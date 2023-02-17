@@ -29,6 +29,45 @@ typedef QVector<QVector<QVector<QgsPointXY>>> QgsMultiPolygonXY;
 
 
 
+class QgsGeometryParameters
+{
+%Docstring(signature="appended")
+Encapsulates parameters under which a geometry operation is performed.
+
+.. versionadded:: 3.28
+%End
+
+%TypeHeaderCode
+#include "qgsgeometry.h"
+%End
+  public:
+
+    double gridSize() const;
+%Docstring
+Returns the grid size which will be used to snap vertices of a geometry.
+
+This parameter is used to control the grid size (or precision) for GEOS geometry operations. Output
+geometry result vertices will be computed on that same precision grid.
+
+A value of -1 indicates that no precision reduction will be applied.
+
+.. seealso:: :py:func:`setGridSize`
+%End
+
+    void setGridSize( double size );
+%Docstring
+Sets the grid ``size`` which will be used to snap vertices of a geometry.
+
+This parameter is used to control the grid size (or precision) for GEOS geometry operations. Output
+geometry result vertices will be computed on that same precision grid.
+
+A value of -1 indicates that no precision reduction will be applied.
+
+.. seealso:: :py:func:`gridSize`
+%End
+
+};
+
 class QgsGeometry
 {
 %Docstring(signature="appended")
@@ -39,14 +78,14 @@ so making copies of geometries is inexpensive. The geometry container class can 
 a QVariant object.
 
 The actual geometry representation is stored as a :py:class:`QgsAbstractGeometry` within the container, and
-can be accessed via the :py:func:`~get` method or set using the :py:func:`~set` method. This gives access to the underlying
+can be accessed via the :py:func:`~QgsGeometryParameters.get` method or set using the :py:func:`~QgsGeometryParameters.set` method. This gives access to the underlying
 raw geometry primitive, such as the point, line, polygon, curve or other geometry subclasses.
 
 .. note::
 
    :py:class:`QgsGeometry` objects are inherently Cartesian/planar geometries. They have no concept of geodesy, and none
    of the methods or properties exposed from the :py:class:`QgsGeometry` API (or :py:class:`QgsAbstractGeometry` subclasses) utilize
-   geodesic calculations. Accordingly, properties like :py:func:`~length` and :py:func:`~area` or spatial operations like :py:func:`~buffer`
+   geodesic calculations. Accordingly, properties like :py:func:`~QgsGeometryParameters.length` and :py:func:`~QgsGeometryParameters.area` or spatial operations like :py:func:`~QgsGeometryParameters.buffer`
    are always calculated using strictly Cartesian mathematics. In contrast, the :py:class:`QgsDistanceArea` class exposes
    methods for working with geodesic calculations and spatial operations on geometries,
    and should be used whenever calculations which account for the curvature of the Earth (or any other celestial body)
@@ -142,9 +181,11 @@ Sets the underlying geometry store. Ownership of geometry is transferred.
     bool isNull() const /HoldGIL/;
 %Docstring
 Returns ``True`` if the geometry is null (ie, contains no underlying geometry
-accessible via :py:func:`~QgsGeometry.geometry` ).
+accessible via :py:func:`~QgsGeometry.get` or :py:func:`~QgsGeometry.constGet` ).
 
 .. seealso:: :py:func:`get`
+
+.. seealso:: :py:func:`constGet`
 
 .. seealso:: :py:func:`isEmpty`
 
@@ -1644,6 +1685,20 @@ If an error was encountered while creating the result, more information can be r
 by calling :py:func:`~QgsGeometry.lastError` on the returned geometry.
 %End
 
+    QgsGeometry concaveHull( double targetPercent, bool allowHoles = false ) const throw( QgsNotSupportedException );
+%Docstring
+Returns a possibly concave polygon that contains all the points in the geometry.
+
+If the input is a NULL geometry, the output will also be a NULL geometry.
+
+If an error was encountered while creating the result, more information can be retrieved
+by calling :py:func:`~QgsGeometry.lastError` on the returned geometry.
+
+:raises QgsNotSupportedException: on QGIS builds based on GEOS 3.10 or earlier.
+
+.. versionadded:: 3.28
+%End
+
     QgsGeometry voronoiDiagram( const QgsGeometry &extent = QgsGeometry(), double tolerance = 0.0, bool edgesOnly = false ) const;
 %Docstring
 Creates a Voronoi diagram for the nodes contained within the geometry.
@@ -1702,7 +1757,7 @@ Returns a null geometry on exception.
 .. versionadded:: 3.20
 %End
 
-    QgsGeometry subdivide( int maxNodes = 256 ) const;
+    QgsGeometry subdivide( int maxNodes = 256, const QgsGeometryParameters &parameters = QgsGeometryParameters() ) const;
 %Docstring
 Subdivides the geometry. The returned geometry will be a collection containing subdivided parts
 from the original geometry, where no part has more then the specified maximum number of nodes (``maxNodes``).
@@ -1719,6 +1774,9 @@ If the input is a NULL geometry, the output will also be a NULL geometry.
 
 If an error was encountered while creating the result, more information can be retrieved
 by calling :py:func:`~QgsGeometry.lastError` on the returned geometry.
+
+Since QGIS 3.28 the optional ``parameters`` argument can be used to specify parameters which
+control the subdivision results.
 
 .. versionadded:: 3.0
 %End
@@ -1775,7 +1833,7 @@ of the node is returned.
 .. versionadded:: 3.0
 %End
 
-    QgsGeometry intersection( const QgsGeometry &geometry ) const;
+    QgsGeometry intersection( const QgsGeometry &geometry, const QgsGeometryParameters &parameters = QgsGeometryParameters() ) const;
 %Docstring
 Returns a geometry representing the points shared by this geometry and other.
 
@@ -1783,6 +1841,9 @@ If the input is a NULL geometry, the output will also be a NULL geometry.
 
 If an error was encountered while creating the result, more information can be retrieved
 by calling :py:func:`~QgsGeometry.lastError` on the returned geometry.
+
+Since QGIS 3.28 the optional ``parameters`` argument can be used to specify parameters which
+control the intersection results.
 %End
 
     QgsGeometry clipped( const QgsRectangle &rectangle );
@@ -1795,7 +1856,7 @@ a ``rectangle``. The returned geometry may be invalid.
 .. versionadded:: 3.0
 %End
 
-    QgsGeometry combine( const QgsGeometry &geometry ) const;
+    QgsGeometry combine( const QgsGeometry &geometry, const QgsGeometryParameters &parameters = QgsGeometryParameters() ) const;
 %Docstring
 Returns a geometry representing all the points in this geometry and other (a
 union geometry operation).
@@ -1808,6 +1869,9 @@ by calling :py:func:`~QgsGeometry.lastError` on the returned geometry.
 .. note::
 
    this operation is not called union since its a reserved word in C++.
+
+Since QGIS 3.28 the optional ``parameters`` argument can be used to specify parameters which
+control the union results.
 %End
 
     QgsGeometry mergeLines() const;
@@ -1822,7 +1886,7 @@ converts them to single line strings.
 .. versionadded:: 3.0
 %End
 
-    QgsGeometry difference( const QgsGeometry &geometry ) const;
+    QgsGeometry difference( const QgsGeometry &geometry, const QgsGeometryParameters &parameters = QgsGeometryParameters() ) const;
 %Docstring
 Returns a geometry representing the points making up this geometry that do not make up other.
 
@@ -1830,9 +1894,12 @@ If the input is a NULL geometry, the output will also be a NULL geometry.
 
 If an error was encountered while creating the result, more information can be retrieved
 by calling :py:func:`~QgsGeometry.lastError` on the returned geometry.
+
+Since QGIS 3.28 the optional ``parameters`` argument can be used to specify parameters which
+control the difference results.
 %End
 
-    QgsGeometry symDifference( const QgsGeometry &geometry ) const;
+    QgsGeometry symDifference( const QgsGeometry &geometry, const QgsGeometryParameters &parameters = QgsGeometryParameters() ) const;
 %Docstring
 Returns a geometry representing the points making up this geometry that do not make up other.
 
@@ -1840,6 +1907,9 @@ If the input is a NULL geometry, the output will also be a NULL geometry.
 
 If an error was encountered while creating the result, more information can be retrieved
 by calling :py:func:`~QgsGeometry.lastError` on the returned geometry.
+
+Since QGIS 3.28 the optional ``parameters`` argument can be used to specify parameters which
+control the difference results.
 %End
 
     QgsGeometry extrude( double x, double y );
@@ -2239,6 +2309,23 @@ not change the geometry.
 :return: ``True`` in case of success and ``False`` else
 %End
 
+    bool convertToCurvedMultiType();
+%Docstring
+Converts a geometry into a multitype geometry of curve kind (when there
+is a corresponding curve type).
+e.g. a polygon into a multisurface geometry with one polygon,
+a multipolygon into a multisurface, a linestring into a multicurve
+geometry with one linestring, or a multilinestring into a multicurve.
+If it is already a multipart curve geometry, it will return ``True`` and
+not change the geometry. It will also return ``True`` and do nothing if
+the current geometry is a multipoint or a geometry collection. A single
+point will be transformed to a multipoint.
+
+:return: ``True`` in case of success and ``False`` else
+
+.. versionadded:: 3.30
+%End
+
     bool convertToSingleType();
 %Docstring
 Converts multi type geometry into single type geometry
@@ -2273,11 +2360,12 @@ Modifies geometry to avoid intersections with the layers specified in project pr
          1 if geometry is not of polygon type,
          2 if avoid intersection would change the geometry type,
          3 at least one geometry intersected is invalid. The algorithm may not work and return the same geometry as the input. You must fix your intersecting geometries.
+         4 if the geometry is not intersected by one of the geometries present in the provided layers.
 
 .. versionadded:: 1.5
 %End
 
-    QgsGeometry makeValid() const;
+    QgsGeometry makeValid( Qgis::MakeValidMethod method = Qgis::MakeValidMethod::Linework, bool keepCollapsed = false ) const throw( QgsNotSupportedException );
 %Docstring
 Attempts to make an invalid geometry valid without losing vertices.
 
@@ -2290,13 +2378,12 @@ It preserves Z values, but M values will be dropped.
 If an error was encountered during the process, more information can be retrieved
 by calling :py:func:`~QgsGeometry.lastError` on the returned geometry.
 
+The ``method`` and ``keepCollapsed`` arguments are available since QGIS 3.28.
+They require builds based on GEOS 3.10 or later.
+
 :return: new valid QgsGeometry or null geometry on error
 
-.. note::
-
-   For QGIS builds using GEOS library versions older than 3.8 this method calls
-   an internal fork of PostGIS' ST_MakeValid() function. For builds based on GEOS 3.8 or
-   later this method calls the GEOS MakeValid method directly.
+:raises QgsNotSupportedException: on QGIS builds based on GEOS 3.9 or earlier when the ``method`` is not Qgis.MakeValidMethod.Linework or the ``keepCollapsed`` option is set.
 
 
 .. versionadded:: 3.0
@@ -2403,11 +2490,14 @@ resultant geometry will be geometrically equivalent to the original geometry.
 .. versionadded:: 3.20
 %End
 
-    static QgsGeometry unaryUnion( const QVector<QgsGeometry> &geometries );
+    static QgsGeometry unaryUnion( const QVector<QgsGeometry> &geometries, const QgsGeometryParameters &parameters = QgsGeometryParameters() );
 %Docstring
 Compute the unary union on a list of ``geometries``. May be faster than an iterative union on a set of geometries.
 The returned geometry will be fully noded, i.e. a node will be created at every common intersection of the
 input geometries. An empty geometry will be returned in the case of errors.
+
+Since QGIS 3.28 the optional ``parameters`` argument can be used to specify parameters which
+control the union results.
 %End
 
     static QgsGeometry polygonize( const QVector<QgsGeometry> &geometries );

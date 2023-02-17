@@ -173,7 +173,87 @@ QVariantMap QgsRaiseWarningAlgorithm::processAlgorithm( const QVariantMap &param
   }
 
   const QString warning = parameterAsString( parameters, QStringLiteral( "MESSAGE" ), context );
-  feedback->reportError( warning );
+  feedback->pushWarning( warning );
+  return QVariantMap();
+}
+
+
+//
+// QgsRaiseMessageAlgorithm
+//
+
+QString QgsRaiseMessageAlgorithm::name() const
+{
+  return QStringLiteral( "raisemessage" );
+}
+
+QgsProcessingAlgorithm::Flags QgsRaiseMessageAlgorithm::flags() const
+{
+  return QgsProcessingAlgorithm::flags() | FlagHideFromToolbox | FlagSkipGenericModelLogging;
+}
+
+QString QgsRaiseMessageAlgorithm::displayName() const
+{
+  return QObject::tr( "Raise message" );
+}
+
+QStringList QgsRaiseMessageAlgorithm::tags() const
+{
+  return QObject::tr( "information" ).split( ',' );
+}
+
+QString QgsRaiseMessageAlgorithm::group() const
+{
+  return QObject::tr( "Modeler tools" );
+}
+
+QString QgsRaiseMessageAlgorithm::groupId() const
+{
+  return QStringLiteral( "modelertools" );
+}
+
+QString QgsRaiseMessageAlgorithm::shortHelpString() const
+{
+  return QObject::tr( "This algorithm raises an information message in the log.\n\n"
+                      "The message can be customized, and optionally an expression based condition "
+                      "can be specified. If an expression condition is used, then the message will only "
+                      "be logged if the expression result is true. A false result indicates that no message "
+                      "will be logged." );
+}
+
+QString QgsRaiseMessageAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Raises an information message." );
+}
+
+QgsRaiseMessageAlgorithm *QgsRaiseMessageAlgorithm::createInstance() const
+{
+  return new QgsRaiseMessageAlgorithm();
+}
+
+void QgsRaiseMessageAlgorithm::initAlgorithm( const QVariantMap & )
+{
+  addParameter( new QgsProcessingParameterString( QStringLiteral( "MESSAGE" ), QObject::tr( "Information message" ) ) );
+  addParameter( new QgsProcessingParameterExpression( QStringLiteral( "CONDITION" ), QObject::tr( "Condition" ), QVariant(), QString(), true ) );
+}
+
+QVariantMap QgsRaiseMessageAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
+{
+  const QString expression = parameterAsExpression( parameters, QStringLiteral( "CONDITION" ), context );
+  if ( !expression.isEmpty() )
+  {
+    const QgsExpressionContext expContext = createExpressionContext( parameters, context );
+    QgsExpression exp( expression );
+    if ( exp.hasParserError() )
+    {
+      throw QgsProcessingException( QObject::tr( "Error parsing condition expression: %1" ).arg( exp.parserErrorString() ) );
+    }
+    if ( !exp.evaluate( &expContext ).toBool() )
+      return QVariantMap();
+  }
+
+  const QString info = parameterAsString( parameters, QStringLiteral( "MESSAGE" ), context );
+  feedback->pushInfo( info );
   return QVariantMap();
 }
 

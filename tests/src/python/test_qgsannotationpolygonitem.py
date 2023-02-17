@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsAnnotationPolygonItem.
 
 From build dir, run: ctest -R PyQgsAnnotationPolygonItem -V
@@ -13,40 +12,36 @@ __date__ = '29/07/2020'
 __copyright__ = 'Copyright 2020, The QGIS Project'
 
 import qgis  # NOQA
-
-from qgis.PyQt.QtCore import (QSize,
-                              QDir)
-from qgis.PyQt.QtGui import (QImage,
-                             QPainter,
-                             QColor,
-                             QTransform)
-from qgis.core import (QgsMapSettings,
-                       QgsCoordinateTransform,
-                       QgsProject,
-                       QgsPoint,
-                       QgsCoordinateReferenceSystem,
-                       QgsFillSymbol,
-                       QgsRenderChecker,
-                       QgsReadWriteContext,
-                       QgsRenderContext,
-                       QgsAnnotationPolygonItem,
-                       QgsRectangle,
-                       QgsLineString,
-                       QgsPolygon,
-                       QgsCurvePolygon,
-                       QgsCircularString,
-                       QgsAnnotationItemNode,
-                       Qgis,
-                       QgsPointXY,
-                       QgsVertexId,
-                       QgsAnnotationItemEditOperationMoveNode,
-                       QgsAnnotationItemEditOperationDeleteNode,
-                       QgsAnnotationItemEditOperationTranslateItem,
-                       QgsAnnotationItemEditOperationAddNode
-                       )
+from qgis.PyQt.QtCore import QDir, QSize
+from qgis.PyQt.QtGui import QColor, QImage, QPainter
 from qgis.PyQt.QtXml import QDomDocument
-
+from qgis.core import (
+    Qgis,
+    QgsAnnotationItemEditOperationAddNode,
+    QgsAnnotationItemEditOperationDeleteNode,
+    QgsAnnotationItemEditOperationMoveNode,
+    QgsAnnotationItemEditOperationTranslateItem,
+    QgsAnnotationItemNode,
+    QgsAnnotationPolygonItem,
+    QgsCircularString,
+    QgsCoordinateReferenceSystem,
+    QgsCoordinateTransform,
+    QgsCurvePolygon,
+    QgsFillSymbol,
+    QgsLineString,
+    QgsMapSettings,
+    QgsPoint,
+    QgsPointXY,
+    QgsPolygon,
+    QgsProject,
+    QgsReadWriteContext,
+    QgsRectangle,
+    QgsRenderChecker,
+    QgsRenderContext,
+    QgsVertexId,
+)
 from qgis.testing import start_app, unittest
+
 from utilities import unitTestDataPath
 
 start_app()
@@ -61,7 +56,7 @@ class TestQgsAnnotationPolygonItem(unittest.TestCase):
 
     @classmethod
     def tearDownClass(cls):
-        report_file_path = "%s/qgistest.html" % QDir.tempPath()
+        report_file_path = f"{QDir.tempPath()}/qgistest.html"
         with open(report_file_path, 'a') as report_file:
             report_file.write(cls.report)
 
@@ -265,7 +260,7 @@ class TestQgsAnnotationPolygonItem(unittest.TestCase):
         self.assertTrue(self.imageCheck('polygon_item_transform', 'polygon_item_transform', image))
 
     def imageCheck(self, name, reference_image, image):
-        TestQgsAnnotationPolygonItem.report += "<h2>Render {}</h2>\n".format(name)
+        TestQgsAnnotationPolygonItem.report += f"<h2>Render {name}</h2>\n"
         temp_dir = QDir.tempPath() + '/'
         file_name = temp_dir + 'patch_' + name + ".png"
         image.save(file_name, "PNG")

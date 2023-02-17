@@ -2,10 +2,17 @@
   "name": "boundary",
   "type": "function",
   "groups": ["GeometryGroup"],
-  "description":"Returns the closure of the combinatorial boundary of the geometry (ie the topological boundary of the geometry). For instance, a polygon geometry will have a boundary consisting of the linestrings for each ring in the polygon. Some geometry types do not have a defined boundary, e.g., points or geometry collections, and will return NULL.",
-  "arguments": [ {"arg":"geometry","description":"a geometry"} ],
-  "examples": [ { "expression":"geom_to_wkt(boundary(geom_from_wkt('Polygon((1 1, 0 0, -1 1, 1 1))')))", "returns":"'LineString(1 1,0 0,-1 1,1 1)'"},
-                { "expression":"geom_to_wkt(boundary(geom_from_wkt('LineString(1 1,0 0,-1 1)')))", "returns":"'MultiPoint ((1 1),(-1 1))'"}
-              ]
+  "description": "Returns the closure of the combinatorial boundary of the geometry (ie the topological boundary of the geometry). For instance, a polygon geometry will have a boundary consisting of the linestrings for each ring in the polygon. Some geometry types do not have a defined boundary, e.g., points or geometry collections, and will return NULL.",
+  "arguments": [{
+    "arg": "geometry",
+    "description": "a geometry"
+  }],
+  "examples": [{
+    "expression": "geom_to_wkt(boundary(geom_from_wkt('Polygon((1 1, 0 0, -1 1, 1 1))')))",
+    "returns": "'LineString(1 1,0 0,-1 1,1 1)'"
+  }, {
+    "expression": "geom_to_wkt(boundary(geom_from_wkt('LineString(1 1,0 0,-1 1)')))",
+    "returns": "'MultiPoint ((1 1),(-1 1))'"
+  }],
+  "tags": ["polygon", "linestrings", "instance", "combinatorial", "topological", "points", "collections", "types", "ring", "boundary", "closure"]
 }
-

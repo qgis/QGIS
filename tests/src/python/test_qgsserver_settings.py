@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsServerSettings.
 
 From build dir, run: ctest -R PyQgsServerSettings -V
@@ -16,10 +15,12 @@ __copyright__ = 'Copyright 2016, The QGIS Project'
 import os
 
 from qgis.PyQt.QtCore import QCoreApplication
+from qgis.server import QgsServerSettings, QgsServerSettingsEnv
+from qgis.testing import unittest
 
 from utilities import unitTestDataPath
-from qgis.testing import unittest
-from qgis.server import QgsServerSettings, QgsServerSettingsEnv
+
+DEFAULT_CACHE_SIZE = 256 * 1024 * 1024
 
 
 class TestQgsServerSettings(unittest.TestCase):
@@ -104,7 +105,7 @@ class TestQgsServerSettings(unittest.TestCase):
     def test_env_cache_size(self):
         env = "QGIS_SERVER_CACHE_SIZE"
 
-        self.assertEqual(self.settings.cacheSize(), 50 * 1024 * 1024)
+        self.assertEqual(self.settings.cacheSize(), DEFAULT_CACHE_SIZE)
 
         os.environ[env] = "1024"
         self.settings.load()
@@ -181,7 +182,7 @@ class TestQgsServerSettings(unittest.TestCase):
     def test_options_path_conf0(self):
         env = "QGIS_OPTIONS_PATH"
         dpath = "conf0"
-        ini = "{0}.ini".format(os.path.join(self.testdata_path, dpath))
+        ini = f"{os.path.join(self.testdata_path, dpath)}.ini"
         QCoreApplication.setOrganizationName(dpath)
 
         # load settings
@@ -205,7 +206,7 @@ class TestQgsServerSettings(unittest.TestCase):
     def test_options_path_conf1(self):
         env = "QGIS_OPTIONS_PATH"
         dpath = "conf1"
-        ini = "{0}.ini".format(os.path.join(self.testdata_path, dpath))
+        ini = f"{os.path.join(self.testdata_path, dpath)}.ini"
         QCoreApplication.setOrganizationName(dpath)
 
         # load settings

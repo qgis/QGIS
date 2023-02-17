@@ -47,6 +47,26 @@ This method returns a new object and the caller takes ownership of the returned 
 .. seealso:: :py:func:`setBearingFormat`
 %End
 
+    static void setGeographicCoordinateFormat( const QgsGeographicCoordinateNumericFormat *format );
+%Docstring
+Sets the default geographic coordinate ``format``, which controls how geographic coordinates are displayed.
+
+.. seealso:: :py:func:`geographicCoordinateFormat`
+
+.. versionadded:: 3.26
+%End
+
+    static QgsGeographicCoordinateNumericFormat *geographicCoordinateFormat() /Factory/;
+%Docstring
+Returns the default geographic coordinate format, which controls how geographic coordinates are displayed.
+
+This method returns a new object and the caller takes ownership of the returned value.
+
+.. seealso:: :py:func:`setGeographicCoordinateFormat`
+
+.. versionadded:: 3.26
+%End
+
 };
 
 /************************************************************************

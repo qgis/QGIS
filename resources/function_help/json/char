@@ -3,6 +3,13 @@
   "type": "function",
   "groups": ["String"],
   "description": "Returns the character associated with a unicode code.",
-  "arguments": [ {"arg":"code","description":"a unicode code number"}],
-  "examples": [ { "expression":"char(81)", "returns":"'Q'"} ]
+  "arguments": [{
+    "arg": "code",
+    "description": "a unicode code number"
+  }],
+  "examples": [{
+    "expression": "char(81)",
+    "returns": "'Q'"
+  }],
+  "tags": ["associated", "character", "unicode", "code"]
 }

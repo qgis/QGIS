@@ -124,7 +124,7 @@ QgsGeometry QgsMapClippingUtils::calculateFeatureIntersectionGeometry( const QLi
   return result;
 }
 
-QPainterPath QgsMapClippingUtils::calculatePainterClipRegion( const QList<QgsMapClippingRegion> &regions, const QgsRenderContext &context, QgsMapLayerType layerType, bool &shouldClip )
+QPainterPath QgsMapClippingUtils::calculatePainterClipRegion( const QList<QgsMapClippingRegion> &regions, const QgsRenderContext &context, Qgis::LayerType layerType, bool &shouldClip )
 {
   QgsGeometry result;
   bool first = true;
@@ -136,23 +136,23 @@ QPainterPath QgsMapClippingUtils::calculatePainterClipRegion( const QList<QgsMap
 
     switch ( layerType )
     {
-      case QgsMapLayerType::VectorLayer:
+      case Qgis::LayerType::Vector:
         if ( region.featureClip() != QgsMapClippingRegion::FeatureClippingType::ClipPainterOnly )
           continue;
         break;
 
-      case QgsMapLayerType::VectorTileLayer:
+      case Qgis::LayerType::VectorTile:
         // for now, we ignore the region's featureClip behavior when rendering vector tiles
         // TODO: ideally we should apply this during rendering, just like we do for normal
         // vector layers
         break;
 
-      case QgsMapLayerType::MeshLayer:
-      case QgsMapLayerType::RasterLayer:
-      case QgsMapLayerType::PluginLayer:
-      case QgsMapLayerType::PointCloudLayer:
-      case QgsMapLayerType::AnnotationLayer:
-      case QgsMapLayerType::GroupLayer:
+      case Qgis::LayerType::Mesh:
+      case Qgis::LayerType::Raster:
+      case Qgis::LayerType::Plugin:
+      case Qgis::LayerType::PointCloud:
+      case Qgis::LayerType::Annotation:
+      case Qgis::LayerType::Group:
         // for these layer types, we ignore the region's featureClip behavior.
         break;
 

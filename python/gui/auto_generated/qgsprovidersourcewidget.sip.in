@@ -8,6 +8,7 @@
 
 
 
+
 class QgsProviderSourceWidget : QWidget
 {
 %Docstring(signature="appended")
@@ -40,6 +41,20 @@ Returns the source URI as currently defined by the widget.
 .. seealso:: :py:func:`setSourceUri`
 %End
 
+    virtual void setMapCanvas( QgsMapCanvas *mapCanvas );
+%Docstring
+Sets a map ``canvas`` associated with the widget.
+
+.. versionadded:: 3.26
+%End
+
+    virtual QgsMapCanvas *mapCanvas();
+%Docstring
+Returns the map canvas associated with the widget.
+
+.. versionadded:: 3.26
+%End
+
   signals:
 
     void validChanged( bool isValid );
@@ -48,6 +63,13 @@ Emitted whenever the validation status of the widget changes.
 
 If ``isValid`` is ``False`` then the widget is not valid, and any dialog using the widget should be prevented from
 being accepted.
+%End
+
+    void changed();
+%Docstring
+Emitted whenever the configuration of the widget changes.
+
+.. versionadded:: 3.30
 %End
 
 };

@@ -65,8 +65,8 @@ Qgs25DRendererWidget::Qgs25DRendererWidget( QgsVectorLayer *layer, QgsStyle *sty
   const QVariant angle = scope->variable( QStringLiteral( "qgis_25d_angle" ) );
   delete scope;
 
-  mHeightWidget->setField( height.isNull() ? QStringLiteral( "10" ) : height.toString() );
-  mAngleWidget->setValue( angle.isNull() ? 70 : angle.toDouble() );
+  mHeightWidget->setField( QgsVariantUtils::isNull( height ) ? QStringLiteral( "10" ) : height.toString() );
+  mAngleWidget->setValue( QgsVariantUtils::isNull( angle ) ? 70 : angle.toDouble() );
   mAngleWidget->setClearValue( 70 );
   mWallColorButton->setColor( mRenderer->wallColor() );
   mRoofColorButton->setColor( mRenderer->roofColor() );

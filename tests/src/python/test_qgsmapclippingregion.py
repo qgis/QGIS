@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsMapClippingRegion.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -12,12 +11,8 @@ __copyright__ = 'Copyright 2020, The QGIS Project'
 
 import qgis  # NOQA
 
+from qgis.core import QgsGeometry, QgsMapClippingRegion, QgsVectorLayer
 from qgis.testing import unittest
-from qgis.core import (
-    QgsMapClippingRegion,
-    QgsGeometry,
-    QgsVectorLayer
-)
 
 
 class TestQgsMapClippingRegion(unittest.TestCase):

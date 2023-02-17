@@ -366,7 +366,6 @@ class ProcessingPlugin(QObject):
 
             if as_batch:
                 dlg = BatchAlgorithmDialog(alg, iface.mainWindow())
-                dlg.setAttribute(Qt.WA_DeleteOnClose)
                 dlg.show()
                 dlg.exec_()
             else:
@@ -488,8 +487,8 @@ class ProcessingPlugin(QObject):
         dlg = HistoryDialog()
         dlg.exec_()
 
-    def tr(self, message):
-        return QCoreApplication.translate('ProcessingPlugin', message)
+    def tr(self, message, disambiguation=None, n=-1):
+        return QCoreApplication.translate('ProcessingPlugin', message, disambiguation=disambiguation, n=n)
 
     def editSelected(self, enabled):
         self.toolbox.set_in_place_edit_mode(enabled)

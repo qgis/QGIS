@@ -33,6 +33,10 @@
 #include "qgseptproviderguimetadata.h"
 #endif
 
+#ifdef HAVE_COPC
+#include "qgscopcproviderguimetadata.h"
+#endif
+
 #ifdef HAVE_STATIC_PROVIDERS
 #include "qgswmsprovidergui.h"
 #include "qgswcsprovidergui.h"
@@ -90,6 +94,11 @@ void QgsProviderGuiRegistry::loadStaticProviders( )
 #ifdef HAVE_EPT
   QgsProviderGuiMetadata *ept = new QgsEptProviderGuiMetadata();
   mProviders[ ept->key() ] = ept;
+#endif
+
+#ifdef HAVE_COPC
+  QgsProviderGuiMetadata *copc = new QgsCopcProviderGuiMetadata();
+  mProviders[ copc->key() ] = copc;
 #endif
 
   // only show point cloud option if we have at least one point cloud provider available!

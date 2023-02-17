@@ -214,6 +214,8 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
 
     Q_PROPERTY( QgsUnitTypes::DistanceUnit mapUnits READ mapUnits )
     Q_PROPERTY( bool isGeographic READ isGeographic )
+    Q_PROPERTY( QString authid READ authid )
+    Q_PROPERTY( QString description READ description )
 
   public:
 
@@ -840,6 +842,51 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     bool hasAxisInverted() const;
 
     /**
+     * Returns an ordered list of the axis directions reflecting the native axis order for the CRS.
+     *
+     * \since QGIS 3.26
+     */
+#ifndef SIP_RUN
+    QList< Qgis::CrsAxisDirection > axisOrdering() const;
+#else
+    SIP_PYOBJECT axisOrdering() const SIP_TYPEHINT( List[Qgis.CrsAxisDirection] );
+    % MethodCode
+    // adapted from the qpymultimedia_qlist.sip file from the PyQt6 sources
+
+    const QList< Qgis::CrsAxisDirection > cppRes = sipCpp->axisOrdering();
+
+    PyObject *l = PyList_New( cppRes.size() );
+
+    if ( !l )
+      sipIsErr = 1;
+    else
+    {
+      for ( int i = 0; i < cppRes.size(); ++i )
+      {
+        PyObject *eobj = sipConvertFromEnum( static_cast<int>( cppRes.at( i ) ),
+                                             sipType_Qgis_CrsAxisDirection );
+
+        if ( !eobj )
+        {
+          sipIsErr = 1;
+        }
+
+        PyList_SetItem( l, i, eobj );
+      }
+
+      if ( !sipIsErr )
+      {
+        sipRes = l;
+      }
+      else
+      {
+        Py_DECREF( l );
+      }
+    }
+    % End
+#endif
+
+    /**
      * Returns the units for the projection used by the CRS.
      */
     QgsUnitTypes::DistanceUnit mapUnits() const;
@@ -853,6 +900,14 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * \since QGIS 3.0
      */
     QgsRectangle bounds() const;
+
+    /**
+     * Returns the crs as OGC URI (format: http://www.opengis.net/def/crs/OGC/1.3/CRS84)
+     * Returns an empty string on failure.
+     *
+     * \since QGIS 3.30
+     */
+    QString toOgcUri() const;
 
     // Mutators -----------------------------------
 
@@ -882,7 +937,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     /**
      * Gets user hint for validation
      */
-    QString validationHint();
+    QString validationHint() const;
 
     /**
      * Update proj.4 parameters in our database from proj.4

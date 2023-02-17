@@ -73,6 +73,9 @@ class CORE_EXPORT QgsCoordinateTransform
      * Python scripts should generally use the constructor variant which accepts
      * a QgsProject instance instead of this constructor.
      *
+     * Since QGIS 3.26 the optional \a flags argument can be used to specify flags
+     * which dictate the behavior of the transformation.
+     *
      * \warning Since QGIS 3.20 The QgsCoordinateTransform class can perform time-dependent transformations
      * between a static and dynamic CRS based on either the source OR destination CRS coordinate epoch,
      * however dynamic CRS to dynamic CRS transformations are not currently supported.
@@ -88,7 +91,8 @@ class CORE_EXPORT QgsCoordinateTransform
      */
     explicit QgsCoordinateTransform( const QgsCoordinateReferenceSystem &source,
                                      const QgsCoordinateReferenceSystem &destination,
-                                     const QgsCoordinateTransformContext &context );
+                                     const QgsCoordinateTransformContext &context,
+                                     Qgis::CoordinateTransformationFlags flags = Qgis::CoordinateTransformationFlags() );
 
     /**
      * Constructs a QgsCoordinateTransform to transform from the \a source
@@ -108,6 +112,9 @@ class CORE_EXPORT QgsCoordinateTransform
      *                                      QgsCoordinateReferenceSystem("EPSG:4326"), QgsProject.instance())
      * \endcode
      *
+     * Since QGIS 3.26 the optional \a flags argument can be used to specify flags
+     * which dictate the behavior of the transformation.
+     *
      * \warning Since QGIS 3.20 The QgsCoordinateTransform class can perform time-dependent transformations
      * between a static and dynamic CRS based on either the source OR destination CRS coordinate epoch,
      * however dynamic CRS to dynamic CRS transformations are not currently supported.
@@ -115,7 +122,8 @@ class CORE_EXPORT QgsCoordinateTransform
      */
     explicit QgsCoordinateTransform( const QgsCoordinateReferenceSystem &source,
                                      const QgsCoordinateReferenceSystem &destination,
-                                     const QgsProject *project );
+                                     const QgsProject *project,
+                                     Qgis::CoordinateTransformationFlags flags = Qgis::CoordinateTransformationFlags() );
 
     /**
      * Constructs a QgsCoordinateTransform to transform from the \a source
@@ -141,6 +149,20 @@ class CORE_EXPORT QgsCoordinateTransform
     QgsCoordinateTransform &operator=( const QgsCoordinateTransform &o );
 
     ~QgsCoordinateTransform();
+
+    /**
+     * Returns TRUE if it is theoretically possible to transform between \a source and \a destination CRSes.
+     *
+     * For example, will return FALSE if \a source and \a destination relate to different celestial bodies and
+     * a transformation between them will never be possible.
+     *
+     * \warning This method tests only if it is theoretically possible to transform between the CRSes, not whether a
+     * transform can actually be constructed on the system. It is possible that this method may return TRUE,
+     * yet construction of a matching QgsCoordinateTransform fails (e.g. due to missing grid shift files on the system).
+     *
+     * \since QGIS 3.26
+     */
+    static bool isTransformationPossible( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination );
 
     /**
      * Returns TRUE if the coordinate transform is valid, ie both the source and destination
@@ -702,6 +724,7 @@ class CORE_EXPORT QgsCoordinateTransform
 #endif
 
     mutable QString mLastError;
+    bool mIgnoreImpossible = false;
     bool mBallparkTransformsAreAppropriate = false;
     bool mDisableFallbackHandler = false;
     mutable bool mFallbackOperationOccurred = false;
@@ -729,6 +752,8 @@ class CORE_EXPORT QgsCoordinateTransform
     static std::function< void( const QgsCoordinateReferenceSystem &sourceCrs,
                                 const QgsCoordinateReferenceSystem &destinationCrs,
                                 const QString &desiredOperation )> sFallbackOperationOccurredHandler;
+
+    friend class TestQgsCoordinateTransform;
 
 };
 

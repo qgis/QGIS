@@ -3,8 +3,19 @@
   "type": "function",
   "groups": ["Arrays"],
   "description": "Returns an array with the given value added at the given position.",
-  "arguments": [ {"arg":"array","description":"an array"},
-                 {"arg":"pos","description":"the position where to add (0 based)"},
-                 {"arg":"value","description":"the value to add"}],
-  "examples": [ { "expression":"array_insert(array(1,2,3),1,100)", "returns":"[ 1, 100, 2, 3 ]"}]
+  "arguments": [{
+    "arg": "array",
+    "description": "an array"
+  }, {
+    "arg": "pos",
+    "description": "the position where to add (0 based)"
+  }, {
+    "arg": "value",
+    "description": "the value to add"
+  }],
+  "examples": [{
+    "expression": "array_insert(array(1,2,3),1,100)",
+    "returns": "[ 1, 100, 2, 3 ]"
+  }],
+  "tags": ["array", "added", "position"]
 }

@@ -237,7 +237,7 @@ void TestQgsTracer::testInvisible()
   snappingConfig.setEnabled( true );
   snappingConfig.setTolerance( 10 );
   snappingConfig.setUnits( QgsTolerance::Pixels );
-  snappingConfig.setMode( QgsSnappingConfig::ActiveLayer );
+  snappingConfig.setMode( Qgis::SnappingMode::ActiveLayer );
   u.setConfig( snappingConfig );
   QgsTracer tracer;
   tracer.setLayers( QList<QgsVectorLayer *>() << mVL );

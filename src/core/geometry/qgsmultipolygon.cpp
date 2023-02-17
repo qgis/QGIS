@@ -91,7 +91,7 @@ QDomElement QgsMultiPolygon::asGml2( QDomDocument &doc, int precision, const QSt
 
 QDomElement QgsMultiPolygon::asGml3( QDomDocument &doc, int precision, const QString &ns, const QgsAbstractGeometry::AxisOrder axisOrder ) const
 {
-  QDomElement elemMultiSurface = doc.createElementNS( ns, QStringLiteral( "MultiPolygon" ) );
+  QDomElement elemMultiSurface = doc.createElementNS( ns, QStringLiteral( "MultiSurface" ) );
 
   if ( isEmpty() )
     return elemMultiSurface;
@@ -100,7 +100,7 @@ QDomElement QgsMultiPolygon::asGml3( QDomDocument &doc, int precision, const QSt
   {
     if ( qgsgeometry_cast<const QgsPolygon *>( geom ) )
     {
-      QDomElement elemSurfaceMember = doc.createElementNS( ns, QStringLiteral( "polygonMember" ) );
+      QDomElement elemSurfaceMember = doc.createElementNS( ns, QStringLiteral( "surfaceMember" ) );
       elemSurfaceMember.appendChild( geom->asGml3( doc, precision, ns, axisOrder ) );
       elemMultiSurface.appendChild( elemSurfaceMember );
     }

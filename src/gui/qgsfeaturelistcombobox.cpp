@@ -29,6 +29,8 @@ QgsFeatureListComboBox::QgsFeatureListComboBox( QWidget *parent )
   , mModel( new QgsFeatureFilterModel( this ) )
   , mCompleter( new QCompleter( mModel ) )
 {
+  setMinimumContentsLength( 1 );
+  setSizeAdjustPolicy( QComboBox::SizeAdjustPolicy::AdjustToMinimumContentsLengthWithIcon );
   mCompleter->setCaseSensitivity( Qt::CaseInsensitive );
   mCompleter->setFilterMode( Qt::MatchContains );
   setEditable( true );
@@ -209,7 +211,7 @@ void QgsFeatureListComboBox::setIdentifierFields( const QStringList &identifierF
 
 QModelIndex QgsFeatureListComboBox::currentModelIndex() const
 {
-  return mModel->index( mModel->extraIdentifierValueIndex(), 0, QModelIndex() );
+  return mModel->index( currentIndex(), 0, QModelIndex() );
 }
 
 void QgsFeatureListComboBox::focusOutEvent( QFocusEvent *event )

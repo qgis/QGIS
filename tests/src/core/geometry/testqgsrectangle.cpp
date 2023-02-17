@@ -279,7 +279,7 @@ void TestQgsRectangle::asVariant()
   //convert to and from a QVariant
   const QVariant var = QVariant::fromValue( rect1 );
   QVERIFY( var.isValid() );
-  QVERIFY( var.canConvert< QgsRectangle >() );
+  QCOMPARE( var.userType(), QMetaType::type( "QgsRectangle" ) );
   QVERIFY( !var.canConvert< QgsReferencedRectangle >() );
 
   const QgsRectangle rect2 = qvariant_cast<QgsRectangle>( var );
@@ -303,7 +303,7 @@ void TestQgsRectangle::referenced()
   // not great - we'd ideally like this to pass, but it doesn't:
   // QVERIFY( !var.canConvert< QgsRectangle >() );
 
-  QVERIFY( var.canConvert< QgsReferencedRectangle >() );
+  QCOMPARE( var.userType(), QMetaType::type( "QgsReferencedRectangle" ) );
 
   const QgsReferencedRectangle rect2 = qvariant_cast<QgsReferencedRectangle>( var );
   QCOMPARE( rect2.xMinimum(), rect1.xMinimum() );

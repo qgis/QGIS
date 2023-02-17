@@ -15,6 +15,8 @@
 
 #include "qgsnetworkreply.h"
 #include <QNetworkReply>
+#include <QRegularExpression>
+#include <QRegularExpressionMatch>
 
 QgsNetworkReplyContent::QgsNetworkReplyContent( QNetworkReply *reply )
   : mError( reply->error() )
@@ -49,7 +51,7 @@ bool QgsNetworkReplyContent::hasRawHeader( const QByteArray &headerName ) const
 {
   for ( auto &header : mRawHeaderPairs )
   {
-    if ( header.first == headerName )
+    if ( ! QString::fromLocal8Bit( header.first ).compare( QString::fromLocal8Bit( headerName ), Qt::CaseInsensitive ) )
       return true;
   }
   return false;
@@ -70,8 +72,43 @@ QByteArray QgsNetworkReplyContent::rawHeader( const QByteArray &headerName ) con
 {
   for ( auto &header : mRawHeaderPairs )
   {
-    if ( header.first == headerName )
+    if ( ! QString::fromLocal8Bit( header.first ).compare( QString::fromLocal8Bit( headerName ), Qt::CaseInsensitive ) )
       return header.second;
   }
   return QByteArray();
+}
+
+QString QgsNetworkReplyContent::extractFilenameFromContentDispositionHeader( QNetworkReply *reply )
+{
+  if ( !reply )
+    return QString();
+
+  return extractFileNameFromContentDispositionHeader( reply->header( QNetworkRequest::ContentDispositionHeader ).toString() );
+}
+
+QString QgsNetworkReplyContent::extractFileNameFromContentDispositionHeader( const QString &header )
+{
+  const thread_local QRegularExpression rx( QStringLiteral( R"""(filename[^;\n]*=\s*(UTF-\d['"]*)?((['"]).*?[.]$\2|[^;\n]*)?)""" ), QRegularExpression::PatternOption::CaseInsensitiveOption );
+
+  QRegularExpressionMatchIterator i = rx.globalMatch( header, 0 );
+  QString res;
+  // we want the last match here, as that will have the UTF filename when present
+  while ( i.hasNext() )
+  {
+    const QRegularExpressionMatch match = i.next();
+    res = match.captured( 2 );
+  }
+
+  if ( res.startsWith( '"' ) )
+  {
+    res = res.mid( 1 );
+    if ( res.endsWith( '"' ) )
+      res.chop( 1 );
+  }
+  if ( !res.isEmpty() )
+  {
+    res = QUrl::fromPercentEncoding( res.toUtf8() );
+  }
+
+  return res;
 }

@@ -112,7 +112,7 @@ bool QgsBinaryWidgetWrapper::valid() const
 
 void QgsBinaryWidgetWrapper::updateValues( const QVariant &value, const QVariantList & )
 {
-  mValue = value.isValid() && !value.isNull() && value.canConvert< QByteArray >() ? value.toByteArray() : QByteArray();
+  mValue = value.isValid() && !QgsVariantUtils::isNull( value ) && value.canConvert< QByteArray >() ? value.toByteArray() : QByteArray();
   if ( mValue.length() == 0 )
     mValue = QByteArray();
 

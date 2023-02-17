@@ -3,6 +3,9 @@
   "type": "function",
   "groups": ["Meshes"],
   "description": "Returns the Z value of the current mesh vertex.",
-  "examples": [ { "expression":"$vertex_z", "returns":"42"}
-  ]
+  "examples": [{
+    "expression": "$vertex_z",
+    "returns": "42"
+  }],
+  "tags": ["mesh", "vertex", "current"]
 }

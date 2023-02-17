@@ -1,0 +1,22 @@
+*****
+Content-Type: application/json
+
+{
+   "nodes": [
+      {
+         "symbols": [
+            {
+               "icon": "iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAKUlEQVQ4jWP0c/v/n4ESQIkBfm7//zNRZDsDA8OoAaMGjBoAAYyUZmcAMb0KZdjI3VIAAAAASUVORK5CYII=",
+               "title": "Ortsteil"
+            },
+            {
+               "icon": "iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAKklEQVQ4jWOcOeX/fwZKACUGzJzy/z8TRbYzMDCMGjBqwKgBEMBIaXYGACyFDMn+2JVEAAAAAElFTkSuQmCC",
+               "title": "Stadtteil"
+            }
+         ],
+         "title": "cdb_lines", 
+         "type": "layer"
+      }
+   ],
+   "title": ""
+}

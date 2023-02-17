@@ -1,7 +1,9 @@
-FROM fedora:34 as single
+ARG DISTRO_VERSION=36
+
+FROM fedora:${DISTRO_VERSION} as single
 MAINTAINER Matthias Kuhn <matthias@opengis.ch>
 
-RUN dnf -y install \
+RUN dnf -y --refresh install \
     bison \
     ccache \
     clang \
@@ -10,14 +12,24 @@ RUN dnf -y install \
     expat-devel \
     fcgi-devel \
     flex \
+    git \
     gdal-devel \
     geos-devel \
+    gpsbabel \
+    grass \
+    grass-devel \
     gsl-devel \
     libpq-devel \
     libspatialite-devel \
+    libxml2-devel \
     libzip-devel \
     libzstd-devel \
+    netcdf-devel \
     ninja-build \
+    ocl-icd-devel \
+    PDAL \
+    PDAL-libs \
+    PDAL-devel \
     proj-devel \
     protobuf-devel \
     protobuf-lite-devel \
@@ -27,11 +39,16 @@ RUN dnf -y install \
     qt6-qtbase-devel \
     qt6-qtdeclarative-devel \
     qt6-qttools-static \
+    qt6-qtserialport-devel \
     qt6-qtsvg-devel \
+    qt6-qtpositioning-devel \
+    qt6-qtdeclarative-devel \
     qt6-qt5compat-devel \
+    qt6-qtmultimedia-devel \
     spatialindex-devel \
     sqlite-devel \
     unzip \
+    unixODBC-devel \
     xorg-x11-server-Xvfb \
     util-linux \
     wget \
@@ -56,10 +73,10 @@ RUN cd /usr/src \
   && ninja install
 
 RUN cd /usr/src \
-  && wget https://github.com/frankosterfeld/qtkeychain/archive/refs/heads/master.zip \
+  && wget https://github.com/frankosterfeld/qtkeychain/archive/841f31c7ca177e45647fd705200d7fcbeee056e5/master.zip \
   && unzip master.zip \
   && rm master.zip \
-  && cd qtkeychain-master \
+  && cd qtkeychain-841f31c7ca177e45647fd705200d7fcbeee056e5 \
   && cmake -DBUILD_WITH_QT6=ON -DBUILD_TRANSLATIONS=OFF -DCMAKE_INSTALL_PREFIX=/usr/local -GNinja \
   && ninja install
 
@@ -75,11 +92,10 @@ RUN cd /usr/src \
 
 
 RUN cd /usr/src \
-  && wget https://www.riverbankcomputing.com/static/Downloads/QScintilla/2.13.0/QScintilla_src-2.13.0.zip \
-  && unzip QScintilla_src-2.13.0.zip \
-  && rm QScintilla_src-2.13.0.zip \
-  && cd QScintilla_src-2.13.0 \
+  && wget https://www.riverbankcomputing.com/static/Downloads/QScintilla/2.13.3/QScintilla_src-2.13.3.zip \
+  && unzip QScintilla_src-2.13.3.zip \
+  && rm QScintilla_src-2.13.3.zip \
+  && cd QScintilla_src-2.13.3 \
   && qmake6 src/qscintilla.pro \
   && make -j4 \
   && make install
-

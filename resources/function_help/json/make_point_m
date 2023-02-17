@@ -3,9 +3,19 @@
   "type": "function",
   "groups": ["GeometryGroup"],
   "description": "Creates a point geometry from an x, y coordinate and m value.",
-  "arguments": [
-	{"arg":"x","description":"x coordinate of point"},
-	{"arg":"y","description":"y coordinate of point"},
-	{"arg":"m","description":"m value of point"} ],
-  "examples": [ { "expression":"geom_to_wkt(make_point_m(2,4,6))", "returns":"'PointM (2 4 6)'"} ]
+  "arguments": [{
+    "arg": "x",
+    "description": "x coordinate of point"
+  }, {
+    "arg": "y",
+    "description": "y coordinate of point"
+  }, {
+    "arg": "m",
+    "description": "m value of point"
+  }],
+  "examples": [{
+    "expression": "geom_to_wkt(make_point_m(2,4,6))",
+    "returns": "'PointM (2 4 6)'"
+  }],
+  "tags": ["point", "coordinate"]
 }

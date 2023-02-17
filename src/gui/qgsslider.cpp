@@ -17,6 +17,7 @@
 
 #include "qgsslider.h"
 #include "qgslogger.h"
+#include "qgsvariantutils.h"
 
 #include <QPaintEvent>
 #include <QPainter>
@@ -70,10 +71,10 @@ void QgsSlider::setValue( const QVariant &value )
 
 void QgsSlider::update()
 {
-  if ( mMin.isNull() || mMax.isNull() || mStep.isNull() )
+  if ( QgsVariantUtils::isNull( mMin ) || QgsVariantUtils::isNull( mMax ) || QgsVariantUtils::isNull( mStep ) )
     return;
 
-  if ( mValue.isNull() )
+  if ( QgsVariantUtils::isNull( mValue ) )
     mValue = mMin;
 
   if ( mMin.type() == QVariant::Int &&
@@ -86,11 +87,7 @@ void QgsSlider::update()
     QSlider::setSingleStep( mStep.toInt() );
     QSlider::setValue( mValue.toInt() );
   }
-
-  if ( mMin.type() == QVariant::Double &&
-       mMax.type() == QVariant::Double &&
-       mStep.type() == QVariant::Double &&
-       mValue.type() == QVariant::Double )
+  else
   {
     if ( minimum() != 0 )
       QSlider::setMinimum( 0 );
@@ -115,7 +112,7 @@ QVariant QgsSlider::variantValue() const
 
 void QgsSlider::onValueChanged( int value )
 {
-  if ( mMin.isNull() || mMax.isNull() || mStep.isNull() )
+  if ( QgsVariantUtils::isNull( mMin ) || QgsVariantUtils::isNull( mMax ) || QgsVariantUtils::isNull( mStep ) )
   {
     mValue = QVariant();
   }
@@ -126,10 +123,7 @@ void QgsSlider::onValueChanged( int value )
   {
     mValue = value;
   }
-  else if ( mMin.type() == QVariant::Double &&
-            mMax.type() == QVariant::Double &&
-            mStep.type() == QVariant::Double &&
-            mValue.type() == QVariant::Double )
+  else
   {
     mValue = QVariant( mMin.toDouble() + value * mStep.toDouble() );
   }

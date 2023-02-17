@@ -210,6 +210,7 @@ Sets the geometry from a WKT string.
     enum WkbFlag
     {
       FlagExportTrianglesAsPolygons,
+      FlagExportNanAsDoubleMin,
     };
     typedef QFlags<QgsAbstractGeometry::WkbFlag> WkbFlags;
 

@@ -30,6 +30,7 @@ class QgsMapToolSelectionHandler;
 class QgsRasterLayer;
 class QgsVectorLayer;
 class QgsFeatureStore;
+class QgsMapLayerActionContext;
 
 /**
  * \brief Map tool for identifying features layers and showing results
@@ -83,7 +84,7 @@ class APP_EXPORT QgsMapToolIdentifyAction : public QgsMapToolIdentify
     void copyToClipboard( QgsFeatureStore & );
 
   private slots:
-    void showAttributeTable( QgsMapLayer *layer, const QList<QgsFeature> &featureList );
+    void showAttributeTable( QgsMapLayer *layer, const QList<QgsFeature> &featureList, const QgsMapLayerActionContext &context );
 
     void identifyFromGeometry();
 

@@ -61,6 +61,16 @@ Parses a datetime ``interval`` and returns a :py:class:`QgsDateTimeRange`
 %End
 
 
+    static QString fieldName( const QString &name, const QgsVectorLayer *layer ) throw( QgsServerApiBadRequestException );
+%Docstring
+Given a field ``name`` (or display name) and a ``layer`` returns the actual name of the field.
+
+:raises QgsServerApiBadRequestException: if ``name`` is neither a field name or a display name.
+
+.. versionadded:: 3.28
+%End
+
+
 
     static QgsExpression temporalFilterExpression( const QgsVectorLayer *layer, const QString &interval );
 %Docstring
@@ -127,10 +137,13 @@ Returns the list of CRSs (format: http://www.opengis.net/def/crs/OGC/1.3/CRS84) 
 Information is read from project WMS configuration.
 %End
 
-    static QString crsToOgcUri( const QgsCoordinateReferenceSystem &crs );
+ static QString crsToOgcUri( const QgsCoordinateReferenceSystem &crs ) /Deprecated/;
 %Docstring
 Returns a ``crs`` as OGC URI (format: http://www.opengis.net/def/crs/OGC/1.3/CRS84)
 Returns an empty string on failure.
+
+.. deprecated:: QGIS 3.30
+   use :py:func:`QgsCoordinateReferenceSystem.toOgcUri()` instead
 %End
 
     static QString appendMapParameter( const QString &path, const QUrl &requestUrl );

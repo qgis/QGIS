@@ -43,6 +43,7 @@ class EditModelAction(ContextAction):
         dlg = ModelerDialog.create(alg)
         dlg.update_model.connect(self.updateModel)
         dlg.show()
+        dlg.activate()
 
     def updateModel(self):
         QgsApplication.processingRegistry().providerById('model').refreshAlgorithms()

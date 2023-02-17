@@ -22,14 +22,16 @@ struct FileDimInfo
     FileDimInfo()
     {}
 
-    FileDimInfo(const std::string& name) : name(name)
+    FileDimInfo(const std::string& name) : name(name), extraDim(false)
     {}
 
     std::string name;
     pdal::Dimension::Type type;
     int offset;
     pdal::Dimension::Id dim;
+    bool extraDim;
 };
+
 using DimInfoList = std::vector<FileDimInfo>;
 
 inline std::ostream& operator<<(std::ostream& out, const FileDimInfo& fdi)

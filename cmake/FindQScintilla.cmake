@@ -25,12 +25,12 @@ IF(QSCINTILLA_VERSION_STR)
 ELSE(QSCINTILLA_VERSION_STR)
 
   set(QSCINTILLA_LIBRARY_NAMES
-    qscintilla2-qt5
-    qscintilla2_qt5
-    libqt5scintilla2
-    libqscintilla2-qt5
-    qt5scintilla2
-    libqscintilla2-qt5.dylib
+    qscintilla2-${QT_VERSION_BASE_LOWER}
+    qscintilla2_${QT_VERSION_BASE_LOWER}
+    lib${QT_VERSION_BASE_LOWER}scintilla2
+    libqscintilla2-${QT_VERSION_BASE_LOWER}
+    ${QT_VERSION_BASE_LOWER}scintilla2
+    libqscintilla2-${QT_VERSION_BASE_LOWER}.dylib
     qscintilla2
   )
 
@@ -40,7 +40,7 @@ ELSE(QSCINTILLA_VERSION_STR)
       "${QT_LIBRARY_DIR}"
       $ENV{LIB_DIR}/lib
       /usr/local/lib
-      /usr/local/lib/qt5
+      /usr/local/lib/${QT_VERSION_BASE_LOWER}
       /usr/lib
   )
 
@@ -53,7 +53,7 @@ ELSE(QSCINTILLA_VERSION_STR)
     NAMES Qsci/qsciglobal.h
     PATHS
       "${_qsci_fw}/Headers"
-      ${Qt5Core_INCLUDE_DIRS}
+      ${${QT_VERSION_BASE}Core_INCLUDE_DIRS}
       "${QT_INCLUDE_DIR}"
       $ENV{LIB_DIR}/include
       /usr/local/include

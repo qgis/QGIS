@@ -216,9 +216,9 @@ Content-Type: text/xml; charset=utf-8
     <Abstract>Group abstract</Abstract>
     <SRS>EPSG:4326</SRS>
     <SRS>EPSG:3857</SRS>
-    <LatLonBoundingBox maxy="44.901483" maxx="8.203548" miny="44.901394" minx="8.203459"/>
-    <BoundingBox maxy="5606025.239" SRS="EPSG:3857" maxx="913214.676" miny="5606011.456" minx="913204.911"/>
-    <BoundingBox maxy="44.901483" SRS="EPSG:4326" maxx="8.203548" miny="44.901394" minx="8.203459"/>
+    <LatLonBoundingBox maxy="44.901483" maxx="8.203547" miny="44.901394" minx="8.203459"/>
+    <BoundingBox maxy="5606025.238" SRS="EPSG:3857" maxx="913214.675" miny="5606011.456" minx="913204.912"/>
+    <BoundingBox maxy="44.901483" SRS="EPSG:4326" maxx="8.203547" miny="44.901394" minx="8.203459"/>
     <Layer queryable="1">
      <Name>testlayer2</Name>
      <Title>testlayer2</Title>
@@ -242,9 +242,9 @@ Content-Type: text/xml; charset=utf-8
     <Title>groupwithoutshortname</Title>
     <SRS>EPSG:4326</SRS>
     <SRS>EPSG:3857</SRS>
-    <LatLonBoundingBox maxy="44.901483" maxx="8.203548" miny="44.901394" minx="8.203459"/>
-    <BoundingBox maxy="5606025.239" SRS="EPSG:3857" maxx="913214.676" miny="5606011.456" minx="913204.911"/>
-    <BoundingBox maxy="44.901483" SRS="EPSG:4326" maxx="8.203548" miny="44.901394" minx="8.203459"/>
+    <LatLonBoundingBox maxy="44.901483" maxx="8.203547" miny="44.901394" minx="8.203459"/>
+    <BoundingBox maxy="5606025.238" SRS="EPSG:3857" maxx="913214.675" miny="5606011.456" minx="913204.912"/>
+    <BoundingBox maxy="44.901483" SRS="EPSG:4326" maxx="8.203547" miny="44.901394" minx="8.203459"/>
     <Layer queryable="0">
      <Name>testlayer3</Name>
      <Title>testlayer3</Title>

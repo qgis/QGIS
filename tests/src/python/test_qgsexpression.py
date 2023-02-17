@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsExpression.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -11,11 +10,16 @@ __date__ = '4/11/2012'
 __copyright__ = 'Copyright 2012, The QGIS Project'
 
 import qgis  # NOQA
-
 from qgis.PyQt.QtCore import QVariant
+from qgis.core import (
+    NULL,
+    QgsExpression,
+    QgsExpressionContext,
+    QgsFeatureRequest,
+    QgsFields,
+)
 from qgis.testing import unittest
 from qgis.utils import qgsfunction
-from qgis.core import QgsExpression, QgsFeatureRequest, QgsFields, QgsExpressionContext, NULL
 
 
 class TestQgsExpressionCustomFunctions(unittest.TestCase):
@@ -23,7 +27,7 @@ class TestQgsExpressionCustomFunctions(unittest.TestCase):
     @qgsfunction(1, 'testing', register=False)
     def testfun(values, feature, parent):
         """ Function help """
-        return "Testing_%s" % values[0]
+        return f"Testing_{values[0]}"
 
     @qgsfunction(args="auto", group='testing', register=False)
     def autocount(value1, value2, value3, feature, parent):
@@ -69,6 +73,11 @@ class TestQgsExpressionCustomFunctions(unittest.TestCase):
     def null_mean(values, feature, parent):
         vals = [val for val in values if val != NULL]
         return sum(vals) / len(vals)
+
+    @qgsfunction(group='testing', register=False)
+    def raise_exception(feature, parent):
+        # an undefined variable
+        foo  # noqa: F821
 
     def tearDown(self):
         QgsExpression.unregisterFunction('testfun')
@@ -169,7 +178,7 @@ class TestQgsExpressionCustomFunctions(unittest.TestCase):
     def testReferencedColumnsSet(self):
         QgsExpression.registerFunction(self.referenced_columns_set)
         exp = QgsExpression('referenced_columns_set()')
-        self.assertEqual(set(exp.referencedColumns()), set(['a', 'b']))
+        self.assertEqual(set(exp.referencedColumns()), {'a', 'b'})
 
     def testHandlesNull(self):
         context = QgsExpressionContext()
@@ -290,6 +299,34 @@ class TestQgsExpressionCustomFunctions(unittest.TestCase):
         e.setExpression("foo = 1")
         self.assertTrue(e.isValid())
         self.assertEqual(len(e.referencedAttributeIndexes(QgsFields())), 0)
+
+    def testSuccessfulEvaluationReturnsNoEvalErrorString(self):
+        exp = QgsExpression("True is False")  # the result does not matter
+        self.assertEqual(exp.evalErrorString(), "")
+
+    def testExceptionDuringEvalReturnsTraceback(self):
+        QgsExpression.registerFunction(self.raise_exception)
+        exp = QgsExpression('raise_exception()')
+        result = exp.evaluate()
+        # The file paths and line offsets are dynamic
+        regex = (
+            "name 'foo' is not defined:<pre>Traceback \\(most recent call last\\):\n"
+            "  File \".*qgsfunction.py\", line [0-9]+, in func\n"
+            "    return self.function\\(\\*values\\)\n"
+            "  File \".*test_qgsexpression.py\", line [0-9]+, in raise_exception\n"
+            "    foo  # noqa: F821\n"
+            "NameError: name \'foo\' is not defined"
+            "\n</pre>"
+        )
+        self.assertRegex(exp.evalErrorString(), regex)
+
+    def testBetween(self):
+
+        e = QgsExpression()
+        e.setExpression("'b'")
+        self.assertTrue(e.isValid(), e.parserErrorString())
+        e.setExpression("'b' between 'a' AND 'c'")
+        self.assertTrue(e.isValid(), e.parserErrorString())
 
 
 if __name__ == "__main__":

@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 ***************************************************************************
     test_qgssinglesymbolrenderer.py
@@ -24,23 +22,23 @@ __author__ = 'Matthias Kuhn'
 __date__ = 'December 2015'
 __copyright__ = '(C) 2015, Matthias Kuhn'
 
-import qgis  # NOQA
-
 import os
 
+import qgis  # NOQA
 from qgis.PyQt.QtCore import QSize
-
-from qgis.core import (QgsVectorLayer,
-                       QgsProject,
-                       QgsRectangle,
-                       QgsMultiRenderChecker,
-                       QgsSingleSymbolRenderer,
-                       QgsFillSymbol,
-                       QgsFeatureRequest,
-                       QgsRenderContext
-                       )
+from qgis.core import (
+    QgsFeatureRequest,
+    QgsFillSymbol,
+    QgsMultiRenderChecker,
+    QgsProject,
+    QgsRectangle,
+    QgsRenderContext,
+    QgsSingleSymbolRenderer,
+    QgsVectorLayer,
+)
 from qgis.testing import unittest
 from qgis.testing.mocked import get_iface
+
 from utilities import unitTestDataPath
 
 TEST_DATA_DIR = unitTestDataPath()
@@ -85,6 +83,17 @@ class TestQgsSingleSymbolRenderer(unittest.TestCase):
         ctx = QgsRenderContext.fromMapSettings(self.mapsettings)
 
         self.assertCountEqual(self.renderer.usedAttributes(ctx), {})
+
+    def test_legend_key_to_expression(self):
+        sym1 = QgsFillSymbol.createSimple({'color': '#fdbf6f', 'outline_color': 'black'})
+        renderer = QgsSingleSymbolRenderer(sym1)
+
+        exp, ok = renderer.legendKeyToExpression('0', None)
+        self.assertTrue(ok)
+        self.assertEqual(exp, 'TRUE')
+
+        exp, ok = renderer.legendKeyToExpression('xxxx', None)
+        self.assertFalse(ok)
 
 
 if __name__ == '__main__':

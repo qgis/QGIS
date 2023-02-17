@@ -75,6 +75,10 @@ void QgsLayoutToPdfAlgorithm::initAlgorithm( const QVariantMap & )
   forceVectorParam->setFlags( forceVectorParam->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
   addParameter( forceVectorParam.release() );
 
+  std::unique_ptr< QgsProcessingParameterBoolean > forceRasterParam = std::make_unique< QgsProcessingParameterBoolean >( QStringLiteral( "FORCE_RASTER" ), QObject::tr( "Always export as raster" ), false );
+  forceRasterParam->setFlags( forceRasterParam->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
+  addParameter( forceRasterParam.release() );
+
   std::unique_ptr< QgsProcessingParameterBoolean > appendGeorefParam = std::make_unique< QgsProcessingParameterBoolean >( QStringLiteral( "GEOREFERENCE" ), QObject::tr( "Append georeference information" ), true );
   appendGeorefParam->setFlags( appendGeorefParam->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
   addParameter( appendGeorefParam.release() );
@@ -101,6 +105,16 @@ void QgsLayoutToPdfAlgorithm::initAlgorithm( const QVariantMap & )
   textFormat->setFlags( textFormat->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
   addParameter( textFormat.release() );
 
+  const QStringList imageCompressionOptions
+  {
+    QObject::tr( "Lossy (JPEG)" ),
+    QObject::tr( "Lossless" )
+  };
+
+  std::unique_ptr< QgsProcessingParameterEnum > imageCompression = std::make_unique< QgsProcessingParameterEnum >( QStringLiteral( "IMAGE_COMPRESSION" ), QObject::tr( "Image compression" ), imageCompressionOptions, false, 0 );
+  imageCompression->setFlags( imageCompression->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
+  addParameter( imageCompression.release() );
+
   std::unique_ptr< QgsProcessingParameterBoolean > layeredExport = std::make_unique< QgsProcessingParameterBoolean >( QStringLiteral( "SEPARATE_LAYERS" ), QObject::tr( "Export layers as separate PDF files" ), false );
   layeredExport->setFlags( layeredExport->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
   addParameter( layeredExport.release() );
@@ -110,7 +124,7 @@ void QgsLayoutToPdfAlgorithm::initAlgorithm( const QVariantMap & )
 
 QgsProcessingAlgorithm::Flags QgsLayoutToPdfAlgorithm::flags() const
 {
-  return QgsProcessingAlgorithm::flags() | FlagNoThreading;
+  return QgsProcessingAlgorithm::flags() | FlagNoThreading | FlagRequiresProject;
 }
 
 QgsLayoutToPdfAlgorithm *QgsLayoutToPdfAlgorithm::createInstance() const
@@ -153,8 +167,8 @@ QVariantMap QgsLayoutToPdfAlgorithm::processAlgorithm( const QVariantMap &parame
   }
 
   settings.forceVectorOutput = parameterAsBool( parameters, QStringLiteral( "FORCE_VECTOR" ), context );
+  settings.rasterizeWholeImage = parameterAsBool( parameters, QStringLiteral( "FORCE_RASTER" ), context );
   settings.appendGeoreference = parameterAsBool( parameters, QStringLiteral( "GEOREFERENCE" ), context );
-  settings.exportMetadata = parameterAsBool( parameters, QStringLiteral( "INCLUDE_METADATA" ), context );
   settings.exportMetadata = parameterAsBool( parameters, QStringLiteral( "INCLUDE_METADATA" ), context );
   settings.simplifyGeometries = parameterAsBool( parameters, QStringLiteral( "SIMPLIFY" ), context );
   settings.textRenderFormat = parameterAsEnum( parameters, QStringLiteral( "TEXT_FORMAT" ), context ) == 0 ? Qgis::TextRenderFormat::AlwaysOutlines : Qgis::TextRenderFormat::AlwaysText;
@@ -164,6 +178,11 @@ QVariantMap QgsLayoutToPdfAlgorithm::processAlgorithm( const QVariantMap &parame
     settings.flags = settings.flags | QgsLayoutRenderContext::FlagDisableTiledRasterLayerRenders;
   else
     settings.flags = settings.flags & ~QgsLayoutRenderContext::FlagDisableTiledRasterLayerRenders;
+
+  if ( parameterAsEnum( parameters, QStringLiteral( "IMAGE_COMPRESSION" ), context ) == 1 )
+    settings.flags = settings.flags | QgsLayoutRenderContext::FlagLosslessImageRendering;
+  else
+    settings.flags = settings.flags & ~QgsLayoutRenderContext::FlagLosslessImageRendering;
 
   switch ( exporter.exportToPdf( dest, settings ) )
   {

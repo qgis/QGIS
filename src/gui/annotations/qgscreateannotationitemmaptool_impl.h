@@ -33,7 +33,7 @@ class QgsMapToolCaptureAnnotationItem: public QgsMapToolCapture, public QgsCreat
     QgsMapTool *mapTool() override;
     QgsMapLayer *layer() const override;
     QgsMapToolCapture::Capabilities capabilities() const override;
-    bool supportsTechnique( CaptureTechnique technique ) const override;
+    bool supportsTechnique( Qgis::CaptureTechnique technique ) const override;
 
   protected:
 
@@ -81,8 +81,8 @@ class QgsCreateLineItemMapTool: public QgsMapToolCaptureAnnotationItem
 
     QgsCreateLineItemMapTool( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget );
 
-    void cadCanvasReleaseEvent( QgsMapMouseEvent *e ) override;
-
+  private slots:
+    void lineCaptured( const QgsCurve *line ) override;
 };
 
 class QgsCreatePolygonItemMapTool: public QgsMapToolCaptureAnnotationItem
@@ -93,8 +93,8 @@ class QgsCreatePolygonItemMapTool: public QgsMapToolCaptureAnnotationItem
 
     QgsCreatePolygonItemMapTool( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget );
 
-    void cadCanvasReleaseEvent( QgsMapMouseEvent *e ) override;
-
+  private slots:
+    void polygonCaptured( const QgsCurvePolygon *polygon ) override;
 };
 
 ///@endcond PRIVATE

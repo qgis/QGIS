@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<copying>
+  <authors>
+    <author href="http://www.gosquared.com/">
+      <name>Go Squared Ltd</name>
+    </author>
+  </authors>
+  <license>
+    <informal>Attribution requested</informal>
+    <year>2009</year>
+    <text href="http://www.gosquared.com/liquidicity/archives/740">
+      We hope you like them and as always you're free to use them 
+      however you wish, as long as that's OK with Apple. Is that 
+      OK with you, Steve?
+
+      If you like this and any of our other icon work we always 
+      appreciate a link back. If you really like this and our other 
+      icons, please consider giving us a little monetary incentive 
+      for us to produce another set in the near future. You'll be 
+      glad you did, we promise!
+    </text>
+  </license>
+  <src>
+    <format>SVG</format>
+    <link href="http://downloads.gosquared.com/vectors/ipod_vector_icons/icon_set_ipods_01.svg">SVG file</link>
+  </src>
+  <distribute>
+    <qgis distribute="yes" license="other"/>
+  </distribute>
+</copying>

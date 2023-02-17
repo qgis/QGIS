@@ -22,9 +22,6 @@ __date__ = 'Janauary 2019'
 __copyright__ = '(C) 2019, CNES'
 
 import os
-import sys
-import unittest
-import hashlib
 import shutil
 import nose2
 import tempfile
@@ -224,8 +221,6 @@ class TestOtbAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
     @classmethod
     def setUpClass(cls):
         start_app()
-        from processing.core.Processing import Processing
-        Processing.initialize()
         cls.provider = OtbAlgorithmProvider()
         QgsApplication.processingRegistry().addProvider(cls.provider)
         ProcessingConfig.setSettingValue(OtbUtils.FOLDER, OTB_INSTALL_DIR)
@@ -240,8 +235,6 @@ class TestOtbAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
 
     @classmethod
     def tearDownClass(cls):
-        from processing.core.Processing import Processing
-        Processing.deinitialize()
         QgsApplication.processingRegistry().removeProvider(cls.provider)
         for path in cls.cleanup_paths:
             shutil.rmtree(path)

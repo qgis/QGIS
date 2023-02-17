@@ -20,7 +20,6 @@
 #include <Qt3DRender/QTexture>
 #include <Qt3DRender/QMaterial>
 
-#include "qgsmarkersymbollayer.h"
 #include "qgs3dmapsettings.h"
 
 #define SIP_NO_FILE

@@ -195,7 +195,7 @@ void QgsAllLayersFeaturesLocatorFilter::triggerResultFromAction( const QgsLocato
     bool fetched = layer->getFeatures( request ).nextFeature( f );
     if ( !fetched )
       return;
-    QgsFeatureAction action( tr( "Attributes changed" ), f, layer, QString(), -1, QgisApp::instance() );
+    QgsFeatureAction action( tr( "Attributes changed" ), f, layer, QUuid(), -1, QgisApp::instance() );
     if ( layer->isEditable() )
     {
       action.editFeature( false );
@@ -233,7 +233,7 @@ void QgsAllLayersFeaturesLocatorFilter::openConfigWidget( QWidget *parent )
   QDialogButtonBox *buttonbBox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel, dlg.get() );
   formLayout->addRow( buttonbBox );
   dlg->setLayout( formLayout );
-  connect( buttonbBox, &QDialogButtonBox::accepted, [&]()
+  connect( buttonbBox, &QDialogButtonBox::accepted, dlg.get(), [&]()
   {
     settings.setValue( QStringLiteral( "%1/limit_global" ).arg( key ), globalLimitSpinBox->value(), QgsSettings::App );
     settings.setValue( QStringLiteral( "%1/limit_per_layer" ).arg( key ), perLayerLimitSpinBox->value(), QgsSettings::App );

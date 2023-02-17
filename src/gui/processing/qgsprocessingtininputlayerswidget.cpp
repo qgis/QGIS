@@ -33,7 +33,7 @@ QgsProcessingTinInputLayersWidget::QgsProcessingTinInputLayersWidget( QgsProject
   onLayerChanged( mComboLayers->currentLayer() );
 
   mTableView->setModel( &mInputLayersModel );
-  mTableView->setItemDelegateForColumn( 1, new Delegate( mTableView ) );
+  mTableView->setItemDelegateForColumn( 1, new QgsProcessingTinInputLayersDelegate( mTableView ) );
 }
 
 QVariant QgsProcessingTinInputLayersWidget::value() const
@@ -137,23 +137,23 @@ void QgsProcessingTinInputLayersWidget::QgsProcessingTinInputLayersWidget::onLay
   emit changed();
 }
 
-QgsProcessingTinInputLayersWidget::QgsProcessingTinInputLayersModel::QgsProcessingTinInputLayersModel( QgsProject *project ):
+QgsProcessingTinInputLayersModel::QgsProcessingTinInputLayersModel( QgsProject *project ):
   mProject( project )
 {}
 
-int QgsProcessingTinInputLayersWidget::QgsProcessingTinInputLayersModel::rowCount( const QModelIndex &parent ) const
+int QgsProcessingTinInputLayersModel::rowCount( const QModelIndex &parent ) const
 {
   Q_UNUSED( parent );
   return mInputLayers.count();
 }
 
-int QgsProcessingTinInputLayersWidget::QgsProcessingTinInputLayersModel::columnCount( const QModelIndex &parent ) const
+int QgsProcessingTinInputLayersModel::columnCount( const QModelIndex &parent ) const
 {
   Q_UNUSED( parent );
   return 3;
 }
 
-QVariant QgsProcessingTinInputLayersWidget::QgsProcessingTinInputLayersModel::data( const QModelIndex &index, int role ) const
+QVariant QgsProcessingTinInputLayersModel::data( const QModelIndex &index, int role ) const
 {
   if ( !index.isValid() )
     return QVariant();
@@ -233,7 +233,7 @@ QVariant QgsProcessingTinInputLayersWidget::QgsProcessingTinInputLayersModel::da
   return QVariant();
 }
 
-bool QgsProcessingTinInputLayersWidget::QgsProcessingTinInputLayersModel::setData( const QModelIndex &index, const QVariant &value, int role )
+bool QgsProcessingTinInputLayersModel::setData( const QModelIndex &index, const QVariant &value, int role )
 {
   if ( index.column() == 1 && role == Qt::EditRole )
   {
@@ -244,7 +244,7 @@ bool QgsProcessingTinInputLayersWidget::QgsProcessingTinInputLayersModel::setDat
   return false;
 }
 
-Qt::ItemFlags QgsProcessingTinInputLayersWidget::QgsProcessingTinInputLayersModel::flags( const QModelIndex &index ) const
+Qt::ItemFlags QgsProcessingTinInputLayersModel::flags( const QModelIndex &index ) const
 {
   if ( !index.isValid() )
     return Qt::NoItemFlags;
@@ -255,7 +255,7 @@ Qt::ItemFlags QgsProcessingTinInputLayersWidget::QgsProcessingTinInputLayersMode
   return QAbstractTableModel::flags( index );
 }
 
-QVariant QgsProcessingTinInputLayersWidget::QgsProcessingTinInputLayersModel::headerData( int section, Qt::Orientation orientation, int role ) const
+QVariant QgsProcessingTinInputLayersModel::headerData( int section, Qt::Orientation orientation, int role ) const
 {
   if ( orientation == Qt::Horizontal && role == Qt::DisplayRole )
   {
@@ -279,14 +279,14 @@ QVariant QgsProcessingTinInputLayersWidget::QgsProcessingTinInputLayersModel::he
   return QVariant();
 }
 
-void QgsProcessingTinInputLayersWidget::QgsProcessingTinInputLayersModel::addLayer( QgsProcessingParameterTinInputLayers::InputLayer &layer )
+void QgsProcessingTinInputLayersModel::addLayer( QgsProcessingParameterTinInputLayers::InputLayer &layer )
 {
   beginInsertRows( QModelIndex(), mInputLayers.count() - 1, mInputLayers.count() - 1 );
   mInputLayers.append( layer );
   endInsertRows();
 }
 
-void QgsProcessingTinInputLayersWidget::QgsProcessingTinInputLayersModel::removeLayer( int index )
+void QgsProcessingTinInputLayersModel::removeLayer( int index )
 {
   if ( index < 0 || index >= mInputLayers.count() )
     return;
@@ -295,22 +295,22 @@ void QgsProcessingTinInputLayersWidget::QgsProcessingTinInputLayersModel::remove
   endRemoveRows();
 }
 
-void QgsProcessingTinInputLayersWidget::QgsProcessingTinInputLayersModel::clear()
+void QgsProcessingTinInputLayersModel::clear()
 {
   mInputLayers.clear();
 }
 
-QList<QgsProcessingParameterTinInputLayers::InputLayer> QgsProcessingTinInputLayersWidget::QgsProcessingTinInputLayersModel::layers() const
+QList<QgsProcessingParameterTinInputLayers::InputLayer> QgsProcessingTinInputLayersModel::layers() const
 {
   return mInputLayers;
 }
 
-void QgsProcessingTinInputLayersWidget::QgsProcessingTinInputLayersModel::setProject( QgsProject *project )
+void QgsProcessingTinInputLayersModel::setProject( QgsProject *project )
 {
   mProject = project;
 }
 
-QWidget *QgsProcessingTinInputLayersWidget::Delegate::createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const
+QWidget *QgsProcessingTinInputLayersDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const
 {
   Q_UNUSED( option );
   Q_UNUSED( index );
@@ -320,7 +320,7 @@ QWidget *QgsProcessingTinInputLayersWidget::Delegate::createEditor( QWidget *par
   return comboType;
 }
 
-void QgsProcessingTinInputLayersWidget::Delegate::setEditorData( QWidget *editor, const QModelIndex &index ) const
+void QgsProcessingTinInputLayersDelegate::setEditorData( QWidget *editor, const QModelIndex &index ) const
 {
   QComboBox *comboType = qobject_cast<QComboBox *>( editor );
   Q_ASSERT( comboType );
@@ -333,7 +333,7 @@ void QgsProcessingTinInputLayersWidget::Delegate::setEditorData( QWidget *editor
     comboType->setCurrentIndex( 0 );
 }
 
-void QgsProcessingTinInputLayersWidget::Delegate::setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const
+void QgsProcessingTinInputLayersDelegate::setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const
 {
   QComboBox *comboType = qobject_cast<QComboBox *>( editor );
   Q_ASSERT( comboType );

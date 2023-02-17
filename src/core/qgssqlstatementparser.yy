@@ -135,7 +135,7 @@ struct sqlstatement_parser_context
 %token <boolVal> BOOLEAN
 %token NULLVALUE
 
-%token <text> STRING IDENTIFIER
+%token <text> STRING IDENTIFIER IDENTIFIER_WITH_DOT
 
 %token COMMA
 
@@ -575,12 +575,39 @@ table_def:
         $$ = new QgsSQLStatement::NodeTableDef(*$1);
         delete $1;
     }
-
+    | IDENTIFIER '.' IDENTIFIER
+    {
+        $$ = new QgsSQLStatement::NodeTableDef(*$1, *$3, QString());
+        delete $1;
+        delete $3;
+    }
+    | IDENTIFIER '.' IDENTIFIER '.' IDENTIFIER
+    {
+        $$ = new QgsSQLStatement::NodeTableDef(*$1 + '.' + *$3, *$5, QString());
+        delete $1;
+        delete $3;
+        delete $5;
+    }
     | IDENTIFIER as_clause
     {
         $$ = new QgsSQLStatement::NodeTableDef(*$1, *$2);
         delete $1;
         delete $2;
+    }
+    | IDENTIFIER '.' IDENTIFIER as_clause
+    {
+        $$ = new QgsSQLStatement::NodeTableDef(*$1, *$3, *$4);
+        delete $1;
+        delete $3;
+        delete $4;
+    }
+    | IDENTIFIER '.' IDENTIFIER '.' IDENTIFIER as_clause
+    {
+        $$ = new QgsSQLStatement::NodeTableDef(*$1 + '.' + *$3, *$5, *$6);
+        delete $1;
+        delete $3;
+        delete $5;
+        delete $6;
     }
 ;
 

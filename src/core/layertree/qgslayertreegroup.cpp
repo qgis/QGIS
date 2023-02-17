@@ -19,6 +19,7 @@
 #include "qgslayertreeutils.h"
 #include "qgsmaplayer.h"
 #include "qgsgrouplayer.h"
+#include "qgspainting.h"
 
 #include <QDomElement>
 #include <QStringList>
@@ -259,6 +260,26 @@ QList<QgsLayerTreeLayer *> QgsLayerTreeGroup::findLayers() const
   return list;
 }
 
+void QgsLayerTreeGroup::reorderGroupLayers( const QList<QgsMapLayer *> &order )
+{
+  const QList< QgsLayerTreeLayer * > childLayers = findLayers();
+  int targetIndex = 0;
+  for ( QgsMapLayer *targetLayer : order )
+  {
+    for ( QgsLayerTreeLayer *layerNode : childLayers )
+    {
+      if ( layerNode->layer() == targetLayer )
+      {
+        QgsLayerTreeLayer *cloned = layerNode->clone();
+        insertChildNode( targetIndex, cloned );
+        removeChildNode( layerNode );
+        targetIndex++;
+        break;
+      }
+    }
+  }
+}
+
 QList<QgsMapLayer *> QgsLayerTreeGroup::layerOrderRespectingGroupLayers() const
 {
   QList<QgsMapLayer *> list;
@@ -465,6 +486,13 @@ QgsGroupLayer *QgsLayerTreeGroup::groupLayer()
 
 void QgsLayerTreeGroup::setGroupLayer( QgsGroupLayer *layer )
 {
+  if ( QgsGroupLayer *groupLayer = qobject_cast< QgsGroupLayer * >( mGroupLayer.get() ) )
+  {
+    if ( !layer )
+    {
+      groupLayer->prepareLayersForRemovalFromGroup();
+    }
+  }
   mGroupLayer.setLayer( layer );
   refreshParentGroupLayerMembers();
 }

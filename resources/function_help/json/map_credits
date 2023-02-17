@@ -3,10 +3,26 @@
   "type": "function",
   "groups": ["Layout"],
   "description": "Returns a list of credit (usage rights) strings for the layers shown in a layout map item.",
-  "arguments": [ {"arg":"id","description":"map item ID"},
-                 {"arg":"include_layer_names","description":"Set to true to include layer names before their credit strings", "optional": true, "default": "false"},
-                 {"arg":"layer_name_separator","description":"String to insert between layer names and their credit strings, if include_layer_names is true", "optional": true, "default": "': '"} ],
-  "examples": [ { "expression":"array_to_string( map_credits( 'Main Map' ) )", "returns":"comma separated list of layer credits for layers shown in the 'Main Map' layout item, e.g 'CC-BY-NC, CC-BY-SA'" },
-  { "expression":"array_to_string( map_credits( 'Main Map', include_layer_names := true, layer_name_separator := ': ' ) )", "returns":"comma separated list of layer names and their credits for layers shown in the 'Main Map' layout item, e.g. 'Railway lines: CC-BY-NC, Basemap: CC-BY-SA'" }
-  ]
+  "arguments": [{
+    "arg": "id",
+    "description": "map item ID"
+  }, {
+    "arg": "include_layer_names",
+    "description": "Set to true to include layer names before their credit strings",
+    "optional": true,
+    "default": "false"
+  }, {
+    "arg": "layer_name_separator",
+    "description": "String to insert between layer names and their credit strings, if include_layer_names is true",
+    "optional": true,
+    "default": "': '"
+  }],
+  "examples": [{
+    "expression": "array_to_string( map_credits( 'Main Map' ) )",
+    "returns": "comma separated list of layer credits for layers shown in the 'Main Map' layout item, e.g 'CC-BY-NC, CC-BY-SA'"
+  }, {
+    "expression": "array_to_string( map_credits( 'Main Map', include_layer_names := true, layer_name_separator := ': ' ) )",
+    "returns": "comma separated list of layer names and their credits for layers shown in the 'Main Map' layout item, e.g. 'Railway lines: CC-BY-NC, Basemap: CC-BY-SA'"
+  }],
+  "tags": ["list", "rights", "layers", "layout", "item", "usage", "credit", "strings", "map"]
 }

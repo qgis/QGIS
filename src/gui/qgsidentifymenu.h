@@ -31,7 +31,7 @@ class CustomActionRegistry : public QgsMapLayerActionRegistry
     Q_OBJECT
 
   public:
-
+#include "qgsmaplayeractionregistry.h"
     CustomActionRegistry() = default;
     // remove all actions
     void clear() { mMapLayerActionList.clear(); }
@@ -95,6 +95,19 @@ class GUI_EXPORT QgsIdentifyMenu : public QMenu
     explicit QgsIdentifyMenu( QgsMapCanvas *canvas );
 
     ~QgsIdentifyMenu() override;
+
+
+    /**
+     * Searches for features on the map \a canvas, which are located at the specified \a event point.
+     *
+     * The \a geometryTypes argument lists acceptable geometry types.
+     *
+     * This method searches through all layers on the canvas, attempting to find matching features at the event
+     * point.
+     *
+     * \since QGIS 3.26
+    */
+    static QList<QgsMapToolIdentify::IdentifyResult> findFeaturesOnCanvas( QgsMapMouseEvent *event, QgsMapCanvas *canvas, const QList<QgsWkbTypes::GeometryType> &geometryTypes );
 
     //! define if the menu executed can return multiple results (e.g. all results or all identified features of a vector layer)
     void setAllowMultipleReturn( bool multipleReturn ) { mAllowMultipleReturn = multipleReturn;}
@@ -164,9 +177,9 @@ class GUI_EXPORT QgsIdentifyMenu : public QMenu
     /**
      * Applies style from the settings to the highlight
      *
-     * \since QGIS 3.8
+     * \deprecated Use QgsHighlight::applyDefaultStyle() instead.
      */
-    static void styleHighlight( QgsHighlight *highlight );
+    Q_DECL_DEPRECATED static void styleHighlight( QgsHighlight *highlight ) SIP_DEPRECATED;
 
   protected:
     void closeEvent( QCloseEvent *e ) override;

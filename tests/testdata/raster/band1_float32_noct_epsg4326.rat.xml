@@ -1,0 +1,96 @@
+<PAMDataset>
+  <PAMRasterBand band="1">
+    <GDALRasterAttributeTable tableType="athematic">
+      <FieldDefn index="0">
+        <Name>Value Min</Name>
+        <Type>1</Type>
+        <Usage>3</Usage>
+      </FieldDefn>
+      <FieldDefn index="1">
+        <Name>Value Max</Name>
+        <Type>1</Type>
+        <Usage>4</Usage>
+      </FieldDefn>
+      <FieldDefn index="2">
+        <Name>Class</Name>
+        <Type>2</Type>
+        <Usage>2</Usage>
+      </FieldDefn>
+      <FieldDefn index="3">
+        <Name>class2</Name>
+        <Type>2</Type>
+        <Usage>2</Usage>
+      </FieldDefn>
+      <FieldDefn index="4">
+        <Name>R</Name>
+        <Type>0</Type>
+        <Usage>6</Usage>
+      </FieldDefn>
+      <FieldDefn index="5">
+        <Name>G</Name>
+        <Type>0</Type>
+        <Usage>7</Usage>
+      </FieldDefn>
+      <FieldDefn index="6">
+        <Name>B</Name>
+        <Type>0</Type>
+        <Usage>8</Usage>
+      </FieldDefn>
+      <FieldDefn index="7">
+        <Name>A</Name>
+        <Type>0</Type>
+        <Usage>9</Usage>
+      </FieldDefn>
+      <Row index="0">
+        <F>-3.40282e+38</F>
+        <F>-1.985599952581195e+38</F>
+        <F>&amp;lt;= -198559995258119542639768996368460283904,0000</F>
+        <F>class1</F>
+        <F>215</F>
+        <F>25</F>
+        <F>28</F>
+        <F>255</F>
+      </Row>
+      <Row index="1">
+        <F>-1.985599952581195e+38</F>
+        <F>-6.391999763998054e+37</F>
+        <F>-198559995258119542639768996368460283904,0000 - -63919997639980541308160678087213711360,0000</F>
+        <F>class3</F>
+        <F>253</F>
+        <F>174</F>
+        <F>97</F>
+        <F>255</F>
+      </Row>
+      <Row index="2">
+        <F>-6.391999763998054e+37</F>
+        <F>7.07199999781585e+37</F>
+        <F>-63919997639980541308160678087213711360,0000 - 70719999978158497802379503151194570752,0000</F>
+        <F>class2</F>
+        <F>255</F>
+        <F>255</F>
+        <F>191</F>
+        <F>255</F>
+      </Row>
+      <Row index="3">
+        <F>7.07199999781585e+37</F>
+        <F>2.053599975962975e+38</F>
+        <F>70719999978158497802379503151194570752,0000 - 205359997596297461355055958475279433728,0000</F>
+        <F>class1</F>
+        <F>171</F>
+        <F>221</F>
+        <F>164</F>
+        <F>255</F>
+      </Row>
+      <Row index="4">
+        <F>2.053599975962975e+38</F>
+        <F>3.40282e+38</F>
+        <F>&amp;gt; 205359997596297461355055958475279433728,0000</F>
+        <F>class3</F>
+        <F>43</F>
+        <F>131</F>
+        <F>186</F>
+        <F>255</F>
+      </Row>
+    </GDALRasterAttributeTable>
+  </PAMRasterBand>
+</PAMDataset>

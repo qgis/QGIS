@@ -1,4 +1,0 @@
-Convert Multipoints to Points
-shapes_points
-QgsProcessingParameterFeatureSource|MULTIPOINTS|Multipoints|0|None|False
-QgsProcessingParameterVectorDestination|POINTS|Points

@@ -172,21 +172,27 @@ If ``False``, then then columns will be individually resized to their minimum po
 .. seealso:: :py:func:`equalColumnWidth`
 %End
 
-    QColor fontColor() const;
+ QColor fontColor() const /Deprecated/;
 %Docstring
 Returns the font color used for legend items.
 
 .. seealso:: :py:func:`setFontColor`
+
+.. deprecated::
+   Use :py:func:`QgsLegendStyle.textFormat()` instead.
 %End
 
-    void setFontColor( const QColor &c );
+ void setFontColor( const QColor &c ) /Deprecated/;
 %Docstring
 Sets the font color used for legend items.
 
 .. seealso:: :py:func:`fontColor`
+
+.. deprecated::
+   Use :py:func:`QgsLegendStyle.textFormat()` instead.
 %End
 
-    QColor layerFontColor() const;
+ QColor layerFontColor() const /Deprecated/;
 %Docstring
 Returns layer font color, defaults to :py:func:`~QgsLegendSettings.fontColor`
 
@@ -194,10 +200,11 @@ Returns layer font color, defaults to :py:func:`~QgsLegendSettings.fontColor`
 
 .. seealso:: :py:func:`fontColor`
 
-.. versionadded:: 3.4.7
+.. deprecated::
+   Use :py:func:`QgsLegendStyle.textFormat()` instead.
 %End
 
-    void setLayerFontColor( const QColor &fontColor );
+ void setLayerFontColor( const QColor &fontColor ) /Deprecated/;
 %Docstring
 Sets layer font color to ``fontColor``
 Overrides :py:func:`~QgsLegendSettings.fontColor`
@@ -206,7 +213,8 @@ Overrides :py:func:`~QgsLegendSettings.fontColor`
 
 .. seealso:: :py:func:`fontColor`
 
-.. versionadded:: 3.4.7
+.. deprecated::
+   Use :py:func:`QgsLegendStyle.textFormat()` instead.
 %End
 
     QSizeF symbolSize() const;
@@ -387,18 +395,24 @@ Sets the desired size (in millimeters) of WMS legend graphics shown in the legen
 .. seealso:: :py:func:`wmsLegendSize`
 %End
 
-    double lineSpacing() const;
+ double lineSpacing() const /Deprecated/;
 %Docstring
 Returns the line spacing to use between lines of legend text.
 
 .. seealso:: :py:func:`setLineSpacing`
+
+.. deprecated::
+   use :py:func:`QgsLegendStyle.textFormat()` from :py:func:`~QgsLegendSettings.style` instead.
 %End
 
-    void setLineSpacing( double s );
+ void setLineSpacing( double s );
 %Docstring
 Sets the line spacing to use between lines of legend text.
 
 .. seealso:: :py:func:`lineSpacing`
+
+.. deprecated::
+   use :py:func:`QgsLegendStyle.setTextFormat()` from :py:func:`~QgsLegendSettings.style` instead.
 %End
 
  double mmPerMapUnit() const /Deprecated/;

@@ -28,10 +28,10 @@ A new subclass of :py:class:`QgsGeometryCheck` needs to be written and at least 
 abstract methods need to be implemented:
 
 - :py:func:`~compatibleGeometryTypes`: A list of geometry types to which this check applies
-- :py:func:`~resolutionMethods`: A list of names for (automated) resolution methods that can be used to fix errors of this type
+- :py:func:`~availableResolutionMethods`: A list of resolution methods that can be used to fix errors of this type
 - :py:func:`~description`: A description for the geometry check.
 - :py:func:`~id`: A unique id for this check.
-- :py:func:`~checkType`: One of :py:class:`QgsGeometryCheck`.LayerCheck, :py:class:`QgsGeometryCheck`.FeatureCheck,:py:class:`QgsGeometryCheck`.FeatureNodeCheck
+- :py:func:`~checkType`: One of :py:class:`QgsGeometryCheck`.LayerCheck, :py:class:`QgsGeometryCheck`.FeatureCheck, :py:class:`QgsGeometryCheck`.FeatureNodeCheck
 - :py:func:`~collectErrors`: This method will be called to validate geometries. All geometries which should be validated are passed
   into this method with the parameter ids and should be retrieved from the available featurePools to make
   use of caching. New errors should be appended to the error list and other message strings to messages.
@@ -63,7 +63,7 @@ is aware of the available geometry checks.
 
 .. code-block:: python
 
-     # Make sure you always keep a
+     # Make sure you always keep a reference
      checkFactory = MyGeometryCheckFactory()
      QgsAnalysis.geometryCheckRegistry().registerGeometryCheck(checkFactory)
 
@@ -148,7 +148,7 @@ Create a new geometry check.
 
     virtual void prepare( const QgsGeometryCheckContext *context, const QVariantMap &configuration );
 %Docstring
-Will be run in the main thread before collectErrors is called (which may be run from a background thread).
+Will be run in the main thread before :py:func:`~QgsGeometryCheck.collectErrors` is called (which may be run from a background thread).
 
 .. versionadded:: 3.10
 %End
@@ -157,7 +157,7 @@ Will be run in the main thread before collectErrors is called (which may be run 
     virtual bool isCompatible( QgsVectorLayer *layer ) const;
 %Docstring
 Returns if this geometry check is compatible with ``layer``.
-By default it checks for the geometry type in ``compatibleGeometryTypes``().
+By default it checks for the geometry type in :py:func:`~QgsGeometryCheck.compatibleGeometryTypes`.
 
 .. versionadded:: 3.4
 %End

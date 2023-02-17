@@ -73,7 +73,7 @@ class GUI_EXPORT QgsEditorWidgetFactory
      *
      * \returns a name
      */
-    QString name();
+    QString name() const;
 
     /**
      * Override this in your implementation.
@@ -96,7 +96,7 @@ class GUI_EXPORT QgsEditorWidgetFactory
      *
      * \see fieldScore()
      */
-    inline bool supportsField( const QgsVectorLayer *vl, int fieldIdx ) { return fieldScore( vl, fieldIdx ) > 0; }
+    inline bool supportsField( const QgsVectorLayer *vl, int fieldIdx ) const { return fieldScore( vl, fieldIdx ) > 0; }
 
     /**
      * Returns a list of widget types which this editor widget supports.

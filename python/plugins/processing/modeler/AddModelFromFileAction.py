@@ -24,7 +24,7 @@ __copyright__ = '(C) 201, Victor Olaya'
 import os
 import shutil
 from qgis.PyQt.QtWidgets import QFileDialog, QMessageBox
-from qgis.PyQt.QtCore import QFileInfo, QCoreApplication
+from qgis.PyQt.QtCore import QFileInfo, QCoreApplication, QDir
 
 from qgis.core import QgsApplication, QgsSettings, QgsProcessingModelAlgorithm
 
@@ -45,7 +45,7 @@ class AddModelFromFileAction(ToolboxAction):
 
     def execute(self):
         settings = QgsSettings()
-        lastDir = settings.value('Processing/lastModelsDir', '')
+        lastDir = settings.value('Processing/lastModelsDir', QDir.homePath())
         filename, selected_filter = QFileDialog.getOpenFileName(self.toolbox,
                                                                 self.tr('Open Model', 'AddModelFromFileAction'), lastDir,
                                                                 self.tr('Processing models (*.model3 *.MODEL3)', 'AddModelFromFileAction'))

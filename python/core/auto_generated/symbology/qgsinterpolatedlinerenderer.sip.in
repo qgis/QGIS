@@ -331,6 +331,8 @@ Creates the symbol layer
 
     virtual void drawPreviewIcon( QgsSymbolRenderContext &context, QSize size );
 
+    virtual QColor color() const;
+
 
     virtual void startFeatureRender( const QgsFeature &feature, QgsRenderContext &context );
 

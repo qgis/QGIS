@@ -282,9 +282,11 @@ Returns the units of area for areal calculations made by this object.
 Measures the area of the polygon described by a set of points.
 %End
 
-    double bearing( const QgsPointXY &p1, const QgsPointXY &p2 ) const;
+    double bearing( const QgsPointXY &p1, const QgsPointXY &p2 ) const throw( QgsCsException );
 %Docstring
 Computes the bearing (in radians) between two points.
+
+:raises QgsCsException: on invalid input coordinates
 %End
 
     static QString formatDistance( double distance, int decimals, QgsUnitTypes::DistanceUnit unit, bool keepBaseUnit = false );

@@ -31,6 +31,8 @@ A base class for objects which belong to a layout.
 #include "qgslayoutframe.h"
 #include "qgslayoutitemshape.h"
 #include "qgslayoutitempage.h"
+#include "qgslayoutitemmarker.h"
+#include "qgslayoutitemelevationprofile.h"
 %End
 %ConvertToSubClassCode
     if ( QgsLayoutItem *item = qobject_cast< QgsLayoutItem * >( sipCpp ) )
@@ -89,6 +91,14 @@ A base class for objects which belong to a layout.
           sipType = sipType_QgsLayoutFrame;
           *sipCppRet = static_cast<QgsLayoutFrame *>( sipCpp );
           break;
+        case QGraphicsItem::UserType + 117:
+          sipType = sipType_QgsLayoutItemMarker;
+          *sipCppRet = static_cast<QgsLayoutItemMarker *>( sipCpp );
+          break;
+        case QGraphicsItem::UserType + 118:
+          sipType = sipType_QgsLayoutItemElevationProfile;
+          *sipCppRet = static_cast<QgsLayoutItemElevationProfile *>( sipCpp );
+          break;
 
         // did you read that comment above? NO? Go read it now. You're about to break stuff.
 
@@ -125,6 +135,10 @@ A base class for objects which belong to a layout.
       ExcludeFromExports,
       FrameColor,
       BackgroundColor,
+      MarginLeft,
+      MarginTop,
+      MarginRight,
+      MarginBottom,
       //composer map
       MapRotation,
       MapScale,
@@ -165,6 +179,14 @@ A base class for objects which belong to a layout.
       LegendTitle,
       LegendColumnCount,
       //scalebar item
+      ScalebarLeftSegments,
+      ScalebarRightSegments,
+      ScalebarSegmentWidth,
+      ScalebarMinimumWidth,
+      ScalebarMaximumWidth,
+      ScalebarHeight,
+      ScalebarRightSegmentSubdivisions,
+      ScalebarSubdivisionHeight,
       ScalebarFillColor,
       ScalebarFillColor2,
       ScalebarLineColor,
@@ -174,6 +196,17 @@ A base class for objects which belong to a layout.
       MapCrs,
       StartDateTime,
       EndDateTime,
+      ElevationProfileTolerance,
+      ElevationProfileDistanceMajorInterval,
+      ElevationProfileDistanceMinorInterval,
+      ElevationProfileDistanceLabelInterval,
+      ElevationProfileElevationMajorInterval,
+      ElevationProfileElevationMinorInterval,
+      ElevationProfileElevationLabelInterval,
+      ElevationProfileMinimumDistance,
+      ElevationProfileMaximumDistance,
+      ElevationProfileMinimumElevation,
+      ElevationProfileMaximumElevation,
     };
 
     enum PropertyValueType

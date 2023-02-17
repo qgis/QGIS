@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsServer WMS GetPrint.
 
 From build dir, run: ctest -R PyQgsServerWMSGetPrintOutputs -V
@@ -19,20 +18,19 @@ import os
 # Needed on Qt 5 so that the serialization of XML is consistent among all executions
 os.environ['QT_HASH_SEED'] = '1'
 
-import urllib.parse
-
-from qgis.testing import unittest
-from qgis.PyQt.QtCore import QSize, Qt
-from qgis.PyQt.QtGui import QImage, QPainter
-from qgis.PyQt.QtSvg import QSvgRenderer, QSvgGenerator
-
-import osgeo.gdal  # NOQA
-import tempfile
 import base64
 import subprocess
+import tempfile
+import urllib.parse
 
-from test_qgsserver import QgsServerTestBase
+import osgeo.gdal  # NOQA
+
 from qgis.core import QgsMultiRenderChecker
+from qgis.PyQt.QtCore import QSize, Qt
+from qgis.PyQt.QtGui import QImage, QPainter
+from qgis.PyQt.QtSvg import QSvgRenderer
+from qgis.testing import unittest
+from test_qgsserver import QgsServerTestBase
 from utilities import getExecutablePath, unitTestDataPath
 
 
@@ -78,23 +76,23 @@ class PyQgsServerWMSGetPrintOutputs(QgsServerTestBase):
         else:
             return False, ''
 
-        print("exportToPdf call: {0}".format(' '.join(call)))
+        print(f"exportToPdf call: {' '.join(call)}")
         try:
             subprocess.check_call(call)
         except subprocess.CalledProcessError as e:
             assert False, ("exportToPdf failed!\n"
-                           "cmd: {0}\n"
-                           "returncode: {1}\n"
-                           "message: {2}".format(e.cmd, e.returncode, e.message))
+                           "cmd: {}\n"
+                           "returncode: {}\n"
+                           "message: {}".format(e.cmd, e.returncode, e.message))
 
     def _pdf_diff(self, pdf, control_image, max_diff, max_size_diff=QSize(), dpi=96):
 
-        temp_pdf = os.path.join(tempfile.gettempdir(), "%s_result.pdf" % control_image)
+        temp_pdf = os.path.join(tempfile.gettempdir(), f"{control_image}_result.pdf")
 
         with open(temp_pdf, "wb") as f:
             f.write(pdf)
 
-        temp_image = os.path.join(tempfile.gettempdir(), "%s_result.png" % control_image)
+        temp_image = os.path.join(tempfile.gettempdir(), f"{control_image}_result.png")
         self._pdf_to_png(temp_pdf, temp_image, dpi=dpi, page=1)
 
         control = QgsMultiRenderChecker()
@@ -113,25 +111,25 @@ class PyQgsServerWMSGetPrintOutputs(QgsServerTestBase):
 
         self.assertEqual(
             headers.get("Content-Type"), 'application/pdf',
-            "Content type is wrong: %s instead of %s\n%s" % (headers.get("Content-Type"), 'application/pdf', response))
+            f"Content type is wrong: {headers.get('Content-Type')} instead of application/pdf\n{response}")
 
         test, report = self._pdf_diff(response, image, max_diff, max_size_diff, dpi)
 
         with open(os.path.join(tempfile.gettempdir(), image + "_result.pdf"), "rb") as rendered_file:
             if not os.environ.get('ENCODED_OUTPUT'):
-                message = "PDF is wrong: rendered file %s/%s_result.%s" % (tempfile.gettempdir(), image, 'pdf')
+                message = f"PDF is wrong: rendered file {tempfile.gettempdir()}/{image}_result.pdf"
             else:
                 encoded_rendered_file = base64.b64encode(rendered_file.read())
-                message = "PDF is wrong\n%sFile:\necho '%s' | base64 -d >%s/%s_result.%s" % (
+                message = "PDF is wrong\n{}File:\necho '{}' | base64 -d >{}/{}_result.{}".format(
                     report, encoded_rendered_file.strip().decode('utf8'), tempfile.gettempdir(), image, 'pdf'
                 )
 
         with open(os.path.join(tempfile.gettempdir(), image + "_result.png"), "rb") as rendered_file:
             if not os.environ.get('ENCODED_OUTPUT'):
-                message = "Image is wrong: rendered file %s/%s_result.%s" % (tempfile.gettempdir(), image, 'png')
+                message = f"Image is wrong: rendered file {tempfile.gettempdir()}/{image}_result.png"
             else:
                 encoded_rendered_file = base64.b64encode(rendered_file.read())
-                message = "Image is wrong\n%s\nImage:\necho '%s' | base64 -d >%s/%s_result.%s" % (
+                message = "Image is wrong\n{}\nImage:\necho '{}' | base64 -d >{}/{}_result.{}".format(
                     report, encoded_rendered_file.strip().decode('utf8'), tempfile.gettempdir(), image, 'png'
                 )
 
@@ -139,10 +137,10 @@ class PyQgsServerWMSGetPrintOutputs(QgsServerTestBase):
         if os.path.exists(os.path.join(tempfile.gettempdir(), image + "_result_diff.png")):
             with open(os.path.join(tempfile.gettempdir(), image + "_result_diff.png"), "rb") as diff_file:
                 if not os.environ.get('ENCODED_OUTPUT'):
-                    message = "Image is wrong: diff file %s/%s_result_diff.%s" % (tempfile.gettempdir(), image, 'png')
+                    message = f"Image is wrong: diff file {tempfile.gettempdir()}/{image}_result_diff.png"
                 else:
                     encoded_diff_file = base64.b64encode(diff_file.read())
-                    message += "\nDiff:\necho '%s' | base64 -d > %s/%s_result_diff.%s" % (
+                    message += "\nDiff:\necho '{}' | base64 -d > {}/{}_result_diff.{}".format(
                         encoded_diff_file.strip().decode('utf8'), tempfile.gettempdir(), image, 'png'
                     )
 

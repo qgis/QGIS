@@ -8,7 +8,7 @@ Content-Type: text/xml; charset=utf-8
   <complexContent>
    <extension base="gml:AbstractFeatureType">
     <sequence>
-     <element maxOccurs="1" type="gml:MultiPolygonPropertyType" minOccurs="0" name="geometry"/>
+     <element maxOccurs="1" type="gml:MultiSurfacePropertyType" minOccurs="0" name="geometry"/>
      <element type="long" name="fid"/>
      <element type="int" nillable="true" name="gid"/>
      <element type="string" nillable="true" name="datum"/>

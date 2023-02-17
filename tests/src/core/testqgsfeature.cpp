@@ -23,6 +23,7 @@
 #include "qgsgeometry.h"
 #include "qgssymbol.h"
 #include "qgslinesymbol.h"
+#include "qgsunsetattributevalue.h"
 
 class TestQgsFeature: public QObject
 {
@@ -36,6 +37,7 @@ class TestQgsFeature: public QObject
     void attributesTest(); //test QgsAttributes
     void constructorTest(); //test default constructors
     void attributesToMap();
+    void unsetAttributes();
     void create();//test creating a feature
     void copy();// test cpy destruction (double delete)
     void assignment();
@@ -164,6 +166,18 @@ void TestQgsFeature::attributesToMap()
   const QgsAttributes attr3;
   const QgsAttributeMap map3 = attr3.toMap();
   QVERIFY( map3.isEmpty() );
+}
+
+void TestQgsFeature::unsetAttributes()
+{
+  QgsAttributes attr1;
+  attr1 << QVariant( 5 ) << QVariant() << QVariant( "val" ) << QVariant( QgsUnsetAttributeValue() )  << QVariant( QgsUnsetAttributeValue() );
+
+  QVERIFY( !attr1.isUnsetValue( 0 ) );
+  QVERIFY( !attr1.isUnsetValue( 1 ) );
+  QVERIFY( !attr1.isUnsetValue( 2 ) );
+  QVERIFY( attr1.isUnsetValue( 3 ) );
+  QVERIFY( attr1.isUnsetValue( 4 ) );
 }
 
 void TestQgsFeature::create()
@@ -519,6 +533,30 @@ void TestQgsFeature::equality()
   feature7.setGeometry( QgsGeometry( new QgsPoint( 1, 3 ) ) );
 
   QVERIFY( feature != feature7 );
+
+  // features without geometry
+  QgsFeature feature8;
+  feature8.setFields( mFields, true );
+  feature8.setAttribute( 0, QStringLiteral( "attr1" ) );
+  feature8.setAttribute( 1, QStringLiteral( "attr2" ) );
+  feature8.setAttribute( 2, QStringLiteral( "attr3" ) );
+  feature8.setValid( true );
+  feature8.setId( 1 );
+  QgsFeature feature9;
+  feature9.setFields( mFields, true );
+  feature9.setAttribute( 0, QStringLiteral( "attr1" ) );
+  feature9.setAttribute( 1, QStringLiteral( "attr2" ) );
+  feature9.setAttribute( 2, QStringLiteral( "attr3" ) );
+  feature9.setValid( true );
+  feature9.setId( 1 );
+  QVERIFY( feature8 == feature9 );
+  feature8.setGeometry( QgsGeometry( new QgsPoint( 1, 3 ) ) );
+  QVERIFY( feature8 != feature9 );
+  feature8.clearGeometry();
+  feature9.setGeometry( QgsGeometry( new QgsPoint( 1, 3 ) ) );
+  QVERIFY( feature8 != feature9 );
+  feature8.setGeometry( QgsGeometry( new QgsPoint( 1, 3 ) ) );
+  QVERIFY( feature8 == feature9 );
 }
 
 void TestQgsFeature::attributeUsingField()

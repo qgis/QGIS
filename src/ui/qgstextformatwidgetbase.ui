@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>521</width>
-    <height>650</height>
+    <height>629</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -655,7 +655,7 @@
                        <x>0</x>
                        <y>0</y>
                        <width>485</width>
-                       <height>429</height>
+                       <height>410</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_2" stretch="0,1">
@@ -1216,9 +1216,9 @@ font-style: italic;</string>
                      <property name="geometry">
                       <rect>
                        <x>0</x>
-                       <y>0</y>
+                       <y>-172</y>
                        <width>471</width>
-                       <height>742</height>
+                       <height>720</height>
                       </rect>
                      </property>
                      <layout class="QGridLayout" name="gridLayout_42">
@@ -1889,6 +1889,20 @@ font-style: italic;</string>
                            <property name="bottomMargin">
                             <number>0</number>
                            </property>
+                           <item row="3" column="3">
+                            <widget class="QgsPropertyOverrideButton" name="mFontLineHeightDDBtn">
+                             <property name="text">
+                              <string>…</string>
+                             </property>
+                            </widget>
+                           </item>
+                           <item row="4" column="3">
+                            <widget class="QgsPropertyOverrideButton" name="mFontMultiLineAlignDDBtn">
+                             <property name="text">
+                              <string>…</string>
+                             </property>
+                            </widget>
+                           </item>
                            <item row="1" column="0">
                             <widget class="QLabel" name="mLabelWrapLinesTo">
                              <property name="text">
@@ -1896,31 +1910,15 @@ font-style: italic;</string>
                              </property>
                             </widget>
                            </item>
-                           <item row="4" column="1">
-                            <widget class="QComboBox" name="mFontMultiLineAlignComboBox">
-                             <property name="enabled">
-                              <bool>true</bool>
-                             </property>
-                             <property name="toolTip">
-                              <string>Paragraph style alignment of multi-line text</string>
-                             </property>
-                             <property name="layoutDirection">
-                              <enum>Qt::LeftToRight</enum>
+                           <item row="3" column="2">
+                            <widget class="QgsUnitSelectionWidget" name="mLineHeightUnitWidget" native="true">
+                             <property name="focusPolicy">
+                              <enum>Qt::StrongFocus</enum>
                              </property>
                             </widget>
                            </item>
-                           <item row="0" column="1">
-                            <widget class="QLineEdit" name="wrapCharacterEdit">
-                             <property name="minimumSize">
-                              <size>
-                               <width>0</width>
-                               <height>0</height>
-                              </size>
-                             </property>
-                            </widget>
-                           </item>
-                           <item row="4" column="0">
-                            <widget class="QLabel" name="mFontMultiLineLabel">
+                           <item row="0" column="0">
+                            <widget class="QLabel" name="mLabelWrapOnCharacter">
                              <property name="sizePolicy">
                               <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
                                <horstretch>0</horstretch>
@@ -1928,49 +1926,11 @@ font-style: italic;</string>
                               </sizepolicy>
                              </property>
                              <property name="text">
-                              <string>Alignment</string>
+                              <string>Wrap on character</string>
                              </property>
                             </widget>
                            </item>
-                           <item row="3" column="2">
-                            <widget class="QgsPropertyOverrideButton" name="mFontLineHeightDDBtn">
-                             <property name="text">
-                              <string>…</string>
-                             </property>
-                            </widget>
-                           </item>
-                           <item row="2" column="1">
-                            <widget class="QComboBox" name="mAutoWrapTypeComboBox">
-                             <property name="toolTip">
-                              <string>Controls whether lines are automatically wrapped using the maximum number of characters in a line, or the minimum</string>
-                             </property>
-                             <item>
-                              <property name="text">
-                               <string>Maximum line length</string>
-                              </property>
-                             </item>
-                             <item>
-                              <property name="text">
-                               <string>Minimum line length</string>
-                              </property>
-                             </item>
-                            </widget>
-                           </item>
-                           <item row="0" column="2">
-                            <widget class="QgsPropertyOverrideButton" name="mWrapCharDDBtn">
-                             <property name="text">
-                              <string>…</string>
-                             </property>
-                            </widget>
-                           </item>
-                           <item row="4" column="2">
-                            <widget class="QgsPropertyOverrideButton" name="mFontMultiLineAlignDDBtn">
-                             <property name="text">
-                              <string>…</string>
-                             </property>
-                            </widget>
-                           </item>
-                           <item row="1" column="1">
+                           <item row="1" column="1" colspan="2">
                             <widget class="QgsSpinBox" name="mAutoWrapLengthSpinBox">
                              <property name="enabled">
                               <bool>true</bool>
@@ -1989,6 +1949,16 @@ font-style: italic;</string>
                              </property>
                             </widget>
                            </item>
+                           <item row="0" column="1" colspan="2">
+                            <widget class="QLineEdit" name="wrapCharacterEdit">
+                             <property name="minimumSize">
+                              <size>
+                               <width>0</width>
+                               <height>0</height>
+                              </size>
+                             </property>
+                            </widget>
+                           </item>
                            <item row="3" column="1">
                             <widget class="QgsDoubleSpinBox" name="mFontLineHeightSpinBox">
                              <property name="enabled">
@@ -2004,19 +1974,66 @@ font-style: italic;</string>
                               <string>Line height spacing for multi-line text</string>
                              </property>
                              <property name="suffix">
-                              <string> line</string>
+                              <string/>
+                             </property>
+                             <property name="decimals">
+                              <number>4</number>
                              </property>
                              <property name="minimum">
                               <double>0.000000000000000</double>
                              </property>
                              <property name="maximum">
-                              <double>10.000000000000000</double>
+                              <double>999999999.000000000000000</double>
                              </property>
                              <property name="singleStep">
-                              <double>0.100000000000000</double>
+                              <double>1.000000000000000</double>
                              </property>
                              <property name="value">
                               <double>1.000000000000000</double>
+                             </property>
+                            </widget>
+                           </item>
+                           <item row="0" column="3">
+                            <widget class="QgsPropertyOverrideButton" name="mWrapCharDDBtn">
+                             <property name="text">
+                              <string>…</string>
+                             </property>
+                            </widget>
+                           </item>
+                           <item row="4" column="0">
+                            <widget class="QLabel" name="mFontMultiLineLabel">
+                             <property name="sizePolicy">
+                              <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+                               <horstretch>0</horstretch>
+                               <verstretch>0</verstretch>
+                              </sizepolicy>
+                             </property>
+                             <property name="text">
+                              <string>Alignment</string>
+                             </property>
+                            </widget>
+                           </item>
+                           <item row="2" column="1" colspan="2">
+                            <widget class="QComboBox" name="mAutoWrapTypeComboBox">
+                             <property name="toolTip">
+                              <string>Controls whether lines are automatically wrapped using the maximum number of characters in a line, or the minimum</string>
+                             </property>
+                             <item>
+                              <property name="text">
+                               <string>Maximum line length</string>
+                              </property>
+                             </item>
+                             <item>
+                              <property name="text">
+                               <string>Minimum line length</string>
+                              </property>
+                             </item>
+                            </widget>
+                           </item>
+                           <item row="1" column="3">
+                            <widget class="QgsPropertyOverrideButton" name="mAutoWrapLengthDDBtn">
+                             <property name="text">
+                              <string>…</string>
                              </property>
                             </widget>
                            </item>
@@ -2033,23 +2050,16 @@ font-style: italic;</string>
                              </property>
                             </widget>
                            </item>
-                           <item row="0" column="0">
-                            <widget class="QLabel" name="mLabelWrapOnCharacter">
-                             <property name="sizePolicy">
-                              <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
-                               <horstretch>0</horstretch>
-                               <verstretch>0</verstretch>
-                              </sizepolicy>
+                           <item row="4" column="1" colspan="2">
+                            <widget class="QComboBox" name="mFontMultiLineAlignComboBox">
+                             <property name="enabled">
+                              <bool>true</bool>
                              </property>
-                             <property name="text">
-                              <string>Wrap on character</string>
+                             <property name="toolTip">
+                              <string>Paragraph style alignment of multi-line text</string>
                              </property>
-                            </widget>
-                           </item>
-                           <item row="1" column="2">
-                            <widget class="QgsPropertyOverrideButton" name="mAutoWrapLengthDDBtn">
-                             <property name="text">
-                              <string>…</string>
+                             <property name="layoutDirection">
+                              <enum>Qt::LeftToRight</enum>
                              </property>
                             </widget>
                            </item>
@@ -2131,8 +2141,8 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>299</width>
-                       <height>308</height>
+                       <width>485</width>
+                       <height>410</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_12">
@@ -2477,8 +2487,8 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>296</width>
-                       <height>291</height>
+                       <width>304</width>
+                       <height>266</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_121">
@@ -2755,8 +2765,8 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>438</width>
-                       <height>753</height>
+                       <width>460</width>
+                       <height>731</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_21">
@@ -3506,8 +3516,8 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>324</width>
-                       <height>457</height>
+                       <width>316</width>
+                       <height>444</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_22">
@@ -3934,8 +3944,8 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>159</width>
-                       <height>211</height>
+                       <width>160</width>
+                       <height>189</height>
                       </rect>
                      </property>
                      <layout class="QGridLayout" name="gridLayout_46">
@@ -4084,8 +4094,8 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>472</width>
-                       <height>1690</height>
+                       <width>467</width>
+                       <height>1681</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_11">
@@ -5436,23 +5446,23 @@ font-style: italic;</string>
                            <item>
                             <widget class="QComboBox" name="mCoordRotationUnitComboBox"/>
                            </item>
-                           <item>
-                            <widget class="QCheckBox" name="chkPreserveRotation">
-                             <property name="toolTip">
-                              <string>Uncheck to write labeling engine derived rotation on pin and NULL on unpin</string>
-                             </property>
-                             <property name="styleSheet">
-                              <string notr="true">margin-left: 12px; margin-top: 3px;</string>
-                             </property>
-                             <property name="text">
-                              <string>Preserve data rotation values</string>
-                             </property>
-                             <property name="checked">
-                              <bool>true</bool>
-                             </property>
-                            </widget>
-                           </item>
                           </layout>
+                         </item>
+                         <item row="4" column="1">
+                          <widget class="QCheckBox" name="chkPreserveRotation">
+                            <property name="toolTip">
+                            <string>Uncheck to write labeling engine derived rotation on pin and NULL on unpin</string>
+                            </property>
+                            <property name="styleSheet">
+                            <string notr="true">margin-left: 12px; margin-top: 3px;</string>
+                            </property>
+                            <property name="text">
+                            <string>Preserve data rotation values</string>
+                            </property>
+                            <property name="checked">
+                            <bool>true</bool>
+                            </property>
+                          </widget>
                          </item>
                          <item row="0" column="1">
                           <layout class="QHBoxLayout" name="horizontalLayout_22">
@@ -5818,8 +5828,8 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>430</width>
-                       <height>708</height>
+                       <width>398</width>
+                       <height>851</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_8">
@@ -6143,11 +6153,28 @@ font-style: italic;</string>
                           </layout>
                          </item>
                          <item>
-                          <widget class="QCheckBox" name="mPalShowAllLabelsForLayerChkBx">
-                           <property name="text">
-                            <string>Show all labels for this layer (including colliding labels)</string>
+                          <layout class="QHBoxLayout" name="horizontalLayout_20">
+                           <property name="topMargin">
+                            <number>0</number>
                            </property>
-                          </widget>
+                           <item>
+                            <widget class="QCheckBox" name="mCheckAllowDegradedPlacement">
+                             <property name="toolTip">
+                              <string>If checked, then inferior placements are permitted when a label cannot otherwise be placed. For instance, it will permit a line label to be placed horizontal over the center of a line which is otherwise too short to fit the label text.</string>
+                             </property>
+                             <property name="text">
+                              <string>Allow inferior fallback placements</string>
+                             </property>
+                            </widget>
+                           </item>
+                           <item>
+                            <widget class="QgsPropertyOverrideButton" name="mAllowInferiorPlacementDBtn">
+                             <property name="text">
+                              <string>…</string>
+                             </property>
+                            </widget>
+                           </item>
+                          </layout>
                          </item>
                          <item>
                           <widget class="QFrame" name="mLabelRenderingDDFrame">
@@ -6173,43 +6200,10 @@ font-style: italic;</string>
                             <property name="verticalSpacing">
                              <number>6</number>
                             </property>
-                            <item row="1" column="6">
-                             <spacer name="horizontalSpacer_23">
-                              <property name="orientation">
-                               <enum>Qt::Horizontal</enum>
-                              </property>
-                              <property name="sizeHint" stdset="0">
-                               <size>
-                                <width>195</width>
-                                <height>20</height>
-                               </size>
-                              </property>
-                             </spacer>
-                            </item>
-                            <item row="1" column="2">
-                             <widget class="QgsPropertyOverrideButton" name="mShowLabelDDBtn">
-                              <property name="text">
-                               <string>…</string>
-                              </property>
-                             </widget>
-                            </item>
                             <item row="1" column="5">
                              <widget class="QgsPropertyOverrideButton" name="mAlwaysShowDDBtn">
                               <property name="text">
                                <string>…</string>
-                              </property>
-                             </widget>
-                            </item>
-                            <item row="1" column="4">
-                             <widget class="QLabel" name="mAlwaysShowLabel">
-                              <property name="sizePolicy">
-                               <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
-                                <horstretch>0</horstretch>
-                                <verstretch>0</verstretch>
-                               </sizepolicy>
-                              </property>
-                              <property name="text">
-                               <string>Always show</string>
                               </property>
                              </widget>
                             </item>
@@ -6229,6 +6223,13 @@ font-style: italic;</string>
                               </property>
                              </widget>
                             </item>
+                            <item row="1" column="2">
+                             <widget class="QgsPropertyOverrideButton" name="mShowLabelDDBtn">
+                              <property name="text">
+                               <string>…</string>
+                              </property>
+                             </widget>
+                            </item>
                             <item row="1" column="0">
                              <spacer name="horizontalSpacer_10">
                               <property name="orientation">
@@ -6245,17 +6246,43 @@ font-style: italic;</string>
                               </property>
                              </spacer>
                             </item>
-                            <item row="1" column="3">
-                             <widget class="Line" name="line_4">
-                              <property name="orientation">
-                               <enum>Qt::Vertical</enum>
-                              </property>
-                             </widget>
-                            </item>
                             <item row="0" column="0" colspan="7">
                              <widget class="QLabel" name="label_3">
                               <property name="text">
                                <string>Data defined</string>
+                              </property>
+                             </widget>
+                            </item>
+                            <item row="1" column="6">
+                             <spacer name="horizontalSpacer_23">
+                              <property name="orientation">
+                               <enum>Qt::Horizontal</enum>
+                              </property>
+                              <property name="sizeHint" stdset="0">
+                               <size>
+                                <width>195</width>
+                                <height>20</height>
+                               </size>
+                              </property>
+                             </spacer>
+                            </item>
+                            <item row="1" column="4">
+                             <widget class="QLabel" name="mAlwaysShowLabel">
+                              <property name="sizePolicy">
+                               <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+                                <horstretch>0</horstretch>
+                                <verstretch>0</verstretch>
+                               </sizepolicy>
+                              </property>
+                              <property name="text">
+                               <string>Always show</string>
+                              </property>
+                             </widget>
+                            </item>
+                            <item row="1" column="3">
+                             <widget class="Line" name="line_4">
+                              <property name="orientation">
+                               <enum>Qt::Vertical</enum>
                               </property>
                              </widget>
                             </item>
@@ -6340,6 +6367,52 @@ font-style: italic;</string>
                              </widget>
                             </item>
                            </layout>
+                          </widget>
+                         </item>
+                        </layout>
+                       </widget>
+                      </item>
+                      <item>
+                       <widget class="QgsCollapsibleGroupBox" name="mPlacementOverrunGroupBox_2">
+                        <property name="title">
+                         <string>Overlapping labels</string>
+                        </property>
+                        <layout class="QGridLayout" name="gridLayout_24" columnstretch="0,1,0,0">
+                         <item row="0" column="0" colspan="4">
+                          <widget class="QLabel" name="label_48">
+                           <property name="text">
+                            <string>The overlap mode controls whether overlapping labels are permitted for features in the layer, and how they should be handled.</string>
+                           </property>
+                           <property name="wordWrap">
+                            <bool>true</bool>
+                           </property>
+                          </widget>
+                         </item>
+                         <item row="1" column="1" colspan="2">
+                          <widget class="QComboBox" name="mComboOverlapHandling"/>
+                         </item>
+                         <item row="1" column="0">
+                          <widget class="QLabel" name="label_47">
+                           <property name="text">
+                            <string>Mode</string>
+                           </property>
+                          </widget>
+                         </item>
+                         <item row="1" column="3">
+                          <widget class="QgsPropertyOverrideButton" name="mOverlapHandlingDBtn">
+                           <property name="text">
+                            <string>…</string>
+                           </property>
+                          </widget>
+                         </item>
+                         <item row="2" column="0" colspan="4">
+                          <widget class="QLabel" name="mOverlapModeDescriptionLabel">
+                           <property name="text">
+                            <string>TextLabel</string>
+                           </property>
+                           <property name="wordWrap">
+                            <bool>true</bool>
+                           </property>
                           </widget>
                          </item>
                         </layout>
@@ -6776,6 +6849,7 @@ font-style: italic;</string>
   <tabstop>mAutoWrapLengthDDBtn</tabstop>
   <tabstop>mAutoWrapTypeComboBox</tabstop>
   <tabstop>mFontLineHeightSpinBox</tabstop>
+  <tabstop>mLineHeightUnitWidget</tabstop>
   <tabstop>mFontLineHeightDDBtn</tabstop>
   <tabstop>mFontMultiLineAlignComboBox</tabstop>
   <tabstop>mFontMultiLineAlignDDBtn</tabstop>
@@ -6977,12 +7051,15 @@ font-style: italic;</string>
   <tabstop>mFontMaxPixelDDBtn</tabstop>
   <tabstop>mZIndexSpinBox</tabstop>
   <tabstop>mZIndexDDBtn</tabstop>
-  <tabstop>mPalShowAllLabelsForLayerChkBx</tabstop>
+  <tabstop>mCheckAllowDegradedPlacement</tabstop>
+  <tabstop>mAllowInferiorPlacementDBtn</tabstop>
   <tabstop>mShowLabelDDBtn</tabstop>
   <tabstop>mAlwaysShowDDBtn</tabstop>
   <tabstop>mUpsidedownRadioOff</tabstop>
   <tabstop>mUpsidedownRadioDefined</tabstop>
   <tabstop>mUpsidedownRadioAll</tabstop>
+  <tabstop>mComboOverlapHandling</tabstop>
+  <tabstop>mOverlapHandlingDBtn</tabstop>
   <tabstop>chkLabelPerFeaturePart</tabstop>
   <tabstop>mLabelAllPartsDDBtn</tabstop>
   <tabstop>chkMergeLines</tabstop>
@@ -6993,6 +7070,7 @@ font-style: italic;</string>
   <tabstop>mCoordRotationUnitComboBox</tabstop>
  </tabstops>
  <resources>
+  <include location="../../images/images.qrc"/>
   <include location="../../images/images.qrc"/>
  </resources>
  <connections>

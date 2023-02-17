@@ -94,6 +94,8 @@ class GUI_EXPORT QgsLayoutScaleBarWidget: public QgsLayoutItemBaseWidget, public
 
     void connectUpdateSignal();
     void disconnectUpdateSignal();
+    void populateDataDefinedButtons();
+
 };
 
 #endif //QGSLAYOUTSCALEBARWIDGET_H

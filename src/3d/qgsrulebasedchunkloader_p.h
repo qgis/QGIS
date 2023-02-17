@@ -55,6 +55,8 @@ namespace Qt3DCore
  */
 class QgsRuleBasedChunkLoaderFactory : public QgsQuadtreeChunkLoaderFactory
 {
+    Q_OBJECT
+
   public:
     //! Constructs the factory (vl and rootRule must not be null)
     QgsRuleBasedChunkLoaderFactory( const Qgs3DMapSettings &map, QgsVectorLayer *vl, QgsRuleBased3DRenderer::Rule *rootRule, int leafLevel, double zMin, double zMax );
@@ -80,6 +82,8 @@ class QgsRuleBasedChunkLoaderFactory : public QgsQuadtreeChunkLoaderFactory
  */
 class QgsRuleBasedChunkLoader : public QgsChunkLoader
 {
+    Q_OBJECT
+
   public:
     //! Constructs the loader (factory and node must not be null)
     QgsRuleBasedChunkLoader( const QgsRuleBasedChunkLoaderFactory *factory, QgsChunkNode *node );

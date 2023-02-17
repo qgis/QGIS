@@ -61,6 +61,11 @@ QString QgsZonalStatisticsAlgorithm::groupId() const
   return QStringLiteral( "rasteranalysis" );
 }
 
+QString QgsZonalStatisticsAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Calculates statistics for a raster layer's values for each feature of an overlapping polygon vector layer." );
+}
+
 QString QgsZonalStatisticsAlgorithm::shortHelpString() const
 {
   return QObject::tr( "This algorithm calculates statistics of a raster layer for each feature "

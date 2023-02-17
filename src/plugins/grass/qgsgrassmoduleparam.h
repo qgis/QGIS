@@ -96,25 +96,25 @@ class QgsGrassModuleParam
     virtual ~QgsGrassModuleParam() = default;
 
     //! Is the item hidden
-    bool hidden();
+    bool hidden() const;
 
     //! Returns list of options which will be passed to module
     virtual QStringList options();
 
     //! Item's key
-    QString key() { return mKey; }
+    QString key() const { return mKey; }
 
     //! Multiple values
     bool multiple() const { return mMultiple; }
 
     //! Item's id
-    QString id() { return mId; }
+    QString id() const { return mId; }
 
     //! Check if option is ready
     //  Returns empty string or error message
     virtual QString ready() { return QString() ; }
 
-    QStringList errors() { return mErrors; }
+    QStringList errors() const { return mErrors; }
 
     /**
      * Gets gisprompt attribute

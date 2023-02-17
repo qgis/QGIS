@@ -42,5 +42,8 @@
     <gradient file="wiki-knutux" dir="wkp/knutux"/>
     <gradient file="nrwc" dir="wkp/tubs"/>
     <gradient file="pakistan" dir="wkp/jarke"/>
+    <gradient file="usgs-gswa2" dir="usgs"/>
+    <gradient file="zambezi-focus" dir="arendal"/>
+    <gradient file="zambezi-proximity" dir="arendal"/>
   </gradients>
 </selection>

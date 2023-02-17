@@ -30,14 +30,17 @@ QgsMapToolSplitFeatures::QgsMapToolSplitFeatures( QgsMapCanvas *canvas )
   setSnapToLayerGridEnabled( false );
 }
 
-bool QgsMapToolSplitFeatures::supportsTechnique( QgsMapToolCapture::CaptureTechnique technique ) const
+bool QgsMapToolSplitFeatures::supportsTechnique( Qgis::CaptureTechnique technique ) const
 {
   switch ( technique )
   {
-    case QgsMapToolCapture::StraightSegments:
-    case QgsMapToolCapture::CircularString:
-    case QgsMapToolCapture::Streaming:
+    case Qgis::CaptureTechnique::StraightSegments:
+    case Qgis::CaptureTechnique::CircularString:
+    case Qgis::CaptureTechnique::Streaming:
       return true;
+
+    case Qgis::CaptureTechnique::Shape:
+      return false;
   }
   return false;
 }

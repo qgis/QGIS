@@ -35,7 +35,7 @@ class QgsMeshLayer;
  * a mesh layer. The layer must be connected and an active dataset
  * must be selected.
  */
-class QgsMeshRendererScalarSettingsWidget : public QWidget, private Ui::QgsMeshRendererScalarSettingsWidgetBase
+class GUI_EXPORT QgsMeshRendererScalarSettingsWidget : public QWidget, private Ui::QgsMeshRendererScalarSettingsWidgetBase
 {
     Q_OBJECT
 

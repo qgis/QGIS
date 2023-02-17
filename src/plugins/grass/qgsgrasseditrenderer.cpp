@@ -64,9 +64,9 @@ QgsGrassEditRenderer::QgsGrassEditRenderer()
   markerLayers << markerSymbolLayer;
   QgsMarkerSymbol *markerSymbol = new QgsMarkerSymbol( markerLayers );
   firstVertexMarkerLine->setSubSymbol( markerSymbol );
-  firstVertexMarkerLine->setPlacement( Qgis::MarkerLinePlacement::FirstVertex );
+  firstVertexMarkerLine->setPlacements( Qgis::MarkerLinePlacement::FirstVertex );
   QgsMarkerLineSymbolLayer *lastVertexMarkerLine = static_cast<QgsMarkerLineSymbolLayer *>( firstVertexMarkerLine->clone() );
-  lastVertexMarkerLine->setPlacement( Qgis::MarkerLinePlacement::LastVertex );
+  lastVertexMarkerLine->setPlacements( Qgis::MarkerLinePlacement::LastVertex );
   for ( int value : colors.keys() )
   {
     QgsSymbol *symbol = QgsSymbol::defaultSymbol( QgsWkbTypes::LineGeometry );
@@ -231,14 +231,14 @@ QgsFeatureRenderer *QgsGrassEditRenderer::create( QDomElement &element, const Qg
     if ( !elem.isNull() )
     {
       QString rendererType = elem.attribute( QStringLiteral( "type" ) );
-      QgsDebugMsg( "childElem.tagName() = " + childElem.tagName() + " rendererType = " + rendererType );
+      QgsDebugMsgLevel( "childElem.tagName() = " + childElem.tagName() + " rendererType = " + rendererType, 2 );
       QgsRendererAbstractMetadata *meta = QgsApplication::rendererRegistry()->rendererMetadata( rendererType );
       if ( meta )
       {
         QgsFeatureRenderer *subRenderer = meta->createRenderer( elem, context );
         if ( subRenderer )
         {
-          QgsDebugMsg( "renderer created : " + renderer->type() );
+          QgsDebugMsgLevel( "renderer created : " + renderer->type(), 2 );
           if ( childElem.tagName() == QLatin1String( "line" ) )
           {
             renderer->setLineRenderer( subRenderer );

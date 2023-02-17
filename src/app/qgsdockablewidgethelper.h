@@ -43,12 +43,15 @@ class APP_EXPORT QgsDockableWidgetHelper : public QObject
      * Constructs an object that is responsible of making a docked widget or a window titled \a windowTitle that holds the \a widget
      * The ownership of \a widget is returned to \a ownerWindow once the object is destroyed.
      */
-    QgsDockableWidgetHelper( bool isDocked, const QString &windowTitle, QWidget *widget, QMainWindow *ownerWindow );
+    QgsDockableWidgetHelper( bool isDocked, const QString &windowTitle, QWidget *widget, QMainWindow *ownerWindow,
+                             Qt::DockWidgetArea defaultDockArea = Qt::NoDockWidgetArea,
+                             const QStringList &tabifyWith = QStringList(), bool raiseTab = false,
+                             const QString &windowGeometrySettingsKey = QString() );
     ~QgsDockableWidgetHelper();
 
     //! Reads the dimensions of both the dock widget and the top level window
     void writeXml( QDomElement &viewDom );
-    void readXml( QDomElement &viewDom );
+    void readXml( const QDomElement &viewDom );
 
     //! Sets the widget placed inside the dock widget or the window
     void setWidget( QWidget *widget );
@@ -71,14 +74,21 @@ class APP_EXPORT QgsDockableWidgetHelper : public QObject
      */
     QToolButton *createDockUndockToolButton();
 
+    /**
+     * Create an action for docking/undocking the widget, with the specified \a parent widget.
+     */
+    QAction *createDockUndockAction( const QString &title, QWidget *parent );
+
   signals:
     void closed();
+
+    void dockModeToggled( bool docked );
 
   public slots:
     void toggleDockMode( bool docked );
 
   private:
-    void setupDockWidget();
+    void setupDockWidget( const QStringList &tabSiblings = QStringList() );
 
     bool mIsDocked = true;
     QWidget *mWidget = nullptr;
@@ -88,11 +98,19 @@ class APP_EXPORT QgsDockableWidgetHelper : public QObject
 
     QgsDockWidget *mDock = nullptr;
     QRect mDockGeometry;
-    bool mIsDockFloating;
-    Qt::DockWidgetArea mDockArea;
+    bool mIsDockFloating = true;
+    Qt::DockWidgetArea mDockArea = Qt::RightDockWidgetArea;
 
     QString mWindowTitle;
-    QMainWindow *mOwnerWindow;
+    QMainWindow *mOwnerWindow = nullptr;
+
+    QStringList mTabifyWith;
+    bool mRaiseTab = false;
+
+    QString mWindowGeometrySettingsKey;
+
+    // Unique identifier of dock
+    QString mUuid;
 };
 
 #endif // QGSDOCKABLEWIDGETHELPER_H

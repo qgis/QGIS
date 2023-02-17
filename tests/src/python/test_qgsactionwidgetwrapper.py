@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsActionWidgetWrapper.
 
 From build dir, run: ctest -R PyQgsActionWidgetWrapper -V
@@ -13,22 +12,11 @@ __date__ = '16/08/2021'
 __copyright__ = 'Copyright 2021, The QGIS Project'
 
 import qgis  # NOQA switch sip api
-
-from qgis.core import (QgsVectorLayer,
-                       QgsFeature,
-                       QgsAction,
-                       )
-from qgis.PyQt.QtCore import QDir, QTemporaryFile, QUuid
+from qgis.PyQt.QtCore import QUuid
 from qgis.PyQt.QtWidgets import QPushButton, QWidget
-from qgis.PyQt.QtGui import QIcon
-
+from qgis.core import QgsAction, QgsVectorLayer
 from qgis.gui import QgsActionWidgetWrapper
-
 from qgis.testing import start_app, unittest
-
-import os
-import time
-import platform
 
 start_app()
 

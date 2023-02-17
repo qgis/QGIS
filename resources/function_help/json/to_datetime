@@ -3,14 +3,27 @@
   "type": "function",
   "groups": ["Conversions", "Date and Time"],
   "description": "Converts a string into a datetime object. An optional format string can be provided to parse the string; see <a href='https://doc.qt.io/qt-5/qdate.html#fromString-2'>QDate::fromString</a>, <a href='https://doc.qt.io/qt-5/qtime.html#fromString-1'>QTime::fromString</a> or the documentation of the format_date function for additional documentation on the format. By default the current QGIS user locale is used.",
-  "arguments": [
-   {"arg":"string","description":"string representing a datetime value"},
-   {"arg":"format","optional":true,"description":"format used to convert the string into a datetime"},
-   {"arg":"language","optional":true,"description":"language (lowercase, two- or three-letter, ISO 639 language code) used to convert the string into a datetime. By default the current QGIS user locale is used."}
-  ],
-  "examples": [
-   { "expression":"to_datetime('2012-05-04 12:50:00')", "returns":"2012-05-04T12:50:00"},
-   { "expression":"to_datetime('June 29, 2019 @ 12:34','MMMM d, yyyy @ HH:mm')", "returns":"2019-06-29T12:34, if the current locale uses the name 'June' for the sixth month, otherwise an error occurs"},
-   { "expression":"to_datetime('29 juin, 2019 @ 12:34','d MMMM, yyyy @ HH:mm','fr')", "returns":"2019-06-29T12:34"}
-  ]
+  "arguments": [{
+    "arg": "string",
+    "description": "string representing a datetime value"
+  }, {
+    "arg": "format",
+    "optional": true,
+    "description": "format used to convert the string into a datetime"
+  }, {
+    "arg": "language",
+    "optional": true,
+    "description": "language (lowercase, two- or three-letter, ISO 639 language code) used to convert the string into a datetime. By default the current QGIS user locale is used."
+  }],
+  "examples": [{
+    "expression": "to_datetime('2012-05-04 12:50:00')",
+    "returns": "2012-05-04T12:50:00"
+  }, {
+    "expression": "to_datetime('June 29, 2019 @ 12:34','MMMM d, yyyy @ HH:mm')",
+    "returns": "2019-06-29T12:34, if the current locale uses the name 'June' for the sixth month, otherwise an error occurs"
+  }, {
+    "expression": "to_datetime('29 juin, 2019 @ 12:34','d MMMM, yyyy @ HH:mm','fr')",
+    "returns": "2019-06-29T12:34"
+  }],
+  "tags": ["provided", "additional", "user", "format_date", "parse", "qdate", "converts", "default", "datetime", "current", "format", "object", "fromstring", "optional", "documentation", "qtime", "see"]
 }

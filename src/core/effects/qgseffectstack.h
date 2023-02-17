@@ -70,7 +70,6 @@ class CORE_EXPORT QgsEffectStack : public QgsPaintEffect SIP_NODEFAULTCTORS
      * Creates a new QgsEffectStack effect from a single initial effect.
      * \param effect initial effect to add to the stack. The effect will
      * be cloned, so ownership is not transferred to the stack.
-     * \returns new QgsEffectStack containing initial effect
      */
     explicit QgsEffectStack( const QgsPaintEffect &effect );
 

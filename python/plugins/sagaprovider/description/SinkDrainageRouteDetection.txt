@@ -1,6 +1,0 @@
-Sink Drainage Route Detection
-ta_preprocessor
-QgsProcessingParameterRasterLayer|ELEVATION|Elevation|None|False
-QgsProcessingParameterBoolean|THRESHOLD       |Threshold|True
-QgsProcessingParameterNumber|THRSHEIGHT|Threshold Height|QgsProcessingParameterNumber.Double|100.0|False|None|None
-QgsProcessingParameterRasterDestination|SINKROUTE|Sink Route

@@ -316,8 +316,7 @@ void QgsHanaSourceSelect::cmbConnections_activated( int )
   QgsHanaSettings::setSelectedConnection( cmbConnections->currentText() );
 
   cbxAllowGeometrylessTables->blockSignals( true );
-  QgsHanaSettings settings( cmbConnections->currentText() );
-  settings.load();
+  QgsHanaSettings settings( cmbConnections->currentText(), true );
   cbxAllowGeometrylessTables->setChecked( settings.allowGeometrylessTables() );
   cbxAllowGeometrylessTables->blockSignals( false );
 }
@@ -506,15 +505,14 @@ void QgsHanaSourceSelect::setSql( const QModelIndex &index )
     return;
   }
 
-  const QModelIndex idx = proxyModel()->mapToSource( index );
-  const QString uri = mTableModel->layerURI( idx, mConnectionName, mConnectionInfo );
+  const QString uri = mTableModel->layerURI( index, mConnectionName, mConnectionInfo );
   if ( uri.isNull() )
   {
     QgsDebugMsg( "no uri" );
     return;
   }
 
-  const QString tableName = mTableModel->itemFromIndex( idx.sibling( idx.row(), QgsHanaTableModel::DbtmTable ) )->text();
+  const QString tableName = mTableModel->itemFromIndex( index.sibling( index.row(), QgsHanaTableModel::DbtmTable ) )->text();
 
   QgsVectorLayer vlayer( uri, tableName, QStringLiteral( "hana" ) );
   if ( !vlayer.isValid() )
@@ -522,7 +520,7 @@ void QgsHanaSourceSelect::setSql( const QModelIndex &index )
 
   QgsQueryBuilder gb( &vlayer, this );
   if ( gb.exec() )
-    mTableModel->setSql( proxyModel()->mapToSource( index ), gb.sql() );
+    mTableModel->setSql( index, gb.sql() );
 }
 
 QString QgsHanaSourceSelect::fullDescription(

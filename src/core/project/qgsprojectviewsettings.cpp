@@ -16,7 +16,6 @@
 #include "qgsprojectviewsettings.h"
 #include "qgis.h"
 #include "qgsproject.h"
-#include "qgslogger.h"
 #include "qgsmaplayerutils.h"
 #include "qgscoordinatetransform.h"
 #include <QDomElement>
@@ -31,6 +30,8 @@ QgsProjectViewSettings::QgsProjectViewSettings( QgsProject *project )
 void QgsProjectViewSettings::reset()
 {
   mDefaultViewExtent = QgsReferencedRectangle();
+
+  mDefaultRotation = 0;
 
   const bool fullExtentChanged = !mPresetFullExtent.isNull();
   mPresetFullExtent = QgsReferencedRectangle();
@@ -83,7 +84,17 @@ QgsReferencedRectangle QgsProjectViewSettings::fullExtent() const
   else
   {
     const QList< QgsMapLayer * > layers = mProject->mapLayers( true ).values();
-    return QgsReferencedRectangle( QgsMapLayerUtils::combinedExtent( layers, mProject->crs(), mProject->transformContext() ), mProject->crs() );
+
+    QList< QgsMapLayer * > nonBaseMapLayers;
+    std::copy_if( layers.begin(), layers.end(),
+                  std::back_inserter( nonBaseMapLayers ),
+    []( const QgsMapLayer * layer ) { return !( layer->properties() & Qgis::MapLayerProperty::IsBasemapLayer ); } );
+
+    // unless ALL layers from the project are basemap layers, we exclude these by default as their extent won't be useful for the project.
+    if ( !nonBaseMapLayers.empty( ) )
+      return QgsReferencedRectangle( QgsMapLayerUtils::combinedExtent( nonBaseMapLayers, mProject->crs(), mProject->transformContext() ), mProject->crs() );
+    else
+      return QgsReferencedRectangle( QgsMapLayerUtils::combinedExtent( layers, mProject->crs(), mProject->transformContext() ), mProject->crs() );
   }
 }
 
@@ -118,6 +129,16 @@ void QgsProjectViewSettings::setUseProjectScales( bool enabled )
 bool QgsProjectViewSettings::useProjectScales() const
 {
   return mUseProjectScales;
+}
+
+double QgsProjectViewSettings::defaultRotation() const
+{
+  return mDefaultRotation;
+}
+
+void QgsProjectViewSettings::setDefaultRotation( double rotation )
+{
+  mDefaultRotation = rotation;
 }
 
 bool QgsProjectViewSettings::readXml( const QDomElement &element, const QgsReadWriteContext & )
@@ -175,6 +196,8 @@ bool QgsProjectViewSettings::readXml( const QDomElement &element, const QgsReadW
     setPresetFullExtent( QgsReferencedRectangle() );
   }
 
+  mDefaultRotation = element.attribute( QStringLiteral( "rotation" ), QStringLiteral( "0" ) ).toDouble();
+
   return true;
 }
 
@@ -182,6 +205,8 @@ QDomElement QgsProjectViewSettings::writeXml( QDomDocument &doc, const QgsReadWr
 {
   QDomElement element = doc.createElement( QStringLiteral( "ProjectViewSettings" ) );
   element.setAttribute( QStringLiteral( "UseProjectScales" ), mUseProjectScales ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
+
+  element.setAttribute( QStringLiteral( "rotation" ), qgsDoubleToString( mDefaultRotation ) );
 
   QDomElement scales = doc.createElement( QStringLiteral( "Scales" ) );
   for ( const double scale : mMapScales )

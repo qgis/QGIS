@@ -25,6 +25,21 @@ class QgsFeatureRenderer;
 class QgsSymbolLayer;
 class QgsSymbolLayerId;
 
+
+#ifndef SIP_RUN
+
+struct QgsMaskedLayer
+{
+  bool hasEffects = false;
+
+  // masked symbol layers
+  QSet<QgsSymbolLayerId> symbolLayerIds;
+};
+
+typedef QHash<QString, QgsMaskedLayer> QgsMaskedLayers;
+
+#endif
+
 /**
  * \ingroup core
  * \class QgsVectorLayerUtils
@@ -167,6 +182,14 @@ class CORE_EXPORT QgsVectorLayerUtils
      * \since QGIS 3.6
      */
     static QVariant createUniqueValueFromCache( const QgsVectorLayer *layer, int fieldIndex, const QSet<QVariant> &existingValues, const QVariant &seed = QVariant() );
+
+    /**
+     * Returns TRUE if a feature attribute has active constraints.
+     * \param layer the vector layer from which field constraints will be checked for
+     * \param attributeIndex the attribute index
+     * \since QGIS 3.30
+     */
+    static bool attributeHasConstraints( const QgsVectorLayer *layer, int attributeIndex );
 
     /**
      * Tests a feature attribute value to check whether it passes all constraints which are present on the corresponding field.
@@ -336,7 +359,7 @@ class CORE_EXPORT QgsVectorLayerUtils
       * \note Not available in Python bindings
       * \since QGIS 3.12
       */
-    static QHash<QString, QHash<QString, QSet<QgsSymbolLayerId>>> labelMasks( const QgsVectorLayer * ) SIP_SKIP;
+    static QHash<QString, QgsMaskedLayers> labelMasks( const QgsVectorLayer * ) SIP_SKIP;
 
     /**
      * Returns all masks that may be defined on symbol layers for a given vector layer.
@@ -345,7 +368,7 @@ class CORE_EXPORT QgsVectorLayerUtils
      * \note Not available in Python bindings
      * \since QGIS 3.12
      */
-    static QHash<QString, QSet<QgsSymbolLayerId>> symbolLayerMasks( const QgsVectorLayer * ) SIP_SKIP;
+    static QgsMaskedLayers symbolLayerMasks( const QgsVectorLayer * ) SIP_SKIP;
 
     /**
      * \returns a descriptive string for a \a feature, suitable for displaying to the user.

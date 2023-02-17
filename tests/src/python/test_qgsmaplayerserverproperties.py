@@ -13,10 +13,7 @@ __author__ = 'Etienne Trimaille'
 __date__ = '21/06/2021'
 __copyright__ = 'Copyright 2021, The QGIS Project'
 
-from qgis.core import (
-    QgsMapLayerServerProperties,
-    QgsVectorLayer,
-)
+from qgis.core import QgsMapLayerServerProperties, QgsVectorLayer
 from qgis.testing import start_app, unittest
 
 app = start_app()

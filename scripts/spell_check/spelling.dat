@@ -366,7 +366,7 @@ alege:allege:*
 aleged:alleged
 alegience:allegiance
 alegorical:allegorical
-algebraical:algebraic
+algebraical:algebraic:*
 algorhitms:algorithms
 algorith:algorithm
 algorithmical:algorithmically
@@ -3527,7 +3527,7 @@ housr:hours
 hovewer:however
 how log:how long
 howerver:however
-howver:however
+howver:however:*
 hsitorians:historians
 hstory:history
 hte:the
@@ -4517,6 +4517,7 @@ metalurgical:metallurgical
 metalurgy:metallurgy
 metamorphysis:metamorphosis
 metaphoricial:metaphorical
+metatada:metadata
 metdata:metadata
 meterologist:meteorologist
 meterology:meteorology

@@ -3,21 +3,50 @@
   "type": "function",
   "groups": ["Aggregates"],
   "description": "Returns an aggregate value calculated using features from another layer.",
-  "arguments": [
-	{"arg":"layer", "description":"a string, representing either a layer name or layer ID"},
-	{"arg":"aggregate", "description":"a string corresponding to the aggregate to calculate. Valid options are:<br /><ul><li>count</li><li>count_distinct</li><li>count_missing</li><li>min</li><li>max</li><li>sum</li><li>mean</li><li>median</li><li>stdev</li><li>stdevsample</li><li>range</li><li>minority</li><li>majority</li><li>q1: first quartile</li><li>q3: third quartile</li><li>iqr: inter quartile range</li><li>min_length: minimum string length</li><li>max_length: maximum string length</li><li>concatenate: join strings with a concatenator</li><li>concatenate_unique: join unique strings with a concatenator</li><li>collect: create an aggregated multipart geometry</li><li>array_agg: create an array of aggregated values</li></ul>"},
-	{"arg":"expression", "description":"sub expression or field name to aggregate"},
-	{"arg":"filter", "optional":true, "description":"optional filter expression to limit the features used for calculating the aggregate. Fields and geometry are from the features on the joined layer. The source feature can be accessed with the variable @parent."},
-	{"arg":"concatenator", "optional":true, "default":"''", "description":"optional string to use to join values for 'concatenate' aggregate"},
-	{"arg":"order_by", "optional":true, "description":"optional filter expression to order the features used for calculating the aggregate. Fields and geometry are from the features on the joined layer. By default, the features will be returned in an unspecified order."}
-  ],
-  "examples": [
-	{ "expression":"aggregate(layer:='rail_stations',aggregate:='sum',expression:=\"passengers\")", "returns":"sum of all values from the passengers field in the rail_stations layer"},
-	{ "expression":"aggregate('rail_stations','sum', \"passengers\"/7)", "returns":"calculates a daily average of \"passengers\" by dividing the \"passengers\" field by 7 before summing the values"},
-	{ "expression":"aggregate(layer:='rail_stations',aggregate:='sum',expression:=\"passengers\",filter:=\"class\">3)", "returns":"sums up all values from the \"passengers\" field from features where the \"class\" attribute is greater than 3 only"},
-	{ "expression":"aggregate(layer:='rail_stations',aggregate:='concatenate', expression:=\"name\", concatenator:=',')", "returns":"comma separated list of the name field for all features in the rail_stations layer"},
-	{ "expression":"aggregate(layer:='countries', aggregate:='max', expression:=\"code\", filter:=intersects( $geometry, geometry(@parent) ) )", "returns":"The country code of an intersecting country on the layer 'countries'"},
-	{ "expression":"aggregate(layer:='rail_stations',aggregate:='sum',expression:=\"passengers\",filter:=contains( @atlas_geometry, $geometry ) )", "returns":"sum of all values from the passengers field in the rail_stations within the current atlas feature"},
-	{ "expression":"aggregate(layer:='rail_stations', aggregate:='collect', expression:=centroid($geometry), filter:=\"region_name\" = attribute(@parent,'name') )", "returns":"aggregates centroid geometries of the rail_stations of the same region as current feature"}
-	]
+  "arguments": [{
+    "arg": "layer",
+    "description": "a string, representing either a layer name or layer ID"
+  }, {
+    "arg": "aggregate",
+    "description": "a string corresponding to the aggregate to calculate. Valid options are:<br /><ul><li>count</li><li>count_distinct</li><li>count_missing</li><li>min</li><li>max</li><li>sum</li><li>mean</li><li>median</li><li>stdev</li><li>stdevsample</li><li>range</li><li>minority</li><li>majority</li><li>q1: first quartile</li><li>q3: third quartile</li><li>iqr: inter quartile range</li><li>min_length: minimum string length</li><li>max_length: maximum string length</li><li>concatenate: join strings with a concatenator</li><li>concatenate_unique: join unique strings with a concatenator</li><li>collect: create an aggregated multipart geometry</li><li>array_agg: create an array of aggregated values</li></ul>"
+  }, {
+    "arg": "expression",
+    "description": "sub expression or field name to aggregate"
+  }, {
+    "arg": "filter",
+    "optional": true,
+    "description": "optional filter expression to limit the features used for calculating the aggregate. Fields and geometry are from the features on the joined layer. The source feature can be accessed with the variable @parent."
+  }, {
+    "arg": "concatenator",
+    "optional": true,
+    "default": "''",
+    "description": "optional string to use to join values for 'concatenate' aggregate"
+  }, {
+    "arg": "order_by",
+    "optional": true,
+    "description": "optional filter expression to order the features used for calculating the aggregate. Fields and geometry are from the features on the joined layer. By default, the features will be returned in an unspecified order."
+  }],
+  "examples": [{
+    "expression": "aggregate(layer:='rail_stations',aggregate:='sum',expression:=\"passengers\")",
+    "returns": "sum of all values from the passengers field in the rail_stations layer"
+  }, {
+    "expression": "aggregate('rail_stations','sum', \"passengers\"/7)",
+    "returns": "calculates a daily average of \"passengers\" by dividing the \"passengers\" field by 7 before summing the values"
+  }, {
+    "expression": "aggregate(layer:='rail_stations',aggregate:='sum',expression:=\"passengers\",filter:=\"class\">3)",
+    "returns": "sums up all values from the \"passengers\" field from features where the \"class\" attribute is greater than 3 only"
+  }, {
+    "expression": "aggregate(layer:='rail_stations',aggregate:='concatenate', expression:=\"name\", concatenator:=',')",
+    "returns": "comma separated list of the name field for all features in the rail_stations layer"
+  }, {
+    "expression": "aggregate(layer:='countries', aggregate:='max', expression:=\"code\", filter:=intersects( $geometry, geometry(@parent) ) )",
+    "returns": "The country code of an intersecting country on the layer 'countries'"
+  }, {
+    "expression": "aggregate(layer:='rail_stations',aggregate:='sum',expression:=\"passengers\",filter:=contains( @atlas_geometry, $geometry ) )",
+    "returns": "sum of all values from the passengers field in the rail_stations within the current atlas feature"
+  }, {
+    "expression": "aggregate(layer:='rail_stations', aggregate:='collect', expression:=centroid($geometry), filter:=\"region_name\" = attribute(@parent,'name') )",
+    "returns": "aggregates centroid geometries of the rail_stations of the same region as current feature"
+  }],
+  "tags": ["aggregate", "combine", "features", "calculated", "merge", "concatenate", "sum", "mean", "median", "count", "quartile", "minimum", "maximum", "minority", "majority", "standard", "deviation", "length", "unique"]
 }

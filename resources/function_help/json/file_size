@@ -3,7 +3,13 @@
   "type": "function",
   "groups": ["Files and Paths"],
   "description": "Returns the size (in bytes) of a file.",
-  "arguments": [ {"arg":"path","description":"a file path"}],
-  "examples": [ { "expression":"file_size('/home/qgis/data/country_boundaries.geojson')", "returns":"5674"}]
+  "arguments": [{
+    "arg": "path",
+    "description": "a file path or a map layer value. If a map layer value is specified then the file source of the layer will be used."
+  }],
+  "examples": [{
+    "expression": "file_size('/home/qgis/data/country_boundaries.geojson')",
+    "returns": "5674"
+  }],
+  "tags": ["size", "file", "bytes"]
 }
-

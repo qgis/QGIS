@@ -105,20 +105,20 @@ void TestQgs3DUtils::testRayFromScreenPoint()
     {
       const QgsRay3D ray1 = Qgs3DUtils::rayFromScreenPoint( QPoint( 50, 50 ), QSize( 100, 100 ), &camera );
       const QgsRay3D ray2( QVector3D( 8.99999904632568f, 14.9999980926514f, 29.9999980926514f ), QVector3D( -0.25916051864624f, -0.431934207677841f, -0.863868415355682f ) );
-      QCOMPARE( ray1.origin(), ray2.origin() );
-      QCOMPARE( ray1.direction(), ray2.direction() );
+      QGSCOMPARENEARVECTOR3D( ray1.origin(), ray2.origin(), 0.00001 );
+      QGSCOMPARENEARVECTOR3D( ray1.direction(), ray2.direction(), 0.00001 );
     }
     {
       const QgsRay3D ray1 = Qgs3DUtils::rayFromScreenPoint( QPoint( 0, 0 ), QSize( 100, 100 ), &camera );
       const QgsRay3D ray2( QVector3D( 8.99999904632568f, 14.9999980926514f, 29.9999980926514f ), QVector3D( -0.810001313686371f, -0.0428109727799892f, -0.584863305091858f ) );
-      QCOMPARE( ray1.origin(), ray2.origin() );
-      QCOMPARE( ray1.direction(), ray2.direction() );
+      QGSCOMPARENEARVECTOR3D( ray1.origin(), ray2.origin(), 0.00001 );
+      QGSCOMPARENEARVECTOR3D( ray1.direction(), ray2.direction(), 0.00001 );
     }
     {
       const QgsRay3D ray1 = Qgs3DUtils::rayFromScreenPoint( QPoint( 100, 100 ), QSize( 100, 100 ), &camera );
       const QgsRay3D ray2( QVector3D( 8.99999904632568f, 14.9999980926514f, 29.9999980926514f ), QVector3D( 0.429731547832489f, -0.590972006320953f, -0.682702660560608f ) );
-      QCOMPARE( ray1.origin(), ray2.origin() );
-      QCOMPARE( ray1.direction(), ray2.direction() );
+      QGSCOMPARENEARVECTOR3D( ray1.origin(), ray2.origin(), 0.00001 );
+      QGSCOMPARENEARVECTOR3D( ray1.direction(), ray2.direction(), 0.00001 );
     }
   }
 
@@ -134,20 +134,20 @@ void TestQgs3DUtils::testRayFromScreenPoint()
     {
       const QgsRay3D ray1 = Qgs3DUtils::rayFromScreenPoint( QPoint( 500, 500 ), QSize( 1000, 1000 ), &camera );
       const QgsRay3D ray2( QVector3D( 0, 0, 0 ), QVector3D( 0, 0.70710676908493f, -0.70710676908493f ) );
-      QCOMPARE( ray1.origin(), ray2.origin() );
-      QCOMPARE( ray1.direction(), ray2.direction() );
+      QGSCOMPARENEARVECTOR3D( ray1.origin(), ray2.origin(), 0.00001 );
+      QGSCOMPARENEARVECTOR3D( ray1.direction(), ray2.direction(), 0.00001 );
     }
     {
       const QgsRay3D ray1 = Qgs3DUtils::rayFromScreenPoint( QPoint( 0, 0 ), QSize( 1000, 1000 ), &camera );
       const QgsRay3D ray2( QVector3D( 0, 0, 0 ), QVector3D( -0.70710676908493f, 0.683012664318085f, -0.183012709021568f ) );
-      QCOMPARE( ray1.origin(), ray2.origin() );
-      QCOMPARE( ray1.direction(), ray2.direction() );
+      QGSCOMPARENEARVECTOR3D( ray1.origin(), ray2.origin(), 0.00001 );
+      QGSCOMPARENEARVECTOR3D( ray1.direction(), ray2.direction(), 0.00001 );
     }
     {
       const QgsRay3D ray1 = Qgs3DUtils::rayFromScreenPoint( QPoint( 500, 1000 ), QSize( 1000, 1000 ), &camera );
       const QgsRay3D ray2( QVector3D( 0, 0, 0 ), QVector3D( 0, 0.258819073438644f, -0.965925812721252f ) );
-      QCOMPARE( ray1.origin(), ray2.origin() );
-      QCOMPARE( ray1.direction(), ray2.direction() );
+      QGSCOMPARENEARVECTOR3D( ray1.origin(), ray2.origin(), 0.00001 );
+      QGSCOMPARENEARVECTOR3D( ray1.direction(), ray2.direction(), 0.00001 );
     }
   }
 }

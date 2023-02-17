@@ -188,6 +188,13 @@ bool QgsServerProjectUtils::wmsFeatureInfoSegmentizeWktGeometry( const QgsProjec
          || segmGeom.compare( QLatin1String( "true" ), Qt::CaseInsensitive ) == 0;
 }
 
+bool QgsServerProjectUtils::wmsAddLegendGroupsLegendGraphic( const QgsProject &project )
+{
+  const QString legendGroups = project.readEntry( QStringLiteral( "WMSAddLayerGroupsLegendGraphic" ), QStringLiteral( "/" ), "" );
+  return legendGroups.compare( QLatin1String( "enabled" ), Qt::CaseInsensitive ) == 0
+         || legendGroups.compare( QLatin1String( "true" ), Qt::CaseInsensitive ) == 0;
+}
+
 int QgsServerProjectUtils::wmsFeatureInfoPrecision( const QgsProject &project )
 {
   return project.readNumEntry( QStringLiteral( "WMSPrecision" ), QStringLiteral( "/" ), 6 );
@@ -407,7 +414,8 @@ QString QgsServerProjectUtils::serviceUrl( const QString &service, const QgsServ
   }
 
   // https://docs.qgis.org/3.16/en/docs/server_manual/services.html#wms-map
-  const QString map = request.parameter( QStringLiteral( "MAP" ) );
+  const QString map = QUrlQuery( request.originalUrl().query().replace( QLatin1String( "MAP" ), QStringLiteral( "MAP" ), Qt::CaseInsensitive ) ).queryItemValue( QStringLiteral( "MAP" ) );
+
   if ( ! map.isEmpty() )
   {
     QUrlQuery query;
@@ -418,6 +426,7 @@ QString QgsServerProjectUtils::serviceUrl( const QString &service, const QgsServ
   {
     urlQUrl.setQuery( NULL );
   }
+
   return urlQUrl.url();
 }
 
@@ -521,3 +530,4 @@ bool QgsServerProjectUtils::wmsRenderMapTiles( const QgsProject &project )
 {
   return project.readBoolEntry( QStringLiteral( "RenderMapTile" ), QStringLiteral( "/" ), false );
 }
+

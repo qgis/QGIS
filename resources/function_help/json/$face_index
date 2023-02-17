@@ -3,5 +3,9 @@
   "type": "function",
   "groups": ["Meshes"],
   "description": "Returns the index of the current mesh face. ",
-  "examples": [ { "expression":"$face_index", "returns":"4581"}]
+  "examples": [{
+    "expression": "$face_index",
+    "returns": "4581"
+  }],
+  "tags": ["index", "mesh", "face", "current"]
 }

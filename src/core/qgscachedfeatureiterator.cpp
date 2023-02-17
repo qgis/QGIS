@@ -65,8 +65,11 @@ QgsCachedFeatureIterator::QgsCachedFeatureIterator( QgsVectorLayerCache *vlCache
   switch ( featureRequest.filterType() )
   {
     case QgsFeatureRequest::FilterFids:
-      mFeatureIds = QList< QgsFeatureId >( qgis::setToList( featureRequest.filterFids() ) );
+    {
+      const QgsFeatureIds filterFids = featureRequest.filterFids();
+      mFeatureIds = QList< QgsFeatureId >( filterFids.begin(), filterFids.end() );
       break;
+    }
 
     case QgsFeatureRequest::FilterFid:
       mFeatureIds = QList< QgsFeatureId >() << featureRequest.filterFid();

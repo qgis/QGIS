@@ -9,6 +9,7 @@
 
 
 
+
 class QgsScopedExpressionFunction : QgsExpressionFunction
 {
 %Docstring(signature="appended")
@@ -335,6 +336,49 @@ Removes any feature associated with the scope.
 .. versionadded:: 3.0
 %End
 
+    bool hasGeometry() const;
+%Docstring
+Returns ``True`` if the scope has a geometry associated with it.
+
+.. seealso:: :py:func:`geometry`
+
+.. versionadded:: 3.24
+%End
+
+    QgsGeometry geometry() const;
+%Docstring
+Sets the geometry associated with the scope.
+
+.. seealso:: :py:func:`setGeometry`
+
+.. seealso:: :py:func:`hasGeometry`
+
+.. versionadded:: 3.24
+%End
+
+    void setGeometry( const QgsGeometry &geometry );
+%Docstring
+Convenience function for setting a ``geometry`` for the scope. Any existing
+geometry set by the scope will be overwritten.
+
+.. seealso:: :py:func:`removeGeometry`
+
+.. seealso:: :py:func:`geometry`
+
+.. versionadded:: 3.24
+%End
+
+    void removeGeometry();
+%Docstring
+Removes any geometry associated with the scope.
+
+.. seealso:: :py:func:`setGeometry`
+
+.. seealso:: :py:func:`hasGeometry`
+
+.. versionadded:: 3.24
+%End
+
     void setFields( const QgsFields &fields );
 %Docstring
 Convenience function for setting a fields for the scope. Any existing
@@ -359,6 +403,87 @@ Writes scope variables to an XML ``element``.
 .. seealso:: :py:func:`readXml`
 
 .. versionadded:: 3.6
+%End
+
+
+    QStringList hiddenVariables() const;
+%Docstring
+Returns the list of variables hidden within the scope.
+
+.. seealso:: :py:func:`setHiddenVariables`
+
+.. seealso:: :py:func:`addHiddenVariable`
+
+.. seealso:: :py:func:`removeHiddenVariable`
+
+.. versionadded:: 3.28
+%End
+
+    void setHiddenVariables( const QStringList &hiddenVariables );
+%Docstring
+
+Sets the list of variables intended to be hidden in the
+expression builder dialog and widget.
+
+.. seealso:: :py:func:`hiddenVariables`
+
+.. seealso:: :py:func:`addHiddenVariable`
+
+.. seealso:: :py:func:`removeHiddenVariable`
+
+.. versionadded:: 3.28
+%End
+
+
+    void addHiddenVariable( const QString &hiddenVariable );
+%Docstring
+
+Adds the passed variable to a list of hidden variables that
+won't be visible in the expression builder dialog and widget.
+
+.. seealso:: :py:func:`hiddenVariables`
+
+.. seealso:: :py:func:`setHiddenVariables`
+
+.. seealso:: :py:func:`removeHiddenVariable`
+
+.. versionadded:: 3.28
+%End
+
+    void removeHiddenVariable( const QString &hiddenVariable );
+%Docstring
+
+Removes the passed variable from a list of hidden variables.
+
+.. seealso:: :py:func:`hiddenVariables`
+
+.. seealso:: :py:func:`setHiddenVariables`
+
+.. seealso:: :py:func:`addHiddenVariable`
+
+.. versionadded:: 3.28
+%End
+
+    void addLayerStore( QgsMapLayerStore *store );
+%Docstring
+Adds a layer ``store`` to the scope.
+
+Ownership of the ``store`` is not transferred to the scope, it is the caller's
+responsibility to ensure that the store remains alive for the duration of the
+expression context.
+
+.. seealso:: :py:func:`layerStores`
+
+.. versionadded:: 3.30
+%End
+
+    QList< QgsMapLayerStore * > layerStores() const;
+%Docstring
+Returns the list of layer stores associated with the scope.
+
+.. seealso:: :py:func:`addLayerStore`
+
+.. versionadded:: 3.30
 %End
 
 };
@@ -694,6 +819,35 @@ Convenience function for retrieving the feature for the context, if set.
 .. seealso:: :py:func:`setFeature`
 %End
 
+    void setGeometry( const QgsGeometry &geometry );
+%Docstring
+Convenience function for setting a ``geometry`` for the context. The geometry
+will be set within the last scope of the context, so will override any
+existing geometries within the context.
+
+.. seealso:: :py:func:`geometry`
+
+.. versionadded:: 3.24
+%End
+
+    bool hasGeometry() const;
+%Docstring
+Returns ``True`` if the context has a geometry associated with it.
+
+.. seealso:: :py:func:`geometry`
+
+.. versionadded:: 3.24
+%End
+
+    QgsGeometry geometry() const;
+%Docstring
+Convenience function for retrieving the geometry for the context, if set.
+
+.. seealso:: :py:func:`setGeometry`
+
+.. versionadded:: 3.24
+%End
+
     void setFields( const QgsFields &fields );
 %Docstring
 Convenience function for setting a fields for the context. The fields
@@ -784,6 +938,37 @@ Clears all cached values from the context.
 .. seealso:: :py:func:`cachedValue`
 
 .. versionadded:: 2.16
+%End
+
+    QList< QgsMapLayerStore * > layerStores() const;
+%Docstring
+Returns the list of layer stores associated with the context.
+
+.. versionadded:: 3.30
+%End
+
+    void setLoadedLayerStore( QgsMapLayerStore *store );
+%Docstring
+Sets the destination layer ``store`` for any layers loaded during
+expression evaluation.
+
+Ownership of the ``store`` is not transferred to the context, it is the caller's
+responsibility to ensure that the store remains alive for the duration of the
+expression context.
+
+.. seealso:: :py:func:`loadedLayerStore`
+
+.. versionadded:: 3.30
+%End
+
+    QgsMapLayerStore *loadedLayerStore() const;
+%Docstring
+Returns the destination layer store for any layers loaded during
+expression evaluation.
+
+.. seealso:: :py:func:`setLoadedLayerStore`
+
+.. versionadded:: 3.30
 %End
 
     void setFeedback( QgsFeedback *feedback );

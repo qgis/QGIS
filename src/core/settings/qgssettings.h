@@ -23,6 +23,7 @@
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgslogger.h"
+#include "qgssettingstreenode.h"
 
 /**
  * \ingroup core
@@ -177,7 +178,7 @@ class CORE_EXPORT QgsSettings : public QObject
     //! Returns a list of all top-level keys that can be read using the QSettings object.
     QStringList childKeys() const;
     //! Returns a list of all key top-level groups that contain keys that can be read using the QSettings object.
-    QStringList childGroups() const;
+    QStringList childGroups( Qgis::SettingsOrigin origin = Qgis::SettingsOrigin::Any ) const;
     //! Returns a list of all key top-level groups (same as childGroups) but only for groups defined in global settings.
     QStringList globalChildGroups() const;
     //! Returns the path to the Global Settings QSettings storage file
@@ -201,6 +202,13 @@ class CORE_EXPORT QgsSettings : public QObject
      * remove(), and contains() will operate on the array entry at that index.
      */
     void setArrayIndex( int i );
+
+    /**
+     * Returns the origin of the setting if it exists at the given \a key
+     * \note it will return Qgis::SettingsOrigin::Any if the key doesn't exist
+     * \since QGIS 3.30
+     */
+    Qgis::SettingsOrigin origin( const QString &key ) const;
 
     /**
      * Sets the value of setting key to value. If the key already exists, the previous value is overwritten.
@@ -236,6 +244,7 @@ class CORE_EXPORT QgsSettings : public QObject
     sipIsErr = !sipRes;
     % End
 #endif
+
 
 #ifndef SIP_RUN
 

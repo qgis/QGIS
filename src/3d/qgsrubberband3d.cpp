@@ -15,26 +15,33 @@
 
 #include "qgsrubberband3d.h"
 
-#include "qgscameracontroller.h"
+#include "qgswindow3dengine.h"
 #include "qgslinevertexdata_p.h"
-#include "qgsabstractmaterialsettings.h"
 #include "qgslinematerial_p.h"
-#include "qgsphongmaterialsettings.h"
-
+#include "qgsvertexid.h"
 #include "qgslinestring.h"
 
 #include <Qt3DCore/QEntity>
+
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 #include <Qt3DRender/QAttribute>
 #include <Qt3DRender/QBuffer>
 #include <Qt3DRender/QGeometry>
+#else
+#include <Qt3DCore/QAttribute>
+#include <Qt3DCore/QBuffer>
+#include <Qt3DCore/QGeometry>
+#endif
+
 #include <Qt3DRender/QGeometryRenderer>
 #include <Qt3DRender/QMaterial>
+#include <QColor>
 
 
 /// @cond PRIVATE
 
 
-QgsRubberBand3D::QgsRubberBand3D( Qgs3DMapSettings &map, QgsCameraController *cameraController, Qt3DCore::QEntity *parentEntity )
+QgsRubberBand3D::QgsRubberBand3D( Qgs3DMapSettings &map, QgsWindow3DEngine *engine, Qt3DCore::QEntity *parentEntity )
 {
   mMapSettings = &map;
 
@@ -59,11 +66,11 @@ QgsRubberBand3D::QgsRubberBand3D( Qgs3DMapSettings &map, QgsCameraController *ca
   mLineMaterial->setLineWidth( 3 );
   mLineMaterial->setLineColor( Qt::red );
 
-  QObject::connect( cameraController, &QgsCameraController::viewportChanged, mLineMaterial, [this, cameraController]
+  QObject::connect( engine, &QgsAbstract3DEngine::sizeChanged, mLineMaterial, [this, engine]
   {
-    mLineMaterial->setViewportSize( cameraController->viewport().size() );
+    mLineMaterial->setViewportSize( engine->size() );
   } );
-  mLineMaterial->setViewportSize( cameraController->viewport().size() );
+  mLineMaterial->setViewportSize( engine->size() );
 
   mEntity->addComponent( mLineMaterial );
 }
@@ -116,7 +123,7 @@ void QgsRubberBand3D::updateGeometry()
 {
   QgsLineVertexData lineData;
   lineData.withAdjacency = true;
-  lineData.init( Qgs3DTypes::AltClampAbsolute, Qgs3DTypes::AltBindVertex, 0, mMapSettings );
+  lineData.init( Qgis::AltitudeClamping::Absolute, Qgis::AltitudeBinding::Vertex, 0, mMapSettings );
   lineData.addLineString( mLineString );
 
   mPositionAttribute->buffer()->setData( lineData.createVertexBuffer() );

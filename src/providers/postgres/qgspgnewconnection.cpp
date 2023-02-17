@@ -75,6 +75,7 @@ QgsPgNewConnection::QgsPgNewConnection( QWidget *parent, const QString &connName
     }
     txtPort->setText( port );
     txtDatabase->setText( settings.value( key + "/database" ).toString() );
+    txtSessionRole->setText( settings.value( key + "/session_role" ).toString() );
     cb_publicSchemaOnly->setChecked( settings.value( key + "/publicOnly", false ).toBool() );
     cb_geometryColumnsOnly->setChecked( settings.value( key + "/geometryColumnsOnly", true ).toBool() );
     cb_dontResolveType->setChecked( settings.value( key + "/dontResolveType", false ).toBool() );
@@ -84,6 +85,7 @@ QgsPgNewConnection::QgsPgNewConnection( QWidget *parent, const QString &connName
 
     cb_useEstimatedMetadata->setChecked( settings.value( key + "/estimatedMetadata", false ).toBool() );
     cb_projectsInDatabase->setChecked( settings.value( key + "/projectsInDatabase", false ).toBool() );
+    cb_metadataInDatabase->setChecked( settings.value( key + "/metadataInDatabase", false ).toBool() );
 
     cbxSSLmode->setCurrentIndex( cbxSSLmode->findData( settings.enumValue( key + "/sslmode", QgsDataSourceUri::SslPrefer ) ) );
 
@@ -161,6 +163,7 @@ void QgsPgNewConnection::accept()
   settings.setValue( baseKey + "/host", txtHost->text() );
   settings.setValue( baseKey + "/port", txtPort->text() );
   settings.setValue( baseKey + "/database", txtDatabase->text() );
+  settings.setValue( baseKey + "/session_role", txtSessionRole->text() );
   settings.setValue( baseKey + "/username", mAuthSettings->storeUsernameIsChecked( ) ? mAuthSettings->username() : QString() );
   settings.setValue( baseKey + "/password", mAuthSettings->storePasswordIsChecked( ) && !hasAuthConfigID ? mAuthSettings->password() : QString() );
   settings.setValue( baseKey + "/authcfg", mAuthSettings->configId() );
@@ -173,6 +176,7 @@ void QgsPgNewConnection::accept()
   settings.setValue( baseKey + "/savePassword", mAuthSettings->storePasswordIsChecked( ) && !hasAuthConfigID ? "true" : "false" );
   settings.setValue( baseKey + "/estimatedMetadata", cb_useEstimatedMetadata->isChecked() );
   settings.setValue( baseKey + "/projectsInDatabase", cb_projectsInDatabase->isChecked() );
+  settings.setValue( baseKey + "/metadataInDatabase", cb_metadataInDatabase->isChecked() );
 
   // remove old save setting
   settings.remove( baseKey + "/save" );
@@ -187,6 +191,8 @@ void QgsPgNewConnection::accept()
   configuration.insert( "savePassword", mAuthSettings->storePasswordIsChecked( ) && !hasAuthConfigID ? "true" : "false" );
   configuration.insert( "estimatedMetadata", cb_useEstimatedMetadata->isChecked() );
   configuration.insert( "projectsInDatabase", cb_projectsInDatabase->isChecked() );
+  configuration.insert( "metadataInDatabase", cb_metadataInDatabase->isChecked() );
+
 
   QgsProviderMetadata *providerMetadata = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "postgres" ) );
   std::unique_ptr< QgsPostgresProviderConnection > providerConnection( qgis::down_cast<QgsPostgresProviderConnection *>( providerMetadata->createConnection( txtName->text() ) ) );
@@ -232,7 +238,12 @@ void QgsPgNewConnection::testConnection()
                        mAuthSettings->configId() );
   }
 
-  QgsPostgresConn *conn = QgsPostgresConn::connectDb( uri.connectionInfo( false ), true );
+  if ( !txtSessionRole->text().isEmpty() )
+  {
+    uri.setParam( QStringLiteral( "session_role" ), txtSessionRole->text() );
+  }
+
+  QgsPostgresConn *conn = QgsPostgresConn::connectDb( uri, true );
 
   if ( conn )
   {
@@ -241,16 +252,21 @@ void QgsPgNewConnection::testConnection()
       cb_projectsInDatabase->setEnabled( false );
       cb_projectsInDatabase->setChecked( false );
       cb_projectsInDatabase->setToolTip( tr( "Saving projects in databases not available for PostgreSQL databases earlier than 9.5" ) );
+      cb_metadataInDatabase->setEnabled( false );
+      cb_metadataInDatabase->setChecked( false );
+      cb_metadataInDatabase->setToolTip( tr( "Saving metadata in databases not available for PostgreSQL databases earlier than 9.5" ) );
     }
     else
     {
       cb_projectsInDatabase->setEnabled( true );
       cb_projectsInDatabase->setToolTip( QString() );
+      cb_metadataInDatabase->setEnabled( true );
+      cb_metadataInDatabase->setToolTip( QString() );
     }
 
     // Database successfully opened; we can now issue SQL commands.
     bar->pushMessage( tr( "Connection to %1 was successful." ).arg( txtName->text() ),
-                      Qgis::MessageLevel::Info );
+                      Qgis::MessageLevel::Success );
 
     // free pg connection resources
     conn->unref();

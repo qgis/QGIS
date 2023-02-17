@@ -2890,7 +2890,15 @@ QString QgsUnitTypes::formatDistance( double distance, int decimals, QgsUnitType
   if ( dist.unit != DistanceUnknownUnit )
     unitText = QChar( ' ' ) + QgsUnitTypes::toAbbreviatedString( dist.unit );
 
-  return QStringLiteral( "%L1%2" ).arg( dist.value, 0, 'f', decimals ).arg( unitText );
+  if ( qgsDoubleNear( dist.value, 0 ) )
+  {
+    unitText = QChar( ' ' ) + QgsUnitTypes::toAbbreviatedString( unit );
+    return QStringLiteral( "%L1%2" ).arg( distance, 0, 'e', decimals ).arg( unitText );
+  }
+  else
+  {
+    return QStringLiteral( "%L1%2" ).arg( dist.value, 0, 'f', decimals ).arg( unitText );
+  }
 }
 
 QString QgsUnitTypes::formatArea( double area, int decimals, QgsUnitTypes::AreaUnit unit, bool keepBaseUnit )
@@ -2902,7 +2910,15 @@ QString QgsUnitTypes::formatArea( double area, int decimals, QgsUnitTypes::AreaU
   if ( areaValue.unit != AreaUnknownUnit )
     unitText = QChar( ' ' ) + QgsUnitTypes::toAbbreviatedString( areaValue.unit );
 
-  return QStringLiteral( "%L1%2" ).arg( areaValue.value, 0, 'f', decimals ).arg( unitText );
+  if ( qgsDoubleNear( areaValue.value, 0 ) )
+  {
+    unitText = QChar( ' ' ) + QgsUnitTypes::toAbbreviatedString( unit );
+    return QStringLiteral( "%L1%2" ).arg( area, 0, 'e', decimals ).arg( unitText );
+  }
+  else
+  {
+    return QStringLiteral( "%L1%2" ).arg( areaValue.value, 0, 'f', decimals ).arg( unitText );
+  }
 }
 
 QString QgsUnitTypes::encodeUnit( RenderUnit unit )

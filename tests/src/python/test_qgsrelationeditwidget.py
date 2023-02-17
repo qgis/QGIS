@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for edit widgets.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -10,36 +9,33 @@ __author__ = 'Matthias Kuhn'
 __date__ = '28/11/2015'
 __copyright__ = 'Copyright 2015, The QGIS Project'
 
-import qgis  # NOQA
-
 import os
 
+import qgis  # NOQA
+from qgis.PyQt.QtCore import QTimer
+from qgis.PyQt.QtWidgets import (
+    QDialog,
+    QDialogButtonBox,
+    QMessageBox,
+    QTableView,
+    QToolButton,
+)
 from qgis.core import (
     QgsFeature,
-    QgsVectorLayer,
+    QgsFeatureRequest,
+    QgsGeometry,
     QgsProject,
     QgsRelation,
     QgsTransaction,
-    QgsFeatureRequest,
+    QgsVectorLayer,
     QgsVectorLayerTools,
-    QgsGeometry
 )
-
 from qgis.gui import (
-    QgsGui,
-    QgsRelationWidgetWrapper,
+    QgsAdvancedDigitizingDockWidget,
     QgsAttributeEditorContext,
+    QgsGui,
     QgsMapCanvas,
-    QgsAdvancedDigitizingDockWidget
-)
-
-from qgis.PyQt.QtCore import QTimer
-from qgis.PyQt.QtWidgets import (
-    QToolButton,
-    QMessageBox,
-    QDialogButtonBox,
-    QTableView,
-    QDialog
+    QgsRelationWidgetWrapper,
 )
 from qgis.testing import start_app, unittest
 
@@ -76,10 +72,10 @@ class TestQgsRelationEditWidget(unittest.TestCase):
         cls.vltools = VlTools()
         cls.layers = {cls.vl_authors, cls.vl_books, cls.vl_link_books_authors}
 
-        assert(cls.vl_authors.isValid())
-        assert(cls.vl_books.isValid())
-        assert(cls.vl_editors.isValid())
-        assert(cls.vl_link_books_authors.isValid())
+        assert cls.vl_authors.isValid()
+        assert cls.vl_books.isValid()
+        assert cls.vl_editors.isValid()
+        assert cls.vl_link_books_authors.isValid()
 
     @classmethod
     def tearDownClass(cls):
@@ -99,7 +95,7 @@ class TestQgsRelationEditWidget(unittest.TestCase):
         self.rel_a.setReferencedLayer(self.vl_authors.id())
         self.rel_a.addFieldPair('fk_author', 'pk')
         self.rel_a.setId('rel_a')
-        assert(self.rel_a.isValid())
+        assert self.rel_a.isValid()
         self.relMgr.addRelation(self.rel_a)
 
         self.rel_b = QgsRelation()
@@ -107,7 +103,7 @@ class TestQgsRelationEditWidget(unittest.TestCase):
         self.rel_b.setReferencedLayer(self.vl_books.id())
         self.rel_b.addFieldPair('fk_book', 'pk')
         self.rel_b.setId('rel_b')
-        assert(self.rel_b.isValid())
+        assert self.rel_b.isValid()
         self.relMgr.addRelation(self.rel_b)
 
         self.startTransaction()
@@ -161,7 +157,7 @@ class TestQgsRelationEditWidget(unittest.TestCase):
             # box
             widget = self.widget.findChild(QMessageBox)
             buttonBox = widget.findChild(QDialogButtonBox)
-            deleteButton = next((b for b in buttonBox.buttons() if buttonBox.buttonRole(b) == QDialogButtonBox.AcceptRole))
+            deleteButton = next(b for b in buttonBox.buttons() if buttonBox.buttonRole(b) == QDialogButtonBox.AcceptRole)
             deleteButton.click()
 
         QTimer.singleShot(1, clickOk)
@@ -221,7 +217,7 @@ class TestQgsRelationEditWidget(unittest.TestCase):
         dlg.accept()
 
         # magically the above code selects the feature here...
-        link_feature = next(self.vl_link_books_authors.getFeatures(QgsFeatureRequest().setFilterExpression('"fk_book"={}'.format(f[0]))))
+        link_feature = next(self.vl_link_books_authors.getFeatures(QgsFeatureRequest().setFilterExpression(f'"fk_book"={f[0]}')))
         self.assertIsNotNone(link_feature[0])
 
         self.assertEqual(self.table_view.model().rowCount(), 1)
@@ -342,7 +338,7 @@ class TestQgsRelationEditWidget(unittest.TestCase):
         # Mock vector layer tool to just set default value on created feature
         class DummyVlTools(QgsVectorLayerTools):
 
-            def addFeature(self, layer, defaultValues, defaultGeometry):
+            def addFeature(self, layer, defaultValues, defaultGeometry, parentWidget=None, showModal=True, hideParent=False):
                 f = QgsFeature(layer.fields())
                 for idx, value in defaultValues.items():
                     f.setAttribute(idx, value)
@@ -441,7 +437,7 @@ class VlTools(QgsVectorLayerTools):
         """
         self.values = values
 
-    def addFeature(self, layer, defaultValues, defaultGeometry):
+    def addFeature(self, layer, defaultValues, defaultGeometry, parentWidget=None, showModal=True, hideParent=False):
         """
         Overrides the addFeature method
         :param layer: vector layer

@@ -64,6 +64,7 @@ class GUI_EXPORT QgsProcessingMatrixParameterPanelWidget : public QgsPanelWidget
     QPushButton *mButtonRemoveAll = nullptr;
     const QgsProcessingParameterMatrix *mParam = nullptr;
     QStandardItemModel *mModel = nullptr;
+    bool mWasCanceled = false;
 
     void populateTable( const QVariantList &contents );
 

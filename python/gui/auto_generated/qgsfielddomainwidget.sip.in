@@ -1,0 +1,114 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsfielddomainwidget.h                                       *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsFieldDomainWidget : QWidget
+{
+%Docstring(signature="appended")
+A widget for configuration of the properties of a :py:class:`QgsFieldDomain`.
+
+.. versionadded:: 3.26
+%End
+
+%TypeHeaderCode
+#include "qgsfielddomainwidget.h"
+%End
+  public:
+
+    QgsFieldDomainWidget( Qgis::FieldDomainType type, QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsFieldDomainWidget for the given domain ``type``, with the specified ``parent`` widget.
+%End
+
+    void setFieldDomain( const QgsFieldDomain *domain );
+%Docstring
+Sets the current field domain to show properties for in the widget.
+
+.. seealso:: :py:func:`createFieldDomain`
+%End
+
+    QgsFieldDomain *createFieldDomain() const /Factory/;
+%Docstring
+Creates a new field domain using the properties from the widget.
+
+Caller takes ownership of the returned object.
+
+.. seealso:: :py:func:`setFieldDomain`
+%End
+
+    bool isValid() const;
+%Docstring
+Returns ``True`` if the widget currently represents a valid field domain configuration.
+
+.. seealso:: :py:func:`validityChanged`
+%End
+
+  signals:
+
+    void validityChanged( bool isValid );
+%Docstring
+Emitted whenever the validity of the field domain configuration in the widget changes.
+
+.. seealso:: :py:func:`isValid`
+%End
+
+};
+
+
+
+class QgsFieldDomainDialog: QDialog
+{
+%Docstring(signature="appended")
+A dialog for configuration of the properties of a :py:class:`QgsFieldDomain`.
+
+.. versionadded:: 3.26
+%End
+
+%TypeHeaderCode
+#include "qgsfielddomainwidget.h"
+%End
+  public:
+
+    explicit QgsFieldDomainDialog( Qgis::FieldDomainType type, QWidget *parent /TransferThis/ = 0, Qt::WindowFlags flags = Qt::WindowFlags() );
+%Docstring
+Constructor for QgsFieldDomainDialog for the given domain ``type``, with the specified ``parent`` widget and window ``flags``.
+%End
+
+    void setFieldDomain( const QgsFieldDomain *domain );
+%Docstring
+Sets the current field domain to show properties for in the dialog.
+
+.. seealso:: :py:func:`createFieldDomain`
+%End
+
+    QgsFieldDomain *createFieldDomain() const /Factory/;
+%Docstring
+Creates a new field domain using the properties from the dialog.
+
+Caller takes ownership of the returned object.
+
+.. seealso:: :py:func:`setFieldDomain`
+%End
+
+  public slots:
+
+    virtual void accept();
+
+
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsfielddomainwidget.h                                       *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

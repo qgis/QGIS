@@ -52,7 +52,7 @@ QString QgsSegmentizeByMaximumDistanceAlgorithm::outputName() const
 QString QgsSegmentizeByMaximumDistanceAlgorithm::shortHelpString() const
 {
   return QObject::tr( "This algorithm segmentizes a geometry by converting curved sections to linear sections.\n\n"
-                      "The segmentization is performed by specifying the maximum allowed offset distance between the original"
+                      "The segmentization is performed by specifying the maximum allowed offset distance between the original "
                       "curve and the segmentized representation.\n\n"
                       "Non-curved geometries will be retained without change." );
 }

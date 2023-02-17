@@ -65,9 +65,12 @@ QgsPointCloudRgbRendererWidget::QgsPointCloudRgbRendererWidget( QgsPointCloudLay
   if ( layer )
   {
     // set nice initial values
+    mBlockChangedSignal = true;
     redAttributeChanged();
     greenAttributeChanged();
     blueAttributeChanged();
+    mBlockChangedSignal = false;
+    minMaxModified();
   }
 }
 
@@ -212,16 +215,16 @@ void QgsPointCloudRgbRendererWidget::redAttributeChanged()
 {
   if ( mLayer && mLayer->dataProvider() )
   {
-    const QVariant max = mLayer->dataProvider()->metadataStatistic( mRedAttributeComboBox->currentAttribute(), QgsStatisticalSummary::Max );
-    if ( max.isValid() )
+    const QgsPointCloudStatistics stats = mLayer->statistics();
+    const double max = stats.maximum( mRedAttributeComboBox->currentAttribute() );
+    if ( !std::isnan( max ) )
     {
-      const int maxValue = max.toInt();
       mDisableMinMaxWidgetRefresh++;
       mRedMinLineEdit->setText( QLocale().toString( 0 ) );
 
       // try and guess suitable range from input max values -- we don't just take the provider max value directly here, but rather see if it's
       // likely to be 8 bit or 16 bit color values
-      mRedMaxLineEdit->setText( QLocale().toString( maxValue > 255 ? 65535 : 255 ) );
+      mRedMaxLineEdit->setText( QLocale().toString( max > 255 ? 65535 : 255 ) );
       mDisableMinMaxWidgetRefresh--;
       emitWidgetChanged();
     }
@@ -232,16 +235,16 @@ void QgsPointCloudRgbRendererWidget::greenAttributeChanged()
 {
   if ( mLayer && mLayer->dataProvider() )
   {
-    const QVariant max = mLayer->dataProvider()->metadataStatistic( mGreenAttributeComboBox->currentAttribute(), QgsStatisticalSummary::Max );
-    if ( max.isValid() )
+    const QgsPointCloudStatistics stats = mLayer->statistics();
+    const double max = stats.maximum( mGreenAttributeComboBox->currentAttribute() );
+    if ( !std::isnan( max ) )
     {
-      const int maxValue = max.toInt();
       mDisableMinMaxWidgetRefresh++;
       mGreenMinLineEdit->setText( QLocale().toString( 0 ) );
 
       // try and guess suitable range from input max values -- we don't just take the provider max value directly here, but rather see if it's
       // likely to be 8 bit or 16 bit color values
-      mGreenMaxLineEdit->setText( QLocale().toString( maxValue > 255 ? 65535 : 255 ) );
+      mGreenMaxLineEdit->setText( QLocale().toString( max > 255 ? 65535 : 255 ) );
       mDisableMinMaxWidgetRefresh--;
       emitWidgetChanged();
     }
@@ -252,16 +255,16 @@ void QgsPointCloudRgbRendererWidget::blueAttributeChanged()
 {
   if ( mLayer && mLayer->dataProvider() )
   {
-    const QVariant max = mLayer->dataProvider()->metadataStatistic( mBlueAttributeComboBox->currentAttribute(), QgsStatisticalSummary::Max );
-    if ( max.isValid() )
+    const QgsPointCloudStatistics stats = mLayer->statistics();
+    const double max = stats.maximum( mBlueAttributeComboBox->currentAttribute() );
+    if ( !std::isnan( max ) )
     {
-      const int maxValue = max.toInt();
       mDisableMinMaxWidgetRefresh++;
       mBlueMinLineEdit->setText( QLocale().toString( 0 ) );
 
       // try and guess suitable range from input max values -- we don't just take the provider max value directly here, but rather see if it's
       // likely to be 8 bit or 16 bit color values
-      mBlueMaxLineEdit->setText( QLocale().toString( maxValue > 255 ? 65535 : 255 ) );
+      mBlueMaxLineEdit->setText( QLocale().toString( max > 255 ? 65535 : 255 ) );
       mDisableMinMaxWidgetRefresh--;
       emitWidgetChanged();
     }

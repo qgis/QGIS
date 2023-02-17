@@ -34,9 +34,9 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgssettingsentry.h"
 
 class QgsFeedback;
+class QgsSettingsEntryInteger;
 
 #ifndef SIP_RUN
 #include "qgsconfig.h"
@@ -560,7 +560,7 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
 #endif
 
     /**
-     * Removes the custom pre-processor function with matching \a id.
+     * Removes the custom request pre-processor function with matching \a id.
      *
      * The \a id must correspond to a pre-processor previously added via a call to setRequestPreprocessor().
      *
@@ -575,6 +575,61 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
     static void removeRequestPreprocessor( const QString &id );
     % MethodCode
     if ( !QgsNetworkAccessManager::removeRequestPreprocessor( *a0 ) )
+    {
+      PyErr_SetString( PyExc_KeyError, QStringLiteral( "No processor with id %1 exists." ).arg( *a0 ).toUtf8().constData() );
+      sipIsErr = 1;
+    }
+    % End
+#endif
+
+    /**
+     * Sets a reply pre-processor function, which allows manipulation of QNetworkReply objects after they are created (but before they are fetched).
+     *
+     * The \a processor function takes a QNetworkRequest request and a QNetworkReply as arguments, and can connect to QNetworkReply signals directly as desired.
+     *
+     * \returns An auto-generated string uniquely identifying the preprocessor, which can later be
+     * used to remove the preprocessor (via a call to removeReplyPreprocessor()).
+     *
+     * \see removeReplyPreprocessor()
+     * \since QGIS 3.26
+     */
+#ifndef SIP_RUN
+    static QString setReplyPreprocessor( const std::function<void ( const QNetworkRequest &, QNetworkReply * )> &processor );
+#else
+    static QString setReplyPreprocessor( SIP_PYCALLABLE / AllowNone / );
+    % MethodCode
+    PyObject *s = 0;
+    Py_BEGIN_ALLOW_THREADS
+    Py_XINCREF( a0 );
+    QString id = QgsNetworkAccessManager::setReplyPreprocessor( [a0]( const QNetworkRequest &request, QNetworkReply *reply )
+    {
+      SIP_BLOCK_THREADS
+      Py_XDECREF( sipCallMethod( NULL, a0, "ND", new QNetworkRequest( request ), sipType_QNetworkRequest, NULL, reply, sipType_QNetworkReply, NULL ) );
+      SIP_UNBLOCK_THREADS
+    } );
+
+    s = sipConvertFromNewType( new QString( id ), sipType_QString, 0 );
+    Py_END_ALLOW_THREADS
+    return s;
+    % End
+#endif
+
+    /**
+     * Removes the custom reply pre-processor function with matching \a id.
+     *
+     * The \a id must correspond to a pre-processor previously added via a call to setReplyPreprocessor().
+     *
+     * Returns TRUE if processor existed and was removed.
+     *
+     * \see setReplyPreprocessor()
+     * \since QGIS 3.26
+     */
+#ifndef SIP_RUN
+    static bool removeReplyPreprocessor( const QString &id );
+#else
+    static void removeReplyPreprocessor( const QString &id );
+    % MethodCode
+    if ( !QgsNetworkAccessManager::removeReplyPreprocessor( *a0 ) )
     {
       PyErr_SetString( PyExc_KeyError, QStringLiteral( "No processor with id %1 exists." ).arg( *a0 ).toUtf8().constData() );
       sipIsErr = 1;
@@ -609,7 +664,7 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
 
 #ifndef SIP_RUN
     //! Settings entry network timeout
-    static const inline QgsSettingsEntryInteger settingsNetworkTimeout = QgsSettingsEntryInteger( QStringLiteral( "/qgis/networkAndProxy/networkTimeout" ), QgsSettings::NoSection, 60000, QObject::tr( "Network timeout" ) );
+    static const QgsSettingsEntryInteger *settingsNetworkTimeout;
 #endif
 
     /**
@@ -797,7 +852,6 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
 
   private:
 #ifndef QT_NO_SSL
-    void unlockAfterSslErrorHandled();
     void afterSslErrorHandled( QNetworkReply *reply );
 #endif
 
@@ -817,10 +871,8 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
     static QgsNetworkAccessManager *sMainNAM;
     // ssl error handler, will be set for main thread ONLY
     std::unique_ptr< QgsSslErrorHandler > mSslErrorHandler;
-    // only in use by worker threads, unused in main thread
-    QMutex mSslErrorHandlerMutex;
-    // only in use by worker threads, unused in main thread
-    QWaitCondition mSslErrorWaitCondition;
+    // Used by worker threads to wait for ssl error handler run in main thread
+    QSemaphore mSslErrorHandlerSemaphore;
 
     // auth request handler, will be set for main thread ONLY
     std::unique_ptr< QgsNetworkAuthenticationHandler > mAuthHandler;

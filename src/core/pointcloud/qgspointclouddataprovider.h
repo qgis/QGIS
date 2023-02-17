@@ -31,6 +31,7 @@ class IndexedPointCloudNode;
 class QgsPointCloudIndex;
 class QgsPointCloudRenderer;
 class QgsGeometry;
+class QgsPointCloudStatistics;
 
 /**
  * \ingroup core
@@ -85,8 +86,6 @@ class CORE_EXPORT QgsPointCloudDataProvider: public QgsDataProvider
      * and a range \a extentZRange for z values. The function will try to limit
      * the number of points returned to \a pointsLimit points
      *
-     * \a maxErrorPixels : maximum accepted error factor in pixels
-     *
      * \note this function does not handle elevation properties and you need to
      * change elevation coordinates yourself after returning from the function
      */
@@ -98,8 +97,6 @@ class CORE_EXPORT QgsPointCloudDataProvider: public QgsDataProvider
      * defined by \a maxError (in layer coordinates), an extent \a geometry in the 2D plane
      * and a range \a extentZRange for z values. The function will try to limit
      * the number of points returned to \a pointsLimit points
-     *
-     * \a maxErrorPixels : maximum accepted error factor in pixels
      *
      * \note this function does not handle elevation properties and you need to
      * change elevation coordinates yourself after returning from the function
@@ -211,6 +208,14 @@ class CORE_EXPORT QgsPointCloudDataProvider: public QgsDataProvider
      * providers will return NULLPTR.
      */
     virtual QgsPointCloudRenderer *createRenderer( const QVariantMap &configuration = QVariantMap() ) const SIP_FACTORY;
+
+    /**
+     * Returns whether the dataset contains statistics metadata
+     *
+     * \since QGIS 3.26
+     */
+    virtual bool hasStatisticsMetadata() const;
+
 #ifndef SIP_RUN
 
     /**
@@ -278,6 +283,7 @@ class CORE_EXPORT QgsPointCloudDataProvider: public QgsDataProvider
      * If no matching precalculated statistic is available then an invalid variant will be returned.
      */
     virtual QVariant metadataClassStatistic( const QString &attribute, const QVariant &value, QgsStatisticalSummary::Statistic statistic ) const;
+
 #else
 
     /**
@@ -306,6 +312,17 @@ class CORE_EXPORT QgsPointCloudDataProvider: public QgsDataProvider
     }
     % End
 #endif
+
+
+    /**
+     * Returns the object containings the statistics metadata extracted from the dataset
+     * \since QGIS 3.26
+     */
+    QgsPointCloudStatistics metadataStatistics();
+
+    bool supportsSubsetString() const override { return true; }
+    QString subsetString() const override;
+    bool setSubsetString( const QString &subset, bool updateFeatureCount = false ) override;
 
     /**
      * Returns the map of LAS classification code to untranslated string value, corresponding to the ASPRS Standard
@@ -342,10 +359,13 @@ class CORE_EXPORT QgsPointCloudDataProvider: public QgsDataProvider
     /**
      * Emitted when point cloud generation state is changed
      */
-    void indexGenerationStateChanged( PointCloudIndexGenerationState state );
+    void indexGenerationStateChanged( QgsPointCloudDataProvider::PointCloudIndexGenerationState state );
 
   private:
     QVector<IndexedPointCloudNode> traverseTree( const QgsPointCloudIndex *pc, IndexedPointCloudNode n, double maxError, double nodeError, const QgsGeometry &extentGeometry, const QgsDoubleRange &extentZRange );
+
+    //! String used to define a subset of the layer
+    QString mSubsetString;
 };
 
 #endif // QGSMESHDATAPROVIDER_H

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Tests for Basic Auth
 
@@ -10,14 +9,17 @@ the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
 
+import base64
 import os
 import tempfile
-import base64
 
-from qgis.core import QgsApplication, QgsAuthManager, QgsAuthMethodConfig, QgsNetworkAccessManager
 from qgis.PyQt.QtCore import QFileInfo, QUrl
-from qgis.testing import start_app, unittest
 from qgis.PyQt.QtNetwork import QNetworkRequest
+from qgis.core import (
+    QgsApplication,
+    QgsAuthMethodConfig,
+)
+from qgis.testing import start_app, unittest
 
 AUTHDBDIR = tempfile.mkdtemp()
 os.environ['QGIS_AUTH_DB_DIR_PATH'] = AUTHDBDIR
@@ -80,7 +82,7 @@ class TestAuthManager(unittest.TestCase):
         self.authm.updateNetworkRequest(req, ac.id())
         auth = bytes(req.rawHeader(b'Authorization'))[6:]
         # Note that RFC7617 states clearly: User-ids containing colons cannot be encoded in user-pass strings
-        u, p = base64.decodestring(auth).split(b':')
+        u, p = base64.b64decode(auth).split(b':')
         return u.decode('utf8'), p.decode('utf8')
 
     def testHeaderEncoding(self):

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsCrsSelectionWidget.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -13,8 +12,7 @@ __copyright__ = 'Copyright 2021, The QGIS Project'
 import qgis  # NOQA
 from qgis.PyQt.QtTest import QSignalSpy
 from qgis.core import QgsCoordinateReferenceSystem
-from qgis.gui import (QgsCrsSelectionWidget)
-
+from qgis.gui import QgsCrsSelectionWidget
 from qgis.testing import start_app, unittest
 
 start_app()

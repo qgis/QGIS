@@ -3,8 +3,19 @@
   "type": "function",
   "groups": ["Date and Time"],
   "description": "Returns the difference between two dates or datetimes.<br>The difference is returned as an <code>Interval</code> and needs to be used with one of the following functions in order to extract useful information:<br /><ul><li><code>year</code></li><li><code>month</code></li><li><code>week</code></li><li><code>day</code></li><li><code>hour</code></li><li><code>minute</code></li><li><code>second</code></li></ul>",
-  "arguments": [ {"arg":"datetime1","description":"a string, date or datetime representing the later date"},
-                 {"arg":"datetime2","description":"a string, date or datetime representing the earlier date"}],
-  "examples": [ { "expression":"day(age('2012-05-12','2012-05-02'))", "returns":"10"},
-                { "expression":"hour(age('2012-05-12','2012-05-02'))", "returns":"240"} ]
+  "arguments": [{
+    "arg": "datetime1",
+    "description": "a string, date or datetime representing the later date"
+  }, {
+    "arg": "datetime2",
+    "description": "a string, date or datetime representing the earlier date"
+  }],
+  "examples": [{
+    "expression": "day(age('2012-05-12','2012-05-02'))",
+    "returns": "10"
+  }, {
+    "expression": "hour(age('2012-05-12','2012-05-02'))",
+    "returns": "240"
+  }],
+  "tags": ["difference", "needs", "datetimes", "order", "extract", "information", "following", "interval", "dates", "functions", "yearmonthweekdayhourminutesecond"]
 }

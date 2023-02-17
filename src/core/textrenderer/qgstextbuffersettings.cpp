@@ -22,6 +22,7 @@
 #include "qgspainting.h"
 #include "qgspainteffectregistry.h"
 #include "qgstextrendererutils.h"
+#include "qgsapplication.h"
 
 QgsTextBufferSettings::QgsTextBufferSettings()
 {
@@ -184,7 +185,7 @@ void QgsTextBufferSettings::updateDataDefinedProperties( QgsRenderContext &conte
   }
 
   QVariant exprVal = properties.value( QgsPalLayerSettings::BufferUnit, context.expressionContext() );
-  if ( !exprVal.isNull() )
+  if ( !QgsVariantUtils::isNull( exprVal ) )
   {
     const QString units = exprVal.toString();
     if ( !units.isEmpty() )
@@ -200,7 +201,7 @@ void QgsTextBufferSettings::updateDataDefinedProperties( QgsRenderContext &conte
   {
     context.expressionContext().setOriginalValueVariable( d->opacity * 100 );
     const QVariant val = properties.value( QgsPalLayerSettings::BufferOpacity, context.expressionContext(), d->opacity * 100 );
-    if ( !val.isNull() )
+    if ( !QgsVariantUtils::isNull( val ) )
     {
       d->opacity = val.toDouble() / 100.0;
     }
@@ -291,7 +292,7 @@ void QgsTextBufferSettings::readFromLayer( QgsVectorLayer *layer )
     d->opacity = ( layer->customProperty( QStringLiteral( "labeling/bufferOpacity" ) ).toDouble() );
   }
   d->blendMode = QgsPainting::getCompositionMode(
-                   static_cast< QgsPainting::BlendMode >( layer->customProperty( QStringLiteral( "labeling/bufferBlendMode" ), QVariant( QgsPainting::BlendNormal ) ).toUInt() ) );
+                   static_cast< Qgis::BlendMode >( layer->customProperty( QStringLiteral( "labeling/bufferBlendMode" ), QVariant( static_cast< int >( Qgis::BlendMode::Normal ) ) ).toUInt() ) );
   d->joinStyle = static_cast< Qt::PenJoinStyle >( layer->customProperty( QStringLiteral( "labeling/bufferJoinStyle" ), QVariant( Qt::RoundJoin ) ).toUInt() );
 
   d->fillBufferInterior = !layer->customProperty( QStringLiteral( "labeling/bufferNoFill" ), QVariant( false ) ).toBool();
@@ -364,7 +365,7 @@ void QgsTextBufferSettings::readXml( const QDomElement &elem )
   }
 
   d->blendMode = QgsPainting::getCompositionMode(
-                   static_cast< QgsPainting::BlendMode >( textBufferElem.attribute( QStringLiteral( "bufferBlendMode" ), QString::number( QgsPainting::BlendNormal ) ).toUInt() ) );
+                   static_cast< Qgis::BlendMode >( textBufferElem.attribute( QStringLiteral( "bufferBlendMode" ), QString::number( static_cast< int >( Qgis::BlendMode::Normal ) ) ).toUInt() ) );
   d->joinStyle = static_cast< Qt::PenJoinStyle >( textBufferElem.attribute( QStringLiteral( "bufferJoinStyle" ), QString::number( Qt::RoundJoin ) ).toUInt() );
   d->fillBufferInterior = !textBufferElem.attribute( QStringLiteral( "bufferNoFill" ), QStringLiteral( "0" ) ).toInt();
   const QDomElement effectElem = textBufferElem.firstChildElement( QStringLiteral( "effect" ) );
@@ -386,7 +387,7 @@ QDomElement QgsTextBufferSettings::writeXml( QDomDocument &doc ) const
   textBufferElem.setAttribute( QStringLiteral( "bufferNoFill" ), !d->fillBufferInterior );
   textBufferElem.setAttribute( QStringLiteral( "bufferOpacity" ), d->opacity );
   textBufferElem.setAttribute( QStringLiteral( "bufferJoinStyle" ), static_cast< unsigned int >( d->joinStyle ) );
-  textBufferElem.setAttribute( QStringLiteral( "bufferBlendMode" ), QgsPainting::getBlendModeEnum( d->blendMode ) );
+  textBufferElem.setAttribute( QStringLiteral( "bufferBlendMode" ), static_cast< int >( QgsPainting::getBlendModeEnum( d->blendMode ) ) );
   if ( d->paintEffect && !QgsPaintEffectRegistry::isDefaultStack( d->paintEffect.get() ) )
     d->paintEffect->saveProperties( doc, textBufferElem );
   return textBufferElem;

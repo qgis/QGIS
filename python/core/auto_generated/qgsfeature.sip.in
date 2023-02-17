@@ -135,6 +135,11 @@ geometry and a list of field/values attributes.
       sipCpp->deleteAttribute( fieldIdx );
 %End
 
+    long __hash__() const;
+%MethodCode
+    sipRes = qHash( *sipCpp );
+%End
+
     QgsFeature( qint64 id = FID_NULL );
 %Docstring
 Constructor for QgsFeature
@@ -156,7 +161,9 @@ Copy constructor
 %End
 
 
+    bool operator==( const QgsFeature &other ) const;
 
+    bool operator!=( const QgsFeature &other ) const;
 
     virtual ~QgsFeature();
 
@@ -522,8 +529,6 @@ Returns the field map associated with the feature.
 %Docstring
 Insert a value into attribute, by field ``name``.
 
-Returns ``False`` if field ``name`` could not be matched.
-
 Field map must be associated using :py:func:`~QgsFeature.setFields` before this method can be used.
 
 Calling this method will automatically set the feature as valid (see :py:func:`~QgsFeature.isValid`).
@@ -545,7 +550,7 @@ Alternatively, in Python it is possible to directly set a field's value via the 
 :param name: The name of the field to set
 :param value: The value to set
 
-:raises KeyError: if the attribute name could not be converted to an index
+:raises KeyError: if the attribute name could not could not be matched.
 
 .. seealso:: :py:func:`setFields`
 %End
@@ -598,7 +603,7 @@ Alternatively, in Python it is possible to directly `del` an attribute via its n
 
 :param name: The name of the field to clear
 
-:raises KeyError: if attribute name could not be converted to index
+:raises KeyError: if attribute name could not be matched.
 
 .. seealso:: :py:func:`setFields`
 %End
@@ -701,6 +706,32 @@ Alternatively, in Python it is possible to directly retrieve a field's value via
       {
         QVariant *v = new QVariant( sipCpp->attribute( a0 ) );
         sipRes = sipConvertFromNewType( v, sipType_QVariant, Py_None );
+      }
+    }
+%End
+
+
+
+    bool isUnsetValue( int fieldIdx ) const;
+%Docstring
+Returns ``True`` if the attribute at the specified index is an unset value.
+
+:raises KeyError: if the field is not found
+
+.. seealso:: :py:class:`QgsUnsetAttributeValue`
+
+.. versionadded:: 3.28
+%End
+%MethodCode
+    {
+      if ( a0 < 0 || a0 >= sipCpp->attributes().count() )
+      {
+        PyErr_SetString( PyExc_KeyError, QByteArray::number( a0 ) );
+        sipIsErr = 1;
+      }
+      else
+      {
+        sipRes = sipCpp->isUnsetValue( a0 );
       }
     }
 %End

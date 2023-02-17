@@ -21,6 +21,7 @@
 #include "qgsmessagelog.h"
 #include "qgsnetworkaccessmanager.h"
 #include "qgswkbptr.h"
+#include "qgsogcutils.h"
 #include "qgsogrutils.h"
 #include "qgsapplication.h"
 #include <QBuffer>
@@ -383,8 +384,8 @@ QgsGmlStreamingParser::QgsGmlStreamingParser( const QList<LayerProperties> &laye
     {
       if ( alreadyFoundGeometry )
       {
-        QgsDebugMsg( QStringLiteral( "Will ignore geometry field %1 from typename %2" ).
-                     arg( mLayerProperties[i].mGeometryAttribute, mLayerProperties[i].mName ) );
+        QgsDebugMsgLevel( QStringLiteral( "Will ignore geometry field %1 from typename %2" ).
+                          arg( mLayerProperties[i].mGeometryAttribute, mLayerProperties[i].mName ), 2 );
         mLayerProperties[i].mGeometryAttribute.clear();
       }
       alreadyFoundGeometry = true;
@@ -879,7 +880,7 @@ void QgsGmlStreamingParser::startElement( const XML_Char *el, const XML_Char **a
     }
     else
     {
-      QgsDebugMsg( QStringLiteral( "mEpsg = %1" ).arg( mEpsg ) );
+      QgsDebugMsgLevel( QStringLiteral( "mEpsg = %1" ).arg( mEpsg ), 2 );
     }
   }
 
@@ -1259,37 +1260,25 @@ int QgsGmlStreamingParser::readEpsgFromAttribute( int &epsgNr, const XML_Char **
   {
     if ( strcmp( attr[i], "srsName" ) == 0 )
     {
-      const QString epsgString( attr[i + 1] );
-      QString epsgNrString;
-      bool bIsUrn = false;
-      if ( epsgString.startsWith( QLatin1String( "http://www.opengis.net/gml/srs/" ) ) ) //e.g. geoserver: "http://www.opengis.net/gml/srs/epsg.xml#4326"
+      const QString srsName( attr[i + 1] );
+      QString authority;
+      QString code;
+      const QgsOgcCrsUtils::CRSFlavor crsFlavor = QgsOgcCrsUtils::parseCrsName( srsName, authority, code );
+      if ( crsFlavor == QgsOgcCrsUtils::CRSFlavor::UNKNOWN )
       {
-        epsgNrString = epsgString.section( '#', 1, 1 );
+        return 1;
       }
-      // WFS >= 1.1
-      else if ( epsgString.startsWith( QLatin1String( "urn:ogc:def:crs:EPSG:" ) ) ||
-                epsgString.startsWith( QLatin1String( "urn:x-ogc:def:crs:EPSG:" ) ) )
-      {
-        bIsUrn = true;
-        epsgNrString = epsgString.split( ':' ).last();
-      }
-      else if ( epsgString.startsWith( QLatin1String( "http://www.opengis.net/def/crs/EPSG/" ) ) ) //e.g. geoserver: "http://www.opengis.net/def/crs/EPSG/4326"
-      {
-        bIsUrn = true;
-        epsgNrString = epsgString.split( '/' ).last();
-      }
-      else //e.g. umn mapserver: "EPSG:4326">
-      {
-        epsgNrString = epsgString.section( ':', 1, 1 );
-      }
+      const bool bIsUrn = ( crsFlavor == QgsOgcCrsUtils::CRSFlavor::OGC_URN ||
+                            crsFlavor == QgsOgcCrsUtils::CRSFlavor::X_OGC_URN ||
+                            crsFlavor == QgsOgcCrsUtils::CRSFlavor::OGC_HTTP_URI );
       bool conversionOk;
-      const int eNr = epsgNrString.toInt( &conversionOk );
+      const int eNr = code.toInt( &conversionOk );
       if ( !conversionOk )
       {
         return 1;
       }
       epsgNr = eNr;
-      mSrsName = epsgString;
+      mSrsName = srsName;
 
       const QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( QStringLiteral( "EPSG:%1" ).arg( epsgNr ) );
       if ( crs.isValid() )

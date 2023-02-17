@@ -3,14 +3,24 @@
   "type": "function",
   "groups": ["GeometryGroup"],
   "description": "Constructs rounded (sine-like) waves along the boundary of a geometry.",
-  "arguments": [
-    {"arg":"geometry","description":"a geometry"},
-    {"arg":"wavelength","description":"wavelength of sine-like waveform"},
-    {"arg":"amplitude","description":"amplitude of sine-like waveform"},
-    {"arg":"strict","optional": true, "default": false, "description":"By default the wavelength argument is treated as a \"maximum wavelength\", where the actual wavelength will be dynamically adjusted so that an exact number of waves are created along the boundaries of the geometry. If the strict argument is set to true then the wavelength will be used exactly and an incomplete pattern may be used for the final waveform."}
-  ],
-  "examples": [
-    { "expression":"wave(geom_from_wkt('LineString(0 0, 10 0)'), 3, 1)", "returns":"Sine-like waves with wavelength 3 and amplitude 1 along the linestring"}
-
-  ]
+  "arguments": [{
+    "arg": "geometry",
+    "description": "a geometry"
+  }, {
+    "arg": "wavelength",
+    "description": "wavelength of sine-like waveform"
+  }, {
+    "arg": "amplitude",
+    "description": "amplitude of sine-like waveform"
+  }, {
+    "arg": "strict",
+    "optional": true,
+    "default": false,
+    "description": "By default the wavelength argument is treated as a \"maximum wavelength\", where the actual wavelength will be dynamically adjusted so that an exact number of waves are created along the boundaries of the geometry. If the strict argument is set to true then the wavelength will be used exactly and an incomplete pattern may be used for the final waveform."
+  }],
+  "examples": [{
+    "expression": "wave(geom_from_wkt('LineString(0 0, 10 0)'), 3, 1)",
+    "returns": "Sine-like waves with wavelength 3 and amplitude 1 along the linestring"
+  }],
+  "tags": ["waves", "rounded", "sine", "boundary", "constructs"]
 }

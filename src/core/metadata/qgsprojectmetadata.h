@@ -103,8 +103,6 @@ class CORE_EXPORT QgsProjectMetadata : public QgsAbstractMetadataBase
 
     QString mAuthor;
 
-    QDateTime mCreationDateTime;
-
     /*
      * IMPORTANT!!!!!!
      *

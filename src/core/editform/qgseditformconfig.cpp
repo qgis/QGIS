@@ -166,7 +166,7 @@ QgsEditFormConfig &QgsEditFormConfig::operator=( const QgsEditFormConfig &o )  /
   return *this;
 }
 
-bool QgsEditFormConfig::operator==( const QgsEditFormConfig &o )
+bool QgsEditFormConfig::operator==( const QgsEditFormConfig &o ) const
 {
   return d == o.d;
 }

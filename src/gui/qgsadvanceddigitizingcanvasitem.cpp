@@ -18,6 +18,7 @@
 #include "qgsadvanceddigitizingdockwidget.h"
 #include "qgsadvanceddigitizingcanvasitem.h"
 #include "qgsmapcanvas.h"
+#include "qgscadutils.h"
 
 
 QgsAdvancedDigitizingCanvasItem::QgsAdvancedDigitizingCanvasItem( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget )
@@ -107,7 +108,7 @@ void QgsAdvancedDigitizingCanvasItem::paint( QPainter *painter )
   }
 
   // Draw segment par/per input
-  if ( mAdvancedDigitizingDockWidget->additionalConstraint() != QgsAdvancedDigitizingDockWidget::AdditionalConstraint::NoConstraint && hasSnappedSegment )
+  if ( mAdvancedDigitizingDockWidget->betweenLineConstraint() != Qgis::BetweenLineConstraint::NoConstraint && hasSnappedSegment )
   {
     painter->setPen( mConstruction2Pen );
     painter->drawLine( snapSegmentPix1, snapSegmentPix2 );
@@ -222,7 +223,7 @@ void QgsAdvancedDigitizingCanvasItem::paint( QPainter *painter )
   }
 
   // Draw constr
-  if ( mAdvancedDigitizingDockWidget->additionalConstraint() == QgsAdvancedDigitizingDockWidget::AdditionalConstraint::NoConstraint )
+  if ( mAdvancedDigitizingDockWidget->betweenLineConstraint() == Qgis::BetweenLineConstraint::NoConstraint )
   {
     if ( curPointExist && previousPointExist )
     {
@@ -244,6 +245,89 @@ void QgsAdvancedDigitizingCanvasItem::paint( QPainter *painter )
                        curPointPix + QPointF( +5, +5 ) );
     painter->drawLine( curPointPix + QPointF( -5, +5 ),
                        curPointPix + QPointF( +5, -5 ) );
+  }
+
+  auto lineExtensionSide = mAdvancedDigitizingDockWidget->lineExtensionSide();
+  if ( mAdvancedDigitizingDockWidget->constraintLineExtension()->isLocked() &&
+       lineExtensionSide != Qgis::LineExtensionSide::NoVertex &&
+       !mAdvancedDigitizingDockWidget->lockedSnapVertices().isEmpty() )
+  {
+    painter->setPen( mLockedPen );
+
+    const QgsPointLocator::Match snap = mAdvancedDigitizingDockWidget->lockedSnapVertices().last();
+    const QPointF snappedPoint = toCanvasCoordinates( snap.point() );
+
+    const QgsFeature feature = snap.layer()->getFeature( snap.featureId() );
+    const QgsGeometry geom = feature.geometry();
+
+    QgsPoint vertex;
+    if ( lineExtensionSide == Qgis::LineExtensionSide::BeforeVertex )
+    {
+      vertex = geom.vertexAt( snap.vertexIndex() - 1 );
+    }
+    else
+    {
+      vertex = geom.vertexAt( snap.vertexIndex() + 1 );
+    }
+
+    if ( !vertex.isEmpty() )
+    {
+      const QPointF point = toCanvasCoordinates( vertex );
+      const double angle = std::atan2( snappedPoint.y() - point.y(), snappedPoint.x() - point.x() );
+
+      const double canvasPadding = QLineF( snappedPoint, curPointPix ).length();
+      painter->drawLine( snappedPoint + ( canvasPadding - canvasDiagonalDimension ) * QPointF( std::cos( angle ), std::sin( angle ) ),
+                         snappedPoint + ( canvasPadding + canvasDiagonalDimension ) * QPointF( std::cos( angle ), std::sin( angle ) ) );
+    }
+
+  }
+
+  if ( mAdvancedDigitizingDockWidget->constraintXyVertex()->isLocked() )
+  {
+    painter->setPen( mLockedPen );
+
+    double coordinateExtension = mAdvancedDigitizingDockWidget->softLockX();
+    if ( coordinateExtension != std::numeric_limits<double>::quiet_NaN() )
+    {
+      const QgsPointXY point( coordinateExtension, mapPoly[0].y() );
+      const QPointF rotation( std::sin( -canvasRotationRad ), std::cos( -canvasRotationRad ) );
+      painter->drawLine( toCanvasCoordinates( point ) - canvasDiagonalDimension * rotation,
+                         toCanvasCoordinates( point ) + canvasDiagonalDimension * rotation );
+    }
+
+    coordinateExtension = mAdvancedDigitizingDockWidget->softLockY();
+    if ( coordinateExtension != std::numeric_limits<double>::quiet_NaN() )
+    {
+      const QgsPointXY point( mapPoly[0].x(), coordinateExtension );
+      const QPointF rotation( std::cos( -canvasRotationRad ), -std::sin( -canvasRotationRad ) );
+      painter->drawLine( toCanvasCoordinates( point ) - canvasDiagonalDimension * rotation,
+                         toCanvasCoordinates( point ) + canvasDiagonalDimension * rotation );
+    }
+  }
+
+  painter->setPen( mCursorPen );
+
+  const QList< QgsPointLocator::Match > lockedSnapVertices = mAdvancedDigitizingDockWidget->lockedSnapVertices();
+  for ( QgsPointLocator::Match snapMatch : lockedSnapVertices )
+  {
+    const QgsPointXY point = snapMatch.point();
+    const QPointF canvasPoint = toCanvasCoordinates( point );
+
+    painter->drawLine( canvasPoint + QPointF( 5, 5 ),
+                       canvasPoint - QPointF( 5, 5 ) );
+    painter->drawLine( canvasPoint + QPointF( -5, 5 ),
+                       canvasPoint - QPointF( -5, 5 ) );
+  }
+
+  if ( !lockedSnapVertices.isEmpty() )
+  {
+    const QgsPointXY point = lockedSnapVertices.last().point();
+    const QPointF canvasPoint = toCanvasCoordinates( point );
+
+    painter->drawLine( canvasPoint + QPointF( 0, 5 ),
+                       canvasPoint - QPointF( 0, 5 ) );
+    painter->drawLine( canvasPoint + QPointF( 5, 0 ),
+                       canvasPoint - QPointF( 5, 0 ) );
   }
 }
 

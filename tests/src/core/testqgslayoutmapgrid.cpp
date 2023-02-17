@@ -27,17 +27,17 @@
 #include "qgstest.h"
 #include "qgsmarkersymbol.h"
 
-class TestQgsLayoutMapGrid : public QObject
+class TestQgsLayoutMapGrid : public QgsTest
 {
     Q_OBJECT
 
   public:
 
+    TestQgsLayoutMapGrid() : QgsTest( QStringLiteral( "Layout Map Grid Tests" ) ) {}
+
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
-    void init();// will be called before each testfunction is executed.
-    void cleanup();// will be called after every testfunction.
 
     void grid(); //test if grid and grid annotation works
     void reprojected(); //test if reprojected grid works
@@ -65,9 +65,6 @@ class TestQgsLayoutMapGrid : public QObject
     void lineBorderAnnotated(); //test line border frame with annotations
     void annotationFormats(); //various tests for annotation formats
     void descendingAnnotations(); //test descending annotation direction
-
-  private:
-    QString mReport;
 };
 
 void TestQgsLayoutMapGrid::initTestCase()
@@ -76,30 +73,11 @@ void TestQgsLayoutMapGrid::initTestCase()
   QgsApplication::initQgis();
 
   QgsFontUtils::loadStandardTestFonts( QStringList() << QStringLiteral( "Bold" ) );
-
-  mReport = QStringLiteral( "<h1>Composer Map Grid Tests</h1>\n" );
 }
 
 void TestQgsLayoutMapGrid::cleanupTestCase()
 {
-  const QString myReportFile = QDir::tempPath() + "/qgistest.html";
-  QFile myFile( myReportFile );
-  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
-  {
-    QTextStream myQTextStream( &myFile );
-    myQTextStream << mReport;
-    myFile.close();
-  }
-
   QgsApplication::exitQgis();
-}
-
-void TestQgsLayoutMapGrid::init()
-{
-}
-
-void TestQgsLayoutMapGrid::cleanup()
-{
 }
 
 void TestQgsLayoutMapGrid::grid()

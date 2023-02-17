@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 ***************************************************************************
     test_qgsgeometrygeneratorsymbollayer.py
@@ -21,37 +19,40 @@ __author__ = 'Matthias Kuhn'
 __date__ = 'December 2015'
 __copyright__ = '(C) 2015, Matthias Kuhn'
 
-import qgis  # NOQA
-
 import os
 
-from qgis.PyQt.QtCore import QSize, QDir, QPointF
+import qgis  # NOQA
+from qgis.PyQt.QtCore import QDir, QPointF, QSize
 from qgis.PyQt.QtGui import QColor, QImage, QPainter, QPolygonF
 from qgis.core import (
-    QgsVectorLayer,
-    QgsSingleSymbolRenderer,
-    QgsFillSymbol,
-    QgsLineSymbol,
-    QgsMarkerSymbol,
-    QgsProject,
-    QgsRectangle,
-    QgsGeometryGeneratorSymbolLayer,
-    QgsSymbol,
-    QgsMultiRenderChecker,
-    QgsMapSettings,
     Qgis,
-    QgsUnitTypes,
-    QgsRenderContext,
-    QgsRenderChecker,
+    QgsArrowSymbolLayer,
     QgsCoordinateReferenceSystem,
     QgsCoordinateTransform,
-    QgsArrowSymbolLayer,
     QgsFeature,
-    QgsGeometry
+    QgsFillSymbol,
+    QgsFontMarkerSymbolLayer,
+    QgsFontUtils,
+    QgsGeometry,
+    QgsGeometryGeneratorSymbolLayer,
+    QgsLineSymbol,
+    QgsMapSettings,
+    QgsMarkerSymbol,
+    QgsMultiRenderChecker,
+    QgsProject,
+    QgsProperty,
+    QgsRectangle,
+    QgsRenderChecker,
+    QgsRenderContext,
+    QgsSingleSymbolRenderer,
+    QgsSymbol,
+    QgsSymbolLayer,
+    QgsUnitTypes,
+    QgsVectorLayer,
 )
-
 from qgis.testing import start_app, unittest
 from qgis.testing.mocked import get_iface
+
 from utilities import unitTestDataPath
 
 # Convenience instances in case you may need them
@@ -93,7 +94,7 @@ class TestQgsGeometryGeneratorSymbolLayerV2(unittest.TestCase):
 
     def tearDown(self):
         QgsProject.instance().removeAllMapLayers()
-        report_file_path = "%s/qgistest.html" % QDir.tempPath()
+        report_file_path = f"{QDir.tempPath()}/qgistest.html"
         with open(report_file_path, 'a') as report_file:
             report_file.write(self.report)
 
@@ -410,8 +411,80 @@ class TestQgsGeometryGeneratorSymbolLayerV2(unittest.TestCase):
         self.report += renderchecker.report()
         self.assertTrue(res)
 
+    def test_geometry_function(self):
+        """
+        The $geometry function used in a subsymbol should refer to the generated geometry
+        """
+        points = QgsVectorLayer('Point?crs=epsg:4326', 'Points', 'memory')
+        self.assertTrue(points.isValid())
+        f = QgsFeature()
+        f.setGeometry(QgsGeometry.fromWkt('Point(1 2)'))
+        points.dataProvider().addFeature(f)
+
+        font = QgsFontUtils.getStandardTestFont('Bold')
+        font_marker = QgsFontMarkerSymbolLayer(font.family(), 'x', 16)
+        font_marker.setDataDefinedProperty(QgsSymbolLayer.PropertyCharacter, QgsProperty.fromExpression('geom_to_wkt($geometry)'))
+        subsymbol = QgsMarkerSymbol()
+        subsymbol.changeSymbolLayer(0, font_marker)
+
+        parent_generator = QgsGeometryGeneratorSymbolLayer.create({'geometryModifier': 'translate($geometry, 1, 2)'})
+        parent_generator.setSymbolType(QgsSymbol.Marker)
+
+        parent_generator.setSubSymbol(subsymbol)
+
+        geom_symbol = QgsMarkerSymbol()
+        geom_symbol.changeSymbolLayer(0, parent_generator)
+        points.renderer().setSymbol(geom_symbol)
+
+        mapsettings = QgsMapSettings(self.mapsettings)
+        mapsettings.setExtent(QgsRectangle(0, 0, 5, 5))
+        mapsettings.setLayers([points])
+
+        renderchecker = QgsMultiRenderChecker()
+        renderchecker.setMapSettings(mapsettings)
+        renderchecker.setControlName('expected_geometrygenerator_function_geometry')
+        res = renderchecker.runTest('geometrygenerator_function_geometry')
+        self.report += renderchecker.report()
+        self.assertTrue(res)
+
+    def test_feature_geometry(self):
+        """
+        The geometry($currentfeature) expression used in a subsymbol should refer to the original FEATURE geometry
+        """
+        points = QgsVectorLayer('Point?crs=epsg:4326', 'Points', 'memory')
+        self.assertTrue(points.isValid())
+        f = QgsFeature()
+        f.setGeometry(QgsGeometry.fromWkt('Point(1 2)'))
+        points.dataProvider().addFeature(f)
+
+        font = QgsFontUtils.getStandardTestFont('Bold')
+        font_marker = QgsFontMarkerSymbolLayer(font.family(), 'x', 16)
+        font_marker.setDataDefinedProperty(QgsSymbolLayer.PropertyCharacter, QgsProperty.fromExpression('geom_to_wkt(geometry($currentfeature))'))
+        subsymbol = QgsMarkerSymbol()
+        subsymbol.changeSymbolLayer(0, font_marker)
+
+        parent_generator = QgsGeometryGeneratorSymbolLayer.create({'geometryModifier': 'translate($geometry, 1, 2)'})
+        parent_generator.setSymbolType(QgsSymbol.Marker)
+
+        parent_generator.setSubSymbol(subsymbol)
+
+        geom_symbol = QgsMarkerSymbol()
+        geom_symbol.changeSymbolLayer(0, parent_generator)
+        points.renderer().setSymbol(geom_symbol)
+
+        mapsettings = QgsMapSettings(self.mapsettings)
+        mapsettings.setExtent(QgsRectangle(0, 0, 5, 5))
+        mapsettings.setLayers([points])
+
+        renderchecker = QgsMultiRenderChecker()
+        renderchecker.setMapSettings(mapsettings)
+        renderchecker.setControlName('expected_geometrygenerator_feature_geometry')
+        res = renderchecker.runTest('geometrygenerator_feature_geometry')
+        self.report += renderchecker.report()
+        self.assertTrue(res)
+
     def imageCheck(self, name, reference_image, image):
-        self.report += "<h2>Render {}</h2>\n".format(name)
+        self.report += f"<h2>Render {name}</h2>\n"
         temp_dir = QDir.tempPath() + '/'
         file_name = temp_dir + name + ".png"
         image.save(file_name, "PNG")
@@ -421,7 +494,7 @@ class TestQgsGeometryGeneratorSymbolLayerV2(unittest.TestCase):
         checker.setColorTolerance(2)
         result = checker.compareImages(name, 0)
         self.report += checker.report()
-        print((self.report))
+        print(self.report)
         return result
 
 

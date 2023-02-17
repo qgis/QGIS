@@ -31,6 +31,7 @@
 #include "qgslogger.h"
 #include "qgsdatasourceuri.h"
 #include "qgsvectordataprovider.h"
+#include "qgsdbquerylog.h"
 
 #include <QSqlDatabase>
 #include <QSqlQuery>
@@ -54,7 +55,7 @@ struct QgsOracleLayerProperty
 
   int size() const { Q_ASSERT( types.size() == srids.size() ); return types.size(); }
 
-  bool operator==( const QgsOracleLayerProperty &other )
+  bool operator==( const QgsOracleLayerProperty &other ) const
   {
     return types == other.types && srids == other.srids && ownerName == other.ownerName &&
            tableName == other.tableName && geometryColName == other.geometryColName &&
@@ -112,6 +113,13 @@ struct QgsOracleLayerProperty
 #endif
 };
 
+
+#include "qgsconfig.h"
+constexpr int sOracleConQueryLogFilePrefixLength = CMAKE_SOURCE_DIR[sizeof( CMAKE_SOURCE_DIR ) - 1] == '/' ? sizeof( CMAKE_SOURCE_DIR ) + 1 : sizeof( CMAKE_SOURCE_DIR );
+#define LoggedExec(_class, query) execLogged( query, true, nullptr, _class, QString(QString( __FILE__ ).mid( sOracleConQueryLogFilePrefixLength ) + ':' + QString::number( __LINE__ ) + " (" + __FUNCTION__ + ")") )
+#define LoggedExecPrivate(_class, query, sql, params ) execLogged( query, sql, params, _class, QString(QString( __FILE__ ).mid( sOracleConQueryLogFilePrefixLength ) + ':' + QString::number( __LINE__ ) + " (" + __FUNCTION__ + ")") )
+
+
 /**
  * Wraps acquireConnection() and releaseConnection() from a QgsOracleConnPool.
  * This can be used to ensure a connection is correctly released when scope ends
@@ -157,6 +165,7 @@ class QgsOracleConn : public QObject
     static QString quotedValue( const QVariant &value, QVariant::Type type = QVariant::Invalid );
 
     bool exec( const QString &query, bool logError = true, QString *errorMessage = nullptr );
+    bool execLogged( const QString &sql, bool logError = true, QString *errorMessage = nullptr, const QString &originatorClass = QString(), const QString &queryOrigin = QString() );
 
     bool begin( QSqlDatabase &db );
     bool commit( QSqlDatabase &db );
@@ -245,6 +254,7 @@ class QgsOracleConn : public QObject
     static QString restrictToSchema( const QString &connName );
     static bool geometryColumnsOnly( const QString &connName );
     static bool allowGeometrylessTables( const QString &connName );
+    static bool allowProjectsInDatabase( const QString &connName );
     static bool estimatedMetadata( const QString &connName );
     static bool onlyExistingTypes( const QString &connName );
     static void deleteConnection( const QString &connName );
@@ -253,11 +263,14 @@ class QgsOracleConn : public QObject
 
     operator QSqlDatabase() { return mDatabase; }
 
+    static QString getLastExecutedQuery( const QSqlQuery &query );
+
   private:
     explicit QgsOracleConn( QgsDataSourceUri uri, bool transaction );
     ~QgsOracleConn() override;
 
     bool exec( QSqlQuery &qry, const QString &sql, const QVariantList &params );
+    bool execLogged( QSqlQuery &qry, const QString &sql, const QVariantList &params, const QString &originatorClass = QString(), const QString &queryOrigin = QString() );
 
     //! reference count
     int mRef;
@@ -280,6 +293,9 @@ class QgsOracleConn : public QObject
     static QMap<QString, QgsOracleConn *> sConnections;
     static int snConnections;
     static QMap<QString, QDateTime> sBrokenConnections;
+
+    // Connection URI string representation for query logger
+    QString mConnInfo;
 };
 
 #endif

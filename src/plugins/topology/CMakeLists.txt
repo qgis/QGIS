@@ -21,7 +21,7 @@ set (topol_RCCS  topol.qrc)
 ########################################################
 # Build
 
-if (WITH_QT6)
+if (BUILD_WITH_QT6)
   QT6_WRAP_UI (topol_UIS_H  ${topol_UIS})
 else()
   QT5_WRAP_UI (topol_UIS_H  ${topol_UIS})

@@ -21,7 +21,7 @@
 #include "qgssettings.h"
 #include "qgsvectorlayerproperties.h"
 #include "qgsmaplayerstylecategoriesmodel.h"
-#include "qgsmessagebar.h"
+#include "qgshelp.h"
 #include "qgsapplication.h"
 #include "qgsgui.h"
 
@@ -59,8 +59,8 @@ QgsMapLayerLoadStyleDialog::QgsMapLayerLoadStyleDialog( QgsMapLayer *layer, QWid
   {
     const QgsVectorLayerProperties::StyleType type = currentStyleType();
     QgsVectorLayer *vl = qobject_cast< QgsVectorLayer * >( mLayer );
-    mFileLabel->setVisible( !vl || type != QgsVectorLayerProperties::StyleType::DB );
-    mFileWidget->setVisible( !vl || type != QgsVectorLayerProperties::StyleType::DB );
+    mFileLabel->setVisible( !vl || ( type != QgsVectorLayerProperties::StyleType::DB && type != QgsVectorLayerProperties::StyleType::Local ) );
+    mFileWidget->setVisible( !vl || ( type != QgsVectorLayerProperties::StyleType::DB && type != QgsVectorLayerProperties::StyleType::Local ) );
     if ( vl )
     {
       mFromDbWidget->setVisible( type == QgsVectorLayerProperties::StyleType::DB );
@@ -76,6 +76,7 @@ QgsMapLayerLoadStyleDialog::QgsMapLayerLoadStyleDialog( QgsMapLayer *layer, QWid
     updateLoadButtonState();
   } );
   mStyleTypeComboBox->addItem( tr( "From File" ), QgsVectorLayerProperties::QML ); // QML is used as entry, but works for SLD too, see currentStyleType()
+  mStyleTypeComboBox->addItem( tr( "Default from local database" ), QgsVectorLayerProperties::Local );
 
   if ( QgsVectorLayer *vl = qobject_cast< QgsVectorLayer * >( mLayer ) )
   {
@@ -98,22 +99,22 @@ QgsMapLayerLoadStyleDialog::QgsMapLayerLoadStyleDialog( QgsMapLayer *layer, QWid
   // load from file setup
   switch ( mLayer->type() )
   {
-    case QgsMapLayerType::VectorLayer:
+    case Qgis::LayerType::Vector:
       mFileWidget->setFilter( tr( "QGIS Layer Style File, SLD File" ) + QStringLiteral( " (*.qml *.sld)" ) );
       break;
 
-    case QgsMapLayerType::VectorTileLayer:
+    case Qgis::LayerType::VectorTile:
       mFileWidget->setFilter( tr( "All Styles" ) + QStringLiteral( " (*.qml *.json);;" )
                               + tr( "QGIS Layer Style File" ) + QStringLiteral( " (*.qml);;" )
                               + tr( "MapBox GL Style JSON File" ) + QStringLiteral( " (*.json)" ) );
       break;
 
-    case QgsMapLayerType::RasterLayer:
-    case QgsMapLayerType::MeshLayer:
-    case QgsMapLayerType::AnnotationLayer:
-    case QgsMapLayerType::PluginLayer:
-    case QgsMapLayerType::PointCloudLayer:
-    case QgsMapLayerType::GroupLayer:
+    case Qgis::LayerType::Raster:
+    case Qgis::LayerType::Mesh:
+    case Qgis::LayerType::Annotation:
+    case Qgis::LayerType::Plugin:
+    case Qgis::LayerType::PointCloud:
+    case Qgis::LayerType::Group:
       break;
 
   }
@@ -341,12 +342,13 @@ void QgsMapLayerLoadStyleDialog::deleteStyleFromDB()
 void QgsMapLayerLoadStyleDialog::updateLoadButtonState()
 {
   const QgsVectorLayerProperties::StyleType type = currentStyleType();
-  if ( mLayer->type() == QgsMapLayerType::VectorLayer )
+  if ( mLayer->type() == Qgis::LayerType::Vector )
   {
     mLoadButton->setEnabled( ( type == QgsVectorLayerProperties::DB
                                && ( mRelatedTable->selectionModel()->hasSelection() || mOthersTable->selectionModel()->hasSelection()
                                   ) ) ||
-                             ( type != QgsVectorLayerProperties::DB && !mFileWidget->filePath().isEmpty() ) );
+                             ( type != QgsVectorLayerProperties::DB && !mFileWidget->filePath().isEmpty() ) ||
+                             type == QgsVectorLayerProperties::Local );
   }
   else
   {

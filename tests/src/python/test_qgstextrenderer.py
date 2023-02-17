@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsTextRenderer.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -14,35 +13,47 @@ import os
 
 import qgis  # NOQA
 from PyQt5.QtSvg import QSvgGenerator
-from qgis.PyQt.QtCore import (Qt, QT_VERSION_STR, QSizeF, QPointF, QRectF, QDir, QSize)
-from qgis.PyQt.QtGui import (QColor, QPainter, QFont, QImage, QBrush, QPen)
+from qgis.PyQt.QtCore import (
+    QT_VERSION_STR,
+    QDir,
+    QPointF,
+    QRectF,
+    QSize,
+    QSizeF,
+    Qt,
+)
+from qgis.PyQt.QtGui import QBrush, QColor, QFont, QImage, QPainter, QPen
 from qgis.PyQt.QtXml import QDomDocument
-from qgis.core import (Qgis,
-                       QgsTextBufferSettings,
-                       QgsTextMaskSettings,
-                       QgsTextBackgroundSettings,
-                       QgsTextShadowSettings,
-                       QgsTextFormat,
-                       QgsUnitTypes,
-                       QgsMapUnitScale,
-                       QgsVectorLayer,
-                       QgsTextRenderer,
-                       QgsMapSettings,
-                       QgsReadWriteContext,
-                       QgsRenderContext,
-                       QgsRectangle,
-                       QgsRenderChecker,
-                       QgsBlurEffect,
-                       QgsMarkerSymbol,
-                       QgsFillSymbol,
-                       QgsSimpleFillSymbolLayer,
-                       QgsPalLayerSettings,
-                       QgsProperty,
-                       QgsFontUtils,
-                       QgsSymbolLayerId,
-                       QgsSymbolLayerReference,
-                       QgsStringUtils)
-from qgis.testing import unittest, start_app
+from qgis.core import (
+    Qgis,
+    QgsBlurEffect,
+    QgsFillSymbol,
+    QgsFontUtils,
+    QgsMapSettings,
+    QgsMapUnitScale,
+    QgsMarkerSymbol,
+    QgsPalLayerSettings,
+    QgsProperty,
+    QgsReadWriteContext,
+    QgsRectangle,
+    QgsRenderChecker,
+    QgsRenderContext,
+    QgsSimpleFillSymbolLayer,
+    QgsStringUtils,
+    QgsSymbolLayerId,
+    QgsSymbolLayerReference,
+    QgsTextBackgroundSettings,
+    QgsTextBufferSettings,
+    QgsTextDocument,
+    QgsTextDocumentMetrics,
+    QgsTextFormat,
+    QgsTextMaskSettings,
+    QgsTextRenderer,
+    QgsTextShadowSettings,
+    QgsUnitTypes,
+    QgsVectorLayer,
+)
+from qgis.testing import start_app, unittest
 
 from utilities import getTestFont, svgSymbolsPath
 
@@ -64,7 +75,7 @@ class PyQgsTextRenderer(unittest.TestCase):
 
     @classmethod
     def tearDownClass(cls):
-        report_file_path = "%s/qgistest.html" % QDir.tempPath()
+        report_file_path = f"{QDir.tempPath()}/qgistest.html"
         with open(report_file_path, 'a') as report_file:
             report_file.write(cls.report)
 
@@ -143,6 +154,10 @@ class PyQgsTextRenderer(unittest.TestCase):
         self.assertTrue(t.isValid())
 
         t = QgsTextFormat()
+        t.setLineHeightUnit(QgsUnitTypes.RenderPoints)
+        self.assertTrue(t.isValid())
+
+        t = QgsTextFormat()
         t.setOrientation(QgsTextFormat.VerticalOrientation)
         self.assertTrue(t.isValid())
 
@@ -168,6 +183,14 @@ class PyQgsTextRenderer(unittest.TestCase):
 
         t = QgsTextFormat()
         t.dataDefinedProperties().setProperty(QgsPalLayerSettings.Bold, QgsProperty.fromValue(True))
+        self.assertTrue(t.isValid())
+
+        t = QgsTextFormat()
+        t.setForcedBold(True)
+        self.assertTrue(t.isValid())
+
+        t = QgsTextFormat()
+        t.setForcedItalic(True)
         self.assertTrue(t.isValid())
 
     def testAlignmentConversion(self):
@@ -708,9 +731,12 @@ class PyQgsTextRenderer(unittest.TestCase):
         s.setOpacity(0.5)
         s.setBlendMode(QPainter.CompositionMode_DestinationAtop)
         s.setLineHeight(5)
+        s.setLineHeightUnit(QgsUnitTypes.RenderInches)
         s.setPreviewBackgroundColor(QColor(100, 150, 200))
         s.setOrientation(QgsTextFormat.VerticalOrientation)
         s.setAllowHtmlFormatting(True)
+        s.setForcedBold(True)
+        s.setForcedItalic(True)
 
         s.setStretchFactor(110)
 
@@ -792,6 +818,10 @@ class PyQgsTextRenderer(unittest.TestCase):
         self.assertNotEqual(s, s2)
         s = self.createFormatSettings()
 
+        s.setLineHeightUnit(QgsUnitTypes.RenderPoints)
+        self.assertNotEqual(s, s2)
+        s = self.createFormatSettings()
+
         s.setPreviewBackgroundColor(QColor(100, 250, 200))
         self.assertNotEqual(s, s2)
         s = self.createFormatSettings()
@@ -801,6 +831,14 @@ class PyQgsTextRenderer(unittest.TestCase):
         s = self.createFormatSettings()
 
         s.setAllowHtmlFormatting(False)
+        self.assertNotEqual(s, s2)
+        s = self.createFormatSettings()
+
+        s.setForcedBold(False)
+        self.assertNotEqual(s, s2)
+        s = self.createFormatSettings()
+
+        s.setForcedItalic(False)
         self.assertNotEqual(s, s2)
         s = self.createFormatSettings()
 
@@ -840,11 +878,14 @@ class PyQgsTextRenderer(unittest.TestCase):
         self.assertEqual(s.opacity(), 0.5)
         self.assertEqual(s.blendMode(), QPainter.CompositionMode_DestinationAtop)
         self.assertEqual(s.lineHeight(), 5)
+        self.assertEqual(s.lineHeightUnit(), QgsUnitTypes.RenderInches)
         self.assertEqual(s.previewBackgroundColor().name(), '#6496c8')
         self.assertEqual(s.orientation(), QgsTextFormat.VerticalOrientation)
         self.assertEqual(s.capitalization(), QgsStringUtils.TitleCase)
         self.assertTrue(s.allowHtmlFormatting())
         self.assertEqual(s.dataDefinedProperties().property(QgsPalLayerSettings.Bold).expressionString(), '1>2')
+        self.assertTrue(s.forcedBold())
+        self.assertTrue(s.forcedItalic())
 
         if int(QT_VERSION_STR.split('.')[0]) > 6 or (
                 int(QT_VERSION_STR.split('.')[0]) == 6 and int(QT_VERSION_STR.split('.')[1]) >= 3):
@@ -1236,7 +1277,7 @@ class PyQgsTextRenderer(unittest.TestCase):
 
         # family
         f.dataDefinedProperties().setProperty(QgsPalLayerSettings.Family, QgsProperty.fromExpression(
-            "'{}'".format(QgsFontUtils.getStandardTestFont().family())))
+            f"'{QgsFontUtils.getStandardTestFont().family()}'"))
         f.updateDataDefinedProperties(context)
         self.assertEqual(f.font().family(), QgsFontUtils.getStandardTestFont().family())
 
@@ -1389,6 +1430,16 @@ class PyQgsTextRenderer(unittest.TestCase):
         qfont = s.toQFont()
         self.assertAlmostEqual(qfont.pointSizeF(), 360.0, 2)
 
+        self.assertFalse(qfont.bold())
+        s.setForcedBold(True)
+        qfont = s.toQFont()
+        self.assertTrue(qfont.bold())
+
+        self.assertFalse(qfont.italic())
+        s.setForcedItalic(True)
+        qfont = s.toQFont()
+        self.assertTrue(qfont.italic())
+
         if int(QT_VERSION_STR.split('.')[0]) > 6 or (
                 int(QT_VERSION_STR.split('.')[0]) == 6 and int(QT_VERSION_STR.split('.')[1]) >= 3):
             s.setStretchFactor(115)
@@ -1420,7 +1471,7 @@ class PyQgsTextRenderer(unittest.TestCase):
         self.assertAlmostEqual(metrics2.width(string), 104.15, 1)
 
     def imageCheck(self, name, reference_image, image):
-        PyQgsTextRenderer.report += "<h2>Render {}</h2>\n".format(name)
+        PyQgsTextRenderer.report += f"<h2>Render {name}</h2>\n"
         temp_dir = QDir.tempPath() + '/'
         file_name = temp_dir + name + ".png"
         image.save(file_name, "PNG")
@@ -1430,8 +1481,9 @@ class PyQgsTextRenderer(unittest.TestCase):
         checker.setRenderedImage(file_name)
         checker.setColorTolerance(2)
         result = checker.compareImages(name, 20)
-        PyQgsTextRenderer.report += checker.report()
-        print(checker.report())
+        if checker.report():
+            PyQgsTextRenderer.report += checker.report()
+            print(checker.report())
         return result
 
     def checkRender(self, format, name, part=None, angle=0, alignment=QgsTextRenderer.AlignLeft,
@@ -1439,7 +1491,8 @@ class PyQgsTextRenderer(unittest.TestCase):
                     rect=QRectF(100, 100, 50, 250),
                     vAlignment=QgsTextRenderer.AlignTop,
                     flags=Qgis.TextRendererFlags(),
-                    image_size=400):
+                    image_size=400,
+                    mode=Qgis.TextLayoutMode.Rectangle):
 
         image = QImage(image_size, image_size, QImage.Format_RGB32)
 
@@ -1475,7 +1528,10 @@ class PyQgsTextRenderer(unittest.TestCase):
                                      alignment,
                                      text,
                                      context,
-                                     format, vAlignment=vAlignment, flags=flags)
+                                     format,
+                                     vAlignment=vAlignment,
+                                     flags=flags,
+                                     mode=mode)
 
         painter.setFont(format.scaledFont(context))
         painter.setPen(QPen(QColor(255, 0, 255, 200)))
@@ -1549,6 +1605,240 @@ class PyQgsTextRenderer(unittest.TestCase):
         format.setFont(getTestFont('bold'))
         format.setSize(1100)
         assert self.checkRender(format, 'massive_font', rect=QRectF(-800, -600, 1000, 1000), text=['a t'], image_size=800)
+
+    def testDrawRectMixedHtml(self):
+        """
+        Test drawing text in rect mode with mixed html fonts
+        """
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setAllowHtmlFormatting(True)
+        format.setSize(30)
+        assert self.checkRender(format, 'rect_html', rect=QRectF(100, 100, 100, 100), text=['first <span style="font-size:50pt">line</span>', 'second <span style="font-size:50pt">line</span>', 'third line'])
+
+    def testDrawDocumentRect(self):
+        """
+        Test drawing text document in rect mode
+        """
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setAllowHtmlFormatting(True)
+        format.setSize(30)
+
+        image = QImage(400, 400, QImage.Format_RGB32)
+
+        painter = QPainter()
+        ms = QgsMapSettings()
+        ms.setExtent(QgsRectangle(0, 0, 50, 50))
+        ms.setOutputSize(image.size())
+        context = QgsRenderContext.fromMapSettings(ms)
+        context.setPainter(painter)
+        context.setScaleFactor(96 / 25.4)  # 96 DPI
+        context.setFlag(QgsRenderContext.ApplyScalingWorkaroundForTextRendering, True)
+
+        painter.begin(image)
+        painter.setRenderHint(QPainter.Antialiasing)
+        image.fill(QColor(152, 219, 249))
+
+        painter.setBrush(QBrush(QColor(182, 239, 255)))
+        painter.setPen(Qt.NoPen)
+
+        doc = QgsTextDocument.fromHtml(['first <span style="font-size:50pt">line</span>', 'second <span style="font-size:50pt">line</span>', 'third line'])
+
+        metrics = QgsTextDocumentMetrics.calculateMetrics(doc, format, context, QgsTextRenderer.FONT_WORKAROUND_SCALE)
+
+        QgsTextRenderer.drawDocument(QRectF(100, 100, 100, 100),
+                                     format,
+                                     doc,
+                                     metrics,
+                                     context,
+                                     mode=Qgis.TextLayoutMode.Rectangle)
+
+        painter.end()
+
+        self.assertTrue(self.imageCheck('draw_document_rect', 'draw_document_rect', image))
+
+    def testDrawRectCapHeightMode(self):
+        """
+        Test drawing text in rect mode with cap height based line heights
+        """
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setSize(30)
+        assert self.checkRender(format, 'rect_cap_height_mode', rect=QRectF(100, 100, 100, 100), text=['first line', 'second line', 'third line'], mode=Qgis.TextLayoutMode.RectangleCapHeightBased)
+
+    def testDrawRectCapHeightModeMixedHtml(self):
+        """
+        Test drawing text in rect mode with cap height based line heights
+        """
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setAllowHtmlFormatting(True)
+        format.setSize(30)
+        assert self.checkRender(format, 'rect_cap_height_mode_html', rect=QRectF(100, 100, 100, 100), text=['first <span style="font-size:50pt">line</span>', 'second <span style="font-size:50pt">line</span>', 'third line'], mode=Qgis.TextLayoutMode.RectangleCapHeightBased)
+
+    def testDrawDocumentRectCapHeightMode(self):
+        """
+        Test drawing text document in rect cap height mode
+        """
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setAllowHtmlFormatting(True)
+        format.setSize(30)
+
+        image = QImage(400, 400, QImage.Format_RGB32)
+
+        painter = QPainter()
+        ms = QgsMapSettings()
+        ms.setExtent(QgsRectangle(0, 0, 50, 50))
+        ms.setOutputSize(image.size())
+        context = QgsRenderContext.fromMapSettings(ms)
+        context.setPainter(painter)
+        context.setScaleFactor(96 / 25.4)  # 96 DPI
+        context.setFlag(QgsRenderContext.ApplyScalingWorkaroundForTextRendering, True)
+
+        painter.begin(image)
+        painter.setRenderHint(QPainter.Antialiasing)
+        image.fill(QColor(152, 219, 249))
+
+        painter.setBrush(QBrush(QColor(182, 239, 255)))
+        painter.setPen(Qt.NoPen)
+
+        doc = QgsTextDocument.fromHtml(['first <span style="font-size:50pt">line</span>', 'second <span style="font-size:50pt">line</span>', 'third line'])
+
+        metrics = QgsTextDocumentMetrics.calculateMetrics(doc, format, context, QgsTextRenderer.FONT_WORKAROUND_SCALE)
+
+        QgsTextRenderer.drawDocument(QRectF(100, 100, 100, 100),
+                                     format,
+                                     doc,
+                                     metrics,
+                                     context,
+                                     mode=Qgis.TextLayoutMode.RectangleCapHeightBased)
+
+        painter.end()
+
+        self.assertTrue(self.imageCheck('draw_document_rect_cap_height', 'draw_document_rect_cap_height', image))
+
+    def testDrawRectAscentMode(self):
+        """
+        Test drawing text in rect mode with cap height based line heights
+        """
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setSize(30)
+        assert self.checkRender(format, 'rect_ascent_mode', rect=QRectF(100, 100, 100, 100), text=['first line', 'second line', 'third line'], mode=Qgis.TextLayoutMode.RectangleAscentBased)
+
+    def testDrawRectAscentModeMixedHtml(self):
+        """
+        Test drawing text in rect mode with ascent based line heights
+        """
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setAllowHtmlFormatting(True)
+        format.setSize(30)
+        assert self.checkRender(format, 'rect_ascent_mode_html', rect=QRectF(100, 100, 100, 100), text=['first <span style="font-size:50pt">line</span>', 'second <span style="font-size:50pt">line</span>', 'third line'], mode=Qgis.TextLayoutMode.RectangleAscentBased)
+
+    def testDrawDocumentRectAscentMode(self):
+        """
+        Test drawing text document in rect ascent mode
+        """
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setAllowHtmlFormatting(True)
+        format.setSize(30)
+
+        image = QImage(400, 400, QImage.Format_RGB32)
+
+        painter = QPainter()
+        ms = QgsMapSettings()
+        ms.setExtent(QgsRectangle(0, 0, 50, 50))
+        ms.setOutputSize(image.size())
+        context = QgsRenderContext.fromMapSettings(ms)
+        context.setPainter(painter)
+        context.setScaleFactor(96 / 25.4)  # 96 DPI
+        context.setFlag(QgsRenderContext.ApplyScalingWorkaroundForTextRendering, True)
+
+        painter.begin(image)
+        painter.setRenderHint(QPainter.Antialiasing)
+        image.fill(QColor(152, 219, 249))
+
+        painter.setBrush(QBrush(QColor(182, 239, 255)))
+        painter.setPen(Qt.NoPen)
+
+        doc = QgsTextDocument.fromHtml(['first <span style="font-size:50pt">line</span>', 'second <span style="font-size:50pt">line</span>', 'third line'])
+
+        metrics = QgsTextDocumentMetrics.calculateMetrics(doc, format, context, QgsTextRenderer.FONT_WORKAROUND_SCALE)
+
+        QgsTextRenderer.drawDocument(QRectF(100, 100, 100, 100),
+                                     format,
+                                     doc,
+                                     metrics,
+                                     context,
+                                     mode=Qgis.TextLayoutMode.RectangleAscentBased)
+
+        painter.end()
+
+        self.assertTrue(self.imageCheck('draw_document_rect_ascent', 'draw_document_rect_ascent', image))
+
+    def testDrawDocumentShadowPlacement(self):
+        """
+        Test drawing text document with shadow placement lowest
+        """
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setAllowHtmlFormatting(True)
+        format.setSize(30)
+        format.setColor(QColor(255, 255, 255))
+
+        format.shadow().setEnabled(True)
+        format.shadow().setShadowPlacement(QgsTextShadowSettings.ShadowLowest)
+        format.shadow().setOpacity(1.0)
+        format.shadow().setBlurRadius(0)
+        format.shadow().setOffsetDistance(5)
+        format.shadow().setOffsetUnit(QgsUnitTypes.RenderMillimeters)
+
+        image = QImage(400, 400, QImage.Format_RGB32)
+
+        painter = QPainter()
+        ms = QgsMapSettings()
+        ms.setExtent(QgsRectangle(0, 0, 50, 50))
+        ms.setOutputSize(image.size())
+        context = QgsRenderContext.fromMapSettings(ms)
+        context.setPainter(painter)
+        context.setScaleFactor(96 / 25.4)  # 96 DPI
+        context.setFlag(QgsRenderContext.ApplyScalingWorkaroundForTextRendering, True)
+
+        painter.begin(image)
+        painter.setRenderHint(QPainter.Antialiasing)
+        image.fill(QColor(152, 219, 249))
+
+        painter.setBrush(QBrush(QColor(182, 239, 255)))
+        painter.setPen(Qt.NoPen)
+
+        doc = QgsTextDocument.fromHtml(['first <span style="font-size:50pt">line</span>', 'second <span style="font-size:50pt">line</span>', 'third line'])
+
+        metrics = QgsTextDocumentMetrics.calculateMetrics(doc, format, context, QgsTextRenderer.FONT_WORKAROUND_SCALE)
+
+        QgsTextRenderer.drawDocument(QRectF(100, 100, 100, 100),
+                                     format,
+                                     doc,
+                                     metrics,
+                                     context,
+                                     mode=Qgis.TextLayoutMode.RectangleAscentBased)
+
+        painter.end()
+
+        self.assertTrue(self.imageCheck('draw_document_shadow_lowest', 'draw_document_shadow_lowest', image))
+
+    def testDrawForcedItalic(self):
+        """
+        Test drawing with forced italic
+        """
+        format = QgsTextFormat()
+        format.setFont(getTestFont())
+        format.setSize(30)
+        format.setForcedItalic(True)
+        assert self.checkRender(format, 'forced_italic', text=['Forced italic'])
 
     @unittest.skipIf(int(QT_VERSION_STR.split('.')[0]) < 6 or (int(QT_VERSION_STR.split('.')[0]) == 6 and int(QT_VERSION_STR.split('.')[1]) < 3), 'Too old Qt')
     def testDrawSmallCaps(self):
@@ -2260,6 +2550,24 @@ class PyQgsTextRenderer(unittest.TestCase):
         format.setSizeUnit(QgsUnitTypes.RenderPoints)
         format.setLineHeight(1.5)
         assert self.checkRender(format, 'text_line_height', QgsTextRenderer.Text, text=['test', 'multi', 'line'])
+
+    def testDrawLineHeightAbsolutePoints(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setSize(30)
+        format.setSizeUnit(QgsUnitTypes.RenderPoints)
+        format.setLineHeight(20)
+        format.setLineHeightUnit(QgsUnitTypes.RenderPoints)
+        assert self.checkRender(format, 'text_line_absolute_height', QgsTextRenderer.Text, text=['test', 'multi', 'line'])
+
+    def testDrawLineHeightAbsoluteMillimeters(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setSize(30)
+        format.setSizeUnit(QgsUnitTypes.RenderPoints)
+        format.setLineHeight(20)
+        format.setLineHeightUnit(QgsUnitTypes.RenderMillimeters)
+        assert self.checkRender(format, 'text_line_absolute_mm_height', QgsTextRenderer.Text, text=['test', 'multi', 'line'])
 
     def testDrawBufferSizeMM(self):
         format = QgsTextFormat()
@@ -3110,13 +3418,214 @@ class PyQgsTextRenderer(unittest.TestCase):
             '<s>t</s><span style="text-decoration: overline">e</span><span style="color: red">s<span style="text-decoration: underline">t</span></span>'],
             point=QPointF(50, 200))
 
+    def testHtmlMixedMetricFormatting(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('regular'))
+        format.setSize(60)
+        format.setSizeUnit(QgsUnitTypes.RenderPoints)
+        format.setColor(QColor(0, 255, 0))
+        format.setAllowHtmlFormatting(True)
+        assert self.checkRenderPoint(format, 'text_html_mixed_metric_formatting', None, text=[
+            '<i>t</i><b style="font-size: 30pt">e</b><p><span style="color: red">s<span style="color: rgba(255,0,0,0.5); text-decoration: underline; font-size:80pt">t</span></span>'],
+            point=QPointF(50, 200))
+
+    def testHtmlMixedMetricLineHeight(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('regular'))
+        format.setSize(60)
+        format.setSizeUnit(QgsUnitTypes.RenderPoints)
+        format.setColor(QColor(0, 255, 0))
+        format.setAllowHtmlFormatting(True)
+        format.setLineHeight(0.5)
+        assert self.checkRenderPoint(format, 'text_html_mixed_metric_formatting_line_height', None, text=[
+            '<i>t</i><b style="font-size: 30pt">e</b><p><span style="color: red">s<span style="color: rgba(255,0,0,0.5); text-decoration: underline; font-size:80pt">t</span></span>'],
+            point=QPointF(50, 200))
+
+    def testHtmlMixedMetricFormattingBuffer(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setSize(60)
+        format.setSizeUnit(QgsUnitTypes.RenderPoints)
+        format.setColor(QColor(0, 255, 0))
+        format.setAllowHtmlFormatting(True)
+        format.buffer().setEnabled(True)
+        format.buffer().setSize(5)
+        format.buffer().setColor(QColor(50, 150, 200))
+        assert self.checkRenderPoint(format, 'text_html_mixed_metric_formatting_buffer', None, text=[
+            '<i>t</i><b style="font-size: 30pt">e</b><p><span style="color: red">s<span style="color: rgba(255,0,0,0.5); text-decoration: underline; font-size:80pt">t</span></span>'],
+            point=QPointF(50, 200))
+
+    def testHtmlMixedMetricFormattingShadow(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setSize(60)
+        format.setSizeUnit(QgsUnitTypes.RenderPoints)
+        format.setColor(QColor(0, 255, 0))
+        format.setAllowHtmlFormatting(True)
+        format.shadow().setEnabled(True)
+        format.shadow().setOffsetDistance(5)
+        format.shadow().setBlurRadius(0)
+        format.shadow().setColor(QColor(50, 150, 200))
+        assert self.checkRenderPoint(format, 'text_html_mixed_metric_formatting_shadow', None, text=[
+            '<i>t</i><b style="font-size: 30pt">e</b><p><span style="color: red">s<span style="color: rgba(255,0,0,0.5); text-decoration: underline; font-size:80pt">t</span></span>'],
+            point=QPointF(50, 200))
+
+    def testHtmlMixedMetricFormattingBufferShadow(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setSize(60)
+        format.setSizeUnit(QgsUnitTypes.RenderPoints)
+        format.setColor(QColor(0, 255, 0))
+        format.setAllowHtmlFormatting(True)
+        format.buffer().setEnabled(True)
+        format.buffer().setSize(5)
+        format.buffer().setColor(QColor(200, 50, 150))
+        format.shadow().setEnabled(True)
+        format.shadow().setOffsetDistance(5)
+        format.shadow().setBlurRadius(0)
+        format.shadow().setColor(QColor(50, 150, 200))
+        assert self.checkRenderPoint(format, 'text_html_mixed_metric_formatting_buffer_shadow', None, text=[
+            '<i>t</i><b style="font-size: 30pt">e</b><p><span style="color: red">s<span style="color: rgba(255,0,0,0.5); text-decoration: underline; font-size:80pt">t</span></span>'],
+            point=QPointF(50, 200))
+
+    def testHtmlMixedMetricFormattingVertical(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setSize(60)
+        format.setSizeUnit(QgsUnitTypes.RenderPoints)
+        format.setColor(QColor(0, 255, 0))
+        format.setAllowHtmlFormatting(True)
+        format.setOrientation(QgsTextFormat.VerticalOrientation)
+        assert self.checkRenderPoint(format, 'text_html_mixed_metric_formatting_vertical', None, text=[
+            '<i>t</i><b style="font-size: 30pt">e</b><p><span style="color: red">s<span style="color: rgba(255,0,0,0.5); text-decoration: underline; font-size:80pt">t</span></span>'],
+            point=QPointF(50, 200))
+
+    def testHtmlMixedMetricFormattingBufferVertical(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setSize(60)
+        format.setSizeUnit(QgsUnitTypes.RenderPoints)
+        format.setColor(QColor(0, 255, 0))
+        format.setAllowHtmlFormatting(True)
+        format.buffer().setEnabled(True)
+        format.buffer().setSize(5)
+        format.buffer().setColor(QColor(50, 150, 200))
+        format.setOrientation(QgsTextFormat.VerticalOrientation)
+        assert self.checkRenderPoint(format, 'text_html_mixed_metric_formatting_buffer_vertical', None, text=[
+            '<i>t</i><b style="font-size: 30pt">e</b><p><span style="color: red">s<span style="color: rgba(255,0,0,0.5); text-decoration: underline; font-size:80pt">t</span></span>'],
+            point=QPointF(50, 200))
+
+    def testHtmlMixedMetricFormattingShadowVertical(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setSize(60)
+        format.setSizeUnit(QgsUnitTypes.RenderPoints)
+        format.setColor(QColor(0, 255, 0))
+        format.setAllowHtmlFormatting(True)
+        format.shadow().setEnabled(True)
+        format.shadow().setOffsetDistance(5)
+        format.shadow().setBlurRadius(0)
+        format.shadow().setColor(QColor(50, 150, 200))
+        format.setOrientation(QgsTextFormat.VerticalOrientation)
+        assert self.checkRenderPoint(format, 'text_html_mixed_metric_formatting_shadow_vertical', None, text=[
+            '<i>t</i><b style="font-size: 30pt">e</b><p><span style="color: red">s<span style="color: rgba(255,0,0,0.5); text-decoration: underline; font-size:80pt">t</span></span>'],
+            point=QPointF(50, 200))
+
+    def testHtmlMixedMetricFormattingBufferShadowVertical(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setSize(60)
+        format.setSizeUnit(QgsUnitTypes.RenderPoints)
+        format.setColor(QColor(0, 255, 0))
+        format.setAllowHtmlFormatting(True)
+        format.buffer().setEnabled(True)
+        format.buffer().setSize(5)
+        format.buffer().setColor(QColor(200, 50, 150))
+        format.shadow().setEnabled(True)
+        format.shadow().setOffsetDistance(5)
+        format.shadow().setBlurRadius(0)
+        format.shadow().setColor(QColor(50, 150, 200))
+        format.setOrientation(QgsTextFormat.VerticalOrientation)
+        assert self.checkRenderPoint(format, 'text_html_mixed_metric_formatting_buffer_shadow_vertical', None, text=[
+            '<i>t</i><b style="font-size: 30pt">e</b><p><span style="color: red">s<span style="color: rgba(255,0,0,0.5); text-decoration: underline; font-size:80pt">t</span></span>'],
+            point=QPointF(50, 200))
+
+    def testHtmlSuperSubscript(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setSize(60)
+        format.setSizeUnit(QgsUnitTypes.RenderPoints)
+        format.setColor(QColor(255, 0, 0))
+        format.setAllowHtmlFormatting(True)
+        assert self.checkRenderPoint(format, 'text_html_supersubscript', None, text=[
+            '<sub>sub</sub>N<sup>sup</sup>'],
+            point=QPointF(50, 200))
+
+    def testHtmlSuperSubscriptFixedFontSize(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setSize(60)
+        format.setSizeUnit(QgsUnitTypes.RenderPoints)
+        format.setColor(QColor(255, 0, 0))
+        format.setAllowHtmlFormatting(True)
+        assert self.checkRenderPoint(format, 'text_html_supersubscript_fixed_font_size', None, text=[
+            '<sub style="font-size:80pt">s<span style="font-size:30pt">u</span></sub>N<sup style="font-size:40pt">s<span style="font-size: 20pt">up</span></sup>'],
+            point=QPointF(50, 200))
+
+    def testHtmlSuperSubscriptBuffer(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setSize(60)
+        format.setSizeUnit(QgsUnitTypes.RenderPoints)
+        format.setColor(QColor(255, 0, 0))
+        format.setAllowHtmlFormatting(True)
+        format.buffer().setEnabled(True)
+        format.buffer().setSize(5)
+        format.buffer().setColor(QColor(50, 150, 200))
+        assert self.checkRenderPoint(format, 'text_html_supersubscript_buffer', None, text=[
+            '<sub>sub</sub>N<sup>sup</sup>'],
+            point=QPointF(50, 200))
+
+    def testHtmlSuperSubscriptShadow(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setSize(60)
+        format.setSizeUnit(QgsUnitTypes.RenderPoints)
+        format.setColor(QColor(0, 255, 0))
+        format.setAllowHtmlFormatting(True)
+        format.shadow().setEnabled(True)
+        format.shadow().setOffsetDistance(5)
+        format.shadow().setBlurRadius(0)
+        format.shadow().setColor(QColor(50, 150, 200))
+        assert self.checkRenderPoint(format, 'text_html_supersubscript_shadow', None, text=[
+            '<sub>sub</sub>N<sup>sup</sup>'],
+            point=QPointF(50, 200))
+
+    def testHtmlSuperSubscriptBufferShadow(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setSize(60)
+        format.setSizeUnit(QgsUnitTypes.RenderPoints)
+        format.setColor(QColor(0, 255, 0))
+        format.setAllowHtmlFormatting(True)
+        format.buffer().setEnabled(True)
+        format.buffer().setSize(5)
+        format.buffer().setColor(QColor(200, 50, 150))
+        format.shadow().setEnabled(True)
+        format.shadow().setOffsetDistance(5)
+        format.shadow().setBlurRadius(0)
+        format.shadow().setColor(QColor(50, 150, 200))
+        assert self.checkRenderPoint(format, 'text_html_supersubscript_buffer_shadow', None, text=[
+            '<sub>sub</sub>N<sup>sup</sup>'],
+            point=QPointF(50, 200))
+
     def testTextRenderFormat(self):
         format = QgsTextFormat()
         format.setFont(getTestFont('bold'))
         format.setSize(30)
         format.setSizeUnit(QgsUnitTypes.RenderPoints)
 
-        filename = '{}/test_render_text.svg'.format(QDir.tempPath())
+        filename = f'{QDir.tempPath()}/test_render_text.svg'
         svg = QSvgGenerator()
         svg.setFileName(filename)
         svg.setSize(QSize(400, 400))
@@ -3149,7 +3658,7 @@ class PyQgsTextRenderer(unittest.TestCase):
         painter.end()
 
         # expect svg to contain a text object with the label
-        with open(filename, 'r') as f:
+        with open(filename) as f:
             lines = ''.join(f.readlines())
         self.assertIn('<text', lines)
         self.assertIn('>my test text<', lines)
@@ -3183,7 +3692,7 @@ class PyQgsTextRenderer(unittest.TestCase):
         painter.end()
 
         # expect svg to contain a text object with the label
-        with open(filename, 'r') as f:
+        with open(filename) as f:
             lines = ''.join(f.readlines())
         self.assertNotIn('<text', lines)
         self.assertNotIn('>my test text<', lines)

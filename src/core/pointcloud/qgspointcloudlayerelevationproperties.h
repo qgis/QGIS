@@ -21,6 +21,7 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
+#include "qgsunittypes.h"
 #include "qgsmaplayerelevationproperties.h"
 
 /**
@@ -45,63 +46,177 @@ class CORE_EXPORT QgsPointCloudLayerElevationProperties : public QgsMapLayerElev
     bool hasElevation() const override;
     QDomElement writeXml( QDomElement &element, QDomDocument &doc, const QgsReadWriteContext &context ) override;
     bool readXml( const QDomElement &element, const QgsReadWriteContext &context ) override;
+    QgsPointCloudLayerElevationProperties *clone() const override SIP_FACTORY;
+    QString htmlSummary() const override;
     bool isVisibleInZRange( const QgsDoubleRange &range ) const override;
     QgsDoubleRange calculateZRange( QgsMapLayer *layer ) const override;
+    bool showByDefaultInElevationProfilePlots() const override;
 
     /**
-     * Returns the z offset, which is a fixed offset amount which should be added to z values from
-     * the layer.
+     * Returns the maximum screen error allowed when generating elevation profiles for the point cloud.
      *
-     * This can be used to correct or manually adjust for incorrect elevation values in a point cloud layer.
+     * Larger values result in a faster generation with less points included.
      *
-     * \note Any scaling specified via zScale() is applied before any offset value specified via zOffset()
+     * Units are retrieved via maximumScreenErrorUnit().
      *
-     * \see setZOffset()
+     * \see setMaximumScreenError()
+     * \see maximumScreenErrorUnit()
+     *
+     * \since QGIS 3.26
      */
-    double zOffset() const { return mZOffset; }
+    double maximumScreenError() const { return mMaximumScreenError; }
 
     /**
-     * Sets the z \a offset, which is a fixed offset amount which will be added to z values from
-     * the layer.
+     * Sets the maximum screen \a error allowed when generating elevation profiles for the point cloud.
      *
-     * This can be used to correct or manually adjust for incorrect elevation values in a point cloud layer.
+     * Larger values result in a faster generation with less points included.
      *
-     * \note Any scaling specified via zScale() is applied before any offset value specified via zOffset()
+     * Units are set via setMaximumScreenErrorUnit().
      *
-     * \see zOffset()
+     * \see maximumScreenError()
+     * \see setMaximumScreenErrorUnit()
+     *
+     * \since QGIS 3.26
      */
-    void setZOffset( double offset ) { mZOffset = offset; }
+    void setMaximumScreenError( double error );
 
     /**
-     * Returns the z scale, which is a scaling factor which should be applied to z values from
-     * the layer.
+     * Returns the unit for the maximum screen error allowed when generating elevation profiles for the point cloud.
      *
-     * This can be used to correct or manually adjust for incorrect elevation values in a point cloud layer, such
-     * as conversion of elevation values in feet to meters.
+     * \see maximumScreenError()
+     * \see setMaximumScreenErrorUnit()
      *
-     * \note Any scaling specified via zScale() is applied before any offset value specified via zOffset()
-     *
-     * \see setZScale()
+     * \since QGIS 3.26
      */
-    double zScale() const { return mZScale; }
+    QgsUnitTypes::RenderUnit maximumScreenErrorUnit() const { return mMaximumScreenErrorUnit; }
 
     /**
-     * Sets the z \a scale, which is a scaling factor which will be applied to z values from
-     * the layer.
+     * Sets the \a unit for the maximum screen error allowed when generating elevation profiles for the point cloud.
      *
-     * This can be used to correct or manually adjust for incorrect elevation values in a point cloud layer, such
-     * as conversion of elevation values in feet to meters.
+     * \see setMaximumScreenError()
+     * \see maximumScreenErrorUnit()
      *
-     * \note Any scaling specified via zScale() is applied before any offset value specified via zOffset()
-     *
-     * \see zScale()
+     * \since QGIS 3.26
      */
-    void setZScale( double scale ) { mZScale = scale; }
+    void setMaximumScreenErrorUnit( QgsUnitTypes::RenderUnit unit );
+
+    /**
+     * Returns the symbol used drawing points in elevation profile charts.
+     *
+     * \see setPointSymbol()
+     * \since QGIS 3.26
+     */
+    Qgis::PointCloudSymbol pointSymbol() const;
+
+    /**
+     * Sets the \a symbol used drawing points in elevation profile charts.
+     *
+     * \see pointSymbol()
+     * \since QGIS 3.26
+     */
+    void setPointSymbol( Qgis::PointCloudSymbol symbol );
+
+    /**
+     * Returns the color used drawing points in elevation profile charts.
+     *
+     * \see setPointColor()
+     * \since QGIS 3.26
+     */
+    QColor pointColor() const { return mPointColor; }
+
+    /**
+     * Sets the \a color used drawing points in elevation profile charts.
+     *
+     * \see pointColor()
+     * \since QGIS 3.26
+     */
+    void setPointColor( const QColor &color );
+
+    /**
+     * Returns TRUE if a reduced opacity by distance from profile curve effect should
+     * be applied when drawing points in elevation profile charts.
+     *
+     * \see setApplyOpacityByDistanceEffect()
+     * \since QGIS 3.26
+     */
+    bool applyOpacityByDistanceEffect() const { return mApplyOpacityByDistanceEffect; }
+
+    /**
+     * Sets whether a reduced opacity by distance from profile curve effect should
+     * be applied when drawing points in elevation profile charts.
+     *
+     * \see applyOpacityByDistanceEffect()
+     * \since QGIS 3.26
+     */
+    void setApplyOpacityByDistanceEffect( bool apply );
+
+    /**
+     * Sets the point \a size used for drawing points in elevation profile charts.
+     *
+     * Point size units are specified via setPointSizeUnit().
+     * \see pointSize()
+     * \see setPointSizeUnit()
+     *
+     * \since QGIS 3.26
+     */
+    void setPointSize( double size );
+
+    /**
+     * Returns the point size used for drawing points in elevation profile charts.
+     *
+     * The point size units are retrieved by calling pointSizeUnit().
+     *
+     * \see setPointSize()
+     * \see pointSizeUnit()
+     *
+     * \since QGIS 3.26
+     */
+    double pointSize() const { return mPointSize; }
+
+    /**
+     * Sets the \a units used for the point size used for drawing points in elevation profile charts.
+     *
+     * \see setPointSize()
+     * \see pointSizeUnit()
+     *
+     * \since QGIS 3.26
+     */
+    void setPointSizeUnit( const QgsUnitTypes::RenderUnit units );
+
+    /**
+     * Returns the units used for the point size used for drawing points in elevation profile charts.
+     * \see setPointSizeUnit()
+     * \see pointSize()
+     *
+     * \since QGIS 3.26
+     */
+    QgsUnitTypes::RenderUnit pointSizeUnit() const { return mPointSizeUnit; }
+
+    /**
+     * Returns TRUE if layer coloring should be respected when rendering elevation profile plots.
+     *
+     * \see setRespectLayerColors()
+     */
+    bool respectLayerColors() const { return mRespectLayerColors; }
+
+    /**
+     * Sets whether layer coloring should be respected when rendering elevation profile plots.
+     *
+     * \see respectLayerColors()
+     */
+    void setRespectLayerColors( bool enabled );
 
   private:
 
-    double mZScale = 1.0;
-    double mZOffset = 0.0;
+    double mMaximumScreenError = 0.3;
+    QgsUnitTypes::RenderUnit mMaximumScreenErrorUnit = QgsUnitTypes::RenderMillimeters;
+
+    double mPointSize = 0.6;
+    QgsUnitTypes::RenderUnit mPointSizeUnit = QgsUnitTypes::RenderMillimeters;
+    Qgis::PointCloudSymbol mPointSymbol = Qgis::PointCloudSymbol::Square;
+    QColor mPointColor;
+    bool mRespectLayerColors = true;
+    bool mApplyOpacityByDistanceEffect = false;
 };
 
 #endif // QGSPOINTCLOUDLAYERELEVATIONPROPERTIES_H

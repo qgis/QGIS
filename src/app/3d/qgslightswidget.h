@@ -74,11 +74,12 @@ class QgsLightsWidget : public QWidget, private Ui::QgsLightsWidget
   public:
     explicit QgsLightsWidget( QWidget *parent = nullptr );
 
-    void setLights( const QList<QgsPointLightSettings> &pointLights,
-                    const QList<QgsDirectionalLightSettings> &directionalLights );
+    void setLights( const QList<QgsLightSource *> sources );
 
-    QList<QgsPointLightSettings> pointLights();
-    QList<QgsDirectionalLightSettings> directionalLights();
+    QList<QgsLightSource *> lightSources();
+
+    int directionalLightCount() const;
+    int lightSourceCount() const;
 
   signals:
     void directionalLightsCountChanged( int count );

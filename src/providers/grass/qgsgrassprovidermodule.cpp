@@ -28,6 +28,7 @@
 #include "qgsgrass.h"
 #include "qgsgrassvector.h"
 #include "qgsproject.h"
+#include "qgsapplication.h"
 
 #ifdef HAVE_GUI
 #include "qgsnewnamedialog.h"
@@ -1328,3 +1329,13 @@ QGISEXTERN QgsProviderMetadata *providerMetadataFactory()
   return new QgsGrassProviderMetadata();
 }
 
+
+QList<Qgis::LayerType> QgsGrassProviderMetadata::supportedLayerTypes() const
+{
+  return { Qgis::LayerType::Vector };
+}
+
+QIcon QgsGrassProviderMetadata::icon() const
+{
+  return QgsApplication::getThemeIcon( QStringLiteral( "providerGrass.svg" ) );
+}

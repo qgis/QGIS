@@ -18,8 +18,8 @@
 #include "qgsproxyprogresstask.h"
 #include "qgsapplication.h"
 
-QgsProxyProgressTask::QgsProxyProgressTask( const QString &description )
-  : QgsTask( description, QgsTask::Flags() )
+QgsProxyProgressTask::QgsProxyProgressTask( const QString &description, bool canCancel )
+  : QgsTask( description, canCancel ? QgsTask::CanCancel : QgsTask::Flags() )
 {
 }
 
@@ -47,6 +47,13 @@ bool QgsProxyProgressTask::run()
 void QgsProxyProgressTask::setProxyProgress( double progress )
 {
   QMetaObject::invokeMethod( this, "setProgress", Qt::AutoConnection, Q_ARG( double, progress ) );
+}
+
+void QgsProxyProgressTask::cancel()
+{
+  emit canceled();
+
+  QgsTask::cancel();
 }
 
 //

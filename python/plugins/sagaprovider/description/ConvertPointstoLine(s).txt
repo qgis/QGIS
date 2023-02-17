@@ -1,6 +1,0 @@
-Convert Points to Line(s)
-shapes_lines
-QgsProcessingParameterFeatureSource|POINTS|Points|0|None|False
-QgsProcessingParameterField|ORDER|Order by...|None|POINTS|-1|False|False
-QgsProcessingParameterField|SEPARATE|Separate by...|None|POINTS|-1|False|False
-QgsProcessingParameterVectorDestination|LINES|Lines

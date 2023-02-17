@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsBox3d.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -12,12 +11,7 @@ __copyright__ = 'Copyright 2017, The QGIS Project'
 
 import qgis  # NOQA
 
-from qgis.core import (QgsBox3d,
-                       QgsPointXY,
-                       QgsPoint,
-                       QgsWkbTypes,
-                       QgsRectangle)
-
+from qgis.core import QgsBox3d, QgsPoint, QgsRectangle
 from qgis.testing import unittest
 
 
@@ -181,6 +175,34 @@ class TestQgsBox3d(unittest.TestCase):
         self.assertNotEqual(box1, QgsBox3d(5.0, 6.0, 17.0, 11.0, 13.0, 15.0))
         self.assertNotEqual(box1, QgsBox3d(5.0, 16.0, 7.0, 11.0, 13.0, 15.0))
         self.assertNotEqual(box1, QgsBox3d(52.0, 6.0, 7.0, 11.0, 13.0, 15.0))
+
+    def testScaling(self):
+        box1 = QgsBox3d(-1, -1, -1, 1, 1, 1)
+        box1.scale(3.0)
+        self.assertEqual(box1.width(), 6.0)
+        self.assertEqual(box1.height(), 6.0)
+        self.assertEqual(box1.depth(), 6.0)
+        self.assertEqual(box1.xMinimum(), -3.0)
+        self.assertEqual(box1.yMinimum(), -3.0)
+        self.assertEqual(box1.zMinimum(), -3.0)
+
+        box2 = QgsBox3d(-1, -1, -1, 1, 1, 1)
+        box2.scale(3.0, QgsPoint(-1.0, -1.0, -1.0))
+        self.assertEqual(box2.width(), 6.0)
+        self.assertEqual(box2.height(), 6.0)
+        self.assertEqual(box2.depth(), 6.0)
+        self.assertEqual(box2.xMinimum(), -1.0)
+        self.assertEqual(box2.yMinimum(), -1.0)
+        self.assertEqual(box2.zMinimum(), -1.0)
+
+        box3 = QgsBox3d(-1, -1, -1, 1, 1, 1)
+        box3.scale(3.0, QgsPoint(-2.0, 2.0, 0.0))
+        self.assertEqual(box3.width(), 6.0)
+        self.assertEqual(box3.height(), 6.0)
+        self.assertEqual(box3.depth(), 6.0)
+        self.assertEqual(box3.xMinimum(), 1.0)
+        self.assertEqual(box3.yMinimum(), -7.0)
+        self.assertEqual(box3.zMinimum(), -3.0)
 
 
 if __name__ == '__main__':

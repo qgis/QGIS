@@ -72,7 +72,7 @@ Optional ``flags`` can be specified to control the output format.
 .. seealso:: :py:func:`formatX`
 %End
 
-    static QString format( const QgsPointXY &point, Format format, int precision = 12,  FormatFlags flags = FlagDegreesUseStringSuffix );
+    static QString format( const QgsPointXY &point, Format format, int precision = 12,  FormatFlags flags = FlagDegreesUseStringSuffix, Qgis::CoordinateOrder order = Qgis::CoordinateOrder::XY );
 %Docstring
 Formats a ``point`` according to the specified parameters.
 
@@ -81,12 +81,16 @@ The ``format`` argument indicates the desired display format for the coordinate.
 The ``precision`` argument gives the number of decimal places to include for coordinates.
 
 Optional ``flags`` can be specified to control the output format.
+
+Since QGIS 3.26 the optional ``order`` argument can be used to control the order of the coordinates.
 %End
 
-    static QString asPair( double x, double y, int precision = 12 );
+    static QString asPair( double x, double y, int precision = 12, Qgis::CoordinateOrder order = Qgis::CoordinateOrder::XY );
 %Docstring
 Formats coordinates as an "``x``,``y``" pair, with optional decimal ``precision`` (number
 of decimal places to include).
+
+Since QGIS 3.26 the optional ``order`` argument can be used to control the order of the coordinates.
 %End
 
     static QChar separator( );

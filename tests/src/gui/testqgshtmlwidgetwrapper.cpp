@@ -35,8 +35,12 @@ class TestQgsHtmlWidgetWrapper : public QObject
     void cleanupTestCase(); // will be called after the last testfunction was executed.
     void init(); // will be called before each testfunction is executed.
     void cleanup(); // will be called after every testfunction.
+
+#ifdef WITH_QTWEBKIT
     void testExpressionEvaluate_data();
     void testExpressionEvaluate();
+    void testExpressionNewLine();
+#endif
 };
 
 void TestQgsHtmlWidgetWrapper::initTestCase()
@@ -59,6 +63,8 @@ void TestQgsHtmlWidgetWrapper::cleanup()
 {
 }
 
+#ifdef WITH_QTWEBKIT
+
 void TestQgsHtmlWidgetWrapper::testExpressionEvaluate_data()
 {
   QTest::addColumn<QString>( "expression" );
@@ -67,6 +73,8 @@ void TestQgsHtmlWidgetWrapper::testExpressionEvaluate_data()
 
   QTest::newRow( "with-geometry" ) << "geom_to_wkt($geometry)" << true << "The text is 'Point (0.5 0.5)'";
   QTest::newRow( "without-geometry" ) << "2+pk" << false << "The text is '3'";
+  QTest::newRow( "aggregate newline" ) << "concat('a', \n'b')" << false << "The text is 'ab'";
+  QTest::newRow( "form value" ) << "current_value('pk') + 2" << false << "The text is '3'";
 }
 
 void TestQgsHtmlWidgetWrapper::testExpressionEvaluate()
@@ -93,12 +101,26 @@ void TestQgsHtmlWidgetWrapper::testExpressionEvaluate()
 
   htmlWrapper->setFeature( f );
 
-#ifdef WITH_QTWEBKIT
   QCOMPARE( webView->page()->mainFrame()->toPlainText(), expectedText );
-#endif
 
   QgsProject::instance()->removeMapLayer( &layer );
 }
+
+void TestQgsHtmlWidgetWrapper::testExpressionNewLine()
+{
+  QgsHtmlWidgetWrapper *htmlWrapper = new QgsHtmlWidgetWrapper( nullptr, nullptr, nullptr );
+  const QString html { QStringLiteral( R"html(First line<br>
+Second line)html" ) };
+  htmlWrapper->setHtmlCode( html );
+
+  QgsWebView *webView = qobject_cast<QgsWebView *>( htmlWrapper->widget() );
+  Q_ASSERT( webView );
+  Q_ASSERT( ! htmlWrapper->needsGeometry() );
+  QCOMPARE( webView->page()->mainFrame()->toPlainText(), R"(First line
+Second line)" );
+}
+
+#endif
 
 QGSTEST_MAIN( TestQgsHtmlWidgetWrapper )
 #include "testqgshtmlwidgetwrapper.moc"

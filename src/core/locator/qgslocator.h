@@ -29,7 +29,10 @@
 #include "qgslocatorfilter.h"
 #include "qgsfeedback.h"
 #include "qgslocatorcontext.h"
-#include "qgssettingsentry.h"
+#include "qgssettingstree.h"
+
+class QgsSettingsEntryBool;
+class QgsSettingsEntryString;
 
 
 /**
@@ -154,12 +157,14 @@ class CORE_EXPORT QgsLocator : public QObject
     QStringList completionList() const {return mAutocompletionList;}
 
 #ifndef SIP_RUN
+    static inline QgsSettingsTreeNamedListNode *sTreeLocatorFilters = QgsSettingsTree::treeRoot()->createNamedListNode( QStringLiteral( "locator-filters" ) );
+
     //! Settings entry locator filter enabled
-    static const inline QgsSettingsEntryBool settingsLocatorFilterEnabled = QgsSettingsEntryBool( QStringLiteral( "locator_filters/enabled_%1" ), QgsSettings::Gui, true, QObject::tr( "Locator filter enabled" ) );
+    static const QgsSettingsEntryBool *settingsLocatorFilterEnabled;
     //! Settings entry locator filter default value
-    static const inline QgsSettingsEntryBool settingsLocatorFilterDefault = QgsSettingsEntryBool( QStringLiteral( "locator_filters/default_%1" ), QgsSettings::Gui, false, QObject::tr( "Locator filter default value" ) );
+    static const QgsSettingsEntryBool *settingsLocatorFilterDefault;
     //! Settings entry locator filter prefix
-    static const inline QgsSettingsEntryString settingsLocatorFilterPrefix = QgsSettingsEntryString( QStringLiteral( "locator_filters/prefix_%1" ), QgsSettings::Gui, QString(), QObject::tr( "Locator filter prefix" ) );
+    static const QgsSettingsEntryString *settingsLocatorFilterPrefix;
 #endif
 
   signals:

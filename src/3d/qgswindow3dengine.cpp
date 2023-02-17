@@ -43,6 +43,11 @@ QWindow *QgsWindow3DEngine::window()
   return mWindow3D;
 }
 
+Qt3DCore::QEntity *QgsWindow3DEngine::root() const
+{
+  return mRoot;
+}
+
 void QgsWindow3DEngine::setShadowRenderingEnabled( bool enabled )
 {
   mShadowRenderingEnabled = enabled;
@@ -96,4 +101,5 @@ void QgsWindow3DEngine::setSize( QSize s )
   mWindow3D->setHeight( mSize.height() );
   mFrameGraph->setSize( mSize );
   camera()->setAspectRatio( float( mSize.width() ) / float( mSize.height() ) );
+  emit sizeChanged();
 }

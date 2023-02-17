@@ -22,6 +22,7 @@
 #include "qgslayoutitem3dmap.h"
 
 class QgsLayoutItem3DMap;
+class Qgs3DMapCanvasWidget;
 
 class QgsLayout3DMapWidget : public QgsLayoutItemBaseWidget, private Ui::QgsLayout3DMapWidgetBase
 {
@@ -38,8 +39,8 @@ class QgsLayout3DMapWidget : public QgsLayoutItemBaseWidget, private Ui::QgsLayo
     void updateCameraPoseWidgetsFromItem();
 
   private slots:
-    void copy3DMapSettings();
-    void copeCameraPose();
+    void copy3DMapSettings( Qgs3DMapCanvasWidget *widget );
+    void copyCameraPose( Qgs3DMapCanvasWidget *widget );
     void updateCameraPose();
 
   private:

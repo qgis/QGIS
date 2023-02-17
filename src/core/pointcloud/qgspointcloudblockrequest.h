@@ -20,14 +20,10 @@
 
 #include <QObject>
 
-#include "qgspointcloudattribute.h"
 #include "qgstiledownloadmanager.h"
 #include "qgspointcloudindex.h"
 
 #define SIP_NO_FILE
-
-class QgsPointCloudAttributeCollection;
-class QgsPointCloudBlock;
 
 /**
  * \ingroup core
@@ -46,9 +42,12 @@ class CORE_EXPORT QgsPointCloudBlockRequest : public QObject
      * QgsPointCloudBlockRequest constructor
      * Note: It is the responsablitiy of the caller to delete the block if it was loaded correctly
      */
-    QgsPointCloudBlockRequest( const IndexedPointCloudNode &node, const QString &Uri, const QString &dataType,
+    QgsPointCloudBlockRequest( const IndexedPointCloudNode &node, const QString &Uri,
                                const QgsPointCloudAttributeCollection &attributes, const QgsPointCloudAttributeCollection &requestedAttributes,
-                               const QgsVector3D &scale, const QgsVector3D &offset );
+                               const QgsVector3D &scale, const QgsVector3D &offset, const QgsPointCloudExpression &filterExpression, const QgsRectangle &filterRect );
+
+
+    virtual ~QgsPointCloudBlockRequest() = 0;
 
     /**
      * Returns the requested block. if the returned block is nullptr, that means the data request failed
@@ -62,17 +61,18 @@ class CORE_EXPORT QgsPointCloudBlockRequest : public QObject
   signals:
     //! Emitted when the request processing has finished
     void finished();
-  private:
+
+  protected:
     IndexedPointCloudNode mNode;
-    QString mDataType;
+    QString mUri;
     QgsPointCloudAttributeCollection mAttributes;
     QgsPointCloudAttributeCollection mRequestedAttributes;
-    std::unique_ptr<QgsTileDownloadManagerReply> mTileDownloadManagetReply = nullptr;
+    std::unique_ptr<QgsTileDownloadManagerReply> mTileDownloadManagerReply = nullptr;
     QgsPointCloudBlock *mBlock = nullptr;
     QString mErrorStr;
     QgsVector3D mScale, mOffset;
-  private slots:
-    void blockFinishedLoading();
+    QgsPointCloudExpression mFilterExpression;
+    QgsRectangle mFilterRect;
 };
 
 #endif // QGSPOINTCLOUDBLOCKREQUEST_H

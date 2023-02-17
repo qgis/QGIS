@@ -162,6 +162,42 @@ class GUI_EXPORT QgsSymbolButton : public QToolButton
      */
     void registerExpressionContextGenerator( QgsExpressionContextGenerator *generator );
 
+    /**
+     * Sets the default symbol for the button, which is shown in the button's drop-down menu for the
+     * "default symbol" option.
+     * \param symbol default symbol for the button. Set to NULLPTR to disable the default symbol
+     * option. Ownership of \a symbol is transferred to the button.
+     * \see defaultSymbol()
+     * \since QGIS 3.30
+     */
+    void setDefaultSymbol( QgsSymbol *symbol SIP_TRANSFER );
+
+    /**
+     * Returns the default symbol for the button, which is shown in the button's drop-down menu for the
+     * "default symbol" option.
+     * \returns default symbol for the button. Returns NULLPTR if the default symbol
+     * option is disabled.
+     * \see setDefaultSymbol()
+     * \since QGIS 3.30
+     */
+    const QgsSymbol *defaultSymbol() const;
+
+    /**
+     * Returns whether the set to null (clear) option is shown in the button's drop-down menu.
+     * \see setShowNull()
+     * \see isNull()
+     * \since QGIS 3.26
+     */
+    bool showNull() const;
+
+    /**
+     * Returns TRUE if the current symbol is null.
+     * \see setShowNull()
+     * \see showNull()
+     * \since QGIS 3.26
+     */
+    bool isNull() const;
+
   public slots:
 
     /**
@@ -204,6 +240,35 @@ class GUI_EXPORT QgsSymbolButton : public QToolButton
      */
     void pasteColor();
 
+    /**
+     * Sets whether a set to null (clear) option is shown in the button's drop-down menu.
+     * \param showNull set to TRUE to show a null option
+     * \see showNull()
+     * \see isNull()
+     * \since QGIS 3.26
+     */
+    void setShowNull( bool showNull );
+
+    /**
+     * Sets symbol to to null.
+     * \see setShowNull()
+     * \see setToDefaultSymbol()
+     * \see showNull()
+     * \since QGIS 3.26
+     */
+    void setToNull();
+
+    /**
+     * Sets symbol to the button's default symbol, if set.
+     *
+     * \see setDefaultSymbol()
+     * \see defaultSymbol()
+     * \see setToNull()
+     *
+     * \since QGIS 3.30
+     */
+    void setToDefaultSymbol();
+
   signals:
 
     /**
@@ -233,6 +298,8 @@ class GUI_EXPORT QgsSymbolButton : public QToolButton
 
     // Reimplemented to accept dropped colors
     void dropEvent( QDropEvent *e ) override;
+
+    void wheelEvent( QWheelEvent *event ) override;
 
   private slots:
 
@@ -277,6 +344,10 @@ class GUI_EXPORT QgsSymbolButton : public QToolButton
 
     bool mPickingColor = false;
 
+    bool mShowNull = false;
+
+    std::unique_ptr< QgsSymbol > mDefaultSymbol;
+
     /**
      * Regenerates the text preview. If \a color is specified, a temporary color preview
      * is shown instead.
@@ -308,6 +379,8 @@ class GUI_EXPORT QgsSymbolButton : public QToolButton
     void stopPicking( QPoint eventPos, bool samplingColor = true );
 
     void showColorDialog();
+
+    void updateSizeHint();
 
 };
 

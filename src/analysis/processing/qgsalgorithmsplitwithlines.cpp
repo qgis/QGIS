@@ -50,13 +50,13 @@ void QgsSplitWithLinesAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ),
                 QObject::tr( "Input layer" ), QList< int >() << QgsProcessing::TypeVectorLine << QgsProcessing::TypeVectorPolygon ) );
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "LINES" ),
-                QObject::tr( "Split layer" ), QList< int >() << QgsProcessing::TypeVectorLine ) );
+                QObject::tr( "Split layer" ), QList< int >() << QgsProcessing::TypeVectorLine << QgsProcessing::TypeVectorPolygon ) );
   addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Split" ) ) );
 }
 
 QString QgsSplitWithLinesAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm splits the lines or polygons in one layer using the lines in another layer to define the breaking points. "
+  return QObject::tr( "This algorithm splits the lines or polygons in one layer using the lines or polygon rings in another layer to define the breaking points. "
                       "Intersection between geometries in both layers are considered as split points." );
 }
 
@@ -106,10 +106,10 @@ QVariantMap QgsSplitWithLinesAlgorithm::processAlgorithm( const QVariantMap &par
   request.setNoAttributes();
   request.setDestinationCrs( source->sourceCrs(), context.transformContext() );
 
-  QgsFeatureIterator splitLines = linesSource->getFeatures( request );
+  QgsFeatureIterator splitFeatures = linesSource->getFeatures( request );
   QgsFeature aSplitFeature;
 
-  const QgsSpatialIndex splitLinesIndex( splitLines, feedback, QgsSpatialIndex::FlagStoreFeatureGeometries );
+  const QgsSpatialIndex splitFeaturesIndex( splitFeatures, feedback, QgsSpatialIndex::FlagStoreFeatureGeometries );
 
   QgsFeature outFeat;
   QgsFeatureIterator features = source->getFeatures();
@@ -137,30 +137,31 @@ QVariantMap QgsSplitWithLinesAlgorithm::processAlgorithm( const QVariantMap &par
 
     QVector< QgsGeometry > inGeoms = originalGeometry.asGeometryCollection();
 
-    const QgsFeatureIds splitLineCandidates = qgis::listToSet( splitLinesIndex.intersects( originalGeometry.boundingBox() ) );
-    if ( !splitLineCandidates.empty() ) // has intersection of bounding boxes
+    const QgsFeatureIds splitFeatureCandidates = qgis::listToSet( splitFeaturesIndex.intersects( originalGeometry.boundingBox() ) );
+    if ( !splitFeatureCandidates.empty() ) // has intersection of bounding boxes
     {
       QVector< QgsGeometry > splittingLines;
 
       // use prepared geometries for faster intersection tests
       std::unique_ptr< QgsGeometryEngine > originalGeometryEngine;
 
-      for ( QgsFeatureId splitLineCandidateId : splitLineCandidates )
+      for ( QgsFeatureId splitFeatureCandidateId : splitFeatureCandidates )
       {
         // check if trying to self-intersect
-        if ( sameLayer && inFeatureA.id() == splitLineCandidateId )
+        if ( sameLayer && inFeatureA.id() == splitFeatureCandidateId )
           continue;
 
-        const QgsGeometry splitLineCandidate = splitLinesIndex.geometry( splitLineCandidateId );
+        const QgsGeometry splitFeatureCandidate = splitFeaturesIndex.geometry( splitFeatureCandidateId );
         if ( !originalGeometryEngine )
         {
           originalGeometryEngine.reset( QgsGeometry::createGeometryEngine( originalGeometry.constGet() ) );
           originalGeometryEngine->prepareGeometry();
         }
 
-        if ( originalGeometryEngine->intersects( splitLineCandidate.constGet() ) )
+        if ( originalGeometryEngine->intersects( splitFeatureCandidate.constGet() ) )
         {
-          QVector< QgsGeometry > splitGeomParts = splitLineCandidate.asGeometryCollection();
+
+          QVector< QgsGeometry > splitGeomParts = splitFeatureCandidate.convertToType( QgsWkbTypes::GeometryType::LineGeometry, true ).asGeometryCollection();
           splittingLines.append( splitGeomParts );
         }
       }
@@ -222,8 +223,8 @@ QVariantMap QgsSplitWithLinesAlgorithm::processAlgorithm( const QVariantMap &par
                 }
                 else
                 {
-                  inGeoms.append( inGeom );
-                  inGeoms.append( newGeometries );
+                  outGeoms.append( inGeom );
+                  outGeoms.append( newGeometries );
                 }
               }
               else

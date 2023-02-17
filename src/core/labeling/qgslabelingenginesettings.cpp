@@ -19,7 +19,6 @@
 #include "qgssymbollayerutils.h"
 
 QgsLabelingEngineSettings::QgsLabelingEngineSettings()
-  : mFlags( UsePartialCandidates )
 {
 }
 
@@ -35,12 +34,13 @@ void QgsLabelingEngineSettings::readSettingsFromProject( QgsProject *prj )
   mMaxLineCandidatesPerCm = prj->readDoubleEntry( QStringLiteral( "PAL" ), QStringLiteral( "/CandidatesLinePerCM" ), 5, &saved );
   mMaxPolygonCandidatesPerCmSquared = prj->readDoubleEntry( QStringLiteral( "PAL" ), QStringLiteral( "/CandidatesPolygonPerCM" ), 2.5, &saved );
 
-  mFlags = Flags();
-  if ( prj->readBoolEntry( QStringLiteral( "PAL" ), QStringLiteral( "/ShowingCandidates" ), false, &saved ) ) mFlags |= DrawCandidates;
-  if ( prj->readBoolEntry( QStringLiteral( "PAL" ), QStringLiteral( "/DrawRectOnly" ), false, &saved ) ) mFlags |= DrawLabelRectOnly;
-  if ( prj->readBoolEntry( QStringLiteral( "PAL" ), QStringLiteral( "/ShowingAllLabels" ), false, &saved ) ) mFlags |= UseAllLabels;
-  if ( prj->readBoolEntry( QStringLiteral( "PAL" ), QStringLiteral( "/ShowingPartialsLabels" ), true, &saved ) ) mFlags |= UsePartialCandidates;
-  if ( prj->readBoolEntry( QStringLiteral( "PAL" ), QStringLiteral( "/DrawUnplaced" ), false, &saved ) ) mFlags |= DrawUnplacedLabels;
+  mFlags = Qgis::LabelingFlags();
+  if ( prj->readBoolEntry( QStringLiteral( "PAL" ), QStringLiteral( "/ShowingCandidates" ), false, &saved ) ) mFlags |= Qgis::LabelingFlag::DrawCandidates;
+  if ( prj->readBoolEntry( QStringLiteral( "PAL" ), QStringLiteral( "/DrawRectOnly" ), false, &saved ) ) mFlags |= Qgis::LabelingFlag::DrawLabelRectOnly;
+  if ( prj->readBoolEntry( QStringLiteral( "PAL" ), QStringLiteral( "/ShowingAllLabels" ), false, &saved ) ) mFlags |= Qgis::LabelingFlag::UseAllLabels;
+  if ( prj->readBoolEntry( QStringLiteral( "PAL" ), QStringLiteral( "/ShowingPartialsLabels" ), true, &saved ) ) mFlags |= Qgis::LabelingFlag::UsePartialCandidates;
+  if ( prj->readBoolEntry( QStringLiteral( "PAL" ), QStringLiteral( "/DrawUnplaced" ), false, &saved ) ) mFlags |= Qgis::LabelingFlag::DrawUnplacedLabels;
+  if ( prj->readBoolEntry( QStringLiteral( "PAL" ), QStringLiteral( "/DrawLabelMetrics" ), false, &saved ) ) mFlags |= Qgis::LabelingFlag::DrawLabelMetrics;
 
   mDefaultTextRenderFormat = Qgis::TextRenderFormat::AlwaysOutlines;
   // if users have disabled the older PAL "DrawOutlineLabels" setting, respect that
@@ -53,7 +53,7 @@ void QgsLabelingEngineSettings::readSettingsFromProject( QgsProject *prj )
 
   mUnplacedLabelColor = QgsSymbolLayerUtils::decodeColor( prj->readEntry( QStringLiteral( "PAL" ), QStringLiteral( "/UnplacedColor" ), QStringLiteral( "#ff0000" ) ) );
 
-  mPlacementVersion = static_cast< PlacementEngineVersion >( prj->readNumEntry( QStringLiteral( "PAL" ), QStringLiteral( "/PlacementEngineVersion" ), static_cast< int >( PlacementEngineVersion1 ) ) );
+  mPlacementVersion = static_cast< Qgis::LabelPlacementEngineVersion >( prj->readNumEntry( QStringLiteral( "PAL" ), QStringLiteral( "/PlacementEngineVersion" ), static_cast< int >( Qgis::LabelPlacementEngineVersion::Version1 ) ) );
 }
 
 void QgsLabelingEngineSettings::writeSettingsToProject( QgsProject *project )
@@ -62,17 +62,18 @@ void QgsLabelingEngineSettings::writeSettingsToProject( QgsProject *project )
   project->writeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/CandidatesLinePerCM" ), mMaxLineCandidatesPerCm );
   project->writeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/CandidatesPolygonPerCM" ), mMaxPolygonCandidatesPerCmSquared );
 
-  project->writeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/ShowingCandidates" ), mFlags.testFlag( DrawCandidates ) );
-  project->writeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/DrawRectOnly" ), mFlags.testFlag( DrawLabelRectOnly ) );
-  project->writeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/DrawUnplaced" ), mFlags.testFlag( DrawUnplacedLabels ) );
-  project->writeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/ShowingAllLabels" ), mFlags.testFlag( UseAllLabels ) );
-  project->writeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/ShowingPartialsLabels" ), mFlags.testFlag( UsePartialCandidates ) );
+  project->writeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/ShowingCandidates" ), mFlags.testFlag( Qgis::LabelingFlag::DrawCandidates ) );
+  project->writeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/DrawRectOnly" ), mFlags.testFlag( Qgis::LabelingFlag::DrawLabelRectOnly ) );
+  project->writeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/DrawUnplaced" ), mFlags.testFlag( Qgis::LabelingFlag::DrawUnplacedLabels ) );
+  project->writeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/ShowingAllLabels" ), mFlags.testFlag( Qgis::LabelingFlag::UseAllLabels ) );
+  project->writeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/ShowingPartialsLabels" ), mFlags.testFlag( Qgis::LabelingFlag::UsePartialCandidates ) );
+  project->writeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/DrawLabelMetrics" ), mFlags.testFlag( Qgis::LabelingFlag::DrawLabelMetrics ) );
 
   project->writeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/TextFormat" ), static_cast< int >( mDefaultTextRenderFormat ) );
 
   project->writeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/UnplacedColor" ), QgsSymbolLayerUtils::encodeColor( mUnplacedLabelColor ) );
 
-  project->writeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/PlacementEngineVersion" ), mPlacementVersion );
+  project->writeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/PlacementEngineVersion" ), static_cast< int >( mPlacementVersion ) );
 }
 
 QColor QgsLabelingEngineSettings::unplacedLabelColor() const
@@ -85,12 +86,12 @@ void QgsLabelingEngineSettings::setUnplacedLabelColor( const QColor &unplacedLab
   mUnplacedLabelColor = unplacedLabelColor;
 }
 
-QgsLabelingEngineSettings::PlacementEngineVersion QgsLabelingEngineSettings::placementVersion() const
+Qgis::LabelPlacementEngineVersion QgsLabelingEngineSettings::placementVersion() const
 {
   return mPlacementVersion;
 }
 
-void QgsLabelingEngineSettings::setPlacementVersion( PlacementEngineVersion placementVersion )
+void QgsLabelingEngineSettings::setPlacementVersion( Qgis::LabelPlacementEngineVersion placementVersion )
 {
   mPlacementVersion = placementVersion;
 }

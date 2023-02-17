@@ -3,7 +3,13 @@
   "type": "function",
   "groups": ["GeometryGroup"],
   "description": "Returns the maximum x coordinate of a geometry. Calculations are in the spatial reference system of this geometry.",
-  "arguments": [ {"arg":"geometry","description":"a geometry"}],
-  "examples": [ { "expression":"x_max( geom_from_wkt( 'LINESTRING(2 5, 3 6, 4 8)') )", "returns":"4"}
-  ]
+  "arguments": [{
+    "arg": "geometry",
+    "description": "a geometry"
+  }],
+  "examples": [{
+    "expression": "x_max( geom_from_wkt( 'LINESTRING(2 5, 3 6, 4 8)') )",
+    "returns": "4"
+  }],
+  "tags": ["coordinate", "spatial", "reference", "calculations", "system", "maximum"]
 }

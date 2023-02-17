@@ -122,7 +122,7 @@ void QgsAttributeTableDelegate::setModelData( QWidget *editor, QAbstractItemMode
   newValues.append( eww->additionalFieldValues() );
 
   if ( ( oldValue != newValues.at( 0 ) && newValues.at( 0 ).isValid() )
-       || oldValue.isNull() != newValues.at( 0 ).isNull()
+       || QgsVariantUtils::isNull( oldValue ) != QgsVariantUtils::isNull( newValues.at( 0 ) )
        || newValues.count() > 1 )
   {
     // This fixes https://github.com/qgis/QGIS/issues/24398
@@ -188,7 +188,7 @@ void QgsAttributeTableDelegate::paint( QPainter *painter, const QStyleOptionView
 
     QStyleOptionViewItem myOpt = option;
 
-    if ( index.model()->data( index, Qt::EditRole ).isNull() )
+    if ( QgsVariantUtils::isNull( index.model()->data( index, Qt::EditRole ) ) )
     {
       myOpt.font.setItalic( true );
       myOpt.palette.setColor( QPalette::Text, QColor( "gray" ) );

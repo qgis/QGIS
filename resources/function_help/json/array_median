@@ -3,9 +3,16 @@
   "type": "function",
   "groups": ["Arrays"],
   "description": "Returns the median of arithmetic values in an array. Non arithmetic values in the array are ignored.",
-  "arguments": [ {"arg":"array","description":"an array"} ],
-  "examples": [ 
-    { "expression":"array_median(array(0,1,42,42,43))", "returns":"42"},
-    { "expression":"array_median(array(0,1,2,42,'a','b'))", "returns":"1.5"}
-  ]
+  "arguments": [{
+    "arg": "array",
+    "description": "an array"
+  }],
+  "examples": [{
+    "expression": "array_median(array(0,1,42,42,43))",
+    "returns": "42"
+  }, {
+    "expression": "array_median(array(0,1,2,42,'a','b'))",
+    "returns": "1.5"
+  }],
+  "tags": ["array", "arithmetic", "median", "ignored"]
 }

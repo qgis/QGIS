@@ -389,11 +389,7 @@ class QgsTaskRunnableWrapper : public QRunnable
 
 QgsTaskManager::QgsTaskManager( QObject *parent )
   : QObject( parent )
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-  , mTaskMutex( new QMutex( QMutex::Recursive ) )
-#else
   , mTaskMutex( new QRecursiveMutex() )
-#endif
 {
 
 }
@@ -496,7 +492,9 @@ long QgsTaskManager::addTaskPrivate( QgsTask *task, QgsTaskList dependencies, bo
 
   if ( !isSubTask )
   {
-    emit taskAdded( taskId );
+    if ( !( task->flags() & QgsTask::Hidden ) )
+      emit taskAdded( taskId );
+
     processQueue();
   }
 
@@ -515,7 +513,7 @@ QgsTask *QgsTaskManager::task( long id ) const
 QList<QgsTask *> QgsTaskManager::tasks() const
 {
   QMutexLocker ml( mTaskMutex );
-  return qgis::setToList( mParentTasks );
+  return QList<QgsTask *>( mParentTasks.begin(), mParentTasks.end() );
 }
 
 int QgsTaskManager::count() const
@@ -658,13 +656,26 @@ QList<QgsTask *> QgsTaskManager::activeTasks() const
   QMutexLocker ml( mTaskMutex );
   QSet< QgsTask * > activeTasks = mActiveTasks;
   activeTasks.intersect( mParentTasks );
-  return qgis::setToList( activeTasks );
+  return QList<QgsTask *>( activeTasks.constBegin(), activeTasks.constEnd() );
 }
 
-int QgsTaskManager::countActiveTasks() const
+int QgsTaskManager::countActiveTasks( bool includeHidden ) const
 {
   QMutexLocker ml( mTaskMutex );
   QSet< QgsTask * > tasks = mActiveTasks;
+
+  if ( !includeHidden )
+  {
+    QSet< QgsTask * > filteredTasks;
+    filteredTasks.reserve( tasks.size() );
+    for ( QgsTask *task : tasks )
+    {
+      if ( !( task->flags() & QgsTask::Hidden ) )
+        filteredTasks.insert( task );
+    }
+    tasks = filteredTasks;
+  }
+
   return tasks.intersect( mParentTasks ).count();
 }
 
@@ -677,6 +688,8 @@ void QgsTaskManager::triggerTask( QgsTask *task )
 void QgsTaskManager::taskProgressChanged( double progress )
 {
   QgsTask *task = qobject_cast< QgsTask * >( sender() );
+  if ( task && task->flags() & QgsTask::Hidden )
+    return;
 
   //find ID of task
   long id = taskId( task );
@@ -685,7 +698,7 @@ void QgsTaskManager::taskProgressChanged( double progress )
 
   emit progressChanged( id, progress );
 
-  if ( countActiveTasks() == 1 )
+  if ( countActiveTasks( false ) == 1 )
   {
     emit finalTaskProgressChanged( progress );
   }
@@ -694,6 +707,7 @@ void QgsTaskManager::taskProgressChanged( double progress )
 void QgsTaskManager::taskStatusChanged( int status )
 {
   QgsTask *task = qobject_cast< QgsTask * >( sender() );
+  const bool isHidden = task && task->flags() & QgsTask::Hidden;
 
   //find ID of task
   long id = taskId( task );
@@ -724,7 +738,7 @@ void QgsTaskManager::taskStatusChanged( int status )
   mTaskMutex->lock();
   bool isParent = mParentTasks.contains( task );
   mTaskMutex->unlock();
-  if ( isParent )
+  if ( isParent && !isHidden )
   {
     // don't emit status changed for subtasks
     emit statusChanged( id, status );
@@ -838,7 +852,7 @@ bool QgsTaskManager::cleanupAndDeleteTask( QgsTask *task )
 
 void QgsTaskManager::processQueue()
 {
-  int prevActiveCount = countActiveTasks();
+  int prevActiveCount = countActiveTasks( false );
   mTaskMutex->lock();
   mActiveTasks.clear();
   for ( QMap< long, TaskInfo >::iterator it = mTasks.begin(); it != mTasks.end(); ++it )
@@ -864,7 +878,7 @@ void QgsTaskManager::processQueue()
     emit allTasksFinished();
   }
 
-  int newActiveCount = countActiveTasks();
+  int newActiveCount = countActiveTasks( false );
   if ( prevActiveCount != newActiveCount )
   {
     emit countActiveTasksChanged( newActiveCount );

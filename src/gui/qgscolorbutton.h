@@ -461,6 +461,8 @@ class GUI_EXPORT QgsColorButton : public QToolButton
      */
     void dropEvent( QDropEvent *e ) override;
 
+    void wheelEvent( QWheelEvent *event ) override;
+
   private:
 
     Behavior mBehavior = QgsColorButton::ShowDialog;

@@ -23,18 +23,28 @@ Base class for map tools that edit vector geometry
 
     virtual Flags flags() const;
 
-    double defaultZValue() const;
+    static double defaultZValue();
 %Docstring
 Returns default Z value.
 Used for setting Z coordinate to new vertex.
 %End
 
-    double defaultMValue() const;
+    static double defaultMValue();
 %Docstring
 Returns default M value.
 Used for setting M coordinate to new vertex.
 
 .. versionadded:: 3.20
+%End
+
+    QgsGeometryRubberBand *createGeometryRubberBand( QgsWkbTypes::GeometryType geometryType = QgsWkbTypes::LineGeometry, bool alternativeBand = false ) const /Factory/;
+%Docstring
+Creates a  geometry rubber band with the color/line width from
+the QGIS settings. The caller takes ownership of the
+returned object
+
+:param geometryType:
+:param alternativeBand: if ``True``, rubber band will be set with more transparency and a dash pattern. default is ``False``.
 %End
 
   protected:
@@ -61,8 +71,6 @@ returned object
 :param geometryType:
 :param alternativeBand: if ``True``, rubber band will be set with more transparency and a dash pattern. default is ``False``.
 %End
-
-    QgsGeometryRubberBand *createGeometryRubberBand( QgsWkbTypes::GeometryType geometryType = QgsWkbTypes::LineGeometry, bool alternativeBand = false ) const /Factory/;
 
     QgsVectorLayer *currentVectorLayer();
 %Docstring

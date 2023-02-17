@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for the OGR/MapInfo tab provider.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -15,8 +14,13 @@ import shutil
 import tempfile
 
 import osgeo.gdal  # NOQA
-from qgis.PyQt.QtCore import QDate, QTime, QDateTime, QVariant, QDir
-from qgis.core import QgsVectorLayer, QgsFeatureRequest, QgsVectorDataProvider, QgsField
+from qgis.PyQt.QtCore import QDate, QDateTime, QDir, QTime, QVariant
+from qgis.core import (
+    QgsFeatureRequest,
+    QgsField,
+    QgsVectorDataProvider,
+    QgsVectorLayer,
+)
 from qgis.testing import start_app, unittest
 
 from utilities import unitTestDataPath
@@ -45,7 +49,7 @@ class TestPyQgsTabfileProvider(unittest.TestCase):
     def testDateTimeFormats(self):
         # check that date and time formats are correctly interpreted
         basetestfile = os.path.join(TEST_DATA_DIR, 'tab_file.tab')
-        vl = QgsVectorLayer('{}|layerid=0'.format(basetestfile), 'test', 'ogr')
+        vl = QgsVectorLayer(f'{basetestfile}|layerid=0', 'test', 'ogr')
 
         fields = vl.dataProvider().fields()
         self.assertEqual(fields.at(fields.indexFromName('date')).type(), QVariant.Date)
@@ -68,7 +72,7 @@ class TestPyQgsTabfileProvider(unittest.TestCase):
         """ Test that on-the-fly re-opening in update/read-only mode works """
 
         basetestfile = os.path.join(TEST_DATA_DIR, 'tab_file.tab')
-        vl = QgsVectorLayer('{}|layerid=0'.format(basetestfile), 'test', 'ogr')
+        vl = QgsVectorLayer(f'{basetestfile}|layerid=0', 'test', 'ogr')
         caps = vl.dataProvider().capabilities()
         self.assertTrue(caps & QgsVectorDataProvider.AddFeatures)
 
@@ -93,7 +97,7 @@ class TestPyQgsTabfileProvider(unittest.TestCase):
         shutil.copy(os.path.join(TEST_DATA_DIR, 'tab_file.dat'), base_dest_file_name + '.dat')
         shutil.copy(os.path.join(TEST_DATA_DIR, 'tab_file.map'), base_dest_file_name + '.map')
         shutil.copy(os.path.join(TEST_DATA_DIR, 'tab_file.id'), base_dest_file_name + '.id')
-        vl = QgsVectorLayer('{}|layerid=0'.format(dest_file_name), 'test', 'ogr')
+        vl = QgsVectorLayer(f'{dest_file_name}|layerid=0', 'test', 'ogr')
         self.assertTrue(vl.isValid())
         self.assertTrue(vl.dataProvider().addAttributes([QgsField("int8", QVariant.LongLong, "integer64")]))
 

@@ -16,9 +16,9 @@
  ***************************************************************************/
 
 #include "qgis.h"
-#include "qgslogger.h"
+#include "qgssettingsregistrycore.h"
 #include "qgsscalecombobox.h"
-#include "qgssettings.h"
+#include "qgssettingsentryimpl.h"
 
 #include <QAbstractItemView>
 #include <QLocale>
@@ -32,7 +32,7 @@ QgsScaleComboBox::QgsScaleComboBox( QWidget *parent )
   setEditable( true );
   setInsertPolicy( QComboBox::NoInsert );
   setCompleter( nullptr );
-  connect( this, static_cast<void ( QComboBox::* )( const QString & )>( &QComboBox::activated ), this, &QgsScaleComboBox::fixupScale );
+  connect( this, qOverload< int >( &QComboBox::activated ), this, &QgsScaleComboBox::fixupScale );
   connect( lineEdit(), &QLineEdit::editingFinished, this, &QgsScaleComboBox::fixupScale );
   fixupScale();
 }
@@ -44,12 +44,7 @@ void QgsScaleComboBox::updateScales( const QStringList &scales )
 
   if ( scales.isEmpty() )
   {
-    const QgsSettings settings;
-    const QString myScales = settings.value( QStringLiteral( "Map/scales" ), Qgis::defaultProjectScales() ).toString();
-    if ( !myScales.isEmpty() )
-    {
-      myScalesList = myScales.split( ',' );
-    }
+    const QStringList scales = QgsSettingsRegistryCore::settingsMapScales->value();
   }
   else
   {

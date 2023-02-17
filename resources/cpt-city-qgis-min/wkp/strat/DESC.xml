@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<description>
+  <dir>strat</dir>
+  <name>Stratigraphy</name>
+  <full>
+    Colour schemes for stratigraphy, colours taken from the
+    wikigeology palette by Sémhur. The ages, in units of MYA (millions
+    of years ago), are taken from the wikipedia page on the
+    International Commission on Stratigraphy.
+  </full>
+  <date>01/08/2012</date>
+</description>

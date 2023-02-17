@@ -18,9 +18,10 @@
 #define QGSSETTINGSREGISTRYGUI_H
 
 #include "qgis_gui.h"
-#include "qgis_sip.h"
 #include "qgssettingsregistry.h"
-#include "qgssettingsentry.h"
+
+
+class QgsSettingsEntryBool;
 
 /**
  * \ingroup gui
@@ -30,8 +31,11 @@
  *
  * \since QGIS 3.22
  */
+Q_NOWARN_DEPRECATED_PUSH
 class GUI_EXPORT QgsSettingsRegistryGui : public QgsSettingsRegistry
 {
+    Q_NOWARN_UNREACHABLE_POP
+    // TODO QGIS 4 do not inherit QgsSettingsRegistry
   public:
 
     /**
@@ -46,7 +50,8 @@ class GUI_EXPORT QgsSettingsRegistryGui : public QgsSettingsRegistry
 
 #ifndef SIP_RUN
     //! Settings entry respect screen dpi
-    static const inline QgsSettingsEntryBool settingsRespectScreenDPI = QgsSettingsEntryBool( QStringLiteral( "qgis/respect_screen_dpi" ), QgsSettings::Gui, false );
+    static const QgsSettingsEntryBool *settingsRespectScreenDPI;
+
 #endif
 
 };

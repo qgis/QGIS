@@ -1,0 +1,85 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/plot/qgsplotmouseevent.h                                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsPlotMouseEvent : QMouseEvent
+{
+%Docstring(signature="appended")
+A :py:class:`QgsPlotMouseEvent` is the result of a user interaction with the mouse on a :py:class:`QgsPlotCanvas`.
+
+The event is sent whenever the user moves, clicks, releases or double clicks the mouse.
+
+In addition to the coordinates in pixel space the event may have knowledge about
+geographic coordinates corresponding to the event.
+
+.. versionadded:: 3.26
+%End
+
+%TypeHeaderCode
+#include "qgsplotmouseevent.h"
+%End
+%ConvertToSubClassCode
+    if ( dynamic_cast<QgsPlotMouseEvent *>( sipCpp ) )
+      sipType = sipType_QgsPlotMouseEvent;
+    else
+      sipType = 0;
+%End
+  public:
+
+    QgsPlotMouseEvent( QgsPlotCanvas *canvas, QMouseEvent *event );
+%Docstring
+Creates a new QgsPlotMouseEvent.
+
+:param canvas: The map canvas on which the event occurred
+:param event: The original mouse event
+%End
+
+    QgsPlotMouseEvent( QgsPlotCanvas *canvas, QEvent::Type type, QPoint pos, Qt::MouseButton button = Qt::NoButton,
+                       Qt::MouseButtons buttons = Qt::NoButton, Qt::KeyboardModifiers modifiers = Qt::NoModifier );
+%Docstring
+Creates a new QgsPlotMouseEvent.
+
+:param canvas: The canvas on which the event occurred
+:param type: The type of the event
+:param pos: The pixel position of the mouse
+:param button: The pressed button
+:param buttons: Further buttons that are pressed
+:param modifiers: Keyboard modifiers
+%End
+
+    QgsPoint mapPoint() const;
+%Docstring
+Returns the point in map coordinates corresponding to the event.
+
+May return an empty point if the event cannot be converted to a map point.
+%End
+
+    QgsPointXY snappedPoint();
+%Docstring
+Returns the point snapped to the plot, if possible.
+
+Returns the original canvas point if snapping was not possible.
+%End
+
+    bool isSnapped();
+%Docstring
+Returns ``True`` if the point can be snapped to the plot.
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/plot/qgsplotmouseevent.h                                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

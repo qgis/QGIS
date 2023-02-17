@@ -4,8 +4,8 @@
         <circle cx="97.896" cy="154.12" r="15.875"/><path d="m82.815 148.83h30.162" stroke-width=".26458px" /><path d="m82.815 159.42h30.162" stroke-width=".25px"/>
     </g>
     <g stroke-width=".265" text-anchor="middle" alignment-baseline="param(align)">
-        <text x="98" y="147.5" font-size="6px">param(text1)</text>
-        <text x="98" y="156.3" font-size="4.5px">param(text2)</text>
+        <text x="98" y="147.5" font-family="QGIS Vera Sans" font-weight="bold" font-size="6px">param(text1)</text>
+        <text x="98" y="156.3" font-family="QGIS Vera Sans" font-weight="bold" font-size="4.5px">param(text2)</text>
     </g>
 </g>
 </svg>

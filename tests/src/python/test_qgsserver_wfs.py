@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsServer WFS.
 
 From build dir, run: ctest -R PyQgsServerWFS -V
@@ -19,27 +18,28 @@ import os
 # Needed on Qt 5 so that the serialization of XML is consistent among all executions
 os.environ['QT_HASH_SEED'] = '1'
 
+import json
 import re
-import urllib.request
-import urllib.parse
 import urllib.error
-
-from qgis.server import QgsServerRequest
-
-from qgis.testing import unittest
-from qgis.PyQt.QtCore import QSize
-from qgis.core import (
-    QgsVectorLayer,
-    QgsFeatureRequest,
-    QgsExpression,
-    QgsCoordinateReferenceSystem,
-    QgsCoordinateTransform,
-    QgsCoordinateTransformContext,
-    QgsGeometry,
-)
+import urllib.parse
+import urllib.request
 
 import osgeo.gdal  # NOQA
 
+from lxml import etree as et
+from qgis.core import (
+    QgsCoordinateReferenceSystem,
+    QgsCoordinateTransform,
+    QgsCoordinateTransformContext,
+    QgsExpression,
+    QgsFeature,
+    QgsFeatureRequest,
+    QgsGeometry,
+    QgsProject,
+    QgsVectorLayer,
+)
+from qgis.server import QgsServerRequest
+from qgis.testing import unittest
 from test_qgsserver import QgsServerTestBase
 
 # Strip path and content length because path may vary
@@ -63,13 +63,13 @@ class TestQgsServerWFS(QgsServerTestBase):
         project = self.testdata_path + project_file
         assert os.path.exists(project), "Project file not found: " + project
 
-        query_string = '?MAP=%s&SERVICE=WFS&REQUEST=%s' % (
+        query_string = '?MAP={}&SERVICE=WFS&REQUEST={}'.format(
             urllib.parse.quote(project), request)
         if version:
-            query_string += '&VERSION=%s' % version
+            query_string += f'&VERSION={version}'
 
         if extra_query_string:
-            query_string += '&%s' % extra_query_string
+            query_string += f'&{extra_query_string}'
 
         header, body = self._execute_request(
             query_string, requestMethod=requestMethod, data=data)
@@ -94,12 +94,15 @@ class TestQgsServerWFS(QgsServerTestBase):
         response = re.sub(RE_STRIP_UNCHECKABLE, b'', response)
         expected = re.sub(RE_STRIP_UNCHECKABLE, b'', expected)
 
-        self.assertXMLEqual(response, expected, msg="request %s failed.\n Query: %s" % (
+        # depending on flex/bison versions, these strings will be interchangeable
+        response = response.replace(b'end of file', b'$end')
+
+        self.assertXMLEqual(response, expected, msg="request {} failed.\n Query: {}".format(
             query_string, request))
         return header, body
 
     def test_operation_not_supported(self):
-        qs = '?MAP=%s&SERVICE=WFS&VERSION=1.1.0&REQUEST=NotAValidRequest' % urllib.parse.quote(self.projectPath)
+        qs = f'?MAP={urllib.parse.quote(self.projectPath)}&SERVICE=WFS&VERSION=1.1.0&REQUEST=NotAValidRequest'
         self._assert_status_code(501, qs)
 
     def test_project_wfs(self):
@@ -114,7 +117,7 @@ class TestQgsServerWFS(QgsServerTestBase):
         project = self.testdata_path + "test_project_wfs.qgs"
         assert os.path.exists(project), "Project file not found: " + project
 
-        query_string = '?MAP=%s&SERVICE=WFS&VERSION=1.0.0&REQUEST=%s' % (
+        query_string = '?MAP={}&SERVICE=WFS&VERSION=1.0.0&REQUEST={}'.format(
             urllib.parse.quote(project), request)
         header, body = self._execute_request(query_string)
 
@@ -124,12 +127,34 @@ class TestQgsServerWFS(QgsServerTestBase):
 
         self.result_compare(
             'wfs_getfeature_' + requestid + '.txt',
-            "request %s failed.\n Query: %s" % (
-                query_string,
-                request,
-            ),
+            f"request {query_string} failed.\n Query: {request}",
             header, body
         )
+
+    def test_getfeature_invalid_typename(self):
+        project = self.testdata_path + "test_project_wfs.qgs"
+
+        # a single invalid typename
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(project),
+            "SERVICE": "WFS",
+            "REQUEST": "GetFeature",
+            "TYPENAME": "invalid"
+        }.items())])
+        header, body = self._execute_request(qs)
+
+        self.assertTrue(b"TypeName 'invalid' could not be found" in body)
+
+        # an invalid typename preceded by a valid one
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(project),
+            "SERVICE": "WFS",
+            "REQUEST": "GetFeature",
+            "TYPENAME": "testlayer,invalid"
+        }.items())])
+        header, body = self._execute_request(qs)
+
+        self.assertTrue(b"TypeName 'invalid' could not be found" in body)
 
     def test_getfeature(self):
 
@@ -147,6 +172,13 @@ class TestQgsServerWFS(QgsServerTestBase):
 
         for id, req in tests:
             self.wfs_getfeature_compare(id, req)
+
+    def test_getfeature_exp_filter(self):
+        # multiple filters
+        exp_filter = "EXP_FILTER=\"name\"='one';\"name\"='two'"
+        req = f"SRSNAME=EPSG:4326&TYPENAME=testlayer,testlayer&{exp_filter}"
+        self.wfs_request_compare(
+            "GetFeature", '1.0.0', req, 'wfs_getFeature_exp_filter_2')
 
     def test_wfs_getcapabilities_100_url(self):
         """Check that URL in GetCapabilities response is complete"""
@@ -212,21 +244,20 @@ class TestQgsServerWFS(QgsServerTestBase):
         f.close()
         response = re.sub(RE_STRIP_UNCHECKABLE, b'', response)
         expected = re.sub(RE_STRIP_UNCHECKABLE, b'', expected)
-        self.assertXMLEqual(response, expected, msg="%s\n" %
-                            (error_msg_header))
+        self.assertXMLEqual(response, expected, msg=f"{error_msg_header}\n")
 
     def wfs_getfeature_post_compare(self, requestid, request):
 
         project = self.testdata_path + "test_project_wfs.qgs"
         assert os.path.exists(project), "Project file not found: " + project
 
-        query_string = '?MAP={}'.format(urllib.parse.quote(project))
+        query_string = f'?MAP={urllib.parse.quote(project)}'
         header, body = self._execute_request(
             query_string, requestMethod=QgsServerRequest.PostMethod, data=request.encode('utf-8'))
 
         self.result_compare(
-            'wfs_getfeature_{}.txt'.format(requestid),
-            "GetFeature in POST for '{}' failed.".format(requestid),
+            f'wfs_getfeature_{requestid}.txt',
+            f"GetFeature in POST for '{requestid}' failed.",
             header, body,
         )
 
@@ -506,11 +537,28 @@ class TestQgsServerWFS(QgsServerTestBase):
         self.wfs_request_compare(
             "GetFeature", '1.0.0', "SRSNAME=EPSG:4326&TYPENAME=testlayer&FEATUREID=testlayer.0", 'wfs_getFeature_1_0_0_featureid_0')
 
+        # with multiple feature ids
+        self.wfs_request_compare(
+            "GetFeature", '1.0.0', "SRSNAME=EPSG:4326&TYPENAME=testlayer&FEATUREID=testlayer.0,testlayer.2", 'wfs_getFeature_1_0_0_featureid_02')
+
+        # with layer name Testing Layer (copy)
+        self.wfs_request_compare(
+            "GetFeature", '1.0.0', "SRSNAME=EPSG:4326&TYPENAME=Testing_Layer_(copy)&FEATUREID=Testing_Layer_(copy).0", 'wfs_getFeature_1_0_0_featureid_0_testing')
+
+        # with propertynanme *
+        self.wfs_request_compare(
+            "GetFeature", '1.0.0', "SRSNAME=EPSG:4326&TYPENAME=testlayer&FEATUREID=testlayer.0&PROPERTYNAME=*", 'wfs_getFeature_1_0_0_featureid_0')
+
     def test_getFeatureFeature11urn(self):
         """Test GetFeature with SRSNAME urn:ogc:def:crs:EPSG::4326"""
 
         self.wfs_request_compare(
             "GetFeature", '1.1.0', "SRSNAME=urn:ogc:def:crs:EPSG::4326&TYPENAME=testlayer&FEATUREID=testlayer.0", 'wfs_getFeature_1_1_0_featureid_0_1_1_0')
+
+    def test_get_feature_srsname_empty(self):
+        """Test GetFeature with an empty SRSNAME."""
+        self.wfs_request_compare(
+            "GetFeature", '1.1.0', "TYPENAME=testlayer&FEATUREID=testlayer.0", 'wfs_getFeature_1_1_0_featureid_0_1_1_0_srsname')
 
     def test_getFeature_EXP_FILTER_regression_20927(self):
         """Test expressions with EXP_FILTER"""
@@ -540,16 +588,41 @@ class TestQgsServerWFS(QgsServerTestBase):
         project_file = "test_project_wms_grouped_layers.qgs"
         self.wfs_request_compare("DescribeFeatureType", '1.0.0', "TYPENAME=as_areas&",
                                  'wfs_describeFeatureType_1_0_0_typename_as_areas', project_file=project_file)
+        self.wfs_request_compare("DescribeFeatureType", '1.0.0', "TYPENAME=as_areas&OUTPUTFORMAT=XMLSCHEMA&",
+                                 'wfs_describeFeatureType_1_0_0_typename_as_areas', project_file=project_file)
+
         self.wfs_request_compare("DescribeFeatureType", '1.1.0', "TYPENAME=as_areas&",
                                  'wfs_describeFeatureType_1_1_0_typename_as_areas', project_file=project_file)
+        self.wfs_request_compare("DescribeFeatureType", '1.1.0', "TYPENAME=as_areas&OUTPUTFORMAT=XMLSCHEMA&",
+                                 'wfs_describeFeatureType_1_1_0_typename_as_areas', project_file=project_file)
+        self.wfs_request_compare("DescribeFeatureType", '1.1.0', "TYPENAME=as_areas&OUTPUTFORMAT=text/xml; subtype=gml/3.1.1&",
+                                 'wfs_describeFeatureType_1_1_0_typename_as_areas', project_file=project_file)
+
         self.wfs_request_compare("DescribeFeatureType", '1.0.0', "",
                                  'wfs_describeFeatureType_1_0_0_typename_empty', project_file=project_file)
         self.wfs_request_compare("DescribeFeatureType", '1.1.0', "",
                                  'wfs_describeFeatureType_1_1_0_typename_empty', project_file=project_file)
+
         self.wfs_request_compare("DescribeFeatureType", '1.0.0', "TYPENAME=does_not_exist&",
                                  'wfs_describeFeatureType_1_0_0_typename_wrong', project_file=project_file)
         self.wfs_request_compare("DescribeFeatureType", '1.1.0', "TYPENAME=does_not_exist&",
                                  'wfs_describeFeatureType_1_1_0_typename_wrong', project_file=project_file)
+
+    def test_describeFeatureTypeGeoJson(self):
+        """Test DescribeFeatureType with GeoJSON format with TYPENAME filters
+        """
+        project_file = "test_project_wms_grouped_layers.qgs"
+        self.wfs_request_compare("DescribeFeatureType", '1.1.0', "TYPENAME=as_areas&OUTPUTFORMAT=GEOJSON",
+                                 'wfs_describeFeatureType_1_1_0_typename_as_areas_geojson', project_file=project_file)
+
+    def test_GetFeature_with_cdata(self):
+        """ Test GetFeature with CDATA."""
+        self.wfs_request_compare(
+            "GetFeature",
+            "1.0.0",
+            "TYPENAME=test_layer_wfs_cdata_lines&",
+            'wfs_getfeature_cdata',
+            project_file="test_layer_wfs_cdata.qgs")
 
     def test_describeFeatureTypeVirtualFields(self):
         """Test DescribeFeatureType with virtual fields: bug GH-29767"""
@@ -588,7 +661,7 @@ class TestQgsServerWFS(QgsServerTestBase):
             if value is None:
                 encoded_data = encoded_data.replace(b'<wfs:Value>None</wfs:Value>', b'')
 
-            header, body = self._execute_request("?MAP=%s&SERVICE=WFS&VERSION=%s" % (
+            header, body = self._execute_request("?MAP={}&SERVICE=WFS&VERSION={}".format(
                 self.testdata_path + 'test_project_wms_grouped_layers.qgs', version), QgsServerRequest.PostMethod, encoded_data)
             if version == '1.0.0':
                 self.assertTrue(b'<SUCCESS/>' in body, body)
@@ -598,9 +671,9 @@ class TestQgsServerWFS(QgsServerTestBase):
                 self.testdata_path + 'test_project_wms_grouped_layers.qgs'))
             if value is not None:
                 xml_value = '<qgs:{0}>{1}</qgs:{0}>'.format(field, value).encode('utf8')
-                self.assertTrue(xml_value in body, "%s not found in body" % xml_value)
+                self.assertTrue(xml_value in body, f"{xml_value} not found in body")
             else:
-                xml_value = '<qgs:{0}>'.format(field).encode('utf8')
+                xml_value = f'<qgs:{field}>'.encode()
                 self.assertFalse(xml_value in body)
             # Check the backend
             vl = QgsVectorLayer(
@@ -645,9 +718,107 @@ class TestQgsServerWFS(QgsServerTestBase):
             self.wfs_request_compare(
                 "GetFeature",
                 '1.0.0',
-                ("OUTPUTFORMAT=%s" % ct)
+                f"OUTPUTFORMAT={ct}"
                 + "&SRSNAME=EPSG:4326&TYPENAME=testlayer&FEATUREID=testlayer.0",
                 'wfs_getFeature_1_0_0_featureid_0_json')
+
+    def test_getFeatureFeatureJsonCrs(self):
+        """Test issue GH #25171, geojson srsName"""
+
+        project = QgsProject()
+        layer = QgsVectorLayer("Point?crs=epsg:3857&field=fldint:integer",
+                               "layer", "memory")
+        project.addMapLayers([layer])
+        project.writeEntry("WFSLayers", "/", [layer.id()])
+        f = QgsFeature(layer.fields())
+
+        f.setGeometry(QgsGeometry.fromWkt('point(807305 5592878)'))
+        f.setAttributes([123])
+        layer.dataProvider().addFeatures([f])
+        f = QgsFeature(layer.fields())
+        f.setGeometry(QgsGeometry.fromWkt('point(812191 5589555)'))
+        f.setAttributes([123])
+        layer.dataProvider().addFeatures([f])
+
+        query_string = "?" + "&".join(["%s=%s" % i for i in list({
+            "SERVICE": "WFS",
+            "REQUEST": "GetFeature",
+            "VERSION": "1.1.0",
+            "TYPENAME": "layer",
+            "SRSNAME": "EPSG:3857",
+            "outputFormat": "GeoJSON"
+        }.items())])
+
+        header, body = self._execute_request_project(query_string, project)
+        json.loads(body)
+        jdata = json.loads(body)
+        jdata['features'][0]['geometry']
+        jdata['features'][0]['geometry']['coordinates']
+        self.assertEqual(jdata['features'][0]['geometry']['coordinates'], [807305, 5592878])
+
+        query_string = "?" + "&".join(["%s=%s" % i for i in list({
+            "SERVICE": "WFS",
+            "REQUEST": "GetFeature",
+            "VERSION": "1.1.0",
+            "TYPENAME": "layer",
+            "SRSNAME": "EPSG:4326",
+            "outputFormat": "GeoJSON"
+        }.items())])
+
+        header, body = self._execute_request_project(query_string, project)
+        json.loads(body)
+        jdata = json.loads(body)
+        jdata['features'][0]['geometry']
+        jdata['features'][0]['geometry']['coordinates']
+        self.assertEqual([int(i) for i in jdata['features'][0]['geometry']['coordinates']], [7, 44])
+
+        query_string = "?" + "&".join(["%s=%s" % i for i in list({
+            "SERVICE": "WFS",
+            "REQUEST": "GetFeature",
+            "VERSION": "1.1.0",
+            "TYPENAME": "layer",
+            "outputFormat": "GeoJSON"
+        }.items())])
+
+        header, body = self._execute_request_project(query_string, project)
+        json.loads(body)
+        jdata = json.loads(body)
+        jdata['features'][0]['geometry']
+        jdata['features'][0]['geometry']['coordinates']
+        self.assertEqual([int(i) for i in jdata['features'][0]['geometry']['coordinates']], [7, 44])
+
+        query_string = "?" + "&".join(["%s=%s" % i for i in list({
+            "SERVICE": "WFS",
+            "REQUEST": "GetFeature",
+            "VERSION": "1.1.0",
+            "TYPENAME": "layer",
+            "SRSNAME": "EPSG:32632",
+            "outputFormat": "GeoJSON"
+        }.items())])
+
+        header, body = self._execute_request_project(query_string, project)
+        json.loads(body)
+        jdata = json.loads(body)
+        jdata['features'][0]['geometry']
+        jdata['features'][0]['geometry']['coordinates']
+        self.assertEqual([int(i) for i in jdata['features'][0]['geometry']['coordinates']], [361806, 4964192])
+
+        query_string = "?" + "&".join(["%s=%s" % i for i in list({
+            "SERVICE": "WFS",
+            "REQUEST": "GetFeature",
+            "VERSION": "1.1.0",
+            "TYPENAME": "layer",
+            "SRSNAME": "EPSG:3857",
+            "outputFormat": "GeoJSON",
+            "FEATUREID": "layer.2"
+        }.items())])
+
+        header, body = self._execute_request_project(query_string, project)
+        json.loads(body)
+        jdata = json.loads(body)
+        jdata['features'][0]['geometry']
+        jdata['features'][0]['geometry']['coordinates']
+        self.assertEqual([int(i) for i in jdata['features'][0]['geometry']['coordinates']], [812191, 5589555])
 
     def test_insert_srsName(self):
         """Test srsName is respected when insering"""
@@ -671,8 +842,7 @@ class TestQgsServerWFS(QgsServerTestBase):
             "test_project_wms_grouped_layers.qgs"
         assert os.path.exists(project), "Project file not found: " + project
 
-        query_string = '?SERVICE=WFS&MAP={}'.format(
-            urllib.parse.quote(project))
+        query_string = f'?SERVICE=WFS&MAP={urllib.parse.quote(project)}'
         request = post_data.format(
             name='4326-test1',
             version='1.1.0',
@@ -719,7 +889,7 @@ class TestQgsServerWFS(QgsServerTestBase):
 
         def _test(version, srsName, lat_lon=False):
             self.i += 1
-            name = '4326-test_%s' % self.i
+            name = f'4326-test_{self.i}'
             request = post_data.format(
                 name=name,
                 version=version,
@@ -728,9 +898,9 @@ class TestQgsServerWFS(QgsServerTestBase):
             )
             header, body = self._execute_request(
                 query_string, requestMethod=QgsServerRequest.PostMethod, data=request.encode('utf-8'))
-            feature = next(vl.getFeatures(QgsFeatureRequest(QgsExpression('"name" = \'%s\'' % name))))
+            feature = next(vl.getFeatures(QgsFeatureRequest(QgsExpression(f'"name" = \'{name}\''))))
             geom = feature.geometry()
-            self.assertEqual(geom.asWkt(0), geom_4326.asWkt(0), "Transaction Failed: %s , %s, lat_lon=%s" % (version, srsName, lat_lon))
+            self.assertEqual(geom.asWkt(0), geom_4326.asWkt(0), f"Transaction Failed: {version} , {srsName}, lat_lon={lat_lon}")
 
         _test('1.1.0', 'urn:ogc:def:crs:EPSG::4326', lat_lon=True)
         _test('1.1.0', 'http://www.opengis.net/def/crs/EPSG/0/4326', lat_lon=True)
@@ -749,7 +919,7 @@ class TestQgsServerWFS(QgsServerTestBase):
             bbox_text = "%s,%s,%s,%s" % ((bbox.yMinimum(), bbox.xMinimum(), bbox.yMaximum(), bbox.xMaximum()) if lat_lon else (bbox.xMinimum(), bbox.yMinimum(), bbox.xMaximum(), bbox.yMaximum()))
             req = query_string + '&REQUEST=GetFeature&VERSION={version}&TYPENAME=as_symbols&SRSNAME={srsName}&BBOX={bbox},{srsName}'.format(version=version, srsName=srsName, bbox=bbox_text)
             header, body = self._execute_request(req)
-            self.assertTrue(b'gid>7' in body, "GetFeature Failed: %s , %s, lat_lon=%s" % (version, srsName, lat_lon))
+            self.assertTrue(b'gid>7' in body, f"GetFeature Failed: {version} , {srsName}, lat_lon={lat_lon}")
 
         _test_getFeature('1.1.0', 'urn:ogc:def:crs:EPSG::4326', lat_lon=True)
         _test_getFeature('1.1.0', 'EPSG:4326', lat_lon=False)
@@ -762,6 +932,101 @@ class TestQgsServerWFS(QgsServerTestBase):
         vl.selectByExpression('"name" LIKE \'4326-test%\'')
         vl.deleteSelectedFeatures()
         self.assertTrue(vl.commitChanges())
+
+    def test_getFeatureFeatureEnvelopeCrs(self):
+        """Test issue GH #48642"""
+
+        project = QgsProject()
+        layer = QgsVectorLayer("Point?crs=epsg:3857&field=fldint:integer",
+                               "layer", "memory")
+        project.addMapLayers([layer])
+        project.writeEntry("WFSLayers", "/", [layer.id()])
+        f = QgsFeature(layer.fields())
+
+        f.setGeometry(QgsGeometry.fromWkt('point(807305 5592878)'))
+        f.setAttributes([123])
+        layer.dataProvider().addFeatures([f])
+        f = QgsFeature(layer.fields())
+        f.setGeometry(QgsGeometry.fromWkt('point(812191 5589555)'))
+        f.setAttributes([123])
+        layer.dataProvider().addFeatures([f])
+
+        query_string = "?" + "&".join(["%s=%s" % i for i in list({
+            "SERVICE": "WFS",
+            "REQUEST": "GetFeature",
+            "VERSION": "1.1.0",
+            "TYPENAME": "layer",
+            "SRSNAME": "EPSG:4326"
+        }.items())])
+
+        header, body = self._execute_request_project(query_string, project)
+        root = et.fromstring(body)
+        e = root.findall('.//gml:Envelope', root.nsmap)[0]
+        self.assertEqual(e.attrib, {'srsName': 'EPSG:4326'})
+
+        self.assertEqual([c[:4] for c in e.findall('.//')[0].text.split(' ')], ['7.25', '44.7'])
+        self.assertEqual([c[:4] for c in e.findall('.//')[1].text.split(' ')], ['7.29', '44.8'])
+
+        query_string = "?" + "&".join(["%s=%s" % i for i in list({
+            "SERVICE": "WFS",
+            "REQUEST": "GetFeature",
+            "VERSION": "1.1.0",
+            "TYPENAME": "layer",
+            "SRSNAME": "EPSG:4326",
+            "BBOX": "7.2,44.5,8.2,45.1,EPSG:4326"
+        }.items())])
+
+        header, body = self._execute_request_project(query_string, project)
+        root = et.fromstring(body)
+        e = root.findall('.//gml:Envelope', root.nsmap)[0]
+        self.assertEqual(e.attrib, {'srsName': 'EPSG:4326'})
+        self.assertEqual([c[:4] for c in e.findall('.//')[0].text.split(' ')], ['7.2', '44.5'])
+        self.assertEqual([c[:4] for c in e.findall('.//')[1].text.split(' ')], ['8.2', '45.1'])
+
+        query_string = "?" + "&".join(["%s=%s" % i for i in list({
+            "SERVICE": "WFS",
+            "REQUEST": "GetFeature",
+            "VERSION": "1.1.0",
+            "TYPENAME": "layer",
+            "SRSNAME": "EPSG:4326",
+            "BBOX": "807305,5589555,812191,5592878,EPSG:3857"
+        }.items())])
+
+        header, body = self._execute_request_project(query_string, project)
+        root = et.fromstring(body)
+        e = root.findall('.//gml:Envelope', root.nsmap)[0]
+        self.assertEqual(e.attrib, {'srsName': 'EPSG:4326'})
+        self.assertEqual([c[:4] for c in e.findall('.//')[0].text.split(' ')], ['7.25', '44.7'])
+        self.assertEqual([c[:4] for c in e.findall('.//')[1].text.split(' ')], ['7.29', '44.8'])
+
+    def test_describeFeatureTypeDateTime(self):
+        """Test DescribeFeatureType with dateTime fields"""
+        project_file = "../qgis_server_accesscontrol/project_with_dimensions.qgs"
+        self.wfs_request_compare("DescribeFeatureType", '1.0.0', "TYPENAME=Datetime_dim&",
+                                 'wfs_describeFeatureType_1_0_0_typename_datetime_dim', project_file=project_file)
+        self.wfs_request_compare("DescribeFeatureType", '1.1.0', "TYPENAME=Datetime_dim&",
+                                 'wfs_describeFeatureType_1_1_0_typename_datetime_dim', project_file=project_file)
+
+        self.wfs_request_compare("DescribeFeatureType", '1.1.0', "TYPENAME=datetime_str&",
+                                 'wfs_describeFeatureType_1_1_0_typename_datetime_str', project_file=project_file)
+
+    def test_GetFeature_with_datetime(self):
+        """ Test GetFeature with date-time data"""
+        project_file = "../qgis_server_accesscontrol/project_with_dimensions.qgs"
+
+        self.wfs_request_compare(
+            "GetFeature",
+            "1.0.0",
+            "TYPENAME=datetime_str&",
+            'wfs_getfeature_datetime_str',
+            project_file=project_file)
+
+        self.wfs_request_compare(
+            "GetFeature",
+            "1.0.0",
+            "TYPENAME=Datetime_dim&",
+            'wfs_getfeature_datetime',
+            project_file=project_file)
 
 
 if __name__ == '__main__':

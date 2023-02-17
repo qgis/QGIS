@@ -28,9 +28,13 @@ pair of name and size in bytes
     enum DataType
     {
       Char,
+      UChar,
       Short,
       UShort,
       Int32,
+      UInt32,
+      Int64,
+      UInt64,
       Float,
       Double,
     };
@@ -77,6 +81,7 @@ This will be used when the full datatype with details has to displayed to the us
 .. seealso:: :py:func:`type`
 %End
 
+
     static bool isNumeric( DataType type );
 %Docstring
 Returns ``True`` if the specified data ``type`` is numeric.
@@ -116,6 +121,16 @@ Ctor with given attributes
     void push_back( const QgsPointCloudAttribute &attribute );
 %Docstring
 Adds extra attribute
+%End
+
+    void extend( const QgsPointCloudAttributeCollection &otherCollection, const QSet<QString> &matchingNames );
+%Docstring
+Adds specific missing attributes from another QgsPointCloudAttributeCollection
+
+:param otherCollection: a QgsPointCloudAttributeCollection with more attributes
+:param matchingNames: the names of the attributes to be added
+
+.. versionadded:: 3.26
 %End
 
     QVector<QgsPointCloudAttribute> attributes() const;

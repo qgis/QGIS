@@ -125,6 +125,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
       FlagLoadDefaultStyle = 1 << 2, //!< Reset the layer's style to the default for the datasource
       SkipGetExtent = 1 << 3, //!< Skip the extent from provider
       SkipFullScan = 1 << 4, //!< Skip expensive full scan on files (i.e. on delimited text) (since QGIS 3.24)
+      ForceReadOnly = 1 << 5, //!< Open layer in a read-only mode (since QGIS 3.28)
     };
     Q_DECLARE_FLAGS( ReadFlags, ReadFlag )
 
@@ -205,6 +206,13 @@ class CORE_EXPORT QgsDataProvider : public QObject
     {
       return QgsDataSourceUri( mDataSourceURI );
     }
+
+    /**
+     * Returns the generic data provider flags.
+     *
+     * \since QGIS 3.26
+     */
+    virtual Qgis::DataProviderFlags flags() const;
 
     /**
      * Returns the provider's temporal capabilities.
@@ -679,6 +687,8 @@ class CORE_EXPORT QgsDataProvider : public QObject
      * \since QGIS 3.12
     */
     virtual void reloadProviderData() {}
+
+    friend class TestQgsProject;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsDataProvider::ReadFlags )

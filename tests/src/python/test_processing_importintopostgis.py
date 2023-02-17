@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for Processing Export to Postgis algorithm.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -10,17 +9,19 @@ __author__ = 'Alessandro Pasotti'
 __date__ = '2018-09'
 __copyright__ = 'Copyright 2019, The QGIS Project'
 
-import re
-
 from processing.core.Processing import Processing
 from processing.gui.AlgorithmExecutor import execute
-from qgis.analysis import QgsNativeAlgorithms
-from qgis.core import (QgsApplication, QgsVectorLayer,
-                       QgsGeometry, QgsProcessingContext,
-                       QgsProcessingFeedback, QgsSettings,
-                       )
 from qgis.PyQt.QtCore import QCoreApplication
+from qgis.analysis import QgsNativeAlgorithms
+from qgis.core import (
+    QgsApplication,
+    QgsProcessingContext,
+    QgsProcessingFeedback,
+    QgsSettings,
+    QgsVectorLayer,
+)
 from qgis.testing import start_app, unittest
+
 from utilities import unitTestDataPath
 
 start_app()
@@ -87,7 +88,7 @@ class TestExportToPostGis(unittest.TestCase):
         # Check that data have been imported correctly
         exported = QgsVectorLayer(unitTestDataPath() + '/points.shp', 'exported')
         self.assertTrue(exported.isValid())
-        imported = QgsVectorLayer("service='qgis_test' table=\"CamelCaseSchema\".\"%s\" (geom)" % table_name, 'imported', 'postgres')
+        imported = QgsVectorLayer(f"service='qgis_test' table=\"CamelCaseSchema\".\"{table_name}\" (geom)", 'imported', 'postgres')
         self.assertTrue(imported.isValid())
         imported_fields = [f.name() for f in imported.fields()]
         for f in exported.fields():

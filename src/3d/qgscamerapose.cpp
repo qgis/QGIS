@@ -43,6 +43,34 @@ void QgsCameraPose::readXml( const QDomElement &elem )
   mHeadingAngle = elem.attribute( QStringLiteral( "heading" ) ).toFloat();
 }
 
+void QgsCameraPose::setCenterPoint( const QgsVector3D &point )
+{
+  // something went horribly wrong. Prevent further errors
+  if ( std::isnan( point.x() ) || std::isnan( point.y() ) || std::isnan( point.z() ) )
+    qWarning() << "Not updating camera position: it cannot be NaN!";
+  else
+    mCenterPoint = point;
+}
+
+void QgsCameraPose::setDistanceFromCenterPoint( float distance )
+{
+  mDistanceFromCenterPoint = std::max( distance, 10.0f );
+}
+
+void QgsCameraPose::setPitchAngle( float pitch )
+{
+  // prevent going over the head
+  // prevent bug in QgsCameraPose::updateCamera when updating camera rotation.
+  // With a mPitchAngle < 0.2 or > 179.8, QQuaternion::fromEulerAngles( mPitchAngle, mHeadingAngle, 0 )
+  // will return bad rotation angle in Qt5.
+  // See https://bugreports.qt.io/browse/QTBUG-72103
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+  mPitchAngle = std::clamp( pitch, 0.2f, 179.8f );
+#else
+  mPitchAngle = std::clamp( pitch, 0.0f, 180.0f );
+#endif
+}
+
 void QgsCameraPose::updateCamera( Qt3DRender::QCamera *camera )
 {
   // basic scene setup:

@@ -20,7 +20,6 @@
 #include "qgsdataitemprovider.h"
 #include "qgsdatasourceuri.h"
 #include "qgswmsprovider.h"
-#include "qgsgeonodeconnection.h"
 #include "qgsconnectionsitem.h"
 
 class QgsWmsCapabilitiesDownload;
@@ -138,6 +137,8 @@ class QgsWMTSLayerItem : public QgsLayerItem
                       const QString &path,
                       const QgsDataSourceUri &dataSourceUri,
                       const QString &id,
+                      const QString &dimension,
+                      const QString &dimensionValue,
                       const QString &format,
                       const QString &style,
                       const QString &tileMatrixSet,
@@ -149,7 +150,14 @@ class QgsWMTSLayerItem : public QgsLayerItem
 
   private:
     QgsDataSourceUri mDataSourceUri;
-    QString mId, mFormat, mStyle, mTileMatrixSet, mCrs, mTitle;
+    QString mId;
+    QString mDimension;
+    QString mDimensionValue;
+    QString mFormat;
+    QString mStyle;
+    QString mTileMatrixSet;
+    QString mCrs;
+    QString mTitle;
 };
 
 class QgsWMSRootItem : public QgsConnectionsRootItem
@@ -184,8 +192,6 @@ class QgsWmsDataItemProvider : public QgsDataItemProvider
     int capabilities() const override { return QgsDataProvider::Net; }
 
     QgsDataItem *createDataItem( const QString &path, QgsDataItem *parentItem ) override;
-
-    QVector<QgsDataItem *> createDataItems( const QString &path, QgsDataItem *parentItem ) override;
 };
 
 
@@ -221,8 +227,6 @@ class QgsXyzTileDataItemProvider : public QgsDataItemProvider
     int capabilities() const override;
 
     QgsDataItem *createDataItem( const QString &path, QgsDataItem *parentItem ) override;
-
-    QVector<QgsDataItem *> createDataItems( const QString &path, QgsDataItem *parentItem ) override;
 };
 
 

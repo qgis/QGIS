@@ -16,8 +16,10 @@
 #include <qgslogger.h>
 #include "qgsxyzconnection.h"
 
+#include "qgsowsconnection.h"
 #include "qgsdatasourceuri.h"
-#include "qgssettings.h"
+#include "qgssettingsentryimpl.h"
+
 
 QString QgsXyzConnection::encodedUri() const
 {
@@ -34,8 +36,9 @@ QString QgsXyzConnection::encodedUri() const
     uri.setUsername( username );
   if ( ! password.isEmpty() )
     uri.setPassword( password );
-  if ( ! referer.isEmpty() )
-    uri.setParam( QStringLiteral( "referer" ), referer );
+
+  uri.setHttpHeaders( httpHeaders );
+
   if ( tilePixelRatio != 0 )
     uri.setParam( QStringLiteral( "tilePixelRatio" ), QString::number( tilePixelRatio ) );
   if ( !interpretation.isEmpty() )
@@ -45,103 +48,60 @@ QString QgsXyzConnection::encodedUri() const
 
 QStringList QgsXyzConnectionUtils::connectionList()
 {
-  QgsSettings settings;
-  QStringList connList;
-
-  settings.beginGroup( QStringLiteral( "qgis/connections-xyz" ) );
-  connList = settings.childGroups();
-
-  const QStringList global = settings.globalChildGroups();
-  settings.endGroup();
-
-  for ( const auto &s : global )
+  QStringList list = QgsXyzConnectionSettings::sTreeXyzConnections->items();
+  for ( const QString &connection : std::as_const( list ) )
   {
-    settings.beginGroup( "qgis/connections-xyz/" + s );
-    const bool isHidden = settings.value( QStringLiteral( "hidden" ), false ).toBool();
-    settings.endGroup();
-    if ( isHidden )
-    {
-      connList.removeOne( s );
-    }
+    if ( QgsXyzConnectionSettings::settingsUrl->origin( {connection} ) == Qgis::SettingsOrigin::Global )
+      if ( QgsXyzConnectionSettings::settingsHidden->value( connection ) )
+        list.removeOne( connection );
   }
-
-  return connList;
-}
-
-QString QgsXyzConnectionUtils::selectedConnection()
-{
-  const QgsSettings settings;
-  return settings.value( QStringLiteral( "qgis/connections-xyz/selected" ) ).toString();
-}
-
-void QgsXyzConnectionUtils::setSelectedConnection( const QString &name )
-{
-  QgsSettings settings;
-  return settings.setValue( QStringLiteral( "qgis/connections-xyz/selected" ), name );
+  return list;
 }
 
 QgsXyzConnection QgsXyzConnectionUtils::connection( const QString &name )
 {
-  QgsSettings settings;
-  settings.beginGroup( "qgis/connections-xyz/" + name );
-
   QgsXyzConnection conn;
   conn.name = name;
-  conn.url = settings.value( QStringLiteral( "url" ) ).toString();
-  conn.zMin = settings.value( QStringLiteral( "zmin" ), -1 ).toInt();
-  conn.zMax = settings.value( QStringLiteral( "zmax" ), -1 ).toInt();
-  conn.authCfg = settings.value( QStringLiteral( "authcfg" ) ).toString();
-  conn.username = settings.value( QStringLiteral( "username" ) ).toString();
-  conn.password = settings.value( QStringLiteral( "password" ) ).toString();
-  conn.referer = settings.value( QStringLiteral( "referer" ) ).toString();
-  conn.tilePixelRatio = settings.value( QStringLiteral( "tilePixelRatio" ), 0 ).toDouble();
-  conn.hidden = settings.value( QStringLiteral( "hidden" ) ).toBool();
-  conn.interpretation = settings.value( QStringLiteral( "interpretation" ), QString() ).toString();
+  conn.url = QgsXyzConnectionSettings::settingsUrl->value( name );
+  conn.zMin = QgsXyzConnectionSettings::settingsZmin->value( name );
+  conn.zMax = QgsXyzConnectionSettings::settingsZmax->value( name );
+  conn.authCfg = QgsXyzConnectionSettings::settingsUsername->value( name );
+  conn.username = QgsXyzConnectionSettings::settingsPassword->value( name );
+  conn.password = QgsXyzConnectionSettings::settingsPassword->value( name );
+
+  QgsHttpHeaders httpHeaders( QgsXyzConnectionSettings::settingsHeaders->value( name ) );
+
+  conn.tilePixelRatio = static_cast<int>( QgsXyzConnectionSettings::settingsTilePixelRatio->value( name ) );
+  conn.hidden = QgsXyzConnectionSettings::settingsHidden->value( name );
+  conn.interpretation = QgsXyzConnectionSettings::settingsInterpretation->value( name );
   return conn;
 }
 
 void QgsXyzConnectionUtils::deleteConnection( const QString &name )
 {
-  QgsSettings settings;
-  settings.remove( "qgis/connections-xyz/" + name );
-
-  settings.beginGroup( QStringLiteral( "qgis/connections-xyz" ) );
-  const QStringList global = settings.globalChildGroups();
-
-  if ( global.contains( name ) )
+  if ( QgsXyzConnectionSettings::settingsUrl->origin( {name} ) == Qgis::SettingsOrigin::Global )
   {
-    QgsSettings settings;
-    settings.beginGroup( "qgis/connections-xyz/" + name );
-    settings.setValue( QStringLiteral( "hidden" ), true );
+    QgsXyzConnectionSettings::settingsHidden->setValue( true, name );
   }
-
+  else
+  {
+    QgsXyzConnectionSettings::sTreeXyzConnections->deleteItem( name );
+  }
 }
 
 void QgsXyzConnectionUtils::addConnection( const QgsXyzConnection &conn )
 {
-  QgsSettings settings;
-  bool addHiddenProperty = false;
+  QgsXyzConnectionSettings::settingsUrl->setValue( conn.url, conn.name );
+  QgsXyzConnectionSettings::settingsZmin->setValue( conn.zMin, conn.name );
+  QgsXyzConnectionSettings::settingsZmax->setValue( conn.zMax, conn.name );
+  QgsXyzConnectionSettings::settingsUsername->setValue( conn.authCfg, conn.name );
+  QgsXyzConnectionSettings::settingsPassword->setValue( conn.username, conn.name );
+  QgsXyzConnectionSettings::settingsPassword->setValue( conn.password, conn.name );
+  QgsXyzConnectionSettings::settingsHeaders->setValue( conn.httpHeaders.headers(), conn.name );
+  QgsXyzConnectionSettings::settingsTilePixelRatio->setValue( conn.tilePixelRatio, conn.name );
+  QgsXyzConnectionSettings::settingsInterpretation->setValue( conn.interpretation, conn.name );
 
-  settings.beginGroup( QStringLiteral( "qgis/connections-xyz" ) );
-  const QStringList global = settings.globalChildGroups();
-  if ( global.contains( conn.name ) )
-  {
-    addHiddenProperty = true;
-  }
-  settings.endGroup();
-
-  settings.beginGroup( "qgis/connections-xyz/" + conn.name );
-  settings.setValue( QStringLiteral( "url" ), conn.url );
-  settings.setValue( QStringLiteral( "zmin" ), conn.zMin );
-  settings.setValue( QStringLiteral( "zmax" ), conn.zMax );
-  settings.setValue( QStringLiteral( "authcfg" ), conn.authCfg );
-  settings.setValue( QStringLiteral( "username" ), conn.username );
-  settings.setValue( QStringLiteral( "password" ), conn.password );
-  settings.setValue( QStringLiteral( "referer" ), conn.referer );
-  settings.setValue( QStringLiteral( "tilePixelRatio" ), conn.tilePixelRatio );
-  settings.setValue( QStringLiteral( "interpretation" ), conn.interpretation );
-  if ( addHiddenProperty )
-  {
-    settings.setValue( QStringLiteral( "hidden" ), false );
-  }
+  if ( QgsXyzConnectionSettings::settingsUrl->origin( {conn.name} ) == Qgis::SettingsOrigin::Global )
+    QgsXyzConnectionSettings::settingsHidden->setValue( false, conn.name );
 }
+

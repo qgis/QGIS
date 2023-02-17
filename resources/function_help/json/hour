@@ -3,17 +3,34 @@
   "type": "function",
   "groups": ["Date and Time"],
   "description": "Extracts the hour part from a datetime or time, or the number of hours from an interval.",
-  "variants": [
-  { "variant": "Time variant",
-      "variant_description": "Extracts the hour part from a time or datetime.",
-      "arguments": [ {"arg":"datetime","description":"a time or datetime value"}],
-      "examples": [ { "expression":"hour( to_datetime('2012-07-22 13:24:57') )", "returns":"13"}] },
-      {
-      "variant": "Interval variant",
-      "variant_description": "Calculates the length in hours of an interval.",
-      "arguments": [ {"arg":"interval","description":"interval value to return number of hours from"}],
-      "examples": [ { "expression":"hour(to_interval('3 hours'))", "returns":"3"},
-                    { "expression":"hour(age('2012-07-22T13:00:00','2012-07-22T10:00:00'))", "returns":"3"},
-                    { "expression":"hour(age('2012-01-01','2010-01-01'))", "returns":"17520"}]
-  }]
+  "variants": [{
+    "variant": "Time variant",
+    "variant_description": "Extracts the hour part from a time or datetime.",
+    "arguments": [{
+      "arg": "datetime",
+      "description": "a time or datetime value"
+    }],
+    "examples": [{
+      "expression": "hour( to_datetime('2012-07-22 13:24:57') )",
+      "returns": "13"
+    }]
+  }, {
+    "variant": "Interval variant",
+    "variant_description": "Calculates the length in hours of an interval.",
+    "arguments": [{
+      "arg": "interval",
+      "description": "interval value to return number of hours from"
+    }],
+    "examples": [{
+      "expression": "hour(to_interval('3 hours'))",
+      "returns": "3"
+    }, {
+      "expression": "hour(age('2012-07-22T13:00:00','2012-07-22T10:00:00'))",
+      "returns": "3"
+    }, {
+      "expression": "hour(age('2012-01-01','2010-01-01'))",
+      "returns": "17520"
+    }]
+  }],
+  "tags": ["extracts", "number", "time", "part", "interval", "hours", "hour", "datetime"]
 }

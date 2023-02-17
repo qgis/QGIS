@@ -414,7 +414,7 @@ class ProcessingAlgFactory():
             alg.MULTILAYER:  QgsProcessingOutputMultipleLayers
             alg.RASTER_LAYER: QgsProcessingOutputRasterLayer
             alg.VECTOR_LAYER: QgsProcessingOutputVectorLayer
-            alg.POINT_CLOUD_LAYER: QgsProcessingOutputPointCloudLayer
+            alg.POINTCLOUD_LAYER: QgsProcessingOutputPointCloudLayer
             alg.BOOL: QgsProcessingOutputBoolean
 
         :param type: The type of the input. This should be a type define on `alg` like alg.STRING, alg.DISTANCE
@@ -493,7 +493,7 @@ class ProcessingAlgFactory():
             alg.DATABASE_SCHEMA: QgsProcessingParameterDatabaseSchema
             alg.DATABASE_TABLE: QgsProcessingParameterDatabaseTable
             alg.COORDINATE_OPERATION: QgsProcessingParameterCoordinateOperation
-            alg.POINT_CLOUD_LAYER: QgsProcessingParameterPointCloudLayer
+            alg.POINTCLOUD_LAYER: QgsProcessingParameterPointCloudLayer
             alg.ANNOTATION_LAYER: QgsProcessingParameterAnnotationLayer
 
         :param type: The type of the input. This should be a type define on `alg` like alg.STRING, alg.DISTANCE

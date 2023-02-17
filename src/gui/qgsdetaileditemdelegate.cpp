@@ -50,7 +50,7 @@ void QgsDetailedItemDelegate::paint( QPainter *thepPainter,
 {
   // After painting we need to restore the painter to its original state
   const QgsScopedQPainterState painterState( thepPainter );
-  if ( index.data( Qt::UserRole ).canConvert<QgsDetailedItemData>() )
+  if ( index.data( Qt::UserRole ).userType() == QMetaType::type( "QgsDetailedItemData" ) )
   {
     const QgsDetailedItemData myData =
       index.data( Qt::UserRole ).value<QgsDetailedItemData>();
@@ -71,7 +71,7 @@ QSize QgsDetailedItemDelegate::sizeHint(
   const QStyleOptionViewItem &option,
   const QModelIndex &index ) const
 {
-  if ( index.data( Qt::UserRole ).canConvert<QgsDetailedItemData>() )
+  if ( index.data( Qt::UserRole ).userType() == QMetaType::type( "QgsDetailedItemData" ) )
   {
     const QgsDetailedItemData myData =
       index.data( Qt::UserRole ).value<QgsDetailedItemData>();

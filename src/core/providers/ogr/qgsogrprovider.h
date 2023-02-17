@@ -125,6 +125,7 @@ class QgsOgrProvider final: public QgsVectorDataProvider
                                        QgsFeedback *feedback = nullptr ) const override;
     QgsFeatureSource::SpatialIndexPresence hasSpatialIndex() const override;
     Qgis::VectorLayerTypeFlags vectorLayerTypeFlags() const override;
+    QList<QgsRelation> discoverRelations( const QgsVectorLayer *target, const QList<QgsVectorLayer *> &layers ) const override;
 
     QString name() const override;
     static QString providerKey();
@@ -257,6 +258,16 @@ class QgsOgrProvider final: public QgsVectorDataProvider
     */
     OGRwkbGeometryType mOgrGeometryTypeFilter = wkbUnknown;
 
+    /**
+     * This flag is only used when mOgrGeometryTypeFilter != wkbUnknown.
+     * When it is set, it indicates that the layer actually contains only
+     * geometries of the type specified by mOgrGeometryTypeFilter (and potentially
+     * null geometries as well). In that situation, filtering on the geometry
+     * type is not actually needed, which enables to use the fast implementation
+     * of getFeatureCount().
+     */
+    bool mUniqueGeometryType = false;
+
     //! current spatial filter
     QgsRectangle mFetchRect;
 
@@ -331,6 +342,8 @@ class QgsOgrProvider final: public QgsVectorDataProvider
     */
     void reloadProviderData() override;
 
+    //! Invalidate GDAL /vsicurl/ RAM cache for mFilePath
+    void invalidateNetworkCache();
 };
 
 ///@endcond

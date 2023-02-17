@@ -3,17 +3,34 @@
   "type": "function",
   "groups": ["Date and Time"],
   "description": "Extracts the day from a date, or the number of days from an interval.",
-  "variants": [
-  { "variant": "Date variant",
-      "variant_description": "Extracts the day from a date or datetime.",
-      "arguments": [ {"arg":"date","description":"a date or datetime value"}],
-      "examples": [ { "expression":"day('2012-05-12')", "returns":"12"}] },
-      {
-      "variant": "Interval variant",
-      "variant_description": "Calculates the length in days of an interval.",
-      "arguments": [ {"arg":"interval","description":"interval value to return number of days from"}],
-      "examples": [ { "expression":"day(to_interval('3 days'))", "returns":"3"},
-                    { "expression":"day(to_interval('3 weeks 2 days'))", "returns":"23"},
-                    { "expression":"day(age('2012-01-01','2010-01-01'))", "returns":"730"}]
-  }]
+  "variants": [{
+    "variant": "Date variant",
+    "variant_description": "Extracts the day from a date or datetime.",
+    "arguments": [{
+      "arg": "date",
+      "description": "a date or datetime value"
+    }],
+    "examples": [{
+      "expression": "day('2012-05-12')",
+      "returns": "12"
+    }]
+  }, {
+    "variant": "Interval variant",
+    "variant_description": "Calculates the length in days of an interval.",
+    "arguments": [{
+      "arg": "interval",
+      "description": "interval value to return number of days from"
+    }],
+    "examples": [{
+      "expression": "day(to_interval('3 days'))",
+      "returns": "3"
+    }, {
+      "expression": "day(to_interval('3 weeks 2 days'))",
+      "returns": "23"
+    }, {
+      "expression": "day(age('2012-01-01','2010-01-01'))",
+      "returns": "730"
+    }]
+  }],
+  "tags": ["date", "extracts", "interval", "days", "number", "day"]
 }

@@ -17,6 +17,7 @@ trans.eo = i18n/qgis_eo.ts
 trans.es = i18n/qgis_es.ts
 trans.et = i18n/qgis_et.ts
 trans.eu = i18n/qgis_eu.ts
+trans.en_US = i18n/qgis_en_US.ts
 trans.fi = i18n/qgis_fi.ts
 trans.fr = i18n/qgis_fr.ts
 trans.gl = i18n/qgis_gl.ts

@@ -206,13 +206,13 @@ QVariantMap QgsJoinWithLinesAlgorithm::processAlgorithm( const QVariantMap &para
 
   QgsWkbTypes::Type outType = geodesic ? QgsWkbTypes::MultiLineString : QgsWkbTypes::LineString;
   bool hasZ = false;
-  if ( QgsWkbTypes::hasZ( hubSource->wkbType() ) || QgsWkbTypes::hasZ( spokeSource->wkbType() ) )
+  if ( !geodesic && ( QgsWkbTypes::hasZ( hubSource->wkbType() ) || QgsWkbTypes::hasZ( spokeSource->wkbType() ) ) )
   {
     outType = QgsWkbTypes::addZ( outType );
     hasZ = true;
   }
   bool hasM = false;
-  if ( QgsWkbTypes::hasM( hubSource->wkbType() ) || QgsWkbTypes::hasM( spokeSource->wkbType() ) )
+  if ( !geodesic && ( QgsWkbTypes::hasM( hubSource->wkbType() ) || QgsWkbTypes::hasM( spokeSource->wkbType() ) ) )
   {
     outType = QgsWkbTypes::addM( outType );
     hasM = true;

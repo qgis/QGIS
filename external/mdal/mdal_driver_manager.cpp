@@ -26,6 +26,7 @@
 
 #ifdef HAVE_GDAL
 #include "frmts/mdal_gdal_grib.hpp"
+#include "frmts/mdal_h2i.hpp"
 #endif
 
 #ifdef HAVE_NETCDF
@@ -247,6 +248,7 @@ MDAL::DriverManager::DriverManager()
 
 #ifdef HAVE_GDAL
   mDrivers.push_back( std::make_shared<MDAL::DriverGdalGrib>() );
+  mDrivers.push_back( std::make_shared<MDAL::DriverH2i>() );
 #endif
 
   // DATASET DRIVERS

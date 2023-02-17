@@ -92,6 +92,8 @@ class ScriptEditorDialog(BASE, WIDGET):
             QgsApplication.getThemeIcon('/mActionIncreaseFont.svg'))
         self.actionDecreaseFontSize.setIcon(
             QgsApplication.getThemeIcon('/mActionDecreaseFont.svg'))
+        self.actionToggleComment.setIcon(
+            QgsApplication.getThemeIcon('console/iconCommentEditorConsole.svg'))
 
         # Connect signals and slots
         self.actionOpenScript.triggered.connect(self.openScript)
@@ -106,6 +108,7 @@ class ScriptEditorDialog(BASE, WIDGET):
         self.actionFindReplace.toggled.connect(self.toggleSearchBox)
         self.actionIncreaseFontSize.triggered.connect(self.editor.zoomIn)
         self.actionDecreaseFontSize.triggered.connect(self.editor.zoomOut)
+        self.actionToggleComment.triggered.connect(self.editor.toggleComment)
         self.editor.textChanged.connect(lambda: self.setHasChanged(True))
 
         self.leFindText.returnPressed.connect(self.find)

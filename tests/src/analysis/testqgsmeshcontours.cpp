@@ -57,7 +57,7 @@ class TestQgsMeshContours : public QObject
     void testQuadAndTriangleFaceScalarPoly();
 
   private:
-    QgsMeshLayer *mpMeshLayer = nullptr;
+    std::unique_ptr< QgsMeshLayer > mpMeshLayer;
 };
 
 void  TestQgsMeshContours::initTestCase()
@@ -71,7 +71,7 @@ void  TestQgsMeshContours::initTestCase()
 
   const QString testDataDir = QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/mesh/" );
   const QString uri( testDataDir + "quad_and_triangle.2dm" );
-  mpMeshLayer = new QgsMeshLayer( uri, "Triangle and Quad MDAL", "mdal" );
+  mpMeshLayer = std::make_unique< QgsMeshLayer >( uri, "Triangle and Quad MDAL", "mdal" );
   mpMeshLayer->dataProvider()->addDataset( testDataDir + "/quad_and_triangle_vertex_scalar.dat" );
   mpMeshLayer->dataProvider()->addDataset( testDataDir + "/quad_and_triangle_els_face_scalar.dat" );
   QVERIFY( mpMeshLayer->isValid() );
@@ -79,6 +79,7 @@ void  TestQgsMeshContours::initTestCase()
 
 void  TestQgsMeshContours::cleanupTestCase()
 {
+  mpMeshLayer.reset();
   QgsApplication::exitQgis();
 }
 
@@ -101,6 +102,9 @@ void TestQgsMeshContours::equals( QgsGeometry geom, QgsGeometry expected )
 
   QVERIFY( geom.type() == expected.type() );
   QVERIFY( geom.isMultipart() == expected.isMultipart() );
+
+  geom.normalize();
+  expected.normalize();
 
   const QString gWkt = geom.asWkt();
   const QString eWkt = expected.asWkt();
@@ -129,7 +133,7 @@ void TestQgsMeshContours::testQuadAndTriangleVertexScalarLine()
 
   const QgsMeshDatasetIndex datasetIndex( 1, 0 );
 
-  QgsMeshContours contours( mpMeshLayer );
+  QgsMeshContours contours( mpMeshLayer.get() );
 
   const QgsGeometry res = contours.exportLines( datasetIndex, value, QgsMeshRendererScalarSettings::None );
   equals( res, expected );
@@ -156,7 +160,7 @@ void TestQgsMeshContours::testQuadAndTriangleFaceScalarLine()
 
   const QgsMeshDatasetIndex datasetIndex( 2, 0 );
 
-  QgsMeshContours contours( mpMeshLayer );
+  QgsMeshContours contours( mpMeshLayer.get() );
 
   const QgsGeometry res = contours.exportLines( datasetIndex, value, QgsMeshRendererScalarSettings::NeighbourAverage );
   equals( res, expected );
@@ -187,7 +191,7 @@ void TestQgsMeshContours::testQuadAndTriangleVertexScalarPoly()
 
   const QgsMeshDatasetIndex datasetIndex( 1, 0 );
 
-  QgsMeshContours contours( mpMeshLayer );
+  QgsMeshContours contours( mpMeshLayer.get() );
 
   const QgsGeometry res = contours.exportPolygons( datasetIndex, min_value, max_value, QgsMeshRendererScalarSettings::None );
   equals( res, expected );
@@ -216,7 +220,7 @@ void TestQgsMeshContours::testQuadAndTriangleFaceScalarPoly()
 
   const QgsMeshDatasetIndex datasetIndex( 2, 0 );
 
-  QgsMeshContours contours( mpMeshLayer );
+  QgsMeshContours contours( mpMeshLayer.get() );
 
   const QgsGeometry res = contours.exportPolygons( datasetIndex, min_value, max_value, QgsMeshRendererScalarSettings::NeighbourAverage );
   equals( res, expected );

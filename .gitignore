@@ -10,6 +10,8 @@
 *.orig
 *.out
 *.prepare
+.venv
+venv
 *.pyc
 *.py.temp
 *.sortinc
@@ -82,3 +84,5 @@ python/plugins/processing/tests/testdata/custom/*.aux.xml
 python/plugins/processing/tests/testdata/*.aux.xml
 Thumb.db
 Testing/*
+.cache/
+compile_commands.json

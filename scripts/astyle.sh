@@ -16,13 +16,13 @@
 
 # sort by version option
 SV=V
-if [[ "$OSTYPE" =~ darwin* ]]; then
+if [[ "$OSTYPE" == *bsd* ]] || [[ "$OSTYPE" =~ darwin* ]]; then
 	SV=n
 fi
 
 min_version="3"
 astyle_version_check() {
-	[ $(printf "$($1 --version 2>&1 | cut -d ' ' -f4)\\n$min_version" | sort -${SV} | head -n1) = "$min_version" ]
+	[ $(printf "$($1 --version 2>/dev/null | cut -d ' ' -f4)\\n$min_version" | sort -${SV} | head -n1) = "$min_version" ]
 }
 
 for ASTYLE in ${QGISSTYLE} $(dirname "$0")/qgisstyle $(dirname "$0")/RelWithDebInfo/qgisstyle astyle
@@ -105,7 +105,7 @@ astyleit() {
 
 for f in "$@"; do
 	case "$f" in
-                src/plugins/grass/qtermwidget/*|external/libdxfrw/*|external/untwine/*|external/qwt*|external/o2/*|external/odbccpp/*|external/qt-unix-signals/*|external/rtree/*|external/astyle/*|external/kdbush/*|external/poly2tri/*|external/wintoast/*|external/qt3dextra-headers/*|external/laz-perf/*|external/meshOptimizer/*|external/mapbox-vector-tile/*|python/ext-libs/*|ui_*.py|*.astyle|tests/testdata/*|editors/*)
+                src/plugins/grass/qtermwidget/*|external/libdxfrw/*|external/untwine/*|external/qwt*|external/o2/*|external/odbccpp/*|external/qt-unix-signals/*|external/rtree/*|external/astyle/*|external/kdbush/*|external/poly2tri/*|external/wintoast/*|external/qt3dextra-headers/*|external/lazperf/*|external/meshOptimizer/*|external/mapbox-vector-tile/*|python/ext-libs/*|ui_*.py|*.astyle|tests/testdata/*|editors/*)
 			echo -ne "$f skipped $elcr"
 			continue
 			;;
@@ -117,7 +117,7 @@ for f in "$@"; do
 			cmd=astyleit
 			;;
 
-		*.ui|*.qgm|*.txt|resources/context_help/*)
+		*.ui|*.qgm|*.txt)
 			cmd=:
 			;;
 

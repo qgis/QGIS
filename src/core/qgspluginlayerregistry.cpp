@@ -26,7 +26,7 @@ QgsPluginLayerType::QgsPluginLayerType( const QString &name )
 {
 }
 
-QString QgsPluginLayerType::name()
+QString QgsPluginLayerType::name() const
 {
   return mName;
 }
@@ -93,7 +93,7 @@ bool QgsPluginLayerRegistry::removePluginLayerType( const QString &typeName )
   const auto constLayers = layers;
   for ( QgsMapLayer *layer : constLayers )
   {
-    if ( layer->type() == QgsMapLayerType::PluginLayer )
+    if ( layer->type() == Qgis::LayerType::Plugin )
     {
       QgsPluginLayer *pl = qobject_cast<QgsPluginLayer *>( layer );
       if ( pl->pluginLayerType() == typeName )

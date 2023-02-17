@@ -21,7 +21,7 @@
 #include "qgsapplication.h"
 #include "qgsmessagelog.h"
 #include "qgsauthmanager.h"
-#include "qgscoordinatetransform.h"
+#include "qgsvariantutils.h"
 
 #include <QUrl>
 #include <QUrlQuery>
@@ -48,13 +48,13 @@ QVariantMap QgsArcGisRestQueryUtils::getLayerInfo( const QString &layerurl, cons
   return queryServiceJSON( queryUrl, authcfg, errorTitle, errorText, requestHeaders );
 }
 
-QVariantMap QgsArcGisRestQueryUtils::getObjectIds( const QString &layerurl, const QString &authcfg, QString &errorTitle, QString &errorText, const QgsHttpHeaders &requestHeaders, const QgsRectangle &bbox )
+QVariantMap QgsArcGisRestQueryUtils::getObjectIds( const QString &layerurl, const QString &authcfg, QString &errorTitle, QString &errorText, const QgsHttpHeaders &requestHeaders, const QgsRectangle &bbox, const QString &whereClause )
 {
   // http://sampleserver5.arcgisonline.com/arcgis/rest/services/Energy/Geology/FeatureServer/1/query?where=1%3D1&returnIdsOnly=true&f=json
   QUrl queryUrl( layerurl + "/query" );
   QUrlQuery query( queryUrl );
   query.addQueryItem( QStringLiteral( "f" ), QStringLiteral( "json" ) );
-  query.addQueryItem( QStringLiteral( "where" ), QStringLiteral( "1=1" ) );
+  query.addQueryItem( QStringLiteral( "where" ), whereClause.isEmpty() ? QStringLiteral( "1=1" ) : whereClause );
   query.addQueryItem( QStringLiteral( "returnIdsOnly" ), QStringLiteral( "true" ) );
   if ( !bbox.isNull() )
   {
@@ -66,6 +66,33 @@ QVariantMap QgsArcGisRestQueryUtils::getObjectIds( const QString &layerurl, cons
   }
   queryUrl.setQuery( query );
   return queryServiceJSON( queryUrl, authcfg, errorTitle, errorText, requestHeaders );
+}
+
+QgsRectangle QgsArcGisRestQueryUtils::getExtent( const QString &layerurl, const QString &whereClause, const QString &authcfg, const QgsHttpHeaders &requestHeaders )
+{
+  // http://sampleserver5.arcgisonline.com/arcgis/rest/services/Energy/Geology/FeatureServer/1/query?where=1%3D1&returnExtentOnly=true&f=json
+  QUrl queryUrl( layerurl + "/query" );
+  QUrlQuery query( queryUrl );
+  query.addQueryItem( QStringLiteral( "f" ), QStringLiteral( "json" ) );
+  query.addQueryItem( QStringLiteral( "where" ), whereClause );
+  query.addQueryItem( QStringLiteral( "returnExtentOnly" ), QStringLiteral( "true" ) );
+  queryUrl.setQuery( query );
+  QString errorTitle;
+  QString errorText;
+  const QVariantMap res = queryServiceJSON( queryUrl, authcfg, errorTitle, errorText, requestHeaders );
+  if ( res.isEmpty() )
+  {
+    QgsDebugMsg( QStringLiteral( "getExtent failed: %1 - %2" ).arg( errorTitle, errorText ) );
+    return QgsRectangle();
+  }
+
+  QgsRectangle rect;
+  const QVariantMap coords = res.value( QStringLiteral( "extent" ) ).toMap();
+  rect.setXMinimum( coords.value( QStringLiteral( "xmin" ) ).toDouble() );
+  rect.setYMinimum( coords.value( QStringLiteral( "ymin" ) ).toDouble() );
+  rect.setXMaximum( coords.value( QStringLiteral( "xmax" ) ).toDouble() );
+  rect.setYMaximum( coords.value( QStringLiteral( "ymax" ) ).toDouble() );
+  return rect;
 }
 
 QVariantMap QgsArcGisRestQueryUtils::getObjects( const QString &layerurl, const QString &authcfg, const QList<quint32> &objectIds, const QString &crs,
@@ -110,12 +137,12 @@ QVariantMap QgsArcGisRestQueryUtils::getObjects( const QString &layerurl, const 
   return queryServiceJSON( queryUrl,  authcfg, errorTitle, errorText, requestHeaders, feedback );
 }
 
-QList<quint32> QgsArcGisRestQueryUtils::getObjectIdsByExtent( const QString &layerurl, const QgsRectangle &filterRect, QString &errorTitle, QString &errorText, const QString &authcfg, const QgsHttpHeaders &requestHeaders, QgsFeedback *feedback )
+QList<quint32> QgsArcGisRestQueryUtils::getObjectIdsByExtent( const QString &layerurl, const QgsRectangle &filterRect, QString &errorTitle, QString &errorText, const QString &authcfg, const QgsHttpHeaders &requestHeaders, QgsFeedback *feedback, const QString &whereClause )
 {
   QUrl queryUrl( layerurl + "/query" );
   QUrlQuery query( queryUrl );
   query.addQueryItem( QStringLiteral( "f" ), QStringLiteral( "json" ) );
-  query.addQueryItem( QStringLiteral( "where" ), QStringLiteral( "1=1" ) );
+  query.addQueryItem( QStringLiteral( "where" ), whereClause.isEmpty() ? QStringLiteral( "1=1" ) : whereClause );
   query.addQueryItem( QStringLiteral( "returnIdsOnly" ), QStringLiteral( "true" ) );
   query.addQueryItem( QStringLiteral( "geometry" ), QStringLiteral( "%1,%2,%3,%4" )
                       .arg( filterRect.xMinimum(), 0, 'f', -1 ).arg( filterRect.yMinimum(), 0, 'f', -1 )
@@ -211,11 +238,17 @@ QVariantMap QgsArcGisRestQueryUtils::queryServiceJSON( const QUrl &url, const QS
   return res;
 }
 
-QUrl QgsArcGisRestQueryUtils::parseUrl( const QUrl &url )
+QUrl QgsArcGisRestQueryUtils::parseUrl( const QUrl &url, bool *isTestEndpoint )
 {
+  if ( isTestEndpoint )
+    *isTestEndpoint = false;
+
   QUrl modifiedUrl( url );
   if ( modifiedUrl.toString().contains( QLatin1String( "fake_qgis_http_endpoint" ) ) )
   {
+    if ( isTestEndpoint )
+      *isTestEndpoint = true;
+
     // Just for testing with local files instead of http:// resources
     QString modifiedUrlString = modifiedUrl.toString();
     // Qt5 does URL encoding from some reason (of the FILTER parameter for example)
@@ -223,7 +256,7 @@ QUrl QgsArcGisRestQueryUtils::parseUrl( const QUrl &url )
     modifiedUrlString.replace( QLatin1String( "fake_qgis_http_endpoint/" ), QLatin1String( "fake_qgis_http_endpoint_" ) );
     QgsDebugMsg( QStringLiteral( "Get %1" ).arg( modifiedUrlString ) );
     modifiedUrlString = modifiedUrlString.mid( QStringLiteral( "http://" ).size() );
-    QString args = modifiedUrlString.mid( modifiedUrlString.indexOf( '?' ) );
+    QString args = modifiedUrlString.indexOf( '?' ) >= 0 ? modifiedUrlString.mid( modifiedUrlString.indexOf( '?' ) ) : QString();
     if ( modifiedUrlString.size() > 150 )
     {
       args = QCryptographicHash::hash( args.toUtf8(), QCryptographicHash::Md5 ).toHex();
@@ -252,6 +285,10 @@ QUrl QgsArcGisRestQueryUtils::parseUrl( const QUrl &url )
     modifiedUrlString = modifiedUrlString.mid( 0, modifiedUrlString.indexOf( '?' ) ) + args;
     QgsDebugMsg( QStringLiteral( "Get %1 (after laundering)" ).arg( modifiedUrlString ) );
     modifiedUrl = QUrl::fromLocalFile( modifiedUrlString );
+    if ( !QFile::exists( modifiedUrlString ) )
+    {
+      QgsDebugMsg( QStringLiteral( "Local test file %1 for URL %2 does not exist!!!" ).arg( modifiedUrlString, url.toString() ) );
+    }
   }
 
   return modifiedUrl;
@@ -294,7 +331,7 @@ void QgsArcGisRestQueryUtils::visitFolderItems( const std::function< void( const
   }
 }
 
-void QgsArcGisRestQueryUtils::visitServiceItems( const std::function<void ( const QString &, const QString &, const QString &, const ServiceTypeFilter )> &visitor, const QVariantMap &serviceData, const QString &baseUrl )
+void QgsArcGisRestQueryUtils::visitServiceItems( const std::function<void ( const QString &, const QString &, Qgis::ArcGisRestServiceType )> &visitor, const QVariantMap &serviceData, const QString &baseUrl )
 {
   QString base( baseUrl );
   bool baseChecked = false;
@@ -305,11 +342,24 @@ void QgsArcGisRestQueryUtils::visitServiceItems( const std::function<void ( cons
   for ( const QVariant &service : serviceList )
   {
     const QVariantMap serviceMap = service.toMap();
-    const QString serviceType = serviceMap.value( QStringLiteral( "type" ) ).toString();
-    if ( serviceType != QLatin1String( "MapServer" ) && serviceType != QLatin1String( "ImageServer" ) && serviceType != QLatin1String( "FeatureServer" ) )
-      continue;
+    const QString serviceTypeString = serviceMap.value( QStringLiteral( "type" ) ).toString();
+    const Qgis::ArcGisRestServiceType serviceType = QgsArcGisRestUtils::serviceTypeFromString( serviceTypeString );
 
-    const ServiceTypeFilter type = serviceType == QLatin1String( "FeatureServer" ) ? Vector : Raster;
+    switch ( serviceType )
+    {
+      case Qgis::ArcGisRestServiceType::FeatureServer:
+      case Qgis::ArcGisRestServiceType::MapServer:
+      case Qgis::ArcGisRestServiceType::ImageServer:
+        // supported
+        break;
+
+      case Qgis::ArcGisRestServiceType::GlobeServer:
+      case Qgis::ArcGisRestServiceType::GPServer:
+      case Qgis::ArcGisRestServiceType::GeocodeServer:
+      case Qgis::ArcGisRestServiceType::Unknown:
+        // unsupported
+        continue;
+    }
 
     const QString serviceName = serviceMap.value( QStringLiteral( "name" ) ).toString();
     const QString displayName = serviceName.split( '/' ).last();
@@ -319,7 +369,7 @@ void QgsArcGisRestQueryUtils::visitServiceItems( const std::function<void ( cons
       baseChecked = true;
     }
 
-    visitor( displayName, base + serviceName + '/' + serviceType, serviceType, type );
+    visitor( displayName, base + serviceName + '/' + serviceTypeString, serviceType );
   }
 }
 
@@ -364,19 +414,19 @@ void QgsArcGisRestQueryUtils::addLayerItems( const std::function<void ( const QS
     const QString description = layerInfoMap.value( QStringLiteral( "description" ) ).toString();
 
     // Yes, potentially we may visit twice, once as as a raster (if applicable), and once as a vector (if applicable)!
-    if ( serviceMayRenderMaps && ( filter == Raster || filter == AllTypes ) )
+    if ( serviceMayRenderMaps && ( filter == ServiceTypeFilter::Raster || filter == ServiceTypeFilter::AllTypes ) )
     {
       if ( !layerInfoMap.value( QStringLiteral( "subLayerIds" ) ).toList().empty() )
       {
-        visitor( parentLayerId, Raster, QgsWkbTypes::UnknownGeometry, id, name, description, parentUrl + '/' + id, true, QString(), format );
+        visitor( parentLayerId, ServiceTypeFilter::Raster, QgsWkbTypes::UnknownGeometry, id, name, description, parentUrl + '/' + id, true, QString(), format );
       }
       else
       {
-        visitor( parentLayerId, Raster, QgsWkbTypes::UnknownGeometry, id, name, description, parentUrl + '/' + id, false, authid, format );
+        visitor( parentLayerId, ServiceTypeFilter::Raster, QgsWkbTypes::UnknownGeometry, id, name, description, parentUrl + '/' + id, false, authid, format );
       }
     }
 
-    if ( serviceMayHaveQueryCapability && ( filter == Vector || filter == AllTypes ) )
+    if ( serviceMayHaveQueryCapability && ( filter == ServiceTypeFilter::Vector || filter == ServiceTypeFilter::AllTypes ) )
     {
       const QString geometryType = layerInfoMap.value( QStringLiteral( "geometryType" ) ).toString();
 #if 0
@@ -401,21 +451,21 @@ void QgsArcGisRestQueryUtils::addLayerItems( const std::function<void ( const QS
 
       if ( !layerInfoMap.value( QStringLiteral( "subLayerIds" ) ).toList().empty() )
       {
-        visitor( parentLayerId, Vector, QgsWkbTypes::geometryType( wkbType ), id, name, description, parentUrl + '/' + id, true, QString(), format );
+        visitor( parentLayerId, ServiceTypeFilter::Vector, QgsWkbTypes::geometryType( wkbType ), id, name, description, parentUrl + '/' + id, true, QString(), format );
       }
       else
       {
-        visitor( parentLayerId, Vector, QgsWkbTypes::geometryType( wkbType ), id, name, description, parentUrl + '/' + id, false, authid, format );
+        visitor( parentLayerId, ServiceTypeFilter::Vector, QgsWkbTypes::geometryType( wkbType ), id, name, description, parentUrl + '/' + id, false, authid, format );
       }
     }
   }
 
   // Add root MapServer as raster layer when multiple layers are listed
-  if ( filter != Vector && layerInfoList.count() > 1 && serviceData.contains( QStringLiteral( "supportedImageFormatTypes" ) ) )
+  if ( filter != ServiceTypeFilter::Vector && layerInfoList.count() > 1 && serviceData.contains( QStringLiteral( "supportedImageFormatTypes" ) ) )
   {
     const QString name = QStringLiteral( "(%1)" ).arg( QObject::tr( "All layers" ) );
     const QString description = serviceData.value( QStringLiteral( "Comments" ) ).toString();
-    visitor( nullptr, Raster, QgsWkbTypes::UnknownGeometry, nullptr, name, description, parentUrl, false, authid, format );
+    visitor( nullptr, ServiceTypeFilter::Raster, QgsWkbTypes::UnknownGeometry, nullptr, name, description, parentUrl, false, authid, format );
   }
 
   // Add root ImageServer as layer
@@ -423,7 +473,7 @@ void QgsArcGisRestQueryUtils::addLayerItems( const std::function<void ( const QS
   {
     const QString name = serviceData.value( QStringLiteral( "name" ) ).toString();
     const QString description = serviceData.value( QStringLiteral( "description" ) ).toString();
-    visitor( nullptr, Raster, QgsWkbTypes::UnknownGeometry, nullptr, name, description, parentUrl, false, authid, format );
+    visitor( nullptr, ServiceTypeFilter::Raster, QgsWkbTypes::UnknownGeometry, nullptr, name, description, parentUrl, false, authid, format );
   }
 }
 
@@ -445,15 +495,12 @@ QgsArcGisAsyncQuery::~QgsArcGisAsyncQuery()
     mReply->deleteLater();
 }
 
-void QgsArcGisAsyncQuery::start( const QUrl &url, const QString &authCfg, QByteArray *result, bool allowCache, const QgsStringMap &headers )
+void QgsArcGisAsyncQuery::start( const QUrl &url, const QString &authCfg, QByteArray *result, bool allowCache, const QgsHttpHeaders &headers )
 {
   mResult = result;
   QNetworkRequest request( url );
 
-  for ( auto it = headers.constBegin(); it != headers.constEnd(); ++it )
-  {
-    request.setRawHeader( it.key().toUtf8(), it.value().toUtf8() );
-  }
+  headers.updateNetworkRequest( request );
 
   if ( !authCfg.isEmpty() &&  !QgsApplication::authManager()->updateNetworkRequest( request, authCfg ) )
   {
@@ -485,7 +532,7 @@ void QgsArcGisAsyncQuery::handleReply()
 
   // Handle HTTP redirects
   const QVariant redirect = mReply->attribute( QNetworkRequest::RedirectionTargetAttribute );
-  if ( !redirect.isNull() )
+  if ( !QgsVariantUtils::isNull( redirect ) )
   {
     QNetworkRequest request = mReply->request();
     QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsArcGisAsyncQuery" ) );
@@ -557,7 +604,7 @@ void QgsArcGisAsyncParallelQuery::handleReply()
     mErrors.append( reply->errorString() );
     --mPendingRequests;
   }
-  else if ( !redirect.isNull() )
+  else if ( !QgsVariantUtils::isNull( redirect ) )
   {
     // Handle HTTP redirects
     QNetworkRequest request = reply->request();

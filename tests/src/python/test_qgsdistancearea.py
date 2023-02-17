@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsDistanceArea.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -10,19 +9,20 @@ __author__ = 'Jürgen E. Fischer'
 __date__ = '19/01/2014'
 __copyright__ = 'Copyright 2014, The QGIS Project'
 
-import qgis  # NOQA
 import math
-
-from qgis.core import (QgsGeometry,
-                       QgsPointXY,
-                       QgsDistanceArea,
-                       QgsCoordinateReferenceSystem,
-                       QgsUnitTypes,
-                       QgsProject)
-
-from qgis.testing import start_app, unittest
-from qgis.PyQt.QtCore import QLocale
 from pprint import pprint
+
+import qgis  # NOQA
+from qgis.PyQt.QtCore import QLocale
+from qgis.core import (
+    QgsCoordinateReferenceSystem,
+    QgsDistanceArea,
+    QgsGeometry,
+    QgsPointXY,
+    QgsProject,
+    QgsUnitTypes,
+)
+from qgis.testing import start_app, unittest
 
 # Convenience instances in case you may need them
 # not used in this test
@@ -59,8 +59,7 @@ class TestQgsDistanceArea(unittest.TestCase):
         )
         da = QgsDistanceArea()
         length = da.measureLength(linestring)
-        myMessage = ('Expected:\n%f\nGot:\n%f\n' %
-                     (4, length))
+        myMessage = f'Expected:\n{4:f}\nGot:\n{length:f}\n'
         assert length == 4, myMessage
 
     def testBearing(self):
@@ -89,21 +88,21 @@ class TestQgsDistanceArea(unittest.TestCase):
                              QgsProject.instance().transformContext())
         if (da_3068.sourceCrs().isGeographic()):
             da_3068.setEllipsoid(da_3068.sourceCrs().ellipsoidAcronym())
-        print(("setting [{}] srid [{}] description [{}]".format(u'Soldner Berlin', da_3068.sourceCrs().authid(),
-                                                                da_3068.sourceCrs().description())))
+        print("setting [{}] srid [{}] description [{}]".format('Soldner Berlin', da_3068.sourceCrs().authid(),
+                                                               da_3068.sourceCrs().description()))
         self.assertEqual(da_3068.sourceCrs().authid(), 'EPSG:3068')
         da_wsg84.setSourceCrs(QgsCoordinateReferenceSystem.fromOgcWmsCrs('EPSG:4326'),
                               QgsProject.instance().transformContext())
         if (da_wsg84.sourceCrs().isGeographic()):
             da_wsg84.setEllipsoid(da_wsg84.sourceCrs().ellipsoidAcronym())
         self.assertEqual(da_wsg84.sourceCrs().authid(), 'EPSG:4326')
-        print(("setting [{}] srid [{}] description [{}] isGeographic[{}]".format(u'Wsg84',
-                                                                                 da_wsg84.sourceCrs().authid(),
-                                                                                 da_wsg84.sourceCrs().description(),
-                                                                                 da_wsg84.sourceCrs().isGeographic())))
+        print("setting [{}] srid [{}] description [{}] isGeographic[{}]".format('Wsg84',
+                                                                                da_wsg84.sourceCrs().authid(),
+                                                                                da_wsg84.sourceCrs().description(),
+                                                                                da_wsg84.sourceCrs().isGeographic()))
         # print(("-- projectionAcronym[{}] ellipsoidAcronym[{}] toWkt[{}] mapUnits[{}] toProj4[{}]".format(da_wsg84.sourceCrs().projectionAcronym(),da_wsg84.sourceCrs().ellipsoidAcronym(), da_wsg84.sourceCrs().toWkt(),da_wsg84.sourceCrs().mapUnits(),da_wsg84.sourceCrs().toProj())))
-        print(("Testing Position change for[{}] years[{}]".format(u'Ampelanlage - Potsdamer Platz, Verkehrsinsel',
-                                                                  u'1924 and 1998')))
+        print("Testing Position change for[{}] years[{}]".format('Ampelanlage - Potsdamer Platz, Verkehrsinsel',
+                                                                 '1924 and 1998'))
 
         # 1924-10-24 SRID=3068;POINT(23099.49 20296.69)
         # 1924-10-24 SRID=4326;POINT(13.37650707988041 52.50952361017194)
@@ -172,67 +171,67 @@ class TestQgsDistanceArea(unittest.TestCase):
         if (da_3068.sourceCrs().isGeographic()):
             da_3068.setEllipsoid(da_3068.sourceCrs().ellipsoidAcronym())
         self.assertEqual(da_3068.sourceCrs().authid(), 'EPSG:3068')
-        print((
+        print(
             "setting [{}] srid [{}] description [{}] isGeographic[{}] lengthUnits[{}] projectionAcronym[{}] ellipsoidAcronym[{}]".format(
-                u'EPSG:3068', da_3068.sourceCrs().authid(), da_3068.sourceCrs().description(),
+                'EPSG:3068', da_3068.sourceCrs().authid(), da_3068.sourceCrs().description(),
                 da_3068.sourceCrs().isGeographic(), QgsUnitTypes.toString(da_3068.lengthUnits()),
-                da_3068.sourceCrs().projectionAcronym(), da_3068.sourceCrs().ellipsoidAcronym())))
+                da_3068.sourceCrs().projectionAcronym(), da_3068.sourceCrs().ellipsoidAcronym()))
         da_wsg84 = QgsDistanceArea()
         da_wsg84.setSourceCrs(QgsCoordinateReferenceSystem.fromOgcWmsCrs('EPSG:4326'),
                               QgsProject.instance().transformContext())
         if (da_wsg84.sourceCrs().isGeographic()):
             da_wsg84.setEllipsoid(da_wsg84.sourceCrs().ellipsoidAcronym())
         self.assertEqual(da_wsg84.sourceCrs().authid(), 'EPSG:4326')
-        print((
+        print(
             "setting [{}] srid [{}] description [{}] isGeographic[{}] lengthUnits[{}] projectionAcronym[{}] ellipsoidAcronym[{}] ellipsoid[{}]".format(
-                u'EPSG:4326', da_wsg84.sourceCrs().authid(), da_wsg84.sourceCrs().description(),
+                'EPSG:4326', da_wsg84.sourceCrs().authid(), da_wsg84.sourceCrs().description(),
                 da_wsg84.sourceCrs().isGeographic(), QgsUnitTypes.toString(da_wsg84.lengthUnits()),
                 da_wsg84.sourceCrs().projectionAcronym(), da_wsg84.sourceCrs().ellipsoidAcronym(),
-                da_wsg84.ellipsoid())))
+                da_wsg84.ellipsoid()))
         da_4314 = QgsDistanceArea()
         da_4314.setSourceCrs(QgsCoordinateReferenceSystem.fromOgcWmsCrs('EPSG:4314'),
                              QgsProject.instance().transformContext())
         if (da_4314.sourceCrs().isGeographic()):
             da_4314.setEllipsoid(da_4314.sourceCrs().ellipsoidAcronym())
         self.assertEqual(da_4314.sourceCrs().authid(), 'EPSG:4314')
-        print((
+        print(
             "setting [{}] srid [{}] description [{}] isGeographic[{}] lengthUnits[{}] projectionAcronym[{}] ellipsoidAcronym[{}]".format(
-                u'EPSG:4314', da_4314.sourceCrs().authid(), da_4314.sourceCrs().description(),
+                'EPSG:4314', da_4314.sourceCrs().authid(), da_4314.sourceCrs().description(),
                 da_4314.sourceCrs().isGeographic(), QgsUnitTypes.toString(da_4314.lengthUnits()),
-                da_4314.sourceCrs().projectionAcronym(), da_4314.sourceCrs().ellipsoidAcronym())))
+                da_4314.sourceCrs().projectionAcronym(), da_4314.sourceCrs().ellipsoidAcronym()))
         da_4805 = QgsDistanceArea()
         da_4805.setSourceCrs(QgsCoordinateReferenceSystem.fromOgcWmsCrs('EPSG:4805'),
                              QgsProject.instance().transformContext())
         if (da_4805.sourceCrs().isGeographic()):
             da_4805.setEllipsoid(da_4805.sourceCrs().ellipsoidAcronym())
         self.assertEqual(da_4805.sourceCrs().authid(), 'EPSG:4805')
-        print((
+        print(
             "setting [{}] srid [{}] description [{}] isGeographic[{}] lengthUnits[{}] projectionAcronym[{}] ellipsoidAcronym[{}]".format(
-                u'EPSG:4805', da_4805.sourceCrs().authid(), da_4805.sourceCrs().description(),
+                'EPSG:4805', da_4805.sourceCrs().authid(), da_4805.sourceCrs().description(),
                 da_4805.sourceCrs().isGeographic(), QgsUnitTypes.toString(da_4805.lengthUnits()),
-                da_4805.sourceCrs().projectionAcronym(), da_4805.sourceCrs().ellipsoidAcronym())))
+                da_4805.sourceCrs().projectionAcronym(), da_4805.sourceCrs().ellipsoidAcronym()))
         # EPSG:5665 unknown, why?
         da_5665 = QgsDistanceArea()
         da_5665.setSourceCrs(QgsCoordinateReferenceSystem.fromOgcWmsCrs('EPSG:5665'),
                              QgsProject.instance().transformContext())
         if (da_5665.sourceCrs().isGeographic()):
             da_5665.setEllipsoid(da_5665.sourceCrs().ellipsoidAcronym())
-        print((
+        print(
             "setting [{}] srid [{}] description [{}] isGeographic[{}] lengthUnits[{}] projectionAcronym[{}] ellipsoidAcronym[{}]".format(
-                u'EPSG:5665', da_5665.sourceCrs().authid(), da_5665.sourceCrs().description(),
+                'EPSG:5665', da_5665.sourceCrs().authid(), da_5665.sourceCrs().description(),
                 da_5665.sourceCrs().isGeographic(), QgsUnitTypes.toString(da_5665.lengthUnits()),
-                da_5665.sourceCrs().projectionAcronym(), da_5665.sourceCrs().ellipsoidAcronym())))
+                da_5665.sourceCrs().projectionAcronym(), da_5665.sourceCrs().ellipsoidAcronym()))
         # self.assertEqual(da_5665.sourceCrs().authid(), 'EPSG:5665')
         da_25833 = QgsDistanceArea()
         da_25833.setSourceCrs(QgsCoordinateReferenceSystem.fromOgcWmsCrs('EPSG:25833'),
                               QgsProject.instance().transformContext())
         if (da_25833.sourceCrs().isGeographic()):
             da_25833.setEllipsoid(da_25833.sourceCrs().ellipsoidAcronym())
-        print((
+        print(
             "setting [{}] srid [{}] description [{}] isGeographic[{}] lengthUnits[{}] projectionAcronym[{}] ellipsoidAcronym[{}]".format(
-                u'EPSG:25833', da_25833.sourceCrs().authid(), da_25833.sourceCrs().description(),
+                'EPSG:25833', da_25833.sourceCrs().authid(), da_25833.sourceCrs().description(),
                 da_25833.sourceCrs().isGeographic(), QgsUnitTypes.toString(da_25833.lengthUnits()),
-                da_25833.sourceCrs().projectionAcronym(), da_25833.sourceCrs().ellipsoidAcronym())))
+                da_25833.sourceCrs().projectionAcronym(), da_25833.sourceCrs().ellipsoidAcronym()))
         self.assertEqual(da_25833.sourceCrs().authid(), 'EPSG:25833')
 
         # Berlin - Brandenburg Gate - Quadriga
@@ -560,8 +559,7 @@ class TestQgsDistanceArea(unittest.TestCase):
         )
         da = QgsDistanceArea()
         length = da.measureLength(linestring)
-        myMessage = ('Expected:\n%f\nGot:\n%f\n' %
-                     (9, length))
+        myMessage = f'Expected:\n{9:f}\nGot:\n{length:f}\n'
         assert length == 9, myMessage
 
     def testMeasurePolygon(self):
@@ -579,10 +577,10 @@ class TestQgsDistanceArea(unittest.TestCase):
 
         da = QgsDistanceArea()
         area = da.measureArea(polygon)
-        assert area == 3, 'Expected:\n%f\nGot:\n%f\n' % (3, area)
+        assert area == 3, f'Expected:\n{3:f}\nGot:\n{area:f}\n'
 
         perimeter = da.measurePerimeter(polygon)
-        assert perimeter == 8, 'Expected:\n%f\nGot:\n%f\n' % (8, perimeter)
+        assert perimeter == 8, f'Expected:\n{8:f}\nGot:\n{perimeter:f}\n'
 
     def testMeasurePolygonWithHole(self):
         # +-+-+-+
@@ -600,11 +598,11 @@ class TestQgsDistanceArea(unittest.TestCase):
         )
         da = QgsDistanceArea()
         area = da.measureArea(polygon)
-        assert area == 8, "Expected:\n%f\nGot:\n%f\n" % (8, area)
+        assert area == 8, f"Expected:\n{8:f}\nGot:\n{area:f}\n"
 
         # MH150729: Changed behavior to consider inner rings for perimeter calculation. Therefore, expected result is 16.
         perimeter = da.measurePerimeter(polygon)
-        assert perimeter == 16, "Expected:\n%f\nGot:\n%f\n" % (16, perimeter)
+        assert perimeter == 16, f"Expected:\n{16:f}\nGot:\n{perimeter:f}\n"
 
     def testMeasureMultiPolygon(self):
         # +-+-+ +-+-+
@@ -623,10 +621,10 @@ class TestQgsDistanceArea(unittest.TestCase):
 
         da = QgsDistanceArea()
         area = da.measureArea(polygon)
-        assert area == 6, 'Expected:\n%f\nGot:\n%f\n' % (6, area)
+        assert area == 6, f'Expected:\n{6:f}\nGot:\n{area:f}\n'
 
         perimeter = da.measurePerimeter(polygon)
-        assert perimeter == 16, "Expected:\n%f\nGot:\n%f\n" % (16, perimeter)
+        assert perimeter == 16, f"Expected:\n{16:f}\nGot:\n{perimeter:f}\n"
 
     def testWillUseEllipsoid(self):
         """test QgsDistanceArea::willUseEllipsoid """
@@ -652,7 +650,7 @@ class TestQgsDistanceArea(unittest.TestCase):
         distance = da.measureLine(QgsPointXY(1, 1), QgsPointXY(2, 3))
         units = da.lengthUnits()
 
-        print(("measured {} in {}".format(distance, QgsUnitTypes.toString(units))))
+        print(f"measured {distance} in {QgsUnitTypes.toString(units)}")
         assert ((abs(distance - 2.23606797) < 0.00000001 and units == QgsUnitTypes.DistanceDegrees)
                 or (abs(distance - 248.52) < 0.01 and units == QgsUnitTypes.DistanceMeters))
 
@@ -660,7 +658,7 @@ class TestQgsDistanceArea(unittest.TestCase):
         distance = da.measureLine(QgsPointXY(1, 1), QgsPointXY(2, 3))
         units = da.lengthUnits()
 
-        print(("measured {} in {}".format(distance, QgsUnitTypes.toString(units))))
+        print(f"measured {distance} in {QgsUnitTypes.toString(units)}")
         # should always be in Meters
         self.assertAlmostEqual(distance, 247555.57, delta=0.01)
         self.assertEqual(units, QgsUnitTypes.DistanceMeters)
@@ -675,7 +673,7 @@ class TestQgsDistanceArea(unittest.TestCase):
         # measurement should be in feet
         distance = da.measureLine(QgsPointXY(1, 1), QgsPointXY(2, 3))
         units = da.lengthUnits()
-        print(("measured {} in {}".format(distance, QgsUnitTypes.toString(units))))
+        print(f"measured {distance} in {QgsUnitTypes.toString(units)}")
         self.assertAlmostEqual(distance, 2.23606797, delta=0.000001)
         self.assertEqual(units, QgsUnitTypes.DistanceFeet)
 
@@ -687,7 +685,7 @@ class TestQgsDistanceArea(unittest.TestCase):
         # now should be in Meters again
         distance = da.measureLine(QgsPointXY(1, 1), QgsPointXY(2, 3))
         units = da.lengthUnits()
-        print(("measured {} in {}".format(distance, QgsUnitTypes.toString(units))))
+        print(f"measured {distance} in {QgsUnitTypes.toString(units)}")
         self.assertAlmostEqual(distance, 0.67953772, delta=0.000001)
         self.assertEqual(units, QgsUnitTypes.DistanceMeters)
 
@@ -716,7 +714,7 @@ class TestQgsDistanceArea(unittest.TestCase):
         area = da.measureArea(polygon)
         units = da.areaUnits()
 
-        print(("measured {} in {}".format(area, QgsUnitTypes.toString(units))))
+        print(f"measured {area} in {QgsUnitTypes.toString(units)}")
         assert ((abs(area - 3.0) < 0.00000001 and units == QgsUnitTypes.AreaSquareDegrees)
                 or (abs(area - 37176087091.5) < 0.1 and units == QgsUnitTypes.AreaSquareMeters))
 
@@ -724,7 +722,7 @@ class TestQgsDistanceArea(unittest.TestCase):
         area = da.measureArea(polygon)
         units = da.areaUnits()
 
-        print(("measured {} in {}".format(area, QgsUnitTypes.toString(units))))
+        print(f"measured {area} in {QgsUnitTypes.toString(units)}")
         # should always be in Meters Squared
         self.assertAlmostEqual(area, 36922805935.96157, delta=0.1)
         self.assertEqual(units, QgsUnitTypes.AreaSquareMeters)
@@ -746,7 +744,7 @@ class TestQgsDistanceArea(unittest.TestCase):
         # measurement should be in square feet
         area = da.measureArea(polygon)
         units = da.areaUnits()
-        print(("measured {} in {}".format(area, QgsUnitTypes.toString(units))))
+        print(f"measured {area} in {QgsUnitTypes.toString(units)}")
         self.assertAlmostEqual(area, 2000000, delta=0.001)
         self.assertEqual(units, QgsUnitTypes.AreaSquareFeet)
 
@@ -758,7 +756,7 @@ class TestQgsDistanceArea(unittest.TestCase):
         # now should be in Square Meters again
         area = da.measureArea(polygon)
         units = da.areaUnits()
-        print(("measured {} in {}".format(area, QgsUnitTypes.toString(units))))
+        print(f"measured {area} in {QgsUnitTypes.toString(units)}")
         self.assertAlmostEqual(area, 185825.2069028169, delta=1.0)
         self.assertEqual(units, QgsUnitTypes.AreaSquareMeters)
 

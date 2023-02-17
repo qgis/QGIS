@@ -3,14 +3,29 @@
   "type": "function",
   "groups": ["Aggregates"],
   "description": "Returns all aggregated strings from a field or expression joined by a delimiter.",
-  "arguments": [
-	{"arg":"expression", "description":"sub expression of field to aggregate"},
-	{"arg":"group_by", "optional":true, "description":"optional expression to use to group aggregate calculations"},
-	{"arg":"filter", "optional":true, "description":"optional expression to use to filter features used to calculate aggregate"},
-	{"arg":"concatenator", "optional":true, "description":"optional string to use to join values. Empty by default."},
-	{"arg":"order_by", "optional":true, "description":"optional expression to use to order features used to calculate aggregate. By default, the features will be returned in an unspecified order."}
-  ],
-  "examples": [
-	{ "expression":"concatenate(\"town_name\",group_by:=\"state\",concatenator:=',')", "returns":"comma separated list of town_names, grouped by state field"}
-  ]
+  "arguments": [{
+    "arg": "expression",
+    "description": "sub expression of field to aggregate"
+  }, {
+    "arg": "group_by",
+    "optional": true,
+    "description": "optional expression to use to group aggregate calculations"
+  }, {
+    "arg": "filter",
+    "optional": true,
+    "description": "optional expression to use to filter features used to calculate aggregate"
+  }, {
+    "arg": "concatenator",
+    "optional": true,
+    "description": "optional string to use to join values. Empty by default."
+  }, {
+    "arg": "order_by",
+    "optional": true,
+    "description": "optional expression to use to order features used to calculate aggregate. By default, the features will be returned in an unspecified order."
+  }],
+  "examples": [{
+    "expression": "concatenate(\"town_name\",group_by:=\"state\",concatenator:=',')",
+    "returns": "comma separated list of town_names, grouped by state field"
+  }],
+  "tags": ["aggregated", "field", "joined", "delimiter", "strings"]
 }

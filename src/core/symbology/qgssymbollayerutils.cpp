@@ -26,14 +26,12 @@
 #include "qgspainteffectregistry.h"
 #include "qgsapplication.h"
 #include "qgspathresolver.h"
-#include "qgsproject.h"
 #include "qgsogcutils.h"
 #include "qgslogger.h"
 #include "qgsreadwritecontext.h"
 #include "qgsrendercontext.h"
 #include "qgsunittypes.h"
 #include "qgsexpressioncontextutils.h"
-#include "qgseffectstack.h"
 #include "qgsstyleentityvisitor.h"
 #include "qgsrenderer.h"
 #include "qgsxmlutils.h"
@@ -43,6 +41,8 @@
 #include "qgsmarkersymbol.h"
 #include "qgsfillsymbol.h"
 #include "qgssymbollayerreference.h"
+#include "qgsmarkersymbollayer.h"
+#include "qmath.h"
 
 #include <QColor>
 #include <QFont>
@@ -57,6 +57,7 @@
 #include <QUrlQuery>
 #include <QMimeData>
 #include <QRegularExpression>
+#include <QDir>
 
 #define POINTS_TO_MM 2.83464567
 
@@ -552,7 +553,7 @@ QPointF QgsSymbolLayerUtils::toPoint( const QVariant &value, bool *ok )
   if ( ok )
     *ok = false;
 
-  if ( value.isNull() )
+  if ( QgsVariantUtils::isNull( value ) )
     return QPoint();
 
   if ( value.type() == QVariant::List )
@@ -616,7 +617,7 @@ QSizeF QgsSymbolLayerUtils::toSize( const QVariant &value, bool *ok )
   if ( ok )
     *ok = false;
 
-  if ( value.isNull() )
+  if ( QgsVariantUtils::isNull( value ) )
     return QSizeF();
 
   if ( value.type() == QVariant::List )
@@ -719,6 +720,11 @@ QString QgsSymbolLayerUtils::encodeSldUom( QgsUnitTypes::RenderUnit unit, double
         *scaleFactor = 0.001; // from millimeters to meters
       return QStringLiteral( "http://www.opengeospatial.org/se/units/metre" );
 
+    case QgsUnitTypes::RenderMetersInMapUnits:
+      if ( scaleFactor )
+        *scaleFactor = 1.0; // from meters to meters
+      return QStringLiteral( "http://www.opengeospatial.org/se/units/metre" );
+
     case QgsUnitTypes::RenderMillimeters:
     default:
       // pixel is the SLD default uom. The "standardized rendering pixel
@@ -736,27 +742,23 @@ QgsUnitTypes::RenderUnit QgsSymbolLayerUtils::decodeSldUom( const QString &str, 
   if ( str == QLatin1String( "http://www.opengeospatial.org/se/units/metre" ) )
   {
     if ( scaleFactor )
-      *scaleFactor = 1000.0;  // from meters to millimeters
-    return QgsUnitTypes::RenderMapUnits;
+      *scaleFactor = 1.0;  // from meters to meters
+    return QgsUnitTypes::RenderMetersInMapUnits;
   }
   else if ( str == QLatin1String( "http://www.opengeospatial.org/se/units/foot" ) )
   {
     if ( scaleFactor )
-      *scaleFactor = 304.8; // from feet to meters
-    return QgsUnitTypes::RenderMapUnits;
+      *scaleFactor = 0.3048; // from feet to meters
+    return QgsUnitTypes::RenderMetersInMapUnits;
   }
-  else if ( str == QLatin1String( "http://www.opengeospatial.org/se/units/pixel" ) )
+  // pixel is the SLD default uom so it's used if no uom attribute is available or
+  // if uom="http://www.opengeospatial.org/se/units/pixel"
+  else
   {
     if ( scaleFactor )
       *scaleFactor = 1.0; // from pixels to pixels
     return QgsUnitTypes::RenderPixels;
   }
-
-  // pixel is the SLD default uom. The "standardized rendering pixel
-  // size" is defined to be 0.28mm x 0.28mm (millimeters).
-  if ( scaleFactor )
-    *scaleFactor = 1 / 0.00028; // from pixels to millimeters
-  return QgsUnitTypes::RenderMillimeters;
 }
 
 QString QgsSymbolLayerUtils::encodeRealVector( const QVector<qreal> &v )
@@ -978,7 +980,7 @@ QPicture QgsSymbolLayerUtils::symbolLayerPreviewPicture( const QgsSymbolLayer *l
   return picture;
 }
 
-QIcon QgsSymbolLayerUtils::symbolLayerPreviewIcon( const QgsSymbolLayer *layer, QgsUnitTypes::RenderUnit u, QSize size, const QgsMapUnitScale &, Qgis::SymbolType parentSymbolType )
+QIcon QgsSymbolLayerUtils::symbolLayerPreviewIcon( const QgsSymbolLayer *layer, QgsUnitTypes::RenderUnit u, QSize size, const QgsMapUnitScale &, Qgis::SymbolType parentSymbolType, QgsMapLayer *mapLayer )
 {
   QPixmap pixmap( size );
   pixmap.fill( Qt::transparent );
@@ -990,7 +992,7 @@ QIcon QgsSymbolLayerUtils::symbolLayerPreviewIcon( const QgsSymbolLayer *layer, 
   renderContext.setFlag( Qgis::RenderContextFlag::HighQualityImageTransforms );
   // build a minimal expression context
   QgsExpressionContext expContext;
-  expContext.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( nullptr ) );
+  expContext.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( mapLayer ) );
   renderContext.setExpressionContext( expContext );
 
   QgsSymbolRenderContext symbolContext( renderContext, u, 1.0, false, Qgis::SymbolRenderHints(), nullptr );
@@ -1307,6 +1309,9 @@ QgsSymbol *QgsSymbolLayerUtils::loadSymbol( const QDomElement &element, const Qg
     flags |= Qgis::SymbolFlag::RendererShouldUseSymbolLevels;
   symbol->setFlags( flags );
 
+  symbol->animationSettings().setIsAnimated( element.attribute( QStringLiteral( "is_animated" ), QStringLiteral( "0" ) ).toInt() );
+  symbol->animationSettings().setFrameRate( element.attribute( QStringLiteral( "frame_rate" ), QStringLiteral( "10" ) ).toDouble() );
+
   const QDomElement ddProps = element.firstChildElement( QStringLiteral( "data_defined_properties" ) );
   if ( !ddProps.isNull() )
   {
@@ -1400,6 +1405,9 @@ QDomElement QgsSymbolLayerUtils::saveSymbol( const QString &name, const QgsSymbo
   symEl.setAttribute( QStringLiteral( "force_rhr" ), symbol->forceRHR() ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
   if ( symbol->flags() & Qgis::SymbolFlag::RendererShouldUseSymbolLevels )
     symEl.setAttribute( QStringLiteral( "renderer_should_use_levels" ), QStringLiteral( "1" ) );
+
+  symEl.setAttribute( QStringLiteral( "is_animated" ), symbol->animationSettings().isAnimated() ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
+  symEl.setAttribute( QStringLiteral( "frame_rate" ), qgsDoubleToString( symbol->animationSettings().frameRate() ) );
 
   //QgsDebugMsg( "num layers " + QString::number( symbol->symbolLayerCount() ) );
 
@@ -1620,6 +1628,8 @@ QgsSymbolLayer *QgsSymbolLayerUtils::createFillLayerFromSld( QDomElement &elemen
     l = QgsApplication::symbolLayerRegistry()->createSymbolLayerFromSld( QStringLiteral( "PointPatternFill" ), element );
   else if ( needSvgFill( element ) )
     l = QgsApplication::symbolLayerRegistry()->createSymbolLayerFromSld( QStringLiteral( "SVGFill" ), element );
+  else if ( needRasterImageFill( element ) )
+    l = QgsApplication::symbolLayerRegistry()->createSymbolLayerFromSld( QStringLiteral( "RasterFill" ), element );
   else
     l = QgsApplication::symbolLayerRegistry()->createSymbolLayerFromSld( QStringLiteral( "SimpleFill" ), element );
 
@@ -1670,6 +1680,11 @@ QgsSymbolLayer *QgsSymbolLayerUtils::createMarkerLayerFromSld( QDomElement &elem
 
 bool QgsSymbolLayerUtils::hasExternalGraphic( QDomElement &element )
 {
+  return hasExternalGraphicV2( element, QStringLiteral( "image/svg+xml" ) );
+}
+
+bool QgsSymbolLayerUtils::hasExternalGraphicV2( QDomElement &element, const QString format )
+{
   const QDomElement graphicElem = element.firstChildElement( QStringLiteral( "Graphic" ) );
   if ( graphicElem.isNull() )
     return false;
@@ -1683,10 +1698,10 @@ bool QgsSymbolLayerUtils::hasExternalGraphic( QDomElement &element )
   if ( formatElem.isNull() )
     return false;
 
-  const QString format = formatElem.firstChild().nodeValue();
-  if ( format != QLatin1String( "image/svg+xml" ) )
+  const QString elementFormat = formatElem.firstChild().nodeValue();
+  if ( ! format.isEmpty() && elementFormat != format )
   {
-    QgsDebugMsg( "unsupported External Graphic format found: " + format );
+    QgsDebugMsgLevel( "unsupported External Graphic format found: " + elementFormat, 4 );
     return false;
   }
 
@@ -1766,7 +1781,7 @@ bool QgsSymbolLayerUtils::needFontMarker( QDomElement &element )
 
 bool QgsSymbolLayerUtils::needSvgMarker( QDomElement &element )
 {
-  return hasExternalGraphic( element );
+  return hasExternalGraphicV2( element, QStringLiteral( "image/svg+xml" ) );
 }
 
 bool QgsSymbolLayerUtils::needEllipseMarker( QDomElement &element )
@@ -1837,8 +1852,23 @@ bool QgsSymbolLayerUtils::needLinePatternFill( QDomElement &element )
 
 bool QgsSymbolLayerUtils::needPointPatternFill( QDomElement &element )
 {
-  Q_UNUSED( element )
-  return false;
+  const QDomElement fillElem = element.firstChildElement( QStringLiteral( "Fill" ) );
+  if ( fillElem.isNull() )
+    return false;
+
+  const QDomElement graphicFillElem = fillElem.firstChildElement( QStringLiteral( "GraphicFill" ) );
+  if ( graphicFillElem.isNull() )
+    return false;
+
+  const QDomElement graphicElem = graphicFillElem.firstChildElement( QStringLiteral( "Graphic" ) );
+  if ( graphicElem.isNull() )
+    return false;
+
+  const QDomElement markElem = graphicElem.firstChildElement( QStringLiteral( "Mark" ) );
+  if ( markElem.isNull() )
+    return false;
+
+  return true;
 }
 
 bool QgsSymbolLayerUtils::needSvgFill( QDomElement &element )
@@ -1851,7 +1881,20 @@ bool QgsSymbolLayerUtils::needSvgFill( QDomElement &element )
   if ( graphicFillElem.isNull() )
     return false;
 
-  return hasExternalGraphic( graphicFillElem );
+  return hasExternalGraphicV2( graphicFillElem, QStringLiteral( "image/svg+xml" ) );
+}
+
+bool QgsSymbolLayerUtils::needRasterImageFill( QDomElement &element )
+{
+  const QDomElement fillElem = element.firstChildElement( QStringLiteral( "Fill" ) );
+  if ( fillElem.isNull() )
+    return false;
+
+  QDomElement graphicFillElem = fillElem.firstChildElement( QStringLiteral( "GraphicFill" ) );
+  if ( graphicFillElem.isNull() )
+    return false;
+
+  return hasExternalGraphicV2( graphicFillElem, QStringLiteral( "image/png" ) ) || hasExternalGraphicV2( graphicFillElem, QStringLiteral( "image/jpeg" ) ) || hasExternalGraphicV2( graphicFillElem, QStringLiteral( "image/gif" ) );
 }
 
 
@@ -2973,17 +3016,27 @@ bool QgsSymbolLayerUtils::createExpressionElement( QDomDocument &doc, QDomElemen
 
 bool QgsSymbolLayerUtils::createFunctionElement( QDomDocument &doc, QDomElement &element, const QString &function )
 {
-  // let's use QgsExpression to generate the SLD for the function
-  const QgsExpression expr( function );
-  if ( expr.hasParserError() )
+  // else rule is not a valid expression
+  if ( function == QLatin1String( "ELSE" ) )
   {
-    element.appendChild( doc.createComment( "Parser Error: " + expr.parserErrorString() + " - Expression was: " + function ) );
-    return false;
-  }
-  const QDomElement filterElem = QgsOgcUtils::expressionToOgcFilter( expr, doc );
-  if ( !filterElem.isNull() )
+    const QDomElement filterElem = QgsOgcUtils::elseFilterExpression( doc );
     element.appendChild( filterElem );
-  return true;
+    return true;
+  }
+  else
+  {
+    // let's use QgsExpression to generate the SLD for the function
+    const QgsExpression expr( function );
+    if ( expr.hasParserError() )
+    {
+      element.appendChild( doc.createComment( "Parser Error: " + expr.parserErrorString() + " - Expression was: " + function ) );
+      return false;
+    }
+    const QDomElement filterElem = QgsOgcUtils::expressionToOgcFilter( expr, doc );
+    if ( !filterElem.isNull() )
+      element.appendChild( filterElem );
+    return true;
+  }
 }
 
 bool QgsSymbolLayerUtils::functionFromSldElement( QDomElement &element, QString &function )
@@ -3163,19 +3216,6 @@ QVariantMap QgsSymbolLayerUtils::parseProperties( const QDomElement &element )
 void QgsSymbolLayerUtils::saveProperties( QVariantMap props, QDomDocument &doc, QDomElement &element )
 {
   element.appendChild( QgsXmlUtils::writeVariant( props, doc ) );
-
-  // -----
-  // let's do this to try to keep some backward compatibility
-  // to open a project saved on 3.18+ in QGIS <= 3.16
-  // TODO QGIS 4: remove
-  for ( QVariantMap::iterator it = props.begin(); it != props.end(); ++it )
-  {
-    QDomElement propEl = doc.createElement( QStringLiteral( "prop" ) );
-    propEl.setAttribute( QStringLiteral( "k" ), it.key() );
-    propEl.setAttribute( QStringLiteral( "v" ), it.value().toString() );
-    element.appendChild( propEl );
-  }
-  // -----
 }
 
 QgsSymbolMap QgsSymbolLayerUtils::loadSymbols( QDomElement &element, const QgsReadWriteContext &context )
@@ -3686,34 +3726,17 @@ bool QgsSymbolLayerUtils::saveColorsToGpl( QFile &file, const QString &paletteNa
   }
 
   QTextStream stream( &file );
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-  stream << "GIMP Palette" << endl;
-#else
   stream << "GIMP Palette" << Qt::endl;
-#endif
   if ( paletteName.isEmpty() )
   {
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-    stream << "Name: QGIS Palette" << endl;
-#else
     stream << "Name: QGIS Palette" << Qt::endl;
-#endif
   }
   else
   {
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-    stream << "Name: " << paletteName << endl;
-#else
     stream << "Name: " << paletteName << Qt::endl;
-#endif
   }
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-  stream << "Columns: 4" << endl;
-  stream << '#' << endl;
-#else
   stream << "Columns: 4" << Qt::endl;
   stream << '#' << Qt::endl;
-#endif
 
   for ( QgsNamedColorList::ConstIterator colorIt = colors.constBegin(); colorIt != colors.constEnd(); ++colorIt )
   {
@@ -3723,11 +3746,7 @@ bool QgsSymbolLayerUtils::saveColorsToGpl( QFile &file, const QString &paletteNa
       continue;
     }
     stream << QStringLiteral( "%1 %2 %3" ).arg( color.red(), 3 ).arg( color.green(), 3 ).arg( color.blue(), 3 );
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-    stream << "\t" << ( ( *colorIt ).second.isEmpty() ? color.name() : ( *colorIt ).second ) << endl;
-#else
     stream << "\t" << ( ( *colorIt ).second.isEmpty() ? color.name() : ( *colorIt ).second ) << Qt::endl;
-#endif
   }
   file.close();
 
@@ -4946,18 +4965,97 @@ QSet<const QgsSymbolLayer *> QgsSymbolLayerUtils::toSymbolLayerPointers( QgsFeat
   return visitor.mSymbolLayers;
 }
 
-QgsSymbol *QgsSymbolLayerUtils::restrictedSizeSymbol( const QgsSymbol *s, double minSize, double maxSize, QgsRenderContext *context, double &width, double &height )
+double QgsSymbolLayerUtils::rendererFrameRate( const QgsFeatureRenderer *renderer )
+{
+  class SymbolRefreshRateVisitor : public QgsStyleEntityVisitorInterface
+  {
+    public:
+      SymbolRefreshRateVisitor()
+      {}
+
+      bool visitEnter( const QgsStyleEntityVisitorInterface::Node &node ) override
+      {
+        if ( node.type == QgsStyleEntityVisitorInterface::NodeType::SymbolRule )
+        {
+          return true;
+        }
+        return false;
+      }
+
+      void visitSymbol( const QgsSymbol *symbol )
+      {
+        // symbol may be marked as animated on a symbol level (e.g. when it implements animation
+        // via data defined properties)
+        if ( symbol->animationSettings().isAnimated() )
+        {
+          if ( symbol->animationSettings().frameRate() > refreshRate )
+            refreshRate = symbol->animationSettings().frameRate();
+        }
+        for ( int idx = 0; idx < symbol->symbolLayerCount(); idx++ )
+        {
+          const QgsSymbolLayer *sl = symbol->symbolLayer( idx );
+          if ( const QgsAnimatedMarkerSymbolLayer *animatedMarker = dynamic_cast< const QgsAnimatedMarkerSymbolLayer *>( sl ) )
+          {
+            // this is a bit of a short cut -- if a symbol has multiple layers with different frame rates,
+            // there's no guarantee that they will be even multiples of each other! But given we are looking for
+            // a single frame rate for a whole renderer, it's an acceptable compromise...
+            if ( refreshRate == -1 || ( animatedMarker->frameRate() > refreshRate ) )
+              refreshRate = animatedMarker->frameRate();
+          }
+
+          if ( const QgsSymbol *subSymbol = const_cast<QgsSymbolLayer *>( sl )->subSymbol() )
+            visitSymbol( subSymbol );
+        }
+      }
+
+      bool visit( const QgsStyleEntityVisitorInterface::StyleLeaf &leaf ) override
+      {
+        if ( leaf.entity && leaf.entity->type() == QgsStyle::SymbolEntity )
+        {
+          if ( QgsSymbol *symbol = qgis::down_cast<const QgsStyleSymbolEntity *>( leaf.entity )->symbol() )
+          {
+            visitSymbol( symbol );
+          }
+        }
+        return true;
+      }
+
+      double refreshRate = -1;
+  };
+
+  SymbolRefreshRateVisitor visitor;
+  renderer->accept( &visitor );
+  return visitor.refreshRate;
+}
+
+QgsSymbol *QgsSymbolLayerUtils::restrictedSizeSymbol( const QgsSymbol *s, double minSize, double maxSize, QgsRenderContext *context, double &width, double &height, bool *ok )
 {
   if ( !s || !context )
   {
-    return 0;
+    return nullptr;
   }
+
+  if ( ok )
+    *ok = true;
 
   double size;
   const QgsMarkerSymbol *markerSymbol = dynamic_cast<const QgsMarkerSymbol *>( s );
   const QgsLineSymbol *lineSymbol = dynamic_cast<const QgsLineSymbol *>( s );
   if ( markerSymbol )
   {
+    const QgsSymbolLayerList sls = s->symbolLayers();
+    for ( const QgsSymbolLayer *sl : std::as_const( sls ) )
+    {
+      // geometry generators involved, there is no way to get a restricted size symbol
+      if ( sl->type() != Qgis::SymbolType::Marker )
+      {
+        if ( ok )
+          *ok = false;
+
+        return nullptr;
+      }
+    }
+
     size = markerSymbol->size( *context );
   }
   else if ( lineSymbol )
@@ -4966,7 +5064,10 @@ QgsSymbol *QgsSymbolLayerUtils::restrictedSizeSymbol( const QgsSymbol *s, double
   }
   else
   {
-    return 0; //not size restriction implemented for other symbol types
+    if ( ok )
+      *ok = false;
+
+    return nullptr; //not size restriction implemented for other symbol types
   }
 
   size /= context->scaleFactor();
@@ -4981,7 +5082,8 @@ QgsSymbol *QgsSymbolLayerUtils::restrictedSizeSymbol( const QgsSymbol *s, double
   }
   else
   {
-    return 0;
+    // no need to restricted size symbol
+    return nullptr;
   }
 
   if ( markerSymbol )
@@ -5001,7 +5103,8 @@ QgsSymbol *QgsSymbolLayerUtils::restrictedSizeSymbol( const QgsSymbol *s, double
     height = size;
     return ls;
   }
-  return 0;
+
+  return nullptr;
 }
 
 QgsStringMap QgsSymbolLayerUtils::evaluatePropertiesMap( const QMap<QString, QgsProperty> &propertiesMap, const QgsExpressionContext &context )
@@ -5015,3 +5118,236 @@ QgsStringMap QgsSymbolLayerUtils::evaluatePropertiesMap( const QMap<QString, Qgs
   return properties;
 }
 
+QSize QgsSymbolLayerUtils::tileSize( int width, int height, double &angleRad )
+{
+
+  angleRad = std::fmod( angleRad, M_PI * 2 );
+
+  if ( angleRad < 0 )
+  {
+    angleRad += M_PI * 2;
+  }
+
+  // tan with rational sin/cos
+  struct rationalTangent
+  {
+    int p; // numerator
+    int q; // denominator
+    double angle; // "good" angle
+  };
+
+#if 0
+
+  // This list is more granular (approx 1 degree steps) but some
+  // values can lead to huge tiles
+  // List of "good" angles from 0 to PI/2
+  static const QList<rationalTangent> __rationalTangents
+  {
+    { 1, 57, 0.01754206006 },
+    { 3, 86, 0.03486958155 },
+    { 1, 19, 0.05258306161 },
+    { 3, 43, 0.06965457373 },
+    { 7, 80, 0.08727771295 },
+    { 2, 19, 0.1048769387 },
+    { 7, 57, 0.1221951707 },
+    { 9, 64, 0.1397088743 },
+    { 13, 82, 0.157228051 },
+    { 3, 17, 0.174672199 },
+    { 7, 36, 0.1920480172 },
+    { 17, 80, 0.209385393 },
+    { 3, 13, 0.2267988481 },
+    { 1, 4, 0.2449786631 },
+    { 26, 97, 0.2618852647 },
+    { 27, 94, 0.2797041525 },
+    { 26, 85, 0.2968446734 },
+    { 13, 40, 0.3142318991 },
+    { 21, 61, 0.3315541619 },
+    { 4, 11, 0.3487710036 },
+    { 38, 99, 0.3664967859 },
+    { 40, 99, 0.383984624 },
+    { 31, 73, 0.4015805401 },
+    { 41, 92, 0.4192323938 },
+    { 7, 15, 0.4366271598 },
+    { 20, 41, 0.4538440015 },
+    { 27, 53, 0.4711662643 },
+    { 42, 79, 0.4886424026 },
+    { 51, 92, 0.5061751436 },
+    { 56, 97, 0.5235757641 },
+    { 3, 5, 0.5404195003 },
+    { 5, 8, 0.5585993153 },
+    { 50, 77, 0.5759185996 },
+    { 29, 43, 0.5933501462 },
+    { 7, 10, 0.6107259644 },
+    { 69, 95, 0.6281701124 },
+    { 52, 69, 0.6458159195 },
+    { 25, 32, 0.6632029927 },
+    { 17, 21, 0.6805212247 },
+    { 73, 87, 0.6981204504 },
+    { 73, 84, 0.7154487784 },
+    { 9, 10, 0.7328151018 },
+    { 83, 89, 0.7505285818 },
+    { 28, 29, 0.7678561033 },
+    { 1, 1, 0.7853981634 },
+    { 29, 28, 0.8029402235 },
+    { 89, 83, 0.820267745 },
+    { 10, 9, 0.837981225 },
+    { 107, 93, 0.855284165 },
+    { 87, 73, 0.8726758763 },
+    { 121, 98, 0.8900374031 },
+    { 32, 25, 0.9075933341 },
+    { 69, 52, 0.9249804073 },
+    { 128, 93, 0.9424647244 },
+    { 10, 7, 0.9600703624 },
+    { 43, 29, 0.9774461806 },
+    { 77, 50, 0.9948777272 },
+    { 8, 5, 1.012197011 },
+    { 163, 98, 1.029475114 },
+    { 168, 97, 1.047174539 },
+    { 175, 97, 1.064668696 },
+    { 126, 67, 1.082075603 },
+    { 157, 80, 1.099534652 },
+    { 203, 99, 1.117049384 },
+    { 193, 90, 1.134452855 },
+    { 146, 65, 1.151936673 },
+    { 139, 59, 1.169382787 },
+    { 99, 40, 1.186811703 },
+    { 211, 81, 1.204257817 },
+    { 272, 99, 1.221730164 },
+    { 273, 94, 1.239188479 },
+    { 277, 90, 1.25664606 },
+    { 157, 48, 1.274088705 },
+    { 279, 80, 1.291550147 },
+    { 362, 97, 1.308990773 },
+    { 373, 93, 1.326448578 },
+    { 420, 97, 1.343823596 },
+    { 207, 44, 1.361353157 },
+    { 427, 83, 1.378810994 },
+    { 414, 73, 1.396261926 },
+    { 322, 51, 1.413716057 },
+    { 185, 26, 1.431170275 },
+    { 790, 97, 1.448623034 },
+    { 333, 35, 1.466075711 },
+    { 1063, 93, 1.483530284 },
+    { 1330, 93, 1.500985147 },
+    { 706, 37, 1.518436297 },
+    { 315, 11, 1.535889876 },
+    { 3953, 69, 1.553343002 },
+  };
+#endif
+
+  // Optimized "good" angles list, it produces small tiles but
+  // it has approximately 10 degrees steps
+  static const QList<rationalTangent> rationalTangents
+  {
+    { 1, 10, qDegreesToRadians( 5.71059 ) },
+    { 1, 5, qDegreesToRadians( 11.3099 ) },
+    { 1, 4, qDegreesToRadians( 14.0362 ) },
+    { 1, 4, qDegreesToRadians( 18.4349 ) },
+    { 1, 2, qDegreesToRadians( 26.5651 ) },
+    { 2, 3, qDegreesToRadians( 33.6901 ) },
+    { 1, 1, qDegreesToRadians( 45.0 ) },
+    { 3, 2, qDegreesToRadians( 56.3099 ) },
+    { 2, 1, qDegreesToRadians( 63.4349 ) },
+    { 3, 1, qDegreesToRadians( 71.5651 ) },
+    { 4, 1, qDegreesToRadians( 75.9638 ) },
+    { 10, 1, qDegreesToRadians( 84.2894 ) },
+  };
+
+  const int quadrant { static_cast<int>( angleRad / M_PI_2 ) };
+  Q_ASSERT( quadrant >= 0 && quadrant <= 3 );
+
+  QSize tileSize;
+
+  switch ( quadrant )
+  {
+    case 0:
+    {
+      break;
+    }
+    case 1:
+    {
+      angleRad -= M_PI / 2;
+      break;
+    }
+    case 2:
+    {
+      angleRad -= M_PI;
+      break;
+    }
+    case 3:
+    {
+      angleRad -= M_PI + M_PI_2;
+      break;
+    }
+  }
+
+  if ( qgsDoubleNear( angleRad, 0, 10E-3 ) )
+  {
+    angleRad = 0;
+    tileSize.setWidth( width );
+    tileSize.setHeight( height );
+  }
+  else if ( qgsDoubleNear( angleRad, M_PI_2, 10E-3 ) )
+  {
+    angleRad = M_PI_2;
+    tileSize.setWidth( height );
+    tileSize.setHeight( width );
+  }
+  else
+  {
+
+    int rTanIdx = 0;
+
+    for ( int idx = 0; idx < rationalTangents.count(); ++idx )
+    {
+      const auto item = rationalTangents.at( idx );
+      if ( qgsDoubleNear( item.angle, angleRad, 10E-3 ) || item.angle > angleRad )
+      {
+        rTanIdx = idx;
+        break;
+      }
+    }
+
+    const rationalTangent bTan { rationalTangents.at( rTanIdx ) };
+    angleRad = bTan.angle;
+    const double k { bTan.q *height *width / std::cos( angleRad ) };
+    const int hcfH { std::gcd( bTan.p * height, bTan.q * width ) };
+    const int hcfW { std::gcd( bTan.q * height, bTan.p * width ) };
+    const int W1 { static_cast<int>( std::round( k / hcfW ) ) };
+    const int H1 { static_cast<int>( std::round( k / hcfH ) ) };
+    tileSize.setWidth( W1 );
+    tileSize.setHeight( H1 );
+  }
+
+  switch ( quadrant )
+  {
+    case 0:
+    {
+      break;
+    }
+    case 1:
+    {
+      angleRad += M_PI / 2;
+      const int h { tileSize.height() };
+      tileSize.setHeight( tileSize.width() );
+      tileSize.setWidth( h );
+      break;
+    }
+    case 2:
+    {
+      angleRad += M_PI;
+      break;
+    }
+    case 3:
+    {
+      angleRad += M_PI + M_PI_2;
+      const int h { tileSize.height() };
+      tileSize.setHeight( tileSize.width() );
+      tileSize.setWidth( h );
+      break;
+    }
+  }
+
+  return tileSize;
+
+}

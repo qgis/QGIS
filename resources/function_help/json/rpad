@@ -3,12 +3,22 @@
   "type": "function",
   "groups": ["String"],
   "description": "Returns a string padded on the right to the specified width, using a fill character. If the target width is smaller than the string's length, the string is truncated.",
-  "arguments": [
-	{"arg":"string","description":"string to pad"},
-	{"arg":"width","description":"length of new string"},
-	{"arg":"fill","description":"character to pad the remaining space with"}
-  ],
-  "examples": [ { "expression":"rpad('Hello', 10, 'x')", "returns":"'Helloxxxxx'"},
-                { "expression":"rpad('Hello', 3, 'x')", "returns":"'Hel'"}
-  ]
+  "arguments": [{
+    "arg": "string",
+    "description": "string to pad"
+  }, {
+    "arg": "width",
+    "description": "length of new string"
+  }, {
+    "arg": "fill",
+    "description": "character to pad the remaining space with"
+  }],
+  "examples": [{
+    "expression": "rpad('Hello', 10, 'x')",
+    "returns": "'Helloxxxxx'"
+  }, {
+    "expression": "rpad('Hello', 3, 'x')",
+    "returns": "'Hel'"
+  }],
+  "tags": ["length", "right", "padded", "width", "specified", "truncated", "target", "fill", "character", "smaller"]
 }

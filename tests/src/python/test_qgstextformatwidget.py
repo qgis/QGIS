@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsTextFormatWidget.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -11,22 +10,24 @@ __date__ = '2016-09'
 __copyright__ = 'Copyright 2016, The QGIS Project'
 
 import qgis  # NOQA
+from qgis.PyQt.QtCore import QPointF, QSizeF, Qt
+from qgis.PyQt.QtGui import QColor, QPainter
+from qgis.core import (
+    QgsBlurEffect,
+    QgsMapUnitScale,
+    QgsMarkerSymbol,
+    QgsSymbolLayerId,
+    QgsSymbolLayerReference,
+    QgsTextBackgroundSettings,
+    QgsTextBufferSettings,
+    QgsTextFormat,
+    QgsTextMaskSettings,
+    QgsTextShadowSettings,
+    QgsUnitTypes,
+)
+from qgis.gui import QgsTextFormatDialog, QgsTextFormatWidget
+from qgis.testing import start_app, unittest
 
-from qgis.core import (QgsTextBufferSettings,
-                       QgsTextMaskSettings,
-                       QgsTextBackgroundSettings,
-                       QgsTextShadowSettings,
-                       QgsTextFormat,
-                       QgsUnitTypes,
-                       QgsMapUnitScale,
-                       QgsBlurEffect,
-                       QgsMarkerSymbol,
-                       QgsSymbolLayerReference,
-                       QgsSymbolLayerId)
-from qgis.gui import (QgsTextFormatWidget, QgsTextFormatDialog)
-from qgis.PyQt.QtGui import (QColor, QPainter)
-from qgis.PyQt.QtCore import (Qt, QSizeF, QPointF)
-from qgis.testing import unittest, start_app
 from utilities import getTestFont
 
 start_app()

@@ -22,7 +22,7 @@
 #include "qgsfield.h"
 #include "qgsvectorlayer.h"
 #include "qgsapplication.h"
-
+#include "qgsvariantutils.h"
 
 QString QgsRangeFieldFormatter::id() const
 {
@@ -34,7 +34,7 @@ QString QgsRangeFieldFormatter::representValue( QgsVectorLayer *layer, int field
   Q_UNUSED( cache )
   Q_UNUSED( config )
 
-  if ( value.isNull() )
+  if ( QgsVariantUtils::isNull( value ) )
   {
     return QgsApplication::nullRepresentation();
   }

@@ -3,6 +3,8 @@
 
 set(QGIS_3D_SRCS
   qgs3d.cpp
+  qgs3daxis.cpp
+  qgs3daxissettings.cpp
   qgsaabb.cpp
   qgsabstract3dengine.cpp
   qgsabstractvectorlayer3drenderer.cpp
@@ -19,8 +21,6 @@ set(QGIS_3D_SRCS
   qgsimagetexture.cpp
   qgslayoutitem3dmap.cpp
   qgsoffscreen3dengine.cpp
-  qgspointlightsettings.cpp
-  qgsdirectionallightsettings.cpp
   qgsraycastingutils_p.cpp
   qgsrulebased3drenderer.cpp
   qgsrulebasedchunkloader_p.cpp
@@ -34,10 +34,14 @@ set(QGIS_3D_SRCS
   qgsskyboxsettings.cpp
   qgsshadowrenderingframegraph.cpp
   qgspostprocessingentity.cpp
+  qgsrenderpassquad.cpp
+  qgsambientocclusionrenderentity.cpp
+  qgsambientocclusionblurentity.cpp
   qgspreviewquad.cpp
   qgsshadowsettings.cpp
   qgscolorramptexture.cpp
   qgsrubberband3d.cpp
+  qgsambientocclusionsettings.cpp
 
   qgspointcloudlayer3drenderer.cpp
   qgspointcloudlayerchunkloader_p.cpp
@@ -48,6 +52,10 @@ set(QGIS_3D_SRCS
   chunks/qgschunkloader_p.cpp
   chunks/qgschunknode_p.cpp
   chunks/qgschunkqueuejob_p.cpp
+
+  lights/qgsdirectionallightsettings.cpp
+  lights/qgslightsource.cpp
+  lights/qgspointlightsettings.cpp
 
   materials/qgsabstractmaterialsettings.cpp
   materials/qgsgoochmaterialsettings.cpp
@@ -99,6 +107,8 @@ set(QGIS_3D_HDRS
   processing/qgs3dalgorithms.h
   qgs3d.h
   qgs3danimationsettings.h
+  qgs3daxis.h
+  qgs3daxissettings.h
   qgs3dmapscene.h
   qgs3dmapsettings.h
   qgs3dsceneexporter.h
@@ -112,8 +122,6 @@ set(QGIS_3D_HDRS
   qgslayoutitem3dmap.h
   qgsmeshlayer3drenderer.h
   qgsoffscreen3dengine.h
-  qgspointlightsettings.h
-  qgsdirectionallightsettings.h
   qgsrulebased3drenderer.h
   qgstessellatedpolygongeometry.h
   qgstilingscheme.h
@@ -126,6 +134,14 @@ set(QGIS_3D_HDRS
   qgspreviewquad.h
   qgsshadowsettings.h
   qgspointcloudlayer3drenderer.h
+  qgsrenderpassquad.h
+  qgsambientocclusionrenderentity.h
+  qgsambientocclusionblurentity.h
+  qgsambientocclusionsettings.h
+
+  lights/qgsdirectionallightsettings.h
+  lights/qgslightsource.h
+  lights/qgspointlightsettings.h
 
   materials/qgsabstractmaterialsettings.h
   materials/qgsgoochmaterialsettings.h
@@ -195,7 +211,7 @@ add_library(qgis_3d SHARED ${QGIS_3D_SRCS} ${QGIS_3D_HDRS} ${QGIS_3D_RCCS} ${QGI
 # require c++17
 target_compile_features(qgis_3d PRIVATE cxx_std_17)
 
-if (WITH_QT6)
+if (BUILD_WITH_QT6)
   target_include_directories(qgis_3d SYSTEM PUBLIC
     ${QT6_3DEXTRA_INCLUDE_DIR}
   )
@@ -208,6 +224,7 @@ endif()
 target_include_directories(qgis_3d PUBLIC
   ${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_CURRENT_SOURCE_DIR}/chunks
+  ${CMAKE_CURRENT_SOURCE_DIR}/lights
   ${CMAKE_CURRENT_SOURCE_DIR}/materials
   ${CMAKE_CURRENT_SOURCE_DIR}/mesh
   ${CMAKE_CURRENT_SOURCE_DIR}/processing
@@ -216,9 +233,10 @@ target_include_directories(qgis_3d PUBLIC
   ${CMAKE_CURRENT_SOURCE_DIR}/terrain
 
   ${CMAKE_BINARY_DIR}/src/3d
+  ${CMAKE_SOURCE_DIR}/external/delaunator-cpp
 )
 
-if (WITH_QT6)
+if (BUILD_WITH_QT6)
   target_link_libraries(qgis_3d Qt6::3DCore Qt6::3DRender Qt6::3DInput Qt6::3DLogic Qt6::3DExtras)
 else()
   target_link_libraries(qgis_3d Qt5::3DCore Qt5::3DRender Qt5::3DInput Qt5::3DLogic Qt5::3DExtras)

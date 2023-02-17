@@ -32,6 +32,7 @@ extern "C"
 #include "qgsvirtuallayerprovider.h"
 #include "qgsvirtuallayersqlitemodule.h"
 #include "qgsvirtuallayerqueryparser.h"
+#include "qgsapplication.h"
 
 #include <QUrl>
 
@@ -120,7 +121,7 @@ bool QgsVirtualLayerProvider::loadSourceLayers()
         PROVIDER_ERROR( QString( "Cannot find layer %1" ).arg( layer.reference() ) );
         return false;
       }
-      if ( l->type() != QgsMapLayerType::VectorLayer )
+      if ( l->type() != Qgis::LayerType::Vector )
       {
         PROVIDER_ERROR( QString( "Layer %1 is not a vector layer" ).arg( layer.reference() ) );
         return false;
@@ -249,7 +250,7 @@ bool QgsVirtualLayerProvider::createIt()
       const auto constMapLayers = QgsProject::instance()->mapLayers();
       for ( const QgsMapLayer *l : constMapLayers )
       {
-        if ( l->type() != QgsMapLayerType::VectorLayer )
+        if ( l->type() != Qgis::LayerType::Vector )
           continue;
 
         const QgsVectorLayer *vl = static_cast<const QgsVectorLayer *>( l );
@@ -593,6 +594,7 @@ void QgsVirtualLayerProvider::updateStatistics() const
 void QgsVirtualLayerProvider::invalidateStatistics()
 {
   mCachedStatistics = false;
+  emit dataChanged();
 }
 
 QgsFields QgsVirtualLayerProvider::fields() const
@@ -670,9 +672,19 @@ QgsVirtualLayerProvider *QgsVirtualLayerProviderMetadata::createProvider(
   return new QgsVirtualLayerProvider( uri, options, flags );
 }
 
+QList<Qgis::LayerType> QgsVirtualLayerProviderMetadata::supportedLayerTypes() const
+{
+  return { Qgis::LayerType::Vector };
+}
+
 QgsVirtualLayerProviderMetadata::QgsVirtualLayerProviderMetadata():
   QgsProviderMetadata( QgsVirtualLayerProvider::VIRTUAL_LAYER_KEY, QgsVirtualLayerProvider::VIRTUAL_LAYER_DESCRIPTION )
 {
+}
+
+QIcon QgsVirtualLayerProviderMetadata::icon() const
+{
+  return QgsApplication::getThemeIcon( QStringLiteral( "mIconVirtualLayer.svg" ) );
 }
 
 

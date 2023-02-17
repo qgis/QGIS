@@ -27,6 +27,12 @@ QgsResidualPlotItem::QgsResidualPlotItem( QgsLayout *layout )
   setBackgroundEnabled( false );
 }
 
+QgsResidualPlotItem::~QgsResidualPlotItem()
+{
+  qDeleteAll( mGCPList );
+  mGCPList.clear();
+}
+
 QgsLayoutItem::Flags QgsResidualPlotItem::itemFlags() const
 {
   return QgsLayoutItem::FlagOverridesPaint;
@@ -58,7 +64,7 @@ void QgsResidualPlotItem::paint( QPainter *painter, const QStyleOptionGraphicsIt
   QgsGCPList::const_iterator gcpIt = mGCPList.constBegin();
   for ( ; gcpIt != mGCPList.constEnd(); ++gcpIt )
   {
-    const QgsPointXY gcpCoords = ( *gcpIt )->pixelCoords();
+    const QgsPointXY gcpCoords = ( *gcpIt )->sourcePoint();
     const double gcpItemMMX = ( gcpCoords.x() - mExtent.xMinimum() ) / mExtent.width() * widthMM;
     const double gcpItemMMY = ( 1 - ( gcpCoords.y() - mExtent.yMinimum() ) / mExtent.height() ) * heightMM;
 
@@ -86,7 +92,7 @@ void QgsResidualPlotItem::paint( QPainter *painter, const QStyleOptionGraphicsIt
   gcpIt = mGCPList.constBegin();
   for ( ; gcpIt != mGCPList.constEnd(); ++gcpIt )
   {
-    const QgsPointXY gcpCoords = ( *gcpIt )->pixelCoords();
+    const QgsPointXY gcpCoords = ( *gcpIt )->sourcePoint();
     const double gcpItemMMX = ( gcpCoords.x() - mExtent.xMinimum() ) / mExtent.width() * widthMM;
     const double gcpItemMMY = ( 1 - ( gcpCoords.y() - mExtent.yMinimum() ) / mExtent.height() ) * heightMM;
     if ( ( *gcpIt )->isEnabled() )
@@ -154,6 +160,17 @@ void QgsResidualPlotItem::paint( QPainter *painter, const QStyleOptionGraphicsIt
   }
 }
 
+void QgsResidualPlotItem::setGCPList( const QgsGCPList &list )
+{
+  qDeleteAll( mGCPList );
+  mGCPList.clear();
+
+  for ( const QgsGeorefDataPoint *pt : list )
+  {
+    mGCPList.append( new QgsGeorefDataPoint( *pt ) );
+  }
+}
+
 void QgsResidualPlotItem::draw( QgsLayoutItemRenderContext & )
 {
 
@@ -177,11 +194,7 @@ double QgsResidualPlotItem::maxMMToPixelRatioForGCP( const QgsGeorefDataPoint *p
   if ( residual.y() > 0 )
   {
     const QLineF lowerFrameLine( 0, rect().height(), rect().width(), rect().height() );
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-    if ( residualLine.intersect( lowerFrameLine, &intersectionPoint ) != QLineF::NoIntersection )
-#else
     if ( residualLine.intersects( lowerFrameLine, &intersectionPoint ) != QLineF::NoIntersection )
-#endif
     {
       upDownDist = dist( QPointF( pixelXMM, pixelYMM ), intersectionPoint );
     }
@@ -189,11 +202,7 @@ double QgsResidualPlotItem::maxMMToPixelRatioForGCP( const QgsGeorefDataPoint *p
   else if ( residual.y() < 0 )
   {
     const QLineF upperFrameLine( 0, 0, mExtent.xMaximum(), 0 );
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-    if ( residualLine.intersect( upperFrameLine, &intersectionPoint ) != QLineF::NoIntersection )
-#else
     if ( residualLine.intersects( upperFrameLine, &intersectionPoint ) != QLineF::NoIntersection )
-#endif
     {
       upDownDist = dist( QPointF( pixelXMM, pixelYMM ), intersectionPoint );
     }
@@ -203,11 +212,7 @@ double QgsResidualPlotItem::maxMMToPixelRatioForGCP( const QgsGeorefDataPoint *p
   if ( residual.x() > 0 )
   {
     const QLineF rightFrameLine( rect().width(), 0, rect().width(), rect().height() );
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-    if ( residualLine.intersect( rightFrameLine, &intersectionPoint ) != QLineF::NoIntersection )
-#else
     if ( residualLine.intersects( rightFrameLine, &intersectionPoint ) != QLineF::NoIntersection )
-#endif
     {
       leftRightDist = dist( QPointF( pixelXMM, pixelYMM ), intersectionPoint );
     }
@@ -215,11 +220,7 @@ double QgsResidualPlotItem::maxMMToPixelRatioForGCP( const QgsGeorefDataPoint *p
   else if ( residual.x() < 0 )
   {
     const QLineF leftFrameLine( 0, 0, 0, rect().height() );
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-    if ( residualLine.intersect( leftFrameLine, &intersectionPoint ) != QLineF::NoIntersection )
-#else
     if ( residualLine.intersects( leftFrameLine, &intersectionPoint ) != QLineF::NoIntersection )
-#endif
     {
       leftRightDist = dist( QPointF( pixelXMM, pixelYMM ), intersectionPoint );
     }

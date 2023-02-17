@@ -20,6 +20,7 @@
 #include "qgsapplication.h"
 #include "qgssettings.h"
 #include "qgsreferencedgeometry.h"
+#include "qgsvariantutils.h"
 
 #include <QDataStream>
 #include <QIcon>
@@ -124,6 +125,18 @@ QString QgsField::displayType( const bool showConstraints ) const
   }
 
   return typeStr;
+}
+
+QString QgsField::friendlyTypeString() const
+{
+  if ( d->type == QVariant::UserType )
+  {
+    if ( d->typeName.compare( QLatin1String( "geometry" ), Qt::CaseInsensitive ) == 0 )
+    {
+      return QObject::tr( "Geometry" );
+    }
+  }
+  return QgsVariantUtils::typeToDisplayString( d->type, d->subType );
 }
 
 QVariant::Type QgsField::type() const
@@ -254,7 +267,7 @@ void QgsField::setConfigurationFlags( QgsField::ConfigurationFlags flags )
 
 QString QgsField::displayString( const QVariant &v ) const
 {
-  if ( v.isNull() )
+  if ( QgsVariantUtils::isNull( v ) )
   {
     return QgsApplication::nullRepresentation();
   }
@@ -341,6 +354,15 @@ QString QgsField::displayString( const QVariant &v ) const
         return QString::number( v.toDouble(), 'f', d->precision );
       }
     }
+    else
+    {
+      const double vDouble = v.toDouble();
+      // mimic Qt 5 handling of when to switch to exponential forms
+      if ( std::fabs( vDouble ) < 1e-04 )
+        return QString::number( vDouble, 'g', QLocale::FloatingPointShortest );
+      else
+        return QString::number( vDouble, 'f', QLocale::FloatingPointShortest );
+    }
   }
   // Other numeric types than doubles
   else if ( isNumeric() &&
@@ -405,7 +427,7 @@ bool QgsField::convertCompatible( QVariant &v, QString *errorMessage ) const
   if ( errorMessage )
     errorMessage->clear();
 
-  if ( v.isNull() )
+  if ( QgsVariantUtils::isNull( v ) )
   {
     v.convert( d->type );
     return true;
@@ -550,12 +572,74 @@ bool QgsField::convertCompatible( QVariant &v, QString *errorMessage ) const
     }
   }
 
-  if ( !v.convert( d->type ) )
+  if ( d->type == QVariant::String && ( d->typeName.compare( QLatin1String( "json" ), Qt::CaseInsensitive ) == 0 || d->typeName == QLatin1String( "jsonb" ) ) )
+  {
+    const QJsonDocument doc = QJsonDocument::fromVariant( v );
+    if ( !doc.isNull() )
+    {
+      v = QString::fromUtf8( doc.toJson( QJsonDocument::Compact ).constData() );
+      return true;
+    }
+    v = QVariant( d->type );
+    return false;
+  }
+
+  if ( ( d->type == QVariant::StringList || ( d->type == QVariant::List && d->subType == QVariant::String ) )
+       && ( v.type() == QVariant::String ) )
+  {
+    v = QStringList( { v.toString() } );
+    return true;
+  }
+
+  if ( ( d->type == QVariant::StringList || d->type == QVariant::List ) && !( v.type() == QVariant::StringList || v.type() == QVariant::List ) )
   {
     v = QVariant( d->type );
 
     if ( errorMessage )
-      *errorMessage = QObject::tr( "Could not convert value \"%1\" to target type" ).arg( original.toString() );
+      *errorMessage = QObject::tr( "Could not convert value \"%1\" to target list type" ).arg( original.toString() );
+
+    return false;
+  }
+
+  // Handle referenced geometries (e.g. from additional geometry fields)
+  if ( d->type == QVariant::String && v.userType() == QMetaType::type( "QgsReferencedGeometry" ) )
+  {
+    const QgsReferencedGeometry geom { v.value<QgsReferencedGeometry>( ) };
+    if ( geom.isNull() )
+    {
+      v = QVariant( d->type );
+    }
+    else
+    {
+      v = QVariant( geom.asWkt() );
+    }
+    return true;
+  }
+  else if ( d->type == QVariant::UserType && d->typeName.compare( QLatin1String( "geometry" ), Qt::CaseInsensitive ) == 0 )
+  {
+    if ( v.userType() == QMetaType::type( "QgsReferencedGeometry" ) || v.userType() == QMetaType::type( "QgsGeometry" ) )
+    {
+      return true;
+    }
+    else if ( v.type() == QVariant::String )
+    {
+      const QgsGeometry geom = QgsGeometry::fromWkt( v.toString() );
+      if ( !geom.isNull() )
+      {
+        v = QVariant::fromValue( geom );
+        return true;
+      }
+    }
+    return false;
+  }
+  else if ( !v.convert( d->type ) )
+  {
+    v = QVariant( d->type );
+
+    if ( errorMessage )
+      *errorMessage = QObject::tr( "Could not convert value \"%1\" to target type \"%2\"" )
+                      .arg( original.toString() )
+                      .arg( d->typeName );
 
     return false;
   }

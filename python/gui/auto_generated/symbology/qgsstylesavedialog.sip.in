@@ -60,6 +60,13 @@ Returns the type of style entity to save.
 .. versionadded:: 3.10
 %End
 
+    QgsStyle *destinationStyle();
+%Docstring
+Returns the destination style database.
+
+.. versionadded:: 3.26
+%End
+
 };
 
 /************************************************************************

@@ -32,6 +32,7 @@
 
 class QgsRenderContext;
 class QgsInterpolatedLineColor;
+class QgsMeshLayerRendererFeedback;
 ///@cond PRIVATE
 
 
@@ -59,7 +60,8 @@ class QgsMeshVectorRenderer
         const QgsMeshRendererVectorSettings &settings,
         QgsRenderContext &context,
         const QgsRectangle &layerExtent,
-        QSize size );
+        QgsMeshLayerRendererFeedback *feedBack,
+        const QSize &size );
 };
 
 /**

@@ -153,13 +153,18 @@ renderer was not found in the registry.
 Returns a list of available renderers.
 %End
 
-    static QgsPointCloudRenderer *defaultRenderer( const QgsPointCloudDataProvider *provider ) /Factory/;
+    static QgsPointCloudRenderer *defaultRenderer( const QgsPointCloudLayer *layer ) /Factory/;
 %Docstring
-Returns a new default point cloud renderer for a layer with the specified ``provider``.
+Returns a new default point cloud renderer for a specified ``layer``.
 
 Caller takes ownership of the returned renderer.
 %End
 
+    static QgsPointCloudCategoryList classificationAttributeCategories( const QgsPointCloudLayer *layer );
+%Docstring
+Returns a list of categories using the available Classification classes of a specified ``layer``, along with
+default colors and translated names for the 19 classes (0-18) of point data record formats 6-10
+%End
   private:
     QgsPointCloudRendererRegistry( const QgsPointCloudRendererRegistry &rh );
 };

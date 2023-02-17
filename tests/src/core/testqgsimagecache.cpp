@@ -25,28 +25,28 @@
 #include <QtConcurrent>
 #include <QElapsedTimer>
 #include "qgsimagecache.h"
-#include "qgsmultirenderchecker.h"
 #include "qgsapplication.h"
+#include "qgsrenderchecker.h"
+#include "qgssettings.h"
 
 /**
  * \ingroup UnitTests
  * This is a unit test for QgsImageCache.
  */
-class TestQgsImageCache : public QObject
+class TestQgsImageCache : public QgsTest
 {
     Q_OBJECT
 
-  private:
+  public:
+    TestQgsImageCache() : QgsTest( QStringLiteral( "QgsImageCache Tests" ) ) {}
 
-    QString mReport;
+  private:
 
     bool imageCheck( const QString &testName, QImage &image, int mismatchCount );
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
-    void init() {} // will be called before each testfunction is executed.
-    void cleanup() {} // will be called after every testfunction.
     void fillCache();
     void threadSafeImage();
     void broken();
@@ -57,6 +57,10 @@ class TestQgsImageCache : public QObject
     void empty();
     void dpi();
     void cachesize();
+    void frameCount();
+    void nextFrameDelay();
+    void imageFrames();
+    void preseedAnimation();
 };
 
 
@@ -64,22 +68,11 @@ void TestQgsImageCache::initTestCase()
 {
   QgsApplication::init();
   QgsApplication::initQgis();
-  mReport += "<h1>QgsImageCache Tests</h1>\n";
 }
 
 void TestQgsImageCache::cleanupTestCase()
 {
   QgsApplication::exitQgis();
-
-  const QString myReportFile = QDir::tempPath() + "/qgistest.html";
-  QFile myFile( myReportFile );
-  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
-  {
-    QTextStream myQTextStream( &myFile );
-    myQTextStream << mReport;
-    myFile.close();
-    //QDesktopServices::openUrl( "file:///" + myReportFile );
-  }
 }
 
 void TestQgsImageCache::fillCache()
@@ -131,6 +124,10 @@ void TestQgsImageCache::threadSafeImage()
   // This unit test checks that concurrent rendering of paths as QImage from QgsImageCache
   // works without issues across threads
 
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0) or QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+  // test deadlocks on 5.15 - see https://bugreports.qt.io/browse/QTBUG-84857
+  // this is supposed to be fixed in 5.15.1, but I can still reproduce in Fedora on 5.15.5..!
+
   QgsImageCache cache;
   const QString imagePath = TEST_DATA_DIR + QStringLiteral( "/sample_image.png" );
 
@@ -138,6 +135,8 @@ void TestQgsImageCache::threadSafeImage()
   QVector< int > list;
   list.resize( 100 );
   QtConcurrent::blockingMap( list, RenderImageWrapper( cache, imagePath ) );
+#endif
+
 }
 
 void TestQgsImageCache::broken()
@@ -145,12 +144,12 @@ void TestQgsImageCache::broken()
   QgsImageCache cache;
   bool inCache = false;
   bool missingImage = false;
-  const QImage img = cache.pathAsImage( QStringLiteral( "bbbbbbb" ), QSize( 200, 200 ), true, 1.0, inCache, false, 96,  &missingImage );
+  cache.pathAsImage( QStringLiteral( "bbbbbbb" ), QSize( 200, 200 ), true, 1.0, inCache, false, 96,  -1, &missingImage );
   QVERIFY( missingImage );
-  cache.pathAsImage( QStringLiteral( "bbbbbbb" ), QSize( 200, 200 ), true, 1.0, inCache, false, 96, &missingImage );
+  cache.pathAsImage( QStringLiteral( "bbbbbbb" ), QSize( 200, 200 ), true, 1.0, inCache, false, 96,  -1, &missingImage );
   QVERIFY( missingImage );
   const QString originalImage = TEST_DATA_DIR + QStringLiteral( "/sample_image.png" );
-  cache.pathAsImage( originalImage, QSize( 200, 200 ), true, 1.0, inCache, false, 96, &missingImage );
+  cache.pathAsImage( originalImage, QSize( 200, 200 ), true, 1.0, inCache, false, 96,   -1, &missingImage );
   QVERIFY( !missingImage );
 }
 
@@ -306,8 +305,8 @@ void TestQgsImageCache::empty()
 
 void TestQgsImageCache::dpi()
 {
-  QgsImageCacheEntry entry1( QStringLiteral( "my path" ), QSize(), true, 1, 96 );
-  QgsImageCacheEntry entry2( QStringLiteral( "my path" ), QSize(), true, 1, 300 );
+  QgsImageCacheEntry entry1( QStringLiteral( "my path" ), QSize(), true, 1, 96, -1 );
+  QgsImageCacheEntry entry2( QStringLiteral( "my path" ), QSize(), true, 1, 300, -1 );
   QVERIFY( !entry1.isEqual( &entry2 ) );
   entry2.targetDpi = 96;
   QVERIFY( entry1.isEqual( &entry2 ) );
@@ -326,6 +325,136 @@ void TestQgsImageCache::cachesize()
   QCOMPARE( cache.mMaxCacheSize, cacheSize );
 }
 
+void TestQgsImageCache::frameCount()
+{
+  QgsImageCache cache;
+
+  // not an animated image
+  const QString notAnimatedImage = TEST_DATA_DIR + QStringLiteral( "/sample_image.png" );
+
+  QCOMPARE( cache.totalFrameCount( notAnimatedImage ), 1 );
+  // call twice to test caching
+  QCOMPARE( cache.totalFrameCount( notAnimatedImage ), 1 );
+
+  const QString animatedImage = TEST_DATA_DIR + QStringLiteral( "/qgis_logo_animated.gif" );
+
+  QCOMPARE( cache.totalFrameCount( animatedImage ), 4 );
+  // call twice to test caching
+  QCOMPARE( cache.totalFrameCount( animatedImage ), 4 );
+}
+
+void TestQgsImageCache::nextFrameDelay()
+{
+  QgsImageCache cache;
+
+  // not an animated image
+  const QString notAnimatedImage = TEST_DATA_DIR + QStringLiteral( "/sample_image.png" );
+
+  QCOMPARE( cache.nextFrameDelay( notAnimatedImage ), -1 );
+  // call twice to test caching
+  QCOMPARE( cache.nextFrameDelay( notAnimatedImage ), -1 );
+
+  const QString animatedImage = TEST_DATA_DIR + QStringLiteral( "/qgis_logo_animated.gif" );
+
+  QCOMPARE( cache.nextFrameDelay( animatedImage ), 100 );
+  // call twice to test caching
+  QCOMPARE( cache.nextFrameDelay( animatedImage ), 100 );
+
+  // different frame
+  QCOMPARE( cache.nextFrameDelay( animatedImage, 1 ), 100 );
+  QCOMPARE( cache.nextFrameDelay( animatedImage, 1 ), 100 );
+
+  QCOMPARE( cache.nextFrameDelay( animatedImage, 5 ), -1 );
+  QCOMPARE( cache.nextFrameDelay( animatedImage, 5 ), -1 );
+
+}
+
+void TestQgsImageCache::imageFrames()
+{
+  QgsImageCache cache;
+  QImage img;
+  bool inCache;
+  const QString originalImage = TEST_DATA_DIR + QStringLiteral( "/qgis_logo_animated.gif" );
+
+  // call twice to test caching
+  img = cache.pathAsImage( originalImage, QSize(), true, 1.0, inCache, false, 96, 0 );
+  QVERIFY( !img.isNull() );
+  img = cache.pathAsImage( originalImage, QSize(), true, 1.0, inCache, false, 96, 0 );
+  QVERIFY( !img.isNull() );
+  QVERIFY( imageCheck( QStringLiteral( "imagecache_animation_0" ), img, 0 ) );
+
+  img = cache.pathAsImage( originalImage, QSize(), true, 1.0, inCache, false, 96, 1 );
+  QVERIFY( !img.isNull() );
+  img = cache.pathAsImage( originalImage, QSize(), true, 1.0, inCache, false, 96, 1 );
+  QVERIFY( !img.isNull() );
+  QVERIFY( imageCheck( QStringLiteral( "imagecache_animation_1" ), img, 0 ) );
+
+  img = cache.pathAsImage( originalImage, QSize(), true, 1.0, inCache, false, 96, 2 );
+  QVERIFY( !img.isNull() );
+  img = cache.pathAsImage( originalImage, QSize(), true, 1.0, inCache, false, 96, 2 );
+  QVERIFY( !img.isNull() );
+  QVERIFY( imageCheck( QStringLiteral( "imagecache_animation_2" ), img, 0 ) );
+
+  img = cache.pathAsImage( originalImage, QSize(), true, 1.0, inCache, false, 96, 3 );
+  QVERIFY( !img.isNull() );
+  img = cache.pathAsImage( originalImage, QSize(), true, 1.0, inCache, false, 96, 3 );
+  QVERIFY( !img.isNull() );
+  QVERIFY( imageCheck( QStringLiteral( "imagecache_animation_3" ), img, 0 ) );
+
+  // invalid frame
+  img = cache.pathAsImage( originalImage, QSize(), true, 1.0, inCache, false, 96, 4 );
+  QVERIFY( img.isNull() );
+}
+
+void TestQgsImageCache::preseedAnimation()
+{
+  QgsImageCache cache;
+  const QString originalImage = TEST_DATA_DIR + QStringLiteral( "/qgis_logo_animated.gif" );
+
+  const QString tempDir = cache.mTemporaryDir->path();
+  QVERIFY( QFile::exists( tempDir ) );
+
+  QStringList entries = QDir( tempDir ).entryList( QDir::Dirs | QDir::Filter::NoDotAndDotDot );
+  QVERIFY( entries.isEmpty() );
+
+  cache.prepareAnimation( originalImage );
+
+  entries = QDir( tempDir ).entryList( QDir::Dirs | QDir::Filter::NoDotAndDotDot );
+  QCOMPARE( entries.size(), 1 );
+  QStringList files = QDir( QDir( tempDir ).filePath( entries.at( 0 ) ) ).entryList( QDir::Files | QDir::Filter::NoDotAndDotDot );
+  QCOMPARE( files.size(), 4 );
+
+  // call twice to test caching
+  bool inCache = false;
+  QImage img = cache.pathAsImage( originalImage, QSize(), true, 1.0, inCache, false, 96, 0 );
+  QVERIFY( !img.isNull() );
+  img = cache.pathAsImage( originalImage, QSize(), true, 1.0, inCache, false, 96, 0 );
+  QVERIFY( !img.isNull() );
+  QVERIFY( imageCheck( QStringLiteral( "imagecache_animation_0" ), img, 0 ) );
+
+  img = cache.pathAsImage( originalImage, QSize(), true, 1.0, inCache, false, 96, 1 );
+  QVERIFY( !img.isNull() );
+  img = cache.pathAsImage( originalImage, QSize(), true, 1.0, inCache, false, 96, 1 );
+  QVERIFY( !img.isNull() );
+  QVERIFY( imageCheck( QStringLiteral( "imagecache_animation_1" ), img, 0 ) );
+
+  img = cache.pathAsImage( originalImage, QSize(), true, 1.0, inCache, false, 96, 2 );
+  QVERIFY( !img.isNull() );
+  img = cache.pathAsImage( originalImage, QSize(), true, 1.0, inCache, false, 96, 2 );
+  QVERIFY( !img.isNull() );
+  QVERIFY( imageCheck( QStringLiteral( "imagecache_animation_2" ), img, 0 ) );
+
+  img = cache.pathAsImage( originalImage, QSize(), true, 1.0, inCache, false, 96, 3 );
+  QVERIFY( !img.isNull() );
+  img = cache.pathAsImage( originalImage, QSize(), true, 1.0, inCache, false, 96, 3 );
+  QVERIFY( !img.isNull() );
+  QVERIFY( imageCheck( QStringLiteral( "imagecache_animation_3" ), img, 0 ) );
+
+  // invalid frame
+  img = cache.pathAsImage( originalImage, QSize(), true, 1.0, inCache, false, 96, 4 );
+  QVERIFY( img.isNull() );
+}
+
 bool TestQgsImageCache::imageCheck( const QString &testName, QImage &image, int mismatchCount )
 {
   //draw background
@@ -335,7 +464,6 @@ bool TestQgsImageCache::imageCheck( const QString &testName, QImage &image, int 
   painter.drawImage( 0, 0, image );
   painter.end();
 
-  mReport += "<h2>" + testName + "</h2>\n";
   const QString tempDir = QDir::tempPath() + '/';
   const QString fileName = tempDir + testName + ".png";
   imageWithBackground.save( fileName, "PNG" );

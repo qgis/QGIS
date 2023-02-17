@@ -128,8 +128,6 @@ class QgsHanaProvider final : public QgsVectorDataProvider
     QgsDataSourceUri mUri;
     // Srid of the geometry column
     int mSrid = -1;
-    // Srs extent
-    QgsRectangle mSrsExtent;
     // Flag that shows the presence of a planar equivalent in a database
     bool mHasSrsPlanarEquivalent = false;
     // Name of the table with no schema
@@ -172,8 +170,11 @@ class QgsHanaProvider final : public QgsVectorDataProvider
 
 class QgsHanaProviderMetadata : public QgsProviderMetadata
 {
+    Q_OBJECT
+
   public:
     QgsHanaProviderMetadata();
+    QIcon icon() const override;
 
     void cleanupProvider() override;
 
@@ -201,6 +202,7 @@ class QgsHanaProviderMetadata : public QgsProviderMetadata
     // Data source URI API
     QVariantMap decodeUri( const QString &uri ) const override;
     QString encodeUri( const QVariantMap &parts ) const override;
+    QList< Qgis::LayerType > supportedLayerTypes() const override;
 };
 
 #endif // QGSHANAPROVIDER_H

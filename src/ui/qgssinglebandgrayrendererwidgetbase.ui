@@ -151,7 +151,7 @@ enhancement</string>
   <customwidget>
    <class>QgsRasterBandComboBox</class>
    <extends>QComboBox</extends>
-   <header>raster/qgsrasterbandcombobox.h</header>
+   <header>qgsrasterbandcombobox.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>

@@ -119,8 +119,10 @@ class GUI_EXPORT QgsExpressionBuilderDialog : public QDialog, private Ui::QgsExp
     void done( int r ) override;
 
     void accept() override;
+    void reject() override;
 
   private:
+    const QString mInitialText;
     QString mRecentKey;
     bool mAllowEvalErrors = false;
 

@@ -16,9 +16,9 @@ if (WITH_GUI)
   )
   
   set(AFS_UIS
-    qgsarcgisrestsourcewidgetbase.ui
-    qgsarcgisservicesourceselectbase.ui
-    qgsnewarcgisrestconnectionbase.ui
+    ${CMAKE_SOURCE_DIR}/src/ui/qgsarcgisrestsourcewidgetbase.ui
+    ${CMAKE_SOURCE_DIR}/src/ui/qgsarcgisservicesourceselectbase.ui
+    ${CMAKE_SOURCE_DIR}/src/ui/qgsnewarcgisrestconnectionbase.ui
   )
 endif()
 
@@ -37,7 +37,7 @@ target_link_libraries (provider_arcgisfeatureserver_a
 )
 
 if (WITH_GUI)
-  if (WITH_QT6)
+  if (BUILD_WITH_QT6)
     QT6_WRAP_UI(AFS_UIS_H ${AFS_UIS})
   else()
     QT5_WRAP_UI(AFS_UIS_H ${AFS_UIS})

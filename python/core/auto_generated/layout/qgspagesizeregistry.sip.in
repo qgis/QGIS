@@ -91,7 +91,7 @@ Orientation is ignored when matching page sizes, so a landscape A4 page will
 match to the portrait A4 size in the registry.
 %End
 
-    bool decodePageSize( const QString &string, QgsPageSize &size );
+    bool decodePageSize( const QString &string, QgsPageSize &size ) const;
 %Docstring
 Decodes a ``string`` representing a preset page size.
 The decoded page size will be stored in the ``size`` argument.

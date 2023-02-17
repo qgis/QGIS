@@ -78,6 +78,9 @@ class _3D_EXPORT QgsAABB
     //! Returns text representation of the bounding box
     QString toString() const;
 
+    //! Returns true if any of xExtent(), yExtent() or zExtent() is zero, false otherwise
+    bool isEmpty() const { return xMin == xMax || yMin == yMax || zMin == zMax; }
+
     float xMin = 0.0f;
     float yMin = 0.0f;
     float zMin = 0.0f;

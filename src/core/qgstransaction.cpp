@@ -43,7 +43,7 @@ QgsTransaction *QgsTransaction::create( const QSet<QgsVectorLayer *> &layers )
   {
     for ( QgsVectorLayer *layer : layers )
     {
-      if ( !transaction->addLayer( layer ) )
+      if ( !transaction->addLayer( layer, false ) )
       {
         transaction.reset();
         break;
@@ -64,6 +64,11 @@ QgsTransaction::QgsTransaction( const QString &connString )
 QgsTransaction::~QgsTransaction()
 {
   setLayerTransactionIds( nullptr );
+}
+
+QString QgsTransaction::connectionString() const
+{
+  return mConnString;
 }
 
 // For the needs of the OGR provider with GeoPackage datasources, remove
@@ -106,12 +111,13 @@ QString QgsTransaction::connectionString( const QString &layerUri )
 }
 ///@endcond
 
-bool QgsTransaction::addLayer( QgsVectorLayer *layer )
+bool QgsTransaction::addLayer( QgsVectorLayer *layer, bool addLayersInEditMode )
 {
   if ( !layer )
     return false;
 
-  if ( layer->isEditable() )
+  if ( ! addLayersInEditMode
+       && layer->isEditable() )
     return false;
 
   //test if provider supports transactions

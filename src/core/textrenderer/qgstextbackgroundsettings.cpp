@@ -22,6 +22,7 @@
 #include "qgspainting.h"
 #include "qgstextrendererutils.h"
 #include "qgspainteffectregistry.h"
+#include "qgsapplication.h"
 
 QgsTextBackgroundSettings::QgsTextBackgroundSettings()
 {
@@ -505,7 +506,7 @@ void QgsTextBackgroundSettings::readFromLayer( QgsVectorLayer *layer )
     d->opacity = ( layer->customProperty( QStringLiteral( "labeling/shapeOpacity" ) ).toDouble() );
   }
   d->blendMode = QgsPainting::getCompositionMode(
-                   static_cast< QgsPainting::BlendMode >( layer->customProperty( QStringLiteral( "labeling/shapeBlendMode" ), QVariant( QgsPainting::BlendNormal ) ).toUInt() ) );
+                   static_cast< Qgis::BlendMode >( layer->customProperty( QStringLiteral( "labeling/shapeBlendMode" ), QVariant( static_cast< int>( Qgis::BlendMode::Normal ) ) ).toUInt() ) );
 
   if ( layer->customProperty( QStringLiteral( "labeling/shapeEffect" ) ).isValid() )
   {
@@ -634,7 +635,7 @@ void QgsTextBackgroundSettings::readXml( const QDomElement &elem, const QgsReadW
   }
 
   d->blendMode = QgsPainting::getCompositionMode(
-                   static_cast< QgsPainting::BlendMode >( backgroundElem.attribute( QStringLiteral( "shapeBlendMode" ), QString::number( QgsPainting::BlendNormal ) ).toUInt() ) );
+                   static_cast< Qgis::BlendMode >( backgroundElem.attribute( QStringLiteral( "shapeBlendMode" ), QString::number( static_cast< int >( Qgis::BlendMode::Normal ) ) ).toUInt() ) );
 
   const QDomElement effectElem = backgroundElem.firstChildElement( QStringLiteral( "effect" ) );
   if ( !effectElem.isNull() )
@@ -705,7 +706,7 @@ QDomElement QgsTextBackgroundSettings::writeXml( QDomDocument &doc, const QgsRea
   backgroundElem.setAttribute( QStringLiteral( "shapeBorderWidthMapUnitScale" ), QgsSymbolLayerUtils::encodeMapUnitScale( d->strokeWidthMapUnitScale ) );
   backgroundElem.setAttribute( QStringLiteral( "shapeJoinStyle" ), static_cast< unsigned int >( d->joinStyle ) );
   backgroundElem.setAttribute( QStringLiteral( "shapeOpacity" ), d->opacity );
-  backgroundElem.setAttribute( QStringLiteral( "shapeBlendMode" ), QgsPainting::getBlendModeEnum( d->blendMode ) );
+  backgroundElem.setAttribute( QStringLiteral( "shapeBlendMode" ), static_cast< int >( QgsPainting::getBlendModeEnum( d->blendMode ) ) );
   if ( d->paintEffect && !QgsPaintEffectRegistry::isDefaultStack( d->paintEffect.get() ) )
     d->paintEffect->saveProperties( doc, backgroundElem );
 
@@ -776,7 +777,7 @@ void QgsTextBackgroundSettings::updateDataDefinedProperties( QgsRenderContext &c
   }
 
   QVariant exprVal = properties.value( QgsPalLayerSettings::ShapeSizeUnits, context.expressionContext() );
-  if ( !exprVal.isNull() )
+  if ( !QgsVariantUtils::isNull( exprVal ) )
   {
     const QString units = exprVal.toString();
     if ( !units.isEmpty() )
@@ -789,7 +790,7 @@ void QgsTextBackgroundSettings::updateDataDefinedProperties( QgsRenderContext &c
   }
 
   exprVal = properties.value( QgsPalLayerSettings::ShapeKind, context.expressionContext() );
-  if ( !exprVal.isNull() )
+  if ( !QgsVariantUtils::isNull( exprVal ) )
   {
     const QString skind = exprVal.toString().trimmed();
     if ( !skind.isEmpty() )
@@ -799,7 +800,7 @@ void QgsTextBackgroundSettings::updateDataDefinedProperties( QgsRenderContext &c
   }
 
   exprVal = properties.value( QgsPalLayerSettings::ShapeSizeType, context.expressionContext() );
-  if ( !exprVal.isNull() )
+  if ( !QgsVariantUtils::isNull( exprVal ) )
   {
     const QString stype = exprVal.toString().trimmed();
     if ( !stype.isEmpty() )
@@ -811,7 +812,7 @@ void QgsTextBackgroundSettings::updateDataDefinedProperties( QgsRenderContext &c
   // data defined shape SVG path?
   context.expressionContext().setOriginalValueVariable( d->svgFile );
   exprVal = properties.value( QgsPalLayerSettings::ShapeSVGFile, context.expressionContext() );
-  if ( !exprVal.isNull() )
+  if ( !QgsVariantUtils::isNull( exprVal ) )
   {
     const QString svgfile = exprVal.toString().trimmed();
     d->svgFile = QgsSymbolLayerUtils::svgSymbolNameToPath( svgfile, context.pathResolver() );
@@ -823,7 +824,7 @@ void QgsTextBackgroundSettings::updateDataDefinedProperties( QgsRenderContext &c
     d->rotation = properties.valueAsDouble( QgsPalLayerSettings::ShapeRotation, context.expressionContext(), d->rotation );
   }
   exprVal = properties.value( QgsPalLayerSettings::ShapeRotationType, context.expressionContext() );
-  if ( !exprVal.isNull() )
+  if ( !QgsVariantUtils::isNull( exprVal ) )
   {
     const QString rotstr = exprVal.toString().trimmed();
     if ( !rotstr.isEmpty() )
@@ -833,7 +834,7 @@ void QgsTextBackgroundSettings::updateDataDefinedProperties( QgsRenderContext &c
   }
 
   exprVal = properties.value( QgsPalLayerSettings::ShapeOffset, context.expressionContext() );
-  if ( !exprVal.isNull() )
+  if ( !QgsVariantUtils::isNull( exprVal ) )
   {
     bool ok = false;
     const QPointF res = QgsSymbolLayerUtils::toPoint( exprVal, &ok );
@@ -843,7 +844,7 @@ void QgsTextBackgroundSettings::updateDataDefinedProperties( QgsRenderContext &c
     }
   }
   exprVal = properties.value( QgsPalLayerSettings::ShapeOffsetUnits, context.expressionContext() );
-  if ( !exprVal.isNull() )
+  if ( !QgsVariantUtils::isNull( exprVal ) )
   {
     const QString units = exprVal.toString();
     if ( !units.isEmpty() )
@@ -856,7 +857,7 @@ void QgsTextBackgroundSettings::updateDataDefinedProperties( QgsRenderContext &c
   }
 
   exprVal = properties.value( QgsPalLayerSettings::ShapeRadii, context.expressionContext() );
-  if ( !exprVal.isNull() )
+  if ( !QgsVariantUtils::isNull( exprVal ) )
   {
     bool ok = false;
     const QSizeF res = QgsSymbolLayerUtils::toSize( exprVal, &ok );
@@ -867,7 +868,7 @@ void QgsTextBackgroundSettings::updateDataDefinedProperties( QgsRenderContext &c
   }
 
   exprVal = properties.value( QgsPalLayerSettings::ShapeRadiiUnits, context.expressionContext() );
-  if ( !exprVal.isNull() )
+  if ( !QgsVariantUtils::isNull( exprVal ) )
   {
     const QString units = exprVal.toString();
     if ( !units.isEmpty() )
@@ -883,7 +884,7 @@ void QgsTextBackgroundSettings::updateDataDefinedProperties( QgsRenderContext &c
   {
     context.expressionContext().setOriginalValueVariable( d->opacity * 100 );
     const QVariant val = properties.value( QgsPalLayerSettings::ShapeOpacity, context.expressionContext(), d->opacity * 100 );
-    if ( !val.isNull() )
+    if ( !QgsVariantUtils::isNull( val ) )
     {
       d->opacity = val.toDouble() / 100.0;
     }
@@ -908,7 +909,7 @@ void QgsTextBackgroundSettings::updateDataDefinedProperties( QgsRenderContext &c
     d->strokeWidth = properties.valueAsDouble( QgsPalLayerSettings::ShapeStrokeWidth, context.expressionContext(), d->strokeWidth );
   }
   exprVal = properties.value( QgsPalLayerSettings::ShapeStrokeWidthUnits, context.expressionContext() );
-  if ( !exprVal.isNull() )
+  if ( !QgsVariantUtils::isNull( exprVal ) )
   {
     const QString units = exprVal.toString();
     if ( !units.isEmpty() )

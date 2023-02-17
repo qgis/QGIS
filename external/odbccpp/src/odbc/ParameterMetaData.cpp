@@ -4,7 +4,7 @@
 #include <odbc/internal/Macros.h>
 #include <odbc/internal/Odbc.h>
 //------------------------------------------------------------------------------
-namespace odbc {
+NS_ODBC_START
 //------------------------------------------------------------------------------
 ParameterMetaData::ParameterMetaData(PreparedStatement* ps)
     : ps_(ps, true)
@@ -73,4 +73,4 @@ bool ParameterMetaData::isNullable(unsigned short paramIndex)
     return nullable == SQL_NULLABLE;
 }
 //------------------------------------------------------------------------------
-} // namespace odbc
+NS_ODBC_END

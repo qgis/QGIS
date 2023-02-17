@@ -3,7 +3,13 @@
   "type": "function",
   "groups": ["GeometryGroup"],
   "description": "Returns the Well-Known Binary (WKB) representation of a geometry",
-  "arguments": [ {"arg":"geometry","description":"a geometry"}],
-  "examples": [ { "expression":"geom_to_wkb( $geometry )", "returns":"binary blob containing a geometry object"}
-  ]
+  "arguments": [{
+    "arg": "geometry",
+    "description": "a geometry"
+  }],
+  "examples": [{
+    "expression": "geom_to_wkb( $geometry )",
+    "returns": "binary blob containing a geometry object"
+  }],
+  "tags": ["wkb", "binary", "representation", "known", "conversion"]
 }

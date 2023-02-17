@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsHistoryProviderRegistry.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -11,19 +10,14 @@ __date__ = '18/10/2016'
 __copyright__ = 'Copyright 2016, The QGIS Project'
 
 import qgis  # NOQA switch sip api
-
 from qgis.PyQt import sip
-from qgis.PyQt.QtCore import (
-    QDateTime,
-    QDate
-)
+from qgis.PyQt.QtCore import QDate, QDateTime
 from qgis.core import Qgis
 from qgis.gui import (
+    QgsAbstractHistoryProvider,
     QgsHistoryEntry,
     QgsHistoryProviderRegistry,
-    QgsAbstractHistoryProvider
 )
-
 from qgis.testing import start_app, unittest
 
 start_app()

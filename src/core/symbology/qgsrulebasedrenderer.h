@@ -68,13 +68,19 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
      */
     struct RenderJob
     {
-        RenderJob( QgsRuleBasedRenderer::FeatureToRender &_ftr, QgsSymbol *_s )
+
+        /**
+         * Constructor for a render job, with the specified feature to render and symbol.
+         *
+         * \note The symbol ownership is not transferred.
+         */
+        RenderJob( const QgsRuleBasedRenderer::FeatureToRender &_ftr, QgsSymbol *_s )
           : ftr( _ftr )
           , symbol( _s )
         {}
 
         //! Feature to render
-        QgsRuleBasedRenderer::FeatureToRender &ftr;
+        QgsRuleBasedRenderer::FeatureToRender ftr;
 
         //! Symbol to render feature with (not owned by this object).
         QgsSymbol *symbol = nullptr;
@@ -377,17 +383,18 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
          *
          * \param ruleElem  The XML rule element
          * \param symbolMap Symbol map
+         * \param reuseId set to TRUE to create an exact copy of the original symbol or FALSE to create a new rule with the same parameters as the original but a new unique ruleKey(). (Since QGIS 3.30)
          *
          * \returns A new rule
          */
-        static QgsRuleBasedRenderer::Rule *create( QDomElement &ruleElem, QgsSymbolMap &symbolMap ) SIP_FACTORY;
+        static QgsRuleBasedRenderer::Rule *create( QDomElement &ruleElem, QgsSymbolMap &symbolMap, bool reuseId = true ) SIP_FACTORY;
 
         /**
          * Returns all children rules of this rule
          *
          * \returns A list of rules
          */
-        const QgsRuleBasedRenderer::RuleList &children() { return mChildren; }
+        const QgsRuleBasedRenderer::RuleList &children() const { return mChildren; }
 
         /**
          * Returns all children, grand-children, grand-grand-children, grand-gra... you get it
@@ -524,6 +531,7 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
     bool legendSymbolItemsCheckable() const override;
     bool legendSymbolItemChecked( const QString &key ) override;
     void checkLegendSymbolItem( const QString &key, bool state = true ) override;
+    QString legendKeyToExpression( const QString &key, QgsVectorLayer *layer, bool &ok ) const override;
 
     void setLegendSymbolItem( const QString &key, QgsSymbol *symbol SIP_TRANSFER ) override;
     QgsLegendSymbolList legendSymbolItems() const override;

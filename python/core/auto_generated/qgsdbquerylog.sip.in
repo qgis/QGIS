@@ -1,0 +1,127 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsdbquerylog.h                                             *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+class QgsDatabaseQueryLogEntry
+{
+%Docstring(signature="appended")
+Encapsulates a logged database query.
+
+.. versionadded:: 3.24
+%End
+
+%TypeHeaderCode
+#include "qgsdbquerylog.h"
+%End
+  public:
+
+    QgsDatabaseQueryLogEntry( const QString &query = QString() );
+%Docstring
+Constructor for QgsDatabaseQueryLogEntry.
+%End
+
+    int queryId;
+
+    QString uri;
+
+    QString provider;
+
+    QString query;
+
+    quint64 startedTime;
+
+    quint64 finishedTime;
+
+    QString initiatorClass;
+
+    QString origin;
+
+    long long fetchedRows;
+
+    QString error;
+
+    bool canceled;
+
+};
+
+
+
+class QgsDatabaseQueryLog: QObject
+{
+%Docstring(signature="appended")
+Handles logging of database queries.
+
+:py:class:`QgsDatabaseQueryLog` is not usually directly created, but rather accessed through
+:py:func:`QgsApplication.databaseQueryLog()`. Generally, clients should only access the
+static :py:func:`~QgsDatabaseQueryLogEntry.log` method to register their queries.
+
+Example
+-------
+
+.. code-block:: python
+
+       # Log a database query
+       QgsDatabaseQueryLog.log('SELECT * FROM my_table')
+
+.. versionadded:: 3.24
+%End
+
+%TypeHeaderCode
+#include "qgsdbquerylog.h"
+%End
+  public:
+
+    QgsDatabaseQueryLog( QObject *parent = 0 );
+%Docstring
+Creates a new query log.
+
+QgsDatabaseQueryLog is not usually directly created, but rather accessed through
+:py:func:`QgsApplication.databaseQueryLog()`.
+%End
+
+
+    static bool enabled();
+%Docstring
+Returns ``True`` if logging is enabled.
+
+.. seealso:: :py:func:`setEnabled`
+%End
+
+    static void log( const QgsDatabaseQueryLogEntry &query );
+%Docstring
+Logs a database ``query`` as starting.
+
+This method can be safely called from any thread.
+%End
+
+    static void finished( const QgsDatabaseQueryLogEntry &query );
+%Docstring
+Records that the database ``query`` has finished.
+
+This method can be safely called from any thread.
+%End
+
+  public slots:
+
+
+
+  signals:
+
+
+
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsdbquerylog.h                                             *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

@@ -3,8 +3,16 @@
   "type": "function",
   "groups": ["GeometryGroup"],
   "description": "Returns the minimum m (measure) value of a geometry.",
-  "arguments": [ {"arg":"geometry","description":"a geometry containing m values"}],
-  "examples": [ { "expression":"m_min( make_point_m( 0,0,1 ) )", "returns":"1"},
-                { "expression":"m_min(make_line( make_point_m( 0,0,1 ), make_point_m( -1,-1,2 ), make_point_m( -2,-2,0 ) ) )", "returns":"0"}
-  ]
+  "arguments": [{
+    "arg": "geometry",
+    "description": "a geometry containing m values"
+  }],
+  "examples": [{
+    "expression": "m_min( make_point_m( 0,0,1 ) )",
+    "returns": "1"
+  }, {
+    "expression": "m_min(make_line( make_point_m( 0,0,1 ), make_point_m( -1,-1,2 ), make_point_m( -2,-2,0 ) ) )",
+    "returns": "0"
+  }],
+  "tags": ["minimum", "measure"]
 }

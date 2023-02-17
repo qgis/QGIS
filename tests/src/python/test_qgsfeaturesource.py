@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsFeatureSource.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -9,20 +8,21 @@ the Free Software Foundation; either version 2 of the License, or
 __author__ = '(C) 2017 by Nyall Dawson'
 __date__ = '26/04/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
+
 import qgis  # NOQA
 
-import os
-
-from qgis.core import (QgsVectorLayer,
-                       QgsFeature,
-                       QgsGeometry,
-                       QgsPointXY,
-                       QgsProject,
-                       QgsFeatureRequest,
-                       QgsWkbTypes,
-                       QgsCoordinateReferenceSystem)
-from qgis.PyQt.QtCore import QVariant
+from qgis.core import (
+    QgsCoordinateReferenceSystem,
+    QgsFeature,
+    QgsFeatureRequest,
+    QgsGeometry,
+    QgsPointXY,
+    QgsProject,
+    QgsVectorLayer,
+    QgsWkbTypes,
+)
 from qgis.testing import start_app, unittest
+
 start_app()
 
 

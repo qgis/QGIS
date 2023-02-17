@@ -56,7 +56,7 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     QgsLayerTreeView *layerTreeView() override;
 
     void addCustomActionForLayerType( QAction *action, QString menu,
-                                      QgsMapLayerType type, bool allLayers ) override;
+                                      Qgis::LayerType type, bool allLayers ) override;
     void addCustomActionForLayer( QAction *action, QgsMapLayer *layer ) override;
     bool removeCustomActionForLayerType( QAction *action ) override;
 
@@ -164,6 +164,11 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     void registerCustomLayoutDropHandler( QgsLayoutCustomDropHandler *handler ) override;
     void unregisterCustomLayoutDropHandler( QgsLayoutCustomDropHandler *handler ) override;
     QMenu *projectMenu() override;
+    QMenu *projectImportExportMenu() override;
+    void addProjectImportAction( QAction *action ) override;
+    void removeProjectImportAction( QAction *action )override;
+    void addProjectExportAction( QAction *action ) override;
+    void removeProjectExportAction( QAction *action ) override;
     QMenu *editMenu() override;
     QMenu *viewMenu() override;
     QMenu *layerMenu() override;
@@ -182,6 +187,7 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     QToolBar *fileToolBar() override;
     QToolBar *layerToolBar() override;
     QToolBar *dataSourceManagerToolBar() override;
+    void openDataSourceManagerPage( const QString &pageName ) override;
     QToolBar *mapNavToolToolBar() override;
     QToolBar *digitizeToolBar() override;
     QToolBar *advancedDigitizeToolBar() override;
@@ -290,22 +296,6 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     QAction *actionQgisHomePage() override;
     QAction *actionCheckQgisVersion() override;
     QAction *actionAbout() override;
-    QAction *actionCircle2Points() override;
-    QAction *actionCircle3Points() override;
-    QAction *actionCircle3Tangents() override;
-    QAction *actionCircle2TangentsPoint() override;
-    QAction *actionCircleCenterPoint() override;
-    QAction *actionEllipseCenter2Points() override;
-    QAction *actionEllipseCenterPoint() override;
-    QAction *actionEllipseExtent() override;
-    QAction *actionEllipseFoci() override;
-    QAction *actionRectangleCenterPoint() override;
-    QAction *actionRectangleExtent() override;
-    QAction *actionRectangle3PointsDistance() override;
-    QAction *actionRectangle3PointsProjected() override;
-    QAction *actionRegularPolygon2Points() override;
-    QAction *actionRegularPolygonCenterPoint() override;
-    QAction *actionRegularPolygonCenterCorner() override;
 
     bool openFeatureForm( QgsVectorLayer *l, QgsFeature &f, bool updateFeatureOnly = false, bool showModal = true ) override;
     QgsAttributeDialog *getFeatureForm( QgsVectorLayer *layer, QgsFeature &feature ) override;
@@ -324,6 +314,7 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     QgsLayerTreeRegistryBridge::InsertionPoint layerTreeInsertionPoint() override;
     void setGpsPanelConnection( QgsGpsConnection *connection ) override;
     QList<QgsMapDecoration *> activeDecorations() override;
+    QgsUserProfileManager *userProfileManager() override;
 
   private slots:
 

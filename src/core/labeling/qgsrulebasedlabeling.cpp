@@ -239,7 +239,7 @@ QgsRuleBasedLabeling::Rule *QgsRuleBasedLabeling::Rule::clone() const
   return newrule;
 }
 
-QgsRuleBasedLabeling::Rule *QgsRuleBasedLabeling::Rule::create( const QDomElement &ruleElem, const QgsReadWriteContext &context )
+QgsRuleBasedLabeling::Rule *QgsRuleBasedLabeling::Rule::create( const QDomElement &ruleElem, const QgsReadWriteContext &context, bool reuseId )
 {
   QgsPalLayerSettings *settings = nullptr;
   QDomElement settingsElem = ruleElem.firstChildElement( QStringLiteral( "settings" ) );
@@ -253,7 +253,11 @@ QgsRuleBasedLabeling::Rule *QgsRuleBasedLabeling::Rule::create( const QDomElemen
   QString description = ruleElem.attribute( QStringLiteral( "description" ) );
   int scaleMinDenom = ruleElem.attribute( QStringLiteral( "scalemindenom" ), QStringLiteral( "0" ) ).toInt();
   int scaleMaxDenom = ruleElem.attribute( QStringLiteral( "scalemaxdenom" ), QStringLiteral( "0" ) ).toInt();
-  QString ruleKey = ruleElem.attribute( QStringLiteral( "key" ) );
+  QString ruleKey;
+  if ( reuseId )
+    ruleKey = ruleElem.attribute( QStringLiteral( "key" ) );
+  else
+    ruleKey = QUuid::createUuid().toString();
   Rule *rule = new Rule( settings, scaleMinDenom, scaleMaxDenom, filterExp, description );
 
   if ( !ruleKey.isEmpty() )
@@ -367,7 +371,7 @@ std::tuple< QgsRuleBasedLabeling::Rule::RegisterResult, QList< QgsLabelFeature *
     registered = true;
   }
 
-  bool willRegisterSomething = false;
+  bool matchedAChild = false;
 
   // call recursively
   for ( Rule *rule : std::as_const( mChildren ) )
@@ -379,26 +383,27 @@ std::tuple< QgsRuleBasedLabeling::Rule::RegisterResult, QList< QgsLabelFeature *
       QList< QgsLabelFeature * > added;
       std::tie( res, added ) = rule->registerFeature( feature, context, subProviders, obstacleGeometry );
       labels.append( added );
-      // consider inactive items as "registered" so the else rule will ignore them
-      willRegisterSomething |= ( res == Registered || res == Inactive );
-      registered |= willRegisterSomething;
+      // consider inactive items as "matched" so the else rule will ignore them
+      matchedAChild |= ( res == Registered || res == Inactive );
+      registered |= matchedAChild;
     }
   }
 
   // If none of the rules passed then we jump into the else rules and process them.
-  if ( !willRegisterSomething )
+  if ( !matchedAChild )
   {
     for ( Rule *rule : std::as_const( mElseRules ) )
     {
       RegisterResult res;
       QList< QgsLabelFeature * > added;
       std::tie( res, added ) = rule->registerFeature( feature, context, subProviders, obstacleGeometry, symbol ) ;
+      matchedAChild |= ( res == Registered || res == Inactive );
       registered |= res != Filtered;
       labels.append( added );
     }
   }
 
-  if ( !mIsActive )
+  if ( !mIsActive || ( matchedAChild && !registered ) )
     return { Inactive, labels };
   else if ( registered )
     return { Registered, labels };

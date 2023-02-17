@@ -28,7 +28,7 @@ jobs:
         - ${{ github.workspace }}:/w
     steps:
 
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Update system
         run: dnf -y update
@@ -40,7 +40,7 @@ jobs:
         run: ./ms-windows/mingw/mingwdeps.sh
 
       # Node.js and Yarn for server landingpage webapp
-      - uses: actions/setup-node@v2
+      - uses: actions/setup-node@v3
         with:
           node-version: '17'
 
@@ -51,7 +51,7 @@ jobs:
         run: mkdir -p /w/.ccache/QGIS
 
       - name: Prepare build cache for pull request
-        uses: pat-s/always-upload-cache@v2.1.5
+        uses: pat-s/always-upload-cache@v3.0.11
         if: github.event_name == 'pull_request'
         with:
           path: /w/.ccache/QGIS
@@ -65,7 +65,7 @@ jobs:
 
       - name: Prepare build cache for branch/tag
         # use a fork of actions/cache@v2 to upload cache even when the build or test failed
-        uses: pat-s/always-upload-cache@v2.1.5
+        uses: pat-s/always-upload-cache@v3.0.11
         if: github.event_name != 'pull_request'
         with:
           path: /w/.ccache/QGIS
@@ -93,13 +93,13 @@ jobs:
           (cd $DEBUGROOT && zip -r - *) > qgis-portable-win64-debugsym.zip
 
       - name: Upload QGIS for Windows 64bit
-        uses: actions/upload-artifact@v2.3.1
+        uses: actions/upload-artifact@v3
         with:
           name: QGIS for Windows 64bit
           path: qgis-portable-win64.zip
 
       - name: Upload QGIS for Windows 64bit Debug Symbols
-        uses: actions/upload-artifact@v2.3.1
+        uses: actions/upload-artifact@v3
         with:
           name: QGIS for Windows 64bit Debug Symbols
           path: qgis-portable-win64-debugsym.zip

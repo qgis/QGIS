@@ -24,7 +24,7 @@
 #include "qgsprocessingparameterdefinitionwidget.h"
 #include "qgsmaptool.h"
 #include "qgsprocessingcontext.h"
-#include "processing/models/qgsprocessingmodelchildparametersource.h"
+#include "qgsprocessingmodelchildparametersource.h"
 
 #include <QAbstractButton>
 
@@ -1780,6 +1780,7 @@ class GUI_EXPORT QgsProcessingMapLayerWidgetWrapper : public QgsAbstractProcessi
 
     QStringList compatibleOutputTypes() const override;
     QString modelerExpressionFormatString() const override;
+    QgsProcessingModelChildParameterSource::Source defaultModelSource( const QgsProcessingParameterDefinition *parameter ) const override;
 
   private:
 

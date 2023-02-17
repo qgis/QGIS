@@ -24,6 +24,7 @@
 #include "qgsfeaturefilterprovider.h"
 #include "qgslogger.h"
 #include "qgspoint.h"
+#include "qgselevationmap.h"
 
 #define POINTS_TO_MM 2.83464567
 #define INCH_TO_MM 25.4
@@ -79,9 +80,13 @@ QgsRenderContext::QgsRenderContext( const QgsRenderContext &rh )
   , mDevicePixelRatio( rh.mDevicePixelRatio )
   , mImageFormat( rh.mImageFormat )
   , mRendererUsage( rh.mRendererUsage )
+  , mFrameRate( rh.mFrameRate )
+  , mCurrentFrame( rh.mCurrentFrame )
+  , mSymbolLayerClipPaths( rh.mSymbolLayerClipPaths )
 #ifdef QGISDEBUG
   , mHasTransformContext( rh.mHasTransformContext )
 #endif
+  , mElevationMap( rh.mElevationMap )
 {
 }
 
@@ -125,11 +130,15 @@ QgsRenderContext &QgsRenderContext::operator=( const QgsRenderContext &rh )
   mImageFormat = rh.mImageFormat;
   setIsTemporal( rh.isTemporal() );
   mRendererUsage = rh.mRendererUsage;
+  mFrameRate = rh.mFrameRate;
+  mCurrentFrame = rh.mCurrentFrame;
+  mSymbolLayerClipPaths = rh.mSymbolLayerClipPaths;
   if ( isTemporal() )
     setTemporalRange( rh.temporalRange() );
 #ifdef QGISDEBUG
   mHasTransformContext = rh.mHasTransformContext;
 #endif
+  mElevationMap = rh.elevationMap();
 
   return *this;
 }
@@ -151,11 +160,8 @@ QgsRenderContext QgsRenderContext::fromQPainter( QPainter *painter )
     context.setFlag( Qgis::RenderContextFlag::Antialiasing, true );
   if ( painter && painter->renderHints() & QPainter::SmoothPixmapTransform )
     context.setFlag( Qgis::RenderContextFlag::HighQualityImageTransforms, true );
-
-#if QT_VERSION >= QT_VERSION_CHECK(5, 13, 0)
   if ( painter && painter->renderHints() & QPainter::LosslessImageRendering )
     context.setFlag( Qgis::RenderContextFlag::LosslessImageRendering, true );
-#endif
 
   return context;
 }
@@ -169,9 +175,7 @@ void QgsRenderContext::setPainterFlagsUsingContext( QPainter *painter ) const
     return;
 
   painter->setRenderHint( QPainter::Antialiasing, mFlags & Qgis::RenderContextFlag::Antialiasing );
-#if QT_VERSION >= QT_VERSION_CHECK(5, 13, 0)
   painter->setRenderHint( QPainter::LosslessImageRendering, mFlags & Qgis::RenderContextFlag::LosslessImageRendering );
-#endif
   painter->setRenderHint( QPainter::SmoothPixmapTransform, mFlags & Qgis::RenderContextFlag::HighQualityImageTransforms );
 }
 
@@ -280,6 +284,8 @@ QgsRenderContext QgsRenderContext::fromMapSettings( const QgsMapSettings &mapSet
   ctx.mClippingRegions = mapSettings.clippingRegions();
 
   ctx.mRendererUsage = mapSettings.rendererUsage();
+  ctx.mFrameRate = mapSettings.frameRate();
+  ctx.mCurrentFrame = mapSettings.currentFrame();
 
   return ctx;
 }
@@ -674,4 +680,42 @@ QSize QgsRenderContext::deviceOutputSize() const
   return outputSize() * mDevicePixelRatio;
 }
 
+double QgsRenderContext::frameRate() const
+{
+  return mFrameRate;
+}
 
+void QgsRenderContext::setFrameRate( double rate )
+{
+  mFrameRate = rate;
+}
+
+long long QgsRenderContext::currentFrame() const
+{
+  return mCurrentFrame;
+}
+
+void QgsRenderContext::setCurrentFrame( long long frame )
+{
+  mCurrentFrame = frame;
+}
+
+QgsElevationMap *QgsRenderContext::elevationMap() const
+{
+  return mElevationMap;
+}
+
+void QgsRenderContext::setElevationMap( QgsElevationMap *map )
+{
+  mElevationMap = map;
+}
+
+void QgsRenderContext::addSymbolLayerClipPath( const QgsSymbolLayer *symbolLayer, QPainterPath path )
+{
+  mSymbolLayerClipPaths[ symbolLayer ].append( path );
+}
+
+QList<QPainterPath> QgsRenderContext::symbolLayerClipPaths( const QgsSymbolLayer *symbolLayer ) const
+{
+  return mSymbolLayerClipPaths[ symbolLayer ];
+}

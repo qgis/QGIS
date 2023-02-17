@@ -33,6 +33,8 @@ class TestQgsMapToolEditMesh : public QObject
     void init(); // will be called before each testfunction is executed.
     void cleanup() {} // will be called after every testfunction.
 
+    void hoverElements();
+
     void editMesh();
 
   private:
@@ -41,6 +43,8 @@ class TestQgsMapToolEditMesh : public QObject
     QString mDataDir;
     std::unique_ptr<QgsMapCanvas> mCanvas;
     QgsMapToolEditMeshFrame *mEditMeshMapTool;
+
+    std::unique_ptr<QgsMeshLayer> meshLayerSimpleBox;
 };
 
 
@@ -52,28 +56,69 @@ void TestQgsMapToolEditMesh::initTestCase()
   mQgisApp = new QgisApp();
   mDataDir = QString( TEST_DATA_DIR ); //defined in CmakeLists.txt
   mDataDir += "/mesh";
-  mCanvas.reset( new QgsMapCanvas() );
-  mEditMeshMapTool = new QgsMapToolEditMeshFrame( mCanvas.get() );
 }
 
 void TestQgsMapToolEditMesh::init()
 {
-  const QString uri = QString( mDataDir + "/quad_flower.2dm" );
-  meshLayerQuadFlower.reset( new QgsMeshLayer( uri, "Quad Flower", "mdal" ) );
-  QVERIFY( meshLayerQuadFlower );
-  QCOMPARE( meshLayerQuadFlower->datasetGroupCount(), 1 );
+  mCanvas.reset( new QgsMapCanvas() );
+  mEditMeshMapTool = new QgsMapToolEditMeshFrame( mCanvas.get() );
+}
 
-  const QgsCoordinateTransform transform;
-  meshLayerQuadFlower->startFrameEditing( transform );
+void TestQgsMapToolEditMesh::hoverElements()
+{
+  QString uri = QString( mDataDir + "/simplebox_clm.nc" );
+  meshLayerSimpleBox.reset( new QgsMeshLayer( uri, "Simple box", "mdal" ) );
+  QVERIFY( meshLayerSimpleBox->isValid() );
 
-  mCanvas->setLayers( QList<QgsMapLayer *>() << meshLayerQuadFlower.get() );
+  mCanvas->setLayers( QList<QgsMapLayer *>() << meshLayerSimpleBox.get() );
+
+  QgsCoordinateReferenceSystem wgs84Crs;
+  wgs84Crs.createFromProj( "+proj=longlat +datum=WGS84 +no_defs" );
+  QVERIFY( wgs84Crs.isValid() );
+  QVERIFY( meshLayerSimpleBox->crs().isValid() );
+  mCanvas->setDestinationCrs( wgs84Crs );
+
+  QgsCoordinateTransform transform( meshLayerSimpleBox->crs(), mCanvas->mapSettings().destinationCrs(), QgsProject::instance() );
+  QgsMeshEditingError error;
+  QVERIFY( meshLayerSimpleBox->startFrameEditing( transform, error, false ) );
+  QVERIFY( error.errorType == Qgis::MeshEditingErrorType::NoError );
+
+  QgsRectangle extent( 3.31351393, 47.97489613, 3.31351792, 47.97508220 );
+  mCanvas->setExtent( extent );
+  TestQgsMapToolAdvancedDigitizingUtils tool( mEditMeshMapTool );
+  mCanvas->setCurrentLayer( meshLayerSimpleBox.get() );
+  mEditMeshMapTool->mActionDigitizing->trigger();
+  tool.mouseMove( 3.31376427, 47.97500487 );
+  QCOMPARE( mEditMeshMapTool->mCurrentFaceIndex, 8 );
+  QVERIFY( mEditMeshMapTool->mCurrentEdge == QgsMapToolEditMeshFrame::Edge( {-1, -1} ) );
+  QCOMPARE( mEditMeshMapTool->mCurrentVertexIndex, -1 );
+
+  tool.mouseMove( 3.31368247, 47.97500500 );
+  QCOMPARE( mEditMeshMapTool->mCurrentFaceIndex, 8 );
+  QVERIFY( mEditMeshMapTool->mCurrentEdge == QgsMapToolEditMeshFrame::Edge( {8, 5} ) );
+  QCOMPARE( mEditMeshMapTool->mCurrentVertexIndex, -1 );
+
+  tool.mouseMove( 3.31368064, 47.97503705 );
+  QCOMPARE( mEditMeshMapTool->mCurrentFaceIndex, 8 );
+  QVERIFY( mEditMeshMapTool->mCurrentEdge == QgsMapToolEditMeshFrame::Edge( {8, 5} ) );
+  QCOMPARE( mEditMeshMapTool->mCurrentVertexIndex, 10 );
 }
 
 void TestQgsMapToolEditMesh::editMesh()
 {
-  const double offsetInMapUnits = 15 * mCanvas->mapSettings().mapUnitsPerPixel();
+  QString uri = QString( mDataDir + "/quad_flower.2dm" );
+  meshLayerQuadFlower.reset( new QgsMeshLayer( uri, "Quad Flower", "mdal" ) );
+  QVERIFY( meshLayerQuadFlower->isValid() );
+  QCOMPARE( meshLayerQuadFlower->datasetGroupCount(), 1 );
 
   const QgsCoordinateTransform transform;
+  QgsMeshEditingError error;
+  meshLayerQuadFlower->startFrameEditing( transform, error, false );
+  QVERIFY( error == QgsMeshEditingError() );
+
+  mCanvas->setLayers( QList<QgsMapLayer *>() << meshLayerQuadFlower.get() );
+  const double offsetInMapUnits = 15 * mCanvas->mapSettings().mapUnitsPerPixel();
+
   QVERIFY( meshLayerQuadFlower->meshEditor() );
 
   TestQgsMapToolAdvancedDigitizingUtils tool( mEditMeshMapTool );
@@ -97,7 +142,8 @@ void TestQgsMapToolEditMesh::editMesh()
 
   QVERIFY( !meshLayerQuadFlower->meshEditor() );
 
-  meshLayerQuadFlower->startFrameEditing( transform );
+  meshLayerQuadFlower->startFrameEditing( transform, error, false );
+  QVERIFY( error == QgsMeshEditingError() );
 
   QVERIFY( meshLayerQuadFlower->meshEditor() );
 
@@ -122,7 +168,7 @@ void TestQgsMapToolEditMesh::editMesh()
   // add a face
   tool.mouseMove( 1999, 2999 ); //move near a vertex
   tool.mouseMove( 2000 + offsetInMapUnits / sqrt( 2 ), 3000 + offsetInMapUnits / sqrt( 2 ) ); //move on the new face marker
-  tool.mouseClick( 2000 + offsetInMapUnits / sqrt( 2 ), 3000 + offsetInMapUnits / sqrt( 2 ), Qt::LeftButton );
+  tool.mouseClick( 2000 + offsetInMapUnits / sqrt( 4 ), 3000 + offsetInMapUnits / sqrt( 2 ), Qt::LeftButton );
   tool.mouseMove( 2499, 3501 ); //move near the new free vertex
   tool.mouseClick( 2501, 3499, Qt::LeftButton ); // click near the vertex
   tool.mouseMove( 2490, 2600 ); //move elsewhere
@@ -131,6 +177,37 @@ void TestQgsMapToolEditMesh::editMesh()
   tool.mouseClick( 5000, 5000, Qt::RightButton ); // valid the face
 
   QCOMPARE( meshLayerQuadFlower->meshFaceCount(), 9 );
+
+  // add a face with new vertices
+  tool.mouseMove( 2500, 3500 ); //move near a vertex
+  tool.mouseMove( 2500, 3501 );
+  tool.mouseMove( 2500 + offsetInMapUnits / sqrt( 5 ), 3500 + 2 * offsetInMapUnits / sqrt( 5 ) ); //move on the new face marker
+  tool.mouseClick( 2500 + offsetInMapUnits / sqrt( 5 ), 3500 + 2 * offsetInMapUnits / sqrt( 5 ), Qt::LeftButton );
+  tool.mouseMove( 3000, 3000 ); //move to a new place outsite the mesh
+  tool.mouseClick( 3000, 3000, Qt::LeftButton );
+  tool.mouseMove( 3000, 3500 ); //move to a new place outsite the mesh (cross edge of new face: invalid)
+  tool.mouseClick( 3000, 3500, Qt::LeftButton );
+  tool.mouseMove( 2500, 2500 );
+  tool.mouseClick( 2500, 2500, Qt::LeftButton );// close the face
+  tool.mouseClick( 5000, 5000, Qt::RightButton ); // valid the fac
+  QCOMPARE( meshLayerQuadFlower->meshFaceCount(), 9 ); //-> face not added
+  QCOMPARE( meshLayerQuadFlower->meshVertexCount(), 10 ); //-> vertices not added
+  tool.keyClick( Qt::Key_Backspace );
+  tool.keyClick( Qt::Key_Backspace );
+  tool.keyClick( Qt::Key_Backspace );
+  tool.mouseMove( 3000, 3500 );
+  tool.mouseClick( 3000, 3000, Qt::LeftButton );
+  tool.mouseMove( 2500, 2500 );
+  tool.mouseClick( 2500, 2500, Qt::LeftButton );
+  tool.mouseMove( 5000, 5000 );
+  tool.mouseClick( 5000, 5000, Qt::RightButton );
+  QCOMPARE( meshLayerQuadFlower->meshFaceCount(), 10 );
+  QCOMPARE( meshLayerQuadFlower->meshVertexCount(), 11 );
+
+  meshLayerQuadFlower->undoStack()->undo();
+
+  QCOMPARE( meshLayerQuadFlower->meshFaceCount(), 9 );
+  QCOMPARE( meshLayerQuadFlower->meshVertexCount(), 10 );
 
   // Remove vertex 7 and 9
   tool.mouseMove( 1500, 3250 );

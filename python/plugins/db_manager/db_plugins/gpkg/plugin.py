@@ -76,7 +76,7 @@ class GPKGDBPlugin(DBPlugin):
         conn = md.findConnection(conn_name)
 
         if conn is None:  # non-existent entry?
-            raise InvalidDataException(self.tr(u'There is no defined database connection "{0}".').format(conn_name))
+            raise InvalidDataException(self.tr('There is no defined database connection "{0}".').format(conn_name))
 
         uri = QgsDataSourceUri()
         uri.setDatabase(conn.uri())
@@ -202,12 +202,12 @@ class GPKGTable(Table):
         self.name, self.isView, self.isSysTable = row
 
     def ogrUri(self):
-        ogrUri = u"%s|layername=%s" % (self.uri().database(), self.name)
+        ogrUri = "%s|layername=%s" % (self.uri().database(), self.name)
         return ogrUri
 
     def mimeUri(self):
         # QGIS has no provider to load Geopackage vectors, let's use OGR
-        return u"vector:ogr:%s:%s" % (self.name, self.ogrUri())
+        return "vector:ogr:%s:%s" % (self.name, self.ogrUri())
 
     def toMapLayer(self, geometryType=None, crs=None):
         from qgis.core import QgsVectorLayer
@@ -300,12 +300,12 @@ class GPKGRasterTable(GPKGTable, RasterTable):
         self.extent = self.database().connector.getTableExtent((self.schemaName(), self.name), self.geomColumn)
 
     def gpkgGdalUri(self):
-        gdalUri = u'GPKG:%s:%s' % (self.uri().database(), self.prefixName)
+        gdalUri = 'GPKG:%s:%s' % (self.uri().database(), self.prefixName)
         return gdalUri
 
     def mimeUri(self):
         # QGIS has no provider to load rasters, let's use GDAL
-        uri = u"raster:gdal:%s:%s" % (self.name, self.uri().database())
+        uri = "raster:gdal:%s:%s" % (self.name, self.uri().database())
         return uri
 
     def toMapLayer(self, geometryType=None, crs=None):

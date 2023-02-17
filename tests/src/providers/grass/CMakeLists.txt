@@ -33,6 +33,7 @@ macro (ADD_QGIS_GRASS_TEST grass_build_version testname testsrc)
     ${GEOS_LIBRARY}
     ${GDAL_LIBRARY}
     qgis_core
+    qgis_test
     qgisgrass${grass_build_version}
   )
   if(WIN32 AND NOT USING_NMAKE)
@@ -76,6 +77,9 @@ endif()
       )
     endif()
   endif()
+
+  set_tests_properties(qgis_${testname}${grass_build_version} PROPERTIES FIXTURES_REQUIRED SOURCETREE)
+
 endmacro (ADD_QGIS_GRASS_TEST)
 
 macro (ADD_QGIS_GRASS_TESTS version)
@@ -86,8 +90,8 @@ macro (ADD_QGIS_GRASS_TESTS version)
   endif()
 endmacro (ADD_QGIS_GRASS_TESTS)
 
-foreach(GRASS_BUILD_VERSION 6 7)
+foreach(GRASS_BUILD_VERSION 6 7 8)
   if(GRASS_FOUND${GRASS_BUILD_VERSION})
     add_subdirectory(${GRASS_BUILD_VERSION})
   endif()
-endforeach(GRASS_BUILD_VERSION 6 7)
+endforeach(GRASS_BUILD_VERSION 6 7 8)

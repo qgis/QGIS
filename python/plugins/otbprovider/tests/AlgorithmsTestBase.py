@@ -212,10 +212,7 @@ class AlgorithmsTest(object):
         elif param['type'] == 'rasterhash':
             outdir = tempfile.mkdtemp()
             self.cleanup_paths.append(outdir)
-            if self.test_definition_file().lower().startswith('saga'):
-                basename = 'raster.sdat'
-            else:
-                basename = 'raster.tif'
+            basename = 'raster.tif'
             filepath = os.path.join(outdir, basename)
             return filepath
         elif param['type'] == 'directory':
@@ -402,14 +399,10 @@ class GenericAlgorithmsTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         start_app()
-        from processing.core.Processing import Processing
-        Processing.initialize()
         cls.cleanup_paths = []
 
     @classmethod
     def tearDownClass(cls):
-        from processing.core.Processing import Processing
-        Processing.deinitialize()
         for path in cls.cleanup_paths:
             shutil.rmtree(path)
 

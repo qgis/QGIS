@@ -58,6 +58,9 @@ class GUI_EXPORT QgsMapToolZoom : public QgsMapTool
     //! Flag to indicate a map canvas drag operation is taking place
     bool mDragging;
 
+    //! Flag to indicate the user has canceled the current zoom operation
+    bool mCanceled = false;
+
     QgsRubberBand *mRubberBand = nullptr;
 
     QCursor mZoomOutCursor;

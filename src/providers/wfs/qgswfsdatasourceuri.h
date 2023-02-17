@@ -22,6 +22,7 @@
 #include "qgsauthorizationsettings.h"
 
 #include <QNetworkRequest>
+#include <QSet>
 #include <QString>
 
 /**
@@ -41,8 +42,11 @@ class QgsWFSDataSourceURI
 
     explicit QgsWFSDataSourceURI( const QString &uri );
 
-    //! Returns the URI, avoiding expansion of authentication configuration, which is handled during network access
-    const QString uri() const;
+    //! Returns whether the URI is a valid one
+    bool isValid() const;
+
+    //! Returns the URI, optionally with the authentication configuration expanded
+    QString uri( bool expandAuthConfig = false ) const;
 
     //! Returns base URL (with SERVICE=WFS parameter if bIncludeServiceWFS=true)
     QUrl baseURL( bool bIncludeServiceWFS = true ) const;
@@ -85,6 +89,12 @@ class QgsWFSDataSourceURI
 
     //! Sets OGC filter xml or a QGIS expression
     void setFilter( const QString &filterIn );
+
+    //! Returns whether there is a geometry type filter.
+    bool hasGeometryTypeFilter() const;
+
+    //! Gets the geometry type filter.
+    QgsWkbTypes::Type geometryTypeFilter() const;
 
     //! Gets SQL query
     QString sql() const;
@@ -133,11 +143,18 @@ class QgsWFSDataSourceURI
     //! Sets Post DCP endpoints
     void setPostEndpoints( const QgsStringMap &map );
 
+    //! Return set of unknown parameter keys in the URI.
+    QSet<QString> unknownParamKeys() const;
+
+    //! Whether the initial GetFeature request, used to determine if gml:description/name/identifiers are used, should be skipped
+    bool skipInitialGetFeature() const;
+
   private:
     QgsDataSourceUri    mURI;
     QgsAuthorizationSettings mAuth;
     QgsStringMap mGetEndpoints;
     QgsStringMap mPostEndpoints;
+    bool mDeprecatedURI = false;
 };
 
 

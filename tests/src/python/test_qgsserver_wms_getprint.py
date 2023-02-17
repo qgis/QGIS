@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsServer WMS GetPrint.
 
 From build dir, run: ctest -R PyQgsServerWMSGetPrint -V
@@ -21,11 +20,9 @@ os.environ['QT_HASH_SEED'] = '1'
 
 import urllib.parse
 
-from qgis.testing import unittest
-
-from test_qgsserver import QgsServerTestBase
-
 from qgis.PyQt.QtCore import QSize
+from qgis.testing import unittest
+from test_qgsserver import QgsServerTestBase
 
 
 class TestQgsServerWMSGetPrint(QgsServerTestBase):
@@ -348,6 +345,18 @@ class TestQgsServerWMSGetPrint(QgsServerTestBase):
 
         r, h = self._result(self._execute_request(qs))
         self._img_diff_error(r, h, "WMS_GetPrint_TwoMaps")
+
+    def test_wms_getprint_excluded_layout(self):
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectPath),
+            "SERVICE": "WMS",
+            "REQUEST": "GetPrint",
+            "TEMPLATE": "excluded",
+            "CRS": "EPSG:4326"
+        }.items())])
+        r, h = self._result(self._execute_request(qs))
+
+        self.assertTrue(b"The TEMPLATE parameter is invalid" in r)
 
     @unittest.skipIf(os.environ.get('QGIS_CONTINUOUS_INTEGRATION_RUN', 'true'),
                      'Can\'t rely on external resources for continuous integration')

@@ -30,5 +30,6 @@
     <gradient file="mby" dir="mby"/>
     <gradient file="afrikakarte" dir="wkp/lilleskut"/>
     <gradient file="colombia" dir="wkp/shadowxfox"/>
+    <gradient file="arctic" dir="arendal"/>
   </gradients>
 </selection>

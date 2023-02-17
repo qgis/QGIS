@@ -26,14 +26,17 @@ class APP_EXPORT QgsMapToolFillRing: public QgsMapToolCapture
     Q_OBJECT
   public:
     QgsMapToolFillRing( QgsMapCanvas *canvas );
-    bool supportsTechnique( CaptureTechnique technique ) const override;
+    bool supportsTechnique( Qgis::CaptureTechnique technique ) const override;
     void cadCanvasReleaseEvent( QgsMapMouseEvent *e ) override;
 
   private:
+    void polygonCaptured( const QgsCurvePolygon *polygon ) override;
+    void createFeature( const QgsGeometry &geometry, QgsFeatureId fid );
 
     /**
      * Returns the geometry of the ring under the point p and sets fid to the feature id
      */
-    QgsGeometry ringUnderPoint( const QgsPointXY &p, QgsFeatureId &fid );
+    void fillRingUnderPoint( const QgsPointXY &p );
 
+    QgsVectorLayer *getCheckLayer();
 };

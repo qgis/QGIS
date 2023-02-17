@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsMapClippingUtils.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -12,22 +11,20 @@ __copyright__ = 'Copyright 2020, The QGIS Project'
 
 import qgis  # NOQA
 
-from qgis.testing import unittest
 from qgis.core import (
+    QgsCoordinateReferenceSystem,
+    QgsCoordinateTransform,
+    QgsGeometry,
     QgsMapClippingRegion,
     QgsMapClippingUtils,
+    QgsMapLayerType,
     QgsMapSettings,
-    QgsRenderContext,
-    QgsGeometry,
-    QgsVectorLayer,
-    QgsCoordinateTransform,
-    QgsCoordinateReferenceSystem,
-    QgsProject,
     QgsMapToPixel,
-    QgsMapLayerType
+    QgsProject,
+    QgsRenderContext,
+    QgsVectorLayer,
 )
-
-from qgis.testing import start_app
+from qgis.testing import start_app, unittest
 
 start_app()
 
@@ -71,17 +68,20 @@ class TestQgsMapClippingUtils(unittest.TestCase):
         self.assertTrue(geom.isNull())
 
         geom, should_clip = QgsMapClippingUtils.calculateFeatureRequestGeometry([region], rc)
+        geom.normalize()
         self.assertTrue(should_clip)
-        self.assertEqual(geom.asWkt(1), 'Polygon ((0 0, 1 0, 1 1, 0 1, 0 0))')
+        self.assertEqual(geom.asWkt(1), 'Polygon ((0 0, 0 1, 1 1, 1 0, 0 0))')
 
         geom, should_clip = QgsMapClippingUtils.calculateFeatureRequestGeometry([region, region2], rc)
+        geom.normalize()
         self.assertTrue(should_clip)
-        self.assertEqual(geom.asWkt(1), 'Polygon ((0.1 0, 0 0, 0 1, 0.1 1, 0.1 0))')
+        self.assertEqual(geom.asWkt(1), 'Polygon ((0 0, 0 1, 0.1 1, 0.1 0, 0 0))')
 
         rc.setCoordinateTransform(QgsCoordinateTransform(QgsCoordinateReferenceSystem('EPSG:3857'), QgsCoordinateReferenceSystem('EPSG:4326'), QgsProject.instance()))
         geom, should_clip = QgsMapClippingUtils.calculateFeatureRequestGeometry([region, region2], rc)
+        geom.normalize()
         self.assertTrue(should_clip)
-        self.assertEqual(geom.asWkt(0), 'Polygon ((11132 0, 0 0, 0 111325, 11132 111325, 11132 0))')
+        self.assertEqual(geom.asWkt(0), 'Polygon ((0 0, 0 111325, 11132 111325, 11132 0, 0 0))')
 
     def testCalculateFeatureIntersectionGeometry(self):
         region = QgsMapClippingRegion(QgsGeometry.fromWkt('Polygon((0 0, 1 0, 1 1, 0 1, 0 0))'))
@@ -98,8 +98,9 @@ class TestQgsMapClippingUtils(unittest.TestCase):
         self.assertTrue(geom.isNull())
 
         geom, should_clip = QgsMapClippingUtils.calculateFeatureIntersectionGeometry([region], rc)
+        geom.normalize()
         self.assertTrue(should_clip)
-        self.assertEqual(geom.asWkt(1), 'Polygon ((0 0, 1 0, 1 1, 0 1, 0 0))')
+        self.assertEqual(geom.asWkt(1), 'Polygon ((0 0, 0 1, 1 1, 1 0, 0 0))')
 
         # region2 is a Intersects type clipping region, should not apply here
         geom, should_clip = QgsMapClippingUtils.calculateFeatureIntersectionGeometry([region2], rc)
@@ -111,13 +112,15 @@ class TestQgsMapClippingUtils(unittest.TestCase):
         self.assertEqual(geom.asWkt(1), 'Polygon ((0 0, 1 0, 1 1, 0 1, 0 0))')
 
         geom, should_clip = QgsMapClippingUtils.calculateFeatureIntersectionGeometry([region, region2, region3], rc)
+        geom.normalize()
         self.assertTrue(should_clip)
-        self.assertEqual(geom.asWkt(1), 'Polygon ((0.1 0, 0 0, 0 1, 0.1 1, 0.1 0))')
+        self.assertEqual(geom.asWkt(1), 'Polygon ((0 0, 0 1, 0.1 1, 0.1 0, 0 0))')
 
         rc.setCoordinateTransform(QgsCoordinateTransform(QgsCoordinateReferenceSystem('EPSG:3857'), QgsCoordinateReferenceSystem('EPSG:4326'), QgsProject.instance()))
         geom, should_clip = QgsMapClippingUtils.calculateFeatureIntersectionGeometry([region, region3], rc)
+        geom.normalize()
         self.assertTrue(should_clip)
-        self.assertEqual(geom.asWkt(0), 'Polygon ((11132 0, 0 0, 0 111325, 11132 111325, 11132 0))')
+        self.assertEqual(geom.asWkt(0), 'Polygon ((0 0, 0 111325, 11132 111325, 11132 0, 0 0))')
 
     def testPainterClipPath(self):
         region = QgsMapClippingRegion(QgsGeometry.fromWkt('Polygon((0 0, 1 0, 1 1, 0 1, 0 0))'))
@@ -152,7 +155,9 @@ class TestQgsMapClippingUtils(unittest.TestCase):
         for t in [QgsMapLayerType.VectorLayer, QgsMapLayerType.RasterLayer, QgsMapLayerType.MeshLayer, QgsMapLayerType.VectorTileLayer]:
             path, should_clip = QgsMapClippingUtils.calculatePainterClipRegion([region, region2, region3], rc, t)
             self.assertTrue(should_clip)
-            self.assertEqual(QgsGeometry.fromQPolygonF(path.toFillPolygon()).asWkt(1), 'Polygon ((0.1 1, 0 1, 0 0, 0.1 0, 0.1 1))')
+            geom = QgsGeometry.fromQPolygonF(path.toFillPolygon())
+            geom.normalize()
+            self.assertEqual(geom.asWkt(1), 'Polygon ((0 0, 0 1, 0.1 1, 0.1 0, 0 0))')
 
         rc.setMapToPixel(QgsMapToPixel(5, 10, 11, 200, 150, 0))
         for t in [QgsMapLayerType.VectorLayer, QgsMapLayerType.RasterLayer, QgsMapLayerType.MeshLayer, QgsMapLayerType.VectorTileLayer]:
@@ -189,15 +194,17 @@ class TestQgsMapClippingUtils(unittest.TestCase):
 
         # region3 is a PainterClip type clipping region, MUST be applied for labels
         geom, should_clip = QgsMapClippingUtils.calculateLabelIntersectionGeometry([region, region2, region3], rc)
+        geom.normalize()
         self.assertTrue(should_clip)
-        self.assertEqual(geom.asWkt(1), 'Polygon ((0.1 0, 0 0, 0 1, 0.1 1, 0.1 0))')
+        self.assertEqual(geom.asWkt(1), 'Polygon ((0 0, 0 1, 0.1 1, 0.1 0, 0 0))')
 
         rc.setCoordinateTransform(
             QgsCoordinateTransform(QgsCoordinateReferenceSystem('EPSG:3857'), QgsCoordinateReferenceSystem('EPSG:4326'),
                                    QgsProject.instance()))
         geom, should_clip = QgsMapClippingUtils.calculateLabelIntersectionGeometry([region, region3], rc)
+        geom.normalize()
         self.assertTrue(should_clip)
-        self.assertEqual(geom.asWkt(0), 'Polygon ((11132 0, 0 0, 0 111325, 11132 111325, 11132 0))')
+        self.assertEqual(geom.asWkt(0), 'Polygon ((0 0, 0 111325, 11132 111325, 11132 0, 0 0))')
 
 
 if __name__ == '__main__':

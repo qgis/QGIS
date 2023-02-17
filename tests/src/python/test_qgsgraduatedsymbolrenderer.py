@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsGraduatedSymbolRenderer
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -11,23 +10,23 @@ __date__ = '3/10/2014'
 __copyright__ = 'Copyright 2014, The QGIS Project'
 
 import qgis  # NOQA
-
-from qgis.testing import unittest, start_app
-from qgis.core import (QgsGraduatedSymbolRenderer,
-                       QgsRendererRange,
-                       QgsRendererRangeLabelFormat,
-                       QgsMarkerSymbol,
-                       QgsGradientColorRamp,
-                       QgsVectorLayer,
-                       QgsFeature,
-                       QgsGeometry,
-                       QgsPointXY,
-                       QgsReadWriteContext,
-                       QgsRenderContext
-                       )
 from qgis.PyQt.QtCore import Qt
-from qgis.PyQt.QtXml import QDomDocument
 from qgis.PyQt.QtGui import QColor
+from qgis.PyQt.QtXml import QDomDocument
+from qgis.core import (
+    QgsFeature,
+    QgsGeometry,
+    QgsGradientColorRamp,
+    QgsGraduatedSymbolRenderer,
+    QgsMarkerSymbol,
+    QgsPointXY,
+    QgsReadWriteContext,
+    QgsRenderContext,
+    QgsRendererRange,
+    QgsRendererRangeLabelFormat,
+    QgsVectorLayer,
+)
+from qgis.testing import start_app, unittest
 
 start_app()
 
@@ -164,6 +163,12 @@ class TestQgsGraduatedSymbolRenderer(unittest.TestCase):
         self.assertEqual(range.lowerValue(), lower, "Lower value getter/setter failed")
         range.setUpperValue(upper)
         self.assertEqual(range.upperValue(), upper, "Upper value getter/setter failed")
+        self.assertEqual(range[0], 123.45)
+        self.assertEqual(range[1], 234.56)
+        with self.assertRaises(IndexError):
+            range[2]
+        with self.assertRaises(IndexError):
+            range[-1]
         range.setLabel(label)
         self.assertEqual(range.label(), label, "Label getter/setter failed")
         range.setRenderState(True)
@@ -232,7 +237,7 @@ class TestQgsGraduatedSymbolRenderer(unittest.TestCase):
             format.setTrimTrailingZeroes(trim)
             result = format.formatNumber(value)
             self.assertEqual(result, expected,
-                             "Number format error {0}:{1}:{2} => {3}".format(
+                             "Number format error {}:{}:{} => {}".format(
                                  precision, trim, value, result))
 
         # Label tests - label format, expected result.
@@ -245,6 +250,7 @@ class TestQgsGraduatedSymbolRenderer(unittest.TestCase):
             ("%1%1", "1.231.23"),
             ("from %1 to %2 meters", "from 1.23 to 2.34 meters"),
             ("from %2 to %1 meters", "from 2.34 to 1.23 meters"),
+            ("< %2", "< 2.34"),
         )
         format.setPrecision(2)
         format.setTrimTrailingZeroes(False)
@@ -254,7 +260,7 @@ class TestQgsGraduatedSymbolRenderer(unittest.TestCase):
             label, expected = t
             format.setFormat(label)
             result = format.labelForLowerUpper(lower, upper)
-            self.assertEqual(result, expected, "Label format error {0} => {1}".format(
+            self.assertEqual(result, expected, "Label format error {} => {}".format(
                 label, result))
 
         range = QgsRendererRange()
@@ -263,7 +269,7 @@ class TestQgsGraduatedSymbolRenderer(unittest.TestCase):
         label = ltests[0][0]
         format.setFormat(label)
         result = format.labelForRange(range)
-        self.assertEqual(result, ltests[0][1], "Label for range error {0} => {1}".format(
+        self.assertEqual(result, ltests[0][1], "Label for range error {} => {}".format(
             label, result))
 
     def testQgsGraduatedSymbolRenderer_1(self):
@@ -475,6 +481,64 @@ class TestQgsGraduatedSymbolRenderer(unittest.TestCase):
         self.assertTrue(renderer.filterNeedsGeometry())
         renderer.setClassAttribute("value - $area")
         self.assertTrue(renderer.filterNeedsGeometry())
+
+    def test_legend_key_to_expression(self):
+        renderer = QgsGraduatedSymbolRenderer()
+        renderer.setClassAttribute('field_name')
+
+        exp, ok = renderer.legendKeyToExpression('xxxx', None)
+        self.assertFalse(ok)
+
+        # no categories
+        exp, ok = renderer.legendKeyToExpression('0', None)
+        self.assertFalse(ok)
+
+        symbol_a = createMarkerSymbol()
+        renderer.addClassRange(QgsRendererRange(1, 2, symbol_a, 'a'))
+        symbol_b = createMarkerSymbol()
+        renderer.addClassRange(QgsRendererRange(5, 6, symbol_b, 'b'))
+        symbol_c = createMarkerSymbol()
+        renderer.addClassRange(QgsRendererRange(15.5, 16.5, symbol_c, 'c', False))
+
+        exp, ok = renderer.legendKeyToExpression('0', None)
+        self.assertTrue(ok)
+        self.assertEqual(exp, "(field_name >= 1) AND (field_name <= 2)")
+
+        exp, ok = renderer.legendKeyToExpression('1', None)
+        self.assertTrue(ok)
+        self.assertEqual(exp, "(field_name >= 5) AND (field_name <= 6)")
+
+        exp, ok = renderer.legendKeyToExpression('2', None)
+        self.assertTrue(ok)
+        self.assertEqual(exp, "(field_name >= 15.5) AND (field_name <= 16.5)")
+
+        exp, ok = renderer.legendKeyToExpression('3', None)
+        self.assertFalse(ok)
+
+        layer = QgsVectorLayer("Point?field=field_name:double&field=fldint:integer", "addfeat", "memory")
+        # with layer
+        exp, ok = renderer.legendKeyToExpression('2', layer)
+        self.assertTrue(ok)
+        self.assertEqual(exp, """("field_name" >= 15.5) AND ("field_name" <= 16.5)""")
+
+        # with expression as attribute
+        renderer.setClassAttribute('log("field_name")')
+
+        exp, ok = renderer.legendKeyToExpression('0', None)
+        self.assertTrue(ok)
+        self.assertEqual(exp, """(log("field_name") >= 1) AND (log("field_name") <= 2)""")
+
+        exp, ok = renderer.legendKeyToExpression('1', None)
+        self.assertTrue(ok)
+        self.assertEqual(exp, """(log("field_name") >= 5) AND (log("field_name") <= 6)""")
+
+        exp, ok = renderer.legendKeyToExpression('2', None)
+        self.assertTrue(ok)
+        self.assertEqual(exp, """(log("field_name") >= 15.5) AND (log("field_name") <= 16.5)""")
+
+        exp, ok = renderer.legendKeyToExpression('2', layer)
+        self.assertTrue(ok)
+        self.assertEqual(exp, """(log("field_name") >= 15.5) AND (log("field_name") <= 16.5)""")
 
 
 if __name__ == "__main__":

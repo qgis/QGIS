@@ -66,7 +66,7 @@ class CORE_EXPORT QgsOptionalExpression : public QgsOptional<QgsExpression>
      *
      * \since QGIS 2.18
      */
-    void writeXml( QDomElement &element );
+    void writeXml( QDomElement &element ) const;
 
     /**
      * Read the optional expression from the provided QDomElement.

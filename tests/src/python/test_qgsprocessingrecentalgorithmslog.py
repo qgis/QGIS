@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsProcessingRecentAlgorithmLog.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -11,10 +10,10 @@ __date__ = '2018-07'
 __copyright__ = 'Copyright 2018, The QGIS Project'
 
 from qgis.PyQt.QtCore import QCoreApplication
-from qgis.core import QgsSettings
-from qgis.gui import QgsProcessingRecentAlgorithmLog, QgsGui
-from qgis.testing import start_app, unittest
 from qgis.PyQt.QtTest import QSignalSpy
+from qgis.core import QgsSettings
+from qgis.gui import QgsGui, QgsProcessingRecentAlgorithmLog
+from qgis.testing import start_app, unittest
 
 start_app()
 

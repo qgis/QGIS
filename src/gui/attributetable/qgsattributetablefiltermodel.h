@@ -48,7 +48,8 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, pub
       ShowSelected,     //!< Show only selected features
       ShowVisible,      //!< Show only visible features (depends on the map canvas)
       ShowFilteredList, //!< Show only features whose ids are on the filter list. {\see setFilteredFeatures}
-      ShowEdited        //!< Show only features which have unsaved changes
+      ShowEdited,       //!< Show only features which have unsaved changes
+      ShowInvalid,      //!< Show only features not respecting constraints (since QGIS 3.30)
     };
     Q_ENUM( FilterMode )
 
@@ -250,6 +251,13 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, pub
      * \since QGIS 3.10.3
      */
     void setFilterExpression( const QgsExpression &expression, const QgsExpressionContext &context );
+
+    /**
+     * Returns the stored filter expression string.
+     *
+     * \since QGIS 3.28.0
+     */
+    QString filterExpression() const { return mFilterExpression; };
 
   signals:
 

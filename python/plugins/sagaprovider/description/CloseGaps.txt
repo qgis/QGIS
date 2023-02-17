@@ -1,6 +1,0 @@
-Close Gaps
-grid_tools
-QgsProcessingParameterRasterLayer|INPUT|Grid|None|False
-QgsProcessingParameterRasterLayer|MASK|Mask|None|True
-QgsProcessingParameterNumber|THRESHOLD|Tension Threshold|QgsProcessingParameterNumber.Double|0.1|False|None|None
-QgsProcessingParameterRasterDestination|RESULT|Changed Grid

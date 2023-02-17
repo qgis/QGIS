@@ -18,12 +18,14 @@
 #define SIP_NO_FILE
 
 #include "qgis_core.h"
-#include "qgspallabeling.h"
 #include "geos_c.h"
 #include "qgsgeos.h"
 #include "qgsmargins.h"
 #include "qgslabelobstaclesettings.h"
+#include "qgslabellinesettings.h"
 #include "qgslabeling.h"
+#include "qgsfeature.h"
+#include "qgscoordinatereferencesystem.h"
 
 namespace pal
 {
@@ -56,9 +58,19 @@ class CORE_EXPORT QgsLabelFeature
 {
   public:
 
-    //! Create label feature, takes ownership of the geometry instance
+    /**
+     * Constructor for QgsLabelFeature.
+     *
+     * The feature \a id argument links the label feature back to the original layer feature.
+     *
+     * The \a geometry argument specifies the geometry associated with the feature, which is
+     * used by the labeling engine to generate candidate placements for the label. For
+     * a vector layer feature this will generally be the feature's geometry.
+     *
+     * The \a size argument dicates the size of the label's content (e.g. text width and height).
+     */
     QgsLabelFeature( QgsFeatureId id, geos::unique_ptr geometry, QSizeF size );
-    //! Clean up geometry and curved label info (if present)
+
     virtual ~QgsLabelFeature();
 
     //! Identifier of the label (unique within the parent label provider)
@@ -98,6 +110,24 @@ class CORE_EXPORT QgsLabelFeature
 
     //! Size of the label (in map units)
     QSizeF size( double angle = 0.0 ) const;
+
+    /**
+     * Returns the extreme outer bounds of the label feature, including any surrounding content like
+     * borders or background shapes.
+     *
+     * \see setOuterBounds()
+     * \since QGIS 3.30
+     */
+    QRectF outerBounds() const { return mOuterBounds; }
+
+    /**
+     * Sets the extreme outer \a bounds of the label feature, including any surrounding content like
+     * borders or background shapes.
+     *
+     * \see outerBounds()
+     * \since QGIS 3.30
+     */
+    void setOuterBounds( const QRectF &bounds ) { mOuterBounds = bounds; }
 
     /**
      * Sets the visual margin for the label feature. The visual margin represents a margin
@@ -251,7 +281,7 @@ class CORE_EXPORT QgsLabelFeature
      * label candidates.
      * \see setOffsetType()
      */
-    QgsPalLayerSettings::OffsetType offsetType() const { return mOffsetType; }
+    Qgis::LabelOffsetType offsetType() const { return mOffsetType; }
 
     /**
      * Sets the offset type, which determines how offsets and distance to label
@@ -259,7 +289,7 @@ class CORE_EXPORT QgsLabelFeature
      * label candidates.
      * \see offsetType()
      */
-    void setOffsetType( QgsPalLayerSettings::OffsetType type ) { mOffsetType = type; }
+    void setOffsetType( Qgis::LabelOffsetType type ) { mOffsetType = type; }
 
     /**
      * Applies to "around point" placement strategy or linestring features.
@@ -278,14 +308,14 @@ class CORE_EXPORT QgsLabelFeature
      * is only used for OrderedPositionsAroundPoint placements.
      * \see setPredefinedPositionOrder()
      */
-    QVector< QgsPalLayerSettings::PredefinedPointPosition > predefinedPositionOrder() const { return mPredefinedPositionOrder; }
+    QVector< Qgis::LabelPredefinedPointPosition > predefinedPositionOrder() const { return mPredefinedPositionOrder; }
 
     /**
      * Sets the priority ordered list of predefined positions for label candidates. This property
      * is only used for OrderedPositionsAroundPoint placements.
      * \see predefinedPositionOrder()
      */
-    void setPredefinedPositionOrder( const QVector< QgsPalLayerSettings::PredefinedPointPosition > &order ) { mPredefinedPositionOrder = order; }
+    void setPredefinedPositionOrder( const QVector< Qgis::LabelPredefinedPointPosition > &order ) { mPredefinedPositionOrder = order; }
 
     /**
      * Applies only to linestring features - after what distance (in map units)
@@ -373,7 +403,7 @@ class CORE_EXPORT QgsLabelFeature
      *
      * \since QGIS 3.10
      */
-    const QgsSymbol *symbol() { return mSymbol; }
+    const QgsSymbol *symbol() const { return mSymbol; }
 
     /**
      * Sets the feature \a symbol associated with this label.
@@ -452,7 +482,6 @@ class CORE_EXPORT QgsLabelFeature
      */
     void setLineAnchorPercent( double percent ) { mLineAnchorPercent = percent; }
 
-
     /**
      * Returns the line anchor type, which dictates how the lineAnchorPercent() setting is
      * handled.
@@ -470,6 +499,26 @@ class CORE_EXPORT QgsLabelFeature
      * \see setLineAnchorPercent()
      */
     void setLineAnchorType( QgsLabelLineSettings::AnchorType type ) { mLineAnchorType = type; }
+
+    /**
+     * Returns the line anchor text point, which dictates which part of the label text
+     * should be placed at the lineAnchorPercent().
+     *
+     * \see setLineAnchorTextPoint()
+     *
+     * \since QGIS 3.26
+     */
+    QgsLabelLineSettings::AnchorTextPoint lineAnchorTextPoint() const;
+
+    /**
+     * Sets the line anchor text \a point, which dictates which part of the label text
+     * should be placed at the lineAnchorPercent().
+     *
+     * \see lineAnchorTextPoint()
+     *
+     * \since QGIS 3.26
+     */
+    void setLineAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint point ) { mAnchorTextPoint = point; }
 
     /**
      * Returns TRUE if all parts of the feature should be labeled.
@@ -542,6 +591,46 @@ class CORE_EXPORT QgsLabelFeature
      */
     void setMinimumSize( double size ) { mMinimumSize = size; }
 
+    /**
+     * Returns the technique to use for handling overlapping labels for the feature.
+     *
+     * \see setOverlapHandling()
+     * \since QGIS 3.26
+     */
+    Qgis::LabelOverlapHandling overlapHandling() const { return mOverlapHandling; }
+
+    /**
+     * Sets the technique to use for handling overlapping labels for the feature.
+     *
+     * \see overlapHandling()
+     * \since QGIS 3.26
+     */
+    void setOverlapHandling( Qgis::LabelOverlapHandling handling ) { mOverlapHandling = handling; }
+
+    /**
+     * Returns TRUE if the label can be placed in inferior fallback positions if it cannot otherwise
+     * be placed.
+     *
+     * For instance, this will permit a curved line label to fallback to a horizontal label at the end of the line
+     * if the label cannot otherwise be placed on the line in a curved manner.
+     *
+     * \see setAllowDegradedPlacement()
+     * \since QGIS 3.26
+     */
+    bool allowDegradedPlacement() const { return mAllowDegradedPlacement; }
+
+    /**
+     * Sets whether the label can be placed in inferior fallback positions if it cannot otherwise
+     * be placed.
+     *
+     * For instance, this will permit a curved line label to fallback to a horizontal label at the end of the line
+     * if the label cannot otherwise be placed on the line in a curved manner.
+     *
+     * \see allowDegradedPlacement()
+     * \since QGIS 3.26
+     */
+    void setAllowDegradedPlacement( bool allow ) { mAllowDegradedPlacement = allow; }
+
   protected:
     //! Pointer to PAL layer (assigned when registered to PAL)
     pal::Layer *mLayer = nullptr;
@@ -556,6 +645,8 @@ class CORE_EXPORT QgsLabelFeature
     QSizeF mSize;
     //! Width and height of the label when rotated between 45 to 135 and 235 to 315 degrees;
     QSizeF mRotatedSize;
+    //! Extreme outer bounds of the label feature, including any surrounding content like borders or background shapes.
+    QRectF mOuterBounds;
     //! Visual margin of label contents
     QgsMargins mVisualMargin;
     //! Size of associated rendered symbol, if applicable
@@ -581,9 +672,9 @@ class CORE_EXPORT QgsLabelFeature
     //! distance of label from the feature (only for "around point" placement or linestrings)
     double mDistLabel = 0;
     //! Offset type for certain placement modes
-    QgsPalLayerSettings::OffsetType mOffsetType = QgsPalLayerSettings::FromPoint;
+    Qgis::LabelOffsetType mOffsetType = Qgis::LabelOffsetType::FromPoint;
     //! Ordered list of predefined positions for label (only for OrderedPositionsAroundPoint placement)
-    QVector< QgsPalLayerSettings::PredefinedPointPosition > mPredefinedPositionOrder;
+    QVector< Qgis::LabelPredefinedPointPosition > mPredefinedPositionOrder;
     //! distance after which label should be repeated (only for linestrings)
     double mRepeatDistance = 0;
     //! whether to always show label - even in case of collisions
@@ -619,6 +710,10 @@ class CORE_EXPORT QgsLabelFeature
 
     double mLineAnchorPercent = 0.5;
     QgsLabelLineSettings::AnchorType mLineAnchorType = QgsLabelLineSettings::AnchorType::HintOnly;
+    QgsLabelLineSettings::AnchorTextPoint mAnchorTextPoint = QgsLabelLineSettings::AnchorTextPoint::CenterOfText;
+
+    Qgis::LabelOverlapHandling mOverlapHandling = Qgis::LabelOverlapHandling::PreventOverlap;
+    bool mAllowDegradedPlacement = false;
 
     QgsCoordinateReferenceSystem mOriginalFeatureCrs;
 

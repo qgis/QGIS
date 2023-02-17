@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsLayerTree.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -10,28 +9,24 @@ __author__ = 'Matthias Kuhn'
 __date__ = '22.3.2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
 
-import qgis  # NOQA
-
 import os
+from tempfile import TemporaryDirectory
 
+import qgis  # NOQA
+from qgis.PyQt.QtCore import QCoreApplication, QDir, QEvent
+from qgis.PyQt.QtTest import QSignalSpy
 from qgis.core import (
+    QgsCoordinateTransformContext,
+    QgsGroupLayer,
     QgsLayerTree,
+    QgsLayerTreeGroup,
+    QgsLayerTreeLayer,
     QgsProject,
     QgsVectorLayer,
-    QgsLayerTreeLayer,
-    QgsLayerTreeGroup,
-    QgsGroupLayer,
-    QgsCoordinateTransformContext
 )
 from qgis.testing import start_app, unittest
-from utilities import (unitTestDataPath)
-from qgis.PyQt.QtTest import QSignalSpy
-from qgis.PyQt.QtCore import (
-    QDir,
-    QCoreApplication,
-    QEvent
-)
-from tempfile import TemporaryDirectory
+
+from utilities import unitTestDataPath
 
 app = start_app()
 TEST_DATA_DIR = unitTestDataPath()
@@ -538,6 +533,36 @@ class TestQgsLayerTree(unittest.TestCase):
         self.assertEqual(p.layerTreeRoot().layerOrder(), [layer, layer2, layer3, layer4])
         self.assertEqual(p.layerTreeRoot().checkedLayers(), [layer, layer2, layer3, layer4])
         self.assertGreater(len(spy), spy_count)
+
+    def test_reorder_group_layers(self):
+        layer = QgsVectorLayer("Point?field=fldtxt:string",
+                               "layer1", "memory")
+        layer2 = QgsVectorLayer("Point?field=fldtxt:string",
+                                "layer2", "memory")
+        layer3 = QgsVectorLayer("Point?field=fldtxt:string",
+                                "layer3", "memory")
+        layer4 = QgsVectorLayer("Point?field=fldtxt:string",
+                                "layer4", "memory")
+        group = QgsLayerTreeGroup()
+        group.addLayer(layer)
+        group.addLayer(layer2)
+        group.addLayer(layer3)
+        group.addLayer(layer4)
+
+        self.assertEqual([l.layer() for l in group.children()], [layer, layer2, layer3, layer4])
+
+        group.reorderGroupLayers([])
+        self.assertEqual([l.layer() for l in group.children()], [layer, layer2, layer3, layer4])
+
+        group.reorderGroupLayers([layer4, layer2])
+        self.assertEqual([l.layer() for l in group.children()], [layer4, layer2, layer, layer3])
+
+        group.reorderGroupLayers([layer3])
+        self.assertEqual([l.layer() for l in group.children()], [layer3, layer4, layer2, layer])
+
+        group.addChildNode(QgsLayerTreeGroup('test'))
+        group.reorderGroupLayers([layer, layer3])
+        self.assertEqual([l.layer() if isinstance(l, QgsLayerTreeLayer) else 'group' for l in group.children()], [layer, layer3, layer4, layer2, 'group'])
 
 
 if __name__ == '__main__':

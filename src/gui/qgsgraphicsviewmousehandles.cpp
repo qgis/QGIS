@@ -493,15 +493,10 @@ void QgsGraphicsViewMouseHandles::resetStatusBar()
 {
   const QList<QGraphicsItem *> selectedItems = selectedSceneItems( false );
   int selectedCount = selectedItems.size();
-  if ( selectedCount > 1 )
+  if ( selectedCount )
   {
     //set status bar message to count of selected items
-    showStatusMessage( tr( "%1 items selected" ).arg( selectedCount ) );
-  }
-  else if ( selectedCount == 1 )
-  {
-    //set status bar message to count of selected items
-    showStatusMessage( tr( "1 item selected" ) );
+    showStatusMessage( tr( "%n item(s) selected", nullptr, selectedCount ) );
   }
   else
   {

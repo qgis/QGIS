@@ -3,9 +3,16 @@
   "type": "function",
   "groups": ["Math"],
   "description": "Converts from degrees to radians.",
-  "arguments": [ {"arg":"degrees","description":"numeric value"}],
-  "examples": [
-	{ "expression":"radians(180)", "returns":"3.14159"},
-	{ "expression":"radians(57.2958)", "returns":"1"}
-  ]
+  "arguments": [{
+    "arg": "degrees",
+    "description": "numeric value"
+  }],
+  "examples": [{
+    "expression": "radians(180)",
+    "returns": "3.14159"
+  }, {
+    "expression": "radians(57.2958)",
+    "returns": "1"
+  }],
+  "tags": ["converts", "degrees", "radians"]
 }

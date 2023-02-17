@@ -30,6 +30,9 @@
 #include "qgspointcloudattributemodel.h"
 #include "qgsdatumtransformdialog.h"
 #include "qgspointcloudlayerelevationproperties.h"
+#include "qgspointcloudquerybuilder.h"
+#include "qgspointcloudrenderer.h"
+
 #include <QFileDialog>
 #include <QMenu>
 #include <QMessageBox>
@@ -47,8 +50,13 @@ QgsPointCloudLayerProperties::QgsPointCloudLayerProperties( QgsPointCloudLayer *
   connect( this, &QDialog::rejected, this, &QgsPointCloudLayerProperties::onCancel );
   connect( buttonBox->button( QDialogButtonBox::Apply ), &QAbstractButton::clicked, this, &QgsPointCloudLayerProperties::apply );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsPointCloudLayerProperties::showHelp );
+  connect( pbnQueryBuilder, &QPushButton::clicked, this, &QgsPointCloudLayerProperties::pbnQueryBuilder_clicked );
 
   connect( mCrsSelector, &QgsProjectionSelectionWidget::crsChanged, this, &QgsPointCloudLayerProperties::crsChanged );
+
+  mScaleRangeWidget->setMapCanvas( mMapCanvas );
+  chkUseScaleDependentRendering->setChecked( lyr->hasScaleBasedVisibility() );
+  mScaleRangeWidget->setScaleRange( lyr->minimumScale(), lyr->maximumScale() );
 
   // QgsOptionsDialogBase handles saving/restoring of geometry, splitter and current tab states,
   // switching vertical tabs between icon/text to icon-only modes (splitter collapsed to left),
@@ -102,12 +110,21 @@ QgsPointCloudLayerProperties::QgsPointCloudLayerProperties( QgsPointCloudLayer *
   mBtnMetadata->setMenu( menuMetadata );
   buttonBox->addButton( mBtnMetadata, QDialogButtonBox::ResetRole );
 
+  //Add help page references
+  mOptsPage_Information->setProperty( "helpPage", QStringLiteral( "working_with_point_clouds/point_clouds.html#information-properties" ) );
+  mOptsPage_Source->setProperty( "helpPage", QStringLiteral( "working_with_point_clouds/point_clouds.html#source-properties" ) );
+  mOptsPage_Rendering->setProperty( "helpPage", QStringLiteral( "working_with_point_clouds/point_clouds.html#rendering-properties" ) );
+  mOptsPage_Metadata->setProperty( "helpPage", QStringLiteral( "working_with_point_clouds/point_clouds.html#metadata-properties" ) );
+  mOptsPage_Statistics->setProperty( "helpPage", QStringLiteral( "working_with_point_clouds/point_clouds.html#statistics-properties" ) );
+
   mStatisticsTableView->setModel( new QgsPointCloudAttributeStatisticsModel( mLayer, mStatisticsTableView ) );
   mStatisticsTableView->verticalHeader()->hide();
 
   mBackupCrs = mLayer->crs();
 
-  if ( mLayer->dataProvider() && !mLayer->dataProvider()->metadataClasses( QStringLiteral( "Classification" ) ).isEmpty() )
+  const QgsPointCloudStatistics stats = mLayer->statistics();
+
+  if ( !stats.classesOf( QStringLiteral( "Classification" ) ).isEmpty() )
   {
     mClassificationStatisticsTableView->setModel( new QgsPointCloudClassificationStatisticsModel( mLayer, QStringLiteral( "Classification" ), mStatisticsTableView ) );
     mClassificationStatisticsTableView->verticalHeader()->hide();
@@ -116,6 +133,13 @@ QgsPointCloudLayerProperties::QgsPointCloudLayerProperties( QgsPointCloudLayer *
   {
     mClassificationStatsGroupBox->hide();
   }
+
+  mStatisticsCalculationWarningLabel->setHidden( mLayer->statisticsCalculationState() != QgsPointCloudLayer::PointCloudStatisticsCalculationState::Calculated );
+
+  connect( mLayer, &QgsPointCloudLayer::statisticsCalculationStateChanged, this, [this]( QgsPointCloudLayer::PointCloudStatisticsCalculationState state )
+  {
+    mStatisticsCalculationWarningLabel->setHidden( state != QgsPointCloudLayer::PointCloudStatisticsCalculationState::Calculated );
+  } );
 
   if ( !mLayer->styleManager()->isDefault( mLayer->styleManager()->currentStyle() ) )
     title += QStringLiteral( " (%1)" ).arg( mLayer->styleManager()->currentStyle() );
@@ -141,13 +165,16 @@ void QgsPointCloudLayerProperties::addPropertiesPageFactory( const QgsMapLayerCo
   page->syncToLayer( mLayer );
 }
 
-#include "qgspointcloudrenderer.h"
-
 void QgsPointCloudLayerProperties::apply()
 {
   mMetadataWidget->acceptMetadata();
 
   mLayer->setName( mLayerOrigNameLineEdit->text() );
+
+  mLayer->setScaleBasedVisibility( chkUseScaleDependentRendering->isChecked() );
+  mLayer->setMinimumScale( mScaleRangeWidget->minimumScale() );
+  mLayer->setMaximumScale( mScaleRangeWidget->maximumScale() );
+
   mBackupCrs = mLayer->crs();
 
   for ( QgsMapLayerConfigWidget *w : mConfigWidgets )
@@ -191,8 +218,19 @@ void QgsPointCloudLayerProperties::syncToLayer()
 
   mCrsSelector->setCrs( mLayer->crs() );
 
+  mSubsetGroupBox->setEnabled( true );
+  txtSubsetSQL->setText( mLayer->subsetString() );
+  txtSubsetSQL->setReadOnly( true );
+  txtSubsetSQL->setCaretWidth( 0 );
+  txtSubsetSQL->setCaretLineVisible( false );
+  pbnQueryBuilder->setEnabled( mLayer &&
+                               mLayer->dataProvider() &&
+                               mLayer->dataProvider()->supportsSubsetString() );
+
   for ( QgsMapLayerConfigWidget *w : mConfigWidgets )
     w->syncToLayer( mLayer );
+
+  mStatisticsCalculationWarningLabel->setHidden( mLayer->statisticsCalculationState() != QgsPointCloudLayer::PointCloudStatisticsCalculationState::Calculated );
 }
 
 
@@ -221,9 +259,13 @@ void QgsPointCloudLayerProperties::saveDefaultStyle()
 
   // a flag passed by reference
   bool defaultSavedFlag = false;
+  // TODO Once the deprecated `saveDefaultStyle()` method is gone, just
+  // remove the NOWARN_DEPRECATED tags
+  Q_NOWARN_DEPRECATED_PUSH
   // after calling this the above flag will be set true for success
   // or false if the save operation failed
   const QString myMessage = mLayer->saveDefaultStyle( defaultSavedFlag );
+  Q_NOWARN_DEPRECATED_POP
   if ( !defaultSavedFlag )
   {
     // let the user know what went wrong
@@ -406,7 +448,7 @@ void QgsPointCloudLayerProperties::showHelp()
   }
   else
   {
-    QgsHelp::openHelp( QStringLiteral( "working_with_vector_tiles/vector_tiles_properties.html" ) );
+    QgsHelp::openHelp( QStringLiteral( "working_with_point_clouds/point_clouds.html" ) );
   }
 }
 
@@ -417,6 +459,16 @@ void QgsPointCloudLayerProperties::urlClicked( const QUrl &url )
     QgsGui::nativePlatformInterface()->openFileExplorerAndSelectFile( url.toLocalFile() );
   else
     QDesktopServices::openUrl( url );
+}
+
+void QgsPointCloudLayerProperties::pbnQueryBuilder_clicked()
+{
+  QgsPointCloudQueryBuilder qb { mLayer };
+  qb.setSubsetString( mLayer->subsetString() );
+  if ( qb.exec() )
+  {
+    txtSubsetSQL->setText( qb.subsetString() );
+  }
 }
 
 void QgsPointCloudLayerProperties::crsChanged( const QgsCoordinateReferenceSystem &crs )
@@ -462,6 +514,7 @@ QVariant QgsPointCloudAttributeStatisticsModel::data( const QModelIndex &index, 
     return QVariant();
 
   const QgsPointCloudAttribute &attr = mAttributes.at( index.row() );
+  const QgsPointCloudStatistics stats = mLayer->statistics();
 
   switch ( role )
   {
@@ -474,16 +527,13 @@ QVariant QgsPointCloudAttributeStatisticsModel::data( const QModelIndex &index, 
           return attr.name();
 
         case Min:
-          return mLayer->dataProvider() ? mLayer->dataProvider()->metadataStatistic( attr.name(), QgsStatisticalSummary::Min ) : QVariant();
-
+          return stats.minimum( attr.name() );
         case Max:
-          return mLayer->dataProvider() ? mLayer->dataProvider()->metadataStatistic( attr.name(), QgsStatisticalSummary::Max ) : QVariant();
-
+          return stats.maximum( attr.name() );
         case Mean:
-          return mLayer->dataProvider() ? mLayer->dataProvider()->metadataStatistic( attr.name(), QgsStatisticalSummary::Mean ) : QVariant();
-
+          return stats.mean( attr.name() );
         case StDev:
-          return mLayer->dataProvider() ? mLayer->dataProvider()->metadataStatistic( attr.name(), QgsStatisticalSummary::StDev ) : QVariant();
+          return stats.stDev( attr.name() );
 
       }
       return QVariant();
@@ -559,8 +609,8 @@ QgsPointCloudClassificationStatisticsModel::QgsPointCloudClassificationStatistic
   , mLayer( layer )
   , mAttribute( attribute )
 {
-  mClassifications = layer->dataProvider() ? layer->dataProvider()->metadataClasses( attribute ) : QVariantList();
-  std::sort( mClassifications.begin(), mClassifications.end(), []( QVariant a, QVariant b ) -> bool { return ( qgsVariantLessThan( a, b ) ); } );
+  mClassifications = layer->statistics().classesOf( attribute );
+  std::sort( mClassifications.begin(), mClassifications.end(), []( int a, int b ) -> bool { return a < b; } );
 }
 
 int QgsPointCloudClassificationStatisticsModel::columnCount( const QModelIndex & ) const
@@ -579,6 +629,7 @@ QVariant QgsPointCloudClassificationStatisticsModel::data( const QModelIndex &in
     return QVariant();
 
   const QVariant classValue = mClassifications.at( index.row() );
+  const QgsPointCloudStatistics stats = mLayer->statistics();
 
   switch ( role )
   {
@@ -594,12 +645,12 @@ QVariant QgsPointCloudClassificationStatisticsModel::data( const QModelIndex &in
           return QgsPointCloudDataProvider::translatedLasClassificationCodes().value( classValue.toInt() );
 
         case Count:
-          return mLayer->dataProvider() ? mLayer->dataProvider()->metadataClassStatistic( mAttribute, classValue, QgsStatisticalSummary::Count ) : QVariant();
+          return stats.availableClasses( mAttribute ).value( classValue.toInt(), 0 );
 
         case Percent:
         {
-          const qint64 pointCount = mLayer->dataProvider() ? mLayer->dataProvider()->pointCount() : -1;
-          return pointCount > 0 ? mLayer->dataProvider()->metadataClassStatistic( mAttribute, classValue, QgsStatisticalSummary::Count ).toDouble() / pointCount * 100 : QVariant();
+          qint64 pointCount = stats.sampledPointsCount();
+          return ( ( double )stats.availableClasses( mAttribute ).value( classValue.toInt(), 0 ) ) / pointCount * 100;
         }
 
       }

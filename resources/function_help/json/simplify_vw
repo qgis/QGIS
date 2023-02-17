@@ -2,9 +2,17 @@
   "name": "simplify_vw",
   "type": "function",
   "groups": ["GeometryGroup"],
-  "description":"Simplifies a geometry by removing nodes using an area based threshold (ie, the Visvalingam-Whyatt algorithm). The algorithm removes vertices which create small areas in geometries, e.g., narrow spikes or nearly straight segments.",
-  "arguments": [ {"arg":"geometry","description":"a geometry"},
-                 {"arg":"tolerance","description":"a measure of the maximum area created by a node for the node to be removed"} ],
-  "examples": [ { "expression":"geom_to_wkt(simplify_vw(geometry:=geom_from_wkt('LineString(0 0, 5 0, 5.01 10, 5.02 0, 10 0)'),tolerance:=5))", "returns":"'LineString(0 0, 10 0)'"}]
+  "description": "Simplifies a geometry by removing nodes using an area based threshold (ie, the Visvalingam-Whyatt algorithm). The algorithm removes vertices which create small areas in geometries, e.g., narrow spikes or nearly straight segments.",
+  "arguments": [{
+    "arg": "geometry",
+    "description": "a geometry"
+  }, {
+    "arg": "tolerance",
+    "description": "a measure of the maximum area created by a node for the node to be removed"
+  }],
+  "examples": [{
+    "expression": "geom_to_wkt(simplify_vw(geometry:=geom_from_wkt('LineString(0 0, 5 0, 5.01 10, 5.02 0, 10 0)'),tolerance:=5))",
+    "returns": "'LineString(0 0, 10 0)'"
+  }],
+  "tags": ["spikes", "areas", "straight", "nodes", "algorithm", "area", "simplifies", "removes", "narrow", "segments", "visvalingam", "threshold", "create", "vertices", "removing", "based", "small"]
 }
-

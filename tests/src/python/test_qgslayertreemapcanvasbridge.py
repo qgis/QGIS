@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsLayerTreeMapCanvasBridge.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -10,20 +9,19 @@ __author__ = 'Nyall Dawson'
 __date__ = '8/03/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
 
-import os
-
 import qgis  # NOQA
-
-from qgis.core import (QgsProject,
-                       QgsApplication,
-                       QgsUnitTypes,
-                       QgsCoordinateReferenceSystem,
-                       QgsVectorLayer)
-from qgis.gui import (QgsLayerTreeMapCanvasBridge,
-                      QgsMapCanvas,
-                      QgsCustomLayerOrderWidget)
+from qgis.core import (
+    QgsProject,
+    QgsVectorLayer,
+)
+from qgis.gui import (
+    QgsCustomLayerOrderWidget,
+    QgsLayerTreeMapCanvasBridge,
+    QgsMapCanvas,
+)
 from qgis.testing import start_app, unittest
-from utilities import (unitTestDataPath)
+
+from utilities import unitTestDataPath
 
 app = start_app()
 TEST_DATA_DIR = unitTestDataPath()

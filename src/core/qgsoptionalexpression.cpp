@@ -28,7 +28,7 @@ QgsOptionalExpression::QgsOptionalExpression( const QgsExpression &expression, b
 
 }
 
-void QgsOptionalExpression::writeXml( QDomElement &element )
+void QgsOptionalExpression::writeXml( QDomElement &element ) const
 {
   const QDomText exp = element.ownerDocument().createTextNode( data().expression() );
   element.setAttribute( QStringLiteral( "enabled" ), enabled() );

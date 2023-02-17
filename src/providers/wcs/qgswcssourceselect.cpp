@@ -19,6 +19,9 @@
 #include "qgis.h"
 #include "qgslogger.h"
 
+#include "qgscoordinatereferencesystem.h"
+#include "qgsmapcanvas.h"
+
 #include "qgsnetworkaccessmanager.h"
 #include "qgswcsprovider.h"
 #include "qgswcssourceselect.h"
@@ -31,9 +34,6 @@ QgsWCSSourceSelect::QgsWCSSourceSelect( QWidget *parent, Qt::WindowFlags fl, Qgs
   : QgsOWSSourceSelect( QStringLiteral( "WCS" ), parent, fl, widgetMode )
 {
 
-  // Hide irrelevant widgets
-  mWMSGroupBox->hide();
-  mLayersTab->layout()->removeWidget( mWMSGroupBox );
   mTabWidget->removeTab( mTabWidget->indexOf( mLayerOrderTab ) );
   mTabWidget->removeTab( mTabWidget->indexOf( mTilesetsTab ) );
   mAddDefaultButton->hide();
@@ -139,6 +139,19 @@ void QgsWCSSourceSelect::addButtonClicked()
   if ( !selectedTime().isEmpty() )
   {
     uri.setParam( QStringLiteral( "time" ), selectedTime() );
+  }
+
+  if ( mSpatialExtentBox->isChecked() )
+  {
+    const QgsRectangle spatialExtent = mSpatialExtentBox->outputExtent();
+    bool inverted = uri.hasParam( QStringLiteral( "InvertAxisOrientation" ) );
+    QString bbox = QString( inverted ? "%2,%1,%4,%3" : "%1,%2,%3,%4" )
+                   .arg( qgsDoubleToString( spatialExtent.xMinimum() ),
+                         qgsDoubleToString( spatialExtent.yMinimum() ),
+                         qgsDoubleToString( spatialExtent.xMaximum() ),
+                         qgsDoubleToString( spatialExtent.yMaximum() ) );
+
+    uri.setParam( QStringLiteral( "bbox" ), bbox );
   }
 
   QString cache;

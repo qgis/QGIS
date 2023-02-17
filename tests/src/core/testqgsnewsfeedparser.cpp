@@ -19,7 +19,6 @@
 #include <QSignalSpy>
 #include "qgsnewsfeedparser.h"
 #include "qgsnewsfeedmodel.h"
-#include "qgssettings.h"
 
 
 class TestQgsNewsFeedParser: public QObject
@@ -73,7 +72,7 @@ void TestQgsNewsFeedParser::testFetch()
 
   const QUrl url( QUrl::fromLocalFile( QStringLiteral( TEST_DATA_DIR ) + "/newsfeed/feed" ) );
   const QString feedKey = QgsNewsFeedParser::keyForFeed( url.toString() );
-  QgsSettings().remove( feedKey, QgsSettings::Core );
+  QgsNewsFeedParser::sTreeNewsFeed->deleteItem( feedKey );
 
   const qint64 beforeTime = QDateTime::currentDateTimeUtc().toSecsSinceEpoch();
 
@@ -111,12 +110,12 @@ void TestQgsNewsFeedParser::testFetch()
   entries.clear();
 
   // after a fetch, the current timestamp should be saved to avoid refetching these
-  const uint after = QgsNewsFeedParser::settingsFeedLastFetchTime.value( feedKey );
+  const uint after = QgsNewsFeedParser::settingsFeedLastFetchTime->value( feedKey );
   QVERIFY( after >= beforeTime );
 
   // reset to a standard known last time
-  QgsSettings().remove( feedKey, QgsSettings::Core );
-  QgsNewsFeedParser::settingsFeedLastFetchTime.setValue( 1457360008, feedKey );
+  QgsNewsFeedParser::sTreeNewsFeed->deleteItem( feedKey );
+  QgsNewsFeedParser::settingsFeedLastFetchTime->setValue( 1457360008, feedKey );
 
   // refetch, only new items should be fetched
   QgsNewsFeedParser parser2( url );
@@ -200,7 +199,7 @@ void TestQgsNewsFeedParser::testAutoExpiry()
 {
   const QUrl url( QStringLiteral( "xxx" ) );
   const QString feedKey = QgsNewsFeedParser::keyForFeed( url.toString() );
-  QgsSettings().remove( feedKey, QgsSettings::Core );
+  QgsNewsFeedParser::sTreeNewsFeed->deleteItem( feedKey );
 
   // ensure entries "auto expire" when past their use-by date
   QgsNewsFeedParser::Entry testEntry;
@@ -228,9 +227,9 @@ void TestQgsNewsFeedParser::testLang()
 
   const QUrl url( QUrl::fromLocalFile( QStringLiteral( TEST_DATA_DIR ) + "/newsfeed/feed" ) );
   const QString feedKey = QgsNewsFeedParser::keyForFeed( url.toString() );
-  QgsSettings().remove( feedKey, QgsSettings::Core );
+  QgsNewsFeedParser::sTreeNewsFeed->deleteItem( feedKey );
   // force to Spanish language
-  QgsNewsFeedParser::settingsFeedLanguage.setValue( QStringLiteral( "es" ), feedKey );
+  QgsNewsFeedParser::settingsFeedLanguage->setValue( QStringLiteral( "es" ), feedKey );
 
   QgsNewsFeedParser parser( url );
   const QSignalSpy spy( &parser, &QgsNewsFeedParser::entryAdded );
@@ -255,9 +254,9 @@ void TestQgsNewsFeedParser::testGeoFencing()
 
   const QUrl url( QUrl::fromLocalFile( QStringLiteral( TEST_DATA_DIR ) + "/newsfeed/feed" ) );
   const QString feedKey = QgsNewsFeedParser::keyForFeed( url.toString() );
-  QgsSettings().remove( feedKey, QgsSettings::Core );
-  QgsNewsFeedParser::settingsFeedLatitude.setValue( 37.2343, feedKey );
-  QgsNewsFeedParser::settingsFeedLongitude.setValue( -115.8067, feedKey );
+  QgsNewsFeedParser::sTreeNewsFeed->deleteItem( feedKey );
+  QgsNewsFeedParser::settingsFeedLatitude->setValue( 37.2343, feedKey );
+  QgsNewsFeedParser::settingsFeedLongitude->setValue( -115.8067, feedKey );
 
   QgsNewsFeedParser parser( url );
   const QSignalSpy spy( &parser, &QgsNewsFeedParser::entryAdded );
@@ -282,7 +281,7 @@ void TestQgsNewsFeedParser::testModel()
   // test news feed model
   const QUrl url( QUrl::fromLocalFile( QStringLiteral( TEST_DATA_DIR ) + "/newsfeed/feed" ) );
   const QString feedKey = QgsNewsFeedParser::keyForFeed( url.toString() );
-  QgsSettings().remove( feedKey, QgsSettings::Core );
+  QgsNewsFeedParser::sTreeNewsFeed->deleteItem( feedKey );
 
   QgsNewsFeedParser parser( url );
   const QgsNewsFeedModel model( &parser );
@@ -361,7 +360,7 @@ void TestQgsNewsFeedParser::testProxyModel()
   // test news feed proxy model
   const QUrl url( QUrl::fromLocalFile( QStringLiteral( TEST_DATA_DIR ) + "/newsfeed/feed" ) );
   const QString feedKey = QgsNewsFeedParser::keyForFeed( url.toString() );
-  QgsSettings().remove( feedKey, QgsSettings::Core );
+  QgsNewsFeedParser::sTreeNewsFeed->deleteItem( feedKey );
 
   QgsNewsFeedParser parser( url );
   const QgsNewsFeedProxyModel model( &parser );

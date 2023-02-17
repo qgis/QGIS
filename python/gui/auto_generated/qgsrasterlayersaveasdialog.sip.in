@@ -83,9 +83,19 @@ Name of the output layer within GeoPackage file
     QgsRasterRangeList noData() const;
 
     QList< int > pyramidsList() const;
-    QgsRaster::RasterBuildPyramids buildPyramidsFlag() const;
+
+    Qgis::RasterBuildPyramidOption buildPyramidsFlag() const;
+%Docstring
+Returns the pyramid building option.
+%End
+
     QString pyramidsResamplingMethod() const;
-    QgsRaster::RasterPyramidsFormat pyramidsFormat() const;
+
+    Qgis::RasterPyramidFormat pyramidsFormat() const;
+%Docstring
+Returns the selected pyramid format.
+%End
+
     QStringList pyramidsConfigOptions() const;
 
     void hideFormat();

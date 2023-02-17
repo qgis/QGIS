@@ -23,3 +23,20 @@ __copyright__ = '(C) 2014, Nathan Woodrow'
 
 from qgis.PyQt import QtCore
 from qgis._3d import *
+
+from qgis.core import Qgis
+# manual monkey patching for old enum values
+Qgs3DTypes.AltitudeClamping = Qgis.AltitudeClamping
+Qgs3DTypes.AltClampAbsolute = Qgis.AltitudeClamping.Absolute
+Qgs3DTypes.AltClampAbsolute.is_monkey_patched = True
+Qgs3DTypes.AltClampRelative = Qgis.AltitudeClamping.Relative
+Qgs3DTypes.AltClampRelative.is_monkey_patched = True
+Qgs3DTypes.AltClampTerrain = Qgis.AltitudeClamping.Terrain
+Qgs3DTypes.AltClampTerrain.is_monkey_patched = True
+
+Qgs3DTypes.AltitudeBinding = Qgis.AltitudeBinding
+Qgs3DTypes.AltBindVertex = Qgis.AltitudeBinding.Vertex
+Qgs3DTypes.AltBindVertex.is_monkey_patched = True
+Qgs3DTypes.AltBindCentroid = Qgis.AltitudeBinding.Centroid
+Qgs3DTypes.AltBindCentroid.is_monkey_patched = True
+

@@ -24,7 +24,9 @@
 #include "qgsfocuswatcher.h"
 
 QgsAdvancedDigitizingFloater::QgsAdvancedDigitizingFloater( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget )
-  : QWidget( canvas->viewport() ), mMapCanvas( canvas ), mCadDockWidget( cadDockWidget )
+  : QWidget( canvas->viewport() )
+  , mMapCanvas( canvas )
+  , mCadDockWidget( cadDockWidget )
 {
   setupUi( this );
 
@@ -117,7 +119,7 @@ QgsAdvancedDigitizingFloater::QgsAdvancedDigitizingFloater( QgsMapCanvas *canvas
 
 bool QgsAdvancedDigitizingFloater::eventFilter( QObject *obj, QEvent *event )
 {
-  if ( mCadDockWidget->cadEnabled() && mActive )
+  if ( mCadDockWidget && mCadDockWidget->cadEnabled() && mActive )
   {
     if ( event->type() == QEvent::MouseMove )
     {
@@ -163,7 +165,7 @@ void QgsAdvancedDigitizingFloater::updatePos( const QPoint &pos )
 
 void QgsAdvancedDigitizingFloater::hideIfDisabled()
 {
-  if ( ! mCadDockWidget->cadEnabled() || ! mActive )
+  if ( !mCadDockWidget || ! mCadDockWidget->cadEnabled() || ! mActive )
   {
     setVisible( false );
   }

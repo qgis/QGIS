@@ -52,6 +52,11 @@ QString QgsProviderMetadata::description() const
   return mDescription;
 }
 
+QIcon QgsProviderMetadata::icon() const
+{
+  return QIcon();
+}
+
 QgsProviderMetadata::ProviderMetadataCapabilities QgsProviderMetadata::capabilities() const
 {
   return QgsProviderMetadata::ProviderMetadataCapabilities();
@@ -62,9 +67,19 @@ QgsProviderMetadata::ProviderCapabilities QgsProviderMetadata::providerCapabilit
   return QgsProviderMetadata::ProviderCapabilities();
 }
 
+QList<Qgis::LayerType> QgsProviderMetadata::supportedLayerTypes() const
+{
+  return {};
+}
+
 QString QgsProviderMetadata::library() const
 {
   return mLibrary;
+}
+
+QString QgsProviderMetadata::suggestGroupNameForUri( const QString & /*uri*/ ) const
+{
+  return QString();
 }
 
 QgsProviderMetadata::CreateDataProviderFunction QgsProviderMetadata::createFunction() const
@@ -97,9 +112,9 @@ int QgsProviderMetadata::priorityForUri( const QString & ) const
   return 0;
 }
 
-QList<QgsMapLayerType> QgsProviderMetadata::validLayerTypesForUri( const QString & ) const
+QList<Qgis::LayerType> QgsProviderMetadata::validLayerTypesForUri( const QString & ) const
 {
-  return QList<QgsMapLayerType>();
+  return QList<Qgis::LayerType>();
 }
 
 bool QgsProviderMetadata::uriIsBlocklisted( const QString & ) const
@@ -182,6 +197,12 @@ Qgis::VectorExportResult QgsProviderMetadata::createEmptyLayer(
   return Qgis::VectorExportResult::ErrorProviderUnsupportedFeature;
 }
 
+bool QgsProviderMetadata::createDatabase( const QString &, QString &errorMessage )
+{
+  errorMessage = QObject::tr( "The %1 provider does not support database creation" ).arg( key() );
+  return false;
+}
+
 QgsRasterDataProvider *QgsProviderMetadata::createRasterDataProvider(
   const QString &, const QString &,
   int, Qgis::DataType, int,
@@ -224,6 +245,7 @@ int QgsProviderMetadata::listStyles( const QString &, QStringList &, QStringList
   return -1;
 }
 
+
 bool QgsProviderMetadata::styleExists( const QString &, const QString &, QString &errorCause )
 {
   errorCause.clear();
@@ -252,6 +274,12 @@ bool QgsProviderMetadata::saveStyle( const QString &, const QString &, const QSt
 QString QgsProviderMetadata::loadStyle( const QString &, QString &errCause )
 {
   errCause = QObject::tr( "Provider %1 has no %2 method" ).arg( key(), QStringLiteral( "loadStyle" ) );
+  return QString();
+}
+
+QString QgsProviderMetadata::loadStoredStyle( const QString &, QString &, QString &errCause )
+{
+  errCause = QObject::tr( "Provider %1 has no %2 method" ).arg( key(), QStringLiteral( "loadStoredStyle" ) );
   return QString();
 }
 
@@ -299,7 +327,7 @@ QgsAbstractProviderConnection *QgsProviderMetadata::findConnection( const QStrin
 QgsAbstractProviderConnection *QgsProviderMetadata::createConnection( const QString &name )
 {
   Q_UNUSED( name );
-  throw QgsProviderConnectionException( QObject::tr( "Provider %1 has no %2 method" ).arg( key(), QStringLiteral( "connection" ) ) );
+  throw QgsProviderConnectionException( QObject::tr( "Provider %1 has no %2 method" ).arg( key(), QStringLiteral( "createConnection" ) ) );
 }
 
 
@@ -307,7 +335,7 @@ QgsAbstractProviderConnection *QgsProviderMetadata::createConnection( const QStr
 {
   Q_UNUSED( configuration );
   Q_UNUSED( uri );
-  throw QgsProviderConnectionException( QObject::tr( "Provider %1 has no %2 method" ).arg( key(), QStringLiteral( "connection" ) ) );
+  throw QgsProviderConnectionException( QObject::tr( "Provider %1 has no %2 method" ).arg( key(), QStringLiteral( "createConnection" ) ) );
 }
 
 void QgsProviderMetadata::deleteConnection( const QString &name )

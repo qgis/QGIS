@@ -81,7 +81,8 @@ class CORE_EXPORT QgsRasterLayerRenderer : public QgsMapLayerRenderer
 
     QgsRasterViewPort *mRasterViewPort = nullptr;
 
-    QgsRasterPipe *mPipe = nullptr;
+    double mLayerOpacity = 1.0;
+    std::unique_ptr<QgsRasterPipe> mPipe;
 
     QgsRasterDataProvider::Capability mProviderCapabilities;
 
@@ -89,6 +90,13 @@ class CORE_EXPORT QgsRasterLayerRenderer : public QgsMapLayerRenderer
     QgsRasterLayerRendererFeedback *mFeedback = nullptr;
 
     QList< QgsMapClippingRegion > mClippingRegions;
+
+    double mElevationScale = 1.0;
+    double mElevationOffset = 0.0;
+    int mElevationBand = 0;
+    bool mDrawElevationMap = false;
+
+    void drawElevationMap();
 
     friend class QgsRasterLayerRendererFeedback;
 };

@@ -120,6 +120,7 @@ class GUI_EXPORT QgsLayoutRuler: public QWidget
 
     int mDragGuideTolerance = 0;
     QgsLayoutGuide *mDraggingGuide = nullptr;
+    double mDraggingGuideOldPosition = 0.0;
     QgsLayoutGuide *mHoverGuide = nullptr;
 
     bool mCreatingGuide = false;

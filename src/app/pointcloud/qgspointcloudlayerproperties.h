@@ -85,7 +85,7 @@ class QgsPointCloudClassificationStatisticsModel : public QAbstractTableModel
 
     QgsPointCloudLayer *mLayer = nullptr;
     QString mAttribute;
-    QVariantList mClassifications;
+    QList<int> mClassifications;
 };
 
 class QgsPointCloudLayerProperties : public QgsOptionsDialogBase, private Ui::QgsPointCloudLayerPropertiesBase
@@ -112,6 +112,7 @@ class QgsPointCloudLayerProperties : public QgsOptionsDialogBase, private Ui::Qg
     void loadDefaultMetadata();
     void showHelp();
     void urlClicked( const QUrl &url );
+    void pbnQueryBuilder_clicked();
     void crsChanged( const QgsCoordinateReferenceSystem &crs );
 
   protected slots:

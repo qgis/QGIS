@@ -3,7 +3,16 @@
   "type": "function",
   "groups": ["Arrays"],
   "description": "Counts the number of occurrences of a given value in an array.",
-  "arguments": [ {"arg":"array","description":"an array"},
-                 {"arg":"value","description":"the value to count"}],
-  "examples": [ { "expression":"array_count(array('a', 'b', 'c', 'b'), 'b')", "returns":"2"}]
+  "arguments": [{
+    "arg": "array",
+    "description": "an array"
+  }, {
+    "arg": "value",
+    "description": "the value to count"
+  }],
+  "examples": [{
+    "expression": "array_count(array('a', 'b', 'c', 'b'), 'b')",
+    "returns": "2"
+  }],
+  "tags": ["number", "array", "occurrences", "given", "counts"]
 }

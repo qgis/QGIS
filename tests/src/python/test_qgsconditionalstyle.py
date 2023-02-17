@@ -1,5 +1,3 @@
-
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for the memory layer provider.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -11,21 +9,21 @@ __author__ = 'Nathan.Woodrow'
 __date__ = '2015-08-11'
 __copyright__ = 'Copyright 2015, The QGIS Project'
 
-from qgis.core import (QgsConditionalStyle,
-                       QgsFeature,
-                       QgsFields,
-                       QgsField,
-                       QgsExpressionContextUtils,
-                       QgsConditionalLayerStyles,
-                       QgsMarkerSymbol
-                       )
-from qgis.testing import (start_app,
-                          unittest,
-                          )
-from utilities import unitTestDataPath
 from qgis.PyQt.QtCore import QVariant
-from qgis.PyQt.QtGui import QFont, QColor
+from qgis.PyQt.QtGui import QColor, QFont
 from qgis.PyQt.QtTest import QSignalSpy
+from qgis.core import (
+    QgsConditionalLayerStyles,
+    QgsConditionalStyle,
+    QgsExpressionContextUtils,
+    QgsFeature,
+    QgsField,
+    QgsFields,
+    QgsMarkerSymbol,
+)
+from qgis.testing import start_app, unittest
+
+from utilities import unitTestDataPath
 
 #
 start_app()
@@ -174,6 +172,16 @@ class TestPyQgsConditionalStyle(unittest.TestCase):
         self.assertEqual(len(spy), 3)
         self.assertEqual(styles.fieldStyles('test'), [QgsConditionalStyle("@value > 30"), QgsConditionalStyle("@value > 40")])
         self.assertEqual(styles.fieldStyles('test2'), [QgsConditionalStyle("@value > 50")])
+
+    def testRequiresGeometry(self):
+
+        styles = QgsConditionalLayerStyles()
+        styles.setRowStyles([QgsConditionalStyle("@value > 10")])
+        self.assertFalse(styles.rulesNeedGeometry())
+        styles.setRowStyles([QgsConditionalStyle("@value > 10"), QgsConditionalStyle('$geometry IS NULL')])
+        self.assertTrue(styles.rulesNeedGeometry())
+        styles.setRowStyles([QgsConditionalStyle('$geometry IS NULL'), QgsConditionalStyle("@value > 10")])
+        self.assertTrue(styles.rulesNeedGeometry())
 
 
 if __name__ == '__main__':

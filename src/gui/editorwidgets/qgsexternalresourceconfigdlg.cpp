@@ -96,14 +96,20 @@ QgsExternalResourceConfigDlg::QgsExternalResourceConfigDlg( QgsVectorLayer *vl, 
   connect( mStorageModeCbx, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsEditorConfigWidget::changed );
   connect( mStoragePathCbx, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsEditorConfigWidget::changed );
   connect( mDocumentViewerGroupBox, &QGroupBox::toggled, this, &QgsEditorConfigWidget::changed );
-  connect( mDocumentViewerContentComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ),  this, [ = ]( int idx )
-  { mDocumentViewerContentSettingsWidget->setEnabled( ( QgsExternalResourceWidget::DocumentViewerContent )idx != QgsExternalResourceWidget::NoContent ); } );
+  connect( mDocumentViewerContentComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ),  this, [ = ]( int )
+  {
+    const QgsExternalResourceWidget::DocumentViewerContent content = static_cast<QgsExternalResourceWidget::DocumentViewerContent>( mDocumentViewerContentComboBox->currentData().toInt() );
+    const bool hasSizeSettings = ( content != QgsExternalResourceWidget::NoContent && content != QgsExternalResourceWidget::Audio );
+    mDocumentViewerContentSettingsWidget->setEnabled( hasSizeSettings );
+  } );
   connect( mDocumentViewerHeight, static_cast<void ( QSpinBox::* )( int )>( &QSpinBox::valueChanged ), this, &QgsEditorConfigWidget::changed );
   connect( mDocumentViewerWidth, static_cast<void ( QSpinBox::* )( int )>( &QSpinBox::valueChanged ), this, &QgsEditorConfigWidget::changed );
   connect( mStorageUrlExpression, &QLineEdit::textChanged, this, &QgsEditorConfigWidget::changed );
 
   mDocumentViewerContentComboBox->addItem( tr( "No Content" ), QgsExternalResourceWidget::NoContent );
   mDocumentViewerContentComboBox->addItem( tr( "Image" ), QgsExternalResourceWidget::Image );
+  mDocumentViewerContentComboBox->addItem( tr( "Audio" ), QgsExternalResourceWidget::Audio );
+  mDocumentViewerContentComboBox->addItem( tr( "Video" ), QgsExternalResourceWidget::Video );
   mDocumentViewerContentComboBox->addItem( tr( "Web View" ), QgsExternalResourceWidget::Web );
 }
 
@@ -120,7 +126,7 @@ void QgsExternalResourceConfigDlg::chooseDefaultPath()
     dir = QgsSettings().value( QStringLiteral( "/UI/lastExternalResourceWidgetDefaultPath" ), QDir::toNativeSeparators( QDir::cleanPath( path ) ) ).toString();
   }
 
-  const QString rootName = QFileDialog::getExistingDirectory( this, tr( "Select a Directory" ), dir, QFileDialog::ShowDirsOnly );
+  const QString rootName = QFileDialog::getExistingDirectory( this, tr( "Select a Directory" ), dir, QFileDialog::Options() );
 
   if ( !rootName.isNull() )
     mRootPath->setText( rootName );

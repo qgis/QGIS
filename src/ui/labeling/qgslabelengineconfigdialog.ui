@@ -118,13 +118,10 @@
    </item>
    <item>
     <layout class="QGridLayout" name="gridLayout_2" columnstretch="0,0,0">
-     <item row="0" column="1" colspan="2">
-      <widget class="QComboBox" name="mTextRenderFormatComboBox">
-       <property name="sizeAdjustPolicy">
-        <enum>QComboBox::AdjustToMinimumContentsLengthWithIcon</enum>
-       </property>
-       <property name="minimumContentsLength">
-        <number>8</number>
+     <item row="1" column="0" colspan="3">
+      <widget class="QCheckBox" name="chkShowPartialsLabels">
+       <property name="text">
+        <string>Allow truncated labels on edges of map</string>
        </property>
       </widget>
      </item>
@@ -132,6 +129,22 @@
       <widget class="QCheckBox" name="chkShowCandidates">
        <property name="text">
         <string>Show candidates (for debugging)</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="0" colspan="3">
+      <widget class="QCheckBox" name="chkShowAllLabels">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="inputMethodHints">
+        <set>Qt::ImhNone</set>
+       </property>
+       <property name="text">
+        <string>Show all labels for all layers (i.e. including collisions)</string>
        </property>
       </widget>
      </item>
@@ -174,19 +187,30 @@
        </item>
       </layout>
      </item>
-     <item row="2" column="0" colspan="3">
-      <widget class="QCheckBox" name="chkShowAllLabels">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
+     <item row="7" column="1" colspan="2">
+      <widget class="QComboBox" name="mPlacementVersionComboBox">
+       <property name="sizeAdjustPolicy">
+        <enum>QComboBox::AdjustToMinimumContentsLengthWithIcon</enum>
        </property>
-       <property name="inputMethodHints">
-        <set>Qt::ImhNone</set>
+       <property name="minimumContentsLength">
+        <number>8</number>
        </property>
+      </widget>
+     </item>
+     <item row="0" column="1" colspan="2">
+      <widget class="QComboBox" name="mTextRenderFormatComboBox">
+       <property name="sizeAdjustPolicy">
+        <enum>QComboBox::AdjustToMinimumContentsLengthWithIcon</enum>
+       </property>
+       <property name="minimumContentsLength">
+        <number>8</number>
+       </property>
+      </widget>
+     </item>
+     <item row="7" column="0">
+      <widget class="QLabel" name="label_7">
        <property name="text">
-        <string>Show all labels for all layers (i.e. including collisions)</string>
+        <string>Project labeling version</string>
        </property>
       </widget>
      </item>
@@ -204,27 +228,10 @@
        </property>
       </widget>
      </item>
-     <item row="1" column="0" colspan="3">
-      <widget class="QCheckBox" name="chkShowPartialsLabels">
+     <item row="6" column="0" colspan="3">
+      <widget class="QCheckBox" name="chkShowMetrics">
        <property name="text">
-        <string>Allow truncated labels on edges of map</string>
-       </property>
-      </widget>
-     </item>
-     <item row="6" column="0">
-      <widget class="QLabel" name="label_7">
-       <property name="text">
-        <string>Project labeling version</string>
-       </property>
-      </widget>
-     </item>
-     <item row="6" column="1" colspan="2">
-      <widget class="QComboBox" name="mPlacementVersionComboBox">
-       <property name="sizeAdjustPolicy">
-        <enum>QComboBox::AdjustToMinimumContentsLengthWithIcon</enum>
-       </property>
-       <property name="minimumContentsLength">
-        <number>8</number>
+        <string>Show label metrics (for debugging)</string>
        </property>
       </widget>
      </item>
@@ -273,6 +280,8 @@
   <tabstop>chkShowUnplaced</tabstop>
   <tabstop>mUnplacedColorButton</tabstop>
   <tabstop>chkShowCandidates</tabstop>
+  <tabstop>chkShowMetrics</tabstop>
+  <tabstop>mPlacementVersionComboBox</tabstop>
  </tabstops>
  <resources/>
  <connections/>

@@ -1,12 +1,16 @@
-
 {
   "name": "md5",
   "groups": ["Conversions"],
   "type": "function",
   "description": "Creates a md5 hash from a string.",
   "variableLenArguments": false,
-  "arguments": [
-    {"arg":"string", "description": "the string to hash"}],
-    "examples": [ { "expression":"md5('QGIS')", "returns":"'57470aaa9e22adaefac7f5f342f1c6da'"}
-    ]
+  "arguments": [{
+    "arg": "string",
+    "description": "the string to hash"
+  }],
+  "examples": [{
+    "expression": "md5('QGIS')",
+    "returns": "'57470aaa9e22adaefac7f5f342f1c6da'"
+  }],
+  "tags": ["hash"]
 }

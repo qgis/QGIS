@@ -15,6 +15,7 @@
  ***************************************************************************/
 #include "qgskeyvaluefieldformatter.h"
 #include "qgsapplication.h"
+#include "qgsvariantutils.h"
 
 #include <QSettings>
 
@@ -30,7 +31,7 @@ QString QgsKeyValueFieldFormatter::representValue( QgsVectorLayer *layer, int fi
   Q_UNUSED( config )
   Q_UNUSED( cache )
 
-  if ( value.isNull() )
+  if ( QgsVariantUtils::isNull( value ) )
   {
     return QgsApplication::nullRepresentation();
   }

@@ -355,7 +355,7 @@ void QgsExpressionBuilderWidget::runPythonCode( const QString &code )
 QgsVectorLayer *QgsExpressionBuilderWidget::contextLayer( const QgsExpressionItem *item ) const
 {
   QgsVectorLayer *layer = nullptr;
-  if ( ! item->data( QgsExpressionItem::LAYER_ID_ROLE ).isNull() )
+  if ( ! QgsVariantUtils::isNull( item->data( QgsExpressionItem::LAYER_ID_ROLE ) ) )
   {
     layer = qobject_cast<QgsVectorLayer *>( QgsProject::instance()->mapLayer( item->data( QgsExpressionItem::LAYER_ID_ROLE ).toString() ) );
   }
@@ -385,11 +385,7 @@ void QgsExpressionBuilderWidget::saveFunctionFile( QString fileName )
   if ( myFile.open( QIODevice::WriteOnly | QFile::Truncate ) )
   {
     QTextStream myFileStream( &myFile );
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-    myFileStream << txtPython->text() << endl;
-#else
     myFileStream << txtPython->text() << Qt::endl;
-#endif
     myFile.close();
   }
 }
@@ -470,7 +466,7 @@ void QgsExpressionBuilderWidget::btnRemoveFile_pressed()
 
     if ( cmbFileNames->count() > 0 )
     {
-      cmbFileNames->setCurrentRow( currentRow > 0 ? currentRow - 1 : 0 );
+      whileBlocking( cmbFileNames )->setCurrentRow( currentRow > 0 ? currentRow - 1 : 0 );
       loadCodeFromFile( mFunctionsPath + QDir::separator() + cmbFileNames->currentItem()->text() );
     }
     else
@@ -558,7 +554,7 @@ void QgsExpressionBuilderWidget::fillFieldValues( const QString &fieldName, QgsV
   {
     QString strValue;
     bool forceRepresentedValue = false;
-    if ( value.isNull() )
+    if ( QgsVariantUtils::isNull( value ) )
       strValue = QStringLiteral( "NULL" );
     else if ( value.type() == QVariant::Int || value.type() == QVariant::Double || value.type() == QVariant::LongLong )
       strValue = value.toString();
@@ -572,6 +568,20 @@ void QgsExpressionBuilderWidget::fillFieldValues( const QString &fieldName, QgsV
           result.append( QStringLiteral( ", " ) );
 
         result.append( '\'' + str.replace( '\'', QLatin1String( "''" ) ) + '\'' );
+      }
+      strValue = QStringLiteral( "array(%1)" ).arg( result );
+      forceRepresentedValue = true;
+    }
+    else if ( value.type() == QVariant::List )
+    {
+      QString result;
+      const QList list = value.toList();
+      for ( const QVariant &item : list )
+      {
+        if ( !result.isEmpty() )
+          result.append( QStringLiteral( ", " ) );
+
+        result.append( item.toString() );
       }
       strValue = QStringLiteral( "array(%1)" ).arg( result );
       forceRepresentedValue = true;
@@ -775,6 +785,13 @@ void QgsExpressionBuilderWidget::createMarkers( const QgsExpressionNode *inNode 
     {
       const QgsExpressionNodeUnaryOperator *node = static_cast<const QgsExpressionNodeUnaryOperator *>( inNode );
       createMarkers( node->operand() );
+      break;
+    }
+    case QgsExpressionNode::NodeType::ntBetweenOperator:
+    {
+      const QgsExpressionNodeBetweenOperator *node = static_cast<const QgsExpressionNodeBetweenOperator *>( inNode );
+      createMarkers( node->lowerBound() );
+      createMarkers( node->higherBound() );
       break;
     }
     case QgsExpressionNode::NodeType::ntBinaryOperator:

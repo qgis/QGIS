@@ -127,6 +127,20 @@ Blocking network requests (see :py:class:`QgsBlockingNetworkRequest`) will autom
 .. seealso:: :py:func:`setContent`
 %End
 
+    static QString extractFilenameFromContentDispositionHeader( QNetworkReply *reply );
+%Docstring
+Extracts the filename component of the content disposition header from a network ``reply``.
+
+.. versionadded:: 3.28
+%End
+
+    static QString extractFileNameFromContentDispositionHeader( const QString &header );
+%Docstring
+Extracts the filename component of the content disposition header from the ``header``.
+
+.. versionadded:: 3.28
+%End
+
 };
 
 /************************************************************************

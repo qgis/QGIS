@@ -19,6 +19,7 @@
 #include "qgsmaplayerutils.h"
 #include "qgsproject.h"
 #include "qgsgrouplayer.h"
+#include "qgslayertree.h"
 
 QList<QgsMapLayer *> QgsProjectUtils::layersMatchingPath( const QgsProject *project, const QString &path )
 {
@@ -56,11 +57,35 @@ bool QgsProjectUtils::updateLayerPath( QgsProject *project, const QString &oldPa
 
 bool QgsProjectUtils::layerIsContainedInGroupLayer( QgsProject *project, QgsMapLayer *layer )
 {
+  // two situations we need to catch here -- one is a group layer which isn't present in the layer
+  // tree, the other is a group layer associated with the project's layer tree which contains
+  // UNCHECKED child layers
   const QVector< QgsGroupLayer * > groupLayers = project->layers< QgsGroupLayer * >();
   for ( QgsGroupLayer *groupLayer : groupLayers )
   {
     if ( groupLayer->childLayers().contains( layer ) )
       return true;
   }
-  return false;
+
+  std::function< bool( QgsLayerTreeGroup *group ) > traverseTree;
+  traverseTree = [ &traverseTree, layer ]( QgsLayerTreeGroup * group ) -> bool
+  {
+    // is the group a layer group containing our target layer?
+    if ( group->groupLayer() && group->findLayer( layer ) )
+    {
+      return true;
+    }
+
+    const QList< QgsLayerTreeNode * > children = group->children();
+    for ( QgsLayerTreeNode *node : children )
+    {
+      if ( QgsLayerTreeGroup *childGroup = qobject_cast< QgsLayerTreeGroup * >( node ) )
+      {
+        if ( traverseTree( childGroup ) )
+          return true;
+      }
+    }
+    return false;
+  };
+  return traverseTree( project->layerTreeRoot() );
 }

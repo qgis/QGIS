@@ -131,7 +131,7 @@ void TestQgsMssqlProvider::projectTransaction()
   project.addMapLayer( vectorLayerPoint );
   project.addMapLayer( vectorLayerPoly );
 
-  project.setAutoTransaction( true );
+  project.setTransactionMode( Qgis::TransactionMode::AutomaticGroups );
 
   QVERIFY( vectorLayerPoint->startEditing() );
   QVERIFY( vectorLayerPoint->isEditable() );
@@ -221,7 +221,7 @@ void TestQgsMssqlProvider::transactionTwoLayers()
 
   // 2. with transaction, try to add a feature to the first layer -> both layers are affected
 
-  project.setAutoTransaction( true );
+  project.setTransactionMode( Qgis::TransactionMode::AutomaticGroups );
 
   QVERIFY( vectorLayerPoint1->startEditing() );
 
@@ -259,7 +259,7 @@ void TestQgsMssqlProvider::transactionUndoRedo()
 
   // 1. without transaction
 
-  project.setAutoTransaction( true );
+  project.setTransactionMode( Qgis::TransactionMode::AutomaticGroups );
 
   QVERIFY( vectorLayerPoint1->startEditing() );
 

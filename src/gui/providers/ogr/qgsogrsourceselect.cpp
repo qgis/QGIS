@@ -72,14 +72,13 @@ QgsOgrSourceSelect::QgsOgrSourceSelect( QWidget *parent, Qt::WindowFlags fl, Qgs
   cmbEncodings->setCurrentIndex( 0 );
 
   //add database drivers
-  mVectorFileFilter = QgsProviderRegistry::instance()->fileVectorFilters();
   QgsDebugMsgLevel( "Database drivers :" + QgsProviderRegistry::instance()->databaseDrivers(), 2 );
   QStringList dbDrivers = QgsProviderRegistry::instance()->databaseDrivers().split( ';' );
 
   for ( int i = 0; i < dbDrivers.count(); i++ )
   {
     QString dbDriver = dbDrivers.at( i );
-    if ( ( !dbDriver.isEmpty() ) && ( !dbDriver.isNull() ) )
+    if ( !dbDriver.isEmpty() )
       cmbDatabaseTypes->addItem( dbDriver.split( ',' ).at( 0 ) );
   }
 
@@ -88,7 +87,7 @@ QgsOgrSourceSelect::QgsOgrSourceSelect( QWidget *parent, Qt::WindowFlags fl, Qgs
   for ( int i = 0; i < dirDrivers.count(); i++ )
   {
     QString dirDriver = dirDrivers.at( i );
-    if ( ( !dirDriver.isEmpty() ) && ( !dirDriver.isNull() ) )
+    if ( !dirDriver.isEmpty() )
       cmbDirectoryTypes->addItem( dirDriver.split( ',' ).at( 0 ) );
   }
 
@@ -99,7 +98,7 @@ QgsOgrSourceSelect::QgsOgrSourceSelect( QWidget *parent, Qt::WindowFlags fl, Qgs
   for ( int i = 0; i < protocolTypes.count(); i++ )
   {
     QString protocolType = protocolTypes.at( i );
-    if ( ( !protocolType.isEmpty() ) && ( !protocolType.isNull() ) )
+    if ( !protocolType.isEmpty() )
       cmbProtocolTypes->addItem( protocolType.split( ',' ).at( 0 ) );
   }
   cmbDatabaseTypes->blockSignals( false );
@@ -108,6 +107,7 @@ QgsOgrSourceSelect::QgsOgrSourceSelect( QWidget *parent, Qt::WindowFlags fl, Qgs
   mAuthWarning->setText( tr( " Additional credential options are required as documented <a href=\"%1\">here</a>." ).arg( QLatin1String( "http://gdal.org/gdal_virtual_file_systems.html#gdal_virtual_file_systems_network" ) ) );
 
   mFileWidget->setDialogTitle( tr( "Open OGR Supported Vector Dataset(s)" ) );
+  mVectorFileFilter = QgsProviderRegistry::instance()->fileVectorFilters();
   mFileWidget->setFilter( mVectorFileFilter );
   mFileWidget->setStorageMode( QgsFileWidget::GetMultipleFiles );
   mFileWidget->setOptions( QFileDialog::HideNameFilterDetails );
@@ -170,7 +170,7 @@ bool QgsOgrSourceSelect::isProtocolCloudType()
 
 void QgsOgrSourceSelect::addNewConnection()
 {
-  QgsNewOgrConnection *nc = new QgsNewOgrConnection( this );
+  QgsNewOgrConnection *nc = new QgsNewOgrConnection( this, cmbDatabaseTypes->currentText() );
   nc->exec();
   delete nc;
 
@@ -691,6 +691,11 @@ void QgsOgrSourceSelect::fillOpenOptions()
          !EQUAL( pszOptionName, "PRELUDE_STATEMENTS" ) )
       continue;
 
+    // The NOLOCK option is automatically set by the OGR provider. Do not
+    // expose it
+    if ( bIsGPKG && EQUAL( pszOptionName, "NOLOCK" ) )
+      continue;
+
     // Do not list database options already asked in the database dialog
     if ( radioSrcDatabase->isChecked() &&
          ( EQUAL( pszOptionName, "USER" ) ||
@@ -703,6 +708,12 @@ void QgsOgrSourceSelect::fillOpenOptions()
     {
       continue;
     }
+
+    // QGIS data model doesn't support the OGRFeature native data concept
+    // (typically used for GeoJSON "foreign" members). Hide it to avoid setting
+    // wrong expectations to users (https://github.com/qgis/QGIS/issues/48004)
+    if ( EQUAL( pszOptionName, "NATIVE_DATA" ) )
+      continue;
 
     const char *pszType = CPLGetXMLValue( psItem, "type", nullptr );
     QStringList options;

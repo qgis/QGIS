@@ -91,6 +91,8 @@ Sets vertex marker icon type
 %Docstring
 Sets whether the vertices are drawn
 %End
+    virtual void updatePosition();
+
 
   protected:
     virtual void paint( QPainter *painter );

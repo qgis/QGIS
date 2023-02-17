@@ -258,9 +258,9 @@ QVariantMap QgsJoinByAttributeAlgorithm::processAlgorithm( const QVariantMap &pa
     }
   }
 
-  feedback->pushInfo( QObject::tr( "%1 feature(s) from input layer were successfully matched" ).arg( joinedCount ) );
+  feedback->pushInfo( QObject::tr( "%n feature(s) from input layer were successfully matched", nullptr, joinedCount ) );
   if ( unjoinedCount > 0 )
-    feedback->reportError( QObject::tr( "%1 feature(s) from input layer could not be matched" ).arg( unjoinedCount ) );
+    feedback->reportError( QObject::tr( "%n feature(s) from input layer could not be matched", nullptr, unjoinedCount ) );
 
   QVariantMap outputs;
   if ( sink )

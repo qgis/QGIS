@@ -123,6 +123,16 @@ Returns a string representing the categories settings, used for debugging purpos
 Converts the category to a matching SLD rule, within the specified DOM document and ``element``.
 %End
 
+    SIP_PYOBJECT __repr__();
+%MethodCode
+    const QString str = !sipCpp->value().isValid()
+                        ? QStringLiteral( "<QgsRendererCategory>" )
+                        : sipCpp->label().isEmpty()
+                        ? QStringLiteral( "<QgsRendererCategory: %1>" ).arg( sipCpp->value().toString() )
+                        : QStringLiteral( "<QgsRendererCategory: %1 (%2)>" ).arg( sipCpp->value().toString(), sipCpp->label() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
+
   protected:
 
     void swap( QgsRendererCategory &other );
@@ -326,6 +336,8 @@ Creates a categorized renderer from an XML ``element``.
     virtual QgsLegendSymbolList legendSymbolItems() const;
 
     virtual QSet< QString > legendKeysForFeature( const QgsFeature &feature, QgsRenderContext &context ) const;
+
+    virtual QString legendKeyToExpression( const QString &key, QgsVectorLayer *layer, bool &ok ) const;
 
 
     QgsSymbol *sourceSymbol();

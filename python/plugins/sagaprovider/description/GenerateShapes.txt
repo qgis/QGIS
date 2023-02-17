@@ -1,8 +1,0 @@
-Generate Shapes
-shapes_tools
-QgsProcessingParameterFeatureSource|INPUT|Input|5|None|False
-QgsProcessingParameterField|FIELD_ID|ID|None|INPUT|-1|False|False
-QgsProcessingParameterField|FIELD_X|X|None|INPUT|-1|False|False
-QgsProcessingParameterField|FIELD_Y|Y|None|INPUT|-1|False|False
-QgsProcessingParameterEnum|SHAPE_TYPE|Shape Type|[0] Point(s);[1] Line(s);[2] Polygon(s)|False|0
-QgsProcessingParameterVectorDestination|OUTPUT|Output

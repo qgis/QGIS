@@ -51,6 +51,13 @@ class CORE_EXPORT QgsPointCloudBlock
     //! Returns number of points that are stored in the block
     int pointCount() const;
 
+    /**
+     * Returns the total size of each individual point record.
+     *
+     * \since QGIS 3.26
+     */
+    int pointRecordSize() const { return mRecordSize; }
+
     //! Returns the attributes that are stored in the data block, along with their size
     QgsPointCloudAttributeCollection attributes() const;
 
@@ -59,9 +66,21 @@ class CORE_EXPORT QgsPointCloudBlock
 
     //! Returns the custom offset of the block.
     QgsVector3D offset() const;
+
+    /**
+     * Changes the number of points in the block.
+     * This is used in order to remove all points after point \a size.
+     * If a \a size larger than \a pointCount() is used, data for the new points will be uninitialized
+     *
+     * \since QGIS 3.26
+     */
+    void setPointCount( int size );
+
   private:
-    int mPointCount;
+
+    int mPointCount = 0;
     QgsPointCloudAttributeCollection mAttributes;
+    int mRecordSize = 0;
     QByteArray mStorage;
     QgsVector3D mScale, mOffset;
 };

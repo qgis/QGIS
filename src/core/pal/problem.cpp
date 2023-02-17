@@ -675,7 +675,7 @@ QList<LabelPosition *> Problem::getSolution( bool returnInactive, QList<LabelPos
     }
     else if ( foundCandidatesForFeature &&
               ( returnInactive // allowing any overlapping labels regardless of where they are from
-                || mLabelPositions.at( startIndexForLabelPlacements )->getFeaturePart()->layer()->displayAll() // allowing overlapping labels for the layer
+                || mLabelPositions.at( startIndexForLabelPlacements )->getFeaturePart()->feature()->overlapHandling() == Qgis::LabelOverlapHandling::AllowOverlapIfRequired // allowing overlapping labels for the layer
                 || mLabelPositions.at( startIndexForLabelPlacements )->getFeaturePart()->alwaysShow() ) ) // allowing overlapping labels for the feature
     {
       finalLabelPlacements.push_back( mLabelPositions[ startIndexForLabelPlacements ].get() ); // unplaced label

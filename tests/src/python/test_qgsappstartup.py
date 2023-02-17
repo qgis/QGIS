@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsApplication.
 
 From build dir: ctest -R PyQgsAppStartup -V
@@ -12,17 +11,18 @@ __author__ = 'Hugo Mercier (hugo.mercier@oslandia.com)'
 __date__ = '17/07/2013'
 __copyright__ = 'Copyright 2013, The QGIS Project'
 
-import sys
-import os
+import errno
 import glob
+import os
 import re
-import time
 import shutil
 import subprocess
+import sys
 import tempfile
-import errno
+import time
 
 from qgis.testing import unittest
+
 from utilities import unitTestDataPath
 
 print('CTEST_FULL_OUTPUT')
@@ -80,17 +80,14 @@ class TestPyQgsAppStartup(unittest.TestCase):
         while not os.path.exists(myTestFile):
             p.poll()
             if p.returncode is not None:
-                raise Exception('Return code: {}, Call: "{}", Env: {}'.format(p.returncode, ' '.join(call), env))
+                raise Exception(f"Return code: {p.returncode}, Call: \"{' '.join(call)}\", Env: {env}")
             time.sleep(1)
             s += 1
             if s > timeOut:
-                raise Exception('Timed out waiting for application start, Call: "{}", Env: {}'.format(' '.join(call), env))
+                raise Exception(f"Timed out waiting for application start, Call: \"{' '.join(call)}\", Env: {env}")
 
-        with open(myTestFile, 'rt', encoding='utf-8') as res_file:
+        with open(myTestFile, encoding='utf-8') as res_file:
             lines = res_file.readlines()
-
-        # platform should be "Desktop"
-        self.assertEqual(lines, ['Platform: desktop'])
 
         try:
             p.terminate()
@@ -98,14 +95,15 @@ class TestPyQgsAppStartup(unittest.TestCase):
             if e.errno != errno.ESRCH:
                 raise e
 
+        return lines
+
     def testPyQgisStartupEnvVar(self):
         # verify PYQGIS_STARTUP env variable file is run by embedded interpreter
         # create a temp python module that writes out test file
         testfile = 'pyqgis_startup.txt'
         testfilepath = os.path.join(self.TMP_DIR, testfile).replace('\\', '/')
         testcode = [
-            "from qgis.core import QgsApplication\n"
-            "f = open('{0}', 'w')\n".format(testfilepath),
+            f"from qgis.core import QgsApplication\nf = open('{testfilepath}', 'w')\n",
             "f.write('Platform: ' + QgsApplication.platform())\n",
             "f.close()\n"
         ]
@@ -113,10 +111,37 @@ class TestPyQgsAppStartup(unittest.TestCase):
         f = open(testmod, 'w')
         f.writelines(testcode)
         f.close()
-        self.doTestStartup(
+        testfile_lines = self.doTestStartup(
             testFile=testfilepath,
             timeOut=360,
             env={'PYQGIS_STARTUP': testmod})
+
+        # platform should be "Desktop"
+        self.assertEqual(testfile_lines, ['Platform: desktop'])
+
+    def testPyArgs(self):
+        testfile = 'pyqgis_code.txt'
+        testfilepath = os.path.join(self.TMP_DIR, testfile).replace('\\', '/')
+        testcode = [
+            f"import sys\nf = open('{testfilepath}', 'a')\n",
+            "for arg in sys.argv:\n"
+            "  f.write(arg)\n",
+            "  f.write('\\n')\n",
+            "f.close()\n"
+        ]
+        testmod = os.path.join(self.TMP_DIR, 'pyqgis_code.py').replace('\\', '/')
+        f = open(testmod, 'w')
+        f.writelines(testcode)
+        f.close()
+
+        testfile_lines = self.doTestStartup(
+            testFile=testfilepath,
+            timeOut=10,
+            additionalArguments=["--code", testmod, "--py-args", "--specialScriptArgument's", 'a "Quoted" text arg', "--"])
+
+        self.assertEqual(testfile_lines, [testmod + '\n',
+                                          "--specialScriptArgument's\n",
+                                          'a "Quoted" text arg\n'])
 
 
 if __name__ == '__main__':
@@ -147,6 +172,6 @@ if __name__ == '__main__':
             if found:
                 break
 
-    print(('\nQGIS_BIN: {}'.format(QGIS_BIN)))
+    print(f'\nQGIS_BIN: {QGIS_BIN}')
     assert QGIS_BIN, 'QGIS binary not found, skipping test suite'
     unittest.main()

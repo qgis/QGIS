@@ -44,9 +44,9 @@ def initDbPluginList():
             continue
 
         try:
-            exec(u"from .%s import plugin as mod" % name, globals())
+            exec("from .%s import plugin as mod" % name, globals())
         except ImportError as e:
-            DBPLUGIN_ERRORS.append(u"%s: %s" % (name, str(e)))
+            DBPLUGIN_ERRORS.append("%s: %s" % (name, str(e)))
             continue
 
         pluginclass = mod.classFactory()  # NOQA

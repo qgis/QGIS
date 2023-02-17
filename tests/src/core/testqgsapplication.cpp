@@ -22,9 +22,14 @@ Email                : sherman at mrcc dot com
 #include <qgsapplication.h>
 #include "qgsrenderchecker.h"
 
-class TestQgsApplication: public QObject
+class TestQgsApplication: public QgsTest
 {
     Q_OBJECT
+
+  public:
+
+    TestQgsApplication() : QgsTest( QStringLiteral( "QgsApplication Tests" ) ) {}
+
   private slots:
     void checkPaths();
     void checkGdalSkip();
@@ -34,39 +39,34 @@ class TestQgsApplication: public QObject
     void accountName();
     void osName();
     void platformName();
+    void applicationFullName();
     void themeIcon();
 
   private:
     QString getQgisPath();
     bool renderCheck( const QString &testName, QImage &image, int mismatchCount = 0 );
-    QString mReport;
+
 };
 
 
 void TestQgsApplication::initTestCase()
 {
-  //
   // Runs once before any tests are run
-  //
+
+
+  // Set up the QgsSettings environment
+  QCoreApplication::setOrganizationName( QStringLiteral( "QGIS" ) );
+  QCoreApplication::setOrganizationDomain( QStringLiteral( "qgis.org" ) );
+  QCoreApplication::setApplicationName( QStringLiteral( "QGIS-TEST" ) );
+
   // init QGIS's paths - true means that all path will be inited from prefix
   QgsApplication::init();
   QgsApplication::initQgis();
   qDebug( "%s", QgsApplication::showSettings().toUtf8().constData() );
-
-  mReport = QStringLiteral( "<h1>QgsApplication Tests</h1>\n" );
-
 }
 
 void TestQgsApplication::cleanupTestCase()
 {
-  const QString myReportFile = QDir::tempPath() + QDir::separator() + "qgistest.html";
-  QFile myFile( myReportFile );
-  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
-  {
-    QTextStream myQTextStream( &myFile );
-    myQTextStream << mReport;
-    myFile.close();
-  }
   QgsApplication::exitQgis();
 }
 
@@ -98,6 +98,12 @@ void TestQgsApplication::platformName()
   QCOMPARE( QgsApplication::platform(), QString( "external" ) );
 }
 
+void TestQgsApplication::applicationFullName()
+{
+  // test will always be run under external platform
+  QCOMPARE( QgsApplication::applicationFullName(), QString( "QGIS-TEST external" ) );
+}
+
 void TestQgsApplication::themeIcon()
 {
   QIcon icon = QgsApplication::getThemeIcon( QStringLiteral( "/mIconFolder.svg" ) );
@@ -118,7 +124,6 @@ void TestQgsApplication::themeIcon()
 
 bool TestQgsApplication::renderCheck( const QString &testName, QImage &image, int mismatchCount )
 {
-  mReport += "<h2>" + testName + "</h2>\n";
   const QString myTmpDir = QDir::tempPath() + '/';
   const QString myFileName = myTmpDir + testName + ".png";
   image.save( myFileName, "PNG" );

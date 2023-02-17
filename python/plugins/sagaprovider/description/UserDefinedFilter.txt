@@ -1,6 +1,0 @@
-User Defined Filter
-grid_filter
-QgsProcessingParameterRasterLayer|INPUT|Grid|None|False
-QgsProcessingParameterFeatureSource|FILTER|Filter Matrix|5|None|True
-QgsProcessingParameterMatrix|FILTER_3X3|Default Filter Matrix (3x3)|3|True|1;2;3|,,,,,,,,
-QgsProcessingParameterRasterDestination|RESULT|Filtered Grid

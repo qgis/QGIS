@@ -23,6 +23,8 @@
 #include <sstream>
 #include <iomanip>
 
+///@cond PRIVATE
+
 struct formatter : std::numpunct<wchar_t>
 {
   formatter( QChar thousands, bool showThousands, QChar decimal )
@@ -38,6 +40,7 @@ struct formatter : std::numpunct<wchar_t>
   wchar_t mDecimal;
   bool mShowThousands = true;
 };
+///@endcond
 
 QgsFractionNumericFormat::QgsFractionNumericFormat()
 {
@@ -162,7 +165,7 @@ QVariantMap QgsFractionNumericFormat::configuration( const QgsReadWriteContext &
   QVariantMap res;
   res.insert( QStringLiteral( "show_thousand_separator" ), mShowThousandsSeparator );
   res.insert( QStringLiteral( "show_plus" ), mShowPlusSign );
-  res.insert( QStringLiteral( "thousand_separator" ), mThousandsSeparator );
+  res.insert( QStringLiteral( "thousand_separator" ), mThousandsSeparator.isNull() ? QVariant() : QVariant::fromValue( mThousandsSeparator ) );
   res.insert( QStringLiteral( "use_dedicated_unicode" ), mUseDedicatedUnicode );
   res.insert( QStringLiteral( "use_unicode_supersubscript" ), mUseUnicodeSuperSubscript );
   return res;

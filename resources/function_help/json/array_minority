@@ -3,17 +3,35 @@
   "type": "function",
   "groups": ["Arrays"],
   "description": "Returns the less common values in an array.",
-  "arguments": [
-    {"arg":"array","description":"an array"},
-    {"arg":"option='all'", "optional":true, "description":"a string specifying the return values handling. Valid options are:<br /><ul><li>all: Default, all less common values are returned in an array.</li><li>any: Returns one of the less common values.</li><li>median: Returns the median of the less common values. Non arithmetic values are ignored.</li><li>real_minority: Returns values which occur less than half the size of the array.</li></ul>"}
-  ],
-  "examples": [
-    { "expression":"array_minority(array(0,42,42), 'all')", "returns":"[ 0 ]"},
-    { "expression":"array_minority(array(0,1,42,42), 'all')", "returns":"[ 0, 1 ]"},
-    { "expression":"array_minority(array(0,1,42,42,43,1), 'any')", "returns":"0 or 43"},
-    { "expression":"array_minority(array(1,2,3,3), 'median')", "returns":"1.5"},
-    { "expression":"array_minority(array(0,1,42,42,43), 'real_minority')", "returns":"[ 42, 43, 0, 1 ]"},
-    { "expression":"array_minority(array(0,1,42,42,43,42), 'real_minority')", "returns":"[ 42, 43, 0, 1 ]"},
-    { "expression":"array_minority(array(0,1,42,42,43,42,42), 'real_minority')", "returns":"[ 43, 0, 1 ]"}
-  ]
+  "arguments": [{
+    "arg": "array",
+    "description": "an array"
+  }, {
+    "arg": "option='all'",
+    "optional": true,
+    "description": "a string specifying the return values handling. Valid options are:<br /><ul><li>all: Default, all less common values are returned in an array.</li><li>any: Returns one of the less common values.</li><li>median: Returns the median of the less common values. Non arithmetic values are ignored.</li><li>real_minority: Returns values which occur less than half the size of the array.</li></ul>"
+  }],
+  "examples": [{
+    "expression": "array_minority(array(0,42,42), 'all')",
+    "returns": "[ 0 ]"
+  }, {
+    "expression": "array_minority(array(0,1,42,42), 'all')",
+    "returns": "[ 0, 1 ]"
+  }, {
+    "expression": "array_minority(array(0,1,42,42,43,1), 'any')",
+    "returns": "0 or 43"
+  }, {
+    "expression": "array_minority(array(1,2,3,3), 'median')",
+    "returns": "1.5"
+  }, {
+    "expression": "array_minority(array(0,1,42,42,43), 'real_minority')",
+    "returns": "[ 42, 43, 0, 1 ]"
+  }, {
+    "expression": "array_minority(array(0,1,42,42,43,42), 'real_minority')",
+    "returns": "[ 42, 43, 0, 1 ]"
+  }, {
+    "expression": "array_minority(array(0,1,42,42,43,42,42), 'real_minority')",
+    "returns": "[ 43, 0, 1 ]"
+  }],
+  "tags": ["common", "array", "median"]
 }

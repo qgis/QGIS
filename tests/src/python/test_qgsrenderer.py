@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsFeatureRenderer.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -12,14 +11,14 @@ __copyright__ = 'Copyright 2016, The QGIS Project'
 
 import qgis  # NOQA
 
-from qgis.core import (QgsRendererAbstractMetadata,
-                       QgsApplication,
-                       QgsVectorLayer,
-                       QgsFeature,
-                       QgsGeometry,
-                       QgsPoint,
-                       QgsPointXY
-                       )
+from qgis.core import (
+    QgsApplication,
+    QgsFeature,
+    QgsGeometry,
+    QgsPointXY,
+    QgsRendererAbstractMetadata,
+    QgsVectorLayer,
+)
 from qgis.testing import start_app, unittest
 
 start_app()

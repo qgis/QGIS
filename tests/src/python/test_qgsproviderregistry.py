@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsProviderRegistry.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -11,16 +10,16 @@ __date__ = '16/03/2020'
 __copyright__ = 'Copyright 2020, The QGIS Project'
 
 import qgis  # NOQA
-
 from qgis.core import (
-    QgsProviderRegistry,
+    Qgis,
     QgsMapLayerType,
     QgsProviderMetadata,
+    QgsProviderRegistry,
     QgsProviderSublayerDetails,
-    Qgis,
-    QgsProviderUtils
+    QgsProviderUtils,
 )
 from qgis.testing import start_app, unittest
+
 from utilities import unitTestDataPath
 
 # Convenience instances in case you may need them
@@ -69,13 +68,30 @@ class TestQgsProviderRegistry(unittest.TestCase):
 
         self.assertIsNone(QgsProviderRegistry.instance().providerMetadata('asdasdasdasdasd'))
 
+    def testProvidersForLayerType(self):
+        """
+        Test retrieving providers for a layer type
+        """
+        providers = QgsProviderRegistry.instance().providersForLayerType(QgsMapLayerType.VectorLayer)
+        self.assertIn('ogr', providers)
+        self.assertIn('memory', providers)
+        self.assertNotIn('gdal', providers)
+
+        providers = QgsProviderRegistry.instance().providersForLayerType(QgsMapLayerType.RasterLayer)
+        self.assertNotIn('ogr', providers)
+        self.assertNotIn('memory', providers)
+        self.assertIn('gdal', providers)
+
+        providers = QgsProviderRegistry.instance().providersForLayerType(QgsMapLayerType.AnnotationLayer)
+        self.assertFalse(providers)
+
     def testCreateProvider(self):
         """
         Test creating provider instance
         """
         providers = QgsProviderRegistry.instance().providerList()
         for p in providers:
-            if p == 'geonode' or p == 'vectortile':
+            if p == 'vectortile':
                 continue
 
             self.assertTrue(QgsProviderRegistry.instance().createProvider(p, ''))

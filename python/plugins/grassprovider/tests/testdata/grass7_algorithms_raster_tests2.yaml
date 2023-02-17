@@ -324,6 +324,7 @@ tests:
         - d447a4dfb85ed7f4d819e68b32eb1303bd2040ca72077892d3e3cec7
         - 7596586771ae5836b141a05e109569c14290906f8215ecd6677e8769
         - 0e0a32123986032c00557ccf8a3b5a5ec26bff6987c353e02a2631fa
+        - 61d6cea43ff284ea8909f071b3f13344e146430b7754ad25321a05af
         type: rasterhash
 
   - algorithm: grass7:r.info
@@ -671,7 +672,9 @@ tests:
       threshold: 1
     results:
       direction:
-        hash: 8499f6e5f81d0b79a0483481b467263246e2c97f1ef652df90e773e2
+        hash:
+        - 8499f6e5f81d0b79a0483481b467263246e2c97f1ef652df90e773e2
+        - c193afe158c5bc50542a2ba1a93f5374a72ac7344a044e95102d7e44
         type: rasterhash
       stream_raster:
         hash: 916672ce0c35295100bcdc56bc60e26841b9cbb384924ae4f54648a8
@@ -825,7 +828,9 @@ tests:
       method: 0
     results:
       output:
-        hash: caa4870e0f0f1a42583cd562c26f0ad6b7795116961c7f6053f1ccde
+        hash:
+        - caa4870e0f0f1a42583cd562c26f0ad6b7795116961c7f6053f1ccde
+        - f435835d1cda88a718e840595f1f526de740523cd8c65ba8dfc7799b
         type: rasterhash
 
   - algorithm: grass7:r.neighbors

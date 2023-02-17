@@ -58,22 +58,87 @@ class CORE_EXPORT QgsRendererRange
 
     bool operator<( const QgsRendererRange &other ) const;
 
+    /**
+     * Returns the lower bound of the range.
+     *
+     * \see setLowerValue()
+     * \see upperValue()
+     */
     double lowerValue() const;
+
+    /**
+     * Returns the upper bound of the range.
+     *
+     * \see setUpperValue()
+     * \see lowerValue()
+     */
     double upperValue() const;
 
+    /**
+     * Returns the symbol used for the range.
+     *
+     * \see setSymbol()
+     */
     QgsSymbol *symbol() const;
+
+    /**
+     * Returns the label used for the range.
+     *
+     * \see setLabel()
+     */
     QString label() const;
 
+    /**
+     * Sets the symbol used for the range.
+     *
+     * Ownership of the symbol is transferred.
+     *
+     * \see symbol()
+     */
     void setSymbol( QgsSymbol *s SIP_TRANSFER );
+
+    /**
+     * Sets the label used for the range.
+     *
+     * \see label()
+     */
     void setLabel( const QString &label );
+
+    /**
+     * Sets the lower bound of the range.
+     *
+     * \see lowerValue()
+     * \see setUpperValue()
+     */
     void setLowerValue( double lowerValue );
+
+    /**
+     * Sets the upper bound of the range.
+     *
+     * \see upperValue()
+     * \see setLowerValue()
+     */
     void setUpperValue( double upperValue );
 
-    // \since QGIS 2.5
+    /**
+     * Returns TRUE if the range should be rendered.
+     *
+     * \see setRenderState()
+     * \since QGIS 2.6
+     */
     bool renderState() const;
+
+    /**
+     * Sets whether the range should be rendered.
+     *
+     * \see renderState()
+     * \since QGIS 2.6
+     */
     void setRenderState( bool render );
 
-    // debugging
+    /**
+     * Dumps a string representation of the range.
+     */
     QString dump() const;
 
     /**
@@ -85,6 +150,33 @@ class CORE_EXPORT QgsRendererRange
      * rather than a < test.
      */
     void toSld( QDomDocument &doc, QDomElement &element, QVariantMap props, bool firstRange = false ) const;
+
+#ifdef SIP_RUN
+    SIP_PYOBJECT __repr__();
+    % MethodCode
+    const QString str = sipCpp->label().isEmpty()
+                        ? QStringLiteral( "<QgsRendererRange: %1 - %2>" ).arg( sipCpp->lowerValue() ).arg( sipCpp->upperValue() )
+                        : QStringLiteral( "<QgsRendererRange: %1 - %2 (%3)>" ).arg( sipCpp->lowerValue() ).arg( sipCpp->upperValue() ).arg( sipCpp->label() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+    % End
+
+    SIP_PYOBJECT __getitem__( int );
+    % MethodCode
+    if ( a0 == 0 )
+    {
+      sipRes = Py_BuildValue( "d", sipCpp->lowerValue() );
+    }
+    else if ( a0 == 1 )
+    {
+      sipRes = Py_BuildValue( "d", sipCpp->upperValue() );
+    }
+    else
+    {
+      QString msg = QString( "Bad index: %1" ).arg( a0 );
+      PyErr_SetString( PyExc_IndexError, msg.toLatin1().constData() );
+    }
+    % End
+#endif
 
   protected:
     double mLowerValue = 0, mUpperValue = 0;
@@ -105,7 +197,7 @@ typedef QList<QgsRendererRange> QgsRangeList;
  * \since QGIS 2.6
  * \deprecated since QGIS 3.10, use QgsClassificationMethod instead
  */
-class CORE_EXPORT Q_DECL_DEPRECATED QgsRendererRangeLabelFormat SIP_DEPRECATED
+class CORE_DEPRECATED_EXPORT QgsRendererRangeLabelFormat SIP_DEPRECATED
 {
   public:
     QgsRendererRangeLabelFormat();

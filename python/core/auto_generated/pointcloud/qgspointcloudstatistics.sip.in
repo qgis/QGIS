@@ -1,0 +1,115 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/pointcloud/qgspointcloudstatistics.h                        *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+struct QgsPointCloudAttributeStatistics
+{
+  double minimum;
+  double maximum;
+  double mean;
+  double stDev;
+  int count;
+};
+
+class QgsPointCloudStatistics
+{
+%Docstring(signature="appended")
+
+Class used to store statistics of a point cloud dataset.
+
+.. versionadded:: 3.26
+%End
+
+%TypeHeaderCode
+#include "qgspointcloudstatistics.h"
+%End
+  public:
+    QgsPointCloudStatistics();
+%Docstring
+Constructor
+%End
+
+
+    int sampledPointsCount() const;
+%Docstring
+Returns the number of points used to calculate the statistics
+%End
+
+    void clear();
+%Docstring
+Clears the statistics of all attributes
+%End
+
+    void clear( const QVector<QgsPointCloudAttribute> &attributes );
+%Docstring
+Clears the statistics of given attributes ``attributes``
+%End
+
+    QgsPointCloudAttributeStatistics statisticsOf( const QString &attribute ) const;
+%Docstring
+Returns the calculated statistics of attribute ``attribute``
+%End
+
+    QList<int> classesOf( const QString &attribute ) const;
+%Docstring
+Returns a list of existing classes which are present for the specified ``attribute``
+%End
+
+
+    double minimum( const QString &attribute ) const;
+%Docstring
+Returns the minimum value for the attribute ``attribute``
+If no matching statistic is available then NaN will be returned.
+%End
+
+    double maximum( const QString &attribute ) const;
+%Docstring
+Returns the maximum value for the attribute ``attribute``
+If no matching statistic is available then NaN will be returned.
+%End
+
+    double mean( const QString &attribute ) const;
+%Docstring
+Returns the mean value for the attribute ``attribute``
+If no matching statistic is available then NaN will be returned.
+%End
+
+    double stDev( const QString &attribute ) const;
+%Docstring
+Returns the standard deviation value for the attribute ``attribute``
+If no matching statistic is available then NaN will be returned.
+%End
+
+    void combineWith( const QgsPointCloudStatistics &stats );
+%Docstring
+Merges the current statistics with the statistics from ``stats``
+%End
+
+    QByteArray toStatisticsJson() const;
+%Docstring
+Converts the current statistics object into JSON object
+%End
+
+    static QgsPointCloudStatistics fromStatisticsJson( QByteArray stats );
+%Docstring
+Creates a statistics object from the JSON object ``stats``
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/pointcloud/qgspointcloudstatistics.h                        *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

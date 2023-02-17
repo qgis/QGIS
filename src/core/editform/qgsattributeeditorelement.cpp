@@ -22,14 +22,17 @@
 #include "qgsattributeeditorhtmlelement.h"
 #include "qgsattributeeditorqmlelement.h"
 #include "qgsattributeeditorrelation.h"
-
-
+#include "qgsattributeeditorspacerelement.h"
+#include "qgsattributeeditortextelement.h"
+#include "qgssymbollayerutils.h"
+#include "qgsfontutils.h"
 
 QDomElement QgsAttributeEditorElement::toDomElement( QDomDocument &doc ) const
 {
   QDomElement elem = doc.createElement( typeIdentifier() );
   elem.setAttribute( QStringLiteral( "name" ), mName );
   elem.setAttribute( QStringLiteral( "showLabel" ), mShowLabel );
+  elem.appendChild( mLabelStyle.writeXml( doc ) );
   saveConfiguration( elem, doc );
   return elem;
 }
@@ -42,6 +45,16 @@ bool QgsAttributeEditorElement::showLabel() const
 void QgsAttributeEditorElement::setShowLabel( bool showLabel )
 {
   mShowLabel = showLabel;
+}
+
+QgsAttributeEditorElement::LabelStyle QgsAttributeEditorElement::labelStyle() const
+{
+  return mLabelStyle;
+}
+
+void QgsAttributeEditorElement::setLabelStyle( const QgsAttributeEditorElement::LabelStyle &labelStyle )
+{
+  mLabelStyle = labelStyle;
 }
 
 QgsAttributeEditorElement *QgsAttributeEditorElement::create( const QDomElement &element, const QString &layerId, const QgsFields &fields, const QgsReadWriteContext &context, QgsAttributeEditorElement *parent )
@@ -74,6 +87,14 @@ QgsAttributeEditorElement *QgsAttributeEditorElement::create( const QDomElement 
   {
     newElement = new QgsAttributeEditorHtmlElement( element.attribute( QStringLiteral( "name" ) ), parent );
   }
+  else if ( element.tagName() == QLatin1String( "attributeEditorTextElement" ) )
+  {
+    newElement = new QgsAttributeEditorTextElement( element.attribute( QStringLiteral( "name" ) ), parent );
+  }
+  else if ( element.tagName() == QLatin1String( "attributeEditorSpacerElement" ) )
+  {
+    newElement = new QgsAttributeEditorSpacerElement( element.attribute( QStringLiteral( "name" ) ), parent );
+  }
   else if ( element.tagName() == QLatin1String( "attributeEditorAction" ) )
   {
     newElement = new QgsAttributeEditorAction( QUuid( element.attribute( QStringLiteral( "name" ) ) ), parent );
@@ -86,9 +107,59 @@ QgsAttributeEditorElement *QgsAttributeEditorElement::create( const QDomElement 
     else
       newElement->setShowLabel( true );
 
+    // Label font and color
+    LabelStyle style;
+    style.readXml( element );
+    newElement->setLabelStyle( style );
+
     newElement->loadConfiguration( element, layerId, context, fields );
   }
 
   return newElement;
 }
 
+
+void QgsAttributeEditorElement::LabelStyle::readXml( const QDomNode &node )
+{
+  QDomElement element { node.firstChildElement( QStringLiteral( "labelStyle" ) ) };
+
+  if ( ! element.isNull() )
+  {
+
+    // Label font and color
+    if ( element.hasAttribute( QStringLiteral( "labelColor" ) ) )
+    {
+      color = QgsSymbolLayerUtils::decodeColor( element.attribute( QStringLiteral( "labelColor" ) ) );
+    }
+
+    QFont newFont;
+    QgsFontUtils::setFromXmlChildNode( newFont, element, QStringLiteral( "labelFont" ) );
+
+    font = newFont;
+
+    if ( element.hasAttribute( QStringLiteral( "overrideLabelColor" ) ) )
+    {
+      overrideColor = element.attribute( QStringLiteral( "overrideLabelColor" ) ) == QChar( '1' );
+    }
+
+    if ( element.hasAttribute( QStringLiteral( "overrideLabelFont" ) ) )
+    {
+      overrideFont = element.attribute( QStringLiteral( "overrideLabelFont" ) ) == QChar( '1' );
+    }
+  }
+}
+
+QDomElement QgsAttributeEditorElement::LabelStyle::writeXml( QDomDocument &document ) const
+{
+  QDomElement elem {  document.createElement( QStringLiteral( "labelStyle" ) ) };
+  elem.setAttribute( QStringLiteral( "labelColor" ), QgsSymbolLayerUtils::encodeColor( color ) );
+  elem.appendChild( QgsFontUtils::toXmlElement( font, document, QStringLiteral( "labelFont" ) ) );
+  elem.setAttribute( QStringLiteral( "overrideLabelColor" ), overrideColor ? QChar( '1' ) : QChar( '0' ) );
+  elem.setAttribute( QStringLiteral( "overrideLabelFont" ), overrideFont ? QChar( '1' ) : QChar( '0' ) );
+  return elem;
+}
+
+bool QgsAttributeEditorElement::LabelStyle::operator==( const LabelStyle &other ) const
+{
+  return overrideColor == other.overrideColor && overrideFont == other.overrideFont && color == other.color && font == other.font;
+}

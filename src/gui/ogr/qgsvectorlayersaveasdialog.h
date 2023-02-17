@@ -20,8 +20,6 @@
 
 #include "ui_qgsvectorlayersaveasdialogbase.h"
 #include <QDialog>
-#include "qgshelp.h"
-#include "qgsfields.h"
 #include "qgsvectorfilewriter.h"
 #include "qgis_gui.h"
 
@@ -120,6 +118,11 @@ class GUI_EXPORT QgsVectorLayerSaveAsDialog : public QDialog, private Ui::QgsVec
     QgsAttributeList selectedAttributes() const;
     //! Returns selected attributes that must be exported with their displayed values instead of their raw values. Added in QGIS 2.16
     QgsAttributeList attributesAsDisplayedValues() const;
+
+    /**
+     * Returns a list of export names for attributes
+     */
+    QStringList attributesExportNames() const;
 
     /**
      * Returns TRUE if the "add to canvas" checkbox is checked.
@@ -233,10 +236,20 @@ class GUI_EXPORT QgsVectorLayerSaveAsDialog : public QDialog, private Ui::QgsVec
     void accept() override;
     void mSelectAllAttributes_clicked();
     void mDeselectAllAttributes_clicked();
+    void mUseAliasesForExportedName_stateChanged( int state );
     void mReplaceRawFieldValues_stateChanged( int state );
     void mAttributeTable_itemChanged( QTableWidgetItem *item );
 
   private:
+
+    enum class ColumnIndex : int
+    {
+      Name = 0,
+      ExportName = 1,
+      Type = 2,
+      ExportAsDisplayedValue = 3
+    };
+
     void setup();
     QList< QPair< QLabel *, QWidget * > > createControls( const QMap<QString, QgsVectorFileWriter::Option *> &options );
 
@@ -246,10 +259,9 @@ class GUI_EXPORT QgsVectorLayerSaveAsDialog : public QDialog, private Ui::QgsVec
     QgsCoordinateReferenceSystem mLayerCrs;
     QgsVectorLayer *mLayer = nullptr;
     QgsMapCanvas *mMapCanvas = nullptr;
-    bool mAttributeTableItemChangedSlotEnabled;
-    bool mReplaceRawFieldValuesStateChangedSlotEnabled;
     QgsVectorFileWriter::ActionOnExistingFile mActionOnExistingFile;
     Options mOptions = AllOptions;
+    QString mDefaultOutputLayerNameFromInputLayerName;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsVectorLayerSaveAsDialog::Options )

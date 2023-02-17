@@ -16,7 +16,6 @@
 #include "qgslayertreeutils.h"
 #include "qgslayertree.h"
 #include "qgsvectorlayer.h"
-#include "qgsmeshlayer.h"
 #include "qgsproject.h"
 #include "qgslogger.h"
 
@@ -322,7 +321,7 @@ void QgsLayerTreeUtils::storeOriginalLayersProperties( QgsLayerTreeGroup *group,
       if ( QgsMapLayer *l = QgsLayerTree::toLayer( node )->layer() )
       {
         // no need to store for annotation layers, they can never break!
-        if ( l->type() == QgsMapLayerType::AnnotationLayer )
+        if ( l->type() == Qgis::LayerType::Annotation )
           return;
 
         QDomElement layerElement { projectLayersElement.firstChildElement( QStringLiteral( "maplayer" ) ) };
@@ -472,7 +471,7 @@ QgsLayerTreeLayer *QgsLayerTreeUtils::insertLayerBelow( QgsLayerTreeGroup *group
   }
   // insert the new layer
   QgsLayerTreeGroup *parent = static_cast<QgsLayerTreeGroup *>( inTree->parent() ) ? static_cast<QgsLayerTreeGroup *>( inTree->parent() ) : group;
-  return parent->insertLayer( idx, layerToInsert );
+  return parent->insertLayer( idx + 1, layerToInsert );
 }
 
 static void _collectMapLayers( const QList<QgsLayerTreeNode *> &nodes, QSet<QgsMapLayer *> &layersSet )
@@ -529,4 +528,171 @@ QgsLayerTreeGroup *QgsLayerTreeUtils::firstGroupWithoutCustomProperty( QgsLayerT
       Q_ASSERT( false );
   }
   return group;
+}
+
+QgsLayerTreeLayer *QgsLayerTreeUtils::insertLayerAtOptimalPlacement( QgsLayerTreeGroup *group, QgsMapLayer *layer )
+{
+  int vectorLineIndex = 0;
+  int vectorPolygonIndex = 0;
+  int pointCloudIndex = 0;
+  int meshIndex = 0;
+  int rasterIndex = 0;
+  int basemapIndex = 0;
+
+  const QList<QgsLayerTreeNode *> children = group->children();
+  int nodeIdx = 0;
+  for ( const QgsLayerTreeNode *child : children )
+  {
+    if ( QgsLayerTree::isLayer( child ) )
+    {
+      nodeIdx++;
+      const QgsMapLayer *layer = qobject_cast<const QgsLayerTreeLayer *>( child )->layer();
+      switch ( layer->type() )
+      {
+        case Qgis::LayerType::Vector:
+        {
+          const QgsVectorLayer *vlayer = static_cast<const QgsVectorLayer *>( layer );
+          if ( vlayer->geometryType() == QgsWkbTypes::PointGeometry )
+          {
+            if ( vectorLineIndex < nodeIdx )
+              vectorLineIndex = nodeIdx;
+            if ( vectorPolygonIndex < nodeIdx )
+              vectorPolygonIndex = nodeIdx;
+            if ( pointCloudIndex < nodeIdx )
+              pointCloudIndex = nodeIdx;
+            if ( meshIndex < nodeIdx )
+              meshIndex = nodeIdx;
+            if ( rasterIndex < nodeIdx )
+              rasterIndex = nodeIdx;
+            if ( basemapIndex < nodeIdx )
+              basemapIndex = nodeIdx;
+          }
+          else if ( vlayer->geometryType() == QgsWkbTypes::LineGeometry )
+          {
+            if ( vectorPolygonIndex < nodeIdx )
+              vectorPolygonIndex = nodeIdx;
+            if ( pointCloudIndex < nodeIdx )
+              pointCloudIndex = nodeIdx;
+            if ( meshIndex < nodeIdx )
+              meshIndex = nodeIdx;
+            if ( rasterIndex < nodeIdx )
+              rasterIndex = nodeIdx;
+            if ( basemapIndex < nodeIdx )
+              basemapIndex = nodeIdx;
+          }
+          else if ( vlayer->geometryType() == QgsWkbTypes::PolygonGeometry )
+          {
+            if ( pointCloudIndex < nodeIdx )
+              pointCloudIndex = nodeIdx;
+            if ( meshIndex < nodeIdx )
+              meshIndex = nodeIdx;
+            if ( rasterIndex < nodeIdx )
+              rasterIndex = nodeIdx;
+            if ( basemapIndex < nodeIdx )
+              basemapIndex = nodeIdx;
+          }
+          break;
+        }
+
+        case Qgis::LayerType::PointCloud:
+        {
+          if ( meshIndex < nodeIdx )
+            meshIndex = nodeIdx;
+          if ( rasterIndex < nodeIdx )
+            rasterIndex = nodeIdx;
+          if ( basemapIndex < nodeIdx )
+            basemapIndex = nodeIdx;
+          break;
+        }
+
+        case Qgis::LayerType::Mesh:
+        {
+          if ( rasterIndex < nodeIdx )
+            rasterIndex = nodeIdx;
+          if ( basemapIndex < nodeIdx )
+            basemapIndex = nodeIdx;
+          break;
+        }
+
+        case Qgis::LayerType::Raster:
+        {
+          if ( layer->dataProvider() && layer->dataProvider()->name() == QLatin1String( "gdal" ) )
+          {
+            // Assume non-gdal raster layers are most likely to be base maps (e.g. XYZ raster)
+            // Admittedly a gross assumption, but better than nothing
+            if ( basemapIndex < nodeIdx )
+              basemapIndex = nodeIdx;
+          }
+          break;
+        }
+
+        case Qgis::LayerType::VectorTile:
+        case Qgis::LayerType::Annotation:
+        case Qgis::LayerType::Group:
+        case Qgis::LayerType::Plugin:
+        default:
+          break;
+      }
+    }
+  }
+
+  int index = 0;
+  switch ( layer->type() )
+  {
+    case Qgis::LayerType::Vector:
+    {
+      QgsVectorLayer *vlayer = static_cast<QgsVectorLayer *>( layer );
+      if ( vlayer->geometryType() == QgsWkbTypes::PointGeometry )
+      {
+        index = 0;
+      }
+      else if ( vlayer->geometryType() == QgsWkbTypes::LineGeometry )
+      {
+        index = vectorLineIndex;
+      }
+      else if ( vlayer->geometryType() == QgsWkbTypes::PolygonGeometry )
+      {
+        index = vectorPolygonIndex;
+      }
+      break;
+    }
+
+    case Qgis::LayerType::PointCloud:
+    {
+      index = pointCloudIndex;
+      break;
+    }
+
+    case Qgis::LayerType::Mesh:
+    {
+      index = meshIndex;
+      break;
+    }
+
+    case Qgis::LayerType::Raster:
+    {
+      if ( layer->dataProvider() && layer->dataProvider()->name() == QLatin1String( "gdal" ) )
+      {
+        index = rasterIndex;
+      }
+      else
+      {
+        index = basemapIndex;
+      }
+      break;
+    }
+
+    case Qgis::LayerType::VectorTile:
+    {
+      index = basemapIndex;
+      break;
+    }
+
+    case Qgis::LayerType::Annotation:
+    case Qgis::LayerType::Group:
+    case Qgis::LayerType::Plugin:
+    default:
+      break;
+  }
+  return group->insertLayer( index, layer );
 }

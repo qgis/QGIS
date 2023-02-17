@@ -16,13 +16,12 @@
 #include <QCloseEvent>
 #include <QPushButton>
 
-#include "qgsproject.h"
 #include "qgs3dmeasuredialog.h"
 #include "qgs3dmaptoolmeasureline.h"
-#include "qgsmapcanvas.h"
 #include "qgisapp.h"
+#include "qgs3dmapcanvas.h"
 #include "qgs3dmapsettings.h"
-
+#include "qgshelp.h"
 
 Qgs3DMeasureDialog::Qgs3DMeasureDialog( Qgs3DMapToolMeasureLine *tool, Qt::WindowFlags f )
   : QDialog( tool->canvas()->topLevelWidget(), f )
@@ -203,7 +202,7 @@ QString Qgs3DMeasureDialog::formatDistance( double distance ) const
 
 void Qgs3DMeasureDialog::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "introduction/general_tools.html#measuring" ) );
+  QgsHelp::openHelp( QStringLiteral( "map_views/map_view.html#measuring" ) );
 }
 
 void Qgs3DMeasureDialog::openConfigTab()

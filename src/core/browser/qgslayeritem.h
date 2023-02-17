@@ -21,6 +21,7 @@
 #include "qgis_core.h"
 #include "qgis.h"
 #include "qgsdataitem.h"
+#include "qgslayermetadata.h"
 
 /**
  * \ingroup core
@@ -55,8 +56,10 @@ class CORE_EXPORT QgsLayerItem : public QgsDataItem
 
     // --- New virtual methods for layer item derived classes ---
 
-    //! Returns QgsMapLayerType
-    QgsMapLayerType mapLayerType() const;
+    /**
+     * Returns the associated map layer type.
+     */
+    Qgis::LayerType mapLayerType() const;
 
     /**
      * Returns the layer item type corresponding to a QgsMapLayer \a layer.
@@ -141,6 +144,23 @@ class CORE_EXPORT QgsLayerItem : public QgsDataItem
     //! \returns the layer name
     virtual QString layerName() const { return name(); }
     QgsAbstractDatabaseProviderConnection *databaseConnection() const override;
+
+    /**
+     * Returns layer's metadata, it may be a default constructed metadata
+     * if metadata is not explicitly set.
+     * \since QGIS 3.28
+     */
+    const QgsLayerMetadata &layerMetadata() const;
+
+    /**
+     * Set layer's \a metadata.
+     * \since QGIS 3.28
+     */
+    void setLayerMetadata( const QgsLayerMetadata &metadata );
+
+  private:
+
+    QgsLayerMetadata mLayerMetadata;
 
 };
 

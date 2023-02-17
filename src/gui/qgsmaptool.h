@@ -22,7 +22,7 @@
 #include <QCursor>
 #include <QString>
 #include <QObject>
-
+#include <QPointer>
 #include <QGestureEvent>
 #include "qgis_gui.h"
 
@@ -92,8 +92,10 @@ class GUI_EXPORT QgsMapTool : public QObject
       sipType = sipType_QgsMapToolAdvancedDigitizing;
     else if ( dynamic_cast<QgsMapToolEdit *>( sipCpp ) != NULL )
       sipType = sipType_QgsMapToolEdit;
+    else if ( sipCpp->inherits( "QgsMapTool" ) ) // e.g. map tools from QGIS app library, which aren't exposed to SIP
+      sipType = sipType_QgsMapTool;
     else
-      sipType = NULL;
+      sipType = nullptr;
     SIP_END
 #endif
 
@@ -261,6 +263,9 @@ class GUI_EXPORT QgsMapTool : public QObject
      */
     virtual bool populateContextMenuWithEvent( QMenu *menu, QgsMapMouseEvent *event );
 
+    //! Transforms a \a point from screen coordinates to map coordinates.
+    QgsPointXY toMapCoordinates( QPoint point );
+
   signals:
     //! emit a message
     void messageEmitted( const QString &message, Qgis::MessageLevel = Qgis::MessageLevel::Info );
@@ -282,9 +287,6 @@ class GUI_EXPORT QgsMapTool : public QObject
 
     //! Constructor takes a map canvas as a parameter.
     QgsMapTool( QgsMapCanvas *canvas SIP_TRANSFERTHIS );
-
-    //! Transforms a \a point from screen coordinates to map coordinates.
-    QgsPointXY toMapCoordinates( QPoint point );
 
     /**
      * Transforms a \a point from map coordinates to \a layer coordinates.
@@ -333,7 +335,7 @@ class GUI_EXPORT QgsMapTool : public QObject
     void setToolName( const QString &name );
 
     //! The pointer to the map canvas
-    QgsMapCanvas *mCanvas = nullptr;
+    QPointer< QgsMapCanvas > mCanvas;
 
     //! The cursor used in the map tool
     QCursor mCursor;
@@ -353,6 +355,7 @@ class GUI_EXPORT QgsMapTool : public QObject
     //! The translated name of the map tool
     QString mToolName;
 
+    friend class QgsMapCanvas;
     friend class TestQgsMapToolEdit;
 
 };

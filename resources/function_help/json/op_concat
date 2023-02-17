@@ -3,14 +3,25 @@
   "type": "operator",
   "groups": ["Operators"],
   "description": "Joins two values together into a string.<br><br>If one of the values is NULL the result will be NULL. See the CONCAT function for a different behavior.",
-  "arguments": [
-        { "arg": "a", "description": "value" },
-        { "arg": "b", "description": "value" }
-  ],
-  "examples": [
-	{ "expression":"'Here' || ' and ' || 'there'", "returns":"'Here and there'"},
-	{ "expression":"'Nothing' || NULL", "returns":"NULL"},
-	{ "expression":"'Dia: ' || \"Diameter\"", "returns":"'Dia: 25'"},
-	{ "expression":"1 || 2", "returns":"'12'"}
-  ]
+  "arguments": [{
+    "arg": "a",
+    "description": "value"
+  }, {
+    "arg": "b",
+    "description": "value"
+  }],
+  "examples": [{
+    "expression": "'Here' || ' and ' || 'there'",
+    "returns": "'Here and there'"
+  }, {
+    "expression": "'Nothing' || NULL",
+    "returns": "NULL"
+  }, {
+    "expression": "'Dia: ' || \"Diameter\"",
+    "returns": "'Dia: 25'"
+  }, {
+    "expression": "1 || 2",
+    "returns": "'12'"
+  }],
+  "tags": ["behavior", "different", "see", "concat", "null", "joins", "result", "values"]
 }

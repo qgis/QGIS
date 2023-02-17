@@ -35,7 +35,7 @@ QgsLayerRestorer::QgsLayerRestorer( const QList<QgsMapLayer *> &layers )
 
     switch ( layer->type() )
     {
-      case QgsMapLayerType::VectorLayer:
+      case Qgis::LayerType::Vector:
       {
         QgsVectorLayer *vLayer = qobject_cast<QgsVectorLayer *>( layer );
 
@@ -47,7 +47,7 @@ QgsLayerRestorer::QgsLayerRestorer( const QList<QgsMapLayer *> &layers )
         }
         break;
       }
-      case QgsMapLayerType::RasterLayer:
+      case Qgis::LayerType::Raster:
       {
         QgsRasterLayer *rLayer = qobject_cast<QgsRasterLayer *>( layer );
 
@@ -58,12 +58,12 @@ QgsLayerRestorer::QgsLayerRestorer( const QList<QgsMapLayer *> &layers )
         break;
       }
 
-      case QgsMapLayerType::MeshLayer:
-      case QgsMapLayerType::VectorTileLayer:
-      case QgsMapLayerType::PluginLayer:
-      case QgsMapLayerType::AnnotationLayer:
-      case QgsMapLayerType::PointCloudLayer:
-      case QgsMapLayerType::GroupLayer:
+      case Qgis::LayerType::Mesh:
+      case Qgis::LayerType::VectorTile:
+      case Qgis::LayerType::Plugin:
+      case Qgis::LayerType::Annotation:
+      case Qgis::LayerType::PointCloud:
+      case Qgis::LayerType::Group:
         break;
     }
 
@@ -73,8 +73,10 @@ QgsLayerRestorer::QgsLayerRestorer( const QList<QgsMapLayer *> &layers )
 
 QgsLayerRestorer::~QgsLayerRestorer()
 {
-  for ( QgsMapLayer *layer : mLayerSettings.keys() )
+  for ( auto it = mLayerSettings.constBegin(); it != mLayerSettings.constEnd(); it++ )
   {
+    QgsMapLayer *layer = it.key();
+
     // Firstly check if a SLD file has been loaded for rendering and removed it
     const QString sldStyleName { layer->customProperty( "sldStyleName", "" ).toString() };
     if ( !sldStyleName.isEmpty() )
@@ -84,13 +86,13 @@ QgsLayerRestorer::~QgsLayerRestorer()
     }
 
     // Then restore the previous style
-    const QgsLayerSettings settings = mLayerSettings[layer];
+    const QgsLayerSettings settings = it.value();
     layer->styleManager()->setCurrentStyle( settings.mNamedStyle );
-    layer->setName( mLayerSettings[layer].name );
+    layer->setName( it.value().name );
 
     switch ( layer->type() )
     {
-      case QgsMapLayerType::VectorLayer:
+      case Qgis::LayerType::Vector:
       {
         QgsVectorLayer *vLayer = qobject_cast<QgsVectorLayer *>( layer );
 
@@ -102,7 +104,7 @@ QgsLayerRestorer::~QgsLayerRestorer()
         }
         break;
       }
-      case QgsMapLayerType::RasterLayer:
+      case Qgis::LayerType::Raster:
       {
         QgsRasterLayer *rLayer = qobject_cast<QgsRasterLayer *>( layer );
 
@@ -113,12 +115,12 @@ QgsLayerRestorer::~QgsLayerRestorer()
         break;
       }
 
-      case QgsMapLayerType::MeshLayer:
-      case QgsMapLayerType::VectorTileLayer:
-      case QgsMapLayerType::PluginLayer:
-      case QgsMapLayerType::AnnotationLayer:
-      case QgsMapLayerType::PointCloudLayer:
-      case QgsMapLayerType::GroupLayer:
+      case Qgis::LayerType::Mesh:
+      case Qgis::LayerType::VectorTile:
+      case Qgis::LayerType::Plugin:
+      case Qgis::LayerType::Annotation:
+      case Qgis::LayerType::PointCloud:
+      case Qgis::LayerType::Group:
         break;
     }
   }

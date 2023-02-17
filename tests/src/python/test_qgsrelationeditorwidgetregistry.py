@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for edit widgets.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -11,35 +10,19 @@ __date__ = '28/11/2015'
 __copyright__ = 'Copyright 2015, The QGIS Project'
 
 import qgis  # NOQA
-
-import os
-
-from qgis.core import (
-    QgsRelation,
-    QgsVectorLayerTools,
-)
-
-from qgis.gui import (
-    QgsGui,
-    QgsAbstractRelationEditorWidget,
-    QgsAbstractRelationEditorConfigWidget,
-    QgsAbstractRelationEditorWidgetFactory,
-    QgsRelationEditorWidget,
-    QgsRelationEditorConfigWidget,
-    QgsAttributeEditorContext,
-    QgsAdvancedDigitizingDockWidget
-)
-
-from qgis.PyQt.QtCore import QTimer
 from qgis.PyQt.QtWidgets import (
-    QToolButton,
-    QMessageBox,
-    QDialogButtonBox,
-    QTableView,
-    QDialog,
-    QLabel,
-    QGridLayout,
     QCheckBox,
+    QGridLayout,
+    QLabel,
+)
+from qgis.core import QgsRelation
+from qgis.gui import (
+    QgsAbstractRelationEditorConfigWidget,
+    QgsAbstractRelationEditorWidget,
+    QgsAbstractRelationEditorWidgetFactory,
+    QgsGui,
+    QgsRelationEditorConfigWidget,
+    QgsRelationEditorWidget,
 )
 from qgis.testing import start_app, unittest
 

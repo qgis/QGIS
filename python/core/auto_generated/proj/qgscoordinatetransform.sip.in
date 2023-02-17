@@ -52,7 +52,8 @@ Default constructor, creates an invalid QgsCoordinateTransform.
 
     explicit QgsCoordinateTransform( const QgsCoordinateReferenceSystem &source,
                                      const QgsCoordinateReferenceSystem &destination,
-                                     const QgsCoordinateTransformContext &context );
+                                     const QgsCoordinateTransformContext &context,
+                                     Qgis::CoordinateTransformationFlags flags = Qgis::CoordinateTransformationFlags() );
 %Docstring
 Constructs a QgsCoordinateTransform to transform from the ``source``
 to ``destination`` coordinate reference system.
@@ -63,6 +64,9 @@ to utilize.
 
 Python scripts should generally use the constructor variant which accepts
 a :py:class:`QgsProject` instance instead of this constructor.
+
+Since QGIS 3.26 the optional ``flags`` argument can be used to specify flags
+which dictate the behavior of the transformation.
 
 .. warning::
 
@@ -85,7 +89,8 @@ a :py:class:`QgsProject` instance instead of this constructor.
 
     explicit QgsCoordinateTransform( const QgsCoordinateReferenceSystem &source,
                                      const QgsCoordinateReferenceSystem &destination,
-                                     const QgsProject *project );
+                                     const QgsProject *project,
+                                     Qgis::CoordinateTransformationFlags flags = Qgis::CoordinateTransformationFlags() );
 %Docstring
 Constructs a QgsCoordinateTransform to transform from the ``source``
 to ``destination`` coordinate reference system, when used with the
@@ -103,6 +108,10 @@ correctly respected during coordinate transforms. E.g.
 
        transform = QgsCoordinateTransform(QgsCoordinateReferenceSystem("EPSG:3111"),
                                           QgsCoordinateReferenceSystem("EPSG:4326"), QgsProject.instance())
+
+Since QGIS 3.26 the optional ``flags`` argument can be used to specify flags
+which dictate the behavior of the transformation.
+
 
 .. warning::
 
@@ -135,6 +144,22 @@ Copy constructor
 
 
     ~QgsCoordinateTransform();
+
+    static bool isTransformationPossible( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination );
+%Docstring
+Returns ``True`` if it is theoretically possible to transform between ``source`` and ``destination`` CRSes.
+
+For example, will return ``False`` if ``source`` and ``destination`` relate to different celestial bodies and
+a transformation between them will never be possible.
+
+.. warning::
+
+   This method tests only if it is theoretically possible to transform between the CRSes, not whether a
+   transform can actually be constructed on the system. It is possible that this method may return ``True``,
+   yet construction of a matching QgsCoordinateTransform fails (e.g. due to missing grid shift files on the system).
+
+.. versionadded:: 3.26
+%End
 
     bool isValid() const;
 %Docstring

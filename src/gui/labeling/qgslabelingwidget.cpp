@@ -69,7 +69,7 @@ void QgsLabelingWidget::resetSettings()
 
 void QgsLabelingWidget::setLayer( QgsMapLayer *mapLayer )
 {
-  if ( !mapLayer || mapLayer->type() != QgsMapLayerType::VectorLayer )
+  if ( !mapLayer || mapLayer->type() != Qgis::LayerType::Vector )
   {
     setEnabled( false );
     return;

@@ -17,15 +17,12 @@
 #include <sqlite3.h>
 
 #include "qgsgeopackageproviderconnection.h"
-#include "qgsogrdbconnection.h"
 #include "qgssettings.h"
-#include "qgsogrprovider.h"
 #include "qgsmessagelog.h"
-#include "qgsproviderregistry.h"
-#include "qgsprovidermetadata.h"
 #include "qgsapplication.h"
 #include "qgsvectorlayer.h"
 #include "qgsfeedback.h"
+#include "qgscoordinatetransform.h"
 
 #include <QTextCodec>
 #include <QRegularExpression>
@@ -35,27 +32,20 @@
 ///@cond PRIVATE
 
 QgsGeoPackageProviderConnection::QgsGeoPackageProviderConnection( const QString &name )
-  : QgsAbstractDatabaseProviderConnection( name )
+  : QgsOgrProviderConnection( name )
 {
-  mProviderKey = QStringLiteral( "ogr" );
-  setDefaultCapabilities();
   QgsSettings settings;
   settings.beginGroup( QStringLiteral( "ogr" ), QgsSettings::Section::Providers );
   settings.beginGroup( QStringLiteral( "GPKG" ) );
   settings.beginGroup( QStringLiteral( "connections" ) );
   settings.beginGroup( name );
   setUri( settings.value( QStringLiteral( "path" ) ).toString() );
+  setDefaultCapabilities();
 }
 
-QgsGeoPackageProviderConnection::QgsGeoPackageProviderConnection( const QString &uri, const QVariantMap &configuration ):
-  QgsAbstractDatabaseProviderConnection( uri, configuration )
+QgsGeoPackageProviderConnection::QgsGeoPackageProviderConnection( const QString &uri, const QVariantMap &configuration )
+  : QgsOgrProviderConnection( uri, configuration )
 {
-  mProviderKey = QStringLiteral( "ogr" );
-  // Cleanup the URI in case it contains other information other than the file path
-  if ( uri.contains( '|' ) )
-  {
-    setUri( uri.left( uri.indexOf( '|' ) ).trimmed() );
-  }
   setDefaultCapabilities();
 }
 
@@ -78,6 +68,21 @@ void QgsGeoPackageProviderConnection::remove( const QString &name ) const
   settings.remove( name );
 }
 
+QgsAbstractDatabaseProviderConnection::TableProperty QgsGeoPackageProviderConnection::table( const QString &schema, const QString &name ) const
+{
+  checkCapability( Capability::Tables );
+  const QList<QgsAbstractDatabaseProviderConnection::TableProperty> constTables { tables( schema ) };
+  for ( const auto &t : constTables )
+  {
+    if ( t.tableName() == name )
+    {
+      return t;
+    }
+  }
+  throw QgsProviderConnectionException( QObject::tr( "Table '%1' was not found in schema '%2'" )
+                                        .arg( name, schema ) );
+}
+
 QString QgsGeoPackageProviderConnection::tableUri( const QString &schema, const QString &name ) const
 {
   const auto tableInfo { table( schema, name ) };
@@ -87,59 +92,9 @@ QString QgsGeoPackageProviderConnection::tableUri( const QString &schema, const 
   }
   else
   {
-    return uri() + QStringLiteral( "|layername=%1" ).arg( name );
+    return QgsOgrProviderConnection::tableUri( schema, name );
   }
 }
-
-void QgsGeoPackageProviderConnection::createVectorTable( const QString &schema,
-    const QString &name,
-    const QgsFields &fields,
-    QgsWkbTypes::Type wkbType,
-    const QgsCoordinateReferenceSystem &srs,
-    bool overwrite,
-    const QMap<QString, QVariant> *options ) const
-{
-  checkCapability( Capability::CreateVectorTable );
-  if ( ! schema.isEmpty() )
-  {
-    QgsMessageLog::logMessage( QStringLiteral( "Schema is not supported by GPKG, ignoring" ), QStringLiteral( "OGR" ), Qgis::MessageLevel::Info );
-  }
-  QMap<QString, QVariant> opts { *options };
-  opts[ QStringLiteral( "layerName" ) ] = QVariant( name );
-  opts[ QStringLiteral( "update" ) ] = true;
-  QMap<int, int> map;
-  QString errCause;
-  Qgis::VectorExportResult errCode = QgsOgrProvider::createEmptyLayer(
-                                       uri(),
-                                       fields,
-                                       wkbType,
-                                       srs,
-                                       overwrite,
-                                       &map,
-                                       &errCause,
-                                       &opts
-                                     );
-  if ( errCode != Qgis::VectorExportResult::Success )
-  {
-    throw QgsProviderConnectionException( QObject::tr( "An error occurred while creating the vector layer: %1" ).arg( errCause ) );
-  }
-}
-
-void QgsGeoPackageProviderConnection::dropVectorTable( const QString &schema, const QString &name ) const
-{
-  checkCapability( Capability::DropVectorTable );
-  if ( ! schema.isEmpty() )
-  {
-    QgsMessageLog::logMessage( QStringLiteral( "Schema is not supported by GPKG, ignoring" ), QStringLiteral( "OGR" ), Qgis::MessageLevel::Info );
-  }
-  QString errCause;
-  const QString layerUri { QStringLiteral( "%1|layername=%2" ).arg( uri(), name ) };
-  if ( ! QgsOgrProviderUtils::deleteLayer( layerUri, errCause ) )
-  {
-    throw QgsProviderConnectionException( QObject::tr( "Error deleting vector/aspatial table %1: %2" ).arg( name, errCause ) );
-  }
-}
-
 
 void QgsGeoPackageProviderConnection::dropRasterTable( const QString &schema, const QString &name ) const
 {
@@ -175,21 +130,6 @@ void QgsGeoPackageProviderConnection::renameVectorTable( const QString &schema, 
   {
     QgsDebugMsgLevel( QStringLiteral( "Warning: error while updating the styles, perhaps there are no styles stored in this GPKG: %1" ).arg( ex.what() ), 4 );
   }
-}
-
-QgsVectorLayer *QgsGeoPackageProviderConnection::createSqlVectorLayer( const QgsAbstractDatabaseProviderConnection::SqlVectorLayerOptions &options ) const
-{
-  QgsProviderMetadata *providerMetadata { QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "ogr" ) ) };
-  Q_ASSERT( providerMetadata );
-  QMap<QString, QVariant> decoded = providerMetadata->decodeUri( uri() );
-  decoded[ QStringLiteral( "subset" ) ] = options.sql;
-  return new QgsVectorLayer( providerMetadata->encodeUri( decoded ), options.layerName.isEmpty() ? QStringLiteral( "QueryLayer" ) : options.layerName, providerKey() );
-}
-
-QgsAbstractDatabaseProviderConnection::QueryResult QgsGeoPackageProviderConnection::execSql( const QString &sql, QgsFeedback *feedback ) const
-{
-  checkCapability( Capability::ExecuteSql );
-  return executeGdalSqlPrivate( sql, feedback );
 }
 
 void QgsGeoPackageProviderConnection::vacuum( const QString &schema, const QString &name ) const
@@ -376,153 +316,44 @@ void QgsGeoPackageProviderConnection::setDefaultCapabilities()
     Capability::DeleteSpatialIndex,
     Capability::DeleteField,
     Capability::AddField,
+    Capability::RenameField,
     Capability::DropRasterTable,
     Capability::SqlLayers
   };
+
+
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,3,0)
+  mCapabilities |= Capability::RetrieveFieldDomain;
+  mCapabilities |= Capability::AddFieldDomain;
+  mCapabilities |= Capability::SetFieldDomain;
+#endif
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,5,0)
+  mCapabilities |= Capability::ListFieldDomains;
+#endif
+
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,6,0)
+  mCapabilities |= Capability::RetrieveRelationships;
+#endif
+
   mGeometryColumnCapabilities =
   {
     GeometryColumnCapability::Z,
     GeometryColumnCapability::M,
-    GeometryColumnCapability::SinglePart,
+    GeometryColumnCapability::SingleLineString,
+    GeometryColumnCapability::SinglePoint,
+    GeometryColumnCapability::SinglePolygon,
     GeometryColumnCapability::Curves
   };
   mSqlLayerDefinitionCapabilities =
   {
     Qgis::SqlLayerDefinitionCapability::SubsetStringFilter,
   };
-}
 
-QgsAbstractDatabaseProviderConnection::QueryResult QgsGeoPackageProviderConnection::executeGdalSqlPrivate( const QString &sql, QgsFeedback *feedback ) const
-{
-
-  if ( feedback && feedback->isCanceled() )
-  {
-    return QgsAbstractDatabaseProviderConnection::QueryResult();
-  }
-
-  QString errCause;
-  gdal::ogr_datasource_unique_ptr hDS( GDALOpenEx( uri().toUtf8().constData(), GDAL_OF_VECTOR | GDAL_OF_UPDATE, nullptr, nullptr, nullptr ) );
-  if ( hDS )
-  {
-
-    if ( feedback && feedback->isCanceled() )
-    {
-      return QgsAbstractDatabaseProviderConnection::QueryResult();
-    }
-
-    std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
-    OGRLayerH ogrLayer( GDALDatasetExecuteSQL( hDS.get(), sql.toUtf8().constData(), nullptr, nullptr ) );
-    std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
-
-    // Read fields
-    if ( ogrLayer )
-    {
-
-      auto iterator = std::make_shared<QgsGeoPackageProviderResultIterator>( std::move( hDS ), ogrLayer );
-      QgsAbstractDatabaseProviderConnection::QueryResult results( iterator );
-      results.setQueryExecutionTime( std::chrono::duration_cast<std::chrono::milliseconds>( end - begin ).count() );
-
-      gdal::ogr_feature_unique_ptr fet;
-      if ( fet.reset( OGR_L_GetNextFeature( ogrLayer ) ), fet )
-      {
-
-        // pk column name
-        QString pkColumnName;
-
-        QgsFields fields { QgsOgrUtils::readOgrFields( fet.get(), QTextCodec::codecForName( "UTF-8" ) ) };
-
-        // We try to guess the table name from the FROM clause
-        thread_local const QRegularExpression tableNameRegexp { QStringLiteral( R"re((?<=from|join)\s+(\w+)|"([^"]+)")re" ), QRegularExpression::PatternOption::CaseInsensitiveOption };
-        const auto match { tableNameRegexp.match( sql ) };
-        if ( match.hasMatch() )
-        {
-          pkColumnName = primaryKeyColumnName( match.captured( match.lastCapturedIndex() ) );
-        }
-
-        // fallback to "fid"
-        if ( pkColumnName.isEmpty() )
-        {
-          pkColumnName = QStringLiteral( "fid" );
-        }
-
-        // geom column name
-        QString geomColumnName;
-
-        OGRFeatureDefnH featureDef = OGR_F_GetDefnRef( fet.get() );
-
-        if ( featureDef )
-        {
-          if ( OGR_F_GetGeomFieldCount( fet.get() ) > 0 )
-          {
-            OGRGeomFieldDefnH geomFldDef { OGR_F_GetGeomFieldDefnRef( fet.get(), 0 ) };
-            if ( geomFldDef )
-            {
-              geomColumnName = OGR_GFld_GetNameRef( geomFldDef );
-            }
-          }
-        }
-
-        // May need to prepend PK and append geometry to the columns
-        if ( ! pkColumnName.isEmpty() )
-        {
-          const QRegularExpression pkRegExp { QStringLiteral( R"(^select\s+(\*|%1)[,\s+](.*)from)" ).arg( pkColumnName ),  QRegularExpression::PatternOption::CaseInsensitiveOption };
-          if ( pkRegExp.match( sql.trimmed() ).hasMatch() )
-          {
-            iterator->setPrimaryKeyColumnName( pkColumnName );
-            results.appendColumn( pkColumnName );
-          }
-        }
-
-        // Add other fields
-        for ( const auto &f : std::as_const( fields ) )
-        {
-          results.appendColumn( f.name() );
-        }
-
-        // Append geom
-        if ( ! geomColumnName.isEmpty() )
-        {
-          results.appendColumn( geomColumnName );
-          iterator->setGeometryColumnName( geomColumnName );
-        }
-
-        iterator->setFields( fields );
-      }
-
-      // Check for errors
-      if ( CE_Failure == CPLGetLastErrorType() || CE_Fatal == CPLGetLastErrorType() )
-      {
-        errCause = CPLGetLastErrorMsg( );
-      }
-
-      if ( ! errCause.isEmpty() )
-      {
-        throw QgsProviderConnectionException( QObject::tr( "Error executing SQL statement %1: %2" ).arg( sql, errCause ) );
-      }
-
-      OGR_L_ResetReading( ogrLayer );
-      iterator->nextRow();
-      return results;
-    }
-
-    // Check for errors
-    if ( CE_Failure == CPLGetLastErrorType() || CE_Fatal == CPLGetLastErrorType() )
-    {
-      errCause = CPLGetLastErrorMsg( );
-    }
-
-  }
-  else
-  {
-    errCause = QObject::tr( "There was an error opening GPKG %1!" ).arg( uri() );
-  }
-
-  if ( !errCause.isEmpty() )
-  {
-    throw QgsProviderConnectionException( QObject::tr( "Error executing SQL %1: %2" ).arg( sql, errCause ) );
-  }
-
-  return QgsAbstractDatabaseProviderConnection::QueryResult();
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,7,0)
+  mCapabilities |= Capability::AddRelationship;
+  mCapabilities |= Capability::UpdateRelationship;
+  mCapabilities |= Capability::DeleteRelationship;
+#endif
 }
 
 QString QgsGeoPackageProviderConnection::primaryKeyColumnName( const QString &table ) const
@@ -566,104 +397,120 @@ QString QgsGeoPackageProviderConnection::primaryKeyColumnName( const QString &ta
   return pkName;
 }
 
-QVariantList QgsGeoPackageProviderResultIterator::nextRowPrivate()
+QList<QgsLayerMetadataProviderResult> QgsGeoPackageProviderConnection::searchLayerMetadata( const QgsMetadataSearchContext &searchContext, const QString &searchString, const QgsRectangle &geographicExtent, QgsFeedback *feedback ) const
 {
-  const QVariantList currentRow = mNextRow;
-  mNextRow = nextRowInternal();
-  return currentRow;
-}
 
-QVariantList QgsGeoPackageProviderResultIterator::nextRowInternal()
-{
-  QVariantList row;
-  if ( mHDS && mOgrLayer )
+  QList<QgsLayerMetadataProviderResult> results;
+  if ( ! feedback || ! feedback->isCanceled() )
   {
-    gdal::ogr_feature_unique_ptr fet;
-    if ( fet.reset( OGR_L_GetNextFeature( mOgrLayer ) ), fet )
+    try
     {
-      // PK
-      if ( ! mPrimaryKeyColumnName.isEmpty() )
+      // first check if metadata tables/extension exists
+      if ( executeSql( QStringLiteral( "SELECT name FROM sqlite_master WHERE name='gpkg_metadata' AND type='table'" ), nullptr ).isEmpty() )
       {
-        row.push_back( OGR_F_GetFID( fet.get() ) );
+        return results;
       }
 
-      if ( ! mFields.isEmpty() )
+      const QString searchQuery { QStringLiteral( R"SQL(
+      SELECT
+        ref.table_name, md.metadata, gc.geometry_type_name
+      FROM
+        gpkg_metadata_reference AS ref
+      JOIN
+        gpkg_metadata AS md ON md.id = ref.md_file_id
+      LEFT JOIN
+        gpkg_geometry_columns AS gc ON gc.table_name = ref.table_name
+      WHERE
+        md.md_standard_uri = 'http://mrcc.com/qgis.dtd'
+        AND ref.reference_scope = 'table'
+        AND md.md_scope = 'dataset'
+      )SQL" ) };
+
+      const QList<QVariantList> constMetadataResults { executeSql( searchQuery, feedback ) };
+      for ( const QVariantList &mdRow : std::as_const( constMetadataResults ) )
       {
-        QgsFeature f { QgsOgrUtils::readOgrFeature( fet.get(), mFields, QTextCodec::codecForName( "UTF-8" ) ) };
-        const QgsAttributes constAttrs  = f.attributes();
-        for ( const QVariant &attribute : constAttrs )
+
+        if ( feedback && feedback->isCanceled() )
         {
-          row.push_back( attribute );
+          break;
         }
 
-        // Geom goes last
-        if ( ! mGeometryColumnName.isEmpty( ) )
+        // Read MD from the XML
+        QDomDocument doc;
+        doc.setContent( mdRow[1].toString() );
+        QgsLayerMetadata layerMetadata;
+        if ( layerMetadata.readMetadataXml( doc.documentElement() ) )
         {
-          row.push_back( f.geometry().asWkt() );
-        }
+          QgsLayerMetadataProviderResult result{ layerMetadata };
 
-      }
-      else // Fallback to strings
-      {
-        for ( int i = 0; i < OGR_F_GetFieldCount( fet.get() ); i++ )
+          QgsRectangle extents;
+
+          const auto cExtents { layerMetadata.extent().spatialExtents() };
+          for ( const auto &ext : std::as_const( cExtents ) )
+          {
+            QgsRectangle bbox {  ext.bounds.toRectangle()  };
+            QgsCoordinateTransform ct { ext.extentCrs, QgsCoordinateReferenceSystem::fromEpsgId( 4326 ), searchContext.transformContext };
+            ct.transform( bbox );
+            extents.combineExtentWith( bbox );
+          }
+
+          QgsPolygon poly;
+          poly.fromWkt( extents.asWktPolygon() );
+
+          // Filters
+          if ( ! geographicExtent.isEmpty() && ( poly.isEmpty() || ! geographicExtent.intersects( extents ) ) )
+          {
+            continue;
+          }
+
+          if ( ! searchString.trimmed().isEmpty() && ! result.contains( searchString ) )
+          {
+            continue;
+          }
+
+          result.setGeographicExtent( poly );
+          result.setStandardUri( QStringLiteral( "http://mrcc.com/qgis.dtd" ) );
+          result.setDataProviderName( QStringLiteral( "ogr" ) );
+          result.setAuthid( layerMetadata.crs().authid() );
+          result.setUri( tableUri( QString(), mdRow[0].toString() ) );
+          const QString geomType { mdRow[2].toString().toUpper() };
+          if ( geomType.contains( QStringLiteral( "POINT" ), Qt::CaseSensitivity::CaseInsensitive ) )
+          {
+            result.setGeometryType( QgsWkbTypes::GeometryType::PointGeometry );
+          }
+          else if ( geomType.contains( QStringLiteral( "POLYGON" ), Qt::CaseSensitivity::CaseInsensitive ) )
+          {
+            result.setGeometryType( QgsWkbTypes::GeometryType::PolygonGeometry );
+          }
+          else if ( geomType.contains( QStringLiteral( "LINESTRING" ), Qt::CaseSensitivity::CaseInsensitive ) )
+          {
+            result.setGeometryType( QgsWkbTypes::GeometryType::LineGeometry );
+          }
+          else
+          {
+            result.setGeometryType( QgsWkbTypes::GeometryType::UnknownGeometry );
+          }
+          result.setLayerType( Qgis::LayerType::Vector );
+
+          results.push_back( result );
+        }
+        else
         {
-          row.push_back( QVariant( QString::fromUtf8( OGR_F_GetFieldAsString( fet.get(), i ) ) ) );
+          throw QgsProviderConnectionException( QStringLiteral( "Error reading XML metdadata from connection %1" ).arg( uri() ) );
         }
       }
     }
-    else
+    catch ( const QgsProviderConnectionException &ex )
     {
-      // Release the resources
-      GDALDatasetReleaseResultSet( mHDS.get(), mOgrLayer );
-      mHDS.release();
+      throw QgsProviderConnectionException( QStringLiteral( "Error fetching metdadata from connection %1: %2" ).arg( uri(), ex.what() ) );
     }
   }
-  return row;
+  return results;
 }
 
-bool QgsGeoPackageProviderResultIterator::hasNextRowPrivate() const
-{
-  return ! mNextRow.isEmpty();
-}
-
-long long QgsGeoPackageProviderResultIterator::rowCountPrivate() const
-{
-  return  mRowCount;
-}
-
-void QgsGeoPackageProviderResultIterator::setFields( const QgsFields &fields )
-{
-  mFields = fields;
-}
-
-void QgsGeoPackageProviderResultIterator::setGeometryColumnName( const QString &geometryColumnName )
-{
-  mGeometryColumnName = geometryColumnName;
-}
-
-void QgsGeoPackageProviderResultIterator::setPrimaryKeyColumnName( const QString &primaryKeyColumnName )
-{
-  mPrimaryKeyColumnName = primaryKeyColumnName;
-}
-
-QList<QgsVectorDataProvider::NativeType> QgsGeoPackageProviderConnection::nativeTypes() const
-{
-  QgsVectorLayer::LayerOptions options { false, true };
-  options.skipCrsValidation = true;
-  const QgsVectorLayer vl { uri(), QStringLiteral( "temp_layer" ), QStringLiteral( "ogr" ), options };
-  if ( ! vl.isValid() || ! vl.dataProvider() )
-  {
-    const QString errorCause = vl.dataProvider() && vl.dataProvider()->hasErrors() ?
-                               vl.dataProvider()->errors().join( '\n' ) :
-                               QObject::tr( "unknown error" );
-    throw QgsProviderConnectionException( QObject::tr( "Error retrieving native types for %1: %2" ).arg( uri(), errorCause ) );
-  }
-  return vl.dataProvider()->nativeTypes();
-}
 
 QgsFields QgsGeoPackageProviderConnection::fields( const QString &schema, const QString &table ) const
 {
-
   Q_UNUSED( schema )
 
   // Get fields from layer
@@ -688,7 +535,7 @@ QgsFields QgsGeoPackageProviderConnection::fields( const QString &schema, const 
     }
     // Append name of the geometry column, the data provider does not expose this information so we need an extra query:/
     const QString sql = QStringLiteral( "SELECT g.column_name "
-                                        "FROM gpkg_contents c LEFT JOIN gpkg_geometry_columns g ON (c.table_name = g.table_name) "
+                                        "FROM gpkg_contents c CROSS JOIN gpkg_geometry_columns g ON (c.table_name = g.table_name) "
                                         "WHERE c.table_name = %1" ).arg( QgsSqliteUtils::quotedString( table ) );
     try
     {
@@ -1168,40 +1015,20 @@ QMultiMap<Qgis::SqlKeywordCategory, QStringList> QgsGeoPackageProviderConnection
   } );
 }
 
-QgsAbstractDatabaseProviderConnection::SqlVectorLayerOptions QgsGeoPackageProviderConnection::sqlOptions( const QString &layerSource )
+QList<Qgis::FieldDomainType> QgsGeoPackageProviderConnection::supportedFieldDomainTypes() const
 {
-  SqlVectorLayerOptions options;
-  QgsProviderMetadata *providerMetadata { QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "ogr" ) ) };
-  Q_ASSERT( providerMetadata );
-  QMap<QString, QVariant> decoded = providerMetadata->decodeUri( layerSource );
-  if ( decoded.contains( QStringLiteral( "subset" ) ) )
+  return
   {
-    options.sql = decoded[ QStringLiteral( "subset" ) ].toString();
-  }
-  else if ( decoded.contains( QStringLiteral( "layerName" ) ) )
-  {
-    options.sql = QStringLiteral( "SELECT * FROM %1" ).arg( QgsSqliteUtils::quotedIdentifier( decoded[ QStringLiteral( "layerName" ) ].toString() ) );
-  }
-  return options;
+    Qgis::FieldDomainType::Coded,
+    Qgis::FieldDomainType::Glob,
+    Qgis::FieldDomainType::Range
+  };
 }
 
-QgsGeoPackageProviderResultIterator::QgsGeoPackageProviderResultIterator( gdal::ogr_datasource_unique_ptr hDS, OGRLayerH ogrLayer )
-  : mHDS( std::move( hDS ) )
-  , mOgrLayer( ogrLayer )
+QString QgsGeoPackageProviderConnection::databaseQueryLogIdentifier() const
 {
-  if ( mOgrLayer )
-  {
-    // Do not scan the layer!
-    mRowCount = OGR_L_GetFeatureCount( mOgrLayer, false );
-  }
+  return QStringLiteral( "QgsGeoPackageProviderConnection" );
 }
 
-QgsGeoPackageProviderResultIterator::~QgsGeoPackageProviderResultIterator()
-{
-  if ( mHDS )
-  {
-    GDALDatasetReleaseResultSet( mHDS.get(), mOgrLayer );
-  }
-}
 
 ///@endcond

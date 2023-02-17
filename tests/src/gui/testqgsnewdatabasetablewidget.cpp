@@ -132,7 +132,7 @@ void TestQgsNewDatabaseTableNameWidget::testWidgetSignalsPostgres()
 
   index = w->mBrowserProxyModel.mapToSource( w->mBrowserProxyModel.index( 0, 0 ) );
   QVERIFY( index.isValid() );
-  QCOMPARE( w->mBrowserModel->data( index, Qt::DisplayRole ).toString(), QString( "PostGIS" ) );
+  QCOMPARE( w->mBrowserModel->data( index, Qt::DisplayRole ).toString(), QString( "PostgreSQL" ) );
   QRect rect = w->mBrowserTreeView->visualRect( w->mBrowserProxyModel.mapFromSource( index ) );
   QVERIFY( rect.isValid() );
   QTest::mouseClick( w->mBrowserTreeView->viewport(), Qt::LeftButton, Qt::KeyboardModifiers(), rect.topLeft() );

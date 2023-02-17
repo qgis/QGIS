@@ -18,7 +18,7 @@ file(GLOB ATTRIBUTEFORMCONFIG_UIS "${CMAKE_CURRENT_SOURCE_DIR}/attributeformconf
 file(GLOB GEOREFERENCER_UIS "${CMAKE_CURRENT_SOURCE_DIR}/georeferencer/*.ui")
 file(GLOB ANNOTATION_UIS "${CMAKE_CURRENT_SOURCE_DIR}/annotations/*.ui")
 
-if (WITH_QT6)
+if (BUILD_WITH_QT6)
   QT6_WRAP_UI(QGIS_UIS_H
     ${QGIS_UIS}
     ${SYMBOLLAYER_UIS}
@@ -61,5 +61,7 @@ else()
     ${ANNOTATION_UIS}
   )
 endif()
+
+set(QGIS_GUI_UI_HDRS ${QGIS_UIS_H} PARENT_SCOPE)
 
 add_custom_target(ui ALL DEPENDS ${QGIS_UIS_H})

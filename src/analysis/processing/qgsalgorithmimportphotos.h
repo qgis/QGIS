@@ -59,7 +59,7 @@ class ANALYSIS_EXPORT QgsImportPhotosAlgorithm : public QgsProcessingAlgorithm
     static QVariant extractOrientationFromMetadata( const QVariantMap &metadata );
     static QVariant extractTimestampFromMetadata( const QVariantMap &metadata );
 
-    friend class TestQgsProcessingAlgs;
+    friend class TestQgsProcessingAlgsPt1;
 };
 
 ///@endcond PRIVATE

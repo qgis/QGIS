@@ -66,6 +66,7 @@ bool QgsHanaTableModel::searchableColumn( int column ) const
     case DbtmSelectAtId:
       return false;
   }
+  BUILTIN_UNREACHABLE
 }
 
 void QgsHanaTableModel::addTableEntry( const QString &connName, const QgsHanaLayerProperty &layerProperty )

@@ -13,13 +13,13 @@
  ***************************************************************************/
 #include "qgsdelimitedtextsourceselect.h"
 
-#include "qgisinterface.h"
 #include "qgslogger.h"
 #include "qgsvectordataprovider.h"
 #include "qgssettings.h"
 #include "qgsproviderregistry.h"
 #include "qgsgui.h"
 #include "qgsapplication.h"
+#include "qgsvariantutils.h"
 
 #include <QButtonGroup>
 #include <QFile>
@@ -55,9 +55,15 @@ QgsDelimitedTextSourceSelect::QgsDelimitedTextSourceSelect( QWidget *parent, Qt:
   bgGeomType->addButton( geomTypeWKT, swGeomType->indexOf( swpGeomWKT ) );
   bgGeomType->addButton( geomTypeNone, swGeomType->indexOf( swpGeomNone ) );
 
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
   connect( bgFileFormat, static_cast < void ( QButtonGroup::* )( int ) > ( &QButtonGroup::buttonClicked ), swFileFormat, &QStackedWidget::setCurrentIndex );
   connect( bgGeomType, static_cast < void ( QButtonGroup::* )( int ) > ( &QButtonGroup::buttonClicked ), swGeomType, &QStackedWidget::setCurrentIndex );
   connect( bgGeomType, static_cast < void ( QButtonGroup::* )( int ) > ( &QButtonGroup::buttonClicked ), this, &QgsDelimitedTextSourceSelect::updateCrsWidgetVisibility );
+#else
+  connect( bgFileFormat, &QButtonGroup::idClicked, swFileFormat, &QStackedWidget::setCurrentIndex );
+  connect( bgGeomType, &QButtonGroup::idClicked, swGeomType, &QStackedWidget::setCurrentIndex );
+  connect( bgGeomType, &QButtonGroup::idClicked, this, &QgsDelimitedTextSourceSelect::updateCrsWidgetVisibility );
+#endif
 
   cmbEncoding->clear();
   cmbEncoding->addItems( QgsVectorDataProvider::availableEncodings() );
@@ -108,7 +114,7 @@ QgsDelimitedTextSourceSelect::QgsDelimitedTextSourceSelect( QWidget *parent, Qt:
 
   const QgsSettings settings;
   mFileWidget->setDialogTitle( tr( "Choose a Delimited Text File to Open" ) );
-  mFileWidget->setFilter( tr( "Text files" ) + QStringLiteral( " (*.txt *.csv *.dat *.wkt);;" ) + tr( "All files" ) + QStringLiteral( " (* *.*)" ) );
+  mFileWidget->setFilter( tr( "Text files" ) + QStringLiteral( " (*.txt *.csv *.dat *.wkt *.tsv);;" ) + tr( "All files" ) + QStringLiteral( " (* *.*)" ) );
   mFileWidget->setSelectedFilter( settings.value( mSettingsKey + QStringLiteral( "/file_filter" ), QString() ).toString() );
   mMaxFields = settings.value( mSettingsKey + QStringLiteral( "/max_fields" ), DEFAULT_MAX_FIELDS ).toInt();
   connect( mFileWidget, &QgsFileWidget::fileChanged, this, &QgsDelimitedTextSourceSelect::updateFileName );
@@ -503,14 +509,14 @@ void QgsDelimitedTextSourceSelect::updateFieldLists()
   for ( int column = 0; column < tblSample->columnCount(); column++ )
   {
     QComboBox *typeCombo = new QComboBox( tblSample );
-    typeCombo->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldText.svg" ) ), tr( "Text" ), "text" );
-    typeCombo->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldInteger.svg" ) ), tr( "Whole Number (integer)" ), "integer" );
-    typeCombo->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldInteger.svg" ) ), tr( "Whole Number (integer - 64 bit)" ), "longlong" );
-    typeCombo->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldFloat.svg" ) ), tr( "Decimal Number" ), "double" );
-    typeCombo->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldBool.svg" ) ), tr( "Boolean" ), "bool" );
-    typeCombo->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldDate.svg" ) ), tr( "Date" ), "date" );
-    typeCombo->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldTime.svg" ) ), tr( "Time" ), "time" );
-    typeCombo->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldDateTime.svg" ) ), tr( "Date and Time" ), "datetime" );
+    typeCombo->addItem( QgsFields::iconForFieldType( QVariant::String ), QgsVariantUtils::typeToDisplayString( QVariant::String ), "text" );
+    typeCombo->addItem( QgsFields::iconForFieldType( QVariant::Int ), QgsVariantUtils::typeToDisplayString( QVariant::Int ), "integer" );
+    typeCombo->addItem( QgsFields::iconForFieldType( QVariant::LongLong ), QgsVariantUtils::typeToDisplayString( QVariant::LongLong ), "longlong" );
+    typeCombo->addItem( QgsFields::iconForFieldType( QVariant::Double ), QgsVariantUtils::typeToDisplayString( QVariant::Double ), "double" );
+    typeCombo->addItem( QgsFields::iconForFieldType( QVariant::Bool ), QgsVariantUtils::typeToDisplayString( QVariant::Bool ), "bool" );
+    typeCombo->addItem( QgsFields::iconForFieldType( QVariant::Date ), QgsVariantUtils::typeToDisplayString( QVariant::Date ), "date" );
+    typeCombo->addItem( QgsFields::iconForFieldType( QVariant::Time ), QgsVariantUtils::typeToDisplayString( QVariant::Time ), "time" );
+    typeCombo->addItem( QgsFields::iconForFieldType( QVariant::DateTime ), QgsVariantUtils::typeToDisplayString( QVariant::DateTime ), "datetime" );
     connect( typeCombo, qOverload<int>( &QComboBox::currentIndexChanged ), this, [ = ]( int )
     {
       mOverriddenFields.insert( column );
@@ -559,6 +565,10 @@ void QgsDelimitedTextSourceSelect::updateFieldLists()
   // As we ignore blank fields we need to map original index
   // of selected fields to index in combo box.
 
+  // Add an empty item for M and Z field
+  cmbMField->addItem( QString() );
+  cmbZField->addItem( QString() );
+
   int fieldNo = 0;
   for ( int i = 0; i < fieldList.size(); i++ )
   {
@@ -578,8 +588,8 @@ void QgsDelimitedTextSourceSelect::updateFieldLists()
   cmbWktField->setCurrentIndex( cmbWktField->findText( columnWkt ) );
   cmbXField->setCurrentIndex( cmbXField->findText( columnX ) );
   cmbYField->setCurrentIndex( cmbYField->findText( columnY ) );
-  cmbZField->setCurrentIndex( cmbYField->findText( columnZ ) );
-  cmbMField->setCurrentIndex( cmbYField->findText( columnM ) );
+  cmbZField->setCurrentIndex( cmbZField->findText( columnZ ) );
+  cmbMField->setCurrentIndex( cmbMField->findText( columnM ) );
 
   // Now try setting optional X,Y fields - will only reset the fields if
   // not already set.
@@ -757,7 +767,7 @@ bool QgsDelimitedTextSourceSelect::validate()
     message = tr( "No data found in file" );
     if ( mBadRowCount > 0 )
     {
-      message = message + " (" + tr( "%1 badly formatted records discarded" ).arg( mBadRowCount ) + ')';
+      message = message + " (" + tr( "%n badly formatted record(s) discarded", nullptr, mBadRowCount ) + ')';
     }
   }
   else if ( geomTypeXY->isChecked() && ( cmbXField->currentText().isEmpty()  || cmbYField->currentText().isEmpty() ) )
@@ -781,7 +791,7 @@ bool QgsDelimitedTextSourceSelect::validate()
     enabled = true;
     if ( mBadRowCount > 0 )
     {
-      message = tr( "%1 badly formatted records discarded from sample data" ).arg( mBadRowCount );
+      message = tr( "%n badly formatted record(s) discarded from sample data", nullptr, mBadRowCount );
     }
 
   }

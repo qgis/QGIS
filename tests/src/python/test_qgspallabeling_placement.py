@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsPalLabeling: base suite of render check tests
 
 Class is meant to be inherited by classes that test different labeling outputs
@@ -14,25 +13,24 @@ __author__ = 'Nyall Dawson'
 __date__ = '2015-08-24'
 __copyright__ = 'Copyright 2015, The QGIS Project'
 
-import qgis  # NOQA
-
 import os
 import sys
 
-from qgis.PyQt.QtCore import QThreadPool, qDebug
-
-from qgis.core import (QgsLabelingEngineSettings,
-                       QgsPalLayerSettings,
-                       QgsSingleSymbolRenderer,
-                       QgsMarkerSymbol,
-                       QgsProperty,
-                       QgsVectorLayerSimpleLabeling,
-                       QgsLabelObstacleSettings,
-                       QgsLabeling)
-from utilities import getTempfilePath, renderMapToImage, mapSettingsString
+import qgis  # NOQA
+from qgis.PyQt.QtCore import qDebug
+from qgis.core import (
+    QgsLabeling,
+    QgsLabelingEngineSettings,
+    QgsLabelObstacleSettings,
+    QgsMarkerSymbol,
+    QgsPalLayerSettings,
+    QgsProperty,
+    QgsSingleSymbolRenderer,
+    QgsVectorLayerSimpleLabeling,
+)
 
 from test_qgspallabeling_base import TestQgsPalLabeling, runSuite
-from qgis.testing import unittest
+from utilities import getTempfilePath, mapSettingsString, renderMapToImage
 
 
 # noinspection PyPep8Naming
@@ -49,7 +47,7 @@ class TestPlacementBase(TestQgsPalLabeling):
 
     def setUp(self):
         """Run before each test."""
-        super(TestPlacementBase, self).setUp()
+        super().setUp()
         self.removeAllLayers()
         self.configTest('pal_placement', 'sp')
         self._TestImage = ''
@@ -75,7 +73,7 @@ class TestPlacementBase(TestQgsPalLabeling):
             ms = self._TestMapSettings  # per test settings
             settings_type = 'Test'
         if 'PAL_VERBOSE' in os.environ:
-            qDebug('MapSettings type: {0}'.format(settings_type))
+            qDebug(f'MapSettings type: {settings_type}')
             qDebug(mapSettingsString(ms))
 
         img = renderMapToImage(ms, parallel=False)

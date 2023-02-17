@@ -46,7 +46,7 @@ class CORE_EXPORT QgsSingleBandPseudoColorRenderer: public QgsRasterRenderer
     const QgsSingleBandPseudoColorRenderer &operator=( const QgsSingleBandPseudoColorRenderer & ) = delete;
 
     QgsSingleBandPseudoColorRenderer *clone() const override SIP_FACTORY;
-
+    Qgis::RasterRendererFlags flags() const override;
     static QgsRasterRenderer *create( const QDomElement &elem, QgsRasterInterface *input ) SIP_FACTORY;
 
     QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback = nullptr ) override SIP_FACTORY;
@@ -59,6 +59,8 @@ class CORE_EXPORT QgsSingleBandPseudoColorRenderer: public QgsRasterRenderer
 
     //! \note available in Python as constShader
     const QgsRasterShader *shader() const SIP_PYNAME( constShader ) { return mShader.get(); }
+
+    bool canCreateRasterAttributeTable( ) const override;
 
     /**
      * Creates a color ramp shader

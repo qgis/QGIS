@@ -11,7 +11,7 @@
 
 
 
-class QgsMeshLayer : QgsMapLayer
+class QgsMeshLayer : QgsMapLayer, QgsAbstractProfileSource
 {
 %Docstring(signature="appended")
 
@@ -135,6 +135,8 @@ QgsMeshLayer cannot be copied.
 
     virtual QgsMapLayerRenderer *createMapRenderer( QgsRenderContext &rendererContext ) /Factory/;
 
+    virtual QgsAbstractProfileGenerator *createProfileGenerator( const QgsProfileRequest &request ) /Factory/;
+
      virtual bool readSymbology( const QDomNode &node, QString &errorMessage,
                         QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories );
      virtual bool writeSymbology( QDomNode &node, QDomDocument &doc, QString &errorMessage,
@@ -152,6 +154,8 @@ QgsMeshLayer cannot be copied.
     virtual bool writeXml( QDomNode &layer_node, QDomDocument &doc, const QgsReadWriteContext &context ) const;
 
     virtual QgsMapLayerTemporalProperties *temporalProperties();
+
+    virtual QgsMapLayerElevationProperties *elevationProperties();
 
     virtual void reload();
 
@@ -756,17 +760,33 @@ Returns the relative time (in milliseconds) of the dataset from the reference ti
 .. versionadded:: 3.16
 %End
 
-    bool startFrameEditing( const QgsCoordinateTransform &transform );
+ bool startFrameEditing( const QgsCoordinateTransform &transform );
 %Docstring
-Starts edition of the mesh frame. Coordinate ``transform`` used to initialize the triangular mesh if needed.
-This operation will disconnect the mesh layer from the data provider anf removes all existing dataset group
+Starts editing of the mesh frame. Coordinate ``transform`` used to initialize the triangular mesh if needed.
+This operation will disconnect the mesh layer from the data provider and removes all existing dataset group
 
 .. versionadded:: 3.22
+
+.. deprecated:: QGIS 3.28
+  use the version with :py:class:`QgsMeshEditingError` instead
 %End
+
+    bool startFrameEditing( const QgsCoordinateTransform &transform, QgsMeshEditingError &error /Out/, bool fixErrors );
+%Docstring
+Starts editing of the mesh frame. Coordinate ``transform`` used to initialize the triangular mesh if needed.
+This operation will disconnect the mesh layer from the data provider and removes all existing dataset group.
+Returns ``False`` if starting fails and the ``error`` that is the reason (No error, if the mesh is not editable or already in edit mode).
+
+If ``fixErrors`` is set to ``True``, errors will be attempted to be fixed.
+In that case returns ``False`` if there is an error that could not be fixed and the remaining ``error``.
+
+.. versionadded:: 3.28
+%End
+
 
     bool commitFrameEditing( const QgsCoordinateTransform &transform, bool continueEditing = true );
 %Docstring
-Commits edition of the mesh frame,
+Commits editing of the mesh frame,
 Rebuilds the triangular mesh and its spatial index with ``transform``,
 Continue editing with the same mesh editor if ``continueEditing`` is True
 
@@ -777,7 +797,7 @@ Continue editing with the same mesh editor if ``continueEditing`` is True
 
     bool rollBackFrameEditing( const QgsCoordinateTransform &transform, bool continueEditing = true );
 %Docstring
-Rolls Back edition of the mesh frame.
+Rolls Back editing of the mesh frame.
 Reload mesh from file, rebuilds the triangular mesh and its spatial index with ``transform``,
 Continue editing with the same mesh editor if ``continueEditing`` is ``True``
 
@@ -788,7 +808,7 @@ Continue editing with the same mesh editor if ``continueEditing`` is ``True``
 
     void stopFrameEditing( const QgsCoordinateTransform &transform );
 %Docstring
-Stops edition of the mesh, re-indexes the faces and vertices,
+Stops editing of the mesh, re-indexes the faces and vertices,
 rebuilds the triangular mesh and its spatial index with ``transform``,
 clean the undostack
 
@@ -883,11 +903,18 @@ Emitted when active vector group dataset is changed
 .. versionadded:: 3.14
 %End
 
-    void timeSettingsChanged( );
+    void timeSettingsChanged();
 %Docstring
 Emitted when time format is changed
 
 .. versionadded:: 3.8
+%End
+
+    void reloaded();
+%Docstring
+Emitted when the mesh layer is reloaded, see :py:func:`~QgsMeshLayer.reload`
+
+.. versionadded:: 3.28
 %End
 
   private: // Private methods

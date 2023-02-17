@@ -85,6 +85,7 @@ typedef struct _nmeaGPGSA
   double  PDOP;       //!< Dilution of precision
   double  HDOP;       //!< Horizontal dilution of precision
   double  VDOP;       //!< Vertical dilution of precision
+  char    pack_type;  //!< P=GPS, N=generic, L=GLONASS
 
 } nmeaGPGSA;
 
@@ -96,6 +97,7 @@ typedef struct _nmeaGPGSV
   int     pack_count; //!< Total number of messages of this type in this cycle
   int     pack_index; //!< Message number
   int     sat_count;  //!< Total number of satellites in view
+  char    pack_type;  //!< P=GPS - S=SBas - N=generic - L=GLONAS - A=GALILEO - B=BEIDOU - Q=QZSS
   nmeaSATELLITE sat_data[NMEA_SATINPACK];
 
 } nmeaGPGSV;

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for Processing algorithm runner(s).
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -10,24 +9,20 @@ __author__ = 'Alessandro Pasotti'
 __date__ = '2019-02'
 __copyright__ = 'Copyright 2019, The QGIS Project'
 
-import re
-from qgis.PyQt.QtCore import QCoreApplication
-from qgis.testing import start_app, unittest
-from qgis.core import QgsProcessingAlgRunnerTask
-
 from processing.core.Processing import Processing
-from processing.core.ProcessingConfig import ProcessingConfig
-from qgis.testing import start_app, unittest
+from qgis.PyQt.QtCore import QCoreApplication
 from qgis.analysis import QgsNativeAlgorithms
 from qgis.core import (
     QgsApplication,
-    QgsSettings,
-    QgsProcessingContext,
-    QgsProcessingAlgRunnerTask,
     QgsProcessingAlgorithm,
-    QgsProject,
+    QgsProcessingAlgRunnerTask,
+    QgsProcessingContext,
     QgsProcessingFeedback,
+    QgsProject,
+    QgsSettings,
+    QgsTask,
 )
+from qgis.testing import start_app, unittest
 
 start_app()
 
@@ -91,6 +86,47 @@ class TestQgsProcessingAlgRunner(unittest.TestCase):
         Processing.initialize()
         QgsApplication.processingRegistry().addProvider(QgsNativeAlgorithms())
         cls.registry = QgsApplication.instance().processingRegistry()
+
+    def test_flags(self):
+        """
+        Test task flags
+        """
+        thread_safe_alg = QgsApplication.processingRegistry().algorithmById('native:buffer')
+        nonthread_safe_alg = QgsApplication.processingRegistry().algorithmById('native:setprojectvariable')
+        context = QgsProcessingContext()
+        context.setProject(QgsProject.instance())
+        feedback = ConsoleFeedBack()
+
+        task = QgsProcessingAlgRunnerTask(thread_safe_alg, {}, context=context, feedback=feedback)
+        self.assertEqual(task.flags(), QgsTask.CanCancel)
+        task = QgsProcessingAlgRunnerTask(thread_safe_alg, {}, context=context, feedback=feedback, flags=QgsTask.Flags())
+        self.assertEqual(task.flags(), QgsTask.Flags())
+        task = QgsProcessingAlgRunnerTask(thread_safe_alg, {}, context=context, feedback=feedback, flags=QgsTask.CanCancel)
+        self.assertEqual(task.flags(), QgsTask.CanCancel)
+        task = QgsProcessingAlgRunnerTask(thread_safe_alg, {}, context=context, feedback=feedback, flags=QgsTask.CancelWithoutPrompt)
+        self.assertEqual(task.flags(), QgsTask.CancelWithoutPrompt)
+        task = QgsProcessingAlgRunnerTask(thread_safe_alg, {}, context=context, feedback=feedback, flags=QgsTask.CancelWithoutPrompt | QgsTask.CanCancel)
+        self.assertEqual(task.flags(), QgsTask.CancelWithoutPrompt | QgsTask.CanCancel)
+
+        # alg which can't be canceled
+        task = QgsProcessingAlgRunnerTask(nonthread_safe_alg, {}, context=context, feedback=feedback)
+        self.assertEqual(task.flags(), QgsTask.Flags())
+        # we clear the CanCancel flag automatically, since the algorithm itself cannot be canceled
+        task = QgsProcessingAlgRunnerTask(nonthread_safe_alg, {}, context=context, feedback=feedback, flags=QgsTask.CanCancel)
+        self.assertEqual(task.flags(), QgsTask.Flags())
+
+        # hidden task
+        task = QgsProcessingAlgRunnerTask(thread_safe_alg, {}, context=context, feedback=feedback, flags=QgsTask.Hidden)
+        self.assertEqual(task.flags(), QgsTask.Hidden)
+        task = QgsProcessingAlgRunnerTask(thread_safe_alg, {}, context=context, feedback=feedback, flags=QgsTask.Hidden | QgsTask.CanCancel)
+        self.assertEqual(task.flags(), QgsTask.Hidden | QgsTask.CanCancel)
+        task = QgsProcessingAlgRunnerTask(thread_safe_alg, {}, context=context, feedback=feedback, flags=QgsTask.Hidden | QgsTask.CanCancel | QgsTask.CancelWithoutPrompt)
+        self.assertEqual(task.flags(), QgsTask.Hidden | QgsTask.CanCancel | QgsTask.CancelWithoutPrompt)
+
+        task = QgsProcessingAlgRunnerTask(nonthread_safe_alg, {}, context=context, feedback=feedback, flags=QgsTask.Hidden)
+        self.assertEqual(task.flags(), QgsTask.Hidden)
+        task = QgsProcessingAlgRunnerTask(nonthread_safe_alg, {}, context=context, feedback=feedback, flags=QgsTask.Hidden | QgsTask.CanCancel)
+        self.assertEqual(task.flags(), QgsTask.Hidden)
 
     def test_bad_script_dont_crash(self):  # spellok
         """Test regression #21270 (segfault)"""

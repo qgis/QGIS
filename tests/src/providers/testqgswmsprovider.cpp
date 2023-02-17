@@ -28,14 +28,20 @@
 #include <qgsstyle.h>
 #include "qgssinglebandgrayrenderer.h"
 #include "qgsrasterlayer.h"
+#include "qgshillshaderenderer.h"
 
 /**
  * \ingroup UnitTests
  * This is a unit test for the WMS provider.
  */
-class TestQgsWmsProvider: public QObject
+class TestQgsWmsProvider: public QgsTest
 {
     Q_OBJECT
+
+  public:
+
+    TestQgsWmsProvider() : QgsTest( QStringLiteral( "WMS Provider Tests" ) ) {}
+
   private slots:
 
     void initTestCase()
@@ -52,22 +58,11 @@ class TestQgsWmsProvider: public QObject
 
       mCapabilities = new QgsWmsCapabilities();
       QVERIFY( mCapabilities->parseResponse( content, config ) );
-
-      mReport += QLatin1String( "<h1>WMS Provider Tests</h1>\n" );
     }
 
     //runs after all tests
     void cleanupTestCase()
     {
-      QString myReportFile = QDir::tempPath() + "/qgistest.html";
-      QFile myFile( myReportFile );
-      if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
-      {
-        QTextStream myQTextStream( &myFile );
-        myQTextStream << mReport;
-        myFile.close();
-      }
-
       delete mCapabilities;
       QgsApplication::exitQgis();
     }
@@ -105,7 +100,7 @@ class TestQgsWmsProvider: public QObject
       QgsWmsProvider provider( failingAddress, QgsDataProvider::ProviderOptions(), mCapabilities );
       QUrl url( provider.createRequestUrlWMS( QgsRectangle( 0, 0, 90, 90 ), 100, 100 ) );
       QCOMPARE( url.toString(), QString( "http://localhost:8380/mapserv?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap"
-                                         "&BBOX=0,0,90,90&CRS=CRS:84&WIDTH=100&HEIGHT=100&LAYERS=&"
+                                         "&BBOX=0%2C0%2C90%2C90&CRS=CRS%3A84&WIDTH=100&HEIGHT=100&LAYERS=&"
                                          "STYLES=&FORMAT=&TRANSPARENT=TRUE" ) );
     }
 
@@ -121,8 +116,8 @@ class TestQgsWmsProvider: public QObject
       QVERIFY( cap.parseResponse( content, config ) );
       QgsWmsProvider provider( failingAddress, QgsDataProvider::ProviderOptions(), &cap );
       QUrl url( provider.createRequestUrlWMS( QgsRectangle( 0, 0, 90, 90 ), 100, 100 ) );
-      QCOMPARE( url.toString(), QString( "http://localhost:8380/mapserv?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&BBOX=0,0,90,90&"
-                                         "CRS=EPSG:2056&WIDTH=100&HEIGHT=100&"
+      QCOMPARE( url.toString(), QString( "http://localhost:8380/mapserv?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&BBOX=0%2C0%2C90%2C90&"
+                                         "CRS=EPSG%3A2056&WIDTH=100&HEIGHT=100&"
                                          "LAYERS=plus%2Bsign&STYLES=&FORMAT=&TRANSPARENT=TRUE" ) );
     }
 
@@ -170,6 +165,23 @@ class TestQgsWmsProvider: public QObject
       mapSettings.setOutputSize( QSize( 400, 400 ) );
       mapSettings.setOutputDpi( 96 );
       QVERIFY( imageCheck( "mbtiles_1", mapSettings ) );
+    }
+
+    void testMBTilesSample()
+    {
+      QString dataDir( TEST_DATA_DIR );
+      QUrlQuery uq;
+      uq.addQueryItem( "type", "mbtiles" );
+      uq.addQueryItem( "interpretation", "maptilerterrain" );
+      uq.addQueryItem( "url", QUrl::fromLocalFile( dataDir + "/isle_of_man.mbtiles" ).toString() );
+
+      QgsRasterLayer layer( uq.toString(), "isle_of_man", "wms" );
+      QVERIFY( layer.isValid() );
+
+      bool ok = false;
+      const double value = layer.dataProvider()->sample( QgsPointXY( -496419, 7213350 ), 1, &ok );
+      QVERIFY( ok );
+      QCOMPARE( value, 1167617.375 );
     }
 
     void testDpiDependentData()
@@ -233,6 +245,13 @@ class TestQgsWmsProvider: public QObject
 
       QString encodedUri = QgsProviderRegistry::instance()->encodeUri( QStringLiteral( "wms" ), parts );
       QCOMPARE( encodedUri, uriString );
+    }
+
+    void testXyzIsBasemap()
+    {
+      // test that xyz tile layers are considered basemap layers
+      QgsRasterLayer layer( QStringLiteral( "type=xyz&url=file://tile.openstreetmap.org/%7Bz%7D/%7Bx%7D/%7By%7D.png&zmax=19&zmin=0" ), QString(), QStringLiteral( "wms" ) );
+      QCOMPARE( layer.properties(), Qgis::MapLayerProperties( Qgis::MapLayerProperty::IsBasemapLayer ) );
     }
 
     void testOsmMetadata()
@@ -301,6 +320,38 @@ class TestQgsWmsProvider: public QObject
       QVERIFY( imageCheck( "terrarium_terrain", mapSettings ) );
     }
 
+    void testResampling()
+    {
+      QString dataDir( TEST_DATA_DIR );
+
+      QgsXyzConnection xyzConn;
+      xyzConn.url = QUrl::fromLocalFile( dataDir + QStringLiteral( "/maptiler_terrain_rgb.png" ) ).toString();
+      xyzConn.interpretation = QStringLiteral( "maptilerterrain" );
+      QgsRasterLayer layer( xyzConn.encodedUri(), "terrain", "wms" );
+      QVERIFY( layer.isValid() );
+      QVERIFY( layer.dataProvider()->dataType( 1 ) == Qgis::DataType::Float32 );
+
+      QVERIFY( layer.dataProvider()->enableProviderResampling( true ) );
+      QVERIFY( layer.dataProvider()->setZoomedInResamplingMethod( QgsRasterDataProvider::ResamplingMethod::Cubic ) );
+      QVERIFY( layer.dataProvider()->setZoomedOutResamplingMethod( QgsRasterDataProvider::ResamplingMethod::Cubic ) );
+      layer.setResamplingStage( Qgis::RasterResamplingStage::Provider );
+      std::unique_ptr<QgsHillshadeRenderer> hillshade = std::make_unique<QgsHillshadeRenderer>( layer.dataProvider(), 1, 315, 45 );
+      hillshade->setZFactor( 0.0005 );
+      layer.setRenderer( hillshade.release() );
+
+      QgsMapSettings mapSettings;
+      mapSettings.setLayers( QList<QgsMapLayer *>() << &layer );
+      QgsRectangle layerExtent = layer.extent();
+      mapSettings.setExtent( QgsRectangle( layerExtent.xMinimum() + 1000,
+                                           layerExtent.yMinimum() + 1000,
+                                           layerExtent.xMinimum() + 1000 + layerExtent.width() / 3000000,
+                                           layerExtent.yMinimum() + 1000 + layerExtent.height() / 3000000 ) );
+      mapSettings.setOutputSize( QSize( 400, 400 ) );
+      mapSettings.setOutputDpi( 96 );
+      mapSettings.setDpiTarget( 48 );
+      QVERIFY( imageCheck( "cubic_resampling", mapSettings ) );
+    }
+
     bool imageCheck( const QString &testType, QgsMapSettings &mapSettings )
     {
       //use the QgsRenderChecker test utility class to
@@ -325,7 +376,6 @@ class TestQgsWmsProvider: public QObject
   private:
     QgsWmsCapabilities *mCapabilities = nullptr;
 
-    QString mReport;
 };
 
 QGSTEST_MAIN( TestQgsWmsProvider )

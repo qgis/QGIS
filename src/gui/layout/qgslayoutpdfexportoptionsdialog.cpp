@@ -59,16 +59,8 @@ QgsLayoutPdfExportOptionsDialog::QgsLayoutPdfExportOptionsDialog( QWidget *paren
     mGeoPdfFormatComboBox->addItem( tr( "OGC Best Practice" ) );
   }
 
-#if QT_VERSION >= QT_VERSION_CHECK(5, 13, 0)
   mComboImageCompression->addItem( tr( "Lossy (JPEG)" ), false );
   mComboImageCompression->addItem( tr( "Lossless" ), true );
-#else
-  mComboImageCompression->setDisabled( true );
-  mComboImageCompression->addItem( tr( "Lossy (JPEG)" ) );
-  mComboImageCompression->setCurrentIndex( 0 );
-  mComboImageCompression->setToolTip( tr( "Lossless image compression is available only with QGIS builds using Qt 5.13 or later" ) );
-#endif
-
 
   const QStringList themes = QgsProject::instance()->mapThemeCollection()->mapThemes();
   for ( const QString &theme : themes )
@@ -183,20 +175,12 @@ bool QgsLayoutPdfExportOptionsDialog::geometriesSimplified() const
 
 void QgsLayoutPdfExportOptionsDialog::setLosslessImageExport( bool enabled )
 {
-#if QT_VERSION >= QT_VERSION_CHECK(5, 13, 0)
   mComboImageCompression->setCurrentIndex( mComboImageCompression->findData( enabled ) );
-#else
-  Q_UNUSED( enabled )
-#endif
 }
 
 bool QgsLayoutPdfExportOptionsDialog::losslessImageExport() const
 {
-#if QT_VERSION >= QT_VERSION_CHECK(5, 13, 0)
   return mComboImageCompression->currentData().toBool();
-#else
-  return false;
-#endif
 }
 
 void QgsLayoutPdfExportOptionsDialog::setExportGeoPdf( bool enabled )

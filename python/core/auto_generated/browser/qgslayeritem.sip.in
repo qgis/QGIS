@@ -40,9 +40,9 @@ Constructor for QgsLayerItem.
 
 
 
-    QgsMapLayerType mapLayerType() const;
+    Qgis::LayerType mapLayerType() const;
 %Docstring
-Returns :py:class:`QgsMapLayerType`
+Returns the associated map layer type.
 %End
 
     static Qgis::BrowserLayerType typeFromMapLayer( QgsMapLayer *layer );
@@ -142,6 +142,21 @@ Returns icon for point cloud layer
 %End
     virtual QgsAbstractDatabaseProviderConnection *databaseConnection() const;
 
+
+    const QgsLayerMetadata &layerMetadata() const;
+%Docstring
+Returns layer's metadata, it may be a default constructed metadata
+if metadata is not explicitly set.
+
+.. versionadded:: 3.28
+%End
+
+    void setLayerMetadata( const QgsLayerMetadata &metadata );
+%Docstring
+Set layer's ``metadata``.
+
+.. versionadded:: 3.28
+%End
 
 };
 

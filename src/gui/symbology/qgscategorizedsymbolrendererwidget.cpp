@@ -36,6 +36,7 @@
 #include "qgsfeatureiterator.h"
 
 #include "qgsproject.h"
+#include "qgsprojectstylesettings.h"
 #include "qgsexpression.h"
 #include "qgsmapcanvas.h"
 #include "qgssettings.h"
@@ -169,7 +170,7 @@ QVariant QgsCategorizedSymbolRendererModel::data( const QModelIndex &index, int 
             else // tooltip
               return res.join( '\n' );
           }
-          else if ( !category.value().isValid() || category.value().isNull() || category.value().toString().isEmpty() )
+          else if ( QgsVariantUtils::isNull( category.value() ) || category.value().toString().isEmpty() )
           {
             return tr( "all other values" );
           }
@@ -186,7 +187,7 @@ QVariant QgsCategorizedSymbolRendererModel::data( const QModelIndex &index, int 
 
     case Qt::FontRole:
     {
-      if ( index.column() == 1 && category.value().type() != QVariant::List && ( !category.value().isValid() || category.value().isNull() || category.value().toString().isEmpty() ) )
+      if ( index.column() == 1 && category.value().type() != QVariant::List && ( QgsVariantUtils::isNull( category.value() ) || category.value().toString().isEmpty() ) )
       {
         QFont italicFont;
         italicFont.setItalic( true );
@@ -209,7 +210,7 @@ QVariant QgsCategorizedSymbolRendererModel::data( const QModelIndex &index, int 
     {
       QBrush brush( qApp->palette().color( QPalette::Text ), Qt::SolidPattern );
       if ( index.column() == 1 && ( category.value().type() == QVariant::List
-                                    || !category.value().isValid() || category.value().isNull() || category.value().toString().isEmpty() ) )
+                                    || QgsVariantUtils::isNull( category.value() ) || category.value().toString().isEmpty() ) )
       {
         QColor fadedTextColor = brush.color();
         fadedTextColor.setAlpha( 128 );
@@ -509,7 +510,7 @@ QWidget *QgsCategorizedRendererViewItemDelegate::createEditor( QWidget *parent, 
   QVariant::Type userType { index.data( QgsCategorizedSymbolRendererWidget::CustomRoles::ValueRole ).type() };
 
   // In case of new values the type is not known
-  if ( userType == QVariant::String && index.data( QgsCategorizedSymbolRendererWidget::CustomRoles::ValueRole ).isNull() )
+  if ( userType == QVariant::String && QgsVariantUtils::isNull( index.data( QgsCategorizedSymbolRendererWidget::CustomRoles::ValueRole ) ) )
   {
     bool isExpression;
     bool isValid;
@@ -655,10 +656,10 @@ QgsCategorizedSymbolRendererWidget::QgsCategorizedSymbolRendererWidget( QgsVecto
   btnColorRamp->setShowRandomColorRamp( true );
 
   // set project default color ramp
-  const QString defaultColorRamp = QgsProject::instance()->readEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/ColorRamp" ), QString() );
-  if ( !defaultColorRamp.isEmpty() )
+  std::unique_ptr< QgsColorRamp > colorRamp( QgsProject::instance()->styleSettings()->defaultColorRamp() );
+  if ( colorRamp )
   {
-    btnColorRamp->setColorRampFromName( defaultColorRamp );
+    btnColorRamp->setColorRamp( colorRamp.get() );
   }
   else
   {
@@ -930,7 +931,7 @@ void QgsCategorizedSymbolRendererWidget::addCategories()
   if ( uniqueValues.size() >= 1000 )
   {
     const int res = QMessageBox::warning( nullptr, tr( "Classify Categories" ),
-                                          tr( "High number of classes. Classification would yield %1 entries which might not be expected. Continue?" ).arg( uniqueValues.size() ),
+                                          tr( "High number of classes. Classification would yield %n entries which might not be expected. Continue?", nullptr, uniqueValues.size() ),
                                           QMessageBox::Ok | QMessageBox::Cancel,
                                           QMessageBox::Cancel );
     if ( res == QMessageBox::Cancel )
@@ -1170,7 +1171,7 @@ void QgsCategorizedSymbolRendererWidget::matchToSymbolsFromLibrary()
   if ( matched > 0 )
   {
     QMessageBox::information( this, tr( "Matched Symbols" ),
-                              tr( "Matched %1 categories to symbols." ).arg( matched ) );
+                              tr( "Matched %n categories to symbols.", nullptr, matched ) );
   }
   else
   {
@@ -1223,7 +1224,7 @@ void QgsCategorizedSymbolRendererWidget::matchToSymbolsFromXml()
   if ( matched > 0 )
   {
     QMessageBox::information( this, tr( "Match to Symbols from File" ),
-                              tr( "Matched %1 categories to symbols from file." ).arg( matched ) );
+                              tr( "Matched %n categories to symbols from file.", nullptr, matched ) );
   }
   else
   {

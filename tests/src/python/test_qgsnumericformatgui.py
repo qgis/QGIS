@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsNumericFormat GUI components
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -11,26 +10,26 @@ __date__ = '6/01/2020'
 __copyright__ = 'Copyright 2020, The QGIS Project'
 
 import qgis  # NOQA
-
-from qgis.core import (QgsFallbackNumericFormat,
-                       QgsBasicNumericFormat,
-                       QgsNumericFormatContext,
-                       QgsBearingNumericFormat,
-                       QgsPercentageNumericFormat,
-                       QgsScientificNumericFormat,
-                       QgsCurrencyNumericFormat,
-                       QgsNumericFormatRegistry,
-                       QgsNumericFormat,
-                       QgsApplication)
-
-from qgis.gui import (QgsNumericFormatSelectorWidget,
-                      QgsNumericFormatGuiRegistry,
-                      QgsNumericFormatConfigurationWidgetFactory,
-                      QgsNumericFormatWidget,
-                      QgsGui)
-
-from qgis.testing import start_app, unittest
 from qgis.PyQt.QtTest import QSignalSpy
+from qgis.core import (
+    QgsApplication,
+    QgsBasicNumericFormat,
+    QgsBearingNumericFormat,
+    QgsCurrencyNumericFormat,
+    QgsFallbackNumericFormat,
+    QgsGeographicCoordinateNumericFormat,
+    QgsNumericFormat,
+    QgsPercentageNumericFormat,
+    QgsScientificNumericFormat,
+)
+from qgis.gui import (
+    QgsGui,
+    QgsNumericFormatConfigurationWidgetFactory,
+    QgsNumericFormatGuiRegistry,
+    QgsNumericFormatSelectorWidget,
+    QgsNumericFormatWidget,
+)
+from qgis.testing import start_app, unittest
 
 start_app()
 
@@ -188,6 +187,28 @@ class TestQgsNumericFormatGui(unittest.TestCase):
         self.assertEqual(new.numberDecimalPlaces(), original.numberDecimalPlaces())
         self.assertEqual(new.showTrailingZeros(), original.showTrailingZeros())
         self.assertEqual(new.directionFormat(), original.directionFormat())
+
+    def testGeographicCoordinateFormat(self):
+        w = QgsNumericFormatSelectorWidget()
+
+        original = QgsGeographicCoordinateNumericFormat()
+        original.setNumberDecimalPlaces(4)
+        original.setShowTrailingZeros(True)
+        original.setAngleFormat(QgsGeographicCoordinateNumericFormat.AngleFormat.DegreesMinutes)
+        original.setShowDirectionalSuffix(True)
+        original.setShowLeadingZeros(True)
+        original.setShowDegreeLeadingZeros(True)
+
+        w.setFormat(original)
+        new = w.format()
+
+        self.assertIsInstance(new, QgsGeographicCoordinateNumericFormat)
+        self.assertEqual(new.numberDecimalPlaces(), original.numberDecimalPlaces())
+        self.assertEqual(new.showTrailingZeros(), original.showTrailingZeros())
+        self.assertEqual(new.showDirectionalSuffix(), original.showDirectionalSuffix())
+        self.assertEqual(new.angleFormat(), original.angleFormat())
+        self.assertEqual(new.showLeadingZeros(), original.showLeadingZeros())
+        self.assertEqual(new.showDegreeLeadingZeros(), original.showDegreeLeadingZeros())
 
     def testPercentageFormat(self):
         w = QgsNumericFormatSelectorWidget()

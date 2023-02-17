@@ -163,7 +163,7 @@ void QgsValueRelationSearchWidgetWrapper::onValueChanged()
   }
   else
   {
-    setExpression( vl.isNull() ? QgsApplication::nullRepresentation() : vl.toString() );
+    setExpression( QgsVariantUtils::isNull( vl ) ? QgsApplication::nullRepresentation() : vl.toString() );
     emit valueChanged();
   }
   emit expressionChanged( mExpression );
@@ -202,7 +202,10 @@ QWidget *QgsValueRelationSearchWidgetWrapper::createWidget( QWidget *parent )
   }
   else
   {
-    return new QComboBox( parent );
+    QComboBox *combo = new QComboBox( parent );
+    combo->setMinimumContentsLength( 1 );
+    combo->setSizeAdjustPolicy( QComboBox::SizeAdjustPolicy::AdjustToMinimumContentsLengthWithIcon );
+    return combo;
   }
 }
 

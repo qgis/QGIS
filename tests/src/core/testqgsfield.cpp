@@ -12,6 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include "qgsreferencedgeometry.h"
 #include "qgstest.h"
 
 #include <QObject>
@@ -21,10 +22,10 @@
 
 #include <memory>
 
-#include "qgssettings.h"
 #include "qgsfield.h"
 #include "qgsapplication.h"
 #include "qgstest.h"
+#include "qgsreferencedgeometry.h"
 
 class TestQgsField: public QObject
 {
@@ -49,6 +50,7 @@ class TestQgsField: public QObject
     void displayName();
     void displayNameWithAlias();
     void displayType();
+    void friendlyTypeString();
     void editorWidgetSetup();
     void collection();
 
@@ -146,10 +148,12 @@ void TestQgsField::gettersSetters()
   QCOMPARE( field.defaultValueDefinition().expression(), QString( "1+2" ) );
   QgsFieldConstraints constraints;
   constraints.setConstraint( QgsFieldConstraints::ConstraintNotNull, QgsFieldConstraints::ConstraintOriginProvider );
+  constraints.setDomainName( QStringLiteral( "domain" ) );
   field.setConstraints( constraints );
   QCOMPARE( field.constraints().constraints(), QgsFieldConstraints::ConstraintNotNull );
   QCOMPARE( field.constraints().constraintOrigin( QgsFieldConstraints::ConstraintNotNull ), QgsFieldConstraints::ConstraintOriginProvider );
   QCOMPARE( field.constraints().constraintOrigin( QgsFieldConstraints::ConstraintUnique ), QgsFieldConstraints::ConstraintOriginNotSet );
+  QCOMPARE( field.constraints().domainName(), QStringLiteral( "domain" ) );
   constraints.setConstraint( QgsFieldConstraints::ConstraintNotNull, QgsFieldConstraints::ConstraintOriginNotSet );
   field.setConstraints( constraints );
   QCOMPARE( field.constraints().constraints(), 0 );
@@ -318,6 +322,13 @@ void TestQgsField::equality()
   field1.setConstraints( constraints );
   QVERIFY( !( field1 == field2 ) );
   QVERIFY( field1 != field2 );
+
+  QgsFieldConstraints constraints1;
+  QgsFieldConstraints constraints2;
+  constraints1.setDomainName( QStringLiteral( "d" ) );
+  QVERIFY( !( constraints1 == constraints2 ) );
+  constraints2.setDomainName( QStringLiteral( "d" ) );
+  QVERIFY( constraints1 == constraints2 );
 }
 
 void TestQgsField::asVariant()
@@ -370,13 +381,38 @@ void TestQgsField::displayString()
   //test double value
   const QgsField doubleField( QStringLiteral( "double" ), QVariant::Double, QStringLiteral( "double" ), 10, 3 );
   QCOMPARE( doubleField.displayString( 5.005005 ), QString( "5.005" ) );
-  QCOMPARE( doubleField.displayString( 4.5e-09 ), QString( "4.5e-09" ) );
+  QCOMPARE( doubleField.displayString( 4.5e-09 ).toLower(), QString( "4.5e-09" ) );
   QCOMPARE( doubleField.displayString( 1e-04 ), QString( "0.0001" ) );
+  QCOMPARE( doubleField.displayString( -5.005005 ), QString( "-5.005" ) );
+  QCOMPARE( doubleField.displayString( -4.5e-09 ).toLower(), QString( "-4.5e-09" ) );
+  QCOMPARE( doubleField.displayString( -1e-04 ), QString( "-0.0001" ) );
   const QgsField doubleFieldNoPrec( QStringLiteral( "double" ), QVariant::Double, QStringLiteral( "double" ), 10 );
   QCOMPARE( doubleFieldNoPrec.displayString( 5.005005 ), QString( "5.005005" ) );
   QCOMPARE( doubleFieldNoPrec.displayString( 5.005005005 ), QString( "5.005005005" ) );
-  QCOMPARE( doubleFieldNoPrec.displayString( 4.5e-09 ), QString( "4.5e-09" ) );
+  QCOMPARE( doubleFieldNoPrec.displayString( 4.5e-09 ).toLower(), QString( "4.5e-09" ) );
+  QCOMPARE( doubleFieldNoPrec.displayString( 4.5e-08 ).toLower(), QString( "4.5e-08" ) );
+  QCOMPARE( doubleFieldNoPrec.displayString( 4.5e-07 ).toLower(), QString( "4.5e-07" ) );
+  QCOMPARE( doubleFieldNoPrec.displayString( 4.5e-06 ).toLower(), QString( "4.5e-06" ) );
+  QCOMPARE( doubleFieldNoPrec.displayString( 4.5e-05 ).toLower(), QString( "4.5e-05" ) );
+  QCOMPARE( doubleFieldNoPrec.displayString( 1e-05 ).toLower(), QString( "1e-05" ) );
+  QCOMPARE( doubleFieldNoPrec.displayString( 5e-05 ).toLower(), QString( "5e-05" ) );
   QCOMPARE( doubleFieldNoPrec.displayString( 1e-04 ), QString( "0.0001" ) );
+  QCOMPARE( doubleFieldNoPrec.displayString( 1e-03 ), QString( "0.001" ) );
+  QCOMPARE( doubleFieldNoPrec.displayString( 1e-02 ), QString( "0.01" ) );
+  QCOMPARE( doubleFieldNoPrec.displayString( 1e-01 ), QString( "0.1" ) );
+  QCOMPARE( doubleFieldNoPrec.displayString( -5.005005 ), QString( "-5.005005" ) );
+  QCOMPARE( doubleFieldNoPrec.displayString( -5.005005005 ), QString( "-5.005005005" ) );
+  QCOMPARE( doubleFieldNoPrec.displayString( -4.5e-09 ).toLower(), QString( "-4.5e-09" ) );
+  QCOMPARE( doubleFieldNoPrec.displayString( -4.5e-08 ).toLower(), QString( "-4.5e-08" ) );
+  QCOMPARE( doubleFieldNoPrec.displayString( -4.5e-07 ).toLower(), QString( "-4.5e-07" ) );
+  QCOMPARE( doubleFieldNoPrec.displayString( -4.5e-06 ).toLower(), QString( "-4.5e-06" ) );
+  QCOMPARE( doubleFieldNoPrec.displayString( -4.5e-05 ).toLower(), QString( "-4.5e-05" ) );
+  QCOMPARE( doubleFieldNoPrec.displayString( -1e-05 ).toLower(), QString( "-1e-05" ) );
+  QCOMPARE( doubleFieldNoPrec.displayString( -5e-05 ).toLower(), QString( "-5e-05" ) );
+  QCOMPARE( doubleFieldNoPrec.displayString( -1e-04 ), QString( "-0.0001" ) );
+  QCOMPARE( doubleFieldNoPrec.displayString( -1e-03 ), QString( "-0.001" ) );
+  QCOMPARE( doubleFieldNoPrec.displayString( -1e-02 ), QString( "-0.01" ) );
+  QCOMPARE( doubleFieldNoPrec.displayString( -1e-01 ), QString( "-0.1" ) );
   QCOMPARE( QLocale().numberOptions() & QLocale::NumberOption::OmitGroupSeparator, QLocale::NumberOption::DefaultNumberOptions );
   QCOMPARE( doubleFieldNoPrec.displayString( 599999898999.0 ), QString( "599,999,898,999" ) );
 
@@ -390,11 +426,11 @@ void TestQgsField::displayString()
   //test double value with German locale
   QLocale::setDefault( QLocale::German );
   QCOMPARE( doubleField.displayString( 5.005005 ), QString( "5,005" ) );
-  QCOMPARE( doubleField.displayString( 4.5e-09 ), QString( "4,5e-09" ) );
+  QCOMPARE( doubleField.displayString( 4.5e-09 ).toLower(), QString( "4,5e-09" ) );
   QCOMPARE( doubleField.displayString( 1e-04 ), QString( "0,0001" ) );
   QCOMPARE( doubleFieldNoPrec.displayString( 5.005005 ), QString( "5,005005" ) );
   QCOMPARE( doubleFieldNoPrec.displayString( 5.005005005 ), QString( "5,005005005" ) );
-  QCOMPARE( doubleFieldNoPrec.displayString( 4.5e-09 ), QString( "4,5e-09" ) );
+  QCOMPARE( doubleFieldNoPrec.displayString( 4.5e-09 ).toLower(), QString( "4,5e-09" ) );
   QCOMPARE( doubleFieldNoPrec.displayString( 1e-04 ), QString( "0,0001" ) );
   QCOMPARE( doubleFieldNoPrec.displayString( 599999898999.0 ), QString( "599.999.898.999" ) );
   QCOMPARE( doubleFieldNoPrec.displayString( 5999.123456 ), QString( "5.999,123456" ) );
@@ -404,11 +440,11 @@ void TestQgsField::displayString()
   customGerman.setNumberOptions( QLocale::NumberOption::OmitGroupSeparator );
   QLocale::setDefault( customGerman );
   QCOMPARE( doubleField.displayString( 5.005005 ), QString( "5,005" ) );
-  QCOMPARE( doubleField.displayString( 4.5e-09 ), QString( "4,5e-09" ) );
+  QCOMPARE( doubleField.displayString( 4.5e-09 ).toLower(), QString( "4,5e-09" ) );
   QCOMPARE( doubleField.displayString( 1e-04 ), QString( "0,0001" ) );
   QCOMPARE( doubleFieldNoPrec.displayString( 5.005005 ), QString( "5,005005" ) );
   QCOMPARE( doubleFieldNoPrec.displayString( 5.005005005 ), QString( "5,005005005" ) );
-  QCOMPARE( doubleFieldNoPrec.displayString( 4.5e-09 ), QString( "4,5e-09" ) );
+  QCOMPARE( doubleFieldNoPrec.displayString( 4.5e-09 ).toLower(), QString( "4,5e-09" ) );
   QCOMPARE( doubleFieldNoPrec.displayString( 1e-04 ), QString( "0,0001" ) );
   QCOMPARE( doubleFieldNoPrec.displayString( 599999898999.0 ), QString( "599999898999" ) );
   QCOMPARE( doubleFieldNoPrec.displayString( 5999.123456 ), QString( "5999,123456" ) );
@@ -426,12 +462,20 @@ void TestQgsField::displayString()
   customEnglish.setNumberOptions( QLocale::NumberOption::OmitGroupSeparator );
   QLocale::setDefault( customEnglish );
   QCOMPARE( doubleField.displayString( 5.005005 ), QString( "5.005" ) );
-  QCOMPARE( doubleField.displayString( 4.5e-09 ), QString( "4.5e-09" ) );
+  QCOMPARE( doubleField.displayString( 4.5e-09 ).toLower(), QString( "4.5e-09" ) );
   QCOMPARE( doubleField.displayString( 1e-04 ), QString( "0.0001" ) );
   QCOMPARE( doubleFieldNoPrec.displayString( 5.005005 ), QString( "5.005005" ) );
   QCOMPARE( doubleFieldNoPrec.displayString( 5.005005005 ), QString( "5.005005005" ) );
-  QCOMPARE( doubleFieldNoPrec.displayString( 4.5e-09 ), QString( "4.5e-09" ) );
+  QCOMPARE( doubleFieldNoPrec.displayString( 4.5e-09 ).toLower(), QString( "4.5e-09" ) );
+  QCOMPARE( doubleFieldNoPrec.displayString( 4.5e-08 ).toLower(), QString( "4.5e-08" ) );
+  QCOMPARE( doubleFieldNoPrec.displayString( 4.5e-07 ).toLower(), QString( "4.5e-07" ) );
+  QCOMPARE( doubleFieldNoPrec.displayString( 4.5e-06 ).toLower(), QString( "4.5e-06" ) );
+  QCOMPARE( doubleFieldNoPrec.displayString( 4.5e-05 ).toLower(), QString( "4.5e-05" ) );
+  QCOMPARE( doubleFieldNoPrec.displayString( 1e-05 ).toLower(), QString( "1e-05" ) );
   QCOMPARE( doubleFieldNoPrec.displayString( 1e-04 ), QString( "0.0001" ) );
+  QCOMPARE( doubleFieldNoPrec.displayString( 1e-03 ), QString( "0.001" ) );
+  QCOMPARE( doubleFieldNoPrec.displayString( 1e-02 ), QString( "0.01" ) );
+  QCOMPARE( doubleFieldNoPrec.displayString( 1e-01 ), QString( "0.1" ) );
   QCOMPARE( doubleFieldNoPrec.displayString( 599999898999.0 ), QString( "599999898999" ) );
   QCOMPARE( doubleFieldNoPrec.displayString( 5999.123456 ), QString( "5999.123456" ) );
 
@@ -492,7 +536,7 @@ void TestQgsField::convertCompatible()
   QString error;
   QVERIFY( !doubleField.convertCompatible( stringVar, &error ) );
   QCOMPARE( stringVar.type(), QVariant::Double );
-  QCOMPARE( error, QStringLiteral( "Could not convert value \"test string\" to target type" ) );
+  QCOMPARE( error, QStringLiteral( "Could not convert value \"test string\" to target type \"double\"" ) );
   stringVar = QVariant( "test string" );
   QVERIFY( !doubleField.convertCompatible( stringVar ) );
   QVERIFY( stringVar.isNull() );
@@ -657,7 +701,7 @@ void TestQgsField::convertCompatible()
   // This should not convert
   stringDouble = QVariant( "1.223.456,012345" );
   QVERIFY( ! doubleField.convertCompatible( stringDouble, &error ) );
-  QCOMPARE( error, QStringLiteral( "Could not convert value \"1.223.456,012345\" to target type" ) );
+  QCOMPARE( error, QStringLiteral( "Could not convert value \"1.223.456,012345\" to target type \"double\"" ) );
 
   //double with precision
   const QgsField doubleWithPrecField( QStringLiteral( "double" ), QVariant::Double, QStringLiteral( "double" ), 10, 3 );
@@ -675,6 +719,14 @@ void TestQgsField::convertCompatible()
   QCOMPARE( stringVar.type(), QVariant::String );
   QCOMPARE( stringVar.toString(), QString( "lon" ) );
 
+  // Referenced geometries
+  const QgsField stringGeomRef( QStringLiteral( "string" ), QVariant::String, QStringLiteral( "string" ) );
+  QgsGeometry geom { QgsGeometry::fromWkt( "POINT( 1 1 )" ) };
+  QgsReferencedGeometry geomRef { geom, QgsCoordinateReferenceSystem() };
+  QVariant geomVar = QVariant::fromValue( geomRef );
+  QVERIFY( stringGeomRef.convertCompatible( geomVar, &error ) );
+  QCOMPARE( geomVar.type(), QVariant::String );
+  QCOMPARE( geomVar.toString().toUpper(), QString( "POINT (1 1)" ) );
 
   /////////////////////////////////////////////////////////
   // German locale tests
@@ -740,6 +792,37 @@ void TestQgsField::convertCompatible()
   intField = QgsField( QStringLiteral( "int" ), QVariant::Int, QStringLiteral( "Integer" ), 10 );
   QVariant vZero = 0;
   QVERIFY( intField.convertCompatible( vZero ) );
+
+  // Test json field conversion
+  const QgsField jsonField( QStringLiteral( "json" ), QVariant::String, QStringLiteral( "json" ) );
+  QVariant jsonValue = QVariant::fromValue( QVariantList() << 1 << 5 << 8 );
+  QVERIFY( jsonField.convertCompatible( jsonValue ) );
+  QCOMPARE( jsonValue.type(), QVariant::String );
+  QCOMPARE( jsonValue, QString( "[1,5,8]" ) );
+  QVariantMap variantMap;
+  variantMap.insert( QStringLiteral( "a" ), 1 );
+  variantMap.insert( QStringLiteral( "c" ), 3 );
+  jsonValue = QVariant::fromValue( variantMap );
+  QVERIFY( jsonField.convertCompatible( jsonValue ) );
+  QCOMPARE( jsonValue.type(), QVariant::String );
+  QCOMPARE( jsonValue, QString( "{\"a\":1,\"c\":3}" ) );
+
+  // geometry field conversion
+  const QgsField geometryField( QStringLiteral( "geometry" ), QVariant::UserType, QStringLiteral( "geometry" ) );
+  QVariant geometryValue;
+  QVERIFY( geometryField.convertCompatible( geometryValue ) );
+  QVERIFY( geometryValue.isNull() );
+  geometryValue = QVariant::fromValue( QgsGeometry::fromWkt( QStringLiteral( "Point( 1 2 )" ) ) );
+  QVERIFY( geometryField.convertCompatible( geometryValue ) );
+  QCOMPARE( geometryValue.userType(), QMetaType::type( "QgsGeometry" ) );
+
+  geometryValue = QVariant::fromValue( QgsReferencedGeometry( QgsGeometry::fromWkt( QStringLiteral( "Point( 1 2 )" ) ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3111" ) ) ) );
+  QVERIFY( geometryField.convertCompatible( geometryValue ) );
+  QCOMPARE( geometryValue.userType(), QMetaType::type( "QgsReferencedGeometry" ) );
+
+  geometryValue = QStringLiteral( "LineString( 1 2, 3 4 )" );
+  QVERIFY( geometryField.convertCompatible( geometryValue ) );
+  QCOMPARE( geometryValue.userType(), QMetaType::type( "QgsGeometry" ) );
 }
 
 void TestQgsField::dataStream()
@@ -814,6 +897,21 @@ void TestQgsField::displayType()
   QCOMPARE( field.displayType( true ), QString( "numeric(20, 10) NULL UNIQUE" ) );
 }
 
+void TestQgsField::friendlyTypeString()
+{
+  QgsField field;
+  field.setType( QVariant::String );
+  QCOMPARE( field.friendlyTypeString(), QStringLiteral( "Text (string)" ) );
+  field.setType( QVariant::Double );
+  field.setLength( 20 );
+  QCOMPARE( field.friendlyTypeString(), QStringLiteral( "Decimal (double)" ) );
+  field.setType( QVariant::List );
+  field.setSubType( QVariant::String );
+  QCOMPARE( field.friendlyTypeString(), QStringLiteral( "List" ) );
+  field.setType( QVariant::UserType );
+  field.setTypeName( QStringLiteral( "geometry" ) );
+  QCOMPARE( field.friendlyTypeString(), QStringLiteral( "Geometry" ) );
+}
 
 void TestQgsField::editorWidgetSetup()
 {
@@ -836,6 +934,27 @@ void TestQgsField::collection()
 
   QVariant str( "hello" );
   QVERIFY( !field.convertCompatible( str ) );
+
+  QVariant intList = QVariantList( {1, 2, 3 } );
+  QVERIFY( field.convertCompatible( intList ) );
+  QCOMPARE( intList.toList(), QVariantList( {1, 2, 3} ) );
+
+  QVariant doubleList = QVariantList( {1.1, 2.2, 3.3 } );
+  QVERIFY( field.convertCompatible( doubleList ) );
+  QCOMPARE( doubleList.toList(), QVariantList( {1.1, 2.2, 3.3 } ) );
+
+  QgsField stringListField( QStringLiteral( "collection" ), QVariant::StringList );
+  str = QVariant( "hello" );
+  QVERIFY( stringListField.convertCompatible( str ) );
+  QCOMPARE( str, QStringList{ QStringLiteral( "hello" )} );
+
+  QVariant strList = QVariant( QStringList( { "hello", "there" } ) );
+  QVERIFY( stringListField.convertCompatible( strList ) );
+  QCOMPARE( strList, QVariant( QStringList( { "hello", "there" } ) ) );
+
+  QVariant strInVariantList = QVariant( QVariantList( { "hello", "there" } ) );
+  QVERIFY( stringListField.convertCompatible( strInVariantList ) );
+  QCOMPARE( strInVariantList, QVariant( QStringList( { "hello", "there" } ) ) );
 }
 
 QGSTEST_MAIN( TestQgsField )

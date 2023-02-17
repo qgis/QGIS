@@ -102,13 +102,13 @@ QString QgsRelationReferenceSearchWidgetWrapper::createExpression( QgsSearchWidg
     {
       if ( flags & EqualTo )
       {
-        if ( v.isNull() )
+        if ( QgsVariantUtils::isNull( v ) )
           return fieldName + " IS NULL";
         return fieldName + '=' + v.toString();
       }
       else if ( flags & NotEqualTo )
       {
-        if ( v.isNull() )
+        if ( QgsVariantUtils::isNull( v ) )
           return fieldName + " IS NOT NULL";
         return fieldName + "<>" + v.toString();
       }
@@ -166,7 +166,7 @@ void QgsRelationReferenceSearchWidgetWrapper::onValuesChanged( const QVariantLis
     const QgsSettings settings;
     // TODO: adapt for composite keys
     const QVariant value = values.at( 0 );
-    setExpression( value.isNull() ? QgsApplication::nullRepresentation() : value.toString() );
+    setExpression( QgsVariantUtils::isNull( value ) ? QgsApplication::nullRepresentation() : value.toString() );
     emit valueChanged();
   }
   emit expressionChanged( mExpression );

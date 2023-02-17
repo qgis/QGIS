@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<copying>
+  <authors>
+    <author href="http://commons.wikimedia.org/wiki/User:Astrokey44">
+      <name>Astrokey44</name>
+    </author>
+    <author href="http://de.wikipedia.org/wiki/Benutzer:Pallando">
+      <name>Pallando</name>
+    </author>
+    <author href="http://en.wikipedia.org/wiki/User:Vardion">
+      <name>Vardion</name>
+    </author>
+  </authors>
+  <license>
+    <informal>Creative commons attribution share-alike 3.0 unported</informal>
+    <year>2012</year>
+    <text href="http://creativecommons.org/licenses/by-sa/3.0/deed.fr"/>
+  </license>
+  <src>
+    <format>PNG image</format>
+    <link href="http://commons.wikimedia.org/wiki/File:Life_expectancy_world_map.PNG">Wikipedia life-expectancy map</link>
+  </src>
+  <distribute>
+    <qgis distribute="yes" license="cc3"/>
+  </distribute>
+</copying>

@@ -209,9 +209,10 @@ void QgsRequestHandler::parseInput()
       int column = -1;
       if ( !doc.setContent( inputString, true, &errorMsg, &line, &column ) )
       {
-        // XXX Output error but continue processing request ?
-        QgsMessageLog::logMessage( QStringLiteral( "Warning: error parsing post data as XML: at line %1, column %2: %3. Assuming urlencoded query string sent in the post body." )
-                                   .arg( line ).arg( column ).arg( errorMsg ) );
+        // Output Warning about POST without XML content
+        QgsMessageLog::logMessage( QStringLiteral( "Error parsing post data as XML: at line %1, column %2: %3. Assuming urlencoded query string sent in the post body." )
+                                   .arg( line ).arg( column ).arg( errorMsg ),
+                                   QStringLiteral( "Server" ), Qgis::MessageLevel::Warning );
 
         // Process input string as a simple query text
 
@@ -271,7 +272,7 @@ void QgsRequestHandler::setParameter( const QString &key, const QString &value )
     if ( key.compare( QLatin1String( "MAP" ), Qt::CaseInsensitive ) == 0 )
     {
       QgsMessageLog::logMessage( QStringLiteral( "Changing the 'MAP' parameter will have no effect on config path: use QgsSerververInterface::setConfigFilePath instead" ),
-                                 "Server", Qgis::MessageLevel::Warning );
+                                 QStringLiteral( "Server" ), Qgis::MessageLevel::Warning );
     }
     mRequest.setParameter( key, value );
   }

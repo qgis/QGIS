@@ -2,12 +2,34 @@
   "name": "smooth",
   "type": "function",
   "groups": ["GeometryGroup"],
-  "description":"Smooths a geometry by adding extra nodes which round off corners in the geometry. If input geometries contain Z or M values, these will also be smoothed and the output geometry will retain the same dimensionality as the input geometry.",
-  "arguments": [ {"arg":"geometry","description":"a geometry"},
-                 {"arg":"iterations", "optional":true, "default":"1", "description":"number of smoothing iterations to apply. Larger numbers result in smoother but more complex geometries."},
-                 {"arg":"offset", "optional":true, "default":"0.25", "description":"value between 0 and 0.5 which controls how tightly the smoothed geometry follow the original geometry. Smaller values result in a tighter smoothing, larger values result in looser smoothing."},
-                 {"arg":"min_length", "optional":true, "default":"-1", "description":"minimum length of segments to apply smoothing to. This parameter can be used to avoid placing excessive additional nodes in shorter segments of the geometry."},
-                 {"arg":"max_angle", "optional":true, "default":"180", "description":"maximum angle at node for smoothing to be applied (0-180). By lowering the maximum angle intentionally sharp corners in the geometry can be preserved. For instance, a value of 80 degrees will retain right angles in the geometry."} ],
-  "examples": [ { "expression":"geom_to_wkt(smooth(geometry:=geom_from_wkt('LineString(0 0, 5 0, 5 5)'),iterations:=1,offset:=0.2,min_length:=-1,max_angle:=180))", "returns":"'LineString (0 0, 4 0, 5 1, 5 5)'"}]
+  "description": "Smooths a geometry by adding extra nodes which round off corners in the geometry. If input geometries contain Z or M values, these will also be smoothed and the output geometry will retain the same dimensionality as the input geometry.",
+  "arguments": [{
+    "arg": "geometry",
+    "description": "a geometry"
+  }, {
+    "arg": "iterations",
+    "optional": true,
+    "default": "1",
+    "description": "number of smoothing iterations to apply. Larger numbers result in smoother but more complex geometries."
+  }, {
+    "arg": "offset",
+    "optional": true,
+    "default": "0.25",
+    "description": "value between 0 and 0.5 which controls how tightly the smoothed geometry follow the original geometry. Smaller values result in a tighter smoothing, larger values result in looser smoothing."
+  }, {
+    "arg": "min_length",
+    "optional": true,
+    "default": "-1",
+    "description": "minimum length of segments to apply smoothing to. This parameter can be used to avoid placing excessive additional nodes in shorter segments of the geometry."
+  }, {
+    "arg": "max_angle",
+    "optional": true,
+    "default": "180",
+    "description": "maximum angle at node for smoothing to be applied (0-180). By lowering the maximum angle intentionally sharp corners in the geometry can be preserved. For instance, a value of 80 degrees will retain right angles in the geometry."
+  }],
+  "examples": [{
+    "expression": "geom_to_wkt(smooth(geometry:=geom_from_wkt('LineString(0 0, 5 0, 5 5)'),iterations:=1,offset:=0.2,min_length:=-1,max_angle:=180))",
+    "returns": "'LineString (0 0, 4 0, 5 1, 5 5)'"
+  }],
+  "tags": ["adding", "corners", "smoothed", "dimensionality", "round", "output", "contain", "input", "retain", "extra", "smooths", "nodes", "values", "same"]
 }
-

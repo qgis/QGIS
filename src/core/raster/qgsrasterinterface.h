@@ -151,6 +151,7 @@ class CORE_EXPORT QgsRasterInterface
 #include <qgssinglebandcolordatarenderer.h>
 #include <qgssinglebandgrayrenderer.h>
 #include <qgssinglebandpseudocolorrenderer.h>
+#include <qgsrastercontourrenderer.h>
 #endif
 
 
@@ -185,6 +186,8 @@ class CORE_EXPORT QgsRasterInterface
         sipType = sipType_QgsSingleBandGrayRenderer;
       else if ( dynamic_cast<QgsSingleBandPseudoColorRenderer *>( sipCpp ) )
         sipType = sipType_QgsSingleBandPseudoColorRenderer;
+      else if ( dynamic_cast<QgsRasterContourRenderer *>( sipCpp ) )
+        sipType = sipType_QgsRasterContourRenderer;
       else
         sipType = sipType_QgsRasterRenderer;
     }
@@ -571,7 +574,7 @@ class CORE_EXPORT QgsRasterInterface
     void initStatistics( QgsRasterBandStats &statistics, int bandNo,
                          int stats = QgsRasterBandStats::All,
                          const QgsRectangle &boundingBox = QgsRectangle(),
-                         int binCount = 0 );
+                         int binCount = 0 ) const;
 
   private:
 #ifdef SIP_RUN
@@ -583,5 +586,3 @@ class CORE_EXPORT QgsRasterInterface
 };
 
 #endif
-
-

@@ -43,7 +43,6 @@ class TestQgsVectorTileWriter : public QObject
 
   private:
     QString mDataDir;
-    QString mReport;
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
@@ -116,7 +115,7 @@ void TestQgsVectorTileWriter::test_basic()
   QgsVectorTileLayer *vtLayer = new QgsVectorTileLayer( ds.encodedUri(), "output" );
 
   const QByteArray tile0 = vtLayer->getRawTile( QgsTileXYZ( 0, 0, 0 ) );
-  QgsVectorTileMVTDecoder decoder;
+  QgsVectorTileMVTDecoder decoder( QgsVectorTileMatrixSet::fromWebMercator() );
   const bool resDecode0 = decoder.decode( QgsTileXYZ( 0, 0, 0 ), tile0 );
   QVERIFY( resDecode0 );
   const QStringList layerNames = decoder.layers();
@@ -185,7 +184,7 @@ void TestQgsVectorTileWriter::test_mbtiles()
   QgsVectorTileLayer *vtLayer = new QgsVectorTileLayer( ds.encodedUri(), "output" );
 
   const QByteArray tile0 = vtLayer->getRawTile( QgsTileXYZ( 0, 0, 0 ) );
-  QgsVectorTileMVTDecoder decoder;
+  QgsVectorTileMVTDecoder decoder( QgsVectorTileMatrixSet::fromWebMercator() );
   const bool resDecode0 = decoder.decode( QgsTileXYZ( 0, 0, 0 ), tile0 );
   QVERIFY( resDecode0 );
   const QStringList layerNames = decoder.layers();
@@ -301,7 +300,7 @@ void TestQgsVectorTileWriter::test_filtering()
   QgsVectorTileLayer *vtLayer = new QgsVectorTileLayer( ds.encodedUri(), "output" );
 
   const QByteArray tile0 = vtLayer->getRawTile( QgsTileXYZ( 0, 0, 0 ) );
-  QgsVectorTileMVTDecoder decoder;
+  QgsVectorTileMVTDecoder decoder( QgsVectorTileMatrixSet::fromWebMercator() );
   const bool resDecode0 = decoder.decode( QgsTileXYZ( 0, 0, 0 ), tile0 );
   QVERIFY( resDecode0 );
   const QStringList layerNames = decoder.layers();
@@ -364,7 +363,7 @@ void TestQgsVectorTileWriter::test_z0TileMatrix3857()
   QgsVectorTileLayer *vtLayer = new QgsVectorTileLayer( ds.encodedUri(), "output" );
 
   const QByteArray tile0 = vtLayer->getRawTile( QgsTileXYZ( 0, 0, 0 ) );
-  QgsVectorTileMVTDecoder decoder;
+  QgsVectorTileMVTDecoder decoder( QgsVectorTileMatrixSet::fromWebMercator() );
   const bool resDecode0 = decoder.decode( QgsTileXYZ( 0, 0, 0 ), tile0 );
   QVERIFY( resDecode0 );
   const QStringList layerNames = decoder.layers();
@@ -450,7 +449,7 @@ void TestQgsVectorTileWriter::test_z0TileMatrix2154()
   QgsVectorTileLayer *vtLayer = new QgsVectorTileLayer( ds.encodedUri(), "output" );
 
   const QByteArray tile0 = vtLayer->getRawTile( QgsTileXYZ( 0, 0, 0 ) );
-  QgsVectorTileMVTDecoder decoder;
+  QgsVectorTileMVTDecoder decoder( QgsVectorTileMatrixSet::fromWebMercator() );
   const bool resDecode0 = decoder.decode( QgsTileXYZ( 0, 0, 0 ), tile0 );
   QVERIFY( resDecode0 );
   const QStringList layerNames = decoder.layers();

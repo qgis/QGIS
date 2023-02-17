@@ -31,12 +31,12 @@
     },
     {
       "arg": "min_overlap",
-      "description": "defines an optional exclusion filter: for polygons a minimum area in current feature squared units for the intersection (if the intersection results in multiple polygons the intersection will be returned if at least one of the polygons has an area greater or equal to the value), for lines a minimum length in current feature units (if the intersection results in multiple lines the intersection will be returned if at least one of the lines has a length greater or equal to the value).",
+      "description": "defines an optional exclusion filter:<ul><li>for polygons, a minimum area in current feature squared units for the intersection. If the intersection results in multiple polygons the intersection will be returned if at least one of the polygons has an area greater or equal to the value</li><li>for lines, a minimum length in current feature units. If the intersection results in multiple lines the intersection will be returned if at least one of the lines has a length greater or equal to the value.</li></ul>",
       "optional": true
     },
     {
       "arg": "min_inscribed_circle_radius",
-      "description": "defines an optional exclusion filter (for polygons only): minimum radius in current feature units for the maximum inscribed circle of the intersection (if the intersection results in multiple polygons the intersection will be returned if at least one of the polygons has a radius for the maximum inscribed circle greater or equal to the value).<br>Read more on the underlying GEOS predicate, as described in PostGIS <a href='https://postgis.net/docs/ST_MaximumInscribedCircle.html'>ST_MaximumInscribedCircle</a> function.<br>This argument requires GEOS >= 3.9.",
+      "description": "defines an optional exclusion filter (for polygons only): minimum radius in current feature units for the maximum inscribed circle of the intersection. If the intersection results in multiple polygons the intersection will be returned if at least one of the polygons has a radius for the maximum inscribed circle greater or equal to the value.<br>Read more on the underlying GEOS predicate, as described in PostGIS <a href='https://postgis.net/docs/ST_MaximumInscribedCircle.html'>ST_MaximumInscribedCircle</a> function.<br>This argument requires GEOS >= 3.9.",
       "optional": true
     },
     {
@@ -53,11 +53,11 @@
   "examples": [
     {
       "expression": "overlay_intersects('regions')",
-      "returns": "true if the current feature spatially intersects a region"
+      "returns": "TRUE if the current feature spatially intersects a region"
     },
     {
       "expression": "overlay_intersects('regions', filter:= population > 10000)",
-      "returns": "true if the current feature spatially intersects a region with a population greater than 10000"
+      "returns": "TRUE if the current feature spatially intersects a region with a population greater than 10000"
     },
     {
       "expression": "overlay_intersects('regions', name)",
@@ -73,15 +73,15 @@
     },
     {
       "expression": "overlay_intersects(layer:='regions', expression:= geom_to_wkt($geometry), limit:=2)",
-      "returns": "an array of geometries (in WKT), for up to two regions intersected by the current feature"    
+      "returns": "an array of geometries (in WKT), for up to two regions intersected by the current feature"
     },
     {
       "expression": "overlay_intersects(layer:='regions', min_overlap:=0.54)",
-      "returns": "true if the current feature spatially intersects a region and the intersection area (of at least one of the parts in case of multipolygons) is greater or equal to 0.54"
+      "returns": "TRUE if the current feature spatially intersects a region and the intersection area (of at least one of the parts in case of multipolygons) is greater or equal to 0.54"
     },
     {
       "expression": "overlay_intersects(layer:='regions', min_inscribed_circle_radius:=0.54)",
-      "returns": "true if the current feature spatially intersects a region and the intersection area maximum inscribed circle's radius (of at least one of the parts in case of multipart) is greater or equal to the 0.54"
+      "returns": "TRUE if the current feature spatially intersects a region and the intersection area maximum inscribed circle's radius (of at least one of the parts in case of multipart) is greater or equal to 0.54"
     },
     {
       "expression": "overlay_intersects(layer:='regions', expression:= geom_to_wkt($geometry), return_details:=true)",
@@ -91,5 +91,6 @@
       "expression": "overlay_intersects(layer:='regions', expression:= geom_to_wkt($geometry), sort_by_intersection_size:='des')",
       "returns": "an array of geometries (in WKT) ordered by the overlap value in descending order"
     }
-  ]
+  ],
+  "tags": ["intersected", "least", "predicate", "current", "target", "array", "geos", "postgis", "described", "st_intersects", "intersects", "underlying", "features"]
 }

@@ -29,30 +29,6 @@
 #include "qgsapplication.h"
 #include "qgsscalewidget.h"
 
-class SnapTypeMenu: public QMenu
-{
-  public:
-    SnapTypeMenu( const QString &title, QWidget *parent = nullptr )
-      : QMenu( title, parent ) {}
-
-    void mouseReleaseEvent( QMouseEvent *e )
-    {
-      QAction *action = activeAction();
-      if ( action )
-        action->trigger();
-      else
-        QMenu::mouseReleaseEvent( e );
-    }
-
-    // set focus to parent so that mTypeButton is not displayed
-    void hideEvent( QHideEvent *e )
-    {
-      qobject_cast<QWidget *>( parent() )->setFocus();
-      QMenu::hideEvent( e );
-    }
-};
-
-
 QgsSnappingLayerDelegate::QgsSnappingLayerDelegate( QgsMapCanvas *canvas, QObject *parent )
   : QItemDelegate( parent )
   , mCanvas( canvas )
@@ -70,20 +46,14 @@ QWidget *QgsSnappingLayerDelegate::createEditor( QWidget *parent, const QStyleOp
     QToolButton *mTypeButton = new QToolButton( parent );
     mTypeButton->setToolTip( tr( "Snapping Type" ) );
     mTypeButton->setPopupMode( QToolButton::InstantPopup );
-    SnapTypeMenu *typeMenu = new SnapTypeMenu( tr( "Set Snapping Mode" ), parent );
+    SnappingLayerDelegateTypeMenu *typeMenu = new SnappingLayerDelegateTypeMenu( tr( "Set Snapping Mode" ), parent );
 
-    for ( const QgsSnappingConfig::SnappingTypes type :
-          {
-            QgsSnappingConfig::VertexFlag,
-            QgsSnappingConfig::SegmentFlag,
-            QgsSnappingConfig::AreaFlag,
-            QgsSnappingConfig::CentroidFlag,
-            QgsSnappingConfig::MiddleOfSegmentFlag,
-            QgsSnappingConfig::LineEndpointFlag
-          } )
+    for ( Qgis::SnappingType type : qgsEnumList<Qgis::SnappingType>() )
     {
-      QAction *action = new QAction( QgsSnappingConfig::snappingTypeFlagToIcon( type ), QgsSnappingConfig::snappingTypeFlagToString( type ), typeMenu );
-      action->setData( type );
+      if ( type == Qgis::SnappingType::NoSnap )
+        continue;
+      QAction *action = new QAction( QgsSnappingConfig::snappingTypeToIcon( type ), QgsSnappingConfig::snappingTypeToString( type ), typeMenu );
+      action->setData( QVariant::fromValue( type ) );
       action->setCheckable( true );
       typeMenu->addAction( action );
     }
@@ -158,14 +128,14 @@ void QgsSnappingLayerDelegate::setEditorData( QWidget *editor, const QModelIndex
 
   if ( index.column() == QgsSnappingLayerTreeModel::TypeColumn )
   {
-    const QgsSnappingConfig::SnappingTypeFlag type = static_cast<QgsSnappingConfig::SnappingTypeFlag>( val.toInt() );
+    const Qgis::SnappingTypes type = static_cast<Qgis::SnappingTypes>( val.toInt() );
     QToolButton *tb = qobject_cast<QToolButton *>( editor );
     if ( tb )
     {
       const QList<QAction *> actions = tb->menu()->actions();
       for ( QAction *action : actions )
       {
-        action->setChecked( type & static_cast< QgsSnappingConfig::SnappingTypeFlag >( action->data().toInt() ) );
+        action->setChecked( type & static_cast< Qgis::SnappingTypes >( action->data().toInt() ) );
       }
     }
   }
@@ -212,14 +182,14 @@ void QgsSnappingLayerDelegate::setModelData( QWidget *editor, QAbstractItemModel
     if ( t )
     {
       const QList<QAction *> actions = t->menu()->actions();
-      QgsSnappingConfig::SnappingTypeFlag type = QgsSnappingConfig::NoSnapFlag;
+      Qgis::SnappingTypes type = Qgis::SnappingType::NoSnap;
 
       for ( QAction *action : actions )
       {
         if ( action->isChecked() )
         {
-          const QgsSnappingConfig::SnappingTypeFlag actionFlag = static_cast<QgsSnappingConfig::SnappingTypeFlag>( action->data().toInt() );
-          type = static_cast<QgsSnappingConfig::SnappingTypeFlag>( type | actionFlag );
+          const Qgis::SnappingTypes actionFlag = static_cast<Qgis::SnappingTypes>( action->data().toInt() );
+          type = static_cast<Qgis::SnappingTypes>( type | actionFlag );
         }
       }
       model->setData( index, static_cast<int>( type ), Qt::EditRole );
@@ -587,19 +557,18 @@ QVariant QgsSnappingLayerTreeModel::data( const QModelIndex &idx, int role ) con
     {
       if ( role == Qt::DisplayRole )
       {
-        if ( ls.typeFlag() == QgsSnappingConfig::NoSnapFlag )
+        if ( ls.typeFlag().testFlag( Qgis::SnappingType::NoSnap ) )
         {
-          return QgsSnappingConfig::snappingTypeFlagToString( ls.typeFlag() );
+          return QgsSnappingConfig::snappingTypeToString( Qgis::SnappingType::NoSnap );
         }
         else
         {
           QString modes;
           int activeTypes = 0;
 
-          const QMetaEnum snappingTypeEnum = QMetaEnum::fromType<QgsSnappingConfig::SnappingTypeFlag>();
-          for ( int i = 0; i < snappingTypeEnum.keyCount(); ++i )
+          for ( Qgis::SnappingType type : qgsEnumList<Qgis::SnappingType>() )
           {
-            if ( ls.typeFlag() & snappingTypeEnum.value( i ) )
+            if ( ls.typeFlag().testFlag( type ) )
             {
               if ( activeTypes == 2 )
               {
@@ -608,7 +577,7 @@ QVariant QgsSnappingLayerTreeModel::data( const QModelIndex &idx, int role ) con
               }
               if ( activeTypes > 0 )
                 modes.append( tr( ", " ) );
-              modes.append( QgsSnappingConfig::snappingTypeFlagToString( ls.typeFlag() & snappingTypeEnum.value( i ) ) );
+              modes.append( QgsSnappingConfig::snappingTypeToString( type ) );
               activeTypes++;
             }
           }
@@ -773,7 +742,7 @@ bool QgsSnappingLayerTreeModel::setData( const QModelIndex &index, const QVarian
       if ( !ls.valid() )
         return false;
 
-      ls.setTypeFlag( static_cast<QgsSnappingConfig::SnappingTypeFlag>( value.toInt() ) );
+      ls.setTypeFlag( static_cast<Qgis::SnappingTypes>( value.toInt() ) );
       QgsSnappingConfig config = mProject->snappingConfig();
       config.setIndividualLayerSettings( vl, ls );
       mProject->setSnappingConfig( config );

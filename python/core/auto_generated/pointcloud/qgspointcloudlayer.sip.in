@@ -12,7 +12,7 @@
 
 
 
-class QgsPointCloudLayer : QgsMapLayer
+class QgsPointCloudLayer : QgsMapLayer, QgsAbstractProfileSource
 {
 %Docstring(signature="appended")
 
@@ -45,8 +45,17 @@ Constructor for LayerOptions with optional ``transformContext``.
       bool skipCrsValidation;
 
       bool skipIndexGeneration;
+
+      bool skipStatisticsCalculation;
     };
 
+
+    enum class PointCloudStatisticsCalculationState
+    {
+      NotStarted,
+      Calculating,
+      Calculated
+    };
 
     explicit QgsPointCloudLayer( const QString &uri = QString(),
                                  const QString &baseName = QString(),
@@ -73,6 +82,8 @@ QgsPointCloudLayer cannot be copied.
     virtual QgsRectangle extent() const;
 
     virtual QgsMapLayerRenderer *createMapRenderer( QgsRenderContext &rendererContext ) /Factory/;
+
+    virtual QgsAbstractProfileGenerator *createProfileGenerator( const QgsProfileRequest &request ) /Factory/;
 
 
     virtual QgsPointCloudDataProvider *dataProvider();
@@ -133,6 +144,87 @@ Sets the 2D ``renderer`` for the point cloud.
 Ownership of ``renderer`` is transferred to the layer.
 
 .. seealso:: :py:func:`renderer`
+%End
+
+    bool setSubsetString( const QString &subset );
+%Docstring
+Sets the string used to define a subset of the layer
+
+:param subset: The subset string to be used in a ``:py:class:`QgsPointCloudExpression```
+
+:return: ``True``, when setting the subset string was successful, ``False`` otherwise
+
+.. versionadded:: 3.26
+%End
+
+    QString subsetString() const;
+%Docstring
+Returns the string used to define a subset of the layer.
+
+:return: The subset string or null QString if not implemented by the provider
+
+.. versionadded:: 3.26
+%End
+
+    void setSync3DRendererTo2DRenderer( bool sync );
+%Docstring
+Sets whether this layer's 3D renderer should be automatically updated
+with changes applied to the layer's 2D renderer
+
+.. versionadded:: 3.26
+%End
+
+    bool sync3DRendererTo2DRenderer() const;
+%Docstring
+Returns whether this layer's 3D renderer should be automatically updated
+with changes applied to the layer's 2D renderer
+
+.. versionadded:: 3.26
+%End
+
+    bool convertRenderer3DFromRenderer2D();
+%Docstring
+Updates the layer's 3D renderer's symbol to match that of the layer's 2D renderer
+
+:return: ``True`` on success, ``False`` otherwise
+
+.. versionadded:: 3.26
+%End
+
+    const QgsPointCloudStatistics statistics() const;
+%Docstring
+Returns the object containing statistics
+
+.. versionadded:: 3.26
+%End
+
+    PointCloudStatisticsCalculationState statisticsCalculationState() const;
+%Docstring
+Returns the status of point cloud statistics calculation
+
+.. versionadded:: 3.26
+%End
+  signals:
+
+    void subsetStringChanged();
+%Docstring
+Emitted when the layer's subset string has changed.
+
+.. versionadded:: 3.26
+%End
+
+    void raiseError( const QString &msg );
+%Docstring
+Signals an error related to this point cloud layer.
+
+.. versionadded:: 3.26
+%End
+
+    void statisticsCalculationStateChanged( QgsPointCloudLayer::PointCloudStatisticsCalculationState state );
+%Docstring
+Emitted when statistics calculation state has changed
+
+.. versionadded:: 3.26
 %End
 
   private:

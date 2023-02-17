@@ -78,7 +78,7 @@ class CORE_EXPORT QgsWkbPtr
     inline const QgsWkbPtr &operator>>( double &v ) const { read( v ); return *this; } SIP_SKIP
     inline const QgsWkbPtr &operator>>( float &r ) const { double v; read( v ); r = v; return *this; } SIP_SKIP
     inline const QgsWkbPtr &operator>>( int &v ) const { read( v ); return *this; } SIP_SKIP
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+#if (!defined(Q_OS_ANDROID) && !defined(Q_PROCESSOR_X86_32)) || (defined(Q_OS_ANDROID) && defined(__aarch64__))
     //! Reads an integer value into a qsizetype
     inline const QgsWkbPtr &operator>>( qsizetype &r ) const { int v; read( v ); r = v; return *this; } SIP_SKIP
 #endif
@@ -92,7 +92,7 @@ class CORE_EXPORT QgsWkbPtr
     inline QgsWkbPtr &operator<<( float r ) { double v = r; write( v ); return *this; } SIP_SKIP
     //! Writes an int to the pointer
     inline QgsWkbPtr &operator<<( int v ) { write( v ); return *this; } SIP_SKIP
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+#if (!defined(Q_OS_ANDROID) && !defined(Q_PROCESSOR_X86_32)) || (defined(Q_OS_ANDROID) && defined(__aarch64__))
     //! Writes a size as int to the pointer
     inline QgsWkbPtr &operator<<( qsizetype r ) { int v = r; write( v ); return *this; } SIP_SKIP
 #endif
@@ -105,7 +105,7 @@ class CORE_EXPORT QgsWkbPtr
     //! Append data from a byte array
     inline QgsWkbPtr &operator<<( const QByteArray &data ) { write( data ); return *this; } SIP_SKIP
 
-    inline void operator+=( int n ) { verifyBound( n ); mP += n; } SIP_SKIP
+    inline void operator+=( int n ) const { verifyBound( n ); mP += n; } SIP_SKIP
 
     inline operator unsigned char *() const { return mP; } SIP_SKIP
 
@@ -183,8 +183,8 @@ class CORE_EXPORT QgsConstWkbPtr
     //! Read a point array
     const QgsConstWkbPtr &operator>>( QPolygonF &points ) const; SIP_SKIP
 
-    inline void operator+=( int n ) { verifyBound( n ); mP += n; } SIP_SKIP
-    inline void operator-=( int n ) { mP -= n; } SIP_SKIP
+    inline void operator+=( int n ) const { verifyBound( n ); mP += n; } SIP_SKIP
+    inline void operator-=( int n ) const { mP -= n; } SIP_SKIP
 
     inline operator const unsigned char *() const { return mP; } SIP_SKIP
 

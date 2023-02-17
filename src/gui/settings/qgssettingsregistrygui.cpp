@@ -17,17 +17,28 @@
 
 #include "qgsapplication.h"
 #include "qgssettingsregistrycore.h"
+#include "qgsstylemanagerdialog.h"
+
+const QgsSettingsEntryBool *QgsSettingsRegistryGui::settingsRespectScreenDPI = new QgsSettingsEntryBool( QStringLiteral( "respect-screen-dpi" ), QgsSettingsTree::sTreeGui, false );
 
 QgsSettingsRegistryGui::QgsSettingsRegistryGui()
   : QgsSettingsRegistry()
 {
-  addSettingsEntry( &settingsRespectScreenDPI );
 
-  QgsApplication::settingsRegistryCore()->addSubRegistry( this );
+  // copy values from old keys to new keys and delete the old ones
+  // for backward compatibility, old keys are recreated when the registry gets deleted
+
+  // single settings - added in 3.30
+  settingsRespectScreenDPI->copyValueFromKey( QStringLiteral( "gui/qgis/respect_screen_dpi" ), {}, true );
+
+
 }
 
 QgsSettingsRegistryGui::~QgsSettingsRegistryGui()
 {
-  QgsApplication::settingsRegistryCore()->removeSubRegistry( this );
+  // TODO QGIS 4.0: Remove
+  // backward compatibility for settings
+  settingsRespectScreenDPI->copyValueToKey( QStringLiteral( "gui/qgis/respect_screen_dpi" ) );
+
 }
 

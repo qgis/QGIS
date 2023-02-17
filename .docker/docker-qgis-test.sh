@@ -2,13 +2,23 @@
 
 set -e
 
-# Debug env
-echo "::group::Print env"
-env
-echo "::endgroup::"
+SRCDIR=${CTEST_SOURCE_DIR-/root/QGIS}
+cd ${SRCDIR}
 
-# Temporarily uncomment to debug ccache issues
-# cat /tmp/cache.debug
+# This is needed for `git status` to work, see
+# https://github.com/qgis/QGIS/runs/6733585841?check_suite_focus=true#step:13:89
+git config --global --add safe.directory ${SRCDIR}
+
+usage() {
+  echo "Usage; $(basename $0) [<TEST_BATCHNAME>]"
+  echo "TEST_BATCHNAME can be any of:"
+  echo "  HANA                Test the HANA provider"
+  echo "  POSTGRES            Test the PostgreSQL provider"
+  echo "  ORACLE              Test the Oracle provider"
+  echo "  SQLSERVER           Test the SQL Server provider"
+  echo "  ALL_BUT_PROVIDERS   Skip all providers tests"
+  echo "  ALL                 (default) Run all tests"
+}
 
 if [ $# -eq 1 ] && [ $1 = "HANA" ]; then
   LABELS_TO_RUN="HANA"
@@ -30,7 +40,8 @@ elif [ $# -eq 1 ] && [ $1 = "ALL_BUT_PROVIDERS" ]; then
   LABELS_TO_EXCLUDE="HANA|POSTGRES|ORACLE|SQLSERVER"
 
 elif [ $# -gt 0 ] &&  [ $1 != "ALL" ]; then
-  echo "Invalid argument, expected values: ALL, ALL_BUT_PROVIDERS, POSTGRES, HANA, ORACLE, SQLSERVER"
+  echo "Invalid argument"
+  usage >&2
   exit 1
 
 else
@@ -39,6 +50,15 @@ else
   RUN_ORACLE=YES
   RUN_SQLSERVER=YES
 fi
+
+# Debug env
+echo "::group::Print env"
+env
+echo "::endgroup::"
+
+# Temporarily uncomment to debug ccache issues
+# cat /tmp/cache.debug
+
 
 if [ -n "$LABELS_TO_RUN" ]; then
   echo "Only following test labels will be run: $LABELS_TO_RUN"
@@ -80,6 +100,8 @@ fi
 
 if [ ${RUN_POSTGRES:-"NO"} == "YES" ]; then
 
+  echo "::group::Setup PostgreSQL"
+
   ############################
   # Restore postgres test data
   ############################
@@ -100,15 +122,19 @@ if [ ${RUN_POSTGRES:-"NO"} == "YES" ]; then
   done
   echo " done 🥩"
 
-  pushd /root/QGIS > /dev/null
+  pushd ${SRCDIR} > /dev/null
   echo "Restoring postgres test data ..."
-  /root/QGIS/tests/testdata/provider/testdata_pg.sh
+  ${SRCDIR}/tests/testdata/provider/testdata_pg.sh
   echo "Postgres test data restored ..."
   popd > /dev/null # /root/QGIS
+
+  echo "::endgroup::"
 
 fi
 
 if [ ${RUN_ORACLE:-"NO"} == "YES" ]; then
+
+  echo "::group::Setup Oracle"
 
   ##############################
   # Restore Oracle test data
@@ -117,8 +143,9 @@ if [ ${RUN_ORACLE:-"NO"} == "YES" ]; then
   echo "${bold}Load Oracle database...🙏${endbold}"
 
   export ORACLE_HOST="oracle"
-  export QGIS_ORACLETEST_DBNAME="${ORACLE_HOST}/XEPDB1"
-  export QGIS_ORACLETEST_DB="host=${QGIS_ORACLETEST_DBNAME} port=1521 user='QGIS' password='qgis'"
+  export ORACLE_PDB="XEPDB1"
+  export QGIS_ORACLETEST_DBNAME="${ORACLE_HOST}/${ORACLE_PDB}"
+  export QGIS_ORACLETEST_DB="host=${ORACLE_HOST} dbname=${ORACLE_PDB} port=1521 user='QGIS' password='qgis'"
 
   echo "Wait a moment while loading Oracle database."
   COUNT=0
@@ -134,14 +161,18 @@ if [ ${RUN_ORACLE:-"NO"} == "YES" ]; then
     echo "timeout, no oracle, no 🙏"
   else
     echo " done 👀"
-    pushd /root/QGIS > /dev/null
-    /root/QGIS/tests/testdata/provider/testdata_oracle.sh $ORACLE_HOST
+    pushd ${SRCDIR} > /dev/null
+    ${SRCDIR}/tests/testdata/provider/testdata_oracle.sh $ORACLE_HOST
     popd > /dev/null # /root/QGIS
   fi
+
+  echo "::endgroup::"
 
 fi
 
 if [ ${RUN_SQLSERVER:-"NO"} == "YES" ]; then
+
+  echo "::group::Setup SQL Server"
 
   ##############################
   # Restore SQL Server test data
@@ -157,9 +188,9 @@ if [ ${RUN_SQLSERVER:-"NO"} == "YES" ]; then
 
   export PATH=$PATH:/opt/mssql-tools/bin
 
-  pushd /root/QGIS > /dev/null
-  /root/QGIS/tests/testdata/provider/testdata_mssql.sh
-  popd > /dev/null # /root/QGIS
+  pushd ${SRCDIR} > /dev/null
+  ${SRCDIR}/tests/testdata/provider/testdata_mssql.sh
+  popd > /dev/null # ${SRCDIR}
 
   echo "Setting up DSN for test SQL Server"
 
@@ -173,6 +204,35 @@ Description  = Test SQL Server
 Server       = mssql
 EOT
 
+  echo "::endgroup::"
+
+fi
+
+#######################################
+# Wait for Minio container to be ready
+#######################################
+
+if [ $# -eq 0 ] || [ $1 = "ALL_BUT_PROVIDERS" ] || [ $1 = "ALL" ] ; then
+
+  echo "::group::Setup Minio"
+
+  echo "Wait for minio to be ready..."
+  COUNT=0
+  while ! curl http://$QGIS_MINIO_HOST:$QGIS_MINIO_PORT &> /dev/null;
+  do
+    printf "."
+    sleep 5
+    if [[ $(( COUNT++ )) -eq 40 ]]; then
+      break
+    fi
+  done
+  if [[ ${COUNT} -eq 41 ]]; then
+    echo "Error: Minio docker timeout!!!"
+  else
+    echo "done"
+  fi
+
+  echo "::endgroup::"
 fi
 
 #######################################
@@ -180,6 +240,8 @@ fi
 #######################################
 
 if [ $# -eq 0 ] || [ $1 = "ALL_BUT_PROVIDERS" ] || [ $1 = "ALL" ] ; then
+
+  echo "::group::Setup WebDAV"
 
   echo "Wait for webdav to be ready..."
   COUNT=0
@@ -196,24 +258,28 @@ if [ $# -eq 0 ] || [ $1 = "ALL_BUT_PROVIDERS" ] || [ $1 = "ALL" ] ; then
   else
     echo "done"
   fi
+
+  echo "::endgroup::"
 fi
 
 ###########
 # Run tests
 ###########
-EXCLUDE_TESTS=$(cat /root/QGIS/.ci/test_blocklist_qt${QT_VERSION}.txt | sed -r '/^(#.*?)?$/d' | paste -sd '|' -)
+EXCLUDE_TESTS=$(cat ${SRCDIR}/.ci/test_blocklist_qt${QT_VERSION}.txt | sed -r '/^(#.*?)?$/d' | paste -sd '|' -)
 if ! [[ ${RUN_FLAKY_TESTS} == true ]]; then
   echo "Flaky tests are skipped!"
-  EXCLUDE_TESTS=${EXCLUDE_TESTS}"|"$(cat /root/QGIS/.ci/test_flaky.txt | sed -r '/^(#.*?)?$/d' | paste -sd '|' -)
+  EXCLUDE_TESTS=${EXCLUDE_TESTS}"|"$(cat ${SRCDIR}/.ci/test_flaky.txt | sed -r '/^(#.*?)?$/d' | paste -sd '|' -)
 else
   echo "Flaky tests are run!"
 fi
 echo "List of skipped tests: $EXCLUDE_TESTS"
 
-echo "Print disk space"
+echo "::group::Print disk space before running tests"
 df -h
+echo "::endgroup::"
 
-python3 /root/QGIS/.ci/ctest2ci.py xvfb-run ctest -V $CTEST_OPTIONS -E "${EXCLUDE_TESTS}" -S /root/QGIS/.ci/config_test.ctest --output-on-failure
+python3 ${SRCDIR}/.ci/ctest2ci.py xvfb-run ctest -V $CTEST_OPTIONS -E "${EXCLUDE_TESTS}" -S ${SRCDIR}/.ci/config_test.ctest --output-on-failure
 
-echo "Print disk space"
+echo "::group::Print disk space after running tests"
 df -h
+echo "::endgroup::"

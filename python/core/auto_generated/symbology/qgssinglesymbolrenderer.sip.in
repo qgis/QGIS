@@ -88,6 +88,8 @@ The caller takes ownership of the returned renderer.
 
     virtual QSet< QString > legendKeysForFeature( const QgsFeature &feature, QgsRenderContext &context ) const;
 
+    virtual QString legendKeyToExpression( const QString &key, QgsVectorLayer *layer, bool &ok ) const;
+
     virtual void setLegendSymbolItem( const QString &key, QgsSymbol *symbol /Transfer/ );
 
 

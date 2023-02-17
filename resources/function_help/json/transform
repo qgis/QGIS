@@ -3,10 +3,19 @@
   "type": "function",
   "groups": ["GeometryGroup"],
   "description": "Returns the geometry transformed from a source CRS to a destination CRS.",
-  "arguments": [ {"arg":"geometry","description":"a geometry"},
-  {"arg":"source_auth_id","description":"the source auth CRS ID"},
-  {"arg":"dest_auth_id","description":"the destination auth CRS ID"}
-  ],
-  "examples": [ { "expression":"geom_to_wkt( transform( make_point(488995.53240249, 7104473.38600835), 'EPSG:2154', 'EPSG:4326' ) )", "returns":"'POINT(0 51)'"}
-  ]
+  "arguments": [{
+    "arg": "geometry",
+    "description": "a geometry"
+  }, {
+    "arg": "source_auth_id",
+    "description": "the source auth CRS ID"
+  }, {
+    "arg": "dest_auth_id",
+    "description": "the destination auth CRS ID"
+  }],
+  "examples": [{
+    "expression": "geom_to_wkt( transform( make_point(488995.53240249, 7104473.38600835), 'EPSG:2154', 'EPSG:4326' ) )",
+    "returns": "'POINT(0 51)'"
+  }],
+  "tags": ["crs", "source", "transformed", "destination", "reprojection"]
 }

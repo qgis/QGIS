@@ -19,8 +19,8 @@
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgslayoutitem.h"
-#include "scalebar/qgsscalebarsettings.h"
-#include "scalebar/qgsscalebarrenderer.h"
+#include "qgsscalebarsettings.h"
+#include "qgsscalebarrenderer.h"
 #include <QFont>
 #include <QPen>
 #include <QColor>
@@ -619,7 +619,7 @@ class CORE_EXPORT QgsLayoutItemScaleBar: public QgsLayoutItem
      *
      * The \a name parameter gives the (untranslated) style name.
      * Possibilities are: 'Single Box', 'Double Box', 'Line Ticks Middle',
-     * 'Line Ticks Down', 'Line Ticks Up', 'Numeric'
+     * 'Line Ticks Down', 'Line Ticks Up', 'Stepped Line', 'Hollow', 'Numeric'.
      *
      * \see style()
     */
@@ -693,6 +693,35 @@ class CORE_EXPORT QgsLayoutItemScaleBar: public QgsLayoutItem
 
     friend class QgsCompositionConverter;
 
+    /**
+     * Recalculates the number of scalebar units per segment
+     * \param context for evaluating data defined units per segment
+     */
+    void refreshUnitsPerSegment( const QgsExpressionContext *context = nullptr );
+
+    /**
+     * Recalculates the number of segments to the left of 0.
+     * \param context for evaluating data defined number of segments to the left.
+     */
+    void refreshNumberOfSegmentsLeft( const QgsExpressionContext *context = nullptr );
+
+    /**
+     * Recalculates the number of segments to the right of 0.
+     * \param context for evaluating data defined number of segments to the left.
+     */
+    void refreshNumberOfSegmentsRight( const QgsExpressionContext *context = nullptr );
+
+    /**
+     * Recalculates the minimum size of a bar segment in mm.
+     * \param context for evaluating data defined minimum width of a segment.
+     */
+    void refreshMinimumBarWidth( const QgsExpressionContext *context = nullptr );
+
+    /**
+     * Recalculates the maximum size of a bar segment in mm.
+     * \param context for evaluating data defined maximum width of a segment.
+     */
+    void refreshMaximumBarWidth( const QgsExpressionContext *context = nullptr );
 };
 
 #endif //QGSLAYOUTITEMSCALEBAR_H

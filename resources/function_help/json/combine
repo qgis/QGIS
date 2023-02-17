@@ -3,10 +3,19 @@
   "type": "function",
   "groups": ["GeometryGroup"],
   "description": "Returns the combination of two geometries.",
-  "arguments": [ {"arg":"geometry1","description":"a geometry"},
-                 {"arg":"geometry2","description":"a geometry"}],
-  "examples": [ { "expression":"geom_to_wkt( combine( geom_from_wkt( 'LINESTRING(3 3, 4 4, 5 5)' ), geom_from_wkt( 'LINESTRING(3 3, 4 4, 2 1)' ) ) )", "returns":"'MULTILINESTRING((4 4, 2 1), (3 3, 4 4), (4 4, 5 5))'"},
-  { "expression":"geom_to_wkt( combine( geom_from_wkt( 'LINESTRING(3 3, 4 4)' ), geom_from_wkt( 'LINESTRING(3 3, 6 6, 2 1)' ) ) )", "returns":"'LINESTRING(3 3, 4 4, 6 6, 2 1)'"}
-  ]
+  "arguments": [{
+    "arg": "geometry1",
+    "description": "a geometry"
+  }, {
+    "arg": "geometry2",
+    "description": "a geometry"
+  }],
+  "examples": [{
+    "expression": "geom_to_wkt( combine( geom_from_wkt( 'LINESTRING(3 3, 4 4, 5 5)' ), geom_from_wkt( 'LINESTRING(3 3, 4 4, 2 1)' ) ) )",
+    "returns": "'MULTILINESTRING((4 4, 2 1), (3 3, 4 4), (4 4, 5 5))'"
+  }, {
+    "expression": "geom_to_wkt( combine( geom_from_wkt( 'LINESTRING(3 3, 4 4)' ), geom_from_wkt( 'LINESTRING(3 3, 6 6, 2 1)' ) ) )",
+    "returns": "'LINESTRING(3 3, 4 4, 6 6, 2 1)'"
+  }],
+  "tags": ["combination", "union"]
 }
-

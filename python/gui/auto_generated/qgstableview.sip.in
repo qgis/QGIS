@@ -1,0 +1,44 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgstableview.h                                               *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+class QgsTableView : QTableView
+{
+%Docstring(signature="appended")
+A QTableView subclass with QGIS specific tweaks and improvements.
+
+:py:class:`QgsTableView` should be used instead of QTableView widgets.
+In most cases the use is identical, however :py:class:`QgsTableView`
+adds extra functionality and UI tweaks for improved user
+experience in QGIS.
+
+.. versionadded:: 3.26
+%End
+
+%TypeHeaderCode
+#include "qgstableview.h"
+%End
+  public:
+
+    explicit QgsTableView( QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsTableView.
+%End
+
+    virtual void wheelEvent( QWheelEvent *event );
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgstableview.h                                               *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

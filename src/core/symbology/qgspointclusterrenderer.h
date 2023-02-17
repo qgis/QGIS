@@ -72,7 +72,7 @@ class CORE_EXPORT QgsPointClusterRenderer: public QgsPointDistanceRenderer
     //! Symbol for point clusters
     std::unique_ptr< QgsMarkerSymbol > mClusterSymbol;
 
-    void drawGroup( QPointF centerPoint, QgsRenderContext &context, const QgsPointDistanceRenderer::ClusteredGroup &group ) override SIP_FORCE;
+    void drawGroup( QPointF centerPoint, QgsRenderContext &context, const QgsPointDistanceRenderer::ClusteredGroup &group ) const override SIP_FORCE;
 
 };
 

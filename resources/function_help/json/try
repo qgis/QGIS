@@ -3,13 +3,23 @@
   "type": "function",
   "groups": ["Conditionals"],
   "description": "Tries an expression and returns its value if error-free. If the expression returns an error, an alternative value will be returned when provided otherwise the function will return NULL.",
-  "arguments": [
-    {"arg":"expression","description":"the expression which should be run"},
-    {"arg":"alternative","optional":true,"description":"the result which will be returned if the expression returns an error."}
-  ],
-  "examples": [
-    { "expression":"try( to_int( '1' ), 0 )", "returns":"1"},
-    { "expression":"try( to_int( 'a' ), 0 )", "returns":"0"},
-    { "expression":"try( to_date( 'invalid_date' ) )", "returns":"NULL"}
-  ]
+  "arguments": [{
+    "arg": "expression",
+    "description": "the expression which should be run"
+  }, {
+    "arg": "alternative",
+    "optional": true,
+    "description": "the result which will be returned if the expression returns an error."
+  }],
+  "examples": [{
+    "expression": "try( to_int( '1' ), 0 )",
+    "returns": "1"
+  }, {
+    "expression": "try( to_int( 'a' ), 0 )",
+    "returns": "0"
+  }, {
+    "expression": "try( to_date( 'invalid_date' ) )",
+    "returns": "NULL"
+  }],
+  "tags": ["return", "tries", "error", "alternative", "provided", "exception"]
 }

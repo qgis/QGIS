@@ -33,6 +33,7 @@ class QgsLayoutPageCollection;
 class QgsLayoutUndoStack;
 class QgsLayoutRenderContext;
 class QgsLayoutReportContext;
+class QgsSettingsEntryStringList;
 
 /**
  * \ingroup core
@@ -660,7 +661,7 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
 
 #ifndef SIP_RUN
     //! Settings entry search path for templates
-    static const inline QgsSettingsEntryStringList settingsSearchPathForTemplates = QgsSettingsEntryStringList( QStringLiteral( "Layout/searchPathsForTemplates" ), QgsSettings::Core, QStringList(), QObject::tr( "Search path for templates" ) );
+    static const QgsSettingsEntryStringList *settingsSearchPathForTemplates;
 #endif
 
   public slots:

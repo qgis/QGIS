@@ -24,7 +24,6 @@
 #include "qgsguiutils.h"
 #include "qgsabstractdbsourceselect.h"
 
-
 #include <QMap>
 #include <QPair>
 #include <QIcon>
@@ -32,7 +31,6 @@
 #include <QString>
 
 class QgsProxyProgressTask;
-class QStringList;
 class QgisApp;
 
 class QgsHanaSourceSelectDelegate : public QItemDelegate

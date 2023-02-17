@@ -54,11 +54,18 @@ QgsNewOgrConnection::QgsNewOgrConnection( QWidget *parent, const QString &connTy
   const QStringList dbDrivers = QgsProviderRegistry::instance()->databaseDrivers().split( ';' );
   for ( int i = 0; i < dbDrivers.count(); i++ )
   {
-    const QString dbDrive = dbDrivers.at( i );
-    cmbDatabaseTypes->addItem( dbDrive.split( ',' ).at( 0 ) );
+    const QString dbDriver = dbDrivers.at( i );
+    if ( !dbDriver.isEmpty() )
+      cmbDatabaseTypes->addItem( dbDriver.split( ',' ).at( 0 ) );
   }
   txtName->setEnabled( true );
   cmbDatabaseTypes->setEnabled( true );
+
+  if ( !connType.isEmpty() )
+  {
+    cmbDatabaseTypes->setCurrentIndex( cmbDatabaseTypes->findText( connType ) );
+  }
+
   if ( !connName.isEmpty() )
   {
     // populate the dialog with the information stored for the connection
@@ -79,7 +86,6 @@ QgsNewOgrConnection::QgsNewOgrConnection( QWidget *parent, const QString &connTy
       mAuthSettingsDatabase->setStorePasswordChecked( true );
     }
     mAuthSettingsDatabase->setConfigId( settings.value( key + "/configid" ).toString() );
-    cmbDatabaseTypes->setCurrentIndex( cmbDatabaseTypes->findText( connType ) );
     txtName->setText( connName );
     txtName->setEnabled( false );
     cmbDatabaseTypes->setEnabled( false );

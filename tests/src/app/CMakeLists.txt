@@ -13,6 +13,7 @@ set(TESTS
   testqgsappbrowserproviders.cpp
   testqgisappclipboard.cpp
   testqgisappdockwidgets.cpp
+  testqgsadvanceddigitizing.cpp
   testqgsattributetable.cpp
   testqgsapplocatorfilters.cpp
   testqgsdecorationscalebar.cpp
@@ -42,9 +43,15 @@ set(TESTS
   testqgsprojectproperties.cpp
   testqgsapplayoutvaliditychecks.cpp
   testqgsmeshcalculatordialog.cpp
-  testqgsgpsinformationwidget.cpp
+  testqgsgpsintegration.cpp
   testqgslabelpropertydialog.cpp
+  testqgsmergeattributesdialog.cpp
 )
+
+if (HAVE_GEOREFERENCER)
+  set(TESTS ${TESTS} testqgsgeoreferencer.cpp)
+endif()
+
 if (WITH_BINDINGS)
   set(TESTS ${TESTS} testqgisapppython.cpp)
 endif()

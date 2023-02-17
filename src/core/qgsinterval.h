@@ -23,6 +23,7 @@
  ****************************************************************************/
 
 #include <QVariant>
+#include <chrono>
 
 #include "qgis_sip.h"
 #include "qgis_core.h"
@@ -67,6 +68,12 @@ class CORE_EXPORT QgsInterval
      * \param seconds duration of interval in seconds
      */
     QgsInterval( double seconds );
+
+    /**
+     * Constructor for QgsInterval.
+     * \param milliseconds duration of interval in milliseconds
+     */
+    QgsInterval( std::chrono::milliseconds milliseconds ) SIP_SKIP;
 
     /**
      * Constructor for QgsInterval, using the specified \a duration and \a units.
@@ -343,6 +350,8 @@ Q_DECLARE_METATYPE( QgsInterval )
 
 #ifndef SIP_RUN
 
+#if QT_VERSION < QT_VERSION_CHECK(6, 4, 0)
+
 /**
  * Returns the interval between two datetimes.
  * \param datetime1 start datetime
@@ -351,6 +360,8 @@ Q_DECLARE_METATYPE( QgsInterval )
  * \since QGIS 2.16
  */
 QgsInterval CORE_EXPORT operator-( const QDateTime &datetime1, const QDateTime &datetime2 );
+
+#endif
 
 /**
  * Returns the interval between two dates.
@@ -381,7 +392,7 @@ QDateTime CORE_EXPORT operator+( const QDateTime &start, const QgsInterval &inte
 
 //! Debug string representation of interval
 QDebug CORE_EXPORT operator<<( QDebug dbg, const QgsInterval &interval );
-\
+
 #endif
 
 #endif // QGSINTERVAL_H

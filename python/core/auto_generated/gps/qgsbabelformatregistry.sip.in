@@ -25,6 +25,7 @@ A registry for :py:class:`QgsAbstractBabelFormat` GPSBabel formats.
 %End
   public:
 
+
     QgsBabelFormatRegistry();
 %Docstring
 Constructor for QgsBabelFormatRegistry.

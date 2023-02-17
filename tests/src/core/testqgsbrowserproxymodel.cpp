@@ -20,10 +20,7 @@
 
 //qgis includes...
 #include "qgsdataitem.h"
-#include "qgsvectorlayer.h"
 #include "qgsapplication.h"
-#include "qgslogger.h"
-#include "qgssettings.h"
 #include "qgsbrowsermodel.h"
 #include "qgsbrowserproxymodel.h"
 #include "qgsdatacollectionitem.h"
@@ -47,6 +44,7 @@ class TestQgsBrowserProxyModel : public QObject
 
 class TestCollectionItem: public QgsDataCollectionItem
 {
+    Q_OBJECT
   public:
 
     TestCollectionItem( QgsDataItem *parent, const QString &name, const QString &path = QString(), const QString &providerKey = QString() )
@@ -234,7 +232,7 @@ void TestQgsBrowserProxyModel::testModel()
   proxy.setFilterString( QString() );
 
   // layer type filtering
-  proxy.setLayerType( QgsMapLayerType::VectorLayer );
+  proxy.setLayerType( Qgis::LayerType::Vector );
   proxy.setFilterByLayerType( true );
 
   QCOMPARE( proxy.rowCount(), 2 );
@@ -252,7 +250,7 @@ void TestQgsBrowserProxyModel::testModel()
   QCOMPARE( proxy.data( proxy.index( 0, 0, child2Index ) ).toString(), QStringLiteral( "Child3" ) );
   QCOMPARE( proxy.rowCount( root2Index ), 0 );
 
-  proxy.setLayerType( QgsMapLayerType::RasterLayer );
+  proxy.setLayerType( Qgis::LayerType::Raster );
   QCOMPARE( proxy.rowCount(), 2 );
   root1Index = proxy.index( 0, 0 );
   root2Index = proxy.index( 1, 0 );

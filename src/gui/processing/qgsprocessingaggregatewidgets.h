@@ -54,7 +54,7 @@ class GUI_EXPORT QgsAggregateMappingModel: public QAbstractTableModel
       Aggregate,              //!< Aggregate name
       Delimiter,              //!< Delimiter
       DestinationName,        //!< Destination field name
-      DestinationType,        //!< Destination field QVariant::Type casted to (int)
+      DestinationType,        //!< Destination field type string
       DestinationLength,      //!< Destination field length
       DestinationPrecision,   //!< Destination field precision
     };
@@ -232,26 +232,32 @@ class GUI_EXPORT QgsAggregateMappingWidget : public QgsPanelWidget
     void updateColumns();
     //! Returns selected row indexes in ascending order
     std::list<int> selectedRows( );
-
-
-    class AggregateDelegate: public QStyledItemDelegate
-    {
-
-      public:
-
-        AggregateDelegate( QObject *parent = nullptr );
-
-        // QAbstractItemDelegate interface
-        QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
-        void setEditorData( QWidget *editor, const QModelIndex &index ) const override;
-        void setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const override;
-
-      private:
-        //! Returns a static list of supported aggregates
-        static const QStringList aggregates();
-    };
-
 };
 
+/// @cond PRIVATE
+
+#ifndef SIP_RUN
+
+class QgsAggregateMappingDelegate: public QStyledItemDelegate
+{
+    Q_OBJECT
+
+  public:
+
+    QgsAggregateMappingDelegate( QObject *parent = nullptr );
+
+    // QAbstractItemDelegate interface
+    QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
+    void setEditorData( QWidget *editor, const QModelIndex &index ) const override;
+    void setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const override;
+
+  private:
+    //! Returns a static list of supported aggregates
+    static const QStringList aggregates();
+};
+
+#endif
+
+/// @endcond
 
 #endif // QGSPROCESSINGAGGREGATEWIDGETS_H

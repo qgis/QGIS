@@ -173,12 +173,6 @@ QgsRasterBlock *QgsHueSaturationFilter::block( int bandNo, QgsRectangle  const &
 
     if ( mInvertColors || alpha != 255 )
     {
-      if ( mInvertColors )
-      {
-        r = 255 - r;
-        g = 255 - g;
-        b = 255 - b;
-      }
       if ( alpha != 255 )
       {
         // Semi-transparent pixel. We need to adjust the colors since we are using Qgis::DataType::ARGB32_Premultiplied
@@ -187,6 +181,12 @@ QgsRasterBlock *QgsHueSaturationFilter::block( int bandNo, QgsRectangle  const &
         r /= alphaFactor;
         g /= alphaFactor;
         b /= alphaFactor;
+      }
+      if ( mInvertColors )
+      {
+        r = 255 - r;
+        g = 255 - g;
+        b = 255 - b;
       }
       myColor = QColor::fromRgb( r, g, b );
     }
@@ -221,7 +221,7 @@ QgsRasterBlock *QgsHueSaturationFilter::block( int bandNo, QgsRectangle  const &
 }
 
 // Process a colorization and update resultant HSL & RGB values
-void QgsHueSaturationFilter::processColorization( int &r, int &g, int &b, int &h, int &s, int &l )
+void QgsHueSaturationFilter::processColorization( int &r, int &g, int &b, int &h, int &s, int &l ) const
 {
   QColor myColor;
 

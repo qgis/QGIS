@@ -3,7 +3,9 @@
   "type": "function",
   "groups": ["GeometryGroup"],
   "description": "Returns the length of a linestring. If you need the length of a border of a polygon, use $perimeter instead. The length calculated by this function respects both the current project's ellipsoid setting and distance unit settings. For example, if an ellipsoid has been set for the project then the calculated length will be ellipsoidal, and if no ellipsoid is set then the calculated length will be planimetric.",
-  "examples": [
-	{ "expression":"$length", "returns":"42.4711"}
-  ]
+  "examples": [{
+    "expression": "$length",
+    "returns": "42.4711"
+  }],
+  "tags": ["distance", "planimetric", "length", "perimeter", "current", "linestring", "project", "settings", "ellipsoid", "border", "setting", "calculated"]
 }

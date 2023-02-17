@@ -45,7 +45,7 @@ class TestQgsPostgresExpressionCompiler: public QObject
 
 void TestQgsPostgresExpressionCompiler::testGeometryFromWkt()
 {
-  const QgsPostgresProvider p( QStringLiteral( "" ), QgsDataProvider::ProviderOptions() );
+  const QgsPostgresProvider p( QLatin1String( "" ), QgsDataProvider::ProviderOptions() );
   QgsPostgresFeatureSource featureSource( &p );
   QgsTestPostgresExpressionCompiler compiler( &featureSource, QStringLiteral( "4326" ), QStringLiteral( "geom" ) );
   QgsExpression exp( QStringLiteral( "intersects($geometry,geom_from_wkt('Polygon((0 0, 1 0, 1 1, 0 1, 0 0))'))" ) );

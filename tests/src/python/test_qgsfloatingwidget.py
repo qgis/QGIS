@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsFloatingWidget.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -11,10 +10,8 @@ __date__ = '26/04/2016'
 __copyright__ = 'Copyright 2016, The QGIS Project'
 
 import qgis  # NOQA
-from qgis.PyQt.QtWidgets import QWidget, QGridLayout
-
+from qgis.PyQt.QtWidgets import QGridLayout, QWidget
 from qgis.gui import QgsFloatingWidget
-
 from qgis.testing import start_app, unittest
 
 start_app()

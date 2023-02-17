@@ -367,6 +367,8 @@ Construct a new color box widget.
 
     virtual void mousePressEvent( QMouseEvent *event );
 
+    virtual void mouseReleaseEvent( QMouseEvent *event );
+
 
 };
 
@@ -486,6 +488,8 @@ Emitted when the widget's color component value changes
 
     virtual void mousePressEvent( QMouseEvent *event );
 
+    virtual void mouseReleaseEvent( QMouseEvent *event );
+
     virtual void keyPressEvent( QKeyEvent *event );
 
 
@@ -556,6 +560,14 @@ Construct a new color line edit widget.
 
     virtual void setColor( const QColor &color, bool emitSignals = false );
 
+
+    void setAllowOpacity( bool allowOpacity );
+%Docstring
+Sets whether opacity modification (transparency) is permitted.
+Defaults to ``True``.
+
+:param allowOpacity: set to ``False`` to disable opacity modification
+%End
 
   protected:
     virtual void resizeEvent( QResizeEvent *event );

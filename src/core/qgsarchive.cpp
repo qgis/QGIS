@@ -83,8 +83,14 @@ bool QgsArchive::zip( const QString &filename )
 #ifdef Q_OS_WIN
   // Clear temporary flag (see GH #32118)
   DWORD dwAttrs;
+#ifdef UNICODE
+  dwAttrs = GetFileAttributes( qUtf16Printable( tmpFile.fileName() ) );
+  SetFileAttributes( qUtf16Printable( tmpFile.fileName() ), dwAttrs & ~ FILE_ATTRIBUTE_TEMPORARY );
+#else
   dwAttrs = GetFileAttributes( tmpFile.fileName().toLocal8Bit( ).data( ) );
   SetFileAttributes( tmpFile.fileName().toLocal8Bit( ).data( ), dwAttrs & ~ FILE_ATTRIBUTE_TEMPORARY );
+#endif
+
 #endif // Q_OS_WIN
 
   // save zip archive

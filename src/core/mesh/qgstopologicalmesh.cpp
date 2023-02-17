@@ -19,7 +19,6 @@
 #include "qgsmesheditor.h"
 #include "qgsmessagelog.h"
 #include "qgsgeometryutils.h"
-#include "qgslinestring.h"
 
 #include <poly2tri.h>
 #include <QSet>
@@ -38,18 +37,24 @@ static int vertexPositionInFace( const QgsMesh &mesh, int vertexIndex, int faceI
   return vertexPositionInFace( vertexIndex, mesh.face( faceIndex ) );
 }
 
-static double crossProduct( int centralVertex, int vertex1, int vertex2, const QgsMesh &mesh )
-{
-  QgsMeshVertex vc = mesh.vertices.at( centralVertex );
-  QgsMeshVertex v1 = mesh.vertices.at( vertex1 );
-  QgsMeshVertex v2 = mesh.vertices.at( vertex2 );
 
+static double crossProduct( const QgsMeshVertex &vc, const QgsMeshVertex &v1, const QgsMeshVertex &v2 )
+{
   double ux1 = v1.x() - vc.x();
   double uy1 = v1.y() - vc.y();
   double vx1 = v2.x() - vc.x();
   double vy1 = v2.y() - vc.y();
 
   return ux1 * vy1 - uy1 * vx1;
+}
+
+static double crossProduct( int centralVertex, int vertex1, int vertex2, const QgsMesh &mesh )
+{
+  QgsMeshVertex vc = mesh.vertices.at( centralVertex );
+  QgsMeshVertex v1 = mesh.vertices.at( vertex1 );
+  QgsMeshVertex v2 = mesh.vertices.at( vertex2 );
+
+  return crossProduct( vc, v1, v2 );
 }
 
 
@@ -255,10 +260,14 @@ int QgsMeshVertexCirculator::degree() const
   if ( !mIsValid )
     return mDegree;
 
-  goBoundaryCounterClockwise();
-  int firstFace = currentFaceIndex();
+  // if we are on the boundary, we count one more to take account of the circulator will
+  // not cover the last vertex (the other vertex on boundary)
+  if ( goBoundaryCounterClockwise() )
+    mDegree = 2;
+  else
+    mDegree = 1;
 
-  mDegree = 2; //if the vertex is not free, the vertex is linked with at least 2 other vertex
+  int firstFace = currentFaceIndex();
 
   while ( turnClockwise() != firstFace && currentFaceIndex() != -1 )
     ++mDegree;
@@ -508,14 +517,17 @@ QgsMeshVertexCirculator QgsTopologicalMesh::vertexCirculator( int vertexIndex ) 
   return QgsMeshVertexCirculator( *this, vertexIndex );
 }
 
-QSet<int> QgsTopologicalMesh::concernedFacesBy( const QList<int> faceIndexes ) const
+QSet<int> QgsTopologicalMesh::concernedFacesBy( const QList<int> &faceIndexes ) const
 {
   QSet<int> faces;
   for ( const int faceIndex : faceIndexes )
   {
     const QgsMeshFace &face = mMesh->face( faceIndex );
     for ( int i = 0; i < face.count(); ++i )
-      faces.unite( qgis::listToSet( facesAroundVertex( face.at( i ) ) ) );
+    {
+      const QList<int> around =  facesAroundVertex( face.at( i ) );
+      faces.unite( QSet< int >( around.begin(), around.end() ) );
+    }
   }
   return faces;
 }
@@ -620,40 +632,22 @@ bool QgsTopologicalMesh::isVertexFree( int vertexIndex ) const
 
 QList<int> QgsTopologicalMesh::freeVerticesIndexes() const
 {
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-  return mFreeVertices.values();
-#else
   return QList<int>( mFreeVertices.begin(), mFreeVertices.end() );
-#endif
 }
 
-QgsMeshEditingError QgsTopologicalMesh::counterClockwiseFaces( QgsMeshFace &face, QgsMesh *mesh )
+QgsMeshEditingError QgsTopologicalMesh::checkTopologyOfVerticesAsFace( const QVector<QgsMeshVertex> &vertices, bool &clockwise )
 {
-  // First check if the face is convex and put it counter clockwise
-  // If the index are not well ordered (edges intersect), invalid face --> return false
-  int faceSize = face.count();
-  if ( faceSize < 3 )
-    return QgsMeshEditingError( Qgis::MeshEditingErrorType::FlatFace, -1 );
-
+  int size = vertices.size();
   int direction = 0;
-  for ( int i = 0; i < faceSize; ++i )
+  for ( int i = 0; i < size; ++i )
   {
-    int iv0 =  face[i];
-    int iv1 = face[( i + 1 ) % faceSize];
-    int iv2 = face[( i + 2 ) % faceSize];
+    int iv0 =  i;
+    int iv1 = ( i + 1 ) % size;
+    int iv2 = ( i + 2 ) % size;
 
-    if ( iv0 < 0 || iv0 >= mesh->vertexCount() )
-      return QgsMeshEditingError( Qgis::MeshEditingErrorType::InvalidVertex, iv0 );
-
-    if ( iv1 < 0 || iv1 >= mesh->vertexCount() )
-      return QgsMeshEditingError( Qgis::MeshEditingErrorType::InvalidVertex, iv1 );
-
-    if ( iv2 < 0 || iv2 >= mesh->vertexCount() )
-      return QgsMeshEditingError( Qgis::MeshEditingErrorType::InvalidVertex, iv2 );
-
-    const QgsMeshVertex &v0 = mesh->vertices.at( iv0 ) ;
-    const QgsMeshVertex &v1 = mesh->vertices.at( iv1 ) ;
-    const QgsMeshVertex &v2 = mesh->vertices.at( iv2 ) ;
+    const QgsMeshVertex &v0 = vertices.at( iv0 ) ;
+    const QgsMeshVertex &v1 = vertices.at( iv1 ) ;
+    const QgsMeshVertex &v2 = vertices.at( iv2 ) ;
 
     if ( v0.isEmpty() )
       return QgsMeshEditingError( Qgis::MeshEditingErrorType::InvalidVertex, iv0 );
@@ -664,16 +658,51 @@ QgsMeshEditingError QgsTopologicalMesh::counterClockwiseFaces( QgsMeshFace &face
     if ( v2.isEmpty() )
       return QgsMeshEditingError( Qgis::MeshEditingErrorType::InvalidVertex, iv2 );
 
-    double crossProd = crossProduct( iv1, iv0, iv2, *mesh ); //if cross product>0, we have two edges clockwise
+    double crossProd = crossProduct( v1, v0, v2 ); //if cross product>0, we have two edges clockwise
     if ( direction != 0 && crossProd * direction < 0 )   // We have a convex face or a (partially) flat face
+    {
+      clockwise = direction > 0;
       return QgsMeshEditingError( Qgis::MeshEditingErrorType::InvalidFace, -1 );
+    }
     else if ( crossProd == 0 )
+    {
+      clockwise = direction > 0;
       return QgsMeshEditingError( Qgis::MeshEditingErrorType::FlatFace, -1 );
-    else if ( direction == 0 && crossProd != 0 )
+    }
+    else if ( direction == 0 )
       direction = crossProd / std::fabs( crossProd );
   }
 
-  if ( direction > 0 )// clockwise --> reverse the order of the index;
+  clockwise = direction > 0;
+
+  return QgsMeshEditingError( Qgis::MeshEditingErrorType::NoError, -1 );
+}
+
+QgsMeshEditingError QgsTopologicalMesh::counterClockwiseFaces( QgsMeshFace &face, QgsMesh *mesh )
+{
+  // First check the topology of the face, then put it counter clockwise if needed
+  // If the indexes are not well ordered (edges intersect), invalid face
+  int faceSize = face.count();
+  if ( faceSize < 3 )
+    return QgsMeshEditingError( Qgis::MeshEditingErrorType::FlatFace, -1 );
+
+  QVector<QgsMeshVertex> vertices( face.size() );
+
+  for ( int i = 0; i < faceSize; ++i )
+  {
+    int iv =  face[i];
+    if ( iv < 0 || iv >= mesh->vertexCount() )
+      return QgsMeshEditingError( Qgis::MeshEditingErrorType::InvalidVertex, iv );
+
+    vertices[i] = mesh->vertices.at( face[i] );
+  }
+
+  bool clockwise = false;
+  QgsMeshEditingError error = QgsTopologicalMesh::checkTopologyOfVerticesAsFace( vertices, clockwise );
+  if ( error != QgsMeshEditingError() )
+    return error;
+
+  if ( clockwise > 0 )// clockwise --> reverse the order of the index;
   {
     for ( int i = 0; i < faceSize / 2; ++i )
     {
@@ -856,7 +885,7 @@ bool QgsTopologicalMesh::renumberVertices( QVector<int> &oldToNewIndex ) const
       if ( nonThreadedVertex.isEmpty() && newIndex < mMesh->vertexCount() )
         return false;
 
-      const QList<int> remainingVertex = qgis::setToList( nonThreadedVertex );
+      const QList<int> remainingVertex( nonThreadedVertex.constBegin(), nonThreadedVertex.constEnd() );
       int minRemainingDegree = std::numeric_limits<int>::max();
       int minRemainingVertex = -1;
       for ( const int i : remainingVertex )
@@ -967,7 +996,7 @@ bool QgsTopologicalMesh::renumberFaces( QVector<int> &oldToNewIndex ) const
       if ( nonThreadedFaces.isEmpty() && newIndex < mMesh->faceCount() )
         return false;
 
-      const QList<int> remainingFace = qgis::setToList( nonThreadedFaces );
+      const QList<int> remainingFace( nonThreadedFaces.constBegin(), nonThreadedFaces.constEnd() );
       int minRemainingDegree = std::numeric_limits<int>::max();
       int minRemainingFace = -1;
       for ( const int i : remainingFace )
@@ -1470,7 +1499,10 @@ QgsTopologicalMesh::Changes QgsTopologicalMesh::removeVertices( const QList<int>
   QSet<int> facesIndex;
   //Search for associated faces
   for ( int vertexIndex : vertices )
-    facesIndex.unite( qgis::listToSet( facesAroundVertex( vertexIndex ) ) );
+  {
+    const QList< int > faces = facesAroundVertex( vertexIndex );
+    facesIndex.unite( QSet< int >( faces.begin(), faces.end() ) );
+  }
 
   // remove the faces
   Changes changes = removeFaces( facesIndex.values() );
@@ -1596,7 +1628,7 @@ QgsMeshEditingError QgsTopologicalMesh::facesCanBeAdded( const QgsTopologicalMes
     return QgsMeshEditingError( Qgis::MeshEditingErrorType::UniqueSharedVertex, uniqueSharedVertexBoundary.first() );
 
   // Check if internal vertices of new faces block are free in the mesh
-  QSet<int> boundaryVertices = qgis::listToSet( topologicFaces.mBoundaries );
+  QSet<int> boundaryVertices( topologicFaces.mBoundaries.constBegin(), topologicFaces.mBoundaries.constEnd() );
   for ( const QgsMeshFace &newFace : std::as_const( topologicFaces.mFaces ) )
   {
     for ( const int vertexIndex : newFace )
@@ -1782,9 +1814,9 @@ QList<int> QgsTopologicalMesh::facesAroundVertex( int vertexIndex ) const
   return circ.facesAround();
 }
 
-QgsMeshEditingError QgsTopologicalMesh::facesCanBeRemoved( const QList<int> facesIndexes )
+QgsMeshEditingError QgsTopologicalMesh::facesCanBeRemoved( const QList<int> &facesIndexes )
 {
-  QSet<int> removedFaces = qgis::listToSet( facesIndexes );
+  QSet<int> removedFaces( facesIndexes.begin(), facesIndexes.end() );
   QSet<int> concernedFaces = concernedFacesBy( facesIndexes );
 
   for ( const int f : std::as_const( removedFaces ) )
@@ -1801,14 +1833,14 @@ QgsMeshEditingError QgsTopologicalMesh::facesCanBeRemoved( const QList<int> face
   return error;
 }
 
-QgsTopologicalMesh::Changes QgsTopologicalMesh::removeFaces( const QList<int> facesIndexesToRemove )
+QgsTopologicalMesh::Changes QgsTopologicalMesh::removeFaces( const QList<int> &facesIndexesToRemove )
 {
   Changes changes;
   changes.mFaceIndexesToRemove = facesIndexesToRemove;
   changes.mFacesToRemove.resize( facesIndexesToRemove.count() );
   changes.mFacesNeighborhoodToRemove.resize( facesIndexesToRemove.count() );
 
-  QSet<int> indexSet = qgis::listToSet( facesIndexesToRemove );
+  QSet<int> indexSet( facesIndexesToRemove.begin(), facesIndexesToRemove.end() );
   QSet<int> threatedVertex;
 
   for ( int i = 0; i < facesIndexesToRemove.count(); ++i )
@@ -2538,7 +2570,8 @@ QgsTopologicalMesh::Changes QgsTopologicalMesh::changeXYValue( const QList<int> 
     changes.mChangeCoordinateVerticesIndexes.append( verticesIndexes.at( i ) );
     changes.mOldXYValues.append( mMesh->vertices.at( verticesIndexes.at( i ) ) );
     changes.mNewXYValues.append( newValues.at( i ) );
-    concernedFace.unite( qgis::listToSet( facesAroundVertex( verticesIndexes.at( i ) ) ) );
+    const QList< int > faces = facesAroundVertex( verticesIndexes.at( i ) );
+    concernedFace.unite( QSet< int>( faces.begin(), faces.end() ) );
   }
 
   changes.mNativeFacesIndexesGeometryChanged = concernedFace.values();

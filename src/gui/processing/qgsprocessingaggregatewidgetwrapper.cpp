@@ -29,8 +29,6 @@
 #include "qgsprocessingmodelalgorithm.h"
 
 #include "qgsprocessingparameteraggregate.h"
-#include "qgsexpressioncontextutils.h"
-#include "qgsfieldexpressionwidget.h"
 
 /// @cond private
 
@@ -107,8 +105,10 @@ QVariant QgsProcessingAggregatePanelWidget::value() const
     QVariantMap def;
     def.insert( QStringLiteral( "name" ), aggregate.field.name() );
     def.insert( QStringLiteral( "type" ), static_cast< int >( aggregate.field.type() ) );
+    def.insert( QStringLiteral( "type_name" ), aggregate.field.typeName() );
     def.insert( QStringLiteral( "length" ), aggregate.field.length() );
     def.insert( QStringLiteral( "precision" ), aggregate.field.precision() );
+    def.insert( QStringLiteral( "sub_type" ), static_cast< int >( aggregate.field.subType() ) );
     def.insert( QStringLiteral( "input" ), aggregate.source );
     def.insert( QStringLiteral( "aggregate" ), aggregate.aggregate );
     def.insert( QStringLiteral( "delimiter" ), aggregate.delimiter );
@@ -131,9 +131,11 @@ void QgsProcessingAggregatePanelWidget::setValue( const QVariant &value )
     const QVariantMap map = field.toMap();
     const QgsField f( map.value( QStringLiteral( "name" ) ).toString(),
                       static_cast< QVariant::Type >( map.value( QStringLiteral( "type" ), QVariant::Invalid ).toInt() ),
-                      QVariant::typeToName( static_cast< QVariant::Type >( map.value( QStringLiteral( "type" ), QVariant::Invalid ).toInt() ) ),
+                      map.value( QStringLiteral( "type_name" ), QVariant::typeToName( static_cast< QVariant::Type >( map.value( QStringLiteral( "type" ), QVariant::Invalid ).toInt() ) ) ).toString(),
                       map.value( QStringLiteral( "length" ), 0 ).toInt(),
-                      map.value( QStringLiteral( "precision" ), 0 ).toInt() );
+                      map.value( QStringLiteral( "precision" ), 0 ).toInt(),
+                      QString(),
+                      static_cast< QVariant::Type >( map.value( QStringLiteral( "sub_type" ), QVariant::Invalid ).toInt() ) );
 
     QgsAggregateMappingModel::Aggregate aggregate;
     aggregate.field = f;
@@ -349,7 +351,7 @@ void QgsProcessingAggregateWidgetWrapper::setParentLayerWrapperValue( const QgsA
   // need to grab ownership of layer if required - otherwise layer may be deleted when context
   // goes out of scope
   std::unique_ptr< QgsMapLayer > ownedLayer( context->takeResultLayer( layer->id() ) );
-  if ( ownedLayer && ownedLayer->type() == QgsMapLayerType::VectorLayer )
+  if ( ownedLayer && ownedLayer->type() == Qgis::LayerType::Vector )
   {
     mParentLayer.reset( qobject_cast< QgsVectorLayer * >( ownedLayer.release() ) );
     layer = mParentLayer.get();

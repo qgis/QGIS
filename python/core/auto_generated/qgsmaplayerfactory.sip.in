@@ -23,7 +23,7 @@ Contains utility functions for creating map layers.
 %End
   public:
 
-    static QgsMapLayerType typeFromString( const QString &string, bool &ok /Out/ );
+    static Qgis::LayerType typeFromString( const QString &string, bool &ok /Out/ );
 %Docstring
 Returns the map layer type corresponding a ``string`` value.
 
@@ -36,7 +36,7 @@ Returns the map layer type corresponding a ``string`` value.
 .. seealso:: :py:func:`typeToString`
 %End
 
-    static QString typeToString( QgsMapLayerType type );
+    static QString typeToString( Qgis::LayerType type );
 %Docstring
 Converts a map layer ``type`` to a string value.
 
@@ -54,9 +54,11 @@ Constructor for LayerOptions with ``transformContext``.
       QgsCoordinateTransformContext transformContext;
 
       bool loadDefaultStyle;
+
+      bool loadAllStoredStyles;
     };
 
-    static QgsMapLayer *createLayer( const QString &uri, const QString &name, QgsMapLayerType type, const LayerOptions &options,
+    static QgsMapLayer *createLayer( const QString &uri, const QString &name, Qgis::LayerType type, const LayerOptions &options,
                                      const QString &provider = QString() ) /Factory/;
 %Docstring
 Creates a map layer, given a ``uri``, ``name``, layer ``type`` and ``provider`` name.

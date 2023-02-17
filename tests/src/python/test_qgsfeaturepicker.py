@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for edit widgets.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -11,25 +10,17 @@ __date__ = '24/04/2020'
 __copyright__ = 'Copyright 2015, The QGIS Project'
 
 import qgis  # NOQA
-
-import os
-
+from qgis.PyQt.QtTest import QSignalSpy, QTest
+from qgis.PyQt.QtWidgets import QComboBox
 from qgis.core import (
     QgsApplication,
     QgsFeature,
-    QgsVectorLayer,
+    QgsGeometry,
     QgsPointXY,
-    QgsGeometry
+    QgsVectorLayer,
 )
-from qgis.gui import (
-    QgsFeaturePickerWidget
-)
-
+from qgis.gui import QgsFeaturePickerWidget
 from qgis.testing import start_app, unittest
-
-from qgis.PyQt.QtWidgets import QComboBox
-from qgis.PyQt.QtTest import QSignalSpy, QTest
-
 
 start_app()
 
@@ -51,7 +42,7 @@ def createLayer(manyFeatures: bool = False):
     if manyFeatures:
         for i in range(4, 100):
             f = QgsFeature()
-            f.setAttributes(["test{}".format(i), i])
+            f.setAttributes([f"test{i}", i])
             flist.append(f)
 
     assert pr.addFeatures(flist)

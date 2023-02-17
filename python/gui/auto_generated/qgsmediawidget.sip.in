@@ -1,0 +1,85 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsmediawidget.h                                             *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsMediaWidget : QWidget
+{
+%Docstring(signature="appended")
+The :py:class:`QgsMediaWidget` class creates a widget for playing back audio and video media files.
+
+.. versionadded:: 3.30
+%End
+
+%TypeHeaderCode
+#include "qgsmediawidget.h"
+%End
+  public:
+
+    enum Mode
+    {
+      Audio,
+      Video,
+    };
+
+    explicit QgsMediaWidget( QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Constructor
+%End
+
+    QString mediaPath() const;
+%Docstring
+Returns the media path.
+%End
+
+    void setMediaPath( const QString &path );
+%Docstring
+Sets the media ``path``.
+%End
+
+    Mode mode() const;
+%Docstring
+Returns the media widget mode.
+%End
+
+    void setMode( Mode mode );
+%Docstring
+Sets the media widget ``mode``.
+%End
+
+    int videoHeight() const;
+%Docstring
+Returns the video frame height.
+%End
+
+    void setVideoHeight( int height );
+%Docstring
+Sets the video frame height.
+
+.. note::
+
+   setting the height to 0 is interpreted as a video frame that will
+   expand to fill available height in the widget's parent layout.
+%End
+
+    QMediaPlayer *mediaPlayer();
+%Docstring
+Returns the QMediaPlayer object.
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsmediawidget.h                                             *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

@@ -3,18 +3,35 @@
   "type": "function",
   "groups": ["Color"],
   "description": "Returns a string representing a color from a color ramp.",
-  "variants": [
-  { "variant": "Saved ramp variant",
+  "variants": [{
+    "variant": "Saved ramp variant",
     "variant_description": "Returns a string representing a color from a saved ramp",
-    "arguments": [ {"arg":"ramp_name","description":"the name of the color ramp as a string, for example 'Spectral'"},
-                 {"arg":"value","description":"the position on the ramp to select the color from as a real number between 0 and 1"}],
-    "examples": [ { "expression":"ramp_color('Spectral',0.3)", "returns":"'253,190,115,255'"} ],
+    "arguments": [{
+      "arg": "ramp_name",
+      "description": "the name of the color ramp as a string, for example 'Spectral'"
+    }, {
+      "arg": "value",
+      "description": "the position on the ramp to select the color from as a real number between 0 and 1"
+    }],
+    "examples": [{
+      "expression": "ramp_color('Spectral',0.3)",
+      "returns": "'253,190,115,255'"
+    }],
     "notes": "The color ramps available vary between QGIS installations. This function may not give the expected results if you move your QGIS project between installations."
-  },
-  { "variant": "Expression-created ramp variant",
+  }, {
+    "variant": "Expression-created ramp variant",
     "variant_description": "Returns a string representing a color from an expression-created ramp",
-    "arguments": [ {"arg":"ramp","description":"the color ramp"},
-                 {"arg":"value","description":"the position on the ramp to select the color from as a real number between 0 and 1"}],
-    "examples": [ { "expression":"ramp_color(create_ramp(map(0,'0,0,0',1,'255,0,0')),1)", "returns":"'255,0,0,255'"} ]
-  }]
+    "arguments": [{
+      "arg": "ramp",
+      "description": "the color ramp"
+    }, {
+      "arg": "value",
+      "description": "the position on the ramp to select the color from as a real number between 0 and 1"
+    }],
+    "examples": [{
+      "expression": "ramp_color(create_ramp(map(0,'0,0,0',1,'255,0,0')),1)",
+      "returns": "'255,0,0,255'"
+    }]
+  }],
+  "tags": ["ramp", "color", "representing"]
 }

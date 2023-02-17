@@ -4,12 +4,29 @@
   "groups": ["Conditionals"],
   "description": "Returns the first non-NULL value from the expression list.<br>This function can take any number of arguments.",
   "variableLenArguments": true,
-  "arguments": [ {"arg":"expression1", "syntaxOnly": true},
-                 {"arg":"expression2", "syntaxOnly": true},
-                 {"arg":"expression", "descOnly": true, "description":"any valid expression or value, regardless of type."}],
-  "examples": [ { "expression":"coalesce(NULL, 2)", "returns":"2"},
-                { "expression":"coalesce(NULL, 2, 3)", "returns":"2"},
-                { "expression":"coalesce(7, NULL, 3*2)", "returns":"7"},
-                { "expression":"coalesce(\"fieldA\", \"fallbackField\", 'ERROR')", "returns":"value of fieldA if it is non-NULL else the value of \"fallbackField\" or the string 'ERROR' if both are NULL"} ]
+  "arguments": [{
+    "arg": "expression1",
+    "syntaxOnly": true
+  }, {
+    "arg": "expression2",
+    "syntaxOnly": true
+  }, {
+    "arg": "expression",
+    "descOnly": true,
+    "description": "any valid expression or value, regardless of type."
+  }],
+  "examples": [{
+    "expression": "coalesce(NULL, 2)",
+    "returns": "2"
+  }, {
+    "expression": "coalesce(NULL, 2, 3)",
+    "returns": "2"
+  }, {
+    "expression": "coalesce(7, NULL, 3*2)",
+    "returns": "7"
+  }, {
+    "expression": "coalesce(\"fieldA\", \"fallbackField\", 'ERROR')",
+    "returns": "value of fieldA if it is non-NULL else the value of \"fallbackField\" or the string 'ERROR' if both are NULL"
+  }],
+  "tags": ["list", "first", "arguments", "null"]
 }
-

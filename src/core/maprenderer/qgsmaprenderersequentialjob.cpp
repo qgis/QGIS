@@ -29,8 +29,8 @@ QgsMapRendererSequentialJob::QgsMapRendererSequentialJob( const QgsMapSettings &
 
   mImage = QImage( mSettings.deviceOutputSize(), mSettings.outputImageFormat() );
   mImage.setDevicePixelRatio( mSettings.devicePixelRatio() );
-  mImage.setDotsPerMeterX( mSettings.devicePixelRatio() * 1000 * settings.outputDpi() / 25.4 );
-  mImage.setDotsPerMeterY( mSettings.devicePixelRatio() * 1000 * settings.outputDpi() / 25.4 );
+  mImage.setDotsPerMeterX( 1000 * settings.outputDpi() / 25.4 );
+  mImage.setDotsPerMeterY( 1000 * settings.outputDpi() / 25.4 );
   mImage.fill( Qt::transparent );
 }
 

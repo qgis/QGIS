@@ -51,6 +51,8 @@ class CORE_EXPORT QgsLayoutObject: public QObject, public QgsExpressionContextGe
 #include "qgslayoutframe.h"
 #include "qgslayoutitemshape.h"
 #include "qgslayoutitempage.h"
+#include "qgslayoutitemmarker.h"
+#include "qgslayoutitemelevationprofile.h"
 #endif
 
 #ifdef SIP_RUN
@@ -111,6 +113,14 @@ class CORE_EXPORT QgsLayoutObject: public QObject, public QgsExpressionContextGe
           sipType = sipType_QgsLayoutFrame;
           *sipCppRet = static_cast<QgsLayoutFrame *>( sipCpp );
           break;
+        case QGraphicsItem::UserType + 117:
+          sipType = sipType_QgsLayoutItemMarker;
+          *sipCppRet = static_cast<QgsLayoutItemMarker *>( sipCpp );
+          break;
+        case QGraphicsItem::UserType + 118:
+          sipType = sipType_QgsLayoutItemElevationProfile;
+          *sipCppRet = static_cast<QgsLayoutItemElevationProfile *>( sipCpp );
+          break;
 
         // did you read that comment above? NO? Go read it now. You're about to break stuff.
 
@@ -153,6 +163,10 @@ class CORE_EXPORT QgsLayoutObject: public QObject, public QgsExpressionContextGe
       ExcludeFromExports, //!< Exclude item from exports
       FrameColor, //!< Item frame color
       BackgroundColor, //!< Item background color
+      MarginLeft, //!< Left margin (since QGIS 3.30)
+      MarginTop, //!< Top margin (since QGIS 3.30)
+      MarginRight, //!< Right margin (since QGIS 3.30)
+      MarginBottom, //!< Bottom margin (since QGIS 3.30)
       //composer map
       MapRotation, //!< Map rotation
       MapScale, //!< Map scale
@@ -193,6 +207,14 @@ class CORE_EXPORT QgsLayoutObject: public QObject, public QgsExpressionContextGe
       LegendTitle, //!< Legend title
       LegendColumnCount, //!< Legend column count
       //scalebar item
+      ScalebarLeftSegments, //!< Number of segments on the left of 0 (since QGIS 3.26)
+      ScalebarRightSegments, //!< Number of segments on the right of 0 (since QGIS 3.26)
+      ScalebarSegmentWidth, //!< Scalebar width in map units of a single segment (since QGIS 3.26)
+      ScalebarMinimumWidth, //!< Scalebar segment minimum width (since QGIS 3.26)
+      ScalebarMaximumWidth, //!< Scalebar segment maximum width (since QGIS 3.26)
+      ScalebarHeight, //!< Scalebar height (since QGIS 3.26)
+      ScalebarRightSegmentSubdivisions, //!< Number of subdivisions per segment on right of 0 (since QGIS 3.26)
+      ScalebarSubdivisionHeight, //!< Scalebar subdivision height (since QGIS 3.26)
       ScalebarFillColor, //!< Scalebar fill color (deprecated, use data defined properties on scalebar fill symbol 1 instead)
       ScalebarFillColor2, //!< Scalebar secondary fill color (deprecated, use data defined properties on scalebar fill symbol 2 instead)
       ScalebarLineColor, //!< Scalebar line color (deprecated, use data defined properties on scalebar line symbol instead)
@@ -202,6 +224,17 @@ class CORE_EXPORT QgsLayoutObject: public QObject, public QgsExpressionContextGe
       MapCrs, //!< Map CRS
       StartDateTime, //!< Temporal range's start DateTime
       EndDateTime, //!< Temporal range's end DateTime
+      ElevationProfileTolerance, //!< Tolerance distance for elevation profiles (since QGIS 3.30)
+      ElevationProfileDistanceMajorInterval, //!< Major grid line interval for elevation profile distance axis (since QGIS 3.30)
+      ElevationProfileDistanceMinorInterval, //!< Minor grid line interval for elevation profile distance axis (since QGIS 3.30)
+      ElevationProfileDistanceLabelInterval, //!< Label interval for elevation profile distance axis (since QGIS 3.30)
+      ElevationProfileElevationMajorInterval, //!< Major grid line interval for elevation profile elevation axis (since QGIS 3.30)
+      ElevationProfileElevationMinorInterval, //!< Minor grid line interval for elevation profile elevation axis (since QGIS 3.30)
+      ElevationProfileElevationLabelInterval, //!< Label interval for elevation profile elevation axis (since QGIS 3.30)
+      ElevationProfileMinimumDistance, //!< Minimum distance value for elevation profile (since QGIS 3.30)
+      ElevationProfileMaximumDistance, //!< Maximum distance value for elevation profile (since QGIS 3.30)
+      ElevationProfileMinimumElevation, //!< Minimum elevation value for elevation profile (since QGIS 3.30)
+      ElevationProfileMaximumElevation, //!< Maximum elevation value for elevation profile (since QGIS 3.30)
     };
 
     /**

@@ -19,42 +19,57 @@
 #include "qgsmapcanvasitem.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgspointxy.h"
-#include <QSvgRenderer>
+#include "qgspointmarkeritem.h"
+
+#include <QObject>
+
 
 class QPainter;
+
+class QgsSettingsEntryBool;
+class QgsSettingsEntryString;
+
 
 /**
  * \ingroup app
  * \brief A class for marking the position of a gps pointer.
  */
-class QgsGpsMarker : public QgsMapCanvasItem
+class QgsGpsMarker : public QObject, public QgsMapCanvasMarkerSymbolItem
 {
+    Q_OBJECT
+
   public:
+
+    static const QgsSettingsEntryString *settingLocationMarkerSymbol;
+    static const QgsSettingsEntryBool *settingShowLocationMarker;
+    static const QgsSettingsEntryBool *settingRotateLocationMarker;
+
     explicit QgsGpsMarker( QgsMapCanvas *mapCanvas );
+    ~QgsGpsMarker() override;
 
     /**
      * Sets the current GPS \a position (in WGS84 coordinate reference system).
      */
     void setGpsPosition( const QgsPointXY &position );
 
-    void paint( QPainter *p ) override;
-
-    QRectF boundingRect() const override;
-
-    void updatePosition() override;
-
-    void setSize( int size );
+    /**
+     * Sets the marker rotation for the GPS bearing.
+     */
+    void setMarkerRotation( double rotation );
 
   protected:
 
     //! Coordinates of the point in the center, in map CRS
     QgsPointXY mCenter;
-    //! Size of the marker - e.g. 8 will draw it as 8x8
-    int mSize;
+
+  private slots:
+
+    void updateMarkerSymbol();
 
   private:
     QgsCoordinateReferenceSystem mWgs84CRS;
-    QSvgRenderer mSvg;
+
+    std::unique_ptr< QgsMarkerSymbol > mMarkerSymbol;
 
 };
 

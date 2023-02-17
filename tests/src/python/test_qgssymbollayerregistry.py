@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -11,17 +10,22 @@ __date__ = '26/11/2021'
 __copyright__ = 'Copyright 2015, The QGIS Project'
 
 import qgis  # NOQA
-from qgis.core import Qgis, QgsApplication, QgsSymbolLayerAbstractMetadata, QgsSymbolLayer, QgsSimpleMarkerSymbolLayer
-from qgis.testing import start_app, unittest
 from qgis.PyQt import sip
-
+from qgis.core import (
+    Qgis,
+    QgsApplication,
+    QgsSimpleMarkerSymbolLayer,
+    QgsSymbolLayer,
+    QgsSymbolLayerAbstractMetadata,
+)
+from qgis.testing import start_app, unittest
 
 start_app()
 
 
 class MySuperMarkerMetadata(QgsSymbolLayerAbstractMetadata):
     def __init__(self):
-        super(MySuperMarkerMetadata, self).__init__('MySuperMarker', 'My Super Marker', Qgis.SymbolType.Marker)
+        super().__init__('MySuperMarker', 'My Super Marker', Qgis.SymbolType.Marker)
 
     def createSymbolLayer(self, map: dict) -> QgsSymbolLayer:
         return QgsSimpleMarkerSymbolLayer()

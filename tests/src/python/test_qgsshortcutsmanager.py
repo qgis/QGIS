@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsActionManager.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -11,12 +10,10 @@ __date__ = '28/05/2016'
 __copyright__ = 'Copyright 2016, The QGIS Project'
 
 import qgis  # NOQA
-
-from qgis.core import QgsSettings
-from qgis.gui import QgsShortcutsManager, QgsGui
 from qgis.PyQt.QtCore import QCoreApplication
-from qgis.PyQt.QtWidgets import QWidget, QAction, QShortcut
-
+from qgis.PyQt.QtWidgets import QAction, QShortcut, QWidget
+from qgis.core import QgsSettings
+from qgis.gui import QgsGui, QgsShortcutsManager
 from qgis.testing import start_app, unittest
 
 
@@ -162,28 +159,28 @@ class TestQgsShortcutsManager(unittest.TestCase):
         # recursive
         s = QgsShortcutsManager()
         s.registerAllChildActions(w, True)
-        self.assertEqual(set(s.listActions()), set([action1, action2]))
+        self.assertEqual(set(s.listActions()), {action1, action2})
         s.registerAllChildShortcuts(w, True)
-        self.assertEqual(set(s.listShortcuts()), set([shortcut1, shortcut2]))
+        self.assertEqual(set(s.listShortcuts()), {shortcut1, shortcut2})
 
         # non recursive
         s = QgsShortcutsManager()
         s.registerAllChildActions(w, False)
-        self.assertEqual(set(s.listActions()), set([action1]))
+        self.assertEqual(set(s.listActions()), {action1})
         s.registerAllChildShortcuts(w, False)
-        self.assertEqual(set(s.listShortcuts()), set([shortcut1]))
+        self.assertEqual(set(s.listShortcuts()), {shortcut1})
 
         # recursive
         s = QgsShortcutsManager()
         s.registerAllChildren(w, True)
-        self.assertEqual(set(s.listActions()), set([action1, action2]))
-        self.assertEqual(set(s.listShortcuts()), set([shortcut1, shortcut2]))
+        self.assertEqual(set(s.listActions()), {action1, action2})
+        self.assertEqual(set(s.listShortcuts()), {shortcut1, shortcut2})
 
         # non recursive
         s = QgsShortcutsManager()
         s.registerAllChildren(w, False)
-        self.assertEqual(set(s.listActions()), set([action1]))
-        self.assertEqual(set(s.listShortcuts()), set([shortcut1]))
+        self.assertEqual(set(s.listActions()), {action1})
+        self.assertEqual(set(s.listShortcuts()), {shortcut1})
 
     def testUnregister(self):
         """ test unregistering from manager """
@@ -214,14 +211,14 @@ class TestQgsShortcutsManager(unittest.TestCase):
         s.registerAction(action1)
         s.registerAction(action2)
 
-        self.assertEqual(set(s.listActions()), set([action1, action2]))
-        self.assertEqual(set(s.listShortcuts()), set([shortcut1, shortcut2]))
+        self.assertEqual(set(s.listActions()), {action1, action2})
+        self.assertEqual(set(s.listShortcuts()), {shortcut1, shortcut2})
 
         self.assertTrue(s.unregisterAction(action1))
         self.assertTrue(s.unregisterShortcut(shortcut1))
 
-        self.assertEqual(set(s.listActions()), set([action2]))
-        self.assertEqual(set(s.listShortcuts()), set([shortcut2]))
+        self.assertEqual(set(s.listActions()), {action2})
+        self.assertEqual(set(s.listShortcuts()), {shortcut2})
 
         self.assertTrue(s.unregisterAction(action2))
         self.assertTrue(s.unregisterShortcut(shortcut2))
@@ -246,9 +243,9 @@ class TestQgsShortcutsManager(unittest.TestCase):
         s.registerAction(action1)
         s.registerAction(action2)
 
-        self.assertEqual(set(s.listActions()), set([action1, action2]))
-        self.assertEqual(set(s.listShortcuts()), set([shortcut1, shortcut2]))
-        self.assertEqual(set(s.listAll()), set([action1, action2, shortcut1, shortcut2]))
+        self.assertEqual(set(s.listActions()), {action1, action2})
+        self.assertEqual(set(s.listShortcuts()), {shortcut1, shortcut2})
+        self.assertEqual(set(s.listAll()), {action1, action2, shortcut1, shortcut2})
 
     def testDefault(self):
         """ test retrieving default sequences """

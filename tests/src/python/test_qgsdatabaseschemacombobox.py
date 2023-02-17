@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsDatabaseSchemaComboBox
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -10,22 +9,16 @@ __author__ = 'Nyall Dawson'
 __date__ = '8/03/2020'
 __copyright__ = 'Copyright 2020, The QGIS Project'
 
-import qgis  # NOQA
-
-import tempfile
-import shutil
 import os
 
-from qgis.core import (
-    QgsVectorLayer,
-    QgsProviderRegistry
-)
-from qgis.gui import QgsDatabaseSchemaComboBox
+import qgis  # NOQA
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.PyQt.QtTest import QSignalSpy
-
+from qgis.core import QgsProviderRegistry
+from qgis.gui import QgsDatabaseSchemaComboBox
 from qgis.testing import unittest
-from utilities import unitTestDataPath, start_app
+
+from utilities import start_app, unitTestDataPath
 
 start_app()
 

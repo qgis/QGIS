@@ -69,7 +69,7 @@ def showWarning(message, category, filename, lineno, file=None, line=None):
     else:
         decoded_filename = filename
     QgsMessageLog.logMessage(
-        u"warning:{}\ntraceback:{}".format(warnings.formatwarning(message, category, decoded_filename, lineno), stk),
+        "warning:{}\ntraceback:{}".format(warnings.formatwarning(message, category, decoded_filename, lineno), stk),
         QCoreApplication.translate("Python", "Python warning")
     )
 
@@ -135,7 +135,7 @@ def open_stack_dialog(type, value, tb, msg, pop_error=True):
         msg = QCoreApplication.translate('Python', 'An error has occurred while executing Python code:')
 
     # TODO Move this to a template HTML file
-    txt = u'''<font color="red"><b>{msg}</b></font>
+    txt = '''<font color="red"><b>{msg}</b></font>
 <br>
 <h3>{main_error}</h3>
 <pre>
@@ -172,7 +172,7 @@ def open_stack_dialog(type, value, tb, msg, pop_error=True):
                      qgisrelease=Qgis.QGIS_RELEASE_NAME,
                      devversion=Qgis.QGIS_DEV_VERSION,
                      pypath_label=pypath_label,
-                     pypath=u"".join(u"<li>{}</li>".format(path) for path in sys.path))
+                     pypath="".join("<li>{}</li>".format(path) for path in sys.path))
 
     txt = txt.replace('  ', '&nbsp; ')  # preserve whitespaces for nicer output
 
@@ -621,7 +621,7 @@ def showPluginHelp(packageName: str = None, filename: str = "index", section: st
         url = "file://" + helpfile
         if section != "":
             url = url + "#" + section
-        QDesktopServices.openUrl(QUrl(url))
+        QDesktopServices.openUrl(QUrl.fromLocalFile(url))
 
 
 def pluginDirectory(packageName: str) -> str:
@@ -775,7 +775,7 @@ using the "mod_spatialite" extension (python3)"""
         try:
             cur.execute("SELECT EnableGpkgAmphibiousMode()")
         except (sqlite3.Error, sqlite3.DatabaseError, sqlite3.NotSupportedError):
-            QgsMessageLog.logMessage(u"warning:{}".format("Could not enable geopackage amphibious mode"),
+            QgsMessageLog.logMessage("warning:{}".format("Could not enable geopackage amphibious mode"),
                                      QCoreApplication.translate("Python", "Python warning"))
 
     cur.close()

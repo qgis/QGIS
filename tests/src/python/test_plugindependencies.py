@@ -1,4 +1,3 @@
-# coding=utf-8
 """QGIS Plugin dependencies test
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -12,18 +11,13 @@ __author__ = 'elpaso@itopen.it'
 __date__ = '2018-09-19'
 __copyright__ = 'Copyright 2018, GISCE-TI S.L.'
 
-import uuid
-import os
-import re
 import json
-import unittest
-from qgis.PyQt.QtCore import QCoreApplication
-from pyplugin_installer.plugindependencies import find_dependencies
+import os
+import uuid
 
-from qgis.testing import (
-    start_app,
-    unittest,
-)
+from pyplugin_installer.plugindependencies import find_dependencies
+from qgis.PyQt.QtCore import QCoreApplication
+from qgis.testing import start_app, unittest
 
 from utilities import unitTestDataPath
 
@@ -39,7 +33,7 @@ class PluginDependenciesTest(unittest.TestCase):
 
         QCoreApplication.setOrganizationName("QGIS")
         QCoreApplication.setOrganizationDomain("qgis.org")
-        QCoreApplication.setApplicationName("QGIS-TEST-%s" % uuid.uuid1())
+        QCoreApplication.setApplicationName(f"QGIS-TEST-{uuid.uuid1()}")
         qgis_app = start_app()
 
         # Installed plugins
@@ -190,10 +184,10 @@ class PluginDependenciesTest(unittest.TestCase):
 
 
 def pluginSuite():
-    return unittest.makeSuite(PluginDependenciesTest, 'test')
+    return unittest.defaultTestLoader.loadTestsFromTestCase(PluginDependenciesTest, 'test')
 
 
 if __name__ == "__main__":
-    suite = unittest.makeSuite(PluginDependenciesTest)
+    suite = unittest.defaultTestLoader.loadTestsFromTestCase(PluginDependenciesTest)
     runner = unittest.TextTestRunner(verbosity=2)
     runner.run(suite)

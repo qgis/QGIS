@@ -22,6 +22,7 @@
 #include "qgsproject.h"
 #include "qgscolorscheme.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsmaplayerstore.h"
 
 #include <QObject>
 #include "qgstest.h"
@@ -44,6 +45,7 @@ class TestQgsExpressionContext : public QObject
     void contextStackFunctions();
     void evaluate();
     void setFeature();
+    void setGeometry();
     void setFields();
     void takeScopes();
     void highlighted();
@@ -58,6 +60,7 @@ class TestQgsExpressionContext : public QObject
     void valuesAsMap();
     void description();
     void readWriteScope();
+    void layerStores();
 
   private:
 
@@ -202,6 +205,26 @@ void TestQgsExpressionContext::contextScope()
   QVERIFY( !scope.removeVariable( "missing" ) );
   QVERIFY( scope.removeVariable( "toremove" ) );
   QVERIFY( !scope.hasVariable( "toremove" ) );
+
+  // checks for variables visibility updates
+  QCOMPARE( scope.hiddenVariables().length(), 0 );
+
+  scope.addHiddenVariable( QStringLiteral( "visibilitytest" ) );
+  QCOMPARE( scope.hiddenVariables().length(), 1 );
+  QCOMPARE( scope.hiddenVariables().at( 0 ), QStringLiteral( "visibilitytest" ) );
+
+  scope.removeHiddenVariable( QStringLiteral( "visibilitytest" ) );
+  QCOMPARE( scope.hiddenVariables().length(), 0 );
+
+  QStringList hiddenVariables;
+  hiddenVariables << QStringLiteral( "visibilitytest1" );
+  hiddenVariables << QStringLiteral( "visibilitytest2" );
+  hiddenVariables << QStringLiteral( "visibilitytest3" );
+
+  scope.setHiddenVariables( hiddenVariables );
+
+  QCOMPARE( scope.hiddenVariables().length(), 3 );
+
 }
 
 void TestQgsExpressionContext::contextScopeCopy()
@@ -484,6 +507,35 @@ void TestQgsExpressionContext::setFeature()
   QVERIFY( contextWithScope.feature().isValid() );
   QCOMPARE( contextWithScope.feature().id(), 50LL );
   QCOMPARE( contextWithScope.feature().id(), 50LL );
+}
+
+void TestQgsExpressionContext::setGeometry()
+{
+  QgsGeometry g( QgsGeometry::fromPointXY( QgsPointXY( 1, 2 ) ) );
+  QgsExpressionContextScope scope;
+  scope.setGeometry( g );
+  QVERIFY( scope.hasGeometry() );
+  QCOMPARE( scope.geometry().asWkt(), QStringLiteral( "Point (1 2)" ) );
+  scope.removeGeometry();
+  QVERIFY( !scope.hasGeometry() );
+  QVERIFY( scope.geometry().isNull() );
+
+  //test setting a geometry in a context with no scopes
+  QgsExpressionContext emptyContext;
+  QVERIFY( !emptyContext.hasGeometry() );
+  QVERIFY( emptyContext.geometry().isNull() );
+  emptyContext.setGeometry( g );
+  //setGeometry should have created a scope
+  QCOMPARE( emptyContext.scopeCount(), 1 );
+  QVERIFY( emptyContext.hasGeometry() );
+  QCOMPARE( emptyContext.geometry().asWkt(), QStringLiteral( "Point (1 2)" ) );
+
+  QgsExpressionContext contextWithScope;
+  contextWithScope << new QgsExpressionContextScope();
+  contextWithScope.setGeometry( g );
+  QCOMPARE( contextWithScope.scopeCount(), 1 );
+  QVERIFY( contextWithScope.hasGeometry() );
+  QCOMPARE( contextWithScope.geometry().asWkt(), QStringLiteral( "Point (1 2)" ) );
 }
 
 void TestQgsExpressionContext::setFields()
@@ -943,6 +995,51 @@ void TestQgsExpressionContext::readWriteScope()
   QCOMPARE( qgis::listToSet( s2.variableNames() ), QSet< QString >() << QStringLiteral( "v1" ) << QStringLiteral( "v2" ) );
   QCOMPARE( s2.variable( QStringLiteral( "v1" ) ).toString(), QStringLiteral( "t1" ) );
   QCOMPARE( s2.variable( QStringLiteral( "v2" ) ).toInt(), 55 );
+}
+
+void TestQgsExpressionContext::layerStores()
+{
+  QgsExpressionContextScope *scope1 = new QgsExpressionContextScope();
+  QVERIFY( scope1->layerStores().isEmpty() );
+
+  QgsMapLayerStore store1;
+  std::unique_ptr< QgsMapLayerStore > store2 = std::make_unique< QgsMapLayerStore >();
+  scope1->addLayerStore( &store1 );
+  scope1->addLayerStore( store2.get() );
+  QCOMPARE( scope1->layerStores(), QList< QgsMapLayerStore *>( {&store1, store2.get() } ) );
+
+  QgsExpressionContextScope *scope3 = new QgsExpressionContextScope();
+  QgsMapLayerStore store3;
+  scope3->addLayerStore( &store3 );
+
+  QCOMPARE( scope3->layerStores(), QList< QgsMapLayerStore *>( {&store3 } ) );
+
+  QgsExpressionContext context;
+  QVERIFY( context.layerStores().isEmpty() );
+  QVERIFY( !context.loadedLayerStore() );
+
+  QgsExpressionContextScope *scope2 = new QgsExpressionContextScope();
+  context.appendScopes( { scope1, scope2, scope3 } );
+
+  // stores from scope 3 should take precedence
+  QCOMPARE( context.layerStores(), QList< QgsMapLayerStore *>( {&store3, &store1, store2.get() } ) );
+
+  store2.reset();
+  QCOMPARE( context.layerStores(), QList< QgsMapLayerStore *>( {&store3, &store1 } ) );
+
+  QVERIFY( !context.loadedLayerStore() );
+  QgsMapLayerStore store4;
+  context.setLoadedLayerStore( &store4 );
+  QCOMPARE( context.loadedLayerStore(), &store4 );
+  // store4 must also be present in layerStores()
+  QCOMPARE( context.layerStores(), QList< QgsMapLayerStore *>( {&store3, &store1, &store4 } ) );
+
+  QgsExpressionContext c2( context );
+  QCOMPARE( c2.loadedLayerStore(), &store4 );
+
+  QgsExpressionContext c3;
+  c3 = context;
+  QCOMPARE( c3.loadedLayerStore(), &store4 );
 }
 
 QGSTEST_MAIN( TestQgsExpressionContext )

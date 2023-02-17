@@ -4,14 +4,33 @@
   "groups": ["Maps"],
   "description": "Returns a map containing all the keys and values passed as pair of parameters.",
   "variableLenArguments": true,
-  "arguments": [
-    {"arg":"key1", "syntaxOnly": true},
-    {"arg":"value1", "syntaxOnly": true},
-    {"arg":"key2", "syntaxOnly": true},
-    {"arg":"value2", "syntaxOnly": true},
-    {"arg":"key", "descOnly": true, "description":"a key (string)"},
-    {"arg":"value", "descOnly": true, "description":"a value"}],
-  "examples": [ { "expression":"map('1','one','2', 'two')", "returns":"{ '1': 'one', '2': 'two' }"},
-                { "expression":"map('1','one','2', 'two')['1']", "returns":"'one'"}
-  ]
+  "arguments": [{
+    "arg": "key1",
+    "syntaxOnly": true
+  }, {
+    "arg": "value1",
+    "syntaxOnly": true
+  }, {
+    "arg": "key2",
+    "syntaxOnly": true
+  }, {
+    "arg": "value2",
+    "syntaxOnly": true
+  }, {
+    "arg": "key",
+    "descOnly": true,
+    "description": "a key (string)"
+  }, {
+    "arg": "value",
+    "descOnly": true,
+    "description": "a value"
+  }],
+  "examples": [{
+    "expression": "map('1','one','2', 'two')",
+    "returns": "{ '1': 'one', '2': 'two' }"
+  }, {
+    "expression": "map('1','one','2', 'two')['1']",
+    "returns": "'one'"
+  }],
+  "tags": ["passed", "keys", "pair", "containing", "parameters", "map"]
 }

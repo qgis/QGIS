@@ -19,6 +19,7 @@
 #include "qgsapplication.h"
 #include "qgslogger.h"
 #include "qgssettings.h"
+#include "qgsvariantutils.h"
 
 #include <QToolButton>
 #include <QMouseEvent>
@@ -299,10 +300,6 @@ void QgsCollapsibleGroupBoxBasic::toggleCollapsed()
 
 void QgsCollapsibleGroupBoxBasic::setStyleSheet( const QString &style )
 {
-#if QT_VERSION < QT_VERSION_CHECK(5, 12, 4)
-  // Fix crash on old Qt versions, see #39693
-  QGroupBox::setStyleSheet( QString() );
-#endif
   QGroupBox::setStyleSheet( style );
 }
 
@@ -525,7 +522,6 @@ void QgsCollapsibleGroupBox::setSettings( QgsSettings *settings )
   mDelSettings = false; // don't delete outside obj
 }
 
-
 void QgsCollapsibleGroupBox::init()
 {
   // use pointer to app qsettings if no custom qsettings specified
@@ -543,6 +539,10 @@ void QgsCollapsibleGroupBox::init()
   mSaveCheckedState = false;
 
   connect( this, &QObject::objectNameChanged, this, &QgsCollapsibleGroupBox::loadState );
+
+  // save state immediately when collapsed state changes, so that other widgets created
+  // before this one is destroyed will correctly restore the new collapsed state
+  connect( this, &QgsCollapsibleGroupBoxBasic::collapsedStateChanged, this, &QgsCollapsibleGroupBox::saveState );
 }
 
 void QgsCollapsibleGroupBox::showEvent( QShowEvent *event )
@@ -605,13 +605,13 @@ void QgsCollapsibleGroupBox::loadState()
   if ( mSaveCheckedState )
   {
     const QVariant val = mSettings->value( key + "/checked" );
-    if ( ! val.isNull() )
+    if ( ! QgsVariantUtils::isNull( val ) )
       setChecked( val.toBool() );
   }
   if ( mSaveCollapsedState )
   {
     const QVariant val = mSettings->value( key + "/collapsed" );
-    if ( ! val.isNull() )
+    if ( ! QgsVariantUtils::isNull( val ) )
       setCollapsed( val.toBool() );
   }
 

@@ -178,6 +178,7 @@ class ModelerParametersPanelWidget(QgsPanelWidget):
         self.context = context
         self.dialog = dialog
         self.widget_labels = {}
+        self.previous_output_definitions = {}
 
         class ContextGenerator(QgsProcessingContextGenerator):
 
@@ -350,6 +351,7 @@ class ModelerParametersPanelWidget(QgsPanelWidget):
     def setPreviousValues(self):
         if self.childId is not None:
             alg = self.model.childAlgorithm(self.childId)
+
             self.descriptionBox.setText(alg.description())
             for param in alg.algorithm().parameterDefinitions():
                 if param.isDestination() or param.flags() & QgsProcessingParameterDefinition.FlagHidden:
@@ -386,6 +388,7 @@ class ModelerParametersPanelWidget(QgsPanelWidget):
                     if out.childId() == self.childId and out.childOutputName() == output.name():
                         # this destination parameter is linked to a model output
                         model_output_name = out.name()
+                        self.previous_output_definitions[output.name()] = out
                         break
 
                 value = None
@@ -458,7 +461,10 @@ class ModelerParametersPanelWidget(QgsPanelWidget):
                 if wrapper.isModelOutput():
                     name = wrapper.modelOutputName()
                     if name:
-                        model_output = QgsProcessingModelOutput(name, name)
+                        # if there was a previous output definition already for this output, we start with it,
+                        # otherwise we'll lose any existing output comments, coloring, position, etc
+                        model_output = self.previous_output_definitions.get(output.name(), QgsProcessingModelOutput(name, name))
+                        model_output.setDescription(name)
                         model_output.setChildId(alg.childId())
                         model_output.setChildOutputName(output.name())
                         outputs[name] = model_output

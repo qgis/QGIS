@@ -13,8 +13,10 @@ set(QGIS_ANALYSIS_SRCS
   ${BISON_QgsRasterCalcParser_OUTPUTS}
 
   georeferencing/qgsgcpgeometrytransformer.cpp
+  georeferencing/qgsgcppoint.cpp
   georeferencing/qgsgcptransformer.cpp
   georeferencing/qgsleastsquares.cpp
+  georeferencing/qgsvectorwarper.cpp
 
   interpolation/qgsgridfilewriter.cpp
   interpolation/qgsidwinterpolator.cpp
@@ -125,8 +127,11 @@ set(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmmergelines.cpp
   processing/qgsalgorithmmergevector.cpp
   processing/qgsalgorithmminimumenclosingcircle.cpp
+  processing/qgsalgorithmmultidifference.cpp
+  processing/qgsalgorithmmultiintersection.cpp
   processing/qgsalgorithmmultiparttosinglepart.cpp
   processing/qgsalgorithmmultiringconstantbuffer.cpp
+  processing/qgsalgorithmmultiunion.cpp
   processing/qgsalgorithmnearestneighbouranalysis.cpp
   processing/qgsalgorithmoffsetlines.cpp
   processing/qgsalgorithmorderbyexpression.cpp
@@ -305,7 +310,9 @@ set(QGIS_ANALYSIS_HDRS
   qgsanalysis.h
 
   georeferencing/qgsgcpgeometrytransformer.h
+  georeferencing/qgsgcppoint.h
   georeferencing/qgsgcptransformer.h
+  georeferencing/qgsvectorwarper.h
 
   interpolation/Bezier3D.h
   interpolation/CloughTocherInterpolator.h

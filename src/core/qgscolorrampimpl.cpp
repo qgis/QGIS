@@ -188,9 +188,7 @@ void QgsGradientStop::setColorSpec( QColor::Spec spec )
   {
     case QColor::Rgb:
     case QColor::Invalid:
-#if QT_VERSION >= QT_VERSION_CHECK(5, 14, 0)
     case QColor::ExtendedRgb:
-#endif
     case QColor::Cmyk:
       mFunc = _interpolateRgb;
       break;
@@ -463,9 +461,7 @@ QVariantMap QgsGradientColorRamp::properties() const
       break;
     case QColor::Cmyk:
     case QColor::Invalid:
-#if QT_VERSION >= QT_VERSION_CHECK(5, 14, 0)
     case QColor::ExtendedRgb:
-#endif
       break;
   }
 
@@ -599,9 +595,7 @@ void QgsGradientColorRamp::setColorSpec( QColor::Spec spec )
   {
     case QColor::Rgb:
     case QColor::Invalid:
-#if QT_VERSION >= QT_VERSION_CHECK(5, 14, 0)
     case QColor::ExtendedRgb:
-#endif
     case QColor::Cmyk:
       mFunc = _interpolateRgb;
       break;
@@ -1016,6 +1010,10 @@ QVariantMap QgsCptCityColorRamp::properties() const
   return map;
 }
 
+QString QgsCptCityColorRamp::fileNameForVariant( const QString &schema, const QString &variant )
+{
+  return QgsCptCityArchive::defaultBaseDir() + QDir::separator() + schema + variant + ".svg";
+}
 
 QString QgsCptCityColorRamp::fileName() const
 {
@@ -1048,7 +1046,7 @@ bool QgsCptCityColorRamp::loadFile()
 {
   if ( mFileLoaded )
   {
-    QgsDebugMsg( "File already loaded for " + mSchemeName + mVariantName );
+    QgsDebugMsgLevel( "File already loaded for " + mSchemeName + mVariantName, 2 );
     return true;
   }
 
@@ -1056,7 +1054,6 @@ bool QgsCptCityColorRamp::loadFile()
   QString filename = fileName();
   if ( filename.isNull() )
   {
-    QgsDebugMsg( "Couldn't get fileName() for " + mSchemeName + mVariantName );
     return false;
   }
 

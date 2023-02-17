@@ -17,7 +17,6 @@
 
 #include "qgsmaptoolshowhidelabels.h"
 
-#include "qgsapplication.h"
 #include "qgsexception.h"
 #include "qgsfeatureiterator.h"
 #include "qgsmapcanvas.h"
@@ -27,6 +26,7 @@
 #include "qgsrubberband.h"
 #include "qgslogger.h"
 #include "qgslabelingresults.h"
+#include "qgsnewauxiliarylayerdialog.h"
 
 QgsMapToolShowHideLabels::QgsMapToolShowHideLabels( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDock )
   : QgsMapToolLabel( canvas, cadDock )
@@ -56,8 +56,8 @@ void QgsMapToolShowHideLabels::canvasPressEvent( QgsMapMouseEvent *e )
     return;
 
   int showCol;
-  if ( !labelCanShowHide( vlayer, showCol )
-       || !diagramCanShowHide( vlayer, showCol ) )
+  if ( ( vlayer->labelsEnabled() && !labelCanShowHide( vlayer, showCol ) )
+       || ( vlayer->diagramsEnabled() && !diagramCanShowHide( vlayer, showCol ) ) )
   {
     if ( !vlayer->auxiliaryLayer() )
     {

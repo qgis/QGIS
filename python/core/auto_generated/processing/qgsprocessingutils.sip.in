@@ -490,6 +490,22 @@ This method returns a fallback value of "las".
 .. versionadded:: 3.24
 %End
 
+    static QVariantMap removePointerValuesFromMap( const QVariantMap &map );
+%Docstring
+Removes any raw pointer values from an input ``map``, replacing them with
+appropriate string values where possible.
+
+.. versionadded:: 3.26
+%End
+
+    static QVariantMap preprocessQgisProcessParameters( const QVariantMap &parameters, bool &ok, QString &error );
+%Docstring
+Pre-processes a set of ``parameter`` values for the qgis_process command.
+
+In particular, this function upgrades encoded data defined values to :py:class:`QgsProperty` objects.
+
+.. versionadded:: 3.30
+%End
 
 };
 

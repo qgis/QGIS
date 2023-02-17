@@ -40,7 +40,7 @@ TestQgsDecorationScalebar::TestQgsDecorationScalebar() = default;
 //runs before all tests
 void TestQgsDecorationScalebar::initTestCase()
 {
-  qDebug() << "TestQgisAppClipboard::initTestCase()";
+  qDebug() << "TestQgsDecorationScalebar::initTestCase()";
   // init QGIS's paths - true means that all path will be inited from prefix
   QgsApplication::init();
   QgsApplication::initQgis();

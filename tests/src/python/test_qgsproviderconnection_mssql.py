@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for MSSQL QgsAbastractProviderConnection API.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -14,14 +13,15 @@ __copyright__ = 'Copyright 2019, The QGIS Project'
 __revision__ = '$Format:%H$'
 
 import os
-from test_qgsproviderconnection_base import TestPyQgsProviderConnectionBase
+
 from qgis.core import (
-    QgsVectorLayer,
-    QgsProviderRegistry,
     QgsDataSourceUri,
-    QgsAbstractDatabaseProviderConnection,
+    QgsProviderRegistry,
+    QgsVectorLayer,
 )
 from qgis.testing import unittest
+
+from test_qgsproviderconnection_base import TestPyQgsProviderConnectionBase
 
 
 class TestPyQgsProviderConnectionMssql(unittest.TestCase, TestPyQgsProviderConnectionBase):

@@ -41,14 +41,6 @@ class CORE_EXPORT QgsTextFormat
 {
   public:
 
-    //! Text orientation
-    enum TextOrientation
-    {
-      HorizontalOrientation, //!< Vertically oriented text
-      VerticalOrientation, //!< Horizontally oriented text
-      RotationBasedOrientation, //!< Horizontally or vertically oriented text based on rotation (only available for map labeling)
-    };
-
     /**
      * Default constructor for QgsTextFormat. Creates a text format initially
      * set to an invalid state (see isValid()).
@@ -223,6 +215,58 @@ class CORE_EXPORT QgsTextFormat
     void setNamedStyle( const QString &style );
 
     /**
+     * Returns TRUE if the format is set to force a bold style.
+     *
+     * \warning Unlike setting a font's style via setNamedStyle(), this will ensure that a font is
+     * always rendered in bold regardless of whether the font family actually has a bold variant. A
+     * "faux bold" effect will be emulated, which may result in poor quality font rendering. For this
+     * reason it is greatly preferred to call setNamedStyle() instead.
+     *
+     * \see setForcedBold()
+     * \since QGIS 3.26
+     */
+    bool forcedBold() const;
+
+    /**
+     * Sets whether the format is set to force a bold style.
+     *
+     * \warning Unlike setting a font's style via setNamedStyle(), this will ensure that a font is
+     * always rendered in bold regardless of whether the font family actually has a bold variant. A
+     * "faux bold" effect will be emulated, which may result in poor quality font rendering. For this
+     * reason it is greatly preferred to call setNamedStyle() instead.
+     *
+     * \see forcedBold()
+     * \since QGIS 3.26
+     */
+    void setForcedBold( bool forced );
+
+    /**
+     * Returns TRUE if the format is set to force an italic style.
+     *
+     * \warning Unlike setting a font's style via setNamedStyle(), this will ensure that a font is
+     * always rendered in italic regardless of whether the font family actually has an italic variant. A
+     * "faux italic" slanted text effect will be emulated, which may result in poor quality font rendering. For this
+     * reason it is greatly preferred to call setNamedStyle() instead.
+     *
+     * \see setForcedItalic()
+     * \since QGIS 3.26
+     */
+    bool forcedItalic() const;
+
+    /**
+     * Sets whether the format is set to force an italic style.
+     *
+     * \warning Unlike setting a font's style via setNamedStyle(), this will ensure that a font is
+     * always rendered in italic regardless of whether the font family actually has an italic variant. A
+     * "faux italic" slanted text effect will be emulated, which may result in poor quality font rendering. For this
+     * reason it is greatly preferred to call setNamedStyle() instead.
+     *
+     * \see forcedItalic()
+     * \since QGIS 3.26
+     */
+    void setForcedItalic( bool forced );
+
+    /**
      * Returns the list of font families to use when restoring the text format, in order of precedence.
      *
      * \warning The list of families returned by this method is ONLY used when restoring the text format
@@ -366,35 +410,62 @@ class CORE_EXPORT QgsTextFormat
     void setBlendMode( QPainter::CompositionMode mode );
 
     /**
-     * Returns the line height for text. This is a number between
-     * 0.0 and 10.0 representing the leading between lines as a
-     * multiplier of line height.
+     * Returns the line height for text.
+     *
+     * If lineHeightUnit() is QgsUnitTypes::RenderPercentage (the default), then this is a number representing
+     * the leading between lines as a multiplier of line height (where 0 - 1.0 represents 0 to 100% of text line height).
+     * Otherwise the line height is an absolute measurement in lineHeightUnit().
+     *
      * \see setLineHeight()
+     * \see lineHeightUnit()
      */
     double lineHeight() const;
 
     /**
      * Sets the line height for text.
-     * \param height a number between
-     * 0.0 and 10.0 representing the leading between lines as a
-     * multiplier of line height.
+     *
+     * If lineHeightUnit() is QgsUnitTypes::RenderPercentage (the default), then \a height is a number representing
+     * the leading between lines as a multiplier of line height (where 0 - 1.0 represents 0 to 100% of text line height).
+     * Otherwise \a height is an absolute measurement in lineHeightUnit().
+     *
      * \see lineHeight()
+     * \see setLineHeightUnit()
      */
     void setLineHeight( double height );
+
+    /**
+     * Returns the units for the line height for text.
+     *
+     * \see setLineHeightUnit()
+     * \see lineHeight()
+     *
+     * \since QGIS 3.28
+     */
+    QgsUnitTypes::RenderUnit lineHeightUnit() const;
+
+    /**
+     * Sets the \a unit for the line height for text.
+     *
+     * \see lineHeightUnit()
+     * \see setLineHeight()
+     *
+     * \since QGIS 3.28
+     */
+    void setLineHeightUnit( QgsUnitTypes::RenderUnit unit );
 
     /**
      * Returns the orientation of the text.
      * \see setOrientation()
      * \since QGIS 3.10
      */
-    TextOrientation orientation() const;
+    Qgis::TextOrientation orientation() const;
 
     /**
      * Sets the \a orientation for the text.
      * \see orientation()
      * \since QGIS 3.10
      */
-    void setOrientation( TextOrientation orientation );
+    void setOrientation( Qgis::TextOrientation orientation );
 
     /**
      * Returns the text capitalization style.

@@ -220,10 +220,11 @@ namespace pal
        * \param distance distance to offset label along curve by
        * \param labeledLineSegmentIsRightToLeft if TRUE label is reversed from lefttoright to righttoleft
        * \param applyAngleConstraints TRUE if label feature character angle constraints should be applied
+       * \param uprightOnly TRUE if only upright label placement should be generated
        * \returns calculated label position
        */
       std::unique_ptr< LabelPosition > curvedPlacementAtOffset( PointSet *mapShape, const std::vector<double> &pathDistances,
-          QgsTextRendererUtils::LabelLineDirection direction, double distance, bool &labeledLineSegmentIsRightToLeft, bool applyAngleConstraints );
+          QgsTextRendererUtils::LabelLineDirection direction, double distance, bool &labeledLineSegmentIsRightToLeft, bool applyAngleConstraints, bool uprightOnly );
 
       /**
        * Generate curved candidates for line features.
@@ -320,7 +321,7 @@ namespace pal
        *
        * E.g. small lines or polygons get higher cost so that larger features are more likely to be labeled.
        */
-      void addSizePenalty( std::vector<std::unique_ptr<LabelPosition> > &lPos, double bbx[4], double bby[4] );
+      void addSizePenalty( std::vector<std::unique_ptr<LabelPosition> > &lPos, double bbx[4], double bby[4] ) const;
 
       /**
        * Calculates the priority for the feature. This will be the feature's priority if set,

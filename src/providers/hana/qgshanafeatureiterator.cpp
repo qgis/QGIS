@@ -146,7 +146,6 @@ bool QgsHanaFeatureIterator::rewind()
 
 bool QgsHanaFeatureIterator::close()
 {
-
   if ( mClosed )
     return false;
 
@@ -305,12 +304,11 @@ bool QgsHanaFeatureIterator::prepareOrderBy( const QList<QgsFeatureRequest::Orde
 QString QgsHanaFeatureIterator::buildSqlQuery( const QgsFeatureRequest &request )
 {
   const bool geometryRequested = ( request.flags() & QgsFeatureRequest::NoGeometry ) == 0
+                                 || !mFilterRect.isNull()
                                  || request.spatialFilterType() == Qgis::SpatialFilterType::DistanceWithin;
   bool limitAtProvider = ( request.limit() >= 0 ) && mRequest.spatialFilterType() != Qgis::SpatialFilterType::DistanceWithin;
 
   QgsRectangle filterRect = mFilterRect;
-  if ( !mSource->mSrsExtent.isEmpty() )
-    filterRect = mSource->mSrsExtent.intersect( filterRect );
 
   if ( !filterRect.isFinite() )
     QgsMessageLog::logMessage( QObject::tr( "Infinite filter rectangle specified" ), QObject::tr( "SAP HANA" ) );
@@ -511,7 +509,6 @@ QgsHanaFeatureSource::QgsHanaFeatureSource( const QgsHanaProvider *p )
   , mGeometryColumn( p->mGeometryColumn )
   , mGeometryType( p->wkbType() )
   , mSrid( p->mSrid )
-  , mSrsExtent( p->mSrsExtent )
   , mCrs( p->crs() )
 {
   if ( p->mHasSrsPlanarEquivalent && p->mDatabaseVersion.majorVersion() <= 1 )

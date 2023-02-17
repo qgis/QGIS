@@ -3,12 +3,18 @@ on:
   schedule:
   - cron: "30 2 * * *"
 
+permissions:
+  contents: read
+
 jobs:
   stale:
+    permissions:
+      issues: write  # for actions/stale to close stale issues
+      pull-requests: write  # for actions/stale to close stale PRs
     if: github.repository_owner == 'qgis'
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/stale@v4
+    - uses: actions/stale@v7
       with:
         repo-token: ${{ secrets.GITHUB_TOKEN }}
         stale-pr-message: >
@@ -49,7 +55,7 @@ jobs:
 
 
         stale-pr-label: 'stale'
-        exempt-pr-labels: 'Merge After Thaw'
+        exempt-pr-labels: 'Merge After Thaw,Frozen'
         days-before-pr-stale: 14
         days-before-pr-close: 7
 

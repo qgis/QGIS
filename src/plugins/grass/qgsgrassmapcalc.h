@@ -221,13 +221,13 @@ class QgsGrassMapcalcFunction
                              QString labels = "", bool drawLabel = true );
     ~QgsGrassMapcalcFunction() = default;
 
-    QString name() { return mName; }
-    int     type() { return mType; }
-    int     inputCount() { return mInputCount; }
-    QString label() { return mLabel; }
-    QString description() { return mDescription; }
-    QStringList inputLabels() { return mInputLabels; }
-    bool drawlabel() { return mDrawLabel; }
+    QString name() const { return mName; }
+    int     type() const { return mType; }
+    int     inputCount() const { return mInputCount; }
+    QString label() const { return mLabel; }
+    QString description() const { return mDescription; }
+    QStringList inputLabels() const { return mInputLabels; }
+    bool drawlabel() const { return mDrawLabel; }
 
   private:
     /* Value used in expression, e.g. 'if' */
@@ -266,11 +266,11 @@ class QgsGrassMapcalcItem
     virtual ~QgsGrassMapcalcItem() = default;
 
     virtual void setSelected( bool s ) { mSelected = s; }
-    bool selected( void ) { return mSelected; }
+    bool selected( void ) const { return mSelected; }
 //    virtual void paint ( QPainter * painter,
 //      const QStyleOptionGraphicsItem * option, QWidget * widget );
 //
-    int id() { return mId; }
+    int id() const { return mId; }
     void setId( int id ) { mId = id; }
 
   protected:

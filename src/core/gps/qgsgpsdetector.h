@@ -18,12 +18,23 @@
 #ifndef QGSGPSDETECTOR_H
 #define QGSGPSDETECTOR_H
 
+#include "qgsconfig.h"
+
 #include <QObject>
 #include <QList>
 #include <QPair>
+#if defined( HAVE_QTSERIALPORT )
+#include <QSerialPort>
+#endif
 #include <memory>
 
 #include "qgis_core.h"
+#include "qgis_sip.h"
+
+#ifndef SIP_RUN
+template<class T>
+class QgsSettingsEntryEnumFlag;
+#endif
 
 class QgsGpsConnection;
 class QgsGpsInformation;
@@ -37,6 +48,14 @@ class CORE_EXPORT QgsGpsDetector : public QObject
     Q_OBJECT
   public:
     QgsGpsDetector( const QString &portName );
+
+#if defined( HAVE_QTSERIALPORT )
+    static const QgsSettingsEntryEnumFlag<QSerialPort::StopBits> *settingsGpsStopBits SIP_SKIP;
+    static const QgsSettingsEntryEnumFlag<QSerialPort::DataBits> *settingsGpsDataBits SIP_SKIP;
+    static const QgsSettingsEntryEnumFlag<QSerialPort::Parity> *settingsGpsParity SIP_SKIP;
+    static const QgsSettingsEntryEnumFlag<QSerialPort::FlowControl> *settingsGpsFlowControl SIP_SKIP;
+#endif
+
     ~QgsGpsDetector() override;
 
     static QList< QPair<QString, QString> > availablePorts();

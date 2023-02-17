@@ -20,7 +20,7 @@
      <x>0</x>
      <y>0</y>
      <width>872</width>
-     <height>25</height>
+     <height>24</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -29,6 +29,7 @@
     </property>
     <addaction name="mActionReset"/>
     <addaction name="mActionOpenRaster"/>
+    <addaction name="mActionOpenVector"/>
     <addaction name="separator"/>
     <addaction name="mActionStartGeoref"/>
     <addaction name="mActionGDALScript"/>
@@ -65,7 +66,7 @@
      <string>Settings</string>
     </property>
     <addaction name="mActionTransformSettings"/>
-    <addaction name="mActionRasterProperties"/>
+    <addaction name="mActionSourceProperties"/>
     <addaction name="mActionGeorefConfig"/>
    </widget>
    <addaction name="menuFile"/>
@@ -91,6 +92,7 @@
     <bool>false</bool>
    </attribute>
    <addaction name="mActionOpenRaster"/>
+   <addaction name="mActionOpenVector"/>
    <addaction name="separator"/>
    <addaction name="mActionStartGeoref"/>
    <addaction name="mActionGDALScript"/>
@@ -340,9 +342,12 @@
     <string>Ctrl+P</string>
    </property>
   </action>
-  <action name="mActionRasterProperties">
+  <action name="mActionSourceProperties">
    <property name="text">
-    <string>Raster Properties…</string>
+    <string>Source Properties…</string>
+   </property>
+   <property name="toolTip">
+    <string>Source Properties…</string>
    </property>
   </action>
   <action name="mActionMoveGCPPoint">
@@ -382,6 +387,15 @@
     <string>Reset Georeferencer</string>
    </property>
   </action>
+  <action name="mActionOpenVector">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionAddOgrLayer.svg</normaloff>:/images/themes/default/mActionAddOgrLayer.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Open Vector…</string>
+   </property>
+  </action>
  </widget>
  <customwidgets>
   <customwidget>
@@ -392,6 +406,7 @@
   </customwidget>
  </customwidgets>
  <resources>
+  <include location="../../../images/images.qrc"/>
   <include location="../../../images/images.qrc"/>
  </resources>
  <connections/>

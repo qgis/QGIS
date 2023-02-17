@@ -17,6 +17,7 @@
 
 #include "qgslayermetadata.h"
 #include "qgsmaplayer.h"
+#include <QRegularExpression>
 
 QgsLayerMetadata *QgsLayerMetadata::clone() const
 {
@@ -423,6 +424,82 @@ bool QgsLayerMetadata::operator==( const QgsLayerMetadata &other )  const
          mEncoding == other.mEncoding &&
          mCrs == other.mCrs &&
          mExtent == other.mExtent;
+}
+
+bool QgsLayerMetadata::contains( const QString &searchString ) const
+{
+
+  if ( searchString.trimmed().isEmpty() )
+  {
+    return false;
+  }
+
+  if ( title().contains( searchString, Qt::CaseInsensitive ) ||
+       identifier().contains( searchString, Qt::CaseInsensitive ) ||
+       abstract().contains( searchString, Qt::CaseInsensitive ) )
+  {
+    return true;
+  }
+
+  const QList<QStringList> keyVals { keywords().values() };
+  for ( const QStringList &kws : std::as_const( keyVals ) )
+  {
+    for ( const QString &kw : std::as_const( kws ) )
+    {
+      if ( kw.contains( searchString, Qt::CaseSensitivity::CaseInsensitive ) )
+      {
+        return true;
+      }
+    }
+  }
+
+  const QStringList constCat { categories() };
+  for ( const QString &cat : std::as_const( constCat ) )
+  {
+    if ( cat.contains( searchString, Qt::CaseSensitivity::CaseInsensitive ) )
+    {
+      return true;
+    }
+  }
+
+  return false;
+}
+
+bool QgsLayerMetadata::matches( const QVector<QRegularExpression> &searchReList ) const
+{
+  for ( const QRegularExpression &re : std::as_const( searchReList ) )
+  {
+    if ( re.match( title() ).hasMatch() ||
+         re.match( identifier() ).hasMatch() ||
+         re.match( abstract() ).hasMatch() )
+    {
+      return true;
+    }
+
+    const QList<QStringList> keyVals { keywords().values() };
+    for ( const QStringList &kws : std::as_const( keyVals ) )
+    {
+      for ( const QString &kw : std::as_const( kws ) )
+      {
+        if ( re.match( kw ).hasMatch() )
+        {
+          return true;
+        }
+      }
+    }
+
+    const QStringList constCat { categories() };
+    for ( const QString &cat : std::as_const( constCat ) )
+    {
+      if ( re.match( cat ).hasMatch() )
+      {
+        return true;
+      }
+    }
+
+  }
+
+  return false;
 }
 
 bool QgsLayerMetadata::SpatialExtent::operator==( const QgsLayerMetadata::SpatialExtent &other ) const

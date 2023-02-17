@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>324</width>
-    <height>250</height>
+    <height>252</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -45,7 +45,54 @@
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_4">
       <item>
-       <layout class="QGridLayout" name="gridLayout">
+       <layout class="QGridLayout" name="gridLayout" rowstretch="0,0,0,0,0,0">
+        <item row="1" column="0">
+         <widget class="QRadioButton" name="mCumulativeCutRadioButton">
+          <property name="text">
+           <string>Cumula&amp;tive
+count cut</string>
+          </property>
+          <property name="checked">
+           <bool>false</bool>
+          </property>
+          <attribute name="buttonGroup">
+           <string notr="true">mMinMaxMethodRadioButtonGroup</string>
+          </attribute>
+         </widget>
+        </item>
+        <item row="5" column="0">
+         <widget class="QLabel" name="mAccuracyLabel">
+          <property name="text">
+           <string>Accuracy</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="2">
+         <widget class="QLabel" name="label">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="text">
+           <string>-</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="4">
+         <widget class="QLabel" name="label_2">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="text">
+           <string>%</string>
+          </property>
+         </widget>
+        </item>
         <item row="0" column="0">
          <widget class="QRadioButton" name="mUserDefinedRadioButton">
           <property name="text">
@@ -59,106 +106,6 @@
           </attribute>
          </widget>
         </item>
-        <item row="1" column="0">
-         <layout class="QHBoxLayout" name="horizontalLayout_4">
-          <item>
-           <widget class="QRadioButton" name="mCumulativeCutRadioButton">
-            <property name="text">
-             <string>Cumula&amp;tive
-count cut</string>
-            </property>
-            <property name="checked">
-             <bool>false</bool>
-            </property>
-            <attribute name="buttonGroup">
-             <string notr="true">mMinMaxMethodRadioButtonGroup</string>
-            </attribute>
-           </widget>
-          </item>
-          <item>
-           <widget class="QgsDoubleSpinBox" name="mCumulativeCutLowerDoubleSpinBox">
-            <property name="decimals">
-             <number>1</number>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLabel" name="label">
-            <property name="text">
-             <string>-</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QgsDoubleSpinBox" name="mCumulativeCutUpperDoubleSpinBox">
-            <property name="decimals">
-             <number>1</number>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLabel" name="label_2">
-            <property name="text">
-             <string>%</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <spacer name="horizontalSpacer_8">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>123</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-         </layout>
-        </item>
-        <item row="4" column="0">
-         <layout class="QHBoxLayout" name="horizontalLayout_6">
-          <item>
-           <widget class="QRadioButton" name="mStdDevRadioButton">
-            <property name="text">
-             <string>Mean +/-
-standard de&amp;viation ×</string>
-            </property>
-            <attribute name="buttonGroup">
-             <string notr="true">mMinMaxMethodRadioButtonGroup</string>
-            </attribute>
-           </widget>
-          </item>
-          <item>
-           <widget class="QgsDoubleSpinBox" name="mStdDevSpinBox">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="value">
-             <double>1.000000000000000</double>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <spacer name="horizontalSpacer_6">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>123</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-         </layout>
-        </item>
         <item row="2" column="0">
          <widget class="QRadioButton" name="mMinMaxRadioButton">
           <property name="text">
@@ -169,59 +116,86 @@ standard de&amp;viation ×</string>
           </attribute>
          </widget>
         </item>
-        <item row="6" column="0">
-         <layout class="QGridLayout" name="gridLayout_2">
-          <item row="0" column="1">
-           <widget class="QComboBox" name="mStatisticsExtentCombo">
-            <item>
-             <property name="text">
-              <string>Whole raster</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>Current canvas</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>Updated canvas</string>
-             </property>
-            </item>
-           </widget>
+        <item row="1" column="3">
+         <widget class="QgsDoubleSpinBox" name="mCumulativeCutUpperDoubleSpinBox">
+          <property name="decimals">
+           <number>1</number>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="QgsDoubleSpinBox" name="mCumulativeCutLowerDoubleSpinBox">
+          <property name="decimals">
+           <number>1</number>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="0">
+         <widget class="QLabel" name="mStatisticsExtentLabel">
+          <property name="text">
+           <string>Statistics extent</string>
+          </property>
+          <property name="margin">
+           <number>0</number>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="3">
+         <widget class="QgsDoubleSpinBox" name="mStdDevSpinBox">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="value">
+           <double>1.000000000000000</double>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="0" colspan="3">
+         <widget class="QRadioButton" name="mStdDevRadioButton">
+          <property name="text">
+           <string>Mean +/-
+standard de&amp;viation ×</string>
+          </property>
+          <attribute name="buttonGroup">
+           <string notr="true">mMinMaxMethodRadioButtonGroup</string>
+          </attribute>
+         </widget>
+        </item>
+        <item row="4" column="1" colspan="3">
+         <widget class="QComboBox" name="mStatisticsExtentCombo">
+          <item>
+           <property name="text">
+            <string>Whole raster</string>
+           </property>
           </item>
-          <item row="0" column="0">
-           <widget class="QLabel" name="mStatisticsExtentLabel">
-            <property name="text">
-             <string>Statistics extent</string>
-            </property>
-            <property name="margin">
-             <number>0</number>
-            </property>
-           </widget>
+          <item>
+           <property name="text">
+            <string>Current canvas</string>
+           </property>
           </item>
-          <item row="1" column="0">
-           <widget class="QLabel" name="mAccuracyLabel">
-            <property name="text">
-             <string>Accuracy</string>
-            </property>
-           </widget>
+          <item>
+           <property name="text">
+            <string>Updated canvas</string>
+           </property>
           </item>
-          <item row="1" column="1">
-           <widget class="QComboBox" name="cboAccuracy">
-            <item>
-             <property name="text">
-              <string>Estimate (faster)</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>Actual (slower)</string>
-             </property>
-            </item>
-           </widget>
+         </widget>
+        </item>
+        <item row="5" column="1" colspan="3">
+         <widget class="QComboBox" name="cboAccuracy">
+          <item>
+           <property name="text">
+            <string>Estimate (faster)</string>
+           </property>
           </item>
-         </layout>
+          <item>
+           <property name="text">
+            <string>Actual (slower)</string>
+           </property>
+          </item>
+         </widget>
         </item>
        </layout>
       </item>
@@ -232,25 +206,19 @@ standard de&amp;viation ×</string>
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsDoubleSpinBox</class>
-   <extends>QDoubleSpinBox</extends>
-   <header>qgsdoublespinbox.h</header>
-  </customwidget>
-  <customwidget>
    <class>QgsCollapsibleGroupBox</class>
    <extends>QGroupBox</extends>
    <header>qgscollapsiblegroupbox.h</header>
    <container>1</container>
   </customwidget>
+  <customwidget>
+   <class>QgsDoubleSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
+   <header>qgsdoublespinbox.h</header>
+  </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>mUserDefinedRadioButton</tabstop>
-  <tabstop>mCumulativeCutRadioButton</tabstop>
-  <tabstop>mCumulativeCutLowerDoubleSpinBox</tabstop>
-  <tabstop>mCumulativeCutUpperDoubleSpinBox</tabstop>
-  <tabstop>mMinMaxRadioButton</tabstop>
-  <tabstop>mStdDevRadioButton</tabstop>
-  <tabstop>mStdDevSpinBox</tabstop>
  </tabstops>
  <resources/>
  <connections/>

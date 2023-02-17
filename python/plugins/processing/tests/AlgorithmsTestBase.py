@@ -37,7 +37,9 @@ from osgeo.gdalconst import GA_ReadOnly
 from numpy import nan_to_num
 from copy import deepcopy
 
-from qgis.core import (QgsVectorLayer,
+from qgis.PyQt.QtCore import QT_VERSION
+from qgis.core import (Qgis,
+                       QgsVectorLayer,
                        QgsRasterLayer,
                        QgsCoordinateReferenceSystem,
                        QgsFeatureRequest,
@@ -56,6 +58,10 @@ from utilities import unitTestDataPath
 import processing
 
 
+def GDAL_COMPUTE_VERSION(maj, min, rev):
+    return ((maj) * 1000000 + (min) * 10000 + (rev) * 100)
+
+
 def processingTestDataPath():
     return os.path.join(os.path.dirname(__file__), 'testdata')
 
@@ -71,6 +77,44 @@ class AlgorithmsTest(object):
 
         if 'tests' in algorithm_tests and algorithm_tests['tests'] is not None:
             for idx, algtest in enumerate(algorithm_tests['tests']):
+                condition = algtest.get('condition')
+                if condition:
+                    geos_condition = condition.get('geos')
+                    if geos_condition:
+                        less_than_condition = geos_condition.get('less_than')
+                        if less_than_condition:
+                            if Qgis.geosVersionInt() >= less_than_condition:
+                                print('!!! Skipping {}, requires GEOS < {}, have version {}'.format(algtest['name'], less_than_condition, Qgis.geosVersionInt()))
+                                continue
+                        at_least_condition = geos_condition.get('at_least')
+                        if at_least_condition:
+                            if Qgis.geosVersionInt() < at_least_condition:
+                                print('!!! Skipping {}, requires GEOS >= {}, have version {}'.format(algtest['name'], at_least_condition, Qgis.geosVersionInt()))
+                                continue
+                    gdal_condition = condition.get('gdal')
+                    if gdal_condition:
+                        less_than_condition = gdal_condition.get('less_than')
+                        if less_than_condition:
+                            if int(gdal.VersionInfo('VERSION_NUM')) >= less_than_condition:
+                                print('!!! Skipping {}, requires GDAL < {}, have version {}'.format(algtest['name'], less_than_condition, gdal.VersionInfo('VERSION_NUM')))
+                                continue
+                        at_least_condition = gdal_condition.get('at_least')
+                        if at_least_condition:
+                            if int(gdal.VersionInfo('VERSION_NUM')) < at_least_condition:
+                                print('!!! Skipping {}, requires GDAL >= {}, have version {}'.format(algtest['name'], at_least_condition, gdal.VersionInfo('VERSION_NUM')))
+                                continue
+                    qt_condition = condition.get('qt')
+                    if qt_condition:
+                        less_than_condition = qt_condition.get('less_than')
+                        if less_than_condition:
+                            if QT_VERSION >= less_than_condition:
+                                print('!!! Skipping {}, requires Qt < {}, have version {}'.format(algtest['name'], less_than_condition, QT_VERSION))
+                                continue
+                        at_least_condition = qt_condition.get('at_least')
+                        if at_least_condition:
+                            if QT_VERSION < at_least_condition:
+                                print('!!! Skipping {}, requires Qt >= {}, have version {}'.format(algtest['name'], at_least_condition, QT_VERSION))
+                                continue
                 print('About to start {} of {}: "{}"'.format(idx, len(algorithm_tests['tests']), algtest['name']))
                 yield self.check_algorithm, algtest['name'], algtest
 
@@ -212,10 +256,7 @@ class AlgorithmsTest(object):
         elif param['type'] == 'rasterhash':
             outdir = tempfile.mkdtemp()
             self.cleanup_paths.append(outdir)
-            if self.test_definition_file().lower().startswith('saga'):
-                basename = 'raster.sdat'
-            else:
-                basename = 'raster.tif'
+            basename = 'raster.tif'
             filepath = os.path.join(outdir, basename)
             return filepath
         elif param['type'] == 'directory':

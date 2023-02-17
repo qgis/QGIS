@@ -254,9 +254,10 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
          * Create a rule from an XML definition
          * \param ruleElem  The XML rule element
          * \param context reading context
+         * \param reuseId set to TRUE to create an exact copy of the original symbol or FALSE to create a new rule with the same parameters as the original but a new unique ruleKey(). (Since QGIS 3.30)
          * \returns A new rule
          */
-        static QgsRuleBasedLabeling::Rule *create( const QDomElement &ruleElem, const QgsReadWriteContext &context ) SIP_FACTORY;
+        static QgsRuleBasedLabeling::Rule *create( const QDomElement &ruleElem, const QgsReadWriteContext &context, bool reuseId = true ) SIP_FACTORY;
 
         //! store labeling info to XML element
         QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context ) const;

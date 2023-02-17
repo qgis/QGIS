@@ -18,13 +18,18 @@
 #include "qgsmanageconnectionsdialog.h"
 #include "qgsnewarcgisrestconnection.h"
 #include "qgsowsconnection.h"
+#include "qgsafsprovider.h"
+#include "qgsexpressionbuilderdialog.h"
+#include "qgsbrowsertreeview.h"
+#include "qgsguiutils.h"
+#include "qgsvectorlayer.h"
 
 #include <QDesktopServices>
 #include <QFileDialog>
 #include <QMessageBox>
 
 
-void QgsArcGisRestDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &, QgsDataItemGuiContext )
+void QgsArcGisRestDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &, QgsDataItemGuiContext context )
 {
   if ( QgsArcGisRestRootItem *rootItem = qobject_cast< QgsArcGisRestRootItem * >( item ) )
   {
@@ -108,6 +113,17 @@ void QgsArcGisRestDataItemGuiProvider::populateContextMenu( QgsDataItem *item, Q
     } );
     menu->addAction( viewInfo );
     menu->addSeparator();
+
+    QAction *addWithFilterAction = new QAction( tr( "Add Filtered Layer to Project…" ), menu );
+    // bit of a gross hack to get this action to appear after the "add layer to project" action, which won't have been created yet...
+    addWithFilterAction->setProperty( "insertAfter", "addLayerToProject" );
+    menu->addAction( addWithFilterAction );
+    const QgsMimeDataUtils::UriList uris = layerItem->mimeUris();
+
+    connect( addWithFilterAction, &QAction::triggered, this, [uris, context, this]
+    {
+      addFilteredLayer( uris.value( 0 ), context );
+    } );
   }
   else if ( QgsArcGisMapServiceLayerItem *layerItem = qobject_cast< QgsArcGisMapServiceLayerItem * >( item ) )
   {
@@ -123,7 +139,7 @@ void QgsArcGisRestDataItemGuiProvider::populateContextMenu( QgsDataItem *item, Q
 
 void QgsArcGisRestDataItemGuiProvider::newConnection( QgsDataItem *item )
 {
-  QgsNewArcGisRestConnectionDialog nc( nullptr, QStringLiteral( "qgis/connections-arcgisfeatureserver/" ), QString() );
+  QgsNewArcGisRestConnectionDialog nc( nullptr, QString() );
   nc.setWindowTitle( tr( "Create a New ArcGIS REST Server Connection" ) );
 
   if ( nc.exec() )
@@ -134,7 +150,7 @@ void QgsArcGisRestDataItemGuiProvider::newConnection( QgsDataItem *item )
 
 void QgsArcGisRestDataItemGuiProvider::editConnection( QgsDataItem *item )
 {
-  QgsNewArcGisRestConnectionDialog nc( nullptr, QStringLiteral( "qgis/connections-arcgisfeatureserver/" ), item->name() );
+  QgsNewArcGisRestConnectionDialog nc( nullptr, item->name() );
   nc.setWindowTitle( tr( "Modify ArcGIS REST Server Connection" ) );
 
   if ( nc.exec() )
@@ -186,4 +202,36 @@ void QgsArcGisRestDataItemGuiProvider::loadConnections( QgsDataItem *item )
   QgsManageConnectionsDialog dlg( nullptr, QgsManageConnectionsDialog::Import, QgsManageConnectionsDialog::ArcgisFeatureServer, fileName );
   if ( dlg.exec() == QDialog::Accepted )
     item->refreshConnections();
+}
+
+void QgsArcGisRestDataItemGuiProvider::addFilteredLayer( const QgsMimeDataUtils::Uri &uri, QgsDataItemGuiContext context )
+{
+  // Query available fields
+  QgsDataSourceUri ds( uri.uri );
+  ds.setSql( QStringLiteral( "1=0" ) ); // don't retrieve any records
+
+  QgsDataProvider::ProviderOptions providerOptions;
+  QgsTemporaryCursorOverride cursor( Qt::WaitCursor );
+  QgsAfsProvider provider( ds.uri( false ), providerOptions );
+  if ( !provider.isValid() )
+  {
+    return;
+  }
+  cursor.release();
+
+  //show expression builder
+  QgsExpressionBuilderDialog d( nullptr, QString(), context.view() ? context.view()->window() : nullptr );
+
+  //add available attributes to expression builder
+  QgsExpressionBuilderWidget *w = d.expressionBuilder();
+  w->initWithFields( provider.fields() );
+
+  if ( d.exec() == QDialog::Accepted )
+  {
+    const QString sql = w->expressionText();
+    ds.setSql( sql );
+
+    std::unique_ptr< QgsVectorLayer > layer = std::make_unique< QgsVectorLayer >( ds.uri( false ), uri.name, QStringLiteral( "arcgisfeatureserver" ) );
+    QgsProject::instance()->addMapLayer( layer.release() );
+  }
 }

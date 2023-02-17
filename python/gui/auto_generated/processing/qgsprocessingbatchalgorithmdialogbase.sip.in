@@ -1,0 +1,97 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/processing/qgsprocessingbatchalgorithmdialogbase.h           *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+
+class QgsProcessingBatchAlgorithmDialogBase : QgsProcessingAlgorithmDialogBase
+{
+%Docstring(signature="appended")
+Base class for processing batch algorithm dialogs.
+
+.. note::
+
+   This is not considered stable API and may change in future QGIS versions.
+
+.. versionadded:: 3.26
+%End
+
+%TypeHeaderCode
+#include "qgsprocessingbatchalgorithmdialogbase.h"
+%End
+  public:
+
+    QgsProcessingBatchAlgorithmDialogBase( QWidget *parent /TransferThis/ = 0, Qt::WindowFlags flags = Qt::WindowFlags() );
+%Docstring
+Constructor for QgsProcessingBatchAlgorithmDialogBase.
+%End
+    ~QgsProcessingBatchAlgorithmDialogBase();
+
+    virtual void resetAdditionalGui();
+
+    virtual void blockAdditionalControlsWhileRunning();
+
+
+  public slots:
+
+    virtual void runAsSingle() = 0;
+%Docstring
+Will be called when the "Run as Single" button is clicked.
+%End
+
+  protected slots:
+
+    virtual void algExecuted( bool successful, const QVariantMap &results );
+
+
+  protected:
+
+    virtual bool isFinalized();
+
+
+    void execute( const QList< QVariantMap > &parameters );
+%Docstring
+Starts the batch execution, where the ``parameters`` list dictates the parameters for each component
+step of the batch.
+%End
+
+    virtual QgsProcessingContext *createContext( QgsProcessingFeedback *feedback ) = 0 /Factory/;
+%Docstring
+Creates a new Processing context.
+
+(Each step in the batch processing will use a new Processing context)
+%End
+
+    virtual void handleAlgorithmResults( QgsProcessingAlgorithm *algorithm, QgsProcessingContext &context, QgsProcessingFeedback *feedback, const QVariantMap &parameters ) = 0;
+%Docstring
+Called when the dialog should handle the results of an algorithm, e.g. by loading layers into the current project.
+%End
+
+    virtual void loadHtmlResults( const QVariantMap &results, int index ) = 0;
+%Docstring
+Populates the HTML results dialog as a result of a successful algorithm execution.
+%End
+
+    virtual void createSummaryTable( const QList< QVariantMap > &results, const QList< QVariantMap > &errors ) = 0;
+%Docstring
+Creates a summary table of the results of a batch execution.
+%End
+
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/processing/qgsprocessingbatchalgorithmdialogbase.h           *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

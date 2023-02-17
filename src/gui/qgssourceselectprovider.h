@@ -42,8 +42,8 @@ class GUI_EXPORT QgsSourceSelectProvider
       OrderLocalProvider = 0, //!< Starting point for local file providers (e.g. OGR)
       OrderDatabaseProvider = 1000, //!< Starting point for database providers (e.g. Postgres)
       OrderRemoteProvider = 2000, //!< Starting point for remote (online) providers (e.g. WMS)
-      OrderGeoCmsProvider = 3000, //!< Starting point for GeoCMS type providers (e.g. GeoNode)
-      OrderOtherProvider = 4000, //!< Starting point for other providers (e.g. plugin based providers)
+      OrderSearchProvider = 4000, //!< Starting point for search providers (e.g. Layer Metadata)
+      OrderOtherProvider = 5000, //!< Starting point for other providers (e.g. plugin based providers)
     };
 
     virtual ~QgsSourceSelectProvider() = default;

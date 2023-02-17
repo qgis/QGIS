@@ -19,185 +19,428 @@
 #include "qgsgeorefdatapoint.h"
 #include "qgsgeoreftransform.h"
 #include "qgssettings.h"
+#include "qgsproject.h"
 
 #include <cmath>
 
-class QgsStandardItem : public QStandardItem
-{
-  public:
-    explicit QgsStandardItem( const QString &text ) : QStandardItem( text )
-    {
-      // In addition to the DisplayRole, also set the user role, which is used for sorting.
-      // This is needed for numerical sorting to work correctly (otherwise sorting is lexicographic).
-      setData( QVariant( text ), Qt::UserRole );
-      setTextAlignment( Qt::AlignRight );
-    }
-
-    explicit QgsStandardItem( int value ) : QStandardItem( QString::number( value ) )
-    {
-      setData( QVariant( value ), Qt::UserRole );
-      setTextAlignment( Qt::AlignCenter );
-    }
-
-    explicit QgsStandardItem( double value ) : QStandardItem( QString::number( value, 'f', 4 ) )
-    {
-      setData( QVariant( value ), Qt::UserRole );
-      //show the full precision when editing points
-      setData( QVariant( value ), Qt::EditRole );
-      setData( QVariant( value ), Qt::ToolTipRole );
-      setTextAlignment( Qt::AlignRight );
-    }
-};
-
 QgsGCPListModel::QgsGCPListModel( QObject *parent )
-  : QStandardItemModel( parent )
+  : QAbstractTableModel( parent )
 {
-  // Use data provided by Qt::UserRole as sorting key (needed for numerical sorting).
-  setSortRole( Qt::UserRole );
 }
 
 void QgsGCPListModel::setGCPList( QgsGCPList *theGCPList )
 {
+  beginResetModel();
   mGCPList = theGCPList;
-  updateModel();
+  endResetModel();
+  updateResiduals();
 }
 
 // ------------------------------- public ---------------------------------- //
 void QgsGCPListModel::setGeorefTransform( QgsGeorefTransform *georefTransform )
 {
   mGeorefTransform = georefTransform;
-  updateModel();
+  updateResiduals();
 }
 
-void QgsGCPListModel::updateModel()
+void QgsGCPListModel::setTargetCrs( const QgsCoordinateReferenceSystem &targetCrs, const QgsCoordinateTransformContext &context )
 {
+  mTargetCrs = targetCrs;
+  mTransformContext = context;
+  updateResiduals();
+  emit dataChanged( index( 0, static_cast< int >( Column::DestinationX ) ),
+                    index( rowCount() - 1, static_cast< int >( Column::DestinationY ) ) );
+}
 
-  //clear();
-  if ( !mGCPList )
-    return;
+int QgsGCPListModel::rowCount( const QModelIndex & ) const
+{
+  return mGCPList ? mGCPList->size() : 0;
+}
 
-  bool bTransformUpdated = false;
-  //  // Setup table header
-  QStringList itemLabels;
-  QString unitType;
-  const QgsSettings s;
+int QgsGCPListModel::columnCount( const QModelIndex & ) const
+{
+  return static_cast< int >( Column::LastColumn );
+}
+
+QVariant QgsGCPListModel::data( const QModelIndex &index, int role ) const
+{
+  if ( !mGCPList
+       || index.row() < 0
+       || index.row() >= mGCPList->size()
+       || index.column() < 0
+       || index.column() >= columnCount() )
+    return QVariant();
+
+  const Column column = static_cast< Column >( index.column() );
+
+  const QgsGeorefDataPoint *point = mGCPList->at( index.row() );
+  switch ( role )
+  {
+    case Qt::DisplayRole:
+    case Qt::EditRole:
+    case Qt::UserRole:
+    case Qt::ToolTipRole:
+      switch ( column )
+      {
+        case QgsGCPListModel::Column::Enabled:
+          break;
+        case QgsGCPListModel::Column::ID:
+          return index.row();
+
+        case QgsGCPListModel::Column::SourceX:
+        case QgsGCPListModel::Column::SourceY:
+        {
+          switch ( role )
+          {
+            case Qt::EditRole:
+            case Qt::UserRole:
+              // use full precision
+              return column == QgsGCPListModel::Column::SourceX ? point->sourcePoint().x() : point->sourcePoint().y();
+
+            case Qt::ToolTipRole:
+            case Qt::DisplayRole:
+              // truncate decimals for display
+              return formatNumber( column == QgsGCPListModel::Column::SourceX ? point->sourcePoint().x() : point->sourcePoint().y() );
+            default:
+              break;
+          }
+          break;
+        }
+
+        case QgsGCPListModel::Column::DestinationX:
+        case QgsGCPListModel::Column::DestinationY:
+        {
+          const QgsPointXY transformedDestinationPoint = point->transformedDestinationPoint( mTargetCrs, mTransformContext );
+
+          switch ( role )
+          {
+            case Qt::ToolTipRole:
+            {
+              const QString crsString = mTargetCrs.userFriendlyIdentifier();
+              const double value = column == QgsGCPListModel::Column::DestinationX ? transformedDestinationPoint.x() : transformedDestinationPoint.y();
+              return QStringLiteral( "<b>%1</b><br>%2" ).arg( formatNumber( value ), crsString );
+            }
+
+            case Qt::EditRole:
+            case Qt::UserRole:
+              // use full precision
+              return column == QgsGCPListModel::Column::DestinationX ? transformedDestinationPoint.x() : transformedDestinationPoint.y();
+
+            case Qt::DisplayRole:
+              // truncate decimals for display
+              return formatNumber( column == QgsGCPListModel::Column::DestinationX ? transformedDestinationPoint.x() : transformedDestinationPoint.y() );
+            default:
+              break;
+          }
+          break;
+        }
+
+        case QgsGCPListModel::Column::ResidualDx:
+        case QgsGCPListModel::Column::ResidualDy:
+        case QgsGCPListModel::Column::TotalResidual:
+        {
+          const double dX = point->residual().x();
+          const double dY = point->residual().y();
+          const double residual = std::sqrt( dX * dX + dY * dY );
+          if ( !qgsDoubleNear( residual, 0 ) )
+          {
+            double value = 0;
+            switch ( column )
+            {
+              case QgsGCPListModel::Column::ResidualDx:
+                value = dX;
+                break;
+              case QgsGCPListModel::Column::ResidualDy:
+                value = dY;
+                break;
+              case QgsGCPListModel::Column::TotalResidual:
+                value = residual;
+                break;
+              default:
+                break;
+            }
+
+            switch ( role )
+            {
+              case Qt::EditRole:
+              case Qt::UserRole:
+                // use full precision
+                return value;
+
+              case Qt::ToolTipRole:
+              case Qt::DisplayRole:
+                // truncate decimals for display
+                return formatNumber( value );
+              default:
+                break;
+            }
+          }
+          else
+          {
+            return tr( "n/a" );
+          }
+          BUILTIN_UNREACHABLE
+          break;
+        }
+        case QgsGCPListModel::Column::LastColumn:
+          break;
+      }
+      break;
+
+    case Qt::CheckStateRole:
+      if ( column == Column::Enabled )
+      {
+        return point->isEnabled() ? Qt::Checked : Qt::Unchecked;
+      }
+      break;
+
+    case Qt::TextAlignmentRole:
+    {
+      switch ( column )
+      {
+        case QgsGCPListModel::Column::Enabled:
+          return Qt::AlignHCenter;
+
+        case QgsGCPListModel::Column::LastColumn:
+          break;
+
+        case QgsGCPListModel::Column::ID:
+        case QgsGCPListModel::Column::SourceX:
+        case QgsGCPListModel::Column::SourceY:
+        case QgsGCPListModel::Column::DestinationX:
+        case QgsGCPListModel::Column::DestinationY:
+        case QgsGCPListModel::Column::ResidualDx:
+        case QgsGCPListModel::Column::ResidualDy:
+        case QgsGCPListModel::Column::TotalResidual:
+          return Qt::AlignRight;
+      }
+      break;
+    }
+
+    case static_cast< int >( Role::SourcePointRole ):
+      return point->sourcePoint();
+
+  }
+  return QVariant();
+}
+
+bool QgsGCPListModel::setData( const QModelIndex &index, const QVariant &value, int role )
+{
+  if ( !mGCPList
+       || index.row() < 0
+       || index.row() >= mGCPList->size()
+       || index.column() < 0
+       || index.column() >= columnCount() )
+    return false;
+
+  QgsGeorefDataPoint *point = mGCPList->at( index.row() );
+  const Column column = static_cast< Column >( index.column() );
+  switch ( column )
+  {
+    case QgsGCPListModel::Column::Enabled:
+      if ( role == Qt::CheckStateRole )
+      {
+        const bool checked = static_cast< Qt::CheckState >( value.toInt() ) == Qt::Checked;
+        point->setEnabled( checked );
+        emit dataChanged( index, index );
+        updateResiduals();
+        emit pointEnabled( point, index.row() );
+        return true;
+      }
+      break;
+
+    case QgsGCPListModel::Column::SourceX:
+    case QgsGCPListModel::Column::SourceY:
+    {
+      QgsPointXY sourcePoint = point->sourcePoint();
+      if ( column == QgsGCPListModel::Column::SourceX )
+        sourcePoint.setX( value.toDouble() );
+      else
+        sourcePoint.setY( value.toDouble() );
+      point->setSourcePoint( sourcePoint );
+      emit dataChanged( index, index );
+      updateResiduals();
+      return true;
+    }
+
+    case QgsGCPListModel::Column::DestinationX:
+    case QgsGCPListModel::Column::DestinationY:
+    {
+      // when setting a destination point x/y, we need to use the transformed destination point
+      // as this is what we were showing to users
+      QgsPointXY destinationPoint = point->transformedDestinationPoint( mTargetCrs, mTransformContext );
+      if ( column == QgsGCPListModel::Column::DestinationX )
+        destinationPoint.setX( value.toDouble() );
+      else
+        destinationPoint.setY( value.toDouble() );
+      point->setDestinationPoint( destinationPoint );
+      // we also have to update the destination point crs to the target crs, as the point is now in a different CRS
+      point->setDestinationPointCrs( mTargetCrs );
+      emit dataChanged( index, index );
+      updateResiduals();
+      return true;
+    }
+
+    case QgsGCPListModel::Column::ID:
+    case QgsGCPListModel::Column::ResidualDx:
+    case QgsGCPListModel::Column::ResidualDy:
+    case QgsGCPListModel::Column::TotalResidual:
+    case QgsGCPListModel::Column::LastColumn:
+      return false;
+  }
+
+  return false;
+}
+
+Qt::ItemFlags QgsGCPListModel::flags( const QModelIndex &index ) const
+{
+  if ( !mGCPList
+       || index.row() < 0
+       || index.row() >= mGCPList->size()
+       || index.column() < 0
+       || index.column() >= columnCount() )
+    return QAbstractTableModel::flags( index );
+
+  const Column column = static_cast< Column >( index.column() );
+  switch ( column )
+  {
+    case QgsGCPListModel::Column::Enabled:
+      return Qt::ItemFlag::ItemIsEnabled | Qt::ItemFlag::ItemIsUserCheckable | Qt::ItemFlag::ItemIsSelectable;
+
+    case QgsGCPListModel::Column::SourceX:
+    case QgsGCPListModel::Column::SourceY:
+    case QgsGCPListModel::Column::DestinationX:
+    case QgsGCPListModel::Column::DestinationY:
+      return Qt::ItemFlag::ItemIsEnabled | Qt::ItemFlag::ItemIsSelectable | Qt::ItemFlag::ItemIsEditable;
+
+    case QgsGCPListModel::Column::ID:
+    case QgsGCPListModel::Column::ResidualDx:
+    case QgsGCPListModel::Column::ResidualDy:
+    case QgsGCPListModel::Column::TotalResidual:
+    case QgsGCPListModel::Column::LastColumn:
+      return Qt::ItemFlag::ItemIsEnabled | Qt::ItemFlag::ItemIsSelectable;
+  }
+  return QAbstractTableModel::flags( index );
+}
+
+QVariant QgsGCPListModel::headerData( int section, Qt::Orientation orientation, int role ) const
+{
+  switch ( orientation )
+  {
+    case Qt::Horizontal:
+      switch ( role )
+      {
+        case Qt::DisplayRole:
+        case Qt::ToolTipRole:
+        {
+          QString residualUnitType;
+          switch ( residualUnit() )
+          {
+            case QgsUnitTypes::RenderMapUnits:
+              residualUnitType = tr( "map units" );
+              break;
+            case QgsUnitTypes::RenderPixels:
+              residualUnitType = tr( "pixels" );
+              break;
+
+            case QgsUnitTypes::RenderMillimeters:
+            case QgsUnitTypes::RenderPercentage:
+            case QgsUnitTypes::RenderPoints:
+            case QgsUnitTypes::RenderInches:
+            case QgsUnitTypes::RenderUnknownUnit:
+            case QgsUnitTypes::RenderMetersInMapUnits:
+              break;
+          }
+
+          switch ( static_cast< Column >( section ) )
+          {
+            case QgsGCPListModel::Column::Enabled:
+              return tr( "Enabled" );
+            case QgsGCPListModel::Column::ID:
+              return tr( "ID" );
+            case QgsGCPListModel::Column::SourceX:
+              return tr( "Source X" );
+            case QgsGCPListModel::Column::SourceY:
+              return tr( "Source Y" );
+            case QgsGCPListModel::Column::DestinationX:
+            case QgsGCPListModel::Column::DestinationY:
+            {
+              const QString heading = static_cast< Column >( section ) == QgsGCPListModel::Column::DestinationX ? tr( "Dest. X" ) : tr( "Dest. Y" );
+              switch ( role )
+              {
+                case Qt::DisplayRole:
+                  return heading;
+
+                case Qt::ToolTipRole:
+                {
+                  const QString crsString = mTargetCrs.userFriendlyIdentifier();
+                  return QStringLiteral( "<b>%1</b><br>%2" ).arg( heading, crsString );
+                }
+
+                default:
+                  break;
+              }
+              break;
+            }
+            case QgsGCPListModel::Column::ResidualDx:
+              return tr( "dX (%1)" ).arg( residualUnitType );
+            case QgsGCPListModel::Column::ResidualDy:
+              return tr( "dY (%1)" ).arg( residualUnitType );
+            case QgsGCPListModel::Column::TotalResidual:
+              return tr( "Residual (%1)" ).arg( residualUnitType );
+            case QgsGCPListModel::Column::LastColumn:
+              break;
+          }
+        }
+        break;
+        default:
+          break;
+      }
+
+      break;
+    case Qt::Vertical:
+      break;
+  }
+  return QVariant();
+}
+
+QgsUnitTypes::RenderUnit QgsGCPListModel::residualUnit() const
+{
   bool mapUnitsPossible = false;
-  QVector<QgsPointXY> mapCoords, pixelCoords;
-
-  mGCPList->createGCPVectors( mapCoords, pixelCoords,
-                              QgsCoordinateReferenceSystem( s.value( QStringLiteral( "/Plugin-GeoReferencer/targetsrs" ) ).toString() ) );
-
   if ( mGeorefTransform )
   {
-    bTransformUpdated = mGeorefTransform->updateParametersFromGcps( pixelCoords, mapCoords, true );
     mapUnitsPossible = mGeorefTransform->providesAccurateInverseTransformation();
   }
 
-  if ( s.value( QStringLiteral( "/Plugin-GeoReferencer/Config/ResidualUnits" ) ) == "mapUnits" && mapUnitsPossible )
+  if ( mapUnitsPossible && QgsSettings().value( QStringLiteral( "/Plugin-GeoReferencer/Config/ResidualUnits" ) ) == "mapUnits" )
   {
-    unitType = tr( "map units" );
+    return QgsUnitTypes::RenderUnit::RenderMapUnits;
   }
   else
   {
-    unitType = tr( "pixels" );
-  }
-
-  itemLabels << tr( "Visible" )
-             << tr( "ID" )
-             << tr( "Source X" )
-             << tr( "Source Y" )
-             << tr( "Dest. X" )
-             << tr( "Dest. Y" )
-             << tr( "dX (%1)" ).arg( unitType )
-             << tr( "dY (%1)" ).arg( unitType )
-             << tr( "Residual (%1)" ).arg( unitType );
-
-  setHorizontalHeaderLabels( itemLabels );
-  setRowCount( mGCPList->size() );
-
-  for ( int i = 0; i < mGCPList->sizeAll(); ++i )
-  {
-    int j = 0;
-    QgsGeorefDataPoint *p = mGCPList->at( i );
-
-    if ( !p )
-      continue;
-
-    p->setId( i );
-
-    QStandardItem *si = new QStandardItem();
-    si->setTextAlignment( Qt::AlignCenter );
-    si->setCheckable( true );
-    if ( p->isEnabled() )
-      si->setCheckState( Qt::Checked );
-    else
-      si->setCheckState( Qt::Unchecked );
-
-    setItem( i, j++, si );
-    setItem( i, j++, new QgsStandardItem( i ) );
-    setItem( i, j++, new QgsStandardItem( p->pixelCoords().x() ) );
-    setItem( i, j++, new QgsStandardItem( p->pixelCoords().y() ) );
-    setItem( i, j++, new QgsStandardItem( p->transCoords().x() ) );
-    setItem( i, j++, new QgsStandardItem( p->transCoords().y() ) );
-
-    double residual;
-    double dX = 0;
-    double dY = 0;
-    // Calculate residual if transform is available and up-to-date
-    if ( mGeorefTransform && bTransformUpdated && mGeorefTransform->parametersInitialized() )
-    {
-      QgsPointXY dst;
-      const QgsPointXY pixel = mGeorefTransform->hasCrs() ? mGeorefTransform->toColumnLine( p->pixelCoords() ) : p->pixelCoords();
-      if ( unitType == tr( "pixels" ) )
-      {
-        // Transform from world to raster coordinate:
-        // This is the transform direction used by the warp operation.
-        // As transforms of order >=2 are not invertible, we are only
-        // interested in the residual in this direction
-        if ( mGeorefTransform->transformWorldToRaster( p->transCoords(), dst ) )
-        {
-          dX = ( dst.x() - pixel.x() );
-          dY = -( dst.y() - pixel.y() );
-        }
-      }
-      else if ( unitType == tr( "map units" ) )
-      {
-        if ( mGeorefTransform->transformRasterToWorld( pixel, dst ) )
-        {
-          dX = ( dst.x() - p->transCoords().x() );
-          dY = ( dst.y() - p->transCoords().y() );
-        }
-      }
-    }
-    residual = std::sqrt( dX * dX + dY * dY );
-
-    p->setResidual( QPointF( dX, dY ) );
-
-    if ( residual >= 0.f )
-    {
-      setItem( i, j++, new QgsStandardItem( dX ) );
-      setItem( i, j++, new QgsStandardItem( dY ) );
-      setItem( i, j++, new QgsStandardItem( residual ) );
-    }
-    else
-    {
-      setItem( i, j++, new QgsStandardItem( QStringLiteral( "n/a" ) ) );
-      setItem( i, j++, new QgsStandardItem( QStringLiteral( "n/a" ) ) );
-      setItem( i, j++, new QgsStandardItem( QStringLiteral( "n/a" ) ) );
-    }
+    return QgsUnitTypes::RenderUnit::RenderPixels;
   }
 }
 
-// --------------------------- public slots -------------------------------- //
-void QgsGCPListModel::replaceDataPoint( QgsGeorefDataPoint *newDataPoint, int i )
+void QgsGCPListModel::updateResiduals()
 {
-  mGCPList->replace( i, newDataPoint );
+  if ( !mGCPList )
+    return;
+
+  mGCPList->updateResiduals( mGeorefTransform, mTargetCrs, mTransformContext, residualUnit() );
+  emit dataChanged( index( 0, static_cast< int >( Column::ResidualDx ) ),
+                    index( rowCount() - 1, static_cast< int >( Column::TotalResidual ) ) );
 }
 
-void QgsGCPListModel::onGCPListModified()
+QString QgsGCPListModel::formatNumber( double number )
 {
+  int decimalPlaces = 4;
+  if ( std::fabs( number ) > 100000 )
+    decimalPlaces = 2;
+  else if ( std::fabs( number ) < 1000 )
+    decimalPlaces = 6;
+
+  return QString::number( number, 'f', decimalPlaces );
 }
 
-void QgsGCPListModel::onTransformationModified()
-{
-}
+

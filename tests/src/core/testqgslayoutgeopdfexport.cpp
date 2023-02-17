@@ -16,8 +16,6 @@
  ***************************************************************************/
 
 #include "qgsapplication.h"
-#include "qgslayout.h"
-#include "qgsmultirenderchecker.h"
 #include "qgslayoutitemmap.h"
 #include "qgsvectorlayer.h"
 #include "qgsproject.h"
@@ -29,55 +27,51 @@
 #include <QObject>
 #include "qgstest.h"
 
-class TestQgsLayoutGeoPdfExport : public QObject
+class TestQgsLayoutGeoPdfExport : public QgsTest
 {
     Q_OBJECT
 
   public:
-    TestQgsLayoutGeoPdfExport() = default;
+    TestQgsLayoutGeoPdfExport() : QgsTest( QStringLiteral( "GeoPDF Export Tests" ) ) {}
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
-    void init();// will be called before each testfunction is executed.
-    void cleanup();// will be called after every testfunction.
+    void testTempFilenames();
     void testCollectingFeatures();
     void skipLayers();
     void layerOrder();
-
-  private:
-
-    QString mReport;
 };
 
 void TestQgsLayoutGeoPdfExport::initTestCase()
 {
   QgsApplication::init();
   QgsApplication::initQgis();
-
-  mReport = QStringLiteral( "<h1>GeoPDF Export Tests</h1>\n" );
 }
 
 void TestQgsLayoutGeoPdfExport::cleanupTestCase()
 {
-  const QString myReportFile = QDir::tempPath() + "/qgistest.html";
-  QFile myFile( myReportFile );
-  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
-  {
-    QTextStream myQTextStream( &myFile );
-    myQTextStream << mReport;
-    myFile.close();
-  }
-
   QgsApplication::exitQgis();
 }
 
-void TestQgsLayoutGeoPdfExport::init()
+void TestQgsLayoutGeoPdfExport::testTempFilenames()
 {
-}
+  QgsProject p;
+  QgsLayout l( &p );
+  QgsLayoutGeoPdfExporter geoPdfExporter( &l );
 
-void TestQgsLayoutGeoPdfExport::cleanup()
-{
+  QString outputFile = geoPdfExporter.generateTemporaryFilepath( QStringLiteral( "test_src.pdf" ) );
+  QVERIFY( outputFile.endsWith( QStringLiteral( "test_src.pdf" ) ) );
+
+  // test generating temporary file path with slash characters (https://github.com/qgis/QGIS/issues/51480)
+  outputFile = geoPdfExporter.generateTemporaryFilepath( QStringLiteral( "test/ src.pdf" ) );
+  QVERIFY( outputFile.endsWith( QStringLiteral( "test_ src.pdf" ) ) );
+
+  outputFile = geoPdfExporter.generateTemporaryFilepath( QStringLiteral( "test\\ src.pdf" ) );
+  QVERIFY( outputFile.endsWith( QStringLiteral( "test_ src.pdf" ) ) );
+
+  outputFile = geoPdfExporter.generateTemporaryFilepath( QStringLiteral( "test: src.pdf" ) );
+  QVERIFY( outputFile.endsWith( QStringLiteral( "test_ src.pdf" ) ) );
 }
 
 void TestQgsLayoutGeoPdfExport::testCollectingFeatures()

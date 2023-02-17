@@ -60,11 +60,30 @@ class CORE_EXPORT QgsAttributeEditorContainer : public QgsAttributeEditorElement
     virtual void setIsGroupBox( bool isGroupBox ) { mIsGroupBox = isGroupBox; }
 
     /**
-     * Returns if this container is going to be rendered as a group box
+     * Returns if this container is going to be a group box
      *
      * \returns TRUE if it will be a group box, FALSE if it will be a tab
      */
     virtual bool isGroupBox() const { return mIsGroupBox; }
+
+    /**
+     * For group box containers  returns if this group box is collapsed.
+     *
+     * \returns TRUE if the group box is collapsed, FALSE otherwise.
+     * \see collapsed()
+     * \see setCollapsed()
+     * \since QGIS 3.26
+     */
+    bool collapsed() const { return mCollapsed; };
+
+    /**
+     * For group box containers  sets if this group box is \a collapsed.
+     *
+     * \see collapsed()
+     * \see setCollapsed()
+     * \since QGIS 3.26
+     */
+    void setCollapsed( bool collapsed ) { mCollapsed = collapsed; };
 
     /**
      * Gets a list of the children elements of this container
@@ -128,6 +147,30 @@ class CORE_EXPORT QgsAttributeEditorContainer : public QgsAttributeEditorElement
     void setVisibilityExpression( const QgsOptionalExpression &visibilityExpression );
 
     /**
+     * The collapsed expression is used in the attribute form to
+     * set the collapsed status of the group box container container based on an expression incorporating
+     * the field value controlled by editor widgets. This property is ignored if the container is not
+     * a group box.
+     *
+     * \note Not available in Python bindings
+     * \see setCollapsedExpression()
+     * \since QGIS 3.26
+     */
+    QgsOptionalExpression collapsedExpression() const SIP_SKIP;
+
+    /**
+     * The collapsed expression is used in the attribute form to
+     * set the collapsed status of the group box of this container based on an expression incorporating
+     * the field value controlled by editor widgets. This property is ignored if the container is not
+     * a group box.
+     *
+     * \note Not available in Python bindings
+     * \see collapsedExpression()
+     * \since QGIS 3.26
+     */
+    void setCollapsedExpression( const QgsOptionalExpression &collapsedExpression ) SIP_SKIP;
+
+    /**
      * \brief backgroundColor
      * \return background color of the container
      * \since QGIS 3.8
@@ -149,6 +192,8 @@ class CORE_EXPORT QgsAttributeEditorContainer : public QgsAttributeEditorElement
     int mColumnCount;
     QgsOptionalExpression mVisibilityExpression;
     QColor mBackgroundColor;
+    bool mCollapsed = false;
+    QgsOptionalExpression mCollapsedExpression;
 };
 
 

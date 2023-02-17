@@ -9,6 +9,9 @@
 
 
 
+
+
+
 class QgsHttpHeaders
 {
 %Docstring(signature="appended")
@@ -23,7 +26,7 @@ This class implements simple http header management.
   public:
 
 
-    QgsHttpHeaders( const QMap<QString, QVariant> &headers );
+    QgsHttpHeaders( const QVariantMap &headers );
 %Docstring
 Constructor from map
 
@@ -35,15 +38,54 @@ Constructor from map
 default constructor
 %End
 
-    QgsHttpHeaders( const QgsSettings &settings, const QString &key = QString() );
+ QgsHttpHeaders( const QgsSettings &settings, const QString &key = QString() ) /Deprecated/;
 %Docstring
-Constructor from :py:class:`QgsSettings` ``settings`` object
+Constructor from :py:class:`QgsSettings` ``settings`` object and root ``key``
 
 :param settings:
 :param key:
+
+.. deprecated:: QGIS 3.30
+   use a variant map settings and the default constructor instead
+%End
+
+    QgsHttpHeaders( const QString &key );
+%Docstring
+Constructor from default :py:class:`QgsSettings` object and root ``key``
+
+:param key:
+%End
+
+    QgsHttpHeaders( const QDomElement &element );
+%Docstring
+Constructor from a QDomElement ``element``
+
+:param element:
 %End
 
     virtual ~QgsHttpHeaders();
+
+    QVariantMap headers() const;
+%Docstring
+Returns the headers as a variant map
+
+.. versionadded:: 3.30
+%End
+
+ bool updateSettings( QgsSettings &settings, const QString &key = QString() ) const /Deprecated/;
+%Docstring
+Updates the ``settings`` by adding all the http headers in the path "key/PATH_PREFIX/"
+
+KEY_REFERER value will be available at path "key/PATH_PREFIX/KEY_REFERER" and path "key/KEY_REFERER" (for backward compatibility)
+
+:param settings:
+:param key: sub group path
+
+:return: ``True`` if the update succeed
+
+.. deprecated:: QGIS 3.30
+   directly use a variant setting instead
+%End
 
     bool updateNetworkRequest( QNetworkRequest &request ) const;
 %Docstring
@@ -52,29 +94,93 @@ Updates a ``request`` by adding all the HTTP headers
 :return: ``True`` if the update succeed
 %End
 
-    void updateSettings( QgsSettings &settings, const QString &key = QString() ) const;
+    bool updateUrlQuery( QUrlQuery &uri ) const;
 %Docstring
-Updates the ``settings`` by adding all the http headers in the path "key/KEY_PREFIX/"
+Updates an ``uri`` by adding all the HTTP headers
 
-:param settings:
-:param key: sub group path
+:return: ``True`` if the update succeed
+%End
+
+    bool updateMap( QVariantMap &map ) const;
+%Docstring
+Updates a ``map`` by adding all the HTTP headers
+
+KEY_REFERER value will be available at key "KEY_PREFIX+KEY_REFERER" and key "KEY_REFERER" (for backward compatibility)
+
+:return: ``True`` if the update succeed
+%End
+
+    bool updateDomElement( QDomElement &el ) const;
+%Docstring
+Updates a ``map`` by adding all the HTTP headers
+
+KEY_REFERER value will be available at attribute "KEY_PREFIX+KEY_REFERER" and attribute "KEY_REFERER" (for backward compatibility)
+
+:return: ``True`` if the update succeed
 %End
 
     void setFromSettings( const QgsSettings &settings, const QString &key = QString() );
 %Docstring
 Loads headers from the ``settings``
 
+key KEY_REFERER will be read at path "key/PATH_PREFIX/KEY_REFERER" and path "key/KEY_REFERER" (for backward compatibility)
+
 :param settings:
 :param key: sub group path
+%End
+
+    void setFromUrlQuery( const QUrlQuery &uri );
+%Docstring
+Loads headers from the ``uri``
+
+:param uri:
+%End
+
+    void setFromMap( const QVariantMap &map );
+%Docstring
+Loads headers from the ``map``
+
+key KEY_REFERER will be read from key "KEY_PREFIX+KEY_REFERER" and key "KEY_REFERER" (for backward compatibility)
+
+:param map:
+%End
+
+    void setFromDomElement( const QDomElement &element );
+%Docstring
+Loads headers from the ``element``
+
+key KEY_REFERER will be read from attribute "KEY_PREFIX+KEY_REFERER" and attribute "KEY_REFERER" (for backward compatibility)
+
+:param element:
+%End
+
+    QString sanitizeKey( const QString &key ) const;
+%Docstring
+Returns a cleansed ``key``
+
+:param key: a key to be sanitized
 %End
 
     QVariant &operator[]( const QString &key );
 
 
+    void insert( const QString &key, const QVariant &value );
+%Docstring
+insert a ``key`` with the specific ``value``
+
+:param key: a key to add
+:param value: a value to add for the key
+%End
+
     QList<QString> keys() const;
 %Docstring
 
 :return: the list of all http header keys
+%End
+
+    QString toSpacedString() const;
+%Docstring
+Returns key/value pairs as strings separated by space
 %End
 
 

@@ -98,6 +98,23 @@ void QgsLabelFeature::setOverrunSmoothDistance( double overrunSmoothDistance )
   mOverrunSmoothDistance = overrunSmoothDistance;
 }
 
+QgsLabelLineSettings::AnchorTextPoint QgsLabelFeature::lineAnchorTextPoint() const
+{
+  if ( mAnchorTextPoint == QgsLabelLineSettings::AnchorTextPoint::FollowPlacement )
+  {
+    if ( mLineAnchorPercent < 0.25 )
+      return QgsLabelLineSettings::AnchorTextPoint::StartOfText;
+    else if ( mLineAnchorPercent > 0.75 )
+      return QgsLabelLineSettings::AnchorTextPoint::EndOfText;
+    else
+      return QgsLabelLineSettings::AnchorTextPoint::CenterOfText;
+  }
+  else
+  {
+    return mAnchorTextPoint;
+  }
+}
+
 const QgsLabelObstacleSettings &QgsLabelFeature::obstacleSettings() const
 {
   return mObstacleSettings;

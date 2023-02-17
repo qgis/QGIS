@@ -174,12 +174,23 @@ Returns an expression from a WFS filter embedded in a document.
 %End
 
 
-    static QDomElement expressionToOgcExpression( const QgsExpression &exp, QDomDocument &doc, QString *errorMessage = 0 );
+    static QDomElement expressionToOgcExpression( const QgsExpression &exp, QDomDocument &doc, QString *errorMessage = 0,
+        bool requiresFilterElement = false );
 %Docstring
-Creates an OGC expression XML element.
+Creates an OGC expression XML element from the ``exp`` expression
+with default values for the geometry name, srs name, honourAsisOrientation and invertAxisOrientation.
 
-:return: valid OGC expression QDomElement on success,
+:return: valid OGC expression QDomElement on success or a valid \verbatim <Filter> \endverbatim QDomElement when ``requiresFilterElement`` is set.
          otherwise null QDomElement
+%End
+
+    static QDomElement elseFilterExpression( QDomDocument &doc );
+%Docstring
+Creates an ElseFilter from ``doc``
+
+:return: valid OGC ElseFilter QDomElement
+
+.. versionadded:: 3.28
 %End
 
     static QDomElement expressionToOgcExpression( const QgsExpression &exp,
@@ -190,11 +201,12 @@ Creates an OGC expression XML element.
         const QString &srsName,
         bool honourAxisOrientation,
         bool invertAxisOrientation,
-        QString *errorMessage = 0 );
+        QString *errorMessage = 0,
+        bool requiresFilterElement = false );
 %Docstring
-Creates an OGC expression XML element.
+Creates an OGC expression XML element from the ``exp`` expression.
 
-:return: valid OGC expression QDomElement on success,
+:return: valid OGC expression QDomElement on success or a valid \verbatim <Filter> \endverbatim QDomElement when ``requiresFilterElement`` is set.
          otherwise null QDomElement
 %End
 

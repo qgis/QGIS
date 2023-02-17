@@ -24,7 +24,7 @@
 #include "odbc/Connection.h"
 #include "odbc/Environment.h"
 
-using namespace odbc;
+using namespace NS_ODBC;
 
 static QString detectDriverPath( EnvironmentRef &env, const QString &libName, const QString &defaultPath )
 {
@@ -73,6 +73,14 @@ QgsHanaDriver::~QgsHanaDriver()
 ConnectionRef QgsHanaDriver::createConnection()
 {
   return mEnv->createConnection();
+}
+
+QStringList QgsHanaDriver::dataSources()
+{
+  QStringList list;
+  for ( const DataSourceInformation &ds : mEnv->getDataSources() )
+    list << QString::fromStdString( ds.name );
+  return list;
 }
 
 const QString &QgsHanaDriver::driver() const

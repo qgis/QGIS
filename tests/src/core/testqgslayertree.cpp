@@ -31,6 +31,9 @@
 #include "qgslegendsettings.h"
 #include "qgsmarkersymbol.h"
 #include "qgsannotationlayer.h"
+#include "qgsgeometrygeneratorsymbollayer.h"
+#include "qgsfillsymbol.h"
+#include "qgsfillsymbollayer.h"
 #include <QSignalSpy>
 
 class TestQgsLayerTree : public QObject
@@ -46,7 +49,10 @@ class TestQgsLayerTree : public QObject
     void testCheckStateHiearchical();
     void testCheckStateMutuallyExclusive();
     void testCheckStateMutuallyExclusiveEdgeCases();
+    void testRestrictedSymbolSize_data();
     void testRestrictedSymbolSize();
+    void testRestrictedSymbolSizeWithGeometryGenerator_data();
+    void testRestrictedSymbolSizeWithGeometryGenerator();
     void testShowHideAllSymbolNodes();
     void testFindLegendNode();
     void testLegendSymbolCategorized();
@@ -64,6 +70,7 @@ class TestQgsLayerTree : public QObject
     void testNodeDepth();
     void testRasterSymbolNode();
     void testLayersEditable();
+    void testInsertLayerBelow();
 
   private:
 
@@ -303,10 +310,26 @@ void TestQgsLayerTree::testCheckStateMutuallyExclusiveEdgeCases()
   delete root3;
 }
 
+void TestQgsLayerTree::testRestrictedSymbolSize_data()
+{
+  QTest::addColumn<double>( "maxSize" );
+  QTest::addColumn<int>( "expectedSize" );
+
+  // QTest::newRow( "smaller than max" ) << 15. << 52;
+  QTest::newRow( "bigger than max" ) << 10. << 40;
+}
+
 void TestQgsLayerTree::testRestrictedSymbolSize()
 {
+  QFETCH( double, maxSize );
+  QFETCH( int, expectedSize );
+
+  // to force re-read of max/min size in QgsSymbolLegendNode constructor
+  QgsSymbolLegendNode::MINIMUM_SIZE = -1;
+  QgsSymbolLegendNode::MAXIMUM_SIZE = -1;
+
   QgsSettings settings;
-  settings.setValue( "/qgis/legendsymbolMaximumSize", 15.0 );
+  settings.setValue( "/qgis/legendsymbolMaximumSize", maxSize );
 
   //new memory layer
   QgsVectorLayer *vl = new QgsVectorLayer( QStringLiteral( "Point?field=col1:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
@@ -336,7 +359,71 @@ void TestQgsLayerTree::testRestrictedSymbolSize()
 
   const QList<QgsLayerTreeModelLegendNode *> nodes = m->layerLegendNodes( n );
   const QSize minimumSize = static_cast< QgsSymbolLegendNode *>( nodes.at( 0 ) )->minimumIconSize();
-  QCOMPARE( minimumSize.width(), 52 );
+  QCOMPARE( minimumSize.width(), expectedSize );
+
+  //cleanup
+  delete m;
+  delete root;
+}
+
+void TestQgsLayerTree::testRestrictedSymbolSizeWithGeometryGenerator_data()
+{
+  QTest::addColumn<double>( "maxSize" );
+  QTest::addColumn<int>( "expectedSize" );
+
+  QTest::newRow( "smaller than max" ) << 15. << 42;
+  QTest::newRow( "bigger than max" ) << 10. << 38;
+}
+
+void TestQgsLayerTree::testRestrictedSymbolSizeWithGeometryGenerator()
+{
+  QFETCH( double, maxSize );
+  QFETCH( int, expectedSize );
+
+  // to force re-read of max/min size in QgsSymbolLegendNode constructor
+  QgsSymbolLegendNode::MINIMUM_SIZE = -1;
+  QgsSymbolLegendNode::MAXIMUM_SIZE = -1;
+
+  QgsSettings settings;
+  settings.setValue( "/qgis/legendsymbolMaximumSize", maxSize );
+
+  //new memory layer
+  QgsVectorLayer *vl = new QgsVectorLayer( QStringLiteral( "Point?field=col1:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
+  QVERIFY( vl->isValid() );
+
+  QgsProject project;
+  project.addMapLayer( vl );
+
+  //create a categorized renderer with geometry generator for layer
+
+  QVariantMap ggProps;
+  ggProps.insert( QStringLiteral( "SymbolType" ), QStringLiteral( "Fill" ) );
+  ggProps.insert( QStringLiteral( "geometryModifier" ), QStringLiteral( "buffer( $geometry, 200 )" ) );
+  QgsSymbolLayer *ggSymbolLayer = QgsGeometryGeneratorSymbolLayer::create( ggProps );
+  QgsSymbolLayerList fillSymbolLayerList;
+  fillSymbolLayerList << new QgsSimpleFillSymbolLayer();
+  ggSymbolLayer->setSubSymbol( new QgsFillSymbol( fillSymbolLayerList ) );
+  QgsSymbolLayerList slList;
+  slList << ggSymbolLayer;
+  QgsMarkerSymbol *symbol = new QgsMarkerSymbol( slList );
+
+  QgsCategorizedSymbolRenderer *renderer = new QgsCategorizedSymbolRenderer();
+  renderer->setClassAttribute( QStringLiteral( "col1" ) );
+  renderer->setSourceSymbol( symbol->clone() );
+  renderer->addCategory( QgsRendererCategory( "a", symbol->clone(), QStringLiteral( "a" ) ) );
+  renderer->addCategory( QgsRendererCategory( "b", symbol->clone(), QStringLiteral( "b" ) ) );
+  vl->setRenderer( renderer );
+
+  //create legend with symbology nodes for categorized renderer
+  QgsLayerTree *root = new QgsLayerTree();
+  QgsLayerTreeLayer *n = new QgsLayerTreeLayer( vl );
+  root->addChildNode( n );
+  QgsLayerTreeModel *m = new QgsLayerTreeModel( root, nullptr );
+  m->setLegendMapViewData( 10, 96, 10 );
+
+  const QList<QgsLayerTreeModelLegendNode *> nodes = m->layerLegendNodes( n );
+  const QSize minimumSize = static_cast< QgsSymbolLegendNode *>( nodes.at( 0 ) )->minimumIconSize();
+  QCOMPARE( minimumSize.width(), expectedSize );
 
   //cleanup
   delete m;
@@ -934,6 +1021,25 @@ void TestQgsLayerTree::testLayersEditable()
   QVERIFY( !QgsLayerTreeUtils::layersEditable( {nodeAl}, true ) );
   QVERIFY( QgsLayerTreeUtils::layersEditable( {nodeAl, nodeVl1}, true ) );
   QVERIFY( !QgsLayerTreeUtils::layersEditable( {nodeAl, nodeVl2}, true ) );
+}
+
+void TestQgsLayerTree::testInsertLayerBelow()
+{
+  QgsVectorLayer *topLayer = new QgsVectorLayer( QStringLiteral( "Point?field=col1:integer" ), QStringLiteral( "Top Layer" ), QStringLiteral( "memory" ) );
+  QVERIFY( topLayer->isValid() );
+  QgsVectorLayer *bottomLayer = new QgsVectorLayer( QStringLiteral( "Point?field=col1:integer" ), QStringLiteral( "Bottom Layer" ), QStringLiteral( "memory" ) );
+  QVERIFY( bottomLayer->isValid() );
+
+  QgsLayerTree root;
+  root.addLayer( topLayer );
+  QCOMPARE( QgsLayerTreeUtils::countMapLayerInTree( &root, topLayer ), 1 );
+  QCOMPARE( QgsLayerTreeUtils::countMapLayerInTree( &root, bottomLayer ), 0 );
+
+  QgsLayerTreeUtils::insertLayerBelow( &root, topLayer, bottomLayer );
+  QCOMPARE( QgsLayerTreeUtils::countMapLayerInTree( &root, bottomLayer ), 1 );
+
+  // Check the order of the layers
+  QCOMPARE( root.findLayerIds(), QStringList() << topLayer->id() << bottomLayer->id() );
 }
 
 QGSTEST_MAIN( TestQgsLayerTree )

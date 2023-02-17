@@ -9,5 +9,6 @@
     <gradient dir="grass" file="celsius"/>
     <gradient dir="ukmo/wow" file="temp-c"/>
     <gradient dir="ncl" file="temp_19lev"/>
+    <gradient dir="arendal" file="temperature"/>
   </gradients>
 </selection>

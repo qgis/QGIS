@@ -367,7 +367,7 @@ void QgsWcsCapabilities::capabilitiesReplyFinished()
   if ( mCapabilitiesReply->error() == QNetworkReply::NoError )
   {
     QVariant redirect = mCapabilitiesReply->attribute( QNetworkRequest::RedirectionTargetAttribute );
-    if ( !redirect.isNull() )
+    if ( !QgsVariantUtils::isNull( redirect ) )
     {
       emit statusChanged( tr( "Capabilities request redirected." ) );
 

@@ -27,7 +27,7 @@ class APP_EXPORT QgsMapToolReshape: public QgsMapToolCapture
   public:
     QgsMapToolReshape( QgsMapCanvas *canvas );
     void cadCanvasReleaseEvent( QgsMapMouseEvent *e ) override;
-    bool supportsTechnique( CaptureTechnique technique ) const override;
+    bool supportsTechnique( Qgis::CaptureTechnique technique ) const override;
 
   private:
     void reshape( QgsVectorLayer *vlayer );

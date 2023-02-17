@@ -37,8 +37,8 @@
 #include "qgsproject.h"
 #include "qgsexpressioncontextutils.h"
 
-#include "qgslogger.h"
-#include "qgsserverlogger.h"
+#include <QRegularExpression>
+#include <QRegularExpressionMatch>
 
 
 namespace QgsWfs
@@ -268,7 +268,7 @@ namespace QgsWfs
       {
         continue;
       }
-      if ( layer->type() != QgsMapLayerType::VectorLayer )
+      if ( layer->type() != Qgis::LayerType::Vector )
       {
         continue;
       }
@@ -331,7 +331,7 @@ namespace QgsWfs
       transactionUpdate &action = *tuIt;
       QString typeName = action.typeName;
 
-      if ( !mapLayerMap.keys().contains( typeName ) )
+      if ( !mapLayerMap.contains( typeName ) )
       {
         action.error = true;
         action.errorMsg = QStringLiteral( "TypeName '%1' unknown" ).arg( typeName );
@@ -429,7 +429,7 @@ namespace QgsWfs
           }
           QgsField field = fields.at( fieldMapIt.value() );
           QVariant value = it.value();
-          if ( value.isNull() )
+          if ( QgsVariantUtils::isNull( value ) )
           {
             if ( field.constraints().constraints() & QgsFieldConstraints::Constraint::ConstraintNotNull )
             {
@@ -549,7 +549,7 @@ namespace QgsWfs
       transactionDelete &action = *tdIt;
       QString typeName = action.typeName;
 
-      if ( !mapLayerMap.keys().contains( typeName ) )
+      if ( !mapLayerMap.contains( typeName ) )
       {
         action.error = true;
         action.errorMsg = QStringLiteral( "TypeName '%1' unknown" ).arg( typeName );
@@ -667,7 +667,7 @@ namespace QgsWfs
       transactionInsert &action = *tiIt;
       QString typeName = action.typeName;
 
-      if ( !mapLayerMap.keys().contains( typeName ) )
+      if ( !mapLayerMap.contains( typeName ) )
       {
         action.error = true;
         action.errorMsg = QStringLiteral( "TypeName '%1' unknown" ).arg( typeName );
@@ -958,18 +958,23 @@ namespace QgsWfs
     {
       QString expFilterName = parameters.value( QStringLiteral( "EXP_FILTER" ) );
       QStringList expFilterList;
-      QRegExp rx( "\\(([^()]+)\\)" );
-      if ( rx.indexIn( expFilterName, 0 ) == -1 )
+      const thread_local QRegularExpression rx( "\\(([^()]+)\\)" );
+      QRegularExpressionMatchIterator matchIt = rx.globalMatch( expFilterName );
+      if ( !matchIt.hasNext() )
       {
         expFilterList << expFilterName;
       }
       else
       {
-        int pos = 0;
-        while ( ( pos = rx.indexIn( expFilterName, pos ) ) != -1 )
+        while ( matchIt.hasNext() )
         {
-          expFilterList << rx.cap( 1 );
-          pos += rx.matchedLength();
+          const QRegularExpressionMatch match = matchIt.next();
+          if ( match.hasMatch() )
+          {
+            QStringList matches = match.capturedTexts();
+            matches.pop_front(); // remove whole match
+            expFilterList.append( matches );
+          }
         }
       }
 
@@ -1056,18 +1061,23 @@ namespace QgsWfs
     {
       QString filterName = parameters.value( QStringLiteral( "FILTER" ) );
       QStringList filterList;
-      QRegExp rx( "\\(([^()]+)\\)" );
-      if ( rx.indexIn( filterName, 0 ) == -1 )
+      const thread_local QRegularExpression rx( "\\(([^()]+)\\)" );
+      QRegularExpressionMatchIterator matchIt = rx.globalMatch( filterName );
+      if ( !matchIt.hasNext() )
       {
         filterList << filterName;
       }
       else
       {
-        int pos = 0;
-        while ( ( pos = rx.indexIn( filterName, pos ) ) != -1 )
+        while ( matchIt.hasNext() )
         {
-          filterList << rx.cap( 1 );
-          pos += rx.matchedLength();
+          const QRegularExpressionMatch match = matchIt.next();
+          if ( match.hasMatch() )
+          {
+            QStringList matches = match.capturedTexts();
+            matches.pop_front(); // remove whole match
+            filterList.append( matches );
+          }
         }
       }
 
@@ -1297,5 +1307,3 @@ namespace QgsWfs
   }
 
 } // namespace QgsWfs
-
-

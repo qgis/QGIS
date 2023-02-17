@@ -14,6 +14,8 @@ set(PG_SRCS
   qgspostgresexpressioncompiler.cpp
   qgspostgreslistener.cpp
   qgspostgresproviderconnection.cpp
+  qgspostgreslayermetadataprovider.cpp
+  qgspostgresprovidermetadatautils.cpp
 )
 
 if (WITH_GUI)
@@ -26,7 +28,7 @@ if (WITH_GUI)
     raster/qgspostgresrastertemporalsettingswidget.cpp
   )
 
-  set(PG_UIS qgspostgresrastertemporalsettingswidgetbase.ui)
+  set(PG_UIS ${CMAKE_SOURCE_DIR}/src/ui/qgspostgresrastertemporalsettingswidgetbase.ui)
 endif()
 
 set(PG_HDRS
@@ -57,7 +59,7 @@ target_link_libraries (provider_postgres_a
 )
 
 if (WITH_GUI)
-  if (WITH_QT6)
+  if (BUILD_WITH_QT6)
     QT6_WRAP_UI(PG_UIS_H ${PG_UIS})
   else()
     QT5_WRAP_UI(PG_UIS_H ${PG_UIS})
@@ -93,6 +95,7 @@ set(PGRASTER_SRCS
   raster/qgspostgresrasterutils.cpp
   qgspostgresconn.cpp
   qgspostgresconnpool.cpp
+  qgspostgresprovidermetadatautils.cpp
 )
 
 # static library

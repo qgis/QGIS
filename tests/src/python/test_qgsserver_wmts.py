@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsServer WMTS.
 
 From build dir, run: ctest -R PyQgsServerWMTS -V
@@ -20,19 +19,15 @@ import os
 os.environ['QT_HASH_SEED'] = '1'
 
 import re
-import urllib.request
-import urllib.parse
 import urllib.error
-
-from qgis.server import QgsServerRequest
-
-from qgis.testing import unittest
-from qgis.PyQt.QtCore import QSize
+import urllib.parse
+import urllib.request
 
 import osgeo.gdal  # NOQA
 
-from test_qgsserver import QgsServerTestBase
 from qgis.core import QgsProject
+from qgis.testing import unittest
+from test_qgsserver import QgsServerTestBase
 
 # Strip path and content length because path may vary
 RE_STRIP_UNCHECKABLE = br'MAP=[^"]+|Content-Length: \d+|timeStamp="[^"]+"'
@@ -51,12 +46,12 @@ class TestQgsServerWMTS(QgsServerTestBase):
             project = self.projectGroupsPath
         assert os.path.exists(project), "Project file not found: " + project
 
-        query_string = '?MAP=%s&SERVICE=WMTS&REQUEST=%s' % (urllib.parse.quote(project), request)
+        query_string = f'?MAP={urllib.parse.quote(project)}&SERVICE=WMTS&REQUEST={request}'
         if version:
-            query_string += '&VERSION=%s' % version
+            query_string += f'&VERSION={version}'
 
         if extra_query_string:
-            query_string += '&%s' % extra_query_string
+            query_string += f'&{extra_query_string}'
 
         header, body = self._execute_request(query_string)
         self.assert_headers(header, body)
@@ -68,7 +63,7 @@ class TestQgsServerWMTS(QgsServerTestBase):
             reference_name = 'wmts_' + request.lower()
 
         reference_name += '.txt'
-        reference_path = self.testdata_path + reference_name
+        reference_path = os.path.join(self.testdata_path, reference_name)
 
         self.store_reference(reference_path, response)
         f = open(reference_path, 'rb')
@@ -77,16 +72,16 @@ class TestQgsServerWMTS(QgsServerTestBase):
         response = re.sub(RE_STRIP_UNCHECKABLE, b'', response)
         expected = re.sub(RE_STRIP_UNCHECKABLE, b'', expected)
 
-        self.assertXMLEqual(response, expected, msg="request %s failed.\n Query: %s" % (query_string, request))
+        self.assertXMLEqual(response, expected, msg=f"request {query_string} failed.\n Query: {request}")
 
     def wmts_request_compare_project(self, project, request, version='', extra_query_string='',
                                      reference_base_name=None):
-        query_string = 'https://www.qgis.org/?SERVICE=WMTS&REQUEST=%s' % (request)
+        query_string = f'https://www.qgis.org/?SERVICE=WMTS&REQUEST={request}'
         if version:
-            query_string += '&VERSION=%s' % version
+            query_string += f'&VERSION={version}'
 
         if extra_query_string:
-            query_string += '&%s' % extra_query_string
+            query_string += f'&{extra_query_string}'
 
         header, body = self._execute_request_project(query_string, project)
         self.assert_headers(header, body)
@@ -98,7 +93,7 @@ class TestQgsServerWMTS(QgsServerTestBase):
             reference_name = 'wmts_' + request.lower()
 
         reference_name += '.txt'
-        reference_path = self.testdata_path + reference_name
+        reference_path = os.path.join(self.testdata_path, reference_name)
 
         self.store_reference(reference_path, response)
         f = open(reference_path, 'rb')
@@ -107,10 +102,10 @@ class TestQgsServerWMTS(QgsServerTestBase):
         response = re.sub(RE_STRIP_UNCHECKABLE, b'', response)
         expected = re.sub(RE_STRIP_UNCHECKABLE, b'', expected)
 
-        self.assertXMLEqual(response, expected, msg="request %s failed.\n Query: %s" % (query_string, request))
+        self.assertXMLEqual(response, expected, msg=f"request {query_string} failed.\n Query: {request}")
 
     def test_operation_not_supported(self):
-        qs = '?MAP=%s&SERVICE=WFS&VERSION=1.0.0&REQUEST=NotAValidRequest' % urllib.parse.quote(self.projectPath)
+        qs = f'?MAP={urllib.parse.quote(self.projectPath)}&SERVICE=WFS&VERSION=1.0.0&REQUEST=NotAValidRequest'
         self._assert_status_code(501, qs)
 
     def test_project_wmts(self):

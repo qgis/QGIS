@@ -26,6 +26,8 @@
 #include "qgsapplication.h"
 #include "qgsmessagelog.h"
 #include "qgsfeedback.h"
+#include "qgsmssqlsqlquerybuilder.h"
+#include "qgsdbquerylog.h"
 #include <QIcon>
 
 #include <chrono>
@@ -260,25 +262,29 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsMssqlProviderConnection::e
     }
 
     //qDebug() << "MSSQL QUERY:" << sql;
-    QSqlQuery q = QSqlQuery( db->db() );
-    q.setForwardOnly( true );
+
+    std::unique_ptr<QgsMssqlQuery> q = std::make_unique<QgsMssqlQuery>( db );
+    q->setForwardOnly( true );
+    QgsDatabaseQueryLogWrapper logWrapper { sql, uri(), providerKey(), QStringLiteral( "QgsMssqlProviderConnection" ), QGS_QUERY_LOG_ORIGIN };
+
 
     const std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
 
-    if ( ! q.exec( sql ) )
+    if ( ! q->exec( sql ) )
     {
-      const QString errorMessage { q.lastError().text() };
+      const QString errorMessage { q->lastError().text() };
+      logWrapper.setError( errorMessage );
       throw QgsProviderConnectionException( QObject::tr( "SQL error: %1 \n %2" )
                                             .arg( sql, errorMessage ) );
 
     }
 
-    if ( q.isActive() )
+    if ( q->isActive() )
     {
       const std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
-      const QSqlRecord rec { q.record() };
+      const QSqlRecord rec { q->record() };
       const int numCols { rec.count() };
-      const auto iterator = std::make_shared<QgssMssqlProviderResultIterator>( resolveTypes, numCols, q );
+      const auto iterator = std::make_shared<QgssMssqlProviderResultIterator>( resolveTypes, numCols, std::move( q ) );
       QgsAbstractDatabaseProviderConnection::QueryResult results( iterator );
       results.setQueryExecutionTime( std::chrono::duration_cast<std::chrono::milliseconds>( end - begin ).count() );
       for ( int idx = 0; idx < numCols; ++idx )
@@ -293,10 +299,10 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsMssqlProviderConnection::e
 }
 
 
-QgssMssqlProviderResultIterator::QgssMssqlProviderResultIterator( bool resolveTypes, int columnCount, const QSqlQuery &query )
+QgssMssqlProviderResultIterator::QgssMssqlProviderResultIterator( bool resolveTypes, int columnCount,  std::unique_ptr<QSqlQuery> query )
   : mResolveTypes( resolveTypes )
   , mColumnCount( columnCount )
-  , mQuery( query )
+  , mQuery( std::move( query ) )
 {
   // Load first row
   nextRow();
@@ -317,30 +323,30 @@ bool QgssMssqlProviderResultIterator::hasNextRowPrivate() const
 QVariantList QgssMssqlProviderResultIterator::nextRowInternal()
 {
   QVariantList row;
-  if ( mQuery.next() )
+  if ( mQuery->next() )
   {
     for ( int col = 0; col < mColumnCount; ++col )
     {
       if ( mResolveTypes )
       {
-        row.push_back( mQuery.value( col ) );
+        row.push_back( mQuery->value( col ) );
       }
       else
       {
-        row.push_back( mQuery.value( col ).toString() );
+        row.push_back( mQuery->value( col ).toString() );
       }
     }
   }
   else
   {
-    mQuery.finish();
+    mQuery->finish();
   }
   return row;
 }
 
 long long QgssMssqlProviderResultIterator::rowCountPrivate() const
 {
-  return mQuery.size();
+  return mQuery->size();
 }
 
 
@@ -585,4 +591,9 @@ QIcon QgsMssqlProviderConnection::icon() const
 QList<QgsVectorDataProvider::NativeType> QgsMssqlProviderConnection::nativeTypes() const
 {
   return QgsMssqlConnection::nativeTypes();
+}
+
+QgsProviderSqlQueryBuilder *QgsMssqlProviderConnection::queryBuilder() const
+{
+  return new QgsMsSqlSqlQueryBuilder();
 }

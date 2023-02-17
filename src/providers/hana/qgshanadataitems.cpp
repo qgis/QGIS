@@ -55,13 +55,18 @@ QVector<QgsDataItem *> QgsHanaConnectionItem::createChildren()
     return items;
   }
 
-  updateToolTip( conn->getUserName(), conn->getDatabaseVersion() );
+  QgsHanaSettings settings( mName, true );
 
   try
   {
-    QgsHanaSettings settings( mName, true );
+    QString userName = conn->getUserName();
+    if ( userName.isEmpty() )
+      userName = settings.userName();
+
+    updateToolTip( userName, conn->getDatabaseVersion() );
+
     const QVector<QgsHanaSchemaProperty> schemas =
-      conn->getSchemas( settings.userTablesOnly() ? settings.userName() : QString() );
+      conn->getSchemas( settings.userTablesOnly() ? userName : QString() );
 
     if ( schemas.isEmpty() )
     {
@@ -109,16 +114,19 @@ void QgsHanaConnectionItem::updateToolTip( const QString &userName, const QStrin
 {
   QgsHanaSettings settings( mName, true );
   QString tip;
-  if ( !settings.database().isEmpty() )
-    tip = tr( "Database: " ) + settings.database();
-  if ( !tip.isEmpty() )
+  if ( settings.connectionType() == QgsHanaConnectionType::HostPort )
+  {
+    if ( !settings.database().isEmpty() )
+      tip = tr( "Database: " ) + settings.database();
+    if ( !tip.isEmpty() )
+      tip += '\n';
+    tip += tr( "Host: " ) + settings.host() + QStringLiteral( " " );
+    if ( QgsHanaIdentifierType::fromInt( settings.identifierType() ) == QgsHanaIdentifierType::InstanceNumber )
+      tip += settings.identifier();
+    else
+      tip += settings.port();
     tip += '\n';
-  tip += tr( "Host: " ) + settings.host() + QStringLiteral( " " );
-  if ( QgsHanaIdentifierType::fromInt( settings.identifierType() ) == QgsHanaIdentifierType::INSTANCE_NUMBER )
-    tip += settings.identifier();
-  else
-    tip += settings.port();
-  tip += '\n';
+  }
   if ( !dbmsVersion.isEmpty() )
     tip += tr( "DB Version: " ) + dbmsVersion + '\n';
   tip += tr( "User: " ) + userName + '\n';

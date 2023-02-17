@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for edit widgets.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -12,7 +11,7 @@ __copyright__ = 'Copyright 2015, The QGIS Project'
 
 import qgis  # NOQA
 
-from qgis.core import QgsFeature, QgsGeometry, QgsPointXY, QgsVectorLayer, NULL
+from qgis.core import NULL, QgsFeature, QgsGeometry, QgsPointXY, QgsVectorLayer
 from qgis.gui import QgsGui
 from qgis.testing import start_app, unittest
 

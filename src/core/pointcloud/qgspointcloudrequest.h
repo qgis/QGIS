@@ -29,6 +29,8 @@
 
 #include "qgspointcloudattribute.h"
 
+#include "qgsrectangle.h"
+
 /**
  * \ingroup core
  *
@@ -48,8 +50,20 @@ class CORE_EXPORT QgsPointCloudRequest
     //! Set attributes filter in the request
     void setAttributes( const QgsPointCloudAttributeCollection &attributes );
 
+    /**
+     * Returns the rectangle from which points will be taken, in point cloud's crs. If the returned rectangle is empty, then no filter rectangle is set.
+     * \since QGIS 3.30
+     */
+    QgsRectangle filterRect() const { return mFilterRect; }
+
+    /**
+     * Sets the rectangle from which points will be taken, in point cloud's crs. An empty rectangle removes the filter.
+     * \since QGIS 3.30
+     */
+    void setFilterRect( QgsRectangle extent ) { mFilterRect = extent; }
   private:
     QgsPointCloudAttributeCollection mAttributes;
+    QgsRectangle mFilterRect;
 };
 
 #endif // QGSPOINTCLOUDREQUEST_H

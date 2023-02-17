@@ -2,8 +2,14 @@
   "name": "main_angle",
   "type": "function",
   "groups": ["GeometryGroup"],
-  "description":"Returns the angle of the long axis (clockwise, in degrees from North) of the oriented minimal bounding rectangle, which completely covers the geometry.",
-  "arguments": [ {"arg":"geometry","description":"a geometry"} ],
-  "examples": [ { "expression":"main_angle(geom_from_wkt('Polygon ((321577 129614, 321581 129618, 321585 129615, 321581 129610, 321577 129614))'))", "returns":"38.66"}]
+  "description": "Returns the angle of the long axis (clockwise, in degrees from North) of the oriented minimal bounding rectangle, which completely covers the geometry.",
+  "arguments": [{
+    "arg": "geometry",
+    "description": "a geometry"
+  }],
+  "examples": [{
+    "expression": "main_angle(geom_from_wkt('Polygon ((321577 129614, 321581 129618, 321585 129615, 321581 129610, 321577 129614))'))",
+    "returns": "38.66"
+  }],
+  "tags": ["oriented", "minimal", "covers", "clockwise", "angle", "long", "north", "degrees", "rectangle", "axis", "bounding"]
 }
-

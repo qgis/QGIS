@@ -20,6 +20,7 @@
 #include "qgis.h"
 #include "qgswkbtypes.h"
 #include "qgscoordinatetransformcontext.h"
+#include "qgsmimedatautils.h"
 
 #include <QString>
 #include <QStringList>
@@ -64,14 +65,14 @@ class CORE_EXPORT QgsProviderSublayerDetails
      *
      * \see setType()
      */
-    QgsMapLayerType type() const { return mType; }
+    Qgis::LayerType type() const { return mType; }
 
     /**
      * Sets the layer \a type.
      *
      * \see type()
      */
-    void setType( QgsMapLayerType type ) { mType = type; }
+    void setType( Qgis::LayerType type ) { mType = type; }
 
     /**
      * Returns the layer's URI.
@@ -105,6 +106,20 @@ class CORE_EXPORT QgsProviderSublayerDetails
 
       //! Set to TRUE if the default layer style should be loaded
       bool loadDefaultStyle = true;
+
+      /**
+       * Controls whether the stored styles will be all loaded.
+       *
+       * If TRUE and the layer's provider supports style stored in the
+       * data source all the available styles will be loaded in addition
+       * to the default one.
+       *
+       * If FALSE (the default), the layer's provider will only load
+       * the default style.
+       *
+       * \since QGIS 3.30
+       */
+      bool loadAllStoredStyle = false;
     };
 
     /**
@@ -280,6 +295,13 @@ class CORE_EXPORT QgsProviderSublayerDetails
      */
     bool skippedContainerScan() const { return mSkippedContainerScan; }
 
+    /**
+     * Converts the sublayer details to a QgsMimeDataUtils::Uri representing the sublayer.
+     *
+     * \since QGIS 3.28
+     */
+    QgsMimeDataUtils::Uri toMimeUri() const;
+
     // TODO c++20 - replace with = default
     bool operator==( const QgsProviderSublayerDetails &other ) const;
     bool operator!=( const QgsProviderSublayerDetails &other ) const;
@@ -287,7 +309,7 @@ class CORE_EXPORT QgsProviderSublayerDetails
   private:
 
     QString mProviderKey;
-    QgsMapLayerType mType = QgsMapLayerType::VectorLayer;
+    Qgis::LayerType mType = Qgis::LayerType::Vector;
     QString mUri;
     int mLayerNumber = 0;
     QString mName;

@@ -141,6 +141,22 @@ class CORE_EXPORT QgsFieldConstraints
      */
     void setConstraintExpression( const QString &expression, const QString &description = QString() );
 
+    /**
+     * Returns the associated field domain name, for providers which support field domains.
+     *
+     * \see setDomainName()
+     * \since QGIS 3.26
+     */
+    QString domainName() const { return mDomainName; }
+
+    /**
+     * Sets the associated field \a domain name, for providers which support field domains.
+     *
+     * \see domainName()
+     * \since QGIS 3.26
+     */
+    void setDomainName( const QString &domain ) { mDomainName = domain; }
+
     // TODO c++20 - replace with = default
     bool operator==( const QgsFieldConstraints &other ) const;
 
@@ -160,6 +176,9 @@ class CORE_EXPORT QgsFieldConstraints
 
     //! Expression constraint descriptive name
     QString mExpressionConstraintDescription;
+
+    //! Field domain name, for providers which support field domains
+    QString mDomainName;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsFieldConstraints::Constraints )

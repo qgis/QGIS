@@ -3,9 +3,22 @@
   "type": "function",
   "groups": ["Color"],
   "description": "Returns a string representation of a color based on its hue, saturation, lightness and alpha (transparency) attributes",
-  "arguments": [ {"arg":"hue","description":"hue of the color, as an integer value from 0 to 360"},
-                 {"arg":"saturation","description":"saturation percentage of the color as an integer value from 0 to 100"},
-                 {"arg":"lightness","description":"lightness percentage of the color as an integer value from 0 to 100"},
-                 {"arg":"alpha","description":"alpha component as an integer value from 0 (completely transparent) to 255 (opaque)."}],
-  "examples": [ { "expression":"color_hsla(100,50,70,200)", "returns":"'166,217,140,200'"}]
+  "arguments": [{
+    "arg": "hue",
+    "description": "hue of the color, as an integer value from 0 to 360"
+  }, {
+    "arg": "saturation",
+    "description": "saturation percentage of the color as an integer value from 0 to 100"
+  }, {
+    "arg": "lightness",
+    "description": "lightness percentage of the color as an integer value from 0 to 100"
+  }, {
+    "arg": "alpha",
+    "description": "alpha component as an integer value from 0 (completely transparent) to 255 (opaque)."
+  }],
+  "examples": [{
+    "expression": "color_hsla(100,50,70,200)",
+    "returns": "'166,217,140,200'"
+  }],
+  "tags": ["attributes", "alpha", "lightness", "color", "transparency", "hue", "representation", "saturation"]
 }

@@ -119,13 +119,8 @@ QVariant QgsFeatureListModel::data( const QModelIndex &index, int role ) const
     return static_cast<Qt::Alignment::Int>( Qt::AlignLeft );
   }
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 13, 0)
-  if ( role == Qt::BackgroundColorRole
-       || role == Qt::TextColorRole
-#else
   if ( role == Qt::BackgroundRole
        || role == Qt::ForegroundRole
-#endif
        || role == Qt::DecorationRole
        || role == Qt::FontRole )
   {
@@ -161,17 +156,9 @@ QVariant QgsFeatureListModel::data( const QModelIndex &index, int role ) const
 
     if ( style.isValid() )
     {
-#if QT_VERSION < QT_VERSION_CHECK(5, 13, 0)
-      if ( role == Qt::BackgroundColorRole && style.validBackgroundColor() )
-#else
       if ( role == Qt::BackgroundRole && style.validBackgroundColor() )
-#endif
         return style.backgroundColor().isValid() ? style.backgroundColor() : QVariant();
-#if QT_VERSION < QT_VERSION_CHECK(5, 13, 0)
-      if ( role == Qt::TextColorRole && style.validTextColor() )
-#else
       if ( role == Qt::ForegroundRole && style.validTextColor() )
-#endif
         return style.textColor().isValid() ? style.textColor() : QVariant();
       if ( role == Qt::DecorationRole )
         return style.icon().isNull() ? QVariant() : style.icon();

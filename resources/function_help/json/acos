@@ -3,6 +3,13 @@
   "type": "function",
   "groups": ["Math"],
   "description": "Returns the inverse cosine of a value in radians.",
-  "arguments": [ {"arg":"value","description":"cosine of an angle in radians"} ],
-  "examples": [ { "expression":"acos(0.5)", "returns":"1.0471975511966"}]
+  "arguments": [{
+    "arg": "value",
+    "description": "cosine of an angle in radians"
+  }],
+  "examples": [{
+    "expression": "acos(0.5)",
+    "returns": "1.0471975511966"
+  }],
+  "tags": ["angle", "cosine", "inverse", "radians"]
 }

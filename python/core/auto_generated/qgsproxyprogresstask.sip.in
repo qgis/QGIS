@@ -28,7 +28,7 @@ task manager.
 %End
   public:
 
-    QgsProxyProgressTask( const QString &description );
+    QgsProxyProgressTask( const QString &description, bool canCancel = false );
 %Docstring
 Constructor for QgsProxyProgressTask, with the specified ``description``.
 %End
@@ -49,6 +49,18 @@ to remove this proxy task from the task manager.
 Sets the ``progress`` (from 0 to 100) for the proxied operation.
 
 This method is safe to call from the main thread.
+%End
+
+    virtual void cancel();
+
+
+  signals:
+
+    void canceled();
+%Docstring
+Emitted when the task is canceled.
+
+.. versionadded:: 3.26
 %End
 
 };

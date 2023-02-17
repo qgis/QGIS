@@ -3,24 +3,39 @@
   "type": "function",
   "groups": ["Record and Attributes"],
   "description": "Returns a map with the attribute names as keys and the configured representation values as values. The representation value for the attributes depends on the configured widget type for each attribute.  Can be used with zero, one or more arguments, see below for details.",
-  "variants": [
-    {
-      "variant": "No parameters",
-      "variant_description": "If called with no parameters, the function will return the representation of the attributes of the current feature in the current layer.",
-      "arguments": [],
-      "examples": [ { "expression": "represent_attributes()", "returns" : "The representation of the attributes for the current feature." } ]
-    },
-    {
-      "variant": "One 'feature' parameter",
-      "variant_description": "If called with a 'feature' parameter only, the function will return the representation of the attributes of the specified feature from the current layer.",
-      "arguments": [ { "arg": "feature", "description": "The feature which should be evaluated." } ],
-      "examples": [ { "expression": "represent_attributes(@atlas_feature)", "returns" : "The representation of the attributes for the specified feature from the current layer." } ]
-    },
-    {
-      "variant": "Layer and feature parameters",
-      "variant_description": "If called with a 'layer' and a 'feature' parameter, the function will return the representation of the attributes of the specified feature from the specified layer.",
-      "arguments": [ { "arg": "layer", "description": "The layer (or its ID or name)." }, { "arg": "feature", "description": "The feature which should be evaluated." } ],
-      "examples": [ { "expression": "represent_attributes('atlas_layer', @atlas_feature)", "returns" : "The representation of the attributes for the specified feature from the specified layer." } ]
-    }
-  ]
+  "variants": [{
+    "variant": "No parameters",
+    "variant_description": "If called with no parameters, the function will return the representation of the attributes of the current feature in the current layer.",
+    "arguments": [],
+    "examples": [{
+      "expression": "represent_attributes()",
+      "returns": "The representation of the attributes for the current feature."
+    }]
+  }, {
+    "variant": "One 'feature' parameter",
+    "variant_description": "If called with a 'feature' parameter only, the function will return the representation of the attributes of the specified feature from the current layer.",
+    "arguments": [{
+      "arg": "feature",
+      "description": "The feature which should be evaluated."
+    }],
+    "examples": [{
+      "expression": "represent_attributes(@atlas_feature)",
+      "returns": "The representation of the attributes for the specified feature from the current layer."
+    }]
+  }, {
+    "variant": "Layer and feature parameters",
+    "variant_description": "If called with a 'layer' and a 'feature' parameter, the function will return the representation of the attributes of the specified feature from the specified layer.",
+    "arguments": [{
+      "arg": "layer",
+      "description": "The layer (or its ID or name)."
+    }, {
+      "arg": "feature",
+      "description": "The feature which should be evaluated."
+    }],
+    "examples": [{
+      "expression": "represent_attributes('atlas_layer', @atlas_feature)",
+      "returns": "The representation of the attributes for the specified feature from the specified layer."
+    }]
+  }],
+  "tags": ["attributes", "keys", "arguments", "representation", "map", "see", "attribute", "configured", "names", "type", "details", "depends", "widget"]
 }

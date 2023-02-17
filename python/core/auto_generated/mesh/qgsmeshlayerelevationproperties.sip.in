@@ -1,0 +1,104 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/mesh/qgsmeshlayerelevationproperties.h                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+class QgsMeshLayerElevationProperties : QgsMapLayerElevationProperties
+{
+%Docstring(signature="appended")
+Mesh layer specific subclass of :py:class:`QgsMapLayerElevationProperties`.
+
+.. versionadded:: 3.26
+%End
+
+%TypeHeaderCode
+#include "qgsmeshlayerelevationproperties.h"
+%End
+  public:
+
+    QgsMeshLayerElevationProperties( QObject *parent /TransferThis/ );
+%Docstring
+Constructor for QgsMeshLayerElevationProperties, with the specified ``parent`` object.
+%End
+    ~QgsMeshLayerElevationProperties();
+
+    virtual bool hasElevation() const;
+
+    virtual QDomElement writeXml( QDomElement &element, QDomDocument &doc, const QgsReadWriteContext &context );
+
+    virtual bool readXml( const QDomElement &element, const QgsReadWriteContext &context );
+
+    virtual QString htmlSummary() const;
+
+    virtual QgsMeshLayerElevationProperties *clone() const /Factory/;
+
+    virtual bool isVisibleInZRange( const QgsDoubleRange &range ) const;
+
+    virtual QgsDoubleRange calculateZRange( QgsMapLayer *layer ) const;
+
+    virtual bool showByDefaultInElevationProfilePlots() const;
+
+
+    QgsLineSymbol *profileLineSymbol() const;
+%Docstring
+Returns the line symbol used to render the mesh profile in elevation profile plots.
+
+.. seealso:: :py:func:`setProfileLineSymbol`
+%End
+
+    void setProfileLineSymbol( QgsLineSymbol *symbol /Transfer/ );
+%Docstring
+Sets the line ``symbol`` used to render the mesh profile in elevation profile plots.
+
+Ownership of ``symbol`` is transferred to the plot.
+
+.. seealso:: :py:func:`profileLineSymbol`
+%End
+
+    QgsFillSymbol *profileFillSymbol() const;
+%Docstring
+Returns the fill symbol used to render the mesh profile in elevation profile plots.
+
+.. seealso:: :py:func:`setProfileFillSymbol`
+%End
+
+    void setProfileFillSymbol( QgsFillSymbol *symbol /Transfer/ );
+%Docstring
+Sets the fill ``symbol`` used to render the mesh profile in elevation profile plots.
+
+Ownership of ``symbol`` is transferred to the plot.
+
+.. seealso:: :py:func:`profileFillSymbol`
+%End
+
+    Qgis::ProfileSurfaceSymbology profileSymbology() const;
+%Docstring
+Returns the symbology option used to render the mesh profile in elevation profile plots.
+
+.. seealso:: :py:func:`setProfileSymbology`
+%End
+
+    void setProfileSymbology( Qgis::ProfileSurfaceSymbology symbology );
+%Docstring
+Sets the ``symbology`` option used to render the mesh profile in elevation profile plots.
+
+.. seealso:: :py:func:`setProfileSymbology`
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/mesh/qgsmeshlayerelevationproperties.h                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

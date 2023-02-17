@@ -43,7 +43,10 @@ class GUI_EXPORT QgsMapCanvasAnnotationItem: public QObject, public QgsMapCanvas
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
     if ( dynamic_cast<QgsMapCanvasAnnotationItem *>( sipCpp ) )
+    {
       sipType = sipType_QgsMapCanvasAnnotationItem;
+      *sipCppRet = dynamic_cast<QgsMapCanvasAnnotationItem *>( sipCpp );
+    }
     else
       sipType = nullptr;
     SIP_END

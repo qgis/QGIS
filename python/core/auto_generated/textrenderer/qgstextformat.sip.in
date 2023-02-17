@@ -27,13 +27,6 @@ Container for all settings relating to text rendering.
 %End
   public:
 
-    enum TextOrientation
-    {
-      HorizontalOrientation,
-      VerticalOrientation,
-      RotationBasedOrientation,
-    };
-
     QgsTextFormat();
 %Docstring
 Default constructor for QgsTextFormat. Creates a text format initially
@@ -218,6 +211,70 @@ Sets the named style for the font used for rendering text.
 .. seealso:: :py:func:`setFont`
 %End
 
+    bool forcedBold() const;
+%Docstring
+Returns ``True`` if the format is set to force a bold style.
+
+.. warning::
+
+   Unlike setting a font's style via :py:func:`~QgsTextFormat.setNamedStyle`, this will ensure that a font is
+   always rendered in bold regardless of whether the font family actually has a bold variant. A
+   "faux bold" effect will be emulated, which may result in poor quality font rendering. For this
+   reason it is greatly preferred to call :py:func:`~QgsTextFormat.setNamedStyle` instead.
+
+.. seealso:: :py:func:`setForcedBold`
+
+.. versionadded:: 3.26
+%End
+
+    void setForcedBold( bool forced );
+%Docstring
+Sets whether the format is set to force a bold style.
+
+.. warning::
+
+   Unlike setting a font's style via :py:func:`~QgsTextFormat.setNamedStyle`, this will ensure that a font is
+   always rendered in bold regardless of whether the font family actually has a bold variant. A
+   "faux bold" effect will be emulated, which may result in poor quality font rendering. For this
+   reason it is greatly preferred to call :py:func:`~QgsTextFormat.setNamedStyle` instead.
+
+.. seealso:: :py:func:`forcedBold`
+
+.. versionadded:: 3.26
+%End
+
+    bool forcedItalic() const;
+%Docstring
+Returns ``True`` if the format is set to force an italic style.
+
+.. warning::
+
+   Unlike setting a font's style via :py:func:`~QgsTextFormat.setNamedStyle`, this will ensure that a font is
+   always rendered in italic regardless of whether the font family actually has an italic variant. A
+   "faux italic" slanted text effect will be emulated, which may result in poor quality font rendering. For this
+   reason it is greatly preferred to call :py:func:`~QgsTextFormat.setNamedStyle` instead.
+
+.. seealso:: :py:func:`setForcedItalic`
+
+.. versionadded:: 3.26
+%End
+
+    void setForcedItalic( bool forced );
+%Docstring
+Sets whether the format is set to force an italic style.
+
+.. warning::
+
+   Unlike setting a font's style via :py:func:`~QgsTextFormat.setNamedStyle`, this will ensure that a font is
+   always rendered in italic regardless of whether the font family actually has an italic variant. A
+   "faux italic" slanted text effect will be emulated, which may result in poor quality font rendering. For this
+   reason it is greatly preferred to call :py:func:`~QgsTextFormat.setNamedStyle` instead.
+
+.. seealso:: :py:func:`forcedItalic`
+
+.. versionadded:: 3.26
+%End
+
     QStringList families() const;
 %Docstring
 Returns the list of font families to use when restoring the text format, in order of precedence.
@@ -396,25 +453,53 @@ Sets the blending mode used for drawing the text.
 
     double lineHeight() const;
 %Docstring
-Returns the line height for text. This is a number between
-0.0 and 10.0 representing the leading between lines as a
-multiplier of line height.
+Returns the line height for text.
+
+If :py:func:`~QgsTextFormat.lineHeightUnit` is :py:class:`QgsUnitTypes`.RenderPercentage (the default), then this is a number representing
+the leading between lines as a multiplier of line height (where 0 - 1.0 represents 0 to 100% of text line height).
+Otherwise the line height is an absolute measurement in :py:func:`~QgsTextFormat.lineHeightUnit`.
 
 .. seealso:: :py:func:`setLineHeight`
+
+.. seealso:: :py:func:`lineHeightUnit`
 %End
 
     void setLineHeight( double height );
 %Docstring
 Sets the line height for text.
 
-:param height: a number between
-               0.0 and 10.0 representing the leading between lines as a
-               multiplier of line height.
+If :py:func:`~QgsTextFormat.lineHeightUnit` is :py:class:`QgsUnitTypes`.RenderPercentage (the default), then ``height`` is a number representing
+the leading between lines as a multiplier of line height (where 0 - 1.0 represents 0 to 100% of text line height).
+Otherwise ``height`` is an absolute measurement in :py:func:`~QgsTextFormat.lineHeightUnit`.
 
 .. seealso:: :py:func:`lineHeight`
+
+.. seealso:: :py:func:`setLineHeightUnit`
 %End
 
-    TextOrientation orientation() const;
+    QgsUnitTypes::RenderUnit lineHeightUnit() const;
+%Docstring
+Returns the units for the line height for text.
+
+.. seealso:: :py:func:`setLineHeightUnit`
+
+.. seealso:: :py:func:`lineHeight`
+
+.. versionadded:: 3.28
+%End
+
+    void setLineHeightUnit( QgsUnitTypes::RenderUnit unit );
+%Docstring
+Sets the ``unit`` for the line height for text.
+
+.. seealso:: :py:func:`lineHeightUnit`
+
+.. seealso:: :py:func:`setLineHeight`
+
+.. versionadded:: 3.28
+%End
+
+    Qgis::TextOrientation orientation() const;
 %Docstring
 Returns the orientation of the text.
 
@@ -423,7 +508,7 @@ Returns the orientation of the text.
 .. versionadded:: 3.10
 %End
 
-    void setOrientation( TextOrientation orientation );
+    void setOrientation( Qgis::TextOrientation orientation );
 %Docstring
 Sets the ``orientation`` for the text.
 

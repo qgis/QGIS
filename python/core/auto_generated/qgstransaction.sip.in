@@ -56,10 +56,22 @@ provider.
 
     ~QgsTransaction();
 
-    bool addLayer( QgsVectorLayer *layer );
+    QString connectionString() const;
 %Docstring
-Add the ``layer`` to the transaction. The layer must not be
-in edit mode and the connection string must match.
+Returns the connection string of the transaction
+
+.. versionadded:: 3.26
+%End
+
+    bool addLayer( QgsVectorLayer *layer, bool addLayersInEditMode = false );
+%Docstring
+Add the ``layer`` to the transaction. The connection string
+must match.
+
+:param layer: that will be added to the transaction
+:param addLayersInEditMode: if set layers that are already
+
+.. versionadded:: 3.26
 %End
 
     bool begin( QString &errorMsg /Out/, int statementTimeout = 20 );

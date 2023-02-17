@@ -35,18 +35,18 @@ QgsVectorTileLayerRenderer::QgsVectorTileLayerRenderer( QgsVectorTileLayer *laye
   : QgsMapLayerRenderer( layer->id(), &context )
   , mSourceType( layer->sourceType() )
   , mSourcePath( layer->sourcePath() )
-  , mSourceMinZoom( layer->sourceMinZoom() )
-  , mSourceMaxZoom( layer->sourceMaxZoom() )
   , mRenderer( layer->renderer()->clone() )
   , mDrawTileBoundaries( layer->isTileBorderRenderingEnabled() )
   , mFeedback( new QgsFeedback )
+  , mSelectedFeatures( layer->selectedFeatures() )
   , mLayerOpacity( layer->opacity() )
+  , mTileMatrixSet( layer->tileMatrixSet() )
 {
 
   QgsDataSourceUri dsUri;
   dsUri.setEncodedUri( layer->source() );
   mAuthCfg = dsUri.authConfigId();
-  mHeaders [QStringLiteral( "referer" ) ] = dsUri.param( QStringLiteral( "referer" ) );
+  mHeaders = dsUri.httpHeaders();
 
   if ( QgsLabelingEngine *engine = context.labelingEngine() )
   {
@@ -75,7 +75,7 @@ bool QgsVectorTileLayerRenderer::render()
   if ( !mClippingRegions.empty() )
   {
     bool needsPainterClipPath = false;
-    const QPainterPath path = QgsMapClippingUtils::calculatePainterClipRegion( mClippingRegions, *renderContext(), QgsMapLayerType::VectorTileLayer, needsPainterClipPath );
+    const QPainterPath path = QgsMapClippingUtils::calculatePainterClipRegion( mClippingRegions, *renderContext(), Qgis::LayerType::VectorTile, needsPainterClipPath );
     if ( needsPainterClipPath )
       renderContext()->painter()->setClipPath( path, Qt::IntersectClip );
   }
@@ -83,13 +83,14 @@ bool QgsVectorTileLayerRenderer::render()
   QElapsedTimer tTotal;
   tTotal.start();
 
+  const double tileRenderScale = mTileMatrixSet.scaleForRenderContext( ctx );
   QgsDebugMsgLevel( QStringLiteral( "Vector tiles rendering extent: " ) + ctx.extent().toString( -1 ), 2 );
-  QgsDebugMsgLevel( QStringLiteral( "Vector tiles map scale 1 : %1" ).arg( ctx.rendererScale() ), 2 );
+  QgsDebugMsgLevel( QStringLiteral( "Vector tiles map scale 1 : %1" ).arg( tileRenderScale ), 2 );
 
-  mTileZoom = QgsVectorTileUtils::scaleToZoomLevel( ctx.rendererScale(), mSourceMinZoom, mSourceMaxZoom );
+  mTileZoom = mTileMatrixSet.scaleToZoomLevel( tileRenderScale );
   QgsDebugMsgLevel( QStringLiteral( "Vector tiles zoom level: %1" ).arg( mTileZoom ), 2 );
 
-  mTileMatrix = QgsTileMatrix::fromWebMercator( mTileZoom );
+  mTileMatrix = mTileMatrixSet.tileMatrix( mTileZoom );
 
   mTileRange = mTileMatrix.tileRangeFromExtent( ctx.extent() );
   QgsDebugMsgLevel( QStringLiteral( "Vector tiles range X: %1 - %2  Y: %3 - %4" )
@@ -129,7 +130,7 @@ bool QgsVectorTileLayerRenderer::render()
   {
     QElapsedTimer tFetch;
     tFetch.start();
-    rawTiles = QgsVectorTileLoader::blockingFetchTileRawData( mSourceType, mSourcePath, mTileMatrix, viewCenter, mTileRange, mAuthCfg, mHeaders );
+    rawTiles = QgsVectorTileLoader::blockingFetchTileRawData( mSourceType, mSourcePath, mTileMatrix, viewCenter, mTileRange, mAuthCfg, mHeaders, mFeedback.get() );
     QgsDebugMsgLevel( QStringLiteral( "Tile fetching time: %1" ).arg( tFetch.elapsed() / 1000. ), 2 );
     QgsDebugMsgLevel( QStringLiteral( "Fetched tiles: %1" ).arg( rawTiles.count() ), 2 );
   }
@@ -150,7 +151,7 @@ bool QgsVectorTileLayerRenderer::render()
   // add @zoom_level variable which can be used in styling
   QgsExpressionContextScope *scope = new QgsExpressionContextScope( QObject::tr( "Tiles" ) ); // will be deleted by popper
   scope->setVariable( QStringLiteral( "zoom_level" ), mTileZoom, true );
-  scope->setVariable( QStringLiteral( "vector_tile_zoom" ), QgsVectorTileUtils::scaleToZoom( ctx.rendererScale() ), true );
+  scope->setVariable( QStringLiteral( "vector_tile_zoom" ), mTileMatrixSet.scaleToZoom( tileRenderScale ), true );
   const QgsExpressionContextScopePopper popper( ctx.expressionContext(), scope );
 
   mRenderer->startRender( *renderContext(), mTileZoom, mTileRange );
@@ -180,13 +181,15 @@ bool QgsVectorTileLayerRenderer::render()
       ctx.labelingEngine()->removeProvider( mLabelProvider );
       mLabelProvider = nullptr; // provider is deleted by the engine
     }
-
-    mRequiredLayers.unite( mLabelProvider->requiredLayers( ctx, mTileZoom ) );
+    else
+    {
+      mRequiredLayers.unite( mLabelProvider->requiredLayers( ctx, mTileZoom ) );
+    }
   }
 
   if ( !isAsync )
   {
-    for ( const QgsVectorTileRawData &rawTile : rawTiles )
+    for ( const QgsVectorTileRawData &rawTile : std::as_const( rawTiles ) )
     {
       if ( ctx.renderingStopped() )
         break;
@@ -202,6 +205,9 @@ bool QgsVectorTileLayerRenderer::render()
     if ( !asyncLoader->error().isEmpty() )
       mErrors.append( asyncLoader->error() );
   }
+
+  if ( ctx.flags() & Qgis::RenderContextFlag::DrawSelection )
+    mRenderer->renderSelectedFeatures( mSelectedFeatures, ctx );
 
   mRenderer->stopRender( ctx );
 
@@ -227,7 +233,7 @@ void QgsVectorTileLayerRenderer::decodeAndDrawTile( const QgsVectorTileRawData &
   tLoad.start();
 
   // currently only MVT encoding supported
-  QgsVectorTileMVTDecoder decoder;
+  QgsVectorTileMVTDecoder decoder( mTileMatrixSet );
   if ( !decoder.decode( rawTile.id, rawTile.data ) )
   {
     QgsDebugMsgLevel( QStringLiteral( "Failed to parse raw tile data! " ) + rawTile.id.toString(), 2 );
@@ -260,17 +266,19 @@ void QgsVectorTileLayerRenderer::decodeAndDrawTile( const QgsVectorTileRawData &
   if ( ctx.renderingStopped() )
     return;
 
-  // set up clipping so that rendering does not go behind tile's extent
-  const QgsScopedQPainterState savePainterState( ctx.painter() );
-  // we have to intersect with any existing painter clip regions, or we risk overwriting valid clip
-  // regions setup outside of the vector tile renderer (e.g. layout map clip region)
-  ctx.painter()->setClipRegion( QRegion( tile.tilePolygon() ), Qt::IntersectClip );
+  {
+    // set up clipping so that rendering does not go behind tile's extent
+    const QgsScopedQPainterState savePainterState( ctx.painter() );
+    // we have to intersect with any existing painter clip regions, or we risk overwriting valid clip
+    // regions setup outside of the vector tile renderer (e.g. layout map clip region)
+    ctx.painter()->setClipRegion( QRegion( tile.tilePolygon() ), Qt::IntersectClip );
 
-  QElapsedTimer tDraw;
-  tDraw.start();
+    QElapsedTimer tDraw;
+    tDraw.start();
 
-  mRenderer->renderTile( tile, ctx );
-  mTotalDrawTime += tDraw.elapsed();
+    mRenderer->renderTile( tile, ctx );
+    mTotalDrawTime += tDraw.elapsed();
+  }
 
   if ( mLabelProvider )
     mLabelProvider->registerTileFeatures( tile, ctx );
@@ -282,7 +290,14 @@ void QgsVectorTileLayerRenderer::decodeAndDrawTile( const QgsVectorTileRawData &
 
     QPen pen( Qt::red );
     pen.setWidth( 3 );
+    QBrush brush( QColor( 255, 0, 0, 40 ), Qt::BrushStyle::Dense3Pattern );
+
     ctx.painter()->setPen( pen );
+    ctx.painter()->setBrush( brush );
     ctx.painter()->drawPolygon( tile.tilePolygon() );
+#if 0
+    ctx.painter()->setBrush( QBrush( QColor( 255, 0, 0 ) ) );
+    ctx.painter()->drawText( tile.tilePolygon().boundingRect().center(), tile.id().toString() );
+#endif
   }
 }

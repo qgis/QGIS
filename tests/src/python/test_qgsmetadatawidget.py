@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsMetadataWidget.
 
 Run with: ctest -V -R QgsMetadataWidget
@@ -13,19 +12,17 @@ __date__ = '20/03/2018'
 __copyright__ = 'Copyright 2018, The QGIS Project'
 
 import qgis  # NOQA
-
-from qgis.PyQt.QtXml import QDomDocument
-
-from qgis.core import (QgsCoordinateReferenceSystem,
-                       QgsAbstractMetadataBase,
-                       QgsLayerMetadata,
-                       QgsProjectMetadata,
-                       QgsBox3d,
-                       QgsDateTimeRange)
-from qgis.gui import (QgsMetadataWidget)
-from qgis.PyQt.QtCore import (QDate,
-                              QTime,
-                              QDateTime)
+from qgis.PyQt.QtCore import QDate, QDateTime, QTime
+from qgis.core import (
+    Qgis,
+    QgsAbstractMetadataBase,
+    QgsBox3d,
+    QgsCoordinateReferenceSystem,
+    QgsDateTimeRange,
+    QgsLayerMetadata,
+    QgsProjectMetadata,
+)
+from qgis.gui import QgsMetadataWidget
 from qgis.testing import start_app, unittest
 
 start_app()
@@ -113,6 +110,12 @@ class TestQgsMetadataWidget(unittest.TestCase):
 
         m.setLinks([l, l2, l3])
 
+        m.setDateTime(Qgis.MetadataDateType.Published, QDateTime(QDate(2020, 1, 2), QTime(3, 4, 5)))
+        m.setDateTime(Qgis.MetadataDateType.Revised,
+                      QDateTime(QDate(2020, 1, 3), QTime(3, 4, 5)))
+        m.setDateTime(Qgis.MetadataDateType.Superseded,
+                      QDateTime(QDate(2020, 1, 4), QTime(3, 4, 5)))
+
         # set widget metadata
         w.setMetadata(m)
         self.assertEqual(w.mode(), QgsMetadataWidget.LayerMetadata)
@@ -175,6 +178,86 @@ class TestQgsMetadataWidget(unittest.TestCase):
         self.assertEqual(m.links()[2].format, 'ESRI Shapefile')
         self.assertEqual(m.links()[2].mimeType, 'application/gzip')
         self.assertEqual(m.links()[2].size, '283676')
+
+        self.assertEqual(m.dateTime(Qgis.MetadataDateType.Published), QDateTime(QDate(2020, 1, 2), QTime(3, 4, 5)))
+        self.assertEqual(m.dateTime(Qgis.MetadataDateType.Revised),
+                         QDateTime(QDate(2020, 1, 3), QTime(3, 4, 5)))
+        self.assertEqual(m.dateTime(Qgis.MetadataDateType.Superseded),
+                         QDateTime(QDate(2020, 1, 4), QTime(3, 4, 5)))
+
+    def testDates(self):
+        """
+        Test date handling
+        """
+        w = QgsMetadataWidget()
+
+        m = QgsLayerMetadata()
+
+        m.setDateTime(Qgis.MetadataDateType.Created,
+                      QDateTime(QDate(2020, 1, 2), QTime(3, 4, 5)))
+        m.setDateTime(Qgis.MetadataDateType.Superseded,
+                      QDateTime(QDate(2020, 1, 4), QTime(3, 4, 5)))
+
+        # set widget metadata
+        w.setMetadata(m)
+
+        m = w.metadata()
+
+        self.assertEqual(m.dateTime(Qgis.MetadataDateType.Created),
+                         QDateTime(QDate(2020, 1, 2), QTime(3, 4, 5)))
+        self.assertEqual(m.dateTime(Qgis.MetadataDateType.Published),
+                         QDateTime())
+        self.assertEqual(m.dateTime(Qgis.MetadataDateType.Revised),
+                         QDateTime())
+        self.assertEqual(m.dateTime(Qgis.MetadataDateType.Superseded),
+                         QDateTime(QDate(2020, 1, 4), QTime(3, 4, 5)))
+
+        # with project metadata
+        w = QgsMetadataWidget()
+
+        m = QgsProjectMetadata()
+
+        m.setDateTime(Qgis.MetadataDateType.Created,
+                      QDateTime(QDate(2020, 1, 2), QTime(3, 4, 5)))
+        m.setDateTime(Qgis.MetadataDateType.Superseded,
+                      QDateTime(QDate(2020, 1, 4), QTime(3, 4, 5)))
+
+        # set widget metadata
+        w.setMetadata(m)
+
+        m = w.metadata()
+
+        self.assertEqual(m.dateTime(Qgis.MetadataDateType.Created),
+                         QDateTime(QDate(2020, 1, 2), QTime(3, 4, 5)))
+        self.assertEqual(m.dateTime(Qgis.MetadataDateType.Published),
+                         QDateTime())
+        self.assertEqual(m.dateTime(Qgis.MetadataDateType.Revised),
+                         QDateTime())
+        self.assertEqual(m.dateTime(Qgis.MetadataDateType.Superseded),
+                         QDateTime(QDate(2020, 1, 4), QTime(3, 4, 5)))
+
+        w = QgsMetadataWidget()
+
+        m = QgsProjectMetadata()
+
+        m.setDateTime(Qgis.MetadataDateType.Created,
+                      QDateTime())
+        m.setDateTime(Qgis.MetadataDateType.Superseded,
+                      QDateTime(QDate(2020, 1, 4), QTime(3, 4, 5)))
+
+        # set widget metadata
+        w.setMetadata(m)
+
+        m = w.metadata()
+
+        self.assertEqual(m.dateTime(Qgis.MetadataDateType.Created),
+                         QDateTime())
+        self.assertEqual(m.dateTime(Qgis.MetadataDateType.Published),
+                         QDateTime())
+        self.assertEqual(m.dateTime(Qgis.MetadataDateType.Revised),
+                         QDateTime())
+        self.assertEqual(m.dateTime(Qgis.MetadataDateType.Superseded),
+                         QDateTime(QDate(2020, 1, 4), QTime(3, 4, 5)))
 
     def testProjectMode(self):
         """

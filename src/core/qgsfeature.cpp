@@ -64,15 +64,22 @@ bool QgsFeature::operator ==( const QgsFeature &other ) const
   if ( d == other.d )
     return true;
 
-  if ( d->fid == other.d->fid
-       && d->valid == other.d->valid
-       && d->fields == other.d->fields
-       && d->attributes == other.d->attributes
-       && d->geometry.equals( other.d->geometry )
-       && d->symbol == other.d->symbol )
-    return true;
+  if ( !( d->fid == other.d->fid
+          && d->valid == other.d->valid
+          && d->fields == other.d->fields
+          && d->attributes == other.d->attributes
+          && d->symbol == other.d->symbol ) )
+    return false;
 
-  return false;
+  // compare geometry
+  if ( d->geometry.isNull() && other.d->geometry.isNull() )
+    return true;
+  else if ( d->geometry.isNull() || other.d->geometry.isNull() )
+    return false;
+  else if ( !d->geometry.equals( other.d->geometry ) )
+    return false;
+
+  return true;
 }
 
 bool QgsFeature::operator!=( const QgsFeature &other ) const
@@ -176,6 +183,9 @@ void QgsFeature::setGeometry( std::unique_ptr<QgsAbstractGeometry> geometry )
 
 void QgsFeature::clearGeometry()
 {
+  if ( d->geometry.isNull() && d->valid )
+    return;
+
   setGeometry( QgsGeometry() );
 }
 
@@ -301,6 +311,14 @@ QVariant QgsFeature::attribute( int fieldIdx ) const
     return QVariant();
 
   return d->attributes.at( fieldIdx );
+}
+
+bool QgsFeature::isUnsetValue( int fieldIdx ) const
+{
+  if ( fieldIdx < 0 || fieldIdx >= d->attributes.count() )
+    return false;
+
+  return d->attributes.at( fieldIdx ).userType() == QMetaType::type( "QgsUnsetAttributeValue" );
 }
 
 const QgsSymbol *QgsFeature::embeddedSymbol() const

@@ -210,7 +210,7 @@ class QgsSnapIndex
         SegmentSnapItem( const CoordIdx *_idxFrom, const CoordIdx *_idxTo );
         QgsPoint getSnapPoint( const QgsPoint &p ) const override;
         bool getIntersection( const QgsPoint &p1, const QgsPoint &p2, QgsPoint &inter ) const;
-        bool getProjection( const QgsPoint &p, QgsPoint &pProj );
+        bool getProjection( const QgsPoint &p, QgsPoint &pProj ) const;
         bool withinDistance( const QgsPoint &p, const double distance );
         const CoordIdx *idxFrom = nullptr;
         const CoordIdx *idxTo = nullptr;

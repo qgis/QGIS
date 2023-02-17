@@ -32,7 +32,10 @@ QgsValueMapSearchWidgetWrapper::QgsValueMapSearchWidgetWrapper( QgsVectorLayer *
 
 QWidget *QgsValueMapSearchWidgetWrapper::createWidget( QWidget *parent )
 {
-  return new QComboBox( parent );
+  auto combo = new QComboBox( parent );
+  combo->setMinimumContentsLength( 1 );
+  combo->setSizeAdjustPolicy( QComboBox::SizeAdjustPolicy::AdjustToMinimumContentsLengthWithIcon );
+  return combo;
 }
 
 void QgsValueMapSearchWidgetWrapper::comboBoxIndexChanged( int idx )

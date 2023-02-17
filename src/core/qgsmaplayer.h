@@ -37,7 +37,6 @@
 #include "qgsmaplayerdependency.h"
 #include "qgslayermetadata.h"
 #include "qgsmaplayerserverproperties.h"
-#include "qgsmaplayerstyle.h"
 #include "qgsreadwritecontext.h"
 #include "qgsdataprovider.h"
 #include "qgis.h"
@@ -52,6 +51,7 @@ class QgsProject;
 class QgsStyleEntityVisitorInterface;
 class QgsMapLayerTemporalProperties;
 class QgsMapLayerElevationProperties;
+class QgsSldExportContext;
 
 class QDomDocument;
 class QKeyEvent;
@@ -77,9 +77,10 @@ class CORE_EXPORT QgsMapLayer : public QObject
     Q_PROPERTY( int autoRefreshInterval READ autoRefreshInterval WRITE setAutoRefreshInterval NOTIFY autoRefreshIntervalChanged )
     Q_PROPERTY( QgsLayerMetadata metadata READ metadata WRITE setMetadata NOTIFY metadataChanged )
     Q_PROPERTY( QgsCoordinateReferenceSystem crs READ crs WRITE setCrs NOTIFY crsChanged )
-    Q_PROPERTY( QgsMapLayerType type READ type CONSTANT )
+    Q_PROPERTY( Qgis::LayerType type READ type CONSTANT )
     Q_PROPERTY( bool isValid READ isValid NOTIFY isValidChanged )
     Q_PROPERTY( double opacity READ opacity WRITE setOpacity NOTIFY opacityChanged )
+    Q_PROPERTY( QString mapTipTemplate READ mapTipTemplate WRITE setMapTipTemplate NOTIFY mapTipTemplateChanged )
 
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
@@ -91,28 +92,28 @@ class CORE_EXPORT QgsMapLayer : public QObject
     {
       switch ( layer->type() )
       {
-        case QgsMapLayerType::VectorLayer:
+        case Qgis::LayerType::Vector:
           sipType = sipType_QgsVectorLayer;
           break;
-        case QgsMapLayerType::RasterLayer:
+        case Qgis::LayerType::Raster:
           sipType = sipType_QgsRasterLayer;
           break;
-        case QgsMapLayerType::PluginLayer:
+        case Qgis::LayerType::Plugin:
           sipType = sipType_QgsPluginLayer;
           break;
-        case QgsMapLayerType::MeshLayer:
+        case Qgis::LayerType::Mesh:
           sipType = sipType_QgsMeshLayer;
           break;
-        case QgsMapLayerType::VectorTileLayer:
+        case Qgis::LayerType::VectorTile:
           sipType = sipType_QgsVectorTileLayer;
           break;
-        case QgsMapLayerType::AnnotationLayer:
+        case Qgis::LayerType::Annotation:
           sipType = sipType_QgsAnnotationLayer;
           break;
-        case QgsMapLayerType::PointCloudLayer:
+        case Qgis::LayerType::PointCloud:
           sipType = sipType_QgsPointCloudLayer;
           break;
-        case QgsMapLayerType::GroupLayer:
+        case Qgis::LayerType::Group:
           sipType = sipType_QgsGroupLayer;
           break;
         default:
@@ -188,7 +189,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * \param name display name for the layer
      * \param source datasource of layer
      */
-    QgsMapLayer( QgsMapLayerType type = QgsMapLayerType::VectorLayer, const QString &name = QString(), const QString &source = QString() );
+    QgsMapLayer( Qgis::LayerType type = Qgis::LayerType::Vector, const QString &name = QString(), const QString &source = QString() );
 
     ~QgsMapLayer() override;
 
@@ -208,7 +209,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     /**
      * Returns the type of the layer.
      */
-    QgsMapLayerType type() const;
+    Qgis::LayerType type() const;
 
     /**
      * Returns the flags for this layer.
@@ -282,7 +283,6 @@ class CORE_EXPORT QgsMapLayer : public QObject
     /**
      * Sets the short name of the layer
      *  used by QGIS Server to identify the layer.
-     * \returns the layer short name
      * \see shortName()
      */
     void setShortName( const QString &shortName ) { mShortName = shortName; }
@@ -312,7 +312,6 @@ class CORE_EXPORT QgsMapLayer : public QObject
     /**
      * Sets the abstract of the layer
      *  used by QGIS Server in GetCapabilities request.
-     * \returns the layer abstract
      * \see abstract()
      */
     void setAbstract( const QString &abstract ) { mAbstract = abstract; }
@@ -328,7 +327,6 @@ class CORE_EXPORT QgsMapLayer : public QObject
     /**
      * Sets the keyword list of the layer
      *  used by QGIS Server in GetCapabilities request.
-     * \returns the layer keyword list
      * \see keywordList()
      */
     void setKeywordList( const QString &keywords ) { mKeywordList = keywords; }
@@ -347,7 +345,6 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * Sets the DataUrl of the layer
      *  used by QGIS Server in GetCapabilities request.
      *  DataUrl is a a link to the underlying data represented by a particular layer.
-     * \returns the layer DataUrl
      * \see dataUrl()
      */
     void setDataUrl( const QString &dataUrl ) { mDataUrl = dataUrl; }
@@ -365,7 +362,6 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * Sets the DataUrl format of the layer
      *  used by QGIS Server in GetCapabilities request.
      *  DataUrl is a a link to the underlying data represented by a particular layer.
-     * \returns the layer DataUrl format
      * \see dataUrlFormat()
      */
     void setDataUrlFormat( const QString &dataUrlFormat ) { mDataUrlFormat = dataUrlFormat; }
@@ -385,7 +381,6 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * Sets the attribution of the layer
      *  used by QGIS Server in GetCapabilities request.
      *  Attribution indicates the provider of a layer or collection of layers.
-     * \returns the layer attribution
      * \see attribution()
      */
     void setAttribution( const QString &attrib ) { mAttribution = attrib; }
@@ -403,7 +398,6 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * Sets the attribution URL of the layer
      *  used by QGIS Server in GetCapabilities request.
      *  Attribution indicates the provider of a layer or collection of layers.
-     * \returns the layer attribution URL
      * \see attributionUrl()
      */
     void setAttributionUrl( const QString &attribUrl ) { mAttributionUrl = attribUrl; }
@@ -457,7 +451,6 @@ class CORE_EXPORT QgsMapLayer : public QObject
      *  used by QGIS Server in GetCapabilities request
      *  MetadataUrlType indicates the standard to which the metadata complies.
      *  Since QGIS 3.22, it edits the first metadata URL type.
-     * \returns the layer metadata type
      * \see serverProperties()
      * \deprecated since QGIS 3.22
      */
@@ -640,6 +633,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
       FlagDontResolveLayers = 1 << 0, //!< Don't resolve layer paths or create data providers for layers.
       FlagTrustLayerMetadata = 1 << 1, //!< Trust layer metadata. Improves layer load time by skipping expensive checks like primary key unicity, geometry type and srid and by using estimated metadata on layer load. Since QGIS 3.16
       FlagReadExtentFromXml = 1 << 2, //!< Read extent from xml and skip get extent from provider.
+      FlagForceReadOnly = 1 << 3, //!< Force open as read only.
     };
     Q_DECLARE_FLAGS( ReadFlags, ReadFlag )
 
@@ -1023,7 +1017,8 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * (either as a .qml file on disk or as a
      * record in the users style table in their personal qgis.db)
      * \returns a QString with the style file name
-     * \see also loadNamedStyle() and saveNamedStyle();
+     * \see loadNamedStyle()
+     * \see saveNamedStyle()
      */
     virtual QString styleURI() const;
 
@@ -1034,7 +1029,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * \param resultFlag a reference to a flag that will be set to FALSE if
      * we did not manage to load the default style.
      * \returns a QString with any status messages
-     * \see also loadNamedStyle();
+     * \see loadNamedStyle()
      */
     virtual QString loadDefaultStyle( bool &resultFlag SIP_OUT );
 
@@ -1051,7 +1046,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * we did not manage to load the default style.
      * \param categories the style categories to be loaded.
      * \returns a QString with any status messages
-     * \see also loadDefaultStyle ();
+     * \see loadDefaultStyle()
      */
     virtual QString loadNamedStyle( const QString &uri, bool &resultFlag SIP_OUT, QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories );
 
@@ -1093,8 +1088,32 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * \param doc the target QDomDocument
      * \param errorMsg this QString will be initialized on error
      * during the execution of writeSymbology
+     * \see exportSldStyleV2()
      */
     virtual void exportSldStyle( QDomDocument &doc, QString &errorMsg ) const;
+
+    /**
+     * Export the properties of this layer as SLD style in a QDomDocument
+     * \param doc the target QDomDocument
+     * \param errorMsg this QString will be initialized on error
+     *                 during the execution of writeSymbology
+     * \param exportContext SLD export context
+     * \since QGIS 3.30
+     */
+    virtual void exportSldStyleV2( QDomDocument &doc, QString &errorMsg, const QgsSldExportContext &exportContext ) const;
+
+    /**
+     * Save the properties of this layer as the default style
+     * (either as a .qml file on disk or as a
+     * record in the users style table in their personal qgis.db)
+     * \param resultFlag a reference to a flag that will be set to FALSE if
+     * we did not manage to save the default style.
+     * \param categories the style categories to be saved (since QGIS 3.26)
+     * \returns a QString with any status messages
+     * \see loadNamedStyle()
+     * \see saveNamedStyle()
+     */
+    virtual QString saveDefaultStyle( bool &resultFlag SIP_OUT, StyleCategories categories );
 
     /**
      * Save the properties of this layer as the default style
@@ -1103,9 +1122,11 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * \param resultFlag a reference to a flag that will be set to FALSE if
      * we did not manage to save the default style.
      * \returns a QString with any status messages
-     * \see loadNamedStyle() and \see saveNamedStyle()
+     * \see loadNamedStyle()
+     * \see saveNamedStyle()
+     * \deprecated since QGIS 3.26
      */
-    virtual QString saveDefaultStyle( bool &resultFlag SIP_OUT );
+    Q_DECL_DEPRECATED virtual QString saveDefaultStyle( bool &resultFlag SIP_OUT ) SIP_DEPRECATED;
 
     /**
      * Save the properties of this layer as a named style
@@ -1131,8 +1152,21 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * the SLD file could not be generated
      * \returns a string with any status or error messages
      * \see loadSldStyle()
+     * \see saveSldStyleV2()
      */
     virtual QString saveSldStyle( const QString &uri, bool &resultFlag ) const;
+
+    /**
+     * Saves the properties of this layer to an SLD format file.
+     * \param resultFlag a reference to a flag that will be set to FALSE if
+     *        the SLD file could not be generated
+     * \param exportContext SLD export context
+     * \returns a string with any status or error messages
+     *
+     * \see loadSldStyle()
+     * \since QGIS 3.30
+     */
+    virtual QString saveSldStyleV2( bool &resultFlag SIP_OUT, const QgsSldExportContext &exportContext ) const;
 
     /**
      * Attempts to style the layer using the formatting from an SLD type file.
@@ -1509,6 +1543,34 @@ class CORE_EXPORT QgsMapLayer : public QObject
      */
     void setLegendPlaceholderImage( const QString &imgPath ) { mLegendPlaceholderImage = imgPath; }
 
+    /**
+     * Returns TRUE if the layer contains map tips.
+     *
+     * \see mapTipTemplate()
+     * \see setMapTipTemplate()
+     */
+    virtual bool hasMapTips() const;
+
+    /**
+     * The mapTip is a pretty, html representation for feature information.
+     *
+     * It may also contain embedded expressions.
+     *
+     * \note this method was only available for vector layers since QGIS 3.0
+     * \since QGIS 3.30
+     */
+    QString mapTipTemplate() const;
+
+    /**
+     * The mapTip is a pretty, html representation for feature information.
+     *
+     * It may also contain embedded expressions.
+     *
+     * \note this method was only available for vector layers since QGIS 3.0
+     * \since QGIS 3.30
+     */
+    void setMapTipTemplate( const QString &mapTipTemplate );
+
   public slots:
 
     /**
@@ -1793,6 +1855,14 @@ class CORE_EXPORT QgsMapLayer : public QObject
      */
     void layerModified();
 
+    /**
+     * Emitted when the map tip template changes
+     *
+     * \note this method was only available for vector layers since QGIS 3.0
+     * \since QGIS 3.30
+     */
+    void mapTipTemplateChanged();
+
   private slots:
 
     void onNotified( const QString &message );
@@ -2048,7 +2118,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     QString mID;
 
     //! Type of the layer (e.g., vector, raster)
-    QgsMapLayerType mLayerType;
+    Qgis::LayerType mLayerType;
 
     LayerFlags mFlags = LayerFlags( Identifiable | Removable | Searchable );
 
@@ -2112,6 +2182,9 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     //! Path to placeholder image for layer legend. If the string is empty, a generated legend is shown
     QString mLegendPlaceholderImage;
+
+    //! Maptip template
+    QString mMapTipTemplate;
 
     friend class QgsVectorLayer;
     friend class TestQgsMapLayer;

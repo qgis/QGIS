@@ -87,6 +87,8 @@ Features collected during :py:func:`~QgsMergedFeatureRenderer.renderFeature` are
 
     virtual QSet< QString > legendKeysForFeature( const QgsFeature &feature, QgsRenderContext &context ) const;
 
+    virtual QString legendKeyToExpression( const QString &key, QgsVectorLayer *layer, bool &ok ) const;
+
     virtual QgsLegendSymbolList legendSymbolItems() const;
 
     virtual bool willRenderFeature( const QgsFeature &feature, QgsRenderContext &context ) const;

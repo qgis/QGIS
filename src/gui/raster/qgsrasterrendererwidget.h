@@ -19,6 +19,7 @@
 #define QGSRASTERRENDERERWIDGET_H
 
 #include "qgsrectangle.h"
+#include "qgscontrastenhancement.h"
 #include "qgis.h"
 
 #include <QWidget>
@@ -93,10 +94,22 @@ class GUI_EXPORT QgsRasterRendererWidget: public QWidget
     virtual int selectedBand( int index = 0 ) { Q_UNUSED( index ) return -1; }
 
     //! Load programmatically with current values
-    virtual void doComputations() { }
+    virtual void doComputations() {}
 
     //! Returns min/max widget when it exists.
     virtual QgsRasterMinMaxWidget *minMaxWidget() { return nullptr; }
+
+    /**
+     * Returns the constrast enhancement \a algorithm to be used by the raster renderer.
+     * \since QGIS 3.26
+     */
+    virtual QgsContrastEnhancement::ContrastEnhancementAlgorithm contrastEnhancementAlgorithm() const { return QgsContrastEnhancement::NoEnhancement; }
+
+    /**
+     * Sets the constrast enhancement \a algorithm to be used by the raster renderer.
+     * \since QGIS 3.26
+     */
+    virtual void setContrastEnhancementAlgorithm( QgsContrastEnhancement::ContrastEnhancementAlgorithm algorithm ) { Q_UNUSED( algorithm ) return; }
 
   signals:
 

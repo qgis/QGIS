@@ -59,6 +59,13 @@ class GUI_EXPORT QgsValueMapConfigDlg : public QgsEditorConfigWidget, private Ui
     void updateMap( const QList<QPair<QString, QVariant>> &list, bool insertNull );
 
     /**
+     * Updates the displayed table with the values from a CSV file.
+     * \param filePath the absolute file path of the CSV file.
+     * \since QGIS 3.24
+     */
+    void loadMapFromCSV( const QString &filePath );
+
+    /**
      * Populates a \a comboBox with the appropriate entries based on a value map \a configuration.
      *
      * If \a skipNull is TRUE, then NULL entries will not be added.

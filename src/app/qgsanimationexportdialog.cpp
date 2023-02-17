@@ -17,12 +17,15 @@
 
 #include "qgsanimationexportdialog.h"
 #include "qgsmapcanvas.h"
-#include "qgsdecorationitem.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgshelp.h"
 #include "qgstemporalnavigationobject.h"
 #include "qgsprojecttimesettings.h"
 #include "qgstemporalutils.h"
+#include "qgsmapdecoration.h"
+
+#include <QRegularExpression>
+#include <QRegularExpressionValidator>
 
 Q_GUI_EXPORT extern int qt_defaultDpiX();
 
@@ -66,8 +69,8 @@ QgsAnimationExportDialog::QgsAnimationExportDialog( QWidget *parent, QgsMapCanva
                                QStringLiteral( "%1####.png" ).arg( QgsProject::instance()->baseName() )
                                , QgsSettings::App ).toString();
   mTemplateLineEdit->setText( templateText );
-  const QRegExp rx( QStringLiteral( "\\w+#+\\.{1}\\w+" ) ); //e.g. anyprefix#####.png
-  QValidator *validator = new QRegExpValidator( rx, this );
+  const QRegularExpression rx( QStringLiteral( "^\\w+#+\\.{1}\\w+$" ) ); //e.g. anyprefix#####.png
+  QValidator *validator = new QRegularExpressionValidator( rx, this );
   mTemplateLineEdit->setValidator( validator );
 
   connect( mTemplateLineEdit, &QLineEdit::textChanged, this, [ = ]
@@ -99,7 +102,8 @@ QgsAnimationExportDialog::QgsAnimationExportDialog( QWidget *parent, QgsMapCanva
           QgsUnitTypes::TemporalMonths,
           QgsUnitTypes::TemporalYears,
           QgsUnitTypes::TemporalDecades,
-          QgsUnitTypes::TemporalCenturies
+          QgsUnitTypes::TemporalCenturies,
+          QgsUnitTypes::TemporalIrregularStep
         } )
   {
     mTimeStepsComboBox->addItem( QgsUnitTypes::toString( u ), u );
@@ -123,7 +127,7 @@ QgsAnimationExportDialog::QgsAnimationExportDialog( QWidget *parent, QgsMapCanva
 
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, [ = ]
   {
-    QgsHelp::openHelp( QStringLiteral( "introduction/qgis_gui.html#time-based-control-on-the-map-canvas" ) );
+    QgsHelp::openHelp( QStringLiteral( "map_views/map_view.html#maptimecontrol" ) );
   } );
 
   connect( buttonBox, &QDialogButtonBox::accepted, this, [ = ]

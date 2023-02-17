@@ -52,11 +52,13 @@ static QgsRenderContext _createRenderContext( double mupp, double dpi, double sc
  * \ingroup UnitTests
  * This is a unit test for legend rendering when using data-defined size of markers.
  */
-class TestQgsDataDefinedSizeLegend : public QObject
+class TestQgsDataDefinedSizeLegend : public QgsTest
 {
     Q_OBJECT
 
   public:
+
+    TestQgsDataDefinedSizeLegend() : QgsTest( QStringLiteral( "Data Defined Size Legend Tests" ) ) {}
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
@@ -65,8 +67,6 @@ class TestQgsDataDefinedSizeLegend : public QObject
     void testBasic();
     void testCrowded();
 
-  private:
-    QString mReport;
 };
 
 void TestQgsDataDefinedSizeLegend::initTestCase()
@@ -76,21 +76,10 @@ void TestQgsDataDefinedSizeLegend::initTestCase()
   QgsApplication::init();
   QgsApplication::initQgis();
   QgsApplication::showSettings();
-
-  mReport += QLatin1String( "<h1>Data Defined Size Legend Tests</h1>\n" );
 }
 
 void TestQgsDataDefinedSizeLegend::cleanupTestCase()
 {
-  const QString myReportFile = QDir::tempPath() + "/qgistest.html";
-  QFile myFile( myReportFile );
-  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
-  {
-    QTextStream myQTextStream( &myFile );
-    myQTextStream << mReport;
-    myFile.close();
-  }
-
   QgsApplication::exitQgis();
 }
 

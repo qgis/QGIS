@@ -20,6 +20,9 @@
 #include "qgshelp.h"
 #include "qgsgui.h"
 #include "fromencodedcomponenthelper.h"
+#include "qgsowsconnection.h"
+#include "qgssettingsentryimpl.h"
+#include "qgssettingsentryenumflag.h"
 
 #include <QMessageBox>
 #include <QUrl>
@@ -28,13 +31,24 @@
 #include <QRegularExpressionValidator>
 #include <QUrlQuery>
 
-QgsNewHttpConnection::QgsNewHttpConnection( QWidget *parent, ConnectionTypes types, const QString &baseKey, const QString &connectionName, QgsNewHttpConnection::Flags flags, Qt::WindowFlags fl )
+QgsNewHttpConnection::QgsNewHttpConnection( QWidget *parent, ConnectionTypes types, const QString &serviceName, const QString &connectionName, QgsNewHttpConnection::Flags flags, Qt::WindowFlags fl )
   : QDialog( parent, fl )
   , mTypes( types )
-  , mBaseKey( baseKey )
+  , mServiceName( serviceName )
   , mOriginalConnName( connectionName )
 {
   setupUi( this );
+
+  // compatibility fix with former API (pre 3.26) when serviceName was a setting key instead
+  if ( mServiceName.startsWith( QLatin1String( "qgis/" ) ) )
+  {
+    // It would be obviously much better to use mBaseKey also for credentials,
+    // but for some strange reason a different hardcoded key was used instead.
+    // WFS and WMS credentials were mixed with the same key WMS.
+    // Only WMS and WFS providers are using QgsNewHttpConnection at this moment
+    // using connection-wms and connection-wfs -> parse credential key from it.
+    mServiceName = mServiceName.split( '-' ).last().toUpper();
+  }
 
   if ( !( flags & FlagShowHttpSettings ) )
     mHttpHeaders->hide();
@@ -43,33 +57,26 @@ QgsNewHttpConnection::QgsNewHttpConnection( QWidget *parent, ConnectionTypes typ
 
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsNewHttpConnection::showHelp );
 
-  const thread_local QRegularExpression rx( "/connections-([^/]+)/" );
-  const QRegularExpressionMatch rxMatch = rx.match( baseKey );
-  if ( rxMatch.hasMatch() )
+  QString connectionType = mServiceName;
+  if ( mServiceName == QLatin1String( "WMS" ) )
   {
-    QString connectionType( rxMatch.captured( 1 ).toUpper() );
-    if ( connectionType == QLatin1String( "WMS" ) )
-    {
-      connectionType = QStringLiteral( "WMS/WMTS" );
-    }
-    setWindowTitle( tr( "Create a New %1 Connection" ).arg( connectionType ) );
+    connectionType = QStringLiteral( "WMS/WMTS" );
   }
-
-  // It would be obviously much better to use mBaseKey also for credentials,
-  // but for some strange reason a different hardcoded key was used instead.
-  // WFS and WMS credentials were mixed with the same key WMS.
-  // Only WMS and WFS providers are using QgsNewHttpConnection at this moment
-  // using connection-wms and connection-wfs -> parse credential key from it.
-  mCredentialsBaseKey = mBaseKey.split( '-' ).last().toUpper();
+  setWindowTitle( tr( "Create a New %1 Connection" ).arg( connectionType ) );
 
   txtName->setValidator( new QRegularExpressionValidator( QRegularExpression( "[^\\/]+" ), txtName ) );
 
   cmbDpiMode->clear();
-  cmbDpiMode->addItem( tr( "all" ) );
-  cmbDpiMode->addItem( tr( "off" ) );
-  cmbDpiMode->addItem( tr( "QGIS" ) );
-  cmbDpiMode->addItem( tr( "UMN" ) );
-  cmbDpiMode->addItem( tr( "GeoServer" ) );
+  cmbDpiMode->addItem( tr( "all" ), static_cast<int>( Qgis::DpiMode::All ) );
+  cmbDpiMode->addItem( tr( "off" ), static_cast<int>( Qgis::DpiMode::Off ) );
+  cmbDpiMode->addItem( tr( "QGIS" ), static_cast<int>( Qgis::DpiMode::QGIS ) );
+  cmbDpiMode->addItem( tr( "UMN" ), static_cast<int>( Qgis::DpiMode::UMN ) );
+  cmbDpiMode->addItem( tr( "GeoServer" ), static_cast<int>( Qgis::DpiMode::GeoServer ) );
+
+  cmbTilePixelRatio->clear();
+  cmbTilePixelRatio->addItem( tr( "Undefined (not scaled)" ), static_cast<int>( Qgis::TilePixelRatio::Undefined ) );
+  cmbTilePixelRatio->addItem( tr( "Standard (96 DPI)" ), static_cast<int>( Qgis::TilePixelRatio::StandardDpi ) );
+  cmbTilePixelRatio->addItem( tr( "High (192 DPI)" ), static_cast<int>( Qgis::TilePixelRatio::HighDpi ) );
 
   cmbVersion->clear();
   cmbVersion->addItem( tr( "Maximum" ) );
@@ -89,20 +96,16 @@ QgsNewHttpConnection::QgsNewHttpConnection( QWidget *parent, ConnectionTypes typ
     // populate the dialog with the information stored for the connection
     // populate the fields with the stored setting parameters
 
-    const QgsSettings settings;
-
-    const QString key = mBaseKey + connectionName;
-    const QString credentialsKey = "qgis/" + mCredentialsBaseKey + '/' + connectionName;
     txtName->setText( connectionName );
-    txtUrl->setText( settings.value( key + "/url" ).toString() );
-    mHttpHeaders->setFromSettings( settings, key );
+    txtUrl->setText( QgsOwsConnection::settingsUrl->value( {mServiceName.toLower(), connectionName} ) );
+    mHttpHeaders->setHeaders( QgsHttpHeaders( QgsOwsConnection::settingsHeaders->value( {mServiceName.toLower(), connectionName} ) ) );
 
     updateServiceSpecificSettings();
 
     // Authentication
-    mAuthSettings->setUsername( settings.value( credentialsKey + "/username" ).toString() );
-    mAuthSettings->setPassword( settings.value( credentialsKey + "/password" ).toString() );
-    mAuthSettings->setConfigId( settings.value( credentialsKey + "/authcfg" ).toString() );
+    mAuthSettings->setUsername( QgsOwsConnection::settingsUsername->value( {mServiceName, connectionName} ) );
+    mAuthSettings->setPassword( QgsOwsConnection::settingsPassword->value( {mServiceName, connectionName} ) );
+    mAuthSettings->setConfigId( QgsOwsConnection::settingsAuthCfg->value( {mServiceName, connectionName} ) );
   }
   mWfsVersionDetectButton->setDisabled( txtUrl->text().isEmpty() );
 
@@ -136,6 +139,10 @@ QgsNewHttpConnection::QgsNewHttpConnection( QWidget *parent, ConnectionTypes typ
       mGroupBox->layout()->removeWidget( cmbDpiMode );
       lblDpiMode->setVisible( false );
       mGroupBox->layout()->removeWidget( lblDpiMode );
+      cmbTilePixelRatio->setVisible( false );
+      mGroupBox->layout()->removeWidget( cmbTilePixelRatio );
+      lblTilePixelRatio->setVisible( false );
+      mGroupBox->layout()->removeWidget( lblTilePixelRatio );
     }
   }
 
@@ -213,12 +220,13 @@ void QgsNewHttpConnection::updateOkButtonState()
 
 bool QgsNewHttpConnection::validate()
 {
-  const QgsSettings settings;
-  const QString key = mBaseKey + txtName->text();
+  const QString newConnectionName = txtName->text();
+
+  bool urlExists = QgsOwsConnection::settingsUrl->exists( {mServiceName.toLower(), newConnectionName} );
 
   // warn if entry was renamed to an existing connection
-  if ( ( mOriginalConnName.isNull() || mOriginalConnName.compare( txtName->text(), Qt::CaseInsensitive ) != 0 ) &&
-       settings.contains( key + "/url" ) &&
+  if ( ( mOriginalConnName.isNull() || mOriginalConnName.compare( newConnectionName, Qt::CaseInsensitive ) != 0 ) &&
+       urlExists &&
        QMessageBox::question( this,
                               tr( "Save Connection" ),
                               tr( "Should the existing connection %1 be overwritten?" ).arg( txtName->text() ),
@@ -286,43 +294,25 @@ QString QgsNewHttpConnection::wmsSettingsKey( const QString &base, const QString
 
 void QgsNewHttpConnection::updateServiceSpecificSettings()
 {
-  const QgsSettings settings;
-  const QString wfsKey = wfsSettingsKey( mBaseKey, mOriginalConnName );
-  const QString wmsKey = wmsSettingsKey( mBaseKey, mOriginalConnName );
+  QStringList detailsParameters = { mServiceName.toLower(), mOriginalConnName };
 
-  cbxIgnoreGetMapURI->setChecked( settings.value( wmsKey + "/ignoreGetMapURI", false ).toBool() );
-  cbxWmsIgnoreReportedLayerExtents->setChecked( settings.value( wmsKey + QStringLiteral( "/ignoreReportedLayerExtents" ), false ).toBool() );
-  cbxWfsIgnoreAxisOrientation->setChecked( settings.value( wfsKey + "/ignoreAxisOrientation", false ).toBool() );
-  cbxWfsInvertAxisOrientation->setChecked( settings.value( wfsKey + "/invertAxisOrientation", false ).toBool() );
-  cbxWfsUseGml2EncodingForTransactions->setChecked( settings.value( wfsKey + "/preferCoordinatesForWfsT11", false ).toBool() );
+  cbxIgnoreGetMapURI->setChecked( QgsOwsConnection::settingsIgnoreGetMapURI->value( detailsParameters ) );
+  cbxWmsIgnoreReportedLayerExtents->setChecked( QgsOwsConnection::settingsReportedLayerExtents->value( detailsParameters ) );
+  cbxWfsIgnoreAxisOrientation->setChecked( QgsOwsConnection::settingsIgnoreAxisOrientation->value( detailsParameters ) );
+  cbxWfsInvertAxisOrientation->setChecked( QgsOwsConnection::settingsInvertAxisOrientation->value( detailsParameters ) );
+  cbxWfsUseGml2EncodingForTransactions->setChecked( QgsOwsConnection::settingsPreferCoordinatesForWfsT11->value( detailsParameters ) );
 
-  cbxWmsIgnoreAxisOrientation->setChecked( settings.value( wmsKey + "/ignoreAxisOrientation", false ).toBool() );
-  cbxWmsInvertAxisOrientation->setChecked( settings.value( wmsKey + "/invertAxisOrientation", false ).toBool() );
-  cbxIgnoreGetFeatureInfoURI->setChecked( settings.value( wmsKey + "/ignoreGetFeatureInfoURI", false ).toBool() );
-  cbxSmoothPixmapTransform->setChecked( settings.value( wmsKey + "/smoothPixmapTransform", false ).toBool() );
+  cbxWmsIgnoreAxisOrientation->setChecked( QgsOwsConnection::settingsIgnoreAxisOrientation->value( detailsParameters ) );
+  cbxWmsInvertAxisOrientation->setChecked( QgsOwsConnection::settingsInvertAxisOrientation->value( detailsParameters ) );
+  cbxIgnoreGetFeatureInfoURI->setChecked( QgsOwsConnection::settingsIgnoreGetFeatureInfoURI->value( detailsParameters ) );
+  cbxSmoothPixmapTransform->setChecked( QgsOwsConnection::settingsSmoothPixmapTransform->value( detailsParameters ) );
 
-  int dpiIdx;
-  switch ( settings.value( wmsKey + "/dpiMode", 7 ).toInt() )
-  {
-    case 0: // off
-      dpiIdx = 1;
-      break;
-    case 1: // QGIS
-      dpiIdx = 2;
-      break;
-    case 2: // UMN
-      dpiIdx = 3;
-      break;
-    case 4: // GeoServer
-      dpiIdx = 4;
-      break;
-    default: // other => all
-      dpiIdx = 0;
-      break;
-  }
-  cmbDpiMode->setCurrentIndex( dpiIdx );
+  Qgis::DpiMode dpiMode = QgsOwsConnection::settingsDpiMode->value( detailsParameters );
+  cmbDpiMode->setCurrentIndex( cmbDpiMode->findData( static_cast<int>( dpiMode ) ) );
+  Qgis::TilePixelRatio tilePixelRatio = QgsOwsConnection::settingsTilePixelRatio->value( detailsParameters );
+  cmbTilePixelRatio->setCurrentIndex( cmbTilePixelRatio->findData( static_cast<int>( tilePixelRatio ) ) );
 
-  const QString version = settings.value( wfsKey + "/version" ).toString();
+  const QString version = QgsOwsConnection::settingsVersion->value( detailsParameters );
   int versionIdx = WFS_VERSION_MAX; // AUTO
   if ( version == QLatin1String( "1.0.0" ) )
     versionIdx = WFS_VERSION_1_0;
@@ -337,12 +327,13 @@ void QgsNewHttpConnection::updateServiceSpecificSettings()
   // Enable/disable these items per WFS versions
   wfsVersionCurrentIndexChanged( versionIdx );
 
-  mHttpHeaders->setFromSettings( settings, wmsKey );
-  txtMaxNumFeatures->setText( settings.value( wfsKey + "/maxnumfeatures" ).toString() );
+  mHttpHeaders->setHeaders( QgsHttpHeaders( QgsOwsConnection::settingsHeaders->value( {mServiceName.toLower(), mOriginalConnName} ) ) );
+
+  txtMaxNumFeatures->setText( QgsOwsConnection::settingsMaxNumFeatures->value( detailsParameters ) );
 
   // Only default to paging enabled if WFS 2.0.0 or higher
-  const bool pagingEnabled = settings.value( wfsKey + "/pagingenabled", ( versionIdx == WFS_VERSION_MAX || versionIdx >= WFS_VERSION_2_0 ) ).toBool();
-  txtPageSize->setText( settings.value( wfsKey + "/pagesize" ).toString() );
+  const bool pagingEnabled = QgsOwsConnection::settingsPagingEnabled->valueWithDefaultOverride( versionIdx == WFS_VERSION_MAX || versionIdx >= WFS_VERSION_2_0, detailsParameters );
+  txtPageSize->setText( QgsOwsConnection::settingsPagesize->value( detailsParameters ) );
   cbxWfsFeaturePaging->setChecked( pagingEnabled );
 }
 
@@ -377,69 +368,50 @@ QUrl QgsNewHttpConnection::urlTrimmed() const
 
 void QgsNewHttpConnection::accept()
 {
-  QgsSettings settings;
-  const QString key = mBaseKey + txtName->text();
-  const QString credentialsKey = "qgis/" + mCredentialsBaseKey + '/' + txtName->text();
+  const QString newConnectionName = txtName->text();
 
   if ( !validate() )
     return;
 
+  QgsSettings settings;
+
   // on rename delete original entry first
-  if ( !mOriginalConnName.isNull() && mOriginalConnName != key )
+  if ( !mOriginalConnName.isNull() && mOriginalConnName != newConnectionName )
   {
-    settings.remove( mBaseKey + mOriginalConnName );
-    settings.remove( "qgis/" + mCredentialsBaseKey + '/' + mOriginalConnName );
+    QgsOwsConnection::sTreeOwsConnections->deleteItem( mOriginalConnName, {mServiceName.toLower()} );
     settings.sync();
   }
 
-  const QUrl url( urlTrimmed() );
-  settings.setValue( key + "/url", url.toString() );
+  QStringList detailsParameters = {mServiceName.toLower(), newConnectionName};
 
-  const QString wfsKey = wfsSettingsKey( mBaseKey, txtName->text() );
-  const QString wmsKey = wmsSettingsKey( mBaseKey, txtName->text() );
+  const QUrl url( urlTrimmed() );
+  QgsOwsConnection::settingsUrl->setValue( url.toString(), detailsParameters );
 
   if ( mTypes & ConnectionWfs )
   {
-    settings.setValue( wfsKey + "/ignoreAxisOrientation", cbxWfsIgnoreAxisOrientation->isChecked() );
-    settings.setValue( wfsKey + "/invertAxisOrientation", cbxWfsInvertAxisOrientation->isChecked() );
-    settings.setValue( wfsKey + "/preferCoordinatesForWfsT11", cbxWfsUseGml2EncodingForTransactions->isChecked() );
+    QgsOwsConnection::settingsIgnoreAxisOrientation->setValue( cbxWfsIgnoreAxisOrientation->isChecked(), detailsParameters );
+    QgsOwsConnection::settingsInvertAxisOrientation->setValue( cbxWfsInvertAxisOrientation->isChecked(), detailsParameters );
+    QgsOwsConnection::settingsPreferCoordinatesForWfsT11->setValue( cbxWfsUseGml2EncodingForTransactions->isChecked(), detailsParameters );
   }
   if ( mTypes & ConnectionWms || mTypes & ConnectionWcs )
   {
-    settings.setValue( wmsKey + "/ignoreAxisOrientation", cbxWmsIgnoreAxisOrientation->isChecked() );
-    settings.setValue( wmsKey + "/invertAxisOrientation", cbxWmsInvertAxisOrientation->isChecked() );
+    QgsOwsConnection::settingsIgnoreAxisOrientation->setValue( cbxWmsIgnoreAxisOrientation->isChecked(), detailsParameters );
+    QgsOwsConnection::settingsInvertAxisOrientation->setValue( cbxWmsInvertAxisOrientation->isChecked(), detailsParameters );
 
-    settings.setValue( wmsKey + QStringLiteral( "/ignoreReportedLayerExtents" ), cbxWmsIgnoreReportedLayerExtents->isChecked() );
-    settings.setValue( wmsKey + "/ignoreGetMapURI", cbxIgnoreGetMapURI->isChecked() );
-    settings.setValue( wmsKey + "/smoothPixmapTransform", cbxSmoothPixmapTransform->isChecked() );
+    QgsOwsConnection::settingsReportedLayerExtents->setValue( cbxWmsIgnoreReportedLayerExtents->isChecked(), detailsParameters );
+    QgsOwsConnection::settingsIgnoreGetMapURI->setValue( cbxIgnoreGetMapURI->isChecked(), detailsParameters );
+    QgsOwsConnection::settingsSmoothPixmapTransform->setValue( cbxSmoothPixmapTransform->isChecked(), detailsParameters );
 
-    int dpiMode = 0;
-    switch ( cmbDpiMode->currentIndex() )
-    {
-      case 0: // all => QGIS|UMN|GeoServer
-        dpiMode = 7;
-        break;
-      case 1: // off
-        dpiMode = 0;
-        break;
-      case 2: // QGIS
-        dpiMode = 1;
-        break;
-      case 3: // UMN
-        dpiMode = 2;
-        break;
-      case 4: // GeoServer
-        dpiMode = 4;
-        break;
-    }
+    Qgis::DpiMode dpiMode = cmbDpiMode->currentData().value<Qgis::DpiMode>();
+    QgsOwsConnection::settingsDpiMode->setValue( dpiMode, detailsParameters );
+    Qgis::TilePixelRatio tilePixelRatio = cmbTilePixelRatio->currentData().value<Qgis::TilePixelRatio>();
+    QgsOwsConnection::settingsTilePixelRatio->setValue( tilePixelRatio, detailsParameters );
 
-    settings.setValue( wmsKey + "/dpiMode", dpiMode );
-
-    mHttpHeaders->updateSettings( settings, wmsKey );
+    QgsOwsConnection::settingsHeaders->setValue( mHttpHeaders->httpHeaders().headers(), detailsParameters );
   }
   if ( mTypes & ConnectionWms )
   {
-    settings.setValue( wmsKey + "/ignoreGetFeatureInfoURI", cbxIgnoreGetFeatureInfoURI->isChecked() );
+    QgsOwsConnection::settingsIgnoreGetFeatureInfoURI->setValue( cbxIgnoreGetFeatureInfoURI->isChecked(), detailsParameters );
   }
   if ( mTypes & ConnectionWfs )
   {
@@ -462,23 +434,21 @@ void QgsNewHttpConnection::accept()
         version = QStringLiteral( "OGC_API_FEATURES" );
         break;
     }
-    settings.setValue( wfsKey + "/version", version );
-
-    settings.setValue( wfsKey + "/maxnumfeatures", txtMaxNumFeatures->text() );
-
-    settings.setValue( wfsKey + "/pagesize", txtPageSize->text() );
-    settings.setValue( wfsKey + "/pagingenabled", cbxWfsFeaturePaging->isChecked() );
+    QgsOwsConnection::settingsVersion->setValue( version, detailsParameters );
+    QgsOwsConnection::settingsMaxNumFeatures->setValue( txtMaxNumFeatures->text(), detailsParameters );
+    QgsOwsConnection::settingsPagesize->setValue( txtPageSize->text(), detailsParameters );
+    QgsOwsConnection::settingsPagingEnabled->setValue( cbxWfsFeaturePaging->isChecked(), detailsParameters );
   }
 
-  settings.setValue( credentialsKey + "/username", mAuthSettings->username() );
-  settings.setValue( credentialsKey + "/password", mAuthSettings->password() );
-
-  settings.setValue( credentialsKey + "/authcfg", mAuthSettings->configId() );
+  QStringList credentialsParameters = {mServiceName, newConnectionName};
+  QgsOwsConnection::settingsUsername->setValue( mAuthSettings->username(), credentialsParameters );
+  QgsOwsConnection::settingsPassword->setValue( mAuthSettings->password(), credentialsParameters );
+  QgsOwsConnection::settingsAuthCfg->setValue( mAuthSettings->configId(), credentialsParameters );
 
   if ( mHttpHeaders->isVisible() )
-    mHttpHeaders->updateSettings( settings, key );
+    QgsOwsConnection::settingsHeaders->setValue( mHttpHeaders->httpHeaders().headers(), credentialsParameters );
 
-  settings.setValue( mBaseKey + "/selected", txtName->text() );
+  QgsOwsConnection::sTreeOwsConnections->setSelectedItem( newConnectionName, {mServiceName.toLower()} );
 
   QDialog::accept();
 }

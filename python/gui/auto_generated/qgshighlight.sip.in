@@ -37,7 +37,13 @@ for highlighting features or geometries on a map canvas.
 %End
 %ConvertToSubClassCode
     if ( dynamic_cast<QgsHighlight *>( sipCpp ) )
+    {
       sipType = sipType_QgsHighlight;
+      // We need to tweak the pointer as sip believes it is single inheritance
+      // from QgsMapCanvasItem, but the raw address of QgsHighlight (sipCpp)
+      // is actually a QObject
+      *sipCppRet = dynamic_cast<QgsHighlight *>( sipCpp );
+    }
     else
       sipType = nullptr;
 %End
@@ -136,6 +142,13 @@ Returns the layer for which this highlight has been created.
 
     virtual void updatePosition();
 
+
+    void applyDefaultStyle();
+%Docstring
+Applies the default style from the user settings to the highlight.
+
+.. versionadded:: 3.30
+%End
 
   protected:
     virtual void paint( QPainter *p );

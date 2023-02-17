@@ -56,7 +56,7 @@ void QgsVectorTileConnectionDialog::setConnection( const QString &name, const QS
 
   mAuthSettings->setUsername( conn.username );
   mAuthSettings->setPassword( conn.password );
-  mEditReferer->setText( conn.referer );
+  mEditReferer->setText( conn.httpHeaders[QgsHttpHeaders::KEY_REFERER].toString() );
   mAuthSettings->setConfigId( conn.authCfg );
 
   mEditStyleUrl->setText( conn.styleUrl );
@@ -72,7 +72,7 @@ QString QgsVectorTileConnectionDialog::connectionUri() const
     conn.zMax = mSpinZMax->value();
   conn.username = mAuthSettings->username();
   conn.password = mAuthSettings->password();
-  conn.referer = mEditReferer->text();
+  conn.httpHeaders[QgsHttpHeaders::KEY_REFERER] = mEditReferer->text();
   conn.authCfg = mAuthSettings->configId( );
   conn.styleUrl = mEditStyleUrl->text();
   return QgsVectorTileProviderConnection::encodedUri( conn );

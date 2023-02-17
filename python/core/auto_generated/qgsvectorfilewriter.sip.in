@@ -377,6 +377,8 @@ Constructor
 
         QgsAttributeList attributes;
 
+        QStringList attributesExportNames;
+
         QgsVectorFileWriter::SymbologyExport symbologyExport;
 
         double symbologyScale;
@@ -596,12 +598,12 @@ Creates a filter for an OGR driver key
 Converts codec name to string passed to ENCODING layer creation option of OGR Shapefile
 %End
 
-    QgsVectorFileWriter::WriterError hasError();
+    QgsVectorFileWriter::WriterError hasError() const;
 %Docstring
 Checks whether there were any errors in constructor
 %End
 
-    QString errorMessage();
+    QString errorMessage() const;
 %Docstring
 Retrieves error message
 %End

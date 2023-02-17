@@ -243,7 +243,11 @@ void QgsMapLayerStyleManagerWidget::saveAsDefault()
   }
 
   bool defaultSavedFlag = false;
+  // TODO Once the deprecated `saveDefaultStyle()` method is gone, just
+  // remove the NOWARN_DEPRECATED tags
+  Q_NOWARN_DEPRECATED_PUSH
   errorMsg = mLayer->saveDefaultStyle( defaultSavedFlag );
+  Q_NOWARN_DEPRECATED_POP
   if ( !defaultSavedFlag )
   {
     QMessageBox::warning( this, tr( "Default Style" ), errorMsg );

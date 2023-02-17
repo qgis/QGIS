@@ -3,6 +3,13 @@
   "type": "function",
   "groups": ["GeometryGroup"],
   "description": "Returns a geometry from a GML representation of geometry.",
-  "arguments": [ {"arg":"gml","description":"GML representation of a geometry as a string"}],
-  "examples": [ { "expression":"geom_from_gml('&lt;gml:LineString srsName=\"EPSG:4326\"&gt;&lt;gml:coordinates&gt;4,4 5,5 6,6&lt;/gml:coordinates&gt;&lt;/gml:LineString&gt;')", "returns":"a line geometry object"}]
+  "arguments": [{
+    "arg": "gml",
+    "description": "GML representation of a geometry as a string"
+  }],
+  "examples": [{
+    "expression": "geom_from_gml('&lt;gml:LineString srsName=\"EPSG:4326\"&gt;&lt;gml:coordinates&gt;4,4 5,5 6,6&lt;/gml:coordinates&gt;&lt;/gml:LineString&gt;')",
+    "returns": "a line geometry object"
+  }],
+  "tags": ["representation", "conversion"]
 }

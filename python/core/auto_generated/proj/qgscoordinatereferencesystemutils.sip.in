@@ -1,0 +1,47 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/proj/qgscoordinatereferencesystemutils.h                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsCoordinateReferenceSystemUtils
+{
+%Docstring(signature="appended")
+Utility functions for working with :py:class:`QgsCoordinateReferenceSystem` objects.
+
+.. versionadded:: 3.26
+%End
+
+%TypeHeaderCode
+#include "qgscoordinatereferencesystemutils.h"
+%End
+  public:
+
+    static Qgis::CoordinateOrder defaultCoordinateOrderForCrs( const QgsCoordinateReferenceSystem &crs );
+%Docstring
+Returns the default coordinate order to use for the specified ``crs``.
+
+.. warning::
+
+   This is quite a "coarse" method, in that many possible CRS axis don't map well to a simply X/Y or Y/X order.
+   Accordingly this method will default to returning Qgis.CoordinateOrder.XY unless we are reasonably certain of a Y/X order.
+%End
+
+    static QString axisDirectionToAbbreviatedString( Qgis::CrsAxisDirection axis );
+%Docstring
+Returns a translated abbreviation representing an ``axis`` direction.
+%End
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/proj/qgscoordinatereferencesystemutils.h                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

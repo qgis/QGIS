@@ -18,7 +18,6 @@
 #include <string>
 
 #include "qgsmdalprovider.h"
-#include "qgstriangularmesh.h"
 #include "qgslogger.h"
 #include "qgsapplication.h"
 #include "qgsmeshdataprovidertemporalcapabilities.h"
@@ -27,6 +26,7 @@
 
 #include <QFileInfo>
 #include <QRegularExpression>
+#include <QIcon>
 #include <mutex>
 
 const QString QgsMdalProvider::MDAL_PROVIDER_KEY = QStringLiteral( "mdal" );
@@ -1146,7 +1146,6 @@ QList<QgsProviderSublayerDetails> QgsMdalProviderMetadata::querySublayers( const
     static std::once_flag initialized;
     std::call_once( initialized, [ = ]( )
     {
-      QStringList meshExtensions;
       QStringList datasetsExtensions;
       QgsMdalProvider::fileMeshExtensions( sExtensions, datasetsExtensions );
       Q_UNUSED( datasetsExtensions )
@@ -1169,7 +1168,7 @@ QList<QgsProviderSublayerDetails> QgsMdalProviderMetadata::querySublayers( const
       return {};
 
     QgsProviderSublayerDetails details;
-    details.setType( QgsMapLayerType::MeshLayer );
+    details.setType( Qgis::LayerType::Mesh );
     details.setProviderKey( QStringLiteral( "mdal" ) );
     details.setUri( uri );
     details.setName( QgsProviderUtils::suggestLayerNameFromFilePath( path ) );
@@ -1196,7 +1195,7 @@ QList<QgsProviderSublayerDetails> QgsMdalProviderMetadata::querySublayers( const
     QgsProviderSublayerDetails details;
     details.setUri( layerUri );
     details.setProviderKey( QStringLiteral( "mdal" ) );
-    details.setType( QgsMapLayerType::MeshLayer );
+    details.setType( Qgis::LayerType::Mesh );
     details.setLayerNumber( layerIndex );
     details.setDriverName( layerUriParts.value( QStringLiteral( "driver" ) ).toString() );
 
@@ -1213,6 +1212,11 @@ QList<QgsProviderSublayerDetails> QgsMdalProviderMetadata::querySublayers( const
     layerIndex++;
   }
   return res;
+}
+
+QList<Qgis::LayerType> QgsMdalProviderMetadata::supportedLayerTypes() const
+{
+  return { Qgis::LayerType::Mesh };
 }
 
 QString QgsMdalProviderMetadata::filters( FilterType type )
@@ -1285,6 +1289,11 @@ QList<QgsMeshDriverMetadata> QgsMdalProviderMetadata::meshDriversMetadata()
 QgsMdalProviderMetadata::QgsMdalProviderMetadata()
   : QgsProviderMetadata( QgsMdalProvider::MDAL_PROVIDER_KEY, QgsMdalProvider::MDAL_PROVIDER_DESCRIPTION )
 {}
+
+QIcon QgsMdalProviderMetadata::icon() const
+{
+  return QgsApplication::getThemeIcon( QStringLiteral( "mIconMeshLayer.svg" ) );
+}
 
 QGISEXTERN QgsProviderMetadata *providerMetadataFactory()
 {

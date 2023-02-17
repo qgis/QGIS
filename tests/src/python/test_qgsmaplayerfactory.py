@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsMapLayerFactory.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -10,23 +9,23 @@ __author__ = 'Nyall Dawson'
 __date__ = '10/03/2021'
 __copyright__ = 'Copyright 2021, The QGIS Project'
 
-import qgis  # NOQA
-
 import os
 
+import qgis  # NOQA
 from qgis.core import (
+    QgsAnnotationLayer,
+    QgsCoordinateTransformContext,
+    QgsDataSourceUri,
     QgsMapLayerFactory,
     QgsMapLayerType,
-    QgsVectorLayer,
-    QgsRasterLayer,
     QgsMeshLayer,
     QgsPointCloudLayer,
-    QgsAnnotationLayer,
+    QgsRasterLayer,
+    QgsVectorLayer,
     QgsVectorTileLayer,
-    QgsDataSourceUri,
-    QgsCoordinateTransformContext
 )
 from qgis.testing import start_app, unittest
+
 from utilities import unitTestDataPath
 
 start_app()
@@ -111,7 +110,7 @@ class TestQgsMapLayerFactory(unittest.TestCase):
         # vector tile layer
         ds = QgsDataSourceUri()
         ds.setParam("type", "xyz")
-        ds.setParam("url", "file://{}/{{z}}-{{x}}-{{y}}.pbf".format(os.path.join(unitTestDataPath(), 'vector_tile')))
+        ds.setParam("url", f"file://{os.path.join(unitTestDataPath(), 'vector_tile')}/{{z}}-{{x}}-{{y}}.pbf")
         ds.setParam("zmax", "1")
         ml = QgsMapLayerFactory.createLayer(ds.encodedUri().data().decode(), 'vtl', QgsMapLayerType.VectorTileLayer, options)
         self.assertTrue(ml.isValid())

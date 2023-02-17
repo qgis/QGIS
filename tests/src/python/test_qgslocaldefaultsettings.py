@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsLocalDefaultSettings.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -11,15 +10,16 @@ __date__ = '09/01/2020'
 __copyright__ = 'Copyright 2020, The QGIS Project'
 
 import qgis  # NOQA
-
-from qgis.core import (QgsSettings,
-                       QgsLocalDefaultSettings,
-                       QgsBearingNumericFormat)
-
 from qgis.PyQt.QtCore import QCoreApplication
-
+from qgis.core import (
+    QgsBearingNumericFormat,
+    QgsGeographicCoordinateNumericFormat,
+    QgsLocalDefaultSettings,
+    QgsSettings,
+)
 from qgis.testing import start_app, unittest
-from utilities import (unitTestDataPath)
+
+from utilities import unitTestDataPath
 
 TEST_DATA_DIR = unitTestDataPath()
 
@@ -58,6 +58,27 @@ class TestQgsLocalDefaultSettings(unittest.TestCase):
         s2 = QgsLocalDefaultSettings()
         self.assertEqual(s2.bearingFormat().numberDecimalPlaces(), 3)
         self.assertEqual(s2.bearingFormat().directionFormat(), QgsBearingNumericFormat.UseRangeNegative180ToPositive180)
+
+    def testGeographicCoordinateFormat(self):
+        s = QgsLocalDefaultSettings()
+
+        format = QgsGeographicCoordinateNumericFormat()
+        format.setAngleFormat(QgsGeographicCoordinateNumericFormat.AngleFormat.DegreesMinutes)
+
+        s.setGeographicCoordinateFormat(format)
+        self.assertEqual(s.geographicCoordinateFormat().angleFormat(), QgsGeographicCoordinateNumericFormat.AngleFormat.DegreesMinutes)
+
+        format = QgsGeographicCoordinateNumericFormat()
+        format.setNumberDecimalPlaces(3)
+        format.setAngleFormat(QgsGeographicCoordinateNumericFormat.AngleFormat.DegreesMinutesSeconds)
+        s.setGeographicCoordinateFormat(format)
+        self.assertEqual(s.geographicCoordinateFormat().numberDecimalPlaces(), 3)
+        self.assertEqual(s.geographicCoordinateFormat().angleFormat(), QgsGeographicCoordinateNumericFormat.AngleFormat.DegreesMinutesSeconds)
+
+        # new settings object, should persist.
+        s2 = QgsLocalDefaultSettings()
+        self.assertEqual(s2.geographicCoordinateFormat().numberDecimalPlaces(), 3)
+        self.assertEqual(s2.geographicCoordinateFormat().angleFormat(), QgsGeographicCoordinateNumericFormat.AngleFormat.DegreesMinutesSeconds)
 
 
 if __name__ == '__main__':

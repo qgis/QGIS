@@ -21,41 +21,20 @@ Misc painting enums and functions.
 %End
   public:
 
-    enum BlendMode
-    {
-      BlendNormal,
-      BlendLighten,
-      BlendScreen,
-      BlendDodge,
-      BlendAddition,
-      BlendDarken,
-      BlendMultiply,
-      BlendBurn,
-      BlendOverlay,
-      BlendSoftLight,
-      BlendHardLight,
-      BlendDifference,
-      BlendSubtract,
-      BlendSource,
-      BlendDestinationOver,
-      BlendClear,
-      BlendDestination,
-      BlendSourceIn,
-      BlendDestinationIn,
-      BlendSourceOut,
-      BlendDestinationOut,
-      BlendSourceAtop,
-      BlendDestinationAtop,
-      BlendXor,
-    };
-
-    static QPainter::CompositionMode getCompositionMode( QgsPainting::BlendMode blendMode );
+    static QPainter::CompositionMode getCompositionMode( Qgis::BlendMode blendMode );
 %Docstring
 Returns a QPainter.CompositionMode corresponding to a BlendMode
 %End
-    static QgsPainting::BlendMode getBlendModeEnum( QPainter::CompositionMode blendMode );
+    static Qgis::BlendMode getBlendModeEnum( QPainter::CompositionMode blendMode );
 %Docstring
 Returns a BlendMode corresponding to a QPainter.CompositionMode
+%End
+
+    static bool isClippingMode( Qgis::BlendMode mode );
+%Docstring
+Returns ``True`` if ``mode`` is a clipping blend mode.
+
+.. versionadded:: 3.30
 %End
 
 };

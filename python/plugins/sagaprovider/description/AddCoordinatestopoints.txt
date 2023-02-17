@@ -1,4 +1,0 @@
-Add Coordinates to points
-shapes_points
-QgsProcessingParameterFeatureSource|INPUT|Points|0|None|False
-QgsProcessingParameterVectorDestination|OUTPUT|Points with coordinates

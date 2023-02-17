@@ -2,540 +2,540 @@
 <selection cadence="high">
   <name short="totp-svg">Top of the (svg) palettes</name>
   <synopsis>The 75 most popular svg gradients 
-    on 22/04/2013</synopsis>
+    on 19/07/2022</synopsis>
   <description>
     The 75 most popular svg files with the number downloaded 
     shown in parentheses. The arrows indicate the change in rank in the last
     month. This list is compiled from the files downloaded in the last year 
-    (a total of 1,255 files) and is updated irregularly, most recently on 
-    22/04/2013.
+    (a total of 7,363 files) and is updated irregularly, most recently on 
+    19/07/2022.
   </description>
   <gradients>
 
     <gradient 
-       file="ETOPO1" 
-       dir="ngdc"  
+       file="DEM_print" 
+       dir="td"  
        rank="1"
-       direction="up" 
-       downloads="20"/>
+       direction="unchanged"
+       downloads="218"/>
 
     <gradient 
-       file="afrikakarte-topo" 
-       dir="wkp/lilleskut"  
+       file="DEM_poster" 
+       dir="td"  
        rank="2"
-       direction="down"
-       downloads="14"/>
+       direction="unchanged"
+       downloads="192"/>
 
     <gradient 
        file="DEM_screen" 
        dir="td"  
        rank="3"
        direction="unchanged"
-       downloads="13"/>
-
-    <gradient 
-       file="DEM_print" 
-       dir="td"  
-       rank="4"
-       direction="down"
-       downloads="12"/>
-
-    <gradient 
-       file="nrwc" 
-       dir="wkp/tubs"  
-       rank="5"
-       direction="unchanged"
-       downloads="11"/>
-
-    <gradient 
-       file="cool-warm" 
-       dir="km"  
-       rank="6"
-       direction="up" 
-       downloads="10"/>
+       downloads="180"/>
 
     <gradient 
        file="temperature" 
-       dir="jjg/misc"  
-       rank="6"
+       dir="arendal"  
+       rank="4"
        direction="up" 
-       downloads="10"/>
+       downloads="169"/>
 
     <gradient 
        file="elevation" 
        dir="grass"  
-       rank="8"
-       direction="down"
-       downloads="9"/>
-
-    <gradient 
-       file="GMT_panoply" 
-       dir="gmt"  
-       rank="8"
-       direction="down"
-       downloads="9"/>
-
-    <gradient 
-       file="nordisk-familjebok" 
-       dir="wkp/encyclopedia"  
-       rank="8"
-       direction="up" 
-       downloads="9"/>
-
-    <gradient 
-       file="wiki-schwarzwald-d050" 
-       dir="wkp/schwarzwald"  
-       rank="8"
-       direction="down"
-       downloads="9"/>
-
-    <gradient 
-       file="sst" 
-       dir="oc"  
-       rank="8"
-       direction="up" 
-       downloads="9"/>
-
-    <gradient 
-       file="wiki-schwarzwald-d100" 
-       dir="wkp/schwarzwald"  
-       rank="13"
-       direction="down"
-       downloads="8"/>
-
-    <gradient 
-       file="afrikakarte" 
-       dir="wkp/lilleskut"  
-       rank="13"
-       direction="down"
-       downloads="8"/>
-
-    <gradient 
-       file="mby" 
-       dir="mby"  
-       rank="15"
-       direction="up" 
-       downloads="7"/>
-
-    <gradient 
-       file="rainbow" 
-       dir="oc"  
-       rank="15"
-       direction="down"
-       downloads="7"/>
-
-    <gradient 
-       file="GMT_haxby" 
-       dir="gmt"  
-       rank="15"
-       direction="up" 
-       downloads="7"/>
+       rank="5"
+       direction="unchanged"
+       downloads="144"/>
 
     <gradient 
        file="colombia" 
        dir="wkp/shadowxfox"  
-       rank="15"
+       rank="6"
+       direction="unchanged"
+       downloads="91"/>
+
+    <gradient 
+       file="usgs" 
+       dir="usgs"  
+       rank="6"
        direction="up" 
-       downloads="7"/>
-
-    <gradient 
-       file="BlueWhiteOrangeRed" 
-       dir="ncl"  
-       rank="19"
-       direction="up" 
-       downloads="6"/>
-
-    <gradient 
-       file="DEM_poster" 
-       dir="td"  
-       rank="19"
-       direction="down"
-       downloads="6"/>
-
-    <gradient 
-       file="temp_19lev" 
-       dir="ncl"  
-       rank="19"
-       direction="down"
-       downloads="6"/>
-
-    <gradient 
-       file="blue-tan" 
-       dir="km"  
-       rank="19"
-       direction="up" 
-       downloads="6"/>
-
-    <gradient 
-       file="cool-warm-d05" 
-       dir="km"  
-       rank="19"
-       direction="down"
-       downloads="6"/>
-
-    <gradient 
-       file="NZ_blue" 
-       dir="em"  
-       rank="24"
-       direction="down"
-       downloads="5"/>
-
-    <gradient 
-       file="wiki-schwarzwald-d020" 
-       dir="wkp/schwarzwald"  
-       rank="24"
-       direction="down"
-       downloads="5"/>
-
-    <gradient 
-       file="fs2010" 
-       dir="cl"  
-       rank="24"
-       direction="down"
-       downloads="5"/>
-
-    <gradient 
-       file="wiki-2.0" 
-       dir="wkp/template"  
-       rank="24"
-       direction="up" 
-       downloads="5"/>
-
-    <gradient 
-       file="wiki-schwarzwald-d010" 
-       dir="wkp/schwarzwald"  
-       rank="24"
-       direction="down"
-       downloads="5"/>
-
-    <gradient 
-       file="nrwd" 
-       dir="wkp/tubs"  
-       rank="24"
-       direction="up" 
-       downloads="5"/>
-
-    <gradient 
-       file="ibcao" 
-       dir="ibcao"  
-       rank="24"
-       direction="up" 
-       downloads="5"/>
-
-    <gradient 
-       file="purple-orange" 
-       dir="km"  
-       rank="24"
-       direction="up" 
-       downloads="5"/>
-
-    <gradient 
-       file="blue-tan-d05" 
-       dir="km"  
-       rank="24"
-       direction="up" 
-       downloads="5"/>
-
-    <gradient 
-       file="etopo2" 
-       dir="grass"  
-       rank="24"
-       direction="up" 
-       downloads="5"/>
-
-    <gradient 
-       file="xkcd-bath" 
-       dir="xkcd"  
-       rank="24"
-       direction="up" 
-       downloads="5"/>
-
-    <gradient 
-       file="ETOPO1-Reed" 
-       dir="ngdc"  
-       rank="24"
-       direction="down"
-       downloads="5"/>
+       downloads="91"/>
 
     <gradient 
        file="wiki-schwarzwald-cont" 
        dir="wkp/schwarzwald"  
+       rank="8"
+       direction="unchanged"
+       downloads="81"/>
+
+    <gradient 
+       file="europe_3" 
+       dir="esri/hypsometry/eu"  
+       rank="9"
+       direction="unchanged"
+       downloads="70"/>
+
+    <gradient 
+       file="usgs-gswa2" 
+       dir="usgs"  
+       rank="10"
+       direction="unchanged"
+       downloads="66"/>
+
+    <gradient 
+       file="mexico" 
+       dir="esri/hypsometry/ca"  
+       rank="10"
+       direction="up" 
+       downloads="66"/>
+
+    <gradient 
+       file="europe_4" 
+       dir="esri/hypsometry/eu"  
+       rank="12"
+       direction="down"
+       downloads="57"/>
+
+    <gradient 
+       file="wiki-2.0" 
+       dir="wkp/template"  
+       rank="13"
+       direction="up" 
+       downloads="52"/>
+
+    <gradient 
+       file="ETOPO1" 
+       dir="ngdc"  
+       rank="14"
+       direction="up" 
+       downloads="50"/>
+
+    <gradient 
+       file="temperature" 
+       dir="jjg/misc"  
+       rank="14"
+       direction="down"
+       downloads="50"/>
+
+    <gradient 
+       file="NZ_blue" 
+       dir="em"  
+       rank="16"
+       direction="down"
+       downloads="47"/>
+
+    <gradient 
+       file="usgs-feet" 
+       dir="usgs"  
+       rank="17"
+       direction="up" 
+       downloads="46"/>
+
+    <gradient 
+       file="sd-a" 
+       dir="jm/sd"  
+       rank="18"
+       direction="down"
+       downloads="45"/>
+
+    <gradient 
+       file="earth" 
+       dir="gist"  
+       rank="19"
+       direction="down"
+       downloads="44"/>
+
+    <gradient 
+       file="bcyr" 
+       dir="grass"  
+       rank="20"
+       direction="down"
+       downloads="43"/>
+
+    <gradient 
+       file="mby" 
+       dir="mby"  
+       rank="21"
+       direction="unchanged"
+       downloads="42"/>
+
+    <gradient 
+       file="wiki-schwarzwald-d050" 
+       dir="wkp/schwarzwald"  
+       rank="22"
+       direction="up" 
+       downloads="40"/>
+
+    <gradient 
+       file="spain" 
+       dir="esri/hypsometry/eu"  
+       rank="22"
+       direction="down"
+       downloads="40"/>
+
+    <gradient 
+       file="humidity" 
+       dir="ukmo/wow"  
+       rank="24"
+       direction="up" 
+       downloads="38"/>
+
+    <gradient 
+       file="arctic" 
+       dir="arendal"  
+       rank="24"
+       direction="up" 
+       downloads="38"/>
+
+    <gradient 
+       file="europe_2" 
+       dir="esri/hypsometry/eu"  
        rank="24"
        direction="down"
-       downloads="5"/>
+       downloads="38"/>
 
     <gradient 
-       file="cool-warm-d15" 
-       dir="km"  
-       rank="24"
+       file="purplefly" 
+       dir="rc"  
+       rank="27"
        direction="up" 
-       downloads="5"/>
+       downloads="36"/>
 
     <gradient 
-       file="meyers" 
-       dir="wkp/encyclopedia"  
+       file="rainbow" 
+       dir="oc"  
+       rank="28"
+       direction="unchanged"
+       downloads="34"/>
+
+    <gradient 
+       file="precip2_17lev" 
+       dir="ncl"  
+       rank="28"
+       direction="up" 
+       downloads="34"/>
+
+    <gradient 
+       file="nrwc" 
+       dir="wkp/tubs"  
+       rank="30"
+       direction="down"
+       downloads="32"/>
+
+    <gradient 
+       file="europe_8" 
+       dir="esri/hypsometry/eu"  
+       rank="31"
+       direction="up" 
+       downloads="31"/>
+
+    <gradient 
+       file="precip3_16lev" 
+       dir="ncl"  
+       rank="32"
+       direction="up" 
+       downloads="30"/>
+
+    <gradient 
+       file="deep" 
+       dir="cmocean"  
+       rank="33"
+       direction="down"
+       downloads="29"/>
+
+    <gradient 
+       file="topo_15lev" 
+       dir="ncl"  
+       rank="33"
+       direction="up" 
+       downloads="29"/>
+
+    <gradient 
+       file="GMT_dem1" 
+       dir="gmt"  
+       rank="33"
+       direction="unchanged"
+       downloads="29"/>
+
+    <gradient 
+       file="aurora" 
+       dir="nord"  
+       rank="33"
+       direction="unchanged"
+       downloads="29"/>
+
+    <gradient 
+       file="GMT_seis" 
+       dir="gmt"  
+       rank="33"
+       direction="up" 
+       downloads="29"/>
+
+    <gradient 
+       file="palm_springs_4" 
+       dir="esri/hypsometry/na"  
        rank="38"
        direction="up" 
-       downloads="4"/>
+       downloads="28"/>
 
     <gradient 
-       file="blue-yellow-d09" 
-       dir="km"  
-       rank="38"
-       direction="up" 
-       downloads="4"/>
-
-    <gradient 
-       file="blue-yellow-d07" 
-       dir="km"  
-       rank="38"
-       direction="up" 
-       downloads="4"/>
-
-    <gradient 
-       file="cool-warm-d07" 
-       dir="km"  
-       rank="38"
-       direction="up" 
-       downloads="4"/>
-
-    <gradient 
-       file="blue-yellow-d05" 
-       dir="km"  
-       rank="38"
-       direction="up" 
-       downloads="4"/>
-
-    <gradient 
-       file="BlueDarkRed18" 
+       file="BlueWhiteOrangeRed" 
        dir="ncl"  
        rank="38"
        direction="up" 
-       downloads="4"/>
+       downloads="28"/>
 
     <gradient 
-       file="blue-tan-d14" 
-       dir="km"  
-       rank="38"
-       direction="up" 
-       downloads="4"/>
-
-    <gradient 
-       file="ch05m151010" 
-       dir="dg"  
+       file="temp-c" 
+       dir="ukmo/wow"  
        rank="38"
        direction="down"
-       downloads="4"/>
+       downloads="28"/>
 
     <gradient 
-       file="blue-tan-d13" 
-       dir="km"  
-       rank="38"
-       direction="up" 
-       downloads="4"/>
-
-    <gradient 
-       file="seismic" 
-       dir="gery"  
-       rank="38"
-       direction="up" 
-       downloads="4"/>
-
-    <gradient 
-       file="blue-tan-d11" 
-       dir="km"  
-       rank="38"
-       direction="up" 
-       downloads="4"/>
-
-    <gradient 
-       file="blue-tan-d09" 
-       dir="km"  
-       rank="38"
-       direction="up" 
-       downloads="4"/>
-
-    <gradient 
-       file="Spectral_11" 
-       dir="cb/div"  
-       rank="38"
-       direction="up" 
-       downloads="4"/>
-
-    <gradient 
-       file="bath_112" 
-       dir="esri/hypsometry/bath"  
-       rank="38"
-       direction="up" 
-       downloads="4"/>
-
-    <gradient 
-       file="blue-tan-d07" 
-       dir="km"  
-       rank="38"
-       direction="up" 
-       downloads="4"/>
-
-    <gradient 
-       file="blue-yellow-d08" 
-       dir="km"  
-       rank="38"
-       direction="up" 
-       downloads="4"/>
-
-    <gradient 
-       file="Blues_09" 
-       dir="cb/seq"  
-       rank="38"
-       direction="up" 
-       downloads="4"/>
-
-    <gradient 
-       file="blue-yellow-d06" 
-       dir="km"  
-       rank="38"
-       direction="up" 
-       downloads="4"/>
-
-    <gradient 
-       file="YlOrRd_06" 
-       dir="cb/seq"  
-       rank="38"
-       direction="up" 
-       downloads="4"/>
-
-    <gradient 
-       file="blue-tan-d15" 
-       dir="km"  
-       rank="38"
-       direction="up" 
-       downloads="4"/>
-
-    <gradient 
-       file="cool-warm-d08" 
-       dir="km"  
-       rank="38"
-       direction="up" 
-       downloads="4"/>
-
-    <gradient 
-       file="green-purple" 
-       dir="km"  
-       rank="38"
-       direction="up" 
-       downloads="4"/>
-
-    <gradient 
-       file="bgyr" 
-       dir="grass"  
+       file="wiki-knutux" 
+       dir="wkp/knutux"  
        rank="38"
        direction="down"
-       downloads="4"/>
+       downloads="28"/>
 
     <gradient 
-       file="blue-tan-d12" 
-       dir="km"  
-       rank="38"
+       file="wiki-zurich" 
+       dir="wkp/country"  
+       rank="42"
+       direction="down"
+       downloads="26"/>
+
+    <gradient 
+       file="usgs-gswa1" 
+       dir="usgs"  
+       rank="42"
        direction="up" 
-       downloads="4"/>
+       downloads="26"/>
+
+    <gradient 
+       file="topo" 
+       dir="cmocean"  
+       rank="44"
+       direction="down"
+       downloads="25"/>
+
+    <gradient 
+       file="zambezi-focus" 
+       dir="arendal"  
+       rank="44"
+       direction="up" 
+       downloads="25"/>
 
     <gradient 
        file="GMT_globe" 
        dir="gmt"  
-       rank="38"
-       direction="down"
-       downloads="4"/>
-
-    <gradient 
-       file="blue-tan-d10" 
-       dir="km"  
-       rank="38"
+       rank="44"
        direction="up" 
-       downloads="4"/>
+       downloads="25"/>
 
     <gradient 
-       file="GMT_wysiwyg" 
+       file="sst" 
+       dir="oc"  
+       rank="44"
+       direction="down"
+       downloads="25"/>
+
+    <gradient 
+       file="thermal" 
+       dir="cmocean"  
+       rank="44"
+       direction="up" 
+       downloads="25"/>
+
+    <gradient 
+       file="GMT_topo" 
        dir="gmt"  
-       rank="38"
+       rank="44"
        direction="up" 
-       downloads="4"/>
+       downloads="25"/>
 
     <gradient 
-       file="haxby" 
-       dir="grass"  
-       rank="38"
+       file="Sunset_Real" 
+       dir="nd/atmospheric"  
+       rank="50"
        direction="down"
-       downloads="4"/>
+       downloads="24"/>
 
     <gradient 
-       file="blue-tan-d08" 
-       dir="km"  
-       rank="38"
+       file="bath_112" 
+       dir="esri/hypsometry/bath"  
+       rank="50"
        direction="up" 
-       downloads="4"/>
+       downloads="24"/>
 
     <gradient 
-       file="fs2006" 
-       dir="cl"  
-       rank="38"
+       file="natural" 
+       dir="fme/metres"  
+       rank="50"
        direction="up" 
-       downloads="4"/>
+       downloads="24"/>
 
     <gradient 
-       file="rain-mmh" 
-       dir="ukmo/wow"  
-       rank="38"
+       file="wiki-schwarzwald-d020" 
+       dir="wkp/schwarzwald"  
+       rank="50"
+       direction="up" 
+       downloads="24"/>
+
+    <gradient 
+       file="GMT_ocean" 
+       dir="gmt"  
+       rank="50"
        direction="down"
-       downloads="4"/>
+       downloads="24"/>
 
     <gradient 
-       file="blue-tan-d06" 
-       dir="km"  
-       rank="38"
-       direction="up" 
-       downloads="4"/>
-
-    <gradient 
-       file="green-purple-d07" 
-       dir="km"  
-       rank="70"
-       direction="up" 
-       downloads="3"/>
-
-    <gradient 
-       file="cool-warm-d13" 
-       dir="km"  
-       rank="70"
-       direction="up" 
-       downloads="3"/>
-
-    <gradient 
-       file="green-red-d11" 
-       dir="km"  
-       rank="70"
-       direction="up" 
-       downloads="3"/>
-
-    <gradient 
-       file="green-purple-d05" 
-       dir="km"  
-       rank="70"
-       direction="up" 
-       downloads="3"/>
-
-    <gradient 
-       file="purple-orange-d14" 
-       dir="km"  
-       rank="70"
-       direction="up" 
-       downloads="3"/>
-
-    <gradient 
-       file="alarm.p1.0.3" 
-       dir="dca"  
-       rank="70"
+       file="europe_9" 
+       dir="esri/hypsometry/eu"  
+       rank="50"
        direction="down"
-       downloads="3"/>
+       downloads="24"/>
+
+    <gradient 
+       file="wiki-precip-mm" 
+       dir="wkp/precip"  
+       rank="50"
+       direction="down"
+       downloads="24"/>
+
+    <gradient 
+       file="jet" 
+       dir="h5"  
+       rank="57"
+       direction="down"
+       downloads="23"/>
+
+    <gradient 
+       file="GMT_dem4" 
+       dir="gmt"  
+       rank="57"
+       direction="down"
+       downloads="23"/>
+
+    <gradient 
+       file="ibcao" 
+       dir="ibcao"  
+       rank="57"
+       direction="down"
+       downloads="23"/>
+
+    <gradient 
+       file="cequal" 
+       dir="imagej"  
+       rank="60"
+       direction="down"
+       downloads="22"/>
+
+    <gradient 
+       file="wiki-schwarzwald-d010" 
+       dir="wkp/schwarzwald"  
+       rank="60"
+       direction="up" 
+       downloads="22"/>
+
+    <gradient 
+       file="ETOPO1-Reed" 
+       dir="ngdc"  
+       rank="60"
+       direction="up" 
+       downloads="22"/>
+
+    <gradient 
+       file="europe_7" 
+       dir="esri/hypsometry/eu"  
+       rank="60"
+       direction="up" 
+       downloads="22"/>
+
+    <gradient 
+       file="wiki-france" 
+       dir="wkp/country"  
+       rank="60"
+       direction="up" 
+       downloads="22"/>
+
+    <gradient 
+       file="chile" 
+       dir="esri/hypsometry/sa"  
+       rank="65"
+       direction="down"
+       downloads="21"/>
+
+    <gradient 
+       file="europe_6" 
+       dir="esri/hypsometry/eu"  
+       rank="65"
+       direction="unchanged"
+       downloads="21"/>
+
+    <gradient 
+       file="GMT_rainbow" 
+       dir="gmt"  
+       rank="65"
+       direction="up" 
+       downloads="21"/>
+
+    <gradient 
+       file="rainfall" 
+       dir="jjg/misc"  
+       rank="65"
+       direction="up" 
+       downloads="21"/>
+
+    <gradient 
+       file="utah_1" 
+       dir="esri/hypsometry/na"  
+       rank="69"
+       direction="up" 
+       downloads="20"/>
+
+    <gradient 
+       file="c3t3" 
+       dir="jjg/dem"  
+       rank="69"
+       direction="down"
+       downloads="20"/>
+
+    <gradient 
+       file="ndvi" 
+       dir="oc"  
+       rank="69"
+       direction="unchanged"
+       downloads="20"/>
+
+    <gradient 
+       file="tpglhwm" 
+       dir="tp"  
+       rank="72"
+       direction="down"
+       downloads="19"/>
+
+    <gradient 
+       file="temp_19lev" 
+       dir="ncl"  
+       rank="72"
+       direction="down"
+       downloads="19"/>
+
+    <gradient 
+       file="illumination" 
+       dir="esri/hillshade"  
+       rank="72"
+       direction="down"
+       downloads="19"/>
+
+    <gradient 
+       file="haline" 
+       dir="cmocean"  
+       rank="72"
+       direction="down"
+       downloads="19"/>
 
   </gradients>
 </selection>

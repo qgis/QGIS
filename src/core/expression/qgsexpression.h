@@ -370,6 +370,20 @@ class CORE_EXPORT QgsExpression
     static int expressionToLayerFieldIndex( const QString &expression, const QgsVectorLayer *layer );
 
     /**
+     * Validate if the expression is a field in the \a layer and ensure it is quoted.
+     *
+     * Given a string which may either directly match a field name from a layer, OR may
+     * be an expression which consists only of a single field reference for that layer, this
+     * method will return the quoted field.
+     *
+     * \returns the \a expression if not a field or quotes are not required, otherwise returns a quoted field.
+     *
+     * \see expressionToLayerFieldIndex()
+     * \since QGIS 3.24
+     */
+    static QString quoteFieldExpression( const QString &expression, const QgsVectorLayer *layer );
+
+    /**
      * Tests whether a string is a valid expression.
      * \param text string to test
      * \param context optional expression context

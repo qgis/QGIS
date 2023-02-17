@@ -16,25 +16,25 @@
 #include "qgsmaplayerstylecategoriesmodel.h"
 #include "qgsapplication.h"
 
-QgsMapLayerStyleCategoriesModel::QgsMapLayerStyleCategoriesModel( QgsMapLayerType type, QObject *parent )
+QgsMapLayerStyleCategoriesModel::QgsMapLayerStyleCategoriesModel( Qgis::LayerType type, QObject *parent )
   : QAbstractListModel( parent )
 {
   switch ( type )
   {
-    case QgsMapLayerType::VectorLayer:
-      mCategoryList = qgsEnumMap<QgsMapLayer::StyleCategory>().keys();
+    case Qgis::LayerType::Vector:
+      mCategoryList = qgsEnumList<QgsMapLayer::StyleCategory>();
       break;
 
-    case QgsMapLayerType::VectorTileLayer:
+    case Qgis::LayerType::VectorTile:
       mCategoryList << QgsMapLayer::StyleCategory::Symbology << QgsMapLayer::StyleCategory::Labeling << QgsMapLayer::StyleCategory::AllStyleCategories;
       break;
 
-    case QgsMapLayerType::RasterLayer:
-    case QgsMapLayerType::AnnotationLayer:
-    case QgsMapLayerType::PluginLayer:
-    case QgsMapLayerType::MeshLayer:
-    case QgsMapLayerType::PointCloudLayer:
-    case QgsMapLayerType::GroupLayer:
+    case Qgis::LayerType::Raster:
+    case Qgis::LayerType::Annotation:
+    case Qgis::LayerType::Plugin:
+    case Qgis::LayerType::Mesh:
+    case Qgis::LayerType::PointCloud:
+    case Qgis::LayerType::Group:
       // not yet handled by the model
       break;
   }

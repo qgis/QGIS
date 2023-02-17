@@ -41,13 +41,23 @@ class CORE_EXPORT QgsProcessingAlgRunnerTask : public QgsTask
     /**
      * Constructor for QgsProcessingAlgRunnerTask. Takes an \a algorithm, algorithm \a parameters
      * and processing \a context.
+     *
+     * Since QGIS 3.26, the \a flags argument allows control over task flags.
      */
     QgsProcessingAlgRunnerTask( const QgsProcessingAlgorithm *algorithm,
                                 const QVariantMap &parameters,
                                 QgsProcessingContext &context,
-                                QgsProcessingFeedback *feedback = nullptr );
+                                QgsProcessingFeedback *feedback = nullptr,
+                                QgsTask::Flags flags = QgsTask::CanCancel );
 
     void cancel() override;
+
+    /**
+     * Returns TRUE if the algorithm was canceled.
+     *
+     * \since QGIS 3.26
+     */
+    bool algorithmCanceled() { return isCanceled(); }
 
   signals:
 

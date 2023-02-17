@@ -33,7 +33,7 @@ class QgsProject;
  *
  * QgsMapViewsManager handles the storage, serializing and deserializing
  * of views. Usually this class is not constructed directly, but rather
- * accessed through a QgsProject via QgsProject::get3DViewsManager() for example.
+ * accessed through a QgsProject via QgsProject::viewsManager().
  *
  * \since QGIS 3.24
  */

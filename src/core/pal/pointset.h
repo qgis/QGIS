@@ -42,6 +42,7 @@
 
 #include "qgis_core.h"
 #include "qgsrectangle.h"
+#include "qgsgeos.h"
 
 namespace pal
 {
@@ -183,7 +184,17 @@ namespace pal
        * \param px final x coord on line
        * \param py final y coord on line
       */
-      void getPointByDistance( double *d, double *ad, double dl, double *px, double *py );
+      void getPointByDistance( double *d, double *ad, double dl, double *px, double *py ) const;
+
+      /**
+       * Returns a GEOS geometry representing the point interpolated on the shape by distance.
+       */
+      geos::unique_ptr interpolatePoint( double distance ) const;
+
+      /**
+       * Returns the distance along the geometry closest to the specified GEOS \a point.
+       */
+      double lineLocatePoint( const GEOSGeometry *point ) const;
 
       /**
        * Returns the point set's GEOS geometry.
@@ -242,7 +253,7 @@ namespace pal
       void createGeosGeom() const;
       const GEOSPreparedGeometry *preparedGeom() const;
 
-      void invalidateGeos();
+      void invalidateGeos() const;
 
       double xmin = std::numeric_limits<double>::max();
       double xmax = std::numeric_limits<double>::lowest();

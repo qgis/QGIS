@@ -59,7 +59,7 @@ QgsPointDisplacementRenderer *QgsPointDisplacementRenderer::clone() const
   return r;
 }
 
-void QgsPointDisplacementRenderer::drawGroup( QPointF centerPoint, QgsRenderContext &context, const ClusteredGroup &group )
+void QgsPointDisplacementRenderer::drawGroup( QPointF centerPoint, QgsRenderContext &context, const ClusteredGroup &group ) const
 {
 
   //calculate max diagonal size from all symbols in group
@@ -398,7 +398,7 @@ void QgsPointDisplacementRenderer::centralizeGrid( QList<QPointF> &pointSymbolPo
 }
 
 void QgsPointDisplacementRenderer::drawGrid( int gridSizeUnits, QgsSymbolRenderContext &context,
-    QList<QPointF> pointSymbolPositions, int nSymbols )
+    QList<QPointF> pointSymbolPositions, int nSymbols ) const
 {
   QPainter *p = context.renderContext().painter();
   if ( nSymbols < 2 || !p ) //draw grid only if multiple features
@@ -426,7 +426,7 @@ void QgsPointDisplacementRenderer::drawGrid( int gridSizeUnits, QgsSymbolRenderC
   }
 }
 
-void QgsPointDisplacementRenderer::drawCircle( double radiusPainterUnits, QgsSymbolRenderContext &context, QPointF centerPoint, int nSymbols )
+void QgsPointDisplacementRenderer::drawCircle( double radiusPainterUnits, QgsSymbolRenderContext &context, QPointF centerPoint, int nSymbols ) const
 {
   QPainter *p = context.renderContext().painter();
   if ( nSymbols < 2 || !p ) //draw circle only if multiple features
@@ -441,7 +441,7 @@ void QgsPointDisplacementRenderer::drawCircle( double radiusPainterUnits, QgsSym
   p->drawArc( QRectF( centerPoint.x() - radiusPainterUnits, centerPoint.y() - radiusPainterUnits, 2 * radiusPainterUnits, 2 * radiusPainterUnits ), 0, 5760 );
 }
 
-void QgsPointDisplacementRenderer::drawSymbols( const ClusteredGroup &group, QgsRenderContext &context, const QList<QPointF> &symbolPositions )
+void QgsPointDisplacementRenderer::drawSymbols( const ClusteredGroup &group, QgsRenderContext &context, const QList<QPointF> &symbolPositions ) const
 {
   QList<QPointF>::const_iterator symbolPosIt = symbolPositions.constBegin();
   ClusteredGroup::const_iterator groupIt = group.constBegin();

@@ -86,7 +86,7 @@ class CORE_EXPORT QgsMapClippingUtils
      *
      * \returns combined painter clipping region for use when rendering maps
      */
-    static QPainterPath calculatePainterClipRegion( const QList< QgsMapClippingRegion > &regions, const QgsRenderContext &context, QgsMapLayerType layerType, bool &shouldClip );
+    static QPainterPath calculatePainterClipRegion( const QList< QgsMapClippingRegion > &regions, const QgsRenderContext &context, Qgis::LayerType layerType, bool &shouldClip );
 
     /**
      * Returns the geometry representing the intersection of clipping \a regions from \a context which should be used to clip individual

@@ -213,7 +213,6 @@
      <addaction name="separator"/>
      <addaction name="mActionSetStyles"/>
      <addaction name="separator"/>
-     <addaction name="mActionDockUndock"/>
     </widget>
    </item>
   </layout>
@@ -508,21 +507,6 @@
     <string>Conditional formatting</string>
    </property>
   </action>
-  <action name="mActionDockUndock">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="icon">
-    <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mDockify.svg</normaloff>:/images/themes/default/mDockify.svg</iconset>
-   </property>
-   <property name="text">
-    <string>Dock Attribute Table</string>
-   </property>
-   <property name="toolTip">
-    <string>Dock Attribute Table</string>
-   </property>
-  </action>
   <action name="mActionOrganizeColumns">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
@@ -589,57 +573,9 @@
  </tabstops>
  <resources>
   <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
  </resources>
- <connections>
-  <connection>
-   <sender>mMainViewButtonGroup</sender>
-   <signal>buttonClicked(int)</signal>
-   <receiver>mMainView</receiver>
-   <slot>setCurrentIndex(int)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>-1</x>
-     <y>-1</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>393</x>
-     <y>266</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>mActionToggleEditing</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>mActionSaveEdits</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>-1</x>
-     <y>-1</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>-1</x>
-     <y>-1</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>mActionToggleEditing</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>mActionReload</receiver>
-   <slot>setDisabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>-1</x>
-     <y>-1</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>-1</x>
-     <y>-1</y>
-    </hint>
-   </hints>
-  </connection>
- </connections>
+ <connections/>
  <buttongroups>
   <buttongroup name="mMainViewButtonGroup"/>
  </buttongroups>

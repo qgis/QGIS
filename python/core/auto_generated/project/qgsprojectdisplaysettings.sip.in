@@ -8,6 +8,7 @@
 
 
 
+
 class QgsProjectDisplaySettings : QObject
 {
 %Docstring(signature="appended")
@@ -21,6 +22,7 @@ values such as map coordinates and bearings.
 #include "qgsprojectdisplaysettings.h"
 %End
   public:
+
 
     QgsProjectDisplaySettings( QObject *parent = 0 );
 %Docstring
@@ -54,6 +56,99 @@ Returns the project bearing's format, which controls how bearings associated wit
 .. seealso:: :py:func:`bearingFormatChanged`
 %End
 
+    void setGeographicCoordinateFormat( QgsGeographicCoordinateNumericFormat *format /Transfer/ );
+%Docstring
+Sets the project geographic coordinate ``format``, which controls how geographic coordinates associated with the project are displayed.
+
+Ownership of ``format`` is transferred to the settings.
+
+.. seealso:: :py:func:`geographicCoordinateFormat`
+
+.. seealso:: :py:func:`geographicCoordinateFormatChanged`
+
+.. versionadded:: 3.26
+%End
+
+    const QgsGeographicCoordinateNumericFormat *geographicCoordinateFormat() const;
+%Docstring
+Returns the project's geographic coordinate format, which controls how geographic coordinates associated with the project are displayed.
+
+.. seealso:: :py:func:`setGeographicCoordinateFormat`
+
+.. seealso:: :py:func:`geographicCoordinateFormatChanged`
+%End
+
+    Qgis::CoordinateDisplayType coordinateType() const;
+%Docstring
+Returns default coordinate type for the project.
+
+.. seealso:: :py:func:`setCoordinateType`
+
+.. versionadded:: 3.28
+%End
+
+    void setCoordinateType( Qgis::CoordinateDisplayType type );
+%Docstring
+Sets the default coordinate ``type`` for the project.
+
+.. seealso:: :py:func:`coordinateType`
+
+.. versionadded:: 3.28
+%End
+
+    Qgis::CoordinateOrder coordinateAxisOrder() const;
+%Docstring
+Returns default coordinate axis order to use when displaying coordinates for the project.
+
+.. seealso:: :py:func:`setCoordinateAxisOrder`
+
+.. seealso:: :py:func:`coordinateAxisOrderChanged`
+
+.. versionadded:: 3.28
+%End
+
+    void setCoordinateAxisOrder( Qgis::CoordinateOrder order );
+%Docstring
+Sets the default coordinate axis ``order`` to use when displaying coordinates for the project.
+
+.. seealso:: :py:func:`coordinateAxisOrder`
+
+.. seealso:: :py:func:`coordinateAxisOrderChanged`
+
+.. versionadded:: 3.28
+%End
+
+    QgsCoordinateReferenceSystem coordinateCustomCrs() const;
+%Docstring
+Returns the coordinate custom CRS used when the project coordinate type is set to Qgis.CoordinateDisplayType.CustomCrs.
+
+.. seealso:: :py:func:`setCoordinateCustomCrs`
+
+.. versionadded:: 3.28
+%End
+
+    void setCoordinateCustomCrs( const QgsCoordinateReferenceSystem &crs );
+%Docstring
+Sets the coordinate custom CRS used when the project coordinate type is set to Qgis.CoordinateDisplayType.CustomCrs.
+
+.. seealso:: :py:func:`setCoordinateCustomCrs`
+
+.. versionadded:: 3.28
+%End
+
+    QgsCoordinateReferenceSystem coordinateCrs() const;
+%Docstring
+Returns the coordinate display CRS used derived from the coordinate type.
+
+.. seealso:: :py:func:`coordinateType`
+
+.. note::
+
+   if not parented to a project object, an invalid CRS will be returned.
+
+.. versionadded:: 3.28
+%End
+
     bool readXml( const QDomElement &element, const QgsReadWriteContext &context );
 %Docstring
 Reads the settings's state from a DOM element.
@@ -77,6 +172,59 @@ Emitted when the bearing format changes.
 .. seealso:: :py:func:`setBearingFormat`
 
 .. seealso:: :py:func:`bearingFormat`
+%End
+
+    void geographicCoordinateFormatChanged();
+%Docstring
+Emitted when the geographic coordinate format changes.
+
+.. seealso:: :py:func:`setGeographicCoordinateFormat`
+
+.. seealso:: :py:func:`geographicCoordinateFormat`
+%End
+
+    void coordinateTypeChanged();
+%Docstring
+Emitted when the default coordinate format changes.
+
+.. seealso:: :py:func:`setCoordinateType`
+
+.. seealso:: :py:func:`coordinateType`
+
+.. versionadded:: 3.28
+%End
+
+    void coordinateAxisOrderChanged();
+%Docstring
+Emitted when the default coordinate axis order changes.
+
+.. seealso:: :py:func:`setCoordinateAxisOrder`
+
+.. seealso:: :py:func:`coordinateAxisOrder`
+
+.. versionadded:: 3.28
+%End
+
+    void coordinateCustomCrsChanged();
+%Docstring
+Emitted when the coordinate custom CRS changes.
+
+.. seealso:: :py:func:`setCoordinateCustomCrs`
+
+.. seealso:: :py:func:`coordinateCustomCrs`
+
+.. versionadded:: 3.28
+%End
+
+    void coordinateCrsChanged();
+%Docstring
+Emitted when the coordinate CRS changes.
+
+.. seealso:: :py:func:`coordinateCrs`
+
+.. seealso:: :py:func:`coordinateType`
+
+.. versionadded:: 3.28
 %End
 
 };

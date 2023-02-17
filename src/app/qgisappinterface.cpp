@@ -29,7 +29,6 @@
 #include "qgisappstylesheet.h"
 #include "qgisapp.h"
 #include "qgsapplayertreeviewmenuprovider.h"
-#include "qgsdatumtransformdialog.h"
 #include "qgsgui.h"
 #include "qgsmaplayer.h"
 #include "qgsmaptooladvanceddigitizing.h"
@@ -39,16 +38,13 @@
 #include "qgslayoutdesignerdialog.h"
 #include "qgsshortcutsmanager.h"
 #include "qgsattributedialog.h"
-#include "qgsfields.h"
 #include "qgsvectordataprovider.h"
 #include "qgsfeatureaction.h"
-#include "qgsactionmanager.h"
 #include "qgsattributetabledialog.h"
 #include "qgslocatorwidget.h"
 #include "qgslocator.h"
 #include "qgsmessagebar.h"
 #include "qgsappmaptools.h"
-#include "qgsmaptoolmodifyannotation.h"
 
 QgisAppInterface::QgisAppInterface( QgisApp *_qgis )
   : qgis( _qgis )
@@ -85,7 +81,7 @@ QgsLayerTreeView *QgisAppInterface::layerTreeView()
 }
 
 void QgisAppInterface::addCustomActionForLayerType( QAction *action,
-    QString menu, QgsMapLayerType type, bool allLayers )
+    QString menu, Qgis::LayerType type, bool allLayers )
 {
   QgsAppLayerTreeViewMenuProvider *menuProvider = dynamic_cast<QgsAppLayerTreeViewMenuProvider *>( qgis->layerTreeView()->menuProvider() );
   if ( !menuProvider )
@@ -639,6 +635,54 @@ void QgisAppInterface::unregisterCustomProjectOpenHandler( QgsCustomProjectOpenH
 }
 
 QMenu *QgisAppInterface::projectMenu() { return qgis->projectMenu(); }
+QMenu *QgisAppInterface::projectImportExportMenu() { return qgis->projectImportExportMenu(); }
+
+void QgisAppInterface::addProjectImportAction( QAction *action )
+{
+  if ( QMenu *menu = projectImportExportMenu() )
+  {
+    // import actions come at the end of the menu, so we can add this action
+    // directly
+    menu->addAction( action );
+  }
+}
+
+void QgisAppInterface::removeProjectImportAction( QAction *action )
+{
+  if ( QMenu *menu = projectImportExportMenu() )
+  {
+    menu->removeAction( action );
+  }
+}
+
+void QgisAppInterface::addProjectExportAction( QAction *action )
+{
+  if ( QMenu *menu = projectImportExportMenu() )
+  {
+    // export actions come before import actions in the menu, so find separator in menu
+    const QList< QAction * > actions = menu->actions();
+    for ( QAction *menuAction : actions )
+    {
+      if ( menuAction->isSeparator() )
+      {
+        menu->insertAction( menuAction, action );
+        return;
+      }
+    }
+    // play it safe -- if we change the menu in future and remove the separator, ensure
+    // the action is still added somewhere
+    menu->addAction( action );
+  }
+}
+
+void QgisAppInterface::removeProjectExportAction( QAction *action )
+{
+  if ( QMenu *menu = projectImportExportMenu() )
+  {
+    menu->removeAction( action );
+  }
+}
+
 QMenu *QgisAppInterface::editMenu() { return qgis->editMenu(); }
 QMenu *QgisAppInterface::viewMenu() { return qgis->viewMenu(); }
 QMenu *QgisAppInterface::layerMenu() { return qgis->layerMenu(); }
@@ -658,6 +702,12 @@ QMenu *QgisAppInterface::helpMenu() { return qgis->helpMenu(); }
 QToolBar *QgisAppInterface::fileToolBar() { return qgis->fileToolBar(); }
 QToolBar *QgisAppInterface::layerToolBar() { return qgis->layerToolBar(); }
 QToolBar *QgisAppInterface::dataSourceManagerToolBar() { return qgis->dataSourceManagerToolBar(); }
+
+void QgisAppInterface::openDataSourceManagerPage( const QString &pageName )
+{
+  qgis->dataSourceManager( pageName );
+}
+
 QToolBar *QgisAppInterface::mapNavToolToolBar() { return qgis->mapNavToolToolBar(); }
 QToolBar *QgisAppInterface::digitizeToolBar() { return qgis->digitizeToolBar(); }
 QToolBar *QgisAppInterface::advancedDigitizeToolBar() { return qgis->advancedDigitizeToolBar(); }
@@ -721,22 +771,6 @@ QAction *QgisAppInterface::actionMapTips() { return qgis->actionMapTips(); }
 QAction *QgisAppInterface::actionNewBookmark() { return qgis->actionNewBookmark(); }
 QAction *QgisAppInterface::actionShowBookmarks() { return qgis->actionShowBookmarks(); }
 QAction *QgisAppInterface::actionDraw() { return qgis->actionDraw(); }
-QAction *QgisAppInterface::actionCircle2Points() {  return qgis->actionCircle2Points();}
-QAction *QgisAppInterface::actionCircle3Points() {  return qgis->actionCircle3Points();}
-QAction *QgisAppInterface::actionCircle3Tangents() {  return qgis->actionCircle3Tangents();}
-QAction *QgisAppInterface::actionCircle2TangentsPoint() {  return qgis->actionCircle2TangentsPoint();}
-QAction *QgisAppInterface::actionCircleCenterPoint() {  return qgis->actionCircleCenterPoint();}
-QAction *QgisAppInterface::actionEllipseCenter2Points() {  return qgis->actionEllipseCenter2Points();}
-QAction *QgisAppInterface::actionEllipseCenterPoint() {  return qgis->actionEllipseCenterPoint();}
-QAction *QgisAppInterface::actionEllipseExtent() {  return qgis->actionEllipseExtent();}
-QAction *QgisAppInterface::actionEllipseFoci() {  return qgis->actionEllipseFoci();}
-QAction *QgisAppInterface::actionRectangleCenterPoint() {  return qgis->actionRectangleCenterPoint();}
-QAction *QgisAppInterface::actionRectangleExtent() {  return qgis->actionRectangleExtent();}
-QAction *QgisAppInterface::actionRectangle3PointsDistance() {  return qgis->actionRectangle3PointsDistance();}
-QAction *QgisAppInterface::actionRectangle3PointsProjected() {  return qgis->actionRectangle3PointsProjected();}
-QAction *QgisAppInterface::actionRegularPolygon2Points() {  return qgis->actionRegularPolygon2Points();}
-QAction *QgisAppInterface::actionRegularPolygonCenterPoint() {  return qgis->actionRegularPolygonCenterPoint();}
-QAction *QgisAppInterface::actionRegularPolygonCenterCorner() {  return qgis->actionRegularPolygonCenterCorner();}
 //! Layer menu actions
 QAction *QgisAppInterface::actionNewVectorLayer() { return qgis->actionNewVectorLayer(); }
 QAction *QgisAppInterface::actionAddOgrLayer() { return qgis->actionAddOgrLayer(); }
@@ -795,7 +829,7 @@ bool QgisAppInterface::openFeatureForm( QgsVectorLayer *vlayer, QgsFeature &f, b
   if ( !vlayer )
     return false;
 
-  QgsFeatureAction action( tr( "Attributes changed" ), f, vlayer, QString(), -1, QgisApp::instance() );
+  QgsFeatureAction action( tr( "Attributes changed" ), f, vlayer, QUuid(), -1, QgisApp::instance() );
   if ( vlayer->isEditable() )
   {
     return action.editFeature( showModal );
@@ -917,5 +951,10 @@ void QgisAppInterface::setGpsPanelConnection( QgsGpsConnection *connection )
 QList<QgsMapDecoration *> QgisAppInterface::activeDecorations()
 {
   return qgis->activeDecorations();
+}
+
+QgsUserProfileManager *QgisAppInterface::userProfileManager()
+{
+  return qgis->userProfileManager();
 }
 

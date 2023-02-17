@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for relations with postgresql provider.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -10,18 +9,10 @@ __author__ = 'Loïc Bartoletti'
 __date__ = '27/07/2020'
 __copyright__ = 'Copyright 2020, The QGIS Project'
 
-import qgis  # NOQA
-
 import os
 
-from qgis.core import (
-    QgsVectorLayer,
-    QgsProject,
-    QgsRelationManager
-)
-from qgis.gui import (
-    QgsMapCanvas
-)
+import qgis  # NOQA
+from qgis.core import QgsProject, QgsVectorLayer
 from qgis.testing import start_app, unittest
 
 start_app()
@@ -56,8 +47,8 @@ class TestQgsRelationPostgresql(unittest.TestCase):
         vl_tables = ['vl_c_amgmt_amgmt_lot', 'vl_c_batiment_bat_lot', 'vl_c_ens_immo_amgmt', 'vl_c_ens_immo_bat', 'vl_c_terrain_ens_immo', 'vl_t_actes', 'vl_t_adresse', 'vl_t_amgmt', 'vl_t_amgmt_lot', 'vl_t_bat', 'vl_t_bat_lot', 'vl_t_ens_immo', 'vl_t_terrain']  # spellok
 
         for i in range(len(tables)):
-            vl_tables[i] = QgsVectorLayer(self.dbconn + ' sslmode=disable key=\'pk\' table="relations"."{}" sql='.format(tables[i]), tables[i], 'postgres')
-            assert(vl_tables[i].isValid())
+            vl_tables[i] = QgsVectorLayer(self.dbconn + f' sslmode=disable key=\'pk\' table="relations"."{tables[i]}" sql=', tables[i], 'postgres')
+            assert vl_tables[i].isValid()
             QgsProject.instance().addMapLayer(vl_tables[i])
 
         relations = self.relMgr.discoverRelations([], vl_tables)

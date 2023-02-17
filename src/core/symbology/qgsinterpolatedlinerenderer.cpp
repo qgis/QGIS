@@ -74,13 +74,14 @@ void QgsInterpolatedLineRenderer::renderInDeviceCoordinates( double valueColor1,
     Q_ASSERT( breakColors.count() == breakValues.count() );
     for ( int i = 0; i < breakValues.count(); ++i )
     {
-      double value = breakValues.at( i );
-      double width = context.convertToPainterUnits( mStrokeWidth.strokeWidth( value ), mStrokeWidthUnit );
+      const bool widthIsInverted { valueWidth1 > valueWidth2 };
+      const double value = breakValues.at( i );
+      const double width = context.convertToPainterUnits( mStrokeWidth.strokeWidth( widthIsInverted ? mStrokeWidth.maximumValue() - value : value ), mStrokeWidthUnit );
       QPen pen( mSelected ? selectedColor : breakColors.at( i ) );
       pen.setWidthF( width );
       pen.setCapStyle( Qt::PenCapStyle::RoundCap );
       painter->setPen( pen );
-      QPointF point = p1 + dir * ( value - valueColor1 ) / ( valueColor2 - valueColor1 );
+      const QPointF point = p1 + dir * ( value - valueColor1 ) / ( valueColor2 - valueColor1 );
       painter->drawPoint( point );
     }
   }
@@ -89,7 +90,7 @@ void QgsInterpolatedLineRenderer::renderInDeviceCoordinates( double valueColor1,
     double width1 = mStrokeWidth.strokeWidth( valueWidth1 );
     double width2 = mStrokeWidth.strokeWidth( valueWidth2 );
 
-    if ( !std::isnan( width1 ) || !std::isnan( width2 ) ) // the two widths on extremity are not out of range and ignored
+    if ( !std::isnan( width1 ) && !std::isnan( width2 ) ) // the two widths on extremity are not out of range and ignored
     {
       //Draw line cap
       QBrush brush( Qt::SolidPattern );
@@ -158,6 +159,7 @@ void QgsInterpolatedLineRenderer::renderInDeviceCoordinates( double valueColor1,
         painter->setPen( pen );
 
         painter->drawPolygon( varLine );
+
       }
       else if ( !gradients.isEmpty() && !breakValues.isEmpty() && !breakColors.isEmpty() )
       {
@@ -920,6 +922,19 @@ void QgsInterpolatedLineSymbolLayer::drawPreviewIcon( QgsSymbolRenderContext &co
   }
 
   renderPolyline( points, context );
+
+}
+
+QColor QgsInterpolatedLineSymbolLayer::color() const
+{
+  switch ( mLineRender.interpolatedColor().coloringMethod() )
+  {
+    case QgsInterpolatedLineColor::SingleColor:
+      return mLineRender.interpolatedColor().singleColor();
+    case QgsInterpolatedLineColor::ColorRamp:
+      return QColor();
+  }
+  BUILTIN_UNREACHABLE
 }
 
 

@@ -17,7 +17,7 @@
 #define QGSSNAPINDICATOR_H
 
 #include "qgspointlocator.h"
-
+#include "qobjectuniqueptr.h"
 #include "qgis_gui.h"
 
 class QgsMapCanvas;
@@ -54,10 +54,9 @@ class GUI_EXPORT QgsSnapIndicator
     QgsSnapIndicator &operator=( const QgsSnapIndicator & );
 #endif
 
-    QgsMapCanvas *mCanvas;
+    QgsMapCanvas *mCanvas = nullptr;
     QgsPointLocator::Match mMatch;
-    QgsVertexMarker *mSnappingMarker = nullptr;
-    QMetaObject::Connection mCanvasDestroyedConnection;
+    QObjectParentUniquePtr< QgsVertexMarker > mSnappingMarker;
 };
 
 #endif // QGSSNAPINDICATOR_H

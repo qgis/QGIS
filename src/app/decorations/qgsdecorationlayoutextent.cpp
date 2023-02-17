@@ -19,17 +19,12 @@
 #include "qgsdecorationlayoutextent.h"
 #include "qgsdecorationlayoutextentdialog.h"
 
-#include "qgslayoutmanager.h"
-#include "qgslayout.h"
 #include "qgslayoutitemmap.h"
 #include "qgsgeometry.h"
 #include "qgsexception.h"
 #include "qgslinesymbollayer.h"
 #include "qgslayoutdesignerdialog.h"
 #include "qgisapp.h"
-#include "qgsapplication.h"
-#include "qgslogger.h"
-#include "qgsmapcanvas.h"
 #include "qgsproject.h"
 #include "qgssymbollayerutils.h"
 #include "qgsreadwritecontext.h"
@@ -169,7 +164,7 @@ void QgsDecorationLayoutExtent::render( const QgsMapSettings &mapSettings, QgsRe
 
       if ( mLabelExtents )
       {
-        QgsTextRenderer::drawText( labelPoint, ( map->mapRotation() - mapSettings.rotation() ) * M_PI / 180.0, QgsTextRenderer::AlignRight, QStringList() << tr( "%1: %2" ).arg( designer->masterLayout()->name(), map->displayName() ),
+        QgsTextRenderer::drawText( labelPoint, ( map->mapRotation() - mapSettings.rotation() ) * M_PI / 180.0, Qgis::TextHorizontalAlignment::Right, QStringList() << tr( "%1: %2" ).arg( designer->masterLayout()->name(), map->displayName() ),
                                    context, mTextFormat );
       }
     }

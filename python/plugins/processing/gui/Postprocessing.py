@@ -101,10 +101,15 @@ def handleAlgorithmResults(alg, context, feedback=None, showResults=True, parame
                     if not group:
                         group = details.project.layerTreeRoot().insertGroup(0, group_name)
 
-                    details.project.addMapLayer(mapLayer, False)
-                    group.addLayer(mapLayer)
+                    details.project.addMapLayer(mapLayer, False)  # Add to registry
+                    group.insertLayer(0, mapLayer)
                 else:
                     details.project.addMapLayer(mapLayer)
+
+                if (ProcessingConfig.getSetting(ProcessingConfig.VECTOR_FEATURE_COUNT) and
+                        layer.type() == QgsMapLayerType.VectorLayer):
+                    layer_tree_layer = details.project.layerTreeRoot().findLayer(layer.id())
+                    layer_tree_layer.setCustomProperty("showFeatureCount", True)
 
                 if details.postProcessor():
                     details.postProcessor().postProcessLayer(layer, context, feedback)

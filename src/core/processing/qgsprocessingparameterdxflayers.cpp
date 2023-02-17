@@ -51,7 +51,7 @@ bool QgsProcessingParameterDxfLayers::checkValueIsAcceptable( const QVariant &in
       return true;
 
     QgsMapLayer *mapLayer = QgsProcessingUtils::mapLayerFromString( input.toString(), *context );
-    return mapLayer && ( mapLayer->type() == QgsMapLayerType::VectorLayer );
+    return mapLayer && ( mapLayer->type() == Qgis::LayerType::Vector );
   }
   else if ( input.type() == QVariant::List )
   {
@@ -70,7 +70,7 @@ bool QgsProcessingParameterDxfLayers::checkValueIsAcceptable( const QVariant &in
           return true;
 
         QgsMapLayer *mapLayer = QgsProcessingUtils::mapLayerFromString( variantLayer.toString(), *context );
-        if ( !mapLayer || mapLayer->type() != QgsMapLayerType::VectorLayer )
+        if ( !mapLayer || mapLayer->type() != Qgis::LayerType::Vector )
           return false;
       }
       else if ( variantLayer.type() == QVariant::Map )
@@ -84,7 +84,7 @@ bool QgsProcessingParameterDxfLayers::checkValueIsAcceptable( const QVariant &in
           return true;
 
         QgsMapLayer *mapLayer = QgsProcessingUtils::mapLayerFromString( layerMap.value( QStringLiteral( "layer" ) ).toString(), *context );
-        if ( !mapLayer || mapLayer->type() != QgsMapLayerType::VectorLayer )
+        if ( !mapLayer || mapLayer->type() != Qgis::LayerType::Vector )
           return false;
 
         QgsVectorLayer *vectorLayer = static_cast<QgsVectorLayer *>( mapLayer );
@@ -151,6 +151,16 @@ QString QgsProcessingParameterDxfLayers::asPythonString( QgsProcessing::PythonOu
     }
   }
   return QString();
+}
+
+QString QgsProcessingParameterDxfLayers::valueAsString( const QVariant &value, QgsProcessingContext &context, bool &ok ) const
+{
+  return valueAsStringPrivate( value, context, ok, ValueAsStringFlag::AllowMapLayerValues );
+}
+
+QVariant QgsProcessingParameterDxfLayers::valueAsJsonObject( const QVariant &value, QgsProcessingContext &context ) const
+{
+  return valueAsJsonObjectPrivate( value, context, ValueAsStringFlag::AllowMapLayerValues );
 }
 
 QList<QgsDxfExport::DxfLayer> QgsProcessingParameterDxfLayers::parameterAsLayers( const QVariant &layersVariant, QgsProcessingContext &context )

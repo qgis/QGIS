@@ -20,11 +20,7 @@
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include <QObject>
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-#include <QMutex>
-#else
 #include <QRecursiveMutex>
-#endif
 #include <QNetworkReply>
 #include <QNetworkRequest>
 #include <QSqlDatabase>
@@ -906,13 +902,8 @@ class CORE_EXPORT QgsAuthManager : public QObject
     bool mScheduledDbEraseRequestEmitted = false;
     int mScheduledDbEraseRequestCount = 0;
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-    std::unique_ptr<QMutex> mMutex;
-    std::unique_ptr<QMutex> mMasterPasswordMutex;
-#else
     std::unique_ptr<QRecursiveMutex> mMutex;
     std::unique_ptr<QRecursiveMutex> mMasterPasswordMutex;
-#endif
 #ifndef QT_NO_SSL
     // mapping of sha1 digest and cert source and cert
     // appending removes duplicates

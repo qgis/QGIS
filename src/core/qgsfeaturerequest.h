@@ -222,6 +222,18 @@ class CORE_EXPORT QgsFeatureRequest
 
         // friend inline int qHash(const OrderByClause &a) { return qHash(a.mExpression.expression()) ^ qHash(a.mAscending) ^ qHash( a.mNullsFirst); }
 
+        bool operator==( const OrderByClause &v ) const
+        {
+          return mExpression == v.mExpression &&
+                 mAscending == v.mAscending &&
+                 mNullsFirst == v.mNullsFirst;
+        }
+
+        bool operator!=( const OrderByClause &v ) const
+        {
+          return !( v == *this );
+        }
+
       private:
         QgsExpression mExpression;
         bool mAscending;

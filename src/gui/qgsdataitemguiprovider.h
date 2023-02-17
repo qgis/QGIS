@@ -28,6 +28,7 @@
 class QgsDataItem;
 class QgsMessageBar;
 class QgsLayerItem;
+class QgsBrowserTreeView;
 
 /**
  * \class QgsDataItemGuiContext
@@ -64,9 +65,27 @@ class GUI_EXPORT QgsDataItemGuiContext
      */
     void setMessageBar( QgsMessageBar *bar );
 
+    /**
+     * Returns the associated view.
+     *
+     * \see setView()
+     * \since QGIS 3.28
+     */
+    QgsBrowserTreeView *view() const;
+
+    /**
+     * Sets the associated \a view.
+     *
+     * \see view()
+     * \since QGIS 3.28
+     */
+    void setView( QgsBrowserTreeView *view );
+
   private:
 
     QgsMessageBar *mMessageBar = nullptr;
+
+    QgsBrowserTreeView *mView = nullptr;
 };
 
 Q_DECLARE_METATYPE( QgsDataItemGuiContext );

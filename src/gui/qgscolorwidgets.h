@@ -323,6 +323,8 @@ class GUI_EXPORT QgsColorWheel : public QgsColorWidget
       Triangle
     };
 
+    bool mIsDragging = false;
+
     /*Margin between outer ring and edge of widget*/
     int mMargin = 4;
 
@@ -410,8 +412,11 @@ class GUI_EXPORT QgsColorBox : public QgsColorWidget
     void resizeEvent( QResizeEvent *event ) override;
     void mouseMoveEvent( QMouseEvent *event ) override;
     void mousePressEvent( QMouseEvent *event ) override;
+    void mouseReleaseEvent( QMouseEvent *event ) override;
 
   private:
+
+    bool mIsDragging = false;
 
     /*Margin between outer ring and edge of widget*/
     int mMargin = 2;
@@ -565,9 +570,12 @@ class GUI_EXPORT QgsColorRampWidget : public QgsColorWidget
     void mouseMoveEvent( QMouseEvent *event ) override;
     void wheelEvent( QWheelEvent *event ) override;
     void mousePressEvent( QMouseEvent *event ) override;
+    void mouseReleaseEvent( QMouseEvent *event ) override;
     void keyPressEvent( QKeyEvent *event ) override;
 
   private:
+
+    bool mIsDragging = false;
 
     /*Orientation for ramp*/
     Orientation mOrientation;
@@ -696,6 +704,13 @@ class GUI_EXPORT QgsColorTextWidget : public QgsColorWidget
 
     void setColor( const QColor &color, bool emitSignals = false ) override;
 
+    /**
+     * Sets whether opacity modification (transparency) is permitted.
+     * Defaults to TRUE.
+     * \param allowOpacity set to FALSE to disable opacity modification
+     */
+    void setAllowOpacity( bool allowOpacity );
+
   protected:
     void resizeEvent( QResizeEvent *event ) override;
 
@@ -708,6 +723,8 @@ class GUI_EXPORT QgsColorTextWidget : public QgsColorWidget
 
     /*Display format for colors*/
     ColorTextFormat mFormat = QgsColorTextWidget::HexRgb;
+
+    bool mAllowAlpha = true;
 
     /**
      * Updates the text based on the current color

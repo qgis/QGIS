@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Migrate QFileDialog methods from PyQt4 to PyQt5
 """
@@ -34,11 +33,11 @@ class FixQfiledialog(BaseFix):
             # we add __ special variable
             if nbLeaves < 3:
                 fileName = node.value
-                node.value = u'{}, __'.format(fileName)
+                node.value = f'{fileName}, __'
                 node.changed()
 
         # Rename *AndFilter methods
         if 'filter' in results:
             method = results['filter'][0]
-            method.value = method.value.replace(u'AndFilter', u'')
+            method.value = method.value.replace('AndFilter', '')
             method.changed()

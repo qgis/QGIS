@@ -33,7 +33,20 @@ class CORE_EXPORT QgsTrackedVectorLayerTools : public QgsVectorLayerTools
      */
     QgsTrackedVectorLayerTools() = default;
 
-    bool addFeature( QgsVectorLayer *layer, const QgsAttributeMap &defaultValues, const QgsGeometry &defaultGeometry, QgsFeature *feature ) const override;
+    /**
+     * This method calls the addFeature method of the backend QgsVectorLayerTools
+     *
+     * \param layer           The layer to which the feature should be added
+     * \param defaultValues   Default values for the feature to add
+     * \param defaultGeometry A default geometry to add to the feature
+     * \param feature         A pointer to the feature
+     * \param parentWidget    The widget calling this function to be passed to the used dialog
+     * \param showModal       If the used dialog should be modal or not
+     * \param hideParent      If the parent widget should be hidden, when the used dialog is opened
+     *
+     * \returns               TRUE in case of success, FALSE if the operation failed/was aborted
+     */
+    bool addFeature( QgsVectorLayer *layer, const QgsAttributeMap &defaultValues, const QgsGeometry &defaultGeometry, QgsFeature *feature, QWidget *parentWidget = nullptr, bool showModal = true, bool hideParent = false ) const override;
     bool startEditing( QgsVectorLayer *layer ) const override;
     bool stopEditing( QgsVectorLayer *layer, bool allowCancel ) const override;
     bool saveEdits( QgsVectorLayer *layer ) const override;

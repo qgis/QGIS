@@ -29,7 +29,12 @@ Constructor for QgsRasterPyramidsOptionsWidget
     QStringList configOptions() const;
     QgsRasterFormatSaveOptionsWidget *createOptionsWidget() /Factory/;
     const QList<int> overviewList() const;
-    QgsRaster::RasterPyramidsFormat pyramidsFormat() const;
+
+    Qgis::RasterPyramidFormat pyramidsFormat() const;
+%Docstring
+Returns the selected pyramid format.
+%End
+
     QString resamplingMethod() const;
     void setRasterLayer( QgsRasterLayer *rasterLayer );
     void setRasterFileName( const QString &file );

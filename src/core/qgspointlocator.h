@@ -317,7 +317,8 @@ class CORE_EXPORT QgsPointLocator : public QObject
                  mLayer == other.mLayer &&
                  mFid == other.mFid &&
                  mVertexIndex == other.mVertexIndex &&
-                 mEdgePoints == other.mEdgePoints &&
+                 mEdgePoints[0] == other.mEdgePoints[0] &&
+                 mEdgePoints[1] == other.mEdgePoints[1] &&
                  mCentroid == other.mCentroid &&
                  mMiddleOfSegment == other.mMiddleOfSegment;
         }

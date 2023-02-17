@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsRenderedItemDetails
 
 From build dir, run: ctest -R QgsRenderedItemDetails -V
@@ -14,11 +13,11 @@ __copyright__ = 'Copyright 2021, The QGIS Project'
 
 import qgis  # NOQA
 from qgis.core import (
+    QgsRectangle,
+    QgsRenderContext,
+    QgsRenderedAnnotationItemDetails,
     QgsRenderedItemDetails,
     QgsRenderedItemResults,
-    QgsRenderedAnnotationItemDetails,
-    QgsRectangle,
-    QgsRenderContext
 )
 from qgis.testing import start_app, unittest
 

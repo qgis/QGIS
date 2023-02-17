@@ -203,7 +203,6 @@ void TestQgsRelationReferenceWidget::testChainFilter()
   }
 
   loop.exec();
-  QStringList items = getComboBoxItems( w.mComboBox );
   QCOMPARE( w.mComboBox->currentText(), allowNull ? QString( "NULL" ) : QString( "10" ) );
 
   // set first filter
@@ -582,8 +581,11 @@ void TestQgsRelationReferenceWidget::testIdentifyOnMap()
 // referenced layer
 class DummyVectorLayerTools : public QgsVectorLayerTools // clazy:exclude=missing-qobject-macro
 {
-    bool addFeature( QgsVectorLayer *layer, const QgsAttributeMap &, const QgsGeometry &, QgsFeature *feat = nullptr ) const override
+    bool addFeature( QgsVectorLayer *layer, const QgsAttributeMap &, const QgsGeometry &, QgsFeature *feat = nullptr, QWidget *parentWidget = nullptr, bool showModal = true, bool hideParent = false ) const override
     {
+      Q_UNUSED( parentWidget );
+      Q_UNUSED( showModal );
+      Q_UNUSED( hideParent );
       feat->setAttribute( QStringLiteral( "pk" ), 13 );
       feat->setAttribute( QStringLiteral( "material" ), QStringLiteral( "steel" ) );
       feat->setAttribute( QStringLiteral( "diameter" ), 140 );
@@ -619,7 +621,7 @@ void TestQgsRelationReferenceWidget::testAddEntry()
 
   QVERIFY( w.mCurrentMapTool );
   QgsFeature feat( mLayer1->fields() );
-  w.mMapToolDigitize->digitized( feat );
+  emit w.mMapToolDigitize->digitizingCompleted( feat );
 
   QCOMPARE( w.mComboBox->identifierValues().at( 0 ).toInt(), 13 );
 }
@@ -722,7 +724,6 @@ void TestQgsRelationReferenceWidget::testSetFilterExpression()
   w.init();
 
   loop.exec();
-  QStringList items = getComboBoxItems( w.mComboBox );
   QCOMPARE( w.mComboBox->currentText(), QStringLiteral( "NULL" ) );
   // in case there is no filter, the number of filtered features will be 4
   QCOMPARE( w.mComboBox->count(), 3 );
@@ -747,8 +748,6 @@ void TestQgsRelationReferenceWidget::testSetFilterExpressionWithOrClause()
   w.setRelation( *mRelation, true );
   w.setFilterExpression( QStringLiteral( " \"raccord\" = 'sleeve' OR FALSE " ) );
   w.init();
-
-  QStringList items = getComboBoxItems( w.mComboBox );
 
   loop.exec();
 

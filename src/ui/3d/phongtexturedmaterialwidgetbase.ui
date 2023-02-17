@@ -15,18 +15,21 @@
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="5" column="1">
-    <widget class="QgsDoubleSpinBox" name="textureRotationSpinBox">
+    <widget class="QgsDoubleSpinBox" name="textureScaleSpinBox">
      <property name="suffix">
-      <string> °</string>
+      <string> %</string>
      </property>
      <property name="minimum">
-      <double>-360.000000000000000</double>
+      <double>0.010000000000000</double>
      </property>
      <property name="maximum">
-      <double>360.000000000000000</double>
+      <double>100000.000000000000000</double>
      </property>
      <property name="singleStep">
-      <double>0.500000000000000</double>
+      <double>1.000000000000000</double>
+     </property>
+     <property name="value">
+      <double>100.000000000000000</double>
      </property>
     </widget>
    </item>
@@ -34,16 +37,6 @@
     <widget class="QgsDoubleSpinBox" name="spinShininess">
      <property name="maximum">
       <double>1000.000000000000000</double>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="0">
-    <widget class="QLabel" name="lblSpecular">
-     <property name="toolTip">
-      <string>Color of light reflecting from smooth surfaces.</string>
-     </property>
-     <property name="text">
-      <string>Specular</string>
      </property>
     </widget>
    </item>
@@ -63,29 +56,23 @@
      </property>
     </widget>
    </item>
-   <item row="4" column="0">
-    <widget class="QLabel" name="lblTextureScale">
+   <item row="4" column="1">
+    <widget class="QgsImageSourceLineEdit" name="textureFile" native="true"/>
+   </item>
+   <item row="1" column="0">
+    <widget class="QLabel" name="lblSpecular">
+     <property name="toolTip">
+      <string>Color of light reflecting from smooth surfaces.</string>
+     </property>
      <property name="text">
-      <string>Texture scale</string>
+      <string>Specular</string>
      </property>
     </widget>
    </item>
-   <item row="4" column="1">
-    <widget class="QgsDoubleSpinBox" name="textureScaleSpinBox">
-     <property name="suffix">
-      <string> %</string>
-     </property>
-     <property name="minimum">
-      <double>0.010000000000000</double>
-     </property>
-     <property name="maximum">
-      <double>100000.000000000000000</double>
-     </property>
-     <property name="singleStep">
-      <double>1.000000000000000</double>
-     </property>
-     <property name="value">
-      <double>100.000000000000000</double>
+   <item row="6" column="0">
+    <widget class="QLabel" name="lblTextureRotation">
+     <property name="text">
+      <string>Texture rotation</string>
      </property>
     </widget>
    </item>
@@ -96,6 +83,23 @@
      </property>
      <property name="text">
       <string>Ambient</string>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="0">
+    <widget class="QLabel" name="lblTextureScale">
+     <property name="text">
+      <string>Texture scale</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="0">
+    <widget class="QLabel" name="lblShininess">
+     <property name="toolTip">
+      <string>How shiny smooth surfaces are.</string>
+     </property>
+     <property name="text">
+      <string>Shininess</string>
      </property>
     </widget>
    </item>
@@ -115,32 +119,38 @@
      </property>
     </widget>
    </item>
-   <item row="5" column="0">
-    <widget class="QLabel" name="lblTextureRotation">
-     <property name="text">
-      <string>Texture rotation</string>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="0">
-    <widget class="QLabel" name="lblShininess">
-     <property name="toolTip">
-      <string>How shiny smooth surfaces are.</string>
-     </property>
-     <property name="text">
-      <string>Shininess</string>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="1">
-    <widget class="QgsImageSourceLineEdit" name="textureFile" native="true"/>
-   </item>
-   <item row="3" column="0">
+   <item row="4" column="0">
     <widget class="QLabel" name="lblTextureScale_2">
      <property name="text">
       <string>Diffuse texture</string>
      </property>
     </widget>
+   </item>
+   <item row="6" column="1">
+    <widget class="QgsDoubleSpinBox" name="textureRotationSpinBox">
+     <property name="suffix">
+      <string> °</string>
+     </property>
+     <property name="minimum">
+      <double>-360.000000000000000</double>
+     </property>
+     <property name="maximum">
+      <double>360.000000000000000</double>
+     </property>
+     <property name="singleStep">
+      <double>0.500000000000000</double>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="0">
+    <widget class="QLabel" name="lblOpacity">
+     <property name="text">
+      <string>Opacity</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="1">
+    <widget class="QgsOpacityWidget" name="mOpacityWidget" native="true"/>
    </item>
   </layout>
  </widget>

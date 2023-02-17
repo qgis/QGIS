@@ -20,7 +20,7 @@ class NetCDFFile
     ~NetCDFFile();
 
     int handle() const;
-    void openFile( const std::string &fileName );
+    void openFile( const std::string &fileName, bool write = false );
 
     std::vector<int> readIntArr( const std::string &name, size_t dim ) const;
     /** Reads hyperslap from double variable - 2D array */
@@ -72,6 +72,7 @@ class NetCDFFile
     std::string getAttrStr( const std::string &attr_name, int varid ) const;
 
     double getFillValue( int varid ) const;
+    void setFillValue( int varid, double fillValue );
     int getVarId( const std::string &name );
     void getDimension( const std::string &name, size_t *val, int *ncid_val ) const;
     void getDimensions( const std::string &variableName, std::vector<size_t> &dimensionsId, std::vector<int> &dimensionIds );
@@ -84,6 +85,7 @@ class NetCDFFile
     void putAttrInt( int varId, const std::string &attrName, int value );
     void putAttrDouble( int varId, const std::string &attrName, double value );
     void putDataDouble( int varId, const size_t index, const double value );
+    void putDataArrayDouble( int varId, const size_t index, const std::vector<double> &values );
     void putDataArrayInt( int varId, size_t line, size_t faceVerticesMax, int *values );
 
     std::string getFileName() const;

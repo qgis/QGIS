@@ -66,6 +66,7 @@ QgsDataDefinedSizeLegendWidget::QgsDataDefinedSizeLegendWidget( const QgsDataDef
 
     symbol = ddsLegend->symbol() ? ddsLegend->symbol()->clone() : nullptr;  // may be null (undefined)
   }
+  groupBoxOptions->setEnabled( radSeparated->isChecked() );
 
   if ( overrideSymbol )
   {
@@ -129,6 +130,7 @@ QgsDataDefinedSizeLegendWidget::QgsDataDefinedSizeLegendWidget( const QgsDataDef
   connect( editTitle, &QLineEdit::textChanged, this, &QgsPanelWidget::widgetChanged );
   connect( mLineSymbolButton, &QgsSymbolButton::changed, this, &QgsPanelWidget::widgetChanged );
   connect( this, &QgsPanelWidget::widgetChanged, this, &QgsDataDefinedSizeLegendWidget::updatePreview );
+  connect( radCollapsed, &QRadioButton::toggled, this, [ = ]( bool toggled ) {groupBoxOptions->setEnabled( toggled );} );
   updatePreview();
 }
 

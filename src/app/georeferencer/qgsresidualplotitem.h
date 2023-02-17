@@ -30,14 +30,15 @@ class QgsResidualPlotItem: public QgsLayoutItem
 
   public:
     explicit QgsResidualPlotItem( QgsLayout *layout );
+    ~QgsResidualPlotItem() override;
 
     QgsLayoutItem::Flags itemFlags() const override;
 
     //! \brief Reimplementation of QCanvasItem::paint
     void paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget ) override;
 
-    void setGCPList( const QgsGCPList &list ) { mGCPList = list; }
-    QgsGCPList GCPList() const { return mGCPList; }
+    void setGCPList( const QgsGCPList &list );
+    const QgsGCPList &GCPList() const { return mGCPList; }
 
     void setExtent( const QgsRectangle &rect ) { mExtent = rect;}
     QgsRectangle extent() const { return mExtent; }

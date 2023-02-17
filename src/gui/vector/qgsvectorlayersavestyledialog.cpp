@@ -22,6 +22,7 @@
 #include "qgshelp.h"
 #include "qgsgui.h"
 #include "qgsmaplayerstylecategoriesmodel.h"
+#include "qgsmaplayerstylemanager.h"
 
 QgsVectorLayerSaveStyleDialog::QgsVectorLayerSaveStyleDialog( QgsVectorLayer *layer, QWidget *parent )
   : QDialog( parent )
@@ -32,30 +33,20 @@ QgsVectorLayerSaveStyleDialog::QgsVectorLayerSaveStyleDialog( QgsVectorLayer *la
 
   QgsSettings settings;
 
-  QString providerName = mLayer->providerType();
-  if ( providerName == QLatin1String( "ogr" ) )
-  {
-    providerName = mLayer->dataProvider()->storageType();
-    if ( providerName == QLatin1String( "GPKG" ) )
-      providerName = QStringLiteral( "GeoPackage" );
-  }
-
   const QString myLastUsedDir = settings.value( QStringLiteral( "style/lastStyleDir" ), QDir::homePath() ).toString();
 
   // save style type combobox
   connect( mStyleTypeComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, [ = ]( int )
   {
     const QgsVectorLayerProperties::StyleType type = currentStyleType();
-    mSaveToFileWidget->setVisible( type != QgsVectorLayerProperties::DB );
+    mFileLabel->setVisible( type != QgsVectorLayerProperties::DB && type != QgsVectorLayerProperties::Local );
+    mFileWidget->setVisible( type != QgsVectorLayerProperties::DB && type != QgsVectorLayerProperties::Local );
     mSaveToDbWidget->setVisible( type == QgsVectorLayerProperties::DB );
-    mStyleCategoriesListView->setEnabled( type == QgsVectorLayerProperties::QML );
+    mSaveToSldWidget->setVisible( type == QgsVectorLayerProperties::SLD && layer->geometryType() == QgsWkbTypes::GeometryType::PolygonGeometry );
+    mStyleCategoriesListView->setEnabled( type != QgsVectorLayerProperties::SLD );
     mFileWidget->setFilter( type == QgsVectorLayerProperties::QML ? tr( "QGIS Layer Style File (*.qml)" ) : tr( "SLD File (*.sld)" ) );
     updateSaveButtonState();
   } );
-  mStyleTypeComboBox->addItem( tr( "As QGIS QML Style File" ), QgsVectorLayerProperties::QML );
-  mStyleTypeComboBox->addItem( tr( "As SLD Style File" ), QgsVectorLayerProperties::SLD );
-  if ( mLayer->dataProvider()->isSaveAndLoadStyleToDatabaseSupported() )
-    mStyleTypeComboBox->addItem( tr( "In Database (%1)" ).arg( providerName ), QgsVectorLayerProperties::DB );
 
   // Save to DB setup
   connect( mDbStyleNameEdit, &QLineEdit::textChanged, this, &QgsVectorLayerSaveStyleDialog::updateSaveButtonState );
@@ -90,6 +81,27 @@ QgsVectorLayerSaveStyleDialog::QgsVectorLayerSaveStyleDialog( QgsVectorLayer *la
 
 }
 
+void QgsVectorLayerSaveStyleDialog::populateStyleComboBox()
+{
+  QString providerName = mLayer->providerType();
+  if ( providerName == QLatin1String( "ogr" ) )
+  {
+    providerName = mLayer->dataProvider()->storageType();
+    if ( providerName == QLatin1String( "GPKG" ) )
+      providerName = QStringLiteral( "GeoPackage" );
+  }
+
+  mStyleTypeComboBox->clear();
+  mStyleTypeComboBox->addItem( tr( "As QGIS QML Style File" ), QgsVectorLayerProperties::QML );
+  mStyleTypeComboBox->addItem( tr( "As SLD Style File" ), QgsVectorLayerProperties::SLD );
+
+  if ( mLayer->dataProvider()->isSaveAndLoadStyleToDatabaseSupported() )
+    mStyleTypeComboBox->addItem( tr( "In Database (%1)" ).arg( providerName ), QgsVectorLayerProperties::DB );
+
+  if ( mSaveOnlyCurrentStyle )
+    mStyleTypeComboBox->addItem( tr( "As Default In Local Database" ), QgsVectorLayerProperties::Local );
+}
+
 void QgsVectorLayerSaveStyleDialog::accept()
 {
   QgsSettings().setFlagValue( QStringLiteral( "style/lastStyleCategories" ), styleCategories() );
@@ -115,6 +127,9 @@ void QgsVectorLayerSaveStyleDialog::updateSaveButtonState()
     case QgsVectorLayerProperties::QML:
     case QgsVectorLayerProperties::SLD:
       enabled = ! mFileWidget->filePath().isEmpty();
+      break;
+    case QgsVectorLayerProperties::Local:
+      enabled = true;
       break;
   }
   buttonBox->button( QDialogButtonBox::Ok )->setEnabled( enabled );
@@ -210,6 +225,8 @@ void QgsVectorLayerSaveStyleDialog::setupMultipleStyles()
   mDbStyleDescriptionEdit->setVisible( mSaveOnlyCurrentStyle );
   descriptionLabel->setVisible( mSaveOnlyCurrentStyle );
   mDbStyleUseAsDefault->setVisible( mSaveOnlyCurrentStyle );
+
+  populateStyleComboBox();
 }
 
 bool QgsVectorLayerSaveStyleDialog::saveOnlyCurrentStyle() const
@@ -231,6 +248,16 @@ const QListWidget *QgsVectorLayerSaveStyleDialog::stylesWidget()
   return mStylesWidget;
 }
 
+Qgis::SldExportOptions QgsVectorLayerSaveStyleDialog::sldExportOptions() const
+{
+  Qgis::SldExportOptions options;
+
+  if ( mStyleTypeComboBox->currentData( ) == QgsVectorLayerProperties::SLD )
+  {
+    options.setFlag( Qgis::SldExportOption::Png );
+  }
+  return options;
+}
 
 void QgsVectorLayerSaveStyleDialog::showHelp()
 {

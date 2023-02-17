@@ -9,6 +9,8 @@
 
 
 
+
+
 class QgsSettingsRegistryGui : QgsSettingsRegistry
 {
 %Docstring(signature="appended")

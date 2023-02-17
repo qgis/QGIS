@@ -3,13 +3,22 @@
   "type": "operator",
   "groups": ["Operators"],
   "description": "Subtraction of two values. If one of the values is NULL the result will be NULL.",
-  "arguments": [
-        { "arg": "a", "description": "value" },
-        { "arg": "b", "description": "value" }
-  ],
-  "examples": [
-	{ "expression":"5 - 4", "returns":"1"},
-	{ "expression":"5 - NULL", "returns":"NULL"},
-	{ "expression":"to_datetime('2012-05-05 12:00:00') - to_interval('1 day 2 hours')", "returns":"2012-05-04T10:00:00"}
-  ]
+  "arguments": [{
+    "arg": "a",
+    "description": "value"
+  }, {
+    "arg": "b",
+    "description": "value"
+  }],
+  "examples": [{
+    "expression": "5 - 4",
+    "returns": "1"
+  }, {
+    "expression": "5 - NULL",
+    "returns": "NULL"
+  }, {
+    "expression": "to_datetime('2012-05-05 12:00:00') - to_interval('1 day 2 hours')",
+    "returns": "2012-05-04T10:00:00"
+  }],
+  "tags": ["subtraction", "null", "result", "values"]
 }

@@ -3,15 +3,32 @@
   "type": "function",
   "groups": ["String", "Date and Time"],
   "description": "Formats a date type or string into a custom string format. Uses Qt date/time format strings. See <a href='https://doc.qt.io/qt-5/qdatetime.html#toString'>QDateTime::toString</a>.",
-  "arguments": [
-	{"arg":"datetime","description":"date, time or datetime value"},
-	{"arg":"format","description":"String template used to format the string. <table><thead><tr><th>Expression</th><th>Output</th></tr></thead><tr valign=\"top\"><td>d</td><td>the day as number without a leading zero (1 to 31)</td></tr><tr valign=\"top\"><td>dd</td><td>the day as number with a leading zero (01 to 31)</td></tr><tr valign=\"top\"><td>ddd</td><td>the abbreviated localized day name (e.g. 'Mon' to 'Sun')</td></tr><tr valign=\"top\"><td>dddd</td><td>the long localized day name (e.g. 'Monday' to 'Sunday')</td></tr><tr valign=\"top\"><td>M</td><td>the month as number without a leading zero (1-12)</td></tr><tr valign=\"top\"><td>MM</td><td>the month as number with a leading zero (01-12)</td></tr><tr valign=\"top\"><td>MMM</td><td>the abbreviated localized month name (e.g. 'Jan' to 'Dec')</td></tr><tr valign=\"top\"><td>MMMM</td><td>the long localized month name (e.g. 'January' to 'December')</td></tr><tr valign=\"top\"><td>yy</td><td>the year as two digit number (00-99)</td></tr><tr valign=\"top\"><td>yyyy</td><td>the year as four digit number</td></tr></table><p>These expressions may be used for the time part of the format string:</p><table><thead><tr><th>Expression</th><th>Output</th></tr></thead><tr valign=\"top\"><td>h</td><td>the hour without a leading zero (0 to 23 or 1 to 12 if AM/PM display)</td></tr><tr valign=\"top\"><td>hh</td><td>the hour with a leading zero (00 to 23 or 01 to 12 if AM/PM display)</td></tr><tr valign=\"top\"><td>H</td><td>the hour without a leading zero (0 to 23, even with AM/PM display)</td></tr><tr valign=\"top\"><td>HH</td><td>the hour with a leading zero (00 to 23, even with AM/PM display)</td></tr><tr valign=\"top\"><td>m</td><td>the minute without a leading zero (0 to 59)</td></tr><tr valign=\"top\"><td>mm</td><td>the minute with a leading zero (00 to 59)</td></tr><tr valign=\"top\"><td>s</td><td>the second without a leading zero (0 to 59)</td></tr><tr valign=\"top\"><td>ss</td><td>the second with a leading zero (00 to 59)</td></tr><tr valign=\"top\"><td>z</td><td>the milliseconds without trailing zeroes (0 to 999)</td></tr><tr valign=\"top\"><td>zzz</td><td>the milliseconds with trailing zeroes (000 to 999)</td></tr><tr valign=\"top\"><td>AP or A</td><td>interpret as an AM/PM time. <i>AP</i> must be either 'AM' or 'PM'.</td></tr><tr valign=\"top\"><td>ap or a</td><td>Interpret as an AM/PM time. <i>ap</i> must be either 'am' or 'pm'.</td></tr></table>"},
- {"arg":"language","optional":true,"description":"language (lowercase, two- or three-letter, <a href='https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes'>ISO 639 language code</a>) used to format the date into a custom string. By default the current QGIS user locale is used."}
-  ],
-  "examples": [ { "expression":"format_date('2012-05-15','dd.MM.yyyy')", "returns":"'15.05.2012'"},
-                { "expression":"format_date('2012-05-15','d MMMM yyyy','fr')", "returns":"'15 mai 2012'"},
-                { "expression":"format_date('2012-05-15','dddd')", "returns":"'Tuesday', if the current locale is an English variant"},
-                { "expression":"format_date('2012-05-15 13:54:20','dd.MM.yy')", "returns":"'15.05.12'"},
-                { "expression":"format_date('13:54:20','hh:mm AP')", "returns":"'01:54 PM'"}
-  ]
+  "arguments": [{
+    "arg": "datetime",
+    "description": "date, time or datetime value"
+  }, {
+    "arg": "format",
+    "description": "String template used to format the string. <table><thead><tr><th>Expression</th><th>Output</th></tr></thead><tr valign=\"top\"><td>d</td><td>the day as number without a leading zero (1 to 31)</td></tr><tr valign=\"top\"><td>dd</td><td>the day as number with a leading zero (01 to 31)</td></tr><tr valign=\"top\"><td>ddd</td><td>the abbreviated localized day name (e.g. 'Mon' to 'Sun')</td></tr><tr valign=\"top\"><td>dddd</td><td>the long localized day name (e.g. 'Monday' to 'Sunday')</td></tr><tr valign=\"top\"><td>M</td><td>the month as number without a leading zero (1-12)</td></tr><tr valign=\"top\"><td>MM</td><td>the month as number with a leading zero (01-12)</td></tr><tr valign=\"top\"><td>MMM</td><td>the abbreviated localized month name (e.g. 'Jan' to 'Dec')</td></tr><tr valign=\"top\"><td>MMMM</td><td>the long localized month name (e.g. 'January' to 'December')</td></tr><tr valign=\"top\"><td>yy</td><td>the year as two digit number (00-99)</td></tr><tr valign=\"top\"><td>yyyy</td><td>the year as four digit number</td></tr></table><p>These expressions may be used for the time part of the format string:</p><table><thead><tr><th>Expression</th><th>Output</th></tr></thead><tr valign=\"top\"><td>h</td><td>the hour without a leading zero (0 to 23 or 1 to 12 if AM/PM display)</td></tr><tr valign=\"top\"><td>hh</td><td>the hour with a leading zero (00 to 23 or 01 to 12 if AM/PM display)</td></tr><tr valign=\"top\"><td>H</td><td>the hour without a leading zero (0 to 23, even with AM/PM display)</td></tr><tr valign=\"top\"><td>HH</td><td>the hour with a leading zero (00 to 23, even with AM/PM display)</td></tr><tr valign=\"top\"><td>m</td><td>the minute without a leading zero (0 to 59)</td></tr><tr valign=\"top\"><td>mm</td><td>the minute with a leading zero (00 to 59)</td></tr><tr valign=\"top\"><td>s</td><td>the second without a leading zero (0 to 59)</td></tr><tr valign=\"top\"><td>ss</td><td>the second with a leading zero (00 to 59)</td></tr><tr valign=\"top\"><td>z</td><td>the milliseconds without trailing zeroes (0 to 999)</td></tr><tr valign=\"top\"><td>zzz</td><td>the milliseconds with trailing zeroes (000 to 999)</td></tr><tr valign=\"top\"><td>AP or A</td><td>interpret as an AM/PM time. <i>AP</i> must be either 'AM' or 'PM'.</td></tr><tr valign=\"top\"><td>ap or a</td><td>Interpret as an AM/PM time. <i>ap</i> must be either 'am' or 'pm'.</td></tr></table>"
+  }, {
+    "arg": "language",
+    "optional": true,
+    "description": "language (lowercase, two- or three-letter, <a href='https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes'>ISO 639 language code</a>) used to format the date into a custom string. By default the current QGIS user locale is used."
+  }],
+  "examples": [{
+    "expression": "format_date('2012-05-15','dd.MM.yyyy')",
+    "returns": "'15.05.2012'"
+  }, {
+    "expression": "format_date('2012-05-15','d MMMM yyyy','fr')",
+    "returns": "'15 mai 2012'"
+  }, {
+    "expression": "format_date('2012-05-15','dddd')",
+    "returns": "'Tuesday', if the current locale is an English variant"
+  }, {
+    "expression": "format_date('2012-05-15 13:54:20','dd.MM.yy')",
+    "returns": "'15.05.12'"
+  }, {
+    "expression": "format_date('13:54:20','hh:mm AP')",
+    "returns": "'01:54 PM'"
+  }],
+  "tags": ["custom", "type", "uses", "format", "strings", "time", "date", "formats", "see", "qdatetime", "tostring"]
 }

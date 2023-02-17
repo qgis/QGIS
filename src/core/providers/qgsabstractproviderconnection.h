@@ -21,8 +21,6 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgsdatasourceuri.h"
-#include "qgsexception.h"
 
 /**
  * \brief The QgsAbstractProviderConnection provides an interface for data provider connections.

@@ -1,52 +1,42 @@
 {
-        "name": "array_slice",
-        "type": "function",
+  "name": "array_slice",
+  "type": "function",
   "groups": ["Arrays"],
-        "description": "Returns a portion of the array. The slice is defined by the start_pos and end_pos arguments.",
-        "arguments": [{
-                        "arg": "array",
-                        "description": "an array"
-                },
-                {
-                        "arg": "start_pos",
-                        "description": "the index of the start position of the slice (0 based). The start_pos index is included in the slice. If you use a negative start_pos, the index is counted from the end of the list (-1 based)."
-                },
-                {
-                        "arg": "end_pos",
-                        "description": "the index of the end position of the slice (0 based). The end_pos index is included in the slice. If you use a negative end_pos, the index is counted from the end of the list (-1 based)."
-                }
-        ],
-        "examples": [{
-                        "expression": "array_slice(array(1,2,3,4,5),0,3)",
-                        "returns": "[ 1, 2, 3, 4 ]"
-                },
-                {
-                        "expression": "array_slice(array(1,2,3,4,5),0,-1)",
-                        "returns": "[ 1, 2, 3, 4, 5 ]"
-                },
-                {
-                        "expression": "array_slice(array(1,2,3,4,5),-5,-1)",
-                        "returns": "[ 1, 2, 3, 4, 5 ]"
-                },
-                {
-                        "expression": "array_slice(array(1,2,3,4,5),0,0)",
-                        "returns": "[ 1 ]"
-                },
-                {
-                        "expression": "array_slice(array(1,2,3,4,5),-2,-1)",
-                        "returns": "[ 4, 5 ]"
-                },
-                {
-                        "expression": "array_slice(array(1,2,3,4,5),-1,-1)",
-                        "returns": "[ 5 ]"
-                },
-                {
-                        "expression": "array_slice(array('Dufour','Valmiera','Chugiak','Brighton'),1,2)",
-                        "returns": "[ 'Valmiera', 'Chugiak' ]"
-                },
-                {
-                        "expression": "array_slice(array('Dufour','Valmiera','Chugiak','Brighton'),-2,-1)",
-                        "returns": "[ 'Chugiak', 'Brighton' ]"
-                }
-        ]
+  "description": "Returns a portion of the array. The slice is defined by the start_pos and end_pos arguments.",
+  "arguments": [{
+    "arg": "array",
+    "description": "an array"
+  }, {
+    "arg": "start_pos",
+    "description": "the index of the start position of the slice (0 based). The start_pos index is included in the slice. If you use a negative start_pos, the index is counted from the end of the list (-1 based)."
+  }, {
+    "arg": "end_pos",
+    "description": "the index of the end position of the slice (0 based). The end_pos index is included in the slice. If you use a negative end_pos, the index is counted from the end of the list (-1 based)."
+  }],
+  "examples": [{
+    "expression": "array_slice(array(1,2,3,4,5),0,3)",
+    "returns": "[ 1, 2, 3, 4 ]"
+  }, {
+    "expression": "array_slice(array(1,2,3,4,5),0,-1)",
+    "returns": "[ 1, 2, 3, 4, 5 ]"
+  }, {
+    "expression": "array_slice(array(1,2,3,4,5),-5,-1)",
+    "returns": "[ 1, 2, 3, 4, 5 ]"
+  }, {
+    "expression": "array_slice(array(1,2,3,4,5),0,0)",
+    "returns": "[ 1 ]"
+  }, {
+    "expression": "array_slice(array(1,2,3,4,5),-2,-1)",
+    "returns": "[ 4, 5 ]"
+  }, {
+    "expression": "array_slice(array(1,2,3,4,5),-1,-1)",
+    "returns": "[ 5 ]"
+  }, {
+    "expression": "array_slice(array('Dufour','Valmiera','Chugiak','Brighton'),1,2)",
+    "returns": "[ 'Valmiera', 'Chugiak' ]"
+  }, {
+    "expression": "array_slice(array('Dufour','Valmiera','Chugiak','Brighton'),-2,-1)",
+    "returns": "[ 'Chugiak', 'Brighton' ]"
+  }],
+  "tags": ["array", "defined", "arguments", "start", "position", "slice", "portion", "end", "index"]
 }

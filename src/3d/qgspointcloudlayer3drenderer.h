@@ -20,7 +20,7 @@
 #include "qgis_sip.h"
 
 #include "qgs3drendererregistry.h"
-#include "qgsabstract3drenderer.h"
+#include "qgsabstractpointcloud3drenderer.h"
 #include "qgsmaplayerref.h"
 #include "qgsfeedback.h"
 #include <QObject>
@@ -110,12 +110,25 @@ class _3D_NO_EXPORT QgsPointCloud3DRenderContext : public Qgs3DRenderContext
     {
       switch ( type )
       {
+        case QgsPointCloudAttribute::UChar:
+          value = *reinterpret_cast< const unsigned char * >( data + offset );
+          return;
         case QgsPointCloudAttribute::Char:
           value = *( data + offset );
           return;
 
         case QgsPointCloudAttribute::Int32:
           value = *reinterpret_cast< const qint32 * >( data + offset );
+          return;
+        case QgsPointCloudAttribute::UInt32:
+          value = *reinterpret_cast< const quint32 * >( data + offset );
+          return;
+
+        case QgsPointCloudAttribute::Int64:
+          value = *reinterpret_cast< const qint64 * >( data + offset );
+          return;
+        case QgsPointCloudAttribute::UInt64:
+          value = *reinterpret_cast< const quint64 * >( data + offset );
           return;
 
         case QgsPointCloudAttribute::Short:
@@ -175,7 +188,16 @@ class _3D_NO_EXPORT QgsPointCloud3DRenderContext : public Qgs3DRenderContext
      * Returns the feedback object used to cancel rendering and check if rendering was canceled.
      */
     QgsFeedback *feedback() const { return mFeedback.get(); }
+
+    /**
+     * Returns the 3D scene's extent in layer crs.
+     * \since QGIS 3.30
+     */
+    QgsRectangle extent() const { return mExtent; }
+
   private:
+    //! Recalculates the 3D scene's extent in layer's crs
+    void updateExtent();
 #ifdef SIP_RUN
     QgsPointCloudRenderContext( const QgsPointCloudRenderContext &rh );
 #endif
@@ -186,6 +208,7 @@ class _3D_NO_EXPORT QgsPointCloud3DRenderContext : public Qgs3DRenderContext
     double mZValueFixedOffset = 0;
     QgsCoordinateTransform mCoordinateTransform;
     std::unique_ptr<QgsFeedback> mFeedback;
+    QgsRectangle mExtent;
 };
 
 
@@ -214,7 +237,7 @@ class _3D_EXPORT QgsPointCloudLayer3DRendererMetadata : public Qgs3DRendererAbst
  *
  * \since QGIS 3.18
  */
-class _3D_EXPORT QgsPointCloudLayer3DRenderer : public QgsAbstract3DRenderer
+class _3D_EXPORT QgsPointCloudLayer3DRenderer : public QgsAbstractPointCloud3DRenderer
 {
   public:
     //! Takes ownership of the symbol object
@@ -284,12 +307,14 @@ class _3D_EXPORT QgsPointCloudLayer3DRenderer : public QgsAbstract3DRenderer
      */
     void setPointRenderingBudget( int budget );
 
+    bool convertFrom2DRenderer( QgsPointCloudRenderer *renderer ) override;
+
   private:
     QgsMapLayerRef mLayerRef; //!< Layer used to extract mesh data from
     std::unique_ptr< QgsPointCloud3DSymbol > mSymbol;
-    double mMaximumScreenError = 1.0;
+    double mMaximumScreenError = 3.0;
     bool mShowBoundingBoxes = false;
-    int mPointBudget = 1000000;
+    int mPointBudget = 5000000;
 
   private:
 #ifdef SIP_RUN

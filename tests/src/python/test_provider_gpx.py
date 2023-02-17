@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for the GPX provider.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -10,21 +9,11 @@ __author__ = 'Nyall Dawson'
 __date__ = '2021-07-30'
 __copyright__ = 'Copyright 2021, The QGIS Project'
 
-from qgis.core import (
-    QgsVectorLayer,
-    QgsFeature,
-    QgsPoint,
-    QgsProviderRegistry
-)
-from qgis.testing import (
-    start_app,
-    unittest
-)
+from qgis.core import QgsFeature, QgsPoint, QgsProviderRegistry, QgsVectorLayer
+from qgis.testing import start_app, unittest
 
 from providertestbase import ProviderTestCase
-from utilities import (
-    unitTestDataPath
-)
+from utilities import unitTestDataPath
 
 start_app()
 
@@ -98,6 +87,10 @@ class TestPyQgsGpxProvider(unittest.TestCase, ProviderTestCase):
 
     @unittest.skip('Base provider test is not suitable for GPX provider')
     def testGetFeaturesFilterRectTests(self):
+        pass
+
+    @unittest.skip('Base provider test is not suitable for GPX provider')
+    def testGetFeaturesFilterRectTestsNoGeomFlag(self):
         pass
 
     @unittest.skip('Base provider test is not suitable for GPX provider')

@@ -189,7 +189,7 @@ public:
   /**
    * Returns true if this character color entry is valid.
    */
-  bool isValid()
+  bool isValid() const
   {
         return _colorSpace != COLOR_SPACE_UNDEFINED;
   }

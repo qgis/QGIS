@@ -183,12 +183,12 @@ class CORE_EXPORT QgsBlockingNetworkRequest : public QObject
     ErrorCode deleteResource( QNetworkRequest &request, QgsFeedback *feedback = nullptr );
 
     /**
-     * Returns the error message string, after a get() or post() request has been made.\
+     * Returns the error message string, after a get(), post(), head() or put() request has been made.
      */
     QString errorMessage() const { return mErrorMessage; }
 
     /**
-     * Returns the content of the network reply, after a get() or post() request has been made.
+     * Returns the content of the network reply, after a get(), post(), head() or put() request has been made.
      */
     QgsNetworkReplyContent reply() const { return mReplyContent; }
 

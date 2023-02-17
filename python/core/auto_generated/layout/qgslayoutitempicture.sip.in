@@ -250,9 +250,20 @@ Sets the stroke ``width`` (in layout units) used for parametrized SVG files.
 
     Format mode() const;
 %Docstring
-Returns the current picture mode (image format).
+Returns the current picture mode (image format), FormatUnknown if given
+picture format is unknown
 
 .. seealso:: :py:func:`setMode`
+%End
+
+    Format originalMode() const;
+%Docstring
+Returns the original set picture mode (image format).
+It could differ from :py:func:`~QgsLayoutItemPicture.mode` if given picture format is unknown
+
+.. seealso:: :py:func:`setMode`
+
+.. versionadded:: 3.22
 %End
 
     void setMode( Format mode );

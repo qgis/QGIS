@@ -73,9 +73,24 @@ class CORE_EXPORT QgsCoordinateUtils
     /**
      * Formats a \a point coordinate for use with the specified \a project, respecting the project's
      * coordinate display settings.
+     *
+     * \note This method returns the x and y coordinates as a concatenated string which respects the project's coordinate axis display order.
+     * See formatCoordinatePartsForProject() for a method which returns separate x and y coordinate strings.
+     *
      * \since QGIS 3.2
      */
     Q_INVOKABLE static QString formatCoordinateForProject( QgsProject *project, const QgsPointXY &point, const QgsCoordinateReferenceSystem &destCrs, int precision );
+
+    /**
+     * Formats a \a point coordinate for use with the specified \a project, respecting the project's
+     * coordinate display settings.
+     *
+     * \note This method returns the x and y coordinates as separate strings, see formatCoordinateForProject() for a method which returns a single concatenated string
+     * respecting the project's coordinate axis display order.
+     *
+     * \since QGIS 3.28
+     */
+    Q_INVOKABLE static void formatCoordinatePartsForProject( QgsProject *project, const QgsPointXY &point, const QgsCoordinateReferenceSystem &destCrs, int precision, QString &x, QString &y );
 
     /**
      * Formats an \a extent for use with the specified \a project, respecting the project's
@@ -91,6 +106,14 @@ class CORE_EXPORT QgsCoordinateUtils
      * \since QGIS 3.16
      */
     Q_INVOKABLE static double dmsToDecimal( const QString &string, bool *ok = nullptr, bool *isEasting = nullptr );
+
+    /**
+     * Converts a decimal degree with suffix string to its raw decimal equivalent.
+     * \param string decimal degree to convert (must include a [N,S,E,W] suffix)
+     * \returns Double decimal value
+     * \since QGIS 3.26
+     */
+    Q_INVOKABLE static double degreeToDecimal( const QString &string, bool *ok = nullptr, bool *isEasting = nullptr );
 
 };
 

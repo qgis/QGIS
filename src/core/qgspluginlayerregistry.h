@@ -38,7 +38,7 @@ class CORE_EXPORT QgsPluginLayerType
     QgsPluginLayerType( const QString &name );
     virtual ~QgsPluginLayerType() = default;
 
-    QString name();
+    QString name() const;
 
     //! Returns new layer of this type. Return NULLPTR on error
     virtual QgsPluginLayer *createLayer() SIP_FACTORY;

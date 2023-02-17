@@ -42,7 +42,7 @@ class GUI_EXPORT QgsMapToolEdit: public QgsMapTool
      * Returns default Z value.
      * Used for setting Z coordinate to new vertex.
      */
-    double defaultZValue() const;
+    static double defaultZValue();
 
     /**
      * Returns default M value.
@@ -50,7 +50,16 @@ class GUI_EXPORT QgsMapToolEdit: public QgsMapTool
      *
      * \since QGIS 3.20
      */
-    double defaultMValue() const;
+    static double defaultMValue();
+
+    /**
+     * Creates a  geometry rubber band with the color/line width from
+     *   the QGIS settings. The caller takes ownership of the
+     *   returned object
+     *   \param geometryType
+     *   \param alternativeBand if TRUE, rubber band will be set with more transparency and a dash pattern. default is FALSE.
+     */
+    QgsGeometryRubberBand *createGeometryRubberBand( QgsWkbTypes::GeometryType geometryType = QgsWkbTypes::LineGeometry, bool alternativeBand = false ) const SIP_FACTORY;
 
   private slots:
     //! Vector layers' editingStopped SIGNAL will eventually trigger a clean
@@ -79,8 +88,6 @@ class GUI_EXPORT QgsMapToolEdit: public QgsMapTool
      *   \param alternativeBand if TRUE, rubber band will be set with more transparency and a dash pattern. default is FALSE.
      */
     QgsRubberBand *createRubberBand( QgsWkbTypes::GeometryType geometryType = QgsWkbTypes::LineGeometry, bool alternativeBand = false ) SIP_FACTORY;
-
-    QgsGeometryRubberBand *createGeometryRubberBand( QgsWkbTypes::GeometryType geometryType = QgsWkbTypes::LineGeometry, bool alternativeBand = false ) const SIP_FACTORY;
 
     //! Returns the current vector layer of the map canvas or 0
     QgsVectorLayer *currentVectorLayer();

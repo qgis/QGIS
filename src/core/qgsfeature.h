@@ -169,6 +169,11 @@ class CORE_EXPORT QgsFeature
     else
       sipCpp->deleteAttribute( fieldIdx );
     % End
+
+    long __hash__() const;
+    % MethodCode
+    sipRes = qHash( *sipCpp );
+    % End
 #endif
 
     /**
@@ -200,17 +205,17 @@ class CORE_EXPORT QgsFeature
     /**
      * Assignment operator
      */
-    QgsFeature &operator=( const QgsFeature &rhs ) SIP_SKIP;
+    QgsFeature &operator=( const QgsFeature &rhs );
 
     /**
      * Compares two features
      */
-    bool operator==( const QgsFeature &other ) const SIP_SKIP;
+    bool operator==( const QgsFeature &other ) const;
 
     /**
      * Compares two features
      */
-    bool operator!=( const QgsFeature &other ) const SIP_SKIP;
+    bool operator!=( const QgsFeature &other ) const;
 
     virtual ~QgsFeature();
 
@@ -593,8 +598,6 @@ class CORE_EXPORT QgsFeature
     /**
      * Insert a value into attribute, by field \a name.
      *
-     * Returns FALSE if field \a name could not be matched.
-     *
      * Field map must be associated using setFields() before this method can be used.
      *
      * Calling this method will automatically set the feature as valid (see isValid()).
@@ -615,7 +618,7 @@ class CORE_EXPORT QgsFeature
      *
      * \param name The name of the field to set
      * \param value The value to set
-     *  \throws KeyError if the attribute name could not be converted to an index
+     * \throws KeyError if the attribute name could not could not be matched.
      * \see setFields()
      */
     void setAttribute( const QString &name, const QVariant &value / GetWrapper / );
@@ -680,7 +683,7 @@ class CORE_EXPORT QgsFeature
      * \endcode
      *
      * \param name The name of the field to clear
-     * \throws KeyError if attribute name could not be converted to index
+     * \throws KeyError if attribute name could not be matched.
      * \see setFields()
      */
     bool deleteAttribute( const QString &name );
@@ -808,6 +811,41 @@ class CORE_EXPORT QgsFeature
     % End
 #endif
 
+
+#ifndef SIP_RUN
+
+    /**
+     * Returns TRUE if the attribute at the specified index is an unset value.
+     *
+     * \see QgsUnsetAttributeValue
+     * \since QGIS 3.28
+     */
+    bool isUnsetValue( int fieldIdx ) const;
+#else
+
+    /**
+     * Returns TRUE if the attribute at the specified index is an unset value.
+     *
+     * \throws KeyError if the field is not found
+     * \see QgsUnsetAttributeValue
+     * \since QGIS 3.28
+     */
+    bool isUnsetValue( int fieldIdx ) const;
+    % MethodCode
+    {
+      if ( a0 < 0 || a0 >= sipCpp->attributes().count() )
+      {
+        PyErr_SetString( PyExc_KeyError, QByteArray::number( a0 ) );
+        sipIsErr = 1;
+      }
+      else
+      {
+        sipRes = sipCpp->isUnsetValue( a0 );
+      }
+    }
+    % End
+#endif
+
     /**
      * Returns the feature's embedded symbology, or NULLPTR if the feature has no embedded symbol.
      *
@@ -881,7 +919,7 @@ typedef QMap<qint64, QgsGeometry> QgsGeometryMap;
 
 typedef QList<QgsFeature> QgsFeatureList;
 
-uint qHash( const QgsFeature &key, uint seed = 0 )  SIP_SKIP;
+CORE_EXPORT uint qHash( const QgsFeature &key, uint seed = 0 )  SIP_SKIP;
 
 Q_DECLARE_METATYPE( QgsFeature )
 Q_DECLARE_METATYPE( QgsFeatureList )

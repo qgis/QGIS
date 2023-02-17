@@ -34,11 +34,17 @@ class QgsWFSSharedData : public QObject, public QgsBackgroundCachedSharedData
     //! Compute WFS filter from the sql or filter in the URI
     bool computeFilter( QString &errorMsg );
 
+    //! Returns computed WFS server expression
+    QString computedExpression( const QgsExpression &expression ) const override;
+
     //! Returns srsName
     QString srsName() const;
 
     //! Return provider geometry attribute name
     const QString &geometryAttribute() const { return mGeometryAttribute; }
+
+    //! Return list of layer properties.
+    const QList< QgsOgcUtils::LayerProperties > &layerProperties() const { return mLayerPropertiesList; }
 
     std::unique_ptr<QgsFeatureDownloaderImpl> newFeatureDownloaderImpl( QgsFeatureDownloader *, bool requestFromMainThread ) override;
 
@@ -50,6 +56,18 @@ class QgsWFSSharedData : public QObject, public QgsBackgroundCachedSharedData
 
     //! Set a new filter and return the previous one. Only used to temporarily disable filtering when trying to get layer geometry type.
     QString setWFSFilter( const QString &newFilter ) { QString oldFilter = mWFSFilter; mWFSFilter = newFilter; return oldFilter; }
+
+    //! Returns the WFS filter computed by computeFilter()
+    const QString &WFSFilter() const { return mWFSFilter; }
+
+    //! Compute mWFSGeometryTypeFilter
+    void computeGeometryTypeFilter();
+
+    //! Combine several WFS filters together with a And condition
+    QString combineWFSFilters( const std::vector<QString> &filters ) const;
+
+    //! Creates a deep copy of this shared data
+    QgsWFSSharedData *clone() const;
 
   signals:
 
@@ -102,6 +120,9 @@ class QgsWFSSharedData : public QObject, public QgsBackgroundCachedSharedData
     //! Geometry type of the features in this layer
     QgsWkbTypes::Type mWKBType = QgsWkbTypes::Unknown;
 
+    //! Geometry type filter to ensure geometries returned by the layer are of type mWKBType.
+    QString mWFSGeometryTypeFilter;
+
     //! Create GML parser
     QgsGmlStreamingParser *createParser() const;
 
@@ -134,6 +155,9 @@ class QgsWFSSharedData : public QObject, public QgsBackgroundCachedSharedData
     QgsRectangle getExtentFromSingleFeatureRequest() const override;
 
     long long getFeatureCountFromServer() const override;
+
+    void getVersionValues( QgsOgcUtils::GMLVersion &gmlVersion,  QgsOgcUtils::FilterVersion &filterVersion, bool &honourAxisOrientation ) const;
+
 };
 
 //! Utility class to issue a GetFeature resultType=hits request

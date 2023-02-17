@@ -33,11 +33,11 @@
 #include "qgis_sip.h"
 #include "qgis.h"
 #include "qgsmaplayer.h"
-#include "qgsraster.h"
 #include "qgsrasterdataprovider.h"
 #include "qgsrasterviewport.h"
 #include "qgsrasterminmaxorigin.h"
 #include "qgscontrastenhancement.h"
+#include "qgsabstractprofilesource.h"
 
 class QgsMapToPixel;
 class QgsRasterRenderer;
@@ -47,6 +47,9 @@ class QgsRasterPipe;
 class QgsRasterResampleFilter;
 class QgsBrightnessContrastFilter;
 class QgsHueSaturationFilter;
+class QgsRasterLayerElevationProperties;
+class QgsSettingsEntryBool;
+class QgsSettingsEntryDouble;
 
 class QImage;
 class QPixmap;
@@ -71,10 +74,14 @@ typedef QList < QPair< QString, QColor > > QgsLegendColorList;
  *     my_raster_layer = QgsRasterLayer("/path/to/file.tif", "my layer")
  * \endcode
  */
-class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
+class CORE_EXPORT QgsRasterLayer : public QgsMapLayer, public QgsAbstractProfileSource
 {
     Q_OBJECT
+
   public:
+
+    static const QgsSettingsEntryBool *settingsRasterDefaultEarlyResampling SIP_SKIP;
+    static const QgsSettingsEntryDouble *settingsRasterDefaultOversampling SIP_SKIP;
 
     //! \brief Default sample size (number of pixels) for estimated statistics/histogram calculation
     static const double SAMPLE_SIZE;
@@ -177,24 +184,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
      */
     QgsRasterLayer *clone() const override SIP_FACTORY;
 
-    //! \brief This enumerator describes the types of shading that can be used
-    enum ColorShadingAlgorithm
-    {
-      UndefinedShader,
-      PseudoColorShader,
-      FreakOutShader,
-      ColorRampShader,
-      UserDefinedShader
-    };
-
-    //! \brief This enumerator describes the type of raster layer
-    enum LayerType
-    {
-      GrayOrUndefined,
-      Palette,
-      Multiband,
-      ColorLayer
-    };
+    QgsAbstractProfileGenerator *createProfileGenerator( const QgsProfileRequest &request ) override SIP_FACTORY;
 
     /**
      * This helper checks to see whether the file name appears to be a valid
@@ -228,7 +218,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     /**
      * Returns the raster layer type (which is a read only property).
      */
-    LayerType rasterType() { return mRasterType; }
+    Qgis::RasterLayerType rasterType() const { return mRasterType; }
 
     /**
      * Sets the raster's \a renderer. Takes ownership of the renderer object.
@@ -313,6 +303,24 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     QString bandName( int bandNoInt ) const;
 
     /**
+     * Returns the (possibly NULL) raster attribute table for the given band \a bandNumber.
+     * \since QGIS 3.30
+     */
+    QgsRasterAttributeTable *attributeTable( int bandNumber ) const;
+
+    /**
+     * Returns the number of attribute tables for the raster by counting the number of bands that have an associated attribute table.
+     * \since QGIS 3.30
+     */
+    int attributeTableCount( ) const;
+
+    /**
+     * Returns TRUE if the raster renderer is suitable for creation of a raster attribute table. The supported renderers are QgsPalettedRasterRenderer and QgsSingleBandPseudoColorRenderer.
+     * \since QGIS 3.30
+     */
+    bool canCreateRasterAttributeTable( );
+
+    /**
      * Returns the source data provider.
      *
      * This will be NULLPTR if the layer is invalid.
@@ -344,6 +352,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     bool isSpatial() const override { return true; }
 
     QString htmlMetadata() const override;
+    Qgis::MapLayerProperties properties() const override;
 
     /**
      * Returns a 100x100 pixmap of the color palette. If the layer has no palette a white pixmap will be returned
@@ -466,6 +475,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     bool ignoreExtents() const;
 
     QgsMapLayerTemporalProperties *temporalProperties() override;
+    QgsMapLayerElevationProperties *elevationProperties() override;
 
   public slots:
     void showStatusMessage( const QString &message );
@@ -484,7 +494,6 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
      * \since QGIS 3.12
      */
     void subsetStringChanged();
-
 
   protected:
     bool readSymbology( const QDomNode &node, QString &errorMessage, QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories ) override;
@@ -509,7 +518,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     bool update();
 
     //! Sets corresponding renderer for style
-    void setRendererForDrawingStyle( QgsRaster::DrawingStyle drawingStyle );
+    void setRendererForDrawingStyle( Qgis::RasterDrawingStyle drawingStyle );
 
     void setContrastEnhancement( QgsContrastEnhancement::ContrastEnhancementAlgorithm algorithm,
                                  QgsRasterMinMaxOrigin::Limits limits,
@@ -541,6 +550,23 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
      */
     void setDataSourcePrivate( const QString &dataSource, const QString &baseName, const QString &provider, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags ) override;
 
+    /**
+     * Writes the paths to the external raster attribute table files associated with the raster bands.
+     * \param layerNode layer node
+     * \param doc document
+     * \param context read-write context
+     * \since QGIS 3.30
+     */
+    void writeRasterAttributeTableExternalPaths( QDomNode &layerNode, QDomDocument &doc, const QgsReadWriteContext &context ) const;
+
+    /**
+     * Reads the paths to the external raster attribute table files associated with the raster bands and loads the raster attribute tables, the raster symbology is not changed.
+     * \param layerNode layer node
+     * \param context read-write context
+     * \since QGIS 3.30
+     */
+    void readRasterAttributeTableExternalPaths( const QDomNode &layerNode, QgsReadWriteContext &context ) const;
+
     //! \brief  Constant defining flag for XML and a constant that signals property not used
     const QString QSTRING_NOT_SET;
     const QString TRSTRING_NOT_SET;
@@ -551,12 +577,14 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     //! Pointer to temporal properties
     QgsRasterLayerTemporalProperties *mTemporalProperties = nullptr;
 
+    QgsRasterLayerElevationProperties *mElevationProperties = nullptr;
+
     //! [ data provider interface ] Timestamp, the last modified time of the data source when the layer was created
     QDateTime mLastModified;
 
     QgsRasterViewPort mLastViewPort;
 
-    LayerType mRasterType = GrayOrUndefined;
+    Qgis::RasterLayerType mRasterType = Qgis::RasterLayerType::GrayOrUndefined;
 
     std::unique_ptr< QgsRasterPipe > mPipe;
 
@@ -565,6 +593,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
 
     QDomDocument mOriginalStyleDocument;
     QDomElement mOriginalStyleElement;
+
 };
 
 // clazy:excludeall=qstring-allocations

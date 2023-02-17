@@ -133,6 +133,54 @@ Register an expression context generator class that will be used to retrieve
 an expression context for the button when required.
 %End
 
+    void setDefaultSymbol( QgsSymbol *symbol /Transfer/ );
+%Docstring
+Sets the default symbol for the button, which is shown in the button's drop-down menu for the
+"default symbol" option.
+
+:param symbol: default symbol for the button. Set to ``None`` to disable the default symbol
+               option. Ownership of ``symbol`` is transferred to the button.
+
+.. seealso:: :py:func:`defaultSymbol`
+
+.. versionadded:: 3.30
+%End
+
+    const QgsSymbol *defaultSymbol() const;
+%Docstring
+Returns the default symbol for the button, which is shown in the button's drop-down menu for the
+"default symbol" option.
+
+:return: default symbol for the button. Returns ``None`` if the default symbol
+         option is disabled.
+
+.. seealso:: :py:func:`setDefaultSymbol`
+
+.. versionadded:: 3.30
+%End
+
+    bool showNull() const;
+%Docstring
+Returns whether the set to null (clear) option is shown in the button's drop-down menu.
+
+.. seealso:: :py:func:`setShowNull`
+
+.. seealso:: :py:func:`isNull`
+
+.. versionadded:: 3.26
+%End
+
+    bool isNull() const;
+%Docstring
+Returns ``True`` if the current symbol is null.
+
+.. seealso:: :py:func:`setShowNull`
+
+.. seealso:: :py:func:`showNull`
+
+.. versionadded:: 3.26
+%End
+
   public slots:
 
     void setSymbol( QgsSymbol *symbol /Transfer/ );
@@ -181,6 +229,45 @@ color or string representation of a color, then no change is applied.
 .. seealso:: :py:func:`copyColor`
 %End
 
+    void setShowNull( bool showNull );
+%Docstring
+Sets whether a set to null (clear) option is shown in the button's drop-down menu.
+
+:param showNull: set to ``True`` to show a null option
+
+.. seealso:: :py:func:`showNull`
+
+.. seealso:: :py:func:`isNull`
+
+.. versionadded:: 3.26
+%End
+
+    void setToNull();
+%Docstring
+Sets symbol to to null.
+
+.. seealso:: :py:func:`setShowNull`
+
+.. seealso:: :py:func:`setToDefaultSymbol`
+
+.. seealso:: :py:func:`showNull`
+
+.. versionadded:: 3.26
+%End
+
+    void setToDefaultSymbol();
+%Docstring
+Sets symbol to the button's default symbol, if set.
+
+.. seealso:: :py:func:`setDefaultSymbol`
+
+.. seealso:: :py:func:`defaultSymbol`
+
+.. seealso:: :py:func:`setToNull`
+
+.. versionadded:: 3.30
+%End
+
   signals:
 
     void changed();
@@ -216,6 +303,9 @@ Emitted when the symbol's settings are changed.
 
 
     virtual void dropEvent( QDropEvent *e );
+
+
+    virtual void wheelEvent( QWheelEvent *event );
 
 
 };

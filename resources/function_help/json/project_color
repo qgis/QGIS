@@ -3,7 +3,13 @@
   "type": "function",
   "groups": ["Color"],
   "description": "Returns a color from the project's color scheme.",
-  "arguments": [ {"arg":"name","description":"a color name"}],
-  "examples": [ { "expression":"project_color('Logo color')", "returns":"'20,140,50'"}
-  ]
+  "arguments": [{
+    "arg": "name",
+    "description": "a color name"
+  }],
+  "examples": [{
+    "expression": "project_color('Logo color')",
+    "returns": "'20,140,50'"
+  }],
+  "tags": ["scheme", "project", "color"]
 }

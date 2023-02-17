@@ -15,10 +15,10 @@
 
 #include "qgscolorrampbutton.h"
 #include "qgscolorramp.h"
-#include "qgsapplication.h"
 #include "qgslogger.h"
 #include "qgssymbollayerutils.h"
 #include "qgsstyle.h"
+#include "qgsguiutils.h"
 
 #include "qgsstylesavedialog.h"
 #include "qgsgradientcolorrampdialog.h"
@@ -234,6 +234,7 @@ void QgsColorRampButton::prepareMenu()
   if ( mShowNull )
   {
     QAction *nullAction = new QAction( tr( "Clear Current Ramp" ), this );
+    nullAction->setEnabled( !isNull() );
     mMenu->addAction( nullAction );
     connect( nullAction, &QAction::triggered, this, &QgsColorRampButton::setToNull );
   }
@@ -400,8 +401,10 @@ void QgsColorRampButton::saveColorRamp()
     return;
   }
 
+  QgsStyle *destinationStyle = saveDlg.destinationStyle();
+
   // check if there is no symbol with same name
-  if ( mStyle->symbolNames().contains( saveDlg.name() ) )
+  if ( destinationStyle->symbolNames().contains( saveDlg.name() ) )
   {
     const int res = QMessageBox::warning( this, tr( "Save Color Ramp" ),
                                           tr( "Color ramp with name '%1' already exists. Overwrite?" )
@@ -411,15 +414,15 @@ void QgsColorRampButton::saveColorRamp()
     {
       return;
     }
-    mStyle->removeColorRamp( saveDlg.name() );
+    destinationStyle->removeColorRamp( saveDlg.name() );
   }
 
   const QStringList colorRampTags = saveDlg.tags().split( ',' );
 
   // add new symbol to style and re-populate the list
   QgsColorRamp *ramp = colorRamp();
-  mStyle->addColorRamp( saveDlg.name(), ramp );
-  mStyle->saveColorRamp( saveDlg.name(), ramp, saveDlg.isFavorite(), colorRampTags );
+  destinationStyle->addColorRamp( saveDlg.name(), ramp );
+  destinationStyle->saveColorRamp( saveDlg.name(), ramp, saveDlg.isFavorite(), colorRampTags );
 
   setColorRampName( saveDlg.name() );
 }

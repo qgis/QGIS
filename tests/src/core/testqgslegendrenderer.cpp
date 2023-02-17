@@ -18,7 +18,6 @@
 #include <QJsonArray>
 
 #include "qgsapplication.h"
-#include "qgsblureffect.h"
 #include "qgscategorizedsymbolrenderer.h"
 #include "qgsdatadefinedsizelegend.h"
 #include "qgseffectstack.h"
@@ -35,7 +34,6 @@
 #include "qgsproject.h"
 #include "qgslegendrenderer.h"
 #include "qgsrasterlayer.h"
-#include "qgsrenderchecker.h"
 #include "qgsshadoweffect.h"
 #include "qgssinglesymbolrenderer.h"
 #include "qgsvectorlayer.h"
@@ -50,23 +48,20 @@
 #include "qgsmarkersymbol.h"
 #include "qgsfillsymbol.h"
 
-static QString _fileNameForTest( const QString &testName )
-{
-  return QDir::tempPath() + '/' + testName + ".png";
-}
-
 static void _setStandardTestFont( QgsLegendSettings &settings, const QString &style = QStringLiteral( "Roman" ) )
 {
-  QList< QgsLegendStyle::Style> styles;
-  styles << QgsLegendStyle::Title
-         << QgsLegendStyle::Group
-         << QgsLegendStyle::Subgroup
-         << QgsLegendStyle::SymbolLabel;
-  for ( const QgsLegendStyle::Style st : styles )
+  for ( const QgsLegendStyle::Style st :
+        {
+          QgsLegendStyle::Title,
+          QgsLegendStyle::Group,
+          QgsLegendStyle::Subgroup,
+          QgsLegendStyle::SymbolLabel
+        } )
   {
     QFont font( QgsFontUtils::getStandardTestFont( style ) );
-    font.setPointSizeF( settings.style( st ).font().pointSizeF() );
-    settings.rstyle( st ).setFont( font );
+    QgsTextFormat f = settings.rstyle( st ).textFormat();
+    f.setFont( font );
+    settings.rstyle( st ).setTextFormat( f );
   }
 }
 
@@ -76,7 +71,7 @@ static QImage _base64ToImage( const QString &base64 )
   return QImage::fromData( bytearray, "PNG" );
 }
 
-static void _renderLegend( const QString &testName, QgsLayerTreeModel *legendModel, QgsLegendSettings &settings )
+static QImage _renderLegend( QgsLayerTreeModel *legendModel, QgsLegendSettings &settings )
 {
   settings.setTitle( QStringLiteral( "Legend" ) );
   QgsLegendRenderer legendRenderer( legendModel, settings );
@@ -85,22 +80,26 @@ static void _renderLegend( const QString &testName, QgsLayerTreeModel *legendMod
   const int dpi = 96;
   const qreal dpmm = dpi / 25.4;
   const QSize s( size.width() * dpmm, size.height() * dpmm );
-  qDebug() << QStringLiteral( "testName:%1 size=%2x%3 dpmm=%4 s=%5x%6" ).arg( testName ).arg( size.width() ).arg( size.height() ).arg( dpmm ).arg( s.width() ).arg( s.height() );
+  // qDebug() << QStringLiteral( "testName:%1 size=%2x%3 dpmm=%4 s=%5x%6" ).arg( testName ).arg( size.width() ).arg( size.height() ).arg( dpmm ).arg( s.width() ).arg( s.height() );
   QImage img( s, QImage::Format_ARGB32_Premultiplied );
   img.fill( Qt::white );
 
   QPainter painter( &img );
   painter.setRenderHint( QPainter::Antialiasing, true );
   QgsRenderContext context = QgsRenderContext::fromQPainter( &painter );
+  context.setTextRenderFormat( Qgis::TextRenderFormat::AlwaysText );
+  context.setFlag( Qgis::RenderContextFlag::ApplyScalingWorkaroundForTextRendering, true );
 
-  const QgsScopedRenderContextScaleToMm scaleToMm( context );
-  context.setRendererScale( 1000 );
-  context.setMapToPixel( QgsMapToPixel( 1 / ( 0.1 * context.scaleFactor() ) ) );
+  {
+    const QgsScopedRenderContextScaleToMm scaleToMm( context );
+    context.setRendererScale( 1000 );
+    context.setMapToPixel( QgsMapToPixel( 1 / ( 0.1 * context.scaleFactor() ) ) );
 
-  legendRenderer.drawLegend( context );
+    legendRenderer.drawLegend( context );
+  }
   painter.end();
 
-  img.save( _fileNameForTest( testName ) );
+  return img;
 }
 
 static QJsonObject _renderJsonLegend( QgsLayerTreeModel *legendModel, const QgsLegendSettings &settings )
@@ -110,18 +109,6 @@ static QJsonObject _renderJsonLegend( QgsLayerTreeModel *legendModel, const QgsL
   QgsRenderContext context;
   context.setFlag( Qgis::RenderContextFlag::Antialiasing, true );
   return legendRenderer.exportLegendToJson( context );
-}
-
-static bool _verifyImage( const QString &testName, QString &report, int diff = 30 )
-{
-  QgsRenderChecker checker;
-  checker.setControlPathPrefix( QStringLiteral( "legend" ) );
-  checker.setControlName( "expected_" + testName );
-  checker.setRenderedImage( _fileNameForTest( testName ) );
-  checker.setSizeTolerance( 3, 3 );
-  const bool equal = checker.compareImages( testName, diff );
-  report += checker.report();
-  return equal;
 }
 
 class TestRasterRenderer : public QgsPalettedRasterRenderer
@@ -149,12 +136,13 @@ class TestRasterRenderer : public QgsPalettedRasterRenderer
 
 };
 
-class TestQgsLegendRenderer : public QObject
+class TestQgsLegendRenderer : public QgsTest
 {
     Q_OBJECT
 
   public:
-    TestQgsLegendRenderer() = default;
+    TestQgsLegendRenderer() : QgsTest( QStringLiteral( "Legend Renderer Tests" ),
+                                         QStringLiteral( "legend" ) ) {}
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
@@ -180,7 +168,11 @@ class TestQgsLegendRenderer : public QObject
     void testRightAlignTextRightAlignSymbol();
 
     void testGroupHeadingSpacing();
-    void testGroupIndent();
+    void testGroupIndentSetup();
+    void testGroupIndentDefault();
+    void testGroupIndentRS();
+    void testGroupIndentRT();
+    void testGroupIndentRSRT();
 
     void testMapUnits();
     void testTallSymbol();
@@ -205,6 +197,7 @@ class TestQgsLegendRenderer : public QObject
     void testDiagramSizeLegend();
     void testDataDefinedSizeCollapsed();
     void testTextOnSymbol();
+    void testColumnsMixedSymbolSize();
 
     void testBasicJson();
     void testOpacityJson();
@@ -218,8 +211,12 @@ class TestQgsLegendRenderer : public QObject
     QgsVectorLayer *mVL2 =  nullptr ; // polygon
     QgsVectorLayer *mVL3 =  nullptr ; // point
     QgsRasterLayer *mRL = nullptr;
-    QString mReport;
-    bool _testLegendColumns( int itemCount, int columnCount, const QString &testName );
+    bool _testLegendColumns( int itemCount, int columnCount, const QString &testName, double symbolSpacing );
+
+    bool _verifyImage( const QImage &image, const QString &testName, int diff = 30 )
+    {
+      return imageCheck( testName, testName, image, QString(), diff, QSize( 6, 10 ) );
+    }
 };
 
 
@@ -227,21 +224,10 @@ void TestQgsLegendRenderer::initTestCase()
 {
   QgsApplication::init();
   QgsApplication::initQgis();
-
-  mReport += QLatin1String( "<h1>Legend Renderer Tests</h1>\n" );
 }
 
 void TestQgsLegendRenderer::cleanupTestCase()
 {
-  const QString myReportFile = QDir::tempPath() + "/qgistest.html";
-  QFile myFile( myReportFile );
-  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
-  {
-    QTextStream myQTextStream( &myFile );
-    myQTextStream << mReport;
-    myFile.close();
-  }
-
   QgsApplication::exitQgis();
 }
 
@@ -371,8 +357,8 @@ void TestQgsLegendRenderer::testBasic()
 
   QgsLegendSettings settings;
   _setStandardTestFont( settings, QStringLiteral( "Bold" ) );
-  _renderLegend( testName, &legendModel, settings );
-  QVERIFY( _verifyImage( testName, mReport ) );
+  const QImage res = _renderLegend( &legendModel, settings );
+  QVERIFY( _verifyImage( res, testName ) );
 }
 
 void TestQgsLegendRenderer::testMultiline()
@@ -391,8 +377,8 @@ void TestQgsLegendRenderer::testMultiline()
 
   QgsLegendSettings settings;
   _setStandardTestFont( settings, QStringLiteral( "Bold" ) );
-  _renderLegend( testName, &legendModel, settings );
-  QVERIFY( _verifyImage( testName, mReport ) );
+  const QImage res = _renderLegend( &legendModel, settings );
+  QVERIFY( _verifyImage( res, testName ) );
 }
 
 void TestQgsLegendRenderer::testOverrideSize()
@@ -419,8 +405,9 @@ void TestQgsLegendRenderer::testOverrideSize()
 
   QgsLegendSettings settings;
   _setStandardTestFont( settings, QStringLiteral( "Bold" ) );
-  _renderLegend( testName, &legendModel, settings );
-  QVERIFY( _verifyImage( testName, mReport ) );
+
+  const QImage res = _renderLegend( &legendModel, settings );
+  QVERIFY( _verifyImage( res, testName ) );
 }
 
 void TestQgsLegendRenderer::testSpacing()
@@ -444,15 +431,15 @@ void TestQgsLegendRenderer::testSpacing()
   settings.rstyle( QgsLegendStyle::Subgroup ).setAlignment( Qt::AlignLeft );
   settings.rstyle( QgsLegendStyle::SymbolLabel ).setAlignment( Qt::AlignLeft );
 
-  _renderLegend( QStringLiteral( "legend_left_align_side_space" ), &legendModel, settings );
-  QVERIFY( _verifyImage( QStringLiteral( "legend_left_align_side_space" ), mReport ) );
+  QImage res = _renderLegend( &legendModel, settings );
+  QVERIFY( _verifyImage( res, QStringLiteral( "legend_left_align_side_space" ) ) );
 
   settings.rstyle( QgsLegendStyle::Group ).setAlignment( Qt::AlignRight );
   settings.rstyle( QgsLegendStyle::Subgroup ).setAlignment( Qt::AlignRight );
   settings.setSymbolAlignment( Qt::AlignRight );
 
-  _renderLegend( QStringLiteral( "legend_right_align_side_space" ), &legendModel, settings );
-  QVERIFY( _verifyImage( QStringLiteral( "legend_right_align_side_space" ), mReport ) );
+  res = _renderLegend( &legendModel, settings );
+  QVERIFY( _verifyImage( res, QStringLiteral( "legend_right_align_side_space" ) ) );
 }
 
 void TestQgsLegendRenderer::testEffects()
@@ -512,8 +499,9 @@ void TestQgsLegendRenderer::testEffects()
 
   QgsLegendSettings settings;
   _setStandardTestFont( settings, QStringLiteral( "Bold" ) );
-  _renderLegend( testName, &legendModel, settings );
-  QVERIFY( _verifyImage( testName, mReport ) );
+
+  const QImage res = _renderLegend( &legendModel, settings );
+  QVERIFY( _verifyImage( res, testName ) );
 }
 
 void TestQgsLegendRenderer::testBigMarker()
@@ -533,8 +521,9 @@ void TestQgsLegendRenderer::testBigMarker()
 
   QgsLegendSettings settings;
   _setStandardTestFont( settings, QStringLiteral( "Bold" ) );
-  _renderLegend( testName, &legendModel, settings );
-  QVERIFY( _verifyImage( testName, mReport ) );
+
+  const QImage res = _renderLegend( &legendModel, settings );
+  QVERIFY( _verifyImage( res, testName ) );
 }
 
 void TestQgsLegendRenderer::testBigMarkerMaxSize()
@@ -551,8 +540,9 @@ void TestQgsLegendRenderer::testBigMarkerMaxSize()
   QgsLegendSettings settings;
   settings.setMaximumSymbolSize( 5 ); //restrict maximum size to 5 mm
   _setStandardTestFont( settings, QStringLiteral( "Bold" ) );
-  _renderLegend( testName, &legendModel, settings );
-  QVERIFY( _verifyImage( testName, mReport ) );
+
+  const QImage res = _renderLegend( &legendModel, settings );
+  QVERIFY( _verifyImage( res, testName ) );
 }
 
 void TestQgsLegendRenderer::testOverrideSymbol()
@@ -579,8 +569,9 @@ void TestQgsLegendRenderer::testOverrideSymbol()
 
   QgsLegendSettings settings;
   _setStandardTestFont( settings, QStringLiteral( "Bold" ) );
-  _renderLegend( testName, &legendModel, settings );
-  QVERIFY( _verifyImage( testName, mReport ) );
+
+  const QImage res = _renderLegend( &legendModel, settings );
+  QVERIFY( _verifyImage( res, testName ) );
 }
 
 void TestQgsLegendRenderer::testCenterAlignText()
@@ -598,12 +589,14 @@ void TestQgsLegendRenderer::testCenterAlignText()
   settings.rstyle( QgsLegendStyle::Subgroup ).setAlignment( Qt::AlignHCenter );
   settings.rstyle( QgsLegendStyle::SymbolLabel ).setAlignment( Qt::AlignHCenter );
   _setStandardTestFont( settings, QStringLiteral( "Bold" ) );
-  _renderLegend( QStringLiteral( "legend_center_align_text" ), &legendModel, settings );
-  QVERIFY( _verifyImage( QStringLiteral( "legend_center_align_text" ), mReport ) );
+
+  QImage res = _renderLegend( &legendModel, settings );
+  QVERIFY( _verifyImage( res, QStringLiteral( "legend_center_align_text" ) ) );
 
   settings.setColumnCount( 2 );
-  _renderLegend( QStringLiteral( "legend_two_cols_center_align_text" ), &legendModel, settings );
-  QVERIFY( _verifyImage( QStringLiteral( "legend_two_cols_center_align_text" ), mReport ) );
+
+  res = _renderLegend( &legendModel, settings );
+  QVERIFY( _verifyImage( res, QStringLiteral( "legend_two_cols_center_align_text" ) ) );
 }
 
 void TestQgsLegendRenderer::testLeftAlignTextRightAlignSymbol()
@@ -622,12 +615,14 @@ void TestQgsLegendRenderer::testLeftAlignTextRightAlignSymbol()
   settings.rstyle( QgsLegendStyle::SymbolLabel ).setAlignment( Qt::AlignLeft );
   settings.setSymbolAlignment( Qt::AlignRight );
   _setStandardTestFont( settings, QStringLiteral( "Bold" ) );
-  _renderLegend( QStringLiteral( "legend_right_symbol_left_align_text" ), &legendModel, settings );
-  QVERIFY( _verifyImage( QStringLiteral( "legend_right_symbol_left_align_text" ), mReport ) );
+
+  QImage res = _renderLegend( &legendModel, settings );
+  QVERIFY( _verifyImage( res, QStringLiteral( "legend_right_symbol_left_align_text" ) ) );
 
   settings.setColumnCount( 2 );
-  _renderLegend( QStringLiteral( "legend_two_cols_right_align_symbol_left_align_text" ), &legendModel, settings );
-  QVERIFY( _verifyImage( QStringLiteral( "legend_two_cols_right_align_symbol_left_align_text" ), mReport ) );
+
+  res = _renderLegend( &legendModel, settings );
+  QVERIFY( _verifyImage( res, QStringLiteral( "legend_two_cols_right_align_symbol_left_align_text" ) ) );
 }
 
 void TestQgsLegendRenderer::testCenterAlignTextRightAlignSymbol()
@@ -646,12 +641,14 @@ void TestQgsLegendRenderer::testCenterAlignTextRightAlignSymbol()
   settings.rstyle( QgsLegendStyle::SymbolLabel ).setAlignment( Qt::AlignHCenter );
   settings.setSymbolAlignment( Qt::AlignRight );
   _setStandardTestFont( settings, QStringLiteral( "Bold" ) );
-  _renderLegend( QStringLiteral( "legend_right_symbol_center_align_text" ), &legendModel, settings );
-  QVERIFY( _verifyImage( QStringLiteral( "legend_right_symbol_center_align_text" ), mReport ) );
+
+  QImage res = _renderLegend( &legendModel, settings );
+  QVERIFY( _verifyImage( res, QStringLiteral( "legend_right_symbol_center_align_text" ) ) );
 
   settings.setColumnCount( 2 );
-  _renderLegend( QStringLiteral( "legend_two_cols_right_align_symbol_center_align_text" ), &legendModel, settings );
-  QVERIFY( _verifyImage( QStringLiteral( "legend_two_cols_right_align_symbol_center_align_text" ), mReport ) );
+
+  res = _renderLegend( &legendModel, settings );
+  QVERIFY( _verifyImage( res, QStringLiteral( "legend_two_cols_right_align_symbol_center_align_text" ) ) );
 }
 
 void TestQgsLegendRenderer::testRightAlignTextRightAlignSymbol()
@@ -670,12 +667,14 @@ void TestQgsLegendRenderer::testRightAlignTextRightAlignSymbol()
   settings.rstyle( QgsLegendStyle::SymbolLabel ).setAlignment( Qt::AlignRight );
   settings.setSymbolAlignment( Qt::AlignRight );
   _setStandardTestFont( settings, QStringLiteral( "Bold" ) );
-  _renderLegend( QStringLiteral( "legend_right_symbol_right_align_text" ), &legendModel, settings );
-  QVERIFY( _verifyImage( QStringLiteral( "legend_right_symbol_right_align_text" ), mReport ) );
+
+  QImage res = _renderLegend( &legendModel, settings );
+  QVERIFY( _verifyImage( res, QStringLiteral( "legend_right_symbol_right_align_text" ) ) );
 
   settings.setColumnCount( 2 );
-  _renderLegend( QStringLiteral( "legend_two_cols_right_align_symbol_right_align_text" ), &legendModel, settings );
-  QVERIFY( _verifyImage( QStringLiteral( "legend_two_cols_right_align_symbol_right_align_text" ), mReport ) );
+
+  res = _renderLegend( &legendModel, settings );
+  QVERIFY( _verifyImage( res, QStringLiteral( "legend_two_cols_right_align_symbol_right_align_text" ) ) );
 }
 
 void TestQgsLegendRenderer::testGroupHeadingSpacing()
@@ -695,25 +694,16 @@ void TestQgsLegendRenderer::testGroupHeadingSpacing()
   settings.rstyle( QgsLegendStyle::Subgroup ).setMargin( QgsLegendStyle::Bottom, 9 );
   settings.setSymbolAlignment( Qt::AlignRight );
   _setStandardTestFont( settings, QStringLiteral( "Bold" ) );
-  _renderLegend( QStringLiteral( "legend_group_heading_spacing" ), &legendModel, settings );
-  QVERIFY( _verifyImage( QStringLiteral( "legend_group_heading_spacing" ), mReport ) );
 
+  QImage res = _renderLegend( &legendModel, settings );
+  QVERIFY( _verifyImage( res, QStringLiteral( "legend_group_heading_spacing" ) ) );
 }
 
-void TestQgsLegendRenderer::testGroupIndent()
+void TestQgsLegendRenderer::testGroupIndentSetup()
 {
   QgsMarkerSymbol *sym = new QgsMarkerSymbol();
   sym->setColor( Qt::red );
-  sym->setSize( sym->size() * 6 );
-  QgsCategorizedSymbolRenderer *catRenderer = dynamic_cast<QgsCategorizedSymbolRenderer *>( mVL3->renderer() );
-  QVERIFY( catRenderer );
-  catRenderer->updateCategorySymbol( 0, sym );
-
-  QgsLayerTreeModel legendModel( mRoot );
-  QgsLegendSettings settings;
-
   QgsLayerTreeGroup *grp2 = mRoot->addGroup( QStringLiteral( "Subgroup" ) );
-  sym->setSize( sym->size() / 6 );
   grp2->setCustomProperty( QStringLiteral( "legend/title-style" ), QLatin1String( "subgroup" ) );
   for ( int i = 1; i <= 4; ++i )
   {
@@ -722,32 +712,94 @@ void TestQgsLegendRenderer::testGroupIndent()
     vl->setRenderer( new QgsSingleSymbolRenderer( sym->clone() ) );
     grp2->addLayer( vl );
   }
+}
 
+
+void TestQgsLegendRenderer::testGroupIndentDefault()
+{
+  testGroupIndentSetup();
+  QgsMarkerSymbol *sym = new QgsMarkerSymbol();
+  sym->setColor( Qt::red );
+  sym->setSize( sym->size() * 6 );
+  QgsCategorizedSymbolRenderer *catRenderer = dynamic_cast<QgsCategorizedSymbolRenderer *>( mVL3->renderer() );
+  QVERIFY( catRenderer );
+  catRenderer->updateCategorySymbol( 0, sym );
+  QgsLayerTreeModel legendModel( mRoot );
+  QgsLegendSettings settings;
   settings.rstyle( QgsLegendStyle::Group ).setIndent( 10 );
   settings.rstyle( QgsLegendStyle::Subgroup ).setIndent( 5 );
   _setStandardTestFont( settings, QStringLiteral( "Bold" ) );
-  _renderLegend( QStringLiteral( "legend_group_indent" ), &legendModel, settings );
-  QVERIFY( _verifyImage( QStringLiteral( "legend_group_indent" ), mReport ) );
 
+  QImage res = _renderLegend( &legendModel, settings );
+  QVERIFY( _verifyImage( res, QStringLiteral( "legend_group_indent" ) ) );
+}
+
+void TestQgsLegendRenderer::testGroupIndentRT()
+{
+  testGroupIndentSetup();
+  QgsMarkerSymbol *sym = new QgsMarkerSymbol();
+  sym->setColor( Qt::red );
+  sym->setSize( sym->size() * 6 );
+  QgsCategorizedSymbolRenderer *catRenderer = dynamic_cast<QgsCategorizedSymbolRenderer *>( mVL3->renderer() );
+  QVERIFY( catRenderer );
+  catRenderer->updateCategorySymbol( 0, sym );
+  QgsLayerTreeModel legendModel( mRoot );
+  QgsLegendSettings settings;
+  settings.rstyle( QgsLegendStyle::Group ).setIndent( 10 );
+  settings.rstyle( QgsLegendStyle::Subgroup ).setIndent( 5 );
+  _setStandardTestFont( settings, QStringLiteral( "Bold" ) );
   settings.rstyle( QgsLegendStyle::Group ).setAlignment( Qt::AlignRight );
   settings.rstyle( QgsLegendStyle::Subgroup ).setAlignment( Qt::AlignRight );
   settings.rstyle( QgsLegendStyle::SymbolLabel ).setAlignment( Qt::AlignRight );
-  _renderLegend( QStringLiteral( "legend_group_indent_right_align_text" ), &legendModel, settings );
-  QVERIFY( _verifyImage( QStringLiteral( "legend_group_indent_right_align_text" ), mReport ) );
 
+  QImage res = _renderLegend( &legendModel, settings );
+  QVERIFY( _verifyImage( res, QStringLiteral( "legend_group_indent_right_align_text" ) ) );
+}
+
+void TestQgsLegendRenderer::testGroupIndentRS()
+{
+  testGroupIndentSetup();
+  QgsMarkerSymbol *sym = new QgsMarkerSymbol();
+  sym->setColor( Qt::red );
+  sym->setSize( sym->size() * 6 );
+  QgsCategorizedSymbolRenderer *catRenderer = dynamic_cast<QgsCategorizedSymbolRenderer *>( mVL3->renderer() );
+  QVERIFY( catRenderer );
+  catRenderer->updateCategorySymbol( 0, sym );
+  QgsLayerTreeModel legendModel( mRoot );
+  QgsLegendSettings settings;
+  settings.rstyle( QgsLegendStyle::Group ).setIndent( 10 );
+  settings.rstyle( QgsLegendStyle::Subgroup ).setIndent( 5 );
+  _setStandardTestFont( settings, QStringLiteral( "Bold" ) );
   settings.rstyle( QgsLegendStyle::Group ).setAlignment( Qt::AlignLeft );
   settings.rstyle( QgsLegendStyle::Subgroup ).setAlignment( Qt::AlignLeft );
   settings.rstyle( QgsLegendStyle::SymbolLabel ).setAlignment( Qt::AlignLeft );
   settings.setSymbolAlignment( Qt::AlignRight );
-  _renderLegend( QStringLiteral( "legend_group_indent_right_align_symbol" ), &legendModel, settings );
-  QVERIFY( _verifyImage( QStringLiteral( "legend_group_indent_right_align_symbol" ), mReport ) );
 
+  QImage res = _renderLegend( &legendModel, settings );
+  QVERIFY( _verifyImage( res, QStringLiteral( "legend_group_indent_right_align_symbol" ) ) );
+}
+
+void TestQgsLegendRenderer::testGroupIndentRSRT()
+{
+  testGroupIndentSetup();
+  QgsMarkerSymbol *sym = new QgsMarkerSymbol();
+  sym->setColor( Qt::red );
+  sym->setSize( sym->size() * 6 );
+  QgsCategorizedSymbolRenderer *catRenderer = dynamic_cast<QgsCategorizedSymbolRenderer *>( mVL3->renderer() );
+  QVERIFY( catRenderer );
+  catRenderer->updateCategorySymbol( 0, sym );
+  QgsLayerTreeModel legendModel( mRoot );
+  QgsLegendSettings settings;
+  settings.rstyle( QgsLegendStyle::Group ).setIndent( 10 );
+  settings.rstyle( QgsLegendStyle::Subgroup ).setIndent( 5 );
+  _setStandardTestFont( settings, QStringLiteral( "Bold" ) );
   settings.rstyle( QgsLegendStyle::Group ).setAlignment( Qt::AlignRight );
   settings.rstyle( QgsLegendStyle::Subgroup ).setAlignment( Qt::AlignRight );
   settings.rstyle( QgsLegendStyle::SymbolLabel ).setAlignment( Qt::AlignRight );
   settings.setSymbolAlignment( Qt::AlignRight );
-  _renderLegend( QStringLiteral( "legend_group_indent_right_align_symbol_right_align_text" ), &legendModel, settings );
-  QVERIFY( _verifyImage( QStringLiteral( "legend_group_indent_right_align_symbol_right_align_text" ), mReport ) );
+
+  QImage res = _renderLegend( &legendModel, settings );
+  QVERIFY( _verifyImage( res, QStringLiteral( "legend_group_indent_right_align_symbol_right_align_text" ) ) );
 }
 
 void TestQgsLegendRenderer::testRightAlignText()
@@ -765,12 +817,13 @@ void TestQgsLegendRenderer::testRightAlignText()
   settings.rstyle( QgsLegendStyle::Subgroup ).setAlignment( Qt::AlignRight );
   settings.rstyle( QgsLegendStyle::SymbolLabel ).setAlignment( Qt::AlignRight );
   _setStandardTestFont( settings, QStringLiteral( "Bold" ) );
-  _renderLegend( QStringLiteral( "legend_right_align_text" ), &legendModel, settings );
-  QVERIFY( _verifyImage( QStringLiteral( "legend_right_align_text" ), mReport ) );
+
+  QImage res = _renderLegend( &legendModel, settings );
+  QVERIFY( _verifyImage( res, QStringLiteral( "legend_right_align_text" ) ) );
 
   settings.setColumnCount( 2 );
-  _renderLegend( QStringLiteral( "legend_two_cols_right_align_text" ), &legendModel, settings );
-  QVERIFY( _verifyImage( QStringLiteral( "legend_two_cols_right_align_text" ), mReport ) );
+  res = _renderLegend( &legendModel, settings );
+  QVERIFY( _verifyImage( res, QStringLiteral( "legend_two_cols_right_align_text" ) ) );
 }
 
 void TestQgsLegendRenderer::testMapUnits()
@@ -810,8 +863,8 @@ void TestQgsLegendRenderer::testMapUnits()
   settings.setMapScale( 1000 );
   Q_NOWARN_DEPRECATED_POP
 
-  _renderLegend( testName, &legendModel, settings );
-  QVERIFY( _verifyImage( testName, mReport ) );
+  QImage res = _renderLegend( &legendModel, settings );
+  QVERIFY( _verifyImage( res, testName ) );
 }
 
 void TestQgsLegendRenderer::testTallSymbol()
@@ -830,8 +883,8 @@ void TestQgsLegendRenderer::testTallSymbol()
   settings.setWrapChar( QStringLiteral( "\n" ) );
   settings.setSymbolSize( QSizeF( 10.0, 10.0 ) );
   _setStandardTestFont( settings, QStringLiteral( "Bold" ) );
-  _renderLegend( testName, &legendModel, settings );
-  QVERIFY( _verifyImage( testName, mReport ) );
+  QImage res = _renderLegend( &legendModel, settings );
+  QVERIFY( _verifyImage( res, testName ) );
 
   mVL2->setName( QStringLiteral( "Polygon Layer" ) );
 }
@@ -850,10 +903,12 @@ void TestQgsLegendRenderer::testLineSpacing()
 
   QgsLegendSettings settings;
   settings.setWrapChar( QStringLiteral( "\n" ) );
+  Q_NOWARN_DEPRECATED_PUSH
   settings.setLineSpacing( 3 );
+  Q_NOWARN_DEPRECATED_POP
   _setStandardTestFont( settings, QStringLiteral( "Bold" ) );
-  _renderLegend( testName, &legendModel, settings );
-  QVERIFY( _verifyImage( testName, mReport ) );
+  QImage res = _renderLegend( &legendModel, settings );
+  QVERIFY( _verifyImage( res, testName ) );
 
   mVL2->setName( QStringLiteral( "Polygon Layer" ) );
 }
@@ -871,8 +926,8 @@ void TestQgsLegendRenderer::testLongSymbolText()
   QgsLegendSettings settings;
   settings.setWrapChar( QStringLiteral( "\n" ) );
   _setStandardTestFont( settings, QStringLiteral( "Bold" ) );
-  _renderLegend( testName, &legendModel, settings );
-  QVERIFY( _verifyImage( testName, mReport ) );
+  QImage res = _renderLegend( &legendModel, settings );
+  QVERIFY( _verifyImage( res, testName ) );
 }
 
 void TestQgsLegendRenderer::testThreeColumns()
@@ -884,8 +939,8 @@ void TestQgsLegendRenderer::testThreeColumns()
   QgsLegendSettings settings;
   settings.setColumnCount( 3 );
   _setStandardTestFont( settings, QStringLiteral( "Bold" ) );
-  _renderLegend( testName, &legendModel, settings );
-  QVERIFY( _verifyImage( testName, mReport ) );
+  QImage res = _renderLegend( &legendModel, settings );
+  QVERIFY( _verifyImage( res, testName ) );
 }
 
 void TestQgsLegendRenderer::testFilterByMap()
@@ -905,8 +960,8 @@ void TestQgsLegendRenderer::testFilterByMap()
 
   QgsLegendSettings settings;
   _setStandardTestFont( settings, QStringLiteral( "Bold" ) );
-  _renderLegend( testName, &legendModel, settings );
-  QVERIFY( _verifyImage( testName, mReport ) );
+  QImage res = _renderLegend( &legendModel, settings );
+  QVERIFY( _verifyImage( res, testName ) );
 }
 
 void TestQgsLegendRenderer::testFilterByMapSameSymbol()
@@ -971,13 +1026,13 @@ void TestQgsLegendRenderer::testFilterByMapSameSymbol()
 
   QgsLegendSettings settings;
   _setStandardTestFont( settings, QStringLiteral( "Bold" ) );
-  _renderLegend( testName, &legendModel, settings );
-  QVERIFY( _verifyImage( testName, mReport ) );
+  QImage res = _renderLegend( &legendModel, settings );
+  QVERIFY( _verifyImage( res, testName ) );
 
   QgsProject::instance()->removeMapLayer( vl4 );
 }
 
-bool TestQgsLegendRenderer::_testLegendColumns( int itemCount, int columnCount, const QString &testName )
+bool TestQgsLegendRenderer::_testLegendColumns( int itemCount, int columnCount, const QString &testName, double symbolSpacing )
 {
   QgsFillSymbol *sym = new QgsFillSymbol();
   sym->setColor( Qt::cyan );
@@ -998,9 +1053,10 @@ bool TestQgsLegendRenderer::_testLegendColumns( int itemCount, int columnCount, 
   QgsLayerTreeModel legendModel( root.get() );
   QgsLegendSettings settings;
   settings.setColumnCount( columnCount );
+  settings.rstyle( QgsLegendStyle::Style::Symbol ).setMargin( QgsLegendStyle::Side::Top, symbolSpacing );
   _setStandardTestFont( settings, QStringLiteral( "Bold" ) );
-  _renderLegend( testName, &legendModel, settings );
-  const bool result = _verifyImage( testName, mReport );
+  const QImage res = _renderLegend( &legendModel, settings );
+  const bool result = _verifyImage( res, testName );
 
   for ( QgsVectorLayer *l : layers )
   {
@@ -1035,7 +1091,11 @@ void TestQgsLegendRenderer::testColumns()
   QFETCH( QString, testName );
   QFETCH( int, items );
   QFETCH( int, columns );
-  QVERIFY( _testLegendColumns( items, columns, testName ) );
+
+  for ( double symbolSpacing : { 2.5, 5.0, 6.0 } )
+  {
+    QVERIFY( _testLegendColumns( items, columns, testName + ( symbolSpacing != 2.5 ? QStringLiteral( "_spacing_%1" ).arg( QString::number( symbolSpacing ).replace( ".", "_" ) ) : QString() ), symbolSpacing ) );
+  }
 }
 
 void TestQgsLegendRenderer::testColumnBreaks()
@@ -1057,8 +1117,8 @@ void TestQgsLegendRenderer::testColumnBreaks()
 
   QgsLegendSettings settings;
   _setStandardTestFont( settings, QStringLiteral( "Bold" ) );
-  _renderLegend( testName, &legendModel, settings );
-  QVERIFY( _verifyImage( testName, mReport ) );
+  QImage res = _renderLegend( &legendModel, settings );
+  QVERIFY( _verifyImage( res, testName ) );
 }
 
 void TestQgsLegendRenderer::testColumnBreaks2()
@@ -1077,8 +1137,8 @@ void TestQgsLegendRenderer::testColumnBreaks2()
 
   QgsLegendSettings settings;
   _setStandardTestFont( settings, QStringLiteral( "Bold" ) );
-  _renderLegend( testName, &legendModel, settings );
-  QVERIFY( _verifyImage( testName, mReport ) );
+  QImage res = _renderLegend( &legendModel, settings );
+  QVERIFY( _verifyImage( res, testName ) );
 }
 
 void TestQgsLegendRenderer::testColumnBreaks3()
@@ -1095,8 +1155,8 @@ void TestQgsLegendRenderer::testColumnBreaks3()
 
   QgsLegendSettings settings;
   _setStandardTestFont( settings, QStringLiteral( "Bold" ) );
-  _renderLegend( testName, &legendModel, settings );
-  QVERIFY( _verifyImage( testName, mReport ) );
+  QImage res = _renderLegend( &legendModel, settings );
+  QVERIFY( _verifyImage( res, testName ) );
 }
 
 void TestQgsLegendRenderer::testColumnBreaks4()
@@ -1117,8 +1177,8 @@ void TestQgsLegendRenderer::testColumnBreaks4()
   settings.setColumnCount( 5 );
   settings.setSplitLayer( true );
   _setStandardTestFont( settings, QStringLiteral( "Bold" ) );
-  _renderLegend( testName, &legendModel, settings );
-  QVERIFY( _verifyImage( testName, mReport ) );
+  QImage res = _renderLegend( &legendModel, settings );
+  QVERIFY( _verifyImage( res, testName ) );
 }
 
 void TestQgsLegendRenderer::testColumnBreaks5()
@@ -1139,8 +1199,8 @@ void TestQgsLegendRenderer::testColumnBreaks5()
   settings.setColumnCount( 4 );
   settings.setSplitLayer( false );
   _setStandardTestFont( settings, QStringLiteral( "Bold" ) );
-  _renderLegend( testName, &legendModel, settings );
-  QVERIFY( _verifyImage( testName, mReport ) );
+  QImage res = _renderLegend( &legendModel, settings );
+  QVERIFY( _verifyImage( res, testName ) );
 }
 
 void TestQgsLegendRenderer::testLayerColumnSplittingAlwaysAllow()
@@ -1156,8 +1216,8 @@ void TestQgsLegendRenderer::testLayerColumnSplittingAlwaysAllow()
   settings.setColumnCount( 4 );
   settings.setSplitLayer( false );
   _setStandardTestFont( settings, QStringLiteral( "Bold" ) );
-  _renderLegend( testName, &legendModel, settings );
-  QVERIFY( _verifyImage( testName, mReport ) );
+  QImage res = _renderLegend( &legendModel, settings );
+  QVERIFY( _verifyImage( res, testName ) );
 }
 
 void TestQgsLegendRenderer::testLayerColumnSplittingAlwaysPrevent()
@@ -1173,8 +1233,8 @@ void TestQgsLegendRenderer::testLayerColumnSplittingAlwaysPrevent()
   settings.setColumnCount( 4 );
   settings.setSplitLayer( true );
   _setStandardTestFont( settings, QStringLiteral( "Bold" ) );
-  _renderLegend( testName, &legendModel, settings );
-  QVERIFY( _verifyImage( testName, mReport ) );
+  QImage res = _renderLegend( &legendModel, settings );
+  QVERIFY( _verifyImage( res, testName ) );
 }
 
 void TestQgsLegendRenderer::testRasterStroke()
@@ -1190,8 +1250,8 @@ void TestQgsLegendRenderer::testRasterStroke()
   _setStandardTestFont( settings, QStringLiteral( "Bold" ) );
   settings.setRasterStrokeWidth( 2 );
   settings.setRasterStrokeColor( Qt::green );
-  _renderLegend( testName, &legendModel, settings );
-  QVERIFY( _verifyImage( testName, mReport ) );
+  QImage res = _renderLegend( &legendModel, settings );
+  QVERIFY( _verifyImage( res, testName ) );
 }
 
 void TestQgsLegendRenderer::testFilterByPolygon()
@@ -1213,17 +1273,16 @@ void TestQgsLegendRenderer::testFilterByPolygon()
 
   QgsLegendSettings settings;
   _setStandardTestFont( settings, QStringLiteral( "Bold" ) );
-  _renderLegend( testName, &legendModel, settings );
-  QVERIFY( _verifyImage( testName, mReport ) );
+  QImage res = _renderLegend( &legendModel, settings );
+  QVERIFY( _verifyImage( res, testName ) );
 
   // again with useExtent to true
   legendModel.setLegendFilter( &mapSettings, /*useExtent*/ true, geom );
 
   const QString testName2 = testName + "2";
-  QString report2 = mReport + "2";
   _setStandardTestFont( settings, QStringLiteral( "Bold" ) );
-  _renderLegend( testName2, &legendModel, settings );
-  QVERIFY( _verifyImage( testName2, report2 ) );
+  res = _renderLegend( &legendModel, settings );
+  QVERIFY( _verifyImage( res, testName2 ) );
 }
 
 void TestQgsLegendRenderer::testFilterByExpression()
@@ -1248,18 +1307,18 @@ void TestQgsLegendRenderer::testFilterByExpression()
 
   QgsLegendSettings settings;
   _setStandardTestFont( settings, QStringLiteral( "Bold" ) );
-  _renderLegend( testName, &legendModel, settings );
-  QVERIFY( _verifyImage( testName, mReport ) );
+  QImage res = _renderLegend( &legendModel, settings );
+  QVERIFY( _verifyImage( res, testName ) );
+
 
   // test again with setLegendFilter and only expressions
   legendModel.setLegendFilterByMap( nullptr );
   legendModel.setLegendFilter( &mapSettings, /*useExtent*/ false );
 
   const QString testName2 = testName + "2";
-  QString report2 = mReport + "2";
   _setStandardTestFont( settings, QStringLiteral( "Bold" ) );
-  _renderLegend( testName2, &legendModel, settings );
-  QVERIFY( _verifyImage( testName2, report2 ) );
+  res = _renderLegend( &legendModel, settings );
+  QVERIFY( _verifyImage( res, testName2 ) );
 }
 
 void TestQgsLegendRenderer::testDiagramAttributeLegend()
@@ -1299,8 +1358,9 @@ void TestQgsLegendRenderer::testDiagramAttributeLegend()
 
   QgsLegendSettings settings;
   _setStandardTestFont( settings, QStringLiteral( "Bold" ) );
-  _renderLegend( QStringLiteral( "legend_diagram_attributes" ), &legendModel, settings );
-  QVERIFY( _verifyImage( "legend_diagram_attributes", mReport ) );
+
+  QImage res = _renderLegend( &legendModel, settings );
+  QVERIFY( _verifyImage( res, QStringLiteral( "legend_diagram_attributes" ) ) );
 
   QgsProject::instance()->removeMapLayer( vl4 );
 }
@@ -1343,8 +1403,9 @@ void TestQgsLegendRenderer::testDiagramSizeLegend()
 
   QgsLegendSettings settings;
   _setStandardTestFont( settings, QStringLiteral( "Bold" ) );
-  _renderLegend( QStringLiteral( "legend_diagram_size" ), &legendModel, settings );
-  QVERIFY( _verifyImage( "legend_diagram_size", mReport ) );
+
+  QImage res = _renderLegend( &legendModel, settings );
+  QVERIFY( _verifyImage( res, QStringLiteral( "legend_diagram_size" ) ) );
 
   QgsProject::instance()->removeMapLayer( vl4 );
 }
@@ -1405,8 +1466,8 @@ void TestQgsLegendRenderer::testDataDefinedSizeCollapsed()
 
   QgsLegendSettings settings;
   _setStandardTestFont( settings, QStringLiteral( "Bold" ) );
-  _renderLegend( testName, &legendModel, settings );
-  QVERIFY( _verifyImage( testName, mReport ) );
+  QImage res = _renderLegend( &legendModel, settings );
+  QVERIFY( _verifyImage( res, testName ) );
 
   delete root;
 }
@@ -1449,10 +1510,43 @@ void TestQgsLegendRenderer::testTextOnSymbol()
 
   QgsLegendSettings settings;
   _setStandardTestFont( settings, QStringLiteral( "Bold" ) );
-  _renderLegend( testName, &legendModel, settings );
-  QVERIFY( _verifyImage( testName, mReport ) );
+  QImage res = _renderLegend( &legendModel, settings );
+  QVERIFY( _verifyImage( res, testName ) );
 
   delete root;
+}
+
+void TestQgsLegendRenderer::testColumnsMixedSymbolSize()
+{
+  QgsMarkerSymbol *sym = new QgsMarkerSymbol();
+  sym->setColor( Qt::cyan );
+
+  std::unique_ptr< QgsLayerTree > root( new QgsLayerTree() );
+
+  QList< QgsVectorLayer * > layers;
+  for ( double size : { 4, 5, 16} )
+  {
+    QgsVectorLayer *vl = new QgsVectorLayer( QStringLiteral( "Polygon" ), QStringLiteral( "Layer %1" ).arg( size ), QStringLiteral( "memory" ) );
+    QgsProject::instance()->addMapLayer( vl );
+    sym->setSize( size );
+    vl->setRenderer( new QgsSingleSymbolRenderer( sym->clone() ) );
+    root->addLayer( vl );
+    layers << vl;
+  }
+  delete sym;
+
+  QgsLayerTreeModel legendModel( root.get() );
+  QgsLegendSettings settings;
+  settings.setColumnCount( 2 );
+  settings.rstyle( QgsLegendStyle::Style::Symbol ).setMargin( QgsLegendStyle::Side::Top, 9 );
+  _setStandardTestFont( settings, QStringLiteral( "Bold" ) );
+  const QImage res = _renderLegend( &legendModel, settings );
+
+  for ( QgsVectorLayer *l : layers )
+  {
+    QgsProject::instance()->removeMapLayer( l );
+  }
+  QVERIFY( _verifyImage( res, QStringLiteral( "columns_with_mixed_symbol_sizes" ) ) );
 }
 
 void TestQgsLegendRenderer::testBasicJson()
@@ -1479,16 +1573,14 @@ void TestQgsLegendRenderer::testBasicJson()
   QCOMPARE( line_layer["type"].toString(), QString( "layer" ) );
   const QImage line_layer_icon = _base64ToImage( line_layer["icon"].toString() );
   QString test_name = "line_layer_icon";
-  line_layer_icon.save( _fileNameForTest( test_name ) );
-  QVERIFY( _verifyImage( test_name, mReport, 5 ) );
+  QVERIFY( _verifyImage( line_layer_icon, test_name, 5 ) );
 
   const QJsonObject polygon_layer = grp1_nodes[1].toObject();
   QCOMPARE( polygon_layer["title"].toString(), QString( "Polygon Layer" ) );
   QCOMPARE( polygon_layer["type"].toString(), QString( "layer" ) );
   const QImage polygon_layer_icon = _base64ToImage( polygon_layer["icon"].toString() );
   test_name = "polygon_layer_icon";
-  polygon_layer_icon.save( _fileNameForTest( test_name ) );
-  QVERIFY( _verifyImage( test_name, mReport, 5 ) );
+  QVERIFY( _verifyImage( polygon_layer_icon, test_name, 5 ) );
 
   const QJsonObject point_layer = root[1].toObject();
   QCOMPARE( point_layer["title"].toString(), QString( "Point Layer" ) );
@@ -1499,22 +1591,19 @@ void TestQgsLegendRenderer::testBasicJson()
   QCOMPARE( point_layer_symbol_red["title"].toString(), QString( "Red" ) );
   const QImage point_layer_icon_red = _base64ToImage( point_layer_symbol_red["icon"].toString() );
   test_name = "point_layer_icon_red";
-  point_layer_icon_red.save( _fileNameForTest( test_name ) );
-  QVERIFY( _verifyImage( test_name, mReport, 5 ) );
+  QVERIFY( _verifyImage( point_layer_icon_red, test_name, 5 ) );
 
   const QJsonObject point_layer_symbol_green = point_layer_symbols[1].toObject();
   QCOMPARE( point_layer_symbol_green["title"].toString(), QString( "Green" ) );
   const QImage point_layer_icon_green = _base64ToImage( point_layer_symbol_green["icon"].toString() );
   test_name = "point_layer_icon_green";
-  point_layer_icon_green.save( _fileNameForTest( test_name ) );
-  QVERIFY( _verifyImage( test_name, mReport, 5 ) );
+  QVERIFY( _verifyImage( point_layer_icon_green, test_name, 5 ) );
 
   const QJsonObject point_layer_symbol_blue = point_layer_symbols[2].toObject();
   QCOMPARE( point_layer_symbol_blue["title"].toString(), QString( "Blue" ) );
   const QImage point_layer_icon_blue = _base64ToImage( point_layer_symbol_blue["icon"].toString() );
   test_name = "point_layer_icon_blue";
-  point_layer_icon_blue.save( _fileNameForTest( test_name ) );
-  QVERIFY( _verifyImage( test_name, mReport, 5 ) );
+  QVERIFY( _verifyImage( point_layer_icon_blue, test_name, 5 ) );
 
   const QJsonObject raster_layer = root[2].toObject();
   QCOMPARE( raster_layer["title"].toString(), QString( "Raster Layer" ) );
@@ -1525,15 +1614,13 @@ void TestQgsLegendRenderer::testBasicJson()
   QCOMPARE( raster_layer_symbol_1["title"].toString(), QString( "1" ) );
   const QImage raster_layer_icon_1 = _base64ToImage( raster_layer_symbol_1["icon"].toString() );
   test_name = "raster_layer_icon_1";
-  raster_layer_icon_1.save( _fileNameForTest( test_name ) );
-  QVERIFY( _verifyImage( test_name, mReport, 5 ) );
+  QVERIFY( _verifyImage( raster_layer_icon_1, test_name, 5 ) );
 
   const QJsonObject raster_layer_symbol_2 = raster_layer_symbols[1].toObject();
   QCOMPARE( raster_layer_symbol_2["title"].toString(), QString( "2" ) );
   const QImage raster_layer_icon_2 = _base64ToImage( raster_layer_symbol_2["icon"].toString() );
   test_name = "raster_layer_icon_2";
-  raster_layer_icon_2.save( _fileNameForTest( test_name ) );
-  QVERIFY( _verifyImage( test_name, mReport, 5 ) );
+  QVERIFY( _verifyImage( raster_layer_icon_2, test_name, 5 ) );
 }
 
 void TestQgsLegendRenderer::testOpacityJson()
@@ -1555,20 +1642,17 @@ void TestQgsLegendRenderer::testOpacityJson()
   const QJsonObject point_layer_symbol_red = point_layer_symbols[0].toObject();
   const QImage point_layer_icon_red = _base64ToImage( point_layer_symbol_red["icon"].toString() );
   QString test_name = "point_layer_icon_red_opacity";
-  point_layer_icon_red.save( _fileNameForTest( test_name ) );
-  QVERIFY( _verifyImage( test_name, mReport, 5 ) );
+  QVERIFY( _verifyImage( point_layer_icon_red, test_name, 5 ) );
 
   const QJsonObject point_layer_symbol_green = point_layer_symbols[1].toObject();
   const QImage point_layer_icon_green = _base64ToImage( point_layer_symbol_green["icon"].toString() );
   test_name = "point_layer_icon_green_opacity";
-  point_layer_icon_green.save( _fileNameForTest( test_name ) );
-  QVERIFY( _verifyImage( test_name, mReport, 5 ) );
+  QVERIFY( _verifyImage( point_layer_icon_green, test_name, 5 ) );
 
   const QJsonObject point_layer_symbol_blue = point_layer_symbols[2].toObject();
   const QImage point_layer_icon_blue = _base64ToImage( point_layer_symbol_blue["icon"].toString() );
   test_name = "point_layer_icon_blue_opacity";
-  point_layer_icon_blue.save( _fileNameForTest( test_name ) );
-  QVERIFY( _verifyImage( test_name, mReport, 5 ) );
+  QVERIFY( _verifyImage( point_layer_icon_blue, test_name, 5 ) );
 
   mVL3->setOpacity( opacity );
 }
@@ -1597,14 +1681,20 @@ void TestQgsLegendRenderer::testBigMarkerJson()
   const QJsonObject point_layer_symbol_red = point_layer_symbols[0].toObject();
   const QImage point_layer_icon_red = _base64ToImage( point_layer_symbol_red["icon"].toString() );
   const QString test_name = "point_layer_icon_red_big";
-  point_layer_icon_red.save( _fileNameForTest( test_name ) );
-  QVERIFY( _verifyImage( test_name, mReport, 50 ) );
+  QVERIFY( _verifyImage( point_layer_icon_red, test_name, 50 ) );
 }
 
 void TestQgsLegendRenderer::testLabelLegend()
 {
   const QString testName( "test_label_legend" );
   QgsPalLayerSettings *labelSettings = new QgsPalLayerSettings();
+  QgsTextFormat format;
+  format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ) );
+  format.setSize( 12 );
+  format.setNamedStyle( QStringLiteral( "Bold" ) );
+  format.setColor( QColor( 255, 0, 255 ) );
+  labelSettings->setFormat( format );
+
   labelSettings->fieldName = QStringLiteral( "test_attr" );
   QgsRuleBasedLabeling::Rule *rootRule = new QgsRuleBasedLabeling::Rule( nullptr ); //root rule
   QgsRuleBasedLabeling::Rule *labelingRule = new QgsRuleBasedLabeling::Rule( labelSettings, 0, 0, QString(), QStringLiteral( "labelingRule" ) );
@@ -1637,8 +1727,8 @@ void TestQgsLegendRenderer::testLabelLegend()
 
   //test rendered legend against reference image
   _setStandardTestFont( settings, QStringLiteral( "Bold" ) );
-  _renderLegend( testName, &legendModel, settings );
-  QVERIFY( _verifyImage( testName, mReport ) );
+  QImage res = _renderLegend( &legendModel, settings );
+  QVERIFY( _verifyImage( res, testName ) );
 
   vLayerLegend->setShowLabelLegend( bkLabelLegendEnabled );
   mVL3->setLabelsEnabled( bkLabelsEnabled );

@@ -19,12 +19,13 @@
 #define DOCKMODEL_H
 
 #include <QAbstractTableModel>
+#include <QSortFilterProxyModel>
 #include <QModelIndex>
 #include <QObject>
 
 #include "topolError.h"
 
-class DockModel: public QAbstractTableModel
+class DockModel : public QAbstractTableModel
 {
     Q_OBJECT
 
@@ -93,6 +94,39 @@ class DockModel: public QAbstractTableModel
   private:
     ErrorList &mErrorlist;
     QList<QString> mHeader;
+};
+
+class DockFilterModel : public QSortFilterProxyModel
+{
+    Q_OBJECT
+
+  public:
+
+    /**
+     * Constructor
+     * \param errorList reference to the ErrorList where errors will be stored
+     * \param parent parent object
+     */
+    DockFilterModel( ErrorList &errorList, QObject *parent );
+
+    ~DockFilterModel() = default;
+
+    /**
+     * Reloads the model data between indices
+     * \param index1 start index
+     * \param index2 end index
+     */
+    void reload( const QModelIndex &index1, const QModelIndex &index2 );
+
+    /**
+     * Resets the model
+     */
+    void resetModel();
+
+  private:
+
+    DockModel *mDockModel = nullptr;
+
 };
 
 #endif

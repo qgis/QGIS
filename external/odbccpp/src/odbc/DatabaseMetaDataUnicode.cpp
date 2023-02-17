@@ -7,7 +7,7 @@
 #include <odbc/internal/Macros.h>
 #include <odbc/internal/Odbc.h>
 //------------------------------------------------------------------------------
-namespace odbc {
+NS_ODBC_START
 //------------------------------------------------------------------------------
 using namespace std;
 //------------------------------------------------------------------------------
@@ -331,4 +331,4 @@ u16string DatabaseMetaDataUnicode::getStringTypeInfoW(unsigned short typeInfo)
     return u16string(&buffer[0]);
 }
 //------------------------------------------------------------------------------
-} // namespace odbc
+NS_ODBC_END

@@ -18,11 +18,13 @@
 
 #include "qgis_sip.h"
 #include "qgis_core.h"
+#include "qgis.h"
 
 #include <QFont>
 #include <QColor>
 
 class QTextCharFormat;
+class QgsRenderContext;
 
 /**
  * \class QgsTextCharacterFormat
@@ -76,13 +78,51 @@ class CORE_EXPORT QgsTextCharacterFormat
      */
     void setTextColor( const QColor &textColor );
 
-#if 0
+    /**
+     * Returns the font point size, or -1 if the font size is not set
+     * and should be inherited.
+     *
+     * \see setFontPointSize()
+     * \since QGIS 3.28
+     */
+    double fontPointSize() const;
+
+    /**
+     * Sets the font point \a size.
+     *
+     * Set \a size to -1 if the font size is not set
+     * and should be inherited.
+     *
+     * \see fontPointSize()
+     * \since QGIS 3.28
+     */
+    void setFontPointSize( double size );
+
+    /**
+     * Returns the font family name, or an empty string if the
+     * family is not set and should be inherited.
+     *
+     * \see setFamily()
+     * \since QGIS 3.28
+     */
+    QString family() const;
+
+    /**
+     * Sets the font \a family name.
+     *
+     * Set to an empty string if the family should be inherited.
+     *
+     * \see family()
+     * \since QGIS 3.28
+     */
+    void setFamily( const QString &family );
 
     /**
      * Returns the font weight, or -1 if the font weight is not set
      * and should be inherited.
      *
      * \see setFontWeight()
+     * \since QGIS 3.28
      */
     int fontWeight() const;
 
@@ -93,6 +133,7 @@ class CORE_EXPORT QgsTextCharacterFormat
      * and should be inherited.
      *
      * \see fontWeight()
+     * \since QGIS 3.28
      */
     void setFontWeight( int fontWeight );
 
@@ -100,6 +141,7 @@ class CORE_EXPORT QgsTextCharacterFormat
      * Returns whether the format has italic enabled.
      *
      * \see setItalic()
+     * \since QGIS 3.28
      */
     BooleanValue italic() const;
 
@@ -107,9 +149,9 @@ class CORE_EXPORT QgsTextCharacterFormat
      * Sets whether the format has italic \a enabled.
      *
      * \see italic()
+     * \since QGIS 3.28
      */
     void setItalic( BooleanValue enabled );
-#endif
 
     /**
      * Returns whether the format has strikethrough enabled.
@@ -154,26 +196,75 @@ class CORE_EXPORT QgsTextCharacterFormat
     void setOverline( BooleanValue enabled );
 
     /**
+     * Returns TRUE if the format has an explicit vertical alignment set.
+     *
+     * If FALSE is returned then the vertical alignment will be inherited.
+     *
+     * \see setHasVerticalAlignmentSet()
+     * \see verticalAlignment()
+     *
+     * \since QGIS 3.30
+     */
+    bool hasVerticalAlignmentSet() const { return mHasVerticalAlignSet; }
+
+    /**
+     * Sets whether the format has an explicit vertical alignment \a set.
+     *
+     * If \a set is FALSE then the vertical alignment will be inherited.
+     *
+     * \see hasVerticalAlignmentSet()
+     * \see setVerticalAlignment()
+     *
+     * \since QGIS 3.30
+     */
+    void setHasVerticalAlignmentSet( bool set ) { mHasVerticalAlignSet = set; }
+
+    /**
+     * Returns the format vertical alignment.
+     *
+     * This property is only respected if hasVerticalAlignmentSet() is TRUE.
+     *
+     * \see hasVerticalAlignmentSet()
+     * \see setVerticalAlignment()
+     *
+     * \since QGIS 3.30
+     */
+    Qgis::TextCharacterVerticalAlignment verticalAlignment() const { return mVerticalAlign; }
+
+    /**
+     * Sets the format vertical \a alignment.
+     *
+     * This property is only respected if hasVerticalAlignmentSet() is TRUE.
+     *
+     * \see hasVerticalAlignmentSet()
+     * \see verticalAlignment()
+     *
+     * \since QGIS 3.30
+     */
+    void setVerticalAlignment( Qgis::TextCharacterVerticalAlignment alignment ) { mVerticalAlign = alignment; }
+
+    /**
      * Updates the specified \a font in place, applying character formatting options which
-     * are applicable on a font level.
+     * are applicable on a font level when rendered in the given \a context.
      *
      * The optional \a scaleFactor parameter can specify a font size scaling factor. It is recommended to set this to
      * QgsTextRenderer::FONT_WORKAROUND_SCALE and then manually calculations
      * based on the resultant font metrics. Failure to do so will result in poor quality text rendering
      * at small font sizes.
      */
-    void updateFontForFormat( QFont &font, double scaleFactor = 1.0 ) const;
+    void updateFontForFormat( QFont &font, const QgsRenderContext &context, double scaleFactor = 1.0 ) const;
 
   private:
 
     QColor mTextColor;
-
-#if 0 // settings which affect font metrics are disabled for now
     int mFontWeight = -1;
+    QString mStyleName;
     BooleanValue mItalic = BooleanValue::NotSet;
     double mFontPointSize = -1;
     QString mFontFamily;
-#endif
+
+    bool mHasVerticalAlignSet = false;
+    Qgis::TextCharacterVerticalAlignment mVerticalAlign = Qgis::TextCharacterVerticalAlignment::Normal;
 
     BooleanValue mStrikethrough = BooleanValue::NotSet;
     BooleanValue mUnderline = BooleanValue::NotSet;

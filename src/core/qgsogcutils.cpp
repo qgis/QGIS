@@ -44,10 +44,13 @@
 #define GML32_NAMESPACE QStringLiteral( "http://www.opengis.net/gml/3.2" )
 #define OGC_NAMESPACE QStringLiteral( "http://www.opengis.net/ogc" )
 #define FES_NAMESPACE QStringLiteral( "http://www.opengis.net/fes/2.0" )
+#define SE_NAMESPACE QStringLiteral( "http://www.opengis.net/se" )
 
 QgsOgcUtilsExprToFilter::QgsOgcUtilsExprToFilter( QDomDocument &doc,
     QgsOgcUtils::GMLVersion gmlVersion,
     QgsOgcUtils::FilterVersion filterVersion,
+    const QString &namespacePrefix,
+    const QString &namespaceURI,
     const QString &geometryName,
     const QString &srsName,
     bool honourAxisOrientation,
@@ -56,6 +59,8 @@ QgsOgcUtilsExprToFilter::QgsOgcUtilsExprToFilter( QDomDocument &doc,
   , mGMLUsed( false )
   , mGMLVersion( gmlVersion )
   , mFilterVersion( filterVersion )
+  , mNamespacePrefix( namespacePrefix )
+  , mNamespaceURI( namespaceURI )
   , mGeometryName( geometryName )
   , mSrsName( srsName )
   , mInvertAxisOrientation( invertAxisOrientation )
@@ -890,6 +895,26 @@ QgsGeometry QgsOgcUtils::geometryFromGMLMultiPolygon( const QDomElement &geometr
   g.fromWkb( wkb, size );
   return g;
 }
+
+QDomElement QgsOgcUtils::filterElement( QDomDocument &doc, GMLVersion gmlVersion, FilterVersion filterVersion, bool GMLUsed )
+{
+  QDomElement filterElem =
+    ( filterVersion == FILTER_FES_2_0 ) ?
+    doc.createElementNS( FES_NAMESPACE, QStringLiteral( "fes:Filter" ) ) :
+    doc.createElementNS( OGC_NAMESPACE, QStringLiteral( "ogc:Filter" ) );
+
+  if ( GMLUsed )
+  {
+    QDomAttr attr = doc.createAttribute( QStringLiteral( "xmlns:gml" ) );
+    if ( gmlVersion == GML_3_2_1 )
+      attr.setValue( GML32_NAMESPACE );
+    else
+      attr.setValue( GML_NAMESPACE );
+    filterElem.setAttributeNode( attr );
+  }
+  return filterElem;
+}
+
 
 bool QgsOgcUtils::readGMLCoordinates( QgsPolylineXY &coords, const QDomElement &elem )
 {
@@ -1854,20 +1879,28 @@ QgsExpressionNodeBinaryOperator *QgsOgcUtils::nodePropertyIsNullFromOgcFilter( Q
 
 QDomElement QgsOgcUtils::expressionToOgcFilter( const QgsExpression &exp, QDomDocument &doc, QString *errorMessage )
 {
-  return expressionToOgcFilter( exp, doc, GML_2_1_2, FILTER_OGC_1_0,
+  return expressionToOgcFilter( exp, doc, GML_2_1_2, FILTER_OGC_1_0, QString(), QString(),
                                 QStringLiteral( "geometry" ), QString(), false, false, errorMessage );
 }
 
-QDomElement QgsOgcUtils::expressionToOgcExpression( const QgsExpression &exp, QDomDocument &doc, QString *errorMessage )
+QDomElement QgsOgcUtils::expressionToOgcExpression( const QgsExpression &exp, QDomDocument &doc, QString *errorMessage, bool requiresFilterElement )
 {
   return expressionToOgcExpression( exp, doc, GML_2_1_2, FILTER_OGC_1_0,
-                                    QStringLiteral( "geometry" ), QString(), false, false, errorMessage );
+                                    QStringLiteral( "geometry" ), QString(), false, false, errorMessage, requiresFilterElement );
 }
+
+QDomElement QgsOgcUtils::elseFilterExpression( QDomDocument &doc )
+{
+  return doc.createElementNS( SE_NAMESPACE, QStringLiteral( "se:ElseFilter" ) );
+}
+
 
 QDomElement QgsOgcUtils::expressionToOgcFilter( const QgsExpression &expression,
     QDomDocument &doc,
     GMLVersion gmlVersion,
     FilterVersion filterVersion,
+    const QString &namespacePrefix,
+    const QString &namespaceURI,
     const QString &geometryName,
     const QString &srsName,
     bool honourAxisOrientation,
@@ -1881,26 +1914,22 @@ QDomElement QgsOgcUtils::expressionToOgcFilter( const QgsExpression &expression,
 
   QgsExpressionContext context;
   context << QgsExpressionContextUtils::globalScope();
-  QgsOgcUtilsExprToFilter utils( doc, gmlVersion, filterVersion, geometryName, srsName, honourAxisOrientation, invertAxisOrientation );
+  QgsOgcUtilsExprToFilter utils( doc, gmlVersion, filterVersion, namespacePrefix, namespaceURI, geometryName, srsName, honourAxisOrientation, invertAxisOrientation );
   const QDomElement exprRootElem = utils.expressionNodeToOgcFilter( exp.rootNode(), &exp, &context );
   if ( errorMessage )
     *errorMessage = utils.errorMessage();
   if ( exprRootElem.isNull() )
     return QDomElement();
 
-  QDomElement filterElem =
-    ( filterVersion == FILTER_FES_2_0 ) ?
-    doc.createElementNS( FES_NAMESPACE, QStringLiteral( "fes:Filter" ) ) :
-    doc.createElementNS( OGC_NAMESPACE, QStringLiteral( "ogc:Filter" ) );
-  if ( utils.GMLNamespaceUsed() )
+  QDomElement filterElem = filterElement( doc, gmlVersion, filterVersion, utils.GMLNamespaceUsed() );
+
+  if ( !namespacePrefix.isEmpty() && !namespaceURI.isEmpty() )
   {
-    QDomAttr attr = doc.createAttribute( QStringLiteral( "xmlns:gml" ) );
-    if ( gmlVersion == GML_3_2_1 )
-      attr.setValue( GML32_NAMESPACE );
-    else
-      attr.setValue( GML_NAMESPACE );
+    QDomAttr attr = doc.createAttribute( QStringLiteral( "xmlns:" ) + namespacePrefix );
+    attr.setValue( namespaceURI );
     filterElem.setAttributeNode( attr );
   }
+
   filterElem.appendChild( exprRootElem );
   return filterElem;
 }
@@ -1913,7 +1942,8 @@ QDomElement QgsOgcUtils::expressionToOgcExpression( const QgsExpression &express
     const QString &srsName,
     bool honourAxisOrientation,
     bool invertAxisOrientation,
-    QString *errorMessage )
+    QString *errorMessage,
+    bool requiresFilterElement )
 {
   QgsExpressionContext context;
   context << QgsExpressionContextUtils::globalScope();
@@ -1930,7 +1960,7 @@ QDomElement QgsOgcUtils::expressionToOgcExpression( const QgsExpression &express
     case QgsExpressionNode::ntLiteral:
     case QgsExpressionNode::ntColumnRef:
     {
-      QgsOgcUtilsExprToFilter utils( doc, gmlVersion, filterVersion, geometryName, srsName, honourAxisOrientation, invertAxisOrientation );
+      QgsOgcUtilsExprToFilter utils( doc, gmlVersion, filterVersion, QString(), QString(), geometryName, srsName, honourAxisOrientation, invertAxisOrientation );
       const QDomElement exprRootElem = utils.expressionNodeToOgcFilter( node, &exp, &context );
 
       if ( errorMessage )
@@ -1938,6 +1968,13 @@ QDomElement QgsOgcUtils::expressionToOgcExpression( const QgsExpression &express
 
       if ( !exprRootElem.isNull() )
       {
+        if ( requiresFilterElement )
+        {
+          QDomElement filterElem = filterElement( doc, gmlVersion, filterVersion, utils.GMLNamespaceUsed() );
+
+          filterElem.appendChild( exprRootElem );
+          return filterElem;
+        }
         return exprRootElem;
       }
       break;
@@ -1974,19 +2011,7 @@ QDomElement QgsOgcUtils::SQLStatementToOgcFilter( const QgsSQLStatement &stateme
   if ( exprRootElem.isNull() )
     return QDomElement();
 
-  QDomElement filterElem =
-    ( filterVersion == FILTER_FES_2_0 ) ?
-    doc.createElementNS( FES_NAMESPACE, QStringLiteral( "fes:Filter" ) ) :
-    doc.createElementNS( OGC_NAMESPACE, QStringLiteral( "ogc:Filter" ) );
-  if ( utils.GMLNamespaceUsed() )
-  {
-    QDomAttr attr = doc.createAttribute( QStringLiteral( "xmlns:gml" ) );
-    if ( gmlVersion == GML_3_2_1 )
-      attr.setValue( GML32_NAMESPACE );
-    else
-      attr.setValue( GML_NAMESPACE );
-    filterElem.setAttributeNode( attr );
-  }
+  QDomElement filterElem = filterElement( doc, gmlVersion, filterVersion, utils.GMLNamespaceUsed() );
 
   QSet<QString> setNamespaceURI;
   for ( const LayerProperties &props : layerProperties )
@@ -2000,7 +2025,6 @@ QDomElement QgsOgcUtils::SQLStatementToOgcFilter( const QgsSQLStatement &stateme
       filterElem.setAttributeNode( attr );
     }
   }
-
   filterElem.appendChild( exprRootElem );
   return filterElem;
 }
@@ -2083,7 +2107,7 @@ QDomElement QgsOgcUtilsExprToFilter::expressionBinaryOperatorToOgcFilter( const 
     if ( node->opRight()->nodeType() == QgsExpressionNode::ntLiteral )
     {
       const QgsExpressionNodeLiteral *rightLit = static_cast<const QgsExpressionNodeLiteral *>( node->opRight() );
-      if ( rightLit->value().isNull() )
+      if ( QgsVariantUtils::isNull( rightLit->value() ) )
       {
 
         QDomElement elem = mDoc.createElement( mFilterPrefix + ":PropertyIsNull" );
@@ -2180,7 +2204,10 @@ QDomElement QgsOgcUtilsExprToFilter::expressionColumnRefToOgcFilter( const QgsEx
   Q_UNUSED( expression )
   Q_UNUSED( context )
   QDomElement propElem = mDoc.createElement( mFilterPrefix + ":" + mPropertyName );
-  propElem.appendChild( mDoc.createTextNode( node->name() ) );
+  QString columnRef( node->name() );
+  if ( !mNamespacePrefix.isEmpty() && !mNamespaceURI.isEmpty() )
+    columnRef =  mNamespacePrefix + QStringLiteral( ":" ) + columnRef;
+  propElem.appendChild( mDoc.createTextNode( columnRef ) );
   return propElem;
 }
 
@@ -2292,11 +2319,19 @@ QDomElement QgsOgcUtilsExprToFilter::expressionFunctionToOgcFilter( const QgsExp
                                   QgsOgcUtils::rectangleToGMLBox( &rect, mDoc, mSrsName, mInvertAxisOrientation ) :
                                   QgsOgcUtils::rectangleToGMLEnvelope( &rect, mDoc, mSrsName, mInvertAxisOrientation );
 
-      QDomElement geomProperty = mDoc.createElement( mFilterPrefix + ":" + mPropertyName );
-      geomProperty.appendChild( mDoc.createTextNode( mGeometryName ) );
-
       QDomElement funcElem = mDoc.createElement( mFilterPrefix + ":BBOX" );
-      funcElem.appendChild( geomProperty );
+
+      if ( !mGeometryName.isEmpty() )
+      {
+        // Geometry column is optional for a BBOX filter.
+        QDomElement geomProperty = mDoc.createElement( mFilterPrefix + ":" + mPropertyName );
+        QString columnRef( mGeometryName );
+        if ( !mNamespacePrefix.isEmpty() && !mNamespaceURI.isEmpty() )
+          columnRef =  mNamespacePrefix + QStringLiteral( ":" ) + columnRef;
+        geomProperty.appendChild( mDoc.createTextNode( columnRef ) );
+
+        funcElem.appendChild( geomProperty );
+      }
       funcElem.appendChild( elemBox );
       return funcElem;
     }
@@ -2346,6 +2381,11 @@ QDomElement QgsOgcUtilsExprToFilter::expressionFunctionToOgcFilter( const QgsExp
       const QgsGeometry geom = QgsGeometry::fromWkt( wkt );
       otherGeomElem = QgsOgcUtils::geometryToGML( geom, mDoc, mGMLVersion, mSrsName, mInvertAxisOrientation,
                       QStringLiteral( "qgis_id_geom_%1" ).arg( mGeomId ) );
+      if ( otherGeomElem.isNull() )
+      {
+        mErrorMessage = QObject::tr( "geom_from_wkt: unable to generate GML from wkt geometry" );
+        return QDomElement();
+      }
       mGeomId ++;
     }
     else if ( otherFnDef->name() == QLatin1String( "geom_from_gml" ) )
@@ -2368,6 +2408,18 @@ QDomElement QgsOgcUtilsExprToFilter::expressionFunctionToOgcFilter( const QgsExp
       const QDomNode geomNode = mDoc.importNode( geomDoc.documentElement(), true );
       otherGeomElem = geomNode.toElement();
     }
+    else if ( otherNode->hasCachedStaticValue() && otherNode->cachedStaticValue().userType() == QMetaType::type( "QgsGeometry" ) )
+    {
+      QgsGeometry geom = otherNode->cachedStaticValue().value<QgsGeometry>();
+      otherGeomElem = QgsOgcUtils::geometryToGML( geom, mDoc, mGMLVersion, mSrsName, mInvertAxisOrientation,
+                      QStringLiteral( "qgis_id_geom_%1" ).arg( mGeomId ) );
+      if ( otherGeomElem.isNull() )
+      {
+        mErrorMessage = QObject::tr( "geom from static value: unable to generate GML from static variable" );
+        return QDomElement();
+      }
+      mGeomId ++;
+    }
     else
     {
       mErrorMessage = QObject::tr( "spatial operator: unknown geometry constructor function" );
@@ -2378,7 +2430,10 @@ QDomElement QgsOgcUtilsExprToFilter::expressionFunctionToOgcFilter( const QgsExp
 
     QDomElement funcElem = mDoc.createElement( mFilterPrefix + ":" + tagNameForSpatialOperator( fd->name() ) );
     QDomElement geomProperty = mDoc.createElement( mFilterPrefix + ":" + mPropertyName );
-    geomProperty.appendChild( mDoc.createTextNode( mGeometryName ) );
+    QString columnRef( mGeometryName );
+    if ( !mNamespacePrefix.isEmpty() && !mNamespaceURI.isEmpty() )
+      columnRef =  mNamespacePrefix + QStringLiteral( ":" ) + columnRef;
+    geomProperty.appendChild( mDoc.createTextNode( columnRef ) );
     funcElem.appendChild( geomProperty );
     funcElem.appendChild( otherGeomElem );
     return funcElem;
@@ -2517,7 +2572,7 @@ QDomElement QgsOgcUtilsSQLStatementToFilter::toOgcFilter( const QgsSQLStatement:
     if ( node->opRight()->nodeType() == QgsSQLStatement::ntLiteral )
     {
       const QgsSQLStatement::NodeLiteral *rightLit = static_cast<const QgsSQLStatement::NodeLiteral *>( node->opRight() );
-      if ( rightLit->value().isNull() )
+      if ( QgsVariantUtils::isNull( rightLit->value() ) )
       {
 
         QDomElement elem = mDoc.createElement( mFilterPrefix + ":PropertyIsNull" );
@@ -2629,7 +2684,7 @@ QDomElement QgsOgcUtilsSQLStatementToFilter::toOgcFilter( const QgsSQLStatement:
   QDomElement propElem = mDoc.createElement( mFilterPrefix + ":" + mPropertyName );
   if ( node->tableName().isEmpty() || mLayerProperties.size() == 1 )
   {
-    if ( mLayerProperties.size() == 1 && !mLayerProperties[0].mNamespacePrefix.isEmpty() )
+    if ( mLayerProperties.size() == 1 && !mLayerProperties[0].mNamespacePrefix.isEmpty() && !mLayerProperties[0].mNamespaceURI.isEmpty() )
       propElem.appendChild( mDoc.createTextNode(
                               mLayerProperties[0].mNamespacePrefix + QStringLiteral( ":" ) + node->name() ) );
     else
@@ -3025,7 +3080,7 @@ QDomElement QgsOgcUtilsSQLStatementToFilter::toOgcFilter( const QgsSQLStatement:
       return QDomElement();
     }
     const QgsSQLStatement::NodeLiteral *lit = static_cast<const QgsSQLStatement::NodeLiteral *>( distanceNode );
-    if ( lit->value().isNull() )
+    if ( QgsVariantUtils::isNull( lit->value() ) )
     {
       mErrorMessage = QObject::tr( "Function %1 3rd argument should be a numeric value or a string made of a numeric value followed by a string" ).arg( node->name() );
       return QDomElement();
@@ -3435,6 +3490,11 @@ QgsExpressionNode *QgsOgcUtilsExpressionFromFilter::nodeLiteralFromOgcFilter( co
   }
 
   std::unique_ptr<QgsExpressionNode> root;
+  if ( !element.hasChildNodes() )
+  {
+    root.reset( new QgsExpressionNodeLiteral( QVariant( "" ) ) );
+    return root.release();
+  }
 
   // the literal content can have more children (e.g. CDATA section, text, ...)
   QDomNode childNode = element.firstChild();
@@ -3628,4 +3688,49 @@ QgsExpressionNode *QgsOgcUtilsExpressionFromFilter::nodeIsBetweenFromOgcFilter( 
 QString QgsOgcUtilsExpressionFromFilter::errorMessage() const
 {
   return mErrorMessage;
+}
+
+QgsOgcCrsUtils::CRSFlavor QgsOgcCrsUtils::parseCrsName( const QString &crsName, QString &authority, QString &code )
+{
+  const thread_local QRegularExpression re_url( QRegularExpression::anchoredPattern( QStringLiteral( "http://www\\.opengis\\.net/gml/srs/epsg\\.xml#(.+)" ) ), QRegularExpression::CaseInsensitiveOption );
+  if ( const QRegularExpressionMatch match = re_url.match( crsName ); match.hasMatch() )
+  {
+    authority = QStringLiteral( "EPSG" );
+    code = match.captured( 1 );
+    return CRSFlavor::HTTP_EPSG_DOT_XML;
+  }
+
+  const thread_local QRegularExpression re_ogc_urn( QRegularExpression::anchoredPattern( QStringLiteral( "urn:ogc:def:crs:([^:]+).+(?<=:)([^:]+)" ) ), QRegularExpression::CaseInsensitiveOption );
+  if ( const QRegularExpressionMatch match = re_ogc_urn.match( crsName ); match.hasMatch() )
+  {
+    authority = match.captured( 1 );
+    code = match.captured( 2 );
+    return CRSFlavor::OGC_URN;
+  }
+
+  const thread_local QRegularExpression re_x_ogc_urn( QRegularExpression::anchoredPattern( QStringLiteral( "urn:x-ogc:def:crs:([^:]+).+(?<=:)([^:]+)" ) ), QRegularExpression::CaseInsensitiveOption );
+  if ( const QRegularExpressionMatch match = re_x_ogc_urn.match( crsName ); match.hasMatch() )
+  {
+    authority = match.captured( 1 );
+    code = match.captured( 2 );
+    return CRSFlavor::X_OGC_URN;
+  }
+
+  const thread_local QRegularExpression re_http_uri( QRegularExpression::anchoredPattern( QStringLiteral( "http://www\\.opengis\\.net/def/crs/([^/]+).+/([^/]+)" ) ), QRegularExpression::CaseInsensitiveOption );
+  if ( const QRegularExpressionMatch match = re_http_uri.match( crsName ); match.hasMatch() )
+  {
+    authority = match.captured( 1 );
+    code = match.captured( 2 );
+    return CRSFlavor::OGC_HTTP_URI;
+  }
+
+  const thread_local QRegularExpression re_auth_code( QRegularExpression::anchoredPattern( QStringLiteral( "([^:]+):(.+)" ) ), QRegularExpression::CaseInsensitiveOption );
+  if ( const QRegularExpressionMatch match = re_auth_code.match( crsName ); match.hasMatch() )
+  {
+    authority = match.captured( 1 );
+    code = match.captured( 2 );
+    return CRSFlavor::AUTH_CODE;
+  }
+
+  return CRSFlavor::UNKNOWN;
 }

@@ -149,7 +149,11 @@ void TestQgsMapToolAddFeatureLineZ::initTestCase()
 
   mLayerTopoZ->startEditing();
   QgsFeature topoFeat;
-  topoFeat.setGeometry( QgsGeometry::fromWkt( "MultiLineStringZ ((7.25 6 0, 7.25 7 0, 7.5 7 0, 7.5 6 0, 7.25 6 0),(6 6 0, 6 7 10, 7 7 0, 7 6 0, 6 6 0),(6.25 6.25 0, 6.75 6.25 0, 6.75 6.75 0, 6.25 6.75 0, 6.25 6.25 0))" ) );
+  topoFeat.setGeometry( QgsGeometry::fromWkt( "MultiLineStringZ ("
+                        "(10 0 0, 10 10 0),"
+                        "(20 0 10, 20 10 10),"
+                        "(30 0 0, 30 10 10)"
+                        ")" ) );
 
   mLayerTopoZ->addFeature( topoFeat );
   QCOMPARE( mLayerTopoZ->featureCount(), ( long ) 1 );
@@ -159,7 +163,7 @@ void TestQgsMapToolAddFeatureLineZ::initTestCase()
   mCanvas->setSnappingUtils( new QgsMapCanvasSnappingUtils( mCanvas, this ) );
 
   // create the tool
-  mCaptureTool = new QgsMapToolAddFeature( mCanvas, /*mAdvancedDigitizingDockWidget, */ QgsMapToolCapture::CaptureLine );
+  mCaptureTool = new QgsMapToolAddFeature( mCanvas, QgisApp::instance()->cadDockWidget(), QgsMapToolCapture::CaptureLine );
 
   mCanvas->setMapTool( mCaptureTool );
   mCanvas->setCurrentLayer( mLayerLine );
@@ -183,7 +187,7 @@ void TestQgsMapToolAddFeatureLineZ::testZ()
   mCanvas->setCurrentLayer( mLayerLineZ );
 
   // test with default Z value = 333
-  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue.setValue( 333 );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue->setValue( 333 );
 
   QSet<QgsFeatureId> oldFids = utils.existingFeatureIds();
   utils.mouseClick( 4, 0, Qt::LeftButton );
@@ -199,7 +203,7 @@ void TestQgsMapToolAddFeatureLineZ::testZ()
   mLayerLine->undoStack()->undo();
 
   // test with default Z value = 222
-  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue.setValue( 222 );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue->setValue( 222 );
 
   oldFids = utils.existingFeatureIds();
   utils.mouseClick( 4, 0, Qt::LeftButton );
@@ -224,7 +228,7 @@ void TestQgsMapToolAddFeatureLineZ::testTopologicalEditingZ()
   mCanvas->setCurrentLayer( mLayerTopoZ );
 
   // test with default Z value = 333
-  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue.setValue( 333 );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue->setValue( 333 );
 
   QSet<QgsFeatureId> oldFids = utils.existingFeatureIds();
 
@@ -232,23 +236,28 @@ void TestQgsMapToolAddFeatureLineZ::testTopologicalEditingZ()
   const bool topologicalEditing = cfg.project()->topologicalEditing();
   cfg.project()->setTopologicalEditing( true );
 
-  cfg.setMode( QgsSnappingConfig::AllLayers );
+  cfg.setMode( Qgis::SnappingMode::AllLayers );
   cfg.setEnabled( true );
   mCanvas->snappingUtils()->setConfig( cfg );
 
   oldFids = utils.existingFeatureIds();
-  utils.mouseClick( 6, 6.5, Qt::LeftButton );
-  utils.mouseClick( 6.25, 6.5, Qt::LeftButton );
-  utils.mouseClick( 6.75, 6.5, Qt::LeftButton );
-  utils.mouseClick( 7.25, 6.5, Qt::LeftButton );
-  utils.mouseClick( 7.5, 6.5, Qt::LeftButton );
-  utils.mouseClick( 8, 6.5, Qt::RightButton );
+  utils.mouseClick( 0, 5, Qt::LeftButton );
+  utils.mouseClick( 10.1, 5, Qt::LeftButton );
+  utils.mouseClick( 20.1, 5, Qt::LeftButton );
+  utils.mouseClick( 30.1, 5, Qt::LeftButton );
+  utils.mouseClick( 40, 5, Qt::LeftButton );
+  utils.mouseClick( 40, 5, Qt::RightButton );
   const QgsFeatureId newFid = utils.newFeatureId( oldFids );
 
-  QString wkt = "LineStringZ (6 6.5 333, 6.25 6.5 333, 6.75 6.5 333, 7.25 6.5 333, 7.5 6.5 333)";
+  QString wkt = "MultiLineStringZ ((0 5 333, 10 5 0, 20 5 10, 30 5 5, 40 5 333))";
   QCOMPARE( mLayerTopoZ->getFeature( newFid ).geometry(), QgsGeometry::fromWkt( wkt ) );
-  wkt = "MultiLineStringZ ((7.25 6 0, 7.25 6.5 333, 7.25 7 0, 7.5 7 0, 7.5 6.5 333, 7.5 6 0, 7.25 6 0),(6 6 0, 6 6.5 333, 6 7 10, 7 7 0, 7 6 0, 6 6 0),(6.25 6.25 0, 6.75 6.25 0, 6.75 6.5 333, 6.75 6.75 0, 6.25 6.75 0, 6.25 6.5 333, 6.25 6.25 0))";
-  QCOMPARE( mLayerTopoZ->getFeature( qgis::setToList( oldFids ).last() ).geometry(), QgsGeometry::fromWkt( wkt ) );
+
+  wkt = "MultiLineStringZ ("
+        "(10 0 0, 10 5 0, 10 10 0),"
+        "(20 0 10, 20 5 10, 20 10 10),"
+        "(30 0 0, 30 5 5, 30 10 10)"
+        ")";
+  QCOMPARE( mLayerTopoZ->getFeature( qgis::setToList( oldFids ).constLast() ).geometry(), QgsGeometry::fromWkt( wkt ) );
 
   mLayerLine->undoStack()->undo();
 
@@ -266,7 +275,7 @@ void TestQgsMapToolAddFeatureLineZ::testZSnapping()
   QSet<QgsFeatureId> oldFids = utils.existingFeatureIds();
 
   QgsSnappingConfig cfg = mCanvas->snappingUtils()->config();
-  cfg.setMode( QgsSnappingConfig::AllLayers );
+  cfg.setMode( Qgis::SnappingMode::AllLayers );
   cfg.setEnabled( true );
   mCanvas->snappingUtils()->setConfig( cfg );
 
@@ -284,7 +293,7 @@ void TestQgsMapToolAddFeatureLineZ::testZSnapping()
   mCanvas->setCurrentLayer( mLayerLineZ );
   oldFids = utils.existingFeatureIds();
   // test with default Z value = 222
-  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue.setValue( 222 );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue->setValue( 222 );
   // snap a on a layer without ZM support
   utils.mouseClick( 9, 9, Qt::LeftButton, Qt::KeyboardModifiers(), true );
   utils.mouseClick( 8, 7, Qt::LeftButton );
@@ -302,11 +311,11 @@ void TestQgsMapToolAddFeatureLineZ::testZSnapping()
 
   // Snap on middle Segment
   mCanvas->setCurrentLayer( mLayerLineZ );
-  cfg.setTypeFlag( QgsSnappingConfig::MiddleOfSegmentFlag );
+  cfg.setTypeFlag( Qgis::SnappingType::MiddleOfSegment );
   mCanvas->snappingUtils()->setConfig( cfg );
 
   // create geometry will be snapped
-  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue.setValue( 123 );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue->setValue( 123 );
 
   oldFids = utils.existingFeatureIds();
   utils.mouseClick( 20, 20, Qt::LeftButton, Qt::KeyboardModifiers(), true );
@@ -318,7 +327,7 @@ void TestQgsMapToolAddFeatureLineZ::testZSnapping()
   wkt = "LineStringZ (20 20 123, 30 20 123)";
   QCOMPARE( mLayerLineZ->getFeature( newFid ).geometry(), QgsGeometry::fromWkt( wkt ) );
 
-  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue.setValue( 321 );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue->setValue( 321 );
   oldFids = utils.existingFeatureIds();
   utils.mouseClick( 25, 20, Qt::LeftButton, Qt::KeyboardModifiers(), true );
   utils.mouseClick( 25, 25, Qt::LeftButton );

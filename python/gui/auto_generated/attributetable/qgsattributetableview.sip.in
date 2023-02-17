@@ -11,7 +11,7 @@
 
 
 
-class QgsAttributeTableView : QTableView
+class QgsAttributeTableView : QgsTableView
 {
 %Docstring(signature="appended")
 Provides a table view of features of a :py:class:`QgsVectorLayer`.
@@ -78,6 +78,12 @@ Optionally a ``column`` can be specified, which will also bring that column into
 .. versionadded:: 3.16
 %End
 
+    void closeCurrentEditor();
+%Docstring
+Closes the editor delegate for the current item, committing its changes to the model.
+
+.. versionadded:: 3.30
+%End
   protected:
 
     virtual void mousePressEvent( QMouseEvent *event );

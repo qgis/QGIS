@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 ***************************************************************************
     test_qgsembeddedsymbolrenderer.py
@@ -25,19 +23,20 @@ __date__ = 'December 2015'
 __copyright__ = '(C) 2015, Matthias Kuhn'
 
 import qgis  # NOQA
-from qgis.PyQt.QtCore import QSize
-from qgis.core import (QgsVectorLayer,
-                       QgsRectangle,
-                       QgsMultiRenderChecker,
-                       QgsEmbeddedSymbolRenderer,
-                       QgsFillSymbol,
-                       QgsMarkerSymbol,
-                       QgsLineSymbol,
-                       QgsMapSettings,
-                       QgsFeature,
-                       QgsGeometry
-                       )
-from qgis.testing import unittest, start_app
+from qgis.PyQt.QtCore import QDir, QSize
+from qgis.core import (
+    QgsEmbeddedSymbolRenderer,
+    QgsFeature,
+    QgsFillSymbol,
+    QgsGeometry,
+    QgsLineSymbol,
+    QgsMapSettings,
+    QgsMarkerSymbol,
+    QgsMultiRenderChecker,
+    QgsRectangle,
+    QgsVectorLayer,
+)
+from qgis.testing import start_app, unittest
 
 from utilities import unitTestDataPath
 
@@ -47,6 +46,16 @@ start_app()
 
 
 class TestQgsEmbeddedSymbolRenderer(unittest.TestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        cls.report = "<h1>Python QgsSimpleFillSymbolLayer Tests</h1>\n"
+
+    @classmethod
+    def tearDownClass(cls):
+        report_file_path = f"{QDir.tempPath()}/qgistest.html"
+        with open(report_file_path, 'a') as report_file:
+            report_file.write(cls.report)
 
     def setUp(self):
         self.mapsettings = QgsMapSettings()
@@ -79,7 +88,9 @@ class TestQgsEmbeddedSymbolRenderer(unittest.TestCase):
         renderchecker.setMapSettings(self.mapsettings)
         renderchecker.setControlPathPrefix('embedded')
         renderchecker.setControlName('expected_embedded_points')
-        self.assertTrue(renderchecker.runTest('embedded_points'))
+        res = renderchecker.runTest('embedded_points')
+        TestQgsEmbeddedSymbolRenderer.report += renderchecker.report()
+        self.assertTrue(res)
 
     def testLines(self):
         line_layer = QgsVectorLayer('LineString', 'Polys', 'memory')
@@ -104,7 +115,9 @@ class TestQgsEmbeddedSymbolRenderer(unittest.TestCase):
         renderchecker.setMapSettings(self.mapsettings)
         renderchecker.setControlPathPrefix('embedded')
         renderchecker.setControlName('expected_embedded_lines')
-        self.assertTrue(renderchecker.runTest('embedded_lines'))
+        res = renderchecker.runTest('embedded_lines')
+        TestQgsEmbeddedSymbolRenderer.report += renderchecker.report()
+        self.assertTrue(res)
 
     def testFills(self):
         line_layer = QgsVectorLayer('Polygon', 'Polys', 'memory')
@@ -128,7 +141,9 @@ class TestQgsEmbeddedSymbolRenderer(unittest.TestCase):
         renderchecker.setMapSettings(self.mapsettings)
         renderchecker.setControlPathPrefix('embedded')
         renderchecker.setControlName('expected_embedded_polys')
-        self.assertTrue(renderchecker.runTest('embedded_polys'))
+        res = renderchecker.runTest('embedded_polys')
+        TestQgsEmbeddedSymbolRenderer.report += renderchecker.report()
+        self.assertTrue(res)
 
     def testDefaultSymbol(self):
         points_layer = QgsVectorLayer('Point', 'Polys', 'memory')
@@ -154,7 +169,9 @@ class TestQgsEmbeddedSymbolRenderer(unittest.TestCase):
         renderchecker.setMapSettings(self.mapsettings)
         renderchecker.setControlPathPrefix('embedded')
         renderchecker.setControlName('expected_embedded_defaultsymbol')
-        self.assertTrue(renderchecker.runTest('embedded_defaultsymbol'))
+        res = renderchecker.runTest('embedded_defaultsymbol')
+        TestQgsEmbeddedSymbolRenderer.report += renderchecker.report()
+        self.assertTrue(res)
 
     def testMapInfoLineSymbolConversion(self):
         line_layer = QgsVectorLayer(TEST_DATA_DIR + '/mapinfo/line_styles.TAB', 'Lines', 'ogr')
@@ -174,7 +191,9 @@ class TestQgsEmbeddedSymbolRenderer(unittest.TestCase):
         renderchecker.setMapSettings(mapsettings)
         renderchecker.setControlPathPrefix('embedded')
         renderchecker.setControlName('expected_embedded_mapinfo_lines')
-        self.assertTrue(renderchecker.runTest('embedded_mapinfo_lines'))
+        res = renderchecker.runTest('embedded_mapinfo_lines')
+        TestQgsEmbeddedSymbolRenderer.report += renderchecker.report()
+        self.assertTrue(res)
 
     def testMapInfoFillSymbolConversion(self):
         line_layer = QgsVectorLayer(TEST_DATA_DIR + '/mapinfo/fill_styles.TAB', 'Fills', 'ogr')
@@ -194,7 +213,9 @@ class TestQgsEmbeddedSymbolRenderer(unittest.TestCase):
         renderchecker.setMapSettings(mapsettings)
         renderchecker.setControlPathPrefix('embedded')
         renderchecker.setControlName('expected_embedded_mapinfo_fills')
-        self.assertTrue(renderchecker.runTest('embedded_mapinfo_fills'))
+        res = renderchecker.runTest('embedded_mapinfo_fills')
+        TestQgsEmbeddedSymbolRenderer.report += renderchecker.report()
+        self.assertTrue(res)
 
     def testMapInfoMarkerSymbolConversion(self):
         line_layer = QgsVectorLayer(TEST_DATA_DIR + '/mapinfo/marker_styles.TAB', 'Marker', 'ogr')
@@ -214,7 +235,9 @@ class TestQgsEmbeddedSymbolRenderer(unittest.TestCase):
         renderchecker.setMapSettings(mapsettings)
         renderchecker.setControlPathPrefix('embedded')
         renderchecker.setControlName('expected_embedded_mapinfo_markers')
-        self.assertTrue(renderchecker.runTest('embedded_mapinfo_markers'))
+        res = renderchecker.runTest('embedded_mapinfo_markers')
+        TestQgsEmbeddedSymbolRenderer.report += renderchecker.report()
+        self.assertTrue(res)
 
 
 if __name__ == '__main__':

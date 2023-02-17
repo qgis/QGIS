@@ -14,6 +14,7 @@ set(SPATIALITE_SRCS
   qgsspatialitetablemodel.cpp
   qgsspatialiteproviderconnection.cpp
   qgsspatialitetransaction.cpp
+  qgsspatialiteexpressioncompiler.cpp
 )
 
 if (WITH_GUI)
@@ -23,7 +24,7 @@ if (WITH_GUI)
     qgsspatialitesourceselect.cpp
   )
 
-  set(SPATIALITE_UIS qgsdbsourceselectbase.ui)
+  set(SPATIALITE_UIS ${CMAKE_SOURCE_DIR}/src/ui/qgsdbsourceselectbase.ui)
 endif()
 
 
@@ -46,7 +47,7 @@ target_compile_features(provider_spatialite_a PRIVATE cxx_std_17)
 target_compile_definitions(provider_spatialite_a PRIVATE "-DQT_NO_FOREACH")
 
 if (WITH_GUI)
-  if (WITH_QT6)
+  if (BUILD_WITH_QT6)
     QT6_WRAP_UI(SPATIALITE_UIS_H ${SPATIALITE_UIS})
   else()
     QT5_WRAP_UI(SPATIALITE_UIS_H ${SPATIALITE_UIS})

@@ -19,6 +19,7 @@
 #include "qgsserverexception.h"
 #include "qgsnetworkcontentfetcher.h"
 #include "qgsmessagelog.h"
+#include "qgsvariantutils.h"
 #include <QObject>
 #include <QUrl>
 #include <QNetworkReply>
@@ -119,6 +120,90 @@ QList<QgsGeometry> QgsServerParameterDefinition::toGeomList( bool &ok, const cha
   }
 
   return geoms;
+}
+
+QStringList QgsServerParameterDefinition::toOgcFilterList() const
+{
+  int pos = 0;
+  QStringList filters;
+  const QString filter = toString();
+
+  while ( pos < filter.size() )
+  {
+    if ( pos + 1 < filter.size() && filter[pos] == '(' && filter[pos + 1] == '<' )
+    {
+      // OGC filter on multiple layers
+      int posEnd = filter.indexOf( "Filter>)", pos );
+      if ( posEnd < 0 )
+      {
+        posEnd = filter.size();
+      }
+      filters.append( filter.mid( pos + 1, posEnd - pos + 6 ) );
+      pos = posEnd + 8;
+    }
+    else if ( pos + 1 < filter.size() && filter[pos] == '(' && filter[pos + 1] == ')' )
+    {
+      // empty OGC filter
+      filters.append( "" );
+      pos += 2;
+    }
+    else if ( filter[pos] == '<' && pos + 7 < filter.size() && filter.mid( pos + 1, 6 ).compare( QLatin1String( "Filter" ) ) == 0 )
+    {
+      // Single OGC filter
+      filters.append( filter.mid( pos ) );
+      break;
+    }
+    else
+    {
+      pos += 1;
+    }
+  }
+
+  return filters;
+}
+
+QStringList QgsServerParameterDefinition::toExpressionList() const
+{
+  int pos = 0;
+  QStringList filters;
+  const QString filter = toString();
+
+  auto isOgcFilter = [filter]()
+  {
+    return filter.contains( QStringLiteral( "<Filter>" ) ) or filter.contains( QStringLiteral( "()" ) );
+  };
+
+  while ( pos < filter.size() )
+  {
+    int posEnd = filter.indexOf( ';', pos );
+
+    if ( posEnd == pos + 1 )
+    {
+      if ( ! isOgcFilter() )
+        filters.append( QString() );
+      pos = posEnd;
+      continue;
+    }
+
+    if ( ! isOgcFilter() )
+      filters.append( filter.mid( pos, posEnd - pos ) );
+
+    if ( posEnd < 0 )
+    {
+      pos = filter.size();
+    }
+    else
+    {
+      pos = posEnd + 1;
+    }
+  }
+
+  if ( ! filter.isEmpty() && filter.back() == ';' )
+  {
+    filters.append( QString() );
+  }
+
+  return filters;
 }
 
 QList<QColor> QgsServerParameterDefinition::toColorList( bool &ok, const char delimiter ) const
@@ -274,7 +359,7 @@ QString QgsServerParameterDefinition::loadUrl( bool &ok ) const
   }
 
   const QVariant status = reply->attribute( QNetworkRequest::HttpStatusCodeAttribute );
-  if ( !status.isNull() && status.toInt() >= 400 )
+  if ( status.isValid() && status.toInt() >= 400 )
   {
     ok = false;
     if ( reply->error() != QNetworkReply::NoError )
@@ -521,7 +606,7 @@ QMap<QString, QString> QgsServerParameters::toMap() const
 
   for ( const auto &parameter : mParameters.toStdMap() )
   {
-    if ( parameter.second.mValue.isNull() )
+    if ( QgsVariantUtils::isNull( parameter.second.mValue ) )
       continue;
 
     if ( parameter.second.mName == QgsServerParameter::VERSION_SERVICE )

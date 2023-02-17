@@ -41,6 +41,8 @@ void Cell::write()
     size_t size = m_pos - m_buf->data();
     if (size)
         m_writer->enqueue(m_key, std::move(m_buf), size);
+    else
+        m_writer->replace(std::move(m_buf));
 }
 
 void Cell::advance()

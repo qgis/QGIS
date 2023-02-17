@@ -244,11 +244,27 @@ Saves a layer style to provider
 .. versionadded:: 3.10
 %End
 
-    QString loadStyle( const QString &providerKey,  const QString &uri, QString &errCause );
+    QString loadStyle( const QString &providerKey, const QString &uri, QString &errCause );
 %Docstring
 Loads a layer style defined by ``uri``
 
+:return: the style QML (XML)
+
 .. versionadded:: 3.10
+%End
+
+    QString loadStoredStyle( const QString &providerKey, const QString &uri, QString &styleName, QString &errCause );
+%Docstring
+Loads a layer style from the provider storage, reporting its name.
+
+:param providerKey: name of the data provider
+:param uri: data source uri
+:param styleName: the name of the style if available, empty otherwise
+:param errCause: report errors
+
+:return: the style QML (XML)
+
+.. versionadded:: 3.30
 %End
 
     bool saveLayerMetadata( const QString &providerKey, const QString &uri, const QgsLayerMetadata &metadata, QString &errorMessage /Out/ ) throw( QgsNotSupportedException );
@@ -284,7 +300,7 @@ Returns new instance of transaction. Ownership is transferred to the caller
 .. versionadded:: 3.10
 %End
 
- QFunctionPointer function( const QString &providerKey, const QString &functionName ) /Deprecated/;
+ QFunctionPointer function( const QString &providerKey, const QString &functionName ) const /Deprecated/;
 %Docstring
 Gets pointer to provider function
 
@@ -320,6 +336,14 @@ Returns list of available providers by their keys
 Returns metadata of the provider or ``None`` if not found
 %End
 
+    QSet< QString > providersForLayerType( Qgis::LayerType type ) const;
+%Docstring
+Returns a list of the provider keys for available providers which handle the specified
+layer ``type``.
+
+.. versionadded:: 3.26
+%End
+
     class ProviderCandidateDetails
 {
 %Docstring(signature="appended")
@@ -334,7 +358,7 @@ Contains information pertaining to a candidate provider.
 %End
       public:
 
-        ProviderCandidateDetails( QgsProviderMetadata *metadata, const QList< QgsMapLayerType > &layerTypes );
+        ProviderCandidateDetails( QgsProviderMetadata *metadata, const QList< Qgis::LayerType > &layerTypes );
 %Docstring
 Constructor for ProviderCandidateDetails, with the specified provider ``metadata`` and valid candidate ``layerTypes``.
 %End
@@ -344,7 +368,7 @@ Constructor for ProviderCandidateDetails, with the specified provider ``metadata
 Returns the candidate provider metadata.
 %End
 
-        QList<QgsMapLayerType> layerTypes() const;
+        QList<Qgis::LayerType> layerTypes() const;
 %Docstring
 Returns a list of map layer types which are valid options for opening the
 target using this candidate provider.
@@ -395,7 +419,7 @@ files cannot be used on their QGIS build.
 %End
       public:
 
-        UnusableUriDetails( const QString &uri = QString(), const QString &warning = QString(), const QList< QgsMapLayerType > &layerTypes = QList< QgsMapLayerType >() );
+        UnusableUriDetails( const QString &uri = QString(), const QString &warning = QString(), const QList< Qgis::LayerType > &layerTypes = QList< Qgis::LayerType >() );
 %Docstring
 Constructor for UnusableUriDetails for the given ``uri``, with the specified user-friendly, translated ``warning``.
 
@@ -409,7 +433,7 @@ options for opening the URI.
 
         QString detailedWarning;
 
-        QList<QgsMapLayerType> layerTypes;
+        QList<Qgis::LayerType> layerTypes;
 
         SIP_PYOBJECT __repr__();
 %MethodCode
@@ -658,7 +682,6 @@ register a new vector data provider from its ``providerMetadata``
   private:
     QgsProviderRegistry( const QString &pluginPath );
 }; // class QgsProviderRegistry
-
 
 /************************************************************************
  * This file has been generated automatically from                      *

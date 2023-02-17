@@ -3,7 +3,13 @@
   "type": "function",
   "groups": ["GeometryGroup"],
   "description": "Forces a geometry to respect the Right-Hand-Rule, in which the area that is bounded by a polygon is to the right of the boundary. In particular, the exterior ring is oriented in a clockwise direction and the interior rings in a counter-clockwise direction. Due to the inconsistency in the definition of the Right-Hand-Rule in some contexts it is recommended to use the explicit force_polygon_cw function instead.",
-  "arguments": [ {"arg":"geometry","description":"a geometry. Any non-polygon geometries are returned unchanged."}],
-  "examples": [ { "expression":"geom_to_wkt(force_rhr(geometry:=geom_from_wkt('POLYGON((-1 -1, 4 0, 4 2, 0 2, -1 -1))')))", "returns":"'Polygon ((-1 -1, 0 2, 4 2, 4 0, -1 -1))'"}]
+  "arguments": [{
+    "arg": "geometry",
+    "description": "a geometry. Any non-polygon geometries are returned unchanged."
+  }],
+  "examples": [{
+    "expression": "geom_to_wkt(force_rhr(geometry:=geom_from_wkt('POLYGON((-1 -1, 4 0, 4 2, 0 2, -1 -1))')))",
+    "returns": "'Polygon ((-1 -1, 0 2, 4 2, 4 0, -1 -1))'"
+  }],
+  "tags": ["contexts", "clockwise", "boundary", "interior", "rings", "bounded", "force_polygon_cw", "explicit", "polygon", "area", "exterior", "inconsistency", "right", "use", "hand", "particular", "respect", "counter", "forces", "ring", "recommended", "oriented", "direction", "rule", "definition"]
 }
-

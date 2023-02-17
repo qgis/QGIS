@@ -21,7 +21,7 @@
 #include <QVector>
 #include <QVector3D>
 #include <QImage>
-#include <Qt3DRender/QAttribute>
+#include <QMap>
 
 #include "qgis_3d.h"
 
@@ -66,7 +66,7 @@ class _3D_EXPORT Qgs3DExportObject
     void setType( ObjectType type ) { mType = type; }
 
     //! Returns whether object edges will look smooth
-    bool smoothEdges() { return mSmoothEdges; }
+    bool smoothEdges() const { return mSmoothEdges; }
     //! Sets whether triangles edges will look smooth
     void setSmoothEdges( bool smoothEdges ) { mSmoothEdges = smoothEdges; }
 
@@ -87,7 +87,7 @@ class _3D_EXPORT Qgs3DExportObject
     //! Sets the texture image used by the object
     void setTextureImage( const QImage &image ) { this->mTextureImage = image; };
     //! Returns the texture image used by the object
-    QImage textureImage() { return mTextureImage; }
+    QImage textureImage() const { return mTextureImage; }
 
     /**
      *

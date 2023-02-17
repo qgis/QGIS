@@ -2463,7 +2463,7 @@ void TestQgsPolygon::transformOldVersion()
   pl.setExteriorRing( ls.clone() );
   pl.addInteriorRing( ls.clone() );
 
-#if PROJ_VERSION_MAJOR<6 // note - z value transform doesn't currently work with proj 6+, because we don't yet support compound CRS definitions
+#if 0 // note - z value transform doesn't currently work with proj 6+, because we don't yet support compound CRS definitions
   //z value transform
   pl.transform( tr, Qgis::TransformDirection::Forward, true );
   const QgsLineString *ext = static_cast< const QgsLineString * >( pl.exteriorRing() );
@@ -2602,7 +2602,10 @@ void TestQgsPolygon::toPolygon()
 
 void TestQgsPolygon::toCurveType()
 {
-  QgsPolygon pl;
+  QgsPolygon pl; // empty
+
+  std::unique_ptr< QgsCurvePolygon > curveType( pl.toCurveType() );
+  QCOMPARE( curveType->wkbType(), QgsWkbTypes::CurvePolygon );
 
   QgsLineString *ext = new QgsLineString();
   ext->setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZM, 0, 0, 1, 5 )
@@ -2620,7 +2623,7 @@ void TestQgsPolygon::toCurveType()
                    << QgsPoint( QgsWkbTypes::PointZM, 1, 1, 1, 7 ) );
   pl.addInteriorRing( ring );
 
-  std::unique_ptr< QgsCurvePolygon > curveType( pl.toCurveType() );
+  curveType.reset( pl.toCurveType() );
 
   QCOMPARE( curveType->wkbType(), QgsWkbTypes::CurvePolygonZM );
 

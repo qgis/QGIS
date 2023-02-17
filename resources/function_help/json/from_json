@@ -3,10 +3,16 @@
   "type": "function",
   "groups": ["Maps"],
   "description": "Loads a JSON formatted string.",
-  "arguments": [
-    {"arg":"string", "description":"JSON string"}],
-  "examples": [
-     {"expression":"from_json('{\"qgis\":\"rocks\"}')", "returns":"{ 'qgis': 'rocks' }"},
-     {"expression":"from_json('[1,2,3]')", "returns":"[1,2,3]"}
-  ]
+  "arguments": [{
+    "arg": "string",
+    "description": "JSON string"
+  }],
+  "examples": [{
+    "expression": "from_json('{\"qgis\":\"rocks\"}')",
+    "returns": "{ 'qgis': 'rocks' }"
+  }, {
+    "expression": "from_json('[1,2,3]')",
+    "returns": "[1,2,3]"
+  }],
+  "tags": ["json", "loads", "formatted"]
 }

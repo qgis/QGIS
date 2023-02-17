@@ -35,6 +35,7 @@ QgsPointCloud3DRenderContext::QgsPointCloud3DRenderContext( const Qgs3DMapSettin
   , mCoordinateTransform( coordinateTransform )
   , mFeedback( new QgsFeedback )
 {
+  updateExtent();
 }
 
 void QgsPointCloud3DRenderContext::setAttributes( const QgsPointCloudAttributeCollection &attributes )
@@ -63,6 +64,7 @@ QSet<int> QgsPointCloud3DRenderContext::getFilteredOutValues() const
 void QgsPointCloud3DRenderContext::setCoordinateTransform( const QgsCoordinateTransform &coordinateTransform )
 {
   mCoordinateTransform = coordinateTransform;
+  updateExtent();
 }
 
 bool QgsPointCloud3DRenderContext::isCanceled() const
@@ -73,6 +75,28 @@ bool QgsPointCloud3DRenderContext::isCanceled() const
 void QgsPointCloud3DRenderContext::cancelRendering() const
 {
   mFeedback->cancel();
+}
+
+void QgsPointCloud3DRenderContext::updateExtent()
+{
+  if ( map().extent().isEmpty() )
+  {
+    // an empty extent means no filter, so let's pass it without transformation
+    mExtent = QgsRectangle();
+  }
+  else
+  {
+    try
+    {
+      mExtent = mCoordinateTransform.transformBoundingBox( map().extent(), Qgis::TransformDirection::Reverse );
+    }
+    catch ( const QgsCsException & )
+    {
+      // bad luck, can't reproject for some reason. Let's use an empty extent to skip filtering.
+      QgsDebugMsg( QStringLiteral( "Transformation of extent failed!" ) );
+      mExtent = QgsRectangle();
+    }
+  }
 }
 // ---------
 
@@ -135,9 +159,10 @@ Qt3DCore::QEntity *QgsPointCloudLayer3DRenderer::createEntity( const Qgs3DMapSet
 
   const QgsCoordinateTransform coordinateTransform( pcl->crs(), map.crs(), map.transformContext() );
 
-  return new QgsPointCloudLayerChunkedEntity( pcl->dataProvider()->index(), map, coordinateTransform, dynamic_cast<QgsPointCloud3DSymbol *>( mSymbol->clone() ), maximumScreenError(), showBoundingBoxes(),
-         static_cast< const QgsPointCloudLayerElevationProperties * >( pcl->elevationProperties() )->zScale(),
-         static_cast< const QgsPointCloudLayerElevationProperties * >( pcl->elevationProperties() )->zOffset(), mPointBudget );
+  QgsPointCloudLayerChunkedEntity *entity = new QgsPointCloudLayerChunkedEntity( pcl->dataProvider()->index(), map, coordinateTransform, dynamic_cast<QgsPointCloud3DSymbol *>( mSymbol->clone() ), maximumScreenError(), showBoundingBoxes(),
+      static_cast< const QgsPointCloudLayerElevationProperties * >( pcl->elevationProperties() )->zScale(),
+      static_cast< const QgsPointCloudLayerElevationProperties * >( pcl->elevationProperties() )->zOffset(), mPointBudget );
+  return entity;
 }
 
 void QgsPointCloudLayer3DRenderer::setSymbol( QgsPointCloud3DSymbol *symbol )
@@ -173,8 +198,8 @@ void QgsPointCloudLayer3DRenderer::readXml( const QDomElement &elem, const QgsRe
 
   const QString symbolType = elemSymbol.attribute( QStringLiteral( "type" ) );
   mShowBoundingBoxes = elem.attribute( QStringLiteral( "show-bounding-boxes" ), QStringLiteral( "0" ) ).toInt();
-  mMaximumScreenError = elem.attribute( QStringLiteral( "max-screen-error" ), QStringLiteral( "1.0" ) ).toDouble();
-  mPointBudget = elem.attribute( QStringLiteral( "point-budget" ), QStringLiteral( "1000000" ) ).toInt();
+  mMaximumScreenError = elem.attribute( QStringLiteral( "max-screen-error" ), QStringLiteral( "3.0" ) ).toDouble();
+  mPointBudget = elem.attribute( QStringLiteral( "point-budget" ), QStringLiteral( "5000000" ) ).toInt();
 
   if ( symbolType == QLatin1String( "single-color" ) )
     mSymbol.reset( new QgsSingleColorPointCloud3DSymbol );
@@ -221,4 +246,22 @@ void QgsPointCloudLayer3DRenderer::setPointRenderingBudget( int budget )
   mPointBudget = budget;
 }
 
+bool QgsPointCloudLayer3DRenderer::convertFrom2DRenderer( QgsPointCloudRenderer *renderer )
+{
+  std::unique_ptr< QgsPointCloudLayer3DRenderer > renderer3D = Qgs3DUtils::convert2DPointCloudRendererTo3D( renderer );
+  if ( !renderer3D )
+  {
+    setSymbol( nullptr );
+    return false;
+  }
 
+  QgsPointCloud3DSymbol *newSymbol = const_cast<QgsPointCloud3DSymbol *>(
+                                       static_cast<QgsPointCloud3DSymbol *>( renderer3D->symbol()->clone() )
+                                     );
+  // we need to retain some settings from the previous symbol, like point size
+  const QgsPointCloud3DSymbol *oldSymbol = symbol();
+  if ( oldSymbol )
+    oldSymbol->copyBaseSettings( newSymbol );
+  setSymbol( newSymbol );
+  return true;
+}

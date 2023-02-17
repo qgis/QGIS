@@ -3,12 +3,24 @@
   "type": "function",
   "groups": ["Arrays"],
   "description": "Creates an array containing a sequence of numbers.",
-  "arguments": [
-    {"arg":"start", "description":"first value of the sequence"},
-    {"arg":"stop", "description":"value that ends the sequence once reached"},
-    {"arg":"step","optional":true,"default":"1","description":"value used as the increment between values"}
-  ],
-  "examples": [ { "expression":"generate_series(1,5)", "returns":"[ 1, 2, 3, 4, 5 ]"},
-                { "expression":"generate_series(5,1,-1)", "returns":"[ 5, 4, 3, 2, 1 ]"}
-  ]
+  "arguments": [{
+    "arg": "start",
+    "description": "first value of the sequence"
+  }, {
+    "arg": "stop",
+    "description": "value that ends the sequence once reached"
+  }, {
+    "arg": "step",
+    "optional": true,
+    "default": "1",
+    "description": "value used as the increment between values"
+  }],
+  "examples": [{
+    "expression": "generate_series(1,5)",
+    "returns": "[ 1, 2, 3, 4, 5 ]"
+  }, {
+    "expression": "generate_series(5,1,-1)",
+    "returns": "[ 5, 4, 3, 2, 1 ]"
+  }],
+  "tags": ["sequence", "containing", "numbers", "array"]
 }

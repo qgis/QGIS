@@ -25,7 +25,7 @@ Raster identify results container.
 Constructor for QgsRasterIdentifyResult.
 %End
 
-    QgsRasterIdentifyResult( QgsRaster::IdentifyFormat format, const QMap<int, QVariant> &results );
+    QgsRasterIdentifyResult( Qgis::RasterIdentifyFormat format, const QMap<int, QVariant> &results );
 %Docstring
 Constructor. Creates valid result.
 
@@ -47,7 +47,7 @@ Constructor. Creates invalid result with error.
 Returns ``True`` if valid
 %End
 
-    QgsRaster::IdentifyFormat format() const;
+    Qgis::RasterIdentifyFormat format() const;
 %Docstring
 Returns the results format.
 %End
@@ -56,9 +56,9 @@ Returns the results format.
 %Docstring
 Returns the identify results. Results are different for each format:
 
-- :py:class:`QgsRaster`.IdentifyFormatValue: a map of values for each band, where keys are band numbers (from 1).
-- :py:class:`QgsRaster`.IdentifyFormatFeature: a map of WMS sublayer keys and lists of :py:class:`QgsFeatureStore` values.
-- :py:class:`QgsRaster`.IdentifyFormatHtml: a map of WMS sublayer keys and HTML strings.
+- Qgis.RasterIdentifyFormat.Value: a map of values for each band, where keys are band numbers (from 1).
+- Qgis.RasterIdentifyFormat.Feature: a map of WMS sublayer keys and lists of :py:class:`QgsFeatureStore` values.
+- Qgis.RasterIdentifyFormat.Html: a map of WMS sublayer keys and HTML strings.
 %End
 
     void setParams( const QMap<QString, QVariant> &params );

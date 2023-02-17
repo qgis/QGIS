@@ -3,14 +3,27 @@
   "type": "function",
   "groups": ["Conversions", "Date and Time"],
   "description": "Converts a string into a time object. An optional format string can be provided to parse the string; see <a href='https://doc.qt.io/qt-5/qtime.html#fromString-1'>QTime::fromString</a> for additional documentation on the format.",
-  "arguments": [
-   {"arg":"string","description":"string representing a time value"},
-   {"arg":"format","optional":true,"description":"format used to convert the string into a time"},
-   {"arg":"language","optional":true,"description":"language (lowercase, two- or three-letter, ISO 639 language code) used to convert the string into a time"}
-  ],
-  "examples": [
-   { "expression":"to_time('12:30:01')", "returns":"12:30:01"},
-   { "expression":"to_time('12:34','HH:mm')", "returns":"12:34:00"},
-   { "expression":"to_time('12:34','HH:mm','fr')", "returns":"12:34:00"}
-  ]
+  "arguments": [{
+    "arg": "string",
+    "description": "string representing a time value"
+  }, {
+    "arg": "format",
+    "optional": true,
+    "description": "format used to convert the string into a time"
+  }, {
+    "arg": "language",
+    "optional": true,
+    "description": "language (lowercase, two- or three-letter, ISO 639 language code) used to convert the string into a time"
+  }],
+  "examples": [{
+    "expression": "to_time('12:30:01')",
+    "returns": "12:30:01"
+  }, {
+    "expression": "to_time('12:34','HH:mm')",
+    "returns": "12:34:00"
+  }, {
+    "expression": "to_time('12:34','HH:mm','fr')",
+    "returns": "12:34:00"
+  }],
+  "tags": ["provided", "additional", "format", "object", "parse", "time", "converts", "fromstring", "optional", "documentation", "qtime", "see"]
 }

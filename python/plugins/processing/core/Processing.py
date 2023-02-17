@@ -114,6 +114,25 @@ class Processing(object):
                 p = c()
                 if QgsApplication.processingRegistry().addProvider(p):
                     Processing.BASIC_PROVIDERS.append(p)
+
+            if QgsApplication.platform() == 'external':
+                # for external applications we must also load the builtin providers stored in separate plugins
+                try:
+                    from grassprovider.Grass7AlgorithmProvider import Grass7AlgorithmProvider
+                    p = Grass7AlgorithmProvider()
+                    if QgsApplication.processingRegistry().addProvider(p):
+                        Processing.BASIC_PROVIDERS.append(p)
+                except ImportError:
+                    pass
+
+                try:
+                    from otbprovider.OtbAlgorithmProvider import OtbAlgorithmProvider
+                    p = OtbAlgorithmProvider()
+                    if QgsApplication.processingRegistry().addProvider(p):
+                        Processing.BASIC_PROVIDERS.append(p)
+                except ImportError:
+                    pass
+
             # And initialize
             ProcessingConfig.initialize()
             ProcessingConfig.readSettings()

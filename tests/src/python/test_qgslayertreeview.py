@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsLayerTreeView.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -11,36 +10,18 @@ __date__ = '02.04.2018'
 __copyright__ = 'Copyright 2018, The QGIS Project'
 
 import qgis  # NOQA
-
-import os
-
-from distutils.version import StrictVersion
-
+from qgis.PyQt.QtCore import QStringListModel
+from qgis.PyQt.QtTest import QAbstractItemModelTester, QSignalSpy
 from qgis.core import (
+    QgsLayerTree,
     QgsLayerTreeModel,
     QgsProject,
     QgsVectorLayer,
-    QgsLayerTreeLayer,
-    QgsLayerTree,
 )
-from qgis.gui import (
-    QgsLayerTreeView,
-    QgsLayerTreeViewDefaultActions,
-)
+from qgis.gui import QgsLayerTreeView, QgsLayerTreeViewDefaultActions
 from qgis.testing import start_app, unittest
-from utilities import (unitTestDataPath)
-from qgis.PyQt.QtCore import QStringListModel
-from qgis.PyQt.QtTest import QSignalSpy
 
-from qgis.PyQt.Qt import PYQT_VERSION_STR
-
-USE_MODEL_TESTER = False
-
-
-if StrictVersion(PYQT_VERSION_STR) >= StrictVersion('5.11'):
-    from qgis.PyQt.QtTest import QAbstractItemModelTester
-    USE_MODEL_TESTER = True
-
+from utilities import unitTestDataPath
 
 app = start_app()
 TEST_DATA_DIR = unitTestDataPath()
@@ -67,8 +48,10 @@ class TestQgsLayerTreeView(unittest.TestCase):
                                      "layer5", "memory")
         self.project.addMapLayers([self.layer, self.layer2, self.layer3])
         self.model = QgsLayerTreeModel(self.project.layerTreeRoot())
-        if USE_MODEL_TESTER:
-            self.tester = QAbstractItemModelTester(self.model)
+        self.tester = QAbstractItemModelTester(self.model)
+
+        self.groupname = "group"
+        self.subgroupname = "sub-group"
 
     def nodeOrder(self, group):
 
@@ -94,16 +77,14 @@ class TestQgsLayerTreeView(unittest.TestCase):
 
         # should work
         view.setModel(self.model)
-        if USE_MODEL_TESTER:
-            proxy_tester = QAbstractItemModelTester(view.model())
+        proxy_tester = QAbstractItemModelTester(view.model())
         self.assertEqual(view.layerTreeModel(), self.model)
 
     def testSetCurrentLayer(self):
 
         view = QgsLayerTreeView()
         view.setModel(self.model)
-        if USE_MODEL_TESTER:
-            proxy_tester = QAbstractItemModelTester(view.model())
+        proxy_tester = QAbstractItemModelTester(view.model())
         current_layer_changed_spy = QSignalSpy(view.currentLayerChanged)
         self.assertFalse(view.currentLayer())
         view.setCurrentLayer(self.layer3)
@@ -119,8 +100,7 @@ class TestQgsLayerTreeView(unittest.TestCase):
     def testDefaultActions(self):
         view = QgsLayerTreeView()
         view.setModel(self.model)
-        if USE_MODEL_TESTER:
-            proxy_tester = QAbstractItemModelTester(view.model())
+        proxy_tester = QAbstractItemModelTester(view.model())
         actions = QgsLayerTreeViewDefaultActions(view)
 
         # show in overview action
@@ -144,8 +124,7 @@ class TestQgsLayerTreeView(unittest.TestCase):
         group.addLayer(self.layer5)
         groupname = group.name()
         view.setModel(self.model)
-        if USE_MODEL_TESTER:
-            proxy_tester = QAbstractItemModelTester(view.model())
+        proxy_tester = QAbstractItemModelTester(view.model())
         actions = QgsLayerTreeViewDefaultActions(view)
         self.assertEqual(self.nodeOrder(self.project.layerTreeRoot().children()), [
             self.layer.name(),
@@ -173,8 +152,7 @@ class TestQgsLayerTreeView(unittest.TestCase):
 
         view = QgsLayerTreeView()
         view.setModel(self.model)
-        if USE_MODEL_TESTER:
-            proxy_tester = QAbstractItemModelTester(view.model())
+        proxy_tester = QAbstractItemModelTester(view.model())
         actions = QgsLayerTreeViewDefaultActions(view)
         self.assertEqual(self.project.layerTreeRoot().layerOrder(), [
                          self.layer, self.layer2, self.layer3])
@@ -193,8 +171,7 @@ class TestQgsLayerTreeView(unittest.TestCase):
         group.addLayer(self.layer5)
         groupname = group.name()
         view.setModel(self.model)
-        if USE_MODEL_TESTER:
-            proxy_tester = QAbstractItemModelTester(view.model())
+        proxy_tester = QAbstractItemModelTester(view.model())
         actions = QgsLayerTreeViewDefaultActions(view)
         self.assertEqual(self.nodeOrder(self.project.layerTreeRoot().children()), [
             self.layer.name(),
@@ -227,8 +204,7 @@ class TestQgsLayerTreeView(unittest.TestCase):
         group.addLayer(self.layer5)
         groupname = group.name()
         view.setModel(self.model)
-        if USE_MODEL_TESTER:
-            proxy_tester = QAbstractItemModelTester(view.model())
+        proxy_tester = QAbstractItemModelTester(view.model())
         actions = QgsLayerTreeViewDefaultActions(view)
         self.assertEqual(self.nodeOrder(self.project.layerTreeRoot().children()), [
             self.layer.name(),
@@ -260,8 +236,7 @@ class TestQgsLayerTreeView(unittest.TestCase):
         group.addLayer(self.layer5)
         groupname = group.name()
         view.setModel(self.model)
-        if USE_MODEL_TESTER:
-            proxy_tester = QAbstractItemModelTester(view.model())
+        proxy_tester = QAbstractItemModelTester(view.model())
         actions = QgsLayerTreeViewDefaultActions(view)
         self.assertEqual(self.nodeOrder(self.project.layerTreeRoot().children()), [
             self.layer.name(),
@@ -294,8 +269,7 @@ class TestQgsLayerTreeView(unittest.TestCase):
 
         view = QgsLayerTreeView()
         view.setModel(self.model)
-        if USE_MODEL_TESTER:
-            proxy_tester = QAbstractItemModelTester(view.model())
+        proxy_tester = QAbstractItemModelTester(view.model())
         actions = QgsLayerTreeViewDefaultActions(view)
         self.assertEqual(self.project.layerTreeRoot().layerOrder(), [
                          self.layer, self.layer2, self.layer3])
@@ -314,8 +288,7 @@ class TestQgsLayerTreeView(unittest.TestCase):
         group.addLayer(self.layer5)
         groupname = group.name()
         view.setModel(self.model)
-        if USE_MODEL_TESTER:
-            proxy_tester = QAbstractItemModelTester(view.model())
+        proxy_tester = QAbstractItemModelTester(view.model())
         actions = QgsLayerTreeViewDefaultActions(view)
         self.assertEqual(self.nodeOrder(self.project.layerTreeRoot().children()), [
             groupname,
@@ -348,8 +321,7 @@ class TestQgsLayerTreeView(unittest.TestCase):
         group.addLayer(self.layer5)
         groupname = group.name()
         view.setModel(self.model)
-        if USE_MODEL_TESTER:
-            proxy_tester = QAbstractItemModelTester(view.model())
+        proxy_tester = QAbstractItemModelTester(view.model())
         actions = QgsLayerTreeViewDefaultActions(view)
         self.assertEqual(self.nodeOrder(self.project.layerTreeRoot().children()), [
             self.layer.name(),
@@ -381,8 +353,7 @@ class TestQgsLayerTreeView(unittest.TestCase):
         group.addLayer(self.layer5)
         groupname = group.name()
         view.setModel(self.model)
-        if USE_MODEL_TESTER:
-            proxy_tester = QAbstractItemModelTester(view.model())
+        proxy_tester = QAbstractItemModelTester(view.model())
         actions = QgsLayerTreeViewDefaultActions(view)
         self.assertEqual(self.nodeOrder(self.project.layerTreeRoot().children()), [
             groupname,
@@ -410,12 +381,162 @@ class TestQgsLayerTreeView(unittest.TestCase):
             groupname + '-' + self.layer4.name(),
         ])
 
+    def testAddGroupActionLayer(self):
+        """Test add group action on single layer"""
+
+        view = QgsLayerTreeView()
+        group = self.project.layerTreeRoot().insertGroup(0, "embeddedgroup")
+        group.addLayer(self.layer4)
+        group.addLayer(self.layer5)
+        groupname = group.name()
+        view.setModel(self.model)
+        proxy_tester = QAbstractItemModelTester(view.model())
+        actions = QgsLayerTreeViewDefaultActions(view)
+        self.assertEqual(self.nodeOrder(self.project.layerTreeRoot().children()), [
+            groupname,
+            groupname + '-' + self.layer4.name(),
+            groupname + '-' + self.layer5.name(),
+            self.layer.name(),
+            self.layer2.name(),
+            self.layer3.name(),
+        ])
+
+        view.setCurrentLayer(self.layer2)
+        addgroup = actions.actionAddGroup()
+        addgroup.trigger()
+        self.assertEqual(self.nodeOrder(self.project.layerTreeRoot().children()), [
+            groupname,
+            groupname + '-' + self.layer4.name(),
+            groupname + '-' + self.layer5.name(),
+            self.layer.name(),
+            self.groupname + '1',
+            self.groupname + '1' + '-' + self.layer2.name(),
+            self.layer3.name()
+        ])
+
+    def testAddGroupActionLayers(self):
+        """Test add group action on several layers"""
+
+        view = QgsLayerTreeView()
+        group = self.project.layerTreeRoot().insertGroup(0, "embeddedgroup")
+        group.addLayer(self.layer4)
+        group.addLayer(self.layer5)
+        groupname = group.name()
+
+        view.setModel(self.model)
+        proxy_tester = QAbstractItemModelTester(view.model())
+        actions = QgsLayerTreeViewDefaultActions(view)
+        self.assertEqual(self.nodeOrder(self.project.layerTreeRoot().children()), [
+            groupname,
+            groupname + '-' + self.layer4.name(),
+            groupname + '-' + self.layer5.name(),
+            self.layer.name(),
+            self.layer2.name(),
+            self.layer3.name(),
+        ])
+
+        selectionMode = view.selectionMode()
+        view.setSelectionMode(QgsLayerTreeView.MultiSelection)
+        view.setCurrentLayer(self.layer)
+        view.setCurrentLayer(self.layer2)
+        view.setSelectionMode(selectionMode)
+
+        addgroup = actions.actionAddGroup()
+        addgroup.trigger()
+        self.assertEqual(self.nodeOrder(self.project.layerTreeRoot().children()), [
+            groupname,
+            groupname + '-' + self.layer4.name(),
+            groupname + '-' + self.layer5.name(),
+            self.groupname + '1',
+            self.groupname + '1' + '-' + self.layer.name(),
+            self.groupname + '1' + '-' + self.layer2.name(),
+            self.layer3.name()
+        ])
+
+    def testAddGroupActionGroup(self):
+        """Test add group action on single group"""
+
+        view = QgsLayerTreeView()
+        group = self.project.layerTreeRoot().insertGroup(0, "embeddedgroup")
+        group.addLayer(self.layer4)
+        group.addLayer(self.layer5)
+        groupname = group.name()
+        view.setModel(self.model)
+        proxy_tester = QAbstractItemModelTester(view.model())
+        actions = QgsLayerTreeViewDefaultActions(view)
+        self.assertEqual(self.nodeOrder(self.project.layerTreeRoot().children()), [
+            groupname,
+            groupname + '-' + self.layer4.name(),
+            groupname + '-' + self.layer5.name(),
+            self.layer.name(),
+            self.layer2.name(),
+            self.layer3.name(),
+        ])
+
+        nodeLayerIndex = view.node2index(group)
+        view.setCurrentIndex(nodeLayerIndex)
+        addgroup = actions.actionAddGroup()
+        addgroup.trigger()
+        self.assertEqual(self.nodeOrder(self.project.layerTreeRoot().children()), [
+            groupname,
+            groupname + '-' + self.layer4.name(),
+            groupname + '-' + self.layer5.name(),
+            groupname + '-' + self.subgroupname + '1',
+            self.layer.name(),
+            self.layer2.name(),
+            self.layer3.name()
+        ])
+
+    def testAddGroupActionGroups(self):
+        """Test add group action on several groups"""
+
+        view = QgsLayerTreeView()
+        group = self.project.layerTreeRoot().insertGroup(0, "embeddedgroup")
+        group.addLayer(self.layer4)
+        groupname = group.name()
+        group2 = self.project.layerTreeRoot().insertGroup(0, "embeddedgroup2")
+        group2.addLayer(self.layer5)
+        groupname2 = group2.name()
+
+        view.setModel(self.model)
+        proxy_tester = QAbstractItemModelTester(view.model())
+        actions = QgsLayerTreeViewDefaultActions(view)
+        self.assertEqual(self.nodeOrder(self.project.layerTreeRoot().children()), [
+            groupname2,
+            groupname2 + '-' + self.layer5.name(),
+            groupname,
+            groupname + '-' + self.layer4.name(),
+            self.layer.name(),
+            self.layer2.name(),
+            self.layer3.name(),
+        ])
+
+        selectionMode = view.selectionMode()
+        view.setSelectionMode(QgsLayerTreeView.MultiSelection)
+        nodeLayerIndex = view.node2index(group)
+        view.setCurrentIndex(nodeLayerIndex)
+        nodeLayerIndex2 = view.node2index(group2)
+        view.setCurrentIndex(nodeLayerIndex2)
+        view.setSelectionMode(selectionMode)
+
+        addgroup = actions.actionAddGroup()
+        addgroup.trigger()
+        self.assertEqual(self.nodeOrder(self.project.layerTreeRoot().children()), [
+            self.groupname + '1',
+            self.groupname + '1' + '-' + groupname,
+            self.groupname + '1' + '-' + groupname + '-' + self.layer4.name(),
+            self.groupname + '1' + '-' + groupname2,
+            self.groupname + '1' + '-' + groupname2 + '-' + self.layer5.name(),
+            self.layer.name(),
+            self.layer2.name(),
+            self.layer3.name()
+        ])
+
     def testSetLayerVisible(self):
 
         view = QgsLayerTreeView()
         view.setModel(self.model)
-        if USE_MODEL_TESTER:
-            proxy_tester = QAbstractItemModelTester(view.model())
+        proxy_tester = QAbstractItemModelTester(view.model())
         self.project.layerTreeRoot().findLayer(
             self.layer).setItemVisibilityChecked(True)
         self.project.layerTreeRoot().findLayer(
@@ -441,8 +562,7 @@ class TestQgsLayerTreeView(unittest.TestCase):
 
         view = QgsLayerTreeView()
         view.setModel(self.model)
-        if USE_MODEL_TESTER:
-            proxy_tester = QAbstractItemModelTester(view.model())
+        proxy_tester = QAbstractItemModelTester(view.model())
         tree_model = view.layerTreeModel()
         proxy_model = view.proxyModel()
 
@@ -507,9 +627,8 @@ class TestQgsLayerTreeView(unittest.TestCase):
 
         view = QgsLayerTreeView()
         view.setModel(self.model)
-        if USE_MODEL_TESTER:
-            proxy_tester = QAbstractItemModelTester(view.model())
-            tree_tester = QAbstractItemModelTester(view.layerTreeModel())
+        proxy_tester = QAbstractItemModelTester(view.model())
+        tree_tester = QAbstractItemModelTester(view.layerTreeModel())
 
         view.setCurrentLayer(self.layer3)
         self.layer3.setFlags(self.layer.Private)
@@ -519,9 +638,8 @@ class TestQgsLayerTreeView(unittest.TestCase):
 
         view = QgsLayerTreeView()
         view.setModel(self.model)
-        if USE_MODEL_TESTER:
-            proxy_tester = QAbstractItemModelTester(view.model())
-            tree_tester = QAbstractItemModelTester(view.layerTreeModel())
+        proxy_tester = QAbstractItemModelTester(view.model())
+        tree_tester = QAbstractItemModelTester(view.layerTreeModel())
 
         tree_model = view.layerTreeModel()
         proxy_model = view.proxyModel()

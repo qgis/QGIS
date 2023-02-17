@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsReport
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -11,19 +10,19 @@ __date__ = '29/12/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
 
 import qgis  # NOQA
-
-from qgis.core import (QgsProject,
-                       QgsLayout,
-                       QgsReport,
-                       QgsReportSectionLayout,
-                       QgsReportSectionFieldGroup,
-                       QgsVectorLayer,
-                       QgsField,
-                       QgsFeature,
-                       QgsReadWriteContext,
-                       QgsUnitTypes)
-from qgis.testing import start_app, unittest
 from qgis.PyQt.QtXml import QDomDocument
+from qgis.core import (
+    QgsFeature,
+    QgsLayout,
+    QgsProject,
+    QgsReadWriteContext,
+    QgsReport,
+    QgsReportSectionFieldGroup,
+    QgsReportSectionLayout,
+    QgsUnitTypes,
+    QgsVectorLayer,
+)
+from qgis.testing import start_app, unittest
 
 start_app()
 

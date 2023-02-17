@@ -107,11 +107,13 @@ bool QgsRefactorFieldsAlgorithm::prepareAlgorithm( const QVariantMap &parameters
       throw QgsProcessingException( QObject::tr( "Field name cannot be empty" ) );
 
     const QVariant::Type type = static_cast< QVariant::Type >( fieldDef.value( QStringLiteral( "type" ) ).toInt() );
+    const QString typeName = fieldDef.value( QStringLiteral( "sub_name" ) ).toString();
+    const QVariant::Type subType = static_cast< QVariant::Type >( fieldDef.value( QStringLiteral( "sub_type" ) ).toInt() );
 
     const int length = fieldDef.value( QStringLiteral( "length" ), 0 ).toInt();
     const int precision = fieldDef.value( QStringLiteral( "precision" ), 0 ).toInt();
 
-    mFields.append( QgsField( name, type, QString(), length, precision ) );
+    mFields.append( QgsField( name, type, typeName, length, precision, QString(), subType ) );
 
     const QString expressionString = fieldDef.value( QStringLiteral( "expression" ) ).toString();
     if ( !expressionString.isEmpty() )

@@ -76,14 +76,17 @@ void QgsMapToolReshape::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
   }
 }
 
-bool QgsMapToolReshape::supportsTechnique( QgsMapToolCapture::CaptureTechnique technique ) const
+bool QgsMapToolReshape::supportsTechnique( Qgis::CaptureTechnique technique ) const
 {
   switch ( technique )
   {
-    case QgsMapToolCapture::StraightSegments:
-    case QgsMapToolCapture::CircularString:
-    case QgsMapToolCapture::Streaming:
+    case Qgis::CaptureTechnique::StraightSegments:
+    case Qgis::CaptureTechnique::CircularString:
+    case Qgis::CaptureTechnique::Streaming:
       return true;
+
+    case Qgis::CaptureTechnique::Shape:
+      return false;
   }
   return false;
 }
@@ -182,13 +185,13 @@ void QgsMapToolReshape::reshape( QgsVectorLayer *vlayer )
           QList<QgsVectorLayer *>  avoidIntersectionsLayers;
           switch ( QgsProject::instance()->avoidIntersectionsMode() )
           {
-            case QgsProject::AvoidIntersectionsMode::AvoidIntersectionsCurrentLayer:
+            case Qgis::AvoidIntersectionsMode::AvoidIntersectionsCurrentLayer:
               avoidIntersectionsLayers.append( vlayer );
               break;
-            case QgsProject::AvoidIntersectionsMode::AvoidIntersectionsLayers:
+            case Qgis::AvoidIntersectionsMode::AvoidIntersectionsLayers:
               avoidIntersectionsLayers = QgsProject::instance()->avoidIntersectionsLayers();
               break;
-            case QgsProject::AvoidIntersectionsMode::AllowIntersections:
+            case Qgis::AvoidIntersectionsMode::AllowIntersections:
               break;
           }
           int res = -1;

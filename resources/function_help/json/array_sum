@@ -3,8 +3,13 @@
   "type": "function",
   "groups": ["Arrays"],
   "description": "Returns the sum of arithmetic values in an array. Non numeric values in the array are ignored.",
-  "arguments": [ {"arg":"array","description":"an array"} ],
-  "examples": [ 
-    { "expression":"array_sum(array(0,1,39.4,1.6,'a'))", "returns":"42.0"}
-  ]
+  "arguments": [{
+    "arg": "array",
+    "description": "an array"
+  }],
+  "examples": [{
+    "expression": "array_sum(array(0,1,39.4,1.6,'a'))",
+    "returns": "42.0"
+  }],
+  "tags": ["array", "ignored", "numeric", "arithmetic", "sum"]
 }

@@ -231,6 +231,9 @@ QgsMeshCalcUtils:: QgsMeshCalcUtils( QgsMeshLayer *layer,
     mDatasetGroupMap.insert( groupName, ds );
   }
 
+  // Here, we calculate for the whole time range, so groups needed for aggregate are the same
+  mDatasetGroupMapForAggregate = mDatasetGroupMap;
+
   // Now populate used times and check that all datasets do have some times
   // OR just one time (== one output)
   bool timesPopulated = false;

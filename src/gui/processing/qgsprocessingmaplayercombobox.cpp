@@ -233,7 +233,7 @@ void QgsProcessingMapLayerComboBox::setValue( const QVariant &value, QgsProcessi
   bool found = false;
   bool selectedOnly = false;
   bool iterate = false;
-  if ( val.canConvert<QgsProcessingFeatureSourceDefinition>() )
+  if ( val.userType() == QMetaType::type( "QgsProcessingFeatureSourceDefinition" ) )
   {
     QgsProcessingFeatureSourceDefinition fromVar = qvariant_cast<QgsProcessingFeatureSourceDefinition>( val );
     val = fromVar.source;
@@ -250,7 +250,7 @@ void QgsProcessingMapLayerComboBox::setValue( const QVariant &value, QgsProcessi
     mGeometryCheck = QgsFeatureRequest::GeometryAbortOnInvalid;
   }
 
-  if ( val.canConvert<QgsProperty>() )
+  if ( val.userType() == QMetaType::type( "QgsProperty" ) )
   {
     if ( val.value< QgsProperty >().propertyType() == QgsProperty::StaticProperty )
     {
@@ -673,7 +673,7 @@ void QgsProcessingMapLayerComboBox::browseForLayer()
 {
   if ( QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( this ) )
   {
-    QgsDataSourceSelectWidget *widget = new QgsDataSourceSelectWidget( mBrowserModel, true, QgsMapLayerType::VectorLayer );
+    QgsDataSourceSelectWidget *widget = new QgsDataSourceSelectWidget( mBrowserModel, true, Qgis::LayerType::Vector );
     widget->setPanelTitle( tr( "Browse for \"%1\"" ).arg( mParameter->description() ) );
 
     panel->openPanel( widget );

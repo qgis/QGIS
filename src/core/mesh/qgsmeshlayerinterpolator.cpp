@@ -34,6 +34,7 @@
 #include "qgscoordinatetransform.h"
 #include "qgsmeshdataprovider.h"
 #include "qgsrendercontext.h"
+#include "qgselevationmap.h"
 
 QgsMeshLayerInterpolator::QgsMeshLayerInterpolator(
   const QgsTriangularMesh &m,
@@ -181,13 +182,29 @@ QgsRasterBlock *QgsMeshLayerInterpolator::block( int, const QgsRectangle &extent
         }
       }
     }
+  }
 
+  if ( mRenderElevation )
+  {
+    QgsElevationMap *elevationMap = mContext.elevationMap();
+    if ( elevationMap && elevationMap->isValid() )
+      elevationMap->fillWithRasterBlock( outputBlock.get(), 0, 0, mElevationScale, mElevationOffset );
   }
 
   return outputBlock.release();
 }
 
-void QgsMeshLayerInterpolator::setSpatialIndexActive( bool active ) {mSpatialIndexActive = active;}
+void QgsMeshLayerInterpolator::setSpatialIndexActive( bool active )
+{
+  mSpatialIndexActive = active;
+}
+
+void QgsMeshLayerInterpolator::setElevationMapSettings( bool renderElevationMap, double elevationScale, double elevationOffset )
+{
+  mRenderElevation = renderElevationMap;
+  mElevationScale = elevationScale;
+  mElevationOffset = elevationOffset;
+}
 
 ///@endcond
 
@@ -228,7 +245,7 @@ QgsRasterBlock *QgsMeshUtils::exportRasterBlock(
   std::unique_ptr<QgsTriangularMesh> triangularMesh = std::make_unique<QgsTriangularMesh>();
   triangularMesh->update( nativeMesh.get(), transform );
 
-  const QgsMeshDatasetGroupMetadata metadata = layer.dataProvider()->datasetGroupMetadata( datasetIndex );
+  const QgsMeshDatasetGroupMetadata metadata = layer.datasetGroupMetadata( datasetIndex );
   const QgsMeshDatasetGroupMetadata::DataType scalarDataType = QgsMeshLayerUtils::datasetValuesType( metadata.dataType() );
   const int count =  QgsMeshLayerUtils::datasetValuesCount( nativeMesh.get(), scalarDataType );
   const QgsMeshDataBlock vals = QgsMeshLayerUtils::datasetValues(
@@ -240,7 +257,7 @@ QgsRasterBlock *QgsMeshUtils::exportRasterBlock(
     return nullptr;
 
   const QVector<double> datasetValues = QgsMeshLayerUtils::calculateMagnitudes( vals );
-  const QgsMeshDataBlock activeFaceFlagValues = layer.dataProvider()->areFacesActive(
+  const QgsMeshDataBlock activeFaceFlagValues = layer.areFacesActive(
         datasetIndex,
         0,
         nativeMesh->faces.count() );

@@ -147,11 +147,7 @@ void QgsModelGraphicsView::wheelZoom( QWheelEvent *event )
   QgsRectangle visibleRect = QgsRectangle( mapToScene( viewportRect ).boundingRect() );
 
   //transform the mouse pos to scene coordinates
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-  QPointF scenePoint = mapToScene( event->pos().x(), event->pos().y() );
-#else
   QPointF scenePoint = mapToScene( event->position().x(), event->position().y() );
-#endif
 
   //adjust view center
   QgsPointXY oldCenter( visibleRect.center() );
@@ -703,7 +699,10 @@ void QgsModelGraphicsView::pasteItems( QgsModelGraphicsView::PasteMode mode )
         alg.loadVariant( v.toMap() );
 
         // ensure algorithm id is unique
-        alg.generateChildId( *modelScene()->model() );
+        if ( modelScene()->model()->childAlgorithms().contains( alg.childId() ) )
+        {
+          alg.generateChildId( *modelScene()->model() );
+        }
         alg.reattach();
 
         pastedAlgorithms << alg.childId();

@@ -19,23 +19,20 @@
 #include "qgspointcloudlayer3drenderer.h"
 #include "qgschunknode_p.h"
 #include "qgslogger.h"
-#include "qgspointcloudlayer.h"
 #include "qgspointcloudindex.h"
 #include "qgseventtracing.h"
 
-#include "qgspoint3dsymbol.h"
-#include "qgsphongmaterialsettings.h"
 
 #include "qgspointcloud3dsymbol.h"
-#include "qgsapplication.h"
-#include "qgs3dsymbolregistry.h"
 #include "qgspointcloudattribute.h"
-#include "qgspointcloudrequest.h"
-#include "qgscolorramptexture.h"
 #include "qgspointcloud3dsymbol_p.h"
 
 #include <QtConcurrent>
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 #include <Qt3DRender/QAttribute>
+#else
+#include <Qt3DCore/QAttribute>
+#endif
 #include <Qt3DRender/QTechnique>
 #include <Qt3DRender/QShaderProgram>
 #include <Qt3DRender/QGraphicsApiFilter>
@@ -82,7 +79,8 @@ QgsPointCloudLayerChunkLoader::QgsPointCloudLayerChunkLoader( const QgsPointClou
   mFutureWatcher = new QFutureWatcher<void>( this );
   connect( mFutureWatcher, &QFutureWatcher<void>::finished, this, &QgsChunkQueueJob::finished );
 
-  const QFuture<void> future = QtConcurrent::run( [pc, pcNode, this]
+  const QgsAABB bbox = node->bbox();
+  const QFuture<void> future = QtConcurrent::run( [pc, pcNode, bbox, this]
   {
     const QgsEventTracing::ScopedEvent e( QStringLiteral( "3D" ), QStringLiteral( "PC chunk load" ) );
 
@@ -91,7 +89,10 @@ QgsPointCloudLayerChunkLoader::QgsPointCloudLayerChunkLoader( const QgsPointClou
       QgsDebugMsgLevel( QStringLiteral( "canceled" ), 2 );
       return;
     }
+
     mHandler->processNode( pc, pcNode, mContext );
+    if ( mContext.symbol()->renderAsTriangles() )
+      mHandler->triangulate( pc, pcNode, mContext, bbox );
   } );
 
   // emit finished() as soon as the handler is populated with features
@@ -138,6 +139,16 @@ QgsPointCloudLayerChunkLoaderFactory::QgsPointCloudLayerChunkLoaderFactory( cons
   , mPointBudget( pointBudget )
 {
   mSymbol.reset( symbol );
+
+  try
+  {
+    mExtent = mCoordinateTransform.transformBoundingBox( mMap.extent(), Qgis::TransformDirection::Reverse );
+  }
+  catch ( const QgsCsException & )
+  {
+    // bad luck, can't reproject for some reason
+    QgsDebugMsg( QStringLiteral( "Transformation of extent failed." ) );
+  }
 }
 
 QgsChunkLoader *QgsPointCloudLayerChunkLoaderFactory::createChunkLoader( QgsChunkNode *node ) const
@@ -181,6 +192,9 @@ QVector<QgsChunkNode *> QgsPointCloudLayerChunkLoaderFactory::createChildren( Qg
 
     if ( !mPointCloudIndex->hasNode( IndexedPointCloudNode( childId.d, childId.x, childId.y, childId.z ) ) )
       continue;
+    if ( !mExtent.isEmpty() &&
+         !mPointCloudIndex->nodeMapExtent( IndexedPointCloudNode( childId.d, childId.x, childId.y, childId.z ) ).intersects( mExtent ) )
+      continue;
 
     // the Y and Z coordinates below are intentionally flipped, because
     // in chunk node IDs the X,Y axes define horizontal plane,
@@ -223,11 +237,15 @@ QgsAABB nodeBoundsToAABB( QgsPointCloudDataBounds nodeBounds, QgsVector3D offset
 }
 
 
-QgsPointCloudLayerChunkedEntity::QgsPointCloudLayerChunkedEntity( QgsPointCloudIndex *pc, const Qgs3DMapSettings &map, const QgsCoordinateTransform &coordinateTransform, QgsPointCloud3DSymbol *symbol, float maximumScreenSpaceError, bool showBoundingBoxes, double zValueScale, double zValueOffset, int pointBudget )
+QgsPointCloudLayerChunkedEntity::QgsPointCloudLayerChunkedEntity( QgsPointCloudIndex *pc, const Qgs3DMapSettings &map,
+    const QgsCoordinateTransform &coordinateTransform, QgsPointCloud3DSymbol *symbol,
+    float maximumScreenSpaceError, bool showBoundingBoxes,
+    double zValueScale, double zValueOffset,
+    int pointBudget )
   : QgsChunkedEntity( maximumScreenSpaceError,
                       new QgsPointCloudLayerChunkLoaderFactory( map, coordinateTransform, pc, symbol, zValueScale, zValueOffset, pointBudget ), true, pointBudget )
 {
-  setUsingAdditiveStrategy( true );
+  setUsingAdditiveStrategy( !symbol->renderAsTriangles() );
   setShowBoundingBoxes( showBoundingBoxes );
 }
 

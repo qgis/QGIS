@@ -20,8 +20,21 @@ class QgsTrackedVectorLayerTools : QgsVectorLayerTools
 Constructor for QgsTrackedVectorLayerTools.
 %End
 
-    virtual bool addFeature( QgsVectorLayer *layer, const QgsAttributeMap &defaultValues, const QgsGeometry &defaultGeometry, QgsFeature *feature ) const;
+    virtual bool addFeature( QgsVectorLayer *layer, const QgsAttributeMap &defaultValues, const QgsGeometry &defaultGeometry, QgsFeature *feature, QWidget *parentWidget = 0, bool showModal = true, bool hideParent = false ) const;
 
+%Docstring
+This method calls the addFeature method of the backend :py:class:`QgsVectorLayerTools`
+
+:param layer: The layer to which the feature should be added
+:param defaultValues: Default values for the feature to add
+:param defaultGeometry: A default geometry to add to the feature
+:param feature: A pointer to the feature
+:param parentWidget: The widget calling this function to be passed to the used dialog
+:param showModal: If the used dialog should be modal or not
+:param hideParent: If the parent widget should be hidden, when the used dialog is opened
+
+:return: ``True`` in case of success, ``False`` if the operation failed/was aborted
+%End
     virtual bool startEditing( QgsVectorLayer *layer ) const;
 
     virtual bool stopEditing( QgsVectorLayer *layer, bool allowCancel ) const;

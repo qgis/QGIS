@@ -66,12 +66,12 @@ QgsTableEditorWidget::QgsTableEditorWidget( QWidget *parent )
     mHeaderMenu->clear();
     if ( isConsecutive )
     {
-      QAction *insertBefore = mHeaderMenu->addAction( selectedColumns.size() > 1 ? tr( "Insert %1 Columns Before" ).arg( selectedColumns.size() ) : tr( "Insert Column Before" ) );
+      QAction *insertBefore = mHeaderMenu->addAction( selectedColumns.size() > 1 ? tr( "Insert %n Column(s) Before", nullptr, selectedColumns.size() ) : tr( "Insert Column Before" ) );
       connect( insertBefore, &QAction::triggered, this, &QgsTableEditorWidget::insertColumnsBefore );
-      QAction *insertAfter = mHeaderMenu->addAction( selectedColumns.size() > 1 ? tr( "Insert %1 Columns After" ).arg( selectedColumns.size() ) : tr( "Insert Column After" ) );
+      QAction *insertAfter = mHeaderMenu->addAction( selectedColumns.size() > 1 ? tr( "Insert %n Column(s) After", nullptr, selectedColumns.size() ) : tr( "Insert Column After" ) );
       connect( insertAfter, &QAction::triggered, this, &QgsTableEditorWidget::insertColumnsAfter );
     }
-    QAction *deleteSelected = mHeaderMenu->addAction( selectedColumns.size() > 1 ? tr( "Delete %1 Columns" ).arg( selectedColumns.size() ) : tr( "Delete Column" ) );
+    QAction *deleteSelected = mHeaderMenu->addAction( selectedColumns.size() > 1 ? tr( "Delete %n Column(s)", nullptr, selectedColumns.size() ) : tr( "Delete Column" ) );
     connect( deleteSelected, &QAction::triggered, this, &QgsTableEditorWidget::deleteColumns );
 
     mHeaderMenu->popup( horizontalHeader()->mapToGlobal( point ) );
@@ -108,12 +108,12 @@ QgsTableEditorWidget::QgsTableEditorWidget( QWidget *parent )
     mHeaderMenu->clear();
     if ( isConsecutive )
     {
-      QAction *insertBefore = mHeaderMenu->addAction( selectedRows.size() > 1 ? tr( "Insert %1 Rows Above" ).arg( selectedRows.size() ) : tr( "Insert Row Above" ) );
+      QAction *insertBefore = mHeaderMenu->addAction( selectedRows.size() > 1 ? tr( "Insert %n Row(s) Above", nullptr, selectedRows.size() ) : tr( "Insert Row Above" ) );
       connect( insertBefore, &QAction::triggered, this, &QgsTableEditorWidget::insertRowsAbove );
-      QAction *insertAfter = mHeaderMenu->addAction( selectedRows.size() > 1 ? tr( "Insert %1 Rows Below" ).arg( selectedRows.size() ) : tr( "Insert Row Below" ) );
+      QAction *insertAfter = mHeaderMenu->addAction( selectedRows.size() > 1 ? tr( "Insert %n Row(s) Below", nullptr, selectedRows.size() ) : tr( "Insert Row Below" ) );
       connect( insertAfter, &QAction::triggered, this, &QgsTableEditorWidget::insertRowsBelow );
     }
-    QAction *deleteSelected = mHeaderMenu->addAction( selectedRows.size() > 1 ? tr( "Delete %1 Rows" ).arg( selectedRows.size() ) : tr( "Delete Row" ) );
+    QAction *deleteSelected = mHeaderMenu->addAction( selectedRows.size() > 1 ? tr( "Delete %n Row(s)", nullptr, selectedRows.size() ) : tr( "Delete Row" ) );
     connect( deleteSelected, &QAction::triggered, this, &QgsTableEditorWidget::deleteRows );
 
     mHeaderMenu->popup( verticalHeader()->mapToGlobal( point ) );

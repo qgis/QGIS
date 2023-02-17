@@ -3,6 +3,13 @@
   "type": "function",
   "groups": ["Date and Time"],
   "description": "Returns a datetime whose date and time are the number of milliseconds, msecs, that have passed since 1970-01-01T00:00:00.000, Coordinated Universal Time (Qt.UTC), and converted to Qt.LocalTime.",
-  "arguments": [ {"arg":"int","description":"number (milliseconds)"} ],
-  "examples": [ { "expression":"datetime_from_epoch(1483225200000)", "returns":"2017-01-01T00:00:00"} ]
+  "arguments": [{
+    "arg": "int",
+    "description": "number (milliseconds)"
+  }],
+  "examples": [{
+    "expression": "datetime_from_epoch(1483225200000)",
+    "returns": "2017-01-01T00:00:00"
+  }],
+  "tags": ["passed", "datetime", "localtime", "msecs", "date", "coordinated", "converted", "universal", "milliseconds", "time"]
 }

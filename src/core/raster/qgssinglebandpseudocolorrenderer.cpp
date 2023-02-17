@@ -100,6 +100,11 @@ QgsSingleBandPseudoColorRenderer *QgsSingleBandPseudoColorRenderer::clone() cons
   return renderer;
 }
 
+Qgis::RasterRendererFlags QgsSingleBandPseudoColorRenderer::flags() const
+{
+  return Qgis::RasterRendererFlag::InternalLayerOpacityHandling;
+}
+
 void QgsSingleBandPseudoColorRenderer::setShader( QgsRasterShader *shader )
 {
   mShader.reset( shader );
@@ -275,7 +280,16 @@ QgsRasterBlock *QgsSingleBandPseudoColorRenderer::block( int bandNo, QgsRectangl
       }
       if ( mAlphaBand > 0 )
       {
-        currentOpacity *= alphaBlock->value( i ) / 255.0;
+        const double alpha = alphaBlock->value( i );
+        if ( alpha == 0 )
+        {
+          outputBlock->setColor( i, myDefaultColor );
+          continue;
+        }
+        else
+        {
+          currentOpacity *= alpha / 255.0;
+        }
       }
 
       outputBlockData[i] = qRgba( currentOpacity * red, currentOpacity * green, currentOpacity * blue, currentOpacity * alpha );
@@ -462,4 +476,9 @@ QList<QgsLayerTreeModelLegendNode *> QgsSingleBandPseudoColorRenderer::createLeg
     }
   }
   return res;
+}
+
+bool QgsSingleBandPseudoColorRenderer::canCreateRasterAttributeTable() const
+{
+  return true;
 }

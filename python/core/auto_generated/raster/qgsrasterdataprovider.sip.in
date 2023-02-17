@@ -79,6 +79,7 @@ Base class for raster data providers.
       ProviderHintCanPerformProviderResampling,
       ReloadData,
       DpiDependentData,
+      NativeRasterAttributeTable,
     };
 
     typedef QFlags<QgsRasterDataProvider::ProviderCapability> ProviderCapabilities;
@@ -136,12 +137,16 @@ Returns source data type for the band specified by number,
 source data type may be shorter than dataType
 %End
 
-    virtual int colorInterpretation( int bandNo ) const;
+    virtual Qgis::RasterColorInterpretation colorInterpretation( int bandNo ) const;
 %Docstring
 Returns data type for the band specified by number
 %End
 
-    QString colorName( int colorInterpretation ) const;
+    QString colorName( Qgis::RasterColorInterpretation colorInterpretation ) const;
+%Docstring
+Returns a string color name representation of a color interpretation.
+%End
+
     virtual bool reload();
 %Docstring
 Reload data (data could change)
@@ -233,7 +238,7 @@ Returns a new image downloader for the raster legend.
 
     virtual QString buildPyramids( const QList<QgsRasterPyramid> &pyramidList,
                                    const QString &resamplingMethod = "NEAREST",
-                                   QgsRaster::RasterPyramidsFormat format = QgsRaster::PyramidsGTiff,
+                                   Qgis::RasterPyramidFormat format = Qgis::RasterPyramidFormat::GeoTiff,
                                    const QStringList &configOptions = QStringList(),
                                    QgsRasterBlockFeedback *feedback = 0 );
 %Docstring
@@ -294,7 +299,7 @@ Returns metadata in a format suitable for feeding directly
 into a subset of the GUI raster properties "Metadata" tab.
 %End
 
-    virtual QgsRasterIdentifyResult identify( const QgsPointXY &point, QgsRaster::IdentifyFormat format, const QgsRectangle &boundingBox = QgsRectangle(), int width = 0, int height = 0, int dpi = 96 );
+    virtual QgsRasterIdentifyResult identify( const QgsPointXY &point, Qgis::RasterIdentifyFormat format, const QgsRectangle &boundingBox = QgsRectangle(), int width = 0, int height = 0, int dpi = 96 );
 %Docstring
 Identify raster value(s) found on the point position. The context
 parameters extent, width and height are important to identify
@@ -531,7 +536,7 @@ Validates creation options for a specific dataset and destination format.
    see also :py:func:`~QgsRasterDataProvider.validateCreationOptionsFormat` in gdal provider for validating options based on format only
 %End
 
-    virtual QString validatePyramidsConfigOptions( QgsRaster::RasterPyramidsFormat pyramidsFormat,
+    virtual QString validatePyramidsConfigOptions( Qgis::RasterPyramidFormat pyramidsFormat,
         const QStringList &configOptions, const QString &fileFormat );
 %Docstring
 Validates pyramid creation options for a specific dataset and destination format
@@ -541,10 +546,29 @@ Validates pyramid creation options for a specific dataset and destination format
    used by GDAL provider only
 %End
 
-    static QString identifyFormatName( QgsRaster::IdentifyFormat format );
-    static QgsRaster::IdentifyFormat identifyFormatFromName( const QString &formatName );
-    static QString identifyFormatLabel( QgsRaster::IdentifyFormat format );
-    static Capability identifyFormatToCapability( QgsRaster::IdentifyFormat format );
+    static QString identifyFormatName( Qgis::RasterIdentifyFormat format );
+%Docstring
+Converts a raster identify ``format`` to a string name.
+
+.. seealso:: :py:func:`identifyFormatFromName`
+%End
+
+    static Qgis::RasterIdentifyFormat identifyFormatFromName( const QString &formatName );
+%Docstring
+Converts a string ``formatName`` to a raster identify format.
+
+.. seealso:: :py:func:`identifyFormatName`
+%End
+
+    static QString identifyFormatLabel( Qgis::RasterIdentifyFormat format );
+%Docstring
+Converts a raster identify ``format`` to a translated string label.
+%End
+
+    static Capability identifyFormatToCapability( Qgis::RasterIdentifyFormat format );
+%Docstring
+Converts a raster identify ``format`` to a capability.
+%End
 
     virtual int stepWidth() const;
 %Docstring
@@ -697,6 +721,70 @@ Returns maximum oversampling factor for zoomed-out operations.
     virtual void writeXml( QDomDocument &doc, QDomElement &parentElem ) const;
 
 
+    QgsRasterAttributeTable *attributeTable( int bandNumber ) const;
+%Docstring
+Returns the (possibly NULL) attribute table for the specified ``bandNumber``.
+
+.. versionadded:: 3.30
+%End
+
+    void setAttributeTable( int bandNumber, QgsRasterAttributeTable *attributeTable /Transfer/ );
+%Docstring
+Set the attribute table to ``attributeTable`` for the specified ``bandNumber``,
+if the ``attributeTable`` is NULL any existing attribute table for the specified
+band will be removed.
+
+.. note::
+
+   Ownership of the attribute table is transferred to the provider.
+
+.. versionadded:: 3.30
+%End
+
+    void removeAttributeTable( int bandNumber );
+%Docstring
+Remove the attribute table for the specified ``bandNumber``.
+If the attribute table does not exist this method does nothing.
+
+.. versionadded:: 3.30
+%End
+
+    bool writeFileBasedAttributeTable( int bandNumber, const QString &path, QString *errorMessage /Out/ = 0 ) const;
+%Docstring
+Writes the filesystem-based attribute table for the specified ``bandNumber`` to ``path``, optionally reporting any error in ``errorMessage``, returns ``True`` on success.
+
+:return: ``True`` on success
+
+.. note::
+
+   No checks for Raster Attribute Table validity are performed when saving, it is client code responsibility to handle validation.
+
+.. versionadded:: 3.30
+%End
+
+    bool readFileBasedAttributeTable( int bandNumber, const QString &path, QString *errorMessage /Out/ = 0 );
+%Docstring
+Loads the filesystem-based attribute table for the specified ``bandNumber`` from ``path``, optionally reporting any error in ``errorMessage``, returns ``True`` on success.
+
+:return: ``True`` on success
+
+.. versionadded:: 3.30
+%End
+
+    virtual bool writeNativeAttributeTable( QString *errorMessage /Out/ = 0 );  //#spellok
+
+    virtual bool readNativeAttributeTable( QString *errorMessage /Out/  = 0 );
+%Docstring
+Reads the native attribute table, optionally reporting any error in ``errorMessage``, returns ``True`` on success.
+The default implementation does nothing and returns ``False``.
+Data providers that have NativeRasterAttributeTable provider capability will try to read the native attribute table.
+
+:return: ``True`` on success
+
+.. versionadded:: 3.30
+%End
+
+
   signals:
 
     void statusChanged( const QString & ) const;
@@ -705,6 +793,7 @@ Emit a message to be displayed on status bar, usually used by network providers 
 
 .. versionadded:: 2.14
 %End
+
 
   protected:
 

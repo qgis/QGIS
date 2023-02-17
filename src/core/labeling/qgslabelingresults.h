@@ -58,6 +58,13 @@ class CORE_EXPORT QgsLabelingResults
     QList<QgsLabelPosition> labelsWithinRect( const QgsRectangle &r ) const;
 
     /**
+     * Returns a list of all label positions sharing the same group ID (i.e. positions for individual characters in a curved label).
+     *
+     * \since QGIS 3.26
+     */
+    QList<QgsLabelPosition> groupedLabelPositions( long long groupId ) const;
+
+    /**
      * Returns a list of callouts with origins or destinations inside the given \a rectangle.
      *
      * The \a rectangle is specified in map coordinates.

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsTextBlock.
 
 Run with: ctest -V -R QgsTextBlock
@@ -14,11 +13,7 @@ __copyright__ = 'Copyright 2020, The QGIS Project'
 
 import qgis  # NOQA
 
-from qgis.core import (
-    QgsTextBlock,
-    QgsTextFragment,
-    QgsStringUtils
-)
+from qgis.core import QgsStringUtils, QgsTextBlock, QgsTextFragment
 from qgis.testing import start_app, unittest
 
 start_app()

@@ -20,6 +20,7 @@
 
 #include "qgis_core.h"
 #include "qgsfeature.h"
+#include "qgsvectordataprovider.h"
 
 #include <ogr_api.h>
 #include <gdal.h>
@@ -28,8 +29,10 @@
 #include "cpl_string.h"
 
 class QgsCoordinateReferenceSystem;
+class QgsFieldDomain;
 
 class QTextCodec;
+class QgsWeakRelation;
 
 namespace gdal
 {
@@ -43,7 +46,7 @@ namespace gdal
     /**
      * Destroys an OGR data \a source, using the correct gdal calls.
      */
-    void CORE_EXPORT operator()( OGRDataSourceH source );
+    void CORE_EXPORT operator()( OGRDataSourceH source ) const;
 
   };
 
@@ -56,7 +59,7 @@ namespace gdal
     /**
      * Destroys an OGR \a geometry, using the correct gdal calls.
      */
-    void CORE_EXPORT operator()( OGRGeometryH geometry );
+    void CORE_EXPORT operator()( OGRGeometryH geometry ) const;
 
   };
 
@@ -69,7 +72,7 @@ namespace gdal
     /**
      * Destroys an OGR field \a definition, using the correct gdal calls.
      */
-    void CORE_EXPORT operator()( OGRFieldDefnH definition );
+    void CORE_EXPORT operator()( OGRFieldDefnH definition ) const;
 
   };
 
@@ -82,7 +85,7 @@ namespace gdal
     /**
      * Destroys an OGR \a feature, using the correct gdal calls.
      */
-    void CORE_EXPORT operator()( OGRFeatureH feature );
+    void CORE_EXPORT operator()( OGRFeatureH feature ) const;
 
   };
 
@@ -95,7 +98,7 @@ namespace gdal
     /**
      * Destroys an gdal \a dataset, using the correct gdal calls.
      */
-    void CORE_EXPORT operator()( GDALDatasetH datasource );
+    void CORE_EXPORT operator()( GDALDatasetH datasource ) const;
 
   };
 
@@ -108,9 +111,25 @@ namespace gdal
     /**
      * Destroys GDAL warp \a options, using the correct gdal calls.
      */
-    void CORE_EXPORT operator()( GDALWarpOptions *options );
+    void CORE_EXPORT operator()( GDALWarpOptions *options ) const;
 
   };
+
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,6,0)
+
+  /**
+   * Closes and cleanups GDAL relationship.
+   */
+  struct GDALRelationshipDeleter
+  {
+
+    /**
+     * Destroys GDAL \a relationship, using the correct gdal calls.
+     */
+    void CORE_EXPORT operator()( GDALRelationshipH relationship ) const;
+
+  };
+#endif
 
   /**
    * Scoped OGR data source.
@@ -151,6 +170,14 @@ namespace gdal
    * Scoped GDAL warp options.
    */
   using warp_options_unique_ptr = std::unique_ptr< GDALWarpOptions, GDALWarpOptionsDeleter >;
+
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,6,0)
+
+  /**
+   * Scoped GDAL relationship.
+   */
+  using relationship_unique_ptr = std::unique_ptr< std::remove_pointer<GDALRelationshipH>::type, GDALRelationshipDeleter >;
+#endif
 }
 
 /**
@@ -171,6 +198,20 @@ class CORE_EXPORT QgsOgrUtils
      * \since QGIS 3.20
      */
     static QVariant OGRFieldtoVariant( const OGRField *value, OGRFieldType type );
+
+    /**
+     * Converts a QVariant to an OGRField value.
+     *
+     * \since QGIS 3.26
+     */
+    static std::unique_ptr<OGRField> variantToOGRField( const QVariant &value );
+
+    /**
+     * Gets the value of OGRField::Date::TZFlag from the timezone of a QDateTime.
+     *
+     * \since QGIS 3.30
+     */
+    static int OGRTZFlagFromQt( const QDateTime &datetime );
 
     /**
      * Reads an OGR feature and converts it to a QgsFeature.
@@ -353,6 +394,94 @@ class CORE_EXPORT QgsOgrUtils
      * \since QGIS 3.20
      */
     static std::unique_ptr< QgsSymbol > symbolFromStyleString( const QString &string, Qgis::SymbolType type ) SIP_FACTORY;
+
+    /**
+     * Converts an OGR field type and sub type to the best matching QVariant::Type equivalent.
+     *
+     * \param ogrType OGR field type
+     * \param ogrSubType OGR field sub type
+     * \param variantType will be set to matching QVariant type
+     * \param variantSubType will be set to matching QVariant sub type, for list, map and other complex OGR field types.
+     *
+     * \note Not available in Python bindings
+     * \since QGIS 3.26
+     */
+    static void ogrFieldTypeToQVariantType( OGRFieldType ogrType, OGRFieldSubType ogrSubType, QVariant::Type &variantType, QVariant::Type &variantSubType ) SIP_SKIP;
+
+    /**
+     * Converts an QVariant type to the best matching OGR field type and sub type.
+     *
+     * \param variantType QVariant field type
+     * \param ogrType will be set to matching OGR type
+     * \param ogrSubType will be set to matching OGR sub type
+     *
+     * \note Not available in Python bindings
+     * \since QGIS 3.26
+     */
+    static void variantTypeToOgrFieldType( QVariant::Type variantType, OGRFieldType &ogrType, OGRFieldSubType &ogrSubType ) SIP_SKIP;
+
+    /**
+     * Converts a string to a variant, using the provider OGR field \a type and \a subType to determine the most appropriate
+     * variant type.
+     *
+     * \note Not available in Python bindings
+     * \since QGIS 3.26
+     */
+    static QVariant stringToVariant( OGRFieldType type, OGRFieldSubType subType, const QString &string ) SIP_SKIP;
+
+    /**
+     * Returns the list of native field types supported for a \a driver.
+     *
+     * \since QGIS 3.28
+     */
+    static QList<QgsVectorDataProvider::NativeType> nativeFieldTypesForDriver( GDALDriverH driver ) SIP_SKIP;
+
+#ifndef SIP_RUN
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,3,0)
+
+    /**
+     * Converts an OGR field domain definition to a QgsFieldDomain equivalent.
+     *
+     * \note Requires GDAL >= 3.3
+     * \note Not available in Python bindings
+     * \since QGIS 3.26
+     */
+    static std::unique_ptr< QgsFieldDomain > convertFieldDomain( OGRFieldDomainH domain );
+
+    /**
+     * Converts a QGIS field domain definition to an OGR field domain equivalent.
+     *
+     * \note Requires GDAL >= 3.3
+     * \note Not available in Python bindings
+     * \since QGIS 3.26
+     */
+    static OGRFieldDomainH convertFieldDomain( const QgsFieldDomain *domain );
+#endif
+#endif
+
+#ifndef SIP_RUN
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,6,0)
+
+    /**
+     * Converts an GDAL \a relationship definition to a QgsWeakRelation equivalent.
+     *
+     * \note Requires GDAL >= 3.6
+     * \note Not available in Python bindings
+     * \since QGIS 3.30
+     */
+    static QgsWeakRelation convertRelationship( GDALRelationshipH relationship, const QString &datasetUri );
+
+    /**
+     * Converts a QGIS relation to a GDAL relationship equivalent.
+     *
+     * \note Requires GDAL >= 3.6
+     * \note Not available in Python bindings
+     * \since QGIS 3.30
+     */
+    static gdal::relationship_unique_ptr convertRelationship( const QgsWeakRelation &relation, QString &error );
+#endif
+#endif
+
 };
 
 #endif // QGSOGRUTILS_H

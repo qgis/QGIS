@@ -43,7 +43,7 @@
 #include "qgsspatialindex.h"
 #include "qgis.h"
 #include "qgsexpressioncontextutils.h"
-#include "qgsproviderregistry.h"
+#include "qgsvariantutils.h"
 
 #include "qgsdelimitedtextfeatureiterator.h"
 #include "qgsdelimitedtextfile.h"
@@ -66,16 +66,16 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider( const QString &uri, const Pr
 
   // Add supported types to enable creating expression fields in field calculator
   setNativeTypes( QList< NativeType >()
-                  << QgsVectorDataProvider::NativeType( tr( "Whole number (integer)" ), QStringLiteral( "integer" ), QVariant::Int, 0, 10 )
-                  << QgsVectorDataProvider::NativeType( tr( "Whole number (integer - 64 bit)" ), QStringLiteral( "longlong" ), QVariant::LongLong )
-                  << QgsVectorDataProvider::NativeType( tr( "Decimal number (double)" ), QStringLiteral( "double" ), QVariant::Double, -1, -1, -1, -1 )
-                  << QgsVectorDataProvider::NativeType( tr( "Boolean" ), QStringLiteral( "bool" ), QVariant::Bool, -1, -1, -1, -1 )
+                  << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::Int ), QStringLiteral( "integer" ), QVariant::Int, 0, 10 )
+                  << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::LongLong ), QStringLiteral( "longlong" ), QVariant::LongLong )
+                  << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::Double ), QStringLiteral( "double" ), QVariant::Double, -1, -1, -1, -1 )
+                  << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::Bool ), QStringLiteral( "bool" ), QVariant::Bool, -1, -1, -1, -1 )
                   << QgsVectorDataProvider::NativeType( tr( "Text, unlimited length (text)" ), QStringLiteral( "text" ), QVariant::String, -1, -1, -1, -1 )
 
                   // date type
-                  << QgsVectorDataProvider::NativeType( tr( "Date" ), QStringLiteral( "date" ), QVariant::Date, -1, -1, -1, -1 )
-                  << QgsVectorDataProvider::NativeType( tr( "Time" ), QStringLiteral( "time" ), QVariant::Time, -1, -1, -1, -1 )
-                  << QgsVectorDataProvider::NativeType( tr( "Date & Time" ), QStringLiteral( "datetime" ), QVariant::DateTime, -1, -1, -1, -1 )
+                  << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::Date ), QStringLiteral( "date" ), QVariant::Date, -1, -1, -1, -1 )
+                  << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::Time ), QStringLiteral( "time" ), QVariant::Time, -1, -1, -1, -1 )
+                  << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::DateTime ), QStringLiteral( "datetime" ), QVariant::DateTime, -1, -1, -1, -1 )
                 );
 
   QgsDebugMsgLevel( "Delimited text file uri is " + uri, 2 );
@@ -93,7 +93,7 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider( const QString &uri, const Pr
     if ( gtype == QLatin1String( "point" ) ) mGeometryType = QgsWkbTypes::PointGeometry;
     else if ( gtype == QLatin1String( "line" ) ) mGeometryType = QgsWkbTypes::LineGeometry;
     else if ( gtype == QLatin1String( "polygon" ) ) mGeometryType = QgsWkbTypes::PolygonGeometry;
-    else if ( gtype == QLatin1String( "none " ) ) mGeometryType = QgsWkbTypes::NullGeometry;
+    else if ( gtype == QLatin1String( "none" ) ) mGeometryType = QgsWkbTypes::NullGeometry;
   }
 
   if ( mGeometryType != QgsWkbTypes::NullGeometry )
@@ -720,46 +720,8 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes, bool forceFullScan, 
 
       if ( couldBeTime[i] && !couldBeDateTime[i] )
       {
-#if QT_VERSION >= QT_VERSION_CHECK(5, 14, 0)
         const QTime t = QTime::fromString( value );
         couldBeTime[i] = t.isValid();
-#else
-        // Accept 12:34, 12:34:56 or 12:34:56.789
-        // We do not use QTime::fromString() with Qt < 5.14 as it accepts
-        // strings like 01/03/2004 as valid times
-        couldBeTime[i] = value.length() >= 5 &&
-                         value[0] >= '0' && value[0] <= '2' &&
-                         value[1] >= '0' && value[1] <= '9' &&
-                         value[2] == ':' &&
-                         value[3] >= '0' && value[3] <= '5' &&
-                         value[4] >= '0' && value[4] <= '9';
-        if ( couldBeTime[i] && value.length() == 5 )
-        {
-          // ok
-        }
-        else if ( couldBeTime[i] && value.length() >= 8 )
-        {
-          couldBeTime[i] = value[5] == ':' &&
-                           value[6] >= '0' && value[6] <= '6' &&
-                           value[7] >= '0' && value[7] <= '9';
-          if ( couldBeTime[i] && value.length() == 8 )
-          {
-            // ok
-          }
-          else if ( couldBeTime[i] && value.length() >= 9 )
-          {
-            couldBeTime[i] = value[8] == '.';
-          }
-          else
-          {
-            couldBeTime[i] = false;
-          }
-        }
-        else
-        {
-          couldBeTime[i] = false;
-        }
-#endif
       }
     }
 
@@ -908,13 +870,13 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes, bool forceFullScan, 
   if ( ! csvtMessage.isEmpty() )
     warnings.append( csvtMessage );
   if ( nBadFormatRecords > 0 )
-    warnings.append( tr( "%1 records discarded due to invalid format" ).arg( nBadFormatRecords ) );
+    warnings.append( tr( "%n record(s) discarded due to invalid format", nullptr, nBadFormatRecords ) );
   if ( nEmptyGeometry > 0 )
-    warnings.append( tr( "%1 records have missing geometry definitions" ).arg( nEmptyGeometry ) );
+    warnings.append( tr( "%n record(s) have missing geometry definitions", nullptr, nEmptyGeometry ) );
   if ( nInvalidGeometry > 0 )
-    warnings.append( tr( "%1 records discarded due to invalid geometry definitions" ).arg( nInvalidGeometry ) );
+    warnings.append( tr( "%n record(s) discarded due to invalid geometry definitions", nullptr, nInvalidGeometry ) );
   if ( nIncompatibleGeometry > 0 )
-    warnings.append( tr( "%1 records discarded due to incompatible geometry types" ).arg( nIncompatibleGeometry ) );
+    warnings.append( tr( "%n record(s) discarded due to incompatible geometry types", nullptr, nIncompatibleGeometry ) );
 
   reportErrors( warnings );
 
@@ -1192,7 +1154,7 @@ void QgsDelimitedTextProvider::reportErrors( const QStringList &messages, bool s
       for ( int i = 0; i < mInvalidLines.size(); ++i )
         QgsMessageLog::logMessage( mInvalidLines.at( i ), tag );
       if ( mNExtraInvalidLines > 0 )
-        QgsMessageLog::logMessage( tr( "There are %1 additional errors in the file" ).arg( mNExtraInvalidLines ), tag );
+        QgsMessageLog::logMessage( tr( "There are %n additional error(s) in the file", nullptr, mNExtraInvalidLines ), tag );
     }
 
     // Display errors in a dialog...
@@ -1212,7 +1174,7 @@ void QgsDelimitedTextProvider::reportErrors( const QStringList &messages, bool s
         for ( int i = 0; i < mInvalidLines.size(); ++i )
           output->appendMessage( mInvalidLines.at( i ) );
         if ( mNExtraInvalidLines > 0 )
-          output->appendMessage( tr( "There are %1 additional errors in the file" ).arg( mNExtraInvalidLines ) );
+          output->appendMessage( tr( "There are %n additional error(s) in the file", nullptr, mNExtraInvalidLines ) );
       }
       output->showMessage();
     }
@@ -1457,6 +1419,11 @@ QgsProviderMetadata::ProviderCapabilities QgsDelimitedTextProviderMetadata::prov
   return FileBasedUris;
 }
 
+QList<Qgis::LayerType> QgsDelimitedTextProviderMetadata::supportedLayerTypes() const
+{
+  return { Qgis::LayerType::Vector };
+}
+
 QgsDataProvider *QgsDelimitedTextProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags )
 {
   return new QgsDelimitedTextProvider( uri, options, flags );
@@ -1466,6 +1433,11 @@ QgsDataProvider *QgsDelimitedTextProviderMetadata::createProvider( const QString
 QgsDelimitedTextProviderMetadata::QgsDelimitedTextProviderMetadata():
   QgsProviderMetadata( QgsDelimitedTextProvider::TEXT_PROVIDER_KEY, QgsDelimitedTextProvider::TEXT_PROVIDER_DESCRIPTION )
 {
+}
+
+QIcon QgsDelimitedTextProviderMetadata::icon() const
+{
+  return QgsApplication::getThemeIcon( QStringLiteral( "mIconDelimitedText.svg" ) );
 }
 
 #ifndef HAVE_STATIC_PROVIDERS

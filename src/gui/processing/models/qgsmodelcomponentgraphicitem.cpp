@@ -1129,7 +1129,7 @@ QgsModelOutputGraphicItem::QgsModelOutputGraphicItem( QgsProcessingModelOutput *
   QPainter painter( &mPicture );
   svg.render( &painter );
   painter.end();
-  setLabel( output->name() );
+  setLabel( output->description() );
 }
 
 QColor QgsModelOutputGraphicItem::fillColor( QgsModelComponentGraphicItem::State state ) const

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsLayoutItemShape.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -11,21 +10,20 @@ __date__ = '23/10/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
 
 import qgis  # NOQA
-
-from qgis.testing import start_app, unittest
+from qgis.PyQt.QtCore import QRectF
+from qgis.PyQt.QtTest import QSignalSpy
+from qgis.PyQt.QtXml import QDomDocument
 from qgis.core import (
-    QgsLayoutItemShape,
-    QgsProject,
+    QgsFillSymbol,
     QgsLayout,
     QgsLayoutItem,
+    QgsLayoutItemShape,
     QgsLayoutMeasurement,
+    QgsProject,
+    QgsReadWriteContext,
     QgsUnitTypes,
-    QgsFillSymbol,
-    QgsReadWriteContext
 )
-from qgis.PyQt.QtCore import QRectF
-from qgis.PyQt.QtXml import QDomDocument, QDomElement
-from qgis.PyQt.QtTest import QSignalSpy
+from qgis.testing import start_app, unittest
 
 from test_qgslayoutitem import LayoutItemTestCase
 

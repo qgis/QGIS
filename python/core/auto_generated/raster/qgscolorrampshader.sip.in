@@ -45,8 +45,6 @@ Creates a new color ramp shader.
 :param type: interpolation type used
 :param classificationMode: method used to classify the color ramp shader
 :param colorRamp: vector color ramp used to classify the color ramp shader. Ownership is transferred to the shader.
-
-:return: new QgsColorRampShader
 %End
 
     ~QgsColorRampShader();

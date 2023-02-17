@@ -15,15 +15,11 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QPainter>
-
-#include "qgslayout.h"
-#include "qgslayoutrendercontext.h"
-#include "qgslayoutreportcontext.h"
 #include "qgslayoutobject.h"
-#include "qgsfeedback.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgslayout.h"
 
+#include <QPainter>
 
 QgsPropertiesDefinition QgsLayoutObject::sPropertyDefinitions;
 
@@ -58,6 +54,10 @@ void QgsLayoutObject::initPropertyDefinitions()
     { QgsLayoutObject::ExcludeFromExports, QgsPropertyDefinition( "dataDefinedExcludeExports", QObject::tr( "Exclude item from exports" ), QgsPropertyDefinition::Boolean ) },
     { QgsLayoutObject::FrameColor, QgsPropertyDefinition( "dataDefinedFrameColor", QObject::tr( "Frame color" ), QgsPropertyDefinition::ColorWithAlpha ) },
     { QgsLayoutObject::BackgroundColor, QgsPropertyDefinition( "dataDefinedBackgroundColor", QObject::tr( "Background color" ), QgsPropertyDefinition::ColorWithAlpha ) },
+    { QgsLayoutObject::MarginLeft, QgsPropertyDefinition( "dataDefinedMarginLeft", QObject::tr( "Left margin" ), QgsPropertyDefinition::DoublePositive ) },
+    { QgsLayoutObject::MarginTop, QgsPropertyDefinition( "dataDefinedMarginTop", QObject::tr( "Top margin" ), QgsPropertyDefinition::DoublePositive ) },
+    { QgsLayoutObject::MarginRight, QgsPropertyDefinition( "dataDefinedMarginRight", QObject::tr( "Right margin" ), QgsPropertyDefinition::DoublePositive ) },
+    { QgsLayoutObject::MarginBottom, QgsPropertyDefinition( "dataDefinedMarginBottom", QObject::tr( "Bottom margin" ), QgsPropertyDefinition::DoublePositive ) },
     { QgsLayoutObject::MapRotation, QgsPropertyDefinition( "dataDefinedMapRotation", QObject::tr( "Map rotation" ), QgsPropertyDefinition::Rotation ) },
     { QgsLayoutObject::MapScale, QgsPropertyDefinition( "dataDefinedMapScale", QObject::tr( "Map scale" ), QgsPropertyDefinition::DoublePositive ) },
     { QgsLayoutObject::MapXMin, QgsPropertyDefinition( "dataDefinedMapXMin", QObject::tr( "Extent minimum X" ), QgsPropertyDefinition::Double ) },
@@ -98,9 +98,28 @@ void QgsLayoutObject::initPropertyDefinitions()
     { QgsLayoutObject::ScalebarLineColor, QgsPropertyDefinition( "dataDefinedScalebarLineColor", QObject::tr( "Line color" ), QgsPropertyDefinition::ColorWithAlpha ) },
     { QgsLayoutObject::ScalebarLineWidth, QgsPropertyDefinition( "dataDefinedScalebarLineWidth", QObject::tr( "Line width" ), QgsPropertyDefinition::StrokeWidth ) },
     { QgsLayoutObject::AttributeTableSourceLayer, QgsPropertyDefinition( "dataDefinedAttributeTableSourceLayer", QObject::tr( "Table source layer" ), QgsPropertyDefinition::String ) },
-    { QgsLayoutObject::MapCrs, QgsPropertyDefinition( "dataDefinedCrs", QgsPropertyDefinition::DataTypeString, QObject::tr( "Map CRS" ), QObject::tr( "string representing a CRS, either an authority/id pair (e.g. \"EPSG:4326\"), a proj string prefixes by \"PROJ:\" (e.g. \"PROJ: +proj=...\") or a WKT string prefixed by \"WKT:\" (e.g. \"WKT:GEOGCS[\"WGS 84\"...)" ) ) },
+    { QgsLayoutObject::MapCrs, QgsPropertyDefinition( "dataDefinedCrs", QgsPropertyDefinition::DataTypeString, QObject::tr( "Map CRS" ), QObject::tr( "string representing a CRS, either an authority/id pair (e.g. 'EPSG:4326'), a proj string prefixes by \"PROJ:\" (e.g. 'PROJ: +proj=...') or a WKT string prefixed by \"WKT:\" (e.g. 'WKT:GEOGCRS[\"WGS 84\"...]')" ) ) },
     { QgsLayoutObject::StartDateTime, QgsPropertyDefinition( "dataDefinedStartDateTime", QObject::tr( "Temporal range start date / time" ), QgsPropertyDefinition::DateTime ) },
     { QgsLayoutObject::EndDateTime, QgsPropertyDefinition( "dataDefinedEndDateTime", QObject::tr( "Temporal range end date / time" ), QgsPropertyDefinition::DateTime ) },
+    { QgsLayoutObject::ScalebarLeftSegments, QgsPropertyDefinition( "dataDefinedScaleBarLeftSegments", QObject::tr( "Segments to the left of 0" ), QgsPropertyDefinition::IntegerPositive )},
+    { QgsLayoutObject::ScalebarRightSegments, QgsPropertyDefinition( "dataDefinedScaleBarRightSegments", QObject::tr( "Segments to the right of 0" ), QgsPropertyDefinition::IntegerPositive ) },
+    { QgsLayoutObject::ScalebarSegmentWidth, QgsPropertyDefinition( "dataDefinedScalebarSegmentWidth", QObject::tr( "Length of a segment in map units" ), QgsPropertyDefinition::DoublePositive ) },
+    { QgsLayoutObject::ScalebarMinimumWidth, QgsPropertyDefinition( "dataDefinedScalebarMinWidth", QObject::tr( "Minimum length of a segment in mm" ), QgsPropertyDefinition::DoublePositive ) },
+    { QgsLayoutObject::ScalebarMaximumWidth, QgsPropertyDefinition( "dataDefinedScalebarMaxWidth", QObject::tr( "Maximum length of a segment in mm" ), QgsPropertyDefinition::DoublePositive ) },
+    { QgsLayoutObject::ScalebarHeight, QgsPropertyDefinition( "dataDefinedScalebarHeight", QObject::tr( "Scalebar height in mm" ), QgsPropertyDefinition::DoublePositive ) },
+    { QgsLayoutObject::ScalebarSubdivisionHeight, QgsPropertyDefinition( "dataDefinedScalebarSubdivisionHeight", QObject::tr( "Subdivision height in mm" ), QgsPropertyDefinition::DoublePositive ) },
+    { QgsLayoutObject::ScalebarRightSegmentSubdivisions, QgsPropertyDefinition( "dataDefinedScalebarRightSegmentSubdivisions", QObject::tr( "Number of subdivisions in segments to the right of 0" ), QgsPropertyDefinition::IntegerPositive ) },
+    { QgsLayoutObject::ElevationProfileTolerance, QgsPropertyDefinition( "dataDefinedElevationProfileTolerance", QObject::tr( "Tolerance" ), QgsPropertyDefinition::DoublePositive ) },
+    { QgsLayoutObject::ElevationProfileDistanceMajorInterval, QgsPropertyDefinition( "dataDefinedElevationProfileDistanceMajorInterval", QObject::tr( "Major grid line interval for elevation axis" ), QgsPropertyDefinition::DoublePositive ) },
+    { QgsLayoutObject::ElevationProfileDistanceMinorInterval, QgsPropertyDefinition( "dataDefinedElevationProfileDistanceMinorInterval", QObject::tr( "Minor grid line interval for elevation axis" ), QgsPropertyDefinition::DoublePositive ) },
+    { QgsLayoutObject::ElevationProfileDistanceLabelInterval, QgsPropertyDefinition( "dataDefinedElevationProfileDistanceLabelInterval", QObject::tr( "Label interval for elevation axis" ), QgsPropertyDefinition::DoublePositive ) },
+    { QgsLayoutObject::ElevationProfileElevationMajorInterval, QgsPropertyDefinition( "dataDefinedElevationProfileElevationMajorInterval", QObject::tr( "Major grid line interval for distance axis" ), QgsPropertyDefinition::DoublePositive ) },
+    { QgsLayoutObject::ElevationProfileElevationMinorInterval, QgsPropertyDefinition( "dataDefinedElevationProfileElevationMinorInterval", QObject::tr( "Minor grid line interval for distance axis" ), QgsPropertyDefinition::DoublePositive ) },
+    { QgsLayoutObject::ElevationProfileElevationLabelInterval, QgsPropertyDefinition( "dataDefinedElevationProfileElevationLabelInterval", QObject::tr( "Label interval for distance axis" ), QgsPropertyDefinition::DoublePositive ) },
+    { QgsLayoutObject::ElevationProfileMinimumDistance, QgsPropertyDefinition( "dataDefinedElevationProfileMinimumDistance", QObject::tr( "Minimum distance" ), QgsPropertyDefinition::DoublePositive ) },
+    { QgsLayoutObject::ElevationProfileMaximumDistance, QgsPropertyDefinition( "dataDefinedElevationProfileMaximumDistance", QObject::tr( "Maximum distance" ), QgsPropertyDefinition::DoublePositive ) },
+    { QgsLayoutObject::ElevationProfileMinimumElevation, QgsPropertyDefinition( "dataDefinedElevationProfileMinimumElevation", QObject::tr( "Minimum elevation" ), QgsPropertyDefinition::Double ) },
+    { QgsLayoutObject::ElevationProfileMaximumElevation, QgsPropertyDefinition( "dataDefinedElevationProfileMaximumElevation", QObject::tr( "Maximum elevation" ), QgsPropertyDefinition::Double ) },
   };
 }
 
@@ -176,9 +195,32 @@ bool QgsLayoutObject::propertyAssociatesWithParentMultiframe( QgsLayoutObject::D
     case QgsLayoutObject::ScalebarFillColor2:
     case QgsLayoutObject::ScalebarLineColor:
     case QgsLayoutObject::ScalebarLineWidth:
+    case QgsLayoutObject::ScalebarLeftSegments:
+    case QgsLayoutObject::ScalebarRightSegments:
+    case QgsLayoutObject::ScalebarSegmentWidth:
+    case QgsLayoutObject::ScalebarMinimumWidth:
+    case QgsLayoutObject::ScalebarMaximumWidth:
+    case QgsLayoutObject::ScalebarHeight:
+    case QgsLayoutObject::ScalebarRightSegmentSubdivisions:
+    case QgsLayoutObject::ScalebarSubdivisionHeight:
     case QgsLayoutObject::MapCrs:
     case QgsLayoutObject::StartDateTime:
     case QgsLayoutObject::EndDateTime:
+    case QgsLayoutObject::ElevationProfileTolerance:
+    case QgsLayoutObject::ElevationProfileDistanceMajorInterval:
+    case QgsLayoutObject::ElevationProfileDistanceMinorInterval:
+    case QgsLayoutObject::ElevationProfileDistanceLabelInterval:
+    case QgsLayoutObject::ElevationProfileElevationMajorInterval:
+    case QgsLayoutObject::ElevationProfileElevationMinorInterval:
+    case QgsLayoutObject::ElevationProfileElevationLabelInterval:
+    case QgsLayoutObject::ElevationProfileMinimumDistance:
+    case QgsLayoutObject::ElevationProfileMaximumDistance:
+    case QgsLayoutObject::ElevationProfileMinimumElevation:
+    case QgsLayoutObject::ElevationProfileMaximumElevation:
+    case QgsLayoutObject::MarginLeft:
+    case QgsLayoutObject::MarginRight:
+    case QgsLayoutObject::MarginTop:
+    case QgsLayoutObject::MarginBottom:
       return false;
   }
   return false;

@@ -199,19 +199,19 @@ void QgsLabelPropertyDialog::init( const QString &layerId, const QString &provid
   QString defaultMultilineAlign;
   switch ( layerSettings.multilineAlign )
   {
-    case QgsPalLayerSettings::MultiLeft:
+    case Qgis::LabelMultiLineAlignment::Left:
       defaultMultilineAlign = QStringLiteral( "left" );
       break;
-    case QgsPalLayerSettings::MultiCenter:
+    case Qgis::LabelMultiLineAlignment::Center:
       defaultMultilineAlign = QStringLiteral( "center" );
       break;
-    case QgsPalLayerSettings::MultiRight:
+    case Qgis::LabelMultiLineAlignment::Right:
       defaultMultilineAlign = QStringLiteral( "right" );
       break;
-    case QgsPalLayerSettings::MultiJustify:
+    case Qgis::LabelMultiLineAlignment::Justify:
       defaultMultilineAlign = QStringLiteral( "justify" );
       break;
-    case QgsPalLayerSettings::MultiFollowPlacement:
+    case Qgis::LabelMultiLineAlignment::FollowPlacement:
       defaultMultilineAlign = QStringLiteral( "follow label placement" );
       break;
   }
@@ -376,7 +376,7 @@ void QgsLabelPropertyDialog::setDataDefinedValues( QgsVectorLayer *vlayer )
 
     //TODO - pass expression context
     const QVariant result = mDataDefinedProperties.value( key, context );
-    if ( !result.isValid() || result.isNull() )
+    if ( QgsVariantUtils::isNull( result ) )
     {
       //could not evaluate data defined value
       continue;

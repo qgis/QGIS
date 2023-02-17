@@ -3,8 +3,13 @@
   "type": "function",
   "groups": ["Maps"],
   "description": "Merge map elements into a hstore-formatted string.",
-  "arguments": [
-    {"arg":"map", "description":"the input map"}],
-  "examples": [ { "expression":"map_to_hstore(map('qgis','rocks'))", "returns":"'\"qgis\"=>\"rocks\"'"}
-  ]
+  "arguments": [{
+    "arg": "map",
+    "description": "the input map"
+  }],
+  "examples": [{
+    "expression": "map_to_hstore(map('qgis','rocks'))",
+    "returns": "'\"qgis\"=>\"rocks\"'"
+  }],
+  "tags": ["formatted", "hstore", "elements", "map", "merge"]
 }

@@ -22,6 +22,7 @@
 #include <gdal.h>
 
 #include "qgsogrutils.h"
+#include "qgsrasterdataprovider.h"
 
 /**
  * \ingroup core
@@ -63,10 +64,31 @@ class CORE_EXPORT QgsGdalUtils
     /**
      * Resamples a single band raster to the destination dataset with different resolution (and possibly with different CRS).
      * Ideally the source dataset should cover the whole area or the destination dataset.
+     *
+     * In case of different CRS, the parameter \a pszCoordinateOperation is the Proj coordinate operation string, that
+     * can be obtained with QgsCoordinateTransformContext::calculateCoordinateOperation()
+     *
      * \returns TRUE on success
      * \since QGIS 3.8
      */
     static bool resampleSingleBandRaster( GDALDatasetH hSrcDS, GDALDatasetH hDstDS, GDALResampleAlg resampleAlg, const char *pszCoordinateOperation );
+
+    /**
+     * Resamples a single band raster to the destination dataset with different resolution and different CRS.
+     * Ideally the source dataset should cover the whole area or the destination dataset.
+     *
+     * \note If possible, it is preferable to use the overload method with parameter \a pszCoordinateOperation.
+     *       But if it is not possible or it fails to obtain the Proj coordinate operation string,
+     *       this function is an alternative.
+     *
+     * \returns TRUE on success
+     * \since QGIS 3.30
+     */
+    static bool resampleSingleBandRaster( GDALDatasetH hSrcDS,
+                                          GDALDatasetH hDstDS,
+                                          GDALResampleAlg resampleAlg,
+                                          const QgsCoordinateReferenceSystem &sourceCrs,
+                                          const QgsCoordinateReferenceSystem &destinationCrs );
 
     /**
      * Resamples a QImage \a image using GDAL resampler.
@@ -102,6 +124,34 @@ class CORE_EXPORT QgsGdalUtils
     static gdal::dataset_unique_ptr imageToMemoryDataset( const QImage &image );
 
     /**
+     * Converts a data \a block to a single band GDAL memory dataset.
+     *
+     * \warning The data \a block must stay allocated for the lifetime of the returned gdal dataset.
+     *
+     * \since QGIS 3.26
+     */
+    static gdal::dataset_unique_ptr blockToSingleBandMemoryDataset( int pixelWidth, int pixelHeight, const QgsRectangle &extent, void *block,  GDALDataType dataType );
+
+    /**
+     * Converts a raster \a block to a single band GDAL memory dataset.
+     *
+     * \warning The raster \a block must stay allocated for the lifetime of the returned gdal dataset.
+     *
+     * \since QGIS 3.30
+     */
+    static gdal::dataset_unique_ptr blockToSingleBandMemoryDataset( const QgsRectangle &extent, QgsRasterBlock *block );
+
+    /**
+     * Converts a raster \a block to a single band GDAL memory dataset with \a rotation angle,side sizes of the grid,
+     * origin if the grid (top left if rotation == 0)
+     *
+     * \warning The raster \a block must stay allocated for the lifetime of the returned gdal dataset.
+     *
+     * \since QGIS 3.30
+     */
+    static gdal::dataset_unique_ptr blockToSingleBandMemoryDataset( double rotation, const QgsPointXY &origin, double gridXSize,  double gridYSize,   QgsRasterBlock *block );
+
+    /**
      * This is a copy of GDALAutoCreateWarpedVRT optimized for imagery using RPC georeferencing
      * that also sets RPC_HEIGHT in GDALCreateGenImgProjTransformer2 based on HEIGHT_OFF.
      * By default GDAL would assume that the imagery has zero elevation - if that is not the case,
@@ -126,6 +176,20 @@ class CORE_EXPORT QgsGdalUtils
      * \since QGIS 3.16
      */
     static void *rpcAwareCreateTransformer( GDALDatasetH hSrcDS, GDALDatasetH hDstDS = nullptr, char **papszOptions = nullptr );
+
+    /**
+     * Returns the GDAL data type corresponding to the QGIS data type \a dataType
+     *
+     * \since QGIS 3.30
+     */
+    static GDALDataType gdalDataTypeFromQgisDataType( Qgis::DataType dataType );
+
+    /**
+     * Returns the GDAL resampling method corresponding to the QGIS resampling  \a method
+     *
+     * \since QGIS 3.30
+     */
+    static GDALResampleAlg gdalResamplingAlgorithm( QgsRasterDataProvider::ResamplingMethod method );
 
 #ifndef QT_NO_NETWORKPROXY
     //! Sets the gdal proxy variables
@@ -162,7 +226,7 @@ class CORE_EXPORT QgsGdalUtils
      *
      * \since QGIS 3.22
      */
-    static bool vrtMatchesLayerType( const QString &vrtPath, QgsMapLayerType type );
+    static bool vrtMatchesLayerType( const QString &vrtPath, Qgis::LayerType type );
 
     friend class TestQgsGdalUtils;
 };

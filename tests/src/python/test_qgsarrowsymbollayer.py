@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 ***************************************************************************
     test_qgsarrowsymbollayer.py
@@ -21,34 +19,32 @@ __author__ = 'Hugo Mercier'
 __date__ = 'March 2016'
 __copyright__ = '(C) 2016, Hugo Mercier'
 
-import qgis  # NOQA
-
 import os
 
-from qgis.PyQt.QtCore import QSize, QDir
-from qgis.PyQt.QtGui import QColor, QPainter, QImage
-
+import qgis  # NOQA
+from qgis.PyQt.QtCore import QDir, QSize
+from qgis.PyQt.QtGui import QColor, QImage, QPainter
 from qgis.core import (
-    QgsVectorLayer,
-    QgsSingleSymbolRenderer,
-    QgsLineSymbol,
-    QgsFillSymbol,
-    QgsProject,
-    QgsRectangle,
     QgsArrowSymbolLayer,
-    QgsMultiRenderChecker,
-    QgsProperty,
-    QgsSymbolLayer,
-    QgsMapSettings,
-    QgsSymbol,
-    QgsGeometry,
     QgsFeature,
+    QgsFillSymbol,
+    QgsGeometry,
+    QgsLineSymbol,
+    QgsMapSettings,
+    QgsMultiRenderChecker,
+    QgsProject,
+    QgsProperty,
+    QgsRectangle,
+    QgsRenderChecker,
     QgsRenderContext,
-    QgsRenderChecker
+    QgsSingleSymbolRenderer,
+    QgsSymbol,
+    QgsSymbolLayer,
+    QgsVectorLayer,
 )
-
 from qgis.testing import start_app, unittest
 from qgis.testing.mocked import get_iface
+
 from utilities import unitTestDataPath
 
 # Convenience instances in case you may need them
@@ -80,7 +76,7 @@ class TestQgsArrowSymbolLayer(unittest.TestCase):
 
     def tearDown(self):
         QgsProject.instance().removeAllMapLayers()
-        report_file_path = "%s/qgistest.html" % QDir.tempPath()
+        report_file_path = f"{QDir.tempPath()}/qgistest.html"
         with open(report_file_path, 'a') as report_file:
             report_file.write(self.report)
 
@@ -290,7 +286,7 @@ class TestQgsArrowSymbolLayer(unittest.TestCase):
         return image
 
     def imageCheck(self, name, reference_image, image):
-        self.report += "<h2>Render {}</h2>\n".format(name)
+        self.report += f"<h2>Render {name}</h2>\n"
         temp_dir = QDir.tempPath() + '/'
         file_name = temp_dir + 'symbol_' + name + ".png"
         image.save(file_name, "PNG")
@@ -301,7 +297,7 @@ class TestQgsArrowSymbolLayer(unittest.TestCase):
         checker.setColorTolerance(2)
         result = checker.compareImages(name, 20)
         self.report += checker.report()
-        print((self.report))
+        print(self.report)
         return result
 
 

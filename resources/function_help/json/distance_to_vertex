@@ -3,7 +3,16 @@
   "type": "function",
   "groups": ["GeometryGroup"],
   "description": "Returns the distance along the geometry to a specified vertex.",
-  "arguments": [ {"arg":"geometry","description":"a linestring geometry"},
-                 {"arg":"vertex","description":"vertex index, starting from 0; if the value is negative, the selected vertex index will be its total count minus the absolute value"}],
-  "examples": [ { "expression":"distance_to_vertex(geometry:=geom_from_wkt('LineString(0 0, 10 0, 10 10)'),vertex:=1)", "returns":"10.0"}]
+  "arguments": [{
+    "arg": "geometry",
+    "description": "a linestring geometry"
+  }, {
+    "arg": "vertex",
+    "description": "vertex index, starting from 0; if the value is negative, the selected vertex index will be its total count minus the absolute value"
+  }],
+  "examples": [{
+    "expression": "distance_to_vertex(geometry:=geom_from_wkt('LineString(0 0, 10 0, 10 10)'),vertex:=1)",
+    "returns": "10.0"
+  }],
+  "tags": ["distance", "specified", "vertex"]
 }

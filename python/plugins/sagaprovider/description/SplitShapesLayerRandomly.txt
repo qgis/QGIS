@@ -1,7 +1,0 @@
-Split Shapes Layer Randomly
-shapes_tools
-QgsProcessingParameterFeatureSource|SHAPES|Shapes|-1|None|False
-QgsProcessingParameterNumber|PERCENT|Split ratio (%)|QgsProcessingParameterNumber.Integer|50|False|0|100
-QgsProcessingParameterBoolean|EXACT       |Split exactly|True
-QgsProcessingParameterVectorDestination|A|Group A
-QgsProcessingParameterVectorDestination|B|Group B

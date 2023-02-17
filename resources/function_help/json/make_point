@@ -3,15 +3,30 @@
   "type": "function",
   "groups": ["GeometryGroup"],
   "description": "Creates a point geometry from an x and y (and optional z and m) value.",
-  "arguments": [
-    {"arg":"x","description":"x coordinate of point"},
-    {"arg":"y","description":"y coordinate of point"},
-    {"arg":"z", "optional": true, "description":"optional z coordinate of point"},
-    {"arg":"m", "optional": true, "description":"optional m value of point"}
-  ],
-  "examples": [
-    { "expression":"geom_to_wkt(make_point(2,4))", "returns":"'Point (2 4)'"},
-    { "expression":"geom_to_wkt(make_point(2,4,6))", "returns":"'PointZ (2 4 6)'"},
-    { "expression":"geom_to_wkt(make_point(2,4,6,8))", "returns":"'PointZM (2 4 6 8)'"}
-  ]
+  "arguments": [{
+    "arg": "x",
+    "description": "x coordinate of point"
+  }, {
+    "arg": "y",
+    "description": "y coordinate of point"
+  }, {
+    "arg": "z",
+    "optional": true,
+    "description": "optional z coordinate of point"
+  }, {
+    "arg": "m",
+    "optional": true,
+    "description": "optional m value of point"
+  }],
+  "examples": [{
+    "expression": "geom_to_wkt(make_point(2,4))",
+    "returns": "'Point (2 4)'"
+  }, {
+    "expression": "geom_to_wkt(make_point(2,4,6))",
+    "returns": "'PointZ (2 4 6)'"
+  }, {
+    "expression": "geom_to_wkt(make_point(2,4,6,8))",
+    "returns": "'PointZM (2 4 6 8)'"
+  }],
+  "tags": ["optional", "point"]
 }

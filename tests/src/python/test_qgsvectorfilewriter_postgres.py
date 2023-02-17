@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsVectorFileWriter with a PostGres database.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -6,21 +5,22 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
-from builtins import next
-from builtins import str
 
 __author__ = 'Julien Cabieces'
 __date__ = '22/03/2021'
 __copyright__ = 'Copyright 2021, The QGIS Project'
 
-import qgis  # NOQA
-
-from qgis.core import (QgsVectorLayer,
-                       QgsCoordinateReferenceSystem,
-                       QgsVectorFileWriter)
-from qgis.PyQt.QtCore import QVariant, QDir
 import os
+
+import qgis  # NOQA
+from qgis.PyQt.QtCore import QDir, QVariant
+from qgis.core import (
+    QgsCoordinateReferenceSystem,
+    QgsVectorFileWriter,
+    QgsVectorLayer,
+)
 from qgis.testing import start_app, unittest
+
 from utilities import unitTestDataPath
 
 TEST_DATA_DIR = unitTestDataPath()
@@ -37,7 +37,7 @@ class TestQgsVectorFileWriterPG(unittest.TestCase):
             dbconn = os.environ['QGIS_PGTEST_DB']
 
         # create a vector layer
-        vl = QgsVectorLayer('{} table="qgis_test"."boolean_table" sql='.format(dbconn), "testbool", "postgres")
+        vl = QgsVectorLayer(f'{dbconn} table="qgis_test"."boolean_table" sql=', "testbool", "postgres")
         self.assertTrue(vl.isValid())
 
         # check that 1 of its fields is a bool

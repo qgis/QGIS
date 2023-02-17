@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsPointCloudAttributeModel
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -11,16 +10,17 @@ __date__ = '09/11/2020'
 __copyright__ = 'Copyright 2020, The QGIS Project'
 
 import qgis  # NOQA
-
-from qgis.core import (QgsPointCloudAttribute,
-                       QgsPointCloudAttributeCollection,
-                       QgsPointCloudAttributeModel,
-                       QgsPointCloudAttributeProxyModel,
-                       QgsProviderRegistry,
-                       QgsPointCloudLayer)
-from qgis.PyQt.QtCore import QVariant, Qt, QModelIndex
-
+from qgis.PyQt.QtCore import Qt
+from qgis.core import (
+    QgsPointCloudAttribute,
+    QgsPointCloudAttributeCollection,
+    QgsPointCloudAttributeModel,
+    QgsPointCloudAttributeProxyModel,
+    QgsPointCloudLayer,
+    QgsProviderRegistry,
+)
 from qgis.testing import start_app, unittest
+
 from utilities import unitTestDataPath
 
 start_app()

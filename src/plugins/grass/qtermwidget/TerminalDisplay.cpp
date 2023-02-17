@@ -218,11 +218,7 @@ unsigned short Konsole::vt100_graphics[32] =
 
 template<class T> inline int horizontalAdvance(const QFontMetrics& fm, T t)
 {
-#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
-    return fm.width( t );
-#else
     return fm.horizontalAdvance( t );
-#endif
 }
 
 void TerminalDisplay::fontChange( const QFont & )
@@ -743,11 +739,7 @@ void TerminalDisplay::drawCharacters( QPainter &painter,
     if ( _bidiEnabled )
       painter.drawText( rect, 0, text );
     else
-#if QT_VERSION >= 0x040800
       painter.drawText( rect, Qt::AlignBottom, LTR_OVERRIDE_CHAR + text );
-#else
-      painter.drawText( rect, 0, LTR_OVERRIDE_CHAR + text );
-#endif
   }
 }
 
@@ -1832,7 +1824,7 @@ void TerminalDisplay::mousePressEvent( QMouseEvent *ev )
         spot->activate( QStringLiteral( "open-action" ) );
     }
   }
-  else if ( ev->button() == Qt::MidButton )
+  else if ( ev->button() == Qt::MiddleButton )
   {
     if ( _mouseMarks || ( ev->modifiers() & Qt::ShiftModifier ) )
       emitSelection( true, ev->modifiers() & Qt::ControlModifier );
@@ -1931,7 +1923,7 @@ void TerminalDisplay::mouseMoveEvent( QMouseEvent *ev )
     int button = 3;
     if ( ev->buttons() & Qt::LeftButton )
       button = 0;
-    if ( ev->buttons() & Qt::MidButton )
+    if ( ev->buttons() & Qt::MiddleButton )
       button = 1;
     if ( ev->buttons() & Qt::RightButton )
       button = 2;
@@ -1973,7 +1965,7 @@ void TerminalDisplay::mouseMoveEvent( QMouseEvent *ev )
   if ( _actSel == 0 ) return;
 
 // don't extend selection while pasting
-  if ( ev->buttons() & Qt::MidButton ) return;
+  if ( ev->buttons() & Qt::MiddleButton ) return;
 
   extendSelection( ev->pos() );
 }
@@ -2231,7 +2223,7 @@ void TerminalDisplay::mouseReleaseEvent( QMouseEvent *ev )
 
   if ( !_mouseMarks &&
        ( ( ev->button() == Qt::RightButton && !( ev->modifiers() & Qt::ShiftModifier ) )
-         || ev->button() == Qt::MidButton ) )
+         || ev->button() == Qt::MiddleButton ) )
   {
     emit mouseSignal( 3,
                       charColumn + 1,
@@ -2715,7 +2707,7 @@ QVariant TerminalDisplay::inputMethodQuery( Qt::InputMethodQuery query ) const
   const QPoint cursorPos = _screenWindow ? _screenWindow->cursorPosition() : QPoint( 0, 0 );
   switch ( query )
   {
-    case Qt::ImMicroFocus:
+    case Qt::ImCursorRectangle:
       return imageToWidget( QRect( cursorPos.x(), cursorPos.y(), 1, 1 ) );
       break;
     case Qt::ImFont:

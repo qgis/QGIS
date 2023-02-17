@@ -109,7 +109,7 @@ Content-Type: text/xml; charset=utf-8
     <southBoundLatitude>46.27919</southBoundLatitude>
     <northBoundLatitude>49.726475</northBoundLatitude>
    </EX_GeographicBoundingBox>
-   <BoundingBox maxy="6399040.039" maxx="347086.26" miny="5825203.208" CRS="EPSG:3857" minx="-571361.416"/>
+   <BoundingBox maxy="6399040.039" maxx="347086.259" miny="5825203.209" CRS="EPSG:3857" minx="-571361.416"/>
    <BoundingBox maxy="3.117929" maxx="49.726475" miny="-5.132627" CRS="EPSG:4326" minx="46.27919"/>
    <Layer queryable="1">
     <Name>france_parts</Name>

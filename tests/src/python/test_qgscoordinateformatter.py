@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsCoordinateFormatter.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -10,10 +9,9 @@ __author__ = 'Nyall Dawson'
 __date__ = '25/07/2014'
 __copyright__ = 'Copyright 2015, The QGIS Project'
 
-import qgis
-from qgis.testing import unittest
-from qgis.core import QgsCoordinateFormatter, QgsPointXY
 from qgis.PyQt.QtCore import QLocale
+from qgis.core import Qgis, QgsCoordinateFormatter, QgsPointXY
+from qgis.testing import unittest
 
 
 class TestQgsCoordinateFormatter(unittest.TestCase):
@@ -51,10 +49,20 @@ class TestQgsCoordinateFormatter(unittest.TestCase):
         self.assertEqual(QgsCoordinateFormatter.asPair(20, 10, 2), '20.00,10.00')
         self.assertEqual(QgsCoordinateFormatter.asPair(20, -10, 2), '20.00,-10.00')
 
+        self.assertEqual(QgsCoordinateFormatter.asPair(20, -10, 2, order=Qgis.CoordinateOrder.XY), '20.00,-10.00')
+        self.assertEqual(QgsCoordinateFormatter.asPair(20, -10, 2, order=Qgis.CoordinateOrder.YX), '-10.00,20.00')
+
     def testFormat(self):
         self.assertEqual(QgsCoordinateFormatter.format(QgsPointXY(20.1, 30.2), QgsCoordinateFormatter.FormatPair, 0), '20,30')
         self.assertEqual(QgsCoordinateFormatter.format(QgsPointXY(20.1, 30.2), QgsCoordinateFormatter.FormatPair, 1), '20.1,30.2')
         self.assertEqual(QgsCoordinateFormatter.format(QgsPointXY(20, 30), QgsCoordinateFormatter.FormatDegreesMinutesSeconds, 0), '20°0′0″E,30°0′0″N')
+
+        self.assertEqual(QgsCoordinateFormatter.format(QgsPointXY(20.1, 30.2), QgsCoordinateFormatter.FormatPair, 1, order=Qgis.CoordinateOrder.XY), '20.1,30.2')
+        self.assertEqual(QgsCoordinateFormatter.format(QgsPointXY(20.1, 30.2), QgsCoordinateFormatter.FormatPair, 1,
+                                                       order=Qgis.CoordinateOrder.YX), '30.2,20.1')
+        self.assertEqual(
+            QgsCoordinateFormatter.format(QgsPointXY(20, 30), QgsCoordinateFormatter.FormatDegreesMinutesSeconds, 0, order=Qgis.CoordinateOrder.YX),
+            '30°0′0″N,20°0′0″E')
 
     def testFormatXFormatDegreesMinutesSeconds(self):
         """Test formatting x as DMS"""

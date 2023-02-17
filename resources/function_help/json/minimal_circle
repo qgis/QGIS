@@ -3,11 +3,21 @@
   "type": "function",
   "groups": ["GeometryGroup"],
   "description": "Returns the minimal enclosing circle of a geometry. It represents the minimum circle that encloses all geometries within the set.",
-  "arguments": [
-    {"arg":"geometry","description":"a geometry"},
-    {"arg":"segments", "optional": true, "default": "36", "description": "optional argument for polygon segmentation. By default this value is 36"}],
-  "examples": [
-    { "expression":"geom_to_wkt( minimal_circle( geom_from_wkt( 'LINESTRING(0 5, 0 -5, 2 1)' ), 4 ) )", "returns":"'Polygon ((0 5, 5 -0, -0 -5, -5 0, 0 5))'"},
-    { "expression":"geom_to_wkt( minimal_circle( geom_from_wkt( 'MULTIPOINT(1 2, 3 4, 3 2)' ), 4 ) )", "returns":"'Polygon ((3 4, 3 2, 1 2, 1 4, 3 4))'"}
-  ]
+  "arguments": [{
+    "arg": "geometry",
+    "description": "a geometry"
+  }, {
+    "arg": "segments",
+    "optional": true,
+    "default": "36",
+    "description": "optional argument for polygon segmentation. By default this value is 36"
+  }],
+  "examples": [{
+    "expression": "geom_to_wkt( minimal_circle( geom_from_wkt( 'LINESTRING(0 5, 0 -5, 2 1)' ), 4 ) )",
+    "returns": "'Polygon ((0 5, 5 -0, -0 -5, -5 0, 0 5))'"
+  }, {
+    "expression": "geom_to_wkt( minimal_circle( geom_from_wkt( 'MULTIPOINT(1 2, 3 4, 3 2)' ), 4 ) )",
+    "returns": "'Polygon ((3 4, 3 2, 1 2, 1 4, 3 4))'"
+  }],
+  "tags": ["enclosing", "minimal", "minimum", "represents", "encloses", "circle", "smallest"]
 }

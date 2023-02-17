@@ -240,7 +240,8 @@ void QgsLayoutAtlasWidget::changesSortFeatureExpression( const QString &expressi
 
   mBlockUpdates = true;
   mLayout->undoStack()->beginCommand( mAtlas, tr( "Change Atlas Sort" ) );
-  mAtlas->setSortExpression( expression );
+  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mAtlasCoverageLayerComboBox->currentLayer() );
+  mAtlas->setSortExpression( QgsExpression::quoteFieldExpression( expression, vlayer ) );
   mLayout->undoStack()->endCommand();
   mBlockUpdates = false;
   updateAtlasFeatures();

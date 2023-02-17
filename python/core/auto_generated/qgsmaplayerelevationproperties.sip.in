@@ -25,11 +25,26 @@ how an individual :py:class:`QgsMapLayer` behaves with relation to z values or e
 %TypeHeaderCode
 #include "qgsmaplayerelevationproperties.h"
 #include "qgspointcloudlayerelevationproperties.h"
+#include "qgsrasterlayerelevationproperties.h"
+#include "qgsvectorlayerelevationproperties.h"
+#include "qgsmeshlayerelevationproperties.h"
 %End
 %ConvertToSubClassCode
     if ( qobject_cast<QgsPointCloudLayerElevationProperties *>( sipCpp ) )
     {
       sipType = sipType_QgsPointCloudLayerElevationProperties;
+    }
+    else if ( qobject_cast<QgsVectorLayerElevationProperties *>( sipCpp ) )
+    {
+      sipType = sipType_QgsVectorLayerElevationProperties;
+    }
+    else if ( qobject_cast<QgsRasterLayerElevationProperties *>( sipCpp ) )
+    {
+      sipType = sipType_QgsRasterLayerElevationProperties;
+    }
+    else if ( qobject_cast<QgsMeshLayerElevationProperties *>( sipCpp ) )
+    {
+      sipType = sipType_QgsMeshLayerElevationProperties;
     }
     else
     {
@@ -37,6 +52,12 @@ how an individual :py:class:`QgsMapLayer` behaves with relation to z values or e
     }
 %End
   public:
+
+    enum Property
+    {
+      ZOffset,
+      ExtrusionHeight,
+    };
 
     enum Flag
     {
@@ -69,6 +90,27 @@ Reads the elevation properties from a DOM ``element`` previously written by :py:
 .. seealso:: :py:func:`writeXml`
 %End
 
+    virtual void setDefaultsFromLayer( QgsMapLayer *layer );
+%Docstring
+Sets default properties based on sensible choices for the given map ``layer``.
+
+.. versionadded:: 3.26
+%End
+
+    virtual QString htmlSummary() const;
+%Docstring
+Returns a HTML formatted summary of the properties.
+
+.. versionadded:: 3.26
+%End
+
+    virtual QgsMapLayerElevationProperties *clone() const = 0 /Factory/;
+%Docstring
+Creates a clone of the properties.
+
+.. versionadded:: 3.26
+%End
+
     virtual bool isVisibleInZRange( const QgsDoubleRange &range ) const;
 %Docstring
 Returns ``True`` if the layer should be visible and rendered for the specified z ``range``.
@@ -87,12 +129,177 @@ the settings defined by this elevation properties object.
 May return an infinite range if the extent could not be calculated.
 %End
 
+    virtual bool showByDefaultInElevationProfilePlots() const;
+%Docstring
+Returns ``True`` if the layer should be visible by default in newly created elevation
+profile plots.
+
+Subclasses should override this with logic which determines whether the layer is
+likely desirable to be initially checked in these plots.
+
+.. versionadded:: 3.26
+%End
+
+    double zOffset() const;
+%Docstring
+Returns the z offset, which is a fixed offset amount which should be added to z values from
+the layer.
+
+.. note::
+
+   Any scaling specified via :py:func:`~QgsMapLayerElevationProperties.zScale` is applied before any offset value specified via :py:func:`~QgsMapLayerElevationProperties.zOffset`
+
+.. seealso:: :py:func:`setZOffset`
+%End
+
+    void setZOffset( double offset );
+%Docstring
+Sets the z ``offset``, which is a fixed offset amount which will be added to z values from
+the layer.
+
+.. note::
+
+   Any scaling specified via :py:func:`~QgsMapLayerElevationProperties.zScale` is applied before any offset value specified via :py:func:`~QgsMapLayerElevationProperties.zOffset`
+
+.. seealso:: :py:func:`zOffset`
+%End
+
+    double zScale() const;
+%Docstring
+Returns the z scale, which is a scaling factor which should be applied to z values from
+the layer.
+
+This can be used to correct or manually adjust for incorrect elevation values in a layer, such
+as conversion of elevation values in feet to meters.
+
+.. note::
+
+   Any scaling specified via :py:func:`~QgsMapLayerElevationProperties.zScale` is applied before any offset value specified via :py:func:`~QgsMapLayerElevationProperties.zOffset`
+
+.. seealso:: :py:func:`setZScale`
+%End
+
+    void setZScale( double scale );
+%Docstring
+Sets the z ``scale``, which is a scaling factor which will be applied to z values from
+the layer.
+
+This can be used to correct or manually adjust for incorrect elevation values in a layer, such
+as conversion of elevation values in feet to meters.
+
+.. note::
+
+   Any scaling specified via :py:func:`~QgsMapLayerElevationProperties.zScale` is applied before any offset value specified via :py:func:`~QgsMapLayerElevationProperties.zOffset`
+
+.. seealso:: :py:func:`zScale`
+%End
+
+    QgsPropertyCollection &dataDefinedProperties();
+%Docstring
+Returns a reference to the object's property collection, used for data defined overrides.
+
+.. seealso:: :py:func:`setDataDefinedProperties`
+
+.. versionadded:: 3.26
+%End
+
+
+    void setDataDefinedProperties( const QgsPropertyCollection &collection );
+%Docstring
+Sets the object's property ``collection``, used for data defined overrides.
+
+Any existing properties will be discarded.
+
+.. seealso:: :py:func:`dataDefinedProperties`
+
+.. seealso:: Property
+
+.. versionadded:: 3.26
+%End
+
+    static QgsPropertiesDefinition propertyDefinitions();
+%Docstring
+Returns the definitions for data defined properties available for use in elevation properties.
+
+.. versionadded:: 3.26
+%End
+
   signals:
 
     void changed();
 %Docstring
-Emitted when the elevation properties have changed.
+Emitted when any of the elevation properties have changed.
+
+See :py:func:`~QgsMapLayerElevationProperties.renderingPropertyChanged` and :py:func:`~QgsMapLayerElevationProperties.profileGenerationPropertyChanged` for more fine-grained signals.
 %End
+
+    void zOffsetChanged();
+%Docstring
+Emitted when the z offset changes.
+
+.. versionadded:: 3.26
+%End
+
+    void zScaleChanged();
+%Docstring
+Emitted when the z scale changes.
+
+.. versionadded:: 3.26
+%End
+
+    void profileRenderingPropertyChanged();
+%Docstring
+Emitted when any of the elevation properties which relate solely to presentation of elevation
+results have changed.
+
+.. seealso:: :py:func:`changed`
+
+.. seealso:: :py:func:`profileGenerationPropertyChanged`
+
+.. versionadded:: 3.26
+%End
+
+    void profileGenerationPropertyChanged();
+%Docstring
+Emitted when any of the elevation properties which relate solely to generation of elevation
+profiles have changed.
+
+.. seealso:: :py:func:`changed`
+
+.. seealso:: :py:func:`profileRenderingPropertyChanged`
+
+.. versionadded:: 3.26
+%End
+
+  protected:
+
+
+
+    void writeCommonProperties( QDomElement &element, QDomDocument &doc, const QgsReadWriteContext &context );
+%Docstring
+Writes common class properties to a DOM ``element``, to be used later with :py:func:`~QgsMapLayerElevationProperties.readXml`.
+
+.. seealso:: :py:func:`readCommonProperties`
+
+.. versionadded:: 3.26
+%End
+
+    void readCommonProperties( const QDomElement &element, const QgsReadWriteContext &context );
+%Docstring
+Reads common class properties from a DOM ``element`` previously written by :py:func:`~QgsMapLayerElevationProperties.writeXml`.
+
+.. seealso:: :py:func:`writeCommonProperties`
+
+.. versionadded:: 3.26
+%End
+
+    void copyCommonProperties( const QgsMapLayerElevationProperties *other );
+%Docstring
+Copies common properties from another object.
+
+.. versionadded:: 3.26
+%End
+
 };
 
 /************************************************************************

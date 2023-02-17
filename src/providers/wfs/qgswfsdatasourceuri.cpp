@@ -28,8 +28,11 @@ QgsWFSDataSourceURI::QgsWFSDataSourceURI( const QString &uri )
 
   // Compatibility with QGIS < 2.16 layer URI of the format
   // http://example.com/?SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=x&SRSNAME=y&username=foo&password=
-  if ( !mURI.hasParam( QgsWFSConstants::URI_PARAM_URL ) )
+  if ( !mURI.hasParam( QgsWFSConstants::URI_PARAM_URL ) &&
+       ( uri.startsWith( QLatin1String( "http://" ) ) ||
+         uri.startsWith( QLatin1String( "https://" ) ) ) )
   {
+    mDeprecatedURI = true;
     static const QSet<QString> sFilter
     {
       QStringLiteral( "service" ),
@@ -101,7 +104,7 @@ QgsWFSDataSourceURI::QgsWFSDataSourceURI( const QString &uri )
     if ( !bbox.isEmpty() )
       mURI.setParam( QgsWFSConstants::URI_PARAM_RESTRICT_TO_REQUEST_BBOX, QStringLiteral( "1" ) );
   }
-  else
+  else if ( mURI.hasParam( QgsWFSConstants::URI_PARAM_URL ) )
   {
     QUrl url( mURI.param( QgsWFSConstants::URI_PARAM_URL ) );
     QUrlQuery query( url );
@@ -148,7 +151,51 @@ QgsWFSDataSourceURI::QgsWFSDataSourceURI( const QString &uri )
   }
 }
 
-const QString QgsWFSDataSourceURI::uri() const
+bool QgsWFSDataSourceURI::isValid() const
+{
+  return mURI.hasParam( QgsWFSConstants::URI_PARAM_URL ) &&
+         mURI.hasParam( QgsWFSConstants::URI_PARAM_TYPENAME );
+}
+
+QSet<QString> QgsWFSDataSourceURI::unknownParamKeys() const
+{
+  static const QSet<QString> knownKeys
+  {
+    QgsWFSConstants::URI_PARAM_URL,
+    QgsWFSConstants::URI_PARAM_USERNAME,
+    QgsWFSConstants::URI_PARAM_USER,
+    QgsWFSConstants::URI_PARAM_PASSWORD,
+    QgsWFSConstants::URI_PARAM_AUTHCFG,
+    QgsWFSConstants::URI_PARAM_VERSION,
+    QgsWFSConstants::URI_PARAM_TYPENAME,
+    QgsWFSConstants::URI_PARAM_SRSNAME,
+    QgsWFSConstants::URI_PARAM_FILTER,
+    QgsWFSConstants::URI_PARAM_OUTPUTFORMAT,
+    QgsWFSConstants::URI_PARAM_RESTRICT_TO_REQUEST_BBOX,
+    QgsWFSConstants::URI_PARAM_MAXNUMFEATURES,
+    QgsWFSConstants::URI_PARAM_IGNOREAXISORIENTATION,
+    QgsWFSConstants::URI_PARAM_INVERTAXISORIENTATION,
+    QgsWFSConstants::URI_PARAM_VALIDATESQLFUNCTIONS,
+    QgsWFSConstants::URI_PARAM_HIDEDOWNLOADPROGRESSDIALOG,
+    QgsWFSConstants::URI_PARAM_PAGING_ENABLED,
+    QgsWFSConstants::URI_PARAM_PAGE_SIZE,
+    QgsWFSConstants::URI_PARAM_WFST_1_1_PREFER_COORDINATES,
+    QgsWFSConstants::URI_PARAM_SKIP_INITIAL_GET_FEATURE,
+    QgsWFSConstants::URI_PARAM_GEOMETRY_TYPE_FILTER,
+  };
+
+  QSet<QString> l_unknownParamKeys;
+  for ( const QString &key : mURI.parameterKeys() )
+  {
+    if ( !knownKeys.contains( key ) && !( mDeprecatedURI && key == QgsWFSConstants::URI_PARAM_BBOX ) )
+    {
+      l_unknownParamKeys.insert( key );
+    }
+  }
+  return l_unknownParamKeys;
+}
+
+QString QgsWFSDataSourceURI::uri( bool expandAuthConfig ) const
 {
   QgsDataSourceUri theURI( mURI );
   // Add authcfg param back into the uri (must be non-empty value)
@@ -168,8 +215,7 @@ const QString QgsWFSDataSourceURI::uri() const
       theURI.setPassword( mAuth.mPassword );
     }
   }
-  // NOTE: do not expand authcfg here; it is handled during network access
-  return theURI.uri( false );
+  return theURI.uri( expandAuthConfig );
 }
 
 
@@ -318,6 +364,16 @@ void QgsWFSDataSourceURI::setFilter( const QString &filter )
   }
 }
 
+bool QgsWFSDataSourceURI::hasGeometryTypeFilter() const
+{
+  return mURI.hasParam( QgsWFSConstants::URI_PARAM_GEOMETRY_TYPE_FILTER );
+}
+
+QgsWkbTypes::Type QgsWFSDataSourceURI::geometryTypeFilter() const
+{
+  return QgsWkbTypes::parseType( mURI.param( QgsWFSConstants::URI_PARAM_GEOMETRY_TYPE_FILTER ) );
+}
+
 QString QgsWFSDataSourceURI::sql() const
 {
   return mURI.sql();
@@ -378,6 +434,13 @@ bool QgsWFSDataSourceURI::preferCoordinatesForWfst11() const
 {
   return mURI.hasParam( QgsWFSConstants::URI_PARAM_WFST_1_1_PREFER_COORDINATES ) &&
          mURI.param( QgsWFSConstants::URI_PARAM_WFST_1_1_PREFER_COORDINATES ).toUpper() == QLatin1String( "TRUE" );
+}
+
+bool QgsWFSDataSourceURI::skipInitialGetFeature() const
+{
+  if ( !mURI.hasParam( QgsWFSConstants::URI_PARAM_SKIP_INITIAL_GET_FEATURE ) )
+    return false;
+  return mURI.param( QgsWFSConstants::URI_PARAM_SKIP_INITIAL_GET_FEATURE ).toUpper() == QLatin1String( "TRUE" );
 }
 
 QString QgsWFSDataSourceURI::build( const QString &baseUri,

@@ -189,6 +189,7 @@ string      "'"{str_char}*"'"
 "^"                 { B_OP(boPow); return POW; }
 
 "IN"                { return IN; }
+"BETWEEN"           { return BETWEEN; }
 
 "NULL"              { return NULLVALUE; }
 

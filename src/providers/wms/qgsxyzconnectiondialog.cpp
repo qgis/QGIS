@@ -49,7 +49,7 @@ void QgsXyzConnectionDialog::setConnection( const QgsXyzConnection &conn )
   mSourceWidget->setZMax( conn.zMax );
   mSourceWidget->setUsername( conn.username );
   mSourceWidget->setPassword( conn.password );
-  mSourceWidget->setReferer( conn.referer );
+  mSourceWidget->setReferer( conn.httpHeaders[QgsHttpHeaders::KEY_REFERER].toString() );
   mSourceWidget->setTilePixelRatio( conn.tilePixelRatio );
   mSourceWidget->setAuthCfg( conn.authCfg );
   mSourceWidget->setInterpretation( conn.interpretation );
@@ -64,7 +64,7 @@ QgsXyzConnection QgsXyzConnectionDialog::connection() const
   conn.zMax = mSourceWidget->zMax();
   conn.username = mSourceWidget->username();
   conn.password = mSourceWidget->password();
-  conn.referer = mSourceWidget->referer();
+  conn.httpHeaders[QgsHttpHeaders::KEY_REFERER] = mSourceWidget->referer();
   conn.tilePixelRatio = mSourceWidget->tilePixelRatio();
   conn.authCfg = mSourceWidget->authcfg( );
   conn.interpretation = mSourceWidget->interpretation();

@@ -70,14 +70,18 @@ QString QgsBasicNumericFormat::formatDouble( double value, const QgsNumericForma
     {
       case DecimalPlaces:
         os << std::fixed << std::setprecision( mNumberDecimalPlaces );
-        os << value;
+        if ( qgsDoubleNear( value, 0 ) )
+          os << 0.0;
+        else
+          os << value;
+
         break;
 
       case SignificantFigures:
       {
         if ( qgsDoubleNear( value, 0 ) )
         {
-          os << std::fixed << std::setprecision( mNumberDecimalPlaces - 1 ) << value;
+          os << std::fixed << std::setprecision( mNumberDecimalPlaces - 1 ) << 0.0;
         }
         else
         {
@@ -93,7 +97,10 @@ QString QgsBasicNumericFormat::formatDouble( double value, const QgsNumericForma
   else
   {
     os << std::scientific << std::setprecision( mNumberDecimalPlaces );
-    os << value;
+    if ( qgsDoubleNear( value, 0 ) )
+      os << 0.0;
+    else
+      os << value;
   }
 
   QString res = QString::fromStdWString( os.str() );
@@ -148,8 +155,8 @@ QVariantMap QgsBasicNumericFormat::configuration( const QgsReadWriteContext & ) 
   res.insert( QStringLiteral( "show_plus" ), mShowPlusSign );
   res.insert( QStringLiteral( "show_trailing_zeros" ), mShowTrailingZeros );
   res.insert( QStringLiteral( "rounding_type" ), static_cast< int >( mRoundingType ) );
-  res.insert( QStringLiteral( "thousand_separator" ), mThousandsSeparator );
-  res.insert( QStringLiteral( "decimal_separator" ), mDecimalSeparator );
+  res.insert( QStringLiteral( "thousand_separator" ), mThousandsSeparator.isNull() ? QVariant() : QVariant::fromValue( mThousandsSeparator ) );
+  res.insert( QStringLiteral( "decimal_separator" ), mDecimalSeparator.isNull() ? QVariant() : QVariant::fromValue( mDecimalSeparator ) );
   return res;
 }
 

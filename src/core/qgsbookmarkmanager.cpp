@@ -60,12 +60,12 @@ QDomElement QgsBookmark::writeXml( QDomDocument &doc ) const
   return bookmarkElem;
 }
 
-bool QgsBookmark::operator==( const QgsBookmark &other )
+bool QgsBookmark::operator==( const QgsBookmark &other ) const
 {
   return mId == other.mId && mName == other.mName && mExtent == other.mExtent && mGroup == other.mGroup;
 }
 
-bool QgsBookmark::operator!=( const QgsBookmark &other )
+bool QgsBookmark::operator!=( const QgsBookmark &other ) const
 {
   return !( *this == other );
 }

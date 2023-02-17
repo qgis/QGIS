@@ -3,9 +3,19 @@
   "type": "function",
   "groups": ["String"],
   "description": "Return the first matching position of a substring within another string, or 0 if the substring is not found.",
-  "arguments": [ {"arg":"haystack","description":"string that is to be searched"},
-                 {"arg":"needle","description":"string to search for"}],
-  "examples": [ { "expression":"strpos('HELLO WORLD','WORLD')", "returns":"7"},
-  { "expression":"strpos('HELLO WORLD','GOODBYE')", "returns":"0"}
-  ]
+  "arguments": [{
+    "arg": "haystack",
+    "description": "string that is to be searched"
+  }, {
+    "arg": "needle",
+    "description": "string to search for"
+  }],
+  "examples": [{
+    "expression": "strpos('HELLO WORLD','WORLD')",
+    "returns": "7"
+  }, {
+    "expression": "strpos('HELLO WORLD','GOODBYE')",
+    "returns": "0"
+  }],
+  "tags": ["substring", "position", "return", "found", "first", "matching"]
 }

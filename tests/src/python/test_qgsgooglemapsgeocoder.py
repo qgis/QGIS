@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsGeocoderLocatorFilter.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -13,16 +12,13 @@ __copyright__ = 'Copyright 2020, The QGIS Project'
 import tempfile
 
 import qgis  # NOQA
-from qgis.PyQt.QtCore import (
-    QCoreApplication,
-    QUrl
-)
+from qgis.PyQt.QtCore import QCoreApplication, QUrl
 from qgis.core import (
-    QgsSettings,
-    QgsRectangle,
-    QgsGoogleMapsGeocoder,
+    QgsCoordinateTransformContext,
     QgsGeocoderContext,
-    QgsCoordinateTransformContext
+    QgsGoogleMapsGeocoder,
+    QgsRectangle,
+    QgsSettings,
 )
 from qgis.testing import start_app, unittest
 
@@ -177,7 +173,7 @@ class TestQgsGeocoderLocatorFilter(unittest.TestCase):
         geocoder.setEndpoint(self.endpoint)
 
         with open(geocoder.requestUrl('20 green st, twaddlingham').toString().replace('file://', ''), 'wb') as f:
-            f.write("""
+            f.write(b"""
         {
    "results" : [
       {
@@ -246,7 +242,7 @@ class TestQgsGeocoderLocatorFilter(unittest.TestCase):
    ],
    "status" : "OK"
 }
-        """.encode('UTF-8'))
+        """)
 
         context = QgsGeocoderContext(QgsCoordinateTransformContext())
         results = geocoder.geocodeString('20 green st, twaddlingham', context)

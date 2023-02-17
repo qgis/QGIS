@@ -3,8 +3,16 @@
   "type": "function",
   "groups": ["GeometryGroup"],
   "description": "Returns the maximum m (measure) value of a geometry.",
-  "arguments": [ {"arg":"geometry","description":"a geometry containing m values"}],
-  "examples": [ { "expression":"m_max( make_point_m( 0,0,1 ) )", "returns":"1"},
-                { "expression":"m_max(make_line( make_point_m( 0,0,1 ), make_point_m( -1,-1,2 ), make_point_m( -2,-2,0 ) ) )", "returns":"2"}
-  ]
+  "arguments": [{
+    "arg": "geometry",
+    "description": "a geometry containing m values"
+  }],
+  "examples": [{
+    "expression": "m_max( make_point_m( 0,0,1 ) )",
+    "returns": "1"
+  }, {
+    "expression": "m_max(make_line( make_point_m( 0,0,1 ), make_point_m( -1,-1,2 ), make_point_m( -2,-2,0 ) ) )",
+    "returns": "2"
+  }],
+  "tags": ["maximum", "measure"]
 }

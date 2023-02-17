@@ -19,11 +19,11 @@
 #define QGSGEOMETRYOPTIONS_H
 
 #include "qgis_core.h"
-#include "qgis_sip.h"
 #include "qgsgeometry.h"
-#include "qgssettingsentry.h"
 
 #include <QObject>
+
+class QgsSettingsEntryString;
 
 /**
  * \ingroup core
@@ -134,7 +134,7 @@ class CORE_EXPORT QgsGeometryOptions : public QObject
 
 #ifndef SIP_RUN
     //! Settings entry search path for templates
-    static const inline QgsSettingsEntryString settingsGeometryValidationDefaultChecks = QgsSettingsEntryString( QStringLiteral( "geometry_validation/default_checks" ), QgsSettings::NoSection, QString() );
+    static const QgsSettingsEntryString *settingsGeometryValidationDefaultChecks;
 #endif
 
   signals:

@@ -230,7 +230,7 @@ void TestQgsMeshCalculator::calcWithVertexLayers()
   const QString tmpName = tmpFile.fileName();
   tmpFile.close();
 
-  QgsMeshCalculator rc( QStringLiteral( "\"VertexScalarDataset\" + 2" ),
+  QgsMeshCalculator rc( QStringLiteral( "\"VertexScalarDataset\" + 2 + max_aggr(\"VertexScalarDataset\" )" ),
                         QStringLiteral( "BINARY_DAT" ),
                         "NewVertexScalarDataset",
                         tmpName,
@@ -244,7 +244,7 @@ void TestQgsMeshCalculator::calcWithVertexLayers()
   const int newGroupCount = mpMeshLayer->dataProvider()->datasetGroupCount();
   QCOMPARE( newGroupCount, groupCount + 1 );
   const QgsMeshDatasetValue val = mpMeshLayer->dataProvider()->datasetValue( QgsMeshDatasetIndex( newGroupCount - 1, 0 ), 0 );
-  QCOMPARE( val.scalar(), 3.0 );
+  QCOMPARE( val.scalar(), 5.0 );
 }
 
 void TestQgsMeshCalculator::calcWithFaceLayers()
@@ -306,7 +306,7 @@ void TestQgsMeshCalculator::calcAndSave()
   const QString tempFilePath = QDir::tempPath() + '/' + "meshCalculatorResult.out";
   QgsMeshCalculator rc( QStringLiteral( "\"VertexScalarDataset\" + \"FaceScalarDataset\"" ),
                         QStringLiteral( "BINARY_DAT" ),
-                        "NewMixScalarDataset",
+                        "NewMixScalarDataset_saved",
                         tempFilePath,
                         extent,
                         0,

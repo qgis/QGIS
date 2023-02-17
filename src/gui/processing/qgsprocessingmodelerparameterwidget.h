@@ -24,7 +24,7 @@
 #include "qgis_sip.h"
 #include <QPointer>
 #include "qgsprocessingcontext.h"
-#include "processing/models/qgsprocessingmodelchildparametersource.h"
+#include "qgsprocessingmodelchildparametersource.h"
 
 class QgsProcessingParameterDefinition;
 class QgsAbstractProcessingParameterWidgetWrapper;
@@ -193,6 +193,13 @@ class GUI_EXPORT QgsProcessingModelerParameterWidget : public QWidget, public Qg
 
     QgsExpressionContext createExpressionContext() const override;
 
+    /**
+     * Sets the current source \a type for the parameter.
+     *
+     * \since QGIS 3.24
+     */
+    void setSourceType( QgsProcessingModelChildParameterSource::Source type );
+
   private slots:
 
     void sourceMenuAboutToShow();
@@ -212,7 +219,6 @@ class GUI_EXPORT QgsProcessingModelerParameterWidget : public QWidget, public Qg
 
     SourceType currentSourceType() const;
 
-    void setSourceType( QgsProcessingModelChildParameterSource::Source type );
     void updateUi();
 
     QgsProcessingModelAlgorithm *mModel = nullptr;

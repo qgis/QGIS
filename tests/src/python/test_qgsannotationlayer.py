@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsAnnotationLayer.
 
 From build dir, run: ctest -R PyQgsAnnotationLayer -V
@@ -13,42 +12,39 @@ __date__ = '29/07/2020'
 __copyright__ = 'Copyright 2020, The QGIS Project'
 
 import qgis  # NOQA
-from qgis.PyQt.QtCore import (QSize,
-                              QDir,
-                              QTemporaryDir)
-from qgis.PyQt.QtGui import (QImage,
-                             QPainter,
-                             QColor)
+from qgis.PyQt.QtCore import QDir, QSize, QTemporaryDir
+from qgis.PyQt.QtGui import QColor, QImage, QPainter
 from qgis.PyQt.QtXml import QDomDocument
-from qgis.core import (QgsMapSettings,
-                       QgsCoordinateTransform,
-                       QgsProject,
-                       QgsPoint,
-                       QgsCoordinateReferenceSystem,
-                       QgsFillSymbol,
-                       QgsRenderChecker,
-                       QgsReadWriteContext,
-                       QgsRenderContext,
-                       QgsAnnotationPolygonItem,
-                       QgsRectangle,
-                       QgsLineString,
-                       QgsPolygon,
-                       QgsAnnotationLayer,
-                       QgsAnnotationLineItem,
-                       QgsAnnotationMarkerItem,
-                       QgsLineSymbol,
-                       QgsMarkerSymbol,
-                       QgsMapRendererSequentialJob,
-                       QgsMapRendererParallelJob,
-                       QgsGeometry,
-                       QgsAnnotationItemEditOperationMoveNode,
-                       QgsVertexId,
-                       QgsPointXY,
-                       Qgis
-                       )
+from qgis.core import (
+    Qgis,
+    QgsAnnotationItemEditOperationMoveNode,
+    QgsAnnotationLayer,
+    QgsAnnotationLineItem,
+    QgsAnnotationMarkerItem,
+    QgsAnnotationPolygonItem,
+    QgsCoordinateReferenceSystem,
+    QgsCoordinateTransform,
+    QgsFillSymbol,
+    QgsGeometry,
+    QgsLayerNotesUtils,
+    QgsLineString,
+    QgsLineSymbol,
+    QgsMapRendererParallelJob,
+    QgsMapRendererSequentialJob,
+    QgsMapSettings,
+    QgsMarkerSymbol,
+    QgsPoint,
+    QgsPolygon,
+    QgsProject,
+    QgsReadWriteContext,
+    QgsRectangle,
+    QgsRenderChecker,
+    QgsRenderContext,
+    QgsVertexId,
+)
 from qgis.testing import start_app, unittest
 
-from utilities import unitTestDataPath, compareWkt
+from utilities import compareWkt, unitTestDataPath
 
 start_app()
 TEST_DATA_DIR = unitTestDataPath()
@@ -62,7 +58,7 @@ class TestQgsAnnotationLayer(unittest.TestCase):
 
     @classmethod
     def tearDownClass(cls):
-        report_file_path = "%s/qgistest.html" % QDir.tempPath()
+        report_file_path = f"{QDir.tempPath()}/qgistest.html"
         with open(report_file_path, 'a') as report_file:
             report_file.write(cls.report)
 
@@ -151,6 +147,7 @@ class TestQgsAnnotationLayer(unittest.TestCase):
         self.assertEqual(len(layer.items()), 0)
         self.assertEqual(layer.opacity(), 1.0)
         self.assertFalse(layer.crs().isValid())
+        self.assertEqual(layer.undoStackStyles().count(), 0)
 
     def testExtent(self):
         layer = QgsAnnotationLayer('test', QgsAnnotationLayer.LayerOptions(QgsProject.instance().transformContext()))
@@ -198,6 +195,9 @@ class TestQgsAnnotationLayer(unittest.TestCase):
         self.assertTrue(layer.isValid())
 
         layer.setCrs(QgsCoordinateReferenceSystem('EPSG:4326'))
+        layer.setScaleBasedVisibility(True)
+        QgsLayerNotesUtils.setLayerNotes(layer, 'test layer notes')
+
         polygon_item_id = layer.addItem(QgsAnnotationPolygonItem(
             QgsPolygon(QgsLineString([QgsPoint(12, 13), QgsPoint(14, 13), QgsPoint(14, 15), QgsPoint(12, 13)]))))
         linestring_item_id = layer.addItem(
@@ -210,6 +210,8 @@ class TestQgsAnnotationLayer(unittest.TestCase):
         layer2 = QgsAnnotationLayer('test2', QgsAnnotationLayer.LayerOptions(QgsProject.instance().transformContext()))
         self.assertTrue(layer2.readLayerXml(elem, QgsReadWriteContext()))
         self.assertEqual(layer2.crs().authid(), 'EPSG:4326')
+        self.assertTrue(layer2.hasScaleBasedVisibility())
+        self.assertEqual(QgsLayerNotesUtils.layerNotes(layer2), 'test layer notes')
 
         self.assertEqual(len(layer2.items()), 3)
         self.assertIsInstance(layer2.items()[polygon_item_id], QgsAnnotationPolygonItem)
@@ -248,7 +250,7 @@ class TestQgsAnnotationLayer(unittest.TestCase):
 
         # save project to xml
         tmpDir = QTemporaryDir()
-        tmpFile = "{}/project.qgs".format(tmpDir.path())
+        tmpFile = f"{tmpDir.path()}/project.qgs"
         self.assertTrue(p.write(tmpFile))
 
         # test that annotation layer is cleared with project
@@ -262,6 +264,24 @@ class TestQgsAnnotationLayer(unittest.TestCase):
         self.assertIsInstance(p2.mainAnnotationLayer().items()[polygon_item_id], QgsAnnotationPolygonItem)
         self.assertIsInstance(p2.mainAnnotationLayer().items()[linestring_item_id], QgsAnnotationLineItem)
         self.assertIsInstance(p2.mainAnnotationLayer().items()[marker_item_id], QgsAnnotationMarkerItem)
+
+    def testMainAnnotationLayerCrs(self):
+        p = QgsProject()
+        self.assertEqual(p.crs(), p.mainAnnotationLayer().crs())
+
+        # main annotation layer should follow project crs
+        p.setCrs(QgsCoordinateReferenceSystem('EPSG:3111'))
+        self.assertEqual(p.crs(), p.mainAnnotationLayer().crs())
+
+        p.setCrs(QgsCoordinateReferenceSystem('EPSG:4326'))
+        self.assertEqual(p.crs(), p.mainAnnotationLayer().crs())
+
+        # add an item, should lock in the crs for the main annotation layer
+        p.mainAnnotationLayer().addItem(QgsAnnotationPolygonItem(
+            QgsPolygon(QgsLineString([QgsPoint(12, 13), QgsPoint(14, 13), QgsPoint(14, 15), QgsPoint(12, 13)]))))
+
+        p.setCrs(QgsCoordinateReferenceSystem('EPSG:3857'))
+        self.assertEqual(p.mainAnnotationLayer().crs().authid(), 'EPSG:4326')
 
     def test_apply_edit(self):
         """
@@ -585,7 +605,7 @@ class TestQgsAnnotationLayer(unittest.TestCase):
                                                                                                             result))
 
     def imageCheck(self, name, reference_image, image):
-        TestQgsAnnotationLayer.report += "<h2>Render {}</h2>\n".format(name)
+        TestQgsAnnotationLayer.report += f"<h2>Render {name}</h2>\n"
         temp_dir = QDir.tempPath() + '/'
         file_name = temp_dir + 'patch_' + name + ".png"
         image.save(file_name, "PNG")

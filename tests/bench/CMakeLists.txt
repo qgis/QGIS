@@ -35,6 +35,8 @@ target_link_libraries(qgis_bench
 )
 
 if(APPLE)
+  target_link_libraries(qgis_bench qgis_native)
+
   set_target_properties(qgis_bench PROPERTIES
     INSTALL_RPATH ${CMAKE_INSTALL_PREFIX}/${QGIS_LIB_DIR}
     INSTALL_RPATH_USE_LINK_PATH true

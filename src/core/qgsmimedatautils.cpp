@@ -18,10 +18,7 @@
 
 #include "qgslayertree.h"
 #include "qgslogger.h"
-#include "qgspluginlayer.h"
-#include "qgsrasterdataprovider.h"
 #include "qgsrasterlayer.h"
-#include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 #include "qgsmeshlayer.h"
 
@@ -76,37 +73,37 @@ QgsMimeDataUtils::Uri::Uri( QgsMapLayer *layer )
 {
   switch ( layer->type() )
   {
-    case QgsMapLayerType::VectorLayer:
+    case Qgis::LayerType::Vector:
     {
       layerType = QStringLiteral( "vector" );
       wkbType = qobject_cast< QgsVectorLayer *>( layer )->wkbType();
       break;
     }
-    case QgsMapLayerType::RasterLayer:
+    case Qgis::LayerType::Raster:
     {
       layerType = QStringLiteral( "raster" );
       break;
     }
 
-    case QgsMapLayerType::MeshLayer:
+    case Qgis::LayerType::Mesh:
     {
       layerType = QStringLiteral( "mesh" );
       break;
     }
-    case QgsMapLayerType::PointCloudLayer:
+    case Qgis::LayerType::PointCloud:
     {
       layerType = QStringLiteral( "pointcloud" );
       break;
     }
-    case QgsMapLayerType::VectorTileLayer:
+    case Qgis::LayerType::VectorTile:
     {
       layerType = QStringLiteral( "vector-tile" );
       break;
     }
 
-    case QgsMapLayerType::PluginLayer:
-    case QgsMapLayerType::GroupLayer:
-    case QgsMapLayerType::AnnotationLayer:
+    case Qgis::LayerType::Plugin:
+    case Qgis::LayerType::Group:
+    case Qgis::LayerType::Annotation:
     {
       // plugin layers do not have a standard way of storing their URI...
       return;
@@ -257,7 +254,7 @@ static void _addLayerTreeNodeToUriList( QgsLayerTreeNode *node, QgsMimeDataUtils
     if ( !layer )
       return;
 
-    if ( layer->type() == QgsMapLayerType::PluginLayer )
+    if ( layer->type() == Qgis::LayerType::Plugin )
       return; // plugin layers do not have a standard way of storing their URI...
 
     uris << QgsMimeDataUtils::Uri( layer );

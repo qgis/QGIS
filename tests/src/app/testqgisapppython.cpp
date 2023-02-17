@@ -65,7 +65,7 @@ void TestQgisAppPython::initTestCase()
   QCoreApplication::setOrganizationDomain( QStringLiteral( "qgis.org" ) );
   QCoreApplication::setApplicationName( QStringLiteral( "QGIS-TEST" ) );
 
-  qDebug() << "TestQgisAppClipboard::initTestCase()";
+  qDebug() << "TestQgisAppPython::initTestCase()";
   // init QGIS's paths - true means that all path will be inited from prefix
   QgsApplication::init();
   QgsApplication::initQgis();
@@ -124,6 +124,9 @@ void TestQgisAppPython::pluginMetadata()
   QCOMPARE( mQgisApp->mPythonUtils->getPluginMetadata( QStringLiteral( "ProcessingPluginTest" ), QStringLiteral( "name" ) ), QStringLiteral( "processing plugin test" ) );
   QCOMPARE( mQgisApp->mPythonUtils->getPluginMetadata( QStringLiteral( "ProcessingPluginTest" ), QStringLiteral( "hasProcessingProvider" ) ), QStringLiteral( "yes" ) );
   QVERIFY( mQgisApp->mPythonUtils->pluginHasProcessingProvider( QStringLiteral( "ProcessingPluginTest" ) ) );
+  // hasProcessingProvider also accepts true/True
+  QCOMPARE( mQgisApp->mPythonUtils->getPluginMetadata( QStringLiteral( "ProcessingPluginTest2" ), QStringLiteral( "hasProcessingProvider" ) ), QStringLiteral( "True" ) );
+  QVERIFY( mQgisApp->mPythonUtils->pluginHasProcessingProvider( QStringLiteral( "ProcessingPluginTest2" ) ) );
 }
 
 void TestQgisAppPython::pythonPluginDependencyOrder()

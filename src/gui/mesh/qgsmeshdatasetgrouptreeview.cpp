@@ -308,12 +308,7 @@ QVariant QgsMeshDatasetGroupProxyModel::data( const QModelIndex &index, int role
       return QVariant();
     case Qt::DecorationRole:
       return QVariant();
-
-#if QT_VERSION < QT_VERSION_CHECK(5, 13, 0)
-    case Qt::BackgroundColorRole:
-#else
     case Qt::BackgroundRole:
-#endif
       return QVariant();
   }
 
@@ -709,7 +704,7 @@ QMenu *QgsMeshDatasetGroupSaveMenu::createSaveMenu( int groupIndex, QMenu *paren
            ( driver.capabilities().testFlag( QgsMeshDriverMetadata::MeshDriverCapability::CanWriteEdgeDatasets )
              && groupMeta.dataType() == QgsMeshDatasetGroupMetadata::DataOnEdges ) )
       {
-        menu->addAction( driver.description(), [groupIndex, driverName, suffix, this]
+        menu->addAction( driver.description(), this, [groupIndex, driverName, suffix, this]
         {
           this->saveDatasetGroup( groupIndex, driverName, suffix );
         } );
@@ -779,14 +774,11 @@ QVariant QgsMeshAvailableDatasetGroupTreeModel::data( const QModelIndex &index, 
   switch ( role )
   {
     case Qt::DisplayRole:
+    case Qt::EditRole:
     case Name:
       return textDisplayed( index );
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 13, 0)
-    case Qt::BackgroundColorRole:
-#else
     case Qt::BackgroundRole:
-#endif
       return backGroundColor( index );
   }
   return QgsMeshDatasetGroupTreeModel::data( index, role );

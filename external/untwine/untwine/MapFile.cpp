@@ -28,18 +28,15 @@
  * OF SUCH DAMAGE.
  ****************************************************************************/
 
-#include "MapFile.hpp"
+// This is here so that things will work with older version of PDAL.
 
-#ifdef _MSC_VER
-#include <io.h>
-#include <fcntl.h>
-#endif
+#include "Common.hpp"
+#include "MapFile.hpp"
 
 namespace untwine
 {
 
-MapContext mapFile(const std::string& filename, bool readOnly,
-    size_t pos, size_t size)
+MapContext mapFile(const std::string& filename, bool readOnly, size_t pos, size_t size)
 {
     MapContext ctx;
 
@@ -50,9 +47,9 @@ MapContext mapFile(const std::string& filename, bool readOnly,
     }
 
 #ifndef _WIN32
-    ctx.m_fd = ::open(filename.c_str(), readOnly ? O_RDONLY : O_RDWR);
+    ctx.m_fd = ::open(filename.data(), readOnly ? O_RDONLY : O_RDWR);
 #else
-    ctx.m_fd = ::_open(filename.c_str(), readOnly ? _O_RDONLY : _O_RDWR);
+    ctx.m_fd = ::_wopen(toNative(filename).data(), readOnly ? _O_RDONLY : _O_RDWR);
 #endif
 
     if (ctx.m_fd == -1)

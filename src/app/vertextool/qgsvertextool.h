@@ -303,6 +303,8 @@ class APP_EXPORT QgsVertexTool : public QgsMapToolAdvancedDigitizing
 
   private:
 
+    QgsVertexEditor *vertexEditor();
+
     // members used for temporary highlight of stuff
 
     //! marker of a snap match (if any) when dragging a vertex
@@ -448,8 +450,6 @@ class APP_EXPORT QgsVertexTool : public QgsMapToolAdvancedDigitizing
 
     //! Locked feature for the vertex editor
     QObjectUniquePtr<QgsLockedFeature> mLockedFeature;
-    //! Dock widget which allows editing vertices
-    QPointer<QgsVertexEditor> mVertexEditor;
 
     /**
      * Data structure that stores alternative features to the currently selected (locked) feature.

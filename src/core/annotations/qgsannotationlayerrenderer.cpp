@@ -32,7 +32,8 @@ QgsAnnotationLayerRenderer::QgsAnnotationLayerRenderer( QgsAnnotationLayer *laye
   // first, we can use the layer's spatial index to very quickly retrieve items we know will fall within the visible
   // extent. This will ONLY apply to items which have a non-scale-dependent bounding box though.
 
-  QSet< QString > items = qgis::listToSet( layer->queryIndex( context.extent() ) );
+  const QStringList itemsList = layer->queryIndex( context.extent() );
+  QSet< QString > items( itemsList.begin(), itemsList.end() );
 
   // we also have NO choice but to clone ALL non-indexed items (i.e. those with a scale-dependent bounding box)
   // since these won't be in the layer's spatial index, and it's too expensive to determine their actual bounding box

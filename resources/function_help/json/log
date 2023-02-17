@@ -3,12 +3,19 @@
   "type": "function",
   "groups": ["Math"],
   "description": "Returns the value of the logarithm of the passed value and base.",
-  "arguments": [
-	{"arg":"base","description":"any positive number"},
-	{"arg":"value","description":"any positive number"}
-  ],
-  "examples": [
-	{ "expression":"log(2, 32)", "returns":"5"},
-	{ "expression":"log(0.5, 32)", "returns":"-5"}
-  ]
+  "arguments": [{
+    "arg": "base",
+    "description": "any positive number"
+  }, {
+    "arg": "value",
+    "description": "any positive number"
+  }],
+  "examples": [{
+    "expression": "log(2, 32)",
+    "returns": "5"
+  }, {
+    "expression": "log(0.5, 32)",
+    "returns": "-5"
+  }],
+  "tags": ["base", "logarithm"]
 }

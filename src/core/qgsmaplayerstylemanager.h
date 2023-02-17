@@ -136,7 +136,7 @@ class CORE_EXPORT QgsMapLayerStyleManager : public QObject
      *
      * \since QGIS 3.0
      */
-    bool isDefault( const QString &styleName ) const;
+    static bool isDefault( const QString &styleName );
 
     /**
      * Copies all styles from \a other.
@@ -161,7 +161,7 @@ class CORE_EXPORT QgsMapLayerStyleManager : public QObject
     QMap<QString, QgsMapLayerStyle> mStyles;
     QString mCurrentStyle;
     QgsMapLayerStyle *mOverriddenOriginalStyle = nullptr;
-    QString defaultStyleName() const;
+    static QString defaultStyleName();
 };
 
 #endif // QGSMAPLAYERSTYLEMANAGER_H

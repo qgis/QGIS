@@ -26,6 +26,7 @@
 #include "qgis_sip.h"
 #include "qgsprocessinggui.h"
 #include "qgsvectorlayer.h"
+#include "qgsprocessingmodelchildparametersource.h"
 
 class QgsProcessingParameterDefinition;
 class QgsProcessingContext;
@@ -661,6 +662,13 @@ class GUI_EXPORT QgsProcessingParameterWidgetFactoryInterface
      */
     virtual QString modelerExpressionFormatString() const;
 
+    /**
+     * Returns the default source type to use for the widget for the specified \a parameter.
+     *
+     * \since QGIS 3.24
+     */
+    virtual QgsProcessingModelChildParameterSource::Source defaultModelSource( const QgsProcessingParameterDefinition *parameter ) const;
+
 };
 
 /**
@@ -677,6 +685,7 @@ class GUI_EXPORT QgsProcessingParameterWidgetFactoryInterface
  */
 class GUI_EXPORT QgsProcessingHiddenWidgetWrapper: public QgsAbstractProcessingParameterWidgetWrapper
 {
+    Q_OBJECT
   public:
 
     /**

@@ -8,43 +8,31 @@ on:
       - queued_ltr_backports
   pull_request:
 
+env:
+  DOXYGEN_VERSION: 1.9.6
+
 jobs:
   documentation_checks:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
-      - name: Set up Python 3.7
-        uses: actions/setup-python@v2.3.1
+        uses: actions/checkout@v3
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v4
         with:
-          python-version: 3.7
-      - name: Install Requirements
+          python-version: '3.10' 
+      - name: Install requirements
         run: |
-          sudo apt install -y \
-              doxygen \
-              cpanminus \
-              libyaml-tiny-perl \
-              libio-socket-ssl-perl \
-              libhttp-date-perl \
-              libgetopt-long-descriptive-perl \
-              libmoo-perl \
-              libnamespace-clean-perl \
-              libpath-tiny-perl \
-              libpod-constants-perl \
-              libscalar-list-utils-perl \
-              libsort-key-perl \
-              libstrictures-perl \
-              libstring-escape-perl \
-              libtry-tiny-perl \
-              expect
-            cpanm --notest App::Licensecheck
+          wget https://www.doxygen.nl/files/doxygen-${DOXYGEN_VERSION}.linux.bin.tar.gz
+          tar -xzf doxygen-${DOXYGEN_VERSION}.linux.bin.tar.gz
           python -m pip install --upgrade pip
           pip install autopep8 nose2 mock termcolor
       - name: Make
         run: |
-         mkdir build
-         cd build
-         cmake -DWITH_SERVER=ON -DUSE_CCACHE=OFF -DWITH_CORE=OFF -DWITH_APIDOC=ON -DWITH_ASTYLE=ON -DENABLE_TESTS=ON -DWITH_DOT=NO -DWERROR=ON ..
+          mkdir build
+          cd build
+          cmake -DUSE_CCACHE=OFF -DWITH_CORE=OFF -DWITH_APIDOC=ON -DWITH_ASTYLE=ON -DENABLE_TESTS=ON \
+                -DWITH_DOT=NO -DWERROR=ON -DDOXYGEN_EXECUTABLE=../doxygen-${DOXYGEN_VERSION}/bin/doxygen ..
           make -j3 apidoc
       - name: Run Tests
         run: cd build && ctest -V -R PyQgsDocCoverage
@@ -53,7 +41,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Install Requirements
         run: |
           sudo apt install -y \
@@ -67,7 +55,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Install Requirements
         run: |
             sudo apt install -y \
@@ -80,7 +68,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Run Banned Keywords Test
         run: ./tests/code_layout/test_banned_keywords.sh
 
@@ -88,7 +76,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Def Window Title Test
         run: ./tests/code_layout/test_defwindowtitle.sh
 
@@ -96,7 +84,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Run QgsScrollArea check
         run: ./tests/code_layout/test_qgsscrollarea.sh
 
@@ -104,7 +92,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: No brace initialization of QVariant variables
         run: ./tests/code_layout/test_qvariant_no_brace_init.sh
 
@@ -112,7 +100,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: No module-wide imports of Qt modules
         run: ./tests/code_layout/test_qt_imports.sh
 
@@ -120,7 +108,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Install Requirements
         run: |
           sudo apt install -y \
@@ -134,7 +122,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           fetch-depth: 100
       - name: Install Requirements
@@ -150,7 +138,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Install Requirements
         run: |
           sudo apt install -y \
@@ -168,7 +156,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Set up Python 3.7
-        uses: actions/setup-python@v2.3.1
+        uses: actions/setup-python@v4
         with:
           python-version: 3.7
       - name: Install Requirements
@@ -192,19 +180,19 @@ jobs:
           python -m pip install --upgrade pip
           pip install autopep8 nose2 mock termcolor
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Sip Checks
-        run: ./tests/code_layout/test_sipify.sh
+        run: ./tests/code_layout/sipify/test_sipify.sh
       - name: Sip Include Test
-        run: ./tests/code_layout/test_sip_include.sh
+        run: ./tests/code_layout/sipify/test_sip_include.sh
       - name: Sip Files Up To Date
-        run: ./tests/code_layout/test_sipfiles.sh
+        run: ./tests/code_layout/sipify/test_sipfiles.sh
 
   cppcheck_18_04:
     runs-on: ubuntu-18.04
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Install Requirements
         run: |

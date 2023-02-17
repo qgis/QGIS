@@ -1,6 +1,7 @@
 *****
 Content-Type: text/xml; charset=utf-8
 
+<?xml version="1.0" encoding="UTF-8"?>
 <ServiceExceptionReport xmlns="http://www.opengis.net/ogc" version="1.3.0">
  <ServiceException code="LayerNotQueryable">The layer 'groupwithoutshortname' is not queryable.</ServiceException>
 </ServiceExceptionReport>

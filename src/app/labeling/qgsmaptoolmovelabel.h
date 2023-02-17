@@ -58,6 +58,9 @@ class APP_EXPORT QgsMapToolMoveLabel: public QgsMapToolLabel
 
     QgsPointXY snapCalloutPointToCommonAngle( const QgsPointXY &mapPoint, bool showStatusMessage ) const;
 
+    bool mAnchorDetached = false;
+    double mLabelTearFromLineThreshold = 0;
+
 };
 
 #endif // QGSMAPTOOLMOVELABEL_H

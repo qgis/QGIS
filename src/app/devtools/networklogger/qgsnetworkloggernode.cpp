@@ -27,88 +27,11 @@
 #include <nlohmann/json.hpp>
 
 //
-// QgsNetworkLoggerNode
-//
-
-QgsNetworkLoggerNode::QgsNetworkLoggerNode() = default;
-QgsNetworkLoggerNode::~QgsNetworkLoggerNode() = default;
-
-
-//
-// QgsNetworkLoggerGroup
-//
-
-QgsNetworkLoggerGroup::QgsNetworkLoggerGroup( const QString &title )
-  : mGroupTitle( title )
-{
-}
-
-void QgsNetworkLoggerGroup::addChild( std::unique_ptr<QgsNetworkLoggerNode> child )
-{
-  if ( !child )
-    return;
-
-  Q_ASSERT( !child->mParent );
-  child->mParent = this;
-
-  mChildren.emplace_back( std::move( child ) );
-}
-
-int QgsNetworkLoggerGroup::indexOf( QgsNetworkLoggerNode *child ) const
-{
-  Q_ASSERT( child->mParent == this );
-  auto it = std::find_if( mChildren.begin(), mChildren.end(), [&]( const std::unique_ptr<QgsNetworkLoggerNode> &p )
-  {
-    return p.get() == child;
-  } );
-  if ( it != mChildren.end() )
-    return std::distance( mChildren.begin(), it );
-  return -1;
-}
-
-QgsNetworkLoggerNode *QgsNetworkLoggerGroup::childAt( int index )
-{
-  Q_ASSERT( static_cast< std::size_t >( index ) < mChildren.size() );
-  return mChildren[ index ].get();
-}
-
-void QgsNetworkLoggerGroup::clear()
-{
-  mChildren.clear();
-}
-
-QVariant QgsNetworkLoggerGroup::data( int role ) const
-{
-  switch ( role )
-  {
-    case Qt::DisplayRole:
-      return mGroupTitle;
-
-    default:
-      break;
-  }
-  return QVariant();
-}
-
-QVariant QgsNetworkLoggerGroup::toVariant() const
-{
-  QVariantMap res;
-  for ( const std::unique_ptr< QgsNetworkLoggerNode > &child : mChildren )
-  {
-    if ( const QgsNetworkLoggerValueNode *valueNode = dynamic_cast< const QgsNetworkLoggerValueNode *>( child.get() ) )
-    {
-      res.insert( valueNode->key(), valueNode->value() );
-    }
-  }
-  return res;
-}
-
-//
 // QgsNetworkLoggerRootNode
 //
 
 QgsNetworkLoggerRootNode::QgsNetworkLoggerRootNode()
-  : QgsNetworkLoggerGroup( QString() )
+  : QgsDevToolsModelGroup( QString() )
 {
 
 }
@@ -126,67 +49,9 @@ void QgsNetworkLoggerRootNode::removeRow( int row )
 QVariant QgsNetworkLoggerRootNode::toVariant() const
 {
   QVariantList res;
-  for ( const std::unique_ptr< QgsNetworkLoggerNode > &child : mChildren )
+  for ( const std::unique_ptr< QgsDevToolsModelNode > &child : mChildren )
     res << child->toVariant();
   return res;
-}
-
-
-//
-// QgsNetworkLoggerValueNode
-//
-QgsNetworkLoggerValueNode::QgsNetworkLoggerValueNode( const QString &key, const QString &value, const QColor &color )
-  : mKey( key )
-  , mValue( value )
-  , mColor( color )
-{
-
-}
-
-QVariant QgsNetworkLoggerValueNode::data( int role ) const
-{
-  switch ( role )
-  {
-    case Qt::DisplayRole:
-    case Qt::ToolTipRole:
-    {
-      return QStringLiteral( "%1: %2" ).arg( mKey.leftJustified( 30, ' ' ), mValue );
-    }
-
-    case Qt::ForegroundRole:
-    {
-      if ( mColor.isValid() )
-        return QBrush( mColor );
-      break;
-    }
-    default:
-      break;
-  }
-  return QVariant();
-}
-
-QList<QAction *> QgsNetworkLoggerValueNode::actions( QObject *parent )
-{
-  QList< QAction * > res;
-
-  QAction *copyAction = new QAction( QObject::tr( "Copy" ), parent );
-  QObject::connect( copyAction, &QAction::triggered, copyAction, [ = ]
-  {
-    QApplication::clipboard()->setText( QStringLiteral( "%1: %2" ).arg( mKey, mValue ) );
-  } );
-
-  res << copyAction;
-
-  return res;
-}
-
-//
-// QgsNetworkLoggerGroup
-//
-
-void QgsNetworkLoggerGroup::addKeyValueNode( const QString &key, const QString &value, const QColor &color )
-{
-  addChild( std::make_unique< QgsNetworkLoggerValueNode >( key, value, color ) );
 }
 
 
@@ -195,7 +60,7 @@ void QgsNetworkLoggerGroup::addKeyValueNode( const QString &key, const QString &
 //
 
 QgsNetworkLoggerRequestGroup::QgsNetworkLoggerRequestGroup( const QgsNetworkRequestParameters &request )
-  : QgsNetworkLoggerGroup( QString() )
+  : QgsDevToolsModelGroup( QString() )
   , mUrl( request.request().url() )
   , mRequestId( request.requestId() )
   , mOperation( request.operation() )
@@ -265,7 +130,12 @@ QVariant QgsNetworkLoggerRequestGroup::data( int role ) const
         case QgsNetworkLoggerRequestGroup::Status::TimeOut:
           return QBrush( QColor( 235, 10, 10 ) );
         case QgsNetworkLoggerRequestGroup::Status::Complete:
+        {
+          if ( mReplyFromCache )
+            return QBrush( QColor( 10, 40, 85, 150 ) );
+
           break;
+        }
       }
       break;
     }
@@ -381,6 +251,7 @@ void QgsNetworkLoggerRequestGroup::setReply( const QgsNetworkReplyContent &reply
   mTotalTime = mTimer.elapsed();
   mHttpStatus = reply.attribute( QNetworkRequest::HttpStatusCodeAttribute ).toInt();
   mContentType = reply.rawHeader( "Content - Type" );
+  mReplyFromCache = reply.attribute( QNetworkRequest::SourceIsFromCacheAttribute ).toBool();
 
   std::unique_ptr< QgsNetworkLoggerReplyGroup > replyGroup = std::make_unique< QgsNetworkLoggerReplyGroup >( reply ) ;
   mReplyGroup = replyGroup.get();
@@ -472,7 +343,7 @@ QString QgsNetworkLoggerRequestGroup::cacheControlToString( QNetworkRequest::Cac
 //
 
 QgsNetworkLoggerRequestDetailsGroup::QgsNetworkLoggerRequestDetailsGroup( const QgsNetworkRequestParameters &request )
-  : QgsNetworkLoggerGroup( QObject::tr( "Request" ) )
+  : QgsDevToolsModelGroup( QObject::tr( "Request" ) )
 {
   addKeyValueNode( QObject::tr( "Operation" ), QgsNetworkLoggerRequestGroup::operationToString( request.operation() ) );
   addKeyValueNode( QObject::tr( "Thread" ), request.originatingThreadId() );
@@ -515,7 +386,7 @@ QgsNetworkLoggerRequestDetailsGroup::QgsNetworkLoggerRequestDetailsGroup( const 
 
 QVariant QgsNetworkLoggerRequestDetailsGroup::toVariant() const
 {
-  QVariantMap res = QgsNetworkLoggerGroup::toVariant().toMap();
+  QVariantMap res = QgsDevToolsModelGroup::toVariant().toMap();
   if ( mQueryGroup )
     res.insert( QObject::tr( "Query" ), mQueryGroup->toVariant() );
   if ( mRequestHeaders )
@@ -531,7 +402,7 @@ QVariant QgsNetworkLoggerRequestDetailsGroup::toVariant() const
 //
 
 QgsNetworkLoggerRequestQueryGroup::QgsNetworkLoggerRequestQueryGroup( const QUrl &url )
-  : QgsNetworkLoggerGroup( QObject::tr( "Query" ) )
+  : QgsDevToolsModelGroup( QObject::tr( "Query" ) )
 {
   QUrlQuery query( url );
   const QList<QPair<QString, QString> > queryItems = query.queryItems();
@@ -547,7 +418,7 @@ QgsNetworkLoggerRequestQueryGroup::QgsNetworkLoggerRequestQueryGroup( const QUrl
 // QgsNetworkLoggerRequestHeadersGroup
 //
 QgsNetworkLoggerRequestHeadersGroup::QgsNetworkLoggerRequestHeadersGroup( const QgsNetworkRequestParameters &request )
-  : QgsNetworkLoggerGroup( QObject::tr( "Headers" ) )
+  : QgsDevToolsModelGroup( QObject::tr( "Headers" ) )
 {
   const QList<QByteArray> headers = request.request().rawHeaderList();
   for ( const QByteArray &header : headers )
@@ -561,7 +432,7 @@ QgsNetworkLoggerRequestHeadersGroup::QgsNetworkLoggerRequestHeadersGroup( const 
 //
 
 QgsNetworkLoggerPostContentGroup::QgsNetworkLoggerPostContentGroup( const QgsNetworkRequestParameters &parameters )
-  : QgsNetworkLoggerGroup( QObject::tr( "Content" ) )
+  : QgsDevToolsModelGroup( QObject::tr( "Content" ) )
 {
   addKeyValueNode( QObject::tr( "Data" ), parameters.content() );
 }
@@ -572,7 +443,7 @@ QgsNetworkLoggerPostContentGroup::QgsNetworkLoggerPostContentGroup( const QgsNet
 //
 
 QgsNetworkLoggerReplyGroup::QgsNetworkLoggerReplyGroup( const QgsNetworkReplyContent &reply )
-  : QgsNetworkLoggerGroup( QObject::tr( "Reply" ) )
+  : QgsDevToolsModelGroup( QObject::tr( "Reply" ) )
 {
   addKeyValueNode( QObject::tr( "Status" ), reply.attribute( QNetworkRequest::HttpStatusCodeAttribute ).toString() );
   if ( reply.error() != QNetworkReply::NoError )
@@ -589,7 +460,7 @@ QgsNetworkLoggerReplyGroup::QgsNetworkLoggerReplyGroup( const QgsNetworkReplyCon
 
 QVariant QgsNetworkLoggerReplyGroup::toVariant() const
 {
-  QVariantMap res = QgsNetworkLoggerGroup::toVariant().toMap();
+  QVariantMap res = QgsDevToolsModelGroup::toVariant().toMap();
   if ( mReplyHeaders )
   {
     res.insert( QObject::tr( "Headers" ), mReplyHeaders->toVariant() );
@@ -602,7 +473,7 @@ QVariant QgsNetworkLoggerReplyGroup::toVariant() const
 // QgsNetworkLoggerReplyHeadersGroup
 //
 QgsNetworkLoggerReplyHeadersGroup::QgsNetworkLoggerReplyHeadersGroup( const QgsNetworkReplyContent &reply )
-  : QgsNetworkLoggerGroup( QObject::tr( "Headers" ) )
+  : QgsDevToolsModelGroup( QObject::tr( "Headers" ) )
 {
   const QList<QByteArray> headers = reply.rawHeaderList();
   for ( const QByteArray &header : headers )
@@ -615,7 +486,7 @@ QgsNetworkLoggerReplyHeadersGroup::QgsNetworkLoggerReplyHeadersGroup( const QgsN
 // QgsNetworkLoggerSslErrorGroup
 //
 QgsNetworkLoggerSslErrorGroup::QgsNetworkLoggerSslErrorGroup( const QList<QSslError> &errors )
-  : QgsNetworkLoggerGroup( QObject::tr( "SSL errors" ) )
+  : QgsDevToolsModelGroup( QObject::tr( "SSL errors" ) )
 {
   for ( const QSslError &error : errors )
   {
@@ -628,15 +499,5 @@ QVariant QgsNetworkLoggerSslErrorGroup::data( int role ) const
   if ( role == Qt::ForegroundRole )
     return QBrush( QColor( 180, 65, 210 ) );
 
-  return QgsNetworkLoggerGroup::data( role );
-}
-
-QList<QAction *> QgsNetworkLoggerNode::actions( QObject * )
-{
-  return QList< QAction * >();
-}
-
-QVariant QgsNetworkLoggerNode::toVariant() const
-{
-  return QVariant();
+  return QgsDevToolsModelGroup::data( role );
 }

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsLabelObstacleSettings
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -12,15 +11,16 @@ __copyright__ = 'Copyright 2019, The QGIS Project'
 
 import qgis  # NOQA
 
-from qgis.core import (QgsProperty,
-                       QgsPropertyCollection,
-                       QgsPalLayerSettings,
-                       QgsLabelObstacleSettings,
-                       QgsExpressionContext,
-                       QgsExpressionContextScope,
-                       QgsGeometry)
-
-from qgis.testing import unittest, start_app
+from qgis.core import (
+    QgsExpressionContext,
+    QgsExpressionContextScope,
+    QgsGeometry,
+    QgsLabelObstacleSettings,
+    QgsPalLayerSettings,
+    QgsProperty,
+    QgsPropertyCollection,
+)
+from qgis.testing import start_app, unittest
 
 start_app()
 

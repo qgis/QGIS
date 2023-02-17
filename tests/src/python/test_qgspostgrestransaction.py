@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for postgres transaction groups.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -10,17 +9,16 @@ __author__ = 'Nyall Dawson'
 __date__ = '11/06/2018'
 __copyright__ = 'Copyright 2018, The QGIS Project'
 
-import qgis  # NOQA
-
 import os
 
+import qgis  # NOQA
 from qgis.core import (
-    QgsVectorLayer,
+    Qgis,
+    QgsDataSourceUri,
     QgsProject,
     QgsTransaction,
-    QgsDataSourceUri
+    QgsVectorLayer,
 )
-
 from qgis.testing import start_app, unittest
 
 start_app()
@@ -81,7 +79,7 @@ class TestQgsPostgresTransaction(unittest.TestCase):
         conn_string = QgsDataSourceUri(self.vl_b.source()).connectionInfo()
 
         # No transaction group.
-        QgsProject.instance().setAutoTransaction(False)
+        QgsProject.instance().setTransactionMode(Qgis.TransactionMode.Disabled)
         noTg = QgsProject.instance().transactionGroup("postgres", conn_string)
         self.assertIsNone(noTg)
 
@@ -92,7 +90,7 @@ class TestQgsPostgresTransaction(unittest.TestCase):
         self.rollbackTransaction()
 
         # with auto transactions
-        QgsProject.instance().setAutoTransaction(True)
+        QgsProject.instance().setTransactionMode(Qgis.TransactionMode.AutomaticGroups)
         self.startTransaction()
         noTg = QgsProject.instance().transactionGroup("postgres", conn_string)
         self.assertIsNotNone(noTg)
@@ -108,7 +106,7 @@ class TestQgsPostgresTransaction(unittest.TestCase):
         """Not particularly related to PG but it fits here nicely: test GH #39282"""
 
         project = QgsProject()
-        project.setAutoTransaction(True)
+        project.setTransactionMode(Qgis.TransactionMode.AutomaticGroups)
 
         vl_b = QgsVectorLayer(self.dbconn + ' sslmode=disable key=\'pk\' table="qgis_test"."books" sql=', 'books',
                               'postgres')

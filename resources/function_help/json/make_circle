@@ -3,14 +3,27 @@
   "type": "function",
   "groups": ["GeometryGroup"],
   "description": "Creates a circular polygon.",
-  "arguments": [
-    {"arg":"center", "description": "center point of the circle"},
-    {"arg":"radius", "description": "radius of the circle"},
-    {"arg":"segments", "optional": true, "default": "36", "description": "optional argument for polygon segmentation. By default this value is 36"}
-  ],
-  "examples": [
-    { "expression":"geom_to_wkt(make_circle(make_point(10,10), 5, 4))", "returns":"'Polygon ((10 15, 15 10, 10 5, 5 10, 10 15))'"},
-    { "expression":"geom_to_wkt(make_circle(make_point(10,10,5), 5, 4))", "returns":"'PolygonZ ((10 15 5, 15 10 5, 10 5 5, 5 10 5, 10 15 5))'"},
-    { "expression":"geom_to_wkt(make_circle(make_point(10,10,5,30), 5, 4))", "returns":"'PolygonZM ((10 15 5 30, 15 10 5 30, 10 5 5 30, 5 10 5 30, 10 15 5 30))'"}
-  ]
+  "arguments": [{
+    "arg": "center",
+    "description": "center point of the circle"
+  }, {
+    "arg": "radius",
+    "description": "radius of the circle"
+  }, {
+    "arg": "segments",
+    "optional": true,
+    "default": "36",
+    "description": "optional argument for polygon segmentation. By default this value is 36"
+  }],
+  "examples": [{
+    "expression": "geom_to_wkt(make_circle(make_point(10,10), 5, 4))",
+    "returns": "'Polygon ((10 15, 15 10, 10 5, 5 10, 10 15))'"
+  }, {
+    "expression": "geom_to_wkt(make_circle(make_point(10,10,5), 5, 4))",
+    "returns": "'PolygonZ ((10 15 5, 15 10 5, 10 5 5, 5 10 5, 10 15 5))'"
+  }, {
+    "expression": "geom_to_wkt(make_circle(make_point(10,10,5,30), 5, 4))",
+    "returns": "'PolygonZM ((10 15 5 30, 15 10 5 30, 10 5 5 30, 5 10 5 30, 10 15 5 30))'"
+  }],
+  "tags": ["circular", "polygon"]
 }

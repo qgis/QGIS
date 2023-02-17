@@ -19,30 +19,38 @@
 #include "qgsguivectorlayertools.h"
 
 #include "qgisapp.h"
-#include "qgsapplication.h"
 #include "qgsfeatureaction.h"
-#include "qgslogger.h"
-#include "qgsmapcanvas.h"
 #include "qgsmessagebar.h"
 #include "qgsmessagebaritem.h"
 #include "qgsmessageviewer.h"
-#include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 
-bool QgsGuiVectorLayerTools::addFeature( QgsVectorLayer *layer, const QgsAttributeMap &defaultValues, const QgsGeometry &defaultGeometry, QgsFeature *feat ) const
+bool QgsGuiVectorLayerTools::addFeature( QgsVectorLayer *layer, const QgsAttributeMap &defaultValues, const QgsGeometry &defaultGeometry, QgsFeature *feat, QWidget *parentWidget, bool showModal, bool hideParent ) const
 {
   QgsFeature *f = feat;
   if ( !feat )
     f = new QgsFeature();
 
   f->setGeometry( defaultGeometry );
-  QgsFeatureAction a( tr( "Add feature" ), *f, layer );
-  a.setForceSuppressFormPopup( forceSuppressFormPopup() );
-  const bool added = a.addFeature( defaultValues );
+  QgsFeatureAction *a = new QgsFeatureAction( tr( "Add feature" ), *f, layer, QUuid(), -1, parentWidget );
+  a->setForceSuppressFormPopup( forceSuppressFormPopup() );
+  connect( a, &QgsFeatureAction::addFeatureFinished, a, &QObject::deleteLater );
+  const QgsFeatureAction::AddFeatureResult result = a->addFeature( defaultValues, showModal, nullptr, hideParent );
   if ( !feat )
     delete f;
 
-  return added;
+  switch ( result )
+  {
+    case QgsFeatureAction::AddFeatureResult::Success:
+    case QgsFeatureAction::AddFeatureResult::Pending:
+      return true;
+
+    case QgsFeatureAction::AddFeatureResult::LayerStateError:
+    case QgsFeatureAction::AddFeatureResult::Canceled:
+    case QgsFeatureAction::AddFeatureResult::FeatureError:
+      return false;
+  }
+  BUILTIN_UNREACHABLE
 }
 
 bool QgsGuiVectorLayerTools::startEditing( QgsVectorLayer *layer ) const
@@ -167,7 +175,7 @@ void QgsGuiVectorLayerTools::commitError( QgsVectorLayer *vlayer ) const
   QToolButton *showMore = new QToolButton();
   // store pointer to vlayer in data of QAction
   QAction *act = new QAction( showMore );
-  act->setData( QVariant( QMetaType::QObjectStar, &vlayer ) );
+  act->setData( QVariant::fromValue( vlayer ) );
   act->setText( tr( "Show more" ) );
   showMore->setStyleSheet( QStringLiteral( "background-color: rgba(255, 255, 255, 0); color: black; text-decoration: underline;" ) );
   showMore->setCursor( Qt::PointingHandCursor );

@@ -205,6 +205,10 @@ Dumps the content to an SQL equivalent
 %End
 
 
+        bool operator==( const OrderByClause &v ) const;
+
+        bool operator!=( const OrderByClause &v ) const;
+
     };
 
 

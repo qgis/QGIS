@@ -354,8 +354,11 @@ void TestQgsMapLayer::styleCategories()
 {
   // control that AllStyleCategories is actually complete
   const QgsMapLayer::StyleCategories allStyleCategories = QgsMapLayer::AllStyleCategories;
-  for ( const QgsMapLayer::StyleCategory category : qgsEnumMap<QgsMapLayer::StyleCategory>().keys() )
+
+  const QMap<QgsMapLayer::StyleCategory, QString> styleCats = qgsEnumMap<QgsMapLayer::StyleCategory>();
+  for ( auto it = styleCats.keyBegin(); it != styleCats.keyEnd(); it++ )
   {
+    const QgsMapLayer::StyleCategory category = *it;
     if ( category == QgsMapLayer::AllStyleCategories )
       continue;
 

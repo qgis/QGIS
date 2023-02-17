@@ -219,8 +219,9 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
 
     QgsPointXY newFaceMarkerPosition( int vertexIndex );
 
-    void addVertexToFaceCanditate( int vertexIndex );
-    bool testNewVertexInFaceCanditate( int vertexIndex );
+    void addVertexToFaceCanditate( int vertexIndex ); //for existing vertex
+    void addVertexToFaceCanditate( const QgsPointXY &vertexPosition );
+    bool testNewVertexInFaceCanditate( bool testLast, int vertexIndex, const QgsPointXY &mapPoint ) const;
 
     // selection methods
     void select( const QgsPointXY &mapPoint, Qt::KeyboardModifiers modifiers, double tolerance );
@@ -239,7 +240,7 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
     void clearSelection();
 
     void setMovingRubberBandValidity( bool valid );
-    bool isSelectionGrapped( QgsPointXY &grappedPoint );
+    bool isSelectionGrapped( QgsPointXY &grappedPoint ) const;
 
     void forceByLineReleaseEvent( QgsMapMouseEvent *e );
     void forceByLineBySelectedFeature( QgsMapMouseEvent *e );
@@ -265,6 +266,7 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
     Edge mCurrentEdge = {-1, -1};
     int mCurrentVertexIndex = -1;
     QList<int> mNewFaceCandidate;
+    QList<QgsMeshVertex> mNewVerticesForNewFaceCandidate;
     bool mDoubleClicks = false;
     QgsPointXY mFirstClickPoint; //the first click point when double clicks, we need it when the point is constraint by the cad tool, second click could not be constraint
     double mFirstClickZValue;
@@ -320,6 +322,8 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
 
     //! members for split face
     int mSplittableFaceCount = 0;
+    //! menbers for refinement face
+    int mRefinableFaceCount = 0;
 
     // assiociated widget
     QgsZValueWidget *mZValueWidget = nullptr; //own by QgsUserInputWidget instance

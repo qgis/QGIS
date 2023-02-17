@@ -104,6 +104,14 @@ void QgsExternalResourceWidgetWrapper::updateProperties( const QgsFeature &featu
         {
           dvc = QgsExternalResourceWidget::Image;
         }
+        else if ( dvcString.compare( QLatin1String( "audio" ), Qt::CaseInsensitive ) == 0 )
+        {
+          dvc = QgsExternalResourceWidget::Audio;
+        }
+        else if ( dvcString.compare( QLatin1String( "video" ), Qt::CaseInsensitive ) == 0 )
+        {
+          dvc = QgsExternalResourceWidget::Video;
+        }
         else if ( dvcString.compare( QLatin1String( "web" ), Qt::CaseInsensitive ) == 0 )
         {
           dvc = QgsExternalResourceWidget::Web;
@@ -236,7 +244,7 @@ void QgsExternalResourceWidgetWrapper::updateValues( const QVariant &value, cons
 {
   if ( mLineEdit )
   {
-    if ( value.isNull() )
+    if ( QgsVariantUtils::isNull( value ) )
     {
       mLineEdit->setText( QgsApplication::nullRepresentation() );
     }
@@ -257,7 +265,7 @@ void QgsExternalResourceWidgetWrapper::updateValues( const QVariant &value, cons
 
   if ( mQgsWidget )
   {
-    if ( value.isNull() )
+    if ( QgsVariantUtils::isNull( value ) )
     {
       mQgsWidget->setDocumentPath( QgsApplication::nullRepresentation() );
     }

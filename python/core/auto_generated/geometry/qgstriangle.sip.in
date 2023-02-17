@@ -154,7 +154,7 @@ Example
        # []
 %End
 
-    bool isDegenerate() /HoldGIL/;
+    bool isDegenerate() const /HoldGIL/;
 %Docstring
 Convenient method checking if the geometry is degenerate (have duplicate or colinear point(s)).
 

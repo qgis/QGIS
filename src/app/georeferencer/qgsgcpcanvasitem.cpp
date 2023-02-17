@@ -54,7 +54,7 @@ void QgsGCPCanvasItem::paint( QPainter *p )
   if ( mDataPoint )
   {
     enabled = mDataPoint->isEnabled();
-    worldCoords = mDataPoint->canvasCoords();
+    worldCoords = mDataPoint->destinationPoint();
     id = mDataPoint->id();
   }
   p->setOpacity( enabled ? 1.0 : 0.3 );
@@ -163,17 +163,21 @@ void QgsGCPCanvasItem::updatePosition()
 
   if ( mIsGCPSource )
   {
-    setPos( toCanvasCoordinates( mDataPoint->pixelCoords() ) );
-    return;
+    setPos( toCanvasCoordinates( mDataPoint->sourcePoint() ) );
   }
-  if ( mDataPoint->canvasCoords().isEmpty() )
+  else
   {
-    const QgsCoordinateReferenceSystem mapCrs = mMapCanvas->mapSettings().destinationCrs();
-    const QgsCoordinateTransform transf( mDataPoint->crs(), mapCrs, QgsProject::instance() );
-    const QgsPointXY mapCoords  = transf.transform( mDataPoint->mapCoords() );
-    mDataPoint->setCanvasCoords( mapCoords );
+    const QgsCoordinateTransform pointToCanvasTransform( mDataPoint->destinationPointCrs(), mMapCanvas->mapSettings().destinationCrs(), QgsProject::instance() );
+    try
+    {
+      const QgsPointXY canvasMapCoords = pointToCanvasTransform.transform( mDataPoint->destinationPoint() );
+      const QPointF canvasCoordinatesInPixels = toCanvasCoordinates( canvasMapCoords );
+
+      setPos( canvasCoordinatesInPixels );
+    }
+    catch ( QgsCsException & )
+    {}
   }
-  setPos( toCanvasCoordinates( mDataPoint->canvasCoords() ) );
 }
 
 void QgsGCPCanvasItem::drawResidualArrow( QPainter *p, const QgsRenderContext &context )
@@ -216,7 +220,7 @@ double QgsGCPCanvasItem::residualToScreenFactor() const
     }
   }
 
-  return 1.0 / ( mapUnitsPerScreenPixel * mapUnitsPerRasterPixel );
+  return mapUnitsPerRasterPixel / mapUnitsPerScreenPixel;
 }
 
 void QgsGCPCanvasItem::checkBoundingRectChange()

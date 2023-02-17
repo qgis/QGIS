@@ -157,6 +157,20 @@ class CORE_EXPORT QgsNetworkReplyContent
      */
     QByteArray content() const { return mContent; }
 
+    /**
+     * Extracts the filename component of the content disposition header from a network \a reply.
+     *
+     * \since QGIS 3.28
+     */
+    static QString extractFilenameFromContentDispositionHeader( QNetworkReply *reply );
+
+    /**
+     * Extracts the filename component of the content disposition header from the \a header.
+     *
+     * \since QGIS 3.28
+     */
+    static QString extractFileNameFromContentDispositionHeader( const QString &header );
+
   private:
 
     QNetworkReply::NetworkError mError = QNetworkReply::NoError;

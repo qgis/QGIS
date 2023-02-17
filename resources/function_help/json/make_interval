@@ -3,18 +3,51 @@
   "type": "function",
   "groups": ["Date and Time"],
   "description": "Creates an interval value from year, month, weeks, days, hours, minute and seconds values.",
-  "arguments": [
-    {"arg":"years","description":"Number of years (assumes a 365.25 day year length).", "optional": true, "default": "0"},
-    {"arg":"months","description":"Number of months (assumes a 30 day month length)", "optional": true, "default": "0"},
-    {"arg":"weeks","description":"Number of weeks", "optional": true, "default": "0"},
-    {"arg":"days","description":"Number of days", "optional": true, "default": "0"},
-    {"arg":"hours","description":"Number of hours", "optional": true, "default": "0"},
-    {"arg":"minutes","description":"Number of minutes", "optional": true, "default": "0"},
-    {"arg":"seconds","description":"Number of seconds", "optional": true, "default": "0"}
-  ],
-  "examples": [
-    { "expression":"make_interval(hours:=3)", "returns":"interval: 3 hours"},
-    { "expression":"make_interval(days:=2, hours:=3)", "returns":"interval: 2.125 days"},
-    { "expression":"make_interval(minutes:=0.5, seconds:=5)", "returns":"interval: 35 seconds"}
-  ]
+  "arguments": [{
+    "arg": "years",
+    "description": "Number of years (assumes a 365.25 day year length).",
+    "optional": true,
+    "default": "0"
+  }, {
+    "arg": "months",
+    "description": "Number of months (assumes a 30 day month length)",
+    "optional": true,
+    "default": "0"
+  }, {
+    "arg": "weeks",
+    "description": "Number of weeks",
+    "optional": true,
+    "default": "0"
+  }, {
+    "arg": "days",
+    "description": "Number of days",
+    "optional": true,
+    "default": "0"
+  }, {
+    "arg": "hours",
+    "description": "Number of hours",
+    "optional": true,
+    "default": "0"
+  }, {
+    "arg": "minutes",
+    "description": "Number of minutes",
+    "optional": true,
+    "default": "0"
+  }, {
+    "arg": "seconds",
+    "description": "Number of seconds",
+    "optional": true,
+    "default": "0"
+  }],
+  "examples": [{
+    "expression": "make_interval(hours:=3)",
+    "returns": "interval: 3 hours"
+  }, {
+    "expression": "make_interval(days:=2, hours:=3)",
+    "returns": "interval: 2.125 days"
+  }, {
+    "expression": "make_interval(minutes:=0.5, seconds:=5)",
+    "returns": "interval: 35 seconds"
+  }],
+  "tags": ["minute", "seconds", "month", "year", "weeks", "values", "interval", "hours", "days"]
 }

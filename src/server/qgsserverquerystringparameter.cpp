@@ -159,3 +159,13 @@ void QgsServerQueryStringParameter::setDescription( const QString &description )
 {
   mDescription = description;
 }
+
+bool QgsServerQueryStringParameter::hidden() const
+{
+  return mHidden;
+}
+
+void QgsServerQueryStringParameter::setHidden( bool hidden )
+{
+  mHidden = hidden;
+}

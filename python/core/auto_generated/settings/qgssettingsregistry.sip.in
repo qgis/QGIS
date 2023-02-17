@@ -10,6 +10,7 @@
 
 
 
+
 class QgsSettingsRegistry
 {
 %Docstring(signature="appended")
@@ -17,6 +18,9 @@ class QgsSettingsRegistry
 list of child :py:class:`QgsSettingsRegistry` and a list of child :py:class:`QgsSettingsRegistry`
 
 .. versionadded:: 3.20
+
+.. deprecated:: QGIS 3.30
+   use :py:func:`QgsSettings.treeRoot()` instead
 %End
 
 %TypeHeaderCode
@@ -60,9 +64,18 @@ Returns the list of registered child QgsSettingsRegistry.
 
   protected:
 
-    void addSettingsEntry( const QgsSettingsEntryBase *settingsEntry );
+    bool addSettingsEntry( const QgsSettingsEntryBase *settingsEntry );
 %Docstring
-Add ``settingsEntry`` to the register.
+Adds ``settingsEntry`` to the registry.
+%End
+
+ void addSettingsEntryGroup( const QgsSettingsEntryGroup *settingsGroup ) /Deprecated/;
+%Docstring
+Adds a group of setting to the registry
+
+.. versionadded:: 3.26
+
+.. deprecated:: QGIS 3.30
 %End
 
 };

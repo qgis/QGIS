@@ -14,9 +14,9 @@
  ***************************************************************************/
 
 #include "qgstextrenderer.h"
-#include "qgsvectorlayer.h"
 #include "qgstextformat.h"
 #include "qgstextdocument.h"
+#include "qgstextdocumentmetrics.h"
 #include "qgstextfragment.h"
 #include "qgspallabeling.h"
 #include "qgspainteffect.h"
@@ -43,34 +43,34 @@ static void _fixQPictureDPI( QPainter *p )
             static_cast< double >( qt_defaultDpiY() ) / p->device()->logicalDpiY() );
 }
 
-QgsTextRenderer::HAlignment QgsTextRenderer::convertQtHAlignment( Qt::Alignment alignment )
+Qgis::TextHorizontalAlignment QgsTextRenderer::convertQtHAlignment( Qt::Alignment alignment )
 {
   if ( alignment & Qt::AlignLeft )
-    return AlignLeft;
+    return Qgis::TextHorizontalAlignment::Left;
   else if ( alignment & Qt::AlignRight )
-    return AlignRight;
+    return Qgis::TextHorizontalAlignment::Right;
   else if ( alignment & Qt::AlignHCenter )
-    return AlignCenter;
+    return Qgis::TextHorizontalAlignment::Center;
   else if ( alignment & Qt::AlignJustify )
-    return AlignJustify;
+    return Qgis::TextHorizontalAlignment::Justify;
 
   // not supported?
-  return AlignLeft;
+  return Qgis::TextHorizontalAlignment::Left;
 }
 
-QgsTextRenderer::VAlignment QgsTextRenderer::convertQtVAlignment( Qt::Alignment alignment )
+Qgis::TextVerticalAlignment QgsTextRenderer::convertQtVAlignment( Qt::Alignment alignment )
 {
   if ( alignment & Qt::AlignTop )
-    return AlignTop;
+    return Qgis::TextVerticalAlignment::Top;
   else if ( alignment & Qt::AlignBottom )
-    return AlignBottom;
+    return Qgis::TextVerticalAlignment::Bottom;
   else if ( alignment & Qt::AlignVCenter )
-    return AlignVCenter;
+    return Qgis::TextVerticalAlignment::VerticalCenter;
   //not supported
   else if ( alignment & Qt::AlignBaseline )
-    return AlignBottom;
+    return Qgis::TextVerticalAlignment::Bottom;
 
-  return AlignTop;
+  return Qgis::TextVerticalAlignment::Top;
 }
 
 int QgsTextRenderer::sizeToPixel( double size, const QgsRenderContext &c, QgsUnitTypes::RenderUnit unit, const QgsMapUnitScale &mapUnitScale )
@@ -78,12 +78,12 @@ int QgsTextRenderer::sizeToPixel( double size, const QgsRenderContext &c, QgsUni
   return static_cast< int >( c.convertToPainterUnits( size, unit, mapUnitScale ) + 0.5 ); //NOLINT
 }
 
-void QgsTextRenderer::drawText( const QRectF &rect, double rotation, QgsTextRenderer::HAlignment alignment, const QStringList &text, QgsRenderContext &context, const QgsTextFormat &format, bool, VAlignment vAlignment, Qgis::TextRendererFlags flags )
+void QgsTextRenderer::drawText( const QRectF &rect, double rotation, Qgis::TextHorizontalAlignment alignment, const QStringList &text, QgsRenderContext &context, const QgsTextFormat &format, bool, Qgis::TextVerticalAlignment vAlignment, Qgis::TextRendererFlags flags,
+                                Qgis::TextLayoutMode mode )
 {
   QgsTextFormat tmpFormat = format;
   if ( format.dataDefinedProperties().hasActiveProperties() ) // note, we use format instead of tmpFormat here, it's const and potentially avoids a detach
     tmpFormat.updateDataDefinedProperties( context );
-  tmpFormat = updateShadowPosition( tmpFormat );
 
   QStringList textLines;
   for ( const QString &line : text )
@@ -101,20 +101,30 @@ void QgsTextRenderer::drawText( const QRectF &rect, double rotation, QgsTextRend
   QgsTextDocument document = format.allowHtmlFormatting() ? QgsTextDocument::fromHtml( textLines ) : QgsTextDocument::fromPlainText( textLines );
   document.applyCapitalization( format.capitalization() );
 
+  const double fontScale = calculateScaleFactorForFormat( context, format );
+  const QgsTextDocumentMetrics metrics = QgsTextDocumentMetrics::calculateMetrics( document, format, context, fontScale );
+
+  drawDocument( rect, tmpFormat, document, metrics, context, alignment, vAlignment, rotation, mode, flags );
+}
+
+void QgsTextRenderer::drawDocument( const QRectF &rect, const QgsTextFormat &format, const QgsTextDocument &document, const QgsTextDocumentMetrics &metrics, QgsRenderContext &context, Qgis::TextHorizontalAlignment horizontalAlignment, Qgis::TextVerticalAlignment verticalAlignment, double rotation, Qgis::TextLayoutMode mode, Qgis::TextRendererFlags )
+{
+  const QgsTextFormat tmpFormat = updateShadowPosition( format );
+
   if ( tmpFormat.background().enabled() )
   {
-    drawPart( rect, rotation, alignment, vAlignment, document, context, tmpFormat, Background );
+    drawPart( rect, rotation, horizontalAlignment, verticalAlignment, document, metrics, context, tmpFormat, Qgis::TextComponent::Background, mode );
   }
 
   if ( tmpFormat.buffer().enabled() )
   {
-    drawPart( rect, rotation, alignment, vAlignment, document, context, tmpFormat, Buffer );
+    drawPart( rect, rotation, horizontalAlignment, verticalAlignment, document, metrics, context, tmpFormat, Qgis::TextComponent::Buffer, mode );
   }
 
-  drawPart( rect, rotation, alignment, vAlignment, document, context, tmpFormat, Text );
+  drawPart( rect, rotation, horizontalAlignment, verticalAlignment, document, metrics, context, tmpFormat, Qgis::TextComponent::Text, mode );
 }
 
-void QgsTextRenderer::drawText( QPointF point, double rotation, QgsTextRenderer::HAlignment alignment, const QStringList &textLines, QgsRenderContext &context, const QgsTextFormat &format, bool )
+void QgsTextRenderer::drawText( QPointF point, double rotation, Qgis::TextHorizontalAlignment alignment, const QStringList &textLines, QgsRenderContext &context, const QgsTextFormat &format, bool )
 {
   QgsTextFormat tmpFormat = format;
   if ( format.dataDefinedProperties().hasActiveProperties() ) // note, we use format instead of tmpFormat here, it's const and potentially avoids a detach
@@ -123,18 +133,20 @@ void QgsTextRenderer::drawText( QPointF point, double rotation, QgsTextRenderer:
 
   QgsTextDocument document = format.allowHtmlFormatting() ? QgsTextDocument::fromHtml( textLines ) : QgsTextDocument::fromPlainText( textLines );
   document.applyCapitalization( format.capitalization() );
+  const double fontScale = calculateScaleFactorForFormat( context, format );
+  const QgsTextDocumentMetrics metrics = QgsTextDocumentMetrics::calculateMetrics( document, format, context, fontScale );
 
   if ( tmpFormat.background().enabled() )
   {
-    drawPart( point, rotation, alignment, document, context, tmpFormat, Background );
+    drawPart( point, rotation, alignment, document, metrics, context, tmpFormat, Qgis::TextComponent::Background, Qgis::TextLayoutMode::Point );
   }
 
   if ( tmpFormat.buffer().enabled() )
   {
-    drawPart( point, rotation, alignment, document, context, tmpFormat, Buffer );
+    drawPart( point, rotation, alignment, document, metrics,  context, tmpFormat, Qgis::TextComponent::Buffer, Qgis::TextLayoutMode::Point );
   }
 
-  drawPart( point, rotation, alignment, document, context, tmpFormat, Text );
+  drawPart( point, rotation, alignment, document, metrics, context, tmpFormat, Qgis::TextComponent::Text, Qgis::TextLayoutMode::Point );
 }
 
 QgsTextFormat QgsTextRenderer::updateShadowPosition( const QgsTextFormat &format )
@@ -158,15 +170,17 @@ QgsTextFormat QgsTextRenderer::updateShadowPosition( const QgsTextFormat &format
   return tmpFormat;
 }
 
-void QgsTextRenderer::drawPart( const QRectF &rect, double rotation, HAlignment alignment,
-                                const QStringList &textLines, QgsRenderContext &context, const QgsTextFormat &format, QgsTextRenderer::TextPart part, bool )
+void QgsTextRenderer::drawPart( const QRectF &rect, double rotation, Qgis::TextHorizontalAlignment alignment,
+                                const QStringList &textLines, QgsRenderContext &context, const QgsTextFormat &format, Qgis::TextComponent part, bool )
 {
   const QgsTextDocument document = format.allowHtmlFormatting() ? QgsTextDocument::fromHtml( textLines ) : QgsTextDocument::fromPlainText( textLines );
+  const double fontScale = calculateScaleFactorForFormat( context, format );
+  const QgsTextDocumentMetrics metrics = QgsTextDocumentMetrics::calculateMetrics( document, format, context, fontScale );
 
-  drawPart( rect, rotation, alignment, AlignTop, document, context, format, part );
+  drawPart( rect, rotation, alignment, Qgis::TextVerticalAlignment::Top, document, metrics, context, format, part, Qgis::TextLayoutMode::Rectangle );
 }
 
-void QgsTextRenderer::drawPart( const QRectF &rect, double rotation, QgsTextRenderer::HAlignment alignment, VAlignment vAlignment, const QgsTextDocument &document, QgsRenderContext &context, const QgsTextFormat &format, QgsTextRenderer::TextPart part )
+void QgsTextRenderer::drawPart( const QRectF &rect, double rotation, Qgis::TextHorizontalAlignment alignment, Qgis::TextVerticalAlignment vAlignment, const QgsTextDocument &document, const QgsTextDocumentMetrics &metrics, QgsRenderContext &context, const QgsTextFormat &format, Qgis::TextComponent part, Qgis::TextLayoutMode mode )
 {
   if ( !context.painter() )
   {
@@ -182,7 +196,7 @@ void QgsTextRenderer::drawPart( const QRectF &rect, double rotation, QgsTextRend
 
   switch ( part )
   {
-    case Background:
+    case Qgis::TextComponent::Background:
     {
       if ( !format.background().enabled() )
         return;
@@ -205,36 +219,50 @@ void QgsTextRenderer::drawPart( const QRectF &rect, double rotation, QgsTextRend
         component.center = rect.center();
       }
 
-      QgsTextRenderer::drawBackground( context, component, format, document, Rect );
+      switch ( vAlignment )
+      {
+        case Qgis::TextVerticalAlignment::Top:
+          break;
+        case Qgis::TextVerticalAlignment::VerticalCenter:
+          component.origin.ry() += ( rect.height() - metrics.documentSize( mode, format.orientation() ).height() ) / 2;
+          break;
+        case Qgis::TextVerticalAlignment::Bottom:
+          component.origin.ry() += ( rect.height() - metrics.documentSize( mode, format.orientation() ).height() );
+          break;
+      }
+
+      QgsTextRenderer::drawBackground( context, component, format, metrics, Qgis::TextLayoutMode::Rectangle );
 
       break;
     }
 
-    case Buffer:
+    case Qgis::TextComponent::Buffer:
     {
       if ( !format.buffer().enabled() )
         break;
     }
     FALLTHROUGH
-    case Text:
-    case Shadow:
+    case Qgis::TextComponent::Text:
+    case Qgis::TextComponent::Shadow:
     {
       drawTextInternal( part, context, format, component,
-                        document,
-                        nullptr,
-                        alignment, vAlignment );
+                        document, metrics,
+                        alignment, vAlignment, mode );
       break;
     }
   }
 }
 
-void QgsTextRenderer::drawPart( QPointF origin, double rotation, QgsTextRenderer::HAlignment alignment, const QStringList &textLines, QgsRenderContext &context, const QgsTextFormat &format, QgsTextRenderer::TextPart part, bool )
+void QgsTextRenderer::drawPart( QPointF origin, double rotation, Qgis::TextHorizontalAlignment alignment, const QStringList &textLines, QgsRenderContext &context, const QgsTextFormat &format, Qgis::TextComponent part, bool )
 {
   const QgsTextDocument document = format.allowHtmlFormatting() ? QgsTextDocument::fromHtml( textLines ) : QgsTextDocument::fromPlainText( textLines );
-  drawPart( origin, rotation, alignment, document, context, format, part );
+  const double fontScale = calculateScaleFactorForFormat( context, format );
+  const QgsTextDocumentMetrics metrics = QgsTextDocumentMetrics::calculateMetrics( document, format, context, fontScale );
+
+  drawPart( origin, rotation, alignment, document, metrics, context, format, part, Qgis::TextLayoutMode::Point );
 }
 
-void QgsTextRenderer::drawPart( QPointF origin, double rotation, QgsTextRenderer::HAlignment alignment, const QgsTextDocument &document, QgsRenderContext &context, const QgsTextFormat &format, QgsTextRenderer::TextPart part )
+void QgsTextRenderer::drawPart( QPointF origin, double rotation, Qgis::TextHorizontalAlignment alignment, const QgsTextDocument &document, const QgsTextDocumentMetrics &metrics, QgsRenderContext &context, const QgsTextFormat &format, Qgis::TextComponent part, Qgis::TextLayoutMode mode )
 {
   if ( !context.painter() )
   {
@@ -249,29 +277,29 @@ void QgsTextRenderer::drawPart( QPointF origin, double rotation, QgsTextRenderer
 
   switch ( part )
   {
-    case Background:
+    case Qgis::TextComponent::Background:
     {
       if ( !format.background().enabled() )
         return;
 
-      QgsTextRenderer::drawBackground( context, component, format, document, Point );
+      QgsTextRenderer::drawBackground( context, component, format, metrics, mode );
       break;
     }
 
-    case Buffer:
+    case Qgis::TextComponent::Buffer:
     {
       if ( !format.buffer().enabled() )
         break;
     }
     FALLTHROUGH
-    case Text:
-    case Shadow:
+    case Qgis::TextComponent::Text:
+    case Qgis::TextComponent::Shadow:
     {
       drawTextInternal( part, context, format, component,
                         document,
-                        nullptr,
-                        alignment, AlignTop,
-                        Point );
+                        metrics,
+                        alignment, Qgis::TextVerticalAlignment::Top,
+                        mode );
       break;
     }
   }
@@ -283,24 +311,25 @@ QFontMetricsF QgsTextRenderer::fontMetrics( QgsRenderContext &context, const Qgs
 }
 
 double QgsTextRenderer::drawBuffer( QgsRenderContext &context, const QgsTextRenderer::Component &component, const QgsTextFormat &format,
-                                    DrawMode mode )
+                                    const QgsTextDocumentMetrics &metrics,
+                                    Qgis::TextLayoutMode mode )
 {
   QPainter *p = context.painter();
 
-  QgsTextFormat::TextOrientation orientation = format.orientation();
-  if ( format.orientation() == QgsTextFormat::RotationBasedOrientation )
+  Qgis::TextOrientation orientation = format.orientation();
+  if ( format.orientation() == Qgis::TextOrientation::RotationBased )
   {
     if ( component.rotation >= -315 && component.rotation < -90 )
     {
-      orientation = QgsTextFormat::VerticalOrientation;
+      orientation = Qgis::TextOrientation::Vertical;
     }
     else if ( component.rotation >= -90 && component.rotation < -45 )
     {
-      orientation = QgsTextFormat::VerticalOrientation;
+      orientation = Qgis::TextOrientation::Vertical;
     }
     else
     {
-      orientation = QgsTextFormat::HorizontalOrientation;
+      orientation = Qgis::TextOrientation::Horizontal;
     }
   }
 
@@ -313,16 +342,14 @@ double QgsTextRenderer::drawBuffer( QgsRenderContext &context, const QgsTextRend
   const double scaleFactor = calculateScaleFactorForFormat( context, format );
 
   std::optional< QgsScopedRenderContextReferenceScaleOverride > referenceScaleOverride;
-  if ( mode == Label )
+  if ( mode == Qgis::TextLayoutMode::Labeling )
   {
     // label size has already been calculated using any symbology reference scale factor -- we need
     // to temporarily remove the reference scale here or we'll be applying the scaling twice
     referenceScaleOverride.emplace( QgsScopedRenderContextReferenceScaleOverride( context, -1.0 ) );
   }
 
-  bool isNullSize = false;
-  const QFont font = format.scaledFont( context, scaleFactor, &isNullSize );
-  if ( isNullSize )
+  if ( metrics.isNullFontSize() )
     return 0;
 
   referenceScaleOverride.reset();
@@ -330,48 +357,63 @@ double QgsTextRenderer::drawBuffer( QgsRenderContext &context, const QgsTextRend
   QPainterPath path;
   path.setFillRule( Qt::WindingFill );
   double advance = 0;
+  double height = component.size.height();
   switch ( orientation )
   {
-    case QgsTextFormat::HorizontalOrientation:
+    case Qgis::TextOrientation::Horizontal:
     {
       double xOffset = 0;
+      int fragmentIndex = 0;
       for ( const QgsTextFragment &fragment : component.block )
       {
-        QFont fragmentFont = font;
-        fragment.characterFormat().updateFontForFormat( fragmentFont, scaleFactor );
+        QFont fragmentFont = metrics.fragmentFont( component.blockIndex, fragmentIndex );
 
         if ( component.extraWordSpacing || component.extraLetterSpacing )
           applyExtraSpacingForLineJustification( fragmentFont, component.extraWordSpacing, component.extraLetterSpacing );
 
-        path.addText( xOffset, 0, fragmentFont, fragment.text() );
+        const double yOffset = metrics.fragmentVerticalOffset( component.blockIndex, fragmentIndex, mode );
+        path.addText( xOffset, yOffset, fragmentFont, fragment.text() );
 
-        xOffset += fragment.horizontalAdvance( fragmentFont, true, scaleFactor );
+        xOffset += metrics.fragmentHorizontalAdvance( component.blockIndex, fragmentIndex, mode );
+
+        fragmentIndex++;
       }
       advance = xOffset;
       break;
     }
 
-    case QgsTextFormat::VerticalOrientation:
-    case QgsTextFormat::RotationBasedOrientation:
+    case Qgis::TextOrientation::Vertical:
+    case Qgis::TextOrientation::RotationBased:
     {
-      double letterSpacing = font.letterSpacing();
       double partYOffset = component.offset.y() * scaleFactor;
+
+      const double blockMaximumCharacterWidth = metrics.blockMaximumCharacterWidth( component.blockIndex );
+      double partLastDescent = 0;
+
+      int fragmentIndex = 0;
       for ( const QgsTextFragment &fragment : component.block )
       {
-        QFont fragmentFont = font;
-        fragment.characterFormat().updateFontForFormat( fragmentFont, scaleFactor );
+        const QFont fragmentFont = metrics.fragmentFont( component.blockIndex, component.firstFragmentIndex + fragmentIndex );
+        const double letterSpacing = fragmentFont.letterSpacing() / scaleFactor;
 
-        QFontMetricsF fragmentMetrics( fragmentFont );
-        const double labelWidth = fragmentMetrics.maxWidth();
+        const QFontMetricsF fragmentMetrics( fragmentFont );
+
+        const double fragmentYOffset = metrics.fragmentVerticalOffset( component.blockIndex, fragmentIndex, mode )
+                                       / 1;
 
         const QStringList parts = QgsPalLabeling::splitToGraphemes( fragment.text() );
         for ( const QString &part : parts )
         {
-          double partXOffset = ( labelWidth - ( fragmentMetrics.horizontalAdvance( part ) - letterSpacing ) ) / 2;
-          path.addText( partXOffset, partYOffset, fragmentFont, part );
-          partYOffset += fragmentMetrics.ascent() + letterSpacing;
+          double partXOffset = ( blockMaximumCharacterWidth - ( fragmentMetrics.horizontalAdvance( part ) / scaleFactor - letterSpacing ) ) / 2;
+          partYOffset += fragmentMetrics.ascent() / scaleFactor;
+          path.addText( partXOffset, partYOffset + fragmentYOffset, fragmentFont, part );
+          partYOffset += letterSpacing;
         }
+        partLastDescent = fragmentMetrics.descent() / scaleFactor;
+
+        fragmentIndex++;
       }
+      height = partYOffset + partLastDescent;
       advance = partYOffset - component.offset.y() * scaleFactor;
       break;
     }
@@ -426,10 +468,11 @@ double QgsTextRenderer::drawBuffer( QgsRenderContext &context, const QgsTextRend
     bufferComponent.origin = QPointF( 0.0, 0.0 );
     bufferComponent.picture = buffPict;
     bufferComponent.pictureBuffer = penSize / 2.0;
+    bufferComponent.size.setHeight( height );
 
-    if ( format.orientation() == QgsTextFormat::VerticalOrientation || format.orientation() == QgsTextFormat::RotationBasedOrientation )
+    if ( format.orientation() == Qgis::TextOrientation::Vertical || format.orientation() == Qgis::TextOrientation::RotationBased )
     {
-      bufferComponent.offset.setY( bufferComponent.offset.y() - bufferComponent.size.height() );
+      bufferComponent.offset.setY( - bufferComponent.size.height() );
     }
     drawShadow( context, bufferComponent, format );
   }
@@ -450,8 +493,8 @@ double QgsTextRenderer::drawBuffer( QgsRenderContext &context, const QgsTextRend
   return advance / scaleFactor;
 }
 
-void QgsTextRenderer::drawMask( QgsRenderContext &context, const QgsTextRenderer::Component &component, const QgsTextFormat &format,
-                                DrawMode mode )
+void QgsTextRenderer::drawMask( QgsRenderContext &context, const QgsTextRenderer::Component &component, const QgsTextFormat &format, const QgsTextDocumentMetrics &metrics,
+                                Qgis::TextLayoutMode mode )
 {
   QgsTextMaskSettings mask = format.mask();
 
@@ -475,29 +518,29 @@ void QgsTextRenderer::drawMask( QgsRenderContext &context, const QgsTextRenderer
   // Hopefully Oslandia come back and fix this? Hint hint...
 
   std::optional< QgsScopedRenderContextReferenceScaleOverride > referenceScaleOverride;
-  if ( mode == Label )
+  if ( mode == Qgis::TextLayoutMode::Labeling )
   {
     // label size has already been calculated using any symbology reference scale factor -- we need
     // to temporarily remove the reference scale here or we'll be applying the scaling twice
     referenceScaleOverride.emplace( QgsScopedRenderContextReferenceScaleOverride( context, -1.0 ) );
   }
 
-  bool isNullSize = false;
-  const QFont font = format.scaledFont( context, scaleFactor, &isNullSize );
-  if ( isNullSize )
+  if ( metrics.isNullFontSize() )
     return;
 
   referenceScaleOverride.reset();
 
   double xOffset = 0;
+  int fragmentIndex = 0;
   for ( const QgsTextFragment &fragment : component.block )
   {
-    QFont fragmentFont = font;
-    fragment.characterFormat().updateFontForFormat( fragmentFont, scaleFactor );
+    const QFont fragmentFont = metrics.fragmentFont( component.blockIndex, fragmentIndex );
 
-    path.addText( xOffset, 0, fragmentFont, fragment.text() );
+    const double fragmentYOffset = metrics.fragmentVerticalOffset( component.blockIndex, fragmentIndex, mode );
+    path.addText( xOffset, fragmentYOffset, fragmentFont, fragment.text() );
 
-    xOffset += fragment.horizontalAdvance( fragmentFont, true );
+    xOffset += metrics.fragmentHorizontalAdvance( component.blockIndex, fragmentIndex, mode );
+    fragmentIndex++;
   }
 
   QColor bufferColor( Qt::gray );
@@ -553,6 +596,9 @@ double QgsTextRenderer::textWidth( const QgsRenderContext &context, const QgsTex
   {
     doc = QgsTextDocument::fromHtml( textLines );
   }
+  if ( doc.size() == 0 )
+    return 0;
+
   doc.applyCapitalization( format.capitalization() );
   return textWidth( context, format, doc );
 }
@@ -562,62 +608,13 @@ double QgsTextRenderer::textWidth( const QgsRenderContext &context, const QgsTex
   //calculate max width of text lines
   const double scaleFactor = calculateScaleFactorForFormat( context, format );
 
-  bool isNullSize = false;
-  const QFont baseFont = format.scaledFont( context, scaleFactor, &isNullSize );
-  if ( isNullSize )
-    return 0;
+  const QgsTextDocumentMetrics metrics = QgsTextDocumentMetrics::calculateMetrics( document, format, context, scaleFactor );
 
-  double width = 0;
-  switch ( format.orientation() )
-  {
-    case QgsTextFormat::HorizontalOrientation:
-    {
-      double maxLineWidth = 0;
-      for ( const QgsTextBlock &block : document )
-      {
-        double blockWidth = 0;
-        for ( const QgsTextFragment &fragment : block )
-        {
-          blockWidth += fragment.horizontalAdvance( baseFont, scaleFactor );
-        }
-        maxLineWidth = std::max( maxLineWidth, blockWidth );
-      }
-      width = maxLineWidth;
-      break;
-    }
-
-    case QgsTextFormat::VerticalOrientation:
-    {
-      double totalLineWidth = 0;
-      int blockIndex = 0;
-      for ( const QgsTextBlock &block : document )
-      {
-        double blockWidth = 0;
-        for ( const QgsTextFragment &fragment : block )
-        {
-          QFont fragmentFont = baseFont;
-          fragment.characterFormat().updateFontForFormat( fragmentFont, scaleFactor );
-          blockWidth = std::max( QFontMetricsF( fragmentFont ).maxWidth(), blockWidth );
-        }
-
-        totalLineWidth += blockIndex == 0 ? blockWidth : blockWidth * format.lineHeight();
-        blockIndex++;
-      }
-      width = totalLineWidth;
-      break;
-    }
-
-    case QgsTextFormat::RotationBasedOrientation:
-    {
-      // label mode only
-      break;
-    }
-  }
-
-  return width / scaleFactor;
+  // width doesn't change depending on layout mode, we can use anything here
+  return metrics.documentSize( Qgis::TextLayoutMode::Point, format.orientation() ).width();
 }
 
-double QgsTextRenderer::textHeight( const QgsRenderContext &context, const QgsTextFormat &format, const QStringList &textLines, DrawMode mode, QFontMetricsF *, Qgis::TextRendererFlags flags, double maxLineWidth )
+double QgsTextRenderer::textHeight( const QgsRenderContext &context, const QgsTextFormat &format, const QStringList &textLines, Qgis::TextLayoutMode mode, QFontMetricsF *, Qgis::TextRendererFlags flags, double maxLineWidth )
 {
   QStringList lines;
   for ( const QString &line : textLines )
@@ -645,6 +642,7 @@ double QgsTextRenderer::textHeight( const QgsRenderContext &context, const QgsTe
 double QgsTextRenderer::textHeight( const QgsRenderContext &context, const QgsTextFormat &format, QChar character, bool includeEffects )
 {
   const double scaleFactor = calculateScaleFactorForFormat( context, format );
+
   bool isNullSize = false;
   const QFont baseFont = format.scaledFont( context, scaleFactor, &isNullSize );
   if ( isNullSize )
@@ -762,7 +760,7 @@ QStringList QgsTextRenderer::wrappedText( const QgsRenderContext &context, const
   return outLines;
 }
 
-double QgsTextRenderer::textHeight( const QgsRenderContext &context, const QgsTextFormat &format, const QgsTextDocument &doc, DrawMode mode )
+double QgsTextRenderer::textHeight( const QgsRenderContext &context, const QgsTextFormat &format, const QgsTextDocument &doc, Qgis::TextLayoutMode mode )
 {
   QgsTextDocument document = doc;
   document.applyCapitalization( format.capitalization() );
@@ -770,100 +768,14 @@ double QgsTextRenderer::textHeight( const QgsRenderContext &context, const QgsTe
   //calculate max height of text lines
   const double scaleFactor = calculateScaleFactorForFormat( context, format );
 
-  bool isNullSize = false;
-  const QFont baseFont = format.scaledFont( context, scaleFactor, &isNullSize );
-  if ( isNullSize )
+  const QgsTextDocumentMetrics metrics = QgsTextDocumentMetrics::calculateMetrics( document, format, context, scaleFactor );
+  if ( metrics.isNullFontSize() )
     return 0;
 
-  switch ( format.orientation() )
-  {
-    case QgsTextFormat::HorizontalOrientation:
-    {
-      int blockIndex = 0;
-      double totalHeight = 0;
-      double lastLineLeading = 0;
-      for ( const QgsTextBlock &block : document )
-      {
-        double maxBlockHeight = 0;
-        double maxBlockLineSpacing = 0;
-        double maxBlockLeading = 0;
-        for ( const QgsTextFragment &fragment : block )
-        {
-          QFont fragmentFont = baseFont;
-          fragment.characterFormat().updateFontForFormat( fragmentFont, scaleFactor );
-          const QFontMetricsF fm( fragmentFont );
-
-          const double fragmentHeight = fm.ascent() + fm.descent(); // ignore +1 for baseline
-
-          maxBlockHeight = std::max( maxBlockHeight, fragmentHeight );
-          if ( fm.lineSpacing() > maxBlockLineSpacing )
-          {
-            maxBlockLineSpacing = fm.lineSpacing();
-            maxBlockLeading = fm.leading();
-          }
-        }
-
-        switch ( mode )
-        {
-          case Label:
-            // rendering labels needs special handling - in this case text should be
-            // drawn with the bottom left corner coinciding with origin, vs top left
-            // for standard text rendering. Line height is also slightly different.
-            totalHeight += blockIndex == 0 ? maxBlockHeight : maxBlockHeight * format.lineHeight();
-            break;
-
-          case Rect:
-          case Point:
-            // standard rendering - designed to exactly replicate QPainter's drawText method
-            totalHeight += blockIndex == 0 ? maxBlockHeight : maxBlockLineSpacing * format.lineHeight();
-            if ( blockIndex > 0 )
-              lastLineLeading = maxBlockLeading;
-            break;
-        }
-
-        blockIndex++;
-      }
-
-      return ( totalHeight - lastLineLeading ) / scaleFactor;
-    }
-
-    case QgsTextFormat::VerticalOrientation:
-    {
-      double maxBlockHeight = 0;
-      for ( const QgsTextBlock &block : document )
-      {
-        double blockHeight = 0;
-        int fragmentIndex = 0;
-        for ( const QgsTextFragment &fragment : block )
-        {
-          QFont fragmentFont = baseFont;
-          fragment.characterFormat().updateFontForFormat( fragmentFont, scaleFactor );
-          const QFontMetricsF fm( fragmentFont );
-
-          const double labelHeight = fm.ascent();
-          const double letterSpacing = fragmentFont.letterSpacing();
-
-          blockHeight += fragmentIndex = 0 ? labelHeight * fragment.text().size() + ( fragment.text().size() - 1 ) * letterSpacing
-                                         : fragment.text().size() * ( labelHeight + letterSpacing );
-          fragmentIndex++;
-        }
-        maxBlockHeight = std::max( maxBlockHeight, blockHeight );
-      }
-
-      return maxBlockHeight / scaleFactor;
-    }
-
-    case QgsTextFormat::RotationBasedOrientation:
-    {
-      // label mode only
-      break;
-    }
-  }
-
-  return 0;
+  return metrics.documentSize( mode, format.orientation() ).height();
 }
 
-void QgsTextRenderer::drawBackground( QgsRenderContext &context, QgsTextRenderer::Component component, const QgsTextFormat &format, const QgsTextDocument &document, QgsTextRenderer::DrawMode mode )
+void QgsTextRenderer::drawBackground( QgsRenderContext &context, QgsTextRenderer::Component component, const QgsTextFormat &format, const QgsTextDocumentMetrics &metrics, Qgis::TextLayoutMode mode )
 {
   QgsTextBackgroundSettings background = format.background();
 
@@ -897,54 +809,57 @@ void QgsTextRenderer::drawBackground( QgsRenderContext &context, QgsTextRenderer
 
   const double scaleFactor = calculateScaleFactorForFormat( context, format );
 
-  if ( mode != Label )
+  if ( mode != Qgis::TextLayoutMode::Labeling )
   {
     // need to calculate size of text
-    double width = textWidth( context, format, document );
-    double height = textHeight( context, format, document, mode );
+    const QSizeF documentSize = metrics.documentSize( mode, format.orientation() );
+    double width = documentSize.width();
+    double height = documentSize.height();
 
     switch ( mode )
     {
-      case Rect:
+      case Qgis::TextLayoutMode::Rectangle:
+      case Qgis::TextLayoutMode::RectangleCapHeightBased:
+      case Qgis::TextLayoutMode::RectangleAscentBased:
         switch ( component.hAlign )
         {
-          case AlignLeft:
-          case AlignJustify:
+          case Qgis::TextHorizontalAlignment::Left:
+          case Qgis::TextHorizontalAlignment::Justify:
             component.center = QPointF( component.origin.x() + width / 2.0,
                                         component.origin.y() + height / 2.0 );
             break;
 
-          case AlignCenter:
+          case Qgis::TextHorizontalAlignment::Center:
             component.center = QPointF( component.origin.x() + component.size.width() / 2.0,
                                         component.origin.y() + height / 2.0 );
             break;
 
-          case AlignRight:
+          case Qgis::TextHorizontalAlignment::Right:
             component.center = QPointF( component.origin.x() + component.size.width() - width / 2.0,
                                         component.origin.y() + height / 2.0 );
             break;
         }
         break;
 
-      case Point:
+      case Qgis::TextLayoutMode::Point:
       {
         bool isNullSize = false;
         QFontMetricsF fm( format.scaledFont( context, scaleFactor, &isNullSize ) );
         double originAdjust = isNullSize ? 0 : ( fm.ascent() / scaleFactor / 2.0 - fm.leading() / scaleFactor / 2.0 );
         switch ( component.hAlign )
         {
-          case AlignLeft:
-          case AlignJustify:
+          case Qgis::TextHorizontalAlignment::Left:
+          case Qgis::TextHorizontalAlignment::Justify:
             component.center = QPointF( component.origin.x() + width / 2.0,
                                         component.origin.y() - height / 2.0 + originAdjust );
             break;
 
-          case AlignCenter:
+          case Qgis::TextHorizontalAlignment::Center:
             component.center = QPointF( component.origin.x(),
                                         component.origin.y() - height / 2.0 + originAdjust );
             break;
 
-          case AlignRight:
+          case Qgis::TextHorizontalAlignment::Right:
             component.center = QPointF( component.origin.x() - width / 2.0,
                                         component.origin.y() - height / 2.0 + originAdjust );
             break;
@@ -961,7 +876,7 @@ void QgsTextRenderer::drawBackground( QgsRenderContext &context, QgsTextRenderer
         break;
       }
 
-      case Label:
+      case Qgis::TextLayoutMode::Labeling:
         break;
     }
 
@@ -1265,7 +1180,8 @@ void QgsTextRenderer::drawShadow( QgsRenderContext &context, const QgsTextRender
   // then scale device painter by 1.0 / rasterCompressFactor for output
 
   QPainter *p = context.painter();
-  double componentWidth = component.size.width(), componentHeight = component.size.height();
+  const double componentWidth = component.size.width();
+  const double componentHeight = component.size.height();
   double xOffset = component.offset.x(), yOffset = component.offset.y();
   double pictbuffer = component.pictureBuffer;
 
@@ -1412,91 +1328,81 @@ void QgsTextRenderer::drawShadow( QgsRenderContext &context, const QgsTextRender
 }
 
 
-void QgsTextRenderer::drawTextInternal( TextPart drawType,
+void QgsTextRenderer::drawTextInternal( Qgis::TextComponent drawType,
                                         QgsRenderContext &context,
                                         const QgsTextFormat &format,
                                         const Component &component,
                                         const QgsTextDocument &document,
-                                        const QFontMetricsF *fontMetrics,
-                                        HAlignment alignment, VAlignment vAlignment, DrawMode mode )
+                                        const QgsTextDocumentMetrics &metrics,
+                                        Qgis::TextHorizontalAlignment alignment, Qgis::TextVerticalAlignment vAlignment, Qgis::TextLayoutMode mode )
 {
   if ( !context.painter() )
   {
     return;
   }
 
-  double fontScale = 1.0;
-  std::unique_ptr< QFontMetricsF > tmpMetrics;
-  if ( !fontMetrics )
+  const double fontScale = calculateScaleFactorForFormat( context, format );
+
+  std::optional< QgsScopedRenderContextReferenceScaleOverride > referenceScaleOverride;
+  if ( mode == Qgis::TextLayoutMode::Labeling )
   {
-    fontScale = calculateScaleFactorForFormat( context, format );
-
-    std::optional< QgsScopedRenderContextReferenceScaleOverride > referenceScaleOverride;
-    if ( mode == Label )
-    {
-      // label size has already been calculated using any symbology reference scale factor -- we need
-      // to temporarily remove the reference scale here or we'll be applying the scaling twice
-      referenceScaleOverride.emplace( QgsScopedRenderContextReferenceScaleOverride( context, -1.0 ) );
-    }
-
-    bool isNullSize = false;
-    const QFont f = format.scaledFont( context, fontScale, &isNullSize );
-    if ( isNullSize )
-      return;
-
-    tmpMetrics = std::make_unique< QFontMetricsF >( f );
-    fontMetrics = tmpMetrics.get();
-
-    referenceScaleOverride.reset();
+    // label size has already been calculated using any symbology reference scale factor -- we need
+    // to temporarily remove the reference scale here or we'll be applying the scaling twice
+    referenceScaleOverride.emplace( QgsScopedRenderContextReferenceScaleOverride( context, -1.0 ) );
   }
 
+  if ( metrics.isNullFontSize() )
+    return;
+
+  referenceScaleOverride.reset();
+
   double rotation = 0;
-  const QgsTextFormat::TextOrientation orientation = calculateRotationAndOrientationForComponent( format, component, rotation );
+  const Qgis::TextOrientation orientation = calculateRotationAndOrientationForComponent( format, component, rotation );
   switch ( orientation )
   {
-    case QgsTextFormat::HorizontalOrientation:
+    case Qgis::TextOrientation::Horizontal:
     {
-      drawTextInternalHorizontal( context, format, drawType, mode, component, document, fontScale, fontMetrics, alignment, vAlignment, rotation );
+      drawTextInternalHorizontal( context, format, drawType, mode, component, document, metrics, fontScale, alignment, vAlignment, rotation );
       break;
     }
 
-    case QgsTextFormat::VerticalOrientation:
-    case QgsTextFormat::RotationBasedOrientation:
+    case Qgis::TextOrientation::Vertical:
+    case Qgis::TextOrientation::RotationBased:
     {
-      drawTextInternalVertical( context, format, drawType, mode, component, document, fontScale, fontMetrics, alignment, vAlignment, rotation );
+      drawTextInternalVertical( context, format, drawType, mode, component, document, metrics, fontScale, alignment, vAlignment, rotation );
       break;
     }
   }
 }
 
-QgsTextFormat::TextOrientation QgsTextRenderer::calculateRotationAndOrientationForComponent( const QgsTextFormat &format, const QgsTextRenderer::Component &component, double &rotation )
+Qgis::TextOrientation QgsTextRenderer::calculateRotationAndOrientationForComponent( const QgsTextFormat &format, const QgsTextRenderer::Component &component, double &rotation )
 {
   rotation = -component.rotation * 180 / M_PI;
 
   switch ( format.orientation() )
   {
-    case QgsTextFormat::RotationBasedOrientation:
+    case Qgis::TextOrientation::RotationBased:
     {
       // Between 45 to 135 and 235 to 315 degrees, rely on vertical orientation
       if ( rotation >= -315 && rotation < -90 )
       {
         rotation -= 90;
-        return QgsTextFormat::VerticalOrientation;
+        return Qgis::TextOrientation::Vertical;
       }
       else if ( rotation >= -90 && rotation < -45 )
       {
         rotation += 90;
-        return QgsTextFormat::VerticalOrientation;
+        return Qgis::TextOrientation::Vertical;
       }
 
-      return QgsTextFormat::HorizontalOrientation;
+      return Qgis::TextOrientation::Horizontal;
     }
 
-    case QgsTextFormat::HorizontalOrientation:
-    case QgsTextFormat::VerticalOrientation:
+    case Qgis::TextOrientation::Horizontal:
+    case Qgis::TextOrientation::Vertical:
       return format.orientation();
   }
-  return QgsTextFormat::HorizontalOrientation;
+  return Qgis::TextOrientation::Horizontal;
 }
 
 void QgsTextRenderer::calculateExtraSpacingForLineJustification( const double spaceToDistribute, const QgsTextBlock &block, double &extraWordSpace, double &extraLetterSpace )
@@ -1544,69 +1450,58 @@ void QgsTextRenderer::applyExtraSpacingForLineJustification( QFont &font, double
   font.setLetterSpacing( QFont::AbsoluteSpacing, prevLetterSpace + extraLetterSpace );
 }
 
-void QgsTextRenderer::drawTextInternalHorizontal( QgsRenderContext &context, const QgsTextFormat &format, TextPart drawType, DrawMode mode, const Component &component, const QgsTextDocument &document, double fontScale, const QFontMetricsF *fontMetrics, HAlignment hAlignment,
-    VAlignment vAlignment, double rotation )
+void QgsTextRenderer::drawTextInternalHorizontal( QgsRenderContext &context, const QgsTextFormat &format, Qgis::TextComponent drawType, Qgis::TextLayoutMode mode, const Component &component, const QgsTextDocument &document, const QgsTextDocumentMetrics &metrics, double fontScale, Qgis::TextHorizontalAlignment hAlignment,
+    Qgis::TextVerticalAlignment vAlignment, double rotation )
 {
   QPainter *maskPainter = context.maskPainter( context.currentMaskId() );
   const QStringList textLines = document.toPlainText();
 
+  const QSizeF documentSize = metrics.documentSize( mode, Qgis::TextOrientation::Horizontal );
+
   double labelWidest = 0.0;
   switch ( mode )
   {
-    case Label:
-    case Point:
-      for ( const QString &line : textLines )
-      {
-        double labelWidth = fontMetrics->horizontalAdvance( line ) / fontScale;
-        if ( labelWidth > labelWidest )
-        {
-          labelWidest = labelWidth;
-        }
-      }
+    case Qgis::TextLayoutMode::Labeling:
+    case Qgis::TextLayoutMode::Point:
+      labelWidest = documentSize.width();
       break;
 
-    case Rect:
+    case Qgis::TextLayoutMode::Rectangle:
+    case Qgis::TextLayoutMode::RectangleCapHeightBased:
+    case Qgis::TextLayoutMode::RectangleAscentBased:
       labelWidest = component.size.width();
       break;
   }
 
-  double labelHeight = ( fontMetrics->ascent() + fontMetrics->descent() ) / fontScale; // ignore +1 for baseline
-  //  double labelHighest = labelfm->height() + ( double )(( lines - 1 ) * labelHeight * tmpLyr.multilineHeight );
+  double verticalAlignOffset = 0;
 
-  // needed to move bottom of text's descender to within bottom edge of label
-  double ascentOffset = 0.25 * fontMetrics->ascent() / fontScale; // labelfm->descent() is not enough
+  bool adjustForAlignment = hAlignment != Qgis::TextHorizontalAlignment::Left && ( mode != Qgis::TextLayoutMode::Labeling || textLines.size() > 1 );
 
-  int i = 0;
-
-  bool adjustForAlignment = hAlignment != AlignLeft && ( mode != Label || textLines.size() > 1 );
-
-  if ( mode == Rect && vAlignment != AlignTop )
+  if ( mode == Qgis::TextLayoutMode::Rectangle && vAlignment != Qgis::TextVerticalAlignment::Top )
   {
-    std::optional< QgsScopedRenderContextReferenceScaleOverride > referenceScaleOverride;
-
-    const double overallHeight = textHeight( context, format, textLines, Rect );
+    const double overallHeight = documentSize.height();
     switch ( vAlignment )
     {
-      case AlignTop:
+      case Qgis::TextVerticalAlignment::Top:
         break;
 
-      case AlignVCenter:
-        ascentOffset = -( component.size.height() - overallHeight ) * 0.5 + ascentOffset;
+      case Qgis::TextVerticalAlignment::VerticalCenter:
+        verticalAlignOffset = ( component.size.height() - overallHeight ) * 0.5;
         break;
 
-      case AlignBottom:
-        ascentOffset = -( component.size.height() - overallHeight ) + ascentOffset;
+      case Qgis::TextVerticalAlignment::Bottom:
+        verticalAlignOffset = ( component.size.height() - overallHeight );
         break;
     }
-    referenceScaleOverride.reset();
   }
 
-  for ( const QString &line : std::as_const( textLines ) )
+  int blockIndex = 0;
+  for ( const QgsTextBlock &block : document )
   {
-    const QgsTextBlock block = document.at( i );
+    const bool isFinalLineInParagraph = ( blockIndex == document.size() - 1 )
+                                        || document.at( blockIndex + 1 ).toPlainText().trimmed().isEmpty();
 
-    const bool isFinalLineInParagraph = ( i == document.size() - 1 )
-                                        || document.at( i + 1 ).toPlainText().trimmed().isEmpty();
+    const double blockHeight = metrics.blockHeight( blockIndex );
 
     QgsScopedQPainterState painterState( context.painter() );
     context.setPainterFlagsUsingContext();
@@ -1625,7 +1520,7 @@ void QgsTextRenderer::drawTextInternalHorizontal( QgsRenderContext &context, con
 
     // figure x offset for horizontal alignment of multiple lines
     double xMultiLineOffset = 0.0;
-    double labelWidth = fontMetrics->horizontalAdvance( line ) / fontScale;
+    double blockWidth = metrics.blockWidth( blockIndex );
     double extraWordSpace = 0;
     double extraLetterSpace = 0;
     if ( adjustForAlignment )
@@ -1633,47 +1528,49 @@ void QgsTextRenderer::drawTextInternalHorizontal( QgsRenderContext &context, con
       double labelWidthDiff = 0;
       switch ( hAlignment )
       {
-        case AlignCenter:
-          labelWidthDiff = ( labelWidest - labelWidth ) * 0.5;
+        case Qgis::TextHorizontalAlignment::Center:
+          labelWidthDiff = ( labelWidest - blockWidth ) * 0.5;
           break;
 
-        case AlignRight:
-          labelWidthDiff = labelWidest - labelWidth;
+        case Qgis::TextHorizontalAlignment::Right:
+          labelWidthDiff = labelWidest - blockWidth;
           break;
 
-        case AlignJustify:
-          if ( !isFinalLineInParagraph && labelWidest > labelWidth )
+        case Qgis::TextHorizontalAlignment::Justify:
+          if ( !isFinalLineInParagraph && labelWidest > blockWidth )
           {
-            calculateExtraSpacingForLineJustification( labelWidest - labelWidth, block, extraWordSpace, extraLetterSpace );
-            labelWidth = labelWidest;
+            calculateExtraSpacingForLineJustification( labelWidest - blockWidth, block, extraWordSpace, extraLetterSpace );
+            blockWidth = labelWidest;
           }
           break;
 
-        case AlignLeft:
+        case Qgis::TextHorizontalAlignment::Left:
           break;
       }
 
       switch ( mode )
       {
-        case Label:
-        case Rect:
+        case Qgis::TextLayoutMode::Labeling:
+        case Qgis::TextLayoutMode::Rectangle:
+        case Qgis::TextLayoutMode::RectangleCapHeightBased:
+        case Qgis::TextLayoutMode::RectangleAscentBased:
           xMultiLineOffset = labelWidthDiff;
           break;
 
-        case Point:
+        case Qgis::TextLayoutMode::Point:
         {
           switch ( hAlignment )
           {
-            case AlignRight:
+            case Qgis::TextHorizontalAlignment::Right:
               xMultiLineOffset = labelWidthDiff - labelWidest;
               break;
 
-            case AlignCenter:
+            case Qgis::TextHorizontalAlignment::Center:
               xMultiLineOffset = labelWidthDiff - labelWidest / 2.0;
               break;
 
-            case AlignLeft:
-            case AlignJustify:
+            case Qgis::TextHorizontalAlignment::Left:
+            case Qgis::TextHorizontalAlignment::Justify:
               break;
           }
         }
@@ -1681,36 +1578,17 @@ void QgsTextRenderer::drawTextInternalHorizontal( QgsRenderContext &context, con
       }
     }
 
-    double yMultiLineOffset = ascentOffset;
-    switch ( mode )
-    {
-      case Label:
-        // rendering labels needs special handling - in this case text should be
-        // drawn with the bottom left corner coinciding with origin, vs top left
-        // for standard text rendering. Line height is also slightly different.
-        yMultiLineOffset = - ascentOffset - ( textLines.size() - 1 - i ) * labelHeight * format.lineHeight();
-        break;
+    const double baseLineOffset = metrics.baselineOffset( blockIndex, mode );
 
-      case Rect:
-        // standard rendering - designed to exactly replicate QPainter's drawText method
-        yMultiLineOffset = - ascentOffset + labelHeight - 1 /*baseline*/ + format.lineHeight() * fontMetrics->lineSpacing() * i / fontScale;
-        break;
-
-      case Point:
-        // standard rendering - designed to exactly replicate QPainter's drawText rect method
-        yMultiLineOffset = 0 - ( textLines.size() - 1 - i ) * fontMetrics->lineSpacing() * format.lineHeight() / fontScale;
-        break;
-
-    }
-
-    context.painter()->translate( QPointF( xMultiLineOffset, yMultiLineOffset ) );
+    context.painter()->translate( QPointF( xMultiLineOffset, baseLineOffset + verticalAlignOffset ) );
     if ( maskPainter )
-      maskPainter->translate( QPointF( xMultiLineOffset, yMultiLineOffset ) );
+      maskPainter->translate( QPointF( xMultiLineOffset, baseLineOffset + verticalAlignOffset ) );
 
     Component subComponent;
     subComponent.block = block;
-    subComponent.size = QSizeF( labelWidth, labelHeight );
-    subComponent.offset = QPointF( 0.0, -ascentOffset );
+    subComponent.blockIndex = blockIndex;
+    subComponent.size = QSizeF( blockWidth, blockHeight );
+    subComponent.offset = QPointF( 0.0, -metrics.ascentOffset() );
     subComponent.rotation = -component.rotation * 180 / M_PI;
     subComponent.rotationOffset = 0.0;
     subComponent.extraWordSpacing = extraWordSpace * fontScale;
@@ -1719,12 +1597,12 @@ void QgsTextRenderer::drawTextInternalHorizontal( QgsRenderContext &context, con
     // draw the mask below the text (for preview)
     if ( format.mask().enabled() )
     {
-      QgsTextRenderer::drawMask( context, subComponent, format, mode );
+      QgsTextRenderer::drawMask( context, subComponent, format, metrics, mode );
     }
 
-    if ( drawType == QgsTextRenderer::Buffer )
+    if ( drawType == Qgis::TextComponent::Buffer )
     {
-      QgsTextRenderer::drawBuffer( context, subComponent, format, mode );
+      QgsTextRenderer::drawBuffer( context, subComponent, format, metrics, mode );
     }
     else
     {
@@ -1735,41 +1613,43 @@ void QgsTextRenderer::drawTextInternalHorizontal( QgsRenderContext &context, con
       textp.setPen( Qt::NoPen );
 
       std::optional< QgsScopedRenderContextReferenceScaleOverride > referenceScaleOverride;
-      if ( mode == Label )
+      if ( mode == Qgis::TextLayoutMode::Labeling )
       {
         // label size has already been calculated using any symbology reference scale factor -- we need
         // to temporarily remove the reference scale here or we'll be applying the scaling twice
         referenceScaleOverride.emplace( QgsScopedRenderContextReferenceScaleOverride( context, -1.0 ) );
       }
-      bool isNullSize = false;
-      const QFont font = format.scaledFont( context, fontScale, &isNullSize );
+
       referenceScaleOverride.reset();
 
-      if ( !isNullSize )
+      if ( !metrics.isNullFontSize() )
       {
         textp.scale( 1 / fontScale, 1 / fontScale );
 
         double xOffset = 0;
+        int fragmentIndex = 0;
         for ( const QgsTextFragment &fragment : block )
         {
           // draw text, QPainterPath method
           QPainterPath path;
           path.setFillRule( Qt::WindingFill );
 
-          QFont fragmentFont = font;
-          fragment.characterFormat().updateFontForFormat( fragmentFont, fontScale );
+          QFont fragmentFont = metrics.fragmentFont( blockIndex, fragmentIndex );
 
           if ( extraWordSpace || extraLetterSpace )
             applyExtraSpacingForLineJustification( fragmentFont, extraWordSpace * fontScale, extraLetterSpace * fontScale );
 
-          path.addText( xOffset, 0, fragmentFont, fragment.text() );
+          const double yOffset = metrics.fragmentVerticalOffset( blockIndex, fragmentIndex, mode );
+
+          path.addText( xOffset, yOffset, fragmentFont, fragment.text() );
 
           QColor textColor = fragment.characterFormat().textColor().isValid() ? fragment.characterFormat().textColor() : format.color();
           textColor.setAlphaF( fragment.characterFormat().textColor().isValid() ? textColor.alphaF() * format.opacity() : format.opacity() );
           textp.setBrush( textColor );
           textp.drawPath( path );
 
-          xOffset += fragment.horizontalAdvance( fragmentFont, true );
+          xOffset += metrics.fragmentHorizontalAdvance( blockIndex, fragmentIndex, mode ) * fontScale;
+          fragmentIndex ++;
         }
         textp.end();
       }
@@ -1805,13 +1685,15 @@ void QgsTextRenderer::drawTextInternalHorizontal( QgsRenderContext &context, con
         case Qgis::TextRenderFormat::AlwaysText:
         {
           double xOffset = 0;
+          int fragmentIndex = 0;
           for ( const QgsTextFragment &fragment : block )
           {
-            QFont fragmentFont = font;
-            fragment.characterFormat().updateFontForFormat( fragmentFont, fontScale );
+            QFont fragmentFont = metrics.fragmentFont( blockIndex, fragmentIndex );
 
             if ( extraWordSpace || extraLetterSpace )
               applyExtraSpacingForLineJustification( fragmentFont, extraWordSpace * fontScale, extraLetterSpace * fontScale );
+
+            const double yOffset = metrics.fragmentVerticalOffset( blockIndex, fragmentIndex, mode );
 
             QColor textColor = fragment.characterFormat().textColor().isValid() ? fragment.characterFormat().textColor() : format.color();
             textColor.setAlphaF( fragment.characterFormat().textColor().isValid() ? textColor.alphaF() * format.opacity() : format.opacity() );
@@ -1821,54 +1703,55 @@ void QgsTextRenderer::drawTextInternalHorizontal( QgsRenderContext &context, con
             context.painter()->setRenderHint( QPainter::TextAntialiasing );
 
             context.painter()->scale( 1 / fontScale, 1 / fontScale );
-            context.painter()->drawText( xOffset, 0, fragment.text() );
+            context.painter()->drawText( QPointF( xOffset, yOffset ), fragment.text() );
             context.painter()->scale( fontScale, fontScale );
 
-            xOffset += fragment.horizontalAdvance( fragmentFont, true, fontScale );
+            xOffset += metrics.fragmentHorizontalAdvance( blockIndex, fragmentIndex, mode );
+            fragmentIndex++;
           }
         }
       }
     }
     if ( maskPainter )
       maskPainter->restore();
-    i++;
+
+    blockIndex++;
   }
 }
 
-void QgsTextRenderer::drawTextInternalVertical( QgsRenderContext &context, const QgsTextFormat &format, QgsTextRenderer::TextPart drawType, QgsTextRenderer::DrawMode mode, const QgsTextRenderer::Component &component, const QgsTextDocument &document, double fontScale, const QFontMetricsF *fontMetrics, QgsTextRenderer::HAlignment hAlignment, QgsTextRenderer::VAlignment, double rotation )
+void QgsTextRenderer::drawTextInternalVertical( QgsRenderContext &context, const QgsTextFormat &format, Qgis::TextComponent drawType, Qgis::TextLayoutMode mode, const QgsTextRenderer::Component &component, const QgsTextDocument &document, const QgsTextDocumentMetrics &metrics, double fontScale, Qgis::TextHorizontalAlignment hAlignment, Qgis::TextVerticalAlignment, double rotation )
 {
   QPainter *maskPainter = context.maskPainter( context.currentMaskId() );
   const QStringList textLines = document.toPlainText();
 
   std::optional< QgsScopedRenderContextReferenceScaleOverride > referenceScaleOverride;
-  if ( mode == Label )
+  if ( mode == Qgis::TextLayoutMode::Labeling )
   {
     // label size has already been calculated using any symbology reference scale factor -- we need
     // to temporarily remove the reference scale here or we'll be applying the scaling twice
     referenceScaleOverride.emplace( QgsScopedRenderContextReferenceScaleOverride( context, -1.0 ) );
   }
 
-  bool isNullSize = false;
-  const QFont font = format.scaledFont( context, fontScale, &isNullSize );
-  if ( isNullSize )
+  if ( metrics.isNullFontSize() )
     return;
 
   referenceScaleOverride.reset();
 
-  double letterSpacing = font.letterSpacing() / fontScale;
+  const QSizeF documentSize = metrics.documentSize( mode, Qgis::TextOrientation::Vertical );
+  const double actualTextWidth = documentSize.width();
+  double textRectWidth = 0.0;
 
-  double labelWidth = fontMetrics->maxWidth() / fontScale; // label width represents the width of one line of a multi-line label
-  double actualLabelWidest = labelWidth + ( textLines.size() - 1 ) * labelWidth * format.lineHeight();
-  double labelWidest = 0.0;
   switch ( mode )
   {
-    case Label:
-    case Point:
-      labelWidest = actualLabelWidest;
+    case Qgis::TextLayoutMode::Labeling:
+    case Qgis::TextLayoutMode::Point:
+      textRectWidth = actualTextWidth;
       break;
 
-    case Rect:
-      labelWidest = component.size.width();
+    case Qgis::TextLayoutMode::Rectangle:
+    case Qgis::TextLayoutMode::RectangleCapHeightBased:
+    case Qgis::TextLayoutMode::RectangleAscentBased:
+      textRectWidth = component.size.width();
       break;
   }
 
@@ -1877,12 +1760,11 @@ void QgsTextRenderer::drawTextInternalVertical( QgsRenderContext &context, const
   {
     maxLineLength = std::max( maxLineLength, static_cast<int>( line.length() ) );
   }
-  double actualLabelHeight = fontMetrics->ascent() / fontScale + ( fontMetrics->ascent() / fontScale + letterSpacing ) * ( maxLineLength - 1 );
-  double ascentOffset = fontMetrics->ascent() / fontScale;
 
-  int i = 0;
+  const double actualLabelHeight = documentSize.height();
+  int blockIndex = 0;
 
-  bool adjustForAlignment = hAlignment != AlignLeft && ( mode != Label || textLines.size() > 1 );
+  bool adjustForAlignment = hAlignment != Qgis::TextHorizontalAlignment::Left && ( mode != Qgis::TextLayoutMode::Labeling || textLines.size() > 1 );
 
   for ( const QgsTextBlock &block : document )
   {
@@ -1902,34 +1784,38 @@ void QgsTextRenderer::drawTextInternalVertical( QgsRenderContext &context, const
         maskPainter->rotate( rotation );
     }
 
+    const double blockMaximumCharacterWidth = metrics.blockMaximumCharacterWidth( blockIndex );
+
     // figure x offset of multiple lines
-    double xOffset = actualLabelWidest - labelWidth - ( i * labelWidth * format.lineHeight() );
+    double xOffset = metrics.verticalOrientationXOffset( blockIndex );
     if ( adjustForAlignment )
     {
-      double labelWidthDiff = 0;
+      double hAlignmentOffset = 0;
       switch ( hAlignment )
       {
-        case AlignCenter:
-          labelWidthDiff = ( labelWidest - actualLabelWidest ) * 0.5;
+        case Qgis::TextHorizontalAlignment::Center:
+          hAlignmentOffset = ( textRectWidth - actualTextWidth ) * 0.5;
           break;
 
-        case AlignRight:
-          labelWidthDiff = labelWidest - actualLabelWidest;
+        case Qgis::TextHorizontalAlignment::Right:
+          hAlignmentOffset = textRectWidth - actualTextWidth;
           break;
 
-        case AlignLeft:
-        case AlignJustify:
+        case Qgis::TextHorizontalAlignment::Left:
+        case Qgis::TextHorizontalAlignment::Justify:
           break;
       }
 
       switch ( mode )
       {
-        case Label:
-        case Rect:
-          xOffset += labelWidthDiff;
+        case Qgis::TextLayoutMode::Labeling:
+        case Qgis::TextLayoutMode::Rectangle:
+        case Qgis::TextLayoutMode::RectangleCapHeightBased:
+        case Qgis::TextLayoutMode::RectangleAscentBased:
+          xOffset += hAlignmentOffset;
           break;
 
-        case Point:
+        case Qgis::TextLayoutMode::Point:
           break;
       }
     }
@@ -1937,53 +1823,60 @@ void QgsTextRenderer::drawTextInternalVertical( QgsRenderContext &context, const
     double yOffset = 0.0;
     switch ( mode )
     {
-      case Label:
-        if ( format.orientation() == QgsTextFormat::RotationBasedOrientation )
+      case Qgis::TextLayoutMode::Labeling:
+        if ( format.orientation() == Qgis::TextOrientation::RotationBased )
         {
           if ( rotation >= -405 && rotation < -180 )
           {
-            yOffset = ascentOffset;
+            yOffset = 0;
           }
           else if ( rotation >= 0 && rotation < 45 )
           {
-            xOffset -= actualLabelWidest;
-            yOffset = -actualLabelHeight + ascentOffset + fontMetrics->descent() / fontScale;
+            xOffset -= actualTextWidth;
+            yOffset = -actualLabelHeight + metrics.blockMaximumDescent( blockIndex );
           }
         }
         else
         {
-          yOffset = -actualLabelHeight + ascentOffset;
+          yOffset = -actualLabelHeight;
         }
         break;
 
-      case Point:
-        yOffset = -actualLabelHeight + ascentOffset;
+      case Qgis::TextLayoutMode::Point:
+        yOffset = -actualLabelHeight;
         break;
 
-      case Rect:
-        yOffset = ascentOffset;
+      case Qgis::TextLayoutMode::Rectangle:
+      case Qgis::TextLayoutMode::RectangleCapHeightBased:
+      case Qgis::TextLayoutMode::RectangleAscentBased:
+        yOffset = 0;
         break;
     }
 
     context.painter()->translate( QPointF( xOffset, yOffset ) );
 
-    double fragmentYOffset = 0;
+    double currentBlockYOffset = 0;
+    int fragmentIndex = 0;
     for ( const QgsTextFragment &fragment : block )
     {
+      QgsScopedQPainterState fragmentPainterState( context.painter() );
+
       // apply some character replacement to draw symbols in vertical presentation
       const QString line = QgsStringUtils::substituteVerticalCharacters( fragment.text() );
 
-      QFont fragmentFont( font );
-      fragment.characterFormat().updateFontForFormat( fragmentFont, fontScale );
+      const QFont fragmentFont = metrics.fragmentFont( blockIndex, fragmentIndex );
 
       QFontMetricsF fragmentMetrics( fragmentFont );
 
-      double labelHeight = fragmentMetrics.ascent() / fontScale + ( fragmentMetrics.ascent() / fontScale + letterSpacing ) * ( line.length() - 1 );
+      const double letterSpacing = fragmentFont.letterSpacing() / fontScale;
+      const double labelHeight = fragmentMetrics.ascent() / fontScale + ( fragmentMetrics.ascent() / fontScale + letterSpacing ) * ( line.length() - 1 );
 
       Component subComponent;
       subComponent.block = QgsTextBlock( fragment );
-      subComponent.size = QSizeF( labelWidth, labelHeight );
-      subComponent.offset = QPointF( 0.0, fragmentYOffset );
+      subComponent.blockIndex = blockIndex;
+      subComponent.firstFragmentIndex = fragmentIndex;
+      subComponent.size = QSizeF( blockMaximumCharacterWidth, labelHeight + fragmentMetrics.descent() / fontScale );
+      subComponent.offset = QPointF( 0.0, currentBlockYOffset );
       subComponent.rotation = -component.rotation * 180 / M_PI;
       subComponent.rotationOffset = 0.0;
 
@@ -1996,9 +1889,9 @@ void QgsTextRenderer::drawTextInternalVertical( QgsRenderContext &context, const
 #endif
       }
 
-      if ( drawType == QgsTextRenderer::Buffer )
+      if ( drawType == Qgis::TextComponent::Buffer )
       {
-        fragmentYOffset += QgsTextRenderer::drawBuffer( context, subComponent, format, mode );
+        currentBlockYOffset += QgsTextRenderer::drawBuffer( context, subComponent, format, metrics, mode );
       }
       else
       {
@@ -2007,11 +1900,12 @@ void QgsTextRenderer::drawTextInternalVertical( QgsRenderContext &context, const
         path.setFillRule( Qt::WindingFill );
         const QStringList parts = QgsPalLabeling::splitToGraphemes( fragment.text() );
         double partYOffset = 0.0;
-        for ( const auto &part : parts )
+        for ( const QString &part : parts )
         {
-          double partXOffset = ( labelWidth - ( fragmentMetrics.horizontalAdvance( part ) / fontScale - letterSpacing ) ) / 2;
+          double partXOffset = ( blockMaximumCharacterWidth - ( fragmentMetrics.horizontalAdvance( part ) / fontScale - letterSpacing ) ) / 2;
+          partYOffset += fragmentMetrics.ascent() / fontScale;
           path.addText( partXOffset * fontScale, partYOffset * fontScale, fragmentFont, part );
-          partYOffset += fragmentMetrics.ascent() / fontScale + letterSpacing;
+          partYOffset += letterSpacing;
         }
 
         // store text's drawing in QPicture for drop shadow call
@@ -2024,6 +1918,7 @@ void QgsTextRenderer::drawTextInternalVertical( QgsRenderContext &context, const
         textp.setBrush( textColor );
         textp.scale( 1 / fontScale, 1 / fontScale );
         textp.drawPath( path );
+
         // TODO: why are some font settings lost on drawPicture() when using drawText() inside QPicture?
         //       e.g. some capitalization options, but not others
         //textp.setFont( tmpLyr.textFont );
@@ -2035,9 +1930,9 @@ void QgsTextRenderer::drawTextInternalVertical( QgsRenderContext &context, const
         {
           subComponent.picture = textPict;
           subComponent.pictureBuffer = 0.0; // no pen width to deal with
-          subComponent.origin = QPointF( 0.0, fragmentYOffset );
+          subComponent.origin = QPointF( 0.0, currentBlockYOffset );
           const double prevY = subComponent.offset.y();
-          subComponent.offset = QPointF( 0, -labelHeight );
+          subComponent.offset = QPointF( 0, -subComponent.size.height() );
           subComponent.useOrigin = true;
           QgsTextRenderer::drawShadow( context, subComponent, format );
           subComponent.useOrigin = false;
@@ -2058,9 +1953,10 @@ void QgsTextRenderer::drawTextInternalVertical( QgsRenderContext &context, const
           case Qgis::TextRenderFormat::AlwaysOutlines:
           {
             // draw outlined text
+            context.painter()->translate( 0, currentBlockYOffset );
             _fixQPictureDPI( context.painter() );
-            context.painter()->drawPicture( 0, fragmentYOffset, textPict );
-            fragmentYOffset += partYOffset;
+            context.painter()->drawPicture( 0, 0, textPict );
+            currentBlockYOffset += partYOffset;
             break;
           }
 
@@ -2073,21 +1969,22 @@ void QgsTextRenderer::drawTextInternalVertical( QgsRenderContext &context, const
             double partYOffset = 0.0;
             for ( const QString &part : parts )
             {
-              double partXOffset = ( labelWidth - ( fragmentMetrics.horizontalAdvance( part ) / fontScale - letterSpacing ) ) / 2;
+              double partXOffset = ( blockMaximumCharacterWidth - ( fragmentMetrics.horizontalAdvance( part ) / fontScale - letterSpacing ) ) / 2;
               context.painter()->scale( 1 / fontScale, 1 / fontScale );
-              context.painter()->drawText( partXOffset * fontScale, ( fragmentYOffset + partYOffset ) * fontScale, part );
+              context.painter()->drawText( QPointF( partXOffset * fontScale, ( currentBlockYOffset + partYOffset ) * fontScale ), part );
               context.painter()->scale( fontScale, fontScale );
               partYOffset += fragmentMetrics.ascent() / fontScale + letterSpacing;
             }
-            fragmentYOffset += partYOffset;
+            currentBlockYOffset += partYOffset;
           }
         }
       }
+      fragmentIndex++;
     }
 
     if ( maskPainter )
       maskPainter->restore();
-    i++;
+    blockIndex++;
   }
 }
 

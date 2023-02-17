@@ -4,7 +4,8 @@
 
     <script type="text/javascript">
     jQuery( document ).ready(function( $ ) {
-        var map = L.map('mapid').setView([0, 0], 13);
+        var map = L.map( 'mapid', { attributionControl: false } ).setView( [0, 0], 13 );
+        L.control.attribution( {  prefix: false } ).addTo( map );
         L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         }).addTo(map)
@@ -19,7 +20,6 @@
           {
             map.fitBounds(jl.getBounds());
           }
-          jl.on('featureOver', featureOver);
         });
     });
 

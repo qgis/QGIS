@@ -97,24 +97,24 @@ class _3D_EXPORT QgsMesh3DSymbol : public QgsAbstract3DSymbol
     void setEnabled( bool enabled );
 
     //! Returns method that determines altitude (whether to clamp to feature to terrain)
-    Qgs3DTypes::AltitudeClamping altitudeClamping() const { return mAltClamping; }
+    Qgis::AltitudeClamping altitudeClamping() const { return mAltClamping; }
     //! Sets method that determines altitude (whether to clamp to feature to terrain)
-    void setAltitudeClamping( Qgs3DTypes::AltitudeClamping altClamping ) { mAltClamping = altClamping; }
+    void setAltitudeClamping( Qgis::AltitudeClamping altClamping ) { mAltClamping = altClamping; }
 
     //! Returns height (altitude) of the symbol (in map units)
     float height() const { return mHeight; }
     //! Sets height (altitude) of the symbol (in map units)
     void setHeight( float height ) { mHeight = height; }
 
-    //! Returns material used for shading of the symbol
-    QgsAbstractMaterialSettings *material() const;
+    //! Returns material settings used for shading of the symbol
+    QgsAbstractMaterialSettings *materialSettings() const;
 
     /**
      * Sets the \a material settings used for shading of the symbol.
      *
      * Ownership of \a material is transferred to the symbol.
      */
-    void setMaterial( QgsAbstractMaterialSettings *material SIP_TRANSFER );
+    void setMaterialSettings( QgsAbstractMaterialSettings *materialSettings SIP_TRANSFER );
 
     /**
      * Returns whether also triangles facing the other side will be created. Useful if input data have inconsistent order of vertices
@@ -345,9 +345,9 @@ class _3D_EXPORT QgsMesh3DSymbol : public QgsAbstract3DSymbol
   private:
 
     //! how to handle altitude of vector features
-    Qgs3DTypes::AltitudeClamping mAltClamping = Qgs3DTypes::AltClampRelative;
+    Qgis::AltitudeClamping mAltClamping = Qgis::AltitudeClamping::Relative;
     float mHeight = 0.0f;           //!< Base height of triangles
-    std::unique_ptr< QgsAbstractMaterialSettings > mMaterial;  //!< Defines appearance of objects
+    std::unique_ptr< QgsAbstractMaterialSettings > mMaterialSettings;  //!< Defines appearance of objects
     bool mAddBackFaces = false;
 
     bool mEnabled = true;

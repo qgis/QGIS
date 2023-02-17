@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsServer WMS GetMap with QGIS_SERVER_IGNORE_BAD_LAYERS=true.
 
 From build dir, run: ctest -R PyQgsServerWMSGetMapIgnoreBadLayers -V
@@ -21,19 +20,14 @@ import os
 # Needed on Qt 5 so that the serialization of XML is consistent among all executions
 os.environ['QT_HASH_SEED'] = '1'
 
-import re
-import urllib.request
-import urllib.parse
 import urllib.error
-
-from qgis.testing import unittest
-from qgis.PyQt.QtCore import QSize
+import urllib.parse
+import urllib.request
 
 import osgeo.gdal  # NOQA
 
+from qgis.testing import unittest
 from test_qgsserver import QgsServerTestBase
-from utilities import unitTestDataPath
-from qgis.core import QgsProject, QgsApplication
 
 # Strip path and content length because path may vary
 RE_STRIP_UNCHECKABLE = br'MAP=[^"]+|Content-Length: \d+'
@@ -45,9 +39,10 @@ class TestQgsServerWMSGetMapIgnoreBadLayers(QgsServerTestBase):
 
     # regenerate_reference = True
 
-    def setUp(self):
+    @classmethod
+    def setUpClass(cls):
         os.environ['QGIS_SERVER_IGNORE_BAD_LAYERS'] = 'true'
-        super().setUp()
+        super().setUpClass()
 
     def test_wms_getmap_datasource_error_ignore(self):
         """Must NOT throw a server exception if datasource if not available and QGIS_SERVER_IGNORE_BAD_LAYERS is set"""
@@ -72,7 +67,7 @@ class TestQgsServerWMSGetMapIgnoreBadLayers(QgsServerTestBase):
 
         r, h = self._result(self._execute_request(qs))
 
-        self.assertFalse('ServerException' in str(r))
+        self.assertFalse('ServerException' in str(r), 'Unexpected ServerException ' + str(r))
 
 
 if __name__ == '__main__':

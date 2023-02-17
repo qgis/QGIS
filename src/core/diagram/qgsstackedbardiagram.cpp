@@ -245,7 +245,9 @@ void QgsStackedBarDiagram::renderDiagram( const QgsFeature &feature, QgsRenderCo
   {
     double length = valIt->first / total * scaledMaxVal;
 
-    mCategoryBrush.setColor( valIt->second );
+    QColor brushColor( valIt->second );
+    brushColor.setAlphaF( brushColor.alphaF() * s.opacity );
+    mCategoryBrush.setColor( brushColor );
     p->setBrush( mCategoryBrush );
 
     switch ( s.diagramOrientation )

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsSymbolLayerUtils.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -10,38 +9,30 @@ __author__ = 'Nyall Dawson'
 __date__ = '2016-09'
 __copyright__ = 'Copyright 2016, The QGIS Project'
 
+import math
+
 import qgis  # NOQA
-from qgis.PyQt.QtCore import (
-    QSizeF,
-    QPointF,
-    QMimeData,
-    QDir,
-    QSize,
-    Qt
-)
-from qgis.PyQt.QtGui import (
-    QColor,
-    QPolygonF,
-    QImage
-)
+from qgis.PyQt.QtCore import QDir, QMimeData, QPointF, QSize, QSizeF, Qt
+from qgis.PyQt.QtGui import QColor, QImage, QPolygonF
 from qgis.core import (
     Qgis,
-    QgsSymbolLayerUtils,
-    QgsMarkerSymbol,
+    QgsAnimatedMarkerSymbolLayer,
     QgsArrowSymbolLayer,
-    QgsUnitTypes,
-    QgsRenderChecker,
     QgsGradientColorRamp,
-    QgsShapeburstFillSymbolLayer,
-    QgsMarkerLineSymbolLayer,
-    QgsSimpleLineSymbolLayer,
-    QgsSimpleFillSymbolLayer,
-    QgsSymbolLayer,
-    QgsProperty,
     QgsMapUnitScale,
-    Qgis
+    QgsMarkerLineSymbolLayer,
+    QgsMarkerSymbol,
+    QgsProperty,
+    QgsRenderChecker,
+    QgsShapeburstFillSymbolLayer,
+    QgsSimpleFillSymbolLayer,
+    QgsSimpleLineSymbolLayer,
+    QgsSingleSymbolRenderer,
+    QgsSymbolLayer,
+    QgsSymbolLayerUtils,
+    QgsUnitTypes,
 )
-from qgis.testing import unittest, start_app
+from qgis.testing import start_app, unittest
 
 start_app()
 
@@ -54,7 +45,7 @@ class PyQgsSymbolLayerUtils(unittest.TestCase):
 
     @classmethod
     def tearDownClass(cls):
-        report_file_path = "%s/qgistest.html" % QDir.tempPath()
+        report_file_path = f"{QDir.tempPath()}/qgistest.html"
         with open(report_file_path, 'a') as report_file:
             report_file.write(cls.report)
 
@@ -316,6 +307,11 @@ class PyQgsSymbolLayerUtils(unittest.TestCase):
         encode = QgsSymbolLayerUtils.encodeSldUom(QgsUnitTypes.RenderMapUnits)
         self.assertTupleEqual(encode, ('http://www.opengeospatial.org/se/units/metre', 0.001))
 
+        # meters at scale
+        encode = None
+        encode = QgsSymbolLayerUtils.encodeSldUom(QgsUnitTypes.RenderMetersInMapUnits)
+        self.assertTupleEqual(encode, ('http://www.opengeospatial.org/se/units/metre', 1.0))
+
     def testDecodeSldUom(self):
         """
         Test Decodes a SLD unit of measure string to a render unit
@@ -324,12 +320,12 @@ class PyQgsSymbolLayerUtils(unittest.TestCase):
         # meter
         decode = None
         decode = QgsSymbolLayerUtils.decodeSldUom("http://www.opengeospatial.org/se/units/metre")
-        self.assertEqual(decode, (QgsUnitTypes.RenderMapUnits, 1000.0))
+        self.assertEqual(decode, (QgsUnitTypes.RenderMetersInMapUnits, 1.0))
 
         # foot
         decode = None
         decode = QgsSymbolLayerUtils.decodeSldUom("http://www.opengeospatial.org/se/units/foot")
-        self.assertEqual(decode, (QgsUnitTypes.RenderMapUnits, 304.8))
+        self.assertEqual(decode, (QgsUnitTypes.RenderMetersInMapUnits, 0.3048))
 
         # pixel
         decode = None
@@ -607,8 +603,41 @@ class PyQgsSymbolLayerUtils(unittest.TestCase):
         self.assertEqual(fill.penJoinStyle(), Qt.MiterJoin)
         self.assertEqual(fill.strokeStyle(), Qt.DashDotDotLine)
 
+    def test_renderer_frame_rate(self):
+        # renderer without an animated symbol
+        marker_symbol = QgsMarkerSymbol.createSimple({})
+        renderer = QgsSingleSymbolRenderer(marker_symbol)
+        self.assertEqual(QgsSymbolLayerUtils.rendererFrameRate(renderer), -1)
+
+        # renderer with an animated symbol
+        marker_symbol = QgsMarkerSymbol()
+        animated_marker = QgsAnimatedMarkerSymbolLayer()
+        animated_marker.setFrameRate(30)
+        marker_symbol.appendSymbolLayer(animated_marker)
+        renderer = QgsSingleSymbolRenderer(marker_symbol)
+        self.assertEqual(QgsSymbolLayerUtils.rendererFrameRate(renderer), 30)
+
+        # renderer with two animated symbol layers
+        marker_symbol = QgsMarkerSymbol()
+        animated_marker = QgsAnimatedMarkerSymbolLayer()
+        animated_marker.setFrameRate(30)
+        marker_symbol.appendSymbolLayer(animated_marker)
+        animated_marker = QgsAnimatedMarkerSymbolLayer()
+        animated_marker.setFrameRate(60)
+        marker_symbol.appendSymbolLayer(animated_marker)
+        renderer = QgsSingleSymbolRenderer(marker_symbol)
+        self.assertEqual(QgsSymbolLayerUtils.rendererFrameRate(renderer), 60)
+
+        s = QgsMarkerSymbol()
+        renderer = QgsSingleSymbolRenderer(s.clone())
+        self.assertEqual(QgsSymbolLayerUtils.rendererFrameRate(renderer), -1)
+        s.animationSettings().setIsAnimated(True)
+        s.animationSettings().setFrameRate(30)
+        renderer = QgsSingleSymbolRenderer(s.clone())
+        self.assertEqual(QgsSymbolLayerUtils.rendererFrameRate(renderer), 30)
+
     def imageCheck(self, name, reference_image, image):
-        self.report += "<h2>Render {}</h2>\n".format(name)
+        self.report += f"<h2>Render {name}</h2>\n"
         temp_dir = QDir.tempPath() + '/'
         file_name = temp_dir + name + ".png"
         image.save(file_name, "PNG")
@@ -620,6 +649,92 @@ class PyQgsSymbolLayerUtils(unittest.TestCase):
         result = checker.compareImages(name, 20)
         PyQgsSymbolLayerUtils.report += checker.report()
         return result
+
+    def testTileSize(self):
+
+        test_data = [
+            # First quadrant
+            [10, 20, 0, 10, 20, 0],
+            [10, 20, math.pi, 10, 20, math.pi],
+            [10, 10, math.pi / 4, 10 * math.sqrt(2), 10 * math.sqrt(2), math.pi / 4],
+            [10, 20, math.pi / 2, 20, 10, math.pi / 2],
+            [10, 20, math.pi / 4, 20 * math.sqrt(2), 20 * math.sqrt(2), math.pi / 4],
+            [10, 20, math.pi / 6, 36, 72, 0.5880031703261417],  # Angle approx
+
+            # Second quadrant
+            [10, 20, math.pi / 2 + math.pi / 6, 72, 36, math.pi / 2 + 0.5880031703261417],  # Angle approx
+            [10, 10, math.pi / 2 + math.pi / 4, 10 * math.sqrt(2), 10 * math.sqrt(2), math.pi / 2 + math.pi / 4],
+            [10, 20, math.pi / 2 + math.pi / 2, 10, 20, math.pi / 2 + math.pi / 2],
+            [10, 20, math.pi / 2 + math.pi / 4, 20 * math.sqrt(2), 20 * math.sqrt(2), math.pi / 2 + math.pi / 4],
+
+            # Third quadrant
+            [10, 20, math.pi + math.pi / 6, 36, 72, math.pi + 0.5880031703261417],  # Angle approx
+            [10, 10, math.pi + math.pi / 4, 10 * math.sqrt(2), 10 * math.sqrt(2), math.pi + math.pi / 4],
+            [10, 20, math.pi + math.pi / 2, 20, 10, math.pi + math.pi / 2],
+            [10, 20, math.pi + math.pi / 4, 20 * math.sqrt(2), 20 * math.sqrt(2), math.pi + math.pi / 4],
+
+            # Fourth quadrant
+            [10, 20, math.pi + math.pi / 2 + math.pi / 6, 72, 36, math.pi + math.pi / 2 + 0.5880031703261417],  # Angle approx
+            [10, 10, math.pi + math.pi / 2 + math.pi / 4, 10 * math.sqrt(2), 10 * math.sqrt(2), math.pi + math.pi / 2 + math.pi / 4],
+            [10, 20, math.pi + math.pi / 2 + math.pi / 4, 20 * math.sqrt(2), 20 * math.sqrt(2), math.pi + math.pi / 2 + math.pi / 4],
+
+            # Test out of range angles > 2 PI
+
+            # First quadrant
+            [10, 10, math.pi * 2 + math.pi / 4, 10 * math.sqrt(2), 10 * math.sqrt(2), math.pi / 4],
+            [10, 20, math.pi * 2 + math.pi / 2, 20, 10, math.pi / 2],
+            [10, 20, math.pi * 2 + math.pi / 4, 20 * math.sqrt(2), 20 * math.sqrt(2), math.pi / 4],
+            [10, 20, math.pi * 2 + math.pi / 6, 36, 72, 0.5880031703261417],  # Angle approx
+
+            # Second quadrant
+            [10, 20, math.pi * 2 + math.pi / 2 + math.pi / 6, 72, 36, math.pi / 2 + 0.5880031703261417],  # Angle approx
+            [10, 10, math.pi * 2 + math.pi / 2 + math.pi / 4, 10 * math.sqrt(2), 10 * math.sqrt(2), math.pi / 2 + math.pi / 4],
+            [10, 20, math.pi * 2 + math.pi / 2 + math.pi / 2, 10, 20, math.pi / 2 + math.pi / 2],
+            [10, 20, math.pi * 2 + math.pi / 2 + math.pi / 4, 20 * math.sqrt(2), 20 * math.sqrt(2), math.pi / 2 + math.pi / 4],
+
+            # Third quadrant
+            [10, 20, math.pi * 2 + math.pi + math.pi / 6, 36, 72, math.pi + 0.5880031703261417],  # Angle approx
+            [10, 10, math.pi * 2 + math.pi + math.pi / 4, 10 * math.sqrt(2), 10 * math.sqrt(2), math.pi + math.pi / 4],
+            [10, 20, math.pi * 2 + math.pi + math.pi / 2, 20, 10, math.pi + math.pi / 2],
+            [10, 20, math.pi * 2 + math.pi + math.pi / 4, 20 * math.sqrt(2), 20 * math.sqrt(2), math.pi + math.pi / 4],
+
+            # Fourth quadrant
+            [10, 20, math.pi * 2 + math.pi + math.pi / 2 + math.pi / 6, 72, 36, math.pi + math.pi / 2 + 0.5880031703261417],  # Angle approx
+            [10, 10, math.pi * 2 + math.pi + math.pi / 2 + math.pi / 4, 10 * math.sqrt(2), 10 * math.sqrt(2), math.pi + math.pi / 2 + math.pi / 4],
+            [10, 20, math.pi * 2 + math.pi + math.pi / 2 + math.pi / 4, 20 * math.sqrt(2), 20 * math.sqrt(2), math.pi + math.pi / 2 + math.pi / 4],
+
+            # Test out of range angles < 0
+
+            # First quadrant
+            [10, 10, - math.pi * 2 + math.pi / 4, 10 * math.sqrt(2), 10 * math.sqrt(2), math.pi / 4],
+            [10, 20, - math.pi * 2 + math.pi / 2, 20, 10, math.pi / 2],
+            [10, 20, - math.pi * 2 + math.pi / 4, 20 * math.sqrt(2), 20 * math.sqrt(2), math.pi / 4],
+            [10, 20, - math.pi * 2 + math.pi / 6, 36, 72, 0.5880031703261417],  # Angle approx
+
+            # Second quadrant
+            [10, 20, - math.pi * 2 + math.pi / 2 + math.pi / 6, 72, 36, math.pi / 2 + 0.5880031703261417],  # Angle approx
+            [10, 10, - math.pi * 2 + math.pi / 2 + math.pi / 4, 10 * math.sqrt(2), 10 * math.sqrt(2), math.pi / 2 + math.pi / 4],
+            [10, 20, - math.pi * 2 + math.pi / 2 + math.pi / 2, 10, 20, math.pi / 2 + math.pi / 2],
+            [10, 20, - math.pi * 2 + math.pi / 2 + math.pi / 4, 20 * math.sqrt(2), 20 * math.sqrt(2), math.pi / 2 + math.pi / 4],
+
+            # Third quadrant
+            [10, 20, - math.pi * 2 + math.pi + math.pi / 6, 36, 72, math.pi + 0.5880031703261417],  # Angle approx
+            [10, 10, - math.pi * 2 + math.pi + math.pi / 4, 10 * math.sqrt(2), 10 * math.sqrt(2), math.pi + math.pi / 4],
+            [10, 20, - math.pi * 2 + math.pi + math.pi / 2, 20, 10, math.pi + math.pi / 2],
+            [10, 20, - math.pi * 2 + math.pi + math.pi / 4, 20 * math.sqrt(2), 20 * math.sqrt(2), math.pi + math.pi / 4],
+
+            # Fourth quadrant
+            [10, 20, - math.pi * 2 + math.pi + math.pi / 2 + math.pi / 6, 72, 36, math.pi + math.pi / 2 + 0.5880031703261417],  # Angle approx
+            [10, 10, - math.pi * 2 + math.pi + math.pi / 2 + math.pi / 4, 10 * math.sqrt(2), 10 * math.sqrt(2), math.pi + math.pi / 2 + math.pi / 4],
+            [10, 20, - math.pi * 2 + math.pi + math.pi / 2 + math.pi / 4, 20 * math.sqrt(2), 20 * math.sqrt(2), math.pi + math.pi / 2 + math.pi / 4],
+
+        ]
+
+        for width, height, angle, exp_width, exp_height, exp_angle in test_data:
+            (res_size, res_angle) = QgsSymbolLayerUtils.tileSize(width, height, angle)
+            self.assertEqual(res_size.height(), int(exp_height), angle)
+            self.assertEqual(res_size.width(), int(exp_width))
+            self.assertAlmostEqual(res_angle, exp_angle)
 
 
 if __name__ == '__main__':

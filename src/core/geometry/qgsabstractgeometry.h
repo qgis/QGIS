@@ -273,6 +273,7 @@ class CORE_EXPORT QgsAbstractGeometry
     enum WkbFlag
     {
       FlagExportTrianglesAsPolygons = 1 << 0, //!< Triangles should be exported as polygon geometries
+      FlagExportNanAsDoubleMin = 1 << 1, //!< Use -DOUBLE_MAX to represent NaN (since QGIS 3.30)
     };
     Q_DECLARE_FLAGS( WkbFlags, WkbFlag )
 

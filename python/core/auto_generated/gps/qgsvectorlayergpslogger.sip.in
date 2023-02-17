@@ -1,0 +1,156 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/gps/qgsvectorlayergpslogger.h                               *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsVectorLayerGpsLogger : QgsGpsLogger
+{
+%Docstring(signature="appended")
+Handles logging of incoming GPS data to a vector layer.
+
+.. versionadded:: 3.30
+%End
+
+%TypeHeaderCode
+#include "qgsvectorlayergpslogger.h"
+%End
+  public:
+
+    QgsVectorLayerGpsLogger( QgsGpsConnection *connection, QObject *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsVectorLayerGpsLogger with the specified ``parent`` object.
+
+The logger will automatically record GPS information from the specified ``connection``.
+%End
+
+    ~QgsVectorLayerGpsLogger();
+
+    bool writeToEditBuffer() const;
+%Docstring
+Returns ``True`` if the logger will use the vector layer edit buffer for the destination layers.
+
+If ``False`` then the features will be written directly to the destination layer's data providers.
+
+The default behavior is to use the edit buffer.
+
+.. seealso:: :py:func:`setWriteToEditBuffer`
+%End
+
+    void setWriteToEditBuffer( bool buffer );
+%Docstring
+Sets whether the logger will use the vector layer edit buffer for the destination layers.
+
+If ``buffer`` is ``False`` then the features will be written directly to the destination layer's data providers.
+
+The default behavior is to use the edit buffer.
+
+.. seealso:: :py:func:`writeToEditBuffer`
+%End
+
+    void setPointsLayer( QgsVectorLayer *layer );
+%Docstring
+Sets the ``layer`` in which recorded GPS points should be stored.
+
+.. seealso:: :py:func:`setTracksLayer`
+
+.. seealso:: :py:func:`pointsLayer`
+%End
+
+    void setTracksLayer( QgsVectorLayer *layer );
+%Docstring
+Sets the ``layer`` in which recorded GPS tracks should be stored.
+
+.. seealso:: :py:func:`setPointsLayer`
+
+.. seealso:: :py:func:`tracksLayer`
+%End
+
+    QgsVectorLayer *pointsLayer();
+%Docstring
+Returns the layer in which recorded GPS points will be stored.
+
+May be ``None`` if points are not being stored.
+
+.. seealso:: :py:func:`setPointsLayer`
+
+.. seealso:: :py:func:`tracksLayer`
+%End
+
+    QgsVectorLayer *tracksLayer();
+%Docstring
+Returns the layer in which recorded GPS tracks will be stored.
+
+May be ``None`` if tracks are not being stored.
+
+.. seealso:: :py:func:`setTracksLayer`
+
+.. seealso:: :py:func:`pointsLayer`
+%End
+
+    void setDestinationField( Qgis::GpsInformationComponent component, const QString &field );
+%Docstring
+Sets a destination ``field`` name for a specific GPS information ``component``.
+
+Depending on the ``component``, the field will either refer to the :py:func:`~QgsVectorLayerGpsLogger.pointsLayer` or :py:func:`~QgsVectorLayerGpsLogger.tracksLayer`.
+
+Fields stored in the :py:func:`~QgsVectorLayerGpsLogger.pointsLayer` are:
+
+- Qgis.GpsInformationComponent.Location:
+- Qgis.GpsInformationComponent.Altitude:
+- Qgis.GpsInformationComponent.GroundSpeed:
+- Qgis.GpsInformationComponent.Bearing:
+- Qgis.GpsInformationComponent.Pdop:
+- Qgis.GpsInformationComponent.Hdop:
+- Qgis.GpsInformationComponent.Vdop:
+- Qgis.GpsInformationComponent.HorizontalAccuracy:
+- Qgis.GpsInformationComponent.VerticalAccuracy:
+- Qgis.GpsInformationComponent.HvAccuracy:
+- Qgis.GpsInformationComponent.SatellitesUsed:
+- Qgis.GpsInformationComponent.Timestamp:
+- Qgis.GpsInformationComponent.TrackDistanceSinceLastPoint:
+- Qgis.GpsInformationComponent.TrackTimeSinceLastPoint:
+
+Fields stored in the :py:func:`~QgsVectorLayerGpsLogger.tracksLayer` are:
+
+- Qgis.GpsInformationComponent.TrackStartTime:
+- Qgis.GpsInformationComponent.TrackEndTime:
+- Qgis.GpsInformationComponent.TotalTrackLength:
+- Qgis.GpsInformationComponent.TrackDistanceFromStart:
+
+.. seealso:: :py:func:`destinationField`
+%End
+
+    QString destinationField( Qgis::GpsInformationComponent component ) const;
+%Docstring
+Returns the destination field name for a specific GPS information ``component``.
+
+.. seealso:: :py:func:`setDestinationField`
+%End
+
+    virtual void setTransformContext( const QgsCoordinateTransformContext &context );
+
+
+  public slots:
+
+    void endCurrentTrack();
+%Docstring
+Ends the current track, storing it in the :py:func:`~QgsVectorLayerGpsLogger.tracksLayer` if appropriate.
+%End
+
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/gps/qgsvectorlayergpslogger.h                               *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

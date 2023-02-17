@@ -115,8 +115,8 @@ Content-Type: text/xml; charset=utf-8
   <sld:UserDefinedSymbolization SupportSLD="1" RemoteWCS="0" UserLayer="0" InlineFeature="0" RemoteWFS="0" UserStyle="1"/>
   <ComposerTemplates>
    <ComposerTemplate height="210" width="297" name="mytemplate">
-    <ComposerMap height="26" width="61" name="map0"/>
-    <ComposerMap height="103" width="87" name="map1"/>
+    <ComposerMap itemName="Map 1" height="26" width="61" name="map0"/>
+    <ComposerMap itemName="Map 2" height="103" width="87" name="map1"/>
    </ComposerTemplate>
   </ComposerTemplates>
   <WFSLayers>
@@ -301,12 +301,12 @@ Content-Type: text/xml; charset=utf-8
     <CRS>EPSG:3857</CRS>
     <EX_GeographicBoundingBox>
      <westBoundLongitude>8.203459</westBoundLongitude>
-     <eastBoundLongitude>8.203548</eastBoundLongitude>
+     <eastBoundLongitude>8.203547</eastBoundLongitude>
      <southBoundLatitude>44.901394</southBoundLatitude>
      <northBoundLatitude>44.901483</northBoundLatitude>
     </EX_GeographicBoundingBox>
-    <BoundingBox maxy="5606025.239" maxx="913214.676" miny="5606011.456" CRS="EPSG:3857" minx="913204.911"/>
-    <BoundingBox maxy="8.203548" maxx="44.901483" miny="8.203459" CRS="EPSG:4326" minx="44.901394"/>
+    <BoundingBox maxy="5606025.238" maxx="913214.675" miny="5606011.456" CRS="EPSG:3857" minx="913204.912"/>
+    <BoundingBox maxy="8.203547" maxx="44.901483" miny="8.203459" CRS="EPSG:4326" minx="44.901394"/>
     <TreeName>groupwithshortname</TreeName>
     <Layer geometryType="Point" queryable="1" displayField="id" visible="1" visibilityChecked="1" opacity="1" expanded="1">
      <Name>testlayer2</Name>
@@ -346,12 +346,12 @@ Content-Type: text/xml; charset=utf-8
     <CRS>EPSG:3857</CRS>
     <EX_GeographicBoundingBox>
      <westBoundLongitude>8.203459</westBoundLongitude>
-     <eastBoundLongitude>8.203548</eastBoundLongitude>
+     <eastBoundLongitude>8.203547</eastBoundLongitude>
      <southBoundLatitude>44.901394</southBoundLatitude>
      <northBoundLatitude>44.901483</northBoundLatitude>
     </EX_GeographicBoundingBox>
-    <BoundingBox maxy="5606025.239" maxx="913214.676" miny="5606011.456" CRS="EPSG:3857" minx="913204.911"/>
-    <BoundingBox maxy="8.203548" maxx="44.901483" miny="8.203459" CRS="EPSG:4326" minx="44.901394"/>
+    <BoundingBox maxy="5606025.238" maxx="913214.675" miny="5606011.456" CRS="EPSG:3857" minx="913204.912"/>
+    <BoundingBox maxy="8.203547" maxx="44.901483" miny="8.203459" CRS="EPSG:4326" minx="44.901394"/>
     <TreeName>groupwithoutshortname</TreeName>
     <Layer geometryType="Point" queryable="0" displayField="name" visible="1" visibilityChecked="1" opacity="1" expanded="1">
      <Name>testlayer3</Name>

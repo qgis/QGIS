@@ -57,6 +57,32 @@ namespace QgsZipUtils
    * \since QGIS 3.0
    */
   CORE_EXPORT bool zip( const QString &zip, const QStringList &files );
+
+
+  /**
+   * Decodes gzip byte stream, returns TRUE on success. Useful for reading vector tiles.
+   *
+   * \note Not available in Python bindings
+   * \since QGIS 3.26
+   */
+  CORE_EXPORT bool decodeGzip( const QByteArray &bytesIn, QByteArray &bytesOut ) SIP_SKIP;
+
+  /**
+   * Decodes gzip byte stream, returns TRUE on success. Useful for reading vector tiles.
+   *
+   * \note Not available in Python bindings
+   * \since QGIS 3.26
+   */
+  CORE_EXPORT bool decodeGzip( const char *bytesIn, std::size_t size, QByteArray &bytesOut ) SIP_SKIP;
+
+  /**
+   * Encodes gzip byte stream, returns TRUE on success. Useful for writing vector tiles.
+   *
+   * \note Not available in Python bindings
+   * \since QGIS 3.26
+   */
+  CORE_EXPORT bool encodeGzip( const QByteArray &bytesIn, QByteArray &bytesOut ) SIP_SKIP;
+
 };
 
 #endif //QGSZIPUTILS_H

@@ -44,6 +44,12 @@ QStringList QgsBatchNominatimGeocodeAlgorithm::tags() const
   return QObject::tr( "geocode,nominatim,batch,bulk,address,match" ).split( ',' );
 }
 
+QgsCoordinateReferenceSystem QgsBatchNominatimGeocodeAlgorithm::outputCrs( const QgsCoordinateReferenceSystem &inputCrs ) const
+{
+  mOutputCrs = inputCrs.isValid() ? inputCrs : QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) );
+  return mOutputCrs;
+}
+
 QgsBatchNominatimGeocodeAlgorithm *QgsBatchNominatimGeocodeAlgorithm::createInstance() const
 {
   return new QgsBatchNominatimGeocodeAlgorithm();

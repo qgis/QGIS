@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsColorRampShader.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -12,11 +11,8 @@ __date__ = '17/08/2016'
 __copyright__ = 'Copyright 2016, The QGIS Project'
 
 import qgis  # NOQA
-
-
 from qgis.PyQt.QtGui import QColor
-
-from qgis.core import (QgsColorRampShader, QgsGradientColorRamp, QgsGradientStop)
+from qgis.core import QgsColorRampShader, QgsGradientColorRamp, QgsGradientStop
 from qgis.testing import unittest
 
 
@@ -45,6 +41,20 @@ class TestQgsRasterColorRampShader(unittest.TestCase):
         self.assertEqual(shaderRamp.color1(), gradientRamp.color1())
         self.assertEqual(shaderRamp.color2(), gradientRamp.color2())
         self.assertEqual(shaderRamp.stops(), gradientRamp.stops())
+
+    def testTwoClassesDiscrete(self):
+        # test for #47759
+        shader = QgsColorRampShader(0, 50, None, QgsColorRampShader.Discrete)
+
+        item1 = QgsColorRampShader.ColorRampItem(50, QColor(0, 0, 0))
+        item2 = QgsColorRampShader.ColorRampItem(float("inf"), QColor(255, 255, 255))
+        shader.setColorRampItemList([item1, item2])
+
+        color1 = shader.shade(50)
+        self.assertEqual(color1[1:4], (0, 0, 0))
+
+        color2 = shader.shade(50.00000000001)
+        self.assertEqual(color2[1:4], (255, 255, 255))
 
 
 if __name__ == '__main__':

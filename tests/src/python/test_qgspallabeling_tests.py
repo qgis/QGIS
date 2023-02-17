@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsPalLabeling: base suite of render check tests
 
 Class is meant to be inherited by classes that test different labeling outputs
@@ -14,22 +13,27 @@ __author__ = 'Larry Shaffer'
 __date__ = '07/16/2013'
 __copyright__ = 'Copyright 2013, The QGIS Project'
 
-import qgis  # NOQA
-
 import os
 
-from qgis.PyQt.QtCore import Qt, QPointF, QSizeF
+import qgis  # NOQA
+from qgis.PyQt.QtCore import QPointF, QSizeF, Qt
 from qgis.PyQt.QtGui import QFont
-
-from qgis.core import QgsLabelingEngineSettings, QgsPalLayerSettings, QgsUnitTypes, QgsTextBackgroundSettings, \
-    QgsProject, QgsExpressionContextUtils, QgsExpressionContext
-from qgis.core import QgsCoordinateReferenceSystem
+from qgis.core import (
+    QgsCoordinateReferenceSystem,
+    QgsExpressionContext,
+    QgsExpressionContextUtils,
+    QgsLabelingEngineSettings,
+    QgsPalLayerSettings,
+    QgsProject,
+    QgsTextBackgroundSettings,
+    QgsUnitTypes,
+)
 
 from utilities import svgSymbolsPath
 
 
 # noinspection PyPep8Naming
-class TestPointBase(object):
+class TestPointBase:
 
     def __init__(self):
         """Dummy assignments, intended to be overridden in subclasses"""
@@ -234,7 +238,7 @@ class TestPointBase(object):
 # noinspection PyPep8Naming
 
 
-class TestLineBase(object):
+class TestLineBase:
 
     def __init__(self):
         """Dummy assignments, intended to be overridden in subclasses"""

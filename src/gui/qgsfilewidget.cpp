@@ -36,9 +36,6 @@
 QgsFileWidget::QgsFileWidget( QWidget *parent )
   : QWidget( parent )
 {
-  setBackgroundRole( QPalette::Window );
-  setAutoFillBackground( true );
-
   mLayout = new QHBoxLayout();
   mLayout->setContentsMargins( 0, 0, 0, 0 );
 
@@ -281,7 +278,7 @@ void QgsFileWidget::openFileDialog()
 
   // if we use a relative path option, we need to obtain the full path
   // first choice is the current file path, if one is entered
-  if ( !mFilePath.isEmpty() && QFile::exists( mFilePath ) )
+  if ( !mFilePath.isEmpty() && ( QFile::exists( mFilePath ) || mStorageMode == SaveFile ) )
   {
     oldPath = relativePath( mFilePath, false );
   }
@@ -323,7 +320,7 @@ void QgsFileWidget::openFileDialog()
         break;
       case GetDirectory:
         title = !mDialogTitle.isEmpty() ? mDialogTitle : tr( "Select a directory" );
-        fileName = QFileDialog::getExistingDirectory( this, title, QFileInfo( oldPath ).absoluteFilePath(), mOptions | QFileDialog::ShowDirsOnly );
+        fileName = QFileDialog::getExistingDirectory( this, title, QFileInfo( oldPath ).absoluteFilePath(), mOptions );
         break;
       case SaveFile:
       {
@@ -344,6 +341,10 @@ void QgsFileWidget::openFileDialog()
       break;
     }
   }
+
+  // return dialog focus on Mac
+  activateWindow();
+  raise();
 
   if ( fileName.isEmpty() && fileNames.isEmpty( ) )
     return;
@@ -431,11 +432,20 @@ QString QgsFileWidget::relativePath( const QString &filePath, bool removeRelativ
   return filePath;
 }
 
+QSize QgsFileWidget::minimumSizeHint() const
+{
+  QSize size { mLineEdit->minimumSizeHint() };
+  const QSize btnSize { mFileWidgetButton->minimumSizeHint() };
+  size.setWidth( size.width() + btnSize.width() );
+  size.setHeight( std::max( size.height(), btnSize.height() ) );
+  return size;
+}
+
 
 QString QgsFileWidget::toUrl( const QString &path ) const
 {
   QString rep;
-  if ( path.isEmpty() )
+  if ( path.isEmpty() || path == QgsApplication::nullRepresentation() )
   {
     return QgsApplication::nullRepresentation();
   }

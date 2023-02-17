@@ -75,6 +75,7 @@ class GUI_EXPORT QgsGeoPdfLayerTreeModel : public QgsMapLayerModel
 ///@cond PRIVATE
 class GUI_EXPORT QgsGeoPdfLayerFilteredTreeModel : public QSortFilterProxyModel
 {
+    Q_OBJECT
   public:
 
     QgsGeoPdfLayerFilteredTreeModel( QgsGeoPdfLayerTreeModel *sourceModel, QObject *parent = nullptr );

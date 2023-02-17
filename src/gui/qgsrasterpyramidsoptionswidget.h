@@ -40,8 +40,12 @@ class GUI_EXPORT QgsRasterPyramidsOptionsWidget: public QWidget, private Ui::Qgs
     QStringList configOptions() const { return mSaveOptionsWidget->options(); }
     QgsRasterFormatSaveOptionsWidget *createOptionsWidget() SIP_FACTORY { return mSaveOptionsWidget; }
     const QList<int> overviewList() const { return mOverviewList; }
-    QgsRaster::RasterPyramidsFormat pyramidsFormat() const
-    { return static_cast< QgsRaster::RasterPyramidsFormat >( cbxPyramidsFormat->currentIndex() ); }
+
+    /**
+     * Returns the selected pyramid format.
+     */
+    Qgis::RasterPyramidFormat pyramidsFormat() const { return cbxPyramidsFormat->currentData().value< Qgis::RasterPyramidFormat >(); }
+
     QString resamplingMethod() const;
     void setRasterLayer( QgsRasterLayer *rasterLayer ) { mSaveOptionsWidget->setRasterLayer( rasterLayer ); }
     void setRasterFileName( const QString &file ) { mSaveOptionsWidget->setRasterFileName( file ); }
@@ -63,15 +67,6 @@ class GUI_EXPORT QgsRasterPyramidsOptionsWidget: public QWidget, private Ui::Qgs
     void someValueChanged(); /* emitted when any other setting changes */
 
   private:
-
-    // Must be in the same order as in the .ui file
-    typedef enum
-    {
-      GTIFF = 0,
-      INTERNAL = 1,
-      ERDAS = 2
-    } Format;
-
 
     QString mProvider;
     QList< int > mOverviewList;

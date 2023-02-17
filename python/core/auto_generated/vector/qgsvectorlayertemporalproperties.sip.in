@@ -336,7 +336,7 @@ occur before or within the map's temporal range should be rendered).
 .. seealso:: :py:func:`accumulateFeatures`
 %End
 
-    QString createFilterString( QgsVectorLayerTemporalContext context, const QgsDateTimeRange &range ) const;
+    QString createFilterString( const QgsVectorLayerTemporalContext &context, const QgsDateTimeRange &range ) const;
 %Docstring
 Creates a QGIS expression filter string for filtering features within
 the specified ``context`` to those within the specified time ``range``.

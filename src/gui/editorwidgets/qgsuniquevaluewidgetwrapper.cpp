@@ -51,7 +51,12 @@ QWidget *QgsUniqueValuesWidgetWrapper::createWidget( QWidget *parent )
   if ( config( QStringLiteral( "Editable" ) ).toBool() )
     return new QgsFilterLineEdit( parent );
   else
-    return new QComboBox( parent );
+  {
+    QComboBox *combo = new QComboBox( parent );
+    combo->setMinimumContentsLength( 1 );
+    combo->setSizeAdjustPolicy( QComboBox::SizeAdjustPolicy::AdjustToMinimumContentsLengthWithIcon );
+    return combo;
+  }
 }
 
 void QgsUniqueValuesWidgetWrapper::initWidget( QWidget *editor )
@@ -132,7 +137,7 @@ void QgsUniqueValuesWidgetWrapper::updateValues( const QVariant &value, const QV
 
   if ( mLineEdit )
   {
-    if ( value.isNull() )
+    if ( QgsVariantUtils::isNull( value ) )
       mLineEdit->setText( QgsApplication::nullRepresentation() );
     else
       mLineEdit->setText( value.toString() );

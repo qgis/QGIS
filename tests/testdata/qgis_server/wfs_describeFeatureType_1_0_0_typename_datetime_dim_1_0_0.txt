@@ -1,0 +1,22 @@
+Content-Length: 2176
+Content-Type: text/xml; charset=utf-8
+
+<schema xmlns:gml="http://www.opengis.net/gml" targetNamespace="http://www.qgis.org/gml" xmlns:qgs="http://www.qgis.org/gml" xmlns="http://www.w3.org/2001/XMLSchema" xmlns:ogc="http://www.opengis.net/ogc" version="1.0" xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+ <import namespace="http://www.opengis.net/gml" schemaLocation="http://schemas.opengis.net/gml/2.1.2/feature.xsd"/>
+ <element type="qgs:Datetime_dimType" name="Datetime_dim" substitutionGroup="gml:_Feature"/>
+ <complexType name="Datetime_dimType">
+  <complexContent>
+   <extension base="gml:AbstractFeatureType">
+    <sequence>
+     <element maxOccurs="1" type="gml:PointPropertyType" minOccurs="0" name="geometry"/>
+     <element type="long" name="fid"/>
+     <element type="int" nillable="true" name="id"/>
+     <element type="date" nillable="true" name="date"/>
+     <element type="time" nillable="true" name="time"/>
+     <element type="dateTime" nillable="true" name="datetime"/>
+     <element type="string" nillable="true" name="date_time"/>
+    </sequence>
+   </extension>
+  </complexContent>
+ </complexType>
+</schema>

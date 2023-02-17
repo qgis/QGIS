@@ -26,11 +26,11 @@
 #include "qgsproject.h"
 #include "qgsgcpcanvasitem.h"
 
-QgsMapCoordsDialog::QgsMapCoordsDialog( QgsMapCanvas *qgisCanvas, const QgsPointXY &pixelCoords, QgsCoordinateReferenceSystem &rasterCrs, QWidget *parent )
+QgsMapCoordsDialog::QgsMapCoordsDialog( QgsMapCanvas *qgisCanvas, const QgsPointXY &sourceLayerCoordinates, QgsCoordinateReferenceSystem &rasterCrs, QWidget *parent )
   : QDialog( parent, Qt::Dialog )
   , mQgisCanvas( qgisCanvas )
   , mRasterCrs( rasterCrs )
-  , mPixelCoords( pixelCoords )
+  , mSourceLayerCoordinates( sourceLayerCoordinates )
 {
   setupUi( this );
   QgsGui::enableAutoGeometryRestore( this );
@@ -103,7 +103,7 @@ void QgsMapCoordsDialog::buttonBox_accepted()
   if ( !ok )
     y = dmsToDD( leYCoord->text() );
 
-  emit pointAdded( mPixelCoords, QgsPointXY( x, y ), mProjectionSelector->crs().isValid() ? mProjectionSelector->crs() : mRasterCrs );
+  emit pointAdded( mSourceLayerCoordinates, QgsPointXY( x, y ), mProjectionSelector->crs().isValid() ? mProjectionSelector->crs() : mRasterCrs );
   close();
 }
 

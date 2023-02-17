@@ -169,6 +169,11 @@ Default implementation does nothing.
       QgsLegendPatchShape patchShape;
 
       QSizeF patchSize;
+
+      const QgsTextDocument *textDocument;
+
+      const QgsTextDocumentMetrics *textDocumentMetrics;
+
     };
 
     struct ItemMetrics
@@ -317,6 +322,7 @@ Constructor for QgsSymbolLegendNode.
 :param item: the legend symbol item
 :param parent: attach a parent QObject to the legend node.
 %End
+    ~QgsSymbolLegendNode();
 
     virtual Qt::ItemFlags flags() const;
 

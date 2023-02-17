@@ -118,3 +118,8 @@ QgsServerSettings *QgsServerInterfaceImpl::serverSettings()
 {
   return mServerSettings;
 }
+
+void QgsServerInterfaceImpl::reloadSettings()
+{
+  mServerSettings->load();
+}

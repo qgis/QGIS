@@ -188,7 +188,7 @@ QVariantMap QgsDeleteDuplicateGeometriesAlgorithm::processAlgorithm( const QVari
     feedback->setProgress( 0.10 * current * step + 90 ); // takes about 10% of time
   }
 
-  feedback->pushInfo( QObject::tr( "%1 duplicate features removed" ).arg( removed ) );
+  feedback->pushInfo( QObject::tr( "%n duplicate feature(s) removed", nullptr, removed ) );
 
   QVariantMap outputs;
   outputs.insert( QStringLiteral( "OUTPUT" ), destId );

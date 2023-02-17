@@ -22,11 +22,11 @@
 #include "qgsgeos.h"
 #include "qgslogger.h"
 #include "qgsvectorlayer.h"
-#include "qgsexception.h"
 #include "qgsrenderer.h"
 #include "qgssettingsregistrycore.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsrendercontext.h"
+#include "qgssettingsentryimpl.h"
 
 #include <queue>
 #include <vector>
@@ -36,7 +36,7 @@ typedef std::pair<int, double> DijkstraQueueItem; // first = vertex index, secon
 // utility comparator for queue items based on distance
 struct comp
 {
-  bool operator()( DijkstraQueueItem a, DijkstraQueueItem b )
+  bool operator()( DijkstraQueueItem a, DijkstraQueueItem b ) const
   {
     return a.second > b.second;
   }
@@ -492,7 +492,7 @@ bool QgsTracer::initGraph()
     std::unique_ptr< QgsFeatureRenderer > renderer;
     std::unique_ptr<QgsRenderContext> ctx;
 
-    bool enableInvisibleFeature = QgsSettingsRegistryCore::settingsDigitizingSnapInvisibleFeature.value();
+    bool enableInvisibleFeature = QgsSettingsRegistryCore::settingsDigitizingSnapInvisibleFeature->value();
     if ( !enableInvisibleFeature && mRenderContext && vl->renderer() )
     {
       renderer.reset( vl->renderer()->clone() );

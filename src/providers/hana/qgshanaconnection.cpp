@@ -29,6 +29,7 @@
 #include "qgscredentials.h"
 #include "qgssettings.h"
 #include "qexception.h"
+#include "qgsvariantutils.h"
 
 #include "odbc/Connection.h"
 #include "odbc/DatabaseMetaDataUnicode.h"
@@ -39,7 +40,7 @@
 #include "odbc/ResultSetMetaDataUnicode.h"
 #include "odbc/Statement.h"
 
-using namespace odbc;
+using namespace NS_ODBC;
 
 namespace
 {
@@ -48,7 +49,7 @@ namespace
     QMap<QString, bool> ret;
     DatabaseMetaDataUnicodeRef dmd = conn.getDatabaseMetaDataUnicode();
     ResultSetRef rsStats = dmd->getStatistics( nullptr, schemaName.toStdU16String().c_str(),
-                           tableName.toStdU16String().c_str(), odbc::IndexType::UNIQUE, odbc::StatisticsAccuracy::ENSURE );
+                           tableName.toStdU16String().c_str(), IndexType::UNIQUE, StatisticsAccuracy::ENSURE );
     QMap<QString, QStringList> compositeKeys;
     while ( rsStats->next() )
     {
@@ -62,9 +63,8 @@ namespace
     }
     rsStats->close();
 
-    for ( const QString &key : compositeKeys.keys() )
+    for ( const QStringList &indexColumns : compositeKeys )
     {
-      const QStringList indexColumns = compositeKeys.value( key );
       if ( indexColumns.size() <= 1 )
         continue;
       for ( const QString &clmName : indexColumns )
@@ -176,7 +176,7 @@ QgsField AttributeField::toQgsField() const
 static const uint8_t CREDENTIALS_INPUT_MAX_ATTEMPTS = 5;
 static const int GEOMETRIES_SELECT_LIMIT = 10;
 
-QgsHanaConnection::QgsHanaConnection( odbc::ConnectionRef connection,  const QgsDataSourceUri &uri )
+QgsHanaConnection::QgsHanaConnection( ConnectionRef connection,  const QgsDataSourceUri &uri )
   : mConnection( connection )
   , mUri( uri )
 {
@@ -222,7 +222,7 @@ QgsHanaConnection *QgsHanaConnection::createConnection( const QgsDataSourceUri &
     conn->setAutoCommit( false );
     QString message;
 
-    auto connect = []( odbc::ConnectionRef & conn,
+    auto connect = []( ConnectionRef & conn,
                        const QgsDataSourceUri & uri,
                        QString & errorMessage )
     {
@@ -429,7 +429,7 @@ QVariant QgsHanaConnection::executeScalar( const QString &sql, const QVariantLis
   }
 }
 
-odbc::PreparedStatementRef QgsHanaConnection::prepareStatement( const QString &sql )
+PreparedStatementRef QgsHanaConnection::prepareStatement( const QString &sql )
 {
   try
   {
@@ -469,28 +469,28 @@ QList<QgsVectorDataProvider::NativeType> QgsHanaConnection::getNativeTypes()
 {
   return QList<QgsVectorDataProvider::NativeType>()
          // boolean
-         << QgsVectorDataProvider::NativeType( tr( "Boolean" ), QStringLiteral( "BOOLEAN" ), QVariant::Bool, -1, -1, -1, -1 )
+         << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::Bool ), QStringLiteral( "BOOLEAN" ), QVariant::Bool, -1, -1, -1, -1 )
          // integer types
-         << QgsVectorDataProvider::NativeType( tr( "8 bytes integer" ), QStringLiteral( "BIGINT" ), QVariant::LongLong, -1, -1, 0, 0 )
-         << QgsVectorDataProvider::NativeType( tr( "4 bytes integer" ), QStringLiteral( "INTEGER" ), QVariant::Int, -1, -1, 0, 0 )
-         << QgsVectorDataProvider::NativeType( tr( "2 bytes integer" ), QStringLiteral( "SMALLINT" ), QVariant::Int, -1, -1, 0, 0 )
-         << QgsVectorDataProvider::NativeType( tr( "1 byte integer" ), QStringLiteral( "TINYINT" ), QVariant::Int, -1, -1, 0, 0 )
-         << QgsVectorDataProvider::NativeType( tr( "Decimal number (DECIMAL)" ), QStringLiteral( "DECIMAL" ), QVariant::Double, 1, 31, 0, 31 )
+         << QgsVectorDataProvider::NativeType( tr( "8 bytes Integer" ), QStringLiteral( "BIGINT" ), QVariant::LongLong, -1, -1, 0, 0 )
+         << QgsVectorDataProvider::NativeType( tr( "4 bytes Integer" ), QStringLiteral( "INTEGER" ), QVariant::Int, -1, -1, 0, 0 )
+         << QgsVectorDataProvider::NativeType( tr( "2 bytes Integer" ), QStringLiteral( "SMALLINT" ), QVariant::Int, -1, -1, 0, 0 )
+         << QgsVectorDataProvider::NativeType( tr( "1 byte Integer" ), QStringLiteral( "TINYINT" ), QVariant::Int, -1, -1, 0, 0 )
+         << QgsVectorDataProvider::NativeType( tr( "Decimal Number (DECIMAL)" ), QStringLiteral( "DECIMAL" ), QVariant::Double, 1, 31, 0, 31 )
          // floating point
-         << QgsVectorDataProvider::NativeType( tr( "Decimal number (REAL)" ), QStringLiteral( "REAL" ), QVariant::Double )
-         << QgsVectorDataProvider::NativeType( tr( "Decimal number (DOUBLE)" ), QStringLiteral( "DOUBLE" ), QVariant::Double )
+         << QgsVectorDataProvider::NativeType( tr( "Decimal Number (REAL)" ), QStringLiteral( "REAL" ), QVariant::Double )
+         << QgsVectorDataProvider::NativeType( tr( "Decimal Number (DOUBLE)" ), QStringLiteral( "DOUBLE" ), QVariant::Double )
          // date/time types
-         << QgsVectorDataProvider::NativeType( tr( "Date" ), QStringLiteral( "DATE" ), QVariant::Date, -1, -1, -1, -1 )
-         << QgsVectorDataProvider::NativeType( tr( "Time" ), QStringLiteral( "TIME" ), QVariant::Time, -1, -1, -1, -1 )
-         << QgsVectorDataProvider::NativeType( tr( "Date & Time" ), QStringLiteral( "TIMESTAMP" ), QVariant::DateTime, -1, -1, -1, -1 )
+         << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::Date ), QStringLiteral( "DATE" ), QVariant::Date, -1, -1, -1, -1 )
+         << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::Time ), QStringLiteral( "TIME" ), QVariant::Time, -1, -1, -1, -1 )
+         << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::DateTime ), QStringLiteral( "TIMESTAMP" ), QVariant::DateTime, -1, -1, -1, -1 )
          // string types
          << QgsVectorDataProvider::NativeType( tr( "Text, variable length (VARCHAR)" ), QStringLiteral( "VARCHAR" ), QVariant::String, 1, 5000 )
-         << QgsVectorDataProvider::NativeType( tr( "Unicode text, variable length (NVARCHAR)" ), QStringLiteral( "NVARCHAR" ), QVariant::String, 1, 5000 )
+         << QgsVectorDataProvider::NativeType( tr( "Unicode Text, variable length (NVARCHAR)" ), QStringLiteral( "NVARCHAR" ), QVariant::String, 1, 5000 )
          << QgsVectorDataProvider::NativeType( tr( "Text, variable length large object (CLOB)" ), QStringLiteral( "CLOB" ), QVariant::String )
-         << QgsVectorDataProvider::NativeType( tr( "Unicode text, variable length large object (NCLOB)" ), QStringLiteral( "NCLOB" ), QVariant::String )
+         << QgsVectorDataProvider::NativeType( tr( "Unicode Text, variable length large object (NCLOB)" ), QStringLiteral( "NCLOB" ), QVariant::String )
          // binary types
-         << QgsVectorDataProvider::NativeType( tr( "Binary object (VARBINARY)" ), QStringLiteral( "VARBINARY" ), QVariant::ByteArray, 1, 5000 )
-         << QgsVectorDataProvider::NativeType( tr( "Binary object (BLOB)" ), QStringLiteral( "BLOB" ), QVariant::ByteArray );
+         << QgsVectorDataProvider::NativeType( tr( "Binary Object (VARBINARY)" ), QStringLiteral( "VARBINARY" ), QVariant::ByteArray, 1, 5000 )
+         << QgsVectorDataProvider::NativeType( tr( "Binary Object (BLOB)" ), QStringLiteral( "BLOB" ), QVariant::ByteArray );
 }
 
 const QString &QgsHanaConnection::getDatabaseVersion()

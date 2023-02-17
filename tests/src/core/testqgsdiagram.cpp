@@ -30,15 +30,12 @@
 #include "diagram/qgshistogramdiagram.h"
 #include "qgsdiagramrenderer.h"
 #include "qgsmaplayer.h"
-#include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 #include "qgsapplication.h"
-#include "qgsproviderregistry.h"
 #include "qgsrenderer.h"
 #include "qgssinglesymbolrenderer.h"
 //qgis test includes
 #include "qgsmultirenderchecker.h"
-#include "qgspallabeling.h"
 #include "qgsproject.h"
 #include "qgsshadoweffect.h"
 #include "qgslinesymbol.h"
@@ -48,19 +45,18 @@
  * \ingroup UnitTests
  * Unit tests for the diagram renderer
  */
-class TestQgsDiagram : public QObject
+class TestQgsDiagram : public QgsTest
 {
     Q_OBJECT
 
   public:
-    TestQgsDiagram() = default;
+    TestQgsDiagram() : QgsTest( QStringLiteral( "Diagram Tests" ) ) {}
 
   private:
     bool mTestHasError =  false ;
     QgsMapSettings *mMapSettings = nullptr;
     QgsVectorLayer *mPointsLayer = nullptr;
     QString mTestDataDir;
-    QString mReport;
 
     bool imageCheck( const QString &testType );
 
@@ -102,25 +98,14 @@ class TestQgsDiagram : public QObject
       // Create map composition to draw on
       QgsProject::instance()->addMapLayer( mPointsLayer );
       mMapSettings->setLayers( QList<QgsMapLayer *>() << mPointsLayer );
-
-      mReport += QLatin1String( "<h1>Diagram Tests</h1>\n" );
     }
 
     // will be called after the last testfunction was executed.
     void cleanupTestCase()
     {
       delete mMapSettings;
-      delete mPointsLayer;
+      QgsProject::instance()->removeAllMapLayers();
 
-      const QString myReportFile = QDir::tempPath() + "/qgistest.html";
-      QFile myFile( myReportFile );
-      if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
-      {
-        QTextStream myQTextStream( &myFile );
-        myQTextStream << mReport;
-        myFile.close();
-        //QDesktopServices::openUrl( "file:///" + myReportFile );
-      }
       QgsApplication::exitQgis();
     }
 
@@ -173,6 +158,117 @@ class TestQgsDiagram : public QObject
       mPointsLayer->setDiagramLayerSettings( dls );
 
       QVERIFY( imageCheck( "piediagram" ) );
+    }
+
+    void testPieDiagramOpacity()
+    {
+      QgsDiagramSettings ds;
+      QColor col1 = Qt::red;
+      QColor col2 = Qt::yellow;
+      col1.setAlphaF( 0.5 );
+      col2.setAlphaF( 1 );
+      ds.categoryColors = QList<QColor>() << col1 << col2;
+      ds.categoryAttributes = QList<QString>() << QStringLiteral( "\"Pilots\"" ) << QStringLiteral( "\"Cabin Crew\"" );
+      ds.minimumScale = -1;
+      ds.maximumScale = -1;
+      ds.minimumSize = 0;
+      ds.penColor = Qt::green;
+      ds.penWidth = .5;
+      ds.scaleByArea = true;
+      ds.sizeType = QgsUnitTypes::RenderMillimeters;
+      ds.size = QSizeF( 5, 5 );
+      ds.rotationOffset = 0;
+
+      QgsLinearlyInterpolatedDiagramRenderer *dr = new QgsLinearlyInterpolatedDiagramRenderer();
+      dr->setLowerValue( 0.0 );
+      dr->setLowerSize( QSizeF( 0.0, 0.0 ) );
+      dr->setUpperValue( 10 );
+      dr->setUpperSize( QSizeF( 40, 40 ) );
+      dr->setClassificationField( QStringLiteral( "Staff" ) );
+      dr->setDiagram( new QgsPieDiagram() );
+      dr->setDiagramSettings( ds );
+      mPointsLayer->setDiagramRenderer( dr );
+
+      QgsDiagramLayerSettings dls = QgsDiagramLayerSettings();
+      dls.setPlacement( QgsDiagramLayerSettings::OverPoint );
+      dls.setShowAllDiagrams( true );
+      mPointsLayer->setDiagramLayerSettings( dls );
+
+      QVERIFY( imageCheck( "piediagram_opacity" ) );
+    }
+
+    void testPieDiagramAggregate()
+    {
+      QgsDiagramSettings ds;
+      QColor col1 = Qt::red;
+      QColor col2 = Qt::yellow;
+      col1.setAlphaF( 0.5 );
+      col2.setAlphaF( 0.5 );
+      ds.categoryColors = QList<QColor>() << col1 << col2;
+      ds.categoryAttributes = QList<QString>() << QStringLiteral( "\"Pilots\"/sum(\"Pilots\")" ) << QStringLiteral( "\"Cabin Crew\"/sum(\"Cabin Crew\")" );
+      ds.minimumScale = -1;
+      ds.maximumScale = -1;
+      ds.minimumSize = 0;
+      ds.penColor = Qt::green;
+      ds.penWidth = .5;
+      ds.scaleByArea = true;
+      ds.sizeType = QgsUnitTypes::RenderMillimeters;
+      ds.size = QSizeF( 5, 5 );
+      ds.rotationOffset = 0;
+
+      QgsLinearlyInterpolatedDiagramRenderer *dr = new QgsLinearlyInterpolatedDiagramRenderer();
+      dr->setLowerValue( 0.0 );
+      dr->setLowerSize( QSizeF( 0.0, 0.0 ) );
+      dr->setUpperValue( 10 );
+      dr->setUpperSize( QSizeF( 40, 40 ) );
+      dr->setClassificationField( QStringLiteral( "Staff" ) );
+      dr->setDiagram( new QgsPieDiagram() );
+      dr->setDiagramSettings( ds );
+      mPointsLayer->setDiagramRenderer( dr );
+
+      QgsDiagramLayerSettings dls = QgsDiagramLayerSettings();
+      dls.setPlacement( QgsDiagramLayerSettings::OverPoint );
+      dls.setShowAllDiagrams( true );
+      mPointsLayer->setDiagramLayerSettings( dls );
+
+      QVERIFY( imageCheck( "piediagram_aggregate" ) );
+    }
+
+    void testDiagramWithGeometryBasedExpressionAttribute()
+    {
+      QgsDiagramSettings ds;
+      QColor col1 = Qt::red;
+      QColor col2 = Qt::yellow;
+      col1.setAlphaF( 0.5 );
+      col2.setAlphaF( 0.5 );
+      ds.categoryColors = QList<QColor>() << col1 << col2;
+      ds.categoryAttributes = QList<QString>() << QStringLiteral( "abs($x)" ) << QStringLiteral( "$y" );
+      ds.minimumScale = -1;
+      ds.maximumScale = -1;
+      ds.minimumSize = 0;
+      ds.penColor = Qt::green;
+      ds.penWidth = .5;
+      ds.scaleByArea = true;
+      ds.sizeType = QgsUnitTypes::RenderMillimeters;
+      ds.size = QSizeF( 5, 5 );
+      ds.rotationOffset = 0;
+
+      QgsLinearlyInterpolatedDiagramRenderer *dr = new QgsLinearlyInterpolatedDiagramRenderer();
+      dr->setLowerValue( 0.0 );
+      dr->setLowerSize( QSizeF( 0.0, 0.0 ) );
+      dr->setUpperValue( 10 );
+      dr->setUpperSize( QSizeF( 40, 40 ) );
+      dr->setClassificationField( QStringLiteral( "Staff" ) );
+      dr->setDiagram( new QgsPieDiagram() );
+      dr->setDiagramSettings( ds );
+      mPointsLayer->setDiagramRenderer( dr );
+
+      QgsDiagramLayerSettings dls = QgsDiagramLayerSettings();
+      dls.setPlacement( QgsDiagramLayerSettings::OverPoint );
+      dls.setShowAllDiagrams( true );
+      mPointsLayer->setDiagramLayerSettings( dls );
+
+      QVERIFY( imageCheck( "piediagram_geometry_based_expression" ) );
     }
 
     void testPaintEffect()

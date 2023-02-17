@@ -34,6 +34,7 @@
 #include "qgsrange.h"
 #include "qgspointcloudattribute.h"
 #include "qgsstatisticalsummary.h"
+#include "qgspointcloudexpression.h"
 
 #define SIP_NO_FILE
 
@@ -41,6 +42,8 @@ class QgsPointCloudRequest;
 class QgsPointCloudAttributeCollection;
 class QgsCoordinateReferenceSystem;
 class QgsPointCloudBlockRequest;
+class QgsPointCloudStatistics;
+class QgsPointCloudIndex;
 
 /**
  * \ingroup core
@@ -172,11 +175,24 @@ class CORE_EXPORT QgsPointCloudIndex: public QObject
     explicit QgsPointCloudIndex();
     ~QgsPointCloudIndex();
 
+    /**
+     * Returns a clone of the current point cloud index object
+     * \note It is the responsibility of the caller to handle the ownership and delete the object.
+     * \since QGIS 3.26
+     */
+    virtual std::unique_ptr<QgsPointCloudIndex> clone() const = 0;
+
     //! Loads the index from the file
     virtual void load( const QString &fileName ) = 0;
 
     //! Returns whether index is loaded and valid
     virtual bool isValid() const = 0;
+
+    /**
+     * Returns the error that occurred during the loading of the index.
+     * \since QGIS 3.26
+     */
+    QString error() const { return mError; }
 
     /**
      * Returns the access type of the data
@@ -190,20 +206,31 @@ class CORE_EXPORT QgsPointCloudIndex: public QObject
     virtual QgsCoordinateReferenceSystem crs() const = 0;
     //! Returns the number of points in the point cloud
     virtual qint64 pointCount() const = 0;
+    //! Returns whether the dataset contains metadata of statistics
+    virtual bool hasStatisticsMetadata() const = 0;
     //! Returns the statistic \a statistic of \a attribute
-    virtual QVariant metadataStatistic( const QString &attribute, QgsStatisticalSummary::Statistic statistic ) const = 0;
+    virtual QVariant metadataStatistic( const QString &attribute, QgsStatisticalSummary::Statistic statistic ) const;
     //! Returns the classes of \a attribute
-    virtual QVariantList metadataClasses( const QString &attribute ) const = 0;
+    virtual QVariantList metadataClasses( const QString &attribute ) const;
     //! Returns the statistic \a statistic of the class \a value of the attribute \a attribute
-    virtual QVariant metadataClassStatistic( const QString &attribute, const QVariant &value, QgsStatisticalSummary::Statistic statistic ) const = 0;
+    virtual QVariant metadataClassStatistic( const QString &attribute, const QVariant &value, QgsStatisticalSummary::Statistic statistic ) const;
     //! Returns the original metadata map
     virtual QVariantMap originalMetadata() const = 0;
+
+    /**
+     * Returns the object containings the statistics metadata extracted from the dataset
+     * \since QGIS 3.26
+     */
+    virtual QgsPointCloudStatistics metadataStatistics() const;
 
     //! Returns root node of the index
     IndexedPointCloudNode root() { return IndexedPointCloudNode( 0, 0, 0, 0 ); }
 
     //! Returns whether the octree contain given node
     virtual bool hasNode( const IndexedPointCloudNode &n ) const;
+
+    //! Returns the number of points of a given node \a n
+    virtual qint64 nodePointCount( const IndexedPointCloudNode &n ) const;
 
     //! Returns all children of node
     virtual QList<IndexedPointCloudNode> nodeChildren( const IndexedPointCloudNode &n ) const;
@@ -275,9 +302,31 @@ class CORE_EXPORT QgsPointCloudIndex: public QObject
     int span() const;
 
     /**
-     * Returns the number of poiny of indexed point cloud node \a n
+     * Returns the number of points of indexed point cloud node \a n
      */
     int nodePointCount( const IndexedPointCloudNode &n );
+
+    /**
+     * Sets the string used to define a subset of the point cloud.
+     * \param subset The subset string to be used in a \a QgsPointCloudExpression
+     * \returns true if the expression is parsed with no errors, false otherwise
+     * \since QGIS 3.26
+     */
+    bool setSubsetString( const QString &subset );
+
+    /**
+     * Returns the string used to define a subset of the point cloud.
+     * \returns The subset string or null QString if not implemented by the provider
+     *
+     * \since QGIS 3.26
+     */
+    QString subsetString() const;
+
+    /**
+     * Copies common properties to the \a destination index
+     * \since QGIS 3.26
+     */
+    void copyCommonProperties( QgsPointCloudIndex *destination ) const;
 
   protected: //TODO private
     //! Sets native attributes of the data
@@ -293,6 +342,9 @@ class CORE_EXPORT QgsPointCloudIndex: public QObject
     QgsPointCloudDataBounds mRootBounds;  //!< Bounds of the root node's cube (in int32 coordinates)
     QgsPointCloudAttributeCollection mAttributes; //! All native attributes stored in the file
     int mSpan;  //!< Number of points in one direction in a single node
+    QgsPointCloudExpression mFilterExpression;  //!< The filter expression to be evaluated when fetching node data
+
+    QString mError;
 };
 
 #endif // QGSPOINTCLOUDINDEX_H

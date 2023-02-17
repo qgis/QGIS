@@ -41,7 +41,8 @@
 
 #include "qgsfileutils.h"
 #include "qgsapplication.h"
-#include "qgspointcloudblockrequest.h"
+#include "qgseptpointcloudblockrequest.h"
+#include "qgspointcloudexpression.h"
 
 ///@cond PRIVATE
 
@@ -51,6 +52,14 @@ QgsRemoteEptPointCloudIndex::QgsRemoteEptPointCloudIndex() : QgsEptPointCloudInd
 }
 
 QgsRemoteEptPointCloudIndex::~QgsRemoteEptPointCloudIndex() = default;
+
+std::unique_ptr<QgsPointCloudIndex> QgsRemoteEptPointCloudIndex::clone() const
+{
+  QgsRemoteEptPointCloudIndex *clone = new QgsRemoteEptPointCloudIndex;
+  QMutexLocker locker( &mHierarchyMutex );
+  copyCommonProperties( clone );
+  return std::unique_ptr<QgsPointCloudIndex>( clone );
+}
 
 QList<IndexedPointCloudNode> QgsRemoteEptPointCloudIndex::nodeChildren( const IndexedPointCloudNode &n ) const
 {
@@ -63,6 +72,7 @@ QList<IndexedPointCloudNode> QgsRemoteEptPointCloudIndex::nodeChildren( const In
   const int y = n.y() * 2;
   const int z = n.z() * 2;
 
+  lst.reserve( 8 );
   for ( int i = 0; i < 8; ++i )
   {
     int dx = i & 1, dy = !!( i & 2 ), dz = !!( i & 4 );
@@ -139,7 +149,13 @@ QgsPointCloudBlockRequest *QgsRemoteEptPointCloudIndex::asyncNodeData( const Ind
     return nullptr;
   }
 
-  return new QgsPointCloudBlockRequest( n, fileUrl, mDataType, attributes(), request.attributes(), scale(), offset() );
+  // we need to create a copy of the expression to pass to the decoder
+  // as the same QgsPointCloudExpression object might be concurrently
+  // used on another thread, for example in a 3d view
+  QgsPointCloudExpression filterExpression = mFilterExpression;
+  QgsPointCloudAttributeCollection requestAttributes = request.attributes();
+  requestAttributes.extend( attributes(), filterExpression.referencedAttributes() );
+  return new QgsEptPointCloudBlockRequest( n, fileUrl, mDataType, attributes(), requestAttributes, scale(), offset(), filterExpression, request.filterRect() );
 }
 
 bool QgsRemoteEptPointCloudIndex::hasNode( const IndexedPointCloudNode &n ) const
@@ -212,7 +228,7 @@ bool QgsRemoteEptPointCloudIndex::loadNodeHierarchy( const IndexedPointCloudNode
       const int nodePointCount = it.value().toInt();
       const IndexedPointCloudNode nodeId = IndexedPointCloudNode::fromString( nodeIdStr );
       mHierarchyMutex.lock();
-      if ( nodePointCount > 0 )
+      if ( nodePointCount >= 0 )
         mHierarchy[nodeId] = nodePointCount;
       else if ( nodePointCount == -1 )
         mHierarchyNodes.insert( nodeId );
@@ -230,6 +246,17 @@ bool QgsRemoteEptPointCloudIndex::loadNodeHierarchy( const IndexedPointCloudNode
 bool QgsRemoteEptPointCloudIndex::isValid() const
 {
   return mIsValid;
+}
+
+void QgsRemoteEptPointCloudIndex::copyCommonProperties( QgsRemoteEptPointCloudIndex *destination ) const
+{
+  QgsEptPointCloudIndex::copyCommonProperties( destination );
+
+  // QgsRemoteEptPointCloudIndex specific fields
+  destination->mUrlDirectoryPart = mUrlDirectoryPart;
+  destination->mUrlFileNamePart = mUrlFileNamePart;
+  destination->mUrl = mUrl;
+  destination->mHierarchyNodes = mHierarchyNodes;
 }
 
 ///@endcond

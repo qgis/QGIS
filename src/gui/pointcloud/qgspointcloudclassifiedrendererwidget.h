@@ -63,12 +63,15 @@ class GUI_EXPORT QgsPointCloudClassifiedRendererModel : public QAbstractItemMode
     QgsPointCloudCategoryList categories() const { return mCategories; }
 
     void setCategoryColor( int row, const QColor &color );
+    //! Updates the model with percentage of points per category
+    void updateCategoriesPercentages( const QMap< int, float > &percentages ) { mPercentages = percentages; };
 
   signals:
     void categoriesChanged();
 
   private:
     QgsPointCloudCategoryList mCategories;
+    QMap< int, float > mPercentages;
     QString mMimeFormat;
 };
 
@@ -99,23 +102,36 @@ class GUI_EXPORT QgsPointCloudClassifiedRendererWidget: public QgsPointCloudRend
     QgsPointCloudCategoryList categoriesList();
     QString attribute();
 
+    /**
+     * Sets the selected attribute and categories based on a 2D renderer.
+     * If the renderer is not a QgsPointCloudClassifiedRenderer, the widget is reinitialized
+     */
+    void setFromRenderer( const QgsPointCloudRenderer *r );
     void setFromCategories( QgsPointCloudCategoryList categories, const QString &attribute );
 
   private slots:
 
+    /**
+     * Gets the available classes for the selected attribute from the layer and adds any categories that are missing.
+     * Categories for the Classification attribute get a default color and name
+     */
+    void addCategories();
     void emitWidgetChanged();
     void categoriesDoubleClicked( const QModelIndex &idx );
-    void addCategories();
     void addCategory();
     void deleteCategories();
     void deleteAllCategories();
+    void attributeChanged();
   private:
-    void setFromRenderer( const QgsPointCloudRenderer *r );
+    //! Sets default category and available classes
+    void initialize();
     void changeCategorySymbol();
     //! Returns a list of indexes for the categories under selection
     QList<int> selectedCategories();
     //! Returns row index for the currently selected category (-1 if on no selection)
     int currentCategoryRow();
+    //! Updates the model with percentage of points per category
+    void updateCategoriesPercentages();
 
     QgsPointCloudClassifiedRendererModel *mModel = nullptr;
     bool mBlockChangedSignal = false;

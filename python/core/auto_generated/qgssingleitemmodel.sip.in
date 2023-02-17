@@ -1,0 +1,69 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgssingleitemmodel.h                                        *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+class QgsSingleItemModel: QAbstractItemModel
+{
+%Docstring(signature="appended")
+
+A :py:class:`QgsSingleItemModel` subclass which contains a single read-only item.
+
+.. versionadded:: 3.26
+%End
+
+%TypeHeaderCode
+#include "qgssingleitemmodel.h"
+%End
+  public:
+
+    explicit QgsSingleItemModel( QObject *parent /TransferThis/ = 0, const QString &text = QString(),
+                                 const QMap< int, QVariant > &data = QMap< int, QVariant >(), Qt::ItemFlags flags = Qt::NoItemFlags );
+%Docstring
+Constructor for QgsSingleItemModel with the specified ``parent`` object and display ``text``.
+
+The ``data`` map specifies the data which should be returned for the specified roles, where
+map keys are Qt item roles.
+
+Custom ``flags`` can also be specified for the item.
+%End
+
+    explicit QgsSingleItemModel( QObject *parent /TransferThis/,
+                                 const QList< QMap< int, QVariant > > &columnData,
+                                 Qt::ItemFlags flags = Qt::NoItemFlags );
+%Docstring
+Constructor for a multi-column QgsSingleItemModel with the specified ``parent`` object.
+
+The ``columnData`` list specifies the data which should be returned for the specified roles for each column in the model, where
+each entry in the list must be a QMap of Qt item role to value.
+
+Custom ``flags`` can also be specified for the item.
+%End
+
+    virtual QVariant data( const QModelIndex &index, int role ) const;
+
+    virtual Qt::ItemFlags flags( const QModelIndex &index ) const;
+
+     virtual QModelIndex index( int row, int column,
+                       const QModelIndex &parent = QModelIndex() ) const;
+    virtual QModelIndex parent( const QModelIndex &index ) const;
+
+    virtual int rowCount( const QModelIndex &parent = QModelIndex() ) const;
+
+    virtual int columnCount( const QModelIndex &parent = QModelIndex() ) const;
+
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgssingleitemmodel.h                                        *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

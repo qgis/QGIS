@@ -22,18 +22,6 @@ class QgsRelation
 
   public:
 
-    enum RelationType
-    {
-      Normal,
-      Generated,
-    };
-
-    enum RelationStrength
-    {
-      Association,
-      Composition
-    };
-
 
     QgsRelation();
 %Docstring
@@ -83,7 +71,7 @@ Set an id for this relation
 Set a name for this relation
 %End
 
-    void setStrength( RelationStrength strength );
+    void setStrength( Qgis::RelationshipStrength strength );
 %Docstring
 Set a strength for this relation
 
@@ -194,7 +182,7 @@ Returns a human readable name for this relation. Mostly used as title for the ch
 :return: A name
 %End
 
-    RelationStrength strength() const;
+    Qgis::RelationshipStrength strength() const;
 %Docstring
 Returns the relation strength as a string
 
@@ -286,6 +274,19 @@ Returns the validity of this relation. Don't use the information if it's not val
 A relation is considered valid if both referenced and referencig layers are valid.
 
 :return: ``True`` if the relation is valid
+
+.. seealso:: :py:func:`validationError`
+%End
+
+    QString validationError() const;
+%Docstring
+Returns a user-friendly explanation for why the relationship is invalid.
+
+Returns an empty string if the relationship :py:func:`~QgsRelation.isValid`.
+
+.. seealso:: :py:func:`isValid`
+
+.. versionadded:: 3.28
 %End
 
     bool hasEqualDefinition( const QgsRelation &other ) const;
@@ -342,11 +343,25 @@ Returns the parent polymorphic relation. If the relation is a normal relation, a
 .. versionadded:: 3.18
 %End
 
-    RelationType type() const;
+    Qgis::RelationshipType type() const;
 %Docstring
 Returns the type of the relation
 
 .. versionadded:: 3.18
+%End
+
+    static QString cardinalityToDisplayString( Qgis::RelationshipCardinality cardinality );
+%Docstring
+Returns a user-friendly translated string representing a relationship ``cardinality``.
+
+.. versionadded:: 3.28
+%End
+
+    static QString strengthToDisplayString( Qgis::RelationshipStrength strength );
+%Docstring
+Returns a user-friendly translated string representing a relationship ``strength``.
+
+.. versionadded:: 3.28
 %End
 
 };

@@ -185,7 +185,8 @@ class PYTHON_EXPORT QgsPythonUtils
     /**
      * Returns TRUE if a plugin implements a Processing provider.
      *
-     * This is determined by checking the plugin metadata for the "hasProcessingProvider=yes" line.
+     * This is determined by checking the plugin metadata for the "hasProcessingProvider=yes"
+     * or "hasProcessingProvider=true" line.
      *
      * \see startProcessingPlugin()
      * \since QGIS 3.8

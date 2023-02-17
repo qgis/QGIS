@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsLayoutAtlas
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -10,55 +9,43 @@ __author__ = 'Nyall Dawson'
 __date__ = '19/12/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
 
-import qgis  # NOQA
-from qgis.PyQt import sip
-import tempfile
-import shutil
-import os
 import glob
+import os
+import shutil
+import tempfile
 
-from qgis.core import (QgsUnitTypes,
-                       QgsFeature,
-                       QgsLayout,
-                       QgsPrintLayout,
-                       QgsLayoutAtlas,
-                       QgsLayoutItemPage,
-                       QgsLayoutGuide,
-                       QgsLayoutObject,
-                       QgsProject,
-                       QgsLayoutItemGroup,
-                       QgsLayoutItem,
-                       QgsProperty,
-                       QgsLayoutPageCollection,
-                       QgsLayoutMeasurement,
-                       QgsFillSymbol,
-                       QgsReadWriteContext,
-                       QgsLayoutItemMap,
-                       QgsLayoutItemLabel,
-                       QgsLayoutSize,
-                       QgsLayoutPoint,
-                       QgsVectorLayer,
-                       QgsRectangle,
-                       QgsCoordinateReferenceSystem,
-                       QgsSingleSymbolRenderer,
-                       QgsLayoutItemLabel,
-                       QgsFontUtils,
-                       QgsFeature,
-                       QgsGeometry,
-                       QgsPointXY,
-                       QgsCategorizedSymbolRenderer,
-                       QgsRendererCategory,
-                       QgsMarkerSymbol,
-                       QgsLayoutItemLegend,
-                       QgsLegendStyle)
-from qgis.PyQt.QtCore import QFileInfo, QRectF, QDir
+import qgis  # NOQA
+from qgis.PyQt.QtCore import QDir, QFileInfo, QRectF
 from qgis.PyQt.QtTest import QSignalSpy
 from qgis.PyQt.QtXml import QDomDocument
-from utilities import unitTestDataPath
+from qgis.core import (
+    QgsCategorizedSymbolRenderer,
+    QgsCoordinateReferenceSystem,
+    QgsFeature,
+    QgsFillSymbol,
+    QgsFontUtils,
+    QgsGeometry,
+    QgsLayoutItemLabel,
+    QgsLayoutItemLegend,
+    QgsLayoutItemMap,
+    QgsLayoutObject,
+    QgsLayoutPoint,
+    QgsLegendStyle,
+    QgsMarkerSymbol,
+    QgsPointXY,
+    QgsPrintLayout,
+    QgsProject,
+    QgsProperty,
+    QgsReadWriteContext,
+    QgsRectangle,
+    QgsRendererCategory,
+    QgsSingleSymbolRenderer,
+    QgsVectorLayer,
+)
 from qgis.testing import start_app, unittest
-from qgis.PyQt.QtTest import QSignalSpy
 
 from qgslayoutchecker import QgsLayoutChecker
+from utilities import unitTestDataPath
 
 start_app()
 
@@ -69,7 +56,7 @@ class TestQgsLayoutAtlas(unittest.TestCase):
         self.report = "<h1>Python QgsLayoutAtlas Tests</h1>\n"
 
     def tearDown(self):
-        report_file_path = "%s/qgistest.html" % QDir.tempPath()
+        report_file_path = f"{QDir.tempPath()}/qgistest.html"
         with open(report_file_path, 'a') as report_file:
             report_file.write(self.report)
 

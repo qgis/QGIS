@@ -22,9 +22,10 @@
 
 void QgsProjectBadLayerHandler::handleBadLayers( const QList<QDomNode> &layers )
 {
-  QgsMessageLog::logMessage( QObject::tr( "%1 unavailable layers found:" ).arg( layers.size() ) );
-  const auto constLayers = layers;
-  for ( const QDomNode &layer : constLayers )
+  if ( !layers.empty() )
+    QgsMessageLog::logMessage( QObject::tr( "%n unavailable layer(s) found:", nullptr, layers.size() ) );
+
+  for ( const QDomNode &layer : layers )
   {
     QgsMessageLog::logMessage( QObject::tr( " * %1" ).arg( dataSource( layer ) ) );
   }
@@ -43,18 +44,18 @@ QgsProjectBadLayerHandler::DataType QgsProjectBadLayerHandler::dataType( const Q
 
   if ( "raster" == type )
   {
-    QgsDebugMsg( QStringLiteral( "is a raster" ) );
+    QgsDebugMsgLevel( QStringLiteral( "is a raster" ), 2 );
 
     return IS_RASTER;
   }
   else if ( "vector" == type )
   {
-    QgsDebugMsg( QStringLiteral( "is a vector" ) );
+    QgsDebugMsgLevel( QStringLiteral( "is a vector" ), 2 );
 
     return IS_VECTOR;
   }
 
-  QgsDebugMsg( "is unknown type " + type );
+  QgsDebugMsgLevel( "is unknown type " + type, 2 );
 
   return IS_BOGUS;
 }
@@ -83,7 +84,7 @@ QgsProjectBadLayerHandler::ProviderType QgsProjectBadLayerHandler::providerType(
     {
       const QString ds = dataSource( layerNode );
 
-      QgsDebugMsg( "datasource is " + ds );
+      QgsDebugMsgLevel( "datasource is " + ds, 2 );
 
       if ( ds.contains( QLatin1String( "host=" ) ) )
       {
@@ -116,9 +117,9 @@ void QgsProjectBadLayerHandler::setDataSource( QDomNode &layerNode, const QStrin
   const QDomElement dataSourceElement = dataSourceNode.toElement();
   QDomText dataSourceText = dataSourceElement.firstChild().toText();
 
-  QgsDebugMsg( "datasource changed from " + dataSourceText.data() );
+  QgsDebugMsgLevel( "datasource changed from " + dataSourceText.data(), 2 );
 
   dataSourceText.setData( dataSource );
 
-  QgsDebugMsg( "to " + dataSourceText.data() );
+  QgsDebugMsgLevel( "to " + dataSourceText.data(), 2 );
 }

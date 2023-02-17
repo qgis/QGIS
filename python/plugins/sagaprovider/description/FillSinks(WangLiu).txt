@@ -1,7 +1,0 @@
-Fill Sinks (Wang & Liu)
-ta_preprocessor
-QgsProcessingParameterRasterLayer|ELEV|DEM|None|False
-QgsProcessingParameterNumber|MINSLOPE|Minimum Slope [Degree]|QgsProcessingParameterNumber.Double|0.01|False|0.0|None
-QgsProcessingParameterRasterDestination|FILLED|Filled DEM
-QgsProcessingParameterRasterDestination|FDIR|Flow Directions
-QgsProcessingParameterRasterDestination|WSHED|Watershed Basins

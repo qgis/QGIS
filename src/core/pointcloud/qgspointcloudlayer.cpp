@@ -32,7 +32,15 @@
 #include "qgsmaplayerlegend.h"
 #include "qgsxmlutils.h"
 #include "qgsmaplayerfactory.h"
-#include "qgsmaplayerutils.h"
+#include "qgsabstractpointcloud3drenderer.h"
+#include "qgspointcloudstatscalculationtask.h"
+#include "qgsmessagelog.h"
+#include "qgstaskmanager.h"
+#include "qgsthreadingutils.h"
+#include "qgspointcloudlayerprofilegenerator.h"
+#ifdef HAVE_COPC
+#include "qgscopcpointcloudindex.h"
+#endif
 
 #include <QUrl>
 
@@ -40,8 +48,9 @@ QgsPointCloudLayer::QgsPointCloudLayer( const QString &uri,
                                         const QString &baseName,
                                         const QString &providerLib,
                                         const QgsPointCloudLayer::LayerOptions &options )
-  : QgsMapLayer( QgsMapLayerType::PointCloudLayer, baseName, uri )
+  : QgsMapLayer( Qgis::LayerType::PointCloud, baseName, uri )
   , mElevationProperties( new QgsPointCloudLayerElevationProperties( this ) )
+  , mLayerOptions( options )
 {
   if ( !uri.isEmpty() && !providerLib.isEmpty() )
   {
@@ -52,34 +61,43 @@ QgsPointCloudLayer::QgsPointCloudLayer( const QString &uri,
       providerFlags |= QgsDataProvider::FlagLoadDefaultStyle;
     }
     setDataSource( uri, baseName, providerLib, providerOptions, providerFlags );
-
-    if ( !options.skipIndexGeneration && mDataProvider && mDataProvider->isValid() )
-      mDataProvider.get()->generateIndex();
   }
 
   setLegend( QgsMapLayerLegend::defaultPointCloudLegend( this ) );
+  connect( this, &QgsPointCloudLayer::subsetStringChanged, this, &QgsMapLayer::configChanged );
 }
 
-QgsPointCloudLayer::~QgsPointCloudLayer() = default;
+QgsPointCloudLayer::~QgsPointCloudLayer()
+{
+  if ( QgsTask *task = QgsApplication::taskManager()->task( mStatsCalculationTask ) )
+  {
+    task->cancel();
+  }
+}
 
 QgsPointCloudLayer *QgsPointCloudLayer::clone() const
 {
-  LayerOptions options;
-  options.loadDefaultStyle = false;
-  options.transformContext = transformContext();
-  options.skipCrsValidation = true;
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  QgsPointCloudLayer *layer = new QgsPointCloudLayer( source(), name(), mProviderKey, options );
+  QgsPointCloudLayer *layer = new QgsPointCloudLayer( source(), name(), mProviderKey, mLayerOptions );
   QgsMapLayer::clone( layer );
 
   if ( mRenderer )
     layer->setRenderer( mRenderer->clone() );
+
+  layer->mElevationProperties = mElevationProperties->clone();
+  layer->mElevationProperties->setParent( layer );
+
+  layer->mLayerOptions = mLayerOptions;
+  layer->mSync3DRendererTo2DRenderer = mSync3DRendererTo2DRenderer;
 
   return layer;
 }
 
 QgsRectangle QgsPointCloudLayer::extent() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   if ( !mDataProvider )
     return QgsRectangle();
 
@@ -88,21 +106,37 @@ QgsRectangle QgsPointCloudLayer::extent() const
 
 QgsMapLayerRenderer *QgsPointCloudLayer::createMapRenderer( QgsRenderContext &rendererContext )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return new QgsPointCloudLayerRenderer( this, rendererContext );
+}
+
+QgsAbstractProfileGenerator *QgsPointCloudLayer::createProfileGenerator( const QgsProfileRequest &request )
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return new QgsPointCloudLayerProfileGenerator( this, request );
 }
 
 QgsPointCloudDataProvider *QgsPointCloudLayer::dataProvider()
 {
+  // BAD! 2D rendering of point clouds is NOT thread safe
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS_NON_FATAL
+
   return mDataProvider.get();
 }
 
 const QgsPointCloudDataProvider *QgsPointCloudLayer::dataProvider() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return mDataProvider.get();
 }
 
 bool QgsPointCloudLayer::readXml( const QDomNode &layerNode, QgsReadWriteContext &context )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   // create provider
   const QDomNode pkeyNode = layerNode.namedItem( QStringLiteral( "provider" ) );
   mProviderKey = pkeyNode.toElement().text();
@@ -131,7 +165,15 @@ bool QgsPointCloudLayer::readXml( const QDomNode &layerNode, QgsReadWriteContext
     {
       flags |= QgsDataProvider::FlagTrustDataSource;
     }
+    if ( mReadFlags & QgsMapLayer::FlagForceReadOnly )
+    {
+      flags |= QgsDataProvider::ForceReadOnly;
+    }
     setDataSource( mDataSource, mLayerName, mProviderKey, providerOptions, flags );
+    const QDomNode subset = layerNode.namedItem( QStringLiteral( "subset" ) );
+    const QString subsetText = subset.toElement().text();
+    if ( !subsetText.isEmpty() )
+      setSubsetString( subsetText );
   }
 
   if ( !isValid() )
@@ -149,9 +191,18 @@ bool QgsPointCloudLayer::readXml( const QDomNode &layerNode, QgsReadWriteContext
 
 bool QgsPointCloudLayer::writeXml( QDomNode &layerNode, QDomDocument &doc, const QgsReadWriteContext &context ) const
 {
-  QDomElement mapLayerNode = layerNode.toElement();
-  mapLayerNode.setAttribute( QStringLiteral( "type" ), QgsMapLayerFactory::typeToString( QgsMapLayerType::PointCloudLayer ) );
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
+  QDomElement mapLayerNode = layerNode.toElement();
+  mapLayerNode.setAttribute( QStringLiteral( "type" ), QgsMapLayerFactory::typeToString( Qgis::LayerType::PointCloud ) );
+
+  if ( !subsetString().isEmpty() )
+  {
+    QDomElement subset = doc.createElement( QStringLiteral( "subset" ) );
+    const QDomText subsetText = doc.createTextNode( subsetString() );
+    subset.appendChild( subsetText );
+    layerNode.appendChild( subset );
+  }
   if ( mDataProvider )
   {
     QDomElement provider  = doc.createElement( QStringLiteral( "provider" ) );
@@ -168,6 +219,8 @@ bool QgsPointCloudLayer::writeXml( QDomNode &layerNode, QDomDocument &doc, const
 
 bool QgsPointCloudLayer::readSymbology( const QDomNode &node, QString &errorMessage, QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   const QDomElement elem = node.toElement();
 
   readCommonStyle( elem, context, categories );
@@ -182,7 +235,17 @@ bool QgsPointCloudLayer::readSymbology( const QDomNode &node, QString &errorMess
 
 bool QgsPointCloudLayer::readStyle( const QDomNode &node, QString &, QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   bool result = true;
+
+  if ( categories.testFlag( Symbology3D ) )
+  {
+    bool ok;
+    bool sync = node.attributes().namedItem( QStringLiteral( "sync3DRendererTo2DRenderer" ) ).nodeValue().toInt( &ok );
+    if ( ok )
+      setSync3DRendererTo2DRenderer( sync );
+  }
 
   if ( categories.testFlag( Symbology ) )
   {
@@ -202,7 +265,7 @@ bool QgsPointCloudLayer::readStyle( const QDomNode &node, QString &, QgsReadWrit
     // make sure layer has a renderer - if none exists, fallback to a default renderer
     if ( !mRenderer )
     {
-      setRenderer( QgsPointCloudRendererRegistry::defaultRenderer( mDataProvider.get() ) );
+      setRenderer( QgsPointCloudRendererRegistry::defaultRenderer( this ) );
     }
   }
 
@@ -213,7 +276,7 @@ bool QgsPointCloudLayer::readStyle( const QDomNode &node, QString &, QgsReadWrit
     if ( !blendModeNode.isNull() )
     {
       const QDomElement e = blendModeNode.toElement();
-      setBlendMode( QgsPainting::getCompositionMode( static_cast< QgsPainting::BlendMode >( e.text().toInt() ) ) );
+      setBlendMode( QgsPainting::getCompositionMode( static_cast< Qgis::BlendMode >( e.text().toInt() ) ) );
     }
   }
 
@@ -247,6 +310,8 @@ bool QgsPointCloudLayer::readStyle( const QDomNode &node, QString &, QgsReadWrit
 bool QgsPointCloudLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QString &errorMessage,
     const QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories ) const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   Q_UNUSED( errorMessage )
 
   QDomElement elem = node.toElement();
@@ -259,7 +324,14 @@ bool QgsPointCloudLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QStr
 
 bool QgsPointCloudLayer::writeStyle( QDomNode &node, QDomDocument &doc, QString &, const QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories ) const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   QDomElement mapLayerNode = node.toElement();
+
+  if ( categories.testFlag( Symbology3D ) )
+  {
+    mapLayerNode.setAttribute( QStringLiteral( "sync3DRendererTo2DRenderer" ), mSync3DRendererTo2DRenderer ? 1 : 0 );
+  }
 
   if ( categories.testFlag( Symbology ) )
   {
@@ -280,7 +352,7 @@ bool QgsPointCloudLayer::writeStyle( QDomNode &node, QDomDocument &doc, QString 
   {
     // add the blend mode field
     QDomElement blendModeElem  = doc.createElement( QStringLiteral( "blendMode" ) );
-    const QDomText blendModeText = doc.createTextNode( QString::number( QgsPainting::getBlendModeEnum( blendMode() ) ) );
+    const QDomText blendModeText = doc.createTextNode( QString::number( static_cast< int >( QgsPainting::getBlendModeEnum( blendMode() ) ) ) );
     blendModeElem.appendChild( blendModeText );
     node.appendChild( blendModeElem );
   }
@@ -297,12 +369,13 @@ bool QgsPointCloudLayer::writeStyle( QDomNode &node, QDomDocument &doc, QString 
     mapLayerNode.setAttribute( QStringLiteral( "maxScale" ), maximumScale() );
     mapLayerNode.setAttribute( QStringLiteral( "minScale" ), minimumScale() );
   }
-
   return true;
 }
 
 void QgsPointCloudLayer::setTransformContext( const QgsCoordinateTransformContext &transformContext )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   if ( mDataProvider )
     mDataProvider->setTransformContext( transformContext );
   invalidateWgs84Extent();
@@ -311,6 +384,8 @@ void QgsPointCloudLayer::setTransformContext( const QgsCoordinateTransformContex
 void QgsPointCloudLayer::setDataSourcePrivate( const QString &dataSource, const QString &baseName, const QString &provider,
     const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   if ( mDataProvider )
   {
     disconnect( mDataProvider.get(), &QgsPointCloudDataProvider::dataChanged, this, &QgsPointCloudLayer::dataChanged );
@@ -336,6 +411,7 @@ void QgsPointCloudLayer::setDataSourcePrivate( const QString &dataSource, const 
   if ( !isValid() )
   {
     QgsDebugMsg( QStringLiteral( "Invalid point cloud provider plugin %1" ).arg( QString( mDataSource.toUtf8() ) ) );
+    setError( mDataProvider->error() );
     return;
   }
 
@@ -353,6 +429,23 @@ void QgsPointCloudLayer::setDataSourcePrivate( const QString &dataSource, const 
   if ( flags & QgsDataProvider::FlagLoadDefaultStyle )
   {
     loadDefaultStyleFlag = true;
+  }
+
+  if ( !mLayerOptions.skipIndexGeneration && mDataProvider && mDataProvider->indexingState() != QgsPointCloudDataProvider::PointCloudIndexGenerationState::Indexed )
+  {
+    mDataProvider->generateIndex();
+  }
+
+  if ( !mLayerOptions.skipStatisticsCalculation && mDataProvider && !mDataProvider->hasStatisticsMetadata() && mDataProvider->indexingState() == QgsPointCloudDataProvider::PointCloudIndexGenerationState::Indexed )
+  {
+    calculateStatistics();
+  }
+
+  // Note: we load the statistics from the data provider regardless of it being an existing metadata (do not check fot hasStatisticsMetadata)
+  // since the X, Y & Z coordinates will be in the header of the dataset
+  if ( mDataProvider && mDataProvider->isValid() && mStatistics.sampledPointsCount() == 0 && mDataProvider->indexingState() == QgsPointCloudDataProvider::Indexed )
+  {
+    mStatistics = mDataProvider->metadataStatistics();
   }
 
   if ( !mRenderer || loadDefaultStyleFlag )
@@ -382,13 +475,15 @@ void QgsPointCloudLayer::setDataSourcePrivate( const QString &dataSource, const 
     if ( !defaultLoadedFlag )
     {
       // all else failed, create default renderer
-      setRenderer( QgsPointCloudRendererRegistry::defaultRenderer( mDataProvider.get() ) );
+      setRenderer( QgsPointCloudRendererRegistry::defaultRenderer( this ) );
     }
   }
 }
 
 QString QgsPointCloudLayer::encodedSource( const QString &source, const QgsReadWriteContext &context ) const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   QVariantMap parts = QgsProviderRegistry::instance()->decodeUri( providerType(), source );
   if ( parts.contains( QStringLiteral( "path" ) ) )
   {
@@ -403,6 +498,8 @@ QString QgsPointCloudLayer::encodedSource( const QString &source, const QgsReadW
 
 QString QgsPointCloudLayer::decodedSource( const QString &source, const QString &dataProvider, const QgsReadWriteContext &context ) const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   QVariantMap parts = QgsProviderRegistry::instance()->decodeUri( dataProvider, source );
   if ( parts.contains( QStringLiteral( "path" ) ) )
   {
@@ -417,21 +514,35 @@ QString QgsPointCloudLayer::decodedSource( const QString &source, const QString 
 
 void QgsPointCloudLayer::onPointCloudIndexGenerationStateChanged( QgsPointCloudDataProvider::PointCloudIndexGenerationState state )
 {
-  if ( state == QgsPointCloudDataProvider::Indexed )
-  {
-    mDataProvider.get()->loadIndex();
-    if ( mRenderer->type() == QLatin1String( "extent" ) )
-    {
-      setRenderer( QgsPointCloudRendererRegistry::defaultRenderer( mDataProvider.get() ) );
-    }
-    triggerRepaint();
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-    emit rendererChanged();
+  switch ( state )
+  {
+    case QgsPointCloudDataProvider::Indexed:
+    {
+      resetRenderer();
+      break;
+    }
+    case QgsPointCloudDataProvider::NotIndexed:
+    {
+      QgsError providerError = mDataProvider->error();
+      if ( !providerError.isEmpty() )
+      {
+        setError( providerError );
+        emit raiseError( providerError.summary() );
+      }
+      break;
+    }
+    case QgsPointCloudDataProvider::Indexing:
+      break;
   }
 }
 
+
 QString QgsPointCloudLayer::loadDefaultStyle( bool &resultFlag )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   if ( mDataProvider->capabilities() & QgsPointCloudDataProvider::CreateRenderer )
   {
     // first try to create a renderer directly from the data provider
@@ -449,6 +560,8 @@ QString QgsPointCloudLayer::loadDefaultStyle( bool &resultFlag )
 
 QString QgsPointCloudLayer::htmlMetadata() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   const QgsLayerMetadataFormatter htmlFormatter( metadata() );
   QString myMetadata = QStringLiteral( "<html>\n<body>\n" );
 
@@ -619,35 +732,238 @@ QString QgsPointCloudLayer::htmlMetadata() const
 
 QgsMapLayerElevationProperties *QgsPointCloudLayer::elevationProperties()
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return mElevationProperties;
 }
 
 QgsPointCloudAttributeCollection QgsPointCloudLayer::attributes() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return mDataProvider ? mDataProvider->attributes() : QgsPointCloudAttributeCollection();
 }
 
 qint64 QgsPointCloudLayer::pointCount() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return mDataProvider ? mDataProvider->pointCount() : 0;
 }
 
 QgsPointCloudRenderer *QgsPointCloudLayer::renderer()
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return mRenderer.get();
 }
 
 const QgsPointCloudRenderer *QgsPointCloudLayer::renderer() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return mRenderer.get();
 }
 
 void QgsPointCloudLayer::setRenderer( QgsPointCloudRenderer *renderer )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   if ( renderer == mRenderer.get() )
     return;
 
   mRenderer.reset( renderer );
   emit rendererChanged();
   emitStyleChanged();
+
+  if ( mSync3DRendererTo2DRenderer )
+    convertRenderer3DFromRenderer2D();
+}
+
+bool QgsPointCloudLayer::setSubsetString( const QString &subset )
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  if ( !isValid() || !mDataProvider )
+  {
+    QgsDebugMsgLevel( QStringLiteral( "invoked with invalid layer or null mDataProvider" ), 3 );
+    setCustomProperty( QStringLiteral( "storedSubsetString" ), subset );
+    return false;
+  }
+  else if ( subset == mDataProvider->subsetString() )
+    return true;
+
+  bool res = mDataProvider->setSubsetString( subset );
+  if ( res )
+  {
+    emit subsetStringChanged();
+    triggerRepaint();
+  }
+  return res;
+}
+
+QString QgsPointCloudLayer::subsetString() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  if ( !isValid() || !mDataProvider )
+  {
+    QgsDebugMsgLevel( QStringLiteral( "invoked with invalid layer or null mDataProvider" ), 3 );
+    return customProperty( QStringLiteral( "storedSubsetString" ) ).toString();
+  }
+  return mDataProvider->subsetString();
+}
+
+bool QgsPointCloudLayer::convertRenderer3DFromRenderer2D()
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  bool result = false;
+  QgsAbstractPointCloud3DRenderer *r = static_cast<QgsAbstractPointCloud3DRenderer *>( renderer3D() );
+  if ( r )
+  {
+    result = r->convertFrom2DRenderer( renderer() );
+    setRenderer3D( r );
+    trigger3DUpdate();
+  }
+  return result;
+}
+
+bool QgsPointCloudLayer::sync3DRendererTo2DRenderer() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return mSync3DRendererTo2DRenderer;
+}
+
+void QgsPointCloudLayer::setSync3DRendererTo2DRenderer( bool sync )
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  mSync3DRendererTo2DRenderer = sync;
+  if ( sync )
+    convertRenderer3DFromRenderer2D();
+}
+
+void QgsPointCloudLayer::calculateStatistics()
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  if ( !mDataProvider.get() || !mDataProvider->hasValidIndex() )
+  {
+    QgsMessageLog::logMessage( QObject::tr( "Failed to calculate statistics of the point cloud %1" ).arg( this->name() ) );
+    return;
+  }
+  if ( mStatsCalculationTask )
+  {
+    QgsMessageLog::logMessage( QObject::tr( "A statistics calculation task for the point cloud %1 is already in progress" ).arg( this->name() ) );
+    return;
+  }
+#ifdef HAVE_COPC
+  if ( mDataProvider && mDataProvider->index() && mDataProvider->index()->isValid() )
+  {
+    if ( QgsCopcPointCloudIndex *index = qobject_cast<QgsCopcPointCloudIndex *>( mDataProvider->index() ) )
+    {
+      mStatistics = index->readStatistics();
+    }
+  }
+#endif
+  if ( mStatistics.sampledPointsCount() != 0 )
+  {
+    mStatisticsCalculationState = QgsPointCloudLayer::PointCloudStatisticsCalculationState::Calculated;
+    emit statisticsCalculationStateChanged( mStatisticsCalculationState );
+    resetRenderer();
+    return;
+  }
+
+  QVector<QgsPointCloudAttribute> attributes = mDataProvider->attributes().attributes();
+  // Do not calculate stats for X, Y & Z since the point cloud index contains that
+  for ( int i = 0; i < attributes.size(); ++i )
+  {
+    if ( attributes[i].name() == QLatin1String( "X" ) || attributes[i].name() == QLatin1String( "Y" ) || attributes[i].name() == QLatin1String( "Z" ) )
+    {
+      attributes.remove( i );
+      --i;
+    }
+  }
+
+  QgsPointCloudStatsCalculationTask *task = new QgsPointCloudStatsCalculationTask( mDataProvider->index(), attributes, 1000000 );
+  connect( task, &QgsTask::taskCompleted, this, [this, task]()
+  {
+    mStatistics = task->calculationResults();
+
+    // fetch X, Y & Z stats directly from the index
+    QVector<QString> coordinateAttributes;
+    coordinateAttributes.push_back( QStringLiteral( "X" ) );
+    coordinateAttributes.push_back( QStringLiteral( "Y" ) );
+    coordinateAttributes.push_back( QStringLiteral( "Z" ) );
+
+    QMap<QString, QgsPointCloudAttributeStatistics> statsMap = mStatistics.statisticsMap();
+    QgsPointCloudIndex *index = mDataProvider->index();
+    for ( const QString &attribute : coordinateAttributes )
+    {
+      QgsPointCloudAttributeStatistics s;
+      QVariant min = index->metadataStatistic( attribute, QgsStatisticalSummary::Min );
+      QVariant max = index->metadataStatistic( attribute, QgsStatisticalSummary::Max );
+      if ( !min.isValid() )
+        continue;
+      s.minimum = min.toDouble();
+      s.maximum = max.toDouble();
+      s.count = index->metadataStatistic( attribute, QgsStatisticalSummary::Count ).toInt();
+      s.mean = index->metadataStatistic( attribute, QgsStatisticalSummary::Mean ).toInt();
+      s.stDev = index->metadataStatistic( attribute, QgsStatisticalSummary::StDev ).toInt();
+      QVariantList classes = index->metadataClasses( attribute );
+      for ( const QVariant &c : classes )
+      {
+        s.classCount[ c.toInt() ] = index->metadataClassStatistic( attribute, c, QgsStatisticalSummary::Count ).toInt();
+      }
+      statsMap[ attribute ] = s;
+    }
+    mStatistics = QgsPointCloudStatistics( mStatistics.sampledPointsCount(), statsMap );
+    //
+
+    mStatisticsCalculationState = QgsPointCloudLayer::PointCloudStatisticsCalculationState::Calculated;
+    emit statisticsCalculationStateChanged( mStatisticsCalculationState );
+    resetRenderer();
+    mStatsCalculationTask = 0;
+#ifdef HAVE_COPC
+    if ( mDataProvider && mDataProvider->index() && mDataProvider->index()->isValid() && mDataProvider->name() == QLatin1String( "pdal" ) && mStatistics.sampledPointsCount() != 0 )
+    {
+      if ( QgsCopcPointCloudIndex *index = qobject_cast<QgsCopcPointCloudIndex *>( mDataProvider->index() ) )
+      {
+        index->writeStatistics( mStatistics );
+      }
+    }
+#endif
+  } );
+
+  // In case the statistics calculation fails, QgsTask::taskTerminated will be called
+  connect( task, &QgsTask::taskTerminated, this, [this]()
+  {
+    QgsMessageLog::logMessage( QObject::tr( "Failed to calculate statistics of the point cloud %1" ).arg( this->name() ) );
+    mStatsCalculationTask = 0;
+  } );
+
+  mStatsCalculationTask = QgsApplication::taskManager()->addTask( task );
+
+  mStatisticsCalculationState = QgsPointCloudLayer::PointCloudStatisticsCalculationState::Calculating;
+  emit statisticsCalculationStateChanged( mStatisticsCalculationState );
+}
+
+void QgsPointCloudLayer::resetRenderer()
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  mDataProvider->loadIndex();
+  if ( !mLayerOptions.skipStatisticsCalculation && !mDataProvider->hasStatisticsMetadata() && statisticsCalculationState() == QgsPointCloudLayer::PointCloudStatisticsCalculationState::NotStarted )
+  {
+    calculateStatistics();
+  }
+  if ( !mRenderer || mRenderer->type() == QLatin1String( "extent" ) )
+  {
+    setRenderer( QgsPointCloudRendererRegistry::defaultRenderer( this ) );
+  }
+  triggerRepaint();
+
+  emit rendererChanged();
 }

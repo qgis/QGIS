@@ -50,7 +50,7 @@ class CORE_EXPORT QgsMarkerSymbol : public QgsSymbol
      * \param symbolAngle new symbol angle
      * \see angle()
      */
-    void setAngle( double symbolAngle );
+    void setAngle( double symbolAngle ) const;
 
     /**
      * Returns the marker angle for the whole symbol. Note that for symbols with
@@ -84,7 +84,7 @@ class CORE_EXPORT QgsMarkerSymbol : public QgsSymbol
      * \param lineAngle Angle in degrees, valid values are between 0 and 360
      * \since QGIS 2.9
      */
-    void setLineAngle( double lineAngle );
+    void setLineAngle( double lineAngle ) const;
 
     /**
      * Sets the size for the whole symbol. Individual symbol layer sizes
@@ -94,7 +94,7 @@ class CORE_EXPORT QgsMarkerSymbol : public QgsSymbol
      * \see setSizeUnit()
      * \see setSizeMapUnitScale()
      */
-    void setSize( double size );
+    void setSize( double size ) const;
 
     /**
      * Returns the estimated size for the whole symbol, which is the maximum size of
@@ -133,7 +133,7 @@ class CORE_EXPORT QgsMarkerSymbol : public QgsSymbol
      * \see setSize()
      * \since QGIS 2.16
      */
-    void setSizeUnit( QgsUnitTypes::RenderUnit unit );
+    void setSizeUnit( QgsUnitTypes::RenderUnit unit ) const;
 
     /**
      * Returns the size units for the whole symbol (including all symbol layers).
@@ -153,7 +153,7 @@ class CORE_EXPORT QgsMarkerSymbol : public QgsSymbol
      * \see setSize()
      * \since QGIS 2.16
      */
-    void setSizeMapUnitScale( const QgsMapUnitScale &scale );
+    void setSizeMapUnitScale( const QgsMapUnitScale &scale ) const;
 
     /**
      * Returns the size map unit scale for the whole symbol. Note that for symbols with
@@ -171,7 +171,7 @@ class CORE_EXPORT QgsMarkerSymbol : public QgsSymbol
      * \see dataDefinedSize()
      * \since QGIS 3.0
      */
-    void setDataDefinedSize( const QgsProperty &property );
+    void setDataDefinedSize( const QgsProperty &property ) const;
 
     /**
      * Returns data defined size for whole symbol (including all symbol layers).
@@ -187,13 +187,13 @@ class CORE_EXPORT QgsMarkerSymbol : public QgsSymbol
      * \param scaleMethod scale method
      * \see scaleMethod()
      */
-    void setScaleMethod( Qgis::ScaleMethod scaleMethod );
+    void setScaleMethod( Qgis::ScaleMethod scaleMethod ) const;
 
     /**
      * Returns the method to use for scaling the marker's size.
      * \see setScaleMethod()
      */
-    Qgis::ScaleMethod scaleMethod();
+    Qgis::ScaleMethod scaleMethod() const;
 
     /**
      * Renders the symbol at the specified \a point, using the given render \a context.
@@ -232,4 +232,3 @@ class CORE_EXPORT QgsMarkerSymbol : public QgsSymbol
 
 
 #endif // QGSMARKERSYMBOL_H
-

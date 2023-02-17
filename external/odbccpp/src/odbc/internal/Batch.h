@@ -4,10 +4,11 @@
 #include <cstddef>
 #include <cstdint>
 #include <vector>
+#include <odbc/Config.h>
 #include <odbc/Forwards.h>
 #include <odbc/RefCounted.h>
 //------------------------------------------------------------------------------
-namespace odbc {
+NS_ODBC_START
 //------------------------------------------------------------------------------
 class ParameterData;
 //------------------------------------------------------------------------------
@@ -217,9 +218,9 @@ private:
     std::size_t blockRow_;
 
     /// The number of bytes required for the batch.
-    std::size_t dataSize_;
+    std::size_t dataSize_{0};
 };
 //------------------------------------------------------------------------------
-} // namespace odbc
+NS_ODBC_END
 //------------------------------------------------------------------------------
 #endif

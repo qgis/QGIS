@@ -157,9 +157,9 @@ void TestQgsMapToolReshape::initTestCase()
   QCOMPARE( mLayerTopo->getFeature( 2 ).geometry().asWkt(), wkt7 );
 
   QgsSnappingConfig cfg = mCanvas->snappingUtils()->config();
-  cfg.setMode( QgsSnappingConfig::AllLayers );
+  cfg.setMode( Qgis::SnappingMode::AllLayers );
   cfg.setTolerance( 100 );
-  cfg.setTypeFlag( static_cast<QgsSnappingConfig::SnappingTypeFlag>( QgsSnappingConfig::VertexFlag | QgsSnappingConfig::SegmentFlag ) );
+  cfg.setTypeFlag( static_cast<Qgis::SnappingTypes>( Qgis::SnappingType::Vertex | Qgis::SnappingType::Segment ) );
   cfg.setEnabled( true );
   mCanvas->snappingUtils()->setConfig( cfg );
   mCanvas->setLayers( QList<QgsMapLayer *>() << mLayerLineZ << mLayerPointZ << mLayerPolygonZ );
@@ -191,7 +191,7 @@ void TestQgsMapToolReshape::testReshapeZ()
   TestQgsMapToolAdvancedDigitizingUtils utils( mCaptureTool );
 
   // test with default Z value = 333
-  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue.setValue( 333 );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue->setValue( 333 );
 
   // snap on a linestringz layer
   utils.mouseClick( 1, 2, Qt::LeftButton, Qt::KeyboardModifiers(), true );
@@ -233,7 +233,7 @@ void TestQgsMapToolReshape::testTopologicalEditing()
   TestQgsMapToolAdvancedDigitizingUtils utils( mCaptureTool );
 
   // test with default Z value = 333
-  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue.setValue( 333 );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue->setValue( 333 );
 
   utils.mouseClick( 4, 4, Qt::LeftButton, Qt::KeyboardModifiers(), true );
   utils.mouseClick( 7, 2, Qt::LeftButton, Qt::KeyboardModifiers(), true );

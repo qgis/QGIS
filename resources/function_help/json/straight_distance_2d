@@ -3,11 +3,16 @@
   "type": "function",
   "groups": ["GeometryGroup"],
   "description": "Returns the direct/euclidean distance between the first and last vertex of a geometry. The geometry must be a curve (circularstring, linestring).",
-  "arguments": [
-    {"arg":"geometry", "description": "The geometry."}
-  ],
-  "examples": [
-    { "expression":"straight_distance_2d(geom_from_wkt('LINESTRING(1 0, 1 1)'))", "returns":"1"},
-    { "expression":"round(straight_distance_2d(geom_from_wkt('LINESTRING(1 4, 3 5, 5 0)')), 3)", "returns":"5.657"}
-  ]
+  "arguments": [{
+    "arg": "geometry",
+    "description": "The geometry."
+  }],
+  "examples": [{
+    "expression": "straight_distance_2d(geom_from_wkt('LINESTRING(1 0, 1 1)'))",
+    "returns": "1"
+  }, {
+    "expression": "round(straight_distance_2d(geom_from_wkt('LINESTRING(1 4, 3 5, 5 0)')), 3)",
+    "returns": "5.657"
+  }],
+  "tags": ["distance", "curve", "circularstring", "first", "last", "direct", "euclidean", "linestring", "vertex"]
 }

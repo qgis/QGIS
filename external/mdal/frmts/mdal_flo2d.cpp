@@ -1078,6 +1078,7 @@ void MDAL::DriverFlo2D::load( const std::string &uri, MDAL::Mesh *mesh )
 
 std::unique_ptr< MDAL::Mesh > MDAL::DriverFlo2D::load( const std::string &resultsFile, const std::string &meshName )
 {
+  MDAL::Log::resetLastStatus();
   mDatFileName = resultsFile;
   std::string mesh2DTopologyFile( fileNameFromDir( resultsFile, "FPLAIN.DAT" ) );
   std::string mesh1DTopologyFile( fileNameFromDir( resultsFile, "CHAN.DAT" ) );
@@ -1115,7 +1116,6 @@ std::unique_ptr<MDAL::Mesh> MDAL::DriverFlo2D::loadMesh1d()
 
 std::unique_ptr<MDAL::Mesh> MDAL::DriverFlo2D::loadMesh2d()
 {
-  MDAL::Log::resetLastStatus();
   mMesh.reset();
   std::vector<CellCenter> cells;
 
@@ -1176,15 +1176,15 @@ bool MDAL::DriverFlo2D::saveNewHDF5File( DatasetGroup *dsGroup )
   if ( !file.isValid() ) return true;
 
   // Create float dataset File Version
-  HdfDataset dsFileVersion( file.id(), "/File Version", H5T_NATIVE_FLOAT );
+  HdfDataset dsFileVersion = file.dataset( "/File Version", H5T_NATIVE_FLOAT );
   dsFileVersion.write( 1.0f );
 
   // Create string dataset File Type
-  HdfDataset dsFileType( file.id(), "/File Type", HdfDataType::createString() );
+  HdfDataset dsFileType = file.dataset( "/File Type", HdfDataType::createString() );
   dsFileType.write( "Xmdf" );
 
   // Create group TIMDEP NETCDF OUTPUT RESULTS
-  HdfGroup groupTNOR = HdfGroup::create( file.id(), "/TIMDEP NETCDF OUTPUT RESULTS" );
+  HdfGroup groupTNOR = file.createGroup( "/TIMDEP NETCDF OUTPUT RESULTS" );
 
   // Create attribute
   HdfAttribute attTNORGrouptype( groupTNOR.id(), "Grouptype", HdfDataType::createString() );
@@ -1257,7 +1257,7 @@ bool MDAL::DriverFlo2D::appendGroup( HdfFile &file, MDAL::DatasetGroup *dsGroup,
   {
     dsGroupName = dsGroup->name() + "_" + std::to_string( i ); // make sure we have unique group name
   }
-  HdfGroup group = HdfGroup::create( groupTNOR.id(), "/TIMDEP NETCDF OUTPUT RESULTS/" + dsGroupName );
+  HdfGroup group = file.createGroup( groupTNOR.id(), "/TIMDEP NETCDF OUTPUT RESULTS/" + dsGroupName );
 
   HdfAttribute attDataType( group.id(), "Data Type", H5T_NATIVE_INT );
   attDataType.write( 0 );
@@ -1280,16 +1280,16 @@ bool MDAL::DriverFlo2D::appendGroup( HdfFile &file, MDAL::DatasetGroup *dsGroup,
   HdfAttribute attTimeUnits( group.id(), "TimeUnits", dtMaxString );
   attTimeUnits.write( "Hours" );
 
-  HdfDataset dsMaxs( file.id(), "/TIMDEP NETCDF OUTPUT RESULTS/" + dsGroupName + "/Maxs", H5T_NATIVE_FLOAT, timesCountVec );
+  HdfDataset dsMaxs = file.dataset( "/TIMDEP NETCDF OUTPUT RESULTS/" + dsGroupName + "/Maxs", H5T_NATIVE_FLOAT, timesCountVec );
   dsMaxs.write( maximums );
 
-  HdfDataset dsMins( file.id(), "/TIMDEP NETCDF OUTPUT RESULTS/" + dsGroupName + "/Mins", H5T_NATIVE_FLOAT, timesCountVec );
+  HdfDataset dsMins = file.dataset( "/TIMDEP NETCDF OUTPUT RESULTS/" + dsGroupName + "/Mins", H5T_NATIVE_FLOAT, timesCountVec );
   dsMins.write( minimums );
 
-  HdfDataset dsTimes( file.id(), "/TIMDEP NETCDF OUTPUT RESULTS/" + dsGroupName + "/Times", H5T_NATIVE_DOUBLE, timesCountVec );
+  HdfDataset dsTimes = file.dataset( "/TIMDEP NETCDF OUTPUT RESULTS/" + dsGroupName + "/Times", H5T_NATIVE_DOUBLE, timesCountVec );
   dsTimes.write( times );
 
-  HdfDataset dsValues( file.id(), "/TIMDEP NETCDF OUTPUT RESULTS/" + dsGroupName + "/Values", H5T_NATIVE_FLOAT, dscValues );
+  HdfDataset dsValues = file.dataset( "/TIMDEP NETCDF OUTPUT RESULTS/" + dsGroupName + "/Values", H5T_NATIVE_FLOAT, dscValues );
   dsValues.write( values );
 
   return false; //OK

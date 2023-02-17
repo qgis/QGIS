@@ -26,14 +26,24 @@ class QgsProcessingAlgRunnerTask : QgsTask
     QgsProcessingAlgRunnerTask( const QgsProcessingAlgorithm *algorithm,
                                 const QVariantMap &parameters,
                                 QgsProcessingContext &context,
-                                QgsProcessingFeedback *feedback = 0 );
+                                QgsProcessingFeedback *feedback = 0,
+                                QgsTask::Flags flags = QgsTask::CanCancel );
 %Docstring
 Constructor for QgsProcessingAlgRunnerTask. Takes an ``algorithm``, algorithm ``parameters``
 and processing ``context``.
+
+Since QGIS 3.26, the ``flags`` argument allows control over task flags.
 %End
 
     virtual void cancel();
 
+
+    bool algorithmCanceled();
+%Docstring
+Returns ``True`` if the algorithm was canceled.
+
+.. versionadded:: 3.26
+%End
 
   signals:
 

@@ -62,6 +62,7 @@
     <addaction name="mActionRun"/>
     <addaction name="mActionReorderInputs"/>
     <addaction name="separator"/>
+    <addaction name="mActionNew"/>
     <addaction name="mActionOpen"/>
     <addaction name="mActionSave"/>
     <addaction name="mActionSaveAs"/>
@@ -112,6 +113,7 @@
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
+   <addaction name="mActionNew"/>
    <addaction name="mActionOpen"/>
    <addaction name="mActionSave"/>
    <addaction name="mActionSaveAs"/>
@@ -743,6 +745,15 @@
    </property>
    <property name="shortcut">
     <string>V</string>
+   </property>
+  </action>
+  <action name="mActionNew">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionFileNew.svg</normaloff>:/images/themes/default/mActionFileNew.svg</iconset>
+   </property>
+   <property name="text">
+    <string>New Model…</string>
    </property>
   </action>
  </widget>

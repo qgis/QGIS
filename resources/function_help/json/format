@@ -4,10 +4,26 @@
   "groups": ["String"],
   "description": "Format a string using supplied arguments.",
   "variableLenArguments": true,
-  "arguments": [ {"arg":"string", "description":"A string with placeholders %1, %2, etc., for the arguments. Placeholders can be repeated. The lowest numbered placeholder is replaced by arg1, the next by arg2, etc."},
-                 {"arg":"arg1", "syntaxOnly": true},
-                 {"arg":"arg2", "syntaxOnly": true},
-                 {"arg":"arg", "descOnly": true, "description":"any type. Any number of arguments."}],
-  "examples": [ { "expression":"format('This %1 a %2','is', 'test')", "returns":"'This is a test'"},
-                { "expression":"format('This is %2','a bit unexpected but 2 is lowest number in string','normal')", "returns":"'This is a bit unexpected but 2 is lowest number in string'"} ]
+  "arguments": [{
+    "arg": "string",
+    "description": "A string with placeholders %1, %2, etc., for the arguments. Placeholders can be repeated. The lowest numbered placeholder is replaced by arg1, the next by arg2, etc."
+  }, {
+    "arg": "arg1",
+    "syntaxOnly": true
+  }, {
+    "arg": "arg2",
+    "syntaxOnly": true
+  }, {
+    "arg": "arg",
+    "descOnly": true,
+    "description": "any type. Any number of arguments."
+  }],
+  "examples": [{
+    "expression": "format('This %1 a %2','is', 'test')",
+    "returns": "'This is a test'"
+  }, {
+    "expression": "format('This is %2','a bit unexpected but 2 is lowest number in string','normal')",
+    "returns": "'This is a bit unexpected but 2 is lowest number in string'"
+  }],
+  "tags": ["format", "supplied", "arguments"]
 }

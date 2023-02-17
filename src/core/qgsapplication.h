@@ -24,7 +24,7 @@
 #include <memory>
 #include "qgis_sip.h"
 #include "qgsconfig.h"
-#include "qgssettingsentry.h"
+#include "qgssettingsentryimpl.h"
 #include "qgstranslationcontext.h"
 
 class QgsSettingsRegistryCore;
@@ -39,6 +39,7 @@ class QgsPaintEffectRegistry;
 class QgsProjectStorageRegistry;
 class QgsExternalStorageRegistry;
 class QgsLocalizedDataPathRegistry;
+class QgsLayerMetadataProviderRegistry;
 class QgsRendererRegistry;
 class QgsSvgCache;
 class QgsImageCache;
@@ -72,6 +73,8 @@ class QgsPointCloudRendererRegistry;
 class QgsTileDownloadManager;
 class QgsCoordinateReferenceSystemRegistry;
 class QgsRecentStyleHandler;
+class QgsDatabaseQueryLog;
+class QgsFontManager;
 
 /**
  * \ingroup core
@@ -181,7 +184,7 @@ class CORE_EXPORT QgsApplication : public QApplication
      * \param profileFolder optional string representing the profile to load at startup
      * \param platformName the QGIS platform name, e.g., "desktop", "server", "qgis_process" or "external" (for external CLI scripts)
      */
-    QgsApplication( SIP_PYLIST argv, bool GUIenabled, QString profileFolder = QString(), QString platformName = "desktop" ) / PostHook = __pyQtQAppHook__ / [( int &argc, char **argv, bool GUIenabled, const QString &profileFolder = QString(), const QString &platformName = "desktop" )];
+    QgsApplication( SIP_PYLIST argv, bool GUIenabled, QString profileFolder = QString(), QString platformName = "external" ) / PostHook = __pyQtQAppHook__ / [( int &argc, char **argv, bool GUIenabled, const QString &profileFolder = QString(), const QString &platformName = "desktop" )];
     % MethodCode
     // The Python interface is a list of argument strings that is modified.
 
@@ -456,11 +459,34 @@ class CORE_EXPORT QgsApplication : public QApplication
     static QString osName();
 
     /**
+     * Returns the size of the system memory (RAM) in megabytes.
+     *
+     * This is only supported on some platforms, and will return -1 if not supported.
+     *
+     * \since QGIS 3.26
+     */
+    static int systemMemorySizeMb();
+
+    /**
      * Returns the QGIS platform name, e.g., "desktop", "server", "qgis_process" or "external" (for external CLI scripts).
      * \see osName()
      * \since QGIS 2.14
      */
     static QString platform();
+
+
+    /**
+     * Returns the QGIS application full name.
+     *
+     * It can be defined by the environment variable QGIS_APPLICATION_FULL_NAME or the /qgis/application_full_name
+     * in the QGIS config file.
+     *
+     * By default it is equal to applicationName()+' '+platform()
+     *
+     * \see platform()
+     * \since QGIS 3.30
+     */
+    static QString applicationFullName();
 
     /**
      * Returns the QGIS locale.
@@ -659,8 +685,9 @@ class CORE_EXPORT QgsApplication : public QApplication
     /**
      * Returns the application's settings registry, used for managing application settings.
      * \since QGIS 3.20
+     * \deprecated since QGIS 3.30 use QgsSettings::treeRoot() instead
      */
-    static QgsSettingsRegistryCore *settingsRegistryCore() SIP_KEEPREFERENCE;
+    Q_DECL_DEPRECATED static QgsSettingsRegistryCore *settingsRegistryCore() SIP_KEEPREFERENCE SIP_DEPRECATED;
 
     /**
      * Returns the application's color scheme registry, used for managing color schemes.
@@ -812,6 +839,13 @@ class CORE_EXPORT QgsApplication : public QApplication
     static QgsRecentStyleHandler *recentStyleHandler() SIP_KEEPREFERENCE;
 
     /**
+     * Returns the database query log.
+     *
+     * \since QGIS 3.24
+     */
+    static QgsDatabaseQueryLog *databaseQueryLog() SIP_KEEPREFERENCE;
+
+    /**
      * Returns a shared QgsStyleModel containing the default style library (see QgsStyle::defaultStyle()).
      *
      * Using this shared model instead of creating a new QgsStyleModel improves performance.
@@ -819,6 +853,13 @@ class CORE_EXPORT QgsApplication : public QApplication
      * \since QGIS 3.10
      */
     static QgsStyleModel *defaultStyleModel();
+
+    /**
+     * Returns the application font manager, which manages available fonts and font installation for the QGIS instance.
+     *
+     * \since QGIS 3.28
+     */
+    static QgsFontManager *fontManager() SIP_KEEPREFERENCE;
 
     /**
      * Returns the application's message log.
@@ -909,6 +950,12 @@ class CORE_EXPORT QgsApplication : public QApplication
      * \since QGIS 3.2
      */
     static QgsProjectStorageRegistry *projectStorageRegistry() SIP_KEEPREFERENCE;
+
+    /**
+     * Returns registry of available layer metadata provider implementations.
+     * \since QGIS 3.28
+     */
+    static QgsLayerMetadataProviderRegistry *layerMetadataProviderRegistry() SIP_KEEPREFERENCE;
 
     /**
      * Returns registry of available external storage implementations.
@@ -1007,17 +1054,18 @@ class CORE_EXPORT QgsApplication : public QApplication
      */
     void collectTranslatableObjects( QgsTranslationContext *translationContext );
 
+
 #ifndef SIP_RUN
     //! Settings entry locale user locale
-    static const inline QgsSettingsEntryString settingsLocaleUserLocale = QgsSettingsEntryString( QStringLiteral( "locale/userLocale" ), QgsSettings::NoSection, QString() );
+    static const QgsSettingsEntryString *settingsLocaleUserLocale;
     //! Settings entry locale override flag
-    static const inline QgsSettingsEntryBool settingsLocaleOverrideFlag = QgsSettingsEntryBool( QStringLiteral( "locale/overrideFlag" ), QgsSettings::NoSection, false );
+    static const QgsSettingsEntryBool *settingsLocaleOverrideFlag;
     //! Settings entry locale global locale
-    static const inline QgsSettingsEntryString settingsLocaleGlobalLocale = QgsSettingsEntryString( QStringLiteral( "locale/globalLocale" ), QgsSettings::NoSection, QString() );
+    static const QgsSettingsEntryString *settingsLocaleGlobalLocale;
     //! Settings entry locale show group separator
-    static const inline QgsSettingsEntryBool settingsLocaleShowGroupSeparator = QgsSettingsEntryBool( QStringLiteral( "locale/showGroupSeparator" ), QgsSettings::NoSection, false );
+    static const QgsSettingsEntryBool *settingsLocaleShowGroupSeparator;
     //! Settings entry search path for SVG
-    static const inline QgsSettingsEntryStringList settingsSearchPathsForSVG = QgsSettingsEntryStringList( QStringLiteral( "svg/searchPathsForSVG" ), QgsSettings::NoSection, QStringList() );
+    static const QgsSettingsEntryStringList *settingsSearchPathsForSVG;
 #endif
 
 #ifdef SIP_RUN
@@ -1108,7 +1156,8 @@ class CORE_EXPORT QgsApplication : public QApplication
       QgsClassificationMethodRegistry *mClassificationMethodRegistry = nullptr;
       QgsProcessingRegistry *mProcessingRegistry = nullptr;
       QgsConnectionRegistry *mConnectionRegistry = nullptr;
-      std::unique_ptr<QgsProjectStorageRegistry> mProjectStorageRegistry;
+      QgsProjectStorageRegistry *mProjectStorageRegistry = nullptr;
+      QgsLayerMetadataProviderRegistry *mLayerMetadataProviderRegistry = nullptr;
       QgsExternalStorageRegistry *mExternalStorageRegistry = nullptr;
       QgsPageSizeRegistry *mPageSizeRegistry = nullptr;
       QgsRasterRendererRegistry *mRasterRendererRegistry = nullptr;
@@ -1127,6 +1176,8 @@ class CORE_EXPORT QgsApplication : public QApplication
       QgsTileDownloadManager *mTileDownloadManager = nullptr;
       QgsStyleModel *mStyleModel = nullptr;
       QgsRecentStyleHandler *mRecentStyleHandler = nullptr;
+      QgsDatabaseQueryLog *mQueryLogger = nullptr;
+      QgsFontManager *mFontManager;
       QString mNullRepresentation;
       QStringList mSvgPathCache;
       bool mSvgPathCacheValid = false;

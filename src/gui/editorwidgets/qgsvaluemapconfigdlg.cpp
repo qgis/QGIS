@@ -104,7 +104,7 @@ void QgsValueMapConfigDlg::setConfig( const QVariantMap &config )
     const QVariantMap values = config.value( QStringLiteral( "map" ) ).toMap();
     for ( QVariantMap::ConstIterator mit = values.constBegin(); mit != values.constEnd(); mit++, row++ )
     {
-      if ( mit.value().isNull() )
+      if ( QgsVariantUtils::isNull( mit.value() ) )
         setRow( row, mit.key(), QString() );
       else
         setRow( row, mit.value().toString(), mit.key() );
@@ -140,9 +140,9 @@ void QgsValueMapConfigDlg::removeSelectedButtonPushed()
       }
     }
   }
-  for ( i = 0; i < rowsToRemove.size(); i++ )
+  for ( const int rowToRemoved : rowsToRemove )
   {
-    tableWidget->removeRow( rowsToRemove.values().at( i ) - removed );
+    tableWidget->removeRow( rowToRemoved - removed );
     removed++;
   }
   emit changed();
@@ -177,7 +177,7 @@ void QgsValueMapConfigDlg::updateMap( const QList<QPair<QString, QVariant>> &lis
 
   for ( const auto &pair : list )
   {
-    if ( pair.second.isNull() )
+    if ( QgsVariantUtils::isNull( pair.second ) )
       setRow( row, pair.first, QString() );
     else
       setRow( row, pair.first, pair.second.toString() );
@@ -301,14 +301,18 @@ void QgsValueMapConfigDlg::loadFromCSVButtonPushed()
   const QString fileName = QFileDialog::getOpenFileName( nullptr, tr( "Load Value Map from File" ), QDir::homePath() );
   if ( fileName.isNull() )
     return;
+  loadMapFromCSV( fileName );
+}
 
-  QFile f( fileName );
+void QgsValueMapConfigDlg::loadMapFromCSV( const QString &filePath )
+{
+  QFile f( filePath );
 
   if ( !f.open( QIODevice::ReadOnly ) )
   {
     QMessageBox::information( nullptr,
                               tr( "Load Value Map from File" ),
-                              tr( "Could not open file %1\nError was: %2" ).arg( fileName, f.errorString() ),
+                              tr( "Could not open file %1\nError was: %2" ).arg( filePath, f.errorString() ),
                               QMessageBox::Cancel );
     return;
   }
@@ -316,53 +320,26 @@ void QgsValueMapConfigDlg::loadFromCSVButtonPushed()
   QTextStream s( &f );
   s.setAutoDetectUnicode( true );
 
-  const thread_local QRegularExpression re0( "^([^;]*?);(.*?)$" );
-  const thread_local QRegularExpression re1( "^([^,]*?),(.*?)$" );
-
+  const thread_local QRegularExpression re( "(?:^\"|[;,]\")(\"\"|[\\w\\W]*?)(?=\"[;,]|\"$)|(?:^(?!\")|[;,](?!\"))([^;,]*?)(?=$|[;,])|(\\r\\n|\\n)" );
   QList<QPair<QString, QVariant>> map;
-
   while ( !s.atEnd() )
   {
     const QString l = s.readLine().trimmed();
-
-    QString key;
-    QString val;
-
-    const QRegularExpressionMatch re0match = re0.match( l );
-    if ( re0match.hasMatch() )
+    QRegularExpressionMatchIterator matches = re.globalMatch( l );
+    QStringList ceils;
+    while ( matches.hasNext() && ceils.size() < 2 )
     {
-      key = re0match.captured( 1 ).trimmed();
-      val = re0match.captured( 2 ).trimmed();
-    }
-    else
-    {
-      const QRegularExpressionMatch re1match = re1.match( l );
-      if ( re1match.hasMatch() )
-      {
-        key = re1match.captured( 1 ).trimmed();
-        val = re1match.captured( 2 ).trimmed();
-      }
-      else
-      {
-        continue;
-      }
+      const QRegularExpressionMatch match = matches.next();
+      ceils << match.capturedTexts().last().trimmed().replace( QLatin1String( "\"\"" ), QLatin1String( "\"" ) );
     }
 
-    if ( ( key.startsWith( '\"' ) && key.endsWith( '\"' ) ) ||
-         ( key.startsWith( '\'' ) && key.endsWith( '\'' ) ) )
-    {
-      key = key.mid( 1, key.length() - 2 );
-    }
+    if ( ceils.size() != 2 )
+      continue;
 
-    if ( ( val.startsWith( '\"' ) && val.endsWith( '\"' ) ) ||
-         ( val.startsWith( '\'' ) && val.endsWith( '\'' ) ) )
-    {
-      val = val.mid( 1, val.length() - 2 );
-    }
-
+    QString key = ceils[0];
+    QString val = ceils[1];
     if ( key == QgsApplication::nullRepresentation() )
       key = QgsValueMapFieldFormatter::NULL_VALUE;
-
     map.append( qMakePair( key, val ) );
   }
 

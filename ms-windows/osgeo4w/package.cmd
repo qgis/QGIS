@@ -294,11 +294,9 @@ for %%i in (%packages%) do (
   "apps/%PACKAGENAME%/plugins/authmethod_basic.dll" ^
   "apps/%PACKAGENAME%/plugins/provider_delimitedtext.dll" ^
   "apps/%PACKAGENAME%/plugins/authmethod_esritoken.dll" ^
-  "apps/%PACKAGENAME%/plugins/provider_geonode.dll" ^
   "apps/%PACKAGENAME%/plugins/provider_gpx.dll" ^
   "apps/%PACKAGENAME%/plugins/authmethod_identcert.dll" ^
   "apps/%PACKAGENAME%/plugins/provider_mssql.dll" ^
-  "apps/%PACKAGENAME%/plugins/provider_db2.dll" ^
   "apps/%PACKAGENAME%/plugins/authmethod_pkcs12.dll" ^
   "apps/%PACKAGENAME%/plugins/authmethod_pkipaths.dll" ^
   "apps/%PACKAGENAME%/plugins/provider_postgres.dll" ^

@@ -91,6 +91,17 @@ class CORE_EXPORT QgsAbstractFeatureIterator
      */
     bool compileFailed() const;
 
+    /**
+     * Possible results from the updateRequestToSourceCrs() method.
+     *
+     * \since QGIS 3.22
+     */
+    enum class RequestToSourceCrsResult : int
+    {
+      Success, //!< Request was successfully updated to the source CRS, or no changes were required
+      DistanceWithinMustBeCheckedManually, //!< The distance within request cannot be losslessly updated to the source CRS, and callers will need to take appropriate steps to handle the distance within requirement manually during feature iteration
+    };
+
   protected:
 
     /**
@@ -148,6 +159,20 @@ class CORE_EXPORT QgsAbstractFeatureIterator
      * \since QGIS 3.0
      */
     QgsRectangle filterRectToSourceCrs( const QgsCoordinateTransform &transform ) const SIP_THROW( QgsCsException );
+
+    /**
+     * Update a QgsFeatureRequest so that spatial filters are
+     * transformed to the source's coordinate reference system.
+     * Iterators should call this method against the request used for filtering
+     * features to ensure that any QgsFeatureRequest::destinationCrs() set on the request is respected.
+     *
+     * \returns result of operation. See QgsAbstractFeatureIterator::RequestToSourceCrsResult for interpretation.
+     *
+     * \throws QgsCsException if the rect cannot be transformed from the destination CRS.
+     *
+     * \since QGIS 3.22
+     */
+    RequestToSourceCrsResult updateRequestToSourceCrs( QgsFeatureRequest &request, const QgsCoordinateTransform &transform ) const SIP_THROW( QgsCsException );
 
     //! A copy of the feature request.
     QgsFeatureRequest mRequest;

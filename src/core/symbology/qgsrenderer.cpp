@@ -265,6 +265,7 @@ QgsFeatureRenderer *QgsFeatureRenderer::loadSld( const QDomNode &node, QgsWkbTyp
       {
         // rule has filter or min/max scale denominator, use the RuleRenderer
         if ( ruleChildElem.localName() == QLatin1String( "Filter" ) ||
+             ruleChildElem.localName() == QLatin1String( "ElseFilter" ) ||
              ruleChildElem.localName() == QLatin1String( "MinScaleDenominator" ) ||
              ruleChildElem.localName() == QLatin1String( "MaxScaleDenominator" ) )
         {
@@ -366,6 +367,12 @@ void QgsFeatureRenderer::setLegendSymbolItem( const QString &key, QgsSymbol *sym
 {
   Q_UNUSED( key )
   delete symbol;
+}
+
+QString QgsFeatureRenderer::legendKeyToExpression( const QString &, QgsVectorLayer *, bool &ok ) const
+{
+  ok = false;
+  return QString();
 }
 
 QgsLegendSymbolList QgsFeatureRenderer::legendSymbolItems() const

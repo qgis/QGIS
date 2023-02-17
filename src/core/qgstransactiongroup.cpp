@@ -84,7 +84,7 @@ void QgsTransactionGroup::onEditingStarted()
   const auto constMLayers = mLayers;
   for ( QgsVectorLayer *layer : constMLayers )
   {
-    mTransaction->addLayer( layer );
+    mTransaction->addLayer( layer, true );
     layer->startEditing();
     connect( layer, &QgsVectorLayer::beforeCommitChanges, this, &QgsTransactionGroup::onBeforeCommitChanges );
     connect( layer, &QgsVectorLayer::beforeRollBack, this, &QgsTransactionGroup::onRollback );

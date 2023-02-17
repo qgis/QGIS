@@ -165,7 +165,8 @@ namespace Sqlite
     const int r = sqlite3_exec( db, sql.toUtf8().constData(), nullptr, nullptr, &errMsg );
     if ( r )
     {
-      const QString err = QStringLiteral( "Query execution error on %1: %2 - %3" ).arg( sql ).arg( r ).arg( errMsg );
+      const QString err = QStringLiteral( "Query execution error on %1: %2 - %3" ).arg( sql ).arg( r ).arg( QString::fromUtf8( errMsg ) );
+      sqlite3_free( errMsg );
       throw std::runtime_error( err.toUtf8().constData() );
     }
   }

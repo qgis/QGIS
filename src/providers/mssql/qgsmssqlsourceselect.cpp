@@ -146,7 +146,7 @@ QgsMssqlSourceSelect::QgsMssqlSourceSelect( QWidget *parent, Qt::WindowFlags fl,
   }
   else
   {
-    setWindowTitle( tr( "Add MSSQL Table(s)" ) );
+    setWindowTitle( tr( "Add MS SQL Server Table(s)" ) );
   }
 
   populateConnectionList();
@@ -387,7 +387,7 @@ void QgsMssqlSourceSelect::btnConnect_clicked()
   {
     // Let user know we couldn't initialize the MSSQL provider
     QMessageBox::warning( this,
-                          tr( "MSSQL Provider" ), db->errorText() );
+                          tr( "MS SQL Server Provider" ), db->errorText() );
     return;
   }
 
@@ -477,7 +477,7 @@ void QgsMssqlSourceSelect::btnConnect_clicked()
     QApplication::restoreOverrideCursor();
     // Let user know we couldn't retrieve tables from the MSSQL provider
     QMessageBox::warning( this,
-                          tr( "MSSQL Provider" ), q.lastError().text() );
+                          tr( "MS SQL Server Provider" ), q.lastError().text() );
     return;
   }
 
@@ -546,7 +546,7 @@ void QgsMssqlSourceSelect::setSql( const QModelIndex &index )
   QgsQueryBuilder gb( vlayer.get(), this );
   if ( gb.exec() )
   {
-    mTableModel->setSql( proxyModel()->mapToSource( index ), gb.sql() );
+    mTableModel->setSql( index, gb.sql() );
   }
 }
 

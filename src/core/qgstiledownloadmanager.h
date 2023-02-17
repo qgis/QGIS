@@ -30,6 +30,7 @@
 #include "qgis_core.h"
 
 class QgsTileDownloadManager;
+class QgsRangeRequestCache;
 
 /**
  * \ingroup core
@@ -53,11 +54,18 @@ class CORE_EXPORT QgsTileDownloadManagerReply : public QObject
     bool hasFinished() const { return mHasFinished; }
     //! Returns binary data returned in the reply (only valid when already finished)
     QByteArray data() const { return mData; }
+    //! Returns the reply URL
+    QUrl url() const { return mUrl; }
+    //! Returns the attribute associated with the \a code
+    QVariant attribute( QNetworkRequest::Attribute code );
+    //! Returns the value of the known header \a header.
+    QVariant header( QNetworkRequest::KnownHeaders header );
+    //! Returns a list of raw header pairs
+    const QList<QNetworkReply::RawHeaderPair> rawHeaderPairs() const { return mRawHeaderPairs; }
     //! Returns error code (only valid when already finished)
     QNetworkReply::NetworkError error() const { return mError; }
     //! Returns error string (only valid when already finished)
     QString errorString() const { return mErrorString; }
-
     //! Returns the original request for this reply object
     QNetworkRequest request() const { return mRequest; }
 
@@ -66,7 +74,8 @@ class CORE_EXPORT QgsTileDownloadManagerReply : public QObject
     void finished();
 
   private slots:
-    void requestFinished( QByteArray data, QNetworkReply::NetworkError error, const QString &errorString );
+    void requestFinished( QByteArray data, QUrl url, const QMap<QNetworkRequest::Attribute, QVariant> &attributes, const QMap<QNetworkRequest::KnownHeaders, QVariant> &headers, const QList<QNetworkReply::RawHeaderPair> rawHeaderPairs, QNetworkReply::NetworkError error, const QString &errorString );
+    void cachedRangeRequestFinished();
 
   private:
     QgsTileDownloadManagerReply( QgsTileDownloadManager *manager, const QNetworkRequest &request );
@@ -81,6 +90,10 @@ class CORE_EXPORT QgsTileDownloadManagerReply : public QObject
     QByteArray mData;
     QNetworkReply::NetworkError mError = QNetworkReply::NoError;
     QString mErrorString;
+    QUrl mUrl;
+    QMap<QNetworkRequest::Attribute, QVariant> mAttributes;
+    QMap<QNetworkRequest::KnownHeaders, QVariant> mHeaders;
+    QList<QNetworkReply::RawHeaderPair> mRawHeaderPairs;
 };
 
 
@@ -102,7 +115,7 @@ class QgsTileDownloadManagerReplyWorkerObject : public QObject
     void replyFinished();
 
   signals:
-    void finished( QByteArray data, QNetworkReply::NetworkError error, const QString &errorString );
+    void finished( QByteArray data, QUrl url, const QMap<QNetworkRequest::Attribute, QVariant> &attributes, const QMap<QNetworkRequest::KnownHeaders, QVariant> &headers, const QList<QNetworkReply::RawHeaderPair> rawHeaderPairs, QNetworkReply::NetworkError error, const QString &errorString );
 
   private:
     //! "parent" download manager of this worker object
@@ -179,6 +192,10 @@ class QgsTileDownloadManagerWorker : public QObject
  *   it is waiting for map rendering to finish.
  * - There is a shared download queue (protected by a mutex) with a list of active requests
  *   and requests waiting to be processed.
+ * - Added in QGIS 3.26: If the request is an HTTP range request, the data may be cached
+ *   into a local directory using QgsRangeRequestCache to avoid requesting the same data
+ *   excessively. Caching will be disabled for requests with CacheLoadControlAttribute set
+ *   to AlwaysNetwork or CacheSaveControlAttribute set to false
  *
  * \since QGIS 3.18
  */
@@ -240,7 +257,7 @@ class CORE_EXPORT QgsTileDownloadManager
      * Blocks the current thread until the queue is empty. This should not be used
      * in production code, it is however useful for auto tests
      */
-    bool waitForPendingRequests( int msec = -1 );
+    bool waitForPendingRequests( int msec = -1 ) const;
 
     //! Asks the worker thread to stop and blocks until it is not stopped.
     void shutdown();
@@ -258,7 +275,7 @@ class CORE_EXPORT QgsTileDownloadManager
     void setIdleThreadTimeout( int timeoutMs ) { mIdleThreadTimeoutMs = timeoutMs; }
 
     //! Returns basic statistics of the queries handled by this class
-    Stats statistics() { return mStats; }
+    Stats statistics() const { return mStats; }
 
     //! Resets statistics of numbers of queries handled by this class
     void resetStatistics();
@@ -274,23 +291,30 @@ class CORE_EXPORT QgsTileDownloadManager
     void addEntry( const QueueEntry &entry );
     void updateEntry( const QueueEntry &entry );
     void removeEntry( const QNetworkRequest &request );
+    void processStagedEntryRemovals();
 
     void signalQueueModified();
 
+    bool isRangeRequest( const QNetworkRequest &request );
+    bool isCachedRangeRequest( const QNetworkRequest &request );
+
   private:
 
-    QList<QueueEntry> mQueue;
+    std::vector<QueueEntry> mQueue;
+
+    bool mStageQueueRemovals = false;
+    std::vector< QNetworkRequest > mStagedQueueRemovals;
+
     bool mShuttingDown = false;
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-    mutable QMutex mMutex;
-#else
     mutable QRecursiveMutex mMutex;
-#endif
+
     QThread *mWorkerThread = nullptr;
     QgsTileDownloadManagerWorker *mWorker = nullptr;
     Stats mStats;
 
     int mIdleThreadTimeoutMs = 10000;
+
+    std::unique_ptr<QgsRangeRequestCache> mRangesCache;
 };
 
 #endif // QGSTILEDOWNLOADMANAGER_H

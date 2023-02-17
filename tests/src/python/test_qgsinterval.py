@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsInterval.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -134,6 +133,12 @@ class TestQgsInterval(unittest.TestCase):
         self.assertTrue(i.isValid())
         self.assertEqual(i.seconds(), 34758060)
         i = QgsInterval.fromString('1 Year. 1 Month. 1 Week. 1 Hour. 1 Minute.')
+        self.assertTrue(i.isValid())
+        self.assertEqual(i.seconds(), 34758060)
+        i = QgsInterval.fromString('1 Year. 1 Month. 1 Week. 01:01:00 ')
+        self.assertTrue(i.isValid())
+        self.assertEqual(i.seconds(), 34758060)
+        i = QgsInterval.fromString('1 Year. 1 Mon. 1 Week. 01:01:00 ')
         self.assertTrue(i.isValid())
         self.assertEqual(i.seconds(), 34758060)
         i = QgsInterval.fromString('2 Years')

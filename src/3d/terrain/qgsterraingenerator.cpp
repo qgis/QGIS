@@ -21,7 +21,7 @@
 
 QgsAABB QgsTerrainGenerator::rootChunkBbox( const Qgs3DMapSettings &map ) const
 {
-  QgsRectangle te = extent();
+  QgsRectangle te = rootChunkExtent();
   QgsCoordinateTransform terrainToMapTransform( crs(), map.crs(), map.transformContext() );
   terrainToMapTransform.setBallparkTransformsAreAppropriate( true );
   te = terrainToMapTransform.transformBoundingBox( te );
@@ -34,7 +34,7 @@ QgsAABB QgsTerrainGenerator::rootChunkBbox( const Qgs3DMapSettings &map ) const
 
 float QgsTerrainGenerator::rootChunkError( const Qgs3DMapSettings &map ) const
 {
-  QgsRectangle te = extent();
+  QgsRectangle te = rootChunkExtent();
   QgsCoordinateTransform terrainToMapTransform( crs(), map.crs(), map.transformContext() );
   terrainToMapTransform.setBallparkTransformsAreAppropriate( true );
   te = terrainToMapTransform.transformBoundingBox( te );

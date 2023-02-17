@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsLayerMetadata.
 
 Run with: ctest -V -R PyQgsLayerMetadata
@@ -13,18 +12,16 @@ __date__ = '11/04/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
 
 import qgis  # NOQA
-
+from qgis.PyQt.QtCore import QDate, QDateTime, QRegularExpression, QTime
 from qgis.PyQt.QtXml import QDomDocument
-
-from qgis.core import (QgsLayerMetadata,
-                       QgsCoordinateReferenceSystem,
-                       QgsVectorLayer,
-                       QgsNativeMetadataValidator,
-                       QgsBox3d,
-                       QgsDateTimeRange)
-from qgis.PyQt.QtCore import (QDate,
-                              QTime,
-                              QDateTime)
+from qgis.core import (
+    QgsBox3d,
+    QgsCoordinateReferenceSystem,
+    QgsDateTimeRange,
+    QgsLayerMetadata,
+    QgsNativeMetadataValidator,
+    QgsVectorLayer,
+)
 from qgis.testing import start_app, unittest
 
 start_app()
@@ -676,6 +673,33 @@ class TestQgsLayerMetadata(unittest.TestCase):
         m2.extent().setTemporalExtents([s])
         m1.combine(m2)
         self.assertEqual(m1.extent().temporalExtents()[0], s)
+
+    def testContainsAndMatches(self):
+        """Test case-insensitive contains"""
+
+        m = self.createTestMetadata()
+
+        self.assertFalse(m.contains('XXXX'))
+        self.assertTrue(m.contains('23'))
+        relist = [QRegularExpression('XXXX')]
+        self.assertFalse(m.matches(relist))
+        relist = [QRegularExpression('23')]
+        self.assertTrue(m.matches(relist))
+
+        self.assertTrue(m.contains('W1'))
+        relist = [QRegularExpression('w1'), QRegularExpression('XXXX')]
+        self.assertTrue(m.matches(relist))
+
+        self.assertTrue(m.contains('uRal'))
+        relist = [QRegularExpression('ural'), QRegularExpression('XXXX')]
+        self.assertTrue(m.matches(relist))
+
+        self.assertTrue(m.contains('My Ro'))
+        relist = [QRegularExpression('my ro'), QRegularExpression('XXXX')]
+        self.assertTrue(m.matches(relist))
+
+        self.assertFalse(m.contains(''))
+        self.assertFalse(m.contains(' '))
 
 
 if __name__ == '__main__':

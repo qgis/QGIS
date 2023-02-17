@@ -3,17 +3,21 @@
   "type": "function",
   "groups": ["Record and Attributes"],
   "description": "Generates a Universally Unique Identifier (UUID) for each row using the Qt <a href='https://doc.qt.io/qt-5/quuid.html#createUuid'>QUuid::createUuid</a> method.",
-  "arguments": [
-        {
-          "arg": "format",
-          "optional": true,
-          "default": "'WithBraces'",
-          "description": "The format, as the UUID will be formatted. 'WithBraces', 'WithoutBraces' or 'Id128'."
-        }
-  ],
-  "examples": [ 
-  		{ "expression":"uuid()", "returns":"'{0bd2f60f-f157-4a6d-96af-d4ba4cb366a1}'" },
-  		{ "expression": "uuid('WithoutBraces')", "returns": "'0bd2f60f-f157-4a6d-96af-d4ba4cb366a1'" },
-  		{ "expression": "uuid('Id128')", "returns": "'0bd2f60ff1574a6d96afd4ba4cb366a1'" }
-  ]
+  "arguments": [{
+    "arg": "format",
+    "optional": true,
+    "default": "'WithBraces'",
+    "description": "The format, as the UUID will be formatted. 'WithBraces', 'WithoutBraces' or 'Id128'."
+  }],
+  "examples": [{
+    "expression": "uuid()",
+    "returns": "'{0bd2f60f-f157-4a6d-96af-d4ba4cb366a1}'"
+  }, {
+    "expression": "uuid('WithoutBraces')",
+    "returns": "'0bd2f60f-f157-4a6d-96af-d4ba4cb366a1'"
+  }, {
+    "expression": "uuid('Id128')",
+    "returns": "'0bd2f60ff1574a6d96afd4ba4cb366a1'"
+  }],
+  "tags": ["createuuid", "generates", "method", "unique", "quuid", "identifier", "row"]
 }

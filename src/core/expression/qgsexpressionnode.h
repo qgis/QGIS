@@ -59,6 +59,9 @@ class CORE_EXPORT QgsExpressionNode SIP_ABSTRACT
       case QgsExpressionNode::ntCondition:
         sipType = sipType_QgsExpressionNodeCondition;
         break;
+      case QgsExpressionNode::ntBetweenOperator:
+        sipType = sipType_QgsExpressionNodeBetweenOperator;
+        break;
       default:
         sipType = 0;
         break;
@@ -81,6 +84,7 @@ class CORE_EXPORT QgsExpressionNode SIP_ABSTRACT
       ntColumnRef, //!< \see QgsExpression::Node::NodeColumnRef
       ntCondition, //!< \see QgsExpression::Node::NodeCondition
       ntIndexOperator, //!< Index operator
+      ntBetweenOperator, //!< Between operator \since QGIS 3.26
     };
 
 
@@ -328,6 +332,15 @@ class CORE_EXPORT QgsExpressionNode SIP_ABSTRACT
      * \since QGIS 3.18
      */
     QVariant cachedStaticValue() const { return mCachedStaticValue; }
+
+    /**
+     * Sets the cached static \a value for the node.
+     *
+     * \note Not available from Python bindings.
+     *
+     * \since QGIS 3.30
+     */
+    void setCachedStaticValue( const QVariant &value ) const SIP_SKIP;
 
     /**
      * Returns a reference to the simplest node which represents this node,

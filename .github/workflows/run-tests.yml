@@ -19,6 +19,7 @@ on:
     branches:
       - master
       - release-**
+      - queued_ltr_backports
     # paths cannot be filtered on this workflow on pull request as it is a required one in the branch protection
     # feature request and hacks: https://github.community/t/feature-request-conditional-required-checks/16761
 
@@ -27,16 +28,16 @@ jobs:
     env:
       DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
       DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-      GH_WORKSPACE: ${{ github.workspace }} # used in docker compose
+      QGIS_WORKSPACE: ${{ github.workspace }} # used in docker compose
       RUN_FLAKY_TESTS: ${{ contains( github.event.pull_request.labels.*.name, 'run flaky tests') }}
 
     runs-on: ubuntu-latest
+    continue-on-error: ${{ matrix.experimental }}
 
     strategy:
       matrix:
-        # tests run on 20.04 (Qt 5.12), compile test on 20.10 (Qt 5.14) and 21.04 (Qt 5.15)
         include:
-          - distro-version: '20.04'
+          - distro-version: '22.04'
             qt-version: 5
             run-tests: true
             docker-tag-suffix: ''
@@ -44,30 +45,27 @@ jobs:
             with-qt5: ON
             with-3d: ON
             with-quick: ON
-            patch-qt-3d: true
-            LD_PRELOAD: /lib/x86_64-linux-gnu/libSegFault.so
+            with-clazy: ON
+            with-grass7: OFF
+            with-grass8: OFF
+            with-compile-commands: ON
+            # LD_PRELOAD: /lib/x86_64-linux-gnu/libSegFault.so
+            experimental: false
 
-          - distro-version: '21.10'
-            qt-version: 5
-            run-tests: false
-            docker-tag-suffix: _21.10
-            with-qt6: OFF
-            with-qt5: ON
-            with-3d: OFF
-            with-quick: ON
-            patch-qt-3d: false
-            LD_PRELOAD: /lib/x86_64-linux-gnu/libSegFault.so
-
-          - distro-version: '34'
+          - distro-version: '36'
             qt-version: 6
             run-tests: true
             docker-tag-suffix: ''
             with-qt6: ON
             with-qt5: OFF
-            with-3d: OFF
-            with-quick: OFF
-            patch-qt-3d: false
+            with-3d: ON
+            with-quick: ON
+            with-clazy: OFF
+            with-grass7: OFF
+            with-grass8: OFF
+            with-compile-commands: OFF
             LD_PRELOAD: ''
+            experimental: false
 
 
       fail-fast: false
@@ -80,7 +78,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Set vars
         env:
@@ -103,7 +101,7 @@ jobs:
 
       - name: Build Docker Container with Build Environment
         id: docker-build
-        uses: whoan/docker-build-with-cache-action@v5
+        uses: whoan/docker-build-with-cache-action@v6
         with:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
@@ -129,7 +127,7 @@ jobs:
           docker push "qgis/qgis3-build-deps:${DOCKER_TAG}"
 
       - name: Prepare build cache for pull request
-        uses: pat-s/always-upload-cache@v2.1.5
+        uses: pat-s/always-upload-cache@v3.0.11
         if: github.event_name == 'pull_request'
         with:
           path: /home/runner/QGIS/.ccache
@@ -143,7 +141,7 @@ jobs:
 
       - name: Prepare build cache for branch/tag
         # use a fork of actions/cache@v2 to upload cache even when the build or test failed
-        uses: pat-s/always-upload-cache@v2.1.5
+        uses: pat-s/always-upload-cache@v3.0.11
         if: github.event_name != 'pull_request'
         with:
           path: /home/runner/QGIS/.ccache
@@ -162,11 +160,14 @@ jobs:
                      --env-file .docker/docker-variables.env \
                      --env PUSH_TO_CDASH=true \
                      --env WITH_QT5=${{ matrix.with-qt5 }} \
-                     --env WITH_QT6=${{ matrix.with-qt6 }} \
+                     --env BUILD_WITH_QT6=${{ matrix.with-qt6 }} \
                      --env WITH_QUICK=${{ matrix.with-quick }} \
                      --env WITH_3D=${{ matrix.with-3d }} \
-                     --env PATCH_QT_3D=${{ matrix.patch-qt-3d }} \
+                     --env WITH_GRASS7=${{ matrix.with-grass7 }} \
+                     --env WITH_GRASS8=${{ matrix.with-grass8 }} \
                      --env LD_PRELOAD=${{ matrix.LD_PRELOAD }} \
+                     --env WITH_CLAZY=${{ matrix.with-clazy }} \
+                     --env WITH_COMPILE_COMMANDS=${{ matrix.with-compile-commands }} \
                      qgis3-build-deps \
                      /root/QGIS/.docker/docker-qgis-build.sh
 
@@ -175,7 +176,7 @@ jobs:
         if: ${{ matrix.run-tests }}
         run: tar --exclude='*.o' -cvzf build.tgz build
 
-      - uses: actions/upload-artifact@v2.3.1
+      - uses: actions/upload-artifact@v3
         if: ${{ matrix.run-tests }}
         with:
           name: build-${{ matrix.distro-version }}-qt${{ matrix.qt-version }}.tgz
@@ -280,7 +281,7 @@ jobs:
     env:
       DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
       DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-      GH_WORKSPACE: ${{ github.workspace }} # used in docker compose
+      QGIS_WORKSPACE: ${{ github.workspace }} # used in docker compose
 
     runs-on: ubuntu-latest
 
@@ -289,21 +290,29 @@ jobs:
 
     strategy:
       matrix:
-        distro-version: [20.04]
-        qt-version: [5]
+        qt-version: [5, 6]
         test-batch: [ALL_BUT_PROVIDERS, POSTGRES, HANA]
-        docker-target: [binary-only]
 
         include:
-          - distro-version: 20.04
-            qt-version: 5
+          - qt-version: 5
+            distro-version: 22.04
+            docker-target: binary-only
+
+          - qt-version: 6
+            distro-version: 36
+            docker-target: single
+
+          - qt-version: 5
+            distro-version: 22.04
             test-batch: ORACLE
             docker-target: binary-for-oracle
 
-          - distro-version: '34'
-            qt-version: 6
-            test-batch: ALL_BUT_PROVIDERS
-            docker-target: single
+        exclude:
+          - qt-version: 6
+            test-batch: HANA
+
+          - qt-version: 6
+            test-batch: POSTGRES
 
       fail-fast: false
 
@@ -315,7 +324,7 @@ jobs:
           sudo df -h
 
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Set vars
         env:
@@ -334,7 +343,7 @@ jobs:
 
       - name: Build Docker Container with Testing Environment
         id: docker-build
-        uses: whoan/docker-build-with-cache-action@v5
+        uses: whoan/docker-build-with-cache-action@v6
         with:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
@@ -360,7 +369,7 @@ jobs:
           sudo df -h
 
       - name: Download build artifact
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: build-${{ matrix.distro-version }}-qt${{ matrix.qt-version }}.tgz
           path: .
@@ -379,6 +388,7 @@ jobs:
         id: tests
         env:
           TEST_BATCH: ${{matrix.test-batch}}
+          QGIS_COMMON_GIT_DIR: ${{ github.workspace }}
         run: |
           DOCKERFILE=$( ( [[ ${{ matrix.test-batch }} == "ORACLE"   ]] && echo "docker-compose-testing-oracle.yml" ) \
                      || ( [[ ${{ matrix.test-batch }} == "POSTGRES" ]] && echo "docker-compose-testing-postgres.yml" ) \
@@ -387,4 +397,69 @@ jobs:
           echo "TEST_BATCH=$TEST_BATCH"
           echo "DOCKERFILE=$DOCKERFILE"
           mkdir -p /tmp/webdav_tests && chmod 777 /tmp/webdav_tests
+          mkdir -p /tmp/minio_tests/test_bucket && chmod -R 777 /tmp/minio_tests
           docker-compose -f .docker/$DOCKERFILE run qgis-deps /root/QGIS/.docker/docker-qgis-test.sh $TEST_BATCH
+
+      - name: Archive test results report
+        if: ${{ failure() }}
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-results
+          path: qgis_test_report
+
+  clang-tidy:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    needs: build
+
+    strategy:
+      matrix:
+        include:
+          - distro-version: '22.04'
+            qt-version: 5
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 2
+
+      - name: Build Docker Container with Testing Environment
+        id: docker-build
+        uses: whoan/docker-build-with-cache-action@v6
+        with:
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+          registry: docker.pkg.github.com
+          image_name: qgis3-qt${{ matrix.qt-version }}-build-deps-bin-only
+          dockerfile: .docker/qgis3-qt${{ matrix.qt-version }}-build-deps.dockerfile
+          build_extra_args: "--build-arg=DISTRO_VERSION=${{ matrix.distro-version }}"
+          push_git_tag: true
+          push_image_and_stages: on:push
+          pull_image_and_stages: ${{ github.event_name != 'workflow_dispatch' }}
+
+      - name: Tag image
+        run: |
+          docker tag ${DOCKER_IMAGE} qgis3-build-deps
+        env:
+          DOCKER_IMAGE: ${{ steps.docker-build.outputs.FULL_IMAGE_NAME }}
+
+      - name: Download build artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: build-${{ matrix.distro-version }}-qt${{ matrix.qt-version }}.tgz
+          path: .
+
+      - name: Extract build artifact
+        run: |
+          tar xvzf build.tgz
+          rm -Rf build.tgz
+
+      - name: Run Clang-Tidy
+        run: |
+          docker run -t --name qgis_container \
+          -v $(pwd):/root/QGIS \
+          -v /home/runner/QGIS/.ccache:/root/.ccache \
+          --env-file .docker/docker-variables.env \
+          qgis3-build-deps \
+          /root/QGIS/.docker/docker-qgis-clangtidy.sh

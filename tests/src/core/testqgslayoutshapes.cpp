@@ -16,34 +16,30 @@
  ***************************************************************************/
 
 #include "qgsapplication.h"
-#include "qgslayout.h"
 #include "qgsmultirenderchecker.h"
 #include "qgslayoutitemshape.h"
-#include "qgsmapsettings.h"
 #include "qgsproject.h"
 #include "qgssymbol.h"
-#include "qgssinglesymbolrenderer.h"
 #include "qgsfillsymbollayer.h"
 #include "qgsreadwritecontext.h"
 #include "qgsfillsymbol.h"
+#include "qgslayout.h"
 
 #include <QObject>
 #include "qgstest.h"
 #include <QColor>
 #include <QPainter>
 
-class TestQgsLayoutShapes : public QObject
+class TestQgsLayoutShapes : public QgsTest
 {
     Q_OBJECT
 
   public:
-    TestQgsLayoutShapes() = default;
+    TestQgsLayoutShapes() : QgsTest( QStringLiteral( "Layout Shape Tests" ) ) {}
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
-    void init();// will be called before each testfunction is executed.
-    void cleanup();// will be called after every testfunction.
     void rectangle(); //test if rectangle shape is functioning
     void triangle(); //test if triangle shape is functioning
     void ellipse(); //test if ellipse shape is functioning
@@ -52,41 +48,17 @@ class TestQgsLayoutShapes : public QObject
     void readWriteXml();
     void bounds();
     void shapeRotation();
-
-  private:
-
-    QString mReport;
 };
 
 void TestQgsLayoutShapes::initTestCase()
 {
   QgsApplication::init();
   QgsApplication::initQgis();
-
-  mReport = QStringLiteral( "<h1>Composer Shape Tests</h1>\n" );
 }
 
 void TestQgsLayoutShapes::cleanupTestCase()
 {
-  const QString myReportFile = QDir::tempPath() + "/qgistest.html";
-  QFile myFile( myReportFile );
-  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
-  {
-    QTextStream myQTextStream( &myFile );
-    myQTextStream << mReport;
-    myFile.close();
-  }
   QgsApplication::exitQgis();
-}
-
-void TestQgsLayoutShapes::init()
-{
-
-}
-
-void TestQgsLayoutShapes::cleanup()
-{
-
 }
 
 void TestQgsLayoutShapes::rectangle()

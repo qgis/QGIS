@@ -39,7 +39,7 @@ class BuPyramid
 {
 public:
     BuPyramid(BaseInfo& common);
-    void run(const Options& options, ProgressWriter& progress);
+    void run(ProgressWriter& progress);
 
 private:
     void getInputFiles();

@@ -197,7 +197,7 @@ void QgsRasterMinMaxWidget::doComputations()
        mLastMinMaxOrigin == newMinMaxOrigin &&
        !mBandsChanged )
   {
-    QgsDebugMsg( QStringLiteral( "Does not need to redo statistics computations" ) );
+    QgsDebugMsgLevel( QStringLiteral( "Does not need to redo statistics computations" ), 2 );
     return;
   }
 
@@ -206,10 +206,9 @@ void QgsRasterMinMaxWidget::doComputations()
   mLastMinMaxOrigin = newMinMaxOrigin;
   mBandsChanged = false;
 
-  const auto constMBands = mBands;
-  for ( const int myBand : constMBands )
+  for ( const int myBand : std::as_const( mBands ) )
   {
-    QgsDebugMsg( QStringLiteral( "myBand = %1" ).arg( myBand ) );
+    QgsDebugMsgLevel( QStringLiteral( "myBand = %1" ).arg( myBand ), 2 );
     if ( myBand < 1 || myBand > mLayer->dataProvider()->bandCount() )
     {
       continue;

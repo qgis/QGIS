@@ -25,6 +25,7 @@ class QgsWebView;
 
 #include <QWidget>
 #include <QUrl>
+#include <QTimer>
 #include "qgsfeature.h"
 #include "qgis_gui.h"
 
@@ -70,14 +71,15 @@ class GUI_EXPORT QgsMapTip : public QWidget
      */
     void showMapTip( QgsMapLayer *thepLayer,
                      QgsPointXY &mapPosition,
-                     QPoint &pixelPosition,
+                     const QPoint &pixelPosition,
                      QgsMapCanvas *mpMapCanvas );
 
     /**
      * Clear the current maptip if it exists
      * \param mpMapCanvas the canvas from which the tip should be cleared.
+     * \param msDelay optional time in ms to defer clearing the maptip (since QGIS 3.26)
      */
-    void clear( QgsMapCanvas *mpMapCanvas = nullptr );
+    void clear( QgsMapCanvas *mpMapCanvas = nullptr, int msDelay = 0 );
 
     /**
      * Apply font family and size to match user settings
@@ -95,6 +97,11 @@ class GUI_EXPORT QgsMapTip : public QWidget
                           QgsPointXY &mapPosition,
                           QgsMapCanvas *mapCanvas );
 
+    // Sample the raster and get the maptip text
+    QString fetchRaster( QgsMapLayer *layer,
+                         QgsPointXY &mapPosition,
+                         QgsMapCanvas *mapCanvas );
+
     QString replaceText(
       QString displayText, QgsVectorLayer *layer, QgsFeature &feat );
 
@@ -108,5 +115,7 @@ class GUI_EXPORT QgsMapTip : public QWidget
     int mFontSize = 8;
 
     const int MARGIN_VALUE = 5;
+
+    QTimer mDelayedClearTimer;
 };
 #endif // QGSMAPTIP_H

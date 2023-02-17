@@ -112,6 +112,17 @@
     <string>Save Log…</string>
    </property>
   </action>
+  <action name="mActionShowCached">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Show Replies Served from Cache</string>
+   </property>
+   <property name="toolTip">
+    <string>Show replies served directly from local cached data</string>
+   </property>
+  </action>
  </widget>
  <customwidgets>
   <customwidget>
@@ -127,7 +138,6 @@
   </customwidget>
  </customwidgets>
  <resources>
-  <include location="../../images/images.qrc"/>
   <include location="../../images/images.qrc"/>
   <include location="../../images/images.qrc"/>
  </resources>

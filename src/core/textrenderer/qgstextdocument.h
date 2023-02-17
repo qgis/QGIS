@@ -22,8 +22,10 @@
 #include "qgstextblock.h"
 
 #include <QVector>
+#include <QSizeF>
 
 class QgsTextFragment;
+class QgsTextFormat;
 
 /**
  * \class QgsTextDocument

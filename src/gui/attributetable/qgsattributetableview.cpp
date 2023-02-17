@@ -20,7 +20,6 @@
 #include <QToolButton>
 #include <QHBoxLayout>
 
-#include "qgssettings.h"
 #include "qgsactionmanager.h"
 #include "qgsattributetableview.h"
 #include "qgsattributetablemodel.h"
@@ -29,17 +28,15 @@
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayercache.h"
 #include "qgsvectorlayerselectionmanager.h"
-#include "qgsvectordataprovider.h"
-#include "qgslogger.h"
-#include "qgsmapcanvas.h"
 #include "qgsfeatureselectionmodel.h"
 #include "qgsmaplayeractionregistry.h"
 #include "qgsfeatureiterator.h"
 #include "qgsstringutils.h"
 #include "qgsgui.h"
+#include "qgsmaplayeraction.h"
 
 QgsAttributeTableView::QgsAttributeTableView( QWidget *parent )
-  : QTableView( parent )
+  : QgsTableView( parent )
 {
   const QgsSettings settings;
   restoreGeometry( settings.value( QStringLiteral( "BetterAttributeTable/geometry" ) ).toByteArray() );
@@ -94,6 +91,7 @@ void QgsAttributeTableView::setAttributeTableConfig( const QgsAttributeTableConf
 {
   int i = 0;
   const auto constColumns = config.columns();
+  QMap<QString, int> columns;
   for ( const QgsAttributeTableConfig::ColumnConfig &columnConfig : constColumns )
   {
     if ( columnConfig.hidden )
@@ -107,11 +105,28 @@ void QgsAttributeTableView::setAttributeTableConfig( const QgsAttributeTableConf
     {
       setColumnWidth( i, horizontalHeader()->defaultSectionSize() );
     }
+    columns.insert( columnConfig.name, i );
     i++;
   }
   mConfig = config;
   if ( config.sortExpression().isEmpty() )
+  {
     horizontalHeader()->setSortIndicatorShown( false );
+  }
+  else
+  {
+    if ( mSortExpression != config.sortExpression() )
+    {
+      const QgsExpression sortExp { config.sortExpression() };
+      if ( sortExp.isField() )
+      {
+        const QStringList refCols { sortExp.referencedColumns().values() };
+        horizontalHeader()->setSortIndicatorShown( true );
+        horizontalHeader()->setSortIndicator( columns.value( refCols.constFirst() ), config.sortOrder() );
+      }
+    }
+  }
+  mSortExpression = config.sortExpression();
 }
 
 QList<QgsFeatureId> QgsAttributeTableView::selectedFeaturesIds() const
@@ -233,7 +248,8 @@ QWidget *QgsAttributeTableView::createActionWidget( QgsFeatureId fid )
       defaultAction = act;
   }
 
-  const auto mapLayerActions {QgsGui::mapLayerActionRegistry()->mapLayerActions( mFilterModel->layer(), QgsMapLayerAction::SingleFeature ) };
+  QgsMapLayerActionContext context;
+  const QList< QgsMapLayerAction * > mapLayerActions = QgsGui::mapLayerActionRegistry()->mapLayerActions( mFilterModel->layer(), Qgis::MapLayerActionTarget::SingleFeature, context );
   // next add any registered actions for this layer
   for ( QgsMapLayerAction *mapLayerAction : mapLayerActions )
   {
@@ -479,7 +495,11 @@ void QgsAttributeTableView::actionTriggered()
     QgsMapLayerAction *layerAction = qobject_cast<QgsMapLayerAction *>( object );
     if ( layerAction )
     {
+      QgsMapLayerActionContext context;
+      Q_NOWARN_DEPRECATED_PUSH
       layerAction->triggerForFeature( mFilterModel->layer(), f );
+      Q_NOWARN_DEPRECATED_POP
+      layerAction->triggerForFeature( mFilterModel->layer(), f, context );
     }
   }
 }
@@ -528,4 +548,11 @@ void QgsAttributeTableView::scrollToFeature( const QgsFeatureId &fid, int col )
     return;
 
   selectionModel()->setCurrentIndex( index, QItemSelectionModel::SelectCurrent );
+}
+
+void QgsAttributeTableView::closeCurrentEditor()
+{
+  QWidget *editor = indexWidget( currentIndex() );
+  commitData( editor );
+  closeEditor( editor, QAbstractItemDelegate::NoHint );
 }

@@ -171,12 +171,12 @@ can be retrieved by calling :py:func:`~QgsBlockingNetworkRequest.errorMessage`.
 
     QString errorMessage() const;
 %Docstring
-Returns the error message string, after a :py:func:`~QgsBlockingNetworkRequest.get` or :py:func:`~QgsBlockingNetworkRequest.post` request has been made.\
+Returns the error message string, after a :py:func:`~QgsBlockingNetworkRequest.get`, :py:func:`~QgsBlockingNetworkRequest.post`, :py:func:`~QgsBlockingNetworkRequest.head` or :py:func:`~QgsBlockingNetworkRequest.put` request has been made.
 %End
 
     QgsNetworkReplyContent reply() const;
 %Docstring
-Returns the content of the network reply, after a :py:func:`~QgsBlockingNetworkRequest.get` or :py:func:`~QgsBlockingNetworkRequest.post` request has been made.
+Returns the content of the network reply, after a :py:func:`~QgsBlockingNetworkRequest.get`, :py:func:`~QgsBlockingNetworkRequest.post`, :py:func:`~QgsBlockingNetworkRequest.head` or :py:func:`~QgsBlockingNetworkRequest.put` request has been made.
 %End
 
     QString authCfg() const;

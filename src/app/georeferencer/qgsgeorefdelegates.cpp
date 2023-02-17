@@ -16,16 +16,13 @@
 
 #include <QDoubleSpinBox>
 #include <QLineEdit>
+#include <QRegularExpression>
+#include <QRegularExpressionMatch>
+#include <QRegularExpressionValidator>
 
 #include "qgsgeorefvalidators.h"
 #include "qgsgeorefdelegates.h"
 #include <cmath>
-
-// ------------------------ QgsNonEditableDelegate ------------------------- //
-QgsNonEditableDelegate::QgsNonEditableDelegate( QWidget *parent )
-  : QStyledItemDelegate( parent )
-{
-}
 
 // ------------------------- QgsDmsAndDdDelegate --------------------------- //
 QgsDmsAndDdDelegate::QgsDmsAndDdDelegate( QWidget *parent )
@@ -63,8 +60,6 @@ void QgsDmsAndDdDelegate::setModelData( QWidget *editor, QAbstractItemModel *mod
     value = stringValue.toDouble();
 
   model->setData( index, value, Qt::EditRole );
-  model->setData( index, value, Qt::DisplayRole );
-  model->setData( index, value, Qt::ToolTipRole );
 }
 
 void QgsDmsAndDdDelegate::updateEditorGeometry( QWidget *editor, const QStyleOptionViewItem &option,
@@ -100,8 +95,8 @@ QWidget *QgsCoordDelegate::createEditor( QWidget *parent, const QStyleOptionView
     const QModelIndex &/*index*/ ) const
 {
   QLineEdit *editor = new QLineEdit( parent );
-  const QRegExp re( "-?\\d*(\\.\\d+)?" );
-  QRegExpValidator *validator = new QRegExpValidator( re, editor );
+  const thread_local QRegularExpression re( QStringLiteral( "-?\\d*(\\.\\d+)?" ) );
+  QRegularExpressionValidator *validator = new QRegularExpressionValidator( re, editor );
   editor->setValidator( validator );
 
   return editor;
@@ -121,8 +116,6 @@ void QgsCoordDelegate::setModelData( QWidget *editor, QAbstractItemModel *model,
   const QString stringValue = lineEdit->text();
   const double value = stringValue.toDouble();
   model->setData( index, value, Qt::EditRole );
-  model->setData( index, value, Qt::DisplayRole );
-  model->setData( index, value, Qt::ToolTipRole );
 }
 
 void QgsCoordDelegate::updateEditorGeometry( QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &index ) const

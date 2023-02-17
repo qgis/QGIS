@@ -3,14 +3,25 @@
   "type": "operator",
   "groups": ["Operators"],
   "description": "Addition of two values. If one of the values is NULL the result will be NULL.",
-  "arguments": [
-        { "arg": "a", "description": "value" },
-        { "arg": "b", "description": "value" }
-  ],
-  "examples": [
-	{ "expression":"5 + 4", "returns":"9"},
-	{ "expression":"5 + NULL", "returns":"NULL"},
-	{ "expression":"'QGIS ' + 'ROCKS'", "returns":"'QGIS ROCKS'"},
-	{ "expression":"to_datetime('2020-08-01 12:00:00') + '1 day 2 hours'", "returns":"2020-08-02T14:00:00"}
-  ]
+  "arguments": [{
+    "arg": "a",
+    "description": "value"
+  }, {
+    "arg": "b",
+    "description": "value"
+  }],
+  "examples": [{
+    "expression": "5 + 4",
+    "returns": "9"
+  }, {
+    "expression": "5 + NULL",
+    "returns": "NULL"
+  }, {
+    "expression": "'QGIS ' + 'ROCKS'",
+    "returns": "'QGIS ROCKS'"
+  }, {
+    "expression": "to_datetime('2020-08-01 12:00:00') + '1 day 2 hours'",
+    "returns": "2020-08-02T14:00:00"
+  }],
+  "tags": ["addition", "null", "result", "values"]
 }

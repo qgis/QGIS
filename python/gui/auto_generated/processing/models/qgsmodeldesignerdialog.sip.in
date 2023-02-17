@@ -67,25 +67,39 @@ Loads a model into the designer from the specified file ``path``.
 Sets the related ``scene``.
 %End
 
+    enum class SaveAction
+    {
+      SaveAsFile,
+      SaveInProject,
+    };
+
+  public slots:
+
+    void activate();
+%Docstring
+Raise, unminimize and activate this window.
+
+.. versionadded:: 3.24
+%End
+
   protected:
 
     virtual void repaintModel( bool showControls = true ) = 0;
     virtual void addAlgorithm( const QString &algorithmId, const QPointF &pos ) = 0;
     virtual void addInput( const QString &inputId, const QPointF &pos ) = 0;
     virtual void exportAsScriptAlgorithm() = 0;
-    virtual void saveModel( bool saveAs = false ) = 0;
+    virtual bool saveModel( bool saveAs = false ) = 0;
 
     QToolBar *toolbar();
     QAction *actionOpen();
     QAction *actionSaveInProject();
-    QAction *actionEditHelp();
     QAction *actionRun();
     QgsMessageBar *messageBar();
     QGraphicsView *view();
 
     void setDirty( bool dirty );
 
-    bool validateSave();
+    bool validateSave( SaveAction action );
 %Docstring
 Checks if the model can current be saved, and returns ``True`` if it can.
 %End
@@ -105,6 +119,15 @@ Sets the results of child algorithms for the last run of the model through the d
     void setLastRunChildAlgorithmInputs( const QVariantMap &inputs );
 %Docstring
 Sets the inputs for child algorithms for the last run of the model through the designer window.
+%End
+
+    void setModelName( const QString &name );
+%Docstring
+Sets the model ``name``.
+
+Updates both the name text edit and the model name itself.
+
+.. versionadded:: 3.24
 %End
 
 };

@@ -60,7 +60,6 @@
 #include "qgsprocessingoutputdestinationwidget.h"
 #include "qgscheckablecombobox.h"
 #include "qgsexpressioncontext.h"
-#include "qgsexpressioncontextutils.h"
 #include "qgsdoublevalidator.h"
 #include "qgsmaplayercombobox.h"
 #include "qgsannotationlayer.h"
@@ -700,8 +699,25 @@ QgsProcessingNumberParameterDefinitionWidget::QgsProcessingNumberParameterDefini
   if ( const QgsProcessingParameterNumber *numberParam = dynamic_cast<const QgsProcessingParameterNumber *>( definition ) )
   {
     mTypeComboBox->setCurrentIndex( mTypeComboBox->findData( numberParam->dataType() ) );
-    mMinLineEdit->setText( QLocale().toString( numberParam->minimum() ) );
-    mMaxLineEdit->setText( QLocale().toString( numberParam->maximum() ) );
+
+    if ( !qgsDoubleNear( numberParam->maximum(), std::numeric_limits<double>::max() ) )
+    {
+      mMaxLineEdit->setText( QLocale().toString( numberParam->maximum() ) );
+    }
+    else
+    {
+      mMaxLineEdit->clear();
+    }
+
+    if ( !qgsDoubleNear( numberParam->minimum(), std::numeric_limits<double>::lowest() ) )
+    {
+      mMinLineEdit->setText( QLocale().toString( numberParam->minimum() ) );
+    }
+    else
+    {
+      mMinLineEdit->clear();
+    }
+
     mDefaultLineEdit->setText( numberParam->defaultValueForGui().toString() );
   }
 
@@ -716,16 +732,22 @@ QgsProcessingParameterDefinition *QgsProcessingNumberParameterDefinitionWidget::
   QgsProcessingParameterNumber::Type dataType = static_cast< QgsProcessingParameterNumber::Type >( mTypeComboBox->currentData().toInt() );
   auto param = std::make_unique< QgsProcessingParameterNumber >( name, description, dataType, ok ? val : QVariant() );
 
-  val = QgsDoubleValidator::toDouble( mMinLineEdit->text( ), &ok );
-  if ( ok )
+  if ( !mMinLineEdit->text().trimmed().isEmpty() )
   {
-    param->setMinimum( val );
+    val = QgsDoubleValidator::toDouble( mMinLineEdit->text( ), &ok );
+    if ( ok )
+    {
+      param->setMinimum( val );
+    }
   }
 
-  val = QgsDoubleValidator::toDouble( mMaxLineEdit->text(), &ok );
-  if ( ok )
+  if ( !mMaxLineEdit->text().trimmed().isEmpty() )
   {
-    param->setMaximum( val );
+    val = QgsDoubleValidator::toDouble( mMaxLineEdit->text(), &ok );
+    if ( ok )
+    {
+      param->setMaximum( val );
+    }
   }
 
   param->setFlags( flags );
@@ -805,7 +827,7 @@ QWidget *QgsProcessingNumericWidgetWrapper::createWidget()
         if ( mDoubleSpinBox )
         {
           mDoubleSpinBox->setShowClearButton( true );
-          const double min = mDoubleSpinBox->minimum() - 1;
+          const double min = mDoubleSpinBox->minimum() - mDoubleSpinBox->singleStep();
           mDoubleSpinBox->setMinimum( min );
           mDoubleSpinBox->setValue( min );
         }
@@ -2257,7 +2279,7 @@ void QgsProcessingExpressionWidgetWrapper::setParentLayerWrapperValue( const Qgs
   }
 
   QVariant val = parentWrapper->parameterValue();
-  if ( val.canConvert<QgsProcessingFeatureSourceDefinition>() )
+  if ( val.userType() == QMetaType::type( "QgsProcessingFeatureSourceDefinition" ) )
   {
     // input is a QgsProcessingFeatureSourceDefinition - get extra properties from it
     QgsProcessingFeatureSourceDefinition fromVar = qvariant_cast<QgsProcessingFeatureSourceDefinition>( val );
@@ -2279,7 +2301,7 @@ void QgsProcessingExpressionWidgetWrapper::setParentLayerWrapperValue( const Qgs
   // need to grab ownership of layer if required - otherwise layer may be deleted when context
   // goes out of scope
   std::unique_ptr< QgsMapLayer > ownedLayer( context->takeResultLayer( layer->id() ) );
-  if ( ownedLayer && ownedLayer->type() == QgsMapLayerType::VectorLayer )
+  if ( ownedLayer && ownedLayer->type() == Qgis::LayerType::Vector )
   {
     mParentLayer.reset( qobject_cast< QgsVectorLayer * >( ownedLayer.release() ) );
     layer = mParentLayer.get();
@@ -2507,7 +2529,7 @@ void QgsProcessingEnumPanelWidget::updateSummaryText()
     if ( concatenated.length() < 100 )
       mLineEdit->setText( concatenated );
     else
-      mLineEdit->setText( tr( "%1 options selected" ).arg( mValue.count() ) );
+      mLineEdit->setText( tr( "%n option(s) selected", nullptr, mValue.count() ) );
   }
 }
 
@@ -2712,12 +2734,15 @@ QWidget *QgsProcessingEnumWidgetWrapper::createWidget()
         if ( expParam->flags() & QgsProcessingParameterDefinition::FlagOptional )
           mComboBox->addItem( tr( "[Not selected]" ), QVariant() );
         const QStringList options = expParam->options();
+        const QVariantList iconList = expParam->metadata().value( QStringLiteral( "widget_wrapper" ) ).toMap().value( QStringLiteral( "icons" ) ).toList();
         for ( int i = 0; i < options.count(); ++i )
         {
+          const QIcon icon = iconList.value( i ).value< QIcon >();
+
           if ( expParam->usesStaticStrings() )
-            mComboBox->addItem( options.at( i ), options.at( i ) );
+            mComboBox->addItem( icon, options.at( i ), options.at( i ) );
           else
-            mComboBox->addItem( options.at( i ), i );
+            mComboBox->addItem( icon, options.at( i ), i );
         }
 
         mComboBox->setToolTip( parameterDefinition()->toolTip() );
@@ -4090,7 +4115,7 @@ QgsProcessingFieldPanelWidget::QgsProcessingFieldPanelWidget( QWidget *parent, c
 
   if ( mParam )
   {
-    mLineEdit->setText( tr( "%1 fields selected" ).arg( 0 ) );
+    mLineEdit->setText( tr( "%n field(s) selected", nullptr, 0 ) );
   }
 
   connect( mToolButton, &QToolButton::clicked, this, &QgsProcessingFieldPanelWidget::showDialog );
@@ -4115,7 +4140,6 @@ void QgsProcessingFieldPanelWidget::setValue( const QVariant &value )
 void QgsProcessingFieldPanelWidget::showDialog()
 {
   QVariantList availableOptions;
-  QStringList fieldNames;
   availableOptions.reserve( mFields.size() );
   for ( const QgsField &field : std::as_const( mFields ) )
   {
@@ -4162,7 +4186,7 @@ void QgsProcessingFieldPanelWidget::updateSummaryText()
 
   if ( mValue.empty() )
   {
-    mLineEdit->setText( tr( "%1 fields selected" ).arg( 0 ) );
+    mLineEdit->setText( tr( "%n field(s) selected", nullptr, 0 ) );
   }
   else
   {
@@ -4177,7 +4201,7 @@ void QgsProcessingFieldPanelWidget::updateSummaryText()
     if ( concatenated.length() < 100 )
       mLineEdit->setText( concatenated );
     else
-      mLineEdit->setText( tr( "%1 fields selected" ).arg( mValue.count() ) );
+      mLineEdit->setText( tr( "%n field(s) selected", nullptr, mValue.count() ) );
   }
 }
 
@@ -4405,7 +4429,7 @@ void QgsProcessingFieldWidgetWrapper::setParentLayerWrapperValue( const QgsAbstr
 
   QVariant value = parentWrapper->parameterValue();
 
-  if ( value.canConvert<QgsProcessingFeatureSourceDefinition>() )
+  if ( value.userType() == QMetaType::type( "QgsProcessingFeatureSourceDefinition" ) )
   {
     // input is a QgsProcessingFeatureSourceDefinition - source from it.
     // this is normally discouraged, and algorithms should NEVER do this -- but in this case we can make
@@ -4459,7 +4483,7 @@ void QgsProcessingFieldWidgetWrapper::setParentLayerWrapperValue( const QgsAbstr
     // need to grab ownership of layer if required - otherwise layer may be deleted when context
     // goes out of scope
     std::unique_ptr< QgsMapLayer > ownedLayer( context->takeResultLayer( layer->id() ) );
-    if ( ownedLayer && ownedLayer->type() == QgsMapLayerType::VectorLayer )
+    if ( ownedLayer && ownedLayer->type() == Qgis::LayerType::Vector )
     {
       mParentLayer.reset( qobject_cast< QgsVectorLayer * >( ownedLayer.release() ) );
       layer = mParentLayer.get();
@@ -5996,6 +6020,11 @@ QString QgsProcessingMapLayerWidgetWrapper::modelerExpressionFormatString() cons
   return tr( "path to a map layer" );
 }
 
+QgsProcessingModelChildParameterSource::Source QgsProcessingMapLayerWidgetWrapper::defaultModelSource( const QgsProcessingParameterDefinition * ) const
+{
+  return QgsProcessingModelChildParameterSource::ModelParameter;
+}
+
 QString QgsProcessingMapLayerWidgetWrapper::parameterType() const
 {
   return QgsProcessingParameterMapLayer::typeName();
@@ -6344,7 +6373,7 @@ QgsProcessingRasterBandPanelWidget::QgsProcessingRasterBandPanelWidget( QWidget 
 
   if ( mParam )
   {
-    mLineEdit->setText( tr( "%1 bands selected" ).arg( 0 ) );
+    mLineEdit->setText( tr( "%n band(s) selected", nullptr, 0 ) );
   }
 
   connect( mToolButton, &QToolButton::clicked, this, &QgsProcessingRasterBandPanelWidget::showDialog );
@@ -6374,7 +6403,6 @@ void QgsProcessingRasterBandPanelWidget::setValue( const QVariant &value )
 void QgsProcessingRasterBandPanelWidget::showDialog()
 {
   QVariantList availableOptions;
-  QStringList fieldNames;
   availableOptions.reserve( mBands.size() );
   for ( int band : std::as_const( mBands ) )
   {
@@ -6419,7 +6447,7 @@ void QgsProcessingRasterBandPanelWidget::showDialog()
 void QgsProcessingRasterBandPanelWidget::updateSummaryText()
 {
   if ( mParam )
-    mLineEdit->setText( tr( "%1 bands selected" ).arg( mValue.count() ) );
+    mLineEdit->setText( tr( "%n band(s) selected", nullptr, mValue.count() ) );
 }
 
 
@@ -6602,7 +6630,7 @@ void QgsProcessingBandWidgetWrapper::setParentLayerWrapperValue( const QgsAbstra
     // need to grab ownership of layer if required - otherwise layer may be deleted when context
     // goes out of scope
     std::unique_ptr< QgsMapLayer > ownedLayer( context->takeResultLayer( layer->id() ) );
-    if ( ownedLayer && ownedLayer->type() == QgsMapLayerType::RasterLayer )
+    if ( ownedLayer && ownedLayer->type() == Qgis::LayerType::Raster )
     {
       mParentLayer.reset( qobject_cast< QgsRasterLayer * >( ownedLayer.release() ) );
       layer = mParentLayer.get();
@@ -6793,7 +6821,7 @@ QgsProcessingMultipleLayerPanelWidget::QgsProcessingMultipleLayerPanelWidget( QW
 
   if ( mParam )
   {
-    mLineEdit->setText( tr( "%1 inputs selected" ).arg( 0 ) );
+    mLineEdit->setText( tr( "%n input(s) selected", nullptr, 0 ) );
   }
 
   connect( mToolButton, &QToolButton::clicked, this, &QgsProcessingMultipleLayerPanelWidget::showDialog );
@@ -7010,7 +7038,7 @@ void QgsProcessingMultipleLayerPanelWidget::showDialog()
 void QgsProcessingMultipleLayerPanelWidget::updateSummaryText()
 {
   if ( mParam )
-    mLineEdit->setText( tr( "%1 inputs selected" ).arg( mValue.count() ) );
+    mLineEdit->setText( tr( "%n input(s) selected", nullptr, mValue.count() ) );
 }
 
 //
@@ -7099,7 +7127,7 @@ void QgsProcessingMultipleLayerWidgetWrapper::setWidgetValue( const QVariant &va
 
     for ( const QVariant &v : value.toList() )
     {
-      if ( v.canConvert< QgsProcessingModelChildParameterSource >() )
+      if ( v.userType() == QMetaType::type( "QgsProcessingModelChildParameterSource" ) )
       {
         const QgsProcessingModelChildParameterSource source = v.value< QgsProcessingModelChildParameterSource >();
         opts << QVariant::fromValue( source );
@@ -7326,7 +7354,7 @@ void QgsProcessingAnnotationLayerWidgetWrapper::setWidgetValue( const QVariant &
     }
 
     QVariant val = value;
-    if ( val.canConvert<QgsProperty>() )
+    if ( val.userType() == QMetaType::type( "QgsProperty" ) )
     {
       if ( val.value< QgsProperty >().propertyType() == QgsProperty::StaticProperty )
       {

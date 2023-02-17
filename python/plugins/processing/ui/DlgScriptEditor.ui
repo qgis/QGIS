@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>721</width>
+    <width>600</width>
     <height>578</height>
    </rect>
   </property>
@@ -120,6 +120,8 @@
    <addaction name="separator"/>
    <addaction name="actionIncreaseFontSize"/>
    <addaction name="actionDecreaseFontSize"/>
+   <addaction name="separator"/>
+   <addaction name="actionToggleComment"/>
   </widget>
   <action name="actionOpenScript">
    <property name="text">
@@ -240,11 +242,16 @@
    <property name="checkable">
     <bool>true</bool>
    </property>
+   <property name="text">
+    <string>Find &amp;&amp; &amp;Replace</string>
+   </property>
    <property name="shortcut">
     <string>Ctrl+F</string>
    </property>
+  </action>
+  <action name="actionToggleComment">
    <property name="text">
-    <string>Find &amp;&amp; &amp;Replace</string>
+    <string>Toggle Comment</string>
    </property>
   </action>
  </widget>

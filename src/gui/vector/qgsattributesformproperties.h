@@ -92,6 +92,16 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpress
       QString htmlCode;
     };
 
+    struct TextElementEditorConfiguration
+    {
+      QString text;
+    };
+
+    struct SpacerElementEditorConfiguration
+    {
+      bool drawLine = false;
+    };
+
     /**
      * \ingroup gui
      * \class DnDTreeItemData
@@ -107,7 +117,9 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpress
           QmlWidget,
           HtmlWidget,
           WidgetType, //!< In the widget tree, the type of widget
-          Action //!< Layer action
+          Action, //!< Layer action
+          TextWidget, //!< Text widget type, \since QGIS 3.30
+          SpacerWidget, //!< Spacer widget type, \since QGIS 3.30
         };
 
         //do we need that
@@ -137,11 +149,71 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpress
         bool showAsGroupBox() const;
         void setShowAsGroupBox( bool showAsGroupBox );
 
+        /**
+         * For group box containers  returns if this group box is collapsed.
+         *
+         * \returns TRUE if the group box is collapsed, FALSE otherwise.
+         * \see collapsed()
+         * \see setCollapsed()
+         * \since QGIS 3.26
+         */
+        bool collapsed() const { return mCollapsed; };
+
+        /**
+         * For group box containers  sets if this group box is \a collapsed.
+         *
+         * \see collapsed()
+         * \see setCollapsed()
+         * \since QGIS 3.26
+         */
+        void setCollapsed( bool collapsed ) { mCollapsed = collapsed; };
+
+        /**
+         * Returns the label style.
+         * \see setLabelStyle()
+         * \since QGIS 3.26
+         */
+        const QgsAttributeEditorElement::LabelStyle labelStyle() const;
+
+        /**
+         * Sets the label style to \a labelStyle.
+         * \see labelStyle()
+         * \since QGIS 3.26
+         */
+        void setLabelStyle( const QgsAttributeEditorElement::LabelStyle &labelStyle );
+
         bool showLabel() const;
         void setShowLabel( bool showLabel );
 
         QgsOptionalExpression visibilityExpression() const;
+
+        /**
+         * Sets the optional \a visibilityExpression that dynamically controls the visibility status of a container.
+         *
+         * \see visibilityExpression()
+         * \since QGIS 3.26
+         */
         void setVisibilityExpression( const QgsOptionalExpression &visibilityExpression );
+
+        /**
+         * Returns the optional expression that dynamically controls the collapsed status of a group box container.
+         *
+         * \see collapsed()
+         * \see setCollapsed()
+         * \see setCollapsedExpression()
+         * \since QGIS 3.26
+         */
+        QgsOptionalExpression collapsedExpression() const;
+
+        /**
+         * Sets the optional \a collapsedExpression that dynamically controls the collapsed status of a group box container.
+         *
+         * \see collapsed()
+         * \see setCollapsed()
+         * \see collapsedExpression()
+         * \since QGIS 3.26
+         */
+        void setCollapsedExpression( const QgsOptionalExpression &collapsedExpression );
 
         RelationEditorConfiguration relationEditorConfiguration() const;
         void setRelationEditorConfiguration( RelationEditorConfiguration relationEditorConfiguration );
@@ -152,8 +224,32 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpress
         HtmlElementEditorConfiguration htmlElementEditorConfiguration() const;
         void setHtmlElementEditorConfiguration( HtmlElementEditorConfiguration htmlElementEditorConfiguration );
 
+        /**
+         * Returns the spacer element configuration
+         * \since QGIS 3.30
+         */
+        SpacerElementEditorConfiguration spacerElementEditorConfiguration() const;
+
+        /**
+         * Sets the the spacer element configuration to \a spacerElementEditorConfiguration
+         * \since QGIS 3.30
+         */
+        void setSpacerElementEditorConfiguration( SpacerElementEditorConfiguration spacerElementEditorConfiguration );
+
         QColor backgroundColor() const;
         void setBackgroundColor( const QColor &backgroundColor );
+
+        /**
+         * Returns the editor configuration for text element.
+         * \since QGIS 3.30
+         */
+        TextElementEditorConfiguration textElementEditorConfiguration() const;
+
+        /**
+         * Sets the editor configuration for text element to \a textElementEditorConfiguration.
+         * \since QGIS 3.30
+         */
+        void setTextElementEditorConfiguration( const TextElementEditorConfiguration &textElementEditorConfiguration );
 
       private:
         Type mType = Field;
@@ -166,7 +262,12 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpress
         RelationEditorConfiguration mRelationEditorConfiguration;
         QmlElementEditorConfiguration mQmlElementEditorConfiguration;
         HtmlElementEditorConfiguration mHtmlElementEditorConfiguration;
+        TextElementEditorConfiguration mTextElementEditorConfiguration;
+        SpacerElementEditorConfiguration mSpacerElementEditorConfiguration;
         QColor mBackgroundColor;
+        bool mCollapsed = false;
+        QgsOptionalExpression mCollapsedExpression;
+        QgsAttributeEditorElement::LabelStyle mLabelStyle;
     };
 
 
@@ -248,12 +349,12 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpress
 
     void loadInfoWidget( const QString &infoText );
 
+    QTreeWidgetItem *loadAttributeEditorTreeItem( QgsAttributeEditorElement *widgetDef, QTreeWidgetItem *parent, QgsAttributesDnDTree *tree );
+
     QgsEditFormConfig::PythonInitCodeSource mInitCodeSource = QgsEditFormConfig::CodeSourceNone;
     QString mInitFunction;
     QString mInitFilePath;
     QString mInitCode;
-
-    QTreeWidgetItem *loadAttributeEditorTreeItem( QgsAttributeEditorElement *widgetDef, QTreeWidgetItem *parent, QgsAttributesDnDTree *tree );
 
   private slots:
     void addTabOrGroupButton();
@@ -279,7 +380,7 @@ QDataStream &operator>> ( QDataStream &stream, QgsAttributesFormProperties::DnDT
  *
  * Graphical representation for the attribute editor drag and drop editor
  */
-class GUI_EXPORT QgsAttributesDnDTree : public QTreeWidget
+class GUI_EXPORT QgsAttributesDnDTree : public QTreeWidget, private QgsExpressionContextGenerator
 {
     Q_OBJECT
 
@@ -328,6 +429,10 @@ class GUI_EXPORT QgsAttributesDnDTree : public QTreeWidget
   private:
     QgsVectorLayer *mLayer = nullptr;
     Type mType = QgsAttributesDnDTree::Type::Drag;
+
+    // QgsExpressionContextGenerator interface
+  public:
+    QgsExpressionContext createExpressionContext() const override;
 };
 
 

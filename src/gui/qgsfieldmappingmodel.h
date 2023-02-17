@@ -23,6 +23,7 @@
 #include "qgsexpressioncontextgenerator.h"
 #include "qgsfieldconstraints.h"
 #include "qgsproperty.h"
+#include "qgsvectordataprovider.h"
 #include "qgis_gui.h"
 
 
@@ -50,7 +51,7 @@ class GUI_EXPORT QgsFieldMappingModel: public QAbstractTableModel
     {
       SourceExpression,       //!< Expression
       DestinationName,        //!< Destination field name
-      DestinationType,        //!< Destination field QVariant::Type casted to (int)
+      DestinationType,        //!< Destination field type string
       DestinationLength,      //!< Destination field length
       DestinationPrecision,   //!< Destination field precision
       DestinationConstraints, //!< Destination field constraints
@@ -89,8 +90,17 @@ class GUI_EXPORT QgsFieldMappingModel: public QAbstractTableModel
     //! Sets the destination fields editable state to \a editable
     void setDestinationEditable( bool editable );
 
-    //! Returns a static map of supported data types
-    static const QMap<QVariant::Type, QString> dataTypes();
+    /**
+     * Returns a static map of supported data types
+     * \deprecated QGIS 3.24 use supportedDataTypes() instead
+     */
+    Q_DECL_DEPRECATED static const QMap<QVariant::Type, QString> dataTypes();
+
+    /**
+     * Returns a static list of supported data types
+     * \since QGIS 3.24
+     */
+    static const QList<QgsVectorDataProvider::NativeType> supportedDataTypes();
 
     //! Returns a list of source fields
     QgsFields sourceFields() const;
@@ -145,6 +155,7 @@ class GUI_EXPORT QgsFieldMappingModel: public QAbstractTableModel
     void setDestinationFields( const QgsFields &destinationFields,
                                const QMap<QString, QString> &expressions = QMap<QString, QString>() );
 
+
     // QAbstractItemModel interface
     int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
     int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
@@ -177,6 +188,18 @@ class GUI_EXPORT QgsFieldMappingModel: public QAbstractTableModel
 
 
     QgsFieldConstraints::Constraints fieldConstraints( const QgsField &field ) const;
+
+    /**
+     * Returns the field type name matching the \a field settings.
+     * \since QGIS 3.24
+     */
+    static const QString qgsFieldToTypeName( const QgsField &field );
+
+    /**
+     * Sets the \a field type and subtype based on the type \a name provided.
+     * \since QGIS 3.24
+     */
+    static void setFieldTypeFromName( QgsField &field, const QString &name );
 
     bool moveUpOrDown( const QModelIndex &index, bool up = true );
 

@@ -575,6 +575,8 @@ void TestQgsProperty::expressionBasedProperty()
   QVERIFY( property.referencedFields( context ).isEmpty() );
   // unset expression
   QgsProperty defaultProperty = QgsProperty::fromExpression( QString() );
+  // an invalid expression (empty string) should return an invalid property
+  QCOMPARE( defaultProperty.propertyType(), QgsProperty::InvalidProperty );
   QCOMPARE( defaultProperty.value( context, -1 ).toInt(), -1 );
   QVERIFY( defaultProperty.referencedFields( context ).isEmpty() );
   defaultProperty.setActive( true );

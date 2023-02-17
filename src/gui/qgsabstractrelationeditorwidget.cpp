@@ -227,21 +227,28 @@ QgsFeatureIds QgsAbstractRelationEditorWidget::addFeature( const QgsGeometry &ge
   QgsFeatureIds addedFeatureIds;
 
   // For generated relations insert the referenced layer field
-  if ( mRelation.type() == QgsRelation::Generated )
+  switch ( mRelation.type() )
   {
-    const QgsPolymorphicRelation polyRel = mRelation.polymorphicRelation();
-    keyAttrs.insert( fields.indexFromName( polyRel.referencedLayerField() ), polyRel.layerRepresentation( mRelation.referencedLayer() ) );
+    case Qgis::RelationshipType::Generated:
+    {
+      const QgsPolymorphicRelation polyRel = mRelation.polymorphicRelation();
+      keyAttrs.insert( fields.indexFromName( polyRel.referencedLayerField() ), polyRel.layerRepresentation( mRelation.referencedLayer() ) );
+      break;
+    }
+
+    case Qgis::RelationshipType::Normal:
+      break;
   }
 
   if ( mNmRelation.isValid() )
   {
     // only normal relations support m:n relation
-    Q_ASSERT( mNmRelation.type() == QgsRelation::Normal );
+    Q_ASSERT( mNmRelation.type() == Qgis::RelationshipType::Normal );
 
     // n:m Relation: first let the user create a new feature on the other table
     // and autocreate a new linking feature.
     QgsFeature finalFeature;
-    if ( !vlTools->addFeature( mNmRelation.referencedLayer(), QgsAttributeMap(), geometry, &finalFeature ) )
+    if ( !vlTools->addFeature( mNmRelation.referencedLayer(), QgsAttributeMap(), geometry, &finalFeature, this, false, true ) )
       return QgsFeatureIds();
 
     addedFeatureIds.insert( finalFeature.id() );
@@ -280,7 +287,7 @@ QgsFeatureIds QgsAbstractRelationEditorWidget::addFeature( const QgsGeometry &ge
       keyAttrs.insert( fields.indexFromName( fieldPair.referencingField() ), mFeatureList.first().attribute( fieldPair.referencedField() ) );
 
     QgsFeature linkFeature;
-    if ( !vlTools->addFeature( mRelation.referencingLayer(), keyAttrs, geometry, &linkFeature ) )
+    if ( !vlTools->addFeature( mRelation.referencingLayer(), keyAttrs, geometry, &linkFeature, this, false, true ) )
       return QgsFeatureIds();
 
     addedFeatureIds.insert( linkFeature.id() );
@@ -322,7 +329,7 @@ void QgsAbstractRelationEditorWidget::deleteFeatures( const QgsFeatureIds &fids 
   if ( mNmRelation.isValid() )
   {
     // only normal relations support m:n relation
-    Q_ASSERT( mNmRelation.type() == QgsRelation::Normal );
+    Q_ASSERT( mNmRelation.type() == Qgis::RelationshipType::Normal );
 
     layer = mNmRelation.referencedLayer();
 
@@ -399,7 +406,7 @@ void QgsAbstractRelationEditorWidget::deleteFeatures( const QgsFeatureIds &fids 
     for ( QgsVectorLayer *chl : infoContextLayers )
     {
       childrenCount += infoContext.duplicatedFeatures( chl ).size();
-      childrenInfo += ( tr( "%1 feature(s) on layer \"%2\", " ).arg( infoContext.duplicatedFeatures( chl ).size() ).arg( chl->name() ) );
+      childrenInfo += ( tr( "%n feature(s) on layer \"%1\", ", nullptr, infoContext.duplicatedFeatures( chl ).size() ).arg( chl->name() ) );
     }
 
     // for extra safety to make sure we know that the delete can have impact on children and joins
@@ -424,7 +431,7 @@ void QgsAbstractRelationEditorWidget::deleteFeatures( const QgsFeatureIds &fids 
         feedbackMessage += tr( "%1 on layer %2. " ).arg( context.handledFeatures( contextLayer ).size() ).arg( contextLayer->name() );
         deletedCount += context.handledFeatures( contextLayer ).size();
       }
-      mEditorContext.mainMessageBar()->pushMessage( tr( "%1 features deleted: %2" ).arg( deletedCount ).arg( feedbackMessage ), Qgis::MessageLevel::Success );
+      mEditorContext.mainMessageBar()->pushMessage( tr( "%n feature(s) deleted: %2", nullptr, deletedCount ).arg( feedbackMessage ), Qgis::MessageLevel::Success );
     }
 
     updateUi();
@@ -440,7 +447,7 @@ void QgsAbstractRelationEditorWidget::linkFeature()
   if ( mNmRelation.isValid() )
   {
     // only normal relations support m:n relation
-    Q_ASSERT( mNmRelation.type() == QgsRelation::Normal );
+    Q_ASSERT( mNmRelation.type() == Qgis::RelationshipType::Normal );
 
     layer = mNmRelation.referencedLayer();
   }
@@ -472,20 +479,26 @@ void QgsAbstractRelationEditorWidget::onLinkFeatureDlgAccepted()
   if ( mNmRelation.isValid() )
   {
     // only normal relations support m:n relation
-    Q_ASSERT( mNmRelation.type() == QgsRelation::Normal );
+    Q_ASSERT( mNmRelation.type() == Qgis::RelationshipType::Normal );
 
     // Fields of the linking table
     const QgsFields fields = mRelation.referencingLayer()->fields();
 
     QgsAttributeMap linkAttributes;
 
-    if ( mRelation.type() == QgsRelation::Generated )
+    switch ( mRelation.type() )
     {
-      const QgsPolymorphicRelation polyRel = mRelation.polymorphicRelation();
-      Q_ASSERT( polyRel.isValid() );
+      case Qgis::RelationshipType::Generated:
+      {
+        const QgsPolymorphicRelation polyRel = mRelation.polymorphicRelation();
+        Q_ASSERT( polyRel.isValid() );
 
-      linkAttributes.insert( fields.indexFromName( polyRel.referencedLayerField() ),
-                             polyRel.layerRepresentation( mRelation.referencedLayer() ) );
+        linkAttributes.insert( fields.indexFromName( polyRel.referencedLayerField() ),
+                               polyRel.layerRepresentation( mRelation.referencedLayer() ) );
+        break;
+      }
+      case Qgis::RelationshipType::Normal:
+        break;
     }
 
     QgsVectorLayerUtils::QgsFeaturesDataList linkFeatureDataList;
@@ -551,15 +564,21 @@ void QgsAbstractRelationEditorWidget::onLinkFeatureDlgAccepted()
     for ( const QgsFeatureId fid : constSelectedFeatures )
     {
       QgsVectorLayer *referencingLayer = mRelation.referencingLayer();
-      if ( mRelation.type() == QgsRelation::Generated )
+      switch ( mRelation.type() )
       {
-        const QgsPolymorphicRelation polyRel = mRelation.polymorphicRelation();
+        case Qgis::RelationshipType::Generated:
+        {
+          const QgsPolymorphicRelation polyRel = mRelation.polymorphicRelation();
 
-        Q_ASSERT( polyRel.isValid() );
+          Q_ASSERT( polyRel.isValid() );
 
-        mRelation.referencingLayer()->changeAttributeValue( fid,
-            referencingLayer->fields().indexFromName( polyRel.referencedLayerField() ),
-            polyRel.layerRepresentation( mRelation.referencedLayer() ) );
+          mRelation.referencingLayer()->changeAttributeValue( fid,
+              referencingLayer->fields().indexFromName( polyRel.referencedLayerField() ),
+              polyRel.layerRepresentation( mRelation.referencedLayer() ) );
+          break;
+        }
+        case Qgis::RelationshipType::Normal:
+          break;
       }
 
       QMapIterator<int, QVariant> it( keys );
@@ -586,7 +605,7 @@ void QgsAbstractRelationEditorWidget::unlinkFeatures( const QgsFeatureIds &fids 
   if ( mNmRelation.isValid() )
   {
     // only normal relations support m:n relation
-    Q_ASSERT( mNmRelation.type() == QgsRelation::Normal );
+    Q_ASSERT( mNmRelation.type() == Qgis::RelationshipType::Normal );
 
     QgsFeatureIterator selectedIterator = mNmRelation.referencedLayer()->getFeatures(
                                             QgsFeatureRequest()
@@ -646,15 +665,21 @@ void QgsAbstractRelationEditorWidget::unlinkFeatures( const QgsFeatureIds &fids 
     for ( const QgsFeatureId fid : constFeatureids )
     {
       QgsVectorLayer *referencingLayer = mRelation.referencingLayer();
-      if ( mRelation.type() == QgsRelation::Generated )
+      switch ( mRelation.type() )
       {
-        const QgsPolymorphicRelation polyRel = mRelation.polymorphicRelation();
+        case Qgis::RelationshipType::Generated:
+        {
+          const QgsPolymorphicRelation polyRel = mRelation.polymorphicRelation();
 
-        Q_ASSERT( mRelation.polymorphicRelation().isValid() );
+          Q_ASSERT( mRelation.polymorphicRelation().isValid() );
 
-        mRelation.referencingLayer()->changeAttributeValue( fid,
-            referencingLayer->fields().indexFromName( polyRel.referencedLayerField() ),
-            referencingLayer->fields().field( polyRel.referencedLayerField() ).type() );
+          mRelation.referencingLayer()->changeAttributeValue( fid,
+              referencingLayer->fields().indexFromName( polyRel.referencedLayerField() ),
+              referencingLayer->fields().field( polyRel.referencedLayerField() ).type() );
+          break;
+        }
+        case Qgis::RelationshipType::Normal:
+          break;
       }
 
       QMapIterator<int, QgsField> it( keyFields );

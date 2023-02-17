@@ -1,0 +1,131 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/raster/qgsrasterlayerelevationproperties.h                  *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsRasterLayerElevationProperties : QgsMapLayerElevationProperties
+{
+%Docstring(signature="appended")
+Raster layer specific subclass of :py:class:`QgsMapLayerElevationProperties`.
+
+.. versionadded:: 3.26
+%End
+
+%TypeHeaderCode
+#include "qgsrasterlayerelevationproperties.h"
+%End
+  public:
+
+    QgsRasterLayerElevationProperties( QObject *parent /TransferThis/ );
+%Docstring
+Constructor for QgsRasterLayerElevationProperties, with the specified ``parent`` object.
+%End
+    ~QgsRasterLayerElevationProperties();
+
+    virtual bool hasElevation() const;
+
+    virtual QDomElement writeXml( QDomElement &element, QDomDocument &doc, const QgsReadWriteContext &context );
+
+    virtual bool readXml( const QDomElement &element, const QgsReadWriteContext &context );
+
+    virtual QgsRasterLayerElevationProperties *clone() const /Factory/;
+
+    virtual QString htmlSummary() const;
+
+    virtual bool isVisibleInZRange( const QgsDoubleRange &range ) const;
+
+    virtual QgsDoubleRange calculateZRange( QgsMapLayer *layer ) const;
+
+    virtual bool showByDefaultInElevationProfilePlots() const;
+
+
+    bool isEnabled() const;
+%Docstring
+Returns ``True`` if the elevation properties are enabled, i.e. the raster layer values represent an elevation surface.
+
+.. seealso:: :py:func:`setEnabled`
+%End
+
+    void setEnabled( bool enabled );
+%Docstring
+Sets whether the elevation properties are enabled, i.e. the raster layer values represent an elevation surface.
+
+.. seealso:: :py:func:`isEnabled`
+%End
+
+    int bandNumber() const;
+%Docstring
+Returns the band number from which the elevation should be taken.
+
+.. seealso:: :py:func:`setBandNumber`
+%End
+
+    void setBandNumber( int band );
+%Docstring
+Sets the ``band`` number from which the elevation should be taken.
+
+.. seealso:: :py:func:`bandNumber`
+%End
+
+    QgsLineSymbol *profileLineSymbol() const;
+%Docstring
+Returns the line symbol used to render the raster profile in elevation profile plots.
+
+.. seealso:: :py:func:`setProfileLineSymbol`
+%End
+
+    void setProfileLineSymbol( QgsLineSymbol *symbol /Transfer/ );
+%Docstring
+Sets the line ``symbol`` used to render the raster profile in elevation profile plots.
+
+Ownership of ``symbol`` is transferred to the plot.
+
+.. seealso:: :py:func:`profileLineSymbol`
+%End
+
+    QgsFillSymbol *profileFillSymbol() const;
+%Docstring
+Returns the fill symbol used to render the raster profile in elevation profile plots.
+
+.. seealso:: :py:func:`setProfileFillSymbol`
+%End
+
+    void setProfileFillSymbol( QgsFillSymbol *symbol /Transfer/ );
+%Docstring
+Sets the fill ``symbol`` used to render the raster profile in elevation profile plots.
+
+Ownership of ``symbol`` is transferred to the plot.
+
+.. seealso:: :py:func:`profileFillSymbol`
+%End
+
+    Qgis::ProfileSurfaceSymbology profileSymbology() const;
+%Docstring
+Returns the symbology option used to render the raster profile in elevation profile plots.
+
+.. seealso:: :py:func:`setProfileSymbology`
+%End
+
+    void setProfileSymbology( Qgis::ProfileSurfaceSymbology symbology );
+%Docstring
+Sets the ``symbology`` option used to render the raster profile in elevation profile plots.
+
+.. seealso:: :py:func:`setProfileSymbology`
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/raster/qgsrasterlayerelevationproperties.h                  *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

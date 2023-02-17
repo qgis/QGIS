@@ -4,11 +4,23 @@
   "groups": ["Math"],
   "description": "Returns the largest value in a set of values.",
   "variableLenArguments": true,
-  "arguments": [
-	{"arg":"value1", "syntaxOnly": true},
-	{"arg":"value2", "syntaxOnly": true},
-	{"arg":"value", "descOnly": true, "description":"a number"}],
-  "examples": [
-    { "expression":"max(2,10.2,5.5)", "returns":"10.2"},
-    { "expression":"max(20.5,NULL,6.2)", "returns":"20.5"}]
+  "arguments": [{
+    "arg": "value1",
+    "syntaxOnly": true
+  }, {
+    "arg": "value2",
+    "syntaxOnly": true
+  }, {
+    "arg": "value",
+    "descOnly": true,
+    "description": "a number"
+  }],
+  "examples": [{
+    "expression": "max(2,10.2,5.5)",
+    "returns": "10.2"
+  }, {
+    "expression": "max(20.5,NULL,6.2)",
+    "returns": "20.5"
+  }],
+  "tags": ["longest", "biggest", "most", "largest", "maximum"]
 }

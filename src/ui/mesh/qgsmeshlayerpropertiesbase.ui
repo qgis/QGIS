@@ -261,7 +261,7 @@
                 <x>0</x>
                 <y>0</y>
                 <width>661</width>
-                <height>508</height>
+                <height>506</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -335,7 +335,7 @@
                  <property name="checkable">
                   <bool>false</bool>
                  </property>
-                 <property name="syncGroup" stdset="0">
+                 <property name="syncGroup">
                   <string notr="true">vectorgeneral</string>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_28">
@@ -343,7 +343,7 @@
                    <number>6</number>
                   </property>
                   <item>
-                   <widget class="QgsProjectionSelectionWidget" name="mCrsSelector" native="true">
+                   <widget class="QgsProjectionSelectionWidget" name="mCrsSelector">
                     <property name="focusPolicy">
                      <enum>Qt::StrongFocus</enum>
                     </property>
@@ -400,19 +400,6 @@
                  </layout>
                 </widget>
                </item>
-               <item>
-                <spacer name="verticalSpacer_3">
-                 <property name="orientation">
-                  <enum>Qt::Vertical</enum>
-                 </property>
-                 <property name="sizeHint" stdset="0">
-                  <size>
-                   <width>20</width>
-                   <height>0</height>
-                  </size>
-                 </property>
-                </spacer>
-               </item>
               </layout>
              </widget>
             </widget>
@@ -447,7 +434,7 @@
                 <x>0</x>
                 <y>0</y>
                 <width>661</width>
-                <height>508</height>
+                <height>506</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_10">
@@ -484,6 +471,49 @@
             <number>0</number>
            </property>
            <item>
+            <widget class="QgsCollapsibleGroupBox" name="chkUseScaleDependentRendering">
+             <property name="title">
+              <string>Scale Dependent Visibility</string>
+             </property>
+             <property name="checkable">
+              <bool>true</bool>
+             </property>
+             <property name="checked">
+              <bool>false</bool>
+             </property>
+             <property name="syncGroup">
+              <string notr="true">rastergeneral</string>
+             </property>
+             <layout class="QGridLayout" name="_5">
+              <property name="leftMargin">
+               <number>11</number>
+              </property>
+              <property name="topMargin">
+               <number>11</number>
+              </property>
+              <property name="rightMargin">
+               <number>11</number>
+              </property>
+              <property name="bottomMargin">
+               <number>11</number>
+              </property>
+              <property name="verticalSpacing">
+               <number>6</number>
+              </property>
+              <item row="0" column="0" colspan="2">
+               <widget class="QgsScaleRangeWidget" name="mScaleRangeWidget">
+                <property name="toolTip">
+                 <string/>
+                </property>
+                <property name="whatsThis">
+                 <string/>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item>
             <widget class="QgsCollapsibleGroupBox" name="mSimplifyMeshGroupBox">
              <property name="title">
               <string>Simplify Mesh</string>
@@ -505,14 +535,14 @@
               <item row="1" column="0">
                <widget class="QLabel" name="label_2">
                 <property name="text">
-                 <string>Maximal mesh resolution</string>
+                 <string>Minimum triangle size</string>
                 </property>
                </widget>
               </item>
               <item row="1" column="2">
                <widget class="QgsSpinBox" name="mSimplifyMeshResolutionSpinBox">
                 <property name="suffix">
-                 <string> pixels/triangle</string>
+                 <string> pixels</string>
                 </property>
                 <property name="minimum">
                  <number>1</number>
@@ -615,10 +645,10 @@
               <string>Layer Temporal Settings</string>
              </property>
              <layout class="QGridLayout" name="gridLayout_4">
-              <item row="0" column="0">
-               <widget class="QLabel" name="label_3">
+              <item row="3" column="0">
+               <widget class="QLabel" name="label_6">
                 <property name="text">
-                 <string>Reference time</string>
+                 <string>Start time</string>
                 </property>
                </widget>
               </item>
@@ -635,54 +665,14 @@
                 </property>
                </widget>
               </item>
-              <item row="0" column="2">
-               <widget class="QPushButton" name="mTemporalReloadButton">
-                <property name="maximumSize">
-                 <size>
-                  <width>24</width>
-                  <height>24</height>
-                 </size>
-                </property>
+              <item row="6" column="1" colspan="2">
+               <widget class="QComboBox" name="mComboBoxTemporalDatasetMatchingMethod">
                 <property name="toolTip">
-                 <string>Reload from provider</string>
-                </property>
-                <property name="text">
-                 <string/>
-                </property>
-                <property name="icon">
-                 <iconset resource="../../../images/images.qrc">
-                  <normaloff>:/images/themes/default/mActionRefresh.svg</normaloff>:/images/themes/default/mActionRefresh.svg</iconset>
+                 <string>Method for selection of temporal mesh dataset from a range time</string>
                 </property>
                </widget>
               </item>
-              <item row="1" column="0">
-               <widget class="QLabel" name="label_6">
-                <property name="text">
-                 <string>Start time</string>
-                </property>
-               </widget>
-              </item>
-              <item row="1" column="1" colspan="2">
-               <widget class="QDateTimeEdit" name="mTemporalDateTimeStart">
-                <property name="enabled">
-                 <bool>false</bool>
-                </property>
-                <property name="readOnly">
-                 <bool>true</bool>
-                </property>
-                <property name="buttonSymbols">
-                 <enum>QAbstractSpinBox::NoButtons</enum>
-                </property>
-               </widget>
-              </item>
-              <item row="2" column="0">
-               <widget class="QLabel" name="label_4">
-                <property name="text">
-                 <string>End time</string>
-                </property>
-               </widget>
-              </item>
-              <item row="2" column="1" colspan="2">
+              <item row="4" column="1" colspan="2">
                <widget class="QDateTimeEdit" name="mTemporalDateTimeEnd">
                 <property name="enabled">
                  <bool>false</bool>
@@ -710,17 +700,64 @@
                 </property>
                </widget>
               </item>
-              <item row="3" column="0">
+              <item row="6" column="0">
                <widget class="QLabel" name="label_10">
                 <property name="text">
                  <string>Dataset matching method</string>
                 </property>
                </widget>
               </item>
+              <item row="0" column="0">
+               <widget class="QLabel" name="label_3">
+                <property name="text">
+                 <string>Reference time</string>
+                </property>
+               </widget>
+              </item>
+              <item row="4" column="0">
+               <widget class="QLabel" name="label_4">
+                <property name="text">
+                 <string>End time</string>
+                </property>
+               </widget>
+              </item>
               <item row="3" column="1" colspan="2">
-               <widget class="QComboBox" name="mComboBoxTemporalDatasetMatchingMethod">
+               <widget class="QDateTimeEdit" name="mTemporalDateTimeStart">
+                <property name="enabled">
+                 <bool>false</bool>
+                </property>
+                <property name="readOnly">
+                 <bool>true</bool>
+                </property>
+                <property name="buttonSymbols">
+                 <enum>QAbstractSpinBox::NoButtons</enum>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="2">
+               <widget class="QPushButton" name="mTemporalReloadButton">
+                <property name="maximumSize">
+                 <size>
+                  <width>24</width>
+                  <height>24</height>
+                 </size>
+                </property>
                 <property name="toolTip">
-                 <string>Method for selection of temporal mesh dataset from a range time</string>
+                 <string>Reload from provider</string>
+                </property>
+                <property name="text">
+                 <string/>
+                </property>
+                <property name="icon">
+                 <iconset resource="../../../images/images.qrc">
+                  <normaloff>:/images/themes/default/mActionRefresh.svg</normaloff>:/images/themes/default/mActionRefresh.svg</iconset>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="1" colspan="2">
+               <widget class="QCheckBox" name="mAlwaysTimeFromSourceCheckBox">
+                <property name="text">
+                 <string>Always take reference time from data source</string>
                 </property>
                </widget>
               </item>
@@ -824,11 +861,6 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsSpinBox</class>
-   <extends>QSpinBox</extends>
-   <header>qgsspinbox.h</header>
-  </customwidget>
-  <customwidget>
    <class>QgsDoubleSpinBox</class>
    <extends>QDoubleSpinBox</extends>
    <header>qgsdoublespinbox.h</header>
@@ -843,6 +875,16 @@
    <extends>QWidget</extends>
    <header>qgsprojectionselectionwidget.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsScaleRangeWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsscalerangewidget.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsSpinBox</class>
+   <extends>QSpinBox</extends>
+   <header>qgsspinbox.h</header>
   </customwidget>
   <customwidget>
    <class>QgsScrollArea</class>
@@ -879,17 +921,20 @@
   <tabstop>mCrsSelector</tabstop>
   <tabstop>mStaticDatasetGroupBox</tabstop>
   <tabstop>scrollArea</tabstop>
+  <tabstop>chkUseScaleDependentRendering</tabstop>
   <tabstop>mSimplifyMeshGroupBox</tabstop>
   <tabstop>mSimplifyReductionFactorSpinBox</tabstop>
   <tabstop>mSimplifyMeshResolutionSpinBox</tabstop>
   <tabstop>mTemporalDateTimeReference</tabstop>
   <tabstop>mTemporalReloadButton</tabstop>
+  <tabstop>mAlwaysTimeFromSourceCheckBox</tabstop>
   <tabstop>mTemporalDateTimeStart</tabstop>
   <tabstop>mTemporalDateTimeEnd</tabstop>
   <tabstop>mComboBoxTemporalDatasetMatchingMethod</tabstop>
   <tabstop>mTemporalProviderTimeUnitComboBox</tabstop>
  </tabstops>
  <resources>
+  <include location="../../../images/images.qrc"/>
   <include location="../../../images/images.qrc"/>
  </resources>
  <connections>

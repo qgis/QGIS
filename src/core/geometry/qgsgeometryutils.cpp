@@ -239,6 +239,22 @@ double QgsGeometryUtils::sqrDistToLine( double ptX, double ptY, double x1, doubl
   return dist;
 }
 
+double QgsGeometryUtils::distToInfiniteLine( const QgsPoint &point, const QgsPoint &linePoint1, const QgsPoint &linePoint2, double epsilon )
+{
+  const double area = std::abs(
+                        ( linePoint1.x() - linePoint2.x() ) * ( point.y() - linePoint2.y() ) -
+                        ( linePoint1.y() - linePoint2.y() ) * ( point.x() - linePoint2.x() )
+                      );
+
+  const double length = std::sqrt(
+                          std::pow( linePoint1.x() - linePoint2.x(), 2 ) +
+                          std::pow( linePoint1.y() - linePoint2.y(), 2 )
+                        );
+
+  const double distance = area / length;
+  return qgsDoubleNear( distance, 0.0, epsilon ) ? 0.0 : distance;
+}
+
 bool QgsGeometryUtils::lineIntersection( const QgsPoint &p1, QgsVector v1, const QgsPoint &p2, QgsVector v2, QgsPoint &intersection )
 {
   const double d = v1.y() * v2.x() - v1.x() * v2.y();
@@ -1200,7 +1216,7 @@ QgsPointSequence QgsGeometryUtils::pointsFromWKT( const QString &wktCoordinateLi
   return points;
 }
 
-void QgsGeometryUtils::pointsToWKB( QgsWkbPtr &wkb, const QgsPointSequence &points, bool is3D, bool isMeasure )
+void QgsGeometryUtils::pointsToWKB( QgsWkbPtr &wkb, const QgsPointSequence &points, bool is3D, bool isMeasure, QgsAbstractGeometry::WkbFlags flags )
 {
   wkb << static_cast<quint32>( points.size() );
   for ( const QgsPoint &point : points )
@@ -1208,11 +1224,21 @@ void QgsGeometryUtils::pointsToWKB( QgsWkbPtr &wkb, const QgsPointSequence &poin
     wkb << point.x() << point.y();
     if ( is3D )
     {
-      wkb << point.z();
+      double z = point.z();
+      if ( flags & QgsAbstractGeometry::FlagExportNanAsDoubleMin
+           && std::isnan( z ) )
+        z = -std::numeric_limits<double>::max();
+
+      wkb << z;
     }
     if ( isMeasure )
     {
-      wkb << point.m();
+      double m = point.m();
+      if ( flags & QgsAbstractGeometry::FlagExportNanAsDoubleMin
+           && std::isnan( m ) )
+        m = -std::numeric_limits<double>::max();
+
+      wkb << m;
     }
   }
 }

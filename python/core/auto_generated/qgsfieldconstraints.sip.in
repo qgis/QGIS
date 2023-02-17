@@ -141,6 +141,24 @@ can also be set. Setting an empty expression will clear any existing expression 
 .. seealso:: :py:func:`constraints`
 %End
 
+    QString domainName() const;
+%Docstring
+Returns the associated field domain name, for providers which support field domains.
+
+.. seealso:: :py:func:`setDomainName`
+
+.. versionadded:: 3.26
+%End
+
+    void setDomainName( const QString &domain );
+%Docstring
+Sets the associated field ``domain`` name, for providers which support field domains.
+
+.. seealso:: :py:func:`domainName`
+
+.. versionadded:: 3.26
+%End
+
     bool operator==( const QgsFieldConstraints &other ) const;
 
 };

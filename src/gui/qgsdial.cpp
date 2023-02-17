@@ -17,6 +17,7 @@
 
 #include "qgsdial.h"
 #include "qgslogger.h"
+#include "qgsvariantutils.h"
 
 #include <QPaintEvent>
 #include <QPainter>
@@ -65,10 +66,10 @@ void QgsDial::setValue( const QVariant &value )
 
 void QgsDial::update()
 {
-  if ( mMin.isNull() || mMax.isNull() || mStep.isNull() )
+  if ( QgsVariantUtils::isNull( mMin ) || QgsVariantUtils::isNull( mMax ) || QgsVariantUtils::isNull( mStep ) )
     return;
 
-  if ( mValue.isNull() )
+  if ( QgsVariantUtils::isNull( mValue ) )
     mValue = mMin;
 
   if ( mMin.type() == QVariant::Int &&
@@ -110,7 +111,7 @@ QVariant QgsDial::variantValue() const
 
 void QgsDial::onValueChanged( int value )
 {
-  if ( mMin.isNull() || mMax.isNull() || mStep.isNull() )
+  if ( QgsVariantUtils::isNull( mMin ) || QgsVariantUtils::isNull( mMax ) || QgsVariantUtils::isNull( mStep ) )
   {
     mValue = QVariant();
   }

@@ -34,6 +34,7 @@
 #include <QDomDocument>
 #include <QJsonObject>
 
+#include "qgsbox3d.h"
 
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with
@@ -573,6 +574,7 @@ bool QgsLineString::fromWkb( QgsConstWkbPtr &wkbPtr )
   return true;
 }
 
+// duplicated code from calculateBoundingBox3d to avoid useless z computation
 QgsRectangle QgsLineString::calculateBoundingBox() const
 {
   if ( mX.empty() )
@@ -585,6 +587,34 @@ QgsRectangle QgsLineString::calculateBoundingBox() const
   const double ymin = *result.first;
   const double ymax = *result.second;
   return QgsRectangle( xmin, ymin, xmax, ymax, false );
+}
+
+QgsBox3d QgsLineString::calculateBoundingBox3d() const
+{
+
+  if ( mX.empty() )
+  {
+    return QgsBox3d();
+  }
+
+  if ( mBoundingBox.isNull() )
+  {
+    mBoundingBox = calculateBoundingBox();
+  }
+
+  QgsBox3d out;
+  if ( is3D() )
+  {
+    auto result = std::minmax_element( mZ.begin(), mZ.end() );
+    const double zmin = *result.first;
+    const double zmax = *result.second;
+    out = QgsBox3d( mBoundingBox.xMinimum(), mBoundingBox.yMinimum(), zmin, mBoundingBox.xMaximum(), mBoundingBox.yMaximum(), zmax );
+  }
+  else
+  {
+    out = QgsBox3d( mBoundingBox.xMinimum(), mBoundingBox.yMinimum(), std::numeric_limits< double >::quiet_NaN(), mBoundingBox.xMaximum(), mBoundingBox.yMaximum(), std::numeric_limits< double >::quiet_NaN() );
+  }
+  return out;
 }
 
 void QgsLineString::scroll( int index )
@@ -673,7 +703,7 @@ QByteArray QgsLineString::asWkb( WkbFlags flags ) const
   wkb << static_cast<quint32>( wkbType() );
   QgsPointSequence pts;
   points( pts );
-  QgsGeometryUtils::pointsToWKB( wkb, pts, is3D(), isMeasure() );
+  QgsGeometryUtils::pointsToWKB( wkb, pts, is3D(), isMeasure(), flags );
   return wkbArray;
 }
 
@@ -1056,6 +1086,76 @@ void QgsLineString::points( QgsPointSequence &pts ) const
   for ( int i = 0; i < nPoints; ++i )
   {
     pts.push_back( pointN( i ) );
+  }
+}
+
+void QgsLineString::setPoints( size_t size, const double *x, const double *y, const double *z, const double *m )
+{
+  clearCache(); //set bounding box invalid
+
+  if ( size == 0 )
+  {
+    clear();
+    return;
+  }
+
+  const bool hasZ = static_cast< bool >( z );
+  const bool hasM = static_cast< bool >( m );
+
+  if ( hasZ && hasM )
+  {
+    mWkbType = QgsWkbTypes::LineStringZM;
+  }
+  else if ( hasZ )
+  {
+    mWkbType = QgsWkbTypes::LineStringZ;
+  }
+  else if ( hasM )
+  {
+    mWkbType = QgsWkbTypes::LineStringM;
+  }
+  else
+  {
+    mWkbType = QgsWkbTypes::LineString;
+  }
+
+  mX.resize( size );
+  mY.resize( size );
+  double *destX = mX.data();
+  double *destY = mY.data();
+  double *destZ = nullptr;
+  if ( hasZ )
+  {
+    mZ.resize( size );
+    destZ = mZ.data();
+  }
+  else
+  {
+    mZ.clear();
+  }
+  double *destM = nullptr;
+  if ( hasM )
+  {
+    mM.resize( size );
+    destM = mM.data();
+  }
+  else
+  {
+    mM.clear();
+  }
+
+  for ( size_t i = 0; i < size; ++i )
+  {
+    *destX++ = *x++;
+    *destY++ = *y++;
+    if ( hasZ )
+    {
+      *destZ++ = *z++;
+    }
+    if ( hasM )
+    {
+      *destM++ = *m++;
+    }
   }
 }
 
@@ -1815,11 +1915,13 @@ QgsPoint QgsLineString::centroid() const
       continue;
 
     totalLineLength += segmentLength;
-    sumX += segmentLength * 0.5 * ( currentX + prevX );
-    sumY += segmentLength * 0.5 * ( currentY + prevY );
+    sumX += segmentLength * ( currentX + prevX );
+    sumY += segmentLength * ( currentY + prevY );
     prevX = currentX;
     prevY = currentY;
   }
+  sumX *= 0.5;
+  sumY *= 0.5;
 
   if ( qgsDoubleNear( totalLineLength, 0.0 ) )
     return QgsPoint( mX.at( 0 ), mY.at( 0 ) );
@@ -1836,12 +1938,31 @@ QgsPoint QgsLineString::centroid() const
 
 void QgsLineString::sumUpArea( double &sum ) const
 {
-  int maxIndex = numPoints() - 1;
-
-  for ( int i = 0; i < maxIndex; ++i )
+  if ( mHasCachedSummedUpArea )
   {
-    sum += 0.5 * ( mX.at( i ) * mY.at( i + 1 ) - mY.at( i ) * mX.at( i + 1 ) );
+    sum += mSummedUpArea;
+    return;
   }
+
+  mSummedUpArea = 0;
+  const int maxIndex = mX.size();
+  if ( maxIndex == 0 )
+    return;
+
+  const double *x = mX.constData();
+  const double *y = mY.constData();
+  double prevX = *x++;
+  double prevY = *y++;
+  for ( int i = 1; i < maxIndex; ++i )
+  {
+    mSummedUpArea += prevX * ( *y ) - prevY * ( *x );
+    prevX = *x++;
+    prevY = *y++;
+  }
+  mSummedUpArea *= 0.5;
+
+  mHasCachedSummedUpArea = true;
+  sum += mSummedUpArea;
 }
 
 void QgsLineString::importVerticesFromWkb( const QgsConstWkbPtr &wkb )

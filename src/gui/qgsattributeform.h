@@ -24,6 +24,8 @@
 #include <QWidget>
 #include <QLabel>
 #include <QDialogButtonBox>
+#include <QMultiMap>
+
 #include "qgis_gui.h"
 
 
@@ -199,6 +201,12 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
      */
     void setExtraContextScope( QgsExpressionContextScope *extraScope SIP_TRANSFER );
 
+    /**
+     * Returns TRUE if any of the form widgets need feature geometry
+     * \since QGIS 3.20
+     */
+    bool needsGeometry() const;
+
   signals:
 
     /**
@@ -274,7 +282,6 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
      */
     void openFilteredFeaturesAttributeTable( const QString &filter );
 
-
   public slots:
 
     /**
@@ -285,6 +292,13 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
      * \param hintText A hint text for non existent joined features
      */
     void changeAttribute( const QString &field, const QVariant &value, const QString &hintText = QString() );
+
+    /**
+     * Changes the \a geometry of the feature attached to the form.
+     *
+     * \since QGIS 3.30
+     */
+    void changeGeometry( const QgsGeometry &geometry );
 
     /**
      * Update all editors to correspond to a different feature.
@@ -337,12 +351,6 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
      * \since QGIS 3.14
      */
     void parentFormValueChanged( const QString &attribute, const QVariant &newValue );
-
-    /**
-     * Returns TRUE if any of the form widgets need feature geometry
-     * \since QGIS 3.20
-     */
-    bool needsGeometry() const;
 
   private slots:
     void onAttributeChanged( const QVariant &value, const QVariantList &additionalFieldValues );
@@ -401,11 +409,10 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
       bool labelOnTop = false;
       bool labelAlignRight = false;
       bool showLabel = true;
+      QgsAttributeEditorElement::LabelStyle labelStyle;
     };
 
     WidgetInfo createWidgetFromDef( const QgsAttributeEditorElement *widgetDef, QWidget *parent, QgsVectorLayer *vl, QgsAttributeEditorContext &context );
-
-    void addWidgetWrapper( QgsEditorWidgetWrapper *eww );
 
     /**
      * Creates widget wrappers for all suitable widgets found.
@@ -441,6 +448,7 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
     void updateContainersVisibility();
     void updateConstraint( const QgsFeature &ft, QgsEditorWidgetWrapper *eww );
     void updateLabels();
+    void updateEditableState();
     bool currentFormValuesFeature( QgsFeature &feature );
     bool currentFormValidConstraints( QStringList &invalidFields, QStringList &descriptions ) const;
     bool currentFormValidHardConstraints( QStringList &invalidFields, QStringList &descriptions ) const;
@@ -462,10 +470,11 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
     QDialogButtonBox *mButtonBox = nullptr;
     QWidget *mSearchButtonBox = nullptr;
     QList<QgsAttributeFormInterface *> mInterfaces;
-    QMap< int, QgsAttributeFormEditorWidget * > mFormEditorWidgets;
+    QMultiMap< int, QgsAttributeFormEditorWidget * > mFormEditorWidgets;
     QList< QgsAttributeFormWidget *> mFormWidgets;
     QMap<const QgsVectorLayerJoinInfo *, QgsFeature> mJoinedFeatures;
     QMap<QLabel *, QgsProperty> mLabelDataDefinedProperties;
+    QMap<QWidget *, QgsProperty> mEditableDataDefinedProperties;
     bool mValuesInitialized = false;
     bool mDirty = false;
     bool mIsSettingFeature = false;
@@ -488,10 +497,21 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
         , isVisible( true )
       {}
 
+      ContainerInformation( QWidget *widget, const QgsExpression &visibilityExpression, bool collapsed, const QgsExpression &collapsedExpression )
+        : widget( widget )
+        , expression( visibilityExpression )
+        , isVisible( true )
+        , isCollapsed( collapsed )
+        , collapsedExpression( collapsedExpression )
+      {}
+
+
       QgsTabWidget *tabWidget = nullptr;
       QWidget *widget = nullptr;
       QgsExpression expression;
       bool isVisible;
+      bool isCollapsed = false;
+      QgsExpression collapsedExpression;
 
       void apply( QgsExpressionContext *expressionContext );
     };
@@ -502,8 +522,8 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
 
     void reloadIcon( const QString &file, const QString &tooltip, QSvgWidget *sw );
 
-    // Contains information about tabs and groupboxes, their visibility state visibility conditions
-    QVector<ContainerInformation *> mContainerVisibilityInformation;
+    // Contains information about tabs and groupboxes, their visibility/collapsed state conditions
+    QVector<ContainerInformation *> mContainerVisibilityCollapsedInformation;
     QMap<QString, QVector<ContainerInformation *> > mContainerInformationDependency;
 
     // Variables below are used for Python
@@ -532,13 +552,13 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
      * Dependency map for default values. Attribute index -> widget wrapper.
      * Attribute indexes will be added multiple times if more than one widget depends on them.
      */
-    QMap<int, QgsWidgetWrapper *> mDefaultValueDependencies;
+    QMultiMap<int, QgsWidgetWrapper *> mDefaultValueDependencies;
 
     /**
      * Dependency map for values from virtual fields. Attribute index -> widget wrapper.
      * Attribute indexes will be added multiple times if more than one widget depends on them.
      */
-    QMap<int, QgsWidgetWrapper *> mVirtualFieldsDependencies;
+    QMultiMap<int, QgsWidgetWrapper *> mVirtualFieldsDependencies;
 
     /**
      * Dependency list for values depending on related layers.

@@ -47,7 +47,7 @@ class QgsMeshExtraDatasetStore: public QgsMeshDatasetSourceInterface
     bool hasTemporalCapabilities() const;
 
     //! Returns the relative times of the dataset index with \a index, returned value in milliseconds
-    quint64 datasetRelativeTime( QgsMeshDatasetIndex index );
+    qint64 datasetRelativeTime( QgsMeshDatasetIndex index ) const;
 
     //! Returns information related to the dataset group with \a groupIndex
     QString description( int groupIndex ) const;
@@ -127,17 +127,15 @@ class QgsMeshDatasetGroupStore: public QObject
     //! Constructor
     QgsMeshDatasetGroupStore( QgsMeshLayer *layer );
 
-    //!  Sets the persistent mesh data provider with the path of its extra dataset
+    //!  Sets the persistent mesh data provider with the path of its extra dataset to be loaded by the provider
     void setPersistentProvider( QgsMeshDataProvider *provider, const QStringList &extraDatasetUri );
 
     //! Adds persistent datasets from a file with \a path
     bool addPersistentDatasets( const QString &path );
 
     /**
-     * Adds a extra dataset \a group, take ownership
-     *
-     * \note as QgsMeshDatasetGroup doesn't support reference time,
-     * the dataset group is supposed to have the same reference time than the pesristent provider
+     * Adds a extra dataset \a group, take ownership, returns True if the group is effectivly added.
+     * If returns False, the ownership is not taken
      */
     bool addDatasetGroup( QgsMeshDatasetGroup *group );
 
@@ -150,8 +148,12 @@ class QgsMeshDatasetGroupStore: public QObject
     //! Returns a pointer to the root of the dataset groups tree item
     QgsMeshDatasetGroupTreeItem *datasetGroupTreeItem() const;
 
-    //! Sets the root of the dataset groups tree item, doesn't take onwnershib but clone the root item
-    void setDatasetGroupTreeItem( QgsMeshDatasetGroupTreeItem *rootItem );
+    /**
+     * Sets the root of the dataset groups tree item.
+     *
+     * The \a rootItem is cloned (ownership is not transferred).
+     */
+    void setDatasetGroupTreeItem( const QgsMeshDatasetGroupTreeItem *rootItem );
 
     //! Returns a list of all group indexes
     QList<int> datasetGroupIndexes() const;
@@ -218,7 +220,7 @@ class QgsMeshDatasetGroupStore: public QObject
     void readXml( const QDomElement &storeElem, const QgsReadWriteContext &context );
 
     /**
-     * Returns the global dataset group index of the dataset group with native index \a globalGroupIndex in the \a source
+     * Returns the global dataset group index of the dataset group with native index \a nativeGroupIndex in the \a source
      * Returns -1 if the group or the source is not registered
      *
      * Since QGIS 3.22
@@ -235,18 +237,20 @@ class QgsMeshDatasetGroupStore: public QObject
   private:
     QgsMeshLayer *mLayer = nullptr;
     QgsMeshDataProvider *mPersistentProvider = nullptr;
-    QList<int> mPersistentExtraDatasetGroupIndexes;
-    std::unique_ptr<QgsMeshExtraDatasetStore> mExtraDatasets;
+    QgsMeshExtraDatasetStore mExtraDatasets;
     QMap < int, DatasetGroup> mRegistery;
+    QList<int> mPersistentExtraDatasetGroupIndexes;
+    QMap<QString, int> mGroupNameToGlobalIndex;
     std::unique_ptr<QgsMeshDatasetGroupTreeItem> mDatasetGroupTreeRootItem;
 
     void removePersistentProvider();
 
     DatasetGroup datasetGroup( int index ) const;
+
+    //! Returns a index that is not already used
     int newIndex();
 
     int registerDatasetGroup( const DatasetGroup &group );
-    int nativeIndexToGroupIndex( QgsMeshDatasetSourceInterface *source, int providerIndex );
     void createDatasetGroupTreeItems( const QList<int> &indexes );
 
     //! Erases from the where this is store, not from the store (registry and tree item), for persistent dataset group, do nothing

@@ -22,10 +22,8 @@
 #include "qgis_core.h"
 #include "qgstextshadowsettings.h"
 #include "qgstextbackgroundsettings.h"
-#include "qgstextformat.h"
 #include "qgsmapunitscale.h"
 #include "qgsunittypes.h"
-#include "qgsapplication.h"
 #include "qgspainteffect.h"
 #include "qgssymbollayerreference.h"
 #include "qgsstringutils.h"
@@ -269,6 +267,8 @@ class QgsTextSettingsPrivate : public QSharedData
       , textFont( other.textFont )
       , families( other.families )
       , textNamedStyle( other.textNamedStyle )
+      , forcedBold( other.forcedBold )
+      , forcedItalic( other.forcedItalic )
       , fontSizeUnits( other.fontSizeUnits )
       , fontSizeMapUnitScale( other.fontSizeMapUnitScale )
       , fontSize( other.fontSize )
@@ -276,6 +276,7 @@ class QgsTextSettingsPrivate : public QSharedData
       , opacity( other.opacity )
       , blendMode( other.blendMode )
       , multilineHeight( other.multilineHeight )
+      , multilineHeightUnits( other.multilineHeightUnits )
       , orientation( other.orientation )
       , previewBackgroundColor( other.previewBackgroundColor )
       , allowHtmlFormatting( other.allowHtmlFormatting )
@@ -288,14 +289,17 @@ class QgsTextSettingsPrivate : public QSharedData
     QFont textFont;
     QStringList families;
     QString textNamedStyle;
+    bool forcedBold = false;
+    bool forcedItalic = false;
     QgsUnitTypes::RenderUnit fontSizeUnits = QgsUnitTypes::RenderPoints;
     QgsMapUnitScale fontSizeMapUnitScale;
     double fontSize = 10 ; //may differ from size in textFont due to units (e.g., size in map units)
     QColor textColor;
     double opacity = 1.0;
     QPainter::CompositionMode blendMode = QPainter::CompositionMode_SourceOver;
-    double multilineHeight = 1.0 ; //0.0 to 10.0, leading between lines as multiplyer of line height
-    QgsTextFormat::TextOrientation orientation = QgsTextFormat::HorizontalOrientation;
+    double multilineHeight = 1.0;
+    QgsUnitTypes::RenderUnit multilineHeightUnits = QgsUnitTypes::RenderPercentage;
+    Qgis::TextOrientation orientation = Qgis::TextOrientation::Horizontal;
     QColor previewBackgroundColor = Qt::white;
     bool allowHtmlFormatting = false;
     Qgis::Capitalization capitalization = Qgis::Capitalization::MixedCase;
@@ -306,10 +310,6 @@ class QgsTextSettingsPrivate : public QSharedData
   private:
     QgsTextSettingsPrivate &operator=( const QgsTextSettingsPrivate & ) = delete;
 };
-
-
-
-
 
 /// @endcond
 

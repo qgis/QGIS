@@ -67,7 +67,7 @@ class ANALYSIS_EXPORT QgsKMeansClusteringAlgorithm : public QgsProcessingAlgorit
     static void findNearest( std::vector< Feature > &points, const std::vector< QgsPointXY > &centers, int k, bool &changed );
     static void updateMeans( const std::vector< Feature > &points, std::vector< QgsPointXY > &centers, std::vector< uint > &weights, int k );
 
-    friend class TestQgsProcessingAlgs;
+    friend class TestQgsProcessingAlgsPt1;
 };
 
 ///@endcond PRIVATE

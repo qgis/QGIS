@@ -38,6 +38,10 @@ class QgsBrowserModel;
  * This class provides common functionality and the interface for all
  * source select dialogs used by data providers to configure data sources
  * and add layers.
+ *
+ * The implementation is generic enough to handle other layer search and
+ * selection widgets.
+ *
  * \since QGIS 3.0
  */
 class GUI_EXPORT QgsAbstractDataSourceWidget : public QDialog
@@ -47,18 +51,25 @@ class GUI_EXPORT QgsAbstractDataSourceWidget : public QDialog
   public:
 
     /**
-     * Store a pointer to the map canvas to retrieve extent and CRS
-     * Used to select an appropriate CRS and possibly to retrieve data only in the current extent
-     */
-    void setMapCanvas( const QgsMapCanvas *mapCanvas );
-
-    /**
      * Sets a browser \a model to use with the widget.
      *
      * \see browserModel()
      * \since QGIS 3.18
      */
-    void setBrowserModel( QgsBrowserModel *model );
+    virtual void setBrowserModel( QgsBrowserModel *model );
+
+    /**
+     * Returns the dialog map canvas
+     * \see setMapCanvas()
+     *
+     */
+    virtual QgsMapCanvas *mapCanvas() {return mMapCanvas; }
+
+    /**
+     * Sets the dialog map canvas
+     * \see mapCanvas()
+     */
+    virtual void setMapCanvas( QgsMapCanvas *mapCanvas ) { mMapCanvas = mapCanvas; }
 
   public slots:
 
@@ -169,7 +180,6 @@ class GUI_EXPORT QgsAbstractDataSourceWidget : public QDialog
      */
     void pushMessage( const QString &title, const QString &message, const Qgis::MessageLevel level = Qgis::MessageLevel::Info );
 
-
   protected:
 
     //! Constructor
@@ -177,9 +187,6 @@ class GUI_EXPORT QgsAbstractDataSourceWidget : public QDialog
 
     //! Returns the widget mode
     QgsProviderRegistry::WidgetMode widgetMode() const;
-
-    //! Returns the map canvas (can be NULLPTR)
-    const QgsMapCanvas *mapCanvas() const;
 
     /**
      * Returns the associated browser model (may be NULLPTR).
@@ -197,8 +204,8 @@ class GUI_EXPORT QgsAbstractDataSourceWidget : public QDialog
   private:
     QPushButton *mAddButton  = nullptr;
     QgsProviderRegistry::WidgetMode mWidgetMode;
-    QgsMapCanvas const *mMapCanvas = nullptr;
     QgsBrowserModel *mBrowserModel = nullptr;
+    QgsMapCanvas *mMapCanvas = nullptr;
 
 };
 

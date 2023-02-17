@@ -10,6 +10,8 @@
 
 
 
+
+
 class QgsVectorLayerUtils
 {
 %Docstring(signature="appended")
@@ -166,6 +168,16 @@ be unique within regard to ``existingValues``.
 The optional seed value can be used as a basis for generated values.
 
 .. versionadded:: 3.6
+%End
+
+    static bool attributeHasConstraints( const QgsVectorLayer *layer, int attributeIndex );
+%Docstring
+Returns ``True`` if a feature attribute has active constraints.
+
+:param layer: the vector layer from which field constraints will be checked for
+:param attributeIndex: the attribute index
+
+.. versionadded:: 3.30
 %End
 
     static bool validateAttribute( const QgsVectorLayer *layer, const QgsFeature &feature, int attributeIndex, QStringList &errors /Out/,

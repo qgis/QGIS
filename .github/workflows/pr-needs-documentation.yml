@@ -13,6 +13,9 @@ on:
 
 jobs:
   ping-author-message:
+    permissions:
+      issues: write  # for peter-evans/create-or-update-comment to create or update comment
+      pull-requests: write  # for peter-evans/create-or-update-comment to create or update comment
     if: github.event.action != 'closed' && github.event.label.name == 'Needs Documentation'
     runs-on: ubuntu-latest
     name: Write comment to ping author about the future creation of an issue in docs
@@ -20,7 +23,7 @@ jobs:
 
       # write comment to ping the PR author
       - name: Create comment
-        uses: peter-evans/create-or-update-comment@v1
+        uses: peter-evans/create-or-update-comment@v2
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           issue-number: ${{ github.event.pull_request.number }}
@@ -119,7 +122,7 @@ jobs:
 
       # write comment to ping the PR author
       - name: Create comment
-        uses: peter-evans/create-or-update-comment@v1
+        uses: peter-evans/create-or-update-comment@v2
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           issue-number: ${{ github.event.pull_request.number }}

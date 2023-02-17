@@ -16,11 +16,12 @@
  ***************************************************************************/
 
 #include "qgsgpsdetector.h"
-#include "qgslogger.h"
 #include "qgsgpsconnection.h"
 #include "qgsnmeaconnection.h"
 #include "qgsgpsdconnection.h"
-#include "qgssettings.h"
+#include "qgssettingstree.h"
+#include "qgssettingsentryenumflag.h"
+
 
 #if defined(QT_POSITIONING_LIB)
 #include "qgsqtlocationconnection.h"
@@ -30,9 +31,14 @@
 #include <QFileInfo>
 #include <QTimer>
 
-#if defined( HAVE_QT5SERIALPORT )
+#if defined( HAVE_QTSERIALPORT )
 #include <QSerialPortInfo>
 #include <QSerialPort>
+
+const QgsSettingsEntryEnumFlag<QSerialPort::FlowControl> *QgsGpsDetector::settingsGpsFlowControl = new QgsSettingsEntryEnumFlag<QSerialPort::FlowControl>( QStringLiteral( "flow-control" ), QgsSettingsTree::sTreeGps, QSerialPort::NoFlowControl );
+const QgsSettingsEntryEnumFlag<QSerialPort::StopBits> *QgsGpsDetector::settingsGpsStopBits = new QgsSettingsEntryEnumFlag<QSerialPort::StopBits>( QStringLiteral( "stop-bits" ), QgsSettingsTree::sTreeGps, QSerialPort::OneStop );
+const QgsSettingsEntryEnumFlag<QSerialPort::DataBits> *QgsGpsDetector::settingsGpsDataBits = new QgsSettingsEntryEnumFlag<QSerialPort::DataBits>( QStringLiteral( "data-bits" ), QgsSettingsTree::sTreeGps, QSerialPort::Data8 );
+const QgsSettingsEntryEnumFlag<QSerialPort::Parity> *QgsGpsDetector::settingsGpsParity = new QgsSettingsEntryEnumFlag<QSerialPort::Parity>( QStringLiteral( "parity" ), QgsSettingsTree::sTreeGps, QSerialPort::NoParity );
 #endif
 
 QList< QPair<QString, QString> > QgsGpsDetector::availablePorts()
@@ -48,7 +54,7 @@ QList< QPair<QString, QString> > QgsGpsDetector::availablePorts()
   devs << QPair<QString, QString>( QStringLiteral( "localhost:2947:" ), tr( "local gpsd" ) );
 
   // try serial ports
-#if defined( HAVE_QT5SERIALPORT )
+#if defined( HAVE_QTSERIALPORT )
   for ( const QSerialPortInfo &p : QSerialPortInfo::availablePorts() )
   {
     devs << QPair<QString, QString>( p.portName(), tr( "%1: %2" ).arg( p.portName(), p.description() ) );
@@ -60,7 +66,7 @@ QList< QPair<QString, QString> > QgsGpsDetector::availablePorts()
 
 QgsGpsDetector::QgsGpsDetector( const QString &portName )
 {
-#if defined( HAVE_QT5SERIALPORT )
+#if defined( HAVE_QTSERIALPORT )
   mBaudList << QSerialPort::Baud4800 << QSerialPort::Baud9600 << QSerialPort::Baud38400 << QSerialPort::Baud57600 << QSerialPort::Baud115200;  //add 57600 for SXBlueII GPS unit
 #endif
 
@@ -79,8 +85,6 @@ QgsGpsDetector::~QgsGpsDetector() = default;
 void QgsGpsDetector::advance()
 {
   mConn.reset();
-
-  QgsSettings settings;
 
   while ( !mConn )
   {
@@ -118,15 +122,15 @@ void QgsGpsDetector::advance()
     }
     else
     {
-#if defined( HAVE_QT5SERIALPORT )
+#if defined( HAVE_QTSERIALPORT )
       std::unique_ptr< QSerialPort > serial = std::make_unique< QSerialPort >( mPortList.at( mPortIndex ).first );
 
       serial->setBaudRate( mBaudList[ mBaudIndex ] );
 
-      serial->setFlowControl( settings.enumValue( QStringLiteral( "gps/flow_control" ), QSerialPort::NoFlowControl, QgsSettings::Core ) );
-      serial->setParity( settings.enumValue( QStringLiteral( "gps/parity" ), QSerialPort::NoParity, QgsSettings::Core ) );
-      serial->setDataBits( settings.enumValue( QStringLiteral( "gps/data_bits" ), QSerialPort::Data8, QgsSettings::Core ) );
-      serial->setStopBits( settings.enumValue( QStringLiteral( "gps/stop_bits" ), QSerialPort::OneStop, QgsSettings::Core ) );
+      serial->setFlowControl( QgsGpsDetector::settingsGpsFlowControl->value() );
+      serial->setParity( QgsGpsDetector::settingsGpsParity->value() );
+      serial->setDataBits( QgsGpsDetector::settingsGpsDataBits->value() );
+      serial->setStopBits( QgsGpsDetector::settingsGpsStopBits->value() );
 
       if ( serial->open( QIODevice::ReadOnly ) )
       {

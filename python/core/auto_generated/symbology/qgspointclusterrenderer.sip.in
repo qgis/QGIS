@@ -68,7 +68,7 @@ Creates a QgsPointClusterRenderer from an existing renderer.
   private:
     QgsPointClusterRenderer( const QgsPointClusterRenderer & );
     QgsPointClusterRenderer &operator=( const QgsPointClusterRenderer & );
-    virtual void drawGroup( QPointF centerPoint, QgsRenderContext &context, const QgsPointDistanceRenderer::ClusteredGroup &group );
+    virtual void drawGroup( QPointF centerPoint, QgsRenderContext &context, const QgsPointDistanceRenderer::ClusteredGroup &group ) const;
 
 };
 

@@ -21,6 +21,7 @@
 #include "qgslogger.h"
 #include "qgssettings.h"
 #include "qgsdatasourceuri.h"
+#include "qgsvariantutils.h"
 #include <QSqlDatabase>
 #include <QSqlError>
 #include <QSqlQuery>
@@ -344,21 +345,21 @@ QList<QgsVectorDataProvider::NativeType> QgsMssqlConnection::nativeTypes()
 {
   return QList<QgsVectorDataProvider::NativeType>()
          // integer types
-         << QgsVectorDataProvider::NativeType( QObject::tr( "8 Bytes integer" ), QStringLiteral( "bigint" ), QVariant::Int )
-         << QgsVectorDataProvider::NativeType( QObject::tr( "4 Bytes integer" ), QStringLiteral( "int" ), QVariant::Int )
-         << QgsVectorDataProvider::NativeType( QObject::tr( "2 Bytes integer" ), QStringLiteral( "smallint" ), QVariant::Int )
-         << QgsVectorDataProvider::NativeType( QObject::tr( "1 Bytes integer" ), QStringLiteral( "tinyint" ), QVariant::Int )
-         << QgsVectorDataProvider::NativeType( QObject::tr( "Decimal number (numeric)" ), QStringLiteral( "numeric" ), QVariant::Double, 1, 20, 0, 20 )
-         << QgsVectorDataProvider::NativeType( QObject::tr( "Decimal number (decimal)" ), QStringLiteral( "decimal" ), QVariant::Double, 1, 20, 0, 20 )
+         << QgsVectorDataProvider::NativeType( QObject::tr( "8 Bytes Integer" ), QStringLiteral( "bigint" ), QVariant::Int )
+         << QgsVectorDataProvider::NativeType( QObject::tr( "4 Bytes Integer" ), QStringLiteral( "int" ), QVariant::Int )
+         << QgsVectorDataProvider::NativeType( QObject::tr( "2 Bytes Integer" ), QStringLiteral( "smallint" ), QVariant::Int )
+         << QgsVectorDataProvider::NativeType( QObject::tr( "1 Bytes Integer" ), QStringLiteral( "tinyint" ), QVariant::Int )
+         << QgsVectorDataProvider::NativeType( QObject::tr( "Decimal Number (numeric)" ), QStringLiteral( "numeric" ), QVariant::Double, 1, 20, 0, 20 )
+         << QgsVectorDataProvider::NativeType( QObject::tr( "Decimal Number (decimal)" ), QStringLiteral( "decimal" ), QVariant::Double, 1, 20, 0, 20 )
 
          // floating point
-         << QgsVectorDataProvider::NativeType( QObject::tr( "Decimal number (real)" ), QStringLiteral( "real" ), QVariant::Double )
-         << QgsVectorDataProvider::NativeType( QObject::tr( "Decimal number (double)" ), QStringLiteral( "float" ), QVariant::Double )
+         << QgsVectorDataProvider::NativeType( QObject::tr( "Decimal Number (real)" ), QStringLiteral( "real" ), QVariant::Double )
+         << QgsVectorDataProvider::NativeType( QObject::tr( "Decimal Number (double)" ), QStringLiteral( "float" ), QVariant::Double )
 
          // date/time types
-         << QgsVectorDataProvider::NativeType( QObject::tr( "Date" ), QStringLiteral( "date" ), QVariant::Date, -1, -1, -1, -1 )
-         << QgsVectorDataProvider::NativeType( QObject::tr( "Time" ), QStringLiteral( "time" ), QVariant::Time, -1, -1, -1, -1 )
-         << QgsVectorDataProvider::NativeType( QObject::tr( "Date & Time" ), QStringLiteral( "datetime" ), QVariant::DateTime, -1, -1, -1, -1 )
+         << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::Date ), QStringLiteral( "date" ), QVariant::Date, -1, -1, -1, -1 )
+         << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::Time ), QStringLiteral( "time" ), QVariant::Time, -1, -1, -1, -1 )
+         << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::DateTime ), QStringLiteral( "datetime" ), QVariant::DateTime, -1, -1, -1, -1 )
 
          // string types
          << QgsVectorDataProvider::NativeType( QObject::tr( "Text, fixed length (char)" ), QStringLiteral( "char" ), QVariant::String, 1, 255 )

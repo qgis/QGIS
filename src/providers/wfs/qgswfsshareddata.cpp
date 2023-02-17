@@ -15,6 +15,7 @@
 
 #include "qgswfsshareddata.h"
 #include "qgswfsutils.h"
+#include "qgswfsprovider.h"
 #include "qgscachedirectorymanager.h"
 #include "qgsogcutils.h"
 #include "qgsexpression.h"
@@ -47,6 +48,27 @@ bool QgsWFSSharedData::isRestrictedToRequestBBOX() const
   return mURI.isRestrictedToRequestBBOX();
 }
 
+QgsWFSSharedData *QgsWFSSharedData::clone() const
+{
+  QgsWFSSharedData *copy = new QgsWFSSharedData( mURI.uri( true ) );
+  copy->mWFSVersion = mWFSVersion;
+  copy->mGeometryAttribute = mGeometryAttribute;
+  copy->mLayerPropertiesList = mLayerPropertiesList;
+  copy->mMapFieldNameToSrcLayerNameFieldName = mMapFieldNameToSrcLayerNameFieldName;
+  copy->mPageSize = mPageSize;
+  copy->mCaps = mCaps;
+  copy->mHasWarnedAboutMissingFeatureId = mHasWarnedAboutMissingFeatureId;
+  copy->mGetFeatureEPSGDotHonoursEPSGOrder = mGetFeatureEPSGDotHonoursEPSGOrder;
+  copy->mServerPrefersCoordinatesForTransactions_1_1 = mServerPrefersCoordinatesForTransactions_1_1;
+  copy->mWKBType = mWKBType;
+  copy->mWFSFilter = mWFSFilter;
+  copy->mWFSGeometryTypeFilter = mWFSGeometryTypeFilter;
+  copy->mSortBy = mSortBy;
+  QgsBackgroundCachedSharedData::copyStateToClone( copy );
+
+  return copy;
+}
+
 void QgsWFSSharedData::invalidateCacheBaseUnderLock()
 {
 }
@@ -73,6 +95,29 @@ QString QgsWFSSharedData::srsName() const
   return srsName;
 }
 
+QString QgsWFSSharedData::computedExpression( const QgsExpression &expression ) const
+{
+
+  if ( expression.isValid() )
+  {
+
+    QgsOgcUtils::GMLVersion gmlVersion;
+    QgsOgcUtils::FilterVersion filterVersion;
+    bool honourAxisOrientation = false;
+    getVersionValues( gmlVersion, filterVersion, honourAxisOrientation );
+
+    QDomDocument expressionDoc;
+    QDomElement expressionElem = QgsOgcUtils::expressionToOgcExpression( expression, expressionDoc, gmlVersion, filterVersion, mGeometryAttribute, srsName(), honourAxisOrientation, mURI.invertAxisOrientation(), nullptr, true );
+
+    if ( !expressionElem.isNull() )
+    {
+      expressionDoc.appendChild( expressionElem );
+      return expressionDoc.toString();
+    }
+  }
+  return QString();
+}
+
 bool QgsWFSSharedData::computeFilter( QString &errorMsg )
 {
   errorMsg.clear();
@@ -82,23 +127,7 @@ bool QgsWFSSharedData::computeFilter( QString &errorMsg )
   QgsOgcUtils::GMLVersion gmlVersion;
   QgsOgcUtils::FilterVersion filterVersion;
   bool honourAxisOrientation = false;
-  if ( mWFSVersion.startsWith( QLatin1String( "1.0" ) ) )
-  {
-    gmlVersion = QgsOgcUtils::GML_2_1_2;
-    filterVersion = QgsOgcUtils::FILTER_OGC_1_0;
-  }
-  else if ( mWFSVersion.startsWith( QLatin1String( "1.1" ) ) )
-  {
-    honourAxisOrientation = !mURI.ignoreAxisOrientation();
-    gmlVersion = QgsOgcUtils::GML_3_1_0;
-    filterVersion = QgsOgcUtils::FILTER_OGC_1_1;
-  }
-  else
-  {
-    honourAxisOrientation = !mURI.ignoreAxisOrientation();
-    gmlVersion = QgsOgcUtils::GML_3_2_1;
-    filterVersion = QgsOgcUtils::FILTER_FES_2_0;
-  }
+  getVersionValues( gmlVersion, filterVersion, honourAxisOrientation );
 
   if ( !mURI.sql().isEmpty() )
   {
@@ -161,7 +190,10 @@ bool QgsWFSSharedData::computeFilter( QString &errorMsg )
         const QgsExpression filterExpression( filter );
 
         const QDomElement filterElem = QgsOgcUtils::expressionToOgcFilter(
-                                         filterExpression, filterDoc, gmlVersion, filterVersion, mGeometryAttribute,
+                                         filterExpression, filterDoc, gmlVersion, filterVersion,
+                                         mLayerPropertiesList.size() == 1 ? mLayerPropertiesList[0].mNamespacePrefix : QString(),
+                                         mLayerPropertiesList.size() == 1 ? mLayerPropertiesList[0].mNamespaceURI : QString(),
+                                         mGeometryAttribute,
                                          srsName(), honourAxisOrientation, mURI.invertAxisOrientation(),
                                          &errorMsg );
 
@@ -182,6 +214,20 @@ bool QgsWFSSharedData::computeFilter( QString &errorMsg )
   return true;
 }
 
+void QgsWFSSharedData::computeGeometryTypeFilter()
+{
+  if ( mWKBType == QgsWkbTypes::NoGeometry )
+    mWFSGeometryTypeFilter = QgsWFSProvider::buildIsNullGeometryFilter( mCaps, mGeometryAttribute );
+  else if ( mWKBType == QgsWkbTypes::MultiPoint )
+    mWFSGeometryTypeFilter = QgsWFSProvider::buildFilterByGeometryType( mCaps, mGeometryAttribute, "IsPoint" );
+  else if ( mWKBType == QgsWkbTypes::MultiCurve )
+    mWFSGeometryTypeFilter = QgsWFSProvider::buildFilterByGeometryType( mCaps, mGeometryAttribute, "IsCurve" );
+  else if ( mWKBType == QgsWkbTypes::MultiSurface )
+    mWFSGeometryTypeFilter = QgsWFSProvider::buildFilterByGeometryType( mCaps, mGeometryAttribute, "IsSurface" );
+  else if ( mWKBType == QgsWkbTypes::GeometryCollection )
+    mWFSGeometryTypeFilter = QgsWFSProvider::buildGeometryCollectionFilter( mCaps, mGeometryAttribute );
+}
+
 void QgsWFSSharedData::pushError( const QString &errorMsg ) const
 {
   QgsMessageLog::logMessage( errorMsg, tr( "WFS" ) );
@@ -196,7 +242,7 @@ QgsGmlStreamingParser *QgsWFSSharedData::createParser() const
     axisOrientationLogic = QgsGmlStreamingParser::Ignore_EPSG;
   }
 
-  if ( !mLayerPropertiesList.isEmpty() )
+  if ( mLayerPropertiesList.size() > 1 )
   {
     QList< QgsGmlStreamingParser::LayerProperties > layerPropertiesList;
     const auto constMLayerPropertiesList = mLayerPropertiesList;
@@ -234,7 +280,101 @@ QgsRectangle QgsWFSSharedData::getExtentFromSingleFeatureRequest() const
 long long QgsWFSSharedData::getFeatureCountFromServer() const
 {
   QgsWFSFeatureHitsRequest request( mURI );
-  return request.getFeatureCount( mWFSVersion, mWFSFilter, mCaps );
+  return request.getFeatureCount( mWFSVersion, combineWFSFilters( { mWFSFilter, mWFSGeometryTypeFilter} ), mCaps );
+}
+
+QString QgsWFSSharedData::combineWFSFilters( const std::vector<QString> &filters ) const
+{
+  int countNonEmpty = 0;
+  QString nonEmptyFilter;
+  for ( const QString &filter : filters )
+  {
+    if ( !filter.isEmpty() )
+    {
+      countNonEmpty ++;
+      nonEmptyFilter = filter;
+    }
+  }
+  if ( countNonEmpty == 0 )
+    return QString();
+  if ( countNonEmpty == 1 )
+    return nonEmptyFilter;
+
+  std::vector<QDomNode> nodes;
+
+  bool envelopeFilterDocSet = false;
+  QDomDocument envelopeFilterDoc;
+  for ( const QString &filter : filters )
+  {
+    if ( filter.isEmpty() )
+      continue;
+    QDomDocument doc;
+    QDomNode node;
+
+    ( void )doc.setContent( filter, !filter.contains( QStringLiteral( "BBOX" ) ) );
+    node = doc.firstChildElement().firstChildElement();
+    node = doc.firstChildElement().removeChild( node );
+    if ( !envelopeFilterDocSet || filter.contains( QStringLiteral( "BBOX" ) ) )
+    {
+      envelopeFilterDocSet = true;
+      envelopeFilterDoc = doc;
+    }
+
+    nodes.push_back( node );
+  }
+
+  QDomElement andElem = envelopeFilterDoc.createElement( mWFSVersion.startsWith( QLatin1String( "2.0" ) ) ? "fes:And" : "ogc:And" );
+  for ( const auto &node : nodes )
+  {
+    andElem.appendChild( node );
+  }
+  envelopeFilterDoc.firstChildElement().appendChild( andElem );
+
+  if ( mLayerPropertiesList.size() == 1 &&
+       envelopeFilterDoc.firstChildElement().hasAttribute( QStringLiteral( "xmlns:" ) + mLayerPropertiesList[0].mNamespacePrefix ) )
+  {
+    // nothing to do
+  }
+  else
+  {
+    // add xmls:PREFIX=URI attributes to top element
+    QSet<QString> setNamespaceURI;
+    for ( const QgsOgcUtils::LayerProperties &props : std::as_const( mLayerPropertiesList ) )
+    {
+      if ( !props.mNamespacePrefix.isEmpty() && !props.mNamespaceURI.isEmpty() &&
+           !setNamespaceURI.contains( props.mNamespaceURI ) )
+      {
+        setNamespaceURI.insert( props.mNamespaceURI );
+        QDomAttr attr = envelopeFilterDoc.createAttribute( QStringLiteral( "xmlns:" ) + props.mNamespacePrefix );
+        attr.setValue( props.mNamespaceURI );
+        envelopeFilterDoc.firstChildElement().setAttributeNode( attr );
+      }
+    }
+  }
+
+  // fprintf(stderr, "%s\n", envelopeFilterDoc.toString().toStdString().c_str());
+  return envelopeFilterDoc.toString();
+}
+
+void QgsWFSSharedData::getVersionValues( QgsOgcUtils::GMLVersion &gmlVersion, QgsOgcUtils::FilterVersion &filterVersion, bool &honourAxisOrientation ) const
+{
+  if ( mWFSVersion.startsWith( QLatin1String( "1.0" ) ) )
+  {
+    gmlVersion = QgsOgcUtils::GML_2_1_2;
+    filterVersion = QgsOgcUtils::FILTER_OGC_1_0;
+  }
+  else if ( mWFSVersion.startsWith( QLatin1String( "1.1" ) ) )
+  {
+    honourAxisOrientation = !mURI.ignoreAxisOrientation();
+    gmlVersion = QgsOgcUtils::GML_3_1_0;
+    filterVersion = QgsOgcUtils::FILTER_OGC_1_1;
+  }
+  else
+  {
+    honourAxisOrientation = !mURI.ignoreAxisOrientation();
+    gmlVersion = QgsOgcUtils::GML_3_2_1;
+    filterVersion = QgsOgcUtils::FILTER_FES_2_0;
+  }
 }
 
 bool QgsWFSSharedData::detectPotentialServerAxisOrderIssueFromSingleFeatureExtent() const

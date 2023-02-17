@@ -297,7 +297,7 @@ class CORE_EXPORT QgsProcessingModelChildAlgorithm : public QgsProcessingModelCo
 
     QgsProcessingModelComment mComment;
 
-    friend class TestQgsProcessing;
+    friend class TestQgsProcessingModelAlgorithm;
 
 };
 

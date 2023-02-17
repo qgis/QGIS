@@ -17,9 +17,6 @@
 #define QGSMESHRENDERER3DAVERAGINGWIDGET_H
 
 #include "ui_qgsmeshrenderer3daveragingwidgetbase.h"
-#include "qgis_gui.h"
-#include "qgsmeshrenderersettings.h"
-#include "qgsmeshdataprovider.h"
 
 #include <memory>
 #include <QWidget>
@@ -28,6 +25,7 @@ SIP_NO_FILE
 
 class QgsMeshLayer;
 class QgsMesh3dAveragingMethod;
+class QgsScreenHelper;
 
 /**
  * \ingroup gui
@@ -67,8 +65,14 @@ class QgsMeshRenderer3dAveragingWidget : public QWidget, private Ui::QgsMeshRend
 
   private slots:
     void onAveragingMethodChanged( int methodIndex );
+    void updateGraphics();
 
   private:
+    void setLabelSvg( QLabel *imageLabel,
+                      const QString &imgName );
+
+    QgsScreenHelper *mScreenHelper = nullptr;
+
     QgsMeshLayer *mMeshLayer = nullptr; //not owned
 };
 

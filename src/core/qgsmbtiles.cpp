@@ -21,9 +21,6 @@
 #include <QFile>
 #include <QImage>
 
-#include <zlib.h>
-
-
 QgsMbTiles::QgsMbTiles( const QString &filename )
   : mFilename( filename )
 {
@@ -80,7 +77,7 @@ bool QgsMbTiles::create()
   return true;
 }
 
-QString QgsMbTiles::metadataValue( const QString &key )
+QString QgsMbTiles::metadataValue( const QString &key ) const
 {
   if ( !mDatabase )
   {
@@ -106,7 +103,7 @@ QString QgsMbTiles::metadataValue( const QString &key )
   return preparedStatement.columnAsText( 0 );
 }
 
-void QgsMbTiles::setMetadataValue( const QString &key, const QString &value )
+void QgsMbTiles::setMetadataValue( const QString &key, const QString &value ) const
 {
   if ( !mDatabase )
   {
@@ -130,7 +127,7 @@ void QgsMbTiles::setMetadataValue( const QString &key, const QString &value )
   }
 }
 
-QgsRectangle QgsMbTiles::extent()
+QgsRectangle QgsMbTiles::extent() const
 {
   const QString boundsStr = metadataValue( "bounds" );
   if ( boundsStr.isEmpty() )
@@ -143,7 +140,7 @@ QgsRectangle QgsMbTiles::extent()
                        boundsArray[2].toDouble(), boundsArray[3].toDouble() );
 }
 
-QByteArray QgsMbTiles::tileData( int z, int x, int y )
+QByteArray QgsMbTiles::tileData( int z, int x, int y ) const
 {
   if ( !mDatabase )
   {
@@ -162,14 +159,15 @@ QByteArray QgsMbTiles::tileData( int z, int x, int y )
 
   if ( preparedStatement.step() != SQLITE_ROW )
   {
-    QgsDebugMsg( QStringLiteral( "MBTile not found: z=%1 x=%2 y=%3" ).arg( z ).arg( x ).arg( y ) );
+    // this is not entirely unexpected -- user may have just requested a tile outside of the extent of the mbtiles package
+    QgsDebugMsgLevel( QStringLiteral( "MBTile not found: z=%1 x=%2 y=%3" ).arg( z ).arg( x ).arg( y ), 2 );
     return QByteArray();
   }
 
   return preparedStatement.columnAsBlob( 0 );
 }
 
-QImage QgsMbTiles::tileDataAsImage( int z, int x, int y )
+QImage QgsMbTiles::tileDataAsImage( int z, int x, int y ) const
 {
   QImage tileImage;
   const QByteArray tileBlob = tileData( z, x, y );
@@ -181,7 +179,7 @@ QImage QgsMbTiles::tileDataAsImage( int z, int x, int y )
   return tileImage;
 }
 
-void QgsMbTiles::setTileData( int z, int x, int y, const QByteArray &data )
+void QgsMbTiles::setTileData( int z, int x, int y, const QByteArray &data ) const
 {
   if ( !mDatabase )
   {
@@ -205,102 +203,4 @@ void QgsMbTiles::setTileData( int z, int x, int y, const QByteArray &data )
     QgsDebugMsg( QStringLiteral( "MBTile tile failed to be set: %1,%2,%3" ).arg( z ).arg( x ).arg( y ) );
     return;
   }
-}
-
-bool QgsMbTiles::decodeGzip( const QByteArray &bytesIn, QByteArray &bytesOut )
-{
-  unsigned char *bytesInPtr = reinterpret_cast<unsigned char *>( const_cast<char *>( bytesIn.constData() ) );
-  uint bytesInLeft = static_cast<uint>( bytesIn.count() );
-
-  const uint CHUNK = 16384;
-  unsigned char out[CHUNK];
-  const int DEC_MAGIC_NUM_FOR_GZIP = 16;
-
-  // allocate inflate state
-  z_stream strm;
-  strm.zalloc = Z_NULL;
-  strm.zfree = Z_NULL;
-  strm.opaque = Z_NULL;
-  strm.avail_in = 0;
-  strm.next_in = Z_NULL;
-
-  int ret = inflateInit2( &strm, MAX_WBITS + DEC_MAGIC_NUM_FOR_GZIP );
-  if ( ret != Z_OK )
-    return false;
-
-  while ( ret != Z_STREAM_END ) // done when inflate() says it's done
-  {
-    // prepare next chunk
-    const uint bytesToProcess = std::min( CHUNK, bytesInLeft );
-    strm.next_in = bytesInPtr;
-    strm.avail_in = bytesToProcess;
-    bytesInPtr += bytesToProcess;
-    bytesInLeft -= bytesToProcess;
-
-    if ( bytesToProcess == 0 )
-      break;  // we end with an error - no more data but inflate() wants more data
-
-    // run inflate() on input until output buffer not full
-    do
-    {
-      strm.avail_out = CHUNK;
-      strm.next_out = out;
-      ret = inflate( &strm, Z_NO_FLUSH );
-      Q_ASSERT( ret != Z_STREAM_ERROR ); // state not clobbered
-      if ( ret == Z_NEED_DICT || ret == Z_DATA_ERROR || ret == Z_MEM_ERROR )
-      {
-        inflateEnd( &strm );
-        return false;
-      }
-      const unsigned have = CHUNK - strm.avail_out;
-      bytesOut.append( QByteArray::fromRawData( reinterpret_cast<const char *>( out ), static_cast<int>( have ) ) );
-    }
-    while ( strm.avail_out == 0 );
-  }
-
-  inflateEnd( &strm );
-  return ret == Z_STREAM_END;
-}
-
-
-bool QgsMbTiles::encodeGzip( const QByteArray &bytesIn, QByteArray &bytesOut )
-{
-  unsigned char *bytesInPtr = reinterpret_cast<unsigned char *>( const_cast<char *>( bytesIn.constData() ) );
-  const uint bytesInLeft = static_cast<uint>( bytesIn.count() );
-
-  const uint CHUNK = 16384;
-  unsigned char out[CHUNK];
-  const int DEC_MAGIC_NUM_FOR_GZIP = 16;
-
-  // allocate deflate state
-  z_stream strm;
-  strm.zalloc = Z_NULL;
-  strm.zfree = Z_NULL;
-  strm.opaque = Z_NULL;
-
-  int ret = deflateInit2( &strm, Z_DEFAULT_COMPRESSION, Z_DEFLATED, MAX_WBITS + DEC_MAGIC_NUM_FOR_GZIP, 8, Z_DEFAULT_STRATEGY );
-  if ( ret != Z_OK )
-    return false;
-
-  strm.avail_in = bytesInLeft;
-  strm.next_in = bytesInPtr;
-
-  // run deflate() on input until output buffer not full, finish
-  // compression if all of source has been read in
-  do
-  {
-    strm.avail_out = CHUNK;
-    strm.next_out = out;
-    ret = deflate( &strm, Z_FINISH );  // no bad return value
-    Q_ASSERT( ret != Z_STREAM_ERROR ); // state not clobbered
-
-    const unsigned have = CHUNK - strm.avail_out;
-    bytesOut.append( QByteArray::fromRawData( reinterpret_cast<const char *>( out ), static_cast<int>( have ) ) );
-  }
-  while ( strm.avail_out == 0 );
-  Q_ASSERT( ret == Z_STREAM_END );      // stream will be complete
-
-  // clean up and return
-  deflateEnd( &strm );
-  return true;
 }

@@ -123,7 +123,7 @@ bool QgsAfsFeatureIterator::fetchFeature( QgsFeature &f )
   if ( mInterruptionChecker && mInterruptionChecker->isCanceled() )
     return false;
 
-  if ( mFeatureIterator >= mSource->sharedData()->featureCount() )
+  if ( mFeatureIterator >= mSource->sharedData()->objectIdCount() )
     return false;
 
   if ( mDeferredFeaturesInFilterRectCheck )
@@ -188,7 +188,7 @@ bool QgsAfsFeatureIterator::fetchFeature( QgsFeature &f )
     case QgsFeatureRequest::FilterExpression:
     case QgsFeatureRequest::FilterNone:
     {
-      while ( mFeatureIterator < mSource->sharedData()->featureCount() )
+      while ( mFeatureIterator < mSource->sharedData()->objectIdCount() )
       {
         if ( mInterruptionChecker && mInterruptionChecker->isCanceled() )
           return false;
@@ -196,7 +196,13 @@ bool QgsAfsFeatureIterator::fetchFeature( QgsFeature &f )
         if ( !mFeatureIdList.empty() && mRemainingFeatureIds.empty() )
           return false;
 
-        bool success = mSource->sharedData()->getFeature( mFeatureIterator, f, QgsRectangle(), mInterruptionChecker );
+        bool success = false;
+        bool isDeleted = mSource->sharedData()->isDeleted( mFeatureIterator );
+        if ( !isDeleted )
+        {
+          success = mSource->sharedData()->getFeature( mFeatureIterator, f, QgsRectangle(), mInterruptionChecker );
+        }
+
         if ( !mFeatureIdList.empty() )
         {
           mRemainingFeatureIds.removeAll( mFeatureIterator );
@@ -208,7 +214,7 @@ bool QgsAfsFeatureIterator::fetchFeature( QgsFeature &f )
           ++mFeatureIterator;
         }
 
-        if ( !mFilterRect.isNull() )
+        if ( success && !mFilterRect.isNull() )
         {
           if ( !f.hasGeometry() )
             success = false;

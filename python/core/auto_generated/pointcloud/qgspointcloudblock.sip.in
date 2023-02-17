@@ -44,6 +44,13 @@ Returns raw pointer to data
 Returns number of points that are stored in the block
 %End
 
+    int pointRecordSize() const;
+%Docstring
+Returns the total size of each individual point record.
+
+.. versionadded:: 3.26
+%End
+
     QgsPointCloudAttributeCollection attributes() const;
 %Docstring
 Returns the attributes that are stored in the data block, along with their size
@@ -58,6 +65,16 @@ Returns the custom scale of the block.
 %Docstring
 Returns the custom offset of the block.
 %End
+
+    void setPointCount( int size );
+%Docstring
+Changes the number of points in the block.
+This is used in order to remove all points after point ``size``.
+If a ``size`` larger than ``pointCount``() is used, data for the new points will be uninitialized
+
+.. versionadded:: 3.26
+%End
+
 };
 
 

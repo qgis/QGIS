@@ -235,6 +235,22 @@ Returns the smallest distance between the box and the point ``point``
 
     bool operator==( const QgsBox3d &other ) const;
 
+    void scale( double scaleFactor, const QgsPoint &center = QgsPoint() );
+%Docstring
+Scale the rectangle around a ``center`` :py:class:`QgsPoint`.
+
+If no ``center`` point is specified then the current center of the box will be used.
+
+.. versionadded:: 3.26
+%End
+
+    void scale( double scaleFactor, double centerX, double centerY, double centerZ );
+%Docstring
+Scale the rectangle around a center coordinates.
+
+.. versionadded:: 3.26
+%End
+
 };
 
 /************************************************************************

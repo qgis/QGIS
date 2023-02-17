@@ -9,6 +9,7 @@
 
 
 
+
 class QgsMapBoxGlStyleConversionContext
 {
 %Docstring(signature="appended")
@@ -138,14 +139,180 @@ Sets the layer ID of the layer currently being converted.
 
 };
 
+
+
+
+class QgsMapBoxGlStyleAbstractSource
+{
+%Docstring(signature="appended")
+Abstract base class for MapBox GL style sources.
+
+.. warning::
+
+   This is private API only, and may change in future QGIS versions
+
+.. versionadded:: 3.28
+%End
+
+%TypeHeaderCode
+#include "qgsmapboxglstyleconverter.h"
+%End
+  public:
+
+%ConvertToSubClassCode
+
+    switch ( sipCpp->type() )
+    {
+      case Qgis::MapBoxGlStyleSourceType::Raster:
+        sipType = sipType_QgsMapBoxGlStyleRasterSource;
+        break;
+      default:
+        sipType = 0;
+        break;
+    }
+%End
+
+    QgsMapBoxGlStyleAbstractSource( const QString &name );
+%Docstring
+Constructor for QgsMapBoxGlStyleAbstractSource.
+%End
+
+    virtual ~QgsMapBoxGlStyleAbstractSource();
+
+    virtual Qgis::MapBoxGlStyleSourceType type() const = 0;
+%Docstring
+Returns the source type.
+%End
+
+    virtual bool setFromJson( const QVariantMap &json, QgsMapBoxGlStyleConversionContext *context ) = 0;
+%Docstring
+Sets the source's state from a ``json`` map.
+%End
+
+    QString name() const;
+%Docstring
+Returns the source's name.
+%End
+
+};
+
+
+class QgsMapBoxGlStyleRasterSource : QgsMapBoxGlStyleAbstractSource
+{
+%Docstring(signature="appended")
+Encapsulates a MapBox GL style raster source.
+
+.. warning::
+
+   This is private API only, and may change in future QGIS versions
+
+.. versionadded:: 3.28
+%End
+
+%TypeHeaderCode
+#include "qgsmapboxglstyleconverter.h"
+%End
+  public:
+
+    QgsMapBoxGlStyleRasterSource( const QString &name );
+%Docstring
+Constructor for QgsMapBoxGlStyleRasterSource.
+%End
+
+    virtual Qgis::MapBoxGlStyleSourceType type() const;
+
+    virtual bool setFromJson( const QVariantMap &json, QgsMapBoxGlStyleConversionContext *context );
+
+
+    QString attribution() const;
+%Docstring
+Returns the source's attribution text.
+%End
+
+    int minimumZoom() const;
+%Docstring
+Returns the minimum tile zoom for which tiles are available.
+
+.. seealso:: :py:func:`maximumZoom`
+%End
+
+    int maximumZoom() const;
+%Docstring
+Returns the maximum tile zoom for which tiles are available.
+
+.. seealso:: :py:func:`minimumZoom`
+%End
+
+    int tileSize() const;
+%Docstring
+Returns the associated tile size.
+%End
+
+    QStringList tiles() const;
+%Docstring
+Returns the list of tile sources.
+%End
+
+    QgsRasterLayer *toRasterLayer() const /Factory/;
+%Docstring
+Returns a new raster layer representing the raster source, or ``None`` if the source cannot be represented as a raster layer.
+
+The caller takes ownership of the returned layer.
+%End
+
+};
+
+
+
+class QgsMapBoxGlStyleRasterSubLayer
+{
+%Docstring(signature="appended")
+Encapsulates a MapBox GL style raster sub layer.
+
+.. warning::
+
+   This is private API only, and may change in future QGIS versions
+
+.. versionadded:: 3.28
+%End
+
+%TypeHeaderCode
+#include "qgsmapboxglstyleconverter.h"
+%End
+  public:
+
+    QgsMapBoxGlStyleRasterSubLayer( const QString &id, const QString &source );
+%Docstring
+Constructor for QgsMapBoxGlStyleRasterSubLayer, with the given ``id`` and ``source``.
+%End
+
+    QString id() const;
+%Docstring
+Returns the layer's ID.
+%End
+
+    QString source() const;
+%Docstring
+Returns the layer's source.
+%End
+
+    QgsPropertyCollection &dataDefinedProperties();
+%Docstring
+Returns a reference to the layer's data defined properties.
+%End
+
+
+};
+
+
 class QgsMapBoxGlStyleConverter
 {
 %Docstring(signature="appended")
 Handles conversion of MapBox GL styles to QGIS vector tile renderers and labeling
 settings.
 
-Conversions are performed by calling :py:func:`~QgsMapBoxGlStyleConversionContext.convert` with either a JSON map or JSON
-string value, and then retrieving the results by calling :py:func:`~QgsMapBoxGlStyleConversionContext.renderer` or :py:func:`~QgsMapBoxGlStyleConversionContext.labeling`
+Conversions are performed by calling :py:func:`~QgsMapBoxGlStyleRasterSubLayer.convert` with either a JSON map or JSON
+string value, and then retrieving the results by calling :py:func:`~QgsMapBoxGlStyleRasterSubLayer.renderer` or :py:func:`~QgsMapBoxGlStyleRasterSubLayer.labeling`
 respectively.
 
 .. versionadded:: 3.16
@@ -154,6 +321,9 @@ respectively.
 %TypeHeaderCode
 #include "qgsmapboxglstyleconverter.h"
 %End
+  public:
+    static const QMetaObject staticMetaObject;
+
   public:
 
     QgsMapBoxGlStyleConverter();
@@ -168,6 +338,14 @@ Constructor for QgsMapBoxGlStyleConverter.
     {
       Success,
       NoLayerList,
+    };
+
+    enum class PropertyType
+    {
+      Color,
+      Numeric,
+      Opacity,
+      Point,
     };
 
     Result convert( const QVariantMap &style, QgsMapBoxGlStyleConversionContext *context = 0 );
@@ -224,15 +402,52 @@ Returns a new instance of a vector tile labeling representing the converted styl
 or ``None`` if the style could not be converted successfully.
 %End
 
+    QList< QgsMapBoxGlStyleAbstractSource * > sources();
+%Docstring
+Returns the list of converted sources.
+
+.. versionadded:: 3.28
+%End
+
+    QList< QgsMapBoxGlStyleRasterSubLayer > rasterSubLayers() const;
+%Docstring
+Returns a list of raster sub layers contained in the style.
+
+.. versionadded:: 3.28
+%End
+
+    QList< QgsMapLayer * > createSubLayers() const /Factory/;
+%Docstring
+Returns a list of new map layers corresponding to sublayers of the style, e.g. raster layers.
+
+The caller takes ownership of the returned layers.
+
+.. versionadded:: 3.28
+%End
+
   protected:
 
-    enum PropertyType
-    {
-      Color,
-      Numeric,
-      Opacity,
-      Point,
-    };
+    void parseSources( const QVariantMap &sources, QgsMapBoxGlStyleConversionContext *context = 0 );
+%Docstring
+Parse list of ``sources`` from JSON.
+
+.. warning::
+
+   This is private API only, and may change in future QGIS versions
+
+.. versionadded:: 3.28
+%End
+
+    void parseRasterSource( const QVariantMap &source, const QString &name, QgsMapBoxGlStyleConversionContext *context = 0 );
+%Docstring
+Parse a raster ``source`` from JSON.
+
+.. warning::
+
+   This is private API only, and may change in future QGIS versions
+
+.. versionadded:: 3.28
+%End
 
     void parseLayers( const QVariantList &layers, QgsMapBoxGlStyleConversionContext *context = 0 );
 %Docstring
@@ -391,7 +606,6 @@ For ``json`` with intermediate stops it uses :py:func:`~QgsMapBoxGlStyleConverte
    This is private API only, and may change in future QGIS versions
 %End
 
-
     static QString parsePointStops( double base, const QVariantList &stops, QgsMapBoxGlStyleConversionContext &context, double multiplier = 1 );
 %Docstring
 Takes values from stops and uses either :py:func:`~QgsMapBoxGlStyleConverter.scale_linear` or :py:func:`~QgsMapBoxGlStyleConverter.scale_exp` functions
@@ -435,6 +649,16 @@ Parses a list of interpolation stops containing string values.
          - defaultString: reasonable default value taken from stops
 %End
 
+
+    static QString parseLabelStops( const QVariantList &stops, QgsMapBoxGlStyleConversionContext &context );
+%Docstring
+Parses a list of interpolation stops containing label values.
+
+:param stops: definition of interpolation stops
+:param context: conversion context
+
+:return: converted expression
+%End
 
     static QgsProperty parseValueList( const QVariantList &json, PropertyType type, QgsMapBoxGlStyleConversionContext &context, double multiplier = 1,
                                        int maxOpacity = 255, QColor *defaultColor /Out/ = 0, double *defaultNumber /Out/ = 0 );

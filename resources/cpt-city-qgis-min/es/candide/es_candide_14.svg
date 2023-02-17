@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300px" height="45px" viewBox="0 0 300 45">
+  <g>
+    <defs>
+      <linearGradient id="ES Candide 14n" gradientUnits="objectBoundingBox" spreadMethod="pad" x1="0%" x2="100%" y1="0%" y2="0%">
+        <stop offset="0.00%" stop-color="rgb(245,161,162)" stop-opacity="1.0000"/>
+        <stop offset="14.99%" stop-color="rgb(249,220,221)" stop-opacity="1.0000"/>
+        <stop offset="23.00%" stop-color="rgb(247,185,186)" stop-opacity="1.0000"/>
+        <stop offset="31.01%" stop-color="rgb(245,228,229)" stop-opacity="1.0000"/>
+        <stop offset="39.99%" stop-color="rgb(246,173,174)" stop-opacity="1.0000"/>
+        <stop offset="80.00%" stop-color="rgb(250,218,219)" stop-opacity="1.0000"/>
+        <stop offset="98.00%" stop-color="rgb(245,229,230)" stop-opacity="1.0000"/>
+        <stop offset="100.00%" stop-color="rgb(245,229,230)" stop-opacity="1.0000"/>
+      </linearGradient>
+    </defs>
+    <rect fill="url(#ES Candide 14n)" x="4" y="4" width="292" height="37" stroke="black" stroke-width="1"/>
+  </g>
+  <metadata>
+    <creator name="cptutils" version="1.46"/>
+    <created date="Wed Aug 15 23:38:55 2012"/>
+  </metadata>
+</svg>

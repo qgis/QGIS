@@ -53,7 +53,7 @@ TestQgsMeshLayerPropertiesDialog::TestQgsMeshLayerPropertiesDialog() = default;
 //runs before all tests
 void TestQgsMeshLayerPropertiesDialog::initTestCase()
 {
-  qDebug() << "TestQgisAppClipboard::initTestCase()";
+  qDebug() << "TestQgsMeshLayerPropertiesDialog::initTestCase()";
   // init QGIS's paths - true means that all path will be inited from prefix
   QgsApplication::init();
   QgsApplication::initQgis();

@@ -19,13 +19,47 @@
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
 #include "qgsnetworkaccessmanager.h"
-#include "qgsapplication.h"
+#include "qgssettings.h"
+#include "qgsvariantutils.h"
 
+#include <QCache>
 #include <QEventLoop>
 #include <QNetworkCacheMetaData>
 #include <QCryptographicHash> // just for testing file:// fake_qgis_http_endpoint hack
 #include <QFuture>
 #include <QtConcurrent>
+
+static QMutex gMemoryCacheMmutex;
+static QCache<QUrl, std::pair<QDateTime, QByteArray>> gCache( 10 * 1024 * 1024 );
+
+static QByteArray getFromMemoryCache( const QUrl &url )
+{
+  QMutexLocker lock( &gMemoryCacheMmutex );
+  const std::pair<QDateTime, QByteArray> *entry = gCache.object( url );
+  if ( entry )
+  {
+    QgsSettings s;
+    const int delayOfCachingInSecs = s.value( QStringLiteral( "qgis/wfsMemoryCacheDelay" ), 60 ).toInt();
+    if ( entry->first.secsTo( QDateTime::currentDateTime() ) < delayOfCachingInSecs )
+    {
+      QgsDebugMsgLevel( QStringLiteral( "Reusing cached response from memory cache for %1" ).arg( url.toString() ), 4 );
+      return entry->second;
+    }
+  }
+  return QByteArray();
+}
+
+static void insertIntoMemoryCache( const QUrl &url, const QByteArray &response )
+{
+  QMutexLocker lock( &gMemoryCacheMmutex );
+  if ( response.size() <= gCache.maxCost() )
+  {
+    std::pair<QDateTime, QByteArray> *entry = new std::pair<QDateTime, QByteArray>();
+    entry->first = QDateTime::currentDateTime();
+    entry->second = response;
+    gCache.insert( url, entry, response.size() );
+  }
+}
 
 QgsBaseNetworkRequest::QgsBaseNetworkRequest( const QgsAuthorizationSettings &auth, const QString &translatedComponent )
   : mAuth( auth )
@@ -56,6 +90,17 @@ bool QgsBaseNetworkRequest::sendGET( const QUrl &url, const QString &acceptHeade
   mErrorCode = QgsBaseNetworkRequest::NoError;
   mForceRefresh = forceRefresh;
   mResponse.clear();
+
+  if ( synchronous )
+  {
+    mResponse = getFromMemoryCache( url );
+    if ( !mResponse.isEmpty() )
+    {
+      emit downloadProgress( mResponse.size(), mResponse.size() );
+      emit downloadFinished();
+      return true;
+    }
+  }
 
   QUrl modifiedUrl( url );
 
@@ -253,7 +298,31 @@ bool QgsBaseNetworkRequest::sendGET( const QUrl &url, const QString &acceptHeade
   {
     downloaderFunction();
   }
-  return success && mErrorMessage.isEmpty();
+
+  if ( !success || !mErrorMessage.isEmpty() )
+  {
+    return false;
+  }
+
+  if ( synchronous )
+  {
+    // Insert response of requests GetCapabilities, DescribeFeatureType or GetFeature
+    // with a COUNT=1 into a short-lived memory cache, as they are emitted
+    // repeatedly in interactive scenarios when adding a WFS layer.
+    QString urlString = url.toString();
+    if ( urlString.contains( QStringLiteral( "REQUEST=GetCapabilities" ) ) ||
+         urlString.contains( QStringLiteral( "REQUEST=DescribeFeatureType" ) ) ||
+         ( urlString.contains( QStringLiteral( "REQUEST=GetFeature" ) ) && urlString.contains( QStringLiteral( "COUNT=1" ) ) ) )
+    {
+      QgsSettings s;
+      if ( s.value( QStringLiteral( "qgis/wfsMemoryCacheAllowed" ), true ).toBool() )
+      {
+        insertIntoMemoryCache( url, mResponse );
+      }
+    }
+  }
+
+  return true;
 }
 
 bool QgsBaseNetworkRequest::sendPOST( const QUrl &url, const QString &contentTypeHeader, const QByteArray &data )
@@ -332,7 +401,7 @@ void QgsBaseNetworkRequest::replyProgress( qint64 bytesReceived, qint64 bytesTot
     if ( mReply->error() == QNetworkReply::NoError )
     {
       const QVariant redirect = mReply->attribute( QNetworkRequest::RedirectionTargetAttribute );
-      if ( !redirect.isNull() )
+      if ( !QgsVariantUtils::isNull( redirect ) )
       {
         // We don't want to emit downloadProgress() for a redirect
         return;
@@ -351,7 +420,7 @@ void QgsBaseNetworkRequest::replyFinished()
     {
       QgsDebugMsgLevel( QStringLiteral( "reply OK" ), 4 );
       const QVariant redirect = mReply->attribute( QNetworkRequest::RedirectionTargetAttribute );
-      if ( !redirect.isNull() )
+      if ( !QgsVariantUtils::isNull( redirect ) )
       {
         QgsDebugMsgLevel( QStringLiteral( "Request redirected." ), 4 );
 

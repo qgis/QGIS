@@ -43,20 +43,44 @@ Contains detailed styling information relating to how a layout legend should be 
 
     QgsLegendStyle();
 
-    QFont font() const;
+ QFont font() const /Deprecated/;
 %Docstring
 Returns the font used for rendering this legend component.
 
 .. seealso:: :py:func:`setFont`
+
+.. deprecated::
+   use :py:func:`~QgsLegendStyle.textFormat` instead
 %End
 
-    void setFont( const QFont &font );
+ void setFont( const QFont &font ) /Deprecated/;
 %Docstring
 Sets the ``font`` used for rendering this legend component.
 
 .. seealso:: :py:func:`font`
+
+.. deprecated::
+   use :py:func:`~QgsLegendStyle.setTextFormat` instead
 %End
 
+    QgsTextFormat &textFormat();
+%Docstring
+Returns the text format used for rendering this legend component.
+
+.. seealso:: :py:func:`setTextFormat`
+
+.. versionadded:: 3.30
+%End
+
+
+    void setTextFormat( const QgsTextFormat &format );
+%Docstring
+Sets the text ``format`` used for rendering this legend component.
+
+.. seealso:: :py:func:`textFormat`
+
+.. versionadded:: 3.30
+%End
 
     double margin( Side side );
 %Docstring
@@ -105,7 +129,7 @@ Sets the alignment for the legend component.
 .. versionadded:: 3.10
 %End
 
-    double indent();
+    double indent() const;
 %Docstring
 Returns the indent (in mm) of a group or subgroup.
 

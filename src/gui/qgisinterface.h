@@ -51,7 +51,6 @@ class QgsMasterLayoutInterface;
 class QgsLayoutDesignerInterface;
 class QgsMapCanvas;
 class QgsMapLayer;
-enum class QgsMapLayerType;
 class QgsMapLayerConfigWidgetFactory;
 class QgsMapDecoration;
 class QgsMessageBar;
@@ -70,6 +69,8 @@ class QgsDevToolWidgetFactory;
 class QgsGpsConnection;
 class QgsApplicationExitBlockerInterface;
 class QgsAbstractMapToolHandler;
+class QgsUserProfileManager;
+class QgsDataSourceManagerDialog;
 
 /**
  * \ingroup gui
@@ -111,7 +112,7 @@ class GUI_EXPORT QgisInterface : public QObject
      * \see addCustomActionForLayer()
      */
     virtual void addCustomActionForLayerType( QAction *action, QString menu,
-        QgsMapLayerType type, bool allLayers ) = 0;
+        Qgis::LayerType type, bool allLayers ) = 0;
 
     /**
      * Add action to context menu for a specific layer in the layer tree.
@@ -215,6 +216,51 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual QMenu *projectMenu() = 0;
 
     /**
+     * Returns a reference to the main window "Import/Export" project menu.
+     *
+     * \see addProjectImportAction()
+     * \see addProjectExportAction
+     * \since QGIS 3.30
+     */
+    virtual QMenu *projectImportExportMenu() = 0;
+
+    /**
+     * Adds an \a action to the QGIS "Import project" menu.
+     *
+     * \see removeProjectImportAction()
+     * \see addProjectExportAction()
+     * \since QGIS 3.30
+     */
+    virtual void addProjectImportAction( QAction *action ) = 0;
+
+    /**
+     * Adds an \a action to the QGIS "Import project" menu.
+     *
+     * \see addProjectImportAction()
+     * \see removeProjectExportAction()
+     * \since QGIS 3.30
+     */
+    virtual void removeProjectImportAction( QAction *action ) = 0;
+
+    /**
+     * Adds an \a action to the QGIS "Export project" menu.
+     *
+     * \see removeProjectExportAction()
+     * \see addProjectImportAction()
+     * \since QGIS 3.30
+     */
+    virtual void addProjectExportAction( QAction *action ) = 0;
+
+    /**
+     * Adds an \a action to the QGIS "Export project" menu.
+     *
+     * \see addProjectExportAction()
+     * \see removeProjectImportAction()
+     * \since QGIS 3.30
+     */
+    virtual void removeProjectExportAction( QAction *action ) = 0;
+
+    /**
      * Returns a reference to the main window "Edit" menu.
      */
     virtual QMenu *editMenu() = 0;
@@ -316,6 +362,15 @@ class GUI_EXPORT QgisInterface : public QObject
      * \since QGIS 3.4
      */
     virtual QToolBar *dataSourceManagerToolBar() = 0;
+
+    /**
+     * Opens a page in the main window "Data Source Manager" dialog.
+     *
+     * This method creates and opens the dialog if it is not already visible.
+     *
+     * \since QGIS 3.30
+     */
+    virtual void openDataSourceManagerPage( const QString &pageName ) = 0;
 
     /**
      * Returns a reference to the main window "Map Navigation" toolbar.
@@ -610,38 +665,102 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual QAction *actionAbout() = 0;
 
     // Shape digitize actions
-    //! Returns the native add circle from 2 points action. Call trigger() on it to set the map tool.
-    virtual QAction *actionCircle2Points()  = 0;
-    //! Returns the native add circle from 3 points action. Call trigger() on it to set the map tool.
-    virtual QAction *actionCircle3Points()  = 0;
-    //! Returns the native add circle from 3 tangents action. Call trigger() on it to set the map tool.
-    virtual QAction *actionCircle3Tangents()  = 0;
-    //! Returns the native add circle from 2 tangents and a point action. Call trigger() on it to set the map tool.
-    virtual QAction *actionCircle2TangentsPoint()  = 0;
-    //! Returns the native add circle from center action. Call trigger() on it to set the map tool.
-    virtual QAction *actionCircleCenterPoint()  = 0;
-    //! Returns the native add ellipse from center and 2 points action. Call trigger() on it to set the map tool.
-    virtual QAction *actionEllipseCenter2Points()  = 0;
-    //! Returns the native add ellipse from center and a point action. Call trigger() on it to set the map tool.
-    virtual QAction *actionEllipseCenterPoint()  = 0;
-    //! Returns the native add ellipse from an extent action. Call trigger() on it to set the map tool.
-    virtual QAction *actionEllipseExtent()  = 0;
-    //! Returns the native add ellipse from foci action. Call trigger() on it to set the map tool.
-    virtual QAction *actionEllipseFoci()  = 0;
-    //! Returns the native add rectangle from center and a point action. Call trigger() on it to set the map tool.
-    virtual QAction *actionRectangleCenterPoint()  = 0;
-    //! Returns the native add rectangle from extent action. Call trigger() on it to set the map tool.
-    virtual QAction *actionRectangleExtent()  = 0;
-    //! Returns the native add rectangle from 3 points (distance from 2nd and 3rd points) action. Call trigger() on it to set the map tool.
-    virtual QAction *actionRectangle3PointsDistance()  = 0;
-    //! Returns the native add rectangle from 3 points (distance from projected 3rd point on segment p1 and p2) action. Call trigger() on it to set the map tool.
-    virtual QAction *actionRectangle3PointsProjected()  = 0;
-    //! Returns the native add regular polygon from 2 points action. Call trigger() on it to set the map tool.
-    virtual QAction *actionRegularPolygon2Points()  = 0;
-    //! Returns the native add regular polygon from center and a point action. Call trigger() on it to set the map tool.
-    virtual QAction *actionRegularPolygonCenterPoint()  = 0;
-    //! Returns the native add regular polygon from center and a corner action. Call trigger() on it to set the map tool.
-    virtual QAction *actionRegularPolygonCenterCorner()  = 0;
+
+    /**
+     * Returns the native add circle from 2 points action. Call trigger() on it to set the map tool.
+     * \deprecated since QGIS 3.26 shape digitizing is now part of the add feature tool. To enable the shape tool, use QgsMapToolCapture::setCurrentCaptureTechnique() and then QgsMapToolCapture::setCurrentShapeMapTool().
+     */
+    Q_DECL_DEPRECATED virtual QAction *actionCircle2Points() SIP_DEPRECATED {return actionAddFeature();}
+
+    /**
+     * Returns the native add circle from 3 points action. Call trigger() on it to set the map tool.
+     * \deprecated since QGIS 3.26 shape digitizing is now part of the add feature tool. To enable the shape tool, use QgsMapToolCapture::setCurrentCaptureTechnique() and then QgsMapToolCapture::setCurrentShapeMapTool().
+     */
+    Q_DECL_DEPRECATED virtual QAction *actionCircle3Points() SIP_DEPRECATED {return actionAddFeature();}
+
+    /**
+     * Returns the native add circle from 3 tangents action. Call trigger() on it to set the map tool.
+     * \deprecated since QGIS 3.26 shape digitizing is now part of the add feature tool. To enable the shape tool, use QgsMapToolCapture::setCurrentCaptureTechnique() and then QgsMapToolCapture::setCurrentShapeMapTool().
+     */
+    Q_DECL_DEPRECATED virtual QAction *actionCircle3Tangents() SIP_DEPRECATED {return actionAddFeature();}
+
+    /**
+     * Returns the native add circle from 2 tangents and a point action. Call trigger() on it to set the map tool.
+     * \deprecated since QGIS 3.26 shape digitizing is now part of the add feature tool. To enable the shape tool, use QgsMapToolCapture::setCurrentCaptureTechnique() and then QgsMapToolCapture::setCurrentShapeMapTool().
+     */
+    Q_DECL_DEPRECATED virtual QAction *actionCircle2TangentsPoint() SIP_DEPRECATED {return actionAddFeature();}
+
+    /**
+     * Returns the native add circle from center action. Call trigger() on it to set the map tool.
+     * \deprecated since QGIS 3.26 shape digitizing is now part of the add feature tool. To enable the shape tool, use QgsMapToolCapture::setCurrentCaptureTechnique() and then QgsMapToolCapture::setCurrentShapeMapTool().
+     */
+    Q_DECL_DEPRECATED virtual QAction *actionCircleCenterPoint() SIP_DEPRECATED {return actionAddFeature();}
+
+    /**
+     * Returns the native add ellipse from center and 2 points action. Call trigger() on it to set the map tool.
+     * \deprecated since QGIS 3.26 shape digitizing is now part of the add feature tool. To enable the shape tool, use QgsMapToolCapture::setCurrentCaptureTechnique() and then QgsMapToolCapture::setCurrentShapeMapTool().
+     */
+    Q_DECL_DEPRECATED virtual QAction *actionEllipseCenter2Points() SIP_DEPRECATED {return actionAddFeature();}
+
+    /**
+     * Returns the native add ellipse from center and a point action. Call trigger() on it to set the map tool.
+     * \deprecated since QGIS 3.26 shape digitizing is now part of the add feature tool. To enable the shape tool, use QgsMapToolCapture::setCurrentCaptureTechnique() and then QgsMapToolCapture::setCurrentShapeMapTool().
+     */
+    Q_DECL_DEPRECATED virtual QAction *actionEllipseCenterPoint() SIP_DEPRECATED {return actionAddFeature();}
+
+    /**
+     * Returns the native add ellipse from an extent action. Call trigger() on it to set the map tool.
+     * \deprecated since QGIS 3.26 shape digitizing is now part of the add feature tool. To enable the shape tool, use QgsMapToolCapture::setCurrentCaptureTechnique() and then QgsMapToolCapture::setCurrentShapeMapTool().
+     */
+    Q_DECL_DEPRECATED virtual QAction *actionEllipseExtent() SIP_DEPRECATED {return actionAddFeature();}
+
+    /**
+     * Returns the native add ellipse from foci action. Call trigger() on it to set the map tool.
+     * \deprecated since QGIS 3.26 shape digitizing is now part of the add feature tool. To enable the shape tool, use QgsMapToolCapture::setCurrentCaptureTechnique() and then QgsMapToolCapture::setCurrentShapeMapTool().
+     */
+    Q_DECL_DEPRECATED virtual QAction *actionEllipseFoci() SIP_DEPRECATED {return actionAddFeature();}
+
+    /**
+     * Returns the native add rectangle from center and a point action. Call trigger() on it to set the map tool.
+     * \deprecated since QGIS 3.26 shape digitizing is now part of the add feature tool. To enable the shape tool, use QgsMapToolCapture::setCurrentCaptureTechnique() and then QgsMapToolCapture::setCurrentShapeMapTool().
+     */
+    Q_DECL_DEPRECATED virtual QAction *actionRectangleCenterPoint() SIP_DEPRECATED {return actionAddFeature();}
+
+    /**
+     * Returns the native add rectangle from extent action. Call trigger() on it to set the map tool.
+     * \deprecated since QGIS 3.26 shape digitizing is now part of the add feature tool. To enable the shape tool, use QgsMapToolCapture::setCurrentCaptureTechnique() and then QgsMapToolCapture::setCurrentShapeMapTool().
+     */
+    Q_DECL_DEPRECATED virtual QAction *actionRectangleExtent() SIP_DEPRECATED {return actionAddFeature();}
+
+    /**
+     * Returns the native add rectangle from 3 points (distance from 2nd and 3rd points) action. Call trigger() on it to set the map tool.
+     * \deprecated since QGIS 3.26 shape digitizing is now part of the add feature tool. To enable the shape tool, use QgsMapToolCapture::setCurrentCaptureTechnique() and then QgsMapToolCapture::setCurrentShapeMapTool().
+     */
+    Q_DECL_DEPRECATED virtual QAction *actionRectangle3PointsDistance() SIP_DEPRECATED {return actionAddFeature();}
+
+    /**
+     * Returns the native add rectangle from 3 points (distance from projected 3rd point on segment p1 and p2) action. Call trigger() on it to set the map tool.
+     * \deprecated since QGIS 3.26 shape digitizing is now part of the add feature tool. To enable the shape tool, use QgsMapToolCapture::setCurrentCaptureTechnique() and then QgsMapToolCapture::setCurrentShapeMapTool().
+     */
+    Q_DECL_DEPRECATED virtual QAction *actionRectangle3PointsProjected() SIP_DEPRECATED {return actionAddFeature();}
+
+    /**
+     * Returns the native add regular polygon from 2 points action. Call trigger() on it to set the map tool.
+     * \deprecated since QGIS 3.26 shape digitizing is now part of the add feature tool. To enable the shape tool, use QgsMapToolCapture::setCurrentCaptureTechnique() and then QgsMapToolCapture::setCurrentShapeMapTool().
+     */
+    Q_DECL_DEPRECATED virtual QAction *actionRegularPolygon2Points() SIP_DEPRECATED {return actionAddFeature();}
+
+    /**
+     * Returns the native add regular polygon from center and a point action. Call trigger() on it to set the map tool.
+     * \deprecated since QGIS 3.26 shape digitizing is now part of the add feature tool. To enable the shape tool, use QgsMapToolCapture::setCurrentCaptureTechnique() and then QgsMapToolCapture::setCurrentShapeMapTool().
+     */
+    Q_DECL_DEPRECATED virtual QAction *actionRegularPolygonCenterPoint() SIP_DEPRECATED {return actionAddFeature();}
+
+    /**
+     * Returns the native add regular polygon from center and a corner action. Call trigger() on it to set the map tool.
+     * \deprecated since QGIS 3.26 shape digitizing is now part of the add feature tool. To enable the shape tool, use QgsMapToolCapture::setCurrentCaptureTechnique() and then QgsMapToolCapture::setCurrentShapeMapTool().
+     */
+    Q_DECL_DEPRECATED virtual QAction *actionRegularPolygonCenterCorner() SIP_DEPRECATED {return actionAddFeature();}
 
     /**
      * Access the vector layer tools instance.
@@ -678,6 +797,12 @@ class GUI_EXPORT QgisInterface : public QObject
      * \since QGIS 3.10
      */
     virtual QgsLayerTreeRegistryBridge::InsertionPoint layerTreeInsertionPoint() = 0;
+
+    /**
+     * Returns a reference to the user profile manager
+     * \since QGIS 3.30
+    */
+    virtual QgsUserProfileManager *userProfileManager() = 0;
 
   public slots: // TODO: do these functions really need to be slots?
 
@@ -1001,20 +1126,21 @@ class GUI_EXPORT QgisInterface : public QObject
      * mOptsPage_Information, mOptsPage_Source, mOptsPage_Style, mOptsPage_Labels,
      * mOptsPage_Masks, mOptsPage_Diagrams, mOptsPage_SourceFields, mOptsPage_AttributesForm,
      * mOptsPage_Joins, mOptsPage_AuxiliaryStorage, mOptsPage_Actions, mOptsPage_Display,
-     * mOptsPage_Rendering, mOptsPage_Temporal, mOptsPage_Variables, mOptsPage_Metadata,
-     * mOptsPage_DataDependencies, mOptsPage_Legend, mOptsPage_Server
+     * mOptsPage_Rendering, mOptsPage_Temporal, mOptsPage_Variables, mOptsPage_Elevation,
+     * mOptsPage_Metadata, mOptsPage_DataDependencies, mOptsPage_Legend, mOptsPage_Server
      *
      * Raster Layer:
      * mOptsPage_Information, mOptsPage_Source, mOptsPage_Style, mOptsPage_Transparency,
      * mOptsPage_Histogram, mOptsPage_Rendering, mOptsPage_Temporal, mOptsPage_Pyramids,
-     * mOptsPage_Metadata, mOptsPage_Legend, mOptsPage_Server
+     * mOptsPage_Elevation, mOptsPage_Metadata, mOptsPage_Legend, mOptsPage_Server
      *
      * Mesh Layer:
      * mOptsPage_Information, mOptsPage_Source, mOptsPage_Style, mOptsPage_StyleContent,
-     * mOptsPage_Rendering, mOptsPage_Temporal, mOptsPage_Metadata
+     * mOptsPage_Rendering, mOptsPage_Temporal, mOptsPage_Elevation, mOptsPage_Metadata
      *
      * Point Cloud Layer:
-     * mOptsPage_Information, mOptsPage_Source, mOptsPage_Metadata, mOptsPage_Statistics
+     * mOptsPage_Information, mOptsPage_Source, mOptsPage_Elevation, mOptsPage_Metadata,
+     * mOptsPage_Statistics, mOptsPage_Rendering
      *
      * Vector Tile Layer:
      * mOptsPage_Information, mOptsPage_Style, mOptsPage_Labeling, mOptsPage_Metadata
@@ -1323,7 +1449,7 @@ class GUI_EXPORT QgisInterface : public QObject
      *
      * \since QGIS 3.16
      */
-    virtual void setGpsPanelConnection( QgsGpsConnection *connection ) = 0;
+    virtual void setGpsPanelConnection( QgsGpsConnection *connection SIP_TRANSFER ) = 0;
 
   signals:
 

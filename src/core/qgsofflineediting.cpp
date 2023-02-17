@@ -779,7 +779,7 @@ void QgsOfflineEditing::convertToOfflineLayer( QgsVectorLayer *layer, sqlite3 *d
       }
       hDS.reset();
 
-      const QString uri = QStringLiteral( "%1|layername=%2" ).arg( offlineDbPath,  tableName );
+      const QString uri = QStringLiteral( "%1|layername=%2|option:QGIS_FORCE_WAL=ON" ).arg( offlineDbPath,  tableName );
       const QgsVectorLayer::LayerOptions layerOptions { QgsProject::instance()->transformContext() };
       newLayer = std::make_unique<QgsVectorLayer>( uri, layer->name() + layerNameSuffix, QStringLiteral( "ogr" ), layerOptions );
       break;

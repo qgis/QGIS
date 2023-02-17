@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<copying>
+  <authors>
+    <author href="http://www.sci.muni.cz/~mikulik/english.html">
+      <name>Petr Mikulik</name>
+      <org>Masaryk University</org>
+    </author>
+  </authors>
+  <license>
+    <informal>GPLv2</informal>
+    <year>2006</year>
+    <text href="http://www.gnu.org/licenses/gpl-2.0.html"/>
+  </license>
+  <src>
+    <format>Gnuplot output</format>
+    <link href="http://gnuplot.sourceforge.net/demo/pm3dcolors.html">pm3d colour scale examples</link>
+  </src>
+  <distribute>
+    <qgis distribute="yes" license="gplv2"/>
+  </distribute>
+</copying>

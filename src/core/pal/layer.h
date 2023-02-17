@@ -37,6 +37,7 @@
 #include "pal.h" // for LineArrangementFlags enum
 #include "qgsgeos.h"
 #include "qgsgenericspatialindex.h"
+#include "qgslabelobstaclesettings.h"
 #include <QMutex>
 #include <QLinkedList>
 #include <QHash>
@@ -68,12 +69,6 @@ namespace pal
       friend class LabelPosition;
 
     public:
-      enum UpsideDownLabels
-      {
-        Upright, // upside-down labels (90 <= angle < 270) are shown upright
-        ShowDefined, // show upside down when rotation is layer- or data-defined
-        ShowAll // show upside down for all labels, including dynamic ones
-      };
 
       /**
        * \brief Create a new layer
@@ -85,14 +80,10 @@ namespace pal
        * \param active is the layer is active (currently displayed)
        * \param toLabel the layer will be labeled whether toLablel is TRUE
        * \param pal pointer to the pal object
-       * \param displayAll if TRUE, all features will be labelled even though overlaps occur
-       *
        */
-      Layer( QgsAbstractLabelProvider *provider, const QString &name, QgsPalLayerSettings::Placement arrangement, double defaultPriority, bool active, bool toLabel, Pal *pal, bool displayAll = false );
+      Layer( QgsAbstractLabelProvider *provider, const QString &name, Qgis::LabelPlacement arrangement, double defaultPriority, bool active, bool toLabel, Pal *pal );
 
       virtual ~Layer();
-
-      bool displayAll() const { return mDisplayAll; }
 
       /**
        * Returns the number of features in layer.
@@ -174,19 +165,19 @@ namespace pal
        * Returns the layer's arrangement policy.
        * \see setArrangement
        */
-      QgsPalLayerSettings::Placement arrangement() const { return mArrangement; }
+      Qgis::LabelPlacement arrangement() const { return mArrangement; }
 
       /**
        * Returns TRUE if the layer has curved labels
        */
-      bool isCurved() const { return mArrangement == QgsPalLayerSettings::Curved || mArrangement == QgsPalLayerSettings::PerimeterCurved; }
+      bool isCurved() const { return mArrangement == Qgis::LabelPlacement::Curved || mArrangement == Qgis::LabelPlacement::PerimeterCurved; }
 
       /**
        * Sets the layer's arrangement policy.
        * \param arrangement arrangement policy
        * \see arrangement
        */
-      void setArrangement( QgsPalLayerSettings::Placement arrangement ) { mArrangement = arrangement; }
+      void setArrangement( Qgis::LabelPlacement arrangement ) { mArrangement = arrangement; }
 
       /**
        * \brief Sets whether the layer is currently active.
@@ -269,13 +260,13 @@ namespace pal
        * \param ud upside down label handling mode
        * \see upsidedownLabels
        */
-      void setUpsidedownLabels( UpsideDownLabels ud ) { mUpsidedownLabels = ud; }
+      void setUpsidedownLabels( Qgis::UpsideDownLabelHandling ud ) { mUpsidedownLabels = ud; }
 
       /**
        * Returns how upside down labels are handled within the layer.
        * \see setUpsidedownLabels
        */
-      UpsideDownLabels upsidedownLabels() const { return mUpsidedownLabels; }
+      Qgis::UpsideDownLabelHandling upsidedownLabels() const { return mUpsidedownLabels; }
 
       /**
        * Sets whether labels placed at the centroid of features within the layer
@@ -336,15 +327,14 @@ namespace pal
       QgsLabelObstacleSettings::ObstacleType mObstacleType = QgsLabelObstacleSettings::PolygonBoundary;
       bool mActive;
       bool mLabelLayer;
-      bool mDisplayAll;
-      bool mCentroidInside;
+      bool mCentroidInside = false;
 
       //! Optional flags used for some placement methods
-      QgsPalLayerSettings::Placement mArrangement;
+      Qgis::LabelPlacement mArrangement;
 
-      bool mMergeLines;
+      bool mMergeLines = false;
 
-      UpsideDownLabels mUpsidedownLabels;
+      Qgis::UpsideDownLabelHandling mUpsidedownLabels = Qgis::UpsideDownLabelHandling::FlipUpsideDownLabels;
 
       //! Lookup table of label features (owned by the label feature provider that created them)
       QHash< QgsFeatureId, QgsLabelFeature *> mHashtable;

@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<copying>
+  <authors>
+    <author href="https://www.stadt-zuerich.ch/statistik">
+      <name>Statistik Stadt Zürich</name>
+    </author>
+  </authors>
+  <license>
+    <informal>
+      Creative Commons 4.0 BY-SA
+    </informal>
+    <year>2015</year>
+    <text href="https://creativecommons.org/licenses/by-sa/4.0/"/>
+  </license>
+  <src>
+    <format>png</format>
+  </src>
+  <distribute>
+    <qgis distribute="yes" license="cc4sa"/>
+  </distribute>
+</copying>

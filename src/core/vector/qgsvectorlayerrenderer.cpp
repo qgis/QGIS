@@ -15,16 +15,13 @@
 
 #include "qgsvectorlayerrenderer.h"
 
-#include "diagram/qgsdiagram.h"
 
-#include "qgsdiagramrenderer.h"
 #include "qgsmessagelog.h"
 #include "qgspallabeling.h"
 #include "qgsrenderer.h"
 #include "qgsrendercontext.h"
 #include "qgssinglesymbolrenderer.h"
 #include "qgssymbollayer.h"
-#include "qgssymbollayerutils.h"
 #include "qgssymbol.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerdiagramprovider.h"
@@ -42,6 +39,7 @@
 #include "qgsvectorlayertemporalproperties.h"
 #include "qgsmapclippingutils.h"
 #include "qgsfeaturerenderergenerator.h"
+#include "qgssettingsentryimpl.h"
 
 #include <QPicture>
 #include <QTimer>
@@ -52,6 +50,7 @@ QgsVectorLayerRenderer::QgsVectorLayerRenderer( QgsVectorLayer *layer, QgsRender
   , mLayer( layer )
   , mFields( layer->fields() )
   , mSource( std::make_unique< QgsVectorLayerFeatureSource >( layer ) )
+  , mNoSetLayerExpressionContext( layer->customProperty( QStringLiteral( "_noset_layer_expression_context" ) ).toBool() )
 {
   std::unique_ptr< QgsFeatureRenderer > mainRenderer( layer->renderer() ? layer->renderer()->clone() : nullptr );
 
@@ -115,9 +114,9 @@ QgsVectorLayerRenderer::QgsVectorLayerRenderer( QgsVectorLayer *layer, QgsRender
     mSimplifyGeometry = layer->simplifyDrawingCanbeApplied( *renderContext(), QgsVectorSimplifyMethod::GeometrySimplification );
   }
 
-  mVertexMarkerOnlyForSelection = QgsSettingsRegistryCore::settingsDigitizingMarkerOnlyForSelected.value();
+  mVertexMarkerOnlyForSelection = QgsSettingsRegistryCore::settingsDigitizingMarkerOnlyForSelected->value();
 
-  QString markerTypeString = QgsSettingsRegistryCore::settingsDigitizingMarkerStyle.value();
+  QString markerTypeString = QgsSettingsRegistryCore::settingsDigitizingMarkerStyle->value();
   if ( markerTypeString == QLatin1String( "Cross" ) )
   {
     mVertexMarkerStyle = Qgis::VertexMarkerType::Cross;
@@ -131,7 +130,7 @@ QgsVectorLayerRenderer::QgsVectorLayerRenderer( QgsVectorLayer *layer, QgsRender
     mVertexMarkerStyle = Qgis::VertexMarkerType::NoMarker;
   }
 
-  mVertexMarkerSize = QgsSettingsRegistryCore::settingsDigitizingMarkerSizeMm.value();
+  mVertexMarkerSize = QgsSettingsRegistryCore::settingsDigitizingMarkerSizeMm->value();
 
   QgsDebugMsgLevel( "rendering v2:\n  " + mRenderer->dump(), 2 );
 
@@ -140,7 +139,8 @@ QgsVectorLayerRenderer::QgsVectorLayerRenderer( QgsVectorLayer *layer, QgsRender
     // set editing vertex markers style (main renderer only)
     mRenderer->setVertexMarkerAppearance( mVertexMarkerStyle, mVertexMarkerSize );
   }
-  renderContext()->expressionContext() << QgsExpressionContextUtils::layerScope( layer );
+  if ( !mNoSetLayerExpressionContext )
+    renderContext()->expressionContext() << QgsExpressionContextUtils::layerScope( layer );
 
   for ( const std::unique_ptr< QgsFeatureRenderer > &renderer : mRenderers )
   {
@@ -273,7 +273,7 @@ bool QgsVectorLayerRenderer::renderInternal( QgsFeatureRenderer *renderer )
     mClipFeatureGeom = QgsMapClippingUtils::calculateFeatureIntersectionGeometry( mClippingRegions, context, mApplyClipGeometries );
 
     bool needsPainterClipPath = false;
-    const QPainterPath path = QgsMapClippingUtils::calculatePainterClipRegion( mClippingRegions, context, QgsMapLayerType::VectorLayer, needsPainterClipPath );
+    const QPainterPath path = QgsMapClippingUtils::calculatePainterClipRegion( mClippingRegions, context, Qgis::LayerType::Vector, needsPainterClipPath );
     if ( needsPainterClipPath )
       context.painter()->setClipPath( path, Qt::IntersectClip );
 
@@ -456,7 +456,8 @@ void QgsVectorLayerRenderer::drawRenderer( QgsFeatureRenderer *renderer, QgsFeat
       if ( mApplyClipGeometries )
         context.setFeatureClipGeometry( mClipFeatureGeom );
 
-      context.expressionContext().setFeature( fet );
+      if ( ! mNoSetLayerExpressionContext )
+        context.expressionContext().setFeature( fet );
 
       bool sel = isMainRenderer && context.showSelection() && mSelectedFeatureIds.contains( fet.id() );
       bool drawMarker = isMainRenderer && ( mDrawVertexMarkers && context.drawEditingInformation() && ( !mVertexMarkerOnlyForSelection || sel ) );
@@ -577,7 +578,8 @@ void QgsVectorLayerRenderer::drawRendererLevels( QgsFeatureRenderer *renderer, Q
     if ( clipEngine && !clipEngine->intersects( fet.geometry().constGet() ) )
       continue; // skip features outside of clipping region
 
-    context.expressionContext().setFeature( fet );
+    if ( ! mNoSetLayerExpressionContext )
+      context.expressionContext().setFeature( fet );
     QgsSymbol *sym = renderer->symbolForFeature( fet, context );
     if ( !sym )
     {
@@ -681,7 +683,8 @@ void QgsVectorLayerRenderer::drawRendererLevels( QgsFeatureRenderer *renderer, Q
         // maybe vertex markers should be drawn only during the last pass...
         bool drawMarker = isMainRenderer && ( mDrawVertexMarkers && context.drawEditingInformation() && ( !mVertexMarkerOnlyForSelection || sel ) );
 
-        context.expressionContext().setFeature( *fit );
+        if ( ! mNoSetLayerExpressionContext )
+          context.expressionContext().setFeature( *fit );
 
         try
         {

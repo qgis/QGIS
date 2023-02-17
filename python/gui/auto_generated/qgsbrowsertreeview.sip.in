@@ -8,6 +8,11 @@
 
 
 
+// this is needed for the "convert to subclass" code below to compile
+%ModuleHeaderCode
+#include "qgsbrowsertreeview.h"
+%End
+
 
 class QgsBrowserTreeView : QTreeView
 {
@@ -21,6 +26,12 @@ The :py:class:`QgsBrowserTreeView` class extends QTreeView with save/restore tre
 
 %TypeHeaderCode
 #include "qgsbrowsertreeview.h"
+%End
+%ConvertToSubClassCode
+    if ( qobject_cast<QgsBrowserTreeView *>( sipCpp ) != nullptr )
+      sipType = sipType_QgsBrowserTreeView;
+    else
+      sipType = nullptr;
 %End
   public:
 
@@ -47,6 +58,24 @@ Returns the browser model
     bool hasExpandedDescendant( const QModelIndex &index ) const;
 
     void setSettingsSection( const QString &section );
+
+    bool setSelectedItem( QgsDataItem *item );
+%Docstring
+Sets the ``item`` currently selected in the view.
+
+Returns ``True`` if the item was found and could be selected.
+
+.. versionadded:: 3.28
+%End
+
+    void expandPath( const QString &path );
+%Docstring
+Expands out a file ``path`` in the view.
+
+The ``path`` must correspond to a valid directory existing on the file system.
+
+.. versionadded:: 3.28
+%End
 
   protected:
 

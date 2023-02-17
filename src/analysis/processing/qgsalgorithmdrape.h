@@ -55,6 +55,10 @@ class QgsDrapeAlgorithmBase : public QgsProcessingFeatureBasedAlgorithm
     bool mDynamicScale = false;
     QgsProperty mScaleProperty;
 
+    double mOffset = 0.0;
+    bool mDynamicOffset = false;
+    QgsProperty mOffsetProperty;
+
     std::unique_ptr< QgsRasterDataProvider > mRasterProvider;
     int mBand = 1;
     QgsRectangle mRasterExtent;

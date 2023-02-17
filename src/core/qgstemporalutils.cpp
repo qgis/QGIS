@@ -99,8 +99,12 @@ bool QgsTemporalUtils::exportAnimation( const QgsMapSettings &mapSettings, const
   QgsTemporalNavigationObject navigator;
   navigator.setTemporalExtents( settings.animationRange );
   navigator.setFrameDuration( settings.frameDuration );
+  if ( settings.frameDuration.originalUnit() == QgsUnitTypes::TemporalIrregularStep )
+    navigator.setAvailableTemporalRanges( settings.availableTemporalRanges );
+
   QgsMapSettings ms = mapSettings;
   const QgsExpressionContext context = ms.expressionContext();
+  ms.setFrameRate( settings.frameRate );
 
   const long long totalFrames = navigator.totalFrameCount();
   long long currentFrame = 0;
@@ -121,6 +125,7 @@ bool QgsTemporalUtils::exportAnimation( const QgsMapSettings &mapSettings, const
 
     ms.setIsTemporal( true );
     ms.setTemporalRange( navigator.dateTimeRangeForFrameNumber( currentFrame ) );
+    ms.setCurrentFrame( currentFrame );
 
     QgsExpressionContext frameContext = context;
     frameContext.appendScope( navigator.createExpressionContextScope() );

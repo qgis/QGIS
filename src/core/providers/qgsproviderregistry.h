@@ -276,9 +276,21 @@ class CORE_EXPORT QgsProviderRegistry
 
     /**
      * Loads a layer style defined by \a uri
+     * \returns the style QML (XML)
      * \since QGIS 3.10
      */
-    QString loadStyle( const QString &providerKey,  const QString &uri, QString &errCause );
+    QString loadStyle( const QString &providerKey, const QString &uri, QString &errCause );
+
+    /**
+     * Loads a layer style from the provider storage, reporting its name.
+     * \param providerKey name of the data provider
+     * \param uri data source uri
+     * \param styleName the name of the style if available, empty otherwise
+     * \param errCause report errors
+     * \returns the style QML (XML)
+     * \since QGIS 3.30
+     */
+    QString loadStoredStyle( const QString &providerKey, const QString &uri, QString &styleName, QString &errCause );
 
     /**
      * Saves \a metadata to the layer corresponding to the specified \a uri.
@@ -319,7 +331,7 @@ class CORE_EXPORT QgsProviderRegistry
      *
      * \deprecated QGIS 3.10 - any provider functionality should be accessed through QgsProviderMetadata
      */
-    Q_DECL_DEPRECATED QFunctionPointer function( const QString &providerKey, const QString &functionName ) SIP_DEPRECATED;
+    Q_DECL_DEPRECATED QFunctionPointer function( const QString &providerKey, const QString &functionName ) const SIP_DEPRECATED;
 
     /**
      * Returns a new QLibrary for the specified \a providerKey. Ownership of the returned
@@ -339,6 +351,14 @@ class CORE_EXPORT QgsProviderRegistry
     QgsProviderMetadata *providerMetadata( const QString &providerKey ) const;
 
     /**
+     * Returns a list of the provider keys for available providers which handle the specified
+     * layer \a type.
+     *
+     * \since QGIS 3.26
+     */
+    QSet< QString > providersForLayerType( Qgis::LayerType type ) const;
+
+    /**
      * \ingroup core
      *
      * \brief Contains information pertaining to a candidate provider.
@@ -353,7 +373,7 @@ class CORE_EXPORT QgsProviderRegistry
         /**
          * Constructor for ProviderCandidateDetails, with the specified provider \a metadata and valid candidate \a layerTypes.
          */
-        ProviderCandidateDetails( QgsProviderMetadata *metadata, const QList< QgsMapLayerType > &layerTypes )
+        ProviderCandidateDetails( QgsProviderMetadata *metadata, const QList< Qgis::LayerType > &layerTypes )
           : mMetadata( metadata )
           , mLayerTypes( layerTypes )
         {}
@@ -367,7 +387,7 @@ class CORE_EXPORT QgsProviderRegistry
          * Returns a list of map layer types which are valid options for opening the
          * target using this candidate provider.
          */
-        QList<QgsMapLayerType> layerTypes() const { return mLayerTypes; }
+        QList<Qgis::LayerType> layerTypes() const { return mLayerTypes; }
 
 #ifdef SIP_RUN
         SIP_PYOBJECT __repr__();
@@ -380,7 +400,7 @@ class CORE_EXPORT QgsProviderRegistry
       private:
         QgsProviderMetadata *mMetadata = nullptr;
 
-        QList< QgsMapLayerType > mLayerTypes;
+        QList< Qgis::LayerType > mLayerTypes;
 
     };
 
@@ -423,7 +443,7 @@ class CORE_EXPORT QgsProviderRegistry
          * The optional \a layerTypes argument can be used to specify layer types which are usually valid
          * options for opening the URI.
          */
-        UnusableUriDetails( const QString &uri = QString(), const QString &warning = QString(), const QList< QgsMapLayerType > &layerTypes = QList< QgsMapLayerType >() )
+        UnusableUriDetails( const QString &uri = QString(), const QString &warning = QString(), const QList< Qgis::LayerType > &layerTypes = QList< Qgis::LayerType >() )
           : uri( uri )
           , warning( warning )
           , layerTypes( layerTypes )
@@ -448,7 +468,7 @@ class CORE_EXPORT QgsProviderRegistry
          * Contains a list of map layer types which are usually valid options for opening the
          * target URI.
          */
-        QList<QgsMapLayerType> layerTypes;
+        QList<Qgis::LayerType> layerTypes;
 
 #ifdef SIP_RUN
         SIP_PYOBJECT __repr__();
@@ -747,4 +767,3 @@ class CORE_EXPORT QgsProviderRegistry
 }; // class QgsProviderRegistry
 
 #endif //QGSPROVIDERREGISTRY_H
-

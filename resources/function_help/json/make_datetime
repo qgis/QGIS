@@ -3,15 +3,28 @@
   "type": "function",
   "groups": ["Date and Time"],
   "description": "Creates a datetime value from year, month, day, hour, minute and second numbers.",
-  "arguments": [
-    {"arg":"year","description":"Year number. Years 1 to 99 are interpreted as is. Year 0 is invalid."},
-    {"arg":"month","description":"Month number, where 1=January"},
-    {"arg":"day", "description":"Day number, beginning with 1 for the first day in the month"},
-    {"arg":"hour", "description":"Hour number"},
-    {"arg":"minute", "description":"Minutes"},
-    {"arg":"second", "description":"Seconds (fractional values include milliseconds)"}    
-  ],
-  "examples": [
-    { "expression":"make_datetime(2020,5,4,13,45,30.5)", "returns":"datetime value 2020-05-04 13:45:30.500"}
-  ]
+  "arguments": [{
+    "arg": "year",
+    "description": "Year number. Years 1 to 99 are interpreted as is. Year 0 is invalid."
+  }, {
+    "arg": "month",
+    "description": "Month number, where 1=January"
+  }, {
+    "arg": "day",
+    "description": "Day number, beginning with 1 for the first day in the month"
+  }, {
+    "arg": "hour",
+    "description": "Hour number"
+  }, {
+    "arg": "minute",
+    "description": "Minutes"
+  }, {
+    "arg": "second",
+    "description": "Seconds (fractional values include milliseconds)"
+  }],
+  "examples": [{
+    "expression": "make_datetime(2020,5,4,13,45,30.5)",
+    "returns": "datetime value 2020-05-04 13:45:30.500"
+  }],
+  "tags": ["minute", "month", "numbers", "day", "year", "second", "hour", "datetime"]
 }

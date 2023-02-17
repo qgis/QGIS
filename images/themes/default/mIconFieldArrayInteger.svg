@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="16" height="16" version="1.1" xmlns="http://www.w3.org/2000/svg">
+ <g transform="translate(0,-2.176e-4)" fill="#555" aria-label="[]">
+  <path d="m2.0417 3.0781h3.2344v1.1719h-1.4635v7.5005h1.4635v1.1719h-3.2344z"/>
+  <path d="m13.958 12.922h-3.2344v-1.1719h1.4635v-7.5005h-1.4635v-1.1719h3.2344z"/>
+ </g>
+ <g transform="translate(.31907 -20.639)" fill="#555" stroke="#555" stroke-width=".417" aria-label="123">
+  <path d="m5.5747 30.803h1.4679v-4.3103l-1.3656 0.33807v-1.1832l1.3745-0.32917h1.2677v5.4847h1.4679v1.1565h-4.2125z"/>
+ </g>
+</svg>

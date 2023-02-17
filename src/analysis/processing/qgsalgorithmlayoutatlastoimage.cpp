@@ -114,7 +114,7 @@ void QgsLayoutAtlasToImageAlgorithm::initAlgorithm( const QVariantMap & )
 
 QgsProcessingAlgorithm::Flags QgsLayoutAtlasToImageAlgorithm::flags() const
 {
-  return QgsProcessingAlgorithm::flags() | FlagNoThreading;
+  return QgsProcessingAlgorithm::flags() | FlagNoThreading | FlagRequiresProject;
 }
 
 QgsLayoutAtlasToImageAlgorithm *QgsLayoutAtlasToImageAlgorithm::createInstance() const

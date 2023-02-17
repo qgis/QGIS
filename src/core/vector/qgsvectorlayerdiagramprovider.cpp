@@ -23,6 +23,7 @@
 #include "qgsgeos.h"
 #include "qgslabelingresults.h"
 #include "qgsrendercontext.h"
+#include "qgsexpressioncontextutils.h"
 
 #include "feature.h"
 #include "labelposition.h"
@@ -37,6 +38,9 @@ QgsVectorLayerDiagramProvider::QgsVectorLayerDiagramProvider( QgsVectorLayer *la
   , mOwnsSource( ownFeatureLoop )
 {
   init();
+
+  // we have to create an expression context scope for the layer in advance, while we still have access to the layer itself
+  mLayerScope.reset( layer->createExpressionContextScope() );
 }
 
 
@@ -44,7 +48,7 @@ void QgsVectorLayerDiagramProvider::init()
 {
   mName = mLayerId;
   mPriority = 1 - mSettings.priority() / 10.0; // convert 0..10 --> 1..0
-  mPlacement = QgsPalLayerSettings::Placement( mSettings.placement() );
+  mPlacement = static_cast< Qgis::LabelPlacement >( mSettings.placement() );
 }
 
 
@@ -115,13 +119,11 @@ void QgsVectorLayerDiagramProvider::drawLabel( QgsRenderContext &context, pal::L
 #endif
 
   QgsDiagramLabelFeature *dlf = dynamic_cast<QgsDiagramLabelFeature *>( label->getFeaturePart()->feature() );
+  const QgsFeature feature = dlf->feature();
 
-  QgsFeature feature;
-  feature.setFields( mFields );
-  feature.setValid( true );
-  feature.setId( label->getFeaturePart()->featureId() );
-  feature.setAttributes( dlf->attributes() );
-
+  // at time of drawing labels the expression context won't contain a layer scope -- so we manually add it here so that
+  // associated variables work correctly
+  QgsExpressionContextScopePopper layerScopePopper( context.expressionContext(), new QgsExpressionContextScope( *mLayerScope ) );
   context.expressionContext().setFeature( feature );
 
   //calculate top-left point for diagram
@@ -143,9 +145,7 @@ void QgsVectorLayerDiagramProvider::drawLabel( QgsRenderContext &context, pal::L
 
   //insert into label search tree to manipulate position interactively
   mEngine->results()->mLabelSearchTree->insertLabel( label, label->getFeaturePart()->featureId(), mLayerId, QString(), QFont(), true, false );
-
 }
-
 
 bool QgsVectorLayerDiagramProvider::prepare( const QgsRenderContext &context, QSet<QString> &attributeNames )
 {
@@ -184,7 +184,7 @@ void QgsVectorLayerDiagramProvider::setClipFeatureGeometry( const QgsGeometry &g
   mLabelClipFeatureGeom = geometry;
 }
 
-QgsLabelFeature *QgsVectorLayerDiagramProvider::registerDiagram( QgsFeature &feat, QgsRenderContext &context, const QgsGeometry &obstacleGeometry )
+QgsLabelFeature *QgsVectorLayerDiagramProvider::registerDiagram( const QgsFeature &feat, QgsRenderContext &context, const QgsGeometry &obstacleGeometry )
 {
   const QgsMapSettings &mapSettings = mEngine->mapSettings();
 
@@ -296,7 +296,7 @@ QgsLabelFeature *QgsVectorLayerDiagramProvider::registerDiagram( QgsFeature &fea
     }
   }
 
-  QgsDiagramLabelFeature *lf = new QgsDiagramLabelFeature( feat.id(), QgsGeos::asGeos( geom ), QSizeF( diagramWidth, diagramHeight ) );
+  QgsDiagramLabelFeature *lf = new QgsDiagramLabelFeature( feat, QgsGeos::asGeos( geom ), QSizeF( diagramWidth, diagramHeight ) );
   lf->setHasFixedPosition( ddPos );
   lf->setFixedPosition( QgsPointXY( ddPosX, ddPosY ) );
   lf->setHasFixedAngle( true );
@@ -306,12 +306,6 @@ QgsLabelFeature *QgsVectorLayerDiagramProvider::registerDiagram( QgsFeature &fea
   os.setIsObstacle( isObstacle );
   os.setObstacleGeometry( preparedObstacleGeom );
   lf->setObstacleSettings( os );
-
-  if ( dr )
-  {
-    //append the diagram attributes to lbl
-    lf->setAttributes( feat.attributes() );
-  }
 
   // data defined priority?
   if ( mSettings.dataDefinedProperties().hasProperty( QgsDiagramLayerSettings::Priority )

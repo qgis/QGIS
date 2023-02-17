@@ -16,13 +16,14 @@
  ***************************************************************************/
 #include "qgsdatasourceuri.h"
 #include "qgshanaexception.h"
+#include "qgshanasettings.h"
 #include "qgshanautils.h"
 
 #include <QDate>
 #include <QTime>
 #include <QDateTime>
 
-using namespace odbc;
+using namespace NS_ODBC;
 
 namespace
 {
@@ -48,14 +49,28 @@ QString QgsHanaUtils::connectionInfo( const QgsDataSourceUri &uri )
       connectionItems << QStringLiteral( "%1=%2" ).arg( key, value );
   };
 
-  if ( !uri.database().isEmpty() )
-    addItem( "dbname", escape( uri.database() ) );
-  if ( !uri.host().isEmpty() )
-    addItem( "host", escape( uri.host() ), false );
-  if ( !uri.port().isEmpty() )
-    addItem( "port", uri.port(), false );
-  if ( !uri.driver().isEmpty() )
-    addItem( "driver", escape( uri.driver() ) );
+  QgsHanaConnectionType connType = QgsHanaConnectionType::HostPort;
+  if ( uri.hasParam( "connectionType" ) )
+    connType = static_cast<QgsHanaConnectionType>( uri.param( "connectionType" ).toUInt() );
+
+  addItem( "connectionType", QString::number( static_cast<uint>( connType ) ) );
+  switch ( connType )
+  {
+    case QgsHanaConnectionType::Dsn:
+      if ( uri.hasParam( "dsn" ) )
+        addItem( "dsn", escape( uri.param( "dsn" ) ) );
+      break;
+    case QgsHanaConnectionType::HostPort:
+      if ( !uri.database().isEmpty() )
+        addItem( "dbname", escape( uri.database() ) );
+      if ( !uri.host().isEmpty() )
+        addItem( "host", escape( uri.host() ), false );
+      if ( !uri.port().isEmpty() )
+        addItem( "port", uri.port(), false );
+      if ( !uri.driver().isEmpty() )
+        addItem( "driver", escape( uri.driver() ) );
+      break;
+  }
 
   if ( !uri.username().isEmpty() )
   {
@@ -337,6 +352,24 @@ QVariant QgsHanaUtils::toVariant( const Binary &value )
 const char16_t *QgsHanaUtils::toUtf16( const QString &sql )
 {
   return reinterpret_cast<const char16_t *>( sql.utf16() );
+}
+
+bool QgsHanaUtils::isGeometryTypeSupported( QgsWkbTypes::Type wkbType )
+{
+  switch ( QgsWkbTypes::flatType( wkbType ) )
+  {
+    case QgsWkbTypes::Point:
+    case QgsWkbTypes::LineString:
+    case QgsWkbTypes::Polygon:
+    case QgsWkbTypes::MultiPoint:
+    case QgsWkbTypes::MultiLineString:
+    case QgsWkbTypes::MultiPolygon:
+    case QgsWkbTypes::CircularString:
+    case QgsWkbTypes::GeometryCollection:
+      return true;
+    default:
+      return false;
+  }
 }
 
 QgsWkbTypes::Type QgsHanaUtils::toWkbType( const String &type, const Int &hasZ, const Int &hasM )

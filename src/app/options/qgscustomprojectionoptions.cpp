@@ -47,33 +47,33 @@ QgsCustomProjectionOptionsWidget::QgsCustomProjectionOptionsWidget( QWidget *par
   populateList();
   if ( mDefinitions.empty() )
   {
-    // create an empty definition which corresponds to the initial state of the dialog
-    mDefinitions << Definition();
-    QTreeWidgetItem *newItem = new QTreeWidgetItem( leNameList, QStringList() );
-    newItem->setText( QgisCrsNameColumn, QString() );
-    newItem->setText( QgisCrsParametersColumn, QString() );
-  }
-  whileBlocking( leName )->setText( mDefinitions[0].name );
-
-  mBlockUpdates++;
-
-  QgsCoordinateReferenceSystem crs;
-  Qgis::CrsDefinitionFormat format;
-  if ( mDefinitions.at( 0 ).wkt.isEmpty() )
-  {
-    crs.createFromProj( mDefinitions[0].proj );
-    format = Qgis::CrsDefinitionFormat::Proj;
+    leName->setEnabled( false );
+    mCrsDefinitionWidget->setEnabled( false );
   }
   else
   {
-    crs.createFromWkt( mDefinitions[0].wkt );
-    format = Qgis::CrsDefinitionFormat::Wkt;
+    whileBlocking( leName )->setText( mDefinitions[0].name );
+
+    mBlockUpdates++;
+
+    QgsCoordinateReferenceSystem crs;
+    Qgis::CrsDefinitionFormat format;
+    if ( mDefinitions.at( 0 ).wkt.isEmpty() )
+    {
+      crs.createFromProj( mDefinitions[0].proj );
+      format = Qgis::CrsDefinitionFormat::Proj;
+    }
+    else
+    {
+      crs.createFromWkt( mDefinitions[0].wkt );
+      format = Qgis::CrsDefinitionFormat::Wkt;
+    }
+    mCrsDefinitionWidget->setCrs( crs, format );
+
+    mBlockUpdates--;
+
+    leNameList->setCurrentItem( leNameList->topLevelItem( 0 ) );
   }
-  mCrsDefinitionWidget->setCrs( crs, format );
-
-  mBlockUpdates--;
-
-  leNameList->setCurrentItem( leNameList->topLevelItem( 0 ) );
 
   leNameList->hideColumn( QgisCrsIdColumn );
 
@@ -155,6 +155,9 @@ void QgsCustomProjectionOptionsWidget::pbnAdd_clicked()
 
   QTreeWidgetItem *newItem = new QTreeWidgetItem( leNameList, QStringList() );
 
+  leName->setEnabled( true );
+  mCrsDefinitionWidget->setEnabled( true );
+
   newItem->setText( QgisCrsNameColumn, name );
   newItem->setText( QgisCrsIdColumn, QString() );
   newItem->setText( QgisCrsParametersColumn, QString() );
@@ -178,7 +181,7 @@ void QgsCustomProjectionOptionsWidget::pbnRemove_clicked()
 
   // make sure the user really wants to delete these definitions
   if ( QMessageBox::No == QMessageBox::question( this, tr( "Delete Projections" ),
-       tr( "Are you sure you want to delete %n projections(s)?", "number of rows", selection.size() ),
+       tr( "Are you sure you want to delete %n projection(s)?", "number of rows", selection.size() ),
        QMessageBox::Yes | QMessageBox::No ) )
     return;
 
@@ -202,6 +205,12 @@ void QgsCustomProjectionOptionsWidget::pbnRemove_clicked()
       mDeletedCRSs.push_back( mDefinitions[row].id );
     }
     mDefinitions.erase( mDefinitions.begin() + row );
+  }
+
+  if ( mDefinitions.empty() )
+  {
+    leName->setEnabled( false );
+    mCrsDefinitionWidget->setEnabled( false );
   }
 }
 
@@ -262,10 +271,12 @@ bool QgsCustomProjectionOptionsWidget::isValid()
   QgsCoordinateReferenceSystem crs;
   for ( const Definition &def : std::as_const( mDefinitions ) )
   {
-    if ( !def.wkt.isEmpty() )
+    if ( !def.wkt.trimmed().isEmpty() )
       crs.createFromWkt( def.wkt );
-    else
+    else if ( !def.proj.trimmed().isEmpty() )
       crs.createFromProj( def.proj );
+    else
+      continue;
 
     if ( !crs.isValid() )
     {

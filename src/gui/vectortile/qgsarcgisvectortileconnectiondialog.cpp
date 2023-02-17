@@ -57,7 +57,7 @@ void QgsArcgisVectorTileConnectionDialog::setConnection( const QString &name, co
 
   mAuthSettings->setUsername( conn.username );
   mAuthSettings->setPassword( conn.password );
-  mEditReferer->setText( conn.referer );
+  mEditReferer->setText( conn.httpHeaders[QgsHttpHeaders::KEY_REFERER].toString() );
   mAuthSettings->setConfigId( conn.authCfg );
 
   mEditStyleUrl->setText( conn.styleUrl );
@@ -79,7 +79,7 @@ QString QgsArcgisVectorTileConnectionDialog::connectionUri() const
 
   conn.username = mAuthSettings->username();
   conn.password = mAuthSettings->password();
-  conn.referer = mEditReferer->text();
+  conn.httpHeaders[QgsHttpHeaders::KEY_REFERER] = mEditReferer->text();
   conn.authCfg = mAuthSettings->configId( );
 
   conn.styleUrl = mEditStyleUrl->text();

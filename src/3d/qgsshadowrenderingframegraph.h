@@ -34,6 +34,9 @@
 #include <Qt3DRender/QCullFace>
 #include <Qt3DRender/QPolygonOffset>
 #include <Qt3DRender/QRenderCapture>
+#if QT_VERSION >= QT_VERSION_CHECK(5, 15, 0)
+#include <Qt3DRender/QDebugOverlay>
+#endif
 
 #include "qgspointlightsettings.h"
 
@@ -41,7 +44,9 @@ class QgsDirectionalLightSettings;
 class QgsCameraController;
 class QgsRectangle;
 class QgsPostprocessingEntity;
+class QgsAmbientOcclusionRenderEntity;
 class QgsPreviewQuad;
+class QgsAmbientOcclusionBlurEntity;
 
 #define SIP_NO_FILE
 
@@ -55,6 +60,8 @@ class QgsPreviewQuad;
  */
 class QgsShadowRenderingFrameGraph : public Qt3DCore::QEntity
 {
+    Q_OBJECT
+
   public:
     //! Constructor
     QgsShadowRenderingFrameGraph( QSurface *surface, QSize s, Qt3DRender::QCamera *mainCamera, Qt3DCore::QEntity *root );
@@ -69,14 +76,30 @@ class QgsShadowRenderingFrameGraph : public Qt3DCore::QEntity
     //! Returns the shadow map (a depth texture for the shadow rendering pass)
     Qt3DRender::QTexture2D *shadowMapTexture() { return mShadowMapTexture; }
 
-    //! Returns a layer object used to indicate that an entity is to be rendered during the post processing rendering pass
-    Qt3DRender::QLayer *postprocessingPassLayer() { return mPostprocessPassLayer; }
+    /**
+     * Returns ambient occlusion factor values texture
+     * \since QGIS 3.28
+     */
+    Qt3DRender::QTexture2D *ambientOcclusionFactorMap() { return mAmbientOcclusionRenderTexture; }
+
+    /**
+     * Returns blurred ambient occlusion factor values texture
+     * \since QGIS 3.28
+     */
+    Qt3DRender::QTexture2D *blurredAmbientOcclusionFactorMap() { return mAmbientOcclusionBlurTexture; }
+
     //! Returns a layer object used to indicate that an entity is to be rendered during the preview textures rendering pass
     Qt3DRender::QLayer *previewLayer() { return mPreviewLayer; }
     //! Returns a layer object used to indicate that an entity will cast shadows
     Qt3DRender::QLayer *castShadowsLayer() { return mCastShadowsLayer; }
     //! Returns a layer object used to indicate that an entity will be rendered during the forward rendering pass
     Qt3DRender::QLayer *forwardRenderLayer() { return mForwardRenderLayer; }
+
+    /**
+     * Returns a layer object used to indicate that the object is transparent
+     * \since QGIS 3.26
+     */
+    Qt3DRender::QLayer *transparentObjectLayer() { return mTransparentObjectsPassLayer; }
 
     //! Returns the main camera
     Qt3DRender::QCamera *mainCamera() { return mMainCamera; }
@@ -114,6 +137,55 @@ class QgsShadowRenderingFrameGraph : public Qt3DCore::QEntity
     //! Sets the resolution of the shadow map
     void setShadowMapResolution( int resolution );
 
+
+    /**
+     * Sets whether Screen Space Ambient Occlusion will be enabled
+     * \since QGIS 3.28
+     */
+    void setAmbientOcclusionEnabled( bool enabled );
+
+    /**
+     * Returns whether Screen Space Ambient Occlusion is enabled
+     * \since QGIS 3.28
+     */
+    bool ambientOcclusionEnabled() const { return mAmbientOcclusionEnabled; }
+
+    /**
+     * Sets the ambient occlusion intensity
+     * \since QGIS 3.28
+     */
+    void setAmbientOcclusionIntensity( float intensity );
+
+    /**
+     * Returns the ambient occlusion intensity
+     * \since QGIS 3.28
+     */
+    float ambientOcclusionIntensity() const { return mAmbientOcclusionIntensity; }
+
+    /**
+     * Sets the ambient occlusion radius
+     * \since QGIS 3.28
+     */
+    void setAmbientOcclusionRadius( float radius );
+
+    /**
+     * Returns the ambient occlusion radius
+     * \since QGIS 3.28
+     */
+    float ambientOcclusionRadius() const { return mAmbientOcclusionRadius; }
+
+    /**
+     * Sets the ambient occlusion threshold
+     * \since QGIS 3.28
+     */
+    void setAmbientOcclusionThreshold( float threshold );
+
+    /**
+     * Returns the ambient occlusion threshold
+     * \since QGIS 3.28
+     */
+    float ambientOcclusionThreshold() const { return mAmbientOcclusionThreshold; }
+
     //! Sets the clear color of the scene (background color)
     void setClearColor( const QColor &clearColor );
     //! Adds an preview entity that shows a texture in real time for debugging purposes
@@ -140,6 +212,13 @@ class QgsShadowRenderingFrameGraph : public Qt3DCore::QEntity
      * \since QGIS 3.18
      */
     bool renderCaptureEnabled() const { return mRenderCaptureEnabled; }
+
+    /**
+     * Sets whether debug overlay is enabled
+     * \since QGIS 3.26
+     */
+    void setDebugOverlayEnabled( bool enabled );
+
   private:
     Qt3DRender::QRenderSurfaceSelector *mRenderSurfaceSelector = nullptr;
     Qt3DRender::QViewport *mMainViewPort = nullptr;
@@ -157,6 +236,10 @@ class QgsShadowRenderingFrameGraph : public Qt3DCore::QEntity
     // Forward rendering pass texture related objects:
     Qt3DRender::QTexture2D *mForwardColorTexture = nullptr;
     Qt3DRender::QTexture2D *mForwardDepthTexture = nullptr;
+    // QDebugOverlay added in the forward pass
+#if QT_VERSION >= QT_VERSION_CHECK(5, 15, 0)
+    Qt3DRender::QDebugOverlay *mDebugOverlay = nullptr;
+#endif
 
     // Shadow rendering pass branch nodes:
     Qt3DRender::QCameraSelector *mLightCameraSelectorShadowPass = nullptr;
@@ -190,6 +273,22 @@ class QgsShadowRenderingFrameGraph : public Qt3DCore::QEntity
     Qt3DRender::QTexture2D *mRenderCaptureColorTexture = nullptr;
     Qt3DRender::QTexture2D *mRenderCaptureDepthTexture = nullptr;
 
+    // Ambient occlusion factor generation pass
+    Qt3DRender::QCameraSelector *mAmbientOcclusionRenderCameraSelector = nullptr;
+    Qt3DRender::QRenderStateSet *mAmbientOcclusionRenderStateSet = nullptr;;
+    Qt3DRender::QLayerFilter *mAmbientOcclusionRenderLayerFilter = nullptr;
+    Qt3DRender::QRenderTargetSelector *mAmbientOcclusionRenderCaptureTargetSelector = nullptr;
+    // Ambient occlusion factor generation pass texture related objects:
+    Qt3DRender::QTexture2D *mAmbientOcclusionRenderTexture = nullptr;
+
+    // Ambient occlusion factor blur pass
+    Qt3DRender::QCameraSelector *mAmbientOcclusionBlurCameraSelector = nullptr;
+    Qt3DRender::QRenderStateSet *mAmbientOcclusionBlurStateSet = nullptr;;
+    Qt3DRender::QLayerFilter *mAmbientOcclusionBlurLayerFilter = nullptr;
+    Qt3DRender::QRenderTargetSelector *mAmbientOcclusionBlurRenderCaptureTargetSelector = nullptr;
+    // Ambient occlusion factor blur pass texture related objects:
+    Qt3DRender::QTexture2D *mAmbientOcclusionBlurTexture = nullptr;
+
     // Texture preview:
     Qt3DRender::QLayerFilter *mPreviewLayerFilter = nullptr;
     Qt3DRender::QRenderStateSet *mPreviewRenderStateSet = nullptr;
@@ -199,6 +298,12 @@ class QgsShadowRenderingFrameGraph : public Qt3DCore::QEntity
     bool mShadowRenderingEnabled = false;
     float mShadowBias = 0.00001f;
     int mShadowMapResolution = 2048;
+
+    // Ambient occlusion related settings
+    bool mAmbientOcclusionEnabled = false;
+    float mAmbientOcclusionIntensity = 0.5f;
+    float mAmbientOcclusionRadius = 25.f;
+    float mAmbientOcclusionThreshold = 0.5f;
 
     QSize mSize = QSize( 1024, 768 );
 
@@ -215,13 +320,15 @@ class QgsShadowRenderingFrameGraph : public Qt3DCore::QEntity
 
     Qt3DCore::QEntity *mRootEntity = nullptr;
 
-    Qt3DRender::QLayer *mPostprocessPassLayer = nullptr;
     Qt3DRender::QLayer *mPreviewLayer = nullptr;
     Qt3DRender::QLayer *mForwardRenderLayer = nullptr;
     Qt3DRender::QLayer *mCastShadowsLayer = nullptr;
     Qt3DRender::QLayer *mDepthRenderPassLayer = nullptr;
+    Qt3DRender::QLayer *mTransparentObjectsPassLayer = nullptr;
 
     QgsPostprocessingEntity *mPostprocessingEntity = nullptr;
+    QgsAmbientOcclusionRenderEntity *mAmbientOcclusionRenderEntity = nullptr;
+    QgsAmbientOcclusionBlurEntity *mAmbientOcclusionBlurEntity = nullptr;
 
     QVector<QgsPreviewQuad *> mPreviewQuads;
 
@@ -230,6 +337,8 @@ class QgsShadowRenderingFrameGraph : public Qt3DCore::QEntity
     Qt3DRender::QFrameGraphNode *constructTexturesPreviewPass();
     Qt3DRender::QFrameGraphNode *constructPostprocessingPass();
     Qt3DRender::QFrameGraphNode *constructDepthRenderPass();
+    Qt3DRender::QFrameGraphNode *constructAmbientOcclusionRenderPass();
+    Qt3DRender::QFrameGraphNode *constructAmbientOcclusionBlurPass();
 
     Qt3DCore::QEntity *constructDepthRenderQuad();
 

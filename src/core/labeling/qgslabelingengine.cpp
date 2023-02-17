@@ -37,6 +37,8 @@ static bool _palIsCanceled( void *ctx )
   return ( reinterpret_cast< QgsRenderContext * >( ctx ) )->renderingStopped();
 }
 
+///@cond PRIVATE
+
 /**
  * \ingroup core
  * \class QgsLabelSorter
@@ -46,8 +48,8 @@ class QgsLabelSorter
 {
   public:
 
-    explicit QgsLabelSorter( const QgsMapSettings &mapSettings )
-      : mMapSettings( mapSettings )
+    explicit QgsLabelSorter( const QStringList &layerRenderingOrderIds )
+      : mLayerRenderingOrderIds( layerRenderingOrderIds )
     {}
 
     bool operator()( pal::LabelPosition *lp1, pal::LabelPosition *lp2 ) const
@@ -59,9 +61,8 @@ class QgsLabelSorter
         return lf1->zIndex() < lf2->zIndex();
 
       //equal z-index, so fallback to respecting layer render order
-      QStringList layerIds = mMapSettings.layerIds();
-      int layer1Pos = layerIds.indexOf( lf1->provider()->layerId() );
-      int layer2Pos = layerIds.indexOf( lf2->provider()->layerId() );
+      int layer1Pos = mLayerRenderingOrderIds.indexOf( lf1->provider()->layerId() );
+      int layer2Pos = mLayerRenderingOrderIds.indexOf( lf2->provider()->layerId() );
       if ( layer1Pos != layer2Pos && layer1Pos >= 0 && layer2Pos >= 0 )
         return layer1Pos > layer2Pos; //higher positions are rendered first
 
@@ -71,8 +72,10 @@ class QgsLabelSorter
 
   private:
 
-    const QgsMapSettings &mMapSettings;
+    const QStringList mLayerRenderingOrderIds;
 };
+
+///@endcond
 
 //
 // QgsLabelingEngine
@@ -91,6 +94,7 @@ QgsLabelingEngine::~QgsLabelingEngine()
 void QgsLabelingEngine::setMapSettings( const QgsMapSettings &mapSettings )
 {
   mMapSettings = mapSettings;
+  mLayerRenderingOrderIds = mMapSettings.layerIds();
   if ( mResults )
     mResults->setMapSettings( mapSettings );
 }
@@ -212,8 +216,7 @@ void QgsLabelingEngine::processProvider( QgsAbstractLabelProvider *provider, Qgs
                               provider->placement(),
                               provider->priority(),
                               true,
-                              flags.testFlag( QgsAbstractLabelProvider::DrawLabels ),
-                              flags.testFlag( QgsAbstractLabelProvider::DrawAllLabels ) );
+                              flags.testFlag( QgsAbstractLabelProvider::DrawLabels ) );
 
   // set whether adjacent lines should be merged
   l->setMergeConnectedLines( flags.testFlag( QgsAbstractLabelProvider::MergeConnectedLines ) );
@@ -225,21 +228,7 @@ void QgsLabelingEngine::processProvider( QgsAbstractLabelProvider *provider, Qgs
   l->setCentroidInside( flags.testFlag( QgsAbstractLabelProvider::CentroidMustBeInside ) );
 
   // set how to show upside-down labels
-  pal::Layer::UpsideDownLabels upsdnlabels = pal::Layer::ShowAll;
-  switch ( provider->upsidedownLabels() )
-  {
-    case QgsPalLayerSettings::Upright:
-      upsdnlabels = pal::Layer::Upright;
-      break;
-    case QgsPalLayerSettings::ShowDefined:
-      upsdnlabels = pal::Layer::ShowDefined;
-      break;
-    case QgsPalLayerSettings::ShowAll:
-      upsdnlabels = pal::Layer::ShowAll;
-      break;
-  }
-  l->setUpsidedownLabels( upsdnlabels );
-
+  l->setUpsidedownLabels( provider->upsidedownLabels() );
 
   const QList<QgsLabelFeature *> features = provider->labelFeatures( context );
 
@@ -280,7 +269,7 @@ void QgsLabelingEngine::registerLabels( QgsRenderContext &context )
   mPal->setMaximumLineCandidatesPerMapUnit( settings.maximumLineCandidatesPerCm() / context.convertToMapUnits( 10, QgsUnitTypes::RenderMillimeters ) );
   mPal->setMaximumPolygonCandidatesPerMapUnitSquared( settings.maximumPolygonCandidatesPerCmSquared() / std::pow( context.convertToMapUnits( 10, QgsUnitTypes::RenderMillimeters ), 2 ) );
 
-  mPal->setShowPartialLabels( settings.testFlag( QgsLabelingEngineSettings::UsePartialCandidates ) );
+  mPal->setShowPartialLabels( settings.testFlag( Qgis::LabelingFlag::UsePartialCandidates ) );
   mPal->setPlacementVersion( settings.placementVersion() );
 
   // for each provider: get labels and register them in PAL
@@ -333,7 +322,7 @@ void QgsLabelingEngine::solve( QgsRenderContext &context )
     mapBoundaryGeom = mapBoundaryGeom.difference( region.geometry );
   }
 
-  if ( settings.flags() & QgsLabelingEngineSettings::DrawCandidates )
+  if ( settings.flags() & Qgis::LabelingFlag::DrawCandidates )
   {
     // draw map boundary
     QgsFeature f;
@@ -397,7 +386,7 @@ void QgsLabelingEngine::solve( QgsRenderContext &context )
   // this is done before actual solution of the problem
   // before number of candidates gets reduced
   // TODO mCandidates.clear();
-  if ( settings.testFlag( QgsLabelingEngineSettings::DrawCandidates ) && mProblem )
+  if ( settings.testFlag( Qgis::LabelingFlag::DrawCandidates ) && mProblem )
   {
     painter->setBrush( Qt::NoBrush );
     for ( int i = 0; i < static_cast< int >( mProblem->featureCount() ); i++ )
@@ -413,11 +402,12 @@ void QgsLabelingEngine::solve( QgsRenderContext &context )
 
   // find the solution
   mLabels = mPal->solveProblem( mProblem.get(), context,
-                                settings.testFlag( QgsLabelingEngineSettings::UseAllLabels ),
-                                settings.testFlag( QgsLabelingEngineSettings::DrawUnplacedLabels ) || settings.testFlag( QgsLabelingEngineSettings::CollectUnplacedLabels ) ? &mUnlabeled : nullptr );
+                                settings.testFlag( Qgis::LabelingFlag::UseAllLabels ),
+                                settings.testFlag( Qgis::LabelingFlag::DrawUnplacedLabels )
+                                || settings.testFlag( Qgis::LabelingFlag::CollectUnplacedLabels ) ? &mUnlabeled : nullptr );
 
   // sort labels
-  std::sort( mLabels.begin(), mLabels.end(), QgsLabelSorter( mMapSettings ) );
+  std::sort( mLabels.begin(), mLabels.end(), QgsLabelSorter( mLayerRenderingOrderIds ) );
 
   QgsDebugMsgLevel( QStringLiteral( "LABELING work:  %1 ms ... labels# %2" ).arg( t.elapsed() ).arg( mLabels.size() ), 4 );
 }
@@ -505,7 +495,7 @@ void QgsLabelingEngine::drawLabels( QgsRenderContext &context, const QString &la
   }
 
   // draw unplaced labels. These are always rendered on top
-  if ( settings.testFlag( QgsLabelingEngineSettings::DrawUnplacedLabels ) || settings.testFlag( QgsLabelingEngineSettings::CollectUnplacedLabels ) )
+  if ( settings.testFlag( Qgis::LabelingFlag::DrawUnplacedLabels ) || settings.testFlag( Qgis::LabelingFlag::CollectUnplacedLabels ) )
   {
     for ( pal::LabelPosition *label : std::as_const( mUnlabeled ) )
     {
@@ -647,10 +637,6 @@ QgsAbstractLabelProvider::QgsAbstractLabelProvider( QgsMapLayer *layer, const QS
   : mLayerId( layer ? layer->id() : QString() )
   , mLayer( layer )
   , mProviderId( providerId )
-  , mFlags( DrawLabels )
-  , mPlacement( QgsPalLayerSettings::AroundPoint )
-  , mPriority( 0.5 )
-  , mUpsidedownLabels( QgsPalLayerSettings::Upright )
 {
   if ( QgsVectorLayer *vl = qobject_cast< QgsVectorLayer * >( layer ) )
   {
@@ -697,48 +683,48 @@ QgsExpressionContextScope *QgsAbstractLabelProvider::layerExpressionContextScope
 // QgsLabelingUtils
 //
 
-QString QgsLabelingUtils::encodePredefinedPositionOrder( const QVector<QgsPalLayerSettings::PredefinedPointPosition> &positions )
+QString QgsLabelingUtils::encodePredefinedPositionOrder( const QVector<Qgis::LabelPredefinedPointPosition> &positions )
 {
   QStringList predefinedOrderString;
   const auto constPositions = positions;
-  for ( QgsPalLayerSettings::PredefinedPointPosition position : constPositions )
+  for ( Qgis::LabelPredefinedPointPosition position : constPositions )
   {
     switch ( position )
     {
-      case QgsPalLayerSettings::TopLeft:
+      case Qgis::LabelPredefinedPointPosition::TopLeft:
         predefinedOrderString << QStringLiteral( "TL" );
         break;
-      case QgsPalLayerSettings::TopSlightlyLeft:
+      case Qgis::LabelPredefinedPointPosition::TopSlightlyLeft:
         predefinedOrderString << QStringLiteral( "TSL" );
         break;
-      case QgsPalLayerSettings::TopMiddle:
+      case Qgis::LabelPredefinedPointPosition::TopMiddle:
         predefinedOrderString << QStringLiteral( "T" );
         break;
-      case QgsPalLayerSettings::TopSlightlyRight:
+      case Qgis::LabelPredefinedPointPosition::TopSlightlyRight:
         predefinedOrderString << QStringLiteral( "TSR" );
         break;
-      case QgsPalLayerSettings::TopRight:
+      case Qgis::LabelPredefinedPointPosition::TopRight:
         predefinedOrderString << QStringLiteral( "TR" );
         break;
-      case QgsPalLayerSettings::MiddleLeft:
+      case Qgis::LabelPredefinedPointPosition::MiddleLeft:
         predefinedOrderString << QStringLiteral( "L" );
         break;
-      case QgsPalLayerSettings::MiddleRight:
+      case Qgis::LabelPredefinedPointPosition::MiddleRight:
         predefinedOrderString << QStringLiteral( "R" );
         break;
-      case QgsPalLayerSettings::BottomLeft:
+      case Qgis::LabelPredefinedPointPosition::BottomLeft:
         predefinedOrderString << QStringLiteral( "BL" );
         break;
-      case QgsPalLayerSettings::BottomSlightlyLeft:
+      case Qgis::LabelPredefinedPointPosition::BottomSlightlyLeft:
         predefinedOrderString << QStringLiteral( "BSL" );
         break;
-      case QgsPalLayerSettings::BottomMiddle:
+      case Qgis::LabelPredefinedPointPosition::BottomMiddle:
         predefinedOrderString << QStringLiteral( "B" );
         break;
-      case QgsPalLayerSettings::BottomSlightlyRight:
+      case Qgis::LabelPredefinedPointPosition::BottomSlightlyRight:
         predefinedOrderString << QStringLiteral( "BSR" );
         break;
-      case QgsPalLayerSettings::BottomRight:
+      case Qgis::LabelPredefinedPointPosition::BottomRight:
         predefinedOrderString << QStringLiteral( "BR" );
         break;
     }
@@ -746,38 +732,38 @@ QString QgsLabelingUtils::encodePredefinedPositionOrder( const QVector<QgsPalLay
   return predefinedOrderString.join( ',' );
 }
 
-QVector<QgsPalLayerSettings::PredefinedPointPosition> QgsLabelingUtils::decodePredefinedPositionOrder( const QString &positionString )
+QVector<Qgis::LabelPredefinedPointPosition> QgsLabelingUtils::decodePredefinedPositionOrder( const QString &positionString )
 {
-  QVector<QgsPalLayerSettings::PredefinedPointPosition> result;
+  QVector<Qgis::LabelPredefinedPointPosition> result;
   const QStringList predefinedOrderList = positionString.split( ',' );
   result.reserve( predefinedOrderList.size() );
   for ( const QString &position : predefinedOrderList )
   {
     QString cleaned = position.trimmed().toUpper();
     if ( cleaned == QLatin1String( "TL" ) )
-      result << QgsPalLayerSettings::TopLeft;
+      result << Qgis::LabelPredefinedPointPosition::TopLeft;
     else if ( cleaned == QLatin1String( "TSL" ) )
-      result << QgsPalLayerSettings::TopSlightlyLeft;
+      result << Qgis::LabelPredefinedPointPosition::TopSlightlyLeft;
     else if ( cleaned == QLatin1String( "T" ) )
-      result << QgsPalLayerSettings::TopMiddle;
+      result << Qgis::LabelPredefinedPointPosition::TopMiddle;
     else if ( cleaned == QLatin1String( "TSR" ) )
-      result << QgsPalLayerSettings::TopSlightlyRight;
+      result << Qgis::LabelPredefinedPointPosition::TopSlightlyRight;
     else if ( cleaned == QLatin1String( "TR" ) )
-      result << QgsPalLayerSettings::TopRight;
+      result << Qgis::LabelPredefinedPointPosition::TopRight;
     else if ( cleaned == QLatin1String( "L" ) )
-      result << QgsPalLayerSettings::MiddleLeft;
+      result << Qgis::LabelPredefinedPointPosition::MiddleLeft;
     else if ( cleaned == QLatin1String( "R" ) )
-      result << QgsPalLayerSettings::MiddleRight;
+      result << Qgis::LabelPredefinedPointPosition::MiddleRight;
     else if ( cleaned == QLatin1String( "BL" ) )
-      result << QgsPalLayerSettings::BottomLeft;
+      result << Qgis::LabelPredefinedPointPosition::BottomLeft;
     else if ( cleaned == QLatin1String( "BSL" ) )
-      result << QgsPalLayerSettings::BottomSlightlyLeft;
+      result << Qgis::LabelPredefinedPointPosition::BottomSlightlyLeft;
     else if ( cleaned == QLatin1String( "B" ) )
-      result << QgsPalLayerSettings::BottomMiddle;
+      result << Qgis::LabelPredefinedPointPosition::BottomMiddle;
     else if ( cleaned == QLatin1String( "BSR" ) )
-      result << QgsPalLayerSettings::BottomSlightlyRight;
+      result << Qgis::LabelPredefinedPointPosition::BottomSlightlyRight;
     else if ( cleaned == QLatin1String( "BR" ) )
-      result << QgsPalLayerSettings::BottomRight;
+      result << Qgis::LabelPredefinedPointPosition::BottomRight;
   }
   return result;
 }

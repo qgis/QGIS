@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for core additions
 
 From build dir, run: ctest -R PyPythonRepr -V
@@ -15,53 +14,55 @@ __copyright__ = 'Copyright 2015, The QGIS Project'
 import qgis  # NOQA
 
 from PyQt5.QtCore import QVariant
-from qgis.testing import unittest, start_app
 from qgis.core import (
-    QgsGeometry,
-    QgsPoint,
-    QgsPointXY,
+    QgsAnnotationLayer,
+    QgsBookmark,
     QgsCircle,
     QgsCircularString,
+    QgsClassificationRange,
     QgsCompoundCurve,
-    QgsCurvePolygon,
-    QgsEllipse,
-    QgsLineString,
-    QgsMultiCurve,
-    QgsRectangle,
-    QgsExpression,
-    QgsField,
-    QgsError,
-    QgsMimeDataUtils,
-    QgsVector,
-    QgsVector3D,
-    QgsVectorLayer,
-    QgsReferencedPointXY,
-    QgsReferencedRectangle,
+    QgsConditionalStyle,
     QgsCoordinateReferenceSystem,
     QgsCoordinateTransform,
-    QgsProject,
-    QgsClassificationRange,
-    QgsBookmark,
+    QgsCurvePolygon,
+    QgsDataSourceUri,
+    QgsDefaultValue,
+    QgsDoubleRange,
+    QgsEllipse,
+    QgsError,
+    QgsExpression,
+    QgsField,
+    QgsGeometry,
+    QgsIntRange,
     QgsLayoutMeasurement,
     QgsLayoutPoint,
     QgsLayoutSize,
-    QgsUnitTypes,
-    QgsConditionalStyle,
-    QgsTableCell,
+    QgsLineString,
+    QgsMeshLayer,
+    QgsMimeDataUtils,
+    QgsMultiCurve,
+    QgsPoint,
+    QgsPointCloudLayer,
+    QgsPointXY,
+    QgsProject,
     QgsProperty,
-    QgsVertexId,
-    QgsReferencedGeometry,
     QgsProviderRegistry,
     QgsRasterLayer,
-    QgsAnnotationLayer,
-    QgsPointCloudLayer,
+    QgsRectangle,
+    QgsReferencedGeometry,
+    QgsReferencedPointXY,
+    QgsReferencedRectangle,
+    QgsRendererCategory,
+    QgsRendererRange,
+    QgsTableCell,
+    QgsUnitTypes,
+    QgsVector,
+    QgsVector3D,
+    QgsVectorLayer,
     QgsVectorTileLayer,
-    QgsMeshLayer,
-    QgsDataSourceUri,
-    QgsDoubleRange,
-    QgsIntRange,
-    QgsDefaultValue
+    QgsVertexId,
 )
+from qgis.testing import start_app, unittest
 
 start_app()
 
@@ -335,6 +336,17 @@ class TestPython__repr__(unittest.TestCase):
     def testDefaultValue(self):
         self.assertEqual(QgsDefaultValue().__repr__(), '<QgsDefaultValue: invalid>')
         self.assertEqual(QgsDefaultValue('1+3').__repr__(), '<QgsDefaultValue: 1+3>')
+
+    def testRendererRange(self):
+        self.assertEqual(QgsRendererRange().__repr__(), '<QgsRendererRange: 0 - 0>')
+        self.assertEqual(QgsRendererRange(1.0, 2.0, None, None).__repr__(), '<QgsRendererRange: 1 - 2>')
+        self.assertEqual(QgsRendererRange(1.0, 2.0, None, 'my class').__repr__(), '<QgsRendererRange: 1 - 2 (my class)>')
+
+    def testRendererCategory(self):
+        self.assertEqual(QgsRendererCategory().__repr__(), '<QgsRendererCategory>')
+        self.assertEqual(QgsRendererCategory(5, None, None).__repr__(), '<QgsRendererCategory: 5>')
+        self.assertEqual(QgsRendererCategory('abc', None, None).__repr__(), '<QgsRendererCategory: abc>')
+        self.assertEqual(QgsRendererCategory('abc', None, 'my class').__repr__(), '<QgsRendererCategory: abc (my class)>')
 
 
 if __name__ == "__main__":

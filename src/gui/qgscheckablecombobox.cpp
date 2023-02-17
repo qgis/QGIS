@@ -299,6 +299,10 @@ void QgsCheckableComboBox::updateCheckedItems()
 
 void QgsCheckableComboBox::updateDisplayText()
 {
+  // There is only a line edit if the combobox is in editable state
+  if ( !lineEdit() )
+    return;
+
   QString text;
   const QStringList items = checkedItems();
   if ( items.isEmpty() )

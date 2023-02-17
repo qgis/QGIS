@@ -3,12 +3,19 @@
   "type": "function",
   "groups": ["Arrays"],
   "description": "Returns an array with the given expression evaluated on each item.",
-  "arguments": [
-    {"arg":"array","description":"an array"},
-    {"arg":"expression","description":"an expression to evaluate on each item. The variable `@element` will be replaced by the current value."}
-  ],
-  "examples": [
-    { "expression": "array_foreach(array('a','b','c'),upper(@element))", "returns":"[ 'A', 'B', 'C' ]"},
-    { "expression": "array_foreach(array(1,2,3),@element + 10)", "returns":"[ 11, 12, 13 ]"}
-  ]
+  "arguments": [{
+    "arg": "array",
+    "description": "an array"
+  }, {
+    "arg": "expression",
+    "description": "an expression to evaluate on each item. The variable `@element` will be replaced by the current value."
+  }],
+  "examples": [{
+    "expression": "array_foreach(array('a','b','c'),upper(@element))",
+    "returns": "[ 'A', 'B', 'C' ]"
+  }, {
+    "expression": "array_foreach(array(1,2,3),@element + 10)",
+    "returns": "[ 11, 12, 13 ]"
+  }],
+  "tags": ["evaluated", "array", "iterate", "item"]
 }

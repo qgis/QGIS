@@ -11,6 +11,7 @@
 
 
 
+
 class QgsAttributeForm : QWidget
 {
 
@@ -185,6 +186,13 @@ for calculations in this form.
 .. versionadded:: 3.16
 %End
 
+    bool needsGeometry() const;
+%Docstring
+Returns ``True`` if any of the form widgets need feature geometry
+
+.. versionadded:: 3.20
+%End
+
   signals:
 
  void attributeChanged( const QString &attribute, const QVariant &value ) /Deprecated/;
@@ -261,7 +269,6 @@ Emitted when the user chooses to open the attribute table dialog with a filtered
 .. versionadded:: 3.24
 %End
 
-
   public slots:
 
     void changeAttribute( const QString &field, const QVariant &value, const QString &hintText = QString() );
@@ -271,6 +278,13 @@ Call this to change the content of a given attribute. Will update the editor(s) 
 :param field: The field to change
 :param value: The new value
 :param hintText: A hint text for non existent joined features
+%End
+
+    void changeGeometry( const QgsGeometry &geometry );
+%Docstring
+Changes the ``geometry`` of the feature attached to the form.
+
+.. versionadded:: 3.30
 %End
 
     void setFeature( const QgsFeature &feature );
@@ -325,13 +339,6 @@ Notify the form widgets that something has changed in case they
 have filter expressions that depend on the parent form scope.
 
 .. versionadded:: 3.14
-%End
-
-    bool needsGeometry() const;
-%Docstring
-Returns ``True`` if any of the form widgets need feature geometry
-
-.. versionadded:: 3.20
 %End
 
 };

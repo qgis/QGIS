@@ -17,9 +17,15 @@
 #define QGSBILLBOARDGEOMETRY_H
 
 #include <QObject>
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 #include <Qt3DRender/QGeometry>
 #include <Qt3DRender/QBuffer>
 #include <Qt3DRender/QAttribute>
+#else
+#include <Qt3DCore/QGeometry>
+#include <Qt3DCore/QBuffer>
+#include <Qt3DCore/QAttribute>
+#endif
 
 #define SIP_NO_FILE
 
@@ -31,7 +37,11 @@
  *
  * \since QGIS 3.10
  */
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 class QgsBillboardGeometry : public Qt3DRender::QGeometry
+#else
+class QgsBillboardGeometry : public Qt3DCore::QGeometry
+#endif
 {
     Q_OBJECT
 
@@ -50,8 +60,13 @@ class QgsBillboardGeometry : public Qt3DRender::QGeometry
     void countChanged( int count );
 
   private:
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     Qt3DRender::QAttribute *mPositionAttribute = nullptr;
     Qt3DRender::QBuffer *mVertexBuffer = nullptr;
+#else
+    Qt3DCore::QAttribute *mPositionAttribute = nullptr;
+    Qt3DCore::QBuffer *mVertexBuffer = nullptr;
+#endif
     int mVertexCount = 0;
 };
 

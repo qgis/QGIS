@@ -203,6 +203,8 @@ class CORE_EXPORT QgsOgcUtils
         QDomDocument &doc,
         QgsOgcUtils::GMLVersion gmlVersion,
         FilterVersion filterVersion,
+        const QString &namespacePrefix,
+        const QString &namespaceURI,
         const QString &geometryName,
         const QString &srsName,
         bool honourAxisOrientation,
@@ -210,15 +212,24 @@ class CORE_EXPORT QgsOgcUtils
         QString *errorMessage = nullptr ) SIP_SKIP;
 
     /**
-     * Creates an OGC expression XML element.
-     * \returns valid OGC expression QDomElement on success,
+     * Creates an OGC expression XML element from the \a exp expression
+     * with default values for the geometry name, srs name, honourAsisOrientation and invertAxisOrientation.
+     * \returns valid OGC expression QDomElement on success or a valid \verbatim <Filter> \endverbatim QDomElement when \a requiresFilterElement is set.
      * otherwise null QDomElement
      */
-    static QDomElement expressionToOgcExpression( const QgsExpression &exp, QDomDocument &doc, QString *errorMessage = nullptr );
+    static QDomElement expressionToOgcExpression( const QgsExpression &exp, QDomDocument &doc, QString *errorMessage = nullptr,
+        bool requiresFilterElement = false );
 
     /**
-     * Creates an OGC expression XML element.
-     * \returns valid OGC expression QDomElement on success,
+     * Creates an ElseFilter from \a doc
+     * \returns valid OGC ElseFilter QDomElement
+     * \since QGIS 3.28
+     */
+    static QDomElement elseFilterExpression( QDomDocument &doc );
+
+    /**
+     * Creates an OGC expression XML element from the \a exp expression.
+     * \returns valid OGC expression QDomElement on success or a valid \verbatim <Filter> \endverbatim QDomElement when \a requiresFilterElement is set.
      * otherwise null QDomElement
      */
     static QDomElement expressionToOgcExpression( const QgsExpression &exp,
@@ -229,7 +240,8 @@ class CORE_EXPORT QgsOgcUtils
         const QString &srsName,
         bool honourAxisOrientation,
         bool invertAxisOrientation,
-        QString *errorMessage = nullptr );
+        QString *errorMessage = nullptr,
+        bool requiresFilterElement = false );
 
 #ifndef SIP_RUN
 
@@ -302,6 +314,16 @@ class CORE_EXPORT QgsOgcUtils
     static QgsGeometry geometryFromGMLMultiPolygon( const QDomElement &geometryElement );
 
     /**
+     * Creates an empty \verbatim <Filter> \endverbatim QDomElement
+     * \returns valid \verbatim <Filter> \endverbatim QDomElement
+     */
+    static QDomElement filterElement(
+      QDomDocument &doc,
+      QgsOgcUtils::GMLVersion gmlVersion,
+      FilterVersion filterVersion,
+      bool GMLUsed );
+
+    /**
      * Reads the \verbatim <gml:coordinates> \endverbatim element and extracts the coordinates as points
      * \param coords list where the found coordinates are appended
      * \param elem the \verbatim <gml:coordinates> \endverbatim element
@@ -370,6 +392,8 @@ class QgsOgcUtilsExprToFilter
     QgsOgcUtilsExprToFilter( QDomDocument &doc,
                              QgsOgcUtils::GMLVersion gmlVersion,
                              QgsOgcUtils::FilterVersion filterVersion,
+                             const QString &namespacePrefix,
+                             const QString &namespaceURI,
                              const QString &geometryName,
                              const QString &srsName,
                              bool honourAxisOrientation,
@@ -389,6 +413,8 @@ class QgsOgcUtilsExprToFilter
     bool mGMLUsed;
     QgsOgcUtils::GMLVersion mGMLVersion;
     QgsOgcUtils::FilterVersion mFilterVersion;
+    const QString &mNamespacePrefix;
+    const QString &mNamespaceURI;
     const QString &mGeometryName;
     const QString &mSrsName;
     bool mInvertAxisOrientation;
@@ -552,6 +578,42 @@ class QgsOgcUtilsSQLStatementToFilter
                          QString &srsName,
                          bool &axisInversion );
 };
+
+/**
+ * \ingroup core
+ * \brief Utilities related to OGC CRS encodings.
+ * \note not available in Python bindings
+ * \since QGIS 3.28
+ */
+class CORE_EXPORT QgsOgcCrsUtils
+{
+  public:
+
+    //! CRS flavor
+    enum class CRSFlavor
+    {
+      UNKNOWN, //! unknown/unhandled flavor
+      AUTH_CODE, //! e.g EPSG:4326
+      HTTP_EPSG_DOT_XML, //! e.g. http://www.opengis.net/gml/srs/epsg.xml#4326 (called "OGC HTTP URL" in GeoServer WFS configuration panel)
+      OGC_URN, //! e.g. urn:ogc:def:crs:EPSG::4326
+      X_OGC_URN, //! e.g. urn:x-ogc:def:crs:EPSG::4326
+      OGC_HTTP_URI, //! e.g. http://www.opengis.net/def/crs/EPSG/0/4326
+    };
+
+    /**
+     * Parse a CRS name in one of the flavors of OGC services, and decompose it
+     * as authority and code.
+     *
+     * \param crsName CRS name, like "EPSG:4326", "http://www.opengis.net/gml/srs/epsg.xml#4326", "urn:ogc:def:crs:EPSG::4326", etc.
+     * \param[out] authority CRS authority.
+     * \param[out] code CRS code.
+     * \return CRS flavor (UNKNOWN if crsName could not been parsed.
+     */
+    static CRSFlavor parseCrsName( const QString &crsName, QString &authority, QString &code );
+};
+
+Q_DECLARE_METATYPE( QgsOgcCrsUtils::CRSFlavor )
+
 #endif // #ifndef SIP_RUN
 
 #endif // QGSOGCUTILS_H

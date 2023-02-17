@@ -69,6 +69,11 @@ QgsMultiBandColorRenderer *QgsMultiBandColorRenderer::clone() const
   return renderer;
 }
 
+Qgis::RasterRendererFlags QgsMultiBandColorRenderer::flags() const
+{
+  return Qgis::RasterRendererFlag::InternalLayerOpacityHandling;
+}
+
 void QgsMultiBandColorRenderer::setRedContrastEnhancement( QgsContrastEnhancement *ce )
 {
   delete mRedContrastEnhancement;
@@ -365,7 +370,16 @@ QgsRasterBlock *QgsMultiBandColorRenderer::block( int bandNo, QgsRectangle  cons
     }
     if ( mAlphaBand > 0 )
     {
-      currentOpacity *= alphaBlock->value( i ) / 255.0;
+      const double alpha = alphaBlock->value( i );
+      if ( alpha == 0 )
+      {
+        outputBlock->setColor( i, myDefaultColor );
+        continue;
+      }
+      else
+      {
+        currentOpacity *= alpha / 255.0;
+      }
     }
 
     if ( qgsDoubleNear( currentOpacity, 1.0 ) )

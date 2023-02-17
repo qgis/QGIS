@@ -25,7 +25,7 @@ void QgsAccessControl::resolveFilterFeatures( const QList<QgsMapLayer *> &layers
 {
   for ( QgsMapLayer *l : layers )
   {
-    if ( l->type() == QgsMapLayerType::VectorLayer )
+    if ( l->type() == Qgis::LayerType::Vector )
     {
       const QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( l );
       mFilterFeaturesExpressions[vl->id()] = resolveFilterFeatures( vl );
@@ -56,6 +56,13 @@ QString QgsAccessControl::resolveFilterFeatures( const QgsVectorLayer *layer ) c
   }
 
   return expression;
+}
+
+//! Clear feature's filter of layers
+void QgsAccessControl::unresolveFilterFeatures()
+{
+  mFilterFeaturesExpressions.clear();
+  mResolved = false;
 }
 
 //! Filter the features of the layer

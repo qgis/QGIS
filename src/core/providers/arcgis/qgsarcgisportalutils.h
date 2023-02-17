@@ -18,6 +18,7 @@
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgshttpheaders.h"
+#include "qgis.h"
 
 #include <QVariantMap>
 #include <QString>
@@ -36,16 +37,6 @@ class QgsFeedback;
 class CORE_EXPORT QgsArcGisPortalUtils
 {
   public:
-
-    /**
-     * Portal item types (not complete)
-     */
-    enum ItemType
-    {
-      FeatureService, //!< ArcGIS Server feature service
-      MapService, //!< ArcGIS Server map service
-      ImageService, //!< ArcGIS Server image service
-    };
 
     /**
      * Retrieves JSON user info for the specified user name.
@@ -159,7 +150,7 @@ class CORE_EXPORT QgsArcGisPortalUtils
      * \param contentUrl should be set to the Portal's content URL, e.g. https://mysite.com/portal/sharing/rest/content/
      * \param groupId ID of group to query
      * \param authcfg authentication configuration ID
-     * \param itemTypes list of desired item types (using QgsArcGisPortalUtils.ItemType values)
+     * \param itemTypes list of desired item types (using Qgis.ArcGisRestServiceType values)
      * \param errorTitle title summary of any encountered errors
      * \param errorText error text of any encountered errors
      * \param requestHeaders optional additional request headers
@@ -179,7 +170,7 @@ class CORE_EXPORT QgsArcGisPortalUtils
      * \param contentUrl should be set to the Portal's content URL, e.g. https://mysite.com/portal/sharing/rest/content/
      * \param groupId ID of group to query
      * \param authcfg authentication configuration ID
-     * \param itemTypes list of desired item types (using QgsArcGisPortalUtils.ItemType values)
+     * \param itemTypes list of desired item types (using Qgis.ArcGisRestServiceType values)
      * \param errorTitle title summary of any encountered errors
      * \param errorText error text of any encountered errors
      * \param requestHeaders optional additional request headers
@@ -195,7 +186,7 @@ class CORE_EXPORT QgsArcGisPortalUtils
 
   private:
 
-    static QString typeToString( ItemType type );
+    static QString typeToString( Qgis::ArcGisRestServiceType type );
 
 };
 

@@ -23,18 +23,18 @@
 # fi
 
 # extensions or files that should be excluded from file list if :% is appended in the spelling.dat file
-EXCLUDE_SCRIPT_LIST='(\.(xml|sip|pl|sh|badquote|cmake(\.in)?)|^(debian/copyright|cmake_templates/.*|tests/testdata/labeling/README.rst|tests/testdata/font/QGIS-Vera/COPYRIGHT.TXT|doc/NEWS\.html|debian/build/))$'
+EXCLUDE_SCRIPT_LIST='(\.(xml|sip|pl|sh|badquote|cmake(\.in)?)|^(debian/copyright|cmake_templates/.*|tests/testdata/labeling/README.rst|tests/testdata/font/QGIS-Vera/COPYRIGHT.TXT|doc/debian/build/))$'
 
-# always exclude these external files
-EXCLUDE_EXTERNAL_LIST='((\.(svg|qgs|laz|las|png|lock|sip\.in))|resources/server/src/.*|resources/server/api/ogc/static/landingpage/js/.*|tests/testdata/.*|doc/api_break.dox)$'
+# always exclude these files
+EXCLUDE_EXTERNAL_LIST='((\.(svg|qgs|laz|las|png|lock|sip\.in))|resources/cpt-city-qgis-min/.*|resources/server/src/.*|resources/server/api/ogc/static/landingpage/js/.*|tests/testdata/.*|doc/api_break.dox|NEWS.md)$'
 
 DIR=$(git rev-parse --show-toplevel)/scripts/spell_check
 
 AGIGNORE=${DIR}/.agignore
 
-# GNU prefix command for mac os support (gsed, gsplit)
+# GNU prefix command for bsd/mac os support (gsed, gsplit)
 GP=
-if [[ "$OSTYPE" =~ darwin* ]]; then
+if [[ "$OSTYPE" == *bsd* ]] || [[ "$OSTYPE" =~ darwin* ]]; then
   GP=g
 fi
 
@@ -63,7 +63,7 @@ shift $((OPTIND - 1))
 
 if [ $# -ne 0 ]; then
   EXCLUDE=$(${GP}sed -e 's/\s*#.*$//' -e '/^\s*$/d' $AGIGNORE | tr '\n' '|' | ${GP}sed -e 's/|$//')
-  INPUTFILES=$(echo "$@" | tr -s '[[:blank:]]' '\n' | ${GP}egrep -iv "$EXCLUDE" | tr '\n' ' ' )
+  INPUTFILES=$(echo "$@" | tr -s '[[:blank:]]' '\n' | ${GP}grep -Eiv "$EXCLUDE" | tr '\n' ' ' )
   if [[ -z $INPUTFILES  ]]; then
     exit 0
   fi

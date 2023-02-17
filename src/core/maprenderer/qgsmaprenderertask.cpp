@@ -28,6 +28,7 @@
 #include "qgsvectorlayer.h"
 
 #include <QFile>
+#include <QImageWriter>
 #include <QTextStream>
 #include <QTimeZone>
 #ifndef QT_NO_PRINTER
@@ -117,9 +118,9 @@ class QgsMapRendererTaskRenderedFeatureHandler : public QgsRenderedFeatureHandle
 
 ///@endcond
 
-QgsMapRendererTask::QgsMapRendererTask( const QgsMapSettings &ms, const QString &fileName, const QString &fileFormat, const bool forceRaster,
+QgsMapRendererTask::QgsMapRendererTask( const QgsMapSettings &ms, const QString &fileName, const QString &fileFormat, const bool forceRaster, QgsTask::Flags flags,
                                         const bool geoPDF, const QgsAbstractGeoPdfExporter::ExportDetails &geoPdfExportDetails )
-  : QgsTask( fileFormat == QLatin1String( "PDF" ) ? tr( "Saving as PDF" ) : tr( "Saving as image" ) )
+  : QgsTask( fileFormat == QLatin1String( "PDF" ) ? tr( "Saving as PDF" ) : tr( "Saving as image" ), flags )
   , mMapSettings( ms )
   , mFileName( fileName )
   , mFileFormat( fileFormat )
@@ -322,7 +323,7 @@ bool QgsMapRendererTask::run()
       if ( mSaveWorldFile || mExportMetadata )
       {
         CPLSetThreadLocalConfigOption( "GDAL_PDF_DPI", QString::number( mMapSettings.outputDpi() ).toLocal8Bit().constData() );
-        const gdal::dataset_unique_ptr outputDS( GDALOpen( mFileName.toLocal8Bit().constData(), GA_Update ) );
+        const gdal::dataset_unique_ptr outputDS( GDALOpen( mFileName.toUtf8().constData(), GA_Update ) );
         if ( outputDS )
         {
           if ( mSaveWorldFile )
@@ -383,7 +384,13 @@ bool QgsMapRendererTask::run()
     }
     else if ( mFileFormat != QLatin1String( "PDF" ) )
     {
-      const bool success = mImage.save( mFileName, mFileFormat.toLocal8Bit().data() );
+      QImageWriter writer( mFileName, mFileFormat.toLocal8Bit().data() );
+      if ( mFileFormat == QLatin1String( "TIF" ) || mFileFormat == QLatin1String( "TIFF" ) )
+      {
+        // Enable LZW compression
+        writer.setCompression( 1 );
+      }
+      const bool success = writer.write( mImage );
       if ( !success )
       {
         mError = ImageSaveFail;
@@ -399,7 +406,7 @@ bool QgsMapRendererTask::run()
         bool skipWorldFile = false;
         if ( outputSuffix == QLatin1String( "tif" ) || outputSuffix == QLatin1String( "tiff" ) )
         {
-          const gdal::dataset_unique_ptr outputDS( GDALOpen( mFileName.toLocal8Bit().constData(), GA_Update ) );
+          const gdal::dataset_unique_ptr outputDS( GDALOpen( mFileName.toUtf8().constData(), GA_Update ) );
           if ( outputDS )
           {
             skipWorldFile = true;

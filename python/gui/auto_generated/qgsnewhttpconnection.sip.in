@@ -43,7 +43,7 @@ information for an HTTP Server for WMS, etc.
 
     QgsNewHttpConnection( QWidget *parent /TransferThis/ = 0,
                           QgsNewHttpConnection::ConnectionTypes types = ConnectionWms,
-                          const QString &baseKey = "qgis/connections-wms/",
+                          const QString &settingsKey = "WMS", // TODO QGIS 4 remove arg rename
                           const QString &connectionName = QString(),
                           QgsNewHttpConnection::Flags flags = QgsNewHttpConnection::Flags(),
                           Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );

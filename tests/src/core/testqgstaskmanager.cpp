@@ -69,7 +69,7 @@ class ProgressReportingTask : public QgsTask
 
   public:
 
-    ProgressReportingTask( const QString &desc = QString() ) : QgsTask( desc )
+    ProgressReportingTask( const QString &desc = QString(), QgsTask::Flags flags = AllFlags ) : QgsTask( desc, flags )
     {
       qDebug() << "created task " << desc;
     }
@@ -181,6 +181,25 @@ class CancelableTask : public QgsTask
       return true;
     }
 };
+
+class HiddenTask : public ProgressReportingTask
+{
+    Q_OBJECT
+
+  public:
+
+    HiddenTask( const QString &desc = QString() ) : ProgressReportingTask( desc, QgsTask::CanCancel | QgsTask::Hidden )
+    {
+      qDebug() << "created task " << desc;
+    }
+
+    ~HiddenTask() override
+    {
+      qDebug() << "deleting task " << description();
+    }
+
+};
+
 
 class SuccessTask : public QgsTask
 {
@@ -341,6 +360,7 @@ class TestQgsTaskManager : public QObject
     void proxyTask();
     void proxyTask2();
     void scopedProxyTask();
+    void hiddenTask();
 };
 
 void TestQgsTaskManager::initTestCase()
@@ -1636,6 +1656,101 @@ void TestQgsTaskManager::scopedProxyTask()
     QCoreApplication::processEvents();
   }
   while ( QgsApplication::taskManager()->countActiveTasks() > 0 )
+  {
+    QCoreApplication::processEvents();
+  }
+  flushEvents();
+}
+
+void TestQgsTaskManager::hiddenTask()
+{
+  //create an empty manager
+  QgsTaskManager manager;
+  QSignalSpy taskAddedSpy( &manager, &QgsTaskManager::taskAdded );
+
+  //add a hidden task -- the "taskAdded" signal should NOT be emitted
+  HiddenTask *task = new HiddenTask( QStringLiteral( "add_task_1" ) );
+  long id = manager.addTask( task );
+
+  QCOMPARE( id, 1L );
+  QCOMPARE( manager.tasks().count(), 1 );
+  QCOMPARE( manager.count(), 1 );
+  // signal should NOT be emitted, it's a hidden task
+  QCOMPARE( taskAddedSpy.count(), 0 );
+  while ( !task->isActive() )
+  {
+    QCoreApplication::processEvents();
+  }
+  flushEvents();
+  QVERIFY( task->isActive() );
+  QCOMPARE( task->status(), QgsTask::Running );
+
+  //retrieve task, should still work
+  QCOMPARE( manager.task( 1L ), task );
+  QCOMPARE( manager.tasks().at( 0 ), task );
+
+  QCOMPARE( manager.countActiveTasks(), 1 );
+  QCOMPARE( manager.countActiveTasks( false ), 0 );
+
+  QSignalSpy spyProgressChanged( &manager, &QgsTaskManager::progressChanged );
+  QSignalSpy spyFinalTaskProgressChanged( &manager, &QgsTaskManager::finalTaskProgressChanged );
+
+  task->emitProgressChanged( 50.0 );
+
+  QElapsedTimer timer;
+  timer.restart();
+  while ( timer.elapsed() < 500 )
+  {
+    QCoreApplication::processEvents();
+  }
+
+  QCOMPARE( task->progress(), 50.0 );
+  // these signals should NOT be emitted for hidden tasks
+  QCOMPARE( spyProgressChanged.count(), 0 );
+  QCOMPARE( spyFinalTaskProgressChanged.count(), 0 );
+
+  //add a second, non-hidden task
+  ProgressReportingTask *task2 = new ProgressReportingTask( QStringLiteral( "add_task_2" ) );
+  id = manager.addTask( task2 );
+  QCOMPARE( id, 2L );
+  QCOMPARE( manager.tasks().count(), 2 );
+  QCOMPARE( manager.count(), 2 );
+  QCOMPARE( manager.task( 1L ), task );
+  QVERIFY( manager.tasks().contains( task ) );
+  QCOMPARE( manager.task( 2L ), task2 );
+  QVERIFY( manager.tasks().contains( task2 ) );
+  while ( !task2->isActive() )
+  {
+    QCoreApplication::processEvents();
+  }
+  flushEvents();
+  QVERIFY( task2->isActive() );
+  QCOMPARE( task2->status(), QgsTask::Running );
+
+  QCOMPARE( taskAddedSpy.count(), 1 );
+  QCOMPARE( taskAddedSpy.last().at( 0 ).toLongLong(), 2LL );
+
+  QCOMPARE( manager.countActiveTasks(), 2 );
+  QCOMPARE( manager.countActiveTasks( false ), 1 );
+
+  task2->emitProgressChanged( 25.0 );
+  timer.restart();
+  while ( timer.elapsed() < 500 )
+  {
+    QCoreApplication::processEvents();
+  }
+
+  // these signals should be emitted for the non-hidden task
+  QCOMPARE( spyProgressChanged.count(), 1 );
+  QCOMPARE( spyProgressChanged.last().at( 0 ).toLongLong(), 2LL );
+  QCOMPARE( spyProgressChanged.last().at( 1 ).toDouble(), 25.0 );
+  QCOMPARE( spyFinalTaskProgressChanged.count(), 1 );
+  QCOMPARE( spyFinalTaskProgressChanged.last().at( 0 ).toDouble(), 25.0 );
+
+  task->cancel();
+  task2->cancel();
+
+  while ( manager.countActiveTasks() > 0 )
   {
     QCoreApplication::processEvents();
   }

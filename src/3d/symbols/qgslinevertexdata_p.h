@@ -32,16 +32,23 @@
 
 #define SIP_NO_FILE
 
-#include "qgs3dtypes.h"
+#include "qgis.h"
+
 
 namespace Qt3DCore
 {
   class QNode;
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+  class QGeometry;
+#endif
 }
+
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 namespace Qt3DRender
 {
   class QGeometry;
 }
+#endif
 
 class QgsLineString;
 class Qgs3DMapSettings;
@@ -68,18 +75,22 @@ struct QgsLineVertexData
   bool withAdjacency = false;  //!< Whether line strip with adjacency primitive will be used
 
   // extra info to calculate elevation
-  Qgs3DTypes::AltitudeClamping altClamping = Qgs3DTypes::AltClampRelative;
-  Qgs3DTypes::AltitudeBinding altBinding = Qgs3DTypes::AltBindVertex;
+  Qgis::AltitudeClamping altClamping = Qgis::AltitudeClamping::Relative;
+  Qgis::AltitudeBinding altBinding = Qgis::AltitudeBinding::Vertex;
   float baseHeight = 0;
   const Qgs3DMapSettings *mapSettings = nullptr;
 
   QgsLineVertexData();
 
-  void init( Qgs3DTypes::AltitudeClamping clamping, Qgs3DTypes::AltitudeBinding binding, float height, const Qgs3DMapSettings *map );
+  void init( Qgis::AltitudeClamping clamping, Qgis::AltitudeBinding binding, float height, const Qgs3DMapSettings *map );
 
   QByteArray createVertexBuffer();
   QByteArray createIndexBuffer();
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
   Qt3DRender::QGeometry *createGeometry( Qt3DCore::QNode *parent );
+#else
+  Qt3DCore::QGeometry *createGeometry( Qt3DCore::QNode *parent );
+#endif
 
   void addLineString( const QgsLineString &lineString, float extraHeightOffset = 0 );
   void addVerticalLines( const QgsLineString &lineString, float verticalLength, float extraHeightOffset = 0 );

@@ -22,21 +22,31 @@
 #include "qgsexception.h"
 #include "qgsproject.h"
 #include "qgsmessagelog.h"
+#include "qgssymbollayerutils.h"
+#include "qgsmarkersymbol.h"
+#include "qgsgui.h"
+#include "qgssettingsentryimpl.h"
+#include "qgssettingstree.h"
 
+
+const QgsSettingsEntryString *QgsGpsMarker::settingLocationMarkerSymbol = new QgsSettingsEntryString( QStringLiteral( "location-marker-symbol" ), QgsSettingsTree::sTreeGps, QStringLiteral( R"""(<symbol alpha="1" frame_rate="10" is_animated="0" name="gps_marker" force_rhr="0" clip_to_extent="1" type="marker"> <data_defined_properties>  <Option type="Map">   <Option value="" name="name" type="QString"/>   <Option name="properties"/>   <Option value="collection" name="type" type="QString"/>  </Option> </data_defined_properties> <layer enabled="1" class="SimpleMarker" pass="0" locked="0">  <Option type="Map">   <Option value="0" name="angle" type="QString"/>   <Option value="square" name="cap_style" type="QString"/>   <Option value="35,35,35,255" name="color" type="QString"/>   <Option value="1" name="horizontal_anchor_point" type="QString"/>   <Option value="round" name="joinstyle" type="QString"/>   <Option value="triangle" name="name" type="QString"/>   <Option value="0,-3.80000000000000115" name="offset" type="QString"/>   <Option value="3x:0,0,0,0,0,0" name="offset_map_unit_scale" type="QString"/>   <Option value="MM" name="offset_unit" type="QString"/>   <Option value="255,255,255,255" name="outline_color" type="QString"/>   <Option value="solid" name="outline_style" type="QString"/>   <Option value="0.4" name="outline_width" type="QString"/>   <Option value="3x:0,0,0,0,0,0" name="outline_width_map_unit_scale" type="QString"/>   <Option value="MM" name="outline_width_unit" type="QString"/>   <Option value="diameter" name="scale_method" type="QString"/>   <Option value="2" name="size" type="QString"/>   <Option value="3x:0,0,0,0,0,0" name="size_map_unit_scale" type="QString"/>   <Option value="MM" name="size_unit" type="QString"/>   <Option value="1" name="vertical_anchor_point" type="QString"/>  </Option>  <prop k="angle" v="0"/>  <prop k="cap_style" v="square"/>  <prop k="color" v="35,35,35,255"/>  <prop k="horizontal_anchor_point" v="1"/>  <prop k="joinstyle" v="round"/>  <prop k="name" v="triangle"/>  <prop k="offset" v="0,-3.80000000000000115"/>  <prop k="offset_map_unit_scale" v="3x:0,0,0,0,0,0"/>  <prop k="offset_unit" v="MM"/>  <prop k="outline_color" v="255,255,255,255"/>  <prop k="outline_style" v="solid"/>  <prop k="outline_width" v="0.4"/>  <prop k="outline_width_map_unit_scale" v="3x:0,0,0,0,0,0"/>  <prop k="outline_width_unit" v="MM"/>  <prop k="scale_method" v="diameter"/>  <prop k="size" v="2"/>  <prop k="size_map_unit_scale" v="3x:0,0,0,0,0,0"/>  <prop k="size_unit" v="MM"/>  <prop k="vertical_anchor_point" v="1"/>  <data_defined_properties>   <Option type="Map">    <Option value="" name="name" type="QString"/>    <Option name="properties"/>    <Option value="collection" name="type" type="QString"/>   </Option>  </data_defined_properties> </layer> <layer enabled="1" class="SimpleMarker" pass="0" locked="0">  <Option type="Map">   <Option value="0" name="angle" type="QString"/>   <Option value="square" name="cap_style" type="QString"/>   <Option value="190,178,151,0" name="color" type="QString"/>   <Option value="1" name="horizontal_anchor_point" type="QString"/>   <Option value="bevel" name="joinstyle" type="QString"/>   <Option value="circle" name="name" type="QString"/>   <Option value="0,0" name="offset" type="QString"/>   <Option value="3x:0,0,0,0,0,0" name="offset_map_unit_scale" type="QString"/>   <Option value="MM" name="offset_unit" type="QString"/>   <Option value="255,255,255,255" name="outline_color" type="QString"/>   <Option value="solid" name="outline_style" type="QString"/>   <Option value="1.22" name="outline_width" type="QString"/>   <Option value="3x:0,0,0,0,0,0" name="outline_width_map_unit_scale" type="QString"/>   <Option value="MM" name="outline_width_unit" type="QString"/>   <Option value="diameter" name="scale_method" type="QString"/>   <Option value="5.8" name="size" type="QString"/>   <Option value="3x:0,0,0,0,0,0" name="size_map_unit_scale" type="QString"/>   <Option value="MM" name="size_unit" type="QString"/>   <Option value="1" name="vertical_anchor_point" type="QString"/>  </Option>  <prop k="angle" v="0"/>  <prop k="cap_style" v="square"/>  <prop k="color" v="190,178,151,0"/>  <prop k="horizontal_anchor_point" v="1"/>  <prop k="joinstyle" v="bevel"/>  <prop k="name" v="circle"/>  <prop k="offset" v="0,0"/>  <prop k="offset_map_unit_scale" v="3x:0,0,0,0,0,0"/>  <prop k="offset_unit" v="MM"/>  <prop k="outline_color" v="255,255,255,255"/>  <prop k="outline_style" v="solid"/>  <prop k="outline_width" v="1.22"/>  <prop k="outline_width_map_unit_scale" v="3x:0,0,0,0,0,0"/>  <prop k="outline_width_unit" v="MM"/>  <prop k="scale_method" v="diameter"/>  <prop k="size" v="5.8"/>  <prop k="size_map_unit_scale" v="3x:0,0,0,0,0,0"/>  <prop k="size_unit" v="MM"/>  <prop k="vertical_anchor_point" v="1"/>  <data_defined_properties>   <Option type="Map">    <Option value="" name="name" type="QString"/>    <Option name="properties"/>    <Option value="collection" name="type" type="QString"/>   </Option>  </data_defined_properties> </layer> <layer enabled="1" class="SimpleMarker" pass="0" locked="0">  <Option type="Map">   <Option value="0" name="angle" type="QString"/>   <Option value="square" name="cap_style" type="QString"/>   <Option value="190,178,151,0" name="color" type="QString"/>   <Option value="1" name="horizontal_anchor_point" type="QString"/>   <Option value="bevel" name="joinstyle" type="QString"/>   <Option value="circle" name="name" type="QString"/>   <Option value="0,0" name="offset" type="QString"/>   <Option value="3x:0,0,0,0,0,0" name="offset_map_unit_scale" type="QString"/>   <Option value="MM" name="offset_unit" type="QString"/>   <Option value="35,35,35,255" name="outline_color" type="QString"/>   <Option value="solid" name="outline_style" type="QString"/>   <Option value="0.8" name="outline_width" type="QString"/>   <Option value="3x:0,0,0,0,0,0" name="outline_width_map_unit_scale" type="QString"/>   <Option value="MM" name="outline_width_unit" type="QString"/>   <Option value="diameter" name="scale_method" type="QString"/>   <Option value="5.8" name="size" type="QString"/>   <Option value="3x:0,0,0,0,0,0" name="size_map_unit_scale" type="QString"/>   <Option value="MM" name="size_unit" type="QString"/>   <Option value="1" name="vertical_anchor_point" type="QString"/>  </Option>  <prop k="angle" v="0"/>  <prop k="cap_style" v="square"/>  <prop k="color" v="190,178,151,0"/>  <prop k="horizontal_anchor_point" v="1"/>  <prop k="joinstyle" v="bevel"/>  <prop k="name" v="circle"/>  <prop k="offset" v="0,0"/>  <prop k="offset_map_unit_scale" v="3x:0,0,0,0,0,0"/>  <prop k="offset_unit" v="MM"/>  <prop k="outline_color" v="35,35,35,255"/>  <prop k="outline_style" v="solid"/>  <prop k="outline_width" v="0.8"/>  <prop k="outline_width_map_unit_scale" v="3x:0,0,0,0,0,0"/>  <prop k="outline_width_unit" v="MM"/>  <prop k="scale_method" v="diameter"/>  <prop k="size" v="5.8"/>  <prop k="size_map_unit_scale" v="3x:0,0,0,0,0,0"/>  <prop k="size_unit" v="MM"/>  <prop k="vertical_anchor_point" v="1"/>  <data_defined_properties>   <Option type="Map">    <Option value="" name="name" type="QString"/>    <Option name="properties"/>    <Option value="collection" name="type" type="QString"/>   </Option>  </data_defined_properties> </layer> <layer enabled="1" class="SimpleMarker" pass="0" locked="0">  <Option type="Map">   <Option value="0" name="angle" type="QString"/>   <Option value="round" name="cap_style" type="QString"/>   <Option value="190,178,151,0" name="color" type="QString"/>   <Option value="1" name="horizontal_anchor_point" type="QString"/>   <Option value="round" name="joinstyle" type="QString"/>   <Option value="cross" name="name" type="QString"/>   <Option value="0,0" name="offset" type="QString"/>   <Option value="3x:0,0,0,0,0,0" name="offset_map_unit_scale" type="QString"/>   <Option value="MM" name="offset_unit" type="QString"/>   <Option value="255,255,255,255" name="outline_color" type="QString"/>   <Option value="solid" name="outline_style" type="QString"/>   <Option value="0.92" name="outline_width" type="QString"/>   <Option value="3x:0,0,0,0,0,0" name="outline_width_map_unit_scale" type="QString"/>   <Option value="MM" name="outline_width_unit" type="QString"/>   <Option value="diameter" name="scale_method" type="QString"/>   <Option value="2.8" name="size" type="QString"/>   <Option value="3x:0,0,0,0,0,0" name="size_map_unit_scale" type="QString"/>   <Option value="MM" name="size_unit" type="QString"/>   <Option value="1" name="vertical_anchor_point" type="QString"/>  </Option>  <prop k="angle" v="0"/>  <prop k="cap_style" v="round"/>  <prop k="color" v="190,178,151,0"/>  <prop k="horizontal_anchor_point" v="1"/>  <prop k="joinstyle" v="round"/>  <prop k="name" v="cross"/>  <prop k="offset" v="0,0"/>  <prop k="offset_map_unit_scale" v="3x:0,0,0,0,0,0"/>  <prop k="offset_unit" v="MM"/>  <prop k="outline_color" v="255,255,255,255"/>  <prop k="outline_style" v="solid"/>  <prop k="outline_width" v="0.92"/>  <prop k="outline_width_map_unit_scale" v="3x:0,0,0,0,0,0"/>  <prop k="outline_width_unit" v="MM"/>  <prop k="scale_method" v="diameter"/>  <prop k="size" v="2.8"/>  <prop k="size_map_unit_scale" v="3x:0,0,0,0,0,0"/>  <prop k="size_unit" v="MM"/>  <prop k="vertical_anchor_point" v="1"/>  <data_defined_properties>   <Option type="Map">    <Option value="" name="name" type="QString"/>    <Option name="properties"/>    <Option value="collection" name="type" type="QString"/>   </Option>  </data_defined_properties> </layer> <layer enabled="1" class="SimpleMarker" pass="0" locked="0">  <Option type="Map">   <Option value="0" name="angle" type="QString"/>   <Option value="round" name="cap_style" type="QString"/>   <Option value="190,178,151,0" name="color" type="QString"/>   <Option value="1" name="horizontal_anchor_point" type="QString"/>   <Option value="round" name="joinstyle" type="QString"/>   <Option value="cross" name="name" type="QString"/>   <Option value="0,0" name="offset" type="QString"/>   <Option value="3x:0,0,0,0,0,0" name="offset_map_unit_scale" type="QString"/>   <Option value="MM" name="offset_unit" type="QString"/>   <Option value="35,35,35,255" name="outline_color" type="QString"/>   <Option value="solid" name="outline_style" type="QString"/>   <Option value="0.46" name="outline_width" type="QString"/>   <Option value="3x:0,0,0,0,0,0" name="outline_width_map_unit_scale" type="QString"/>   <Option value="MM" name="outline_width_unit" type="QString"/>   <Option value="diameter" name="scale_method" type="QString"/>   <Option value="2.8" name="size" type="QString"/>   <Option value="3x:0,0,0,0,0,0" name="size_map_unit_scale" type="QString"/>   <Option value="MM" name="size_unit" type="QString"/>   <Option value="1" name="vertical_anchor_point" type="QString"/>  </Option>  <prop k="angle" v="0"/>  <prop k="cap_style" v="round"/>  <prop k="color" v="190,178,151,0"/>  <prop k="horizontal_anchor_point" v="1"/>  <prop k="joinstyle" v="round"/>  <prop k="name" v="cross"/>  <prop k="offset" v="0,0"/>  <prop k="offset_map_unit_scale" v="3x:0,0,0,0,0,0"/>  <prop k="offset_unit" v="MM"/>  <prop k="outline_color" v="35,35,35,255"/>  <prop k="outline_style" v="solid"/>  <prop k="outline_width" v="0.46"/>  <prop k="outline_width_map_unit_scale" v="3x:0,0,0,0,0,0"/>  <prop k="outline_width_unit" v="MM"/>  <prop k="scale_method" v="diameter"/>  <prop k="size" v="2.8"/>  <prop k="size_map_unit_scale" v="3x:0,0,0,0,0,0"/>  <prop k="size_unit" v="MM"/>  <prop k="vertical_anchor_point" v="1"/>  <data_defined_properties>   <Option type="Map">    <Option value="" name="name" type="QString"/>    <Option name="properties"/>    <Option value="collection" name="type" type="QString"/>   </Option>  </data_defined_properties> </layer> <layer enabled="1" class="SimpleMarker" pass="0" locked="0">  <Option type="Map">   <Option value="0" name="angle" type="QString"/>   <Option value="square" name="cap_style" type="QString"/>   <Option value="35,35,35,255" name="color" type="QString"/>   <Option value="1" name="horizontal_anchor_point" type="QString"/>   <Option value="bevel" name="joinstyle" type="QString"/>   <Option value="triangle" name="name" type="QString"/>   <Option value="0,-3.80000000000000115" name="offset" type="QString"/>   <Option value="3x:0,0,0,0,0,0" name="offset_map_unit_scale" type="QString"/>   <Option value="MM" name="offset_unit" type="QString"/>   <Option value="35,35,35,255" name="outline_color" type="QString"/>   <Option value="no" name="outline_style" type="QString"/>   <Option value="0" name="outline_width" type="QString"/>   <Option value="3x:0,0,0,0,0,0" name="outline_width_map_unit_scale" type="QString"/>   <Option value="MM" name="outline_width_unit" type="QString"/>   <Option value="diameter" name="scale_method" type="QString"/>   <Option value="2" name="size" type="QString"/>   <Option value="3x:0,0,0,0,0,0" name="size_map_unit_scale" type="QString"/>   <Option value="MM" name="size_unit" type="QString"/>   <Option value="1" name="vertical_anchor_point" type="QString"/>  </Option>  <prop k="angle" v="0"/>  <prop k="cap_style" v="square"/>  <prop k="color" v="35,35,35,255"/>  <prop k="horizontal_anchor_point" v="1"/>  <prop k="joinstyle" v="bevel"/>  <prop k="name" v="triangle"/>  <prop k="offset" v="0,-3.80000000000000115"/>  <prop k="offset_map_unit_scale" v="3x:0,0,0,0,0,0"/>  <prop k="offset_unit" v="MM"/>  <prop k="outline_color" v="35,35,35,255"/>  <prop k="outline_style" v="no"/>  <prop k="outline_width" v="0"/>  <prop k="outline_width_map_unit_scale" v="3x:0,0,0,0,0,0"/>  <prop k="outline_width_unit" v="MM"/>  <prop k="scale_method" v="diameter"/>  <prop k="size" v="2"/>  <prop k="size_map_unit_scale" v="3x:0,0,0,0,0,0"/>  <prop k="size_unit" v="MM"/>  <prop k="vertical_anchor_point" v="1"/>  <data_defined_properties>   <Option type="Map">    <Option value="" name="name" type="QString"/>    <Option name="properties"/>    <Option value="collection" name="type" type="QString"/>   </Option>  </data_defined_properties> </layer></symbol>)""" ), QStringLiteral( "Marker symbol to use for GPS location marker" ), Qgis::SettingsOptions(), 0 );
+
+const QgsSettingsEntryBool *QgsGpsMarker::settingShowLocationMarker = new QgsSettingsEntryBool( QStringLiteral( "show-location-marker" ), QgsSettingsTree::sTreeGps, true, QStringLiteral( "Whether to show the current GPS location marker" ) );
+
+const QgsSettingsEntryBool *QgsGpsMarker::settingRotateLocationMarker = new QgsSettingsEntryBool( QStringLiteral( "rotate-location-marker" ), QgsSettingsTree::sTreeGps, true, QStringLiteral( "Whether to rotate GPS marker symbol to follow GPS bearing" ), Qgis::SettingsOptions() );
 
 QgsGpsMarker::QgsGpsMarker( QgsMapCanvas *mapCanvas )
-  : QgsMapCanvasItem( mapCanvas )
+  : QgsMapCanvasMarkerSymbolItem( mapCanvas )
 {
-  mSize = 16;
   mWgs84CRS = QgsCoordinateReferenceSystem::fromOgcWmsCrs( QStringLiteral( "EPSG:4326" ) );
-  mSvg.load( QStringLiteral( ":/images/north_arrows/gpsarrow2.svg" ) );
+  updateMarkerSymbol();
+
+  QObject::connect( QgsGui::instance(), &QgsGui::optionsChanged, this, &QgsGpsMarker::updateMarkerSymbol );
+
   setZValue( 200 );
 }
 
-void QgsGpsMarker::setSize( int size )
-{
-  mSize = size;
-}
+QgsGpsMarker::~QgsGpsMarker() = default;
 
 void QgsGpsMarker::setGpsPosition( const QgsPointXY &point )
 {
@@ -59,35 +69,31 @@ void QgsGpsMarker::setGpsPosition( const QgsPointXY &point )
     mCenter = point;
   }
 
-  const QPointF pt = toCanvasCoordinates( mCenter );
-  setPos( pt );
+  setPointLocation( mCenter );
+  updateSize();
 }
 
-void QgsGpsMarker::paint( QPainter *p )
+void QgsGpsMarker::setMarkerRotation( double rotation )
 {
-  if ( ! mSvg.isValid() )
+  QgsMarkerSymbol *renderedMarker = qgis::down_cast< QgsMarkerSymbol *>( symbol() );
+  if ( !settingRotateLocationMarker->value( ) )
   {
-    return;
+    renderedMarker->setAngle( mMarkerSymbol->angle() );
   }
-
-  // this needs to be done when the canvas is repainted to make for smoother map rendering
-  // if not done the map could be panned, but the cursor position won't be updated until the next valid GPS fix is received
-  const QPointF pt = toCanvasCoordinates( mCenter );
-  setPos( pt );
-
-  const double halfSize = mSize / 2.0;
-  mSvg.render( p, QRectF( 0 - halfSize, 0 - halfSize, mSize, mSize ) );
+  else
+  {
+    renderedMarker->setAngle( mMarkerSymbol->angle() + rotation + mMapCanvas->rotation() );
+  }
+  updateSize();
 }
 
-
-QRectF QgsGpsMarker::boundingRect() const
+void QgsGpsMarker::updateMarkerSymbol()
 {
-  const double halfSize = mSize / 2.0;
-  return QRectF( -halfSize, -halfSize, 2.0 * halfSize, 2.0 * halfSize );
-}
-
-void QgsGpsMarker::updatePosition()
-{
-  const QPointF pt = toCanvasCoordinates( mCenter );
-  setPos( pt );
+  const QString defaultSymbol = QgsGpsMarker::settingLocationMarkerSymbol->value();
+  QDomDocument symbolDoc;
+  symbolDoc.setContent( defaultSymbol );
+  const QDomElement markerElement = symbolDoc.documentElement();
+  mMarkerSymbol.reset( QgsSymbolLayerUtils::loadSymbol<QgsMarkerSymbol>( markerElement, QgsReadWriteContext() ) );
+  setSymbol( std::unique_ptr< QgsMarkerSymbol >( mMarkerSymbol->clone() ) );
+  updateSize();
 }

@@ -25,7 +25,7 @@ class APP_EXPORT QgsMapToolSplitFeatures: public QgsMapToolCapture
     Q_OBJECT
   public:
     QgsMapToolSplitFeatures( QgsMapCanvas *canvas );
-    bool supportsTechnique( CaptureTechnique technique ) const override;
+    bool supportsTechnique( Qgis::CaptureTechnique technique ) const override;
     void cadCanvasReleaseEvent( QgsMapMouseEvent *e ) override;
 };
 

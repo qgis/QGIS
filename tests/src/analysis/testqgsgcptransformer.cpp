@@ -42,6 +42,11 @@ class TestQgsGcpTransformer : public QObject
       QgsApplication::init(); // needed for CRS database
     }
 
+    void cleanupTestCase()
+    {
+      QgsApplication::exitQgis();
+    }
+
     void testLinear()
     {
       QgsLinearGeorefTransform transform;

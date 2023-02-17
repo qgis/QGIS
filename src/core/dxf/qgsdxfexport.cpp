@@ -50,6 +50,7 @@
 #include "qgsexpressioncontextutils.h"
 #include "qgsdxfexport_p.h"
 #include "qgssymbol.h"
+#include "qgsvariantutils.h"
 
 #include "qgswkbtypes.h"
 #include "qgspoint.h"
@@ -61,6 +62,10 @@
 
 #include <QIODevice>
 #include <QTextCodec>
+
+#ifdef _MSC_VER
+#define strcasecmp( a, b ) stricmp( a, b )
+#endif
 
 QgsDxfExport::QgsDxfExport() = default;
 
@@ -1298,57 +1303,57 @@ void QgsDxfExport::writeText( const QString &layer, const QString &text, pal::La
 
   const QgsPropertyCollection &props = layerSettings.dataDefinedProperties();
 
-  if ( layerSettings.placement == QgsPalLayerSettings::Placement::OverPoint )
+  if ( layerSettings.placement == Qgis::LabelPlacement::OverPoint )
   {
     lblX = labelFeature->anchorPosition().x();
     lblY = labelFeature->anchorPosition().y();
 
-    QgsPalLayerSettings::QuadrantPosition offsetQuad = layerSettings.quadOffset;
+    Qgis::LabelQuadrantPosition offsetQuad = layerSettings.quadOffset;
 
     if ( props.isActive( QgsPalLayerSettings::OffsetQuad ) )
     {
       const QVariant exprVal = props.value( QgsPalLayerSettings::OffsetQuad, expressionContext );
-      if ( !exprVal.isNull() )
+      if ( !QgsVariantUtils::isNull( exprVal ) )
       {
-        offsetQuad = static_cast<QgsPalLayerSettings::QuadrantPosition>( exprVal.toInt() );
+        offsetQuad = static_cast<Qgis::LabelQuadrantPosition>( exprVal.toInt() );
       }
     }
 
     switch ( offsetQuad )
     {
-      case QgsPalLayerSettings::QuadrantPosition::QuadrantAboveLeft:
+      case Qgis::LabelQuadrantPosition::AboveLeft:
         hali = HAlign::HRight;
         vali = VAlign::VBottom;
         break;
-      case QgsPalLayerSettings::QuadrantPosition::QuadrantAbove:
+      case Qgis::LabelQuadrantPosition::Above:
         hali = HAlign::HCenter;
         vali = VAlign::VBottom;
         break;
-      case QgsPalLayerSettings::QuadrantPosition::QuadrantAboveRight:
+      case Qgis::LabelQuadrantPosition::AboveRight:
         hali = HAlign::HLeft;
         vali = VAlign::VBottom;
         break;
-      case QgsPalLayerSettings::QuadrantPosition::QuadrantLeft:
+      case Qgis::LabelQuadrantPosition::Left:
         hali = HAlign::HRight;
         vali = VAlign::VMiddle;
         break;
-      case QgsPalLayerSettings::QuadrantPosition::QuadrantOver:
+      case Qgis::LabelQuadrantPosition::Over:
         hali = HAlign::HCenter;
         vali = VAlign::VMiddle;
         break;
-      case QgsPalLayerSettings::QuadrantPosition::QuadrantRight:
+      case Qgis::LabelQuadrantPosition::Right:
         hali = HAlign::HLeft;
         vali = VAlign::VMiddle;
         break;
-      case QgsPalLayerSettings::QuadrantPosition::QuadrantBelowLeft:
+      case Qgis::LabelQuadrantPosition::BelowLeft:
         hali = HAlign::HRight;
         vali = VAlign::VTop;
         break;
-      case QgsPalLayerSettings::QuadrantPosition::QuadrantBelow:
+      case Qgis::LabelQuadrantPosition::Below:
         hali = HAlign::HCenter;
         vali = VAlign::VTop;
         break;
-      case QgsPalLayerSettings::QuadrantPosition::QuadrantBelowRight:
+      case Qgis::LabelQuadrantPosition::BelowRight:
         hali = HAlign::HLeft;
         vali = VAlign::VTop;
         break;
@@ -1362,7 +1367,7 @@ void QgsDxfExport::writeText( const QString &layer, const QString &text, pal::La
 
     hali = HAlign::HLeft;
     QVariant exprVal = props.value( QgsPalLayerSettings::Hali, expressionContext );
-    if ( !exprVal.isNull() )
+    if ( !QgsVariantUtils::isNull( exprVal ) )
     {
       const QString haliString = exprVal.toString();
       if ( haliString.compare( QLatin1String( "Center" ), Qt::CaseInsensitive ) == 0 )
@@ -1381,7 +1386,7 @@ void QgsDxfExport::writeText( const QString &layer, const QString &text, pal::La
   {
     vali = VAlign::VBottom;
     QVariant exprVal = props.value( QgsPalLayerSettings::Vali, expressionContext );
-    if ( !exprVal.isNull() )
+    if ( !QgsVariantUtils::isNull( exprVal ) )
     {
       const QString valiString = exprVal.toString();
       if ( valiString.compare( QLatin1String( "Bottom" ), Qt::CaseInsensitive ) != 0 )
@@ -1616,6 +1621,8 @@ void QgsDxfExport::addFeature( QgsSymbolRenderContext &ctx, const QgsCoordinateT
       case QgsWkbTypes::CircularString:
       case QgsWkbTypes::CompoundCurve:
       case QgsWkbTypes::LineString:
+      case QgsWkbTypes::MultiCurve:
+      case QgsWkbTypes::MultiLineString:
       {
         if ( !qgsDoubleNear( offset, 0.0 ) )
         {
@@ -1631,66 +1638,26 @@ void QgsDxfExport::addFeature( QgsSymbolRenderContext &ctx, const QgsCoordinateT
         if ( curve )
         {
           writePolyline( *curve, layer, lineStyleName, penColor, width );
-          break;
-        }
-
-        // Offset with miter might have turned the simple to a multiline string
-        offset = 0.0;
-      }
-      FALLTHROUGH
-
-      case QgsWkbTypes::MultiCurve:
-      case QgsWkbTypes::MultiLineString:
-      {
-        if ( !qgsDoubleNear( offset, 0.0 ) )
-        {
-          QgsGeos geos( sourceGeom );
-          tempGeom.reset( geos.offsetCurve( offset, 0, Qgis::JoinStyle::Miter, 2.0 ) );  //#spellok
-          if ( tempGeom )
-            sourceGeom = tempGeom.get();
-          else
-            sourceGeom = geom.constGet();
-        }
-
-        const QgsGeometryCollection *gc = dynamic_cast<const QgsGeometryCollection *>( sourceGeom );
-        if ( gc )
-        {
-          for ( int i = 0; i < gc->numGeometries(); i++ )
-          {
-            const QgsCurve *curve = dynamic_cast<const QgsCurve *>( gc->geometryN( i ) );
-            Q_ASSERT( curve );
-            writePolyline( *curve, layer, lineStyleName, penColor, width );
-          }
         }
         else
+        {
+          const QgsGeometryCollection *gc = dynamic_cast<const QgsGeometryCollection *>( sourceGeom );
           Q_ASSERT( gc );
-
+          if ( gc )
+          {
+            for ( int i = 0; i < gc->numGeometries(); i++ )
+            {
+              const QgsCurve *curve = dynamic_cast<const QgsCurve *>( gc->geometryN( i ) );
+              Q_ASSERT( curve );
+              writePolyline( *curve, layer, lineStyleName, penColor, width );
+            }
+          }
+        }
         break;
       }
 
       case QgsWkbTypes::CurvePolygon:
       case QgsWkbTypes::Polygon:
-      {
-        if ( !qgsDoubleNear( offset, 0.0 ) )
-        {
-          QgsGeos geos( sourceGeom );
-          tempGeom.reset( geos.buffer( offset, 0, Qgis::EndCapStyle::Flat, Qgis::JoinStyle::Miter, 2.0 ) );  //#spellok
-          if ( tempGeom )
-            sourceGeom = tempGeom.get();
-          else
-            sourceGeom = geom.constGet();
-        }
-
-        const QgsCurvePolygon *polygon = dynamic_cast<const QgsCurvePolygon *>( sourceGeom );
-        Q_ASSERT( polygon );
-
-        writePolyline( *polygon->exteriorRing(), layer, lineStyleName, penColor, width );
-        for ( int i = 0; i < polygon->numInteriorRings(); i++ )
-          writePolyline( *polygon->interiorRing( i ), layer, lineStyleName, penColor, width );
-
-        break;
-      }
-
       case QgsWkbTypes::MultiSurface:
       case QgsWkbTypes::MultiPolygon:
       {
@@ -1704,17 +1671,29 @@ void QgsDxfExport::addFeature( QgsSymbolRenderContext &ctx, const QgsCoordinateT
             sourceGeom = geom.constGet();
         }
 
-        const QgsGeometryCollection *gc = dynamic_cast<const QgsGeometryCollection *>( sourceGeom );
-        Q_ASSERT( gc );
-
-        for ( int i = 0; i < gc->numGeometries(); i++ )
+        const QgsCurvePolygon *polygon = dynamic_cast<const QgsCurvePolygon *>( sourceGeom );
+        if ( polygon )
         {
-          const QgsCurvePolygon *polygon = dynamic_cast<const QgsCurvePolygon *>( gc->geometryN( i ) );
-          Q_ASSERT( polygon );
-
           writePolyline( *polygon->exteriorRing(), layer, lineStyleName, penColor, width );
-          for ( int j = 0; j < polygon->numInteriorRings(); j++ )
-            writePolyline( *polygon->interiorRing( j ), layer, lineStyleName, penColor, width );
+          for ( int i = 0; i < polygon->numInteriorRings(); i++ )
+            writePolyline( *polygon->interiorRing( i ), layer, lineStyleName, penColor, width );
+        }
+        else
+        {
+          const QgsGeometryCollection *gc = dynamic_cast<const QgsGeometryCollection *>( sourceGeom );
+          Q_ASSERT( gc );
+          if ( gc )
+          {
+            for ( int i = 0; i < gc->numGeometries(); i++ )
+            {
+              const QgsCurvePolygon *polygon = dynamic_cast<const QgsCurvePolygon *>( gc->geometryN( i ) );
+              Q_ASSERT( polygon );
+
+              writePolyline( *polygon->exteriorRing(), layer, lineStyleName, penColor, width );
+              for ( int j = 0; j < polygon->numInteriorRings(); j++ )
+                writePolyline( *polygon->interiorRing( j ), layer, lineStyleName, penColor, width );
+            }
+          }
         }
 
         break;
@@ -2150,6 +2129,9 @@ QString QgsDxfExport::dxfLayerName( const QString &name )
   layerName.replace( '|', '_' );
   layerName.replace( '=', '_' );
   layerName.replace( '\'', '_' );
+  // if layer name contains comma, resulting file is unreadable in AutoCAD
+  // see https://github.com/qgis/QGIS/issues/47381
+  layerName.replace( ',', '_' );
 
   // also remove newline characters (#15067)
   layerName.replace( QLatin1String( "\r\n" ), QLatin1String( "_" ) );
@@ -2216,12 +2198,15 @@ QStringList QgsDxfExport::encodings()
   for ( const QByteArray &codec : codecs )
   {
     int i;
-    for ( i = 0; i < static_cast< int >( sizeof( DXF_ENCODINGS ) / sizeof( *DXF_ENCODINGS ) ) && strcmp( codec.data(), DXF_ENCODINGS[i][1] ) != 0; ++i )
+    for ( i = 0; i < static_cast< int >( sizeof( DXF_ENCODINGS ) / sizeof( *DXF_ENCODINGS ) ) && strcasecmp( codec.data(), DXF_ENCODINGS[i][1] ) != 0; ++i )
       ;
 
     if ( i < static_cast< int >( sizeof( DXF_ENCODINGS ) / sizeof( *DXF_ENCODINGS ) ) )
       encodings << codec.data();
   }
+
+  encodings.removeDuplicates();
+
   return encodings;
 }
 
@@ -2257,7 +2242,7 @@ void QgsDxfExport::drawLabel( const QString &layerId, QgsRenderContext &context,
   format.setFont( dFont );
   tmpLyr.setFormat( format );
 
-  if ( tmpLyr.multilineAlign == QgsPalLayerSettings::MultiFollowPlacement )
+  if ( tmpLyr.multilineAlign == Qgis::LabelMultiLineAlignment::FollowPlacement )
   {
     //calculate font alignment based on label quadrant
     switch ( label->getQuadrant() )
@@ -2265,17 +2250,17 @@ void QgsDxfExport::drawLabel( const QString &layerId, QgsRenderContext &context,
       case pal::LabelPosition::QuadrantAboveLeft:
       case pal::LabelPosition::QuadrantLeft:
       case pal::LabelPosition::QuadrantBelowLeft:
-        tmpLyr.multilineAlign = QgsPalLayerSettings::MultiRight;
+        tmpLyr.multilineAlign = Qgis::LabelMultiLineAlignment::Right;
         break;
       case pal::LabelPosition::QuadrantAbove:
       case pal::LabelPosition::QuadrantOver:
       case pal::LabelPosition::QuadrantBelow:
-        tmpLyr.multilineAlign = QgsPalLayerSettings::MultiCenter;
+        tmpLyr.multilineAlign = Qgis::LabelMultiLineAlignment::Center;
         break;
       case pal::LabelPosition::QuadrantAboveRight:
       case pal::LabelPosition::QuadrantRight:
       case pal::LabelPosition::QuadrantBelowRight:
-        tmpLyr.multilineAlign = QgsPalLayerSettings::MultiLeft;
+        tmpLyr.multilineAlign = Qgis::LabelMultiLineAlignment::Left;
         break;
     }
   }
@@ -2298,7 +2283,7 @@ void QgsDxfExport::drawLabel( const QString &layerId, QgsRenderContext &context,
   QString wrapchr = tmpLyr.wrapChar.isEmpty() ? QStringLiteral( "\n" ) : tmpLyr.wrapChar;
 
   //add the direction symbol if needed
-  if ( !txt.isEmpty() && tmpLyr.placement == QgsPalLayerSettings::Line && tmpLyr.lineSettings().addDirectionSymbol() )
+  if ( !txt.isEmpty() && tmpLyr.placement == Qgis::LabelPlacement::Line && tmpLyr.lineSettings().addDirectionSymbol() )
   {
     bool prependSymb = false;
     QString symb = tmpLyr.lineSettings().rightDirectionSymbol();

@@ -247,7 +247,7 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
                     elapsed = '{0} {1:0.2f} {2}'.format(
                         result, delta_t, str_seconds)
 
-                return(elapsed)
+                return elapsed
 
             if self.iterateParam:
                 # Make sure the Log tab is visible before executing the algorithm
@@ -293,7 +293,9 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
                     self.feedback.pushInfo('')
 
                     if self.history_log_id is not None:
-                        self.history_details['results'] = results
+                        # can't deepcopy this!
+                        self.history_details['results'] = {k: v for k, v in results.items() if k != 'CHILD_INPUTS'}
+
                         QgsGui.historyProviderRegistry().updateEntry(self.history_log_id, self.history_details)
 
                     if self.feedback_dialog is not None:

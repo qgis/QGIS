@@ -28,15 +28,20 @@ code autocompletion.
 %End
   public:
 
-    QgsCodeEditorPython( QWidget *parent /TransferThis/ = 0, const QList<QString> &filenames = QList<QString>() );
+    QgsCodeEditorPython( QWidget *parent /TransferThis/ = 0, const QList<QString> &filenames = QList<QString>(),
+                         QgsCodeEditor::Mode mode = QgsCodeEditor::Mode::ScriptEditor );
 %Docstring
 Construct a new Python editor.
 
 :param parent: The parent QWidget
 :param filenames: The list of apis files to load for the Python lexer
+:param mode: code editor mode (since QGIS 3.30)
 
 .. versionadded:: 2.6
 %End
+
+    virtual Qgis::ScriptLanguage language() const;
+
 
     void loadAPIs( const QList<QString> &filenames );
 %Docstring
@@ -47,9 +52,28 @@ Load APIs from one or more files
 
     bool loadScript( const QString &script );
 %Docstring
-Load a script file
+Loads a ``script`` file.
+%End
 
-:param script: The script file to load
+    bool isCursorInsideStringLiteralOrComment() const;
+%Docstring
+Check whether the current cursor position is inside a string literal or a comment
+
+.. versionadded:: 3.30
+%End
+
+    QString characterBeforeCursor() const;
+%Docstring
+Returns the character before the cursor, or an empty string if cursor is set at start
+
+.. versionadded:: 3.30
+%End
+
+    QString characterAfterCursor() const;
+%Docstring
+Returns the character after the cursor, or an empty string if the cursot is set at end
+
+.. versionadded:: 3.30
 %End
 
   public slots:
@@ -61,10 +85,19 @@ Searches the selected text in the official PyQGIS online documentation.
 .. versionadded:: 3.16
 %End
 
+    void toggleComment();
+%Docstring
+Toggle comment for the selected text.
+
+.. versionadded:: 3.30
+%End
+
   protected:
 
     virtual void initializeLexer();
 
+
+    virtual void keyPressEvent( QKeyEvent *event );
 
   protected slots:
 

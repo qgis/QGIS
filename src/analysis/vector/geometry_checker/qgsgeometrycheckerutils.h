@@ -19,8 +19,8 @@
 
 #include "qgis_analysis.h"
 #include "qgsfeature.h"
-#include "geometry/qgsabstractgeometry.h"
-#include "geometry/qgspoint.h"
+#include "qgsabstractgeometry.h"
+#include "qgspoint.h"
 #include "qgsgeometrycheckcontext.h"
 #include <qmath.h>
 
@@ -170,7 +170,7 @@ class ANALYSIS_EXPORT QgsGeometryCheckerUtils
              * Dereferences the item at the current iterator location.
              */
             const QgsGeometryCheckerUtils::LayerFeature &operator*() const;
-            bool operator!=( const iterator &other );
+            bool operator!=( const iterator &other ) const;
 
           private:
             bool nextLayerFeature( bool begin );

@@ -355,7 +355,7 @@ QgsSvgSelectorGroupsModel::QgsSvgSelectorGroupsModel( QObject *parent )
     parentItem->appendRow( baseGroup );
     parentPaths << svgPaths.at( i );
     mPathItemHash.insert( svgPaths.at( i ), baseGroup );
-    QgsDebugMsg( QStringLiteral( "SVG base path %1: %2" ).arg( i ).arg( baseGroup->data().toString() ) );
+    QgsDebugMsgLevel( QStringLiteral( "SVG base path %1: %2" ).arg( i ).arg( baseGroup->data().toString() ), 2 );
   }
   mLoader->setParentPaths( parentPaths );
   connect( mLoader, &QgsSvgGroupLoader::foundPath, this, &QgsSvgSelectorGroupsModel::addPath );
@@ -615,7 +615,7 @@ QMap<QString, QgsProperty> QgsSvgParametersModel::parameters() const
 
 void QgsSvgParametersModel::removeParameters( const QModelIndexList &indexList )
 {
-  if ( !indexList.count() )
+  if ( indexList.isEmpty() )
     return;
 
   auto mm = std::minmax_element( indexList.constBegin(), indexList.constEnd(), []( const QModelIndex & i1, const QModelIndex & i2 ) {return i1.row() < i2.row();} );

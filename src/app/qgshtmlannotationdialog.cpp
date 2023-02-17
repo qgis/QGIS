@@ -34,6 +34,10 @@ QgsHtmlAnnotationDialog::QgsHtmlAnnotationDialog( QgsMapCanvasAnnotationItem *it
   setupUi( this );
   connect( mBrowseToolButton, &QToolButton::clicked, this, &QgsHtmlAnnotationDialog::mBrowseToolButton_clicked );
   connect( mButtonBox, &QDialogButtonBox::clicked, this, &QgsHtmlAnnotationDialog::mButtonBox_clicked );
+
+  connect( mFileRadioButton, &QToolButton::toggled, this, &QgsHtmlAnnotationDialog::fileRadioButtonToggled );
+  connect( mSourceRadioButton, &QToolButton::toggled, this, &QgsHtmlAnnotationDialog::sourceRadioButtonToggled );
+
   setWindowTitle( tr( "HTML Annotation" ) );
   mEmbeddedWidget = new QgsAnnotationWidget( mItem );
   mStackedWidget->addWidget( mEmbeddedWidget );
@@ -103,12 +107,12 @@ void QgsHtmlAnnotationDialog::mBrowseToolButton_clicked()
   mFileLineEdit->setText( filename );
 }
 
-void QgsHtmlAnnotationDialog::on_mFileRadioButton_toggled( bool checked )
+void QgsHtmlAnnotationDialog::fileRadioButtonToggled( bool checked )
 {
   mFileLineEdit->setEnabled( checked );
 }
 
-void QgsHtmlAnnotationDialog::on_mSourceRadioButton_toggled( bool checked )
+void QgsHtmlAnnotationDialog::sourceRadioButtonToggled( bool checked )
 {
   mHtmlSourceTextEdit->setEnabled( checked );
 }
@@ -130,5 +134,5 @@ void QgsHtmlAnnotationDialog::mButtonBox_clicked( QAbstractButton *button )
 
 void QgsHtmlAnnotationDialog::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "introduction/general_tools.html#annotation-tools" ) );
+  QgsHelp::openHelp( QStringLiteral( "map_views/map_view.html#sec-annotations" ) );
 }

@@ -36,6 +36,7 @@
 #include "qgisinterface.h"
 #include "qgsmessagelog.h"
 #include "qgssettings.h"
+#include "qgsstringutils.h"
 
 #include "topolTest.h"
 #include "rulesDialog.h"
@@ -55,7 +56,8 @@ checkDock::checkDock( QgisInterface *qIface, QWidget *parent )
   mFixButton->hide();
   mFixBox->hide();
 
-  mErrorListModel = new DockModel( mErrorList, parent );
+  mErrorListModel = new DockFilterModel( mErrorList, parent );
+  mErrorListModel->setFilterCaseSensitivity( Qt::CaseInsensitive );
   mErrorTableView->setModel( mErrorListModel );
   mErrorTableView->setSelectionBehavior( QAbstractItemView::SelectRows );
   mErrorTableView->verticalHeader()->setDefaultSectionSize( 20 );
@@ -95,6 +97,8 @@ checkDock::checkDock( QgisInterface *qIface, QWidget *parent )
   connect( qgsInterface, &QgisInterface::newProjectCreated, mConfigureDialog, &rulesDialog::clearRules );
   connect( qgsInterface, &QgisInterface::newProjectCreated, this, &checkDock::deleteErrors );
 
+  updateFilterComboBox();
+  connect( mFilterComboBox, &QComboBox::currentTextChanged, this, &checkDock::filterErrors );
 }
 
 checkDock::~checkDock()
@@ -105,6 +109,8 @@ checkDock::~checkDock()
   // delete errors in list
   deleteErrors();
   delete mErrorListModel;
+
+  mTest->deleteLater();
 }
 
 void checkDock::clearVertexMarkers()
@@ -126,6 +132,11 @@ void checkDock::clearVertexMarkers()
   }
 }
 
+void checkDock::filterErrors()
+{
+  mErrorListModel->setFilterFixedString( mFilterComboBox->currentIndex() > 0 ? mFilterComboBox->currentText() : QString() );
+}
+
 void checkDock::updateRubberBands( bool visible )
 {
   if ( !visible )
@@ -144,6 +155,9 @@ void checkDock::updateRubberBands( bool visible )
 void checkDock::deleteErrors()
 {
   qDeleteAll( mErrorList );
+
+  mErrorNames.clear();
+  updateFilterComboBox();
 
   mErrorList.clear();
   mErrorListModel->resetModel();
@@ -225,7 +239,7 @@ void checkDock::errorListClicked( const QModelIndex &index )
 
   fl.layer->getFeatures( QgsFeatureRequest().setFilterFid( fl.feature.id() ) ).nextFeature( f );
   g = f.geometry();
-  if ( g.isNull() )
+  if ( g.isNull() && mErrorList.at( row )->name() != QObject::tr( "gaps" ) )
   {
     QgsMessageLog::logMessage( tr( "Invalid first geometry" ), tr( "Topology plugin" ) );
     QMessageBox::information( this, tr( "Topology test" ), tr( "Feature not found in the layer.\nThe layer has probably changed.\nRun topology check again." ) );
@@ -258,7 +272,7 @@ void checkDock::errorListClicked( const QModelIndex &index )
 
   fl.layer->getFeatures( QgsFeatureRequest().setFilterFid( fl.feature.id() ) ).nextFeature( f );
   g = f.geometry();
-  if ( g.isNull() )
+  if ( g.isNull() && mErrorList.at( row )->name() != QObject::tr( "gaps" ) )
   {
     QgsMessageLog::logMessage( tr( "Invalid second geometry" ), tr( "Topology plugin" ) );
     QMessageBox::information( this, tr( "Topology test" ), tr( "Feature not found in the layer.\nThe layer has probably changed.\nRun topology check again." ) );
@@ -315,7 +329,7 @@ void checkDock::fix()
     mErrorList.removeAt( row );
     mErrorListModel->resetModel();
     //parseErrorListByFeature();
-    mComment->setText( tr( "%1 errors were found" ).arg( mErrorList.count() ) );
+    mComment->setText( tr( "%n error(s) were found", nullptr, mErrorList.count() ) );
     qgsInterface->mapCanvas()->refresh();
   }
   else
@@ -330,6 +344,9 @@ void checkDock::runTests( ValidateType type )
   {
     if ( mTest->testCanceled() )
       break;
+
+    if ( mTestTable->item( i, 0 )->checkState() != Qt::Checked )
+      continue;
 
     const QString testName = mTestTable->item( i, 0 )->text();
     const QString layer1Str = mTestTable->item( i, 3 )->text();
@@ -382,19 +399,40 @@ void checkDock::runTests( ValidateType type )
     }
     mErrorList << errors;
   }
+
+  for ( TopolError *error : std::as_const( mErrorList ) )
+  {
+    if ( !mErrorNames.contains( error->name() ) )
+    {
+      mErrorNames << error->name();
+    }
+  }
+  updateFilterComboBox();
+
   mToggleRubberband->setChecked( true );
   mErrorListModel->resetModel();
 }
 
+void checkDock::updateFilterComboBox()
+{
+  mFilterComboBox->clear();
+  mFilterComboBox->addItem( tr( "All Errors" ) );
+  for ( const QString &name : mErrorNames )
+  {
+    mFilterComboBox->addItem( QgsStringUtils::capitalize( name, Qgis::Capitalization::TitleCase ) );
+  }
+}
+
 void checkDock::validate( ValidateType type )
 {
+  mErrorNames.clear();
   mErrorList.clear();
 
   qDeleteAll( mRbErrorMarkers );
   mRbErrorMarkers.clear();
 
   runTests( type );
-  mComment->setText( tr( "%1 errors were found" ).arg( mErrorList.count() ) );
+  mComment->setText( tr( "%n error(s) were found", nullptr, mErrorList.count() ) );
 
   mRBFeature1->reset();
   mRBFeature2->reset();

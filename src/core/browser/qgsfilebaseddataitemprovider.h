@@ -56,6 +56,14 @@ class CORE_EXPORT QgsProviderSublayerItem final: public QgsLayerItem
     QgsProviderSublayerItem( QgsDataItem *parent, const QString &name, const QgsProviderSublayerDetails &details, const QString &filePath );
     QString layerName() const override;
     QVector<QgsDataItem *> createChildren() override;
+    QgsAbstractDatabaseProviderConnection *databaseConnection() const override;
+
+    /**
+     * Returns the sublayer details for the item.
+     *
+     * \since QGIS 3.28
+     */
+    QgsProviderSublayerDetails sublayerDetails() const;
 
   private:
 
@@ -63,6 +71,39 @@ class CORE_EXPORT QgsProviderSublayerItem final: public QgsLayerItem
 
     QgsProviderSublayerDetails mDetails;
 
+};
+
+
+/**
+ * \ingroup core
+ * \brief A data collection item for grouping of the content in file based data collections (e.g. FileGeodatabase files).
+ *
+ * \since QGIS 3.28
+ */
+class CORE_EXPORT QgsFileDataCollectionGroupItem final: public QgsDataCollectionItem
+{
+    Q_OBJECT
+  public:
+
+    /**
+     * Constructor for QgsFileDataCollectionGroupItem.
+     * \param parent parent item
+     * \param groupName group name
+     * \param path item path
+     */
+    QgsFileDataCollectionGroupItem( QgsDataItem *parent, const QString &groupName, const QString &path );
+
+    /**
+     * Adds a \a sublayer to the group.
+     */
+    void appendSublayer( const QgsProviderSublayerDetails &sublayer );
+
+    bool hasDragEnabled() const override;
+    QgsMimeDataUtils::UriList mimeUris() const override;
+
+  private:
+
+    QList< QgsProviderSublayerDetails > mSublayers;
 };
 
 /**

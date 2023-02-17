@@ -2,6 +2,9 @@
   "name": "$rownum",
   "type": "function",
   "description": "Returns the number of the current row.",
-  "examples": [ { "expression":"$rownum", "returns":"4711"}
-  ]
+  "examples": [{
+    "expression": "$rownum",
+    "returns": "4711"
+  }],
+  "tags": ["row", "number", "current"]
 }

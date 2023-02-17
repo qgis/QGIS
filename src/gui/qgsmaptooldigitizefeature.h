@@ -16,7 +16,7 @@
 #ifndef QGSMAPTOOLDIGITIZEFEATURE_H
 #define QGSMAPTOOLDIGITIZEFEATURE_H
 
-#include "qgsmaptoolcapture.h"
+#include "qgsmaptoolcapturelayergeometry.h"
 #include "qgis_gui.h"
 
 class QgsFeature;
@@ -28,7 +28,7 @@ class QgsFeature;
  * A signal will then be emitted.
  * \since QGIS 3.10
  */
-class GUI_EXPORT QgsMapToolDigitizeFeature : public QgsMapToolCapture
+class GUI_EXPORT QgsMapToolDigitizeFeature : public QgsMapToolCaptureLayerGeometry
 {
     Q_OBJECT
 
@@ -43,7 +43,7 @@ class GUI_EXPORT QgsMapToolDigitizeFeature : public QgsMapToolCapture
     QgsMapToolDigitizeFeature( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget, CaptureMode mode = QgsMapToolCapture::CaptureNone );
 
     QgsMapToolCapture::Capabilities capabilities() const override;
-    bool supportsTechnique( CaptureTechnique technique ) const override;
+    bool supportsTechnique( Qgis::CaptureTechnique technique ) const override;
 
     void cadCanvasReleaseEvent( QgsMapMouseEvent *e ) override;
 
@@ -55,6 +55,9 @@ class GUI_EXPORT QgsMapToolDigitizeFeature : public QgsMapToolCapture
 
     void activate() override;
     void deactivate() override;
+
+    // Overridden to emit digitizingCanceled when ESC is pressed
+    void keyPressEvent( QKeyEvent *e ) override;
 
   signals:
 
@@ -68,7 +71,13 @@ class GUI_EXPORT QgsMapToolDigitizeFeature : public QgsMapToolCapture
      * Emitted whenever the digitizing has been ended without digitizing
      * any feature
      */
-    void digitizingFinished( );
+    void digitizingFinished();
+
+    /**
+     * Emitted when the digitizing process was interrupted by the user.
+     * \since QGIS 3.28
+     */
+    void digitizingCanceled();
 
   protected:
 
@@ -83,14 +92,21 @@ class GUI_EXPORT QgsMapToolDigitizeFeature : public QgsMapToolCapture
      * \since QGIS 3.0
      */
     void setCheckGeometryType( bool checkGeometryType );
+    // TODO QGIS 4: remove if GRASS plugin is dropped
 
   private:
 
     /**
      * Called when the feature has been digitized.
-     * \param f the new created feature
+     * \param geometry the digitized geometry
      */
-    virtual void digitized( const QgsFeature &f );
+    void layerGeometryCaptured( const QgsGeometry &geometry ) FINAL;
+
+    /**
+     * Called when the feature has been digitized
+     * \since QGIS 3.26
+     */
+    virtual void featureDigitized( const QgsFeature &feature )  {Q_UNUSED( feature )} SIP_FORCE
 
     /**
      * individual layer per digitizing session
@@ -111,6 +127,7 @@ class GUI_EXPORT QgsMapToolDigitizeFeature : public QgsMapToolCapture
     bool mCheckGeometryType;
 
     friend class TestQgsRelationReferenceWidget;
+
 };
 
 #endif // QGSMAPTOOLDIGITIZEFEATURE_H

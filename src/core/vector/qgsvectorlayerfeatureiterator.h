@@ -94,7 +94,35 @@ class CORE_EXPORT QgsVectorLayerFeatureSource : public QgsAbstractFeatureSource
   protected:
 
     std::unique_ptr< QgsAbstractFeatureSource > mProviderFeatureSource;
+
     std::unique_ptr< QgsVectorLayerJoinBuffer > mJoinBuffer;
+
+#ifndef SIP_RUN
+
+    /**
+     * Contains join layer source information prepared in a thread-safe way, ready for vector
+     * layer feature iterators with joins to utilize.
+     *
+     * \since QGIS 3.30
+     */
+    struct JoinLayerSource
+    {
+
+      /**
+       * Feature source for join
+       */
+      std::shared_ptr< QgsVectorLayerFeatureSource > joinSource;
+
+      /**
+       * Fields from joined layer.
+       */
+      QgsFields joinLayerFields;
+    };
+
+    //! Contains prepared join sources by layer ID
+    QMap< QString, JoinLayerSource > mJoinSources;
+#endif
+
     std::unique_ptr< QgsExpressionFieldBuffer > mExpressionFieldBuffer;
 
     QgsFields mFields;
@@ -268,9 +296,11 @@ class CORE_EXPORT QgsVectorLayerFeatureIterator : public QgsAbstractFeatureItera
     QgsFeatureRequest mChangedFeaturesRequest;
     QgsFeatureIterator mChangedFeaturesIterator;
 
+    // filter bounding box constraint, in SOURCE CRS
     QgsRectangle mFilterRect;
     QgsCoordinateTransform mTransform;
 
+    // distance within constraint reference geometry and distance IN DESTINATION CRS
     QgsGeometry mDistanceWithinGeom;
     std::shared_ptr< QgsGeometryEngine > mDistanceWithinEngine;
     double mDistanceWithin = 0;

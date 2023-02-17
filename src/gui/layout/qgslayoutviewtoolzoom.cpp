@@ -33,6 +33,11 @@ void QgsLayoutViewToolZoom::layoutPressEvent( QgsLayoutViewMouseEvent *event )
 {
   if ( event->button() != Qt::LeftButton )
   {
+    if ( mMarqueeZoom )
+    {
+      mMarqueeZoom = false;
+      mRubberBand->finish();
+    }
     event->ignore();
     return;
   }

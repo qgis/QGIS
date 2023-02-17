@@ -81,6 +81,7 @@ mkdir -p "$BUILDDIR"
     -DUSE_CCACHE=ON \
     -DCMAKE_BUILD_TYPE=$buildtype \
     -DNATIVE_CRSSYNC_BIN="$CRSSYNC_BIN" \
+    -DNATIVE_Python_EXECUTABLE=python3 \
     -DBUILD_TESTING=OFF \
     -DENABLE_TESTS=OFF \
     -DQGIS_BIN_SUBDIR=bin \
@@ -242,6 +243,8 @@ linkDep lib/qt5/plugins/crypto/libqca-logger.dll bin/crypto
 linkDep lib/qt5/plugins/crypto/libqca-softstore.dll bin/crypto
 linkDep lib/qt5/plugins/crypto/libqca-gnupg.dll bin/crypto
 linkDep lib/qt5/plugins/crypto/libqca-ossl.dll bin/crypto
+
+linkDep lib/ossl-modules/legacy.dll lib/ossl-modules
 
 mkdir -p "$installprefix/share/qt5/translations/"
 #cp -a "$MINGWROOT/share/qt5/translations/qt_"*.qm  "$installprefix/share/qt5/translations"

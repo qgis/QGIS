@@ -23,7 +23,7 @@
 #include "qgis_gui.h"
 #include "qgsdistancearea.h"
 
-
+class QAction;
 class QgsVectorLayer;
 
 /**
@@ -114,7 +114,7 @@ class GUI_EXPORT QgsExpressionPreviewWidget : public QWidget, private Ui::QgsExp
     void linkActivated( const QString & );
     void setEvalError( bool evalError );
     void setParserError( bool parserError );
-
+    void copyFullExpressionValue();
 
   private:
     void setExpressionToolTip( const QString &toolTip );
@@ -129,6 +129,7 @@ class GUI_EXPORT QgsExpressionPreviewWidget : public QWidget, private Ui::QgsExp
     bool mParserError = true;
     QString mExpressionText;
     QgsExpression mExpression;
+    QAction *mCopyPreviewAction = nullptr;
 };
 
 #endif // QGSEXPRESSIONPREVIEWWIDGET_H

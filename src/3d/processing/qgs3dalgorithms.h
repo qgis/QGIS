@@ -20,7 +20,7 @@
 
 #include "qgis_3d.h"
 #include "qgis.h"
-#include "processing/qgsprocessingprovider.h"
+#include "qgsprocessingprovider.h"
 
 /**
  * \ingroup analysis

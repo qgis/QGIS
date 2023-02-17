@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsVirtualLayerDefinition
 
 From build dir, run: ctest -R PyQgsSelectiveMasking -V
@@ -13,63 +12,46 @@ the Free Software Foundation; either version 2 of the License, or
 __author__ = 'Hugo Mercier / Oslandia'
 __date__ = '28/06/2019'
 
-import qgis  # NOQA
 import os
+import subprocess
 
-from qgis.PyQt.QtCore import (
-    QSize,
-    QRectF,
-    QDir
-)
-from qgis.PyQt.QtGui import (
-    QColor,
-    QImage,
-    QPainter
-)
-
-from qgis.testing import unittest, start_app
-
-from utilities import (
-    unitTestDataPath,
-    getTempfilePath,
-    renderMapToImage,
-    loadTestFonts,
-    getTestFont,
-    openInBrowserTab
-)
-
+import qgis  # NOQA
+from qgis.PyQt.QtCore import QDir, QRectF, QSize, Qt
+from qgis.PyQt.QtGui import QColor, QImage, QPainter
 from qgis.core import (
-    QgsMapSettings,
+    Qgis,
     QgsCoordinateReferenceSystem,
-    QgsRectangle,
-    QgsProject,
-    QgsSymbolLayerReference,
-    QgsMapRendererParallelJob,
-    QgsMapRendererSequentialJob,
-    QgsRenderChecker,
-    QgsSimpleMarkerSymbolLayer,
-    QgsSimpleMarkerSymbolLayerBase,
-    QgsMarkerSymbol,
-    QgsMaskMarkerSymbolLayer,
-    QgsSingleSymbolRenderer,
-    QgsSymbolLayerId,
-    QgsSymbolLayerUtils,
-    QgsMapRendererCache,
-    QgsUnitTypes,
-    QgsOuterGlowEffect,
-    QgsPalLayerSettings,
-    QgsRuleBasedLabeling,
-    QgsPalLayerSettings,
-    QgsProperty,
-    QgsRenderContext,
-    QgsVectorLayerSimpleLabeling,
     QgsLayout,
+    QgsLayoutExporter,
+    QgsLayoutItemMap,
     QgsLayoutItemPage,
     QgsLayoutSize,
-    QgsLayoutItemMap,
-    QgsLayoutExporter,
+    QgsMapRendererCache,
+    QgsMapRendererCustomPainterJob,
+    QgsMapRendererParallelJob,
+    QgsMapRendererSequentialJob,
+    QgsMapSettings,
+    QgsMarkerSymbol,
+    QgsMaskMarkerSymbolLayer,
+    QgsOuterGlowEffect,
+    QgsPalLayerSettings,
+    QgsProject,
+    QgsProperty,
+    QgsRectangle,
+    QgsRenderChecker,
+    QgsRenderContext,
+    QgsSingleSymbolRenderer,
+    QgsSymbolLayerId,
+    QgsSymbolLayerReference,
+    QgsSymbolLayerUtils,
+    QgsUnitTypes,
     QgsWkbTypes,
 )
+from qgis.testing import start_app, unittest
+
+from utilities import getTempfilePath, getTestFont, unitTestDataPath
+
+TEST_DATA_DIR = unitTestDataPath()
 
 
 def renderMapToImageWithTime(mapsettings, parallel=False, cache=None):
@@ -147,7 +129,7 @@ class TestSelectiveMasking(unittest.TestCase):
         self.map_settings.setLayers([self.points_layer, self.lines_layer, self.polys_layer])
 
     def tearDown(self):
-        report_file_path = "%s/qgistest.html" % QDir.tempPath()
+        report_file_path = f"{QDir.tempPath()}/qgistest.html"
         with open(report_file_path, 'a') as report_file:
             report_file.write(self.report)
 
@@ -170,16 +152,71 @@ class TestSelectiveMasking(unittest.TestCase):
                     renderMapToImageWithTime(self.map_settings, parallel=do_parallel, cache=cache)
                 img, t = renderMapToImageWithTime(self.map_settings, parallel=do_parallel, cache=cache)
                 img.save(tmp)
-                print("Image rendered in {}".format(tmp))
+                print(f"Image rendered in {tmp}")
 
                 self.checker.setControlName(control_name)
                 self.checker.setRenderedImage(tmp)
-                suffix = "_parallel" if do_parallel else "_sequential"
+                suffix = ("_parallel" if do_parallel else "_sequential") + ("_cache" if use_cache else "_nocache")
                 res = self.checker.compareImages(control_name + suffix)
                 self.report += self.checker.report()
                 self.assertTrue(res)
 
-                print("=== Rendering took {}s".format(float(t) / 1000.0))
+                print(f"=== Rendering took {float(t) / 1000.0}s")
+
+    def check_layout_export(self, control_name, expected_nb_raster, layers=None, dpiTarget=None):
+        """
+        Generate a PDF layout export and control the output matches expected_filename
+        """
+
+        # generate vector file
+        layout = QgsLayout(QgsProject.instance())
+        page = QgsLayoutItemPage(layout)
+        page.setPageSize(QgsLayoutSize(50, 33))
+        layout.pageCollection().addPage(page)
+
+        map = QgsLayoutItemMap(layout)
+        map.attemptSetSceneRect(QRectF(1, 1, 48, 32))
+        map.setFrameEnabled(True)
+        layout.addLayoutItem(map)
+        map.setExtent(self.lines_layer.extent())
+        map.setLayers(layers if layers is not None else [self.points_layer, self.lines_layer, self.polys_layer])
+
+        settings = QgsLayoutExporter.PdfExportSettings()
+
+        if dpiTarget is not None:
+            settings.dpi = dpiTarget
+
+        exporter = QgsLayoutExporter(layout)
+        result_filename = getTempfilePath('pdf')
+        exporter.exportToPdf(result_filename, settings)
+        self.assertTrue(os.path.exists(result_filename))
+
+        # Generate a readable PDF file so we count raster in it
+        result_txt = getTempfilePath("txt")
+        subprocess.run(["qpdf", "--qdf", "--object-streams=disable", result_filename, result_txt])
+        self.assertTrue(os.path.exists(result_txt))
+
+        # expected_file = os.path.join(TEST_DATA_DIR, "control_images/selective_masking/pdf_exports/{}".format(expected_filename))
+        # self.assertTrue(os.path.exists(expected_file))
+
+        result = open(result_txt, 'rb')
+        result_lines = [l.decode('iso-8859-1') for l in result.readlines()]
+        result.close()
+        nb_raster = len([l for l in result_lines if "/Subtype /Image" in l])
+        self.assertEqual(nb_raster, expected_nb_raster)
+
+        # Generate an image from pdf to compare with expected control image
+        # keep PDF DPI resolution (300)
+        image_result_filename = getTempfilePath("png")
+        subprocess.run(["pdftoppm", result_filename,
+                        os.path.splitext(image_result_filename)[0],
+                        "-png", "-r", "300", "-singlefile"])
+
+        self.checker.setControlName(control_name)
+        self.checker.setRenderedImage(image_result_filename)
+        res = self.checker.compareImages(control_name)
+        self.report += self.checker.report()
+        self.assertTrue(res)
 
     def test_save_restore_references(self):
         """
@@ -695,67 +732,9 @@ class TestSelectiveMasking(unittest.TestCase):
 
         self.check_renderings(self.map_settings, "label_mask_with_effect")
 
-    def test_layout_exports(self):
-        """Test mask effects in a layout export at 300 dpi"""
-        # modify labeling settings
-        label_settings = self.polys_layer.labeling().settings()
-        fmt = label_settings.format()
-        # enable a mask
-        fmt.mask().setEnabled(True)
-        fmt.mask().setSize(4.0)
-        # and mask other symbol layers underneath
-        fmt.mask().setMaskedSymbolLayers([
-            # the black part of roads
-            QgsSymbolLayerReference(self.lines_layer.id(), QgsSymbolLayerId("", 0)),
-            # the black jets
-            QgsSymbolLayerReference(self.points_layer.id(), QgsSymbolLayerId("B52", 0)),
-            QgsSymbolLayerReference(self.points_layer.id(), QgsSymbolLayerId("Jet", 0))])
-
-        # add an outer glow effect to the mask
-        blur = QgsOuterGlowEffect.create({"enabled": "1",
-                                          "blur_level": "6.445",
-                                          "blur_unit": "MM",
-                                          "opacity": "1",
-                                          "spread": "0.6",
-                                          "spread_unit": "MM",
-                                          "color1": "0,0,255,255",
-                                          "draw_mode": "2"
-                                          })
-        fmt.mask().setPaintEffect(blur)
-
-        label_settings.setFormat(fmt)
-        self.polys_layer.labeling().setSettings(label_settings)
-
-        layout = QgsLayout(QgsProject.instance())
-        page = QgsLayoutItemPage(layout)
-        page.setPageSize(QgsLayoutSize(50, 33))
-        layout.pageCollection().addPage(page)
-
-        map = QgsLayoutItemMap(layout)
-        map.attemptSetSceneRect(QRectF(1, 1, 48, 32))
-        map.setFrameEnabled(True)
-        layout.addLayoutItem(map)
-        map.setExtent(self.lines_layer.extent())
-        map.setLayers([self.points_layer, self.lines_layer, self.polys_layer])
-
-        image = QImage(591, 591, QImage.Format_RGB32)
-        image.setDotsPerMeterX(int(300 / 25.3 * 1000))
-        image.setDotsPerMeterY(int(300 / 25.3 * 1000))
-        image.fill(0)
-        p = QPainter(image)
-        exporter = QgsLayoutExporter(layout)
-        exporter.renderPage(p, 0)
-        p.end()
-
-        tmp = getTempfilePath('png')
-        image.save(tmp)
-
-        control_name = "layout_export"
-        self.checker.setControlName(control_name)
-        self.checker.setRenderedImage(tmp)
-        res = self.checker.compareImages(control_name)
-        self.report += self.checker.report()
-        self.assertTrue(res)
+        # test that force vector output has no impact on the result
+        self.map_settings.setFlag(Qgis.MapSettingsFlag.ForceVectorOutput, True)
+        self.check_renderings(self.map_settings, "label_mask_with_effect")
 
     def test_different_dpi_target(self):
         """Test with raster layer and a target dpi"""
@@ -777,6 +756,325 @@ class TestSelectiveMasking(unittest.TestCase):
         self.map_settings.setLayers([self.lines_layer, self.polys_layer, self.raster_layer])
         self.map_settings.setDpiTarget(300)
         self.check_renderings(self.map_settings, "different_dpi_target")
+
+        # test with high dpi screen
+        self.map_settings.setDevicePixelRatio(2)
+        self.check_renderings(self.map_settings, "different_dpi_target_hdpi")
+
+    def test_layout_export(self):
+        """Test mask effects in a layout export at 300 dpi"""
+        # modify labeling settings
+        label_settings = self.polys_layer.labeling().settings()
+        fmt = label_settings.format()
+        # enable a mask
+
+        fmt.font().setPointSize(4)
+
+        fmt.mask().setEnabled(True)
+        fmt.mask().setSize(1.0)
+        # and mask other symbol layers underneath
+        fmt.mask().setMaskedSymbolLayers([
+            # the black part of roads
+            QgsSymbolLayerReference(self.lines_layer.id(), QgsSymbolLayerId("", 0)),
+            # the black jets
+            QgsSymbolLayerReference(self.points_layer.id(), QgsSymbolLayerId("B52", 0)),
+            QgsSymbolLayerReference(self.points_layer.id(), QgsSymbolLayerId("Jet", 0))])
+
+        label_settings.setFormat(fmt)
+        self.polys_layer.labeling().setSettings(label_settings)
+
+        self.check_layout_export("layout_export", 0)
+
+    def test_layout_export_w_effects(self):
+        """Test mask effects in a layout export at 300 dpi"""
+        # modify labeling settings
+        label_settings = self.polys_layer.labeling().settings()
+        fmt = label_settings.format()
+        # enable a mask
+
+        fmt.font().setPointSize(4)
+
+        fmt.mask().setEnabled(True)
+        fmt.mask().setSize(1.0)
+        # and mask other symbol layers underneath
+        fmt.mask().setMaskedSymbolLayers([
+            # the black part of roads
+            QgsSymbolLayerReference(self.lines_layer.id(), QgsSymbolLayerId("", 0)),
+            # the black jets
+            QgsSymbolLayerReference(self.points_layer.id(), QgsSymbolLayerId("B52", 0)),
+            QgsSymbolLayerReference(self.points_layer.id(), QgsSymbolLayerId("Jet", 0))])
+
+        # add an outer glow effect to the mask
+        blur = QgsOuterGlowEffect.create({"enabled": "1",
+                                          "blur_level": "3.445",
+                                          "blur_unit": "MM",
+                                          "opacity": "1",
+                                          "spread": "0.06",
+                                          "spread_unit": "MM",
+                                          "color1": "0,0,255,255",
+                                          "draw_mode": "2"
+                                          })
+        fmt.mask().setPaintEffect(blur)
+
+        label_settings.setFormat(fmt)
+        self.polys_layer.labeling().setSettings(label_settings)
+
+        # 4 rasters : Image and its mask for masked point and lines layer
+        self.check_layout_export("layout_export_w_effects", 4)
+
+    def test_layout_export_marker_masking(self):
+        """Test mask effects in a layout export with a marker symbol masking"""
+
+        p = QgsMarkerSymbol.createSimple({'color': '#fdbf6f', 'size': "3"})
+        self.points_layer.setRenderer(QgsSingleSymbolRenderer(p))
+
+        circle_symbol = QgsMarkerSymbol.createSimple({'size': '6'})
+        mask_layer = QgsMaskMarkerSymbolLayer()
+        mask_layer.setSubSymbol(circle_symbol)
+        mask_layer.setMasks([
+            # the black part of roads
+            QgsSymbolLayerReference(self.lines_layer.id(), QgsSymbolLayerId("", 0)),
+        ])
+        # add this mask layer to the point layer
+        self.points_layer.renderer().symbol().appendSymbolLayer(mask_layer)
+
+        self.check_layout_export("layout_export_marker_masking", 0)
+
+    def test_layout_export_marker_masking_w_effects(self):
+        """Test mask effects in a layout export with a marker symbol masking"""
+
+        p = QgsMarkerSymbol.createSimple({'color': '#fdbf6f', 'size': "3"})
+        self.points_layer.setRenderer(QgsSingleSymbolRenderer(p))
+
+        circle_symbol = QgsMarkerSymbol.createSimple({'size': '6'})
+        mask_layer = QgsMaskMarkerSymbolLayer()
+        mask_layer.setSubSymbol(circle_symbol)
+        mask_layer.setMasks([
+            # the black part of roads
+            QgsSymbolLayerReference(self.lines_layer.id(), QgsSymbolLayerId("", 0)),
+        ])
+
+        # add an outer glow effect to the mask
+        blur = QgsOuterGlowEffect.create({"enabled": "1",
+                                          "blur_level": "3.445",
+                                          "blur_unit": "MM",
+                                          "opacity": "1",
+                                          "spread": "0.06",
+                                          "spread_unit": "MM",
+                                          "color1": "0,0,255,255",
+                                          "draw_mode": "2"
+                                          })
+
+        # TODO try to set the mask effect on p the marker symbol -> result should be the same
+        mask_layer.setPaintEffect(blur)
+
+        # add this mask layer to the point layer
+        self.points_layer.renderer().symbol().appendSymbolLayer(mask_layer)
+
+        # 2 rasters : Image and its mask for masked lines layer
+        self.check_layout_export("layout_export_marker_masking_w_effects", 2)
+
+    def test_layout_export_w_raster(self):
+        """Test layout export with raster beneath the masked area"""
+
+        # just decrease the yellow line so we see the raster on masked area
+        self.lines_layer.renderer().symbol().symbolLayers()[1].setWidth(0.5)
+
+        # modify labeling settings
+        label_settings = self.polys_layer.labeling().settings()
+        fmt = label_settings.format()
+        # enable a mask
+
+        fmt.font().setPointSize(4)
+
+        fmt.mask().setEnabled(True)
+        fmt.mask().setSize(1.0)
+        # and mask other symbol layers underneath
+        fmt.mask().setMaskedSymbolLayers([
+            # the black part of roads
+            QgsSymbolLayerReference(self.lines_layer.id(), QgsSymbolLayerId("", 0)),
+            # the black jets
+            QgsSymbolLayerReference(self.points_layer.id(), QgsSymbolLayerId("B52", 0)),
+            QgsSymbolLayerReference(self.points_layer.id(), QgsSymbolLayerId("Jet", 0))])
+
+        label_settings.setFormat(fmt)
+        self.polys_layer.labeling().setSettings(label_settings)
+
+        # 1 raster : the raster layer
+        self.check_layout_export("layout_export_w_raster", 1, [self.lines_layer, self.polys_layer, self.raster_layer])
+
+    def test_layout_export_w_force_raster_render(self):
+        """
+        Test layout export with a marker symbol masking forced to be render as raster
+        We expect the lines to be masked and the whole output needs to be vector except
+        the marker layer forced as raster
+        """
+
+        p = QgsMarkerSymbol.createSimple({'color': '#fdbf6f', 'size': "3"})
+        self.points_layer.setRenderer(QgsSingleSymbolRenderer(p))
+
+        circle_symbol = QgsMarkerSymbol.createSimple({'size': '6'})
+        mask_layer = QgsMaskMarkerSymbolLayer()
+        mask_layer.setSubSymbol(circle_symbol)
+        mask_layer.setMasks([
+            # the black part of roads
+            QgsSymbolLayerReference(self.lines_layer.id(), QgsSymbolLayerId("", 0)),
+        ])
+        # add this mask layer to the point layer
+        self.points_layer.renderer().symbol().appendSymbolLayer(mask_layer)
+        self.points_layer.renderer().setForceRasterRender(True)
+
+        # 2 rasters : Image and its mask for the points layer
+        self.check_layout_export("layout_export_force_raster_render", 2, [self.points_layer, self.lines_layer])
+
+    def test_layout_export_marker_masking_w_transparency(self):
+        """Test layout export with a marker symbol masking which has an opacity lower than 1"""
+
+        p = QgsMarkerSymbol.createSimple({'color': '#fdbf6f', 'size': "3"})
+        self.points_layer.setRenderer(QgsSingleSymbolRenderer(p))
+
+        circle_symbol = QgsMarkerSymbol.createSimple({'size': '6'})
+        circle_symbol.setOpacity(0.5)
+        mask_layer = QgsMaskMarkerSymbolLayer()
+        mask_layer.setSubSymbol(circle_symbol)
+        mask_layer.setMasks([
+            # the black part of roads
+            QgsSymbolLayerReference(self.lines_layer.id(), QgsSymbolLayerId("", 0)),
+        ])
+        # add this mask layer to the point layer
+        self.points_layer.renderer().symbol().appendSymbolLayer(mask_layer)
+
+        # 2 rasters (mask + image) because opacity force rasterization of the masked line layers
+        self.check_layout_export("layout_export_marker_masking_w_transparency", 2)
+
+    def test_layout_export_text_masking_w_transparency(self):
+        """Test mask effects in a layout export at 300 dpi"""
+        # modify labeling settings
+        label_settings = self.polys_layer.labeling().settings()
+        fmt = label_settings.format()
+        # enable a mask
+
+        fmt.font().setPointSize(4)
+
+        fmt.mask().setEnabled(True)
+        fmt.mask().setSize(1.0)
+        fmt.mask().setOpacity(0.5)
+
+        # and mask other symbol layers underneath
+        fmt.mask().setMaskedSymbolLayers([
+            # the black part of roads
+            QgsSymbolLayerReference(self.lines_layer.id(), QgsSymbolLayerId("", 0)),
+            # the black jets
+            QgsSymbolLayerReference(self.points_layer.id(), QgsSymbolLayerId("B52", 0)),
+            QgsSymbolLayerReference(self.points_layer.id(), QgsSymbolLayerId("Jet", 0))])
+
+        label_settings.setFormat(fmt)
+        self.polys_layer.labeling().setSettings(label_settings)
+
+        # 4 rasters (mask+image per masked layer) because opacity force rasterization
+        # of the masked line and point layers
+        self.check_layout_export("layout_export_text_masking_w_transparency", 4)
+
+    def test_different_dpi_target_vector(self):
+        """Test rendering a raster layer with vector output and a target dpi
+        Used when layout previewing
+        """
+
+        # modify labeling settings
+        label_settings = self.polys_layer.labeling().settings()
+        fmt = label_settings.format()
+        # enable a mask
+        fmt.mask().setEnabled(True)
+        fmt.mask().setSize(4.0)
+        # and mask other symbol layers underneath
+        fmt.mask().setMaskedSymbolLayers([
+            # the black part of roads
+            QgsSymbolLayerReference(self.lines_layer.id(), QgsSymbolLayerId("", 0))])
+
+        label_settings.setFormat(fmt)
+        self.polys_layer.labeling().setSettings(label_settings)
+
+        self.map_settings.setLayers([self.lines_layer, self.polys_layer, self.raster_layer])
+        self.map_settings.setOutputDpi(81)
+        self.map_settings.setDpiTarget(300)
+        self.map_settings.setFlag(Qgis.MapSettingsFlag.ForceVectorOutput, True)
+
+        image = QImage(self.map_settings.deviceOutputSize(), self.map_settings.outputImageFormat())
+        image.setDevicePixelRatio(self.map_settings.devicePixelRatio())
+        image.setDotsPerMeterX(int(1000 * self.map_settings.outputDpi() / 25.4))
+        image.setDotsPerMeterY(int(1000 * self.map_settings.outputDpi() / 25.4))
+        image.fill(Qt.transparent)
+        pImg = QPainter()
+        pImg.begin(image)
+        job = QgsMapRendererCustomPainterJob(self.map_settings, pImg)
+        job.start()
+        job.waitForFinished()
+        pImg.end()
+        tmp = getTempfilePath('png')
+        image.save(tmp)
+
+        control_name = "different_dpi_target_vector"
+        self.checker.setControlName(control_name)
+        self.checker.setRenderedImage(tmp)
+        res = self.checker.compareImages(control_name)
+        self.report += self.checker.report()
+        self.assertTrue(res)
+
+        # Same test with high dpi
+        self.map_settings.setDevicePixelRatio(2)
+        image = QImage(self.map_settings.deviceOutputSize(), self.map_settings.outputImageFormat())
+        image.setDevicePixelRatio(self.map_settings.devicePixelRatio())
+        image.setDotsPerMeterX(int(1000 * self.map_settings.outputDpi() / 25.4))
+        image.setDotsPerMeterY(int(1000 * self.map_settings.outputDpi() / 25.4))
+        image.fill(Qt.transparent)
+        pImg = QPainter()
+        pImg.begin(image)
+        job = QgsMapRendererCustomPainterJob(self.map_settings, pImg)
+        job.start()
+        job.waitForFinished()
+        pImg.end()
+        tmp = getTempfilePath('png')
+        image.save(tmp)
+
+        control_name = "different_dpi_target_vector_hdpi"
+        self.checker.setControlName(control_name)
+        self.checker.setRenderedImage(tmp)
+        res = self.checker.compareImages(control_name)
+        self.report += self.checker.report()
+        self.assertTrue(res)
+
+    def test_layout_export_2_sources_masking(self):
+        """Test masking with 2 different sources"""
+
+        # mask with points layer circles...
+        p = QgsMarkerSymbol.createSimple({'color': '#fdbf6f', 'size': "3"})
+        self.points_layer.setRenderer(QgsSingleSymbolRenderer(p))
+
+        circle_symbol = QgsMarkerSymbol.createSimple({'size': '6'})
+        mask_layer = QgsMaskMarkerSymbolLayer()
+        mask_layer.setSubSymbol(circle_symbol)
+        mask_layer.setMasks([
+            # the black part of roads
+            QgsSymbolLayerReference(self.lines_layer.id(), QgsSymbolLayerId("", 0)),
+        ])
+        self.points_layer.renderer().symbol().appendSymbolLayer(mask_layer)
+
+        # ...and with text
+        label_settings = self.polys_layer.labeling().settings()
+        fmt = label_settings.format()
+
+        fmt.font().setPointSize(4)
+        fmt.mask().setEnabled(True)
+        fmt.mask().setSize(1.0)
+        # and mask other symbol layers underneath
+        fmt.mask().setMaskedSymbolLayers([
+            # the black part of roads
+            QgsSymbolLayerReference(self.lines_layer.id(), QgsSymbolLayerId("", 0))])
+
+        label_settings.setFormat(fmt)
+        self.polys_layer.labeling().setSettings(label_settings)
+
+        self.check_layout_export("layout_export_2_sources_masking", 0)
 
 
 if __name__ == '__main__':

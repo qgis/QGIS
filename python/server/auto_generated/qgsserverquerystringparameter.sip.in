@@ -100,6 +100,23 @@ Returns the name of the parameter
 Sets validator ``description``
 %End
 
+    bool hidden() const;
+%Docstring
+Returns ``True`` if the parameter is hidden from the schema.
+
+Hidden params can be useful to implement legacy parameters or
+parameters that can be accepted without being advertised.
+
+.. versionadded:: 3.28
+%End
+
+    void setHidden( bool hidden );
+%Docstring
+Set the parameter's ``hidden`` status, parameters are not hidden by default.
+
+.. versionadded:: 3.28
+%End
+
 };
 
 /************************************************************************
