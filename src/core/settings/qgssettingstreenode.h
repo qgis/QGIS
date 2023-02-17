@@ -157,9 +157,6 @@ class CORE_EXPORT QgsSettingsTreeNode
     % End
 #endif
 
-    //! Copies the \a other node to this instance
-    virtual void copy( const QgsSettingsTreeNode *other );
-
   protected:
     //! Registers a child nodes
     void registerChildNode( QgsSettingsTreeNode *node );
@@ -189,7 +186,6 @@ class CORE_EXPORT QgsSettingsTreeNode
     QList<const QgsSettingsEntryBase *> mChildrenSettings;
     QgsSettingsTreeNode *mParent = nullptr;
 
-    bool mIsCopy = false;
     QString mKey;
     QString mCompleteKey;
     int mNamedNodesCount = 0;
@@ -256,8 +252,6 @@ class CORE_EXPORT QgsSettingsTreeNamedListNode : public QgsSettingsTreeNode
 
     //! Returns the setting used to store the selected item
     const QgsSettingsEntryString *selectedItemSetting() const {return mSelectedItemSetting;}
-
-    virtual void copy( const QgsSettingsTreeNode *other ) override;
 
   protected:
     //! Init the nodes with the specific \a options

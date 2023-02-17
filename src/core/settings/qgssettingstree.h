@@ -65,11 +65,10 @@ class CORE_EXPORT QgsSettingsTree
 #endif
 
     /**
-     * Returns a copy of tree node at the given \a key
-     * \note The returned node is a copy and any modification to it won't alter the main tree.
-     * This is intended to be used to access settings from Python.
+     * Returns the tree node at the given \a key
+     * \note For Plugins, use createPluginTreeNode() to create nodes for plugin settings.
      */
-    static const QgsSettingsTreeNode *nodeCopy( const QString &key );
+    static const QgsSettingsTreeNode *node( const QString &key ) {return treeRoot()->childNode( key );}
 
     /**
      * Creates a settings tree node for the given \a pluginName

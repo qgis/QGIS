@@ -24,14 +24,13 @@ class QgsSettingsTree
   public:
 
 
-    static const QgsSettingsTreeNode *nodeCopy( const QString &key );
+    static const QgsSettingsTreeNode *node( const QString &key );
 %Docstring
-Returns a copy of tree node at the given ``key``
+Returns the tree node at the given ``key``
 
 .. note::
 
-   The returned node is a copy and any modification to it won't alter the main tree.
-   This is intended to be used to access settings from Python.
+   For Plugins, use :py:func:`~QgsSettingsTree.createPluginTreeNode` to create nodes for plugin settings.
 %End
 
     static QgsSettingsTreeNode *createPluginTreeNode( const QString &pluginName );
