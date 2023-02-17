@@ -476,6 +476,7 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 
 #ifdef HAVE_PDAL_QGIS
 #include <pdal/pdal.hpp>
+#include "processing/pdal/qgspdalalgorithms.h"
 #endif
 
 //
@@ -13024,6 +13025,10 @@ void QgisApp::initNativeProcessing()
   QgsApplication::processingRegistry()->addProvider( new QgsNativeAlgorithms( QgsApplication::processingRegistry() ) );
 #ifdef HAVE_3D
   QgsApplication::processingRegistry()->addProvider( new Qgs3DAlgorithms( QgsApplication::processingRegistry() ) );
+#endif
+
+#ifdef HAVE_PDAL_QGIS
+  QgsApplication::processingRegistry()->addProvider( new QgsPdalAlgorithms( QgsApplication::processingRegistry() ) );
 #endif
 }
 

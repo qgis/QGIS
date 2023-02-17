@@ -417,6 +417,16 @@ if (${QT_VERSION_BASE}PrintSupport_FOUND)
   )
 endif()
 
+if (WITH_PDAL)
+  set(QGIS_ANALYSIS_SRCS ${QGIS_ANALYSIS_SRCS}
+    processing/pdal/qgspdalalgorithms.cpp
+  )
+
+  set(QGIS_ANALYSIS_HDRS ${QGIS_ANALYSIS_HDRS}
+    processing/pdal/qgspdalalgorithms.h
+  )
+endif()
+
 include_directories(SYSTEM ${SPATIALITE_INCLUDE_DIR})
 include_directories(SYSTEM ${SPATIALINDEX_INCLUDE_DIR})
 include_directories(SYSTEM ${SQLITE3_INCLUDE_DIR})

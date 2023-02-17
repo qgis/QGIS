@@ -46,3 +46,4 @@
 %Include auto_generated/vector/qgsgeometrysnapper.sip
 %Include auto_generated/vector/qgsgeometrysnappersinglesource.sip
 %Include auto_generated/vector/qgszonalstatistics.sip
+%Include auto_generated/processing/pdal/qgspdalalgorithms.sip
