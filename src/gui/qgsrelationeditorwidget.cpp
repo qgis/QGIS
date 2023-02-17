@@ -653,8 +653,14 @@ void QgsRelationEditorWidget::updateUiSingleEdit()
   }
   else
   {
+    mFeatureSelectionMgr = new QgsFilteredSelectionManager( layer, request, mDualView );
+    mDualView->setFeatureSelectionManager( mFeatureSelectionMgr );
+    connect( mFeatureSelectionMgr, &QgsIFeatureSelectionManager::selectionChanged, this, &QgsRelationEditorWidget::updateButtons );
+
     mDualView->setRequest( request );
     mDualView->masterModel()->loadLayer();
+
+    updateButtons();
   }
 }
 
