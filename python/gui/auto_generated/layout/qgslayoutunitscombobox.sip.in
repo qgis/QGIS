@@ -70,7 +70,8 @@ life of the combo box.
 
   signals:
 
-    void changed( Qgis::LayoutUnit unit );
+
+    void changed( int );
 %Docstring
 Emitted when the ``unit`` is changed.
 %End

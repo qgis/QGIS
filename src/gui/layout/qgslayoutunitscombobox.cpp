@@ -67,7 +67,8 @@ void QgsLayoutUnitsComboBox::indexChanged( int )
         whileBlocking( widget.data() )->setValue( mConverter->convert( QgsLayoutMeasurement( widget->value(), mOldUnit ), newUnit ).length() );
     }
   }
-  emit changed( newUnit );
+  emit unitChanged( newUnit );
+  emit changed( static_cast<int>( newUnit ) );
   mOldUnit = newUnit;
 }
 

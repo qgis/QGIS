@@ -82,10 +82,18 @@ class GUI_EXPORT QgsLayoutUnitsComboBox : public QComboBox
 
   signals:
 
+#ifndef SIP_RUN
+
     /**
      * Emitted when the \a unit is changed.
      */
-    void changed( Qgis::LayoutUnit unit );
+    void unitChanged( Qgis::LayoutUnit unit );
+#endif
+
+    /**
+     * Emitted when the \a unit is changed.
+     */
+    void changed( int );
 
   private slots:
 
