@@ -208,7 +208,7 @@ void QgsColorRampShaderWidget::autoLabel()
       currentItem->setForeground( LabelColumn, QBrush( QColor( Qt::gray ) ) );
     }
   }
-
+  applyColorRamp();
 }
 
 void QgsColorRampShaderWidget::setUnitFromLabels()
