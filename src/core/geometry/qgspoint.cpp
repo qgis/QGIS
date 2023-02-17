@@ -156,7 +156,7 @@ bool QgsPoint::fromWkb( QgsConstWkbPtr &wkbPtr )
 
 inline double stringToDouble( const QString &string )
 {
-  if ( 0 == string.compare( QLatin1String( "nan" ) ) )
+  if ( 0 == string.compare( QLatin1String( "nan" ), Qt::CaseInsensitive ) )
     return std::numeric_limits<double>::quiet_NaN();
   else
     return string.toDouble();
