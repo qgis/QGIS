@@ -47,7 +47,8 @@ from qgis.core import (
     QgsSymbolLayerUtils,
     QgsUnitTypes,
     QgsWkbTypes,
-    QgsFontUtils
+    QgsFontUtils,
+    QgsFillSymbol
 )
 from qgis.testing import start_app, unittest
 
@@ -1328,6 +1329,100 @@ class TestSelectiveMasking(unittest.TestCase):
         map_settings.setLayers([layer])
 
         self.check_layout_export("layout_export_random_generator_fill", 0, [layer], extent=extent)
+
+    def test_layer_opacity(self):
+        """
+        Test that layer opacity is respected during exports
+        """
+        self.assertTrue(QgsProject.instance().read(os.path.join(unitTestDataPath(), "selective_masking.qgs")))
+
+        polys = QgsProject.instance().mapLayersByName('polys')[0]
+        self.assertTrue(polys)
+        simple_fill = QgsFillSymbol.createSimple({'color': '#ffaaaa', 'style_border': 'no'})
+        polys.setRenderer(QgsSingleSymbolRenderer(simple_fill))
+        polys.setOpacity(0.5)
+
+        points = QgsProject.instance().mapLayersByName('points')[0]
+        self.assertTrue(points)
+
+        simple_marker = QgsMarkerSymbol.createSimple({'color': '#0000ff', 'size': '30', 'outline_style': 'no'})
+        points.setRenderer(QgsSingleSymbolRenderer(simple_marker))
+
+        self.assertTrue(len(polys.labeling().subProviders()), 1)
+        settings = polys.labeling().settings()
+        fmt = settings.format()
+        fmt.setFont(QgsFontUtils.getStandardTestFont("Bold"))
+        fmt.setSize(32)
+        fmt.setSizeUnit(QgsUnitTypes.RenderPoints)
+
+        mask = fmt.mask()
+        mask.setEnabled(True)
+        mask.setSize(9)
+        mask.setSizeUnit(Qgis.RenderUnit.Millimeters)
+        mask.setMaskedSymbolLayers([QgsSymbolLayerReference(points.id(), simple_marker[0].id())])
+
+        fmt.setMask(mask)
+
+        settings.setFormat(fmt)
+        polys.labeling().setSettings(settings)
+
+        map_settings = QgsMapSettings()
+        crs = polys.crs()
+        map_settings.setExtent(polys.extent())
+        map_settings.setBackgroundColor(QColor(152, 219, 249))
+        map_settings.setOutputSize(QSize(800, 600))
+        map_settings.setOutputDpi(72)
+        map_settings.setFlag(QgsMapSettings.Antialiasing, True)
+        map_settings.setFlag(QgsMapSettings.ForceVectorOutput, True)
+        map_settings.setFlag(QgsMapSettings.UseAdvancedEffects, True)
+        map_settings.setDestinationCrs(crs)
+        map_settings.setLayers([points, polys])
+
+        im = QImage(map_settings.outputSize(), QImage.Format_RGB32)
+        im.setDotsPerMeterX(int(map_settings.outputDpi() / 25.4 * 1000))
+        im.setDotsPerMeterY(int(map_settings.outputDpi() / 25.4 * 1000))
+        im.fill(Qt.transparent)
+        p = QPainter(im)
+
+        job = QgsMapRendererCustomPainterJob(map_settings, p)
+        job.start()
+        job.waitForFinished()
+
+        p.end()
+
+        self.assertTrue(self.imageCheck('layer_opacity', 'layer_opacity', im))
+
+        polys.setOpacity(1.0)
+        points.setOpacity(0.5)
+
+        im = QImage(map_settings.outputSize(), QImage.Format_RGB32)
+        im.setDotsPerMeterX(int(map_settings.outputDpi() / 25.4 * 1000))
+        im.setDotsPerMeterY(int(map_settings.outputDpi() / 25.4 * 1000))
+        im.fill(Qt.transparent)
+        p = QPainter(im)
+
+        job = QgsMapRendererCustomPainterJob(map_settings, p)
+        job.start()
+        job.waitForFinished()
+
+        p.end()
+
+        self.assertTrue(self.imageCheck('layer_opacity_points', 'layer_opacity_points', im))
+
+    def imageCheck(self, name, reference_image, image):
+        TestSelectiveMasking.report += f"<h2>Render {name}</h2>\n"
+        temp_dir = QDir.tempPath() + '/'
+        file_name = temp_dir + 'plot_' + name + ".png"
+        image.save(file_name, "PNG")
+        checker = QgsRenderChecker()
+        checker.setControlPathPrefix("selective_masking")
+        checker.setControlName("expected_" + reference_image)
+        checker.setRenderedImage(file_name)
+        checker.setColorTolerance(2)
+        result = checker.compareImages(name, 20)
+        TestSelectiveMasking.report += checker.report()
+        print(checker.report())
+        return result
 
 
 if __name__ == '__main__':

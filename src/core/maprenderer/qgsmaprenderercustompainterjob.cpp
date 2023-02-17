@@ -473,7 +473,11 @@ void QgsMapRendererCustomPainterJob::doRender()
           mPainter->restore();
         }
         else
+        {
+          mPainter->setOpacity( job.opacity );
           mPainter->drawImage( 0, 0, *job.img );
+          mPainter->setOpacity( 1.0 );
+        }
       }
 
       if ( mLabelJob.picture )

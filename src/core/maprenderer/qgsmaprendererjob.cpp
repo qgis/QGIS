@@ -889,7 +889,7 @@ std::vector< LayerRenderJob > QgsMapRendererJob::prepareSecondPassJobs( std::vec
     // associate first pass job with second pass job
     job2.firstPassJob = &job;
 
-    if ( !forceVector || job2.maskRequiresLayerRasterization )
+    if ( !forceVector || job2.maskRequiresLayerRasterization || ( job.renderer && job.renderer->forceRasterRender() ) )
     {
       job2.context()->setPainter( allocateImageAndPainter( job.layerId, job2.img, job2.context() ) );
     }
