@@ -28,7 +28,7 @@ bool QgsSettingsEntryString::checkValue( const QString &value ) const
 {
   if ( value.length() < mMinLength )
   {
-    QgsDebugMsg( QObject::tr( "Can't set value for settings. String length '%1' is shorter than minimum length '%2'." )
+    QgsDebugMsg( QStringLiteral( "Can't set value for settings. String length '%1' is shorter than minimum length '%2'." )
                  .arg( value.length() )
                  .arg( mMinLength ) );
     return false;
@@ -37,7 +37,7 @@ bool QgsSettingsEntryString::checkValue( const QString &value ) const
   if ( mMaxLength >= 0
        && value.length() > mMaxLength )
   {
-    QgsDebugMsg( QObject::tr( "Can't set value for settings. String length '%1' is longer than maximum length '%2'." )
+    QgsDebugMsg( QStringLiteral( "Can't set value for settings. String length '%1' is longer than maximum length '%2'." )
                  .arg( value.length() )
                  .arg( mMinLength ) );
     return false;
@@ -237,7 +237,7 @@ bool QgsSettingsEntryColor::checkValue( const QColor &value ) const
 {
   if ( !mAllowAlpha && value.alpha() != 255 )
   {
-    QgsDebugMsg( QObject::tr( "Settings %1 doesn't allow transparency and the given color has transparency." ).arg( definitionKey() ) );
+    QgsDebugMsg( QStringLiteral( "Setting %1 doesn't allow transparency and the given color has transparency." ).arg( definitionKey() ) );
     return false;
   }
 

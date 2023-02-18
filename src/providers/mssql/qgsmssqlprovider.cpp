@@ -2838,7 +2838,7 @@ int QgsMssqlProviderMetadata::listStyles( const QString &uri,
   }
   if ( query.isActive() && query.next() && query.value( 0 ).toInt() == 0 )
   {
-    QgsDebugMsgLevel( QObject::tr( "No styles available on DB" ), 2 );
+    QgsDebugMsgLevel( QStringLiteral( "No styles available on DB" ), 2 );
     return -1;
   }
 
