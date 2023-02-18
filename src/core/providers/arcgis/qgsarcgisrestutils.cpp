@@ -43,6 +43,7 @@
 #include "qgsvariantutils.h"
 
 #include <QRegularExpression>
+#include <QUrl>
 
 QVariant::Type QgsArcGisRestUtils::convertFieldType( const QString &esriFieldType )
 {
