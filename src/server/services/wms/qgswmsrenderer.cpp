@@ -665,26 +665,22 @@ namespace QgsWms
 
       if ( !atlasPrint || !map->atlasDriven() ) //No need to extent, scal, rotation set with atlas feature
       {
-        //map extent is mandatory
-        if ( !cMapParams.mHasExtent )
+        if ( cMapParams.mHasExtent )
         {
-          //remove map from composition if not referenced by the request
-          c->removeLayoutItem( map );
-          continue;
-        }
-        // Change CRS of map set to "project CRS" to match requested CRS
-        // (if map has a valid preset crs then we keep this crs and don't use the
-        // requested crs for this map item)
-        if ( mapSettings.destinationCrs().isValid() && !map->presetCrs().isValid() )
-          map->setCrs( mapSettings.destinationCrs() );
+          // Change CRS of map set to "project CRS" to match requested CRS
+          // (if map has a valid preset crs then we keep this crs and don't use the
+          // requested crs for this map item)
+          if ( mapSettings.destinationCrs().isValid() && !map->presetCrs().isValid() )
+            map->setCrs( mapSettings.destinationCrs() );
 
-        QgsRectangle r( cMapParams.mExtent );
-        if ( mWmsParameters.versionAsNumber() >= QgsProjectVersion( 1, 3, 0 ) &&
-             mapSettings.destinationCrs().hasAxisInverted() )
-        {
-          r.invert();
+          QgsRectangle r( cMapParams.mExtent );
+          if ( mWmsParameters.versionAsNumber() >= QgsProjectVersion( 1, 3, 0 ) &&
+               mapSettings.destinationCrs().hasAxisInverted() )
+          {
+            r.invert();
+          }
+          map->setExtent( r );
         }
-        map->setExtent( r );
 
         // scale
         if ( cMapParams.mScale > 0 )
