@@ -110,8 +110,9 @@ fi
 
 trap cleanup EXIT
 
-if [[ "$(git name-rev --name-only HEAD)" =~ ^release-[0-9]+_[0-9]+$ ]]; then
-	TX_FLAGS=-b
+branch=$(git name-rev --name-only HEAD)
+if [[ "$branch" =~ ^release-[0-9]+_[0-9]+$ ]]; then
+	TX_FLAGS="--branch '${branch//_/-}'"
 fi
 
 echo Saving translations
