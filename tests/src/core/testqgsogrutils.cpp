@@ -37,6 +37,7 @@
 #include "qgsfontutils.h"
 #include "qgssymbol.h"
 #include "qgsfielddomain.h"
+#include "qgsweakrelation.h"
 
 class TestQgsOgrUtils: public QObject
 {
