@@ -183,7 +183,7 @@ unless( defined $dopoint ) {
 	run( "cp -v images/splash/splash-$newmajor.$newminor.png images/splash/splash.png", "splash png switch failed" );
 	run( "git commit -n -a -m 'Release of $release ($newreleasename)'", "release commit failed" );
 	run( "git tag $reltag -m 'Version $release'", "release tag failed" );
-	run( "for i in \$(seq 20); do tx push -s -b $relbranch && exit 0; echo \"Retry \$i/20...\"; done; exit 1", "push translation for $relbranch branch" );
+	run( "for i in \$(seq 20); do tx push -s --branch $relbranch && exit 0; echo \"Retry \$i/20...\"; done; exit 1", "push translation for $relbranch branch" );
 } else {
 	run( "git commit -n -a -m 'Release of $version'", "release commit failed" );
 	run( "git tag $reltag -m 'Version $version'", "tag failed" );
