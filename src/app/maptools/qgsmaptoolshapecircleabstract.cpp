@@ -33,12 +33,12 @@ void QgsMapToolShapeCircleAbstract::addCircleToParentTool()
   mParentTool->clearCurve();
 
   // Check whether to draw the circle as a polygon or a circular string
-  auto layerCrs = mParentTool->layer()->crs();
-  auto mapCrs = mParentTool->canvas()->mapSettings().destinationCrs();
-  bool drawAsPolygon = layerCrs != mapCrs;
+  const QgsCoordinateReferenceSystem layerCrs = mParentTool->layer()->crs();
+  const QgsCoordinateReferenceSystem mapCrs = mParentTool->canvas()->mapSettings().destinationCrs();
+  const bool drawAsPolygon = layerCrs != mapCrs;
   if ( drawAsPolygon )
   {
-    int segments = QgsSettingsRegistryCore::settingsDigitizingOffsetQuadSeg->value() * 12;
+    const int segments = QgsSettingsRegistryCore::settingsDigitizingOffsetQuadSeg->value() * 12;
     std::unique_ptr<QgsLineString> ls( mCircle.toLineString( segments ) );
     mParentTool->addCurve( ls.release() );
   }
