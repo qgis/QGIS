@@ -461,6 +461,10 @@ class CORE_EXPORT QgsField
     % End
 #endif
 
+#ifndef SIP_RUN
+    static constexpr int MAX_WKT_LENGTH = 999;
+#endif
+
   private:
 
     QSharedDataPointer<QgsFieldPrivate> d;

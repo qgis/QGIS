@@ -238,7 +238,7 @@ void QgsGeometryWidget::updateLineEdit()
     QString wkt = mGeometry.asWkt();
     if ( wkt.length() >= 1050 )
     {
-      wkt = wkt.left( 999 ) + QChar( 0x2026 );
+      wkt = wkt.left( QgsField::MAX_WKT_LENGTH ) + QChar( 0x2026 );
     }
 
     if ( mGeometry.crs().isValid() )
