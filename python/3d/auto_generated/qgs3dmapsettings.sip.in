@@ -682,6 +682,22 @@ This parameter is transient. It is not saved in the project parameters.
 .. versionadded:: 3.26
 %End
 
+    bool showExtentIn2DView() const;
+%Docstring
+Returns whether the extent is displayed on the main 2D map canvas
+
+.. seealso:: :py:func:`setShowExtentIn2DView`
+
+.. versionadded:: 3.32
+%End
+
+    void setShowExtentIn2DView( bool show );
+%Docstring
+Sets whether the extent is displayed on the main 2D map canvas
+
+.. versionadded:: 3.32
+%End
+
   signals:
 
     void settingsChanged();
@@ -934,6 +950,15 @@ Emitted when the 3d view's 2d extent has changed
 .. seealso:: :py:func:`setExtent`
 
 .. versionadded:: 3.30
+%End
+
+    void showExtentIn2DViewChanged();
+%Docstring
+Emitted when the parameter to display 3d view's extent in the 2D canvas has changed
+
+.. seealso:: :py:func:`setShowExtentIn2DView`
+
+.. versionadded:: 3.32
 %End
 
   private:

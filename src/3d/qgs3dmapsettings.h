@@ -681,6 +681,19 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
      */
     void setIsDebugOverlayEnabled( bool debugOverlayEnabled );
 
+    /**
+     * Returns whether the extent is displayed on the main 2D map canvas
+     * \see setShowExtentIn2DView()
+     * \since QGIS 3.32
+     */
+    bool showExtentIn2DView() const { return mShowExtentIn2DView; }
+
+    /**
+     * Sets whether the extent is displayed on the main 2D map canvas
+     * \since QGIS 3.32
+     */
+    void setShowExtentIn2DView( bool show );
+
   signals:
 
     /**
@@ -887,6 +900,13 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
      */
     void extentChanged();
 
+    /**
+     * Emitted when the parameter to display 3d view's extent in the 2D canvas has changed
+     * \see setShowExtentIn2DView()
+     * \since QGIS 3.32
+     */
+    void showExtentIn2DViewChanged();
+
   private:
 #ifdef SIP_RUN
     Qgs3DMapSettings &operator=( const Qgs3DMapSettings & );
@@ -960,6 +980,8 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     bool mIsDebugOverlayEnabled = false;
 
     QgsRectangle mExtent; //!< 2d extent used to limit the 3d view
+
+    bool mShowExtentIn2DView = false;
 
 };
 

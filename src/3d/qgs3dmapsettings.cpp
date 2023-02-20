@@ -99,6 +99,7 @@ Qgs3DMapSettings::Qgs3DMapSettings( const Qgs3DMapSettings &other )
   , m3dAxisSettings( other.m3dAxisSettings )
   , mIsDebugOverlayEnabled( other.mIsDebugOverlayEnabled )
   , mExtent( other.mExtent )
+  , mShowExtentIn2DView( other.mShowExtentIn2DView )
 {
   for ( QgsAbstract3DRenderer *renderer : std::as_const( other.mRenderers ) )
   {
@@ -141,6 +142,8 @@ void Qgs3DMapSettings::readXml( const QDomElement &elem, const QgsReadWriteConte
                 elemExtent.attribute( QStringLiteral( "yMin" ) ).toDouble(),
                 elemExtent.attribute( QStringLiteral( "xMax" ) ).toDouble(),
                 elemExtent.attribute( QStringLiteral( "yMax" ) ).toDouble() );
+
+    mShowExtentIn2DView = elemExtent.attribute( QStringLiteral( "showIn2dView" ), QStringLiteral( "0" ) ).toInt();
   }
   else
   {
@@ -364,6 +367,7 @@ QDomElement Qgs3DMapSettings::writeXml( QDomDocument &doc, const QgsReadWriteCon
   elemExtent.setAttribute( QStringLiteral( "yMin" ), mExtent.yMinimum() );
   elemExtent.setAttribute( QStringLiteral( "xMax" ), mExtent.xMaximum() );
   elemExtent.setAttribute( QStringLiteral( "yMax" ), mExtent.yMaximum() );
+  elemExtent.setAttribute( QStringLiteral( "showIn2dView" ), mShowExtentIn2DView );
   elem.appendChild( elemExtent );
 
   QDomElement elemCamera = doc.createElement( QStringLiteral( "camera" ) );
@@ -1016,6 +1020,7 @@ void Qgs3DMapSettings::connectChangedSignalsToSettingsChanged()
   connect( this, &Qgs3DMapSettings::axisSettingsChanged, this, &Qgs3DMapSettings::settingsChanged );
   connect( this, &Qgs3DMapSettings::ambientOcclusionSettingsChanged, this, &Qgs3DMapSettings::settingsChanged );
   connect( this, &Qgs3DMapSettings::extentChanged, this, &Qgs3DMapSettings::settingsChanged );
+  connect( this, &Qgs3DMapSettings::showExtentIn2DViewChanged, this, &Qgs3DMapSettings::settingsChanged );
 }
 
 
@@ -1036,4 +1041,13 @@ void Qgs3DMapSettings::set3DAxisSettings( const Qgs3DAxisSettings &axisSettings,
     m3dAxisSettings = axisSettings;
     emit axisSettingsChanged();
   }
+}
+
+void Qgs3DMapSettings::setShowExtentIn2DView( bool show )
+{
+  if ( show == mShowExtentIn2DView )
+    return;
+
+  mShowExtentIn2DView = show;
+  emit showExtentIn2DViewChanged();
 }
