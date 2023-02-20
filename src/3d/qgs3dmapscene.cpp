@@ -119,9 +119,6 @@ Qgs3DMapScene::Qgs3DMapScene( Qgs3DMapSettings &map, QgsAbstract3DEngine *engine
   addCameraRotationCenterEntity( mCameraController );
   updateLights();
 
-  // create terrain entity
-
-  createTerrainDeferred();
   connect( &map, &Qgs3DMapSettings::extentChanged, this, &Qgs3DMapScene::createTerrain );
   connect( &map, &Qgs3DMapSettings::terrainGeneratorChanged, this, &Qgs3DMapScene::createTerrain );
   connect( &map, &Qgs3DMapSettings::terrainVerticalScaleChanged, this, &Qgs3DMapScene::createTerrain );
@@ -190,6 +187,8 @@ Qgs3DMapScene::Qgs3DMapScene( Qgs3DMapSettings &map, QgsAbstract3DEngine *engine
 
   // listen to changes of layers in order to add/remove 3D renderer entities
   connect( &map, &Qgs3DMapSettings::layersChanged, this, &Qgs3DMapScene::onLayersChanged );
+  // Create entities for each layer
+  onLayersChanged();
 
   connect( mCameraController, &QgsCameraController::cameraChanged, this, &Qgs3DMapScene::onCameraChanged );
   connect( mEngine, &QgsAbstract3DEngine::sizeChanged, this, &Qgs3DMapScene::onCameraChanged );
@@ -585,7 +584,20 @@ void Qgs3DMapScene::createTerrain()
 
 void Qgs3DMapScene::createTerrainDeferred()
 {
+  bool hasValidTerrainRenderer = false;
   if ( mMap.terrainRenderingEnabled() && mMap.terrainGenerator() )
+  {
+    for ( const auto *layer : mMap.layers() )
+    {
+      if ( layer->type() == Qgis::LayerType::Raster )
+      {
+        hasValidTerrainRenderer = true;
+        break;
+      }
+    }
+  }
+
+  if ( hasValidTerrainRenderer )
   {
     double tile0width = mMap.terrainGenerator()->rootChunkExtent().width();
     int maxZoomLevel = Qgs3DUtils::maxZoomLevel( tile0width, mMap.mapTileResolution(), mMap.maxTerrainGroundError() );
@@ -606,17 +618,6 @@ void Qgs3DMapScene::createTerrainDeferred()
   else
   {
     mTerrain = nullptr;
-  }
-
-  // make sure that renderers for layers are re-created as well
-  const QList<QgsMapLayer *> layers = mMap.layers();
-  for ( QgsMapLayer *layer : layers )
-  {
-    // remove old entity - if any
-    removeLayerEntity( layer );
-
-    // add new entity - if any 3D renderer
-    addLayerEntity( layer );
   }
 
   emit terrainEntityChanged();
@@ -831,6 +832,13 @@ void Qgs3DMapScene::addLayerEntity( QgsMapLayer *layer )
     connect( pclayer, &QgsPointCloudLayer::renderer3DChanged, this, &Qgs3DMapScene::onLayerRenderer3DChanged );
     connect( pclayer, &QgsPointCloudLayer::subsetStringChanged, this, &Qgs3DMapScene::onLayerRenderer3DChanged );
   }
+
+
+  // create the terrain
+  if ( !mTerrain && layer->type() == Qgis::LayerType::Raster )
+  {
+    createTerrain();
+  }
 }
 
 void Qgs3DMapScene::removeLayerEntity( QgsMapLayer *layer )
@@ -865,6 +873,12 @@ void Qgs3DMapScene::removeLayerEntity( QgsMapLayer *layer )
     QgsPointCloudLayer *pclayer = qobject_cast<QgsPointCloudLayer *>( layer );
     disconnect( pclayer, &QgsPointCloudLayer::renderer3DChanged, this, &Qgs3DMapScene::onLayerRenderer3DChanged );
     disconnect( pclayer, &QgsPointCloudLayer::subsetStringChanged, this, &Qgs3DMapScene::onLayerRenderer3DChanged );
+  }
+
+  // remove the terrain
+  if ( mTerrain && layer->type() == Qgis::LayerType::Raster )
+  {
+    createTerrain();
   }
 }
 
