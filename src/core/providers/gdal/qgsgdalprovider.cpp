@@ -2487,7 +2487,7 @@ QString QgsGdalProviderMetadata::absoluteToRelativeUri( const QString &uri, cons
   {
     // NETCDF:filename:variable
     // filename can be quoted with " as it can contain colons
-    const QRegularExpression netcdfEncodedRegExp( QRegularExpression::anchoredPattern( "NETCDF:(.+):([^:]+)" ) );
+    const thread_local QRegularExpression netcdfEncodedRegExp( QRegularExpression::anchoredPattern( "NETCDF:(.+):([^:]+)" ) );
     const QRegularExpressionMatch match = netcdfEncodedRegExp.match( src );
     if ( match.hasMatch() )
     {
@@ -2511,7 +2511,7 @@ QString QgsGdalProviderMetadata::absoluteToRelativeUri( const QString &uri, cons
   {
     // HDF4_SDS:subdataset_type:file_name:subdataset_index
     // filename can be quoted with " as it can contain colons
-    const QRegularExpression hdf4EncodedRegExp( QRegularExpression::anchoredPattern( "HDF4_SDS:([^:]+):(.+):([^:]+)" ) );
+    const thread_local QRegularExpression hdf4EncodedRegExp( QRegularExpression::anchoredPattern( "HDF4_SDS:([^:]+):(.+):([^:]+)" ) );
     const QRegularExpressionMatch match = hdf4EncodedRegExp.match( src );
     if ( match.hasMatch() )
     {
@@ -2525,7 +2525,7 @@ QString QgsGdalProviderMetadata::absoluteToRelativeUri( const QString &uri, cons
   {
     // HDF5:file_name:subdataset
     // filename can be quoted with " as it can contain colons
-    const QRegularExpression hdf5EncodedRegExp( QRegularExpression::anchoredPattern( "HDF5:(.+):([^:]+)" ) );
+    const thread_local QRegularExpression hdf5EncodedRegExp( QRegularExpression::anchoredPattern( "HDF5:(.+):([^:]+)" ) );
     const QRegularExpressionMatch match = hdf5EncodedRegExp.match( src );
     if ( match.hasMatch() )
     {
@@ -2539,7 +2539,7 @@ QString QgsGdalProviderMetadata::absoluteToRelativeUri( const QString &uri, cons
   {
     // NITF_IM:0:filename
     // RADARSAT_2_CALIB:?:filename
-    const QRegularExpression nitfRadarsatEncodedRegExp( QRegularExpression::anchoredPattern( "([^:]+):([^:]+):(.+)" ) );
+    const thread_local QRegularExpression nitfRadarsatEncodedRegExp( QRegularExpression::anchoredPattern( "([^:]+):([^:]+):(.+)" ) );
     const QRegularExpressionMatch match = nitfRadarsatEncodedRegExp.match( src );
     if ( match.hasMatch() )
     {
