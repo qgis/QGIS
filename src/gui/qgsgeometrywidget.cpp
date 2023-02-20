@@ -18,6 +18,7 @@
 #include "qgsgeometry.h"
 #include "qgsjsonutils.h"
 #include "qgsguiutils.h"
+#include "qgsprojectionselectiondialog.h"
 #include <QLineEdit>
 #include <QHBoxLayout>
 #include <QToolButton>
@@ -160,8 +161,22 @@ void QgsGeometryWidget::pasteTriggered()
 {
   if ( !mPastedGeom.isNull() )
   {
-    setGeometryValue( mPastedGeom );
-    mPastedGeom = QgsReferencedGeometry();
+    QgsCoordinateReferenceSystem defaultCrs = mPastedGeom.crs();
+
+    // default to CRS of current geometry, if we have no better guesses as to what the clipboard CRS is
+    if ( !defaultCrs.isValid() )
+      defaultCrs = mGeometry.crs();
+
+    QgsProjectionSelectionDialog crsSelector( this );
+    crsSelector.setWindowTitle( tr( "Paste Geometry" ) );
+    crsSelector.setMessage( tr( "Please specify the Coordinate Reference System (CRS) for the pasted geometry." ) );
+    crsSelector.setCrs( defaultCrs );
+    if ( crsSelector.exec() )
+    {
+      mPastedGeom.setCrs( crsSelector.crs() );
+      setGeometryValue( mPastedGeom );
+      mPastedGeom = QgsReferencedGeometry();
+    }
   }
 }
 
@@ -202,7 +217,8 @@ void QgsGeometryWidget::fetchGeomFromClipboard()
   const QgsFeatureList features = QgsJsonUtils::stringToFeatureList( text );
   if ( !features.isEmpty() && features.at( 0 ).hasGeometry() )
   {
-    mPastedGeom = QgsReferencedGeometry( features.at( 0 ).geometry(), QgsCoordinateReferenceSystem() );
+    // assume EPSG:4326 for GeoJSON
+    mPastedGeom = QgsReferencedGeometry( features.at( 0 ).geometry(), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ) );
     return;
   }
 }
