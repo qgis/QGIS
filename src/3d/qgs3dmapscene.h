@@ -231,10 +231,10 @@ class _3D_EXPORT Qgs3DMapScene : public QObject
   private slots:
     void onCameraChanged();
     void onFrameTriggered( float dt );
-    void createTerrain();
+    void updateTerrain();
     void onLayerRenderer3DChanged();
     void onLayersChanged();
-    void createTerrainDeferred();
+    void updateTerrainDeferred();
     void onBackgroundColorChanged();
     void onLayerEntityPickedObject( Qt3DRender::QPickEvent *pickEvent, QgsFeatureId fid );
     void updateLights();
