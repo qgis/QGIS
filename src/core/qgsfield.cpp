@@ -282,7 +282,7 @@ QString QgsField::displayString( const QVariant &v ) const
       QString wkt = geom.asWkt();
       if ( wkt.length() >= 1050 )
       {
-        wkt = wkt.left( 999 ) + QChar( 0x2026 );
+        wkt = wkt.left( MAX_WKT_LENGTH ) + QChar( 0x2026 );
       }
       QString formattedText = QStringLiteral( "%1 [%2]" ).arg( wkt, geom.crs().userFriendlyIdentifier() );
       return formattedText;

@@ -411,6 +411,7 @@ providers which support generated fields for instance.
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
+
 }; // class QgsField
 
 
