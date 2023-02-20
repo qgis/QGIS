@@ -20,6 +20,7 @@
 #include "qgsapplication.h"
 
 #include "qgsalgorithmpdalinformation.h"
+#include "qgsalgorithmpdalconvertformat.h"
 
 ///@cond PRIVATE
 
@@ -77,6 +78,7 @@ void QgsPdalAlgorithms::loadAlgorithms()
   const QgsScopedRuntimeProfile profile( QObject::tr( "QGIS PDAL provider" ) );
 
   addAlgorithm( new QgsPdalInformationAlgorithm() );
+  addAlgorithm( new QgsPdalConvertFormatAlgorithm() );
 }
 
 ///@endcond

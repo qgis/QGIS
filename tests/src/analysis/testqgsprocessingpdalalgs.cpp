@@ -35,6 +35,7 @@ class TestQgsProcessingPdalAlgs: public QObject
     void cleanup() {} // will be called after every testfunction.
 
     void info();
+    void convertFormat();
 
   private:
     QString mPointCloudLayerPath;
@@ -87,6 +88,37 @@ void TestQgsProcessingPdalAlgs::info()
 
   QStringList args = alg->createArgumentLists( parameters, *context, &feedback );
   QCOMPARE( args, QStringList() << QStringLiteral( "info" ) << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath ) );
+}
+
+void TestQgsProcessingPdalAlgs::convertFormat()
+{
+  QgsPdalAlgorithmBase *alg = const_cast<QgsPdalAlgorithmBase *>( static_cast< const QgsPdalAlgorithmBase * >( QgsApplication::processingRegistry()->algorithmById( QStringLiteral( "pdal:convertformat" ) ) ) );
+
+  std::unique_ptr< QgsProcessingContext > context = std::make_unique< QgsProcessingContext >();
+  context->setProject( QgsProject::instance() );
+
+  QgsProcessingFeedback feedback;
+
+  const QString outputPointCloud = QDir::tempPath() + "/converted.laz";
+
+  QVariantMap parameters;
+  parameters.insert( QStringLiteral( "INPUT" ), mPointCloudLayerPath );
+  parameters.insert( QStringLiteral( "OUTPUT" ), outputPointCloud );
+
+  QStringList args = alg->createArgumentLists( parameters, *context, &feedback );
+  QCOMPARE( args, QStringList() << QStringLiteral( "translate" )
+            << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath )
+            << QStringLiteral( "--output=%1" ).arg( outputPointCloud )
+          );
+
+  // set max threads to 2, a --threads argument should be added
+  QgsSettings().setValue( QStringLiteral( "/Processing/Configuration/MAX_THREADS" ), 2 );
+  args = alg->createArgumentLists( parameters, *context, &feedback );
+  QCOMPARE( args, QStringList() << QStringLiteral( "translate" )
+            << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath )
+            << QStringLiteral( "--output=%1" ).arg( outputPointCloud )
+            << QStringLiteral( "--threads=2" )
+          );
 }
 
 QGSTEST_MAIN( TestQgsProcessingPdalAlgs )
