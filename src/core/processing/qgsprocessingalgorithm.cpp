@@ -113,6 +113,8 @@ bool QgsProcessingAlgorithm::checkParameterValues( const QVariantMap &parameters
           *message = invalidSinkError( parameters, def->name() );
         else if ( def->type() == QgsProcessingParameterRasterLayer::typeName() )
           *message = invalidRasterError( parameters, def->name() );
+        else if ( def->type() == QgsProcessingParameterPointCloudLayer::typeName() )
+          *message = invalidPointCloudError( parameters, def->name() );
         else
           *message = QObject::tr( "Incorrect parameter value for %1" ).arg( def->name() );
       }
@@ -961,6 +963,28 @@ QString QgsProcessingAlgorithm::invalidSinkError( const QVariantMap &parameters,
       return QObject::tr( "Could not create destination layer for %1: %2" ).arg( name, var.toString() );
     else
       return QObject::tr( "Could not create destination layer for %1: invalid value" ).arg( name );
+  }
+}
+
+QString QgsProcessingAlgorithm::invalidPointCloudError( const QVariantMap &parameters, const QString &name )
+{
+  if ( !parameters.contains( name ) )
+    return QObject::tr( "Could not load source layer for %1: no value specified for parameter" ).arg( name );
+  else
+  {
+    QVariant var = parameters.value( name );
+    if ( var.userType() == QMetaType::type( "QgsProperty" ) )
+    {
+      QgsProperty p = var.value< QgsProperty >();
+      if ( p.propertyType() == QgsProperty::StaticProperty )
+      {
+        var = p.staticValue();
+      }
+    }
+    if ( !var.toString().isEmpty() )
+      return QObject::tr( "Could not load source layer for %1: %2 not found" ).arg( name, var.toString() );
+    else
+      return QObject::tr( "Could not load source layer for %1: invalid value" ).arg( name );
   }
 }
 

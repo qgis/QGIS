@@ -420,6 +420,10 @@ endif()
 if (WITH_PDAL)
   set(QGIS_ANALYSIS_SRCS ${QGIS_ANALYSIS_SRCS}
     processing/pdal/qgspdalalgorithms.cpp
+
+    processing/pdal/qgspdalalgorithmbase.cpp
+
+    processing/pdal/qgsalgorithmpdalinformation.cpp
   )
 
   set(QGIS_ANALYSIS_HDRS ${QGIS_ANALYSIS_HDRS}

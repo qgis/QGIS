@@ -1042,6 +1042,8 @@ should correspond to the invalid source parameter name.
 
 .. seealso:: :py:func:`invalidSinkError`
 
+.. seealso:: :py:func:`invalidPointCloudError`
+
 .. versionadded:: 3.2
 %End
 
@@ -1051,11 +1053,13 @@ Returns a user-friendly string to use as an error when a raster layer input coul
 not be loaded.
 
 The ``parameters`` argument should give the algorithms parameter map, and the ``name``
-should correspond to the invalid source parameter name.
+should correspond to the invalid raster parameter name.
 
 .. seealso:: :py:func:`invalidSourceError`
 
 .. seealso:: :py:func:`invalidSinkError`
+
+.. seealso:: :py:func:`invalidPointCloudError`
 
 .. versionadded:: 3.2
 %End
@@ -1066,13 +1070,32 @@ Returns a user-friendly string to use as an error when a sink parameter could
 not be created.
 
 The ``parameters`` argument should give the algorithms parameter map, and the ``name``
-should correspond to the invalid source parameter name.
+should correspond to the invalid sink parameter name.
 
 .. seealso:: :py:func:`invalidSourceError`
 
 .. seealso:: :py:func:`invalidRasterError`
 
+.. seealso:: :py:func:`invalidPointCloudError`
+
 .. versionadded:: 3.2
+%End
+
+    static QString invalidPointCloudError( const QVariantMap &parameters, const QString &name );
+%Docstring
+Returns a user-friendly string to use as an error when a point cloud layer input could
+not be loaded.
+
+The ``parameters`` argument should give the algorithms parameter map, and the ``name``
+should correspond to the invalid point cloud parameter name.
+
+.. seealso:: :py:func:`invalidSourceError`
+
+.. seealso:: :py:func:`invalidSinkError`
+
+.. seealso:: :py:func:`invalidRasterError`
+
+.. versionadded:: 3.32
 %End
 
     static QString writeFeatureError( QgsFeatureSink *sink, const QVariantMap &parameters, const QString &name );

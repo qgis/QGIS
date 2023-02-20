@@ -1036,6 +1036,7 @@ class CORE_EXPORT QgsProcessingAlgorithm
      *
      * \see invalidRasterError()
      * \see invalidSinkError()
+     * \see invalidPointCloudError()
      * \since QGIS 3.2
      */
     static QString invalidSourceError( const QVariantMap &parameters, const QString &name );
@@ -1045,11 +1046,12 @@ class CORE_EXPORT QgsProcessingAlgorithm
      * not be loaded.
      *
      * The \a parameters argument should give the algorithms parameter map, and the \a name
-     * should correspond to the invalid source parameter name.
+     * should correspond to the invalid raster parameter name.
      *
      *
      * \see invalidSourceError()
      * \see invalidSinkError()
+     * \see invalidPointCloudError()
      * \since QGIS 3.2
      */
     static QString invalidRasterError( const QVariantMap &parameters, const QString &name );
@@ -1059,14 +1061,30 @@ class CORE_EXPORT QgsProcessingAlgorithm
      * not be created.
      *
      * The \a parameters argument should give the algorithms parameter map, and the \a name
-     * should correspond to the invalid source parameter name.
+     * should correspond to the invalid sink parameter name.
      *
      *
      * \see invalidSourceError()
      * \see invalidRasterError()
+     * \see invalidPointCloudError()
      * \since QGIS 3.2
      */
     static QString invalidSinkError( const QVariantMap &parameters, const QString &name );
+
+    /**
+     * Returns a user-friendly string to use as an error when a point cloud layer input could
+     * not be loaded.
+     *
+     * The \a parameters argument should give the algorithms parameter map, and the \a name
+     * should correspond to the invalid point cloud parameter name.
+     *
+     *
+     * \see invalidSourceError()
+     * \see invalidSinkError()
+     * \see invalidRasterError()
+     * \since QGIS 3.32
+     */
+    static QString invalidPointCloudError( const QVariantMap &parameters, const QString &name );
 
     /**
      * Returns a user-friendly string to use as an error when a feature cannot be
