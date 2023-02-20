@@ -423,8 +423,9 @@ if (WITH_PDAL)
 
     processing/pdal/qgspdalalgorithmbase.cpp
 
-    processing/pdal/qgsalgorithmpdalinformation.cpp
     processing/pdal/qgsalgorithmpdalconvertformat.cpp
+    processing/pdal/qgsalgorithmpdalfixprojection.cpp
+    processing/pdal/qgsalgorithmpdalinformation.cpp
     processing/pdal/qgsalgorithmpdalreproject.cpp
   )
 
