@@ -19,6 +19,8 @@
 #include "qgsruntimeprofiler.h"
 #include "qgsapplication.h"
 
+#include "qgsalgorithmpdalinformation.h"
+
 ///@cond PRIVATE
 
 QgsPdalAlgorithms::QgsPdalAlgorithms( QObject *parent )
@@ -73,6 +75,8 @@ QStringList QgsPdalAlgorithms::supportedOutputPointCloudLayerExtensions() const
 void QgsPdalAlgorithms::loadAlgorithms()
 {
   const QgsScopedRuntimeProfile profile( QObject::tr( "QGIS PDAL provider" ) );
+
+  addAlgorithm( new QgsPdalInformationAlgorithm() );
 }
 
 ///@endcond
