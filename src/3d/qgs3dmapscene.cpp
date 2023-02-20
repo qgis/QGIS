@@ -133,7 +133,6 @@ Qgs3DMapScene::Qgs3DMapScene( Qgs3DMapSettings &map, QgsAbstract3DEngine *engine
   connect( &map, &Qgs3DMapSettings::showLightSourceOriginsChanged, this, &Qgs3DMapScene::updateLights );
   connect( &map, &Qgs3DMapSettings::fieldOfViewChanged, this, &Qgs3DMapScene::updateCameraLens );
   connect( &map, &Qgs3DMapSettings::projectionTypeChanged, this, &Qgs3DMapScene::updateCameraLens );
-  connect( &map, &Qgs3DMapSettings::renderersChanged, this, &Qgs3DMapScene::onRenderersChanged );
   connect( &map, &Qgs3DMapSettings::skyboxSettingsChanged, this, &Qgs3DMapScene::onSkyboxSettingsChanged );
   connect( &map, &Qgs3DMapSettings::shadowSettingsChanged, this, &Qgs3DMapScene::onShadowSettingsChanged );
   connect( &map, &Qgs3DMapSettings::ambientOcclusionSettingsChanged, this, &Qgs3DMapScene::onAmbientOcclusionSettingsChanged );
@@ -183,10 +182,6 @@ Qgs3DMapScene::Qgs3DMapScene( Qgs3DMapSettings &map, QgsAbstract3DEngine *engine
       }
     }
   } );
-
-  // create entities of renderers
-
-  onRenderersChanged();
 
   // listen to changes of layers in order to add/remove 3D renderer entities
   connect( &map, &Qgs3DMapSettings::layersChanged, this, &Qgs3DMapScene::onLayersChanged );
@@ -682,26 +677,6 @@ void Qgs3DMapScene::updateCameraLens()
   mEngine->camera()->lens()->setFieldOfView( mMap.fieldOfView() );
   mEngine->camera()->lens()->setProjectionType( mMap.projectionType() );
   onCameraChanged();
-}
-
-void Qgs3DMapScene::onRenderersChanged()
-{
-  // remove entities (if any)
-  qDeleteAll( mRenderersEntities );
-  mRenderersEntities.clear();
-
-  // re-add entities from new set of renderers
-  const QList<QgsAbstract3DRenderer *> renderers = mMap.renderers();
-  for ( const QgsAbstract3DRenderer *renderer : renderers )
-  {
-    Qt3DCore::QEntity *newEntity = renderer->createEntity( mMap );
-    if ( newEntity )
-    {
-      newEntity->setParent( this );
-      finalizeNewEntity( newEntity );
-      mRenderersEntities[renderer] = newEntity;
-    }
-  }
 }
 
 void Qgs3DMapScene::onLayerRenderer3DChanged()

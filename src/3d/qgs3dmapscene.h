@@ -232,7 +232,6 @@ class _3D_EXPORT Qgs3DMapScene : public QObject
     void onLayerEntityPickedObject( Qt3DRender::QPickEvent *pickEvent, QgsFeatureId fid );
     void updateLights();
     void updateCameraLens();
-    void onRenderersChanged();
     void onSkyboxSettingsChanged();
     void onShadowSettingsChanged();
     void onAmbientOcclusionSettingsChanged();
@@ -275,7 +274,6 @@ class _3D_EXPORT Qgs3DMapScene : public QObject
     Qt3DCore::QEntity *mEntityCameraViewCenter = nullptr;
     //! Keeps track of entities that belong to a particular layer
     QMap<QgsMapLayer *, Qt3DCore::QEntity *> mLayerEntities;
-    QMap<const QgsAbstract3DRenderer *, Qt3DCore::QEntity *> mRenderersEntities;
     bool mTerrainUpdateScheduled = false;
     SceneState mSceneState = Ready;
     //! List of currently registered pick handlers (used by identify tool)
