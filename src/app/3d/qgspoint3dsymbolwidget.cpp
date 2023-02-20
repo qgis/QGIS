@@ -26,6 +26,7 @@
 #include "qgssymbollayerutils.h"
 #include "qgsphongmaterialsettings.h"
 #include "qgsmarkersymbol.h"
+#include "qgs3dutils.h"
 
 QgsPoint3DSymbolWidget::QgsPoint3DSymbolWidget( QWidget *parent )
   : Qgs3DSymbolWidget( parent )
@@ -155,11 +156,13 @@ void QgsPoint3DSymbolWidget::setSymbol( const QgsAbstract3DSymbol *symbol, QgsVe
   // decompose the transform matrix
   // assuming the last row has values [0 0 0 1]
   // see https://math.stackexchange.com/questions/237369/given-this-transformation-matrix-how-do-i-decompose-it-into-translation-rotati
+  // A point on the 2D plane (x', y') is transformed to (x, -z) in the 3D world.
+  // The formula from stackexchange need to be changed to take into account the 3D representation.
   QMatrix4x4 m = pointSymbol->transform();
   float *md = m.data();  // returns data in column-major order
   const float sx = QVector3D( md[0], md[1], md[2] ).length();
-  const float sy = QVector3D( md[4], md[5], md[6] ).length();
-  const float sz = QVector3D( md[8], md[9], md[10] ).length();
+  const float sz = QVector3D( md[4], md[5], md[6] ).length();
+  const float sy = QVector3D( md[8], md[9], md[10] ).length();
   float rd[9] =
   {
     md[0] / sx, md[4] / sy, md[8] / sz,
@@ -168,17 +171,18 @@ void QgsPoint3DSymbolWidget::setSymbol( const QgsAbstract3DSymbol *symbol, QgsVe
   };
   const QMatrix3x3 rot3x3( rd ); // takes data in row-major order
   const QVector3D rot = QQuaternion::fromRotationMatrix( rot3x3 ).toEulerAngles();
+  const QgsVector3D translationMapCoords( md[12], -md[14], md[13] );
 
   spinBillboardHeight->setValue( md[13] );
-  spinTX->setValue( md[12] );
-  spinTY->setValue( md[13] );
-  spinTZ->setValue( md[14] );
+  spinTX->setValue( translationMapCoords.x() );
+  spinTY->setValue( translationMapCoords.y() );
+  spinTZ->setValue( translationMapCoords.z() );
   spinSX->setValue( sx );
   spinSY->setValue( sy );
   spinSZ->setValue( sz );
   spinRX->setValue( QgsLayoutUtils::normalizedAngle( rot.x() ) );
-  spinRY->setValue( QgsLayoutUtils::normalizedAngle( rot.y() ) );
-  spinRZ->setValue( QgsLayoutUtils::normalizedAngle( rot.z() ) );
+  spinRY->setValue( QgsLayoutUtils::normalizedAngle( 360.0 - rot.z() ) );
+  spinRZ->setValue( QgsLayoutUtils::normalizedAngle( rot.y() ) );
 }
 
 QgsAbstract3DSymbol *QgsPoint3DSymbolWidget::symbol()
@@ -218,9 +222,12 @@ QgsAbstract3DSymbol *QgsPoint3DSymbolWidget::symbol()
       break;
   }
 
-  const QQuaternion rot( QQuaternion::fromEulerAngles( spinRX->value(), spinRY->value(), spinRZ->value() ) );
-  const QVector3D sca( spinSX->value(), spinSY->value(), spinSZ->value() );
-  const QVector3D tra( spinTX->value(), spinTY->value(), spinTZ->value() );
+  // A point on the 2D plane (x', y') is transformed to (x, -z) in the 3D world.
+  // The rotation, scale and translation values need to be converted in the 3D world.
+  const QgsVector3D translationWorldCoords( spinTX->value(), spinTZ->value(), -spinTY->value() );
+  const QQuaternion rot( QQuaternion::fromEulerAngles( static_cast<float>( spinRX->value() ), static_cast<float>( spinRZ->value() ), static_cast<float>( 360.0 - spinRY->value() ) ) );
+  const QVector3D sca( static_cast<float>( spinSX->value() ), static_cast<float>( spinSZ->value() ), static_cast<float>( spinSY->value() ) );
+  const QVector3D tra( static_cast<float>( translationWorldCoords.x() ), static_cast<float>( translationWorldCoords.y() ), static_cast<float>( translationWorldCoords.z() ) );
 
   QMatrix4x4 tr;
   tr.translate( tra );
