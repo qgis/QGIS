@@ -21,6 +21,7 @@
 
 #include "qgsalgorithmpdalinformation.h"
 #include "qgsalgorithmpdalconvertformat.h"
+#include "qgsalgorithmpdalreproject.h"
 
 ///@cond PRIVATE
 
@@ -79,6 +80,7 @@ void QgsPdalAlgorithms::loadAlgorithms()
 
   addAlgorithm( new QgsPdalInformationAlgorithm() );
   addAlgorithm( new QgsPdalConvertFormatAlgorithm() );
+  addAlgorithm( new QgsPdalReprojectAlgorithm() );
 }
 
 ///@endcond

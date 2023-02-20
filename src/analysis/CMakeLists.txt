@@ -425,6 +425,7 @@ if (WITH_PDAL)
 
     processing/pdal/qgsalgorithmpdalinformation.cpp
     processing/pdal/qgsalgorithmpdalconvertformat.cpp
+    processing/pdal/qgsalgorithmpdalreproject.cpp
   )
 
   set(QGIS_ANALYSIS_HDRS ${QGIS_ANALYSIS_HDRS}
