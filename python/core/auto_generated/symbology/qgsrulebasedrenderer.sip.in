@@ -517,6 +517,9 @@ Returns symbol for current feature. Should not be used individually: there could
 
 
     static QgsFeatureRenderer *createFromSld( QDomElement &element, Qgis::GeometryType geomType ) /Factory/;
+%Docstring
+Creates a new rule based renderer from an SLD XML element.
+%End
 
     virtual QgsSymbolList symbols( QgsRenderContext &context ) const;
 

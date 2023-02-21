@@ -115,6 +115,9 @@ class CORE_EXPORT QgsRendererAbstractMetadata
     virtual QgsRendererWidget *createRendererWidget( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *oldRenderer ) SIP_FACTORY
     { Q_UNUSED( layer ) Q_UNUSED( style ); Q_UNUSED( oldRenderer ); return nullptr; }
 
+    /**
+     * Returns a new instance of the renderer, converted from an SLD XML element.
+     */
     virtual QgsFeatureRenderer *createRendererFromSld( QDomElement &elem, Qgis::GeometryType geomType ) SIP_FACTORY
     { Q_UNUSED( elem ) Q_UNUSED( geomType ); return nullptr; }
 

@@ -49,6 +49,9 @@ A rubberband class for :py:class:`QgsAbstractGeometry` (considering curved geome
     };
 
     QgsGeometryRubberBand( QgsMapCanvas *mapCanvas, Qgis::GeometryType geomType = Qgis::GeometryType::Line );
+%Docstring
+Constructor for QgsGeometryRubberBand of the given ``geomType``, shown in the specified ``mapCanvas``.
+%End
     ~QgsGeometryRubberBand();
 
     virtual void setGeometry( QgsAbstractGeometry *geom /Transfer/ );

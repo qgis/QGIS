@@ -532,6 +532,9 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
 
     void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props = QVariantMap() ) const override;
 
+    /**
+     * Creates a new rule based renderer from an SLD XML element.
+     */
     static QgsFeatureRenderer *createFromSld( QDomElement &element, Qgis::GeometryType geomType ) SIP_FACTORY;
 
     QgsSymbolList symbols( QgsRenderContext &context ) const override;
