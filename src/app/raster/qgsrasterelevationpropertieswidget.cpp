@@ -96,6 +96,12 @@ void QgsRasterElevationPropertiesWidget::apply()
     return;
 
   QgsRasterLayerElevationProperties *props = qgis::down_cast< QgsRasterLayerElevationProperties * >( mLayer->elevationProperties() );
+
+  const bool changed3DrelatedProperties = props->isEnabled() != mElevationGroupBox->isChecked()
+                                          || !qgsDoubleNear( mOffsetZSpinBox->value(), props->zOffset() )
+                                          || !qgsDoubleNear( mScaleZSpinBox->value(), props->zScale() )
+                                          || props->bandNumber() != mBandComboBox->currentBand();
+
   props->setEnabled( mElevationGroupBox->isChecked() );
   props->setZOffset( mOffsetZSpinBox->value() );
   props->setZScale( mScaleZSpinBox->value() );
@@ -103,7 +109,11 @@ void QgsRasterElevationPropertiesWidget::apply()
   props->setProfileFillSymbol( mFillStyleButton->clonedSymbol< QgsFillSymbol >() );
   props->setProfileSymbology( static_cast< Qgis::ProfileSurfaceSymbology >( mStyleComboBox->currentData().toInt() ) );
   props->setBandNumber( mBandComboBox->currentBand() );
-  mLayer->trigger3DUpdate();
+
+  if ( changed3DrelatedProperties )
+  {
+    mLayer->trigger3DUpdate();
+  }
 }
 
 void QgsRasterElevationPropertiesWidget::onChanged()
