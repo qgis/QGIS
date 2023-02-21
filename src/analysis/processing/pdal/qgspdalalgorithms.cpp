@@ -22,6 +22,7 @@
 #include "qgsalgorithmpdalboundary.h"
 #include "qgsalgorithmpdalconvertformat.h"
 #include "qgsalgorithmpdaldensity.h"
+#include "qgsalgorithmpdalexportrastertin.h"
 #include "qgsalgorithmpdalfixprojection.h"
 #include "qgsalgorithmpdalinformation.h"
 #include "qgsalgorithmpdalreproject.h"
@@ -85,6 +86,7 @@ void QgsPdalAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsPdalBoundaryAlgorithm() );
   addAlgorithm( new QgsPdalConvertFormatAlgorithm() );
   addAlgorithm( new QgsPdalDensityAlgorithm() );
+  addAlgorithm( new QgsPdalExportRasterTinAlgorithm() );
   addAlgorithm( new QgsPdalFixProjectionAlgorithm() );
   addAlgorithm( new QgsPdalInformationAlgorithm() );
   addAlgorithm( new QgsPdalReprojectAlgorithm() );
