@@ -405,6 +405,20 @@ Qgis.SettingsType.__doc__ = 'Types of settings entries\n\n.. versionadded:: 3.26
 # --
 Qgis.SettingsType.baseClass = Qgis
 # monkey patching scoped based enum
+Qgis.SettingsTreeNodeType.Root.__doc__ = "Root Node"
+Qgis.SettingsTreeNodeType.Standard.__doc__ = "Normal Node"
+Qgis.SettingsTreeNodeType.NamedList.__doc__ = ""
+Qgis.SettingsTreeNodeType.__doc__ = 'Type of tree node\n\n.. versionadded:: 3.30\n\n' + '* ``Root``: ' + Qgis.SettingsTreeNodeType.Root.__doc__ + '\n' + '* ``Standard``: ' + Qgis.SettingsTreeNodeType.Standard.__doc__ + '\n' + '* ``NamedList``: ' + Qgis.SettingsTreeNodeType.NamedList.__doc__
+# --
+Qgis.SettingsTreeNodeType.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.SettingsTreeNodeOption.NamedListSelectedItemSetting.__doc__ = "Creates a setting to store which is the current item"
+Qgis.SettingsTreeNodeOption.__doc__ = 'Options for named list nodes\n\n.. versionadded:: 3.30\n\n' + '* ``NamedListSelectedItemSetting``: ' + Qgis.SettingsTreeNodeOption.NamedListSelectedItemSetting.__doc__
+# --
+Qgis.SettingsTreeNodeOption.baseClass = Qgis
+Qgis.SettingsTreeNodeOptions.baseClass = Qgis
+SettingsTreeNodeOptions = Qgis  # dirty hack since SIP seems to introduce the flags in module
+# monkey patching scoped based enum
 Qgis.SldExportOption.NoOptions.__doc__ = "Default SLD export"
 Qgis.SldExportOption.Svg.__doc__ = "Export complex styles to separate SVG files for better compatibility with OGC servers"
 Qgis.SldExportOption.Png.__doc__ = "Export complex styles to separate PNG files for better compatibility with OGC servers"

@@ -10,6 +10,7 @@ the Free Software Foundation; either version 2 of the License, or
 """
 
 from qgis.core import (
+    Qgis,
     QgsSettings,
     QgsSettingsEntryEnumFlag,
     QgsSettingsEntryString,
@@ -41,18 +42,18 @@ class TestQgsSettingsEntry(unittest.TestCase):
             QgsSettingsTreeNode()
 
         root = QgsSettingsTree.createPluginTreeNode(self.pluginName)
-        self.assertEqual(root.type(), QgsSettingsTreeNode.Type.Standard)
+        self.assertEqual(root.type(), Qgis.SettingsTreeNodeType.Standard)
         pluginsNode = root.parent()
-        self.assertEqual(pluginsNode.type(), QgsSettingsTreeNode.Type.Standard)
-        self.assertEqual(pluginsNode.parent().type(), QgsSettingsTreeNode.Type.Root)
+        self.assertEqual(pluginsNode.type(), Qgis.SettingsTreeNodeType.Standard)
+        self.assertEqual(pluginsNode.parent().type(), Qgis.SettingsTreeNodeType.Root)
         self.assertEqual(pluginsNode.parent().parent(), None)
 
     def test_parent(self):
         root = QgsSettingsTree.createPluginTreeNode(self.pluginName)
-        self.assertEqual(root.type(), QgsSettingsTreeNode.Type.Standard)
+        self.assertEqual(root.type(), Qgis.SettingsTreeNodeType.Standard)
 
         l1 = root.createChildNode("test-parent-level-1")
-        self.assertEqual(l1.type(), QgsSettingsTreeNode.Type.Standard)
+        self.assertEqual(l1.type(), Qgis.SettingsTreeNodeType.Standard)
         self.assertEqual(l1.key(), "test-parent-level-1")
         self.assertEqual(l1.completeKey(), f"/plugins/{self.pluginName}/test-parent-level-1/")
         self.assertEqual(l1.parent(), root)
@@ -60,7 +61,7 @@ class TestQgsSettingsEntry(unittest.TestCase):
         self.assertEqual(root.childrenSettings(), [])
 
         l1a = l1.createChildNode("level-a")
-        self.assertEqual(l1a.type(), QgsSettingsTreeNode.Type.Standard)
+        self.assertEqual(l1a.type(), Qgis.SettingsTreeNodeType.Standard)
         self.assertEqual(l1a.key(), "level-a")
         self.assertEqual(l1a.completeKey(), f"/plugins/{self.pluginName}/test-parent-level-1/level-a/")
         self.assertEqual(l1a.parent(), l1)
@@ -90,7 +91,7 @@ class TestQgsSettingsEntry(unittest.TestCase):
         self.assertEqual(nl.childrenSettings(), [])
 
         # nesting lists
-        nl2 = nl.createNamedListNode("my_nested_list", QgsSettingsTreeNode.Option.NamedListSelectedItemSetting)
+        nl2 = nl.createNamedListNode("my_nested_list", Qgis.SettingsTreeNodeOption.NamedListSelectedItemSetting)
         self.assertEqual(nl2.key(), "my_nested_list")
         self.assertEqual(nl2.completeKey(), f"/plugins/{self.pluginName}/level-1/my_list/items/%1/my_nested_list/items/%2/")
         self.assertEqual(nl2.namedNodesCount(), 2)
