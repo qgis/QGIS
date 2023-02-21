@@ -82,8 +82,11 @@ class CORE_EXPORT QgsWkbPtr
     //! Reads an integer value into a qsizetype
     inline const QgsWkbPtr &operator>>( qsizetype &r ) const { int v; read( v ); r = v; return *this; } SIP_SKIP
 #endif
+    //! Reads an unsigned integer value
     inline const QgsWkbPtr &operator>>( unsigned int &v ) const { read( v ); return *this; } SIP_SKIP
+    //! Reads an char value
     inline const QgsWkbPtr &operator>>( char &v ) const { read( v ); return *this; } SIP_SKIP
+    //! Reads a Qgis::WkbType enum value
     inline const QgsWkbPtr &operator>>( Qgis::WkbType &v ) const { read( v ); return *this; } SIP_SKIP
 
     //! Writes a double to the pointer

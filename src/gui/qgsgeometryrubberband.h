@@ -92,6 +92,9 @@ class GUI_EXPORT QgsGeometryRubberBand: public QgsMapCanvasItem
       ICON_FULL_BOX
     };
 
+    /**
+     * Constructor for QgsGeometryRubberBand of the given \a geomType, shown in the specified \a mapCanvas.
+     */
     QgsGeometryRubberBand( QgsMapCanvas *mapCanvas, Qgis::GeometryType geomType = Qgis::GeometryType::Line );
     ~QgsGeometryRubberBand() override;
 

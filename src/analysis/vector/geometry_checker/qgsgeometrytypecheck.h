@@ -27,6 +27,14 @@
 class ANALYSIS_EXPORT QgsGeometryTypeCheckError : public QgsSingleGeometryCheckError
 {
   public:
+
+    /**
+     * Constructor for QgsGeometryTypeCheckError.
+     * \param check associated geometry check
+     * \param geometry original geometry
+     * \param errorLocation location of geometry error
+     * \param flatType geometry flat type
+     */
     QgsGeometryTypeCheckError( const QgsSingleGeometryCheck *check,
                                const QgsGeometry &geometry,
                                const QgsGeometry &errorLocation,

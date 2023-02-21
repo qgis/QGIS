@@ -97,6 +97,9 @@ The old renderer does not have to be of the same type as returned by :py:func:`~
 %End
 
     virtual QgsFeatureRenderer *createRendererFromSld( QDomElement &elem, Qgis::GeometryType geomType ) /Factory/;
+%Docstring
+Returns a new instance of the renderer, converted from an SLD XML element.
+%End
 
   protected:
 };
