@@ -15,6 +15,7 @@ import tempfile
 import qgis  # NOQA
 from qgis.PyQt.QtCore import QTemporaryDir, QUrl, QVariant
 from qgis.core import (
+    Qgis,
     QgsFeature,
     QgsFeatureRequest,
     QgsField,
@@ -345,16 +346,17 @@ class TestQgsVirtualLayerProvider(unittest.TestCase, ProviderTestCase):
 
     def test_geometryTypes(self):
 
-        geo = [(1, "POINT", "(0 0)"),
-               (2, "LINESTRING", "(0 0,1 0)"),
-               (3, "POLYGON", "((0 0,1 0,1 1,0 0))"),
-               (4, "MULTIPOINT", "((1 1))"),
-               (5, "MULTILINESTRING", "((0 0,1 0),(0 1,1 1))"),
-               (6, "MULTIPOLYGON", "(((0 0,1 0,1 1,0 0)),((2 2,3 0,3 3,2 2)))"),
-               (9, "COMPOUNDCURVE", "(CIRCULARSTRING(0 0, 1 0, 1 1))"),
-               (10, "CURVEPOLYGON", "(COMPOUNDCURVE(CIRCULARSTRING(0 0, 1 0, 1 1)))"),
-               (11, "MULTICURVE", "(COMPOUNDCURVE(CIRCULARSTRING(0 0, 1 0, 1 1)),COMPOUNDCURVE(CIRCULARSTRING(2 2, 3 2, 3 3)))"),
-               (12, "MULTISURFACE", "(CURVEPOLYGON(COMPOUNDCURVE(CIRCULARSTRING(0 0, 1 0, 1 1))),CURVEPOLYGON(COMPOUNDCURVE(CIRCULARSTRING(2 2, 3 2, 3 3))))")]
+        geo = [(Qgis.WkbType.Point, "POINT", "(0 0)"),
+               (Qgis.WkbType.LineString, "LINESTRING", "(0 0,1 0)"),
+               (Qgis.WkbType.Polygon, "POLYGON", "((0 0,1 0,1 1,0 0))"),
+               (Qgis.WkbType.MultiPoint, "MULTIPOINT", "((1 1))"),
+               (Qgis.WkbType.MultiLineString, "MULTILINESTRING", "((0 0,1 0),(0 1,1 1))"),
+               (Qgis.WkbType.MultiPolygon, "MULTIPOLYGON", "(((0 0,1 0,1 1,0 0)),((2 2,3 0,3 3,2 2)))"),
+               (Qgis.WkbType.CompoundCurve, "COMPOUNDCURVE", "(CIRCULARSTRING(0 0, 1 0, 1 1))"),
+               (Qgis.WkbType.CurvePolygon, "CURVEPOLYGON", "(COMPOUNDCURVE(CIRCULARSTRING(0 0, 1 0, 1 1)))"),
+               (Qgis.WkbType.MultiCurve, "MULTICURVE", "(COMPOUNDCURVE(CIRCULARSTRING(0 0, 1 0, 1 1)),COMPOUNDCURVE(CIRCULARSTRING(2 2, 3 2, 3 3)))"),
+               (Qgis.WkbType.MultiSurface, "MULTISURFACE", "(CURVEPOLYGON(COMPOUNDCURVE(CIRCULARSTRING(0 0, 1 0, 1 1))),CURVEPOLYGON(COMPOUNDCURVE(CIRCULARSTRING(2 2, 3 2, 3 3))))")]
+
         for wkb_type, wkt_type, wkt in geo:
             l = QgsVectorLayer(f"{wkt_type}?crs=epsg:4326", "m1", "memory", QgsVectorLayer.LayerOptions(False))
             self.assertEqual(l.isValid(), True)
