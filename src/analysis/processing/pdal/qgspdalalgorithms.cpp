@@ -23,6 +23,7 @@
 #include "qgsalgorithmpdalfixprojection.h"
 #include "qgsalgorithmpdalinformation.h"
 #include "qgsalgorithmpdalreproject.h"
+#include "qgsalgorithmpdalthin.h"
 
 ///@cond PRIVATE
 
@@ -83,6 +84,7 @@ void QgsPdalAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsPdalFixProjectionAlgorithm() );
   addAlgorithm( new QgsPdalInformationAlgorithm() );
   addAlgorithm( new QgsPdalReprojectAlgorithm() );
+  addAlgorithm( new QgsPdalThinAlgorithm() );
 }
 
 ///@endcond

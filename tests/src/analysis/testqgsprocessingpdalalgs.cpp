@@ -38,6 +38,7 @@ class TestQgsProcessingPdalAlgs: public QObject
     void fixProjection();
     void info();
     void reproject();
+    void thin();
 
   private:
     QString mPointCloudLayerPath;
@@ -187,6 +188,62 @@ void TestQgsProcessingPdalAlgs::fixProjection()
             << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath )
             << QStringLiteral( "--output=%1" ).arg( outputPointCloud )
             << QStringLiteral( "--assign-crs=%1" ).arg( QStringLiteral( "EPSG:4326" ) )
+            << QStringLiteral( "--threads=2" )
+          );
+}
+
+void TestQgsProcessingPdalAlgs::thin()
+{
+  QgsPdalAlgorithmBase *alg = const_cast<QgsPdalAlgorithmBase *>( static_cast< const QgsPdalAlgorithmBase * >( QgsApplication::processingRegistry()->algorithmById( QStringLiteral( "pdal:thin" ) ) ) );
+
+  std::unique_ptr< QgsProcessingContext > context = std::make_unique< QgsProcessingContext >();
+  context->setProject( QgsProject::instance() );
+
+  QgsProcessingFeedback feedback;
+
+  const QString outputPointCloud = QDir::tempPath() + "/reprojected.laz";
+
+  // default values
+  QVariantMap parameters;
+  parameters.insert( QStringLiteral( "INPUT" ), mPointCloudLayerPath );
+  parameters.insert( QStringLiteral( "OUTPUT" ), outputPointCloud );
+
+  QStringList args = alg->createArgumentLists( parameters, *context, &feedback );
+  QCOMPARE( args, QStringList() << QStringLiteral( "thin" )
+            << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath )
+            << QStringLiteral( "--output=%1" ).arg( outputPointCloud )
+            << QStringLiteral( "--mode=every-nth" )
+            << QStringLiteral( "--step-every-nth=20" )
+          );
+
+  // change step
+  parameters.insert( QStringLiteral( "STEP" ), 200 );
+  args = alg->createArgumentLists( parameters, *context, &feedback );
+  QCOMPARE( args, QStringList() << QStringLiteral( "thin" )
+            << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath )
+            << QStringLiteral( "--output=%1" ).arg( outputPointCloud )
+            << QStringLiteral( "--mode=every-nth" )
+            << QStringLiteral( "--step-every-nth=200" )
+          );
+
+  // change mode
+  parameters.insert( QStringLiteral( "MODE" ), 1 );
+  args = alg->createArgumentLists( parameters, *context, &feedback );
+  QCOMPARE( args, QStringList() << QStringLiteral( "thin" )
+            << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath )
+            << QStringLiteral( "--output=%1" ).arg( outputPointCloud )
+            << QStringLiteral( "--mode=sample" )
+            << QStringLiteral( "--step-sample=200" )
+          );
+
+  // set max threads to 2, a --threads argument should be added
+  QgsSettings().setValue( QStringLiteral( "/Processing/Configuration/MAX_THREADS" ), 2 );
+  args = alg->createArgumentLists( parameters, *context, &feedback );
+  QCOMPARE( args, QStringList() << QStringLiteral( "thin" )
+            << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath )
+            << QStringLiteral( "--output=%1" ).arg( outputPointCloud )
+            << QStringLiteral( "--mode=sample" )
+            << QStringLiteral( "--step-sample=200" )
             << QStringLiteral( "--threads=2" )
           );
 }
