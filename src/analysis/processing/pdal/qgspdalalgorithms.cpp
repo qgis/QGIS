@@ -27,6 +27,7 @@
 #include "qgsalgorithmpdalinformation.h"
 #include "qgsalgorithmpdalreproject.h"
 #include "qgsalgorithmpdalthin.h"
+#include "qgsalgorithmpdaltile.h"
 
 ///@cond PRIVATE
 
@@ -91,6 +92,7 @@ void QgsPdalAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsPdalInformationAlgorithm() );
   addAlgorithm( new QgsPdalReprojectAlgorithm() );
   addAlgorithm( new QgsPdalThinAlgorithm() );
+  addAlgorithm( new QgsPdalTileAlgorithm() );
 }
 
 ///@endcond
