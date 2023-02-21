@@ -355,6 +355,31 @@ class CORE_EXPORT Qgis
     Q_ENUM( SettingsType )
 
     /**
+     * Type of tree node
+     * \since QGIS 3.30
+     */
+    enum class SettingsTreeNodeType
+    {
+      Root, //!< Root Node
+      Standard, //!< Normal Node
+      NamedList, //! Named List Node
+    };
+    Q_ENUM( SettingsTreeNodeType )
+
+    /**
+     * Options for named list nodes
+     * \since QGIS 3.30
+     */
+    enum class SettingsTreeNodeOption : int
+    {
+      NamedListSelectedItemSetting, //!< Creates a setting to store which is the current item
+    };
+
+    Q_ENUM( SettingsTreeNodeOption )
+    Q_DECLARE_FLAGS( SettingsTreeNodeOptions, SettingsTreeNodeOption )
+    Q_FLAG( SettingsTreeNodeOptions )
+
+    /**
      * \brief SLD export options
      *
      * \since QGIS 3.30
@@ -3343,6 +3368,8 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::GpsInformationComponents )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::MapLayerActionTargets )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::MapLayerActionFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::RelationshipCapabilities )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SettingsTreeNodeOptions )
+
 
 // hack to workaround warnings when casting void pointers
 // retrieved from QLibrary::resolve to function pointers.

@@ -236,6 +236,21 @@ The development version
       Color
     };
 
+    enum class SettingsTreeNodeType
+    {
+      Root,
+      Standard,
+      NamedList,
+    };
+
+    enum class SettingsTreeNodeOption
+    {
+      NamedListSelectedItemSetting,
+    };
+
+    typedef QFlags<Qgis::SettingsTreeNodeOption> SettingsTreeNodeOptions;
+
+
     enum class SldExportOption
     {
       NoOptions,
@@ -1993,6 +2008,9 @@ QFlags<Qgis::MapLayerActionTarget> operator|(Qgis::MapLayerActionTarget f1, QFla
 QFlags<Qgis::MapLayerActionFlag> operator|(Qgis::MapLayerActionFlag f1, QFlags<Qgis::MapLayerActionFlag> f2);
 
 QFlags<Qgis::RelationshipCapability> operator|(Qgis::RelationshipCapability f1, QFlags<Qgis::RelationshipCapability> f2);
+
+QFlags<Qgis::SettingsTreeNodeOption> operator|(Qgis::SettingsTreeNodeOption f1, QFlags<Qgis::SettingsTreeNodeOption> f2);
+
 
 
 

@@ -58,24 +58,6 @@ class CORE_EXPORT QgsSettingsTreeNode
     Q_GADGET
 
   public:
-    //! Type of tree node
-    enum class Type
-    {
-      Root, //!< Root Node
-      Standard, //!< Normal Node
-      NamedList, //! Named List Node
-    };
-    Q_ENUM( Type )
-
-    //! Options for named list nodes
-    enum class Option
-    {
-      NamedListSelectedItemSetting, //!< Creates a setting to store which is the current item
-    };
-
-    Q_ENUM( Option )
-    Q_DECLARE_FLAGS( Options, Option )
-    Q_FLAG( Options )
 
     virtual ~QgsSettingsTreeNode();
 
@@ -96,11 +78,11 @@ class CORE_EXPORT QgsSettingsTreeNode
      * Creates a named list tree node.
      * This is useful to register groups of settings for several named items (for instance credentials for several named services)
      */
-    QgsSettingsTreeNamedListNode *createNamedListNode( const QString &key, const QgsSettingsTreeNode::Options &options = QgsSettingsTreeNode::Options() ) SIP_THROW( QgsSettingsException ) SIP_KEEPREFERENCE;
+    QgsSettingsTreeNamedListNode *createNamedListNode( const QString &key, const Qgis::SettingsTreeNodeOptions &options = Qgis::SettingsTreeNodeOptions() ) SIP_THROW( QgsSettingsException ) SIP_KEEPREFERENCE;
 
 
     //! Returns the type of node
-    Type type() const {return mType;}
+    Qgis::SettingsTreeNodeType type() const {return mType;}
 
     /**
      * Registers a child setting
@@ -150,7 +132,7 @@ class CORE_EXPORT QgsSettingsTreeNode
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    const QMetaEnum metaEnum = QMetaEnum::fromType<QgsSettingsTreeNode::Type>();
+    const QMetaEnum metaEnum = QMetaEnum::fromType<Qgis::SettingsTreeNodeType>();
 
     QString str = QStringLiteral( "<QgsSettingsTreeNode (%1): %2>" ).arg( metaEnum.valueToKey( static_cast<int>( sipCpp->type() ) ), sipCpp->key() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
@@ -161,7 +143,7 @@ class CORE_EXPORT QgsSettingsTreeNode
     //! Registers a child nodes
     void registerChildNode( QgsSettingsTreeNode *node );
 
-    Type mType = Type::Root;
+    Qgis::SettingsTreeNodeType mType = Qgis::SettingsTreeNodeType::Root;
 
 
   private:
@@ -255,7 +237,7 @@ class CORE_EXPORT QgsSettingsTreeNamedListNode : public QgsSettingsTreeNode
 
   protected:
     //! Init the nodes with the specific \a options
-    void initNamedList( const QgsSettingsTreeNode::Options &options );
+    void initNamedList( const Qgis::SettingsTreeNodeOptions &options );
 
   private:
     friend class QgsSettingsTreeNode;
@@ -271,11 +253,9 @@ class CORE_EXPORT QgsSettingsTreeNamedListNode : public QgsSettingsTreeNode
     //! Returns the key with named items placeholders filled with args
     QString completeKeyWithNamedItems( const QString &key, const QStringList &namedItems ) const;
 
-    QgsSettingsTreeNode::Options mOptions;
+    Qgis::SettingsTreeNodeOptions mOptions;
     const QgsSettingsEntryString *mSelectedItemSetting = nullptr;
     QString mItemsCompleteKey;
 };
-
-Q_DECLARE_OPERATORS_FOR_FLAGS( QgsSettingsTreeNode::Options )
 
 #endif  // QGSSETTINGSTREENODE_H

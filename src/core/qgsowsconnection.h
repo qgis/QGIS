@@ -46,7 +46,7 @@ template<class T> class QgsSettingsEntryEnumFlag;
 class CORE_EXPORT QgsXyzConnectionSettings SIP_SKIP
 {
   public:
-    static inline QgsSettingsTreeNamedListNode *sTreeXyzConnections = QgsSettingsTree::sTreeConnections->createNamedListNode( QStringLiteral( "xyz" ), QgsSettingsTreeNode::Option::NamedListSelectedItemSetting );
+    static inline QgsSettingsTreeNamedListNode *sTreeXyzConnections = QgsSettingsTree::sTreeConnections->createNamedListNode( QStringLiteral( "xyz" ), Qgis::SettingsTreeNodeOption::NamedListSelectedItemSetting );
 
     static const QgsSettingsEntryString *settingsUrl;
     static const QgsSettingsEntryVariantMap *settingsHeaders;
@@ -70,7 +70,7 @@ class CORE_EXPORT QgsXyzConnectionSettings SIP_SKIP
 class CORE_EXPORT QgsArcGisConnectionSettings SIP_SKIP
 {
   public:
-    static inline QgsSettingsTreeNamedListNode *sTreeConnectionArcgis = QgsSettingsTree::sTreeConnections->createNamedListNode( QStringLiteral( "arcgisfeatureserver" ), QgsSettingsTreeNamedListNode::Option::NamedListSelectedItemSetting );
+    static inline QgsSettingsTreeNamedListNode *sTreeConnectionArcgis = QgsSettingsTree::sTreeConnections->createNamedListNode( QStringLiteral( "arcgisfeatureserver" ), Qgis::SettingsTreeNodeOption::NamedListSelectedItemSetting );
 
     static const QgsSettingsEntryString *settingsUrl;
     static const QgsSettingsEntryString *settingsAuthcfg;
