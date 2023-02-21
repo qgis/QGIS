@@ -202,6 +202,13 @@ void QgsVectorElevationPropertiesWidget::apply()
 
   QgsVectorLayerElevationProperties *props = qgis::down_cast< QgsVectorLayerElevationProperties * >( mLayer->elevationProperties() );
 
+  const bool changed3DrelatedProperties = !qgsDoubleNear( mOffsetZSpinBox->value(), props->zOffset() )
+                                          || !qgsDoubleNear( mScaleZSpinBox->value(), props->zScale() )
+                                          || static_cast< Qgis::AltitudeClamping >( mComboClamping->currentData().toInt() ) != props->clamping()
+                                          || static_cast< Qgis::AltitudeBinding >( mComboBinding->currentData().toInt() ) != props->binding()
+                                          || mExtrusionGroupBox->isChecked() != props->extrusionEnabled()
+                                          || mExtrusionSpinBox->value() != props->extrusionHeight();
+
   props->setZOffset( mOffsetZSpinBox->value() );
   props->setZScale( mScaleZSpinBox->value() );
   props->setType( static_cast< Qgis::VectorProfileType >( mTypeComboBox->currentData().toInt() ) );
@@ -230,7 +237,10 @@ void QgsVectorElevationPropertiesWidget::apply()
 
   props->setDataDefinedProperties( mPropertyCollection );
 
-  mLayer->trigger3DUpdate();
+  if ( changed3DrelatedProperties )
+  {
+    mLayer->trigger3DUpdate();
+  }
 }
 
 void QgsVectorElevationPropertiesWidget::onChanged()
