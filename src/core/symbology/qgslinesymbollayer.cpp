@@ -3774,11 +3774,6 @@ double QgsLineburstSymbolLayer::estimateMaxBleed( const QgsRenderContext & ) con
   return ( mWidth / 2.0 ) + mOffset;
 }
 
-QColor QgsLineburstSymbolLayer::color() const
-{
-  return QColor();
-}
-
 QgsColorRamp *QgsLineburstSymbolLayer::colorRamp()
 {
   return mGradientRamp.get();
