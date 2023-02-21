@@ -425,6 +425,7 @@ if (WITH_PDAL)
 
     processing/pdal/qgsalgorithmpdalboundary.cpp
     processing/pdal/qgsalgorithmpdalconvertformat.cpp
+    processing/pdal/qgsalgorithmpdaldensity.cpp
     processing/pdal/qgsalgorithmpdalfixprojection.cpp
     processing/pdal/qgsalgorithmpdalinformation.cpp
     processing/pdal/qgsalgorithmpdalreproject.cpp
