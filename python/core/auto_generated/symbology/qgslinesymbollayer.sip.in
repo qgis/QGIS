@@ -1443,8 +1443,6 @@ serialized in the ``properties`` map (corresponding to the output from
 
     virtual double estimateMaxBleed( const QgsRenderContext &context ) const;
 
-    virtual QColor color() const;
-
 
     Qgis::GradientColorSource gradientColorType() const;
 %Docstring
