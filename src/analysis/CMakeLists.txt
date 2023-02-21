@@ -428,6 +428,7 @@ if (WITH_PDAL)
     processing/pdal/qgsalgorithmpdaldensity.cpp
     processing/pdal/qgsalgorithmpdalexportraster.cpp
     processing/pdal/qgsalgorithmpdalexportrastertin.cpp
+    processing/pdal/qgsalgorithmpdalexportvector.cpp
     processing/pdal/qgsalgorithmpdalfixprojection.cpp
     processing/pdal/qgsalgorithmpdalinformation.cpp
     processing/pdal/qgsalgorithmpdalreproject.cpp
