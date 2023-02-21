@@ -77,12 +77,12 @@ QgsVirtualLayerSourceSelect::QgsVirtualLayerSourceSelect( QWidget *parent, Qt::W
   buttonBox->addButton( pbn, QDialogButtonBox::ActionRole );
   connect( pbn, &QAbstractButton::clicked, this, &QgsVirtualLayerSourceSelect::testQuery );
 
-  mGeometryType->addItem( QgsIconUtils::iconForWkbType( QgsWkbTypes::Point ), tr( "Point" ), static_cast< long long >( QgsWkbTypes::Point ) );
-  mGeometryType->addItem( QgsIconUtils::iconForWkbType( QgsWkbTypes::LineString ), tr( "LineString" ), static_cast< long long >( QgsWkbTypes::LineString ) );
-  mGeometryType->addItem( QgsIconUtils::iconForWkbType( QgsWkbTypes::Polygon ), tr( "Polygon" ), static_cast< long long >( QgsWkbTypes::Polygon ) );
-  mGeometryType->addItem( QgsIconUtils::iconForWkbType( QgsWkbTypes::MultiPoint ), tr( "MultiPoint" ), static_cast< long long >( QgsWkbTypes::MultiPoint ) );
-  mGeometryType->addItem( QgsIconUtils::iconForWkbType( QgsWkbTypes::MultiLineString ), tr( "MultiLineString" ), static_cast< long long >( QgsWkbTypes::MultiLineString ) );
-  mGeometryType->addItem( QgsIconUtils::iconForWkbType( QgsWkbTypes::MultiPolygon ), tr( "MultiPolygon" ), static_cast< long long >( QgsWkbTypes::MultiPolygon ) );
+  mGeometryType->addItem( QgsIconUtils::iconForWkbType( Qgis::WkbType::Point ), tr( "Point" ), static_cast< long long >( Qgis::WkbType::Point ) );
+  mGeometryType->addItem( QgsIconUtils::iconForWkbType( Qgis::WkbType::LineString ), tr( "LineString" ), static_cast< long long >( Qgis::WkbType::LineString ) );
+  mGeometryType->addItem( QgsIconUtils::iconForWkbType( Qgis::WkbType::Polygon ), tr( "Polygon" ), static_cast< long long >( Qgis::WkbType::Polygon ) );
+  mGeometryType->addItem( QgsIconUtils::iconForWkbType( Qgis::WkbType::MultiPoint ), tr( "MultiPoint" ), static_cast< long long >( Qgis::WkbType::MultiPoint ) );
+  mGeometryType->addItem( QgsIconUtils::iconForWkbType( Qgis::WkbType::MultiLineString ), tr( "MultiLineString" ), static_cast< long long >( Qgis::WkbType::MultiLineString ) );
+  mGeometryType->addItem( QgsIconUtils::iconForWkbType( Qgis::WkbType::MultiPolygon ), tr( "MultiPolygon" ), static_cast< long long >( Qgis::WkbType::MultiPolygon ) );
 
   mQueryEdit->setLineNumbersVisible( true );
 
@@ -163,7 +163,7 @@ void QgsVirtualLayerSourceSelect::layerComboChanged( int idx )
     mUIDField->setText( def.uid() );
   }
 
-  if ( def.geometryWkbType() == QgsWkbTypes::NoGeometry )
+  if ( def.geometryWkbType() == Qgis::WkbType::NoGeometry )
   {
     mNoGeometryRadio->setChecked( true );
   }
@@ -224,11 +224,11 @@ QgsVirtualLayerDefinition QgsVirtualLayerSourceSelect::getVirtualLayerDef()
   }
   if ( mNoGeometryRadio->isChecked() )
   {
-    def.setGeometryWkbType( QgsWkbTypes::NoGeometry );
+    def.setGeometryWkbType( Qgis::WkbType::NoGeometry );
   }
   else if ( mGeometryRadio->isChecked() )
   {
-    const QgsWkbTypes::Type t = mGeometryType->currentIndex() > -1 ? static_cast<QgsWkbTypes::Type>( mGeometryType->currentData().toLongLong() ) : QgsWkbTypes::NoGeometry;
+    const Qgis::WkbType t = mGeometryType->currentIndex() > -1 ? static_cast<Qgis::WkbType>( mGeometryType->currentData().toLongLong() ) : Qgis::WkbType::NoGeometry;
     def.setGeometryWkbType( t );
     def.setGeometryField( mGeometryField->text() );
     def.setGeometrySrid( mSrid );

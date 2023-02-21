@@ -644,9 +644,9 @@ void TestQgsGeometryUtils::testMidPoint()
 {
   const QgsPoint p1( 4, 6 );
   QCOMPARE( QgsGeometryUtils::midpoint( p1, QgsPoint( 2, 2 ) ), QgsPoint( 3, 4 ) );
-  QCOMPARE( QgsGeometryUtils::midpoint( QgsPoint( 4, 6, 0 ), QgsPoint( QgsWkbTypes::PointZ, 2, 2, 2 ) ), QgsPoint( QgsWkbTypes::PointZ, 3, 4, 1 ) );
-  QCOMPARE( QgsGeometryUtils::midpoint( QgsPoint( QgsWkbTypes::PointM, 4, 6, 0, 0 ), QgsPoint( QgsWkbTypes::PointM, 2, 2, 0, 2 ) ), QgsPoint( QgsWkbTypes::PointM, 3, 4, 0, 1 ) );
-  QCOMPARE( QgsGeometryUtils::midpoint( QgsPoint( QgsWkbTypes::PointZM, 4, 6, 0, 0 ), QgsPoint( QgsWkbTypes::PointZM, 2, 2, 2, 2 ) ), QgsPoint( QgsWkbTypes::PointZM, 3, 4, 1, 1 ) );
+  QCOMPARE( QgsGeometryUtils::midpoint( QgsPoint( 4, 6, 0 ), QgsPoint( Qgis::WkbType::PointZ, 2, 2, 2 ) ), QgsPoint( Qgis::WkbType::PointZ, 3, 4, 1 ) );
+  QCOMPARE( QgsGeometryUtils::midpoint( QgsPoint( Qgis::WkbType::PointM, 4, 6, 0, 0 ), QgsPoint( Qgis::WkbType::PointM, 2, 2, 0, 2 ) ), QgsPoint( Qgis::WkbType::PointM, 3, 4, 0, 1 ) );
+  QCOMPARE( QgsGeometryUtils::midpoint( QgsPoint( Qgis::WkbType::PointZM, 4, 6, 0, 0 ), QgsPoint( Qgis::WkbType::PointZM, 2, 2, 2, 2 ) ), QgsPoint( Qgis::WkbType::PointZM, 3, 4, 1, 1 ) );
 }
 
 void TestQgsGeometryUtils::testGradient()
@@ -1213,20 +1213,20 @@ void TestQgsGeometryUtils::testInterpolatePointOnLineQgsPoint()
   QCOMPARE( p.x(), 10.0 );
   QCOMPARE( p.y(), 6.0 );
   // with m
-  p = QgsGeometryUtils::interpolatePointOnLine( QgsPoint( 0, 0, 0, 5, QgsWkbTypes::PointM ), QgsPoint( -10, -6, 0, 10, QgsWkbTypes::PointM ), 0.4 );
-  QCOMPARE( p.wkbType(), QgsWkbTypes::PointM );
+  p = QgsGeometryUtils::interpolatePointOnLine( QgsPoint( 0, 0, 0, 5, Qgis::WkbType::PointM ), QgsPoint( -10, -6, 0, 10, Qgis::WkbType::PointM ), 0.4 );
+  QCOMPARE( p.wkbType(), Qgis::WkbType::PointM );
   QCOMPARE( p.x(), -4.0 );
   QCOMPARE( p.y(), -2.4 );
   QCOMPARE( p.m(), 7.0 );
   // with z
-  p = QgsGeometryUtils::interpolatePointOnLine( QgsPoint( 0, 0, 5, 0, QgsWkbTypes::PointZ ), QgsPoint( -10, -6, 10, 0, QgsWkbTypes::PointZ ), 0.4 );
-  QCOMPARE( p.wkbType(), QgsWkbTypes::PointZ );
+  p = QgsGeometryUtils::interpolatePointOnLine( QgsPoint( 0, 0, 5, 0, Qgis::WkbType::PointZ ), QgsPoint( -10, -6, 10, 0, Qgis::WkbType::PointZ ), 0.4 );
+  QCOMPARE( p.wkbType(), Qgis::WkbType::PointZ );
   QCOMPARE( p.x(), -4.0 );
   QCOMPARE( p.y(), -2.4 );
   QCOMPARE( p.z(), 7.0 );
   // with zm
-  p = QgsGeometryUtils::interpolatePointOnLine( QgsPoint( 0, 0, 5, 10, QgsWkbTypes::PointZM ), QgsPoint( -10, -6, 10, 5, QgsWkbTypes::PointZM ), 0.4 );
-  QCOMPARE( p.wkbType(), QgsWkbTypes::PointZM );
+  p = QgsGeometryUtils::interpolatePointOnLine( QgsPoint( 0, 0, 5, 10, Qgis::WkbType::PointZM ), QgsPoint( -10, -6, 10, 5, Qgis::WkbType::PointZM ), 0.4 );
+  QCOMPARE( p.wkbType(), Qgis::WkbType::PointZM );
   QCOMPARE( p.x(), -4.0 );
   QCOMPARE( p.y(), -2.4 );
   QCOMPARE( p.z(), 7.0 );
@@ -1710,27 +1710,27 @@ void TestQgsGeometryUtils::transferFirstZValueToPoint()
   QCOMPARE( ret, false );
 
   // Type: PointM
-  ret = QgsGeometryUtils::transferFirstZValueToPoint( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointM, 0, 2, 0, 4 ), point );
+  ret = QgsGeometryUtils::transferFirstZValueToPoint( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointM, 0, 2, 0, 4 ), point );
   QCOMPARE( ret, false );
 
   // Type: PointZ
   ret = QgsGeometryUtils::transferFirstZValueToPoint( QgsPointSequence() << QgsPoint( 0, 2, 4 ), point );
   QCOMPARE( ret, true );
-  QCOMPARE( point.wkbType(), QgsWkbTypes::PointZ );
+  QCOMPARE( point.wkbType(), Qgis::WkbType::PointZ );
   QCOMPARE( point.z(), 4.0 );
 
   // Type: PointZ
   ret = QgsGeometryUtils::transferFirstZValueToPoint( QgsPointSequence() << QgsPoint( 0, 2, 5 ), point );
   QCOMPARE( ret, true );
-  QCOMPARE( point.wkbType(), QgsWkbTypes::PointZ );
+  QCOMPARE( point.wkbType(), Qgis::WkbType::PointZ );
   QCOMPARE( point.z(), 5.0 ); // now point.z == 5.
 
   // Add Z to a PointM
-  QgsPoint pointM( QgsWkbTypes::PointM, 1, 2, 0, 3 );
+  QgsPoint pointM( Qgis::WkbType::PointM, 1, 2, 0, 3 );
   // Type: PointZ
   ret = QgsGeometryUtils::transferFirstZValueToPoint( QgsPointSequence() << QgsPoint( 0, 2, 4 ), pointM );
   QCOMPARE( ret, true );
-  QCOMPARE( pointM.wkbType(), QgsWkbTypes::PointZM );
+  QCOMPARE( pointM.wkbType(), Qgis::WkbType::PointZM );
   QCOMPARE( pointM.z(), 4.0 );
 }
 
@@ -1747,23 +1747,23 @@ void TestQgsGeometryUtils::transferFirstMValueToPoint()
   QCOMPARE( ret, false );
 
   // Type: PointM
-  ret = QgsGeometryUtils::transferFirstMValueToPoint( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointM, 0, 2, 0, 4 ), point );
+  ret = QgsGeometryUtils::transferFirstMValueToPoint( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointM, 0, 2, 0, 4 ), point );
   QCOMPARE( ret, true );
-  QCOMPARE( point.wkbType(), QgsWkbTypes::PointM );
+  QCOMPARE( point.wkbType(), Qgis::WkbType::PointM );
   QCOMPARE( point.m(), 4.0 );
 
   // Type: PointM
-  ret = QgsGeometryUtils::transferFirstMValueToPoint( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointM, 0, 2, 0, 5 ), point );
+  ret = QgsGeometryUtils::transferFirstMValueToPoint( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointM, 0, 2, 0, 5 ), point );
   QCOMPARE( ret, true );
-  QCOMPARE( point.wkbType(), QgsWkbTypes::PointM );
+  QCOMPARE( point.wkbType(), Qgis::WkbType::PointM );
   QCOMPARE( point.m(), 5.0 ); // now point.m == 5
 
   // Add M to a PointZ
   QgsPoint pointZ( 1, 2, 4 );
   // Type: PointM
-  ret = QgsGeometryUtils::transferFirstMValueToPoint( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointM, 0, 2, 0, 5 ), pointZ );
+  ret = QgsGeometryUtils::transferFirstMValueToPoint( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointM, 0, 2, 0, 5 ), pointZ );
   QCOMPARE( ret, true );
-  QCOMPARE( pointZ.wkbType(), QgsWkbTypes::PointZM );
+  QCOMPARE( pointZ.wkbType(), Qgis::WkbType::PointZM );
   QCOMPARE( pointZ.m(), 5.0 );
 }
 
@@ -1790,78 +1790,78 @@ void TestQgsGeometryUtils::transferFirstZOrMValueToPoint_qgspointsequence()
   // iterator
   ret = QgsGeometryUtils::transferFirstZOrMValueToPoint( points, point );
   QCOMPARE( ret, true );
-  QCOMPARE( point.wkbType(), QgsWkbTypes::PointZ );
+  QCOMPARE( point.wkbType(), Qgis::WkbType::PointZ );
   QCOMPARE( point.z(), 4.0 );
   // QgsPointSequence
   point = QgsPoint( 1, 2 );
   ret = QgsGeometryUtils::transferFirstZOrMValueToPoint( points.constBegin(), points.constEnd(), point );
   QCOMPARE( ret, true );
-  QCOMPARE( point.wkbType(), QgsWkbTypes::PointZ );
+  QCOMPARE( point.wkbType(), Qgis::WkbType::PointZ );
   QCOMPARE( point.z(), 4.0 );
 
   // Type: PointM
   point = QgsPoint( 1, 2 );
   points.clear();
-  points << QgsPoint( QgsWkbTypes::PointM, 0, 2, 0, 4 );
+  points << QgsPoint( Qgis::WkbType::PointM, 0, 2, 0, 4 );
   // iterator
   ret = QgsGeometryUtils::transferFirstZOrMValueToPoint( points, point );
   QCOMPARE( ret, true );
-  QCOMPARE( point.wkbType(), QgsWkbTypes::PointM );
+  QCOMPARE( point.wkbType(), Qgis::WkbType::PointM );
   QCOMPARE( point.m(), 4.0 );
   // QgsPointSequence
   point = QgsPoint( 1, 2 );
   ret = QgsGeometryUtils::transferFirstZOrMValueToPoint( points.constBegin(), points.constEnd(), point );
   QCOMPARE( ret, true );
-  QCOMPARE( point.wkbType(), QgsWkbTypes::PointM );
+  QCOMPARE( point.wkbType(), Qgis::WkbType::PointM );
   QCOMPARE( point.m(), 4.0 );
 
   // Type: PointM
   points.clear();
-  points << QgsPoint( QgsWkbTypes::PointM, 0, 2, 0, 5 );
+  points << QgsPoint( Qgis::WkbType::PointM, 0, 2, 0, 5 );
   // iterator
   ret = QgsGeometryUtils::transferFirstZOrMValueToPoint( points, point );
   QCOMPARE( ret, true );
-  QCOMPARE( point.wkbType(), QgsWkbTypes::PointM );
+  QCOMPARE( point.wkbType(), Qgis::WkbType::PointM );
   QCOMPARE( point.m(), 5.0 ); // now point.m == 5
   // QgsPointSequence
   point = QgsPoint( 1, 2 );
   ret = QgsGeometryUtils::transferFirstZOrMValueToPoint( points.constBegin(), points.constEnd(), point );
   QCOMPARE( ret, true );
-  QCOMPARE( point.wkbType(), QgsWkbTypes::PointM );
+  QCOMPARE( point.wkbType(), Qgis::WkbType::PointM );
   QCOMPARE( point.m(), 5.0 ); // now point.m == 5
 
   // Add M to a PointZ
   point = QgsPoint( 1, 2, 4 );
   // Type: PointM
   points.clear();
-  points << QgsPoint( QgsWkbTypes::PointM, 0, 2, 0, 5 );
+  points << QgsPoint( Qgis::WkbType::PointM, 0, 2, 0, 5 );
   // iterator
   ret = QgsGeometryUtils::transferFirstZOrMValueToPoint( points, point );
   QCOMPARE( ret, true );
-  QCOMPARE( point.wkbType(), QgsWkbTypes::PointZM );
+  QCOMPARE( point.wkbType(), Qgis::WkbType::PointZM );
   QCOMPARE( point.m(), 5.0 );
   // QgsPointSequence
   point = QgsPoint( 1, 2, 4 );
   ret = QgsGeometryUtils::transferFirstZOrMValueToPoint( points.constBegin(), points.constEnd(), point );
   QCOMPARE( ret, true );
-  QCOMPARE( point.wkbType(), QgsWkbTypes::PointZM );
+  QCOMPARE( point.wkbType(), Qgis::WkbType::PointZM );
   QCOMPARE( point.m(), 5.0 );
 
   // Add Z from point1 and M from point2
   point = QgsPoint( 1, 2 );
   points.clear();
-  points << QgsPoint( 7, 8, 9 ) << QgsPoint( QgsWkbTypes::PointM, 0, 2, 0, 5 );
+  points << QgsPoint( 7, 8, 9 ) << QgsPoint( Qgis::WkbType::PointM, 0, 2, 0, 5 );
   // iterator
   ret = QgsGeometryUtils::transferFirstZOrMValueToPoint( points, point );
   QCOMPARE( ret, true );
-  QCOMPARE( point.wkbType(), QgsWkbTypes::PointZM );
+  QCOMPARE( point.wkbType(), Qgis::WkbType::PointZM );
   QCOMPARE( point.z(), 9.0 );
   QCOMPARE( point.m(), 5.0 );
   // QgsPointSequence
   point = QgsPoint( 1, 2 );
   ret = QgsGeometryUtils::transferFirstZOrMValueToPoint( points.constBegin(), points.constEnd(), point );
   QCOMPARE( ret, true );
-  QCOMPARE( point.wkbType(), QgsWkbTypes::PointZM );
+  QCOMPARE( point.wkbType(), Qgis::WkbType::PointZM );
   QCOMPARE( point.z(), 9.0 );
   QCOMPARE( point.m(), 5.0 );
 
@@ -1943,14 +1943,14 @@ void TestQgsGeometryUtils::transferFirstZOrMValueToPoint_qgsgeometry()
   // point is M and linestring ZM
   geom = QgsGeometry::fromWkt( "LineStringZM( 0 2 3 5, 2 3 4 6)" );
   // iterator
-  point = QgsPoint( QgsWkbTypes::PointM, 1, 2, 0, 4 );
+  point = QgsPoint( Qgis::WkbType::PointM, 1, 2, 0, 4 );
   ret = QgsGeometryUtils::transferFirstZOrMValueToPoint( geom.vertices_begin(), geom.vertices_end(), point );
   QCOMPARE( ret, true );
   QCOMPARE( point.z(), 3.0 );
   QCOMPARE( point.m(), 5.0 );
 
   // QgsGeometry
-  point = QgsPoint( QgsWkbTypes::PointM, 1, 2, 0, 4 );
+  point = QgsPoint( Qgis::WkbType::PointM, 1, 2, 0, 4 );
   ret = QgsGeometryUtils::transferFirstZOrMValueToPoint( geom, point );
   QCOMPARE( ret, true );
   QCOMPARE( point.z(), 3.0 );

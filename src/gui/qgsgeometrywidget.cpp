@@ -113,12 +113,12 @@ QgsReferencedGeometry QgsGeometryWidget::geometryValue() const
   return mGeometry;
 }
 
-void QgsGeometryWidget::setAcceptedWkbTypes( const QList<QgsWkbTypes::Type> &types )
+void QgsGeometryWidget::setAcceptedWkbTypes( const QList<Qgis::WkbType> &types )
 {
   mAcceptedTypes = types;
 }
 
-QList<QgsWkbTypes::Type> QgsGeometryWidget::acceptedWkbTypes() const
+QList< Qgis::WkbType > QgsGeometryWidget::acceptedWkbTypes() const
 {
   return mAcceptedTypes;
 }
@@ -223,7 +223,7 @@ void QgsGeometryWidget::fetchGeomFromClipboard()
   }
 }
 
-bool QgsGeometryWidget::typeIsAcceptable( QgsWkbTypes::Type type ) const
+bool QgsGeometryWidget::typeIsAcceptable( Qgis::WkbType type ) const
 {
   if ( mAcceptedTypes.isEmpty() )
   {

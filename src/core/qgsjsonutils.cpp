@@ -126,7 +126,7 @@ json QgsJsonExporter::exportFeatureToJsonObject( const QgsFeature &feature, cons
     }
     QgsRectangle box = geom.boundingBox();
 
-    if ( QgsWkbTypes::flatType( geom.wkbType() ) != QgsWkbTypes::Point )
+    if ( QgsWkbTypes::flatType( geom.wkbType() ) != Qgis::WkbType::Point )
     {
       featureJson[ "bbox" ] =
       {

@@ -15,7 +15,6 @@
 
 #include "qgsrastercontourrenderer.h"
 
-#include "qgslinesymbollayer.h"
 #include "qgsreadwritecontext.h"
 #include "qgssymbollayerutils.h"
 #include "qgslayertreemodellegendnode.h"
@@ -26,7 +25,7 @@
 QgsRasterContourRenderer::QgsRasterContourRenderer( QgsRasterInterface *input )
   : QgsRasterRenderer( input, QStringLiteral( "contour" ) )
 {
-  mContourSymbol.reset( static_cast<QgsLineSymbol *>( QgsLineSymbol::defaultSymbol( QgsWkbTypes::LineGeometry ) ) );
+  mContourSymbol.reset( static_cast<QgsLineSymbol *>( QgsLineSymbol::defaultSymbol( Qgis::GeometryType::Line ) ) );
 }
 
 QgsRasterContourRenderer::~QgsRasterContourRenderer() = default;

@@ -73,7 +73,7 @@ QgsHeatmapRendererWidget::QgsHeatmapRendererWidget( QgsVectorLayer *layer, QgsSt
     return;
   }
   // the renderer only applies to point vector layers
-  if ( layer->geometryType() != QgsWkbTypes::PointGeometry )
+  if ( layer->geometryType() != Qgis::GeometryType::Point )
   {
     //setup blank dialog
     mRenderer = nullptr;

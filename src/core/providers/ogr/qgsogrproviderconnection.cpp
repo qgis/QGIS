@@ -263,7 +263,7 @@ QgsAbstractDatabaseProviderConnection::TableProperty QgsOgrProviderConnection::t
   }
   geomType.wkbType = QgsOgrUtils::ogrGeometryTypeToQgsWkbType( fdef.GetGeomType() );
 
-  if ( geomType.wkbType != QgsWkbTypes::NoGeometry )
+  if ( geomType.wkbType != Qgis::WkbType::NoGeometry )
   {
     property.setGeometryColumnTypes( { geomType } );
     property.setFlag( TableFlag::Vector );
@@ -294,7 +294,7 @@ QgsVectorLayer *QgsOgrProviderConnection::createSqlVectorLayer( const QgsAbstrac
 void QgsOgrProviderConnection::createVectorTable( const QString &schema,
     const QString &name,
     const QgsFields &fields,
-    QgsWkbTypes::Type wkbType,
+    Qgis::WkbType wkbType,
     const QgsCoordinateReferenceSystem &srs,
     bool overwrite,
     const QMap<QString, QVariant> *options ) const

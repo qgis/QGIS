@@ -285,7 +285,7 @@ QVector<QVariantMap> QgsPointCloudRenderer::identify( QgsPointCloudLayer *layer,
   const double maxErrorInLayerCoordinates = maxErrorInMapCoordinates * rootErrorInLayerCoordinates / rootErrorInMapCoordinates;
 
   QgsGeometry selectionGeometry = geometry;
-  if ( geometry.type() == QgsWkbTypes::PointGeometry )
+  if ( geometry.type() == Qgis::GeometryType::Point )
   {
     const double x = geometry.asPoint().x();
     const double y = geometry.asPoint().y();

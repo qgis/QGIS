@@ -196,7 +196,7 @@ QVariantMap QgsRandomPointsOnLinesAlgorithm::processAlgorithm( const QVariantMap
 
   QString ldest;
   std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, OUTPUT,
-                                          context, ldest, fields, QgsWkbTypes::Point, lineSource->sourceCrs() ) );
+                                          context, ldest, fields, Qgis::WkbType::Point, lineSource->sourceCrs() ) );
   if ( !sink )
     throw QgsProcessingException( invalidSinkError( parameters, OUTPUT ) );
 

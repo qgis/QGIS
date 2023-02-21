@@ -412,7 +412,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
     /**
      * Creates a symbol layer list from a DOM \a element.
      */
-    static bool createSymbolLayerListFromSld( QDomElement &element, QgsWkbTypes::GeometryType geomType, QList<QgsSymbolLayer *> &layers );
+    static bool createSymbolLayerListFromSld( QDomElement &element, Qgis::GeometryType geomType, QList<QgsSymbolLayer *> &layers );
 
     static QgsSymbolLayer *createFillLayerFromSld( QDomElement &element ) SIP_FACTORY;
     static QgsSymbolLayer *createLineLayerFromSld( QDomElement &element ) SIP_FACTORY;
@@ -958,6 +958,6 @@ class CORE_EXPORT QgsSymbolLayerUtils
 class QPolygonF;
 
 //! calculate geometry shifted by a specified distance
-QList<QPolygonF> offsetLine( QPolygonF polyline, double dist, QgsWkbTypes::GeometryType geometryType ) SIP_SKIP;
+QList<QPolygonF> offsetLine( QPolygonF polyline, double dist, Qgis::GeometryType geometryType ) SIP_SKIP;
 
 #endif

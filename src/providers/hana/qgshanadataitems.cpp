@@ -175,7 +175,7 @@ bool QgsHanaConnectionItem::handleDrop( const QMimeData *data, const QString &to
         if ( geomColumn.isEmpty() )
         {
           bool fieldsInUpperCase = QgsHanaUtils::countFieldsWithFirstLetterInUppercase( srcLayer->fields() ) > srcLayer->fields().size() / 2;
-          geomColumn = ( srcLayer->geometryType() != QgsWkbTypes::NullGeometry ) ? ( fieldsInUpperCase ? QStringLiteral( "GEOM" ) : QStringLiteral( "geom" ) ) : nullptr;
+          geomColumn = ( srcLayer->geometryType() != Qgis::GeometryType::Null ) ? ( fieldsInUpperCase ? QStringLiteral( "GEOM" ) : QStringLiteral( "geom" ) ) : nullptr;
         }
 
         uri.setDataSource( toSchema, u.name, geomColumn, QString(), dsUri.keyColumn() );
@@ -290,7 +290,7 @@ QString QgsHanaLayerItem::createUri() const
   uri.setDataSource( mLayerProperty.schemaName, mLayerProperty.tableName,
                      mLayerProperty.geometryColName, mLayerProperty.sql, pkColumns.join( ',' ) );
   uri.setWkbType( mLayerProperty.type );
-  if ( uri.wkbType() != QgsWkbTypes::NoGeometry )
+  if ( uri.wkbType() != Qgis::WkbType::NoGeometry )
     uri.setSrid( QString::number( mLayerProperty.srid ) );
   QgsDebugMsgLevel( QStringLiteral( "layer uri: %1" ).arg( uri.uri( false ) ), 4 );
   return uri.uri( false );
@@ -374,16 +374,16 @@ QgsHanaLayerItem *QgsHanaSchemaItem::createLayer( const QgsHanaLayerProperty &la
     if ( !layerProperty.tableComment.isEmpty() )
       tip = layerProperty.tableComment + '\n' + tip;
 
-    QgsWkbTypes::GeometryType geomType = QgsWkbTypes::geometryType( layerProperty.type );
+    Qgis::GeometryType geomType = QgsWkbTypes::geometryType( layerProperty.type );
     switch ( geomType )
     {
-      case QgsWkbTypes::PointGeometry:
+      case Qgis::GeometryType::Point:
         layerType = Qgis::BrowserLayerType::Point;
         break;
-      case QgsWkbTypes::LineGeometry:
+      case Qgis::GeometryType::Line:
         layerType = Qgis::BrowserLayerType::Line;
         break;
-      case QgsWkbTypes::PolygonGeometry:
+      case Qgis::GeometryType::Polygon:
         layerType = Qgis::BrowserLayerType::Polygon;
         break;
       default:

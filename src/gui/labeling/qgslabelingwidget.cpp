@@ -20,7 +20,6 @@
 
 #include "qgslabelengineconfigdialog.h"
 #include "qgslabelinggui.h"
-#include "qgsreadwritecontext.h"
 #include "qgsrulebasedlabelingwidget.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerlabeling.h"
@@ -247,7 +246,7 @@ void QgsLabelingWidget::labelModeChanged( int index )
         {
           QgsLabelObstacleSettingsWidget *obstacleWidget = new QgsLabelObstacleSettingsWidget( this, mLayer );
           obstacleWidget->setContext( context );
-          obstacleWidget->setGeometryType( mLayer ? mLayer->geometryType() : QgsWkbTypes::UnknownGeometry );
+          obstacleWidget->setGeometryType( mLayer ? mLayer->geometryType() : Qgis::GeometryType::Unknown );
           obstacleWidget->setDockMode( dockMode() );
           obstacleWidget->setSettings( mSimpleSettings->obstacleSettings() );
           obstacleWidget->setDataDefinedProperties( mSimpleSettings->dataDefinedProperties() );

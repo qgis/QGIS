@@ -266,7 +266,7 @@ QgsMapToolEditMeshFrame::QgsMapToolEditMeshFrame( QgsMapCanvas *canvas )
       activateWithState( SelectingByPolygon );
     }
     else
-      mSelectionBand->reset( QgsWkbTypes::PolygonGeometry );
+      mSelectionBand->reset( Qgis::GeometryType::Polygon );
   } );
 
   connect( mActionSelectByExpression, &QAction::triggered, this, &QgsMapToolEditMeshFrame::showSelectByExpressionDialog );
@@ -310,7 +310,7 @@ QgsMapToolEditMeshFrame::QgsMapToolEditMeshFrame( QgsMapCanvas *canvas )
   connect( mActionForceByLines, &QAction::toggled, this, [this]( bool checked )
   {
     if ( mIsInitialized )
-      mForceByLineRubberBand->reset( QgsWkbTypes::LineGeometry );
+      mForceByLineRubberBand->reset( Qgis::GeometryType::Line );
     mForcingLineZValue.clear();
     if ( checked )
     {
@@ -431,7 +431,7 @@ QAction *QgsMapToolEditMeshFrame::reindexAction() const
 void QgsMapToolEditMeshFrame::initialize()
 {
   if ( !mFaceRubberBand )
-    mFaceRubberBand = createRubberBand( QgsWkbTypes::PolygonGeometry );
+    mFaceRubberBand = createRubberBand( Qgis::GeometryType::Polygon );
   mFaceRubberBand->setVisible( false );
   mFaceRubberBand->setZValue( 5 );
 
@@ -465,7 +465,7 @@ void QgsMapToolEditMeshFrame::initialize()
   mEdgeBand->setVisible( false );
 
   if ( !mNewFaceBand )
-    mNewFaceBand = createRubberBand( QgsWkbTypes::PolygonGeometry );
+    mNewFaceBand = createRubberBand( Qgis::GeometryType::Polygon );
   mInvalidFaceColor = QColor( 255, 0, 0, mNewFaceBand->fillColor().alpha() ); //override color and keep only the transparency
   mValidFaceColor = QColor( 0, 255, 0, mNewFaceBand->fillColor().alpha() ); //override color and keep only the transparency
   mNewFaceBand->setFillColor( mInvalidFaceColor );
@@ -473,13 +473,13 @@ void QgsMapToolEditMeshFrame::initialize()
   mNewFaceBand->setZValue( 10 );
 
   if ( !mSelectionBand )
-    mSelectionBand = new QgsRubberBand( mCanvas, QgsWkbTypes::PolygonGeometry );
+    mSelectionBand = new QgsRubberBand( mCanvas, Qgis::GeometryType::Polygon );
   mSelectionBand->setFillColor( QColor( 254, 178, 76, 63 ) );
   mSelectionBand->setStrokeColor( QColor( 254, 58, 29, 100 ) );
   mSelectionBand->setZValue( 10 );
 
   if ( !mSelectedFacesRubberband )
-    mSelectedFacesRubberband = new QgsRubberBand( mCanvas, QgsWkbTypes::PolygonGeometry );
+    mSelectedFacesRubberband = new QgsRubberBand( mCanvas, Qgis::GeometryType::Polygon );
   mSelectedFacesRubberband->setZValue( 1 );
 
   if ( !mNewFaceMarker )
@@ -511,14 +511,14 @@ void QgsMapToolEditMeshFrame::initialize()
   mSelectEdgeMarker->setZValue( 10 );
 
   if ( !mMovingEdgesRubberband )
-    mMovingEdgesRubberband = createRubberBand( QgsWkbTypes::LineGeometry );
+    mMovingEdgesRubberband = createRubberBand( Qgis::GeometryType::Line );
 
   if ( !mMovingFacesRubberband )
-    mMovingFacesRubberband = createRubberBand( QgsWkbTypes::PolygonGeometry );
+    mMovingFacesRubberband = createRubberBand( Qgis::GeometryType::Polygon );
 
   if ( !mMovingFreeVertexRubberband )
   {
-    mMovingFreeVertexRubberband = createRubberBand( QgsWkbTypes::PointGeometry );
+    mMovingFreeVertexRubberband = createRubberBand( Qgis::GeometryType::Point );
     mMovingFreeVertexRubberband->setIcon( QgsRubberBand::ICON_X );
     mMovingFreeVertexRubberband->setIconSize( QgsGuiUtils::scaleIconSize( 10 ) );
     mMovingFreeVertexRubberband->setWidth( QgsGuiUtils::scaleIconSize( 3 ) );
@@ -544,7 +544,7 @@ void QgsMapToolEditMeshFrame::initialize()
   mMergeFaceMarker->setZValue( 10 );
 
   if ( !mForceByLineRubberBand )
-    mForceByLineRubberBand = createRubberBand( QgsWkbTypes::LineGeometry );
+    mForceByLineRubberBand = createRubberBand( Qgis::GeometryType::Line );
 
   connect( mCanvas, &QgsMapCanvas::currentLayerChanged, this, &QgsMapToolEditMeshFrame::setCurrentLayer );
 
@@ -703,7 +703,7 @@ QgsMapTool::Flags QgsMapToolEditMeshFrame::flags() const
 void QgsMapToolEditMeshFrame::forceByLineBySelectedFeature( QgsMapMouseEvent *e )
 {
   const QList<QgsMapToolIdentify::IdentifyResult> &results =
-    QgsIdentifyMenu::findFeaturesOnCanvas( e, mCanvas, QList<QgsWkbTypes::GeometryType>() << QgsWkbTypes::PolygonGeometry << QgsWkbTypes::LineGeometry );
+    QgsIdentifyMenu::findFeaturesOnCanvas( e, mCanvas, QList<Qgis::GeometryType>() << Qgis::GeometryType::Polygon << Qgis::GeometryType::Line );
 
   QgsIdentifyMenu *menu = new QgsIdentifyMenu( mCanvas );
   menu->setExecWithSingleResult( true );
@@ -751,7 +751,7 @@ void QgsMapToolEditMeshFrame::cadCanvasPressEvent( QgsMapMouseEvent *e )
     case MovingSelection:
     case ForceByLines:
       if ( e->button() == Qt::LeftButton )
-        mSelectionBand->reset( QgsWkbTypes::PolygonGeometry );
+        mSelectionBand->reset( Qgis::GeometryType::Polygon );
       break;
     case SelectingByPolygon:
       if ( mSelectionHandler )
@@ -768,7 +768,7 @@ void QgsMapToolEditMeshFrame::cadCanvasPressEvent( QgsMapMouseEvent *e )
           // The workaround is to check if a feature exist under the mouse before sending the event to the selection handler.
           // This is not ideal because that leads to a double search but no better idea for now to allow the editing context menu with selecting by polygon
 
-          bool hasSelectableFeature = ! QgsIdentifyMenu::findFeaturesOnCanvas( e, mCanvas, QList<QgsWkbTypes::GeometryType>() << QgsWkbTypes::PolygonGeometry ).isEmpty();
+          bool hasSelectableFeature = ! QgsIdentifyMenu::findFeaturesOnCanvas( e, mCanvas, QList<Qgis::GeometryType>() << Qgis::GeometryType::Polygon ).isEmpty();
 
           if ( hasSelectableFeature || mIsSelectingPolygonInProgress )
             mSelectionHandler->canvasPressEvent( e );
@@ -902,7 +902,7 @@ void QgsMapToolEditMeshFrame::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
           mCurrentState = AddingNewFace;
           mNewFaceMarker->setVisible( false );
           mNewFaceBand->setVisible( true );
-          mNewFaceBand->reset( QgsWkbTypes::PolygonGeometry );
+          mNewFaceBand->reset( Qgis::GeometryType::Polygon );
           addVertexToFaceCanditate( mCurrentVertexIndex );
           const QgsPointXY &currentPoint = mapVertexXY( mCurrentVertexIndex );
           cadDockWidget()->setPoints( QList<QgsPointXY>() << currentPoint << currentPoint );
@@ -972,7 +972,7 @@ void QgsMapToolEditMeshFrame::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
         if ( testNewVertexInFaceCanditate( false, -1, QgsPointXY() ) )
         {
           mCurrentEditor->addFaceWithNewVertices( mNewFaceCandidate, mNewVerticesForNewFaceCandidate );
-          mNewFaceBand->reset( QgsWkbTypes::PolygonGeometry );
+          mNewFaceBand->reset( Qgis::GeometryType::Polygon );
           mNewFaceCandidate.clear();
           mNewVerticesForNewFaceCandidate.clear();
           mCurrentState = Digitizing;
@@ -983,7 +983,7 @@ void QgsMapToolEditMeshFrame::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
     {
       const QgsGeometry selectionGeom = mSelectionBand->asGeometry();
       selectByGeometry( selectionGeom, e->modifiers() );
-      mSelectionBand->reset( QgsWkbTypes::PolygonGeometry );
+      mSelectionBand->reset( Qgis::GeometryType::Polygon );
       mCurrentState = Digitizing;
     }
     break;
@@ -1053,9 +1053,9 @@ void QgsMapToolEditMeshFrame::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 void QgsMapToolEditMeshFrame::moveSelection( const QgsPointXY &destinationPoint )
 {
   const QgsVector &translation = destinationPoint - mStartMovingPoint;
-  mMovingEdgesRubberband->reset( QgsWkbTypes::LineGeometry );
-  mMovingFacesRubberband->reset( QgsWkbTypes::PolygonGeometry );
-  mMovingFreeVertexRubberband->reset( QgsWkbTypes::PointGeometry );
+  mMovingEdgesRubberband->reset( Qgis::GeometryType::Line );
+  mMovingFacesRubberband->reset( Qgis::GeometryType::Polygon );
+  mMovingFreeVertexRubberband->reset( Qgis::GeometryType::Point );
   QgsGeometry movingFacesGeometry = mSelectedFacesRubberband->asGeometry();
   movingFacesGeometry.translate( translation.x(), translation.y() );
   mMovingFacesRubberband->setToGeometry( movingFacesGeometry );
@@ -1229,7 +1229,7 @@ void QgsMapToolEditMeshFrame::keyPressEvent( QKeyEvent *e )
 
       if ( e->key() == Qt::Key_Escape )
       {
-        mNewFaceBand->reset( QgsWkbTypes::PolygonGeometry );
+        mNewFaceBand->reset( Qgis::GeometryType::Polygon );
         mNewFaceCandidate.clear();
         mNewVerticesForNewFaceCandidate.clear();
         mCurrentState = Digitizing;
@@ -1241,9 +1241,9 @@ void QgsMapToolEditMeshFrame::keyPressEvent( QKeyEvent *e )
       if ( e->key() == Qt::Key_Escape )
       {
         mCurrentState = Digitizing;
-        mMovingEdgesRubberband->reset( QgsWkbTypes::LineGeometry );
-        mMovingFacesRubberband->reset( QgsWkbTypes::PolygonGeometry );
-        mMovingFreeVertexRubberband->reset( QgsWkbTypes::PointGeometry );
+        mMovingEdgesRubberband->reset( Qgis::GeometryType::Line );
+        mMovingFacesRubberband->reset( Qgis::GeometryType::Polygon );
+        mMovingFreeVertexRubberband->reset( Qgis::GeometryType::Point );
         mCadDockWidget->setEnabledZ( mCadDockWidget->cadEnabled() );
       }
       break;
@@ -1256,7 +1256,7 @@ void QgsMapToolEditMeshFrame::keyPressEvent( QKeyEvent *e )
 
       if ( e->key() == Qt::Key_Escape )
       {
-        mForceByLineRubberBand->reset( QgsWkbTypes::LineGeometry );
+        mForceByLineRubberBand->reset( Qgis::GeometryType::Line );
         mForcingLineZValue.clear();
       }
       break;
@@ -1789,9 +1789,9 @@ void QgsMapToolEditMeshFrame::triggerTransformCoordinatesDockWidget( bool checke
 
   connect( mTransformDockWidget, &QgsMeshTransformCoordinatesDockWidget::calculationUpdated, this, [this]
   {
-    mMovingFacesRubberband->reset( QgsWkbTypes::PolygonGeometry );
-    mMovingEdgesRubberband->reset( QgsWkbTypes::LineGeometry );
-    mMovingFreeVertexRubberband->reset( QgsWkbTypes::PointGeometry );
+    mMovingFacesRubberband->reset( Qgis::GeometryType::Polygon );
+    mMovingEdgesRubberband->reset( Qgis::GeometryType::Line );
+    mMovingFreeVertexRubberband->reset( Qgis::GeometryType::Point );
     setMovingRubberBandValidity( mTransformDockWidget->isResultValid() );
 
     if ( !mCurrentLayer || !mCurrentEditor )
@@ -1898,9 +1898,9 @@ void QgsMapToolEditMeshFrame::triggerTransformCoordinatesDockWidget( bool checke
     mActionTransformCoordinates->setChecked( false );
     if ( !mIsInitialized )
       return;
-    mMovingFacesRubberband->reset( QgsWkbTypes::PolygonGeometry );
-    mMovingEdgesRubberband->reset( QgsWkbTypes::LineGeometry );
-    mMovingFreeVertexRubberband->reset( QgsWkbTypes::PointGeometry );
+    mMovingFacesRubberband->reset( Qgis::GeometryType::Polygon );
+    mMovingEdgesRubberband->reset( Qgis::GeometryType::Line );
+    mMovingFreeVertexRubberband->reset( Qgis::GeometryType::Point );
     setMovingRubberBandValidity( false );
   } );
 
@@ -2157,7 +2157,7 @@ void QgsMapToolEditMeshFrame::prepareSelection()
     mSelectedFacesRubberband->setFillColor( fillColor );
   }
   else
-    mSelectedFacesRubberband->reset( QgsWkbTypes::PolygonGeometry );
+    mSelectedFacesRubberband->reset( Qgis::GeometryType::Polygon );
 
   if ( mSelectedVertices.count() == 1 )
   {
@@ -2329,7 +2329,7 @@ void QgsMapToolEditMeshFrame::forceByLineReleaseEvent( QgsMapMouseEvent *e )
     }
     std::unique_ptr<QgsLineString> forcingLine = std::make_unique<QgsLineString>( points );
     forceByLine( QgsGeometry( forcingLine.release() ) );
-    mForceByLineRubberBand->reset( QgsWkbTypes::LineGeometry );
+    mForceByLineRubberBand->reset( Qgis::GeometryType::Line );
     mForcingLineZValue.clear();
   }
 }
@@ -2371,8 +2371,8 @@ void QgsMapToolEditMeshFrame::highlightCurrentHoveredFace( const QgsPointXY &map
   }
 
   const QgsPointSequence faceGeometry = nativeFaceGeometry( mCurrentFaceIndex );
-  mFaceRubberBand->reset( QgsWkbTypes::PolygonGeometry );
-  mFaceVerticesBand->reset( QgsWkbTypes::PointGeometry );
+  mFaceRubberBand->reset( Qgis::GeometryType::Polygon );
+  mFaceVerticesBand->reset( Qgis::GeometryType::Point );
   for ( const QgsPoint &pt : faceGeometry )
   {
     mFaceRubberBand->addPoint( pt );
@@ -2414,7 +2414,7 @@ void QgsMapToolEditMeshFrame::highlightCloseVertex( const QgsPointXY &mapPoint )
     double tol = QgsTolerance::vertexSearchRadius( canvas()->mapSettings() );
     if ( mVertexBand->getPoint( 0 )->distance( mapPoint ) > tol )
     {
-      mVertexBand->reset( QgsWkbTypes::PointGeometry );
+      mVertexBand->reset( Qgis::GeometryType::Point );
       mVertexBand->setVisible( false );
       mNewFaceMarker->setVisible( false );
       mCurrentVertexIndex = -1;
@@ -2426,7 +2426,7 @@ void QgsMapToolEditMeshFrame::highlightCloseVertex( const QgsPointXY &mapPoint )
     mCurrentVertexIndex = -1;
     bool isBoundary = mCurrentEditor->isVertexOnBoundary( closeVert );
     bool isFree = mCurrentEditor->isVertexFree( closeVert );
-    mVertexBand->reset( QgsWkbTypes::PointGeometry );
+    mVertexBand->reset( Qgis::GeometryType::Point );
 
     if ( closeVert >= 0 && ( mCurrentState != AddingNewFace || isBoundary || isFree ) )
     {
@@ -2499,7 +2499,7 @@ void QgsMapToolEditMeshFrame::highlightCloseEdge( const QgsPointXY &mapPoint )
 
     if ( mCurrentFaceIndex == -1 )
     {
-      mFaceVerticesBand->reset( QgsWkbTypes::PointGeometry );
+      mFaceVerticesBand->reset( Qgis::GeometryType::Point );
       mFaceVerticesBand->addPoint( edgeGeom.at( 0 ) );
       mFaceVerticesBand->addPoint( edgeGeom.at( 1 ) );
     }
@@ -2605,8 +2605,8 @@ void QgsMapToolEditMeshFrame::clearSelection()
 {
   mSelectedVertices.clear();
   mSelectedFaces.clear();
-  mSelectionBand->reset( QgsWkbTypes::PolygonGeometry );
-  mSelectedFacesRubberband->reset( QgsWkbTypes::PolygonGeometry );
+  mSelectionBand->reset( Qgis::GeometryType::Polygon );
+  mSelectedFacesRubberband->reset( Qgis::GeometryType::Polygon );
   qDeleteAll( mSelectedVerticesMarker );
   mSelectedVerticesMarker.clear();
   prepareSelection();

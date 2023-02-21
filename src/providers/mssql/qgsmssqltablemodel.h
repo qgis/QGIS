@@ -87,7 +87,7 @@ class QgsMssqlTableModel : public QgsAbstractDbTableModel
 
     QString layerURI( const QModelIndex &index, const QString &connInfo, bool useEstimatedMetadata, bool disableInvalidGeometryHandling );
 
-    static QgsWkbTypes::Type wkbTypeFromMssql( QString dbType );
+    static Qgis::WkbType wkbTypeFromMssql( QString dbType );
 
     void setConnectionName( const QString &connectionName );
 

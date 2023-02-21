@@ -230,9 +230,9 @@ void QgsSimpleLineCalloutWidget::setCallout( QgsCallout *callout )
   registerDataDefinedButton( mDestYDDBtn, QgsCallout::DestinationY );
 }
 
-void QgsSimpleLineCalloutWidget::setGeometryType( QgsWkbTypes::GeometryType type )
+void QgsSimpleLineCalloutWidget::setGeometryType( Qgis::GeometryType type )
 {
-  const bool isPolygon = type == QgsWkbTypes::PolygonGeometry;
+  const bool isPolygon = type == Qgis::GeometryType::Polygon;
   mAnchorPointLbl->setEnabled( isPolygon );
   mAnchorPointLbl->setVisible( isPolygon );
   mAnchorPointComboBox->setEnabled( isPolygon );
@@ -457,9 +457,9 @@ void QgsCurvedLineCalloutWidget::setCallout( QgsCallout *callout )
   registerDataDefinedButton( mDestYDDBtn, QgsCallout::DestinationY );
 }
 
-void QgsCurvedLineCalloutWidget::setGeometryType( QgsWkbTypes::GeometryType type )
+void QgsCurvedLineCalloutWidget::setGeometryType( Qgis::GeometryType type )
 {
-  const bool isPolygon = type == QgsWkbTypes::PolygonGeometry;
+  const bool isPolygon = type == Qgis::GeometryType::Polygon;
   mAnchorPointLbl->setEnabled( isPolygon );
   mAnchorPointLbl->setVisible( isPolygon );
   mAnchorPointComboBox->setEnabled( isPolygon );
@@ -697,9 +697,9 @@ void QgsBalloonCalloutWidget::setCallout( QgsCallout *callout )
   registerDataDefinedButton( mCornerRadiusDDBtn, QgsCallout::CornerRadius );
 }
 
-void QgsBalloonCalloutWidget::setGeometryType( QgsWkbTypes::GeometryType type )
+void QgsBalloonCalloutWidget::setGeometryType( Qgis::GeometryType type )
 {
-  const bool isPolygon = type == QgsWkbTypes::PolygonGeometry;
+  const bool isPolygon = type == Qgis::GeometryType::Polygon;
   mAnchorPointLbl->setEnabled( isPolygon );
   mAnchorPointLbl->setVisible( isPolygon );
   mAnchorPointComboBox->setEnabled( isPolygon );

@@ -20,13 +20,11 @@
 #include "qgsdistancearea.h"
 #include "qgsexpression.h"
 #include "qgsfeatureiterator.h"
-#include "qgsmapcanvas.h"
 #include "qgsproject.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 #include "qgsexpressioncontext.h"
 #include "qgsgeometry.h"
-#include "qgssettings.h"
 #include "qgsgui.h"
 #include "qgsguiutils.h"
 #include "qgsproxyprogresstask.h"
@@ -527,7 +525,7 @@ void QgsFieldCalculator::populateFields()
     mExistingFieldComboBox->addItem( fields.iconForField( idx ), fieldName, idx );
   }
 
-  if ( mVectorLayer->geometryType() != QgsWkbTypes::NullGeometry )
+  if ( mVectorLayer->geometryType() != Qgis::GeometryType::Null )
   {
     mExistingFieldComboBox->addItem( tr( "<geometry>" ), "geom" );
 

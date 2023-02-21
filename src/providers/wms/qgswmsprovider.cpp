@@ -3659,7 +3659,7 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPointXY &point, Qgis:
 
         QgsDebugMsgLevel( "GML UTF-8 (first 2000 bytes):\n" + gmlByteArray.left( 2000 ), 2 );
 
-        QgsWkbTypes::Type wkbType;
+        Qgis::WkbType wkbType;
         QgsGmlSchema gmlSchema;
 
         if ( xsdPart >= 0 )  // XSD available

@@ -128,7 +128,7 @@ class CORE_EXPORT QgsGeometryGeneratorSymbolLayer : public QgsSymbolLayer
      * \param points optional list of original points which are being rendered by the parent symbol (since QGIS 3.22)
      * \param rings optional list of original rings which are being rendered by the parent symbol (since QGIS 3.22)
      */
-    void render( QgsSymbolRenderContext &context, QgsWkbTypes::GeometryType geometryType = QgsWkbTypes::GeometryType::UnknownGeometry, const QPolygonF *points = nullptr, const QVector<QPolygonF> *rings = nullptr );
+    void render( QgsSymbolRenderContext &context, Qgis::GeometryType geometryType = Qgis::GeometryType::Unknown, const QPolygonF *points = nullptr, const QVector<QPolygonF> *rings = nullptr );
 
     void setColor( const QColor &color ) override;
 

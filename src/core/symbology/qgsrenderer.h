@@ -137,7 +137,7 @@ class CORE_EXPORT QgsFeatureRenderer
     // renderer takes ownership of its symbols!
 
     //! Returns a new renderer - used by default in vector layers
-    static QgsFeatureRenderer *defaultRenderer( QgsWkbTypes::GeometryType geomType ) SIP_FACTORY;
+    static QgsFeatureRenderer *defaultRenderer( Qgis::GeometryType geomType ) SIP_FACTORY;
 
     QString type() const { return mType; }
 
@@ -330,7 +330,7 @@ class CORE_EXPORT QgsFeatureRenderer
      * went wrong
      * \returns the renderer
      */
-    static QgsFeatureRenderer *loadSld( const QDomNode &node, QgsWkbTypes::GeometryType geomType, QString &errorMessage ) SIP_FACTORY;
+    static QgsFeatureRenderer *loadSld( const QDomNode &node, Qgis::GeometryType geomType, QString &errorMessage ) SIP_FACTORY;
 
     //! used from subclasses to create SLD Rule elements following SLD v1.1 specs
     virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props = QVariantMap() ) const

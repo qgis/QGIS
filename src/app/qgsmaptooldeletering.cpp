@@ -18,9 +18,7 @@
 #include "qgsmapcanvas.h"
 #include "qgsfeatureiterator.h"
 #include "qgsgeometry.h"
-#include "qgsvertexmarker.h"
 #include "qgsvectorlayer.h"
-#include "qgisapp.h"
 #include "qgsrubberband.h"
 #include "qgsmapmouseevent.h"
 
@@ -66,7 +64,7 @@ void QgsMapToolDeleteRing::canvasPressEvent( QgsMapMouseEvent *e )
     return;
   }
 
-  if ( vlayer->geometryType() != QgsWkbTypes::PolygonGeometry )
+  if ( vlayer->geometryType() != Qgis::GeometryType::Polygon )
   {
     emit messageEmitted( tr( "Delete ring can only be used in a polygon layer." ) );
     return;
@@ -134,7 +132,7 @@ QgsGeometry QgsMapToolDeleteRing::ringUnderPoint( const QgsPointXY &p, QgsFeatur
   while ( fit.nextFeature( f ) )
   {
     g = f.geometry();
-    if ( g.isNull() || QgsWkbTypes::geometryType( g.wkbType() ) != QgsWkbTypes::PolygonGeometry )
+    if ( g.isNull() || QgsWkbTypes::geometryType( g.wkbType() ) != Qgis::GeometryType::Polygon )
       continue;
 
     if ( !QgsWkbTypes::isMultiType( g.wkbType() ) )
@@ -177,10 +175,10 @@ void QgsMapToolDeleteRing::deleteRing( QgsFeatureId fId, int beforeVertexNr, Qgs
   vlayer->getFeatures( QgsFeatureRequest().setFilterFid( fId ) ).nextFeature( f );
 
   const QgsGeometry g = f.geometry();
-  const QgsWkbTypes::Type wkbtype = g.wkbType();
+  const Qgis::WkbType wkbtype = g.wkbType();
   int ringNum, partNum = 0;
 
-  if ( QgsWkbTypes::geometryType( wkbtype ) != QgsWkbTypes::PolygonGeometry )
+  if ( QgsWkbTypes::geometryType( wkbtype ) != Qgis::GeometryType::Polygon )
     return;
 
   if ( !QgsWkbTypes::isMultiType( wkbtype ) )

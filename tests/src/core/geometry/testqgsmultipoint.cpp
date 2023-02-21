@@ -73,7 +73,7 @@ void TestQgsMultiPoint::constructor()
   QCOMPARE( mp.partCount(), 0 );
   QVERIFY( !mp.is3D() );
   QVERIFY( !mp.isMeasure() );
-  QCOMPARE( mp.wkbType(), QgsWkbTypes::MultiPoint );
+  QCOMPARE( mp.wkbType(), Qgis::WkbType::MultiPoint );
   QCOMPARE( mp.wktTypeStr(), QString( "MultiPoint" ) );
   QCOMPARE( mp.geometryType(), QString( "MultiPoint" ) );
   QCOMPARE( mp.dimension(), 0 );
@@ -95,14 +95,14 @@ void TestQgsMultiPoint::copyConstructor()
 
   QVERIFY( mp2.isEmpty() );
 
-  mp1.addGeometry( new QgsPoint( QgsWkbTypes::PointZM, 10, 0, 4, 8 ) );
-  mp1.addGeometry( new QgsPoint( QgsWkbTypes::PointZM, 20, 10, 14, 18 ) );
+  mp1.addGeometry( new QgsPoint( Qgis::WkbType::PointZM, 10, 0, 4, 8 ) );
+  mp1.addGeometry( new QgsPoint( Qgis::WkbType::PointZM, 20, 10, 14, 18 ) );
   QgsMultiPoint mp3( mp1 );
 
   QCOMPARE( mp3.numGeometries(), 2 );
-  QCOMPARE( mp3.wkbType(), QgsWkbTypes::MultiPointZM );
-  QCOMPARE( *static_cast< const QgsPoint * >( mp3.geometryN( 0 ) ), QgsPoint( QgsWkbTypes::PointZM, 10, 0, 4, 8 ) );
-  QCOMPARE( *static_cast< const QgsPoint * >( mp3.geometryN( 1 ) ), QgsPoint( QgsWkbTypes::PointZM, 20, 10, 14, 18 ) );
+  QCOMPARE( mp3.wkbType(), Qgis::WkbType::MultiPointZM );
+  QCOMPARE( *static_cast< const QgsPoint * >( mp3.geometryN( 0 ) ), QgsPoint( Qgis::WkbType::PointZM, 10, 0, 4, 8 ) );
+  QCOMPARE( *static_cast< const QgsPoint * >( mp3.geometryN( 1 ) ), QgsPoint( Qgis::WkbType::PointZM, 20, 10, 14, 18 ) );
 }
 
 void TestQgsMultiPoint::addGeometryWithNullptr()
@@ -115,7 +115,7 @@ void TestQgsMultiPoint::addGeometryWithNullptr()
   QCOMPARE( mp.ringCount(), 0 );
   QCOMPARE( mp.partCount(), 0 );
   QCOMPARE( mp.numGeometries(), 0 );
-  QCOMPARE( mp.wkbType(), QgsWkbTypes::MultiPoint );
+  QCOMPARE( mp.wkbType(), Qgis::WkbType::MultiPoint );
   QVERIFY( !mp.geometryN( 0 ) );
   QVERIFY( !mp.geometryN( -1 ) );
 }
@@ -130,7 +130,7 @@ void TestQgsMultiPoint::addGeometryWithNotAPoint()
   QCOMPARE( mp.ringCount(), 0 );
   QCOMPARE( mp.partCount(), 0 );
   QCOMPARE( mp.numGeometries(), 0 );
-  QCOMPARE( mp.wkbType(), QgsWkbTypes::MultiPoint );
+  QCOMPARE( mp.wkbType(), Qgis::WkbType::MultiPoint );
   QVERIFY( !mp.geometryN( 0 ) );
   QVERIFY( !mp.geometryN( -1 ) );
 }
@@ -148,7 +148,7 @@ void TestQgsMultiPoint::addGeometry()
   QCOMPARE( mp.partCount(), 1 );
   QVERIFY( !mp.is3D() );
   QVERIFY( !mp.isMeasure() );
-  QCOMPARE( mp.wkbType(), QgsWkbTypes::MultiPoint );
+  QCOMPARE( mp.wkbType(), Qgis::WkbType::MultiPoint );
   QCOMPARE( mp.wktTypeStr(), QString( "MultiPoint" ) );
   QCOMPARE( mp.geometryType(), QString( "MultiPoint" ) );
   QCOMPARE( mp.dimension(), 0 );
@@ -167,33 +167,33 @@ void TestQgsMultiPoint::addGeometryWithZM()
 {
   //initial adding of geometry should set z/m type
   QgsMultiPoint mp;
-  QgsPoint part( QgsWkbTypes::PointZ, 10, 11, 1 );
+  QgsPoint part( Qgis::WkbType::PointZ, 10, 11, 1 );
   mp.addGeometry( part.clone() );
 
   QVERIFY( mp.is3D() );
   QVERIFY( !mp.isMeasure() );
-  QCOMPARE( mp.wkbType(), QgsWkbTypes::MultiPointZ );
+  QCOMPARE( mp.wkbType(), Qgis::WkbType::MultiPointZ );
   QCOMPARE( mp.wktTypeStr(), QString( "MultiPointZ" ) );
   QCOMPARE( mp.geometryType(), QString( "MultiPoint" ) );
   QCOMPARE( *( static_cast< const QgsPoint * >( mp.geometryN( 0 ) ) ), part );
 
   mp.clear();
-  part = QgsPoint( QgsWkbTypes::PointM, 10, 10, 0, 3 );
+  part = QgsPoint( Qgis::WkbType::PointM, 10, 10, 0, 3 );
   mp.addGeometry( part.clone() );
 
   QVERIFY( !mp.is3D() );
   QVERIFY( mp.isMeasure() );
-  QCOMPARE( mp.wkbType(), QgsWkbTypes::MultiPointM );
+  QCOMPARE( mp.wkbType(), Qgis::WkbType::MultiPointM );
   QCOMPARE( mp.wktTypeStr(), QString( "MultiPointM" ) );
   QCOMPARE( *( static_cast< const QgsPoint * >( mp.geometryN( 0 ) ) ), part );
 
   mp.clear();
-  part = QgsPoint( QgsWkbTypes::PointZM, 10, 10, 5, 3 );
+  part = QgsPoint( Qgis::WkbType::PointZM, 10, 10, 5, 3 );
   mp.addGeometry( part.clone() );
 
   QVERIFY( mp.is3D() );
   QVERIFY( mp.isMeasure() );
-  QCOMPARE( mp.wkbType(), QgsWkbTypes::MultiPointZM );
+  QCOMPARE( mp.wkbType(), Qgis::WkbType::MultiPointZM );
   QCOMPARE( mp.wktTypeStr(), QString( "MultiPointZM" ) );
   QCOMPARE( *( static_cast< const QgsPoint * >( mp.geometryN( 0 ) ) ), part );
 }
@@ -205,11 +205,11 @@ void TestQgsMultiPoint::addGeometryDimensionPreservation()
   QgsPoint part( 9, 1 );
 
   mp.addGeometry( part.clone() );
-  QCOMPARE( mp.wkbType(), QgsWkbTypes::MultiPoint );
+  QCOMPARE( mp.wkbType(), Qgis::WkbType::MultiPoint );
 
-  mp.addGeometry( new QgsPoint( QgsWkbTypes::PointZ, 1.0, 2.0, 3 ) );
+  mp.addGeometry( new QgsPoint( Qgis::WkbType::PointZ, 1.0, 2.0, 3 ) );
 
-  QCOMPARE( mp.wkbType(), QgsWkbTypes::MultiPoint );
+  QCOMPARE( mp.wkbType(), Qgis::WkbType::MultiPoint );
   QCOMPARE( mp.vertexCount( 0, 0 ), 1 );
   QCOMPARE( mp.vertexCount( 1, 0 ), 1 );
   QCOMPARE( mp.vertexCount( 2, 0 ), 0 );
@@ -217,20 +217,20 @@ void TestQgsMultiPoint::addGeometryDimensionPreservation()
   QCOMPARE( mp.nCoordinates(), 2 );
   QCOMPARE( mp.ringCount(), 1 );
   QCOMPARE( mp.partCount(), 2 );
-  QCOMPARE( mp.wkbType(), QgsWkbTypes::MultiPoint ); //should still be 2d
+  QCOMPARE( mp.wkbType(), Qgis::WkbType::MultiPoint ); //should still be 2d
   QVERIFY( !mp.is3D() );
   QCOMPARE( *( static_cast< const QgsPoint * >( mp.geometryN( 1 ) ) ), QgsPoint( 1, 2 ) );
 
-  mp.addGeometry( new QgsPoint( QgsWkbTypes::PointM, 11.0, 12.0, 0, 3 ) );
+  mp.addGeometry( new QgsPoint( Qgis::WkbType::PointM, 11.0, 12.0, 0, 3 ) );
 
-  QCOMPARE( mp.wkbType(), QgsWkbTypes::MultiPoint );
+  QCOMPARE( mp.wkbType(), Qgis::WkbType::MultiPoint );
   QCOMPARE( mp.vertexCount( 0, 0 ), 1 );
   QCOMPARE( mp.vertexCount( 1, 0 ), 1 );
   QCOMPARE( mp.vertexCount( 2, 0 ), 1 );
   QCOMPARE( mp.nCoordinates(), 3 );
   QCOMPARE( mp.ringCount(), 1 );
   QCOMPARE( mp.partCount(), 3 );
-  QCOMPARE( mp.wkbType(), QgsWkbTypes::MultiPoint ); //should still be 2d
+  QCOMPARE( mp.wkbType(), Qgis::WkbType::MultiPoint ); //should still be 2d
   QVERIFY( !mp.is3D() );
   QVERIFY( !mp.isMeasure() );
   QCOMPARE( *( static_cast< const QgsPoint * >( mp.geometryN( 2 ) ) ), QgsPoint( 11, 12 ) );
@@ -240,74 +240,74 @@ void TestQgsMultiPoint::addGeometryDimensionPreservationZ()
 {
   QgsMultiPoint mp;
 
-  mp.addGeometry( new QgsPoint( QgsWkbTypes::PointZ, 1.0, 2.0, 3 ) );
-  QCOMPARE( mp.wkbType(), QgsWkbTypes::MultiPointZ );
+  mp.addGeometry( new QgsPoint( Qgis::WkbType::PointZ, 1.0, 2.0, 3 ) );
+  QCOMPARE( mp.wkbType(), Qgis::WkbType::MultiPointZ );
 
-  mp.addGeometry( new QgsPoint( QgsWkbTypes::Point, 11.0, 12.0 ) );
+  mp.addGeometry( new QgsPoint( Qgis::WkbType::Point, 11.0, 12.0 ) );
 
-  QCOMPARE( mp.wkbType(), QgsWkbTypes::MultiPointZ );
+  QCOMPARE( mp.wkbType(), Qgis::WkbType::MultiPointZ );
   QVERIFY( mp.is3D() );
-  QCOMPARE( *( static_cast< const QgsPoint * >( mp.geometryN( 0 ) ) ), QgsPoint( QgsWkbTypes::PointZ, 1, 2, 3 ) );
-  QCOMPARE( *( static_cast< const QgsPoint * >( mp.geometryN( 1 ) ) ), QgsPoint( QgsWkbTypes::PointZ, 11, 12, 0 ) );
+  QCOMPARE( *( static_cast< const QgsPoint * >( mp.geometryN( 0 ) ) ), QgsPoint( Qgis::WkbType::PointZ, 1, 2, 3 ) );
+  QCOMPARE( *( static_cast< const QgsPoint * >( mp.geometryN( 1 ) ) ), QgsPoint( Qgis::WkbType::PointZ, 11, 12, 0 ) );
 
-  mp.addGeometry( new QgsPoint( QgsWkbTypes::PointM, 21.0, 22.0, 0, 3 ) );
+  mp.addGeometry( new QgsPoint( Qgis::WkbType::PointM, 21.0, 22.0, 0, 3 ) );
 
-  QCOMPARE( mp.wkbType(), QgsWkbTypes::MultiPointZ );
+  QCOMPARE( mp.wkbType(), Qgis::WkbType::MultiPointZ );
   QVERIFY( mp.is3D() );
   QVERIFY( !mp.isMeasure() );
-  QCOMPARE( *( static_cast< const QgsPoint * >( mp.geometryN( 2 ) ) ), QgsPoint( QgsWkbTypes::PointZ, 21, 22, 0 ) );
+  QCOMPARE( *( static_cast< const QgsPoint * >( mp.geometryN( 2 ) ) ), QgsPoint( Qgis::WkbType::PointZ, 21, 22, 0 ) );
 }
 
 void TestQgsMultiPoint::addGeometryDimensionPreservationM()
 {
   QgsMultiPoint mp;
 
-  mp.addGeometry( new QgsPoint( QgsWkbTypes::PointM, 1.0, 2.0, 0, 3 ) );
-  QCOMPARE( mp.wkbType(), QgsWkbTypes::MultiPointM );
+  mp.addGeometry( new QgsPoint( Qgis::WkbType::PointM, 1.0, 2.0, 0, 3 ) );
+  QCOMPARE( mp.wkbType(), Qgis::WkbType::MultiPointM );
 
-  mp.addGeometry( new QgsPoint( QgsWkbTypes::Point, 11.0, 12.0 ) );
+  mp.addGeometry( new QgsPoint( Qgis::WkbType::Point, 11.0, 12.0 ) );
 
-  QCOMPARE( mp.wkbType(), QgsWkbTypes::MultiPointM );
+  QCOMPARE( mp.wkbType(), Qgis::WkbType::MultiPointM );
   QVERIFY( mp.isMeasure() );
-  QCOMPARE( *( static_cast< const QgsPoint * >( mp.geometryN( 0 ) ) ), QgsPoint( QgsWkbTypes::PointM, 1, 2, 0, 3 ) );
-  QCOMPARE( *( static_cast< const QgsPoint * >( mp.geometryN( 1 ) ) ), QgsPoint( QgsWkbTypes::PointM, 11, 12, 0, 0 ) );
+  QCOMPARE( *( static_cast< const QgsPoint * >( mp.geometryN( 0 ) ) ), QgsPoint( Qgis::WkbType::PointM, 1, 2, 0, 3 ) );
+  QCOMPARE( *( static_cast< const QgsPoint * >( mp.geometryN( 1 ) ) ), QgsPoint( Qgis::WkbType::PointM, 11, 12, 0, 0 ) );
 
-  mp.addGeometry( new QgsPoint( QgsWkbTypes::PointZ, 21.0, 22.0, 3 ) );
+  mp.addGeometry( new QgsPoint( Qgis::WkbType::PointZ, 21.0, 22.0, 3 ) );
 
-  QCOMPARE( mp.wkbType(), QgsWkbTypes::MultiPointM );
+  QCOMPARE( mp.wkbType(), Qgis::WkbType::MultiPointM );
   QVERIFY( !mp.is3D() );
   QVERIFY( mp.isMeasure() );
-  QCOMPARE( *( static_cast< const QgsPoint * >( mp.geometryN( 2 ) ) ), QgsPoint( QgsWkbTypes::PointM, 21, 22, 0, 0 ) );
+  QCOMPARE( *( static_cast< const QgsPoint * >( mp.geometryN( 2 ) ) ), QgsPoint( Qgis::WkbType::PointM, 21, 22, 0, 0 ) );
 }
 
 void TestQgsMultiPoint::addGeometryDimensionPreservationZM()
 {
   QgsMultiPoint mp;
 
-  mp.addGeometry( new QgsPoint( QgsWkbTypes::PointZM, 1.0, 2.0, 4, 3 ) );
-  QCOMPARE( mp.wkbType(), QgsWkbTypes::MultiPointZM );
+  mp.addGeometry( new QgsPoint( Qgis::WkbType::PointZM, 1.0, 2.0, 4, 3 ) );
+  QCOMPARE( mp.wkbType(), Qgis::WkbType::MultiPointZM );
 
-  mp.addGeometry( new QgsPoint( QgsWkbTypes::Point, 11.0, 12.0 ) );
+  mp.addGeometry( new QgsPoint( Qgis::WkbType::Point, 11.0, 12.0 ) );
 
-  QCOMPARE( mp.wkbType(), QgsWkbTypes::MultiPointZM );
+  QCOMPARE( mp.wkbType(), Qgis::WkbType::MultiPointZM );
   QVERIFY( mp.isMeasure() );
   QVERIFY( mp.is3D() );
-  QCOMPARE( *( static_cast< const QgsPoint * >( mp.geometryN( 0 ) ) ), QgsPoint( QgsWkbTypes::PointZM, 1, 2, 4, 3 ) );
-  QCOMPARE( *( static_cast< const QgsPoint * >( mp.geometryN( 1 ) ) ), QgsPoint( QgsWkbTypes::PointZM, 11, 12, 0, 0 ) );
+  QCOMPARE( *( static_cast< const QgsPoint * >( mp.geometryN( 0 ) ) ), QgsPoint( Qgis::WkbType::PointZM, 1, 2, 4, 3 ) );
+  QCOMPARE( *( static_cast< const QgsPoint * >( mp.geometryN( 1 ) ) ), QgsPoint( Qgis::WkbType::PointZM, 11, 12, 0, 0 ) );
 
-  mp.addGeometry( new QgsPoint( QgsWkbTypes::PointZ, 21.0, 22.0, 3 ) );
+  mp.addGeometry( new QgsPoint( Qgis::WkbType::PointZ, 21.0, 22.0, 3 ) );
 
-  QCOMPARE( mp.wkbType(), QgsWkbTypes::MultiPointZM );
+  QCOMPARE( mp.wkbType(), Qgis::WkbType::MultiPointZM );
   QVERIFY( mp.is3D() );
   QVERIFY( mp.isMeasure() );
-  QCOMPARE( *( static_cast< const QgsPoint * >( mp.geometryN( 2 ) ) ), QgsPoint( QgsWkbTypes::PointZM, 21, 22, 3, 0 ) );
+  QCOMPARE( *( static_cast< const QgsPoint * >( mp.geometryN( 2 ) ) ), QgsPoint( Qgis::WkbType::PointZM, 21, 22, 3, 0 ) );
 
-  mp.addGeometry( new QgsPoint( QgsWkbTypes::PointM, 31.0, 32.0, 0, 4 ) );
+  mp.addGeometry( new QgsPoint( Qgis::WkbType::PointM, 31.0, 32.0, 0, 4 ) );
 
-  QCOMPARE( mp.wkbType(), QgsWkbTypes::MultiPointZM );
+  QCOMPARE( mp.wkbType(), Qgis::WkbType::MultiPointZM );
   QVERIFY( mp.is3D() );
   QVERIFY( mp.isMeasure() );
-  QCOMPARE( *( static_cast< const QgsPoint * >( mp.geometryN( 3 ) ) ), QgsPoint( QgsWkbTypes::PointZM, 31, 32, 0, 4 ) );
+  QCOMPARE( *( static_cast< const QgsPoint * >( mp.geometryN( 3 ) ) ), QgsPoint( Qgis::WkbType::PointZM, 31, 32, 0, 4 ) );
 }
 
 void TestQgsMultiPoint::cordinateSequenceWithMultiPart()
@@ -374,20 +374,20 @@ void TestQgsMultiPoint::clone()
 
   QVERIFY( cloned->isEmpty() );
 
-  mp.addGeometry( new QgsPoint( QgsWkbTypes::PointZM, 0, 0, 1, 5 ) );
-  mp.addGeometry( new QgsPoint( QgsWkbTypes::PointZM, 1, 2, 3, 4 ) );
+  mp.addGeometry( new QgsPoint( Qgis::WkbType::PointZM, 0, 0, 1, 5 ) );
+  mp.addGeometry( new QgsPoint( Qgis::WkbType::PointZM, 1, 2, 3, 4 ) );
   cloned.reset( mp.clone() );
 
   QCOMPARE( cloned->numGeometries(), 2 );
-  QCOMPARE( *static_cast< const QgsPoint * >( cloned->geometryN( 0 ) ), QgsPoint( QgsWkbTypes::PointZM, 0, 0, 1, 5 ) );
-  QCOMPARE( *static_cast< const QgsPoint * >( cloned->geometryN( 1 ) ), QgsPoint( QgsWkbTypes::PointZM, 1, 2, 3, 4 ) );
+  QCOMPARE( *static_cast< const QgsPoint * >( cloned->geometryN( 0 ) ), QgsPoint( Qgis::WkbType::PointZM, 0, 0, 1, 5 ) );
+  QCOMPARE( *static_cast< const QgsPoint * >( cloned->geometryN( 1 ) ), QgsPoint( Qgis::WkbType::PointZM, 1, 2, 3, 4 ) );
 }
 
 void TestQgsMultiPoint::clear()
 {
   QgsMultiPoint mp;
-  mp.addGeometry( new  QgsPoint( QgsWkbTypes::PointZ, 0, 10, 2 ) );
-  mp.addGeometry( new  QgsPoint( QgsWkbTypes::PointZ, 11, 12, 3 ) );
+  mp.addGeometry( new  QgsPoint( Qgis::WkbType::PointZ, 0, 10, 2 ) );
+  mp.addGeometry( new  QgsPoint( Qgis::WkbType::PointZ, 11, 12, 3 ) );
 
   QCOMPARE( mp.numGeometries(), 2 );
 
@@ -400,7 +400,7 @@ void TestQgsMultiPoint::clear()
   QCOMPARE( mp.partCount(), 0 );
   QVERIFY( !mp.is3D() );
   QVERIFY( !mp.isMeasure() );
-  QCOMPARE( mp.wkbType(), QgsWkbTypes::MultiPoint );
+  QCOMPARE( mp.wkbType(), Qgis::WkbType::MultiPoint );
 }
 
 void TestQgsMultiPoint::assignment()
@@ -412,12 +412,12 @@ void TestQgsMultiPoint::assignment()
   QCOMPARE( mp1.numGeometries(), 0 );
 
   QgsMultiPoint mp3;
-  mp3.addGeometry( new QgsPoint( QgsWkbTypes::PointZM, 10, 0, 4, 8 ) );
-  mp3.addGeometry( new QgsPoint( QgsWkbTypes::PointZM, 20, 10, 14, 18 ) );
+  mp3.addGeometry( new QgsPoint( Qgis::WkbType::PointZM, 10, 0, 4, 8 ) );
+  mp3.addGeometry( new QgsPoint( Qgis::WkbType::PointZM, 20, 10, 14, 18 ) );
   mp1 = mp3;
   QCOMPARE( mp1.numGeometries(), 2 );
-  QCOMPARE( *static_cast< const QgsPoint * >( mp1.geometryN( 0 ) ), QgsPoint( QgsWkbTypes::PointZM, 10, 0, 4, 8 ) );
-  QCOMPARE( *static_cast< const QgsPoint * >( mp1.geometryN( 1 ) ), QgsPoint( QgsWkbTypes::PointZM, 20, 10, 14, 18 ) );
+  QCOMPARE( *static_cast< const QgsPoint * >( mp1.geometryN( 0 ) ), QgsPoint( Qgis::WkbType::PointZM, 10, 0, 4, 8 ) );
+  QCOMPARE( *static_cast< const QgsPoint * >( mp1.geometryN( 1 ) ), QgsPoint( Qgis::WkbType::PointZM, 20, 10, 14, 18 ) );
 }
 
 void TestQgsMultiPoint::cast()
@@ -455,26 +455,26 @@ void TestQgsMultiPoint::isValid()
 void TestQgsMultiPoint::toCurveType()
 {
   QgsMultiPoint mp;
-  mp.addGeometry( new QgsPoint( QgsWkbTypes::PointZM, 10, 0, 4, 8 ) );
-  mp.addGeometry( new QgsPoint( QgsWkbTypes::PointZM, 20, 10, 14, 18 ) );
+  mp.addGeometry( new QgsPoint( Qgis::WkbType::PointZM, 10, 0, 4, 8 ) );
+  mp.addGeometry( new QgsPoint( Qgis::WkbType::PointZM, 20, 10, 14, 18 ) );
 
   std::unique_ptr< QgsMultiPoint > curveType( mp.toCurveType() );
 
-  QCOMPARE( curveType->wkbType(), QgsWkbTypes::MultiPointZM );
+  QCOMPARE( curveType->wkbType(), Qgis::WkbType::MultiPointZM );
   QCOMPARE( curveType->numGeometries(), 2 );
 
   const QgsPoint *curve = static_cast< const QgsPoint * >( curveType->geometryN( 0 ) );
-  QCOMPARE( *curve, QgsPoint( QgsWkbTypes::PointZM, 10, 0, 4, 8 ) );
+  QCOMPARE( *curve, QgsPoint( Qgis::WkbType::PointZM, 10, 0, 4, 8 ) );
 
   curve = static_cast< const QgsPoint * >( curveType->geometryN( 1 ) );
-  QCOMPARE( *curve, QgsPoint( QgsWkbTypes::PointZM, 20, 10, 14, 18 ) );
+  QCOMPARE( *curve, QgsPoint( Qgis::WkbType::PointZM, 20, 10, 14, 18 ) );
 }
 
 void TestQgsMultiPoint::toFromWKB()
 {
   QgsMultiPoint mp1;
-  mp1.addGeometry( new QgsPoint( QgsWkbTypes::Point, 10, 11 ) );
-  mp1.addGeometry( new QgsPoint( QgsWkbTypes::Point, 20, 21 ) );
+  mp1.addGeometry( new QgsPoint( Qgis::WkbType::Point, 10, 11 ) );
+  mp1.addGeometry( new QgsPoint( Qgis::WkbType::Point, 20, 21 ) );
 
   QByteArray wkb = mp1.asWkb();
   QgsConstWkbPtr wkbPtr( wkb );
@@ -483,15 +483,15 @@ void TestQgsMultiPoint::toFromWKB()
   mp2.fromWkb( wkbPtr );
 
   QCOMPARE( mp2.numGeometries(), 2 );
-  QCOMPARE( *static_cast< const QgsPoint * >( mp2.geometryN( 0 ) ), QgsPoint( QgsWkbTypes::Point, 10, 11 ) );
-  QCOMPARE( *static_cast< const QgsPoint * >( mp2.geometryN( 1 ) ), QgsPoint( QgsWkbTypes::Point, 20, 21 ) );
+  QCOMPARE( *static_cast< const QgsPoint * >( mp2.geometryN( 0 ) ), QgsPoint( Qgis::WkbType::Point, 10, 11 ) );
+  QCOMPARE( *static_cast< const QgsPoint * >( mp2.geometryN( 1 ) ), QgsPoint( Qgis::WkbType::Point, 20, 21 ) );
 }
 
 void TestQgsMultiPoint::toFromWKBWithZ()
 {
   QgsMultiPoint mp1;
-  mp1.addGeometry( new QgsPoint( QgsWkbTypes::PointZ, 10, 0, 4 ) );
-  mp1.addGeometry( new QgsPoint( QgsWkbTypes::PointZ, 9, 1, 4 ) );
+  mp1.addGeometry( new QgsPoint( Qgis::WkbType::PointZ, 10, 0, 4 ) );
+  mp1.addGeometry( new QgsPoint( Qgis::WkbType::PointZ, 9, 1, 4 ) );
 
   QByteArray wkb = mp1.asWkb();
   QgsConstWkbPtr wkbPtr( wkb );
@@ -500,16 +500,16 @@ void TestQgsMultiPoint::toFromWKBWithZ()
   mp2.fromWkb( wkbPtr );
 
   QCOMPARE( mp2.numGeometries(), 2 );
-  QCOMPARE( mp2.wkbType(), QgsWkbTypes::MultiPointZ );
-  QCOMPARE( *static_cast< const QgsPoint * >( mp2.geometryN( 0 ) ), QgsPoint( QgsWkbTypes::PointZ, 10, 0, 4 ) );
-  QCOMPARE( *static_cast< const QgsPoint * >( mp2.geometryN( 1 ) ), QgsPoint( QgsWkbTypes::PointZ, 9, 1, 4 ) );
+  QCOMPARE( mp2.wkbType(), Qgis::WkbType::MultiPointZ );
+  QCOMPARE( *static_cast< const QgsPoint * >( mp2.geometryN( 0 ) ), QgsPoint( Qgis::WkbType::PointZ, 10, 0, 4 ) );
+  QCOMPARE( *static_cast< const QgsPoint * >( mp2.geometryN( 1 ) ), QgsPoint( Qgis::WkbType::PointZ, 9, 1, 4 ) );
 }
 
 void TestQgsMultiPoint::toFromWKBWithM()
 {
   QgsMultiPoint mp1;
-  mp1.addGeometry( new QgsPoint( QgsWkbTypes::PointM, 10, 0, 0, 4 ) );
-  mp1.addGeometry( new QgsPoint( QgsWkbTypes::PointM, 9, 1, 0, 4 ) );
+  mp1.addGeometry( new QgsPoint( Qgis::WkbType::PointM, 10, 0, 0, 4 ) );
+  mp1.addGeometry( new QgsPoint( Qgis::WkbType::PointM, 9, 1, 0, 4 ) );
 
   QByteArray wkb = mp1.asWkb();
   QgsConstWkbPtr wkbPtr( wkb );
@@ -518,16 +518,16 @@ void TestQgsMultiPoint::toFromWKBWithM()
   mp2.fromWkb( wkbPtr );
 
   QCOMPARE( mp2.numGeometries(), 2 );
-  QCOMPARE( mp2.wkbType(), QgsWkbTypes::MultiPointM );
-  QCOMPARE( *static_cast< const QgsPoint * >( mp2.geometryN( 0 ) ), QgsPoint( QgsWkbTypes::PointM, 10, 0, 0, 4 ) );
-  QCOMPARE( *static_cast< const QgsPoint * >( mp2.geometryN( 1 ) ), QgsPoint( QgsWkbTypes::PointM, 9, 1, 0, 4 ) );
+  QCOMPARE( mp2.wkbType(), Qgis::WkbType::MultiPointM );
+  QCOMPARE( *static_cast< const QgsPoint * >( mp2.geometryN( 0 ) ), QgsPoint( Qgis::WkbType::PointM, 10, 0, 0, 4 ) );
+  QCOMPARE( *static_cast< const QgsPoint * >( mp2.geometryN( 1 ) ), QgsPoint( Qgis::WkbType::PointM, 9, 1, 0, 4 ) );
 }
 
 void TestQgsMultiPoint::toFromWKBWithZM()
 {
   QgsMultiPoint mp1;
-  mp1.addGeometry( new QgsPoint( QgsWkbTypes::PointZM, 10, 0, 70, 4 ) );
-  mp1.addGeometry( new QgsPoint( QgsWkbTypes::PointZM, 9, 1, 3, 4 ) );
+  mp1.addGeometry( new QgsPoint( Qgis::WkbType::PointZM, 10, 0, 70, 4 ) );
+  mp1.addGeometry( new QgsPoint( Qgis::WkbType::PointZM, 9, 1, 3, 4 ) );
 
   QByteArray wkb = mp1.asWkb();
   QgsConstWkbPtr wkbPtr( wkb );
@@ -536,9 +536,9 @@ void TestQgsMultiPoint::toFromWKBWithZM()
   mp2.fromWkb( wkbPtr );
 
   QCOMPARE( mp2.numGeometries(), 2 );
-  QCOMPARE( mp2.wkbType(), QgsWkbTypes::MultiPointZM );
-  QCOMPARE( *static_cast< const QgsPoint * >( mp2.geometryN( 0 ) ), QgsPoint( QgsWkbTypes::PointZM, 10, 0, 70, 4 ) );
-  QCOMPARE( *static_cast< const QgsPoint * >( mp2.geometryN( 1 ) ), QgsPoint( QgsWkbTypes::PointZM, 9, 1, 3, 4 ) );
+  QCOMPARE( mp2.wkbType(), Qgis::WkbType::MultiPointZM );
+  QCOMPARE( *static_cast< const QgsPoint * >( mp2.geometryN( 0 ) ), QgsPoint( Qgis::WkbType::PointZM, 10, 0, 70, 4 ) );
+  QCOMPARE( *static_cast< const QgsPoint * >( mp2.geometryN( 1 ) ), QgsPoint( Qgis::WkbType::PointZM, 9, 1, 3, 4 ) );
 }
 
 void TestQgsMultiPoint::toFromBadWKB()
@@ -548,21 +548,21 @@ void TestQgsMultiPoint::toFromBadWKB()
   QgsConstWkbPtr nullPtr( nullptr, 0 );
 
   QVERIFY( !mp.fromWkb( nullPtr ) );
-  QCOMPARE( mp.wkbType(), QgsWkbTypes::MultiPoint );
+  QCOMPARE( mp.wkbType(), Qgis::WkbType::MultiPoint );
 
   QgsPoint point( 1, 2 );
   QByteArray wkbPoint = point.asWkb();
   QgsConstWkbPtr wkbPointPtr( wkbPoint );
 
   QVERIFY( !mp.fromWkb( wkbPointPtr ) );
-  QCOMPARE( mp.wkbType(), QgsWkbTypes::MultiPoint );
+  QCOMPARE( mp.wkbType(), Qgis::WkbType::MultiPoint );
 }
 
 void TestQgsMultiPoint::toFromWKT()
 {
   QgsMultiPoint mp;
-  mp.addGeometry( new QgsPoint( QgsWkbTypes::PointZM, 10, 0, 4, 8 ) );
-  mp.addGeometry( new QgsPoint( QgsWkbTypes::PointZM, 9, 1, 4, 4 ) );
+  mp.addGeometry( new QgsPoint( Qgis::WkbType::PointZM, 10, 0, 4, 8 ) );
+  mp.addGeometry( new QgsPoint( Qgis::WkbType::PointZM, 9, 1, 4, 4 ) );
 
   QString wkt = mp.asWkt();
   QVERIFY( !wkt.isEmpty() );
@@ -570,22 +570,22 @@ void TestQgsMultiPoint::toFromWKT()
   mp.clear();
   QVERIFY( mp.fromWkt( wkt ) );
   QCOMPARE( mp.numGeometries(), 2 );
-  QCOMPARE( *static_cast< const QgsPoint * >( mp.geometryN( 0 ) ), QgsPoint( QgsWkbTypes::PointZM, 10, 0, 4, 8 ) );
-  QCOMPARE( *static_cast< const QgsPoint * >( mp.geometryN( 1 ) ), QgsPoint( QgsWkbTypes::PointZM, 9, 1, 4, 4 ) );
+  QCOMPARE( *static_cast< const QgsPoint * >( mp.geometryN( 0 ) ), QgsPoint( Qgis::WkbType::PointZM, 10, 0, 4, 8 ) );
+  QCOMPARE( *static_cast< const QgsPoint * >( mp.geometryN( 1 ) ), QgsPoint( Qgis::WkbType::PointZM, 9, 1, 4, 4 ) );
 
   //bad WKT
   mp.clear();
   QVERIFY( !mp.fromWkt( "Point()" ) );
   QVERIFY( mp.isEmpty() );
   QCOMPARE( mp.numGeometries(), 0 );
-  QCOMPARE( mp.wkbType(), QgsWkbTypes::MultiPoint );
+  QCOMPARE( mp.wkbType(), Qgis::WkbType::MultiPoint );
 }
 
 void TestQgsMultiPoint::exportImport()
 {
   QgsMultiPoint exportC;
-  exportC.addGeometry( new QgsPoint( QgsWkbTypes::Point, 0, 10 ) );
-  exportC.addGeometry( new QgsPoint( QgsWkbTypes::Point, 10, 0 ) );
+  exportC.addGeometry( new QgsPoint( Qgis::WkbType::Point, 0, 10 ) );
+  exportC.addGeometry( new QgsPoint( Qgis::WkbType::Point, 10, 0 ) );
 
   // GML document for compare
   QDomDocument doc( "gml" );
@@ -610,8 +610,8 @@ void TestQgsMultiPoint::exportImport()
   QCOMPARE( res, expectedSimpleJson );
 
   QgsMultiPoint exportFloat;
-  exportFloat.addGeometry( new QgsPoint( QgsWkbTypes::Point, 10 / 9.0, 100 / 9.0 ) );
-  exportFloat.addGeometry( new QgsPoint( QgsWkbTypes::Point, 4 / 3.0, 2 / 3.0 ) );
+  exportFloat.addGeometry( new QgsPoint( Qgis::WkbType::Point, 10 / 9.0, 100 / 9.0 ) );
+  exportFloat.addGeometry( new QgsPoint( Qgis::WkbType::Point, 4 / 3.0, 2 / 3.0 ) );
 
 
   QString expectedJsonPrec3( "{\"coordinates\":[[1.111,11.111],[1.333,0.667]],\"type\":\"MultiPoint\"}" );
@@ -635,16 +635,16 @@ void TestQgsMultiPoint::exportImport()
   QCOMPARE( exportFloat.asKml( 3 ), expectedKmlPrec3 );
 
   QgsMultiPoint exportZ;
-  exportZ.addGeometry( new QgsPoint( QgsWkbTypes::PointZ, 0, 10, 0 ) );
-  exportZ.addGeometry( new QgsPoint( QgsWkbTypes::PointZ, 10, 0, 1 ) );
+  exportZ.addGeometry( new QgsPoint( Qgis::WkbType::PointZ, 0, 10, 0 ) );
+  exportZ.addGeometry( new QgsPoint( Qgis::WkbType::PointZ, 10, 0, 1 ) );
 
   QString expectedJsonZ( "{\"coordinates\":[[0.0,10.0,0.0],[10.0,0.0,1.0]],\"type\":\"MultiPoint\"}" );
   res = exportZ.asJson();
   QCOMPARE( res, expectedJsonZ );
 
   QgsMultiPoint exportM;
-  exportM.addGeometry( new QgsPoint( QgsWkbTypes::PointM, 0, 10, 0 ) );
-  exportM.addGeometry( new QgsPoint( QgsWkbTypes::PointM, 10, 0, 1 ) );
+  exportM.addGeometry( new QgsPoint( Qgis::WkbType::PointM, 0, 10, 0 ) );
+  exportM.addGeometry( new QgsPoint( Qgis::WkbType::PointM, 10, 0, 1 ) );
 
   QString expectedJsonM( "{\"coordinates\":[[0.0,10.0],[10.0,0.0]],\"type\":\"MultiPoint\"}" );
   res = exportM.asJson();
@@ -659,8 +659,8 @@ void TestQgsMultiPoint::vertexNumberFromVertexId()
   QCOMPARE( mp.vertexNumberFromVertexId( QgsVertexId( 0, 0, 0 ) ), -1 );
   QCOMPARE( mp.vertexNumberFromVertexId( QgsVertexId( 1, 0, 0 ) ), -1 );
 
-  mp.addGeometry( new QgsPoint( QgsWkbTypes::PointZM, 10, 0, 4, 8 ) );
-  mp.addGeometry( new QgsPoint( QgsWkbTypes::PointZM, 9, 1, 4, 4 ) );
+  mp.addGeometry( new QgsPoint( Qgis::WkbType::PointZM, 10, 0, 4, 8 ) );
+  mp.addGeometry( new QgsPoint( Qgis::WkbType::PointZM, 9, 1, 4, 4 ) );
 
   QCOMPARE( mp.vertexNumberFromVertexId( QgsVertexId( -1, 0, 0 ) ), -1 );
   QCOMPARE( mp.vertexNumberFromVertexId( QgsVertexId( 2, 0, 0 ) ), -1 );
@@ -676,8 +676,8 @@ void TestQgsMultiPoint::adjacentVertices()
 {
   //both should be invalid
   QgsMultiPoint mp;
-  mp.addGeometry( new QgsPoint( QgsWkbTypes::PointZM, 10, 0, 4, 8 ) );
-  mp.addGeometry( new QgsPoint( QgsWkbTypes::PointZM, 9, 1, 4, 4 ) );
+  mp.addGeometry( new QgsPoint( Qgis::WkbType::PointZM, 10, 0, 4, 8 ) );
+  mp.addGeometry( new QgsPoint( Qgis::WkbType::PointZM, 9, 1, 4, 4 ) );
   QgsVertexId prev( 1, 2, 3 ); // start with something
   QgsVertexId next( 4, 5, 6 );
 
@@ -698,10 +698,10 @@ void TestQgsMultiPoint::filterVertices()
     return point.x() < 5;
   };
   mp.filterVertices( filter ); // no crash
-  mp.addGeometry( new QgsPoint( QgsWkbTypes::PointZM, 10, 0, 4, 8 ) );
-  mp.addGeometry( new QgsPoint( QgsWkbTypes::PointZM, 3, 0, 4, 8 ) );
-  mp.addGeometry( new QgsPoint( QgsWkbTypes::PointZM, 1, 0, 4, 8 ) );
-  mp.addGeometry( new QgsPoint( QgsWkbTypes::PointZM, 11, 0, 4, 8 ) );
+  mp.addGeometry( new QgsPoint( Qgis::WkbType::PointZM, 10, 0, 4, 8 ) );
+  mp.addGeometry( new QgsPoint( Qgis::WkbType::PointZM, 3, 0, 4, 8 ) );
+  mp.addGeometry( new QgsPoint( Qgis::WkbType::PointZM, 1, 0, 4, 8 ) );
+  mp.addGeometry( new QgsPoint( Qgis::WkbType::PointZM, 11, 0, 4, 8 ) );
   mp.filterVertices( filter );
 
   QCOMPARE( mp.asWkt( 2 ), QStringLiteral( "MultiPointZM ((3 0 4 8),(1 0 4 8))" ) );
@@ -741,8 +741,8 @@ void TestQgsMultiPoint::removeDuplicateNodes()
 
   QVERIFY( !mp.removeDuplicateNodes() );
 
-  mp.addGeometry( new QgsPoint( QgsWkbTypes::PointZM, 10, 1, 4, 8 ) );
-  mp.addGeometry( new QgsPoint( QgsWkbTypes::PointZM, 10, 1, 4, 8 ) );
+  mp.addGeometry( new QgsPoint( Qgis::WkbType::PointZM, 10, 1, 4, 8 ) );
+  mp.addGeometry( new QgsPoint( Qgis::WkbType::PointZM, 10, 1, 4, 8 ) );
 
   QVERIFY( !mp.removeDuplicateNodes() );
   QCOMPARE( mp.numGeometries(), 2 );

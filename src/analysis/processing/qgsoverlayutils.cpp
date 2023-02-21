@@ -23,7 +23,7 @@
 
 ///@cond PRIVATE
 
-bool QgsOverlayUtils::sanitizeIntersectionResult( QgsGeometry &geom, QgsWkbTypes::GeometryType geometryType, SanitizeFlags flags )
+bool QgsOverlayUtils::sanitizeIntersectionResult( QgsGeometry &geom, Qgis::GeometryType geometryType, SanitizeFlags flags )
 {
   if ( geom.isNull() )
   {
@@ -34,7 +34,7 @@ bool QgsOverlayUtils::sanitizeIntersectionResult( QgsGeometry &geom, QgsWkbTypes
   // Intersection of geometries may give use also geometries we do not want in our results.
   // For example, two square polygons touching at the corner have a point as the intersection, but no area.
   // In other cases we may get a mixture of geometries in the output - we want to keep only the expected types.
-  if ( QgsWkbTypes::flatType( geom.wkbType() ) == QgsWkbTypes::GeometryCollection )
+  if ( QgsWkbTypes::flatType( geom.wkbType() ) == Qgis::WkbType::GeometryCollection )
   {
     // try to filter out irrelevant parts with different geometry type than what we want
     geom.convertGeometryCollectionToSubclass( geometryType );
@@ -48,7 +48,7 @@ bool QgsOverlayUtils::sanitizeIntersectionResult( QgsGeometry &geom, QgsWkbTypes
     return false;
   }
 
-  if ( geometryType != QgsWkbTypes::GeometryType::PointGeometry
+  if ( geometryType != Qgis::GeometryType::Point
        || !( flags & SanitizeFlag::DontPromotePointGeometryToMultiPoint ) )
   {
     // some data providers are picky about the geometries we pass to them: we can't add single-part geometries
@@ -61,7 +61,7 @@ bool QgsOverlayUtils::sanitizeIntersectionResult( QgsGeometry &geom, QgsWkbTypes
 
 
 //! Makes sure that what came out from difference of two geometries is good to be used in the output
-static bool sanitizeDifferenceResult( QgsGeometry &geom, QgsWkbTypes::GeometryType geometryType, QgsOverlayUtils::SanitizeFlags flags )
+static bool sanitizeDifferenceResult( QgsGeometry &geom, Qgis::GeometryType geometryType, QgsOverlayUtils::SanitizeFlags flags )
 {
   if ( geom.isNull() )
   {
@@ -70,7 +70,7 @@ static bool sanitizeDifferenceResult( QgsGeometry &geom, QgsWkbTypes::GeometryTy
   }
 
   //fix geometry collections
-  if ( QgsWkbTypes::flatType( geom.wkbType() ) == QgsWkbTypes::GeometryCollection )
+  if ( QgsWkbTypes::flatType( geom.wkbType() ) == Qgis::WkbType::GeometryCollection )
   {
     // try to filter out irrelevant parts with different geometry type than what we want
     geom.convertGeometryCollectionToSubclass( geometryType );
@@ -81,7 +81,7 @@ static bool sanitizeDifferenceResult( QgsGeometry &geom, QgsWkbTypes::GeometryTy
   if ( geom.isEmpty() )
     return false;
 
-  if ( geometryType != QgsWkbTypes::GeometryType::PointGeometry
+  if ( geometryType != Qgis::GeometryType::Point
        || !( flags & QgsOverlayUtils::SanitizeFlag::DontPromotePointGeometryToMultiPoint ) )
   {
     // some data providers are picky about the geometries we pass to them: we can't add single-part geometries
@@ -100,7 +100,7 @@ static QString writeFeatureError()
 
 void QgsOverlayUtils::difference( const QgsFeatureSource &sourceA, const QgsFeatureSource &sourceB, QgsFeatureSink &sink, QgsProcessingContext &context, QgsProcessingFeedback *feedback, long &count, long totalCount, QgsOverlayUtils::DifferenceOutput outputAttrs, const QgsGeometryParameters &parameters, SanitizeFlags flags )
 {
-  const QgsWkbTypes::GeometryType geometryType = QgsWkbTypes::geometryType( QgsWkbTypes::multiType( sourceA.wkbType() ) );
+  const Qgis::GeometryType geometryType = QgsWkbTypes::geometryType( QgsWkbTypes::multiType( sourceA.wkbType() ) );
   QgsFeatureRequest requestB;
   requestB.setNoAttributes();
   if ( outputAttrs != OutputBA )
@@ -232,7 +232,7 @@ void QgsOverlayUtils::difference( const QgsFeatureSource &sourceA, const QgsFeat
 
 void QgsOverlayUtils::intersection( const QgsFeatureSource &sourceA, const QgsFeatureSource &sourceB, QgsFeatureSink &sink, QgsProcessingContext &context, QgsProcessingFeedback *feedback, long &count, long totalCount, const QList<int> &fieldIndicesA, const QList<int> &fieldIndicesB, const QgsGeometryParameters &parameters )
 {
-  const QgsWkbTypes::GeometryType geometryType = QgsWkbTypes::geometryType( QgsWkbTypes::multiType( sourceA.wkbType() ) );
+  const Qgis::GeometryType geometryType = QgsWkbTypes::geometryType( QgsWkbTypes::multiType( sourceA.wkbType() ) );
   const int attrCount = fieldIndicesA.count() + fieldIndicesB.count();
 
   QgsFeatureRequest request;
@@ -334,7 +334,7 @@ void QgsOverlayUtils::resolveOverlaps( const QgsFeatureSource &source, QgsFeatur
 
   QgsFeatureId newFid = -1;
 
-  const QgsWkbTypes::GeometryType geometryType = QgsWkbTypes::geometryType( QgsWkbTypes::multiType( source.wkbType() ) );
+  const Qgis::GeometryType geometryType = QgsWkbTypes::geometryType( QgsWkbTypes::multiType( source.wkbType() ) );
 
   QgsFeatureRequest requestOnlyGeoms;
   requestOnlyGeoms.setNoAttributes();

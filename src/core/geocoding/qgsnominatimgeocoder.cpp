@@ -65,9 +65,9 @@ QgsFields QgsNominatimGeocoder::appendedFields() const
   return fields;
 }
 
-QgsWkbTypes::Type QgsNominatimGeocoder::wkbType() const
+Qgis::WkbType QgsNominatimGeocoder::wkbType() const
 {
-  return QgsWkbTypes::Point;
+  return Qgis::WkbType::Point;
 }
 
 QList<QgsGeocoderResult> QgsNominatimGeocoder::geocodeString( const QString &string, const QgsGeocoderContext &context, QgsFeedback *feedback ) const

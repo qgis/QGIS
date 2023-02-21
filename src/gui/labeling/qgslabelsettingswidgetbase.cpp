@@ -39,7 +39,7 @@ QgsSymbolWidgetContext QgsLabelSettingsWidgetBase::context() const
   return mContext;
 }
 
-void QgsLabelSettingsWidgetBase::setGeometryType( QgsWkbTypes::GeometryType )
+void QgsLabelSettingsWidgetBase::setGeometryType( Qgis::GeometryType )
 {
 
 }

@@ -516,9 +516,9 @@ void QgsTextFormatWidget::initWidget()
     updateCalloutFrameStatus();
   } );
 
-  mGeometryGeneratorType->addItem( QgsIconUtils::iconForWkbType( QgsWkbTypes::Polygon ), tr( "Polygon / MultiPolygon" ), QgsWkbTypes::GeometryType::PolygonGeometry );
-  mGeometryGeneratorType->addItem( QgsIconUtils::iconForWkbType( QgsWkbTypes::LineString ), tr( "LineString / MultiLineString" ), QgsWkbTypes::GeometryType::LineGeometry );
-  mGeometryGeneratorType->addItem( QgsIconUtils::iconForWkbType( QgsWkbTypes::Point ), tr( "Point / MultiPoint" ), QgsWkbTypes::GeometryType::PointGeometry );
+  mGeometryGeneratorType->addItem( QgsIconUtils::iconForWkbType( Qgis::WkbType::Polygon ), tr( "Polygon / MultiPolygon" ), static_cast< int >( Qgis::GeometryType::Polygon ) );
+  mGeometryGeneratorType->addItem( QgsIconUtils::iconForWkbType( Qgis::WkbType::LineString ), tr( "LineString / MultiLineString" ), static_cast< int >( Qgis::GeometryType::Line ) );
+  mGeometryGeneratorType->addItem( QgsIconUtils::iconForWkbType( Qgis::WkbType::Point ), tr( "Point / MultiPoint" ), static_cast< int >( Qgis::GeometryType::Point ) );
 
   // set correct initial tab to match displayed setting page
   whileBlocking( mOptionsTab )->setCurrentIndex( mLabelStackedWidget->currentIndex() );
@@ -1011,8 +1011,8 @@ void QgsTextFormatWidget::updateWidgetForFormat( const QgsTextFormat &format )
   }
   mBackgroundEffectWidget->setPaintEffect( mBackgroundEffect.get() );
 
-  mBackgroundMarkerSymbolButton->setSymbol( background.markerSymbol() ? background.markerSymbol()->clone() : QgsSymbol::defaultSymbol( QgsWkbTypes::PointGeometry ) );
-  mBackgroundFillSymbolButton->setSymbol( background.fillSymbol() ? background.fillSymbol()->clone() : QgsSymbol::defaultSymbol( QgsWkbTypes::PolygonGeometry ) );
+  mBackgroundMarkerSymbolButton->setSymbol( background.markerSymbol() ? background.markerSymbol()->clone() : QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ) );
+  mBackgroundFillSymbolButton->setSymbol( background.fillSymbol() ? background.fillSymbol()->clone() : QgsSymbol::defaultSymbol( Qgis::GeometryType::Polygon ) );
 
   // drop shadow
   mShadowDrawChkBx->setChecked( shadow.enabled() );
@@ -1330,7 +1330,7 @@ void QgsTextFormatWidget::changeBufferColor( const QColor &color )
 
 void QgsTextFormatWidget::updatePlacementWidgets()
 {
-  const QgsWkbTypes::GeometryType currentGeometryType = labelGeometryType();
+  const Qgis::GeometryType currentGeometryType = labelGeometryType();
   bool showLineFrame = false;
   bool showCentroidFrame = false;
   bool showQuadrantFrame = false;
@@ -1343,37 +1343,37 @@ void QgsTextFormatWidget::updatePlacementWidgets()
   bool showMaxCharAngleFrame = false;
 
   const Qgis::LabelPlacement currentPlacement = static_cast< Qgis::LabelPlacement >( mPlacementModeComboBox->currentData().toInt() );
-  const bool showPolygonPlacementOptions = ( currentGeometryType == QgsWkbTypes::PolygonGeometry && currentPlacement != Qgis::LabelPlacement::Line && currentPlacement != Qgis::LabelPlacement::PerimeterCurved && currentPlacement != Qgis::LabelPlacement::OutsidePolygons );
+  const bool showPolygonPlacementOptions = ( currentGeometryType == Qgis::GeometryType::Polygon && currentPlacement != Qgis::LabelPlacement::Line && currentPlacement != Qgis::LabelPlacement::PerimeterCurved && currentPlacement != Qgis::LabelPlacement::OutsidePolygons );
 
   bool enableMultiLinesFrame = true;
 
   if ( currentPlacement == Qgis::LabelPlacement::AroundPoint
-       && ( currentGeometryType == QgsWkbTypes::PointGeometry || currentGeometryType == QgsWkbTypes::PolygonGeometry ) )
+       && ( currentGeometryType == Qgis::GeometryType::Point || currentGeometryType == Qgis::GeometryType::Polygon ) )
   {
-    showCentroidFrame = currentGeometryType == QgsWkbTypes::PolygonGeometry;
+    showCentroidFrame = currentGeometryType == Qgis::GeometryType::Polygon;
     showDistanceFrame = true;
     //showRotationFrame = true; // TODO: uncomment when supported
-    showQuadrantFrame = currentGeometryType == QgsWkbTypes::PointGeometry;
+    showQuadrantFrame = currentGeometryType == Qgis::GeometryType::Point;
   }
   else if ( currentPlacement == Qgis::LabelPlacement::OverPoint
-            && ( currentGeometryType == QgsWkbTypes::PointGeometry || currentGeometryType == QgsWkbTypes::PolygonGeometry ) )
+            && ( currentGeometryType == Qgis::GeometryType::Point || currentGeometryType == Qgis::GeometryType::Polygon ) )
   {
-    showCentroidFrame = currentGeometryType == QgsWkbTypes::PolygonGeometry;
+    showCentroidFrame = currentGeometryType == Qgis::GeometryType::Polygon;
     showQuadrantFrame = true;
     showFixedQuadrantFrame = true;
     showOffsetFrame = true;
     showRotationFrame = true;
   }
-  else if ( currentGeometryType == QgsWkbTypes::PointGeometry && currentPlacement == Qgis::LabelPlacement::OrderedPositionsAroundPoint )
+  else if ( currentGeometryType == Qgis::GeometryType::Point && currentPlacement == Qgis::LabelPlacement::OrderedPositionsAroundPoint )
   {
     showDistanceFrame = true;
     showPlacementPriorityFrame = true;
     showOffsetTypeFrame  = true;
   }
-  else if ( ( currentGeometryType == QgsWkbTypes::LineGeometry && currentPlacement == Qgis::LabelPlacement::Line )
-            || ( currentGeometryType == QgsWkbTypes::PolygonGeometry && currentPlacement == Qgis::LabelPlacement::Line )
-            || ( currentGeometryType == QgsWkbTypes::LineGeometry && currentPlacement == Qgis::LabelPlacement::Curved )
-            || ( currentGeometryType == QgsWkbTypes::PolygonGeometry && currentPlacement == Qgis::LabelPlacement::PerimeterCurved ) )
+  else if ( ( currentGeometryType == Qgis::GeometryType::Line && currentPlacement == Qgis::LabelPlacement::Line )
+            || ( currentGeometryType == Qgis::GeometryType::Polygon && currentPlacement == Qgis::LabelPlacement::Line )
+            || ( currentGeometryType == Qgis::GeometryType::Line && currentPlacement == Qgis::LabelPlacement::Curved )
+            || ( currentGeometryType == Qgis::GeometryType::Polygon && currentPlacement == Qgis::LabelPlacement::PerimeterCurved ) )
   {
     showLineFrame = true;
     showDistanceFrame = true;
@@ -1383,13 +1383,13 @@ void QgsTextFormatWidget::updatePlacementWidgets()
     chkLineOrientationDependent->setEnabled( offline );
     mPlacementDistanceFrame->setEnabled( offline );
 
-    const bool isCurved = ( currentGeometryType == QgsWkbTypes::LineGeometry && currentPlacement == Qgis::LabelPlacement::Curved )
-                          || ( currentGeometryType == QgsWkbTypes::PolygonGeometry && currentPlacement == Qgis::LabelPlacement::PerimeterCurved );
+    const bool isCurved = ( currentGeometryType == Qgis::GeometryType::Line && currentPlacement == Qgis::LabelPlacement::Curved )
+                          || ( currentGeometryType == Qgis::GeometryType::Polygon && currentPlacement == Qgis::LabelPlacement::PerimeterCurved );
     showMaxCharAngleFrame = isCurved;
     // TODO: enable mMultiLinesFrame when supported for curved labels
     enableMultiLinesFrame = !isCurved;
   }
-  else if ( currentGeometryType == QgsWkbTypes::PolygonGeometry
+  else if ( currentGeometryType == Qgis::GeometryType::Polygon
             && ( currentPlacement == Qgis::LabelPlacement::OutsidePolygons || mCheckAllowLabelsOutsidePolygons->isChecked() || mAllowOutsidePolygonsDDBtn->isActive() ) )
   {
     showDistanceFrame = true;
@@ -1405,10 +1405,10 @@ void QgsTextFormatWidget::updatePlacementWidgets()
   mPlacementDistanceFrame->setVisible( showDistanceFrame );
   mPlacementOffsetTypeFrame->setVisible( showOffsetTypeFrame );
   mPlacementRotationFrame->setVisible( showRotationFrame );
-  mPlacementRepeatGroupBox->setVisible( currentGeometryType == QgsWkbTypes::LineGeometry || ( currentGeometryType == QgsWkbTypes::PolygonGeometry &&
+  mPlacementRepeatGroupBox->setVisible( currentGeometryType == Qgis::GeometryType::Line || ( currentGeometryType == Qgis::GeometryType::Polygon &&
                                         ( currentPlacement == Qgis::LabelPlacement::Line || currentPlacement == Qgis::LabelPlacement::PerimeterCurved ) ) );
-  mPlacementOverrunGroupBox->setVisible( currentGeometryType == QgsWkbTypes::LineGeometry && currentPlacement != Qgis::LabelPlacement::Horizontal );
-  mLineAnchorGroupBox->setVisible( currentGeometryType == QgsWkbTypes::LineGeometry );
+  mPlacementOverrunGroupBox->setVisible( currentGeometryType == Qgis::GeometryType::Line && currentPlacement != Qgis::LabelPlacement::Horizontal );
+  mLineAnchorGroupBox->setVisible( currentGeometryType == Qgis::GeometryType::Line );
   mPlacementMaxCharAngleFrame->setVisible( showMaxCharAngleFrame );
 
   mMultiLinesFrame->setEnabled( enableMultiLinesFrame );
@@ -1418,47 +1418,47 @@ void QgsTextFormatWidget::updatePlacementWidgets()
   switch ( currentPlacement )
   {
     case Qgis::LabelPlacement::AroundPoint:
-      if ( currentGeometryType == QgsWkbTypes::PointGeometry )
+      if ( currentGeometryType == Qgis::GeometryType::Point )
         helperText = tr( "Arranges label candidates in a clockwise circle around the feature, preferring placements to the top-right of the feature." );
-      else if ( currentGeometryType == QgsWkbTypes::PolygonGeometry )
+      else if ( currentGeometryType == Qgis::GeometryType::Polygon )
         helperText = tr( "Arranges label candidates in a cluster around the feature's centroid, preferring placements directly over the centroid." );
       break;
     case Qgis::LabelPlacement::OverPoint:
-      if ( currentGeometryType == QgsWkbTypes::PointGeometry )
+      if ( currentGeometryType == Qgis::GeometryType::Point )
         helperText = tr( "Arranges label candidates directly over the feature or at a preset offset from the feature." );
-      else if ( currentGeometryType == QgsWkbTypes::PolygonGeometry )
+      else if ( currentGeometryType == Qgis::GeometryType::Polygon )
         helperText = tr( "Arranges label candidates directly over the feature's centroid, or at a preset offset from the centroid." );
       break;
     case Qgis::LabelPlacement::Line:
-      if ( currentGeometryType == QgsWkbTypes::LineGeometry )
+      if ( currentGeometryType == Qgis::GeometryType::Line )
         helperText = tr( "Arranges label candidates parallel to a generalised line representing the feature. Placements which fall over straighter portions of the line are preferred." );
-      else if ( currentGeometryType == QgsWkbTypes::PolygonGeometry )
+      else if ( currentGeometryType == Qgis::GeometryType::Polygon )
         helperText = tr( "Arranges label candidates parallel to a generalised line representing the polygon's perimeter. Placements which fall over straighter portions of the perimeter are preferred." );
       break;
     case Qgis::LabelPlacement::Curved:
-      if ( currentGeometryType == QgsWkbTypes::LineGeometry )
+      if ( currentGeometryType == Qgis::GeometryType::Line )
         helperText = tr( "Arranges candidates following the curvature of a line feature. Placements which fall over straighter portions of the line are preferred." );
       break;
     case Qgis::LabelPlacement::Horizontal:
-      if ( currentGeometryType == QgsWkbTypes::PolygonGeometry )
+      if ( currentGeometryType == Qgis::GeometryType::Polygon )
         helperText = tr( "Arranges label candidates scattered throughout the polygon. Labels will always be placed horizontally, with placements further from the edges of the polygon preferred." );
-      else if ( currentGeometryType == QgsWkbTypes::LineGeometry )
+      else if ( currentGeometryType == Qgis::GeometryType::Line )
         helperText = tr( "Label candidates are arranged horizontally along the length of the feature." );
       break;
     case Qgis::LabelPlacement::Free:
-      if ( currentGeometryType == QgsWkbTypes::PolygonGeometry )
+      if ( currentGeometryType == Qgis::GeometryType::Polygon )
         helperText = tr( "Arranges label candidates scattered throughout the polygon. Labels are rotated to respect the polygon's orientation, with placements further from the edges of the polygon preferred." );
       break;
     case Qgis::LabelPlacement::OrderedPositionsAroundPoint:
-      if ( currentGeometryType == QgsWkbTypes::PointGeometry )
+      if ( currentGeometryType == Qgis::GeometryType::Point )
         helperText = tr( "Label candidates are placed in predefined positions around the features. Preference is given to positions with greatest cartographic appeal, e.g., top right and bottom right of the feature." );
       break;
     case Qgis::LabelPlacement::PerimeterCurved:
-      if ( currentGeometryType == QgsWkbTypes::PolygonGeometry )
+      if ( currentGeometryType == Qgis::GeometryType::Polygon )
         helperText = tr( "Arranges candidates following the curvature of the feature's perimeter. Placements which fall over straighter portions of the perimeter are preferred." );
       break;
     case Qgis::LabelPlacement::OutsidePolygons:
-      if ( currentGeometryType == QgsWkbTypes::PolygonGeometry )
+      if ( currentGeometryType == Qgis::GeometryType::Polygon )
         helperText = tr( "Label candidates are placed outside of the features, preferring placements which give greatest visual association between the label and the feature." );
       break;
   }
@@ -2135,10 +2135,10 @@ QgsExpressionContext QgsTextFormatWidget::createExpressionContext() const
   return expContext;
 }
 
-QgsWkbTypes::GeometryType QgsTextFormatWidget::labelGeometryType() const
+Qgis::GeometryType QgsTextFormatWidget::labelGeometryType() const
 {
   if ( mGeometryGeneratorGroupBox->isChecked() )
-    return mGeometryGeneratorType->currentData().value<QgsWkbTypes::GeometryType>();
+    return mGeometryGeneratorType->currentData().value<Qgis::GeometryType>();
   else if ( mLayer )
     return mLayer->geometryType();
   else

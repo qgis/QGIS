@@ -81,7 +81,7 @@ class QgsDrapeToZAlgorithm : public QgsDrapeAlgorithmBase
 
   protected:
 
-    QgsWkbTypes::Type outputWkbType( QgsWkbTypes::Type inputWkbType ) const override;
+    Qgis::WkbType outputWkbType( Qgis::WkbType inputWkbType ) const override;
 
   private:
     void prepareGeometry( QgsGeometry &geometry, double defaultVal ) const override;
@@ -105,7 +105,7 @@ class QgsDrapeToMAlgorithm : public QgsDrapeAlgorithmBase
 
   protected:
 
-    QgsWkbTypes::Type outputWkbType( QgsWkbTypes::Type inputWkbType ) const override;
+    Qgis::WkbType outputWkbType( Qgis::WkbType inputWkbType ) const override;
 
   private:
     void prepareGeometry( QgsGeometry &geometry, double defaultVal ) const override;

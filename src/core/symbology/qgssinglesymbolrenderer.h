@@ -72,7 +72,7 @@ class CORE_EXPORT QgsSingleSymbolRenderer : public QgsFeatureRenderer
      *
      * The caller takes ownership of the returned renderer.
      */
-    static QgsFeatureRenderer *createFromSld( QDomElement &element, QgsWkbTypes::GeometryType geomType ) SIP_FACTORY;
+    static QgsFeatureRenderer *createFromSld( QDomElement &element, Qgis::GeometryType geomType ) SIP_FACTORY;
 
     QgsFeatureRenderer::Capabilities capabilities() override { return SymbolLevels; }
     QgsSymbolList symbols( QgsRenderContext &context ) const override;

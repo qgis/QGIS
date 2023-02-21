@@ -37,7 +37,7 @@ void QgsMapToolProfileCurveFromFeature::canvasPressEvent( QgsMapMouseEvent *e )
   {
     e->ignore();
 
-    const QList<QgsMapToolIdentify::IdentifyResult> results = QgsIdentifyMenu::findFeaturesOnCanvas( e, mCanvas, { QgsWkbTypes::LineGeometry } );
+    const QList<QgsMapToolIdentify::IdentifyResult> results = QgsIdentifyMenu::findFeaturesOnCanvas( e, mCanvas, { Qgis::GeometryType::Line } );
     if ( results.empty( ) )
       return;
 

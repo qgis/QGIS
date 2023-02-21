@@ -97,8 +97,8 @@ class TestQgsRuleBasedRenderer: public QgsTest
       f3.setAttribute( idx, QVariant( 100 ) );
 
       // prepare renderer
-      QgsSymbol *s1 = QgsSymbol::defaultSymbol( QgsWkbTypes::PointGeometry );
-      QgsSymbol *s2 = QgsSymbol::defaultSymbol( QgsWkbTypes::PointGeometry );
+      QgsSymbol *s1 = QgsSymbol::defaultSymbol( Qgis::GeometryType::Point );
+      QgsSymbol *s2 = QgsSymbol::defaultSymbol( Qgis::GeometryType::Point );
       RRule *rootRule = new RRule( nullptr );
       rootRule->appendChild( new RRule( s1, 0, 0, QStringLiteral( "fld >= 5 and fld <= 20" ) ) );
       rootRule->appendChild( new RRule( s2, 0, 0, QStringLiteral( "fld <= 10" ) ) );
@@ -1276,9 +1276,9 @@ class TestQgsRuleBasedRenderer: public QgsTest
       QgsRuleBasedRenderer::Rule *rootRule = new QgsRuleBasedRenderer::Rule( nullptr );
       std::unique_ptr< QgsRuleBasedRenderer > renderer = std::make_unique< QgsRuleBasedRenderer >( rootRule );
 
-      QgsRuleBasedRenderer::Rule *rule1 = new QgsRuleBasedRenderer::Rule( QgsSymbol::defaultSymbol( QgsWkbTypes::GeometryType::PointGeometry ), 0, 0, "\"field_name\" = 1" );
-      QgsRuleBasedRenderer::Rule *rule2 = new QgsRuleBasedRenderer::Rule( QgsSymbol::defaultSymbol( QgsWkbTypes::GeometryType::PointGeometry ), 0, 0, "\"field_name\" = 6" );
-      QgsRuleBasedRenderer::Rule *ruleElse = new QgsRuleBasedRenderer::Rule( QgsSymbol::defaultSymbol( QgsWkbTypes::GeometryType::PointGeometry ), 0, 0, "ELSE" );
+      QgsRuleBasedRenderer::Rule *rule1 = new QgsRuleBasedRenderer::Rule( QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ), 0, 0, "\"field_name\" = 1" );
+      QgsRuleBasedRenderer::Rule *rule2 = new QgsRuleBasedRenderer::Rule( QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ), 0, 0, "\"field_name\" = 6" );
+      QgsRuleBasedRenderer::Rule *ruleElse = new QgsRuleBasedRenderer::Rule( QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ), 0, 0, "ELSE" );
 
       Q_ASSERT( ruleElse->isElse() );
 

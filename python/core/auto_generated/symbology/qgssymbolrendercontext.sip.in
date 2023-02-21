@@ -134,7 +134,7 @@ Sets rendering hint flags for the symbol.
 Returns the current feature being rendered. This may be ``None``.
 %End
 
-    void setOriginalGeometryType( QgsWkbTypes::GeometryType type );
+    void setOriginalGeometryType( Qgis::GeometryType type );
 %Docstring
 Sets the geometry type for the original feature geometry being rendered.
 
@@ -143,7 +143,7 @@ Sets the geometry type for the original feature geometry being rendered.
 .. versionadded:: 3.0
 %End
 
-    QgsWkbTypes::GeometryType originalGeometryType() const;
+    Qgis::GeometryType originalGeometryType() const;
 %Docstring
 Returns the geometry type for the original feature geometry being rendered. This can be
 useful if symbol layers alter their appearance based on geometry type - eg offsetting a

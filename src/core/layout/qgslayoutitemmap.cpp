@@ -2644,7 +2644,7 @@ void QgsLayoutItemMap::updateAtlasFeature()
   QgsRectangle originalExtent = mExtent;
 
   //sanity check - only allow fixed scale mode for point layers
-  bool isPointLayer = QgsWkbTypes::geometryType( mLayout->reportContext().layer()->wkbType() ) == QgsWkbTypes::PointGeometry;
+  bool isPointLayer = QgsWkbTypes::geometryType( mLayout->reportContext().layer()->wkbType() ) == Qgis::GeometryType::Point;
 
   if ( mAtlasScalingMode == Fixed || mAtlasScalingMode == Predefined || isPointLayer )
   {

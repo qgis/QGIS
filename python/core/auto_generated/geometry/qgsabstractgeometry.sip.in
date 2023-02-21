@@ -137,7 +137,7 @@ Returns a unique string representing the geometry type.
 .. seealso:: :py:func:`wktTypeStr`
 %End
 
-    QgsWkbTypes::Type wkbType() const /HoldGIL/;
+    Qgis::WkbType wkbType() const /HoldGIL/;
 %Docstring
 Returns the WKB type of the geometry.
 
@@ -713,7 +713,7 @@ coordinates reversed.
 .. versionadded:: 3.2
 %End
 
-    virtual bool convertTo( QgsWkbTypes::Type type );
+    virtual bool convertTo( Qgis::WkbType type );
 %Docstring
 Converts the geometry to a specified type.
 
@@ -920,7 +920,7 @@ Returns point at index (for geometries without child geometries - i.e. curve / p
 
   protected:
 
-    void setZMTypeFromSubGeometry( const QgsAbstractGeometry *subggeom, QgsWkbTypes::Type baseGeomType );
+    void setZMTypeFromSubGeometry( const QgsAbstractGeometry *subggeom, Qgis::WkbType baseGeomType );
 %Docstring
 Updates the geometry type based on whether sub geometries contain z or m values.
 %End

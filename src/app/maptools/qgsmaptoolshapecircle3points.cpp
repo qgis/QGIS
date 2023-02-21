@@ -17,7 +17,6 @@
 #include "qgsmaptoolshapecircle3points.h"
 #include "qgsgeometryrubberband.h"
 #include "qgslinestring.h"
-#include "qgsmapcanvas.h"
 #include "qgspoint.h"
 #include "qgsmapmouseevent.h"
 #include "qgsmaptoolcapture.h"
@@ -58,7 +57,7 @@ bool QgsMapToolShapeCircle3Points::cadCanvasReleaseEvent( QgsMapMouseEvent *e, Q
       mPoints.append( mParentTool->mapPoint( *e ) );
     if ( !mPoints.isEmpty() && !mTempRubberBand )
     {
-      QgsWkbTypes::GeometryType type = mode == QgsMapToolCapture::CapturePolygon ? QgsWkbTypes::PolygonGeometry : QgsWkbTypes::LineGeometry;
+      Qgis::GeometryType type = mode == QgsMapToolCapture::CapturePolygon ? Qgis::GeometryType::Polygon : Qgis::GeometryType::Line;
       mTempRubberBand = mParentTool->createGeometryRubberBand( type, true );
       mTempRubberBand->show();
     }

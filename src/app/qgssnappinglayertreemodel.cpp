@@ -269,7 +269,7 @@ Qt::ItemFlags QgsSnappingLayerTreeModel::flags( const QModelIndex &idx ) const
     {
       if ( idx.column() == AvoidIntersectionColumn )
       {
-        if ( vl->geometryType() == QgsWkbTypes::PolygonGeometry )
+        if ( vl->geometryType() == Qgis::GeometryType::Polygon )
         {
           return Qt::ItemIsEnabled | Qt::ItemIsEditable | Qt::ItemIsUserCheckable;
         }
@@ -629,7 +629,7 @@ QVariant QgsSnappingLayerTreeModel::data( const QModelIndex &idx, int role ) con
     // avoid intersection(Overlap)
     if ( idx.column() == AvoidIntersectionColumn )
     {
-      if ( role == Qt::CheckStateRole && vl->geometryType() == QgsWkbTypes::PolygonGeometry )
+      if ( role == Qt::CheckStateRole && vl->geometryType() == Qgis::GeometryType::Polygon )
       {
         if ( mProject->avoidIntersectionsLayers().contains( vl ) )
         {

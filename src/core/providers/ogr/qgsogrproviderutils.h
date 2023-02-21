@@ -138,7 +138,7 @@ class CORE_EXPORT QgsOgrProviderUtils
     static bool createEmptyDataSource( const QString &uri,
                                        const QString &format,
                                        const QString &encoding,
-                                       QgsWkbTypes::Type vectortype,
+                                       Qgis::WkbType vectortype,
                                        const QList< QPair<QString, QString> > &attributes,
                                        const QgsCoordinateReferenceSystem &srs,
                                        QString &errorMessage );
@@ -221,10 +221,10 @@ class CORE_EXPORT QgsOgrProviderUtils
     static void invalidateCachedLastModifiedDate( const QString &dsName );
 
     //! Converts a QGIS WKB type to the corresponding OGR wkb type
-    static OGRwkbGeometryType ogrTypeFromQgisType( QgsWkbTypes::Type type );
+    static OGRwkbGeometryType ogrTypeFromQgisType( Qgis::WkbType type );
 
     //! Converts a OGR WKB type to the corresponding QGIS wkb type
-    static QgsWkbTypes::Type qgisTypeFromOgrType( OGRwkbGeometryType type );
+    static Qgis::WkbType qgisTypeFromOgrType( OGRwkbGeometryType type );
 
     //! Conerts a string to an OGR WKB geometry type
     static OGRwkbGeometryType ogrWkbGeometryTypeFromName( const QString &typeName );

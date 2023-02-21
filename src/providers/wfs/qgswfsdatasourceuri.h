@@ -94,7 +94,7 @@ class QgsWFSDataSourceURI
     bool hasGeometryTypeFilter() const;
 
     //! Gets the geometry type filter.
-    QgsWkbTypes::Type geometryTypeFilter() const;
+    Qgis::WkbType geometryTypeFilter() const;
 
     //! Gets SQL query
     QString sql() const;

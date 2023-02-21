@@ -322,7 +322,7 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
         /**
          * Create a rule from the SLD provided in element and for the specified geometry type.
          */
-        static QgsRuleBasedRenderer::Rule *createFromSld( QDomElement &element, QgsWkbTypes::GeometryType geomType ) SIP_FACTORY;
+        static QgsRuleBasedRenderer::Rule *createFromSld( QDomElement &element, Qgis::GeometryType geomType ) SIP_FACTORY;
 
         QDomElement save( QDomDocument &doc, QgsSymbolMap &symbolMap ) const;
 
@@ -532,7 +532,7 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
 
     void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props = QVariantMap() ) const override;
 
-    static QgsFeatureRenderer *createFromSld( QDomElement &element, QgsWkbTypes::GeometryType geomType ) SIP_FACTORY;
+    static QgsFeatureRenderer *createFromSld( QDomElement &element, Qgis::GeometryType geomType ) SIP_FACTORY;
 
     QgsSymbolList symbols( QgsRenderContext &context ) const override;
 

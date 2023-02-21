@@ -572,7 +572,7 @@ QString QgsProviderRegistry::encodeUri( const QString &providerKey, const QVaria
 Qgis::VectorExportResult QgsProviderRegistry::createEmptyLayer( const QString &providerKey,
     const QString &uri,
     const QgsFields &fields,
-    QgsWkbTypes::Type wkbType,
+    Qgis::WkbType wkbType,
     const QgsCoordinateReferenceSystem &srs,
     bool overwrite, QMap<int, int> &oldToNewAttrIdxMap,
     QString &errorMessage,

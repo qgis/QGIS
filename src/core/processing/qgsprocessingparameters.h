@@ -305,7 +305,7 @@ class CORE_EXPORT QgsProcessingOutputLayerDefinition
   private:
 
     bool mUseRemapping = false;
-    QgsRemappingSinkDefinition mRemappingDefinition;
+    QgsRemappingSinkDefinition mRemappingDefinition = QgsRemappingSinkDefinition();
 
 };
 
@@ -1159,7 +1159,7 @@ class CORE_EXPORT QgsProcessingParameters
      * This function creates a new object and the caller takes responsibility for deleting the returned object.
      */
     static QgsFeatureSink *parameterAsSink( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters,
-                                            const QgsFields &fields, QgsWkbTypes::Type geometryType, const QgsCoordinateReferenceSystem &crs,
+                                            const QgsFields &fields, Qgis::WkbType geometryType, const QgsCoordinateReferenceSystem &crs,
                                             QgsProcessingContext &context, QString &destinationIdentifier SIP_OUT, QgsFeatureSink::SinkFlags sinkFlags = QgsFeatureSink::SinkFlags(), const QVariantMap &createOptions = QVariantMap(), const QStringList &datasourceOptions = QStringList(), const QStringList &layerOptions = QStringList() ) SIP_FACTORY;
 
     /**
@@ -1182,7 +1182,7 @@ class CORE_EXPORT QgsProcessingParameters
      * \since QGIS 3.4
      */
     static QgsFeatureSink *parameterAsSink( const QgsProcessingParameterDefinition *definition, const QVariant &value,
-                                            const QgsFields &fields, QgsWkbTypes::Type geometryType, const QgsCoordinateReferenceSystem &crs,
+                                            const QgsFields &fields, Qgis::WkbType geometryType, const QgsCoordinateReferenceSystem &crs,
                                             QgsProcessingContext &context, QString &destinationIdentifier SIP_OUT, QgsFeatureSink::SinkFlags sinkFlags = QgsFeatureSink::SinkFlags(), const QVariantMap &createOptions = QVariantMap(), const QStringList &datasourceOptions = QStringList(), const QStringList &layerOptions = QStringList() ) SIP_THROW( QgsProcessingException ) SIP_FACTORY;
 
     /**

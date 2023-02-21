@@ -50,7 +50,7 @@ class QgsExtractVerticesAlgorithm : public QgsProcessingFeatureBasedAlgorithm
     QString outputName() const override;
     QgsFields outputFields( const QgsFields &inputFields ) const override;
     QgsProcessing::SourceType outputLayerType() const override;
-    QgsWkbTypes::Type outputWkbType( QgsWkbTypes::Type inputWkbType ) const override;
+    Qgis::WkbType outputWkbType( Qgis::WkbType inputWkbType ) const override;
     QgsProcessingFeatureSource::Flag sourceFlags() const override;
     QgsFeatureSink::SinkFlags sinkFlags() const override;
 
@@ -58,7 +58,7 @@ class QgsExtractVerticesAlgorithm : public QgsProcessingFeatureBasedAlgorithm
     QgsFeatureList processFeature( const QgsFeature &feature,  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
   private:
-    QgsWkbTypes::GeometryType mGeometryType;
+    Qgis::GeometryType mGeometryType;
 };
 
 ///@endcond PRIVATE

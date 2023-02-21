@@ -215,13 +215,13 @@ QList<QgsProviderSublayerDetails> QgsWfsProviderMetadata::querySublayers( const 
   if ( wfsUri.hasGeometryTypeFilter() ||
        !caps.supportsGeometryTypeFilters() )
   {
-    if ( provider.wkbType() == QgsWkbTypes::Type::Unknown )
+    if ( provider.wkbType() == Qgis::WkbType::Unknown )
       provider.issueInitialGetFeature();
     details.setWkbType( provider.wkbType() );
     return res;
   }
 
-  if ( provider.wkbType() == QgsWkbTypes::Type::Unknown &&
+  if ( provider.wkbType() == Qgis::WkbType::Unknown &&
        provider.sharedData()->layerProperties().size() == 1 )
   {
     std::vector<std::unique_ptr<QgsWFSGetFeature>> requests;
@@ -338,14 +338,14 @@ QList<QgsProviderSublayerDetails> QgsWfsProviderMetadata::querySublayers( const 
     const struct
     {
       int index;
-      QgsWkbTypes::Type wkbType;
+      Qgis::WkbType wkbType;
     } types[] =
     {
-      { INDEX_NULL, QgsWkbTypes::NoGeometry },
-      { INDEX_POINT, QgsWkbTypes::MultiPoint },
-      { INDEX_CURVE, QgsWkbTypes::MultiCurve },
-      { INDEX_SURFACE, QgsWkbTypes::MultiSurface },
-      { INDEX_GEOMETRYCOLLECTION, QgsWkbTypes::GeometryCollection },
+      { INDEX_NULL, Qgis::WkbType::NoGeometry },
+      { INDEX_POINT, Qgis::WkbType::MultiPoint },
+      { INDEX_CURVE, Qgis::WkbType::MultiCurve },
+      { INDEX_SURFACE, Qgis::WkbType::MultiSurface },
+      { INDEX_GEOMETRYCOLLECTION, Qgis::WkbType::GeometryCollection },
     };
 
     // Create sublayers details
@@ -353,7 +353,7 @@ QList<QgsProviderSublayerDetails> QgsWfsProviderMetadata::querySublayers( const 
     for ( const auto &tuple : types )
     {
       if ( !countsAllValid || featureCounts[tuple.index] > 0 ||
-           ( tuple.wkbType == QgsWkbTypes::NoGeometry && featureCounts[INDEX_ALL] == 0 ) )
+           ( tuple.wkbType == Qgis::WkbType::NoGeometry && featureCounts[INDEX_ALL] == 0 ) )
       {
         QgsProviderSublayerDetails details;
         details.setType( Qgis::LayerType::Vector );

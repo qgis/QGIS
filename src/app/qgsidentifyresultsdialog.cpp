@@ -2154,7 +2154,7 @@ void QgsIdentifyResultsDialog::highlightFeature( QTreeWidgetItem *item )
   if ( mHighlights.contains( featItem ) )
     return;
 
-  if ( !featItem->feature().hasGeometry() || featItem->feature().geometry().wkbType() == QgsWkbTypes::Unknown )
+  if ( !featItem->feature().hasGeometry() || featItem->feature().geometry().wkbType() == Qgis::WkbType::Unknown )
     return;
 
   QgsHighlight *highlight = nullptr;

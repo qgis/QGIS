@@ -13,14 +13,9 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsdistancearea.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
-#include "qgsmaptopixel.h"
 #include "qgsrubberband.h"
-#include "qgsvectorlayer.h"
-#include "qgssnappingutils.h"
-#include "qgstolerance.h"
 #include "qgsexception.h"
 #include "qgsmeasuredialog.h"
 #include "qgsmeasuretool.h"
@@ -38,8 +33,8 @@ QgsMeasureTool::QgsMeasureTool( QgsMapCanvas *canvas, bool measureArea )
   , mMeasureArea( measureArea )
   , mSnapIndicator( new QgsSnapIndicator( canvas ) )
 {
-  mRubberBand = new QgsRubberBand( canvas, mMeasureArea ? QgsWkbTypes::PolygonGeometry : QgsWkbTypes::LineGeometry );
-  mRubberBandPoints = new QgsRubberBand( canvas, QgsWkbTypes::PointGeometry );
+  mRubberBand = new QgsRubberBand( canvas, mMeasureArea ? Qgis::GeometryType::Polygon : Qgis::GeometryType::Line );
+  mRubberBandPoints = new QgsRubberBand( canvas, Qgis::GeometryType::Point );
 
   // Append point we will move
   mPoints.append( QgsPointXY( 0, 0 ) );
@@ -120,8 +115,8 @@ void QgsMeasureTool::restart()
 {
   mPoints.clear();
 
-  mRubberBand->reset( mMeasureArea ? QgsWkbTypes::PolygonGeometry : QgsWkbTypes::LineGeometry );
-  mRubberBandPoints->reset( QgsWkbTypes::PointGeometry );
+  mRubberBand->reset( mMeasureArea ? Qgis::GeometryType::Polygon : Qgis::GeometryType::Line );
+  mRubberBandPoints->reset( Qgis::GeometryType::Point );
 
   mDone = true;
   mWrongProjectProjection = false;

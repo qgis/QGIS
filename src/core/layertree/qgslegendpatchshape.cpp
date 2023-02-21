@@ -153,7 +153,7 @@ QList<QList<QPolygonF> > QgsLegendPatchShape::toQPolygonF( Qgis::SymbolType type
     {
       QPolygonF points;
 
-      if ( QgsWkbTypes::flatType( mGeometry.wkbType() ) == QgsWkbTypes::MultiPoint )
+      if ( QgsWkbTypes::flatType( mGeometry.wkbType() ) == Qgis::WkbType::MultiPoint )
       {
         const QgsGeometry patch = geom;
         for ( auto it = patch.vertices_begin(); it != patch.vertices_end(); ++it )
@@ -170,7 +170,7 @@ QList<QList<QPolygonF> > QgsLegendPatchShape::toQPolygonF( Qgis::SymbolType type
     {
       QList< QList<QPolygonF> > res;
       const QgsGeometry patch = geom;
-      if ( QgsWkbTypes::geometryType( mGeometry.wkbType() ) == QgsWkbTypes::LineGeometry )
+      if ( QgsWkbTypes::geometryType( mGeometry.wkbType() ) == Qgis::GeometryType::Line )
       {
         for ( auto it = patch.const_parts_begin(); it != patch.const_parts_end(); ++it )
         {

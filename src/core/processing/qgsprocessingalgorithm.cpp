@@ -715,7 +715,7 @@ bool QgsProcessingAlgorithm::parameterAsBoolean( const QVariantMap &parameters, 
   return QgsProcessingParameters::parameterAsBool( parameterDefinition( name ), parameters, context );
 }
 
-QgsFeatureSink *QgsProcessingAlgorithm::parameterAsSink( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context, QString &destinationIdentifier, const QgsFields &fields, QgsWkbTypes::Type geometryType, const QgsCoordinateReferenceSystem &crs, QgsFeatureSink::SinkFlags sinkFlags, const QVariantMap &createOptions, const QStringList &datasourceOptions, const QStringList &layerOptions ) const
+QgsFeatureSink *QgsProcessingAlgorithm::parameterAsSink( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context, QString &destinationIdentifier, const QgsFields &fields, Qgis::WkbType geometryType, const QgsCoordinateReferenceSystem &crs, QgsFeatureSink::SinkFlags sinkFlags, const QVariantMap &createOptions, const QStringList &datasourceOptions, const QStringList &layerOptions ) const
 {
   if ( !parameterDefinition( name ) )
     throw QgsProcessingException( QObject::tr( "No parameter definition for the sink '%1'" ).arg( name ) );
@@ -1052,7 +1052,7 @@ QgsFeatureSink::SinkFlags QgsProcessingFeatureBasedAlgorithm::sinkFlags() const
   return QgsFeatureSink::SinkFlags();
 }
 
-QgsWkbTypes::Type QgsProcessingFeatureBasedAlgorithm::outputWkbType( QgsWkbTypes::Type inputWkbType ) const
+Qgis::WkbType QgsProcessingFeatureBasedAlgorithm::outputWkbType( Qgis::WkbType inputWkbType ) const
 {
   return inputWkbType;
 }
@@ -1142,22 +1142,22 @@ bool QgsProcessingFeatureBasedAlgorithm::supportInPlaceEdit( const QgsMapLayer *
   if ( !layer )
     return false;
 
-  QgsWkbTypes::GeometryType inPlaceGeometryType = layer->geometryType();
+  Qgis::GeometryType inPlaceGeometryType = layer->geometryType();
   if ( !inputLayerTypes().empty() &&
        !inputLayerTypes().contains( QgsProcessing::TypeVector ) &&
        !inputLayerTypes().contains( QgsProcessing::TypeVectorAnyGeometry ) &&
-       ( ( inPlaceGeometryType == QgsWkbTypes::PolygonGeometry && !inputLayerTypes().contains( QgsProcessing::TypeVectorPolygon ) ) ||
-         ( inPlaceGeometryType == QgsWkbTypes::LineGeometry && !inputLayerTypes().contains( QgsProcessing::TypeVectorLine ) ) ||
-         ( inPlaceGeometryType == QgsWkbTypes::PointGeometry && !inputLayerTypes().contains( QgsProcessing::TypeVectorPoint ) ) ) )
+       ( ( inPlaceGeometryType == Qgis::GeometryType::Polygon && !inputLayerTypes().contains( QgsProcessing::TypeVectorPolygon ) ) ||
+         ( inPlaceGeometryType == Qgis::GeometryType::Line && !inputLayerTypes().contains( QgsProcessing::TypeVectorLine ) ) ||
+         ( inPlaceGeometryType == Qgis::GeometryType::Point && !inputLayerTypes().contains( QgsProcessing::TypeVectorPoint ) ) ) )
     return false;
 
-  QgsWkbTypes::Type type = QgsWkbTypes::Unknown;
-  if ( inPlaceGeometryType == QgsWkbTypes::PointGeometry )
-    type = QgsWkbTypes::Point;
-  else if ( inPlaceGeometryType == QgsWkbTypes::LineGeometry )
-    type = QgsWkbTypes::LineString;
-  else if ( inPlaceGeometryType == QgsWkbTypes::PolygonGeometry )
-    type = QgsWkbTypes::Polygon;
+  Qgis::WkbType type = Qgis::WkbType::Unknown;
+  if ( inPlaceGeometryType == Qgis::GeometryType::Point )
+    type = Qgis::WkbType::Point;
+  else if ( inPlaceGeometryType == Qgis::GeometryType::Line )
+    type = Qgis::WkbType::LineString;
+  else if ( inPlaceGeometryType == Qgis::GeometryType::Polygon )
+    type = Qgis::WkbType::Polygon;
 
   if ( QgsWkbTypes::geometryType( outputWkbType( type ) ) != inPlaceGeometryType )
     return false;

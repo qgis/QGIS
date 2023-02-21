@@ -484,7 +484,7 @@ void QgsSimpleLineSymbolLayer::renderPolyline( const QPolygonF &pts, QgsSymbolRe
       scaledOffset = std::min( std::max( context.renderContext().convertToPainterUnits( offset, Qgis::RenderUnit::Millimeters ), 3.0 ), 100.0 );
     }
 
-    QList<QPolygonF> mline = ::offsetLine( points, scaledOffset, context.originalGeometryType() != QgsWkbTypes::UnknownGeometry ? context.originalGeometryType() : QgsWkbTypes::LineGeometry );
+    QList<QPolygonF> mline = ::offsetLine( points, scaledOffset, context.originalGeometryType() != Qgis::GeometryType::Unknown ? context.originalGeometryType() : Qgis::GeometryType::Line );
     for ( const QPolygonF &part : mline )
     {
       if ( applyPatternTweaks )
@@ -1365,7 +1365,7 @@ void QgsTemplatedLineSymbolLayerBase::renderPolyline( const QPolygonF &points, Q
   else
   {
     context.renderContext().setGeometry( nullptr ); //always use segmented geometry with offset
-    QList<QPolygonF> mline = ::offsetLine( points, context.renderContext().convertToPainterUnits( offset, mOffsetUnit, mOffsetMapUnitScale ), context.originalGeometryType() != QgsWkbTypes::UnknownGeometry ? context.originalGeometryType() : QgsWkbTypes::LineGeometry );
+    QList<QPolygonF> mline = ::offsetLine( points, context.renderContext().convertToPainterUnits( offset, mOffsetUnit, mOffsetMapUnitScale ), context.originalGeometryType() != Qgis::GeometryType::Unknown ? context.originalGeometryType() : Qgis::GeometryType::Line );
 
     for ( int part = 0; part < mline.count(); ++part )
     {
@@ -2997,7 +2997,7 @@ void QgsAbstractBrushedLineSymbolLayer::renderPolylineUsingBrush( const QPolygon
   {
     const double scaledOffset = context.renderContext().convertToPainterUnits( offset, mOffsetUnit, mOffsetMapUnitScale );
 
-    const QList<QPolygonF> offsetLine = ::offsetLine( points, scaledOffset, context.originalGeometryType() != QgsWkbTypes::UnknownGeometry ? context.originalGeometryType() : QgsWkbTypes::LineGeometry );
+    const QList<QPolygonF> offsetLine = ::offsetLine( points, scaledOffset, context.originalGeometryType() != Qgis::GeometryType::Unknown ? context.originalGeometryType() : Qgis::GeometryType::Line );
     for ( const QPolygonF &part : offsetLine )
     {
       renderLine( part, context, patternThickness, patternLength, brush );

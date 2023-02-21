@@ -91,7 +91,7 @@ exists for the lifetime of this algorithm.
 
     virtual QgsFields outputFields( const QgsFields &inputFields ) const;
 
-    virtual QgsWkbTypes::Type outputWkbType( QgsWkbTypes::Type inputWkbType ) const;
+    virtual Qgis::WkbType outputWkbType( Qgis::WkbType inputWkbType ) const;
 
 
 };

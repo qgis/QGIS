@@ -469,7 +469,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
        * \see fallbackCrs
        * \since QGIS 3.8
        */
-      QgsWkbTypes::Type fallbackWkbType = QgsWkbTypes::Unknown;
+      Qgis::WkbType fallbackWkbType = Qgis::WkbType::Unknown;
 
       /**
        * Fallback layer coordinate reference system.
@@ -992,10 +992,10 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     QList< const QgsFeatureRendererGenerator * > featureRendererGenerators() const;
 
     //! Returns point, line or polygon
-    Q_INVOKABLE QgsWkbTypes::GeometryType geometryType() const;
+    Q_INVOKABLE Qgis::GeometryType geometryType() const;
 
     //! Returns the WKBType or WKBUnknown in case of error
-    Q_INVOKABLE QgsWkbTypes::Type wkbType() const FINAL;
+    Q_INVOKABLE Qgis::WkbType wkbType() const FINAL;
 
     QgsCoordinateReferenceSystem sourceCrs() const FINAL;
     QString sourceName() const FINAL;
@@ -2968,7 +2968,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     QgsEditFormConfig mEditFormConfig;
 
     //! Geometry type as defined in enum WkbType (qgis.h)
-    QgsWkbTypes::Type mWkbType = QgsWkbTypes::Unknown;
+    Qgis::WkbType mWkbType = Qgis::WkbType::Unknown;
 
     //! Renderer object which holds the information about how to display the features
     QgsFeatureRenderer *mRenderer = nullptr;

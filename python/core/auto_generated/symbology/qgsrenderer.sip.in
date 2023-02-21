@@ -82,7 +82,7 @@ class QgsFeatureRenderer
 %End
   public:
 
-    static QgsFeatureRenderer *defaultRenderer( QgsWkbTypes::GeometryType geomType ) /Factory/;
+    static QgsFeatureRenderer *defaultRenderer( Qgis::GeometryType geomType ) /Factory/;
 %Docstring
 Returns a new renderer - used by default in vector layers
 %End
@@ -284,7 +284,7 @@ create the SLD UserStyle element following the SLD v1.1 specs with the given nam
 .. versionadded:: 2.8
 %End
 
-    static QgsFeatureRenderer *loadSld( const QDomNode &node, QgsWkbTypes::GeometryType geomType, QString &errorMessage ) /Factory/;
+    static QgsFeatureRenderer *loadSld( const QDomNode &node, Qgis::GeometryType geomType, QString &errorMessage ) /Factory/;
 %Docstring
 Create a new renderer according to the information contained in
 the UserStyle element of a SLD style document

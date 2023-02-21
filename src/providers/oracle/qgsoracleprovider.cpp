@@ -23,18 +23,15 @@
 #include "qgspolygon.h"
 #include "qgsmultipolygon.h"
 #include "qgsmultisurface.h"
-#include "qgsmessageoutput.h"
 #include "qgsmessagelog.h"
 #include "qgsrectangle.h"
 #include "qgscoordinatereferencesystem.h"
-#include "qgsvectorlayerexporter.h"
 #include "qgslogger.h"
 #include "qgsdbquerylog.h"
 #include "qgsprojectstorageguiprovider.h"
 #include "qgsprojectstorageregistry.h"
 
 #include "qgsoracleprovider.h"
-#include "qgsoracletablemodel.h"
 #include "qgsoracledataitems.h"
 #include "qgsoraclefeatureiterator.h"
 #include "qgsoracleconnpool.h"
@@ -69,8 +66,8 @@ QgsOracleProvider::QgsOracleProvider( QString const &uri, const ProviderOptions 
   , mIsQuery( false )
   , mPrimaryKeyType( PktUnknown )
   , mFeaturesCounted( -1 )
-  , mDetectedGeomType( QgsWkbTypes::Unknown )
-  , mRequestedGeomType( QgsWkbTypes::Unknown )
+  , mDetectedGeomType( Qgis::WkbType::Unknown )
+  , mRequestedGeomType( Qgis::WkbType::Unknown )
   , mHasSpatialIndex( false )
   , mSpatialIndexName( QString() )
   , mOracleVersion( -1 )
@@ -525,9 +522,9 @@ void QgsOracleProvider::setExtent( QgsRectangle &newExtent )
 /**
  * Returns the feature type
  */
-QgsWkbTypes::Type QgsOracleProvider::wkbType() const
+Qgis::WkbType QgsOracleProvider::wkbType() const
 {
-  return mRequestedGeomType != QgsWkbTypes::Unknown ? mRequestedGeomType : mDetectedGeomType;
+  return mRequestedGeomType != Qgis::WkbType::Unknown ? mRequestedGeomType : mDetectedGeomType;
 }
 
 QgsField QgsOracleProvider::field( int index ) const
@@ -1991,17 +1988,17 @@ void QgsOracleProvider::appendGeomParam( const QgsGeometry &geom, QSqlQuery &qry
     g.ordinates.clear();
 
     int iOrdinate = 1;
-    QgsWkbTypes::Type type = ( QgsWkbTypes::Type ) * ptr.iPtr++;
+    Qgis::WkbType type = static_cast< Qgis::WkbType >( * ptr.iPtr++ );
     int dim = 2;
 
     switch ( type )
     {
-      case QgsWkbTypes::Point25D:
-      case QgsWkbTypes::PointZ:
+      case Qgis::WkbType::Point25D:
+      case Qgis::WkbType::PointZ:
         dim = 3;
         FALLTHROUGH
 
-      case QgsWkbTypes::Point:
+      case Qgis::WkbType::Point:
         g.srid  = mSrid;
         g.gtype = SDO_GTYPE( dim, GtPoint );
         g.x = *ptr.dPtr++;
@@ -2009,19 +2006,19 @@ void QgsOracleProvider::appendGeomParam( const QgsGeometry &geom, QSqlQuery &qry
         g.z = dim == 3 ? *ptr.dPtr++ : 0.0;
         break;
 
-      case QgsWkbTypes::LineString25D:
-      case QgsWkbTypes::MultiLineString25D:
-      case QgsWkbTypes::LineStringZ:
-      case QgsWkbTypes::MultiLineStringZ:
+      case Qgis::WkbType::LineString25D:
+      case Qgis::WkbType::MultiLineString25D:
+      case Qgis::WkbType::LineStringZ:
+      case Qgis::WkbType::MultiLineStringZ:
         dim = 3;
         FALLTHROUGH
 
-      case QgsWkbTypes::LineString:
-      case QgsWkbTypes::MultiLineString:
+      case Qgis::WkbType::LineString:
+      case Qgis::WkbType::MultiLineString:
       {
         g.gtype = SDO_GTYPE( dim, GtLine );
         int nLines = 1;
-        if ( type == QgsWkbTypes::MultiLineString25D || type == QgsWkbTypes::MultiLineString || type == QgsWkbTypes::MultiLineStringZ )
+        if ( type == Qgis::WkbType::MultiLineString25D || type == Qgis::WkbType::MultiLineString || type == Qgis::WkbType::MultiLineStringZ )
         {
           g.gtype = SDO_GTYPE( dim, GtMultiLine );
           nLines = *ptr.iPtr++;
@@ -2048,20 +2045,20 @@ void QgsOracleProvider::appendGeomParam( const QgsGeometry &geom, QSqlQuery &qry
       }
       break;
 
-      case QgsWkbTypes::Polygon25D:
-      case QgsWkbTypes::MultiPolygon25D:
-      case QgsWkbTypes::PolygonZ:
-      case QgsWkbTypes::MultiPolygonZ:
+      case Qgis::WkbType::Polygon25D:
+      case Qgis::WkbType::MultiPolygon25D:
+      case Qgis::WkbType::PolygonZ:
+      case Qgis::WkbType::MultiPolygonZ:
         dim = 3;
         FALLTHROUGH
 
-      case QgsWkbTypes::Polygon:
-      case QgsWkbTypes::MultiPolygon:
+      case Qgis::WkbType::Polygon:
+      case Qgis::WkbType::MultiPolygon:
       {
         g.gtype = SDO_GTYPE( dim, GtPolygon );
         int nPolygons = 1;
         const QgsMultiPolygon *multipoly =
-          ( QgsWkbTypes::flatType( type ) == QgsWkbTypes::MultiPolygon ) ?
+          ( QgsWkbTypes::flatType( type ) == Qgis::WkbType::MultiPolygon ) ?
           dynamic_cast<const QgsMultiPolygon *>( geom.constGet() ) : nullptr;
         if ( multipoly )
         {
@@ -2120,12 +2117,12 @@ void QgsOracleProvider::appendGeomParam( const QgsGeometry &geom, QSqlQuery &qry
       }
       break;
 
-      case QgsWkbTypes::MultiPoint25D:
-      case QgsWkbTypes::MultiPointZ:
+      case Qgis::WkbType::MultiPoint25D:
+      case Qgis::WkbType::MultiPointZ:
         dim = 3;
         FALLTHROUGH
 
-      case QgsWkbTypes::MultiPoint:
+      case Qgis::WkbType::MultiPoint:
       {
         g.gtype = SDO_GTYPE( dim, GtMultiPoint );
         int n = *ptr.iPtr++;
@@ -2145,19 +2142,19 @@ void QgsOracleProvider::appendGeomParam( const QgsGeometry &geom, QSqlQuery &qry
       }
       break;
 
-      case QgsWkbTypes::CircularStringZ:
-      case QgsWkbTypes::CompoundCurveZ:
-      case QgsWkbTypes::MultiCurveZ:
+      case Qgis::WkbType::CircularStringZ:
+      case Qgis::WkbType::CompoundCurveZ:
+      case Qgis::WkbType::MultiCurveZ:
         dim = 3;
         FALLTHROUGH
 
-      case QgsWkbTypes::CircularString:
-      case QgsWkbTypes::CompoundCurve:
-      case QgsWkbTypes::MultiCurve:
+      case Qgis::WkbType::CircularString:
+      case Qgis::WkbType::CompoundCurve:
+      case Qgis::WkbType::MultiCurve:
       {
         g.gtype = SDO_GTYPE( dim, GtLine );
         int nCurves = 1;
-        if ( type == QgsWkbTypes::MultiCurve || type == QgsWkbTypes::MultiCurveZ )
+        if ( type == Qgis::WkbType::MultiCurve || type == Qgis::WkbType::MultiCurveZ )
         {
           g.gtype = SDO_GTYPE( dim, GtMultiLine );
           nCurves = *ptr.iPtr++;
@@ -2165,16 +2162,16 @@ void QgsOracleProvider::appendGeomParam( const QgsGeometry &geom, QSqlQuery &qry
 
         for ( int iCurve = 0; iCurve < nCurves; iCurve++ )
         {
-          QgsWkbTypes::Type curveType = type;
-          if ( type == QgsWkbTypes::MultiCurve || type == QgsWkbTypes::MultiCurveZ )
+          Qgis::WkbType curveType = type;
+          if ( type == Qgis::WkbType::MultiCurve || type == Qgis::WkbType::MultiCurveZ )
           {
             ptr.ucPtr++; // Skip endianness of curve
-            curveType = ( QgsWkbTypes::Type ) * ptr.iPtr++; // type of curve
+            curveType = static_cast< Qgis::WkbType >( * ptr.iPtr++ ); // type of curve
           }
 
           int nLines = 1;
-          QgsWkbTypes::Type lineType = curveType;
-          if ( curveType == QgsWkbTypes::CompoundCurve || curveType == QgsWkbTypes::CompoundCurveZ )
+          Qgis::WkbType lineType = curveType;
+          if ( curveType == Qgis::WkbType::CompoundCurve || curveType == Qgis::WkbType::CompoundCurveZ )
           {
             nLines = *ptr.iPtr++;
 
@@ -2185,7 +2182,7 @@ void QgsOracleProvider::appendGeomParam( const QgsGeometry &geom, QSqlQuery &qry
             }
 
             ptr.ucPtr++; // Skip endianness of first linestring
-            lineType = ( QgsWkbTypes::Type ) * ptr.iPtr++; // type of first linestring
+            lineType = static_cast< Qgis::WkbType >( * ptr.iPtr++ ); // type of first linestring
           }
 
           for ( int iLine = 0; iLine < nLines; iLine++ )
@@ -2193,9 +2190,9 @@ void QgsOracleProvider::appendGeomParam( const QgsGeometry &geom, QSqlQuery &qry
             if ( iLine > 0 )
             {
               ptr.ucPtr++; // Skip endianness of linestring
-              lineType = ( QgsWkbTypes::Type ) * ptr.iPtr++; // type of linestring
+              lineType = static_cast< Qgis::WkbType >( * ptr.iPtr++ ); // type of linestring
             }
-            bool circularString = lineType == QgsWkbTypes::CircularString || lineType == QgsWkbTypes::CircularStringZ;
+            bool circularString = lineType == Qgis::WkbType::CircularString || lineType == Qgis::WkbType::CircularStringZ;
 
             g.eleminfo << iOrdinate << 2 << ( circularString ? 2 : 1 );
 
@@ -2203,7 +2200,7 @@ void QgsOracleProvider::appendGeomParam( const QgsGeometry &geom, QSqlQuery &qry
             {
               // Inside a compound curve, two consecutives lines share start/end points
               // We don't repeat this point in ordinates, so we skip the last point (except for last line)
-              if ( ( curveType == QgsWkbTypes::CompoundCurve || curveType == QgsWkbTypes::CompoundCurveZ )
+              if ( ( curveType == Qgis::WkbType::CompoundCurve || curveType == Qgis::WkbType::CompoundCurveZ )
                    && i == n - 1 && iLine < nLines - 1 )
               {
                 ptr.dPtr += dim;
@@ -2223,18 +2220,18 @@ void QgsOracleProvider::appendGeomParam( const QgsGeometry &geom, QSqlQuery &qry
       break;
 
 
-      case QgsWkbTypes::CurvePolygonZ:
-      case QgsWkbTypes::MultiSurfaceZ:
+      case Qgis::WkbType::CurvePolygonZ:
+      case Qgis::WkbType::MultiSurfaceZ:
         dim = 3;
         FALLTHROUGH
 
-      case QgsWkbTypes::CurvePolygon:
-      case QgsWkbTypes::MultiSurface:
+      case Qgis::WkbType::CurvePolygon:
+      case Qgis::WkbType::MultiSurface:
       {
         g.gtype = SDO_GTYPE( dim, GtPolygon );
         int nSurfaces = 1;
         const QgsMultiSurface *multisurface =
-          ( QgsWkbTypes::flatType( type ) == QgsWkbTypes::MultiSurface ) ?
+          ( QgsWkbTypes::flatType( type ) == Qgis::WkbType::MultiSurface ) ?
           dynamic_cast<const QgsMultiSurface *>( geom.constGet() ) : nullptr;
         if ( multisurface )
         {
@@ -2253,7 +2250,7 @@ void QgsOracleProvider::appendGeomParam( const QgsGeometry &geom, QSqlQuery &qry
           for ( int iRing = 0; iRing < nRings; iRing++ )
           {
             const QgsCurve *ring = iRing == 0 ? curvepoly->exteriorRing() : curvepoly->interiorRing( iRing - 1 );
-            const QgsWkbTypes::Type ringType = ring->wkbType();
+            const Qgis::WkbType ringType = ring->wkbType();
 
             // Oracle polygons must have their exterior ring in counterclockwise
             // order, and the interior ring(s) in clockwise order.
@@ -2264,7 +2261,7 @@ void QgsOracleProvider::appendGeomParam( const QgsGeometry &geom, QSqlQuery &qry
             const QgsCurve *correctedRing = reversedRing ? reversedRing.get() : ring;
             const QgsCompoundCurve *compound = dynamic_cast<const QgsCompoundCurve *>( correctedRing );
             int nLines = 1;
-            QgsWkbTypes::Type lineType = ringType;
+            Qgis::WkbType lineType = ringType;
             if ( compound )
             {
               nLines = compound->nCurves();
@@ -2275,7 +2272,7 @@ void QgsOracleProvider::appendGeomParam( const QgsGeometry &geom, QSqlQuery &qry
             // Oracle don't store compound curve with only one line
             g.eleminfo << iOrdinate
                        << ( iRing == 0 ? 1000 : 2000 ) + ( nLines > 1 ? 5 : 3 )
-                       << ( nLines > 1 ? nLines : ( QgsWkbTypes::flatType( lineType ) == QgsWkbTypes::CircularString ? 2 : 1 ) );
+                       << ( nLines > 1 ? nLines : ( QgsWkbTypes::flatType( lineType ) == Qgis::WkbType::CircularString ? 2 : 1 ) );
 
             for ( int iLine = 0; iLine < nLines; iLine++ )
             {
@@ -2285,7 +2282,7 @@ void QgsOracleProvider::appendGeomParam( const QgsGeometry &geom, QSqlQuery &qry
               }
               if ( nLines > 1 )
               {
-                g.eleminfo << iOrdinate << 2 << ( QgsWkbTypes::flatType( lineType ) == QgsWkbTypes::CircularString ? 2 : 1 );
+                g.eleminfo << iOrdinate << 2 << ( QgsWkbTypes::flatType( lineType ) == Qgis::WkbType::CircularString ? 2 : 1 );
               }
               const QgsCurve *lineCurve = compound ? compound->curveAt( iLine ) : correctedRing;
 
@@ -2316,40 +2313,40 @@ void QgsOracleProvider::appendGeomParam( const QgsGeometry &geom, QSqlQuery &qry
       break;
 
       // unsupported M values
-      case QgsWkbTypes::PointM:
-      case QgsWkbTypes::PointZM:
-      case QgsWkbTypes::LineStringM:
-      case QgsWkbTypes::LineStringZM:
-      case QgsWkbTypes::PolygonM:
-      case QgsWkbTypes::PolygonZM:
-      case QgsWkbTypes::MultiPointM:
-      case QgsWkbTypes::MultiPointZM:
-      case QgsWkbTypes::MultiLineStringM:
-      case QgsWkbTypes::MultiLineStringZM:
-      case QgsWkbTypes::MultiPolygonM:
-      case QgsWkbTypes::MultiPolygonZM:
-      case QgsWkbTypes::CircularStringM:
-      case QgsWkbTypes::CircularStringZM:
-      case QgsWkbTypes::CompoundCurveM:
-      case QgsWkbTypes::CompoundCurveZM:
-      case QgsWkbTypes::MultiCurveM:
-      case QgsWkbTypes::MultiCurveZM:
-      case QgsWkbTypes::CurvePolygonM:
-      case QgsWkbTypes::CurvePolygonZM:
-      case QgsWkbTypes::MultiSurfaceM:
-      case QgsWkbTypes::MultiSurfaceZM:
+      case Qgis::WkbType::PointM:
+      case Qgis::WkbType::PointZM:
+      case Qgis::WkbType::LineStringM:
+      case Qgis::WkbType::LineStringZM:
+      case Qgis::WkbType::PolygonM:
+      case Qgis::WkbType::PolygonZM:
+      case Qgis::WkbType::MultiPointM:
+      case Qgis::WkbType::MultiPointZM:
+      case Qgis::WkbType::MultiLineStringM:
+      case Qgis::WkbType::MultiLineStringZM:
+      case Qgis::WkbType::MultiPolygonM:
+      case Qgis::WkbType::MultiPolygonZM:
+      case Qgis::WkbType::CircularStringM:
+      case Qgis::WkbType::CircularStringZM:
+      case Qgis::WkbType::CompoundCurveM:
+      case Qgis::WkbType::CompoundCurveZM:
+      case Qgis::WkbType::MultiCurveM:
+      case Qgis::WkbType::MultiCurveZM:
+      case Qgis::WkbType::CurvePolygonM:
+      case Qgis::WkbType::CurvePolygonZM:
+      case Qgis::WkbType::MultiSurfaceM:
+      case Qgis::WkbType::MultiSurfaceZM:
 
       // other unsupported or missing geometry types
-      case QgsWkbTypes::GeometryCollection:
-      case QgsWkbTypes::GeometryCollectionZ:
-      case QgsWkbTypes::GeometryCollectionM:
-      case QgsWkbTypes::GeometryCollectionZM:
-      case QgsWkbTypes::Triangle:
-      case QgsWkbTypes::TriangleZ:
-      case QgsWkbTypes::TriangleM:
-      case QgsWkbTypes::TriangleZM:
-      case QgsWkbTypes::Unknown:
-      case QgsWkbTypes::NoGeometry:
+      case Qgis::WkbType::GeometryCollection:
+      case Qgis::WkbType::GeometryCollectionZ:
+      case Qgis::WkbType::GeometryCollectionM:
+      case Qgis::WkbType::GeometryCollectionZM:
+      case Qgis::WkbType::Triangle:
+      case Qgis::WkbType::TriangleZ:
+      case Qgis::WkbType::TriangleM:
+      case Qgis::WkbType::TriangleZM:
+      case Qgis::WkbType::Unknown:
+      case Qgis::WkbType::NoGeometry:
 
         g.isNull = true;
         break;
@@ -2675,7 +2672,7 @@ bool QgsOracleProvider::getGeometryDetails()
 {
   if ( mGeometryColumn.isNull() )
   {
-    mDetectedGeomType = QgsWkbTypes::NoGeometry;
+    mDetectedGeomType = Qgis::WkbType::NoGeometry;
     mValid = true;
     return true;
   }
@@ -2711,7 +2708,7 @@ bool QgsOracleProvider::getGeometryDetails()
   }
 
   int detectedSrid = -1;
-  QgsWkbTypes::Type detectedType = QgsWkbTypes::Unknown;
+  Qgis::WkbType detectedType = Qgis::WkbType::Unknown;
   mHasSpatialIndex = false;
 
   if ( mIsQuery )
@@ -2763,12 +2760,12 @@ bool QgsOracleProvider::getGeometryDetails()
         detectedType = QgsOracleConn::wkbTypeFromDatabase( qry.value( 0 ).toInt() );
         if ( qry.next() )
         {
-          detectedType = QgsWkbTypes::Unknown;
+          detectedType = Qgis::WkbType::Unknown;
         }
       }
       else
       {
-        detectedType = QgsWkbTypes::Unknown;
+        detectedType = Qgis::WkbType::Unknown;
         QgsMessageLog::logMessage( tr( "%1 has no valid geometry types.\nSQL: %2" )
                                    .arg( mQuery )
                                    .arg( qry.lastQuery() ), tr( "Oracle" ) );
@@ -2783,7 +2780,7 @@ bool QgsOracleProvider::getGeometryDetails()
     }
   }
 
-  if ( detectedType == QgsWkbTypes::Unknown || detectedSrid <= 0 )
+  if ( detectedType == Qgis::WkbType::Unknown || detectedSrid <= 0 )
   {
     QgsOracleLayerProperty layerProperty;
 
@@ -2811,17 +2808,17 @@ bool QgsOracleProvider::getGeometryDetails()
     if ( layerProperty.types.isEmpty() )
     {
       // no data - so take what's requested
-      if ( mRequestedGeomType == QgsWkbTypes::Unknown )
+      if ( mRequestedGeomType == Qgis::WkbType::Unknown )
       {
         QgsMessageLog::logMessage( tr( "Geometry type and srid for empty column %1 of %2 undefined." ).arg( mGeometryColumn, mQuery ) );
       }
 
-      detectedType = QgsWkbTypes::Unknown;
+      detectedType = Qgis::WkbType::Unknown;
     }
     else
     {
       // requested type && srid is available
-      if ( mRequestedGeomType == QgsWkbTypes::Unknown || layerProperty.types.contains( mRequestedGeomType ) )
+      if ( mRequestedGeomType == Qgis::WkbType::Unknown || layerProperty.types.contains( mRequestedGeomType ) )
       {
         if ( layerProperty.size() == 1 )
         {
@@ -2832,14 +2829,14 @@ bool QgsOracleProvider::getGeometryDetails()
         else
         {
           // we need to filter
-          detectedType = QgsWkbTypes::Unknown;
+          detectedType = Qgis::WkbType::Unknown;
         }
       }
       else
       {
         // geometry type undetermined or not unrequested
         QgsMessageLog::logMessage( tr( "Feature type or srid for %1 of %2 could not be determined or was not requested." ).arg( mGeometryColumn ).arg( mQuery ) );
-        detectedType = QgsWkbTypes::Unknown;
+        detectedType = Qgis::WkbType::Unknown;
       }
     }
   }
@@ -2849,10 +2846,10 @@ bool QgsOracleProvider::getGeometryDetails()
     mSrid = detectedSrid;
 
   QgsDebugMsgLevel( QStringLiteral( "Detected Oracle SRID is %1" ).arg( mSrid ), 2 );
-  QgsDebugMsgLevel( QStringLiteral( "Detected type is %1" ).arg( mDetectedGeomType ), 2 );
-  QgsDebugMsgLevel( QStringLiteral( "Requested type is %1" ).arg( mRequestedGeomType ), 2 );
+  QgsDebugMsgLevel( QStringLiteral( "Detected type is %1" ).arg( qgsEnumValueToKey( mDetectedGeomType ) ), 2 );
+  QgsDebugMsgLevel( QStringLiteral( "Requested type is %1" ).arg( qgsEnumValueToKey( mRequestedGeomType ) ), 2 );
 
-  mValid = ( mDetectedGeomType != QgsWkbTypes::Unknown || mRequestedGeomType != QgsWkbTypes::Unknown );
+  mValid = ( mDetectedGeomType != Qgis::WkbType::Unknown || mRequestedGeomType != Qgis::WkbType::Unknown );
 
   if ( !mValid )
     return false;
@@ -3016,15 +3013,14 @@ bool QgsOracleProvider::convertField( QgsField &field )
 }
 
 
-Qgis::VectorExportResult QgsOracleProvider::createEmptyLayer(
-  const QString &uri,
-  const QgsFields &fields,
-  QgsWkbTypes::Type wkbType,
-  const QgsCoordinateReferenceSystem &srs,
-  bool overwrite,
-  QMap<int, int> &oldToNewAttrIdxMap,
-  QString &errorMessage,
-  const QMap<QString, QVariant> *options )
+Qgis::VectorExportResult QgsOracleProvider::createEmptyLayer( const QString &uri,
+    const QgsFields &fields,
+    Qgis::WkbType wkbType,
+    const QgsCoordinateReferenceSystem &srs,
+    bool overwrite,
+    QMap<int, int> &oldToNewAttrIdxMap,
+    QString &errorMessage,
+    const QMap<QString, QVariant> *options )
 {
   Q_UNUSED( wkbType )
   Q_UNUSED( options )
@@ -3520,7 +3516,7 @@ QgsTransaction *QgsOracleProviderMetadata::createTransaction( const QString &con
 
 Qgis::VectorExportResult QgsOracleProviderMetadata::createEmptyLayer( const QString &uri,
     const QgsFields &fields,
-    QgsWkbTypes::Type wkbType,
+    Qgis::WkbType wkbType,
     const QgsCoordinateReferenceSystem &srs,
     bool overwrite,
     QMap<int, int> &oldToNewAttrIdxMap,
@@ -4103,8 +4099,8 @@ QVariantMap QgsOracleProviderMetadata::decodeUri( const QString &uri ) const
     uriParts[ QStringLiteral( "password" ) ] = dsUri.password();
   if ( ! dsUri.authConfigId().isEmpty() )
     uriParts[ QStringLiteral( "authcfg" ) ] = dsUri.authConfigId();
-  if ( dsUri.wkbType() != QgsWkbTypes::Type::Unknown )
-    uriParts[ QStringLiteral( "type" ) ] = dsUri.wkbType();
+  if ( dsUri.wkbType() != Qgis::WkbType::Unknown )
+    uriParts[ QStringLiteral( "type" ) ] = static_cast< quint32>( dsUri.wkbType() );
   if ( ! dsUri.table().isEmpty() )
     uriParts[ QStringLiteral( "table" ) ] = dsUri.table();
   if ( ! dsUri.schema().isEmpty() )
@@ -4149,7 +4145,7 @@ QString QgsOracleProviderMetadata::encodeUri( const QVariantMap &parts ) const
   if ( parts.contains( QStringLiteral( "authcfg" ) ) )
     dsUri.setAuthConfigId( parts.value( QStringLiteral( "authcfg" ) ).toString() );
   if ( parts.contains( QStringLiteral( "type" ) ) )
-    dsUri.setParam( QStringLiteral( "type" ), QgsWkbTypes::displayString( static_cast<QgsWkbTypes::Type>( parts.value( QStringLiteral( "type" ) ).toInt() ) ) );
+    dsUri.setParam( QStringLiteral( "type" ), QgsWkbTypes::displayString( static_cast<Qgis::WkbType>( parts.value( QStringLiteral( "type" ) ).toInt() ) ) );
   if ( parts.contains( QStringLiteral( "table" ) ) )
     dsUri.setTable( parts.value( QStringLiteral( "table" ) ).toString() );
   if ( parts.contains( QStringLiteral( "schema" ) ) )

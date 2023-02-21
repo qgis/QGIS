@@ -23,117 +23,10 @@
 #include <QWidget>
 
 #include "qgsreferencedgeometry.h"
-#include "qgswkbtypes.h"
 
 class QLineEdit;
 class QToolButton;
 class QMenu;
-
-#ifdef SIP_RUN
-// adapted from the qpymultimedia_qlist.sip file from the PyQt6 sources
-% MappedType QList<QgsWkbTypes::Type>
-{
-  % TypeHeaderCode
-#include <QList>
-  % End
-
-  % ConvertFromTypeCode
-  PyObject *l = PyList_New( sipCpp->size() );
-
-  if ( !l )
-    return 0;
-
-  for ( int i = 0; i < sipCpp->size(); ++i )
-  {
-    PyObject *eobj = sipConvertFromEnum( sipCpp->at( i ),
-                                         sipType_QgsWkbTypes_Type );
-
-    if ( !eobj )
-    {
-      Py_DECREF( l );
-
-      return 0;
-    }
-
-    PyList_SetItem( l, i, eobj );
-  }
-
-  return l;
-  % End
-
-  % ConvertToTypeCode
-  PyObject *iter = PyObject_GetIter( sipPy );
-
-  if ( !sipIsErr )
-  {
-    PyErr_Clear();
-    Py_XDECREF( iter );
-
-    return ( iter
-#if PY_MAJOR_VERSION < 3
-             && !PyString_Check( sipPy )
-#endif
-             && !PyUnicode_Check( sipPy ) );
-  }
-
-  if ( !iter )
-  {
-    *sipIsErr = 1;
-
-    return 0;
-  }
-
-  QList<QgsWkbTypes::Type> *ql = new QList<QgsWkbTypes::Type>;
-
-  for ( Py_ssize_t i = 0; ; ++i )
-  {
-    PyErr_Clear();
-    PyObject *itm = PyIter_Next( iter );
-
-    if ( !itm )
-    {
-      if ( PyErr_Occurred() )
-      {
-        delete ql;
-        Py_DECREF( iter );
-        *sipIsErr = 1;
-
-        return 0;
-      }
-
-      break;
-    }
-
-    int v = sipConvertToEnum( itm, sipType_QgsWkbTypes_Type );
-
-    if ( PyErr_Occurred() )
-    {
-      PyErr_Format( PyExc_TypeError,
-                    "index %zd has type '%s' but 'QgsWkbTypes.Type' is expected",
-                    i, sipPyTypeName( Py_TYPE( itm ) ) );
-
-      Py_DECREF( itm );
-      delete ql;
-      Py_DECREF( iter );
-      *sipIsErr = 1;
-
-      return 0;
-    }
-
-    ql->append( static_cast<QgsWkbTypes::Type>( v ) );
-
-    Py_DECREF( itm );
-  }
-
-  Py_DECREF( iter );
-
-  *sipCppPtr = ql;
-
-  return sipGetState( sipTransferObj );
-  % End
-};
-#endif
-
 
 /**
  * \ingroup gui
@@ -186,14 +79,14 @@ class GUI_EXPORT QgsGeometryWidget : public QWidget
      *
      * \see acceptedWkbTypes()
      */
-    void setAcceptedWkbTypes( const QList<QgsWkbTypes::Type> &types );
+    void setAcceptedWkbTypes( const QList<Qgis::WkbType> &types );
 
     /**
      * Returns the list of WKB geometry types which are permitted for the widget.
      *
      * \see setAcceptedWkbTypes()
      */
-    QList<QgsWkbTypes::Type> acceptedWkbTypes() const;
+    QList< Qgis::WkbType > acceptedWkbTypes() const;
 
     /**
      * Returns whether the widget is in a read-only state.
@@ -257,11 +150,11 @@ class GUI_EXPORT QgsGeometryWidget : public QWidget
     QAction *mPasteAction = nullptr;
     QgsReferencedGeometry mGeometry;
     QgsReferencedGeometry mPastedGeom;
-    QList<QgsWkbTypes::Type> mAcceptedTypes;
+    QList<Qgis::WkbType> mAcceptedTypes;
     bool mReadOnly = false;
 
     void fetchGeomFromClipboard();
-    bool typeIsAcceptable( QgsWkbTypes::Type type ) const;
+    bool typeIsAcceptable( Qgis::WkbType type ) const;
 
   private slots:
 

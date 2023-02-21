@@ -58,7 +58,7 @@ If ``encoding`` is specified, it will be set to the encoding of the created file
 %Docstring
 New dialog constructor.
 %End
-    QgsWkbTypes::Type selectedType() const;
+    Qgis::WkbType selectedType() const;
 %Docstring
 Returns the selected geometry type
 %End

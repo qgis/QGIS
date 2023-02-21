@@ -241,7 +241,7 @@ QVariant QgsProviderSublayerModelSublayerNode::data( int role, int column ) cons
     {
       if ( column == 0 )
         return mSublayer.type() == Qgis::LayerType::Vector
-               ? ( mSublayer.wkbType() != QgsWkbTypes::Unknown ? QgsIconUtils::iconForWkbType( mSublayer.wkbType() ) : QVariant() )
+               ? ( mSublayer.wkbType() != Qgis::WkbType::Unknown ? QgsIconUtils::iconForWkbType( mSublayer.wkbType() ) : QVariant() )
                : QgsIconUtils::iconForLayerType( mSublayer.type() );
       else
         return QVariant();
@@ -272,7 +272,7 @@ QVariant QgsProviderSublayerModelSublayerNode::data( int role, int column ) cons
       return mSublayer.featureCount();
 
     case static_cast< int >( QgsProviderSublayerModel::Role::WkbType ):
-      return mSublayer.wkbType();
+      return static_cast< quint32>( mSublayer.wkbType() );
 
     case static_cast< int >( QgsProviderSublayerModel::Role::GeometryColumnName ):
       return mSublayer.geometryColumnName();
@@ -673,7 +673,7 @@ bool QgsProviderSublayerProxyModel::filterAcceptsRow( int source_row, const QMod
   const QVariant wkbTypeVariant =  sourceModel()->data( sourceIndex, static_cast< int >( QgsProviderSublayerModel::Role::WkbType ) );
   if ( wkbTypeVariant.isValid() )
   {
-    const QgsWkbTypes::Type wkbType = static_cast< QgsWkbTypes::Type >( wkbTypeVariant.toInt() );
+    const Qgis::WkbType wkbType = static_cast< Qgis::WkbType >( wkbTypeVariant.toUInt() );
     if ( QgsWkbTypes::displayString( wkbType ).contains( mFilterString, Qt::CaseInsensitive ) )
       return true;
   }

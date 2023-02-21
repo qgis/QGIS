@@ -35,9 +35,6 @@
 #include <qgsproject.h>
 #include <qgssymbol.h>
 #include <qgssinglesymbolrenderer.h>
-//qgis test includes
-#include "qgsrenderchecker.h"
-
 
 /**
  * \ingroup UnitTests
@@ -237,7 +234,7 @@ void TestQgsVectorLayer::setRenderer()
 {
   const QSignalSpy spy( mpPointsLayer, &QgsVectorLayer::rendererChanged );
 
-  QgsSingleSymbolRenderer *symbolRenderer = new QgsSingleSymbolRenderer( QgsSymbol::defaultSymbol( QgsWkbTypes::PointGeometry ) );
+  QgsSingleSymbolRenderer *symbolRenderer = new QgsSingleSymbolRenderer( QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ) );
 
   mpPointsLayer->setRenderer( symbolRenderer );
   QCOMPARE( spy.count(), 1 );

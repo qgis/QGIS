@@ -196,7 +196,7 @@ bool QgsVectorLayerRenderer::forceRasterRender() const
 
 bool QgsVectorLayerRenderer::render()
 {
-  if ( mGeometryType == QgsWkbTypes::NullGeometry || mGeometryType == QgsWkbTypes::UnknownGeometry )
+  if ( mGeometryType == Qgis::GeometryType::Null || mGeometryType == Qgis::GeometryType::Unknown )
   {
     mReadyToCompose = true;
     return true;
@@ -497,7 +497,7 @@ void QgsVectorLayerRenderer::drawRenderer( QgsFeatureRenderer *renderer, QgsFeat
           QgsGeometry obstacleGeometry;
           QgsSymbolList symbols = renderer->originalSymbolsForFeature( fet, context );
           QgsSymbol *symbol = nullptr;
-          if ( !symbols.isEmpty() && fet.geometry().type() == QgsWkbTypes::PointGeometry )
+          if ( !symbols.isEmpty() && fet.geometry().type() == Qgis::GeometryType::Point )
           {
             obstacleGeometry = QgsVectorLayerLabelProvider::getPointObstacleGeometry( fet, context, symbols );
           }
@@ -608,7 +608,7 @@ void QgsVectorLayerRenderer::drawRendererLevels( QgsFeatureRenderer *renderer, Q
       QgsGeometry obstacleGeometry;
       QgsSymbolList symbols = renderer->originalSymbolsForFeature( fet, context );
       QgsSymbol *symbol = nullptr;
-      if ( !symbols.isEmpty() && fet.geometry().type() == QgsWkbTypes::PointGeometry )
+      if ( !symbols.isEmpty() && fet.geometry().type() == Qgis::GeometryType::Point )
       {
         obstacleGeometry = QgsVectorLayerLabelProvider::getPointObstacleGeometry( fet, context, symbols );
       }

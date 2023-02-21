@@ -688,27 +688,27 @@ template<> QgsGeometryCheck *QgsGeometryCheckFactoryT<QgsGeometryTypeCheck>::cre
   int allowedTypes = 0;
   if ( ui.checkBoxPoint->isEnabled() && ui.checkBoxPoint->isChecked() )
   {
-    allowedTypes |= 1 << QgsWkbTypes::Point;
+    allowedTypes |= 1 << static_cast< quint32>( Qgis::WkbType::Point );
   }
   if ( ui.checkBoxMultipoint->isEnabled() && ui.checkBoxMultipoint->isChecked() )
   {
-    allowedTypes |= 1 << QgsWkbTypes::MultiPoint;
+    allowedTypes |= 1 << static_cast< quint32>( Qgis::WkbType::MultiPoint );
   }
   if ( ui.checkBoxLine->isEnabled() && ui.checkBoxLine->isChecked() )
   {
-    allowedTypes |= 1 << QgsWkbTypes::LineString;
+    allowedTypes |= 1 << static_cast< quint32>( Qgis::WkbType::LineString );
   }
   if ( ui.checkBoxMultiline->isEnabled() && ui.checkBoxMultiline->isChecked() )
   {
-    allowedTypes |= 1 << QgsWkbTypes::MultiLineString;
+    allowedTypes |= 1 << static_cast< quint32>( Qgis::WkbType::MultiLineString );
   }
   if ( ui.checkBoxPolygon->isEnabled() && ui.checkBoxPolygon->isChecked() )
   {
-    allowedTypes |= 1 << QgsWkbTypes::Polygon;
+    allowedTypes |= 1 << static_cast< quint32>( Qgis::WkbType::Polygon );
   }
   if ( ui.checkBoxMultipolygon->isEnabled() && ui.checkBoxMultipolygon->isChecked() )
   {
-    allowedTypes |= 1 << QgsWkbTypes::MultiPolygon;
+    allowedTypes |= 1 << static_cast< quint32>( Qgis::WkbType::MultiPolygon );
   }
   if ( allowedTypes != 0 )
   {

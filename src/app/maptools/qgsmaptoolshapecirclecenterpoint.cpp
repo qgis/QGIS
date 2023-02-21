@@ -16,7 +16,6 @@
 
 #include "qgsmaptoolshapecirclecenterpoint.h"
 #include "qgsgeometryrubberband.h"
-#include "qgsmapcanvas.h"
 #include "qgspoint.h"
 #include "qgsmapmouseevent.h"
 #include "qgsmaptoolcapture.h"
@@ -61,7 +60,7 @@ bool QgsMapToolShapeCircleCenterPoint::cadCanvasReleaseEvent( QgsMapMouseEvent *
 
     if ( !mTempRubberBand )
     {
-      QgsWkbTypes::GeometryType type = mode == QgsMapToolCapture::CapturePolygon ? QgsWkbTypes::PolygonGeometry : QgsWkbTypes::LineGeometry;
+      Qgis::GeometryType type = mode == QgsMapToolCapture::CapturePolygon ? Qgis::GeometryType::Polygon : Qgis::GeometryType::Line;
       mTempRubberBand = mParentTool->createGeometryRubberBand( type, true );
       mTempRubberBand->show();
     }

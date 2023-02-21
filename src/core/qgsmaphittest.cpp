@@ -30,7 +30,7 @@ QgsMapHitTest::QgsMapHitTest( const QgsMapSettings &settings, const QgsGeometry 
   , mLayerFilterExpression( layerFilterExpression )
   , mOnlyExpressions( false )
 {
-  if ( !polygon.isNull() && polygon.type() == QgsWkbTypes::PolygonGeometry )
+  if ( !polygon.isNull() && polygon.type() == Qgis::GeometryType::Polygon )
   {
     mPolygon = polygon;
   }

@@ -55,7 +55,7 @@ QgsDataProvider *QgsOgrProviderMetadata::createProvider( const QString &uri, con
 
 Qgis::VectorExportResult QgsOgrProviderMetadata::createEmptyLayer( const QString &uri,
     const QgsFields &fields,
-    QgsWkbTypes::Type wkbType,
+    Qgis::WkbType wkbType,
     const QgsCoordinateReferenceSystem &srs,
     bool overwrite,
     QMap<int, int> &oldToNewAttrIdxMap,
@@ -1309,7 +1309,7 @@ QList<QgsProviderSublayerDetails> QgsOgrProviderMetadata::querySublayers( const 
   if ( originalUriLayerIdWasSpecified )
     layerId = uriLayerId;
 
-  QgsWkbTypes::Type originalGeometryTypeFilter = QgsWkbTypes::Unknown;
+  Qgis::WkbType originalGeometryTypeFilter = Qgis::WkbType::Unknown;
   bool originalUriGeometryTypeWasSpecified = false;
   const QString originalGeometryTypeString = uriParts.value( QStringLiteral( "geometryType" ) ).toString();
   if ( !originalGeometryTypeString.isEmpty() )
@@ -1399,7 +1399,7 @@ QList<QgsProviderSublayerDetails> QgsOgrProviderMetadata::querySublayers( const 
   for ( int i = 0; i < res.count(); ++i )
   {
     QVariantMap parts = decodeUri( res.at( i ).uri() );
-    if ( originalUriGeometryTypeWasSpecified && res.at( i ).wkbType() == QgsWkbTypes::Unknown )
+    if ( originalUriGeometryTypeWasSpecified && res.at( i ).wkbType() == Qgis::WkbType::Unknown )
     {
       res[ i ].setWkbType( originalGeometryTypeFilter );
       parts.insert( QStringLiteral( "geometryType" ), originalGeometryTypeString );

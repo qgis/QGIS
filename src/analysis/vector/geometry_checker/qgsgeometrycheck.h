@@ -258,7 +258,7 @@ class ANALYSIS_EXPORT QgsGeometryCheck
      *
      * \since QGIS 3.4
      */
-    virtual QList<QgsWkbTypes::GeometryType> compatibleGeometryTypes() const = 0;
+    virtual QList<Qgis::GeometryType> compatibleGeometryTypes() const = 0;
 
     /**
      * Flags for this geometry check.

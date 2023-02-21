@@ -124,7 +124,7 @@ void QgsMapToolShapeCircle3Tangents::cadCanvasMoveEvent( QgsMapMouseEvent *e, Qg
 
   if ( !mTempRubberBand )
   {
-    QgsWkbTypes::GeometryType type = mode == QgsMapToolCapture::CapturePolygon ? QgsWkbTypes::PolygonGeometry : QgsWkbTypes::LineGeometry;
+    Qgis::GeometryType type = mode == QgsMapToolCapture::CapturePolygon ? Qgis::GeometryType::Polygon : Qgis::GeometryType::Line;
     mTempRubberBand = mParentTool->createGeometryRubberBand( type, true );
     mTempRubberBand->show();
   }

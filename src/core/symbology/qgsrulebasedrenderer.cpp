@@ -816,7 +816,7 @@ QgsRuleBasedRenderer::RuleList QgsRuleBasedRenderer::Rule::descendants() const
   return l;
 }
 
-QgsRuleBasedRenderer::Rule *QgsRuleBasedRenderer::Rule::createFromSld( QDomElement &ruleElem, QgsWkbTypes::GeometryType geomType )
+QgsRuleBasedRenderer::Rule *QgsRuleBasedRenderer::Rule::createFromSld( QDomElement &ruleElem, Qgis::GeometryType geomType )
 {
   if ( ruleElem.localName() != QLatin1String( "Rule" ) )
   {
@@ -914,20 +914,20 @@ QgsRuleBasedRenderer::Rule *QgsRuleBasedRenderer::Rule::createFromSld( QDomEleme
   {
     switch ( geomType )
     {
-      case QgsWkbTypes::LineGeometry:
+      case Qgis::GeometryType::Line:
         symbol = new QgsLineSymbol( layers );
         break;
 
-      case QgsWkbTypes::PolygonGeometry:
+      case Qgis::GeometryType::Polygon:
         symbol = new QgsFillSymbol( layers );
         break;
 
-      case QgsWkbTypes::PointGeometry:
+      case Qgis::GeometryType::Point:
         symbol = new QgsMarkerSymbol( layers );
         break;
 
       default:
-        QgsDebugMsg( QStringLiteral( "invalid geometry type: found %1" ).arg( geomType ) );
+        QgsDebugMsg( QStringLiteral( "invalid geometry type: found %1" ).arg( qgsEnumValueToKey( geomType ) ) );
         return nullptr;
     }
   }
@@ -1260,7 +1260,7 @@ QgsFeatureRenderer *QgsRuleBasedRenderer::create( QDomElement &element, const Qg
   return r;
 }
 
-QgsFeatureRenderer *QgsRuleBasedRenderer::createFromSld( QDomElement &element, QgsWkbTypes::GeometryType geomType )
+QgsFeatureRenderer *QgsRuleBasedRenderer::createFromSld( QDomElement &element, Qgis::GeometryType geomType )
 {
   // retrieve child rules
   Rule *root = nullptr;

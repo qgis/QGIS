@@ -24,7 +24,6 @@
 #include "qgsfeatureiterator.h"
 #include "qgsfeaturesource.h"
 #include "qgsvectordataprovider.h"
-#include "qgspoint.h"
 #include "qgsgeometry.h"
 #include "qgsdistancearea.h"
 #include "qgswkbtypes.h"
@@ -211,9 +210,9 @@ void QgsVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, const
       return;
 
     QgsMultiPolylineXY mpl;
-    if ( QgsWkbTypes::flatType( feature.geometry().wkbType() ) == QgsWkbTypes::MultiLineString )
+    if ( QgsWkbTypes::flatType( feature.geometry().wkbType() ) == Qgis::WkbType::MultiLineString )
       mpl = feature.geometry().asMultiPolyline();
-    else if ( QgsWkbTypes::flatType( feature.geometry().wkbType() ) == QgsWkbTypes::LineString )
+    else if ( QgsWkbTypes::flatType( feature.geometry().wkbType() ) == Qgis::WkbType::LineString )
       mpl.push_back( feature.geometry().asPolyline() );
 
     for ( const QgsPolylineXY &line : std::as_const( mpl ) )
@@ -334,9 +333,9 @@ void QgsVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, const
 
     // begin features segments and add arc to the Graph;
     QgsMultiPolylineXY mpl;
-    if ( QgsWkbTypes::flatType( feature.geometry().wkbType() ) == QgsWkbTypes::MultiLineString )
+    if ( QgsWkbTypes::flatType( feature.geometry().wkbType() ) == Qgis::WkbType::MultiLineString )
       mpl = feature.geometry().asMultiPolyline();
-    else if ( QgsWkbTypes::flatType( feature.geometry().wkbType() ) == QgsWkbTypes::LineString )
+    else if ( QgsWkbTypes::flatType( feature.geometry().wkbType() ) == Qgis::WkbType::LineString )
       mpl.push_back( feature.geometry().asPolyline() );
 
     for ( const QgsPolylineXY &line : std::as_const( mpl ) )

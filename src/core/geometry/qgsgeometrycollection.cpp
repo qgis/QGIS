@@ -34,7 +34,7 @@ email                : marco.hugentobler at sourcepole dot com
 
 QgsGeometryCollection::QgsGeometryCollection()
 {
-  mWkbType = QgsWkbTypes::GeometryCollection;
+  mWkbType = Qgis::WkbType::GeometryCollection;
 }
 
 QgsGeometryCollection::QgsGeometryCollection( const QgsGeometryCollection &c ):
@@ -369,7 +369,7 @@ bool QgsGeometryCollection::fromWkb( QgsConstWkbPtr &wkbPtr )
     return false;
   }
 
-  QgsWkbTypes::Type wkbType = wkbPtr.readHeader();
+  Qgis::WkbType wkbType = wkbPtr.readHeader();
   if ( QgsWkbTypes::flatType( wkbType ) != QgsWkbTypes::flatType( mWkbType ) )
     return false;
 
@@ -745,7 +745,7 @@ bool QgsGeometryCollection::fromCollectionWkt( const QString &wkt, const QVector
 {
   clear();
 
-  QPair<QgsWkbTypes::Type, QString> parts = QgsGeometryUtils::wktReadBlock( wkt );
+  QPair<Qgis::WkbType, QString> parts = QgsGeometryUtils::wktReadBlock( wkt );
 
   if ( QgsWkbTypes::flatType( parts.first ) != QgsWkbTypes::flatType( wkbType() ) )
   {
@@ -765,7 +765,7 @@ bool QgsGeometryCollection::fromCollectionWkt( const QString &wkt, const QVector
   const QStringList blocks = QgsGeometryUtils::wktGetChildBlocks( parts.second, defChildWkbType );
   for ( const QString &childWkt : blocks )
   {
-    QPair<QgsWkbTypes::Type, QString> childParts = QgsGeometryUtils::wktReadBlock( childWkt );
+    QPair<Qgis::WkbType, QString> childParts = QgsGeometryUtils::wktReadBlock( childWkt );
 
     bool success = false;
     for ( const QgsAbstractGeometry *geom : subtypes )
@@ -953,7 +953,7 @@ bool QgsGeometryCollection::addMValue( double mValue )
 
 bool QgsGeometryCollection::dropZValue()
 {
-  if ( mWkbType != QgsWkbTypes::GeometryCollection && !is3D() )
+  if ( mWkbType != Qgis::WkbType::GeometryCollection && !is3D() )
     return false;
 
   mWkbType = QgsWkbTypes::dropZ( mWkbType );
@@ -967,7 +967,7 @@ bool QgsGeometryCollection::dropZValue()
 
 bool QgsGeometryCollection::dropMValue()
 {
-  if ( mWkbType != QgsWkbTypes::GeometryCollection && !isMeasure() )
+  if ( mWkbType != Qgis::WkbType::GeometryCollection && !isMeasure() )
     return false;
 
   mWkbType = QgsWkbTypes::dropM( mWkbType );

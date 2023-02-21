@@ -955,7 +955,7 @@ void QgsSimpleMarkerSymbolLayerBase::calculateOffsetAndRotation( QgsSymbolRender
     const QgsFeature *f = context.feature();
     if ( f )
     {
-      if ( f->hasGeometry() && f->geometry().type() == QgsWkbTypes::PointGeometry )
+      if ( f->hasGeometry() && f->geometry().type() == Qgis::GeometryType::Point )
       {
         const QgsMapToPixel &m2p = context.renderContext().mapToPixel();
         angle += m2p.mapRotation();
@@ -2545,7 +2545,7 @@ void QgsSvgMarkerSymbolLayer::calculateOffsetAndRotation( QgsSymbolRenderContext
     const QgsFeature *f = context.feature();
     if ( f )
     {
-      if ( f->hasGeometry() && f->geometry().type() == QgsWkbTypes::PointGeometry )
+      if ( f->hasGeometry() && f->geometry().type() == Qgis::GeometryType::Point )
       {
         const QgsMapToPixel &m2p = context.renderContext().mapToPixel();
         angle += m2p.mapRotation();
@@ -3307,7 +3307,7 @@ void QgsRasterMarkerSymbolLayer::calculateOffsetAndRotation( QgsSymbolRenderCont
     const QgsFeature *f = context.feature();
     if ( f )
     {
-      if ( f->hasGeometry() && f->geometry().type() == QgsWkbTypes::PointGeometry )
+      if ( f->hasGeometry() && f->geometry().type() == Qgis::GeometryType::Point )
       {
         const QgsMapToPixel &m2p = context.renderContext().mapToPixel();
         angle += m2p.mapRotation();
@@ -3610,7 +3610,7 @@ void QgsFontMarkerSymbolLayer::calculateOffsetAndRotation( QgsSymbolRenderContex
     const QgsFeature *f = context.feature();
     if ( f )
     {
-      if ( f->hasGeometry() && f->geometry().type() == QgsWkbTypes::PointGeometry )
+      if ( f->hasGeometry() && f->geometry().type() == Qgis::GeometryType::Point )
       {
         const QgsMapToPixel &m2p = context.renderContext().mapToPixel();
         angle += m2p.mapRotation();

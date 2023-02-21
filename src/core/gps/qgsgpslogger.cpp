@@ -109,16 +109,16 @@ QVector<QgsPoint> QgsGpsLogger::currentTrack() const
   return mCaptureListWgs84;
 }
 
-QgsGeometry QgsGpsLogger::currentGeometry( QgsWkbTypes::Type type, QString &error ) const
+QgsGeometry QgsGpsLogger::currentGeometry( Qgis::WkbType type, QString &error ) const
 {
-  const QgsWkbTypes::GeometryType geometryType = QgsWkbTypes::geometryType( type );
+  const Qgis::GeometryType geometryType = QgsWkbTypes::geometryType( type );
   const QVector< QgsPoint > captureListWgs84 = currentTrack();
-  if ( geometryType == QgsWkbTypes::LineGeometry && captureListWgs84.size() < 2 )
+  if ( geometryType == Qgis::GeometryType::Line && captureListWgs84.size() < 2 )
   {
     error = tr( "Creating a line feature requires a track with at least two vertices." );
     return QgsGeometry();
   }
-  else if ( geometryType == QgsWkbTypes::PolygonGeometry && captureListWgs84.size() < 3 )
+  else if ( geometryType == Qgis::GeometryType::Polygon && captureListWgs84.size() < 3 )
   {
     error = tr( "Creating a polygon feature requires a track with at least three vertices." );
     return QgsGeometry();
@@ -128,7 +128,7 @@ QgsGeometry QgsGpsLogger::currentGeometry( QgsWkbTypes::Type type, QString &erro
   const bool isMeasure = QgsWkbTypes::hasM( type );
   switch ( geometryType )
   {
-    case QgsWkbTypes::PointGeometry:
+    case Qgis::GeometryType::Point:
     {
       const QgsPointXY pointXYWgs84 = lastPosition();
 
@@ -147,8 +147,8 @@ QgsGeometry QgsGpsLogger::currentGeometry( QgsWkbTypes::Type type, QString &erro
       return g;
     }
 
-    case QgsWkbTypes::LineGeometry:
-    case QgsWkbTypes::PolygonGeometry:
+    case Qgis::GeometryType::Line:
+    case Qgis::GeometryType::Polygon:
     {
       QgsGeometry g;
 
@@ -158,13 +158,13 @@ QgsGeometry QgsGpsLogger::currentGeometry( QgsWkbTypes::Type type, QString &erro
       if ( !isMeasure )
         ringWgs84->dropMValue();
 
-      if ( geometryType == QgsWkbTypes::LineGeometry )
+      if ( geometryType == Qgis::GeometryType::Line )
       {
         g = QgsGeometry( ringWgs84.release() );
         if ( QgsWkbTypes::isMultiType( type ) )
           g.convertToMultiType();
       }
-      else if ( geometryType == QgsWkbTypes::PolygonGeometry )
+      else if ( geometryType == Qgis::GeometryType::Polygon )
       {
         ringWgs84->close();
         std::unique_ptr<QgsPolygon> polygon( new QgsPolygon() );
@@ -178,8 +178,8 @@ QgsGeometry QgsGpsLogger::currentGeometry( QgsWkbTypes::Type type, QString &erro
       return g;
     }
 
-    case QgsWkbTypes::NullGeometry:
-    case QgsWkbTypes::UnknownGeometry:
+    case Qgis::GeometryType::Null:
+    case Qgis::GeometryType::Unknown:
       break;
   }
   return QgsGeometry();

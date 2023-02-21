@@ -312,8 +312,8 @@ class CORE_EXPORT QgsCurve: public QgsAbstractGeometry SIP_ABSTRACT
       if ( !geom )
         return nullptr;
 
-      const QgsWkbTypes::Type type = geom->wkbType();
-      if ( QgsWkbTypes::geometryType( type ) == QgsWkbTypes::LineGeometry && QgsWkbTypes::isSingleType( type ) )
+      const Qgis::WkbType type = geom->wkbType();
+      if ( QgsWkbTypes::geometryType( type ) == Qgis::GeometryType::Line && QgsWkbTypes::isSingleType( type ) )
       {
         return static_cast<const QgsCurve *>( geom );
       }

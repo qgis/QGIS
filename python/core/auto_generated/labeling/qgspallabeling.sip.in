@@ -434,11 +434,11 @@ Set unit for rotation of labels.
 
     QString geometryGenerator;
 
-    QgsWkbTypes::GeometryType geometryGeneratorType;
+    Qgis::GeometryType geometryGeneratorType;
 
     bool geometryGeneratorEnabled;
 
-    QgsWkbTypes::GeometryType layerType;
+    Qgis::GeometryType layerType;
 
     void setLegendString( const QString &legendString );
 %Docstring

@@ -727,7 +727,7 @@ class CORE_EXPORT QgsPalLayerSettings
     QString geometryGenerator;
 
     //! The type of the result geometry of the geometry generator.
-    QgsWkbTypes::GeometryType geometryGeneratorType = QgsWkbTypes::GeometryType::PointGeometry;
+    Qgis::GeometryType geometryGeneratorType = Qgis::GeometryType::Point;
 
     //! Defines if the geometry generator is enabled or not. If disabled, the standard geometry will be taken.
     bool geometryGeneratorEnabled = false;
@@ -736,7 +736,7 @@ class CORE_EXPORT QgsPalLayerSettings
      * Geometry type of layers associated with these settings.
      * \since QGIS 3.10
      */
-    QgsWkbTypes::GeometryType layerType = QgsWkbTypes::UnknownGeometry;
+    Qgis::GeometryType layerType = Qgis::GeometryType::Unknown;
 
     /**
      * \brief setLegendString

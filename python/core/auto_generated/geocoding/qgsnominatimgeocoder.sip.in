@@ -44,7 +44,7 @@ The optional ``endpoint`` argument can be used to specify a non-default endpoint
 
     virtual QgsFields appendedFields() const;
 
-    virtual QgsWkbTypes::Type wkbType() const;
+    virtual Qgis::WkbType wkbType() const;
 
     virtual QList< QgsGeocoderResult > geocodeString( const QString &string, const QgsGeocoderContext &context, QgsFeedback *feedback = 0 ) const;
 

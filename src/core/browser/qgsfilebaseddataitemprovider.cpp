@@ -130,19 +130,19 @@ Qgis::BrowserLayerType QgsProviderSublayerItem::layerTypeFromSublayer( const Qgs
     {
       switch ( QgsWkbTypes::geometryType( sublayer.wkbType() ) )
       {
-        case QgsWkbTypes::PointGeometry:
+        case Qgis::GeometryType::Point:
           return Qgis::BrowserLayerType::Point;
 
-        case QgsWkbTypes::LineGeometry:
+        case Qgis::GeometryType::Line:
           return Qgis::BrowserLayerType::Line;
 
-        case QgsWkbTypes::PolygonGeometry:
+        case Qgis::GeometryType::Polygon:
           return Qgis::BrowserLayerType::Polygon;
 
-        case QgsWkbTypes::NullGeometry:
+        case Qgis::GeometryType::Null:
           return Qgis::BrowserLayerType::TableLayer;
 
-        case QgsWkbTypes::UnknownGeometry:
+        case Qgis::GeometryType::Unknown:
           return Qgis::BrowserLayerType::Vector;
       }
 

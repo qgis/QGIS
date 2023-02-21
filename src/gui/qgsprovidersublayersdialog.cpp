@@ -48,7 +48,7 @@ QVariant QgsProviderSublayerDialogModel::data( const QModelIndex &index, int rol
   {
     const QgsProviderSublayerDetails details = sublayerNode->sublayer();
 
-    if ( details.type() == Qgis::LayerType::Vector && details.wkbType() == QgsWkbTypes::Unknown && !mGeometryTypesResolved )
+    if ( details.type() == Qgis::LayerType::Vector && details.wkbType() == Qgis::WkbType::Unknown && !mGeometryTypesResolved )
     {
       switch ( role )
       {
@@ -97,7 +97,7 @@ Qt::ItemFlags QgsProviderSublayerDialogModel::flags( const QModelIndex &index ) 
   {
     const QgsProviderSublayerDetails details = mSublayers.at( index.row() );
 
-    if ( details.type() == Qgis::LayerType::Vector && details.wkbType() == QgsWkbTypes::Unknown && !mGeometryTypesResolved )
+    if ( details.type() == Qgis::LayerType::Vector && details.wkbType() == Qgis::WkbType::Unknown && !mGeometryTypesResolved )
     {
       // unknown geometry item can't be selected
       return Qt::ItemFlags();

@@ -72,10 +72,10 @@ QgsProcessing::SourceType QgsSingleSidedBufferAlgorithm::outputLayerType() const
   return QgsProcessing::TypeVectorPolygon;
 }
 
-QgsWkbTypes::Type QgsSingleSidedBufferAlgorithm::outputWkbType( QgsWkbTypes::Type type ) const
+Qgis::WkbType QgsSingleSidedBufferAlgorithm::outputWkbType( Qgis::WkbType type ) const
 {
   Q_UNUSED( type );
-  return QgsWkbTypes::Polygon;
+  return Qgis::WkbType::Polygon;
 }
 
 QgsSingleSidedBufferAlgorithm *QgsSingleSidedBufferAlgorithm::createInstance() const

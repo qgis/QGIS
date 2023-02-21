@@ -48,7 +48,7 @@ A rubberband class for :py:class:`QgsAbstractGeometry` (considering curved geome
       ICON_FULL_BOX
     };
 
-    QgsGeometryRubberBand( QgsMapCanvas *mapCanvas, QgsWkbTypes::GeometryType geomType = QgsWkbTypes::LineGeometry );
+    QgsGeometryRubberBand( QgsMapCanvas *mapCanvas, Qgis::GeometryType geomType = Qgis::GeometryType::Line );
     ~QgsGeometryRubberBand();
 
     virtual void setGeometry( QgsAbstractGeometry *geom /Transfer/ );
@@ -98,12 +98,12 @@ Sets whether the vertices are drawn
     virtual void paint( QPainter *painter );
 
 
-    QgsWkbTypes::GeometryType geometryType() const;
+    Qgis::GeometryType geometryType() const;
 %Docstring
 Returns which geometry is handled by the rubber band, polygon or line
 %End
 
-    void setGeometryType( const QgsWkbTypes::GeometryType &geometryType );
+    void setGeometryType( Qgis::GeometryType geometryType );
 %Docstring
 Sets which geometry is handled by the rubber band, polygon or line
 %End

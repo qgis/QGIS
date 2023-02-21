@@ -150,7 +150,7 @@ QgsMssqlProvider::QgsMssqlProvider( const QString &uri, const ProviderOptions &o
     if ( !anUri.geometryColumn().isEmpty() )
       mGeometryColName = anUri.geometryColumn();
 
-    if ( mSRId < 0 || mWkbType == QgsWkbTypes::Unknown || mGeometryColName.isEmpty() )
+    if ( mSRId < 0 || mWkbType == Qgis::WkbType::Unknown || mGeometryColName.isEmpty() )
     {
       loadMetadata();
     }
@@ -218,7 +218,7 @@ QgsMssqlProvider::QgsMssqlProvider( const QString &uri, const ProviderOptions &o
       if ( mGeometryColName.isEmpty() )
       {
         // table contains no geometries
-        mWkbType = QgsWkbTypes::NoGeometry;
+        mWkbType = Qgis::WkbType::NoGeometry;
         mSRId = 0;
       }
     }
@@ -316,7 +316,7 @@ QVariant::Type QgsMssqlProvider::DecodeSqlType( const QString &sqlTypeName )
 void QgsMssqlProvider::loadMetadata()
 {
   mSRId = 0;
-  mWkbType = QgsWkbTypes::Unknown;
+  mWkbType = Qgis::WkbType::Unknown;
 
   QSqlQuery query = createQuery();
   query.setForwardOnly( true );
@@ -1086,7 +1086,7 @@ QgsRectangle QgsMssqlProvider::extent() const
 /**
  * Returns the feature type
  */
-QgsWkbTypes::Type QgsMssqlProvider::wkbType() const
+Qgis::WkbType QgsMssqlProvider::wkbType() const
 {
   return mWkbType;
 }
@@ -1137,7 +1137,7 @@ bool QgsMssqlProvider::addFeatures( QgsFeatureList &flist, Flags flags )
 {
   for ( QgsFeatureList::iterator it = flist.begin(); it != flist.end(); ++it )
   {
-    if ( it->hasGeometry() && mWkbType == QgsWkbTypes::NoGeometry )
+    if ( it->hasGeometry() && mWkbType == Qgis::WkbType::NoGeometry )
     {
       it->clearGeometry();
     }
@@ -2092,31 +2092,31 @@ bool QgsMssqlProvider::convertField( QgsField &field )
   return true;
 }
 
-void QgsMssqlProvider::mssqlWkbTypeAndDimension( QgsWkbTypes::Type wkbType, QString &geometryType, int &dim )
+void QgsMssqlProvider::mssqlWkbTypeAndDimension( Qgis::WkbType wkbType, QString &geometryType, int &dim )
 {
-  const QgsWkbTypes::Type flatType = QgsWkbTypes::flatType( wkbType );
+  const Qgis::WkbType flatType = QgsWkbTypes::flatType( wkbType );
 
-  if ( flatType == QgsWkbTypes::Point )
+  if ( flatType == Qgis::WkbType::Point )
     geometryType = QStringLiteral( "POINT" );
-  else if ( flatType == QgsWkbTypes::LineString )
+  else if ( flatType == Qgis::WkbType::LineString )
     geometryType = QStringLiteral( "LINESTRING" );
-  else if ( flatType == QgsWkbTypes::Polygon )
+  else if ( flatType == Qgis::WkbType::Polygon )
     geometryType = QStringLiteral( "POLYGON" );
-  else if ( flatType == QgsWkbTypes::MultiPoint )
+  else if ( flatType == Qgis::WkbType::MultiPoint )
     geometryType = QStringLiteral( "MULTIPOINT" );
-  else if ( flatType == QgsWkbTypes::MultiLineString )
+  else if ( flatType == Qgis::WkbType::MultiLineString )
     geometryType = QStringLiteral( "MULTILINESTRING" );
-  else if ( flatType == QgsWkbTypes::MultiPolygon )
+  else if ( flatType == Qgis::WkbType::MultiPolygon )
     geometryType = QStringLiteral( "MULTIPOLYGON" );
-  else if ( flatType == QgsWkbTypes::GeometryCollection )
+  else if ( flatType == Qgis::WkbType::GeometryCollection )
     geometryType = QStringLiteral( "GEOMETRYCOLLECTION" );
-  else if ( flatType == QgsWkbTypes::CircularString )
+  else if ( flatType == Qgis::WkbType::CircularString )
     geometryType = QStringLiteral( "CIRCULARSTRING" );
-  else if ( flatType == QgsWkbTypes::CompoundCurve )
+  else if ( flatType == Qgis::WkbType::CompoundCurve )
     geometryType = QStringLiteral( "COMPOUNDCURVE" );
-  else if ( flatType == QgsWkbTypes::CurvePolygon )
+  else if ( flatType == Qgis::WkbType::CurvePolygon )
     geometryType = QStringLiteral( "CURVEPOLYGON" );
-  else if ( flatType == QgsWkbTypes::Unknown )
+  else if ( flatType == Qgis::WkbType::Unknown )
     geometryType = QStringLiteral( "GEOMETRY" );
   else
   {
@@ -2137,13 +2137,13 @@ void QgsMssqlProvider::mssqlWkbTypeAndDimension( QgsWkbTypes::Type wkbType, QStr
     geometryType += QLatin1Char( 'M' );
     dim = 3;
   }
-  else if ( wkbType >= QgsWkbTypes::Point25D && wkbType <= QgsWkbTypes::MultiPolygon25D )
+  else if ( wkbType >= Qgis::WkbType::Point25D && wkbType <= Qgis::WkbType::MultiPolygon25D )
   {
     dim = 3;
   }
 }
 
-QgsWkbTypes::Type QgsMssqlProvider::getWkbType( const QString &geometryType )
+Qgis::WkbType QgsMssqlProvider::getWkbType( const QString &geometryType )
 {
   return QgsWkbTypes::parseType( geometryType );
 }
@@ -2151,7 +2151,7 @@ QgsWkbTypes::Type QgsMssqlProvider::getWkbType( const QString &geometryType )
 
 Qgis::VectorExportResult QgsMssqlProvider::createEmptyLayer( const QString &uri,
     const QgsFields &fields,
-    QgsWkbTypes::Type wkbType,
+    Qgis::WkbType wkbType,
     const QgsCoordinateReferenceSystem &srs,
     bool overwrite,
     QMap<int, int> *oldToNewAttrIdxMap,
@@ -2186,7 +2186,7 @@ Qgis::VectorExportResult QgsMssqlProvider::createEmptyLayer( const QString &uri,
   if ( schemaName.isEmpty() )
     schemaName = QStringLiteral( "dbo" );
 
-  if ( wkbType != QgsWkbTypes::NoGeometry && geometryColumn.isEmpty() )
+  if ( wkbType != Qgis::WkbType::NoGeometry && geometryColumn.isEmpty() )
     geometryColumn = QStringLiteral( "geom" );
 
   // get the pk's name and type
@@ -2494,15 +2494,14 @@ void QgsMssqlProviderMetadata::saveConnection( const QgsAbstractProviderConnecti
   saveConnectionProtected( conn, name );
 }
 
-Qgis::VectorExportResult QgsMssqlProviderMetadata::createEmptyLayer(
-  const QString &uri,
-  const QgsFields &fields,
-  QgsWkbTypes::Type wkbType,
-  const QgsCoordinateReferenceSystem &srs,
-  bool overwrite,
-  QMap<int, int> &oldToNewAttrIdxMap,
-  QString &errorMessage,
-  const QMap<QString, QVariant> *options )
+Qgis::VectorExportResult QgsMssqlProviderMetadata::createEmptyLayer( const QString &uri,
+    const QgsFields &fields,
+    Qgis::WkbType wkbType,
+    const QgsCoordinateReferenceSystem &srs,
+    bool overwrite,
+    QMap<int, int> &oldToNewAttrIdxMap,
+    QString &errorMessage,
+    const QMap<QString, QVariant> *options )
 {
   return QgsMssqlProvider::createEmptyLayer(
            uri, fields, wkbType, srs, overwrite,
@@ -2983,8 +2982,8 @@ QVariantMap QgsMssqlProviderMetadata::decodeUri( const QString &uri ) const
   //if ( ! dsUri.authConfigId().isEmpty() )
   //  uriParts[ QStringLiteral( "authcfg" ) ] = dsUri.authConfigId();
 
-  if ( dsUri.wkbType() != QgsWkbTypes::Type::Unknown )
-    uriParts[ QStringLiteral( "type" ) ] = dsUri.wkbType();
+  if ( dsUri.wkbType() != Qgis::WkbType::Unknown )
+    uriParts[ QStringLiteral( "type" ) ] = static_cast< quint32>( dsUri.wkbType() );
 
   // Supported?
   // uriParts[ QStringLiteral( "selectatid" ) ] = dsUri.selectAtIdDisabled();
@@ -3055,7 +3054,7 @@ QString QgsMssqlProviderMetadata::encodeUri( const QVariantMap &parts ) const
   //if ( parts.contains( QStringLiteral( "authcfg" ) ) )
   //  dsUri.setAuthConfigId( parts.value( QStringLiteral( "authcfg" ) ).toString() );
   if ( parts.contains( QStringLiteral( "type" ) ) )
-    dsUri.setParam( QStringLiteral( "type" ), QgsWkbTypes::displayString( static_cast<QgsWkbTypes::Type>( parts.value( QStringLiteral( "type" ) ).toInt() ) ) );
+    dsUri.setParam( QStringLiteral( "type" ), QgsWkbTypes::displayString( static_cast<Qgis::WkbType>( parts.value( QStringLiteral( "type" ) ).toInt() ) ) );
   // Supported?
   //if ( parts.contains( QStringLiteral( "selectatid" ) ) )
   //  dsUri.setParam( QStringLiteral( "selectatid" ), parts.value( QStringLiteral( "selectatid" ) ).toString() );

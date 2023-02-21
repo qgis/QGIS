@@ -146,7 +146,7 @@ class CORE_EXPORT QgsSymbolRenderContext
      * \see originalGeometryType()
      * \since QGIS 3.0
      */
-    void setOriginalGeometryType( QgsWkbTypes::GeometryType type ) { mOriginalGeometryType = type; }
+    void setOriginalGeometryType( Qgis::GeometryType type ) { mOriginalGeometryType = type; }
 
     /**
      * Returns the geometry type for the original feature geometry being rendered. This can be
@@ -156,7 +156,7 @@ class CORE_EXPORT QgsSymbolRenderContext
      * \see originalGeometryType()
      * \since QGIS 3.0
      */
-    QgsWkbTypes::GeometryType originalGeometryType() const { return mOriginalGeometryType; }
+    Qgis::GeometryType originalGeometryType() const { return mOriginalGeometryType; }
 
     /**
      * Fields of the layer. Currently only available in startRender() calls
@@ -252,7 +252,7 @@ class CORE_EXPORT QgsSymbolRenderContext
     QgsFields mFields;
     int mGeometryPartCount;
     int mGeometryPartNum;
-    QgsWkbTypes::GeometryType mOriginalGeometryType = QgsWkbTypes::UnknownGeometry;
+    Qgis::GeometryType mOriginalGeometryType = Qgis::GeometryType::Unknown;
     std::unique_ptr< QgsLegendPatchShape > mPatchShape;
 };
 

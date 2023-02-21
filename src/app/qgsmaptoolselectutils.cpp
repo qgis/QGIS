@@ -84,7 +84,7 @@ void QgsMapToolSelectUtils::setRubberBand( QgsMapCanvas *canvas, QRect &selectRe
 
   if ( rubberBand )
   {
-    rubberBand->reset( QgsWkbTypes::PolygonGeometry );
+    rubberBand->reset( Qgis::GeometryType::Polygon );
     rubberBand->addPoint( ll, false );
     rubberBand->addPoint( lr, false );
     rubberBand->addPoint( ur, false );
@@ -106,7 +106,7 @@ QgsRectangle QgsMapToolSelectUtils::expandSelectRectangle( QgsPointXY mapPoint, 
       case Qgis::LayerType::Vector:
       {
         QgsVectorLayer *vLayer = qobject_cast< QgsVectorLayer * >( layer );
-        if ( vLayer->geometryType() != QgsWkbTypes::PolygonGeometry )
+        if ( vLayer->geometryType() != Qgis::GeometryType::Polygon )
         {
           //if point or line use an artificial bounding box of 10x10 pixels
           //to aid the user to click on a feature accurately
@@ -160,7 +160,7 @@ bool transformSelectGeometry( const QgsGeometry &selectGeometry, QgsGeometry &se
   selectGeomTrans = selectGeometry;
   try
   {
-    if ( !ct.isShortCircuited() && selectGeomTrans.type() == QgsWkbTypes::PolygonGeometry )
+    if ( !ct.isShortCircuited() && selectGeomTrans.type() == Qgis::GeometryType::Polygon )
     {
       // convert add more points to the edges of the rectangle
       // improve transformation result
@@ -345,7 +345,7 @@ QgsFeatureIds QgsMapToolSelectUtils::getMatchingFeatures( QgsMapCanvas *canvas, 
 {
   QgsFeatureIds newSelectedFeatures;
 
-  if ( selectGeometry.type() != QgsWkbTypes::PolygonGeometry )
+  if ( selectGeometry.type() != Qgis::GeometryType::Polygon )
     return newSelectedFeatures;
 
   QgsMapLayer *targetLayer = QgsMapToolSelectUtils::getCurrentTargetLayer( canvas );
@@ -561,7 +561,7 @@ QgsFeatureIds QgsMapToolSelectUtils::QgsMapToolSelectMenuActions::search( std::s
 {
   QgsFeatureIds newSelectedFeatures;
 
-  if ( data->selectGeometry.type() != QgsWkbTypes::PolygonGeometry )
+  if ( data->selectGeometry.type() != Qgis::GeometryType::Polygon )
     return newSelectedFeatures;
 
   QgsGeometry selectGeomTrans = data->selectGeometry;

@@ -53,11 +53,11 @@ QgsLayerMetadataSearchWidget::QgsLayerMetadataSearchWidget( QWidget *parent, Qt:
   mExtentFilterComboBox->adjustSize();
 
   mGeometryTypeComboBox->addItem( QString( ), QVariant() );
-  mGeometryTypeComboBox->addItem( QgsIconUtils::iconForGeometryType( QgsWkbTypes::GeometryType::PointGeometry ), QgsWkbTypes::geometryDisplayString( QgsWkbTypes::GeometryType::PointGeometry ), QgsWkbTypes::GeometryType::PointGeometry );
-  mGeometryTypeComboBox->addItem( QgsIconUtils::iconForGeometryType( QgsWkbTypes::GeometryType::LineGeometry ), QgsWkbTypes::geometryDisplayString( QgsWkbTypes::GeometryType::LineGeometry ), QgsWkbTypes::GeometryType::LineGeometry );
-  mGeometryTypeComboBox->addItem( QgsIconUtils::iconForGeometryType( QgsWkbTypes::GeometryType::PolygonGeometry ), QgsWkbTypes::geometryDisplayString( QgsWkbTypes::GeometryType::PolygonGeometry ), QgsWkbTypes::GeometryType::PolygonGeometry );
+  mGeometryTypeComboBox->addItem( QgsIconUtils::iconForGeometryType( Qgis::GeometryType::Point ), QgsWkbTypes::geometryDisplayString( Qgis::GeometryType::Point ), static_cast< int >( Qgis::GeometryType::Point ) );
+  mGeometryTypeComboBox->addItem( QgsIconUtils::iconForGeometryType( Qgis::GeometryType::Line ), QgsWkbTypes::geometryDisplayString( Qgis::GeometryType::Line ), static_cast< int >( Qgis::GeometryType::Line ) );
+  mGeometryTypeComboBox->addItem( QgsIconUtils::iconForGeometryType( Qgis::GeometryType::Polygon ), QgsWkbTypes::geometryDisplayString( Qgis::GeometryType::Polygon ), static_cast< int >( Qgis::GeometryType::Polygon ) );
   // Note: unknown geometry is mapped to null and missing from the combo
-  mGeometryTypeComboBox->addItem( QgsIconUtils::iconForGeometryType( QgsWkbTypes::GeometryType::NullGeometry ), QgsWkbTypes::geometryDisplayString( QgsWkbTypes::GeometryType::NullGeometry ), QgsWkbTypes::GeometryType::NullGeometry );
+  mGeometryTypeComboBox->addItem( QgsIconUtils::iconForGeometryType( Qgis::GeometryType::Null ), QgsWkbTypes::geometryDisplayString( Qgis::GeometryType::Null ), static_cast< int >( Qgis::GeometryType::Null ) );
   mGeometryTypeComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "mIconRaster.svg" ) ), tr( "Raster" ), QVariant() );
   mGeometryTypeComboBox->setCurrentIndex( 0 );
   mGeometryTypeComboBox->setSizeAdjustPolicy( QComboBox::SizeAdjustPolicy::AdjustToContents );
@@ -127,7 +127,7 @@ QgsLayerMetadataSearchWidget::QgsLayerMetadataSearchWidget( QWidget *parent, Qt:
       if ( geomTypeFilterValue.isValid() )  // Vector layers
       {
         mProxyModel->setFilterGeometryTypeEnabled( true );
-        mProxyModel->setFilterGeometryType( geomTypeFilterValue.value<QgsWkbTypes::GeometryType>( ) );
+        mProxyModel->setFilterGeometryType( geomTypeFilterValue.value<Qgis::GeometryType>( ) );
         mProxyModel->setFilterMapLayerTypeEnabled( true );
         mProxyModel->setFilterMapLayerType( Qgis::LayerType::Vector );
       }

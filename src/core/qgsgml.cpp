@@ -58,7 +58,7 @@ QgsGml::QgsGml(
   }
 }
 
-int QgsGml::getFeatures( const QString &uri, QgsWkbTypes::Type *wkbType, QgsRectangle *extent, const QString &userName, const QString &password, const QString &authcfg )
+int QgsGml::getFeatures( const QString &uri, Qgis::WkbType *wkbType, QgsRectangle *extent, const QString &userName, const QString &password, const QString &authcfg )
 {
   //start with empty extent
   mExtent.setMinimal();
@@ -161,7 +161,7 @@ int QgsGml::getFeatures( const QString &uri, QgsWkbTypes::Type *wkbType, QgsRect
 
   *wkbType = mParser.wkbType();
 
-  if ( *wkbType != QgsWkbTypes::Unknown )
+  if ( *wkbType != Qgis::WkbType::Unknown )
   {
     if ( mExtent.isEmpty() )
     {
@@ -176,7 +176,7 @@ int QgsGml::getFeatures( const QString &uri, QgsWkbTypes::Type *wkbType, QgsRect
   return 0;
 }
 
-int QgsGml::getFeatures( const QByteArray &data, QgsWkbTypes::Type *wkbType, QgsRectangle *extent )
+int QgsGml::getFeatures( const QByteArray &data, Qgis::WkbType *wkbType, QgsRectangle *extent )
 {
   mExtent.setMinimal();
 
@@ -284,7 +284,7 @@ QgsGmlStreamingParser::QgsGmlStreamingParser( const QString &typeName,
   , mTypeNameBA( mTypeName.toUtf8() )
   , mTypeNamePtr( mTypeNameBA.constData() )
   , mTypeNameUTF8Len( strlen( mTypeNamePtr ) )
-  , mWkbType( QgsWkbTypes::Unknown )
+  , mWkbType( Qgis::WkbType::Unknown )
   , mGeometryAttribute( geometryAttribute )
   , mGeometryAttributeBA( geometryAttribute.toUtf8() )
   , mGeometryAttributePtr( mGeometryAttributeBA.constData() )
@@ -344,7 +344,7 @@ QgsGmlStreamingParser::QgsGmlStreamingParser( const QList<LayerProperties> &laye
     bool invertAxisOrientation )
   : mLayerProperties( layerProperties )
   , mTypeNameUTF8Len( 0 )
-  , mWkbType( QgsWkbTypes::Unknown )
+  , mWkbType( Qgis::WkbType::Unknown )
   , mGeometryAttributeUTF8Len( 0 )
   , mFields( fields )
   , mIsException( false )
@@ -1052,9 +1052,9 @@ void QgsGmlStreamingParser::endElement( const XML_Char *el )
         //error
       }
 
-      if ( mWkbType != QgsWkbTypes::MultiPoint ) //keep multitype in case of geometry type mix
+      if ( mWkbType != Qgis::WkbType::MultiPoint ) //keep multitype in case of geometry type mix
       {
-        mWkbType = QgsWkbTypes::Point;
+        mWkbType = Qgis::WkbType::Point;
       }
     }
     else //multipoint, add WKB as fragment
@@ -1091,9 +1091,9 @@ void QgsGmlStreamingParser::endElement( const XML_Char *el )
         //error
       }
 
-      if ( mWkbType != QgsWkbTypes::MultiLineString )//keep multitype in case of geometry type mix
+      if ( mWkbType != Qgis::WkbType::MultiLineString )//keep multitype in case of geometry type mix
       {
-        mWkbType = QgsWkbTypes::LineString;
+        mWkbType = Qgis::WkbType::LineString;
       }
     }
     else //multiline, add WKB as fragment
@@ -1142,9 +1142,9 @@ void QgsGmlStreamingParser::endElement( const XML_Char *el )
   else if ( ( parseMode == Geometry || parseMode == MultiPolygon ) && isGMLNS &&
             LOCALNAME_EQUALS( "Polygon" ) )
   {
-    if ( mWkbType != QgsWkbTypes::MultiPolygon )//keep multitype in case of geometry type mix
+    if ( mWkbType != Qgis::WkbType::MultiPolygon )//keep multitype in case of geometry type mix
     {
-      mWkbType = QgsWkbTypes::Polygon;
+      mWkbType = Qgis::WkbType::Polygon;
     }
 
     if ( parseMode == Geometry )
@@ -1155,21 +1155,21 @@ void QgsGmlStreamingParser::endElement( const XML_Char *el )
   else if ( parseMode == MultiPoint &&  isGMLNS &&
             LOCALNAME_EQUALS( "MultiPoint" ) )
   {
-    mWkbType = QgsWkbTypes::MultiPoint;
+    mWkbType = Qgis::WkbType::MultiPoint;
     mParseModeStack.pop();
     createMultiPointFromFragments();
   }
   else if ( parseMode == MultiLine && isGMLNS &&
             ( LOCALNAME_EQUALS( "MultiLineString" )  || LOCALNAME_EQUALS( "MultiCurve" ) ) )
   {
-    mWkbType = QgsWkbTypes::MultiLineString;
+    mWkbType = Qgis::WkbType::MultiLineString;
     mParseModeStack.pop();
     createMultiLineFromFragments();
   }
   else if ( parseMode == MultiPolygon && isGMLNS &&
             ( LOCALNAME_EQUALS( "MultiPolygon" )  || LOCALNAME_EQUALS( "MultiSurface" ) ) )
   {
-    mWkbType = QgsWkbTypes::MultiPolygon;
+    mWkbType = Qgis::WkbType::MultiPolygon;
     mParseModeStack.pop();
     createMultiPolygonFromFragments();
   }
@@ -1420,7 +1420,7 @@ int QgsGmlStreamingParser::getPointWKB( QgsWkbPtr &wkbPtr, const QgsPointXY &poi
   wkbPtr = QgsWkbPtr( new unsigned char[wkbSize], wkbSize );
 
   QgsWkbPtr fillPtr( wkbPtr );
-  fillPtr << mEndian << QgsWkbTypes::Point << point.x() << point.y();
+  fillPtr << mEndian << Qgis::WkbType::Point << point.x() << point.y();
 
   return 0;
 }
@@ -1432,7 +1432,7 @@ int QgsGmlStreamingParser::getLineWKB( QgsWkbPtr &wkbPtr, const QList<QgsPointXY
 
   QgsWkbPtr fillPtr( wkbPtr );
 
-  fillPtr << mEndian << QgsWkbTypes::LineString << lineCoordinates.size();
+  fillPtr << mEndian << Qgis::WkbType::LineString << lineCoordinates.size();
 
   QList<QgsPointXY>::const_iterator iter;
   for ( iter = lineCoordinates.constBegin(); iter != lineCoordinates.constEnd(); ++iter )
@@ -1468,7 +1468,7 @@ int QgsGmlStreamingParser::createMultiLineFromFragments()
 
   QgsWkbPtr wkbPtr( mCurrentWKB );
 
-  wkbPtr << mEndian << QgsWkbTypes::MultiLineString << mCurrentWKBFragments.constBegin()->size();
+  wkbPtr << mEndian << Qgis::WkbType::MultiLineString << mCurrentWKBFragments.constBegin()->size();
 
   //copy (and delete) all the wkb fragments
   QList<QgsWkbPtr>::const_iterator wkbIt = mCurrentWKBFragments.constBegin()->constBegin();
@@ -1480,7 +1480,7 @@ int QgsGmlStreamingParser::createMultiLineFromFragments()
   }
 
   mCurrentWKBFragments.clear();
-  mWkbType = QgsWkbTypes::MultiLineString;
+  mWkbType = Qgis::WkbType::MultiLineString;
   return 0;
 }
 
@@ -1490,7 +1490,7 @@ int QgsGmlStreamingParser::createMultiPointFromFragments()
   mCurrentWKB = QgsWkbPtr( new unsigned char[size], size );
 
   QgsWkbPtr wkbPtr( mCurrentWKB );
-  wkbPtr << mEndian << QgsWkbTypes::MultiPoint << mCurrentWKBFragments.constBegin()->size();
+  wkbPtr << mEndian << Qgis::WkbType::MultiPoint << mCurrentWKBFragments.constBegin()->size();
 
   QList<QgsWkbPtr>::const_iterator wkbIt = mCurrentWKBFragments.constBegin()->constBegin();
   for ( ; wkbIt != mCurrentWKBFragments.constBegin()->constEnd(); ++wkbIt )
@@ -1501,7 +1501,7 @@ int QgsGmlStreamingParser::createMultiPointFromFragments()
   }
 
   mCurrentWKBFragments.clear();
-  mWkbType = QgsWkbTypes::MultiPoint;
+  mWkbType = Qgis::WkbType::MultiPoint;
   return 0;
 }
 
@@ -1512,7 +1512,7 @@ int QgsGmlStreamingParser::createPolygonFromFragments()
   mCurrentWKB = QgsWkbPtr( new unsigned char[size], size );
 
   QgsWkbPtr wkbPtr( mCurrentWKB );
-  wkbPtr << mEndian << QgsWkbTypes::Polygon << mCurrentWKBFragments.constBegin()->size();
+  wkbPtr << mEndian << Qgis::WkbType::Polygon << mCurrentWKBFragments.constBegin()->size();
 
   QList<QgsWkbPtr>::const_iterator wkbIt = mCurrentWKBFragments.constBegin()->constBegin();
   for ( ; wkbIt != mCurrentWKBFragments.constBegin()->constEnd(); ++wkbIt )
@@ -1523,7 +1523,7 @@ int QgsGmlStreamingParser::createPolygonFromFragments()
   }
 
   mCurrentWKBFragments.clear();
-  mWkbType = QgsWkbTypes::Polygon;
+  mWkbType = Qgis::WkbType::Polygon;
   return 0;
 }
 
@@ -1537,7 +1537,7 @@ int QgsGmlStreamingParser::createMultiPolygonFromFragments()
   mCurrentWKB = QgsWkbPtr( new unsigned char[size], size );
 
   QgsWkbPtr wkbPtr( mCurrentWKB );
-  wkbPtr << ( char ) mEndian << QgsWkbTypes::MultiPolygon << mCurrentWKBFragments.size();
+  wkbPtr << ( char ) mEndian << Qgis::WkbType::MultiPolygon << mCurrentWKBFragments.size();
 
   //have outer and inner iterators
   QList< QList<QgsWkbPtr> >::const_iterator outerWkbIt = mCurrentWKBFragments.constBegin();
@@ -1545,7 +1545,7 @@ int QgsGmlStreamingParser::createMultiPolygonFromFragments()
   for ( ; outerWkbIt != mCurrentWKBFragments.constEnd(); ++outerWkbIt )
   {
     //new polygon
-    wkbPtr << ( char ) mEndian << QgsWkbTypes::Polygon << outerWkbIt->size();
+    wkbPtr << ( char ) mEndian << Qgis::WkbType::Polygon << outerWkbIt->size();
 
     QList<QgsWkbPtr>::const_iterator innerWkbIt = outerWkbIt->constBegin();
     for ( ; innerWkbIt != outerWkbIt->constEnd(); ++innerWkbIt )
@@ -1557,7 +1557,7 @@ int QgsGmlStreamingParser::createMultiPolygonFromFragments()
   }
 
   mCurrentWKBFragments.clear();
-  mWkbType = QgsWkbTypes::MultiPolygon;
+  mWkbType = Qgis::WkbType::MultiPolygon;
   return 0;
 }
 

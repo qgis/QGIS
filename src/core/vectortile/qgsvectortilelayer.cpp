@@ -1030,7 +1030,7 @@ void QgsVectorTileLayer::selectByGeometry( const QgsGeometry &geometry, const Qg
   QgsGeometry selectionGeom = geometry;
   bool isPointOrRectangle;
   QgsPointXY point;
-  bool isSinglePoint = selectionGeom.type() == QgsWkbTypes::PointGeometry;
+  bool isSinglePoint = selectionGeom.type() == Qgis::GeometryType::Point;
   if ( isSinglePoint )
   {
     isPointOrRectangle = true;
@@ -1218,31 +1218,31 @@ void QgsVectorTileLayer::selectByGeometry( const QgsGeometry &geometry, const Qg
 
         switch ( candidate.geometry().type() )
         {
-          case QgsWkbTypes::PointGeometry:
+          case Qgis::GeometryType::Point:
             bestCandidate = candidate;
             break;
-          case QgsWkbTypes::LineGeometry:
+          case Qgis::GeometryType::Line:
           {
             const double length = candidate.geometry().length();
-            if ( length < smallestLength && bestCandidate.geometry().type() != QgsWkbTypes::PointGeometry )
+            if ( length < smallestLength && bestCandidate.geometry().type() != Qgis::GeometryType::Point )
             {
               bestCandidate = candidate;
               smallestLength = length;
             }
             break;
           }
-          case QgsWkbTypes::PolygonGeometry:
+          case Qgis::GeometryType::Polygon:
           {
             const double area = candidate.geometry().area();
-            if ( area < smallestArea && bestCandidate.geometry().type() != QgsWkbTypes::PointGeometry && bestCandidate.geometry().type() != QgsWkbTypes::LineGeometry )
+            if ( area < smallestArea && bestCandidate.geometry().type() != Qgis::GeometryType::Point && bestCandidate.geometry().type() != Qgis::GeometryType::Line )
             {
               bestCandidate = candidate;
               smallestArea = area;
             }
             break;
           }
-          case QgsWkbTypes::UnknownGeometry:
-          case QgsWkbTypes::NullGeometry:
+          case Qgis::GeometryType::Unknown:
+          case Qgis::GeometryType::Null:
             break;
         }
       }
@@ -1257,31 +1257,31 @@ void QgsVectorTileLayer::selectByGeometry( const QgsGeometry &geometry, const Qg
       {
         switch ( candidate.geometry().type() )
         {
-          case QgsWkbTypes::PointGeometry:
+          case Qgis::GeometryType::Point:
             bestCandidate = candidate;
             break;
-          case QgsWkbTypes::LineGeometry:
+          case Qgis::GeometryType::Line:
           {
             const double length = candidate.geometry().length();
-            if ( length < smallestLength && bestCandidate.geometry().type() != QgsWkbTypes::PointGeometry )
+            if ( length < smallestLength && bestCandidate.geometry().type() != Qgis::GeometryType::Point )
             {
               bestCandidate = candidate;
               smallestLength = length;
             }
             break;
           }
-          case QgsWkbTypes::PolygonGeometry:
+          case Qgis::GeometryType::Polygon:
           {
             const double area = candidate.geometry().area();
-            if ( area < smallestArea && bestCandidate.geometry().type() != QgsWkbTypes::PointGeometry && bestCandidate.geometry().type() != QgsWkbTypes::LineGeometry )
+            if ( area < smallestArea && bestCandidate.geometry().type() != Qgis::GeometryType::Point && bestCandidate.geometry().type() != Qgis::GeometryType::Line )
             {
               bestCandidate = candidate;
               smallestArea = area;
             }
             break;
           }
-          case QgsWkbTypes::UnknownGeometry:
-          case QgsWkbTypes::NullGeometry:
+          case Qgis::GeometryType::Unknown:
+          case Qgis::GeometryType::Null:
             break;
         }
       }

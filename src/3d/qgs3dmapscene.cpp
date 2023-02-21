@@ -776,7 +776,7 @@ void Qgs3DMapScene::addLayerEntity( QgsMapLayer *layer )
       if ( renderer->type() == QLatin1String( "vector" ) )
       {
         QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
-        if ( vlayer->geometryType() == QgsWkbTypes::PointGeometry )
+        if ( vlayer->geometryType() == Qgis::GeometryType::Point )
         {
           const QgsPoint3DSymbol *pointSymbol = static_cast< const QgsPoint3DSymbol * >( static_cast< QgsVectorLayer3DRenderer *>( renderer )->symbol() );
           if ( pointSymbol->shape() == QgsPoint3DSymbol::Model )

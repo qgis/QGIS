@@ -120,7 +120,7 @@ class CORE_EXPORT QgsSymbol
      *
      * \since QGIS 3.20
      */
-    static Qgis::SymbolType symbolTypeForGeometryType( QgsWkbTypes::GeometryType type );
+    static Qgis::SymbolType symbolTypeForGeometryType( Qgis::GeometryType type );
 
     /**
      * Data definable properties.
@@ -144,7 +144,7 @@ class CORE_EXPORT QgsSymbol
      *
      * The caller takes ownership of the returned object.
      */
-    static QgsSymbol *defaultSymbol( QgsWkbTypes::GeometryType geomType ) SIP_FACTORY;
+    static QgsSymbol *defaultSymbol( Qgis::GeometryType geomType ) SIP_FACTORY;
 
     /**
      * Returns the symbol's type.
@@ -774,7 +774,7 @@ class CORE_EXPORT QgsSymbol
      * Since QGIS 3.22, the optional \a geometryType, \a points and \a rings arguments can specify the original
      * geometry type, points and rings in which are being rendered by the parent symbol.
      */
-    void renderUsingLayer( QgsSymbolLayer *layer, QgsSymbolRenderContext &context, QgsWkbTypes::GeometryType geometryType = QgsWkbTypes::GeometryType::UnknownGeometry, const QPolygonF *points = nullptr, const QVector<QPolygonF> *rings = nullptr );
+    void renderUsingLayer( QgsSymbolLayer *layer, QgsSymbolRenderContext &context, Qgis::GeometryType geometryType = Qgis::GeometryType::Unknown, const QPolygonF *points = nullptr, const QVector<QPolygonF> *rings = nullptr );
 
     /**
      * Render editing vertex marker at specified point

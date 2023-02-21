@@ -101,7 +101,7 @@ QVariantMap QgsMultiUnionAlgorithm::processAlgorithm( const QVariantMap &paramet
     totalLayerCount++;
   }
 
-  const QgsWkbTypes::Type geometryType = QgsWkbTypes::multiType( sourceA->wkbType() );
+  const Qgis::WkbType geometryType = QgsWkbTypes::multiType( sourceA->wkbType() );
   const QgsCoordinateReferenceSystem crs = sourceA->sourceCrs();
   const QString overlayFieldsPrefix = parameterAsString( parameters, QStringLiteral( "OVERLAY_FIELDS_PREFIX" ), context );
   std::unique_ptr< QgsFeatureSink > sink;
