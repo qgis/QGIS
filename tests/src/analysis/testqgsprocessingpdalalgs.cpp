@@ -39,6 +39,7 @@ class TestQgsProcessingPdalAlgs: public QObject
     void density();
     void exportRaster();
     void exportRasterTin();
+    void exportVector();
     void fixProjection();
     void info();
     void reproject();
@@ -605,6 +606,48 @@ void TestQgsProcessingPdalAlgs::exportRaster()
             << QStringLiteral( "--tile-size=100" )
             << QStringLiteral( "--tile-origin-x=1" )
             << QStringLiteral( "--tile-origin-y=10" )
+            << QStringLiteral( "--threads=2" )
+          );
+}
+
+void TestQgsProcessingPdalAlgs::exportVector()
+{
+  QgsPdalAlgorithmBase *alg = const_cast<QgsPdalAlgorithmBase *>( static_cast< const QgsPdalAlgorithmBase * >( QgsApplication::processingRegistry()->algorithmById( QStringLiteral( "pdal:exportvector" ) ) ) );
+
+  std::unique_ptr< QgsProcessingContext > context = std::make_unique< QgsProcessingContext >();
+  context->setProject( QgsProject::instance() );
+
+  QgsProcessingFeedback feedback;
+
+  const QString outputFile = QDir::tempPath() + "/points.gpkg";
+
+  // defaults
+  QVariantMap parameters;
+  parameters.insert( QStringLiteral( "INPUT" ), mPointCloudLayerPath );
+  parameters.insert( QStringLiteral( "OUTPUT" ), outputFile );
+
+  QStringList args = alg->createArgumentLists( parameters, *context, &feedback );
+  QCOMPARE( args, QStringList() << QStringLiteral( "to_vector" )
+            << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath )
+            << QStringLiteral( "--output=%1" ).arg( outputFile )
+          );
+
+  // set attribute
+  parameters.insert( QStringLiteral( "ATTRIBUTE" ), QStringLiteral( "Z" ) );
+  args = alg->createArgumentLists( parameters, *context, &feedback );
+  QCOMPARE( args, QStringList() << QStringLiteral( "to_vector" )
+            << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath )
+            << QStringLiteral( "--output=%1" ).arg( outputFile )
+            << QStringLiteral( "--attribute=Z" )
+          );
+
+  // set max threads to 2, a --threads argument should be added
+  QgsSettings().setValue( QStringLiteral( "/Processing/Configuration/MAX_THREADS" ), 2 );
+  args = alg->createArgumentLists( parameters, *context, &feedback );
+  QCOMPARE( args, QStringList() << QStringLiteral( "to_vector" )
+            << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath )
+            << QStringLiteral( "--output=%1" ).arg( outputFile )
+            << QStringLiteral( "--attribute=Z" )
             << QStringLiteral( "--threads=2" )
           );
 }
