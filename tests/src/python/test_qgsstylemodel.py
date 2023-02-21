@@ -37,7 +37,7 @@ class Dummy3dSymbol(QgsAbstract3DSymbol):
 
     def __init__(self):
         super().__init__()
-        self.layer_types = [int(QgsWkbTypes.PointGeometry), int(QgsWkbTypes.LineGeometry)]
+        self.layer_types = [QgsWkbTypes.PointGeometry, QgsWkbTypes.LineGeometry]
 
     @staticmethod
     def create():
@@ -2022,10 +2022,10 @@ class TestQgsStyleModel(unittest.TestCase):
         self.assertTrue(style.addSymbol3D('sym3d a', symbol3d_a, True))
         style.tagSymbol(QgsStyle.Symbol3DEntity, 'sym3d a', ['tag 1', 'tag 2'])
         symbol3d_B = Dummy3dSymbol()
-        symbol3d_B.layer_types = [2]
+        symbol3d_B.layer_types = [QgsWkbTypes.PolygonGeometry]
         self.assertTrue(style.addSymbol3D('sym3d BB', symbol3d_B, True))
         symbol3d_B = Dummy3dSymbol()
-        symbol3d_B.layer_types = [1]
+        symbol3d_B.layer_types = [QgsWkbTypes.LineGeometry]
         self.assertTrue(style.addSymbol3D('sym3d c', symbol3d_B, True))
 
         model = QgsStyleProxyModel(style)
