@@ -14,9 +14,7 @@
  ***************************************************************************/
 
 #include "qgswfsshareddata.h"
-#include "qgswfsutils.h"
 #include "qgswfsprovider.h"
-#include "qgscachedirectorymanager.h"
 #include "qgsogcutils.h"
 #include "qgsexpression.h"
 #include "qgsmessagelog.h"
@@ -216,15 +214,15 @@ bool QgsWFSSharedData::computeFilter( QString &errorMsg )
 
 void QgsWFSSharedData::computeGeometryTypeFilter()
 {
-  if ( mWKBType == QgsWkbTypes::NoGeometry )
+  if ( mWKBType == Qgis::WkbType::NoGeometry )
     mWFSGeometryTypeFilter = QgsWFSProvider::buildIsNullGeometryFilter( mCaps, mGeometryAttribute );
-  else if ( mWKBType == QgsWkbTypes::MultiPoint )
+  else if ( mWKBType == Qgis::WkbType::MultiPoint )
     mWFSGeometryTypeFilter = QgsWFSProvider::buildFilterByGeometryType( mCaps, mGeometryAttribute, "IsPoint" );
-  else if ( mWKBType == QgsWkbTypes::MultiCurve )
+  else if ( mWKBType == Qgis::WkbType::MultiCurve )
     mWFSGeometryTypeFilter = QgsWFSProvider::buildFilterByGeometryType( mCaps, mGeometryAttribute, "IsCurve" );
-  else if ( mWKBType == QgsWkbTypes::MultiSurface )
+  else if ( mWKBType == Qgis::WkbType::MultiSurface )
     mWFSGeometryTypeFilter = QgsWFSProvider::buildFilterByGeometryType( mCaps, mGeometryAttribute, "IsSurface" );
-  else if ( mWKBType == QgsWkbTypes::GeometryCollection )
+  else if ( mWKBType == Qgis::WkbType::GeometryCollection )
     mWFSGeometryTypeFilter = QgsWFSProvider::buildGeometryCollectionFilter( mCaps, mGeometryAttribute );
 }
 

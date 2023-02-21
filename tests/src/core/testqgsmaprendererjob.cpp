@@ -26,7 +26,6 @@
 #include "qgsvectorfilewriter.h"
 #include "qgsfeature.h"
 #include "qgsgeometry.h"
-#include "qgspoint.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsapplication.h"
 #include "qgsfield.h"
@@ -36,7 +35,6 @@
 #include "qgsnullpainterdevice.h"
 #include "qgsmaplayer.h"
 #include "qgsreadwritecontext.h"
-#include "qgsproviderregistry.h"
 #include "qgsproject.h"
 #include "qgsrenderedfeaturehandlerinterface.h"
 #include "qgsmaprendererstagedrenderjob.h"
@@ -54,7 +52,6 @@
 #include "qgsmeshlayer.h"
 #include "qgsfillsymbol.h"
 #include "qgsrasterlayerelevationproperties.h"
-#include "qgsrasterresamplefilter.h"
 
 //qgs unit test utility class
 #include "qgsmultirenderchecker.h"
@@ -152,7 +149,7 @@ void TestQgsMapRendererJob::initTestCase()
 
     QgsVectorFileWriter::SaveVectorOptions saveOptions;
     saveOptions.fileEncoding = mEncoding;
-    std::unique_ptr< QgsVectorFileWriter > writer( QgsVectorFileWriter::create( myFileName, mFields, QgsWkbTypes::Polygon, mCRS, QgsCoordinateTransformContext(), saveOptions ) );
+    std::unique_ptr< QgsVectorFileWriter > writer( QgsVectorFileWriter::create( myFileName, mFields, Qgis::WkbType::Polygon, mCRS, QgsCoordinateTransformContext(), saveOptions ) );
     double myInterval = 0.5;
     for ( double i = -180.0; i <= 180.0; i += myInterval )
     {
@@ -1131,7 +1128,7 @@ void TestQgsMapRendererJob::testMapShading()
   vectorLayer->addFeature( ft0 );
   vectorLayer->commitChanges();
   QVERIFY( vectorLayer->featureCount() == 1 );
-  std::unique_ptr<QgsFillSymbol> fill( static_cast< QgsFillSymbol * >( QgsSymbol::defaultSymbol( QgsWkbTypes::PolygonGeometry ) ) ) ;
+  std::unique_ptr<QgsFillSymbol> fill( static_cast< QgsFillSymbol * >( QgsSymbol::defaultSymbol( Qgis::GeometryType::Polygon ) ) ) ;
   fill->setColor( QColor( 255, 0, 255 ) );
   vectorLayer->setRenderer( new QgsSingleSymbolRenderer( fill.release() ) );
 

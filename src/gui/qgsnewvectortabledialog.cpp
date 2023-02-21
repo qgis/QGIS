@@ -14,7 +14,6 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsnewvectortabledialog.h"
-#include "qgsvectorlayer.h"
 #include "qgslogger.h"
 #include "qgsgui.h"
 #include "qgsapplication.h"
@@ -146,28 +145,28 @@ QgsNewVectorTableDialog::QgsNewVectorTableDialog( QgsAbstractDatabaseProviderCon
   const bool hasSinglePart { conn->geometryColumnCapabilities().testFlag( QgsAbstractDatabaseProviderConnection::GeometryColumnCapability::SinglePart ) };
   Q_NOWARN_DEPRECATED_POP
 
-  const auto addGeomItem = [this]( QgsWkbTypes::Type type )
+  const auto addGeomItem = [this]( Qgis::WkbType type )
   {
-    mGeomTypeCbo->addItem( QgsIconUtils::iconForWkbType( type ), QgsWkbTypes::translatedDisplayString( type ), type );
+    mGeomTypeCbo->addItem( QgsIconUtils::iconForWkbType( type ), QgsWkbTypes::translatedDisplayString( type ), static_cast< quint32>( type ) );
   };
 
-  mGeomTypeCbo->addItem( QgsApplication::getThemeIcon( QStringLiteral( "mIconTableLayer.svg" ) ), tr( "No Geometry" ), QgsWkbTypes::Type::NoGeometry );
+  mGeomTypeCbo->addItem( QgsApplication::getThemeIcon( QStringLiteral( "mIconTableLayer.svg" ) ), tr( "No Geometry" ), static_cast< quint32>( Qgis::WkbType::NoGeometry ) );
   if ( hasSinglePart || conn->geometryColumnCapabilities().testFlag( QgsAbstractDatabaseProviderConnection::GeometryColumnCapability::SinglePoint ) )
-    addGeomItem( QgsWkbTypes::Type::Point );
-  addGeomItem( QgsWkbTypes::Type::MultiPoint );
+    addGeomItem( Qgis::WkbType::Point );
+  addGeomItem( Qgis::WkbType::MultiPoint );
   if ( hasSinglePart || conn->geometryColumnCapabilities().testFlag( QgsAbstractDatabaseProviderConnection::GeometryColumnCapability::SingleLineString ) )
-    addGeomItem( QgsWkbTypes::Type::LineString );
-  addGeomItem( QgsWkbTypes::Type::MultiLineString );
+    addGeomItem( Qgis::WkbType::LineString );
+  addGeomItem( Qgis::WkbType::MultiLineString );
   if ( hasSinglePart || conn->geometryColumnCapabilities().testFlag( QgsAbstractDatabaseProviderConnection::GeometryColumnCapability::SinglePolygon ) )
-    addGeomItem( QgsWkbTypes::Type::Polygon );
-  addGeomItem( QgsWkbTypes::Type::MultiPolygon );
+    addGeomItem( Qgis::WkbType::Polygon );
+  addGeomItem( Qgis::WkbType::MultiPolygon );
 
   if ( conn->geometryColumnCapabilities().testFlag( QgsAbstractDatabaseProviderConnection::GeometryColumnCapability::Curves ) )
   {
-    addGeomItem( QgsWkbTypes::Type::CompoundCurve );
-    addGeomItem( QgsWkbTypes::Type::CurvePolygon );
-    addGeomItem( QgsWkbTypes::Type::MultiCurve );
-    addGeomItem( QgsWkbTypes::Type::MultiSurface );
+    addGeomItem( Qgis::WkbType::CompoundCurve );
+    addGeomItem( Qgis::WkbType::CurvePolygon );
+    addGeomItem( Qgis::WkbType::MultiCurve );
+    addGeomItem( Qgis::WkbType::MultiSurface );
   }
 
   mGeomTypeCbo->setCurrentIndex( 0 );
@@ -283,9 +282,9 @@ void QgsNewVectorTableDialog::setTableName( const QString &name )
   mTableName->setText( name );
 }
 
-void QgsNewVectorTableDialog::setGeometryType( QgsWkbTypes::Type type )
+void QgsNewVectorTableDialog::setGeometryType( Qgis::WkbType type )
 {
-  mGeomTypeCbo->setCurrentIndex( mGeomTypeCbo->findData( type ) );
+  mGeomTypeCbo->setCurrentIndex( mGeomTypeCbo->findData( static_cast< quint32>( type ) ) );
 }
 
 void QgsNewVectorTableDialog::setCrs( const QgsCoordinateReferenceSystem &crs )
@@ -318,9 +317,9 @@ QgsFields QgsNewVectorTableDialog::fields() const
   return mFieldModel ? mFieldModel->fields() : QgsFields();
 }
 
-QgsWkbTypes::Type QgsNewVectorTableDialog::geometryType() const
+Qgis::WkbType QgsNewVectorTableDialog::geometryType() const
 {
-  QgsWkbTypes::Type type { static_cast<QgsWkbTypes::Type>( mGeomTypeCbo->currentData( ).toInt() ) };
+  Qgis::WkbType type { static_cast<Qgis::WkbType>( mGeomTypeCbo->currentData( ).toInt() ) };
   if ( mHasMChk->isChecked() )
   {
     type = QgsWkbTypes::addM( type );

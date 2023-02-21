@@ -40,7 +40,7 @@ QgsPointDisplacementRendererWidget::QgsPointDisplacementRendererWidget( QgsVecto
   }
 
   //the renderer only applies to point vector layers
-  if ( QgsWkbTypes::geometryType( layer->wkbType() ) != QgsWkbTypes::PointGeometry )
+  if ( QgsWkbTypes::geometryType( layer->wkbType() ) != Qgis::GeometryType::Point )
   {
     //setup blank dialog
     mRenderer = nullptr;

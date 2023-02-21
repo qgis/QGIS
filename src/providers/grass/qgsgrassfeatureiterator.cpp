@@ -20,11 +20,8 @@
 #include "qgsgrassfeatureiterator.h"
 #include "qgsgrassprovider.h"
 #include "qgsgrassvectormap.h"
-
-#include "qgsapplication.h"
 #include "qgsgeometry.h"
 #include "qgslogger.h"
-#include "qgsmessagelog.h"
 
 extern "C"
 {

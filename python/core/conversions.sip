@@ -22,6 +22,209 @@ which are not wrapped by PyQt:
 - NULL QVariant which is missing in PyQt5 with sip.enableautoconversion
 */
 
+
+// adapted from the qpymultimedia_qlist.sip file from the PyQt6 sources
+%MappedType QList<Qgis::GeometryType>
+        /TypeHintIn="Iterable[Qgis.GeometryType]",
+        TypeHintOut="List[Qgis.GeometryType]", TypeHintValue="[]"/
+{
+%TypeHeaderCode
+#include "qgis.h"
+%End
+
+%ConvertFromTypeCode
+    PyObject *l = PyList_New(sipCpp->size());
+
+    if (!l)
+        return 0;
+
+    for (int i = 0; i < sipCpp->size(); ++i)
+    {
+        PyObject *eobj = sipConvertFromEnum(static_cast<int>(sipCpp->at(i)),
+                sipType_Qgis_GeometryType);
+
+        if (!eobj)
+        {
+            Py_DECREF(l);
+
+            return 0;
+        }
+
+        PyList_SetItem(l, i, eobj);
+    }
+
+    return l;
+%End
+
+%ConvertToTypeCode
+    PyObject *iter = PyObject_GetIter(sipPy);
+
+    if (!sipIsErr)
+    {
+        PyErr_Clear();
+        Py_XDECREF(iter);
+
+        return (iter && !PyBytes_Check(sipPy) && !PyUnicode_Check(sipPy));
+    }
+
+    if (!iter)
+    {
+        *sipIsErr = 1;
+
+        return 0;
+    }
+
+    QList<Qgis::GeometryType> *ql = new QList<Qgis::GeometryType>;
+
+    for (Py_ssize_t i = 0; ; ++i)
+    {
+        PyErr_Clear();
+        PyObject *itm = PyIter_Next(iter);
+
+        if (!itm)
+        {
+            if (PyErr_Occurred())
+            {
+                delete ql;
+                Py_DECREF(iter);
+                *sipIsErr = 1;
+
+                return 0;
+            }
+
+            break;
+        }
+
+        int v = sipConvertToEnum(itm, sipType_Qgis_GeometryType);
+
+        if (PyErr_Occurred())
+        {
+            PyErr_Format(PyExc_TypeError,
+                    "index %zd has type '%s' but 'Qgis.GeometryType' is expected",
+                    i, sipPyTypeName(Py_TYPE(itm)));
+
+            Py_DECREF(itm);
+            delete ql;
+            Py_DECREF(iter);
+            *sipIsErr = 1;
+
+            return 0;
+        }
+
+        ql->append(static_cast<Qgis::GeometryType>(v));
+
+        Py_DECREF(itm);
+    }
+
+    Py_DECREF(iter);
+
+    *sipCppPtr = ql;
+
+    return sipGetState(sipTransferObj);
+%End
+};
+
+// adapted from the qpymultimedia_qlist.sip file from the PyQt6 sources
+%MappedType QList<Qgis::WkbType>
+        /TypeHintIn="Iterable[Qgis.WkbType]",
+        TypeHintOut="List[Qgis.WkbType]", TypeHintValue="[]"/
+{
+%TypeHeaderCode
+#include "qgis.h"
+%End
+
+%ConvertFromTypeCode
+    PyObject *l = PyList_New(sipCpp->size());
+
+    if (!l)
+        return 0;
+
+    for (int i = 0; i < sipCpp->size(); ++i)
+    {
+        PyObject *eobj = sipConvertFromEnum(static_cast<int>(sipCpp->at(i)),
+                sipType_Qgis_WkbType);
+
+        if (!eobj)
+        {
+            Py_DECREF(l);
+
+            return 0;
+        }
+
+        PyList_SetItem(l, i, eobj);
+    }
+
+    return l;
+%End
+
+%ConvertToTypeCode
+    PyObject *iter = PyObject_GetIter(sipPy);
+
+    if (!sipIsErr)
+    {
+        PyErr_Clear();
+        Py_XDECREF(iter);
+
+        return (iter && !PyBytes_Check(sipPy) && !PyUnicode_Check(sipPy));
+    }
+
+    if (!iter)
+    {
+        *sipIsErr = 1;
+
+        return 0;
+    }
+
+    QList<Qgis::WkbType> *ql = new QList<Qgis::WkbType>;
+
+    for (Py_ssize_t i = 0; ; ++i)
+    {
+        PyErr_Clear();
+        PyObject *itm = PyIter_Next(iter);
+
+        if (!itm)
+        {
+            if (PyErr_Occurred())
+            {
+                delete ql;
+                Py_DECREF(iter);
+                *sipIsErr = 1;
+
+                return 0;
+            }
+
+            break;
+        }
+
+        int v = sipConvertToEnum(itm, sipType_Qgis_WkbType);
+
+        if (PyErr_Occurred())
+        {
+            PyErr_Format(PyExc_TypeError,
+                    "index %zd has type '%s' but 'Qgis.WkbType' is expected",
+                    i, sipPyTypeName(Py_TYPE(itm)));
+
+            Py_DECREF(itm);
+            delete ql;
+            Py_DECREF(iter);
+            *sipIsErr = 1;
+
+            return 0;
+        }
+
+        ql->append(static_cast<Qgis::WkbType>(v));
+
+        Py_DECREF(itm);
+    }
+
+    Py_DECREF(iter);
+
+    *sipCppPtr = ql;
+
+    return sipGetState(sipTransferObj);
+%End
+};
+
 // adapted from the qpymultimedia_qlist.sip file from the PyQt6 sources
 %MappedType QList<Qgis::LayerType>
         /TypeHintIn="Iterable[Qgis.LayerType]",
@@ -2866,67 +3069,6 @@ bool null_from_qvariant_converter( const QVariant *varp, PyObject **objp )
   }
 }
 %End
-
-// Mapped type for QList<QgsWkbTypes::GeometryType>.
-%MappedType QList<QgsWkbTypes::GeometryType>
-{
-%TypeHeaderCode
-#include <qgswkbtypes.h>
-%End
-
-%ConvertFromTypeCode
-    // Create the list.
-    PyObject *l;
-
-    if ((l = PyList_New(sipCpp->size())) == NULL)
-        return NULL;
-
-    // Set the list elements.
-    for (int i = 0; i < sipCpp->size(); ++i)
-    {
-       QgsWkbTypes::GeometryType e = sipCpp->at(i);
-        PyObject *eobj;
-
-        if ((eobj = sipConvertFromEnum(e, sipType_QgsWkbTypes_GeometryType)) == NULL)
-        {
-            Py_DECREF(l);
-
-            return NULL;
-        }
-
-        PyList_SET_ITEM(l, i, eobj);
-    }
-
-    return l;
-%End
-
-%ConvertToTypeCode
-    // Check the type if that is all that is required.
-    if (sipIsErr == NULL)
-    {
-        if (!PyList_Check(sipPy))
-            return 0;
-
-        for (SIP_SSIZE_T i = 0; i < PyList_GET_SIZE(sipPy); ++i)
-            if (PyObject_TypeCheck(PyList_GET_ITEM(sipPy, i), sipTypeAsPyTypeObject(sipType_QgsWkbTypes_GeometryType)))
-                return 0;
-
-        return 1;
-    }
-
-    QList<QgsWkbTypes::GeometryType> *ql = new QList<QgsWkbTypes::GeometryType>;
-
-    for (SIP_SSIZE_T i = 0; i < PyList_GET_SIZE(sipPy); ++i)
-    {
-        long l = SIPLong_AsLong(PyList_GET_ITEM(sipPy, i));
-        ql->append(static_cast<QgsWkbTypes::GeometryType>(l));
-    }
-
-    *sipCppPtr = ql;
-
-    return sipGetState(sipTransferObj);
-%End
-};
 
 %PostInitialisationCode  //#spellok
 

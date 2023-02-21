@@ -17,16 +17,12 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include "qgslayoututils.h"
-#include "qgsreadwritecontext.h"
-#include "qgssettings.h"
 
 #include "qgspoint3dsymbol.h"
 #include "qgssymbolbutton.h"
-#include "qgssymbollayer.h"
-#include "qgssymbollayerutils.h"
-#include "qgsphongmaterialsettings.h"
 #include "qgsmarkersymbol.h"
-#include "qgs3dutils.h"
+#include "qgsabstractmaterialsettings.h"
+#include "qgsvector3d.h"
 
 QgsPoint3DSymbolWidget::QgsPoint3DSymbolWidget( QWidget *parent )
   : Qgs3DSymbolWidget( parent )
@@ -189,7 +185,7 @@ QgsAbstract3DSymbol *QgsPoint3DSymbolWidget::symbol()
 {
   QVariantMap vm;
   std::unique_ptr< QgsPoint3DSymbol > sym = std::make_unique< QgsPoint3DSymbol >();
-  sym->setBillboardSymbol( static_cast<QgsMarkerSymbol *>( QgsSymbol::defaultSymbol( QgsWkbTypes::PointGeometry ) ) );
+  sym->setBillboardSymbol( static_cast<QgsMarkerSymbol *>( QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ) ) );
   switch ( cboShape->currentIndex() )
   {
     case 0:  // sphere

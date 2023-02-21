@@ -22,9 +22,6 @@
 #include "qgspoint.h"
 #include "qgspolygon.h"
 #include "qgstriangle.h"
-#include "qgis_sip.h"
-#include "qgsgeometryengine.h"
-
 #include "poly2tri.h"
 
 #include <QtDebug>
@@ -510,7 +507,7 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
     }
 
     ptStart = QgsPoint( exterior->startPoint() );
-    pt0 = QgsPoint( QgsWkbTypes::PointZ, ptStart.x(), ptStart.y(), std::isnan( ptStart.z() ) ? 0 : ptStart.z() );
+    pt0 = QgsPoint( Qgis::WkbType::PointZ, ptStart.x(), ptStart.y(), std::isnan( ptStart.z() ) ? 0 : ptStart.z() );
 
     // subtract ptFirst from geometry for better numerical stability in triangulation
     // and apply new 3D vector base if the polygon is not horizontal

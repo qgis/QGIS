@@ -162,8 +162,8 @@ void QgsMapToolOffsetCurve::applyOffset( double offset, Qt::KeyboardModifiers mo
   {
     QgsGeometry geometry;
     int partIndex = 0;
-    const QgsWkbTypes::Type geomType = mOriginalGeometry.wkbType();
-    if ( QgsWkbTypes::geometryType( geomType ) == QgsWkbTypes::LineGeometry )
+    const Qgis::WkbType geomType = mOriginalGeometry.wkbType();
+    if ( QgsWkbTypes::geometryType( geomType ) == Qgis::GeometryType::Line )
     {
       QgsMultiPolylineXY newMultiLine;
       const QgsMultiPolylineXY multiLine = mOriginalGeometry.asMultiPolyline();
@@ -423,7 +423,7 @@ double QgsMapToolOffsetCurve::calculateOffset( const QgsPointXY &mapPoint )
     int leftOf = 0;
 
     offset = std::sqrt( mManipulatedGeometry.closestSegmentWithContext( layerCoords, minDistPoint, beforeVertex, &leftOf ) );
-    if ( QgsWkbTypes::geometryType( mManipulatedGeometry.wkbType() ) == QgsWkbTypes::LineGeometry )
+    if ( QgsWkbTypes::geometryType( mManipulatedGeometry.wkbType() ) == Qgis::GeometryType::Line )
     {
       offset = leftOf < 0 ? offset : -offset;
     }
@@ -494,8 +494,8 @@ void QgsMapToolOffsetCurve::prepareGeometry( const QgsPointLocator::Match &match
   }
   mOriginalGeometry = geom;
 
-  const QgsWkbTypes::Type geomType = geom.wkbType();
-  if ( QgsWkbTypes::geometryType( geomType ) == QgsWkbTypes::LineGeometry )
+  const Qgis::WkbType geomType = geom.wkbType();
+  if ( QgsWkbTypes::geometryType( geomType ) == Qgis::GeometryType::Line )
   {
     if ( !geom.isMultipart() )
     {
@@ -512,7 +512,7 @@ void QgsMapToolOffsetCurve::prepareGeometry( const QgsPointLocator::Match &match
       mManipulatedGeometry = QgsGeometry::fromPolylineXY( multiLine.at( mModifiedPart ) );
     }
   }
-  else if ( QgsWkbTypes::geometryType( geomType ) == QgsWkbTypes::PolygonGeometry )
+  else if ( QgsWkbTypes::geometryType( geomType ) == Qgis::GeometryType::Polygon )
   {
     if ( !match.hasEdge() && !match.hasVertex() && match.hasArea() )
     {
@@ -584,7 +584,7 @@ void QgsMapToolOffsetCurve::createUserInputWidget()
   deleteUserInputWidget();
 
   mUserInputWidget = new QgsOffsetUserWidget();
-  mUserInputWidget->setPolygonMode( QgsWkbTypes::geometryType( mOriginalGeometry.wkbType() ) != QgsWkbTypes::LineGeometry );
+  mUserInputWidget->setPolygonMode( QgsWkbTypes::geometryType( mOriginalGeometry.wkbType() ) != Qgis::GeometryType::Line );
   QgisApp::instance()->addUserInputWidget( mUserInputWidget );
   mUserInputWidget->setFocus( Qt::TabFocusReason );
 
@@ -635,7 +635,7 @@ void QgsMapToolOffsetCurve::updateGeometryAndRubberBand( double offset )
   const Qgis::EndCapStyle capStyle = QgsSettingsRegistryCore::settingsDigitizingOffsetCapStyle->value();
 
 
-  if ( QgsWkbTypes::geometryType( mOriginalGeometry.wkbType() ) == QgsWkbTypes::LineGeometry )
+  if ( QgsWkbTypes::geometryType( mOriginalGeometry.wkbType() ) == Qgis::GeometryType::Line )
   {
     offsetGeom = mManipulatedGeometry.offsetCurve( offset, quadSegments, joinStyle, miterLimit );
   }

@@ -156,7 +156,7 @@ Update the enabled state of the data defined alignment buttons.
     virtual QgsExpressionContext createExpressionContext() const;
 
 
-    QgsWkbTypes::GeometryType labelGeometryType() const;
+    Qgis::GeometryType labelGeometryType() const;
 %Docstring
 Returns the geometry type which will be used by the labeling engine
 when registering labels for the labeling settings currently defined by the widget.

@@ -18,6 +18,7 @@
 #include "qgshanaconnectionpool.h"
 #include "qgshanasettings.h"
 #include "qgshanautils.h"
+#include "qgslogger.h"
 
 QgsHanaConnectionPoolGroup::QgsHanaConnectionPoolGroup( const QString &name )
   : QgsConnectionPoolGroup<QgsHanaConnection*>( name )

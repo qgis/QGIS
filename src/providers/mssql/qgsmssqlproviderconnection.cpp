@@ -153,7 +153,7 @@ void QgsMssqlProviderConnection::dropTablePrivate( const QString &schema, const 
 void QgsMssqlProviderConnection::createVectorTable( const QString &schema,
     const QString &name,
     const QgsFields &fields,
-    QgsWkbTypes::Type wkbType,
+    Qgis::WkbType wkbType,
     const QgsCoordinateReferenceSystem &srs,
     bool overwrite,
     const QMap<QString,
@@ -166,7 +166,7 @@ void QgsMssqlProviderConnection::createVectorTable( const QString &schema,
   newUri.setSchema( schema );
   newUri.setTable( name );
   // Set geometry column if it's not aspatial
-  if ( wkbType != QgsWkbTypes::Type::Unknown &&  wkbType != QgsWkbTypes::Type::NoGeometry )
+  if ( wkbType != Qgis::WkbType::Unknown &&  wkbType != Qgis::WkbType::NoGeometry )
   {
     newUri.setGeometryColumn( options->value( QStringLiteral( "geometryColumn" ), QStringLiteral( "geom" ) ).toString() );
   }
@@ -480,7 +480,7 @@ QList<QgsMssqlProviderConnection::TableProperty> QgsMssqlProviderConnection::tab
     else
     {
       // Add an invalid column
-      table.addGeometryColumnType( QgsWkbTypes::Type::NoGeometry,
+      table.addGeometryColumnType( Qgis::WkbType::NoGeometry,
                                    QgsCoordinateReferenceSystem() );
       table.setFlag( QgsMssqlProviderConnection::TableFlag::Aspatial );
     }

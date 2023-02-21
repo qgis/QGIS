@@ -65,7 +65,7 @@ QgsVectorLayerLabelProvider::QgsVectorLayerLabelProvider( QgsVectorLayer *layer,
   init();
 }
 
-QgsVectorLayerLabelProvider::QgsVectorLayerLabelProvider( QgsWkbTypes::GeometryType geometryType, const QgsFields &fields, const QgsCoordinateReferenceSystem &crs, const QString &providerId, const QgsPalLayerSettings *settings, QgsMapLayer *layer, const QString &layerName )
+QgsVectorLayerLabelProvider::QgsVectorLayerLabelProvider( Qgis::GeometryType geometryType, const QgsFields &fields, const QgsCoordinateReferenceSystem &crs, const QString &providerId, const QgsPalLayerSettings *settings, QgsMapLayer *layer, const QString &layerName )
   : QgsAbstractLabelProvider( layer, providerId )
   , mSettings( settings ? * settings : QgsPalLayerSettings() ) // TODO: all providers should have valid settings?
   , mLayerGeometryType( geometryType )
@@ -92,7 +92,7 @@ void QgsVectorLayerLabelProvider::init()
 
   mPriority = 1 - mSettings.priority / 10.0; // convert 0..10 --> 1..0
 
-  if ( mLayerGeometryType == QgsWkbTypes::PointGeometry && mRenderer )
+  if ( mLayerGeometryType == Qgis::GeometryType::Point && mRenderer )
   {
     //override obstacle type to treat any intersection of a label with the point symbol as a high cost conflict
     mObstacleType = QgsLabelObstacleSettings::PolygonWhole;
@@ -170,7 +170,7 @@ QList<QgsLabelFeature *> QgsVectorLayerLabelProvider::labelFeatures( QgsRenderCo
     if ( mRenderer )
     {
       QgsSymbolList symbols = mRenderer->originalSymbolsForFeature( fet, ctx );
-      if ( !symbols.isEmpty() && fet.geometry().type() == QgsWkbTypes::PointGeometry )
+      if ( !symbols.isEmpty() && fet.geometry().type() == Qgis::GeometryType::Point )
       {
         //point feature, use symbol bounds as obstacle
         obstacleGeometry = QgsVectorLayerLabelProvider::getPointObstacleGeometry( fet, ctx, symbols );
@@ -208,7 +208,7 @@ QList< QgsLabelFeature * > QgsVectorLayerLabelProvider::registerFeature( const Q
 
 QgsGeometry QgsVectorLayerLabelProvider::getPointObstacleGeometry( QgsFeature &fet, QgsRenderContext &context, const QgsSymbolList &symbols )
 {
-  if ( !fet.hasGeometry() || fet.geometry().type() != QgsWkbTypes::PointGeometry )
+  if ( !fet.hasGeometry() || fet.geometry().type() != Qgis::GeometryType::Point )
     return QgsGeometry();
 
   bool isMultiPoint = fet.geometry().constGet()->nCoordinates() > 1;

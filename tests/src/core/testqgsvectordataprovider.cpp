@@ -113,7 +113,7 @@ static void checkFid4( QgsFeature &f, bool hasGeometry, bool hasAttrs, int onlyO
   if ( hasGeometry )
   {
     QVERIFY( f.hasGeometry() );
-    QVERIFY( f.geometry().wkbType() == QgsWkbTypes::Point );
+    QVERIFY( f.geometry().wkbType() == Qgis::WkbType::Point );
     QCOMPARE( keep6digits( f.geometry().asPoint().x() ), -88.302277 );
     QCOMPARE( keep6digits( f.geometry().asPoint().y() ),  33.731884 );
   }

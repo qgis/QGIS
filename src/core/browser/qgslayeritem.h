@@ -127,7 +127,7 @@ class CORE_EXPORT QgsLayerItem : public QgsDataItem
      * Returns the icon for a vector layer whose geometry type is provided.
      * \since QGIS 3.18
      */
-    static QIcon iconForWkbType( QgsWkbTypes::Type type );
+    static QIcon iconForWkbType( Qgis::WkbType type );
 
     static QIcon iconPoint();
     static QIcon iconLine();

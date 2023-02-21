@@ -122,7 +122,7 @@ This is a hybrid layer, it constructs its own geometry so it does not
 care about the geometry of its parents.
 %End
 
-    void render( QgsSymbolRenderContext &context, QgsWkbTypes::GeometryType geometryType = QgsWkbTypes::GeometryType::UnknownGeometry, const QPolygonF *points = 0, const QVector<QPolygonF> *rings = 0 );
+    void render( QgsSymbolRenderContext &context, Qgis::GeometryType geometryType = Qgis::GeometryType::Unknown, const QPolygonF *points = 0, const QVector<QPolygonF> *rings = 0 );
 %Docstring
 Will render this symbol layer using the context.
 In comparison to other symbols there is no geometry passed in, since

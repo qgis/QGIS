@@ -547,7 +547,7 @@ class CORE_EXPORT QgsGeometryUtils
      * Parses a WKT block of the format "TYPE( contents )" and returns a pair of geometry type to contents ("Pair(wkbType, "contents")")
      * \note not available in Python bindings
      */
-    static QPair<QgsWkbTypes::Type, QString> wktReadBlock( const QString &wkt ) SIP_SKIP;
+    static QPair<Qgis::WkbType, QString> wktReadBlock( const QString &wkt ) SIP_SKIP;
 
     /**
      * Parses a WKT string and returns of list of blocks contained in the WKT.

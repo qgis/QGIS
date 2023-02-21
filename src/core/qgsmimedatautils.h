@@ -145,7 +145,7 @@ class CORE_EXPORT QgsMimeDataUtils
        *
        * \since QGIS 3.8
        */
-      QgsWkbTypes::Type wkbType = QgsWkbTypes::Unknown;
+      Qgis::WkbType wkbType = Qgis::WkbType::Unknown;
 
       /**
        * Path to file, if uri is associated with a file.

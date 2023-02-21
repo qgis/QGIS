@@ -292,7 +292,7 @@ clone this rule, return new instance
 Saves the symbol layer as SLD
 %End
 
-        static QgsRuleBasedRenderer::Rule *createFromSld( QDomElement &element, QgsWkbTypes::GeometryType geomType ) /Factory/;
+        static QgsRuleBasedRenderer::Rule *createFromSld( QDomElement &element, Qgis::GeometryType geomType ) /Factory/;
 %Docstring
 Create a rule from the SLD provided in element and for the specified geometry type.
 %End
@@ -516,7 +516,7 @@ Returns symbol for current feature. Should not be used individually: there could
     virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props = QVariantMap() ) const;
 
 
-    static QgsFeatureRenderer *createFromSld( QDomElement &element, QgsWkbTypes::GeometryType geomType ) /Factory/;
+    static QgsFeatureRenderer *createFromSld( QDomElement &element, Qgis::GeometryType geomType ) /Factory/;
 
     virtual QgsSymbolList symbols( QgsRenderContext &context ) const;
 

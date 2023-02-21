@@ -198,7 +198,7 @@ QVariantMap QgsPointsToPathsAlgorithm::processAlgorithm( const QVariantMap &para
   QCollator collator;
   collator.setNumericMode( true );
 
-  QgsWkbTypes::Type wkbType = QgsWkbTypes::LineString;
+  Qgis::WkbType wkbType = Qgis::WkbType::LineString;
   if ( QgsWkbTypes::hasM( source->wkbType() ) )
     wkbType = QgsWkbTypes::addM( wkbType );
   if ( QgsWkbTypes::hasZ( source->wkbType() ) )

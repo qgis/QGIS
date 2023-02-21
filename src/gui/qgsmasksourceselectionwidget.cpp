@@ -199,15 +199,15 @@ void QgsMaskSourceSelectionWidget::update()
   const auto layers = QgsProject::instance()->layerTreeRoot()->findLayers();
   for ( const QgsLayerTreeLayer *layerTreeLayer : layers )
   {
-    const QgsMapLayer *layer = layerTreeLayer->layer();
-    const QgsVectorLayer *vl = qobject_cast<const QgsVectorLayer *>( layer );
+    QgsMapLayer *layer = layerTreeLayer->layer();
+    QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer );
     if ( ! vl )
       continue;
     if ( ! vl->renderer() )
       continue;
 
     std::unique_ptr< QTreeWidgetItem > layerItem = std::make_unique< QTreeWidgetItem >( mTree, QStringList() << layer->name() );
-    layerItem->setData( 0, Qt::UserRole, vl );
+    layerItem->setData( 0, Qt::UserRole, QVariant::fromValue( vl ) );
 
     if ( vl->labeling() )
     {

@@ -424,7 +424,7 @@ between symbols.
 .. versionadded:: 2.12
 %End
 
-    static bool createSymbolLayerListFromSld( QDomElement &element, QgsWkbTypes::GeometryType geomType, QList<QgsSymbolLayer *> &layers );
+    static bool createSymbolLayerListFromSld( QDomElement &element, Qgis::GeometryType geomType, QList<QgsSymbolLayer *> &layers );
 %Docstring
 Creates a symbol layer list from a DOM ``element``.
 %End

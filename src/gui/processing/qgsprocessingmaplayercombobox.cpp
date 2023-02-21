@@ -423,26 +423,26 @@ QString QgsProcessingMapLayerComboBox::compatibleUriFromMimeData( const QMimeDat
       bool acceptable = false;
       switch ( QgsWkbTypes::geometryType( u.wkbType ) )
       {
-        case QgsWkbTypes::UnknownGeometry:
+        case Qgis::GeometryType::Unknown:
           acceptable = true;
           break;
 
-        case QgsWkbTypes::PointGeometry:
+        case Qgis::GeometryType::Point:
           if ( dataTypes.isEmpty() || dataTypes.contains( QgsProcessing::TypeVector ) || dataTypes.contains( QgsProcessing::TypeVectorAnyGeometry ) || dataTypes.contains( QgsProcessing::TypeVectorPoint ) )
             acceptable = true;
           break;
 
-        case QgsWkbTypes::LineGeometry:
+        case Qgis::GeometryType::Line:
           if ( dataTypes.isEmpty() || dataTypes.contains( QgsProcessing::TypeVector ) || dataTypes.contains( QgsProcessing::TypeVectorAnyGeometry ) || dataTypes.contains( QgsProcessing::TypeVectorLine ) )
             acceptable = true;
           break;
 
-        case QgsWkbTypes::PolygonGeometry:
+        case Qgis::GeometryType::Polygon:
           if ( dataTypes.isEmpty() || dataTypes.contains( QgsProcessing::TypeVector ) || dataTypes.contains( QgsProcessing::TypeVectorAnyGeometry ) || dataTypes.contains( QgsProcessing::TypeVectorPolygon ) )
             acceptable = true;
           break;
 
-        case QgsWkbTypes::NullGeometry:
+        case Qgis::GeometryType::Null:
           if ( dataTypes.contains( QgsProcessing::TypeVector ) )
             acceptable = true;
           break;
@@ -468,25 +468,25 @@ QString QgsProcessingMapLayerComboBox::compatibleUriFromMimeData( const QMimeDat
       {
         switch ( QgsWkbTypes::geometryType( u.wkbType ) )
         {
-          case QgsWkbTypes::UnknownGeometry:
+          case Qgis::GeometryType::Unknown:
             return u.uri;
 
-          case QgsWkbTypes::PointGeometry:
+          case Qgis::GeometryType::Point:
             if ( dataTypes.contains( QgsProcessing::TypeVectorAnyGeometry ) || dataTypes.contains( QgsProcessing::TypeVectorPoint ) )
               return u.uri;
             break;
 
-          case QgsWkbTypes::LineGeometry:
+          case Qgis::GeometryType::Line:
             if ( dataTypes.contains( QgsProcessing::TypeVectorAnyGeometry ) || dataTypes.contains( QgsProcessing::TypeVectorLine ) )
               return u.uri;
             break;
 
-          case QgsWkbTypes::PolygonGeometry:
+          case Qgis::GeometryType::Polygon:
             if ( dataTypes.contains( QgsProcessing::TypeVectorAnyGeometry ) || dataTypes.contains( QgsProcessing::TypeVectorPolygon ) )
               return u.uri;
             break;
 
-          case QgsWkbTypes::NullGeometry:
+          case Qgis::GeometryType::Null:
             return u.uri;
         }
       }

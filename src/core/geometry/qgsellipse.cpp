@@ -195,7 +195,7 @@ QgsPointSequence QgsEllipse::points( unsigned int segments ) const
   }
 
 
-  const QgsWkbTypes::Type pType( mCenter.wkbType() );
+  const Qgis::WkbType pType( mCenter.wkbType() );
   const double z = mCenter.z();
   const double m = mCenter.m();
 

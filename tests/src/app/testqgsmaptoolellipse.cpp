@@ -157,31 +157,31 @@ void TestQgsMapToolEllipse::initAttributs()
   mExpectedWkts[QStringLiteral( "XY" "FromFoci" )] = QgsEllipse::fromFoci( QgsPoint( 0, 0 ), QgsPoint( 1, -1 ), QgsPoint( 0, -1 ) ).toLineString( segments() )->asWkt( WKT_PRECISION );
   mExpectedWkts[QStringLiteral( "XY" "FromFociWithDeletedVertex" )] = mExpectedWkts[QStringLiteral( "XY" "FromFoci" )];
 
-  mExpectedWkts[QStringLiteral( "XYZ" "CenterAndPoint" )] =  QgsEllipse::fromCenterPoint( QgsPoint( 0, 0, Z, M, QgsWkbTypes::PointZ ), QgsPoint( 1, -1, Z, M, QgsWkbTypes::PointZ ) ).toLineString( segments() )->asWkt( WKT_PRECISION );
+  mExpectedWkts[QStringLiteral( "XYZ" "CenterAndPoint" )] =  QgsEllipse::fromCenterPoint( QgsPoint( 0, 0, Z, M, Qgis::WkbType::PointZ ), QgsPoint( 1, -1, Z, M, Qgis::WkbType::PointZ ) ).toLineString( segments() )->asWkt( WKT_PRECISION );
   mExpectedWkts[QStringLiteral( "XYZ" "CenterAndPointWithDeletedVertex" )] = mExpectedWkts[QStringLiteral( "XYZ" "CenterAndPoint" )];
-  mExpectedWkts[QStringLiteral( "XYZ" "CenterAnd2Points" )] = QgsEllipse::fromCenter2Points( QgsPoint( 0, 0, Z, M, QgsWkbTypes::PointZ ), QgsPoint( 0, 1, Z, M, QgsWkbTypes::PointZ ), QgsPoint( 0, -1, Z, M, QgsWkbTypes::PointZ ) ).toLineString( segments() )->asWkt( WKT_PRECISION );
+  mExpectedWkts[QStringLiteral( "XYZ" "CenterAnd2Points" )] = QgsEllipse::fromCenter2Points( QgsPoint( 0, 0, Z, M, Qgis::WkbType::PointZ ), QgsPoint( 0, 1, Z, M, Qgis::WkbType::PointZ ), QgsPoint( 0, -1, Z, M, Qgis::WkbType::PointZ ) ).toLineString( segments() )->asWkt( WKT_PRECISION );
   mExpectedWkts[QStringLiteral( "XYZ" "CenterAnd2PointsWithDeletedVertex" )] = mExpectedWkts[QStringLiteral( "XYZ" "CenterAnd2Points" )];
-  mExpectedWkts[QStringLiteral( "XYZ" "FromExtent" )] = QgsEllipse::fromExtent( QgsPoint( 0, 0, Z, M, QgsWkbTypes::PointZ ), QgsPoint( 2, 2, Z, M, QgsWkbTypes::PointZ ) ).toLineString( segments() )->asWkt( WKT_PRECISION );
+  mExpectedWkts[QStringLiteral( "XYZ" "FromExtent" )] = QgsEllipse::fromExtent( QgsPoint( 0, 0, Z, M, Qgis::WkbType::PointZ ), QgsPoint( 2, 2, Z, M, Qgis::WkbType::PointZ ) ).toLineString( segments() )->asWkt( WKT_PRECISION );
   mExpectedWkts[QStringLiteral( "XYZ" "FromExtentWithDeletedVertex" )] = mExpectedWkts[QStringLiteral( "XYZ" "FromExtent" )];
-  mExpectedWkts[QStringLiteral( "XYZ" "FromFoci" )] = QgsEllipse::fromFoci( QgsPoint( 0, 0, Z, M, QgsWkbTypes::PointZ ), QgsPoint( 1, -1, Z, M, QgsWkbTypes::PointZ ), QgsPoint( 0, -1, Z, M, QgsWkbTypes::PointZ ) ).toLineString( segments() )->asWkt( WKT_PRECISION );
+  mExpectedWkts[QStringLiteral( "XYZ" "FromFoci" )] = QgsEllipse::fromFoci( QgsPoint( 0, 0, Z, M, Qgis::WkbType::PointZ ), QgsPoint( 1, -1, Z, M, Qgis::WkbType::PointZ ), QgsPoint( 0, -1, Z, M, Qgis::WkbType::PointZ ) ).toLineString( segments() )->asWkt( WKT_PRECISION );
   mExpectedWkts[QStringLiteral( "XYZ" "FromFociWithDeletedVertex" )] = mExpectedWkts[QStringLiteral( "XYZ" "FromFoci" )];
 
-  mExpectedWkts[QStringLiteral( "XYM" "CenterAndPoint" )] =  QgsEllipse::fromCenterPoint( QgsPoint( 0, 0, Z, M, QgsWkbTypes::PointM ), QgsPoint( 1, -1, Z, M, QgsWkbTypes::PointM ) ).toLineString( segments() )->asWkt( WKT_PRECISION );
+  mExpectedWkts[QStringLiteral( "XYM" "CenterAndPoint" )] =  QgsEllipse::fromCenterPoint( QgsPoint( 0, 0, Z, M, Qgis::WkbType::PointM ), QgsPoint( 1, -1, Z, M, Qgis::WkbType::PointM ) ).toLineString( segments() )->asWkt( WKT_PRECISION );
   mExpectedWkts[QStringLiteral( "XYM" "CenterAndPointWithDeletedVertex" )] = mExpectedWkts[QStringLiteral( "XYM" "CenterAndPoint" )];
-  mExpectedWkts[QStringLiteral( "XYM" "CenterAnd2Points" )] = QgsEllipse::fromCenter2Points( QgsPoint( 0, 0, Z, M, QgsWkbTypes::PointM ), QgsPoint( 0, 1, Z, M, QgsWkbTypes::PointM ), QgsPoint( 0, -1, Z, M, QgsWkbTypes::PointM ) ).toLineString( segments() )->asWkt( WKT_PRECISION );
+  mExpectedWkts[QStringLiteral( "XYM" "CenterAnd2Points" )] = QgsEllipse::fromCenter2Points( QgsPoint( 0, 0, Z, M, Qgis::WkbType::PointM ), QgsPoint( 0, 1, Z, M, Qgis::WkbType::PointM ), QgsPoint( 0, -1, Z, M, Qgis::WkbType::PointM ) ).toLineString( segments() )->asWkt( WKT_PRECISION );
   mExpectedWkts[QStringLiteral( "XYM" "CenterAnd2PointsWithDeletedVertex" )] = mExpectedWkts[QStringLiteral( "XYM" "CenterAnd2Points" )];
-  mExpectedWkts[QStringLiteral( "XYM" "FromExtent" )] = QgsEllipse::fromExtent( QgsPoint( 0, 0, Z, M, QgsWkbTypes::PointM ), QgsPoint( 2, 2, Z, M, QgsWkbTypes::PointM ) ).toLineString( segments() )->asWkt( WKT_PRECISION );
+  mExpectedWkts[QStringLiteral( "XYM" "FromExtent" )] = QgsEllipse::fromExtent( QgsPoint( 0, 0, Z, M, Qgis::WkbType::PointM ), QgsPoint( 2, 2, Z, M, Qgis::WkbType::PointM ) ).toLineString( segments() )->asWkt( WKT_PRECISION );
   mExpectedWkts[QStringLiteral( "XYM" "FromExtentWithDeletedVertex" )] = mExpectedWkts[QStringLiteral( "XYM" "FromExtent" )];
-  mExpectedWkts[QStringLiteral( "XYM" "FromFoci" )] = QgsEllipse::fromFoci( QgsPoint( 0, 0, Z, M, QgsWkbTypes::PointM ), QgsPoint( 1, -1, Z, M, QgsWkbTypes::PointM ), QgsPoint( 0, -1, Z, M, QgsWkbTypes::PointM ) ).toLineString( segments() )->asWkt( WKT_PRECISION );
+  mExpectedWkts[QStringLiteral( "XYM" "FromFoci" )] = QgsEllipse::fromFoci( QgsPoint( 0, 0, Z, M, Qgis::WkbType::PointM ), QgsPoint( 1, -1, Z, M, Qgis::WkbType::PointM ), QgsPoint( 0, -1, Z, M, Qgis::WkbType::PointM ) ).toLineString( segments() )->asWkt( WKT_PRECISION );
   mExpectedWkts[QStringLiteral( "XYM" "FromFociWithDeletedVertex" )] = mExpectedWkts[QStringLiteral( "XYM" "FromFoci" )];
 
-  mExpectedWkts[QStringLiteral( "XYZM" "CenterAndPoint" )] =  QgsEllipse::fromCenterPoint( QgsPoint( 0, 0, Z, M, QgsWkbTypes::PointZM ), QgsPoint( 1, -1, Z, M, QgsWkbTypes::PointZM ) ).toLineString( segments() )->asWkt( WKT_PRECISION );
+  mExpectedWkts[QStringLiteral( "XYZM" "CenterAndPoint" )] =  QgsEllipse::fromCenterPoint( QgsPoint( 0, 0, Z, M, Qgis::WkbType::PointZM ), QgsPoint( 1, -1, Z, M, Qgis::WkbType::PointZM ) ).toLineString( segments() )->asWkt( WKT_PRECISION );
   mExpectedWkts[QStringLiteral( "XYZM" "CenterAndPointWithDeletedVertex" )] = mExpectedWkts[QStringLiteral( "XYZM" "CenterAndPoint" )];
-  mExpectedWkts[QStringLiteral( "XYZM" "CenterAnd2Points" )] = QgsEllipse::fromCenter2Points( QgsPoint( 0, 0, Z, M, QgsWkbTypes::PointZM ), QgsPoint( 0, 1, Z, M, QgsWkbTypes::PointZM ), QgsPoint( 0, -1, Z, M, QgsWkbTypes::PointZM ) ).toLineString( segments() )->asWkt( WKT_PRECISION );
+  mExpectedWkts[QStringLiteral( "XYZM" "CenterAnd2Points" )] = QgsEllipse::fromCenter2Points( QgsPoint( 0, 0, Z, M, Qgis::WkbType::PointZM ), QgsPoint( 0, 1, Z, M, Qgis::WkbType::PointZM ), QgsPoint( 0, -1, Z, M, Qgis::WkbType::PointZM ) ).toLineString( segments() )->asWkt( WKT_PRECISION );
   mExpectedWkts[QStringLiteral( "XYZM" "CenterAnd2PointsWithDeletedVertex" )] = mExpectedWkts[QStringLiteral( "XYZM" "CenterAnd2Points" )];
-  mExpectedWkts[QStringLiteral( "XYZM" "FromExtent" )] = QgsEllipse::fromExtent( QgsPoint( 0, 0, Z, M, QgsWkbTypes::PointZM ), QgsPoint( 2, 2, Z, M, QgsWkbTypes::PointZM ) ).toLineString( segments() )->asWkt( WKT_PRECISION );
+  mExpectedWkts[QStringLiteral( "XYZM" "FromExtent" )] = QgsEllipse::fromExtent( QgsPoint( 0, 0, Z, M, Qgis::WkbType::PointZM ), QgsPoint( 2, 2, Z, M, Qgis::WkbType::PointZM ) ).toLineString( segments() )->asWkt( WKT_PRECISION );
   mExpectedWkts[QStringLiteral( "XYZM" "FromExtentWithDeletedVertex" )] = mExpectedWkts[QStringLiteral( "XYZM" "FromExtent" )];
-  mExpectedWkts[QStringLiteral( "XYZM" "FromFoci" )] = QgsEllipse::fromFoci( QgsPoint( 0, 0, Z, M, QgsWkbTypes::PointZM ), QgsPoint( 1, -1, Z, M, QgsWkbTypes::PointZM ), QgsPoint( 0, -1, Z, M, QgsWkbTypes::PointZM ) ).toLineString( segments() )->asWkt( WKT_PRECISION );
+  mExpectedWkts[QStringLiteral( "XYZM" "FromFoci" )] = QgsEllipse::fromFoci( QgsPoint( 0, 0, Z, M, Qgis::WkbType::PointZM ), QgsPoint( 1, -1, Z, M, Qgis::WkbType::PointZM ), QgsPoint( 0, -1, Z, M, Qgis::WkbType::PointZM ) ).toLineString( segments() )->asWkt( WKT_PRECISION );
   mExpectedWkts[QStringLiteral( "XYZM" "FromFociWithDeletedVertex" )] = mExpectedWkts[QStringLiteral( "XYZM" "FromFoci" )];
 }
 

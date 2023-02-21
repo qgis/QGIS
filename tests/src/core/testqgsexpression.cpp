@@ -3353,24 +3353,24 @@ class TestQgsExpression: public QObject
       fPolylineZ.setGeometry( polylineZGeom );
 
       QgsPolyline polylineM;
-      polylineM << QgsPoint( QgsWkbTypes::PointM, 0, 0, 0, 0 ) << QgsPoint( QgsWkbTypes::PointM, 3, 0, 0, 8 );
+      polylineM << QgsPoint( Qgis::WkbType::PointM, 0, 0, 0, 0 ) << QgsPoint( Qgis::WkbType::PointM, 3, 0, 0, 8 );
       QgsGeometry polylineMGeom = QgsGeometry::fromPolyline( polylineM );
       QgsFeature fPolylineM;
       fPolylineM.setGeometry( polylineMGeom );
 
       QgsPolyline polylineZM;
-      polylineZM << QgsPoint( QgsWkbTypes::PointZM, 0, 0, 0, 0 ) << QgsPoint( QgsWkbTypes::PointZM, 3, 0, 4, 8 );
+      polylineZM << QgsPoint( Qgis::WkbType::PointZM, 0, 0, 0, 0 ) << QgsPoint( Qgis::WkbType::PointZM, 3, 0, 4, 8 );
       QgsGeometry polylineZMGeom = QgsGeometry::fromPolyline( polylineZM );
       QgsFeature fPolylineZM;
       fPolylineZM.setGeometry( polylineZMGeom );
 
       QgsMultiLineString mls;
       QgsLineString part;
-      part.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZM, 10, 10, 10, 10 )
-                      << QgsPoint( QgsWkbTypes::PointZM, 20, 20, 20, 20 ) );
+      part.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 10, 10, 10, 10 )
+                      << QgsPoint( Qgis::WkbType::PointZM, 20, 20, 20, 20 ) );
       mls.addGeometry( part.clone() );
-      part.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZM, 30, 30, 30, 30 )
-                      << QgsPoint( QgsWkbTypes::PointZM, 40, 40, 40, 40 ) );
+      part.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 30, 30, 30, 30 )
+                      << QgsPoint( Qgis::WkbType::PointZM, 40, 40, 40, 40 ) );
       mls.addGeometry( part.clone() );
       QgsGeometry multiStringZMGeom;
       multiStringZMGeom.set( mls.clone() );

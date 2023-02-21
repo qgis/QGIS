@@ -88,7 +88,7 @@ class CORE_EXPORT QgsVectorLayerExporter : public QgsFeatureSink
     QgsVectorLayerExporter( const QString &uri,
                             const QString &provider,
                             const QgsFields &fields,
-                            QgsWkbTypes::Type geometryType,
+                            Qgis::WkbType geometryType,
                             const QgsCoordinateReferenceSystem &crs,
                             bool overwrite = false,
                             const QMap<QString, QVariant> &options = QMap<QString, QVariant>(),

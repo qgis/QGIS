@@ -74,7 +74,7 @@ void QgsHighlight::init()
   connect( mMapCanvas, &QgsMapCanvas::destinationCrsChanged, this, &QgsHighlight::updateTransformedGeometry );
   updateTransformedGeometry();
 
-  if ( mGeometry.type() == QgsWkbTypes::PointGeometry )
+  if ( mGeometry.type() == Qgis::GeometryType::Point )
   {
     mRenderContext = createRenderContext();
   }
@@ -297,7 +297,7 @@ void QgsHighlight::updatePosition()
   if ( !isVisible() )
     return;
 
-  if ( mGeometry.type() == QgsWkbTypes::PointGeometry )
+  if ( mGeometry.type() == Qgis::GeometryType::Point )
   {
     mRenderContext = createRenderContext();
   }
@@ -408,7 +408,7 @@ void QgsHighlight::paint( QPainter *p )
 
     switch ( mGeometry.type() )
     {
-      case QgsWkbTypes::PointGeometry:
+      case Qgis::GeometryType::Point:
       {
         setRenderContextVariables( p, mRenderContext );
 
@@ -443,7 +443,7 @@ void QgsHighlight::paint( QPainter *p )
       }
       break;
 
-      case QgsWkbTypes::LineGeometry:
+      case Qgis::GeometryType::Line:
       {
         if ( !mGeometry.isMultipart() )
         {
@@ -461,7 +461,7 @@ void QgsHighlight::paint( QPainter *p )
         break;
       }
 
-      case QgsWkbTypes::PolygonGeometry:
+      case Qgis::GeometryType::Polygon:
       {
         if ( !mGeometry.isMultipart() )
         {
@@ -478,8 +478,8 @@ void QgsHighlight::paint( QPainter *p )
         break;
       }
 
-      case QgsWkbTypes::UnknownGeometry:
-      case QgsWkbTypes::NullGeometry:
+      case Qgis::GeometryType::Unknown:
+      case Qgis::GeometryType::Null:
         return;
     }
   }

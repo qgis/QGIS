@@ -221,15 +221,15 @@ struct VTable
       QgsVectorDataProvider *provider = mLayer ? mLayer->dataProvider() : mProvider;
 
       // spatialite doesn't support curved geometries, it will be converted to linear in qgsGeometryToSpatialiteBlob
-      QgsWkbTypes::Type layerType = QgsWkbTypes::linearType( provider->wkbType() );
+      Qgis::WkbType layerType = QgsWkbTypes::linearType( provider->wkbType() );
 
-      if ( layerType != QgsWkbTypes::NoGeometry )
+      if ( layerType != Qgis::WkbType::NoGeometry )
       {
         // we have here a convenient hack
         // the type of a column can be declared with two numeric arguments, usually for setting numeric precision
         // we are using them to set the geometry type and srid
         // these will be reused by the provider when it will introspect the query to detect types
-        sqlFields << QStringLiteral( "geometry geometry(%1,%2)" ).arg( layerType ).arg( provider->crs().postgisSrid() );
+        sqlFields << QStringLiteral( "geometry geometry(%1,%2)" ).arg( static_cast< quint32>( layerType ) ).arg( provider->crs().postgisSrid() );
 
         // add a hidden field for rtree filtering
         sqlFields << QStringLiteral( "_search_frame_ HIDDEN BLOB" );
@@ -319,10 +319,10 @@ struct VTableCursor
 void getGeometryType( const QgsVectorDataProvider *provider, QString &geometryTypeStr, int &geometryDim, int &geometryWkbType, long &srid )
 {
   srid = const_cast<QgsVectorDataProvider *>( provider )->crs().postgisSrid();
-  QgsWkbTypes::Type t = provider->wkbType();
+  Qgis::WkbType t = provider->wkbType();
   geometryTypeStr = QgsWkbTypes::displayString( t );
   geometryDim = QgsWkbTypes::coordDimensions( t );
-  if ( ( t != QgsWkbTypes::NoGeometry ) && ( t != QgsWkbTypes::Unknown ) )
+  if ( ( t != Qgis::WkbType::NoGeometry ) && ( t != Qgis::WkbType::Unknown ) )
     geometryWkbType = static_cast<int>( t );
   else
     geometryWkbType = 0;

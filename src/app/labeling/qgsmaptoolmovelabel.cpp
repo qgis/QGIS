@@ -199,7 +199,7 @@ void QgsMapToolMoveLabel::cadCanvasPressEvent( QgsMapMouseEvent *e )
       mClickOffsetX = 0;
       mClickOffsetY = 0;
 
-      mCalloutMoveRubberBand = new QgsRubberBand( mCanvas, QgsWkbTypes::LineGeometry );
+      mCalloutMoveRubberBand = new QgsRubberBand( mCanvas, Qgis::GeometryType::Line );
       mCalloutMoveRubberBand->addPoint( mCurrentCallout.origin() );
       mCalloutMoveRubberBand->addPoint( mCurrentCallout.destination() );
       mCalloutMoveRubberBand->setColor( QColor( 0, 255, 0, 65 ) );

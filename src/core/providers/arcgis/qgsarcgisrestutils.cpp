@@ -41,6 +41,7 @@
 #include "qgslinesymbol.h"
 #include "qgsfillsymbol.h"
 #include "qgsvariantutils.h"
+#include "qgsmarkersymbollayer.h"
 
 #include <QRegularExpression>
 #include <QUrl>
@@ -76,21 +77,21 @@ QVariant::Type QgsArcGisRestUtils::convertFieldType( const QString &esriFieldTyp
   return QVariant::Invalid;
 }
 
-QgsWkbTypes::Type QgsArcGisRestUtils::convertGeometryType( const QString &esriGeometryType )
+Qgis::WkbType QgsArcGisRestUtils::convertGeometryType( const QString &esriGeometryType )
 {
   // http://resources.arcgis.com/en/help/arcobjects-cpp/componenthelp/index.html#//000w0000001p000000
   if ( esriGeometryType == QLatin1String( "esriGeometryNull" ) )
-    return QgsWkbTypes::Unknown;
+    return Qgis::WkbType::Unknown;
   else if ( esriGeometryType == QLatin1String( "esriGeometryPoint" ) )
-    return QgsWkbTypes::Point;
+    return Qgis::WkbType::Point;
   else if ( esriGeometryType == QLatin1String( "esriGeometryMultipoint" ) )
-    return QgsWkbTypes::MultiPoint;
+    return Qgis::WkbType::MultiPoint;
   else if ( esriGeometryType == QLatin1String( "esriGeometryPolyline" ) )
-    return QgsWkbTypes::MultiCurve;
+    return Qgis::WkbType::MultiCurve;
   else if ( esriGeometryType == QLatin1String( "esriGeometryPolygon" ) )
-    return QgsWkbTypes::MultiPolygon;
+    return Qgis::WkbType::MultiPolygon;
   else if ( esriGeometryType == QLatin1String( "esriGeometryEnvelope" ) )
-    return QgsWkbTypes::Polygon;
+    return Qgis::WkbType::Polygon;
   // Unsupported (either by qgis, or format unspecified by the specification)
   //  esriGeometryCircularArc
   //  esriGeometryEllipticArc
@@ -106,10 +107,10 @@ QgsWkbTypes::Type QgsArcGisRestUtils::convertGeometryType( const QString &esriGe
   //  esriGeometrySphere
   //  esriGeometryTriangles
   //  esriGeometryBag
-  return QgsWkbTypes::Unknown;
+  return Qgis::WkbType::Unknown;
 }
 
-std::unique_ptr< QgsPoint > QgsArcGisRestUtils::convertPoint( const QVariantList &coordList, QgsWkbTypes::Type pointType )
+std::unique_ptr< QgsPoint > QgsArcGisRestUtils::convertPoint( const QVariantList &coordList, Qgis::WkbType pointType )
 {
   int nCoords = coordList.size();
   if ( nCoords < 2 )
@@ -127,7 +128,7 @@ std::unique_ptr< QgsPoint > QgsArcGisRestUtils::convertPoint( const QVariantList
   return std::make_unique< QgsPoint >( pointType, x, y, z, m );
 }
 
-std::unique_ptr< QgsCircularString > QgsArcGisRestUtils::convertCircularString( const QVariantMap &curveData, QgsWkbTypes::Type pointType, const QgsPoint &startPoint )
+std::unique_ptr< QgsCircularString > QgsArcGisRestUtils::convertCircularString( const QVariantMap &curveData, Qgis::WkbType pointType, const QgsPoint &startPoint )
 {
   const QVariantList coordsList = curveData[QStringLiteral( "c" )].toList();
   if ( coordsList.isEmpty() )
@@ -158,7 +159,7 @@ std::unique_ptr< QgsCircularString > QgsArcGisRestUtils::convertCircularString( 
   return curve;
 }
 
-std::unique_ptr< QgsCompoundCurve > QgsArcGisRestUtils::convertCompoundCurve( const QVariantList &curvesList, QgsWkbTypes::Type pointType )
+std::unique_ptr< QgsCompoundCurve > QgsArcGisRestUtils::convertCompoundCurve( const QVariantList &curvesList, Qgis::WkbType pointType )
 {
   // [[6,3],[5,3],{"b":[[3,2],[6,1],[2,4]]},[1,2],{"c": [[3,3],[1,4]]}]
   std::unique_ptr< QgsCompoundCurve > compoundCurve = std::make_unique< QgsCompoundCurve >();
@@ -301,7 +302,7 @@ std::unique_ptr< QgsCompoundCurve > QgsArcGisRestUtils::convertCompoundCurve( co
   return compoundCurve;
 }
 
-std::unique_ptr< QgsPoint > QgsArcGisRestUtils::convertGeometryPoint( const QVariantMap &geometryData, QgsWkbTypes::Type pointType )
+std::unique_ptr< QgsPoint > QgsArcGisRestUtils::convertGeometryPoint( const QVariantMap &geometryData, Qgis::WkbType pointType )
 {
   // {"x" : <x>, "y" : <y>, "z" : <z>, "m" : <m>}
   bool xok = false, yok = false;
@@ -314,7 +315,7 @@ std::unique_ptr< QgsPoint > QgsArcGisRestUtils::convertGeometryPoint( const QVar
   return std::make_unique< QgsPoint >( pointType, x, y, z, m );
 }
 
-std::unique_ptr< QgsMultiPoint > QgsArcGisRestUtils::convertMultiPoint( const QVariantMap &geometryData, QgsWkbTypes::Type pointType )
+std::unique_ptr< QgsMultiPoint > QgsArcGisRestUtils::convertMultiPoint( const QVariantMap &geometryData, Qgis::WkbType pointType )
 {
   // {"points" : [[ <x1>, <y1>, <z1>, <m1> ] , [ <x2>, <y2>, <z2>, <m2> ], ... ]}
   const QVariantList coordsList = geometryData[QStringLiteral( "points" )].toList();
@@ -346,7 +347,7 @@ std::unique_ptr< QgsMultiPoint > QgsArcGisRestUtils::convertMultiPoint( const QV
   return multiPoint;
 }
 
-std::unique_ptr< QgsMultiCurve > QgsArcGisRestUtils::convertGeometryPolyline( const QVariantMap &geometryData, QgsWkbTypes::Type pointType )
+std::unique_ptr< QgsMultiCurve > QgsArcGisRestUtils::convertGeometryPolyline( const QVariantMap &geometryData, Qgis::WkbType pointType )
 {
   // {"curvePaths": [[[0,0], {"c": [[3,3],[1,4]]} ]]}
   QVariantList pathsList;
@@ -370,7 +371,7 @@ std::unique_ptr< QgsMultiCurve > QgsArcGisRestUtils::convertGeometryPolyline( co
   return multiCurve;
 }
 
-std::unique_ptr< QgsMultiSurface > QgsArcGisRestUtils::convertGeometryPolygon( const QVariantMap &geometryData, QgsWkbTypes::Type pointType )
+std::unique_ptr< QgsMultiSurface > QgsArcGisRestUtils::convertGeometryPolygon( const QVariantMap &geometryData, Qgis::WkbType pointType )
 {
   // {"curveRings": [[[0,0], {"c": [[3,3],[1,4]]} ]]}
   QVariantList ringsList;
@@ -462,7 +463,7 @@ std::unique_ptr< QgsPolygon > QgsArcGisRestUtils::convertEnvelope( const QVarian
 
 QgsAbstractGeometry *QgsArcGisRestUtils::convertGeometry( const QVariantMap &geometryData, const QString &esriGeometryType, bool readM, bool readZ, QgsCoordinateReferenceSystem *crs )
 {
-  QgsWkbTypes::Type pointType = QgsWkbTypes::zmType( QgsWkbTypes::Point, readZ, readM );
+  Qgis::WkbType pointType = QgsWkbTypes::zmType( Qgis::WkbType::Point, readZ, readM );
   if ( crs )
   {
     *crs = convertSpatialReference( geometryData[QStringLiteral( "spatialReference" )].toMap() );
@@ -1061,55 +1062,55 @@ QVariantMap QgsArcGisRestUtils::geometryToJson( const QgsGeometry &geometry, con
   const QgsAbstractGeometry *geom = geometry.constGet()->simplifiedTypeRef();
   switch ( QgsWkbTypes::flatType( geom->wkbType() ) )
   {
-    case QgsWkbTypes::Unknown:
-    case QgsWkbTypes::NoGeometry:
+    case Qgis::WkbType::Unknown:
+    case Qgis::WkbType::NoGeometry:
       return QVariantMap();
 
-    case QgsWkbTypes::Point:
+    case Qgis::WkbType::Point:
       res = pointToJson( qgsgeometry_cast< const QgsPoint * >( geom ) );
       break;
 
-    case QgsWkbTypes::LineString:
+    case Qgis::WkbType::LineString:
       res = lineStringToJson( qgsgeometry_cast< const QgsLineString * >( geom ) );
       break;
 
-    case QgsWkbTypes::CircularString:
-    case QgsWkbTypes::CompoundCurve:
+    case Qgis::WkbType::CircularString:
+    case Qgis::WkbType::CompoundCurve:
       res = curveToJson( qgsgeometry_cast< const QgsCurve * >( geom ) );
       break;
 
-    case QgsWkbTypes::Polygon:
+    case Qgis::WkbType::Polygon:
       res = polygonToJson( qgsgeometry_cast< const QgsPolygon * >( geom ) );
       break;
 
-    case QgsWkbTypes::MultiPoint:
+    case Qgis::WkbType::MultiPoint:
       res = multiPointToJson( qgsgeometry_cast< const QgsMultiPoint * >( geom ) );
       break;
 
-    case QgsWkbTypes::MultiLineString:
+    case Qgis::WkbType::MultiLineString:
       res = multiLineStringToJson( qgsgeometry_cast< const QgsMultiLineString * >( geom ) );
       break;
 
-    case QgsWkbTypes::MultiCurve:
+    case Qgis::WkbType::MultiCurve:
       res = multiCurveToJson( qgsgeometry_cast< const QgsMultiCurve * >( geom ) );
       break;
 
-    case QgsWkbTypes::MultiPolygon:
+    case Qgis::WkbType::MultiPolygon:
       res = multiPolygonToJson( qgsgeometry_cast< const QgsMultiPolygon * >( geom ) );
       break;
 
-    case QgsWkbTypes::CurvePolygon:
+    case Qgis::WkbType::CurvePolygon:
       res = curvePolygonToJson( qgsgeometry_cast< const QgsCurvePolygon * >( geom ) );
       break;
 
-    case QgsWkbTypes::MultiSurface:
+    case Qgis::WkbType::MultiSurface:
       res = multiSurfaceToJson( qgsgeometry_cast< const QgsMultiSurface * >( geom ) );
       break;
 
-    case QgsWkbTypes::GeometryCollection:
+    case Qgis::WkbType::GeometryCollection:
       return QVariantMap(); // not supported by REST API
 
-    case QgsWkbTypes::Triangle:
+    case Qgis::WkbType::Triangle:
       return QVariantMap(); //not yet supported, but could be
 
     default:
@@ -1235,7 +1236,7 @@ QVariantList QgsArcGisRestUtils::curveToJsonCurve( const QgsCurve *curve, bool i
   QVariantList res;
   switch ( QgsWkbTypes::flatType( curve->wkbType() ) )
   {
-    case QgsWkbTypes::LineString:
+    case Qgis::WkbType::LineString:
     {
       QVariantList part = lineStringToJsonPath( qgsgeometry_cast< const QgsLineString *>( curve ) );
       if ( !part.isEmpty() && !includeStart )
@@ -1244,7 +1245,7 @@ QVariantList QgsArcGisRestUtils::curveToJsonCurve( const QgsCurve *curve, bool i
       break;
     }
 
-    case QgsWkbTypes::CircularString:
+    case Qgis::WkbType::CircularString:
     {
       const QgsCircularString *circularString = qgsgeometry_cast<const QgsCircularString * >( curve );
       if ( includeStart && !circularString->isEmpty() )
@@ -1268,7 +1269,7 @@ QVariantList QgsArcGisRestUtils::curveToJsonCurve( const QgsCurve *curve, bool i
       break;
     }
 
-    case QgsWkbTypes::CompoundCurve:
+    case Qgis::WkbType::CompoundCurve:
     {
       const QgsCompoundCurve *compoundCurve = qgsgeometry_cast<const QgsCompoundCurve * >( curve );
 

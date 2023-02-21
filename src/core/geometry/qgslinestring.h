@@ -226,7 +226,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
                 ml.append( p->m() );
               }
 
-              if ( i == 0 && p->wkbType() == QgsWkbTypes::Point25D )
+              if ( i == 0 && p->wkbType() == Qgis::WkbType::Point25D )
                 is25D = true;
             }
             sipReleaseType( p, sipType_QgsPoint, state );
@@ -930,7 +930,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
     bool dropMValue() override;
     void swapXy() override;
 
-    bool convertTo( QgsWkbTypes::Type type ) override;
+    bool convertTo( Qgis::WkbType type ) override;
 
     bool transform( QgsAbstractGeometryTransformer *transformer, QgsFeedback *feedback = nullptr ) override;
     void scroll( int firstVertexIndex ) final;
@@ -948,7 +948,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
      */
     inline static const QgsLineString *cast( const QgsAbstractGeometry *geom )
     {
-      if ( geom && QgsWkbTypes::flatType( geom->wkbType() ) == QgsWkbTypes::LineString )
+      if ( geom && QgsWkbTypes::flatType( geom->wkbType() ) == Qgis::WkbType::LineString )
         return static_cast<const QgsLineString *>( geom );
       return nullptr;
     }
@@ -1075,7 +1075,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
      * \param type WKB type
      * \param wkb WKB representation of line geometry
      */
-    void fromWkbPoints( QgsWkbTypes::Type type, const QgsConstWkbPtr &wkb )
+    void fromWkbPoints( Qgis::WkbType type, const QgsConstWkbPtr &wkb )
     {
       mWkbType = type;
       importVerticesFromWkb( wkb );

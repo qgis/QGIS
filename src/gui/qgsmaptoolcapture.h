@@ -429,7 +429,7 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     QgsPointXY mTracingStartPoint;
 
     //! Used to store the state of digitizing type (linear or circular)
-    QgsWkbTypes::Type mLineDigitizingType = QgsWkbTypes::LineString;
+    Qgis::WkbType mLineDigitizingType = Qgis::WkbType::LineString;
 
     Qgis::CaptureTechnique mCurrentCaptureTechnique = Qgis::CaptureTechnique::StraightSegments;
 

@@ -26,7 +26,7 @@ email                : marco.hugentobler at sourcepole dot com
 
 QgsMultiPoint::QgsMultiPoint()
 {
-  mWkbType = QgsWkbTypes::MultiPoint;
+  mWkbType = Qgis::WkbType::MultiPoint;
 }
 
 QgsPoint *QgsMultiPoint::pointN( int index )
@@ -79,7 +79,7 @@ bool QgsMultiPoint::fromWkt( const QString &wkt )
 void QgsMultiPoint::clear()
 {
   QgsGeometryCollection::clear();
-  mWkbType = QgsWkbTypes::MultiPoint;
+  mWkbType = Qgis::WkbType::MultiPoint;
 }
 
 QDomElement QgsMultiPoint::asGml2( QDomDocument &doc, int precision, const QString &ns, const AxisOrder axisOrder ) const
@@ -155,7 +155,7 @@ bool QgsMultiPoint::addGeometry( QgsAbstractGeometry *g )
   }
   if ( mGeometries.empty() )
   {
-    setZMTypeFromSubGeometry( g, QgsWkbTypes::MultiPoint );
+    setZMTypeFromSubGeometry( g, Qgis::WkbType::MultiPoint );
   }
   if ( is3D() && !g->is3D() )
     g->addZValue();
@@ -171,7 +171,7 @@ bool QgsMultiPoint::addGeometry( QgsAbstractGeometry *g )
 
 bool QgsMultiPoint::insertGeometry( QgsAbstractGeometry *g, int index )
 {
-  if ( !g || QgsWkbTypes::flatType( g->wkbType() ) != QgsWkbTypes::Point )
+  if ( !g || QgsWkbTypes::flatType( g->wkbType() ) != Qgis::WkbType::Point )
   {
     delete g;
     return false;

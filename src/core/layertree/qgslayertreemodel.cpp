@@ -628,7 +628,7 @@ void QgsLayerTreeModel::setLegendFilter( const QgsMapSettings *settings, bool us
         }
       }
     }
-    bool polygonValid = !polygon.isNull() && polygon.type() == QgsWkbTypes::PolygonGeometry;
+    bool polygonValid = !polygon.isNull() && polygon.type() == Qgis::GeometryType::Polygon;
     if ( useExpressions && !useExtent && !polygonValid ) // only expressions
     {
       mLegendFilterHitTest.reset( new QgsMapHitTest( *mLegendFilterMapSettings, exprs ) );

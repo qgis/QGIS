@@ -237,7 +237,7 @@ void QgsLineSymbol::renderPolyline( const QPolygonF &points, const QgsFeature *f
   //save old painter
   QPainter *renderPainter = context.painter();
   QgsSymbolRenderContext symbolContext( context, Qgis::RenderUnit::Unknown, opacity, selected, mRenderHints, f );
-  symbolContext.setOriginalGeometryType( QgsWkbTypes::LineGeometry );
+  symbolContext.setOriginalGeometryType( Qgis::GeometryType::Line );
   symbolContext.setGeometryPartCount( symbolRenderContext()->geometryPartCount() );
   symbolContext.setGeometryPartNum( symbolRenderContext()->geometryPartNum() );
 
@@ -252,7 +252,7 @@ void QgsLineSymbol::renderPolyline( const QPolygonF &points, const QgsFeature *f
         renderPolylineUsingLayer( lineLayer, points, symbolContext );
       }
       else
-        renderUsingLayer( symbolLayer, symbolContext, QgsWkbTypes::LineGeometry, &points );
+        renderUsingLayer( symbolLayer, symbolContext, Qgis::GeometryType::Line, &points );
     }
     return;
   }
@@ -273,7 +273,7 @@ void QgsLineSymbol::renderPolyline( const QPolygonF &points, const QgsFeature *f
     }
     else
     {
-      renderUsingLayer( symbolLayer, symbolContext, QgsWkbTypes::LineGeometry, &points );
+      renderUsingLayer( symbolLayer, symbolContext, Qgis::GeometryType::Line, &points );
     }
   }
 

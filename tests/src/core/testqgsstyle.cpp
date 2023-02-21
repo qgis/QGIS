@@ -24,13 +24,10 @@
 //qgis includes...
 #include "qgsmultirenderchecker.h"
 #include <qgsapplication.h>
-#include "qgsconfig.h"
 #include "qgslogger.h"
 #include "qgscolorramp.h"
 #include "qgscptcityarchive.h"
 #include "qgsvectorlayer.h"
-#include "qgslinesymbollayer.h"
-#include "qgsfillsymbollayer.h"
 #include "qgssinglesymbolrenderer.h"
 #include "qgsmarkersymbollayer.h"
 #include "qgsrulebasedrenderer.h"
@@ -49,7 +46,6 @@
 #include "qgstextannotation.h"
 #include "qgslayoutitemlegend.h"
 #include "qgslayertreelayer.h"
-#include "qgslayertreeutils.h"
 #include "qgsmaplayerlegend.h"
 #include "qgsabstract3dsymbol.h"
 #include "qgs3dsymbolregistry.h"
@@ -130,7 +126,7 @@ class Dummy3DSymbol : public QgsAbstract3DSymbol
     QgsAbstract3DSymbol *clone() const override { Dummy3DSymbol *res = new Dummy3DSymbol(); res->id = id; return res; }
     void readXml( const QDomElement &elem, const QgsReadWriteContext & ) override { id = elem.attribute( QStringLiteral( "id" ) ); }
     void writeXml( QDomElement &elem, const QgsReadWriteContext & ) const override { elem.setAttribute( QStringLiteral( "id" ), id ); }
-    QList<QgsWkbTypes::GeometryType> compatibleGeometryTypes() const override { return QList< QgsWkbTypes::GeometryType >() << QgsWkbTypes::PointGeometry << QgsWkbTypes::LineGeometry; }
+    QList<Qgis::GeometryType> compatibleGeometryTypes() const override { return QList< Qgis::GeometryType >() << Qgis::GeometryType::Point << Qgis::GeometryType::Line; }
 
     QString id;
 
@@ -485,7 +481,7 @@ void TestStyle::testCreate3dSymbol()
   QVERIFY( mStyle->symbol3DNames().contains( QStringLiteral( "test_settings" ) ) );
   QCOMPARE( mStyle->symbol3DCount(), 1 );
   QVERIFY( mStyle->symbol3DCompatibleGeometryTypes( QStringLiteral( "blah" ) ).isEmpty() );
-  QCOMPARE( mStyle->symbol3DCompatibleGeometryTypes( QStringLiteral( "test_settings" ) ), QList< QgsWkbTypes::GeometryType >() << QgsWkbTypes::PointGeometry << QgsWkbTypes::LineGeometry );
+  QCOMPARE( mStyle->symbol3DCompatibleGeometryTypes( QStringLiteral( "test_settings" ) ), QList< Qgis::GeometryType >() << Qgis::GeometryType::Point << Qgis::GeometryType::Line );
   std::unique_ptr< Dummy3DSymbol > retrieved( dynamic_cast< Dummy3DSymbol * >( mStyle->symbol3D( QStringLiteral( "test_settings" ) ) ) );
   QCOMPARE( retrieved->id, QStringLiteral( "xxx" ) );
   symbol.id = QStringLiteral( "yyy" );
@@ -1522,9 +1518,9 @@ void TestStyle::testVisitor()
   QgsVectorLayer *vl2 = new QgsVectorLayer( QStringLiteral( "Point?crs=epsg:4326&field=pk:int&field=col1:string" ), QStringLiteral( "vl2" ), QStringLiteral( "memory" ) );
   QVERIFY( vl2->isValid() );
   p.addMapLayer( vl2 );
-  QgsSymbol *s1 = QgsSymbol::defaultSymbol( QgsWkbTypes::PointGeometry );
+  QgsSymbol *s1 = QgsSymbol::defaultSymbol( Qgis::GeometryType::Point );
   s1->setColor( QColor( 0, 255, 0 ) );
-  QgsSymbol *s2 = QgsSymbol::defaultSymbol( QgsWkbTypes::PointGeometry );
+  QgsSymbol *s2 = QgsSymbol::defaultSymbol( Qgis::GeometryType::Point );
   s2->setColor( QColor( 0, 255, 255 ) );
   QgsRuleBasedRenderer::Rule *rootRule = new QgsRuleBasedRenderer::Rule( nullptr );
   QgsRuleBasedRenderer::Rule *rule2 = new QgsRuleBasedRenderer::Rule( s1, 0, 0, QStringLiteral( "fld >= 5 and fld <= 20" ) );
@@ -1656,10 +1652,10 @@ void TestStyle::testVisitor()
 
   // with annotations
   QgsTextAnnotation *annotation = new QgsTextAnnotation();
-  QgsSymbol *a1 = QgsSymbol::defaultSymbol( QgsWkbTypes::PointGeometry );
+  QgsSymbol *a1 = QgsSymbol::defaultSymbol( Qgis::GeometryType::Point );
   a1->setColor( QColor( 0, 200, 0 ) );
   annotation->setMarkerSymbol( static_cast< QgsMarkerSymbol * >( a1 ) );
-  QgsSymbol *a2 = QgsSymbol::defaultSymbol( QgsWkbTypes::PolygonGeometry );
+  QgsSymbol *a2 = QgsSymbol::defaultSymbol( Qgis::GeometryType::Polygon );
   a2->setColor( QColor( 200, 200, 0 ) );
   annotation->setFillSymbol( static_cast< QgsFillSymbol * >( a2 ) );
   p.annotationManager()->addAnnotation( annotation );

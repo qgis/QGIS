@@ -193,7 +193,7 @@ void QgsMapToolModifyAnnotation::cadCanvasMoveEvent( QgsMapMouseEvent *event )
         if ( !mHoveredNodeRubberBand )
           createHoveredNodeBand();
 
-        mHoveredNodeRubberBand->reset( QgsWkbTypes::PointGeometry );
+        mHoveredNodeRubberBand->reset( Qgis::GeometryType::Point );
         mHoveredNodeRubberBand->addPoint( hoveredNode.point() );
         mHoveredNodeRubberBand->show();
 
@@ -607,7 +607,7 @@ void QgsMapToolModifyAnnotation::setHoveredItem( const QgsRenderedAnnotationItem
 
   mHoverRubberBand->show();
 
-  mHoverRubberBand->reset( QgsWkbTypes::LineGeometry );
+  mHoverRubberBand->reset( Qgis::GeometryType::Line );
   mHoverRubberBand->addPoint( QgsPointXY( itemMapBounds.xMinimum(), itemMapBounds.yMinimum() ) );
   mHoverRubberBand->addPoint( QgsPointXY( itemMapBounds.xMaximum(), itemMapBounds.yMinimum() ) );
   mHoverRubberBand->addPoint( QgsPointXY( itemMapBounds.xMaximum(), itemMapBounds.yMaximum() ) );
@@ -624,7 +624,7 @@ void QgsMapToolModifyAnnotation::setHoveredItem( const QgsRenderedAnnotationItem
   const double scaleFactor = canvas()->fontMetrics().xHeight() * .2;
 
   const QList< QgsAnnotationItemNode > itemNodes = annotationItem->nodes();
-  QgsRubberBand *vertexNodeBand = new QgsRubberBand( mCanvas, QgsWkbTypes::PointGeometry );
+  QgsRubberBand *vertexNodeBand = new QgsRubberBand( mCanvas, Qgis::GeometryType::Point );
 
   vertexNodeBand->setIcon( QgsRubberBand::ICON_BOX );
   vertexNodeBand->setWidth( scaleFactor );
@@ -790,7 +790,7 @@ void QgsMapToolModifyAnnotation::createHoverBand()
 {
   const double scaleFactor = canvas()->fontMetrics().xHeight() * .2;
 
-  mHoverRubberBand.reset( new QgsRubberBand( mCanvas, QgsWkbTypes::LineGeometry ) );
+  mHoverRubberBand.reset( new QgsRubberBand( mCanvas, Qgis::GeometryType::Line ) );
   mHoverRubberBand->setWidth( scaleFactor );
   mHoverRubberBand->setSecondaryStrokeColor( QColor( 255, 255, 255, 100 ) );
   mHoverRubberBand->setColor( QColor( 100, 100, 100, 155 ) );
@@ -800,7 +800,7 @@ void QgsMapToolModifyAnnotation::createHoveredNodeBand()
 {
   const double scaleFactor = canvas()->fontMetrics().xHeight() * .2;
 
-  mHoveredNodeRubberBand.reset( new QgsRubberBand( mCanvas, QgsWkbTypes::PointGeometry ) );
+  mHoveredNodeRubberBand.reset( new QgsRubberBand( mCanvas, Qgis::GeometryType::Point ) );
   mHoveredNodeRubberBand->setIcon( QgsRubberBand::ICON_FULL_BOX );
   mHoveredNodeRubberBand->setWidth( scaleFactor );
   mHoveredNodeRubberBand->setIconSize( scaleFactor * 5 );
@@ -811,7 +811,7 @@ void QgsMapToolModifyAnnotation::createSelectedItemBand()
 {
   const double scaleFactor = canvas()->fontMetrics().xHeight() * .2;
 
-  mSelectedRubberBand.reset( new QgsRubberBand( mCanvas, QgsWkbTypes::LineGeometry ) );
+  mSelectedRubberBand.reset( new QgsRubberBand( mCanvas, Qgis::GeometryType::Line ) );
   mSelectedRubberBand->setWidth( scaleFactor );
   mSelectedRubberBand->setSecondaryStrokeColor( QColor( 255, 255, 255, 100 ) );
   mSelectedRubberBand->setColor( QColor( 50, 50, 50, 200 ) );

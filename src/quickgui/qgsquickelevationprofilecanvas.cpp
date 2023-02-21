@@ -480,7 +480,7 @@ void QgsQuickElevationProfileCanvas::setProfileCurve( QgsGeometry curve )
   if ( mProfileCurve.equals( curve ) )
     return;
 
-  mProfileCurve = curve.type() == QgsWkbTypes::LineGeometry ? curve : QgsGeometry();
+  mProfileCurve = curve.type() == Qgis::GeometryType::Line ? curve : QgsGeometry();
 
   emit profileCurveChanged();
 }

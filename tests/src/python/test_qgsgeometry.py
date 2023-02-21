@@ -3629,7 +3629,6 @@ class TestQgsGeometry(unittest.TestCase):
         self.assertEqual(QgsWkbTypes.displayString(QgsWkbTypes.MultiPoint25D), 'MultiPoint25D')
         self.assertEqual(QgsWkbTypes.displayString(QgsWkbTypes.MultiLineString25D), 'MultiLineString25D')
         self.assertEqual(QgsWkbTypes.displayString(QgsWkbTypes.MultiPolygon25D), 'MultiPolygon25D')
-        self.assertEqual(QgsWkbTypes.displayString(9999999), '')
 
         # test parseType method
         self.assertEqual(QgsWkbTypes.parseType('point( 1 2 )'), QgsWkbTypes.Point)
@@ -4601,7 +4600,6 @@ class TestQgsGeometry(unittest.TestCase):
         self.assertEqual(QgsWkbTypes.geometryDisplayString(QgsWkbTypes.PolygonGeometry), 'Polygon')
         self.assertEqual(QgsWkbTypes.geometryDisplayString(QgsWkbTypes.UnknownGeometry), 'Unknown geometry')
         self.assertEqual(QgsWkbTypes.geometryDisplayString(QgsWkbTypes.NullGeometry), 'No geometry')
-        self.assertEqual(QgsWkbTypes.geometryDisplayString(999999), 'Invalid type')
 
     def testDeleteVertexCircularString(self):
 

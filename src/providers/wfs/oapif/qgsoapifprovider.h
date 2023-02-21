@@ -49,7 +49,7 @@ class QgsOapifProvider final: public QgsVectorDataProvider
 
     QgsFeatureIterator getFeatures( const QgsFeatureRequest &request = QgsFeatureRequest() ) const override;
 
-    QgsWkbTypes::Type wkbType() const override;
+    Qgis::WkbType wkbType() const override;
     long long featureCount() const override;
 
     QgsFields fields() const override;
@@ -144,7 +144,7 @@ class QgsOapifSharedData final: public QObject, public QgsBackgroundCachedShared
 
     QString computedExpression( const QgsExpression &expression ) const override;
 
-    bool hasGeometry() const override { return mWKBType != QgsWkbTypes::Unknown; }
+    bool hasGeometry() const override { return mWKBType != Qgis::WkbType::Unknown; }
 
     std::unique_ptr<QgsFeatureDownloaderImpl> newFeatureDownloaderImpl( QgsFeatureDownloader *, bool requestFromMainThread ) override;
 
@@ -169,7 +169,7 @@ class QgsOapifSharedData final: public QObject, public QgsBackgroundCachedShared
     QgsWFSDataSourceURI mURI;
 
     //! Geometry type of the features in this layer
-    QgsWkbTypes::Type mWKBType = QgsWkbTypes::Unknown;
+    Qgis::WkbType mWKBType = Qgis::WkbType::Unknown;
 
     //! Page size. 0 = disabled
     long long mPageSize = 0;

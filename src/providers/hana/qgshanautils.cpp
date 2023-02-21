@@ -354,50 +354,50 @@ const char16_t *QgsHanaUtils::toUtf16( const QString &sql )
   return reinterpret_cast<const char16_t *>( sql.utf16() );
 }
 
-bool QgsHanaUtils::isGeometryTypeSupported( QgsWkbTypes::Type wkbType )
+bool QgsHanaUtils::isGeometryTypeSupported( Qgis::WkbType wkbType )
 {
   switch ( QgsWkbTypes::flatType( wkbType ) )
   {
-    case QgsWkbTypes::Point:
-    case QgsWkbTypes::LineString:
-    case QgsWkbTypes::Polygon:
-    case QgsWkbTypes::MultiPoint:
-    case QgsWkbTypes::MultiLineString:
-    case QgsWkbTypes::MultiPolygon:
-    case QgsWkbTypes::CircularString:
-    case QgsWkbTypes::GeometryCollection:
+    case Qgis::WkbType::Point:
+    case Qgis::WkbType::LineString:
+    case Qgis::WkbType::Polygon:
+    case Qgis::WkbType::MultiPoint:
+    case Qgis::WkbType::MultiLineString:
+    case Qgis::WkbType::MultiPolygon:
+    case Qgis::WkbType::CircularString:
+    case Qgis::WkbType::GeometryCollection:
       return true;
     default:
       return false;
   }
 }
 
-QgsWkbTypes::Type QgsHanaUtils::toWkbType( const String &type, const Int &hasZ, const Int &hasM )
+Qgis::WkbType QgsHanaUtils::toWkbType( const NS_ODBC::String &type, const NS_ODBC::Int &hasZ, const NS_ODBC::Int &hasM )
 {
   if ( type.isNull() )
-    return QgsWkbTypes::Unknown;
+    return Qgis::WkbType::Unknown;
 
   const bool hasZValue = hasZ.isNull() ? false : *hasZ == 1;
   const bool hasMValue = hasM.isNull() ? false : *hasM == 1;
   const QString hanaType( type->c_str() );
 
   if ( hanaType == QLatin1String( "ST_POINT" ) )
-    return QgsWkbTypes::zmType( QgsWkbTypes::Point, hasZValue, hasMValue );
+    return QgsWkbTypes::zmType( Qgis::WkbType::Point, hasZValue, hasMValue );
   else if ( hanaType == QLatin1String( "ST_MULTIPOINT" ) )
-    return QgsWkbTypes::zmType( QgsWkbTypes::MultiPoint, hasZValue, hasMValue );
+    return QgsWkbTypes::zmType( Qgis::WkbType::MultiPoint, hasZValue, hasMValue );
   else if ( hanaType == QLatin1String( "ST_LINESTRING" ) )
-    return QgsWkbTypes::zmType( QgsWkbTypes::LineString, hasZValue, hasMValue );
+    return QgsWkbTypes::zmType( Qgis::WkbType::LineString, hasZValue, hasMValue );
   else if ( hanaType == QLatin1String( "ST_MULTILINESTRING" ) )
-    return QgsWkbTypes::zmType( QgsWkbTypes::MultiLineString, hasZValue, hasMValue );
+    return QgsWkbTypes::zmType( Qgis::WkbType::MultiLineString, hasZValue, hasMValue );
   else if ( hanaType == QLatin1String( "ST_POLYGON" ) )
-    return QgsWkbTypes::zmType( QgsWkbTypes::Polygon, hasZValue, hasMValue );
+    return QgsWkbTypes::zmType( Qgis::WkbType::Polygon, hasZValue, hasMValue );
   else if ( hanaType == QLatin1String( "ST_MULTIPOLYGON" ) )
-    return QgsWkbTypes::zmType( QgsWkbTypes::MultiPolygon, hasZValue, hasMValue );
+    return QgsWkbTypes::zmType( Qgis::WkbType::MultiPolygon, hasZValue, hasMValue );
   else if ( hanaType == QLatin1String( "ST_GEOMETRYCOLLECTION" ) )
-    return QgsWkbTypes::zmType( QgsWkbTypes::GeometryCollection, hasZValue, hasMValue );
+    return QgsWkbTypes::zmType( Qgis::WkbType::GeometryCollection, hasZValue, hasMValue );
   else if ( hanaType == QLatin1String( "ST_CIRCULARSTRING" ) )
-    return QgsWkbTypes::zmType( QgsWkbTypes::CircularString, hasZValue, hasMValue );
-  return QgsWkbTypes::Type::Unknown;
+    return QgsWkbTypes::zmType( Qgis::WkbType::CircularString, hasZValue, hasMValue );
+  return Qgis::WkbType::Unknown;
 }
 
 QVersionNumber QgsHanaUtils::toHANAVersion( const QString &dbVersion )

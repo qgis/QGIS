@@ -22,10 +22,8 @@
 #include "qgsrubberband.h"
 #include "qgsvectorlayer.h"
 #include "qgsmapmouseevent.h"
-
 #include "qgisapp.h"
 #include "qgsmessagebar.h"
-#include "qgsapplication.h"
 
 QgsMapToolRotateLabel::QgsMapToolRotateLabel( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDock )
   : QgsMapToolLabel( canvas, cadDock )
@@ -335,7 +333,7 @@ void QgsMapToolRotateLabel::createRotationPreviewBox()
   if ( boxPoints.empty() )
     return;
 
-  mRotationPreviewBox.reset( new QgsRubberBand( mCanvas, QgsWkbTypes::LineGeometry ) );
+  mRotationPreviewBox.reset( new QgsRubberBand( mCanvas, Qgis::GeometryType::Line ) );
   mRotationPreviewBox->setColor( QColor( 0, 0, 255, 65 ) );
   mRotationPreviewBox->setWidth( 3 );
   setRotationPreviewBox( mCurrentRotation - mStartRotation );

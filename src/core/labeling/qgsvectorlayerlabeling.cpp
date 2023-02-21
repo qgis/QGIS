@@ -54,19 +54,19 @@ QgsPalLayerSettings QgsAbstractVectorLayerLabeling::defaultSettingsForLayer( con
 
   switch ( layer->geometryType() )
   {
-    case QgsWkbTypes::PointGeometry:
+    case Qgis::GeometryType::Point:
       settings.placement = Qgis::LabelPlacement::OrderedPositionsAroundPoint;
       settings.offsetType = Qgis::LabelOffsetType::FromSymbolBounds;
       break;
-    case QgsWkbTypes::LineGeometry:
+    case Qgis::GeometryType::Line:
       settings.placement = Qgis::LabelPlacement::Line;
       break;
-    case QgsWkbTypes::PolygonGeometry:
+    case Qgis::GeometryType::Polygon:
       settings.placement = Qgis::LabelPlacement::AroundPoint;
       break;
 
-    case QgsWkbTypes::UnknownGeometry:
-    case QgsWkbTypes::NullGeometry:
+    case Qgis::GeometryType::Unknown:
+    case Qgis::GeometryType::Null:
       break;
   }
   return settings;

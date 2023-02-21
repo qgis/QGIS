@@ -1345,7 +1345,7 @@ QgsFields QgsVectorLayerSelectedFeatureSource::fields() const
   return mSource.fields();
 }
 
-QgsWkbTypes::Type QgsVectorLayerSelectedFeatureSource::wkbType() const
+Qgis::WkbType QgsVectorLayerSelectedFeatureSource::wkbType() const
 {
   return mWkbType;
 }

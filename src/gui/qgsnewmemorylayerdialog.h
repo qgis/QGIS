@@ -50,7 +50,7 @@ class GUI_EXPORT QgsNewMemoryLayerDialog: public QDialog, private Ui::QgsNewMemo
     QgsNewMemoryLayerDialog( QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
 
     //! Returns the selected geometry type
-    QgsWkbTypes::Type selectedType() const;
+    Qgis::WkbType selectedType() const;
 
     /**
      * Sets the \a crs value for the new layer in the dialog.

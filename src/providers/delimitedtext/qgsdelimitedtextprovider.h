@@ -90,7 +90,7 @@ class QgsDelimitedTextProvider final: public QgsVectorDataProvider
     QgsAbstractFeatureSource *featureSource() const override;
     QString storageType() const override;
     QgsFeatureIterator getFeatures( const QgsFeatureRequest &request ) const override;
-    QgsWkbTypes::Type wkbType() const override;
+    Qgis::WkbType wkbType() const override;
     long long featureCount() const override;
     QgsFields fields() const override;
     QgsVectorDataProvider::Capabilities capabilities() const override;
@@ -233,8 +233,8 @@ class QgsDelimitedTextProvider final: public QgsVectorDataProvider
     // Coordinate reference system
     QgsCoordinateReferenceSystem mCrs;
 
-    QgsWkbTypes::Type mWkbType = QgsWkbTypes::NoGeometry;
-    QgsWkbTypes::GeometryType mGeometryType = QgsWkbTypes::UnknownGeometry;
+    Qgis::WkbType mWkbType = Qgis::WkbType::NoGeometry;
+    Qgis::GeometryType mGeometryType = Qgis::GeometryType::Unknown;
 
     // Spatial index
     bool mBuildSpatialIndex = false;

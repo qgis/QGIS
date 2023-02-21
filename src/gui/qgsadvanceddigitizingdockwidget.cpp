@@ -365,7 +365,7 @@ void QgsAdvancedDigitizingDockWidget::switchZM( )
       case Qgis::LayerType::Vector:
       {
         QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
-        const QgsWkbTypes::Type type = vlayer->wkbType();
+        const Qgis::WkbType type = vlayer->wkbType();
         enableZ = QgsWkbTypes::hasZ( type );
         enableM = QgsWkbTypes::hasM( type );
         break;

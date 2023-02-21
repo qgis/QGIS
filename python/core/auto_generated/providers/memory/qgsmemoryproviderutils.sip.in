@@ -25,7 +25,7 @@ Utility functions for use with the memory vector data provider.
 
     static QgsVectorLayer *createMemoryLayer( const QString &name,
         const QgsFields &fields,
-        QgsWkbTypes::Type geometryType = QgsWkbTypes::NoGeometry,
+        Qgis::WkbType geometryType = Qgis::WkbType::NoGeometry,
         const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem(),
         bool loadDefaultStyle = true ) /Factory/;
 %Docstring

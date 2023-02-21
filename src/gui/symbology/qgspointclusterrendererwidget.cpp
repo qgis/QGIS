@@ -18,12 +18,9 @@
 #include "qgspointclusterrendererwidget.h"
 #include "qgspointclusterrenderer.h"
 #include "qgsrendererregistry.h"
-#include "qgsfield.h"
 #include "qgsstyle.h"
 #include "qgssymbolselectordialog.h"
-#include "qgssymbollayerutils.h"
 #include "qgsvectorlayer.h"
-#include "qgsguiutils.h"
 #include "qgsapplication.h"
 #include "qgsmarkersymbol.h"
 
@@ -42,7 +39,7 @@ QgsPointClusterRendererWidget::QgsPointClusterRendererWidget( QgsVectorLayer *la
   }
 
   //the renderer only applies to point vector layers
-  if ( QgsWkbTypes::geometryType( layer->wkbType() ) != QgsWkbTypes::PointGeometry )
+  if ( QgsWkbTypes::geometryType( layer->wkbType() ) != Qgis::GeometryType::Point )
   {
     //setup blank dialog
     mRenderer = nullptr;

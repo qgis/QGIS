@@ -271,7 +271,7 @@ Converts a string to a Python string literal. E.g. by replacing ' with \'.
 %End
 
 
-    static void createFeatureSinkPython( QgsFeatureSink **sink /Out,TransferBack/, QString &destination /In,Out/, QgsProcessingContext &context, const QgsFields &fields, QgsWkbTypes::Type geometryType, const QgsCoordinateReferenceSystem &crs, const QVariantMap &createOptions = QVariantMap() ) throw( QgsProcessingException ) /PyName=createFeatureSink/;
+    static void createFeatureSinkPython( QgsFeatureSink **sink /Out,TransferBack/, QString &destination /In,Out/, QgsProcessingContext &context, const QgsFields &fields, Qgis::WkbType geometryType, const QgsCoordinateReferenceSystem &crs, const QVariantMap &createOptions = QVariantMap() ) throw( QgsProcessingException ) /PyName=createFeatureSink/;
 %Docstring
 Creates a feature sink ready for adding features. The ``destination`` specifies a destination
 URI for the resultant layer. It may be updated in place to reflect the actual destination
@@ -561,7 +561,7 @@ iterator, eg by restricting the returned attributes or geometry.
 
     virtual QgsFields fields() const;
 
-    virtual QgsWkbTypes::Type wkbType() const;
+    virtual Qgis::WkbType wkbType() const;
 
     virtual long long featureCount() const;
 

@@ -55,7 +55,7 @@ class GUI_EXPORT QgsLabelObstacleSettingsWidget : public QgsLabelSettingsWidgetB
      */
     QgsLabelObstacleSettings settings() const;
 
-    void setGeometryType( QgsWkbTypes::GeometryType type ) override;
+    void setGeometryType( Qgis::GeometryType type ) override;
 
     void updateDataDefinedProperties( QgsPropertyCollection &properties ) override;
 

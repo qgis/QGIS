@@ -293,7 +293,7 @@ bool QgsVirtualLayerProvider::createIt()
   resetSqlite();
   initVirtualLayerMetadata( mSqlite.get() );
 
-  const bool noGeometry = mDefinition.geometryWkbType() == QgsWkbTypes::NoGeometry;
+  const bool noGeometry = mDefinition.geometryWkbType() == Qgis::WkbType::NoGeometry;
 
   // load source layers (and populate mLayers)
   if ( !loadSourceLayers() )
@@ -533,9 +533,9 @@ bool QgsVirtualLayerProvider::setSubsetString( const QString &subset, bool updat
 }
 
 
-QgsWkbTypes::Type QgsVirtualLayerProvider::wkbType() const
+Qgis::WkbType QgsVirtualLayerProvider::wkbType() const
 {
-  return static_cast<QgsWkbTypes::Type>( mDefinition.geometryWkbType() );
+  return static_cast<Qgis::WkbType>( mDefinition.geometryWkbType() );
 }
 
 long long QgsVirtualLayerProvider::featureCount() const
@@ -558,7 +558,7 @@ QgsRectangle QgsVirtualLayerProvider::extent() const
 
 void QgsVirtualLayerProvider::updateStatistics() const
 {
-  const bool hasGeometry = mDefinition.geometryWkbType() != QgsWkbTypes::NoGeometry;
+  const bool hasGeometry = mDefinition.geometryWkbType() != Qgis::WkbType::NoGeometry;
   const QString subset = mSubset.isEmpty() ? QString() : " WHERE " + mSubset;
   const QString sql = QStringLiteral( "SELECT Count(*)%1 FROM %2%3" )
                       .arg( hasGeometry ? QStringLiteral( ",Min(MbrMinX(%1)),Min(MbrMinY(%1)),Max(MbrMaxX(%1)),Max(MbrMaxY(%1))" ).arg( quotedColumn( mDefinition.geometryField() ) ) : QString(),

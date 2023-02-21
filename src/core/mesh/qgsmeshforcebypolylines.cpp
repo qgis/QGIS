@@ -21,9 +21,8 @@
 #include "qgsmultisurface.h"
 #include "qgsmulticurve.h"
 #include "qgscurvepolygon.h"
-#include "qgslinestring.h"
 #include "qgsmeshlayerutils.h"
-
+#include "qgscurve.h"
 
 static int vertexPositionInFace( int vertexIndex, const QgsMeshFace &face )
 {
@@ -1153,7 +1152,7 @@ QgsTopologicalMesh::Changes QgsMeshEditForceByPolylines::apply( QgsMeshEditor *m
 void QgsMeshEditForceByPolylines::addLineFromGeometry( const QgsGeometry &geom )
 {
   std::vector<const QgsCurve *> curves;
-  if ( QgsWkbTypes::geometryType( geom.wkbType() ) == QgsWkbTypes::PolygonGeometry )
+  if ( QgsWkbTypes::geometryType( geom.wkbType() ) == Qgis::GeometryType::Polygon )
   {
     std::vector< const QgsCurvePolygon * > polygons;
     if ( geom.isMultipart() )

@@ -123,6 +123,116 @@ class CORE_EXPORT Qgis
     Q_ENUM( LayerType )
 
     /**
+     * The WKB type describes the number of dimensions a geometry has
+     *
+     * - Point
+     * - LineString
+     * - Polygon
+     *
+     * as well as the number of dimensions for each individual vertex
+     *
+     * - X (always)
+     * - Y (always)
+     * - Z (optional)
+     * - M (measurement value, optional)
+     *
+     * it also has values for multi types, collections, unknown geometry,
+     * null geometry, no geometry and curve support.
+     *
+     * These classes of geometry are often used for data sources to
+     * communicate what kind of geometry should be expected for a given
+     * geometry field. It is also used for tools or algorithms to decide
+     * if they should be available for a given geometry type or act in
+     * a different mode.
+     *
+     * \note Prior to 3.30 this was available as QgsWkbTypes.Type.
+     *
+     * \since QGIS 3.30
+     */
+    enum class WkbType SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsWkbTypes, Type ) : quint32
+      {
+      Unknown =  0, //!< Unknown
+      Point = 1, //!< Point
+      LineString = 2, //!< LineString
+      Polygon = 3, //!< Polygon
+      Triangle = 17, //!< Triangle
+      MultiPoint = 4, //!< MultiPoint
+      MultiLineString = 5, //!< MultiLineString
+      MultiPolygon = 6, //!< MultiPolygon
+      GeometryCollection = 7, //!< GeometryCollection
+      CircularString = 8, //!< CircularString
+      CompoundCurve = 9, //!< CompoundCurve
+      CurvePolygon = 10, //!< CurvePolygon
+      MultiCurve = 11, //!< MultiCurve
+      MultiSurface = 12, //!< MultiSurface
+      NoGeometry = 100, //!< No geometry
+      PointZ = 1001, //!< PointZ
+      LineStringZ = 1002, //!< LineStringZ
+      PolygonZ = 1003, //!< PolygonZ
+      TriangleZ = 1017, //!< TriangleZ
+      MultiPointZ = 1004, //!< MultiPointZ
+      MultiLineStringZ = 1005, //!< MultiLineStringZ
+      MultiPolygonZ = 1006, //!< MultiPolygonZ
+      GeometryCollectionZ = 1007, //!< GeometryCollectionZ
+      CircularStringZ = 1008, //!< CircularStringZ
+      CompoundCurveZ = 1009, //!< CompoundCurveZ
+      CurvePolygonZ = 1010, //!< CurvePolygonZ
+      MultiCurveZ = 1011, //!< MultiCurveZ
+      MultiSurfaceZ = 1012, //!< MultiSurfaceZ
+      PointM = 2001, //!< PointM
+      LineStringM = 2002, //!< LineStringM
+      PolygonM = 2003, //!< PolygonM
+      TriangleM = 2017, //!< TriangleM
+      MultiPointM = 2004, //!< MultiPointM
+      MultiLineStringM = 2005, //!< MultiLineStringM
+      MultiPolygonM = 2006, //!< MultiPolygonM
+      GeometryCollectionM = 2007, //!< GeometryCollectionM
+      CircularStringM = 2008, //!< CircularStringM
+      CompoundCurveM = 2009, //!< CompoundCurveM
+      CurvePolygonM = 2010, //!< CurvePolygonM
+      MultiCurveM = 2011, //!< MultiCurveM
+      MultiSurfaceM = 2012, //!< MultiSurfaceM
+      PointZM = 3001, //!< PointZM
+      LineStringZM = 3002, //!< LineStringZM
+      PolygonZM = 3003, //!< PolygonZM
+      MultiPointZM = 3004, //!< MultiPointZM
+      MultiLineStringZM = 3005, //!< MultiLineStringZM
+      MultiPolygonZM = 3006, //!< MultiPolygonZM
+      GeometryCollectionZM = 3007, //!< GeometryCollectionZM
+      CircularStringZM = 3008, //!< CircularStringZM
+      CompoundCurveZM = 3009, //!< CompoundCurveZM
+      CurvePolygonZM = 3010, //!< CurvePolygonZM
+      MultiCurveZM = 3011, //!< MultiCurveZM
+      MultiSurfaceZM = 3012, //!< MultiSurfaceZM
+      TriangleZM = 3017, //!< TriangleZM
+      Point25D = 0x80000001, //!< Point25D
+      LineString25D, //!< LineString25D
+      Polygon25D, //!< Polygon25D
+      MultiPoint25D, //!< MultiPoint25D
+      MultiLineString25D, //!< MultiLineString25D
+      MultiPolygon25D //!< MultiPolygon25D
+    };
+    Q_ENUM( WkbType )
+
+    /**
+     * The geometry types are used to group Qgis::WkbType in a
+     * coarse way.
+     *
+     * \note Prior to 3.30 this was available as QgsWkbTypes.GeometryType.
+     *
+     * \since QGIS 3.30
+     */
+    enum class GeometryType SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsWkbTypes, GeometryType ) : int
+      {
+      Point SIP_MONKEYPATCH_COMPAT_NAME( PointGeometry ), //!< Points
+      Line SIP_MONKEYPATCH_COMPAT_NAME( LineGeometry ), //!< Lines
+      Polygon SIP_MONKEYPATCH_COMPAT_NAME( PolygonGeometry ), //!< Polygons
+      Unknown SIP_MONKEYPATCH_COMPAT_NAME( UnknownGeometry ), //!< Unknown types
+      Null SIP_MONKEYPATCH_COMPAT_NAME( NullGeometry ), //!< No geometry
+    };
+    Q_ENUM( GeometryType )
+
+    /**
      * Raster data types.
      * This is modified and extended copy of GDALDataType.
      */

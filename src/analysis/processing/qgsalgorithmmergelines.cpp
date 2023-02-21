@@ -54,9 +54,9 @@ QgsProcessing::SourceType QgsMergeLinesAlgorithm::outputLayerType() const
   return QgsProcessing::TypeVectorLine;
 }
 
-QgsWkbTypes::Type QgsMergeLinesAlgorithm::outputWkbType( QgsWkbTypes::Type ) const
+Qgis::WkbType QgsMergeLinesAlgorithm::outputWkbType( Qgis::WkbType ) const
 {
-  return QgsWkbTypes::MultiLineString;
+  return Qgis::WkbType::MultiLineString;
 }
 
 QString QgsMergeLinesAlgorithm::shortHelpString() const

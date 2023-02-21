@@ -94,7 +94,7 @@ Returns the recorded points in the current track.
 These points will always be in WGS84 coordinate reference system.
 %End
 
-    QgsGeometry currentGeometry( QgsWkbTypes::Type type, QString &error /Out/ ) const;
+    QgsGeometry currentGeometry( Qgis::WkbType type, QString &error /Out/ ) const;
 %Docstring
 Returns the current logged GPS positions as a geometry of the specified ``type``.
 

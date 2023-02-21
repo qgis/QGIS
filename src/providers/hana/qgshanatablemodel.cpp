@@ -19,7 +19,6 @@
 #include "qgshanaprimarykeys.h"
 #include "qgshanatablemodel.h"
 #include "qgshanasettings.h"
-#include "qgshanautils.h"
 #include "qgslogger.h"
 
 QgsHanaTableModel::QgsHanaTableModel( QObject *parent )
@@ -71,17 +70,17 @@ bool QgsHanaTableModel::searchableColumn( int column ) const
 
 void QgsHanaTableModel::addTableEntry( const QString &connName, const QgsHanaLayerProperty &layerProperty )
 {
-  QgsWkbTypes::Type wkbType = layerProperty.type;
+  Qgis::WkbType wkbType = layerProperty.type;
   int srid = layerProperty.srid;
 
-  if ( wkbType == QgsWkbTypes::Unknown && layerProperty.geometryColName.isEmpty() )
-    wkbType = QgsWkbTypes::NoGeometry;
+  if ( wkbType == Qgis::WkbType::Unknown && layerProperty.geometryColName.isEmpty() )
+    wkbType = Qgis::WkbType::NoGeometry;
 
   bool withTipButSelectable = false;
   QString tip;
-  if ( wkbType == QgsWkbTypes::Unknown )
+  if ( wkbType == Qgis::WkbType::Unknown )
     tip = tr( "Specify a geometry type in the '%1' column" ).arg( tr( "Data Type" ) );
-  else if ( wkbType != QgsWkbTypes::NoGeometry && srid == std::numeric_limits<int>::min() )
+  else if ( wkbType != Qgis::WkbType::NoGeometry && srid == std::numeric_limits<int>::min() )
     tip = tr( "Enter a SRID into the '%1' column" ).arg( tr( "SRID" ) );
   else if ( !layerProperty.pkCols.empty() )
   {
@@ -91,17 +90,17 @@ void QgsHanaTableModel::addTableEntry( const QString &connName, const QgsHanaLay
 
   QStandardItem *schemaNameItem = new QStandardItem( layerProperty.schemaName );
   QStandardItem *typeItem = new QStandardItem( iconForWkbType( wkbType ),
-      wkbType == QgsWkbTypes::Unknown ? tr( "Select…" ) : QgsWkbTypes::displayString( wkbType ) );
-  typeItem->setData( wkbType == QgsWkbTypes::Unknown, Qt::UserRole + 1 );
-  typeItem->setData( wkbType, Qt::UserRole + 2 );
-  if ( wkbType == QgsWkbTypes::Unknown )
+      wkbType == Qgis::WkbType::Unknown ? tr( "Select…" ) : QgsWkbTypes::displayString( wkbType ) );
+  typeItem->setData( wkbType == Qgis::WkbType::Unknown, Qt::UserRole + 1 );
+  typeItem->setData( static_cast< quint32>( wkbType ), Qt::UserRole + 2 );
+  if ( wkbType == Qgis::WkbType::Unknown )
     typeItem->setFlags( typeItem->flags() | Qt::ItemIsEditable );
 
   QStandardItem *tableItem = new QStandardItem( layerProperty.tableName );
   QStandardItem *commentItem = new QStandardItem( layerProperty.tableComment );
   QStandardItem *geomItem = new QStandardItem( layerProperty.geometryColName );
-  QStandardItem *sridItem = new QStandardItem( wkbType != QgsWkbTypes::NoGeometry ? QString::number( srid ) : QString() );
-  sridItem->setEditable( wkbType != QgsWkbTypes::NoGeometry && srid < 0 );
+  QStandardItem *sridItem = new QStandardItem( wkbType != Qgis::WkbType::NoGeometry ? QString::number( srid ) : QString() );
+  sridItem->setEditable( wkbType != Qgis::WkbType::NoGeometry && srid < 0 );
   if ( sridItem->isEditable() )
   {
     sridItem->setText( tr( "Enter…" ) );
@@ -249,19 +248,19 @@ void QgsHanaTableModel::setSql( const QModelIndex &index, const QString &sql )
   }
 }
 
-QIcon QgsHanaTableModel::iconForWkbType( QgsWkbTypes::Type type )
+QIcon QgsHanaTableModel::iconForWkbType( Qgis::WkbType type )
 {
   switch ( QgsWkbTypes::geometryType( type ) )
   {
-    case QgsWkbTypes::PointGeometry:
+    case Qgis::GeometryType::Point:
       return QgsApplication::getThemeIcon( QStringLiteral( "/mIconPointLayer.svg" ) );
-    case QgsWkbTypes::LineGeometry:
+    case Qgis::GeometryType::Line:
       return QgsApplication::getThemeIcon( QStringLiteral( "/mIconLineLayer.svg" ) );
-    case QgsWkbTypes::PolygonGeometry:
+    case Qgis::GeometryType::Polygon:
       return QgsApplication::getThemeIcon( QStringLiteral( "/mIconPolygonLayer.svg" ) );
-    case QgsWkbTypes::NullGeometry:
+    case Qgis::GeometryType::Null:
       return QgsApplication::getThemeIcon( QStringLiteral( "/mIconTableLayer.svg" ) );
-    case QgsWkbTypes::UnknownGeometry:
+    case Qgis::GeometryType::Unknown:
       return QgsApplication::getThemeIcon( QStringLiteral( "/mIconLayer.png" ) );
   }
   return QgsApplication::getThemeIcon( QStringLiteral( "/mIconLayer.png" ) );
@@ -274,14 +273,14 @@ bool QgsHanaTableModel::setData( const QModelIndex &idx, const QVariant &value, 
 
   if ( idx.column() == DbtmGeomType || idx.column() == DbtmSrid || idx.column() == DbtmPkCol )
   {
-    QgsWkbTypes::Type wkbType = static_cast<QgsWkbTypes::Type>( idx.sibling( idx.row(), DbtmGeomType ).data( Qt::UserRole + 2 ).toInt() );
+    Qgis::WkbType wkbType = static_cast<Qgis::WkbType>( idx.sibling( idx.row(), DbtmGeomType ).data( Qt::UserRole + 2 ).toInt() );
 
     QString tip;
-    if ( wkbType == QgsWkbTypes::Unknown )
+    if ( wkbType == Qgis::WkbType::Unknown )
     {
       tip = tr( "Specify a geometry type in the '%1' column" ).arg( tr( "Data Type" ) );
     }
-    else if ( wkbType != QgsWkbTypes::NoGeometry )
+    else if ( wkbType != Qgis::WkbType::NoGeometry )
     {
       bool ok;
       int srid = idx.sibling( idx.row(), DbtmSrid ).data().toInt( &ok );
@@ -336,8 +335,8 @@ QString QgsHanaTableModel::layerURI( const QModelIndex &index, const QString &co
   if ( !index.isValid() )
     return QString();
 
-  QgsWkbTypes::Type wkbType = static_cast<QgsWkbTypes::Type>( itemFromIndex( index.sibling( index.row(), DbtmGeomType ) )->data( Qt::UserRole + 2 ).toInt() );
-  if ( wkbType == QgsWkbTypes::Unknown )
+  Qgis::WkbType wkbType = static_cast<Qgis::WkbType>( itemFromIndex( index.sibling( index.row(), DbtmGeomType ) )->data( Qt::UserRole + 2 ).toInt() );
+  if ( wkbType == Qgis::WkbType::Unknown )
     // no geometry type selected
     return QString();
 
@@ -361,7 +360,7 @@ QString QgsHanaTableModel::layerURI( const QModelIndex &index, const QString &co
 
   QString geomColumnName;
   QString srid;
-  if ( wkbType != QgsWkbTypes::NoGeometry )
+  if ( wkbType != Qgis::WkbType::NoGeometry )
   {
     geomColumnName = index.sibling( index.row(), DbtmGeomCol ).data( Qt::DisplayRole ).toString();
 

@@ -66,7 +66,7 @@ bool QgsBatchGeocodeAlgorithm::supportInPlaceEdit( const QgsMapLayer *layer ) co
 {
   if ( const QgsVectorLayer *vl = qobject_cast< const QgsVectorLayer * >( layer ) )
   {
-    return vl->geometryType() == QgsWkbTypes::PointGeometry;
+    return vl->geometryType() == Qgis::GeometryType::Point;
   }
   return false;
 }
@@ -90,9 +90,9 @@ bool QgsBatchGeocodeAlgorithm::prepareAlgorithm( const QVariantMap &parameters, 
   return true;
 }
 
-QgsWkbTypes::Type QgsBatchGeocodeAlgorithm::outputWkbType( QgsWkbTypes::Type ) const
+Qgis::WkbType QgsBatchGeocodeAlgorithm::outputWkbType( Qgis::WkbType ) const
 {
-  return QgsWkbTypes::Point;
+  return Qgis::WkbType::Point;
 }
 
 QgsCoordinateReferenceSystem QgsBatchGeocodeAlgorithm::outputCrs( const QgsCoordinateReferenceSystem &inputCrs ) const

@@ -339,7 +339,7 @@ class CORE_EXPORT QgsProcessingAlgorithm
       QgsFields fields;
 
       //! Geometry (WKB) type
-      QgsWkbTypes::Type wkbType = QgsWkbTypes::Unknown;
+      Qgis::WkbType wkbType = Qgis::WkbType::Unknown;
 
       //! Coordinate Reference System
       QgsCoordinateReferenceSystem crs;
@@ -730,7 +730,7 @@ class CORE_EXPORT QgsProcessingAlgorithm
      * \throws QgsProcessingException
      */
     QgsFeatureSink *parameterAsSink( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context, QString &destinationIdentifier SIP_OUT,
-                                     const QgsFields &fields, QgsWkbTypes::Type geometryType = QgsWkbTypes::NoGeometry, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem(), QgsFeatureSink::SinkFlags sinkFlags = QgsFeatureSink::SinkFlags(), const QVariantMap &createOptions = QVariantMap(), const QStringList &datasourceOptions = QStringList(), const QStringList &layerOptions = QStringList() ) const SIP_THROW( QgsProcessingException ) SIP_FACTORY;
+                                     const QgsFields &fields, Qgis::WkbType geometryType = Qgis::WkbType::NoGeometry, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem(), QgsFeatureSink::SinkFlags sinkFlags = QgsFeatureSink::SinkFlags(), const QVariantMap &createOptions = QVariantMap(), const QStringList &datasourceOptions = QStringList(), const QStringList &layerOptions = QStringList() ) const SIP_THROW( QgsProcessingException ) SIP_FACTORY;
 
     /**
      * Evaluates the parameter with matching \a name to a feature source.
@@ -1237,7 +1237,7 @@ class CORE_EXPORT QgsProcessingFeatureBasedAlgorithm : public QgsProcessingAlgor
      * This is called once by the base class when creating the output sink for the algorithm (i.e. it is
      * not called once per feature processed).
      */
-    virtual QgsWkbTypes::Type outputWkbType( QgsWkbTypes::Type inputWkbType ) const;
+    virtual Qgis::WkbType outputWkbType( Qgis::WkbType inputWkbType ) const;
 
     /**
      * Maps the input source fields (\a inputFields) to corresponding

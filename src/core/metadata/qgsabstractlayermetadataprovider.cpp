@@ -56,12 +56,12 @@ void QgsLayerMetadataProviderResult::setGeographicExtent( const QgsPolygon &geog
   mGeographicExtent = geographicExtent;
 }
 
-const QgsWkbTypes::GeometryType &QgsLayerMetadataProviderResult::geometryType() const
+Qgis::GeometryType QgsLayerMetadataProviderResult::geometryType() const
 {
   return mGeometryType;
 }
 
-void QgsLayerMetadataProviderResult::setGeometryType( const QgsWkbTypes::GeometryType &geometryType )
+void QgsLayerMetadataProviderResult::setGeometryType( Qgis::GeometryType geometryType )
 {
   mGeometryType = geometryType;
 }

@@ -43,7 +43,7 @@ Returns the obstacle settings defined by the widget.
 .. seealso:: :py:func:`setSettings`
 %End
 
-    virtual void setGeometryType( QgsWkbTypes::GeometryType type );
+    virtual void setGeometryType( Qgis::GeometryType type );
 
 
     virtual void updateDataDefinedProperties( QgsPropertyCollection &properties );

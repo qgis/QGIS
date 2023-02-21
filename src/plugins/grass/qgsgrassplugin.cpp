@@ -37,7 +37,6 @@
 #include "qgsmaplayerstylemanager.h"
 #include "qgsrubberband.h"
 #include "qgsproject.h"
-#include "qgsproviderregistry.h"
 #include "qgsrendererregistry.h"
 #include "qgsvectorlayer.h"
 #include "qgssettings.h"
@@ -122,7 +121,7 @@ void QgsGrassPlugin::initGui()
   mCanvas = qGisInterface->mapCanvas();
 
   // Create region rubber band
-  mRegionBand = new QgsRubberBand( mCanvas, QgsWkbTypes::PolygonGeometry );
+  mRegionBand = new QgsRubberBand( mCanvas, Qgis::GeometryType::Polygon );
   mRegionBand->setZValue( 20 );
 
   // Create the action for tool (the icons are set later by calling setCurrentTheme)

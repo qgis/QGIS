@@ -232,17 +232,17 @@ void QgsGeometryGeneratorSymbolLayer::drawPreviewIcon( QgsSymbolRenderContext &c
       Qgis::SymbolType originalSymbolType = Qgis::SymbolType::Hybrid;
       switch ( context.originalGeometryType() )
       {
-        case QgsWkbTypes::PointGeometry:
+        case Qgis::GeometryType::Point:
           originalSymbolType = Qgis::SymbolType::Marker;
           break;
-        case QgsWkbTypes::LineGeometry:
+        case Qgis::GeometryType::Line:
           originalSymbolType = Qgis::SymbolType::Line;
           break;
-        case QgsWkbTypes::PolygonGeometry:
+        case Qgis::GeometryType::Polygon:
           originalSymbolType = Qgis::SymbolType::Fill;
           break;
-        case QgsWkbTypes::UnknownGeometry:
-        case QgsWkbTypes::NullGeometry:
+        case Qgis::GeometryType::Unknown:
+        case Qgis::GeometryType::Null:
           originalSymbolType = mSymbol->type();
           break;
       }
@@ -348,25 +348,25 @@ QgsGeometry QgsGeometryGeneratorSymbolLayer::coerceToExpectedType( const QgsGeom
   switch ( mSymbolType )
   {
     case Qgis::SymbolType::Marker:
-      if ( geometry.type() != QgsWkbTypes::PointGeometry )
+      if ( geometry.type() != Qgis::GeometryType::Point )
       {
-        QVector< QgsGeometry > geoms = geometry.coerceToType( QgsWkbTypes::MultiPoint );
+        QVector< QgsGeometry > geoms = geometry.coerceToType( Qgis::WkbType::MultiPoint );
         if ( !geoms.empty() )
           return geoms.at( 0 );
       }
       break;
     case Qgis::SymbolType::Line:
-      if ( geometry.type() != QgsWkbTypes::LineGeometry )
+      if ( geometry.type() != Qgis::GeometryType::Line )
       {
-        QVector< QgsGeometry > geoms = geometry.coerceToType( QgsWkbTypes::MultiLineString );
+        QVector< QgsGeometry > geoms = geometry.coerceToType( Qgis::WkbType::MultiLineString );
         if ( !geoms.empty() )
           return geoms.at( 0 );
       }
       break;
     case Qgis::SymbolType::Fill:
-      if ( geometry.type() != QgsWkbTypes::PolygonGeometry )
+      if ( geometry.type() != Qgis::GeometryType::Polygon )
       {
-        QVector< QgsGeometry > geoms = geometry.coerceToType( QgsWkbTypes::MultiPolygon );
+        QVector< QgsGeometry > geoms = geometry.coerceToType( Qgis::WkbType::MultiPolygon );
         if ( !geoms.empty() )
           return geoms.at( 0 );
       }
@@ -377,7 +377,7 @@ QgsGeometry QgsGeometryGeneratorSymbolLayer::coerceToExpectedType( const QgsGeom
   return geometry;
 }
 
-void QgsGeometryGeneratorSymbolLayer::render( QgsSymbolRenderContext &context, QgsWkbTypes::GeometryType geometryType, const QPolygonF *points, const QVector<QPolygonF> *rings )
+void QgsGeometryGeneratorSymbolLayer::render( QgsSymbolRenderContext &context, Qgis::GeometryType geometryType, const QPolygonF *points, const QVector<QPolygonF> *rings )
 {
   if ( mRenderingFeature && mHasRenderedFeature )
     return;
@@ -396,20 +396,20 @@ void QgsGeometryGeneratorSymbolLayer::render( QgsSymbolRenderContext &context, Q
     // step 1 - convert points and rings to geometry
     switch ( geometryType )
     {
-      case QgsWkbTypes::PointGeometry:
+      case Qgis::GeometryType::Point:
       {
         Q_ASSERT( points->size() == 1 );
         drawGeometry = QgsGeometry::fromPointXY( points->at( 0 ) );
         break;
       }
-      case QgsWkbTypes::LineGeometry:
+      case Qgis::GeometryType::Line:
       {
         Q_ASSERT( !rings );
         std::unique_ptr < QgsLineString > ring( QgsLineString::fromQPolygonF( *points ) );
         drawGeometry = QgsGeometry( std::move( ring ) );
         break;
       }
-      case QgsWkbTypes::PolygonGeometry:
+      case Qgis::GeometryType::Polygon:
       {
         std::unique_ptr < QgsLineString > exterior( QgsLineString::fromQPolygonF( *points ) );
         std::unique_ptr< QgsPolygon > polygon = std::make_unique< QgsPolygon >();
@@ -425,8 +425,8 @@ void QgsGeometryGeneratorSymbolLayer::render( QgsSymbolRenderContext &context, Q
         break;
       }
 
-      case QgsWkbTypes::UnknownGeometry:
-      case QgsWkbTypes::NullGeometry:
+      case Qgis::GeometryType::Unknown:
+      case Qgis::GeometryType::Null:
         return; // unreachable
     }
 

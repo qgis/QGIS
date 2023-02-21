@@ -199,9 +199,9 @@ QgsFeatureList QgsArrayTranslatedFeaturesAlgorithm::processFeature( const QgsFea
   return result;
 }
 
-QgsWkbTypes::Type QgsArrayTranslatedFeaturesAlgorithm::outputWkbType( QgsWkbTypes::Type inputWkbType ) const
+Qgis::WkbType QgsArrayTranslatedFeaturesAlgorithm::outputWkbType( Qgis::WkbType inputWkbType ) const
 {
-  QgsWkbTypes::Type wkb = inputWkbType;
+  Qgis::WkbType wkb = inputWkbType;
   if ( mDeltaZ != 0 )
     wkb = QgsWkbTypes::addZ( wkb );
   if ( mDeltaM != 0 )

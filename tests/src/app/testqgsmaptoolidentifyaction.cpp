@@ -830,7 +830,7 @@ void TestQgsMapToolIdentifyAction::identifyVectorTile()
   QCOMPARE( results.size(), 1 );
   QCOMPARE( results[0].mLayer, tempLayer );
   QCOMPARE( results[0].mLabel, QStringLiteral( "place" ) );
-  QCOMPARE( results[0].mFeature.geometry().wkbType(), QgsWkbTypes::Point );
+  QCOMPARE( results[0].mFeature.geometry().wkbType(), Qgis::WkbType::Point );
   QCOMPARE( results[0].mFeature.attribute( QStringLiteral( "class" ) ).toString(), QStringLiteral( "country" ) );
   QCOMPARE( results[0].mFeature.attribute( QStringLiteral( "name" ) ).toString(), QStringLiteral( "Australia" ) );
 

@@ -20,7 +20,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsiconutils.h"
 
-QIcon QgsLayerItem::iconForWkbType( QgsWkbTypes::Type type )
+QIcon QgsLayerItem::iconForWkbType( Qgis::WkbType type )
 {
   return QgsIconUtils::iconForWkbType( type );
 }
@@ -139,19 +139,19 @@ Qgis::BrowserLayerType QgsLayerItem::typeFromMapLayer( QgsMapLayer *layer )
     {
       switch ( qobject_cast< QgsVectorLayer * >( layer )->geometryType() )
       {
-        case QgsWkbTypes::PointGeometry:
+        case Qgis::GeometryType::Point:
           return Qgis::BrowserLayerType::Point;
 
-        case QgsWkbTypes::LineGeometry:
+        case Qgis::GeometryType::Line:
           return Qgis::BrowserLayerType::Line;
 
-        case QgsWkbTypes::PolygonGeometry:
+        case Qgis::GeometryType::Polygon:
           return Qgis::BrowserLayerType::Polygon;
 
-        case QgsWkbTypes::NullGeometry:
+        case Qgis::GeometryType::Null:
           return Qgis::BrowserLayerType::TableLayer;
 
-        case QgsWkbTypes::UnknownGeometry:
+        case Qgis::GeometryType::Unknown:
           return Qgis::BrowserLayerType::Vector;
       }
 
@@ -237,16 +237,16 @@ QgsMimeDataUtils::UriList QgsLayerItem::mimeUris() const
       switch ( mLayerType )
       {
         case Qgis::BrowserLayerType::Point:
-          u.wkbType = QgsWkbTypes::Point;
+          u.wkbType = Qgis::WkbType::Point;
           break;
         case Qgis::BrowserLayerType::Line:
-          u.wkbType = QgsWkbTypes::LineString;
+          u.wkbType = Qgis::WkbType::LineString;
           break;
         case Qgis::BrowserLayerType::Polygon:
-          u.wkbType = QgsWkbTypes::Polygon;
+          u.wkbType = Qgis::WkbType::Polygon;
           break;
         case Qgis::BrowserLayerType::TableLayer:
-          u.wkbType = QgsWkbTypes::NoGeometry;
+          u.wkbType = Qgis::WkbType::NoGeometry;
           break;
 
         case Qgis::BrowserLayerType::Database:

@@ -367,7 +367,7 @@ Constructor for LayerOptions.
 
       QgsCoordinateTransformContext transformContext;
 
-      QgsWkbTypes::Type fallbackWkbType;
+      Qgis::WkbType fallbackWkbType;
 
       QgsCoordinateReferenceSystem fallbackCrs;
 
@@ -890,12 +890,12 @@ Returns a list of the feature renderer generators owned by the layer.
 .. versionadded:: 3.18
 %End
 
-    QgsWkbTypes::GeometryType geometryType() const;
+    Qgis::GeometryType geometryType() const;
 %Docstring
 Returns point, line or polygon
 %End
 
-    virtual QgsWkbTypes::Type wkbType() const ${SIP_FINAL};
+    virtual Qgis::WkbType wkbType() const ${SIP_FINAL};
 
 %Docstring
 Returns the WKBType or WKBUnknown in case of error

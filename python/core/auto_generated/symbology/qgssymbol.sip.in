@@ -91,7 +91,7 @@ Returns a translated string version of the specified symbol ``type``.
 .. versionadded:: 3.20
 %End
 
-    static Qgis::SymbolType symbolTypeForGeometryType( QgsWkbTypes::GeometryType type );
+    static Qgis::SymbolType symbolTypeForGeometryType( Qgis::GeometryType type );
 %Docstring
 Returns the default symbol type required for the specified geometry ``type``.
 
@@ -112,7 +112,7 @@ Returns the symbol property definitions.
 
     virtual ~QgsSymbol();
 
-    static QgsSymbol *defaultSymbol( QgsWkbTypes::GeometryType geomType ) /Factory/;
+    static QgsSymbol *defaultSymbol( Qgis::GeometryType geomType ) /Factory/;
 %Docstring
 Returns a new default symbol for the specified geometry type.
 
@@ -748,7 +748,7 @@ Retrieve a cloned list of all layers that make up this symbol.
 Ownership is transferred to the caller.
 %End
 
-    void renderUsingLayer( QgsSymbolLayer *layer, QgsSymbolRenderContext &context, QgsWkbTypes::GeometryType geometryType = QgsWkbTypes::GeometryType::UnknownGeometry, const QPolygonF *points = 0, const QVector<QPolygonF> *rings = 0 );
+    void renderUsingLayer( QgsSymbolLayer *layer, QgsSymbolRenderContext &context, Qgis::GeometryType geometryType = Qgis::GeometryType::Unknown, const QPolygonF *points = 0, const QVector<QPolygonF> *rings = 0 );
 %Docstring
 Renders a context using a particular symbol layer without passing in a
 geometry. This is used as fallback, if the symbol being rendered is not

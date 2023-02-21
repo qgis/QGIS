@@ -18,26 +18,19 @@
 
 #include "qgsapplication.h"
 #include "qgsfields.h"
-#include "qgsfeature.h"
-#include "qgsfeatureiterator.h"
-#include "qgsgeometry.h"
 
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsvectorfilewriter.h"
-#include "qgsrenderer.h"
-#include "qgssymbollayer.h"
-#include "qgsvectordataprovider.h"
-#include "qgsvectorlayer.h"
-#include "qgslocalec.h"
-#include "qgsexception.h"
 #include "qgssettings.h"
-#include "qgsgeometryengine.h"
+#include "qgssymbol.h"
+#include "qgssymbollayer.h"
+#include "qgslocalec.h"
+#include "qgsvectorlayer.h"
 #include "qgsproviderregistry.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsreadwritelocker.h"
-#include "qgssymbol.h"
 
 #include <QFile>
 #include <QFileInfo>
@@ -79,7 +72,7 @@ QgsVectorFileWriter::QgsVectorFileWriter(
   const QString &vectorFileName,
   const QString &fileEncoding,
   const QgsFields &fields,
-  QgsWkbTypes::Type geometryType,
+  Qgis::WkbType geometryType,
   const QgsCoordinateReferenceSystem &srs,
   const QString &driverName,
   const QStringList &datasourceOptions,
@@ -105,7 +98,7 @@ QgsVectorFileWriter::QgsVectorFileWriter(
   const QString &vectorFileName,
   const QString &fileEncoding,
   const QgsFields &fields,
-  QgsWkbTypes::Type geometryType,
+  Qgis::WkbType geometryType,
   const QgsCoordinateReferenceSystem &srs,
   const QString &driverName,
   const QStringList &datasourceOptions,
@@ -133,7 +126,7 @@ QgsVectorFileWriter::QgsVectorFileWriter(
 QgsVectorFileWriter *QgsVectorFileWriter::create(
   const QString &fileName,
   const QgsFields &fields,
-  QgsWkbTypes::Type geometryType,
+  Qgis::WkbType geometryType,
   const QgsCoordinateReferenceSystem &srs,
   const QgsCoordinateTransformContext &transformContext,
   const QgsVectorFileWriter::SaveVectorOptions &options,
@@ -174,7 +167,7 @@ bool QgsVectorFileWriter::supportsFeatureStyles( const QString &driverName )
 void QgsVectorFileWriter::init( QString vectorFileName,
                                 QString fileEncoding,
                                 const QgsFields &fields,
-                                QgsWkbTypes::Type geometryType,
+                                Qgis::WkbType geometryType,
                                 QgsCoordinateReferenceSystem srs,
                                 const QString &driverName,
                                 QStringList datasourceOptions,
@@ -474,7 +467,7 @@ void QgsVectorFileWriter::init( QString vectorFileName,
         // See logic in GDAL ogr/ogrsf_frmts/gpx/ogrgpxdatasource.cpp ICreateLayer()
         switch ( QgsWkbTypes::flatType( geometryType ) )
         {
-          case QgsWkbTypes::Point:
+          case Qgis::WkbType::Point:
           {
             if ( !EQUAL( layerName.toUtf8().constData(), "track_points" ) &&
                  !EQUAL( layerName.toUtf8().constData(), "route_points" ) )
@@ -484,7 +477,7 @@ void QgsVectorFileWriter::init( QString vectorFileName,
           }
           break;
 
-          case QgsWkbTypes::LineString:
+          case Qgis::WkbType::LineString:
           {
             const char *pszForceGPXTrack
               = CSLFetchNameValue( options, "FORCE_GPX_TRACK" );
@@ -496,7 +489,7 @@ void QgsVectorFileWriter::init( QString vectorFileName,
           }
           break;
 
-          case QgsWkbTypes::MultiLineString:
+          case Qgis::WkbType::MultiLineString:
           {
             const char *pszForceGPXRoute
               = CSLFetchNameValue( options, "FORCE_GPX_ROUTE" );
@@ -909,7 +902,7 @@ void QgsVectorFileWriter::init( QString vectorFileName,
   }
 }
 
-OGRGeometryH QgsVectorFileWriter::createEmptyGeometry( QgsWkbTypes::Type wkbType )
+OGRGeometryH QgsVectorFileWriter::createEmptyGeometry( Qgis::WkbType wkbType )
 {
   return OGR_G_CreateGeometry( ogrTypeFromWkbType( wkbType ) );
 }
@@ -2512,12 +2505,12 @@ QStringList QgsVectorFileWriter::defaultLayerOptions( const QString &driverName 
   return concatenateOptions( metadata.layerOptions );
 }
 
-OGRwkbGeometryType QgsVectorFileWriter::ogrTypeFromWkbType( QgsWkbTypes::Type type )
+OGRwkbGeometryType QgsVectorFileWriter::ogrTypeFromWkbType( Qgis::WkbType type )
 {
 
   OGRwkbGeometryType ogrType = static_cast<OGRwkbGeometryType>( type );
 
-  if ( type >= QgsWkbTypes::PointZ && type <= QgsWkbTypes::GeometryCollectionZ )
+  if ( type >= Qgis::WkbType::PointZ && type <= Qgis::WkbType::GeometryCollectionZ )
   {
     ogrType = static_cast<OGRwkbGeometryType>( QgsWkbTypes::to25D( type ) );
   }
@@ -2935,7 +2928,7 @@ gdal::ogr_feature_unique_ptr QgsVectorFileWriter::createFeature( const QgsFeatur
     }
   }
 
-  if ( mWkbType != QgsWkbTypes::NoGeometry )
+  if ( mWkbType != Qgis::WkbType::NoGeometry )
   {
     if ( feature.hasGeometry() )
     {
@@ -2968,16 +2961,16 @@ gdal::ogr_feature_unique_ptr QgsVectorFileWriter::createFeature( const QgsFeatur
 
         // If requested WKB type is 25D and geometry WKB type is 3D,
         // we must force the use of 25D.
-        if ( mWkbType >= QgsWkbTypes::Point25D && mWkbType <= QgsWkbTypes::MultiPolygon25D )
+        if ( mWkbType >= Qgis::WkbType::Point25D && mWkbType <= Qgis::WkbType::MultiPolygon25D )
         {
           //ND: I suspect there's a bug here, in that this is NOT converting the geometry's WKB type,
           //so the exported WKB has a different type to what the OGRGeometry is expecting.
           //possibly this is handled already in OGR, but it should be fixed regardless by actually converting
           //geom to the correct WKB type
-          QgsWkbTypes::Type wkbType = geom.wkbType();
-          if ( wkbType >= QgsWkbTypes::PointZ && wkbType <= QgsWkbTypes::MultiPolygonZ )
+          Qgis::WkbType wkbType = geom.wkbType();
+          if ( wkbType >= Qgis::WkbType::PointZ && wkbType <= Qgis::WkbType::MultiPolygonZ )
           {
-            QgsWkbTypes::Type wkbType25d = static_cast<QgsWkbTypes::Type>( geom.wkbType() - QgsWkbTypes::PointZ + QgsWkbTypes::Point25D );
+            Qgis::WkbType wkbType25d = static_cast<Qgis::WkbType>( static_cast< quint32>( geom.wkbType() ) - static_cast< quint32>( Qgis::WkbType::PointZ ) + static_cast<quint32>( Qgis::WkbType::Point25D ) );
             mGeom2 = createEmptyGeometry( wkbType25d );
           }
         }
@@ -3130,7 +3123,7 @@ QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer *layer,
     SymbologyExport symbologyExport,
     double symbologyScale,
     const QgsRectangle *filterExtent,
-    QgsWkbTypes::Type overrideGeometryType,
+    Qgis::WkbType overrideGeometryType,
     bool forceMulti,
     bool includeZ,
     const QgsAttributeList &attributes,
@@ -3177,7 +3170,7 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::writeAsVectorFormat( QgsVe
     SymbologyExport symbologyExport,
     double symbologyScale,
     const QgsRectangle *filterExtent,
-    QgsWkbTypes::Type overrideGeometryType,
+    Qgis::WkbType overrideGeometryType,
     bool forceMulti,
     bool includeZ,
     const QgsAttributeList &attributes,
@@ -3261,7 +3254,7 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::prepareWriteAsVectorFormat
   }
 
   details.destWkbType = details.sourceWkbType;
-  if ( options.overrideGeometryType != QgsWkbTypes::Unknown )
+  if ( options.overrideGeometryType != Qgis::WkbType::Unknown )
   {
     details.destWkbType = QgsWkbTypes::flatType( options.overrideGeometryType );
     if ( QgsWkbTypes::hasZ( options.overrideGeometryType ) || options.includeZ )
@@ -3370,7 +3363,7 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::writeAsVectorFormat( Prepa
 
 QgsVectorFileWriter::WriterError QgsVectorFileWriter::writeAsVectorFormatV2( PreparedWriterDetails &details, const QString &fileName, const QgsCoordinateTransformContext &transformContext, const QgsVectorFileWriter::SaveVectorOptions &options, QString *newFilename, QString *newLayer, QString *errorMessage )
 {
-  QgsWkbTypes::Type destWkbType = details.destWkbType;
+  Qgis::WkbType destWkbType = details.destWkbType;
 
   int lastProgressReport = 0;
   long long total = details.featureCount;

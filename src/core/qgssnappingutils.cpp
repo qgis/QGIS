@@ -18,7 +18,6 @@
 #include "qgsproject.h"
 #include "qgsvectorlayer.h"
 #include "qgslogger.h"
-#include "qgsrenderer.h"
 #include "qgsrendercontext.h"
 
 QgsSnappingUtils::QgsSnappingUtils( QObject *parent, bool enableSnappingForInvisibleFeature )
@@ -60,7 +59,7 @@ void QgsSnappingUtils::clearAllLocators()
 
 QgsPointLocator *QgsSnappingUtils::locatorForLayerUsingStrategy( QgsVectorLayer *vl, const QgsPointXY &pointMap, double tolerance )
 {
-  if ( vl->geometryType() == QgsWkbTypes::NullGeometry || mStrategy == IndexNeverFull )
+  if ( vl->geometryType() == Qgis::GeometryType::Null || mStrategy == IndexNeverFull )
     return nullptr;
 
   QgsRectangle aoi( pointMap.x() - tolerance, pointMap.y() - tolerance,
@@ -127,7 +126,7 @@ static QgsPointLocator::Match _findClosestSegmentIntersection( const QgsPointXY 
 
   // get intersection points
   QList<QgsPointXY> newPoints;
-  if ( g.wkbType() == QgsWkbTypes::LineString )
+  if ( g.wkbType() == Qgis::WkbType::LineString )
   {
     const auto constAsPolyline = g.asPolyline();
     for ( const QgsPointXY &p : constAsPolyline )
@@ -136,7 +135,7 @@ static QgsPointLocator::Match _findClosestSegmentIntersection( const QgsPointXY 
         newPoints << p;
     }
   }
-  if ( g.wkbType() == QgsWkbTypes::MultiLineString )
+  if ( g.wkbType() == Qgis::WkbType::MultiLineString )
   {
     const auto constAsMultiPolyline = g.asMultiPolyline();
     for ( const QgsPolylineXY &pl : constAsMultiPolyline )
@@ -449,7 +448,7 @@ void QgsSnappingUtils::prepareIndex( const QList<LayerAndAreaOfInterest> &layers
   {
     QgsVectorLayer *vl = entry.first;
 
-    if ( vl->geometryType() == QgsWkbTypes::NullGeometry || mStrategy == IndexNeverFull )
+    if ( vl->geometryType() == Qgis::GeometryType::Null || mStrategy == IndexNeverFull )
       continue;
 
     QgsPointLocator *loc = locatorForLayer( vl );

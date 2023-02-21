@@ -21,15 +21,14 @@
 #include "qgis.h"
 #include "qgslogger.h"
 #include "qgscoordinatereferencesystem.h"
-#include "qgsproviderregistry.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorfilewriter.h"
 #include "qgssettings.h"
-#include "qgsogrprovider.h"
 #include "qgsgui.h"
 #include "qgsiconutils.h"
 #include "qgsfileutils.h"
 #include "qgsvariantutils.h"
+#include "qgsogrproviderutils.h"
 
 #include <QPushButton>
 #include <QComboBox>
@@ -59,17 +58,17 @@ QgsNewVectorLayerDialog::QgsNewVectorLayerDialog( QWidget *parent, Qt::WindowFla
   mWidth->setValidator( new QIntValidator( 1, 255, this ) );
   mPrecision->setValidator( new QIntValidator( 0, 15, this ) );
 
-  const QgsWkbTypes::Type geomTypes[] =
+  const Qgis::WkbType geomTypes[] =
   {
-    QgsWkbTypes::NoGeometry,
-    QgsWkbTypes::Point,
-    QgsWkbTypes::MultiPoint,
-    QgsWkbTypes::LineString,
-    QgsWkbTypes::Polygon,
+    Qgis::WkbType::NoGeometry,
+    Qgis::WkbType::Point,
+    Qgis::WkbType::MultiPoint,
+    Qgis::WkbType::LineString,
+    Qgis::WkbType::Polygon,
   };
 
   for ( const auto type : geomTypes )
-    mGeometryTypeBox->addItem( QgsIconUtils::iconForWkbType( type ), QgsWkbTypes::translatedDisplayString( type ), type );
+    mGeometryTypeBox->addItem( QgsIconUtils::iconForWkbType( type ), QgsWkbTypes::translatedDisplayString( type ), static_cast<quint32>( type ) );
   mGeometryTypeBox->setCurrentIndex( -1 );
 
   mOkButton = buttonBox->button( QDialogButtonBox::Ok );
@@ -179,10 +178,10 @@ void QgsNewVectorLayerDialog::mTypeBox_currentIndexChanged( int index )
   }
 }
 
-QgsWkbTypes::Type QgsNewVectorLayerDialog::selectedType() const
+Qgis::WkbType QgsNewVectorLayerDialog::selectedType() const
 {
-  QgsWkbTypes::Type wkbType = QgsWkbTypes::Unknown;
-  wkbType = static_cast<QgsWkbTypes::Type>
+  Qgis::WkbType wkbType = Qgis::WkbType::Unknown;
+  wkbType = static_cast<Qgis::WkbType>
             ( mGeometryTypeBox->currentData( Qt::UserRole ).toInt() );
 
   if ( mGeometryWithZRadioButton->isChecked() )
@@ -287,10 +286,10 @@ void QgsNewVectorLayerDialog::updateExtension()
 {
   QString fileName = filename();
   const QString fileformat = selectedFileFormat();
-  const QgsWkbTypes::Type geometrytype = selectedType();
+  const Qgis::WkbType geometrytype = selectedType();
   if ( fileformat == QLatin1String( "ESRI Shapefile" ) )
   {
-    if ( geometrytype != QgsWkbTypes::NoGeometry )
+    if ( geometrytype != Qgis::WkbType::NoGeometry )
     {
       fileName = fileName.replace( fileName.lastIndexOf( QLatin1String( ".dbf" ), -1, Qt::CaseInsensitive ), 4, QLatin1String( ".shp" ) );
       fileName = QgsFileUtils::ensureFileNameHasExtension( fileName, { QStringLiteral( "shp" ) } );
@@ -356,7 +355,7 @@ QString QgsNewVectorLayerDialog::execAndCreateLayer( QString &errorMessage, QWid
   }
 
   const QString fileformat = geomDialog.selectedFileFormat();
-  const QgsWkbTypes::Type geometrytype = geomDialog.selectedType();
+  const Qgis::WkbType geometrytype = geomDialog.selectedType();
   QString fileName = geomDialog.filename();
 
   const QString enc = geomDialog.selectedFileEncoding();
@@ -370,7 +369,7 @@ QString QgsNewVectorLayerDialog::execAndCreateLayer( QString &errorMessage, QWid
   settings.setValue( QStringLiteral( "UI/encoding" ), enc );
 
   //try to create the new layer with OGRProvider instead of QgsVectorFileWriter
-  if ( geometrytype != QgsWkbTypes::Unknown )
+  if ( geometrytype != Qgis::WkbType::Unknown )
   {
     const QgsCoordinateReferenceSystem srs = geomDialog.crs();
     const bool success = QgsOgrProviderUtils::createEmptyDataSource( fileName, fileformat, enc, geometrytype, attributes, srs, errorMessage );

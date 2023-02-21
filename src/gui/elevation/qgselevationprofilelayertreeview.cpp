@@ -70,8 +70,8 @@ QVariant QgsElevationProfileLayerTreeModel::data( const QModelIndex &index, int 
               switch ( elevationProperties->type() )
               {
                 case Qgis::VectorProfileType::IndividualFeatures:
-                  if ( ( vLayer->geometryType() == QgsWkbTypes::PointGeometry && !elevationProperties->extrusionEnabled() )
-                       || ( vLayer->geometryType() == QgsWkbTypes::LineGeometry && !elevationProperties->extrusionEnabled() )
+                  if ( ( vLayer->geometryType() == Qgis::GeometryType::Point && !elevationProperties->extrusionEnabled() )
+                       || ( vLayer->geometryType() == Qgis::GeometryType::Line && !elevationProperties->extrusionEnabled() )
                      )
                   {
                     if ( QgsMarkerSymbol *markerSymbol = elevationProperties->profileMarkerSymbol() )
@@ -80,7 +80,7 @@ QVariant QgsElevationProfileLayerTreeModel::data( const QModelIndex &index, int 
                     }
                   }
 
-                  if ( !symbol && vLayer->geometryType() == QgsWkbTypes::PolygonGeometry && elevationProperties->extrusionEnabled() )
+                  if ( !symbol && vLayer->geometryType() == Qgis::GeometryType::Polygon && elevationProperties->extrusionEnabled() )
                   {
                     if ( QgsFillSymbol *fillSymbol = elevationProperties->profileFillSymbol() )
                     {
