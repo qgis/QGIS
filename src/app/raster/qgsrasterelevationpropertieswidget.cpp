@@ -148,4 +148,3 @@ QString QgsRasterElevationPropertiesWidgetFactory::layerPropertiesPagePositionHi
 {
   return QStringLiteral( "mOptsPage_Metadata" );
 }
-
