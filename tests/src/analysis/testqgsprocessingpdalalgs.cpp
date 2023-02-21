@@ -37,6 +37,7 @@ class TestQgsProcessingPdalAlgs: public QObject
     void boundary();
     void convertFormat();
     void density();
+    void exportRasterTin();
     void fixProjection();
     void info();
     void reproject();
@@ -353,6 +354,88 @@ void TestQgsProcessingPdalAlgs::density()
   QgsSettings().setValue( QStringLiteral( "/Processing/Configuration/MAX_THREADS" ), 2 );
   args = alg->createArgumentLists( parameters, *context, &feedback );
   QCOMPARE( args, QStringList() << QStringLiteral( "density" )
+            << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath )
+            << QStringLiteral( "--output=%1" ).arg( outputFile )
+            << QStringLiteral( "--resolution=100" )
+            << QStringLiteral( "--tile-size=100" )
+            << QStringLiteral( "--tile-origin-x=1" )
+            << QStringLiteral( "--tile-origin-y=10" )
+            << QStringLiteral( "--threads=2" )
+          );
+}
+
+void TestQgsProcessingPdalAlgs::exportRasterTin()
+{
+  QgsPdalAlgorithmBase *alg = const_cast<QgsPdalAlgorithmBase *>( static_cast< const QgsPdalAlgorithmBase * >( QgsApplication::processingRegistry()->algorithmById( QStringLiteral( "pdal:exportrastertin" ) ) ) );
+
+  std::unique_ptr< QgsProcessingContext > context = std::make_unique< QgsProcessingContext >();
+  context->setProject( QgsProject::instance() );
+
+  QgsProcessingFeedback feedback;
+
+  const QString outputFile = QDir::tempPath() + "/raster.tif";
+  if ( QFile::exists( outputFile ) )
+    QFile::remove( outputFile );
+
+  QVariantMap parameters;
+  // defaults
+  parameters.insert( QStringLiteral( "INPUT" ), mPointCloudLayerPath );
+  parameters.insert( QStringLiteral( "OUTPUT" ), outputFile );
+
+  QStringList args = alg->createArgumentLists( parameters, *context, &feedback );
+  QCOMPARE( args, QStringList() << QStringLiteral( "to_raster_tin" )
+            << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath )
+            << QStringLiteral( "--output=%1" ).arg( outputFile )
+            << QStringLiteral( "--resolution=1" )
+            << QStringLiteral( "--tile-size=1000" )
+          );
+
+  // change resolution
+  parameters.insert( QStringLiteral( "RESOLUTION" ), 100 );
+  args = alg->createArgumentLists( parameters, *context, &feedback );
+  QCOMPARE( args, QStringList() << QStringLiteral( "to_raster_tin" )
+            << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath )
+            << QStringLiteral( "--output=%1" ).arg( outputFile )
+            << QStringLiteral( "--resolution=100" )
+            << QStringLiteral( "--tile-size=1000" )
+          );
+
+  // set tile size
+  parameters.insert( QStringLiteral( "TILE_SIZE" ), 100 );
+  args = alg->createArgumentLists( parameters, *context, &feedback );
+  QCOMPARE( args, QStringList() << QStringLiteral( "to_raster_tin" )
+            << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath )
+            << QStringLiteral( "--output=%1" ).arg( outputFile )
+            << QStringLiteral( "--resolution=100" )
+            << QStringLiteral( "--tile-size=100" )
+          );
+
+  // set X tile origin
+  parameters.insert( QStringLiteral( "ORIGIN_X" ), 1 );
+  QVERIFY_EXCEPTION_THROWN( alg->createArgumentLists( parameters, *context, &feedback ), QgsProcessingException );
+
+  // set Y tile origin
+  parameters.remove( QStringLiteral( "ORIGIN_X" ) );
+  parameters.insert( QStringLiteral( "ORIGIN_Y" ), 10 );
+  QVERIFY_EXCEPTION_THROWN( alg->createArgumentLists( parameters, *context, &feedback ), QgsProcessingException );
+
+  // set both X and Y tile origin
+  parameters.insert( QStringLiteral( "ORIGIN_Y" ), 10 );
+  parameters.insert( QStringLiteral( "ORIGIN_X" ), 1 );
+  args = alg->createArgumentLists( parameters, *context, &feedback );
+  QCOMPARE( args, QStringList() << QStringLiteral( "to_raster_tin" )
+            << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath )
+            << QStringLiteral( "--output=%1" ).arg( outputFile )
+            << QStringLiteral( "--resolution=100" )
+            << QStringLiteral( "--tile-size=100" )
+            << QStringLiteral( "--tile-origin-x=1" )
+            << QStringLiteral( "--tile-origin-y=10" )
+          );
+
+  // set max threads to 2, a --threads argument should be added
+  QgsSettings().setValue( QStringLiteral( "/Processing/Configuration/MAX_THREADS" ), 2 );
+  args = alg->createArgumentLists( parameters, *context, &feedback );
+  QCOMPARE( args, QStringList() << QStringLiteral( "to_raster_tin" )
             << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath )
             << QStringLiteral( "--output=%1" ).arg( outputFile )
             << QStringLiteral( "--resolution=100" )
