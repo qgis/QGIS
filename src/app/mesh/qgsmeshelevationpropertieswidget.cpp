@@ -91,12 +91,20 @@ void QgsMeshElevationPropertiesWidget::apply()
     return;
 
   QgsMeshLayerElevationProperties *props = qgis::down_cast< QgsMeshLayerElevationProperties * >( mLayer->elevationProperties() );
+
+  const bool changed3DrelatedProperties = !qgsDoubleNear( mOffsetZSpinBox->value(), props->zOffset() )
+                                          || !qgsDoubleNear( mScaleZSpinBox->value(), props->zScale() );
+
   props->setZOffset( mOffsetZSpinBox->value() );
   props->setZScale( mScaleZSpinBox->value() );
   props->setProfileLineSymbol( mLineStyleButton->clonedSymbol< QgsLineSymbol >() );
   props->setProfileFillSymbol( mFillStyleButton->clonedSymbol< QgsFillSymbol >() );
   props->setProfileSymbology( static_cast< Qgis::ProfileSurfaceSymbology >( mStyleComboBox->currentData().toInt() ) );
-  mLayer->trigger3DUpdate();
+
+  if ( changed3DrelatedProperties )
+  {
+    mLayer->trigger3DUpdate();
+  }
 }
 
 void QgsMeshElevationPropertiesWidget::onChanged()
