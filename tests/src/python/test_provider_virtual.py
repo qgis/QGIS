@@ -83,10 +83,6 @@ class TestQgsVirtualLayerProvider(unittest.TestCase, ProviderTestCase):
     def setUp(self):
         """Run before each test."""
         self.testDataDir = unitTestDataPath()
-        print("****************************************************")
-        print(("In method", self._testMethodName))
-        print("****************************************************")
-        pass
 
     def testGetFeaturesThreadSafety(self):
         # provider does not work with this test - sqlite mutex prevents
