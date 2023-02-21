@@ -141,4 +141,3 @@ QString QgsMeshElevationPropertiesWidgetFactory::layerPropertiesPagePositionHint
 {
   return QStringLiteral( "mOptsPage_Metadata" );
 }
-
