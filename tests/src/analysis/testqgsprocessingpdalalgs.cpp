@@ -34,6 +34,7 @@ class TestQgsProcessingPdalAlgs: public QObject
     void init(); // will be called before each testfunction is executed.
     void cleanup() {} // will be called after every testfunction.
 
+    void boundary();
     void convertFormat();
     void fixProjection();
     void info();
@@ -244,6 +245,37 @@ void TestQgsProcessingPdalAlgs::thin()
             << QStringLiteral( "--output=%1" ).arg( outputPointCloud )
             << QStringLiteral( "--mode=sample" )
             << QStringLiteral( "--step-sample=200" )
+            << QStringLiteral( "--threads=2" )
+          );
+}
+
+void TestQgsProcessingPdalAlgs::boundary()
+{
+  QgsPdalAlgorithmBase *alg = const_cast<QgsPdalAlgorithmBase *>( static_cast< const QgsPdalAlgorithmBase * >( QgsApplication::processingRegistry()->algorithmById( QStringLiteral( "pdal:boundary" ) ) ) );
+
+  std::unique_ptr< QgsProcessingContext > context = std::make_unique< QgsProcessingContext >();
+  context->setProject( QgsProject::instance() );
+
+  QgsProcessingFeedback feedback;
+
+  const QString outputGpkg = QDir::tempPath() + "/boundary.gpkg";
+
+  QVariantMap parameters;
+  parameters.insert( QStringLiteral( "INPUT" ), mPointCloudLayerPath );
+  parameters.insert( QStringLiteral( "OUTPUT" ), outputGpkg );
+
+  QStringList args = alg->createArgumentLists( parameters, *context, &feedback );
+  QCOMPARE( args, QStringList() << QStringLiteral( "boundary" )
+            << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath )
+            << QStringLiteral( "--output=%1" ).arg( outputGpkg )
+          );
+
+  // set max threads to 2, a --threads argument should be added
+  QgsSettings().setValue( QStringLiteral( "/Processing/Configuration/MAX_THREADS" ), 2 );
+  args = alg->createArgumentLists( parameters, *context, &feedback );
+  QCOMPARE( args, QStringList() << QStringLiteral( "boundary" )
+            << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath )
+            << QStringLiteral( "--output=%1" ).arg( outputGpkg )
             << QStringLiteral( "--threads=2" )
           );
 }
