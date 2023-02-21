@@ -19,6 +19,7 @@
 #include "qgsruntimeprofiler.h"
 #include "qgsapplication.h"
 
+#include "qgsalgorithmpdalboundary.h"
 #include "qgsalgorithmpdalconvertformat.h"
 #include "qgsalgorithmpdalfixprojection.h"
 #include "qgsalgorithmpdalinformation.h"
@@ -80,6 +81,7 @@ void QgsPdalAlgorithms::loadAlgorithms()
 {
   const QgsScopedRuntimeProfile profile( QObject::tr( "QGIS PDAL provider" ) );
 
+  addAlgorithm( new QgsPdalBoundaryAlgorithm() );
   addAlgorithm( new QgsPdalConvertFormatAlgorithm() );
   addAlgorithm( new QgsPdalFixProjectionAlgorithm() );
   addAlgorithm( new QgsPdalInformationAlgorithm() );
