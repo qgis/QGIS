@@ -417,4 +417,3 @@ QString QgsVectorElevationPropertiesWidgetFactory::layerPropertiesPagePositionHi
 {
   return QStringLiteral( "mOptsPage_Metadata" );
 }
-
