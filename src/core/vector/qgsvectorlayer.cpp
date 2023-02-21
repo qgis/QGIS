@@ -3357,7 +3357,7 @@ void QgsVectorLayer::setFieldAlias( int attIndex, const QString &aliasString )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  if ( attIndex < 0 || attIndex >= fields().count() )
+  if ( attIndex < 0 || attIndex >= fields().count() || mFields[ attIndex ].alias() == aliasString )
     return;
 
   QString name = fields().at( attIndex ).name();
