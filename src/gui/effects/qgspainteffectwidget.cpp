@@ -125,8 +125,8 @@ QgsBlurWidget::QgsBlurWidget( QWidget *parent )
   mBlurTypeCombo->addItem( tr( "Stack Blur (fast, doesn't support high dpi)" ), QgsBlurEffect::StackBlur );
   mBlurTypeCombo->addItem( tr( "Gaussian Blur (quality, supports high dpi)" ), QgsBlurEffect::GaussianBlur );
 
-  mBlurUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderPixels << QgsUnitTypes::RenderMapUnits
-                             << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
+  mBlurUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::Pixels << Qgis::RenderUnit::MapUnits
+                             << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches );
 
   initGui();
   connect( mOpacityWidget, &QgsOpacityWidget::opacityChanged, this, &QgsBlurWidget::opacityChanged );
@@ -271,10 +271,10 @@ QgsShadowEffectWidget::QgsShadowEffectWidget( QWidget *parent )
   mShadowColorBtn->setContext( QStringLiteral( "symbology" ) );
   mShadowOffsetAngleSpnBx->setClearValue( 0 );
 
-  mOffsetUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderPixels << QgsUnitTypes::RenderMapUnits
-                               << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
-  mBlurUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderPixels << QgsUnitTypes::RenderMapUnits
-                             << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
+  mOffsetUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::Pixels << Qgis::RenderUnit::MapUnits
+                               << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches );
+  mBlurUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::Pixels << Qgis::RenderUnit::MapUnits
+                             << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches );
 
   initGui();
 
@@ -452,10 +452,10 @@ QgsGlowWidget::QgsGlowWidget( QWidget *parent )
   mColorBtn->setColorDialogTitle( tr( "Select Glow Color" ) );
   mColorBtn->setContext( QStringLiteral( "symbology" ) );
 
-  mSpreadUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderPixels << QgsUnitTypes::RenderMapUnits
-                               << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
-  mBlurUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderPixels << QgsUnitTypes::RenderMapUnits
-                             << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
+  mSpreadUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::Pixels << Qgis::RenderUnit::MapUnits
+                               << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches );
+  mBlurUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::Pixels << Qgis::RenderUnit::MapUnits
+                             << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches );
 
   btnColorRamp->setShowGradientOnly( true );
 
@@ -659,8 +659,8 @@ QgsTransformWidget::QgsTransformWidget( QWidget *parent )
   connect( mSpinScaleY, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsTransformWidget::mSpinScaleY_valueChanged );
   connect( mRotationSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsTransformWidget::mRotationSpinBox_valueChanged );
 
-  mTranslateUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderPixels << QgsUnitTypes::RenderMapUnits
-                                  << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
+  mTranslateUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::Pixels << Qgis::RenderUnit::MapUnits
+                                  << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches );
   mSpinTranslateX->setClearValue( 0 );
   mSpinTranslateY->setClearValue( 0 );
   mRotationSpinBox->setClearValue( 0 );

@@ -696,7 +696,7 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
      * \see convertToMapUnits()
      * \since QGIS 3.0
      */
-    double convertToPainterUnits( double size, QgsUnitTypes::RenderUnit unit, const QgsMapUnitScale &scale = QgsMapUnitScale(), Qgis::RenderSubcomponentProperty property = Qgis::RenderSubcomponentProperty::Generic ) const;
+    double convertToPainterUnits( double size, Qgis::RenderUnit unit, const QgsMapUnitScale &scale = QgsMapUnitScale(), Qgis::RenderSubcomponentProperty property = Qgis::RenderSubcomponentProperty::Generic ) const;
 
     /**
      * Converts a size from the specified units to map units. The conversion respects the limits
@@ -704,14 +704,14 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
      * \see convertToPainterUnits()
      * \since QGIS 3.0
      */
-    double convertToMapUnits( double size, QgsUnitTypes::RenderUnit unit, const QgsMapUnitScale &scale = QgsMapUnitScale() ) const;
+    double convertToMapUnits( double size, Qgis::RenderUnit unit, const QgsMapUnitScale &scale = QgsMapUnitScale() ) const;
 
     /**
      * Converts a size from map units to the specified units.
      * \see convertToMapUnits()
      * \since QGIS 3.0
      */
-    double convertFromMapUnits( double sizeInMapUnits, QgsUnitTypes::RenderUnit outputUnit ) const;
+    double convertFromMapUnits( double sizeInMapUnits, Qgis::RenderUnit outputUnit ) const;
 
     /**
      * Convert meter distances to active MapUnit values for QgsUnitTypes::RenderMetersInMapUnits

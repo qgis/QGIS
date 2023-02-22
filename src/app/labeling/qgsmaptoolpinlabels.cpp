@@ -18,9 +18,7 @@
 #include "qgsmaptoolpinlabels.h"
 
 #include "qgisapp.h"
-#include "qgsapplication.h"
 #include "qgsmapcanvas.h"
-#include "qgsproject.h"
 #include "qgsvectorlayer.h"
 #include "qgsmapmouseevent.h"
 #include "qgsmaptoolselectutils.h"
@@ -53,7 +51,7 @@ void QgsMapToolPinLabels::canvasPressEvent( QgsMapMouseEvent *e )
   mSelectRect.setRect( 0, 0, 0, 0 );
   mSelectRect.setTopLeft( e->pos() );
   mSelectRect.setBottomRight( e->pos() );
-  mRubberBand = new QgsRubberBand( mCanvas, QgsWkbTypes::PolygonGeometry );
+  mRubberBand = new QgsRubberBand( mCanvas, Qgis::GeometryType::Polygon );
 }
 
 void QgsMapToolPinLabels::canvasMoveEvent( QgsMapMouseEvent *e )
@@ -104,7 +102,7 @@ void QgsMapToolPinLabels::canvasReleaseEvent( QgsMapMouseEvent *e )
 
     pinUnpinLabels( ext, e );
 
-    mRubberBand->reset( QgsWkbTypes::PolygonGeometry );
+    mRubberBand->reset( Qgis::GeometryType::Polygon );
     delete mRubberBand;
     mRubberBand = nullptr;
   }
@@ -141,7 +139,7 @@ void QgsMapToolPinLabels::highlightLabel( const QgsLabelPosition &labelpos,
     const QString &id,
     const QColor &color )
 {
-  QgsRubberBand *rb = new QgsRubberBand( mCanvas, QgsWkbTypes::PolygonGeometry );
+  QgsRubberBand *rb = new QgsRubberBand( mCanvas, Qgis::GeometryType::Polygon );
   rb->addPoint( labelpos.cornerPoints.at( 0 ) );
   rb->addPoint( labelpos.cornerPoints.at( 1 ) );
   rb->addPoint( labelpos.cornerPoints.at( 2 ) );
@@ -158,7 +156,7 @@ void QgsMapToolPinLabels::highlightCallout( bool isOrigin, const QgsCalloutPosit
 {
   double scaleFactor = mCanvas->fontMetrics().xHeight();
 
-  QgsRubberBand *rb = new QgsRubberBand( mCanvas, QgsWkbTypes::PointGeometry );
+  QgsRubberBand *rb = new QgsRubberBand( mCanvas, Qgis::GeometryType::Point );
   rb->setWidth( 2 );
   rb->setSecondaryStrokeColor( QColor( 255, 255, 255, 100 ) );
   rb->setColor( color );

@@ -3353,24 +3353,24 @@ class TestQgsExpression: public QObject
       fPolylineZ.setGeometry( polylineZGeom );
 
       QgsPolyline polylineM;
-      polylineM << QgsPoint( QgsWkbTypes::PointM, 0, 0, 0, 0 ) << QgsPoint( QgsWkbTypes::PointM, 3, 0, 0, 8 );
+      polylineM << QgsPoint( Qgis::WkbType::PointM, 0, 0, 0, 0 ) << QgsPoint( Qgis::WkbType::PointM, 3, 0, 0, 8 );
       QgsGeometry polylineMGeom = QgsGeometry::fromPolyline( polylineM );
       QgsFeature fPolylineM;
       fPolylineM.setGeometry( polylineMGeom );
 
       QgsPolyline polylineZM;
-      polylineZM << QgsPoint( QgsWkbTypes::PointZM, 0, 0, 0, 0 ) << QgsPoint( QgsWkbTypes::PointZM, 3, 0, 4, 8 );
+      polylineZM << QgsPoint( Qgis::WkbType::PointZM, 0, 0, 0, 0 ) << QgsPoint( Qgis::WkbType::PointZM, 3, 0, 4, 8 );
       QgsGeometry polylineZMGeom = QgsGeometry::fromPolyline( polylineZM );
       QgsFeature fPolylineZM;
       fPolylineZM.setGeometry( polylineZMGeom );
 
       QgsMultiLineString mls;
       QgsLineString part;
-      part.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZM, 10, 10, 10, 10 )
-                      << QgsPoint( QgsWkbTypes::PointZM, 20, 20, 20, 20 ) );
+      part.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 10, 10, 10, 10 )
+                      << QgsPoint( Qgis::WkbType::PointZM, 20, 20, 20, 20 ) );
       mls.addGeometry( part.clone() );
-      part.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZM, 30, 30, 30, 30 )
-                      << QgsPoint( QgsWkbTypes::PointZM, 40, 40, 40, 40 ) );
+      part.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 30, 30, 30, 30 )
+                      << QgsPoint( Qgis::WkbType::PointZM, 40, 40, 40, 40 ) );
       mls.addGeometry( part.clone() );
       QgsGeometry multiStringZMGeom;
       multiStringZMGeom.set( mls.clone() );
@@ -3647,10 +3647,10 @@ class TestQgsExpression: public QObject
       double expected = 1005640568.0;
       QGSCOMPARENEAR( vArea.toDouble(), expected, 1.0 );
       // units should not be converted if no geometry calculator set
-      expArea.setAreaUnits( QgsUnitTypes::AreaSquareFeet );
+      expArea.setAreaUnits( Qgis::AreaUnit::SquareFeet );
       vArea = expArea.evaluate( &context );
       QGSCOMPARENEAR( vArea.toDouble(), expected, 1.0 );
-      expArea.setAreaUnits( QgsUnitTypes::AreaSquareNauticalMiles );
+      expArea.setAreaUnits( Qgis::AreaUnit::SquareNauticalMiles );
       vArea = expArea.evaluate( &context );
       QGSCOMPARENEAR( vArea.toDouble(), expected, 1.0 );
 
@@ -3661,13 +3661,13 @@ class TestQgsExpression: public QObject
       expected = 1005755617.819134;
       QGSCOMPARENEAR( vArea.toDouble(), expected, 1.0 );
       // test unit conversion
-      expArea2.setAreaUnits( QgsUnitTypes::AreaSquareMeters ); //default units should be square meters
+      expArea2.setAreaUnits( Qgis::AreaUnit::SquareMeters ); //default units should be square meters
       vArea = expArea2.evaluate( &context );
       QGSCOMPARENEAR( vArea.toDouble(), expected, 1.0 );
-      expArea2.setAreaUnits( QgsUnitTypes::AreaUnknownUnit ); //unknown units should not be converted
+      expArea2.setAreaUnits( Qgis::AreaUnit::Unknown ); //unknown units should not be converted
       vArea = expArea2.evaluate( &context );
       QGSCOMPARENEAR( vArea.toDouble(), expected, 1.0 );
-      expArea2.setAreaUnits( QgsUnitTypes::AreaSquareMiles );
+      expArea2.setAreaUnits( Qgis::AreaUnit::SquareMiles );
       expected = 388.324415;
       vArea = expArea2.evaluate( &context );
       QGSCOMPARENEAR( vArea.toDouble(), expected, 0.001 );
@@ -3678,10 +3678,10 @@ class TestQgsExpression: public QObject
       expected = 128282.086;
       QGSCOMPARENEAR( vPerimeter.toDouble(), expected, 0.001 );
       // units should not be converted if no geometry calculator set
-      expPerimeter.setDistanceUnits( QgsUnitTypes::DistanceFeet );
+      expPerimeter.setDistanceUnits( Qgis::DistanceUnit::Feet );
       vPerimeter = expPerimeter.evaluate( &context );
       QGSCOMPARENEAR( vPerimeter.toDouble(), expected, 0.001 );
-      expPerimeter.setDistanceUnits( QgsUnitTypes::DistanceNauticalMiles );
+      expPerimeter.setDistanceUnits( Qgis::DistanceUnit::NauticalMiles );
       vPerimeter = expPerimeter.evaluate( &context );
       QGSCOMPARENEAR( vPerimeter.toDouble(), expected, 0.001 );
 
@@ -3692,13 +3692,13 @@ class TestQgsExpression: public QObject
       expected = 128289.074;
       QGSCOMPARENEAR( vPerimeter.toDouble(), expected, 0.001 );
       // test unit conversion
-      expPerimeter2.setDistanceUnits( QgsUnitTypes::DistanceMeters ); //default units should be meters
+      expPerimeter2.setDistanceUnits( Qgis::DistanceUnit::Meters ); //default units should be meters
       vPerimeter = expPerimeter2.evaluate( &context );
       QGSCOMPARENEAR( vPerimeter.toDouble(), expected, 0.001 );
-      expPerimeter2.setDistanceUnits( QgsUnitTypes::DistanceUnknownUnit ); //unknown units should not be converted
+      expPerimeter2.setDistanceUnits( Qgis::DistanceUnit::Unknown ); //unknown units should not be converted
       vPerimeter = expPerimeter2.evaluate( &context );
       QGSCOMPARENEAR( vPerimeter.toDouble(), expected, 0.001 );
-      expPerimeter2.setDistanceUnits( QgsUnitTypes::DistanceFeet );
+      expPerimeter2.setDistanceUnits( Qgis::DistanceUnit::Feet );
       expected = 420895.9120735;
       vPerimeter = expPerimeter2.evaluate( &context );
       QGSCOMPARENEAR( vPerimeter.toDouble(), expected, 0.001 );
@@ -3715,10 +3715,10 @@ class TestQgsExpression: public QObject
       expected = 26930.637;
       QGSCOMPARENEAR( vLength.toDouble(), expected, 0.001 );
       // units should not be converted if no geometry calculator set
-      expLength.setDistanceUnits( QgsUnitTypes::DistanceFeet );
+      expLength.setDistanceUnits( Qgis::DistanceUnit::Feet );
       vLength = expLength.evaluate( &context );
       QGSCOMPARENEAR( vLength.toDouble(), expected, 0.001 );
-      expLength.setDistanceUnits( QgsUnitTypes::DistanceNauticalMiles );
+      expLength.setDistanceUnits( Qgis::DistanceUnit::NauticalMiles );
       vLength = expLength.evaluate( &context );
       QGSCOMPARENEAR( vLength.toDouble(), expected, 0.001 );
 
@@ -3729,13 +3729,13 @@ class TestQgsExpression: public QObject
       expected = 26932.156;
       QGSCOMPARENEAR( vLength.toDouble(), expected, 0.001 );
       // test unit conversion
-      expLength2.setDistanceUnits( QgsUnitTypes::DistanceMeters ); //default units should be meters
+      expLength2.setDistanceUnits( Qgis::DistanceUnit::Meters ); //default units should be meters
       vLength = expLength2.evaluate( &context );
       QGSCOMPARENEAR( vLength.toDouble(), expected, 0.001 );
-      expLength2.setDistanceUnits( QgsUnitTypes::DistanceUnknownUnit ); //unknown units should not be converted
+      expLength2.setDistanceUnits( Qgis::DistanceUnit::Unknown ); //unknown units should not be converted
       vLength = expLength2.evaluate( &context );
       QGSCOMPARENEAR( vLength.toDouble(), expected, 0.001 );
-      expLength2.setDistanceUnits( QgsUnitTypes::DistanceFeet );
+      expLength2.setDistanceUnits( Qgis::DistanceUnit::Feet );
       expected = 88360.0918635;
       vLength = expLength2.evaluate( &context );
       QGSCOMPARENEAR( vLength.toDouble(), expected, 0.001 );

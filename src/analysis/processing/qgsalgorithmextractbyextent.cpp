@@ -77,7 +77,7 @@ QVariantMap QgsExtractByExtentAlgorithm::processAlgorithm( const QVariantMap &pa
   const bool clip = parameterAsBoolean( parameters, QStringLiteral( "CLIP" ), context );
 
   // if clipping, we force multi output
-  const QgsWkbTypes::Type outType = clip ? QgsWkbTypes::promoteNonPointTypesToMulti( featureSource->wkbType() ) : featureSource->wkbType();
+  const Qgis::WkbType outType = clip ? QgsWkbTypes::promoteNonPointTypesToMulti( featureSource->wkbType() ) : featureSource->wkbType();
 
   QString dest;
   std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, featureSource->fields(), outType, featureSource->sourceCrs() ) );
@@ -103,7 +103,7 @@ QVariantMap QgsExtractByExtentAlgorithm::processAlgorithm( const QVariantMap &pa
     {
       QgsGeometry g = f.geometry().intersection( clipGeom );
 
-      if ( g.type() != QgsWkbTypes::GeometryType::PointGeometry )
+      if ( g.type() != Qgis::GeometryType::Point )
       {
         // some data providers are picky about the geometries we pass to them: we can't add single-part geometries
         // when we promised multi-part geometries, so ensure we have the right type

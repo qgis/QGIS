@@ -15,8 +15,6 @@ email                : hugo dot mercier at oslandia dot com
  ***************************************************************************/
 
 #include "qgsvirtuallayerdefinition.h"
-#include "qgsvectorlayer.h"
-#include "qgsvectordataprovider.h"
 #include "fromencodedcomponenthelper.h"
 
 #include <QUrl>
@@ -115,10 +113,10 @@ QgsVirtualLayerDefinition QgsVirtualLayerDefinition::fromUrl( const QUrl &url )
         if ( match.capturedTexts().size() > 2 )
         {
           // not used by the spatialite provider for now ...
-          QgsWkbTypes::Type wkbType = QgsWkbTypes::parseType( match.captured( 2 ) );
-          if ( wkbType == QgsWkbTypes::Unknown )
+          Qgis::WkbType wkbType = QgsWkbTypes::parseType( match.captured( 2 ) );
+          if ( wkbType == Qgis::WkbType::Unknown )
           {
-            wkbType = static_cast<QgsWkbTypes::Type>( match.captured( 2 ).toLong() );
+            wkbType = static_cast<Qgis::WkbType>( match.captured( 2 ).toLong() );
           }
           def.setGeometryWkbType( wkbType );
           def.setGeometrySrid( match.captured( 3 ).toLong() );
@@ -127,7 +125,7 @@ QgsVirtualLayerDefinition QgsVirtualLayerDefinition::fromUrl( const QUrl &url )
     }
     else if ( key == QLatin1String( "nogeometry" ) )
     {
-      def.setGeometryWkbType( QgsWkbTypes::NoGeometry );
+      def.setGeometryWkbType( Qgis::WkbType::NoGeometry );
     }
     else if ( key == QLatin1String( "uid" ) )
     {
@@ -207,12 +205,12 @@ QUrl QgsVirtualLayerDefinition::toUrl() const
   if ( !uid().isEmpty() )
     urlQuery.addQueryItem( QStringLiteral( "uid" ), uid() );
 
-  if ( geometryWkbType() == QgsWkbTypes::NoGeometry )
+  if ( geometryWkbType() == Qgis::WkbType::NoGeometry )
     urlQuery.addQueryItem( QStringLiteral( "nogeometry" ), QString() );
   else if ( !geometryField().isEmpty() )
   {
     if ( hasDefinedGeometry() )
-      urlQuery.addQueryItem( QStringLiteral( "geometry" ), QStringLiteral( "%1:%2:%3" ).arg( geometryField() ). arg( geometryWkbType() ).arg( geometrySrid() ).toUtf8() );
+      urlQuery.addQueryItem( QStringLiteral( "geometry" ), QStringLiteral( "%1:%2:%3" ).arg( geometryField() ). arg( qgsEnumValueToKey( geometryWkbType() ) ).arg( geometrySrid() ).toUtf8() );
     else
       urlQuery.addQueryItem( QStringLiteral( "geometry" ), geometryField() );
   }

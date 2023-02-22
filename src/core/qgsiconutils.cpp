@@ -22,25 +22,25 @@
 
 #include <QIcon>
 
-QIcon QgsIconUtils::iconForWkbType( QgsWkbTypes::Type type )
+QIcon QgsIconUtils::iconForWkbType( Qgis::WkbType type )
 {
-  const QgsWkbTypes::GeometryType geomType = QgsWkbTypes::geometryType( QgsWkbTypes::Type( type ) );
+  const Qgis::GeometryType geomType = QgsWkbTypes::geometryType( type );
   return iconForGeometryType( geomType );
 }
 
-QIcon QgsIconUtils::iconForGeometryType( QgsWkbTypes::GeometryType typeGroup )
+QIcon QgsIconUtils::iconForGeometryType( Qgis::GeometryType typeGroup )
 {
   switch ( typeGroup )
   {
-    case QgsWkbTypes::NullGeometry:
+    case Qgis::GeometryType::Null:
       return iconTable();
-    case QgsWkbTypes::PointGeometry:
+    case Qgis::GeometryType::Point:
       return iconPoint();
-    case QgsWkbTypes::LineGeometry:
+    case Qgis::GeometryType::Line:
       return iconLine();
-    case QgsWkbTypes::PolygonGeometry:
+    case Qgis::GeometryType::Polygon:
       return iconPolygon();
-    case QgsWkbTypes::UnknownGeometry:
+    case Qgis::GeometryType::Unknown:
       return iconGeometryCollection();
   }
   return iconDefaultLayer();
@@ -118,26 +118,26 @@ QIcon QgsIconUtils::iconForLayer( const QgsMapLayer *layer )
       {
         return QIcon();
       }
-      const QgsWkbTypes::GeometryType geomType = vl->geometryType();
+      const Qgis::GeometryType geomType = vl->geometryType();
       switch ( geomType )
       {
-        case QgsWkbTypes::PointGeometry:
+        case Qgis::GeometryType::Point:
         {
           return QgsIconUtils::iconPoint();
         }
-        case QgsWkbTypes::PolygonGeometry :
+        case Qgis::GeometryType::Polygon:
         {
           return QgsIconUtils::iconPolygon();
         }
-        case QgsWkbTypes::LineGeometry :
+        case Qgis::GeometryType::Line:
         {
           return QgsIconUtils::iconLine();
         }
-        case QgsWkbTypes::NullGeometry :
+        case Qgis::GeometryType::Null:
         {
           return QgsIconUtils::iconTable();
         }
-        case QgsWkbTypes::UnknownGeometry:
+        case Qgis::GeometryType::Unknown:
         {
           return QgsIconUtils::iconGeometryCollection();
         }

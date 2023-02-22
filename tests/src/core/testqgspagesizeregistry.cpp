@@ -130,7 +130,7 @@ void TestQgsPageSizeRegistry::findBySize()
   QCOMPARE( registry->find( QgsLayoutSize( 210, 297 ) ), QStringLiteral( "A4" ) );
   QCOMPARE( registry->find( QgsLayoutSize( 297, 210 ) ), QStringLiteral( "A4" ) );
   QCOMPARE( registry->find( QgsLayoutSize( 125, 176 ) ), QStringLiteral( "B6" ) );
-  QCOMPARE( registry->find( QgsLayoutSize( 21, 29.7, QgsUnitTypes::LayoutCentimeters ) ), QStringLiteral( "A4" ) );
+  QCOMPARE( registry->find( QgsLayoutSize( 21, 29.7, Qgis::LayoutUnit::Centimeters ) ), QStringLiteral( "A4" ) );
   // must have allowance of 0.01 units - because we round to this precision in all page size widgets
   QCOMPARE( registry->find( QgsLayoutSize( 125.009, 175.991 ) ), QStringLiteral( "B6" ) );
 }

@@ -230,7 +230,7 @@ class CORE_EXPORT QgsProviderSublayerDetails
      *
      * \see setWkbType()
      */
-    QgsWkbTypes::Type wkbType() const { return mWkbType; }
+    Qgis::WkbType wkbType() const { return mWkbType; }
 
     /**
      * Set the layer's WKB \a type.
@@ -239,7 +239,7 @@ class CORE_EXPORT QgsProviderSublayerDetails
      *
      * \see wkbType()
      */
-    void setWkbType( QgsWkbTypes::Type type ) { mWkbType = type; }
+    void setWkbType( Qgis::WkbType type ) { mWkbType = type; }
 
     /**
      * Returns the layer's geometry column name, or an empty string if not applicable.
@@ -317,7 +317,7 @@ class CORE_EXPORT QgsProviderSublayerDetails
     long long mFeatureCount = static_cast< long >( Qgis::FeatureCountState::UnknownCount );
     QString mGeometryColumnName;
     QStringList mPath;
-    QgsWkbTypes::Type mWkbType = QgsWkbTypes::Unknown;
+    Qgis::WkbType mWkbType = Qgis::WkbType::Unknown;
     QString mDriverName;
     bool mSkippedContainerScan = false;
     Qgis::SublayerFlags mFlags = Qgis::SublayerFlags();

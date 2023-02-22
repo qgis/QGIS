@@ -17,7 +17,6 @@
 #include <QString>
 
 #include "qgsellipse.h"
-#include "qgsgeometryutils.h"
 #include "qgslinestring.h"
 #include "qgspoint.h"
 
@@ -246,14 +245,14 @@ void TestQgsEllipse::quadrant()
   QCOMPARE( quad.at( 1 ), QgsPoint( 0, -2 ) );
   QCOMPARE( quad.at( 2 ), QgsPoint( -5, 0 ) );
 
-  elp = QgsEllipse( QgsPoint( QgsWkbTypes::PointZM, 0, 0, 123, 321 ), 5, 2, 0 );
+  elp = QgsEllipse( QgsPoint( Qgis::WkbType::PointZM, 0, 0, 123, 321 ), 5, 2, 0 );
   quad.clear();
   quad = elp.quadrant();
 
-  QCOMPARE( quad.at( 0 ), QgsPoint( QgsWkbTypes::PointZM, 0, 5, 123, 321 ) );
-  QCOMPARE( quad.at( 3 ), QgsPoint( QgsWkbTypes::PointZM, -2, 0, 123, 321 ) );
-  QCOMPARE( quad.at( 2 ), QgsPoint( QgsWkbTypes::PointZM, 0, -5, 123, 321 ) );
-  QCOMPARE( quad.at( 1 ), QgsPoint( QgsWkbTypes::PointZM, 2, 0, 123, 321 ) );
+  QCOMPARE( quad.at( 0 ), QgsPoint( Qgis::WkbType::PointZM, 0, 5, 123, 321 ) );
+  QCOMPARE( quad.at( 3 ), QgsPoint( Qgis::WkbType::PointZM, -2, 0, 123, 321 ) );
+  QCOMPARE( quad.at( 2 ), QgsPoint( Qgis::WkbType::PointZM, 0, -5, 123, 321 ) );
+  QCOMPARE( quad.at( 1 ), QgsPoint( Qgis::WkbType::PointZM, 2, 0, 123, 321 ) );
 
   elp = QgsEllipse( QgsPoint( 0, 0 ), 2.5, 2, 315 );
   quad.clear();

@@ -34,6 +34,8 @@
 #include "qgsstyleentityvisitor.h"
 #include "qgslayertreemodellegendnode.h"
 #include "qgsvectorlayer.h"
+#include "qgslayoutrendercontext.h"
+#include "qgslayoutreportcontext.h"
 
 #include <QDomDocument>
 #include <QDomElement>
@@ -119,7 +121,7 @@ void QgsLayoutItemLegend::paint( QPainter *painter, const QStyleOptionGraphicsIt
   {
     Q_NOWARN_DEPRECATED_PUSH
     // no longer required, but left set for api stability
-    mSettings.setMmPerMapUnit( mLayout->convertFromLayoutUnits( mMap->mapUnitsToLayoutUnits(), QgsUnitTypes::LayoutMillimeters ).length() );
+    mSettings.setMmPerMapUnit( mLayout->convertFromLayoutUnits( mMap->mapUnitsToLayoutUnits(), Qgis::LayoutUnit::Millimeters ).length() );
     Q_NOWARN_DEPRECATED_POP
 
     // use a temporary QgsMapSettings to find out real map scale
@@ -706,22 +708,22 @@ bool QgsLayoutItemLegend::readPropertiesFromElement( const QDomElement &itemElem
     QgsTextFormat f = rstyle( QgsLegendStyle::Title ).textFormat();
     // assume font sizes in points, since that was what we always had from before this method was deprecated
     f.setLineHeight( f.size() * 0.352778 + spacing );
-    f.setLineHeightUnit( QgsUnitTypes::RenderMillimeters );
+    f.setLineHeightUnit( Qgis::RenderUnit::Millimeters );
     rstyle( QgsLegendStyle::Title ).setTextFormat( f );
 
     f = rstyle( QgsLegendStyle::Group ).textFormat();
     f.setLineHeight( f.size() * 0.352778 + spacing );
-    f.setLineHeightUnit( QgsUnitTypes::RenderMillimeters );
+    f.setLineHeightUnit( Qgis::RenderUnit::Millimeters );
     rstyle( QgsLegendStyle::Group ).setTextFormat( f );
 
     f = rstyle( QgsLegendStyle::Subgroup ).textFormat();
     f.setLineHeight( f.size() * 0.352778 + spacing );
-    f.setLineHeightUnit( QgsUnitTypes::RenderMillimeters );
+    f.setLineHeightUnit( Qgis::RenderUnit::Millimeters );
     rstyle( QgsLegendStyle::Subgroup ).setTextFormat( f );
 
     f = rstyle( QgsLegendStyle::SymbolLabel ).textFormat();
     f.setLineHeight( f.size() * 0.352778 + spacing );
-    f.setLineHeightUnit( QgsUnitTypes::RenderMillimeters );
+    f.setLineHeightUnit( Qgis::RenderUnit::Millimeters );
     rstyle( QgsLegendStyle::SymbolLabel ).setTextFormat( f );
   }
 
@@ -1004,7 +1006,7 @@ void QgsLayoutItemLegend::doUpdateFilterByMap()
     const QgsRectangle requestRectangle = mMap->requestedExtent();
 
     QSizeF size( requestRectangle.width(), requestRectangle.height() );
-    size *= mLayout->convertFromLayoutUnits( mMap->mapUnitsToLayoutUnits(), QgsUnitTypes::LayoutMillimeters ).length() * dpi / 25.4;
+    size *= mLayout->convertFromLayoutUnits( mMap->mapUnitsToLayoutUnits(), Qgis::LayoutUnit::Millimeters ).length() * dpi / 25.4;
 
     const QgsMapSettings ms = mMap->mapSettings( requestRectangle, size, dpi, true );
 

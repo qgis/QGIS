@@ -20,6 +20,7 @@
 #include <QDir>
 #include <QNetworkCacheMetaData>
 #include <QRegularExpression>
+#include <QUrlQuery>
 
 #include "qgis.h"
 #include "qgssettings.h"
@@ -28,9 +29,9 @@
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
 #include "qgsnetworkaccessmanager.h"
-#include "qgsunittypes.h"
 #include "qgsexception.h"
 #include "qgstemporalutils.h"
+#include "qgsunittypes.h"
 
 // %%% copied from qgswmsprovider.cpp
 static QString DEFAULT_LATLON_CRS = QStringLiteral( "CRS:84" );
@@ -137,7 +138,7 @@ bool QgsWmsSettings::parseUri( const QString &uriString )
       else
       {
         mAllRanges.append( QgsDateTimeRange( begin, end ) );
-        mDefaultInterval = QgsInterval( 1, QgsUnitTypes::TemporalIrregularStep );
+        mDefaultInterval = QgsInterval( 1, Qgis::TemporalUnit::IrregularStep );
       }
     }
 
@@ -1190,7 +1191,38 @@ void QgsWmsCapabilities::parseLayer( const QDomElement &element, QgsWmsLayerProp
 
         // Inherit things into the sublayer
         //   Ref: 7.2.4.8 Inheritance of layer properties
-        subLayerProperty.style                    = layerProperty.style;
+
+        // Cleanup inherited styles, replace layer name with current layer name
+        QVector<QgsWmsStyleProperty> inheritedStyles { layerProperty.style };
+        if ( ! nodeElement.firstChildElement( QStringLiteral( "Name" ) ).isNull() )
+        {
+          const QString layerName { nodeElement.firstChildElement( QStringLiteral( "Name" ) ).text() };
+          for ( auto stylesIt = inheritedStyles.begin(); stylesIt != inheritedStyles.end(); ++stylesIt )
+          {
+            for ( auto legendUriIt = stylesIt->legendUrl.begin(); legendUriIt != stylesIt->legendUrl.end(); ++legendUriIt )
+            {
+              QUrl legendUrl { legendUriIt->onlineResource.xlinkHref };
+              if ( legendUrl.hasQuery() )
+              {
+                QUrlQuery query { legendUrl.query() };
+                if ( query.hasQueryItem( QStringLiteral( "LAYER" ) ) )
+                {
+                  query.removeQueryItem( QStringLiteral( "LAYER" ) );
+                  query.addQueryItem( QStringLiteral( "LAYER" ), layerName );
+                }
+                else if ( query.hasQueryItem( QStringLiteral( "layer" ) ) )
+                {
+                  query.removeQueryItem( QStringLiteral( "layer" ) );
+                  query.addQueryItem( QStringLiteral( "layer" ), layerName );
+                }
+                legendUrl.setQuery( query );
+                legendUriIt->onlineResource.xlinkHref = legendUrl.url( );
+              }
+            }
+          }
+        }
+
+        subLayerProperty.style                    = inheritedStyles;
         subLayerProperty.crs                      = layerProperty.crs;
         subLayerProperty.boundingBoxes            = layerProperty.boundingBoxes;
         subLayerProperty.ex_GeographicBoundingBox = layerProperty.ex_GeographicBoundingBox;
@@ -1421,6 +1453,7 @@ void QgsWmsCapabilities::parseLayer( const QDomElement &element, QgsWmsLayerProp
   {
     mLayerParentNames[ layerProperty.orderId ] = QStringList() << layerProperty.name << layerProperty.title << layerProperty.abstract;
   }
+
 }
 
 
@@ -1749,7 +1782,7 @@ void QgsWmsCapabilities::parseWMTSContents( const QDomElement &element )
 
     set.wkScaleSet = childElement.firstChildElement( QStringLiteral( "WellKnownScaleSet" ) ).text();
 
-    double metersPerUnit = QgsUnitTypes::fromUnitToUnitFactor( crs.mapUnits(), QgsUnitTypes::DistanceMeters );
+    double metersPerUnit = QgsUnitTypes::fromUnitToUnitFactor( crs.mapUnits(), Qgis::DistanceUnit::Meters );
 
     set.crs = crs.authid();
 
@@ -2050,7 +2083,7 @@ void QgsWmsCapabilities::parseWMTSContents( const QDomElement &element )
           // populate temporal information
           QDateTime minTime;
           QDateTime maxTime;
-          QgsInterval defaultInterval = QgsInterval( 1, QgsUnitTypes::TemporalIrregularStep );
+          QgsInterval defaultInterval = QgsInterval( 1, Qgis::TemporalUnit::IrregularStep );
           bool hasPeriodValue = false;
           for ( const QString &value : std::as_const( dimension.values ) )
           {
@@ -2377,7 +2410,7 @@ bool QgsWmsCapabilities::detectTileLayerBoundingBox( QgsWmtsTileLayer &tileLayer
     return false;
 
   const QgsWmtsTileMatrix &tm = *tmIt;
-  double metersPerUnit = QgsUnitTypes::fromUnitToUnitFactor( crs.mapUnits(), QgsUnitTypes::DistanceMeters );
+  double metersPerUnit = QgsUnitTypes::fromUnitToUnitFactor( crs.mapUnits(), Qgis::DistanceUnit::Meters );
   // the magic number below is "standardized rendering pixel size" defined
   // in WMTS (and WMS 1.3) standard, being 0.28 pixel
   double res = tm.scaleDenom * 0.00028 / metersPerUnit;

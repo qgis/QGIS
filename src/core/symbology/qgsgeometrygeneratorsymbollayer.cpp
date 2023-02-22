@@ -21,6 +21,7 @@
 #include "qgspolygon.h"
 #include "qgslegendpatchshape.h"
 #include "qgsstyle.h"
+#include "qgsunittypes.h"
 
 #include "qgsexpressioncontextutils.h"
 
@@ -142,7 +143,7 @@ QColor QgsGeometryGeneratorSymbolLayer::color() const
   return QColor();
 }
 
-QgsUnitTypes::RenderUnit QgsGeometryGeneratorSymbolLayer::outputUnit() const
+Qgis::RenderUnit QgsGeometryGeneratorSymbolLayer::outputUnit() const
 {
   if ( mFillSymbol )
     return mFillSymbol->outputUnit();
@@ -150,10 +151,10 @@ QgsUnitTypes::RenderUnit QgsGeometryGeneratorSymbolLayer::outputUnit() const
     return mLineSymbol->outputUnit();
   else if ( mMarkerSymbol )
     return mMarkerSymbol->outputUnit();
-  return QgsUnitTypes::RenderUnknownUnit;
+  return Qgis::RenderUnit::Unknown;
 }
 
-void QgsGeometryGeneratorSymbolLayer::setOutputUnit( QgsUnitTypes::RenderUnit unit )
+void QgsGeometryGeneratorSymbolLayer::setOutputUnit( Qgis::RenderUnit unit )
 {
   if ( mFillSymbol )
     mFillSymbol->setOutputUnit( unit );
@@ -231,17 +232,17 @@ void QgsGeometryGeneratorSymbolLayer::drawPreviewIcon( QgsSymbolRenderContext &c
       Qgis::SymbolType originalSymbolType = Qgis::SymbolType::Hybrid;
       switch ( context.originalGeometryType() )
       {
-        case QgsWkbTypes::PointGeometry:
+        case Qgis::GeometryType::Point:
           originalSymbolType = Qgis::SymbolType::Marker;
           break;
-        case QgsWkbTypes::LineGeometry:
+        case Qgis::GeometryType::Line:
           originalSymbolType = Qgis::SymbolType::Line;
           break;
-        case QgsWkbTypes::PolygonGeometry:
+        case Qgis::GeometryType::Polygon:
           originalSymbolType = Qgis::SymbolType::Fill;
           break;
-        case QgsWkbTypes::UnknownGeometry:
-        case QgsWkbTypes::NullGeometry:
+        case Qgis::GeometryType::Unknown:
+        case Qgis::GeometryType::Null:
           originalSymbolType = mSymbol->type();
           break;
       }
@@ -347,25 +348,25 @@ QgsGeometry QgsGeometryGeneratorSymbolLayer::coerceToExpectedType( const QgsGeom
   switch ( mSymbolType )
   {
     case Qgis::SymbolType::Marker:
-      if ( geometry.type() != QgsWkbTypes::PointGeometry )
+      if ( geometry.type() != Qgis::GeometryType::Point )
       {
-        QVector< QgsGeometry > geoms = geometry.coerceToType( QgsWkbTypes::MultiPoint );
+        QVector< QgsGeometry > geoms = geometry.coerceToType( Qgis::WkbType::MultiPoint );
         if ( !geoms.empty() )
           return geoms.at( 0 );
       }
       break;
     case Qgis::SymbolType::Line:
-      if ( geometry.type() != QgsWkbTypes::LineGeometry )
+      if ( geometry.type() != Qgis::GeometryType::Line )
       {
-        QVector< QgsGeometry > geoms = geometry.coerceToType( QgsWkbTypes::MultiLineString );
+        QVector< QgsGeometry > geoms = geometry.coerceToType( Qgis::WkbType::MultiLineString );
         if ( !geoms.empty() )
           return geoms.at( 0 );
       }
       break;
     case Qgis::SymbolType::Fill:
-      if ( geometry.type() != QgsWkbTypes::PolygonGeometry )
+      if ( geometry.type() != Qgis::GeometryType::Polygon )
       {
-        QVector< QgsGeometry > geoms = geometry.coerceToType( QgsWkbTypes::MultiPolygon );
+        QVector< QgsGeometry > geoms = geometry.coerceToType( Qgis::WkbType::MultiPolygon );
         if ( !geoms.empty() )
           return geoms.at( 0 );
       }
@@ -376,7 +377,7 @@ QgsGeometry QgsGeometryGeneratorSymbolLayer::coerceToExpectedType( const QgsGeom
   return geometry;
 }
 
-void QgsGeometryGeneratorSymbolLayer::render( QgsSymbolRenderContext &context, QgsWkbTypes::GeometryType geometryType, const QPolygonF *points, const QVector<QPolygonF> *rings )
+void QgsGeometryGeneratorSymbolLayer::render( QgsSymbolRenderContext &context, Qgis::GeometryType geometryType, const QPolygonF *points, const QVector<QPolygonF> *rings )
 {
   if ( mRenderingFeature && mHasRenderedFeature )
     return;
@@ -395,20 +396,20 @@ void QgsGeometryGeneratorSymbolLayer::render( QgsSymbolRenderContext &context, Q
     // step 1 - convert points and rings to geometry
     switch ( geometryType )
     {
-      case QgsWkbTypes::PointGeometry:
+      case Qgis::GeometryType::Point:
       {
         Q_ASSERT( points->size() == 1 );
         drawGeometry = QgsGeometry::fromPointXY( points->at( 0 ) );
         break;
       }
-      case QgsWkbTypes::LineGeometry:
+      case Qgis::GeometryType::Line:
       {
         Q_ASSERT( !rings );
         std::unique_ptr < QgsLineString > ring( QgsLineString::fromQPolygonF( *points ) );
         drawGeometry = QgsGeometry( std::move( ring ) );
         break;
       }
-      case QgsWkbTypes::PolygonGeometry:
+      case Qgis::GeometryType::Polygon:
       {
         std::unique_ptr < QgsLineString > exterior( QgsLineString::fromQPolygonF( *points ) );
         std::unique_ptr< QgsPolygon > polygon = std::make_unique< QgsPolygon >();
@@ -424,8 +425,8 @@ void QgsGeometryGeneratorSymbolLayer::render( QgsSymbolRenderContext &context, Q
         break;
       }
 
-      case QgsWkbTypes::UnknownGeometry:
-      case QgsWkbTypes::NullGeometry:
+      case Qgis::GeometryType::Unknown:
+      case Qgis::GeometryType::Null:
         return; // unreachable
     }
 
@@ -453,20 +454,20 @@ void QgsGeometryGeneratorSymbolLayer::render( QgsSymbolRenderContext &context, Q
   {
     switch ( mUnits )
     {
-      case QgsUnitTypes::RenderMapUnits:
-      case QgsUnitTypes::RenderUnknownUnit: // unsupported, not exposed as an option
-      case QgsUnitTypes::RenderMetersInMapUnits: // unsupported, not exposed as an option
-      case QgsUnitTypes::RenderPercentage: // unsupported, not exposed as an option
+      case Qgis::RenderUnit::MapUnits:
+      case Qgis::RenderUnit::Unknown: // unsupported, not exposed as an option
+      case Qgis::RenderUnit::MetersInMapUnits: // unsupported, not exposed as an option
+      case Qgis::RenderUnit::Percentage: // unsupported, not exposed as an option
       {
         QgsGeometry geom = mExpression->evaluate( &expressionContext ).value<QgsGeometry>();
         f.setGeometry( coerceToExpectedType( geom ) );
         break;
       }
 
-      case QgsUnitTypes::RenderMillimeters:
-      case QgsUnitTypes::RenderPixels:
-      case QgsUnitTypes::RenderPoints:
-      case QgsUnitTypes::RenderInches:
+      case Qgis::RenderUnit::Millimeters:
+      case Qgis::RenderUnit::Pixels:
+      case Qgis::RenderUnit::Points:
+      case Qgis::RenderUnit::Inches:
       {
         // convert feature geometry to painter units
         QgsGeometry transformed = f.geometry();

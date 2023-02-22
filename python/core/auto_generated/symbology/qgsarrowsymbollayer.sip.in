@@ -50,7 +50,7 @@ Create a new QgsArrowSymbolLayer
 
     virtual bool usesMapUnits() const;
 
-    virtual void setOutputUnit( QgsUnitTypes::RenderUnit unit );
+    virtual void setOutputUnit( Qgis::RenderUnit unit );
 
 
     double arrowWidth() const;
@@ -61,11 +61,11 @@ Gets current arrow width
 %Docstring
 Sets the arrow width
 %End
-    QgsUnitTypes::RenderUnit arrowWidthUnit() const;
+    Qgis::RenderUnit arrowWidthUnit() const;
 %Docstring
 Gets the unit for the arrow width
 %End
-    void setArrowWidthUnit( QgsUnitTypes::RenderUnit unit );
+    void setArrowWidthUnit( Qgis::RenderUnit unit );
 %Docstring
 Sets the unit for the arrow width
 %End
@@ -86,11 +86,11 @@ Gets current arrow start width. Only meaningful for single headed arrows
 %Docstring
 Sets the arrow start width
 %End
-    QgsUnitTypes::RenderUnit arrowStartWidthUnit() const;
+    Qgis::RenderUnit arrowStartWidthUnit() const;
 %Docstring
 Gets the unit for the arrow start width
 %End
-    void setArrowStartWidthUnit( QgsUnitTypes::RenderUnit unit );
+    void setArrowStartWidthUnit( Qgis::RenderUnit unit );
 %Docstring
 Sets the unit for the arrow start width
 %End
@@ -111,11 +111,11 @@ Gets the current arrow head length
 %Docstring
 Sets the arrow head length
 %End
-    QgsUnitTypes::RenderUnit headLengthUnit() const;
+    Qgis::RenderUnit headLengthUnit() const;
 %Docstring
 Gets the unit for the head length
 %End
-    void setHeadLengthUnit( QgsUnitTypes::RenderUnit unit );
+    void setHeadLengthUnit( Qgis::RenderUnit unit );
 %Docstring
 Sets the unit for the head length
 %End
@@ -136,11 +136,11 @@ Gets the current arrow head height
 %Docstring
 Sets the arrow head height
 %End
-    QgsUnitTypes::RenderUnit headThicknessUnit() const;
+    Qgis::RenderUnit headThicknessUnit() const;
 %Docstring
 Gets the unit for the head height
 %End
-    void setHeadThicknessUnit( QgsUnitTypes::RenderUnit unit );
+    void setHeadThicknessUnit( Qgis::RenderUnit unit );
 %Docstring
 Sets the unit for the head height
 %End

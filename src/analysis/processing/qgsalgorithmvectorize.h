@@ -62,7 +62,7 @@ class QgsVectorizeAlgorithmBase : public QgsProcessingAlgorithm
 
     virtual QString outputName() const = 0;
     virtual QgsProcessing::SourceType outputType() const = 0;
-    virtual QgsWkbTypes::Type sinkType() const = 0;
+    virtual Qgis::WkbType sinkType() const = 0;
     virtual QgsGeometry createGeometryForPixel( double centerX, double centerY, double pixelWidthX, double pixelWidthY ) const = 0;
 };
 
@@ -85,7 +85,7 @@ class QgsRasterPixelsToPolygonsAlgorithm : public QgsVectorizeAlgorithmBase
 
     QString outputName() const override;
     QgsProcessing::SourceType outputType() const override;
-    QgsWkbTypes::Type sinkType() const override;
+    Qgis::WkbType sinkType() const override;
     QgsGeometry createGeometryForPixel( double centerX, double centerY, double pixelWidthX, double pixelWidthY ) const override;
 
 };
@@ -109,7 +109,7 @@ class QgsRasterPixelsToPointsAlgorithm : public QgsVectorizeAlgorithmBase
 
     QString outputName() const override;
     QgsProcessing::SourceType outputType() const override;
-    QgsWkbTypes::Type sinkType() const override;
+    Qgis::WkbType sinkType() const override;
     QgsGeometry createGeometryForPixel( double centerX, double centerY, double pixelWidthX, double pixelWidthY ) const override;
 
 };

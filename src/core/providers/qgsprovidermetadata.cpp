@@ -197,11 +197,10 @@ QString QgsProviderMetadata::relativeToAbsoluteUri( const QString &uri, const Qg
   return context.pathResolver().readPath( uri );
 }
 
-Qgis::VectorExportResult QgsProviderMetadata::createEmptyLayer(
-  const QString &, const QgsFields &,
-  QgsWkbTypes::Type, const QgsCoordinateReferenceSystem &,
-  bool, QMap<int, int> &,
-  QString &errorMessage, const QMap<QString, QVariant> * )
+Qgis::VectorExportResult QgsProviderMetadata::createEmptyLayer( const QString &, const QgsFields &,
+    Qgis::WkbType, const QgsCoordinateReferenceSystem &,
+    bool, QMap<int, int> &,
+    QString &errorMessage, const QMap<QString, QVariant> * )
 {
   errorMessage = QObject::tr( "Provider %1 has no %2 method" ).arg( key(), QStringLiteral( "createEmptyLayer" ) );
   return Qgis::VectorExportResult::ErrorProviderUnsupportedFeature;

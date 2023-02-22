@@ -58,7 +58,7 @@ These fields will include any extra content returned by the geocoder, such as fi
 match or correct attribute values.
 %End
 
-    virtual QgsWkbTypes::Type wkbType() const;
+    virtual Qgis::WkbType wkbType() const;
 %Docstring
 Returns the WKB type of geometries returned by the geocoder.
 

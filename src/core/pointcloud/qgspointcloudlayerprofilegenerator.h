@@ -84,7 +84,7 @@ class CORE_EXPORT QgsPointCloudLayerProfileResults : public QgsAbstractProfileRe
     double maxZ = std::numeric_limits< double >::lowest();
 
     double pointSize = 1;
-    QgsUnitTypes::RenderUnit pointSizeUnit = QgsUnitTypes::RenderMillimeters;
+    Qgis::RenderUnit pointSizeUnit = Qgis::RenderUnit::Millimeters;
     Qgis::PointCloudSymbol pointSymbol = Qgis::PointCloudSymbol::Square;
     bool respectLayerColors = true;
     QColor pointColor;
@@ -151,10 +151,10 @@ class CORE_EXPORT QgsPointCloudLayerProfileGenerator : public QgsAbstractProfile
     QgsPointCloudAttributeCollection mLayerAttributes;
     std::unique_ptr< QgsPointCloudRenderer > mRenderer;
     double mMaximumScreenError = 0.3;
-    QgsUnitTypes::RenderUnit mMaximumScreenErrorUnit = QgsUnitTypes::RenderMillimeters;
+    Qgis::RenderUnit mMaximumScreenErrorUnit = Qgis::RenderUnit::Millimeters;
 
     double mPointSize = 1;
-    QgsUnitTypes::RenderUnit mPointSizeUnit = QgsUnitTypes::RenderMillimeters;
+    Qgis::RenderUnit mPointSizeUnit = Qgis::RenderUnit::Millimeters;
     Qgis::PointCloudSymbol mPointSymbol = Qgis::PointCloudSymbol::Square;
     QColor mPointColor;
     bool mOpacityByDistanceEffect = false;

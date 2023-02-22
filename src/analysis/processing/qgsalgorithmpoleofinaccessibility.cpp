@@ -82,11 +82,11 @@ QgsProcessing::SourceType QgsPoleOfInaccessibilityAlgorithm::outputLayerType() c
   return QgsProcessing::TypeVectorPoint;
 }
 
-QgsWkbTypes::Type QgsPoleOfInaccessibilityAlgorithm::outputWkbType( QgsWkbTypes::Type inputWkbType ) const
+Qgis::WkbType QgsPoleOfInaccessibilityAlgorithm::outputWkbType( Qgis::WkbType inputWkbType ) const
 {
   Q_UNUSED( inputWkbType );
 
-  return QgsWkbTypes::Point;
+  return Qgis::WkbType::Point;
 }
 
 QgsFields QgsPoleOfInaccessibilityAlgorithm::outputFields( const QgsFields &inputFields ) const

@@ -207,7 +207,7 @@ QgsFeatureIterator QgsOapifProvider::getFeatures( const QgsFeatureRequest &reque
   return QgsFeatureIterator( new QgsBackgroundCachedFeatureIterator( new QgsBackgroundCachedFeatureSource( mShared ), true, mShared, request ) );
 }
 
-QgsWkbTypes::Type QgsOapifProvider::wkbType() const
+Qgis::WkbType QgsOapifProvider::wkbType() const
 {
   return mShared->mWKBType;
 }

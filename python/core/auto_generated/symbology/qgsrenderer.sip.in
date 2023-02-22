@@ -82,7 +82,7 @@ class QgsFeatureRenderer
 %End
   public:
 
-    static QgsFeatureRenderer *defaultRenderer( QgsWkbTypes::GeometryType geomType ) /Factory/;
+    static QgsFeatureRenderer *defaultRenderer( Qgis::GeometryType geomType ) /Factory/;
 %Docstring
 Returns a new renderer - used by default in vector layers
 %End
@@ -148,6 +148,18 @@ Calls to :py:func:`~QgsFeatureRenderer.stopRender` must always be preceded by a 
    the renderer should instead be cloned and :py:func:`~QgsFeatureRenderer.startRender`/:py:func:`~QgsFeatureRenderer.stopRender` called on the clone.
 
 .. seealso:: :py:func:`startRender`
+%End
+
+    virtual bool canSkipRender();
+%Docstring
+Returns ``True`` if the renderer can be entirely skipped, i.e. if it is known in advance
+that no features will be rendered.
+
+.. warning::
+
+   Must be called between :py:func:`~QgsFeatureRenderer.startRender` and :py:func:`~QgsFeatureRenderer.stopRender` calls.
+
+.. versionadded:: 3.30
 %End
 
     virtual QString filter( const QgsFields &fields = QgsFields() );
@@ -272,7 +284,7 @@ create the SLD UserStyle element following the SLD v1.1 specs with the given nam
 .. versionadded:: 2.8
 %End
 
-    static QgsFeatureRenderer *loadSld( const QDomNode &node, QgsWkbTypes::GeometryType geomType, QString &errorMessage ) /Factory/;
+    static QgsFeatureRenderer *loadSld( const QDomNode &node, Qgis::GeometryType geomType, QString &errorMessage ) /Factory/;
 %Docstring
 Create a new renderer according to the information contained in
 the UserStyle element of a SLD style document

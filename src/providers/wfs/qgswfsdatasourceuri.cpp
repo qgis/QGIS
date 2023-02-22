@@ -369,7 +369,7 @@ bool QgsWFSDataSourceURI::hasGeometryTypeFilter() const
   return mURI.hasParam( QgsWFSConstants::URI_PARAM_GEOMETRY_TYPE_FILTER );
 }
 
-QgsWkbTypes::Type QgsWFSDataSourceURI::geometryTypeFilter() const
+Qgis::WkbType QgsWFSDataSourceURI::geometryTypeFilter() const
 {
   return QgsWkbTypes::parseType( mURI.param( QgsWFSConstants::URI_PARAM_GEOMETRY_TYPE_FILTER ) );
 }

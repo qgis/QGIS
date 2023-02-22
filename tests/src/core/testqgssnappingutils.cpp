@@ -25,7 +25,6 @@
 #include "qgssnappingutils.h"
 #include "qgssnappingconfig.h"
 #include "qgscategorizedsymbolrenderer.h"
-#include "qgssettings.h"
 #include "qgslayertree.h"
 #include "qgslayertreemodel.h"
 #include "qgssymbol.h"
@@ -145,8 +144,8 @@ class TestQgsSnappingUtils : public QObject
     {
       QgsCategorizedSymbolRenderer *renderer = new QgsCategorizedSymbolRenderer();
       renderer->setClassAttribute( QStringLiteral( "fld" ) );
-      renderer->setSourceSymbol( QgsSymbol::defaultSymbol( QgsWkbTypes::PolygonGeometry ) );
-      renderer->addCategory( QgsRendererCategory( "2", QgsSymbol::defaultSymbol( QgsWkbTypes::PolygonGeometry ), QStringLiteral( "2" ) ) );
+      renderer->setSourceSymbol( QgsSymbol::defaultSymbol( Qgis::GeometryType::Polygon ) );
+      renderer->addCategory( QgsRendererCategory( "2", QgsSymbol::defaultSymbol( Qgis::GeometryType::Polygon ), QStringLiteral( "2" ) ) );
       mVL->setRenderer( renderer );
 
       //create legend with symbology nodes for categorized renderer

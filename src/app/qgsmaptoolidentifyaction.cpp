@@ -30,7 +30,6 @@
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 #include "qgsproject.h"
-#include "qgsunittypes.h"
 #include "qgsstatusbar.h"
 #include "qgssettings.h"
 #include "qgsmapmouseevent.h"
@@ -111,7 +110,7 @@ void QgsMapToolIdentifyAction::identifyFromGeometry()
   connect( this, &QgsMapToolIdentifyAction::identifyMessage, QgisApp::instance(), &QgisApp::showStatusMessage );
 
   const QgsGeometry geometry = mSelectionHandler->selectedGeometry();
-  const bool isSinglePoint = geometry.type() == QgsWkbTypes::PointGeometry;
+  const bool isSinglePoint = geometry.type() == Qgis::GeometryType::Point;
 
   if ( isSinglePoint )
     setClickContextScope( geometry.asPoint() );
@@ -233,12 +232,12 @@ void QgsMapToolIdentifyAction::showResultsForFeature( QgsVectorLayer *vlayer, Qg
   resultsDialog()->updateViewModes();
 }
 
-QgsUnitTypes::DistanceUnit QgsMapToolIdentifyAction::displayDistanceUnits() const
+Qgis::DistanceUnit QgsMapToolIdentifyAction::displayDistanceUnits() const
 {
   return QgsProject::instance()->distanceUnits();
 }
 
-QgsUnitTypes::AreaUnit QgsMapToolIdentifyAction::displayAreaUnits() const
+Qgis::AreaUnit QgsMapToolIdentifyAction::displayAreaUnits() const
 {
   return QgsProject::instance()->areaUnits();
 }

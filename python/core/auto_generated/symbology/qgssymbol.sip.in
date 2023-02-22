@@ -91,7 +91,7 @@ Returns a translated string version of the specified symbol ``type``.
 .. versionadded:: 3.20
 %End
 
-    static Qgis::SymbolType symbolTypeForGeometryType( QgsWkbTypes::GeometryType type );
+    static Qgis::SymbolType symbolTypeForGeometryType( Qgis::GeometryType type );
 %Docstring
 Returns the default symbol type required for the specified geometry ``type``.
 
@@ -112,7 +112,7 @@ Returns the symbol property definitions.
 
     virtual ~QgsSymbol();
 
-    static QgsSymbol *defaultSymbol( QgsWkbTypes::GeometryType geomType ) /Factory/;
+    static QgsSymbol *defaultSymbol( Qgis::GeometryType geomType ) /Factory/;
 %Docstring
 Returns a new default symbol for the specified geometry type.
 
@@ -420,7 +420,7 @@ Ownership is transferred to the caller.
 Converts the symbol to a SLD representation.
 %End
 
-    QgsUnitTypes::RenderUnit outputUnit() const;
+    Qgis::RenderUnit outputUnit() const;
 %Docstring
 Returns the units to use for sizes and widths within the symbol. Individual
 symbol layer definitions will interpret this in different ways, e.g., a marker symbol
@@ -439,7 +439,7 @@ Returns ``True`` if the symbol has any components which use map unit based sizes
 .. versionadded:: 3.18
 %End
 
-    void setOutputUnit( QgsUnitTypes::RenderUnit unit ) const;
+    void setOutputUnit( Qgis::RenderUnit unit ) const;
 %Docstring
 Sets the units to use for sizes and widths within the symbol. Individual
 symbol definitions will interpret this in different ways, e.g., a marker symbol
@@ -748,7 +748,7 @@ Retrieve a cloned list of all layers that make up this symbol.
 Ownership is transferred to the caller.
 %End
 
-    void renderUsingLayer( QgsSymbolLayer *layer, QgsSymbolRenderContext &context, QgsWkbTypes::GeometryType geometryType = QgsWkbTypes::GeometryType::UnknownGeometry, const QPolygonF *points = 0, const QVector<QPolygonF> *rings = 0 );
+    void renderUsingLayer( QgsSymbolLayer *layer, QgsSymbolRenderContext &context, Qgis::GeometryType geometryType = Qgis::GeometryType::Unknown, const QPolygonF *points = 0, const QVector<QPolygonF> *rings = 0 );
 %Docstring
 Renders a context using a particular symbol layer without passing in a
 geometry. This is used as fallback, if the symbol being rendered is not

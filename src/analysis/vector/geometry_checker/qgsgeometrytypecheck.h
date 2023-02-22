@@ -27,10 +27,18 @@
 class ANALYSIS_EXPORT QgsGeometryTypeCheckError : public QgsSingleGeometryCheckError
 {
   public:
+
+    /**
+     * Constructor for QgsGeometryTypeCheckError.
+     * \param check associated geometry check
+     * \param geometry original geometry
+     * \param errorLocation location of geometry error
+     * \param flatType geometry flat type
+     */
     QgsGeometryTypeCheckError( const QgsSingleGeometryCheck *check,
                                const QgsGeometry &geometry,
                                const QgsGeometry &errorLocation,
-                               QgsWkbTypes::Type flatType )
+                               Qgis::WkbType flatType )
       : QgsSingleGeometryCheckError( check, geometry, errorLocation )
       , mFlatType( flatType )
     {
@@ -41,7 +49,7 @@ class ANALYSIS_EXPORT QgsGeometryTypeCheckError : public QgsSingleGeometryCheckE
     QString description() const override;
 
   private:
-    QgsWkbTypes::Type mFlatType;
+    Qgis::WkbType mFlatType;
 };
 
 /**
@@ -56,7 +64,7 @@ class ANALYSIS_EXPORT QgsGeometryTypeCheck : public QgsSingleGeometryCheck
       : QgsSingleGeometryCheck( context, configuration )
       , mAllowedTypes( allowedTypes )
     {}
-    QList<QgsWkbTypes::GeometryType> compatibleGeometryTypes() const override { return factoryCompatibleGeometryTypes(); }
+    QList<Qgis::GeometryType> compatibleGeometryTypes() const override { return factoryCompatibleGeometryTypes(); }
     QList<QgsSingleGeometryCheckError *> processGeometry( const QgsGeometry &geometry ) const override;
     void fixError( const QMap<QString, QgsFeaturePool *> &featurePools, QgsGeometryCheckError *error, int method, const QMap<QString, int> &mergeAttributeIndices, Changes &changes ) const override;
     Q_DECL_DEPRECATED QStringList resolutionMethods() const override;
@@ -64,7 +72,7 @@ class ANALYSIS_EXPORT QgsGeometryTypeCheck : public QgsSingleGeometryCheck
     QString id() const override;
     QgsGeometryCheck::CheckType checkType() const override;
 
-    static QList<QgsWkbTypes::GeometryType> factoryCompatibleGeometryTypes() SIP_SKIP {return {QgsWkbTypes::PointGeometry, QgsWkbTypes::LineGeometry, QgsWkbTypes::PolygonGeometry}; }
+    static QList<Qgis::GeometryType> factoryCompatibleGeometryTypes() SIP_SKIP {return {Qgis::GeometryType::Point, Qgis::GeometryType::Line, Qgis::GeometryType::Polygon}; }
     static bool factoryIsCompatible( QgsVectorLayer *layer ) SIP_SKIP { return factoryCompatibleGeometryTypes().contains( layer->geometryType() ); }
     static QString factoryDescription() SIP_SKIP;
     static QString factoryId() SIP_SKIP;

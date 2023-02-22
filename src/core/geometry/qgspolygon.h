@@ -91,10 +91,10 @@ class CORE_EXPORT QgsPolygon: public QgsCurvePolygon
       if ( !geom )
         return nullptr;
 
-      const QgsWkbTypes::Type flatType = QgsWkbTypes::flatType( geom->wkbType() );
+      const Qgis::WkbType flatType = QgsWkbTypes::flatType( geom->wkbType() );
 
-      if ( flatType == QgsWkbTypes::Polygon
-           || flatType == QgsWkbTypes::Triangle )
+      if ( flatType == Qgis::WkbType::Polygon
+           || flatType == Qgis::WkbType::Triangle )
         return static_cast<const QgsPolygon *>( geom );
       return nullptr;
     }

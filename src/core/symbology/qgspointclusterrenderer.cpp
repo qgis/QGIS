@@ -18,12 +18,11 @@
 #include "qgspointclusterrenderer.h"
 #include "qgspointdisplacementrenderer.h"
 #include "qgssymbollayerutils.h"
-#include "qgspainteffectregistry.h"
-#include "qgspainteffect.h"
 #include "qgsmarkersymbollayer.h"
 #include "qgsproperty.h"
 #include "qgsstyleentityvisitor.h"
 #include "qgsmarkersymbol.h"
+#include "qgsunittypes.h"
 
 #include <cmath>
 

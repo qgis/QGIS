@@ -62,7 +62,7 @@ class CORE_EXPORT QgsMaskMarkerSymbolLayer : public QgsMarkerSymbolLayer
     void renderPoint( QPointF point, QgsSymbolRenderContext &context ) override;
     QRectF bounds( QPointF point, QgsSymbolRenderContext &context ) override;
     bool usesMapUnits() const override;
-    void setOutputUnit( QgsUnitTypes::RenderUnit unit ) override;
+    void setOutputUnit( Qgis::RenderUnit unit ) override;
     QColor color() const override;
 
     virtual void drawPreviewIcon( QgsSymbolRenderContext &context, QSize size ) override;

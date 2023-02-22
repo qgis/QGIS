@@ -81,7 +81,7 @@ class GUI_EXPORT QgsCalloutWidget : public QWidget, protected QgsExpressionConte
     /**
      * Sets the geometry \a type of the features to customize the widget accordingly.
      */
-    virtual void setGeometryType( QgsWkbTypes::GeometryType type ) = 0;
+    virtual void setGeometryType( Qgis::GeometryType type ) = 0;
 
   protected:
 
@@ -140,7 +140,7 @@ class GUI_EXPORT QgsSimpleLineCalloutWidget : public QgsCalloutWidget, private U
 
     QgsCallout *callout() override;
 
-    void setGeometryType( QgsWkbTypes::GeometryType type ) override;
+    void setGeometryType( Qgis::GeometryType type ) override;
 
   private slots:
 
@@ -194,7 +194,7 @@ class GUI_EXPORT QgsCurvedLineCalloutWidget : public QgsCalloutWidget, private U
 
     QgsCallout *callout() override;
 
-    void setGeometryType( QgsWkbTypes::GeometryType type ) override;
+    void setGeometryType( Qgis::GeometryType type ) override;
 
   private slots:
 
@@ -236,7 +236,7 @@ class GUI_EXPORT QgsBalloonCalloutWidget : public QgsCalloutWidget, private Ui::
 
     QgsCallout *callout() override;
 
-    void setGeometryType( QgsWkbTypes::GeometryType type ) override;
+    void setGeometryType( Qgis::GeometryType type ) override;
 
   private slots:
 

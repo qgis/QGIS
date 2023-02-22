@@ -40,8 +40,8 @@ class QgsPostgresExpressionCompiler : public QgsSqlExpressionCompiler
 
     QString mGeometryColumn;
     QgsPostgresGeometryColumnType mSpatialColType;
-    QgsWkbTypes::Type mDetectedGeomType;
-    QgsWkbTypes::Type mRequestedGeomType;
+    Qgis::WkbType mDetectedGeomType;
+    Qgis::WkbType mRequestedGeomType;
     QString mRequestedSrid;
     QString mDetectedSrid;
 };

@@ -296,7 +296,7 @@ class ExtractLabelSink : public QgsLabelSink
           buffer.setOpacity( dataDefinedValues.value( QgsPalLayerSettings::BufferOpacity ).toDouble() / 100.0 );
         }
 
-        bufferSize =  buffer.sizeUnit() == QgsUnitTypes::RenderPercentage
+        bufferSize =  buffer.sizeUnit() == Qgis::RenderUnit::Percentage
                       ? context.convertToPainterUnits( format.size(), format.sizeUnit(), format.sizeMapUnitScale() ) * buffer.size() / 100
                       : context.convertToPainterUnits( buffer.size(), buffer.sizeUnit(), buffer.sizeMapUnitScale() );
         bufferSize = bufferSize * 72 / context.painter()->device()->logicalDpiX();
@@ -376,7 +376,7 @@ QVariantMap QgsExtractLabelsAlgorithm::processAlgorithm( const QVariantMap &para
   fields.append( QgsField( QStringLiteral( "BufferOpacity" ), QVariant::Double, QString(), 20, 1 ) );
 
   QString dest;
-  std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, fields, QgsWkbTypes::Point, mCrs, QgsFeatureSink::RegeneratePrimaryKey ) );
+  std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, fields, Qgis::WkbType::Point, mCrs, QgsFeatureSink::RegeneratePrimaryKey ) );
   if ( !sink )
     throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
 
@@ -523,11 +523,11 @@ QVariantMap QgsExtractLabelsAlgorithm::processAlgorithm( const QVariantMap &para
 
       QgsTextFormat textFormat;
       textFormat.setSize( 9 );
-      textFormat.setSizeUnit( QgsUnitTypes::RenderPoints );
+      textFormat.setSizeUnit( Qgis::RenderUnit::Points );
       textFormat.setColor( QColor( 0, 0, 0 ) );
 
       QgsTextBufferSettings buffer = textFormat.buffer();
-      buffer.setSizeUnit( QgsUnitTypes::RenderPoints );
+      buffer.setSizeUnit( Qgis::RenderUnit::Points );
 
       textFormat.setBuffer( buffer );
       settings.setFormat( textFormat );

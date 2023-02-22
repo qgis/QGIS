@@ -17,7 +17,6 @@
 
 #include "qgis.h"
 #include "qgsmeshlayer.h"
-#include "qgsmessagelog.h"
 
 QgsMeshRendererVectorSettingsWidget::QgsMeshRendererVectorSettingsWidget( QWidget *parent )
   : QWidget( parent )
@@ -105,11 +104,13 @@ QgsMeshRendererVectorSettingsWidget::QgsMeshRendererVectorSettingsWidget( QWidge
   connect( mTracesParticlesCountSpinBox, qOverload<int>( &QgsSpinBox::valueChanged ),
            this, &QgsMeshRendererVectorSettingsWidget::widgetChanged );
 
-  mTracesTailLengthMapUnitWidget->setUnits( QgsUnitTypes::RenderUnitList()
-      << QgsUnitTypes::RenderMillimeters
-      << QgsUnitTypes::RenderMetersInMapUnits
-      << QgsUnitTypes::RenderPixels
-      << QgsUnitTypes::RenderPoints );
+  mTracesTailLengthMapUnitWidget->setUnits(
+  {
+    Qgis::RenderUnit::Millimeters,
+    Qgis::RenderUnit::MetersInMapUnits,
+    Qgis::RenderUnit::Pixels,
+    Qgis::RenderUnit::Points
+  } );
 
   connect( mTracesTailLengthMapUnitWidget, &QgsUnitSelectionWidget::changed,
            this, &QgsMeshRendererVectorSettingsWidget::widgetChanged );

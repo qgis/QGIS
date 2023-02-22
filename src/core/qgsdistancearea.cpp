@@ -27,7 +27,6 @@
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
 #include "qgsmultisurface.h"
-#include "qgswkbptr.h"
 #include "qgslinestring.h"
 #include "qgspolygon.h"
 #include "qgssurface.h"
@@ -410,16 +409,16 @@ double QgsDistanceArea::measureLineProjected( const QgsPointXY &p1, double dista
   else // Cartesian coordinates
   {
     result = distance; // Avoid rounding errors when using meters [return as sent]
-    if ( sourceCrs().mapUnits() != QgsUnitTypes::DistanceMeters )
+    if ( sourceCrs().mapUnits() != Qgis::DistanceUnit::Meters )
     {
-      distance = ( distance * QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::DistanceMeters, sourceCrs().mapUnits() ) );
+      distance = ( distance * QgsUnitTypes::fromUnitToUnitFactor( Qgis::DistanceUnit::Meters, sourceCrs().mapUnits() ) );
       result = p1.distance( p2 );
     }
     p2 = p1.project( distance, azimuth );
   }
   QgsDebugMsgLevel( QStringLiteral( "Converted distance of %1 %2 to %3 distance %4 %5, using azimuth[%6] from point[%7] to point[%8] sourceCrs[%9] mEllipsoid[%10] isGeographic[%11] [%12]" )
                     .arg( QString::number( distance, 'f', 7 ),
-                          QgsUnitTypes::toString( QgsUnitTypes::DistanceMeters ),
+                          QgsUnitTypes::toString( Qgis::DistanceUnit::Meters ),
                           QString::number( result, 'f', 7 ),
                           mCoordTransform.sourceCrs().isGeographic() ? QStringLiteral( "Geographic" ) : QStringLiteral( "Cartesian" ),
                           QgsUnitTypes::toString( sourceCrs().mapUnits() ) )
@@ -544,7 +543,7 @@ double QgsDistanceArea::latitudeGeodesicCrossesAntimeridian( const QgsPointXY &p
 
 QgsGeometry QgsDistanceArea::splitGeometryAtAntimeridian( const QgsGeometry &geometry ) const
 {
-  if ( QgsWkbTypes::geometryType( geometry.wkbType() ) != QgsWkbTypes::LineGeometry )
+  if ( QgsWkbTypes::geometryType( geometry.wkbType() ) != Qgis::GeometryType::Line )
     return geometry;
 
   QgsGeometry g = geometry;
@@ -787,14 +786,14 @@ QVector< QVector<QgsPointXY> > QgsDistanceArea::geodesicLine( const QgsPointXY &
   return res;
 }
 
-QgsUnitTypes::DistanceUnit QgsDistanceArea::lengthUnits() const
+Qgis::DistanceUnit QgsDistanceArea::lengthUnits() const
 {
-  return willUseEllipsoid() ? QgsUnitTypes::DistanceMeters : mCoordTransform.sourceCrs().mapUnits();
+  return willUseEllipsoid() ? Qgis::DistanceUnit::Meters : mCoordTransform.sourceCrs().mapUnits();
 }
 
-QgsUnitTypes::AreaUnit QgsDistanceArea::areaUnits() const
+Qgis::AreaUnit QgsDistanceArea::areaUnits() const
 {
-  return willUseEllipsoid() ? QgsUnitTypes::AreaSquareMeters :
+  return willUseEllipsoid() ? Qgis::AreaUnit::SquareMeters :
          QgsUnitTypes::distanceToAreaUnit( mCoordTransform.sourceCrs().mapUnits() );
 }
 
@@ -965,20 +964,20 @@ double QgsDistanceArea::computePolygonFlatArea( const QVector<QgsPointXY> &point
   return std::fabs( area ); // All areas are positive!
 }
 
-QString QgsDistanceArea::formatDistance( double distance, int decimals, QgsUnitTypes::DistanceUnit unit, bool keepBaseUnit )
+QString QgsDistanceArea::formatDistance( double distance, int decimals, Qgis::DistanceUnit unit, bool keepBaseUnit )
 {
   return QgsUnitTypes::formatDistance( distance, decimals, unit, keepBaseUnit );
 }
 
-QString QgsDistanceArea::formatArea( double area, int decimals, QgsUnitTypes::AreaUnit unit, bool keepBaseUnit )
+QString QgsDistanceArea::formatArea( double area, int decimals, Qgis::AreaUnit unit, bool keepBaseUnit )
 {
   return QgsUnitTypes::formatArea( area, decimals, unit, keepBaseUnit );
 }
 
-double QgsDistanceArea::convertLengthMeasurement( double length, QgsUnitTypes::DistanceUnit toUnits ) const
+double QgsDistanceArea::convertLengthMeasurement( double length, Qgis::DistanceUnit toUnits ) const
 {
   // get the conversion factor between the specified units
-  const QgsUnitTypes::DistanceUnit measureUnits = lengthUnits();
+  const Qgis::DistanceUnit measureUnits = lengthUnits();
   const double factorUnits = QgsUnitTypes::fromUnitToUnitFactor( measureUnits, toUnits );
 
   const double result = length * factorUnits;
@@ -989,10 +988,10 @@ double QgsDistanceArea::convertLengthMeasurement( double length, QgsUnitTypes::D
   return result;
 }
 
-double QgsDistanceArea::convertAreaMeasurement( double area, QgsUnitTypes::AreaUnit toUnits ) const
+double QgsDistanceArea::convertAreaMeasurement( double area, Qgis::AreaUnit toUnits ) const
 {
   // get the conversion factor between the specified units
-  const QgsUnitTypes::AreaUnit measureUnits = areaUnits();
+  const Qgis::AreaUnit measureUnits = areaUnits();
   const double factorUnits = QgsUnitTypes::fromUnitToUnitFactor( measureUnits, toUnits );
 
   const double result = area * factorUnits;

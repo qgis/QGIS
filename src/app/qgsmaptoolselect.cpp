@@ -183,7 +183,7 @@ bool QgsMapToolSelect::populateContextMenuWithEvent( QMenu *menu, QgsMapMouseEve
 void QgsMapToolSelect::selectFeatures( Qt::KeyboardModifiers modifiers )
 {
   if ( mSelectionHandler->selectionMode() == QgsMapToolSelectionHandler::SelectSimple &&
-       mSelectionHandler->selectedGeometry().type() == QgsWkbTypes::PointGeometry )
+       mSelectionHandler->selectedGeometry().type() == Qgis::GeometryType::Point )
   {
     QgsMapLayer *layer = QgsMapToolSelectUtils::getCurrentTargetLayer( mCanvas );
     const QgsRectangle r = QgsMapToolSelectUtils::expandSelectRectangle( mSelectionHandler->selectedGeometry().asPoint(), mCanvas, layer );

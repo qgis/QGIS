@@ -75,7 +75,7 @@ class QgsAfsSharedData : public QObject
     QgsDataSourceUri mDataSource;
     bool mLimitBBox = false;
     QgsRectangle mExtent;
-    QgsWkbTypes::Type mGeometryType = QgsWkbTypes::Unknown;
+    Qgis::WkbType mGeometryType = Qgis::WkbType::Unknown;
     QgsFields mFields;
     int mMaximumFetchObjectsCount = 100;
 

@@ -205,7 +205,7 @@ Returns the coordinate reference system for features in the cache.
 Returns the fields associated with features in the cache.
 %End
 
-    QgsWkbTypes::Type wkbType() const;
+    Qgis::WkbType wkbType() const;
 %Docstring
 Returns the geometry type for features in the cache.
 %End

@@ -37,7 +37,7 @@ Used for setting M coordinate to new vertex.
 .. versionadded:: 3.20
 %End
 
-    QgsGeometryRubberBand *createGeometryRubberBand( QgsWkbTypes::GeometryType geometryType = QgsWkbTypes::LineGeometry, bool alternativeBand = false ) const /Factory/;
+    QgsGeometryRubberBand *createGeometryRubberBand( Qgis::GeometryType geometryType = Qgis::GeometryType::Line, bool alternativeBand = false ) const /Factory/;
 %Docstring
 Creates a  geometry rubber band with the color/line width from
 the QGIS settings. The caller takes ownership of the
@@ -62,7 +62,7 @@ Returns stroke width for rubber bands (from global settings)
 Returns fill color for rubber bands (from global settings)
 %End
 
-    QgsRubberBand *createRubberBand( QgsWkbTypes::GeometryType geometryType = QgsWkbTypes::LineGeometry, bool alternativeBand = false ) /Factory/;
+    QgsRubberBand *createRubberBand( Qgis::GeometryType geometryType = Qgis::GeometryType::Line, bool alternativeBand = false ) /Factory/;
 %Docstring
 Creates a rubber band with the color/line width from
 the QGIS settings. The caller takes ownership of the

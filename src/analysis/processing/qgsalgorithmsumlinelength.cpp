@@ -174,7 +174,7 @@ bool QgsSumLineLengthAlgorithm::supportInPlaceEdit( const QgsMapLayer *layer ) c
 {
   if ( const QgsVectorLayer *vl = qobject_cast< const QgsVectorLayer * >( layer ) )
   {
-    return vl->geometryType() == QgsWkbTypes::PolygonGeometry;
+    return vl->geometryType() == Qgis::GeometryType::Polygon;
   }
   return false;
 }

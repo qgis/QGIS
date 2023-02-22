@@ -123,7 +123,7 @@ QVariantMap QgsTransectAlgorithm::processAlgorithm( const QVariantMap &parameter
   fields.append( QgsField( QStringLiteral( "TR_LENGTH" ), QVariant::Double, QString(), 20, 6 ) );
   fields.append( QgsField( QStringLiteral( "TR_ORIENT" ), QVariant::Int, QString(), 1 ) );
 
-  QgsWkbTypes::Type outputWkb = QgsWkbTypes::LineString;
+  Qgis::WkbType outputWkb = Qgis::WkbType::LineString;
   if ( QgsWkbTypes::hasZ( source->wkbType() ) )
     outputWkb = QgsWkbTypes::addZ( outputWkb );
   if ( QgsWkbTypes::hasM( source->wkbType() ) )

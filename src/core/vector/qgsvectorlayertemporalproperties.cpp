@@ -21,6 +21,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsfields.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsunittypes.h"
 
 QgsVectorLayerTemporalProperties::QgsVectorLayerTemporalProperties( QObject *parent, bool enabled )
   :  QgsMapLayerTemporalProperties( parent, enabled )
@@ -272,7 +273,7 @@ bool QgsVectorLayerTemporalProperties::readXml( const QDomElement &element, cons
   mStartExpression = temporalNode.attribute( QStringLiteral( "startExpression" ) );
   mEndExpression = temporalNode.attribute( QStringLiteral( "endExpression" ) );
   mDurationFieldName = temporalNode.attribute( QStringLiteral( "durationField" ) );
-  mDurationUnit = QgsUnitTypes::decodeTemporalUnit( temporalNode.attribute( QStringLiteral( "durationUnit" ), QgsUnitTypes::encodeUnit( QgsUnitTypes::TemporalMinutes ) ) );
+  mDurationUnit = QgsUnitTypes::decodeTemporalUnit( temporalNode.attribute( QStringLiteral( "durationUnit" ), QgsUnitTypes::encodeUnit( Qgis::TemporalUnit::Minutes ) ) );
   mFixedDuration = temporalNode.attribute( QStringLiteral( "fixedDuration" ) ).toDouble();
   mAccumulateFeatures = temporalNode.attribute( QStringLiteral( "accumulate" ), QStringLiteral( "0" ) ).toInt();
 
@@ -422,12 +423,12 @@ void QgsVectorLayerTemporalProperties::setDurationField( const QString &field )
   mDurationFieldName = field;
 }
 
-QgsUnitTypes::TemporalUnit QgsVectorLayerTemporalProperties::durationUnits() const
+Qgis::TemporalUnit QgsVectorLayerTemporalProperties::durationUnits() const
 {
   return mDurationUnit;
 }
 
-void QgsVectorLayerTemporalProperties::setDurationUnits( QgsUnitTypes::TemporalUnit units )
+void QgsVectorLayerTemporalProperties::setDurationUnits( Qgis::TemporalUnit units )
 {
   mDurationUnit = units;
 }
@@ -496,48 +497,48 @@ QString QgsVectorLayerTemporalProperties::createFilterString( const QgsVectorLay
       QString intervalExpression;
       switch ( mDurationUnit )
       {
-        case QgsUnitTypes::TemporalMilliseconds:
+        case Qgis::TemporalUnit::Milliseconds:
           intervalExpression = QStringLiteral( "make_interval(0,0,0,0,0,0,%1/1000)" ).arg( QgsExpression::quotedColumnRef( mDurationFieldName ) );
           break;
 
-        case QgsUnitTypes::TemporalSeconds:
+        case Qgis::TemporalUnit::Seconds:
           intervalExpression = QStringLiteral( "make_interval(0,0,0,0,0,0,%1)" ).arg( QgsExpression::quotedColumnRef( mDurationFieldName ) );
           break;
 
-        case QgsUnitTypes::TemporalMinutes:
+        case Qgis::TemporalUnit::Minutes:
           intervalExpression = QStringLiteral( "make_interval(0,0,0,0,0,%1,0)" ).arg( QgsExpression::quotedColumnRef( mDurationFieldName ) );
           break;
 
-        case QgsUnitTypes::TemporalHours:
+        case Qgis::TemporalUnit::Hours:
           intervalExpression = QStringLiteral( "make_interval(0,0,0,0,%1,0,0)" ).arg( QgsExpression::quotedColumnRef( mDurationFieldName ) );
           break;
 
-        case QgsUnitTypes::TemporalDays:
+        case Qgis::TemporalUnit::Days:
           intervalExpression = QStringLiteral( "make_interval(0,0,0,%1,0,0,0)" ).arg( QgsExpression::quotedColumnRef( mDurationFieldName ) );
           break;
 
-        case QgsUnitTypes::TemporalWeeks:
+        case Qgis::TemporalUnit::Weeks:
           intervalExpression = QStringLiteral( "make_interval(0,0,%1,0,0,0,0)" ).arg( QgsExpression::quotedColumnRef( mDurationFieldName ) );
           break;
 
-        case QgsUnitTypes::TemporalMonths:
+        case Qgis::TemporalUnit::Months:
           intervalExpression = QStringLiteral( "make_interval(0,%1,0,0,0,0,0)" ).arg( QgsExpression::quotedColumnRef( mDurationFieldName ) );
           break;
 
-        case QgsUnitTypes::TemporalYears:
+        case Qgis::TemporalUnit::Years:
           intervalExpression = QStringLiteral( "make_interval(%1,0,0,0,0,0,0)" ).arg( QgsExpression::quotedColumnRef( mDurationFieldName ) );
           break;
 
-        case QgsUnitTypes::TemporalDecades:
+        case Qgis::TemporalUnit::Decades:
           intervalExpression = QStringLiteral( "make_interval(10 * %1,0,0,0,0,0,0)" ).arg( QgsExpression::quotedColumnRef( mDurationFieldName ) );
           break;
 
-        case QgsUnitTypes::TemporalCenturies:
+        case Qgis::TemporalUnit::Centuries:
           intervalExpression = QStringLiteral( "make_interval(100 * %1,0,0,0,0,0,0)" ).arg( QgsExpression::quotedColumnRef( mDurationFieldName ) );
           break;
 
-        case QgsUnitTypes::TemporalUnknownUnit:
-        case QgsUnitTypes::TemporalIrregularStep:
+        case Qgis::TemporalUnit::Unknown:
+        case Qgis::TemporalUnit::IrregularStep:
           return QString();
       }
       return QStringLiteral( "(%1 %2 %3 OR %1 IS NULL) AND ((%1 + %4 %5 %6) OR %7 IS NULL)" ).arg( dateTimefieldCast( mStartFieldName ),

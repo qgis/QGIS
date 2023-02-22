@@ -552,7 +552,7 @@ QgsLayerTreeLayer *QgsLayerTreeUtils::insertLayerAtOptimalPlacement( QgsLayerTre
         case Qgis::LayerType::Vector:
         {
           const QgsVectorLayer *vlayer = static_cast<const QgsVectorLayer *>( layer );
-          if ( vlayer->geometryType() == QgsWkbTypes::PointGeometry )
+          if ( vlayer->geometryType() == Qgis::GeometryType::Point )
           {
             if ( vectorLineIndex < nodeIdx )
               vectorLineIndex = nodeIdx;
@@ -567,7 +567,7 @@ QgsLayerTreeLayer *QgsLayerTreeUtils::insertLayerAtOptimalPlacement( QgsLayerTre
             if ( basemapIndex < nodeIdx )
               basemapIndex = nodeIdx;
           }
-          else if ( vlayer->geometryType() == QgsWkbTypes::LineGeometry )
+          else if ( vlayer->geometryType() == Qgis::GeometryType::Line )
           {
             if ( vectorPolygonIndex < nodeIdx )
               vectorPolygonIndex = nodeIdx;
@@ -580,7 +580,7 @@ QgsLayerTreeLayer *QgsLayerTreeUtils::insertLayerAtOptimalPlacement( QgsLayerTre
             if ( basemapIndex < nodeIdx )
               basemapIndex = nodeIdx;
           }
-          else if ( vlayer->geometryType() == QgsWkbTypes::PolygonGeometry )
+          else if ( vlayer->geometryType() == Qgis::GeometryType::Polygon )
           {
             if ( pointCloudIndex < nodeIdx )
               pointCloudIndex = nodeIdx;
@@ -642,15 +642,15 @@ QgsLayerTreeLayer *QgsLayerTreeUtils::insertLayerAtOptimalPlacement( QgsLayerTre
     case Qgis::LayerType::Vector:
     {
       QgsVectorLayer *vlayer = static_cast<QgsVectorLayer *>( layer );
-      if ( vlayer->geometryType() == QgsWkbTypes::PointGeometry )
+      if ( vlayer->geometryType() == Qgis::GeometryType::Point )
       {
         index = 0;
       }
-      else if ( vlayer->geometryType() == QgsWkbTypes::LineGeometry )
+      else if ( vlayer->geometryType() == Qgis::GeometryType::Line )
       {
         index = vectorLineIndex;
       }
-      else if ( vlayer->geometryType() == QgsWkbTypes::PolygonGeometry )
+      else if ( vlayer->geometryType() == Qgis::GeometryType::Polygon )
       {
         index = vectorPolygonIndex;
       }

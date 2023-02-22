@@ -1035,7 +1035,7 @@ Evaluates the parameter with matching ``definition`` and ``value`` to a static b
 %End
 
     static QgsFeatureSink *parameterAsSink( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters,
-                                            const QgsFields &fields, QgsWkbTypes::Type geometryType, const QgsCoordinateReferenceSystem &crs,
+                                            const QgsFields &fields, Qgis::WkbType geometryType, const QgsCoordinateReferenceSystem &crs,
                                             QgsProcessingContext &context, QString &destinationIdentifier /Out/, QgsFeatureSink::SinkFlags sinkFlags = QgsFeatureSink::SinkFlags(), const QVariantMap &createOptions = QVariantMap(), const QStringList &datasourceOptions = QStringList(), const QStringList &layerOptions = QStringList() ) /Factory/;
 %Docstring
 Evaluates the parameter with matching ``definition`` to a feature sink.
@@ -1056,7 +1056,7 @@ This function creates a new object and the caller takes responsibility for delet
 %End
 
     static QgsFeatureSink *parameterAsSink( const QgsProcessingParameterDefinition *definition, const QVariant &value,
-                                            const QgsFields &fields, QgsWkbTypes::Type geometryType, const QgsCoordinateReferenceSystem &crs,
+                                            const QgsFields &fields, Qgis::WkbType geometryType, const QgsCoordinateReferenceSystem &crs,
                                             QgsProcessingContext &context, QString &destinationIdentifier /Out/, QgsFeatureSink::SinkFlags sinkFlags = QgsFeatureSink::SinkFlags(), const QVariantMap &createOptions = QVariantMap(), const QStringList &datasourceOptions = QStringList(), const QStringList &layerOptions = QStringList() ) throw( QgsProcessingException ) /Factory/;
 %Docstring
 Evaluates the parameter with matching ``definition`` and ``value`` to a feature sink.
@@ -2375,7 +2375,7 @@ Sets the name of the parent layer parameter. Use an empty string if this is not 
 .. seealso:: :py:func:`parentParameterName`
 %End
 
-    QgsUnitTypes::DistanceUnit defaultUnit() const;
+    Qgis::DistanceUnit defaultUnit() const;
 %Docstring
 Returns the default distance unit for the parameter.
 
@@ -2384,7 +2384,7 @@ Returns the default distance unit for the parameter.
 .. versionadded:: 3.4.3
 %End
 
-    void setDefaultUnit( QgsUnitTypes::DistanceUnit unit );
+    void setDefaultUnit( Qgis::DistanceUnit unit );
 %Docstring
 Sets the default distance ``unit`` for the parameter.
 
@@ -2436,14 +2436,14 @@ Returns the type name for the parameter class.
     virtual QString asPythonString( QgsProcessing::PythonOutputType outputType = QgsProcessing::PythonQgsProcessingAlgorithmSubclass ) const;
 
 
-    QgsUnitTypes::TemporalUnit defaultUnit() const;
+    Qgis::TemporalUnit defaultUnit() const;
 %Docstring
 Returns the default duration unit for the parameter.
 
 .. seealso:: :py:func:`setDefaultUnit`
 %End
 
-    void setDefaultUnit( QgsUnitTypes::TemporalUnit unit );
+    void setDefaultUnit( Qgis::TemporalUnit unit );
 %Docstring
 Sets the default duration ``unit`` for the parameter.
 

@@ -240,7 +240,7 @@ QgsGeometry QgsOgcUtils::geometryFromGMLPoint( const QDomElement &geometryElemen
   double y = point_it->y();
   const int size = 1 + sizeof( int ) + 2 * sizeof( double );
 
-  QgsWkbTypes::Type type = QgsWkbTypes::Point;
+  Qgis::WkbType type = Qgis::WkbType::Point;
   unsigned char *wkb = new unsigned char[size];
 
   int wkbPosition = 0; //current offset from wkb beginning (in bytes)
@@ -287,7 +287,7 @@ QgsGeometry QgsOgcUtils::geometryFromGMLLineString( const QDomElement &geometryE
   char e = htonl( 1 ) != 1;
   const int size = 1 + 2 * sizeof( int ) + lineCoordinates.size() * 2 * sizeof( double );
 
-  QgsWkbTypes::Type type = QgsWkbTypes::LineString;
+  Qgis::WkbType type = Qgis::WkbType::LineString;
   unsigned char *wkb = new unsigned char[size];
 
   int wkbPosition = 0; //current offset from wkb beginning (in bytes)
@@ -406,7 +406,7 @@ QgsGeometry QgsOgcUtils::geometryFromGMLPolygon( const QDomElement &geometryElem
   }
   const int size = 1 + 2 * sizeof( int ) + nrings * sizeof( int ) + 2 * npoints * sizeof( double );
 
-  QgsWkbTypes::Type type = QgsWkbTypes::Polygon;
+  Qgis::WkbType type = Qgis::WkbType::Polygon;
   unsigned char *wkb = new unsigned char[size];
 
   //char e = QgsApplication::endian();
@@ -511,7 +511,7 @@ QgsGeometry QgsOgcUtils::geometryFromGMLMultiPoint( const QDomElement &geometryE
   //calculate the required wkb size
   const int size = 1 + 2 * sizeof( int ) + pointList.size() * ( 2 * sizeof( double ) + 1 + sizeof( int ) );
 
-  QgsWkbTypes::Type type = QgsWkbTypes::MultiPoint;
+  Qgis::WkbType type = Qgis::WkbType::MultiPoint;
   unsigned char *wkb = new unsigned char[size];
 
   //fill the wkb content
@@ -524,7 +524,7 @@ QgsGeometry QgsOgcUtils::geometryFromGMLMultiPoint( const QDomElement &geometryE
   wkbPosition += sizeof( int );
   memcpy( &( wkb )[wkbPosition], &nPoints, sizeof( int ) );
   wkbPosition += sizeof( int );
-  type = QgsWkbTypes::Point;
+  type = Qgis::WkbType::Point;
   for ( QgsPolylineXY::const_iterator it = pointList.constBegin(); it != pointList.constEnd(); ++it )
   {
     memcpy( &( wkb )[wkbPosition], &e, 1 );
@@ -649,7 +649,7 @@ QgsGeometry QgsOgcUtils::geometryFromGMLMultiLineString( const QDomElement &geom
     size += it->size() * 2 * sizeof( double );
   }
 
-  QgsWkbTypes::Type type = QgsWkbTypes::MultiLineString;
+  Qgis::WkbType type = Qgis::WkbType::MultiLineString;
   unsigned char *wkb = new unsigned char[size];
 
   //fill the wkb content
@@ -663,7 +663,7 @@ QgsGeometry QgsOgcUtils::geometryFromGMLMultiLineString( const QDomElement &geom
   wkbPosition += sizeof( int );
   memcpy( &( wkb )[wkbPosition], &nLines, sizeof( int ) );
   wkbPosition += sizeof( int );
-  type = QgsWkbTypes::LineString;
+  type = Qgis::WkbType::LineString;
   for ( QList< QgsPolylineXY >::const_iterator it = lineCoordinates.constBegin(); it != lineCoordinates.constEnd(); ++it )
   {
     memcpy( &( wkb )[wkbPosition], &e, 1 );
@@ -846,7 +846,7 @@ QgsGeometry QgsOgcUtils::geometryFromGMLMultiPolygon( const QDomElement &geometr
     }
   }
 
-  QgsWkbTypes::Type type = QgsWkbTypes::MultiPolygon;
+  Qgis::WkbType type = Qgis::WkbType::MultiPolygon;
   unsigned char *wkb = new unsigned char[size];
 
   char e = htonl( 1 ) != 1;
@@ -863,7 +863,7 @@ QgsGeometry QgsOgcUtils::geometryFromGMLMultiPolygon( const QDomElement &geometr
   memcpy( &( wkb )[wkbPosition], &nPolygons, sizeof( int ) );
   wkbPosition += sizeof( int );
 
-  type = QgsWkbTypes::Polygon;
+  type = Qgis::WkbType::Polygon;
 
   for ( QgsMultiPolygonXY::const_iterator it = multiPolygonPoints.constBegin(); it != multiPolygonPoints.constEnd(); ++it )
   {
@@ -1256,10 +1256,10 @@ QDomElement QgsOgcUtils::geometryToGML( const QgsGeometry &geometry,
   {
     switch ( geometry.wkbType() )
     {
-      case QgsWkbTypes::Point25D:
-      case QgsWkbTypes::Point:
-      case QgsWkbTypes::MultiPoint25D:
-      case QgsWkbTypes::MultiPoint:
+      case Qgis::WkbType::Point25D:
+      case Qgis::WkbType::Point:
+      case Qgis::WkbType::MultiPoint25D:
+      case Qgis::WkbType::MultiPoint:
         baseCoordElem = doc.createElement( QStringLiteral( "gml:pos" ) );
         break;
       default:
@@ -1280,8 +1280,8 @@ QDomElement QgsOgcUtils::geometryToGML( const QgsGeometry &geometry,
   {
     switch ( geometry.wkbType() )
     {
-      case QgsWkbTypes::Point25D:
-      case QgsWkbTypes::Point:
+      case Qgis::WkbType::Point25D:
+      case Qgis::WkbType::Point:
       {
         QDomElement pointElem = doc.createElement( QStringLiteral( "gml:Point" ) );
         if ( gmlVersion == GML_3_2_1 && !gmlIdBase.isEmpty() )
@@ -1302,11 +1302,11 @@ QDomElement QgsOgcUtils::geometryToGML( const QgsGeometry &geometry,
         pointElem.appendChild( coordElem );
         return pointElem;
       }
-      case QgsWkbTypes::MultiPoint25D:
+      case Qgis::WkbType::MultiPoint25D:
         hasZValue = true;
         //intentional fall-through
         FALLTHROUGH
-      case QgsWkbTypes::MultiPoint:
+      case Qgis::WkbType::MultiPoint:
       {
         QDomElement multiPointElem = doc.createElement( QStringLiteral( "gml:MultiPoint" ) );
         if ( gmlVersion == GML_3_2_1 && !gmlIdBase.isEmpty() )
@@ -1347,11 +1347,11 @@ QDomElement QgsOgcUtils::geometryToGML( const QgsGeometry &geometry,
         }
         return multiPointElem;
       }
-      case QgsWkbTypes::LineString25D:
+      case Qgis::WkbType::LineString25D:
         hasZValue = true;
         //intentional fall-through
         FALLTHROUGH
-      case QgsWkbTypes::LineString:
+      case Qgis::WkbType::LineString:
       {
         QDomElement lineStringElem = doc.createElement( QStringLiteral( "gml:LineString" ) );
         if ( gmlVersion == GML_3_2_1 && !gmlIdBase.isEmpty() )
@@ -1390,11 +1390,11 @@ QDomElement QgsOgcUtils::geometryToGML( const QgsGeometry &geometry,
         lineStringElem.appendChild( coordElem );
         return lineStringElem;
       }
-      case QgsWkbTypes::MultiLineString25D:
+      case Qgis::WkbType::MultiLineString25D:
         hasZValue = true;
         //intentional fall-through
         FALLTHROUGH
-      case QgsWkbTypes::MultiLineString:
+      case Qgis::WkbType::MultiLineString:
       {
         QDomElement multiLineStringElem = doc.createElement( QStringLiteral( "gml:MultiLineString" ) );
         if ( gmlVersion == GML_3_2_1 && !gmlIdBase.isEmpty() )
@@ -1448,11 +1448,11 @@ QDomElement QgsOgcUtils::geometryToGML( const QgsGeometry &geometry,
         }
         return multiLineStringElem;
       }
-      case QgsWkbTypes::Polygon25D:
+      case Qgis::WkbType::Polygon25D:
         hasZValue = true;
         //intentional fall-through
         FALLTHROUGH
-      case QgsWkbTypes::Polygon:
+      case Qgis::WkbType::Polygon:
       {
         QDomElement polygonElem = doc.createElement( QStringLiteral( "gml:Polygon" ) );
         if ( gmlVersion == GML_3_2_1 && !gmlIdBase.isEmpty() )
@@ -1510,11 +1510,11 @@ QDomElement QgsOgcUtils::geometryToGML( const QgsGeometry &geometry,
         }
         return polygonElem;
       }
-      case QgsWkbTypes::MultiPolygon25D:
+      case Qgis::WkbType::MultiPolygon25D:
         hasZValue = true;
         //intentional fall-through
         FALLTHROUGH
-      case QgsWkbTypes::MultiPolygon:
+      case Qgis::WkbType::MultiPolygon:
       {
         QDomElement multiPolygonElem = doc.createElement( QStringLiteral( "gml:MultiPolygon" ) );
         if ( gmlVersion == GML_3_2_1 && !gmlIdBase.isEmpty() )

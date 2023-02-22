@@ -738,9 +738,9 @@ void QgsSnappingWidget::updateToleranceDecimals()
   }
   else
   {
-    QgsUnitTypes::DistanceUnit mapUnit = mCanvas->mapUnits();
-    QgsUnitTypes::DistanceUnitType type = QgsUnitTypes::unitType( mapUnit );
-    if ( type == QgsUnitTypes::Standard )
+    Qgis::DistanceUnit mapUnit = mCanvas->mapUnits();
+    Qgis::DistanceUnitType type = QgsUnitTypes::unitType( mapUnit );
+    if ( type == Qgis::DistanceUnitType::Standard )
     {
       mToleranceSpinBox->setDecimals( 2 );
     }

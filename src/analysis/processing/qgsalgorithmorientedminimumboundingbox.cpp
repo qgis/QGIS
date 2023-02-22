@@ -50,9 +50,9 @@ QString QgsOrientedMinimumBoundingBoxAlgorithm::outputName() const
   return QObject::tr( "Bounding boxes" );
 }
 
-QgsWkbTypes::Type QgsOrientedMinimumBoundingBoxAlgorithm::outputWkbType( QgsWkbTypes::Type ) const
+Qgis::WkbType QgsOrientedMinimumBoundingBoxAlgorithm::outputWkbType( Qgis::WkbType ) const
 {
-  return QgsWkbTypes::Polygon;
+  return Qgis::WkbType::Polygon;
 }
 
 QString QgsOrientedMinimumBoundingBoxAlgorithm::shortHelpString() const
@@ -76,7 +76,7 @@ bool QgsOrientedMinimumBoundingBoxAlgorithm::supportInPlaceEdit( const QgsMapLay
   if ( ! QgsProcessingFeatureBasedAlgorithm::supportInPlaceEdit( layer ) )
     return false;
   // Polygons only
-  return layer->wkbType() == QgsWkbTypes::Type::Polygon || layer->wkbType() == QgsWkbTypes::Type::MultiPolygon;
+  return layer->wkbType() == Qgis::WkbType::Polygon || layer->wkbType() == Qgis::WkbType::MultiPolygon;
 }
 
 QgsFields QgsOrientedMinimumBoundingBoxAlgorithm::outputFields( const QgsFields &inputFields ) const

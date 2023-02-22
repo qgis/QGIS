@@ -54,14 +54,14 @@ Returns color used for rendering
 Sets color used for rendering of the mesh
 %End
 
-    QgsUnitTypes::RenderUnit lineWidthUnit() const;
+    Qgis::RenderUnit lineWidthUnit() const;
 %Docstring
 Returns units of the width of the mesh frame
 
 .. versionadded:: 3.14
 %End
 
-    void setLineWidthUnit( const QgsUnitTypes::RenderUnit &lineWidthUnit );
+    void setLineWidthUnit( Qgis::RenderUnit lineWidthUnit );
 %Docstring
 Sets units of the width of the mesh frame
 
@@ -166,14 +166,14 @@ Sets the stroke width used to render edges scalar dataset
 .. versionadded:: 3.14
 %End
 
-    QgsUnitTypes::RenderUnit edgeStrokeWidthUnit() const;
+    Qgis::RenderUnit edgeStrokeWidthUnit() const;
 %Docstring
 Returns the stroke width unit used to render edges scalar dataset
 
 .. versionadded:: 3.14
 %End
 
-    void setEdgeStrokeWidthUnit( const QgsUnitTypes::RenderUnit &edgeStrokeWidthUnit );
+    void setEdgeStrokeWidthUnit( Qgis::RenderUnit edgeStrokeWidthUnit );
 %Docstring
 Sets the stroke width unit used to render edges scalar dataset
 
@@ -399,11 +399,11 @@ Returns particles count
 %Docstring
 Sets particles count
 %End
-    QgsUnitTypes::RenderUnit maximumTailLengthUnit() const;
+    Qgis::RenderUnit maximumTailLengthUnit() const;
 %Docstring
 Returns the maximum tail length unit
 %End
-    void setMaximumTailLengthUnit( const QgsUnitTypes::RenderUnit &maximumTailLengthUnit );
+    void setMaximumTailLengthUnit( Qgis::RenderUnit maximumTailLengthUnit );
 %Docstring
 Sets the maximum tail length unit
 %End
@@ -416,8 +416,6 @@ Reads configuration from the given DOM element
 %Docstring
 Writes configuration to a new DOM element
 %End
-
-
 
 };
 

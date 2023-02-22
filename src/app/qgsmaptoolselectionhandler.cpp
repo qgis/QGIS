@@ -277,7 +277,7 @@ void QgsMapToolSelectionHandler::selectPolygonPressEvent( QgsMapMouseEvent *e )
   // Handle immediate right-click on feature to show context menu
   if ( !mSelectionRubberBand && ( e->button() == Qt::RightButton ) )
   {
-    const QList<QgsMapToolIdentify::IdentifyResult> results = QgsIdentifyMenu::findFeaturesOnCanvas( e, mCanvas, { QgsWkbTypes::PolygonGeometry } );
+    const QList<QgsMapToolIdentify::IdentifyResult> results = QgsIdentifyMenu::findFeaturesOnCanvas( e, mCanvas, { Qgis::GeometryType::Polygon } );
 
     const QPoint globalPos = mCanvas->mapToGlobal( QPoint( e->pos().x() + 5, e->pos().y() + 5 ) );
     const QList<QgsMapToolIdentify::IdentifyResult> selectedFeatures = mIdentifyMenu->exec( results, globalPos );
@@ -405,7 +405,7 @@ void QgsMapToolSelectionHandler::selectRadiusReleaseEvent( QgsMapMouseEvent *e )
 
 void QgsMapToolSelectionHandler::initRubberBand()
 {
-  mSelectionRubberBand = std::make_unique<QgsRubberBand>( mCanvas, QgsWkbTypes::PolygonGeometry );
+  mSelectionRubberBand = std::make_unique<QgsRubberBand>( mCanvas, Qgis::GeometryType::Polygon );
   mSelectionRubberBand->setFillColor( mFillColor );
   mSelectionRubberBand->setStrokeColor( mStrokeColor );
 }
@@ -463,7 +463,7 @@ void QgsMapToolSelectionHandler::updateRadiusRubberband( double radius )
 
   const int RADIUS_SEGMENTS = 80;
 
-  mSelectionRubberBand->reset( QgsWkbTypes::PolygonGeometry );
+  mSelectionRubberBand->reset( Qgis::GeometryType::Polygon );
   for ( int i = 0; i <= RADIUS_SEGMENTS; ++i )
   {
     const double theta = i * ( 2.0 * M_PI / RADIUS_SEGMENTS );

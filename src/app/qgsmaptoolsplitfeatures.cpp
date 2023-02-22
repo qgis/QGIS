@@ -64,21 +64,24 @@ void QgsMapToolSplitFeatures::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 
   bool split = false;
 
-
   //add point to list and to rubber band
   if ( e->button() == Qt::LeftButton )
   {
+    int error = 0;
     //If we snap the first point on a vertex of a line layer, we directly split the feature at this point
-    if ( vlayer->geometryType() == QgsWkbTypes::LineGeometry && pointsZM().isEmpty() )
+    if ( vlayer->geometryType() == Qgis::GeometryType::Line && pointsZM().isEmpty() )
     {
       const QgsPointLocator::Match m = mCanvas->snappingUtils()->snapToCurrentLayer( e->pos(), QgsPointLocator::Vertex );
       if ( m.isValid() )
       {
+        error = addVertex( e->mapPoint(), m );
         split = true;
       }
     }
 
-    const int error = addVertex( e->mapPoint(), e->mapPointMatch() );
+    if ( !split )
+      error = addVertex( e->mapPoint(), e->mapPointMatch() );
+
     if ( error == 2 )
     {
       //problem with coordinate transformation
@@ -93,6 +96,12 @@ void QgsMapToolSplitFeatures::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
   }
   else if ( e->button() == Qt::RightButton )
   {
+    if ( !split && size() < 2 )
+    {
+      stopCapturing();
+      return;
+    }
+
     split = true;
   }
 
@@ -129,8 +138,8 @@ void QgsMapToolSplitFeatures::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
                  vectorLayer->isEditable() &&
                  vectorLayer->isSpatial() &&
                  vectorLayer != vlayer &&
-                 ( vectorLayer->geometryType() == QgsWkbTypes::LineGeometry ||
-                   vectorLayer->geometryType() == QgsWkbTypes::PolygonGeometry ) )
+                 ( vectorLayer->geometryType() == Qgis::GeometryType::Line ||
+                   vectorLayer->geometryType() == Qgis::GeometryType::Polygon ) )
             {
               vectorLayer->beginEditCommand( tr( "Topological points from Features split" ) );
               const int returnValue = vectorLayer->addTopologicalPoints( topologyTestPoints );

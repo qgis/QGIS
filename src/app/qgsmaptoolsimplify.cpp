@@ -342,7 +342,7 @@ void QgsMapToolSimplify::canvasMoveEvent( QgsMapMouseEvent *e )
   {
     mDragging = true;
     delete mSelectionRubberBand;
-    mSelectionRubberBand = new QgsRubberBand( mCanvas, QgsWkbTypes::PolygonGeometry );
+    mSelectionRubberBand = new QgsRubberBand( mCanvas, Qgis::GeometryType::Polygon );
     QColor color( Qt::blue );
     color.setAlpha( 63 );
     mSelectionRubberBand->setColor( color );

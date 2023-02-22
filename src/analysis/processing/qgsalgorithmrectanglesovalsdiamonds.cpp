@@ -69,9 +69,9 @@ QgsProcessing::SourceType QgsRectanglesOvalsDiamondsAlgorithm::outputLayerType()
   return QgsProcessing::TypeVectorPolygon;
 }
 
-QgsWkbTypes::Type QgsRectanglesOvalsDiamondsAlgorithm::outputWkbType( QgsWkbTypes::Type inputWkbType ) const
+Qgis::WkbType QgsRectanglesOvalsDiamondsAlgorithm::outputWkbType( Qgis::WkbType inputWkbType ) const
 {
-  QgsWkbTypes::Type outputWkbType = QgsWkbTypes::Polygon;
+  Qgis::WkbType outputWkbType = Qgis::WkbType::Polygon;
   if ( QgsWkbTypes::hasM( inputWkbType ) )
   {
     outputWkbType = QgsWkbTypes::addM( outputWkbType );

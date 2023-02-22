@@ -70,7 +70,7 @@ QList<int> QgsGeometryByExpressionAlgorithm::inputLayerTypes() const
   return QList< int >() << QgsProcessing::TypeVector;
 }
 
-QgsWkbTypes::Type QgsGeometryByExpressionAlgorithm::outputWkbType( QgsWkbTypes::Type ) const
+Qgis::WkbType QgsGeometryByExpressionAlgorithm::outputWkbType( Qgis::WkbType ) const
 {
   return mWkbType;
 }
@@ -96,13 +96,13 @@ bool QgsGeometryByExpressionAlgorithm::prepareAlgorithm( const QVariantMap &para
   switch ( geometryType )
   {
     case 0:
-      mWkbType = QgsWkbTypes::Type::Polygon;
+      mWkbType = Qgis::WkbType::Polygon;
       break;
     case 1:
-      mWkbType = QgsWkbTypes::Type::LineString;
+      mWkbType = Qgis::WkbType::LineString;
       break;
     case 2:
-      mWkbType = QgsWkbTypes::Type::Point;
+      mWkbType = Qgis::WkbType::Point;
       break;
   }
 

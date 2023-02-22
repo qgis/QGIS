@@ -16,8 +16,6 @@
 #define QGSARCGISRESTUTILS_H
 
 #include "qgswkbtypes.h"
-#include "qgsrectangle.h"
-#include "qgsmarkersymbollayer.h"
 #include "qgscoordinatereferencesystem.h"
 
 #include "qgis_sip.h"
@@ -31,7 +29,8 @@
 
 class QNetworkReply;
 class QgsNetworkAccessManager;
-class QgsFields;
+class QgsField;
+class QgsGeometry;
 class QgsAbstractGeometry;
 class QgsAbstractVectorLayerLabeling;
 class QgsCoordinateReferenceSystem;
@@ -52,6 +51,9 @@ class QgsPolygon;
 class QgsMultiCurve;
 class QgsMultiPolygon;
 class QgsCurvePolygon;
+class QgsFeature;
+class QgsLineString;
+class QgsCurve;
 
 /**
  * \ingroup core
@@ -123,7 +125,7 @@ class CORE_EXPORT QgsArcGisRestUtils
     /**
      * Converts an ESRI REST geometry \a type to a WKB type.
      */
-    static QgsWkbTypes::Type convertGeometryType( const QString &type );
+    static Qgis::WkbType convertGeometryType( const QString &type );
 
     /**
      * Converts an ESRI REST \a geometry JSON definition to a QgsAbstractGeometry.
@@ -265,39 +267,39 @@ class CORE_EXPORT QgsArcGisRestUtils
     /**
      * Converts a JSON \a list to a point geometry of the specified wkb \a type.
      */
-    static std::unique_ptr< QgsPoint > convertPoint( const QVariantList &list, QgsWkbTypes::Type type );
+    static std::unique_ptr< QgsPoint > convertPoint( const QVariantList &list, Qgis::WkbType type );
 
     /**
      * Converts circular string JSON \a data to a geometry object of the specified \a type.
      *
      * The \a startPoint argument must specify the starting point of the circular string.
      */
-    static std::unique_ptr< QgsCircularString > convertCircularString( const QVariantMap &data, QgsWkbTypes::Type type, const QgsPoint &startPoint );
+    static std::unique_ptr< QgsCircularString > convertCircularString( const QVariantMap &data, Qgis::WkbType type, const QgsPoint &startPoint );
 
     /**
      * Converts a compound curve JSON \a list to a geometry object of the specified \a type.
      */
-    static std::unique_ptr< QgsCompoundCurve > convertCompoundCurve( const QVariantList &list, QgsWkbTypes::Type type );
+    static std::unique_ptr< QgsCompoundCurve > convertCompoundCurve( const QVariantList &list, Qgis::WkbType type );
 
     /**
      * Converts point \a data to a point object of the specified \a type.
      */
-    static std::unique_ptr< QgsPoint > convertGeometryPoint( const QVariantMap &data, QgsWkbTypes::Type pointType );
+    static std::unique_ptr< QgsPoint > convertGeometryPoint( const QVariantMap &data, Qgis::WkbType pointType );
 
     /**
      * Converts multipoint \a data to a multipoint object of the specified \a type.
      */
-    static std::unique_ptr< QgsMultiPoint > convertMultiPoint( const QVariantMap &geometryData, QgsWkbTypes::Type pointType );
+    static std::unique_ptr< QgsMultiPoint > convertMultiPoint( const QVariantMap &geometryData, Qgis::WkbType pointType );
 
     /**
      * Converts polyline \a data to a curve object of the specified \a type.
      */
-    static std::unique_ptr< QgsMultiCurve > convertGeometryPolyline( const QVariantMap &data, QgsWkbTypes::Type pointType );
+    static std::unique_ptr< QgsMultiCurve > convertGeometryPolyline( const QVariantMap &data, Qgis::WkbType pointType );
 
     /**
      * Converts polygon \a data to a polygon object of the specified \a type.
      */
-    static std::unique_ptr< QgsMultiSurface > convertGeometryPolygon( const QVariantMap &data, QgsWkbTypes::Type pointType );
+    static std::unique_ptr< QgsMultiSurface > convertGeometryPolygon( const QVariantMap &data, Qgis::WkbType pointType );
 
     /**
      * Converts envelope \a data to a polygon object.

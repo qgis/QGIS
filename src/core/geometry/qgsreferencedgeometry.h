@@ -173,6 +173,9 @@ class CORE_EXPORT QgsReferencedGeometry : public QgsGeometry, public QgsReferenc
       return QVariant::fromValue( *this );
     }
 
+    bool operator==( const QgsReferencedGeometry &other ) const;
+    bool operator!=( const QgsReferencedGeometry &other ) const;
+
     /**
      * Construct a new QgsReferencedGeometry from referenced \a point
      */

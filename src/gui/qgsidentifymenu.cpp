@@ -48,7 +48,7 @@ QgsIdentifyMenu::~QgsIdentifyMenu()
   deleteRubberBands();
 }
 
-QList<QgsMapToolIdentify::IdentifyResult> QgsIdentifyMenu::findFeaturesOnCanvas( QgsMapMouseEvent *event, QgsMapCanvas *canvas, const QList<QgsWkbTypes::GeometryType> &geometryTypes )
+QList<QgsMapToolIdentify::IdentifyResult> QgsIdentifyMenu::findFeaturesOnCanvas( QgsMapMouseEvent *event, QgsMapCanvas *canvas, const QList<Qgis::GeometryType> &geometryTypes )
 {
   QList<QgsMapToolIdentify::IdentifyResult> results;
   const QMap< QString, QString > derivedAttributes;
@@ -66,7 +66,7 @@ QList<QgsMapToolIdentify::IdentifyResult> QgsIdentifyMenu::findFeaturesOnCanvas(
       QgsVectorLayer *vectorLayer = qobject_cast<QgsVectorLayer *>( layer );
 
       bool typeIsSelectable = false;
-      for ( QgsWkbTypes::GeometryType type : geometryTypes )
+      for ( Qgis::GeometryType type : geometryTypes )
       {
         if ( vectorLayer->geometryType() == type )
         {

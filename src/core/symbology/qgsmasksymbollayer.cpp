@@ -14,15 +14,10 @@
  ***************************************************************************/
 
 #include "qgsmasksymbollayer.h"
-#include "qgssymbollayerutils.h"
-#include "qgsproject.h"
-#include "qgsvectorlayer.h"
 #include "qgspainteffect.h"
 #include "qgspainterswapper.h"
 #include "qgsmarkersymbol.h"
-#include "qgsmarkersymbollayer.h"
 #include "qgssymbollayerreference.h"
-#include "qgsmaskpaintdevice.h"
 
 QgsMaskMarkerSymbolLayer::QgsMaskMarkerSymbolLayer()
 {
@@ -148,11 +143,11 @@ QRectF QgsMaskMarkerSymbolLayer::bounds( QPointF point, QgsSymbolRenderContext &
 
 bool QgsMaskMarkerSymbolLayer::usesMapUnits() const
 {
-  return mSizeUnit == QgsUnitTypes::RenderMapUnits || mSizeUnit == QgsUnitTypes::RenderMetersInMapUnits
+  return mSizeUnit == Qgis::RenderUnit::MapUnits || mSizeUnit == Qgis::RenderUnit::MetersInMapUnits
          || ( mSymbol && mSymbol->usesMapUnits() );
 }
 
-void QgsMaskMarkerSymbolLayer::setOutputUnit( QgsUnitTypes::RenderUnit unit )
+void QgsMaskMarkerSymbolLayer::setOutputUnit( Qgis::RenderUnit unit )
 {
   QgsMarkerSymbolLayer::setOutputUnit( unit );
   if ( mSymbol )

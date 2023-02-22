@@ -17,7 +17,6 @@
 #include "qgsexception.h"
 #include "qgsdatasourceuri.h"
 #include "qgshanaconnection.h"
-#include "qgshanaconnectionpool.h"
 #include "qgshanaconnectionstringbuilder.h"
 #include "qgshanadriver.h"
 #include "qgshanaexception.h"
@@ -28,7 +27,6 @@
 #include "qgsmessagelog.h"
 #include "qgscredentials.h"
 #include "qgssettings.h"
-#include "qexception.h"
 #include "qgsvariantutils.h"
 
 #include "odbc/Connection.h"
@@ -620,7 +618,7 @@ QVector<QgsHanaLayerProperty> QgsHanaConnection::getLayers(
       layer.tableComment = rsLayers->getString( 5 );
       layer.isView = isView;
       layer.srid = -1;
-      layer.type = isGeometryColumn ? QgsWkbTypes::Type::Unknown : QgsWkbTypes::NoGeometry;
+      layer.type = isGeometryColumn ? Qgis::WkbType::Unknown : Qgis::WkbType::NoGeometry;
 
       if ( layerFilter && !layerFilter( layer ) )
         continue;
@@ -924,12 +922,12 @@ QStringList QgsHanaConnection::getPrimaryKeyCandidates( const QgsHanaLayerProper
   return ret;
 }
 
-QgsWkbTypes::Type QgsHanaConnection::getColumnGeometryType( const QString &querySource, const QString &columnName )
+Qgis::WkbType QgsHanaConnection::getColumnGeometryType( const QString &querySource, const QString &columnName )
 {
   if ( columnName.isEmpty() )
-    return QgsWkbTypes::NoGeometry;
+    return Qgis::WkbType::NoGeometry;
 
-  QgsWkbTypes::Type ret = QgsWkbTypes::Unknown;
+  Qgis::WkbType ret = Qgis::WkbType::Unknown;
   QString sql = QStringLiteral( "SELECT upper(%1.ST_GeometryType()), %1.ST_Is3D(), %1.ST_IsMeasured() FROM %2 "
                                 "WHERE %1 IS NOT NULL LIMIT %3" ).arg(
                   QgsHanaUtils::quotedIdentifier( columnName ),
@@ -942,15 +940,15 @@ QgsWkbTypes::Type QgsHanaConnection::getColumnGeometryType( const QString &query
     ResultSetRef rsGeomInfo = stmt->executeQuery( QgsHanaUtils::toUtf16( sql ) );
     while ( rsGeomInfo->next() )
     {
-      QgsWkbTypes::Type geomType = QgsWkbTypes::singleType( QgsHanaUtils::toWkbType(
-                                     rsGeomInfo->getString( 1 ), rsGeomInfo->getInt( 2 ), rsGeomInfo->getInt( 3 ) ) );
-      if ( geomType == QgsWkbTypes::Unknown )
+      Qgis::WkbType geomType = QgsWkbTypes::singleType( QgsHanaUtils::toWkbType(
+                                 rsGeomInfo->getString( 1 ), rsGeomInfo->getInt( 2 ), rsGeomInfo->getInt( 3 ) ) );
+      if ( geomType == Qgis::WkbType::Unknown )
         continue;
-      if ( ret == QgsWkbTypes::Unknown )
+      if ( ret == Qgis::WkbType::Unknown )
         ret = geomType;
       else if ( ret != geomType )
       {
-        ret = QgsWkbTypes::Unknown;
+        ret = Qgis::WkbType::Unknown;
         break;
       }
     }
@@ -964,7 +962,7 @@ QgsWkbTypes::Type QgsHanaConnection::getColumnGeometryType( const QString &query
   return ret;
 }
 
-QgsWkbTypes::Type QgsHanaConnection::getColumnGeometryType( const QString &schemaName, const QString &tableName, const QString &columnName )
+Qgis::WkbType QgsHanaConnection::getColumnGeometryType( const QString &schemaName, const QString &tableName, const QString &columnName )
 {
   QString querySource = QStringLiteral( "%1.%2" ).arg( QgsHanaUtils::quotedIdentifier( schemaName ),
                         QgsHanaUtils::quotedIdentifier( tableName ) );

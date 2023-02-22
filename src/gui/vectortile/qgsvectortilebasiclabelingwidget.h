@@ -20,8 +20,6 @@
 
 #include "ui_qgsvectortilebasiclabelingwidget.h"
 
-#include "qgswkbtypes.h"
-
 #include <memory>
 #include <QSortFilterProxyModel>
 
@@ -55,7 +53,7 @@ class GUI_EXPORT QgsVectorTileBasicLabelingWidget : public QgsMapLayerConfigWidg
     void apply() override;
 
   private slots:
-    void addStyle( QgsWkbTypes::GeometryType geomType );
+    void addStyle( Qgis::GeometryType geomType );
     //void addStyle();
     void editStyle();
     void editStyleAtIndex( const QModelIndex &index );

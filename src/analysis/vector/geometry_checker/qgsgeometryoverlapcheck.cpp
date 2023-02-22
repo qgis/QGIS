@@ -253,9 +253,9 @@ QgsGeometryCheck::Flags QgsGeometryOverlapCheck::factoryFlags()
   return QgsGeometryCheck::AvailableInValidation;
 }
 
-QList<QgsWkbTypes::GeometryType> QgsGeometryOverlapCheck::factoryCompatibleGeometryTypes()
+QList<Qgis::GeometryType> QgsGeometryOverlapCheck::factoryCompatibleGeometryTypes()
 {
-  return {QgsWkbTypes::PolygonGeometry};
+  return {Qgis::GeometryType::Polygon};
 }
 
 bool QgsGeometryOverlapCheck::factoryIsCompatible( QgsVectorLayer *layer ) SIP_SKIP

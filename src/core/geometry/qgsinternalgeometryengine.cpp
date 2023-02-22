@@ -25,7 +25,6 @@
 #include "qgsgeometryutils.h"
 #include "qgslinesegment.h"
 #include "qgscircle.h"
-#include "qgslogger.h"
 #include "qgstessellator.h"
 #include "qgsfeedback.h"
 #include "qgsgeometryengine.h"
@@ -160,7 +159,7 @@ bool isCounterClockwise( std::array<Direction, 4> dirs )
 
 bool QgsInternalGeometryEngine::isAxisParallelRectangle( double maximumDeviation, bool simpleRectanglesOnly ) const
 {
-  if ( QgsWkbTypes::flatType( mGeometry->wkbType() ) != QgsWkbTypes::Polygon )
+  if ( QgsWkbTypes::flatType( mGeometry->wkbType() ) != Qgis::WkbType::Polygon )
     return false;
 
   const QgsPolygon *polygon = qgsgeometry_cast< const QgsPolygon * >( mGeometry );
@@ -615,7 +614,7 @@ QgsAbstractGeometry *orthogonalizeGeom( const QgsAbstractGeometry *geom, int max
     geom = segmentizedCopy.get();
   }
 
-  if ( QgsWkbTypes::geometryType( geom->wkbType() ) == QgsWkbTypes::LineGeometry )
+  if ( QgsWkbTypes::geometryType( geom->wkbType() ) == Qgis::GeometryType::Line )
   {
     return doOrthogonalize( static_cast< QgsLineString * >( geom->clone() ),
                             maxIterations, tolerance, lowerThreshold, upperThreshold );
@@ -641,8 +640,8 @@ QgsAbstractGeometry *orthogonalizeGeom( const QgsAbstractGeometry *geom, int max
 QgsGeometry QgsInternalGeometryEngine::orthogonalize( double tolerance, int maxIterations, double angleThreshold ) const
 {
   mLastError.clear();
-  if ( !mGeometry || ( QgsWkbTypes::geometryType( mGeometry->wkbType() ) != QgsWkbTypes::LineGeometry
-                       && QgsWkbTypes::geometryType( mGeometry->wkbType() ) != QgsWkbTypes::PolygonGeometry ) )
+  if ( !mGeometry || ( QgsWkbTypes::geometryType( mGeometry->wkbType() ) != Qgis::GeometryType::Line
+                       && QgsWkbTypes::geometryType( mGeometry->wkbType() ) != Qgis::GeometryType::Polygon ) )
   {
     return QgsGeometry();
   }
@@ -774,7 +773,7 @@ QgsAbstractGeometry *densifyGeometry( const QgsAbstractGeometry *geom, int extra
     geom = segmentizedCopy.get();
   }
 
-  if ( QgsWkbTypes::geometryType( geom->wkbType() ) == QgsWkbTypes::LineGeometry )
+  if ( QgsWkbTypes::geometryType( geom->wkbType() ) == Qgis::GeometryType::Line )
   {
     return doDensify( static_cast< const QgsLineString * >( geom ), extraNodesPerSegment, distance );
   }
@@ -804,7 +803,7 @@ QgsGeometry QgsInternalGeometryEngine::densifyByCount( int extraNodesPerSegment 
     return QgsGeometry();
   }
 
-  if ( QgsWkbTypes::geometryType( mGeometry->wkbType() ) == QgsWkbTypes::PointGeometry )
+  if ( QgsWkbTypes::geometryType( mGeometry->wkbType() ) == Qgis::GeometryType::Point )
   {
     return QgsGeometry( mGeometry->clone() ); // point geometry, nothing to do
   }
@@ -840,7 +839,7 @@ QgsGeometry QgsInternalGeometryEngine::densifyByDistance( double distance ) cons
     return QgsGeometry();
   }
 
-  if ( QgsWkbTypes::geometryType( mGeometry->wkbType() ) == QgsWkbTypes::PointGeometry )
+  if ( QgsWkbTypes::geometryType( mGeometry->wkbType() ) == Qgis::GeometryType::Point )
   {
     return QgsGeometry( mGeometry->clone() ); // point geometry, nothing to do
   }
@@ -1200,7 +1199,7 @@ QgsGeometry QgsInternalGeometryEngine::variableWidthBufferByM( int segments ) co
 QVector<QgsPointXY> QgsInternalGeometryEngine::randomPointsInPolygon( const QgsGeometry &polygon, int count,
     const std::function< bool( const QgsPointXY & ) > &acceptPoint, unsigned long seed, QgsFeedback *feedback, int maxTriesPerPoint )
 {
-  if ( polygon.type() != QgsWkbTypes::PolygonGeometry || count == 0 )
+  if ( polygon.type() != Qgis::GeometryType::Polygon || count == 0 )
     return QVector< QgsPointXY >();
 
   // step 1 - tessellate the polygon to triangles
@@ -1342,15 +1341,15 @@ QVector<QgsPointXY> QgsInternalGeometryEngine::randomPointsInPolygon( const QgsG
 std::unique_ptr< QgsCurve > lineToCurve( const QgsCurve *curve, double distanceTolerance,
     double pointSpacingAngleTolerance )
 {
-  const QgsWkbTypes::Type flatType = QgsWkbTypes::flatType( curve->wkbType() );
-  if ( flatType == QgsWkbTypes::CircularString )
+  const Qgis::WkbType flatType = QgsWkbTypes::flatType( curve->wkbType() );
+  if ( flatType == Qgis::WkbType::CircularString )
   {
     // already curved, so just return a copy
     std::unique_ptr< QgsCircularString > out;
     out.reset( qgsgeometry_cast< QgsCircularString * >( curve )->clone() );
     return out;
   }
-  else if ( flatType == QgsWkbTypes::CompoundCurve )
+  else if ( flatType == Qgis::WkbType::CompoundCurve )
   {
     std::unique_ptr< QgsCompoundCurve > out = std::make_unique< QgsCompoundCurve >();
     const QgsCompoundCurve *in = qgsgeometry_cast< const QgsCompoundCurve * >( curve );
@@ -1362,7 +1361,7 @@ std::unique_ptr< QgsCurve > lineToCurve( const QgsCurve *curve, double distanceT
         // check the simplified type ref of the geometry to see if it consists of just a single linestring component.
         // If so, we extract this line string along, so that we don't create geometry components which consits of a
         // compound curve with only linestring parts.
-        if ( QgsWkbTypes::flatType( processed->simplifiedTypeRef()->wkbType() ) == QgsWkbTypes::LineString )
+        if ( QgsWkbTypes::flatType( processed->simplifiedTypeRef()->wkbType() ) == Qgis::WkbType::LineString )
         {
           out->addCurve( qgsgeometry_cast< const QgsLineString * >( processed->simplifiedTypeRef() )->clone() );
         }
@@ -1374,7 +1373,7 @@ std::unique_ptr< QgsCurve > lineToCurve( const QgsCurve *curve, double distanceT
     }
     return out;
   }
-  else if ( flatType == QgsWkbTypes::LineString )
+  else if ( flatType == Qgis::WkbType::LineString )
   {
     const QgsLineString *lineString = qgsgeometry_cast< QgsLineString * >( curve );
 
@@ -1558,7 +1557,7 @@ std::unique_ptr< QgsCurve > lineToCurve( const QgsCurve *curve, double distanceT
     addPointsToCurve( start, end, edgeType );
 
     // return a simplified type if it doesn't need to be a compound curve resu
-    if ( QgsWkbTypes::flatType( out->simplifiedTypeRef()->wkbType() ) == QgsWkbTypes::CircularString )
+    if ( QgsWkbTypes::flatType( out->simplifiedTypeRef()->wkbType() ) == Qgis::WkbType::CircularString )
     {
       std::unique_ptr< QgsCircularString > res;
       res.reset( qgsgeometry_cast< const QgsCircularString * >( out->simplifiedTypeRef() )->clone() );
@@ -1573,7 +1572,7 @@ std::unique_ptr< QgsCurve > lineToCurve( const QgsCurve *curve, double distanceT
 
 std::unique_ptr< QgsAbstractGeometry > convertGeometryToCurves( const QgsAbstractGeometry *geom, double distanceTolerance, double angleTolerance )
 {
-  if ( QgsWkbTypes::geometryType( geom->wkbType() ) == QgsWkbTypes::LineGeometry )
+  if ( QgsWkbTypes::geometryType( geom->wkbType() ) == Qgis::GeometryType::Line )
   {
     return lineToCurve( qgsgeometry_cast< const QgsCurve * >( geom ), distanceTolerance, angleTolerance );
   }
@@ -1603,7 +1602,7 @@ QgsGeometry QgsInternalGeometryEngine::convertToCurves( double distanceTolerance
     return QgsGeometry();
   }
 
-  if ( QgsWkbTypes::geometryType( mGeometry->wkbType() ) == QgsWkbTypes::PointGeometry )
+  if ( QgsWkbTypes::geometryType( mGeometry->wkbType() ) == Qgis::GeometryType::Point )
   {
     return QgsGeometry( mGeometry->clone() ); // point geometry, nothing to do
   }
@@ -1843,7 +1842,7 @@ std::unique_ptr< QgsAbstractGeometry > triangularWavesPrivate( const QgsAbstract
     geom = segmentizedCopy.get();
   }
 
-  if ( QgsWkbTypes::geometryType( geom->wkbType() ) == QgsWkbTypes::LineGeometry )
+  if ( QgsWkbTypes::geometryType( geom->wkbType() ) == Qgis::GeometryType::Line )
   {
     return triangularWavesAlongLine( static_cast< const QgsLineString * >( geom ), wavelength, amplitude, strictWavelength );
   }
@@ -1874,7 +1873,7 @@ std::unique_ptr< QgsAbstractGeometry > triangularWavesRandomizedPrivate( const Q
     geom = segmentizedCopy.get();
   }
 
-  if ( QgsWkbTypes::geometryType( geom->wkbType() ) == QgsWkbTypes::LineGeometry )
+  if ( QgsWkbTypes::geometryType( geom->wkbType() ) == Qgis::GeometryType::Line )
   {
     return triangularWavesRandomizedAlongLine( static_cast< const QgsLineString * >( geom ), minimumWavelength, maximumWavelength, minimumAmplitude, maximumAmplitude, uniformDist, mt );
   }
@@ -1907,7 +1906,7 @@ QgsGeometry QgsInternalGeometryEngine::triangularWaves( double wavelength, doubl
     return QgsGeometry();
   }
 
-  if ( QgsWkbTypes::geometryType( mGeometry->wkbType() ) == QgsWkbTypes::PointGeometry )
+  if ( QgsWkbTypes::geometryType( mGeometry->wkbType() ) == Qgis::GeometryType::Point )
   {
     return QgsGeometry( mGeometry->clone() ); // point geometry, nothing to do
   }
@@ -1950,7 +1949,7 @@ QgsGeometry QgsInternalGeometryEngine::triangularWavesRandomized( double minimum
   std::mt19937 mt( seed == 0 ? rd() : seed );
   std::uniform_real_distribution<> uniformDist( 0, 1 );
 
-  if ( QgsWkbTypes::geometryType( mGeometry->wkbType() ) == QgsWkbTypes::PointGeometry )
+  if ( QgsWkbTypes::geometryType( mGeometry->wkbType() ) == Qgis::GeometryType::Point )
   {
     return QgsGeometry( mGeometry->clone() ); // point geometry, nothing to do
   }
@@ -2139,7 +2138,7 @@ std::unique_ptr< QgsAbstractGeometry > squareWavesPrivate( const QgsAbstractGeom
     geom = segmentizedCopy.get();
   }
 
-  if ( QgsWkbTypes::geometryType( geom->wkbType() ) == QgsWkbTypes::LineGeometry )
+  if ( QgsWkbTypes::geometryType( geom->wkbType() ) == Qgis::GeometryType::Line )
   {
     return squareWavesAlongLine( static_cast< const QgsLineString * >( geom ), wavelength, amplitude, strictWavelength );
   }
@@ -2170,7 +2169,7 @@ std::unique_ptr< QgsAbstractGeometry > squareWavesRandomizedPrivate( const QgsAb
     geom = segmentizedCopy.get();
   }
 
-  if ( QgsWkbTypes::geometryType( geom->wkbType() ) == QgsWkbTypes::LineGeometry )
+  if ( QgsWkbTypes::geometryType( geom->wkbType() ) == Qgis::GeometryType::Line )
   {
     return squareWavesRandomizedAlongLine( static_cast< const QgsLineString * >( geom ), minimumWavelength, maximumWavelength, minimumAmplitude, maximumAmplitude, uniformDist, mt );
   }
@@ -2203,7 +2202,7 @@ QgsGeometry QgsInternalGeometryEngine::squareWaves( double wavelength, double am
     return QgsGeometry();
   }
 
-  if ( QgsWkbTypes::geometryType( mGeometry->wkbType() ) == QgsWkbTypes::PointGeometry )
+  if ( QgsWkbTypes::geometryType( mGeometry->wkbType() ) == Qgis::GeometryType::Point )
   {
     return QgsGeometry( mGeometry->clone() ); // point geometry, nothing to do
   }
@@ -2246,7 +2245,7 @@ QgsGeometry QgsInternalGeometryEngine::squareWavesRandomized( double minimumWave
   std::mt19937 mt( seed == 0 ? rd() : seed );
   std::uniform_real_distribution<> uniformDist( 0, 1 );
 
-  if ( QgsWkbTypes::geometryType( mGeometry->wkbType() ) == QgsWkbTypes::PointGeometry )
+  if ( QgsWkbTypes::geometryType( mGeometry->wkbType() ) == Qgis::GeometryType::Point )
   {
     return QgsGeometry( mGeometry->clone() ); // point geometry, nothing to do
   }
@@ -2555,7 +2554,7 @@ std::unique_ptr< QgsAbstractGeometry > roundWavesPrivate( const QgsAbstractGeome
     geom = segmentizedCopy.get();
   }
 
-  if ( QgsWkbTypes::geometryType( geom->wkbType() ) == QgsWkbTypes::LineGeometry )
+  if ( QgsWkbTypes::geometryType( geom->wkbType() ) == Qgis::GeometryType::Line )
   {
     return roundWavesAlongLine( static_cast< const QgsLineString * >( geom ), wavelength, amplitude, strictWavelength );
   }
@@ -2586,7 +2585,7 @@ std::unique_ptr< QgsAbstractGeometry > roundWavesRandomizedPrivate( const QgsAbs
     geom = segmentizedCopy.get();
   }
 
-  if ( QgsWkbTypes::geometryType( geom->wkbType() ) == QgsWkbTypes::LineGeometry )
+  if ( QgsWkbTypes::geometryType( geom->wkbType() ) == Qgis::GeometryType::Line )
   {
     return roundWavesRandomizedAlongLine( static_cast< const QgsLineString * >( geom ), minimumWavelength, maximumWavelength, minimumAmplitude, maximumAmplitude, uniformDist, mt );
   }
@@ -2619,7 +2618,7 @@ QgsGeometry QgsInternalGeometryEngine::roundWaves( double wavelength, double amp
     return QgsGeometry();
   }
 
-  if ( QgsWkbTypes::geometryType( mGeometry->wkbType() ) == QgsWkbTypes::PointGeometry )
+  if ( QgsWkbTypes::geometryType( mGeometry->wkbType() ) == Qgis::GeometryType::Point )
   {
     return QgsGeometry( mGeometry->clone() ); // point geometry, nothing to do
   }
@@ -2662,7 +2661,7 @@ QgsGeometry QgsInternalGeometryEngine::roundWavesRandomized( double minimumWavel
   std::mt19937 mt( seed == 0 ? rd() : seed );
   std::uniform_real_distribution<> uniformDist( 0, 1 );
 
-  if ( QgsWkbTypes::geometryType( mGeometry->wkbType() ) == QgsWkbTypes::PointGeometry )
+  if ( QgsWkbTypes::geometryType( mGeometry->wkbType() ) == Qgis::GeometryType::Point )
   {
     return QgsGeometry( mGeometry->clone() ); // point geometry, nothing to do
   }
@@ -2938,7 +2937,7 @@ std::unique_ptr< QgsAbstractGeometry > applyDashPatternPrivate( const QgsAbstrac
     geom = segmentizedCopy.get();
   }
 
-  if ( QgsWkbTypes::geometryType( geom->wkbType() ) == QgsWkbTypes::LineGeometry )
+  if ( QgsWkbTypes::geometryType( geom->wkbType() ) == Qgis::GeometryType::Line )
   {
     return dashPatternAlongLine( static_cast< const QgsLineString * >( geom ), pattern, startRule, endRule, adjustment, patternOffset );
   }
@@ -2974,7 +2973,7 @@ QgsGeometry QgsInternalGeometryEngine::applyDashPattern( const QVector<double> &
     return QgsGeometry();
   }
 
-  if ( QgsWkbTypes::geometryType( mGeometry->wkbType() ) == QgsWkbTypes::PointGeometry )
+  if ( QgsWkbTypes::geometryType( mGeometry->wkbType() ) == Qgis::GeometryType::Point )
   {
     return QgsGeometry( mGeometry->clone() ); // point geometry, nothing to do
   }

@@ -72,7 +72,6 @@
 #include "qgsexpressioncontext.h"
 #include "qgsfeedback.h"
 #include "qgsxmlutils.h"
-#include "qgsunittypes.h"
 #include "qgstaskmanager.h"
 #include "qgstransaction.h"
 #include "qgsauxiliarystorage.h"
@@ -791,7 +790,7 @@ void QgsVectorLayer::setDiagramRenderer( QgsDiagramRenderer *r )
   emit styleChanged();
 }
 
-QgsWkbTypes::GeometryType QgsVectorLayer::geometryType() const
+Qgis::GeometryType QgsVectorLayer::geometryType() const
 {
   // non fatal for now -- the "rasterize" processing algorithm is not thread safe and calls this
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS_NON_FATAL
@@ -799,7 +798,7 @@ QgsWkbTypes::GeometryType QgsVectorLayer::geometryType() const
   return QgsWkbTypes::geometryType( mWkbType );
 }
 
-QgsWkbTypes::Type QgsVectorLayer::wkbType() const
+Qgis::WkbType QgsVectorLayer::wkbType() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
@@ -1064,7 +1063,7 @@ QgsRectangle QgsVectorLayer::extent() const
     QgsFeature fet;
     while ( fit.nextFeature( fet ) )
     {
-      if ( fet.hasGeometry() && fet.geometry().type() != QgsWkbTypes::UnknownGeometry )
+      if ( fet.hasGeometry() && fet.geometry().type() != Qgis::GeometryType::Unknown )
       {
         const QgsRectangle bb = fet.geometry().boundingBox();
         rect.combineExtentWith( bb );
@@ -1146,7 +1145,7 @@ bool QgsVectorLayer::simplifyDrawingCanbeApplied( const QgsRenderContext &render
   // non fatal for now -- the "rasterize" processing algorithm is not thread safe and calls this
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS_NON_FATAL
 
-  if ( isValid() && mDataProvider && !mEditBuffer && ( isSpatial() && geometryType() != QgsWkbTypes::PointGeometry ) && ( mSimplifyMethod.simplifyHints() & simplifyHint ) && renderContext.useRenderingOptimization() )
+  if ( isValid() && mDataProvider && !mEditBuffer && ( isSpatial() && geometryType() != Qgis::GeometryType::Point ) && ( mSimplifyMethod.simplifyHints() & simplifyHint ) && renderContext.useRenderingOptimization() )
   {
     double maximumSimplificationScale = mSimplifyMethod.maximumScale();
 
@@ -1858,7 +1857,7 @@ void QgsVectorLayer::setDataSourcePrivate( const QString &dataSource, const QStr
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  QgsWkbTypes::GeometryType geomType = geometryType();
+  Qgis::GeometryType geomType = geometryType();
 
   mDataSource = dataSource;
   setName( baseName );
@@ -2565,7 +2564,7 @@ bool QgsVectorLayer::readStyle( const QDomNode &node, QString &errorMessage,
   // we must try to restore a renderer if our geometry type is unknown
   // as this allows the renderer to be correctly restored even for layers
   // with broken sources
-  if ( isSpatial() || mWkbType == QgsWkbTypes::Unknown )
+  if ( isSpatial() || mWkbType == Qgis::WkbType::Unknown )
   {
     // defer style changed signal until we've set the renderer, labeling, everything.
     // we don't want multiple signals!
@@ -2982,7 +2981,7 @@ bool QgsVectorLayer::writeStyle( QDomNode &node, QDomDocument &doc, QString &err
   // we must try to write the renderer if our geometry type is unknown
   // as this allows the renderer to be correctly restored even for layers
   // with broken sources
-  if ( isSpatial() || mWkbType == QgsWkbTypes::Unknown )
+  if ( isSpatial() || mWkbType == Qgis::WkbType::Unknown )
   {
     if ( categories.testFlag( Symbology ) )
     {
@@ -3809,7 +3808,7 @@ QgsFeatureIterator QgsVectorLayer::getSelectedFeatures( QgsFeatureRequest reques
   if ( mSelectedFeatureIds.isEmpty() )
     return QgsFeatureIterator();
 
-  if ( geometryType() == QgsWkbTypes::NullGeometry )
+  if ( geometryType() == Qgis::GeometryType::Null )
     request.setFlags( QgsFeatureRequest::NoGeometry );
 
   if ( mSelectedFeatureIds.count() == 1 )
@@ -3920,8 +3919,8 @@ bool QgsVectorLayer::isSpatial() const
   // non fatal for now -- the "rasterize" processing algorithm is not thread safe and calls this
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS_NON_FATAL
 
-  QgsWkbTypes::GeometryType t = geometryType();
-  return t != QgsWkbTypes::NullGeometry && t != QgsWkbTypes::UnknownGeometry;
+  Qgis::GeometryType t = geometryType();
+  return t != Qgis::GeometryType::Null && t != Qgis::GeometryType::Unknown;
 }
 
 bool QgsVectorLayer::isReadOnly() const
@@ -3997,7 +3996,7 @@ void QgsVectorLayer::setRenderer( QgsFeatureRenderer *r )
   // we must allow setting a renderer if our geometry type is unknown
   // as this allows the renderer to be correctly set even for layers
   // with broken sources
-  if ( !isSpatial() && mWkbType != QgsWkbTypes::Unknown )
+  if ( !isSpatial() && mWkbType != Qgis::WkbType::Unknown )
     return;
 
   if ( r != mRenderer )
@@ -5134,7 +5133,7 @@ bool QgsVectorLayer::readSldTextSymbolizer( const QDomNode &node, QgsPalLayerSet
     return false;
   }
 
-  QgsUnitTypes::RenderUnit sldUnitSize = QgsUnitTypes::RenderPixels;
+  Qgis::RenderUnit sldUnitSize = Qgis::RenderUnit::Pixels;
   if ( textSymbolizerElem.hasAttribute( QStringLiteral( "uom" ) ) )
   {
     sldUnitSize = QgsSymbolLayerUtils::decodeSldUom( textSymbolizerElem.attribute( QStringLiteral( "uom" ) ) );
@@ -5142,7 +5141,7 @@ bool QgsVectorLayer::readSldTextSymbolizer( const QDomNode &node, QgsPalLayerSet
 
   QString fontFamily = QStringLiteral( "Sans-Serif" );
   int fontPointSize = 10;
-  QgsUnitTypes::RenderUnit fontUnitSize = QgsUnitTypes::RenderPoints;
+  Qgis::RenderUnit fontUnitSize = Qgis::RenderUnit::Points;
   int fontWeight = -1;
   bool fontItalic = false;
   bool fontUnderline = false;
@@ -5245,7 +5244,7 @@ bool QgsVectorLayer::readSldTextSymbolizer( const QDomNode &node, QgsPalLayerSet
     if ( !pointPlacementElem.isNull() )
     {
       settings.placement = Qgis::LabelPlacement::OverPoint;
-      if ( geometryType() == QgsWkbTypes::LineGeometry )
+      if ( geometryType() == Qgis::GeometryType::Line )
       {
         settings.placement = Qgis::LabelPlacement::Horizontal;
       }
@@ -5377,7 +5376,7 @@ bool QgsVectorLayer::readSldTextSymbolizer( const QDomNode &node, QgsPalLayerSet
       }
       else if ( it.key() == QLatin1String( "followLine" ) && it.value() == QLatin1String( "true" ) )
       {
-        if ( geometryType() == QgsWkbTypes::PolygonGeometry )
+        if ( geometryType() == Qgis::GeometryType::Polygon )
         {
           settings.placement = Qgis::LabelPlacement::PerimeterCurved;
         }
@@ -5522,8 +5521,8 @@ QString QgsVectorLayer::htmlMetadata() const
   if ( isSpatial() )
   {
     // geom type
-    QgsWkbTypes::GeometryType type = geometryType();
-    if ( type < 0 || type > QgsWkbTypes::NullGeometry )
+    Qgis::GeometryType type = geometryType();
+    if ( static_cast<int>( type ) < 0 || static_cast< int >( type ) > static_cast< int >( Qgis::GeometryType::Null ) )
     {
       QgsDebugMsgLevel( QStringLiteral( "Invalid vector type" ), 2 );
     }

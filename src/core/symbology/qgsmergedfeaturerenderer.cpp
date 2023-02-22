@@ -294,7 +294,7 @@ void QgsMergedFeatureRenderer::stopRender( QgsRenderContext &context )
       case QgsMergedFeatureRenderer::Merge:
       {
         QgsGeometry unioned( QgsGeometry::unaryUnion( cit.geometries ) );
-        if ( unioned.type() == QgsWkbTypes::LineGeometry )
+        if ( unioned.type() == Qgis::GeometryType::Line )
           unioned = unioned.mergeLines();
         feat.setGeometry( unioned );
         break;
@@ -328,13 +328,13 @@ void QgsMergedFeatureRenderer::stopRender( QgsRenderContext &context )
         for ( const QgsGeometry &geom : std::as_const( cit.geometries ) )
         {
           QgsMultiPolygonXY multi;
-          QgsWkbTypes::Type type = QgsWkbTypes::flatType( geom.constGet()->wkbType() );
+          Qgis::WkbType type = QgsWkbTypes::flatType( geom.constGet()->wkbType() );
 
-          if ( ( type == QgsWkbTypes::Polygon ) || ( type == QgsWkbTypes::CurvePolygon ) )
+          if ( ( type == Qgis::WkbType::Polygon ) || ( type == Qgis::WkbType::CurvePolygon ) )
           {
             multi.append( geom.asPolygon() );
           }
-          else if ( ( type == QgsWkbTypes::MultiPolygon ) || ( type == QgsWkbTypes::MultiSurface ) )
+          else if ( ( type == Qgis::WkbType::MultiPolygon ) || ( type == Qgis::WkbType::MultiSurface ) )
           {
             multi = geom.asMultiPolygon();
           }

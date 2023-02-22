@@ -174,7 +174,7 @@ QMap< QString, QgsWmsLayerInfos > QgsWmsLayerInfos::buildWmsLayerInfos(
     if ( ml->type() == Qgis::LayerType::Vector )
     {
       QgsVectorLayer *vLayer = qobject_cast<QgsVectorLayer *>( ml );
-      if ( !vLayer || vLayer->wkbType() == QgsWkbTypes::NoGeometry )
+      if ( !vLayer || vLayer->wkbType() == Qgis::WkbType::NoGeometry )
       {
         hasExtent = false;
       }

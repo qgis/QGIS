@@ -199,7 +199,7 @@ QgsCoordinateReferenceSystem QgsVectorLayerCache::sourceCrs() const
   return mLayer->crs();
 }
 
-QgsWkbTypes::Type QgsVectorLayerCache::wkbType() const
+Qgis::WkbType QgsVectorLayerCache::wkbType() const
 {
   return mLayer->wkbType();
 }

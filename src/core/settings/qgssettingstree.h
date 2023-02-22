@@ -65,6 +65,12 @@ class CORE_EXPORT QgsSettingsTree
 #endif
 
     /**
+     * Returns the tree node at the given \a key
+     * \note For Plugins, use createPluginTreeNode() to create nodes for plugin settings.
+     */
+    static const QgsSettingsTreeNode *node( const QString &key ) {return treeRoot()->childNode( key );}
+
+    /**
      * Creates a settings tree node for the given \a pluginName
      */
     static QgsSettingsTreeNode *createPluginTreeNode( const QString &pluginName );

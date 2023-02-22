@@ -24,6 +24,7 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
+#include "qgis.h"
 
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with
@@ -44,252 +45,148 @@ class CORE_EXPORT QgsWkbTypes
   public:
 
     /**
-     * The WKB type describes the number of dimensions a geometry has
-     *
-     * - Point
-     * - LineString
-     * - Polygon
-     *
-     * as well as the number of dimensions for each individual vertex
-     *
-     * - X (always)
-     * - Y (always)
-     * - Z (optional)
-     * - M (measurement value, optional)
-     *
-     * it also has values for multi types, collections, unknown geometry,
-     * null geometry, no geometry and curve support.
-     *
-     * These classes of geometry are often used for data sources to
-     * communicate what kind of geometry should be expected for a given
-     * geometry field. It is also used for tools or algorithms to decide
-     * if they should be available for a given geometry type or act in
-     * a different mode.
-     */
-    enum Type
-    {
-      Unknown = 0,
-      Point = 1,
-      LineString = 2,
-      Polygon = 3,
-      Triangle = 17,
-      MultiPoint = 4,
-      MultiLineString = 5,
-      MultiPolygon = 6,
-      GeometryCollection = 7,
-      CircularString = 8,
-      CompoundCurve = 9,
-      CurvePolygon = 10, //13, //should be 10. Seems to be correct in newer PostGIS versions
-      MultiCurve = 11,
-      MultiSurface = 12,
-      NoGeometry = 100, //attributes only
-      PointZ = 1001,
-      LineStringZ = 1002,
-      PolygonZ = 1003,
-      TriangleZ = 1017,
-      MultiPointZ = 1004,
-      MultiLineStringZ = 1005,
-      MultiPolygonZ = 1006,
-      GeometryCollectionZ = 1007,
-      CircularStringZ = 1008,
-      CompoundCurveZ = 1009,
-      CurvePolygonZ = 1010,
-      MultiCurveZ = 1011,
-      MultiSurfaceZ = 1012,
-      PointM = 2001,
-      LineStringM = 2002,
-      PolygonM = 2003,
-      TriangleM = 2017,
-      MultiPointM = 2004,
-      MultiLineStringM = 2005,
-      MultiPolygonM = 2006,
-      GeometryCollectionM = 2007,
-      CircularStringM = 2008,
-      CompoundCurveM = 2009,
-      CurvePolygonM = 2010,
-      MultiCurveM = 2011,
-      MultiSurfaceM = 2012,
-      PointZM = 3001,
-      LineStringZM = 3002,
-      PolygonZM = 3003,
-      MultiPointZM = 3004,
-      MultiLineStringZM = 3005,
-      MultiPolygonZM = 3006,
-      GeometryCollectionZM = 3007,
-      CircularStringZM = 3008,
-      CompoundCurveZM = 3009,
-      CurvePolygonZM = 3010,
-      MultiCurveZM = 3011,
-      MultiSurfaceZM = 3012,
-      TriangleZM = 3017,
-      Point25D = 0x80000001,
-      LineString25D,
-      Polygon25D,
-      MultiPoint25D,
-      MultiLineString25D,
-      MultiPolygon25D
-    };
-    Q_ENUM( Type )
-
-    /**
-     * The geometry types are used to group QgsWkbTypes::Type in a
-     * coarse way.
-     *
-     * \see geometryType( QgsWkbTypes::Type )
-     */
-    enum GeometryType
-    {
-      PointGeometry,
-      LineGeometry,
-      PolygonGeometry,
-      UnknownGeometry,
-      NullGeometry
-    };
-    Q_ENUM( GeometryType )
-
-    /**
      * Returns the single type for a WKB type. For example, for MultiPolygon WKB types the single type would be Polygon.
      * \see isSingleType()
      * \see multiType()
      * \see curveType()
      * \see flatType()
      */
-    static Type singleType( Type type ) SIP_HOLDGIL
+    static Qgis::WkbType singleType( Qgis::WkbType type ) SIP_HOLDGIL
     {
       switch ( type )
       {
-        case Unknown:
-        case GeometryCollection:
-        case GeometryCollectionZ:
-        case GeometryCollectionM:
-        case GeometryCollectionZM:
-          return Unknown;
+        case Qgis::WkbType::Unknown:
+        case Qgis::WkbType::GeometryCollection:
+        case Qgis::WkbType::GeometryCollectionZ:
+        case Qgis::WkbType::GeometryCollectionM:
+        case Qgis::WkbType::GeometryCollectionZM:
+          return Qgis::WkbType::Unknown;
 
-        case Point:
-        case MultiPoint:
-          return Point;
+        case Qgis::WkbType::Point:
+        case Qgis::WkbType::MultiPoint:
+          return Qgis::WkbType::Point;
 
-        case PointZ:
-        case MultiPointZ:
-          return PointZ;
+        case Qgis::WkbType::PointZ:
+        case Qgis::WkbType::MultiPointZ:
+          return Qgis::WkbType::PointZ;
 
-        case PointM:
-        case MultiPointM:
-          return PointM;
+        case Qgis::WkbType::PointM:
+        case Qgis::WkbType::MultiPointM:
+          return Qgis::WkbType::PointM;
 
-        case PointZM:
-        case MultiPointZM:
-          return PointZM;
+        case Qgis::WkbType::PointZM:
+        case Qgis::WkbType::MultiPointZM:
+          return Qgis::WkbType::PointZM;
 
-        case LineString:
-        case MultiLineString:
-          return LineString;
+        case Qgis::WkbType::LineString:
+        case Qgis::WkbType::MultiLineString:
+          return Qgis::WkbType::LineString;
 
-        case LineStringZ:
-        case MultiLineStringZ:
-          return LineStringZ;
+        case Qgis::WkbType::LineStringZ:
+        case Qgis::WkbType::MultiLineStringZ:
+          return Qgis::WkbType::LineStringZ;
 
-        case LineStringM:
-        case MultiLineStringM:
-          return LineStringM;
+        case Qgis::WkbType::LineStringM:
+        case Qgis::WkbType::MultiLineStringM:
+          return Qgis::WkbType::LineStringM;
 
-        case LineStringZM:
-        case MultiLineStringZM:
-          return LineStringZM;
+        case Qgis::WkbType::LineStringZM:
+        case Qgis::WkbType::MultiLineStringZM:
+          return Qgis::WkbType::LineStringZM;
 
-        case Polygon:
-        case MultiPolygon:
-          return Polygon;
+        case Qgis::WkbType::Polygon:
+        case Qgis::WkbType::MultiPolygon:
+          return Qgis::WkbType::Polygon;
 
-        case PolygonZ:
-        case MultiPolygonZ:
-          return PolygonZ;
+        case Qgis::WkbType::PolygonZ:
+        case Qgis::WkbType::MultiPolygonZ:
+          return Qgis::WkbType::PolygonZ;
 
-        case PolygonM:
-        case MultiPolygonM:
-          return PolygonM;
+        case Qgis::WkbType::PolygonM:
+        case Qgis::WkbType::MultiPolygonM:
+          return Qgis::WkbType::PolygonM;
 
-        case PolygonZM:
-        case MultiPolygonZM:
-          return PolygonZM;
+        case Qgis::WkbType::PolygonZM:
+        case Qgis::WkbType::MultiPolygonZM:
+          return Qgis::WkbType::PolygonZM;
 
-        case Triangle:
+        case Qgis::WkbType::Triangle:
           // case MultiTriangle:
-          return Triangle;
+          return Qgis::WkbType::Triangle;
 
-        case TriangleZ:
+        case Qgis::WkbType::TriangleZ:
           // case MultiTriangleZ:
-          return TriangleZ;
+          return Qgis::WkbType::TriangleZ;
 
-        case TriangleM:
+        case Qgis::WkbType::TriangleM:
           // case MultiTriangleM:
-          return TriangleM;
+          return Qgis::WkbType::TriangleM;
 
-        case TriangleZM:
+        case Qgis::WkbType::TriangleZM:
           // case MultiTriangleZM:
-          return TriangleZM;
+          return Qgis::WkbType::TriangleZM;
 
-        case CircularString:
-          return CircularString;
+        case Qgis::WkbType::CircularString:
+          return Qgis::WkbType::CircularString;
 
-        case CircularStringZ:
-          return CircularStringZ;
+        case Qgis::WkbType::CircularStringZ:
+          return Qgis::WkbType::CircularStringZ;
 
-        case CircularStringM:
-          return CircularStringM;
+        case Qgis::WkbType::CircularStringM:
+          return Qgis::WkbType::CircularStringM;
 
-        case CircularStringZM:
-          return CircularStringZM;
+        case Qgis::WkbType::CircularStringZM:
+          return Qgis::WkbType::CircularStringZM;
 
-        case CompoundCurve:
-        case MultiCurve:
-          return CompoundCurve;
+        case Qgis::WkbType::CompoundCurve:
+        case Qgis::WkbType::MultiCurve:
+          return Qgis::WkbType::CompoundCurve;
 
-        case CompoundCurveZ:
-        case MultiCurveZ:
-          return CompoundCurveZ;
+        case Qgis::WkbType::CompoundCurveZ:
+        case Qgis::WkbType::MultiCurveZ:
+          return Qgis::WkbType::CompoundCurveZ;
 
-        case CompoundCurveM:
-        case MultiCurveM:
-          return CompoundCurveM;
+        case Qgis::WkbType::CompoundCurveM:
+        case Qgis::WkbType::MultiCurveM:
+          return Qgis::WkbType::CompoundCurveM;
 
-        case CompoundCurveZM:
-        case MultiCurveZM:
-          return CompoundCurveZM;
+        case Qgis::WkbType::CompoundCurveZM:
+        case Qgis::WkbType::MultiCurveZM:
+          return Qgis::WkbType::CompoundCurveZM;
 
-        case CurvePolygon:
-        case MultiSurface:
-          return CurvePolygon;
+        case Qgis::WkbType::CurvePolygon:
+        case Qgis::WkbType::MultiSurface:
+          return Qgis::WkbType::CurvePolygon;
 
-        case CurvePolygonZ:
-        case MultiSurfaceZ:
-          return CurvePolygonZ;
+        case Qgis::WkbType::CurvePolygonZ:
+        case Qgis::WkbType::MultiSurfaceZ:
+          return Qgis::WkbType::CurvePolygonZ;
 
-        case CurvePolygonM:
-        case MultiSurfaceM:
-          return CurvePolygonM;
+        case Qgis::WkbType::CurvePolygonM:
+        case Qgis::WkbType::MultiSurfaceM:
+          return Qgis::WkbType::CurvePolygonM;
 
-        case CurvePolygonZM:
-        case MultiSurfaceZM:
-          return CurvePolygonZM;
+        case Qgis::WkbType::CurvePolygonZM:
+        case Qgis::WkbType::MultiSurfaceZM:
+          return Qgis::WkbType::CurvePolygonZM;
 
-        case NoGeometry:
-          return NoGeometry;
+        case Qgis::WkbType::NoGeometry:
+          return Qgis::WkbType::NoGeometry;
 
-        case Point25D:
-        case MultiPoint25D:
-          return Point25D;
+        case Qgis::WkbType::Point25D:
+        case Qgis::WkbType::MultiPoint25D:
+          return Qgis::WkbType::Point25D;
 
-        case LineString25D:
-        case MultiLineString25D:
-          return LineString25D;
+        case Qgis::WkbType::LineString25D:
+        case Qgis::WkbType::MultiLineString25D:
+          return Qgis::WkbType::LineString25D;
 
-        case Polygon25D:
-        case MultiPolygon25D:
-          return Polygon25D;
+        case Qgis::WkbType::Polygon25D:
+        case Qgis::WkbType::MultiPolygon25D:
+          return Qgis::WkbType::Polygon25D;
 
       }
-      return Unknown;
+      return Qgis::WkbType::Unknown;
     }
 
     /**
@@ -301,138 +198,138 @@ class CORE_EXPORT QgsWkbTypes
      * \see curveType()
      * \see flatType()
      */
-    static Type multiType( Type type ) SIP_HOLDGIL
+    static Qgis::WkbType multiType( Qgis::WkbType type ) SIP_HOLDGIL
     {
       switch ( type )
       {
-        case Unknown:
-          return Unknown;
+        case Qgis::WkbType::Unknown:
+          return Qgis::WkbType::Unknown;
 
         // until we support TIN types, use multipolygon
-        case Triangle:
-          return MultiPolygon;
+        case Qgis::WkbType::Triangle:
+          return Qgis::WkbType::MultiPolygon;
 
-        case TriangleZ:
-          return MultiPolygonZ;
+        case Qgis::WkbType::TriangleZ:
+          return Qgis::WkbType::MultiPolygonZ;
 
-        case TriangleM:
-          return MultiPolygonM;
+        case Qgis::WkbType::TriangleM:
+          return Qgis::WkbType::MultiPolygonM;
 
-        case TriangleZM:
-          return MultiPolygonZM;
+        case Qgis::WkbType::TriangleZM:
+          return Qgis::WkbType::MultiPolygonZM;
 
-        case GeometryCollection:
-          return GeometryCollection;
+        case Qgis::WkbType::GeometryCollection:
+          return Qgis::WkbType::GeometryCollection;
 
-        case GeometryCollectionZ:
-          return GeometryCollectionZ;
+        case Qgis::WkbType::GeometryCollectionZ:
+          return Qgis::WkbType::GeometryCollectionZ;
 
-        case GeometryCollectionM:
-          return GeometryCollectionM;
+        case Qgis::WkbType::GeometryCollectionM:
+          return Qgis::WkbType::GeometryCollectionM;
 
-        case GeometryCollectionZM:
-          return GeometryCollectionZM;
+        case Qgis::WkbType::GeometryCollectionZM:
+          return Qgis::WkbType::GeometryCollectionZM;
 
-        case Point:
-        case MultiPoint:
-          return MultiPoint;
+        case Qgis::WkbType::Point:
+        case Qgis::WkbType::MultiPoint:
+          return Qgis::WkbType::MultiPoint;
 
-        case PointZ:
-        case MultiPointZ:
-          return MultiPointZ;
+        case Qgis::WkbType::PointZ:
+        case Qgis::WkbType::MultiPointZ:
+          return Qgis::WkbType::MultiPointZ;
 
-        case PointM:
-        case MultiPointM:
-          return MultiPointM;
+        case Qgis::WkbType::PointM:
+        case Qgis::WkbType::MultiPointM:
+          return Qgis::WkbType::MultiPointM;
 
-        case PointZM:
-        case MultiPointZM:
-          return MultiPointZM;
+        case Qgis::WkbType::PointZM:
+        case Qgis::WkbType::MultiPointZM:
+          return Qgis::WkbType::MultiPointZM;
 
-        case LineString:
-        case MultiLineString:
-          return MultiLineString;
+        case Qgis::WkbType::LineString:
+        case Qgis::WkbType::MultiLineString:
+          return Qgis::WkbType::MultiLineString;
 
-        case LineStringZ:
-        case MultiLineStringZ:
-          return MultiLineStringZ;
+        case Qgis::WkbType::LineStringZ:
+        case Qgis::WkbType::MultiLineStringZ:
+          return Qgis::WkbType::MultiLineStringZ;
 
-        case LineStringM:
-        case MultiLineStringM:
-          return MultiLineStringM;
+        case Qgis::WkbType::LineStringM:
+        case Qgis::WkbType::MultiLineStringM:
+          return Qgis::WkbType::MultiLineStringM;
 
-        case LineStringZM:
-        case MultiLineStringZM:
-          return MultiLineStringZM;
+        case Qgis::WkbType::LineStringZM:
+        case Qgis::WkbType::MultiLineStringZM:
+          return Qgis::WkbType::MultiLineStringZM;
 
-        case Polygon:
-        case MultiPolygon:
-          return MultiPolygon;
+        case Qgis::WkbType::Polygon:
+        case Qgis::WkbType::MultiPolygon:
+          return Qgis::WkbType::MultiPolygon;
 
-        case PolygonZ:
-        case MultiPolygonZ:
-          return MultiPolygonZ;
+        case Qgis::WkbType::PolygonZ:
+        case Qgis::WkbType::MultiPolygonZ:
+          return Qgis::WkbType::MultiPolygonZ;
 
-        case PolygonM:
-        case MultiPolygonM:
-          return MultiPolygonM;
+        case Qgis::WkbType::PolygonM:
+        case Qgis::WkbType::MultiPolygonM:
+          return Qgis::WkbType::MultiPolygonM;
 
-        case PolygonZM:
-        case MultiPolygonZM:
-          return MultiPolygonZM;
+        case Qgis::WkbType::PolygonZM:
+        case Qgis::WkbType::MultiPolygonZM:
+          return Qgis::WkbType::MultiPolygonZM;
 
-        case CompoundCurve:
-        case CircularString:
-        case MultiCurve:
-          return MultiCurve;
+        case Qgis::WkbType::CompoundCurve:
+        case Qgis::WkbType::CircularString:
+        case Qgis::WkbType::MultiCurve:
+          return Qgis::WkbType::MultiCurve;
 
-        case CompoundCurveZ:
-        case CircularStringZ:
-        case MultiCurveZ:
-          return MultiCurveZ;
+        case Qgis::WkbType::CompoundCurveZ:
+        case Qgis::WkbType::CircularStringZ:
+        case Qgis::WkbType::MultiCurveZ:
+          return Qgis::WkbType::MultiCurveZ;
 
-        case CompoundCurveM:
-        case CircularStringM:
-        case MultiCurveM:
-          return MultiCurveM;
+        case Qgis::WkbType::CompoundCurveM:
+        case Qgis::WkbType::CircularStringM:
+        case Qgis::WkbType::MultiCurveM:
+          return Qgis::WkbType::MultiCurveM;
 
-        case CompoundCurveZM:
-        case CircularStringZM:
-        case MultiCurveZM:
-          return MultiCurveZM;
+        case Qgis::WkbType::CompoundCurveZM:
+        case Qgis::WkbType::CircularStringZM:
+        case Qgis::WkbType::MultiCurveZM:
+          return Qgis::WkbType::MultiCurveZM;
 
-        case CurvePolygon:
-        case MultiSurface:
-          return MultiSurface;
+        case Qgis::WkbType::CurvePolygon:
+        case Qgis::WkbType::MultiSurface:
+          return Qgis::WkbType::MultiSurface;
 
-        case CurvePolygonZ:
-        case MultiSurfaceZ:
-          return MultiSurfaceZ;
+        case Qgis::WkbType::CurvePolygonZ:
+        case Qgis::WkbType::MultiSurfaceZ:
+          return Qgis::WkbType::MultiSurfaceZ;
 
-        case CurvePolygonM:
-        case MultiSurfaceM:
-          return MultiSurfaceM;
+        case Qgis::WkbType::CurvePolygonM:
+        case Qgis::WkbType::MultiSurfaceM:
+          return Qgis::WkbType::MultiSurfaceM;
 
-        case CurvePolygonZM:
-        case MultiSurfaceZM:
-          return MultiSurfaceZM;
+        case Qgis::WkbType::CurvePolygonZM:
+        case Qgis::WkbType::MultiSurfaceZM:
+          return Qgis::WkbType::MultiSurfaceZM;
 
-        case NoGeometry:
-          return NoGeometry;
+        case Qgis::WkbType::NoGeometry:
+          return Qgis::WkbType::NoGeometry;
 
-        case Point25D:
-        case MultiPoint25D:
-          return MultiPoint25D;
+        case Qgis::WkbType::Point25D:
+        case Qgis::WkbType::MultiPoint25D:
+          return Qgis::WkbType::MultiPoint25D;
 
-        case LineString25D:
-        case MultiLineString25D:
-          return MultiLineString25D;
+        case Qgis::WkbType::LineString25D:
+        case Qgis::WkbType::MultiLineString25D:
+          return Qgis::WkbType::MultiLineString25D;
 
-        case Polygon25D:
-        case MultiPolygon25D:
-          return MultiPolygon25D;
+        case Qgis::WkbType::Polygon25D:
+        case Qgis::WkbType::MultiPolygon25D:
+          return Qgis::WkbType::MultiPolygon25D;
       }
-      return Unknown;
+      return Qgis::WkbType::Unknown;
     }
 
 
@@ -448,20 +345,20 @@ class CORE_EXPORT QgsWkbTypes
      * \see singleType()
      * \since QGIS 3.24
      */
-    static Type promoteNonPointTypesToMulti( Type type ) SIP_HOLDGIL
+    static Qgis::WkbType promoteNonPointTypesToMulti( Qgis::WkbType type ) SIP_HOLDGIL
     {
       switch ( geometryType( type ) )
       {
-        case QgsWkbTypes::PointGeometry:
-        case QgsWkbTypes::UnknownGeometry:
-        case QgsWkbTypes::NullGeometry:
+        case Qgis::GeometryType::Point:
+        case Qgis::GeometryType::Unknown:
+        case Qgis::GeometryType::Null:
           return type;
 
-        case QgsWkbTypes::LineGeometry:
-        case QgsWkbTypes::PolygonGeometry:
+        case Qgis::GeometryType::Line:
+        case Qgis::GeometryType::Polygon:
           return multiType( type );
       }
-      return Unknown;
+      return Qgis::WkbType::Unknown;
     }
 
     /**
@@ -478,133 +375,133 @@ class CORE_EXPORT QgsWkbTypes
      *
      * \since QGIS 3.10
      */
-    static Type curveType( Type type ) SIP_HOLDGIL
+    static Qgis::WkbType curveType( Qgis::WkbType type ) SIP_HOLDGIL
     {
       switch ( type )
       {
-        case Unknown:
-        case Triangle:
-        case TriangleZ:
-        case TriangleM:
-        case TriangleZM:
-          return Unknown;
+        case Qgis::WkbType::Unknown:
+        case Qgis::WkbType::Triangle:
+        case Qgis::WkbType::TriangleZ:
+        case Qgis::WkbType::TriangleM:
+        case Qgis::WkbType::TriangleZM:
+          return Qgis::WkbType::Unknown;
 
-        case GeometryCollection:
-          return GeometryCollection;
+        case Qgis::WkbType::GeometryCollection:
+          return Qgis::WkbType::GeometryCollection;
 
-        case GeometryCollectionZ:
-          return GeometryCollectionZ;
+        case Qgis::WkbType::GeometryCollectionZ:
+          return Qgis::WkbType::GeometryCollectionZ;
 
-        case GeometryCollectionM:
-          return GeometryCollectionM;
+        case Qgis::WkbType::GeometryCollectionM:
+          return Qgis::WkbType::GeometryCollectionM;
 
-        case GeometryCollectionZM:
-          return GeometryCollectionZM;
+        case Qgis::WkbType::GeometryCollectionZM:
+          return Qgis::WkbType::GeometryCollectionZM;
 
-        case Point:
-          return Point;
+        case Qgis::WkbType::Point:
+          return Qgis::WkbType::Point;
 
-        case MultiPoint:
-          return MultiPoint;
+        case Qgis::WkbType::MultiPoint:
+          return Qgis::WkbType::MultiPoint;
 
-        case PointZ:
-          return PointZ;
+        case Qgis::WkbType::PointZ:
+          return Qgis::WkbType::PointZ;
 
-        case MultiPointZ:
-          return MultiPointZ;
+        case Qgis::WkbType::MultiPointZ:
+          return Qgis::WkbType::MultiPointZ;
 
-        case PointM:
-          return PointM;
+        case Qgis::WkbType::PointM:
+          return Qgis::WkbType::PointM;
 
-        case MultiPointM:
-          return MultiPointM;
+        case Qgis::WkbType::MultiPointM:
+          return Qgis::WkbType::MultiPointM;
 
-        case PointZM:
-          return PointZM;
+        case Qgis::WkbType::PointZM:
+          return Qgis::WkbType::PointZM;
 
-        case MultiPointZM:
-          return MultiPointZM;
+        case Qgis::WkbType::MultiPointZM:
+          return Qgis::WkbType::MultiPointZM;
 
-        case LineString:
-        case CompoundCurve:
-        case CircularString:
-          return CompoundCurve;
+        case Qgis::WkbType::LineString:
+        case Qgis::WkbType::CompoundCurve:
+        case Qgis::WkbType::CircularString:
+          return Qgis::WkbType::CompoundCurve;
 
-        case MultiLineString:
-        case MultiCurve:
-          return MultiCurve;
+        case Qgis::WkbType::MultiLineString:
+        case Qgis::WkbType::MultiCurve:
+          return Qgis::WkbType::MultiCurve;
 
-        case LineStringZ:
-        case CompoundCurveZ:
-        case CircularStringZ:
-        case LineString25D:
-          return CompoundCurveZ;
+        case Qgis::WkbType::LineStringZ:
+        case Qgis::WkbType::CompoundCurveZ:
+        case Qgis::WkbType::CircularStringZ:
+        case Qgis::WkbType::LineString25D:
+          return Qgis::WkbType::CompoundCurveZ;
 
-        case MultiLineStringZ:
-        case MultiCurveZ:
-        case MultiLineString25D:
-          return MultiCurveZ;
+        case Qgis::WkbType::MultiLineStringZ:
+        case Qgis::WkbType::MultiCurveZ:
+        case Qgis::WkbType::MultiLineString25D:
+          return Qgis::WkbType::MultiCurveZ;
 
-        case LineStringM:
-        case CompoundCurveM:
-        case CircularStringM:
-          return CompoundCurveM;
+        case Qgis::WkbType::LineStringM:
+        case Qgis::WkbType::CompoundCurveM:
+        case Qgis::WkbType::CircularStringM:
+          return Qgis::WkbType::CompoundCurveM;
 
-        case MultiLineStringM:
-        case MultiCurveM:
-          return MultiCurveM;
+        case Qgis::WkbType::MultiLineStringM:
+        case Qgis::WkbType::MultiCurveM:
+          return Qgis::WkbType::MultiCurveM;
 
-        case LineStringZM:
-        case CompoundCurveZM:
-        case CircularStringZM:
-          return CompoundCurveZM;
+        case Qgis::WkbType::LineStringZM:
+        case Qgis::WkbType::CompoundCurveZM:
+        case Qgis::WkbType::CircularStringZM:
+          return Qgis::WkbType::CompoundCurveZM;
 
-        case MultiLineStringZM:
-        case MultiCurveZM:
-          return MultiCurveZM;
+        case Qgis::WkbType::MultiLineStringZM:
+        case Qgis::WkbType::MultiCurveZM:
+          return Qgis::WkbType::MultiCurveZM;
 
-        case Polygon:
-        case CurvePolygon:
-          return CurvePolygon;
+        case Qgis::WkbType::Polygon:
+        case Qgis::WkbType::CurvePolygon:
+          return Qgis::WkbType::CurvePolygon;
 
-        case MultiPolygon:
-        case MultiSurface:
-          return MultiSurface;
+        case Qgis::WkbType::MultiPolygon:
+        case Qgis::WkbType::MultiSurface:
+          return Qgis::WkbType::MultiSurface;
 
-        case PolygonZ:
-        case CurvePolygonZ:
-        case Polygon25D:
-          return CurvePolygonZ;
+        case Qgis::WkbType::PolygonZ:
+        case Qgis::WkbType::CurvePolygonZ:
+        case Qgis::WkbType::Polygon25D:
+          return Qgis::WkbType::CurvePolygonZ;
 
-        case MultiPolygonZ:
-        case MultiSurfaceZ:
-        case MultiPolygon25D:
-          return MultiSurfaceZ;
+        case Qgis::WkbType::MultiPolygonZ:
+        case Qgis::WkbType::MultiSurfaceZ:
+        case Qgis::WkbType::MultiPolygon25D:
+          return Qgis::WkbType::MultiSurfaceZ;
 
-        case PolygonM:
-        case CurvePolygonM:
-          return CurvePolygonM;
+        case Qgis::WkbType::PolygonM:
+        case Qgis::WkbType::CurvePolygonM:
+          return Qgis::WkbType::CurvePolygonM;
 
-        case MultiPolygonM:
-        case MultiSurfaceM:
-          return MultiSurfaceM;
+        case Qgis::WkbType::MultiPolygonM:
+        case Qgis::WkbType::MultiSurfaceM:
+          return Qgis::WkbType::MultiSurfaceM;
 
-        case PolygonZM:
-        case CurvePolygonZM:
-          return CurvePolygonZM;
+        case Qgis::WkbType::PolygonZM:
+        case Qgis::WkbType::CurvePolygonZM:
+          return Qgis::WkbType::CurvePolygonZM;
 
-        case MultiPolygonZM:
-        case MultiSurfaceZM:
-          return MultiSurfaceZM;
+        case Qgis::WkbType::MultiPolygonZM:
+        case Qgis::WkbType::MultiSurfaceZM:
+          return Qgis::WkbType::MultiSurfaceZM;
 
-        case NoGeometry:
-          return NoGeometry;
+        case Qgis::WkbType::NoGeometry:
+          return Qgis::WkbType::NoGeometry;
 
-        case Point25D:
-        case MultiPoint25D:
-          return MultiPoint25D;
+        case Qgis::WkbType::Point25D:
+        case Qgis::WkbType::MultiPoint25D:
+          return Qgis::WkbType::MultiPoint25D;
       }
-      return Unknown;
+      return Qgis::WkbType::Unknown;
     }
 
     /**
@@ -619,107 +516,107 @@ class CORE_EXPORT QgsWkbTypes
      *
      * \since QGIS 3.14
      */
-    static Type linearType( Type type ) SIP_HOLDGIL
+    static Qgis::WkbType linearType( Qgis::WkbType type ) SIP_HOLDGIL
     {
       switch ( type )
       {
 
-        case CircularString:
-        case CompoundCurve:
-          return LineString;
+        case Qgis::WkbType::CircularString:
+        case Qgis::WkbType::CompoundCurve:
+          return Qgis::WkbType::LineString;
 
-        case CircularStringM:
-        case CompoundCurveM:
-          return LineStringM;
+        case Qgis::WkbType::CircularStringM:
+        case Qgis::WkbType::CompoundCurveM:
+          return Qgis::WkbType::LineStringM;
 
-        case CircularStringZ:
-        case CompoundCurveZ:
-          return LineStringZ;
+        case Qgis::WkbType::CircularStringZ:
+        case Qgis::WkbType::CompoundCurveZ:
+          return Qgis::WkbType::LineStringZ;
 
-        case CircularStringZM:
-        case CompoundCurveZM:
-          return LineStringZM;
+        case Qgis::WkbType::CircularStringZM:
+        case Qgis::WkbType::CompoundCurveZM:
+          return Qgis::WkbType::LineStringZM;
 
-        case MultiCurve:
-          return MultiLineString;
+        case Qgis::WkbType::MultiCurve:
+          return Qgis::WkbType::MultiLineString;
 
-        case MultiCurveM:
-          return MultiLineStringM;
+        case Qgis::WkbType::MultiCurveM:
+          return Qgis::WkbType::MultiLineStringM;
 
-        case MultiCurveZ:
-          return MultiLineStringZ;
+        case Qgis::WkbType::MultiCurveZ:
+          return Qgis::WkbType::MultiLineStringZ;
 
-        case MultiCurveZM:
-          return MultiLineStringZM;
+        case Qgis::WkbType::MultiCurveZM:
+          return Qgis::WkbType::MultiLineStringZM;
 
-        case CurvePolygon:
-          return Polygon;
+        case Qgis::WkbType::CurvePolygon:
+          return Qgis::WkbType::Polygon;
 
-        case CurvePolygonM:
-          return PolygonM;
+        case Qgis::WkbType::CurvePolygonM:
+          return Qgis::WkbType::PolygonM;
 
-        case CurvePolygonZ:
-          return PolygonZ;
+        case Qgis::WkbType::CurvePolygonZ:
+          return Qgis::WkbType::PolygonZ;
 
-        case CurvePolygonZM:
-          return PolygonZM;
+        case Qgis::WkbType::CurvePolygonZM:
+          return Qgis::WkbType::PolygonZM;
 
-        case MultiSurface:
-          return MultiPolygon;
+        case Qgis::WkbType::MultiSurface:
+          return Qgis::WkbType::MultiPolygon;
 
-        case MultiSurfaceM:
-          return MultiPolygonM;
+        case Qgis::WkbType::MultiSurfaceM:
+          return Qgis::WkbType::MultiPolygonM;
 
-        case MultiSurfaceZ:
-          return MultiPolygonZ;
+        case Qgis::WkbType::MultiSurfaceZ:
+          return Qgis::WkbType::MultiPolygonZ;
 
-        case MultiSurfaceZM:
-          return MultiPolygonZM;
+        case Qgis::WkbType::MultiSurfaceZM:
+          return Qgis::WkbType::MultiPolygonZM;
 
-        case GeometryCollection:
-        case GeometryCollectionM:
-        case GeometryCollectionZ:
-        case GeometryCollectionZM:
-        case LineString:
-        case LineString25D:
-        case LineStringM:
-        case LineStringZ:
-        case LineStringZM:
-        case MultiLineString:
-        case MultiLineString25D:
-        case MultiLineStringM:
-        case MultiLineStringZ:
-        case MultiLineStringZM:
-        case MultiPoint:
-        case MultiPoint25D:
-        case MultiPointM:
-        case MultiPointZ:
-        case MultiPointZM:
-        case MultiPolygon:
-        case MultiPolygon25D:
-        case MultiPolygonM:
-        case MultiPolygonZ:
-        case MultiPolygonZM:
-        case NoGeometry:
-        case Point:
-        case Point25D:
-        case PointM:
-        case PointZ:
-        case PointZM:
-        case Polygon:
-        case Polygon25D:
-        case PolygonM:
-        case PolygonZ:
-        case PolygonZM:
-        case Triangle:
-        case TriangleM:
-        case TriangleZ:
-        case TriangleZM:
-        case Unknown:
+        case Qgis::WkbType::GeometryCollection:
+        case Qgis::WkbType::GeometryCollectionM:
+        case Qgis::WkbType::GeometryCollectionZ:
+        case Qgis::WkbType::GeometryCollectionZM:
+        case Qgis::WkbType::LineString:
+        case Qgis::WkbType::LineString25D:
+        case Qgis::WkbType::LineStringM:
+        case Qgis::WkbType::LineStringZ:
+        case Qgis::WkbType::LineStringZM:
+        case Qgis::WkbType::MultiLineString:
+        case Qgis::WkbType::MultiLineString25D:
+        case Qgis::WkbType::MultiLineStringM:
+        case Qgis::WkbType::MultiLineStringZ:
+        case Qgis::WkbType::MultiLineStringZM:
+        case Qgis::WkbType::MultiPoint:
+        case Qgis::WkbType::MultiPoint25D:
+        case Qgis::WkbType::MultiPointM:
+        case Qgis::WkbType::MultiPointZ:
+        case Qgis::WkbType::MultiPointZM:
+        case Qgis::WkbType::MultiPolygon:
+        case Qgis::WkbType::MultiPolygon25D:
+        case Qgis::WkbType::MultiPolygonM:
+        case Qgis::WkbType::MultiPolygonZ:
+        case Qgis::WkbType::MultiPolygonZM:
+        case Qgis::WkbType::NoGeometry:
+        case Qgis::WkbType::Point:
+        case Qgis::WkbType::Point25D:
+        case Qgis::WkbType::PointM:
+        case Qgis::WkbType::PointZ:
+        case Qgis::WkbType::PointZM:
+        case Qgis::WkbType::Polygon:
+        case Qgis::WkbType::Polygon25D:
+        case Qgis::WkbType::PolygonM:
+        case Qgis::WkbType::PolygonZ:
+        case Qgis::WkbType::PolygonZM:
+        case Qgis::WkbType::Triangle:
+        case Qgis::WkbType::TriangleM:
+        case Qgis::WkbType::TriangleZ:
+        case Qgis::WkbType::TriangleZM:
+        case Qgis::WkbType::Unknown:
           return type;
 
       }
-      return Unknown;
+      return Qgis::WkbType::Unknown;
     }
 
     /**
@@ -729,112 +626,112 @@ class CORE_EXPORT QgsWkbTypes
      * \see multiType()
      * \see curveType()
      */
-    static Type flatType( Type type ) SIP_HOLDGIL
+    static Qgis::WkbType flatType( Qgis::WkbType type ) SIP_HOLDGIL
     {
       switch ( type )
       {
-        case Unknown:
-          return Unknown;
+        case Qgis::WkbType::Unknown:
+          return Qgis::WkbType::Unknown;
 
-        case Point:
-        case PointZ:
-        case PointM:
-        case PointZM:
-        case Point25D:
-          return Point;
+        case Qgis::WkbType::Point:
+        case Qgis::WkbType::PointZ:
+        case Qgis::WkbType::PointM:
+        case Qgis::WkbType::PointZM:
+        case Qgis::WkbType::Point25D:
+          return Qgis::WkbType::Point;
 
-        case LineString:
-        case LineStringZ:
-        case LineStringM:
-        case LineStringZM:
-        case LineString25D:
-          return LineString;
+        case Qgis::WkbType::LineString:
+        case Qgis::WkbType::LineStringZ:
+        case Qgis::WkbType::LineStringM:
+        case Qgis::WkbType::LineStringZM:
+        case Qgis::WkbType::LineString25D:
+          return Qgis::WkbType::LineString;
 
-        case Polygon:
-        case PolygonZ:
-        case PolygonM:
-        case PolygonZM:
-        case Polygon25D:
-          return Polygon;
+        case Qgis::WkbType::Polygon:
+        case Qgis::WkbType::PolygonZ:
+        case Qgis::WkbType::PolygonM:
+        case Qgis::WkbType::PolygonZM:
+        case Qgis::WkbType::Polygon25D:
+          return Qgis::WkbType::Polygon;
 
-        case Triangle:
-        case TriangleZ:
-        case TriangleM:
-        case TriangleZM:
-          return Triangle;
+        case Qgis::WkbType::Triangle:
+        case Qgis::WkbType::TriangleZ:
+        case Qgis::WkbType::TriangleM:
+        case Qgis::WkbType::TriangleZM:
+          return Qgis::WkbType::Triangle;
 
-        case MultiPoint:
-        case MultiPointZ:
-        case MultiPointM:
-        case MultiPointZM:
-        case MultiPoint25D:
-          return MultiPoint;
+        case Qgis::WkbType::MultiPoint:
+        case Qgis::WkbType::MultiPointZ:
+        case Qgis::WkbType::MultiPointM:
+        case Qgis::WkbType::MultiPointZM:
+        case Qgis::WkbType::MultiPoint25D:
+          return Qgis::WkbType::MultiPoint;
 
-        case MultiLineString:
-        case MultiLineStringZ:
-        case MultiLineStringM:
-        case MultiLineStringZM:
-        case MultiLineString25D:
-          return MultiLineString;
+        case Qgis::WkbType::MultiLineString:
+        case Qgis::WkbType::MultiLineStringZ:
+        case Qgis::WkbType::MultiLineStringM:
+        case Qgis::WkbType::MultiLineStringZM:
+        case Qgis::WkbType::MultiLineString25D:
+          return Qgis::WkbType::MultiLineString;
 
-        case MultiPolygon:
-        case MultiPolygonZ:
-        case MultiPolygonM:
-        case MultiPolygonZM:
-        case MultiPolygon25D:
-          return MultiPolygon;
+        case Qgis::WkbType::MultiPolygon:
+        case Qgis::WkbType::MultiPolygonZ:
+        case Qgis::WkbType::MultiPolygonM:
+        case Qgis::WkbType::MultiPolygonZM:
+        case Qgis::WkbType::MultiPolygon25D:
+          return Qgis::WkbType::MultiPolygon;
 
-        case GeometryCollection:
-        case GeometryCollectionZ:
-        case GeometryCollectionM:
-        case GeometryCollectionZM:
-          return GeometryCollection;
+        case Qgis::WkbType::GeometryCollection:
+        case Qgis::WkbType::GeometryCollectionZ:
+        case Qgis::WkbType::GeometryCollectionM:
+        case Qgis::WkbType::GeometryCollectionZM:
+          return Qgis::WkbType::GeometryCollection;
 
-        case CircularString:
-        case CircularStringZ:
-        case CircularStringM:
-        case CircularStringZM:
-          return CircularString;
+        case Qgis::WkbType::CircularString:
+        case Qgis::WkbType::CircularStringZ:
+        case Qgis::WkbType::CircularStringM:
+        case Qgis::WkbType::CircularStringZM:
+          return Qgis::WkbType::CircularString;
 
-        case CompoundCurve:
-        case CompoundCurveZ:
-        case CompoundCurveM:
-        case CompoundCurveZM:
-          return CompoundCurve;
+        case Qgis::WkbType::CompoundCurve:
+        case Qgis::WkbType::CompoundCurveZ:
+        case Qgis::WkbType::CompoundCurveM:
+        case Qgis::WkbType::CompoundCurveZM:
+          return Qgis::WkbType::CompoundCurve;
 
-        case MultiCurve:
-        case MultiCurveZ:
-        case MultiCurveM:
-        case MultiCurveZM:
-          return MultiCurve;
+        case Qgis::WkbType::MultiCurve:
+        case Qgis::WkbType::MultiCurveZ:
+        case Qgis::WkbType::MultiCurveM:
+        case Qgis::WkbType::MultiCurveZM:
+          return Qgis::WkbType::MultiCurve;
 
-        case CurvePolygon:
-        case CurvePolygonZ:
-        case CurvePolygonM:
-        case CurvePolygonZM:
-          return CurvePolygon;
+        case Qgis::WkbType::CurvePolygon:
+        case Qgis::WkbType::CurvePolygonZ:
+        case Qgis::WkbType::CurvePolygonM:
+        case Qgis::WkbType::CurvePolygonZM:
+          return Qgis::WkbType::CurvePolygon;
 
-        case MultiSurface:
-        case MultiSurfaceZ:
-        case MultiSurfaceM:
-        case MultiSurfaceZM:
-          return MultiSurface;
+        case Qgis::WkbType::MultiSurface:
+        case Qgis::WkbType::MultiSurfaceZ:
+        case Qgis::WkbType::MultiSurfaceM:
+        case Qgis::WkbType::MultiSurfaceZM:
+          return Qgis::WkbType::MultiSurface;
 
-        case NoGeometry:
-          return NoGeometry;
+        case Qgis::WkbType::NoGeometry:
+          return Qgis::WkbType::NoGeometry;
 
       }
-      return Unknown;
+      return Qgis::WkbType::Unknown;
     }
 
     //! Returns the modified input geometry type according to hasZ / hasM
-    static Type zmType( Type type, bool hasZ, bool hasM ) SIP_HOLDGIL
+    static Qgis::WkbType zmType( Qgis::WkbType type, bool hasZ, bool hasM ) SIP_HOLDGIL
     {
       type = flatType( type );
       if ( hasZ )
-        type = static_cast<QgsWkbTypes::Type>( static_cast<quint32>( type ) + 1000 );
+        type = static_cast<Qgis::WkbType>( static_cast<quint32>( type ) + 1000 );
       if ( hasM )
-        type = static_cast<QgsWkbTypes::Type>( static_cast<quint32>( type ) + 2000 );
+        type = static_cast<Qgis::WkbType>( static_cast<quint32>( type ) + 2000 );
       return type;
     }
 
@@ -842,16 +739,16 @@ class CORE_EXPORT QgsWkbTypes
      * Attempts to extract the WKB type from a WKT string.
      * \param wktStr a valid WKT string
      */
-    static Type parseType( const QString &wktStr );
+    static Qgis::WkbType parseType( const QString &wktStr );
 
     /**
      * Returns TRUE if the WKB type is a single type.
      * \see isMultiType()
      * \see singleType()
      */
-    static bool isSingleType( Type type ) SIP_HOLDGIL
+    static bool isSingleType( Qgis::WkbType type ) SIP_HOLDGIL
     {
-      return ( type != Unknown && !isMultiType( type ) );
+      return ( type != Qgis::WkbType::Unknown && !isMultiType( type ) );
     }
 
     /**
@@ -859,43 +756,43 @@ class CORE_EXPORT QgsWkbTypes
      * \see isSingleType()
      * \see multiType()
      */
-    static bool isMultiType( Type type ) SIP_HOLDGIL
+    static bool isMultiType( Qgis::WkbType type ) SIP_HOLDGIL
     {
       switch ( type )
       {
-        case Unknown:
-        case Point:
-        case LineString:
-        case Polygon:
-        case Triangle:
-        case CircularString:
-        case CompoundCurve:
-        case CurvePolygon:
-        case NoGeometry:
-        case PointZ:
-        case LineStringZ:
-        case PolygonZ:
-        case TriangleZ:
-        case CircularStringZ:
-        case CompoundCurveZ:
-        case CurvePolygonZ:
-        case PointM:
-        case LineStringM:
-        case PolygonM:
-        case TriangleM:
-        case CircularStringM:
-        case CompoundCurveM:
-        case CurvePolygonM:
-        case PointZM:
-        case LineStringZM:
-        case PolygonZM:
-        case TriangleZM:
-        case CircularStringZM:
-        case CompoundCurveZM:
-        case CurvePolygonZM:
-        case Point25D:
-        case LineString25D:
-        case Polygon25D:
+        case Qgis::WkbType::Unknown:
+        case Qgis::WkbType::Point:
+        case Qgis::WkbType::LineString:
+        case Qgis::WkbType::Polygon:
+        case Qgis::WkbType::Triangle:
+        case Qgis::WkbType::CircularString:
+        case Qgis::WkbType::CompoundCurve:
+        case Qgis::WkbType::CurvePolygon:
+        case Qgis::WkbType::NoGeometry:
+        case Qgis::WkbType::PointZ:
+        case Qgis::WkbType::LineStringZ:
+        case Qgis::WkbType::PolygonZ:
+        case Qgis::WkbType::TriangleZ:
+        case Qgis::WkbType::CircularStringZ:
+        case Qgis::WkbType::CompoundCurveZ:
+        case Qgis::WkbType::CurvePolygonZ:
+        case Qgis::WkbType::PointM:
+        case Qgis::WkbType::LineStringM:
+        case Qgis::WkbType::PolygonM:
+        case Qgis::WkbType::TriangleM:
+        case Qgis::WkbType::CircularStringM:
+        case Qgis::WkbType::CompoundCurveM:
+        case Qgis::WkbType::CurvePolygonM:
+        case Qgis::WkbType::PointZM:
+        case Qgis::WkbType::LineStringZM:
+        case Qgis::WkbType::PolygonZM:
+        case Qgis::WkbType::TriangleZM:
+        case Qgis::WkbType::CircularStringZM:
+        case Qgis::WkbType::CompoundCurveZM:
+        case Qgis::WkbType::CurvePolygonZM:
+        case Qgis::WkbType::Point25D:
+        case Qgis::WkbType::LineString25D:
+        case Qgis::WkbType::Polygon25D:
           return false;
 
         default:
@@ -908,15 +805,15 @@ class CORE_EXPORT QgsWkbTypes
      * Returns TRUE if the WKB type is a curved type or can contain curved geometries.
      * \since QGIS 2.14
      */
-    static bool isCurvedType( Type type ) SIP_HOLDGIL
+    static bool isCurvedType( Qgis::WkbType type ) SIP_HOLDGIL
     {
       switch ( flatType( type ) )
       {
-        case CircularString:
-        case CompoundCurve:
-        case CurvePolygon:
-        case MultiCurve:
-        case MultiSurface:
+        case Qgis::WkbType::CircularString:
+        case Qgis::WkbType::CompoundCurve:
+        case Qgis::WkbType::CurvePolygon:
+        case Qgis::WkbType::MultiCurve:
+        case Qgis::WkbType::MultiSurface:
           return true;
 
         default:
@@ -931,14 +828,14 @@ class CORE_EXPORT QgsWkbTypes
      * Invalid geometry types will return a dimension of 0.
      * \see coordDimensions()
      */
-    static int wkbDimensions( Type type ) SIP_HOLDGIL
+    static int wkbDimensions( Qgis::WkbType type ) SIP_HOLDGIL
     {
-      const GeometryType gtype = geometryType( type );
+      const Qgis::GeometryType gtype = geometryType( type );
       switch ( gtype )
       {
-        case LineGeometry:
+        case Qgis::GeometryType::Line:
           return 1;
-        case PolygonGeometry:
+        case Qgis::GeometryType::Polygon:
           return 2;
         default: //point, no geometry, unknown geometry
           return 0;
@@ -952,9 +849,9 @@ class CORE_EXPORT QgsWkbTypes
      * \see wkbDimensions()
      * \since QGIS 2.14
      */
-    static int coordDimensions( Type type ) SIP_HOLDGIL
+    static int coordDimensions( Qgis::WkbType type ) SIP_HOLDGIL
     {
-      if ( type == Unknown || type == NoGeometry )
+      if ( type == Qgis::WkbType::Unknown || type == Qgis::WkbType::NoGeometry )
         return 0;
 
       return 2 + hasZ( type ) + hasM( type );
@@ -965,95 +862,95 @@ class CORE_EXPORT QgsWkbTypes
      * PolygonGeometry geometry type.
      * GeometryCollections are reported as QgsWkbTypes::UnknownGeometry.
      */
-    static GeometryType geometryType( Type type ) SIP_HOLDGIL
+    static Qgis::GeometryType geometryType( Qgis::WkbType type ) SIP_HOLDGIL
     {
       switch ( type )
       {
-        case Unknown:
-        case GeometryCollection:
-        case GeometryCollectionZ:
-        case GeometryCollectionM:
-        case GeometryCollectionZM:
-          return UnknownGeometry;
+        case Qgis::WkbType::Unknown:
+        case Qgis::WkbType::GeometryCollection:
+        case Qgis::WkbType::GeometryCollectionZ:
+        case Qgis::WkbType::GeometryCollectionM:
+        case Qgis::WkbType::GeometryCollectionZM:
+          return Qgis::GeometryType::Unknown;
 
-        case Point:
-        case MultiPoint:
-        case PointZ:
-        case MultiPointZ:
-        case PointM:
-        case MultiPointM:
-        case PointZM:
-        case MultiPointZM:
-        case Point25D:
-        case MultiPoint25D:
-          return PointGeometry;
+        case Qgis::WkbType::Point:
+        case Qgis::WkbType::MultiPoint:
+        case Qgis::WkbType::PointZ:
+        case Qgis::WkbType::MultiPointZ:
+        case Qgis::WkbType::PointM:
+        case Qgis::WkbType::MultiPointM:
+        case Qgis::WkbType::PointZM:
+        case Qgis::WkbType::MultiPointZM:
+        case Qgis::WkbType::Point25D:
+        case Qgis::WkbType::MultiPoint25D:
+          return Qgis::GeometryType::Point;
 
-        case LineString:
-        case MultiLineString:
-        case LineStringZ:
-        case MultiLineStringZ:
-        case LineStringM:
-        case MultiLineStringM:
-        case LineStringZM:
-        case MultiLineStringZM:
-        case LineString25D:
-        case MultiLineString25D:
-        case CircularString:
-        case CompoundCurve:
-        case MultiCurve:
-        case CircularStringZ:
-        case CompoundCurveZ:
-        case MultiCurveZ:
-        case CircularStringM:
-        case CompoundCurveM:
-        case MultiCurveM:
-        case CircularStringZM:
-        case CompoundCurveZM:
-        case MultiCurveZM:
-          return LineGeometry;
+        case Qgis::WkbType::LineString:
+        case Qgis::WkbType::MultiLineString:
+        case Qgis::WkbType::LineStringZ:
+        case Qgis::WkbType::MultiLineStringZ:
+        case Qgis::WkbType::LineStringM:
+        case Qgis::WkbType::MultiLineStringM:
+        case Qgis::WkbType::LineStringZM:
+        case Qgis::WkbType::MultiLineStringZM:
+        case Qgis::WkbType::LineString25D:
+        case Qgis::WkbType::MultiLineString25D:
+        case Qgis::WkbType::CircularString:
+        case Qgis::WkbType::CompoundCurve:
+        case Qgis::WkbType::MultiCurve:
+        case Qgis::WkbType::CircularStringZ:
+        case Qgis::WkbType::CompoundCurveZ:
+        case Qgis::WkbType::MultiCurveZ:
+        case Qgis::WkbType::CircularStringM:
+        case Qgis::WkbType::CompoundCurveM:
+        case Qgis::WkbType::MultiCurveM:
+        case Qgis::WkbType::CircularStringZM:
+        case Qgis::WkbType::CompoundCurveZM:
+        case Qgis::WkbType::MultiCurveZM:
+          return Qgis::GeometryType::Line;
 
-        case Polygon:
-        case MultiPolygon:
-        case Triangle:
-        case PolygonZ:
-        case TriangleZ:
-        case MultiPolygonZ:
-        case PolygonM:
-        case TriangleM:
-        case MultiPolygonM:
-        case PolygonZM:
-        case MultiPolygonZM:
-        case TriangleZM:
-        case Polygon25D:
-        case MultiPolygon25D:
-        case CurvePolygon:
-        case MultiSurface:
-        case CurvePolygonZ:
-        case MultiSurfaceZ:
-        case CurvePolygonM:
-        case MultiSurfaceM:
-        case CurvePolygonZM:
-        case MultiSurfaceZM:
-          return PolygonGeometry;
+        case Qgis::WkbType::Polygon:
+        case Qgis::WkbType::MultiPolygon:
+        case Qgis::WkbType::Triangle:
+        case Qgis::WkbType::PolygonZ:
+        case Qgis::WkbType::TriangleZ:
+        case Qgis::WkbType::MultiPolygonZ:
+        case Qgis::WkbType::PolygonM:
+        case Qgis::WkbType::TriangleM:
+        case Qgis::WkbType::MultiPolygonM:
+        case Qgis::WkbType::PolygonZM:
+        case Qgis::WkbType::MultiPolygonZM:
+        case Qgis::WkbType::TriangleZM:
+        case Qgis::WkbType::Polygon25D:
+        case Qgis::WkbType::MultiPolygon25D:
+        case Qgis::WkbType::CurvePolygon:
+        case Qgis::WkbType::MultiSurface:
+        case Qgis::WkbType::CurvePolygonZ:
+        case Qgis::WkbType::MultiSurfaceZ:
+        case Qgis::WkbType::CurvePolygonM:
+        case Qgis::WkbType::MultiSurfaceM:
+        case Qgis::WkbType::CurvePolygonZM:
+        case Qgis::WkbType::MultiSurfaceZM:
+          return Qgis::GeometryType::Polygon;
 
-        case NoGeometry:
-          return NullGeometry;
+        case Qgis::WkbType::NoGeometry:
+          return Qgis::GeometryType::Null;
       }
 
-      return UnknownGeometry;
+      return Qgis::GeometryType::Unknown;
     }
 
     /**
      * Returns a non-translated display string type for a WKB type, e.g., the geometry name used in WKT geometry representations.
      */
-    static QString displayString( Type type ) SIP_HOLDGIL;
+    static QString displayString( Qgis::WkbType type ) SIP_HOLDGIL;
 
     /**
      * Returns a translated display string type for a WKB type, e.g., the geometry name used in WKT geometry representations.
      *
      * \since QGIS 3.18
      */
-    static QString translatedDisplayString( Type type ) SIP_HOLDGIL;
+    static QString translatedDisplayString( Qgis::WkbType type ) SIP_HOLDGIL;
 
     /**
      * Returns a display string for a geometry type.
@@ -1069,7 +966,7 @@ class CORE_EXPORT QgsWkbTypes
      *
      * \since QGIS 3.0
      */
-    static QString geometryDisplayString( GeometryType type ) SIP_HOLDGIL;
+    static QString geometryDisplayString( Qgis::GeometryType type ) SIP_HOLDGIL;
 
     /**
      * Tests whether a WKB type contains the z-dimension.
@@ -1077,42 +974,42 @@ class CORE_EXPORT QgsWkbTypes
      * \see addZ()
      * \see hasM()
      */
-    static bool hasZ( Type type ) SIP_HOLDGIL
+    static bool hasZ( Qgis::WkbType type ) SIP_HOLDGIL
     {
       switch ( type )
       {
-        case PointZ:
-        case LineStringZ:
-        case PolygonZ:
-        case TriangleZ:
-        case MultiPointZ:
-        case MultiLineStringZ:
-        case MultiPolygonZ:
-        case GeometryCollectionZ:
-        case CircularStringZ:
-        case CompoundCurveZ:
-        case CurvePolygonZ:
-        case MultiCurveZ:
-        case MultiSurfaceZ:
-        case PointZM:
-        case LineStringZM:
-        case PolygonZM:
-        case TriangleZM:
-        case MultiPointZM:
-        case MultiLineStringZM:
-        case MultiPolygonZM:
-        case GeometryCollectionZM:
-        case CircularStringZM:
-        case CompoundCurveZM:
-        case CurvePolygonZM:
-        case MultiCurveZM:
-        case MultiSurfaceZM:
-        case Point25D:
-        case LineString25D:
-        case Polygon25D:
-        case MultiPoint25D:
-        case MultiLineString25D:
-        case MultiPolygon25D:
+        case Qgis::WkbType::PointZ:
+        case Qgis::WkbType::LineStringZ:
+        case Qgis::WkbType::PolygonZ:
+        case Qgis::WkbType::TriangleZ:
+        case Qgis::WkbType::MultiPointZ:
+        case Qgis::WkbType::MultiLineStringZ:
+        case Qgis::WkbType::MultiPolygonZ:
+        case Qgis::WkbType::GeometryCollectionZ:
+        case Qgis::WkbType::CircularStringZ:
+        case Qgis::WkbType::CompoundCurveZ:
+        case Qgis::WkbType::CurvePolygonZ:
+        case Qgis::WkbType::MultiCurveZ:
+        case Qgis::WkbType::MultiSurfaceZ:
+        case Qgis::WkbType::PointZM:
+        case Qgis::WkbType::LineStringZM:
+        case Qgis::WkbType::PolygonZM:
+        case Qgis::WkbType::TriangleZM:
+        case Qgis::WkbType::MultiPointZM:
+        case Qgis::WkbType::MultiLineStringZM:
+        case Qgis::WkbType::MultiPolygonZM:
+        case Qgis::WkbType::GeometryCollectionZM:
+        case Qgis::WkbType::CircularStringZM:
+        case Qgis::WkbType::CompoundCurveZM:
+        case Qgis::WkbType::CurvePolygonZM:
+        case Qgis::WkbType::MultiCurveZM:
+        case Qgis::WkbType::MultiSurfaceZM:
+        case Qgis::WkbType::Point25D:
+        case Qgis::WkbType::LineString25D:
+        case Qgis::WkbType::Polygon25D:
+        case Qgis::WkbType::MultiPoint25D:
+        case Qgis::WkbType::MultiLineString25D:
+        case Qgis::WkbType::MultiPolygon25D:
           return true;
 
         default:
@@ -1127,36 +1024,36 @@ class CORE_EXPORT QgsWkbTypes
      * \see addM()
      * \see hasZ()
      */
-    static bool hasM( Type type ) SIP_HOLDGIL
+    static bool hasM( Qgis::WkbType type ) SIP_HOLDGIL
     {
       switch ( type )
       {
-        case PointM:
-        case LineStringM:
-        case PolygonM:
-        case TriangleM:
-        case MultiPointM:
-        case MultiLineStringM:
-        case MultiPolygonM:
-        case GeometryCollectionM:
-        case CircularStringM:
-        case CompoundCurveM:
-        case CurvePolygonM:
-        case MultiCurveM:
-        case MultiSurfaceM:
-        case PointZM:
-        case LineStringZM:
-        case PolygonZM:
-        case TriangleZM:
-        case MultiPointZM:
-        case MultiLineStringZM:
-        case MultiPolygonZM:
-        case GeometryCollectionZM:
-        case CircularStringZM:
-        case CompoundCurveZM:
-        case CurvePolygonZM:
-        case MultiCurveZM:
-        case MultiSurfaceZM:
+        case Qgis::WkbType::PointM:
+        case Qgis::WkbType::LineStringM:
+        case Qgis::WkbType::PolygonM:
+        case Qgis::WkbType::TriangleM:
+        case Qgis::WkbType::MultiPointM:
+        case Qgis::WkbType::MultiLineStringM:
+        case Qgis::WkbType::MultiPolygonM:
+        case Qgis::WkbType::GeometryCollectionM:
+        case Qgis::WkbType::CircularStringM:
+        case Qgis::WkbType::CompoundCurveM:
+        case Qgis::WkbType::CurvePolygonM:
+        case Qgis::WkbType::MultiCurveM:
+        case Qgis::WkbType::MultiSurfaceM:
+        case Qgis::WkbType::PointZM:
+        case Qgis::WkbType::LineStringZM:
+        case Qgis::WkbType::PolygonZM:
+        case Qgis::WkbType::TriangleZM:
+        case Qgis::WkbType::MultiPointZM:
+        case Qgis::WkbType::MultiLineStringZM:
+        case Qgis::WkbType::MultiPolygonZM:
+        case Qgis::WkbType::GeometryCollectionZM:
+        case Qgis::WkbType::CircularStringZM:
+        case Qgis::WkbType::CompoundCurveZM:
+        case Qgis::WkbType::CurvePolygonZM:
+        case Qgis::WkbType::MultiCurveZM:
+        case Qgis::WkbType::MultiSurfaceZM:
           return true;
 
         default:
@@ -1173,21 +1070,21 @@ class CORE_EXPORT QgsWkbTypes
      * \see hasZ()
      * \since QGIS 2.12
      */
-    static Type addZ( Type type ) SIP_HOLDGIL
+    static Qgis::WkbType addZ( Qgis::WkbType type ) SIP_HOLDGIL
     {
       if ( hasZ( type ) )
         return type;
-      else if ( type == Unknown )
-        return Unknown;
-      else if ( type == NoGeometry )
-        return NoGeometry;
+      else if ( type == Qgis::WkbType::Unknown )
+        return Qgis::WkbType::Unknown;
+      else if ( type == Qgis::WkbType::NoGeometry )
+        return Qgis::WkbType::NoGeometry;
 
       //upgrade with z dimension
-      const Type flat = flatType( type );
+      const Qgis::WkbType flat = flatType( type );
       if ( hasM( type ) )
-        return static_cast< QgsWkbTypes::Type >( flat + 3000 );
+        return static_cast< Qgis::WkbType >( static_cast< quint32>( flat ) + 3000 );
       else
-        return static_cast< QgsWkbTypes::Type >( flat + 1000 );
+        return static_cast<Qgis::WkbType >( static_cast< quint32>( flat ) + 1000 );
     }
 
     /**
@@ -1198,33 +1095,33 @@ class CORE_EXPORT QgsWkbTypes
      * \see hasM()
      * \since QGIS 2.12
      */
-    static Type addM( Type type ) SIP_HOLDGIL
+    static Qgis::WkbType addM( Qgis::WkbType type ) SIP_HOLDGIL
     {
       if ( hasM( type ) )
         return type;
-      else if ( type == Unknown )
-        return Unknown;
-      else if ( type == NoGeometry )
-        return NoGeometry;
-      else if ( type == Point25D )
-        return PointZM;
-      else if ( type == LineString25D )
-        return LineStringZM;
-      else if ( type == Polygon25D )
-        return PolygonZM;
-      else if ( type == MultiPoint25D )
-        return MultiPointZM;
-      else if ( type == MultiLineString25D )
-        return MultiLineStringZM;
-      else if ( type == MultiPolygon25D )
-        return MultiPolygonZM;
+      else if ( type == Qgis::WkbType::Unknown )
+        return Qgis::WkbType::Unknown;
+      else if ( type == Qgis::WkbType::NoGeometry )
+        return Qgis::WkbType::NoGeometry;
+      else if ( type == Qgis::WkbType::Point25D )
+        return Qgis::WkbType::PointZM;
+      else if ( type == Qgis::WkbType::LineString25D )
+        return Qgis::WkbType::LineStringZM;
+      else if ( type == Qgis::WkbType::Polygon25D )
+        return Qgis::WkbType::PolygonZM;
+      else if ( type == Qgis::WkbType::MultiPoint25D )
+        return Qgis::WkbType::MultiPointZM;
+      else if ( type == Qgis::WkbType::MultiLineString25D )
+        return Qgis::WkbType::MultiLineStringZM;
+      else if ( type == Qgis::WkbType::MultiPolygon25D )
+        return Qgis::WkbType::MultiPolygonZM;
 
       //upgrade with m dimension
-      const Type flat = flatType( type );
+      const Qgis::WkbType flat = flatType( type );
       if ( hasZ( type ) )
-        return static_cast< QgsWkbTypes::Type >( flat + 3000 );
+        return static_cast< Qgis::WkbType >( static_cast< quint32 >( flat ) + 3000 );
       else
-        return static_cast< QgsWkbTypes::Type >( flat + 2000 );
+        return static_cast< Qgis::WkbType >( static_cast< quint32 >( flat ) + 2000 );
     }
 
     /**
@@ -1234,12 +1131,12 @@ class CORE_EXPORT QgsWkbTypes
      * \see addZ()
      * \since QGIS 2.14
      */
-    static Type dropZ( Type type ) SIP_HOLDGIL
+    static Qgis::WkbType dropZ( Qgis::WkbType type ) SIP_HOLDGIL
     {
       if ( !hasZ( type ) )
         return type;
 
-      QgsWkbTypes::Type returnType = flatType( type );
+      Qgis::WkbType returnType = flatType( type );
       if ( hasM( type ) )
         returnType = addM( returnType );
       return returnType;
@@ -1252,12 +1149,12 @@ class CORE_EXPORT QgsWkbTypes
      * \see addM()
      * \since QGIS 2.14
      */
-    static Type dropM( Type type ) SIP_HOLDGIL
+    static Qgis::WkbType dropM( Qgis::WkbType type ) SIP_HOLDGIL
     {
       if ( !hasM( type ) )
         return type;
 
-      QgsWkbTypes::Type returnType = flatType( type );
+      Qgis::WkbType returnType = flatType( type );
       if ( hasZ( type ) )
         returnType = addZ( returnType );
       return returnType;
@@ -1268,16 +1165,16 @@ class CORE_EXPORT QgsWkbTypes
      * \param type The type to convert
      * \returns the 25D version of the type or Unknown
      */
-    static Type to25D( Type type ) SIP_HOLDGIL
+    static Qgis::WkbType to25D( Qgis::WkbType type ) SIP_HOLDGIL
     {
-      const QgsWkbTypes::Type flat = flatType( type );
+      const Qgis::WkbType flat = flatType( type );
 
-      if ( flat >= Point && flat <= MultiPolygon )
-        return static_cast< QgsWkbTypes::Type >( static_cast<unsigned>( flat ) + 0x80000000U );
-      else if ( type == QgsWkbTypes::NoGeometry )
-        return QgsWkbTypes::NoGeometry;
+      if ( static_cast< quint32 >( flat ) >= static_cast< quint32>( Qgis::WkbType::Point ) && static_cast< quint32 >( flat ) <= static_cast< quint32>( Qgis::WkbType::MultiPolygon ) )
+        return static_cast< Qgis::WkbType >( static_cast< quint32 >( flat ) + 0x80000000U );
+      else if ( type == Qgis::WkbType::NoGeometry )
+        return Qgis::WkbType::NoGeometry;
       else
-        return Unknown;
+        return Qgis::WkbType::Unknown;
     }
 
 };

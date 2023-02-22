@@ -17,9 +17,11 @@
 
 #include "qgslayoutmeasurement.h"
 #include "qgis.h"
+#include "qgsunittypes.h"
+
 #include <QStringList>
 
-QgsLayoutMeasurement::QgsLayoutMeasurement( const double length, const QgsUnitTypes::LayoutUnit units )
+QgsLayoutMeasurement::QgsLayoutMeasurement( const double length, const Qgis::LayoutUnit units )
   : mLength( length )
   , mUnits( units )
 {

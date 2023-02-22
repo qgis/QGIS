@@ -326,9 +326,9 @@ QgsVectorTileBasicRendererWidget::QgsVectorTileBasicRendererWidget( QgsVectorTil
   mFilterLineEdit->setPlaceholderText( tr( "Filter rules" ) );
 
   QMenu *menuAddRule = new QMenu( btnAddRule );
-  menuAddRule->addAction( tr( "Marker" ), this, [this] { addStyle( QgsWkbTypes::PointGeometry ); } );
-  menuAddRule->addAction( tr( "Line" ), this, [this] { addStyle( QgsWkbTypes::LineGeometry ); } );
-  menuAddRule->addAction( tr( "Fill" ), this, [this] { addStyle( QgsWkbTypes::PolygonGeometry ); } );
+  menuAddRule->addAction( tr( "Marker" ), this, [this] { addStyle( Qgis::GeometryType::Point ); } );
+  menuAddRule->addAction( tr( "Line" ), this, [this] { addStyle( Qgis::GeometryType::Line ); } );
+  menuAddRule->addAction( tr( "Fill" ), this, [this] { addStyle( Qgis::GeometryType::Polygon ); } );
   btnAddRule->setMenu( menuAddRule );
 
   connect( btnEditRule, &QPushButton::clicked, this, &QgsVectorTileBasicRendererWidget::editStyle );
@@ -415,24 +415,24 @@ void QgsVectorTileBasicRendererWidget::apply()
   mVTLayer->setRenderer( mRenderer->clone() );
 }
 
-void QgsVectorTileBasicRendererWidget::addStyle( QgsWkbTypes::GeometryType geomType )
+void QgsVectorTileBasicRendererWidget::addStyle( Qgis::GeometryType geomType )
 {
   QgsVectorTileBasicRendererStyle style( QString(), QString(), geomType );
   style.setSymbol( QgsSymbol::defaultSymbol( geomType ) );
 
   switch ( geomType )
   {
-    case QgsWkbTypes::PointGeometry:
+    case Qgis::GeometryType::Point:
       style.setFilterExpression( QStringLiteral( "geometry_type($geometry)='Point'" ) );
       break;
-    case QgsWkbTypes::LineGeometry:
+    case Qgis::GeometryType::Line:
       style.setFilterExpression( QStringLiteral( "geometry_type($geometry)='Line'" ) );
       break;
-    case QgsWkbTypes::PolygonGeometry:
+    case Qgis::GeometryType::Polygon:
       style.setFilterExpression( QStringLiteral( "geometry_type($geometry)='Polygon'" ) );
       break;
-    case QgsWkbTypes::UnknownGeometry:
-    case QgsWkbTypes::NullGeometry:
+    case Qgis::GeometryType::Unknown:
+    case Qgis::GeometryType::Null:
       break;
   }
 

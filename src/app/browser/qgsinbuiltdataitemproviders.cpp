@@ -1630,10 +1630,10 @@ void QgsDatabaseItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *
           const QString tableName { dlg.tableName() };
           const QString schemaName { dlg.schemaName() };
           const QString geometryColumn { dlg.geometryColumnName() };
-          const QgsWkbTypes::Type geometryType { dlg.geometryType() };
+          const Qgis::WkbType geometryType { dlg.geometryType() };
           const bool createSpatialIndex = dlg.createSpatialIndex() &&
-                                          geometryType != QgsWkbTypes::NoGeometry &&
-                                          geometryType != QgsWkbTypes::Unknown;
+                                          geometryType != Qgis::WkbType::NoGeometry &&
+                                          geometryType != Qgis::WkbType::Unknown;
           const QgsCoordinateReferenceSystem crs { dlg.crs( ) };
           // This flag tells to the provider that field types do not need conversion
           // also prevents  GDAL to create a spatial index by default for GPKG, we are

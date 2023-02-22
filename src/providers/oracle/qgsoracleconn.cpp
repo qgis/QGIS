@@ -20,11 +20,10 @@
 #include "qgsdatasourceuri.h"
 #include "qgsmessagelog.h"
 #include "qgscredentials.h"
-#include "qgsfields.h"
-#include "qgsoracletablemodel.h"
 #include "qgssettings.h"
 #include "qgsoracleconnpool.h"
 #include "qgsvariantutils.h"
+#include "qgsdbquerylog.h"
 
 #include <QSqlError>
 #include <QSqlField>
@@ -393,7 +392,7 @@ bool QgsOracleConn::tableInfo( const QString &schema, bool geometryColumnsOnly, 
     layerProperty.ownerName       = qry.value( 0 ).toString();
     layerProperty.tableName       = qry.value( 1 ).toString();
     layerProperty.geometryColName = qry.value( 2 ).toString();
-    layerProperty.types           = QList<QgsWkbTypes::Type>() << ( qry.value( 2 ).isNull() ? QgsWkbTypes::NoGeometry : QgsWkbTypes::Unknown );
+    layerProperty.types           = QList<Qgis::WkbType>() << ( qry.value( 2 ).isNull() ? Qgis::WkbType::NoGeometry : Qgis::WkbType::Unknown );
     layerProperty.srids           = QList<int>() << qry.value( 3 ).toInt();
     layerProperty.isView          = qry.value( 4 ) != QLatin1String( "TABLE" );
     layerProperty.pkCols.clear();
@@ -684,15 +683,15 @@ void QgsOracleConn::retrieveLayerTypes( QgsOracleLayerProperty &layerProperty, b
     where = layerProperty.sql;
   }
 
-  QgsWkbTypes::Type detectedType = layerProperty.types.value( 0, QgsWkbTypes::Unknown );
+  Qgis::WkbType detectedType = layerProperty.types.value( 0, Qgis::WkbType::Unknown );
   int detectedSrid = layerProperty.srids.value( 0, -1 );
 
-  Q_ASSERT( detectedType == QgsWkbTypes::Unknown || detectedSrid <= 0 );
+  Q_ASSERT( detectedType == Qgis::WkbType::Unknown || detectedSrid <= 0 );
 
   QSqlQuery qry( mDatabase );
   int idx = 0;
   QString sql = QStringLiteral( "SELECT DISTINCT " );
-  if ( detectedType == QgsWkbTypes::Unknown )
+  if ( detectedType == Qgis::WkbType::Unknown )
   {
     sql += QLatin1String( "t.%1.SDO_GTYPE" );
     if ( detectedSrid <= 0 )
@@ -730,10 +729,10 @@ void QgsOracleConn::retrieveLayerTypes( QgsOracleLayerProperty &layerProperty, b
   while ( qry.next() )
   {
     fetchedRows++;
-    if ( detectedType == QgsWkbTypes::Unknown )
+    if ( detectedType == Qgis::WkbType::Unknown )
     {
-      QgsWkbTypes::Type type = wkbTypeFromDatabase( qry.value( 0 ).toInt() );
-      if ( type == QgsWkbTypes::Unknown )
+      Qgis::WkbType type = wkbTypeFromDatabase( qry.value( 0 ).toInt() );
+      if ( type == Qgis::WkbType::Unknown )
       {
         QgsMessageLog::logMessage( tr( "Unsupported geometry type %1 in %2.%3.%4 ignored" )
                                    .arg( qry.value( 0 ).toInt() )
@@ -741,7 +740,7 @@ void QgsOracleConn::retrieveLayerTypes( QgsOracleLayerProperty &layerProperty, b
                                    tr( "Oracle" ) );
         continue;
       }
-      QgsDebugMsgLevel( QStringLiteral( "add type %1" ).arg( type ), 2 );
+      QgsDebugMsgLevel( QStringLiteral( "add type %1" ).arg( qgsEnumValueToKey( type ) ), 2 );
       layerProperty.types << type;
     }
     else
@@ -758,51 +757,51 @@ void QgsOracleConn::retrieveLayerTypes( QgsOracleLayerProperty &layerProperty, b
 
   if ( !onlyExistingTypes )
   {
-    layerProperty.types << QgsWkbTypes::Unknown;
+    layerProperty.types << Qgis::WkbType::Unknown;
     layerProperty.srids << ( detectedSrid > 0 ? detectedSrid : ( srids.size() == 1 ? *srids.constBegin() : 0 ) );
   }
 }
 
-QString QgsOracleConn::databaseTypeFilter( const QString &alias, QString geomCol, QgsWkbTypes::Type geomType )
+QString QgsOracleConn::databaseTypeFilter( const QString &alias, QString geomCol, Qgis::WkbType geomType )
 {
   geomCol = quotedIdentifier( alias ) + "." + quotedIdentifier( geomCol );
 
   switch ( geomType )
   {
-    case QgsWkbTypes::Point:
-    case QgsWkbTypes::Point25D:
-    case QgsWkbTypes::PointZ:
-    case QgsWkbTypes::MultiPoint:
-    case QgsWkbTypes::MultiPoint25D:
-    case QgsWkbTypes::MultiPointZ:
+    case Qgis::WkbType::Point:
+    case Qgis::WkbType::Point25D:
+    case Qgis::WkbType::PointZ:
+    case Qgis::WkbType::MultiPoint:
+    case Qgis::WkbType::MultiPoint25D:
+    case Qgis::WkbType::MultiPointZ:
       return QStringLiteral( "mod(%1.sdo_gtype,100) IN (1,5)" ).arg( geomCol );
-    case QgsWkbTypes::LineString:
-    case QgsWkbTypes::LineString25D:
-    case QgsWkbTypes::LineStringZ:
-    case QgsWkbTypes::CircularString:
-    case QgsWkbTypes::CircularStringZ:
-    case QgsWkbTypes::CompoundCurve:
-    case QgsWkbTypes::CompoundCurveZ:
-    case QgsWkbTypes::MultiLineString:
-    case QgsWkbTypes::MultiLineString25D:
-    case QgsWkbTypes::MultiLineStringZ:
-    case QgsWkbTypes::MultiCurve:
-    case QgsWkbTypes::MultiCurveZ:
+    case Qgis::WkbType::LineString:
+    case Qgis::WkbType::LineString25D:
+    case Qgis::WkbType::LineStringZ:
+    case Qgis::WkbType::CircularString:
+    case Qgis::WkbType::CircularStringZ:
+    case Qgis::WkbType::CompoundCurve:
+    case Qgis::WkbType::CompoundCurveZ:
+    case Qgis::WkbType::MultiLineString:
+    case Qgis::WkbType::MultiLineString25D:
+    case Qgis::WkbType::MultiLineStringZ:
+    case Qgis::WkbType::MultiCurve:
+    case Qgis::WkbType::MultiCurveZ:
       return QStringLiteral( "mod(%1.sdo_gtype,100) IN (2,6)" ).arg( geomCol );
-    case QgsWkbTypes::Polygon:
-    case QgsWkbTypes::Polygon25D:
-    case QgsWkbTypes::PolygonZ:
-    case QgsWkbTypes::CurvePolygon:
-    case QgsWkbTypes::CurvePolygonZ:
-    case QgsWkbTypes::MultiPolygon:
-    case QgsWkbTypes::MultiPolygonZ:
-    case QgsWkbTypes::MultiPolygon25D:
-    case QgsWkbTypes::MultiSurface:
-    case QgsWkbTypes::MultiSurfaceZ:
+    case Qgis::WkbType::Polygon:
+    case Qgis::WkbType::Polygon25D:
+    case Qgis::WkbType::PolygonZ:
+    case Qgis::WkbType::CurvePolygon:
+    case Qgis::WkbType::CurvePolygonZ:
+    case Qgis::WkbType::MultiPolygon:
+    case Qgis::WkbType::MultiPolygonZ:
+    case Qgis::WkbType::MultiPolygon25D:
+    case Qgis::WkbType::MultiSurface:
+    case Qgis::WkbType::MultiSurfaceZ:
       return QStringLiteral( "mod(%1.sdo_gtype,100) IN (3,7)" ).arg( geomCol );
-    case QgsWkbTypes::NoGeometry:
+    case Qgis::WkbType::NoGeometry:
       return QStringLiteral( "%1 IS NULL" ).arg( geomCol );
-    case QgsWkbTypes::Unknown:
+    case Qgis::WkbType::Unknown:
       Q_ASSERT( !"unknown geometry unexpected" );
       return QString();
     default:
@@ -813,13 +812,13 @@ QString QgsOracleConn::databaseTypeFilter( const QString &alias, QString geomCol
   return QString();
 }
 
-QgsWkbTypes::Type QgsOracleConn::wkbTypeFromDatabase( int gtype )
+Qgis::WkbType QgsOracleConn::wkbTypeFromDatabase( int gtype )
 {
   QgsDebugMsgLevel( QStringLiteral( "entering %1" ).arg( gtype ), 2 );
   int t = gtype % 100;
 
   if ( t == 0 )
-    return QgsWkbTypes::Unknown;
+    return Qgis::WkbType::Unknown;
 
   int d = gtype / 1000;
   if ( d == 2 )
@@ -827,23 +826,23 @@ QgsWkbTypes::Type QgsOracleConn::wkbTypeFromDatabase( int gtype )
     switch ( t )
     {
       case 1:
-        return QgsWkbTypes::Point;
+        return Qgis::WkbType::Point;
       case 2:
-        return QgsWkbTypes::CompoundCurve;
+        return Qgis::WkbType::CompoundCurve;
       case 3:
-        return QgsWkbTypes::Polygon;
+        return Qgis::WkbType::Polygon;
       case 4:
         QgsDebugMsg( QStringLiteral( "geometry collection type %1 unsupported" ).arg( gtype ) );
-        return QgsWkbTypes::Unknown;
+        return Qgis::WkbType::Unknown;
       case 5:
-        return QgsWkbTypes::MultiPoint;
+        return Qgis::WkbType::MultiPoint;
       case 6:
-        return QgsWkbTypes::MultiCurve;
+        return Qgis::WkbType::MultiCurve;
       case 7:
-        return QgsWkbTypes::MultiPolygon;
+        return Qgis::WkbType::MultiPolygon;
       default:
         QgsDebugMsg( QStringLiteral( "gtype %1 unsupported" ).arg( gtype ) );
-        return QgsWkbTypes::Unknown;
+        return Qgis::WkbType::Unknown;
     }
   }
   else if ( d == 3 )
@@ -851,50 +850,50 @@ QgsWkbTypes::Type QgsOracleConn::wkbTypeFromDatabase( int gtype )
     switch ( t )
     {
       case 1:
-        return QgsWkbTypes::PointZ;
+        return Qgis::WkbType::PointZ;
       case 2:
-        return QgsWkbTypes::CompoundCurveZ;
+        return Qgis::WkbType::CompoundCurveZ;
       case 3:
-        return QgsWkbTypes::PolygonZ;
+        return Qgis::WkbType::PolygonZ;
       case 4:
         QgsDebugMsg( QStringLiteral( "geometry collection type %1 unsupported" ).arg( gtype ) );
-        return QgsWkbTypes::Unknown;
+        return Qgis::WkbType::Unknown;
       case 5:
-        return QgsWkbTypes::MultiPointZ;
+        return Qgis::WkbType::MultiPointZ;
       case 6:
-        return QgsWkbTypes::MultiCurveZ;
+        return Qgis::WkbType::MultiCurveZ;
       case 7:
-        return QgsWkbTypes::MultiPolygonZ;
+        return Qgis::WkbType::MultiPolygonZ;
       default:
         QgsDebugMsg( QStringLiteral( "gtype %1 unsupported" ).arg( gtype ) );
-        return QgsWkbTypes::Unknown;
+        return Qgis::WkbType::Unknown;
     }
   }
   else
   {
     QgsDebugMsg( QStringLiteral( "dimension of gtype %1 unsupported" ).arg( gtype ) );
-    return QgsWkbTypes::Unknown;
+    return Qgis::WkbType::Unknown;
   }
 }
 
-QgsWkbTypes::Type QgsOracleConn::wkbTypeFromGeomType( QgsWkbTypes::GeometryType geomType )
+Qgis::WkbType QgsOracleConn::wkbTypeFromGeomType( Qgis::GeometryType geomType )
 {
   switch ( geomType )
   {
-    case QgsWkbTypes::PointGeometry:
-      return QgsWkbTypes::Point;
-    case QgsWkbTypes::LineGeometry:
-      return QgsWkbTypes::LineString;
-    case QgsWkbTypes::PolygonGeometry:
-      return QgsWkbTypes::Polygon;
-    case QgsWkbTypes::NullGeometry:
-      return QgsWkbTypes::NoGeometry;
-    case QgsWkbTypes::UnknownGeometry:
-      return QgsWkbTypes::Unknown;
+    case Qgis::GeometryType::Point:
+      return Qgis::WkbType::Point;
+    case Qgis::GeometryType::Line:
+      return Qgis::WkbType::LineString;
+    case Qgis::GeometryType::Polygon:
+      return Qgis::WkbType::Polygon;
+    case Qgis::GeometryType::Null:
+      return Qgis::WkbType::NoGeometry;
+    case Qgis::GeometryType::Unknown:
+      return Qgis::WkbType::Unknown;
   }
 
   Q_ASSERT( !"unexpected geomType" );
-  return QgsWkbTypes::Unknown;
+  return Qgis::WkbType::Unknown;
 }
 
 QStringList QgsOracleConn::connectionList()

@@ -23,6 +23,7 @@
 #include "qgspainteffectregistry.h"
 #include "qgstextrendererutils.h"
 #include "qgsapplication.h"
+#include "qgsunittypes.h"
 
 QgsTextBufferSettings::QgsTextBufferSettings()
 {
@@ -90,12 +91,12 @@ void QgsTextBufferSettings::setSize( double size )
   d->size = size;
 }
 
-QgsUnitTypes::RenderUnit QgsTextBufferSettings::sizeUnit() const
+Qgis::RenderUnit QgsTextBufferSettings::sizeUnit() const
 {
   return d->sizeUnit;
 }
 
-void QgsTextBufferSettings::setSizeUnit( QgsUnitTypes::RenderUnit unit )
+void QgsTextBufferSettings::setSizeUnit( Qgis::RenderUnit unit )
 {
   d->sizeUnit = unit;
 }
@@ -191,7 +192,7 @@ void QgsTextBufferSettings::updateDataDefinedProperties( QgsRenderContext &conte
     if ( !units.isEmpty() )
     {
       bool ok;
-      const QgsUnitTypes::RenderUnit res = QgsUnitTypes::decodeRenderUnit( units, &ok );
+      const Qgis::RenderUnit res = QgsUnitTypes::decodeRenderUnit( units, &ok );
       if ( ok )
         d->sizeUnit = res;
     }
@@ -263,7 +264,7 @@ void QgsTextBufferSettings::readFromLayer( QgsVectorLayer *layer )
   if ( layer->customProperty( QStringLiteral( "labeling/bufferSizeUnits" ) ).toString().isEmpty() )
   {
     const bool bufferSizeInMapUnits = layer->customProperty( QStringLiteral( "labeling/bufferSizeInMapUnits" ) ).toBool();
-    d->sizeUnit = bufferSizeInMapUnits ? QgsUnitTypes::RenderMapUnits : QgsUnitTypes::RenderMillimeters;
+    d->sizeUnit = bufferSizeInMapUnits ? Qgis::RenderUnit::MapUnits : Qgis::RenderUnit::Millimeters;
   }
   else
   {
@@ -334,7 +335,7 @@ void QgsTextBufferSettings::readXml( const QDomElement &elem )
   if ( !textBufferElem.hasAttribute( QStringLiteral( "bufferSizeUnits" ) ) )
   {
     const bool bufferSizeInMapUnits = textBufferElem.attribute( QStringLiteral( "bufferSizeInMapUnits" ) ).toInt();
-    d->sizeUnit = bufferSizeInMapUnits ? QgsUnitTypes::RenderMapUnits : QgsUnitTypes::RenderMillimeters;
+    d->sizeUnit = bufferSizeInMapUnits ? Qgis::RenderUnit::MapUnits : Qgis::RenderUnit::Millimeters;
   }
   else
   {

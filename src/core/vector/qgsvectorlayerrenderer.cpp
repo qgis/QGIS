@@ -196,7 +196,7 @@ bool QgsVectorLayerRenderer::forceRasterRender() const
 
 bool QgsVectorLayerRenderer::render()
 {
-  if ( mGeometryType == QgsWkbTypes::NullGeometry || mGeometryType == QgsWkbTypes::UnknownGeometry )
+  if ( mGeometryType == Qgis::GeometryType::Null || mGeometryType == Qgis::GeometryType::Unknown )
   {
     mReadyToCompose = true;
     return true;
@@ -261,6 +261,13 @@ bool QgsVectorLayerRenderer::renderInternal( QgsFeatureRenderer *renderer )
   }
 
   renderer->startRender( context, mFields );
+
+  if ( renderer->canSkipRender() )
+  {
+    // nothing to draw for now...
+    renderer->stopRender( context );
+    return true;
+  }
 
   QString rendererFilter = renderer->filter( mFields );
 
@@ -329,7 +336,7 @@ bool QgsVectorLayerRenderer::renderInternal( QgsFeatureRenderer *renderer )
       {
         QgsCoordinateTransform toleranceTransform = ct;
         QgsPointXY center = context.extent().center();
-        double rectSize = toleranceTransform.sourceCrs().mapUnits() == QgsUnitTypes::DistanceDegrees ? 0.0008983 /* ~100/(40075014/360=111319.4833) */ : 100;
+        double rectSize = toleranceTransform.sourceCrs().mapUnits() == Qgis::DistanceUnit::Degrees ? 0.0008983 /* ~100/(40075014/360=111319.4833) */ : 100;
 
         QgsRectangle sourceRect = QgsRectangle( center.x(), center.y(), center.x() + rectSize, center.y() + rectSize );
         toleranceTransform.setBallparkTransformsAreAppropriate( true );
@@ -490,7 +497,7 @@ void QgsVectorLayerRenderer::drawRenderer( QgsFeatureRenderer *renderer, QgsFeat
           QgsGeometry obstacleGeometry;
           QgsSymbolList symbols = renderer->originalSymbolsForFeature( fet, context );
           QgsSymbol *symbol = nullptr;
-          if ( !symbols.isEmpty() && fet.geometry().type() == QgsWkbTypes::PointGeometry )
+          if ( !symbols.isEmpty() && fet.geometry().type() == Qgis::GeometryType::Point )
           {
             obstacleGeometry = QgsVectorLayerLabelProvider::getPointObstacleGeometry( fet, context, symbols );
           }
@@ -601,7 +608,7 @@ void QgsVectorLayerRenderer::drawRendererLevels( QgsFeatureRenderer *renderer, Q
       QgsGeometry obstacleGeometry;
       QgsSymbolList symbols = renderer->originalSymbolsForFeature( fet, context );
       QgsSymbol *symbol = nullptr;
-      if ( !symbols.isEmpty() && fet.geometry().type() == QgsWkbTypes::PointGeometry )
+      if ( !symbols.isEmpty() && fet.geometry().type() == Qgis::GeometryType::Point )
       {
         obstacleGeometry = QgsVectorLayerLabelProvider::getPointObstacleGeometry( fet, context, symbols );
       }

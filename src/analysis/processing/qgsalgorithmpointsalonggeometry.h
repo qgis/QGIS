@@ -43,7 +43,7 @@ class QgsPointsAlongGeometryAlgorithm : public QgsProcessingFeatureBasedAlgorith
     QString shortDescription() const override;
     QList<int> inputLayerTypes() const override;
     QgsProcessing::SourceType outputLayerType() const override;
-    QgsWkbTypes::Type outputWkbType( QgsWkbTypes::Type inputWkbType ) const override;
+    Qgis::WkbType outputWkbType( Qgis::WkbType inputWkbType ) const override;
     QgsFields outputFields( const QgsFields &inputFields ) const override;
     QgsPointsAlongGeometryAlgorithm *createInstance() const override SIP_FACTORY;
     void initParameters( const QVariantMap &configuration = QVariantMap() ) override;

@@ -84,7 +84,7 @@ QString QgsSpatiaLiteProviderConnection::tableUri( const QString &schema, const 
 void QgsSpatiaLiteProviderConnection::createVectorTable( const QString &schema,
     const QString &name,
     const QgsFields &fields,
-    QgsWkbTypes::Type wkbType,
+    Qgis::WkbType wkbType,
     const QgsCoordinateReferenceSystem &srs,
     bool overwrite,
     const QMap<QString, QVariant> *options ) const
@@ -375,7 +375,7 @@ QList<QgsSpatiaLiteProviderConnection::TableProperty> QgsSpatiaLiteProviderConne
           else
           {
             property.setGeometryColumnCount( 0 );
-            property.setGeometryColumnTypes( {{ QgsWkbTypes::NoGeometry, QgsCoordinateReferenceSystem() }} );
+            property.setGeometryColumnTypes( {{ Qgis::WkbType::NoGeometry, QgsCoordinateReferenceSystem() }} );
             property.setFlag( QgsSpatiaLiteProviderConnection::TableFlag::Aspatial );
           }
 

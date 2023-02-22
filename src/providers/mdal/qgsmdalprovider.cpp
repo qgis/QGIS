@@ -61,7 +61,7 @@ QStringList QgsMdalProvider::subLayers() const
 QgsMdalProvider::QgsMdalProvider( const QString &uri, const ProviderOptions &options, QgsDataProvider::ReadFlags flags )
   : QgsMeshDataProvider( uri, options, flags )
 {
-  temporalCapabilities()->setTemporalUnit( QgsUnitTypes::TemporalHours );
+  temporalCapabilities()->setTemporalUnit( Qgis::TemporalUnit::Hours );
   QByteArray curi = dataSourceUri().toUtf8();
 
   if ( uri.contains( "\":" ) ) //contains a mesh name, so can be directly loaded;

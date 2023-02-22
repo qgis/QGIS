@@ -49,12 +49,12 @@ void QgsMeshRendererMeshSettings::setColor( const QColor &color )
   mColor = color;
 }
 
-QgsUnitTypes::RenderUnit QgsMeshRendererMeshSettings::lineWidthUnit() const
+Qgis::RenderUnit QgsMeshRendererMeshSettings::lineWidthUnit() const
 {
   return mLineWidthUnit;
 }
 
-void QgsMeshRendererMeshSettings::setLineWidthUnit( const QgsUnitTypes::RenderUnit &lineWidthUnit )
+void QgsMeshRendererMeshSettings::setLineWidthUnit( Qgis::RenderUnit lineWidthUnit )
 {
   mLineWidthUnit = lineWidthUnit;
 }
@@ -135,7 +135,7 @@ QDomElement QgsMeshRendererScalarSettings::writeXml( QDomDocument &doc, const Qg
 
   QDomElement elemEdge = doc.createElement( QStringLiteral( "edge-settings" ) );
   elemEdge.appendChild( mEdgeStrokeWidth.writeXml( doc, context ) );
-  elemEdge.setAttribute( QStringLiteral( "stroke-width-unit" ), mEdgeStrokeWidthUnit );
+  elemEdge.setAttribute( QStringLiteral( "stroke-width-unit" ), static_cast< int >( mEdgeStrokeWidthUnit ) );
   elem.appendChild( elemEdge );
 
   return elem;
@@ -162,7 +162,7 @@ void QgsMeshRendererScalarSettings::readXml( const QDomElement &elem, const QgsR
   const QDomElement elemEdge = elem.firstChildElement( QStringLiteral( "edge-settings" ) );
   const QDomElement elemEdgeStrokeWidth = elemEdge.firstChildElement( QStringLiteral( "mesh-stroke-width" ) );
   mEdgeStrokeWidth.readXml( elemEdgeStrokeWidth, context );
-  mEdgeStrokeWidthUnit = static_cast<QgsUnitTypes::RenderUnit>(
+  mEdgeStrokeWidthUnit = static_cast<Qgis::RenderUnit>(
                            elemEdge.attribute( QStringLiteral( "stroke-width-unit" ) ).toInt() );
 }
 
@@ -176,12 +176,12 @@ void QgsMeshRendererScalarSettings::setEdgeStrokeWidth( const QgsInterpolatedLin
   mEdgeStrokeWidth = strokeWidth;
 }
 
-QgsUnitTypes::RenderUnit QgsMeshRendererScalarSettings::edgeStrokeWidthUnit() const
+Qgis::RenderUnit QgsMeshRendererScalarSettings::edgeStrokeWidthUnit() const
 {
   return mEdgeStrokeWidthUnit;
 }
 
-void QgsMeshRendererScalarSettings::setEdgeStrokeWidthUnit( const QgsUnitTypes::RenderUnit &edgeStrokeWidthUnit )
+void QgsMeshRendererScalarSettings::setEdgeStrokeWidthUnit( Qgis::RenderUnit edgeStrokeWidthUnit )
 {
   mEdgeStrokeWidthUnit = edgeStrokeWidthUnit;
 }
@@ -695,7 +695,7 @@ void QgsMeshRendererVectorSettings::setTracesSettings( const QgsMeshRendererVect
 void QgsMeshRendererVectorTracesSettings::readXml( const QDomElement &elem )
 {
   mMaximumTailLength = elem.attribute( QStringLiteral( "maximum-tail-length" ) ).toInt();
-  mMaximumTailLengthUnit = static_cast<QgsUnitTypes::RenderUnit>(
+  mMaximumTailLengthUnit = static_cast<Qgis::RenderUnit>(
                              elem.attribute( QStringLiteral( "maximum-tail-length-unit" ) ).toInt() );
   mParticlesCount = elem.attribute( QStringLiteral( "particles-count" ) ).toInt();
 }
@@ -704,18 +704,18 @@ QDomElement QgsMeshRendererVectorTracesSettings::writeXml( QDomDocument &doc ) c
 {
   QDomElement elem = doc.createElement( QStringLiteral( "vector-traces-settings" ) );
   elem.setAttribute( QStringLiteral( "maximum-tail-length" ), mMaximumTailLength );
-  elem.setAttribute( QStringLiteral( "maximum-tail-length-unit" ), mMaximumTailLengthUnit );
+  elem.setAttribute( QStringLiteral( "maximum-tail-length-unit" ), static_cast< int >( mMaximumTailLengthUnit ) );
   elem.setAttribute( QStringLiteral( "particles-count" ), mParticlesCount );
 
   return elem;
 }
 
-QgsUnitTypes::RenderUnit QgsMeshRendererVectorTracesSettings::maximumTailLengthUnit() const
+Qgis::RenderUnit QgsMeshRendererVectorTracesSettings::maximumTailLengthUnit() const
 {
   return mMaximumTailLengthUnit;
 }
 
-void QgsMeshRendererVectorTracesSettings::setMaximumTailLengthUnit( const QgsUnitTypes::RenderUnit &maximumTailLengthUnit )
+void QgsMeshRendererVectorTracesSettings::setMaximumTailLengthUnit( Qgis::RenderUnit maximumTailLengthUnit )
 {
   mMaximumTailLengthUnit = maximumTailLengthUnit;
 }

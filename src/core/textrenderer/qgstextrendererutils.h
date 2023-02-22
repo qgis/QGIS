@@ -74,7 +74,7 @@ class CORE_EXPORT QgsTextRendererUtils
      * \note Not available in Python bindings.
      * \since QGIS 3.14
      */
-    static QgsUnitTypes::RenderUnit convertFromOldLabelUnit( int val ) SIP_SKIP;
+    static Qgis::RenderUnit convertFromOldLabelUnit( int val ) SIP_SKIP;
 
     /**
      * Converts an encoded color value from a \a layer \a property.

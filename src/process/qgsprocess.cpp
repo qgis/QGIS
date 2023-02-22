@@ -29,6 +29,7 @@
 #include "processing/models/qgsprocessingmodelalgorithm.h"
 #include "qgsproject.h"
 #include "qgsgeos.h"
+#include "qgsunittypes.h"
 #include "qgsjsonutils.h"
 
 #if defined(Q_OS_UNIX) && !defined(Q_OS_ANDROID)
@@ -349,8 +350,8 @@ int QgsProcessingExec::run( const QStringList &constArgs )
 
     // build parameter map
     QString ellipsoid;
-    QgsUnitTypes::DistanceUnit distanceUnit = QgsUnitTypes::DistanceUnknownUnit;
-    QgsUnitTypes::AreaUnit areaUnit = QgsUnitTypes::AreaUnknownUnit;
+    Qgis::DistanceUnit distanceUnit = Qgis::DistanceUnit::Unknown;
+    Qgis::AreaUnit areaUnit = Qgis::AreaUnit::Unknown;
     QString projectPath;
     QVariantMap params;
 
@@ -998,7 +999,7 @@ int QgsProcessingExec::showAlgorithmHelp( const QString &inputId, bool useJson )
   return 0;
 }
 
-int QgsProcessingExec::execute( const QString &inputId, const QVariantMap &inputs, const QString &ellipsoid, QgsUnitTypes::DistanceUnit distanceUnit, QgsUnitTypes::AreaUnit areaUnit, QgsProcessingContext::LogLevel logLevel, bool useJson, const QString &projectPath )
+int QgsProcessingExec::execute( const QString &inputId, const QVariantMap &inputs, const QString &ellipsoid, Qgis::DistanceUnit distanceUnit, Qgis::AreaUnit areaUnit, QgsProcessingContext::LogLevel logLevel, bool useJson, const QString &projectPath )
 {
   QVariantMap json;
   if ( useJson )
@@ -1133,14 +1134,14 @@ int QgsProcessingExec::execute( const QString &inputId, const QVariantMap &input
     else
       json.insert( QStringLiteral( "ellipsoid" ), ellipsoid );
   }
-  if ( distanceUnit != QgsUnitTypes::DistanceUnknownUnit )
+  if ( distanceUnit != Qgis::DistanceUnit::Unknown )
   {
     if ( !useJson )
       std::cout << "Using distance unit:\t" << QgsUnitTypes::toString( distanceUnit ).toLocal8Bit().constData() << '\n';
     else
       json.insert( QStringLiteral( "distance_unit" ), QgsUnitTypes::toString( distanceUnit ) );
   }
-  if ( areaUnit != QgsUnitTypes::AreaUnknownUnit )
+  if ( areaUnit != Qgis::AreaUnit::Unknown )
   {
     if ( !useJson )
       std::cout << "Using area unit:\t" << QgsUnitTypes::toString( areaUnit ).toLocal8Bit().constData() << '\n';

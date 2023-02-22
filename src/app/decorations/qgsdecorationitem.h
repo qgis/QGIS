@@ -86,7 +86,7 @@ class APP_EXPORT QgsDecorationItem : public QObject, public QgsMapDecoration
     //! Placement of the decoration
     Placement mPlacement = TopLeft;
     //! Units used for the decoration placement margin
-    QgsUnitTypes::RenderUnit mMarginUnit = QgsUnitTypes::RenderMillimeters;
+    Qgis::RenderUnit mMarginUnit = Qgis::RenderUnit::Millimeters;
 
     QString mConfigurationName;
 };

@@ -18,7 +18,6 @@
 
 #include "qgsactionmanager.h"
 #include "qgseditorwidgetregistry.h"
-#include "qgseditorwidgetfactory.h"
 #include "qgsexpression.h"
 #include "qgsfeatureiterator.h"
 #include "qgsconditionalstyle.h"
@@ -49,7 +48,7 @@ QgsAttributeTableModel::QgsAttributeTableModel( QgsVectorLayerCache *layerCache,
 {
   mExpressionContext.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( layerCache->layer() ) );
 
-  if ( mLayer->geometryType() == QgsWkbTypes::NullGeometry )
+  if ( mLayer->geometryType() == Qgis::GeometryType::Null )
   {
     mFeatureRequest.setFlags( QgsFeatureRequest::NoGeometry );
   }

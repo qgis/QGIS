@@ -104,7 +104,7 @@ The caller takes ownership of the returned symbol.
 Returns ``None`` if the specified type is not found in the registry.
 %End
 
-    QgsAbstract3DSymbol *defaultSymbolForGeometryType( QgsWkbTypes::GeometryType type ) /Factory/;
+    QgsAbstract3DSymbol *defaultSymbolForGeometryType( Qgis::GeometryType type ) /Factory/;
 %Docstring
 Creates a new instance of the default 3D symbol for the specified geometry ``type``.
 

@@ -68,11 +68,11 @@ bool QgsPointCloudLayerElevationProperties::readXml( const QDomElement &element,
   bool ok = false;
   mMaximumScreenErrorUnit = QgsUnitTypes::decodeRenderUnit( elevationElement.attribute( QStringLiteral( "max_screen_error_unit" ) ), &ok );
   if ( !ok )
-    mMaximumScreenErrorUnit = QgsUnitTypes::RenderMillimeters;
+    mMaximumScreenErrorUnit = Qgis::RenderUnit::Millimeters;
   mPointSize = elevationElement.attribute( QStringLiteral( "point_size" ), QStringLiteral( "0.6" ) ).toDouble();
   mPointSizeUnit = QgsUnitTypes::decodeRenderUnit( elevationElement.attribute( QStringLiteral( "point_size_unit" ) ), &ok );
   if ( !ok )
-    mPointSizeUnit = QgsUnitTypes::RenderMillimeters;
+    mPointSizeUnit = Qgis::RenderUnit::Millimeters;
   mPointSymbol = qgsEnumKeyToValue( elevationElement.attribute( QStringLiteral( "point_symbol" ) ), Qgis::PointCloudSymbol::Square );
   const QString colorString = elevationElement.attribute( QStringLiteral( "point_color" ) );
   if ( !colorString.isEmpty() )
@@ -156,7 +156,7 @@ void QgsPointCloudLayerElevationProperties::setMaximumScreenError( double error 
   emit profileGenerationPropertyChanged();
 }
 
-void QgsPointCloudLayerElevationProperties::setMaximumScreenErrorUnit( QgsUnitTypes::RenderUnit unit )
+void QgsPointCloudLayerElevationProperties::setMaximumScreenErrorUnit( Qgis::RenderUnit unit )
 {
   if ( unit == mMaximumScreenErrorUnit )
     return;
@@ -216,7 +216,7 @@ void QgsPointCloudLayerElevationProperties::setPointSize( double size )
   emit profileRenderingPropertyChanged();
 }
 
-void QgsPointCloudLayerElevationProperties::setPointSizeUnit( const QgsUnitTypes::RenderUnit units )
+void QgsPointCloudLayerElevationProperties::setPointSizeUnit( const Qgis::RenderUnit units )
 {
   if ( mPointSizeUnit == units )
     return;

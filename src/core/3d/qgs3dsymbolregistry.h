@@ -217,7 +217,7 @@ class CORE_EXPORT Qgs3DSymbolRegistry
      *
      * The caller takes ownership of the returned symbol.
      */
-    QgsAbstract3DSymbol *defaultSymbolForGeometryType( QgsWkbTypes::GeometryType type ) SIP_FACTORY;
+    QgsAbstract3DSymbol *defaultSymbolForGeometryType( Qgis::GeometryType type ) SIP_FACTORY;
 
 #ifndef SIP_RUN
 

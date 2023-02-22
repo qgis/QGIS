@@ -23,9 +23,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsfontutils.h"
 #include "qgsnullsymbolrenderer.h"
-#include "qgstextrenderer.h"
 #include "qgspallabeling.h"
-#include "qgslabelingengine.h"
 #include "qgssinglesymbolrenderer.h"
 #include "qgsvectorlayerlabeling.h"
 #include "qgslinesymbollayer.h"
@@ -175,7 +173,7 @@ void TestQgsDxfExport::testPoints()
   std::unique_ptr< QgsVectorLayer > result = std::make_unique< QgsVectorLayer >( file, "dxf" );
   QVERIFY( result->isValid() );
   QCOMPARE( result->featureCount(), mPointLayer->featureCount() );
-  QCOMPARE( result->wkbType(), QgsWkbTypes::Point );
+  QCOMPARE( result->wkbType(), Qgis::WkbType::Point );
 }
 
 void TestQgsDxfExport::testLines()
@@ -203,7 +201,7 @@ void TestQgsDxfExport::testLines()
   std::unique_ptr< QgsVectorLayer > result = std::make_unique< QgsVectorLayer >( file, "dxf" );
   QVERIFY( result->isValid() );
   QCOMPARE( result->featureCount(), mLineLayer->featureCount() );
-  QCOMPARE( result->wkbType(), QgsWkbTypes::LineString );
+  QCOMPARE( result->wkbType(), Qgis::WkbType::LineString );
 }
 
 void TestQgsDxfExport::testPolygons()
@@ -231,7 +229,7 @@ void TestQgsDxfExport::testPolygons()
   std::unique_ptr< QgsVectorLayer > result = std::make_unique< QgsVectorLayer >( file, "dxf" );
   QVERIFY( result->isValid() );
   QCOMPARE( result->featureCount(), 12L );
-  QCOMPARE( result->wkbType(), QgsWkbTypes::LineString );
+  QCOMPARE( result->wkbType(), Qgis::WkbType::LineString );
 }
 
 void TestQgsDxfExport::testMultiSurface()
@@ -264,7 +262,7 @@ void TestQgsDxfExport::testMultiSurface()
   std::unique_ptr< QgsVectorLayer > result = std::make_unique< QgsVectorLayer >( file, "dxf" );
   QVERIFY( result->isValid() );
   QCOMPARE( result->featureCount(), 1L );
-  QCOMPARE( result->wkbType(), QgsWkbTypes::LineString );
+  QCOMPARE( result->wkbType(), Qgis::WkbType::LineString );
   QgsFeature f2;
   result->getFeatures().nextFeature( f2 );
   QCOMPARE( f2.geometry().asWkt(), QStringLiteral( "LineString (0 0, 0 1, 1 1, 0 0)" ) );
@@ -1060,7 +1058,7 @@ void TestQgsDxfExport::testDashedLine()
   std::unique_ptr<QgsSimpleLineSymbolLayer> symbolLayer = std::make_unique<QgsSimpleLineSymbolLayer>( QColor( 0, 0, 0 ) );
   symbolLayer->setWidth( 0.11 );
   symbolLayer->setCustomDashVector( { 0.5, 0.35 } );
-  symbolLayer->setCustomDashPatternUnit( QgsUnitTypes::RenderUnit::RenderMapUnits );
+  symbolLayer->setCustomDashPatternUnit( Qgis::RenderUnit::MapUnits );
   symbolLayer->setUseCustomDashPattern( true );
 
   QgsLineSymbol *symbol = new QgsLineSymbol();
@@ -1181,7 +1179,7 @@ void TestQgsDxfExport::testTransform()
   std::unique_ptr<QgsSimpleLineSymbolLayer> symbolLayer = std::make_unique<QgsSimpleLineSymbolLayer>( QColor( 0, 0, 0 ) );
   symbolLayer->setWidth( 0.11 );
   symbolLayer->setCustomDashVector( { 0.5, 0.35 } );
-  symbolLayer->setCustomDashPatternUnit( QgsUnitTypes::RenderUnit::RenderMapUnits );
+  symbolLayer->setCustomDashPatternUnit( Qgis::RenderUnit::MapUnits );
   symbolLayer->setUseCustomDashPattern( true );
 
   QgsLineSymbol *symbol = new QgsLineSymbol();

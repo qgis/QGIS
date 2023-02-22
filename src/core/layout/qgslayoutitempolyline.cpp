@@ -19,7 +19,7 @@
 #include "qgssymbollayerutils.h"
 #include "qgssymbol.h"
 #include "qgslayout.h"
-#include "qgsmapsettings.h"
+#include "qgslayoutrendercontext.h"
 #include "qgslayoututils.h"
 #include "qgsreadwritecontext.h"
 #include "qgssvgcache.h"
@@ -281,7 +281,7 @@ void QgsLayoutItemPolyline::_draw( QgsLayoutItemRenderContext &context, const QS
 {
   const QgsScopedQPainterState painterState( context.renderContext().painter() );
   //setup painter scaling to dots so that raster symbology is drawn to scale
-  const double scale = context.renderContext().convertToPainterUnits( 1, QgsUnitTypes::RenderMillimeters );
+  const double scale = context.renderContext().convertToPainterUnits( 1, Qgis::RenderUnit::Millimeters );
   const QTransform t = QTransform::fromScale( scale, scale );
 
   mPolylineStyleSymbol->startRender( context.renderContext() );

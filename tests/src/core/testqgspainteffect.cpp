@@ -29,7 +29,6 @@
 #include "qgstransformeffect.h"
 #include "qgspainteffectregistry.h"
 #include "qgscolorrampimpl.h"
-#include "qgssymbollayerutils.h"
 #include "qgsmapsettings.h"
 #include "qgsvectorlayer.h"
 #include "qgsapplication.h"
@@ -46,6 +45,7 @@
 #include "qgsfillsymbol.h"
 #include "qgsmarkersymbol.h"
 #include "qgslinesymbol.h"
+#include "qgslayoutexporter.h"
 
 //qgis test includes
 #include "qgsmultirenderchecker.h"
@@ -430,8 +430,8 @@ void TestQgsPaintEffect::dropShadow()
   QCOMPARE( effect->offsetAngle(), 77 );
   effect->setOffsetDistance( 9.7 );
   QCOMPARE( effect->offsetDistance(), 9.7 );
-  effect->setOffsetUnit( QgsUnitTypes::RenderMapUnits );
-  QCOMPARE( effect->offsetUnit(), QgsUnitTypes::RenderMapUnits );
+  effect->setOffsetUnit( Qgis::RenderUnit::MapUnits );
+  QCOMPARE( effect->offsetUnit(), Qgis::RenderUnit::MapUnits );
   effect->setOffsetMapUnitScale( QgsMapUnitScale( 1.0, 2.0 ) );
   QCOMPARE( effect->offsetMapUnitScale().minScale, 1.0 );
   QCOMPARE( effect->offsetMapUnitScale().maxScale, 2.0 );
@@ -525,8 +525,8 @@ void TestQgsPaintEffect::glow()
   QCOMPARE( effect->blurLevel(), 6.0 );
   effect->setSpread( 7.8 );
   QCOMPARE( effect->spread(), 7.8 );
-  effect->setSpreadUnit( QgsUnitTypes::RenderMapUnits );
-  QCOMPARE( effect->spreadUnit(), QgsUnitTypes::RenderMapUnits );
+  effect->setSpreadUnit( Qgis::RenderUnit::MapUnits );
+  QCOMPARE( effect->spreadUnit(), Qgis::RenderUnit::MapUnits );
   effect->setSpreadMapUnitScale( QgsMapUnitScale( 1.0, 2.0 ) );
   QCOMPARE( effect->spreadMapUnitScale().minScale, 1.0 );
   QCOMPARE( effect->spreadMapUnitScale().maxScale, 2.0 );
@@ -629,8 +629,8 @@ void TestQgsPaintEffect::transform()
   QCOMPARE( effect->translateX(), 6.0 );
   effect->setTranslateY( 77 );
   QCOMPARE( effect->translateY(), 77.0 );
-  effect->setTranslateUnit( QgsUnitTypes::RenderMapUnits );
-  QCOMPARE( effect->translateUnit(), QgsUnitTypes::RenderMapUnits );
+  effect->setTranslateUnit( Qgis::RenderUnit::MapUnits );
+  QCOMPARE( effect->translateUnit(), Qgis::RenderUnit::MapUnits );
   effect->setTranslateMapUnitScale( QgsMapUnitScale( 1.0, 2.0 ) );
   QCOMPARE( effect->translateMapUnitScale().minScale, 1.0 );
   QCOMPARE( effect->translateMapUnitScale().maxScale, 2.0 );
@@ -657,7 +657,7 @@ void TestQgsPaintEffect::transform()
   QCOMPARE( copy->enabled(), false );
   QCOMPARE( copy->translateX(), 6.0 );
   QCOMPARE( copy->translateY(), 77.0 );
-  QCOMPARE( copy->translateUnit(), QgsUnitTypes::RenderMapUnits );
+  QCOMPARE( copy->translateUnit(), Qgis::RenderUnit::MapUnits );
   QCOMPARE( copy->translateMapUnitScale().minScale, 1.0 );
   QCOMPARE( copy->translateMapUnitScale().maxScale, 2.0 );
   QCOMPARE( copy->scaleX(), 0.5 );
@@ -677,7 +677,7 @@ void TestQgsPaintEffect::transform()
   QCOMPARE( cloneCast->enabled(), false );
   QCOMPARE( cloneCast->translateX(), 6.0 );
   QCOMPARE( cloneCast->translateY(), 77.0 );
-  QCOMPARE( cloneCast->translateUnit(), QgsUnitTypes::RenderMapUnits );
+  QCOMPARE( cloneCast->translateUnit(), Qgis::RenderUnit::MapUnits );
   QCOMPARE( cloneCast->translateMapUnitScale().minScale, 1.0 );
   QCOMPARE( cloneCast->translateMapUnitScale().maxScale, 2.0 );
   QCOMPARE( cloneCast->scaleX(), 0.5 );
@@ -698,7 +698,7 @@ void TestQgsPaintEffect::transform()
   QCOMPARE( readCast->enabled(), false );
   QCOMPARE( readCast->translateX(), 6.0 );
   QCOMPARE( readCast->translateY(), 77.0 );
-  QCOMPARE( readCast->translateUnit(), QgsUnitTypes::RenderMapUnits );
+  QCOMPARE( readCast->translateUnit(), Qgis::RenderUnit::MapUnits );
   QCOMPARE( readCast->translateMapUnitScale().minScale, 1.0 );
   QCOMPARE( readCast->translateMapUnitScale().maxScale, 2.0 );
   QCOMPARE( readCast->scaleX(), 0.5 );
@@ -919,7 +919,7 @@ void TestQgsPaintEffect::mapUnits()
   QgsOuterGlowEffect *effect = new QgsOuterGlowEffect();
   effect->setColor( QColor( 255, 0, 0 ) );
   effect->setSpread( 3 );
-  effect->setSpreadUnit( QgsUnitTypes::RenderMapUnits );
+  effect->setSpreadUnit( Qgis::RenderUnit::MapUnits );
   renderer->setPaintEffect( effect );
 
   lineLayer->setRenderer( renderer );

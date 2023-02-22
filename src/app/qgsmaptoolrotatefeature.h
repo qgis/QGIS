@@ -122,6 +122,9 @@ class APP_EXPORT QgsMapToolRotateFeature: public QgsMapToolAdvancedDigitizing
 
     //! Shows current angle value and allows numerical editing
     QgsAngleMagnetWidget *mRotationWidget = nullptr;
+
+    // MultiGeometry of the features being rotated
+    QgsGeometry mGeom;
 };
 
 #endif

@@ -648,7 +648,7 @@ bool QgsProcessingParameters::parameterAsBoolean( const QgsProcessingParameterDe
 }
 
 QgsFeatureSink *QgsProcessingParameters::parameterAsSink( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QgsFields &fields,
-    QgsWkbTypes::Type geometryType, const QgsCoordinateReferenceSystem &crs,
+    Qgis::WkbType geometryType, const QgsCoordinateReferenceSystem &crs,
     QgsProcessingContext &context, QString &destinationIdentifier, QgsFeatureSink::SinkFlags sinkFlags,
     const QVariantMap &createOptions, const QStringList &datasourceOptions, const QStringList &layerOptions )
 {
@@ -661,7 +661,7 @@ QgsFeatureSink *QgsProcessingParameters::parameterAsSink( const QgsProcessingPar
   return parameterAsSink( definition, val, fields, geometryType, crs, context, destinationIdentifier, sinkFlags, createOptions, datasourceOptions, layerOptions );
 }
 
-QgsFeatureSink *QgsProcessingParameters::parameterAsSink( const QgsProcessingParameterDefinition *definition, const QVariant &value, const QgsFields &fields, QgsWkbTypes::Type geometryType, const QgsCoordinateReferenceSystem &crs, QgsProcessingContext &context, QString &destinationIdentifier, QgsFeatureSink::SinkFlags sinkFlags, const QVariantMap &createOptions, const QStringList &datasourceOptions, const QStringList &layerOptions )
+QgsFeatureSink *QgsProcessingParameters::parameterAsSink( const QgsProcessingParameterDefinition *definition, const QVariant &value, const QgsFields &fields, Qgis::WkbType geometryType, const QgsCoordinateReferenceSystem &crs, QgsProcessingContext &context, QString &destinationIdentifier, QgsFeatureSink::SinkFlags sinkFlags, const QVariantMap &createOptions, const QStringList &datasourceOptions, const QStringList &layerOptions )
 {
   QVariantMap options = createOptions;
   QVariant val = value;
@@ -3593,38 +3593,38 @@ bool QgsProcessingParameterGeometry::checkValueIsAcceptable( const QVariant &inp
     return true;
   }
 
-  const bool anyTypeAllowed = mGeomTypes.isEmpty() || mGeomTypes.contains( QgsWkbTypes::UnknownGeometry );
+  const bool anyTypeAllowed = mGeomTypes.isEmpty() || mGeomTypes.contains( static_cast< int >( Qgis::GeometryType::Unknown ) );
 
   if ( input.userType() == QMetaType::type( "QgsGeometry" ) )
   {
-    return ( anyTypeAllowed || mGeomTypes.contains( input.value<QgsGeometry>().type() ) ) &&
+    return ( anyTypeAllowed || mGeomTypes.contains( static_cast< int >( input.value<QgsGeometry>().type() ) ) ) &&
            ( mAllowMultipart || !input.value<QgsGeometry>().isMultipart() );
   }
 
   if ( input.userType() == QMetaType::type( "QgsReferencedGeometry" ) )
   {
-    return ( anyTypeAllowed || mGeomTypes.contains( input.value<QgsReferencedGeometry>().type() ) ) &&
+    return ( anyTypeAllowed || mGeomTypes.contains( static_cast<int>( input.value<QgsReferencedGeometry>().type() ) ) ) &&
            ( mAllowMultipart || !input.value<QgsReferencedGeometry>().isMultipart() );
   }
 
   if ( input.userType() == QMetaType::type( "QgsPointXY" ) )
   {
-    return anyTypeAllowed || mGeomTypes.contains( QgsWkbTypes::PointGeometry );
+    return anyTypeAllowed || mGeomTypes.contains( static_cast< int >( Qgis::GeometryType::Point ) );
   }
 
   if ( input.userType() == QMetaType::type( "QgsRectangle" ) )
   {
-    return anyTypeAllowed || mGeomTypes.contains( QgsWkbTypes::PolygonGeometry );
+    return anyTypeAllowed || mGeomTypes.contains( static_cast< int >( Qgis::GeometryType::Polygon ) );
   }
 
   if ( input.userType() == QMetaType::type( "QgsReferencedPointXY" ) )
   {
-    return anyTypeAllowed || mGeomTypes.contains( QgsWkbTypes::PointGeometry );
+    return anyTypeAllowed || mGeomTypes.contains( static_cast< int >( Qgis::GeometryType::Point ) );
   }
 
   if ( input.userType() == QMetaType::type( "QgsReferencedRectangle" ) )
   {
-    return anyTypeAllowed || mGeomTypes.contains( QgsWkbTypes::PolygonGeometry );
+    return anyTypeAllowed || mGeomTypes.contains( static_cast< int >( Qgis::GeometryType::Polygon ) );
   }
 
   if ( input.type() == QVariant::String )
@@ -3642,7 +3642,7 @@ bool QgsProcessingParameterGeometry::checkValueIsAcceptable( const QVariant &inp
     const QgsGeometry g = QgsGeometry::fromWkt( match.captured( 2 ) );
     if ( ! g.isNull() )
     {
-      return ( anyTypeAllowed || mGeomTypes.contains( g.type() ) ) && ( mAllowMultipart || !g.isMultipart() );
+      return ( anyTypeAllowed || mGeomTypes.contains( static_cast< int >( g.type() ) ) ) && ( mAllowMultipart || !g.isMultipart() );
     }
     else
     {
@@ -3722,17 +3722,17 @@ QString QgsProcessingParameterGeometry::asScriptCode() const
 
   for ( const int type : mGeomTypes )
   {
-    switch ( static_cast<QgsWkbTypes::GeometryType>( type ) )
+    switch ( static_cast<Qgis::GeometryType>( type ) )
     {
-      case QgsWkbTypes::PointGeometry:
+      case Qgis::GeometryType::Point:
         code += QLatin1String( "point " );
         break;
 
-      case QgsWkbTypes::LineGeometry:
+      case Qgis::GeometryType::Line:
         code += QLatin1String( "line " );
         break;
 
-      case QgsWkbTypes::PolygonGeometry:
+      case Qgis::GeometryType::Polygon:
         code += QLatin1String( "polygon " );
         break;
 
@@ -3759,23 +3759,23 @@ QString QgsProcessingParameterGeometry::asPythonString( const QgsProcessing::Pyt
 
       if ( !mGeomTypes.empty() )
       {
-        auto geomTypeToString = []( QgsWkbTypes::GeometryType t ) -> QString
+        auto geomTypeToString = []( Qgis::GeometryType t ) -> QString
         {
           switch ( t )
           {
-            case QgsWkbTypes::PointGeometry:
+            case Qgis::GeometryType::Point:
               return QStringLiteral( "PointGeometry" );
 
-            case QgsWkbTypes::LineGeometry:
+            case Qgis::GeometryType::Line:
               return QStringLiteral( "LineGeometry" );
 
-            case QgsWkbTypes::PolygonGeometry:
+            case Qgis::GeometryType::Polygon:
               return QStringLiteral( "PolygonGeometry" );
 
-            case QgsWkbTypes::UnknownGeometry:
+            case Qgis::GeometryType::Unknown:
               return QStringLiteral( "UnknownGeometry" );
 
-            case QgsWkbTypes::NullGeometry:
+            case Qgis::GeometryType::Null:
               return QStringLiteral( "NullGeometry" );
           }
           return QString();
@@ -3785,7 +3785,7 @@ QString QgsProcessingParameterGeometry::asPythonString( const QgsProcessing::Pyt
         options.reserve( mGeomTypes.size() );
         for ( const int type : mGeomTypes )
         {
-          options << QStringLiteral( " QgsWkbTypes.%1" ).arg( geomTypeToString( static_cast<QgsWkbTypes::GeometryType>( type ) ) );
+          options << QStringLiteral( " QgsWkbTypes.%1" ).arg( geomTypeToString( static_cast<Qgis::GeometryType>( type ) ) );
         }
         code += QStringLiteral( ", geometryTypes=[%1 ]" ).arg( options.join( ',' ) );
       }
@@ -7403,7 +7403,7 @@ bool QgsProcessingParameterDistance::fromVariantMap( const QVariantMap &map )
 {
   QgsProcessingParameterNumber::fromVariantMap( map );
   mParentParameterName = map.value( QStringLiteral( "parent" ) ).toString();
-  mDefaultUnit = static_cast< QgsUnitTypes::DistanceUnit>( map.value( QStringLiteral( "default_unit" ), QgsUnitTypes::DistanceUnknownUnit ).toInt() );
+  mDefaultUnit = static_cast< Qgis::DistanceUnit>( map.value( QStringLiteral( "default_unit" ), static_cast< int >( Qgis::DistanceUnit::Unknown ) ).toInt() );
   return true;
 }
 
@@ -7460,7 +7460,7 @@ QVariantMap QgsProcessingParameterDuration::toVariantMap() const
 bool QgsProcessingParameterDuration::fromVariantMap( const QVariantMap &map )
 {
   QgsProcessingParameterNumber::fromVariantMap( map );
-  mDefaultUnit = static_cast< QgsUnitTypes::TemporalUnit>( map.value( QStringLiteral( "default_unit" ), QgsUnitTypes::TemporalDays ).toInt() );
+  mDefaultUnit = static_cast< Qgis::TemporalUnit>( map.value( QStringLiteral( "default_unit" ), static_cast< int >( Qgis::TemporalUnit::Days ) ).toInt() );
   return true;
 }
 

@@ -24,6 +24,7 @@
 #include "qgsgeometryoptions.h"
 #include "qgsmaplayercombobox.h"
 #include "qgsproject.h"
+#include "qgsunittypes.h"
 
 #include <QFormLayout>
 

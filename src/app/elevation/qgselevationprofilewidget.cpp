@@ -23,7 +23,6 @@
 #include "qgsmaptoolprofilecurve.h"
 #include "qgsmaptoolprofilecurvefromfeature.h"
 #include "qgsrubberband.h"
-#include "qgssettingsregistrycore.h"
 #include "qgsplottoolpan.h"
 #include "qgsplottoolxaxiszoom.h"
 #include "qgsplottoolzoom.h"
@@ -33,7 +32,6 @@
 #include "qgsmessagebar.h"
 #include "qgsplot.h"
 #include "qgsmulticurve.h"
-#include "qgsmaplayerutils.h"
 #include "qgslinesymbol.h"
 #include "qgslinesymbollayer.h"
 #include "qgsfillsymbol.h"
@@ -43,7 +41,6 @@
 #include "qgslayertree.h"
 #include "qgslayertreeregistrybridge.h"
 #include "qgselevationprofilelayertreeview.h"
-#include "qgsmaplayerelevationproperties.h"
 #include "qgsgui.h"
 #include "qgsshortcutsmanager.h"
 #include "qgselevationprofiletoolidentify.h"
@@ -365,7 +362,7 @@ void QgsElevationProfileWidget::setMainCanvas( QgsMapCanvas *canvas )
   mCaptureCurveFromFeatureMapTool->setAction( mCaptureCurveFromFeatureAction );
   connect( mCaptureCurveFromFeatureMapTool.get(), &QgsMapToolProfileCurveFromFeature::curveCaptured, this, [ = ]( const QgsGeometry & curve ) { setProfileCurve( curve, true ); } );
 
-  mMapPointRubberBand.reset( new QgsRubberBand( canvas, QgsWkbTypes::PointGeometry ) );
+  mMapPointRubberBand.reset( new QgsRubberBand( canvas, Qgis::GeometryType::Point ) );
   mMapPointRubberBand->setZValue( 1000 );
   mMapPointRubberBand->setIcon( QgsRubberBand::ICON_FULL_DIAMOND );
   mMapPointRubberBand->setWidth( QgsGuiUtils::scaleIconSize( 8 ) );
@@ -563,8 +560,8 @@ void QgsElevationProfileWidget::exportAsPdf()
   Qgs2DPlot plotSettings;
   dialog.updatePlotSettings( plotSettings );
 
-  mCanvas->render( rc, rc.convertToPainterUnits( pageSizeMM.width(), QgsUnitTypes::RenderMillimeters ),
-                   rc.convertToPainterUnits( pageSizeMM.height(), QgsUnitTypes::RenderMillimeters ), plotSettings );
+  mCanvas->render( rc, rc.convertToPainterUnits( pageSizeMM.width(), Qgis::RenderUnit::Millimeters ),
+                   rc.convertToPainterUnits( pageSizeMM.height(), Qgis::RenderUnit::Millimeters ), plotSettings );
   p.end();
 
   QgisApp::instance()->messageBar()->pushSuccess( tr( "Save as PDF" ), tr( "Successfully saved the profile to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( outputFileName ).toString(), QDir::toNativeSeparators( outputFileName ) ) );
@@ -648,7 +645,7 @@ void QgsElevationProfileWidget::createOrUpdateRubberBands( )
 {
   if ( !mRubberBand )
   {
-    mRubberBand.reset( new QgsRubberBand( mMainCanvas, QgsWkbTypes::LineGeometry ) );
+    mRubberBand.reset( new QgsRubberBand( mMainCanvas, Qgis::GeometryType::Line ) );
     mRubberBand->setZValue( 1000 );
     mRubberBand->setWidth( QgsGuiUtils::scaleIconSize( 2 ) );
 
@@ -656,7 +653,7 @@ void QgsElevationProfileWidget::createOrUpdateRubberBands( )
 
     std::unique_ptr< QgsSimpleLineSymbolLayer > bottomLayer = std::make_unique< QgsSimpleLineSymbolLayer >();
     bottomLayer->setWidth( 0.8 );
-    bottomLayer->setWidthUnit( QgsUnitTypes::RenderMillimeters );
+    bottomLayer->setWidthUnit( Qgis::RenderUnit::Millimeters );
     bottomLayer->setColor( QColor( 40, 40, 40, 100 ) );
     bottomLayer->setPenCapStyle( Qt::PenCapStyle::FlatCap );
     layers.append( bottomLayer.release() );
@@ -668,7 +665,7 @@ void QgsElevationProfileWidget::createOrUpdateRubberBands( )
     std::unique_ptr< QgsSimpleMarkerSymbolLayer > arrowSymbolLayer = std::make_unique< QgsSimpleMarkerSymbolLayer >( Qgis::MarkerShape::EquilateralTriangle );
     arrowSymbolLayer->setSize( 4 );
     arrowSymbolLayer->setAngle( 90 );
-    arrowSymbolLayer->setSizeUnit( QgsUnitTypes::RenderMillimeters );
+    arrowSymbolLayer->setSizeUnit( Qgis::RenderUnit::Millimeters );
     arrowSymbolLayer->setColor( QColor( 40, 40, 40, 100 ) );
     arrowSymbolLayer->setStrokeColor( QColor( 255, 255, 255, 255 ) );
     arrowSymbolLayer->setStrokeWidth( 0.2 );
@@ -681,7 +678,7 @@ void QgsElevationProfileWidget::createOrUpdateRubberBands( )
 
     std::unique_ptr< QgsSimpleLineSymbolLayer > topLayer = std::make_unique< QgsSimpleLineSymbolLayer >();
     topLayer->setWidth( 0.4 );
-    topLayer->setWidthUnit( QgsUnitTypes::RenderMillimeters );
+    topLayer->setWidthUnit( Qgis::RenderUnit::Millimeters );
     topLayer->setColor( QColor( 255, 255, 255, 255 ) );
     topLayer->setPenStyle( Qt::DashLine );
     topLayer->setPenCapStyle( Qt::PenCapStyle::FlatCap );
@@ -701,7 +698,7 @@ void QgsElevationProfileWidget::createOrUpdateRubberBands( )
   {
     if ( !mToleranceRubberBand )
     {
-      mToleranceRubberBand.reset( new QgsRubberBand( mMainCanvas, QgsWkbTypes::PolygonGeometry ) );
+      mToleranceRubberBand.reset( new QgsRubberBand( mMainCanvas, Qgis::GeometryType::Polygon ) );
       mToleranceRubberBand->setZValue( 999 );
 
       QgsSymbolLayerList layers;

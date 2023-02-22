@@ -86,36 +86,36 @@ void QgsAbstractProfileResults::copyPropertiesFromGenerator( const QgsAbstractPr
 #define POINTS_TO_MM 2.83464567
 #define INCH_TO_MM 25.4
 
-double QgsProfileGenerationContext::convertDistanceToPixels( double size, QgsUnitTypes::RenderUnit unit ) const
+double QgsProfileGenerationContext::convertDistanceToPixels( double size, Qgis::RenderUnit unit ) const
 {
   double conversionFactor = 1.0;
   const double pixelsPerMillimeter = mDpi / 25.4;
   switch ( unit )
   {
-    case QgsUnitTypes::RenderMillimeters:
+    case Qgis::RenderUnit::Millimeters:
       conversionFactor = pixelsPerMillimeter;
       break;
 
-    case QgsUnitTypes::RenderPoints:
+    case Qgis::RenderUnit::Points:
       conversionFactor = pixelsPerMillimeter / POINTS_TO_MM;
       break;
 
-    case QgsUnitTypes::RenderInches:
+    case Qgis::RenderUnit::Inches:
       conversionFactor = pixelsPerMillimeter * INCH_TO_MM;
       break;
 
-    case QgsUnitTypes::RenderMapUnits:
+    case Qgis::RenderUnit::MapUnits:
     {
       conversionFactor = 1.0 / mMapUnitsPerDistancePixel;
       break;
     }
-    case QgsUnitTypes::RenderPixels:
+    case Qgis::RenderUnit::Pixels:
       conversionFactor = 1.0;
       break;
 
-    case QgsUnitTypes::RenderUnknownUnit:
-    case QgsUnitTypes::RenderPercentage:
-    case QgsUnitTypes::RenderMetersInMapUnits:
+    case Qgis::RenderUnit::Unknown:
+    case Qgis::RenderUnit::Percentage:
+    case Qgis::RenderUnit::MetersInMapUnits:
       //not supported
       conversionFactor = 1.0;
       break;

@@ -1124,7 +1124,7 @@ void QgsMapCanvas::showContextMenu( QgsMapMouseEvent *event )
       }
       catch ( QgsCsException & )
       {
-        displayPrecision = crs.mapUnits() == QgsUnitTypes::DistanceDegrees ? 5 : 3;
+        displayPrecision = crs.mapUnits() == Qgis::DistanceUnit::Degrees ? 5 : 3;
       }
 
       const QList< Qgis::CrsAxisDirection > axisList = crs.axisOrdering();
@@ -1639,7 +1639,7 @@ QgsRectangle QgsMapCanvas::optimalExtentForPointLayer( QgsVectorLayer *layer, co
 {
   QgsRectangle rect( center, center );
 
-  if ( layer->geometryType() == QgsWkbTypes::PointGeometry )
+  if ( layer->geometryType() == Qgis::GeometryType::Point )
   {
     QgsPointXY centerLayerCoordinates = mSettings.mapToLayerCoordinates( layer, center );
     QgsRectangle extentRect = mSettings.mapToLayerCoordinates( layer, extent() ).scaled( 1.0 / scaleFactor, &centerLayerCoordinates );
@@ -1704,7 +1704,7 @@ void QgsMapCanvas::zoomToSelected( QgsMapLayer *layer )
 
       // zoom in if point cannot be distinguished from others
       // also check that rect is empty, as it might not in case of multi points
-      if ( vlayer->geometryType() == QgsWkbTypes::PointGeometry && rect.isEmpty() )
+      if ( vlayer->geometryType() == Qgis::GeometryType::Point && rect.isEmpty() )
       {
         rect = optimalExtentForPointLayer( vlayer, rect.center() );
       }
@@ -1777,7 +1777,7 @@ void QgsMapCanvas::zoomToSelected( const QList<QgsMapLayer *> &layers )
 
         rect = mapSettings().layerExtentToOutputExtent( layer, rect );
 
-        if ( layer->geometryType() == QgsWkbTypes::PointGeometry && rect.isEmpty() )
+        if ( layer->geometryType() == Qgis::GeometryType::Point && rect.isEmpty() )
           rect = optimalExtentForPointLayer( layer, rect.center() );
 
         selectionExtent.combineExtentWith( rect );
@@ -2038,7 +2038,7 @@ void QgsMapCanvas::panToSelected( const QList<QgsMapLayer *> &layers )
 
         rect = mapSettings().layerExtentToOutputExtent( layer, rect );
 
-        if ( layer->geometryType() == QgsWkbTypes::PointGeometry && rect.isEmpty() )
+        if ( layer->geometryType() == Qgis::GeometryType::Point && rect.isEmpty() )
           rect = optimalExtentForPointLayer( layer, rect.center() );
         break;
       }
@@ -2112,25 +2112,25 @@ void QgsMapCanvas::flashGeometries( const QList<QgsGeometry> &geometries, const 
   if ( geometries.isEmpty() )
     return;
 
-  QgsWkbTypes::GeometryType geomType = QgsWkbTypes::geometryType( geometries.at( 0 ).wkbType() );
+  Qgis::GeometryType geomType = QgsWkbTypes::geometryType( geometries.at( 0 ).wkbType() );
   QgsRubberBand *rb = new QgsRubberBand( this, geomType );
   for ( const QgsGeometry &geom : geometries )
     rb->addGeometry( geom, crs, false );
   rb->updatePosition();
   rb->update();
 
-  if ( geomType == QgsWkbTypes::LineGeometry || geomType == QgsWkbTypes::PointGeometry )
+  if ( geomType == Qgis::GeometryType::Line || geomType == Qgis::GeometryType::Point )
   {
     rb->setWidth( 2 );
     rb->setSecondaryStrokeColor( QColor( 255, 255, 255 ) );
   }
-  if ( geomType == QgsWkbTypes::PointGeometry )
+  if ( geomType == Qgis::GeometryType::Point )
     rb->setIcon( QgsRubberBand::ICON_CIRCLE );
 
   QColor startColor = color1;
   if ( !startColor.isValid() )
   {
-    if ( geomType == QgsWkbTypes::PolygonGeometry )
+    if ( geomType == Qgis::GeometryType::Polygon )
     {
       startColor = rb->fillColor();
     }
@@ -2157,7 +2157,7 @@ void QgsMapCanvas::flashGeometries( const QList<QgsGeometry> &geometries, const 
   connect( animation, &QPropertyAnimation::valueChanged, this, [rb, geomType]( const QVariant & value )
   {
     QColor c = value.value<QColor>();
-    if ( geomType == QgsWkbTypes::PolygonGeometry )
+    if ( geomType == Qgis::GeometryType::Polygon )
     {
       rb->setFillColor( c );
     }
@@ -2334,7 +2334,7 @@ void QgsMapCanvas::beginZoomRect( QPoint pos )
   mZoomRect.setRect( 0, 0, 0, 0 );
   mTemporaryCursorOverride.reset( new QgsTemporaryCursorOverride( mZoomCursor ) );
   mZoomDragging = true;
-  mZoomRubberBand.reset( new QgsRubberBand( this, QgsWkbTypes::PolygonGeometry ) );
+  mZoomRubberBand.reset( new QgsRubberBand( this, Qgis::GeometryType::Polygon ) );
   QColor color( Qt::blue );
   color.setAlpha( 63 );
   mZoomRubberBand->setColor( color );
@@ -2866,7 +2866,7 @@ double QgsMapCanvas::mapUnitsPerPixel() const
   return mapSettings().mapUnitsPerPixel();
 }
 
-QgsUnitTypes::DistanceUnit QgsMapCanvas::mapUnits() const
+Qgis::DistanceUnit QgsMapCanvas::mapUnits() const
 {
   return mapSettings().mapUnits();
 }

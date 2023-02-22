@@ -22,27 +22,20 @@
 #include <QCompleter>
 
 #include "qgsattributeform.h"
-#include "qgsattributetablefiltermodel.h"
 #include "qgsattributedialog.h"
 #include "qgsapplication.h"
 #include "qgscollapsiblegroupbox.h"
-#include "qgseditorwidgetfactory.h"
 #include "qgsexpression.h"
-#include "qgsfeaturelistmodel.h"
 #include "qgsfields.h"
 #include "qgsgeometry.h"
 #include "qgshighlight.h"
 #include "qgsmapcanvas.h"
 #include "qgsmessagebar.h"
-#include "qgsrelationreferenceconfigdlg.h"
 #include "qgsvectorlayer.h"
-#include "qgsattributetablemodel.h"
 #include "qgsmaptoolidentifyfeature.h"
 #include "qgsmaptooldigitizefeature.h"
 #include "qgsfeatureiterator.h"
 #include "qgsfeaturelistcombobox.h"
-#include "qgsexpressioncontextutils.h"
-#include "qgsfeaturefiltermodel.h"
 #include "qgsvectorlayerutils.h"
 
 
@@ -865,7 +858,7 @@ void QgsRelationReferenceWidget::addEntry()
     return;
 
   // no geometry, skip the digitizing
-  if ( mReferencedLayer->geometryType() == QgsWkbTypes::UnknownGeometry || mReferencedLayer->geometryType() == QgsWkbTypes::NullGeometry )
+  if ( mReferencedLayer->geometryType() == Qgis::GeometryType::Unknown || mReferencedLayer->geometryType() == Qgis::GeometryType::Null )
   {
     QgsFeature f( mReferencedLayer->fields() );
     entryAdded( f );

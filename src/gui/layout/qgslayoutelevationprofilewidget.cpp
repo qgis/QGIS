@@ -31,6 +31,7 @@
 #include "qgselevationprofilecanvas.h"
 #include "qgscurve.h"
 #include "qgslayoutatlas.h"
+#include "qgslayoutreportcontext.h"
 #include <QMenu>
 
 std::function< void( QgsLayoutElevationProfileWidget *, QMenu * ) > QgsLayoutElevationProfileWidget::sBuildCopyMenuFunction = []( QgsLayoutElevationProfileWidget *, QMenu * ) {};
@@ -721,7 +722,7 @@ void QgsLayoutElevationProfileWidget::layoutAtlasToggled( bool atlasEnabled )
 {
   if ( atlasEnabled &&
        mProfile && mProfile->layout() && mProfile->layout()->reportContext().layer()
-       && mProfile->layout()->reportContext().layer()->geometryType() == QgsWkbTypes::LineGeometry )
+       && mProfile->layout()->reportContext().layer()->geometryType() == Qgis::GeometryType::Line )
   {
     mCheckControlledByAtlas->setEnabled( true );
   }
@@ -734,7 +735,7 @@ void QgsLayoutElevationProfileWidget::layoutAtlasToggled( bool atlasEnabled )
 
 void QgsLayoutElevationProfileWidget::atlasLayerChanged( QgsVectorLayer *layer )
 {
-  if ( !layer || layer->geometryType() != QgsWkbTypes::LineGeometry )
+  if ( !layer || layer->geometryType() != Qgis::GeometryType::Line )
   {
     //non-line layer, disable atlas control
     mCheckControlledByAtlas->setChecked( false );

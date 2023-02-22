@@ -56,7 +56,7 @@ class CORE_EXPORT QgsGoogleMapsGeocoder : public QgsGeocoderInterface
 
     Flags flags() const override;
     QgsFields appendedFields() const override;
-    QgsWkbTypes::Type wkbType() const override;
+    Qgis::WkbType wkbType() const override;
     QList< QgsGeocoderResult > geocodeString( const QString &string, const QgsGeocoderContext &context, QgsFeedback *feedback = nullptr ) const override;
 
     /**

@@ -95,7 +95,7 @@ to create a new layer corresponding to the URI.
 
       QString pId;
 
-      QgsWkbTypes::Type wkbType;
+      Qgis::WkbType wkbType;
 
       QString filePath;
 

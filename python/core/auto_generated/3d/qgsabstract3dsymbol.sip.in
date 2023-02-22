@@ -57,7 +57,7 @@ Writes symbol configuration to the given DOM element
 Reads symbol configuration from the given DOM element
 %End
 
-    virtual QList< QgsWkbTypes::GeometryType > compatibleGeometryTypes() const;
+    virtual QList< Qgis::GeometryType > compatibleGeometryTypes() const;
 %Docstring
 Returns the list of the vector layer geometry types which are compatible with this symbol.
 

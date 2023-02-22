@@ -244,7 +244,7 @@ void TestQgsLabelingEngine::testScaledFont()
   QgsTextFormat format;
   format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
   format.setSize( 9.9 );
-  format.setSizeUnit( QgsUnitTypes::RenderUnit::RenderPixels );
+  format.setSizeUnit( Qgis::RenderUnit::Pixels );
 
   bool isNullSize = true;
 
@@ -3687,7 +3687,7 @@ void TestQgsLabelingEngine::testLabelRotationUnit()
   setDefaultLabelParams( settings );
 
   settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::LabelRotation, QgsProperty::fromExpression( QString::number( 3.14 / 2.0 ) ) );
-  settings.setRotationUnit( QgsUnitTypes::AngleRadians );
+  settings.setRotationUnit( Qgis::AngleUnit::Radians );
 
   vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
   vl->setLabelsEnabled( true );
@@ -5014,7 +5014,7 @@ void TestQgsLabelingEngine::testMapUnitLetterSpacing()
 
   QgsTextFormat format = settings.format();
   format.setSize( 50 );
-  format.setSizeUnit( QgsUnitTypes::RenderMapUnits );
+  format.setSizeUnit( Qgis::RenderUnit::MapUnits );
   format.setColor( QColor( 0, 0, 0 ) );
   settings.setFormat( format );
 
@@ -5068,7 +5068,7 @@ void TestQgsLabelingEngine::testMapUnitWordSpacing()
 
   QgsTextFormat format = settings.format();
   format.setSize( 50 );
-  format.setSizeUnit( QgsUnitTypes::RenderMapUnits );
+  format.setSizeUnit( Qgis::RenderUnit::MapUnits );
   format.setColor( QColor( 0, 0, 0 ) );
   settings.setFormat( format );
 
@@ -5122,10 +5122,10 @@ void TestQgsLabelingEngine::testLineHeightAbsolute()
 
   QgsTextFormat format = settings.format();
   format.setSize( 26 );
-  format.setSizeUnit( QgsUnitTypes::RenderPoints );
+  format.setSizeUnit( Qgis::RenderUnit::Points );
   format.setColor( QColor( 0, 0, 0 ) );
   format.setLineHeight( 20 );
-  format.setLineHeightUnit( QgsUnitTypes::RenderPoints );
+  format.setLineHeightUnit( Qgis::RenderUnit::Points );
   settings.setFormat( format );
 
   settings.fieldName = QStringLiteral( "'X\nX\nX'" );
@@ -5192,7 +5192,7 @@ void TestQgsLabelingEngine::testClipping()
 
   QgsTextFormat format = settings.format();
   format.setSize( 12 );
-  format.setSizeUnit( QgsUnitTypes::RenderPoints );
+  format.setSizeUnit( Qgis::RenderUnit::Points );
   format.setColor( QColor( 0, 0, 0 ) );
   settings.setFormat( format );
 
@@ -6269,7 +6269,7 @@ void TestQgsLabelingEngine::testSymbologyScalingFactor()
   // test rendering labels with a layer with a reference scale set (with callout)
   std::unique_ptr< QgsVectorLayer > vl = std::make_unique< QgsVectorLayer >( QStringLiteral( TEST_DATA_DIR ) + "/points.shp", QStringLiteral( "points" ), QStringLiteral( "ogr" ) );
   QVERIFY( vl->isValid() );
-  QgsMarkerSymbol *marker = static_cast< QgsMarkerSymbol * >( QgsSymbol::defaultSymbol( QgsWkbTypes::PointGeometry ) );
+  QgsMarkerSymbol *marker = static_cast< QgsMarkerSymbol * >( QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ) );
   marker->setColor( QColor( 255, 0, 0 ) );
   marker->setSize( 3 );
   static_cast< QgsSimpleMarkerSymbolLayer * >( marker->symbolLayer( 0 ) )->setStrokeStyle( Qt::NoPen );
@@ -6334,7 +6334,7 @@ void TestQgsLabelingEngine::testSymbologyScalingFactor2()
   // test rendering labels with a layer with a reference scale set (with label background)
   std::unique_ptr< QgsVectorLayer > vl = std::make_unique< QgsVectorLayer >( QStringLiteral( TEST_DATA_DIR ) + "/points.shp", QStringLiteral( "points" ), QStringLiteral( "ogr" ) );
   QVERIFY( vl->isValid() );
-  QgsMarkerSymbol *marker = static_cast< QgsMarkerSymbol * >( QgsSymbol::defaultSymbol( QgsWkbTypes::PointGeometry ) );
+  QgsMarkerSymbol *marker = static_cast< QgsMarkerSymbol * >( QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ) );
   marker->setColor( QColor( 255, 0, 0 ) );
   marker->setSize( 3 );
   static_cast< QgsSimpleMarkerSymbolLayer * >( marker->symbolLayer( 0 ) )->setStrokeStyle( Qt::NoPen );

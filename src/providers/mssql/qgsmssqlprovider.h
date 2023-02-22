@@ -85,7 +85,7 @@ class QgsMssqlProvider final: public QgsVectorDataProvider
 
     QgsFeatureIterator getFeatures( const QgsFeatureRequest &request ) const override;
 
-    QgsWkbTypes::Type wkbType() const override;
+    Qgis::WkbType wkbType() const override;
 
     long long featureCount() const override;
 
@@ -151,7 +151,7 @@ class QgsMssqlProvider final: public QgsVectorDataProvider
     static Qgis::VectorExportResult createEmptyLayer(
       const QString &uri,
       const QgsFields &fields,
-      QgsWkbTypes::Type wkbType,
+      Qgis::WkbType wkbType,
       const QgsCoordinateReferenceSystem &srs,
       bool overwrite,
       QMap<int, int> *oldToNewAttrIdxMap,
@@ -218,7 +218,7 @@ class QgsMssqlProvider final: public QgsVectorDataProvider
     // Coordinate reference system
     mutable QgsCoordinateReferenceSystem mCrs;
 
-    mutable QgsWkbTypes::Type mWkbType = QgsWkbTypes::Unknown;
+    mutable Qgis::WkbType mWkbType = Qgis::WkbType::Unknown;
 
     // current layer name
     QString mSchemaName;
@@ -251,8 +251,8 @@ class QgsMssqlProvider final: public QgsVectorDataProvider
 
     QSqlQuery createQuery() const;
 
-    static void mssqlWkbTypeAndDimension( QgsWkbTypes::Type wkbType, QString &geometryType, int &dim );
-    static QgsWkbTypes::Type getWkbType( const QString &wkbType );
+    static void mssqlWkbTypeAndDimension( Qgis::WkbType wkbType, QString &geometryType, int &dim );
+    static Qgis::WkbType getWkbType( const QString &wkbType );
 
     QString whereClauseFid( QgsFeatureId fid );
 
@@ -312,7 +312,7 @@ class QgsMssqlProviderMetadata final: public QgsProviderMetadata
     Qgis::VectorExportResult createEmptyLayer(
       const QString &uri,
       const QgsFields &fields,
-      QgsWkbTypes::Type wkbType,
+      Qgis::WkbType wkbType,
       const QgsCoordinateReferenceSystem &srs,
       bool overwrite,
       QMap<int, int> &oldToNewAttrIdxMap,

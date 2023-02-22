@@ -24,6 +24,7 @@
 #include "qgslayoutundostack.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsmessagebar.h"
+#include "qgslayoutreportcontext.h"
 
 QgsLayoutAtlasWidget::QgsLayoutAtlasWidget( QWidget *parent, QgsPrintLayout *layout )
   : QWidget( parent )

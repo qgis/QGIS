@@ -587,52 +587,52 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
 
 
   // Set the units for measuring
-  mDistanceUnitsComboBox->addItem( tr( "Meters" ), QgsUnitTypes::DistanceMeters );
-  mDistanceUnitsComboBox->addItem( tr( "Kilometers" ), QgsUnitTypes::DistanceKilometers );
-  mDistanceUnitsComboBox->addItem( tr( "Feet" ), QgsUnitTypes::DistanceFeet );
-  mDistanceUnitsComboBox->addItem( tr( "Yards" ), QgsUnitTypes::DistanceYards );
-  mDistanceUnitsComboBox->addItem( tr( "Miles" ), QgsUnitTypes::DistanceMiles );
-  mDistanceUnitsComboBox->addItem( tr( "Nautical Miles" ), QgsUnitTypes::DistanceNauticalMiles );
-  mDistanceUnitsComboBox->addItem( tr( "Centimeters" ), QgsUnitTypes::DistanceCentimeters );
-  mDistanceUnitsComboBox->addItem( tr( "Millimeters" ), QgsUnitTypes::DistanceMillimeters );
-  mDistanceUnitsComboBox->addItem( tr( "Degrees" ), QgsUnitTypes::DistanceDegrees );
-  mDistanceUnitsComboBox->addItem( tr( "Map Units" ), QgsUnitTypes::DistanceUnknownUnit );
+  mDistanceUnitsComboBox->addItem( tr( "Meters" ), static_cast< int >( Qgis::DistanceUnit::Meters ) );
+  mDistanceUnitsComboBox->addItem( tr( "Kilometers" ), static_cast< int >( Qgis::DistanceUnit::Kilometers ) );
+  mDistanceUnitsComboBox->addItem( tr( "Feet" ), static_cast< int >( Qgis::DistanceUnit::Feet ) );
+  mDistanceUnitsComboBox->addItem( tr( "Yards" ), static_cast< int >( Qgis::DistanceUnit::Yards ) );
+  mDistanceUnitsComboBox->addItem( tr( "Miles" ), static_cast< int >( Qgis::DistanceUnit::Miles ) );
+  mDistanceUnitsComboBox->addItem( tr( "Nautical Miles" ), static_cast< int >( Qgis::DistanceUnit::NauticalMiles ) );
+  mDistanceUnitsComboBox->addItem( tr( "Centimeters" ), static_cast< int >( Qgis::DistanceUnit::Centimeters ) );
+  mDistanceUnitsComboBox->addItem( tr( "Millimeters" ), static_cast< int >( Qgis::DistanceUnit::Millimeters ) );
+  mDistanceUnitsComboBox->addItem( tr( "Degrees" ), static_cast< int >( Qgis::DistanceUnit::Degrees ) );
+  mDistanceUnitsComboBox->addItem( tr( "Map Units" ), static_cast< int >( Qgis::DistanceUnit::Unknown ) );
 
   bool ok = false;
-  QgsUnitTypes::DistanceUnit distanceUnits = QgsUnitTypes::decodeDistanceUnit( mSettings->value( QStringLiteral( "/qgis/measure/displayunits" ) ).toString(), &ok );
+  Qgis::DistanceUnit distanceUnits = QgsUnitTypes::decodeDistanceUnit( mSettings->value( QStringLiteral( "/qgis/measure/displayunits" ) ).toString(), &ok );
   if ( !ok )
-    distanceUnits = QgsUnitTypes::DistanceMeters;
-  mDistanceUnitsComboBox->setCurrentIndex( mDistanceUnitsComboBox->findData( distanceUnits ) );
+    distanceUnits = Qgis::DistanceUnit::Meters;
+  mDistanceUnitsComboBox->setCurrentIndex( mDistanceUnitsComboBox->findData( static_cast< int >( distanceUnits ) ) );
 
-  mAreaUnitsComboBox->addItem( tr( "Square Meters" ), QgsUnitTypes::AreaSquareMeters );
-  mAreaUnitsComboBox->addItem( tr( "Square Kilometers" ), QgsUnitTypes::AreaSquareKilometers );
-  mAreaUnitsComboBox->addItem( tr( "Square Feet" ), QgsUnitTypes::AreaSquareFeet );
-  mAreaUnitsComboBox->addItem( tr( "Square Yards" ), QgsUnitTypes::AreaSquareYards );
-  mAreaUnitsComboBox->addItem( tr( "Square Miles" ), QgsUnitTypes::AreaSquareMiles );
-  mAreaUnitsComboBox->addItem( tr( "Hectares" ), QgsUnitTypes::AreaHectares );
-  mAreaUnitsComboBox->addItem( tr( "Acres" ), QgsUnitTypes::AreaAcres );
-  mAreaUnitsComboBox->addItem( tr( "Square Nautical Miles" ), QgsUnitTypes::AreaSquareNauticalMiles );
-  mAreaUnitsComboBox->addItem( tr( "Square Centimeters" ), QgsUnitTypes::AreaSquareCentimeters );
-  mAreaUnitsComboBox->addItem( tr( "Square Millimeters" ), QgsUnitTypes::AreaSquareMillimeters );
-  mAreaUnitsComboBox->addItem( tr( "Square Degrees" ), QgsUnitTypes::AreaSquareDegrees );
-  mAreaUnitsComboBox->addItem( tr( "Map Units" ), QgsUnitTypes::AreaUnknownUnit );
+  mAreaUnitsComboBox->addItem( tr( "Square Meters" ), static_cast< int >( Qgis::AreaUnit::SquareMeters ) );
+  mAreaUnitsComboBox->addItem( tr( "Square Kilometers" ), static_cast< int >( Qgis::AreaUnit::SquareKilometers ) );
+  mAreaUnitsComboBox->addItem( tr( "Square Feet" ), static_cast< int >( Qgis::AreaUnit::SquareFeet ) );
+  mAreaUnitsComboBox->addItem( tr( "Square Yards" ), static_cast< int >( Qgis::AreaUnit::SquareYards ) );
+  mAreaUnitsComboBox->addItem( tr( "Square Miles" ), static_cast< int >( Qgis::AreaUnit::SquareMiles ) );
+  mAreaUnitsComboBox->addItem( tr( "Hectares" ), static_cast< int >( Qgis::AreaUnit::Hectares ) );
+  mAreaUnitsComboBox->addItem( tr( "Acres" ), static_cast< int >( Qgis::AreaUnit::Acres ) );
+  mAreaUnitsComboBox->addItem( tr( "Square Nautical Miles" ), static_cast< int >( Qgis::AreaUnit::SquareNauticalMiles ) );
+  mAreaUnitsComboBox->addItem( tr( "Square Centimeters" ), static_cast< int >( Qgis::AreaUnit::SquareCentimeters ) );
+  mAreaUnitsComboBox->addItem( tr( "Square Millimeters" ), static_cast< int >( Qgis::AreaUnit::SquareMillimeters ) );
+  mAreaUnitsComboBox->addItem( tr( "Square Degrees" ), static_cast< int >( Qgis::AreaUnit::SquareDegrees ) );
+  mAreaUnitsComboBox->addItem( tr( "Map Units" ), static_cast< int >( Qgis::AreaUnit::Unknown ) );
 
-  QgsUnitTypes::AreaUnit areaUnits = QgsUnitTypes::decodeAreaUnit( mSettings->value( QStringLiteral( "/qgis/measure/areaunits" ) ).toString(), &ok );
+  Qgis::AreaUnit areaUnits = QgsUnitTypes::decodeAreaUnit( mSettings->value( QStringLiteral( "/qgis/measure/areaunits" ) ).toString(), &ok );
   if ( !ok )
-    areaUnits = QgsUnitTypes::AreaSquareMeters;
-  mAreaUnitsComboBox->setCurrentIndex( mAreaUnitsComboBox->findData( areaUnits ) );
+    areaUnits = Qgis::AreaUnit::SquareMeters;
+  mAreaUnitsComboBox->setCurrentIndex( mAreaUnitsComboBox->findData( static_cast< int >( areaUnits ) ) );
 
-  mAngleUnitsComboBox->addItem( tr( "Degrees" ), QgsUnitTypes::AngleDegrees );
-  mAngleUnitsComboBox->addItem( tr( "Radians" ), QgsUnitTypes::AngleRadians );
-  mAngleUnitsComboBox->addItem( tr( "Gon/gradians" ), QgsUnitTypes::AngleGon );
-  mAngleUnitsComboBox->addItem( tr( "Minutes of Arc" ), QgsUnitTypes::AngleMinutesOfArc );
-  mAngleUnitsComboBox->addItem( tr( "Seconds of Arc" ), QgsUnitTypes::AngleSecondsOfArc );
-  mAngleUnitsComboBox->addItem( tr( "Turns/revolutions" ), QgsUnitTypes::AngleTurn );
-  mAngleUnitsComboBox->addItem( tr( "Milliradians (SI Definition)" ), QgsUnitTypes::AngleMilliradiansSI );
-  mAngleUnitsComboBox->addItem( tr( "Mil (NATO/military Definition)" ), QgsUnitTypes::AngleMilNATO );
+  mAngleUnitsComboBox->addItem( tr( "Degrees" ), static_cast< int >( Qgis::AngleUnit::Degrees ) );
+  mAngleUnitsComboBox->addItem( tr( "Radians" ), static_cast< int >( Qgis::AngleUnit::Radians ) );
+  mAngleUnitsComboBox->addItem( tr( "Gon/gradians" ), static_cast< int >( Qgis::AngleUnit::Gon ) );
+  mAngleUnitsComboBox->addItem( tr( "Minutes of Arc" ), static_cast< int >( Qgis::AngleUnit::MinutesOfArc ) );
+  mAngleUnitsComboBox->addItem( tr( "Seconds of Arc" ), static_cast< int >( Qgis::AngleUnit::SecondsOfArc ) );
+  mAngleUnitsComboBox->addItem( tr( "Turns/revolutions" ), static_cast< int >( Qgis::AngleUnit::Turn ) );
+  mAngleUnitsComboBox->addItem( tr( "Milliradians (SI Definition)" ), static_cast< int >( Qgis::AngleUnit::MilliradiansSI ) );
+  mAngleUnitsComboBox->addItem( tr( "Mil (NATO/military Definition)" ), static_cast< int >( Qgis::AngleUnit::MilNATO ) );
 
-  QgsUnitTypes::AngleUnit unit = QgsUnitTypes::decodeAngleUnit( mSettings->value( QStringLiteral( "/qgis/measure/angleunits" ), QgsUnitTypes::encodeUnit( QgsUnitTypes::AngleDegrees ) ).toString() );
-  mAngleUnitsComboBox->setCurrentIndex( mAngleUnitsComboBox->findData( unit ) );
+  Qgis::AngleUnit unit = QgsUnitTypes::decodeAngleUnit( mSettings->value( QStringLiteral( "/qgis/measure/angleunits" ), QgsUnitTypes::encodeUnit( Qgis::AngleUnit::Degrees ) ).toString() );
+  mAngleUnitsComboBox->setCurrentIndex( mAngleUnitsComboBox->findData( static_cast<int>( unit ) ) );
 
   // set decimal places of the measure tool
   int decimalPlaces = mSettings->value( QStringLiteral( "/qgis/measure/decimalplaces" ), 3 ).toInt();
@@ -1645,13 +1645,13 @@ void QgsOptions::saveOptions()
   //measurement settings
   mSettings->setValue( QStringLiteral( "measure/planimetric" ), mPlanimetricMeasurementsComboBox->isChecked(), QgsSettings::Core );
 
-  QgsUnitTypes::DistanceUnit distanceUnit = static_cast< QgsUnitTypes::DistanceUnit >( mDistanceUnitsComboBox->currentData().toInt() );
+  Qgis::DistanceUnit distanceUnit = static_cast< Qgis::DistanceUnit >( mDistanceUnitsComboBox->currentData().toInt() );
   mSettings->setValue( QStringLiteral( "/qgis/measure/displayunits" ), QgsUnitTypes::encodeUnit( distanceUnit ) );
 
-  QgsUnitTypes::AreaUnit areaUnit = static_cast< QgsUnitTypes::AreaUnit >( mAreaUnitsComboBox->currentData().toInt() );
+  Qgis::AreaUnit areaUnit = static_cast< Qgis::AreaUnit >( mAreaUnitsComboBox->currentData().toInt() );
   mSettings->setValue( QStringLiteral( "/qgis/measure/areaunits" ), QgsUnitTypes::encodeUnit( areaUnit ) );
 
-  QgsUnitTypes::AngleUnit angleUnit = static_cast< QgsUnitTypes::AngleUnit >( mAngleUnitsComboBox->currentData().toInt() );
+  Qgis::AngleUnit angleUnit = static_cast< Qgis::AngleUnit >( mAngleUnitsComboBox->currentData().toInt() );
   mSettings->setValue( QStringLiteral( "/qgis/measure/angleunits" ), QgsUnitTypes::encodeUnit( angleUnit ) );
 
   int decimalPlaces = mDecimalPlacesSpinBox->value();

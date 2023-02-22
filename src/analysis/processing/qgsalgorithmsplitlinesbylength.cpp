@@ -101,7 +101,7 @@ QString QgsSplitLinesByLengthAlgorithm::outputName() const
   return QObject::tr( "Split" );
 }
 
-QgsWkbTypes::Type QgsSplitLinesByLengthAlgorithm::outputWkbType( QgsWkbTypes::Type inputWkbType ) const
+Qgis::WkbType QgsSplitLinesByLengthAlgorithm::outputWkbType( Qgis::WkbType inputWkbType ) const
 {
   return QgsWkbTypes::singleType( inputWkbType );
 }

@@ -22,7 +22,7 @@
 
 #include "qgsexpression.h"
 #include "qgsdistancearea.h"
-#include "qgsunittypes.h"
+#include "qgis.h"
 #include "qgsexpressionnode.h"
 
 ///@cond
@@ -78,8 +78,8 @@ class QgsExpressionPrivate
     std::unique_ptr<QgsCoordinateTransformContext> mDaTransformContext;
 
     std::shared_ptr<QgsDistanceArea> mCalc;
-    QgsUnitTypes::DistanceUnit mDistanceUnit = QgsUnitTypes::DistanceUnknownUnit;
-    QgsUnitTypes::AreaUnit mAreaUnit = QgsUnitTypes::AreaUnknownUnit;
+    Qgis::DistanceUnit mDistanceUnit = Qgis::DistanceUnit::Unknown;
+    Qgis::AreaUnit mAreaUnit = Qgis::AreaUnit::Unknown;
 
     //! Whether prepare() has been called before evaluate()
     bool mIsPrepared = false;

@@ -27,14 +27,8 @@
 #include "qgsdiagramproperties.h"
 #include "qgsdiagramrenderer.h"
 #include "qgslabelengineconfigdialog.h"
-#include "qgsmessagebar.h"
-#include "qgsvectorlayerproperties.h"
-#include "qgsvectordataprovider.h"
 #include "qgsfeatureiterator.h"
-#include "qgscolordialog.h"
-#include "qgsguiutils.h"
 #include "qgssymbolselectordialog.h"
-#include "qgsstyle.h"
 #include "qgsmapcanvas.h"
 #include "qgsexpressionbuilderdialog.h"
 #include "qgslogger.h"
@@ -88,8 +82,12 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer *layer, QWidget *pare
   mDiagramOptionsListWidget->setAttribute( Qt::WA_MacShowFocusRect, false );
 
   mBarSpacingSpinBox->setClearValue( 0 );
-  mBarSpacingUnitComboBox->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
-                                     << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
+  mBarSpacingUnitComboBox->setUnits( { Qgis::RenderUnit::Millimeters,
+                                       Qgis::RenderUnit::MetersInMapUnits,
+                                       Qgis::RenderUnit::MapUnits,
+                                       Qgis::RenderUnit::Pixels,
+                                       Qgis::RenderUnit::Points,
+                                       Qgis::RenderUnit::Inches } );
 
   mDiagramFontButton->setMode( QgsFontButton::ModeQFont );
 
@@ -134,13 +132,19 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer *layer, QWidget *pare
   connect( mFixedSizeRadio, &QRadioButton::toggled, this, &QgsDiagramProperties::scalingTypeChanged );
   connect( mAttributeBasedScalingRadio, &QRadioButton::toggled, this, &QgsDiagramProperties::scalingTypeChanged );
 
-  mDiagramUnitComboBox->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
-                                  << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
-  mDiagramLineUnitComboBox->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
-                                      << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
+  mDiagramUnitComboBox->setUnits( {Qgis::RenderUnit::Millimeters,
+                                   Qgis::RenderUnit::MapUnits,
+                                   Qgis::RenderUnit::Pixels,
+                                   Qgis::RenderUnit::Points,
+                                   Qgis::RenderUnit::Inches } );
+  mDiagramLineUnitComboBox->setUnits( { Qgis::RenderUnit::Millimeters,
+                                        Qgis::RenderUnit::MapUnits,
+                                        Qgis::RenderUnit::Pixels,
+                                        Qgis::RenderUnit::Points,
+                                        Qgis::RenderUnit::Inches } );
 
-  const QgsWkbTypes::GeometryType layerType = layer->geometryType();
-  if ( layerType == QgsWkbTypes::UnknownGeometry || layerType == QgsWkbTypes::NullGeometry )
+  const Qgis::GeometryType layerType = layer->geometryType();
+  if ( layerType == Qgis::GeometryType::Unknown || layerType == Qgis::GeometryType::Null )
   {
     mDiagramTypeComboBox->setEnabled( false );
     mDiagramFrame->setEnabled( false );
@@ -150,20 +154,20 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer *layer, QWidget *pare
 
   switch ( layerType )
   {
-    case QgsWkbTypes::PointGeometry:
+    case Qgis::GeometryType::Point:
       stackedPlacement->setCurrentWidget( pagePoint );
       mLinePlacementFrame->setVisible( false );
       break;
-    case QgsWkbTypes::LineGeometry:
+    case Qgis::GeometryType::Line:
       stackedPlacement->setCurrentWidget( pageLine );
       mLinePlacementFrame->setVisible( true );
       break;
-    case QgsWkbTypes::PolygonGeometry:
+    case Qgis::GeometryType::Polygon:
       stackedPlacement->setCurrentWidget( pagePolygon );
       mLinePlacementFrame->setVisible( false );
       break;
-    case QgsWkbTypes::NullGeometry:
-    case QgsWkbTypes::UnknownGeometry:
+    case Qgis::GeometryType::Null:
+    case Qgis::GeometryType::Unknown:
       break;
   }
 
@@ -274,8 +278,8 @@ void QgsDiagramProperties::syncToLayer()
     mDiagramTypeComboBox->setCurrentIndex( 0 );
     mDiagramTypeComboBox->blockSignals( false );
     mFixedSizeRadio->setChecked( true );
-    mDiagramUnitComboBox->setUnit( QgsUnitTypes::RenderMillimeters );
-    mDiagramLineUnitComboBox->setUnit( QgsUnitTypes::RenderMillimeters );
+    mDiagramUnitComboBox->setUnit( Qgis::RenderUnit::Millimeters );
+    mDiagramLineUnitComboBox->setUnit( Qgis::RenderUnit::Millimeters );
     mLabelPlacementComboBox->setCurrentIndex( mLabelPlacementComboBox->findText( tr( "x-height" ) ) );
     mDiagramSizeSpinBox->setEnabled( true );
     mDiagramSizeSpinBox->setValue( 15 );
@@ -290,11 +294,11 @@ void QgsDiagramProperties::syncToLayer()
 
     switch ( mLayer->geometryType() )
     {
-      case QgsWkbTypes::PointGeometry:
+      case Qgis::GeometryType::Point:
         radAroundPoint->setChecked( true );
         break;
 
-      case QgsWkbTypes::LineGeometry:
+      case Qgis::GeometryType::Line:
         radAroundLine->setChecked( true );
         chkLineAbove->setChecked( true );
         chkLineBelow->setChecked( false );
@@ -302,15 +306,15 @@ void QgsDiagramProperties::syncToLayer()
         chkLineOrientationDependent->setChecked( false );
         break;
 
-      case QgsWkbTypes::PolygonGeometry:
+      case Qgis::GeometryType::Polygon:
         radOverCentroid->setChecked( true );
         mDiagramDistanceLabel->setEnabled( false );
         mDiagramDistanceSpinBox->setEnabled( false );
         mDistanceDDBtn->setEnabled( false );
         break;
 
-      case QgsWkbTypes::UnknownGeometry:
-      case QgsWkbTypes::NullGeometry:
+      case Qgis::GeometryType::Unknown:
+      case Qgis::GeometryType::Null:
         break;
     }
     mBackgroundColorButton->setColor( QColor( 255, 255, 255, 255 ) );
@@ -1042,7 +1046,7 @@ void QgsDiagramProperties::updatePlacementWidgets()
     mDistanceDDBtn->setEnabled( false );
   }
 
-  const bool linePlacementEnabled = mLayer->geometryType() == QgsWkbTypes::LineGeometry && ( curWdgt == pageLine && radAroundLine->isChecked() );
+  const bool linePlacementEnabled = mLayer->geometryType() == Qgis::GeometryType::Line && ( curWdgt == pageLine && radAroundLine->isChecked() );
   chkLineAbove->setEnabled( linePlacementEnabled );
   chkLineBelow->setEnabled( linePlacementEnabled );
   chkLineOn->setEnabled( linePlacementEnabled );

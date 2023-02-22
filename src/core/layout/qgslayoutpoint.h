@@ -19,7 +19,7 @@
 #define QGSLAYOUTPOINT_H
 
 #include "qgis_core.h"
-#include "qgsunittypes.h"
+#include "qgis.h"
 #include <QPointF>
 
 /**
@@ -43,18 +43,18 @@ class CORE_EXPORT QgsLayoutPoint
     /**
      * Constructor for QgsLayoutPoint.
     */
-    QgsLayoutPoint( double x, double y, QgsUnitTypes::LayoutUnit units = QgsUnitTypes::LayoutMillimeters );
+    QgsLayoutPoint( double x, double y, Qgis::LayoutUnit units = Qgis::LayoutUnit::Millimeters );
 
     /**
      * Constructor for QgsLayoutPoint.
     */
-    explicit QgsLayoutPoint( QPointF point, QgsUnitTypes::LayoutUnit units = QgsUnitTypes::LayoutMillimeters );
+    explicit QgsLayoutPoint( QPointF point, Qgis::LayoutUnit units = Qgis::LayoutUnit::Millimeters );
 
     /**
      * Constructor for an empty point, where both x and y are set to 0.
      * \param units units for measurement
     */
-    explicit QgsLayoutPoint( QgsUnitTypes::LayoutUnit units = QgsUnitTypes::LayoutMillimeters );
+    explicit QgsLayoutPoint( Qgis::LayoutUnit units = Qgis::LayoutUnit::Millimeters );
 
     /**
      * Sets new x and y coordinates for the point.
@@ -96,14 +96,14 @@ class CORE_EXPORT QgsLayoutPoint
      * Returns the units for the point.
      * \see setUnits()
     */
-    QgsUnitTypes::LayoutUnit units() const { return mUnits; }
+    Qgis::LayoutUnit units() const { return mUnits; }
 
     /**
      * Sets the \a units for the point. Does not alter the stored coordinates,
      * ie. no conversion is done.
      * \see units()
     */
-    void setUnits( const QgsUnitTypes::LayoutUnit units ) { mUnits = units; }
+    void setUnits( const Qgis::LayoutUnit units ) { mUnits = units; }
 
     /**
      * Tests whether the position is null, ie both its x and y coordinates
@@ -166,7 +166,7 @@ class CORE_EXPORT QgsLayoutPoint
 
     double mX = 0.0;
     double mY = 0.0;
-    QgsUnitTypes::LayoutUnit mUnits = QgsUnitTypes::LayoutMillimeters;
+    Qgis::LayoutUnit mUnits = Qgis::LayoutUnit::Millimeters;
 
 };
 

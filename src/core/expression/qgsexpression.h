@@ -27,7 +27,6 @@
 #include <functional>
 
 #include "qgis.h"
-#include "qgsunittypes.h"
 #include "qgsinterval.h"
 #include "qgsexpressionnode.h"
 
@@ -446,7 +445,7 @@ class CORE_EXPORT QgsExpression
      * \see areaUnits()
      * \since QGIS 2.14
      */
-    QgsUnitTypes::DistanceUnit distanceUnits() const;
+    Qgis::DistanceUnit distanceUnits() const;
 
     /**
      * Sets the desired distance units for calculations involving geomCalculator(), e.g., "$length" and "$perimeter".
@@ -457,7 +456,7 @@ class CORE_EXPORT QgsExpression
      * \see setAreaUnits()
      * \since QGIS 2.14
      */
-    void setDistanceUnits( QgsUnitTypes::DistanceUnit unit );
+    void setDistanceUnits( Qgis::DistanceUnit unit );
 
     /**
      * Returns the desired areal units for calculations involving geomCalculator(), e.g., "$area".
@@ -466,7 +465,7 @@ class CORE_EXPORT QgsExpression
      * \see distanceUnits()
      * \since QGIS 2.14
      */
-    QgsUnitTypes::AreaUnit areaUnits() const;
+    Qgis::AreaUnit areaUnits() const;
 
     /**
      * Sets the desired areal units for calculations involving geomCalculator(), e.g., "$area".
@@ -477,7 +476,7 @@ class CORE_EXPORT QgsExpression
      * \see setDistanceUnits()
      * \since QGIS 2.14
      */
-    void setAreaUnits( QgsUnitTypes::AreaUnit unit );
+    void setAreaUnits( Qgis::AreaUnit unit );
 
     /**
      * This function replaces each expression between [% and %]

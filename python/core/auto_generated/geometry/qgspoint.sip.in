@@ -37,12 +37,12 @@ instead of :py:class:`QgsPoint`.
 
   public:
 
-    QgsPoint( SIP_PYOBJECT x /TypeHint="Optional[Union[QgsPoint, QPointF, float]]"/ = Py_None, SIP_PYOBJECT y /TypeHint="Optional[float]"/ = Py_None, SIP_PYOBJECT z /TypeHint="Optional[float]"/ = Py_None, SIP_PYOBJECT m /TypeHint="Optional[float]"/ = Py_None, SIP_PYOBJECT wkbType /TypeHint="Optional[int]"/ = Py_None ) [( double x = 0.0, double y = 0.0, double z = 0.0, double m = 0.0, QgsWkbTypes::Type wkbType = QgsWkbTypes::Unknown )];
+    QgsPoint( SIP_PYOBJECT x /TypeHint="Optional[Union[QgsPoint, QPointF, float]]"/ = Py_None, SIP_PYOBJECT y /TypeHint="Optional[float]"/ = Py_None, SIP_PYOBJECT z /TypeHint="Optional[float]"/ = Py_None, SIP_PYOBJECT m /TypeHint="Optional[float]"/ = Py_None, SIP_PYOBJECT wkbType /TypeHint="Optional[int]"/ = Py_None ) [( double x = 0.0, double y = 0.0, double z = 0.0, double m = 0.0, Qgis::WkbType wkbType = Qgis::WkbType::Unknown )];
 %Docstring
 Construct a point with the provided initial coordinate values.
 
-If ``wkbType`` is set to `QgsWkbTypes.Point`, `QgsWkbTypes.PointZ`, `QgsWkbTypes.PointM` or `QgsWkbTypes.PointZM`
-the type will be set accordingly. If it is left to the default `QgsWkbTypes.Unknown`, the type will be set
+If ``wkbType`` is set to `Qgis.WkbType.Point`, `Qgis.WkbType.PointZ`, `Qgis.WkbType.PointM` or `Qgis.WkbType.PointZM`
+the type will be set accordingly. If it is left to the default `Qgis.WkbType.Unknown`, the type will be set
 based on the following rules:
 
 - If only x and y are specified, the type will be a 2D point.
@@ -105,7 +105,7 @@ based on the following rules:
       double y = a1 == Py_None ? std::numeric_limits<double>::quiet_NaN() : PyFloat_AsDouble( a1 );
       double z = a2 == Py_None ? std::numeric_limits<double>::quiet_NaN() : PyFloat_AsDouble( a2 );
       double m = a3 == Py_None ? std::numeric_limits<double>::quiet_NaN() : PyFloat_AsDouble( a3 );
-      QgsWkbTypes::Type wkbType = a4 == Py_None ? QgsWkbTypes::Unknown : static_cast<QgsWkbTypes::Type>( sipConvertToEnum( a4, sipType_QgsWkbTypes_Type ) );
+      Qgis::WkbType wkbType = a4 == Py_None ? Qgis::WkbType::Unknown : static_cast<Qgis::WkbType>( sipConvertToEnum( a4, sipType_Qgis_WkbType ) );
       sipCpp = new sipQgsPoint( QgsPoint( x, y, z, m, wkbType ) );
     }
     else // Invalid ctor arguments
@@ -465,7 +465,7 @@ Angle undefined. Always returns 0.0
 
     virtual void swapXy();
 
-    virtual bool convertTo( QgsWkbTypes::Type type );
+    virtual bool convertTo( Qgis::WkbType type );
 
 
     virtual bool transform( QgsAbstractGeometryTransformer *transformer, QgsFeedback *feedback = 0 );

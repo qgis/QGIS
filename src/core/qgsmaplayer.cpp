@@ -47,6 +47,7 @@
 #include "qgsdatums.h"
 #include "qgsprojoperation.h"
 #include "qgsthreadingutils.h"
+#include "qgsunittypes.h"
 
 #include <QDir>
 #include <QDomDocument>
@@ -1415,8 +1416,8 @@ bool QgsMapLayer::importNamedStyle( QDomDocument &myDocument, QString &myErrorMe
     if ( type() == Qgis::LayerType::Vector && !myRoot.firstChildElement( QStringLiteral( "layerGeometryType" ) ).isNull() )
     {
       QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( this );
-      const QgsWkbTypes::GeometryType importLayerGeometryType = static_cast<QgsWkbTypes::GeometryType>( myRoot.firstChildElement( QStringLiteral( "layerGeometryType" ) ).text().toInt() );
-      if ( importLayerGeometryType != QgsWkbTypes::GeometryType::UnknownGeometry && vl->geometryType() != importLayerGeometryType )
+      const Qgis::GeometryType importLayerGeometryType = static_cast<Qgis::GeometryType>( myRoot.firstChildElement( QStringLiteral( "layerGeometryType" ) ).text().toInt() );
+      if ( importLayerGeometryType != Qgis::GeometryType::Unknown && vl->geometryType() != importLayerGeometryType )
       {
         myErrorMessage = tr( "Cannot apply style with symbology to layer with a different geometry type" );
         return false;
@@ -1475,7 +1476,7 @@ void QgsMapLayer::exportNamedStyle( QDomDocument &doc, QString &errorMsg, const 
   {
     //Getting the selectionLayer geometry
     const QgsVectorLayer *vl = qobject_cast<const QgsVectorLayer *>( this );
-    const QString geoType = QString::number( vl->geometryType() );
+    const QString geoType = QString::number( static_cast<int>( vl->geometryType() ) );
 
     //Adding geometryinformation
     QDomElement layerGeometryType = myDocument.createElement( QStringLiteral( "layerGeometryType" ) );

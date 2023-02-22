@@ -16,15 +16,11 @@
  ***************************************************************************/
 
 #include "qgsnewmemorylayerdialog.h"
-#include "qgsapplication.h"
 #include "qgis.h"
 #include "qgscoordinatereferencesystem.h"
-#include "qgsproviderregistry.h"
-#include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 #include "qgsfield.h"
 #include "qgsfields.h"
-#include "qgssettings.h"
 #include "qgsmemoryproviderutils.h"
 #include "qgsgui.h"
 #include "qgsiconutils.h"
@@ -45,7 +41,7 @@ QgsVectorLayer *QgsNewMemoryLayerDialog::runAndCreateLayer( QWidget *parent, con
     return nullptr;
   }
 
-  const QgsWkbTypes::Type geometrytype = dialog.selectedType();
+  const Qgis::WkbType geometrytype = dialog.selectedType();
   const QgsFields fields = dialog.fields();
   const QString name = dialog.layerName().isEmpty() ? tr( "New scratch layer" ) : dialog.layerName();
   QgsVectorLayer *newLayer = QgsMemoryProviderUtils::createMemoryLayer( name, fields, geometrytype, dialog.crs() );
@@ -60,23 +56,23 @@ QgsNewMemoryLayerDialog::QgsNewMemoryLayerDialog( QWidget *parent, Qt::WindowFla
 
   mNameLineEdit->setText( tr( "New scratch layer" ) );
 
-  const QgsWkbTypes::Type geomTypes[] =
+  const Qgis::WkbType geomTypes[] =
   {
-    QgsWkbTypes::NoGeometry,
-    QgsWkbTypes::Point,
-    QgsWkbTypes::LineString,
-    QgsWkbTypes::CompoundCurve,
-    QgsWkbTypes::Polygon,
-    QgsWkbTypes::CurvePolygon,
-    QgsWkbTypes::MultiPoint,
-    QgsWkbTypes::MultiLineString,
-    QgsWkbTypes::MultiCurve,
-    QgsWkbTypes::MultiPolygon,
-    QgsWkbTypes::MultiSurface,
+    Qgis::WkbType::NoGeometry,
+    Qgis::WkbType::Point,
+    Qgis::WkbType::LineString,
+    Qgis::WkbType::CompoundCurve,
+    Qgis::WkbType::Polygon,
+    Qgis::WkbType::CurvePolygon,
+    Qgis::WkbType::MultiPoint,
+    Qgis::WkbType::MultiLineString,
+    Qgis::WkbType::MultiCurve,
+    Qgis::WkbType::MultiPolygon,
+    Qgis::WkbType::MultiSurface,
   };
 
   for ( const auto type : geomTypes )
-    mGeometryTypeBox->addItem( QgsIconUtils::iconForWkbType( type ), QgsWkbTypes::translatedDisplayString( type ), type );
+    mGeometryTypeBox->addItem( QgsIconUtils::iconForWkbType( type ), QgsWkbTypes::translatedDisplayString( type ), static_cast< quint32>( type ) );
   mGeometryTypeBox->setCurrentIndex( -1 );
 
   mGeometryWithZCheckBox->setEnabled( false );
@@ -124,13 +120,13 @@ QgsNewMemoryLayerDialog::QgsNewMemoryLayerDialog( QWidget *parent, Qt::WindowFla
   mNameLineEdit->setFocus();
 }
 
-QgsWkbTypes::Type QgsNewMemoryLayerDialog::selectedType() const
+Qgis::WkbType QgsNewMemoryLayerDialog::selectedType() const
 {
-  QgsWkbTypes::Type geomType = QgsWkbTypes::Unknown;
-  geomType = static_cast<QgsWkbTypes::Type>
+  Qgis::WkbType geomType = Qgis::WkbType::Unknown;
+  geomType = static_cast<Qgis::WkbType>
              ( mGeometryTypeBox->currentData( Qt::UserRole ).toInt() );
 
-  if ( geomType != QgsWkbTypes::Unknown && geomType != QgsWkbTypes::NoGeometry )
+  if ( geomType != Qgis::WkbType::Unknown && geomType != Qgis::WkbType::NoGeometry )
   {
     if ( mGeometryWithZCheckBox->isChecked() )
       geomType = QgsWkbTypes::addZ( geomType );
@@ -143,10 +139,10 @@ QgsWkbTypes::Type QgsNewMemoryLayerDialog::selectedType() const
 
 void QgsNewMemoryLayerDialog::geometryTypeChanged( int )
 {
-  const QgsWkbTypes::Type geomType = static_cast<QgsWkbTypes::Type>
-                                     ( mGeometryTypeBox->currentData( Qt::UserRole ).toInt() );
+  const Qgis::WkbType geomType = static_cast<Qgis::WkbType>
+                                 ( mGeometryTypeBox->currentData( Qt::UserRole ).toInt() );
 
-  const bool isSpatial = geomType != QgsWkbTypes::NoGeometry;
+  const bool isSpatial = geomType != Qgis::WkbType::NoGeometry;
   mGeometryWithZCheckBox->setEnabled( isSpatial );
   mGeometryWithMCheckBox->setEnabled( isSpatial );
   mCrsSelector->setEnabled( isSpatial );

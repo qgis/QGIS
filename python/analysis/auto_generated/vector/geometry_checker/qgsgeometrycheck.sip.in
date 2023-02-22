@@ -162,7 +162,7 @@ By default it checks for the geometry type in :py:func:`~QgsGeometryCheck.compat
 .. versionadded:: 3.4
 %End
 
-    virtual QList<QgsWkbTypes::GeometryType> compatibleGeometryTypes() const = 0;
+    virtual QList<Qgis::GeometryType> compatibleGeometryTypes() const = 0;
 %Docstring
 A list of geometry types for which this check can be performed.
 

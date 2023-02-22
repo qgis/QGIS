@@ -252,7 +252,7 @@ Creates a clone of the FieldValueConverter.
         QgsVectorFileWriter::SymbologyExport symbologyExport = QgsVectorFileWriter::NoSymbology,
         double symbologyScale = 1.0,
         const QgsRectangle *filterExtent = 0,
-        QgsWkbTypes::Type overrideGeometryType = QgsWkbTypes::Unknown,
+        Qgis::WkbType overrideGeometryType = Qgis::WkbType::Unknown,
         bool forceMulti = false,
         bool includeZ = false,
         const QgsAttributeList &attributes = QgsAttributeList(),
@@ -301,7 +301,7 @@ Write contents of vector layer to an (OGR supported) vector format
         QgsVectorFileWriter::SymbologyExport symbologyExport = QgsVectorFileWriter::NoSymbology,
         double symbologyScale = 1.0,
         const QgsRectangle *filterExtent = 0,
-        QgsWkbTypes::Type overrideGeometryType = QgsWkbTypes::Unknown,
+        Qgis::WkbType overrideGeometryType = Qgis::WkbType::Unknown,
         bool forceMulti = false,
         bool includeZ = false,
         const QgsAttributeList &attributes = QgsAttributeList(),
@@ -385,7 +385,7 @@ Constructor
 
         QgsRectangle filterExtent;
 
-        QgsWkbTypes::Type overrideGeometryType;
+        Qgis::WkbType overrideGeometryType;
 
         bool forceMulti;
 
@@ -427,7 +427,7 @@ Writes a layer out to a vector file.
  QgsVectorFileWriter( const QString &vectorFileName,
                                            const QString &fileEncoding,
                                            const QgsFields &fields,
-                                           QgsWkbTypes::Type geometryType,
+                                           Qgis::WkbType geometryType,
                                            const QgsCoordinateReferenceSystem &srs = QgsCoordinateReferenceSystem(),
                                            const QString &driverName = "GPKG",
                                            const QStringList &datasourceOptions = QStringList(),
@@ -441,7 +441,7 @@ Writes a layer out to a vector file.
 
     static QgsVectorFileWriter *create( const QString &fileName,
                                         const QgsFields &fields,
-                                        QgsWkbTypes::Type geometryType,
+                                        Qgis::WkbType geometryType,
                                         const QgsCoordinateReferenceSystem &srs,
                                         const QgsCoordinateTransformContext &transformContext,
                                         const QgsVectorFileWriter::SaveVectorOptions &options,
@@ -615,7 +615,7 @@ Retrieves error message
     virtual QString lastError() const;
 
 
-    bool addFeatureWithStyle( QgsFeature &feature, QgsFeatureRenderer *renderer, QgsUnitTypes::DistanceUnit outputUnit = QgsUnitTypes::DistanceMeters );
+    bool addFeatureWithStyle( QgsFeature &feature, QgsFeatureRenderer *renderer, Qgis::DistanceUnit outputUnit = Qgis::DistanceUnit::Meters );
 %Docstring
 Adds a ``feature`` to the currently opened data source, using the style from a specified ``renderer``.
 

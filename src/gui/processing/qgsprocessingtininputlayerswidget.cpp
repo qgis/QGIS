@@ -108,15 +108,15 @@ void QgsProcessingTinInputLayersWidget::onCurrentLayerAdded()
 
   switch ( currentLayer->geometryType() )
   {
-    case QgsWkbTypes::PointGeometry:
+    case Qgis::GeometryType::Point:
       layer.type = QgsProcessingParameterTinInputLayers::Vertices;
       break;
-    case QgsWkbTypes::LineGeometry:
-    case QgsWkbTypes::PolygonGeometry:
+    case Qgis::GeometryType::Line:
+    case Qgis::GeometryType::Polygon:
       layer.type = QgsProcessingParameterTinInputLayers::BreakLines;
       break;
-    case QgsWkbTypes::UnknownGeometry:
-    case QgsWkbTypes::NullGeometry:
+    case Qgis::GeometryType::Unknown:
+    case Qgis::GeometryType::Null:
       return;
       break;
   }

@@ -59,7 +59,7 @@ class GUI_EXPORT QgsMapToolEdit: public QgsMapTool
      *   \param geometryType
      *   \param alternativeBand if TRUE, rubber band will be set with more transparency and a dash pattern. default is FALSE.
      */
-    QgsGeometryRubberBand *createGeometryRubberBand( QgsWkbTypes::GeometryType geometryType = QgsWkbTypes::LineGeometry, bool alternativeBand = false ) const SIP_FACTORY;
+    QgsGeometryRubberBand *createGeometryRubberBand( Qgis::GeometryType geometryType = Qgis::GeometryType::Line, bool alternativeBand = false ) const SIP_FACTORY;
 
   private slots:
     //! Vector layers' editingStopped SIGNAL will eventually trigger a clean
@@ -87,7 +87,7 @@ class GUI_EXPORT QgsMapToolEdit: public QgsMapTool
      *   \param geometryType
      *   \param alternativeBand if TRUE, rubber band will be set with more transparency and a dash pattern. default is FALSE.
      */
-    QgsRubberBand *createRubberBand( QgsWkbTypes::GeometryType geometryType = QgsWkbTypes::LineGeometry, bool alternativeBand = false ) SIP_FACTORY;
+    QgsRubberBand *createRubberBand( Qgis::GeometryType geometryType = Qgis::GeometryType::Line, bool alternativeBand = false ) SIP_FACTORY;
 
     //! Returns the current vector layer of the map canvas or 0
     QgsVectorLayer *currentVectorLayer();

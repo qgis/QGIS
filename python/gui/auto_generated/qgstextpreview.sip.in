@@ -76,7 +76,7 @@ The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
 .. seealso:: :py:func:`mapUnits`
 %End
 
-    void setMapUnits( QgsUnitTypes::DistanceUnit unit );
+    void setMapUnits( Qgis::DistanceUnit unit );
 %Docstring
 Sets the map unit type for previewing format sizes in map units.
 
@@ -87,7 +87,7 @@ Sets the map unit type for previewing format sizes in map units.
 .. seealso:: :py:func:`setScale`
 %End
 
-    QgsUnitTypes::DistanceUnit mapUnits() const;
+    Qgis::DistanceUnit mapUnits() const;
 %Docstring
 Returns the map unit type used for previewing format sizes in map units.
 

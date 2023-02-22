@@ -54,9 +54,9 @@ that is created by this generator.
 
     virtual QColor color() const;
 
-    virtual QgsUnitTypes::RenderUnit outputUnit() const;
+    virtual Qgis::RenderUnit outputUnit() const;
 
-    virtual void setOutputUnit( QgsUnitTypes::RenderUnit unit );
+    virtual void setOutputUnit( Qgis::RenderUnit unit );
 
     virtual QgsMapUnitScale mapUnitScale() const;
 
@@ -80,7 +80,7 @@ Set the expression to generate this geometry.
 Gets the expression to generate this geometry.
 %End
 
-    QgsUnitTypes::RenderUnit units() const;
+    Qgis::RenderUnit units() const;
 %Docstring
 Returns the unit for the geometry expression.
 
@@ -92,7 +92,7 @@ will return geometries in the associated layer's CRS.
 .. versionadded:: 3.22
 %End
 
-    void setUnits( QgsUnitTypes::RenderUnit units );
+    void setUnits( Qgis::RenderUnit units );
 %Docstring
 Sets the ``units`` for the geometry expression.
 
@@ -122,7 +122,7 @@ This is a hybrid layer, it constructs its own geometry so it does not
 care about the geometry of its parents.
 %End
 
-    void render( QgsSymbolRenderContext &context, QgsWkbTypes::GeometryType geometryType = QgsWkbTypes::GeometryType::UnknownGeometry, const QPolygonF *points = 0, const QVector<QPolygonF> *rings = 0 );
+    void render( QgsSymbolRenderContext &context, Qgis::GeometryType geometryType = Qgis::GeometryType::Unknown, const QPolygonF *points = 0, const QVector<QPolygonF> *rings = 0 );
 %Docstring
 Will render this symbol layer using the context.
 In comparison to other symbols there is no geometry passed in, since

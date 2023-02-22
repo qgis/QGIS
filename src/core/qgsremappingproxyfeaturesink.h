@@ -107,14 +107,14 @@ class CORE_EXPORT QgsRemappingSinkDefinition
      *
      * \see setDestinationWkbType()
      */
-    QgsWkbTypes::Type destinationWkbType() const { return mDestinationWkbType; }
+    Qgis::WkbType destinationWkbType() const { return mDestinationWkbType; }
 
     /**
      * Sets the WKB geometry \a type for the destination.
      *
      * \see setDestinationWkbType()
      */
-    void setDestinationWkbType( QgsWkbTypes::Type type ) { mDestinationWkbType = type; }
+    void setDestinationWkbType( Qgis::WkbType type ) { mDestinationWkbType = type; }
 
     /**
      * Returns the fields for the destination sink.
@@ -155,7 +155,7 @@ class CORE_EXPORT QgsRemappingSinkDefinition
     QgsCoordinateReferenceSystem mSourceCrs;
     QgsCoordinateReferenceSystem mDestinationCrs;
 
-    QgsWkbTypes::Type mDestinationWkbType = QgsWkbTypes::Unknown;
+    Qgis::WkbType mDestinationWkbType = Qgis::WkbType::Unknown;
 
     QgsFields mDestinationFields;
 

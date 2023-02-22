@@ -117,23 +117,23 @@ QVector<QgsDataItem *> QgsGeoPackageCollectionItem::createChildren()
 
         switch ( QgsWkbTypes::geometryType( sublayer.wkbType() ) )
         {
-          case QgsWkbTypes::PointGeometry:
+          case Qgis::GeometryType::Point:
             layerType = Qgis::BrowserLayerType::Point;
             break;
 
-          case QgsWkbTypes::LineGeometry:
+          case Qgis::GeometryType::Line:
             layerType = Qgis::BrowserLayerType::Line;
             break;
 
-          case QgsWkbTypes::PolygonGeometry:
+          case Qgis::GeometryType::Polygon:
             layerType = Qgis::BrowserLayerType::Polygon;
             break;
 
-          case QgsWkbTypes::NullGeometry:
+          case Qgis::GeometryType::Null:
             layerType = Qgis::BrowserLayerType::TableLayer;
             break;
 
-          case QgsWkbTypes::UnknownGeometry:
+          case Qgis::GeometryType::Unknown:
             layerType = Qgis::BrowserLayerType::Vector;
             break;
         }

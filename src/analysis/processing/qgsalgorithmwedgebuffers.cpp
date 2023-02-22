@@ -51,9 +51,9 @@ QString QgsWedgeBuffersAlgorithm::outputName() const
   return QObject::tr( "Buffers" );
 }
 
-QgsWkbTypes::Type QgsWedgeBuffersAlgorithm::outputWkbType( QgsWkbTypes::Type inputWkbType ) const
+Qgis::WkbType QgsWedgeBuffersAlgorithm::outputWkbType( Qgis::WkbType inputWkbType ) const
 {
-  QgsWkbTypes::Type out = QgsWkbTypes::CurvePolygon;
+  Qgis::WkbType out = Qgis::WkbType::CurvePolygon;
   if ( QgsWkbTypes::hasZ( inputWkbType ) )
     out = QgsWkbTypes::addZ( out );
   if ( QgsWkbTypes::hasM( inputWkbType ) )
@@ -150,7 +150,7 @@ bool QgsWedgeBuffersAlgorithm::prepareAlgorithm( const QVariantMap &parameters, 
 QgsFeatureList QgsWedgeBuffersAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
   QgsFeature f = feature;
-  if ( f.hasGeometry() && QgsWkbTypes::geometryType( f.geometry().wkbType() ) == QgsWkbTypes::PointGeometry )
+  if ( f.hasGeometry() && QgsWkbTypes::geometryType( f.geometry().wkbType() ) == Qgis::GeometryType::Point )
   {
     double azimuth = mAzimuth;
     if ( mDynamicAzimuth )

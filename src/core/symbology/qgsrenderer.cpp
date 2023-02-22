@@ -16,23 +16,17 @@
 #include "qgsrenderer.h"
 #include "qgssymbol.h"
 #include "qgssymbollayerutils.h"
-#include "qgsrulebasedrenderer.h"
 
 #include "qgssinglesymbolrenderer.h" // for default renderer
 
 #include "qgsrendererregistry.h"
 
 #include "qgsrendercontext.h"
-#include "qgsclipper.h"
-#include "qgsgeometry.h"
-#include "qgsgeometrycollection.h"
 #include "qgsfeature.h"
 #include "qgslogger.h"
 #include "qgsvectorlayer.h"
 #include "qgspainteffect.h"
-#include "qgseffectstack.h"
 #include "qgspainteffectregistry.h"
-#include "qgswkbptr.h"
 #include "qgspoint.h"
 #include "qgsproperty.h"
 #include "qgsapplication.h"
@@ -76,7 +70,7 @@ QgsFeatureRenderer::~QgsFeatureRenderer()
   delete mPaintEffect;
 }
 
-QgsFeatureRenderer *QgsFeatureRenderer::defaultRenderer( QgsWkbTypes::GeometryType geomType )
+QgsFeatureRenderer *QgsFeatureRenderer::defaultRenderer( Qgis::GeometryType geomType )
 {
   return new QgsSingleSymbolRenderer( QgsSymbol::defaultSymbol( geomType ) );
 }
@@ -105,6 +99,11 @@ void QgsFeatureRenderer::startRender( QgsRenderContext &, const QgsFields & )
     Q_ASSERT_X( mThread == QThread::currentThread(), "QgsFeatureRenderer::startRender", "startRender called in a different thread - use a cloned renderer instead" );
   }
 #endif
+}
+
+bool QgsFeatureRenderer::canSkipRender()
+{
+  return false;
 }
 
 void QgsFeatureRenderer::stopRender( QgsRenderContext & )
@@ -219,7 +218,7 @@ void QgsFeatureRenderer::saveRendererData( QDomDocument &doc, QDomElement &rende
   rendererElem.setAttribute( QStringLiteral( "enableorderby" ), ( mOrderByEnabled ? QStringLiteral( "1" ) : QStringLiteral( "0" ) ) );
 }
 
-QgsFeatureRenderer *QgsFeatureRenderer::loadSld( const QDomNode &node, QgsWkbTypes::GeometryType geomType, QString &errorMessage )
+QgsFeatureRenderer *QgsFeatureRenderer::loadSld( const QDomNode &node, Qgis::GeometryType geomType, QString &errorMessage )
 {
   const QDomElement element = node.toElement();
   if ( element.isNull() )
@@ -393,7 +392,7 @@ bool QgsFeatureRenderer::willRenderFeature( const QgsFeature &feature, QgsRender
 
 void QgsFeatureRenderer::renderVertexMarker( QPointF pt, QgsRenderContext &context )
 {
-  const int markerSize = context.convertToPainterUnits( mCurrentVertexMarkerSize, QgsUnitTypes::RenderMillimeters );
+  const int markerSize = context.convertToPainterUnits( mCurrentVertexMarkerSize, Qgis::RenderUnit::Millimeters );
   QgsSymbolLayerUtils::drawVertexMarker( pt.x(), pt.y(), *context.painter(),
                                          mCurrentVertexMarkerType,
                                          markerSize );

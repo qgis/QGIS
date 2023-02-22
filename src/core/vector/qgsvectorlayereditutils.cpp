@@ -640,11 +640,11 @@ int QgsVectorLayerEditUtils::addTopologicalPoints( const QgsPoint &p )
   {
     threshold = 0.0000001;
 
-    if ( mLayer->crs().mapUnits() == QgsUnitTypes::DistanceMeters )
+    if ( mLayer->crs().mapUnits() == Qgis::DistanceUnit::Meters )
     {
       threshold = 0.001;
     }
-    else if ( mLayer->crs().mapUnits() == QgsUnitTypes::DistanceFeet )
+    else if ( mLayer->crs().mapUnits() == Qgis::DistanceUnit::Feet )
     {
       threshold = 0.0001;
     }

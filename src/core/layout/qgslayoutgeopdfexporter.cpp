@@ -21,6 +21,7 @@
 #include "qgsgeometry.h"
 #include "qgsvectorlayer.h"
 #include "qgslayertree.h"
+#include "qgslayoutrendercontext.h"
 
 #include <gdal.h>
 #include "qgslayoutpagecollection.h"
@@ -43,7 +44,7 @@ class QgsGeoPdfRenderedFeatureHandler: public QgsRenderedFeatureHandlerInterface
       // get page size
       const QgsLayoutSize pageSize = map->layout()->pageCollection()->page( map->page() )->pageSize();
       QSizeF pageSizeLayoutUnits = map->layout()->convertToLayoutUnits( pageSize );
-      const QgsLayoutSize pageSizeInches = map->layout()->renderContext().measurementConverter().convert( pageSize, QgsUnitTypes::LayoutInches );
+      const QgsLayoutSize pageSizeInches = map->layout()->renderContext().measurementConverter().convert( pageSize, Qgis::LayoutUnit::Inches );
 
       // PDF assumes 72 dpi -- this is hardcoded!!
       const double pageHeightPdfUnits = pageSizeInches.height() * 72;

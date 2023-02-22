@@ -28,10 +28,8 @@
 #include <QDateTime>
 
 #include "qgis.h"
-#include "qgslogger.h"
 #include "qgsdatasourceuri.h"
 #include "qgsvectordataprovider.h"
-#include "qgsdbquerylog.h"
 
 #include <QSqlDatabase>
 #include <QSqlQuery>
@@ -42,7 +40,7 @@ class QgsField;
 // Oracle layer properties
 struct QgsOracleLayerProperty
 {
-  QList<QgsWkbTypes::Type> types;
+  QList<Qgis::WkbType> types;
   QList<int>           srids;
   QString              ownerName;
   QString              tableName;
@@ -85,11 +83,11 @@ struct QgsOracleLayerProperty
   {
     QString typeString;
     const auto constTypes = types;
-    for ( QgsWkbTypes::Type type : constTypes )
+    for ( Qgis::WkbType type : constTypes )
     {
       if ( !typeString.isEmpty() )
         typeString += "|";
-      typeString += QString::number( type );
+      typeString += QString::number( static_cast< quint32>( type ) );
     }
     QString sridString;
     const auto constSrids = srids;
@@ -240,11 +238,11 @@ class QgsOracleConn : public QObject
 
     static const int sGeomTypeSelectLimit;
 
-    static QgsWkbTypes::Type wkbTypeFromDatabase( int gtype );
+    static Qgis::WkbType wkbTypeFromDatabase( int gtype );
 
-    static QString databaseTypeFilter( const QString &alias, QString geomCol, QgsWkbTypes::Type wkbType );
+    static QString databaseTypeFilter( const QString &alias, QString geomCol, Qgis::WkbType wkbType );
 
-    static QgsWkbTypes::Type wkbTypeFromGeomType( QgsWkbTypes::GeometryType geomType );
+    static Qgis::WkbType wkbTypeFromGeomType( Qgis::GeometryType geomType );
 
     static QStringList connectionList();
     static QString selectedConnection();

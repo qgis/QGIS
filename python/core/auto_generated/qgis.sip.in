@@ -86,6 +86,79 @@ The development version
       Group,
     };
 
+    enum class WkbType
+      {
+      Unknown,
+      Point,
+      LineString,
+      Polygon,
+      Triangle,
+      MultiPoint,
+      MultiLineString,
+      MultiPolygon,
+      GeometryCollection,
+      CircularString,
+      CompoundCurve,
+      CurvePolygon,
+      MultiCurve,
+      MultiSurface,
+      NoGeometry,
+      PointZ,
+      LineStringZ,
+      PolygonZ,
+      TriangleZ,
+      MultiPointZ,
+      MultiLineStringZ,
+      MultiPolygonZ,
+      GeometryCollectionZ,
+      CircularStringZ,
+      CompoundCurveZ,
+      CurvePolygonZ,
+      MultiCurveZ,
+      MultiSurfaceZ,
+      PointM,
+      LineStringM,
+      PolygonM,
+      TriangleM,
+      MultiPointM,
+      MultiLineStringM,
+      MultiPolygonM,
+      GeometryCollectionM,
+      CircularStringM,
+      CompoundCurveM,
+      CurvePolygonM,
+      MultiCurveM,
+      MultiSurfaceM,
+      PointZM,
+      LineStringZM,
+      PolygonZM,
+      MultiPointZM,
+      MultiLineStringZM,
+      MultiPolygonZM,
+      GeometryCollectionZM,
+      CircularStringZM,
+      CompoundCurveZM,
+      CurvePolygonZM,
+      MultiCurveZM,
+      MultiSurfaceZM,
+      TriangleZM,
+      Point25D,
+      LineString25D,
+      Polygon25D,
+      MultiPoint25D,
+      MultiLineString25D,
+      MultiPolygon25D
+    };
+
+    enum class GeometryType
+      {
+      Point,
+      Line,
+      Polygon,
+      Unknown,
+      Null,
+    };
+
     enum class DataType
       {
       UnknownDataType,
@@ -1640,6 +1713,134 @@ The development version
       SourceAtop,
       DestinationAtop,
       Xor,
+    };
+
+    enum class SystemOfMeasurement
+      {
+      Unknown,
+      Metric,
+      Imperial,
+      USCS,
+    };
+
+    enum class UnitType
+      {
+      Distance,
+      Area,
+      Volume,
+      Unknown,
+      Temporal,
+    };
+
+    enum class DistanceUnit
+      {
+      Meters,
+      Kilometers,
+      Feet,
+      NauticalMiles,
+      Yards,
+      Miles,
+      Degrees,
+      Centimeters,
+      Millimeters,
+      Unknown,
+    };
+
+    enum class DistanceUnitType
+      {
+      Standard,
+      Geographic,
+      Unknown,
+    };
+
+    enum class AreaUnit
+      {
+      SquareMeters,
+      SquareKilometers,
+      SquareFeet,
+      SquareYards,
+      SquareMiles,
+      Hectares,
+      Acres,
+      SquareNauticalMiles,
+      SquareDegrees,
+      SquareCentimeters,
+      SquareMillimeters,
+      Unknown,
+    };
+
+    enum class VolumeUnit
+      {
+      CubicMeters,
+      CubicFeet,
+      CubicYards,
+      Barrel,
+      CubicDecimeter,
+      Liters,
+      GallonUS,
+      CubicInch,
+      CubicCentimeter,
+      CubicDegrees,
+      Unknown,
+    };
+
+    enum class AngleUnit
+      {
+      Degrees,
+      Radians,
+      Gon,
+      MinutesOfArc,
+      SecondsOfArc,
+      Turn,
+      MilliradiansSI,
+      MilNATO,
+      Unknown,
+    };
+
+    enum class TemporalUnit
+      {
+      Milliseconds,
+      Seconds,
+      Minutes,
+      Hours,
+      Days,
+      Weeks,
+      Months,
+      Years,
+      Decades,
+      Centuries,
+      IrregularStep,
+      Unknown
+    };
+
+    enum class RenderUnit
+      {
+      Millimeters,
+      MapUnits,
+      Pixels,
+      Percentage,
+      Points,
+      Inches,
+      Unknown,
+      MetersInMapUnits,
+    };
+
+    enum class LayoutUnit
+      {
+      Millimeters,
+      Centimeters,
+      Meters,
+      Inches,
+      Feet,
+      Points,
+      Picas,
+      Pixels
+    };
+
+    enum class LayoutUnitType
+      {
+      PaperUnits,
+      ScreenUnits
     };
 
     static const double DEFAULT_SEARCH_RADIUS_MM;
