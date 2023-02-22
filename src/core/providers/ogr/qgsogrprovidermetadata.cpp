@@ -28,7 +28,6 @@ email                : nyall dot dawson at gmail dot com
 #include "qgsgeopackageproviderconnection.h"
 #include "qgsogrdbconnection.h"
 #include "qgsprovidersublayerdetails.h"
-#include "qgszipitem.h"
 #include "qgsproviderutils.h"
 #include "qgsgdalutils.h"
 #include "qgsproviderregistry.h"
@@ -1183,7 +1182,7 @@ QList<QgsProviderSublayerDetails> QgsOgrProviderMetadata::querySublayers( const 
   QVariantMap uriParts = decodeUri( uri );
 
   // Try to open using VSIFileHandler
-  QString vsiPrefix = QgsZipItem::vsiPrefix( uriParts.value( QStringLiteral( "path" ) ).toString() );
+  QString vsiPrefix = qgsVsiPrefix( uriParts.value( QStringLiteral( "path" ) ).toString() );
   if ( !vsiPrefix.isEmpty() && uriParts.value( QStringLiteral( "vsiPrefix" ) ).toString().isEmpty() )
   {
     if ( !uri.startsWith( vsiPrefix ) )

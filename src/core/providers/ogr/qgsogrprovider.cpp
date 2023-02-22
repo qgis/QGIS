@@ -33,7 +33,6 @@ email                : sherman at mrcc.com
 #include "qgslocalec.h"
 #include "qgssymbol.h"
 #include "qgsembeddedsymbolrenderer.h"
-#include "qgszipitem.h"
 #include "qgsprovidersublayerdetails.h"
 #include "qgsvectorlayer.h"
 #include "qgsproviderregistry.h"
@@ -3531,7 +3530,7 @@ void QgsOgrProvider::open( OpenMode mode )
 
   // Try to open using VSIFileHandler
   //   see http://trac.osgeo.org/gdal/wiki/UserDocs/ReadInZip
-  QString vsiPrefix = QgsZipItem::vsiPrefix( dataSourceUri( true ) );
+  QString vsiPrefix = qgsVsiPrefix( dataSourceUri( true ) );
   if ( !vsiPrefix.isEmpty() || mFilePath.startsWith( QLatin1String( "/vsicurl/" ) ) )
   {
     // GDAL>=1.8.0 has write support for zip, but read and write operations
