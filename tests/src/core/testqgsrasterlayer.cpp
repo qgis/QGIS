@@ -13,7 +13,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgsogrutils.h"
+
 #include "qgstest.h"
 #include <QObject>
 #include <QString>
