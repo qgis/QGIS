@@ -21,6 +21,7 @@
 
 #include "qgsalgorithmpdalboundary.h"
 #include "qgsalgorithmpdalbuildvpc.h"
+#include "qgsalgorithmpdalclip.h"
 #include "qgsalgorithmpdalconvertformat.h"
 #include "qgsalgorithmpdaldensity.h"
 #include "qgsalgorithmpdalexportraster.h"
@@ -90,6 +91,7 @@ void QgsPdalAlgorithms::loadAlgorithms()
 
   addAlgorithm( new QgsPdalBoundaryAlgorithm() );
   addAlgorithm( new QgsPdalBuildVpcAlgorithm() );
+  addAlgorithm( new QgsPdalClipAlgorithm() );
   addAlgorithm( new QgsPdalConvertFormatAlgorithm() );
   addAlgorithm( new QgsPdalDensityAlgorithm() );
   addAlgorithm( new QgsPdalExportRasterAlgorithm() );
