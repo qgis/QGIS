@@ -21,23 +21,14 @@
 #include <Qt3DLogic/QFrameAction>
 #include <QMouseEvent>
 
-
 #include "qgscameracontroller.h"
 #include "qgs3dmapsettings.h"
 #include "qgs3dmapscene.h"
 #include "qgs3dmaptool.h"
 #include "qgswindow3dengine.h"
 #include "qgs3dnavigationwidget.h"
-#include "qgsproject.h"
-#include "qgsprojectviewsettings.h"
 #include "qgssettings.h"
 #include "qgstemporalcontroller.h"
-#include "qgsflatterraingenerator.h"
-#include "qgsonlineterraingenerator.h"
-#include "qgsray3d.h"
-#include "qgs3dutils.h"
-#include "qgsoffscreen3dengine.h"
-#include "qgscoordinatetransform.h"
 
 Qgs3DMapCanvas::Qgs3DMapCanvas( QWidget *parent )
   : QWidget( parent )
@@ -296,7 +287,7 @@ QSize Qgs3DMapCanvas::windowSize() const
   return mEngine->size();
 }
 
-void Qgs3DMapCanvas::onNavigationModeChanged( QgsCameraController::NavigationMode mode )
+void Qgs3DMapCanvas::onNavigationModeChanged( Qgis::NavigationMode mode )
 {
   mMap->setCameraNavigationMode( mode );
 }

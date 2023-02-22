@@ -149,6 +149,7 @@
 #include "qgsmapviewsmanager.h"
 #include "qgs3dmapcanvaswidget.h"
 #include "qgs3dmapscene.h"
+#include "qgsdirectionallightsettings.h"
 #endif
 
 #ifdef HAVE_GEOREFERENCER
@@ -13170,7 +13171,7 @@ void QgisApp::new3DMapCanvas()
     map->setLayers( mMapCanvas->layers( true ) );
     map->setTemporalRange( mMapCanvas->temporalRange() );
 
-    const QgsCameraController::NavigationMode defaultNavMode = settings.enumValue( QStringLiteral( "map3d/defaultNavigation" ), QgsCameraController::TerrainBasedNavigation, QgsSettings::App );
+    const Qgis::NavigationMode defaultNavMode = settings.enumValue( QStringLiteral( "map3d/defaultNavigation" ), Qgis::NavigationMode::TerrainBased, QgsSettings::App );
     map->setCameraNavigationMode( defaultNavMode );
 
     map->setCameraMovementSpeed( settings.value( QStringLiteral( "map3d/defaultMovementSpeed" ), 5, QgsSettings::App ).toDouble() );
@@ -13200,7 +13201,7 @@ void QgisApp::new3DMapCanvas()
     float dist = static_cast< float >( std::max( extent.width(), extent.height() ) );
     canvasWidget->mapCanvas3D()->setViewFromTop( mMapCanvas->extent().center(), dist, static_cast< float >( mMapCanvas->rotation() ) );
 
-    const QgsCameraController::VerticalAxisInversion axisInversion = settings.enumValue( QStringLiteral( "map3d/axisInversion" ), QgsCameraController::WhenDragging, QgsSettings::App );
+    const Qgis::VerticalAxisInversion axisInversion = settings.enumValue( QStringLiteral( "map3d/axisInversion" ), Qgis::VerticalAxisInversion::WhenDragging, QgsSettings::App );
     if ( canvasWidget->mapCanvas3D()->cameraController() )
       canvasWidget->mapCanvas3D()->cameraController()->setVerticalAxisInversion( axisInversion );
 

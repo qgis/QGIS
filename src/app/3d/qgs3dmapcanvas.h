@@ -149,7 +149,7 @@ class Qgs3DMapCanvas : public QWidget
 
   private slots:
     void updateTemporalRange( const QgsDateTimeRange &timeRange );
-    void onNavigationModeChanged( QgsCameraController::NavigationMode mode );
+    void onNavigationModeChanged( Qgis::NavigationMode mode );
 
   protected:
     void resizeEvent( QResizeEvent *ev ) override;

@@ -24,6 +24,8 @@
 
 #define SIP_NO_FILE
 
+class QgsMarkerSymbol;
+
 /**
  * \ingroup 3d
  * \brief Material of the billboard rendering for points in 3D map view.
@@ -38,6 +40,7 @@ class QgsPoint3DBillboardMaterial : public Qt3DRender::QMaterial
 
   public:
     QgsPoint3DBillboardMaterial();
+    ~QgsPoint3DBillboardMaterial() override;
 
     //! Set the billboard size.
     void setSize( const QSizeF size );

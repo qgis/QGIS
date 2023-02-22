@@ -2385,6 +2385,31 @@ class CORE_EXPORT Qgis
     Q_ENUM( LightSourceType )
 
     /**
+     * The navigation mode used by 3D cameras.
+     *
+     * \since QGIS 3.30
+     */
+    enum class NavigationMode : int
+    {
+      TerrainBased, //!< The default navigation based on the terrain
+      Walk //!< Uses WASD keys or arrows to navigate in walking (first person) manner
+    };
+    Q_ENUM( NavigationMode )
+
+    /**
+     * Vertical axis inversion options for 3D views.
+     *
+     * \since QGIS 3.30
+     */
+    enum class VerticalAxisInversion : int
+    {
+      Never, //!< Never invert vertical axis movements
+      WhenDragging, //!< Invert vertical axis movements when dragging in first person modes
+      Always, //!< Always invert vertical axis movements
+    };
+    Q_ENUM( VerticalAxisInversion )
+
+    /**
      * Surface symbology type for elevation profile plots.
      *
      * \since QGIS 3.26

@@ -1412,6 +1412,19 @@ The development version
       Directional,
     };
 
+    enum class NavigationMode
+    {
+      TerrainBased,
+      Walk
+    };
+
+    enum class VerticalAxisInversion
+    {
+      Never,
+      WhenDragging,
+      Always,
+    };
+
     enum class ProfileSurfaceSymbology
     {
       Line,

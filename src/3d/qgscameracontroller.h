@@ -66,24 +66,6 @@ class _3D_EXPORT QgsCameraController : public QObject
     Q_OBJECT
   public:
 
-    //! The navigation mode used by the camera
-    enum NavigationMode
-    {
-      TerrainBasedNavigation, //!< The default navigation based on the terrain
-      WalkNavigation //!< Uses WASD keys or arrows to navigate in walking (first person) manner
-    };
-    Q_ENUM( NavigationMode )
-
-    //! Vertical axis inversion options
-    enum VerticalAxisInversion
-    {
-      Never, //!< Never invert vertical axis movements
-      WhenDragging, //!< Invert vertical axis movements when dragging in first person modes
-      Always, //!< Always invert vertical axis movements
-    };
-    Q_ENUM( VerticalAxisInversion )
-
-  public:
     //! Constructs the camera controller with optional parent node that will take ownership
     QgsCameraController( Qgs3DMapScene *scene ) SIP_SKIP;
     ~QgsCameraController() override;
@@ -101,7 +83,7 @@ class _3D_EXPORT QgsCameraController : public QObject
      * Returns the navigation mode used by the camera controller.
      * \since QGIS 3.18
      */
-    QgsCameraController::NavigationMode cameraNavigationMode() const { return mCameraNavigationMode; }
+    Qgis::NavigationMode cameraNavigationMode() const { return mCameraNavigationMode; }
 
     /**
      * Returns the camera movement speed
@@ -119,13 +101,13 @@ class _3D_EXPORT QgsCameraController : public QObject
      * Returns the vertical axis inversion behavior.
      * \since QGIS 3.18
      */
-    QgsCameraController::VerticalAxisInversion verticalAxisInversion() const { return mVerticalAxisInversion; }
+    Qgis::VerticalAxisInversion verticalAxisInversion() const { return mVerticalAxisInversion; }
 
     /**
      * Sets the vertical axis \a inversion behavior.
      * \since QGIS 3.18
      */
-    void setVerticalAxisInversion( QgsCameraController::VerticalAxisInversion inversion );
+    void setVerticalAxisInversion( Qgis::VerticalAxisInversion inversion );
 
     //! Called internally from 3D scene when a new frame is generated. Updates camera according to keyboard/mouse input
     void frameTriggered( float dt );
@@ -209,7 +191,7 @@ class _3D_EXPORT QgsCameraController : public QObject
      * Sets the navigation mode used by the camera controller.
      * \since QGIS 3.18
      */
-    void setCameraNavigationMode( QgsCameraController::NavigationMode navigationMode );
+    void setCameraNavigationMode( Qgis::NavigationMode navigationMode );
 
     /**
      * Sets the depth buffer image used by the camera controller to calculate world position from a pixel's coordinates and depth
@@ -234,7 +216,7 @@ class _3D_EXPORT QgsCameraController : public QObject
     void cameraChanged();
 
     //! Emitted when the navigation mode is changed using the hotkey ctrl + ~
-    void navigationModeChanged( QgsCameraController::NavigationMode mode );
+    void navigationModeChanged( Qgis::NavigationMode mode );
 
     /**
      * Emitted whenever the camera movement speed is changed by the controller.
@@ -323,8 +305,8 @@ class _3D_EXPORT QgsCameraController : public QObject
 
     Qt3DInput::QMouseHandler *mMouseHandler = nullptr;
     Qt3DInput::QKeyboardHandler *mKeyboardHandler = nullptr;
-    NavigationMode mCameraNavigationMode = NavigationMode::TerrainBasedNavigation;
-    VerticalAxisInversion mVerticalAxisInversion = WhenDragging;
+    Qgis::NavigationMode mCameraNavigationMode = Qgis::NavigationMode::TerrainBased;
+    Qgis::VerticalAxisInversion mVerticalAxisInversion = Qgis::VerticalAxisInversion::WhenDragging;
     double mCameraMovementSpeed = 5.0;
 
     QSet< int > mDepressedKeys;

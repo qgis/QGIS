@@ -2343,6 +2343,19 @@ Qgis.LightSourceType.__doc__ = 'Light source types for 3D scenes.\n\n.. versiona
 # --
 Qgis.LightSourceType.baseClass = Qgis
 # monkey patching scoped based enum
+Qgis.NavigationMode.TerrainBased.__doc__ = "The default navigation based on the terrain"
+Qgis.NavigationMode.Walk.__doc__ = "Uses WASD keys or arrows to navigate in walking (first person) manner"
+Qgis.NavigationMode.__doc__ = 'The navigation mode used by 3D cameras.\n\n.. versionadded:: 3.30\n\n' + '* ``TerrainBased``: ' + Qgis.NavigationMode.TerrainBased.__doc__ + '\n' + '* ``Walk``: ' + Qgis.NavigationMode.Walk.__doc__
+# --
+Qgis.NavigationMode.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.VerticalAxisInversion.Never.__doc__ = "Never invert vertical axis movements"
+Qgis.VerticalAxisInversion.WhenDragging.__doc__ = "Invert vertical axis movements when dragging in first person modes"
+Qgis.VerticalAxisInversion.Always.__doc__ = "Always invert vertical axis movements"
+Qgis.VerticalAxisInversion.__doc__ = 'Vertical axis inversion options for 3D views.\n\n.. versionadded:: 3.30\n\n' + '* ``Never``: ' + Qgis.VerticalAxisInversion.Never.__doc__ + '\n' + '* ``WhenDragging``: ' + Qgis.VerticalAxisInversion.WhenDragging.__doc__ + '\n' + '* ``Always``: ' + Qgis.VerticalAxisInversion.Always.__doc__
+# --
+Qgis.VerticalAxisInversion.baseClass = Qgis
+# monkey patching scoped based enum
 Qgis.ProfileSurfaceSymbology.Line.__doc__ = "The elevation surface will be rendered using a line symbol"
 Qgis.ProfileSurfaceSymbology.FillBelow.__doc__ = "The elevation surface will be rendered using a fill symbol below the surface level"
 Qgis.ProfileSurfaceSymbology.__doc__ = 'Surface symbology type for elevation profile plots.\n\n.. versionadded:: 3.26\n\n' + '* ``Line``: ' + Qgis.ProfileSurfaceSymbology.Line.__doc__ + '\n' + '* ``FillBelow``: ' + Qgis.ProfileSurfaceSymbology.FillBelow.__doc__
