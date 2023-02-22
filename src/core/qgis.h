@@ -372,7 +372,7 @@ class CORE_EXPORT Qgis
      */
     enum class SettingsTreeNodeOption : int
     {
-      NamedListSelectedItemSetting, //!< Creates a setting to store which is the current item
+      NamedListSelectedItemSetting = 1 << 0, //!< Creates a setting to store which is the current item
     };
 
     Q_ENUM( SettingsTreeNodeOption )
