@@ -27,6 +27,7 @@
 #include "qgsalgorithmpdalexportvector.h"
 #include "qgsalgorithmpdalfixprojection.h"
 #include "qgsalgorithmpdalinformation.h"
+#include "qgsalgorithmpdalmerge.h"
 #include "qgsalgorithmpdalreproject.h"
 #include "qgsalgorithmpdalthin.h"
 #include "qgsalgorithmpdaltile.h"
@@ -94,6 +95,7 @@ void QgsPdalAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsPdalExportVectorAlgorithm() );
   addAlgorithm( new QgsPdalFixProjectionAlgorithm() );
   addAlgorithm( new QgsPdalInformationAlgorithm() );
+  addAlgorithm( new QgsPdalMergeAlgorithm() );
   addAlgorithm( new QgsPdalReprojectAlgorithm() );
   addAlgorithm( new QgsPdalThinAlgorithm() );
   addAlgorithm( new QgsPdalTileAlgorithm() );

@@ -42,6 +42,7 @@ class TestQgsProcessingPdalAlgs: public QObject
     void exportVector();
     void fixProjection();
     void info();
+    void merge();
     void reproject();
     void thin();
     void tile();
@@ -649,6 +650,50 @@ void TestQgsProcessingPdalAlgs::exportVector()
             << QStringLiteral( "--output=%1" ).arg( outputFile )
             << QStringLiteral( "--attribute=Z" )
             << QStringLiteral( "--threads=2" )
+          );
+}
+
+void TestQgsProcessingPdalAlgs::merge()
+{
+  QgsPdalAlgorithmBase *alg = const_cast<QgsPdalAlgorithmBase *>( static_cast< const QgsPdalAlgorithmBase * >( QgsApplication::processingRegistry()->algorithmById( QStringLiteral( "pdal:merge" ) ) ) );
+
+  std::unique_ptr< QgsProcessingContext > context = std::make_unique< QgsProcessingContext >();
+  context->setProject( QgsProject::instance() );
+
+  QgsProcessingFeedback feedback;
+
+  const QString pointCloud1 = QString( TEST_DATA_DIR ) + "/point_clouds/copc/rgb.copc.laz";
+  const QString pointCloud2 = QString( TEST_DATA_DIR ) + "/point_clouds/copc/rgb16.copc.laz";
+  const QString outputFile = QDir::tempPath() + "/merged.las";
+
+  // single layer
+  QVariantMap parameters;
+  parameters.insert( QStringLiteral( "LAYERS" ), QStringList() << pointCloud1 );
+  parameters.insert( QStringLiteral( "OUTPUT" ), outputFile );
+
+  QStringList args = alg->createArgumentLists( parameters, *context, &feedback );
+  QCOMPARE( args, QStringList() << QStringLiteral( "merge" )
+            << QStringLiteral( "--output=%1" ).arg( outputFile )
+            << pointCloud1
+          );
+
+  // multiple layers
+  parameters.insert( QStringLiteral( "LAYERS" ), QStringList() << pointCloud1 << pointCloud2 );
+  args = alg->createArgumentLists( parameters, *context, &feedback );
+  QCOMPARE( args, QStringList() << QStringLiteral( "merge" )
+            << QStringLiteral( "--output=%1" ).arg( outputFile )
+            << pointCloud1
+            << pointCloud2
+          );
+
+  // set max threads to 2, a --threads argument should be added
+  QgsSettings().setValue( QStringLiteral( "/Processing/Configuration/MAX_THREADS" ), 2 );
+  args = alg->createArgumentLists( parameters, *context, &feedback );
+  QCOMPARE( args, QStringList() << QStringLiteral( "merge" )
+            << QStringLiteral( "--output=%1" ).arg( outputFile )
+            << QStringLiteral( "--threads=2" )
+            << pointCloud1
+            << pointCloud2
           );
 }
 
