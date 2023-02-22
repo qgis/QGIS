@@ -22,6 +22,7 @@
 #include <Qt3DInput/QMouseEvent>
 #include <QImage>
 
+#ifndef SIP_RUN
 namespace Qt3DInput
 {
   class QKeyEvent;
@@ -36,6 +37,8 @@ namespace Qt3DRender
   class QCamera;
 }
 
+#endif
+
 #include "qgscamerapose.h"
 
 class QDomDocument;
@@ -46,16 +49,20 @@ class QgsVector3D;
 class QgsWindow3DEngine;
 class Qgs3DMapScene;
 
-#define SIP_NO_FILE
-
 /**
  * \ingroup 3d
  * \brief Object that controls camera movement based on user input
  * \note Not available in Python bindings
  * \since QGIS 3.0
  */
+#ifndef SIP_RUN
 class _3D_EXPORT QgsCameraController : public Qt3DCore::QEntity
 {
+#else
+class _3D_EXPORT QgsCameraController : public QObject
+{
+#endif
+
     Q_OBJECT
   public:
 
@@ -78,10 +85,17 @@ class _3D_EXPORT QgsCameraController : public Qt3DCore::QEntity
 
   public:
     //! Constructs the camera controller with optional parent node that will take ownership
-    QgsCameraController( Qgs3DMapScene *scene );
+    QgsCameraController( Qgs3DMapScene *scene ) SIP_SKIP;
+    ~QgsCameraController() override;
 
-    //! Returns camera that is being controlled
+#ifndef SIP_RUN
+
+    /**
+     * Returns camera that is being controlled
+     * \note Not available in Python bindings
+     */
     Qt3DRender::QCamera *camera() const { return mCamera; }
+#endif
 
     /**
      * Returns the navigation mode used by the camera controller.
@@ -204,6 +218,11 @@ class _3D_EXPORT QgsCameraController : public Qt3DCore::QEntity
     void depthBufferCaptured( const QImage &depthImage );
 
   private:
+#ifdef SIP_RUN
+    QgsCameraController();
+    QgsCameraController( const QgsCameraController &other );
+#endif
+
     void rotateCamera( float diffPitch, float diffYaw );
     void updateCameraFromPose();
     void moveCameraPositionBy( const QVector3D &posDiff );

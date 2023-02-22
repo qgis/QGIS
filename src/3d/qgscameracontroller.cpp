@@ -68,6 +68,8 @@ QgsCameraController::QgsCameraController( Qgs3DMapScene *scene )
   mFpsNavTimer->start();
 }
 
+QgsCameraController::~QgsCameraController() = default;
+
 QWindow *QgsCameraController::window() const
 {
   QgsWindow3DEngine *windowEngine = qobject_cast<QgsWindow3DEngine *>( mScene->engine() );

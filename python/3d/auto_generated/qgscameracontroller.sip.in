@@ -1,0 +1,252 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/3d/qgscameracontroller.h                                         *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+
+
+class QgsCameraController : QObject
+{
+%Docstring(signature="appended")
+Object that controls camera movement based on user input
+
+.. note::
+
+   Not available in Python bindings
+
+.. versionadded:: 3.0
+%End
+
+%TypeHeaderCode
+#include "qgscameracontroller.h"
+%End
+  public:
+
+    enum NavigationMode
+    {
+      TerrainBasedNavigation,
+      WalkNavigation
+    };
+
+    enum VerticalAxisInversion
+    {
+      Never,
+      WhenDragging,
+      Always,
+    };
+
+  public:
+    ~QgsCameraController();
+
+
+    QgsCameraController::NavigationMode cameraNavigationMode() const;
+%Docstring
+Returns the navigation mode used by the camera controller.
+
+.. versionadded:: 3.18
+%End
+
+    double cameraMovementSpeed() const;
+%Docstring
+Returns the camera movement speed
+
+.. versionadded:: 3.18
+%End
+
+    void setCameraMovementSpeed( double movementSpeed );
+%Docstring
+Sets the camera movement speed
+
+.. versionadded:: 3.18
+%End
+
+    QgsCameraController::VerticalAxisInversion verticalAxisInversion() const;
+%Docstring
+Returns the vertical axis inversion behavior.
+
+.. versionadded:: 3.18
+%End
+
+    void setVerticalAxisInversion( QgsCameraController::VerticalAxisInversion inversion );
+%Docstring
+Sets the vertical axis ``inversion`` behavior.
+
+.. versionadded:: 3.18
+%End
+
+    void frameTriggered( float dt );
+%Docstring
+Called internally from 3D scene when a new frame is generated. Updates camera according to keyboard/mouse input
+%End
+
+    void resetView( float distance );
+%Docstring
+Move camera back to the initial position (looking down towards origin of world's coordinates)
+%End
+
+    void setViewFromTop( float worldX, float worldY, float distance, float yaw = 0 );
+%Docstring
+Sets camera to look down towards given point in world coordinate, in given distance from plane with zero elevation
+%End
+
+    QgsVector3D lookingAtPoint() const;
+%Docstring
+Returns the point in the world coordinates towards which the camera is looking
+%End
+
+    void setLookingAtPoint( const QgsVector3D &point, float distance, float pitch, float yaw );
+%Docstring
+Sets the complete camera configuration: the point towards it is looking (in 3D world coordinates), the distance
+of the camera from the point, pitch angle in degrees (0 = looking from the top, 90 = looking from the side) and
+yaw angle in degrees.
+
+.. versionadded:: 3.4
+%End
+
+    void setCameraPose( const QgsCameraPose &camPose );
+%Docstring
+Sets camera pose
+
+.. versionadded:: 3.4
+%End
+
+    QgsCameraPose cameraPose() const;
+%Docstring
+Returns camera pose
+
+.. versionadded:: 3.4
+%End
+
+    float distance() const;
+%Docstring
+Returns distance of the camera from the point it is looking at.
+The value should not be smaller than 10.
+
+.. versionadded:: 3.4
+%End
+
+    float pitch() const;
+%Docstring
+Returns pitch angle in degrees (0 = looking from the top, 90 = looking from the side).
+The angle should range from 0 to 180.
+
+.. versionadded:: 3.4
+%End
+
+    float yaw() const;
+%Docstring
+Returns yaw angle in degrees.  Yaw value of zero means the camera is pointing towards north.
+The angle should range from 0 to 360.
+
+.. versionadded:: 3.4
+%End
+
+    QDomElement writeXml( QDomDocument &doc ) const;
+%Docstring
+Writes camera configuration to the given DOM element
+%End
+    void readXml( const QDomElement &elem );
+%Docstring
+Reads camera configuration from the given DOM element
+%End
+
+    void zoom( float factor );
+%Docstring
+Zoom the map by ``factor``
+%End
+    void tiltUpAroundViewCenter( float deltaPitch );
+%Docstring
+Tilt up the view by ``deltaPitch`` around the view center (camera moves)
+%End
+    void rotateAroundViewCenter( float deltaYaw );
+%Docstring
+Rotate clockwise the view by ``deltaYaw`` around the view center (camera moves)
+%End
+    void setCameraHeadingAngle( float angle );
+%Docstring
+Set camera heading to ``angle`` (used for rotating the view)
+%End
+    void moveView( float tx, float ty );
+%Docstring
+Move the map by ``tx`` and ``ty``
+%End
+
+    bool willHandleKeyEvent( QKeyEvent *event );
+%Docstring
+Returns ``True`` if the camera controller will handle the specified key ``event``,
+preventing it from being instead handled by parents of the 3D window before
+the controller ever receives it.
+%End
+
+  public slots:
+
+    void setCameraNavigationMode( QgsCameraController::NavigationMode navigationMode );
+%Docstring
+Sets the navigation mode used by the camera controller.
+
+.. versionadded:: 3.18
+%End
+
+    void depthBufferCaptured( const QImage &depthImage );
+%Docstring
+Sets the depth buffer image used by the camera controller to calculate world position from a pixel's coordinates and depth
+
+.. versionadded:: 3.24
+%End
+
+  private:
+    QgsCameraController();
+    QgsCameraController( const QgsCameraController &other );
+  signals:
+    void cameraChanged();
+%Docstring
+Emitted when camera has been updated
+%End
+
+    void navigationModeChanged( QgsCameraController::NavigationMode mode );
+%Docstring
+Emitted when the navigation mode is changed using the hotkey ctrl + ~
+%End
+
+    void cameraMovementSpeedChanged( double speed );
+%Docstring
+Emitted whenever the camera movement speed is changed by the controller.
+%End
+
+    void setCursorPosition( QPoint point );
+%Docstring
+Emitted when the mouse cursor position should be moved to the specified ``point``
+on the map viewport.
+%End
+
+    void requestDepthBufferCapture();
+%Docstring
+Emitted to ask for the depth buffer image
+
+.. versionadded:: 3.24
+%End
+
+    void cameraRotationCenterChanged( QVector3D position );
+%Docstring
+Emitted when the camera rotation center changes
+
+.. versionadded:: 3.24
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/3d/qgscameracontroller.h                                         *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
