@@ -424,6 +424,7 @@ if (WITH_PDAL)
     processing/pdal/qgspdalalgorithmbase.cpp
 
     processing/pdal/qgsalgorithmpdalboundary.cpp
+    processing/pdal/qgsalgorithmpdalbuildvpc.cpp
     processing/pdal/qgsalgorithmpdalconvertformat.cpp
     processing/pdal/qgsalgorithmpdaldensity.cpp
     processing/pdal/qgsalgorithmpdalexportraster.cpp

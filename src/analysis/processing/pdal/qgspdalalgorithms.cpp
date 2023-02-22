@@ -20,6 +20,7 @@
 #include "qgsapplication.h"
 
 #include "qgsalgorithmpdalboundary.h"
+#include "qgsalgorithmpdalbuildvpc.h"
 #include "qgsalgorithmpdalconvertformat.h"
 #include "qgsalgorithmpdaldensity.h"
 #include "qgsalgorithmpdalexportraster.h"
@@ -88,6 +89,7 @@ void QgsPdalAlgorithms::loadAlgorithms()
   const QgsScopedRuntimeProfile profile( QObject::tr( "QGIS PDAL provider" ) );
 
   addAlgorithm( new QgsPdalBoundaryAlgorithm() );
+  addAlgorithm( new QgsPdalBuildVpcAlgorithm() );
   addAlgorithm( new QgsPdalConvertFormatAlgorithm() );
   addAlgorithm( new QgsPdalDensityAlgorithm() );
   addAlgorithm( new QgsPdalExportRasterAlgorithm() );

@@ -35,6 +35,7 @@ class TestQgsProcessingPdalAlgs: public QObject
     void cleanup() {} // will be called after every testfunction.
 
     void boundary();
+    void buildVpc();
     void convertFormat();
     void density();
     void exportRaster();
@@ -690,6 +691,50 @@ void TestQgsProcessingPdalAlgs::merge()
   QgsSettings().setValue( QStringLiteral( "/Processing/Configuration/MAX_THREADS" ), 2 );
   args = alg->createArgumentLists( parameters, *context, &feedback );
   QCOMPARE( args, QStringList() << QStringLiteral( "merge" )
+            << QStringLiteral( "--output=%1" ).arg( outputFile )
+            << QStringLiteral( "--threads=2" )
+            << pointCloud1
+            << pointCloud2
+          );
+}
+
+void TestQgsProcessingPdalAlgs::buildVpc()
+{
+  QgsPdalAlgorithmBase *alg = const_cast<QgsPdalAlgorithmBase *>( static_cast< const QgsPdalAlgorithmBase * >( QgsApplication::processingRegistry()->algorithmById( QStringLiteral( "pdal:virtualpointcloud" ) ) ) );
+
+  std::unique_ptr< QgsProcessingContext > context = std::make_unique< QgsProcessingContext >();
+  context->setProject( QgsProject::instance() );
+
+  QgsProcessingFeedback feedback;
+
+  const QString pointCloud1 = QString( TEST_DATA_DIR ) + "/point_clouds/copc/rgb.copc.laz";
+  const QString pointCloud2 = QString( TEST_DATA_DIR ) + "/point_clouds/copc/rgb16.copc.laz";
+  const QString outputFile = QDir::tempPath() + "/test.vpc";
+
+  // single layer
+  QVariantMap parameters;
+  parameters.insert( QStringLiteral( "LAYERS" ), QStringList() << pointCloud1 );
+  parameters.insert( QStringLiteral( "OUTPUT" ), outputFile );
+
+  QStringList args = alg->createArgumentLists( parameters, *context, &feedback );
+  QCOMPARE( args, QStringList() << QStringLiteral( "build_vpc" )
+            << QStringLiteral( "--output=%1" ).arg( outputFile )
+            << pointCloud1
+          );
+
+  // multiple layers
+  parameters.insert( QStringLiteral( "LAYERS" ), QStringList() << pointCloud1 << pointCloud2 );
+  args = alg->createArgumentLists( parameters, *context, &feedback );
+  QCOMPARE( args, QStringList() << QStringLiteral( "build_vpc" )
+            << QStringLiteral( "--output=%1" ).arg( outputFile )
+            << pointCloud1
+            << pointCloud2
+          );
+
+  // set max threads to 2, a --threads argument should be added
+  QgsSettings().setValue( QStringLiteral( "/Processing/Configuration/MAX_THREADS" ), 2 );
+  args = alg->createArgumentLists( parameters, *context, &feedback );
+  QCOMPARE( args, QStringList() << QStringLiteral( "build_vpc" )
             << QStringLiteral( "--output=%1" ).arg( outputFile )
             << QStringLiteral( "--threads=2" )
             << pointCloud1
