@@ -30,24 +30,10 @@ Object that controls camera movement based on user input
 %End
   public:
 
-    enum NavigationMode
-    {
-      TerrainBasedNavigation,
-      WalkNavigation
-    };
-
-    enum VerticalAxisInversion
-    {
-      Never,
-      WhenDragging,
-      Always,
-    };
-
-  public:
     ~QgsCameraController();
 
 
-    QgsCameraController::NavigationMode cameraNavigationMode() const;
+    Qgis::NavigationMode cameraNavigationMode() const;
 %Docstring
 Returns the navigation mode used by the camera controller.
 
@@ -68,14 +54,14 @@ Sets the camera movement speed
 .. versionadded:: 3.18
 %End
 
-    QgsCameraController::VerticalAxisInversion verticalAxisInversion() const;
+    Qgis::VerticalAxisInversion verticalAxisInversion() const;
 %Docstring
 Returns the vertical axis inversion behavior.
 
 .. versionadded:: 3.18
 %End
 
-    void setVerticalAxisInversion( QgsCameraController::VerticalAxisInversion inversion );
+    void setVerticalAxisInversion( Qgis::VerticalAxisInversion inversion );
 %Docstring
 Sets the vertical axis ``inversion`` behavior.
 
@@ -188,7 +174,7 @@ the controller ever receives it.
 
   public slots:
 
-    void setCameraNavigationMode( QgsCameraController::NavigationMode navigationMode );
+    void setCameraNavigationMode( Qgis::NavigationMode navigationMode );
 %Docstring
 Sets the navigation mode used by the camera controller.
 
@@ -211,7 +197,7 @@ Sets the depth buffer image used by the camera controller to calculate world pos
 Emitted when camera has been updated
 %End
 
-    void navigationModeChanged( QgsCameraController::NavigationMode mode );
+    void navigationModeChanged( Qgis::NavigationMode mode );
 %Docstring
 Emitted when the navigation mode is changed using the hotkey ctrl + ~
 %End

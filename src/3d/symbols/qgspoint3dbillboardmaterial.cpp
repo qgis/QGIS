@@ -81,6 +81,8 @@ QgsPoint3DBillboardMaterial::QgsPoint3DBillboardMaterial()
   setEffect( effect );
 }
 
+QgsPoint3DBillboardMaterial::~QgsPoint3DBillboardMaterial() = default;
+
 void QgsPoint3DBillboardMaterial::setSize( const QSizeF size )
 {
   mSize->setValue( size );

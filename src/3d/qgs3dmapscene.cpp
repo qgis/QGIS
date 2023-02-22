@@ -65,15 +65,14 @@
 #include "qgssourcecache.h"
 #include "qgsterrainentity_p.h"
 #include "qgsterraingenerator.h"
-#include "qgstessellatedpolygongeometry.h"
+#include "qgsdirectionallightsettings.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayer3drenderer.h"
 #include "qgspoint3dbillboardmaterial.h"
 #include "qgsmaplayertemporalproperties.h"
-
+#include "qgsmaplayerelevationproperties.h"
 #include "qgslinematerial_p.h"
 #include "qgs3dsceneexporter.h"
-#include "qgsabstract3drenderer.h"
 #include "qgs3dmapexportsettings.h"
 #include "qgsmessageoutput.h"
 
@@ -81,9 +80,7 @@
 #include "qgsskyboxsettings.h"
 
 #include "qgswindow3dengine.h"
-#include "qgspointcloudlayerelevationproperties.h"
 #include "qgspointcloudlayer.h"
-#include "qgspointcloudlayerchunkloader_p.h"
 
 std::function< QMap< QString, Qgs3DMapScene * >() > Qgs3DMapScene::sOpenScenesFunction = [] { return QMap< QString, Qgs3DMapScene * >(); };
 
