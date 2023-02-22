@@ -1,0 +1,180 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/3d/qgs3dmapscene.h                                               *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+
+
+class Qgs3DMapScene : QObject
+{
+%Docstring(signature="appended")
+Entity that encapsulates our 3D scene - contains all other entities (such as terrain) as children.
+
+.. note::
+
+   Not available in Python bindings
+
+.. versionadded:: 3.0
+%End
+
+%TypeHeaderCode
+#include "qgs3dmapscene.h"
+%End
+  public:
+
+    QgsCameraController *cameraController();
+%Docstring
+Returns camera controller
+%End
+
+
+    void viewZoomFull();
+%Docstring
+Resets camera view to show the whole scene (top view)
+%End
+
+    void setViewFrom2DExtent( const QgsRectangle &extent );
+%Docstring
+Resets camera view to show the extent ``extent`` (top view)
+
+.. versionadded:: 3.26
+%End
+
+    QVector<QgsPointXY> viewFrustum2DExtent();
+%Docstring
+Calculates the 2D extent viewed by the 3D camera as the vertices of the viewed trapezoid
+
+.. versionadded:: 3.26
+%End
+
+    int terrainPendingJobsCount() const;
+%Docstring
+Returns number of pending jobs of the terrain entity
+%End
+
+    int totalPendingJobsCount() const;
+%Docstring
+Returns number of pending jobs for all chunked entities
+
+.. versionadded:: 3.12
+%End
+
+    enum SceneState
+    {
+      Ready,
+      Updating,
+    };
+
+    SceneState sceneState() const;
+%Docstring
+Returns the current state of the scene
+%End
+
+
+    float worldSpaceError( float epsilon, float distance );
+%Docstring
+Given screen error (in pixels) and distance from camera (in 3D world coordinates), this function
+estimates the error in world space. Takes into account camera's field of view and the screen (3D view) size.
+%End
+
+    void exportScene( const Qgs3DMapExportSettings &exportSettings );
+%Docstring
+Exports the scene according to the scene export settings
+%End
+
+
+    QgsRectangle sceneExtent();
+%Docstring
+Returns the scene extent in the map's CRS
+
+.. versionadded:: 3.20
+%End
+
+    QgsDoubleRange elevationRange() const;
+%Docstring
+Returns the scene's elevation range
+
+.. note::
+
+   Only terrain and point cloud layers are taken into account
+
+.. versionadded:: 3.30
+%End
+
+
+
+    static QMap< QString, Qgs3DMapScene * > openScenes();
+%Docstring
+Returns a map of 3D map scenes (by name) open in the QGIS application.
+
+.. note::
+
+   Only available from the QGIS desktop application.
+
+.. versionadded:: 3.30
+%End
+
+
+  signals:
+    void terrainEntityChanged();
+%Docstring
+Emitted when the current terrain entity is replaced by a new one
+%End
+    void terrainPendingJobsCountChanged();
+%Docstring
+Emitted when the number of terrain's pending jobs changes
+%End
+
+    void totalPendingJobsCountChanged();
+%Docstring
+Emitted when the total number of pending jobs changes
+
+.. versionadded:: 3.12
+%End
+    void sceneStateChanged();
+%Docstring
+Emitted when the scene's state has changed
+%End
+
+    void fpsCountChanged( float fpsCount );
+%Docstring
+Emitted when the FPS count changes
+%End
+    void fpsCounterEnabledChanged( bool fpsCounterEnabled );
+%Docstring
+Emitted when the FPS counter is activated or deactivated
+%End
+
+    void viewed2DExtentFrom3DChanged( QVector<QgsPointXY> extent );
+%Docstring
+Emitted when the viewed 2D extent seen by the 3D camera has changed
+
+.. versionadded:: 3.26
+%End
+
+  public slots:
+    void updateTemporal();
+%Docstring
+Updates the temporale entities
+%End
+
+  private:
+    Qgs3DMapScene();
+    Qgs3DMapScene( const Qgs3DMapScene &other );
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/3d/qgs3dmapscene.h                                               *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

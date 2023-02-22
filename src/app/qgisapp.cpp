@@ -148,6 +148,7 @@
 #include "qgs3doptions.h"
 #include "qgsmapviewsmanager.h"
 #include "qgs3dmapcanvaswidget.h"
+#include "qgs3dmapscene.h"
 #endif
 
 #ifdef HAVE_GEOREFERENCER
@@ -1817,6 +1818,11 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipBadLayers
 
 #ifdef HAVE_3D
   connect( QgsProject::instance()->viewsManager(), &QgsMapViewsManager::views3DListChanged, this, &QgisApp::views3DMenuAboutToShow );
+
+  Qgs3DMapScene::sOpenScenesFunction = [this]() -> QMap< QString, Qgs3DMapScene * >
+  {
+    return map3DScenes();
+  };
 #endif
 
   setupDuplicateFeaturesAction();
@@ -9412,6 +9418,18 @@ QList<QgsMapCanvas *> QgisApp::mapCanvases()
     return !canvas || canvas->property( "browser_canvas" ).toBool();
   } ), canvases.end() );
   return canvases;
+}
+
+QMap< QString, Qgs3DMapScene * > QgisApp::map3DScenes()
+{
+  QMap< QString, Qgs3DMapScene * > res;
+#ifdef HAVE_3D
+  for ( Qgs3DMapCanvasWidget *canvas3D : std::as_const( mOpen3DMapViews ) )
+  {
+    res.insert( canvas3D->canvasName(), canvas3D->mapCanvas3D()->scene() );
+  }
+#endif
+  return res;
 }
 
 void QgisApp::removeAnnotationItems()

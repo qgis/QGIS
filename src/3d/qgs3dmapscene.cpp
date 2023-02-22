@@ -85,6 +85,8 @@
 #include "qgspointcloudlayer.h"
 #include "qgspointcloudlayerchunkloader_p.h"
 
+std::function< QMap< QString, Qgs3DMapScene * >() > Qgs3DMapScene::sOpenScenesFunction = [] { return QMap< QString, Qgs3DMapScene * >(); };
+
 Qgs3DMapScene::Qgs3DMapScene( Qgs3DMapSettings &map, QgsAbstract3DEngine *engine )
   : mMap( map )
   , mEngine( engine )
@@ -1243,6 +1245,11 @@ QgsDoubleRange Qgs3DMapScene::elevationRange() const
   const QgsDoubleRange yRange( std::min( yMin, std::numeric_limits<double>::max() ),
                                std::max( yMax, std::numeric_limits<double>::lowest() ) );
   return yRange;
+}
+
+QMap< QString, Qgs3DMapScene * > Qgs3DMapScene::openScenes()
+{
+  return sOpenScenesFunction();
 }
 
 void Qgs3DMapScene::addCameraRotationCenterEntity( QgsCameraController *controller )
