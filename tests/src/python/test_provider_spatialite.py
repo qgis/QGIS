@@ -27,9 +27,11 @@ from qgis.core import (
     QgsFeatureRequest,
     QgsFieldConstraints,
     QgsGeometry,
+    QgsPathResolver,
     QgsPointXY,
     QgsProject,
     QgsProviderRegistry,
+    QgsReadWriteContext,
     QgsRectangle,
     QgsSettings,
     QgsVectorDataProvider,
@@ -1866,6 +1868,19 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
         layer = QgsVectorLayer(
             f'dbname=\'{self.dbname}\' table="table50523" (position) sql=', 'test', 'spatialite')
         self.assertEqual(len([f for f in layer.getFeatures()]), 1)
+
+    def test_absolute_relative_uri(self):
+        context = QgsReadWriteContext()
+        context.setPathResolver(QgsPathResolver(os.path.join(TEST_DATA_DIR, "project.qgs")))
+
+        absolute_uri = 'dbname=\'{}\' table="somedata" (geom)'.format(os.path.join(TEST_DATA_DIR, 'provider', 'spatialite.db'))
+        relative_uri = 'dbname=\'./provider/spatialite.db\' table="somedata" (geom)'
+
+        meta = QgsProviderRegistry.instance().providerMetadata("spatialite")
+        assert meta is not None
+
+        self.assertEqual(meta.absoluteToRelativeUri(absolute_uri, context), relative_uri)
+        self.assertEqual(meta.relativeToAbsoluteUri(relative_uri, context), absolute_uri)
 
 
 if __name__ == '__main__':

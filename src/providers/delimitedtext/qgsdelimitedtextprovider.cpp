@@ -1418,6 +1418,30 @@ QString QgsDelimitedTextProviderMetadata::encodeUri( const QVariantMap &parts ) 
   return QString::fromLatin1( url.toEncoded() );
 }
 
+QString QgsDelimitedTextProviderMetadata::absoluteToRelativeUri( const QString &uri, const QgsReadWriteContext &context ) const
+{
+  QUrl urlSource = QUrl::fromEncoded( uri.toLatin1() );
+  QUrl urlDest = QUrl::fromLocalFile( context.pathResolver().writePath( urlSource.toLocalFile() ) );
+  urlDest.setQuery( urlSource.query() );
+  return QString::fromLatin1( urlDest.toEncoded() );
+}
+
+QString QgsDelimitedTextProviderMetadata::relativeToAbsoluteUri( const QString &uri, const QgsReadWriteContext &context ) const
+{
+  QUrl urlSource = QUrl::fromEncoded( uri.toLatin1() );
+
+  if ( !uri.startsWith( QLatin1String( "file:" ) ) )
+  {
+    QUrl file = QUrl::fromLocalFile( uri.left( uri.indexOf( '?' ) ) );
+    urlSource.setScheme( QStringLiteral( "file" ) );
+    urlSource.setPath( file.path() );
+  }
+
+  QUrl urlDest = QUrl::fromLocalFile( context.pathResolver().readPath( urlSource.toLocalFile() ) );
+  urlDest.setQuery( urlSource.query() );
+  return QString::fromLatin1( urlDest.toEncoded() );
+}
+
 QgsProviderMetadata::ProviderCapabilities QgsDelimitedTextProviderMetadata::providerCapabilities() const
 {
   return FileBasedUris;

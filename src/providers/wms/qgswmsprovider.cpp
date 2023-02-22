@@ -5217,6 +5217,41 @@ QString QgsWmsProviderMetadata::encodeUri( const QVariantMap &parts ) const
   return query.toString();
 }
 
+QString QgsWmsProviderMetadata::absoluteToRelativeUri( const QString &src, const QgsReadWriteContext &context ) const
+{
+  // handle relative paths to XYZ tiles
+  QgsDataSourceUri uri;
+  uri.setEncodedUri( src );
+  const QUrl srcUrl( uri.param( QStringLiteral( "url" ) ) );
+  if ( srcUrl.isLocalFile() )
+  {
+    // relative path will become "file:./x.txt"
+    const QString relSrcUrl = context.pathResolver().writePath( srcUrl.toLocalFile() );
+    uri.removeParam( QStringLiteral( "url" ) );  // needed because setParam() would insert second "url" key
+    uri.setParam( QStringLiteral( "url" ), QUrl::fromLocalFile( relSrcUrl ).toString() );
+    return uri.encodedUri();
+  }
+
+  return src;
+}
+
+QString QgsWmsProviderMetadata::relativeToAbsoluteUri( const QString &src, const QgsReadWriteContext &context ) const
+{
+  // handle relative paths to XYZ tiles
+  QgsDataSourceUri uri;
+  uri.setEncodedUri( src );
+  const QUrl srcUrl( uri.param( QStringLiteral( "url" ) ) );
+  if ( srcUrl.isLocalFile() )  // file-based URL? convert to relative path
+  {
+    const QString absSrcUrl = context.pathResolver().readPath( srcUrl.toLocalFile() );
+    uri.removeParam( QStringLiteral( "url" ) );  // needed because setParam() would insert second "url" key
+    uri.setParam( QStringLiteral( "url" ), QUrl::fromLocalFile( absSrcUrl ).toString() );
+    return uri.encodedUri();
+  }
+
+  return src;
+}
+
 QList<Qgis::LayerType> QgsWmsProviderMetadata::supportedLayerTypes() const
 {
   return { Qgis::LayerType::Raster };

@@ -96,6 +96,8 @@ class QgsVirtualRasterProviderMetadata: public QgsProviderMetadata
     QgsVirtualRasterProviderMetadata();
     QIcon icon() const override;
     QgsVirtualRasterProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() ) override;
+    QString absoluteToRelativeUri( const QString &uri, const QgsReadWriteContext &context ) const override;
+    QString relativeToAbsoluteUri( const QString &uri, const QgsReadWriteContext &context ) const override;
     QList< Qgis::LayerType > supportedLayerTypes() const override;
 };
 

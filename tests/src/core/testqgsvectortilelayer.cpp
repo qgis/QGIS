@@ -32,6 +32,8 @@
 #include "qgsfillsymbol.h"
 #include "qgsmarkersymbol.h"
 #include "qgsmarkersymbollayer.h"
+#include "qgsprovidermetadata.h"
+#include "qgsproviderregistry.h"
 
 /**
  * \ingroup UnitTests
@@ -60,6 +62,7 @@ class TestQgsVectorTileLayer : public QgsTest
     void test_render_withClip();
     void test_labeling();
     void test_relativePaths();
+    void test_absoluteRelativeUri();
     void test_polygonWithLineStyle();
     void test_polygonWithMarker();
 };
@@ -236,6 +239,30 @@ void TestQgsVectorTileLayer::test_relativePaths()
   QCOMPARE( layer.decodedSource( srcXyzLocal, QString(), contextAbs ), srcXyzLocal );
   QCOMPARE( layer.decodedSource( srcXyzRemote, QString(), contextAbs ), srcXyzRemote );
   QCOMPARE( layer.decodedSource( srcMbtiles, QString(), contextAbs ), srcMbtiles );
+}
+
+void TestQgsVectorTileLayer::test_absoluteRelativeUri()
+{
+  QgsReadWriteContext context;
+  context.setPathResolver( QgsPathResolver( QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/project.qgs" ) ) );
+
+  QgsProviderMetadata *vectorTileMetadata = QgsProviderRegistry::instance()->providerMetadata( "vectortile" );
+  QVERIFY( vectorTileMetadata );
+
+  QgsDataSourceUri dsAbs;
+  dsAbs.setParam( "type", "xyz" );
+  dsAbs.setParam( "url", QString( "file://%1/{z}-{x}-{y}.pbf" ).arg( mDataDir ) );
+  dsAbs.setParam( "zmax", "1" );
+
+  QgsDataSourceUri dsRel;
+  dsRel.setParam( "type", "xyz" );
+  dsRel.setParam( "url", "file:./vector_tile/{z}-{x}-{y}.pbf" );
+  dsRel.setParam( "zmax", "1" );
+
+  QString absoluteUri = dsAbs.encodedUri();
+  QString relativeUri = dsRel.encodedUri();
+  QCOMPARE( vectorTileMetadata->absoluteToRelativeUri( absoluteUri, context ), relativeUri );
+  QCOMPARE( vectorTileMetadata->relativeToAbsoluteUri( relativeUri, context ), absoluteUri );
 }
 
 void TestQgsVectorTileLayer::test_polygonWithLineStyle()

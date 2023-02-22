@@ -733,6 +733,8 @@ class QgsWmsProviderMetadata final: public QgsProviderMetadata
     QList<QgsDataItemProvider *> dataItemProviders() const override;
     QVariantMap decodeUri( const QString &uri ) const override;
     QString encodeUri( const QVariantMap &parts ) const override;
+    QString absoluteToRelativeUri( const QString &uri, const QgsReadWriteContext &context ) const override;
+    QString relativeToAbsoluteUri( const QString &uri, const QgsReadWriteContext &context ) const override;
     QList< Qgis::LayerType > supportedLayerTypes() const override;
 };
 

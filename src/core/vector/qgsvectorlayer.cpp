@@ -2229,184 +2229,20 @@ QString QgsVectorLayer::encodedSource( const QString &source, const QgsReadWrite
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  QString src( source );
-
-  // TODO: what about postgres, mysql and others, they should not go through writePath()
-  if ( providerType() == QLatin1String( "spatialite" ) )
-  {
-    QgsDataSourceUri uri( src );
-    QString database = context.pathResolver().writePath( uri.database() );
-    uri.setConnection( uri.host(), uri.port(), database, uri.username(), uri.password() );
-    src = uri.uri();
-  }
-  else if ( providerType() == QLatin1String( "ogr" ) )
-  {
-    QStringList theURIParts = src.split( '|' );
-    theURIParts[0] = context.pathResolver().writePath( theURIParts[0] );
-    src = theURIParts.join( QLatin1Char( '|' ) );
-  }
-  else if ( providerType() == QLatin1String( "gpx" ) )
-  {
-    QStringList theURIParts = src.split( '?' );
-    theURIParts[0] = context.pathResolver().writePath( theURIParts[0] );
-    src = theURIParts.join( QLatin1Char( '?' ) );
-  }
-  else if ( providerType() == QLatin1String( "delimitedtext" ) )
-  {
-    QUrl urlSource = QUrl::fromEncoded( src.toLatin1() );
-    QUrl urlDest = QUrl::fromLocalFile( context.pathResolver().writePath( urlSource.toLocalFile() ) );
-    urlDest.setQuery( urlSource.query() );
-    src = QString::fromLatin1( urlDest.toEncoded() );
-  }
-  else if ( providerType() == QLatin1String( "memory" ) )
+  if ( providerType() == QLatin1String( "memory" ) )
   {
     // Refetch the source from the provider, because adding fields actually changes the source for this provider.
-    src = dataProvider()->dataSourceUri();
-  }
-  else if ( providerType() == QLatin1String( "virtual" ) )
-  {
-    QUrl urlSource = QUrl::fromEncoded( src.toLatin1() );
-    QStringList theURIParts;
-
-    QUrlQuery query = QUrlQuery( urlSource.query() );
-    QList<QPair<QString, QString> > queryItems = query.queryItems();
-
-    for ( int i = 0; i < queryItems.size(); i++ )
-    {
-      QString key = queryItems.at( i ).first;
-      QString value = queryItems.at( i ).second;
-      if ( key == QLatin1String( "layer" ) )
-      {
-        // syntax: provider:url_encoded_source_URI(:name(:encoding)?)?
-        theURIParts = value.split( ':' );
-        theURIParts[1] = QUrl::fromPercentEncoding( theURIParts[1].toUtf8() );
-
-        if ( theURIParts[0] == QLatin1String( "delimitedtext" ) )
-        {
-          QUrl urlSource = QUrl( theURIParts[1] );
-          QUrl urlDest = QUrl::fromLocalFile( context.pathResolver().writePath( urlSource.toLocalFile() ) );
-          urlDest.setQuery( urlSource.query() );
-          theURIParts[1] = QUrl::toPercentEncoding( urlDest.toString(), QByteArray( "" ), QByteArray( ":" ) );
-        }
-        else
-        {
-          theURIParts[1] = context.pathResolver().writePath( theURIParts[1] );
-          theURIParts[1] = QUrl::toPercentEncoding( theURIParts[1] );
-        }
-
-        queryItems[i].second =  theURIParts.join( QLatin1Char( ':' ) ) ;
-      }
-    }
-
-    query.setQueryItems( queryItems );
-
-    QUrl urlDest = QUrl( urlSource );
-    urlDest.setQuery( query.query() );
-    src = QString::fromLatin1( urlDest.toEncoded() );
-  }
-  else
-  {
-    src = context.pathResolver().writePath( src );
+    return dataProvider()->dataSourceUri();
   }
 
-  return src;
+  return QgsProviderRegistry::instance()->absoluteToRelativeUri( mProviderKey, source, context );
 }
 
 QString QgsVectorLayer::decodedSource( const QString &source, const QString &provider, const QgsReadWriteContext &context ) const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  QString src( source );
-
-  if ( provider == QLatin1String( "spatialite" ) )
-  {
-    QgsDataSourceUri uri( src );
-    uri.setDatabase( context.pathResolver().readPath( uri.database() ) );
-    src = uri.uri();
-  }
-  else if ( provider == QLatin1String( "ogr" ) )
-  {
-    QStringList theURIParts = src.split( '|' );
-    theURIParts[0] = context.pathResolver().readPath( theURIParts[0] );
-    src = theURIParts.join( QLatin1Char( '|' ) );
-  }
-  else if ( provider == QLatin1String( "gpx" ) )
-  {
-    QStringList theURIParts = src.split( '?' );
-    theURIParts[0] = context.pathResolver().readPath( theURIParts[0] );
-    src = theURIParts.join( QLatin1Char( '?' ) );
-  }
-  else if ( provider == QLatin1String( "delimitedtext" ) )
-  {
-    QUrl urlSource = QUrl::fromEncoded( src.toLatin1() );
-
-    if ( !src.startsWith( QLatin1String( "file:" ) ) )
-    {
-      QUrl file = QUrl::fromLocalFile( src.left( src.indexOf( '?' ) ) );
-      urlSource.setScheme( QStringLiteral( "file" ) );
-      urlSource.setPath( file.path() );
-    }
-
-    QUrl urlDest = QUrl::fromLocalFile( context.pathResolver().readPath( urlSource.toLocalFile() ) );
-    urlDest.setQuery( urlSource.query() );
-    src = QString::fromLatin1( urlDest.toEncoded() );
-  }
-  else if ( provider == QLatin1String( "virtual" ) )
-  {
-    QUrl urlSource = QUrl::fromEncoded( src.toLatin1() );
-    QStringList theURIParts;
-
-    QUrlQuery query = QUrlQuery( urlSource.query() );
-    QList<QPair<QString, QString> > queryItems = query.queryItems();
-
-    for ( int i = 0; i < queryItems.size(); i++ )
-    {
-      QString key = queryItems.at( i ).first;
-      QString value = queryItems.at( i ).second;
-      if ( key == QLatin1String( "layer" ) )
-      {
-        // syntax: provider:url_encoded_source_URI(:name(:encoding)?)?
-        theURIParts = value.split( ':' );
-        theURIParts[1] = QUrl::fromPercentEncoding( theURIParts[1].toUtf8() );
-
-        if ( theURIParts[0] == QLatin1String( "delimitedtext" ) )
-        {
-          QUrl urlSource = QUrl( theURIParts[1] );
-
-          if ( !theURIParts[1].startsWith( QLatin1String( "file:" ) ) )
-          {
-            QUrl file = QUrl::fromLocalFile( theURIParts[1].left( theURIParts[1].indexOf( '?' ) ) );
-            urlSource.setScheme( QStringLiteral( "file" ) );
-            urlSource.setPath( file.path() );
-          }
-
-          QUrl urlDest = QUrl::fromLocalFile( context.pathResolver().readPath( urlSource.toLocalFile() ) );
-          urlDest.setQuery( urlSource.query() );
-
-          theURIParts[1] = urlDest.toString();
-        }
-        else
-        {
-          theURIParts[1] = context.pathResolver().readPath( theURIParts[1] );
-        }
-
-        theURIParts[1] = QUrl::toPercentEncoding( theURIParts[1] );
-        queryItems[i].second =  theURIParts.join( QLatin1Char( ':' ) ) ;
-      }
-    }
-
-    query.setQueryItems( queryItems );
-
-    QUrl urlDest = QUrl( urlSource );
-    urlDest.setQuery( query.query() );
-    src = QString::fromLatin1( urlDest.toEncoded() );
-  }
-  else
-  {
-    src = context.pathResolver().readPath( src );
-  }
-
-  return src;
+  return QgsProviderRegistry::instance()->relativeToAbsoluteUri( provider, source, context );
 }
 
 

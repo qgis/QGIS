@@ -5923,6 +5923,21 @@ QString QgsSpatiaLiteProviderMetadata::encodeUri( const QVariantMap &parts ) con
   return dsUri.uri();
 }
 
+QString QgsSpatiaLiteProviderMetadata::absoluteToRelativeUri( const QString &src, const QgsReadWriteContext &context ) const
+{
+  QgsDataSourceUri uri( src );
+  QString database = context.pathResolver().writePath( uri.database() );
+  uri.setConnection( uri.host(), uri.port(), database, uri.username(), uri.password() );
+  return uri.uri();
+}
+
+QString QgsSpatiaLiteProviderMetadata::relativeToAbsoluteUri( const QString &src, const QgsReadWriteContext &context ) const
+{
+  QgsDataSourceUri uri( src );
+  uri.setDatabase( context.pathResolver().readPath( uri.database() ) );
+  return uri.uri();
+}
+
 QgsProviderMetadata::ProviderCapabilities QgsSpatiaLiteProviderMetadata::providerCapabilities() const
 {
   return FileBasedUris;

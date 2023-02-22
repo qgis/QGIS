@@ -589,6 +589,24 @@ QVariantMap QgsGpxProviderMetadata::decodeUri( const QString &uri ) const
   return QgsGPXProvider::decodeUri( uri );
 }
 
+QString QgsGpxProviderMetadata::absoluteToRelativeUri( const QString &uri, const QgsReadWriteContext &context ) const
+{
+  QString src = uri;
+  QStringList theURIParts = src.split( '?' );
+  theURIParts[0] = context.pathResolver().writePath( theURIParts[0] );
+  src = theURIParts.join( QLatin1Char( '?' ) );
+  return src;
+}
+
+QString QgsGpxProviderMetadata::relativeToAbsoluteUri( const QString &uri, const QgsReadWriteContext &context ) const
+{
+  QString src = uri;
+  QStringList theURIParts = src.split( '?' );
+  theURIParts[0] = context.pathResolver().readPath( theURIParts[0] );
+  src = theURIParts.join( QLatin1Char( '?' ) );
+  return src;
+}
+
 QList<Qgis::LayerType> QgsGpxProviderMetadata::supportedLayerTypes() const
 {
   return { Qgis::LayerType::Vector };

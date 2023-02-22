@@ -73,6 +73,7 @@ class TestQgsGdalProvider : public QgsTest
     void testGdalProviderQuerySublayers_NetCDF();
     void testGdalProviderQuerySublayersFastScan();
     void testGdalProviderQuerySublayersFastScan_NetCDF();
+    void testGdalProviderAbsoluteRelativeUri();
 
   private:
     QString mTestDataDir;
@@ -815,6 +816,27 @@ void TestQgsGdalProvider::testGdalProviderQuerySublayersFastScan_NetCDF()
   QCOMPARE( res.at( 0 ).type(), Qgis::LayerType::Raster );
   QVERIFY( res.at( 0 ).skippedContainerScan() );
 
+}
+
+void TestQgsGdalProvider::testGdalProviderAbsoluteRelativeUri()
+{
+  QgsReadWriteContext context;
+  context.setPathResolver( QgsPathResolver( QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/project.qgs" ) ) );
+
+  QString absoluteUri = QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/landsat.tif" );
+  QString relativeUri = QStringLiteral( "./landsat.tif" );
+  QCOMPARE( mGdalMetadata->absoluteToRelativeUri( absoluteUri, context ), relativeUri );
+  QCOMPARE( mGdalMetadata->relativeToAbsoluteUri( relativeUri, context ), absoluteUri );
+
+  absoluteUri = QStringLiteral( "GPKG:%1/mixed_layers.gpkg:band1" ).arg( TEST_DATA_DIR );
+  relativeUri = QStringLiteral( "GPKG:./mixed_layers.gpkg:band1" );
+  QCOMPARE( mGdalMetadata->absoluteToRelativeUri( absoluteUri, context ), relativeUri );
+  QCOMPARE( mGdalMetadata->relativeToAbsoluteUri( relativeUri, context ), absoluteUri );
+
+  absoluteUri = QStringLiteral( "NETCDF:\"%1/landsat.nc\":Band1" ).arg( TEST_DATA_DIR );
+  relativeUri = QStringLiteral( "NETCDF:\"./landsat.nc\":Band1" );
+  QCOMPARE( mGdalMetadata->absoluteToRelativeUri( absoluteUri, context ), relativeUri );
+  QCOMPARE( mGdalMetadata->relativeToAbsoluteUri( relativeUri, context ), absoluteUri );
 }
 
 QGSTEST_MAIN( TestQgsGdalProvider )
