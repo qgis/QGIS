@@ -77,6 +77,12 @@ Checks whether the point is in front of the ray
 Returns the angle between the ray and the vector from the ray's origin and the point ``point``
 %End
 
+    bool intersects( const QgsBox3d &box ) const;
+%Docstring
+Checks whether the ray intersects ``box``
+
+.. versionadded:: 3.32
+%End
 };
 
 /************************************************************************
