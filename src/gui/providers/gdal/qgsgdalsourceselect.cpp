@@ -259,8 +259,20 @@ void QgsGdalSourceSelect::fillOpenOptions()
   if ( mDataSources.isEmpty() )
     return;
 
+  const QString firstDataSource = mDataSources.at( 0 );
+  const QString vsiPrefix = qgsVsiPrefix( firstDataSource );
+  const QString scheme = QUrl( firstDataSource ).scheme();
+  const bool isRemoteNonVsiCurlUrl = vsiPrefix.isEmpty() && ( scheme.startsWith( QLatin1String( "http" ) ) || scheme == QLatin1String( "ftp" ) );
+  if ( isRemoteNonVsiCurlUrl )
+  {
+    // it can be very expensive to determine open options for non /vsicurl/ http uris -- it may require a full download of the remote dataset,
+    // so just be safe and don't show any open options. Users can always manually append the /vsicurl/ prefix if they desire these, OR
+    // correctly use the HTTP "Protocol" option instead.
+    return;
+  }
+
   GDALDriverH hDriver;
-  hDriver = GDALIdentifyDriverEx( mDataSources[0].toUtf8().toStdString().c_str(), GDAL_OF_RASTER, nullptr, nullptr );
+  hDriver = GDALIdentifyDriverEx( firstDataSource.toUtf8().toStdString().c_str(), GDAL_OF_RASTER, nullptr, nullptr );
   if ( hDriver == nullptr )
     return;
 
