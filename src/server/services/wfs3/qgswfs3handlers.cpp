@@ -1399,7 +1399,7 @@ void QgsWfs3CollectionsItemsHandler::handleRequest( const QgsServerApiContext &c
       if ( offset != 0 )
       {
         json prevLink = selfLink;
-        prevLink["href"] = QStringLiteral( "%1&offset=%2&limit=%3" ).arg( cleanedUrlAsString ).arg( std::max<long>( 0, limit - offset ) ).arg( limit ).toStdString();
+        prevLink["href"] = QStringLiteral( "%1&offset=%2&limit=%3" ).arg( cleanedUrlAsString ).arg( std::max<long>( 0, offset - limit ) ).arg( limit ).toStdString();
         prevLink["rel"] = "prev";
         prevLink["title"] = "Previous page";
         data["links"].push_back( prevLink );
