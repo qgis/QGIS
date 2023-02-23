@@ -22,6 +22,7 @@
 #include "qgspointcloudlayer.h"
 #include "qgisapp.h"
 #include "qgsstringutils.h"
+#include "qgsmessagebar.h"
 
 QgsLayerTreeViewFilterIndicatorProvider::QgsLayerTreeViewFilterIndicatorProvider( QgsLayerTreeView *view )
   : QgsLayerTreeViewIndicatorProvider( view )
@@ -34,8 +35,15 @@ void QgsLayerTreeViewFilterIndicatorProvider::onIndicatorClicked( const QModelIn
   if ( !QgsLayerTree::isLayer( node ) )
     return;
 
-  QgisApp::instance()->layerSubsetString( QgsLayerTree::toLayer( node )->layer() );
+  QgsMapLayer *layer = QgsLayerTree::toLayer( node )->layer();
+  QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer );
+  if ( vl && vl->isEditable() )
+  {
+    QgisApp::instance()->messageBar()->pushWarning( tr( "Edit filter" ),  tr( "Cannot edit filter when layer is in edit mode" ) );
+    return;
+  }
 
+  QgisApp::instance()->layerSubsetString( layer );
 }
 
 QString QgsLayerTreeViewFilterIndicatorProvider::iconName( QgsMapLayer *layer )
