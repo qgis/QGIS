@@ -848,17 +848,32 @@ void TestQgsGeoreferencer::testGdalCommands()
   QgsGeoreferencerMainWindow window;
   window.openLayer( QgsMapLayerType::RasterLayer, QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/landsat.tif" ) );
 
-  window.addPoint( QgsPointXY( 783414, 3350122 ), QgsPointXY( 783414, 3350122 ), QgsCoordinateReferenceSystem() );
+  window.addPoint( QgsPointXY( 783414, 3350122 ), QgsPointXY( 783414.001234567, 3350122.002345678 ), QgsCoordinateReferenceSystem() );
   window.addPoint( QgsPointXY( 791344, 3349795 ), QgsPointXY( 791344, 33497952 ), QgsCoordinateReferenceSystem() );
   window.addPoint( QgsPointXY( 783077, 334093 ), QgsPointXY( 783077, 334093 ), QgsCoordinateReferenceSystem() );
   window.addPoint( QgsPointXY( 791134, 3341401 ), QgsPointXY( 791134, 3341401 ), QgsCoordinateReferenceSystem() );
 
   QString command = window.generateGDALtranslateCommand();
   // gdal_translate command must use source pixels, not geographic coordinates
-  QCOMPARE( command, QStringLiteral( "gdal_translate -of GTiff -co TFW=YES -gcp 30.7303 14.0548 783414 3.35012e+06 -gcp 169.853 19.7917 791344 3.3498e+07 -gcp 24.818 52926.8 783077 334093 -gcp 166.169 167.055 791134 3.3414e+06 \"%1\" \"%2\"" ).arg(
+  QCOMPARE( command, QStringLiteral( "gdal_translate -of GTiff -co TFW=YES -gcp 30.73 14.055 783414.001 3350122.002 -gcp 169.853 19.792 791344 33497952 -gcp 24.818 52926.844 783077 334093 -gcp 166.169 167.055 791134 3341401 \"%1\" \"%2\"" ).arg(
               QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/landsat.tif" ),
               QDir::tempPath() + QStringLiteral( "/landsat.tif" ) ) );
 
+  command = window.generateGDALogr2ogrCommand();
+  QCOMPARE( command, QStringLiteral( "ogr2ogr -gcp 783414 3350122 783414.001 3350122.002 -gcp 791344 3349795 791344 33497952 -gcp 783077 334093 783077 334093 -gcp 791134 3341401 791134 3341401 -tps -t_srs EPSG:32633 \"\" \"%1\"" ).arg(
+              QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/landsat.tif" ) ) );
+
+  window.mTargetCrs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) );
+  command = window.generateGDALtranslateCommand();
+  QgsDebugMsg( command );
+  QCOMPARE( command, QStringLiteral( "gdal_translate -of GTiff -co TFW=YES -gcp 30.73 14.055 783414.00123457 3350122.00234568 -gcp 169.853 19.792 791344 33497952 -gcp 24.818 52926.844 783077 334093 -gcp 166.169 167.055 791134 3341401 \"%1\" \"%2\"" ).arg(
+              QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/landsat.tif" ),
+              QDir::tempPath() + QStringLiteral( "/landsat.tif" ) ) );
+
+  command = window.generateGDALogr2ogrCommand();
+  QgsDebugMsg( command );
+  QCOMPARE( command, QStringLiteral( "ogr2ogr -gcp 783414 3350122 783414.00123457 3350122.00234568 -gcp 791344 3349795 791344 33497952 -gcp 783077 334093 783077 334093 -gcp 791134 3341401 791134 3341401 -tps -t_srs EPSG:4326 \"\" \"%1\"" ).arg(
+              QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/landsat.tif" ) ) );
 }
 
 QGSTEST_MAIN( TestQgsGeoreferencer )

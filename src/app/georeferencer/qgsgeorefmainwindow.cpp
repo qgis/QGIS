@@ -58,6 +58,7 @@
 #include "qgsgeoreftooldeletepoint.h"
 #include "qgsgeoreftoolmovepoint.h"
 #include "qgsgcpcanvasitem.h"
+#include "qgscoordinateutils.h"
 
 #include "qgsgcplistwidget.h"
 
@@ -2114,12 +2115,16 @@ QString QgsGeoreferencerMainWindow::generateGDALtranslateCommand( bool generateT
     gdalCommand << QStringLiteral( "-co TFW=YES" );
   }
 
+  const int precision = QgsCoordinateUtils::calculateCoordinatePrecision( mTargetCrs );
   for ( QgsGeorefDataPoint *pt : std::as_const( mPoints ) )
   {
     const QgsPointXY pixel = mGeorefTransform.toSourcePixel( pt->sourcePoint() );
     const QgsPointXY transformedDestinationPoint = pt->transformedDestinationPoint( mTargetCrs, QgsProject::instance()->transformContext() );
-    gdalCommand << QStringLiteral( "-gcp %1 %2 %3 %4" ).arg( pixel.x() ).arg( -pixel.y() )
-                .arg( transformedDestinationPoint.x() ).arg( transformedDestinationPoint.y() );
+    gdalCommand << QStringLiteral( "-gcp %1 %2 %3 %4" ).arg(
+                  qgsDoubleToString( pixel.x(), 3 ),
+                  qgsDoubleToString( -pixel.y(), 3 ),
+                  qgsDoubleToString( transformedDestinationPoint.x(), precision ),
+                  qgsDoubleToString( transformedDestinationPoint.y(), precision ) );
   }
 
   QFileInfo rasterFileInfo( mFileName );
@@ -2134,11 +2139,17 @@ QString QgsGeoreferencerMainWindow::generateGDALogr2ogrCommand() const
   QStringList gdalCommand;
   gdalCommand << QStringLiteral( "ogr2ogr" );
 
+  const int sourcePrecision = QgsCoordinateUtils::calculateCoordinatePrecision( mLayer->crs() );
+  const int destPrecision = QgsCoordinateUtils::calculateCoordinatePrecision( mTargetCrs );
+
   for ( QgsGeorefDataPoint *pt : std::as_const( mPoints ) )
   {
     const QgsPointXY dest = pt->transformedDestinationPoint( mTargetCrs, QgsProject::instance()->transformContext() );
-    gdalCommand << QStringLiteral( "-gcp %1 %2 %3 %4" ).arg( pt->sourcePoint().x() ).arg( pt->sourcePoint().y() )
-                .arg( dest.x() ).arg( dest.y() );
+    gdalCommand << QStringLiteral( "-gcp %1 %2 %3 %4" ).arg(
+                  qgsDoubleToString( pt->sourcePoint().x(), sourcePrecision ),
+                  qgsDoubleToString( pt->sourcePoint().y(), sourcePrecision ),
+                  qgsDoubleToString( dest.x(), destPrecision ),
+                  qgsDoubleToString( dest.y(), destPrecision ) );
   }
 
   switch ( mTransformMethod )
