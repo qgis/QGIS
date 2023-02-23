@@ -197,8 +197,6 @@ void QgsSettingsTreeNamedListNode::deleteItem( const QString &item, const QStrin
 {
   if ( namedNodesCount() - 1 != parentsNamedItems.count() )
     throw QgsSettingsException( QObject::tr( "The number of given parent named items (%1) doesn't match with the number of named items in the key (%2)." ).arg( parentsNamedItems.count(), namedNodesCount() ) );
-  if ( !mOptions.testFlag( Qgis::SettingsTreeNodeOption::NamedListSelectedItemSetting ) )
-    throw QgsSettingsException( QObject::tr( "The named list node has no option to set the current selected entry." ) );
 
   QStringList args = parentsNamedItems;
   args << item;
