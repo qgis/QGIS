@@ -856,7 +856,8 @@ int QgsProcessingExec::showAlgorithmHelp( const QString &inputId, bool useJson )
     addAlgorithmInformation( algorithmDetails, alg );
     json.insert( QStringLiteral( "algorithm_details" ), algorithmDetails );
     QVariantMap providerJson;
-    addProviderInformation( providerJson, alg->provider() );
+    if ( alg->provider() )
+      addProviderInformation( providerJson, alg->provider() );
     json.insert( QStringLiteral( "provider_details" ), providerJson );
   }
 
