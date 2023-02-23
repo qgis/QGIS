@@ -267,6 +267,7 @@ bool QgsGrassRasterImport::import()
     {
       case Qgis::DataType::Byte:
       case Qgis::DataType::UInt16:
+      case Qgis::DataType::Int8:
       case Qgis::DataType::Int16:
       case Qgis::DataType::UInt32:
       case Qgis::DataType::Int32:
