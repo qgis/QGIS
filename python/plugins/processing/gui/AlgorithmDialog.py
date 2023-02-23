@@ -205,7 +205,7 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
 
             self.clearProgress()
             self.feedback.pushVersionInfo(self.algorithm().provider())
-            if self.algorithm().provider().warningMessage():
+            if self.algorithm().provider() and self.algorithm().provider().warningMessage():
                 self.feedback.reportError(self.algorithm().provider().warningMessage())
 
             self.feedback.pushInfo(
