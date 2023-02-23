@@ -985,7 +985,7 @@ Content-Type: application/geo+json
       "type": "text/html"
     },
     {
-      "href": "http://server.qgis.org/wfs3/collections/as-areas-short-name/items?crs=http10A10F10Fwww.opengis.net10Fdef10Fcrs10FEPSG10F010F4326&offset=10&limit=10",
+      "href": "http://server.qgis.org/wfs3/collections/as-areas-short-name/items?crs=http%3A%2F%2Fwww.opengis.net%2Fdef%2Fcrs%2FEPSG%2F0%2F4326&offset=10&limit=10",
       "rel": "next",
       "title": "Next page",
       "type": "application/geo+json"
