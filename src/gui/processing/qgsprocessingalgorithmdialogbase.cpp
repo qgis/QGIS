@@ -310,12 +310,12 @@ void QgsProcessingAlgorithmDialogBase::setAlgorithm( QgsProcessingAlgorithm *alg
     textShortHelp->show();
   }
 
-  if ( algorithm->helpUrl().isEmpty() && algorithm->provider()->helpId().isEmpty() )
+  if ( algorithm->helpUrl().isEmpty() && ( !algorithm->provider() || algorithm->provider()->helpId().isEmpty() ) )
   {
     mButtonBox->removeButton( mButtonBox->button( QDialogButtonBox::Help ) );
   }
 
-  const QString warning = algorithm->provider()->warningMessage();
+  const QString warning = algorithm->provider() ? algorithm->provider()->warningMessage() : QString();
   if ( !warning.isEmpty() )
   {
     mMessageBar->pushMessage( warning, Qgis::MessageLevel::Warning );
@@ -445,7 +445,7 @@ void QgsProcessingAlgorithmDialogBase::finished( bool, const QVariantMap &, QgsP
 void QgsProcessingAlgorithmDialogBase::openHelp()
 {
   QUrl algHelp = mAlgorithm->helpUrl();
-  if ( algHelp.isEmpty() )
+  if ( algHelp.isEmpty() && mAlgorithm->provider() )
   {
     algHelp = QgsHelp::helpUrl( QStringLiteral( "processing_algs/%1/%2.html#%3" ).arg( mAlgorithm->provider()->helpId(), mAlgorithm->groupId(), QStringLiteral( "%1%2" ).arg( mAlgorithm->provider()->helpId() ).arg( mAlgorithm->name() ) ) );
   }
