@@ -1383,6 +1383,10 @@ void QgsWfs3CollectionsItemsHandler::handleRequest( const QgsServerApiContext &c
       {
         cleanedUrlAsString += '?';
       }
+      else
+      {
+        cleanedUrlAsString += '&';
+      }
 
       // Get the self link
       json selfLink;
@@ -1399,7 +1403,7 @@ void QgsWfs3CollectionsItemsHandler::handleRequest( const QgsServerApiContext &c
       if ( offset != 0 )
       {
         json prevLink = selfLink;
-        prevLink["href"] = QStringLiteral( "%1&offset=%2&limit=%3" ).arg( cleanedUrlAsString ).arg( std::max<long>( 0, offset - limit ) ).arg( limit ).toStdString();
+        prevLink["href"] = QStringLiteral( "%1offset=%2&limit=%3" ).arg( cleanedUrlAsString ).arg( std::max<long>( 0, offset - limit ) ).arg( limit ).toStdString();
         prevLink["rel"] = "prev";
         prevLink["title"] = "Previous page";
         data["links"].push_back( prevLink );
@@ -1408,7 +1412,7 @@ void QgsWfs3CollectionsItemsHandler::handleRequest( const QgsServerApiContext &c
       if ( limit + offset < matchedFeaturesCount )
       {
         json nextLink = selfLink;
-        nextLink["href"] = QStringLiteral( "%1&offset=%2&limit=%3" ).arg( cleanedUrlAsString ).arg( std::min<long>( matchedFeaturesCount, limit + offset ) ).arg( limit ).toStdString();
+        nextLink["href"] = QStringLiteral( "%1offset=%2&limit=%3" ).arg( cleanedUrlAsString ).arg( std::min<long>( matchedFeaturesCount, limit + offset ) ).arg( limit ).toStdString();
         nextLink["rel"] = "next";
         nextLink["title"] = "Next page";
         data["links"].push_back( nextLink );
