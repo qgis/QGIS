@@ -33,7 +33,7 @@ Content-Type: application/geo+json
       "type": "text/html"
     },
     {
-      "href": "http://server.qgis.org/wfs3/collections/testlayer èé/items?&offset=1&limit=1",
+      "href": "http://server.qgis.org/wfs3/collections/testlayer èé/items?offset=1&limit=1",
       "rel": "next",
       "title": "Next page",
       "type": "application/geo+json"
