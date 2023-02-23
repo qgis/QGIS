@@ -1945,8 +1945,11 @@ void QgsLineString::sumUpArea( double &sum ) const
 
   mSummedUpArea = 0;
   const int maxIndex = mX.size();
-  if ( maxIndex == 0 )
+  if ( maxIndex < 2 )
+  {
+    mHasCachedSummedUpArea = true;
     return;
+  }
 
   const double *x = mX.constData();
   const double *y = mY.constData();
@@ -1954,7 +1957,7 @@ void QgsLineString::sumUpArea( double &sum ) const
   double prevY = *y++;
   for ( int i = 1; i < maxIndex; ++i )
   {
-    mSummedUpArea += prevX * ( *y ) - prevY * ( *x );
+    mSummedUpArea += prevX * ( *y - prevY ) - prevY * ( *x - prevX );
     prevX = *x++;
     prevY = *y++;
   }
