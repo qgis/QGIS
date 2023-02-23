@@ -7179,6 +7179,14 @@ class TestQgsGeometry(unittest.TestCase):
         self.assertTrue(poly.boundingBox().intersects(bbox))
         self.assertTrue(poly.intersects(bbox))  # was failing here!
 
+    def testPolygonRings(self):
+        """Test rings ownership transfer, GH #51978"""
+
+        ring = QgsLineString([0.5, 0.5, 0.9, 0.9], [0.5, 0.9, 0.9, 0.5])
+        p = QgsPolygon(QgsLineString([0, 0, 1, 1], [0, 1, 1, 0]), rings=[ring])
+        del ring
+        p.asWkt()  # This was crashing!
+
 
 if __name__ == '__main__':
     unittest.main()

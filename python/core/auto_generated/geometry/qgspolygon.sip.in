@@ -37,6 +37,28 @@ Ownership of ``exterior`` and ``rings`` is transferred to the polygon.
 
 .. versionadded:: 3.14
 %End
+%MethodCode
+
+    sipCpp = new sipQgsPolygon( a0 );
+
+    for ( int i = 0; i < a1->size(); ++i )
+    {
+
+      PyObject *obj;
+
+      // Get the Python wrapper for the QgsLineString instance
+      if ( ( obj = sipConvertFromType( a1->at( i ), sipType_QgsLineString, NULL ) ) != NULL )
+      {
+        sipCpp->addInteriorRing( a1->at( i ) );
+      }
+      else
+      {
+        sipIsErr = 1;
+      }
+
+    }
+    sipCpp->clearCache();
+%End
 
     virtual QString geometryType() const /HoldGIL/;
 

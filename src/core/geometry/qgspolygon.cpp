@@ -130,7 +130,7 @@ int QgsPolygon::wkbSize( QgsAbstractGeometry::WkbFlags ) const
   {
     binarySize += sizeof( quint32 ) + mExteriorRing->numPoints() * ( 2 + mExteriorRing->is3D() + mExteriorRing->isMeasure() ) * sizeof( double );
   }
-  for ( const QgsCurve *curve : mInteriorRings )
+  for ( const QgsCurve *curve : std::as_const( mInteriorRings ) )
   {
     binarySize += sizeof( quint32 ) + curve->numPoints() * ( 2 + curve->is3D() + curve->isMeasure() ) * sizeof( double );
   }

@@ -47,7 +47,33 @@ class CORE_EXPORT QgsPolygon: public QgsCurvePolygon
      *
      * \since QGIS 3.14
      */
+#ifndef SIP_RUN
+    QgsPolygon( QgsLineString *exterior, const QList< QgsLineString * > &rings = QList< QgsLineString * >() );
+#else
     QgsPolygon( QgsLineString *exterior SIP_TRANSFER, const QList< QgsLineString * > &rings SIP_TRANSFER = QList< QgsLineString * >() ) SIP_HOLDGIL;
+    % MethodCode
+
+    sipCpp = new sipQgsPolygon( a0 );
+
+    for ( int i = 0; i < a1->size(); ++i )
+    {
+
+      PyObject *obj;
+
+      // Get the Python wrapper for the QgsLineString instance
+      if ( ( obj = sipConvertFromType( a1->at( i ), sipType_QgsLineString, NULL ) ) != NULL )
+      {
+        sipCpp->addInteriorRing( a1->at( i ) );
+      }
+      else
+      {
+        sipIsErr = 1;
+      }
+
+    }
+    sipCpp->clearCache();
+    % End
+#endif
 
     QString geometryType() const override SIP_HOLDGIL;
     QgsPolygon *clone() const override SIP_FACTORY;
