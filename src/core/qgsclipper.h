@@ -566,9 +566,9 @@ inline bool QgsClipper::inside( double x, double y, double z, Boundary boundary,
     case YMin: // y > MIN_Y is inside
       return ( y > boundaryValue );
     case ZMax: // z < MAX_Z is inside
-      return ( z < boundaryValue );
+      return z < boundaryValue || std::isnan( z ) ;
     case ZMin: // z > MIN_Z is inside
-      return ( z > boundaryValue );
+      return z > boundaryValue || std::isnan( z );
   }
   return false;
 }
