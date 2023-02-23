@@ -746,7 +746,6 @@ void Qgs3DMapScene::addLayerEntity( QgsMapLayer *layer )
   if ( layer->type() == Qgis::LayerType::PointCloud )
   {
     QgsPointCloudLayer *pclayer = qobject_cast<QgsPointCloudLayer *>( layer );
-    connect( pclayer, &QgsPointCloudLayer::renderer3DChanged, this, &Qgs3DMapScene::onLayerRenderer3DChanged );
     connect( pclayer, &QgsPointCloudLayer::subsetStringChanged, this, &Qgs3DMapScene::onLayerRenderer3DChanged );
   }
 }
@@ -781,7 +780,6 @@ void Qgs3DMapScene::removeLayerEntity( QgsMapLayer *layer )
   if ( layer->type() == Qgis::LayerType::PointCloud )
   {
     QgsPointCloudLayer *pclayer = qobject_cast<QgsPointCloudLayer *>( layer );
-    disconnect( pclayer, &QgsPointCloudLayer::renderer3DChanged, this, &Qgs3DMapScene::onLayerRenderer3DChanged );
     disconnect( pclayer, &QgsPointCloudLayer::subsetStringChanged, this, &Qgs3DMapScene::onLayerRenderer3DChanged );
   }
 }
