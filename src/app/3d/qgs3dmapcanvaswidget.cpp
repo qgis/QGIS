@@ -96,9 +96,9 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
   actionGroup->setExclusive( true );
   actionCameraControl->setChecked( true );
 
-  QAction *actionAnim = toolBar->addAction( QIcon( QgsApplication::iconPath( "mTaskRunning.svg" ) ),
-                        tr( "Animations" ), this, &Qgs3DMapCanvasWidget::toggleAnimations );
-  actionAnim->setCheckable( true );
+  mActionAnim = toolBar->addAction( QIcon( QgsApplication::iconPath( "mTaskRunning.svg" ) ),
+                                    tr( "Animations" ), this, &Qgs3DMapCanvasWidget::toggleAnimations );
+  mActionAnim->setCheckable( true );
 
   toolBar->addAction( QgsApplication::getThemeIcon( QStringLiteral( "mActionSaveMapAsImage.svg" ) ),
                       tr( "Save as Image…" ), this, &Qgs3DMapCanvasWidget::saveAsImage );
