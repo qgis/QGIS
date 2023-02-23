@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsdemterraintilegeometry_p.h"
+#include "qgsray3d.h"
 #include <QMatrix4x4>
 
 
@@ -363,6 +364,12 @@ static bool intersectionDemTriangles( const QByteArray &vertexBuf, const QByteAr
 bool DemTerrainTileGeometry::rayIntersection( const QgsRayCastingUtils::Ray3D &ray, const QMatrix4x4 &worldTransform, QVector3D &intersectionPoint )
 {
   return intersectionDemTriangles( mVertexBuffer->data(), mIndexBuffer->data(), ray, worldTransform, intersectionPoint );
+}
+
+bool DemTerrainTileGeometry::rayIntersection( const QgsRay3D &ray, const QMatrix4x4 &worldTransform, QVector3D &intersectionPoint )
+{
+  QgsRayCastingUtils::Ray3D r( ray.origin(), ray.direction(), 10000 );
+  return intersectionDemTriangles( mVertexBuffer->data(), mIndexBuffer->data(), r, worldTransform, intersectionPoint );
 }
 
 void DemTerrainTileGeometry::init()

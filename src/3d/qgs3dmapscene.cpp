@@ -54,6 +54,7 @@
 #include "qgsmeshlayer.h"
 #include "qgsmeshlayer3drenderer.h"
 #include "qgspoint3dsymbol.h"
+#include "qgspointcloudrequest.h"
 #include "qgsrulebased3drenderer.h"
 #include "qgspointcloudlayer.h"
 #include "qgspointcloudlayer3drenderer.h"
@@ -79,6 +80,9 @@
 #include "qgspointcloudlayerelevationproperties.h"
 #include "qgspointcloudlayer.h"
 #include "qgspointcloudlayerchunkloader_p.h"
+#include "qgsvectorlayerchunkloader_p.h"
+#include "qgsrulebasedchunkloader_p.h"
+#include "qgsdemterraintilegeometry_p.h"
 
 Qgs3DMapScene::Qgs3DMapScene( Qgs3DMapSettings &map, QgsAbstract3DEngine *engine )
   : mMap( map )
@@ -1233,4 +1237,267 @@ void Qgs3DMapScene::on3DAxisSettingsChanged()
                                &mMap );
     }
   }
+}
+
+QVector<QPair<QgsMapLayer *, QVector<QVariantMap>>> Qgs3DMapScene::castRay( const QgsRay3D &ray ) const
+{
+  QVector<QPair<QgsMapLayer *, QVector<QVariantMap>>> results;
+  const QList<QgsMapLayer *> keys = mLayerEntities.keys();
+  for ( const auto &layer : keys )
+  {
+    if ( QgsChunkedEntity *entity = qobject_cast<QgsChunkedEntity *>( mLayerEntities[layer] ) )
+    {
+      QgsVectorLayerChunkedEntity *vector = qobject_cast<QgsVectorLayerChunkedEntity *>( entity );
+      QgsRuleBasedChunkedEntity *ruled = qobject_cast<QgsRuleBasedChunkedEntity *>( entity );
+      if ( vector || ruled )
+      {
+        const auto result = intersectVectorEntity( ray, entity );
+        if ( !result.isEmpty() )
+          results.append( qMakePair( layer, result ) );
+      }
+      else if ( QgsPointCloudLayerChunkedEntity *pointCloud = qobject_cast<QgsPointCloudLayerChunkedEntity *>( entity ) )
+      {
+        QgsPointCloudLayer *pclayer = qobject_cast<QgsPointCloudLayer *>( layer );
+        const auto result = intersectEntity( ray, pointCloud, pclayer );
+        if ( !result.isEmpty() )
+          results.append( qMakePair( layer, result ) );
+      }
+    }
+  }
+  if ( mTerrain ) // || QgsTerrainEntity *terrain = qobject_cast<QgsTerrainEntity *>( entity ) )
+  {
+    //todo: handle terrain intersection
+    const auto result = intersectEntity( ray, mTerrain );
+    if ( !result.isEmpty() )
+      results.append( qMakePair( nullptr, result ) );
+  }
+  return results;
+}
+
+QVector<QVariantMap> Qgs3DMapScene::intersectEntity( const QgsRay3D &ray, QgsTerrainEntity *entity ) const
+{
+  QVector<QVariantMap> result;
+
+  if ( mMap.terrainGenerator()->type() != QgsTerrainGenerator::Dem )
+    return result;  // currently only working with DEM terrain
+
+  float minDist = -1;
+  QVector3D intersectionPoint;
+
+  const QList<QgsChunkNode *> activeNodes = entity->activeNodes();
+  for ( QgsChunkNode *node : activeNodes )
+  {
+    if ( node->entity() &&
+         ( minDist < 0 || node->bbox().distanceFromPoint( ray.origin() ) < minDist ) &&
+         ray.intersects( Qgs3DUtils::aabbToBox( node->bbox() ) ) )
+    {
+      Qt3DRender::QGeometryRenderer *rend = node->entity()->findChild<Qt3DRender::QGeometryRenderer *>();
+      auto *geom = rend->geometry();
+      DemTerrainTileGeometry *demGeom = static_cast<DemTerrainTileGeometry *>( geom );
+      Qt3DCore::QTransform *tr = node->entity()->findChild<Qt3DCore::QTransform *>();
+      QVector3D nodeIntPoint;
+      if ( demGeom->rayIntersection( ray, tr->matrix(), nodeIntPoint ) )
+      {
+        float dist = ( ray.origin() - intersectionPoint ).length();
+        if ( minDist < 0 || dist < minDist )
+        {
+          minDist = dist;
+          intersectionPoint = nodeIntPoint;
+        }
+      }
+    }
+  }
+  if ( !intersectionPoint.isNull() )
+  {
+    QVariantMap map;
+    map[ "X" ] = intersectionPoint.x();
+    map[ "Y" ] = intersectionPoint.y();
+    map[ "Z" ] = intersectionPoint.z();
+    result.append( map );
+  }
+  return result;
+}
+
+QVector<QVariantMap> Qgs3DMapScene::intersectEntity( const QgsRay3D &ray, QgsVectorLayerChunkedEntity *entity ) const
+{
+  return intersectVectorEntity( ray, entity );
+}
+
+QVector<QVariantMap> Qgs3DMapScene::intersectEntity( const QgsRay3D &ray, QgsRuleBasedChunkedEntity *entity ) const
+{
+  return intersectVectorEntity( ray, entity );
+}
+
+QVector<QVariantMap> Qgs3DMapScene::intersectVectorEntity( const QgsRay3D &ray, QgsChunkedEntity *entity ) const
+{
+  QgsDebugMsg( "Ray cast on vector layer" );
+  int nodeUsed = 0;
+  int nodesAll = 0;
+  int hits = 0;
+  QVector<QVariantMap> result;
+
+  float minDist = -1;
+  QVector3D intersectionPoint;
+
+  const QList<QgsChunkNode *> activeNodes = entity->activeNodes();
+  for ( QgsChunkNode *node : activeNodes )
+  {
+    nodesAll++;
+    if ( !node->entity() )
+    {
+      QgsDebugMsg( "Skipped node; no entity" );
+      continue;
+    }
+    if ( minDist >= 0 && node->bbox().distanceFromPoint( ray.origin() ) > minDist )
+    {
+      QgsDebugMsg( QString( "Skipped node; min dist: %1" ).arg( minDist ) );
+      continue;
+    }
+//    if (!ray.intersects( Qgs3DUtils::aabbToBox( node->bbox() )) )
+//    {
+//      QgsDebugMsg( QString( "Skipped node; no bbox intersection" ) );
+//      continue;
+//    }
+    if ( node->entity() &&
+         ( minDist < 0 || node->bbox().distanceFromPoint( ray.origin() ) < minDist ) &&
+         true ) //ray.intersects( Qgs3DUtils::aabbToBox( node->bbox() ) ) )
+    {
+      nodeUsed++;
+      Qt3DRender::QGeometryRenderer *rend = node->entity()->findChild<Qt3DRender::QGeometryRenderer *>();
+      auto *geom = rend->geometry();
+      QgsTessellatedPolygonGeometry *polygonGeom = qobject_cast<QgsTessellatedPolygonGeometry *>( geom );
+      if ( !polygonGeom )
+        return result; // other QGeometry types are not supported for now
+      Qt3DCore::QTransform *tr = node->entity()->findChild<Qt3DCore::QTransform *>();
+      if ( !tr )
+      {
+        tr = new Qt3DCore::QTransform( node->entity() );
+        node->entity()->addComponent( tr );
+        auto rot = tr->rotation();
+        auto tra = tr->translation();
+      }
+
+      QVector3D nodeIntPoint;
+      QgsFeatureId fid;
+      if ( polygonGeom->rayIntersection( ray, tr->matrix(), nodeIntPoint, fid ) )
+      {
+        hits++;
+        float dist = ( ray.origin() - nodeIntPoint ).length();
+        if ( minDist < 0 || dist < minDist )
+        {
+          minDist = dist;
+          intersectionPoint = nodeIntPoint;
+        }
+      }
+    }
+  }
+  if ( !intersectionPoint.isNull() )
+  {
+    QVariantMap map;
+    map[ "X" ] = intersectionPoint.x();
+    map[ "Y" ] = intersectionPoint.y();
+    map[ "Z" ] = intersectionPoint.z();
+    result.append( map );
+  }
+  QgsDebugMsg( QString( "Active Nodes: %1, checked nodes: %2, hits found: %3" ).arg( nodesAll ).arg( nodeUsed ).arg( hits ) );
+  return result;
+
+}
+
+QVector<QVariantMap> Qgs3DMapScene::intersectEntity( const QgsRay3D &ray, QgsPointCloudLayerChunkedEntity *entity, QgsPointCloudLayer *layer ) const
+{
+  float minDistance = std::numeric_limits<float>::max();
+
+  // transform ray
+  const QgsVector3D originMapCoords = mMap.worldToMapCoordinates( ray.origin() );
+  const QgsVector3D pointMapCoords = mMap.worldToMapCoordinates( ray.origin() + ray.origin().length() * ray.direction().normalized() );
+  QgsVector3D directionMapCoords = pointMapCoords - originMapCoords;
+  directionMapCoords.normalize();
+
+  const QVector3D rayOriginMapCoords( originMapCoords.x(), originMapCoords.y(), originMapCoords.z() );
+  const QVector3D rayDirectionMapCoords( directionMapCoords.x(), directionMapCoords.y(), directionMapCoords.z() );
+
+  const QSize size = mEngine->size();
+  const int screenSizePx = std::max( size.width(), size.height() ); // TODO: is this correct? (see sceneState_)
+  QgsPointCloudLayer3DRenderer *renderer = dynamic_cast<QgsPointCloudLayer3DRenderer *>( layer->renderer3D() );
+  const QgsPointCloud3DSymbol *symbol = renderer->symbol();
+  // Symbol can be null in case of no rendering enabled
+  if ( !symbol )
+//    return rayHit();
+    return QVector<QVariantMap>();
+  const double pointSize = symbol->pointSize();
+  const double limitAngle = 2 * pointSize / screenSizePx * mCameraController->camera()->fieldOfView();
+
+  // adjust ray to elevation properties
+  QgsPointCloudLayerElevationProperties *elevationProps = dynamic_cast<QgsPointCloudLayerElevationProperties *>( layer->elevationProperties() );
+  const QVector3D adjutedRayOrigin = QVector3D( rayOriginMapCoords.x(), rayOriginMapCoords.y(), ( rayOriginMapCoords.z() -  elevationProps->zOffset() ) / elevationProps->zScale() );
+  QVector3D adjutedRayDirection = QVector3D( rayDirectionMapCoords.x(), rayDirectionMapCoords.y(), rayDirectionMapCoords.z() / elevationProps->zScale() );
+  adjutedRayDirection.normalize();
+
+  const QgsRay3D layerRay( adjutedRayOrigin, adjutedRayDirection );
+
+  QgsPointCloudDataProvider *provider = layer->dataProvider();
+  QgsPointCloudIndex *index = provider->index();
+  QVector<QVariantMap> points;
+  const QgsPointCloudAttributeCollection attributeCollection = index->attributes();
+  QgsPointCloudRequest request;
+  request.setAttributes( attributeCollection );
+
+  const QList<QgsChunkNode *> activeNodes = entity->activeNodes();
+  for ( const auto &node : activeNodes )
+  {
+    const QgsChunkNodeId id = node->tileId();
+    const IndexedPointCloudNode n( id.d, id.x, id.y, id.z );
+
+    if ( !index->hasNode( n ) )
+      continue;
+    const auto ab = node->bbox();
+    const auto b = Qgs3DUtils::aabbToBox( ab );
+    if ( !ray.intersects( Qgs3DUtils::aabbToBox( node->bbox() ) ) )
+      continue;
+
+    std::unique_ptr<QgsPointCloudBlock> block( index->nodeData( n, request ) );
+    if ( !block )
+      continue;
+
+    const QgsVector3D blockScale = block->scale();
+    const QgsVector3D blockOffset = block->offset();
+
+    const char *ptr = block->data();
+    const QgsPointCloudAttributeCollection blockAttributes = block->attributes();
+    const std::size_t recordSize = blockAttributes.pointRecordSize();
+    int xOffset = 0, yOffset = 0, zOffset = 0;
+    const QgsPointCloudAttribute::DataType xType = blockAttributes.find( QStringLiteral( "X" ), xOffset )->type();
+    const QgsPointCloudAttribute::DataType yType = blockAttributes.find( QStringLiteral( "Y" ), yOffset )->type();
+    const QgsPointCloudAttribute::DataType zType = blockAttributes.find( QStringLiteral( "Z" ), zOffset )->type();
+    for ( int i = 0; i < block->pointCount(); ++i )
+    {
+      double x, y, z;
+      QgsPointCloudAttribute::getPointXYZ( ptr, i, recordSize, xOffset, xType, yOffset, yType, zOffset, zType, blockScale, blockOffset, x, y, z );
+      const QVector3D point( x, y, z );
+
+      // check whether point is in front of the ray
+      if ( !layerRay.isInFront( point ) )
+        continue;
+
+      // calculate the angle between the point and the projected point
+      if ( layerRay.angleToPoint( point ) > limitAngle )
+        continue;
+
+      float distance = ( point - layerRay.origin() ).length();
+//      if ( distance > minDistance )
+//        continue;
+
+      minDistance = distance;
+      // Note : applying elevation properties is done in fromPointCloudIdentificationToIdentifyResults
+      QVariantMap pointAttr = QgsPointCloudAttribute::getAttributeMap( ptr, i * recordSize, blockAttributes );
+      pointAttr[ QStringLiteral( "X" ) ] = x;
+      pointAttr[ QStringLiteral( "Y" ) ] = y;
+      pointAttr[ QStringLiteral( "Z" ) ] = z;
+      pointAttr[ tr( "Distance to camera" ) ] = distance;
+//      points.clear();
+      points.push_back( pointAttr );
+    }
+  }
+  return points;
 }

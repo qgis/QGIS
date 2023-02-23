@@ -56,8 +56,20 @@ class QgsShadowRenderingFrameGraph;
 class QgsPostprocessingEntity;
 class QgsChunkNode;
 class QgsDoubleRange;
+class QgsVectorLayerChunkedEntity;
+class QgsRuleBasedChunkedEntity;
+class QgsPointCloudLayerChunkedEntity;
+class QgsPointCloudLayer;
 
 #define SIP_NO_FILE
+
+
+struct rayHit
+{
+  float dis;
+  QVector3D pos;
+  QgsFeatureId fid;
+};
 
 /**
  * \ingroup 3d
@@ -158,6 +170,14 @@ class _3D_EXPORT Qgs3DMapScene : public Qt3DCore::QEntity
      */
     QgsAbstract3DEngine *engine() { return mEngine; }
 
+    // TODO: docs
+    QVector<QPair<QgsMapLayer *, QVector<QVariantMap>>> castRay( const QgsRay3D &ray ) const;
+    QVector<QVariantMap> intersectEntity( const QgsRay3D &ray, QgsTerrainEntity *entity ) const;
+    QVector<QVariantMap> intersectEntity( const QgsRay3D &ray, QgsVectorLayerChunkedEntity *entity ) const;
+    QVector<QVariantMap> intersectEntity( const QgsRay3D &ray, QgsRuleBasedChunkedEntity *entity ) const;
+    QVector<QVariantMap> intersectEntity( const QgsRay3D &ray, QgsPointCloudLayerChunkedEntity *entity, QgsPointCloudLayer *layer ) const;
+    QVector<QVariantMap> intersectVectorEntity( const QgsRay3D &ray, QgsChunkedEntity *entity ) const;
+
   signals:
     //! Emitted when the current terrain entity is replaced by a new one
     void terrainEntityChanged();
@@ -250,5 +270,4 @@ class _3D_EXPORT Qgs3DMapScene : public Qt3DCore::QEntity
     Qgs3DAxis *m3DAxis = nullptr;
 
 };
-
 #endif // QGS3DMAPSCENE_H
