@@ -174,7 +174,7 @@ void QgsFeatureListView::mousePressEvent( QMouseEvent *event )
   }
 }
 
-void QgsFeatureListView::editSelectionChanged( const QItemSelection &deselected, const QItemSelection &selected )
+void QgsFeatureListView::editSelectionChanged( const QItemSelection &selected, const QItemSelection &deselected )
 {
   if ( isVisible() && updatesEnabled() )
   {
