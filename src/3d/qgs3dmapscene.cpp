@@ -65,15 +65,14 @@
 #include "qgssourcecache.h"
 #include "qgsterrainentity_p.h"
 #include "qgsterraingenerator.h"
-#include "qgstessellatedpolygongeometry.h"
+#include "qgsdirectionallightsettings.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayer3drenderer.h"
 #include "qgspoint3dbillboardmaterial.h"
 #include "qgsmaplayertemporalproperties.h"
-
+#include "qgsmaplayerelevationproperties.h"
 #include "qgslinematerial_p.h"
 #include "qgs3dsceneexporter.h"
-#include "qgsabstract3drenderer.h"
 #include "qgs3dmapexportsettings.h"
 #include "qgsmessageoutput.h"
 
@@ -81,9 +80,9 @@
 #include "qgsskyboxsettings.h"
 
 #include "qgswindow3dengine.h"
-#include "qgspointcloudlayerelevationproperties.h"
 #include "qgspointcloudlayer.h"
-#include "qgspointcloudlayerchunkloader_p.h"
+
+std::function< QMap< QString, Qgs3DMapScene * >() > Qgs3DMapScene::sOpenScenesFunction = [] { return QMap< QString, Qgs3DMapScene * >(); };
 
 Qgs3DMapScene::Qgs3DMapScene( Qgs3DMapSettings &map, QgsAbstract3DEngine *engine )
   : mMap( map )
@@ -769,14 +768,14 @@ void Qgs3DMapScene::addLayerEntity( QgsMapLayer *layer )
     // It has happened before that renderer pointed to a different layer (probably after copying a style).
     // This is a bit of a hack and it should be handled in QgsMapLayer::setRenderer3D() but in qgis_core
     // the vector layer 3D renderer classes are not available.
-    if ( layer->type() == QgsMapLayerType::VectorLayer &&
+    if ( layer->type() == Qgis::LayerType::Vector &&
          ( renderer->type() == QLatin1String( "vector" ) || renderer->type() == QLatin1String( "rulebased" ) ) )
     {
       static_cast<QgsAbstractVectorLayer3DRenderer *>( renderer )->setLayer( static_cast<QgsVectorLayer *>( layer ) );
       if ( renderer->type() == QLatin1String( "vector" ) )
       {
         QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
-        if ( vlayer->geometryType() == QgsWkbTypes::PointGeometry )
+        if ( vlayer->geometryType() == Qgis::GeometryType::Point )
         {
           const QgsPoint3DSymbol *pointSymbol = static_cast< const QgsPoint3DSymbol * >( static_cast< QgsVectorLayer3DRenderer *>( renderer )->symbol() );
           if ( pointSymbol->shape() == QgsPoint3DSymbol::Model )
@@ -799,7 +798,7 @@ void Qgs3DMapScene::addLayerEntity( QgsMapLayer *layer )
         }
       }
     }
-    else if ( layer->type() == QgsMapLayerType::MeshLayer && renderer->type() == QLatin1String( "mesh" ) )
+    else if ( layer->type() == Qgis::LayerType::Mesh && renderer->type() == QLatin1String( "mesh" ) )
     {
       QgsMeshLayer3DRenderer *meshRenderer = static_cast<QgsMeshLayer3DRenderer *>( renderer );
       meshRenderer->setLayer( static_cast<QgsMeshLayer *>( layer ) );
@@ -810,7 +809,7 @@ void Qgs3DMapScene::addLayerEntity( QgsMapLayer *layer )
       sym->setMaximumTextureSize( maximumTextureSize() );
       meshRenderer->setSymbol( sym );
     }
-    else if ( layer->type() == QgsMapLayerType::PointCloudLayer && renderer->type() == QLatin1String( "pointcloud" ) )
+    else if ( layer->type() == Qgis::LayerType::PointCloud && renderer->type() == QLatin1String( "pointcloud" ) )
     {
       QgsPointCloudLayer3DRenderer *pointCloudRenderer = static_cast<QgsPointCloudLayer3DRenderer *>( renderer );
       pointCloudRenderer->setLayer( static_cast<QgsPointCloudLayer *>( layer ) );
@@ -847,19 +846,19 @@ void Qgs3DMapScene::addLayerEntity( QgsMapLayer *layer )
 
   connect( layer, &QgsMapLayer::request3DUpdate, this, &Qgs3DMapScene::onLayerRenderer3DChanged );
 
-  if ( layer->type() == QgsMapLayerType::VectorLayer )
+  if ( layer->type() == Qgis::LayerType::Vector )
   {
     QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
     connect( vlayer, &QgsVectorLayer::selectionChanged, this, &Qgs3DMapScene::onLayerRenderer3DChanged );
     connect( vlayer, &QgsVectorLayer::layerModified, this, &Qgs3DMapScene::onLayerRenderer3DChanged );
   }
 
-  if ( layer->type() == QgsMapLayerType::MeshLayer )
+  if ( layer->type() == Qgis::LayerType::Mesh )
   {
     connect( layer, &QgsMapLayer::rendererChanged, this, &Qgs3DMapScene::onLayerRenderer3DChanged );
   }
 
-  if ( layer->type() == QgsMapLayerType::PointCloudLayer )
+  if ( layer->type() == Qgis::LayerType::PointCloud )
   {
     QgsPointCloudLayer *pclayer = qobject_cast<QgsPointCloudLayer *>( layer );
     connect( pclayer, &QgsPointCloudLayer::renderer3DChanged, this, &Qgs3DMapScene::onLayerRenderer3DChanged );
@@ -881,7 +880,7 @@ void Qgs3DMapScene::removeLayerEntity( QgsMapLayer *layer )
 
   disconnect( layer, &QgsMapLayer::request3DUpdate, this, &Qgs3DMapScene::onLayerRenderer3DChanged );
 
-  if ( layer->type() == QgsMapLayerType::VectorLayer )
+  if ( layer->type() == Qgis::LayerType::Vector )
   {
     QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
     disconnect( vlayer, &QgsVectorLayer::selectionChanged, this, &Qgs3DMapScene::onLayerRenderer3DChanged );
@@ -889,12 +888,12 @@ void Qgs3DMapScene::removeLayerEntity( QgsMapLayer *layer )
     mModelVectorLayers.removeAll( layer );
   }
 
-  if ( layer->type() == QgsMapLayerType::MeshLayer )
+  if ( layer->type() == Qgis::LayerType::Mesh )
   {
     disconnect( layer, &QgsMapLayer::rendererChanged, this, &Qgs3DMapScene::onLayerRenderer3DChanged );
   }
 
-  if ( layer->type() == QgsMapLayerType::PointCloudLayer )
+  if ( layer->type() == Qgis::LayerType::PointCloud )
   {
     QgsPointCloudLayer *pclayer = qobject_cast<QgsPointCloudLayer *>( layer );
     disconnect( pclayer, &QgsPointCloudLayer::renderer3DChanged, this, &Qgs3DMapScene::onLayerRenderer3DChanged );
@@ -1168,20 +1167,20 @@ void Qgs3DMapScene::exportScene( const Qgs3DMapExportSettings &exportSettings )
   {
     QgsMapLayer *layer = it.key();
     Qt3DCore::QEntity *rootEntity = it.value();
-    QgsMapLayerType layerType =  layer->type();
+    Qgis::LayerType layerType =  layer->type();
     switch ( layerType )
     {
-      case QgsMapLayerType::VectorLayer:
+      case Qgis::LayerType::Vector:
         if ( !exporter.parseVectorLayerEntity( rootEntity, qobject_cast<QgsVectorLayer *>( layer ) ) )
           notParsedLayers.push_back( layer->name() );
         break;
-      case QgsMapLayerType::RasterLayer:
-      case QgsMapLayerType::PluginLayer:
-      case QgsMapLayerType::MeshLayer:
-      case QgsMapLayerType::VectorTileLayer:
-      case QgsMapLayerType::AnnotationLayer:
-      case QgsMapLayerType::PointCloudLayer:
-      case QgsMapLayerType::GroupLayer:
+      case Qgis::LayerType::Raster:
+      case Qgis::LayerType::Plugin:
+      case Qgis::LayerType::Mesh:
+      case Qgis::LayerType::VectorTile:
+      case Qgis::LayerType::Annotation:
+      case Qgis::LayerType::PointCloud:
+      case Qgis::LayerType::Group:
         notParsedLayers.push_back( layer->name() );
         break;
     }
@@ -1232,7 +1231,7 @@ QgsDoubleRange Qgs3DMapScene::elevationRange() const
   for ( auto it = mLayerEntities.constBegin(); it != mLayerEntities.constEnd(); it++ )
   {
     QgsMapLayer *layer = it.key();
-    if ( layer->type() == QgsMapLayerType::PointCloudLayer )
+    if ( layer->type() == Qgis::LayerType::PointCloud )
     {
       QgsPointCloudLayer *pcl = qobject_cast< QgsPointCloudLayer *>( layer );
       QgsDoubleRange zRange = pcl->elevationProperties()->calculateZRange( pcl );
@@ -1243,6 +1242,11 @@ QgsDoubleRange Qgs3DMapScene::elevationRange() const
   const QgsDoubleRange yRange( std::min( yMin, std::numeric_limits<double>::max() ),
                                std::max( yMax, std::numeric_limits<double>::lowest() ) );
   return yRange;
+}
+
+QMap< QString, Qgs3DMapScene * > Qgs3DMapScene::openScenes()
+{
+  return sOpenScenesFunction();
 }
 
 void Qgs3DMapScene::addCameraRotationCenterEntity( QgsCameraController *controller )

@@ -72,7 +72,6 @@
 #include "qgsexpressioncontext.h"
 #include "qgsfeedback.h"
 #include "qgsxmlutils.h"
-#include "qgsunittypes.h"
 #include "qgstaskmanager.h"
 #include "qgstransaction.h"
 #include "qgsauxiliarystorage.h"
@@ -163,7 +162,7 @@ QgsVectorLayer::QgsVectorLayer( const QString &vectorLayerPath,
                                 const QString &baseName,
                                 const QString &providerKey,
                                 const QgsVectorLayer::LayerOptions &options )
-  : QgsMapLayer( QgsMapLayerType::VectorLayer, baseName, vectorLayerPath )
+  : QgsMapLayer( Qgis::LayerType::Vector, baseName, vectorLayerPath )
   , mTemporalProperties( new QgsVectorLayerTemporalProperties( this ) )
   , mElevationProperties( new QgsVectorLayerElevationProperties( this ) )
   , mAuxiliaryLayer( nullptr )
@@ -791,7 +790,7 @@ void QgsVectorLayer::setDiagramRenderer( QgsDiagramRenderer *r )
   emit styleChanged();
 }
 
-QgsWkbTypes::GeometryType QgsVectorLayer::geometryType() const
+Qgis::GeometryType QgsVectorLayer::geometryType() const
 {
   // non fatal for now -- the "rasterize" processing algorithm is not thread safe and calls this
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS_NON_FATAL
@@ -799,7 +798,7 @@ QgsWkbTypes::GeometryType QgsVectorLayer::geometryType() const
   return QgsWkbTypes::geometryType( mWkbType );
 }
 
-QgsWkbTypes::Type QgsVectorLayer::wkbType() const
+Qgis::WkbType QgsVectorLayer::wkbType() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
@@ -1064,7 +1063,7 @@ QgsRectangle QgsVectorLayer::extent() const
     QgsFeature fet;
     while ( fit.nextFeature( fet ) )
     {
-      if ( fet.hasGeometry() && fet.geometry().type() != QgsWkbTypes::UnknownGeometry )
+      if ( fet.hasGeometry() && fet.geometry().type() != Qgis::GeometryType::Unknown )
       {
         const QgsRectangle bb = fet.geometry().boundingBox();
         rect.combineExtentWith( bb );
@@ -1146,7 +1145,7 @@ bool QgsVectorLayer::simplifyDrawingCanbeApplied( const QgsRenderContext &render
   // non fatal for now -- the "rasterize" processing algorithm is not thread safe and calls this
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS_NON_FATAL
 
-  if ( isValid() && mDataProvider && !mEditBuffer && ( isSpatial() && geometryType() != QgsWkbTypes::PointGeometry ) && ( mSimplifyMethod.simplifyHints() & simplifyHint ) && renderContext.useRenderingOptimization() )
+  if ( isValid() && mDataProvider && !mEditBuffer && ( isSpatial() && geometryType() != Qgis::GeometryType::Point ) && ( mSimplifyMethod.simplifyHints() & simplifyHint ) && renderContext.useRenderingOptimization() )
   {
     double maximumSimplificationScale = mSimplifyMethod.maximumScale();
 
@@ -1858,7 +1857,7 @@ void QgsVectorLayer::setDataSourcePrivate( const QString &dataSource, const QStr
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  QgsWkbTypes::GeometryType geomType = geometryType();
+  Qgis::GeometryType geomType = geometryType();
 
   mDataSource = dataSource;
   setName( baseName );
@@ -2160,7 +2159,7 @@ bool QgsVectorLayer::writeXml( QDomNode &layer_node,
     return false;
   }
 
-  mapLayerNode.setAttribute( QStringLiteral( "type" ), QgsMapLayerFactory::typeToString( QgsMapLayerType::VectorLayer ) );
+  mapLayerNode.setAttribute( QStringLiteral( "type" ), QgsMapLayerFactory::typeToString( Qgis::LayerType::Vector ) );
 
   // set the geometry type
   mapLayerNode.setAttribute( QStringLiteral( "geometry" ), QgsWkbTypes::geometryDisplayString( geometryType() ) );
@@ -2230,184 +2229,20 @@ QString QgsVectorLayer::encodedSource( const QString &source, const QgsReadWrite
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  QString src( source );
-
-  // TODO: what about postgres, mysql and others, they should not go through writePath()
-  if ( providerType() == QLatin1String( "spatialite" ) )
-  {
-    QgsDataSourceUri uri( src );
-    QString database = context.pathResolver().writePath( uri.database() );
-    uri.setConnection( uri.host(), uri.port(), database, uri.username(), uri.password() );
-    src = uri.uri();
-  }
-  else if ( providerType() == QLatin1String( "ogr" ) )
-  {
-    QStringList theURIParts = src.split( '|' );
-    theURIParts[0] = context.pathResolver().writePath( theURIParts[0] );
-    src = theURIParts.join( QLatin1Char( '|' ) );
-  }
-  else if ( providerType() == QLatin1String( "gpx" ) )
-  {
-    QStringList theURIParts = src.split( '?' );
-    theURIParts[0] = context.pathResolver().writePath( theURIParts[0] );
-    src = theURIParts.join( QLatin1Char( '?' ) );
-  }
-  else if ( providerType() == QLatin1String( "delimitedtext" ) )
-  {
-    QUrl urlSource = QUrl::fromEncoded( src.toLatin1() );
-    QUrl urlDest = QUrl::fromLocalFile( context.pathResolver().writePath( urlSource.toLocalFile() ) );
-    urlDest.setQuery( urlSource.query() );
-    src = QString::fromLatin1( urlDest.toEncoded() );
-  }
-  else if ( providerType() == QLatin1String( "memory" ) )
+  if ( providerType() == QLatin1String( "memory" ) )
   {
     // Refetch the source from the provider, because adding fields actually changes the source for this provider.
-    src = dataProvider()->dataSourceUri();
-  }
-  else if ( providerType() == QLatin1String( "virtual" ) )
-  {
-    QUrl urlSource = QUrl::fromEncoded( src.toLatin1() );
-    QStringList theURIParts;
-
-    QUrlQuery query = QUrlQuery( urlSource.query() );
-    QList<QPair<QString, QString> > queryItems = query.queryItems();
-
-    for ( int i = 0; i < queryItems.size(); i++ )
-    {
-      QString key = queryItems.at( i ).first;
-      QString value = queryItems.at( i ).second;
-      if ( key == QLatin1String( "layer" ) )
-      {
-        // syntax: provider:url_encoded_source_URI(:name(:encoding)?)?
-        theURIParts = value.split( ':' );
-        theURIParts[1] = QUrl::fromPercentEncoding( theURIParts[1].toUtf8() );
-
-        if ( theURIParts[0] == QLatin1String( "delimitedtext" ) )
-        {
-          QUrl urlSource = QUrl( theURIParts[1] );
-          QUrl urlDest = QUrl::fromLocalFile( context.pathResolver().writePath( urlSource.toLocalFile() ) );
-          urlDest.setQuery( urlSource.query() );
-          theURIParts[1] = QUrl::toPercentEncoding( urlDest.toString(), QByteArray( "" ), QByteArray( ":" ) );
-        }
-        else
-        {
-          theURIParts[1] = context.pathResolver().writePath( theURIParts[1] );
-          theURIParts[1] = QUrl::toPercentEncoding( theURIParts[1] );
-        }
-
-        queryItems[i].second =  theURIParts.join( QLatin1Char( ':' ) ) ;
-      }
-    }
-
-    query.setQueryItems( queryItems );
-
-    QUrl urlDest = QUrl( urlSource );
-    urlDest.setQuery( query.query() );
-    src = QString::fromLatin1( urlDest.toEncoded() );
-  }
-  else
-  {
-    src = context.pathResolver().writePath( src );
+    return dataProvider()->dataSourceUri();
   }
 
-  return src;
+  return QgsProviderRegistry::instance()->absoluteToRelativeUri( mProviderKey, source, context );
 }
 
 QString QgsVectorLayer::decodedSource( const QString &source, const QString &provider, const QgsReadWriteContext &context ) const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  QString src( source );
-
-  if ( provider == QLatin1String( "spatialite" ) )
-  {
-    QgsDataSourceUri uri( src );
-    uri.setDatabase( context.pathResolver().readPath( uri.database() ) );
-    src = uri.uri();
-  }
-  else if ( provider == QLatin1String( "ogr" ) )
-  {
-    QStringList theURIParts = src.split( '|' );
-    theURIParts[0] = context.pathResolver().readPath( theURIParts[0] );
-    src = theURIParts.join( QLatin1Char( '|' ) );
-  }
-  else if ( provider == QLatin1String( "gpx" ) )
-  {
-    QStringList theURIParts = src.split( '?' );
-    theURIParts[0] = context.pathResolver().readPath( theURIParts[0] );
-    src = theURIParts.join( QLatin1Char( '?' ) );
-  }
-  else if ( provider == QLatin1String( "delimitedtext" ) )
-  {
-    QUrl urlSource = QUrl::fromEncoded( src.toLatin1() );
-
-    if ( !src.startsWith( QLatin1String( "file:" ) ) )
-    {
-      QUrl file = QUrl::fromLocalFile( src.left( src.indexOf( '?' ) ) );
-      urlSource.setScheme( QStringLiteral( "file" ) );
-      urlSource.setPath( file.path() );
-    }
-
-    QUrl urlDest = QUrl::fromLocalFile( context.pathResolver().readPath( urlSource.toLocalFile() ) );
-    urlDest.setQuery( urlSource.query() );
-    src = QString::fromLatin1( urlDest.toEncoded() );
-  }
-  else if ( provider == QLatin1String( "virtual" ) )
-  {
-    QUrl urlSource = QUrl::fromEncoded( src.toLatin1() );
-    QStringList theURIParts;
-
-    QUrlQuery query = QUrlQuery( urlSource.query() );
-    QList<QPair<QString, QString> > queryItems = query.queryItems();
-
-    for ( int i = 0; i < queryItems.size(); i++ )
-    {
-      QString key = queryItems.at( i ).first;
-      QString value = queryItems.at( i ).second;
-      if ( key == QLatin1String( "layer" ) )
-      {
-        // syntax: provider:url_encoded_source_URI(:name(:encoding)?)?
-        theURIParts = value.split( ':' );
-        theURIParts[1] = QUrl::fromPercentEncoding( theURIParts[1].toUtf8() );
-
-        if ( theURIParts[0] == QLatin1String( "delimitedtext" ) )
-        {
-          QUrl urlSource = QUrl( theURIParts[1] );
-
-          if ( !theURIParts[1].startsWith( QLatin1String( "file:" ) ) )
-          {
-            QUrl file = QUrl::fromLocalFile( theURIParts[1].left( theURIParts[1].indexOf( '?' ) ) );
-            urlSource.setScheme( QStringLiteral( "file" ) );
-            urlSource.setPath( file.path() );
-          }
-
-          QUrl urlDest = QUrl::fromLocalFile( context.pathResolver().readPath( urlSource.toLocalFile() ) );
-          urlDest.setQuery( urlSource.query() );
-
-          theURIParts[1] = urlDest.toString();
-        }
-        else
-        {
-          theURIParts[1] = context.pathResolver().readPath( theURIParts[1] );
-        }
-
-        theURIParts[1] = QUrl::toPercentEncoding( theURIParts[1] );
-        queryItems[i].second =  theURIParts.join( QLatin1Char( ':' ) ) ;
-      }
-    }
-
-    query.setQueryItems( queryItems );
-
-    QUrl urlDest = QUrl( urlSource );
-    urlDest.setQuery( query.query() );
-    src = QString::fromLatin1( urlDest.toEncoded() );
-  }
-  else
-  {
-    src = context.pathResolver().readPath( src );
-  }
-
-  return src;
+  return QgsProviderRegistry::instance()->relativeToAbsoluteUri( provider, source, context );
 }
 
 
@@ -2729,7 +2564,7 @@ bool QgsVectorLayer::readStyle( const QDomNode &node, QString &errorMessage,
   // we must try to restore a renderer if our geometry type is unknown
   // as this allows the renderer to be correctly restored even for layers
   // with broken sources
-  if ( isSpatial() || mWkbType == QgsWkbTypes::Unknown )
+  if ( isSpatial() || mWkbType == Qgis::WkbType::Unknown )
   {
     // defer style changed signal until we've set the renderer, labeling, everything.
     // we don't want multiple signals!
@@ -3146,7 +2981,7 @@ bool QgsVectorLayer::writeStyle( QDomNode &node, QDomDocument &doc, QString &err
   // we must try to write the renderer if our geometry type is unknown
   // as this allows the renderer to be correctly restored even for layers
   // with broken sources
-  if ( isSpatial() || mWkbType == QgsWkbTypes::Unknown )
+  if ( isSpatial() || mWkbType == Qgis::WkbType::Unknown )
   {
     if ( categories.testFlag( Symbology ) )
     {
@@ -3973,7 +3808,7 @@ QgsFeatureIterator QgsVectorLayer::getSelectedFeatures( QgsFeatureRequest reques
   if ( mSelectedFeatureIds.isEmpty() )
     return QgsFeatureIterator();
 
-  if ( geometryType() == QgsWkbTypes::NullGeometry )
+  if ( geometryType() == Qgis::GeometryType::Null )
     request.setFlags( QgsFeatureRequest::NoGeometry );
 
   if ( mSelectedFeatureIds.count() == 1 )
@@ -4084,8 +3919,8 @@ bool QgsVectorLayer::isSpatial() const
   // non fatal for now -- the "rasterize" processing algorithm is not thread safe and calls this
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS_NON_FATAL
 
-  QgsWkbTypes::GeometryType t = geometryType();
-  return t != QgsWkbTypes::NullGeometry && t != QgsWkbTypes::UnknownGeometry;
+  Qgis::GeometryType t = geometryType();
+  return t != Qgis::GeometryType::Null && t != Qgis::GeometryType::Unknown;
 }
 
 bool QgsVectorLayer::isReadOnly() const
@@ -4161,7 +3996,7 @@ void QgsVectorLayer::setRenderer( QgsFeatureRenderer *r )
   // we must allow setting a renderer if our geometry type is unknown
   // as this allows the renderer to be correctly set even for layers
   // with broken sources
-  if ( !isSpatial() && mWkbType != QgsWkbTypes::Unknown )
+  if ( !isSpatial() && mWkbType != Qgis::WkbType::Unknown )
     return;
 
   if ( r != mRenderer )
@@ -5298,7 +5133,7 @@ bool QgsVectorLayer::readSldTextSymbolizer( const QDomNode &node, QgsPalLayerSet
     return false;
   }
 
-  QgsUnitTypes::RenderUnit sldUnitSize = QgsUnitTypes::RenderPixels;
+  Qgis::RenderUnit sldUnitSize = Qgis::RenderUnit::Pixels;
   if ( textSymbolizerElem.hasAttribute( QStringLiteral( "uom" ) ) )
   {
     sldUnitSize = QgsSymbolLayerUtils::decodeSldUom( textSymbolizerElem.attribute( QStringLiteral( "uom" ) ) );
@@ -5306,7 +5141,7 @@ bool QgsVectorLayer::readSldTextSymbolizer( const QDomNode &node, QgsPalLayerSet
 
   QString fontFamily = QStringLiteral( "Sans-Serif" );
   int fontPointSize = 10;
-  QgsUnitTypes::RenderUnit fontUnitSize = QgsUnitTypes::RenderPoints;
+  Qgis::RenderUnit fontUnitSize = Qgis::RenderUnit::Points;
   int fontWeight = -1;
   bool fontItalic = false;
   bool fontUnderline = false;
@@ -5409,7 +5244,7 @@ bool QgsVectorLayer::readSldTextSymbolizer( const QDomNode &node, QgsPalLayerSet
     if ( !pointPlacementElem.isNull() )
     {
       settings.placement = Qgis::LabelPlacement::OverPoint;
-      if ( geometryType() == QgsWkbTypes::LineGeometry )
+      if ( geometryType() == Qgis::GeometryType::Line )
       {
         settings.placement = Qgis::LabelPlacement::Horizontal;
       }
@@ -5541,7 +5376,7 @@ bool QgsVectorLayer::readSldTextSymbolizer( const QDomNode &node, QgsPalLayerSet
       }
       else if ( it.key() == QLatin1String( "followLine" ) && it.value() == QLatin1String( "true" ) )
       {
-        if ( geometryType() == QgsWkbTypes::PolygonGeometry )
+        if ( geometryType() == Qgis::GeometryType::Polygon )
         {
           settings.placement = Qgis::LabelPlacement::PerimeterCurved;
         }
@@ -5686,8 +5521,8 @@ QString QgsVectorLayer::htmlMetadata() const
   if ( isSpatial() )
   {
     // geom type
-    QgsWkbTypes::GeometryType type = geometryType();
-    if ( type < 0 || type > QgsWkbTypes::NullGeometry )
+    Qgis::GeometryType type = geometryType();
+    if ( static_cast<int>( type ) < 0 || static_cast< int >( type ) > static_cast< int >( Qgis::GeometryType::Null ) )
     {
       QgsDebugMsgLevel( QStringLiteral( "Invalid vector type" ), 2 );
     }

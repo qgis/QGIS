@@ -99,22 +99,22 @@ QgsMapLayerLoadStyleDialog::QgsMapLayerLoadStyleDialog( QgsMapLayer *layer, QWid
   // load from file setup
   switch ( mLayer->type() )
   {
-    case QgsMapLayerType::VectorLayer:
+    case Qgis::LayerType::Vector:
       mFileWidget->setFilter( tr( "QGIS Layer Style File, SLD File" ) + QStringLiteral( " (*.qml *.sld)" ) );
       break;
 
-    case QgsMapLayerType::VectorTileLayer:
+    case Qgis::LayerType::VectorTile:
       mFileWidget->setFilter( tr( "All Styles" ) + QStringLiteral( " (*.qml *.json);;" )
                               + tr( "QGIS Layer Style File" ) + QStringLiteral( " (*.qml);;" )
                               + tr( "MapBox GL Style JSON File" ) + QStringLiteral( " (*.json)" ) );
       break;
 
-    case QgsMapLayerType::RasterLayer:
-    case QgsMapLayerType::MeshLayer:
-    case QgsMapLayerType::AnnotationLayer:
-    case QgsMapLayerType::PluginLayer:
-    case QgsMapLayerType::PointCloudLayer:
-    case QgsMapLayerType::GroupLayer:
+    case Qgis::LayerType::Raster:
+    case Qgis::LayerType::Mesh:
+    case Qgis::LayerType::Annotation:
+    case Qgis::LayerType::Plugin:
+    case Qgis::LayerType::PointCloud:
+    case Qgis::LayerType::Group:
       break;
 
   }
@@ -342,7 +342,7 @@ void QgsMapLayerLoadStyleDialog::deleteStyleFromDB()
 void QgsMapLayerLoadStyleDialog::updateLoadButtonState()
 {
   const QgsVectorLayerProperties::StyleType type = currentStyleType();
-  if ( mLayer->type() == QgsMapLayerType::VectorLayer )
+  if ( mLayer->type() == Qgis::LayerType::Vector )
   {
     mLoadButton->setEnabled( ( type == QgsVectorLayerProperties::DB
                                && ( mRelatedTable->selectionModel()->hasSelection() || mOthersTable->selectionModel()->hasSelection()

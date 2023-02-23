@@ -17,7 +17,7 @@
 
 #include <QMessageBox>
 #include <QInputDialog>
-#include <QRegExpValidator>
+#include <QRegularExpressionValidator>
 
 #include "qgssettings.h"
 #include "qgsoraclenewconnection.h"
@@ -109,7 +109,7 @@ QgsOracleNewConnection::QgsOracleNewConnection( QWidget *parent, const QString &
 
     txtName->setText( connName );
   }
-  txtName->setValidator( new QRegExpValidator( QRegExp( QStringLiteral( "[^\\/]+" ) ), txtName ) );
+  txtName->setValidator( new QRegularExpressionValidator( QRegularExpression( QStringLiteral( "[^\\/]+" ) ), txtName ) );
 }
 
 void QgsOracleNewConnection::accept()

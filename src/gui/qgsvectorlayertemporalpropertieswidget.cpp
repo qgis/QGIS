@@ -17,9 +17,7 @@
 
 #include "qgsvectorlayertemporalpropertieswidget.h"
 #include "qgsgui.h"
-#include "qgsproject.h"
-#include "qgsprojecttimesettings.h"
-#include "qgsvectordataprovidertemporalcapabilities.h"
+#include "qgsunittypes.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayertemporalproperties.h"
 #include "qgsstringutils.h"
@@ -81,24 +79,24 @@ QgsVectorLayerTemporalPropertiesWidget::QgsVectorLayerTemporalPropertiesWidget( 
   mFixedDurationSpinBox->setMinimum( 0 );
   mFixedDurationSpinBox->setClearValue( 0 );
 
-  for ( const QgsUnitTypes::TemporalUnit u :
+  for ( const Qgis::TemporalUnit u :
         {
-          QgsUnitTypes::TemporalMilliseconds,
-          QgsUnitTypes::TemporalSeconds,
-          QgsUnitTypes::TemporalMinutes,
-          QgsUnitTypes::TemporalHours,
-          QgsUnitTypes::TemporalDays,
-          QgsUnitTypes::TemporalWeeks,
-          QgsUnitTypes::TemporalMonths,
-          QgsUnitTypes::TemporalYears,
-          QgsUnitTypes::TemporalDecades,
-          QgsUnitTypes::TemporalCenturies
+          Qgis::TemporalUnit::Milliseconds,
+          Qgis::TemporalUnit::Seconds,
+          Qgis::TemporalUnit::Minutes,
+          Qgis::TemporalUnit::Hours,
+          Qgis::TemporalUnit::Days,
+          Qgis::TemporalUnit::Weeks,
+          Qgis::TemporalUnit::Months,
+          Qgis::TemporalUnit::Years,
+          Qgis::TemporalUnit::Decades,
+          Qgis::TemporalUnit::Centuries
         } )
   {
     const QString title = ( QgsGui::higFlags() & QgsGui::HigDialogTitleIsTitleCase ) ? QgsStringUtils::capitalize( QgsUnitTypes::toString( u ), Qgis::Capitalization::TitleCase )
                           : QgsUnitTypes::toString( u );
-    mDurationUnitsComboBox->addItem( title, u );
-    mFixedDurationUnitsComboBox->addItem( title, u );
+    mDurationUnitsComboBox->addItem( title, static_cast< int >( u ) );
+    mFixedDurationUnitsComboBox->addItem( title, static_cast< int >( u ) );
   }
 
   mFixedDurationUnitsComboBox->setEnabled( !mAccumulateCheckBox->isChecked() );
@@ -139,17 +137,17 @@ void QgsVectorLayerTemporalPropertiesWidget::saveTemporalProperties()
     case Qgis::VectorTemporalMode::RedrawLayerOnly:
     case Qgis::VectorTemporalMode::FeatureDateTimeStartAndEndFromExpressions:
       properties->setStartField( mSingleFieldComboBox->currentField() );
-      properties->setDurationUnits( static_cast< QgsUnitTypes::TemporalUnit >( mFixedDurationUnitsComboBox->currentData().toInt() ) );
+      properties->setDurationUnits( static_cast< Qgis::TemporalUnit >( mFixedDurationUnitsComboBox->currentData().toInt() ) );
       break;
 
     case Qgis::VectorTemporalMode::FeatureDateTimeStartAndEndFromFields:
       properties->setStartField( mStartFieldComboBox->currentField() );
-      properties->setDurationUnits( static_cast< QgsUnitTypes::TemporalUnit >( mFixedDurationUnitsComboBox->currentData().toInt() ) );
+      properties->setDurationUnits( static_cast< Qgis::TemporalUnit >( mFixedDurationUnitsComboBox->currentData().toInt() ) );
       break;
 
     case Qgis::VectorTemporalMode::FeatureDateTimeStartAndDurationFromFields:
       properties->setStartField( mDurationStartFieldComboBox->currentField() );
-      properties->setDurationUnits( static_cast< QgsUnitTypes::TemporalUnit >( mDurationUnitsComboBox->currentData().toInt() ) );
+      properties->setDurationUnits( static_cast< Qgis::TemporalUnit >( mDurationUnitsComboBox->currentData().toInt() ) );
       break;
   }
 
@@ -188,8 +186,8 @@ void QgsVectorLayerTemporalPropertiesWidget::syncToLayer()
   mDurationStartFieldComboBox->setField( properties->startField() );
   mEndFieldComboBox->setField( properties->endField() );
   mDurationFieldComboBox->setField( properties->durationField() );
-  mDurationUnitsComboBox->setCurrentIndex( mDurationUnitsComboBox->findData( properties->durationUnits() ) );
-  mFixedDurationUnitsComboBox->setCurrentIndex( mDurationUnitsComboBox->findData( properties->durationUnits() ) );
+  mDurationUnitsComboBox->setCurrentIndex( mDurationUnitsComboBox->findData( static_cast< int >( properties->durationUnits() ) ) );
+  mFixedDurationUnitsComboBox->setCurrentIndex( mDurationUnitsComboBox->findData( static_cast< int >( properties->durationUnits() ) ) );
 
   mAccumulateCheckBox->setChecked( properties->accumulateFeatures() );
 

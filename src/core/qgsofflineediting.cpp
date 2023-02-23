@@ -16,31 +16,21 @@
  *                                                                         *
  ***************************************************************************/
 
-
-#include "qgsapplication.h"
 #include "qgsdatasourceuri.h"
 #include "qgsgeometry.h"
-#include "qgslayertreegroup.h"
-#include "qgslayertreelayer.h"
 #include "qgsmaplayer.h"
 #include "qgsofflineediting.h"
 #include "qgsproject.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayereditbuffer.h"
-#include "qgsvectorlayerjoinbuffer.h"
 #include "qgsspatialiteutils.h"
 #include "qgsfeatureiterator.h"
 #include "qgslogger.h"
 #include "qgsvectorlayerutils.h"
-#include "qgsrelationmanager.h"
-#include "qgsmapthemecollection.h"
-#include "qgslayertree.h"
 #include "qgsogrutils.h"
-#include "qgsvectorfilewriter.h"
 #include "qgsvectorlayer.h"
 #include "qgsproviderregistry.h"
 #include "qgsprovidermetadata.h"
-#include "qgsmaplayerstylemanager.h"
 #include "qgsjsonutils.h"
 #include "qgstransactiongroup.h"
 
@@ -590,27 +580,27 @@ void QgsOfflineEditing::convertToOfflineLayer( QgsVectorLayer *layer, sqlite3 *d
       // add geometry column
       if ( layer->isSpatial() )
       {
-        const QgsWkbTypes::Type sourceWkbType = layer->wkbType();
+        const Qgis::WkbType sourceWkbType = layer->wkbType();
 
         QString geomType;
         switch ( QgsWkbTypes::flatType( sourceWkbType ) )
         {
-          case QgsWkbTypes::Point:
+          case Qgis::WkbType::Point:
             geomType = QStringLiteral( "POINT" );
             break;
-          case QgsWkbTypes::MultiPoint:
+          case Qgis::WkbType::MultiPoint:
             geomType = QStringLiteral( "MULTIPOINT" );
             break;
-          case QgsWkbTypes::LineString:
+          case Qgis::WkbType::LineString:
             geomType = QStringLiteral( "LINESTRING" );
             break;
-          case QgsWkbTypes::MultiLineString:
+          case Qgis::WkbType::MultiLineString:
             geomType = QStringLiteral( "MULTILINESTRING" );
             break;
-          case QgsWkbTypes::Polygon:
+          case Qgis::WkbType::Polygon:
             geomType = QStringLiteral( "POLYGON" );
             break;
-          case QgsWkbTypes::MultiPolygon:
+          case Qgis::WkbType::MultiPolygon:
             geomType = QStringLiteral( "MULTIPOLYGON" );
             break;
           default:

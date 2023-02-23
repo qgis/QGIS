@@ -31,6 +31,7 @@
 #include "qgspainting.h"
 #include "qgsfillsymbol.h"
 #include "qgslinesymbol.h"
+#include "qgsunittypes.h"
 
 #include <mutex>
 
@@ -440,7 +441,7 @@ QgsGeometry QgsCallout::calloutLineToPart( const QgsGeometry &labelGeometry, con
       if ( ok )
       {
         pinned = true;
-        tempPartAnchor = std::make_unique< QgsPoint >( QgsWkbTypes::Point, x, y );
+        tempPartAnchor = std::make_unique< QgsPoint >( Qgis::WkbType::Point, x, y );
         evaluatedPartAnchor = tempPartAnchor.get();
         try
         {
@@ -467,14 +468,14 @@ QgsGeometry QgsCallout::calloutLineToPart( const QgsGeometry &labelGeometry, con
 
   switch ( QgsWkbTypes::geometryType( evaluatedPartAnchor->wkbType() ) )
   {
-    case QgsWkbTypes::PointGeometry:
-    case QgsWkbTypes::LineGeometry:
+    case Qgis::GeometryType::Point:
+    case Qgis::GeometryType::Line:
     {
       line = labelGeos.shortestLine( evaluatedPartAnchor );
       break;
     }
 
-    case QgsWkbTypes::PolygonGeometry:
+    case Qgis::GeometryType::Polygon:
     {
       if ( labelGeos.intersects( evaluatedPartAnchor ) )
         return QgsGeometry();
@@ -500,8 +501,8 @@ QgsGeometry QgsCallout::calloutLineToPart( const QgsGeometry &labelGeometry, con
       break;
     }
 
-    case QgsWkbTypes::NullGeometry:
-    case QgsWkbTypes::UnknownGeometry:
+    case Qgis::GeometryType::Null:
+    case Qgis::GeometryType::Unknown:
       return QgsGeometry(); // shouldn't even get here..
   }
   return line;

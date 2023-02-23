@@ -108,6 +108,9 @@ A useful hunting tool is `git grep`, which could be used like this:
   $ ctest -V -R PyQgsAuthManagerPasswordPostgresTest # use the CMakeLists.txt name
 ```
 
+You may also use `ctest -N` to get a list of test names according to
+ctest.
+
 If you get `Could not connect to any X display` errors it means that your build
 machine does not have an X server.  In that case you need to run the test under
 `xvfb-run`.  For example:

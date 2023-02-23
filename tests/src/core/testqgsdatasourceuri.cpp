@@ -18,7 +18,7 @@
 //header for class being tested
 #include <qgsdatasourceuri.h>
 
-Q_DECLARE_METATYPE( QgsWkbTypes::Type )
+Q_DECLARE_METATYPE( Qgis::WkbType )
 Q_DECLARE_METATYPE( QgsDataSourceUri::SslMode )
 
 class TestQgsDataSourceUri: public QObject
@@ -45,7 +45,7 @@ void TestQgsDataSourceUri::checkparser_data()
   QTest::addColumn<QString>( "key" );
   QTest::addColumn<bool>( "estimatedmetadata" );
   QTest::addColumn<QString>( "srid" );
-  QTest::addColumn<QgsWkbTypes::Type>( "type" );
+  QTest::addColumn<Qgis::WkbType>( "type" );
   QTest::addColumn<bool>( "selectatid" );
   QTest::addColumn<QString>( "service" );
   QTest::addColumn<QString>( "user" );
@@ -68,7 +68,7 @@ void TestQgsDataSourceUri::checkparser_data()
       << "" // key
       << true // estimatedmetadata
       << "1000003007" // srid
-      << QgsWkbTypes::Unknown // type
+      << Qgis::WkbType::Unknown // type
       << false // selectatid
       << "" // service
       << "myname" // user
@@ -91,7 +91,7 @@ void TestQgsDataSourceUri::checkparser_data()
       << "" // key
       << true // estimatedmetadata
       << "3067" // srid
-      << QgsWkbTypes::Unknown // type
+      << Qgis::WkbType::Unknown // type
       << false // selectatid
       << "" // service
       << "myname" // user
@@ -114,7 +114,7 @@ void TestQgsDataSourceUri::checkparser_data()
       << "" // key
       << false // estimatedmetadata
       << "" // srid
-      << QgsWkbTypes::Unknown // type
+      << Qgis::WkbType::Unknown // type
       << false // selectatid
       << "" // service
       << "myname" // user
@@ -137,7 +137,7 @@ void TestQgsDataSourceUri::checkparser_data()
       << "" // key
       << false // estimatedmetadata
       << "" // srid
-      << QgsWkbTypes::Unknown // type
+      << Qgis::WkbType::Unknown // type
       << false // selectatid
       << "" // service
       << "myname" // user
@@ -160,7 +160,7 @@ void TestQgsDataSourceUri::checkparser_data()
       << "" // key
       << false // estimatedmetadata
       << "" // srid
-      << QgsWkbTypes::Unknown // type
+      << Qgis::WkbType::Unknown // type
       << false // selectatid
       << "" // service
       << "" // user
@@ -185,7 +185,7 @@ void TestQgsDataSourceUri::checkparser_data()
       << "" // key
       << false // estimatedmetadata
       << "" // srid
-      << QgsWkbTypes::MultiLineStringZ // type
+      << Qgis::WkbType::MultiLineStringZ // type
       << false // selectatid
       << "" // service
       << "myname" // user
@@ -210,7 +210,7 @@ void TestQgsDataSourceUri::checkparser()
   QFETCH( QString, key );
   QFETCH( bool, estimatedmetadata );
   QFETCH( QString, srid );
-  QFETCH( QgsWkbTypes::Type, type );
+  QFETCH( Qgis::WkbType, type );
   QFETCH( bool, selectatid );
   QFETCH( QString, service );
   QFETCH( QString, user );

@@ -141,32 +141,32 @@ void TestQgsMapToolCircle::initAttributs()
   mDrawFunctionPtrMap["centerPoint"] = std::bind( &TestQgsMapToolCircle::drawCircleFromCenterPoint, this );
   mDrawFunctionPtrMap["centerPointWithDeletedVertex"] = std::bind( &TestQgsMapToolCircle::drawCircleFromCenterPointWithDeletedVertex, this );
 
-  mExpectedWkts[QStringLiteral( "XY" "2Points" )] = QgsCircle::from2Points( QgsPoint( 0, 0, Z, M, QgsWkbTypes::Point ), QgsPoint( 0, 2, Z, M, QgsWkbTypes::Point ) ).toCircularString( true )->asWkt( WKT_PRECISION );
+  mExpectedWkts[QStringLiteral( "XY" "2Points" )] = QgsCircle::from2Points( QgsPoint( 0, 0, Z, M, Qgis::WkbType::Point ), QgsPoint( 0, 2, Z, M, Qgis::WkbType::Point ) ).toCircularString( true )->asWkt( WKT_PRECISION );
   mExpectedWkts[QStringLiteral( "XY" "2PointsWithDeletedVertex" )] = mExpectedWkts[QStringLiteral( "XY" "2Points" )];
-  mExpectedWkts[QStringLiteral( "XY" "3Points" )] = QgsCircle::from3Points( QgsPoint( 0, 0, Z, M, QgsWkbTypes::Point ), QgsPoint( 0, 2, Z, M, QgsWkbTypes::Point ), QgsPoint( 1, 1, Z, M, QgsWkbTypes::Point ) ).toCircularString( true )->asWkt( WKT_PRECISION );
+  mExpectedWkts[QStringLiteral( "XY" "3Points" )] = QgsCircle::from3Points( QgsPoint( 0, 0, Z, M, Qgis::WkbType::Point ), QgsPoint( 0, 2, Z, M, Qgis::WkbType::Point ), QgsPoint( 1, 1, Z, M, Qgis::WkbType::Point ) ).toCircularString( true )->asWkt( WKT_PRECISION );
   mExpectedWkts[QStringLiteral( "XY" "3PointsWithDeletedVertex" )] = mExpectedWkts[QStringLiteral( "XY" "3Points" )];
-  mExpectedWkts[QStringLiteral( "XY" "centerPoint" )] = QgsCircle::fromCenterPoint( QgsPoint( 0, 0, Z, M, QgsWkbTypes::Point ), QgsPoint( 0, 2, Z, M, QgsWkbTypes::Point ) ).toCircularString( true )->asWkt( WKT_PRECISION );
+  mExpectedWkts[QStringLiteral( "XY" "centerPoint" )] = QgsCircle::fromCenterPoint( QgsPoint( 0, 0, Z, M, Qgis::WkbType::Point ), QgsPoint( 0, 2, Z, M, Qgis::WkbType::Point ) ).toCircularString( true )->asWkt( WKT_PRECISION );
   mExpectedWkts[QStringLiteral( "XY" "centerPointWithDeletedVertex" )] = mExpectedWkts[QStringLiteral( "XY" "centerPoint" )] ;
 
-  mExpectedWkts[QStringLiteral( "XYZ" "2Points" )] = QgsCircle::from2Points( QgsPoint( 0, 0, Z, M, QgsWkbTypes::PointZ ), QgsPoint( 0, 2, Z, M, QgsWkbTypes::PointZ ) ).toCircularString( true )->asWkt( WKT_PRECISION );
+  mExpectedWkts[QStringLiteral( "XYZ" "2Points" )] = QgsCircle::from2Points( QgsPoint( 0, 0, Z, M, Qgis::WkbType::PointZ ), QgsPoint( 0, 2, Z, M, Qgis::WkbType::PointZ ) ).toCircularString( true )->asWkt( WKT_PRECISION );
   mExpectedWkts[QStringLiteral( "XYZ" "2PointsWithDeletedVertex" )] = mExpectedWkts[QStringLiteral( "XYZ" "2Points" )];
-  mExpectedWkts[QStringLiteral( "XYZ" "3Points" )] = QgsCircle::from3Points( QgsPoint( 0, 0, Z, M, QgsWkbTypes::PointZ ), QgsPoint( 0, 2, Z, M, QgsWkbTypes::PointZ ), QgsPoint( 1, 1, Z, M, QgsWkbTypes::PointZ ) ).toCircularString( true )->asWkt( WKT_PRECISION );
+  mExpectedWkts[QStringLiteral( "XYZ" "3Points" )] = QgsCircle::from3Points( QgsPoint( 0, 0, Z, M, Qgis::WkbType::PointZ ), QgsPoint( 0, 2, Z, M, Qgis::WkbType::PointZ ), QgsPoint( 1, 1, Z, M, Qgis::WkbType::PointZ ) ).toCircularString( true )->asWkt( WKT_PRECISION );
   mExpectedWkts[QStringLiteral( "XYZ" "3PointsWithDeletedVertex" )] = mExpectedWkts[QStringLiteral( "XYZ" "3Points" )];
-  mExpectedWkts[QStringLiteral( "XYZ" "centerPoint" )] = QgsCircle::fromCenterPoint( QgsPoint( 0, 0, Z, M, QgsWkbTypes::PointZ ), QgsPoint( 0, 2, Z, M, QgsWkbTypes::PointZ ) ).toCircularString( true )->asWkt( WKT_PRECISION );
+  mExpectedWkts[QStringLiteral( "XYZ" "centerPoint" )] = QgsCircle::fromCenterPoint( QgsPoint( 0, 0, Z, M, Qgis::WkbType::PointZ ), QgsPoint( 0, 2, Z, M, Qgis::WkbType::PointZ ) ).toCircularString( true )->asWkt( WKT_PRECISION );
   mExpectedWkts[QStringLiteral( "XYZ" "centerPointWithDeletedVertex" )] = mExpectedWkts[QStringLiteral( "XYZ" "centerPoint" )] ;
 
-  mExpectedWkts[QStringLiteral( "XYM" "2Points" )] = QgsCircle::from2Points( QgsPoint( 0, 0, Z, M, QgsWkbTypes::PointM ), QgsPoint( 0, 2, Z, M, QgsWkbTypes::PointM ) ).toCircularString( true )->asWkt( WKT_PRECISION );
+  mExpectedWkts[QStringLiteral( "XYM" "2Points" )] = QgsCircle::from2Points( QgsPoint( 0, 0, Z, M, Qgis::WkbType::PointM ), QgsPoint( 0, 2, Z, M, Qgis::WkbType::PointM ) ).toCircularString( true )->asWkt( WKT_PRECISION );
   mExpectedWkts[QStringLiteral( "XYM" "2PointsWithDeletedVertex" )] = mExpectedWkts[QStringLiteral( "XYM" "2Points" )];
-  mExpectedWkts[QStringLiteral( "XYM" "3Points" )] = QgsCircle::from3Points( QgsPoint( 0, 0, Z, M, QgsWkbTypes::PointM ), QgsPoint( 0, 2, Z, M, QgsWkbTypes::PointM ), QgsPoint( 1, 1, Z, M, QgsWkbTypes::PointM ) ).toCircularString( true )->asWkt( WKT_PRECISION );
+  mExpectedWkts[QStringLiteral( "XYM" "3Points" )] = QgsCircle::from3Points( QgsPoint( 0, 0, Z, M, Qgis::WkbType::PointM ), QgsPoint( 0, 2, Z, M, Qgis::WkbType::PointM ), QgsPoint( 1, 1, Z, M, Qgis::WkbType::PointM ) ).toCircularString( true )->asWkt( WKT_PRECISION );
   mExpectedWkts[QStringLiteral( "XYM" "3PointsWithDeletedVertex" )] = mExpectedWkts[QStringLiteral( "XYM" "3Points" )];
-  mExpectedWkts[QStringLiteral( "XYM" "centerPoint" )] = QgsCircle::fromCenterPoint( QgsPoint( 0, 0, Z, M, QgsWkbTypes::PointM ), QgsPoint( 0, 2, Z, M, QgsWkbTypes::PointM ) ).toCircularString( true )->asWkt( WKT_PRECISION );
+  mExpectedWkts[QStringLiteral( "XYM" "centerPoint" )] = QgsCircle::fromCenterPoint( QgsPoint( 0, 0, Z, M, Qgis::WkbType::PointM ), QgsPoint( 0, 2, Z, M, Qgis::WkbType::PointM ) ).toCircularString( true )->asWkt( WKT_PRECISION );
   mExpectedWkts[QStringLiteral( "XYM" "centerPointWithDeletedVertex" )] = mExpectedWkts[QStringLiteral( "XYM" "centerPoint" )] ;
 
-  mExpectedWkts[QStringLiteral( "XYZM" "2Points" )] = QgsCircle::from2Points( QgsPoint( 0, 0, Z, M, QgsWkbTypes::PointZM ), QgsPoint( 0, 2, Z, M, QgsWkbTypes::PointZM ) ).toCircularString( true )->asWkt( WKT_PRECISION );
+  mExpectedWkts[QStringLiteral( "XYZM" "2Points" )] = QgsCircle::from2Points( QgsPoint( 0, 0, Z, M, Qgis::WkbType::PointZM ), QgsPoint( 0, 2, Z, M, Qgis::WkbType::PointZM ) ).toCircularString( true )->asWkt( WKT_PRECISION );
   mExpectedWkts[QStringLiteral( "XYZM" "2PointsWithDeletedVertex" )] = mExpectedWkts[QStringLiteral( "XYZM" "2Points" )];
-  mExpectedWkts[QStringLiteral( "XYZM" "3Points" )] = QgsCircle::from3Points( QgsPoint( 0, 0, Z, M, QgsWkbTypes::PointZM ), QgsPoint( 0, 2, Z, M, QgsWkbTypes::PointZM ), QgsPoint( 1, 1, Z, M, QgsWkbTypes::PointZM ) ).toCircularString( true )->asWkt( WKT_PRECISION );
+  mExpectedWkts[QStringLiteral( "XYZM" "3Points" )] = QgsCircle::from3Points( QgsPoint( 0, 0, Z, M, Qgis::WkbType::PointZM ), QgsPoint( 0, 2, Z, M, Qgis::WkbType::PointZM ), QgsPoint( 1, 1, Z, M, Qgis::WkbType::PointZM ) ).toCircularString( true )->asWkt( WKT_PRECISION );
   mExpectedWkts[QStringLiteral( "XYZM" "3PointsWithDeletedVertex" )] = mExpectedWkts[QStringLiteral( "XYZM" "3Points" )];
-  mExpectedWkts[QStringLiteral( "XYZM" "centerPoint" )] = QgsCircle::fromCenterPoint( QgsPoint( 0, 0, Z, M, QgsWkbTypes::PointZM ), QgsPoint( 0, 2, Z, M, QgsWkbTypes::PointZM ) ).toCircularString( true )->asWkt( WKT_PRECISION );
+  mExpectedWkts[QStringLiteral( "XYZM" "centerPoint" )] = QgsCircle::fromCenterPoint( QgsPoint( 0, 0, Z, M, Qgis::WkbType::PointZM ), QgsPoint( 0, 2, Z, M, Qgis::WkbType::PointZM ) ).toCircularString( true )->asWkt( WKT_PRECISION );
   mExpectedWkts[QStringLiteral( "XYZM" "centerPointWithDeletedVertex" )] = mExpectedWkts[QStringLiteral( "XYZM" "centerPoint" )] ;
 }
 

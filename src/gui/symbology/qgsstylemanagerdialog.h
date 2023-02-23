@@ -473,7 +473,7 @@ class GUI_EXPORT QgsStyleManagerDialog : public QDialog, private Ui::QgsStyleMan
     bool addTextFormat();
     bool editTextFormat();
 
-    bool addLabelSettings( QgsWkbTypes::GeometryType type );
+    bool addLabelSettings( Qgis::GeometryType type );
     bool editLabelSettings();
 
     bool addLegendPatchShape( Qgis::SymbolType type );

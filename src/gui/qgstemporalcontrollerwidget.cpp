@@ -17,7 +17,6 @@
 
 #include "qgsapplication.h"
 #include "qgstemporalcontrollerwidget.h"
-#include "qgsgui.h"
 #include "qgsmaplayermodel.h"
 #include "qgsproject.h"
 #include "qgsprojecttimesettings.h"
@@ -26,6 +25,7 @@
 #include "qgsmaplayertemporalproperties.h"
 #include "qgsmeshlayer.h"
 #include "qgsrasterlayer.h"
+#include "qgsunittypes.h"
 
 #include <QAction>
 #include <QMenu>
@@ -131,26 +131,26 @@ QgsTemporalControllerWidget::QgsTemporalControllerWidget( QWidget *parent )
     whileBlocking( mFixedRangeEndDateTime )->setDateTime( range.end() );
   }
 
-  for ( const QgsUnitTypes::TemporalUnit u :
+  for ( const Qgis::TemporalUnit u :
         {
-          QgsUnitTypes::TemporalMilliseconds,
-          QgsUnitTypes::TemporalSeconds,
-          QgsUnitTypes::TemporalMinutes,
-          QgsUnitTypes::TemporalHours,
-          QgsUnitTypes::TemporalDays,
-          QgsUnitTypes::TemporalWeeks,
-          QgsUnitTypes::TemporalMonths,
-          QgsUnitTypes::TemporalYears,
-          QgsUnitTypes::TemporalDecades,
-          QgsUnitTypes::TemporalCenturies,
-          QgsUnitTypes::TemporalIrregularStep,
+          Qgis::TemporalUnit::Milliseconds,
+          Qgis::TemporalUnit::Seconds,
+          Qgis::TemporalUnit::Minutes,
+          Qgis::TemporalUnit::Hours,
+          Qgis::TemporalUnit::Days,
+          Qgis::TemporalUnit::Weeks,
+          Qgis::TemporalUnit::Months,
+          Qgis::TemporalUnit::Years,
+          Qgis::TemporalUnit::Decades,
+          Qgis::TemporalUnit::Centuries,
+          Qgis::TemporalUnit::IrregularStep,
         } )
   {
-    mTimeStepsComboBox->addItem( u != QgsUnitTypes::TemporalIrregularStep ? QgsUnitTypes::toString( u ) : tr( "source timestamps" ), u );
+    mTimeStepsComboBox->addItem( u != Qgis::TemporalUnit::IrregularStep ? QgsUnitTypes::toString( u ) : tr( "source timestamps" ), static_cast< int >( u ) );
   }
 
   // TODO: might want to choose an appropriate default unit based on the range
-  mTimeStepsComboBox->setCurrentIndex( mTimeStepsComboBox->findData( QgsUnitTypes::TemporalHours ) );
+  mTimeStepsComboBox->setCurrentIndex( mTimeStepsComboBox->findData( static_cast< int >( Qgis::TemporalUnit::Hours ) ) );
 
   // NOTE 'minimum' and 'decimals' should be in sync with the 'decimals' in qgstemporalcontrollerwidgetbase.ui
   mStepSpinBox->setDecimals( 3 );
@@ -303,9 +303,9 @@ void QgsTemporalControllerWidget::updateFrameDuration()
     return;
 
   // save new settings into project
-  const QgsUnitTypes::TemporalUnit unit = static_cast< QgsUnitTypes::TemporalUnit>( mTimeStepsComboBox->currentData().toInt() );
+  const Qgis::TemporalUnit unit = static_cast< Qgis::TemporalUnit>( mTimeStepsComboBox->currentData().toInt() );
   QgsProject::instance()->timeSettings()->setTimeStepUnit( unit );
-  QgsProject::instance()->timeSettings()->setTimeStep( unit == QgsUnitTypes::TemporalIrregularStep ? 1 : mStepSpinBox->value() );
+  QgsProject::instance()->timeSettings()->setTimeStep( unit == Qgis::TemporalUnit::IrregularStep ? 1 : mStepSpinBox->value() );
 
   if ( !mBlockFrameDurationUpdates )
   {
@@ -317,7 +317,7 @@ void QgsTemporalControllerWidget::updateFrameDuration()
   mSlider->setRange( 0, mNavigationObject->totalFrameCount() - 1 );
   mSlider->setValue( mNavigationObject->currentFrameNumber() );
 
-  if ( unit == QgsUnitTypes::TemporalIrregularStep )
+  if ( unit == Qgis::TemporalUnit::IrregularStep )
   {
     mStepSpinBox->setEnabled( false );
     mStepSpinBox->setValue( 1 );
@@ -335,7 +335,7 @@ void QgsTemporalControllerWidget::updateFrameDuration()
 void QgsTemporalControllerWidget::setWidgetStateFromProject()
 {
   mBlockSettingUpdates++;
-  mTimeStepsComboBox->setCurrentIndex( mTimeStepsComboBox->findData( QgsProject::instance()->timeSettings()->timeStepUnit() ) );
+  mTimeStepsComboBox->setCurrentIndex( mTimeStepsComboBox->findData( static_cast< int >( QgsProject::instance()->timeSettings()->timeStepUnit() ) ) );
   mStepSpinBox->setValue( QgsProject::instance()->timeSettings()->timeStep() );
   mBlockSettingUpdates--;
 
@@ -493,7 +493,7 @@ void QgsTemporalControllerWidget::onProjectCleared()
   whileBlocking( mFixedRangeEndDateTime )->setDateTime( end );
 
   updateTemporalExtent();
-  mTimeStepsComboBox->setCurrentIndex( mTimeStepsComboBox->findData( QgsUnitTypes::TemporalHours ) );
+  mTimeStepsComboBox->setCurrentIndex( mTimeStepsComboBox->findData( static_cast< int >( Qgis::TemporalUnit::Hours ) ) );
   mStepSpinBox->setValue( 1 );
 }
 
@@ -507,7 +507,7 @@ void QgsTemporalControllerWidget::updateRangeLabel( const QgsDateTimeRange &rang
 {
   QString timeFrameFormat = QStringLiteral( "yyyy-MM-dd HH:mm:ss" );
   // but if timesteps are < 1 second (as: in milliseconds), add milliseconds to the format
-  if ( mTimeStepsComboBox->currentIndex() == mTimeStepsComboBox->findData( QgsUnitTypes::TemporalMilliseconds ) )
+  if ( static_cast< Qgis::TemporalUnit >( mTimeStepsComboBox->currentData().toInt() ) == Qgis::TemporalUnit::Milliseconds )
     timeFrameFormat = QStringLiteral( "yyyy-MM-dd HH:mm:ss.zzz" );
   switch ( mNavigationObject->navigationMode() )
   {
@@ -590,7 +590,7 @@ void QgsTemporalControllerWidget::setTimeStep( const QgsInterval &timeStep )
 
   int selectedUnit = -1;
   double selectedValue = std::numeric_limits<double>::max();
-  if ( timeStep.originalUnit() != QgsUnitTypes::TemporalIrregularStep )
+  if ( timeStep.originalUnit() != Qgis::TemporalUnit::IrregularStep )
   {
     // Search the time unit the most appropriate :
     // the one that gives the smallest time step value for double spin box with round value (if possible) and/or the less signifiant digits
@@ -599,8 +599,8 @@ void QgsTemporalControllerWidget::setTimeStep( const QgsInterval &timeStep )
     const int precision = mStepSpinBox->decimals();
     for ( int i = 0; i < mTimeStepsComboBox->count(); ++i )
     {
-      const QgsUnitTypes::TemporalUnit unit = static_cast<QgsUnitTypes::TemporalUnit>( mTimeStepsComboBox->itemData( i ).toInt() );
-      const double value = timeStep.seconds() * QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::TemporalSeconds, unit );
+      const Qgis::TemporalUnit unit = static_cast<Qgis::TemporalUnit>( mTimeStepsComboBox->itemData( i ).toInt() );
+      const double value = timeStep.seconds() * QgsUnitTypes::fromUnitToUnitFactor( Qgis::TemporalUnit::Seconds, unit );
       QString string = QString::number( value, 'f', precision );
 
       const thread_local QRegularExpression trailingZeroRegEx = QRegularExpression( QStringLiteral( "0+$" ) );
@@ -650,7 +650,7 @@ void QgsTemporalControllerWidget::updateTimeStepInputs( const QgsInterval &timeS
     return;
 
   QString timeDisplayFormat = QStringLiteral( "yyyy-MM-dd HH:mm:ss" );
-  if ( QgsUnitTypes::TemporalMilliseconds == timeStep.originalUnit() )
+  if ( Qgis::TemporalUnit::Milliseconds == timeStep.originalUnit() )
   {
     timeDisplayFormat = QStringLiteral( "yyyy-MM-dd HH:mm:ss.zzz" );
     // very big change that you have to update the range too, as defaulting to NOT handling millis
@@ -663,13 +663,13 @@ void QgsTemporalControllerWidget::updateTimeStepInputs( const QgsInterval &timeS
 
   // Only update ui when the intervals are different
   if ( timeStep == QgsInterval( mStepSpinBox->value(),
-                                static_cast< QgsUnitTypes::TemporalUnit>( mTimeStepsComboBox->currentData().toInt() ) ) )
+                                static_cast< Qgis::TemporalUnit>( mTimeStepsComboBox->currentData().toInt() ) ) )
     return;
 
-  if ( timeStep.originalUnit() != QgsUnitTypes::TemporalUnknownUnit )
+  if ( timeStep.originalUnit() != Qgis::TemporalUnit::Unknown )
   {
     mStepSpinBox->setValue( timeStep.originalDuration() );
-    mTimeStepsComboBox->setCurrentIndex( timeStep.originalUnit() );
+    mTimeStepsComboBox->setCurrentIndex( mTimeStepsComboBox->findData( static_cast< int >( timeStep.originalUnit() ) ) );
   }
 
   updateFrameDuration();

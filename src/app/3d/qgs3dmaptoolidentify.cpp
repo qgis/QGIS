@@ -215,7 +215,7 @@ void Qgs3DMapToolIdentify::activate()
     // if the terrain contains point cloud data disable the terrain picker signals
     for ( QgsMapLayer *layer : map.layers() )
     {
-      if ( layer->type() == QgsMapLayerType::PointCloudLayer )
+      if ( layer->type() == Qgis::LayerType::PointCloud )
       {
         disableTerrainPicker = true;
         break;

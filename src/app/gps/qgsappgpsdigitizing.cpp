@@ -275,7 +275,7 @@ void QgsAppGpsDigitizing::createFeature()
     return;
   }
 
-  if ( geometryLayerCrs.type() == QgsWkbTypes::PolygonGeometry )
+  if ( geometryLayerCrs.type() == Qgis::GeometryType::Polygon )
   {
     const int avoidIntersectionsReturn = geometryLayerCrs.avoidIntersections( QgsProject::instance()->avoidIntersectionsLayers() );
     if ( avoidIntersectionsReturn == 1 )
@@ -322,7 +322,7 @@ void QgsAppGpsDigitizing::createFeature()
 
   switch ( vlayer->geometryType() )
   {
-    case QgsWkbTypes::PointGeometry:
+    case Qgis::GeometryType::Point:
     {
       QgsFeatureAction action( tr( "Feature Added" ), f, vlayer, QUuid(), -1, this );
       const QgsFeatureAction::AddFeatureResult result = action.addFeature( attrMap );
@@ -359,8 +359,8 @@ void QgsAppGpsDigitizing::createFeature()
       break;
     }
 
-    case QgsWkbTypes::LineGeometry:
-    case QgsWkbTypes::PolygonGeometry:
+    case Qgis::GeometryType::Line:
+    case Qgis::GeometryType::Polygon:
     {
       mBlockGpsStateChanged++;
 
@@ -406,8 +406,8 @@ void QgsAppGpsDigitizing::createFeature()
       break;
     }
 
-    case QgsWkbTypes::NullGeometry:
-    case QgsWkbTypes::UnknownGeometry:
+    case Qgis::GeometryType::Null:
+    case Qgis::GeometryType::Unknown:
       return;
   }
   vlayer->triggerRepaint();
@@ -462,7 +462,7 @@ void QgsAppGpsDigitizing::createRubberBand()
 {
   delete mRubberBand;
 
-  mRubberBand = new QgsRubberBand( mCanvas, QgsWkbTypes::LineGeometry );
+  mRubberBand = new QgsRubberBand( mCanvas, Qgis::GeometryType::Line );
   updateTrackAppearance();
   mRubberBand->show();
 }

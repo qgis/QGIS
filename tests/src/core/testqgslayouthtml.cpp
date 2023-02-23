@@ -25,6 +25,7 @@
 #include "qgsvectordataprovider.h"
 #include "qgsproject.h"
 #include "qgslayout.h"
+#include "qgslayoutreportcontext.h"
 
 #include <QObject>
 #include "qgstest.h"

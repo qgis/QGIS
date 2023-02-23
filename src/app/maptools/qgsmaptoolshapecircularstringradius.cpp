@@ -16,7 +16,6 @@
 #include "qgsmaptoolshapecircularstringradius.h"
 #include "qgisapp.h"
 #include "qgscircularstring.h"
-#include "qgscompoundcurve.h"
 #include "qgsgeometryutils.h"
 #include "qgsgeometryrubberband.h"
 #include "qgsmapcanvas.h"
@@ -134,7 +133,7 @@ void QgsMapToolShapeCircularStringRadius::recalculateRubberBand()
     const int rubberBandSize = mPoints.size() - ( mPoints.size() + 1 ) % 2;
     cString->setPoints( mPoints.mid( 0, rubberBandSize ) );
     delete mRubberBand;
-    QgsWkbTypes::GeometryType type = mCaptureMode == QgsMapToolCapture::CapturePolygon ? QgsWkbTypes::PolygonGeometry : QgsWkbTypes::LineGeometry;
+    Qgis::GeometryType type = mCaptureMode == QgsMapToolCapture::CapturePolygon ? Qgis::GeometryType::Polygon : Qgis::GeometryType::Line;
     mRubberBand = mParentTool->createGeometryRubberBand( type );
     mRubberBand->setGeometry( cString );
     mRubberBand->show();
@@ -166,7 +165,7 @@ void QgsMapToolShapeCircularStringRadius::recalculateTempRubberBand( const QgsPo
   QgsCircularString *cString = new QgsCircularString();
   cString->setPoints( rubberBandPoints );
   delete mTempRubberBand;
-  QgsWkbTypes::GeometryType type = mCaptureMode == QgsMapToolCapture::CapturePolygon ? QgsWkbTypes::PolygonGeometry : QgsWkbTypes::LineGeometry;
+  Qgis::GeometryType type = mCaptureMode == QgsMapToolCapture::CapturePolygon ? Qgis::GeometryType::Polygon : Qgis::GeometryType::Line;
   mTempRubberBand = mParentTool->createGeometryRubberBand( type, true );
   mTempRubberBand->setGeometry( cString );
   mTempRubberBand->show();

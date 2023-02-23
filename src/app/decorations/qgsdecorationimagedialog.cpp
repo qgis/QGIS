@@ -16,12 +16,8 @@
 #include "qgsdecorationimagedialog.h"
 #include "qgsdecorationimage.h"
 #include "qgsimagecache.h"
-#include "qgslogger.h"
 #include "qgshelp.h"
-#include "qgsproject.h"
-#include "qgssymbollayerutils.h"
 #include "qgssvgcache.h"
-#include "qgssvgselectorwidget.h"
 #include "qgsgui.h"
 
 #include <QPainter>
@@ -63,7 +59,12 @@ QgsDecorationImageDialog::QgsDecorationImageDialog( QgsDecorationImage &deco, QW
   spinHorizontal->setClearValue( 0 );
   spinHorizontal->setValue( mDeco.mMarginHorizontal );
   spinVertical->setValue( mDeco.mMarginVertical );
-  wgtUnitSelection->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderPercentage << QgsUnitTypes::RenderPixels );
+  wgtUnitSelection->setUnits(
+  {
+    Qgis::RenderUnit::Millimeters,
+    Qgis::RenderUnit::Percentage,
+    Qgis::RenderUnit::Pixels
+  } );
   wgtUnitSelection->setUnit( mDeco.mMarginUnit );
 
   // enabled

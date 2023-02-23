@@ -16,7 +16,6 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsapplication.h"
 #include "qgsvertexeditor.h"
 #include "qgscoordinateutils.h"
 #include "qgsmapcanvas.h"
@@ -66,19 +65,16 @@ void QgsVertexEditorModel::setFeature( QgsLockedFeature *lockedFeature )
   mLockedFeature = lockedFeature;
   if ( mLockedFeature && mLockedFeature->layer() )
   {
-    const QgsWkbTypes::Type layerWKBType = mLockedFeature->layer()->wkbType();
+    const Qgis::WkbType layerWKBType = mLockedFeature->layer()->wkbType();
 
     mHasZ = QgsWkbTypes::hasZ( layerWKBType );
     mHasM = QgsWkbTypes::hasM( layerWKBType );
 
-    if ( mHasZ )
-      mZCol = 2;
+    mZCol = mHasZ ? 2 : -1;
 
-    if ( mHasM )
-      mMCol = 2 + ( mHasZ ? 1 : 0 );
+    mMCol = mHasM ? ( 2 + ( mHasZ ? 1 : 0 ) ) : -1;
 
-    if ( mHasR )
-      mRCol = 2 + ( mHasZ ? 1 : 0 ) + ( mHasM ? 1 : 0 );
+    mRCol = mHasR ? ( 2 + ( mHasZ ? 1 : 0 ) + ( mHasM ? 1 : 0 ) ) : -1;
   }
 
   endResetModel();
@@ -275,7 +271,7 @@ bool QgsVertexEditorModel::setData( const QModelIndex &index, const QVariant &va
   }
   const double z = ( index.column() == mZCol ? doubleValue : mLockedFeature->vertexMap().at( index.row() )->point().z() );
   const double m = ( index.column() == mMCol ? doubleValue : mLockedFeature->vertexMap().at( index.row() )->point().m() );
-  const QgsPoint p( QgsWkbTypes::PointZM, x, y, z, m );
+  const QgsPoint p( Qgis::WkbType::PointZM, x, y, z, m );
 
   mLockedFeature->layer()->beginEditCommand( QObject::tr( "Moved vertices" ) );
   mLockedFeature->layer()->moveVertex( p, mLockedFeature->featureId(), index.row() );

@@ -1064,7 +1064,11 @@ geos::unique_ptr QgsGeos::linePointDifference( GEOSGeometry *GEOSsplitPoint ) co
       line->closestSegment( *intersectionPoint, segmentPoint2D, nextVertex );
       const QgsLineString segment = QgsLineString( line->pointN( nextVertex.vertex - 1 ), line->pointN( nextVertex.vertex ) );
       const double distance = segmentPoint2D.distance( line->pointN( nextVertex.vertex - 1 ) );
-      std::unique_ptr< QgsPoint > correctSegmentPoint( segment.interpolatePoint( distance ) );
+
+      // Due to precision issues, distance can be a tad larger than the actual segment length, making interpolatePoint() return nullptr
+      // In that case we'll use the segment's endpoint instead of interpolating
+      std::unique_ptr< QgsPoint > correctSegmentPoint( distance > segment.length() ? segment.endPoint().clone() : segment.interpolatePoint( distance ) );
+
       const QPair< double, QgsPoint > pair = qMakePair( distance, *correctSegmentPoint.get() );
       if ( pointMap.contains( nextVertex.vertex - 1 ) )
         pointMap[ nextVertex.vertex - 1 ].append( pair );
@@ -1131,7 +1135,7 @@ QgsGeometryEngine::EngineOperationResult QgsGeos::splitLinearGeometry( GEOSGeome
     return InvalidBaseGeometry;
 
   geos::unique_ptr intersectGeom( GEOSIntersection_r( geosinit()->ctxt, splitLine, mGeos.get() ) );
-  if ( !intersectGeom )
+  if ( !intersectGeom || GEOSisEmpty_r( geosinit()->ctxt, intersectGeom.get() ) )
     return NothingHappened;
 
   //check that split line has no linear intersection
@@ -1593,18 +1597,18 @@ QgsPoint QgsGeos::coordSeqPoint( const GEOSCoordSequence *cs, int i, bool hasZ, 
     GEOSCoordSeq_getOrdinate_r( geosinit()->ctxt, cs, i, 3, &m );
   }
 
-  QgsWkbTypes::Type t = QgsWkbTypes::Point;
+  Qgis::WkbType t = Qgis::WkbType::Point;
   if ( hasZ && hasM )
   {
-    t = QgsWkbTypes::PointZM;
+    t = Qgis::WkbType::PointZM;
   }
   else if ( hasZ )
   {
-    t = QgsWkbTypes::PointZ;
+    t = Qgis::WkbType::PointZ;
   }
   else if ( hasM )
   {
-    t = QgsWkbTypes::PointM;
+    t = Qgis::WkbType::PointM;
   }
   return QgsPoint( t, x, y, z, m );
 }
@@ -1624,28 +1628,28 @@ geos::unique_ptr QgsGeos::asGeos( const QgsAbstractGeometry *geom, double precis
     ++coordDims;
   }
 
-  if ( QgsWkbTypes::isMultiType( geom->wkbType() )  || QgsWkbTypes::flatType( geom->wkbType() ) == QgsWkbTypes::GeometryCollection )
+  if ( QgsWkbTypes::isMultiType( geom->wkbType() )  || QgsWkbTypes::flatType( geom->wkbType() ) == Qgis::WkbType::GeometryCollection )
   {
     int geosType = GEOS_GEOMETRYCOLLECTION;
 
-    if ( QgsWkbTypes::flatType( geom->wkbType() ) != QgsWkbTypes::GeometryCollection )
+    if ( QgsWkbTypes::flatType( geom->wkbType() ) != Qgis::WkbType::GeometryCollection )
     {
       switch ( QgsWkbTypes::geometryType( geom->wkbType() ) )
       {
-        case QgsWkbTypes::PointGeometry:
+        case Qgis::GeometryType::Point:
           geosType = GEOS_MULTIPOINT;
           break;
 
-        case QgsWkbTypes::LineGeometry:
+        case Qgis::GeometryType::Line:
           geosType = GEOS_MULTILINESTRING;
           break;
 
-        case QgsWkbTypes::PolygonGeometry:
+        case Qgis::GeometryType::Polygon:
           geosType = GEOS_MULTIPOLYGON;
           break;
 
-        case QgsWkbTypes::UnknownGeometry:
-        case QgsWkbTypes::NullGeometry:
+        case Qgis::GeometryType::Unknown:
+        case Qgis::GeometryType::Null:
           return nullptr;
       }
     }
@@ -1667,17 +1671,17 @@ geos::unique_ptr QgsGeos::asGeos( const QgsAbstractGeometry *geom, double precis
   {
     switch ( QgsWkbTypes::geometryType( geom->wkbType() ) )
     {
-      case QgsWkbTypes::PointGeometry:
+      case Qgis::GeometryType::Point:
         return createGeosPoint( static_cast<const QgsPoint *>( geom ), coordDims, precision );
 
-      case QgsWkbTypes::LineGeometry:
+      case Qgis::GeometryType::Line:
         return createGeosLinestring( static_cast<const QgsLineString *>( geom ), precision );
 
-      case QgsWkbTypes::PolygonGeometry:
+      case Qgis::GeometryType::Polygon:
         return createGeosPolygon( static_cast<const QgsPolygon *>( geom ), precision );
 
-      case QgsWkbTypes::UnknownGeometry:
-      case QgsWkbTypes::NullGeometry:
+      case Qgis::GeometryType::Unknown:
+      case Qgis::GeometryType::Null:
         return nullptr;
     }
   }

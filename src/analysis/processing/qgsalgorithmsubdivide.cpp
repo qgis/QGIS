@@ -75,7 +75,7 @@ QString QgsSubdivideAlgorithm::outputName() const
   return QObject::tr( "Subdivided" );
 }
 
-QgsWkbTypes::Type QgsSubdivideAlgorithm::outputWkbType( QgsWkbTypes::Type inputWkbType ) const
+Qgis::WkbType QgsSubdivideAlgorithm::outputWkbType( Qgis::WkbType inputWkbType ) const
 {
   return QgsWkbTypes::multiType( inputWkbType );
 }

@@ -75,7 +75,7 @@ Units are set via :py:func:`~QgsPointCloudLayerElevationProperties.setMaximumScr
 .. versionadded:: 3.26
 %End
 
-    QgsUnitTypes::RenderUnit maximumScreenErrorUnit() const;
+    Qgis::RenderUnit maximumScreenErrorUnit() const;
 %Docstring
 Returns the unit for the maximum screen error allowed when generating elevation profiles for the point cloud.
 
@@ -86,7 +86,7 @@ Returns the unit for the maximum screen error allowed when generating elevation 
 .. versionadded:: 3.26
 %End
 
-    void setMaximumScreenErrorUnit( QgsUnitTypes::RenderUnit unit );
+    void setMaximumScreenErrorUnit( Qgis::RenderUnit unit );
 %Docstring
 Sets the ``unit`` for the maximum screen error allowed when generating elevation profiles for the point cloud.
 
@@ -179,7 +179,7 @@ The point size units are retrieved by calling :py:func:`~QgsPointCloudLayerEleva
 .. versionadded:: 3.26
 %End
 
-    void setPointSizeUnit( const QgsUnitTypes::RenderUnit units );
+    void setPointSizeUnit( const Qgis::RenderUnit units );
 %Docstring
 Sets the ``units`` used for the point size used for drawing points in elevation profile charts.
 
@@ -190,7 +190,7 @@ Sets the ``units`` used for the point size used for drawing points in elevation 
 .. versionadded:: 3.26
 %End
 
-    QgsUnitTypes::RenderUnit pointSizeUnit() const;
+    Qgis::RenderUnit pointSizeUnit() const;
 %Docstring
 Returns the units used for the point size used for drawing points in elevation profile charts.
 

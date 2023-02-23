@@ -18,15 +18,12 @@
 #include "qgsrenderedfeaturehandlerinterface.h"
 #include "qgsfeaturerequest.h"
 #include "qgslayout.h"
-#include "qgslogger.h"
 #include "qgsgeometry.h"
 #include "qgsvectorlayer.h"
-#include "qgsvectorfilewriter.h"
 #include "qgslayertree.h"
+#include "qgslayoutrendercontext.h"
 
 #include <gdal.h>
-#include "qgsgdalutils.h"
-#include "cpl_string.h"
 #include "qgslayoutpagecollection.h"
 
 #include <QMutex>
@@ -47,7 +44,7 @@ class QgsGeoPdfRenderedFeatureHandler: public QgsRenderedFeatureHandlerInterface
       // get page size
       const QgsLayoutSize pageSize = map->layout()->pageCollection()->page( map->page() )->pageSize();
       QSizeF pageSizeLayoutUnits = map->layout()->convertToLayoutUnits( pageSize );
-      const QgsLayoutSize pageSizeInches = map->layout()->renderContext().measurementConverter().convert( pageSize, QgsUnitTypes::LayoutInches );
+      const QgsLayoutSize pageSizeInches = map->layout()->renderContext().measurementConverter().convert( pageSize, Qgis::LayoutUnit::Inches );
 
       // PDF assumes 72 dpi -- this is hardcoded!!
       const double pageHeightPdfUnits = pageSizeInches.height() * 72;
@@ -120,7 +117,7 @@ QgsLayoutGeoPdfExporter::QgsLayoutGeoPdfExporter( QgsLayout *layout )
     {
       const QVariant visibility = ml->customProperty( QStringLiteral( "geopdf/initiallyVisible" ), true );
       mInitialLayerVisibility.insert( ml->id(), !visibility.isValid() ? true : visibility.toBool() );
-      if ( ml->type() == QgsMapLayerType::VectorLayer )
+      if ( ml->type() == Qgis::LayerType::Vector )
       {
         const QVariant v = ml->customProperty( QStringLiteral( "geopdf/includeFeatures" ) );
         if ( !v.isValid() || v.toBool() )

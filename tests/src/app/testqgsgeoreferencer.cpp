@@ -620,7 +620,7 @@ void TestQgsGeoreferencer::testUpdateResiduals()
                                        QgsPointXY( 787362.375, 3362323.125 ), QgsPointXY( -35, 42 ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ),
                                        true ) );
 
-  list.updateResiduals( &transform, QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ), QgsProject::instance()->transformContext(), QgsUnitTypes::RenderPixels );
+  list.updateResiduals( &transform, QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ), QgsProject::instance()->transformContext(), Qgis::RenderUnit::Pixels );
   QGSCOMPARENEAR( list.at( 0 )->residual().x(), 0, 0.00001 );
   QGSCOMPARENEAR( list.at( 0 )->residual().y(), -189.189, 0.1 );
   QGSCOMPARENEAR( list.at( 1 )->residual().x(), 105.7142, 0.1 );
@@ -629,7 +629,7 @@ void TestQgsGeoreferencer::testUpdateResiduals()
   QGSCOMPARENEAR( list.at( 2 )->residual().y(), 0, 0.00001 );
 
   // in map units
-  list.updateResiduals( &transform, QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ), QgsProject::instance()->transformContext(), QgsUnitTypes::RenderMapUnits );
+  list.updateResiduals( &transform, QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ), QgsProject::instance()->transformContext(), Qgis::RenderUnit::MapUnits );
   QGSCOMPARENEAR( list.at( 0 )->residual().x(), 0, 0.00001 );
   QGSCOMPARENEAR( list.at( 0 )->residual().y(), -34.999, 0.1 );
   QGSCOMPARENEAR( list.at( 1 )->residual().x(), -92.499, 0.1 );
@@ -638,7 +638,7 @@ void TestQgsGeoreferencer::testUpdateResiduals()
   QGSCOMPARENEAR( list.at( 2 )->residual().y(), 0, 0.00001 );
 
   // different target CRS
-  list.updateResiduals( &transform, QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) ), QgsProject::instance()->transformContext(), QgsUnitTypes::RenderPixels );
+  list.updateResiduals( &transform, QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) ), QgsProject::instance()->transformContext(), Qgis::RenderUnit::Pixels );
   QGSCOMPARENEAR( list.at( 0 )->residual().x(), 0, 0.00001 );
   QGSCOMPARENEAR( list.at( 0 )->residual().y(), -186.828, 0.1 );
   QGSCOMPARENEAR( list.at( 1 )->residual().x(), 105.7142, 0.1 );
@@ -651,7 +651,7 @@ void TestQgsGeoreferencer::testUpdateResiduals()
   projective.loadRaster( QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/landsat.tif" ) );
   QVERIFY( projective.hasExistingGeoreference() );
 
-  list.updateResiduals( &projective, QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) ), QgsProject::instance()->transformContext(), QgsUnitTypes::RenderPixels );
+  list.updateResiduals( &projective, QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) ), QgsProject::instance()->transformContext(), Qgis::RenderUnit::Pixels );
   QGSCOMPARENEAR( list.at( 0 )->residual().x(), 0, 0.00001 );
   QGSCOMPARENEAR( list.at( 0 )->residual().y(), 0, 0.00001 );
   QGSCOMPARENEAR( list.at( 1 )->residual().x(), 0, 0.00001 );
@@ -678,7 +678,7 @@ void TestQgsGeoreferencer::testListModel()
   QgsGeorefTransform transform( QgsGcpTransformerInterface::TransformMethod::Linear );
   transform.loadRaster( QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/landsat.tif" ) );
   QVERIFY( transform.hasExistingGeoreference() );
-  list.updateResiduals( &transform, QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ), QgsProject::instance()->transformContext(), QgsUnitTypes::RenderPixels );
+  list.updateResiduals( &transform, QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ), QgsProject::instance()->transformContext(), Qgis::RenderUnit::Pixels );
 
   QgsGCPListModel model;
   QCOMPARE( model.rowCount(), 0 );
@@ -846,7 +846,7 @@ void TestQgsGeoreferencer::testListModelCrs()
 void TestQgsGeoreferencer::testGdalCommands()
 {
   QgsGeoreferencerMainWindow window;
-  window.openLayer( QgsMapLayerType::RasterLayer, QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/landsat.tif" ) );
+  window.openLayer( Qgis::LayerType::Raster, QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/landsat.tif" ) );
 
   window.addPoint( QgsPointXY( 783414, 3350122 ), QgsPointXY( 783414, 3350122 ), QgsCoordinateReferenceSystem() );
   window.addPoint( QgsPointXY( 791344, 3349795 ), QgsPointXY( 791344, 33497952 ), QgsCoordinateReferenceSystem() );

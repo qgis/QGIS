@@ -15,7 +15,6 @@
 
 #include "qgsrelation.h"
 
-#include "qgsapplication.h"
 #include "qgsfeatureiterator.h"
 #include "qgslogger.h"
 #include "qgsproject.h"
@@ -23,6 +22,8 @@
 #include "qgsrelation_p.h"
 #include "qgspolymorphicrelation.h"
 #include "qgsrelationmanager.h"
+
+#include <QApplication>
 
 QgsRelation::QgsRelation()
   : d( new QgsRelationPrivate() )
@@ -76,7 +77,7 @@ QgsRelation QgsRelation::createFromXml( const QDomNode &node, QgsReadWriteContex
   {
     QgsLogger::warning( QApplication::translate( "QgsRelation", "Relation defined for layer '%1' which does not exist." ).arg( referencingLayerId ) );
   }
-  else if ( QgsMapLayerType::VectorLayer  != referencingLayer->type() )
+  else if ( Qgis::LayerType::Vector != referencingLayer->type() )
   {
     QgsLogger::warning( QApplication::translate( "QgsRelation", "Relation defined for layer '%1' which is not of type VectorLayer." ).arg( referencingLayerId ) );
   }
@@ -85,7 +86,7 @@ QgsRelation QgsRelation::createFromXml( const QDomNode &node, QgsReadWriteContex
   {
     QgsLogger::warning( QApplication::translate( "QgsRelation", "Relation defined for layer '%1' which does not exist." ).arg( referencedLayerId ) );
   }
-  else if ( QgsMapLayerType::VectorLayer  != referencedLayer->type() )
+  else if ( Qgis::LayerType::Vector != referencedLayer->type() )
   {
     QgsLogger::warning( QApplication::translate( "QgsRelation", "Relation defined for layer '%1' which is not of type VectorLayer." ).arg( referencedLayerId ) );
   }

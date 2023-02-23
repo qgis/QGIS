@@ -1780,7 +1780,7 @@ QList<QgsProviderSublayerDetails> QgsGdalProvider::sublayerDetails( GDALDatasetH
 
         QgsProviderSublayerDetails details;
         details.setProviderKey( PROVIDER_KEY );
-        details.setType( QgsMapLayerType::RasterLayer );
+        details.setType( Qgis::LayerType::Raster );
         details.setName( layerName );
         details.setDescription( layerDesc );
         details.setLayerNumber( i );
@@ -2452,6 +2452,172 @@ QVariantMap QgsGdalProviderMetadata::decodeUri( const QString &uri ) const
 QString QgsGdalProviderMetadata::encodeUri( const QVariantMap &parts ) const
 {
   return  QgsGdalProviderBase::encodeGdalUri( parts );
+}
+
+
+static bool _parseGpkgColons( const QString &src, QString &filename, QString &tablename )
+{
+  // GDAL accepts the following input format:  GPKG:filename:table
+  // (GDAL won't accept quoted filename)
+
+  QStringList lst = src.split( ':' );
+  if ( lst.count() != 3 && lst.count() != 4 )
+    return false;
+
+  tablename = lst.last();
+  if ( lst.count() == 3 )
+  {
+    filename = lst[1];
+    return true;
+  }
+  else if ( lst.count() == 4 && lst[1].count() == 1 && ( lst[2][0] == '/' || lst[2][0] == '\\' ) )
+  {
+    // a bit of handling to make sure that filename C:\hello.gpkg is parsed correctly
+    filename = lst[1] + ":" + lst[2];
+    return true;
+  }
+  return false;
+}
+
+
+QString QgsGdalProviderMetadata::absoluteToRelativeUri( const QString &uri, const QgsReadWriteContext &context ) const
+{
+  const QString src = uri;
+  if ( src.startsWith( QLatin1String( "NETCDF:" ) ) )
+  {
+    // NETCDF:filename:variable
+    // filename can be quoted with " as it can contain colons
+    const thread_local QRegularExpression netcdfEncodedRegExp( QRegularExpression::anchoredPattern( "NETCDF:(.+):([^:]+)" ) );
+    const QRegularExpressionMatch match = netcdfEncodedRegExp.match( src );
+    if ( match.hasMatch() )
+    {
+      QString filename = match.captured( 1 );
+      if ( filename.startsWith( '"' ) && filename.endsWith( '"' ) )
+        filename = filename.mid( 1, filename.length() - 2 );
+      return "NETCDF:\"" + context.pathResolver().writePath( filename ) + "\":" + match.captured( 2 );
+    }
+  }
+  else if ( src.startsWith( QLatin1String( "GPKG:" ) ) )
+  {
+    // GPKG:filename:table
+    QString filename, tablename;
+    if ( _parseGpkgColons( src, filename, tablename ) )
+    {
+      filename = context.pathResolver().writePath( filename );
+      return QStringLiteral( "GPKG:%1:%2" ).arg( filename, tablename );
+    }
+  }
+  else if ( src.startsWith( QLatin1String( "HDF4_SDS:" ) ) )
+  {
+    // HDF4_SDS:subdataset_type:file_name:subdataset_index
+    // filename can be quoted with " as it can contain colons
+    const thread_local QRegularExpression hdf4EncodedRegExp( QRegularExpression::anchoredPattern( "HDF4_SDS:([^:]+):(.+):([^:]+)" ) );
+    const QRegularExpressionMatch match = hdf4EncodedRegExp.match( src );
+    if ( match.hasMatch() )
+    {
+      QString filename = match.captured( 2 );
+      if ( filename.startsWith( '"' ) && filename.endsWith( '"' ) )
+        filename = filename.mid( 1, filename.length() - 2 );
+      return "HDF4_SDS:" + match.captured( 1 ) + ":\"" + context.pathResolver().writePath( filename ) + "\":" + match.captured( 3 );
+    }
+  }
+  else if ( src.startsWith( QLatin1String( "HDF5:" ) ) )
+  {
+    // HDF5:file_name:subdataset
+    // filename can be quoted with " as it can contain colons
+    const thread_local QRegularExpression hdf5EncodedRegExp( QRegularExpression::anchoredPattern( "HDF5:(.+):([^:]+)" ) );
+    const QRegularExpressionMatch match = hdf5EncodedRegExp.match( src );
+    if ( match.hasMatch() )
+    {
+      QString filename = match.captured( 1 );
+      if ( filename.startsWith( '"' ) && filename.endsWith( '"' ) )
+        filename = filename.mid( 1, filename.length() - 2 );
+      return "HDF5:\"" + context.pathResolver().writePath( filename ) + "\":" + match.captured( 2 );
+    }
+  }
+  else if ( src.contains( QRegularExpression( "^(NITF_IM|RADARSAT_2_CALIB):" ) ) )
+  {
+    // NITF_IM:0:filename
+    // RADARSAT_2_CALIB:?:filename
+    const thread_local QRegularExpression nitfRadarsatEncodedRegExp( QRegularExpression::anchoredPattern( "([^:]+):([^:]+):(.+)" ) );
+    const QRegularExpressionMatch match = nitfRadarsatEncodedRegExp.match( src );
+    if ( match.hasMatch() )
+    {
+      return match.captured( 1 ) + ':' + match.captured( 2 ) + ':' + context.pathResolver().writePath( match.captured( 3 ) );
+    }
+  }
+
+  return context.pathResolver().writePath( src );
+}
+
+QString QgsGdalProviderMetadata::relativeToAbsoluteUri( const QString &uri, const QgsReadWriteContext &context ) const
+{
+  const QString src = uri;
+  if ( src.startsWith( QLatin1String( "NETCDF:" ) ) )
+  {
+    // NETCDF:filename:variable
+    // filename can be quoted with " as it can contain colons
+    const QRegularExpression netcdfDecodedRegExp( QRegularExpression::anchoredPattern( "NETCDF:(.+):([^:]+)" ) );
+    const QRegularExpressionMatch match = netcdfDecodedRegExp.match( src );
+    if ( match.hasMatch() )
+    {
+      QString filename = match.captured( 1 );
+      if ( filename.startsWith( '"' ) && filename.endsWith( '"' ) )
+        filename = filename.mid( 1, filename.length() - 2 );
+      return "NETCDF:\"" + context.pathResolver().readPath( filename ) + "\":" + match.captured( 2 );
+    }
+  }
+  else if ( src.startsWith( QLatin1String( "GPKG:" ) ) )
+  {
+    // GPKG:filename:table
+    QString filename, tablename;
+    if ( _parseGpkgColons( src, filename, tablename ) )
+    {
+      filename = context.pathResolver().readPath( filename );
+      return QStringLiteral( "GPKG:%1:%2" ).arg( filename, tablename );
+    }
+  }
+  else if ( src.startsWith( QLatin1String( "HDF4_SDS:" ) ) )
+  {
+    // HDF4_SDS:subdataset_type:file_name:subdataset_index
+    // filename can be quoted with " as it can contain colons
+    const QRegularExpression hdf4DecodedRegExp( QRegularExpression::anchoredPattern( "HDF4_SDS:([^:]+):(.+):([^:]+)" ) );
+    const QRegularExpressionMatch match = hdf4DecodedRegExp.match( src );
+    if ( match.hasMatch() )
+    {
+      QString filename = match.captured( 2 );
+      if ( filename.startsWith( '"' ) && filename.endsWith( '"' ) )
+        filename = filename.mid( 1, filename.length() - 2 );
+      return "HDF4_SDS:" + match.captured( 1 ) + ":\"" + context.pathResolver().readPath( filename ) + "\":" + match.captured( 3 );
+    }
+  }
+  else if ( src.startsWith( QLatin1String( "HDF5:" ) ) )
+  {
+    // HDF5:file_name:subdataset
+    // filename can be quoted with " as it can contain colons
+    const QRegularExpression hdf5DecodedRegExp( QRegularExpression::anchoredPattern( "HDF5:(.+):([^:]+)" ) );
+    const QRegularExpressionMatch match = hdf5DecodedRegExp.match( src );
+    if ( match.hasMatch() )
+    {
+      QString filename = match.captured( 1 );
+      if ( filename.startsWith( '"' ) && filename.endsWith( '"' ) )
+        filename = filename.mid( 1, filename.length() - 2 );
+      return "HDF5:\"" + context.pathResolver().readPath( filename ) + "\":" + match.captured( 2 );
+    }
+  }
+  else if ( src.contains( QRegularExpression( "^(NITF_IM|RADARSAT_2_CALIB):" ) ) )
+  {
+    // NITF_IM:0:filename
+    // RADARSAT_2_CALIB:?:filename
+    const QRegularExpression niftRadarsatDecodedRegExp( QRegularExpression::anchoredPattern( "([^:]+):([^:]+):(.+)" ) );
+    const QRegularExpressionMatch match = niftRadarsatDecodedRegExp.match( src );
+    if ( match.hasMatch() )
+    {
+      return match.captured( 1 ) + ':' + match.captured( 2 ) + ':' + context.pathResolver().readPath( match.captured( 3 ) );
+    }
+  }
+
+  return context.pathResolver().readPath( src );
 }
 
 bool QgsGdalProviderMetadata::uriIsBlocklisted( const QString &uri ) const
@@ -3409,8 +3575,7 @@ void QgsGdalProvider::initBaseDataset()
     // if there are subdatasets, leave the dataset open for subsequent queries
     else
     {
-      QgsDebugMsg( QObject::tr( "Cannot get GDAL raster band: %1" ).arg( msg ) +
-                   QString( " but dataset has %1 subdatasets" ).arg( mSubLayers.size() ) );
+      QgsDebugMsg( QStringLiteral( "Cannot get GDAL raster band: %1 but dataset has %2 subdatasets" ).arg( msg ).arg( mSubLayers.size() ) );
       mValid = false;
       return;
     }
@@ -4058,8 +4223,8 @@ QList<QgsProviderSublayerDetails> QgsGdalProviderMetadata::querySublayers( const
     }
 
     // if this is a VRT file make sure it is raster VRT
-    if ( ( vsiPrefix.isEmpty() && suffix == QLatin1String( "vrt" ) && !QgsGdalUtils::vrtMatchesLayerType( path, QgsMapLayerType::RasterLayer ) )
-         || ( !vsiPrefix.isEmpty() && suffix == QLatin1String( "vrt" ) && !QgsGdalUtils::vrtMatchesLayerType( gdalUri, QgsMapLayerType::RasterLayer ) ) )
+    if ( ( vsiPrefix.isEmpty() && suffix == QLatin1String( "vrt" ) && !QgsGdalUtils::vrtMatchesLayerType( path, Qgis::LayerType::Raster ) )
+         || ( !vsiPrefix.isEmpty() && suffix == QLatin1String( "vrt" ) && !QgsGdalUtils::vrtMatchesLayerType( gdalUri, Qgis::LayerType::Raster ) ) )
     {
       return {};
     }
@@ -4076,7 +4241,7 @@ QList<QgsProviderSublayerDetails> QgsGdalProviderMetadata::querySublayers( const
     }
 
     QgsProviderSublayerDetails details;
-    details.setType( QgsMapLayerType::RasterLayer );
+    details.setType( Qgis::LayerType::Raster );
     details.setProviderKey( QStringLiteral( "gdal" ) );
     details.setUri( uri );
     details.setName( uriParts.value( QStringLiteral( "vsiSuffix" ) ).toString().isEmpty()
@@ -4109,7 +4274,7 @@ QList<QgsProviderSublayerDetails> QgsGdalProviderMetadata::querySublayers( const
       {
         QgsProviderSublayerDetails details;
         details.setProviderKey( PROVIDER_KEY );
-        details.setType( QgsMapLayerType::RasterLayer );
+        details.setType( Qgis::LayerType::Raster );
         details.setUri( uri );
         details.setLayerNumber( 1 );
         GDALDriverH hDriver = GDALGetDatasetDriver( dataset.get() );
@@ -4279,9 +4444,9 @@ QStringList QgsGdalProviderMetadata::sidecarFilesForUri( const QString &uri ) co
   return res;
 }
 
-QList<QgsMapLayerType> QgsGdalProviderMetadata::supportedLayerTypes() const
+QList<Qgis::LayerType> QgsGdalProviderMetadata::supportedLayerTypes() const
 {
-  return { QgsMapLayerType::RasterLayer };
+  return { Qgis::LayerType::Raster };
 }
 
 QgsGdalProviderMetadata::QgsGdalProviderMetadata():

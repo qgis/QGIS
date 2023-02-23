@@ -32,6 +32,8 @@
 #include "qgsfillsymbol.h"
 #include "qgsmarkersymbol.h"
 #include "qgsmarkersymbollayer.h"
+#include "qgsprovidermetadata.h"
+#include "qgsproviderregistry.h"
 
 /**
  * \ingroup UnitTests
@@ -60,6 +62,7 @@ class TestQgsVectorTileLayer : public QgsTest
     void test_render_withClip();
     void test_labeling();
     void test_relativePaths();
+    void test_absoluteRelativeUri();
     void test_polygonWithLineStyle();
     void test_polygonWithMarker();
 };
@@ -176,7 +179,7 @@ void TestQgsVectorTileLayer::test_labeling()
   st.setStyleName( "st1" );
   st.setLayerName( "place" );
   st.setFilterExpression( "rank = 1 AND class = 'country'" );
-  st.setGeometryType( QgsWkbTypes::PointGeometry );
+  st.setGeometryType( Qgis::GeometryType::Point );
   st.setLabelSettings( labelSettings );
 
   QgsVectorTileBasicLabeling *labeling = new QgsVectorTileBasicLabeling;
@@ -238,6 +241,30 @@ void TestQgsVectorTileLayer::test_relativePaths()
   QCOMPARE( layer.decodedSource( srcMbtiles, QString(), contextAbs ), srcMbtiles );
 }
 
+void TestQgsVectorTileLayer::test_absoluteRelativeUri()
+{
+  QgsReadWriteContext context;
+  context.setPathResolver( QgsPathResolver( QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/project.qgs" ) ) );
+
+  QgsProviderMetadata *vectorTileMetadata = QgsProviderRegistry::instance()->providerMetadata( "vectortile" );
+  QVERIFY( vectorTileMetadata );
+
+  QgsDataSourceUri dsAbs;
+  dsAbs.setParam( "type", "xyz" );
+  dsAbs.setParam( "url", QString( "file://%1/{z}-{x}-{y}.pbf" ).arg( mDataDir ) );
+  dsAbs.setParam( "zmax", "1" );
+
+  QgsDataSourceUri dsRel;
+  dsRel.setParam( "type", "xyz" );
+  dsRel.setParam( "url", "file:./vector_tile/{z}-{x}-{y}.pbf" );
+  dsRel.setParam( "zmax", "1" );
+
+  QString absoluteUri = dsAbs.encodedUri();
+  QString relativeUri = dsRel.encodedUri();
+  QCOMPARE( vectorTileMetadata->absoluteToRelativeUri( absoluteUri, context ), relativeUri );
+  QCOMPARE( vectorTileMetadata->relativeToAbsoluteUri( relativeUri, context ), absoluteUri );
+}
+
 void TestQgsVectorTileLayer::test_polygonWithLineStyle()
 {
   QgsDataSourceUri ds;
@@ -257,7 +284,7 @@ void TestQgsVectorTileLayer::test_polygonWithLineStyle()
   lineSymbolLayer->setWidth( lineStrokeWidth );
   QgsLineSymbol *lineSymbol = new QgsLineSymbol( QgsSymbolLayerList() << lineSymbolLayer );
 
-  QgsVectorTileBasicRendererStyle st( QStringLiteral( "Polygons" ), QString(), QgsWkbTypes::LineGeometry );
+  QgsVectorTileBasicRendererStyle st( QStringLiteral( "Polygons" ), QString(), Qgis::GeometryType::Line );
   st.setSymbol( lineSymbol );
 
   QgsSimpleFillSymbolLayer *fillSymbolLayer = new QgsSimpleFillSymbolLayer;
@@ -265,7 +292,7 @@ void TestQgsVectorTileLayer::test_polygonWithLineStyle()
   fillSymbolLayer->setStrokeStyle( Qt::NoPen );
   QgsFillSymbol *fillSymbol = new QgsFillSymbol( QgsSymbolLayerList() << fillSymbolLayer );
 
-  QgsVectorTileBasicRendererStyle bgst( QStringLiteral( "background" ), QStringLiteral( "background" ), QgsWkbTypes::PolygonGeometry );
+  QgsVectorTileBasicRendererStyle bgst( QStringLiteral( "background" ), QStringLiteral( "background" ), Qgis::GeometryType::Polygon );
   bgst.setSymbol( fillSymbol );
 
   QgsVectorTileBasicRenderer *rend = new QgsVectorTileBasicRenderer;
@@ -293,7 +320,7 @@ void TestQgsVectorTileLayer::test_polygonWithMarker()
   markerSymbolLayer->setColor( markerColor );
   QgsMarkerSymbol *markerSymbol = new QgsMarkerSymbol( QgsSymbolLayerList() << markerSymbolLayer );
 
-  QgsVectorTileBasicRendererStyle st( QStringLiteral( "Polygons" ), QString(), QgsWkbTypes::PointGeometry );
+  QgsVectorTileBasicRendererStyle st( QStringLiteral( "Polygons" ), QString(), Qgis::GeometryType::Point );
   st.setSymbol( markerSymbol );
 
   QgsSimpleFillSymbolLayer *fillSymbolLayer = new QgsSimpleFillSymbolLayer;
@@ -301,7 +328,7 @@ void TestQgsVectorTileLayer::test_polygonWithMarker()
   fillSymbolLayer->setStrokeStyle( Qt::NoPen );
   QgsFillSymbol *fillSymbol = new QgsFillSymbol( QgsSymbolLayerList() << fillSymbolLayer );
 
-  QgsVectorTileBasicRendererStyle bgst( QStringLiteral( "background" ), QStringLiteral( "background" ), QgsWkbTypes::PolygonGeometry );
+  QgsVectorTileBasicRendererStyle bgst( QStringLiteral( "background" ), QStringLiteral( "background" ), Qgis::GeometryType::Polygon );
   bgst.setSymbol( fillSymbol );
 
   QgsVectorTileBasicRenderer *rend = new QgsVectorTileBasicRenderer;

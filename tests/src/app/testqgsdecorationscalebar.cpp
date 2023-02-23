@@ -78,7 +78,7 @@ void TestQgsDecorationScalebar::mapWidth()
 
   // Cartesian measure
   QgsProject::instance()->setEllipsoid( QString() );
-  scalebar.mSettings.setUnits( QgsUnitTypes::DistanceMiles );
+  scalebar.mSettings.setUnits( Qgis::DistanceUnit::Miles );
   QGSCOMPARENEAR( scalebar.mapWidth( settings ), 4.97097, 0.0001 );
 
   // ellipsoidal measure

@@ -67,7 +67,7 @@ QgsProviderMetadata::ProviderCapabilities QgsProviderMetadata::providerCapabilit
   return QgsProviderMetadata::ProviderCapabilities();
 }
 
-QList<QgsMapLayerType> QgsProviderMetadata::supportedLayerTypes() const
+QList<Qgis::LayerType> QgsProviderMetadata::supportedLayerTypes() const
 {
   return {};
 }
@@ -112,9 +112,9 @@ int QgsProviderMetadata::priorityForUri( const QString & ) const
   return 0;
 }
 
-QList<QgsMapLayerType> QgsProviderMetadata::validLayerTypesForUri( const QString & ) const
+QList<Qgis::LayerType> QgsProviderMetadata::validLayerTypesForUri( const QString & ) const
 {
-  return QList<QgsMapLayerType>();
+  return QList<Qgis::LayerType>();
 }
 
 bool QgsProviderMetadata::uriIsBlocklisted( const QString & ) const
@@ -187,11 +187,20 @@ QString QgsProviderMetadata::encodeUri( const QVariantMap & ) const
   return QString();
 }
 
-Qgis::VectorExportResult QgsProviderMetadata::createEmptyLayer(
-  const QString &, const QgsFields &,
-  QgsWkbTypes::Type, const QgsCoordinateReferenceSystem &,
-  bool, QMap<int, int> &,
-  QString &errorMessage, const QMap<QString, QVariant> * )
+QString QgsProviderMetadata::absoluteToRelativeUri( const QString &uri, const QgsReadWriteContext &context ) const
+{
+  return context.pathResolver().writePath( uri );
+}
+
+QString QgsProviderMetadata::relativeToAbsoluteUri( const QString &uri, const QgsReadWriteContext &context ) const
+{
+  return context.pathResolver().readPath( uri );
+}
+
+Qgis::VectorExportResult QgsProviderMetadata::createEmptyLayer( const QString &, const QgsFields &,
+    Qgis::WkbType, const QgsCoordinateReferenceSystem &,
+    bool, QMap<int, int> &,
+    QString &errorMessage, const QMap<QString, QVariant> * )
 {
   errorMessage = QObject::tr( "Provider %1 has no %2 method" ).arg( key(), QStringLiteral( "createEmptyLayer" ) );
   return Qgis::VectorExportResult::ErrorProviderUnsupportedFeature;

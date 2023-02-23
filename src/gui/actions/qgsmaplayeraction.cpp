@@ -36,7 +36,7 @@ QgsMapLayerAction::QgsMapLayerAction( const QString &name, QObject *parent, QgsM
 {
 }
 
-QgsMapLayerAction::QgsMapLayerAction( const QString &name, QObject *parent, QgsMapLayerType layerType, Qgis::MapLayerActionTargets targets, const QIcon &icon, Qgis::MapLayerActionFlags flags )
+QgsMapLayerAction::QgsMapLayerAction( const QString &name, QObject *parent, Qgis::LayerType layerType, Qgis::MapLayerActionTargets targets, const QIcon &icon, Qgis::MapLayerActionFlags flags )
   : QAction( icon, name, parent )
   , mSpecificLayerType( true )
   , mLayerType( layerType )
@@ -68,7 +68,7 @@ bool QgsMapLayerAction::canRunUsingLayer( QgsMapLayer *layer, const QgsMapLayerA
     // action is only enabled for editable layers
     if ( !layer )
       return false;
-    if ( layer->type() != QgsMapLayerType::VectorLayer )
+    if ( layer->type() != Qgis::LayerType::Vector )
       return false;
     if ( !qobject_cast<QgsVectorLayer *>( layer )->isEditable() )
       return false;

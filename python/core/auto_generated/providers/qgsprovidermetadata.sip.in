@@ -209,7 +209,7 @@ Returns the provider's capabilities.
 .. versionadded:: 3.18.1
 %End
 
-    SIP_PYOBJECT supportedLayerTypes() const /TypeHint="List[QgsMapLayerType]"/;
+    SIP_PYOBJECT supportedLayerTypes() const /TypeHint="List[Qgis.LayerType]"/;
 %Docstring
 Returns a list of the map layer types supported by the provider.
 
@@ -218,7 +218,7 @@ Returns a list of the map layer types supported by the provider.
 %MethodCode
     // adapted from the qpymultimedia_qlist.sip file from the PyQt6 sources
 
-    const QList< QgsMapLayerType > cppRes = sipCpp->supportedLayerTypes();
+    const QList< Qgis::LayerType > cppRes = sipCpp->supportedLayerTypes();
 
     PyObject *l = PyList_New( cppRes.size() );
 
@@ -229,7 +229,7 @@ Returns a list of the map layer types supported by the provider.
       for ( int i = 0; i < cppRes.size(); ++i )
       {
         PyObject *eobj = sipConvertFromEnum( static_cast<int>( cppRes.at( i ) ),
-                                             sipType_QgsMapLayerType );
+                                             sipType_Qgis_LayerType );
 
         if ( !eobj )
         {
@@ -319,7 +319,7 @@ The default implementation returns 0 for all URIs.
 .. versionadded:: 3.18
 %End
 
-    virtual QList< QgsMapLayerType > validLayerTypesForUri( const QString &uri ) const;
+    virtual QList< Qgis::LayerType > validLayerTypesForUri( const QString &uri ) const;
 %Docstring
 Returns a list of valid layer types which the provider can be used with when
 opening the specified ``uri``.
@@ -541,6 +541,44 @@ Reassembles a provider data source URI from its component paths (e.g. file path,
 .. seealso:: :py:func:`decodeUri`
 
 .. versionadded:: 3.12
+%End
+
+    virtual QString absoluteToRelativeUri( const QString &uri, const QgsReadWriteContext &context ) const;
+%Docstring
+Converts absolute path(s) to relative path(s) in the given provider-specific URI. and
+returns modified URI according to the context object's configuration.
+This is commonly used when writing project files.
+If a provider does not work with paths, unmodified URI will be returned.
+
+:return: modified URI with relative path(s)
+
+.. note::
+
+   this function may not be supported by all providers. The default
+   implementation uses :py:func:`QgsPathResolver.writePath()` on the whole URI.
+
+.. seealso:: :py:func:`relativeToAbsoluteUri`
+
+.. versionadded:: 3.30
+%End
+
+    virtual QString relativeToAbsoluteUri( const QString &uri, const QgsReadWriteContext &context ) const;
+%Docstring
+Converts relative path(s) to absolute path(s) in the given provider-specific URI. and
+returns modified URI according to the context object's configuration.
+This is commonly used when reading project files.
+If a provider does not work with paths, unmodified URI will be returned.
+
+:return: modified URI with absolute path(s)
+
+.. note::
+
+   this function may not be supported by all providers. The default
+   implementation uses :py:func:`QgsPathResolver.readPath()` on the whole URI.
+
+.. seealso:: :py:func:`absoluteToRelativeUri`
+
+.. versionadded:: 3.30
 %End
 
     virtual QList< QgsDataItemProvider * > dataItemProviders() const /Factory/;

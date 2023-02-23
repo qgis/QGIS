@@ -55,7 +55,7 @@ int QgsNineCellFilter::processRaster( QgsFeedback *feedback )
     {
       try
       {
-        QgsDebugMsg( QObject::tr( "Running OpenCL program: %1" ).arg( openClProgramBaseName( ) ) );
+        QgsDebugMsg( QStringLiteral( "Running OpenCL program: %1" ).arg( openClProgramBaseName( ) ) );
         return processRasterGPU( source, feedback );
       }
       catch ( cl::Error &e )

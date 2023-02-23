@@ -127,6 +127,18 @@ QString QgsField::displayType( const bool showConstraints ) const
   return typeStr;
 }
 
+QString QgsField::friendlyTypeString() const
+{
+  if ( d->type == QVariant::UserType )
+  {
+    if ( d->typeName.compare( QLatin1String( "geometry" ), Qt::CaseInsensitive ) == 0 )
+    {
+      return QObject::tr( "Geometry" );
+    }
+  }
+  return QgsVariantUtils::typeToDisplayString( d->type, d->subType );
+}
+
 QVariant::Type QgsField::type() const
 {
   return d->type;
@@ -270,7 +282,7 @@ QString QgsField::displayString( const QVariant &v ) const
       QString wkt = geom.asWkt();
       if ( wkt.length() >= 1050 )
       {
-        wkt = wkt.left( 999 ) + QChar( 0x2026 );
+        wkt = wkt.left( MAX_WKT_LENGTH ) + QChar( 0x2026 );
       }
       QString formattedText = QStringLiteral( "%1 [%2]" ).arg( wkt, geom.crs().userFriendlyIdentifier() );
       return formattedText;
@@ -589,7 +601,38 @@ bool QgsField::convertCompatible( QVariant &v, QString *errorMessage ) const
     return false;
   }
 
-  if ( !v.convert( d->type ) )
+  // Handle referenced geometries (e.g. from additional geometry fields)
+  if ( d->type == QVariant::String && v.userType() == QMetaType::type( "QgsReferencedGeometry" ) )
+  {
+    const QgsReferencedGeometry geom { v.value<QgsReferencedGeometry>( ) };
+    if ( geom.isNull() )
+    {
+      v = QVariant( d->type );
+    }
+    else
+    {
+      v = QVariant( geom.asWkt() );
+    }
+    return true;
+  }
+  else if ( d->type == QVariant::UserType && d->typeName.compare( QLatin1String( "geometry" ), Qt::CaseInsensitive ) == 0 )
+  {
+    if ( v.userType() == QMetaType::type( "QgsReferencedGeometry" ) || v.userType() == QMetaType::type( "QgsGeometry" ) )
+    {
+      return true;
+    }
+    else if ( v.type() == QVariant::String )
+    {
+      const QgsGeometry geom = QgsGeometry::fromWkt( v.toString() );
+      if ( !geom.isNull() )
+      {
+        v = QVariant::fromValue( geom );
+        return true;
+      }
+    }
+    return false;
+  }
+  else if ( !v.convert( d->type ) )
   {
     v = QVariant( d->type );
 

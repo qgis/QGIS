@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgsmeshelevationpropertieswidget.h"
-#include "qgsstyle.h"
 #include "qgsapplication.h"
 #include "qgsmaplayer.h"
 #include "qgsmeshlayer.h"
@@ -135,7 +134,7 @@ bool QgsMeshElevationPropertiesWidgetFactory::supportsStyleDock() const
 
 bool QgsMeshElevationPropertiesWidgetFactory::supportsLayer( QgsMapLayer *layer ) const
 {
-  return layer->type() == QgsMapLayerType::MeshLayer;
+  return layer->type() == Qgis::LayerType::Mesh;
 }
 
 QString QgsMeshElevationPropertiesWidgetFactory::layerPropertiesPagePositionHint() const

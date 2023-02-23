@@ -36,7 +36,7 @@ class GUI_EXPORT QgsMapToolCaptureRubberBand: public QgsGeometryRubberBand
 {
   public:
     //! Constructor
-    QgsMapToolCaptureRubberBand( QgsMapCanvas *mapCanvas, QgsWkbTypes::GeometryType geomType = QgsWkbTypes::LineGeometry );
+    QgsMapToolCaptureRubberBand( QgsMapCanvas *mapCanvas, Qgis::GeometryType geomType = Qgis::GeometryType::Line );
 
     /**
      * Returns the curve defined by the rubber band, or NULLPTR if no curve is defined.
@@ -56,10 +56,10 @@ class GUI_EXPORT QgsMapToolCaptureRubberBand: public QgsGeometryRubberBand
      * that must be line geometry or polygon geometry.
      * \a firstPolygonPoint is the first point that will be used to render the polygon rubber band (if \a geomType is PolygonGeometry)
      */
-    void reset( QgsWkbTypes::GeometryType geomType = QgsWkbTypes::LineGeometry, QgsWkbTypes::Type stringType = QgsWkbTypes::LineString, const QgsPoint &firstPolygonPoint = QgsPoint() );
+    void reset( Qgis::GeometryType geomType = Qgis::GeometryType::Line, Qgis::WkbType stringType = Qgis::WkbType::LineString, const QgsPoint &firstPolygonPoint = QgsPoint() );
 
     //! Sets the geometry type of the rubberband without removing already existing points
-    void setRubberBandGeometryType( QgsWkbTypes::GeometryType geomType );
+    void setRubberBandGeometryType( Qgis::GeometryType geomType );
 
     //! Adds point to the rubber band
     void addPoint( const QgsPoint &point, bool doUpdate = true );
@@ -74,10 +74,10 @@ class GUI_EXPORT QgsMapToolCaptureRubberBand: public QgsGeometryRubberBand
     int pointsCount();
 
     //! Returns the type of the curve (linear string or circular string)
-    QgsWkbTypes::Type stringType() const;
+    Qgis::WkbType stringType() const;
 
     //! Sets the type of the curve (linear string or circular string)
-    void setStringType( const QgsWkbTypes::Type &type );
+    void setStringType( Qgis::WkbType type );
 
     //! Returns the last point of the rubber band
     QgsPoint lastPoint() const;
@@ -89,7 +89,7 @@ class GUI_EXPORT QgsMapToolCaptureRubberBand: public QgsGeometryRubberBand
     void removeLastPoint();
 
   private:
-    QgsWkbTypes::Type mStringType = QgsWkbTypes::LineString;
+    Qgis::WkbType mStringType = Qgis::WkbType::LineString;
 
     void setGeometry( QgsAbstractGeometry *geom ) override;
     void updateCurve();

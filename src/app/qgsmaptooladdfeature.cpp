@@ -15,19 +15,10 @@
 
 #include "qgsmaptooladdfeature.h"
 #include "qgsadvanceddigitizingdockwidget.h"
-#include "qgsapplication.h"
-#include "qgsattributedialog.h"
 #include "qgsexception.h"
-#include "qgscurvepolygon.h"
-#include "qgsfields.h"
 #include "qgsgeometry.h"
-#include "qgslinestring.h"
-#include "qgsmultipoint.h"
 #include "qgsmapcanvas.h"
-#include "qgsmapmouseevent.h"
-#include "qgspolygon.h"
 #include "qgsproject.h"
-#include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 #include "qgslogger.h"
 #include "qgsfeatureaction.h"
@@ -121,7 +112,7 @@ void QgsMapToolAddFeature::featureDigitized( const QgsFeature &feature )
         for ( QgsVectorLayer *vl : intersectionLayers )
         {
           //can only add topological points if background layer is editable...
-          if ( vl->geometryType() == QgsWkbTypes::PolygonGeometry && vl->isEditable() )
+          if ( vl->geometryType() == Qgis::GeometryType::Polygon && vl->isEditable() )
           {
             vl->addTopologicalPoints( feature.geometry() );
           }

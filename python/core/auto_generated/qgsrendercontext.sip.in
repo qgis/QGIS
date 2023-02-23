@@ -690,7 +690,7 @@ Gets segmentation tolerance type (maximum angle or maximum difference between cu
 %End
 
 
-    double convertToPainterUnits( double size, QgsUnitTypes::RenderUnit unit, const QgsMapUnitScale &scale = QgsMapUnitScale(), Qgis::RenderSubcomponentProperty property = Qgis::RenderSubcomponentProperty::Generic ) const;
+    double convertToPainterUnits( double size, Qgis::RenderUnit unit, const QgsMapUnitScale &scale = QgsMapUnitScale(), Qgis::RenderSubcomponentProperty property = Qgis::RenderSubcomponentProperty::Generic ) const;
 %Docstring
 Converts a size from the specified units to painter units (pixels). The conversion respects the limits
 specified by the optional scale parameter.
@@ -704,7 +704,7 @@ property will be limited to a suitably fast range when the render context has th
 .. versionadded:: 3.0
 %End
 
-    double convertToMapUnits( double size, QgsUnitTypes::RenderUnit unit, const QgsMapUnitScale &scale = QgsMapUnitScale() ) const;
+    double convertToMapUnits( double size, Qgis::RenderUnit unit, const QgsMapUnitScale &scale = QgsMapUnitScale() ) const;
 %Docstring
 Converts a size from the specified units to map units. The conversion respects the limits
 specified by the optional scale parameter.
@@ -714,7 +714,7 @@ specified by the optional scale parameter.
 .. versionadded:: 3.0
 %End
 
-    double convertFromMapUnits( double sizeInMapUnits, QgsUnitTypes::RenderUnit outputUnit ) const;
+    double convertFromMapUnits( double sizeInMapUnits, Qgis::RenderUnit outputUnit ) const;
 %Docstring
 Converts a size from map units to the specified units.
 

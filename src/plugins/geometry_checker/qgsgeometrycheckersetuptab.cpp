@@ -17,7 +17,6 @@
 
 #include "qgsgeometrycheckcontext.h"
 #include "qgsgeometrycheckersetuptab.h"
-#include "qgsgeometrycheckerresulttab.h"
 #include "qgsgeometrychecker.h"
 #include "qgsgeometrycheckfactory.h"
 #include "qgsgeometrycheck.h"
@@ -28,10 +27,8 @@
 #include "qgisinterface.h"
 #include "qgsproject.h"
 #include "qgsvectorlayer.h"
-#include "qgsmapcanvas.h"
 #include "qgsvectorfilewriter.h"
 #include "qgsvectordataprovider.h"
-#include "qgsapplication.h"
 #include "qgsiconutils.h"
 
 #include <QAction>
@@ -129,16 +126,16 @@ void QgsGeometryCheckerSetupTab::updateLayers()
 
     QListWidgetItem *item = new QListWidgetItem( layer->name() );
     bool supportedGeometryType = true;
-    if ( layer->geometryType() == QgsWkbTypes::PointGeometry )
+    if ( layer->geometryType() == Qgis::GeometryType::Point )
     {
       item->setIcon( QgsIconUtils::iconPoint() );
     }
-    else if ( layer->geometryType() == QgsWkbTypes::LineGeometry )
+    else if ( layer->geometryType() == Qgis::GeometryType::Line )
     {
       item->setIcon( QgsIconUtils::iconLine() );
       ui.comboLineLayerIntersection->addItem( layer->name(), layer->id() );
     }
-    else if ( layer->geometryType() == QgsWkbTypes::PolygonGeometry )
+    else if ( layer->geometryType() == Qgis::GeometryType::Polygon )
     {
       item->setIcon( QgsIconUtils::iconPolygon() );
       ui.comboLineLayerIntersection->addItem( layer->name(), layer->id() );
@@ -220,16 +217,16 @@ void QgsGeometryCheckerSetupTab::validateInput()
   {
     for ( QgsVectorLayer *layer : layers )
     {
-      QgsWkbTypes::GeometryType geomType = layer->geometryType();
-      if ( geomType == QgsWkbTypes::PointGeometry )
+      Qgis::GeometryType geomType = layer->geometryType();
+      if ( geomType == Qgis::GeometryType::Point )
       {
         ++nPoint;
       }
-      else if ( geomType == QgsWkbTypes::LineGeometry )
+      else if ( geomType == Qgis::GeometryType::Line )
       {
         ++nLineString;
       }
-      else if ( geomType == QgsWkbTypes::PolygonGeometry )
+      else if ( geomType == Qgis::GeometryType::Polygon )
       {
         ++nPolygon;
       }

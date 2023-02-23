@@ -28,7 +28,7 @@ email                : marco.hugentobler at sourcepole dot com
 
 QgsMultiCurve::QgsMultiCurve()
 {
-  mWkbType = QgsWkbTypes::MultiCurve;
+  mWkbType = Qgis::WkbType::MultiCurve;
 }
 
 QgsCurve *QgsMultiCurve::curveN( int index )
@@ -61,7 +61,7 @@ QgsMultiCurve *QgsMultiCurve::clone() const
 void QgsMultiCurve::clear()
 {
   QgsGeometryCollection::clear();
-  mWkbType = QgsWkbTypes::MultiCurve;
+  mWkbType = Qgis::WkbType::MultiCurve;
 }
 
 QgsMultiCurve *QgsMultiCurve::toCurveType() const
@@ -151,7 +151,7 @@ bool QgsMultiCurve::addGeometry( QgsAbstractGeometry *g )
 
   if ( mGeometries.empty() )
   {
-    setZMTypeFromSubGeometry( g, QgsWkbTypes::MultiCurve );
+    setZMTypeFromSubGeometry( g, Qgis::WkbType::MultiCurve );
   }
   if ( is3D() && !g->is3D() )
     g->addZValue();

@@ -48,7 +48,7 @@ class CORE_EXPORT QgsVectorTileBasicRendererStyle
 {
   public:
     //! Constructs a style object
-    QgsVectorTileBasicRendererStyle( const QString &stName = QString(), const QString &laName = QString(), QgsWkbTypes::GeometryType geomType = QgsWkbTypes::UnknownGeometry );
+    QgsVectorTileBasicRendererStyle( const QString &stName = QString(), const QString &laName = QString(), Qgis::GeometryType geomType = Qgis::GeometryType::Unknown );
     //! Constructs a style object as a copy of another style
     QgsVectorTileBasicRendererStyle( const QgsVectorTileBasicRendererStyle &other );
     QgsVectorTileBasicRendererStyle &operator=( const QgsVectorTileBasicRendererStyle &other );
@@ -65,9 +65,9 @@ class CORE_EXPORT QgsVectorTileBasicRendererStyle
     QString layerName() const { return mLayerName; }
 
     //! Sets type of the geometry that will be used (point / line / polygon)
-    void setGeometryType( QgsWkbTypes::GeometryType geomType ) { mGeometryType = geomType; }
+    void setGeometryType( Qgis::GeometryType geomType ) { mGeometryType = geomType; }
     //! Returns type of the geometry that will be used (point / line / polygon)
-    QgsWkbTypes::GeometryType geometryType() const { return mGeometryType; }
+    Qgis::GeometryType geometryType() const { return mGeometryType; }
 
     //! Sets filter expression (empty filter means that all features match)
     void setFilterExpression( const QString &expr ) { mExpression = expr; }
@@ -108,7 +108,7 @@ class CORE_EXPORT QgsVectorTileBasicRendererStyle
   private:
     QString mStyleName;
     QString mLayerName;
-    QgsWkbTypes::GeometryType mGeometryType;
+    Qgis::GeometryType mGeometryType;
     std::unique_ptr<QgsSymbol> mSymbol;
     bool mEnabled = true;
     QString mExpression;

@@ -177,6 +177,7 @@ class CORE_EXPORT QgsSettingsTreeNode
     //! itilaize the tree node
     void init( QgsSettingsTreeNode *parent, const QString &key );
 
+    friend class QgsSettingsTree;
     friend class QgsSettingsTreeNamedListNode;
 
     QgsSettingsTreeNode *childNodeAtKey( const QString &key );

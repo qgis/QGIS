@@ -460,6 +460,7 @@ class TestQgsWmsCapabilities: public QObject
       QTest::newRow( "text/html" ) << QByteArray( "text/html" ) << static_cast<int>( QgsRasterInterface::IdentifyHtml );
       QTest::newRow( "application/json" ) << QByteArray( "application/json" ) << static_cast<int>( QgsRasterInterface::IdentifyFeature );
       QTest::newRow( "application/geojson" ) << QByteArray( "application/geojson" ) << static_cast<int>( QgsRasterInterface::IdentifyFeature );
+      QTest::newRow( "application/geo+json" ) << QByteArray( "application/geo+json" ) << static_cast<int>( QgsRasterInterface::IdentifyFeature );
       QTest::newRow( "application/vnd.ogc.gml" ) << QByteArray( "application/vnd.ogc.gml" ) << static_cast<int>( QgsRasterInterface::IdentifyFeature );
       QTest::newRow( "application/vnd.esri.wms_featureinfo_xml" ) << QByteArray( "application/vnd.esri.wms_featureinfo_xml" ) << static_cast<int>( QgsRasterInterface::NoCapabilities );
     }
@@ -574,7 +575,7 @@ class TestQgsWmsCapabilities: public QObject
         QgsDateTimeRange( QDateTime( QDate( 2009, 2, 1 ), QTime( 0, 0, 0 ) ), QDateTime( QDate( 2009, 2, 1 ), QTime( 0, 0, 0 ) ) ),
       } ) );
       QCOMPARE( tileLayer.temporalExtent, QgsDateTimeRange( QDateTime( QDate( 2005, 7, 1 ), QTime( 0, 0, 0 ) ), QDateTime( QDate( 2016, 3, 1 ), QTime( 0, 0, 0 ) ) ) );
-      QCOMPARE( tileLayer.temporalInterval, QgsInterval( 1, QgsUnitTypes::TemporalUnit::TemporalIrregularStep ) );
+      QCOMPARE( tileLayer.temporalInterval, QgsInterval( 1, Qgis::TemporalUnit::IrregularStep ) );
       QCOMPARE( tileLayer.temporalCapabilityFlags, Qgis::RasterTemporalCapabilityFlag::RequestedTimesMustExactlyMatchAllAvailableTemporalRanges );
       QCOMPARE( tileLayer.defaultTimeDimensionValue, QStringLiteral( "current" ) );
     }

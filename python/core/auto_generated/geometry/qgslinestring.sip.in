@@ -188,7 +188,7 @@ The linestring Z and M type will be set based on the type of the first point in 
                 ml.append( p->m() );
               }
 
-              if ( i == 0 && p->wkbType() == QgsWkbTypes::Point25D )
+              if ( i == 0 && p->wkbType() == Qgis::WkbType::Point25D )
                 is25D = true;
             }
             sipReleaseType( p, sipType_QgsPoint, state );
@@ -734,7 +734,7 @@ since otherwise a bug can be introduced (such as the bug fixed for github issue 
     virtual void swapXy();
 
 
-    virtual bool convertTo( QgsWkbTypes::Type type );
+    virtual bool convertTo( Qgis::WkbType type );
 
 
     virtual bool transform( QgsAbstractGeometryTransformer *transformer, QgsFeedback *feedback = 0 );

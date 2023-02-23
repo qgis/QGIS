@@ -53,9 +53,9 @@ QgsPageSizeRegistry::QgsPageSizeRegistry()
   add( QgsPageSize( QStringLiteral( "Arch E1" ), QgsLayoutSize( 762, 1066.8 ), QObject::tr( "Arch E1" ) ) );
   add( QgsPageSize( QStringLiteral( "Arch E2" ), QgsLayoutSize( 660, 965 ), QObject::tr( "Arch E2" ) ) );
   add( QgsPageSize( QStringLiteral( "Arch E3" ), QgsLayoutSize( 686, 991 ), QObject::tr( "Arch E3" ) ) );
-  add( QgsPageSize( QStringLiteral( "1920x1080" ), QgsLayoutSize( 1080, 1920, QgsUnitTypes::LayoutPixels ), QObject::tr( "1920×1080" ) ) );
-  add( QgsPageSize( QStringLiteral( "1280x800" ), QgsLayoutSize( 800, 1280, QgsUnitTypes::LayoutPixels ), QObject::tr( "1280×800" ) ) );
-  add( QgsPageSize( QStringLiteral( "1024x768" ), QgsLayoutSize( 768, 1024, QgsUnitTypes::LayoutPixels ), QObject::tr( "1024×768" ) ) );
+  add( QgsPageSize( QStringLiteral( "1920x1080" ), QgsLayoutSize( 1080, 1920, Qgis::LayoutUnit::Pixels ), QObject::tr( "1920×1080" ) ) );
+  add( QgsPageSize( QStringLiteral( "1280x800" ), QgsLayoutSize( 800, 1280, Qgis::LayoutUnit::Pixels ), QObject::tr( "1280×800" ) ) );
+  add( QgsPageSize( QStringLiteral( "1024x768" ), QgsLayoutSize( 768, 1024, Qgis::LayoutUnit::Pixels ), QObject::tr( "1024×768" ) ) );
 }
 
 void QgsPageSizeRegistry::add( const QgsPageSize &size )

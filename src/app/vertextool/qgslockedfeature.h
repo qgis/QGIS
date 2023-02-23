@@ -18,6 +18,7 @@
 
 #include <QObject>
 
+#include "qgis_app.h"
 #include "qgsgeometry.h"
 #include "qgsfeatureid.h"
 
@@ -31,7 +32,7 @@ class QgsVertexEntry;
 /**
  * Class that keeps the selected feature
  */
-class QgsLockedFeature: public QObject
+class APP_EXPORT QgsLockedFeature: public QObject
 {
     Q_OBJECT
 

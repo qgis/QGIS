@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgsrasterelevationpropertieswidget.h"
-#include "qgsstyle.h"
 #include "qgsapplication.h"
 #include "qgsmaplayer.h"
 #include "qgsrasterlayer.h"
@@ -142,7 +141,7 @@ bool QgsRasterElevationPropertiesWidgetFactory::supportsStyleDock() const
 
 bool QgsRasterElevationPropertiesWidgetFactory::supportsLayer( QgsMapLayer *layer ) const
 {
-  return layer->type() == QgsMapLayerType::RasterLayer;
+  return layer->type() == Qgis::LayerType::Raster;
 }
 
 QString QgsRasterElevationPropertiesWidgetFactory::layerPropertiesPagePositionHint() const

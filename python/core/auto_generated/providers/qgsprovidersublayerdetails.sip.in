@@ -47,14 +47,14 @@ Sets the associated data provider key.
 .. seealso:: :py:func:`providerKey`
 %End
 
-    QgsMapLayerType type() const;
+    Qgis::LayerType type() const;
 %Docstring
 Returns the layer type.
 
 .. seealso:: :py:func:`setType`
 %End
 
-    void setType( QgsMapLayerType type );
+    void setType( Qgis::LayerType type );
 %Docstring
 Sets the layer ``type``.
 
@@ -193,14 +193,14 @@ Set to Qgis.FeatureCountState.UnknownCount or Qgis.FeatureCountState.Uncounted i
 .. seealso:: :py:func:`featureCount`
 %End
 
-    QgsWkbTypes::Type wkbType() const;
+    Qgis::WkbType wkbType() const;
 %Docstring
 Returns the layer's WKB type, or :py:class:`QgsWkbTypes`.Unknown if the WKB type is not application or unknown.
 
 .. seealso:: :py:func:`setWkbType`
 %End
 
-    void setWkbType( QgsWkbTypes::Type type );
+    void setWkbType( Qgis::WkbType type );
 %Docstring
 Set the layer's WKB ``type``.
 

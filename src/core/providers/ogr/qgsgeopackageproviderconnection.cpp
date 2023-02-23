@@ -253,7 +253,7 @@ QList<QgsGeoPackageProviderConnection::TableProperty> QgsGeoPackageProviderConne
       if ( aspatialTypes.contains( dataType ) )
       {
         property.setFlag( QgsGeoPackageProviderConnection::Aspatial );
-        property.addGeometryColumnType( QgsWkbTypes::Type::NoGeometry, QgsCoordinateReferenceSystem() );
+        property.addGeometryColumnType( Qgis::WkbType::NoGeometry, QgsCoordinateReferenceSystem() );
       }
       else
       {
@@ -476,21 +476,21 @@ QList<QgsLayerMetadataProviderResult> QgsGeoPackageProviderConnection::searchLay
           const QString geomType { mdRow[2].toString().toUpper() };
           if ( geomType.contains( QStringLiteral( "POINT" ), Qt::CaseSensitivity::CaseInsensitive ) )
           {
-            result.setGeometryType( QgsWkbTypes::GeometryType::PointGeometry );
+            result.setGeometryType( Qgis::GeometryType::Point );
           }
           else if ( geomType.contains( QStringLiteral( "POLYGON" ), Qt::CaseSensitivity::CaseInsensitive ) )
           {
-            result.setGeometryType( QgsWkbTypes::GeometryType::PolygonGeometry );
+            result.setGeometryType( Qgis::GeometryType::Polygon );
           }
           else if ( geomType.contains( QStringLiteral( "LINESTRING" ), Qt::CaseSensitivity::CaseInsensitive ) )
           {
-            result.setGeometryType( QgsWkbTypes::GeometryType::LineGeometry );
+            result.setGeometryType( Qgis::GeometryType::Line );
           }
           else
           {
-            result.setGeometryType( QgsWkbTypes::GeometryType::UnknownGeometry );
+            result.setGeometryType( Qgis::GeometryType::Unknown );
           }
-          result.setLayerType( QgsMapLayerType::VectorLayer );
+          result.setLayerType( Qgis::LayerType::Vector );
 
           results.push_back( result );
         }

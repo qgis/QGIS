@@ -41,7 +41,9 @@ from qgis.core import (
     QgsFeatureRequest,
     QgsFeatureSource,
     QgsGeometry,
+    QgsPathResolver,
     QgsProviderRegistry,
+    QgsReadWriteContext,
     QgsRectangle,
     QgsVectorLayer,
     QgsWkbTypes,
@@ -1388,6 +1390,26 @@ class TestQgsDelimitedTextProviderOther(unittest.TestCase):
 
         # This was crashing!
         features = [f for f in vl.getFeatures()]
+
+    def test_absolute_relative_uri(self):
+        context = QgsReadWriteContext()
+        context.setPathResolver(QgsPathResolver(os.path.join(TEST_DATA_DIR, "project.qgs")))
+
+        csv_path = os.path.join(TEST_DATA_DIR, 'provider', 'delimited_xy.csv')
+        url = MyUrl.fromLocalFile(csv_path)
+        url.addQueryItem("crs", "epsg:4326")
+        url.addQueryItem("type", "csv")
+        url.addQueryItem("xField", "X")
+        url.addQueryItem("yField", "Y")
+
+        absolute_uri = url.toString()
+        relative_uri = 'file:./provider/delimited_xy.csv?crs=epsg:4326&type=csv&xField=X&yField=Y'
+
+        meta = QgsProviderRegistry.instance().providerMetadata("delimitedtext")
+        assert meta is not None
+
+        self.assertEqual(meta.absoluteToRelativeUri(absolute_uri, context), relative_uri)
+        self.assertEqual(meta.relativeToAbsoluteUri(relative_uri, context), absolute_uri)
 
 
 if __name__ == '__main__':

@@ -238,7 +238,7 @@ int TestZipLayer::getLayerTransparency( const QString &myFileName, const QString
   if ( myLayer && myLayer->isValid() )
   {
     // myTransparency = myLayer->getTransparency();
-    if ( myLayer->type() == QgsMapLayerType::RasterLayer )
+    if ( myLayer->type() == Qgis::LayerType::Raster )
     {
       QgsRasterLayer *layer = dynamic_cast<QgsRasterLayer *>( myLayer );
       if ( layer && layer->renderer() )

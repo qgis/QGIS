@@ -136,7 +136,7 @@ size of each symbol layer using the provided render ``context``.
 .. versionadded:: 3.4.5
 %End
 
-    void setSizeUnit( QgsUnitTypes::RenderUnit unit ) const;
+    void setSizeUnit( Qgis::RenderUnit unit ) const;
 %Docstring
 Sets the size units for the whole symbol (including all symbol layers).
 
@@ -151,7 +151,7 @@ Sets the size units for the whole symbol (including all symbol layers).
 .. versionadded:: 2.16
 %End
 
-    QgsUnitTypes::RenderUnit sizeUnit() const;
+    Qgis::RenderUnit sizeUnit() const;
 %Docstring
 Returns the size units for the whole symbol (including all symbol layers).
 

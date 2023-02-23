@@ -17,7 +17,6 @@
 
 #include "qgslegendstyle.h"
 #include "qgsfontutils.h"
-#include "qgssettings.h"
 #include "qgis.h"
 #include "qgsreadwritecontext.h"
 
@@ -38,12 +37,12 @@ void QgsLegendStyle::setFont( const QFont &font )
   if ( font.pointSizeF() > 0 )
   {
     mTextFormat.setSize( font.pointSizeF() );
-    mTextFormat.setSizeUnit( QgsUnitTypes::RenderPoints );
+    mTextFormat.setSizeUnit( Qgis::RenderUnit::Points );
   }
   else if ( font.pixelSize() > 0 )
   {
     mTextFormat.setSize( font.pixelSize() );
-    mTextFormat.setSizeUnit( QgsUnitTypes::RenderPixels );
+    mTextFormat.setSizeUnit( Qgis::RenderUnit::Pixels );
   }
 }
 

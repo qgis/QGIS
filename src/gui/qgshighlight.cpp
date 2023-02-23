@@ -31,8 +31,7 @@
 #include "qgsrenderer.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgspointcloudlayer.h"
-#include "qgssinglesymbolrenderer.h"
-#include "qgspointcloudlayerrenderer.h"
+#include "qgspointcloudrenderer.h"
 
 /* Few notes about highlighting (RB):
  - The highlight fill must always be partially transparent because above highlighted layer
@@ -75,7 +74,7 @@ void QgsHighlight::init()
   connect( mMapCanvas, &QgsMapCanvas::destinationCrsChanged, this, &QgsHighlight::updateTransformedGeometry );
   updateTransformedGeometry();
 
-  if ( mGeometry.type() == QgsWkbTypes::PointGeometry )
+  if ( mGeometry.type() == Qgis::GeometryType::Point )
   {
     mRenderContext = createRenderContext();
   }
@@ -186,13 +185,13 @@ void QgsHighlight::setSymbol( QgsSymbol *symbol, const QgsRenderContext &context
   }
 }
 
-double QgsHighlight::getSymbolWidth( const QgsRenderContext &context, double width, QgsUnitTypes::RenderUnit unit )
+double QgsHighlight::getSymbolWidth( const QgsRenderContext &context, double width, Qgis::RenderUnit unit )
 {
   // if necessary scale mm to map units
   double scale = 1.;
-  if ( unit == QgsUnitTypes::RenderMapUnits )
+  if ( unit == Qgis::RenderUnit::MapUnits )
   {
-    scale = context.convertToPainterUnits( 1, QgsUnitTypes::RenderMillimeters ) / context.convertToPainterUnits( 1, QgsUnitTypes::RenderMapUnits );
+    scale = context.convertToPainterUnits( 1, Qgis::RenderUnit::Millimeters ) / context.convertToPainterUnits( 1, Qgis::RenderUnit::MapUnits );
   }
   width = std::max( width + 2 * mBuffer * scale, mMinWidth * scale );
   return width;
@@ -204,7 +203,7 @@ void QgsHighlight::setWidth( int width )
   mPen.setWidth( width );
 }
 
-void QgsHighlight::paintPoint( QgsRenderContext &context, const QgsPoint *point, double size, QgsUnitTypes::RenderUnit sizeUnit, PointSymbol symbol )
+void QgsHighlight::paintPoint( QgsRenderContext &context, const QgsPoint *point, double size, Qgis::RenderUnit sizeUnit, PointSymbol symbol )
 {
   if ( !point )
     return;
@@ -298,7 +297,7 @@ void QgsHighlight::updatePosition()
   if ( !isVisible() )
     return;
 
-  if ( mGeometry.type() == QgsWkbTypes::PointGeometry )
+  if ( mGeometry.type() == Qgis::GeometryType::Point )
   {
     mRenderContext = createRenderContext();
   }
@@ -409,13 +408,13 @@ void QgsHighlight::paint( QPainter *p )
 
     switch ( mGeometry.type() )
     {
-      case QgsWkbTypes::PointGeometry:
+      case Qgis::GeometryType::Point:
       {
         setRenderContextVariables( p, mRenderContext );
 
         // default to 1.5 mm radius square points
         double pointSizeRadius = mPointSizeRadiusMM;
-        QgsUnitTypes::RenderUnit sizeUnit = QgsUnitTypes::RenderMillimeters;
+        Qgis::RenderUnit sizeUnit = Qgis::RenderUnit::Millimeters;
         PointSymbol symbol = mPointSymbol;
 
         // but for point clouds, use actual sizes (+a little margin!)
@@ -424,7 +423,7 @@ void QgsHighlight::paint( QPainter *p )
           if ( QgsPointCloudRenderer *pcRenderer = pcLayer->renderer() )
           {
             pointSizeRadius = 1.2 * 0.5 * mRenderContext.convertToPainterUnits( pcRenderer->pointSize(), pcRenderer->pointSizeUnit(), pcRenderer->pointSizeMapUnitScale() );
-            sizeUnit = QgsUnitTypes::RenderPixels;
+            sizeUnit = Qgis::RenderUnit::Pixels;
             switch ( pcRenderer->pointSymbol() )
             {
               case Qgis::PointCloudSymbol::Circle:
@@ -444,7 +443,7 @@ void QgsHighlight::paint( QPainter *p )
       }
       break;
 
-      case QgsWkbTypes::LineGeometry:
+      case Qgis::GeometryType::Line:
       {
         if ( !mGeometry.isMultipart() )
         {
@@ -462,7 +461,7 @@ void QgsHighlight::paint( QPainter *p )
         break;
       }
 
-      case QgsWkbTypes::PolygonGeometry:
+      case Qgis::GeometryType::Polygon:
       {
         if ( !mGeometry.isMultipart() )
         {
@@ -479,8 +478,8 @@ void QgsHighlight::paint( QPainter *p )
         break;
       }
 
-      case QgsWkbTypes::UnknownGeometry:
-      case QgsWkbTypes::NullGeometry:
+      case Qgis::GeometryType::Unknown:
+      case Qgis::GeometryType::Null:
         return;
     }
   }

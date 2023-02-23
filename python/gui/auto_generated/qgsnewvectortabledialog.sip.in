@@ -49,7 +49,7 @@ Sets the schema ``name``
 Sets the table ``name``
 %End
 
-    void setGeometryType( QgsWkbTypes::Type type );
+    void setGeometryType( Qgis::WkbType type );
 %Docstring
 Sets the geometry ``type``
 %End
@@ -84,7 +84,7 @@ Returns the geometry column name
 Returns the fields
 %End
 
-    QgsWkbTypes::Type geometryType() const;
+    Qgis::WkbType geometryType() const;
 %Docstring
 Returns the geometry type
 %End

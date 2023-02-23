@@ -232,7 +232,7 @@ bool QgsMapRendererJob::prepareLabelCache() const
 
     switch ( ml->type() )
     {
-      case QgsMapLayerType::VectorLayer:
+      case Qgis::LayerType::Vector:
       {
         QgsVectorLayer *vl = qobject_cast< QgsVectorLayer *>( ml );
         if ( vl->labelsEnabled() && vl->labeling()->requiresAdvancedEffects() )
@@ -242,18 +242,18 @@ bool QgsMapRendererJob::prepareLabelCache() const
         break;
       }
 
-      case QgsMapLayerType::VectorTileLayer:
+      case Qgis::LayerType::VectorTile:
       {
         // TODO -- add detection of advanced labeling effects for vector tile layers
         break;
       }
 
-      case QgsMapLayerType::RasterLayer:
-      case QgsMapLayerType::AnnotationLayer:
-      case QgsMapLayerType::PluginLayer:
-      case QgsMapLayerType::MeshLayer:
-      case QgsMapLayerType::PointCloudLayer:
-      case QgsMapLayerType::GroupLayer:
+      case Qgis::LayerType::Raster:
+      case Qgis::LayerType::Annotation:
+      case Qgis::LayerType::Plugin:
+      case Qgis::LayerType::Mesh:
+      case Qgis::LayerType::PointCloud:
+      case Qgis::LayerType::Group:
         break;
     }
 
@@ -301,7 +301,7 @@ bool QgsMapRendererJob::reprojectToLayerExtent( const QgsMapLayer *ml, const Qgs
 
     if ( ml->crs().isGeographic() )
     {
-      if ( ml->type() == QgsMapLayerType::VectorLayer && !approxTransform.destinationCrs().isGeographic() )
+      if ( ml->type() == Qgis::LayerType::Vector && !approxTransform.destinationCrs().isGeographic() )
       {
         // if we transform from a projected coordinate system check
         // check if transforming back roughly returns the input
@@ -552,7 +552,7 @@ std::vector<LayerRenderJob> QgsMapRendererJob::prepareJobs( QPainter *painter, Q
 
     job.blendMode = ml->blendMode();
 
-    if ( ml->type() == QgsMapLayerType::RasterLayer )
+    if ( ml->type() == Qgis::LayerType::Raster )
     {
       // raster layers are abnormal wrt opacity handling -- opacity is sometimes handled directly within the raster layer renderer
       QgsRasterLayer *rl = qobject_cast< QgsRasterLayer * >( ml );

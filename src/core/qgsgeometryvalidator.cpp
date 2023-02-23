@@ -19,7 +19,6 @@ email                : jef at norbit dot de
 #include "qgslogger.h"
 #include "qgsgeos.h"
 #include "qgsgeometrycollection.h"
-#include "qgspolygon.h"
 #include "qgscurvepolygon.h"
 #include "qgscurve.h"
 #include "qgsvertexid.h"
@@ -290,7 +289,7 @@ void QgsGeometryValidator::run()
     case Qgis::GeometryValidationEngine::Geos:
     {
       // avoid calling geos for trivial point geometries
-      if ( QgsWkbTypes::geometryType( mGeometry.wkbType() ) == QgsWkbTypes::PointGeometry )
+      if ( QgsWkbTypes::geometryType( mGeometry.wkbType() ) == Qgis::GeometryType::Point )
       {
         return;
       }
@@ -320,15 +319,15 @@ void QgsGeometryValidator::run()
     {
       switch ( QgsWkbTypes::flatType( mGeometry.constGet()->wkbType() ) )
       {
-        case QgsWkbTypes::Point:
-        case QgsWkbTypes::MultiPoint:
+        case Qgis::WkbType::Point:
+        case Qgis::WkbType::MultiPoint:
           break;
 
-        case QgsWkbTypes::LineString:
+        case Qgis::WkbType::LineString:
           validatePolyline( 0, qgsgeometry_cast< const QgsLineString * >( mGeometry.constGet() ) );
           break;
 
-        case QgsWkbTypes::MultiLineString:
+        case Qgis::WkbType::MultiLineString:
         {
           const QgsGeometryCollection *collection = qgsgeometry_cast< const QgsGeometryCollection * >( mGeometry.constGet() );
           for ( int i = 0; !mStop && i < collection->numGeometries(); i++ )
@@ -336,13 +335,13 @@ void QgsGeometryValidator::run()
           break;
         }
 
-        case QgsWkbTypes::Polygon:
-        case QgsWkbTypes::CurvePolygon:
+        case Qgis::WkbType::Polygon:
+        case Qgis::WkbType::CurvePolygon:
           validatePolygon( 0, qgsgeometry_cast< const QgsCurvePolygon * >( mGeometry.constGet() ) );
           break;
 
-        case QgsWkbTypes::MultiPolygon:
-        case QgsWkbTypes::MultiSurface:
+        case Qgis::WkbType::MultiPolygon:
+        case Qgis::WkbType::MultiSurface:
         {
           const QgsGeometryCollection *collection = qgsgeometry_cast< const QgsGeometryCollection * >( mGeometry.constGet() );
           for ( int i = 0; !mStop && i < collection->numGeometries(); i++ )
@@ -386,9 +385,9 @@ void QgsGeometryValidator::run()
           break;
         }
 
-        case QgsWkbTypes::Unknown:
+        case Qgis::WkbType::Unknown:
         {
-          emit errorFound( QgsGeometry::Error( QObject::tr( "Unknown geometry type %1" ).arg( mGeometry.wkbType() ) ) );
+          emit errorFound( QgsGeometry::Error( QObject::tr( "Unknown geometry type %1" ).arg( qgsEnumValueToKey( mGeometry.wkbType() ) ) ) );
           mErrorCount++;
           break;
         }

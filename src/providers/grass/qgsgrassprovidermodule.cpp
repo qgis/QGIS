@@ -1330,9 +1330,9 @@ QGISEXTERN QgsProviderMetadata *providerMetadataFactory()
 }
 
 
-QList<QgsMapLayerType> QgsGrassProviderMetadata::supportedLayerTypes() const
+QList<Qgis::LayerType> QgsGrassProviderMetadata::supportedLayerTypes() const
 {
-  return { QgsMapLayerType::VectorLayer };
+  return { Qgis::LayerType::Vector };
 }
 
 QIcon QgsGrassProviderMetadata::icon() const

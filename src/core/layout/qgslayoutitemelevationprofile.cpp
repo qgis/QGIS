@@ -28,6 +28,8 @@
 #include "qgsprofilerenderer.h"
 #include "qgslayoututils.h"
 #include "qgsvectorlayer.h"
+#include "qgslayoutrendercontext.h"
+#include "qgslayoutreportcontext.h"
 
 #include <QTimer>
 

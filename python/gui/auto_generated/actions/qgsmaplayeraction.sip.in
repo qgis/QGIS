@@ -39,7 +39,7 @@ Creates a map layer action which can run on any layer
 Creates a map layer action which can run only on a specific layer
 %End
 
-    QgsMapLayerAction( const QString &name, QObject *parent /TransferThis/, QgsMapLayerType layerType, Qgis::MapLayerActionTargets targets = Qgis::MapLayerActionTarget::AllActions, const QIcon &icon = QIcon(), Qgis::MapLayerActionFlags flags = Qgis::MapLayerActionFlags() );
+    QgsMapLayerAction( const QString &name, QObject *parent /TransferThis/, Qgis::LayerType layerType, Qgis::MapLayerActionTargets targets = Qgis::MapLayerActionTarget::AllActions, const QIcon &icon = QIcon(), Qgis::MapLayerActionFlags flags = Qgis::MapLayerActionFlags() );
 %Docstring
 Creates a map layer action which can run on a specific type of layer
 %End

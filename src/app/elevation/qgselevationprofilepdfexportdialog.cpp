@@ -82,7 +82,7 @@ void QgsElevationProfilePdfExportDialog::updatePlotSettings( Qgs2DPlot &plot )
 
 QgsLayoutSize QgsElevationProfilePdfExportDialog::pageSizeMM() const
 {
-  return mConverter.convert( QgsLayoutSize( mWidthSpin->value(), mHeightSpin->value(), mSizeUnitsComboBox->unit() ), QgsUnitTypes::LayoutMillimeters );
+  return mConverter.convert( QgsLayoutSize( mWidthSpin->value(), mHeightSpin->value(), mSizeUnitsComboBox->unit() ), Qgis::LayoutUnit::Millimeters );
 }
 
 void QgsElevationProfilePdfExportDialog::pageSizeChanged( int )

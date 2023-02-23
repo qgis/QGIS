@@ -131,7 +131,7 @@ QgsFeatureIds QgsFeatureSource::allFeatureIds() const
 
 QgsVectorLayer *QgsFeatureSource::materialize( const QgsFeatureRequest &request, QgsFeedback *feedback )
 {
-  const QgsWkbTypes::Type outWkbType = ( request.flags() & QgsFeatureRequest::NoGeometry ) ? QgsWkbTypes::NoGeometry : wkbType();
+  const Qgis::WkbType outWkbType = ( request.flags() & QgsFeatureRequest::NoGeometry ) ? Qgis::WkbType::NoGeometry : wkbType();
   const QgsCoordinateReferenceSystem crs = request.destinationCrs().isValid() ? request.destinationCrs() : sourceCrs();
 
   const QgsAttributeList requestedAttrs = request.subsetOfAttributes();

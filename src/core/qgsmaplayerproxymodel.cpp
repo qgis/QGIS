@@ -18,11 +18,6 @@
 #include "qgsmaplayer.h"
 #include "qgsproject.h"
 #include "qgsvectorlayer.h"
-#include "qgsrasterlayer.h"
-#include "qgsmeshlayer.h"
-#include "qgsvectordataprovider.h"
-#include "qgsrasterdataprovider.h"
-#include "qgsmeshdataprovider.h"
 
 QgsMapLayerProxyModel::QgsMapLayerProxyModel( QObject *parent )
   : QSortFilterProxyModel( parent )
@@ -49,13 +44,13 @@ bool QgsMapLayerProxyModel::layerMatchesFilters( const QgsMapLayer *layer, const
     return true;
 
   // layer type
-  if ( ( filters.testFlag( RasterLayer ) && layer->type() == QgsMapLayerType::RasterLayer ) ||
-       ( filters.testFlag( VectorLayer ) && layer->type() == QgsMapLayerType::VectorLayer ) ||
-       ( filters.testFlag( MeshLayer ) && layer->type() == QgsMapLayerType::MeshLayer ) ||
-       ( filters.testFlag( VectorTileLayer ) && layer->type() == QgsMapLayerType::VectorTileLayer ) ||
-       ( filters.testFlag( PointCloudLayer ) && layer->type() == QgsMapLayerType::PointCloudLayer ) ||
-       ( filters.testFlag( AnnotationLayer ) && layer->type() == QgsMapLayerType::AnnotationLayer ) ||
-       ( filters.testFlag( PluginLayer ) && layer->type() == QgsMapLayerType::PluginLayer ) )
+  if ( ( filters.testFlag( RasterLayer ) && layer->type() == Qgis::LayerType::Raster ) ||
+       ( filters.testFlag( VectorLayer ) && layer->type() == Qgis::LayerType::Vector ) ||
+       ( filters.testFlag( MeshLayer ) && layer->type() == Qgis::LayerType::Mesh ) ||
+       ( filters.testFlag( VectorTileLayer ) && layer->type() == Qgis::LayerType::VectorTile ) ||
+       ( filters.testFlag( PointCloudLayer ) && layer->type() == Qgis::LayerType::PointCloud ) ||
+       ( filters.testFlag( AnnotationLayer ) && layer->type() == Qgis::LayerType::Annotation ) ||
+       ( filters.testFlag( PluginLayer ) && layer->type() == Qgis::LayerType::Plugin ) )
     return true;
 
   // geometry type
@@ -64,19 +59,19 @@ bool QgsMapLayerProxyModel::layerMatchesFilters( const QgsMapLayer *layer, const
                               filters.testFlag( LineLayer ) ||
                               filters.testFlag( PolygonLayer ) ||
                               filters.testFlag( HasGeometry );
-  if ( detectGeometry && layer->type() == QgsMapLayerType::VectorLayer )
+  if ( detectGeometry && layer->type() == Qgis::LayerType::Vector )
   {
     if ( const QgsVectorLayer *vl = qobject_cast<const QgsVectorLayer *>( layer ) )
     {
       if ( filters.testFlag( HasGeometry ) && vl->isSpatial() )
         return true;
-      if ( filters.testFlag( NoGeometry ) && vl->geometryType() == QgsWkbTypes::NullGeometry )
+      if ( filters.testFlag( NoGeometry ) && vl->geometryType() == Qgis::GeometryType::Null )
         return true;
-      if ( filters.testFlag( PointLayer ) && vl->geometryType() == QgsWkbTypes::PointGeometry )
+      if ( filters.testFlag( PointLayer ) && vl->geometryType() == Qgis::GeometryType::Point )
         return true;
-      if ( filters.testFlag( LineLayer ) && vl->geometryType() == QgsWkbTypes::LineGeometry )
+      if ( filters.testFlag( LineLayer ) && vl->geometryType() == Qgis::GeometryType::Line )
         return true;
-      if ( filters.testFlag( PolygonLayer ) && vl->geometryType() == QgsWkbTypes::PolygonGeometry )
+      if ( filters.testFlag( PolygonLayer ) && vl->geometryType() == Qgis::GeometryType::Polygon )
         return true;
     }
   }

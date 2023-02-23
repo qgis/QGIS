@@ -626,7 +626,7 @@ QVariantMap QgsExportMeshOnGridAlgorithm::processAlgorithm( const QVariantMap &p
                                         context,
                                         identifier,
                                         fields,
-                                        QgsWkbTypes::Point,
+                                        Qgis::WkbType::Point,
                                         outputCrs ) );
   if ( !sink )
     return QVariantMap();
@@ -1101,7 +1101,7 @@ QVariantMap QgsMeshContoursAlgorithm::processAlgorithm( const QVariantMap &param
         context,
         polygonIdentifier,
         polygonFields,
-        QgsWkbTypes::PolygonZ,
+        Qgis::WkbType::PolygonZ,
         outputCrs ) );
   std::unique_ptr<QgsFeatureSink> sinkLines( parameterAsSink(
         parameters,
@@ -1109,7 +1109,7 @@ QVariantMap QgsMeshContoursAlgorithm::processAlgorithm( const QVariantMap &param
         context,
         lineIdentifier,
         lineFields,
-        QgsWkbTypes::LineStringZ,
+        Qgis::WkbType::LineStringZ,
         outputCrs ) );
 
   if ( !sinkLines || !sinkPolygons )

@@ -155,16 +155,29 @@ class CORE_EXPORT QgsField
      */
     QString displayNameWithAlias() const;
 
-
     /**
      * Returns the type to use when displaying this field, including the length and precision of the datatype if applicable.
      *
      * This will be used when the full datatype with details has to displayed to the user.
      *
      * \see type()
+     * \see friendlyTypeString()
+     *
      * \since QGIS 3.14
      */
     QString displayType( bool showConstraints = false ) const;
+
+    /**
+     * Returns a user friendly, translated representation of the field type.
+     *
+     * Unlike displayType(), this method only returns strings representing the field type and does not include
+     * length, precision or constraint information.
+     *
+     * \see type()
+     * \see displayType()
+     * \since QGIS 3.14
+     */
+    QString friendlyTypeString() const;
 
     //! Gets variant type of the field as it will be retrieved from data source
     QVariant::Type type() const;
@@ -446,6 +459,10 @@ class CORE_EXPORT QgsField
     QString str = QStringLiteral( "<QgsField: %1 (%2)>" ).arg( sipCpp->name() ).arg( sipCpp->typeName() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
+#endif
+
+#ifndef SIP_RUN
+    static constexpr int MAX_WKT_LENGTH = 999;
 #endif
 
   private:

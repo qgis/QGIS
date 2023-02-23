@@ -539,7 +539,11 @@ void QgsProject::setFlags( Qgis::ProjectFlags flags )
     }
   }
 
-  mFlags = flags;
+  if ( mFlags != flags )
+  {
+    mFlags = flags;
+    setDirty( true );
+  }
 }
 
 void QgsProject::setFlag( Qgis::ProjectFlag flag, bool enabled )
@@ -654,7 +658,7 @@ void QgsProject::registerTranslatableObjects( QgsTranslationContext *translation
     translationContext->registerTranslation( QStringLiteral( "project:layers:%1" ).arg( layer->layerId() ), layer->name() );
 
     QgsMapLayer *mapLayer = layer->layer();
-    if ( mapLayer && mapLayer->type() == QgsMapLayerType::VectorLayer )
+    if ( mapLayer && mapLayer->type() == Qgis::LayerType::Vector )
     {
       QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mapLayer );
 
@@ -1041,11 +1045,11 @@ void QgsProject::clear()
 
   //fallback to QGIS default measurement unit
   bool ok = false;
-  const QgsUnitTypes::DistanceUnit distanceUnit = QgsUnitTypes::decodeDistanceUnit( mSettings.value( QStringLiteral( "/qgis/measure/displayunits" ) ).toString(), &ok );
-  setDistanceUnits( ok ? distanceUnit : QgsUnitTypes::DistanceMeters );
+  const Qgis::DistanceUnit distanceUnit = QgsUnitTypes::decodeDistanceUnit( mSettings.value( QStringLiteral( "/qgis/measure/displayunits" ) ).toString(), &ok );
+  setDistanceUnits( ok ? distanceUnit : Qgis::DistanceUnit::Meters );
   ok = false;
-  const QgsUnitTypes::AreaUnit areaUnits = QgsUnitTypes::decodeAreaUnit( mSettings.value( QStringLiteral( "/qgis/measure/areaunits" ) ).toString(), &ok );
-  setAreaUnits( ok ? areaUnits : QgsUnitTypes::AreaSquareMeters );
+  const Qgis::AreaUnit areaUnits = QgsUnitTypes::decodeAreaUnit( mSettings.value( QStringLiteral( "/qgis/measure/areaunits" ) ).toString(), &ok );
+  setAreaUnits( ok ? areaUnits : Qgis::AreaUnit::SquareMeters );
 
   mEmbeddedLayers.clear();
   mRelationManager->clear();
@@ -1393,7 +1397,7 @@ bool QgsProject::addLayer( const QDomElement &layerElem, QList<QDomNode> &broken
   QgsScopedRuntimeProfile profile( tr( "Create layer" ), QStringLiteral( "projectload" ) );
 
   bool ok = false;
-  const QgsMapLayerType layerType( QgsMapLayerFactory::typeFromString( type, ok ) );
+  const Qgis::LayerType layerType( QgsMapLayerFactory::typeFromString( type, ok ) );
   if ( !ok )
   {
     QgsDebugMsg( QStringLiteral( "Unknown layer type \"%1\"" ).arg( type ) );
@@ -1402,48 +1406,41 @@ bool QgsProject::addLayer( const QDomElement &layerElem, QList<QDomNode> &broken
 
   switch ( layerType )
   {
-    case QgsMapLayerType::VectorLayer:
-    {
+    case Qgis::LayerType::Vector:
       mapLayer = std::make_unique<QgsVectorLayer>();
-      // apply specific settings to vector layer
-      if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( mapLayer.get() ) )
-      {
-        vl->setReadExtentFromXml( ( mFlags & Qgis::ProjectFlag::TrustStoredLayerStatistics ) || ( flags & Qgis::ProjectReadFlag::TrustLayerMetadata ) );
-      }
       break;
-    }
 
-    case QgsMapLayerType::RasterLayer:
+    case Qgis::LayerType::Raster:
       mapLayer = std::make_unique<QgsRasterLayer>();
       break;
 
-    case QgsMapLayerType::MeshLayer:
+    case Qgis::LayerType::Mesh:
       mapLayer = std::make_unique<QgsMeshLayer>();
       break;
 
-    case QgsMapLayerType::VectorTileLayer:
+    case Qgis::LayerType::VectorTile:
       mapLayer = std::make_unique<QgsVectorTileLayer>();
       break;
 
-    case QgsMapLayerType::PointCloudLayer:
+    case Qgis::LayerType::PointCloud:
       mapLayer = std::make_unique<QgsPointCloudLayer>();
       break;
 
-    case QgsMapLayerType::PluginLayer:
+    case Qgis::LayerType::Plugin:
     {
       const QString typeName = layerElem.attribute( QStringLiteral( "name" ) );
       mapLayer.reset( QgsApplication::pluginLayerRegistry()->createLayer( typeName ) );
       break;
     }
 
-    case QgsMapLayerType::AnnotationLayer:
+    case Qgis::LayerType::Annotation:
     {
       const QgsAnnotationLayer::LayerOptions options( mTransformContext );
       mapLayer = std::make_unique<QgsAnnotationLayer>( QString(), options );
       break;
     }
 
-    case QgsMapLayerType::GroupLayer:
+    case Qgis::LayerType::Group:
     {
       const QgsGroupLayer::LayerOptions options( mTransformContext );
       mapLayer = std::make_unique<QgsGroupLayer>( QString(), options );
@@ -1478,6 +1475,17 @@ bool QgsProject::addLayer( const QDomElement &layerElem, QList<QDomNode> &broken
 
   profile.switchTask( tr( "Load layer source" ) );
   const bool layerIsValid = mapLayer->readLayerXml( layerElem, context, layerFlags ) && mapLayer->isValid();
+
+  // apply specific settings to vector layer
+  if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( mapLayer.get() ) )
+  {
+    vl->setReadExtentFromXml( ( mFlags & Qgis::ProjectFlag::TrustStoredLayerStatistics ) || ( flags & Qgis::ProjectReadFlag::TrustLayerMetadata ) );
+    if ( vl->dataProvider() )
+    {
+      const bool evaluateDefaultValues = mFlags & Qgis::ProjectFlag::EvaluateDefaultValuesOnProviderSide;
+      vl->dataProvider()->setProviderProperty( QgsVectorDataProvider::EvaluateDefaultValues, evaluateDefaultValues );
+    }
+  }
 
   profile.switchTask( tr( "Add layer to project" ) );
   QList<QgsMapLayer *> newLayers;
@@ -1896,6 +1904,8 @@ bool QgsProject::readProjectFile( const QString &filename, Qgis::ProjectReadFlag
   // get the map layers
   profile.switchTask( tr( "Reading map layers" ) );
 
+  loadProjectFlags( doc.get() );
+
   QList<QDomNode> brokenNodes;
   const bool clean = _getMapLayers( *doc, brokenNodes, flags );
 
@@ -1935,8 +1945,6 @@ bool QgsProject::readProjectFile( const QString &filename, Qgis::ProjectReadFlag
   // now that layers are loaded, we can resolve layer tree's references to the layers
   profile.switchTask( tr( "Resolving references" ) );
   mRootGroup->resolveReferences( this );
-
-  loadProjectFlags( doc.get() );
 
   if ( !layerTreeElem.isNull() )
   {
@@ -3606,7 +3614,7 @@ bool QgsProject::topologicalEditing() const
   return readNumEntry( QStringLiteral( "Digitizing" ), QStringLiteral( "/TopologicalEditing" ), 0 );
 }
 
-void QgsProject::setDistanceUnits( QgsUnitTypes::DistanceUnit unit )
+void QgsProject::setDistanceUnits( Qgis::DistanceUnit unit )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
@@ -3618,7 +3626,7 @@ void QgsProject::setDistanceUnits( QgsUnitTypes::DistanceUnit unit )
   emit distanceUnitsChanged();
 }
 
-void QgsProject::setAreaUnits( QgsUnitTypes::AreaUnit unit )
+void QgsProject::setAreaUnits( Qgis::AreaUnit unit )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
@@ -4187,7 +4195,7 @@ QList<QgsMapLayer *> QgsProject::addMapLayers(
   {
     for ( QgsMapLayer *mlayer : myResultList )
     {
-      if ( mlayer->type() != QgsMapLayerType::VectorLayer )
+      if ( mlayer->type() != Qgis::LayerType::Vector )
         continue;
 
       QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( mlayer );
@@ -4219,7 +4227,7 @@ void QgsProject::removeAuxiliaryLayer( const QgsMapLayer *ml )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  if ( ! ml || ml->type() != QgsMapLayerType::VectorLayer )
+  if ( ! ml || ml->type() != Qgis::LayerType::Vector )
     return;
 
   const QgsVectorLayer *vl = qobject_cast<const QgsVectorLayer *>( ml );
@@ -4382,7 +4390,7 @@ bool QgsProject::saveAuxiliaryStorage( const QString &filename )
   bool empty = true;
   for ( auto it = layers.constBegin(); it != layers.constEnd(); ++it )
   {
-    if ( it.value()->type() != QgsMapLayerType::VectorLayer )
+    if ( it.value()->type() != Qgis::LayerType::Vector )
       continue;
 
     QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( it.value() );

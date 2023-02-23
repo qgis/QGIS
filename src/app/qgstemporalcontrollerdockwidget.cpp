@@ -19,12 +19,9 @@
 #include "qgstemporalcontrollerwidget.h"
 #include "qgspanelwidgetstack.h"
 #include "qgsanimationexportdialog.h"
-#include "qgsdecorationitem.h"
 #include "qgsmapcanvas.h"
 #include "qgsmapdecoration.h"
-
 #include "qgstemporalutils.h"
-#include "qgstaskmanager.h"
 #include "qgsproxyprogresstask.h"
 #include "qgsmessagebar.h"
 
@@ -116,7 +113,7 @@ void QgsTemporalControllerDockWidget::exportAnimation()
     animationSettings.outputDirectory = outputDir;
     animationSettings.fileNameTemplate = fileNameExpression;
     animationSettings.decorations = decorations;
-    if ( frameDuration.originalUnit() == QgsUnitTypes::TemporalIrregularStep )
+    if ( frameDuration.originalUnit() == Qgis::TemporalUnit::IrregularStep )
       animationSettings.availableTemporalRanges = QgsTemporalUtils::usedTemporalRangesForProject( QgsProject::instance() );
 
     const bool success = QgsTemporalUtils::exportAnimation( s, animationSettings, error, &progressFeedback );

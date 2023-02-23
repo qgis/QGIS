@@ -106,7 +106,6 @@ represents.
 .. versionadded:: 3.12
 %End
 
-
     QString displayType( bool showConstraints = false ) const;
 %Docstring
 Returns the type to use when displaying this field, including the length and precision of the datatype if applicable.
@@ -114,6 +113,22 @@ Returns the type to use when displaying this field, including the length and pre
 This will be used when the full datatype with details has to displayed to the user.
 
 .. seealso:: :py:func:`type`
+
+.. seealso:: :py:func:`friendlyTypeString`
+
+.. versionadded:: 3.14
+%End
+
+    QString friendlyTypeString() const;
+%Docstring
+Returns a user friendly, translated representation of the field type.
+
+Unlike :py:func:`~QgsField.displayType`, this method only returns strings representing the field type and does not include
+length, precision or constraint information.
+
+.. seealso:: :py:func:`type`
+
+.. seealso:: :py:func:`displayType`
 
 .. versionadded:: 3.14
 %End
@@ -395,6 +410,7 @@ providers which support generated fields for instance.
     QString str = QStringLiteral( "<QgsField: %1 (%2)>" ).arg( sipCpp->name() ).arg( sipCpp->typeName() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
+
 
 }; // class QgsField
 

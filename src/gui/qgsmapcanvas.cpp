@@ -415,7 +415,7 @@ void QgsMapCanvas::setLayersPrivate( const QList<QgsMapLayer *> &layers )
     disconnect( layer, &QgsMapLayer::autoRefreshIntervalChanged, this, &QgsMapCanvas::updateAutoRefreshTimer );
     switch ( layer->type() )
     {
-      case QgsMapLayerType::VectorLayer:
+      case Qgis::LayerType::Vector:
       {
         QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
         disconnect( vlayer, &QgsVectorLayer::selectionChanged, this, &QgsMapCanvas::selectionChangedSlot );
@@ -423,19 +423,19 @@ void QgsMapCanvas::setLayersPrivate( const QList<QgsMapLayer *> &layers )
         break;
       }
 
-      case QgsMapLayerType::VectorTileLayer:
+      case Qgis::LayerType::VectorTile:
       {
         QgsVectorTileLayer *vtlayer = qobject_cast<QgsVectorTileLayer *>( layer );
         disconnect( vtlayer, &QgsVectorTileLayer::selectionChanged, this, &QgsMapCanvas::selectionChangedSlot );
         break;
       }
 
-      case QgsMapLayerType::RasterLayer:
-      case QgsMapLayerType::PluginLayer:
-      case QgsMapLayerType::MeshLayer:
-      case QgsMapLayerType::AnnotationLayer:
-      case QgsMapLayerType::PointCloudLayer:
-      case QgsMapLayerType::GroupLayer:
+      case Qgis::LayerType::Raster:
+      case Qgis::LayerType::Plugin:
+      case Qgis::LayerType::Mesh:
+      case Qgis::LayerType::Annotation:
+      case Qgis::LayerType::PointCloud:
+      case Qgis::LayerType::Group:
         break;
     }
   }
@@ -452,7 +452,7 @@ void QgsMapCanvas::setLayersPrivate( const QList<QgsMapLayer *> &layers )
 
     switch ( layer->type() )
     {
-      case QgsMapLayerType::VectorLayer:
+      case Qgis::LayerType::Vector:
       {
         QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
         connect( vlayer, &QgsVectorLayer::selectionChanged, this, &QgsMapCanvas::selectionChangedSlot );
@@ -460,19 +460,19 @@ void QgsMapCanvas::setLayersPrivate( const QList<QgsMapLayer *> &layers )
         break;
       }
 
-      case QgsMapLayerType::VectorTileLayer:
+      case Qgis::LayerType::VectorTile:
       {
         QgsVectorTileLayer *vtlayer = qobject_cast<QgsVectorTileLayer *>( layer );
         connect( vtlayer, &QgsVectorTileLayer::selectionChanged, this, &QgsMapCanvas::selectionChangedSlot );
         break;
       }
 
-      case QgsMapLayerType::RasterLayer:
-      case QgsMapLayerType::PluginLayer:
-      case QgsMapLayerType::MeshLayer:
-      case QgsMapLayerType::AnnotationLayer:
-      case QgsMapLayerType::PointCloudLayer:
-      case QgsMapLayerType::GroupLayer:
+      case Qgis::LayerType::Raster:
+      case Qgis::LayerType::Plugin:
+      case Qgis::LayerType::Mesh:
+      case Qgis::LayerType::Annotation:
+      case Qgis::LayerType::PointCloud:
+      case Qgis::LayerType::Group:
         break;
     }
   }
@@ -513,6 +513,12 @@ void QgsMapCanvas::setDestinationCrs( const QgsCoordinateReferenceSystem &crs )
     }
   }
 
+  // defer extent and scale changed signals until we've correctly
+  // set the destination crs, otherwise slots which connect to these signals
+  // may retrieve an outdated CRS for the map canvas
+  mBlockExtentChangedSignal++;
+  mBlockScaleChangedSignal++;
+
   if ( !rect.isEmpty() )
   {
     // we will be manually calling updateCanvasItemPositions() later, AFTER setting the updating the mSettings destination CRS, and we don't
@@ -522,8 +528,13 @@ void QgsMapCanvas::setDestinationCrs( const QgsCoordinateReferenceSystem &crs )
     mBlockItemPositionUpdates--;
   }
 
+  mBlockExtentChangedSignal--;
+  mBlockScaleChangedSignal--;
+
   mSettings.setDestinationCrs( crs );
   updateScale();
+  emitExtentsChanged();
+
   updateCanvasItemPositions();
 
   QgsDebugMsgLevel( QStringLiteral( "refreshing after destination CRS changed" ), 2 );
@@ -1113,7 +1124,7 @@ void QgsMapCanvas::showContextMenu( QgsMapMouseEvent *event )
       }
       catch ( QgsCsException & )
       {
-        displayPrecision = crs.mapUnits() == QgsUnitTypes::DistanceDegrees ? 5 : 3;
+        displayPrecision = crs.mapUnits() == Qgis::DistanceUnit::Degrees ? 5 : 3;
       }
 
       const QList< Qgis::CrsAxisDirection > axisList = crs.axisOrdering();
@@ -1437,6 +1448,7 @@ void QgsMapCanvas::setExtent( const QgsRectangle &r, bool magnified )
 
     // ### QGIS 3: do not allow empty extent - require users to call setCenter() explicitly
     QgsDebugMsgLevel( QStringLiteral( "Empty extent - keeping old scale with new center!" ), 2 );
+
     setCenter( r.center() );
   }
   else
@@ -1459,7 +1471,7 @@ void QgsMapCanvas::setExtent( const QgsRectangle &r, bool magnified )
       mSettings.setExtent( r, magnified );
     }
   }
-  emit extentsChanged();
+  emitExtentsChanged();
   updateScale();
 
   //clear all extent items after current index
@@ -1535,7 +1547,7 @@ QgsPointXY QgsMapCanvas::cursorPoint() const
 double QgsMapCanvas::rotation() const
 {
   return mapSettings().rotation();
-} // rotation
+}
 
 void QgsMapCanvas::setRotation( double degrees )
 {
@@ -1546,13 +1558,13 @@ void QgsMapCanvas::setRotation( double degrees )
 
   mSettings.setRotation( degrees );
   emit rotationChanged( degrees );
-  emit extentsChanged(); // visible extent changes with rotation
-} // setRotation
-
+  emitExtentsChanged(); // visible extent changes with rotation
+}
 
 void QgsMapCanvas::updateScale()
 {
-  emit scaleChanged( mapSettings().scale() );
+  if ( !mBlockScaleChangedSignal )
+    emit scaleChanged( mapSettings().scale() );
 }
 
 void QgsMapCanvas::zoomToFullExtent()
@@ -1588,7 +1600,7 @@ void QgsMapCanvas::zoomToPreviousExtent()
   {
     mLastExtentIndex--;
     mSettings.setExtent( mLastExtent[mLastExtentIndex] );
-    emit extentsChanged();
+    emitExtentsChanged();
     updateScale();
     refresh();
     // update controls' enabled state
@@ -1604,7 +1616,7 @@ void QgsMapCanvas::zoomToNextExtent()
   {
     mLastExtentIndex++;
     mSettings.setExtent( mLastExtent[mLastExtentIndex] );
-    emit extentsChanged();
+    emitExtentsChanged();
     updateScale();
     refresh();
     // update controls' enabled state
@@ -1627,7 +1639,7 @@ QgsRectangle QgsMapCanvas::optimalExtentForPointLayer( QgsVectorLayer *layer, co
 {
   QgsRectangle rect( center, center );
 
-  if ( layer->geometryType() == QgsWkbTypes::PointGeometry )
+  if ( layer->geometryType() == Qgis::GeometryType::Point )
   {
     QgsPointXY centerLayerCoordinates = mSettings.mapToLayerCoordinates( layer, center );
     QgsRectangle extentRect = mSettings.mapToLayerCoordinates( layer, extent() ).scaled( 1.0 / scaleFactor, &centerLayerCoordinates );
@@ -1674,7 +1686,7 @@ void QgsMapCanvas::zoomToSelected( QgsMapLayer *layer )
 
   switch ( layer->type() )
   {
-    case QgsMapLayerType::VectorLayer:
+    case Qgis::LayerType::Vector:
     {
       QgsVectorLayer *vlayer = qobject_cast< QgsVectorLayer * >( layer );
       if ( vlayer->selectedFeatureCount() == 0 )
@@ -1692,14 +1704,14 @@ void QgsMapCanvas::zoomToSelected( QgsMapLayer *layer )
 
       // zoom in if point cannot be distinguished from others
       // also check that rect is empty, as it might not in case of multi points
-      if ( vlayer->geometryType() == QgsWkbTypes::PointGeometry && rect.isEmpty() )
+      if ( vlayer->geometryType() == Qgis::GeometryType::Point && rect.isEmpty() )
       {
         rect = optimalExtentForPointLayer( vlayer, rect.center() );
       }
       break;
     }
 
-    case QgsMapLayerType::VectorTileLayer:
+    case Qgis::LayerType::VectorTile:
     {
       QgsVectorTileLayer *vtLayer = qobject_cast< QgsVectorTileLayer * >( layer );
       if ( vtLayer->selectedFeatureCount() == 0 )
@@ -1725,12 +1737,12 @@ void QgsMapCanvas::zoomToSelected( QgsMapLayer *layer )
       break;
     }
 
-    case QgsMapLayerType::RasterLayer:
-    case QgsMapLayerType::PluginLayer:
-    case QgsMapLayerType::MeshLayer:
-    case QgsMapLayerType::AnnotationLayer:
-    case QgsMapLayerType::PointCloudLayer:
-    case QgsMapLayerType::GroupLayer:
+    case Qgis::LayerType::Raster:
+    case Qgis::LayerType::Plugin:
+    case Qgis::LayerType::Mesh:
+    case Qgis::LayerType::Annotation:
+    case Qgis::LayerType::PointCloud:
+    case Qgis::LayerType::Group:
       return;   // not supported
   }
 
@@ -1751,7 +1763,7 @@ void QgsMapCanvas::zoomToSelected( const QList<QgsMapLayer *> &layers )
 
     switch ( mapLayer->type() )
     {
-      case QgsMapLayerType::VectorLayer:
+      case Qgis::LayerType::Vector:
       {
         QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( mapLayer );
 
@@ -1765,14 +1777,14 @@ void QgsMapCanvas::zoomToSelected( const QList<QgsMapLayer *> &layers )
 
         rect = mapSettings().layerExtentToOutputExtent( layer, rect );
 
-        if ( layer->geometryType() == QgsWkbTypes::PointGeometry && rect.isEmpty() )
+        if ( layer->geometryType() == Qgis::GeometryType::Point && rect.isEmpty() )
           rect = optimalExtentForPointLayer( layer, rect.center() );
 
         selectionExtent.combineExtentWith( rect );
         break;
       }
 
-      case QgsMapLayerType::VectorTileLayer:
+      case Qgis::LayerType::VectorTile:
       {
         QgsVectorTileLayer *vtLayer = qobject_cast< QgsVectorTileLayer * >( mapLayer );
         if ( vtLayer->selectedFeatureCount() == 0 )
@@ -1793,12 +1805,12 @@ void QgsMapCanvas::zoomToSelected( const QList<QgsMapLayer *> &layers )
         break;
       }
 
-      case QgsMapLayerType::RasterLayer:
-      case QgsMapLayerType::PluginLayer:
-      case QgsMapLayerType::MeshLayer:
-      case QgsMapLayerType::AnnotationLayer:
-      case QgsMapLayerType::PointCloudLayer:
-      case QgsMapLayerType::GroupLayer:
+      case Qgis::LayerType::Raster:
+      case Qgis::LayerType::Plugin:
+      case Qgis::LayerType::Mesh:
+      case Qgis::LayerType::Annotation:
+      case Qgis::LayerType::PointCloud:
+      case Qgis::LayerType::Group:
         break;
     }
   }
@@ -1953,7 +1965,7 @@ void QgsMapCanvas::panToSelected( QgsMapLayer *layer )
   QgsRectangle rect;
   switch ( layer->type() )
   {
-    case QgsMapLayerType::VectorLayer:
+    case Qgis::LayerType::Vector:
     {
       QgsVectorLayer *vLayer = qobject_cast< QgsVectorLayer * >( layer );
       if ( vLayer->selectedFeatureCount() == 0 )
@@ -1962,7 +1974,7 @@ void QgsMapCanvas::panToSelected( QgsMapLayer *layer )
       rect = vLayer->boundingBoxOfSelected();
       break;
     }
-    case QgsMapLayerType::VectorTileLayer:
+    case Qgis::LayerType::VectorTile:
     {
       QgsVectorTileLayer *vtLayer = qobject_cast< QgsVectorTileLayer * >( layer );
       if ( vtLayer->selectedFeatureCount() == 0 )
@@ -1979,12 +1991,12 @@ void QgsMapCanvas::panToSelected( QgsMapLayer *layer )
       break;
     }
 
-    case QgsMapLayerType::RasterLayer:
-    case QgsMapLayerType::PluginLayer:
-    case QgsMapLayerType::MeshLayer:
-    case QgsMapLayerType::AnnotationLayer:
-    case QgsMapLayerType::PointCloudLayer:
-    case QgsMapLayerType::GroupLayer:
+    case Qgis::LayerType::Raster:
+    case Qgis::LayerType::Plugin:
+    case Qgis::LayerType::Mesh:
+    case Qgis::LayerType::Annotation:
+    case Qgis::LayerType::PointCloud:
+    case Qgis::LayerType::Group:
       return;
   }
 
@@ -2013,7 +2025,7 @@ void QgsMapCanvas::panToSelected( const QList<QgsMapLayer *> &layers )
     rect.setMinimal();
     switch ( mapLayer->type() )
     {
-      case QgsMapLayerType::VectorLayer:
+      case Qgis::LayerType::Vector:
       {
         QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( mapLayer );
         if ( layer->selectedFeatureCount() == 0 )
@@ -2026,12 +2038,12 @@ void QgsMapCanvas::panToSelected( const QList<QgsMapLayer *> &layers )
 
         rect = mapSettings().layerExtentToOutputExtent( layer, rect );
 
-        if ( layer->geometryType() == QgsWkbTypes::PointGeometry && rect.isEmpty() )
+        if ( layer->geometryType() == Qgis::GeometryType::Point && rect.isEmpty() )
           rect = optimalExtentForPointLayer( layer, rect.center() );
         break;
       }
 
-      case QgsMapLayerType::VectorTileLayer:
+      case Qgis::LayerType::VectorTile:
       {
         QgsVectorTileLayer *vtLayer = qobject_cast< QgsVectorTileLayer * >( mapLayer );
         if ( vtLayer->selectedFeatureCount() == 0 )
@@ -2050,12 +2062,12 @@ void QgsMapCanvas::panToSelected( const QList<QgsMapLayer *> &layers )
         break;
       }
 
-      case QgsMapLayerType::RasterLayer:
-      case QgsMapLayerType::PluginLayer:
-      case QgsMapLayerType::MeshLayer:
-      case QgsMapLayerType::AnnotationLayer:
-      case QgsMapLayerType::PointCloudLayer:
-      case QgsMapLayerType::GroupLayer:
+      case Qgis::LayerType::Raster:
+      case Qgis::LayerType::Plugin:
+      case Qgis::LayerType::Mesh:
+      case Qgis::LayerType::Annotation:
+      case Qgis::LayerType::PointCloud:
+      case Qgis::LayerType::Group:
         continue;
     }
 
@@ -2100,25 +2112,25 @@ void QgsMapCanvas::flashGeometries( const QList<QgsGeometry> &geometries, const 
   if ( geometries.isEmpty() )
     return;
 
-  QgsWkbTypes::GeometryType geomType = QgsWkbTypes::geometryType( geometries.at( 0 ).wkbType() );
+  Qgis::GeometryType geomType = QgsWkbTypes::geometryType( geometries.at( 0 ).wkbType() );
   QgsRubberBand *rb = new QgsRubberBand( this, geomType );
   for ( const QgsGeometry &geom : geometries )
     rb->addGeometry( geom, crs, false );
   rb->updatePosition();
   rb->update();
 
-  if ( geomType == QgsWkbTypes::LineGeometry || geomType == QgsWkbTypes::PointGeometry )
+  if ( geomType == Qgis::GeometryType::Line || geomType == Qgis::GeometryType::Point )
   {
     rb->setWidth( 2 );
     rb->setSecondaryStrokeColor( QColor( 255, 255, 255 ) );
   }
-  if ( geomType == QgsWkbTypes::PointGeometry )
+  if ( geomType == Qgis::GeometryType::Point )
     rb->setIcon( QgsRubberBand::ICON_CIRCLE );
 
   QColor startColor = color1;
   if ( !startColor.isValid() )
   {
-    if ( geomType == QgsWkbTypes::PolygonGeometry )
+    if ( geomType == Qgis::GeometryType::Polygon )
     {
       startColor = rb->fillColor();
     }
@@ -2145,7 +2157,7 @@ void QgsMapCanvas::flashGeometries( const QList<QgsGeometry> &geometries, const 
   connect( animation, &QPropertyAnimation::valueChanged, this, [rb, geomType]( const QVariant & value )
   {
     QColor c = value.value<QColor>();
-    if ( geomType == QgsWkbTypes::PolygonGeometry )
+    if ( geomType == Qgis::GeometryType::Polygon )
     {
       rb->setFillColor( c );
     }
@@ -2322,7 +2334,7 @@ void QgsMapCanvas::beginZoomRect( QPoint pos )
   mZoomRect.setRect( 0, 0, 0, 0 );
   mTemporaryCursorOverride.reset( new QgsTemporaryCursorOverride( mZoomCursor ) );
   mZoomDragging = true;
-  mZoomRubberBand.reset( new QgsRubberBand( this, QgsWkbTypes::PolygonGeometry ) );
+  mZoomRubberBand.reset( new QgsRubberBand( this, Qgis::GeometryType::Polygon ) );
   QColor color( Qt::blue );
   color.setAlpha( 63 );
   mZoomRubberBand->setColor( color );
@@ -2535,7 +2547,7 @@ void QgsMapCanvas::resizeEvent( QResizeEvent *e )
     updateScale();
   }
 
-  emit extentsChanged();
+  emitExtentsChanged();
 }
 
 void QgsMapCanvas::paintEvent( QPaintEvent *e )
@@ -2854,7 +2866,7 @@ double QgsMapCanvas::mapUnitsPerPixel() const
   return mapSettings().mapUnitsPerPixel();
 }
 
-QgsUnitTypes::DistanceUnit QgsMapCanvas::mapUnits() const
+Qgis::DistanceUnit QgsMapCanvas::mapUnits() const
 {
   return mapSettings().mapUnits();
 }
@@ -3092,6 +3104,12 @@ void QgsMapCanvas::showEvent( QShowEvent *event )
 {
   Q_UNUSED( event )
   updateDevicePixelFromScreen();
+}
+
+void QgsMapCanvas::emitExtentsChanged()
+{
+  if ( !mBlockExtentChangedSignal )
+    emit extentsChanged();
 }
 
 QPoint QgsMapCanvas::mouseLastXY()

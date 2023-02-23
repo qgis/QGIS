@@ -54,7 +54,7 @@ Returns the coordinate reference system for features in the source.
 Returns the fields associated with features in the source.
 %End
 
-    virtual QgsWkbTypes::Type wkbType() const = 0;
+    virtual Qgis::WkbType wkbType() const = 0;
 %Docstring
 Returns the geometry type for features returned by this source.
 %End

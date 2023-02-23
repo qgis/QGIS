@@ -16,7 +16,6 @@
 #include "qgslayertreeutils.h"
 #include "qgslayertree.h"
 #include "qgsvectorlayer.h"
-#include "qgsmeshlayer.h"
 #include "qgsproject.h"
 #include "qgslogger.h"
 
@@ -322,7 +321,7 @@ void QgsLayerTreeUtils::storeOriginalLayersProperties( QgsLayerTreeGroup *group,
       if ( QgsMapLayer *l = QgsLayerTree::toLayer( node )->layer() )
       {
         // no need to store for annotation layers, they can never break!
-        if ( l->type() == QgsMapLayerType::AnnotationLayer )
+        if ( l->type() == Qgis::LayerType::Annotation )
           return;
 
         QDomElement layerElement { projectLayersElement.firstChildElement( QStringLiteral( "maplayer" ) ) };
@@ -550,10 +549,10 @@ QgsLayerTreeLayer *QgsLayerTreeUtils::insertLayerAtOptimalPlacement( QgsLayerTre
       const QgsMapLayer *layer = qobject_cast<const QgsLayerTreeLayer *>( child )->layer();
       switch ( layer->type() )
       {
-        case QgsMapLayerType::VectorLayer:
+        case Qgis::LayerType::Vector:
         {
           const QgsVectorLayer *vlayer = static_cast<const QgsVectorLayer *>( layer );
-          if ( vlayer->geometryType() == QgsWkbTypes::PointGeometry )
+          if ( vlayer->geometryType() == Qgis::GeometryType::Point )
           {
             if ( vectorLineIndex < nodeIdx )
               vectorLineIndex = nodeIdx;
@@ -568,7 +567,7 @@ QgsLayerTreeLayer *QgsLayerTreeUtils::insertLayerAtOptimalPlacement( QgsLayerTre
             if ( basemapIndex < nodeIdx )
               basemapIndex = nodeIdx;
           }
-          else if ( vlayer->geometryType() == QgsWkbTypes::LineGeometry )
+          else if ( vlayer->geometryType() == Qgis::GeometryType::Line )
           {
             if ( vectorPolygonIndex < nodeIdx )
               vectorPolygonIndex = nodeIdx;
@@ -581,7 +580,7 @@ QgsLayerTreeLayer *QgsLayerTreeUtils::insertLayerAtOptimalPlacement( QgsLayerTre
             if ( basemapIndex < nodeIdx )
               basemapIndex = nodeIdx;
           }
-          else if ( vlayer->geometryType() == QgsWkbTypes::PolygonGeometry )
+          else if ( vlayer->geometryType() == Qgis::GeometryType::Polygon )
           {
             if ( pointCloudIndex < nodeIdx )
               pointCloudIndex = nodeIdx;
@@ -595,7 +594,7 @@ QgsLayerTreeLayer *QgsLayerTreeUtils::insertLayerAtOptimalPlacement( QgsLayerTre
           break;
         }
 
-        case QgsMapLayerType::PointCloudLayer:
+        case Qgis::LayerType::PointCloud:
         {
           if ( meshIndex < nodeIdx )
             meshIndex = nodeIdx;
@@ -606,7 +605,7 @@ QgsLayerTreeLayer *QgsLayerTreeUtils::insertLayerAtOptimalPlacement( QgsLayerTre
           break;
         }
 
-        case QgsMapLayerType::MeshLayer:
+        case Qgis::LayerType::Mesh:
         {
           if ( rasterIndex < nodeIdx )
             rasterIndex = nodeIdx;
@@ -615,7 +614,7 @@ QgsLayerTreeLayer *QgsLayerTreeUtils::insertLayerAtOptimalPlacement( QgsLayerTre
           break;
         }
 
-        case QgsMapLayerType::RasterLayer:
+        case Qgis::LayerType::Raster:
         {
           if ( layer->dataProvider() && layer->dataProvider()->name() == QLatin1String( "gdal" ) )
           {
@@ -627,10 +626,10 @@ QgsLayerTreeLayer *QgsLayerTreeUtils::insertLayerAtOptimalPlacement( QgsLayerTre
           break;
         }
 
-        case QgsMapLayerType::VectorTileLayer:
-        case QgsMapLayerType::AnnotationLayer:
-        case QgsMapLayerType::GroupLayer:
-        case QgsMapLayerType::PluginLayer:
+        case Qgis::LayerType::VectorTile:
+        case Qgis::LayerType::Annotation:
+        case Qgis::LayerType::Group:
+        case Qgis::LayerType::Plugin:
         default:
           break;
       }
@@ -640,37 +639,37 @@ QgsLayerTreeLayer *QgsLayerTreeUtils::insertLayerAtOptimalPlacement( QgsLayerTre
   int index = 0;
   switch ( layer->type() )
   {
-    case QgsMapLayerType::VectorLayer:
+    case Qgis::LayerType::Vector:
     {
       QgsVectorLayer *vlayer = static_cast<QgsVectorLayer *>( layer );
-      if ( vlayer->geometryType() == QgsWkbTypes::PointGeometry )
+      if ( vlayer->geometryType() == Qgis::GeometryType::Point )
       {
         index = 0;
       }
-      else if ( vlayer->geometryType() == QgsWkbTypes::LineGeometry )
+      else if ( vlayer->geometryType() == Qgis::GeometryType::Line )
       {
         index = vectorLineIndex;
       }
-      else if ( vlayer->geometryType() == QgsWkbTypes::PolygonGeometry )
+      else if ( vlayer->geometryType() == Qgis::GeometryType::Polygon )
       {
         index = vectorPolygonIndex;
       }
       break;
     }
 
-    case QgsMapLayerType::PointCloudLayer:
+    case Qgis::LayerType::PointCloud:
     {
       index = pointCloudIndex;
       break;
     }
 
-    case QgsMapLayerType::MeshLayer:
+    case Qgis::LayerType::Mesh:
     {
       index = meshIndex;
       break;
     }
 
-    case QgsMapLayerType::RasterLayer:
+    case Qgis::LayerType::Raster:
     {
       if ( layer->dataProvider() && layer->dataProvider()->name() == QLatin1String( "gdal" ) )
       {
@@ -683,15 +682,15 @@ QgsLayerTreeLayer *QgsLayerTreeUtils::insertLayerAtOptimalPlacement( QgsLayerTre
       break;
     }
 
-    case QgsMapLayerType::VectorTileLayer:
+    case Qgis::LayerType::VectorTile:
     {
       index = basemapIndex;
       break;
     }
 
-    case QgsMapLayerType::AnnotationLayer:
-    case QgsMapLayerType::GroupLayer:
-    case QgsMapLayerType::PluginLayer:
+    case Qgis::LayerType::Annotation:
+    case Qgis::LayerType::Group:
+    case Qgis::LayerType::Plugin:
     default:
       break;
   }

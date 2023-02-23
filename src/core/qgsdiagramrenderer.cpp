@@ -15,7 +15,6 @@
 #include "qgsdiagramrenderer.h"
 
 #include "qgsdatadefinedsizelegend.h"
-#include "qgsvectorlayer.h"
 #include "diagram/qgstextdiagram.h"
 #include "diagram/qgspiediagram.h"
 #include "diagram/qgshistogramdiagram.h"
@@ -29,6 +28,7 @@
 #include "qgsapplication.h"
 #include "qgslinesymbol.h"
 #include "qgsmarkersymbol.h"
+#include "qgsunittypes.h"
 
 #include <QDomElement>
 #include <QPainter>
@@ -215,7 +215,7 @@ void QgsDiagramSettings::readXml( const QDomElement &elem, const QgsReadWriteCon
   if ( elem.attribute( QStringLiteral( "sizeType" ) ) == QLatin1String( "MapUnits" ) )
   {
     //compatibility with pre-2.16 project files
-    sizeType = QgsUnitTypes::RenderMapUnits;
+    sizeType = Qgis::RenderUnit::MapUnits;
   }
   else
   {

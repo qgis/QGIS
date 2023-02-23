@@ -26,17 +26,13 @@
 #include "qgsmaphittest.h"
 #include "qgsmaplayer.h"
 #include "qgsmaplayerlegend.h"
-#include "qgsmaplayerstylemanager.h"
-#include "qgsmeshlayer.h"
-#include "qgspluginlayer.h"
-#include "qgsrasterlayer.h"
-#include "qgsrenderer.h"
-#include "qgssymbollayerutils.h"
 #include "qgsvectorlayer.h"
 #include "qgslayerdefinition.h"
 #include "qgsiconutils.h"
 #include "qgsmimedatautils.h"
 #include "qgssettingsregistrycore.h"
+#include "qgsmaplayerstyle.h"
+#include "qgsrendercontext.h"
 
 #include <QPalette>
 
@@ -632,7 +628,7 @@ void QgsLayerTreeModel::setLegendFilter( const QgsMapSettings *settings, bool us
         }
       }
     }
-    bool polygonValid = !polygon.isNull() && polygon.type() == QgsWkbTypes::PolygonGeometry;
+    bool polygonValid = !polygon.isNull() && polygon.type() == Qgis::GeometryType::Polygon;
     if ( useExpressions && !useExtent && !polygonValid ) // only expressions
     {
       mLegendFilterHitTest.reset( new QgsMapHitTest( *mLegendFilterMapSettings, exprs ) );
@@ -900,7 +896,7 @@ void QgsLayerTreeModel::connectToLayer( QgsLayerTreeLayer *nodeLayer )
       if ( mAutoCollapseLegendNodesCount != -1 && rowCount( node2index( nodeLayer ) )  >= mAutoCollapseLegendNodesCount )
         nodeLayer->setExpanded( false );
 
-      if ( nodeLayer->layer()->type() == QgsMapLayerType::VectorLayer && QgsSettingsRegistryCore::settingsLayerTreeShowFeatureCountForNewLayers->value() )
+      if ( nodeLayer->layer()->type() == Qgis::LayerType::Vector && QgsSettingsRegistryCore::settingsLayerTreeShowFeatureCountForNewLayers->value() )
       {
         nodeLayer->setCustomProperty( QStringLiteral( "showFeatureCount" ), true );
       }

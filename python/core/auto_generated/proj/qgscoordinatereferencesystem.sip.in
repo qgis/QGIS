@@ -961,7 +961,7 @@ Returns an ordered list of the axis directions reflecting the native axis order 
     }
 %End
 
-    QgsUnitTypes::DistanceUnit mapUnits() const;
+    Qgis::DistanceUnit mapUnits() const;
 %Docstring
 Returns the units for the projection used by the CRS.
 %End

@@ -49,7 +49,7 @@ class CORE_EXPORT QgsMemoryProviderUtils
      */
     static QgsVectorLayer *createMemoryLayer( const QString &name,
         const QgsFields &fields,
-        QgsWkbTypes::Type geometryType = QgsWkbTypes::NoGeometry,
+        Qgis::WkbType geometryType = Qgis::WkbType::NoGeometry,
         const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem(),
         bool loadDefaultStyle = true ) SIP_FACTORY;
 };

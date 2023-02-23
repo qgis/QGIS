@@ -135,15 +135,24 @@ bool QgsOapifProvider::init()
 
   mShared->mCollectionUrl =
     landingPageRequest.collectionsUrl() + QStringLiteral( "/" ) + mShared->mURI.typeName();
-  QgsOapifCollectionRequest collectionRequest( mShared->mURI.uri(), mShared->appendExtraQueryParameters( mShared->mCollectionUrl ) );
-  if ( !collectionRequest.request( synchronous, forceRefresh ) )
-    return false;
-  if ( collectionRequest.errorCode() != QgsBaseNetworkRequest::NoError )
-    return false;
+  std::unique_ptr<QgsOapifCollectionRequest> collectionRequest = std::make_unique<QgsOapifCollectionRequest>( mShared->mURI.uri(), mShared->appendExtraQueryParameters( mShared->mCollectionUrl ) );
+  if ( !collectionRequest->request( synchronous, forceRefresh ) ||
+       collectionRequest->errorCode() != QgsBaseNetworkRequest::NoError )
+  {
 
-  mShared->mCapabilityExtent = collectionRequest.collection().mBbox;
-
-  mLayerMetadata = collectionRequest.collection().mLayerMetadata;
+    // Retry with a trailing slash. Works around a bug with
+    // https://geoserveis.ide.cat/servei/catalunya/inspire/ogc/features/collections/inspire:AD.Address not working
+    // but https://geoserveis.ide.cat/servei/catalunya/inspire/ogc/features/collections/inspire:AD.Address/ working
+    mShared->mCollectionUrl +=  QStringLiteral( "/" );
+    collectionRequest = std::make_unique<QgsOapifCollectionRequest>( mShared->mURI.uri(), mShared->appendExtraQueryParameters( mShared->mCollectionUrl ) );
+    if ( !collectionRequest->request( synchronous, forceRefresh ) ||
+         collectionRequest->errorCode() != QgsBaseNetworkRequest::NoError )
+    {
+      return false;
+    }
+  }
+  mShared->mCapabilityExtent = collectionRequest->collection().mBbox;
+  mLayerMetadata = collectionRequest->collection().mLayerMetadata;
 
   if ( mLayerMetadata.crs().isValid() )
   {
@@ -207,7 +216,7 @@ QgsFeatureIterator QgsOapifProvider::getFeatures( const QgsFeatureRequest &reque
   return QgsFeatureIterator( new QgsBackgroundCachedFeatureIterator( new QgsBackgroundCachedFeatureSource( mShared ), true, mShared, request ) );
 }
 
-QgsWkbTypes::Type QgsOapifProvider::wkbType() const
+Qgis::WkbType QgsOapifProvider::wkbType() const
 {
   return mShared->mWKBType;
 }
@@ -896,9 +905,9 @@ QgsOapifProvider *QgsOapifProviderMetadata::createProvider( const QString &uri, 
   return new QgsOapifProvider( uri, options, flags );
 }
 
-QList<QgsMapLayerType> QgsOapifProviderMetadata::supportedLayerTypes() const
+QList<Qgis::LayerType> QgsOapifProviderMetadata::supportedLayerTypes() const
 {
-  return { QgsMapLayerType::VectorLayer };
+  return { Qgis::LayerType::Vector };
 }
 
 QgsOapifProviderMetadata::QgsOapifProviderMetadata():

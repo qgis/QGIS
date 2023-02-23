@@ -17,8 +17,6 @@
 
 #include "qgsmeshtriangulation.h"
 #include "qgsdualedgetriangulation.h"
-#include "qgsvectorlayer.h"
-#include "qgscoordinatetransformcontext.h"
 #include "qgscurve.h"
 #include "qgscurvepolygon.h"
 #include "qgsmultisurface.h"
@@ -26,6 +24,8 @@
 #include "qgsfeedback.h"
 #include "qgslogger.h"
 #include "qgsmesheditor.h"
+#include "qgsfeature.h"
+#include "qgsfeatureiterator.h"
 
 QgsMeshTriangulation::QgsMeshTriangulation(): QObject()
 {
@@ -77,14 +77,14 @@ bool QgsMeshTriangulation::addBreakLines( QgsFeatureIterator &lineFeatureIterato
       i++;
     }
 
-    QgsWkbTypes::GeometryType geomType = feat.geometry().type();
+    Qgis::GeometryType geomType = feat.geometry().type();
     switch ( geomType )
     {
-      case QgsWkbTypes::PointGeometry:
+      case Qgis::GeometryType::Point:
         addVerticesFromFeature( feat, valueAttribute, transform, feedback );
         break;
-      case QgsWkbTypes::LineGeometry:
-      case QgsWkbTypes::PolygonGeometry:
+      case Qgis::GeometryType::Line:
+      case Qgis::GeometryType::Polygon:
         addBreakLinesFromFeature( feat, valueAttribute, transform, feedback );
         break;
       default:
@@ -138,7 +138,7 @@ void QgsMeshTriangulation::addVerticesFromFeature( const QgsFeature &feature, in
       mTriangulation->addPoint( *vit );
     else
     {
-      mTriangulation->addPoint( QgsPoint( QgsWkbTypes::PointZ, ( *vit ).x(), ( *vit ).y(), value ) );
+      mTriangulation->addPoint( QgsPoint( Qgis::WkbType::PointZ, ( *vit ).x(), ( *vit ).y(), value ) );
     }
     ++vit;
   }
@@ -164,7 +164,7 @@ void QgsMeshTriangulation::addBreakLinesFromFeature( const QgsFeature &feature, 
     return;
   }
 
-  if ( QgsWkbTypes::geometryType( geom.wkbType() ) == QgsWkbTypes::PolygonGeometry )
+  if ( QgsWkbTypes::geometryType( geom.wkbType() ) == Qgis::GeometryType::Polygon )
   {
     std::vector< const QgsCurvePolygon * > polygons;
     if ( geom.isMultipart() )

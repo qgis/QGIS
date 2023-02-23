@@ -20,7 +20,6 @@
 
 #include "qgslabelengineconfigdialog.h"
 #include "qgslabelinggui.h"
-#include "qgsreadwritecontext.h"
 #include "qgsrulebasedlabelingwidget.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerlabeling.h"
@@ -69,7 +68,7 @@ void QgsLabelingWidget::resetSettings()
 
 void QgsLabelingWidget::setLayer( QgsMapLayer *mapLayer )
 {
-  if ( !mapLayer || mapLayer->type() != QgsMapLayerType::VectorLayer )
+  if ( !mapLayer || mapLayer->type() != Qgis::LayerType::Vector )
   {
     setEnabled( false );
     return;
@@ -247,7 +246,7 @@ void QgsLabelingWidget::labelModeChanged( int index )
         {
           QgsLabelObstacleSettingsWidget *obstacleWidget = new QgsLabelObstacleSettingsWidget( this, mLayer );
           obstacleWidget->setContext( context );
-          obstacleWidget->setGeometryType( mLayer ? mLayer->geometryType() : QgsWkbTypes::UnknownGeometry );
+          obstacleWidget->setGeometryType( mLayer ? mLayer->geometryType() : Qgis::GeometryType::Unknown );
           obstacleWidget->setDockMode( dockMode() );
           obstacleWidget->setSettings( mSimpleSettings->obstacleSettings() );
           obstacleWidget->setDataDefinedProperties( mSimpleSettings->dataDefinedProperties() );

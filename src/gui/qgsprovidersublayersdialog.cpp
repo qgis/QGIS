@@ -21,6 +21,7 @@
 #include "qgsapplication.h"
 #include "qgstaskmanager.h"
 #include "qgsnative.h"
+#include "qgsgui.h"
 
 #include <QPushButton>
 #include <QFileInfo>
@@ -47,7 +48,7 @@ QVariant QgsProviderSublayerDialogModel::data( const QModelIndex &index, int rol
   {
     const QgsProviderSublayerDetails details = sublayerNode->sublayer();
 
-    if ( details.type() == QgsMapLayerType::VectorLayer && details.wkbType() == QgsWkbTypes::Unknown && !mGeometryTypesResolved )
+    if ( details.type() == Qgis::LayerType::Vector && details.wkbType() == Qgis::WkbType::Unknown && !mGeometryTypesResolved )
     {
       switch ( role )
       {
@@ -96,7 +97,7 @@ Qt::ItemFlags QgsProviderSublayerDialogModel::flags( const QModelIndex &index ) 
   {
     const QgsProviderSublayerDetails details = mSublayers.at( index.row() );
 
-    if ( details.type() == QgsMapLayerType::VectorLayer && details.wkbType() == QgsWkbTypes::Unknown && !mGeometryTypesResolved )
+    if ( details.type() == Qgis::LayerType::Vector && details.wkbType() == Qgis::WkbType::Unknown && !mGeometryTypesResolved )
     {
       // unknown geometry item can't be selected
       return Qt::ItemFlags();
@@ -111,7 +112,7 @@ void QgsProviderSublayerDialogModel::setGeometryTypesResolved( bool resolved )
   emit dataChanged( index( 0, 0 ), index( rowCount( QModelIndex() ), columnCount() ) );
 }
 
-QgsProviderSublayersDialog::QgsProviderSublayersDialog( const QString &uri, const QString &providerKey, const QString &filePathIn, const QList<QgsProviderSublayerDetails> initialDetails, const QList<QgsMapLayerType> &acceptableTypes, QWidget *parent, Qt::WindowFlags fl )
+QgsProviderSublayersDialog::QgsProviderSublayersDialog( const QString &uri, const QString &providerKey, const QString &filePathIn, const QList<QgsProviderSublayerDetails> initialDetails, const QList<Qgis::LayerType> &acceptableTypes, QWidget *parent, Qt::WindowFlags fl )
   : QDialog( parent, fl )
 {
   setupUi( this );

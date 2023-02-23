@@ -132,10 +132,10 @@ void QgsMapTip::showMapTip( QgsMapLayer *pLayer,
   // Only supported layer types here:
   switch ( pLayer->type() )
   {
-    case QgsMapLayerType::VectorLayer:
+    case Qgis::LayerType::Vector:
       tipText = fetchFeature( pLayer, mapPosition, pMapCanvas );
       break;
-    case QgsMapLayerType::RasterLayer:
+    case Qgis::LayerType::Raster:
       tipText = fetchRaster( pLayer, mapPosition, pMapCanvas );
       break;
     default:

@@ -19,13 +19,10 @@
 #include "qgssymbollayerselectionwidget.h"
 #include "qgsproject.h"
 #include "qgsvectorlayer.h"
-#include "qgslegendsymbolitem.h"
 #include "symbology/qgsrenderer.h"
 #include "qgsstyleentityvisitor.h"
 #include "symbology/qgssymbollayerutils.h"
 #include "qgsguiutils.h"
-#include "qgslayertree.h"
-#include "qgslayertreelayer.h"
 
 QgsSymbolLayerSelectionWidget::QgsSymbolLayerSelectionWidget( QWidget *parent )
   : QWidget( parent )
@@ -82,7 +79,7 @@ void QgsSymbolLayerSelectionWidget::setLayer( const QgsVectorLayer *layer )
           indexPath.append( idx );
 
           QTreeWidgetItem *slItem = new QTreeWidgetItem();
-          const QIcon slIcon = QgsSymbolLayerUtils::symbolLayerPreviewIcon( sl, QgsUnitTypes::RenderMillimeters, QSize( iconSize, iconSize ), QgsMapUnitScale(), symbol->type() );
+          const QIcon slIcon = QgsSymbolLayerUtils::symbolLayerPreviewIcon( sl, Qgis::RenderUnit::Millimeters, QSize( iconSize, iconSize ), QgsMapUnitScale(), symbol->type() );
           slItem->setData( 0, Qt::UserRole, idx );
           slItem->setIcon( 0, slIcon );
           auto flags = slItem->flags();

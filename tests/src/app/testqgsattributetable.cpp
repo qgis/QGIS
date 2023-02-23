@@ -24,13 +24,11 @@
 #include "qgsattributetabledialog.h"
 #include "qgsproject.h"
 #include "qgsmapcanvas.h"
-#include "qgsunittypes.h"
 #include "qgssettings.h"
 #include "qgsvectorfilewriter.h"
 #include "qgsfeaturelistmodel.h"
 #include "qgsclipboard.h"
 #include "qgsvectorlayercache.h"
-#include "qgsfeatureselectionmodel.h"
 #include "qgsgui.h"
 #include "qgseditorwidgetregistry.h"
 
@@ -122,7 +120,7 @@ void TestQgsAttributeTable::testFieldCalculation()
   const QgsCoordinateReferenceSystem srs( QStringLiteral( "EPSG:3111" ) );
   QgsProject::instance()->setCrs( srs );
   QgsProject::instance()->setEllipsoid( QStringLiteral( "WGS84" ) );
-  QgsProject::instance()->setDistanceUnits( QgsUnitTypes::DistanceMeters );
+  QgsProject::instance()->setDistanceUnits( Qgis::DistanceUnit::Meters );
 
   // run length calculation
   std::unique_ptr< QgsAttributeTableDialog > dlg( new QgsAttributeTableDialog( tempLayer.get() ) );
@@ -137,7 +135,7 @@ void TestQgsAttributeTable::testFieldCalculation()
   QGSCOMPARENEAR( f.attribute( "col1" ).toDouble(), expected, 0.001 );
 
   // change project length unit, check calculation respects unit
-  QgsProject::instance()->setDistanceUnits( QgsUnitTypes::DistanceFeet );
+  QgsProject::instance()->setDistanceUnits( Qgis::DistanceUnit::Feet );
   std::unique_ptr< QgsAttributeTableDialog > dlg2( new QgsAttributeTableDialog( tempLayer.get() ) );
   tempLayer->startEditing();
   dlg2->runFieldCalculation( tempLayer.get(), QStringLiteral( "col1" ), QStringLiteral( "$length" ) );
@@ -172,7 +170,7 @@ void TestQgsAttributeTable::testFieldCalculationArea()
   const QgsCoordinateReferenceSystem srs( QStringLiteral( "EPSG:3111" ) );
   QgsProject::instance()->setCrs( srs );
   QgsProject::instance()->setEllipsoid( QStringLiteral( "WGS84" ) );
-  QgsProject::instance()->setAreaUnits( QgsUnitTypes::AreaSquareMeters );
+  QgsProject::instance()->setAreaUnits( Qgis::AreaUnit::SquareMeters );
 
   // run area calculation
   std::unique_ptr< QgsAttributeTableDialog > dlg( new QgsAttributeTableDialog( tempLayer.get() ) );
@@ -187,7 +185,7 @@ void TestQgsAttributeTable::testFieldCalculationArea()
   QGSCOMPARENEAR( f.attribute( "col1" ).toDouble(), expected, 1.0 );
 
   // change project area unit, check calculation respects unit
-  QgsProject::instance()->setAreaUnits( QgsUnitTypes::AreaSquareMiles );
+  QgsProject::instance()->setAreaUnits( Qgis::AreaUnit::SquareMiles );
   std::unique_ptr< QgsAttributeTableDialog > dlg2( new QgsAttributeTableDialog( tempLayer.get() ) );
   tempLayer->startEditing();
   dlg2->runFieldCalculation( tempLayer.get(), QStringLiteral( "col1" ), QStringLiteral( "$area" ) );

@@ -13,24 +13,21 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsgeometrycheckcontext.h"
 #include "qgsgeometrytypecheck.h"
 #include "qgsgeometrycollection.h"
 #include "qgsmulticurve.h"
 #include "qgsmultilinestring.h"
 #include "qgsmultipoint.h"
 #include "qgsmultipolygon.h"
-#include "qgsmultirenderchecker.h"
 #include "qgsfeaturepool.h"
-
 
 
 QList<QgsSingleGeometryCheckError *> QgsGeometryTypeCheck::processGeometry( const QgsGeometry &geometry ) const
 {
   QList<QgsSingleGeometryCheckError *> errors;
   const QgsAbstractGeometry *geom = geometry.constGet();
-  const QgsWkbTypes::Type type = QgsWkbTypes::flatType( geom->wkbType() );
-  if ( ( mAllowedTypes & ( 1 << type ) ) == 0 )
+  const Qgis::WkbType type = QgsWkbTypes::flatType( geom->wkbType() );
+  if ( ( mAllowedTypes & ( 1 << static_cast< quint32>( type ) ) ) == 0 )
   {
     errors.append( new QgsGeometryTypeCheckError( this, geometry, geometry, type ) );
   }
@@ -50,8 +47,8 @@ void QgsGeometryTypeCheck::fixError( const QMap<QString, QgsFeaturePool *> &feat
   const QgsAbstractGeometry *geom = featureGeom.constGet();
 
   // Check if error still applies
-  const QgsWkbTypes::Type type = QgsWkbTypes::flatType( geom->wkbType() );
-  if ( ( mAllowedTypes & ( 1 << type ) ) != 0 )
+  const Qgis::WkbType type = QgsWkbTypes::flatType( geom->wkbType() );
+  if ( ( mAllowedTypes & ( 1 << static_cast< quint32>( type ) ) ) != 0 )
   {
     error->setObsolete();
     return;
@@ -65,7 +62,7 @@ void QgsGeometryTypeCheck::fixError( const QMap<QString, QgsFeaturePool *> &feat
   else if ( method == Convert )
   {
     // Check if corresponding single type is allowed
-    if ( QgsWkbTypes::isMultiType( type ) && ( ( 1 << QgsWkbTypes::singleType( type ) ) & mAllowedTypes ) != 0 )
+    if ( QgsWkbTypes::isMultiType( type ) && ( ( 1 << static_cast< quint32>( QgsWkbTypes::singleType( type ) ) ) & mAllowedTypes ) != 0 )
     {
       // Explode multi-type feature into single-type features
       for ( int iPart = 1, nParts = geom->partCount(); iPart < nParts; ++iPart )
@@ -82,32 +79,32 @@ void QgsGeometryTypeCheck::fixError( const QMap<QString, QgsFeaturePool *> &feat
       changes[error->layerId()][feature.id()].append( Change( ChangeFeature, ChangeChanged ) );
     }
     // Check if corresponding multi type is allowed
-    else if ( QgsWkbTypes::isSingleType( type ) && ( ( 1 << QgsWkbTypes::multiType( type ) ) & mAllowedTypes ) != 0 )
+    else if ( QgsWkbTypes::isSingleType( type ) && ( ( 1 << static_cast< quint32>( QgsWkbTypes::multiType( type ) ) ) & mAllowedTypes ) != 0 )
     {
       QgsGeometryCollection *geomCollection = nullptr;
       switch ( QgsWkbTypes::multiType( type ) )
       {
-        case QgsWkbTypes::MultiPoint:
+        case Qgis::WkbType::MultiPoint:
         {
           geomCollection = new QgsMultiPoint();
           break;
         }
-        case QgsWkbTypes::MultiLineString:
+        case Qgis::WkbType::MultiLineString:
         {
           geomCollection = new QgsMultiLineString();
           break;
         }
-        case QgsWkbTypes::MultiPolygon:
+        case Qgis::WkbType::MultiPolygon:
         {
           geomCollection = new QgsMultiPolygon();
           break;
         }
-        case QgsWkbTypes::MultiCurve:
+        case Qgis::WkbType::MultiCurve:
         {
           geomCollection = new QgsMultiCurve();
           break;
         }
-        case QgsWkbTypes::MultiSurface:
+        case Qgis::WkbType::MultiSurface:
         {
           geomCollection = new QgsMultiSurface();
           break;

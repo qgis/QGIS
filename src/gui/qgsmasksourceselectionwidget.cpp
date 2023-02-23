@@ -19,7 +19,6 @@
 #include "qgsmasksourceselectionwidget.h"
 #include "qgsproject.h"
 #include "qgsvectorlayer.h"
-#include "qgslegendsymbolitem.h"
 #include "symbology/qgsrenderer.h"
 #include "qgsstyleentityvisitor.h"
 #include "symbology/qgssymbollayerutils.h"
@@ -27,8 +26,6 @@
 #include "qgslayertree.h"
 #include "qgslayertreelayer.h"
 #include "qgsvectorlayerlabeling.h"
-#include "qgsvectorlayerutils.h"
-#include "symbology/qgsmasksymbollayer.h"
 
 static void expandAll( QTreeWidgetItem *item )
 {
@@ -104,7 +101,7 @@ void QgsMaskSourceSelectionWidget::update()
           indexPath.append( idx );
 
           std::unique_ptr< QTreeWidgetItem > slItem = std::make_unique< QTreeWidgetItem >( rootItem );
-          const QIcon slIcon = QgsSymbolLayerUtils::symbolLayerPreviewIcon( sl, QgsUnitTypes::RenderMillimeters, QSize( iconSize, iconSize ), QgsMapUnitScale(), symbol->type() );
+          const QIcon slIcon = QgsSymbolLayerUtils::symbolLayerPreviewIcon( sl, Qgis::RenderUnit::Millimeters, QSize( iconSize, iconSize ), QgsMapUnitScale(), symbol->type() );
           slItem->setIcon( 0, slIcon );
           if ( sl->layerType() == "MaskMarker" )
           {
@@ -202,15 +199,15 @@ void QgsMaskSourceSelectionWidget::update()
   const auto layers = QgsProject::instance()->layerTreeRoot()->findLayers();
   for ( const QgsLayerTreeLayer *layerTreeLayer : layers )
   {
-    const QgsMapLayer *layer = layerTreeLayer->layer();
-    const QgsVectorLayer *vl = qobject_cast<const QgsVectorLayer *>( layer );
+    QgsMapLayer *layer = layerTreeLayer->layer();
+    QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer );
     if ( ! vl )
       continue;
     if ( ! vl->renderer() )
       continue;
 
     std::unique_ptr< QTreeWidgetItem > layerItem = std::make_unique< QTreeWidgetItem >( mTree, QStringList() << layer->name() );
-    layerItem->setData( 0, Qt::UserRole, vl );
+    layerItem->setData( 0, Qt::UserRole, QVariant::fromValue( vl ) );
 
     if ( vl->labeling() )
     {

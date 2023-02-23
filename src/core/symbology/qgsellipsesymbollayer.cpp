@@ -14,10 +14,8 @@
  ***************************************************************************/
 #include "qgsellipsesymbollayer.h"
 #include "qgsdxfexport.h"
-#include "qgsexpression.h"
 #include "qgsfeature.h"
 #include "qgsrendercontext.h"
-#include "qgsvectorlayer.h"
 #include "qgslogger.h"
 #include "qgsunittypes.h"
 #include "qgsproperty.h"
@@ -330,7 +328,7 @@ void QgsEllipseSymbolLayer::calculateOffsetAndRotation( QgsSymbolRenderContext &
     if ( f )
     {
       const QgsGeometry g = f->geometry();
-      if ( !g.isNull() && g.type() == QgsWkbTypes::PointGeometry )
+      if ( !g.isNull() && g.type() == Qgis::GeometryType::Point )
       {
         const QgsMapToPixel &m2p = context.renderContext().mapToPixel();
         angle += m2p.mapRotation();
@@ -510,7 +508,7 @@ QgsSymbolLayer *QgsEllipseSymbolLayer::createFromSld( QDomElement &element )
 
   double scaleFactor = 1.0;
   const QString uom = element.attribute( QStringLiteral( "uom" ) );
-  QgsUnitTypes::RenderUnit sldUnitSize = QgsSymbolLayerUtils::decodeSldUom( uom, &scaleFactor );
+  Qgis::RenderUnit sldUnitSize = QgsSymbolLayerUtils::decodeSldUom( uom, &scaleFactor );
   size = size * scaleFactor;
   strokeWidth = strokeWidth * scaleFactor;
 
@@ -790,7 +788,7 @@ void QgsEllipseSymbolLayer::setSymbolHeight( double h )
   QgsMarkerSymbolLayer::setSize( mSymbolWidth >= mSymbolHeight ? mSymbolWidth : mSymbolHeight );
 }
 
-void QgsEllipseSymbolLayer::setOutputUnit( QgsUnitTypes::RenderUnit unit )
+void QgsEllipseSymbolLayer::setOutputUnit( Qgis::RenderUnit unit )
 {
   QgsMarkerSymbolLayer::setOutputUnit( unit );
   mSymbolWidthUnit = unit;
@@ -798,22 +796,22 @@ void QgsEllipseSymbolLayer::setOutputUnit( QgsUnitTypes::RenderUnit unit )
   mStrokeWidthUnit = unit;
 }
 
-QgsUnitTypes::RenderUnit QgsEllipseSymbolLayer::outputUnit() const
+Qgis::RenderUnit QgsEllipseSymbolLayer::outputUnit() const
 {
-  const QgsUnitTypes::RenderUnit unit = QgsMarkerSymbolLayer::outputUnit();
+  const Qgis::RenderUnit unit = QgsMarkerSymbolLayer::outputUnit();
   if ( mSymbolWidthUnit != unit || mSymbolHeightUnit != unit || mStrokeWidthUnit != unit )
   {
-    return QgsUnitTypes::RenderUnknownUnit;
+    return Qgis::RenderUnit::Unknown;
   }
   return unit;
 }
 
 bool QgsEllipseSymbolLayer::usesMapUnits() const
 {
-  return mSymbolWidthUnit == QgsUnitTypes::RenderMapUnits || mSymbolWidthUnit == QgsUnitTypes::RenderMetersInMapUnits
-         || mSymbolHeightUnit == QgsUnitTypes::RenderMapUnits || mSymbolHeightUnit == QgsUnitTypes::RenderMetersInMapUnits
-         || mStrokeWidthUnit == QgsUnitTypes::RenderMapUnits || mStrokeWidthUnit == QgsUnitTypes::RenderMetersInMapUnits
-         || mOffsetUnit == QgsUnitTypes::RenderMapUnits || mOffsetUnit == QgsUnitTypes::RenderMetersInMapUnits;
+  return mSymbolWidthUnit == Qgis::RenderUnit::MapUnits || mSymbolWidthUnit == Qgis::RenderUnit::MetersInMapUnits
+         || mSymbolHeightUnit == Qgis::RenderUnit::MapUnits || mSymbolHeightUnit == Qgis::RenderUnit::MetersInMapUnits
+         || mStrokeWidthUnit == Qgis::RenderUnit::MapUnits || mStrokeWidthUnit == Qgis::RenderUnit::MetersInMapUnits
+         || mOffsetUnit == Qgis::RenderUnit::MapUnits || mOffsetUnit == Qgis::RenderUnit::MetersInMapUnits;
 }
 
 void QgsEllipseSymbolLayer::setMapUnitScale( const QgsMapUnitScale &scale )
@@ -907,7 +905,7 @@ bool QgsEllipseSymbolLayer::writeDxf( QgsDxfExport &e, double mmMapUnitScaleFact
     context.setOriginalValueVariable( mSymbolWidth );
     symbolWidth = mDataDefinedProperties.valueAsDouble( QgsSymbolLayer::PropertyWidth, context.renderContext().expressionContext(), mSymbolWidth );
   }
-  if ( mSymbolWidthUnit == QgsUnitTypes::RenderMillimeters )
+  if ( mSymbolWidthUnit == Qgis::RenderUnit::Millimeters )
   {
     symbolWidth *= mmMapUnitScaleFactor;
   }
@@ -919,7 +917,7 @@ bool QgsEllipseSymbolLayer::writeDxf( QgsDxfExport &e, double mmMapUnitScaleFact
     context.setOriginalValueVariable( mSymbolHeight );
     symbolWidth = mDataDefinedProperties.valueAsDouble( QgsSymbolLayer::PropertyHeight, context.renderContext().expressionContext(), mSymbolHeight );
   }
-  if ( mSymbolHeightUnit == QgsUnitTypes::RenderMillimeters )
+  if ( mSymbolHeightUnit == Qgis::RenderUnit::Millimeters )
   {
     symbolHeight *= mmMapUnitScaleFactor;
   }
@@ -932,7 +930,7 @@ bool QgsEllipseSymbolLayer::writeDxf( QgsDxfExport &e, double mmMapUnitScaleFact
     context.setOriginalValueVariable( mStrokeWidth );
     strokeWidth = mDataDefinedProperties.valueAsDouble( QgsSymbolLayer::PropertyStrokeWidth, context.renderContext().expressionContext(), mStrokeWidth );
   }
-  if ( mStrokeWidthUnit == QgsUnitTypes::RenderMillimeters )
+  if ( mStrokeWidthUnit == Qgis::RenderUnit::Millimeters )
   {
     strokeWidth *= strokeWidth;
   }

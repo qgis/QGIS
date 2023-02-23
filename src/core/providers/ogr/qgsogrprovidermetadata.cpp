@@ -17,7 +17,6 @@ email                : nyall dot dawson at gmail dot com
 #include "qgsogrprovidermetadata.h"
 #include "qgsogrprovider.h"
 #include "qgsgeopackagedataitems.h"
-#include "qgssettings.h"
 #include "qgsmessagelog.h"
 #include "qgsogrtransaction.h"
 #include "qgsogrlayermetadataprovider.h"
@@ -34,8 +33,6 @@ email                : nyall dot dawson at gmail dot com
 #include "qgsgdalutils.h"
 #include "qgsproviderregistry.h"
 #include "qgsvectorfilewriter.h"
-#include "qgsvectorlayer.h"
-#include "qgsproject.h"
 
 #include <gdal.h>
 #include <QFileInfo>
@@ -58,7 +55,7 @@ QgsDataProvider *QgsOgrProviderMetadata::createProvider( const QString &uri, con
 
 Qgis::VectorExportResult QgsOgrProviderMetadata::createEmptyLayer( const QString &uri,
     const QgsFields &fields,
-    QgsWkbTypes::Type wkbType,
+    Qgis::WkbType wkbType,
     const QgsCoordinateReferenceSystem &srs,
     bool overwrite,
     QMap<int, int> &oldToNewAttrIdxMap,
@@ -317,6 +314,24 @@ QString QgsOgrProviderMetadata::encodeUri( const QVariantMap &parts ) const
   if ( !authcfg.isEmpty() )
     uri += QStringLiteral( " authcfg='%1'" ).arg( authcfg );
   return uri;
+}
+
+QString QgsOgrProviderMetadata::absoluteToRelativeUri( const QString &uri, const QgsReadWriteContext &context ) const
+{
+  QString src = uri;
+  QStringList theURIParts = src.split( '|' );
+  theURIParts[0] = context.pathResolver().writePath( theURIParts[0] );
+  src = theURIParts.join( QLatin1Char( '|' ) );
+  return src;
+}
+
+QString QgsOgrProviderMetadata::relativeToAbsoluteUri( const QString &uri, const QgsReadWriteContext &context ) const
+{
+  QString src = uri;
+  QStringList theURIParts = src.split( '|' );
+  theURIParts[0] = context.pathResolver().readPath( theURIParts[0] );
+  src = theURIParts.join( QLatin1Char( '|' ) );
+  return src;
 }
 
 QList<QgsDataItemProvider *> QgsOgrProviderMetadata::dataItemProviders() const
@@ -1284,13 +1299,13 @@ QList<QgsProviderSublayerDetails> QgsOgrProviderMetadata::querySublayers( const 
     if ( !QgsGdalUtils::pathIsCheapToOpen( path ) )
     {
       // if this is a VRT file make sure it is vector VRT
-      if ( suffix == QLatin1String( "vrt" ) && !QgsGdalUtils::vrtMatchesLayerType( path, QgsMapLayerType::VectorLayer ) )
+      if ( suffix == QLatin1String( "vrt" ) && !QgsGdalUtils::vrtMatchesLayerType( path, Qgis::LayerType::Vector ) )
       {
         return {};
       }
 
       QgsProviderSublayerDetails details;
-      details.setType( QgsMapLayerType::VectorLayer );
+      details.setType( Qgis::LayerType::Vector );
       details.setProviderKey( QStringLiteral( "ogr" ) );
       details.setUri( uri );
       details.setName( uriParts.value( QStringLiteral( "vsiSuffix" ) ).toString().isEmpty()
@@ -1312,7 +1327,7 @@ QList<QgsProviderSublayerDetails> QgsOgrProviderMetadata::querySublayers( const 
   if ( originalUriLayerIdWasSpecified )
     layerId = uriLayerId;
 
-  QgsWkbTypes::Type originalGeometryTypeFilter = QgsWkbTypes::Unknown;
+  Qgis::WkbType originalGeometryTypeFilter = Qgis::WkbType::Unknown;
   bool originalUriGeometryTypeWasSpecified = false;
   const QString originalGeometryTypeString = uriParts.value( QStringLiteral( "geometryType" ) ).toString();
   if ( !originalGeometryTypeString.isEmpty() )
@@ -1402,7 +1417,7 @@ QList<QgsProviderSublayerDetails> QgsOgrProviderMetadata::querySublayers( const 
   for ( int i = 0; i < res.count(); ++i )
   {
     QVariantMap parts = decodeUri( res.at( i ).uri() );
-    if ( originalUriGeometryTypeWasSpecified && res.at( i ).wkbType() == QgsWkbTypes::Unknown )
+    if ( originalUriGeometryTypeWasSpecified && res.at( i ).wkbType() == Qgis::WkbType::Unknown )
     {
       res[ i ].setWkbType( originalGeometryTypeFilter );
       parts.insert( QStringLiteral( "geometryType" ), originalGeometryTypeString );
@@ -1579,9 +1594,9 @@ QStringList QgsOgrProviderMetadata::sidecarFilesForUri( const QString &uri ) con
   return res;
 }
 
-QList<QgsMapLayerType> QgsOgrProviderMetadata::supportedLayerTypes() const
+QList<Qgis::LayerType> QgsOgrProviderMetadata::supportedLayerTypes() const
 {
-  return { QgsMapLayerType::VectorLayer };
+  return { Qgis::LayerType::Vector };
 }
 
 QMap<QString, QgsAbstractProviderConnection *> QgsOgrProviderMetadata::connections( bool cached )

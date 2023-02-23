@@ -746,7 +746,7 @@ void QgsVectorLayerUtils::matchAttributesToFields( QgsFeature &feature, const Qg
 
 QgsFeatureList QgsVectorLayerUtils::makeFeatureCompatible( const QgsFeature &feature, const QgsVectorLayer *layer, QgsFeatureSink::SinkFlags sinkFlags )
 {
-  QgsWkbTypes::Type inputWkbType( layer->wkbType( ) );
+  Qgis::WkbType inputWkbType( layer->wkbType( ) );
   QgsFeatureList resultFeatures;
   QgsFeature newF( feature );
   // Fix attributes
@@ -764,13 +764,13 @@ QgsFeatureList QgsVectorLayerUtils::makeFeatureCompatible( const QgsFeature &fea
   }
 
   // Does geometry need transformations?
-  QgsWkbTypes::GeometryType newFGeomType( QgsWkbTypes::geometryType( newF.geometry().wkbType() ) );
+  Qgis::GeometryType newFGeomType( QgsWkbTypes::geometryType( newF.geometry().wkbType() ) );
   bool newFHasGeom = newFGeomType !=
-                     QgsWkbTypes::GeometryType::UnknownGeometry &&
-                     newFGeomType != QgsWkbTypes::GeometryType::NullGeometry;
+                     Qgis::GeometryType::Unknown &&
+                     newFGeomType != Qgis::GeometryType::Null;
   bool layerHasGeom = inputWkbType !=
-                      QgsWkbTypes::Type::NoGeometry &&
-                      inputWkbType != QgsWkbTypes::Type::Unknown;
+                      Qgis::WkbType::NoGeometry &&
+                      inputWkbType != Qgis::WkbType::Unknown;
   // Drop geometry if layer is geometry-less
   if ( ( newFHasGeom && !layerHasGeom ) || !newFHasGeom )
   {

@@ -18,10 +18,10 @@
 QgsCoordinateBoundsPreviewMapWidget::QgsCoordinateBoundsPreviewMapWidget( QWidget *parent )
   : QgsMapCanvas( parent )
 {
-  mPreviewBand = new QgsRubberBand( this, QgsWkbTypes::PolygonGeometry );
+  mPreviewBand = new QgsRubberBand( this, Qgis::GeometryType::Polygon );
   mPreviewBand->setWidth( 4 );
 
-  mCanvasPreviewBand = new QgsRubberBand( this, QgsWkbTypes::PolygonGeometry );
+  mCanvasPreviewBand = new QgsRubberBand( this, Qgis::GeometryType::Polygon );
   mCanvasPreviewBand->setWidth( 4 );
   const QColor rectColor = QColor( 185, 84, 210, 60 );
   mCanvasPreviewBand->setColor( rectColor );

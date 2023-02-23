@@ -18,6 +18,7 @@
 #include "qgshanaexpressioncompiler.h"
 #include "qgshanautils.h"
 #include "qgssqlexpressioncompiler.h"
+#include "qgslogger.h"
 
 QgsHanaExpressionCompiler::QgsHanaExpressionCompiler( QgsHanaFeatureSource *source, bool ignoreStaticNodes )
   : QgsSqlExpressionCompiler( source->mFields, QgsSqlExpressionCompiler::IntegerDivisionResultsInInteger |

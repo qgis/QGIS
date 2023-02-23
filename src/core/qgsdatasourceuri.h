@@ -285,10 +285,10 @@ class CORE_EXPORT QgsDataSourceUri
     /**
      * Returns the WKB type associated with the URI.
      */
-    QgsWkbTypes::Type wkbType() const;
+    Qgis::WkbType wkbType() const;
 
     //! Sets the WKB \a type associated with the URI.
-    void setWkbType( QgsWkbTypes::Type type );
+    void setWkbType( Qgis::WkbType type );
 
     //! Returns the spatial reference ID associated with the URI.
     QString srid() const;
@@ -399,7 +399,7 @@ class CORE_EXPORT QgsDataSourceUri
     //! Whether mSelectAtIdDisabled has been explicitly set to true or false
     bool mSelectAtIdDisabledSet = false;
     //! geometry type (or QgsWkbTypes::Unknown if not specified)
-    QgsWkbTypes::Type mWkbType = QgsWkbTypes::Unknown;
+    Qgis::WkbType mWkbType = Qgis::WkbType::Unknown;
     //! SRID or a null string if not specified
     QString mSrid;
     //! Generic params store

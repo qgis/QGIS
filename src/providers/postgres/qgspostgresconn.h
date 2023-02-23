@@ -72,7 +72,7 @@ struct QgsPostgresSchemaProperty
 struct QgsPostgresLayerProperty
 {
   // Postgres/PostGIS layer properties
-  QList<QgsWkbTypes::Type>          types;
+  QList<Qgis::WkbType>          types;
   QString                       schemaName;
   QString                       tableName;
   QString                       geometryColName;
@@ -127,11 +127,11 @@ struct QgsPostgresLayerProperty
   {
     QString typeString;
     const auto constTypes = types;
-    for ( const QgsWkbTypes::Type type : constTypes )
+    for ( const Qgis::WkbType type : constTypes )
     {
       if ( !typeString.isEmpty() )
         typeString += '|';
-      typeString += QString::number( type );
+      typeString += QString::number( static_cast< quint32>( type ) );
     }
     QString sridString;
     const auto constSrids = srids;
@@ -426,18 +426,18 @@ class QgsPostgresConn : public QObject
 
     static const int GEOM_TYPE_SELECT_LIMIT;
 
-    static QString displayStringForWkbType( QgsWkbTypes::Type wkbType );
+    static QString displayStringForWkbType( Qgis::WkbType wkbType );
     static QString displayStringForGeomType( QgsPostgresGeometryColumnType geomType );
-    static QgsWkbTypes::Type wkbTypeFromPostgis( const QString &dbType );
+    static Qgis::WkbType wkbTypeFromPostgis( const QString &dbType );
 
-    static QString postgisWkbTypeName( QgsWkbTypes::Type wkbType );
-    static int postgisWkbTypeDim( QgsWkbTypes::Type wkbType );
-    static void postgisWkbType( QgsWkbTypes::Type wkbType, QString &geometryType, int &dim );
+    static QString postgisWkbTypeName( Qgis::WkbType wkbType );
+    static int postgisWkbTypeDim( Qgis::WkbType wkbType );
+    static void postgisWkbType( Qgis::WkbType wkbType, QString &geometryType, int &dim );
 
-    static QString postgisTypeFilter( QString geomCol, QgsWkbTypes::Type wkbType, bool castToGeometry );
+    static QString postgisTypeFilter( QString geomCol, Qgis::WkbType wkbType, bool castToGeometry );
 
-    static QgsWkbTypes::Type wkbTypeFromGeomType( QgsWkbTypes::GeometryType geomType );
-    static QgsWkbTypes::Type wkbTypeFromOgcWkbType( unsigned int ogcWkbType );
+    static Qgis::WkbType wkbTypeFromGeomType( Qgis::GeometryType geomType );
+    static Qgis::WkbType wkbTypeFromOgcWkbType( unsigned int ogcWkbType );
 
     static QStringList connectionList();
     static QString selectedConnection();
@@ -455,6 +455,10 @@ class QgsPostgresConn : public QObject
     //! A connection needs to be locked when it uses transactions, see QgsPostgresConn::{begin,commit,rollback}
     void lock() { mLock.lock(); }
     void unlock() { mLock.unlock(); }
+
+    QgsCoordinateReferenceSystem sridToCrs( int srsId );
+
+    int crsToSrid( const QgsCoordinateReferenceSystem &crs );
 
   private:
 
@@ -529,6 +533,12 @@ class QgsPostgresConn : public QObject
     bool mTransaction;
 
     mutable QRecursiveMutex mLock;
+
+    /* Mutex protecting sCrsCache */
+    QMutex mCrsCacheMutex;
+
+    /* Cache of SRID to CRS */
+    mutable QMap<int, QgsCoordinateReferenceSystem> mCrsCache;
 };
 
 // clazy:excludeall=qstring-allocations

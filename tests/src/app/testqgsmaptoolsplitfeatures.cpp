@@ -39,6 +39,8 @@ class TestQgsMapToolSplitFeatures : public QObject
     void testNoFeaturesSplit();
     void testSplitPolygon();
     void testSplitPolygonTopologicalEditing();
+    void testSplitSelectedLines();
+    void testSplitSomeOfSelectedLines();
 
   private:
     QPoint mapToPoint( double x, double y );
@@ -245,6 +247,87 @@ void TestQgsMapToolSplitFeatures::testSplitPolygonTopologicalEditing()
   QVERIFY( mMultiLineStringLayer->undoStack()->index() == 2 );
   mMultiPolygonLayer->undoStack()->undo();
   QVERIFY( mMultiPolygonLayer->undoStack()->index() == 1 );
+}
+
+void TestQgsMapToolSplitFeatures::testSplitSelectedLines()
+{
+  mMultiLineStringLayer->select( lineF1.id() );
+  mCanvas->setCurrentLayer( mMultiLineStringLayer );
+  QgsMapToolSplitFeatures *mapTool = new QgsMapToolSplitFeatures( mCanvas ) ;
+  mCanvas->setMapTool( mapTool );
+
+  std::unique_ptr< QgsMapMouseEvent > event( new QgsMapMouseEvent(
+        mCanvas,
+        QEvent::MouseButtonRelease,
+        mapToPoint( 5, 6 ),
+        Qt::LeftButton
+      ) );
+  mapTool->cadCanvasReleaseEvent( event.get() );
+  event.reset( new QgsMapMouseEvent(
+                 mCanvas,
+                 QEvent::MouseButtonRelease,
+                 mapToPoint( 5, -1 ),
+                 Qt::LeftButton
+               ) );
+  mapTool->cadCanvasReleaseEvent( event.get() );
+
+  event.reset( new QgsMapMouseEvent(
+                 mCanvas,
+                 QEvent::MouseButtonRelease,
+                 mapToPoint( 5, -1 ),
+                 Qt::RightButton
+               ) );
+  mapTool->cadCanvasReleaseEvent( event.get() );
+
+
+  // only the selected feature should be split
+  QVERIFY( mMultiLineStringLayer->featureCount() == 3 );
+  QVERIFY( mMultiLineStringLayer->undoStack()->index() == 3 );
+
+  // undo changes
+  mMultiLineStringLayer->undoStack()->undo();
+  QVERIFY( mMultiLineStringLayer->undoStack()->index() == 2 );
+  mMultiLineStringLayer->removeSelection();
+}
+
+void TestQgsMapToolSplitFeatures::testSplitSomeOfSelectedLines()
+{
+  mMultiLineStringLayer->selectAll();
+  mCanvas->setCurrentLayer( mMultiLineStringLayer );
+  QgsMapToolSplitFeatures *mapTool = new QgsMapToolSplitFeatures( mCanvas ) ;
+  mCanvas->setMapTool( mapTool );
+
+  std::unique_ptr< QgsMapMouseEvent > event( new QgsMapMouseEvent(
+        mCanvas,
+        QEvent::MouseButtonRelease,
+        mapToPoint( 5, 1 ),
+        Qt::LeftButton
+      ) );
+  mapTool->cadCanvasReleaseEvent( event.get() );
+  event.reset( new QgsMapMouseEvent(
+                 mCanvas,
+                 QEvent::MouseButtonRelease,
+                 mapToPoint( 5, -1 ),
+                 Qt::LeftButton
+               ) );
+  mapTool->cadCanvasReleaseEvent( event.get() );
+
+  event.reset( new QgsMapMouseEvent(
+                 mCanvas,
+                 QEvent::MouseButtonRelease,
+                 mapToPoint( 5, -1 ),
+                 Qt::RightButton
+               ) );
+  mapTool->cadCanvasReleaseEvent( event.get() );
+
+  // intersecting selected feature should be split
+  QVERIFY( mMultiLineStringLayer->featureCount() == 3 );
+  QVERIFY( mMultiLineStringLayer->undoStack()->index() == 3 );
+
+  // undo changes
+  mMultiLineStringLayer->undoStack()->undo();
+  QVERIFY( mMultiLineStringLayer->undoStack()->index() == 2 );
+  mMultiLineStringLayer->removeSelection();
 }
 
 QGSTEST_MAIN( TestQgsMapToolSplitFeatures )

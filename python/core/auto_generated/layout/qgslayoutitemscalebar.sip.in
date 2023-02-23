@@ -669,14 +669,14 @@ Sets the scalebar ``alignment``.
 .. seealso:: :py:func:`alignment`
 %End
 
-    QgsUnitTypes::DistanceUnit units() const;
+    Qgis::DistanceUnit units() const;
 %Docstring
 Returns the distance units used by the scalebar.
 
 .. seealso:: :py:func:`setUnits`
 %End
 
-    void setUnits( QgsUnitTypes::DistanceUnit units );
+    void setUnits( Qgis::DistanceUnit units );
 %Docstring
 Sets the distance ``units`` used by the scalebar.
 
@@ -739,7 +739,7 @@ Returns ``True`` if settings were applied.
 .. versionadded:: 3.14
 %End
 
-    QgsUnitTypes::DistanceUnit guessUnits() const;
+    Qgis::DistanceUnit guessUnits() const;
 %Docstring
 Attempts to guess the most reasonable unit choice for the scalebar, given
 the current linked map's scale.
@@ -748,7 +748,7 @@ This method also considers the linked map's CRS, in order to determine if
 metric or imperial units are more appropriate.
 %End
 
-    void applyDefaultSize( QgsUnitTypes::DistanceUnit units = QgsUnitTypes::DistanceMeters );
+    void applyDefaultSize( Qgis::DistanceUnit units = Qgis::DistanceUnit::Meters );
 %Docstring
 Applies the default size to the scale bar (scale bar 1/5 of map item width)
 

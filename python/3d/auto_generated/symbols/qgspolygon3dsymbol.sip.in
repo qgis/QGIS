@@ -42,7 +42,7 @@ Constructor for QgsPolygon3DSymbol
 
     virtual void readXml( const QDomElement &elem, const QgsReadWriteContext &context );
 
-    virtual QList< QgsWkbTypes::GeometryType > compatibleGeometryTypes() const;
+    virtual QList< Qgis::GeometryType > compatibleGeometryTypes() const;
 
     virtual void setDefaultPropertiesFromLayer( const QgsVectorLayer *layer );
 

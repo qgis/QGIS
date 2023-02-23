@@ -159,13 +159,13 @@ void TestQgs3DSymbolRegistry::createSymbol()
 void TestQgs3DSymbolRegistry::defaultSymbolForGeometryType()
 {
   Qgs3DSymbolRegistry *registry = QgsApplication::symbol3DRegistry();
-  std::unique_ptr< QgsAbstract3DSymbol > symbol( registry->defaultSymbolForGeometryType( QgsWkbTypes::PointGeometry ) );
+  std::unique_ptr< QgsAbstract3DSymbol > symbol( registry->defaultSymbolForGeometryType( Qgis::GeometryType::Point ) );
   QCOMPARE( symbol->type(), QStringLiteral( "point" ) );
-  symbol.reset( registry->defaultSymbolForGeometryType( QgsWkbTypes::LineGeometry ) );
+  symbol.reset( registry->defaultSymbolForGeometryType( Qgis::GeometryType::Line ) );
   QCOMPARE( symbol->type(), QStringLiteral( "line" ) );
-  symbol.reset( registry->defaultSymbolForGeometryType( QgsWkbTypes::PolygonGeometry ) );
+  symbol.reset( registry->defaultSymbolForGeometryType( Qgis::GeometryType::Polygon ) );
   QCOMPARE( symbol->type(), QStringLiteral( "polygon" ) );
-  symbol.reset( registry->defaultSymbolForGeometryType( QgsWkbTypes::NullGeometry ) );
+  symbol.reset( registry->defaultSymbolForGeometryType( Qgis::GeometryType::Null ) );
   QVERIFY( !symbol );
 }
 

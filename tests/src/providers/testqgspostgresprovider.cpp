@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgstest.h"
+#include "qgsconfig.h" // for ENABLE_PGTEST
 #include <QObject>
 #include <QRegularExpression>
 #include <QRegularExpressionMatch>
@@ -21,11 +22,42 @@
 #include <qgspostgresconn.h>
 #include <qgsfields.h>
 
-
 class TestQgsPostgresProvider: public QObject
 {
     Q_OBJECT
+
+  private:
+
+#ifdef ENABLE_PGTEST
+    QgsPostgresConn *_connection;
+
+
+    QgsPostgresConn *getConnection()
+    {
+      if ( ! _connection )
+      {
+        const char *connstring = getenv( "QGIS_PGTEST_DB" );
+        if ( !connstring ) connstring = "service=qgis_test";
+        _connection = QgsPostgresConn::connectDb( connstring, true );
+      }
+      return _connection;
+    }
+#endif
+
   private slots:
+
+    void initTestCase() // will be called before the first testfunction is executed.
+    {
+#ifdef ENABLE_PGTEST
+      this->_connection = 0;
+#endif
+    }
+    void cleanupTestCase() // will be called after the last testfunction was executed.
+    {
+#ifdef ENABLE_PGTEST
+      if ( this->_connection ) this->_connection->unref();
+#endif
+    }
 
     void decodeHstore();
     void decodeHstoreNoQuote();
@@ -41,6 +73,9 @@ class TestQgsPostgresProvider: public QObject
     void testDecodeDateTimes();
     void testQuotedValueBigInt();
     void testWhereClauseFids();
+#ifdef ENABLE_PGTEST
+    void testEwktInOut();
+#endif
 };
 
 
@@ -427,6 +462,33 @@ void TestQgsPostgresProvider::testWhereClauseFids()
                    QStringList() << "\"fld_int\"=42 AND \"fld\"::text='QGIS ''Rocks''!'"
                    << "\"fld_int\"=43 AND \"fld\"::text='PostGIS too!'" );
 }
+
+#ifdef ENABLE_PGTEST
+void TestQgsPostgresProvider::testEwktInOut()
+{
+  QGSTEST_NEED_PGTEST_DB();
+
+  QgsPostgresConn *conn = getConnection();
+  QVERIFY( conn != nullptr );
+  QgsReferencedGeometry g;
+  QString ewkt_obtained;
+
+  g = QgsPostgresProvider::fromEwkt( "SRID=4326;LINESTRING(0 0,-5 2)", conn );
+  QVERIFY( ! g.isNull() );
+  QCOMPARE( g.crs().authid(), "EPSG:4326" );
+  ewkt_obtained = QgsPostgresProvider::toEwkt( g, conn );
+  QCOMPARE( ewkt_obtained, "SRID=4326;LineString (0 0, -5 2)" );
+
+  // Test for srid-less geometry
+  // See https://github.com/qgis/QGIS/issues/49380#issuecomment-1282913470
+  g = QgsPostgresProvider::fromEwkt( "POINT(0 0)", conn );
+  QVERIFY( ! g.isNull() );
+  ewkt_obtained = QgsPostgresProvider::toEwkt( g, conn );
+  QVERIFY( ! g.crs().isValid() ); // is unknown
+  QCOMPARE( ewkt_obtained, QString( "SRID=0;Point (0 0)" ) );
+
+}
+#endif // ENABLE_PGTEST
 
 QGSTEST_MAIN( TestQgsPostgresProvider )
 #include "testqgspostgresprovider.moc"

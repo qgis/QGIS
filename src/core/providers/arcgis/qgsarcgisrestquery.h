@@ -109,7 +109,7 @@ class CORE_EXPORT QgsArcGisRestQueryUtils
     /**
      * Calls the specified \a visitor function on all layer items found within the given service data.
      */
-    static void addLayerItems( const std::function<void ( const QString &parentLayerId, ServiceTypeFilter serviceType, QgsWkbTypes::GeometryType geometryType, const QString &layerId, const QString &name, const QString &description, const QString &url, bool isParentLayer, const QString &authid, const QString &format )> &visitor, const QVariantMap &serviceData, const QString &parentUrl, const QString &parentSupportedFormats, const ServiceTypeFilter filter = ServiceTypeFilter::AllTypes );
+    static void addLayerItems( const std::function<void ( const QString &parentLayerId, ServiceTypeFilter serviceType, Qgis::GeometryType geometryType, const QString &layerId, const QString &name, const QString &description, const QString &url, bool isParentLayer, const QString &authid, const QString &format )> &visitor, const QVariantMap &serviceData, const QString &parentUrl, const QString &parentSupportedFormats, const ServiceTypeFilter filter = ServiceTypeFilter::AllTypes );
 
     /**
      * Parses and processes a \a url.

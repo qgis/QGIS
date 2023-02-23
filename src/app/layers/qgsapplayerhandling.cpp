@@ -67,8 +67,8 @@ void QgsAppLayerHandling::postProcessAddedLayer( QgsMapLayer *layer )
 {
   switch ( layer->type() )
   {
-    case QgsMapLayerType::VectorLayer:
-    case QgsMapLayerType::RasterLayer:
+    case Qgis::LayerType::Vector:
+    case Qgis::LayerType::Raster:
     {
       bool ok = false;
       layer->loadDefaultStyle( ok );
@@ -76,10 +76,10 @@ void QgsAppLayerHandling::postProcessAddedLayer( QgsMapLayer *layer )
       break;
     }
 
-    case QgsMapLayerType::PluginLayer:
+    case Qgis::LayerType::Plugin:
       break;
 
-    case QgsMapLayerType::MeshLayer:
+    case Qgis::LayerType::Mesh:
     {
       QgsMeshLayer *meshLayer = qobject_cast< QgsMeshLayer *>( layer );
       QDateTime referenceTime = QgsProject::instance()->timeSettings()->temporalRange().begin();
@@ -95,7 +95,7 @@ void QgsAppLayerHandling::postProcessAddedLayer( QgsMapLayer *layer )
       break;
     }
 
-    case QgsMapLayerType::VectorTileLayer:
+    case Qgis::LayerType::VectorTile:
     {
       bool ok = false;
       QString error = layer->loadDefaultStyle( ok );
@@ -108,11 +108,11 @@ void QgsAppLayerHandling::postProcessAddedLayer( QgsMapLayer *layer )
       break;
     }
 
-    case QgsMapLayerType::AnnotationLayer:
-    case QgsMapLayerType::GroupLayer:
+    case Qgis::LayerType::Annotation:
+    case Qgis::LayerType::Group:
       break;
 
-    case QgsMapLayerType::PointCloudLayer:
+    case Qgis::LayerType::PointCloud:
     {
       bool ok = false;
       layer->loadDefaultStyle( ok );
@@ -142,19 +142,19 @@ void QgsAppLayerHandling::addSortedLayersToLegend( QList<QgsMapLayer *> &layers 
   {
     std::sort( layers.begin(), layers.end(), []( QgsMapLayer * a, QgsMapLayer * b )
     {
-      const static QMap<QgsMapLayerType, int> layerTypeOrdering =
+      const static QMap<Qgis::LayerType, int> layerTypeOrdering =
       {
-        { QgsMapLayerType::AnnotationLayer, -1 },
-        { QgsMapLayerType::VectorLayer, 0 },
-        { QgsMapLayerType::PointCloudLayer, 1 },
-        { QgsMapLayerType::MeshLayer, 2 },
-        { QgsMapLayerType::VectorTileLayer, 3 },
-        { QgsMapLayerType::RasterLayer, 4 },
-        { QgsMapLayerType::GroupLayer, 5 },
-        { QgsMapLayerType::PluginLayer, 6 },
+        { Qgis::LayerType::Annotation, -1 },
+        { Qgis::LayerType::Vector, 0 },
+        { Qgis::LayerType::PointCloud, 1 },
+        { Qgis::LayerType::Mesh, 2 },
+        { Qgis::LayerType::VectorTile, 3 },
+        { Qgis::LayerType::Raster, 4 },
+        { Qgis::LayerType::Group, 5 },
+        { Qgis::LayerType::Plugin, 6 },
       };
 
-      if ( a->type() == QgsMapLayerType::VectorLayer && b->type() == QgsMapLayerType::VectorLayer )
+      if ( a->type() == Qgis::LayerType::Vector && b->type() == Qgis::LayerType::Vector )
       {
         QgsVectorLayer *av = qobject_cast<QgsVectorLayer *>( a );
         QgsVectorLayer *bv = qobject_cast<QgsVectorLayer *>( b );
@@ -183,7 +183,7 @@ void QgsAppLayerHandling::postProcessAddedLayers( const QList<QgsMapLayer *> &la
   {
     switch ( layer->type() )
     {
-      case QgsMapLayerType::VectorLayer:
+      case Qgis::LayerType::Vector:
       {
         QgsVectorLayer *vl = qobject_cast< QgsVectorLayer * >( layer );
 
@@ -210,13 +210,13 @@ void QgsAppLayerHandling::postProcessAddedLayers( const QList<QgsMapLayer *> &la
         }
         break;
       }
-      case QgsMapLayerType::RasterLayer:
-      case QgsMapLayerType::PluginLayer:
-      case QgsMapLayerType::MeshLayer:
-      case QgsMapLayerType::VectorTileLayer:
-      case QgsMapLayerType::AnnotationLayer:
-      case QgsMapLayerType::PointCloudLayer:
-      case QgsMapLayerType::GroupLayer:
+      case Qgis::LayerType::Raster:
+      case Qgis::LayerType::Plugin:
+      case Qgis::LayerType::Mesh:
+      case Qgis::LayerType::VectorTile:
+      case Qgis::LayerType::Annotation:
+      case Qgis::LayerType::PointCloud:
+      case Qgis::LayerType::Group:
         break;
     }
   }
@@ -251,7 +251,7 @@ QList< QgsMapLayer * > QgsAppLayerHandling::addOgrVectorLayers( const QStringLis
       if ( ! uri.startsWith( QLatin1String( "/vsi" ), Qt::CaseInsensitive ) &&
            ( vsiPrefix == QLatin1String( "/vsizip/" ) || vsiPrefix == QLatin1String( "/vsitar/" ) ) )
       {
-        if ( askUserForZipItemLayers( uri, { QgsMapLayerType::VectorLayer } ) )
+        if ( askUserForZipItemLayers( uri, { Qgis::LayerType::Vector} ) )
           continue;
       }
     }
@@ -292,7 +292,7 @@ QList< QgsMapLayer * > QgsAppLayerHandling::addOgrVectorLayers( const QStringLis
     // filter out non-vector sublayers
     sublayers.erase( std::remove_if( sublayers.begin(), sublayers.end(), []( const QgsProviderSublayerDetails & sublayer )
     {
-      return sublayer.type() != QgsMapLayerType::VectorLayer;
+      return sublayer.type() != Qgis::LayerType::Vector;
     } ), sublayers.end() );
 
     cursorOverride.reset();
@@ -316,7 +316,7 @@ QList< QgsMapLayer * > QgsAppLayerHandling::addOgrVectorLayers( const QStringLis
           case SublayerHandling::AskUser:
           {
             // prompt user for sublayers
-            QgsProviderSublayersDialog dlg( uri, QString(), path, sublayers, {QgsMapLayerType::VectorLayer}, QgisApp::instance() );
+            QgsProviderSublayersDialog dlg( uri, QString(), path, sublayers, {Qgis::LayerType::Vector}, QgisApp::instance() );
 
             if ( dlg.exec() )
               sublayers = dlg.selectedLayers();
@@ -335,7 +335,7 @@ QList< QgsMapLayer * > QgsAppLayerHandling::addOgrVectorLayers( const QStringLis
               // filter out non-vector sublayers
               sublayers.erase( std::remove_if( sublayers.begin(), sublayers.end(), []( const QgsProviderSublayerDetails & sublayer )
               {
-                return sublayer.type() != QgsMapLayerType::VectorLayer;
+                return sublayer.type() != Qgis::LayerType::Vector;
               } ), sublayers.end() );
             }
             break;
@@ -353,7 +353,7 @@ QList< QgsMapLayer * > QgsAppLayerHandling::addOgrVectorLayers( const QStringLis
         // filter out non-vector sublayers
         sublayers.erase( std::remove_if( sublayers.begin(), sublayers.end(), []( const QgsProviderSublayerDetails & sublayer )
         {
-          return sublayer.type() != QgsMapLayerType::VectorLayer;
+          return sublayer.type() != Qgis::LayerType::Vector;
         } ), sublayers.end() );
       }
 
@@ -500,7 +500,7 @@ QgsVectorTileLayer *QgsAppLayerHandling::addVectorTileLayer( const QString &uri,
   return layer.release();
 }
 
-bool QgsAppLayerHandling::askUserForZipItemLayers( const QString &path, const QList<QgsMapLayerType> &acceptableTypes )
+bool QgsAppLayerHandling::askUserForZipItemLayers( const QString &path, const QList<Qgis::LayerType> &acceptableTypes )
 {
   // query sublayers
   QList< QgsProviderSublayerDetails > sublayers = QgsProviderRegistry::instance()->querySublayers( path, Qgis::SublayerQueryFlag::IncludeSystemTables );
@@ -602,7 +602,7 @@ QgsAppLayerHandling::SublayerHandling QgsAppLayerHandling::shouldAskUserForSubla
       // if any non-raster layers are found, we ask the user. Otherwise we load all
       for ( const QgsProviderSublayerDetails &sublayer : layers )
       {
-        if ( sublayer.type() != QgsMapLayerType::RasterLayer )
+        if ( sublayer.type() != Qgis::LayerType::Raster )
           return SublayerHandling::AskUser;
       }
       return SublayerHandling::LoadAll;
@@ -795,17 +795,17 @@ QList< QgsMapLayer * > QgsAppLayerHandling::openLayer( const QString &fileName, 
     // one good candidate provider and possible layer type -- that makes things nice and easy!
     switch ( candidateProviders.at( 0 ).layerTypes().at( 0 ) )
     {
-      case QgsMapLayerType::VectorLayer:
-      case QgsMapLayerType::RasterLayer:
-      case QgsMapLayerType::MeshLayer:
-      case QgsMapLayerType::AnnotationLayer:
-      case QgsMapLayerType::PluginLayer:
-      case QgsMapLayerType::VectorTileLayer:
-      case QgsMapLayerType::GroupLayer:
+      case Qgis::LayerType::Vector:
+      case Qgis::LayerType::Raster:
+      case Qgis::LayerType::Mesh:
+      case Qgis::LayerType::Annotation:
+      case Qgis::LayerType::Plugin:
+      case Qgis::LayerType::VectorTile:
+      case Qgis::LayerType::Group:
         // not supported here yet!
         break;
 
-      case QgsMapLayerType::PointCloudLayer:
+      case Qgis::LayerType::PointCloud:
       {
         if ( QgsPointCloudLayer *layer = addPointCloudLayer( fileName, fileInfo.completeBaseName(), candidateProviders.at( 0 ).metadata()->key(), addToLegend, true ) )
         {
@@ -1038,17 +1038,17 @@ QList< QgsMapLayer * > QgsAppLayerHandling::openLayer( const QString &fileName, 
 
 QgsVectorLayer *QgsAppLayerHandling::addVectorLayer( const QString &uri, const QString &baseName, const QString &provider, bool addToLegend )
 {
-  return addLayerPrivate< QgsVectorLayer >( QgsMapLayerType::VectorLayer, uri, baseName, !provider.isEmpty() ? provider : QLatin1String( "ogr" ), true, addToLegend );
+  return addLayerPrivate< QgsVectorLayer >( Qgis::LayerType::Vector, uri, baseName, !provider.isEmpty() ? provider : QLatin1String( "ogr" ), true, addToLegend );
 }
 
 QgsRasterLayer *QgsAppLayerHandling::addRasterLayer( const QString &uri, const QString &baseName, const QString &provider, bool addToLegend )
 {
-  return addLayerPrivate< QgsRasterLayer >( QgsMapLayerType::RasterLayer, uri, baseName, !provider.isEmpty() ? provider : QLatin1String( "gdal" ), true, addToLegend );
+  return addLayerPrivate< QgsRasterLayer >( Qgis::LayerType::Raster, uri, baseName, !provider.isEmpty() ? provider : QLatin1String( "gdal" ), true, addToLegend );
 }
 
 QgsMeshLayer *QgsAppLayerHandling::addMeshLayer( const QString &uri, const QString &baseName, const QString &provider, bool addToLegend )
 {
-  return addLayerPrivate< QgsMeshLayer >( QgsMapLayerType::MeshLayer, uri, baseName, provider, true, addToLegend );
+  return addLayerPrivate< QgsMeshLayer >( Qgis::LayerType::Mesh, uri, baseName, provider, true, addToLegend );
 }
 
 QList<QgsMapLayer *> QgsAppLayerHandling::addGdalRasterLayers( const QStringList &uris, bool &ok, bool showWarningOnInvalid )
@@ -1076,7 +1076,7 @@ QList<QgsMapLayer *> QgsAppLayerHandling::addGdalRasterLayers( const QStringList
     if ( ( !uri.startsWith( QLatin1String( "/vsi" ), Qt::CaseInsensitive ) || uri.endsWith( QLatin1String( ".zip" ) ) || uri.endsWith( QLatin1String( ".tar" ) ) ) &&
          ( vsiPrefix == QLatin1String( "/vsizip/" ) || vsiPrefix == QLatin1String( "/vsitar/" ) ) )
     {
-      if ( askUserForZipItemLayers( uri, { QgsMapLayerType::RasterLayer } ) )
+      if ( askUserForZipItemLayers( uri, { Qgis::LayerType::Raster } ) )
         continue;
     }
 
@@ -1109,7 +1109,7 @@ QList<QgsMapLayer *> QgsAppLayerHandling::addGdalRasterLayers( const QStringList
 
       // try to create the layer
       cursorOverride.reset();
-      QgsRasterLayer *layer = addLayerPrivate< QgsRasterLayer >( QgsMapLayerType::RasterLayer, uri, layerName, QStringLiteral( "gdal" ), showWarningOnInvalid );
+      QgsRasterLayer *layer = addLayerPrivate< QgsRasterLayer >( Qgis::LayerType::Raster, uri, layerName, QStringLiteral( "gdal" ), showWarningOnInvalid );
       res << layer;
 
       if ( layer && layer->isValid() )
@@ -1303,7 +1303,7 @@ QList< QgsMapLayer * > QgsAppLayerHandling::addDatabaseLayers( const QStringList
 }
 
 template<typename T>
-T *QgsAppLayerHandling::addLayerPrivate( QgsMapLayerType type, const QString &uri, const QString &name, const QString &providerKey, bool guiWarnings, bool addToLegend )
+T *QgsAppLayerHandling::addLayerPrivate( Qgis::LayerType type, const QString &uri, const QString &name, const QString &providerKey, bool guiWarnings, bool addToLegend )
 {
   QgsSettings settings;
 

@@ -50,6 +50,7 @@ class TestQgsMdalProvider : public QgsTest
     void load();
     void filters();
     void encodeDecodeUri();
+    void absoluteRelativeUri();
 
   private:
     QString mTestDataDir;
@@ -117,6 +118,25 @@ void TestQgsMdalProvider::encodeDecodeUri()
   QCOMPARE( parts.value( QStringLiteral( "driver" ) ).toString(), QStringLiteral( "ESRI_TIN" ) );
   QCOMPARE( parts.value( QStringLiteral( "layerName" ) ).toString(), QString() );
   QCOMPARE( mdalMetadata->encodeUri( parts ), QStringLiteral( "ESRI_TIN:\"/home/data/tdenv9.adf\"" ) );
+}
+
+void TestQgsMdalProvider::absoluteRelativeUri()
+{
+  QgsReadWriteContext context;
+  context.setPathResolver( QgsPathResolver( QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/project.qgs" ) ) );
+
+  QgsProviderMetadata *mdalMetadata = QgsProviderRegistry::instance()->providerMetadata( "mdal" );
+  QVERIFY( mdalMetadata );
+
+  QString absoluteUri = QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/mesh/quad_flower.2dm" );
+  QString relativeUri = QStringLiteral( "./mesh/quad_flower.2dm" );
+  QCOMPARE( mdalMetadata->absoluteToRelativeUri( absoluteUri, context ), relativeUri );
+  QCOMPARE( mdalMetadata->relativeToAbsoluteUri( relativeUri, context ), absoluteUri );
+
+  absoluteUri = QStringLiteral( "2DM:\"%1/mesh/mesh_flower.2dm\"" ).arg( QStringLiteral( TEST_DATA_DIR ) );
+  relativeUri = QStringLiteral( "2DM:\"./mesh/mesh_flower.2dm\"" );
+  QCOMPARE( mdalMetadata->absoluteToRelativeUri( absoluteUri, context ), relativeUri );
+  QCOMPARE( mdalMetadata->relativeToAbsoluteUri( relativeUri, context ), absoluteUri );
 }
 
 void TestQgsMdalProvider::load()

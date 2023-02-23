@@ -1260,7 +1260,7 @@ QImage QgsWmsLegendNode::getLegendGraphic() const
     }
     else
     {
-      QgsDebugMsg( tr( "Failed to download legend graphics: layer is not valid." ) );
+      QgsDebugMsg( QStringLiteral( "Failed to download legend graphics: layer is not valid." ) );
     }
   }
 

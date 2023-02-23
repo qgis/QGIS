@@ -56,8 +56,10 @@ class CORE_EXPORT QgsLayerItem : public QgsDataItem
 
     // --- New virtual methods for layer item derived classes ---
 
-    //! Returns QgsMapLayerType
-    QgsMapLayerType mapLayerType() const;
+    /**
+     * Returns the associated map layer type.
+     */
+    Qgis::LayerType mapLayerType() const;
 
     /**
      * Returns the layer item type corresponding to a QgsMapLayer \a layer.
@@ -125,7 +127,7 @@ class CORE_EXPORT QgsLayerItem : public QgsDataItem
      * Returns the icon for a vector layer whose geometry type is provided.
      * \since QGIS 3.18
      */
-    static QIcon iconForWkbType( QgsWkbTypes::Type type );
+    static QIcon iconForWkbType( Qgis::WkbType type );
 
     static QIcon iconPoint();
     static QIcon iconLine();

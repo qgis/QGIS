@@ -88,13 +88,17 @@
           <number>6</number>
          </property>
          <item row="1" column="1" colspan="3">
-          <widget class="QgsFieldExpressionWidget" name="mWidthEndFieldExpression" native="true"/>
+          <widget class="QgsFieldExpressionWidget" name="mWidthEndFieldExpression"/>
          </item>
          <item row="0" column="1" colspan="3">
-          <widget class="QgsFieldExpressionWidget" name="mWidthStartFieldExpression" native="true"/>
+          <widget class="QgsFieldExpressionWidget" name="mWidthStartFieldExpression"/>
          </item>
          <item row="6" column="1" colspan="2">
-          <widget class="QDoubleSpinBox" name="mDoubleSpinBoxMinWidth"/>
+          <widget class="QDoubleSpinBox" name="mDoubleSpinBoxMinWidth">
+           <property name="maximum">
+            <double>999999.989999999990687</double>
+           </property>
+          </widget>
          </item>
          <item row="8" column="0" colspan="4">
           <layout class="QVBoxLayout" name="verticalLayout_7">
@@ -167,7 +171,11 @@
           </layout>
          </item>
          <item row="7" column="1" colspan="2">
-          <widget class="QDoubleSpinBox" name="mDoubleSpinBoxMaxWidth"/>
+          <widget class="QDoubleSpinBox" name="mDoubleSpinBoxMaxWidth">
+           <property name="maximum">
+            <double>999999.989999999990687</double>
+           </property>
+          </widget>
          </item>
          <item row="6" column="0">
           <widget class="QLabel" name="label_6">
@@ -312,7 +320,7 @@
           </widget>
          </item>
          <item row="0" column="1" colspan="2">
-          <widget class="QgsFieldExpressionWidget" name="mColorStartFieldExpression" native="true"/>
+          <widget class="QgsFieldExpressionWidget" name="mColorStartFieldExpression"/>
          </item>
          <item row="1" column="0">
           <widget class="QLabel" name="label_10">
@@ -359,7 +367,7 @@
           <widget class="QLineEdit" name="mLineEditColorMaxValue"/>
          </item>
          <item row="1" column="1" colspan="2">
-          <widget class="QgsFieldExpressionWidget" name="mColorEndFieldExpression" native="true"/>
+          <widget class="QgsFieldExpressionWidget" name="mColorEndFieldExpression"/>
          </item>
         </layout>
        </widget>
@@ -384,6 +392,17 @@
  </widget>
  <customwidgets>
   <customwidget>
+   <class>QgsColorButton</class>
+   <extends>QToolButton</extends>
+   <header>qgscolorbutton.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsDoubleSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
+   <header>qgsdoublespinbox.h</header>
+  </customwidget>
+  <customwidget>
    <class>QgsFieldExpressionWidget</class>
    <extends>QWidget</extends>
    <header>qgsfieldexpressionwidget.h</header>
@@ -393,17 +412,6 @@
    <class>QgsUnitSelectionWidget</class>
    <extends>QWidget</extends>
    <header>qgsunitselectionwidget.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsDoubleSpinBox</class>
-   <extends>QDoubleSpinBox</extends>
-   <header>qgsdoublespinbox.h</header>
-  </customwidget>
-  <customwidget>
-   <class>QgsColorButton</class>
-   <extends>QToolButton</extends>
-   <header>qgscolorbutton.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>

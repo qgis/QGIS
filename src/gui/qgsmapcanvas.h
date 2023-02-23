@@ -522,7 +522,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView, public QgsExpressionContex
      * Convenience function for returning the current canvas map units. The map units
      * are dictated by the canvas' destinationCrs() map units.
      */
-    QgsUnitTypes::DistanceUnit mapUnits() const;
+    Qgis::DistanceUnit mapUnits() const;
 
     /**
      * Returns the stored overrides of styles for layers.
@@ -1174,7 +1174,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView, public QgsExpressionContex
      *
      * \since QGIS 3.12
      */
-    void panDistanceBearingChanged( double distance, QgsUnitTypes::DistanceUnit unit, double bearing );
+    void panDistanceBearingChanged( double distance, Qgis::DistanceUnit unit, double bearing );
 
     /**
      * Emitted whenever a tap and hold \a gesture occurs at the specified map point.
@@ -1228,6 +1228,13 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView, public QgsExpressionContex
     void dropEvent( QDropEvent *event ) override;
 
     void showEvent( QShowEvent *event ) override;
+
+    /**
+     * Emits the extentsChanged signal when appropriate.
+     *
+     * \since QGIS 3.30
+     */
+    void emitExtentsChanged();
 
     /// implementation struct
     class CanvasProperties;
@@ -1427,6 +1434,8 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView, public QgsExpressionContex
     QList< QgsMapCanvasInteractionBlocker * > mInteractionBlockers;
 
     int mBlockItemPositionUpdates = 0;
+    int mBlockExtentChangedSignal = 0;
+    int mBlockScaleChangedSignal = 0;
 
     std::unique_ptr< QgsTemporaryCursorOverride > mTemporaryCursorOverride;
 

@@ -18,8 +18,6 @@
 
 #include "qgsmeshmemorydataprovider.h"
 #include "qgsmeshdataprovidertemporalcapabilities.h"
-#include "qgsmeshlayerutils.h"
-#include "qgstriangularmesh.h"
 #include "qgsapplication.h"
 
 #include <cstring>
@@ -61,7 +59,7 @@ QgsMeshMemoryDataProvider::QgsMeshMemoryDataProvider( const QString &uri,
   }
   mIsValid = splitMeshSections( data );
 
-  temporalCapabilities()->setTemporalUnit( QgsUnitTypes::TemporalHours );
+  temporalCapabilities()->setTemporalUnit( Qgis::TemporalUnit::Hours );
 }
 
 QString QgsMeshMemoryDataProvider::providerKey()
@@ -670,9 +668,9 @@ QgsDataProvider *QgsMeshMemoryProviderMetadata::createProvider( const QString &u
   return new QgsMeshMemoryDataProvider( uri, options, flags );
 }
 
-QList<QgsMapLayerType> QgsMeshMemoryProviderMetadata::supportedLayerTypes() const
+QList<Qgis::LayerType> QgsMeshMemoryProviderMetadata::supportedLayerTypes() const
 {
-  return { QgsMapLayerType::MeshLayer };
+  return { Qgis::LayerType::Mesh };
 }
 
 ///@endcond

@@ -19,7 +19,6 @@
 #include "qgsexpression.h"
 #include "qgsgeometry.h"
 #include "qgslogger.h"
-#include "qgsmessagelog.h"
 #include "qgsproject.h"
 #include "qgsspatialindex.h"
 #include "qgsexception.h"

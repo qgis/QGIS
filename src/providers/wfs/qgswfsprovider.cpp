@@ -28,7 +28,6 @@
 #include "qgswfsprovider.h"
 #include "qgswfscapabilities.h"
 #include "qgswfsdescribefeaturetype.h"
-#include "qgswfsgetfeature.h"
 #include "qgswfstransactionrequest.h"
 #include "qgswfsshareddata.h"
 #include "qgswfsutils.h"
@@ -142,12 +141,12 @@ QgsWFSProvider::QgsWFSProvider( const QString &uri, const ProviderOptions &optio
     return;
   }
 
-  if ( mShared->mWKBType == QgsWkbTypes::Unknown &&
+  if ( mShared->mWKBType == Qgis::WkbType::Unknown &&
        mShared->mURI.hasGeometryTypeFilter() &&
        mShared->mCaps.supportsGeometryTypeFilters() )
   {
     mShared->mWKBType = mShared->mURI.geometryTypeFilter();
-    if ( mShared->mWKBType != QgsWkbTypes::Unknown )
+    if ( mShared->mWKBType != Qgis::WkbType::Unknown )
     {
       mShared->computeGeometryTypeFilter();
     }
@@ -196,38 +195,38 @@ void QgsWFSProvider::issueInitialGetFeature()
 
   const auto TryToDetectGeometryType = [&]()
   {
-    const QgsWkbTypes::Type initialGeometryType = mShared->mWKBType;
+    const Qgis::WkbType initialGeometryType = mShared->mWKBType;
 
     // try first without a BBOX, because some servers exhibit very poor
     // performance when being requested on a large extent
     GetGeometryTypeFromOneFeature( false );
-    if ( initialGeometryType == QgsWkbTypes::Unknown )
+    if ( initialGeometryType == Qgis::WkbType::Unknown )
     {
-      bool noGeometryFound = ( mShared->mWKBType == QgsWkbTypes::NoGeometry );
+      bool noGeometryFound = ( mShared->mWKBType == Qgis::WkbType::NoGeometry );
       if ( noGeometryFound )
-        mShared->mWKBType = QgsWkbTypes::Unknown;
+        mShared->mWKBType = Qgis::WkbType::Unknown;
 
       // If we still didn't get the geometry type, and have a filter, temporarily
       // disable the filter.
       // See https://github.com/qgis/QGIS/issues/43950
-      if ( mShared->mWKBType == QgsWkbTypes::Unknown && !mSubsetString.isEmpty() )
+      if ( mShared->mWKBType == Qgis::WkbType::Unknown && !mSubsetString.isEmpty() )
       {
         const QString oldFilter = mShared->setWFSFilter( QString() );
         GetGeometryTypeFromOneFeature( false );
-        if ( mShared->mWKBType == QgsWkbTypes::NoGeometry )
+        if ( mShared->mWKBType == Qgis::WkbType::NoGeometry )
         {
           noGeometryFound = true;
-          mShared->mWKBType = QgsWkbTypes::Unknown;
+          mShared->mWKBType = Qgis::WkbType::Unknown;
         }
-        if ( mShared->mWKBType == QgsWkbTypes::Unknown )
+        if ( mShared->mWKBType == Qgis::WkbType::Unknown )
           GetGeometryTypeFromOneFeature( true );
         mShared->setWFSFilter( oldFilter );
       }
-      else if ( mShared->mWKBType == QgsWkbTypes::Unknown )
+      else if ( mShared->mWKBType == Qgis::WkbType::Unknown )
         GetGeometryTypeFromOneFeature( true );
 
-      if ( noGeometryFound && mShared->mWKBType == QgsWkbTypes::Unknown )
-        mShared->mWKBType = QgsWkbTypes::NoGeometry;
+      if ( noGeometryFound && mShared->mWKBType == Qgis::WkbType::Unknown )
+        mShared->mWKBType = Qgis::WkbType::NoGeometry;
     }
     else
     {
@@ -239,7 +238,7 @@ void QgsWFSProvider::issueInitialGetFeature()
   // if we do not known the exact geometry type from
   // describeFeatureType()
   if ( mShared->mWFSVersion.startsWith( QLatin1String( "1.0" ) ) &&
-       mShared->mWKBType == QgsWkbTypes::Unknown )
+       mShared->mWKBType == Qgis::WkbType::Unknown )
   {
     TryToDetectGeometryType();
   }
@@ -252,7 +251,7 @@ void QgsWFSProvider::issueInitialGetFeature()
   // Another reason to issue it if we do not known the exact geometry type
   // from describeFeatureType()
   else if ( !mShared->mWFSVersion.startsWith( QLatin1String( "1.0" ) ) &&
-            ( mShared->mWKBType == QgsWkbTypes::Unknown ||
+            ( mShared->mWKBType == Qgis::WkbType::Unknown ||
               mShared->mFields.indexOf( QLatin1String( "gmlId" ) ) < 0 ||
               mShared->mFields.indexOf( QLatin1String( "gmlName" ) ) < 0 ||
               mShared->mFields.indexOf( QLatin1String( "gmlDescription" ) ) < 0 ) )
@@ -604,7 +603,7 @@ bool QgsWFSProvider::processSQL( const QString &sqlString, QString &errorMsg, QS
   {
     QString geometryAttribute;
     QgsFields fields;
-    QgsWkbTypes::Type geomType;
+    Qgis::WkbType geomType;
     if ( !readAttributesFromSchema( describeFeatureDocument,
                                     typeName,
                                     geometryAttribute, fields, geomType, errorMsg ) )
@@ -797,7 +796,7 @@ bool QgsWFSProvider::setLayerPropertiesListFromDescribeFeature( QDomDocument &de
   {
     QString geometryAttribute;
     QgsFields fields;
-    QgsWkbTypes::Type geomType;
+    Qgis::WkbType geomType;
     if ( !readAttributesFromSchema( describeFeatureDocument,
                                     typeName,
                                     geometryAttribute, fields, geomType, errorMsg ) )
@@ -831,13 +830,13 @@ void QgsWFSProvider::pushErrorSlot( const QString &errorMsg )
 
 void QgsWFSProvider::featureReceivedAnalyzeOneFeature( QVector<QgsFeatureUniqueIdPair> list )
 {
-  if ( list.size() != 0 && mShared->mWKBType == QgsWkbTypes::Unknown )
+  if ( list.size() != 0 && mShared->mWKBType == Qgis::WkbType::Unknown )
   {
     QgsFeature feat = list[0].first;
     QgsGeometry geometry = feat.geometry();
     if ( geometry.isNull() )
     {
-      mShared->mWKBType = QgsWkbTypes::NoGeometry;
+      mShared->mWKBType = Qgis::WkbType::NoGeometry;
     }
     else
     {
@@ -849,42 +848,42 @@ void QgsWFSProvider::featureReceivedAnalyzeOneFeature( QVector<QgsFeatureUniqueI
       // see if they are of the same type. If then, assume that all features
       // will be similar, and report the proper MultiPoint/MultiLineString/
       // MultiPolygon type instead.
-      if ( mShared->mWKBType == QgsWkbTypes::GeometryCollection )
+      if ( mShared->mWKBType == Qgis::WkbType::GeometryCollection )
       {
         auto geomColl = geometry.asGeometryCollection();
-        mShared->mWKBType = QgsWkbTypes::Unknown;
+        mShared->mWKBType = Qgis::WkbType::Unknown;
         for ( const auto &geom : geomColl )
         {
-          if ( mShared->mWKBType == QgsWkbTypes::Unknown )
+          if ( mShared->mWKBType == Qgis::WkbType::Unknown )
           {
             mShared->mWKBType = geom.wkbType();
           }
           else if ( mShared->mWKBType != geom.wkbType() )
           {
-            mShared->mWKBType = QgsWkbTypes::Unknown;
+            mShared->mWKBType = Qgis::WkbType::Unknown;
             break;
           }
         }
-        if ( mShared->mWKBType != QgsWkbTypes::Unknown )
+        if ( mShared->mWKBType != Qgis::WkbType::Unknown )
         {
-          if ( mShared->mWKBType == QgsWkbTypes::Point )
+          if ( mShared->mWKBType == Qgis::WkbType::Point )
           {
             QgsDebugMsg( QStringLiteral( "Layer of unknown type. First element is a GeometryCollection of Point. Advertizing optimistically as MultiPoint" ) );
-            mShared->mWKBType = QgsWkbTypes::MultiPoint;
+            mShared->mWKBType = Qgis::WkbType::MultiPoint;
           }
-          else if ( mShared->mWKBType == QgsWkbTypes::LineString )
+          else if ( mShared->mWKBType == Qgis::WkbType::LineString )
           {
             QgsDebugMsg( QStringLiteral( "Layer of unknown type. First element is a GeometryCollection of LineString. Advertizing optimistically as MultiLineString" ) );
-            mShared->mWKBType = QgsWkbTypes::MultiLineString;
+            mShared->mWKBType = Qgis::WkbType::MultiLineString;
           }
-          else if ( mShared->mWKBType == QgsWkbTypes::Polygon )
+          else if ( mShared->mWKBType == Qgis::WkbType::Polygon )
           {
             QgsDebugMsg( QStringLiteral( "Layer of unknown type. First element is a GeometryCollection of Polygon. Advertizing optimistically as MultiPolygon" ) );
-            mShared->mWKBType = QgsWkbTypes::MultiPolygon;
+            mShared->mWKBType = Qgis::WkbType::MultiPolygon;
           }
           else
           {
-            mShared->mWKBType = QgsWkbTypes::Unknown;
+            mShared->mWKBType = Qgis::WkbType::Unknown;
           }
         }
       }
@@ -1019,7 +1018,7 @@ QDomElement QgsWFSProvider::geometryElement( const QgsGeometry &geometry, QDomDo
   return gmlElem;
 }
 
-QgsWkbTypes::Type QgsWFSProvider::wkbType() const
+Qgis::WkbType QgsWFSProvider::wkbType() const
 {
   return mShared->mWKBType;
 }
@@ -1485,7 +1484,7 @@ void QgsWFSProvider::handlePostCloneOperations( QgsVectorDataProvider *source )
   mShared = qobject_cast<QgsWFSProvider *>( source )->mShared;
 };
 
-bool QgsWFSProvider::describeFeatureType( QString &geometryAttribute, QgsFields &fields, QgsWkbTypes::Type &geomType )
+bool QgsWFSProvider::describeFeatureType( QString &geometryAttribute, QgsFields &fields, Qgis::WkbType &geomType )
 {
   fields.clear();
 
@@ -1532,7 +1531,7 @@ bool QgsWFSProvider::readAttributesFromSchema( QDomDocument &schemaDoc,
     const QString &prefixedTypename,
     QString &geometryAttribute,
     QgsFields &fields,
-    QgsWkbTypes::Type &geomType,
+    Qgis::WkbType &geomType,
     QString &errorMsg )
 {
   //get the <schema> root element
@@ -1730,20 +1729,20 @@ bool QgsWFSProvider::readAttributesFromSchema( QDomDocument &schemaDoc,
     {
       foundGeometryAttribute = true;
       geometryAttribute = name;
-      geomType = QgsWkbTypes::MultiPolygon;
+      geomType = Qgis::WkbType::MultiPolygon;
     }
     else if ( ! foundGeometryAttribute && type == QLatin1String( "gmgml:LineString_Curve_MultiCurve_CompositeCurvePropertyType" ) )
     {
       foundGeometryAttribute = true;
       geometryAttribute = name;
-      geomType = QgsWkbTypes::MultiLineString;
+      geomType = Qgis::WkbType::MultiLineString;
     }
     // such as http://go.geozug.ch/Zug_WFS_Baumkataster/service.svc/get
     else if ( type == QLatin1String( "gmgml:Point_MultiPointPropertyType" ) )
     {
       foundGeometryAttribute = true;
       geometryAttribute = name;
-      geomType = QgsWkbTypes::MultiPoint;
+      geomType = Qgis::WkbType::MultiPoint;
     }
     //is it a geometry attribute?
     // the GeometryAssociationType has been seen in #11785
@@ -1753,7 +1752,7 @@ bool QgsWFSProvider::readAttributesFromSchema( QDomDocument &schemaDoc,
       geometryAttribute = name;
       // We have a choice parent element we cannot assume any valid information over the geometry type
       if ( attributeElement.parentNode().nodeName() == QLatin1String( "choice" ) && ! attributeElement.nextSibling().isNull() )
-        geomType = QgsWkbTypes::Unknown;
+        geomType = Qgis::WkbType::Unknown;
       else
       {
         const QRegularExpressionMatch match = gmlPT.match( type );
@@ -1798,7 +1797,7 @@ bool QgsWFSProvider::readAttributesFromSchema( QDomDocument &schemaDoc,
   }
   if ( !foundGeometryAttribute )
   {
-    geomType = QgsWkbTypes::NoGeometry;
+    geomType = Qgis::WkbType::NoGeometry;
   }
 
   return true;
@@ -2118,25 +2117,25 @@ bool QgsWFSProvider::getCapabilities()
   return foundLayer;
 }
 
-QgsWkbTypes::Type QgsWFSProvider::geomTypeFromPropertyType( const QString &attName, const QString &propType )
+Qgis::WkbType QgsWFSProvider::geomTypeFromPropertyType( const QString &attName, const QString &propType )
 {
   Q_UNUSED( attName )
 
   QgsDebugMsgLevel( QStringLiteral( "DescribeFeatureType geometry attribute \"%1\" type is \"%2\"" )
                     .arg( attName, propType ), 4 );
   if ( propType == QLatin1String( "Point" ) )
-    return QgsWkbTypes::Point;
+    return Qgis::WkbType::Point;
   if ( propType == QLatin1String( "LineString" ) || propType == QLatin1String( "Curve" ) )
-    return QgsWkbTypes::LineString;
+    return Qgis::WkbType::LineString;
   if ( propType == QLatin1String( "Polygon" ) || propType == QLatin1String( "Surface" ) )
-    return QgsWkbTypes::Polygon;
+    return Qgis::WkbType::Polygon;
   if ( propType == QLatin1String( "MultiPoint" ) )
-    return QgsWkbTypes::MultiPoint;
+    return Qgis::WkbType::MultiPoint;
   if ( propType == QLatin1String( "MultiLineString" ) || propType == QLatin1String( "MultiCurve" ) )
-    return QgsWkbTypes::MultiLineString;
+    return Qgis::WkbType::MultiLineString;
   if ( propType == QLatin1String( "MultiPolygon" ) || propType == QLatin1String( "MultiSurface" ) )
-    return QgsWkbTypes::MultiPolygon;
-  return QgsWkbTypes::Unknown;
+    return Qgis::WkbType::MultiPolygon;
+  return Qgis::WkbType::Unknown;
 }
 
 void QgsWFSProvider::handleException( const QDomDocument &serverResponse )

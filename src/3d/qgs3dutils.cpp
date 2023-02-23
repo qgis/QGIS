@@ -24,19 +24,11 @@
 #include "qgsvectorlayer.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsfeedback.h"
-#include "qgsexpression.h"
-#include "qgsexpressionutils.h"
 #include "qgsoffscreen3dengine.h"
-
 #include "qgs3dmapscene.h"
 #include "qgsabstract3dengine.h"
 #include "qgsterraingenerator.h"
 #include "qgscameracontroller.h"
-
-#include "qgsline3dsymbol.h"
-#include "qgspoint3dsymbol.h"
-#include "qgspolygon3dsymbol.h"
-
 #include "qgspointcloudrenderer.h"
 #include "qgspointcloud3dsymbol.h"
 #include "qgspointcloudlayer3drenderer.h"

@@ -21,7 +21,7 @@
 #include "qgssymbollayerutils.h"
 #include "qgslayoutitemundocommand.h"
 #include "qgslayoutpagecollection.h"
-#include "qgslayoutundostack.h"
+#include "qgslayoutrendercontext.h"
 #include "qgsstyle.h"
 #include "qgsstyleentityvisitor.h"
 #include "qgsfillsymbol.h"
@@ -108,7 +108,7 @@ QPageLayout QgsLayoutItemPage::pageLayout() const
   QPageLayout pageLayout;
   pageLayout.setMargins( {0, 0, 0, 0} );
   pageLayout.setMode( QPageLayout::FullPageMode );
-  const QSizeF size = layout()->renderContext().measurementConverter().convert( pageSize(), QgsUnitTypes::LayoutMillimeters ).toQSizeF();
+  const QSizeF size = layout()->renderContext().measurementConverter().convert( pageSize(), Qgis::LayoutUnit::Millimeters ).toQSizeF();
 
   if ( pageSize().width() > pageSize().height() )
   {
@@ -253,7 +253,7 @@ void QgsLayoutItemPage::draw( QgsLayoutItemRenderContext &context )
     return;
   }
 
-  const double scale = context.renderContext().convertToPainterUnits( 1, QgsUnitTypes::RenderMillimeters );
+  const double scale = context.renderContext().convertToPainterUnits( 1, Qgis::RenderUnit::Millimeters );
 
   const QgsExpressionContext expressionContext = createExpressionContext();
   context.renderContext().setExpressionContext( expressionContext );

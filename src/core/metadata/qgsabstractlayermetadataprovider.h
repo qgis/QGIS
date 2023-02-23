@@ -85,12 +85,12 @@ class CORE_EXPORT QgsLayerMetadataProviderResult: public QgsLayerMetadata
     /**
      * Returns the layer geometry type.
      */
-    const QgsWkbTypes::GeometryType &geometryType() const;
+    Qgis::GeometryType geometryType() const;
 
     /**
      * Sets the layer geometry type to \a geometryType.
      */
-    void setGeometryType( const QgsWkbTypes::GeometryType &geometryType );
+    void setGeometryType( Qgis::GeometryType geometryType );
 
     /**
      * Returns the layer CRS authid.
@@ -125,12 +125,12 @@ class CORE_EXPORT QgsLayerMetadataProviderResult: public QgsLayerMetadata
     /**
      * Returns the layer type.
      */
-    QgsMapLayerType layerType() const;
+    Qgis::LayerType layerType() const;
 
     /**
      * Sets the layer type to \a layerType.
      */
-    void setLayerType( QgsMapLayerType layerType );
+    void setLayerType( Qgis::LayerType layerType );
 
     /**
      * Returns the metadata standard URI (usually "http://mrcc.com/qgis.dtd")
@@ -148,7 +148,7 @@ class CORE_EXPORT QgsLayerMetadataProviderResult: public QgsLayerMetadata
     //! Layer spatial extent of the layer in EPSG:4326
     QgsPolygon mGeographicExtent;
     //! Layer geometry type (Point, Polygon, Linestring)
-    QgsWkbTypes::GeometryType mGeometryType;
+    Qgis::GeometryType mGeometryType;
     //! Layer CRS authid
     QString mAuthid;
     //! Layer QgsDataSourceUri string
@@ -156,7 +156,7 @@ class CORE_EXPORT QgsLayerMetadataProviderResult: public QgsLayerMetadata
     //! Layer data provider name
     QString mDataProviderName;
     //! Layer type (vector, raster etc.)
-    QgsMapLayerType mLayerType;
+    Qgis::LayerType mLayerType;
     //! Metadata standard uri, QGIS QMD metadata format uses "http://mrcc.com/qgis.dtd"
     QString mStandardUri;
 };

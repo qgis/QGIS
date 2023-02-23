@@ -383,7 +383,7 @@ class GUI_EXPORT QgsProcessingDistanceWidgetWrapper : public QgsProcessingNumeri
 
   public slots:
     void setUnitParameterValue( const QVariant &value );
-    void setUnits( QgsUnitTypes::DistanceUnit unit );
+    void setUnits( Qgis::DistanceUnit unit );
 
   protected:
 
@@ -391,7 +391,7 @@ class GUI_EXPORT QgsProcessingDistanceWidgetWrapper : public QgsProcessingNumeri
 
   private:
 
-    QgsUnitTypes::DistanceUnit mBaseUnit = QgsUnitTypes::DistanceUnknownUnit;
+    Qgis::DistanceUnit mBaseUnit = Qgis::DistanceUnit::Unknown;
     QLabel *mLabel = nullptr;
     QWidget *mWarningLabel = nullptr;
     QComboBox *mUnitsCombo = nullptr;
@@ -449,7 +449,7 @@ class GUI_EXPORT QgsProcessingDurationWidgetWrapper : public QgsProcessingNumeri
 
   private:
 
-    QgsUnitTypes::TemporalUnit mBaseUnit = QgsUnitTypes::TemporalMilliseconds;
+    Qgis::TemporalUnit mBaseUnit = Qgis::TemporalUnit::Milliseconds;
     QComboBox *mUnitsCombo = nullptr;
 
     friend class TestProcessingGui;

@@ -223,7 +223,7 @@ and vertical margins to add to the text when calculating the size of the shape.
 .. seealso:: :py:func:`setSizeType`
 %End
 
-    QgsUnitTypes::RenderUnit sizeUnit() const;
+    Qgis::RenderUnit sizeUnit() const;
 %Docstring
 Returns the units used for the shape's size. This value has no meaning if the :py:func:`~QgsTextBackgroundSettings.sizeType` is set to
 QgsTextBackgroundSettings.SizePercent.
@@ -235,7 +235,7 @@ QgsTextBackgroundSettings.SizePercent.
 .. seealso:: :py:func:`size`
 %End
 
-    void setSizeUnit( QgsUnitTypes::RenderUnit unit );
+    void setSizeUnit( Qgis::RenderUnit unit );
 %Docstring
 Sets the units used for the shape's size. This value has no meaning if the :py:func:`~QgsTextBackgroundSettings.sizeType` is set to
 QgsTextBackgroundSettings.SizePercent.
@@ -331,7 +331,7 @@ Sets the offset used for drawing the background shape. Units are specified using
 .. seealso:: :py:func:`setOffsetUnit`
 %End
 
-    QgsUnitTypes::RenderUnit offsetUnit() const;
+    Qgis::RenderUnit offsetUnit() const;
 %Docstring
 Returns the units used for the shape's offset.
 
@@ -340,7 +340,7 @@ Returns the units used for the shape's offset.
 .. seealso:: :py:func:`offset`
 %End
 
-    void setOffsetUnit( QgsUnitTypes::RenderUnit units );
+    void setOffsetUnit( Qgis::RenderUnit units );
 %Docstring
 Sets the units used for the shape's offset.
 
@@ -396,7 +396,7 @@ Sets the radii used for rounding the corners of shapes. This is only used if
 .. seealso:: :py:func:`setRadiiUnit`
 %End
 
-    QgsUnitTypes::RenderUnit radiiUnit() const;
+    Qgis::RenderUnit radiiUnit() const;
 %Docstring
 Returns the units used for the shape's radii.
 
@@ -405,7 +405,7 @@ Returns the units used for the shape's radii.
 .. seealso:: :py:func:`radii`
 %End
 
-    void setRadiiUnit( QgsUnitTypes::RenderUnit units );
+    void setRadiiUnit( Qgis::RenderUnit units );
 %Docstring
 Sets the units used for the shape's radii.
 
@@ -552,7 +552,7 @@ Sets the width of the shape's stroke (stroke). Units are specified through
    other background types should be configured through their symbols.
 %End
 
-    QgsUnitTypes::RenderUnit strokeWidthUnit() const;
+    Qgis::RenderUnit strokeWidthUnit() const;
 %Docstring
 Returns the units used for the shape's stroke width.
 
@@ -561,7 +561,7 @@ Returns the units used for the shape's stroke width.
 .. seealso:: :py:func:`strokeWidth`
 %End
 
-    void setStrokeWidthUnit( QgsUnitTypes::RenderUnit units );
+    void setStrokeWidthUnit( Qgis::RenderUnit units );
 %Docstring
 Sets the units used for the shape's stroke width.
 

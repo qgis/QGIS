@@ -15,12 +15,10 @@
  ***************************************************************************/
 
 #include "qgslayoutitemnodeitem.h"
-#include "qgssymbollayerutils.h"
 #include "qgssymbol.h"
-#include "qgsmapsettings.h"
 #include "qgslayout.h"
-#include "qgslayoututils.h"
 #include "qgsmarkersymbol.h"
+#include "qgslayoutrendercontext.h"
 
 #include <limits>
 #include <cmath>

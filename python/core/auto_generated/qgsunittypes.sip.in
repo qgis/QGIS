@@ -26,140 +26,13 @@ Helper functions for various unit types.
     static const QMetaObject staticMetaObject;
 
   public:
-    enum SystemOfMeasurement
-    {
-      UnknownSystem,
-      MetricSystem,
-      ImperialSystem,
-      USCSSystem
-    };
-
-    enum UnitType
-    {
-      TypeDistance,
-      TypeArea,
-      TypeVolume,
-      TypeUnknown,
-      TypeTemporal,
-    };
-
-    enum DistanceUnit
-    {
-      DistanceMeters,
-      DistanceKilometers,
-      DistanceFeet,
-      DistanceNauticalMiles,
-      DistanceYards,
-      DistanceMiles,
-      DistanceDegrees,
-      DistanceCentimeters,
-      DistanceMillimeters,
-      DistanceUnknownUnit,
-    };
-
-    enum DistanceUnitType
-    {
-      Standard,
-      Geographic,
-      UnknownType,
-    };
-
-    enum AreaUnit
-    {
-      AreaSquareMeters,
-      AreaSquareKilometers,
-      AreaSquareFeet,
-      AreaSquareYards,
-      AreaSquareMiles,
-      AreaHectares,
-      AreaAcres,
-      AreaSquareNauticalMiles,
-      AreaSquareDegrees,
-      AreaSquareCentimeters,
-      AreaSquareMillimeters,
-      AreaUnknownUnit,
-    };
-
-    enum VolumeUnit
-    {
-      VolumeCubicMeters,
-      VolumeCubicFeet,
-      VolumeCubicYards,
-      VolumeBarrel,
-      VolumeCubicDecimeter,
-      VolumeLiters,
-      VolumeGallonUS,
-      VolumeCubicInch,
-      VolumeCubicCentimeter,
-      VolumeCubicDegrees,
-      VolumeUnknownUnit,
-    };
-
-    enum AngleUnit
-    {
-      AngleDegrees,
-      AngleRadians,
-      AngleGon,
-      AngleMinutesOfArc,
-      AngleSecondsOfArc,
-      AngleTurn,
-      AngleMilliradiansSI,
-      AngleMilNATO,
-      AngleUnknownUnit,
-    };
-
-    enum TemporalUnit
-    {
-      TemporalMilliseconds,
-      TemporalSeconds,
-      TemporalMinutes,
-      TemporalHours,
-      TemporalDays,
-      TemporalWeeks,
-      TemporalMonths,
-      TemporalYears,
-      TemporalDecades,
-      TemporalCenturies,
-      TemporalIrregularStep,
-      TemporalUnknownUnit
-    };
-
-    enum RenderUnit
-    {
-      RenderMillimeters,
-      RenderMapUnits,
-      RenderPixels,
-      RenderPercentage,
-      RenderPoints,
-      RenderInches,
-      RenderUnknownUnit,
-      RenderMetersInMapUnits,
-    };
-
-    enum LayoutUnit
-    {
-      LayoutMillimeters,
-      LayoutCentimeters,
-      LayoutMeters,
-      LayoutInches,
-      LayoutFeet,
-      LayoutPoints,
-      LayoutPicas,
-      LayoutPixels
-    };
-
-    enum LayoutUnitType
-    {
-      LayoutPaperUnits,
-      LayoutScreenUnits
-    };
 
     struct DistanceValue
     {
 
       double value;
 
-      QgsUnitTypes::DistanceUnit unit;
+      Qgis::DistanceUnit unit;
     };
 
     struct AreaValue
@@ -167,12 +40,12 @@ Helper functions for various unit types.
 
       double value;
 
-      QgsUnitTypes::AreaUnit unit;
+      Qgis::AreaUnit unit;
     };
 
-    typedef QList<QgsUnitTypes::RenderUnit> RenderUnitList;
+    typedef QList<Qgis::RenderUnit> RenderUnitList;
 
-    static QString encodeUnitType( QgsUnitTypes::UnitType type );
+    static QString encodeUnitType( Qgis::UnitType type );
 %Docstring
 Encodes a unit ``type`` to a string.
 
@@ -183,7 +56,7 @@ Encodes a unit ``type`` to a string.
 .. versionadded:: 3.10
 %End
 
-    static QgsUnitTypes::UnitType decodeUnitType( const QString &string, bool *ok /Out/ = 0 );
+    static Qgis::UnitType decodeUnitType( const QString &string, bool *ok /Out/ = 0 );
 %Docstring
 Decodes a unit type from a ``string``.
 
@@ -199,12 +72,12 @@ Decodes a unit type from a ``string``.
 
 
 
-    static QgsUnitTypes::DistanceUnitType unitType( QgsUnitTypes::DistanceUnit unit );
+    static Qgis::DistanceUnitType unitType( Qgis::DistanceUnit unit );
 %Docstring
 Returns the type for a distance unit.
 %End
 
-    static QString encodeUnit( QgsUnitTypes::DistanceUnit unit );
+    static QString encodeUnit( Qgis::DistanceUnit unit );
 %Docstring
 Encodes a distance unit to a string.
 
@@ -215,7 +88,7 @@ Encodes a distance unit to a string.
 .. seealso:: :py:func:`decodeDistanceUnit`
 %End
 
-    static QgsUnitTypes::DistanceUnit decodeDistanceUnit( const QString &string, bool *ok /Out/ = 0 );
+    static Qgis::DistanceUnit decodeDistanceUnit( const QString &string, bool *ok /Out/ = 0 );
 %Docstring
 Decodes a distance unit from a string.
 
@@ -227,7 +100,7 @@ Decodes a distance unit from a string.
 .. seealso:: :py:func:`encodeUnit`
 %End
 
-    static QString toString( QgsUnitTypes::DistanceUnit unit );
+    static QString toString( Qgis::DistanceUnit unit );
 %Docstring
 Returns a translated string representing a distance unit.
 
@@ -236,7 +109,7 @@ Returns a translated string representing a distance unit.
 .. seealso:: :py:func:`stringToDistanceUnit`
 %End
 
-    static QString toAbbreviatedString( QgsUnitTypes::DistanceUnit unit );
+    static QString toAbbreviatedString( Qgis::DistanceUnit unit );
 %Docstring
 Returns a translated abbreviation representing a distance unit.
 
@@ -247,7 +120,7 @@ Returns a translated abbreviation representing a distance unit.
 .. versionadded:: 3.0
 %End
 
-    static QgsUnitTypes::DistanceUnit stringToDistanceUnit( const QString &string, bool *ok /Out/ = 0 );
+    static Qgis::DistanceUnit stringToDistanceUnit( const QString &string, bool *ok /Out/ = 0 );
 %Docstring
 Converts a translated string to a distance unit.
 
@@ -259,7 +132,7 @@ Converts a translated string to a distance unit.
 .. seealso:: :py:func:`toString`
 %End
 
-    static double fromUnitToUnitFactor( QgsUnitTypes::DistanceUnit fromUnit, QgsUnitTypes::DistanceUnit toUnit );
+    static double fromUnitToUnitFactor( Qgis::DistanceUnit fromUnit, Qgis::DistanceUnit toUnit );
 %Docstring
 Returns the conversion factor between the specified distance units.
 
@@ -270,12 +143,12 @@ Returns the conversion factor between the specified distance units.
 %End
 
 
-    static QgsUnitTypes::DistanceUnitType unitType( QgsUnitTypes::AreaUnit unit );
+    static Qgis::DistanceUnitType unitType( Qgis::AreaUnit unit );
 %Docstring
 Returns the type for an areal unit.
 %End
 
-    static QString encodeUnit( QgsUnitTypes::AreaUnit unit );
+    static QString encodeUnit( Qgis::AreaUnit unit );
 %Docstring
 Encodes an areal unit to a string.
 
@@ -286,7 +159,7 @@ Encodes an areal unit to a string.
 .. seealso:: :py:func:`decodeAreaUnit`
 %End
 
-    static QgsUnitTypes::AreaUnit decodeAreaUnit( const QString &string, bool *ok /Out/ = 0 );
+    static Qgis::AreaUnit decodeAreaUnit( const QString &string, bool *ok /Out/ = 0 );
 %Docstring
 Decodes an areal unit from a string.
 
@@ -298,7 +171,7 @@ Decodes an areal unit from a string.
 .. seealso:: :py:func:`encodeUnit`
 %End
 
-    static QString toString( QgsUnitTypes::AreaUnit unit );
+    static QString toString( Qgis::AreaUnit unit );
 %Docstring
 Returns a translated string representing an areal unit.
 
@@ -307,7 +180,7 @@ Returns a translated string representing an areal unit.
 .. seealso:: :py:func:`stringToAreaUnit`
 %End
 
-    static QString toAbbreviatedString( QgsUnitTypes::AreaUnit unit );
+    static QString toAbbreviatedString( Qgis::AreaUnit unit );
 %Docstring
 Returns a translated abbreviation representing an areal unit.
 
@@ -318,7 +191,7 @@ Returns a translated abbreviation representing an areal unit.
 .. versionadded:: 3.0
 %End
 
-    static QgsUnitTypes::AreaUnit stringToAreaUnit( const QString &string, bool *ok /Out/ = 0 );
+    static Qgis::AreaUnit stringToAreaUnit( const QString &string, bool *ok /Out/ = 0 );
 %Docstring
 Converts a translated string to an areal unit.
 
@@ -330,7 +203,7 @@ Converts a translated string to an areal unit.
 .. seealso:: :py:func:`toString`
 %End
 
-    static double fromUnitToUnitFactor( QgsUnitTypes::AreaUnit fromUnit, QgsUnitTypes::AreaUnit toUnit );
+    static double fromUnitToUnitFactor( Qgis::AreaUnit fromUnit, Qgis::AreaUnit toUnit );
 %Docstring
 Returns the conversion factor between the specified areal units.
 
@@ -340,7 +213,7 @@ Returns the conversion factor between the specified areal units.
 :return: multiplication factor to convert between units
 %End
 
-    static QgsUnitTypes::AreaUnit distanceToAreaUnit( QgsUnitTypes::DistanceUnit distanceUnit );
+    static Qgis::AreaUnit distanceToAreaUnit( Qgis::DistanceUnit distanceUnit );
 %Docstring
 Converts a distance unit to its corresponding area unit, e.g., meters to square meters
 
@@ -349,7 +222,7 @@ Converts a distance unit to its corresponding area unit, e.g., meters to square 
 :return: matching areal unit
 %End
 
-    static QgsUnitTypes::DistanceUnit areaToDistanceUnit( QgsUnitTypes::AreaUnit areaUnit );
+    static Qgis::DistanceUnit areaToDistanceUnit( Qgis::AreaUnit areaUnit );
 %Docstring
 Converts an area unit to its corresponding distance unit, e.g., square meters to meters
 
@@ -361,7 +234,7 @@ Converts an area unit to its corresponding distance unit, e.g., square meters to
 %End
 
 
-    static QString encodeUnit( QgsUnitTypes::TemporalUnit unit );
+    static QString encodeUnit( Qgis::TemporalUnit unit );
 %Docstring
 Encodes a temporal ``unit`` to a string.
 
@@ -372,7 +245,7 @@ Encodes a temporal ``unit`` to a string.
 .. versionadded:: 3.14
 %End
 
-    static QgsUnitTypes::TemporalUnit decodeTemporalUnit( const QString &string, bool *ok /Out/ = 0 );
+    static Qgis::TemporalUnit decodeTemporalUnit( const QString &string, bool *ok /Out/ = 0 );
 %Docstring
 Decodes a temporal unit from a ``string``.
 
@@ -386,7 +259,7 @@ Decodes a temporal unit from a ``string``.
 .. versionadded:: 3.14
 %End
 
-    static QString toString( QgsUnitTypes::TemporalUnit unit );
+    static QString toString( Qgis::TemporalUnit unit );
 %Docstring
 Returns a translated string representing a temporal ``unit``.
 
@@ -395,7 +268,7 @@ Returns a translated string representing a temporal ``unit``.
 .. versionadded:: 3.14
 %End
 
-    static QString toAbbreviatedString( QgsUnitTypes::TemporalUnit unit );
+    static QString toAbbreviatedString( Qgis::TemporalUnit unit );
 %Docstring
 Returns a translated abbreviation representing a temporal ``unit``.
 
@@ -404,7 +277,7 @@ Returns a translated abbreviation representing a temporal ``unit``.
 .. versionadded:: 3.14
 %End
 
-    static QgsUnitTypes::TemporalUnit stringToTemporalUnit( const QString &string, bool *ok /Out/ = 0 );
+    static Qgis::TemporalUnit stringToTemporalUnit( const QString &string, bool *ok /Out/ = 0 );
 %Docstring
 Converts a translated ``string`` to a temporal unit.
 
@@ -418,7 +291,7 @@ Converts a translated ``string`` to a temporal unit.
 .. versionadded:: 3.14
 %End
 
-    static double fromUnitToUnitFactor( QgsUnitTypes::TemporalUnit fromUnit, QgsUnitTypes::TemporalUnit toUnit );
+    static double fromUnitToUnitFactor( Qgis::TemporalUnit fromUnit, Qgis::TemporalUnit toUnit );
 %Docstring
 Returns the conversion factor between the specified temporal units.
 
@@ -439,14 +312,14 @@ Returns the conversion factor between the specified temporal units.
 %End
 
 
-    static QgsUnitTypes::DistanceUnitType unitType( QgsUnitTypes::VolumeUnit unit );
+    static Qgis::DistanceUnitType unitType( Qgis::VolumeUnit unit );
 %Docstring
 Returns the type for an volume unit.
 
 .. versionadded:: 3.10
 %End
 
-    static QString encodeUnit( QgsUnitTypes::VolumeUnit unit );
+    static QString encodeUnit( Qgis::VolumeUnit unit );
 %Docstring
 Encodes a volume ``unit`` to a string.
 
@@ -457,7 +330,7 @@ Encodes a volume ``unit`` to a string.
 .. versionadded:: 3.10
 %End
 
-    static QgsUnitTypes::VolumeUnit decodeVolumeUnit( const QString &string, bool *ok /Out/ = 0 );
+    static Qgis::VolumeUnit decodeVolumeUnit( const QString &string, bool *ok /Out/ = 0 );
 %Docstring
 Decodes a volume unit from a ``string``.
 
@@ -471,7 +344,7 @@ Decodes a volume unit from a ``string``.
 .. versionadded:: 3.10
 %End
 
-    static QString toString( QgsUnitTypes::VolumeUnit unit );
+    static QString toString( Qgis::VolumeUnit unit );
 %Docstring
 Returns a translated string representing a volume ``unit``.
 
@@ -480,7 +353,7 @@ Returns a translated string representing a volume ``unit``.
 .. versionadded:: 3.10
 %End
 
-    static QString toAbbreviatedString( QgsUnitTypes::VolumeUnit unit );
+    static QString toAbbreviatedString( Qgis::VolumeUnit unit );
 %Docstring
 Returns a translated abbreviation representing a volume ``unit``.
 
@@ -489,7 +362,7 @@ Returns a translated abbreviation representing a volume ``unit``.
 .. versionadded:: 3.10
 %End
 
-    static QgsUnitTypes::VolumeUnit stringToVolumeUnit( const QString &string, bool *ok /Out/ = 0 );
+    static Qgis::VolumeUnit stringToVolumeUnit( const QString &string, bool *ok /Out/ = 0 );
 %Docstring
 Converts a translated ``string`` to a volume unit.
 
@@ -503,7 +376,7 @@ Converts a translated ``string`` to a volume unit.
 .. versionadded:: 3.10
 %End
 
-    static double fromUnitToUnitFactor( QgsUnitTypes::VolumeUnit fromUnit, QgsUnitTypes::VolumeUnit toUnit );
+    static double fromUnitToUnitFactor( Qgis::VolumeUnit fromUnit, Qgis::VolumeUnit toUnit );
 %Docstring
 Returns the conversion factor between the specified volume units.
 
@@ -515,7 +388,7 @@ Returns the conversion factor between the specified volume units.
 .. versionadded:: 3.10
 %End
 
-    static QgsUnitTypes::VolumeUnit distanceToVolumeUnit( QgsUnitTypes::DistanceUnit distanceUnit );
+    static Qgis::VolumeUnit distanceToVolumeUnit( Qgis::DistanceUnit distanceUnit );
 %Docstring
 Converts a distance unit to its corresponding volume unit, e.g., meters to cubic meters
 
@@ -526,7 +399,7 @@ Converts a distance unit to its corresponding volume unit, e.g., meters to cubic
 .. versionadded:: 3.10
 %End
 
-    static QgsUnitTypes::DistanceUnit volumeToDistanceUnit( QgsUnitTypes::VolumeUnit volumeUnit );
+    static Qgis::DistanceUnit volumeToDistanceUnit( Qgis::VolumeUnit volumeUnit );
 %Docstring
 Converts a volume unit to its corresponding distance unit, e.g., cubic meters to meters
 
@@ -538,7 +411,7 @@ Converts a volume unit to its corresponding distance unit, e.g., cubic meters to
 %End
 
 
-    static QString encodeUnit( QgsUnitTypes::AngleUnit unit );
+    static QString encodeUnit( Qgis::AngleUnit unit );
 %Docstring
 Encodes an angular unit to a string.
 
@@ -549,7 +422,7 @@ Encodes an angular unit to a string.
 .. seealso:: :py:func:`decodeAngleUnit`
 %End
 
-    static QgsUnitTypes::AngleUnit decodeAngleUnit( const QString &string, bool *ok /Out/ = 0 );
+    static Qgis::AngleUnit decodeAngleUnit( const QString &string, bool *ok /Out/ = 0 );
 %Docstring
 Decodes an angular unit from a string.
 
@@ -561,14 +434,14 @@ Decodes an angular unit from a string.
 .. seealso:: :py:func:`encodeUnit`
 %End
 
-    static QString toString( QgsUnitTypes::AngleUnit unit );
+    static QString toString( Qgis::AngleUnit unit );
 %Docstring
 Returns a translated string representing an angular unit.
 
 :param unit: unit to convert to string
 %End
 
-    static double fromUnitToUnitFactor( QgsUnitTypes::AngleUnit fromUnit, QgsUnitTypes::AngleUnit toUnit );
+    static double fromUnitToUnitFactor( Qgis::AngleUnit fromUnit, Qgis::AngleUnit toUnit );
 %Docstring
 Returns the conversion factor between the specified angular units.
 
@@ -578,7 +451,7 @@ Returns the conversion factor between the specified angular units.
 :return: multiplication factor to convert between units
 %End
 
-    static QString formatAngle( double angle, int decimals, QgsUnitTypes::AngleUnit unit );
+    static QString formatAngle( double angle, int decimals, Qgis::AngleUnit unit );
 %Docstring
 Returns an angle formatted as a friendly string.
 
@@ -589,7 +462,7 @@ Returns an angle formatted as a friendly string.
 :return: formatted angle string
 %End
 
-    static QgsUnitTypes::DistanceValue scaledDistance( double distance, QgsUnitTypes::DistanceUnit unit, int decimals, bool keepBaseUnit = false );
+    static QgsUnitTypes::DistanceValue scaledDistance( double distance, Qgis::DistanceUnit unit, int decimals, bool keepBaseUnit = false );
 %Docstring
 Will convert a ``distance`` with a given ``unit`` to a distance value which is nice to display.
 It will convert between different units (e.g. from meters to kilometers or millimeters)
@@ -600,7 +473,7 @@ further formatting when converting to a string).
 .. versionadded:: 3.0
 %End
 
-    static QgsUnitTypes::AreaValue scaledArea( double area, QgsUnitTypes::AreaUnit unit, int decimals, bool keepBaseUnit = false );
+    static QgsUnitTypes::AreaValue scaledArea( double area, Qgis::AreaUnit unit, int decimals, bool keepBaseUnit = false );
 %Docstring
 Will convert an ``area`` with a given ``unit`` to an area value which is nice to display.
 It will convert between different units (e.g. from square meters to square kilometers)
@@ -611,7 +484,7 @@ further formatting when converting to a string).
 .. versionadded:: 3.0
 %End
 
-    static QString formatDistance( double distance, int decimals, QgsUnitTypes::DistanceUnit unit, bool keepBaseUnit = false );
+    static QString formatDistance( double distance, int decimals, Qgis::DistanceUnit unit, bool keepBaseUnit = false );
 %Docstring
 Returns an distance formatted as a friendly string.
 
@@ -628,7 +501,7 @@ Returns an distance formatted as a friendly string.
 .. versionadded:: 3.0
 %End
 
-    static QString formatArea( double area, int decimals, QgsUnitTypes::AreaUnit unit, bool keepBaseUnit = false );
+    static QString formatArea( double area, int decimals, Qgis::AreaUnit unit, bool keepBaseUnit = false );
 %Docstring
 Returns an area formatted as a friendly string.
 
@@ -646,7 +519,7 @@ Returns an area formatted as a friendly string.
 %End
 
 
-    static QString encodeUnit( QgsUnitTypes::RenderUnit unit );
+    static QString encodeUnit( Qgis::RenderUnit unit );
 %Docstring
 Encodes a render unit to a string.
 
@@ -657,7 +530,7 @@ Encodes a render unit to a string.
 .. seealso:: :py:func:`decodeRenderUnit`
 %End
 
-    static QgsUnitTypes::RenderUnit decodeRenderUnit( const QString &string, bool *ok /Out/ = 0 );
+    static Qgis::RenderUnit decodeRenderUnit( const QString &string, bool *ok /Out/ = 0 );
 %Docstring
 Decodes a render unit from a string.
 
@@ -670,14 +543,14 @@ Decodes a render unit from a string.
 %End
 
 
-    static QString toString( QgsUnitTypes::RenderUnit unit );
+    static QString toString( Qgis::RenderUnit unit );
 %Docstring
 Returns a translated string representing a render ``unit``.
 
 .. versionadded:: 3.0
 %End
 
-    static QString toAbbreviatedString( QgsUnitTypes::RenderUnit unit );
+    static QString toAbbreviatedString( Qgis::RenderUnit unit );
 %Docstring
 Returns a translated abbreviation representing a render unit.
 
@@ -688,7 +561,7 @@ Returns a translated abbreviation representing a render unit.
 
 
 
-    static QString encodeUnit( QgsUnitTypes::LayoutUnit unit );
+    static QString encodeUnit( Qgis::LayoutUnit unit );
 %Docstring
 Encodes a layout unit to a string.
 
@@ -701,7 +574,7 @@ Encodes a layout unit to a string.
 .. versionadded:: 3.0
 %End
 
-    static QgsUnitTypes::LayoutUnit decodeLayoutUnit( const QString &string, bool *ok /Out/ = 0 );
+    static Qgis::LayoutUnit decodeLayoutUnit( const QString &string, bool *ok /Out/ = 0 );
 %Docstring
 Decodes a layout unit from a string.
 
@@ -715,21 +588,21 @@ Decodes a layout unit from a string.
 .. versionadded:: 3.0
 %End
 
-    static QgsUnitTypes::LayoutUnitType unitType( QgsUnitTypes::LayoutUnit units );
+    static Qgis::LayoutUnitType unitType( Qgis::LayoutUnit units );
 %Docstring
 Returns the type for a unit of measurement.
 
 .. versionadded:: 3.0
 %End
 
-    static QString toAbbreviatedString( QgsUnitTypes::LayoutUnit unit );
+    static QString toAbbreviatedString( Qgis::LayoutUnit unit );
 %Docstring
 Returns a translated abbreviation representing a layout ``unit`` (e.g. "mm").
 
 .. versionadded:: 3.0
 %End
 
-    static QString toString( QgsUnitTypes::LayoutUnit unit );
+    static QString toString( Qgis::LayoutUnit unit );
 %Docstring
 Returns a translated string representing a layout ``unit``.
 

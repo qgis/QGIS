@@ -168,6 +168,44 @@ Reassembles a provider data source URI from its component paths (e.g. file path,
 .. versionadded:: 3.12
 %End
 
+    QString absoluteToRelativeUri( const QString &providerKey, const QString &uri, const QgsReadWriteContext &context ) const;
+%Docstring
+Converts absolute path(s) to relative path(s) in the given provider-specific URI. and
+returns modified URI according to the context object's configuration.
+This is commonly used when writing project files.
+If a provider does not work with paths, unmodified URI will be returned.
+
+:return: modified URI with relative path(s)
+
+.. note::
+
+   this function may not be supported by all providers. The default
+   implementation uses :py:func:`QgsPathResolver.writePath()` on the whole URI.
+
+.. seealso:: :py:func:`relativeToAbsoluteUri`
+
+.. versionadded:: 3.30
+%End
+
+    QString relativeToAbsoluteUri( const QString &providerKey, const QString &uri, const QgsReadWriteContext &context ) const;
+%Docstring
+Converts relative path(s) to absolute path(s) in the given provider-specific URI. and
+returns modified URI according to the context object's configuration.
+This is commonly used when reading project files.
+If a provider does not work with paths, unmodified URI will be returned.
+
+:return: modified URI with absolute path(s)
+
+.. note::
+
+   this function may not be supported by all providers. The default
+   implementation uses :py:func:`QgsPathResolver.readPath()` on the whole URI.
+
+.. seealso:: :py:func:`absoluteToRelativeUri`
+
+.. versionadded:: 3.30
+%End
+
  QWidget *createSelectionWidget( const QString &providerKey, QWidget *parent = 0, Qt::WindowFlags fl = Qt::WindowFlags(), QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None ) /Deprecated/;
 %Docstring
 Returns a new widget for selecting layers from a provider.
@@ -336,7 +374,7 @@ Returns list of available providers by their keys
 Returns metadata of the provider or ``None`` if not found
 %End
 
-    QSet< QString > providersForLayerType( QgsMapLayerType type ) const;
+    QSet< QString > providersForLayerType( Qgis::LayerType type ) const;
 %Docstring
 Returns a list of the provider keys for available providers which handle the specified
 layer ``type``.
@@ -358,7 +396,7 @@ Contains information pertaining to a candidate provider.
 %End
       public:
 
-        ProviderCandidateDetails( QgsProviderMetadata *metadata, const QList< QgsMapLayerType > &layerTypes );
+        ProviderCandidateDetails( QgsProviderMetadata *metadata, const QList< Qgis::LayerType > &layerTypes );
 %Docstring
 Constructor for ProviderCandidateDetails, with the specified provider ``metadata`` and valid candidate ``layerTypes``.
 %End
@@ -368,7 +406,7 @@ Constructor for ProviderCandidateDetails, with the specified provider ``metadata
 Returns the candidate provider metadata.
 %End
 
-        QList<QgsMapLayerType> layerTypes() const;
+        QList<Qgis::LayerType> layerTypes() const;
 %Docstring
 Returns a list of map layer types which are valid options for opening the
 target using this candidate provider.
@@ -419,7 +457,7 @@ files cannot be used on their QGIS build.
 %End
       public:
 
-        UnusableUriDetails( const QString &uri = QString(), const QString &warning = QString(), const QList< QgsMapLayerType > &layerTypes = QList< QgsMapLayerType >() );
+        UnusableUriDetails( const QString &uri = QString(), const QString &warning = QString(), const QList< Qgis::LayerType > &layerTypes = QList< Qgis::LayerType >() );
 %Docstring
 Constructor for UnusableUriDetails for the given ``uri``, with the specified user-friendly, translated ``warning``.
 
@@ -433,7 +471,7 @@ options for opening the URI.
 
         QString detailedWarning;
 
-        QList<QgsMapLayerType> layerTypes;
+        QList<Qgis::LayerType> layerTypes;
 
         SIP_PYOBJECT __repr__();
 %MethodCode

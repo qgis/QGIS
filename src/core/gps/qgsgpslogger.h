@@ -145,7 +145,7 @@ class CORE_EXPORT QgsGpsLogger : public QObject
      *
      * \returns logged GPS positions as a geometry.
      */
-    QgsGeometry currentGeometry( QgsWkbTypes::Type type, QString &error SIP_OUT ) const;
+    QgsGeometry currentGeometry( Qgis::WkbType type, QString &error SIP_OUT ) const;
 
     /**
      * Returns the last recorded position of the device.

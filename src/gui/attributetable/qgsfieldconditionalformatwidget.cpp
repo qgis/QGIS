@@ -293,7 +293,7 @@ QgsEditConditionalFormatRuleWidget::QgsEditConditionalFormatRuleWidget( QWidget 
   mPresetsList->setModel( mPresetsModel );
 
   btnChangeIcon->setSymbolType( Qgis::SymbolType::Marker );
-  btnChangeIcon->setSymbol( QgsSymbol::defaultSymbol( QgsWkbTypes::PointGeometry ) );
+  btnChangeIcon->setSymbol( QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ) );
   connect( checkIcon, &QCheckBox::toggled, btnChangeIcon, &QWidget::setEnabled );
 }
 

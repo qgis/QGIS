@@ -20,13 +20,11 @@
 #include "qgsdistancearea.h"
 #include "qgsexpression.h"
 #include "qgsfeatureiterator.h"
-#include "qgsmapcanvas.h"
 #include "qgsproject.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 #include "qgsexpressioncontext.h"
 #include "qgsgeometry.h"
-#include "qgssettings.h"
 #include "qgsgui.h"
 #include "qgsguiutils.h"
 #include "qgsproxyprogresstask.h"
@@ -382,7 +380,7 @@ void QgsFieldCalculator::populateOutputFieldTypes()
   mOutputFieldTypeComboBox->clear();
   for ( int i = 0; i < typelist.size(); i++ )
   {
-    mOutputFieldTypeComboBox->addItem( QgsFields::iconForFieldType( typelist[i].mType, typelist[i].mSubType ), typelist[i].mTypeDesc );
+    mOutputFieldTypeComboBox->addItem( QgsFields::iconForFieldType( typelist[i].mType, typelist[i].mSubType, typelist[i].mTypeName ), typelist[i].mTypeDesc );
     mOutputFieldTypeComboBox->setItemData( i, static_cast<int>( typelist[i].mType ), Qt::UserRole + FTC_TYPE_ROLE_IDX );
     mOutputFieldTypeComboBox->setItemData( i, typelist[i].mTypeName, Qt::UserRole + FTC_TYPE_NAME_IDX );
     mOutputFieldTypeComboBox->setItemData( i, typelist[i].mMinLen, Qt::UserRole + FTC_MINLEN_IDX );
@@ -527,7 +525,7 @@ void QgsFieldCalculator::populateFields()
     mExistingFieldComboBox->addItem( fields.iconForField( idx ), fieldName, idx );
   }
 
-  if ( mVectorLayer->geometryType() != QgsWkbTypes::NullGeometry )
+  if ( mVectorLayer->geometryType() != Qgis::GeometryType::Null )
   {
     mExistingFieldComboBox->addItem( tr( "<geometry>" ), "geom" );
 

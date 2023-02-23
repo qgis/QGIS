@@ -23,7 +23,6 @@
 #include "qgsproject.h"
 #include "qgsexpressioncontext.h"
 #include "qgsfeaturerequest.h"
-#include "qgsexception.h"
 #include "qgsprocessingfeedback.h"
 #include "qgsprocessingutils.h"
 
@@ -137,9 +136,9 @@ class CORE_EXPORT QgsProcessingContext
         mTransformContext = mProject->transformContext();
         if ( mEllipsoid.isEmpty() )
           mEllipsoid = mProject->ellipsoid();
-        if ( mDistanceUnit == QgsUnitTypes::DistanceUnknownUnit )
+        if ( mDistanceUnit == Qgis::DistanceUnit::Unknown )
           mDistanceUnit = mProject->distanceUnits();
-        if ( mAreaUnit == QgsUnitTypes::AreaUnknownUnit )
+        if ( mAreaUnit == Qgis::AreaUnit::Unknown )
           mAreaUnit = mProject->areaUnits();
       }
     }
@@ -200,7 +199,7 @@ class CORE_EXPORT QgsProcessingContext
      * \see areaUnit()
      * \since QGIS 3.16
      */
-    QgsUnitTypes::DistanceUnit distanceUnit() const;
+    Qgis::DistanceUnit distanceUnit() const;
 
     /**
      * Sets the \a unit to use for distance calculations.
@@ -211,7 +210,7 @@ class CORE_EXPORT QgsProcessingContext
      * \see setAreaUnit()
      * \since QGIS 3.16
      */
-    void setDistanceUnit( QgsUnitTypes::DistanceUnit unit );
+    void setDistanceUnit( Qgis::DistanceUnit unit );
 
     /**
      * Returns the area unit to use for area calculations.
@@ -220,7 +219,7 @@ class CORE_EXPORT QgsProcessingContext
      * \see distanceUnit()
      * \since QGIS 3.16
      */
-    QgsUnitTypes::AreaUnit areaUnit() const;
+    Qgis::AreaUnit areaUnit() const;
 
     /**
      * Sets the \a unit to use for area calculations.
@@ -231,7 +230,7 @@ class CORE_EXPORT QgsProcessingContext
      * \see setDistanceUnit()
      * \since QGIS 3.16
      */
-    void setAreaUnit( QgsUnitTypes::AreaUnit areaUnit );
+    void setAreaUnit( Qgis::AreaUnit areaUnit );
 
     /**
      * Returns the current time range to use for temporal operations.
@@ -690,8 +689,8 @@ class CORE_EXPORT QgsProcessingContext
     QgsCoordinateTransformContext mTransformContext;
 
     QString mEllipsoid;
-    QgsUnitTypes::DistanceUnit mDistanceUnit = QgsUnitTypes::DistanceUnknownUnit;
-    QgsUnitTypes::AreaUnit mAreaUnit = QgsUnitTypes::AreaUnknownUnit;
+    Qgis::DistanceUnit mDistanceUnit = Qgis::DistanceUnit::Unknown;
+    Qgis::AreaUnit mAreaUnit = Qgis::AreaUnit::Unknown;
 
     QgsDateTimeRange mCurrentTimeRange;
 

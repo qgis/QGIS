@@ -457,7 +457,7 @@ of the stroke outside of the polygon. This amount is estimated, since it may
 be affected by data defined symbology rules.
 %End
 
-    virtual void setOutputUnit( QgsUnitTypes::RenderUnit unit );
+    virtual void setOutputUnit( Qgis::RenderUnit unit );
 %Docstring
 Sets the units to use for sizes and widths within the symbol layer. Individual
 symbol layer subclasses will interpret this in different ways, e.g., a marker symbol
@@ -469,7 +469,7 @@ layer may use it to specify the units for the line width.
 .. seealso:: :py:func:`outputUnit`
 %End
 
-    virtual QgsUnitTypes::RenderUnit outputUnit() const;
+    virtual Qgis::RenderUnit outputUnit() const;
 %Docstring
 Returns the units to use for sizes and widths within the symbol layer. Individual
 symbol layer subclasses will interpret this in different ways, e.g., a marker symbol
@@ -550,7 +550,7 @@ Gets color
 Gets angle
 %End
 
-    virtual QVector<qreal> dxfCustomDashPattern( QgsUnitTypes::RenderUnit &unit ) const;
+    virtual QVector<qreal> dxfCustomDashPattern( Qgis::RenderUnit &unit ) const;
 %Docstring
 Gets dash pattern
 %End
@@ -798,7 +798,7 @@ Returns the symbol size. Units are specified by :py:func:`~QgsMarkerSymbolLayer.
 .. seealso:: :py:func:`sizeMapUnitScale`
 %End
 
-    void setSizeUnit( QgsUnitTypes::RenderUnit unit );
+    void setSizeUnit( Qgis::RenderUnit unit );
 %Docstring
 Sets the units for the symbol's size.
 
@@ -811,7 +811,7 @@ Sets the units for the symbol's size.
 .. seealso:: :py:func:`setSizeMapUnitScale`
 %End
 
-    QgsUnitTypes::RenderUnit sizeUnit() const;
+    Qgis::RenderUnit sizeUnit() const;
 %Docstring
 Returns the units for the symbol's size.
 
@@ -888,7 +888,7 @@ will have from the original feature's geometry. Units are specified by :py:func:
 .. seealso:: :py:func:`offsetMapUnitScale`
 %End
 
-    void setOffsetUnit( QgsUnitTypes::RenderUnit unit );
+    void setOffsetUnit( Qgis::RenderUnit unit );
 %Docstring
 Sets the units for the symbol's offset.
 
@@ -901,7 +901,7 @@ Sets the units for the symbol's offset.
 .. seealso:: :py:func:`setOffsetMapUnitScale`
 %End
 
-    QgsUnitTypes::RenderUnit offsetUnit() const;
+    Qgis::RenderUnit offsetUnit() const;
 %Docstring
 Returns the units for the symbol's offset.
 
@@ -992,9 +992,9 @@ Writes the symbol layer definition as a SLD XML element.
 :param props: symbol layer definition (see :py:func:`~QgsMarkerSymbolLayer.properties`)
 %End
 
-    virtual void setOutputUnit( QgsUnitTypes::RenderUnit unit );
+    virtual void setOutputUnit( Qgis::RenderUnit unit );
 
-    virtual QgsUnitTypes::RenderUnit outputUnit() const;
+    virtual Qgis::RenderUnit outputUnit() const;
 
     virtual void setMapUnitScale( const QgsMapUnitScale &scale );
 
@@ -1047,7 +1047,7 @@ and any displacement required to align with the marker's anchor point.
 %End
 
     void markerOffset( QgsSymbolRenderContext &context, double width, double height,
-                       QgsUnitTypes::RenderUnit widthUnit, QgsUnitTypes::RenderUnit heightUnit,
+                       Qgis::RenderUnit widthUnit, Qgis::RenderUnit heightUnit,
                        double &offsetX, double &offsetY,
                        const QgsMapUnitScale &widthMapUnitScale, const QgsMapUnitScale &heightMapUnitScale ) const /PyName=markerOffset2/;
 %Docstring
@@ -1089,12 +1089,12 @@ class QgsLineSymbolLayer : QgsSymbolLayer
 
 
 
-    virtual void setOutputUnit( QgsUnitTypes::RenderUnit unit );
+    virtual void setOutputUnit( Qgis::RenderUnit unit );
 
 %Docstring
 QgsLineSymbolLayer cannot be copied
 %End
-    virtual QgsUnitTypes::RenderUnit outputUnit() const;
+    virtual Qgis::RenderUnit outputUnit() const;
 
     virtual void setMapUnitScale( const QgsMapUnitScale &scale );
 
@@ -1191,7 +1191,7 @@ Offset units are set via :py:func:`~QgsLineSymbolLayer.setOffsetUnit`.
 .. seealso:: :py:func:`setOffsetMapUnitScale`
 %End
 
-    void setOffsetUnit( QgsUnitTypes::RenderUnit unit );
+    void setOffsetUnit( Qgis::RenderUnit unit );
 %Docstring
 Sets the ``unit`` for the line's offset.
 
@@ -1202,7 +1202,7 @@ Sets the ``unit`` for the line's offset.
 .. seealso:: :py:func:`setOffsetMapUnitScale`
 %End
 
-    QgsUnitTypes::RenderUnit offsetUnit() const;
+    Qgis::RenderUnit offsetUnit() const;
 %Docstring
 Returns the units for the line's offset.
 
@@ -1236,7 +1236,7 @@ Returns the map unit scale for the line's offset.
 %End
 
 
-    void setWidthUnit( QgsUnitTypes::RenderUnit unit );
+    void setWidthUnit( Qgis::RenderUnit unit );
 %Docstring
 Sets the units for the line's width.
 
@@ -1245,7 +1245,7 @@ Sets the units for the line's width.
 .. seealso:: :py:func:`widthUnit`
 %End
 
-    QgsUnitTypes::RenderUnit widthUnit() const;
+    Qgis::RenderUnit widthUnit() const;
 %Docstring
 Returns the units for the line's width.
 

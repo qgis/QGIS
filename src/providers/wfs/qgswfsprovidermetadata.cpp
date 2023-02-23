@@ -45,9 +45,9 @@ QgsDataProvider *QgsWfsProviderMetadata::createProvider( const QString &uri, con
   return new QgsWFSProvider( uri, options );
 }
 
-QList<QgsMapLayerType> QgsWfsProviderMetadata::supportedLayerTypes() const
+QList<Qgis::LayerType> QgsWfsProviderMetadata::supportedLayerTypes() const
 {
-  return { QgsMapLayerType::VectorLayer };
+  return { Qgis::LayerType::Vector };
 }
 
 QList<QgsDataItemProvider *> QgsWfsProviderMetadata::dataItemProviders() const
@@ -205,7 +205,7 @@ QList<QgsProviderSublayerDetails> QgsWfsProviderMetadata::querySublayers( const 
     uri + " " + QgsWFSConstants::URI_PARAM_SKIP_INITIAL_GET_FEATURE + "='true'",
     QgsDataProvider::ProviderOptions(), caps );
   QgsProviderSublayerDetails details;
-  details.setType( QgsMapLayerType::VectorLayer );
+  details.setType( Qgis::LayerType::Vector );
   details.setProviderKey( QgsWFSProvider::WFS_PROVIDER_KEY );
   details.setUri( uri );
   details.setName( wfsUri.typeName() );
@@ -215,13 +215,13 @@ QList<QgsProviderSublayerDetails> QgsWfsProviderMetadata::querySublayers( const 
   if ( wfsUri.hasGeometryTypeFilter() ||
        !caps.supportsGeometryTypeFilters() )
   {
-    if ( provider.wkbType() == QgsWkbTypes::Type::Unknown )
+    if ( provider.wkbType() == Qgis::WkbType::Unknown )
       provider.issueInitialGetFeature();
     details.setWkbType( provider.wkbType() );
     return res;
   }
 
-  if ( provider.wkbType() == QgsWkbTypes::Type::Unknown &&
+  if ( provider.wkbType() == Qgis::WkbType::Unknown &&
        provider.sharedData()->layerProperties().size() == 1 )
   {
     std::vector<std::unique_ptr<QgsWFSGetFeature>> requests;
@@ -338,14 +338,14 @@ QList<QgsProviderSublayerDetails> QgsWfsProviderMetadata::querySublayers( const 
     const struct
     {
       int index;
-      QgsWkbTypes::Type wkbType;
+      Qgis::WkbType wkbType;
     } types[] =
     {
-      { INDEX_NULL, QgsWkbTypes::NoGeometry },
-      { INDEX_POINT, QgsWkbTypes::MultiPoint },
-      { INDEX_CURVE, QgsWkbTypes::MultiCurve },
-      { INDEX_SURFACE, QgsWkbTypes::MultiSurface },
-      { INDEX_GEOMETRYCOLLECTION, QgsWkbTypes::GeometryCollection },
+      { INDEX_NULL, Qgis::WkbType::NoGeometry },
+      { INDEX_POINT, Qgis::WkbType::MultiPoint },
+      { INDEX_CURVE, Qgis::WkbType::MultiCurve },
+      { INDEX_SURFACE, Qgis::WkbType::MultiSurface },
+      { INDEX_GEOMETRYCOLLECTION, Qgis::WkbType::GeometryCollection },
     };
 
     // Create sublayers details
@@ -353,10 +353,10 @@ QList<QgsProviderSublayerDetails> QgsWfsProviderMetadata::querySublayers( const 
     for ( const auto &tuple : types )
     {
       if ( !countsAllValid || featureCounts[tuple.index] > 0 ||
-           ( tuple.wkbType == QgsWkbTypes::NoGeometry && featureCounts[INDEX_ALL] == 0 ) )
+           ( tuple.wkbType == Qgis::WkbType::NoGeometry && featureCounts[INDEX_ALL] == 0 ) )
       {
         QgsProviderSublayerDetails details;
-        details.setType( QgsMapLayerType::VectorLayer );
+        details.setType( Qgis::LayerType::Vector );
         details.setProviderKey( QgsWFSProvider::WFS_PROVIDER_KEY );
         details.setUri( uri + QStringLiteral( " " ) + QgsWFSConstants::URI_PARAM_GEOMETRY_TYPE_FILTER + QStringLiteral( "='" ) + QgsWkbTypes::displayString( tuple.wkbType ) + QStringLiteral( "'" ) );
         details.setName( wfsUri.typeName() + QStringLiteral( " " ) + QgsWkbTypes::translatedDisplayString( tuple.wkbType ) );

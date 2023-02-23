@@ -16,7 +16,6 @@
 
 
 #include "qgssettings.h"
-#include "qgsunittypes.h"
 #include "qgsmaplayerproxymodel.h"
 #include "qgstest.h"
 
@@ -43,29 +42,29 @@ void TestQgsSettings::enumValue()
   settings.setValue( QStringLiteral( "qgis/testing/my_value_for_units" ), -1 );
   settings.setValue( QStringLiteral( "qgis/testing/my_value_for_units_as_string" ), QStringLiteral( "myString" ) );
   // just to be sure it really doesn't exist
-  QVERIFY( static_cast<int>( QgsUnitTypes::LayoutMeters ) != -1 );
+  QVERIFY( static_cast<int>( Qgis::LayoutUnit::Meters ) != -1 );
 
   // standard method returns invalid value
-  const int v1 = settings.value( QStringLiteral( "qgis/testing/my_value_for_units" ), QgsUnitTypes::LayoutMeters ).toInt();
+  const int v1 = settings.value( QStringLiteral( "qgis/testing/my_value_for_units" ), static_cast< int >( Qgis::LayoutUnit::Meters ) ).toInt();
   QCOMPARE( v1, -1 );
 
   // enum method returns default value if current setting is incorrect
-  const QgsUnitTypes::LayoutUnit v2 = settings.enumValue( QStringLiteral( "qgis/testing/my_value_for_units" ), QgsUnitTypes::LayoutMeters );
-  QCOMPARE( v2, QgsUnitTypes::LayoutMeters );
-  const QgsUnitTypes::LayoutUnit v2s = settings.enumValue( QStringLiteral( "qgis/testing/my_value_for_units_as_string" ), QgsUnitTypes::LayoutMeters );
-  QCOMPARE( v2s, QgsUnitTypes::LayoutMeters );
+  const Qgis::LayoutUnit v2 = settings.enumValue( QStringLiteral( "qgis/testing/my_value_for_units" ), Qgis::LayoutUnit::Meters );
+  QCOMPARE( v2, Qgis::LayoutUnit::Meters );
+  const Qgis::LayoutUnit v2s = settings.enumValue( QStringLiteral( "qgis/testing/my_value_for_units_as_string" ), Qgis::LayoutUnit::Meters );
+  QCOMPARE( v2s, Qgis::LayoutUnit::Meters );
 
   // test a different value than default
-  settings.setValue( QStringLiteral( "qgis/testing/my_value_for_units" ), QgsUnitTypes::LayoutCentimeters );
-  const QgsUnitTypes::LayoutUnit v3 = settings.enumValue( QStringLiteral( "qgis/testing/my_value_for_units" ), QgsUnitTypes::LayoutMeters );
-  QCOMPARE( v3, QgsUnitTypes::LayoutCentimeters );
-  settings.setEnumValue( QStringLiteral( "qgis/testing/my_value_for_units" ), QgsUnitTypes::LayoutCentimeters );
+  settings.setValue( QStringLiteral( "qgis/testing/my_value_for_units" ), static_cast< int >( Qgis::LayoutUnit::Centimeters ) );
+  const Qgis::LayoutUnit v3 = settings.enumValue( QStringLiteral( "qgis/testing/my_value_for_units" ), Qgis::LayoutUnit::Meters );
+  QCOMPARE( v3, Qgis::LayoutUnit::Centimeters );
+  settings.setEnumValue( QStringLiteral( "qgis/testing/my_value_for_units" ), Qgis::LayoutUnit::Centimeters );
   // auto conversion of old settings (int to str)
-  QCOMPARE( settings.value( "qgis/testing/my_value_for_units" ).toString(), QStringLiteral( "LayoutCentimeters" ) );
-  const QgsUnitTypes::LayoutUnit v3s = settings.enumValue( QStringLiteral( "qgis/testing/my_value_for_units" ), QgsUnitTypes::LayoutMeters );
-  QCOMPARE( v3s, QgsUnitTypes::LayoutCentimeters );
+  QCOMPARE( settings.value( "qgis/testing/my_value_for_units" ).toString(), QStringLiteral( "Centimeters" ) );
+  const Qgis::LayoutUnit v3s = settings.enumValue( QStringLiteral( "qgis/testing/my_value_for_units" ), Qgis::LayoutUnit::Meters );
+  QCOMPARE( v3s, Qgis::LayoutUnit::Centimeters );
   const QString v3ss = settings.value( QStringLiteral( "qgis/testing/my_value_for_units" ), QStringLiteral( "myDummyValue" ) ).toString();
-  QCOMPARE( v3ss, QStringLiteral( "LayoutCentimeters" ) );
+  QCOMPARE( v3ss, QStringLiteral( "Centimeters" ) );
 }
 
 void TestQgsSettings::flagValue()

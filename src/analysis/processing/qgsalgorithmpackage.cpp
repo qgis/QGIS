@@ -16,7 +16,6 @@
  ***************************************************************************/
 
 #include "qgsalgorithmpackage.h"
-#include "qgsgeometryengine.h"
 #include "qgsogrutils.h"
 #include "qgsvectorfilewriter.h"
 #include "qgsvectorlayer.h"
@@ -340,7 +339,7 @@ QVariantMap QgsPackageAlgorithm::processAlgorithm( const QVariantMap &parameters
 
     switch ( layer->type() )
     {
-      case QgsMapLayerType::VectorLayer:
+      case Qgis::LayerType::Vector:
       {
         QgsVectorLayer *vectorLayer = qobject_cast<QgsVectorLayer *>( layer.get() );
         const bool onlySaveSelected = vectorLayer->selectedFeatureCount() > 0 && selectedFeaturesOnly;
@@ -351,7 +350,7 @@ QVariantMap QgsPackageAlgorithm::processAlgorithm( const QVariantMap &parameters
         break;
       }
 
-      case QgsMapLayerType::RasterLayer:
+      case Qgis::LayerType::Raster:
       {
         //not supported
         feedback->pushDebugInfo( QObject::tr( "Packaging raster layers is not supported." ) );
@@ -359,37 +358,37 @@ QVariantMap QgsPackageAlgorithm::processAlgorithm( const QVariantMap &parameters
         break;
       }
 
-      case QgsMapLayerType::PluginLayer:
+      case Qgis::LayerType::Plugin:
         //not supported
         feedback->pushDebugInfo( QObject::tr( "Packaging plugin layers is not supported." ) );
         errored = true;
         break;
 
-      case QgsMapLayerType::MeshLayer:
+      case Qgis::LayerType::Mesh:
         //not supported
         feedback->pushDebugInfo( QObject::tr( "Packaging mesh layers is not supported." ) );
         errored = true;
         break;
 
-      case QgsMapLayerType::PointCloudLayer:
+      case Qgis::LayerType::PointCloud:
         //not supported
         feedback->pushDebugInfo( QObject::tr( "Packaging point cloud layers is not supported." ) );
         errored = true;
         break;
 
-      case QgsMapLayerType::VectorTileLayer:
+      case Qgis::LayerType::VectorTile:
         //not supported
         feedback->pushDebugInfo( QObject::tr( "Packaging vector tile layers is not supported." ) );
         errored = true;
         break;
 
-      case QgsMapLayerType::AnnotationLayer:
+      case Qgis::LayerType::Annotation:
         //not supported
         feedback->pushDebugInfo( QObject::tr( "Packaging annotation layers is not supported." ) );
         errored = true;
         break;
 
-      case QgsMapLayerType::GroupLayer:
+      case Qgis::LayerType::Group:
         //not supported
         feedback->pushDebugInfo( QObject::tr( "Packaging group layers is not supported." ) );
         errored = true;

@@ -23,7 +23,7 @@
 #include "qgisapp.h"
 #include "qgsvectorlayerutils.h"
 #include "qgsmapmouseevent.h"
-#include "qgspolygon.h"
+#include "qgscurvepolygon.h"
 
 #include <limits>
 
@@ -180,7 +180,7 @@ void QgsMapToolFillRing::fillRingUnderPoint( const QgsPointXY &p )
   while ( fit.nextFeature( f ) )
   {
     const QgsGeometry g = f.geometry();
-    if ( g.isNull() || QgsWkbTypes::geometryType( g.wkbType() ) != QgsWkbTypes::PolygonGeometry )
+    if ( g.isNull() || QgsWkbTypes::geometryType( g.wkbType() ) != Qgis::GeometryType::Polygon )
       continue;
 
     QgsMultiPolygonXY pol;

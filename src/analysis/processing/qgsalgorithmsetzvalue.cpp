@@ -78,7 +78,7 @@ QgsProcessingFeatureSource::Flag QgsSetZValueAlgorithm::sourceFlags() const
   return QgsProcessingFeatureSource::FlagSkipGeometryValidityChecks;
 }
 
-QgsWkbTypes::Type QgsSetZValueAlgorithm::outputWkbType( QgsWkbTypes::Type type ) const
+Qgis::WkbType QgsSetZValueAlgorithm::outputWkbType( Qgis::WkbType type ) const
 {
   return QgsWkbTypes::addZ( type );
 }

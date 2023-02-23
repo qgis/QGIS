@@ -124,13 +124,13 @@ class CORE_EXPORT QgsSimpleFillSymbolLayer : public QgsFillSymbolLayer
      * \param unit width units
      * \see strokeWidthUnit()
     */
-    void setStrokeWidthUnit( QgsUnitTypes::RenderUnit unit ) { mStrokeWidthUnit = unit; }
+    void setStrokeWidthUnit( Qgis::RenderUnit unit ) { mStrokeWidthUnit = unit; }
 
     /**
      * Returns the units for the width of the fill's stroke.
      * \see setStrokeWidthUnit()
     */
-    QgsUnitTypes::RenderUnit strokeWidthUnit() const { return mStrokeWidthUnit; }
+    Qgis::RenderUnit strokeWidthUnit() const { return mStrokeWidthUnit; }
 
     void setStrokeWidthMapUnitScale( const QgsMapUnitScale &scale ) { mStrokeWidthMapUnitScale = scale; }
     const QgsMapUnitScale &strokeWidthMapUnitScale() const { return mStrokeWidthMapUnitScale; }
@@ -140,14 +140,14 @@ class CORE_EXPORT QgsSimpleFillSymbolLayer : public QgsFillSymbolLayer
      * \see offset()
      * \see offsetUnit()
     */
-    void setOffsetUnit( QgsUnitTypes::RenderUnit unit ) { mOffsetUnit = unit; }
+    void setOffsetUnit( Qgis::RenderUnit unit ) { mOffsetUnit = unit; }
 
     /**
      * Returns the units for the fill's offset.
      * \see setOffsetUnit()
      * \see offset()
     */
-    QgsUnitTypes::RenderUnit offsetUnit() const { return mOffsetUnit; }
+    Qgis::RenderUnit offsetUnit() const { return mOffsetUnit; }
 
     /**
      * Sets the map unit \a scale for the fill's offset.
@@ -163,8 +163,8 @@ class CORE_EXPORT QgsSimpleFillSymbolLayer : public QgsFillSymbolLayer
     */
     const QgsMapUnitScale &offsetMapUnitScale() const { return mOffsetMapUnitScale; }
 
-    void setOutputUnit( QgsUnitTypes::RenderUnit unit ) override;
-    QgsUnitTypes::RenderUnit outputUnit() const override;
+    void setOutputUnit( Qgis::RenderUnit unit ) override;
+    Qgis::RenderUnit outputUnit() const override;
     bool usesMapUnits() const override;
 
     void setMapUnitScale( const QgsMapUnitScale &scale ) override;
@@ -188,14 +188,14 @@ class CORE_EXPORT QgsSimpleFillSymbolLayer : public QgsFillSymbolLayer
     QColor mStrokeColor;
     Qt::PenStyle mStrokeStyle;
     double mStrokeWidth;
-    QgsUnitTypes::RenderUnit mStrokeWidthUnit = QgsUnitTypes::RenderMillimeters;
+    Qgis::RenderUnit mStrokeWidthUnit = Qgis::RenderUnit::Millimeters;
     QgsMapUnitScale mStrokeWidthMapUnitScale;
     Qt::PenJoinStyle mPenJoinStyle;
     QPen mPen;
     QPen mSelPen;
 
     QPointF mOffset;
-    QgsUnitTypes::RenderUnit mOffsetUnit = QgsUnitTypes::RenderMillimeters;
+    Qgis::RenderUnit mOffsetUnit = Qgis::RenderUnit::Millimeters;
     QgsMapUnitScale mOffsetMapUnitScale;
 
   private:
@@ -416,14 +416,14 @@ class CORE_EXPORT QgsGradientFillSymbolLayer : public QgsFillSymbolLayer
      * \see offset()
      * \see offsetUnit()
     */
-    void setOffsetUnit( QgsUnitTypes::RenderUnit unit ) { mOffsetUnit = unit; }
+    void setOffsetUnit( Qgis::RenderUnit unit ) { mOffsetUnit = unit; }
 
     /**
      * Returns the units for the fill's offset.
      * \see setOffsetUnit()
      * \see offset()
     */
-    QgsUnitTypes::RenderUnit offsetUnit() const { return mOffsetUnit; }
+    Qgis::RenderUnit offsetUnit() const { return mOffsetUnit; }
 
     /**
      * Sets the map unit \a scale for the fill's offset.
@@ -439,8 +439,8 @@ class CORE_EXPORT QgsGradientFillSymbolLayer : public QgsFillSymbolLayer
     */
     const QgsMapUnitScale &offsetMapUnitScale() const { return mOffsetMapUnitScale; }
 
-    void setOutputUnit( QgsUnitTypes::RenderUnit unit ) override;
-    QgsUnitTypes::RenderUnit outputUnit() const override;
+    void setOutputUnit( Qgis::RenderUnit unit ) override;
+    Qgis::RenderUnit outputUnit() const override;
     bool usesMapUnits() const override;
 
     void setMapUnitScale( const QgsMapUnitScale &scale ) override;
@@ -463,7 +463,7 @@ class CORE_EXPORT QgsGradientFillSymbolLayer : public QgsFillSymbolLayer
     bool mReferencePoint2IsCentroid = false;
 
     QPointF mOffset;
-    QgsUnitTypes::RenderUnit mOffsetUnit = QgsUnitTypes::RenderMillimeters;
+    Qgis::RenderUnit mOffsetUnit = Qgis::RenderUnit::Millimeters;
     QgsMapUnitScale mOffsetMapUnitScale;
 
   private:
@@ -592,7 +592,7 @@ class CORE_EXPORT QgsShapeburstFillSymbolLayer : public QgsFillSymbolLayer
      * \see distanceUnit
      * \since QGIS 2.3
      */
-    void setDistanceUnit( QgsUnitTypes::RenderUnit unit ) { mDistanceUnit = unit; }
+    void setDistanceUnit( Qgis::RenderUnit unit ) { mDistanceUnit = unit; }
 
     /**
      * Returns the unit for the maximum distance to shade inside of the shape from the polygon's boundary.
@@ -601,7 +601,7 @@ class CORE_EXPORT QgsShapeburstFillSymbolLayer : public QgsFillSymbolLayer
      * \see setDistanceUnit
      * \since QGIS 2.3
      */
-    QgsUnitTypes::RenderUnit distanceUnit() const { return mDistanceUnit; }
+    Qgis::RenderUnit distanceUnit() const { return mDistanceUnit; }
 
     void setDistanceMapUnitScale( const QgsMapUnitScale &scale ) { mDistanceMapUnitScale = scale; }
     const QgsMapUnitScale &distanceMapUnitScale() const { return mDistanceMapUnitScale; }
@@ -710,7 +710,7 @@ class CORE_EXPORT QgsShapeburstFillSymbolLayer : public QgsFillSymbolLayer
      * \see offsetUnit
      * \since QGIS 2.3
      */
-    void setOffsetUnit( QgsUnitTypes::RenderUnit unit ) { mOffsetUnit = unit; }
+    void setOffsetUnit( Qgis::RenderUnit unit ) { mOffsetUnit = unit; }
 
     /**
      * Returns the units used for the offset of the shapeburst fill.
@@ -719,13 +719,13 @@ class CORE_EXPORT QgsShapeburstFillSymbolLayer : public QgsFillSymbolLayer
      * \see setOffsetUnit
      * \since QGIS 2.3
      */
-    QgsUnitTypes::RenderUnit offsetUnit() const { return mOffsetUnit; }
+    Qgis::RenderUnit offsetUnit() const { return mOffsetUnit; }
 
     void setOffsetMapUnitScale( const QgsMapUnitScale &scale ) { mOffsetMapUnitScale = scale; }
     const QgsMapUnitScale &offsetMapUnitScale() const { return mOffsetMapUnitScale; }
 
-    void setOutputUnit( QgsUnitTypes::RenderUnit unit ) override;
-    QgsUnitTypes::RenderUnit outputUnit() const override;
+    void setOutputUnit( Qgis::RenderUnit unit ) override;
+    Qgis::RenderUnit outputUnit() const override;
     bool usesMapUnits() const override;
 
     void setMapUnitScale( const QgsMapUnitScale &scale ) override;
@@ -739,7 +739,7 @@ class CORE_EXPORT QgsShapeburstFillSymbolLayer : public QgsFillSymbolLayer
 
     bool mUseWholeShape = true;
     double mMaxDistance = 5.0;
-    QgsUnitTypes::RenderUnit mDistanceUnit = QgsUnitTypes::RenderMillimeters;
+    Qgis::RenderUnit mDistanceUnit = Qgis::RenderUnit::Millimeters;
     QgsMapUnitScale mDistanceMapUnitScale;
 
     Qgis::GradientColorSource mColorType = Qgis::GradientColorSource::SimpleTwoColor;
@@ -748,7 +748,7 @@ class CORE_EXPORT QgsShapeburstFillSymbolLayer : public QgsFillSymbolLayer
     bool mIgnoreRings = false;
 
     QPointF mOffset;
-    QgsUnitTypes::RenderUnit mOffsetUnit = QgsUnitTypes::RenderMillimeters;
+    Qgis::RenderUnit mOffsetUnit = Qgis::RenderUnit::Millimeters;
     QgsMapUnitScale mOffsetMapUnitScale;
 
     std::unique_ptr< QgsColorRamp > mGradientRamp;
@@ -790,14 +790,14 @@ class CORE_EXPORT QgsImageFillSymbolLayer: public QgsFillSymbolLayer
      * \see strokeWidthUnit()
      * \see setStrokeWidthMapUnitScale()
     */
-    void setStrokeWidthUnit( QgsUnitTypes::RenderUnit unit ) { mStrokeWidthUnit = unit; }
+    void setStrokeWidthUnit( Qgis::RenderUnit unit ) { mStrokeWidthUnit = unit; }
 
     /**
      * Returns the units for the symbol's stroke width.
      * \see setStrokeWidthUnit()
      * \see strokeWidthMapUnitScale()
     */
-    QgsUnitTypes::RenderUnit strokeWidthUnit() const { return mStrokeWidthUnit; }
+    Qgis::RenderUnit strokeWidthUnit() const { return mStrokeWidthUnit; }
 
     /**
      * Sets the stroke width map unit \a scale.
@@ -835,8 +835,8 @@ class CORE_EXPORT QgsImageFillSymbolLayer: public QgsFillSymbolLayer
      */
     Qgis::SymbolCoordinateReference coordinateReference() const { return mCoordinateReference; }
 
-    void setOutputUnit( QgsUnitTypes::RenderUnit unit ) override;
-    QgsUnitTypes::RenderUnit outputUnit() const override;
+    void setOutputUnit( Qgis::RenderUnit unit ) override;
+    Qgis::RenderUnit outputUnit() const override;
     void setMapUnitScale( const QgsMapUnitScale &scale ) override;
     QgsMapUnitScale mapUnitScale() const override;
     double dxfWidth( const QgsDxfExport &e, QgsSymbolRenderContext &context ) const override;
@@ -850,7 +850,7 @@ class CORE_EXPORT QgsImageFillSymbolLayer: public QgsFillSymbolLayer
 
     //! Stroke width
     double mStrokeWidth = 0.0;
-    QgsUnitTypes::RenderUnit mStrokeWidthUnit = QgsUnitTypes::RenderMillimeters;
+    Qgis::RenderUnit mStrokeWidthUnit = Qgis::RenderUnit::Millimeters;
     QgsMapUnitScale mStrokeWidthMapUnitScale;
 
     /**
@@ -919,7 +919,7 @@ class CORE_EXPORT QgsRasterFillSymbolLayer: public QgsImageFillSymbolLayer
     double estimateMaxBleed( const QgsRenderContext &context ) const override;
     bool usesMapUnits() const override;
     QColor color() const override;
-    void setOutputUnit( QgsUnitTypes::RenderUnit unit ) override;
+    void setOutputUnit( Qgis::RenderUnit unit ) override;
 
     //override QgsImageFillSymbolLayer's support for sub symbols
     QgsSymbol *subSymbol() override { return nullptr; }
@@ -994,7 +994,7 @@ class CORE_EXPORT QgsRasterFillSymbolLayer: public QgsImageFillSymbolLayer
      * \see setOffset
      * \see setOffsetMapUnitScale
      */
-    void setOffsetUnit( const QgsUnitTypes::RenderUnit unit ) { mOffsetUnit = unit; }
+    void setOffsetUnit( const Qgis::RenderUnit unit ) { mOffsetUnit = unit; }
 
     /**
      * Returns the units for the fill's offset.
@@ -1003,7 +1003,7 @@ class CORE_EXPORT QgsRasterFillSymbolLayer: public QgsImageFillSymbolLayer
      * \see offset
      * \see offsetMapUnitScale
      */
-    QgsUnitTypes::RenderUnit offsetUnit() const { return mOffsetUnit; }
+    Qgis::RenderUnit offsetUnit() const { return mOffsetUnit; }
 
     /**
      * Sets the map unit scale for the fill's offset.
@@ -1050,7 +1050,7 @@ class CORE_EXPORT QgsRasterFillSymbolLayer: public QgsImageFillSymbolLayer
      * \see setWidth
      * \see setWidthMapUnitScale
      */
-    void setWidthUnit( const QgsUnitTypes::RenderUnit unit ) { mWidthUnit = unit; }
+    void setWidthUnit( const Qgis::RenderUnit unit ) { mWidthUnit = unit; }
 
     /**
      * Returns the units for the image's width.
@@ -1059,7 +1059,7 @@ class CORE_EXPORT QgsRasterFillSymbolLayer: public QgsImageFillSymbolLayer
      * \see width
      * \see widthMapUnitScale
      */
-    QgsUnitTypes::RenderUnit widthUnit() const { return mWidthUnit; }
+    Qgis::RenderUnit widthUnit() const { return mWidthUnit; }
 
     /**
      * Sets the map unit scale for the image's width.
@@ -1091,11 +1091,11 @@ class CORE_EXPORT QgsRasterFillSymbolLayer: public QgsImageFillSymbolLayer
     double mOpacity = 1.0;
 
     QPointF mOffset;
-    QgsUnitTypes::RenderUnit mOffsetUnit = QgsUnitTypes::RenderMillimeters;
+    Qgis::RenderUnit mOffsetUnit = Qgis::RenderUnit::Millimeters;
     QgsMapUnitScale mOffsetMapUnitScale;
 
     double mWidth = 0.0;
-    QgsUnitTypes::RenderUnit mWidthUnit = QgsUnitTypes::RenderPixels;
+    Qgis::RenderUnit mWidthUnit = Qgis::RenderUnit::Pixels;
     QgsMapUnitScale mWidthMapUnitScale;
 
     //! Applies the image pattern to the brush
@@ -1274,7 +1274,7 @@ class CORE_EXPORT QgsSVGFillSymbolLayer: public QgsImageFillSymbolLayer
      * \see setPatternWidth()
      * \see setPatternWidthMapUnitScale()
     */
-    void setPatternWidthUnit( QgsUnitTypes::RenderUnit unit ) { mPatternWidthUnit = unit; }
+    void setPatternWidthUnit( Qgis::RenderUnit unit ) { mPatternWidthUnit = unit; }
 
     /**
      * Returns the units for the width of the SVG images in the pattern.
@@ -1283,7 +1283,7 @@ class CORE_EXPORT QgsSVGFillSymbolLayer: public QgsImageFillSymbolLayer
      * \see patternWidth()
      * \see patternWidthMapUnitScale()
     */
-    QgsUnitTypes::RenderUnit patternWidthUnit() const { return mPatternWidthUnit; }
+    Qgis::RenderUnit patternWidthUnit() const { return mPatternWidthUnit; }
 
     /**
      * Sets the map unit \a scale for the pattern's width.
@@ -1310,7 +1310,7 @@ class CORE_EXPORT QgsSVGFillSymbolLayer: public QgsImageFillSymbolLayer
      * \see setSvgStrokeWidth()
      * \see setSvgStrokeWidthMapUnitScale()
     */
-    void setSvgStrokeWidthUnit( QgsUnitTypes::RenderUnit unit ) { mSvgStrokeWidthUnit = unit; }
+    void setSvgStrokeWidthUnit( Qgis::RenderUnit unit ) { mSvgStrokeWidthUnit = unit; }
 
     /**
      * Returns the units for the stroke width.
@@ -1319,7 +1319,7 @@ class CORE_EXPORT QgsSVGFillSymbolLayer: public QgsImageFillSymbolLayer
      * \see svgStrokeWidth()
      * \see svgStrokeWidthMapUnitScale()
     */
-    QgsUnitTypes::RenderUnit svgStrokeWidthUnit() const { return mSvgStrokeWidthUnit; }
+    Qgis::RenderUnit svgStrokeWidthUnit() const { return mSvgStrokeWidthUnit; }
 
     /**
      * Sets the map unit \a scale for the pattern's stroke.
@@ -1339,8 +1339,8 @@ class CORE_EXPORT QgsSVGFillSymbolLayer: public QgsImageFillSymbolLayer
      */
     const QgsMapUnitScale &svgStrokeWidthMapUnitScale() const { return mSvgStrokeWidthMapUnitScale; }
 
-    void setOutputUnit( QgsUnitTypes::RenderUnit unit ) override;
-    QgsUnitTypes::RenderUnit outputUnit() const override;
+    void setOutputUnit( Qgis::RenderUnit unit ) override;
+    Qgis::RenderUnit outputUnit() const override;
 
     void setMapUnitScale( const QgsMapUnitScale &scale ) override;
     QgsMapUnitScale mapUnitScale() const override;
@@ -1365,7 +1365,7 @@ class CORE_EXPORT QgsSVGFillSymbolLayer: public QgsImageFillSymbolLayer
 
     //! Width of the pattern (in output units)
     double mPatternWidth = 20;
-    QgsUnitTypes::RenderUnit mPatternWidthUnit = QgsUnitTypes::RenderMillimeters;
+    Qgis::RenderUnit mPatternWidthUnit = Qgis::RenderUnit::Millimeters;
     QgsMapUnitScale mPatternWidthMapUnitScale;
     QMap<QString, QgsProperty> mParameters;
 
@@ -1380,7 +1380,7 @@ class CORE_EXPORT QgsSVGFillSymbolLayer: public QgsImageFillSymbolLayer
     //to be replaced in memory
     QColor mSvgStrokeColor = QColor( 35, 35, 35 );
     double mSvgStrokeWidth = 0.2;
-    QgsUnitTypes::RenderUnit mSvgStrokeWidthUnit = QgsUnitTypes::RenderMillimeters;
+    Qgis::RenderUnit mSvgStrokeWidthUnit = Qgis::RenderUnit::Millimeters;
     QgsMapUnitScale mSvgStrokeWidthMapUnitScale;
 
     //! Custom stroke -- here for historic reasons only
@@ -1391,8 +1391,8 @@ class CORE_EXPORT QgsSVGFillSymbolLayer: public QgsImageFillSymbolLayer
     void setDefaultSvgParams(); //fills mSvgFillColor, mSvgStrokeColor, mSvgStrokeWidth with default values for mSvgFilePath
 
     //! Applies the svg pattern to the brush
-    void applyPattern( QBrush &brush, const QString &svgFilePath, double patternWidth, QgsUnitTypes::RenderUnit patternWidthUnit, const QColor &svgFillColor, const QColor &svgStrokeColor,
-                       double svgStrokeWidth, QgsUnitTypes::RenderUnit svgStrokeWidthUnit, const QgsSymbolRenderContext &context, const QgsMapUnitScale &patternWidthMapUnitScale, const QgsMapUnitScale &svgStrokeWidthMapUnitScale,
+    void applyPattern( QBrush &brush, const QString &svgFilePath, double patternWidth, Qgis::RenderUnit patternWidthUnit, const QColor &svgFillColor, const QColor &svgStrokeColor,
+                       double svgStrokeWidth, Qgis::RenderUnit svgStrokeWidthUnit, const QgsSymbolRenderContext &context, const QgsMapUnitScale &patternWidthMapUnitScale, const QgsMapUnitScale &svgStrokeWidthMapUnitScale,
                        const QgsStringMap svgParameters );
 };
 
@@ -1515,7 +1515,7 @@ class CORE_EXPORT QgsLinePatternFillSymbolLayer: public QgsImageFillSymbolLayer
      * \see distanceUnit()
      * \see setDistance()
     */
-    void setDistanceUnit( QgsUnitTypes::RenderUnit unit ) { mDistanceUnit = unit; }
+    void setDistanceUnit( Qgis::RenderUnit unit ) { mDistanceUnit = unit; }
 
     /**
      * Returns the units for the distance between lines in the fill pattern.
@@ -1523,7 +1523,7 @@ class CORE_EXPORT QgsLinePatternFillSymbolLayer: public QgsImageFillSymbolLayer
      * \see setDistanceUnit()
      * \see distance()
     */
-    QgsUnitTypes::RenderUnit distanceUnit() const { return mDistanceUnit; }
+    Qgis::RenderUnit distanceUnit() const { return mDistanceUnit; }
 
     /**
      * Sets the map unit \a scale for the pattern's line distance.
@@ -1548,14 +1548,14 @@ class CORE_EXPORT QgsLinePatternFillSymbolLayer: public QgsImageFillSymbolLayer
      *
      * \see lineWidthUnit()
     */
-    void setLineWidthUnit( QgsUnitTypes::RenderUnit unit ) { mLineWidthUnit = unit; }
+    void setLineWidthUnit( Qgis::RenderUnit unit ) { mLineWidthUnit = unit; }
 
     /**
      * Returns the units for the line's width.
      *
      * \see setLineWidthUnit()
     */
-    QgsUnitTypes::RenderUnit lineWidthUnit() const { return mLineWidthUnit; }
+    Qgis::RenderUnit lineWidthUnit() const { return mLineWidthUnit; }
 
     /**
      * Sets the map unit \a scale for the pattern's line width.
@@ -1580,14 +1580,14 @@ class CORE_EXPORT QgsLinePatternFillSymbolLayer: public QgsImageFillSymbolLayer
 
      * \see offsetUnit()
     */
-    void setOffsetUnit( QgsUnitTypes::RenderUnit unit ) { mOffsetUnit = unit; }
+    void setOffsetUnit( Qgis::RenderUnit unit ) { mOffsetUnit = unit; }
 
     /**
      * Returns the units for the line pattern's offset.
      *
      * \see setOffsetUnit()
     */
-    QgsUnitTypes::RenderUnit offsetUnit() const { return mOffsetUnit; }
+    Qgis::RenderUnit offsetUnit() const { return mOffsetUnit; }
 
     /**
      * Sets the map unit \a scale for the pattern's line offset.
@@ -1623,8 +1623,8 @@ class CORE_EXPORT QgsLinePatternFillSymbolLayer: public QgsImageFillSymbolLayer
      */
     void setClipMode( Qgis::LineClipMode mode ) { mClipMode = mode; }
 
-    void setOutputUnit( QgsUnitTypes::RenderUnit unit ) override;
-    QgsUnitTypes::RenderUnit outputUnit() const override;
+    void setOutputUnit( Qgis::RenderUnit unit ) override;
+    Qgis::RenderUnit outputUnit() const override;
     bool usesMapUnits() const override;
     void setMapUnitScale( const QgsMapUnitScale &scale ) override;
     QgsMapUnitScale mapUnitScale() const override;
@@ -1642,17 +1642,17 @@ class CORE_EXPORT QgsLinePatternFillSymbolLayer: public QgsImageFillSymbolLayer
   private:
     //! Distance (in mm or map units) between lines
     double mDistance = 5.0;
-    QgsUnitTypes::RenderUnit mDistanceUnit = QgsUnitTypes::RenderMillimeters;
+    Qgis::RenderUnit mDistanceUnit = Qgis::RenderUnit::Millimeters;
     QgsMapUnitScale mDistanceMapUnitScale;
     //! Line width (in mm or map units)
     double mLineWidth = 0;
-    QgsUnitTypes::RenderUnit mLineWidthUnit = QgsUnitTypes::RenderMillimeters;
+    Qgis::RenderUnit mLineWidthUnit = Qgis::RenderUnit::Millimeters;
     QgsMapUnitScale mLineWidthMapUnitScale;
     //! Vector line angle in degrees (0 = horizontal, counterclockwise)
     double mLineAngle = 45.0;
     //! Offset perpendicular to line direction
     double mOffset = 0.0;
-    QgsUnitTypes::RenderUnit mOffsetUnit = QgsUnitTypes::RenderMillimeters;
+    Qgis::RenderUnit mOffsetUnit = Qgis::RenderUnit::Millimeters;
     QgsMapUnitScale mOffsetMapUnitScale;
 
     bool mRenderUsingLines = false;
@@ -1702,8 +1702,8 @@ class CORE_EXPORT QgsPointPatternFillSymbolLayer: public QgsImageFillSymbolLayer
     double estimateMaxBleed( const QgsRenderContext &context ) const override;
     bool setSubSymbol( QgsSymbol *symbol SIP_TRANSFER ) override;
     QgsSymbol *subSymbol() override;
-    void setOutputUnit( QgsUnitTypes::RenderUnit unit ) override;
-    QgsUnitTypes::RenderUnit outputUnit() const override;
+    void setOutputUnit( Qgis::RenderUnit unit ) override;
+    Qgis::RenderUnit outputUnit() const override;
     bool usesMapUnits() const override;
     void setMapUnitScale( const QgsMapUnitScale &scale ) override;
     QgsMapUnitScale mapUnitScale() const override;
@@ -1740,14 +1740,14 @@ class CORE_EXPORT QgsPointPatternFillSymbolLayer: public QgsImageFillSymbolLayer
      * \see distanceXUnit()
      * \see setDistanceYUnit()
     */
-    void setDistanceXUnit( QgsUnitTypes::RenderUnit unit ) { mDistanceXUnit = unit; }
+    void setDistanceXUnit( Qgis::RenderUnit unit ) { mDistanceXUnit = unit; }
 
     /**
      * Returns the units for the horizontal distance between points in the pattern.
      * \see setDistanceXUnit()
      * \see distanceYUnit()
     */
-    QgsUnitTypes::RenderUnit distanceXUnit() const { return mDistanceXUnit; }
+    Qgis::RenderUnit distanceXUnit() const { return mDistanceXUnit; }
 
     /**
      * Sets the map unit \a scale for the horizontal distance between points in the pattern.
@@ -1793,14 +1793,14 @@ class CORE_EXPORT QgsPointPatternFillSymbolLayer: public QgsImageFillSymbolLayer
      * \see distanceYUnit()
      * \see setDistanceXUnit()
     */
-    void setDistanceYUnit( QgsUnitTypes::RenderUnit unit ) { mDistanceYUnit = unit; }
+    void setDistanceYUnit( Qgis::RenderUnit unit ) { mDistanceYUnit = unit; }
 
     /**
      * Returns the units for the vertical distance between points in the pattern.
      * \see setDistanceYUnit()
      * \see distanceXUnit()
     */
-    QgsUnitTypes::RenderUnit distanceYUnit() const { return mDistanceYUnit; }
+    Qgis::RenderUnit distanceYUnit() const { return mDistanceYUnit; }
 
     /**
      * Sets the map unit \a scale for the vertical distance between points in the pattern.
@@ -1846,14 +1846,14 @@ class CORE_EXPORT QgsPointPatternFillSymbolLayer: public QgsImageFillSymbolLayer
      * \see displacementXUnit()
      * \see setDisplacementYUnit()
     */
-    void setDisplacementXUnit( QgsUnitTypes::RenderUnit unit ) { mDisplacementXUnit = unit; }
+    void setDisplacementXUnit( Qgis::RenderUnit unit ) { mDisplacementXUnit = unit; }
 
     /**
      * Returns the units for the horizontal displacement between rows in the pattern.
      * \see setDisplacementXUnit()
      * \see displacementYUnit()
     */
-    QgsUnitTypes::RenderUnit displacementXUnit() const { return mDisplacementXUnit; }
+    Qgis::RenderUnit displacementXUnit() const { return mDisplacementXUnit; }
 
     /**
      * Sets the map unit \a scale for the horizontal displacement between odd numbered rows in the pattern.
@@ -1899,14 +1899,14 @@ class CORE_EXPORT QgsPointPatternFillSymbolLayer: public QgsImageFillSymbolLayer
      * \see displacementYUnit()
      * \see setDisplacementXUnit()
     */
-    void setDisplacementYUnit( QgsUnitTypes::RenderUnit unit ) { mDisplacementYUnit = unit; }
+    void setDisplacementYUnit( Qgis::RenderUnit unit ) { mDisplacementYUnit = unit; }
 
     /**
      * Returns the units for the vertical displacement between rows in the pattern.
      * \see setDisplacementYUnit()
      * \see displacementXUnit()
     */
-    QgsUnitTypes::RenderUnit displacementYUnit() const { return mDisplacementYUnit; }
+    Qgis::RenderUnit displacementYUnit() const { return mDisplacementYUnit; }
 
     /**
      * Sets the map unit \a scale for the vertical displacement between odd numbered columns in the pattern.
@@ -1965,7 +1965,7 @@ class CORE_EXPORT QgsPointPatternFillSymbolLayer: public QgsImageFillSymbolLayer
      * \see setOffsetYUnit()
      * \since QGIS 3.8
     */
-    void setOffsetXUnit( QgsUnitTypes::RenderUnit unit ) { mOffsetXUnit = unit; }
+    void setOffsetXUnit( Qgis::RenderUnit unit ) { mOffsetXUnit = unit; }
 
     /**
      * Returns the units for the horizontal offset for rows in the pattern.
@@ -1973,7 +1973,7 @@ class CORE_EXPORT QgsPointPatternFillSymbolLayer: public QgsImageFillSymbolLayer
      * \see offsetYUnit()
      * \since QGIS 3.8
     */
-    QgsUnitTypes::RenderUnit offsetXUnit() const { return mOffsetXUnit; }
+    Qgis::RenderUnit offsetXUnit() const { return mOffsetXUnit; }
 
     /**
      * Sets the unit scale for the horizontal offset for rows in the pattern.
@@ -1999,7 +1999,7 @@ class CORE_EXPORT QgsPointPatternFillSymbolLayer: public QgsImageFillSymbolLayer
      * \see setOffsetXUnit()
      * \since QGIS 3.8
     */
-    void setOffsetYUnit( QgsUnitTypes::RenderUnit unit ) { mOffsetYUnit = unit; }
+    void setOffsetYUnit( Qgis::RenderUnit unit ) { mOffsetYUnit = unit; }
 
     /**
      * Returns the units for the vertical offset for rows in the pattern.
@@ -2007,7 +2007,7 @@ class CORE_EXPORT QgsPointPatternFillSymbolLayer: public QgsImageFillSymbolLayer
      * \see offsetXUnit()
      * \since QGIS 3.8
     */
-    QgsUnitTypes::RenderUnit offsetYUnit() const { return mOffsetYUnit; }
+    Qgis::RenderUnit offsetYUnit() const { return mOffsetYUnit; }
 
     /**
      * Sets the unit scale for the vertical offset for rows in the pattern.
@@ -2093,7 +2093,7 @@ class CORE_EXPORT QgsPointPatternFillSymbolLayer: public QgsImageFillSymbolLayer
      * \see setRandomDeviationYUnit()
      * \since QGIS 3.24
     */
-    void setRandomDeviationXUnit( QgsUnitTypes::RenderUnit unit ) { mRandomDeviationXUnit = unit; }
+    void setRandomDeviationXUnit( Qgis::RenderUnit unit ) { mRandomDeviationXUnit = unit; }
 
     /**
      * Returns the units for the horizontal random deviation of points in the pattern.
@@ -2102,7 +2102,7 @@ class CORE_EXPORT QgsPointPatternFillSymbolLayer: public QgsImageFillSymbolLayer
      *
      * \since QGIS 3.24
     */
-    QgsUnitTypes::RenderUnit randomDeviationXUnit() const { return mRandomDeviationXUnit; }
+    Qgis::RenderUnit randomDeviationXUnit() const { return mRandomDeviationXUnit; }
 
     /**
      * Sets the \a unit for the vertical random deviation of points in the pattern.
@@ -2111,7 +2111,7 @@ class CORE_EXPORT QgsPointPatternFillSymbolLayer: public QgsImageFillSymbolLayer
      * \see setRandomDeviationXUnit()
      * \since QGIS 3.24
     */
-    void setRandomDeviationYUnit( QgsUnitTypes::RenderUnit unit ) { mRandomDeviationYUnit = unit; }
+    void setRandomDeviationYUnit( Qgis::RenderUnit unit ) { mRandomDeviationYUnit = unit; }
 
     /**
      * Returns the units for the vertical random deviation of points in the pattern.
@@ -2121,7 +2121,7 @@ class CORE_EXPORT QgsPointPatternFillSymbolLayer: public QgsImageFillSymbolLayer
      *
      * \since QGIS 3.24
     */
-    QgsUnitTypes::RenderUnit randomDeviationYUnit() const { return mRandomDeviationYUnit; }
+    Qgis::RenderUnit randomDeviationYUnit() const { return mRandomDeviationYUnit; }
 
     /**
      * Returns the unit scale for the horizontal random deviation of points in the pattern.
@@ -2196,29 +2196,29 @@ class CORE_EXPORT QgsPointPatternFillSymbolLayer: public QgsImageFillSymbolLayer
   protected:
     std::unique_ptr< QgsMarkerSymbol > mMarkerSymbol;
     double mDistanceX = 15;
-    QgsUnitTypes::RenderUnit mDistanceXUnit = QgsUnitTypes::RenderMillimeters;
+    Qgis::RenderUnit mDistanceXUnit = Qgis::RenderUnit::Millimeters;
     QgsMapUnitScale mDistanceXMapUnitScale;
     double mDistanceY = 15;
-    QgsUnitTypes::RenderUnit mDistanceYUnit = QgsUnitTypes::RenderMillimeters;
+    Qgis::RenderUnit mDistanceYUnit = Qgis::RenderUnit::Millimeters;
     QgsMapUnitScale mDistanceYMapUnitScale;
     double mDisplacementX = 0;
-    QgsUnitTypes::RenderUnit mDisplacementXUnit = QgsUnitTypes::RenderMillimeters;
+    Qgis::RenderUnit mDisplacementXUnit = Qgis::RenderUnit::Millimeters;
     QgsMapUnitScale mDisplacementXMapUnitScale;
     double mDisplacementY = 0;
-    QgsUnitTypes::RenderUnit mDisplacementYUnit = QgsUnitTypes::RenderMillimeters;
+    Qgis::RenderUnit mDisplacementYUnit = Qgis::RenderUnit::Millimeters;
     QgsMapUnitScale mDisplacementYMapUnitScale;
     double mOffsetX = 0;
-    QgsUnitTypes::RenderUnit mOffsetXUnit = QgsUnitTypes::RenderMillimeters;
+    Qgis::RenderUnit mOffsetXUnit = Qgis::RenderUnit::Millimeters;
     QgsMapUnitScale mOffsetXMapUnitScale;
     double mOffsetY = 0;
-    QgsUnitTypes::RenderUnit mOffsetYUnit = QgsUnitTypes::RenderMillimeters;
+    Qgis::RenderUnit mOffsetYUnit = Qgis::RenderUnit::Millimeters;
     QgsMapUnitScale mOffsetYMapUnitScale;
 
     double mRandomDeviationX = 0;
-    QgsUnitTypes::RenderUnit mRandomDeviationXUnit = QgsUnitTypes::RenderMillimeters;
+    Qgis::RenderUnit mRandomDeviationXUnit = Qgis::RenderUnit::Millimeters;
     QgsMapUnitScale mRandomDeviationXMapUnitScale;
     double mRandomDeviationY = 0;
-    QgsUnitTypes::RenderUnit mRandomDeviationYUnit = QgsUnitTypes::RenderMillimeters;
+    Qgis::RenderUnit mRandomDeviationYUnit = Qgis::RenderUnit::Millimeters;
     QgsMapUnitScale mRandomDeviationYMapUnitScale;
     unsigned long mSeed = 0;
 
@@ -2282,8 +2282,8 @@ class CORE_EXPORT QgsRandomMarkerFillSymbolLayer : public QgsFillSymbolLayer
     QgsSymbol *subSymbol() override;
     bool setSubSymbol( QgsSymbol *symbol SIP_TRANSFER ) override;
 
-    void setOutputUnit( QgsUnitTypes::RenderUnit unit ) override;
-    QgsUnitTypes::RenderUnit outputUnit() const override;
+    void setOutputUnit( Qgis::RenderUnit unit ) override;
+    Qgis::RenderUnit outputUnit() const override;
     bool usesMapUnits() const override;
 
     void setMapUnitScale( const QgsMapUnitScale &scale ) override;
@@ -2373,13 +2373,13 @@ class CORE_EXPORT QgsRandomMarkerFillSymbolLayer : public QgsFillSymbolLayer
      * \param unit width units
      * \see densityAreaUnit()
     */
-    void setDensityAreaUnit( QgsUnitTypes::RenderUnit unit ) { mDensityAreaUnit = unit; }
+    void setDensityAreaUnit( Qgis::RenderUnit unit ) { mDensityAreaUnit = unit; }
 
     /**
      * Returns the units for the density area.
      * \see setDensityAreaUnit()
     */
-    QgsUnitTypes::RenderUnit densityAreaUnit() const { return mDensityAreaUnit; }
+    Qgis::RenderUnit densityAreaUnit() const { return mDensityAreaUnit; }
 
     /**
      * Sets the map scale for the density area.
@@ -2420,7 +2420,7 @@ class CORE_EXPORT QgsRandomMarkerFillSymbolLayer : public QgsFillSymbolLayer
     Qgis::PointCountMethod mCountMethod = Qgis::PointCountMethod::Absolute;
     int mPointCount = 10;
     double mDensityArea = 250.0;
-    QgsUnitTypes::RenderUnit mDensityAreaUnit = QgsUnitTypes::RenderMillimeters;
+    Qgis::RenderUnit mDensityAreaUnit = Qgis::RenderUnit::Millimeters;
     QgsMapUnitScale mDensityAreaUnitScale;
     unsigned long mSeed = 0;
     bool mClipPoints = false;
@@ -2463,8 +2463,8 @@ class CORE_EXPORT QgsCentroidFillSymbolLayer : public QgsFillSymbolLayer
     QColor color() const override;
     QgsSymbol *subSymbol() override;
     bool setSubSymbol( QgsSymbol *symbol SIP_TRANSFER ) override;
-    void setOutputUnit( QgsUnitTypes::RenderUnit unit ) override;
-    QgsUnitTypes::RenderUnit outputUnit() const override;
+    void setOutputUnit( Qgis::RenderUnit unit ) override;
+    Qgis::RenderUnit outputUnit() const override;
     bool usesMapUnits() const override;
     void setMapUnitScale( const QgsMapUnitScale &scale ) override;
     QgsMapUnitScale mapUnitScale() const override;

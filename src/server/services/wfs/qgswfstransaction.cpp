@@ -37,9 +37,6 @@
 #include "qgsproject.h"
 #include "qgsexpressioncontextutils.h"
 
-#include "qgslogger.h"
-#include "qgsserverlogger.h"
-
 #include <QRegularExpression>
 #include <QRegularExpressionMatch>
 
@@ -271,7 +268,7 @@ namespace QgsWfs
       {
         continue;
       }
-      if ( layer->type() != QgsMapLayerType::VectorLayer )
+      if ( layer->type() != Qgis::LayerType::Vector )
       {
         continue;
       }

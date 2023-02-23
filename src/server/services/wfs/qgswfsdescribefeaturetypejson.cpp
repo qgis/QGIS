@@ -177,43 +177,43 @@ QJsonObject QgsWfsDescribeFeatureTypeJson::schemaLayerToJson( const QgsVectorLay
 
 void QgsWfsDescribeFeatureTypeJson::getGeometryType( const QgsVectorLayer *layer, QString &geomType, QString &geomLocalType ) const
 {
-  const QgsWkbTypes::Type wkbType = layer->wkbType();
+  const Qgis::WkbType wkbType = layer->wkbType();
   switch ( wkbType )
   {
-    case QgsWkbTypes::Point25D:
-    case QgsWkbTypes::Point:
+    case Qgis::WkbType::Point25D:
+    case Qgis::WkbType::Point:
       geomType = QStringLiteral( "gml:PointPropertyType" );
       geomLocalType = QStringLiteral( "Point" );
       break;
 
-    case QgsWkbTypes::LineString25D:
-    case QgsWkbTypes::LineString:
+    case Qgis::WkbType::LineString25D:
+    case Qgis::WkbType::LineString:
       geomType = QStringLiteral( "gml:LineStringPropertyType" );
       geomLocalType = QStringLiteral( "LineString" );
       break;
 
-    case QgsWkbTypes::Polygon25D:
-    case QgsWkbTypes::Polygon:
+    case Qgis::WkbType::Polygon25D:
+    case Qgis::WkbType::Polygon:
       geomType = QStringLiteral( "gml:PolygonPropertyType" );
       geomLocalType = QStringLiteral( "Polygon" );
       break;
 
-    case QgsWkbTypes::MultiPoint25D:
-    case QgsWkbTypes::MultiPoint:
+    case Qgis::WkbType::MultiPoint25D:
+    case Qgis::WkbType::MultiPoint:
       geomType = QStringLiteral( "gml:MultiPointPropertyType" );
       geomLocalType = QStringLiteral( "MultiPoint" );
       break;
 
-    case QgsWkbTypes::MultiCurve:
-    case QgsWkbTypes::MultiLineString25D:
-    case QgsWkbTypes::MultiLineString:
+    case Qgis::WkbType::MultiCurve:
+    case Qgis::WkbType::MultiLineString25D:
+    case Qgis::WkbType::MultiLineString:
       geomType = QStringLiteral( "gml:MultiCurvePropertyType" );
       geomLocalType = QStringLiteral( "MultiCurve" );
       break;
 
-    case QgsWkbTypes::MultiSurface:
-    case QgsWkbTypes::MultiPolygon25D:
-    case QgsWkbTypes::MultiPolygon:
+    case Qgis::WkbType::MultiSurface:
+    case Qgis::WkbType::MultiPolygon25D:
+    case Qgis::WkbType::MultiPolygon:
       geomType = QStringLiteral( "gml:MultiSurfacePropertyType" );
       geomLocalType = QStringLiteral( "MultiSurface" );
       break;

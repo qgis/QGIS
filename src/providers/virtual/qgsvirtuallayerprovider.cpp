@@ -35,6 +35,7 @@ extern "C"
 #include "qgsapplication.h"
 
 #include <QUrl>
+#include <QUrlQuery>
 
 const QString QgsVirtualLayerProvider::VIRTUAL_LAYER_KEY = QStringLiteral( "virtual" );
 const QString QgsVirtualLayerProvider::VIRTUAL_LAYER_DESCRIPTION = QStringLiteral( "Virtual layer data provider" );
@@ -121,7 +122,7 @@ bool QgsVirtualLayerProvider::loadSourceLayers()
         PROVIDER_ERROR( QString( "Cannot find layer %1" ).arg( layer.reference() ) );
         return false;
       }
-      if ( l->type() != QgsMapLayerType::VectorLayer )
+      if ( l->type() != Qgis::LayerType::Vector )
       {
         PROVIDER_ERROR( QString( "Layer %1 is not a vector layer" ).arg( layer.reference() ) );
         return false;
@@ -250,7 +251,7 @@ bool QgsVirtualLayerProvider::createIt()
       const auto constMapLayers = QgsProject::instance()->mapLayers();
       for ( const QgsMapLayer *l : constMapLayers )
       {
-        if ( l->type() != QgsMapLayerType::VectorLayer )
+        if ( l->type() != Qgis::LayerType::Vector )
           continue;
 
         const QgsVectorLayer *vl = static_cast<const QgsVectorLayer *>( l );
@@ -293,7 +294,7 @@ bool QgsVirtualLayerProvider::createIt()
   resetSqlite();
   initVirtualLayerMetadata( mSqlite.get() );
 
-  const bool noGeometry = mDefinition.geometryWkbType() == QgsWkbTypes::NoGeometry;
+  const bool noGeometry = mDefinition.geometryWkbType() == Qgis::WkbType::NoGeometry;
 
   // load source layers (and populate mLayers)
   if ( !loadSourceLayers() )
@@ -533,9 +534,9 @@ bool QgsVirtualLayerProvider::setSubsetString( const QString &subset, bool updat
 }
 
 
-QgsWkbTypes::Type QgsVirtualLayerProvider::wkbType() const
+Qgis::WkbType QgsVirtualLayerProvider::wkbType() const
 {
-  return static_cast<QgsWkbTypes::Type>( mDefinition.geometryWkbType() );
+  return static_cast<Qgis::WkbType>( mDefinition.geometryWkbType() );
 }
 
 long long QgsVirtualLayerProvider::featureCount() const
@@ -558,7 +559,7 @@ QgsRectangle QgsVirtualLayerProvider::extent() const
 
 void QgsVirtualLayerProvider::updateStatistics() const
 {
-  const bool hasGeometry = mDefinition.geometryWkbType() != QgsWkbTypes::NoGeometry;
+  const bool hasGeometry = mDefinition.geometryWkbType() != Qgis::WkbType::NoGeometry;
   const QString subset = mSubset.isEmpty() ? QString() : " WHERE " + mSubset;
   const QString sql = QStringLiteral( "SELECT Count(*)%1 FROM %2%3" )
                       .arg( hasGeometry ? QStringLiteral( ",Min(MbrMinX(%1)),Min(MbrMinY(%1)),Max(MbrMaxX(%1)),Max(MbrMaxY(%1))" ).arg( quotedColumn( mDefinition.geometryField() ) ) : QString(),
@@ -672,9 +673,102 @@ QgsVirtualLayerProvider *QgsVirtualLayerProviderMetadata::createProvider(
   return new QgsVirtualLayerProvider( uri, options, flags );
 }
 
-QList<QgsMapLayerType> QgsVirtualLayerProviderMetadata::supportedLayerTypes() const
+QString QgsVirtualLayerProviderMetadata::absoluteToRelativeUri( const QString &uri, const QgsReadWriteContext &context ) const
 {
-  return { QgsMapLayerType::VectorLayer };
+  QUrl urlSource = QUrl::fromEncoded( uri.toLatin1() );
+  QStringList theURIParts;
+
+  QUrlQuery query = QUrlQuery( urlSource.query() );
+  QList<QPair<QString, QString> > queryItems = query.queryItems();
+
+  for ( int i = 0; i < queryItems.size(); i++ )
+  {
+    QString key = queryItems.at( i ).first;
+    QString value = queryItems.at( i ).second;
+    if ( key == QLatin1String( "layer" ) )
+    {
+      // syntax: provider:url_encoded_source_URI(:name(:encoding)?)?
+      theURIParts = value.split( ':' );
+      theURIParts[1] = QUrl::fromPercentEncoding( theURIParts[1].toUtf8() );
+
+      if ( theURIParts[0] == QLatin1String( "delimitedtext" ) )
+      {
+        QUrl urlSource = QUrl( theURIParts[1] );
+        QUrl urlDest = QUrl::fromLocalFile( context.pathResolver().writePath( urlSource.toLocalFile() ) );
+        urlDest.setQuery( urlSource.query() );
+        theURIParts[1] = QUrl::toPercentEncoding( urlDest.toString(), QByteArray( "" ), QByteArray( ":" ) );
+      }
+      else
+      {
+        theURIParts[1] = context.pathResolver().writePath( theURIParts[1] );
+        theURIParts[1] = QUrl::toPercentEncoding( theURIParts[1] );
+      }
+
+      queryItems[i].second =  theURIParts.join( QLatin1Char( ':' ) ) ;
+    }
+  }
+
+  query.setQueryItems( queryItems );
+
+  QUrl urlDest = QUrl( urlSource );
+  urlDest.setQuery( query.query() );
+  return QString::fromLatin1( urlDest.toEncoded() );
+}
+
+QString QgsVirtualLayerProviderMetadata::relativeToAbsoluteUri( const QString &uri, const QgsReadWriteContext &context ) const
+{
+  QUrl urlSource = QUrl::fromEncoded( uri.toLatin1() );
+  QStringList theURIParts;
+
+  QUrlQuery query = QUrlQuery( urlSource.query() );
+  QList<QPair<QString, QString> > queryItems = query.queryItems();
+
+  for ( int i = 0; i < queryItems.size(); i++ )
+  {
+    QString key = queryItems.at( i ).first;
+    QString value = queryItems.at( i ).second;
+    if ( key == QLatin1String( "layer" ) )
+    {
+      // syntax: provider:url_encoded_source_URI(:name(:encoding)?)?
+      theURIParts = value.split( ':' );
+      theURIParts[1] = QUrl::fromPercentEncoding( theURIParts[1].toUtf8() );
+
+      if ( theURIParts[0] == QLatin1String( "delimitedtext" ) )
+      {
+        QUrl urlSource = QUrl( theURIParts[1] );
+
+        if ( !theURIParts[1].startsWith( QLatin1String( "file:" ) ) )
+        {
+          QUrl file = QUrl::fromLocalFile( theURIParts[1].left( theURIParts[1].indexOf( '?' ) ) );
+          urlSource.setScheme( QStringLiteral( "file" ) );
+          urlSource.setPath( file.path() );
+        }
+
+        QUrl urlDest = QUrl::fromLocalFile( context.pathResolver().readPath( urlSource.toLocalFile() ) );
+        urlDest.setQuery( urlSource.query() );
+
+        theURIParts[1] = urlDest.toString();
+      }
+      else
+      {
+        theURIParts[1] = context.pathResolver().readPath( theURIParts[1] );
+      }
+
+      theURIParts[1] = QUrl::toPercentEncoding( theURIParts[1] );
+      queryItems[i].second =  theURIParts.join( QLatin1Char( ':' ) ) ;
+    }
+  }
+
+  query.setQueryItems( queryItems );
+
+  QUrl urlDest = QUrl( urlSource );
+  urlDest.setQuery( query.query() );
+  return QString::fromLatin1( urlDest.toEncoded() );
+}
+
+QList<Qgis::LayerType> QgsVirtualLayerProviderMetadata::supportedLayerTypes() const
+{
+  return { Qgis::LayerType::Vector };
 }
 
 QgsVirtualLayerProviderMetadata::QgsVirtualLayerProviderMetadata():

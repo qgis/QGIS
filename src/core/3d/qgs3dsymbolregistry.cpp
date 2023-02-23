@@ -42,15 +42,15 @@ QgsAbstract3DSymbol *Qgs3DSymbolRegistry::createSymbol( const QString &type ) co
   return mMetadata[type]->create();
 }
 
-QgsAbstract3DSymbol *Qgs3DSymbolRegistry::defaultSymbolForGeometryType( QgsWkbTypes::GeometryType type )
+QgsAbstract3DSymbol *Qgs3DSymbolRegistry::defaultSymbolForGeometryType( Qgis::GeometryType type )
 {
   switch ( type )
   {
-    case QgsWkbTypes::PointGeometry:
+    case Qgis::GeometryType::Point:
       return createSymbol( QStringLiteral( "point" ) );
-    case QgsWkbTypes::LineGeometry:
+    case Qgis::GeometryType::Line:
       return createSymbol( QStringLiteral( "line" ) );
-    case QgsWkbTypes::PolygonGeometry:
+    case Qgis::GeometryType::Polygon:
       return createSymbol( QStringLiteral( "polygon" ) );
     default:
       return nullptr;

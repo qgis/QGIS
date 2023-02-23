@@ -833,7 +833,7 @@ void TestQgsLegendRenderer::testMapUnits()
   QgsMarkerSymbol *sym = new QgsMarkerSymbol();
   sym->setColor( Qt::red );
   sym->setSize( 100 );
-  sym->setSizeUnit( QgsUnitTypes::RenderMapUnits );
+  sym->setSizeUnit( Qgis::RenderUnit::MapUnits );
   QgsCategorizedSymbolRenderer *catRenderer = dynamic_cast<QgsCategorizedSymbolRenderer *>( mVL3->renderer() );
   QVERIFY( catRenderer );
   catRenderer->updateCategorySymbol( 0, sym );
@@ -841,13 +841,13 @@ void TestQgsLegendRenderer::testMapUnits()
   sym = new QgsMarkerSymbol();
   sym->setColor( Qt::green );
   sym->setSize( 300 );
-  sym->setSizeUnit( QgsUnitTypes::RenderMapUnits );
+  sym->setSizeUnit( Qgis::RenderUnit::MapUnits );
   catRenderer->updateCategorySymbol( 1, sym );
 
   sym = new QgsMarkerSymbol();
   sym->setColor( Qt::blue );
   sym->setSize( 5 );
-  sym->setSizeUnit( QgsUnitTypes::RenderMillimeters );
+  sym->setSizeUnit( Qgis::RenderUnit::Millimeters );
   catRenderer->updateCategorySymbol( 2, sym );
 
   std::unique_ptr< QgsLayerTree > root( new QgsLayerTree() );

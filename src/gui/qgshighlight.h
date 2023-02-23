@@ -197,10 +197,10 @@ class GUI_EXPORT QgsHighlight : public QgsMapCanvasItem
 
     void init();
     void setSymbol( QgsSymbol *symbol, const QgsRenderContext &context, const QColor &color, const QColor &fillColor );
-    double getSymbolWidth( const QgsRenderContext &context, double width, QgsUnitTypes::RenderUnit unit );
+    double getSymbolWidth( const QgsRenderContext &context, double width, Qgis::RenderUnit unit );
     //! Gets renderer for current color mode and colors. The renderer should be freed by caller.
     std::unique_ptr< QgsFeatureRenderer > createRenderer( QgsRenderContext &context, const QColor &color, const QColor &fillColor );
-    void paintPoint( QgsRenderContext &context, const QgsPoint *point, double size, QgsUnitTypes::RenderUnit sizeUnit, PointSymbol symbol );
+    void paintPoint( QgsRenderContext &context, const QgsPoint *point, double size, Qgis::RenderUnit sizeUnit, PointSymbol symbol );
     void paintLine( QPainter *p, QgsPolylineXY line );
     void paintPolygon( QPainter *p, const QgsPolygonXY &polygon );
     QgsRenderContext createRenderContext();

@@ -17,10 +17,11 @@
 
 #include "qgslayoutpoint.h"
 #include "qgis.h"
+#include "qgsunittypes.h"
 
 #include <QStringList>
 
-QgsLayoutPoint::QgsLayoutPoint( const double x, const double y, const QgsUnitTypes::LayoutUnit units )
+QgsLayoutPoint::QgsLayoutPoint( const double x, const double y, const Qgis::LayoutUnit units )
   : mX( x )
   , mY( y )
   , mUnits( units )
@@ -28,7 +29,7 @@ QgsLayoutPoint::QgsLayoutPoint( const double x, const double y, const QgsUnitTyp
 
 }
 
-QgsLayoutPoint::QgsLayoutPoint( const QPointF point, const QgsUnitTypes::LayoutUnit units )
+QgsLayoutPoint::QgsLayoutPoint( const QPointF point, const Qgis::LayoutUnit units )
   : mX( point.x() )
   , mY( point.y() )
   , mUnits( units )
@@ -36,7 +37,7 @@ QgsLayoutPoint::QgsLayoutPoint( const QPointF point, const QgsUnitTypes::LayoutU
 
 }
 
-QgsLayoutPoint::QgsLayoutPoint( const QgsUnitTypes::LayoutUnit units )
+QgsLayoutPoint::QgsLayoutPoint( const Qgis::LayoutUnit units )
   : mUnits( units )
 {
 

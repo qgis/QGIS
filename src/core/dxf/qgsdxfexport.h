@@ -232,7 +232,7 @@ class CORE_EXPORT QgsDxfExport : public QgsLabelSink
      * Retrieve map units
      * \returns unit
      */
-    QgsUnitTypes::DistanceUnit mapUnits() const;
+    Qgis::DistanceUnit mapUnits() const;
 
     /**
      * Set destination CRS
@@ -501,7 +501,7 @@ class CORE_EXPORT QgsDxfExport : public QgsLabelSink
      * \param mapUnits the map units
      * \param mapUnitsPerPixel Map units per pixel
     */
-    static double mapUnitScaleFactor( double scale, QgsUnitTypes::RenderUnit symbolUnits, QgsUnitTypes::DistanceUnit mapUnits, double mapUnitsPerPixel = 1.0 );
+    static double mapUnitScaleFactor( double scale, Qgis::RenderUnit symbolUnits, Qgis::DistanceUnit mapUnits, double mapUnitsPerPixel = 1.0 );
 
     /**
      * Clips value to scale minimum/maximum
@@ -548,7 +548,7 @@ class CORE_EXPORT QgsDxfExport : public QgsLabelSink
     //! Scale for symbology export (used if symbols units are mm)
     double mSymbologyScale = 1.0;
     SymbologyExport mSymbologyExport = NoSymbology;
-    QgsUnitTypes::DistanceUnit mMapUnits = QgsUnitTypes::DistanceMeters;
+    Qgis::DistanceUnit mMapUnits = Qgis::DistanceUnit::Meters;
     bool mLayerTitleAsName = false;
 
     QTextStream mTextStream;
@@ -576,7 +576,7 @@ class CORE_EXPORT QgsDxfExport : public QgsLabelSink
     void writePoint( const QgsPoint &pt, const QString &layer, const QColor &color, QgsSymbolRenderContext &ctx, const QgsSymbolLayer *symbolLayer, const QgsSymbol *symbol, double angle );
     void writeDefaultLinetypes();
     void writeSymbolLayerLinetype( const QgsSymbolLayer *symbolLayer );
-    void writeLinetype( const QString &styleName, const QVector<qreal> &pattern, QgsUnitTypes::RenderUnit u );
+    void writeLinetype( const QString &styleName, const QVector<qreal> &pattern, Qgis::RenderUnit u );
 
     /**
      * Helper method to calculate text properties from (PAL) label

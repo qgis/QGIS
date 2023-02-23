@@ -73,7 +73,7 @@ void QgsJoinWithLinesAlgorithm::initAlgorithm( const QVariantMap & )
 
   auto distanceParam = std::make_unique< QgsProcessingParameterDistance >( QStringLiteral( "GEODESIC_DISTANCE" ), QObject::tr( "Distance between vertices (geodesic lines only)" ), 1000 );
   distanceParam->setFlags( distanceParam->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
-  distanceParam->setDefaultUnit( QgsUnitTypes::DistanceKilometers );
+  distanceParam->setDefaultUnit( Qgis::DistanceUnit::Kilometers );
   distanceParam->setIsDynamic( true );
   distanceParam->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "Geodesic Distance" ), QObject::tr( "Distance between vertices" ), QgsPropertyDefinition::DoublePositive ) );
   distanceParam->setDynamicLayerParameterName( QStringLiteral( "HUBS" ) );
@@ -204,7 +204,7 @@ QVariantMap QgsJoinWithLinesAlgorithm::processAlgorithm( const QVariantMap &para
 
   const QgsFields fields = QgsProcessingUtils::combineFields( hubOutFields, spokeOutFields );
 
-  QgsWkbTypes::Type outType = geodesic ? QgsWkbTypes::MultiLineString : QgsWkbTypes::LineString;
+  Qgis::WkbType outType = geodesic ? Qgis::WkbType::MultiLineString : Qgis::WkbType::LineString;
   bool hasZ = false;
   if ( !geodesic && ( QgsWkbTypes::hasZ( hubSource->wkbType() ) || QgsWkbTypes::hasZ( spokeSource->wkbType() ) ) )
   {
@@ -227,7 +227,7 @@ QVariantMap QgsJoinWithLinesAlgorithm::processAlgorithm( const QVariantMap &para
   auto getPointFromFeature = [hasZ, hasM]( const QgsFeature & feature )->QgsPoint
   {
     QgsPoint p;
-    if ( feature.geometry().type() == QgsWkbTypes::PointGeometry && !feature.geometry().isMultipart() )
+    if ( feature.geometry().type() == Qgis::GeometryType::Point && !feature.geometry().isMultipart() )
       p = *static_cast< const QgsPoint *>( feature.geometry().constGet() );
     else
       p = *static_cast< const QgsPoint *>( feature.geometry().pointOnSurface().constGet() );

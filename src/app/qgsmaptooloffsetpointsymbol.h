@@ -92,7 +92,7 @@ class APP_EXPORT QgsMapToolOffsetPointSymbol: public QgsMapToolPointSymbol
      * Calculates the required offset from the start to end points, in the specified unit
      * \note start and end points are in map units
      */
-    QPointF calculateOffset( const QgsPointXY &startPoint, const QgsPointXY &endPoint, QgsUnitTypes::RenderUnit unit ) const;
+    QPointF calculateOffset( const QgsPointXY &startPoint, const QgsPointXY &endPoint, Qgis::RenderUnit unit ) const;
 
     //! Adjusts the calculated offset to account for the symbol's rotation
     QPointF rotatedOffset( QPointF offset, double angle ) const;

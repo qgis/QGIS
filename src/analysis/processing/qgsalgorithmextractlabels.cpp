@@ -146,15 +146,27 @@ class ExtractLabelSink : public QgsLabelSink
       }
 
       const QgsFeatureId fid = label->getFeaturePart()->featureId();
-      if ( settings.placement == Qgis::LabelPlacement::Curved ||
-           settings.placement == Qgis::LabelPlacement::PerimeterCurved )
+      switch ( settings.placement )
       {
-        if ( !mCurvedWarningPushed.contains( layerId ) )
+        case Qgis::LabelPlacement::Curved:
+        case Qgis::LabelPlacement::PerimeterCurved:
         {
-          mCurvedWarningPushed << layerId;
-          mFeedback->pushWarning( QObject::tr( "Curved placement not supported, skipping labels from layer %1" ).arg( mMapLayerNames.value( layerId ) ) );
+          if ( !mCurvedWarningPushed.contains( layerId ) )
+          {
+            mCurvedWarningPushed << layerId;
+            mFeedback->pushWarning( QObject::tr( "Curved placement not supported, skipping labels from layer %1" ).arg( mMapLayerNames.value( layerId ) ) );
+          }
+          return;
         }
-        return;
+
+        case Qgis::LabelPlacement::AroundPoint:
+        case Qgis::LabelPlacement::OverPoint:
+        case Qgis::LabelPlacement::Line:
+        case Qgis::LabelPlacement::Horizontal:
+        case Qgis::LabelPlacement::Free:
+        case Qgis::LabelPlacement::OrderedPositionsAroundPoint:
+        case Qgis::LabelPlacement::OutsidePolygons:
+          break;
       }
 
       QgsTextLabelFeature *labelFeature = dynamic_cast<QgsTextLabelFeature *>( label->getFeaturePart()->feature() );
@@ -284,7 +296,7 @@ class ExtractLabelSink : public QgsLabelSink
           buffer.setOpacity( dataDefinedValues.value( QgsPalLayerSettings::BufferOpacity ).toDouble() / 100.0 );
         }
 
-        bufferSize =  buffer.sizeUnit() == QgsUnitTypes::RenderPercentage
+        bufferSize =  buffer.sizeUnit() == Qgis::RenderUnit::Percentage
                       ? context.convertToPainterUnits( format.size(), format.sizeUnit(), format.sizeMapUnitScale() ) * buffer.size() / 100
                       : context.convertToPainterUnits( buffer.size(), buffer.sizeUnit(), buffer.sizeMapUnitScale() );
         bufferSize = bufferSize * 72 / context.painter()->device()->logicalDpiX();
@@ -364,7 +376,7 @@ QVariantMap QgsExtractLabelsAlgorithm::processAlgorithm( const QVariantMap &para
   fields.append( QgsField( QStringLiteral( "BufferOpacity" ), QVariant::Double, QString(), 20, 1 ) );
 
   QString dest;
-  std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, fields, QgsWkbTypes::Point, mCrs, QgsFeatureSink::RegeneratePrimaryKey ) );
+  std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, fields, Qgis::WkbType::Point, mCrs, QgsFeatureSink::RegeneratePrimaryKey ) );
   if ( !sink )
     throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
 
@@ -511,11 +523,11 @@ QVariantMap QgsExtractLabelsAlgorithm::processAlgorithm( const QVariantMap &para
 
       QgsTextFormat textFormat;
       textFormat.setSize( 9 );
-      textFormat.setSizeUnit( QgsUnitTypes::RenderPoints );
+      textFormat.setSizeUnit( Qgis::RenderUnit::Points );
       textFormat.setColor( QColor( 0, 0, 0 ) );
 
       QgsTextBufferSettings buffer = textFormat.buffer();
-      buffer.setSizeUnit( QgsUnitTypes::RenderPoints );
+      buffer.setSizeUnit( Qgis::RenderUnit::Points );
 
       textFormat.setBuffer( buffer );
       settings.setFormat( textFormat );
@@ -564,7 +576,7 @@ bool QgsExtractLabelsAlgorithm::prepareAlgorithm( const QVariantMap &parameters,
     for ( const QgsMapLayer *l : constLayers )
     {
       // only copy vector layers as other layer types aren't actors in the labeling process
-      if ( l->type() == QgsMapLayerType::VectorLayer )
+      if ( l->type() == Qgis::LayerType::Vector )
         mMapLayers.push_back( l->clone() );
     }
     mMapThemeStyleOverrides = context.project()->mapThemeCollection( )->mapThemeStyleOverrides( mapTheme );
@@ -585,7 +597,7 @@ bool QgsExtractLabelsAlgorithm::prepareAlgorithm( const QVariantMap &parameters,
 
     for ( const QgsMapLayer *l : std::as_const( layers ) )
     {
-      if ( l->type() == QgsMapLayerType::VectorLayer )
+      if ( l->type() == Qgis::LayerType::Vector )
         mMapLayers.push_back( l->clone() );
     }
   }
