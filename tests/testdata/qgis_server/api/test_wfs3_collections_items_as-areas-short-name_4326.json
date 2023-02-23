@@ -986,9 +986,8 @@ Content-Type: application/geo+json
     },
     {
       "href": "http://server.qgis.org/wfs3/collections/as-areas-short-name/items?crs=http10A10F10Fwww.opengis.net10Fdef10Fcrs10FEPSG10F010F4326&offset=10&limit=10",
-      "name": "Next page",
       "rel": "next",
-      "title": "Retrieve the features of the collection as GEOJSON",
+      "title": "Next page",
       "type": "application/geo+json"
     }
   ],
