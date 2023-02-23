@@ -1401,7 +1401,7 @@ void QgsWfs3CollectionsItemsHandler::handleRequest( const QgsServerApiContext &c
         json prevLink = selfLink;
         prevLink["href"] = QStringLiteral( "%1&offset=%2&limit=%3" ).arg( cleanedUrlAsString ).arg( std::max<long>( 0, limit - offset ) ).arg( limit ).toStdString();
         prevLink["rel"] = "prev";
-        prevLink["name"] = "Previous page";
+        prevLink["title"] = "Previous page";
         data["links"].push_back( prevLink );
       }
 
@@ -1410,7 +1410,7 @@ void QgsWfs3CollectionsItemsHandler::handleRequest( const QgsServerApiContext &c
         json nextLink = selfLink;
         nextLink["href"] = QStringLiteral( "%1&offset=%2&limit=%3" ).arg( cleanedUrlAsString ).arg( std::min<long>( matchedFeaturesCount, limit + offset ) ).arg( limit ).toStdString();
         nextLink["rel"] = "next";
-        nextLink["name"] = "Next page";
+        nextLink["title"] = "Next page";
         data["links"].push_back( nextLink );
       }
 

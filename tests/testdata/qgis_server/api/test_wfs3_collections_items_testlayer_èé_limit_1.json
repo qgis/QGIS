@@ -34,9 +34,8 @@ Content-Type: application/geo+json
     },
     {
       "href": "http://server.qgis.org/wfs3/collections/testlayer èé/items?&offset=1&limit=1",
-      "name": "Next page",
       "rel": "next",
-      "title": "Retrieve the features of the collection as GEOJSON",
+      "title": "Next page",
       "type": "application/geo+json"
     }
   ],
