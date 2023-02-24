@@ -975,7 +975,7 @@ void QgsVectorLayerProperties::mCrsSelector_crsChanged( const QgsCoordinateRefer
   mMetadataWidget->crsChanged();
 }
 
-void QgsVectorLayerProperties::loadDefaultStyle_clicked()
+void QgsVectorLayerProperties::loadDefaultStyle()
 {
   QString msg;
   bool defaultLoadedFlag = false;
@@ -1036,7 +1036,7 @@ void QgsVectorLayerProperties::loadDefaultStyle_clicked()
   }
 }
 
-void QgsVectorLayerProperties::saveDefaultStyle_clicked()
+void QgsVectorLayerProperties::saveDefaultStyle()
 {
   apply();
   QString errorMsg;
@@ -1452,8 +1452,8 @@ void QgsVectorLayerProperties::aboutToShowStyleMenu()
   }
 
   m->addSeparator();
-  m->addAction( tr( "Save as Default" ), this, &QgsVectorLayerProperties::saveDefaultStyle_clicked );
-  m->addAction( tr( "Restore Default" ), this, &QgsVectorLayerProperties::loadDefaultStyle_clicked );
+  m->addAction( tr( "Save as Default" ), this, &QgsVectorLayerProperties::saveDefaultStyle );
+  m->addAction( tr( "Restore Default" ), this, &QgsVectorLayerProperties::loadDefaultStyle );
 
   // re-add style manager actions!
   m->addSeparator();

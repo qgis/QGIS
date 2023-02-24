@@ -42,6 +42,34 @@ Adds properties page from a factory
 .. versionadded:: 3.16
 %End
 
+    void loadDefaultStyle();
+%Docstring
+Loads the default style when appropriate button is pressed
+
+.. versionadded:: 3.30
+%End
+
+    void saveDefaultStyle();
+%Docstring
+Saves the default style when appropriate button is pressed
+
+.. versionadded:: 3.30
+%End
+
+    void loadStyle();
+%Docstring
+Loads a saved style when appropriate button is pressed
+
+.. versionadded:: 3.30
+%End
+
+    void saveStyleAs();
+%Docstring
+Saves a style when appriate button is pressed
+
+.. versionadded:: 3.30
+%End
+
   protected slots:
 
 };

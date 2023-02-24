@@ -29,9 +29,14 @@
 #include "qgsvectordataprovider.h"
 #include "qgsrasterdataprovider.h"
 #include "qgsvectorlayer.h"
+#include "qgsvectortilelayer.h"
 #include "qgsrasterlayer.h"
 #include "qgsapplication.h"
 #include "qgsproviderregistry.h"
+#include "qgsvectorlayerproperties.h"
+#include "qgsvectortilelayerproperties.h"
+#include "qgsrasterlayerproperties.h"
+#include "qgsmeshlayerproperties.h"
 
 QgsMapLayerStyleManagerWidget::QgsMapLayerStyleManagerWidget( QgsMapLayer *layer, QgsMapCanvas *canvas, QWidget *parent )
   : QgsMapLayerConfigWidget( layer, canvas, parent )
@@ -52,15 +57,13 @@ QgsMapLayerStyleManagerWidget::QgsMapLayerStyleManagerWidget( QgsMapLayer *layer
   QAction *loadFromFileAction = toolbar->addAction( tr( "Load Style" ) );
   loadFromFileAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionFileOpen.svg" ) ) );
   connect( loadFromFileAction, &QAction::triggered, this, &QgsMapLayerStyleManagerWidget::loadStyle );
+  QAction *saveAction = toolbar->addAction( tr( "Save Style" ) );
+  saveAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionFileSave.svg" ) ) );
+  connect( saveAction, &QAction::triggered, this, &QgsMapLayerStyleManagerWidget::saveStyle );
   QAction *saveAsDefaultAction = toolbar->addAction( tr( "Save as Default" ) );
   connect( saveAsDefaultAction, &QAction::triggered, this, &QgsMapLayerStyleManagerWidget::saveAsDefault );
   QAction *loadDefaultAction = toolbar->addAction( tr( "Restore Default" ) );
   connect( loadDefaultAction, &QAction::triggered, this, &QgsMapLayerStyleManagerWidget::loadDefault );
-
-
-  // Save style doesn't work correctly yet so just disable for now.
-//  QAction* saveToFileAction = toolbar->addAction( tr( "Save Style" ) );
-//  connect( saveToFileAction, SIGNAL( triggered() ), this, SLOT( saveStyle() ) );
 
   //broken connect - not sure what the purpose of this was?
 //  connect( canvas, &QgsMapCanvas::mapCanvasRefreshed, this, SLOT( updateCurrent() ) );
@@ -192,177 +195,152 @@ void QgsMapLayerStyleManagerWidget::renameStyle( QStandardItem *item )
 
 void QgsMapLayerStyleManagerWidget::saveAsDefault()
 {
-  QString errorMsg;
+  if ( !mLayer )
+    return;
 
-  if ( QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( mLayer ) )
+  switch ( mLayer->type() )
   {
-    if ( layer->dataProvider()->isSaveAndLoadStyleToDatabaseSupported() )
-    {
-      QMessageBox askToUser;
-      askToUser.setWindowTitle( tr( "Save Style" ) );
-      askToUser.setText( tr( "Save default style to: " ) );
-      askToUser.setIcon( QMessageBox::Question );
-      askToUser.addButton( tr( "Cancel" ), QMessageBox::RejectRole );
-      askToUser.addButton( tr( "Local Database" ), QMessageBox::NoRole );
-      askToUser.addButton( tr( "Datasource Database" ), QMessageBox::YesRole );
 
-      switch ( askToUser.exec() )
-      {
-        case 0:
-          return;
-        case 2:
-        {
-          QString errorMessage;
-          if ( QgsProviderRegistry::instance()->styleExists( layer->providerType(), layer->source(), QString(), errorMessage ) )
-          {
-            if ( QMessageBox::question( nullptr, tr( "Save style in database" ),
-                                        tr( "A matching style already exists in the database for this layer. Do you want to overwrite it?" ),
-                                        QMessageBox::Yes | QMessageBox::No ) == QMessageBox::No )
-            {
-              return;
-            }
-          }
-          else if ( !errorMessage.isEmpty() )
-          {
-            QMessageBox::warning( nullptr, tr( "Save style in database" ),
-                                  errorMessage );
-            return;
-          }
+    case Qgis::LayerType::Vector:
+      QgsVectorLayerProperties( mMapCanvas,
+                                mMapLayerConfigWidgetContext.messageBar(),
+                                qobject_cast<QgsVectorLayer *>( mLayer ) ).saveDefaultStyle();
+      break;
 
-          layer->saveStyleToDatabase( QString(), QString(), true, QString(), errorMsg );
-          if ( errorMsg.isNull() )
-          {
-            return;
-          }
-          break;
-        }
-        default:
-          break;
-      }
-    }
+    case Qgis::LayerType::Raster:
+      QgsRasterLayerProperties( mLayer, mMapCanvas ).saveDefaultStyle();
+      break;
+
+    case Qgis::LayerType::Mesh:
+      QgsMeshLayerProperties( mLayer, mMapCanvas ).saveDefaultStyle();
+      break;
+
+    case Qgis::LayerType::VectorTile:
+      QgsVectorTileLayerProperties( qobject_cast<QgsVectorTileLayer *>( mLayer ),
+                                    mMapCanvas,
+                                    mMapLayerConfigWidgetContext.messageBar() ).saveDefaultStyle();
+      break;
+
+    // Not available for these
+    case Qgis::LayerType::PointCloud:
+    case Qgis::LayerType::Annotation:
+    case Qgis::LayerType::Plugin:
+    case Qgis::LayerType::Group:
+    default:
+      break;
   }
-
-  bool defaultSavedFlag = false;
-  // TODO Once the deprecated `saveDefaultStyle()` method is gone, just
-  // remove the NOWARN_DEPRECATED tags
-  Q_NOWARN_DEPRECATED_PUSH
-  errorMsg = mLayer->saveDefaultStyle( defaultSavedFlag );
-  Q_NOWARN_DEPRECATED_POP
-  if ( !defaultSavedFlag )
-  {
-    QMessageBox::warning( this, tr( "Default Style" ), errorMsg );
-  }
-
 }
 
 void QgsMapLayerStyleManagerWidget::loadDefault()
 {
-  QString msg;
-  bool defaultLoadedFlag = false;
+  if ( !mLayer )
+    return;
 
-  if ( QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( mLayer ) )
+  switch ( mLayer->type() )
   {
-    if ( layer->dataProvider()->isSaveAndLoadStyleToDatabaseSupported() )
-    {
-      QMessageBox askToUser;
-      askToUser.setWindowTitle( tr( "Load Style" ) );
-      askToUser.setText( tr( "Load default style from: " ) );
-      askToUser.setIcon( QMessageBox::Question );
-      askToUser.addButton( tr( "Cancel" ), QMessageBox::RejectRole );
-      askToUser.addButton( tr( "Local Database" ), QMessageBox::NoRole );
-      askToUser.addButton( tr( "Datasource Database" ), QMessageBox::YesRole );
 
-      switch ( askToUser.exec() )
-      {
-        case 0:
-          return;
-        case 2:
-          msg = layer->loadNamedStyle( mLayer->styleURI(), defaultLoadedFlag );
-          if ( !defaultLoadedFlag )
-          {
-            //something went wrong - let them know why
-            QMessageBox::information( this, tr( "Default Style" ), msg );
-          }
-          if ( msg.compare( tr( "Loaded from Provider" ) ) )
-          {
-            QMessageBox::information( this, tr( "Default Style" ),
-                                      tr( "No default style was found for this layer" ) );
-          }
-          return;
-        default:
-          break;
-      }
-    }
+    case Qgis::LayerType::Vector:
+      QgsVectorLayerProperties( mMapCanvas,
+                                mMapLayerConfigWidgetContext.messageBar(),
+                                qobject_cast<QgsVectorLayer *>( mLayer ) ).loadDefaultStyle();
+      break;
+
+    case Qgis::LayerType::Raster:
+      QgsRasterLayerProperties( mLayer, mMapCanvas ).loadDefaultStyle();
+      break;
+
+    case Qgis::LayerType::Mesh:
+      QgsMeshLayerProperties( mLayer, mMapCanvas ).loadDefaultStyle();
+      break;
+
+    case Qgis::LayerType::VectorTile:
+      QgsVectorTileLayerProperties( qobject_cast<QgsVectorTileLayer *>( mLayer ),
+                                    mMapCanvas,
+                                    mMapLayerConfigWidgetContext.messageBar() ).loadDefaultStyle();
+      break;
+
+    // Not available for these
+    case Qgis::LayerType::PointCloud:
+    case Qgis::LayerType::Annotation:
+    case Qgis::LayerType::Plugin:
+    case Qgis::LayerType::Group:
+    default:
+      break;
   }
-
-  QString myMessage;
-  if ( QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( mLayer ) )
-  {
-    myMessage = layer->loadNamedStyle( mLayer->styleURI(), defaultLoadedFlag, true );
-  }
-  if ( QgsRasterLayer *layer = qobject_cast<QgsRasterLayer *>( mLayer ) )
-  {
-    myMessage = layer->loadNamedStyle( mLayer->styleURI(), defaultLoadedFlag );
-  }
-
-//  QString myMessage = layer->loadDefaultStyle( defaultLoadedFlag );
-  //reset if the default style was loaded OK only
-
-
-  if ( !defaultLoadedFlag )
-  {
-    //something went wrong - let them know why
-    QMessageBox::information( this, tr( "Default Style" ), myMessage );
-  }
-  else
-  {
-    emit widgetChanged();
-  }
-
 }
 
 void QgsMapLayerStyleManagerWidget::saveStyle()
 {
+  if ( !mLayer )
+    return;
 
+  switch ( mLayer->type() )
+  {
+
+    case Qgis::LayerType::Vector:
+      QgsVectorLayerProperties( mMapCanvas,
+                                mMapLayerConfigWidgetContext.messageBar(),
+                                qobject_cast<QgsVectorLayer *>( mLayer ) ).saveStyleAs();
+      break;
+
+    case Qgis::LayerType::Raster:
+      QgsRasterLayerProperties( mLayer, mMapCanvas ).saveStyleAs();
+      break;
+
+    case Qgis::LayerType::Mesh:
+      QgsMeshLayerProperties( mLayer, mMapCanvas ).saveStyleAs();
+      break;
+
+    case Qgis::LayerType::VectorTile:
+      QgsVectorTileLayerProperties( qobject_cast<QgsVectorTileLayer *>( mLayer ),
+                                    mMapCanvas,
+                                    mMapLayerConfigWidgetContext.messageBar() ).saveStyleAs();
+      break;
+
+    // Not available for these
+    case Qgis::LayerType::PointCloud:
+    case Qgis::LayerType::Annotation:
+    case Qgis::LayerType::Plugin:
+    case Qgis::LayerType::Group:
+    default:
+      break;
+  }
 }
 
 void QgsMapLayerStyleManagerWidget::loadStyle()
 {
-  QgsSettings myQSettings;  // where we keep last used filter in persistent state
-  const QString myLastUsedDir = myQSettings.value( QStringLiteral( "style/lastStyleDir" ), QDir::homePath() ).toString();
-
-  const QString myFileName = QFileDialog::getOpenFileName( this, tr( "Load layer properties from style file" ), myLastUsedDir,
-                             tr( "QGIS Layer Style File" ) + " (*.qml);;" + tr( "SLD File" ) + " (*.sld)" );
-  if ( myFileName.isNull() )
-  {
+  if ( !mLayer )
     return;
-  }
 
-  QString myMessage;
-  bool defaultLoadedFlag = false;
+  switch ( mLayer->type() )
+  {
 
-  if ( myFileName.endsWith( QLatin1String( ".sld" ), Qt::CaseInsensitive ) )
-  {
-    // load from SLD
-    myMessage = mLayer->loadSldStyle( myFileName, defaultLoadedFlag );
-  }
-  else
-  {
-    myMessage = mLayer->loadNamedStyle( myFileName, defaultLoadedFlag );
-  }
-  //reset if the default style was loaded OK only
-  if ( defaultLoadedFlag )
-  {
-    emit widgetChanged();
-  }
-  else
-  {
-    //let the user know what went wrong
-    QMessageBox::warning( this, tr( "Load Style" ), myMessage );
-  }
+    case Qgis::LayerType::Vector:
+      QgsVectorLayerProperties( mMapCanvas,
+                                mMapLayerConfigWidgetContext.messageBar(),
+                                qobject_cast<QgsVectorLayer *>( mLayer ) ).loadStyle();
+      break;
 
-  const QFileInfo myFI( myFileName );
-  const QString myPath = myFI.path();
-  myQSettings.setValue( QStringLiteral( "style/lastStyleDir" ), myPath );
+    case Qgis::LayerType::Raster:
+      QgsRasterLayerProperties( mLayer, mMapCanvas ).loadStyle();
+      break;
 
+    case Qgis::LayerType::Mesh:
+      QgsMeshLayerProperties( mLayer, mMapCanvas ).loadStyle();
+      break;
+
+    case Qgis::LayerType::VectorTile:
+      QgsVectorTileLayerProperties( qobject_cast<QgsVectorTileLayer *>( mLayer ),
+                                    mMapCanvas,
+                                    mMapLayerConfigWidgetContext.messageBar() ).loadStyle();
+      break;
+
+    // Not available for these
+    case Qgis::LayerType::PointCloud:
+    case Qgis::LayerType::Annotation:
+    case Qgis::LayerType::Plugin:
+    case Qgis::LayerType::Group:
+    default:
+      break;
+  }
 }
