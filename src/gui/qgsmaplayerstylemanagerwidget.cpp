@@ -168,21 +168,9 @@ void QgsMapLayerStyleManagerWidget::addStyle()
 void QgsMapLayerStyleManagerWidget::removeStyle()
 {
   const QString current = mLayer->styleManager()->currentStyle();
-  const QList<QStandardItem *> items = mModel->findItems( current );
-  if ( items.isEmpty() )
-    return;
-
-  QStandardItem *item = items.at( 0 );
   const bool res = mLayer->styleManager()->removeStyle( current );
-  if ( res )
-  {
-    mModel->removeRow( item->row() );
-  }
-  else
-  {
+  if ( !res )
     QgsDebugMsg( QStringLiteral( "Failed to remove current style" ) );
-  }
-
 }
 
 void QgsMapLayerStyleManagerWidget::renameStyle( QStandardItem *item )
