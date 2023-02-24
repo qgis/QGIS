@@ -174,12 +174,12 @@ QgsFeatureRenderer *QgsPointDisplacementRenderer::create( QDomElement &symbology
     if ( f.pointSizeF() > 0 )
     {
       labelFormat.setSize( f.pointSizeF() );
-      labelFormat.setSizeUnit( QgsUnitTypes::RenderPoints );
+      labelFormat.setSizeUnit( Qgis::RenderUnit::Points );
     }
     else if ( f.pixelSize() > 0 )
     {
       labelFormat.setSize( f.pixelSize() );
-      labelFormat.setSizeUnit( QgsUnitTypes::RenderPixels );
+      labelFormat.setSizeUnit( Qgis::RenderUnit::Pixels );
     }
 
     //font color
