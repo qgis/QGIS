@@ -364,10 +364,7 @@ QgsFields QgsOgrUtils::readOgrFields( OGRFeatureH ogrFet, QTextCodec *encoding )
         varType = QVariant::DateTime;
         break;
       case OFTString:
-        if ( OGR_Fld_GetSubType( fldDef ) == OFSTJSON )
-          varType = QVariant::Map;
-        else
-          varType = QVariant::String;
+        varType = QVariant::String;
         break;
       default:
         varType = QVariant::String; // other unsupported, leave it as a string
@@ -1764,7 +1761,6 @@ void QgsOgrUtils::ogrFieldTypeToQVariantType( OGRFieldType ogrType, OGRFieldSubT
       if ( ogrSubType == OFSTBoolean )
       {
         variantType = QVariant::Bool;
-        ogrSubType = OFSTBoolean;
       }
       else
         variantType = QVariant::Int;
@@ -1791,16 +1787,7 @@ void QgsOgrUtils::ogrFieldTypeToQVariantType( OGRFieldType ogrType, OGRFieldSubT
 
     case OFTString:
     case OFTWideString:
-      if ( ogrSubType == OFSTJSON )
-      {
-        ogrSubType = OFSTJSON;
-        variantType = QVariant::Map;
-        variantSubType = QVariant::String;
-      }
-      else
-      {
-        variantType = QVariant::String;
-      }
+      variantType = QVariant::String;
       break;
 
     case OFTStringList:
