@@ -14,6 +14,7 @@ import os
 import shutil
 import sys
 import tempfile
+import json
 from datetime import datetime
 
 from osgeo import gdal, ogr  # NOQA
@@ -3170,6 +3171,62 @@ class PyQgsOGRProvider(unittest.TestCase):
             2: ['2', 'feat 2', 'fid 2'],
             3: ['3', 'feat 3', 'fid 3']
         })
+
+    def testGeoJsonMixedType(self):
+        """Test issue GH #51911 Some versions of QGIS can't parse mixed-dtype-columns in GeoJSON"""
+
+        temp_dir = QTemporaryDir()
+        temp_path = temp_dir.path()
+        json_path = os.path.join(temp_path, 'test.json')
+
+        data = {
+            'type': 'FeatureCollection',
+            'features': [
+                {"type": "Feature",
+                    "geometry": {"type": "Point", "coordinates": [102.0, 0.5]},
+                    "properties": {"prop0": "astring"}
+                 },
+                {"type": "Feature",
+                    "geometry": {"type": "Point", "coordinates": [102.0, 0.5]},
+                    "properties": {"prop0": 42}
+                 },
+                {"type": "Feature",
+                    "geometry": {"type": "Point", "coordinates": [102.0, 0.5]},
+                    "properties": {"prop0": {"nested": 75}}
+                 }
+            ]
+        }
+
+        with open(json_path, 'w+') as f:
+            f.write(json.dumps(data))
+
+        vl = QgsVectorLayer(json_path, 'vl')
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.fields()[0].type(), QVariant.String)
+
+        # Swap string and int
+        f = data['features'][0]
+        data['features'][0] = data['features'][1]
+        data['features'][1] = f
+
+        with open(json_path, 'w+') as f:
+            f.write(json.dumps(data))
+
+        vl = QgsVectorLayer(json_path, 'vl')
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.fields()[0].type(), QVariant.String)
+
+        # Swap obj and int
+        f = data['features'][0]
+        data['features'][0] = data['features'][2]
+        data['features'][2] = f
+
+        with open(json_path, 'w+') as f:
+            f.write(json.dumps(data))
+
+        vl = QgsVectorLayer(json_path, 'vl')
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.fields()[0].type(), QVariant.String)
 
 
 if __name__ == '__main__':
