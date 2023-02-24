@@ -139,13 +139,8 @@ namespace QgsWms
     }
     else
     {
-      context.setScaleFactor( mContext.dotsPerMm() );
-      const double mmPerMapUnit = 1 / QgsServerProjectUtils::wmsDefaultMapUnitsPerMm( *mProject );
-      context.setMapToPixel( QgsMapToPixel( 1 / ( mmPerMapUnit * context.scaleFactor() ) ) );
-      QgsDistanceArea distanceArea;
-      distanceArea.setSourceCrs( QgsCoordinateReferenceSystem( mWmsParameters.crs() ), mProject->transformContext() );
-      distanceArea.setEllipsoid( geoNone() );
-      context.setDistanceArea( distanceArea );
+      //use default scale settings
+      configureDefaultRenderContext( context );
     }
 
     // create image according to context
@@ -211,13 +206,7 @@ namespace QgsWms
 
     // create context
     QgsRenderContext context = QgsRenderContext::fromQPainter( painter.get() );
-    context.setScaleFactor( mContext.dotsPerMm() );
-    const double mmPerMapUnit = 1 / QgsServerProjectUtils::wmsDefaultMapUnitsPerMm( *mProject );
-    context.setMapToPixel( QgsMapToPixel( 1 / ( mmPerMapUnit * context.scaleFactor() ) ) );
-    QgsDistanceArea distanceArea = QgsDistanceArea();
-    distanceArea.setSourceCrs( QgsCoordinateReferenceSystem( mWmsParameters.crs() ), mProject->transformContext() );
-    distanceArea.setEllipsoid( geoNone() );
-    context.setDistanceArea( distanceArea );
+    configureDefaultRenderContext( context );
     ctx.context = &context;
 
     nodeModel.drawSymbol( settings, &ctx, size.height() / dpmm );
@@ -1385,6 +1374,17 @@ namespace QgsWms
       }
 
     }
+  }
+
+  void QgsRenderer::configureDefaultRenderContext( QgsRenderContext &context )
+  {
+    context.setScaleFactor( mContext.dotsPerMm() );
+    const double mmPerMapUnit = 1 / QgsServerProjectUtils::wmsDefaultMapUnitsPerMm( *mProject );
+    context.setMapToPixel( QgsMapToPixel( 1 / ( mmPerMapUnit * context.scaleFactor() ) ) );
+    QgsDistanceArea distanceArea = QgsDistanceArea();
+    distanceArea.setSourceCrs( QgsCoordinateReferenceSystem( mWmsParameters.crs() ), mProject->transformContext() );
+    distanceArea.setEllipsoid( geoNone() );
+    context.setDistanceArea( distanceArea );
   }
 
   QDomDocument QgsRenderer::featureInfoDocument( QList<QgsMapLayer *> &layers, const QgsMapSettings &mapSettings,
