@@ -195,6 +195,12 @@ namespace QgsWms
        */
       void configureMapSettings( const QPaintDevice *paintDevice, QgsMapSettings &mapSettings, bool mandatoryCrsParam = true );
 
+      /**
+       * Configures QgsRenderContext according to the WMS parameters and default settings. Used, for example, when no mapSettings are available.
+       * \param context render context keeping info about the scale
+       */
+      void configureDefaultRenderContext( QgsRenderContext &context );
+
       QDomDocument featureInfoDocument( QList<QgsMapLayer *> &layers, const QgsMapSettings &mapSettings,
                                         const QImage *outputImage, const QString &version ) const;
 
