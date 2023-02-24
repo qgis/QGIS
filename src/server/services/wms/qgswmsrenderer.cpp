@@ -204,6 +204,18 @@ namespace QgsWms
     QgsLegendSettings settings = legendSettings();
     QgsLayerTreeModelLegendNode::ItemContext ctx;
     ctx.painter = painter.get();
+
+    // create context
+    QgsRenderContext context = QgsRenderContext::fromQPainter( painter.get() );
+    context.setScaleFactor( mContext.dotsPerMm() );
+    const double mmPerMapUnit = 1 / QgsServerProjectUtils::wmsDefaultMapUnitsPerMm( *mProject );
+    context.setMapToPixel( QgsMapToPixel( 1 / ( mmPerMapUnit * context.scaleFactor() ) ) );
+    QgsDistanceArea distanceArea = QgsDistanceArea();
+    distanceArea.setSourceCrs( QgsCoordinateReferenceSystem( mWmsParameters.crs() ), mProject->transformContext() );
+    distanceArea.setEllipsoid( geoNone() );
+    context.setDistanceArea( distanceArea );
+    ctx.context = &context;
+
     nodeModel.drawSymbol( settings, &ctx, size.height() / dpmm );
     painter->end();
 
