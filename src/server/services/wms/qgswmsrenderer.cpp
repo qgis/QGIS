@@ -142,6 +142,10 @@ namespace QgsWms
       context.setScaleFactor( mContext.dotsPerMm() );
       const double mmPerMapUnit = 1 / QgsServerProjectUtils::wmsDefaultMapUnitsPerMm( *mProject );
       context.setMapToPixel( QgsMapToPixel( 1 / ( mmPerMapUnit * context.scaleFactor() ) ) );
+      QgsDistanceArea distanceArea;
+      distanceArea.setSourceCrs( QgsCoordinateReferenceSystem( mWmsParameters.crs() ), mProject->transformContext() );
+      distanceArea.setEllipsoid( geoNone() );
+      context.setDistanceArea( distanceArea );
     }
 
     // create image according to context
