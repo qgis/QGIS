@@ -54,6 +54,8 @@ int QgisEvent = QEvent::User + 1;
 class CORE_EXPORT Qgis
 {
     Q_GADGET
+    Q_CLASSINFO( "RegisterEnumClassesUnscoped", "false" )
+
   public:
 
     /**

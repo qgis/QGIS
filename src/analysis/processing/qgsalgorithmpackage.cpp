@@ -21,6 +21,8 @@
 #include "qgsvectorlayer.h"
 #include "qgssettings.h"
 
+#include <QLocale>
+
 ///@cond PRIVATE
 
 QString QgsPackageAlgorithm::name() const

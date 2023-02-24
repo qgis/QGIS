@@ -13,6 +13,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+
 #include "qgsrasterattributetable.h"
 #include "qgsvectorfilewriter.h"
 #include "qgsogrprovider.h"
@@ -22,6 +23,9 @@
 #include "qgssinglebandpseudocolorrenderer.h"
 #include "qgsrastershader.h"
 #include "qgsrastershaderfunction.h"
+
+#include <QLocale>
+
 #include <mutex>
 #include <cmath>
 
