@@ -18,7 +18,6 @@
 
 #include "qgseditorwidgetwrapper.h"
 
-#include "qgsattributeform.h"
 #include "qgis_gui.h"
 
 class QgsJsonEditWidget;
