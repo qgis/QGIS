@@ -385,7 +385,7 @@ bool QgsMapRendererTask::run()
     else if ( mFileFormat != QLatin1String( "PDF" ) )
     {
       QImageWriter writer( mFileName, mFileFormat.toLocal8Bit().data() );
-      if ( mFileFormat == QLatin1String( "TIF" ) || mFileFormat == QLatin1String( "TIFF" ) )
+      if ( mFileFormat.compare( QLatin1String( "TIF" ), Qt::CaseInsensitive ) == 0 || mFileFormat.compare( QLatin1String( "TIFF" ), Qt::CaseInsensitive ) == 0 )
       {
         // Enable LZW compression
         writer.setCompression( 1 );
