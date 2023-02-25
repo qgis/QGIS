@@ -404,7 +404,7 @@ bool QgsMapRendererTask::run()
         // build the world file name
         const QString outputSuffix = info.suffix();
         bool skipWorldFile = false;
-        if ( outputSuffix == QLatin1String( "tif" ) || outputSuffix == QLatin1String( "tiff" ) )
+        if ( outputSuffix.compare( QLatin1String( "TIF" ), Qt::CaseInsensitive ) == 0 || outputSuffix.compare( QLatin1String( "TIFF" ), Qt::CaseInsensitive ) == 0 )
         {
           const gdal::dataset_unique_ptr outputDS( GDALOpen( mFileName.toUtf8().constData(), GA_Update ) );
           if ( outputDS )
