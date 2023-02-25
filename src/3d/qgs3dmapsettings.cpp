@@ -73,7 +73,6 @@ Qgs3DMapSettings::Qgs3DMapSettings( const Qgs3DMapSettings &other )
   , mCameraNavigationMode( other.mCameraNavigationMode )
   , mCameraMovementSpeed( other.mCameraMovementSpeed )
   , mLayers( other.mLayers )
-  , mRenderers() // initialized in body
   , mTransformContext( other.mTransformContext )
   , mPathResolver( other.mPathResolver )
   , mMapThemes( other.mMapThemes )
@@ -100,11 +99,6 @@ Qgs3DMapSettings::Qgs3DMapSettings( const Qgs3DMapSettings &other )
   , mIsDebugOverlayEnabled( other.mIsDebugOverlayEnabled )
   , mExtent( other.mExtent )
 {
-  for ( QgsAbstract3DRenderer *renderer : std::as_const( other.mRenderers ) )
-  {
-    mRenderers << renderer->clone();
-  }
-
   for ( QgsLightSource *source : std::as_const( other.mLightSources ) )
   {
     if ( source )
@@ -120,7 +114,6 @@ Qgs3DMapSettings::Qgs3DMapSettings( const Qgs3DMapSettings &other )
 
 Qgs3DMapSettings::~Qgs3DMapSettings()
 {
-  qDeleteAll( mRenderers );
   qDeleteAll( mLightSources );
 }
 
@@ -273,36 +266,6 @@ void Qgs3DMapSettings::readXml( const QDomElement &elem, const QgsReadWriteConte
   }
   mTerrainGenerator->readXml( elemTerrainGenerator );
 
-  qDeleteAll( mRenderers );
-  mRenderers.clear();
-
-  QDomElement elemRenderers = elem.firstChildElement( QStringLiteral( "renderers" ) );
-  QDomElement elemRenderer = elemRenderers.firstChildElement( QStringLiteral( "renderer" ) );
-  while ( !elemRenderer.isNull() )
-  {
-    QgsAbstract3DRenderer *renderer = nullptr;
-    QString type = elemRenderer.attribute( QStringLiteral( "type" ) );
-    if ( type == QLatin1String( "vector" ) )
-    {
-      renderer = new QgsVectorLayer3DRenderer;
-    }
-    else if ( type == QLatin1String( "mesh" ) )
-    {
-      renderer = new QgsMeshLayer3DRenderer;
-    }
-    else if ( type == QLatin1String( "pointcloud" ) )
-    {
-      renderer = new QgsPointCloudLayer3DRenderer;
-    }
-
-    if ( renderer )
-    {
-      renderer->readXml( elemRenderer, context );
-      mRenderers.append( renderer );
-    }
-    elemRenderer = elemRenderer.nextSiblingElement( QStringLiteral( "renderer" ) );
-  }
-
   QDomElement elemSkybox = elem.firstChildElement( QStringLiteral( "skybox" ) );
   mIsSkyboxEnabled = elemSkybox.attribute( QStringLiteral( "skybox-enabled" ) ).toInt();
   mSkyboxSettings.readXml( elemSkybox, context );
@@ -430,16 +393,6 @@ QDomElement Qgs3DMapSettings::writeXml( QDomDocument &doc, const QgsReadWriteCon
   elemTerrain.appendChild( elemTerrainGenerator );
   elem.appendChild( elemTerrain );
 
-  QDomElement elemRenderers = doc.createElement( QStringLiteral( "renderers" ) );
-  for ( const QgsAbstract3DRenderer *renderer : mRenderers )
-  {
-    QDomElement elemRenderer = doc.createElement( QStringLiteral( "renderer" ) );
-    elemRenderer.setAttribute( QStringLiteral( "type" ), renderer->type() );
-    renderer->writeXml( elemRenderer, context );
-    elemRenderers.appendChild( elemRenderer );
-  }
-  elem.appendChild( elemRenderers );
-
   QDomElement elemSkybox = doc.createElement( QStringLiteral( "skybox" ) );
   elemSkybox.setAttribute( QStringLiteral( "skybox-enabled" ), mIsSkyboxEnabled );
   mSkyboxSettings.writeXml( elemSkybox, context );
@@ -502,12 +455,6 @@ void Qgs3DMapSettings::resolveReferences( const QgsProject &project )
   }
 
   mTerrainGenerator->resolveReferences( project );
-
-  for ( int i = 0; i < mRenderers.count(); ++i )
-  {
-    QgsAbstract3DRenderer *renderer = mRenderers[i];
-    renderer->resolveReferences( project );
-  }
 }
 
 void Qgs3DMapSettings::setExtent( const QgsRectangle &extent )
@@ -783,15 +730,6 @@ void Qgs3DMapSettings::setTerrainMapTheme( const QString &theme )
 
   mTerrainMapTheme = theme;
   emit terrainMapThemeChanged();
-}
-
-void Qgs3DMapSettings::setRenderers( const QList<QgsAbstract3DRenderer *> &renderers )
-{
-  qDeleteAll( mRenderers );
-
-  mRenderers = renderers;
-
-  emit renderersChanged();
 }
 
 void Qgs3DMapSettings::setShowTerrainBoundingBoxes( bool enabled )

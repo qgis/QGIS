@@ -339,11 +339,6 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     // misc configuration
     //
 
-    //! Sets list of extra 3D renderers to use in the scene. Takes ownership of the objects.
-    void setRenderers( const QList<QgsAbstract3DRenderer *> &renderers SIP_TRANSFER );
-    //! Returns list of extra 3D renderers
-    QList<QgsAbstract3DRenderer *> renderers() const { return mRenderers; }
-
     //! Sets whether to display bounding boxes of terrain tiles (for debugging)
     void setShowTerrainBoundingBoxes( bool enabled );
     //! Returns whether to display bounding boxes of terrain tiles (for debugging)
@@ -923,7 +918,6 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     Qgis::NavigationMode mCameraNavigationMode = Qgis::NavigationMode::TerrainBased;
     double mCameraMovementSpeed = 5.0;
     QList<QgsMapLayerRef> mLayers;   //!< Layers to be rendered
-    QList<QgsAbstract3DRenderer *> mRenderers;  //!< Extra stuff to render as 3D object
     //! Coordinate transform context
     QgsCoordinateTransformContext mTransformContext;
     QgsPathResolver mPathResolver;
