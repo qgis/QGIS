@@ -326,15 +326,6 @@ Empty map theme name means that the map theme is not overridden and the current 
 %End
 
 
-    void setRenderers( const QList<QgsAbstract3DRenderer *> &renderers /Transfer/ );
-%Docstring
-Sets list of extra 3D renderers to use in the scene. Takes ownership of the objects.
-%End
-    QList<QgsAbstract3DRenderer *> renderers() const;
-%Docstring
-Returns list of extra 3D renderers
-%End
-
     void setShowTerrainBoundingBoxes( bool enabled );
 %Docstring
 Sets whether to display bounding boxes of terrain tiles (for debugging)
