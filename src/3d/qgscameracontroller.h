@@ -182,7 +182,7 @@ class _3D_EXPORT QgsCameraController : public QObject
      * Walks into the map by \a tx, \a ty, and \a tz
      * \since QGIS 3.30
      */
-    void walkView( float tx, float ty, float tz );
+    void walkView( double tx, double ty, double tz );
 
     /**
      * Rotates the camera on itself.

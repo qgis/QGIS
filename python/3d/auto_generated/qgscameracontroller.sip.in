@@ -165,7 +165,7 @@ Set camera heading to ``angle`` (used for rotating the view)
 Move the map by ``tx`` and ``ty``
 %End
 
-    void walkView( float tx, float ty, float tz );
+    void walkView( double tx, double ty, double tz );
 %Docstring
 Walks into the map by ``tx``, ``ty``, and ``tz``
 
