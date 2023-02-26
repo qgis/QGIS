@@ -164,9 +164,22 @@ Set camera heading to ``angle`` (used for rotating the view)
 %Docstring
 Move the map by ``tx`` and ``ty``
 %End
+
     void walkView( float tx, float ty, float tz );
 %Docstring
-Walk into the map by ``tx``, ``ty``, and ``tz``
+Walks into the map by ``tx``, ``ty``, and ``tz``
+
+.. versionadded:: 3.30
+%End
+
+    void rotateCamera( float diffPitch, float diffYaw );
+%Docstring
+Rotates the camera on itself.
+
+:param diffPitch: the pitch difference
+:param diffYaw: the yaw difference
+
+.. versionadded:: 3.30
 %End
 
     bool willHandleKeyEvent( QKeyEvent *event );
