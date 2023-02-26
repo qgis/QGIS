@@ -63,7 +63,7 @@ class _3D_EXPORT Qgs3DAxis : public QObject
   public:
 
     /**
-     * \brief Defaul Qgs3DAxis constructor
+     * \brief Default Qgs3DAxis constructor
      * \param parentWindow qt3d windows
      * @param parent3DScene root entity to set as parent
      * @param mapScene 3d map scene to retrieve terrain and 3d engine data
