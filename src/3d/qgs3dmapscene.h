@@ -178,6 +178,13 @@ class _3D_EXPORT Qgs3DMapScene : public QObject
     QgsAbstract3DEngine *engine() SIP_SKIP { return mEngine; }
 
     /**
+     * Returns the 3D map settings.
+     *
+     * \since QGIS 3.30
+     */
+    Qgs3DMapSettings *mapSettings() const { return &mMap; }
+
+    /**
      * Returns a map of 3D map scenes (by name) open in the QGIS application.
      *
      * \note Only available from the QGIS desktop application.
