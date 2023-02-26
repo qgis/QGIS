@@ -817,7 +817,7 @@ void QgsCameraController::onKeyPressedFlyNavigation( Qt3DInput::QKeyEvent *event
   mDepressedKeys.insert( event->key() );
 }
 
-void QgsCameraController::applyFlyModeKeyMovements()
+void QgsCameraController::walkView( float tx, float ty, float tz )
 {
   const QVector3D cameraUp = mCamera->upVector().normalized();
   const QVector3D cameraFront = ( QVector3D( mCameraPose.centerPoint().x(), mCameraPose.centerPoint().y(), mCameraPose.centerPoint().z() ) - mCamera->position() ).normalized();
@@ -825,6 +825,24 @@ void QgsCameraController::applyFlyModeKeyMovements()
 
   QVector3D cameraPosDiff( 0.0f, 0.0f, 0.0f );
 
+  if ( tx != 0.0 )
+  {
+    cameraPosDiff += tx * cameraFront;
+  }
+  if ( ty != 0.0 )
+  {
+    cameraPosDiff += ty * cameraLeft;
+  }
+  if ( tz != 0.0 )
+  {
+    cameraPosDiff += tz * QVector3D( 0.0f, 1.0f, 0.0f );
+  }
+
+  moveCameraPositionBy( cameraPosDiff );
+}
+
+void QgsCameraController::applyFlyModeKeyMovements()
+{
   // shift = "run", ctrl = "slow walk"
   const bool shiftPressed = mDepressedKeys.contains( Qt::Key_Shift );
   const bool ctrlPressed = mDepressedKeys.contains( Qt::Key_Control );
@@ -832,28 +850,31 @@ void QgsCameraController::applyFlyModeKeyMovements()
   const double movementSpeed = mCameraMovementSpeed * ( shiftPressed ? 2 : 1 ) * ( ctrlPressed ? 0.1 : 1 );
 
   bool changed = false;
+  float x = 0.0;
+  float y = 0.0;
+  float z = 0.0;
   if ( mDepressedKeys.contains( Qt::Key_Left ) || mDepressedKeys.contains( Qt::Key_A ) )
   {
     changed = true;
-    cameraPosDiff += movementSpeed * cameraLeft;
+    y += movementSpeed;
   }
 
   if ( mDepressedKeys.contains( Qt::Key_Right ) || mDepressedKeys.contains( Qt::Key_D ) )
   {
     changed = true;
-    cameraPosDiff += - movementSpeed * cameraLeft;
+    y -= movementSpeed;
   }
 
   if ( mDepressedKeys.contains( Qt::Key_Up ) || mDepressedKeys.contains( Qt::Key_W ) )
   {
     changed = true;
-    cameraPosDiff += movementSpeed * cameraFront;
+    x += movementSpeed;
   }
 
   if ( mDepressedKeys.contains( Qt::Key_Down ) || mDepressedKeys.contains( Qt::Key_S ) )
   {
     changed = true;
-    cameraPosDiff += - movementSpeed * cameraFront;
+    x -= movementSpeed;
   }
 
   // note -- vertical axis movements are slower by default then horizontal ones, as GIS projects
@@ -862,17 +883,17 @@ void QgsCameraController::applyFlyModeKeyMovements()
   if ( mDepressedKeys.contains( Qt::Key_PageUp ) || mDepressedKeys.contains( Qt::Key_E ) )
   {
     changed = true;
-    cameraPosDiff += ELEVATION_MOVEMENT_SCALE * movementSpeed * QVector3D( 0.0f, 1.0f, 0.0f );
+    z += ELEVATION_MOVEMENT_SCALE * movementSpeed;
   }
 
   if ( mDepressedKeys.contains( Qt::Key_PageDown ) || mDepressedKeys.contains( Qt::Key_Q ) )
   {
     changed = true;
-    cameraPosDiff += ELEVATION_MOVEMENT_SCALE * - movementSpeed * QVector3D( 0.0f, 1.0f, 0.0f );
+    z -= ELEVATION_MOVEMENT_SCALE * movementSpeed;
   }
 
   if ( changed )
-    moveCameraPositionBy( cameraPosDiff );
+    walkView( x, y, z );
 }
 
 void QgsCameraController::onPositionChangedFlyNavigation( Qt3DInput::QMouseEvent *mouse )

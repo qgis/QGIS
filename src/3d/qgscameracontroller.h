@@ -177,6 +177,8 @@ class _3D_EXPORT QgsCameraController : public QObject
     void setCameraHeadingAngle( float angle );
     //! Move the map by \a tx and \a ty
     void moveView( float tx, float ty );
+    //! Walk into the map by \a tx, \a ty, and \a tz
+    void walkView( float tx, float ty, float tz );
 
     /**
      * Returns TRUE if the camera controller will handle the specified key \a event,
