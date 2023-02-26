@@ -111,6 +111,13 @@ Returns the scene's elevation range
 
 
 
+    Qgs3DMapSettings *mapSettings() const;
+%Docstring
+Returns the 3D map settings.
+
+.. versionadded:: 3.30
+%End
+
     static QMap< QString, Qgs3DMapScene * > openScenes();
 %Docstring
 Returns a map of 3D map scenes (by name) open in the QGIS application.
