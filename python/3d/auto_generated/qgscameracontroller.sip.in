@@ -164,6 +164,10 @@ Set camera heading to ``angle`` (used for rotating the view)
 %Docstring
 Move the map by ``tx`` and ``ty``
 %End
+    void walkView( float tx, float ty, float tz );
+%Docstring
+Walk into the map by ``tx``, ``ty``, and ``tz``
+%End
 
     bool willHandleKeyEvent( QKeyEvent *event );
 %Docstring
