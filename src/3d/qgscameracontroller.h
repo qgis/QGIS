@@ -177,8 +177,20 @@ class _3D_EXPORT QgsCameraController : public QObject
     void setCameraHeadingAngle( float angle );
     //! Move the map by \a tx and \a ty
     void moveView( float tx, float ty );
-    //! Walk into the map by \a tx, \a ty, and \a tz
+
+    /**
+     * Walks into the map by \a tx, \a ty, and \a tz
+     * \since QGIS 3.30
+     */
     void walkView( float tx, float ty, float tz );
+
+    /**
+     * Rotates the camera on itself.
+     * \param diffPitch the pitch difference
+     * \param diffYaw the yaw difference
+     * \since QGIS 3.30
+     */
+    void rotateCamera( float diffPitch, float diffYaw );
 
     /**
      * Returns TRUE if the camera controller will handle the specified key \a event,
@@ -207,7 +219,6 @@ class _3D_EXPORT QgsCameraController : public QObject
     QgsCameraController( const QgsCameraController &other );
 #endif
 
-    void rotateCamera( float diffPitch, float diffYaw );
     void updateCameraFromPose();
     void moveCameraPositionBy( const QVector3D &posDiff );
     //! Returns a pointer to the scene's engine's window or nullptr if engine is QgsOffscreen3DEngine
