@@ -817,7 +817,7 @@ void QgsCameraController::onKeyPressedFlyNavigation( Qt3DInput::QKeyEvent *event
   mDepressedKeys.insert( event->key() );
 }
 
-void QgsCameraController::walkView( float tx, float ty, float tz )
+void QgsCameraController::walkView( double tx, double ty, double tz )
 {
   const QVector3D cameraUp = mCamera->upVector().normalized();
   const QVector3D cameraFront = ( QVector3D( mCameraPose.centerPoint().x(), mCameraPose.centerPoint().y(), mCameraPose.centerPoint().z() ) - mCamera->position() ).normalized();
@@ -850,9 +850,9 @@ void QgsCameraController::applyFlyModeKeyMovements()
   const double movementSpeed = mCameraMovementSpeed * ( shiftPressed ? 2 : 1 ) * ( ctrlPressed ? 0.1 : 1 );
 
   bool changed = false;
-  float x = 0.0;
-  float y = 0.0;
-  float z = 0.0;
+  double x = 0.0;
+  double y = 0.0;
+  double z = 0.0;
   if ( mDepressedKeys.contains( Qt::Key_Left ) || mDepressedKeys.contains( Qt::Key_A ) )
   {
     changed = true;
