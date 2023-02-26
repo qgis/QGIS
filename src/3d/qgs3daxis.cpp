@@ -38,6 +38,7 @@ typedef Qt3DCore::QBuffer Qt3DQBuffer;
 #include <Qt3DRender/QLayer>
 #include <Qt3DRender/QLayerFilter>
 #include <Qt3DRender/QPointLight>
+#include <Qt3DRender/QSortPolicy>
 #include <QWidget>
 #include <QScreen>
 #include <QShortcut>
@@ -307,7 +308,14 @@ Qt3DRender::QViewport *Qgs3DAxis::constructAxisViewport( Qt3DCore::QEntity *pare
   axisCameraSelector->setParent( axisLayerFilter );
   axisCameraSelector->setCamera( mAxisCamera );
 
-  Qt3DRender::QClearBuffers *clearBuffers = new Qt3DRender::QClearBuffers( axisCameraSelector );
+  // This ensures to have the labels (Text2DEntity) rendered after the other objects and therefore
+  // avoid any transparency issue on the labels.
+  Qt3DRender::QSortPolicy *sortPolicy = new Qt3DRender::QSortPolicy( axisCameraSelector );
+  QVector<Qt3DRender::QSortPolicy::SortType> sortTypes = QVector<Qt3DRender::QSortPolicy::SortType>();
+  sortTypes << Qt3DRender::QSortPolicy::BackToFront;
+  sortPolicy->setSortTypes( sortTypes );
+
+  Qt3DRender::QClearBuffers *clearBuffers = new Qt3DRender::QClearBuffers( sortPolicy );
   clearBuffers->setBuffers( Qt3DRender::QClearBuffers::DepthBuffer );
 
   // cppcheck-suppress memleak
@@ -348,7 +356,14 @@ Qt3DRender::QViewport *Qgs3DAxis::constructLabelViewport( Qt3DCore::QEntity *par
   twoDCameraSelector->setParent( twoDLayerFilter );
   twoDCameraSelector->setCamera( mTwoDLabelCamera );
 
-  Qt3DRender::QClearBuffers *clearBuffers = new Qt3DRender::QClearBuffers( twoDCameraSelector );
+  // this ensures to have the labels (Text2DEntity) rendered after the other objects and therefore
+  // avoid any transparency issue on the labels.
+  Qt3DRender::QSortPolicy *sortPolicy = new Qt3DRender::QSortPolicy( twoDCameraSelector );
+  QVector<Qt3DRender::QSortPolicy::SortType> sortTypes = QVector<Qt3DRender::QSortPolicy::SortType>();
+  sortTypes << Qt3DRender::QSortPolicy::BackToFront;
+  sortPolicy->setSortTypes( sortTypes );
+
+  Qt3DRender::QClearBuffers *clearBuffers = new Qt3DRender::QClearBuffers( sortPolicy );
   clearBuffers->setBuffers( Qt3DRender::QClearBuffers::DepthBuffer );
 
   // cppcheck-suppress memleak
