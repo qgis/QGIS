@@ -96,6 +96,11 @@ int QgsCoordinateUtils::calculateCoordinatePrecisionForCrs( const QgsCoordinateR
     return prj->readNumEntry( QStringLiteral( "PositionPrecision" ), QStringLiteral( "/DecimalPlaces" ), 6 );
   }
 
+  return calculateCoordinatePrecision( crs );
+}
+
+int QgsCoordinateUtils::calculateCoordinatePrecision( const QgsCoordinateReferenceSystem &crs )
+{
   const Qgis::DistanceUnit unit = crs.mapUnits();
   if ( unit == Qgis::DistanceUnit::Degrees )
   {
