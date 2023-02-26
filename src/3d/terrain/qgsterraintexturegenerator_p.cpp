@@ -55,15 +55,6 @@ int QgsTerrainTextureGenerator::render( const QgsRectangle &extent, QgsChunkNode
   }
   mapSettings.setOutputSize( size );
 
-  QList<QgsMapLayer *> layers = mMap.layers();
-  QList<QgsMapLayer *> toBeRenderedLayers;
-  for ( QgsMapLayer *l : layers )
-  {
-    if ( l->renderer3D() == nullptr )
-      toBeRenderedLayers.push_back( l );
-  }
-  mapSettings.setLayers( toBeRenderedLayers );
-
   QgsEventTracing::addEvent( QgsEventTracing::AsyncBegin, QStringLiteral( "3D" ), QStringLiteral( "Texture" ), tileId.text() );
 
   QgsMapRendererSequentialJob *job = new QgsMapRendererSequentialJob( mapSettings );
@@ -178,17 +169,23 @@ QgsMapSettings QgsTerrainTextureGenerator::baseMapSettings()
   mapSettings.setPathResolver( mMap.pathResolver() );
   mapSettings.setRendererUsage( mMap.rendererUsage() );
 
+  QList<QgsMapLayer *> layers;
   QgsMapThemeCollection *mapThemes = mMap.mapThemeCollection();
   QString mapThemeName = mMap.terrainMapTheme();
   if ( mapThemeName.isEmpty() || !mapThemes || !mapThemes->hasMapTheme( mapThemeName ) )
   {
-    mapSettings.setLayers( mMap.layers() );
+    layers = mMap.layers();
   }
   else
   {
-    mapSettings.setLayers( mapThemes->mapThemeVisibleLayers( mapThemeName ) );
+    layers = mapThemes->mapThemeVisibleLayers( mapThemeName );
     mapSettings.setLayerStyleOverrides( mapThemes->mapThemeStyleOverrides( mapThemeName ) );
   }
+  layers.erase( std::remove_if( layers.begin(),
+                                layers.end(),
+  []( const QgsMapLayer * layer ) { return layer->renderer3D() != nullptr; } ),
+  layers.end() );
+  mapSettings.setLayers( layers );
 
   return mapSettings;
 }
