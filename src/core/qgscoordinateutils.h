@@ -62,13 +62,27 @@ class CORE_EXPORT QgsCoordinateUtils
     Q_INVOKABLE static int calculateCoordinatePrecision( double mapUnitsPerPixel, const QgsCoordinateReferenceSystem &mapCrs, QgsProject *project = nullptr );
 
     /**
-     * Calculates coordinate precision for a CRS / Project. Considers CRS units and project settings
+     * Calculates coordinate precision for a \a crs and \a project.
+     *
+     * This method checks whether the \a project has explicit precision settings, and if not
+     * calculates a precision based on CRS units.
+     *
      * \param crs Coordinate system
      * \param project QGIS project. Takes QgsProject::instance() if NULL
+     *
      * \returns number of decimal places behind the dot
      * \since QGIS 3.18
      */
     Q_INVOKABLE static int calculateCoordinatePrecisionForCrs( const QgsCoordinateReferenceSystem &crs, QgsProject *project = nullptr );
+
+    /**
+     * Calculates a reasonable coordinate precision for a \a crs.
+     *
+     * This method considers the CRS units only.
+     *
+     * \since QGIS 3.30
+     */
+    Q_INVOKABLE static int calculateCoordinatePrecision( const QgsCoordinateReferenceSystem &crs );
 
     /**
      * Formats a \a point coordinate for use with the specified \a project, respecting the project's
