@@ -43,6 +43,7 @@
 #include "qgssymbollayerreference.h"
 #include "qgsmarkersymbollayer.h"
 #include "qmath.h"
+#include "qgsmasksymbollayer.h"
 
 #include <QColor>
 #include <QFont>
@@ -1327,6 +1328,7 @@ QgsSymbolLayer *QgsSymbolLayerUtils::loadSymbolLayer( QDomElement &element, cons
   const bool locked = element.attribute( QStringLiteral( "locked" ) ).toInt();
   const bool enabled = element.attribute( QStringLiteral( "enabled" ), QStringLiteral( "1" ) ).toInt();
   const int pass = element.attribute( QStringLiteral( "pass" ) ).toInt();
+  const QString id = element.attribute( QStringLiteral( "id" ) );
 
   // parse properties
   QVariantMap props = parseProperties( element );
@@ -1343,6 +1345,10 @@ QgsSymbolLayer *QgsSymbolLayerUtils::loadSymbolLayer( QDomElement &element, cons
     layer->setLocked( locked );
     layer->setRenderingPass( pass );
     layer->setEnabled( enabled );
+
+    // old project format, empty is missing, keep the actual layer one
+    if ( !id.isEmpty() )
+      layer->setId( id );
 
     //restore layer effect
     const QDomElement effectElem = element.firstChildElement( QStringLiteral( "effect" ) );
@@ -1424,6 +1430,7 @@ QDomElement QgsSymbolLayerUtils::saveSymbol( const QString &name, const QgsSymbo
     layerEl.setAttribute( QStringLiteral( "enabled" ), layer->enabled() );
     layerEl.setAttribute( QStringLiteral( "locked" ), layer->isLocked() );
     layerEl.setAttribute( QStringLiteral( "pass" ), layer->renderingPass() );
+    layerEl.setAttribute( QStringLiteral( "id" ), layer->id() );
 
     QVariantMap props = layer->properties();
 
@@ -4905,7 +4912,7 @@ double QgsSymbolLayerUtils::sizeInPixelsFromSldUom( const QString &uom, double s
   return size * scale;
 }
 
-QSet<const QgsSymbolLayer *> QgsSymbolLayerUtils::toSymbolLayerPointers( QgsFeatureRenderer *renderer, const QSet<QgsSymbolLayerId> &symbolLayerIds )
+QSet<const QgsSymbolLayer *> QgsSymbolLayerUtils::toSymbolLayerPointers( const QgsFeatureRenderer *renderer, const QSet<QgsSymbolLayerId> &symbolLayerIds )
 {
   class SymbolLayerVisitor : public QgsStyleEntityVisitorInterface
   {
@@ -5349,5 +5356,45 @@ QSize QgsSymbolLayerUtils::tileSize( int width, int height, double &angleRad )
   }
 
   return tileSize;
+}
 
+template <typename Functor>
+void changeSymbolLayerIds( QgsSymbolLayer *sl, Functor &&generateId )
+{
+  sl->setId( generateId() );
+
+  // recurse over sub symbols
+  QgsSymbol *subSymbol = sl->subSymbol();
+  if ( subSymbol )
+    changeSymbolLayerIds( subSymbol, generateId );
+}
+
+template <typename Functor>
+void changeSymbolLayerIds( QgsSymbol *symbol, Functor &&generateId )
+{
+  if ( !symbol )
+    return;
+
+  for ( int idx = 0; idx < symbol->symbolLayerCount(); idx++ )
+    changeSymbolLayerIds( symbol->symbolLayer( idx ), generateId );
+}
+
+void QgsSymbolLayerUtils::clearSymbolLayerIds( QgsSymbol *symbol )
+{
+  changeSymbolLayerIds( symbol, []() { return QString(); } );
+}
+
+void QgsSymbolLayerUtils::clearSymbolLayerIds( QgsSymbolLayer *symbolLayer )
+{
+  changeSymbolLayerIds( symbolLayer, []() { return QString(); } );
+}
+
+void QgsSymbolLayerUtils::resetSymbolLayerIds( QgsSymbolLayer *symbolLayer )
+{
+  changeSymbolLayerIds( symbolLayer, []() { return QUuid::createUuid().toString(); } );
+}
+
+void QgsSymbolLayerUtils::resetSymbolLayerIds( QgsSymbol *symbol )
+{
+  changeSymbolLayerIds( symbol, []() { return QUuid::createUuid().toString(); } );
 }

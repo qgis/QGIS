@@ -883,8 +883,9 @@ class CORE_EXPORT QgsSymbolLayerUtils
     /**
      * Converts a set of symbol layer id to a set of pointers to actual symbol layers carried by the feature renderer.
      * \since QGIS 3.12
+     * \deprecated since QGIS 3.30 because it was related to old QgsSymbolLayerReference system
      */
-    static QSet<const QgsSymbolLayer *> toSymbolLayerPointers( QgsFeatureRenderer *renderer, const QSet<QgsSymbolLayerId> &symbolLayerIds );
+    Q_DECL_DEPRECATED static QSet<const QgsSymbolLayer *> toSymbolLayerPointers( const QgsFeatureRenderer *renderer, const QSet<QgsSymbolLayerId> &symbolLayerIds );
 
     /**
      * Calculates the frame rate (in frames per second) at which the given \a renderer must be redrawn.
@@ -927,6 +928,30 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * \since QGIS 3.30
      */
     static QSize tileSize( int width, int height, double &angleRad SIP_INOUT );
+
+    /**
+     * Remove recursively unique id from all \a symbol symbol layers and set an empty string instead
+     * \since QGIS 3.30
+     */
+    static void clearSymbolLayerIds( QgsSymbol *symbol );
+
+    /**
+     * Remove recursively unique id from \a symbolLayer and its children and set an empty string instead
+     * \since QGIS 3.30
+     */
+    static void clearSymbolLayerIds( QgsSymbolLayer *symbolLayer );
+
+    /**
+     * Regenerate recursively unique id from all \a symbol symbol layers
+     * \since QGIS 3.30
+     */
+    static void resetSymbolLayerIds( QgsSymbol *symbol );
+
+    /**
+     * Regenerate recursively unique id from \a symbolLayer and its children
+     * \since QGIS 3.30
+     */
+    static void resetSymbolLayerIds( QgsSymbolLayer *symbolLayer );
 
     ///@cond PRIVATE
 #ifndef SIP_RUN

@@ -18,7 +18,9 @@ from qgis.core import (
     Qgis,
     QgsAnimatedMarkerSymbolLayer,
     QgsArrowSymbolLayer,
+    QgsFillSymbol,
     QgsGradientColorRamp,
+    QgsLinePatternFillSymbolLayer,
     QgsMapUnitScale,
     QgsMarkerLineSymbolLayer,
     QgsMarkerSymbol,
@@ -31,6 +33,7 @@ from qgis.core import (
     QgsSymbolLayer,
     QgsSymbolLayerUtils,
     QgsUnitTypes,
+    QgsVectorLayer
 )
 from qgis.testing import start_app, unittest
 
@@ -735,6 +738,40 @@ class PyQgsSymbolLayerUtils(unittest.TestCase):
             self.assertEqual(res_size.height(), int(exp_height), angle)
             self.assertEqual(res_size.width(), int(exp_width))
             self.assertAlmostEqual(res_angle, exp_angle)
+
+    def test_clear_symbollayer_ids(self):
+        """
+        Test we manage to clear all symbol layer ids on a symbol
+        """
+
+        source = QgsVectorLayer("Polygon?crs=EPSG:4326", 'layer', "memory")
+        self.assertTrue(source.isValid())
+
+        layer = QgsLinePatternFillSymbolLayer()
+        fill_symbol = QgsFillSymbol([layer])
+
+        sub_renderer = QgsSingleSymbolRenderer(fill_symbol)
+        source.setRenderer(sub_renderer)
+
+        self.assertEqual(len(fill_symbol.symbolLayers()), 1)
+
+        subsymbol = fill_symbol.symbolLayers()[0].subSymbol()
+        self.assertTrue(subsymbol)
+        self.assertEqual(len(subsymbol.symbolLayers()), 1)
+
+        child_sl = subsymbol.symbolLayers()[0]
+        self.assertTrue(child_sl)
+
+        old_id = child_sl.id()
+        self.assertTrue(child_sl.id())
+
+        QgsSymbolLayerUtils.resetSymbolLayerIds(fill_symbol)
+
+        self.assertTrue(child_sl.id())
+        self.assertTrue(child_sl.id() != old_id)
+
+        QgsSymbolLayerUtils.clearSymbolLayerIds(fill_symbol)
+        self.assertFalse(child_sl.id())
 
 
 if __name__ == '__main__':

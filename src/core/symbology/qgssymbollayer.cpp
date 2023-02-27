@@ -32,6 +32,7 @@
 #include <QPainter>
 #include <QPointF>
 #include <QPolygonF>
+#include <QUuid>
 
 QgsPropertiesDefinition QgsSymbolLayer::sPropertyDefinitions;
 
@@ -124,14 +125,10 @@ void QgsSymbolLayer::setDataDefinedProperty( QgsSymbolLayer::Property key, const
 
 void QgsSymbolLayer::startFeatureRender( const QgsFeature &feature, QgsRenderContext &context )
 {
+  installMasks( context, false );
+
   if ( QgsSymbol *lSubSymbol = subSymbol() )
     lSubSymbol->startFeatureRender( feature, context );
-
-  if ( !mClipPath.isEmpty() )
-  {
-    context.painter()->save();
-    context.painter()->setClipPath( mClipPath, Qt::IntersectClip );
-  }
 }
 
 void QgsSymbolLayer::stopFeatureRender( const QgsFeature &feature, QgsRenderContext &context )
@@ -139,10 +136,7 @@ void QgsSymbolLayer::stopFeatureRender( const QgsFeature &feature, QgsRenderCont
   if ( QgsSymbol *lSubSymbol = subSymbol() )
     lSubSymbol->stopFeatureRender( feature, context );
 
-  if ( !mClipPath.isEmpty() )
-  {
-    context.painter()->restore();
-  }
+  removeMasks( context, false );
 }
 
 QgsSymbol *QgsSymbolLayer::subSymbol()
@@ -230,6 +224,7 @@ void QgsSymbolLayer::setPaintEffect( QgsPaintEffect *effect )
 QgsSymbolLayer::QgsSymbolLayer( Qgis::SymbolType type, bool locked )
   : mType( type )
   , mLocked( locked )
+  , mId( QUuid::createUuid().toString() )
 {
 }
 
@@ -911,7 +906,7 @@ void QgsSymbolLayer::prepareMasks( const QgsSymbolRenderContext &context )
   mClipPath.clear();
 
   const QgsRenderContext &renderContext = context.renderContext();
-  const QList<QPainterPath> clipPaths = renderContext.symbolLayerClipPaths( this );
+  const QList<QPainterPath> clipPaths = renderContext.symbolLayerClipPaths( id() );
   if ( !clipPaths.isEmpty() )
   {
     QPainterPath mergedPaths;
@@ -928,4 +923,44 @@ void QgsSymbolLayer::prepareMasks( const QgsSymbolRenderContext &context )
       mClipPath = mClipPath.subtracted( mergedPaths );
     }
   }
+}
+
+void QgsSymbolLayer::installMasks( QgsRenderContext &context, bool recursive )
+{
+  if ( !mClipPath.isEmpty() )
+  {
+    context.painter()->save();
+    context.painter()->setClipPath( mClipPath, Qt::IntersectClip );
+  }
+
+  if ( QgsSymbol *lSubSymbol = recursive ? subSymbol() : nullptr )
+  {
+    for ( QgsSymbolLayer *sl : lSubSymbol->symbolLayers() )
+      sl->installMasks( context, true );
+  }
+}
+
+void QgsSymbolLayer::removeMasks( QgsRenderContext &context, bool recursive )
+{
+  if ( !mClipPath.isEmpty() )
+  {
+    context.painter()->restore();
+  }
+
+  if ( QgsSymbol *lSubSymbol = recursive ? subSymbol() : nullptr )
+  {
+    for ( QgsSymbolLayer *sl : lSubSymbol->symbolLayers() )
+      sl->removeMasks( context, true );
+  }
+}
+
+
+void QgsSymbolLayer::setId( const QString &id )
+{
+  mId = id;
+}
+
+QString QgsSymbolLayer::id() const
+{
+  return mId;
 }

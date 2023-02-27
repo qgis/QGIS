@@ -109,7 +109,39 @@ This is currently used to implement selective masking.
 .. versionadded:: 3.12
 %End
 
-    QSet<const QgsSymbolLayer *> disabledSymbolLayers() const;
+
+ void setDisabledSymbolLayers( const QSet<const QgsSymbolLayer *> &symbolLayers ) /Deprecated/;
+%Docstring
+When rendering a map layer in a second pass (for selective masking),
+some symbol layers may be disabled.
+
+Sets the list of disabled symbol layers.
+
+.. seealso:: :py:func:`disabledSymbolLayers`
+
+.. seealso:: :py:func:`isSymbolLayerEnabled`
+
+.. versionadded:: 3.12
+
+.. deprecated:: QGIS 3.30
+   and replaced with setDisabledSymbolLayersV2
+%End
+
+    void setDisabledSymbolLayersV2( const QSet<QString> &symbolLayers );
+%Docstring
+When rendering a map layer in a second pass (for selective masking),
+some symbol layers may be disabled.
+
+Sets the list of disabled symbol layer ids.
+
+.. seealso:: :py:func:`disabledSymbolLayersV2`
+
+.. seealso:: :py:func:`isSymbolLayerEnabled`
+
+.. versionadded:: 3.30
+%End
+
+ QSet<const QgsSymbolLayer *> disabledSymbolLayers() const /Deprecated/;
 %Docstring
 When rendering a map layer in a second pass (for selective masking),
 some symbol layers may be disabled.
@@ -121,6 +153,23 @@ Returns the list of disabled symbol layers.
 .. seealso:: :py:func:`isSymbolLayerEnabled`
 
 .. versionadded:: 3.12
+
+.. deprecated:: QGIS 3.30
+   and replaced with disabledSymbolLayersV2
+%End
+
+    QSet<QString> disabledSymbolLayersV2() const;
+%Docstring
+When rendering a map layer in a second pass (for selective masking),
+some symbol layers may be disabled.
+
+Returns the list of disabled symbol layer ids.
+
+.. seealso:: :py:func:`setDisabledSymbolLayers`
+
+.. seealso:: :py:func:`isSymbolLayerEnabled`
+
+.. versionadded:: 3.30
 %End
 
     bool isSymbolLayerEnabled( const QgsSymbolLayer *layer ) const;
@@ -515,20 +564,6 @@ of any rendering operations.
 Multiple mask painters can be defined and the second parameter gives a unique identifier to each one.
 
 .. seealso:: :py:func:`maskPainter`
-%End
-
-    void setDisabledSymbolLayers( const QSet<const QgsSymbolLayer *> &symbolLayers );
-%Docstring
-When rendering a map layer in a second pass (for selective masking),
-some symbol layers may be disabled.
-
-Sets the list of disabled symbol layers.
-
-.. seealso:: :py:func:`disabledSymbolLayers`
-
-.. seealso:: :py:func:`isSymbolLayerEnabled`
-
-.. versionadded:: 3.12
 %End
 
     void setForceVectorOutput( bool force );
@@ -935,6 +970,19 @@ rendering using QBrush objects.
 .. versionadded:: 3.16
 %End
 
+    void addSymbolLayerClipPath( const QString &symbolLayerId, QPainterPath path );
+%Docstring
+Add a clip ``path`` to be applied to the ``symbolLayer`` before rendering
+
+.. versionadded:: 3.26
+%End
+
+    QList<QPainterPath> symbolLayerClipPaths( const QString &symbolLayerId ) const;
+%Docstring
+Returns clip paths to be applied to the ``symbolLayer`` before rendering
+
+.. versionadded:: 3.26
+%End
 
     QgsDoubleRange zRange() const;
 %Docstring

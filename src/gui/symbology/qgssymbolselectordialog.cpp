@@ -721,6 +721,7 @@ void QgsSymbolSelectorWidget::duplicateLayer()
   QgsSymbol *parentSymbol = item->symbol();
 
   QgsSymbolLayer *newLayer = source->clone();
+  QgsSymbolLayerUtils::resetSymbolLayerIds( newLayer );
   if ( insertIdx == -1 )
     parentSymbol->appendSymbolLayer( newLayer );
   else

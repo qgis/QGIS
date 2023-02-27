@@ -645,7 +645,27 @@ This is a list of symbol layers of other layers that should be occluded.
 Prepares all mask internal objects according to what is defined in ``context``
 This should be called prior to calling :py:func:`~QgsSymbolLayer.startRender` method.
 
+.. seealso:: :py:func:`QgsRenderContext.addSymbolLayerClipPath`
+
+.. seealso:: :py:func:`QgsRenderContext.symbolLayerClipPaths`
+
 .. versionadded:: 3.26
+%End
+
+    void setId( const QString &id );
+%Docstring
+Set symbol layer identifier
+This id has to be unique in the whole project
+
+.. versionadded:: 3.30
+%End
+
+    QString id() const;
+%Docstring
+Returns symbol layer identifier
+This id is unique in the whole project
+
+.. versionadded:: 3.30
 %End
 
   protected:
@@ -657,7 +677,6 @@ Constructor for QgsSymbolLayer.
 :param type: specifies the associated symbol type
 :param locked: if ``True``, then symbol layer colors will be locked and will ignore any symbol-level color changes.
 %End
-
 
 
 
@@ -686,6 +705,30 @@ Copies paint effect of this layer to another symbol layer
 :param destLayer: destination layer
 
 .. versionadded:: 2.9
+%End
+
+    void installMasks( QgsRenderContext &context, bool recursive );
+%Docstring
+When rendering, install masks on ``context`` painter
+if ``recursive`` is ``True`` masks are installed recursively for all children symbol layers
+
+.. seealso:: :py:func:`prepareMasks`
+
+.. seealso:: :py:func:`removeMasks`
+
+.. versionadded:: 3.30
+%End
+
+    void removeMasks( QgsRenderContext &context, bool recursive );
+%Docstring
+When rendering, remove previously installed masks from ``context`` painter
+if ``recursive`` is ``True`` masks are removed recursively for all children symbol layers
+
+.. seealso:: :py:func:`prepareMasks`
+
+.. seealso:: :py:func:`installMasks`
+
+.. versionadded:: 3.30
 %End
 
   private:

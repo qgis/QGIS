@@ -143,6 +143,10 @@ QgsMarkerSymbol *QgsTextBackgroundSettings::markerSymbol() const
 
 void QgsTextBackgroundSettings::setMarkerSymbol( QgsMarkerSymbol *symbol )
 {
+  if ( symbol )
+    // Remove symbol layer unique id to have correct settings equality
+    QgsSymbolLayerUtils::clearSymbolLayerIds( symbol );
+
   d->markerSymbol.reset( symbol );
 }
 
@@ -153,6 +157,10 @@ QgsFillSymbol *QgsTextBackgroundSettings::fillSymbol() const
 
 void QgsTextBackgroundSettings::setFillSymbol( QgsFillSymbol *symbol )
 {
+  if ( symbol )
+    // Remove symbol layer unique id to have correct settings equality
+    QgsSymbolLayerUtils::clearSymbolLayerIds( symbol );
+
   d->fillSymbol.reset( symbol );
 }
 

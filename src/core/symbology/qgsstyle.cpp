@@ -291,7 +291,13 @@ bool QgsStyle::renameEntity( QgsStyle::StyleEntity type, const QString &oldName,
 QgsSymbol *QgsStyle::symbol( const QString &name )
 {
   const QgsSymbol *symbol = symbolRef( name );
-  return symbol ? symbol->clone() : nullptr;
+  if ( !symbol )
+    return nullptr;
+
+  QgsSymbol *newSymbol = symbol->clone();
+  QgsSymbolLayerUtils::resetSymbolLayerIds( newSymbol );
+
+  return newSymbol;
 }
 
 const QgsSymbol *QgsStyle::symbolRef( const QString &name ) const

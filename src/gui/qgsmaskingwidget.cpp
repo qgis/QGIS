@@ -90,13 +90,13 @@ void QgsMaskingWidget::showEvent( QShowEvent *event )
  * - mask source symbol layer id
  * - list of target mask symbol layer references
  */
-QList<QPair<QgsSymbolLayerId, QList<QgsSymbolLayerReference>>> symbolLayerMasks( const QgsVectorLayer *layer )
+QList<QPair<QString, QList<QgsSymbolLayerReference>>> symbolLayerMasks( const QgsVectorLayer *layer )
 {
   if ( ! layer->renderer() )
     return {};
 
-  QList<QPair<QgsSymbolLayerId, QList<QgsSymbolLayerReference>>> mMasks;
-  SymbolLayerVisitor collector( [&]( const QgsSymbolLayer * sl, const QgsSymbolLayerId & lid )
+  QList<QPair<QString, QList<QgsSymbolLayerReference>>> mMasks;
+  SymbolLayerVisitor collector( [&]( const QgsSymbolLayer * sl, const QString & lid )
   {
     if ( ! sl->masks().isEmpty() )
       mMasks.push_back( qMakePair( lid, sl->masks() ) );
@@ -120,7 +120,7 @@ void QgsMaskingWidget::populate()
   mMaskTargetsWidget->setLayer( mLayer );
 
   // collect masks and filter on those which have the current layer as destination
-  QSet<QgsSymbolLayerId> maskedSymbolLayers;
+  QSet<QString> maskedSymbolLayers;
   QList<QgsMaskSourceSelectionWidget::MaskSource> maskSources;
   QMap<QString, QgsMapLayer *> layers = QgsProject::instance()->mapLayers();
 
@@ -133,16 +133,16 @@ void QgsMaskingWidget::populate()
       continue;
 
     // collect symbol layer masks
-    const QList<QPair<QgsSymbolLayerId, QList<QgsSymbolLayerReference>>> slMasks = symbolLayerMasks( vl );
-    for ( const QPair<QgsSymbolLayerId, QList<QgsSymbolLayerReference>> &p : slMasks )
+    const QList<QPair<QString, QList<QgsSymbolLayerReference>>> slMasks = symbolLayerMasks( vl );
+    for ( const QPair<QString, QList<QgsSymbolLayerReference>> &p : slMasks )
     {
-      const QgsSymbolLayerId &sourceSymbolLayerId = p.first;
+      const QString &sourceSymbolLayerId = p.first;
       for ( const QgsSymbolLayerReference &ref : p.second )
       {
         if ( ref.layerId() == mLayer->id() )
         {
           // add to the set of destinations
-          maskedSymbolLayers.insert( ref.symbolLayerId() );
+          maskedSymbolLayers.insert( ref.symbolLayerIdV2() );
           // add to the list of mask sources
           source.layerId = layerId;
           source.isLabeling = false;
@@ -166,7 +166,7 @@ void QgsMaskingWidget::populate()
           // add the mask source
           source.layerId = layerId;
           source.isLabeling = true;
-          source.symbolLayerId = QgsSymbolLayerId( ruleKey, {} );
+          source.symbolLayerId = ruleKey;
           maskSources.append( source );
         }
       }
@@ -180,7 +180,7 @@ void QgsMaskingWidget::populate()
 void QgsMaskingWidget::apply()
 {
   QList<QgsMaskSourceSelectionWidget::MaskSource> maskSources = mMaskSourcesWidget->selection();
-  QSet<QgsSymbolLayerId> maskedSymbolLayers = mMaskTargetsWidget->selection();
+  QSet<QString> maskedSymbolLayers = mMaskTargetsWidget->selection();
 
   QSet<QString> layersToRefresh;
 
@@ -193,7 +193,7 @@ void QgsMaskingWidget::apply()
 
     //
     // First reset symbol layer masks
-    SymbolLayerVisitor maskSetter( [&]( const QgsSymbolLayer * sl, const QgsSymbolLayerId & slId )
+    SymbolLayerVisitor maskSetter( [&]( const QgsSymbolLayer * sl, const QString & slId )
     {
       if ( sl->layerType() == "MaskMarker" )
       {
@@ -212,7 +212,7 @@ void QgsMaskingWidget::apply()
           if ( ! source.isLabeling && source.layerId == layerIt.key() && source.symbolLayerId == slId )
           {
             // ... then add the new masked symbol layers, if any
-            for ( const QgsSymbolLayerId &maskedId : maskedSymbolLayers )
+            for ( const QString &maskedId : maskedSymbolLayers )
             {
               newMasks.append( QgsSymbolLayerReference( mLayer->id(), maskedId ) );
             }
@@ -249,9 +249,9 @@ void QgsMaskingWidget::apply()
       {
         // ... then add the new masked symbol layers, if any
 
-        if ( source.isLabeling && source.layerId == layerIt.key() && source.symbolLayerId.symbolKey() == labelProvider )
+        if ( source.isLabeling && source.layerId == layerIt.key() && source.symbolLayerId == labelProvider )
         {
-          for ( const QgsSymbolLayerId &maskedId : maskedSymbolLayers )
+          for ( const QString &maskedId : maskedSymbolLayers )
           {
             newMasks.append( QgsSymbolLayerReference( mLayer->id(), maskedId ) );
           }
@@ -303,7 +303,7 @@ void SymbolLayerVisitor::visitSymbol( const QgsSymbol *symbol, const QString &le
 
     const QgsSymbolLayer *sl = symbol->symbolLayer( idx );
 
-    mCallback( sl, QgsSymbolLayerId( mSymbolKey + leafIdentifier, indexPath ) );
+    mCallback( sl, sl->id() );
 
     // recurse over sub symbols
     const QgsSymbol *subSymbol = const_cast<QgsSymbolLayer *>( sl )->subSymbol();

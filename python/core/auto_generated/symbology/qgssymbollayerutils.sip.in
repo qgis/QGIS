@@ -978,11 +978,14 @@ Encodes a reference to a parametric SVG into a path with parameters according to
 .. versionadded:: 3.0
 %End
 
-    static QSet<const QgsSymbolLayer *> toSymbolLayerPointers( QgsFeatureRenderer *renderer, const QSet<QgsSymbolLayerId> &symbolLayerIds );
+ static QSet<const QgsSymbolLayer *> toSymbolLayerPointers( const QgsFeatureRenderer *renderer, const QSet<QgsSymbolLayerId> &symbolLayerIds );
 %Docstring
 Converts a set of symbol layer id to a set of pointers to actual symbol layers carried by the feature renderer.
 
 .. versionadded:: 3.12
+
+.. deprecated:: QGIS 3.30
+   because it was related to old :py:class:`QgsSymbolLayerReference` system
 %End
 
     static double rendererFrameRate( const QgsFeatureRenderer *renderer );
@@ -1029,6 +1032,34 @@ The method makes approximations and can modify ``angle`` in order to generate th
 :param angleRad: symbol layer rotation angle in radians (counter clockwise), it may be approximated by the method to minimize the tile size.
 
 :return: the size of the tile
+
+.. versionadded:: 3.30
+%End
+
+    static void clearSymbolLayerIds( QgsSymbol *symbol );
+%Docstring
+Remove recursively unique id from all ``symbol`` symbol layers and set an empty string instead
+
+.. versionadded:: 3.30
+%End
+
+    static void clearSymbolLayerIds( QgsSymbolLayer *symbolLayer );
+%Docstring
+Remove recursively unique id from ``symbolLayer`` and its children and set an empty string instead
+
+.. versionadded:: 3.30
+%End
+
+    static void resetSymbolLayerIds( QgsSymbol *symbol );
+%Docstring
+Regenerate recursively unique id from all ``symbol`` symbol layers
+
+.. versionadded:: 3.30
+%End
+
+    static void resetSymbolLayerIds( QgsSymbolLayer *symbolLayer );
+%Docstring
+Regenerate recursively unique id from ``symbolLayer`` and its children
 
 .. versionadded:: 3.30
 %End

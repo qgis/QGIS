@@ -17,10 +17,12 @@
 
 
 #include "qgsprojectfiletransform.h"
+#include "qgsmasksymbollayer.h"
 #include "qgsprojectversion.h"
 #include "qgslogger.h"
 #include "qgsrasterlayer.h"
 #include "qgsreadwritecontext.h"
+#include "qgsstyleentityvisitor.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 #include "qgspathresolver.h"
@@ -29,6 +31,8 @@
 #include "qgsrasterbandstats.h"
 #include "qgsrasterdataprovider.h"
 #include "qgsxmlutils.h"
+#include "qgssymbollayerreference.h"
+#include "qgssymbollayerutils.h"
 
 #include <QTextStream>
 #include <QDomDocument>
@@ -1222,5 +1226,93 @@ void transformContrastEnhancement( QDomDocument &doc, const QDomElement &rasterp
     newContrastEnhancementElem.appendChild( newAlgorithmElem );
 
     rendererElem.appendChild( newContrastEnhancementElem );
+  }
+}
+
+void QgsProjectFileTransform::fixOldSymbolLayerReferences( const QMap<QString, QgsMapLayer *> &mapLayers )
+{
+  for ( QgsMapLayer *ml : mapLayers )
+  {
+    QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( ml );
+    if ( !vl )
+      continue;
+
+    auto migrateOldReferences = [&mapLayers]( const QList<QgsSymbolLayerReference> &slRefs )
+    {
+      QList<QgsSymbolLayerReference> newRefs;
+      for ( QgsSymbolLayerReference slRef : slRefs )
+      {
+        const QgsVectorLayer *vlRef = qobject_cast<QgsVectorLayer *>( mapLayers[ slRef.layerId() ] );
+        const QgsFeatureRenderer *renderer = vlRef ? vlRef->renderer() : nullptr;
+        QSet<const QgsSymbolLayer *> symbolLayers = renderer ? QgsSymbolLayerUtils::toSymbolLayerPointers(
+              renderer, QSet<QgsSymbolLayerId>() << slRef.symbolLayerId() ) : QSet<const QgsSymbolLayer *>();
+        const QString slId = symbolLayers.isEmpty() ? QString() : ( *symbolLayers.constBegin() )->id();
+        newRefs << QgsSymbolLayerReference( slRef.layerId(), slId );
+      }
+
+      return newRefs;
+    };
+
+    if ( QgsAbstractVectorLayerLabeling *labeling = vl->labeling() )
+    {
+      for ( QString provider : labeling->subProviders() )
+      {
+        QgsPalLayerSettings settings = labeling->settings( provider );
+        QgsTextFormat format = settings.format();
+        QList<QgsSymbolLayerReference> newMaskedSymbolLayers = migrateOldReferences( format.mask().maskedSymbolLayers() );
+        format.mask().setMaskedSymbolLayers( newMaskedSymbolLayers );
+        settings.setFormat( format );
+        labeling->setSettings( new QgsPalLayerSettings( settings ), provider );
+      }
+    }
+
+    if ( QgsFeatureRenderer *renderer = vl->renderer() )
+    {
+
+      class SymbolLayerVisitor : public QgsStyleEntityVisitorInterface
+      {
+        public:
+          bool visitEnter( const QgsStyleEntityVisitorInterface::Node &node ) override
+          {
+            return ( node.type == QgsStyleEntityVisitorInterface::NodeType::SymbolRule );
+          }
+
+          void visitSymbol( const QgsSymbol *symbol )
+          {
+            for ( int idx = 0; idx < symbol->symbolLayerCount(); idx++ )
+            {
+              const QgsSymbolLayer *sl = symbol->symbolLayer( idx );
+
+              // recurse over sub symbols
+              const QgsSymbol *subSymbol = const_cast<QgsSymbolLayer *>( sl )->subSymbol();
+              if ( subSymbol )
+                visitSymbol( subSymbol );
+
+              if ( const QgsMaskMarkerSymbolLayer *maskLayer = dynamic_cast<const QgsMaskMarkerSymbolLayer *>( sl ) )
+                maskSymbolLayers << maskLayer;
+            }
+          }
+
+          bool visit( const QgsStyleEntityVisitorInterface::StyleLeaf &leaf ) override
+          {
+            if ( leaf.entity && leaf.entity->type() == QgsStyle::SymbolEntity )
+            {
+              auto symbolEntity = static_cast<const QgsStyleSymbolEntity *>( leaf.entity );
+              if ( symbolEntity->symbol() )
+                visitSymbol( symbolEntity->symbol() );
+            }
+            return true;
+          }
+
+          QList<const QgsMaskMarkerSymbolLayer *> maskSymbolLayers;
+      };
+
+      SymbolLayerVisitor visitor;
+      renderer->accept( &visitor );
+
+      for ( const QgsMaskMarkerSymbolLayer *maskSymbolLayer : visitor.maskSymbolLayers )
+        // Ugly but there is no other proper way to get those layer in order to modify them
+        const_cast<QgsMaskMarkerSymbolLayer *>( maskSymbolLayer )->setMasks( migrateOldReferences( maskSymbolLayer->masks() ) );
+    }
   }
 }

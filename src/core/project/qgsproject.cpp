@@ -1946,6 +1946,14 @@ bool QgsProject::readProjectFile( const QString &filename, Qgis::ProjectReadFlag
   profile.switchTask( tr( "Resolving references" ) );
   mRootGroup->resolveReferences( this );
 
+  // we need to migrate old fashion designed QgsSymbolLayerReference to new ones
+  if ( QgsProjectVersion( 3, 28, 0 ) > mSaveVersion )
+  {
+    Q_NOWARN_DEPRECATED_PUSH
+    QgsProjectFileTransform::fixOldSymbolLayerReferences( mapLayers() );
+    Q_NOWARN_DEPRECATED_POP
+  }
+
   if ( !layerTreeElem.isNull() )
   {
     mRootGroup->readLayerOrderFromXml( layerTreeElem );
