@@ -304,7 +304,6 @@ class CORE_EXPORT QgsInterpolatedLineSymbolLayer : public QgsLineSymbolLayer
     void startFeatureRender( const QgsFeature &feature, QgsRenderContext &context ) override;
     void stopFeatureRender( const QgsFeature &feature, QgsRenderContext &context ) override;
     void renderPolyline( const QPolygonF &points, QgsSymbolRenderContext &context ) override;
-    bool isCompatibleWithSymbol( QgsSymbol *symbol ) const override;
     bool canCauseArtifactsBetweenAdjacentTiles() const override;
 
     /**
