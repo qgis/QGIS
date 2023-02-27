@@ -1215,11 +1215,6 @@ void QgsInterpolatedLineSymbolLayer::renderPolyline( const QPolygonF &points, Qg
   }
 }
 
-bool QgsInterpolatedLineSymbolLayer::isCompatibleWithSymbol( QgsSymbol *symbol ) const
-{
-  return symbol && symbol->type() == Qgis::SymbolType::Line;
-}
-
 bool QgsInterpolatedLineSymbolLayer::canCauseArtifactsBetweenAdjacentTiles() const
 {
   return true;
