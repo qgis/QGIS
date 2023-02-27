@@ -183,6 +183,13 @@ void QgsFeatureListView::editSelectionChanged( const QItemSelection &selected, c
     viewport()->update( visualRegionForSelection( localDeselected ) | visualRegionForSelection( localSelected ) );
   }
 
+  if ( !selected.isEmpty() )
+  {
+    QgsFeature selectedFeature;
+    mModel->featureByIndex( mModel->mapFromMaster( selected.indexes().first() ), selectedFeature );
+    mLastEditSelectionFid = selectedFeature.id();
+  }
+
   const QItemSelection currentSelection = mCurrentEditSelectionModel->selection();
   if ( currentSelection.size() == 1 )
   {
@@ -501,25 +508,35 @@ void QgsFeatureListView::updateEditSelection( bool inSelection )
 
     int rowToSelect = -1;
 
+    QgsFeatureIds selectedFids;
+
     if ( inSelection )
     {
-      const QgsFeatureIds selectedFids = layerCache()->layer()->selectedFeatureIds();
-      const int rowCount = mModel->rowCount();
+      selectedFids = layerCache()->layer()->selectedFeatureIds();
+    }
 
-      for ( int i = 0; i < rowCount; i++ )
+    //if the selectedFids are empty because of no selection or selection reset, the index should persist
+    if ( selectedFids.isEmpty() )
+    {
+      //if no index can be evaluated from the last position the index should go to 0
+      selectedFids = QgsFeatureIds() << mLastEditSelectionFid;
+    }
+
+    const int rowCount = mModel->rowCount();
+    for ( int i = 0; i < rowCount; i++ )
+    {
+      if ( selectedFids.contains( mModel->idxToFid( mModel->index( i, 0 ) ) ) )
       {
-        if ( selectedFids.contains( mModel->idxToFid( mModel->index( i, 0 ) ) ) )
-        {
-          rowToSelect = i;
-          break;
-        }
-
-        if ( rowToSelect == -1 && !validEditSelectionAvailable )
-          rowToSelect = 0;
+        rowToSelect = i;
+        break;
       }
     }
-    else
+
+    if ( rowToSelect == -1 && !validEditSelectionAvailable )
+    {
+      // if no index could have been evaluated but no validEditSelectionAvailable, then jump to zero
       rowToSelect = 0;
+    }
 
     if ( rowToSelect != -1 )
     {
