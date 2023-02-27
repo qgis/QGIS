@@ -88,13 +88,13 @@
           <number>6</number>
          </property>
          <item row="1" column="1" colspan="3">
-          <widget class="QgsFieldExpressionWidget" name="mWidthEndFieldExpression"/>
+          <widget class="QgsFieldExpressionWidget" name="mWidthEndFieldExpression" native="true"/>
          </item>
          <item row="0" column="1" colspan="3">
-          <widget class="QgsFieldExpressionWidget" name="mWidthStartFieldExpression"/>
+          <widget class="QgsFieldExpressionWidget" name="mWidthStartFieldExpression" native="true"/>
          </item>
          <item row="6" column="1" colspan="2">
-          <widget class="QDoubleSpinBox" name="mDoubleSpinBoxMinWidth">
+          <widget class="QgsDoubleSpinBox" name="mDoubleSpinBoxMinWidth">
            <property name="maximum">
             <double>999999.989999999990687</double>
            </property>
@@ -171,7 +171,7 @@
           </layout>
          </item>
          <item row="7" column="1" colspan="2">
-          <widget class="QDoubleSpinBox" name="mDoubleSpinBoxMaxWidth">
+          <widget class="QgsDoubleSpinBox" name="mDoubleSpinBoxMaxWidth">
            <property name="maximum">
             <double>999999.989999999990687</double>
            </property>
@@ -320,7 +320,7 @@
           </widget>
          </item>
          <item row="0" column="1" colspan="2">
-          <widget class="QgsFieldExpressionWidget" name="mColorStartFieldExpression"/>
+          <widget class="QgsFieldExpressionWidget" name="mColorStartFieldExpression" native="true"/>
          </item>
          <item row="1" column="0">
           <widget class="QLabel" name="label_10">
@@ -367,7 +367,7 @@
           <widget class="QLineEdit" name="mLineEditColorMaxValue"/>
          </item>
          <item row="1" column="1" colspan="2">
-          <widget class="QgsFieldExpressionWidget" name="mColorEndFieldExpression"/>
+          <widget class="QgsFieldExpressionWidget" name="mColorEndFieldExpression" native="true"/>
          </item>
         </layout>
        </widget>
