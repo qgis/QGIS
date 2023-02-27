@@ -146,8 +146,8 @@ class CORE_EXPORT QgsSymbolLayerReference
      * \param symbolLayer symbol layer id
      * \deprecated since QGIS 3.30
      */
-    Q_DECL_DEPRECATED QgsSymbolLayerReference( const QString &layerId, const QgsSymbolLayerId &symbolLayer )
-      : mLayerId( layerId ), mDeprecatedSymbolLayerId( symbolLayer )
+    Q_DECL_DEPRECATED QgsSymbolLayerReference( const QString &layerId, const QgsSymbolLayerId &symbolLayer ) SIP_DEPRECATED
+  : mLayerId( layerId ), mDeprecatedSymbolLayerId( symbolLayer )
     {}
 
     /**
@@ -169,7 +169,7 @@ class CORE_EXPORT QgsSymbolLayerReference
      * The symbol layer's id
      * \deprecated since QGIS 3.30, use symbolLayerIdV2 instead
      */
-    Q_DECL_DEPRECATED QgsSymbolLayerId symbolLayerId() const { return mDeprecatedSymbolLayerId; }
+    Q_DECL_DEPRECATED QgsSymbolLayerId symbolLayerId() const SIP_DEPRECATED { return mDeprecatedSymbolLayerId; }
 
     /**
      * The symbol layer's id

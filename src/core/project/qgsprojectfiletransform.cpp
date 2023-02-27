@@ -1240,12 +1240,14 @@ void QgsProjectFileTransform::fixOldSymbolLayerReferences( const QMap<QString, Q
     auto migrateOldReferences = [&mapLayers]( const QList<QgsSymbolLayerReference> &slRefs )
     {
       QList<QgsSymbolLayerReference> newRefs;
-      for ( QgsSymbolLayerReference slRef : slRefs )
+      for ( const QgsSymbolLayerReference &slRef : slRefs )
       {
         const QgsVectorLayer *vlRef = qobject_cast<QgsVectorLayer *>( mapLayers[ slRef.layerId() ] );
         const QgsFeatureRenderer *renderer = vlRef ? vlRef->renderer() : nullptr;
+        Q_NOWARN_DEPRECATED_PUSH
         QSet<const QgsSymbolLayer *> symbolLayers = renderer ? QgsSymbolLayerUtils::toSymbolLayerPointers(
               renderer, QSet<QgsSymbolLayerId>() << slRef.symbolLayerId() ) : QSet<const QgsSymbolLayer *>();
+        Q_NOWARN_DEPRECATED_POP
         const QString slId = symbolLayers.isEmpty() ? QString() : ( *symbolLayers.constBegin() )->id();
         newRefs << QgsSymbolLayerReference( slRef.layerId(), slId );
       }
@@ -1255,7 +1257,8 @@ void QgsProjectFileTransform::fixOldSymbolLayerReferences( const QMap<QString, Q
 
     if ( QgsAbstractVectorLayerLabeling *labeling = vl->labeling() )
     {
-      for ( QString provider : labeling->subProviders() )
+      const QStringList subProviders = labeling->subProviders();
+      for ( const QString &provider : subProviders )
       {
         QgsPalLayerSettings settings = labeling->settings( provider );
         QgsTextFormat format = settings.format();
@@ -1310,7 +1313,7 @@ void QgsProjectFileTransform::fixOldSymbolLayerReferences( const QMap<QString, Q
       SymbolLayerVisitor visitor;
       renderer->accept( &visitor );
 
-      for ( const QgsMaskMarkerSymbolLayer *maskSymbolLayer : visitor.maskSymbolLayers )
+      for ( const QgsMaskMarkerSymbolLayer *maskSymbolLayer : std::as_const( visitor.maskSymbolLayers ) )
         // Ugly but there is no other proper way to get those layer in order to modify them
         const_cast<QgsMaskMarkerSymbolLayer *>( maskSymbolLayer )->setMasks( migrateOldReferences( maskSymbolLayer->masks() ) );
     }

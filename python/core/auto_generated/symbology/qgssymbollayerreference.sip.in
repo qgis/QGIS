@@ -110,7 +110,7 @@ Type used to refer to a specific symbol layer in a symbol of a layer.
 Default constructor
 %End
 
- QgsSymbolLayerReference( const QString &layerId, const QgsSymbolLayerId &symbolLayer );
+ QgsSymbolLayerReference( const QString &layerId, const QgsSymbolLayerId &symbolLayer ) /Deprecated/;
 %Docstring
 Constructor
 
@@ -135,7 +135,7 @@ Constructor
 The referenced vector layer / feature renderer
 %End
 
- QgsSymbolLayerId symbolLayerId() const;
+ QgsSymbolLayerId symbolLayerId() const /Deprecated/;
 %Docstring
 The symbol layer's id
 
