@@ -15,6 +15,8 @@
 
 #include "qgsjsoneditwidget.h"
 
+#include <QJsonObject>
+#include <QJsonDocument>
 #include <QAction>
 #include <QClipboard>
 #include <QDesktopServices>

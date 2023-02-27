@@ -37,12 +37,14 @@ unsigned int QgsJsonEditWidgetFactory::fieldScore( const QgsVectorLayer *vl, int
 {
   const QVariant::Type type = vl->fields().field( fieldIdx ).type();
 
+  const QString typeName = vl->fields().field( fieldIdx ).typeName().toLower();
+  const bool isJson { typeName == QLatin1String( "json" ) || typeName == QLatin1String( "jsonb" ) };
+
   switch ( type )
   {
     case QVariant::Map:
     {
-      const QString typeName = vl->fields().field( fieldIdx ).typeName();
-      if ( typeName == QLatin1String( "json" ) || typeName == QLatin1String( "jsonb" ) )
+      if ( isJson )
         return 21;
       return 15;
     }
@@ -51,6 +53,8 @@ unsigned int QgsJsonEditWidgetFactory::fieldScore( const QgsVectorLayer *vl, int
       return 10;
       break;
     default:
+      if ( isJson )
+        return 21;
       return 5;
       break;
   }

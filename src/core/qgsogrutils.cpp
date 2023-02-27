@@ -431,6 +431,12 @@ QVariant QgsOgrUtils::getOgrFeatureAttribute( OGRFeatureH ogrFet, const QgsField
           value = QVariant( QStringLiteral( "" ) ); // skip-keyword-check
 #endif
 
+        // Deal with JSON types
+        if ( field.typeName().toUpper() == QStringLiteral( "JSON" ) )
+        {
+          value = QJsonDocument().fromJson( value.toByteArray() ).toVariant();
+        }
+
         break;
       }
       case QVariant::Int:

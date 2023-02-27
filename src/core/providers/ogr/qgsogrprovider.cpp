@@ -1820,16 +1820,24 @@ bool QgsOgrProvider::addAttributeOGRLevel( const QgsField &field, bool &ignoreEr
   OGR_Fld_SetWidth( fielddefn.get(), width );
   OGR_Fld_SetPrecision( fielddefn.get(), field.precision() );
 
-  switch ( field.type() )
+  // If typeName is JSON set it explicitly
+  if ( field.typeName().toUpper() == QStringLiteral( "JSON" ) )
   {
-    case QVariant::Bool:
-      OGR_Fld_SetSubType( fielddefn.get(), OFSTBoolean );
-      break;
-    case QVariant::Map:
-      OGR_Fld_SetSubType( fielddefn.get(), OFSTJSON );
-      break;
-    default:
-      break;
+    OGR_Fld_SetSubType( fielddefn.get(), OFSTJSON );
+  }
+  else
+  {
+    switch ( field.type() )
+    {
+      case QVariant::Bool:
+        OGR_Fld_SetSubType( fielddefn.get(), OFSTBoolean );
+        break;
+      case QVariant::Map:
+        OGR_Fld_SetSubType( fielddefn.get(), OFSTJSON );
+        break;
+      default:
+        break;
+    }
   }
 
   if ( mOgrLayer->CreateField( fielddefn.get(), true ) != OGRERR_NONE )

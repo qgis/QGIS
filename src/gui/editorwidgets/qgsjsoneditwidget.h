@@ -18,7 +18,6 @@
 
 #include "ui_qgsjsoneditwidget.h"
 
-#include "qgseditorconfigwidget.h"
 #include "qgis_sip.h"
 #include "qgis_gui.h"
 
