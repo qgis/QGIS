@@ -269,6 +269,8 @@ class GUI_EXPORT QgsFeatureListView : public QListView
     QTimer mUpdateEditSelectionTimerWithSelection;
     QTimer mUpdateEditSelectionTimerWithoutSelection;
 
+    QgsFeatureId mLastEditSelectionFid;
+
     friend class QgsDualView;
 };
 
