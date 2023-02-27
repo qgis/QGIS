@@ -575,7 +575,7 @@ QString QgsProviderRegistry::absoluteToRelativeUri( const QString &providerKey, 
   if ( meta )
     return meta->absoluteToRelativeUri( uri, context );
   else
-    return QString();
+    return uri;
 }
 
 QString QgsProviderRegistry::relativeToAbsoluteUri( const QString &providerKey, const QString &uri, const QgsReadWriteContext &context ) const
@@ -584,7 +584,7 @@ QString QgsProviderRegistry::relativeToAbsoluteUri( const QString &providerKey, 
   if ( meta )
     return meta->relativeToAbsoluteUri( uri, context );
   else
-    return QString();
+    return uri;
 }
 
 Qgis::VectorExportResult QgsProviderRegistry::createEmptyLayer( const QString &providerKey,
