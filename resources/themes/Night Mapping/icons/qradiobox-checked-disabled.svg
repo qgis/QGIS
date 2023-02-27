@@ -1,60 +1,15 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<svg:svg
-   xmlns:dc="http://purl.org/dc/elements/1.1/"
-   xmlns:cc="http://creativecommons.org/ns#"
-   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-   xmlns:svg="http://www.w3.org/2000/svg"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   inkscape:version="1.0 (4035a4fb49, 2020-05-01)"
-   sodipodi:docname="qradiobox-checked-disabled.svg"
-   xml:space="preserve"
-   viewBox="0 0 16 16"
-   height="16"
-   width="16"
-   y="0"
-   x="0"
-   id="Layer_1"
-   version="1.1"><svg:metadata
-     id="metadata9"><rdf:RDF><cc:Work><dc:format>image/svg+xml</dc:format><dc:type
-           rdf:resource="http://purl.org/dc/dcmitype/StillImage" /><dc:title></dc:title></cc:Work></rdf:RDF></svg:metadata><svg:defs
-     id="defs7" /><sodipodi:namedview
-     inkscape:document-rotation="0"
-     inkscape:current-layer="Layer_1"
-     inkscape:window-maximized="1"
-     inkscape:window-y="-11"
-     inkscape:window-x="3829"
-     inkscape:cy="7.754"
-     inkscape:cx="4.272"
-     inkscape:zoom="41.725"
-     showgrid="true"
-     id="namedview5"
-     inkscape:window-height="1116"
-     inkscape:window-width="1920"
-     inkscape:pageshadow="2"
-     inkscape:pageopacity="0"
-     guidetolerance="10"
-     gridtolerance="10"
-     objecttolerance="10"
-     borderopacity="1"
-     bordercolor="#666666"
-     pagecolor="#ffffff"><inkscape:grid
-       id="grid823"
-       type="xygrid" /></sodipodi:namedview><script /><svg:circle
-     style="stroke:#aaaaaa;stroke-opacity:1"
-     stroke-opacity="1"
-     stroke-dashoffset="0"
-     stroke-dasharray="none"
-     stroke-linejoin="miter"
-     stroke-linecap="round"
-     stroke-width="0.8"
-     stroke="none"
-     fill-opacity="1"
-     fill="none"
-     vector-effect="none"
-     opacity="1"
-     r="7.6"
-     stroke-miterlimit="4"
-     cy="8"
-     cx="8"
-     id="path814" /></svg:svg>
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns:cc="http://creativecommons.org/ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" space="preserve" version="1.1" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+<metadata>
+<rdf:RDF>
+<cc:Work>
+<dc:format>image/svg+xml</dc:format>
+<dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+<dc:title/>
+</cc:Work>
+</rdf:RDF>
+</metadata>
+<script/>
+<circle cx="8" cy="8" r="7.6" fill="#5A5B5D" stroke="#222222" style="font-variant-east_asian:normal" stroke-width=".8"/>
+<circle cx="8" cy="8" r="3" fill="#222222" stroke="#222222" />
+</svg>
