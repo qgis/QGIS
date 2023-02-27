@@ -234,6 +234,8 @@ class GUI_EXPORT QgsFeatureListView : public QListView
   private:
     void selectRow( const QModelIndex &index, bool anchor );
 
+    void updateEditSelection( bool inSelection = false );
+
     enum PositionInList
     {
       First,
@@ -264,7 +266,8 @@ class GUI_EXPORT QgsFeatureListView : public QListView
     int mRowAnchor = 0;
     QItemSelectionModel::SelectionFlags mCtrlDragSelectionFlag;
 
-    QTimer mUpdateEditSelectionTimer;
+    QTimer mUpdateEditSelectionTimerWithSelection;
+    QTimer mUpdateEditSelectionTimerWithoutSelection;
 
     friend class QgsDualView;
 };
