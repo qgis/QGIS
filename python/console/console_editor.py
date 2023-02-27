@@ -318,7 +318,7 @@ class Editor(QgsCodeEditorPython):
         deleteTempFile = False
         if self.syntaxCheck():
             if filename and self.isModified() and autoSave:
-                self.parent.save(filename)
+                self.save(filename)
             elif not filename or self.isModified():
                 # Create a new temp file if the file isn't already saved.
                 filename = self.createTempFile()
@@ -406,7 +406,7 @@ class Editor(QgsCodeEditorPython):
         if self.isReadOnly():
             return
         tabwidget = self.tabwidget
-        index = tabwidget.indexOf(self)
+        index = tabwidget.indexOf(self.parent)
         if filename:
             self.path = filename
         if self.path is None:
@@ -489,18 +489,16 @@ class EditorTab(QWidget):
     def __init__(self, parent, pythonconsole, filename, readOnly):
         super().__init__(parent)
         self.tabwidget = parent
-        self.path = None
 
-        self.editor = Editor(self)
-        self.editor.pythonconsole = pythonconsole
-        self.editor.tabwidget = parent
+        self._editor = Editor(self)
+        self._editor.pythonconsole = pythonconsole
+        self._editor.tabwidget = parent
         if filename:
-            self.path = filename
             if QFileInfo(filename).exists():
-                self.editor.loadFile(filename, readOnly)
+                self._editor.loadFile(filename, readOnly)
 
         # Creates layout for message bar
-        self.layout = QGridLayout(self.editor)
+        self.layout = QGridLayout(self._editor)
         self.layout.setContentsMargins(0, 0, 0, 0)
         spacerItem = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
         self.layout.addItem(spacerItem, 1, 0, 1, 1)
@@ -512,13 +510,27 @@ class EditorTab(QWidget):
 
         self.tabLayout = QGridLayout(self)
         self.tabLayout.setContentsMargins(0, 0, 0, 0)
-        self.tabLayout.addWidget(self.editor)
+        self.tabLayout.addWidget(self._editor)
 
     def modified(self, modified):
         self.tabwidget.tabModified(self, modified)
 
     def close(self):
         self.tabwidget._removeTab(self, tab2index=True)
+
+    def __getattr__(self, name):
+        """ Forward all missing attribute requests to the editor."""
+        try:
+            return super().__getattr__(name)
+        except AttributeError:
+            return getattr(self._editor, name)
+
+    def __setattr__(self, name, value):
+        """ Forward all missing attribute requests to the editor."""
+        try:
+            return super().__setattr__(name, value)
+        except AttributeError:
+            return setattr(self._editor, name, value)
 
 
 class EditorTabWidget(QTabWidget):
@@ -644,7 +656,7 @@ class EditorTabWidget(QTabWidget):
             menu.addSeparator()
             saveAction = menu.addAction(
                 QCoreApplication.translate("PythonConsole", "Save"),
-                cW.editor.save)
+                cW.save)
             menu.addAction(
                 QCoreApplication.translate("PythonConsole", "Save As"),
                 self.saveAs)
@@ -656,7 +668,7 @@ class EditorTabWidget(QTabWidget):
                 closeTabAction.setEnabled(True)
                 closeAllTabAction.setEnabled(True)
                 closeOthersTabAction.setEnabled(True)
-            if self.widget(self.idx).editor.isModified():
+            if self.widget(self.idx).isModified():
                 saveAction.setEnabled(True)
             menu.exec_(self.mapToGlobal(e.pos()))
 
@@ -680,7 +692,7 @@ class EditorTabWidget(QTabWidget):
     def enableSaveIfModified(self, tab):
         tabWidget = self.widget(tab)
         if tabWidget:
-            self.parent.saveFileButton.setEnabled(tabWidget.editor.isModified())
+            self.parent.saveFileButton.setEnabled(tabWidget.isModified())
 
     def enableToolBarEditor(self, enable):
         if self.topFrame.isVisible():
@@ -727,8 +739,8 @@ class EditorTabWidget(QTabWidget):
     def _removeTab(self, tab, tab2index=False):
         if tab2index:
             tab = self.indexOf(tab)
-        tabWidget = self.widget(tab)
-        if tabWidget.editor.isModified():
+        editorTab = self.widget(tab)
+        if editorTab.isModified():
             txtSaveOnRemove = QCoreApplication.translate("PythonConsole",
                                                          "Python Console: Save File")
             txtMsgSaveOnRemove = QCoreApplication.translate("PythonConsole",
@@ -739,23 +751,23 @@ class EditorTabWidget(QTabWidget):
             if res == QMessageBox.Cancel:
                 return
             if res == QMessageBox.Save:
-                tabWidget.save()
-            if tabWidget.path:
-                self.parent.updateTabListScript(tabWidget.path, action='remove')
+                editorTab.save()
+            if editorTab.path:
+                self.parent.updateTabListScript(editorTab.path, action='remove')
             self.removeTab(tab)
             if self.count() < 1:
                 self.newTabEditor()
         else:
-            if tabWidget.path:
-                self.parent.updateTabListScript(tabWidget.path, action='remove')
+            if editorTab.path:
+                self.parent.updateTabListScript(editorTab.path, action='remove')
             if self.count() <= 1:
                 self.removeTab(tab)
                 self.newTabEditor()
             else:
                 self.removeTab(tab)
 
-        tabWidget.deleteLater()
-        self.currentWidget().editor.setFocus(Qt.TabFocusReason)
+        editorTab.deleteLater()
+        self.currentWidget().setFocus(Qt.TabFocusReason)
 
     def buttonClosePressed(self):
         self.closeCurrentWidget()
@@ -800,7 +812,7 @@ class EditorTabWidget(QTabWidget):
             self.newTabEditor(filename=None)
         self.topFrame.close()
         self.enableToolBarEditor(True)
-        self.currentWidget().editor.setFocus(Qt.TabFocusReason)
+        self.currentWidget().setFocus(Qt.TabFocusReason)
 
     def closeRestore(self):
         self.parent.updateTabListScript(None)

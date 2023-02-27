@@ -558,13 +558,13 @@ class PythonConsoleWidget(QWidget):
             # iterate backwards through tabs, as we may be closing some as we go
             tab_index = tab_count - i - 1
             tab_widget = self.tabEditorWidget.widget(tab_index)
-            if tab_widget.editor.isModified():
+            if tab_widget.isModified():
                 ret = QMessageBox.question(self, self.tr("Save {}").format(self.tabEditorWidget.tabText(tab_index)),
                                            self.tr("There are unsaved changes in this script. Do you want to keep those?"),
                                            QMessageBox.Save | QMessageBox.Cancel | QMessageBox.Discard, QMessageBox.Cancel)
                 if ret == QMessageBox.Save:
-                    tab_widget.edisave()
-                    if tab_widget.editor.isModified():
+                    tab_widget.save()
+                    if tab_widget.isModified():
                         # save failed, treat as cancel
                         return False
                 elif ret == QMessageBox.Discard:
@@ -577,36 +577,36 @@ class PythonConsoleWidget(QWidget):
         return True
 
     def _toggleFind(self):
-        self.tabEditorWidget.currentWidget().editor.toggleFindWidget()
+        self.tabEditorWidget.currentWidget().toggleFindWidget()
 
     def _openFind(self):
-        self.tabEditorWidget.currentWidget().editor.openFindWidget()
+        self.tabEditorWidget.currentWidget().openFindWidget()
 
     def _closeFind(self):
-        self.tabEditorWidget.currentWidget().editor.closeFindWidget()
+        self.tabEditorWidget.currentWidget().closeFindWidget()
 
     def _findNext(self):
-        self.tabEditorWidget.currentWidget().editor.findText(True)
+        self.tabEditorWidget.currentWidget().findText(True)
 
     def _findPrev(self):
-        self.tabEditorWidget.currentWidget().editor.findText(False)
+        self.tabEditorWidget.currentWidget().findText(False)
 
     def _textFindChanged(self):
         if self.lineEditFind.text():
             self.findNextButton.setEnabled(True)
             self.findPrevButton.setEnabled(True)
-            self.tabEditorWidget.currentWidget().editor.findText(True, showMessage=False, findFirst=True)
+            self.tabEditorWidget.currentWidget().findText(True, showMessage=False, findFirst=True)
         else:
             self.lineEditFind.setStyleSheet('')
             self.findNextButton.setEnabled(False)
             self.findPrevButton.setEnabled(False)
 
     def onClickGoToLine(self, item, column):
-        tabEditor = self.tabEditorWidget.currentWidget().editor
+        tabEditor = self.tabEditorWidget.currentWidget()
         if item.text(1) == 'syntaxError':
             check = tabEditor.syntaxCheck()
             if check and not tabEditor.isReadOnly():
-                self.tabEditorWidget.currentWidget().edisave()
+                self.tabEditorWidget.currentWidget().save()
             return
         linenr = int(item.text(1))
         itemName = str(item.text(0))
@@ -627,19 +627,19 @@ class PythonConsoleWidget(QWidget):
         self.listClassMethod.show() if checked else self.listClassMethod.hide()
 
     def pasteEditor(self):
-        self.tabEditorWidget.currentWidget().editor.paste()
+        self.tabEditorWidget.currentWidget().paste()
 
     def cutEditor(self):
-        self.tabEditorWidget.currentWidget().editor.cut()
+        self.tabEditorWidget.currentWidget().cut()
 
     def copyEditor(self):
-        self.tabEditorWidget.currentWidget().editor.copy()
+        self.tabEditorWidget.currentWidget().copy()
 
     def runScriptEditor(self):
-        self.tabEditorWidget.currentWidget().editor.runScriptCode()
+        self.tabEditorWidget.currentWidget().runScriptCode()
 
     def toggleComment(self):
-        self.tabEditorWidget.currentWidget().editor.toggleComment()
+        self.tabEditorWidget.currentWidget().toggleComment()
 
     def openScriptFileExtEditor(self):
         tabWidget = self.tabEditorWidget.currentWidget()
@@ -673,7 +673,7 @@ class PythonConsoleWidget(QWidget):
     def saveScriptFile(self):
         tabWidget = self.tabEditorWidget.currentWidget()
         try:
-            tabWidget.editor.save()
+            tabWidget.save()
         except (IOError, OSError) as error:
             msgText = QCoreApplication.translate('PythonConsole',
                                                  'The file <b>{0}</b> could not be saved. Error: {1}').format(tabWidget.path,
