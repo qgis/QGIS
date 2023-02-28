@@ -738,7 +738,7 @@ bool MDAL::DriverHec2D::canReadMesh( const std::string &uri )
   {
     HdfFile hdfFile = openHdfFile( uri );
     std::string fileType = openHdfAttribute( hdfFile, "File Type" );
-    return canReadFormat( fileType ) || canReadFormat505( fileType );
+    return canReadFormat( fileType );
   }
   catch ( MDAL_Status )
   {
@@ -752,17 +752,12 @@ bool MDAL::DriverHec2D::canReadMesh( const std::string &uri )
 
 bool MDAL::DriverHec2D::canReadFormat( const std::string &fileType ) const
 {
-  return fileType == "HEC-RAS Results";
+  return fileType == "HEC-RAS Results" || fileType == "HEC-RAS Geometry";
 }
 
-bool MDAL::DriverHec2D::canReadFormat505( const std::string &fileType ) const
+std::unique_ptr<MDAL::Mesh> MDAL::DriverHec2D::load( const std::string &fileName, const std::string & )
 {
-  return fileType == "HEC-RAS Geometry";
-}
-
-std::unique_ptr<MDAL::Mesh> MDAL::DriverHec2D::load( const std::string &resultsFile, const std::string & )
-{
-  mFileName = resultsFile;
+  mFileName = fileName;
   MDAL::Log::resetLastStatus();
   mMesh.reset();
 
@@ -787,22 +782,29 @@ std::unique_ptr<MDAL::Mesh> MDAL::DriverHec2D::load( const std::string &resultsF
     parseMesh( gGeom2DFlowAreas, areaElemStartIndex, flowAreaNames );
     setProjection( hdfFile );
 
-    mTimes = readTimes( hdfFile );
-    mReferenceTime = readReferenceDateTime( hdfFile );
+    bool hasResults = hdfFile.pathExists( "Results" );
+    if ( hasResults )
+    {
+      mTimes = readTimes( hdfFile );
+      mReferenceTime = readReferenceDateTime( hdfFile );
+    }
 
     //Elevation
     std::shared_ptr<MDAL::MemoryDataset2D> bed_elevation = readBedElevation( gGeom2DFlowAreas, areaElemStartIndex, flowAreaNames );
 
-    // Element centered Values
-    readElemResults( hdfFile, bed_elevation, areaElemStartIndex, flowAreaNames );
+    if ( hasResults )
+    {
+      // Element centered Values
+      readElemResults( hdfFile, bed_elevation, areaElemStartIndex, flowAreaNames );
 
-    // Face centered Values
-    readFaceResults( hdfFile, areaElemStartIndex, flowAreaNames );
+      // Face centered Values
+      readFaceResults( hdfFile, areaElemStartIndex, flowAreaNames );
+    }
 
   }
   catch ( MDAL_Status error )
   {
-    MDAL::Log::error( error, name(), "Error occurred while loading file " + resultsFile );
+    MDAL::Log::error( error, name(), "Error occurred while loading file " + fileName );
     mMesh.reset();
   }
   catch ( MDAL::Error err )
