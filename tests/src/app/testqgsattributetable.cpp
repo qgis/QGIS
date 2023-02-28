@@ -853,7 +853,7 @@ void TestQgsAttributeTable::testEnsureEditSelection()
 
   std::unique_ptr< QgsAttributeTableDialog > dlg( new QgsAttributeTableDialog( layer.get() ) );
 
-  //since the update is done by timer we need to wait for update (at least one milisecond)
+  //since the update is done by timer, we have to wait for the update (at least one millisecond)
   QEventLoop loop;
 
   // we set the index to ft3
