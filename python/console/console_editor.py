@@ -767,20 +767,7 @@ class EditorTabWidget(QTabWidget):
                 self.removeTab(tab)
 
         editorTab.deleteLater()
-        self.currentWidget().setFocus(Qt.TabFocusReason)
-
-    def buttonClosePressed(self):
-        self.closeCurrentWidget()
-
-    def closeCurrentWidget(self):
-        currWidget = self.currentWidget()
-        if currWidget and currWidget.close():
-            self.removeTab(self.currentIndex())
-            currWidget = self.currentWidget()
-            if currWidget:
-                currWidget.setFocus(Qt.TabFocusReason)
-        if currWidget.path in self.restoreTabList:
-            self.parent.updateTabListScript(currWidget.path, action='remove')
+        self.currentWidget()._editor.setFocus(Qt.TabFocusReason)
 
     def restoreTabsOrAddNew(self):
         """
@@ -812,7 +799,7 @@ class EditorTabWidget(QTabWidget):
             self.newTabEditor(filename=None)
         self.topFrame.close()
         self.enableToolBarEditor(True)
-        self.currentWidget().setFocus(Qt.TabFocusReason)
+        self.currentWidget()._editor.setFocus(Qt.TabFocusReason)
 
     def closeRestore(self):
         self.parent.updateTabListScript(None)
