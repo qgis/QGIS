@@ -41,6 +41,8 @@ class QgsRectanglesOvalsDiamondsAlgorithm : public QgsProcessingFeatureBasedAlgo
     QString group() const override;
     QString groupId() const override;
     QString shortHelpString() const override;
+    QIcon icon() const override;
+    QString svgIconPath() const override;
     QList<int> inputLayerTypes() const override;
     void initParameters( const QVariantMap &configuration = QVariantMap() ) override;
     QgsRectanglesOvalsDiamondsAlgorithm *createInstance() const override SIP_FACTORY;

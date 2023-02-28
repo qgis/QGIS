@@ -54,6 +54,16 @@ QString QgsRectanglesOvalsDiamondsAlgorithm::shortHelpString() const
                       "to singleparts first." );
 }
 
+QIcon QgsRectanglesOvalsDiamondsAlgorithm::icon() const
+{
+  return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmRectanglesOvalsDiamonds.svg" ) );
+}
+
+QString QgsRectanglesOvalsDiamondsAlgorithm::svgIconPath() const
+{
+  return QgsApplication::iconPath( QStringLiteral( "/algorithms/mAlgorithmRectanglesOvalsDiamonds.svg" ) );
+}
+
 QString QgsRectanglesOvalsDiamondsAlgorithm::outputName() const
 {
   return QObject::tr( "Polygon" );
