@@ -191,42 +191,9 @@ Qgs3DMapScene::Qgs3DMapScene( Qgs3DMapSettings &map, QgsAbstract3DEngine *engine
   // listen to changes of layers in order to add/remove 3D renderer entities
   connect( &map, &Qgs3DMapSettings::layersChanged, this, &Qgs3DMapScene::onLayersChanged );
 
-
-#if 0
-  ChunkedEntity *testChunkEntity = new ChunkedEntity( AABB( -500, 0, -500, 500, 100, 500 ), 2.f, 3.f, 7, new TestChunkLoaderFactory );
-  testChunkEntity->setEnabled( false );
-  testChunkEntity->setParent( this );
-  chunkEntities << testChunkEntity;
-#endif
-
   connect( mCameraController, &QgsCameraController::cameraChanged, this, &Qgs3DMapScene::onCameraChanged );
   connect( mEngine, &QgsAbstract3DEngine::sizeChanged, this, &Qgs3DMapScene::onCameraChanged );
 
-#if 0
-  // experiments with loading of existing 3D models.
-
-  // scene loader only gets loaded only when added to a scene...
-  // it loads everything: geometries, materials, transforms, lights, cameras (if any)
-  Qt3DCore::QEntity *loaderEntity = new Qt3DCore::QEntity;
-  Qt3DRender::QSceneLoader *loader = new Qt3DRender::QSceneLoader;
-  loader->setSource( QUrl( "file:///home/martin/Downloads/LowPolyModels/tree.dae" ) );
-  loaderEntity->addComponent( loader );
-  loaderEntity->setParent( this );
-
-  // mesh loads just geometry as one geometry...
-  // so if there are different materials (e.g. colors) used in the model, this information is lost
-  Qt3DCore::QEntity *meshEntity = new Qt3DCore::QEntity;
-  Qt3DRender::QMesh *mesh = new Qt3DRender::QMesh;
-  mesh->setSource( QUrl( "file:///home/martin/Downloads/LowPolyModels/tree.obj" ) );
-  meshEntity->addComponent( mesh );
-  Qt3DExtras::QPhongMaterial *material = new Qt3DExtras::QPhongMaterial;
-  material->setAmbient( Qt::red );
-  meshEntity->addComponent( material );
-  Qt3DCore::QTransform *meshTransform = new Qt3DCore::QTransform;
-  meshTransform->setScale( 1 );
-  meshEntity->addComponent( meshTransform );
-  meshEntity->setParent( this );
-#endif
   onSkyboxSettingsChanged();
 
   // force initial update of chunked entities
