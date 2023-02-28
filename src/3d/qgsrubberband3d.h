@@ -36,6 +36,9 @@
 class QgsWindow3DEngine;
 class QgsLineMaterial;
 class Qgs3DMapSettings;
+class QgsBillboardGeometry;
+class QgsMarkerSymbol;
+class QgsPoint3DBillboardMaterial;
 
 namespace Qt3DCore
 {
@@ -87,17 +90,22 @@ class _3D_EXPORT QgsRubberBand3D
 
     void removeLastPoint();
 
+    void moveLastPoint( const QgsPoint &pt );
+
   private:
     void updateGeometry();
+    void updateMarkerMaterial();
 
   private:
     QgsLineString mLineString;
 
     Qgs3DMapSettings *mMapSettings = nullptr;  // not owned
+    QgsWindow3DEngine *mEngine = nullptr;
 
-    Qt3DCore::QEntity *mEntity = nullptr;  // owned by parentEntity (from constructor)
+    Qt3DCore::QEntity *mLineEntity = nullptr;  // owned by parentEntity (from constructor)
+    Qt3DCore::QEntity *mMarkerEntity = nullptr; // owned by parentEntity (from constructor)
 
-    // all these are owned by mEntity
+    // all these are owned by mLineEntity
     Qt3DRender::QGeometryRenderer *mGeomRenderer = nullptr;
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     Qt3DRender::QGeometry *mGeometry = nullptr;
@@ -109,6 +117,12 @@ class _3D_EXPORT QgsRubberBand3D
     Qt3DCore::QAttribute *mIndexAttribute = nullptr;
 #endif
     QgsLineMaterial *mLineMaterial = nullptr;
+
+    // and these are owned by mMarkerEntity
+    Qt3DRender::QGeometryRenderer *mMarkerGeometryRenderer = nullptr;
+    QgsBillboardGeometry *mMarkerGeometry = nullptr;
+    QgsPoint3DBillboardMaterial *mMarkerMaterial = nullptr;
+    QgsMarkerSymbol *mMarkerSymbol = nullptr;
 
     // Disable copying as we have pointer members.
     QgsRubberBand3D( const QgsRubberBand3D & ) = delete;
