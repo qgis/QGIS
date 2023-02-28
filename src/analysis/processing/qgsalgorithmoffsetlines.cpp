@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsalgorithmoffsetlines.h"
+#include "qgsapplication.h"
 
 ///@cond PRIVATE
 
@@ -62,6 +63,16 @@ QString QgsOffsetLinesAlgorithm::shortHelpString() const
 QString QgsOffsetLinesAlgorithm::shortDescription() const
 {
   return QObject::tr( "Offsets lines by a specified distance." );
+}
+
+QIcon QgsOffsetLinesAlgorithm::icon() const
+{
+  return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmOffsetLines.svg" ) );
+}
+
+QString QgsOffsetLinesAlgorithm::svgIconPath() const
+{
+  return QgsApplication::iconPath( QStringLiteral( "/algorithms/mAlgorithmOffsetLines.svg" ) );
 }
 
 QgsOffsetLinesAlgorithm *QgsOffsetLinesAlgorithm::createInstance() const
