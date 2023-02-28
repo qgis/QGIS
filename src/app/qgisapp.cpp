@@ -1604,10 +1604,10 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipBadLayers
     QgsPluginRegistry::instance()->restoreSessionPlugins( QgsApplication::pluginPath() );
 
     // Also restore plugins from user specified plugin directories
-    QString myPaths = settings.value( QStringLiteral( "plugins/searchPathsForPlugins" ), "" ).toString();
-    if ( !myPaths.isEmpty() )
+    QStringList myPathList = settings.value( QStringLiteral( "plugins/searchPathsForPlugins" ) ).toStringList();
+    if ( !myPathList.isEmpty() )
     {
-      QStringList myPathList = myPaths.split( '|' );
+      myPathList.removeDuplicates();
       QgsPluginRegistry::instance()->restoreSessionPlugins( myPathList );
     }
   }
