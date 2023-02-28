@@ -807,6 +807,36 @@ void TestQgsField::convertCompatible()
   QCOMPARE( jsonValue.type(), QVariant::String );
   QCOMPARE( jsonValue, QString( "{\"a\":1,\"c\":3}" ) );
 
+  // JSON literals
+  jsonValue = QVariant::fromValue( 123 );
+  QVERIFY( jsonField.convertCompatible( jsonValue ) );
+  QCOMPARE( jsonValue.type(), QVariant::LongLong );
+  QCOMPARE( jsonValue, QString( "123" ) );
+
+  jsonValue = QVariant::fromValue( 1.23 );
+  QVERIFY( jsonField.convertCompatible( jsonValue ) );
+  QCOMPARE( jsonValue.type(), QVariant::Double );
+  QCOMPARE( jsonValue, QString( "1.23" ) );
+
+  jsonValue = QVariant::fromValue( true );
+  QVERIFY( jsonField.convertCompatible( jsonValue ) );
+  QCOMPARE( jsonValue.type(), QVariant::Bool );
+  QCOMPARE( jsonValue, QString( "true" ) );
+
+  jsonValue = QVariant::fromValue( QStringLiteral( "a string" ) );
+  QVERIFY( jsonField.convertCompatible( jsonValue ) );
+  QCOMPARE( jsonValue.type(), QVariant::String );
+  QCOMPARE( jsonValue, QString( "a string" ) );
+
+  QCOMPARE( jsonField.displayString( QVariant( ) ), QStringLiteral( "TEST NULL" ) );
+  QCOMPARE( jsonField.displayString( QStringLiteral( "\"a string\"" ) ), QStringLiteral( "\"a string\"" ) );
+  QCOMPARE( jsonField.displayString( QStringLiteral( "42" ) ), QStringLiteral( "42" ) );
+  QCOMPARE( jsonField.displayString( QStringLiteral( "1.23456" ) ), QStringLiteral( "1.23456" ) );
+  QCOMPARE( jsonField.displayString( 42 ), QStringLiteral( "42" ) );
+  QCOMPARE( jsonField.displayString( 1.23456 ), QStringLiteral( "1.23456" ) );
+  QCOMPARE( jsonField.displayString( QVariantList() << 1 << 2 ), QStringLiteral( "[\n    1,\n    2\n]\n" ) );
+  QCOMPARE( jsonField.displayString( QVariantList() << 1.2 << 3.4 ), QStringLiteral( "[\n    1.2,\n    3.4\n]\n" ) );
+
   // geometry field conversion
   const QgsField geometryField( QStringLiteral( "geometry" ), QVariant::UserType, QStringLiteral( "geometry" ) );
   QVariant geometryValue;

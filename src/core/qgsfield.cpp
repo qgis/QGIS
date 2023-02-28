@@ -375,8 +375,17 @@ QString QgsField::displayString( const QVariant &v ) const
   }
   else if ( d->typeName.compare( QLatin1String( "json" ), Qt::CaseInsensitive ) == 0 || d->typeName == QLatin1String( "jsonb" ) )
   {
+    // This may fail with literals
     const QJsonDocument doc = QJsonDocument::fromVariant( v );
-    return QString::fromUtf8( doc.toJson().data() );
+    // Check literals
+    if ( doc.isNull() )
+    {
+      return v.toString();
+    }
+    else
+    {
+      return QString::fromUtf8( doc.toJson().data() );
+    }
   }
   else if ( d->type == QVariant::ByteArray )
   {
@@ -580,8 +589,16 @@ bool QgsField::convertCompatible( QVariant &v, QString *errorMessage ) const
       v = QString::fromUtf8( doc.toJson( QJsonDocument::Compact ).constData() );
       return true;
     }
-    v = QVariant( d->type );
-    return false;
+    else
+    {
+      QJsonParseError error;
+      const QJsonDocument jDoc { QJsonDocument::fromJson( QStringLiteral( "{\"v\": %1 }" ).arg( v.toString() ).toUtf8(), &error ) };
+      if ( error.error == QJsonParseError::NoError )
+      {
+        v = jDoc.toVariant().toMap().value( QStringLiteral( "v" ) );
+        return true;
+      }
+    }
   }
 
   if ( ( d->type == QVariant::StringList || ( d->type == QVariant::List && d->subType == QVariant::String ) )

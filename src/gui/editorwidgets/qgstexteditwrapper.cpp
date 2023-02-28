@@ -83,6 +83,22 @@ QVariant QgsTextEditWrapper::value() const
   // treat VariantMap fields including JSON differently
   if ( field().type() != QVariant::Map && field().convertCompatible( res ) )
   {
+    // But, if the field typeName is JSON attempt a conversion to a JSON supported variant
+    // because we might be using this widget as a plain text JSON editor (sadly the
+    // QgsJsonEditWidget is read-only)
+    if ( field().typeName().compare( QStringLiteral( "JSON" ), Qt::CaseSensitivity::CaseInsensitive ) == 0 )
+    {
+      QString error;
+      const QVariant jVal { QgsJsonUtils::parseJson( res.toString().toStdString(), error ) };
+      if ( error.isEmpty() )
+      {
+        return jVal;
+      }
+      else
+      {
+        return res.toString();
+      }
+    }
     return res;
   }
   else if ( field().type() == QVariant::String && field().length() > 0 )

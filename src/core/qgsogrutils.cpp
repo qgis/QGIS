@@ -431,10 +431,23 @@ QVariant QgsOgrUtils::getOgrFeatureAttribute( OGRFeatureH ogrFet, const QgsField
           value = QVariant( QStringLiteral( "" ) ); // skip-keyword-check
 #endif
 
-        // Deal with JSON types
+        // Handle JSON
         if ( field.typeName().toUpper() == QStringLiteral( "JSON" ) )
         {
-          value = QJsonDocument().fromJson( value.toByteArray() ).toVariant();
+          QJsonParseError error;
+          const QJsonDocument jDoc { QJsonDocument::fromJson( value.toByteArray(), &error ) };
+          if ( error.error == QJsonParseError::NoError )
+          {
+            value = jDoc.toVariant();
+          }
+          else  // Literal?
+          {
+            const QJsonDocument jDoc { QJsonDocument::fromJson( QStringLiteral( "{\"v\": %1 }" ).arg( value.toString() ).toUtf8(), &error ) };
+            if ( error.error == QJsonParseError::NoError )
+            {
+              value = jDoc.toVariant().toMap().value( QStringLiteral( "v" ) );
+            }
+          }
         }
 
         break;

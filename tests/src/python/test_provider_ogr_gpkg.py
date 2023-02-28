@@ -18,6 +18,7 @@ import shutil
 import sys
 import tempfile
 import time
+import json
 from sqlite3 import OperationalError
 
 import qgis  # NOQA
@@ -1678,7 +1679,7 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         self.assertTrue(vl.isValid())
 
         fields = vl.dataProvider().fields()
-        self.assertEqual(fields.at(fields.indexFromName('json_content')).type(), QVariant.Map)
+        self.assertEqual(fields.at(fields.indexFromName('json_content')).typeName(), 'JSON')
 
         fi = vl.getFeatures(QgsFeatureRequest())
         f = QgsFeature()
@@ -2637,6 +2638,60 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
 
         got = [feat for feat in vl.getFeatures()]
         self.assertEqual(got[0]["dt"], new_dt)
+
+    def testJsonMixedTypes(self):
+
+        properties_data = [
+            ["a_string", 42.0, {"a_field": "a_value"}],
+            ["a_string", 42, {"a_field": "a_value"}],
+            ["a_string", {"a_field": "a_value"}, 42],
+            [42, "a_string", {"a_field": "a_value"}],
+            [42, {"a_field": "a_value"}, "a_string"],
+            [{"a_field": "a_value"}, 42, "a_string"],
+            [{"a_field": "a_value"}, "a_string", 42],
+        ]
+
+        tmpfile = os.path.join(self.basetestpath, 'test_json.json')
+
+        for properties in properties_data:
+
+            jdata = {"type": "FeatureCollection", "features": []}
+
+            for prop_val in properties:
+                jdata["features"].append({"type": "Feature", "properties": {"prop0": prop_val}})
+
+            with open(tmpfile, 'w+') as f:
+                f.write(json.dumps(jdata))
+
+            vl = QgsVectorLayer(tmpfile, 'vl')
+
+            props = [f['prop0'] for f in vl.getFeatures()]
+            self.assertEqual(props, properties)
+
+        # Test editing
+        self.assertTrue(vl.startEditing())
+        self.assertTrue(vl.changeAttributeValue(1, 0, 'new string'))
+        self.assertTrue(vl.commitChanges())
+        vl = QgsVectorLayer(tmpfile, 'vl')
+        self.assertEqual(vl.getFeature(1)['prop0'], 'new string')
+
+        self.assertTrue(vl.startEditing())
+        self.assertTrue(vl.changeAttributeValue(1, 0, 42))
+        self.assertTrue(vl.commitChanges())
+        vl = QgsVectorLayer(tmpfile, 'vl')
+        self.assertEqual(vl.getFeature(1)['prop0'], 42)
+
+        self.assertTrue(vl.startEditing())
+        self.assertTrue(vl.changeAttributeValue(1, 0, True))
+        self.assertTrue(vl.commitChanges())
+        vl = QgsVectorLayer(tmpfile, 'vl')
+        self.assertEqual(vl.getFeature(1)['prop0'], True)
+
+        self.assertTrue(vl.startEditing())
+        self.assertTrue(vl.changeAttributeValue(1, 0, 1.23456))
+        self.assertTrue(vl.commitChanges())
+        vl = QgsVectorLayer(tmpfile, 'vl')
+        self.assertEqual(vl.getFeature(1)['prop0'], 1.23456)
 
 
 if __name__ == '__main__':

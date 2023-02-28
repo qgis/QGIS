@@ -1901,6 +1901,7 @@ bool QgsOgrProvider::addAttributes( const QList<QgsField> &attributes )
     if ( idx >= 0 )
     {
       mAttributeFields[ idx ].setType( it->type() );
+      mAttributeFields[ idx ].setSubType( it->subType() );
       mAttributeFields[ idx ].setLength( it->length() );
       mAttributeFields[ idx ].setPrecision( it->precision() );
       mAttributeFields[ idx ].setEditorWidgetSetup( it->editorWidgetSetup() );
