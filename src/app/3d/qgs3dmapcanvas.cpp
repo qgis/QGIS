@@ -263,6 +263,9 @@ bool Qgs3DMapCanvas::eventFilter( QObject *watched, QEvent *event )
     case QEvent::MouseMove:
       mMapTool->mouseMoveEvent( static_cast<QMouseEvent *>( event ) );
       break;
+    case QEvent::KeyPress:
+      mMapTool->keyPressEvent( static_cast<QKeyEvent *>( event ) );
+      break;
     default:
       break;
   }
