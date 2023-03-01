@@ -16,11 +16,6 @@
  ***************************************************************************/
 
 #include "qgsattributetypedialog.h"
-#include "qgsattributeeditorelement.h"
-#include "qgsattributetypeloaddialog.h"
-#include "qgsvectordataprovider.h"
-#include "qgsmapcanvas.h"
-#include "qgsexpressionbuilderdialog.h"
 #include "qgsproject.h"
 #include "qgslogger.h"
 #include "qgsfieldformatterregistry.h"
@@ -37,6 +32,7 @@
 #include <QFileDialog>
 #include <QTextStream>
 #include <QScrollBar>
+#include <QStandardItemModel>
 
 #include <climits>
 #include <cfloat>
@@ -109,6 +105,25 @@ QgsAttributeTypeDialog::QgsAttributeTypeDialog( QgsVectorLayer *vl, int fieldIdx
   constraintExpressionWidget->setAllowEmptyFieldName( true );
   constraintExpressionWidget->setLayer( vl );
 
+  if ( mLayer->isSpatial() && mLayer->geometryType() != Qgis::GeometryType::Point )
+  {
+    mSplitPolicyComboBox->addItem( tr( "Duplicate Value" ), QVariant::fromValue( Qgis::FieldDomainSplitPolicy::Duplicate ) );
+    mSplitPolicyComboBox->addItem( tr( "Use Default Value" ), QVariant::fromValue( Qgis::FieldDomainSplitPolicy::DefaultValue ) );
+    mSplitPolicyComboBox->addItem( tr( "Remove Value" ), QVariant::fromValue( Qgis::FieldDomainSplitPolicy::UnsetField ) );
+    if ( mLayer->fields().at( mFieldIdx ).isNumeric() )
+    {
+      mSplitPolicyComboBox->addItem( tr( "Use Ratio of Geometries" ), QVariant::fromValue( Qgis::FieldDomainSplitPolicy::GeometryRatio ) );
+    }
+  }
+  else
+  {
+    mSplitPolicyComboBox->setEnabled( false );
+    mSplitPolicyLabel->setEnabled( false );
+    mSplitPolicyDescriptionLabel->hide();
+  }
+
+  connect( mSplitPolicyComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsAttributeTypeDialog::updateSplitPolicyLabel );
+  updateSplitPolicyLabel();
 }
 
 QgsAttributeTypeDialog::~QgsAttributeTypeDialog()
@@ -355,6 +370,17 @@ void QgsAttributeTypeDialog::setApplyDefaultValueOnUpdate( bool applyDefaultValu
   mApplyDefaultValueOnUpdateCheckBox->setChecked( applyDefaultValueOnUpdate );
 }
 
+Qgis::FieldDomainSplitPolicy QgsAttributeTypeDialog::splitPolicy() const
+{
+  return mSplitPolicyComboBox->currentData().value< Qgis::FieldDomainSplitPolicy >();
+}
+
+void QgsAttributeTypeDialog::setSplitPolicy( Qgis::FieldDomainSplitPolicy policy )
+{
+  mSplitPolicyComboBox->setCurrentIndex( mSplitPolicyComboBox->findData( QVariant::fromValue( policy ) ) );
+  updateSplitPolicyLabel();
+}
+
 QString QgsAttributeTypeDialog::constraintExpression() const
 {
   return constraintExpressionWidget->asExpression();
@@ -446,6 +472,30 @@ void QgsAttributeTypeDialog::defaultExpressionChanged()
   const QString previewText = fieldFormatter->representValue( mLayer, mFieldIdx, editorWidgetConfig(), QVariant(), val );
 
   mDefaultPreviewLabel->setText( "<i>" + previewText + "</i>" );
+}
+
+void QgsAttributeTypeDialog::updateSplitPolicyLabel()
+{
+  QString helperText;
+  switch ( mSplitPolicyComboBox->currentData().value< Qgis::FieldDomainSplitPolicy >() )
+  {
+    case Qgis::FieldDomainSplitPolicy::DefaultValue:
+      helperText = tr( "Resets the field by recalculating its default value." );
+      break;
+
+    case Qgis::FieldDomainSplitPolicy::Duplicate:
+      helperText = tr( "Copies the current field value without change." );
+      break;
+
+    case Qgis::FieldDomainSplitPolicy::GeometryRatio:
+      helperText = tr( "Recalculates the field value for all split portions by multiplying the existing value by the ratio of the split parts lengths or areas." );
+      break;
+
+    case Qgis::FieldDomainSplitPolicy::UnsetField:
+      helperText = tr( "Clears the field to an unset state." );
+      break;
+  }
+  mSplitPolicyDescriptionLabel->setText( QStringLiteral( "<i>%1</i>" ).arg( helperText ) );
 }
 
 QStandardItem *QgsAttributeTypeDialog::currentItem() const
