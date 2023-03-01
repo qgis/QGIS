@@ -929,13 +929,7 @@ class TestQgsServerWMSGetLegendGraphic(TestQgsServerWMSTestBase):
             "CRS": "EPSG:4326",
             "WIDTH": "50",
             "HEIGHT": "50",
-            "RULE": "two",
-            "LAYERFONTBOLD": "TRUE",
-            "LAYERFONTSIZE": "12",
-            "LAYERFONTFAMILY": self.fontFamily,
-            "ITEMFONTBOLD": "TRUE",
-            "ITEMFONTSIZE": "12",
-            "ITEMFONTFAMILY": self.fontFamily
+            "RULE": "two"
         }.items())])
 
         r, h = self._result(self._execute_request(qs))
@@ -995,13 +989,7 @@ class TestQgsServerWMSGetLegendGraphic(TestQgsServerWMSTestBase):
             "CRS": "EPSG:2056",
             "WIDTH": "50",
             "HEIGHT": "50",
-            "RULE": "test",
-            "LAYERFONTBOLD": "TRUE",
-            "LAYERFONTSIZE": "12",
-            "LAYERFONTFAMILY": self.fontFamily,
-            "ITEMFONTBOLD": "TRUE",
-            "ITEMFONTSIZE": "12",
-            "ITEMFONTFAMILY": self.fontFamily
+            "RULE": "test"
         }.items())])
 
         r, h = self._result(self._execute_request(qs))
@@ -1069,7 +1057,7 @@ class TestQgsServerWMSGetLegendGraphic(TestQgsServerWMSTestBase):
             "LAYERFONTFAMILY": self.fontFamily,
             "ITEMFONTBOLD": "TRUE",
             "ITEMFONTSIZE": "12",
-            "ITEMFONTFAMILY": self.fontFamily
+            "ITEMFONTFAMILY": self.fontFamily,
             "ITEMFONTCOLOR": "red",
             "LAYERFONTCOLOR": "blue"
         }.items())])
