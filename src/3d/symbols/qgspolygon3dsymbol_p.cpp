@@ -230,6 +230,7 @@ void QgsPolygon3DSymbolHandler::finalize( Qt3DCore::QEntity *parent, const Qgs3D
     mat->setLineWidth( mSymbol->edgeWidth() );
 
     Qt3DCore::QEntity *entity = new Qt3DCore::QEntity;
+    entity->setObjectName( parent->objectName() +  "_EDGES" );
 
     // geometry renderer
     Qt3DRender::QGeometryRenderer *renderer = new Qt3DRender::QGeometryRenderer;
@@ -247,30 +248,33 @@ void QgsPolygon3DSymbolHandler::finalize( Qt3DCore::QEntity *parent, const Qgs3D
 }
 
 
-void QgsPolygon3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context, PolygonData &out, bool selected )
+void QgsPolygon3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context, PolygonData &polyData, bool selected )
 {
-  if ( out.tessellator->dataVerticesCount() == 0 )
+  if ( polyData.tessellator->dataVerticesCount() == 0 )
     return;  // nothing to show - no need to create the entity
 
   Qt3DRender::QMaterial *mat = material( mSymbol.get(), selected, context );
 
   // extract vertex buffer data from tessellator
-  const QByteArray data( ( const char * )out.tessellator->data().constData(), out.tessellator->data().count() * sizeof( float ) );
-  const int nVerts = data.count() / out.tessellator->stride();
+  const QByteArray data( ( const char * )polyData.tessellator->data().constData(), ( int )( polyData.tessellator->data().count() * sizeof( float ) ) );
+  const int nVerts = data.count() / polyData.tessellator->stride();
 
   const QgsPhongTexturedMaterialSettings *texturedMaterialSettings = dynamic_cast< const QgsPhongTexturedMaterialSettings * >( mSymbol->materialSettings() );
 
   QgsTessellatedPolygonGeometry *geometry = new QgsTessellatedPolygonGeometry( true, mSymbol->invertNormals(), mSymbol->addBackFaces(),
       texturedMaterialSettings && texturedMaterialSettings->requiresTextureCoordinates() );
-  geometry->setData( data, nVerts, out.triangleIndexFids, out.triangleIndexStartingIndices );
+
+  geometry->setData( data, nVerts, polyData.triangleIndexFids, polyData.triangleIndexStartingIndices );
+
   if ( mSymbol->materialSettings()->dataDefinedProperties().hasActiveProperties() )
-    mSymbol->materialSettings()->applyDataDefinedToGeometry( geometry, nVerts, out.materialDataDefined );
+    mSymbol->materialSettings()->applyDataDefinedToGeometry( geometry, nVerts, polyData.materialDataDefined );
 
   Qt3DRender::QGeometryRenderer *renderer = new Qt3DRender::QGeometryRenderer;
   renderer->setGeometry( geometry );
 
   // make entity
   Qt3DCore::QEntity *entity = new Qt3DCore::QEntity;
+  entity->setObjectName( parent->objectName() + "_CHUNK_MESH" );
   entity->addComponent( renderer );
   entity->addComponent( mat );
   entity->setParent( parent );
