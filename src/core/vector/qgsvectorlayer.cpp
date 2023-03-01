@@ -2073,6 +2073,10 @@ bool QgsVectorLayer::setDataProvider( QString const &provider, const QgsDataProv
     {
       mAttributeAliasMap[ field.name() ] = field.alias();
     }
+    if ( !mAttributeSplitPolicy.contains( field.name() ) )
+    {
+      mAttributeSplitPolicy[ field.name() ] = field.splitPolicy();
+    }
   }
 
   if ( profile )
@@ -2380,6 +2384,22 @@ bool QgsVectorLayer::readSymbology( const QDomNode &layerNode, QString &errorMes
 
         QgsDebugMsgLevel( "field " + field + " origalias " + aliasElem.attribute( QStringLiteral( "name" ) ) + " trans " + alias, 3 );
         mAttributeAliasMap.insert( field, alias );
+      }
+    }
+
+    // IMPORTANT - we don't clear mAttributeSplitPolicy here, as it may contain policies which are coming direct
+    // from the data provider. Instead we leave any existing policies and only overwrite them if the style
+    // has a specific value for that field's policy
+    const QDomNode splitPoliciesNode = layerNode.namedItem( QStringLiteral( "splitPolicies" ) );
+    if ( !splitPoliciesNode.isNull() )
+    {
+      const QDomNodeList splitPolicyNodeList = splitPoliciesNode.toElement().elementsByTagName( QStringLiteral( "policy" ) );
+      for ( int i = 0; i < splitPolicyNodeList.size(); ++i )
+      {
+        const QDomElement splitPolicyElem = splitPolicyNodeList.at( i ).toElement();
+        const QString field = splitPolicyElem.attribute( QStringLiteral( "field" ) );
+        const Qgis::FieldDomainSplitPolicy policy = qgsEnumKeyToValue( splitPolicyElem.attribute( QStringLiteral( "policy" ) ), Qgis::FieldDomainSplitPolicy::Duplicate );
+        mAttributeSplitPolicy.insert( field, policy );
       }
     }
 
@@ -2879,6 +2899,19 @@ bool QgsVectorLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QString 
     }
     node.appendChild( aliasElem );
 
+    //split policies
+    {
+      QDomElement splitPoliciesElement = doc.createElement( QStringLiteral( "splitPolicies" ) );
+      for ( const QgsField &field : std::as_const( mFields ) )
+      {
+        QDomElement splitPolicyElem = doc.createElement( QStringLiteral( "policy" ) );
+        splitPolicyElem.setAttribute( QStringLiteral( "field" ), field.name() );
+        splitPolicyElem.setAttribute( QStringLiteral( "policy" ), qgsEnumValueToKey( field.splitPolicy() ) );
+        splitPoliciesElement.appendChild( splitPolicyElem );
+      }
+      node.appendChild( splitPoliciesElement );
+    }
+
     //default expressions
     QDomElement defaultsElem = doc.createElement( QStringLiteral( "defaults" ) );
     for ( const QgsField &field : std::as_const( mFields ) )
@@ -3360,6 +3393,21 @@ QgsStringMap QgsVectorLayer::attributeAliases() const
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
   return mAttributeAliasMap;
+}
+
+void QgsVectorLayer::setFieldSplitPolicy( int index, Qgis::FieldDomainSplitPolicy policy )
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  if ( index < 0 || index >= fields().count() )
+    return;
+
+  const QString name = fields().at( index ).name();
+
+  mAttributeSplitPolicy.insert( name, policy );
+  mFields[ index ].setSplitPolicy( policy );
+  mEditFormConfig.setFields( mFields );
+  emit layerModified(); // TODO[MD]: should have a different signal?
 }
 
 QSet<QString> QgsVectorLayer::excludeAttributesWms() const
@@ -4216,14 +4264,22 @@ void QgsVectorLayer::updateFields()
     mExpressionFieldBuffer->updateFields( mFields );
 
   // set aliases and default values
-  QMap< QString, QString >::const_iterator aliasIt = mAttributeAliasMap.constBegin();
-  for ( ; aliasIt != mAttributeAliasMap.constEnd(); ++aliasIt )
+  for ( auto aliasIt = mAttributeAliasMap.constBegin(); aliasIt != mAttributeAliasMap.constEnd(); ++aliasIt )
   {
     int index = mFields.lookupField( aliasIt.key() );
     if ( index < 0 )
       continue;
 
     mFields[ index ].setAlias( aliasIt.value() );
+  }
+
+  for ( auto splitPolicyIt = mAttributeSplitPolicy.constBegin(); splitPolicyIt != mAttributeSplitPolicy.constEnd(); ++splitPolicyIt )
+  {
+    int index = mFields.lookupField( splitPolicyIt.key() );
+    if ( index < 0 )
+      continue;
+
+    mFields[ index ].setSplitPolicy( splitPolicyIt.value() );
   }
 
   // Update configuration flags

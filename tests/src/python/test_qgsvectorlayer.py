@@ -4438,6 +4438,51 @@ class TestQgsVectorLayerTransformContext(unittest.TestCase):
         self.assertFalse(vl.mapTipTemplate())
         self.assertFalse(vl.hasMapTips())
 
+    def test_split_policies(self):
+        vl = QgsVectorLayer('Point?crs=epsg:3111&field=field_default:integer&field=field_dupe:integer&field=field_unset:integer&field=field_ratio:integer', 'test', 'memory')
+        self.assertTrue(vl.isValid())
+
+        with self.assertRaises(KeyError):
+            vl.setFieldSplitPolicy(-1, Qgis.FieldDomainSplitPolicy.DefaultValue)
+        with self.assertRaises(KeyError):
+            vl.setFieldSplitPolicy(4, Qgis.FieldDomainSplitPolicy.DefaultValue)
+
+        vl.setFieldSplitPolicy(0, Qgis.FieldDomainSplitPolicy.DefaultValue)
+        vl.setFieldSplitPolicy(1, Qgis.FieldDomainSplitPolicy.Duplicate)
+        vl.setFieldSplitPolicy(2, Qgis.FieldDomainSplitPolicy.UnsetField)
+        vl.setFieldSplitPolicy(3, Qgis.FieldDomainSplitPolicy.GeometryRatio)
+
+        self.assertEqual(vl.fields()[0].splitPolicy(),
+                         Qgis.FieldDomainSplitPolicy.DefaultValue)
+        self.assertEqual(vl.fields()[1].splitPolicy(),
+                         Qgis.FieldDomainSplitPolicy.Duplicate)
+        self.assertEqual(vl.fields()[2].splitPolicy(),
+                         Qgis.FieldDomainSplitPolicy.UnsetField)
+        self.assertEqual(vl.fields()[3].splitPolicy(),
+                         Qgis.FieldDomainSplitPolicy.GeometryRatio)
+
+        p = QgsProject()
+        p.addMapLayer(vl)
+
+        # test saving and restoring split policies
+        with tempfile.TemporaryDirectory() as temp:
+            self.assertTrue(p.write(temp + '/test.qgs'))
+
+            p2 = QgsProject()
+            self.assertTrue(p2.read(temp + '/test.qgs'))
+
+            vl2 = list(p2.mapLayers().values())[0]
+            self.assertEqual(vl2.name(), vl.name())
+
+            self.assertEqual(vl2.fields()[0].splitPolicy(),
+                             Qgis.FieldDomainSplitPolicy.DefaultValue)
+            self.assertEqual(vl2.fields()[1].splitPolicy(),
+                             Qgis.FieldDomainSplitPolicy.Duplicate)
+            self.assertEqual(vl2.fields()[2].splitPolicy(),
+                             Qgis.FieldDomainSplitPolicy.UnsetField)
+            self.assertEqual(vl2.fields()[3].splitPolicy(),
+                             Qgis.FieldDomainSplitPolicy.GeometryRatio)
+
 
 # TODO:
 # - fetch rect: feat with changed geometry: 1. in rect, 2. out of rect

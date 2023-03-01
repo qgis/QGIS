@@ -2038,6 +2038,28 @@ Convenience function that returns the attribute alias if defined or the field na
 Returns a map of field name to attribute alias
 %End
 
+
+    void setFieldSplitPolicy( int index, Qgis::FieldDomainSplitPolicy policy );
+%Docstring
+Sets a split ``policy`` for the field with the specified index.
+
+:raises KeyError: if no field with the specified index exists
+
+.. versionadded:: 3.30
+%End
+
+%MethodCode
+    if ( a0 < 0 || a0 >= sipCpp->fields().count() )
+    {
+      PyErr_SetString( PyExc_KeyError, QByteArray::number( a0 ) );
+      sipIsErr = 1;
+    }
+    else
+    {
+      sipCpp->setFieldSplitPolicy( a0, a1 );
+    }
+%End
+
  QSet<QString> excludeAttributesWms() const /Deprecated/;
 %Docstring
 A set of attributes that are not advertised in WMS requests with QGIS server.
