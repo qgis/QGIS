@@ -1354,6 +1354,7 @@ The development version
       DefaultValue,
       Duplicate,
       GeometryRatio,
+      UnsetField,
     };
 
     enum class FieldDomainMergePolicy

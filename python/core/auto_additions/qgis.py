@@ -2276,7 +2276,8 @@ Qgis.CrsDefinitionFormat.baseClass = Qgis
 Qgis.FieldDomainSplitPolicy.DefaultValue.__doc__ = "Use default field value"
 Qgis.FieldDomainSplitPolicy.Duplicate.__doc__ = "Duplicate original value"
 Qgis.FieldDomainSplitPolicy.GeometryRatio.__doc__ = "New values are computed by the ratio of their area/length compared to the area/length of the original feature"
-Qgis.FieldDomainSplitPolicy.__doc__ = 'Split policy for field domains.\n\nWhen a feature is split into multiple parts, defines how the value of attributes\nfollowing the domain are computed.\n\n.. versionadded:: 3.26\n\n' + '* ``DefaultValue``: ' + Qgis.FieldDomainSplitPolicy.DefaultValue.__doc__ + '\n' + '* ``Duplicate``: ' + Qgis.FieldDomainSplitPolicy.Duplicate.__doc__ + '\n' + '* ``GeometryRatio``: ' + Qgis.FieldDomainSplitPolicy.GeometryRatio.__doc__
+Qgis.FieldDomainSplitPolicy.UnsetField.__doc__ = "Clears the field value so that the data provider backend will populate using any backend triggers or similar logic (since QGIS 3.30)"
+Qgis.FieldDomainSplitPolicy.__doc__ = 'Split policy for field domains.\n\nWhen a feature is split into multiple parts, defines how the value of attributes\nfollowing the domain are computed.\n\n.. versionadded:: 3.26\n\n' + '* ``DefaultValue``: ' + Qgis.FieldDomainSplitPolicy.DefaultValue.__doc__ + '\n' + '* ``Duplicate``: ' + Qgis.FieldDomainSplitPolicy.Duplicate.__doc__ + '\n' + '* ``GeometryRatio``: ' + Qgis.FieldDomainSplitPolicy.GeometryRatio.__doc__ + '\n' + '* ``UnsetField``: ' + Qgis.FieldDomainSplitPolicy.UnsetField.__doc__
 # --
 Qgis.FieldDomainSplitPolicy.baseClass = Qgis
 # monkey patching scoped based enum

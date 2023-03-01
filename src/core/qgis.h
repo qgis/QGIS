@@ -2274,6 +2274,7 @@ class CORE_EXPORT Qgis
       DefaultValue, //!< Use default field value
       Duplicate, //!< Duplicate original value
       GeometryRatio, //!< New values are computed by the ratio of their area/length compared to the area/length of the original feature
+      UnsetField, //!< Clears the field value so that the data provider backend will populate using any backend triggers or similar logic (since QGIS 3.30)
     };
     Q_ENUM( FieldDomainSplitPolicy )
 
