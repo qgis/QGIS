@@ -394,12 +394,6 @@ QList< QgsMapLayer * > QgsAppLayerHandling::addOgrVectorLayers( const QStringLis
   QgsProject::instance()->addMapLayers( layersToAdd );
   for ( QgsMapLayer *l : std::as_const( layersToAdd ) )
   {
-    if ( !encoding.isEmpty() )
-    {
-      if ( QgsVectorLayer *vl = qobject_cast< QgsVectorLayer * >( l ) )
-        vl->setProviderEncoding( encoding );
-    }
-
     QgisApp::instance()->askUserForDatumTransform( l->crs(), QgsProject::instance()->crs(), l );
     QgsAppLayerHandling::postProcessAddedLayer( l );
   }
@@ -407,6 +401,16 @@ QList< QgsMapLayer * > QgsAppLayerHandling::addOgrVectorLayers( const QStringLis
 
   ok = true;
   addedLayers.append( layersToAdd );
+
+  for ( QgsMapLayer *l : std::as_const( addedLayers ) )
+  {
+    if ( !encoding.isEmpty() )
+    {
+      if ( QgsVectorLayer *vl = qobject_cast< QgsVectorLayer * >( l ) )
+        vl->setProviderEncoding( encoding );
+    }
+  }
+
   return addedLayers;
 }
 
