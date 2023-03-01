@@ -36,7 +36,11 @@ echo "::endgroup::"
 
 echo "${bold}Run clang-tidy on modifications...${endbold}"
 CLANG_TIDY_CHECKS=$(cat tests/code_layout/clangtidy_checks.txt | grep -ve "^#" | grep -ve "^$" | tr -d '\n')
-git diff -U0 HEAD^ | python3 clang-tidy-diff.py -p1 -path=${CTEST_BUILD_DIR} -use-color -checks="$CLANG_TIDY_CHECKS" | tee clang-tidy.log
+
+# We need to add build/src/test dir as extra include directories because when clang-tidy tries to process qgstest.h
+# it has no compile_commands.json instructions to know what are include directories
+# It manages to figure out for other headers though, I don't get how...
+git diff -U0 HEAD^ | python3 clang-tidy-diff.py -p1 -path=${CTEST_BUILD_DIR} -use-color -checks="$CLANG_TIDY_CHECKS" -extra-arg=-I${CTEST_BUILD_DIR}/src/test/ | tee clang-tidy.log
 
 echo -e "\e[1;34mTo reproduce locally:"
 echo -e "\e[1;34m - launch cmake with option -DCMAKE_EXPORT_COMPILE_COMMANDS=ON"
