@@ -1921,6 +1921,37 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     //! Returns a map of field name to attribute alias
     QgsStringMap attributeAliases() const;
 
+#ifndef SIP_RUN
+
+    /**
+     * Sets a split \a policy for the field with the specified index.
+     *
+     * \since QGIS 3.30
+     */
+    void setFieldSplitPolicy( int index, Qgis::FieldDomainSplitPolicy policy );
+#else
+
+    /**
+     * Sets a split \a policy for the field with the specified index.
+     *
+     * \throws KeyError if no field with the specified index exists
+     * \since QGIS 3.30
+     */
+    void setFieldSplitPolicy( int index, Qgis::FieldDomainSplitPolicy policy );
+
+    % MethodCode
+    if ( a0 < 0 || a0 >= sipCpp->fields().count() )
+    {
+      PyErr_SetString( PyExc_KeyError, QByteArray::number( a0 ) );
+      sipIsErr = 1;
+    }
+    else
+    {
+      sipCpp->setFieldSplitPolicy( a0, a1 );
+    }
+    % End
+#endif
+
     /**
      * A set of attributes that are not advertised in WMS requests with QGIS server.
      * \deprecated since QGIS 3.16, use fields().configurationFlags() instead
@@ -2948,6 +2979,9 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
     //! Map which stores default value expressions for fields
     QMap<QString, QgsDefaultValue> mDefaultExpressionMap;
+
+    //! Map that stores the split policy for attributes
+    QMap< QString, Qgis::FieldDomainSplitPolicy > mAttributeSplitPolicy;
 
     //! An internal structure to keep track of fields that have a defaultValueOnUpdate
     QSet<int> mDefaultValueOnUpdateFields;
