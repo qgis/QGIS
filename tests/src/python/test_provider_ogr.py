@@ -1256,11 +1256,25 @@ class PyQgsOGRProvider(unittest.TestCase):
         self.assertEqual(fields.field('with_range_domain_int').constraints().domainName(), 'range_domain_int')
         self.assertEqual(fields.field('with_glob_domain').constraints().domainName(), 'glob_domain')
 
+        self.assertEqual(fields.field('with_range_domain_int').splitPolicy(), Qgis.FieldDomainSplitPolicy.DefaultValue)
+        self.assertEqual(fields.field('with_glob_domain').splitPolicy(), Qgis.FieldDomainSplitPolicy.DefaultValue)
+
         datasource = os.path.join(unitTestDataPath(), 'gps_timestamp.gpkg')
         vl = QgsVectorLayer(datasource, 'test', 'ogr')
         self.assertTrue(vl.isValid())
         fields = vl.fields()
         self.assertFalse(fields.field('stringf').constraints().domainName())
+
+        datasource = os.path.join(unitTestDataPath(), 'domains.gdb|layername=test')
+        vl = QgsVectorLayer(datasource, 'test', 'ogr')
+        self.assertTrue(vl.isValid())
+        fields = vl.fields()
+        self.assertEqual(fields.field('default_value').splitPolicy(),
+                         Qgis.FieldDomainSplitPolicy.DefaultValue)
+        self.assertEqual(fields.field('duplicate').splitPolicy(),
+                         Qgis.FieldDomainSplitPolicy.Duplicate)
+        self.assertEqual(fields.field('ratio').splitPolicy(),
+                         Qgis.FieldDomainSplitPolicy.GeometryRatio)
 
     def testGdbLayerMetadata(self):
         """
