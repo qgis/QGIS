@@ -33,6 +33,16 @@ Defines enumerations and other auxiliary types for QGIS 3D
       Back,
       FrontAndBack
     };
+
+    static const char *PROP_NAME_3D_RENDERER_FLAG;
+
+    enum Flag3DRenderer
+    {
+      Main3DRenderer,
+      Selected3DRenderer,
+    };
+
+
 };
 
 /************************************************************************

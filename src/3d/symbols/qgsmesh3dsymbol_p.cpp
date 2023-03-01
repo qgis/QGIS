@@ -57,7 +57,7 @@ QgsMesh3DSymbolEntity::QgsMesh3DSymbolEntity( const Qgs3DMapSettings &map,
 
   // build the entity
   QgsMesh3DSymbolEntityNode *entity = new QgsMesh3DSymbolEntityNode( map, layer, symbol );
-  entity->findChild<Qt3DRender::QGeometryRenderer *>()->setObjectName( QStringLiteral( "main" ) ); // temporary measure to distinguish between "selected" and "main"
+  entity->findChild<Qt3DRender::QGeometryRenderer *>()->setProperty( Qgs3DTypes::PROP_NAME_3D_RENDERER_FLAG,  Qgs3DTypes::Main3DRenderer ); // temporary measure to distinguish between "selected" and "main"
   entity->addComponent( mat );
   entity->addComponent( tform );
   entity->setParent( this );
