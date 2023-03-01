@@ -496,12 +496,13 @@ void TestQgsLayoutItem::dataDefinedPosition()
   QCOMPARE( item->scenePos().x(), 140.0 ); //mm
   QCOMPARE( item->scenePos().y(), 40.0 ); //mm
 
-  QgsLayoutItemPage *page1 = new QgsLayoutItemPage( &l );
+
+  std::unique_ptr< QgsLayoutItemPage > page1( new QgsLayoutItemPage( &l ) );
   page1->setPageSize( "A4" );
-  l.pageCollection()->addPage( page1 );
-  QgsLayoutItemPage *page2 = new QgsLayoutItemPage( &l );
+  l.pageCollection()->addPage( page1.release() );
+  std::unique_ptr< QgsLayoutItemPage > page2( new QgsLayoutItemPage( &l ) );
   page2->setPageSize( "A4" );
-  l.pageCollection()->addPage( page2 );
+  l.pageCollection()->addPage( page2.release() );
 
   //validate that the page is accounted for even with DD variable during movement
   item->dataDefinedProperties().setProperty( QgsLayoutObject::PositionX, QgsProperty() );
