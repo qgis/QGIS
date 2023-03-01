@@ -170,13 +170,32 @@ void QgsPolygon3DSymbol::setMaterialSettings( QgsAbstractMaterialSettings *mater
 
 bool QgsPolygon3DSymbol::exportGeometries( Qgs3DSceneExporter *exporter, Qt3DCore::QEntity *entity, const QString &objectNamePrefix ) const
 {
-  const QList<Qt3DRender::QGeometryRenderer *> renderers = entity->findChildren<Qt3DRender::QGeometryRenderer *>();
-  for ( Qt3DRender::QGeometryRenderer *r : renderers )
+  const QList<Qt3DCore::QEntity *> entities = entity->findChildren<Qt3DCore::QEntity *>( QString(), Qt::FindDirectChildrenOnly );
+  if ( entities.isEmpty() )
   {
-    Qgs3DExportObject *object = exporter->processGeometryRenderer( r, objectNamePrefix );
-    if ( object == nullptr ) continue;
-    exporter->processEntityMaterial( entity, object );
-    exporter->mObjects.push_back( object );
+    const QList<Qt3DRender::QGeometryRenderer *> renderers = entity->findChildren<Qt3DRender::QGeometryRenderer *>();
+    for ( Qt3DRender::QGeometryRenderer *r : renderers )
+    {
+      Qgs3DExportObject *object = exporter->processGeometryRenderer( r, objectNamePrefix );
+      if ( object == nullptr ) continue;
+      exporter->processEntityMaterial( entity, object );
+      exporter->mObjects.push_back( object );
+    }
+    return renderers.size() != 0;
   }
-  return renderers.size() != 0;
+  else
+  {
+    bool out = false;
+    QString prefix;
+    for ( Qt3DCore::QEntity *e : entities )
+    {
+      if ( e->objectName().isEmpty() )
+        prefix = objectNamePrefix;
+      else
+        prefix = e->objectName() + "_";
+
+      out |= exportGeometries( exporter, e, prefix );
+    }
+    return out;
+  }
 }
