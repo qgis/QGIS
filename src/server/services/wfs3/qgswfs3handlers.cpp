@@ -1428,8 +1428,8 @@ void QgsWfs3CollectionsItemsHandler::handleRequest( const QgsServerApiContext &c
         // Pagination
         if ( matchedFeaturesCount - limit > 0 )
         {
-          const int totalPages = std::ceil( ( float ) matchedFeaturesCount / limit );
-          const int currentPage = offset / limit + 1;
+          const int totalPages { static_cast<int>( std::ceil( static_cast<float>( matchedFeaturesCount ) / static_cast<float>( limit ) ) ) };
+          const int currentPage { static_cast<int>( offset / limit + 1 ) };
           const std::string currentPageLink { selfLink["href"] };
 
           std::string prevPageLink;
