@@ -231,6 +231,23 @@ class GUI_EXPORT QgsAttributeTypeDialog: public QWidget, private Ui::QgsAttribut
     bool applyDefaultValueOnUpdate() const;
     void setApplyDefaultValueOnUpdate( bool applyDefaultValueOnUpdate );
 
+    /**
+     * Returns the field's split policy.
+     *
+     * \see setSplitPolicy()
+     *
+     * \since QGIS 3.32
+     */
+    Qgis::FieldDomainSplitPolicy splitPolicy() const;
+
+    /**
+     * Sets the field's split policy.
+     *
+     * \see splitPolicy()
+     *
+     * \since QGIS 3.32
+     */
+    void setSplitPolicy( Qgis::FieldDomainSplitPolicy policy );
 
   private slots:
 
@@ -241,6 +258,8 @@ class GUI_EXPORT QgsAttributeTypeDialog: public QWidget, private Ui::QgsAttribut
     void onCurrentWidgetChanged( int index );
 
     void defaultExpressionChanged();
+
+    void updateSplitPolicyLabel();
 
   private:
     QgsVectorLayer *mLayer = nullptr;
