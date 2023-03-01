@@ -14,11 +14,9 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsfields.h"
 #include "qgsfield_p.h"
 #include "qgis.h"
 #include "qgsapplication.h"
-#include "qgssettings.h"
 #include "qgsreferencedgeometry.h"
 #include "qgsvariantutils.h"
 
@@ -101,7 +99,7 @@ QString QgsField::displayNameWithAlias() const
   {
     return name();
   }
-  return QStringLiteral( "%1 (%2)" ).arg( name() ).arg( alias() );
+  return QStringLiteral( "%1 (%2)" ).arg( name(), alias() );
 }
 
 QString QgsField::displayType( const bool showConstraints ) const
@@ -638,8 +636,8 @@ bool QgsField::convertCompatible( QVariant &v, QString *errorMessage ) const
 
     if ( errorMessage )
       *errorMessage = QObject::tr( "Could not convert value \"%1\" to target type \"%2\"" )
-                      .arg( original.toString() )
-                      .arg( d->typeName );
+                      .arg( original.toString(),
+                            d->typeName );
 
     return false;
   }
