@@ -34,6 +34,7 @@ typedef QList<int> QgsAttributeList SIP_SKIP;
 #include "qgseditorwidgetsetup.h"
 #include "qgsfieldconstraints.h"
 #include "qgsdefaultvalue.h"
+#include "qgis.h"
 
 class QgsFieldPrivate;
 
@@ -452,6 +453,26 @@ class CORE_EXPORT QgsField
      * \since QGIS 3.18
      */
     bool isReadOnly() const;
+
+    /**
+     * Returns the field's split policy, which indicates how field values should
+     * be handled during a split operation.
+     *
+     * \see setSplitPolicy()
+     *
+     * \since QGIS 3.30
+     */
+    Qgis::FieldDomainSplitPolicy splitPolicy() const;
+
+    /**
+     * Sets the field's split \a policy, which indicates how field values should
+     * be handled during a split operation.
+     *
+     * \see splitPolicy()
+     *
+     * \since QGIS 3.30
+     */
+    void setSplitPolicy( Qgis::FieldDomainSplitPolicy policy );
 
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
