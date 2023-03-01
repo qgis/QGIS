@@ -32,6 +32,8 @@
 #include "qgsgui.h"
 #include "qgseditorwidgetregistry.h"
 
+#include <QSignalSpy>
+
 /**
  * \ingroup UnitTests
  * This is a unit test for the attribute table dialog
@@ -853,8 +855,9 @@ void TestQgsAttributeTable::testEnsureEditSelection()
 
   std::unique_ptr< QgsAttributeTableDialog > dlg( new QgsAttributeTableDialog( layer.get() ) );
 
-  //since the update is done by timer, we have to wait for the update (at least one millisecond)
-  QEventLoop loop;
+  //since the update is done by timer, we have to wait (at least one millisecond) or until the current edit selection changed
+  qRegisterMetaType<QgsFeature>( "QgsFeature&" );
+  QSignalSpy spy( dlg->mMainView->mFeatureListView, &QgsFeatureListView::currentEditSelectionChanged );
 
   // we set the index to ft3
   dlg->mMainView->setCurrentEditSelection( {ft3.id()} );
@@ -863,36 +866,31 @@ void TestQgsAttributeTable::testEnsureEditSelection()
 
   // we make a featureselection on ft1, ft2 and ft3
   layer->selectByIds( QgsFeatureIds() << 1 << 2 << 3 );
-  QTimer::singleShot( 1, this, [&] { loop.quit(); } );
-  loop.exec();
+  spy.wait( 1 );
   // ... and the currentEditSelection stays on ft3 (since it's in the featureselection)
   QVERIFY( dlg->mMainView->mFeatureListView->currentEditSelection().contains( 3 ) );
 
   // we release the featureselection
   layer->removeSelection();
-  QTimer::singleShot( 1, this, [&] { loop.quit(); } );
-  loop.exec();
+  spy.wait( 1 );
   // ... and the currentEditSelection persists on 3 (since it does not make an update)
   QVERIFY( dlg->mMainView->mFeatureListView->currentEditSelection().contains( 3 ) );
 
   // we make afeatureselection on ft4
   layer->selectByIds( QgsFeatureIds() << 4 );
-  QTimer::singleShot( 1, this, [&] { loop.quit(); } );
-  loop.exec();
+  spy.wait( 1 );
   // ... and the currentEditSelection goes to ft4
   QVERIFY( dlg->mMainView->mFeatureListView->currentEditSelection().contains( 4 ) );
 
   // we make afeatureselection on ft2 and ft3
   layer->selectByIds( QgsFeatureIds() << 2 << 3 );
-  QTimer::singleShot( 1, this, [&] { loop.quit(); } );
-  loop.exec();
+  spy.wait( 1 );
   // ... and the currentEditSelection goes to the first one of the featureselection (means ft2)
   QVERIFY( dlg->mMainView->mFeatureListView->currentEditSelection().contains( 2 ) );
 
   // we reload the layer
   layer->reload();
-  QTimer::singleShot( 1, this, [&] { loop.quit(); } );
-  loop.exec();
+  spy.wait( 1 );
   // ... and the currentEditSelection jumps to the first one (instead of staying at 2, since it's NOT persistend)
   QVERIFY( dlg->mMainView->mFeatureListView->currentEditSelection().contains( 1 ) );
 
