@@ -37,9 +37,6 @@
 #include "qgsfielddomain.h"
 #include "qgsfontmanager.h"
 #include "qgsvariantutils.h"
-#include "qgsweakrelation.h"
-#include "qgsproviderregistry.h"
-#include "qgsprovidermetadata.h"
 #include "qgsogrproviderutils.h"
 
 #include <cmath>
@@ -2242,6 +2239,10 @@ OGRFieldDomainH QgsOgrUtils::convertFieldDomain( const QgsFieldDomain *domain )
       break;
     case Qgis::FieldDomainSplitPolicy::Duplicate:
       OGR_FldDomain_SetSplitPolicy( res, OFDSP_DUPLICATE );
+      break;
+
+    case Qgis::FieldDomainSplitPolicy::UnsetField:
+      // not supported
       break;
   }
 

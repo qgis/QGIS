@@ -2123,6 +2123,9 @@ QString QgsFieldDomainDetailsWidget::htmlMetadata( QgsFieldDomain *domain, const
     case Qgis::FieldDomainSplitPolicy::GeometryRatio:
       metadata +=  tr( "Use geometry ratio" );
       break;
+    case Qgis::FieldDomainSplitPolicy::UnsetField:
+      metadata +=  tr( "Unset field" );
+      break;
   }
   metadata += QLatin1String( "</td></tr>\n" );
 
