@@ -161,10 +161,16 @@
    <item row="4" column="0">
     <widget class="QGroupBox" name="groupBox_2">
      <property name="toolTip">
-      <string>The field format is intended for fields that are not of a date type and should otherwise be left at the default value. For the display of the date use the Widget Display. </string>
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Overwriting the field format is intended for fields that are &lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;not&lt;/span&gt; of a date type (like e.g. QDate).&lt;/p&gt;&lt;p&gt;For the display format of the date, use the Widget Display above.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="title">
-      <string>Field Format</string>
+      <string>Overwrite Field Format</string>
+     </property>
+     <property name="checkable">
+      <bool>true</bool>
+     </property>
+     <property name="checked">
+      <bool>false</bool>
      </property>
      <layout class="QGridLayout" name="gridLayout_3">
       <item row="0" column="0">
@@ -180,7 +186,7 @@
       <item row="0" column="1">
        <widget class="QLineEdit" name="mFieldFormatEdit">
         <property name="enabled">
-         <bool>true</bool>
+         <bool>false</bool>
         </property>
        </widget>
       </item>
