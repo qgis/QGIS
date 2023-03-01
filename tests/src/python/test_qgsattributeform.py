@@ -178,7 +178,7 @@ class TestQgsAttributeForm(unittest.TestCase):
         form.changeAttribute('age', 7)
         self.assertEqual(form.currentFormFeature()['numbers'], [1, 7])
 
-    def test_default_value_alway_updated(self):
+    def test_default_value_always_updated(self):
         """Test that default values are not updated on every edit operation
         when containing an 'attribute' expression"""
 
