@@ -95,7 +95,7 @@ QVector<T> getAttributeData( Qt3DQAttribute *attribute, const QByteArray &data )
 
   if ( bytesStride == 0 )
   {
-    QgsDebugMsg( "bytesStride==0, the attribute probably was not set properly" );
+    QgsDebugMsgLevel( QStringLiteral( "bytesStride==0, the attribute probably was not set properly" ), 2 );
     return result;
   }
 
@@ -143,7 +143,7 @@ QVector<uint> getIndexData( Qt3DQAttribute *indexAttribute, const QByteArray &da
     case Qt3DQAttribute::VertexBaseType::UnsignedByte:
       return _getIndexDataImplementation<uchar>( data );
     default:
-      QgsDebugMsg( "Probably trying to get index data using an attribute that has vertex data" );
+      QgsDebugMsgLevel( QStringLiteral( "Probably trying to get index data using an attribute that has vertex data" ), 2 );
       break;
   }
   return QVector<uint>();
@@ -154,7 +154,7 @@ QByteArray getData( Qt3DQBuffer *buffer )
   QByteArray bytes = buffer->data();
   if ( bytes.isNull() )
   {
-    QgsDebugMsg( "QBuffer is null" );
+    QgsDebugMsgLevel( QStringLiteral( "QBuffer is null" ), 3 );
   }
   return bytes;
 }
@@ -336,7 +336,7 @@ void Qgs3DSceneExporter::parseFlatTile( QgsTerrainTileEntity *tileEntity, const 
   Qt3DExtras::QPlaneGeometry *tileGeometry = qobject_cast<Qt3DExtras::QPlaneGeometry *>( geometry );
   if ( tileGeometry == nullptr )
   {
-    QgsDebugMsg( "Qt3DExtras::QPlaneGeometry* is expected but something else was given" );
+    QgsDebugMsgLevel( QStringLiteral( "Qt3DExtras::QPlaneGeometry* is expected but something else was given" ), 2 );
     return;
   }
 
@@ -393,7 +393,7 @@ void Qgs3DSceneExporter::parseDemTile( QgsTerrainTileEntity *tileEntity, const Q
   DemTerrainTileGeometry *tileGeometry = qobject_cast<DemTerrainTileGeometry *>( geometry );
   if ( tileGeometry == nullptr )
   {
-    QgsDebugMsg( "DemTerrainTileGeometry* is expected but something else was given" );
+    QgsDebugMsgLevel( QStringLiteral( "DemTerrainTileGeometry* is expected but something else was given" ), 2 );
     return;
   }
 
@@ -570,7 +570,7 @@ Qgs3DExportObject *Qgs3DSceneExporter::processGeometryRenderer( Qt3DRender::QGeo
 
   if ( positionAttribute == nullptr )
   {
-    QgsDebugMsg( "Geometry renderer with null data was being processed" );
+    QgsDebugMsgLevel( QStringLiteral( "Geometry renderer with null data was being processed" ), 2 );
     return nullptr;
   }
 
@@ -617,7 +617,7 @@ QVector<Qgs3DExportObject *> Qgs3DSceneExporter::processLines( Qt3DCore::QEntity
     }
     if ( positionAttribute == nullptr || indexAttribute == nullptr )
     {
-      QgsDebugMsg( "Position or index attribute was not found" );
+      QgsDebugMsgLevel( QStringLiteral( "Position or index attribute was not found" ), 2 );
       continue;
     }
 
