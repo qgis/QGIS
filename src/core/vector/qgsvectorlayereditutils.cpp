@@ -14,6 +14,7 @@
  ***************************************************************************/
 #include "qgsvectorlayereditutils.h"
 
+#include "qgsunsetattributevalue.h"
 #include "qgsvectordataprovider.h"
 #include "qgsfeatureiterator.h"
 #include "qgsvectorlayereditbuffer.h"
@@ -413,6 +414,8 @@ Qgis::GeometryOperationResult QgsVectorLayerEditUtils::splitFeatures( const QgsC
 
   QgsVectorLayerUtils::QgsFeaturesDataList featuresDataToAdd;
 
+  const int fieldCount = mLayer->fields().count();
+
   QgsFeature feat;
   while ( features.nextFeature( feat ) )
   {
@@ -422,7 +425,8 @@ Qgis::GeometryOperationResult QgsVectorLayerEditUtils::splitFeatures( const QgsC
     }
     QVector<QgsGeometry> newGeometries;
     QgsPointSequence featureTopologyTestPoints;
-    QgsGeometry featureGeom = feat.geometry();
+    const QgsGeometry originalGeom = feat.geometry();
+    QgsGeometry featureGeom = originalGeom;
     splitFunctionReturn = featureGeom.splitGeometry( curve, newGeometries, preserveCircular, topologicalEditing, featureTopologyTestPoints );
     topologyTestPoints.append( featureTopologyTestPoints );
     if ( splitFunctionReturn == Qgis::GeometryOperationResult::Success )
@@ -430,10 +434,142 @@ Qgis::GeometryOperationResult QgsVectorLayerEditUtils::splitFeatures( const QgsC
       //change this geometry
       mLayer->changeGeometry( feat.id(), featureGeom );
 
+      //update any attributes for original feature which are set to GeometryRatio split policy
+      QgsAttributeMap attributeMap;
+      for ( int fieldIdx = 0; fieldIdx < fieldCount; ++fieldIdx )
+      {
+        const QgsField field = mLayer->fields().at( fieldIdx );
+        switch ( field.splitPolicy() )
+        {
+          case Qgis::FieldDomainSplitPolicy::DefaultValue:
+          case Qgis::FieldDomainSplitPolicy::Duplicate:
+          case Qgis::FieldDomainSplitPolicy::UnsetField:
+            break;
+
+          case Qgis::FieldDomainSplitPolicy::GeometryRatio:
+          {
+            if ( field.isNumeric() )
+            {
+              const double originalValue = feat.attribute( fieldIdx ).toDouble();
+
+              double originalSize = 0;
+
+              switch ( originalGeom.type() )
+              {
+                case Qgis::GeometryType::Point:
+                case Qgis::GeometryType::Unknown:
+                case Qgis::GeometryType::Null:
+                  originalSize = 0;
+                  break;
+                case Qgis::GeometryType::Line:
+                  originalSize = originalGeom.length();
+                  break;
+                case Qgis::GeometryType::Polygon:
+                  originalSize = originalGeom.area();
+                  break;
+              }
+
+              double newSize = 0;
+              switch ( featureGeom.type() )
+              {
+                case Qgis::GeometryType::Point:
+                case Qgis::GeometryType::Unknown:
+                case Qgis::GeometryType::Null:
+                  newSize = 0;
+                  break;
+                case Qgis::GeometryType::Line:
+                  newSize = featureGeom.length();
+                  break;
+                case Qgis::GeometryType::Polygon:
+                  newSize = featureGeom.area();
+                  break;
+              }
+
+              attributeMap.insert( fieldIdx, originalSize > 0 ? ( originalValue * newSize / originalSize ) : originalValue );
+            }
+            break;
+          }
+        }
+      }
+
+      if ( !attributeMap.isEmpty() )
+      {
+        mLayer->changeAttributeValues( feat.id(), attributeMap );
+      }
+
       //insert new features
-      QgsAttributeMap attributeMap = feat.attributes().toMap();
       for ( const QgsGeometry &geom : std::as_const( newGeometries ) )
       {
+        QgsAttributeMap attributeMap;
+        for ( int fieldIdx = 0; fieldIdx < fieldCount; ++fieldIdx )
+        {
+          const QgsField field = mLayer->fields().at( fieldIdx );
+          // respect field split policy
+          switch ( field.splitPolicy() )
+          {
+            case Qgis::FieldDomainSplitPolicy::DefaultValue:
+              // TODO!!!
+
+              break;
+
+            case Qgis::FieldDomainSplitPolicy::Duplicate:
+              attributeMap.insert( fieldIdx, feat.attribute( fieldIdx ) );
+              break;
+
+            case Qgis::FieldDomainSplitPolicy::GeometryRatio:
+            {
+              if ( !field.isNumeric() )
+              {
+                attributeMap.insert( fieldIdx, feat.attribute( fieldIdx ) );
+              }
+              else
+              {
+                const double originalValue = feat.attribute( fieldIdx ).toDouble();
+
+                double originalSize = 0;
+
+                switch ( originalGeom.type() )
+                {
+                  case Qgis::GeometryType::Point:
+                  case Qgis::GeometryType::Unknown:
+                  case Qgis::GeometryType::Null:
+                    originalSize = 0;
+                    break;
+                  case Qgis::GeometryType::Line:
+                    originalSize = originalGeom.length();
+                    break;
+                  case Qgis::GeometryType::Polygon:
+                    originalSize = originalGeom.area();
+                    break;
+                }
+
+                double newSize = 0;
+                switch ( geom.type() )
+                {
+                  case Qgis::GeometryType::Point:
+                  case Qgis::GeometryType::Unknown:
+                  case Qgis::GeometryType::Null:
+                    newSize = 0;
+                    break;
+                  case Qgis::GeometryType::Line:
+                    newSize = geom.length();
+                    break;
+                  case Qgis::GeometryType::Polygon:
+                    newSize = geom.area();
+                    break;
+                }
+
+                attributeMap.insert( fieldIdx, originalSize > 0 ? ( originalValue * newSize / originalSize ) : originalValue );
+              }
+              break;
+            }
+
+            case Qgis::FieldDomainSplitPolicy::UnsetField:
+              attributeMap.insert( fieldIdx, QgsUnsetAttributeValue() );
+              break;
+          }
+        }
+
         featuresDataToAdd << QgsVectorLayerUtils::QgsFeatureData( geom, attributeMap );
       }
 
