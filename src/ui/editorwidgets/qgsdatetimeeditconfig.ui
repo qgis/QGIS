@@ -161,7 +161,7 @@
    <item row="4" column="0">
     <widget class="QGroupBox" name="groupBox_2">
      <property name="toolTip">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Overwriting the field format is intended for fields that are &lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;not&lt;/span&gt; of a date type (like e.g. QDate).&lt;/p&gt;&lt;p&gt;For the display format of the date, use the Widget Display above.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Overwriting the field format is intended for fields that are &lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;not&lt;/span&gt; of a date type.&lt;/p&gt;&lt;p&gt;For the display format of the date, use the Widget Display above.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="title">
       <string>Overwrite Field Format</string>
