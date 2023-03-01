@@ -1453,7 +1453,7 @@ void QgsWfs3CollectionsItemsHandler::handleRequest( const QgsServerApiContext &c
           }
           if ( currentPage > 3 )
           {
-            pagination.push_back( {{ "title", "..." }, { "class", "page-item disabled" }} ) ;
+            pagination.push_back( {{ "title", "\u2026" }, { "class", "page-item disabled" }} ) ;
           }
           if ( currentPage > 2 )
           {
@@ -1466,7 +1466,7 @@ void QgsWfs3CollectionsItemsHandler::handleRequest( const QgsServerApiContext &c
           }
           if ( currentPage < totalPages - 2 )
           {
-            pagination.push_back( {{ "title", "..." }, { "class", "page-item disabled" }} ) ;
+            pagination.push_back( {{ "title", "\u2026" }, { "class", "page-item disabled" }} ) ;
           }
           if ( currentPage != totalPages )
           {
