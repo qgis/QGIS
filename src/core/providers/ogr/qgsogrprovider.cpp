@@ -857,6 +857,19 @@ void QgsOgrProvider::loadFields()
       // dataset retains ownership of domain!
       if ( OGRFieldDomainH domain = GDALDatasetGetFieldDomain( ds, domainName ) )
       {
+        switch ( OGR_FldDomain_GetSplitPolicy( domain ) )
+        {
+          case OFDSP_DEFAULT_VALUE:
+            newField.setSplitPolicy( Qgis::FieldDomainSplitPolicy::DefaultValue );
+            break;
+          case OFDSP_DUPLICATE:
+            newField.setSplitPolicy( Qgis::FieldDomainSplitPolicy::Duplicate );
+            break;
+          case OFDSP_GEOMETRY_RATIO:
+            newField.setSplitPolicy( Qgis::FieldDomainSplitPolicy::GeometryRatio );
+            break;
+        }
+
         switch ( OGR_FldDomain_GetDomainType( domain ) )
         {
           case OFDT_CODED:
