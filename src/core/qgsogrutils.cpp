@@ -39,6 +39,12 @@
 #include "qgsvariantutils.h"
 #include "qgsogrproviderutils.h"
 
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,6,0)
+#include "qgsweakrelation.h"
+#include "qgsproviderregistry.h"
+#include "qgsprovidermetadata.h"
+#endif
+
 #include <cmath>
 #include <QTextCodec>
 #include <QUuid>
