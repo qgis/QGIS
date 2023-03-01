@@ -684,6 +684,15 @@ bool QgsField::isReadOnly() const
   return d->isReadOnly;
 }
 
+Qgis::FieldDomainSplitPolicy QgsField::splitPolicy() const
+{
+  return d->splitPolicy;
+}
+
+void QgsField::setSplitPolicy( Qgis::FieldDomainSplitPolicy policy )
+{
+  d->splitPolicy = policy;
+}
 
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with
@@ -712,6 +721,7 @@ QDataStream &operator<<( QDataStream &out, const QgsField &field )
   out << field.constraints().constraintExpression();
   out << field.constraints().constraintDescription();
   out << static_cast< quint32 >( field.subType() );
+  out << static_cast< int >( field.splitPolicy() );
   return out;
 }
 
@@ -728,6 +738,7 @@ QDataStream &operator>>( QDataStream &in, QgsField &field )
   quint32 strengthNotNull;
   quint32 strengthUnique;
   quint32 strengthExpression;
+  int splitPolicy;
 
   bool applyOnUpdate;
 
@@ -741,7 +752,7 @@ QDataStream &operator>>( QDataStream &in, QgsField &field )
 
   in >> name >> type >> typeName >> length >> precision >> comment >> alias
      >> defaultValueExpression >> applyOnUpdate >> constraints >> originNotNull >> originUnique >> originExpression >> strengthNotNull >> strengthUnique >> strengthExpression >>
-     constraintExpression >> constraintDescription >> subType;
+     constraintExpression >> constraintDescription >> subType >> splitPolicy;
   field.setName( name );
   field.setType( static_cast< QVariant::Type >( type ) );
   field.setTypeName( typeName );
@@ -750,6 +761,7 @@ QDataStream &operator>>( QDataStream &in, QgsField &field )
   field.setComment( comment );
   field.setAlias( alias );
   field.setDefaultValueDefinition( QgsDefaultValue( defaultValueExpression, applyOnUpdate ) );
+  field.setSplitPolicy( static_cast< Qgis::FieldDomainSplitPolicy >( splitPolicy ) );
   QgsFieldConstraints fieldConstraints;
   if ( constraints & QgsFieldConstraints::ConstraintNotNull )
   {

@@ -405,6 +405,26 @@ providers which support generated fields for instance.
 .. versionadded:: 3.18
 %End
 
+    Qgis::FieldDomainSplitPolicy splitPolicy() const;
+%Docstring
+Returns the field's split policy, which indicates how field values should
+be handled during a split operation.
+
+.. seealso:: :py:func:`setSplitPolicy`
+
+.. versionadded:: 3.30
+%End
+
+    void setSplitPolicy( Qgis::FieldDomainSplitPolicy policy );
+%Docstring
+Sets the field's split ``policy``, which indicates how field values should
+be handled during a split operation.
+
+.. seealso:: :py:func:`splitPolicy`
+
+.. versionadded:: 3.30
+%End
+
     SIP_PYOBJECT __repr__();
 %MethodCode
     QString str = QStringLiteral( "<QgsField: %1 (%2)>" ).arg( sipCpp->name() ).arg( sipCpp->typeName() );
