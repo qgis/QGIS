@@ -496,12 +496,14 @@ void TestQgsLayoutItem::dataDefinedPosition()
   QCOMPARE( item->scenePos().x(), 140.0 ); //mm
   QCOMPARE( item->scenePos().y(), 40.0 ); //mm
 
-
+  QgsLayoutItemPage *page0 = new QgsLayoutItemPage( &l );
+  page0->setPageSize( "A4" );
+  l.pageCollection()->addPage( page0 );
   std::unique_ptr< QgsLayoutItemPage > page1( new QgsLayoutItemPage( &l ) );
-  page1->setPageSize( "A4" );
+  page1->setPageSize( "A2", QgsLayoutItemPage::Landscape );
   l.pageCollection()->addPage( page1.release() );
   std::unique_ptr< QgsLayoutItemPage > page2( new QgsLayoutItemPage( &l ) );
-  page2->setPageSize( "A4" );
+  page2->setPageSize( "A3", QgsLayoutItemPage::Landscape );
   l.pageCollection()->addPage( page2.release() );
 
   //validate that the page is accounted for even with DD variable during movement
@@ -515,9 +517,6 @@ void TestQgsLayoutItem::dataDefinedPosition()
   QList<QgsLayoutItem *> items = l.pageCollection()->itemsOnPage( 2 );
   QCOMPARE( items.length(), 2 );
   QCOMPARE( item->page(), 2 );
-
-  l.pageCollection()->deletePage( 2 );
-  l.pageCollection()->deletePage( 1 );
 
   delete item;
 }
