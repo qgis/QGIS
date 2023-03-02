@@ -43,17 +43,17 @@ QgsPostgresFeatureIterator::QgsPostgresFeatureIterator( QgsPostgresFeatureSource
     mConn = QgsPostgresConnPool::instance()->acquireConnection( mSource->mConnInfo, request.timeout(), request.requestMayBeNested() );
 
     const QString sessionRoleKey = QStringLiteral( "session_role" );
-    if ( uri.hasParam( sessionRoleKey ) )
+    if ( mSource->mUri.hasParam( sessionRoleKey ) )
     {
-      const QString sessionRole = uri.param( sessionRoleKey );
+      const QString sessionRole = mSource->mUri.param( sessionRoleKey );
       if ( !sessionRole.isEmpty() )
       {
-        conn->setSessionRole( sessionRole )
+        mConn->setSessionRole( sessionRole );
       }
     }
     else
     {
-      conn->resetSessionRole();
+      mConn->resetSessionRole();
     }
 
     mIsTransactionConnection = false;
