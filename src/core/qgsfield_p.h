@@ -122,7 +122,7 @@ class QgsFieldPrivate : public QSharedData
     //! Comment
     QString comment;
 
-    //! Field metadata. Keys should match Qgis::FieldMetadataProperty values.
+    //! Field metadata. Keys should match Qgis::FieldMetadataProperty values, or custom values extended from Qgis::FieldMetadataProperty::CustomProperty
     QMap< int, QVariant > metadata;
 
     //! Alias for field name (friendly name shown to users)
