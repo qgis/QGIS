@@ -233,7 +233,15 @@ class CORE_EXPORT QgsField
      * \see setMetadata()
      * \since QGIS 3.30
      */
-    QVariant metadata( Qgis::FieldMetadataProperty property ) const;
+    QVariant metadata( Qgis::FieldMetadataProperty property ) const SIP_SKIP;
+
+    /**
+     * Returns a specific metadata \a property.
+     *
+     * \see setMetadata()
+     * \since QGIS 3.30
+     */
+    QVariant metadata( int property ) const;
 
     /**
      * Sets the map of field \a metadata.
@@ -251,7 +259,15 @@ class CORE_EXPORT QgsField
      * \see metadata()
      * \since QGIS 3.30
      */
-    void setMetadata( Qgis::FieldMetadataProperty property, const QVariant &value );
+    void setMetadata( Qgis::FieldMetadataProperty property, const QVariant &value ) SIP_SKIP;
+
+    /**
+     * Sets a metadata \a property to \a value.
+     *
+     * \see metadata()
+     * \since QGIS 3.30
+     */
+    void setMetadata( int property, const QVariant &value );
 
     /**
      * Returns if this field is numeric. Any integer or floating point type

@@ -186,7 +186,8 @@ Map keys should match values from the Qgis.FieldMetadataProperty enum.
 .. versionadded:: 3.30
 %End
 
-    QVariant metadata( Qgis::FieldMetadataProperty property ) const;
+
+    QVariant metadata( int property ) const;
 %Docstring
 Returns a specific metadata ``property``.
 
@@ -206,7 +207,8 @@ Map keys should match values from the Qgis.FieldMetadataProperty enum.
 .. versionadded:: 3.30
 %End
 
-    void setMetadata( Qgis::FieldMetadataProperty property, const QVariant &value );
+
+    void setMetadata( int property, const QVariant &value );
 %Docstring
 Sets a metadata ``property`` to ``value``.
 

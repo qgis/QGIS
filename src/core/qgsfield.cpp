@@ -167,6 +167,11 @@ QString QgsField::comment() const
   return d->comment;
 }
 
+QVariant QgsField::metadata( int property ) const
+{
+  return d->metadata.value( property );
+}
+
 QMap<int, QVariant> QgsField::metadata() const
 {
   return d->metadata;
@@ -185,6 +190,11 @@ void QgsField::setMetadata( const QMap<int, QVariant> metadata )
 void QgsField::setMetadata( Qgis::FieldMetadataProperty property, const QVariant &value )
 {
   d->metadata[ static_cast< int >( property )] = value;
+}
+
+void QgsField::setMetadata( int property, const QVariant &value )
+{
+  d->metadata[ property ] = value;
 }
 
 bool QgsField::isNumeric() const
