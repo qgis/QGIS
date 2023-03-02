@@ -154,7 +154,7 @@ void QgsNewMemoryLayerDialog::geometryTypeChanged( int )
 void QgsNewMemoryLayerDialog::mTypeBox_currentIndexChanged( int )
 {
   const QString fieldType = mTypeBox->currentData().toString();
-  if ( fieldType == QStringLiteral( "string" ) )
+  if ( fieldType == QLatin1String( "string" ) )
   {
     if ( mWidth->text().toInt() < 1 || mWidth->text().toInt() > 255 )
       mWidth->setText( QStringLiteral( "255" ) );
@@ -162,7 +162,7 @@ void QgsNewMemoryLayerDialog::mTypeBox_currentIndexChanged( int )
     mPrecision->setEnabled( false );
     mWidth->setValidator( new QIntValidator( 1, 255, this ) );
   }
-  else if ( fieldType == QStringLiteral( "integer" ) )
+  else if ( fieldType == QLatin1String( "integer" ) )
   {
     if ( mWidth->text().toInt() < 1 || mWidth->text().toInt() > 10 )
       mWidth->setText( QStringLiteral( "10" ) );
@@ -170,7 +170,7 @@ void QgsNewMemoryLayerDialog::mTypeBox_currentIndexChanged( int )
     mPrecision->setEnabled( false );
     mWidth->setValidator( new QIntValidator( 1, 10, this ) );
   }
-  else if ( fieldType == QStringLiteral( "double" ) )
+  else if ( fieldType == QLatin1String( "double" ) )
   {
     if ( mWidth->text().toInt() < 1 || mWidth->text().toInt() > 30 )
       mWidth->setText( QStringLiteral( "30" ) );
@@ -179,28 +179,28 @@ void QgsNewMemoryLayerDialog::mTypeBox_currentIndexChanged( int )
     mPrecision->setEnabled( true );
     mWidth->setValidator( new QIntValidator( 1, 20, this ) );
   }
-  else if ( fieldType == QStringLiteral( "bool" ) )
+  else if ( fieldType == QLatin1String( "bool" ) )
   {
     mWidth->clear();
     mWidth->setEnabled( false );
     mPrecision->clear();
     mPrecision->setEnabled( false );
   }
-  else if ( fieldType == QStringLiteral( "date" ) )
+  else if ( fieldType == QLatin1String( "date" ) )
   {
     mWidth->clear();
     mWidth->setEnabled( false );
     mPrecision->clear();
     mPrecision->setEnabled( false );
   }
-  else if ( fieldType == QStringLiteral( "time" ) )
+  else if ( fieldType == QLatin1String( "time" ) )
   {
     mWidth->clear();
     mWidth->setEnabled( false );
     mPrecision->clear();
     mPrecision->setEnabled( false );
   }
-  else if ( fieldType == QStringLiteral( "datetime" ) )
+  else if ( fieldType == QLatin1String( "datetime" ) )
   {
     mWidth->clear();
     mWidth->setEnabled( false );
@@ -213,7 +213,7 @@ void QgsNewMemoryLayerDialog::mTypeBox_currentIndexChanged( int )
             || fieldType == QStringLiteral( "doublelist" )
             || fieldType == QStringLiteral( "integer64list" )
             || fieldType == QStringLiteral( "map" )
-            || fieldType == QStringLiteral( "geometry" ) )
+            || fieldType == QLatin1String( "geometry" ) )
   {
     mWidth->clear();
     mWidth->setEnabled( false );

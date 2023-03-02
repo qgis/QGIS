@@ -227,12 +227,12 @@ long long QgsOapifProvider::featureCount() const
   if ( mSubsetString.isEmpty() )
   {
     QString url = mShared->mItemsUrl;
-    url += QStringLiteral( "?limit=1" );
+    url += QLatin1String( "?limit=1" );
     url = mShared->appendExtraQueryParameters( url );
 
     if ( !mShared->mServerFilter.isEmpty() )
     {
-      url += QStringLiteral( "&" );
+      url += QLatin1Char( '&' );
       url += mShared->mServerFilter;
     }
 

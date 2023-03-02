@@ -148,7 +148,7 @@ QString QgsPathResolver::readPath( const QString &f ) const
   const QRegularExpressionMatch match = delimiterRe.match( srcPath );
   if ( match.hasMatch() )
   {
-    const QString delimiter = match.captured( 0 ).replace( '\\', QStringLiteral( "%5C" ) );
+    const QString delimiter = match.captured( 0 ).replace( '\\', QLatin1String( "%5C" ) );
     srcPath.replace( match.captured( 0 ), delimiter );
   }
 

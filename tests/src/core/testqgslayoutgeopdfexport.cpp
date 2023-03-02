@@ -61,17 +61,17 @@ void TestQgsLayoutGeoPdfExport::testTempFilenames()
   QgsLayoutGeoPdfExporter geoPdfExporter( &l );
 
   QString outputFile = geoPdfExporter.generateTemporaryFilepath( QStringLiteral( "test_src.pdf" ) );
-  QVERIFY( outputFile.endsWith( QStringLiteral( "test_src.pdf" ) ) );
+  QVERIFY( outputFile.endsWith( QLatin1String( "test_src.pdf" ) ) );
 
   // test generating temporary file path with slash characters (https://github.com/qgis/QGIS/issues/51480)
   outputFile = geoPdfExporter.generateTemporaryFilepath( QStringLiteral( "test/ src.pdf" ) );
-  QVERIFY( outputFile.endsWith( QStringLiteral( "test_ src.pdf" ) ) );
+  QVERIFY( outputFile.endsWith( QLatin1String( "test_ src.pdf" ) ) );
 
   outputFile = geoPdfExporter.generateTemporaryFilepath( QStringLiteral( "test\\ src.pdf" ) );
-  QVERIFY( outputFile.endsWith( QStringLiteral( "test_ src.pdf" ) ) );
+  QVERIFY( outputFile.endsWith( QLatin1String( "test_ src.pdf" ) ) );
 
   outputFile = geoPdfExporter.generateTemporaryFilepath( QStringLiteral( "test: src.pdf" ) );
-  QVERIFY( outputFile.endsWith( QStringLiteral( "test_ src.pdf" ) ) );
+  QVERIFY( outputFile.endsWith( QLatin1String( "test_ src.pdf" ) ) );
 }
 
 void TestQgsLayoutGeoPdfExport::testCollectingFeatures()
