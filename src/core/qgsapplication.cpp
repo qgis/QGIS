@@ -2351,9 +2351,12 @@ void QgsApplication::setMaxThreads( int maxThreads )
   QgsDebugMsgLevel( QStringLiteral( "maxThreads: %1" ).arg( maxThreads ), 2 );
 
   // make sure value is between 1 and #cores, if not set to -1 (use #cores)
-  // 0 could be used to disable any parallel processing
   if ( maxThreads < 1 || maxThreads > QThread::idealThreadCount() )
     maxThreads = -1;
+
+  // force at least 2 threads -- anything less risks deadlocks within Qt itself (e.g in QImage internal mutexes)
+  if ( maxThreads > 0 && maxThreads < 2 )
+    maxThreads = 2;
 
   // save value
   ABISYM( sMaxThreads ) = maxThreads;
