@@ -183,6 +183,7 @@ void QgsFeatureListView::editSelectionChanged( const QItemSelection &selected, c
     viewport()->update( visualRegionForSelection( localDeselected ) | visualRegionForSelection( localSelected ) );
   }
 
+  mLastEditSelectionFid = QgsFeatureId();
   if ( !selected.isEmpty() )
   {
     const QModelIndexList indexList = selected.indexes();
