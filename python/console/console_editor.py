@@ -324,8 +324,8 @@ class Editor(QgsCodeEditorPython):
                 filename = self.createTempFile()
                 deleteTempFile = True
 
-            self.pythonconsole.shell.runCommand("exec(Path('{0}').read_text())"
-                                                .format(filename.replace("\\", "/")))
+            self.pythonconsole.shell.runFile(filename)
+
             if deleteTempFile:
                 Path(filename).unlink()
 

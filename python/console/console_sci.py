@@ -81,10 +81,11 @@ class PythonInterpreter(QgsCodeInterpreter, code.InteractiveInterpreter):
             except ModuleNotFoundError:
                 pass
 
-    def execCommandImpl(self, cmd):
+    def execCommandImpl(self, cmd, show_input=True):
         res = self.currentState()
 
-        self.writeCMD(cmd)
+        if show_input:
+            self.writeCMD(cmd)
         import webbrowser
         version = 'master' if 'master' in Qgis.QGIS_VERSION.lower() else \
             re.findall(r'^\d.[0-9]*', Qgis.QGIS_VERSION)[0]
@@ -291,3 +292,19 @@ class ShellScintilla(QgsCodeEditorPython):
     def write(self, txt):
         if sys.stderr:
             sys.stderr.write(txt)
+
+    def runFile(self, filename):
+        filename = filename.replace("\\", "/")
+        dirname = os.path.dirname(filename)
+
+        # Append the directory of the file to the path and set __file__ to the filename
+        self._interpreter.execCommandImpl("sys.path.append('{0}')".format(dirname), False)
+        self._interpreter.execCommandImpl("__file__ = '{0}'".format(filename), False)
+
+        try:
+            # Run the file
+            self.runCommand("exec(Path('{0}').read_text())".format(filename))
+        finally:
+            # Remove the directory from the path and delete the __file__ variable
+            self._interpreter.execCommandImpl("del __file__", False)
+            self._interpreter.execCommandImpl("sys.path.remove('{0}')".format(dirname), False)
