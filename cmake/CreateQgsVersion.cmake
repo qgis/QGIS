@@ -26,10 +26,11 @@ MACRO(CREATE_QGSVERSION)
             WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
           )
         ELSE(WIN32 AND NOT CMAKE_CROSS_COMPILING)
+          STRING(REPLACE "'" "%x27" _rn ${RELEASE_NAME})
           ADD_CUSTOM_COMMAND(
             OUTPUT ${CMAKE_BINARY_DIR}/qgsversion.h ${CMAKE_BINARY_DIR}/qgsversion.inc
             COMMAND ${GITCOMMAND} log -n1 --pretty=\#define\\ QGSVERSION\\ \\"%h\\" >${CMAKE_BINARY_DIR}/qgsversion.h.temp
-            COMMAND ${GITCOMMAND} log -n1 --pretty='PROJECT_NUMBER = \"${COMPLETE_VERSION}-${RELEASE_NAME} \(%h\)\"' >${CMAKE_BINARY_DIR}/qgsversion.inc
+            COMMAND ${GITCOMMAND} log -n1 --pretty='PROJECT_NUMBER = \"${COMPLETE_VERSION}-${_rn} \(%h\)\"' >${CMAKE_BINARY_DIR}/qgsversion.inc
             COMMAND ${GITCOMMAND} config remote.$$\(${GITCOMMAND} config branch.$$\(${GITCOMMAND} name-rev --name-only HEAD\).remote\).url | sed -e 's/^/\#define QGS_GIT_REMOTE_URL \"/' -e 's/$$/\"/' >>${CMAKE_BINARY_DIR}/qgsversion.h.temp
             COMMAND ${CMAKE_COMMAND} -DSRC=${CMAKE_BINARY_DIR}/qgsversion.h.temp -DDST=${CMAKE_BINARY_DIR}/qgsversion.h -P ${CMAKE_SOURCE_DIR}/cmake/CopyIfChanged.cmake
             MAIN_DEPENDENCY ${CMAKE_SOURCE_DIR}/.git/index

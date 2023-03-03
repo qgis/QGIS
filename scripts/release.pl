@@ -162,7 +162,7 @@ run( "scripts/create_changelog.sh", "create_changelog.sh failed" );
 run( "perl -i -pe 's#<releases>#<releases>\n    <release version=\"$newmajor.$newminor.$newpatch\" date=\"" . strftime("%Y-%m-%d", localtime) . "\" />#' linux/org.qgis.qgis.appdata.xml.in", "appdata update failed" );
 
 unless( defined $dopoint ) {
-	run( "scripts/update_news.pl $newmajor.$newminor '$newreleasename'", "could not update news" ) if $major>2 || ($major==2 && $minor>14);
+	run( "scripts/update_news.pl $newmajor.$newminor \"$newreleasename\"", "could not update news" ) if $major>2 || ($major==2 && $minor>14);
 
 	run( "git commit -n -a -m \"changelog and news update for $release\"", "could not commit changelog and news update" );
 
@@ -181,7 +181,7 @@ unless( defined $dopoint ) {
 	run( "perl -i -pe 's/qgis-dev-deps/qgis-ltr-deps/;' INSTALL.md", "could not update osgeo4w deps package" ) if $doltr;
 	run( "perl -i -pe 's/qgis-dev-deps/qgis-rel-deps/;' INSTALL.md", "could not update osgeo4w deps package" ) unless $doltr;
 	run( "cp -v images/splash/splash-$newmajor.$newminor.png images/splash/splash.png", "splash png switch failed" );
-	run( "git commit -n -a -m 'Release of $release ($newreleasename)'", "release commit failed" );
+	run( "git commit -n -a -m \"Release of $release ($newreleasename)\"", "release commit failed" );
 	run( "git tag $reltag -m 'Version $release'", "release tag failed" );
 	run( "for i in \$(seq 20); do tx push -s --branch $relbranch && exit 0; echo \"Retry \$i/20...\"; done; exit 1", "push translation for $relbranch branch" );
 } else {

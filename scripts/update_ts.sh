@@ -135,7 +135,9 @@ if [ $action = push ]; then
 	cp i18n/qgis_en.ts /tmp/qgis_en.ts-downloaded
 	perl scripts/ts_clear.pl  # reset English translations
 elif [ $action = pull ]; then
+	mv i18n/qgis_en.ts i18n/qgis_en.ts.source
 	rm -f i18n/qgis_*.ts
+	mv i18n/qgis_en.ts.source i18n/qgis_en.ts
 
 	echo Pulling new translations...
 	if [ "$#" -gt 0 ]; then
