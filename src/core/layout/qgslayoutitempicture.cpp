@@ -355,7 +355,10 @@ void QgsLayoutItemPicture::refreshPicture( const QgsExpressionContext *context )
     {
       mHasExpressionError = true;
       source = QString();
-      QgsMessageLog::logMessage( tr( "Picture expression eval error" ) );
+      if ( scopedContext.feature().isValid() )
+      {
+        QgsMessageLog::logMessage( QStringLiteral( "%1: %2" ).arg( tr( "Picture expression eval error" ), sourceProperty.asExpression() ) );
+      }
     }
     else if ( source.type() != QVariant::ByteArray )
     {
