@@ -32,6 +32,8 @@
 #include "qgsgui.h"
 #include "qgseditorwidgetregistry.h"
 
+#include <QSignalSpy>
+
 /**
  * \ingroup UnitTests
  * This is a unit test for the attribute table dialog
@@ -66,6 +68,7 @@ class TestQgsAttributeTable : public QObject
     void testStartMultiEditNoChanges();
     void testMultiEditMakeUncommittedChanges();
     void testInvalidView();
+    void testEnsureEditSelection();
 
   private:
     QgisApp *mQgisApp = nullptr;
@@ -828,6 +831,69 @@ void TestQgsAttributeTable::testInvalidView()
 
   // feature id 2 is filtered out due not matching the provided filter expression
   QCOMPARE( dlg->mMainView->filteredFeatures(), QgsFeatureIds() << 1 << 3 );
+}
+
+void TestQgsAttributeTable::testEnsureEditSelection()
+{
+  std::unique_ptr< QgsVectorLayer > layer = std::make_unique< QgsVectorLayer >( QStringLiteral( "Point?field=col0:integer&field=col1:integer" ), QStringLiteral( "test" ), QStringLiteral( "memory" ) );
+  QVERIFY( layer->isValid() );
+
+  QgsFeature ft1( layer->dataProvider()->fields(), 1 );
+  ft1.setAttributes( QgsAttributes() << 1 << 2 );
+  layer->dataProvider()->addFeature( ft1 );
+  QgsFeature ft2( layer->dataProvider()->fields(), 2 );
+  ft2.setAttributes( QgsAttributes() << 3 << 4 );
+  layer->dataProvider()->addFeature( ft2 );
+  QgsFeature ft3( layer->dataProvider()->fields(), 3 );
+  ft3.setAttributes( QgsAttributes() << 5 << 6 );
+  layer->dataProvider()->addFeature( ft3 );
+  QgsFeature ft4( layer->dataProvider()->fields(), 4 );
+  ft4.setAttributes( QgsAttributes() << 7 << 8 );
+  layer->dataProvider()->addFeature( ft4 );
+
+  layer->removeSelection();
+
+  std::unique_ptr< QgsAttributeTableDialog > dlg( new QgsAttributeTableDialog( layer.get() ) );
+
+  //since the update is done by timer, we have to wait (at least one millisecond) or until the current edit selection changed
+  qRegisterMetaType<QgsFeature>( "QgsFeature&" );
+  QSignalSpy spy( dlg->mMainView->mFeatureListView, &QgsFeatureListView::currentEditSelectionChanged );
+
+  // we set the index to ft3
+  dlg->mMainView->setCurrentEditSelection( {ft3.id()} );
+  // ... and the currentEditSelection is on ft3
+  QVERIFY( dlg->mMainView->mFeatureListView->currentEditSelection().contains( 3 ) );
+
+  // we make a featureselection on ft1, ft2 and ft3
+  layer->selectByIds( QgsFeatureIds() << 1 << 2 << 3 );
+  spy.wait( 1 );
+  // ... and the currentEditSelection stays on ft3 (since it's in the featureselection)
+  QVERIFY( dlg->mMainView->mFeatureListView->currentEditSelection().contains( 3 ) );
+
+  // we release the featureselection
+  layer->removeSelection();
+  spy.wait( 1 );
+  // ... and the currentEditSelection persists on 3 (since it does not make an update)
+  QVERIFY( dlg->mMainView->mFeatureListView->currentEditSelection().contains( 3 ) );
+
+  // we make afeatureselection on ft4
+  layer->selectByIds( QgsFeatureIds() << 4 );
+  spy.wait( 1 );
+  // ... and the currentEditSelection goes to ft4
+  QVERIFY( dlg->mMainView->mFeatureListView->currentEditSelection().contains( 4 ) );
+
+  // we make afeatureselection on ft2 and ft3
+  layer->selectByIds( QgsFeatureIds() << 2 << 3 );
+  spy.wait( 1 );
+  // ... and the currentEditSelection goes to the first one of the featureselection (means ft2)
+  QVERIFY( dlg->mMainView->mFeatureListView->currentEditSelection().contains( 2 ) );
+
+  // we reload the layer
+  layer->reload();
+  spy.wait( 1 );
+  // ... and the currentEditSelection jumps to the first one (instead of staying at 2, since it's NOT persistend)
+  QVERIFY( dlg->mMainView->mFeatureListView->currentEditSelection().contains( 1 ) );
+
 }
 
 QGSTEST_MAIN( TestQgsAttributeTable )
