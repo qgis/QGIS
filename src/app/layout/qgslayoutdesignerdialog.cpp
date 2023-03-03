@@ -4237,17 +4237,17 @@ bool QgsLayoutDesignerDialog::showFileSizeWarning()
   // Image size
   double oneInchInLayoutUnits = mLayout->convertToLayoutUnits( QgsLayoutMeasurement( 1, Qgis::LayoutUnit::Inches ) );
   QSizeF maxPageSize = mLayout->pageCollection()->maximumPageSize();
-  int width = static_cast< int >( mLayout->renderContext().dpi() * maxPageSize.width() / oneInchInLayoutUnits );
-  int height = static_cast< int >( mLayout->renderContext().dpi() * maxPageSize.height() / oneInchInLayoutUnits );
-  int memuse = width * height * 3 / 1000000;  // pixmap + image
+  const int width = static_cast< int >( mLayout->renderContext().dpi() * maxPageSize.width() / oneInchInLayoutUnits );
+  const int height = static_cast< int >( mLayout->renderContext().dpi() * maxPageSize.height() / oneInchInLayoutUnits );
+  const std::size_t memuse = static_cast< std::size_t >( width ) * height * 3;  // pixmap + image
   QgsDebugMsg( QStringLiteral( "Image %1x%2" ).arg( width ).arg( height ) );
   QgsDebugMsg( QStringLiteral( "memuse = %1" ).arg( memuse ) );
 
-  if ( memuse > 400 )   // about 4500x4500
+  if ( memuse > 400000000 )   // about 4500x4500
   {
     int answer = QMessageBox::warning( this, tr( "Export Layout" ),
-                                       tr( "To create an image of %1x%2 requires about %3 MB of memory. Proceed?" )
-                                       .arg( width ).arg( height ).arg( memuse ),
+                                       tr( "To create an image of %1x%2 requires about %3 of memory. Proceed?" )
+                                       .arg( width ).arg( height ).arg( QgsFileUtils::representFileSize( memuse ) ),
                                        QMessageBox::Ok | QMessageBox::Cancel, QMessageBox::Ok );
 
     raise();
