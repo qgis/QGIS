@@ -145,7 +145,7 @@ namespace QgsWms
     else
     {
       //use default scale settings
-      configureDefaultRenderContext( context );
+      context = configureDefaultRenderContext();
     }
 
     // create image according to context
@@ -210,8 +210,7 @@ namespace QgsWms
     ctx.painter = painter.get();
 
     // create context
-    QgsRenderContext context = QgsRenderContext::fromQPainter( painter.get() );
-    configureDefaultRenderContext( context );
+    QgsRenderContext context = configureDefaultRenderContext( painter.get() );
     ctx.context = &context;
 
     nodeModel.drawSymbol( settings, &ctx, size.height() / dpmm );
@@ -1381,8 +1380,9 @@ namespace QgsWms
     }
   }
 
-  void QgsRenderer::configureDefaultRenderContext( QgsRenderContext &context )
+  QgsRenderContext QgsRenderer::configureDefaultRenderContext( QPainter *painter )
   {
+    QgsRenderContext context = QgsRenderContext::fromQPainter( painter );
     context.setScaleFactor( mContext.dotsPerMm() );
     const double mmPerMapUnit = 1 / QgsServerProjectUtils::wmsDefaultMapUnitsPerMm( *mProject );
     context.setMapToPixel( QgsMapToPixel( 1 / ( mmPerMapUnit * context.scaleFactor() ) ) );
@@ -1390,6 +1390,7 @@ namespace QgsWms
     distanceArea.setSourceCrs( QgsCoordinateReferenceSystem( mWmsParameters.crs() ), mProject->transformContext() );
     distanceArea.setEllipsoid( geoNone() );
     context.setDistanceArea( distanceArea );
+    return context;
   }
 
   QDomDocument QgsRenderer::featureInfoDocument( QList<QgsMapLayer *> &layers, const QgsMapSettings &mapSettings,
