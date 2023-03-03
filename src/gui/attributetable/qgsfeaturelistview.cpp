@@ -185,9 +185,13 @@ void QgsFeatureListView::editSelectionChanged( const QItemSelection &selected, c
 
   if ( !selected.isEmpty() )
   {
-    QgsFeature selectedFeature;
-    mModel->featureByIndex( mModel->mapFromMaster( selected.indexes().first() ), selectedFeature );
-    mLastEditSelectionFid = selectedFeature.id();
+    const QModelIndexList indexList = selected.indexes();
+    if ( !indexList.isEmpty() )
+    {
+      QgsFeature selectedFeature;
+      mModel->featureByIndex( mModel->mapFromMaster( indexList.first() ), selectedFeature );
+      mLastEditSelectionFid = selectedFeature.id();
+    }
   }
 
   const QItemSelection currentSelection = mCurrentEditSelectionModel->selection();
