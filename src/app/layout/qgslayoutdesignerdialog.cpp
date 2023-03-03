@@ -4232,7 +4232,7 @@ bool QgsLayoutDesignerDialog::showFileSizeWarning()
   {
     int answer = QMessageBox::warning( this, tr( "Export Layout" ),
                                        tr( "To create an image of %1x%2 requires about %3 of memory. Proceed?" )
-                                       .arg( width ).arg( height ).arg( QgsFileUtils::representFileSize( memuse ) ),
+                                       .arg( width ).arg( height ).arg( QgsFileUtils::representFileSize( static_cast< qint64 >( memuse ) ) ),
                                        QMessageBox::Ok | QMessageBox::Cancel, QMessageBox::Ok );
 
     raise();
