@@ -287,7 +287,7 @@ QgsOgrFeatureIterator::QgsOgrFeatureIterator( QgsOgrFeatureSource *source, bool 
   //       when the logger was disabled.
   //       There is currently no API to connect the change of state of the
   //       logger to the data provider.
-  if ( QgsApplication::databaseQueryLog()->enabled() )
+  if ( QgsApplication::databaseQueryLog()->enabled() && mConn )
   {
     GDALDatasetSetQueryLoggerFunc( mConn->ds, [ ]( const char *pszSQL, const char *pszError, int64_t lNumRecords, int64_t lExecutionTimeMilliseconds, void *pQueryLoggerArg )
     {
