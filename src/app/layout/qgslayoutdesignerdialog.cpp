@@ -4240,8 +4240,8 @@ bool QgsLayoutDesignerDialog::showFileSizeWarning()
   const int width = static_cast< int >( mLayout->renderContext().dpi() * maxPageSize.width() / oneInchInLayoutUnits );
   const int height = static_cast< int >( mLayout->renderContext().dpi() * maxPageSize.height() / oneInchInLayoutUnits );
   const std::size_t memuse = static_cast< std::size_t >( width ) * height * 3;  // pixmap + image
-  QgsDebugMsg( QStringLiteral( "Image %1x%2" ).arg( width ).arg( height ) );
-  QgsDebugMsg( QStringLiteral( "memuse = %1" ).arg( memuse ) );
+  QgsDebugMsgLevel( QStringLiteral( "Image %1x%2" ).arg( width ).arg( height ), 2 );
+  QgsDebugMsgLevel( QStringLiteral( "memuse = %1" ).arg( memuse ), 2 );
 
   if ( memuse > 400000000 )   // about 4500x4500
   {
