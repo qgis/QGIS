@@ -42,6 +42,9 @@ class GUI_EXPORT QgsDateTimeEditConfig : public QgsEditorConfigWidget, private U
     void updateDisplayFormat( const QString &fieldFormat );
     void displayFormatChanged( int idx );
     void showHelp( bool buttonChecked );
+
+  private:
+    void setFieldFormatCombo( const QString &fieldFormat );
 };
 
 #endif // QGSDATETIMEEDITCONFIG_H
