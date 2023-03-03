@@ -445,7 +445,7 @@ class CORE_EXPORT QgsImageOperation
           int increment = ( mDirection == QgsImageOperation::ByRow ) ? 4 : bytesPerLine;
           if ( !mForwardDirection )
           {
-            p += ( lineLength - 1 ) * increment;
+            p += static_cast< std::size_t >( lineLength - 1 ) * increment;
             increment = -increment;
           }
 
