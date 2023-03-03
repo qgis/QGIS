@@ -1503,11 +1503,11 @@ void QgsShapeburstFillSymbolLayer::distanceTransform1d( double *f, int n, int *v
   z[1] = + INF;
   for ( int q = 1; q <= n - 1; q++ )
   {
-    double s  = ( ( f[q] + q * q ) - ( f[v[k]] + ( v[k] * v[k] ) ) ) / ( 2 * q - 2 * v[k] );
+    double s  = ( ( f[q] + static_cast< double >( q ) * q ) - ( f[v[k]] + ( static_cast< double >( v[k] ) * v[k] ) ) ) / ( 2 * q - 2 * v[k] );
     while ( s <= z[k] )
     {
       k--;
-      s  = ( ( f[q] + q * q ) - ( f[v[k]] + ( v[k] * v[k] ) ) ) / ( 2 * q - 2 * v[k] );
+      s  = ( ( f[q] + static_cast< double >( q ) * q ) - ( f[v[k]] + ( static_cast< double >( v[k] ) * v[k] ) ) ) / ( 2 * q - 2 * v[k] );
     }
     k++;
     v[k] = q;
@@ -1520,7 +1520,7 @@ void QgsShapeburstFillSymbolLayer::distanceTransform1d( double *f, int n, int *v
   {
     while ( z[k + 1] < q )
       k++;
-    d[q] = ( q - v[k] ) * ( q - v[k] ) + f[v[k]];
+    d[q] = static_cast< double >( q - v[k] ) * ( q - v[k] ) + f[v[k]];
   }
 }
 
@@ -1541,12 +1541,12 @@ void QgsShapeburstFillSymbolLayer::distanceTransform2d( double *im, int width, i
 
     for ( int y = 0; y < height; y++ )
     {
-      f[y] = im[ x + y * width ];
+      f[y] = im[ x + static_cast< std::size_t>( y ) * width ];
     }
     distanceTransform1d( f, height, v, z, d );
     for ( int y = 0; y < height; y++ )
     {
-      im[ x + y * width ] = d[y];
+      im[ x + static_cast< std::size_t>( y ) * width ] = d[y];
     }
   }
 
@@ -1558,12 +1558,12 @@ void QgsShapeburstFillSymbolLayer::distanceTransform2d( double *im, int width, i
 
     for ( int x = 0; x < width; x++ )
     {
-      f[x] = im[  x + y * width ];
+      f[x] = im[  x + static_cast< std::size_t>( y ) * width ];
     }
     distanceTransform1d( f, width, v, z, d );
     for ( int x = 0; x < width; x++ )
     {
-      im[  x + y * width ] = d[x];
+      im[  x + static_cast< std::size_t>( y ) * width ] = d[x];
     }
   }
 
@@ -1579,11 +1579,11 @@ double *QgsShapeburstFillSymbolLayer::distanceTransform( QImage *im, QgsRenderCo
   int width = im->width();
   int height = im->height();
 
-  double *dtArray = new double[width * height];
+  double *dtArray = new double[static_cast< std::size_t>( width ) * height];
 
   //load qImage to array
   QRgb tmpRgb;
-  int idx = 0;
+  std::size_t idx = 0;
   for ( int heightIndex = 0; heightIndex < height; ++heightIndex )
   {
     if ( context.renderingStopped() )
@@ -1625,7 +1625,7 @@ void QgsShapeburstFillSymbolLayer::dtArrayToQImage( double *array, QImage *im, Q
   {
     //no max distance specified in symbol properties, so calculate from maximum value in distance transform results
     double dtMaxValue = array[0];
-    for ( int i = 1; i < ( width * height ); ++i )
+    for ( std::size_t i = 1; i < static_cast< std::size_t >( width ) * height; ++i )
     {
       if ( array[i] > dtMaxValue )
       {
@@ -1643,7 +1643,7 @@ void QgsShapeburstFillSymbolLayer::dtArrayToQImage( double *array, QImage *im, Q
   }
 
   //update the pixels in the provided QImage
-  int idx = 0;
+  std::size_t idx = 0;
   double squaredVal = 0;
   double pixVal = 0;
 
