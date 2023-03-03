@@ -81,6 +81,7 @@ class Qgs3DMapToolMeasureLine : public Qgs3DMapTool
 
     //! Check if mouse was moved between mousePress and mouseRelease
     bool mMouseHasMoved = false;
+    QPoint mMouseClickPos;
 };
 
 #endif // QGS3DMAPTOOLMEASURELINE_H

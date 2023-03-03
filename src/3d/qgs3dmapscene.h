@@ -64,11 +64,21 @@ class QgsPointCloudLayer;
 #define SIP_NO_FILE
 
 
-struct rayHit
+struct RayHit
 {
-  float dis;
+  float distance;
   QVector3D pos;
   QgsFeatureId fid;
+  QVariantMap attributes;
+  QgsMapLayer *layer;
+  RayHit( const float distance, const QVector3D pos, const QgsFeatureId fid = QgsFeatureId(), const QVariantMap attributes = QVariantMap(), QgsMapLayer *layer = nullptr )
+    : distance( distance )
+    , pos( pos )
+    , fid( fid )
+    , attributes( attributes )
+    , layer( layer )
+  {
+  }
 };
 
 /**
@@ -171,12 +181,10 @@ class _3D_EXPORT Qgs3DMapScene : public Qt3DCore::QEntity
     QgsAbstract3DEngine *engine() { return mEngine; }
 
     // TODO: docs
-    QVector<QPair<QgsMapLayer *, QVector<QVariantMap>>> castRay( const QgsRay3D &ray ) const;
-    QVector<QVariantMap> intersectEntity( const QgsRay3D &ray, QgsTerrainEntity *entity ) const;
-    QVector<QVariantMap> intersectEntity( const QgsRay3D &ray, QgsVectorLayerChunkedEntity *entity ) const;
-    QVector<QVariantMap> intersectEntity( const QgsRay3D &ray, QgsRuleBasedChunkedEntity *entity ) const;
-    QVector<QVariantMap> intersectEntity( const QgsRay3D &ray, QgsPointCloudLayerChunkedEntity *entity, QgsPointCloudLayer *layer ) const;
-    QVector<QVariantMap> intersectVectorEntity( const QgsRay3D &ray, QgsChunkedEntity *entity ) const;
+    QVector<RayHit> castRay( const QgsRay3D &ray ) const;
+    QVector<RayHit> intersectEntity( const QgsRay3D &ray, QgsTerrainEntity *entity ) const;
+    QVector<RayHit> intersectEntity( const QgsRay3D &ray, QgsPointCloudLayerChunkedEntity *entity, QgsPointCloudLayer *layer ) const;
+    QVector<RayHit> intersectVectorEntity( const QgsRay3D &ray, QgsChunkedEntity *entity ) const;
 
   signals:
     //! Emitted when the current terrain entity is replaced by a new one

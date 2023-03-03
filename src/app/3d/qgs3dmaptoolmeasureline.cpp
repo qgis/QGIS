@@ -83,9 +83,30 @@ void Qgs3DMapToolMeasureLine::handleClick( QPoint screenPos )
   {
     mDialog->restart();
   }
-
   mDone = false;
-  const QgsVector3D worldIntersection;
+
+  Qgs3DMapCanvas *canvas = this->canvas();
+  const QgsRay3D ray = Qgs3DUtils::rayFromScreenPoint( screenPos, canvas->windowSize(), canvas->cameraController()->camera() );
+  const auto results = mCanvas->scene()->castRay( ray );
+
+  if ( results.isEmpty() )
+    return;
+
+  QgsVector3D worldIntersection;
+  float minDist = -1;
+  for ( const auto &result : results )
+  {
+    QgsVector3D resPt = QgsVector3D( result.pos.x(),
+                                     result.pos.y(),
+                                     result.pos.z()
+                                   );
+    const double resDist = result.distance;
+    if ( minDist < 0 || resDist < minDist )
+    {
+      minDist = resDist;
+      worldIntersection = resPt;
+    }
+  }
   const QgsVector3D mapCoords = Qgs3DUtils::worldToMapCoordinates( QgsVector3D( worldIntersection.x(),
                                 worldIntersection.y(),
                                 worldIntersection.z() ), mCanvas->map()->origin() );
@@ -122,7 +143,16 @@ void Qgs3DMapToolMeasureLine::addPoint( const QgsPoint &point )
   mPoints.append( addedPoint );
   mDialog->addPoint();
 
-  mRubberBand->addPoint( QgsPoint( point.x(), point.y(), point.z() / canvas()->map()->terrainVerticalScale() ) );
+  const QgsPoint newPoint( point.x(), point.y(), point.z() / canvas()->map()->terrainVerticalScale() );
+  if ( mPoints.size() == 1 )
+  {
+    mRubberBand->addPoint( newPoint );
+  }
+  else
+  {
+    mRubberBand->moveLastPoint( newPoint );
+  }
+  mRubberBand->addPoint( newPoint );
 }
 
 void Qgs3DMapToolMeasureLine::restart()
@@ -160,15 +190,28 @@ QVector<QgsPoint> Qgs3DMapToolMeasureLine::points() const
   return mPoints;
 }
 
-void Qgs3DMapToolMeasureLine::mousePressEvent( QMouseEvent * )
+void Qgs3DMapToolMeasureLine::mousePressEvent( QMouseEvent *event )
 {
   mMouseHasMoved = false;
+  mMouseClickPos = event->pos();
 }
 
-void Qgs3DMapToolMeasureLine::mouseMoveEvent( QMouseEvent * )
+void Qgs3DMapToolMeasureLine::mouseMoveEvent( QMouseEvent *event )
 {
-  if ( !mMouseHasMoved )
+  if ( !mMouseHasMoved &&
+       ( event->pos() - mMouseClickPos ).manhattanLength() > 3 )
+  {
     mMouseHasMoved = true;
+  }
+
+  if ( mPoints.isEmpty() )
+    return;
+
+  const QgsRay3D ray = Qgs3DUtils::rayFromScreenPoint( event->pos(), mCanvas->windowSize(), mCanvas->cameraController()->camera() );
+  const float dist = static_cast<float>( mPoints.last().z() - ray.origin().y() ) / ray.direction().y();
+  const QVector3D hoverPoint = ray.origin() + ray.direction() * dist;
+  const QgsVector3D mapCoords = Qgs3DUtils::worldToMapCoordinates( hoverPoint, mCanvas->map()->origin() );
+  mRubberBand->moveLastPoint( QgsPoint( mapCoords.x(), mapCoords.y(), mapCoords.z() ) );
 }
 
 void Qgs3DMapToolMeasureLine::mouseReleaseEvent( QMouseEvent *event )

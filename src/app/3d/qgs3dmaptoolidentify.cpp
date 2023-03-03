@@ -59,118 +59,91 @@ void Qgs3DMapToolIdentify::mouseReleaseEvent( QMouseEvent *event )
     return;
 
   // point cloud identification
-  QVector<QPair<QgsMapLayer *, QVector<QVariantMap>>> layerPoints;
   Qgs3DMapCanvas *canvas = this->canvas();
 
   const QgsRay3D ray = Qgs3DUtils::rayFromScreenPoint( event->pos(), canvas->windowSize(), canvas->cameraController()->camera() );
+  const QVector<RayHit> allHits = mCanvas->scene()->castRay( ray );
 
-  QHash<QgsPointCloudLayer *, QVector<IndexedPointCloudNode>> layerChunks;
-  for ( QgsMapLayer *layer : canvas->map()->layers() )
-  {
-    if ( QgsPointCloudLayer *pc = qobject_cast<QgsPointCloudLayer *>( layer ) )
-    {
-      QVector<IndexedPointCloudNode> pointCloudNodes;
-      for ( const QgsChunkNode *n : canvas->scene()->getLayerActiveChunkNodes( pc ) )
-      {
-        const QgsChunkNodeId id = n->tileId();
-        pointCloudNodes.push_back( IndexedPointCloudNode( id.d, id.x, id.y, id.z ) );
-      }
-      if ( pointCloudNodes.empty() )
-        continue;
-      layerChunks[ pc ] = pointCloudNodes;
-    }
-  }
 
-  for ( auto it = layerChunks.constBegin(); it != layerChunks.constEnd(); ++it )
-  {
-    QgsPointCloudLayer *layer = it.key();
-    // transform ray
-    const QgsVector3D originMapCoords = canvas->map()->worldToMapCoordinates( ray.origin() );
-    const QgsVector3D pointMapCoords = canvas->map()->worldToMapCoordinates( ray.origin() + ray.origin().length() * ray.direction().normalized() );
-    QgsVector3D directionMapCoords = pointMapCoords - originMapCoords;
-    directionMapCoords.normalize();
-
-    const QVector3D rayOriginMapCoords( originMapCoords.x(), originMapCoords.y(), originMapCoords.z() );
-    const QVector3D rayDirectionMapCoords( directionMapCoords.x(), directionMapCoords.y(), directionMapCoords.z() );
-
-    const QSize size = canvas->engine()->size();
-    const int screenSizePx = std::max( size.width(), size.height() ); // TODO: is this correct? (see sceneState_)
-    QgsPointCloudLayer3DRenderer *renderer = dynamic_cast<QgsPointCloudLayer3DRenderer *>( layer->renderer3D() );
-    const QgsPointCloud3DSymbol *symbol = renderer->symbol();
-    // Symbol can be null in case of no rendering enabled
-    if ( !symbol )
-      continue;
-    const double pointSize = symbol->pointSize();
-    const double limitAngle = 2 * pointSize / screenSizePx * canvas->cameraController()->camera()->fieldOfView();
-
-    // adjust ray to elevation properties
-    QgsPointCloudLayerElevationProperties *elevationProps = dynamic_cast<QgsPointCloudLayerElevationProperties *>( layer->elevationProperties() );
-    const QVector3D adjutedRayOrigin = QVector3D( rayOriginMapCoords.x(), rayOriginMapCoords.y(), ( rayOriginMapCoords.z() -  elevationProps->zOffset() ) / elevationProps->zScale() );
-    QVector3D adjutedRayDirection = QVector3D( rayDirectionMapCoords.x(), rayDirectionMapCoords.y(), rayDirectionMapCoords.z() / elevationProps->zScale() );
-    adjutedRayDirection.normalize();
-
-    const QgsRay3D layerRay( adjutedRayOrigin, adjutedRayDirection );
-
-    QgsPointCloudDataProvider *provider = layer->dataProvider();
-    QgsPointCloudIndex *index = provider->index();
-    QVector<QVariantMap> points;
-    const QgsPointCloudAttributeCollection attributeCollection = index->attributes();
-    QgsPointCloudRequest request;
-    request.setAttributes( attributeCollection );
-    for ( const IndexedPointCloudNode &n : it.value() )
-    {
-      if ( !index->hasNode( n ) )
-        continue;
-      std::unique_ptr<QgsPointCloudBlock> block( index->nodeData( n, request ) );
-      if ( !block )
-        continue;
-
-      const QgsVector3D blockScale = block->scale();
-      const QgsVector3D blockOffset = block->offset();
-
-      const char *ptr = block->data();
-      const QgsPointCloudAttributeCollection blockAttributes = block->attributes();
-      const std::size_t recordSize = blockAttributes.pointRecordSize();
-      int xOffset = 0, yOffset = 0, zOffset = 0;
-      const QgsPointCloudAttribute::DataType xType = blockAttributes.find( QStringLiteral( "X" ), xOffset )->type();
-      const QgsPointCloudAttribute::DataType yType = blockAttributes.find( QStringLiteral( "Y" ), yOffset )->type();
-      const QgsPointCloudAttribute::DataType zType = blockAttributes.find( QStringLiteral( "Z" ), zOffset )->type();
-      for ( int i = 0; i < block->pointCount(); ++i )
-      {
-        double x, y, z;
-        QgsPointCloudAttribute::getPointXYZ( ptr, i, recordSize, xOffset, xType, yOffset, yType, zOffset, zType, blockScale, blockOffset, x, y, z );
-        const QVector3D point( x, y, z );
-
-        // check whether point is in front of the ray
-        if ( !layerRay.isInFront( point ) )
-          continue;
-
-        // calculate the angle between the point and the projected point
-        if ( layerRay.angleToPoint( point ) > limitAngle )
-          continue;
-
-        // Note : applying elevation properties is done in fromPointCloudIdentificationToIdentifyResults
-        QVariantMap pointAttr = QgsPointCloudAttribute::getAttributeMap( ptr, i * recordSize, blockAttributes );
-        pointAttr[ QStringLiteral( "X" ) ] = x;
-        pointAttr[ QStringLiteral( "Y" ) ] = y;
-        pointAttr[ QStringLiteral( "Z" ) ] = z;
-        pointAttr[ tr( "Distance to camera" ) ] = ( point - layerRay.origin() ).length();
-        points.push_back( pointAttr );
-      }
-
-    }
-    layerPoints.push_back( qMakePair( layer, points ) );
-  }
+  QMap<QgsMapLayer *, QVector<QVariantMap>> pointCloudResults;
 
   QList<QgsMapToolIdentify::IdentifyResult> identifyResults;
-  for ( int i = 0; i < layerPoints.size(); ++i )
+  QgsMapToolIdentifyAction *identifyTool2D = QgisApp::instance()->identifyMapTool();
+
+  bool showTerrainResults = true;
+
+  for ( const auto &hit : allHits )
   {
-    QgsPointCloudLayer *pcLayer = qobject_cast< QgsPointCloudLayer * >( layerPoints[i].first );
-    QgsMapToolIdentify::fromPointCloudIdentificationToIdentifyResults( pcLayer, layerPoints[i].second, identifyResults );
+    if ( !pointCloudResults.contains( hit.layer ) &&
+         qobject_cast<QgsPointCloudLayer * >( hit.layer ) )
+    {
+      pointCloudResults[ hit.layer ] = QVector<QVariantMap>();
+    }
+
+    if ( qobject_cast<QgsPointCloudLayer * >( hit.layer ) )
+    {
+      pointCloudResults[ hit.layer ].append( hit.attributes );
+      showTerrainResults = false;
+    }
+    else if ( hit.layer && !FID_IS_NULL( hit.fid ) )
+    {
+      const QgsVector3D mapCoords = Qgs3DUtils::worldToMapCoordinates( hit.pos, mCanvas->map()->origin() );
+      const QgsPoint pt( mapCoords.x(), mapCoords.y(), mapCoords.z() );
+      QgsVectorLayer *vLayer = qobject_cast<QgsVectorLayer * >( hit.layer );
+      identifyTool2D->showResultsForFeature( vLayer, hit.fid, pt );
+      showTerrainResults = false;
+    }
+    else if ( showTerrainResults )
+    {
+      // estimate search radius
+      Qgs3DMapScene *scene = mCanvas->scene();
+      const double searchRadiusMM = QgsMapTool::searchRadiusMM();
+      const double pixelsPerMM = mCanvas->logicalDpiX() / 25.4;
+      const double searchRadiusPx = searchRadiusMM * pixelsPerMM;
+      const double searchRadiusMapUnits = scene->worldSpaceError( searchRadiusPx, hit.distance );
+
+      QgsMapCanvas *canvas2D = identifyTool2D->canvas();
+
+      // transform the point and search radius to CRS of the map canvas (if they are different)
+      const QgsCoordinateTransform ct( mCanvas->map()->crs(), canvas2D->mapSettings().destinationCrs(), canvas2D->mapSettings().transformContext() );
+
+      const QgsVector3D mapCoords = Qgs3DUtils::worldToMapCoordinates( hit.pos, mCanvas->map()->origin() );
+      const QgsPointXY mapPoint( mapCoords.x(), mapCoords.y() );
+
+      QgsPointXY mapPointCanvas2D = mapPoint;
+      double searchRadiusCanvas2D = searchRadiusMapUnits;
+      try
+      {
+        mapPointCanvas2D = ct.transform( mapPoint );
+        const QgsPointXY mapPointSearchRadius( mapPoint.x() + searchRadiusMapUnits, mapPoint.y() );
+        const QgsPointXY mapPointSearchRadiusCanvas2D = ct.transform( mapPointSearchRadius );
+        searchRadiusCanvas2D = mapPointCanvas2D.distance( mapPointSearchRadiusCanvas2D );
+      }
+      catch ( QgsException &e )
+      {
+        Q_UNUSED( e )
+        QgsDebugMsg( QStringLiteral( "Caught exception %1" ).arg( e.what() ) );
+      }
+
+      identifyTool2D->identifyAndShowResults( QgsGeometry::fromPointXY( mapPointCanvas2D ), searchRadiusCanvas2D );
+    }
   }
 
-  QgsMapToolIdentifyAction *identifyTool2D = QgisApp::instance()->identifyMapTool();
-  identifyTool2D->showIdentifyResults( identifyResults );
+
+
+
+  for ( auto it = pointCloudResults.constKeyValueBegin(); it != pointCloudResults.constKeyValueEnd(); ++it )
+  {
+    if ( QgsPointCloudLayer *pcLayer = qobject_cast<QgsPointCloudLayer * >( ( *it ).first ) )
+    {
+      QgsMapToolIdentify::fromPointCloudIdentificationToIdentifyResults( pcLayer, ( *it ).second, identifyResults );
+      identifyTool2D->showIdentifyResults( identifyResults );
+    }
+  }
+
+
+
+
 }
 
 void Qgs3DMapToolIdentify::activate()

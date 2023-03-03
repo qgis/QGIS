@@ -59,21 +59,24 @@ bool QgsRay3D::intersects( const QgsBox3d &box ) const
   const float invX = 1 / mDirection.x();
   const float invY = 1 / mDirection.y();
   const float invZ = 1 / mDirection.z();
+  const float xOffset = box.width() > 0 ? 0 : 0.1;
+  const float yOffset = box.height() > 0 ? 0 : 0.1;
+  const float zOffset = box.depth() > 0 ? 0 : 0.1;
 
   double t1 = ( box.xMinimum() - mOrigin.x() ) * invX;
-  double t2 = ( box.xMaximum() - mOrigin.x() ) * invX;
+  double t2 = ( box.xMaximum() - mOrigin.x() + xOffset ) * invX;
 
   double tmin = std::min( t1, t2 );
   double tmax = std::max( t1, t2 );
 
   t1 = ( box.yMinimum() - mOrigin.y() ) * invY;
-  t2 = ( box.yMaximum() - mOrigin.y() ) * invY;
+  t2 = ( box.yMaximum() - mOrigin.y() + yOffset ) * invY;
 
   tmin = std::max( tmin, std::min( std::min( t1, t2 ), tmax ) );
   tmax = std::min( tmax, std::max( std::max( t1, t2 ), tmin ) );
 
   t1 = ( box.zMinimum() - mOrigin.z() ) * invZ;
-  t2 = ( box.zMaximum() - mOrigin.z() ) * invZ;
+  t2 = ( box.zMaximum() - mOrigin.z() + zOffset ) * invZ;
 
   tmin = std::max( tmin, std::min( std::min( t1, t2 ), tmax ) );
   tmax = std::min( tmax, std::max( std::max( t1, t2 ), tmin ) );
