@@ -982,9 +982,9 @@ void TestQgsAttributeForm::testDefaultValueUpdate()
   //col3 - "col2"
 
   // set constraints for each field
-  layer->setDefaultValueDefinition( 1, QgsDefaultValue( QStringLiteral( "\"col0\"+1" ) ) );
-  layer->setDefaultValueDefinition( 2, QgsDefaultValue( QStringLiteral( "\"col0\"+\"col1\"" ) ) );
-  layer->setDefaultValueDefinition( 3, QgsDefaultValue( QStringLiteral( "\"col2\"" ) ) );
+  layer->setDefaultValueDefinition( 1, QgsDefaultValue( QStringLiteral( "\"col0\"+1" ), true ) );
+  layer->setDefaultValueDefinition( 2, QgsDefaultValue( QStringLiteral( "\"col0\"+\"col1\"" ), true ) );
+  layer->setDefaultValueDefinition( 3, QgsDefaultValue( QStringLiteral( "\"col2\"" ), true ) );
 
   layer->startEditing();
 
@@ -1044,10 +1044,10 @@ void TestQgsAttributeForm::testDefaultValueUpdateRecursion()
   //col3 - COALESCE( 0, "col2"+1)
 
   // set constraints for each field
-  layer->setDefaultValueDefinition( 0, QgsDefaultValue( QStringLiteral( "\"col3\"+1" ) ) );
-  layer->setDefaultValueDefinition( 1, QgsDefaultValue( QStringLiteral( "\"col0\"+1" ) ) );
-  layer->setDefaultValueDefinition( 2, QgsDefaultValue( QStringLiteral( "\"col1\"+1" ) ) );
-  layer->setDefaultValueDefinition( 3, QgsDefaultValue( QStringLiteral( "\"col2\"+1" ) ) );
+  layer->setDefaultValueDefinition( 0, QgsDefaultValue( QStringLiteral( "\"col3\"+1" ), true ) );
+  layer->setDefaultValueDefinition( 1, QgsDefaultValue( QStringLiteral( "\"col0\"+1" ), true ) );
+  layer->setDefaultValueDefinition( 2, QgsDefaultValue( QStringLiteral( "\"col1\"+1" ), true ) );
+  layer->setDefaultValueDefinition( 3, QgsDefaultValue( QStringLiteral( "\"col2\"+1" ), true ) );
 
   layer->startEditing();
 
