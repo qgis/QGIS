@@ -180,11 +180,18 @@ run( "cp debian/changelog /tmp", "backup changelog failed" );
 unless( defined $dopoint ) {
 	run( "perl -i -pe 's/qgis-dev-deps/qgis-ltr-deps/;' INSTALL.md", "could not update osgeo4w deps package" ) if $doltr;
 	run( "perl -i -pe 's/qgis-dev-deps/qgis-rel-deps/;' INSTALL.md", "could not update osgeo4w deps package" ) unless $doltr;
-	run( "cp -v images/splash/splash-$newmajor.$newminor.png images/splash/splash.png", "splash png switch failed" );
+	run( "cp -v images/splash/splash-${newmajor}.${newminor}rc.png images/splash/splash.png", "splash png switch failed" );
 	run( "git commit -n -a -m \"Release of $release ($newreleasename)\"", "release commit failed" );
 	run( "git tag $reltag -m 'Version $release'", "release tag failed" );
 	run( "for i in \$(seq 20); do tx push -s --branch $relbranch && exit 0; echo \"Retry \$i/20...\"; done; exit 1", "push translation for $relbranch branch" );
 } else {
+	if($newpatch == 1) {
+		run( "cp -v images/splash/splash-${newmajor}.${newminor}.png images/splash/splash.png", "splash png switch failed" );
+	} elsif($newpatch == 4) {	# TODO handle EPRs
+		if( system("git tag -l | grep -q '^ltr-${newmajor}_${newminor}$'") == 0) {
+			run( "cp -v images/splash/splash-${newmajor}.${newminor}ltr.png images/splash/splash.png", "splash png switch failed" );
+		}
+	}
 	run( "git commit -n -a -m 'Release of $version'", "release commit failed" );
 	run( "git tag $reltag -m 'Version $version'", "tag failed" );
 }
@@ -263,7 +270,15 @@ release.pl {{-major|-minor [-premajor]} [-skipts] -releasename=releasename|-poin
 			a major release
 
   Major and minor releases also require a new splash screen
-  images/splash/splash-M.N.png.
+  images/splash/splash-M.Nrc.png, which should have a label
+  "release candidate".
+
+  The first point release also requires a new splash screen
+  images/splash/splash-M.N.png without that label.
+
+  The fourth point release of a ltr branch requires a new splash screen
+  images/splash/splash-M.Nltr.png with the label "long-term
+  release".
 
   A pre-major minor release also produces a second branch
   master_$currentmajor to allow more interim minor releases
