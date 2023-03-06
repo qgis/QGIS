@@ -161,7 +161,7 @@
    <item row="4" column="0">
     <widget class="QGroupBox" name="mFieldFormatGroupBox">
      <property name="toolTip">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Overwriting the field format is &lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;usually&lt;/span&gt; intended for fields that are &lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;not&lt;/span&gt; of a date type.&lt;/p&gt;&lt;p&gt;For the display format of the date widget, use the section above.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The field format allows to customize the format in which the date will be stored in the datasource. &lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;Overwriting the field format is&lt;span style=&quot; font-weight:600; font-style:italic;&quot;/&gt;usually&lt;span style=&quot; font-weight:600; font-style:italic;&quot;/&gt;intended for fields that are &lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;not&lt;/span&gt; of a date type.&lt;/p&gt;&lt;p&gt;For the display format of the date widget, use the section above.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="title">
       <string>Overwrite Field Format</string>
