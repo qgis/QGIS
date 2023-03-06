@@ -412,6 +412,8 @@ class TestQgsCategorizedSymbolRenderer(unittest.TestCase):
         default_symbol.setColor(QColor(255, 255, 255))
         renderer.addCategory(QgsRendererCategory('', default_symbol, 'default'))
 
+        self.assertEqual(renderer.legendKeys(), {'0', '1', '2', '3', '4'})
+
         context = QgsRenderContext()
         context.setRendererScale(0)  # simulate counting
         renderer.startRender(context, fields)

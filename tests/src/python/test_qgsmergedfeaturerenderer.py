@@ -47,6 +47,16 @@ class TestQgsMergedFeatureRenderer(unittest.TestCase):
         with open(report_file_path, 'a') as report_file:
             report_file.write(self.report)
 
+    def test_legend_keys(self):
+        symbol1 = QgsFillSymbol()
+        symbol2 = QgsFillSymbol()
+        sub_renderer = QgsCategorizedSymbolRenderer('cat', [QgsRendererCategory('cat1', symbol1, 'cat1'),
+                                                            QgsRendererCategory('cat2', symbol2, 'cat2')
+                                                            ])
+
+        renderer = QgsMergedFeatureRenderer(sub_renderer)
+        self.assertEqual(renderer.legendKeys(), {'0', '1'})
+
     def testSinglePolys(self):
         source = QgsVectorLayer(os.path.join(TEST_DATA_DIR, 'polys_overlapping.shp'))
         self.assertTrue(source.isValid())
