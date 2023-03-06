@@ -42,6 +42,14 @@ Constructor version used with only expressions to filter symbols (no extent or p
 Runs the map hit test
 %End
 
+    QMap<QString, QSet<QString>> results() const;
+%Docstring
+Returns the hit test results, which are a map of layer ID to
+visible symbol legend keys.
+
+.. versionadded:: 3.32
+%End
+
     bool symbolVisible( QgsSymbol *symbol, QgsVectorLayer *layer ) const;
 %Docstring
 Tests whether a symbol is visible for a specified layer.
