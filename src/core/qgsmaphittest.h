@@ -19,6 +19,8 @@
 #include "qgis_sip.h"
 #include "qgsmapsettings.h"
 #include "qgsgeometry.h"
+#include "qgstaskmanager.h"
+#include "qgscoordinatetransform.h"
 
 #include <QSet>
 
@@ -125,6 +127,77 @@ class CORE_EXPORT QgsMapHitTest
 
     //! Whether to use only expressions during the filtering
     bool mOnlyExpressions;
+
+    friend class QgsMapHitTestTask;
+};
+
+
+/**
+ * \ingroup core
+ * \brief Executes a QgsMapHitTest in a background thread.
+ *
+ * \since QGIS 3.32
+ */
+class CORE_EXPORT QgsMapHitTestTask : public QgsTask
+{
+    Q_OBJECT
+
+  public:
+
+    /**
+     * Constructor for QgsMapHitTestTask, filtering by a visible geometry.
+     *
+     * \param settings Map settings used to evaluate symbols
+     * \param polygon Polygon geometry to refine the hit test
+     * \param layerFilterExpression Expression string for each layer id to evaluate in order to refine the symbol selection
+     */
+    QgsMapHitTestTask( const QgsMapSettings &settings, const QgsGeometry &polygon = QgsGeometry(), const QgsMapHitTest::LayerFilterExpression &layerFilterExpression = QgsMapHitTest::LayerFilterExpression() );
+
+    /**
+     * Constructor for QgsMapHitTestTask, filtering by expressions.
+     *
+     * \param settings Map settings used to evaluate symbols
+     * \param layerFilterExpression Expression string for each layer id to evaluate in order to refine the symbol selection
+     */
+    QgsMapHitTestTask( const QgsMapSettings &settings, const QgsMapHitTest::LayerFilterExpression &layerFilterExpression );
+
+    /**
+     * Returns the hit test results, which are a map of layer ID to
+     * visible symbol legend keys.
+     */
+    QMap<QString, QSet<QString>> results() const;
+
+    void cancel() override;
+
+  protected:
+
+    bool run() override;
+
+  private:
+
+    void prepare();
+
+    struct PreparedLayerData
+    {
+      std::unique_ptr< QgsAbstractFeatureSource > source;
+      QString layerId;
+      QgsCoordinateReferenceSystem crs;
+      QgsFields fields;
+      std::unique_ptr< QgsFeatureRenderer > renderer;
+      QgsRectangle extent;
+      QgsCoordinateTransform transform;
+      std::unique_ptr< QgsExpressionContextScope > layerScope;
+    };
+
+    std::vector< PreparedLayerData > mPreparedData;
+
+    QgsMapSettings mSettings;
+    QgsMapHitTest::LayerFilterExpression mLayerFilterExpression;
+    QgsGeometry mPolygon;
+    bool mOnlyExpressions = false;
+    QMap<QString, QSet<QString>> mResults;
+
+    std::unique_ptr< QgsFeedback > mFeedback;
 };
 
 #endif // QGSMAPHITTEST_H
