@@ -77,6 +77,7 @@ class CORE_EXPORT QgsRay3D
      *  \since QGIS 3.32
      */
     bool intersects( const QgsBox3d &box ) const;
+
   private:
     QVector3D mOrigin;
     QVector3D mDirection;

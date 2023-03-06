@@ -81,6 +81,18 @@ struct RayHit
   }
 };
 
+struct RayCastContext
+{
+  bool singleResult;
+  int screenWidth;
+  int screenHeight;
+  RayCastContext( bool singleResult = true, int screenWidth = 0, int screenHeight = 0 )
+    : singleResult( singleResult )
+    , screenWidth( screenWidth )
+    , screenHeight( screenHeight )
+  {}
+};
+
 /**
  * \ingroup 3d
  * \brief Entity that encapsulates our 3D scene - contains all other entities (such as terrain) as children.
@@ -182,7 +194,7 @@ class _3D_EXPORT Qgs3DMapScene : public Qt3DCore::QEntity
 
     // TODO: docs
     QVector<RayHit> castRay( const QgsRay3D &ray ) const;
-    QVector<RayHit> intersectEntity( const QgsRay3D &ray, QgsTerrainEntity *entity ) const;
+//    QVector<RayHit> intersectEntity( const QgsRay3D &ray, QgsTerrainEntity *entity ) const;
     QVector<RayHit> intersectEntity( const QgsRay3D &ray, QgsPointCloudLayerChunkedEntity *entity, QgsPointCloudLayer *layer ) const;
     QVector<RayHit> intersectVectorEntity( const QgsRay3D &ray, QgsChunkedEntity *entity ) const;
 

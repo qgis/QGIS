@@ -83,6 +83,7 @@ Checks whether the ray intersects ``box``
 
 .. versionadded:: 3.32
 %End
+
 };
 
 /************************************************************************
