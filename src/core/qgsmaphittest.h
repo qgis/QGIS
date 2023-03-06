@@ -26,6 +26,8 @@ class QgsRenderContext;
 class QgsSymbol;
 class QgsVectorLayer;
 class QgsExpression;
+class QgsAbstractFeatureSource;
+class QgsFeatureRenderer;
 
 /**
  * \ingroup core
@@ -54,6 +56,14 @@ class CORE_EXPORT QgsMapHitTest
     void run();
 
     /**
+     * Returns the hit test results, which are a map of layer ID to
+     * visible symbol legend keys.
+     *
+     * \since QGIS 3.32
+     */
+    QMap<QString, QSet<QString>> results() const;
+
+    /**
      * Tests whether a symbol is visible for a specified layer.
      * \param symbol symbol to find
      * \param layer vector layer
@@ -76,19 +86,27 @@ class CORE_EXPORT QgsMapHitTest
     //! \note not available in Python bindings
     typedef QSet<QString> SymbolSet;
 
-    //! \note not available in Python bindings
-    typedef QMap<QgsVectorLayer *, SymbolSet> HitTest;
+    //! Layer ID to symbol set
+    typedef QMap<QString, SymbolSet> HitTest;
 
     /**
-     * Runs test for visible symbols within a layer
-     * \param vl vector layer
+     * Runs test for visible symbols from a feature \a source
+     * \param source feature source
+     * \param fields source fields
      * \param usedSymbols set for storage of visible symbols
      * \param usedSymbolsRuleKey set of storage of visible legend rule keys
      * \param context render context
      * \note not available in Python bindings
-     * \since QGIS 2.12
      */
-    void runHitTestLayer( QgsVectorLayer *vl, SymbolSet &usedSymbols, SymbolSet &usedSymbolsRuleKey, QgsRenderContext &context );
+    void runHitTestFeatureSource( QgsAbstractFeatureSource *source,
+                                  const QString &layerId,
+                                  const QgsCoordinateReferenceSystem &crs,
+                                  const QgsFields &fields,
+                                  const QgsFeatureRenderer *renderer,
+                                  SymbolSet &usedSymbols,
+                                  SymbolSet &usedSymbolsRuleKey,
+                                  QgsRenderContext &context,
+                                  QgsFeedback *feedback );
 
     //! The initial map settings
     QgsMapSettings mSettings;
