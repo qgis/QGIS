@@ -1152,6 +1152,33 @@ class TestQgsRuleBasedRenderer: public QgsTest
       QCOMPARE( counter->featureCount( "2" ), 1LL );
     }
 
+    void testLegendKeys()
+    {
+      QgsRuleBasedRenderer::Rule *rootRule = new QgsRuleBasedRenderer::Rule( nullptr );
+      std::unique_ptr< QgsRuleBasedRenderer > renderer = std::make_unique< QgsRuleBasedRenderer >( rootRule );
+
+      QVERIFY( renderer->legendKeys().empty() );
+
+      QgsRuleBasedRenderer::Rule *rule2 = new QgsRuleBasedRenderer::Rule( nullptr, 0, 0, "\"field_name\" = 5" );
+      QgsRuleBasedRenderer::Rule *rule3 = new QgsRuleBasedRenderer::Rule( nullptr, 2000, 0, "\"field_name\" = 6" );
+      QgsRuleBasedRenderer::Rule *rule4 = new QgsRuleBasedRenderer::Rule( nullptr, 0, 1000, "\"field_name\" = 7" );
+      QgsRuleBasedRenderer::Rule *rule5 = new QgsRuleBasedRenderer::Rule( nullptr, 1000, 3000 );
+
+      rootRule->appendChild( rule2 );
+      rootRule->appendChild( rule3 );
+      rootRule->appendChild( rule4 );
+      rootRule->appendChild( rule5 );
+
+      QSet< QString > expected = QSet< QString >
+      {
+        rule2->ruleKey(),
+        rule3->ruleKey(),
+        rule4->ruleKey(),
+        rule5->ruleKey()
+      };
+      QCOMPARE( renderer->legendKeys(), expected );
+    }
+
     void testLegendKeyToExpression()
     {
       QgsRuleBasedRenderer::Rule *rootRule = new QgsRuleBasedRenderer::Rule( nullptr );

@@ -485,6 +485,18 @@ class TestQgsPointDisplacementRenderer(unittest.TestCase):
         self.assertTrue(res)
         self._tearDown(layer)
 
+    def test_legend_keys(self):
+        symbol1 = QgsMarkerSymbol()
+        symbol2 = QgsMarkerSymbol()
+        sub_renderer = QgsCategorizedSymbolRenderer('cat', [QgsRendererCategory('cat1', symbol1, 'cat1'),
+                                                            QgsRendererCategory('cat2', symbol2, 'cat2')
+                                                            ])
+
+        renderer = QgsPointDisplacementRenderer()
+        renderer.setEmbeddedRenderer(sub_renderer)
+
+        self.assertEqual(renderer.legendKeys(), {'0', '1'})
+
     def test_legend_key_to_expression(self):
         sym1 = QgsMarkerSymbol.createSimple({'color': '#fdbf6f', 'outline_color': 'black'})
         sub_renderer = QgsSingleSymbolRenderer(sym1)
