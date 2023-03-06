@@ -340,6 +340,15 @@ class CORE_EXPORT QgsFeatureRenderer
     }
 
     /**
+     * Returns the set of all legend keys used by the renderer.
+     *
+     * \see legendSymbolItems()
+     *
+     * \since QGIS 3.32
+     */
+    QSet< QString > legendKeys() const;
+
+    /**
      * Returns TRUE if symbology items in legend are checkable.
      *
      * \since QGIS 2.5
@@ -350,6 +359,7 @@ class CORE_EXPORT QgsFeatureRenderer
      * Returns TRUE if the legend symbology item with the specified \a key is checked.
      *
      * \see checkLegendSymbolItem()
+     * \see legendKeys()
      *
      * \since QGIS 2.5
      */
@@ -359,6 +369,7 @@ class CORE_EXPORT QgsFeatureRenderer
      * Sets whether the legend symbology item with the specified \a ley should be checked.
      *
      * \see legendSymbolItemChecked()
+     * \see legendKeys()
      *
      * \since QGIS 2.5
      */
@@ -368,6 +379,9 @@ class CORE_EXPORT QgsFeatureRenderer
      * Sets the symbol to be used for a legend symbol item.
      * \param key rule key for legend symbol
      * \param symbol new symbol for legend item. Ownership is transferred to renderer.
+     *
+     * \see legendKeys()
+     *
      * \since QGIS 2.14
      */
     virtual void setLegendSymbolItem( const QString &key, QgsSymbol *symbol SIP_TRANSFER );
@@ -382,12 +396,17 @@ class CORE_EXPORT QgsFeatureRenderer
      *
      * \returns QGIS expression string for matching features with the specified key
      *
+     * \see legendKeys()
+     *
      * \since QGIS 3.26
      */
     virtual QString legendKeyToExpression( const QString &key, QgsVectorLayer *layer, bool &ok SIP_OUT ) const;
 
     /**
      * Returns a list of symbology items for the legend
+     *
+     * \see legendKeys()
+     *
      * \since QGIS 2.6
      */
     virtual QgsLegendSymbolList legendSymbolItems() const;
