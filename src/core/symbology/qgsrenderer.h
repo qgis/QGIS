@@ -340,19 +340,26 @@ class CORE_EXPORT QgsFeatureRenderer
     }
 
     /**
-     * items of symbology items in legend should be checkable
+     * Returns TRUE if symbology items in legend are checkable.
+     *
      * \since QGIS 2.5
      */
     virtual bool legendSymbolItemsCheckable() const;
 
     /**
-     * items of symbology items in legend is checked
+     * Returns TRUE if the legend symbology item with the specified \a key is checked.
+     *
+     * \see checkLegendSymbolItem()
+     *
      * \since QGIS 2.5
      */
     virtual bool legendSymbolItemChecked( const QString &key );
 
     /**
-     * item in symbology was checked
+     * Sets whether the legend symbology item with the specified \a ley should be checked.
+     *
+     * \see legendSymbolItemChecked()
+     *
      * \since QGIS 2.5
      */
     virtual void checkLegendSymbolItem( const QString &key, bool state = true );
