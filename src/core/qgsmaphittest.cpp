@@ -116,6 +116,14 @@ void QgsMapHitTest::runHitTestLayer( QgsVectorLayer *vl, SymbolSet &usedSymbols,
     return;
   }
 
+  // if there's no legend items for this layer, shortcut out early
+  QSet< QString > remainingKeysToFind = r->legendKeys();
+  if ( remainingKeysToFind.empty() )
+  {
+    r->stopRender( context );
+    return;
+  }
+
   QgsFeatureRequest request;
 
   const QString rendererFilterExpression = r->filter( vl->fields() );
@@ -168,8 +176,6 @@ void QgsMapHitTest::runHitTestLayer( QgsVectorLayer *vl, SymbolSet &usedSymbols,
 
   usedSymbols.clear();
   usedSymbolsRuleKey.clear();
-
-  QSet< QString > remainingKeysToFind = r->legendKeys();
 
   QgsFeature f;
   while ( fi.nextFeature( f ) )
