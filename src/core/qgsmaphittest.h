@@ -106,10 +106,14 @@ class CORE_EXPORT QgsMapHitTest
     /**
      * Runs test for visible symbols from a feature \a source
      * \param source feature source
-     * \param fields source fields
+     * \param layerId associated layer id
+     * \param crs layer crs
+     * \param fields layer fields
+     * \param renderer layer renderer
      * \param usedSymbols set for storage of visible symbols
      * \param usedSymbolsRuleKey set of storage of visible legend rule keys
      * \param context render context
+     * \param feedback optional feedback argument for cancel support
      * \note not available in Python bindings
      */
     void runHitTestFeatureSource( QgsAbstractFeatureSource *source,
