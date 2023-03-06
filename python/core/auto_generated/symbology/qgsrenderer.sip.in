@@ -304,6 +304,15 @@ the UserStyle element of a SLD style document
 used from subclasses to create SLD Rule elements following SLD v1.1 specs
 %End
 
+    QSet< QString > legendKeys() const;
+%Docstring
+Returns the set of all legend keys used by the renderer.
+
+.. seealso:: :py:func:`legendSymbolItems`
+
+.. versionadded:: 3.32
+%End
+
     virtual bool legendSymbolItemsCheckable() const;
 %Docstring
 Returns ``True`` if symbology items in legend are checkable.
@@ -317,6 +326,8 @@ Returns ``True`` if the legend symbology item with the specified ``key`` is chec
 
 .. seealso:: :py:func:`checkLegendSymbolItem`
 
+.. seealso:: :py:func:`legendKeys`
+
 .. versionadded:: 2.5
 %End
 
@@ -325,6 +336,8 @@ Returns ``True`` if the legend symbology item with the specified ``key`` is chec
 Sets whether the legend symbology item with the specified ``ley`` should be checked.
 
 .. seealso:: :py:func:`legendSymbolItemChecked`
+
+.. seealso:: :py:func:`legendKeys`
 
 .. versionadded:: 2.5
 %End
@@ -335,6 +348,8 @@ Sets the symbol to be used for a legend symbol item.
 
 :param key: rule key for legend symbol
 :param symbol: new symbol for legend item. Ownership is transferred to renderer.
+
+.. seealso:: :py:func:`legendKeys`
 
 .. versionadded:: 2.14
 %End
@@ -351,12 +366,17 @@ the features displayed using that key.
          - ok: will be set to ``True`` if legend key was successfully converted to a filter expression
 
 
+.. seealso:: :py:func:`legendKeys`
+
+
 .. versionadded:: 3.26
 %End
 
     virtual QgsLegendSymbolList legendSymbolItems() const;
 %Docstring
 Returns a list of symbology items for the legend
+
+.. seealso:: :py:func:`legendKeys`
 
 .. versionadded:: 2.6
 %End

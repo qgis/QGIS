@@ -330,6 +330,19 @@ QgsFeatureRenderer *QgsFeatureRenderer::loadSld( const QDomNode &node, Qgis::Geo
   return r;
 }
 
+QSet<QString> QgsFeatureRenderer::legendKeys() const
+{
+  // build up a list of unique legend keys
+  const QgsLegendSymbolList allLegendSymbols = legendSymbolItems();
+  QSet< QString > keys;
+  keys.reserve( allLegendSymbols.size() );
+  for ( const QgsLegendSymbolItem &symbol : allLegendSymbols )
+  {
+    keys.insert( symbol.ruleKey() );
+  }
+  return keys;
+}
+
 QDomElement QgsFeatureRenderer::writeSld( QDomDocument &doc, const QString &styleName, const QVariantMap &props ) const
 {
   QDomElement userStyleElem = doc.createElement( QStringLiteral( "UserStyle" ) );

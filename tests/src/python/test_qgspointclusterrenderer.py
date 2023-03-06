@@ -45,6 +45,8 @@ from qgis.core import (
     QgsSymbolLayer,
     QgsUnitTypes,
     QgsVectorLayer,
+    QgsCategorizedSymbolRenderer,
+    QgsRendererCategory
 )
 from qgis.testing import start_app, unittest
 
@@ -121,6 +123,18 @@ class TestQgsPointClusterRenderer(unittest.TestCase):
         elem = r.save(doc, QgsReadWriteContext())
         c = QgsPointClusterRenderer.create(elem, QgsReadWriteContext())
         self._checkProperties(c)
+
+    def test_legend_keys(self):
+        symbol1 = QgsMarkerSymbol()
+        symbol2 = QgsMarkerSymbol()
+        sub_renderer = QgsCategorizedSymbolRenderer('cat', [QgsRendererCategory('cat1', symbol1, 'cat1'),
+                                                            QgsRendererCategory('cat2', symbol2, 'cat2')
+                                                            ])
+
+        renderer = QgsPointClusterRenderer()
+        renderer.setEmbeddedRenderer(sub_renderer)
+
+        self.assertEqual(renderer.legendKeys(), {'0', '1'})
 
     def testConvert(self):
         """ test renderer conversion """

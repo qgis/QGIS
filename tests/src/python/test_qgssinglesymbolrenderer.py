@@ -84,6 +84,12 @@ class TestQgsSingleSymbolRenderer(unittest.TestCase):
 
         self.assertCountEqual(self.renderer.usedAttributes(ctx), {})
 
+    def test_legend_keys(self):
+        sym1 = QgsFillSymbol.createSimple({'color': '#fdbf6f', 'outline_color': 'black'})
+        renderer = QgsSingleSymbolRenderer(sym1)
+
+        self.assertEqual(renderer.legendKeys(), {'0'})
+
     def test_legend_key_to_expression(self):
         sym1 = QgsFillSymbol.createSimple({'color': '#fdbf6f', 'outline_color': 'black'})
         renderer = QgsSingleSymbolRenderer(sym1)

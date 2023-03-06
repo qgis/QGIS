@@ -482,6 +482,21 @@ class TestQgsGraduatedSymbolRenderer(unittest.TestCase):
         renderer.setClassAttribute("value - $area")
         self.assertTrue(renderer.filterNeedsGeometry())
 
+    def test_legend_keys(self):
+        renderer = QgsGraduatedSymbolRenderer()
+        renderer.setClassAttribute('field_name')
+
+        self.assertFalse(renderer.legendKeys())
+
+        symbol_a = createMarkerSymbol()
+        renderer.addClassRange(QgsRendererRange(1, 2, symbol_a, 'a'))
+        symbol_b = createMarkerSymbol()
+        renderer.addClassRange(QgsRendererRange(5, 6, symbol_b, 'b'))
+        symbol_c = createMarkerSymbol()
+        renderer.addClassRange(QgsRendererRange(15.5, 16.5, symbol_c, 'c', False))
+
+        self.assertEqual(renderer.legendKeys(), {'0', '1', '2'})
+
     def test_legend_key_to_expression(self):
         renderer = QgsGraduatedSymbolRenderer()
         renderer.setClassAttribute('field_name')
