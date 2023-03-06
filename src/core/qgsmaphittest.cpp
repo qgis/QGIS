@@ -109,6 +109,13 @@ void QgsMapHitTest::runHitTestLayer( QgsVectorLayer *vl, SymbolSet &usedSymbols,
   const bool moreSymbolsPerFeature = r->capabilities() & QgsFeatureRenderer::MoreSymbolsPerFeature;
   r->startRender( context, vl->fields() );
 
+  // shortcut early if we know that there's nothing visible
+  if ( r->canSkipRender() )
+  {
+    r->stopRender( context );
+    return;
+  }
+
   QgsFeatureRequest request;
 
   const QString rendererFilterExpression = r->filter( vl->fields() );
