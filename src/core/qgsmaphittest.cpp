@@ -267,3 +267,131 @@ void QgsMapHitTest::runHitTestFeatureSource( QgsAbstractFeatureSource *source,
   r->stopRender( context );
 }
 
+
+//
+// QgsMapHitTestTask
+//
+
+QgsMapHitTestTask::QgsMapHitTestTask( const QgsMapSettings &settings, const QgsGeometry &polygon, const QgsMapHitTest::LayerFilterExpression &layerFilterExpression )
+  : QgsTask( tr( "Updating Legend" ), QgsTask::Flag::CanCancel | QgsTask::Flag::CancelWithoutPrompt | QgsTask::Flag::Silent )
+  , mSettings( settings )
+  , mLayerFilterExpression( layerFilterExpression )
+  , mPolygon( polygon )
+  , mOnlyExpressions( false )
+{
+  prepare();
+}
+
+QgsMapHitTestTask::QgsMapHitTestTask( const QgsMapSettings &settings, const QgsMapHitTest::LayerFilterExpression &layerFilterExpression )
+  : QgsTask( tr( "Updating Legend" ), QgsTask::Flag::CanCancel | QgsTask::Flag::CancelWithoutPrompt | QgsTask::Flag::Silent )
+  , mSettings( settings )
+  , mLayerFilterExpression( layerFilterExpression )
+  , mOnlyExpressions( true )
+{
+  prepare();
+}
+
+QMap<QString, QSet<QString> > QgsMapHitTestTask::results() const
+{
+  return mResults;
+}
+
+void QgsMapHitTestTask::prepare()
+{
+  const QList< QgsMapLayer * > layers = mSettings.layers( true );
+  for ( QgsMapLayer *layer : layers )
+  {
+    QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer );
+    if ( !vl || !vl->renderer() )
+      continue;
+
+    QgsMapLayerStyleOverride styleOverride( vl );
+    if ( mSettings.layerStyleOverrides().contains( vl->id() ) )
+      styleOverride.setOverrideStyle( mSettings.layerStyleOverrides().value( vl->id() ) );
+
+    if ( !mOnlyExpressions )
+    {
+      if ( !vl->isInScaleRange( mSettings.scale() ) )
+      {
+        continue;
+      }
+    }
+
+    PreparedLayerData layerData;
+    layerData.source = std::make_unique< QgsVectorLayerFeatureSource >( vl );
+    layerData.layerId = vl->id();
+    layerData.crs = vl->crs();
+    layerData.fields = vl->fields();
+    layerData.renderer.reset( vl->renderer()->clone() );
+    layerData.transform = mSettings.layerTransform( vl );
+    layerData.extent = mSettings.outputExtentToLayerExtent( vl, mSettings.visibleExtent() );
+    layerData.layerScope.reset( QgsExpressionContextUtils::layerScope( vl ) );
+
+    mPreparedData.emplace_back( std::move( layerData ) );
+  }
+}
+
+void QgsMapHitTestTask::cancel()
+{
+  if ( mFeedback )
+    mFeedback->cancel();
+
+  QgsTask::cancel();
+}
+
+bool QgsMapHitTestTask::run()
+{
+  mFeedback = std::make_unique< QgsFeedback >();
+  connect( mFeedback.get(), &QgsFeedback::progressChanged, this, &QgsTask::progressChanged );
+
+  std::unique_ptr< QgsMapHitTest > hitTest;
+  if ( !mOnlyExpressions )
+    hitTest = std::make_unique< QgsMapHitTest >( mSettings, mPolygon, mLayerFilterExpression );
+  else
+    hitTest = std::make_unique< QgsMapHitTest >( mSettings, mLayerFilterExpression );
+
+  // TODO: do we need this temp image?
+  QImage tmpImage( mSettings.outputSize(), mSettings.outputImageFormat() );
+  tmpImage.setDotsPerMeterX( mSettings.outputDpi() * 25.4 );
+  tmpImage.setDotsPerMeterY( mSettings.outputDpi() * 25.4 );
+  QPainter painter( &tmpImage );
+
+  QgsRenderContext context = QgsRenderContext::fromMapSettings( mSettings );
+  context.setPainter( &painter ); // we are not going to draw anything, but we still need a working painter
+
+  int layerIdx = 0;
+  const int totalCount = mPreparedData.size();
+  for ( auto &layerData : mPreparedData )
+  {
+    mFeedback->setProgress( static_cast< double >( layerIdx ) / totalCount * 100.0 );
+    if ( mFeedback->isCanceled() )
+      break;
+
+    QgsMapHitTest::SymbolSet &usedSymbols = hitTest->mHitTest[layerData.layerId];
+    QgsMapHitTest::SymbolSet &usedSymbolsRuleKey = hitTest->mHitTestRuleKey[layerData.layerId];
+
+    context.setCoordinateTransform( layerData.transform );
+    context.setExtent( layerData.extent );
+
+    QgsExpressionContextScope *layerScope = layerData.layerScope.release();
+    QgsExpressionContextScopePopper scopePopper( context.expressionContext(), layerScope );
+
+    hitTest->runHitTestFeatureSource( layerData.source.get(),
+                                      layerData.layerId,
+                                      layerData.crs,
+                                      layerData.fields,
+                                      layerData.renderer.get(),
+                                      usedSymbols,
+                                      usedSymbolsRuleKey,
+                                      context,
+                                      mFeedback.get() );
+    layerIdx++;
+  }
+
+  mResults = hitTest->mHitTestRuleKey;
+
+  mFeedback.reset();
+
+  return true;
+}
+

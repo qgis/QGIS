@@ -76,6 +76,53 @@ Tests whether a given legend key is visible for a specified layer.
 
 };
 
+
+class QgsMapHitTestTask : QgsTask
+{
+%Docstring(signature="appended")
+Executes a QgsMapHitTest in a background thread.
+
+.. versionadded:: 3.32
+%End
+
+%TypeHeaderCode
+#include "qgsmaphittest.h"
+%End
+  public:
+
+    QgsMapHitTestTask( const QgsMapSettings &settings, const QgsGeometry &polygon = QgsGeometry(), const QgsMapHitTest::LayerFilterExpression &layerFilterExpression = QgsMapHitTest::LayerFilterExpression() );
+%Docstring
+Constructor for QgsMapHitTestTask, filtering by a visible geometry.
+
+:param settings: Map settings used to evaluate symbols
+:param polygon: Polygon geometry to refine the hit test
+:param layerFilterExpression: Expression string for each layer id to evaluate in order to refine the symbol selection
+%End
+
+    QgsMapHitTestTask( const QgsMapSettings &settings, const QgsMapHitTest::LayerFilterExpression &layerFilterExpression );
+%Docstring
+Constructor for QgsMapHitTestTask, filtering by expressions.
+
+:param settings: Map settings used to evaluate symbols
+:param layerFilterExpression: Expression string for each layer id to evaluate in order to refine the symbol selection
+%End
+
+    QMap<QString, QSet<QString>> results() const;
+%Docstring
+Returns the hit test results, which are a map of layer ID to
+visible symbol legend keys.
+%End
+
+    virtual void cancel();
+
+
+  protected:
+
+    virtual bool run();
+
+
+};
+
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
