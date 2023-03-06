@@ -96,6 +96,7 @@ QMap<QString, QSet<QString> > QgsMapHitTest::results() const
   return mHitTestRuleKey;
 }
 
+///@cond PRIVATE
 QMap<QString, QList<QString> > QgsMapHitTest::resultsPy() const
 {
   QMap<QString, QList<QString> > res;
@@ -105,6 +106,7 @@ QMap<QString, QList<QString> > QgsMapHitTest::resultsPy() const
   }
   return res;
 }
+///@endcond PRIVATE
 
 bool QgsMapHitTest::symbolVisible( QgsSymbol *symbol, QgsVectorLayer *layer ) const
 {
@@ -306,6 +308,7 @@ QMap<QString, QSet<QString> > QgsMapHitTestTask::results() const
   return mResults;
 }
 
+///@cond PRIVATE
 QMap<QString, QList<QString> > QgsMapHitTestTask::resultsPy() const
 {
   QMap<QString, QList<QString> > res;
@@ -315,6 +318,7 @@ QMap<QString, QList<QString> > QgsMapHitTestTask::resultsPy() const
   }
   return res;
 }
+///@endcond PRIVATE
 
 void QgsMapHitTestTask::prepare()
 {
