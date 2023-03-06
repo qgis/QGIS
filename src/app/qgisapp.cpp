@@ -4768,6 +4768,7 @@ void QgisApp::initLayerTreeView()
   model->setFlag( QgsLayerTreeModel::ShowLegendAsTree );
   model->setFlag( QgsLayerTreeModel::UseEmbeddedWidgets );
   model->setFlag( QgsLayerTreeModel::UseTextFormatting );
+  model->setFlag( QgsLayerTreeModel::UseThreadedHitTest );
   model->setAutoCollapseLegendNodes( 10 );
 
   mLayerTreeView->setModel( model );
