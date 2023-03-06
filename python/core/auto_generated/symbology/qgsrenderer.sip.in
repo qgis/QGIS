@@ -306,21 +306,25 @@ used from subclasses to create SLD Rule elements following SLD v1.1 specs
 
     virtual bool legendSymbolItemsCheckable() const;
 %Docstring
-items of symbology items in legend should be checkable
+Returns ``True`` if symbology items in legend are checkable.
 
 .. versionadded:: 2.5
 %End
 
     virtual bool legendSymbolItemChecked( const QString &key );
 %Docstring
-items of symbology items in legend is checked
+Returns ``True`` if the legend symbology item with the specified ``key`` is checked.
+
+.. seealso:: :py:func:`checkLegendSymbolItem`
 
 .. versionadded:: 2.5
 %End
 
     virtual void checkLegendSymbolItem( const QString &key, bool state = true );
 %Docstring
-item in symbology was checked
+Sets whether the legend symbology item with the specified ``ley`` should be checked.
+
+.. seealso:: :py:func:`legendSymbolItemChecked`
 
 .. versionadded:: 2.5
 %End
