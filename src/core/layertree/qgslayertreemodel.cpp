@@ -610,6 +610,7 @@ void QgsLayerTreeModel::setLegendFilter( const QgsMapSettings *settings, bool us
 {
   if ( settings && settings->hasValidSettings() )
   {
+    mUseHitTest = true;
     mLegendFilterMapSettings.reset( new QgsMapSettings( *settings ) );
     mLegendFilterMapSettings->setLayerStyleOverrides( mLayerStyleOverrides );
     QgsMapHitTest::LayerFilterExpression exprs;
@@ -629,25 +630,57 @@ void QgsLayerTreeModel::setLegendFilter( const QgsMapSettings *settings, bool us
       }
     }
     bool polygonValid = !polygon.isNull() && polygon.type() == Qgis::GeometryType::Polygon;
+
+    if ( mHitTestTask )
+    {
+      // cancel outdated task -- this is owned by the task manager and will get automatically deleted accordingly
+      disconnect( mHitTestTask, &QgsTask::taskCompleted, this, &QgsLayerTreeModel::hitTestTaskCompleted );
+      mHitTestTask->cancel();
+      mHitTestTask = nullptr;
+    }
+
+    std::unique_ptr< QgsMapHitTest > blockingHitTest;
     if ( useExpressions && !useExtent && !polygonValid ) // only expressions
     {
-      mLegendFilterHitTest.reset( new QgsMapHitTest( *mLegendFilterMapSettings, exprs ) );
+      if ( mFlags & QgsLayerTreeModel::Flag::UseThreadedHitTest )
+        mHitTestTask = new QgsMapHitTestTask( *mLegendFilterMapSettings, exprs );
+      else
+        blockingHitTest = std::make_unique< QgsMapHitTest >( *mLegendFilterMapSettings, exprs );
     }
     else
     {
-      mLegendFilterHitTest.reset( new QgsMapHitTest( *mLegendFilterMapSettings, polygon, exprs ) );
+      if ( mFlags & QgsLayerTreeModel::Flag::UseThreadedHitTest )
+        mHitTestTask = new QgsMapHitTestTask( *mLegendFilterMapSettings, polygon, exprs );
+      else
+        blockingHitTest = std::make_unique< QgsMapHitTest >( *mLegendFilterMapSettings, polygon, exprs );
     }
-    mLegendFilterHitTest->run();
+
+    if ( mHitTestTask )
+    {
+      connect( mHitTestTask, &QgsTask::taskCompleted, this, &QgsLayerTreeModel::hitTestTaskCompleted );
+      QgsApplication::taskManager()->addTask( mHitTestTask );
+    }
+    else
+    {
+      blockingHitTest->run();
+      mHitTestResults = blockingHitTest->results();
+      onHitTestResultsChanged();
+    }
   }
   else
   {
+    mUseHitTest = false;
     if ( !mLegendFilterMapSettings )
       return; // no change
 
     mLegendFilterMapSettings.reset();
-    mLegendFilterHitTest.reset();
-  }
 
+    onHitTestResultsChanged();
+  }
+}
+
+void QgsLayerTreeModel::onHitTestResultsChanged()
+{
   // temporarily disable autocollapse so that legend nodes stay visible
   int bkAutoCollapse = autoCollapseLegendNodes();
   setAutoCollapseLegendNodes( -1 );
@@ -871,6 +904,14 @@ void QgsLayerTreeModel::legendNodeSizeChanged()
     emit dataChanged( index, index, QVector<int> { Qt::SizeHintRole } );
 }
 
+void QgsLayerTreeModel::hitTestTaskCompleted()
+{
+  if ( mHitTestTask )
+  {
+    mHitTestResults = mHitTestTask->results();
+    onHitTestResultsChanged();
+  }
+}
 
 void QgsLayerTreeModel::connectToLayer( QgsLayerTreeLayer *nodeLayer )
 {
@@ -1209,7 +1250,7 @@ QList<QgsLayerTreeModelLegendNode *> QgsLayerTreeModel::filterLegendNodes( const
         filtered << node;
     }
   }
-  else if ( mLegendFilterMapSettings )
+  else if ( mUseHitTest )
   {
     if ( !nodes.isEmpty() && mLegendFilterMapSettings->layers().contains( nodes.at( 0 )->layerNode()->layer() ) )
     {
@@ -1235,8 +1276,11 @@ QList<QgsLayerTreeModelLegendNode *> QgsLayerTreeModel::filterLegendNodes( const
             {
               if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( node->layerNode()->layer() ) )
               {
-                if ( mLegendFilterHitTest->legendKeyVisible( ruleKey, vl ) )
+                auto it = mHitTestResults.constFind( vl->id() );
+                if ( it != mHitTestResults.constEnd() && it->contains( ruleKey ) )
+                {
                   filtered << node;
+                }
               }
               else
               {
@@ -1273,6 +1317,14 @@ void QgsLayerTreeModel::legendCleanup()
     delete data.tree;
   }
   mLegend.clear();
+
+  if ( mHitTestTask )
+  {
+    // cancel outdated task -- this is owned by the task manager and will get automatically deleted accordingly
+    disconnect( mHitTestTask, &QgsTask::taskCompleted, this, &QgsLayerTreeModel::hitTestTaskCompleted );
+    mHitTestTask->cancel();
+    mHitTestTask = nullptr;
+  }
 }
 
 
