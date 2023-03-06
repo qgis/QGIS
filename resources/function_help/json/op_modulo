@@ -2,7 +2,7 @@
   "name": "%",
   "type": "operator",
   "groups": ["Operators"],
-  "description": "Remainder of division",
+  "description": "Remainder of division. Takes the sign of the dividend.",
   "arguments": [{
     "arg": "a",
     "description": "value"
@@ -11,11 +11,17 @@
     "description": "value"
   }],
   "examples": [{
-    "expression": "5 % 4",
+    "expression": "9 % 2",
     "returns": "1"
+  }, {
+    "expression": "9 % -2",
+    "returns": "1"
+  }, {
+    "expression": "-9 % 2",
+    "returns": "-1"
   }, {
     "expression": "5 % NULL",
     "returns": "NULL"
   }],
-  "tags": ["division", "remainder"]
+  "tags": ["division", "remainder", "modulo"]
 }
