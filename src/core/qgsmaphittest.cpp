@@ -162,6 +162,8 @@ void QgsMapHitTest::runHitTestLayer( QgsVectorLayer *vl, SymbolSet &usedSymbols,
   usedSymbols.clear();
   usedSymbolsRuleKey.clear();
 
+  QSet< QString > remainingKeysToFind = r->legendKeys();
+
   QgsFeature f;
   while ( fi.nextFeature( f ) )
   {
@@ -178,16 +180,17 @@ void QgsMapHitTest::runHitTestLayer( QgsVectorLayer *vl, SymbolSet &usedSymbols,
 
     //make sure we store string representation of symbol, not pointer
     //otherwise layer style override changes will delete original symbols and leave hanging pointers
-    const auto constLegendKeysForFeature = r->legendKeysForFeature( f, context );
-    for ( const QString &legendKey : constLegendKeysForFeature )
+    const QSet< QString > legendKeysForFeature = r->legendKeysForFeature( f, context );
+    for ( const QString &legendKey : legendKeysForFeature )
     {
       usedSymbolsRuleKey.insert( legendKey );
+      remainingKeysToFind.remove( legendKey );
     }
 
     if ( moreSymbolsPerFeature )
     {
-      const auto constOriginalSymbolsForFeature = r->originalSymbolsForFeature( f, context );
-      for ( QgsSymbol *s : constOriginalSymbolsForFeature )
+      const QgsSymbolList originalSymbolsForFeature = r->originalSymbolsForFeature( f, context );
+      for ( QgsSymbol *s : originalSymbolsForFeature )
       {
         if ( s )
           usedSymbols.insert( QgsSymbolLayerUtils::symbolProperties( s ) );
@@ -198,6 +201,12 @@ void QgsMapHitTest::runHitTestLayer( QgsVectorLayer *vl, SymbolSet &usedSymbols,
       QgsSymbol *s = r->originalSymbolForFeature( f, context );
       if ( s )
         usedSymbols.insert( QgsSymbolLayerUtils::symbolProperties( s ) );
+    }
+
+    if ( remainingKeysToFind.empty() )
+    {
+      // already found features for all legend items, no need to keep searching
+      break;
     }
   }
   r->stopRender( context );
