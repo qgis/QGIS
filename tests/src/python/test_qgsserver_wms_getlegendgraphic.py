@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsServer WMS GetLegendGraphic.
 
 From build dir, run: ctest -R PyQgsServerWMSGetLegendGraphic -V
@@ -18,27 +19,31 @@ import os
 # Needed on Qt 5 so that the serialization of XML is consistent among all executions
 os.environ['QT_HASH_SEED'] = '1'
 
+import re
 import json
-import urllib.error
-import urllib.parse
 import urllib.request
+import urllib.parse
+import urllib.error
+
+from qgis.testing import unittest
+from qgis.PyQt.QtCore import QSize
 
 import osgeo.gdal  # NOQA
 
+from test_qgsserver_wms import TestQgsServerWMSTestBase
 from qgis.core import (
-    QgsMarkerSymbol,
     QgsProject,
+    QgsMarkerSymbol,
     QgsRuleBasedRenderer,
     QgsVectorLayer,
 )
-from qgis.PyQt.QtCore import QSize
+
 from qgis.server import (
     QgsBufferServerRequest,
     QgsBufferServerResponse,
     QgsServer,
+    QgsServerRequest,
 )
-from qgis.testing import unittest
-from test_qgsserver_wms import TestQgsServerWMSTestBase
 
 # Strip path and content length because path may vary
 RE_STRIP_UNCHECKABLE = br'MAP=[^"]+|Content-Length: \d+'
@@ -63,10 +68,10 @@ class TestQgsServerWMSGetLegendGraphic(TestQgsServerWMSTestBase):
             # 'HEIGHT': '20', # optional
             'LAYER': 'testlayer%20èé',
         }
-        qs = '?' + '&'.join([f"{k}={v}" for k, v in parms.items()])
+        qs = '?' + '&'.join(["%s=%s" % (k, v) for k, v in parms.items()])
         h, r = self._execute_request(qs)
-        self.assertEqual(-1, h.find(b'Content-Type: text/xml; charset=utf-8'), f"Header: {h}\nResponse:\n{r}")
-        self.assertNotEqual(-1, h.find(b'Content-Type: image/png'), f"Header: {h}\nResponse:\n{r}")
+        self.assertEqual(-1, h.find(b'Content-Type: text/xml; charset=utf-8'), "Header: %s\nResponse:\n%s" % (h, r))
+        self.assertNotEqual(-1, h.find(b'Content-Type: image/png'), "Header: %s\nResponse:\n%s" % (h, r))
 
     def test_wms_GetLegendGraphic_LayerSpace(self):
         qs = "?" + "&".join(["%s=%s" % i for i in list({
@@ -81,9 +86,9 @@ class TestQgsServerWMSGetLegendGraphic(TestQgsServerWMSTestBase):
             "LAYERSPACE": "50.0",
             "LAYERFONTBOLD": "TRUE",
             "LAYERFONTSIZE": "30",
+            "LAYERFONTFAMILY": self.fontFamily,
             "ITEMFONTBOLD": "TRUE",
             "ITEMFONTSIZE": "20",
-            "LAYERFONTFAMILY": self.fontFamily,
             "ITEMFONTFAMILY": self.fontFamily,
             "LAYERTITLE": "TRUE",
             "CRS": "EPSG:3857"
@@ -127,9 +132,9 @@ class TestQgsServerWMSGetLegendGraphic(TestQgsServerWMSTestBase):
             "LAYERTITLESPACE": "20.0",
             "LAYERFONTBOLD": "TRUE",
             "LAYERFONTSIZE": "30",
+            "LAYERFONTFAMILY": self.fontFamily,
             "ITEMFONTBOLD": "TRUE",
             "ITEMFONTSIZE": "20",
-            "LAYERFONTFAMILY": self.fontFamily,
             "ITEMFONTFAMILY": self.fontFamily,
             "LAYERTITLE": "TRUE",
             "CRS": "EPSG:3857"
@@ -152,9 +157,9 @@ class TestQgsServerWMSGetLegendGraphic(TestQgsServerWMSTestBase):
             "LAYERFONTBOLD": "TRUE",
             "LAYERFONTSIZE": "30",
             "LAYERFONTFAMILY": self.fontFamily,
-            "ITEMFONTFAMILY": self.fontFamily,
             "ITEMFONTBOLD": "TRUE",
             "ITEMFONTSIZE": "20",
+            "ITEMFONTFAMILY": self.fontFamily,
             "SHOWFEATURECOUNT": "TRUE",
             "CRS": "EPSG:3857"
         }.items())])
@@ -178,14 +183,14 @@ class TestQgsServerWMSGetLegendGraphic(TestQgsServerWMSTestBase):
             'LAYER': 'testlayer%20èé',
             'LAYERFONTBOLD': 'TRUE',
             'LAYERFONTSIZE': '30',
-            'ITEMFONTBOLD': 'TRUE',
             'LAYERFONTFAMILY': self.fontFamily,
-            'ITEMFONTFAMILY': self.fontFamily,
+            'ITEMFONTBOLD': 'TRUE',
             'ITEMFONTSIZE': '20',
+            'ITEMFONTFAMILY': self.fontFamily,
             'LAYERTITLE': 'TRUE',
             'RULELABEL': 'TRUE'
         }
-        qs = '?' + '&'.join([f"{k}={v}" for k, v in parms.items()])
+        qs = '?' + '&'.join(["%s=%s" % (k, v) for k, v in parms.items()])
         r, h = self._result(self._execute_request(qs))
         self._img_diff_error(r, h, "WMS_GetLegendGraphic_test", 250, QSize(15, 15))
 
@@ -201,12 +206,12 @@ class TestQgsServerWMSGetLegendGraphic(TestQgsServerWMSTestBase):
             'LAYER': 'testlayer%20èé',
             'LAYERFONTBOLD': 'TRUE',
             'LAYERFONTSIZE': '30',
-            'ITEMFONTBOLD': 'TRUE',
             'LAYERFONTFAMILY': self.fontFamily,
-            'ITEMFONTFAMILY': self.fontFamily,
-            'ITEMFONTSIZE': '20'
+            'ITEMFONTBOLD': 'TRUE',
+            'ITEMFONTSIZE': '20',
+            'ITEMFONTFAMILY': self.fontFamily
         }
-        qs = '?' + '&'.join([f"{k}={v}" for k, v in parms.items()])
+        qs = '?' + '&'.join(["%s=%s" % (k, v) for k, v in parms.items()])
         r, h = self._result(self._execute_request(qs))
 
         self._img_diff_error(r, h, "WMS_GetLegendGraphic_test", 250, QSize(15, 15))
@@ -223,7 +228,7 @@ class TestQgsServerWMSGetLegendGraphic(TestQgsServerWMSTestBase):
             'LAYERTITLE': 'FALSE',
             'RULELABEL': 'FALSE'
         }
-        qs = '?' + '&'.join([f"{k}={v}" for k, v in parms.items()])
+        qs = '?' + '&'.join(["%s=%s" % (k, v) for k, v in parms.items()])
         r, h = self._result(self._execute_request(qs))
         self._img_diff_error(r, h, "WMS_GetLegendGraphic_test_layertitle_false", 250, QSize(15, 15))
 
@@ -238,13 +243,13 @@ class TestQgsServerWMSGetLegendGraphic(TestQgsServerWMSTestBase):
             'LAYER': 'testlayer%20èé',
             'LAYERFONTBOLD': 'TRUE',
             'LAYERFONTSIZE': '30',
+            'LAYERFONTFAMILY': self.fontFamily,
             'ITEMFONTBOLD': 'TRUE',
             'ITEMFONTSIZE': '20',
-            'LAYERFONTFAMILY': self.fontFamily,
             'ITEMFONTFAMILY': self.fontFamily,
             'RULELABEL': 'FALSE'
         }
-        qs = '?' + '&'.join([f"{k}={v}" for k, v in parms.items()])
+        qs = '?' + '&'.join(["%s=%s" % (k, v) for k, v in parms.items()])
         r, h = self._result(self._execute_request(qs))
         self._img_diff_error(r, h, "WMS_GetLegendGraphic_rulelabel_false", 250, QSize(15, 15))
 
@@ -257,14 +262,14 @@ class TestQgsServerWMSGetLegendGraphic(TestQgsServerWMSTestBase):
             'LAYER': 'testlayer%20èé',
             'LAYERFONTBOLD': 'TRUE',
             'LAYERFONTSIZE': '30',
+            'LAYERFONTFAMILY': self.fontFamily,
             'ITEMFONTBOLD': 'TRUE',
             'ITEMFONTSIZE': '20',
-            'LAYERFONTFAMILY': self.fontFamily,
             'ITEMFONTFAMILY': self.fontFamily,
             'LAYERTITLE': 'FALSE',
             'RULELABEL': 'TRUE'
         }
-        qs = '?' + '&'.join([f"{k}={v}" for k, v in parms.items()])
+        qs = '?' + '&'.join(["%s=%s" % (k, v) for k, v in parms.items()])
         r, h = self._result(self._execute_request(qs))
         self._img_diff_error(r, h, "WMS_GetLegendGraphic_rulelabel_true", 250, QSize(15, 15))
 
@@ -278,13 +283,13 @@ class TestQgsServerWMSGetLegendGraphic(TestQgsServerWMSTestBase):
             'LAYER': 'testlayer%20èé',
             'LAYERFONTBOLD': 'TRUE',
             'LAYERFONTSIZE': '30',
+            'LAYERFONTFAMILY': self.fontFamily,
             'ITEMFONTBOLD': 'TRUE',
             'ITEMFONTSIZE': '20',
-            'LAYERFONTFAMILY': self.fontFamily,
             'ITEMFONTFAMILY': self.fontFamily,
             'LAYERTITLE': 'FALSE'
         }
-        qs = '?' + '&'.join([f"{k}={v}" for k, v in parms.items()])
+        qs = '?' + '&'.join(["%s=%s" % (k, v) for k, v in parms.items()])
         r, h = self._result(self._execute_request(qs))
         self._img_diff_error(r, h, "WMS_GetLegendGraphic_rulelabel_notset", 250, QSize(15, 15))
 
@@ -299,7 +304,7 @@ class TestQgsServerWMSGetLegendGraphic(TestQgsServerWMSTestBase):
             'LAYERTITLE': 'FALSE',
             'RULELABEL': 'AUTO'
         }
-        qs = '?' + '&'.join([f"{k}={v}" for k, v in parms.items()])
+        qs = '?' + '&'.join(["%s=%s" % (k, v) for k, v in parms.items()])
         r, h = self._result(self._execute_request(qs))
         self._img_diff_error(r, h, "WMS_GetLegendGraphic_rulelabel_auto", 250, QSize(15, 15))
 
@@ -316,7 +321,7 @@ class TestQgsServerWMSGetLegendGraphic(TestQgsServerWMSTestBase):
             'HEIGHT': '20',
             'RULE': 'rule0',
         }
-        qs = '?' + '&'.join([f"{k}={v}" for k, v in parms.items()])
+        qs = '?' + '&'.join(["%s=%s" % (k, v) for k, v in parms.items()])
         r, h = self._result(self._execute_request(qs))
         self._img_diff_error(r, h, "WMS_GetLegendGraphic_rule0", 250, QSize(15, 15))
 
@@ -331,7 +336,7 @@ class TestQgsServerWMSGetLegendGraphic(TestQgsServerWMSTestBase):
             'HEIGHT': '20',
             'RULE': 'rule1',
         }
-        qs = '?' + '&'.join([f"{k}={v}" for k, v in parms.items()])
+        qs = '?' + '&'.join(["%s=%s" % (k, v) for k, v in parms.items()])
         r, h = self._result(self._execute_request(qs))
         self._img_diff_error(r, h, "WMS_GetLegendGraphic_rule1", 250, QSize(15, 15))
 
@@ -626,8 +631,8 @@ class TestQgsServerWMSGetLegendGraphic(TestQgsServerWMSTestBase):
         }.items())])
 
         h, r = self._execute_request(qs)
-        self.assertEqual(-1, h.find(b'Content-Type: text/xml; charset=utf-8'), f"Header: {h}\nResponse:\n{r}")
-        self.assertNotEqual(-1, h.find(b'Content-Type: image/png'), f"Header: {h}\nResponse:\n{r}")
+        self.assertEqual(-1, h.find(b'Content-Type: text/xml; charset=utf-8'), "Header: %s\nResponse:\n%s" % (h, r))
+        self.assertNotEqual(-1, h.find(b'Content-Type: image/png'), "Header: %s\nResponse:\n%s" % (h, r))
 
     def test_wms_GetLegendGraphic_wmsRootName(self):
         """Test an unreported issue when a wmsRootName short name is set in the service capabilities"""
@@ -648,8 +653,8 @@ class TestQgsServerWMSGetLegendGraphic(TestQgsServerWMSTestBase):
         }.items())])
 
         h, r = self._execute_request(qs)
-        self.assertEqual(-1, h.find(b'Content-Type: text/xml; charset=utf-8'), f"Header: {h}\nResponse:\n{r}")
-        self.assertNotEqual(-1, h.find(b'Content-Type: image/png'), f"Header: {h}\nResponse:\n{r}")
+        self.assertEqual(-1, h.find(b'Content-Type: text/xml; charset=utf-8'), "Header: %s\nResponse:\n%s" % (h, r))
+        self.assertNotEqual(-1, h.find(b'Content-Type: image/png'), "Header: %s\nResponse:\n%s" % (h, r))
 
         # Then test with the wmsRootName short name:
         qs = "?" + "&".join(["%s=%s" % i for i in list({
@@ -667,8 +672,8 @@ class TestQgsServerWMSGetLegendGraphic(TestQgsServerWMSTestBase):
         }.items())])
 
         h, r = self._execute_request(qs)
-        self.assertEqual(-1, h.find(b'Content-Type: text/xml; charset=utf-8'), f"Header: {h}\nResponse:\n{r}")
-        self.assertNotEqual(-1, h.find(b'Content-Type: image/png'), f"Header: {h}\nResponse:\n{r}")
+        self.assertEqual(-1, h.find(b'Content-Type: text/xml; charset=utf-8'), "Header: %s\nResponse:\n%s" % (h, r))
+        self.assertNotEqual(-1, h.find(b'Content-Type: image/png'), "Header: %s\nResponse:\n%s" % (h, r))
 
     def test_wms_GetLegendGraphic_ScaleSymbol_Min(self):
         # 1:500000000 min
@@ -681,7 +686,13 @@ class TestQgsServerWMSGetLegendGraphic(TestQgsServerWMSTestBase):
             "SRCHEIGHT": "550",
             "SRCWIDTH": "850",
             "BBOX": "-608.4,-1002.6,698.2,1019.0",
-            "CRS": "EPSG:4326"
+            "CRS": "EPSG:4326",
+            "LAYERFONTBOLD": "TRUE",
+            "LAYERFONTSIZE": "12",
+            "LAYERFONTFAMILY": self.fontFamily,
+            "ITEMFONTBOLD": "TRUE",
+            "ITEMFONTSIZE": "12",
+            "ITEMFONTFAMILY": self.fontFamily
         }.items())])
 
         r, h = self._result(self._execute_request(qs))
@@ -697,7 +708,13 @@ class TestQgsServerWMSGetLegendGraphic(TestQgsServerWMSTestBase):
             "SRCHEIGHT": "550",
             "SRCWIDTH": "850",
             "BBOX": "-1261.7,-2013.5,1351.5,2029.9",
-            "CRS": "EPSG:4326"
+            "CRS": "EPSG:4326",
+            "LAYERFONTBOLD": "TRUE",
+            "LAYERFONTSIZE": "12",
+            "LAYERFONTFAMILY": self.fontFamily,
+            "ITEMFONTBOLD": "TRUE",
+            "ITEMFONTSIZE": "12",
+            "ITEMFONTFAMILY": self.fontFamily
         }.items())])
 
         r, h = self._result(self._execute_request(qs))
@@ -714,7 +731,13 @@ class TestQgsServerWMSGetLegendGraphic(TestQgsServerWMSTestBase):
             "SRCHEIGHT": "550",
             "SRCWIDTH": "850",
             "BBOX": "31.8,-12.0,58.0,28.4",
-            "CRS": "EPSG:4326"
+            "CRS": "EPSG:4326",
+            "LAYERFONTBOLD": "TRUE",
+            "LAYERFONTSIZE": "12",
+            "LAYERFONTFAMILY": self.fontFamily,
+            "ITEMFONTBOLD": "TRUE",
+            "ITEMFONTSIZE": "12",
+            "ITEMFONTFAMILY": self.fontFamily
         }.items())])
 
         r, h = self._result(self._execute_request(qs))
@@ -731,7 +754,13 @@ class TestQgsServerWMSGetLegendGraphic(TestQgsServerWMSTestBase):
             "SRCHEIGHT": "550",
             "SRCWIDTH": "850",
             "BBOX": "25.3,-22.1,64.5,38.5",
-            "CRS": "EPSG:4326"
+            "CRS": "EPSG:4326",
+            "LAYERFONTBOLD": "TRUE",
+            "LAYERFONTSIZE": "12",
+            "LAYERFONTFAMILY": self.fontFamily,
+            "ITEMFONTBOLD": "TRUE",
+            "ITEMFONTSIZE": "12",
+            "ITEMFONTFAMILY": self.fontFamily
         }.items())])
 
         r, h = self._result(self._execute_request(qs))
@@ -748,7 +777,13 @@ class TestQgsServerWMSGetLegendGraphic(TestQgsServerWMSTestBase):
             "SRCHEIGHT": "550",
             "SRCWIDTH": "850",
             "BBOX": "44.8,8.0,45.0,8.4",
-            "CRS": "EPSG:4326"
+            "CRS": "EPSG:4326",
+            "LAYERFONTBOLD": "TRUE",
+            "LAYERFONTSIZE": "12",
+            "LAYERFONTFAMILY": self.fontFamily,
+            "ITEMFONTBOLD": "TRUE",
+            "ITEMFONTSIZE": "12",
+            "ITEMFONTFAMILY": self.fontFamily
         }.items())])
 
         r, h = self._result(self._execute_request(qs))
@@ -764,7 +799,13 @@ class TestQgsServerWMSGetLegendGraphic(TestQgsServerWMSTestBase):
             "SRCHEIGHT": "550",
             "SRCWIDTH": "850",
             "BBOX": "43.6,6.2,46.2,10.2",
-            "CRS": "EPSG:4326"
+            "CRS": "EPSG:4326",
+            "LAYERFONTBOLD": "TRUE",
+            "LAYERFONTSIZE": "12",
+            "LAYERFONTFAMILY": self.fontFamily,
+            "ITEMFONTBOLD": "TRUE",
+            "ITEMFONTSIZE": "12",
+            "ITEMFONTFAMILY": self.fontFamily
         }.items())])
 
         r, h = self._result(self._execute_request(qs))
@@ -778,7 +819,13 @@ class TestQgsServerWMSGetLegendGraphic(TestQgsServerWMSTestBase):
             "REQUEST": "GetLegendGraphic",
             "LAYER": "testlayer",
             "FORMAT": "image/png",
-            "CRS": "EPSG:4326"
+            "CRS": "EPSG:4326",
+            "LAYERFONTBOLD": "TRUE",
+            "LAYERFONTSIZE": "12",
+            "LAYERFONTFAMILY": self.fontFamily,
+            "ITEMFONTBOLD": "TRUE",
+            "ITEMFONTSIZE": "12",
+            "ITEMFONTFAMILY": self.fontFamily
         }.items())])
 
         r, h = self._result(self._execute_request(qs))
@@ -796,7 +843,13 @@ class TestQgsServerWMSGetLegendGraphic(TestQgsServerWMSTestBase):
             "SRCHEIGHT": "600",
             "SRCWIDTH": "1500",
             "BBOX": "2662610.7,1268841.8,2663010.5,1269000.05",
-            "CRS": "EPSG:2056"
+            "CRS": "EPSG:2056",
+            "LAYERFONTBOLD": "TRUE",
+            "LAYERFONTSIZE": "12",
+            "LAYERFONTFAMILY": self.fontFamily,
+            "ITEMFONTBOLD": "TRUE",
+            "ITEMFONTSIZE": "12",
+            "ITEMFONTFAMILY": self.fontFamily
         }.items())])
 
         r, h = self._result(self._execute_request(qs))
@@ -810,11 +863,137 @@ class TestQgsServerWMSGetLegendGraphic(TestQgsServerWMSTestBase):
             "REQUEST": "GetLegendGraphic",
             "LAYER": "testlayer_2056",
             "FORMAT": "image/png",
-            "CRS": "EPSG:2056"
+            "CRS": "EPSG:2056",
+            "LAYERFONTBOLD": "TRUE",
+            "LAYERFONTSIZE": "12",
+            "LAYERFONTFAMILY": self.fontFamily,
+            "ITEMFONTBOLD": "TRUE",
+            "ITEMFONTSIZE": "12",
+            "ITEMFONTFAMILY": self.fontFamily
         }.items())])
 
         r, h = self._result(self._execute_request(qs))
         self._img_diff_error(r, h, "WMS_GetLegendGraphic_ScaleSymbol_DefaultScale_2056", max_size_diff=QSize(15, 15))
+
+    def test_wms_GetLegendGraphic_MetersAtScaleSymbol_Scaled(self):
+        # meters at scale symbols on EPSG:4326 calculated with BBOX
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": self.testdata_path + 'test_project_meters_at_scaledsymbols.qgs',
+            "SERVICE": "WMS",
+            "REQUEST": "GetLegendGraphic",
+            "LAYER": "testlayer",
+            "FORMAT": "image/png",
+            "SRCHEIGHT": "2550",
+            "SRCWIDTH": "3850",
+            "BBOX": "44.89945254864102964,8.20044117721021948,44.90400902275693085,8.20936038559772285",
+            "CRS": "EPSG:4326",
+            "LAYERFONTBOLD": "TRUE",
+            "LAYERFONTSIZE": "12",
+            "LAYERFONTFAMILY": self.fontFamily,
+            "ITEMFONTBOLD": "TRUE",
+            "ITEMFONTSIZE": "12",
+            "ITEMFONTFAMILY": self.fontFamily
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        self._img_diff_error(r, h, "WMS_GetLegendGraphic_MetersAtScaleSymbol_Scaled", max_size_diff=QSize(15, 15))
+
+    def test_wms_GetLegendGraphic_MetersAtScaleSymbol_DefaultScale(self):
+        # meters at scale symbols on EPSG:4326 calculated with Default Scale set in the projects configuration
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": self.testdata_path + 'test_project_meters_at_scaledsymbols.qgs',
+            "SERVICE": "WMS",
+            "REQUEST": "GetLegendGraphic",
+            "LAYER": "testlayer",
+            "FORMAT": "image/png",
+            "CRS": "EPSG:4326",
+            "LAYERFONTBOLD": "TRUE",
+            "LAYERFONTSIZE": "12",
+            "LAYERFONTFAMILY": self.fontFamily,
+            "ITEMFONTBOLD": "TRUE",
+            "ITEMFONTSIZE": "12",
+            "ITEMFONTFAMILY": self.fontFamily
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        self._img_diff_error(r, h, "WMS_GetLegendGraphic_MetersAtScaleSymbol_DefaultScale", max_size_diff=QSize(15, 15))
+
+    def test_wms_GetLegendGraphic_MetersAtScaleSymbol_Rule(self):
+        # meters at scale symbols on EPSG:4326 calculated with Default Scale set in the projects configuration and having a rule
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": self.testdata_path + 'test_project_meters_at_scaledsymbols.qgs',
+            "SERVICE": "WMS",
+            "REQUEST": "GetLegendGraphic",
+            "LAYER": "testlayer",
+            "FORMAT": "image/png",
+            "CRS": "EPSG:4326",
+            "WIDTH": "50",
+            "HEIGHT": "50",
+            "RULE": "two"
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        self._img_diff_error(r, h, "WMS_GetLegendGraphic_MetersAtScaleSymbol_Rule", max_size_diff=QSize(15, 15))
+
+    def test_wms_GetLegendGraphic_MetersAtScaleSymbol_Scaled_2056(self):
+        # meters at scale symbols on EPSG:2056 calculated with BBOX
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": self.testdata_path + 'test_project_meters_at_scaledsymbols_2056.qgs',
+            "SERVICE": "WMS",
+            "REQUEST": "GetLegendGraphic",
+            "LAYER": "testlayer_2056",
+            "FORMAT": "image/png",
+            "SRCHEIGHT": "1100",
+            "SRCWIDTH": "1700",
+            "BBOX": "2662610.7,1268841.8,2663010.5,1269000.05",
+            "CRS": "EPSG:2056",
+            "LAYERFONTBOLD": "TRUE",
+            "LAYERFONTSIZE": "12",
+            "LAYERFONTFAMILY": self.fontFamily,
+            "ITEMFONTBOLD": "TRUE",
+            "ITEMFONTSIZE": "12",
+            "ITEMFONTFAMILY": self.fontFamily
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        self._img_diff_error(r, h, "WMS_GetLegendGraphic_MetersAtScaleSymbol_Scaled_2056", max_size_diff=QSize(15, 15))
+
+    def test_wms_GetLegendGraphic_MetersAtScaleSymbol_DefaultScale_2056(self):
+        # meters at scale symbols on EPSG:2056 calculated with Default Scale set in the projects configuration
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": self.testdata_path + 'test_project_meters_at_scaledsymbols_2056.qgs',
+            "SERVICE": "WMS",
+            "REQUEST": "GetLegendGraphic",
+            "LAYER": "testlayer_2056",
+            "FORMAT": "image/png",
+            "CRS": "EPSG:2056",
+            "LAYERFONTBOLD": "TRUE",
+            "LAYERFONTSIZE": "12",
+            "LAYERFONTFAMILY": self.fontFamily,
+            "ITEMFONTBOLD": "TRUE",
+            "ITEMFONTSIZE": "12",
+            "ITEMFONTFAMILY": self.fontFamily
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        self._img_diff_error(r, h, "WMS_GetLegendGraphic_MetersAtScaleSymbol_DefaultScale_2056", max_size_diff=QSize(15, 15))
+
+    def test_wms_GetLegendGraphic_MetersAtScaleSymbol_Rule_2056(self):
+        # meters at scale symbols on EPSG:2056 calculated with Default Scale set in the projects configuration and having a rule
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": self.testdata_path + 'test_project_meters_at_scaledsymbols_2056.qgs',
+            "SERVICE": "WMS",
+            "REQUEST": "GetLegendGraphic",
+            "LAYER": "testlayer_2056",
+            "FORMAT": "image/png",
+            "CRS": "EPSG:2056",
+            "WIDTH": "50",
+            "HEIGHT": "50",
+            "RULE": "test"
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        self._img_diff_error(r, h, "WMS_GetLegendGraphic_MetersAtScaleSymbol_Rule_2056", max_size_diff=QSize(15, 15))
 
     def test_wms_GetLegendGraphic_LAYERFONTCOLOR(self):
         qs = "?" + "&".join(["%s=%s" % i for i in list({
@@ -827,6 +1006,12 @@ class TestQgsServerWMSGetLegendGraphic(TestQgsServerWMSTestBase):
             "HEIGHT": "500",
             "WIDTH": "500",
             "CRS": "EPSG:3857",
+            "LAYERFONTBOLD": "TRUE",
+            "LAYERFONTSIZE": "12",
+            "LAYERFONTFAMILY": self.fontFamily,
+            "ITEMFONTBOLD": "TRUE",
+            "ITEMFONTSIZE": "12",
+            "ITEMFONTFAMILY": self.fontFamily,
             "LAYERFONTCOLOR": "red"
         }.items())])
 
@@ -844,7 +1029,13 @@ class TestQgsServerWMSGetLegendGraphic(TestQgsServerWMSTestBase):
             "HEIGHT": "500",
             "WIDTH": "500",
             "CRS": "EPSG:3857",
-            "ITEMFONTCOLOR": "red",
+            "LAYERFONTBOLD": "TRUE",
+            "LAYERFONTSIZE": "12",
+            "LAYERFONTFAMILY": self.fontFamily,
+            "ITEMFONTBOLD": "TRUE",
+            "ITEMFONTSIZE": "12",
+            "ITEMFONTFAMILY": self.fontFamily,
+            "ITEMFONTCOLOR": "red"
         }.items())])
 
         r, h = self._result(self._execute_request(qs))
@@ -861,6 +1052,12 @@ class TestQgsServerWMSGetLegendGraphic(TestQgsServerWMSTestBase):
             "HEIGHT": "500",
             "WIDTH": "500",
             "CRS": "EPSG:3857",
+            "LAYERFONTBOLD": "TRUE",
+            "LAYERFONTSIZE": "12",
+            "LAYERFONTFAMILY": self.fontFamily,
+            "ITEMFONTBOLD": "TRUE",
+            "ITEMFONTSIZE": "12",
+            "ITEMFONTFAMILY": self.fontFamily,
             "ITEMFONTCOLOR": "red",
             "LAYERFONTCOLOR": "blue"
         }.items())])
@@ -879,6 +1076,12 @@ class TestQgsServerWMSGetLegendGraphic(TestQgsServerWMSTestBase):
             "HEIGHT": "500",
             "WIDTH": "500",
             "CRS": "EPSG:3857",
+            "LAYERFONTBOLD": "TRUE",
+            "LAYERFONTSIZE": "12",
+            "LAYERFONTFAMILY": self.fontFamily,
+            "ITEMFONTBOLD": "TRUE",
+            "ITEMFONTSIZE": "12",
+            "ITEMFONTFAMILY": self.fontFamily,
             "ITEMFONTCOLOR": r"%23FF0000",
             "LAYERFONTCOLOR": r"%230000FF"
         }.items())])
@@ -899,6 +1102,12 @@ class TestQgsServerWMSGetLegendGraphic(TestQgsServerWMSTestBase):
             "CRS": "EPSG:4326",
             "BBOX": "52.44462990911360123,10.6723591605239374,52.44631832182876963,10.6795952150175264",
             "SLD_VERSION": "1.1",
+            "LAYERFONTBOLD": "TRUE",
+            "LAYERFONTSIZE": "12",
+            "LAYERFONTFAMILY": self.fontFamily,
+            "ITEMFONTBOLD": "TRUE",
+            "ITEMFONTSIZE": "12",
+            "ITEMFONTFAMILY": self.fontFamily
         }.items())])
 
         r, h = self._result(self._execute_request(qs))
@@ -923,6 +1132,12 @@ class TestQgsServerWMSGetLegendGraphic(TestQgsServerWMSTestBase):
             "CRS": "EPSG:4326",
             "BBOX": "0.05148830809982496426,-2.237691019614711507,0.8090701330998248952,-0.2050896957968479928",
             "SLD_VERSION": "1.1",
+            "LAYERFONTBOLD": "TRUE",
+            "LAYERFONTSIZE": "12",
+            "LAYERFONTFAMILY": self.fontFamily,
+            "ITEMFONTBOLD": "TRUE",
+            "ITEMFONTSIZE": "12",
+            "ITEMFONTFAMILY": self.fontFamily
         }.items())])
 
         r, h = self._result(self._execute_request(qs))
@@ -940,6 +1155,12 @@ class TestQgsServerWMSGetLegendGraphic(TestQgsServerWMSTestBase):
             "CRS": "EPSG:4326",
             "BBOX": "0.02893333257443075901,-0.2568334631786342026,1.544096982574430621,3.808369184457092604",
             "SLD_VERSION": "1.1",
+            "LAYERFONTBOLD": "TRUE",
+            "LAYERFONTSIZE": "12",
+            "LAYERFONTFAMILY": self.fontFamily,
+            "ITEMFONTBOLD": "TRUE",
+            "ITEMFONTSIZE": "12",
+            "ITEMFONTFAMILY": self.fontFamily
         }.items())])
 
         r, h = self._result(self._execute_request(qs))
@@ -957,6 +1178,12 @@ class TestQgsServerWMSGetLegendGraphic(TestQgsServerWMSTestBase):
             "CRS": "EPSG:4326",
             "BBOX": "-0.6636370923817864753,-0.2886757815674259042,0.8515265576182133866,3.776526866068300681",
             "SLD_VERSION": "1.1",
+            "LAYERFONTBOLD": "TRUE",
+            "LAYERFONTSIZE": "12",
+            "LAYERFONTFAMILY": self.fontFamily,
+            "ITEMFONTBOLD": "TRUE",
+            "ITEMFONTSIZE": "12",
+            "ITEMFONTFAMILY": self.fontFamily
         }.items())])
 
         r, h = self._result(self._execute_request(qs))
@@ -974,6 +1201,12 @@ class TestQgsServerWMSGetLegendGraphic(TestQgsServerWMSTestBase):
             "CRS": "EPSG:4326",
             "BBOX": "-0.5787242433450088264,-4.316729057749563836,0.9364394066549910356,-0.2515264101138368069",
             "SLD_VERSION": "1.1",
+            "LAYERFONTBOLD": "TRUE",
+            "LAYERFONTSIZE": "12",
+            "LAYERFONTFAMILY": self.fontFamily,
+            "ITEMFONTBOLD": "TRUE",
+            "ITEMFONTSIZE": "12",
+            "ITEMFONTFAMILY": self.fontFamily
         }.items())])
 
         r, h = self._result(self._execute_request(qs))
@@ -992,6 +1225,12 @@ class TestQgsServerWMSGetLegendGraphic(TestQgsServerWMSTestBase):
             "CRS": "EPSG:3857",
             "BBOX": "-28147.15420315234223,3960.286488616475253,424402.4530122592696,172632.4964886165108",
             "SLD_VERSION": "1.1",
+            "LAYERFONTBOLD": "TRUE",
+            "LAYERFONTSIZE": "12",
+            "LAYERFONTFAMILY": self.fontFamily,
+            "ITEMFONTBOLD": "TRUE",
+            "ITEMFONTSIZE": "12",
+            "ITEMFONTFAMILY": self.fontFamily
         }.items())])
 
         r, h = self._result(self._execute_request(qs))
@@ -1055,6 +1294,12 @@ class TestQgsServerWMSGetLegendGraphic(TestQgsServerWMSTestBase):
             "REQUEST": "GetLegendGraphic",
             "LAYER": "landsat",
             "FORMAT": "image/png",
+            "LAYERFONTBOLD": "TRUE",
+            "LAYERFONTSIZE": "12",
+            "LAYERFONTFAMILY": self.fontFamily,
+            "ITEMFONTBOLD": "TRUE",
+            "ITEMFONTSIZE": "12",
+            "ITEMFONTFAMILY": self.fontFamily
         }.items())])
 
         r, h = self._result(self._execute_request(qs))
