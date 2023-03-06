@@ -96,6 +96,16 @@ QMap<QString, QSet<QString> > QgsMapHitTest::results() const
   return mHitTestRuleKey;
 }
 
+QMap<QString, QList<QString> > QgsMapHitTest::resultsPy() const
+{
+  QMap<QString, QList<QString> > res;
+  for ( auto it = mHitTestRuleKey.begin(); it != mHitTestRuleKey.end(); ++it )
+  {
+    res.insert( it.key(), qgis::setToList( it.value() ) );
+  }
+  return res;
+}
+
 bool QgsMapHitTest::symbolVisible( QgsSymbol *symbol, QgsVectorLayer *layer ) const
 {
   if ( !symbol || !layer )
@@ -294,6 +304,16 @@ QgsMapHitTestTask::QgsMapHitTestTask( const QgsMapSettings &settings, const QgsM
 QMap<QString, QSet<QString> > QgsMapHitTestTask::results() const
 {
   return mResults;
+}
+
+QMap<QString, QList<QString> > QgsMapHitTestTask::resultsPy() const
+{
+  QMap<QString, QList<QString> > res;
+  for ( auto it = mResults.begin(); it != mResults.end(); ++it )
+  {
+    res.insert( it.key(), qgis::setToList( it.value() ) );
+  }
+  return res;
 }
 
 void QgsMapHitTestTask::prepare()

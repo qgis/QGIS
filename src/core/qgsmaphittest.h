@@ -61,9 +61,21 @@ class CORE_EXPORT QgsMapHitTest
      * Returns the hit test results, which are a map of layer ID to
      * visible symbol legend keys.
      *
+     * \note Not available in Python bindings
      * \since QGIS 3.32
      */
-    QMap<QString, QSet<QString>> results() const;
+    QMap<QString, QSet<QString>> results() const SIP_SKIP;
+
+    ///@cond PRIVATE
+
+    /**
+     * Returns the hit test results, which are a map of layer ID to
+     * visible symbol legend keys.
+     *
+     * \since QGIS 3.32
+     */
+    QMap<QString, QList<QString>> resultsPy() const SIP_PYNAME( results );
+    ///@endcond PRIVATE
 
     /**
      * Tests whether a symbol is visible for a specified layer.
@@ -164,8 +176,18 @@ class CORE_EXPORT QgsMapHitTestTask : public QgsTask
     /**
      * Returns the hit test results, which are a map of layer ID to
      * visible symbol legend keys.
+     * \note Not available in Python bindings
      */
-    QMap<QString, QSet<QString>> results() const;
+    QMap<QString, QSet<QString>> results() const SIP_SKIP;
+
+    ///@cond PRIVATE
+
+    /**
+     * Returns the hit test results, which are a map of layer ID to
+     * visible symbol legend keys.
+     */
+    QMap<QString, QList<QString>> resultsPy() const SIP_PYNAME( results );
+    ///@endcond PRIVATE
 
     void cancel() override;
 
