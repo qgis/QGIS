@@ -48,8 +48,8 @@ void QgsMapHitTest::run()
 {
   // TODO: do we need this temp image?
   QImage tmpImage( mSettings.outputSize(), mSettings.outputImageFormat() );
-  tmpImage.setDotsPerMeterX( mSettings.outputDpi() * 25.4 );
-  tmpImage.setDotsPerMeterY( mSettings.outputDpi() * 25.4 );
+  tmpImage.setDotsPerMeterX( static_cast< int >( std::round( mSettings.outputDpi() * 25.4 ) ) );
+  tmpImage.setDotsPerMeterY( static_cast< int >( std::round( mSettings.outputDpi() * 25.4 ) ) );
   QPainter painter( &tmpImage );
 
   QgsRenderContext context = QgsRenderContext::fromMapSettings( mSettings );
@@ -376,15 +376,15 @@ bool QgsMapHitTestTask::run()
 
   // TODO: do we need this temp image?
   QImage tmpImage( mSettings.outputSize(), mSettings.outputImageFormat() );
-  tmpImage.setDotsPerMeterX( mSettings.outputDpi() * 25.4 );
-  tmpImage.setDotsPerMeterY( mSettings.outputDpi() * 25.4 );
+  tmpImage.setDotsPerMeterX( static_cast< int >( std::round( mSettings.outputDpi() * 25.4 ) ) );
+  tmpImage.setDotsPerMeterY( static_cast< int >( std::round( mSettings.outputDpi() * 25.4 ) ) );
   QPainter painter( &tmpImage );
 
   QgsRenderContext context = QgsRenderContext::fromMapSettings( mSettings );
   context.setPainter( &painter ); // we are not going to draw anything, but we still need a working painter
 
-  int layerIdx = 0;
-  const int totalCount = mPreparedData.size();
+  std::size_t layerIdx = 0;
+  const std::size_t totalCount = mPreparedData.size();
   for ( auto &layerData : mPreparedData )
   {
     mFeedback->setProgress( static_cast< double >( layerIdx ) / totalCount * 100.0 );
