@@ -204,7 +204,7 @@ void QgsRuleBasedChunkedEntity::onTerrainElevationOffsetChanged( float newOffset
   mTransform->setTranslation( QVector3D( 0.0f, newOffset, 0.0f ) );
 }
 
-QVector<RayHit> QgsRuleBasedChunkedEntity::intersectEntity( const QgsRay3D &ray, const RayCastContext &context ) const
+QVector<RayHit> QgsRuleBasedChunkedEntity::rayIntersection( const QgsRay3D &ray, const RayCastContext &context ) const
 {
   Q_UNUSED( context )
   QgsDebugMsgLevel( QStringLiteral( "Ray cast on vector layer" ), 2 );

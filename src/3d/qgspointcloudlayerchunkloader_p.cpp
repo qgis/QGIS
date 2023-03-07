@@ -256,7 +256,7 @@ QgsPointCloudLayerChunkedEntity::~QgsPointCloudLayerChunkedEntity()
   cancelActiveJobs();
 }
 
-QVector<RayHit> QgsPointCloudLayerChunkedEntity::intersectEntity( const QgsRay3D &ray, const RayCastContext &context ) const
+QVector<RayHit> QgsPointCloudLayerChunkedEntity::rayIntersection( const QgsRay3D &ray, const RayCastContext &context ) const
 {
 
   QgsPointCloudLayerChunkLoaderFactory *factory = static_cast<QgsPointCloudLayerChunkLoaderFactory *>( mChunkLoaderFactory );

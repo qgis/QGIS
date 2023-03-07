@@ -136,7 +136,7 @@ class QgsPointCloudLayerChunkedEntity : public QgsChunkedEntity
     explicit QgsPointCloudLayerChunkedEntity( QgsPointCloudIndex *pc, const Qgs3DMapSettings &map, const QgsCoordinateTransform &coordinateTransform, QgsPointCloud3DSymbol *symbol, float maxScreenError, bool showBoundingBoxes,
         double zValueScale, double zValueOffset, int pointBudget );
 
-    QVector<RayHit> intersectEntity( const QgsRay3D &ray, const RayCastContext &context ) const override;
+    QVector<RayHit> rayIntersection( const QgsRay3D &ray, const RayCastContext &context ) const override;
 
     ~QgsPointCloudLayerChunkedEntity();
 };

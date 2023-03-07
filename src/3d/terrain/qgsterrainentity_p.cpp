@@ -130,7 +130,7 @@ bool QgsTerrainEntity::rayIntersection( const QgsRayCastingUtils::Ray3D &ray, QV
   return minDist >= 0;
 }
 
-QVector<RayHit> QgsTerrainEntity::intersectEntity( const QgsRay3D &ray, const RayCastContext &context ) const
+QVector<RayHit> QgsTerrainEntity::rayIntersection( const QgsRay3D &ray, const RayCastContext &context ) const
 {
   Q_UNUSED( context )
   QVector<RayHit> result;

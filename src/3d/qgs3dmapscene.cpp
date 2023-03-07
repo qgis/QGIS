@@ -15,7 +15,6 @@
 
 #include "qgs3dmapscene.h"
 
-#include <Qt3DRender/QAttribute>
 #include <Qt3DRender/QCamera>
 #include <Qt3DRender/QMesh>
 #include <Qt3DRender/QRenderSettings>
@@ -55,14 +54,12 @@
 #include "qgsmeshlayer.h"
 #include "qgsmeshlayer3drenderer.h"
 #include "qgspoint3dsymbol.h"
-#include "qgspointcloudrequest.h"
 #include "qgsrulebased3drenderer.h"
 #include "qgspointcloudlayer.h"
 #include "qgspointcloudlayer3drenderer.h"
 #include "qgssourcecache.h"
 #include "qgsterrainentity_p.h"
 #include "qgsterraingenerator.h"
-#include "qgstessellatedpolygongeometry.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayer3drenderer.h"
 #include "qgspoint3dbillboardmaterial.h"
@@ -80,10 +77,6 @@
 #include "qgswindow3dengine.h"
 #include "qgspointcloudlayerelevationproperties.h"
 #include "qgspointcloudlayer.h"
-#include "qgspointcloudlayerchunkloader_p.h"
-#include "qgsvectorlayerchunkloader_p.h"
-#include "qgsrulebasedchunkloader_p.h"
-#include "qgsdemterraintilegeometry_p.h"
 
 Qgs3DMapScene::Qgs3DMapScene( Qgs3DMapSettings &map, QgsAbstract3DEngine *engine )
   : mMap( map )
@@ -1239,64 +1232,3 @@ void Qgs3DMapScene::on3DAxisSettingsChanged()
     }
   }
 }
-
-//QVector<RayHit> Qgs3DMapScene::castRay( const QgsRay3D &ray ) const
-//{
-//  QVector<RayHit> results;
-//  const QList<QgsMapLayer *> keys = mLayerEntities.keys();
-//  for ( const auto &layer : keys )
-//  {
-
-
-//    if ( QgsChunkedEntity *entity = qobject_cast<QgsChunkedEntity *>( mLayerEntities[layer] ) )
-//    {
-//      auto result = entity->intersectEntity( ray, RayCastContext( false, mEngine->size().width(), mEngine->size().height() ) );
-//    }
-
-//    switch ( layer->type() )
-//    {
-//      case QgsMapLayerType::VectorLayer:
-//        if ( QgsChunkedEntity *entity = qobject_cast<QgsChunkedEntity *>( mLayerEntities[layer] ) )
-//        {
-//          auto result = entity->intersectEntity( ray, RayCastContext() );
-//          if ( !result.isEmpty() )
-//          {
-//            result.first().layer = layer;
-//            results.append( result );
-//          }
-//        }
-//        break;
-//      case QgsMapLayerType::PointCloudLayer:
-//        if ( QgsPointCloudLayerChunkedEntity *entity = qobject_cast<QgsPointCloudLayerChunkedEntity *>( mLayerEntities[layer] ) )
-//        {
-//          QgsPointCloudLayer *pclayer = qobject_cast<QgsPointCloudLayer *>( layer );
-//          auto result = entity->intersectEntity( ray, RayCastContext( false, mEngine->size().width(), mEngine->size().height() ) );
-//          if ( !result.isEmpty() )
-//          {
-//            for ( auto &r : result )
-//            {
-//              r.layer = pclayer;
-//            }
-//            results.append( result );
-//          }
-//        }
-//        break;
-//      case QgsMapLayerType::MeshLayer:
-//      case QgsMapLayerType::RasterLayer:
-//      case QgsMapLayerType::PluginLayer:
-//      case QgsMapLayerType::VectorTileLayer:
-//      case QgsMapLayerType::AnnotationLayer:
-//      case QgsMapLayerType::GroupLayer:
-//        // not supported
-//        break;
-//    }
-//  }
-//  if ( mTerrain )
-//  {
-////    const auto result = intersectEntity( ray, mTerrain );
-//    const auto result = mTerrain->intersectEntity( ray, RayCastContext() );
-//    if ( !result.isEmpty() )
-//      results.append( result );
-//  }
-//  return results;
-//}

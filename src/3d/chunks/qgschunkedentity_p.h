@@ -42,14 +42,12 @@ class QgsChunkQueueJobFactory;
 class QgsRay3D;
 class RayHit;
 class RayCastContext;
-#include "qgs3dmapscene.h" //TODO: REMOVE
 
 #include <QVector3D>
 #include <QMatrix4x4>
 
 #include <QTime>
 
-#include "qgsfeatureid.h"
 #include "qgschunknode_p.h"
 
 
@@ -127,7 +125,7 @@ class QgsChunkedEntity : public Qt3DCore::QEntity
 
     static double calculateEntityGpuMemorySize( Qt3DCore::QEntity *entity );
 
-    virtual QVector<RayHit> intersectEntity( const QgsRay3D &ray, const RayCastContext &context ) const;
+    virtual QVector<RayHit> rayIntersection( const QgsRay3D &ray, const RayCastContext &context ) const;
 
   protected:
     //! Cancels the background job that is currently in progress

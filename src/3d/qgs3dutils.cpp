@@ -805,14 +805,14 @@ QHash<QgsMapLayer *, QVector<RayHit>> Qgs3DUtils::castRay( const QgsRay3D &ray, 
 
     if ( QgsChunkedEntity *chunkedEntity = qobject_cast<QgsChunkedEntity *>( entity ) )
     {
-      auto result = chunkedEntity->intersectEntity( ray, RayCastContext( false, scene->engine()->size().width(), scene->engine()->size().height() ) );
+      auto result = chunkedEntity->rayIntersection( ray, RayCastContext( false, scene->engine()->size().width(), scene->engine()->size().height() ) );
       if ( !result.isEmpty() )
         results[ layer ] = result;
     }
   }
   if ( QgsTerrainEntity *terrain = scene->terrainEntity() )
   {
-    const auto result = terrain->intersectEntity( ray, RayCastContext() );
+    const auto result = terrain->rayIntersection( ray, RayCastContext() );
     if ( !result.isEmpty() )
       results[ nullptr ] = result;
   }

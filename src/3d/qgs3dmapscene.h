@@ -20,9 +20,7 @@
 
 #include <Qt3DCore/QEntity>
 
-#include "qgsfeatureid.h"
-#include "qgsshadowrenderingframegraph.h"
-#include "qgsray3d.h"
+#include "qgsrectangle.h"
 #include "qgscameracontroller.h"
 
 namespace Qt3DRender
@@ -56,42 +54,9 @@ class QgsShadowRenderingFrameGraph;
 class QgsPostprocessingEntity;
 class QgsChunkNode;
 class QgsDoubleRange;
-class QgsVectorLayerChunkedEntity;
-class QgsRuleBasedChunkedEntity;
-class QgsPointCloudLayerChunkedEntity;
-class QgsPointCloudLayer;
 
 #define SIP_NO_FILE
 
-
-//struct RayHit
-//{
-//  float distance;
-//  QVector3D pos;
-//  QgsFeatureId fid;
-//  QVariantMap attributes;
-//  QgsMapLayer *layer;
-//  RayHit( const float distance, const QVector3D pos, const QgsFeatureId fid = QgsFeatureId(), const QVariantMap attributes = QVariantMap(), QgsMapLayer *layer = nullptr )
-//    : distance( distance )
-//    , pos( pos )
-//    , fid( fid )
-//    , attributes( attributes )
-//    , layer( layer )
-//  {
-//  }
-//};
-
-//struct RayCastContext
-//{
-//  bool singleResult;
-//  int screenWidth;
-//  int screenHeight;
-//  RayCastContext( bool singleResult = true, int screenWidth = 0, int screenHeight = 0 )
-//    : singleResult( singleResult )
-//    , screenWidth( screenWidth )
-//    , screenHeight( screenHeight )
-//  {}
-//};
 
 /**
  * \ingroup 3d
@@ -205,9 +170,6 @@ class _3D_EXPORT Qgs3DMapScene : public Qt3DCore::QEntity
      * \since QGIS 3.26
      */
     QgsAbstract3DEngine *engine() { return mEngine; }
-
-    // TODO: move out
-//    QVector<RayHit> castRay( const QgsRay3D &ray ) const;
 
   signals:
     //! Emitted when the current terrain entity is replaced by a new one

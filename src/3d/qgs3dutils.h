@@ -47,10 +47,6 @@ namespace Qt3DExtras
 
 struct RayHit
 {
-  float distance;
-  QVector3D pos;
-  QgsFeatureId fid;
-  QVariantMap attributes;
   RayHit( const float distance, const QVector3D pos, const QgsFeatureId fid = QgsFeatureId(), const QVariantMap attributes = QVariantMap() )
     : distance( distance )
     , pos( pos )
@@ -58,18 +54,22 @@ struct RayHit
     , attributes( attributes )
   {
   }
+  float distance;
+  QVector3D pos;
+  QgsFeatureId fid;
+  QVariantMap attributes;
 };
 
 struct RayCastContext
 {
-  bool singleResult;
-  int screenWidth;
-  int screenHeight;
   RayCastContext( bool singleResult = true, int screenWidth = 0, int screenHeight = 0 )
     : singleResult( singleResult )
     , screenWidth( screenWidth )
     , screenHeight( screenHeight )
   {}
+  bool singleResult;
+  int screenWidth;
+  int screenHeight;
 };
 
 /**
