@@ -271,9 +271,7 @@ QVector<RayHit> QgsPointCloudLayerChunkedEntity::rayIntersection( const QgsRay3D
   const QVector3D rayOriginMapCoords( originMapCoords.x(), originMapCoords.y(), originMapCoords.z() );
   const QVector3D rayDirectionMapCoords( directionMapCoords.x(), directionMapCoords.y(), directionMapCoords.z() );
 
-//  const QSize size = mEngine->size();
-//  const int screenSizePx = std::max( size.width(), size.height() ); // TODO: is this correct? (see sceneState_)
-  const int screenSizePx = std::max( context.screenWidth, context.screenHeight ); // TODO: is this correct? (see sceneState_)
+  const int screenSizePx = std::max( context.screenWidth, context.screenHeight );
 
   const QgsPointCloud3DSymbol *symbol = factory->mSymbol.get();
   // Symbol can be null in case of no rendering enabled
@@ -342,7 +340,8 @@ QVector<RayHit> QgsPointCloudLayerChunkedEntity::rayIntersection( const QgsRay3D
       pointAttr[ QStringLiteral( "Y" ) ] = y;
       pointAttr[ QStringLiteral( "Z" ) ] = z;
 
-      RayHit hit( 0, QVector3D( x, y, z ), QgsFeatureId(), pointAttr/*, layer */ );
+      // TODO: compute distance or remove it from RayHit if not needed
+      RayHit hit( 0, QVector3D( x, y, z ), QgsFeatureId(), pointAttr );
       result.append( hit );
     }
   }

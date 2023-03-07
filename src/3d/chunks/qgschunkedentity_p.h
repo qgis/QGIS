@@ -96,11 +96,6 @@ class QgsChunkedEntity : public Qt3DCore::QEntity
     //! Returns number of jobs pending for this entity until it is fully loaded/updated in the current view
     int pendingJobsCount() const;
 
-    //! Enables or disables object picking on this entity. When enabled, pickedObject() signals will be emitted on mouse clicks
-    void setPickingEnabled( bool enabled );
-    //! Returns whether object picking is currently enabled
-    bool hasPickingEnabled() const { return mPickingEnabled; }
-
     //! Sets whether additive strategy is enabled - see usingAditiveStrategy()
     void setUsingAdditiveStrategy( bool additive ) { mAdditiveStrategy = additive; }
 
@@ -192,9 +187,6 @@ class QgsChunkedEntity : public Qt3DCore::QEntity
 
     //! jobs that are currently being processed (asynchronously in worker threads)
     QList<QgsChunkQueueJob *> mActiveJobs;
-
-    //! If picking is enabled, chunks will interact with TODO RayCaster
-    bool mPickingEnabled = false;
 
     /**
      * With additive strategy enabled, also all parent nodes are added to active nodes.

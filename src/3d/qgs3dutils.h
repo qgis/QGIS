@@ -272,6 +272,13 @@ class _3D_EXPORT Qgs3DUtils
      */
     static QgsBox3d aabbToBox( const QgsAABB &aabb ) { return QgsBox3d( aabb.xMin, aabb.yMin, aabb.zMin, aabb.xMax, aabb.yMax, aabb.zMax ); }
 
+    /**
+     * Casts a \a ray through the \a scene and returns information about the intersecting entities
+     * The resulting hits are grouped by layer in a QHash.
+     * \note Hits on the terrain have nullptr as their key in the returning QHash.
+     *
+     * \since QGIS 3.32
+     */
     static QHash<QgsMapLayer *, QVector<RayHit>> castRay( const QgsRay3D &ray, Qgs3DMapScene *scene );
 };
 

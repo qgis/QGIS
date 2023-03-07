@@ -653,30 +653,6 @@ void QgsChunkedEntity::cancelActiveJobs()
   }
 }
 
-
-void QgsChunkedEntity::setPickingEnabled( bool enabled )
-{
-  if ( mPickingEnabled == enabled )
-    return;
-
-  mPickingEnabled = enabled;
-
-  if ( enabled )
-  {
-    QgsChunkListEntry *entry = mReplacementQueue->first();
-    while ( entry )
-    {
-      QgsChunkNode *node = entry->chunk;
-
-      entry = entry->next;
-    }
-  }
-  else
-  {
-
-  }
-}
-
 double QgsChunkedEntity::calculateEntityGpuMemorySize( Qt3DCore::QEntity *entity )
 {
   long long usedGpuMemory = 0;

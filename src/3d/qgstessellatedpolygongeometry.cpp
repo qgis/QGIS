@@ -156,11 +156,6 @@ void QgsTessellatedPolygonGeometry::setPolygons( const QList<QgsPolygon *> &poly
 
   const QByteArray data( ( const char * )tessellator.data().constData(), tessellator.data().count() * sizeof( float ) );
   const int nVerts = data.count() / tessellator.stride();
-  int dataSize = data.size();
-  int dataCount = data.count();
-  int tesDataCount = tessellator.data().count();
-  int tesStride = tessellator.stride();
-  int tesDVC = tessellator.dataVerticesCount();
 
   mVertexBuffer->setData( data );
   mPositionAttribute->setCount( nVerts );
