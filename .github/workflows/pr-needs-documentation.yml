@@ -54,7 +54,7 @@ jobs:
         run: |
           LABEL=$(sed -r 's/^([[:digit:]]\.[[:digit:]]+)(\.[[:digit:]]+)?$/\1/' <<< ${MILESTONE})
           echo ${LABEL}
-          echo "::set-output name=label::${LABEL}"
+          echo "label=${LABEL}" >> $GITHUB_OUTPUT
             # get the PR body
 
       # get the PR body
@@ -92,7 +92,7 @@ jobs:
           JSON_DATA: ${{ steps.get_pr_commits.outputs.data }}
         run: |
           COMMITS_MESSAGES=$(echo ${JSON_DATA} | jq '.[].commit.message | select( . |test("\\[(feature|needs?.doc(umentation)?s?)\\]"; "i")) | sub("\\[needs?.doc(umentation)?s?\\]"; "\n\n\n\n"; "i")')
-          echo "::set-output name=commits::$(echo ${COMMITS_MESSAGES} | tr -d '\n' )"
+          echo "commits=$(echo ${COMMITS_MESSAGES} | tr -d '\n' )" >> $GITHUB_OUTPUT
 
       # create the documentation issue
       - name: Create Documentation issue
