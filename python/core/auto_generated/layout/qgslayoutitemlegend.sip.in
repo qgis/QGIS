@@ -561,6 +561,8 @@ only drawn if :py:func:`~QgsLayoutItemLegend.drawRasterStroke` is ``True``.
 Sets the ``map`` to associate with the legend.
 
 .. seealso:: :py:func:`linkedMap`
+
+.. seealso:: :py:func:`setFilterByMapItems`
 %End
 
     QgsLayoutItemMap *linkedMap() const;
@@ -568,6 +570,28 @@ Sets the ``map`` to associate with the legend.
 Returns the associated map.
 
 .. seealso:: :py:func:`setLinkedMap`
+%End
+
+    void setFilterByMapItems( const QList< QgsLayoutItemMap * > &maps );
+%Docstring
+Sets the ``maps`` to use when filtering legend content by map extents.
+
+.. seealso:: :py:func:`filterByMapItems`
+
+.. seealso:: :py:func:`setLinkedMap`
+
+.. versionadded:: 3.32
+%End
+
+    QList< QgsLayoutItemMap * > filterByMapItems() const;
+%Docstring
+Returns the \maps to use when filtering legend content by map extents.
+
+.. seealso:: :py:func:`setFilterByMapItems`
+
+.. seealso:: :py:func:`setLinkedMap`
+
+.. versionadded:: 3.32
 %End
 
     QString themeName() const;

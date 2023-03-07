@@ -528,6 +528,7 @@ class CORE_EXPORT QgsLayoutItemLegend : public QgsLayoutItem
     /**
      * Sets the \a map to associate with the legend.
      * \see linkedMap()
+     * \see setFilterByMapItems()
      */
     void setLinkedMap( QgsLayoutItemMap *map );
 
@@ -536,6 +537,26 @@ class CORE_EXPORT QgsLayoutItemLegend : public QgsLayoutItem
      * \see setLinkedMap()
      */
     QgsLayoutItemMap *linkedMap() const { return mMap; }
+
+    /**
+     * Sets the \a maps to use when filtering legend content by map extents.
+     *
+     * \see filterByMapItems()
+     * \see setLinkedMap()
+     *
+     * \since QGIS 3.32
+     */
+    void setFilterByMapItems( const QList< QgsLayoutItemMap * > &maps );
+
+    /**
+     * Returns the \maps to use when filtering legend content by map extents.
+     *
+     * \see setFilterByMapItems()
+     * \see setLinkedMap()
+     *
+     * \since QGIS 3.32
+     */
+    QList< QgsLayoutItemMap * > filterByMapItems() const;
 
     /**
      * Returns the name of the theme currently linked to the legend.
@@ -621,6 +642,9 @@ class CORE_EXPORT QgsLayoutItemLegend : public QgsLayoutItem
 
     QString mMapUuid;
     QgsLayoutItemMap *mMap = nullptr;
+
+    QList< QString > mFilterByMapUuids;
+    QList< QPointer< QgsLayoutItemMap >> mFilterByMapItems;
 
     bool mLegendFilterByMap = false;
     bool mLegendFilterByExpression = false;

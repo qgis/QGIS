@@ -63,9 +63,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>-1282</y>
+        <y>0</y>
         <width>359</width>
-        <height>2253</height>
+        <height>2256</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="mainLayout">
@@ -432,14 +432,28 @@
            </layout>
           </item>
           <item>
-           <widget class="QCheckBox" name="mFilterByMapCheckBox">
-            <property name="toolTip">
-             <string>Filter out legend elements that lie outside the linked map item.</string>
+           <layout class="QHBoxLayout" name="horizontalLayout_3">
+            <property name="topMargin">
+             <number>0</number>
             </property>
-            <property name="text">
-             <string>Only show items inside linked map</string>
-            </property>
-           </widget>
+            <item>
+             <widget class="QCheckBox" name="mFilterByMapCheckBox">
+              <property name="toolTip">
+               <string>Filter out legend elements that lie outside the linked map item.</string>
+              </property>
+              <property name="text">
+               <string>Only show items inside linked maps</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QToolButton" name="mButtonLinkedMaps">
+              <property name="text">
+               <string>...</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
           </item>
           <item>
            <widget class="QCheckBox" name="mFilterLegendByAtlasCheckBox">
@@ -1388,6 +1402,7 @@
   <tabstop>mCountToolButton</tabstop>
   <tabstop>mExpressionFilterButton</tabstop>
   <tabstop>mFilterByMapCheckBox</tabstop>
+  <tabstop>mButtonLinkedMaps</tabstop>
   <tabstop>mFilterLegendByAtlasCheckBox</tabstop>
   <tabstop>mFontsColGroupBox</tabstop>
   <tabstop>mTitleFontButton</tabstop>
@@ -1426,6 +1441,9 @@
   <tabstop>mIconLabelSpaceSpinBox</tabstop>
   <tabstop>mBoxSpaceSpinBox</tabstop>
   <tabstop>mColumnSpaceSpinBox</tabstop>
+  <tabstop>mGroupIndentSpinBox</tabstop>
+  <tabstop>mSubgroupIndentSpinBox</tabstop>
+  <tabstop>mGroupSpaceSpinBox</tabstop>
  </tabstops>
  <resources>
   <include location="../../../images/images.qrc"/>

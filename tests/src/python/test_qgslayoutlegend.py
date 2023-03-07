@@ -14,6 +14,8 @@ from time import sleep
 
 from qgis.PyQt.QtCore import QDir, QRectF
 from qgis.PyQt.QtGui import QColor
+from qgis.PyQt.QtXml import QDomDocument
+
 from qgis.core import (
     QgsCategorizedSymbolRenderer,
     QgsCoordinateReferenceSystem,
@@ -42,6 +44,7 @@ from qgis.core import (
     QgsRuleBasedRenderer,
     QgsSingleSymbolRenderer,
     QgsVectorLayer,
+    QgsReadWriteContext
 )
 from qgis.testing import start_app, unittest
 
@@ -890,6 +893,131 @@ class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
 
         checker = QgsLayoutChecker(
             'composer_legend_elseChild', layout)
+        checker.setControlPathPrefix("composer_legend")
+        result, message = checker.testLayout()
+        TestQgsLayoutItemLegend.report += checker.report()
+        self.assertTrue(result, message)
+
+    def test_filter_by_map_items(self):
+        p = QgsProject()
+
+        layout = QgsLayout(p)
+        layout.initializeDefaults()
+
+        map1 = QgsLayoutItemMap(layout)
+        map1.setId('map 1')
+        layout.addLayoutItem(map1)
+
+        map2 = QgsLayoutItemMap(layout)
+        map2.setId('map 2')
+        layout.addLayoutItem(map2)
+
+        map3 = QgsLayoutItemMap(layout)
+        map3.setId('map 3')
+        layout.addLayoutItem(map3)
+
+        legend = QgsLayoutItemLegend(layout)
+        layout.addLayoutItem(legend)
+        self.assertFalse(legend.filterByMapItems())
+
+        legend.setFilterByMapItems([map1, map3])
+        self.assertEqual(legend.filterByMapItems(), [map1, map3])
+
+        # test restoring from xml
+        doc = QDomDocument("testdoc")
+        elem = layout.writeXml(doc, QgsReadWriteContext())
+
+        l2 = QgsLayout(p)
+        self.assertTrue(l2.readXml(elem, doc, QgsReadWriteContext()))
+        map1_restore = [i for i in l2.items() if isinstance(i, QgsLayoutItemMap) and i.id() == 'map 1'][0]
+        map3_restore = [i for i in l2.items() if isinstance(i, QgsLayoutItemMap) and i.id() == 'map 3'][0]
+        legend_restore = [i for i in l2.items() if isinstance(i, QgsLayoutItemLegend)][0]
+
+        self.assertEqual(legend_restore.filterByMapItems(), [map1_restore, map3_restore])
+
+    def test_filter_by_map_content_rendering(self):
+        point_path = os.path.join(TEST_DATA_DIR, 'points.shp')
+        point_layer = QgsVectorLayer(point_path, 'points', 'ogr')
+
+        root_rule = QgsRuleBasedRenderer.Rule(None)
+        marker_symbol = QgsMarkerSymbol.createSimple(
+            {'color': '#ff0000', 'outline_style': 'no', 'size': '8'})
+
+        less_than_two_rule = QgsRuleBasedRenderer.Rule(marker_symbol,
+                                                       filterExp='"Importance" <=2',
+                                                       label='lessthantwo')
+        root_rule.appendChild(less_than_two_rule)
+
+        else_rule = QgsRuleBasedRenderer.Rule(None, elseRule=True)
+
+        marker_symbol = QgsMarkerSymbol.createSimple(
+            {'color': '#00ffff', 'outline_style': 'no', 'size': '4'})
+        one_rule = QgsRuleBasedRenderer.Rule(marker_symbol,
+                                             filterExp='"Pilots" = 1',
+                                             label='1')
+        else_rule.appendChild(one_rule)
+        marker_symbol = QgsMarkerSymbol.createSimple(
+            {'color': '#ff8888', 'outline_style': 'no', 'size': '4'})
+        two_rule = QgsRuleBasedRenderer.Rule(marker_symbol,
+                                             filterExp='"Pilots" = 2',
+                                             label='2')
+        else_rule.appendChild(two_rule)
+        marker_symbol = QgsMarkerSymbol.createSimple(
+            {'color': '#8888ff', 'outline_style': 'no', 'size': '4'})
+        three_rule = QgsRuleBasedRenderer.Rule(marker_symbol,
+                                               filterExp='"Pilots" = 3',
+                                               label='3')
+        else_rule.appendChild(three_rule)
+
+        root_rule.appendChild(else_rule)
+
+        renderer = QgsRuleBasedRenderer(root_rule)
+        point_layer.setRenderer(renderer)
+        p = QgsProject()
+        p.addMapLayer(point_layer)
+
+        layout = QgsLayout(p)
+        layout.initializeDefaults()
+
+        map = QgsLayoutItemMap(layout)
+        map.attemptSetSceneRect(QRectF(19, 17, 100, 165))
+        map.setFrameEnabled(True)
+        map.setCrs(QgsCoordinateReferenceSystem('EPSG:4326'))
+        map.setLayers([point_layer])
+        map.zoomToExtent(QgsRectangle(-120, 14, -100, 18))
+        map.setMapRotation(45)
+
+        layout.addLayoutItem(map)
+
+        map2 = QgsLayoutItemMap(layout)
+        map2.attemptSetSceneRect(QRectF(150, 117, 100, 165))
+        map2.setFrameEnabled(True)
+        map2.setCrs(QgsCoordinateReferenceSystem('EPSG:3857'))
+        map2.setLayers([point_layer])
+        map2.setExtent(QgsRectangle(-12309930, 3091263, -11329181, 3977074))
+
+        layout.addLayoutItem(map2)
+
+        legend = QgsLayoutItemLegend(layout)
+        legend.setLegendFilterByMapEnabled(True)
+        legend.setFilterByMapItems([map, map2])
+        layout.addLayoutItem(legend)
+        legend.setTitle("Legend")
+        legend.attemptSetSceneRect(QRectF(220, 20, 20, 20))
+        legend.setFrameEnabled(True)
+        legend.setFrameStrokeWidth(QgsLayoutMeasurement(2))
+        legend.setBackgroundColor(QColor(200, 200, 200))
+        legend.setTitle('')
+
+        legend.setStyleFont(QgsLegendStyle.Title, QgsFontUtils.getStandardTestFont('Bold', 16))
+        legend.setStyleFont(QgsLegendStyle.Group, QgsFontUtils.getStandardTestFont('Bold', 16))
+        legend.setStyleFont(QgsLegendStyle.Subgroup, QgsFontUtils.getStandardTestFont('Bold', 16))
+        legend.setStyleFont(QgsLegendStyle.Symbol, QgsFontUtils.getStandardTestFont('Bold', 16))
+        legend.setStyleFont(QgsLegendStyle.SymbolLabel,
+                            QgsFontUtils.getStandardTestFont('Bold', 16))
+
+        checker = QgsLayoutChecker(
+            'legend_multiple_filter_maps', layout)
         checker.setControlPathPrefix("composer_legend")
         result, message = checker.testLayout()
         TestQgsLayoutItemLegend.report += checker.report()
