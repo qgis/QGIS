@@ -206,6 +206,7 @@ void QgsVectorLayerChunkedEntity::onTerrainElevationOffsetChanged( float newOffs
 
 QVector<RayHit> QgsVectorLayerChunkedEntity::intersectEntity( const QgsRay3D &ray, const RayCastContext &context ) const
 {
+  Q_UNUSED( context )
   QgsDebugMsgLevel( QStringLiteral( "Ray cast on vector layer" ), 2 );
   int nodeUsed = 0;
   int nodesAll = 0;

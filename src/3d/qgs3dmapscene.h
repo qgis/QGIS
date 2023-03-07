@@ -64,34 +64,34 @@ class QgsPointCloudLayer;
 #define SIP_NO_FILE
 
 
-struct RayHit
-{
-  float distance;
-  QVector3D pos;
-  QgsFeatureId fid;
-  QVariantMap attributes;
-  QgsMapLayer *layer;
-  RayHit( const float distance, const QVector3D pos, const QgsFeatureId fid = QgsFeatureId(), const QVariantMap attributes = QVariantMap(), QgsMapLayer *layer = nullptr )
-    : distance( distance )
-    , pos( pos )
-    , fid( fid )
-    , attributes( attributes )
-    , layer( layer )
-  {
-  }
-};
+//struct RayHit
+//{
+//  float distance;
+//  QVector3D pos;
+//  QgsFeatureId fid;
+//  QVariantMap attributes;
+//  QgsMapLayer *layer;
+//  RayHit( const float distance, const QVector3D pos, const QgsFeatureId fid = QgsFeatureId(), const QVariantMap attributes = QVariantMap(), QgsMapLayer *layer = nullptr )
+//    : distance( distance )
+//    , pos( pos )
+//    , fid( fid )
+//    , attributes( attributes )
+//    , layer( layer )
+//  {
+//  }
+//};
 
-struct RayCastContext
-{
-  bool singleResult;
-  int screenWidth;
-  int screenHeight;
-  RayCastContext( bool singleResult = true, int screenWidth = 0, int screenHeight = 0 )
-    : singleResult( singleResult )
-    , screenWidth( screenWidth )
-    , screenHeight( screenHeight )
-  {}
-};
+//struct RayCastContext
+//{
+//  bool singleResult;
+//  int screenWidth;
+//  int screenHeight;
+//  RayCastContext( bool singleResult = true, int screenWidth = 0, int screenHeight = 0 )
+//    : singleResult( singleResult )
+//    , screenWidth( screenWidth )
+//    , screenHeight( screenHeight )
+//  {}
+//};
 
 /**
  * \ingroup 3d
@@ -164,6 +164,20 @@ class _3D_EXPORT Qgs3DMapScene : public Qt3DCore::QEntity
     QVector<const QgsChunkNode *> getLayerActiveChunkNodes( QgsMapLayer *layer ) SIP_SKIP;
 
     /**
+     * Returns the layers that contain chunked entities
+     *
+     * \since QGIS 3.32
+     */
+    QList<QgsMapLayer *> getLayers() { return mLayerEntities.keys(); }
+
+    /**
+     * Returns the entity belonging to \a layer
+     *
+     * \since QGIS 3.32
+     */
+    Qt3DCore::QEntity *getLayerEntity( QgsMapLayer *layer ) const { return mLayerEntities.value( layer ); }
+
+    /**
      * Returns the scene extent in the map's CRS
      *
      * \since QGIS 3.20
@@ -192,11 +206,8 @@ class _3D_EXPORT Qgs3DMapScene : public Qt3DCore::QEntity
      */
     QgsAbstract3DEngine *engine() { return mEngine; }
 
-    // TODO: docs
-    QVector<RayHit> castRay( const QgsRay3D &ray ) const;
-//    QVector<RayHit> intersectEntity( const QgsRay3D &ray, QgsTerrainEntity *entity ) const;
-    QVector<RayHit> intersectEntity( const QgsRay3D &ray, QgsPointCloudLayerChunkedEntity *entity, QgsPointCloudLayer *layer ) const;
-    QVector<RayHit> intersectVectorEntity( const QgsRay3D &ray, QgsChunkedEntity *entity ) const;
+    // TODO: move out
+//    QVector<RayHit> castRay( const QgsRay3D &ray ) const;
 
   signals:
     //! Emitted when the current terrain entity is replaced by a new one

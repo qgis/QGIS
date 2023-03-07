@@ -45,6 +45,33 @@ namespace Qt3DExtras
 
 #define SIP_NO_FILE
 
+struct RayHit
+{
+  float distance;
+  QVector3D pos;
+  QgsFeatureId fid;
+  QVariantMap attributes;
+  RayHit( const float distance, const QVector3D pos, const QgsFeatureId fid = QgsFeatureId(), const QVariantMap attributes = QVariantMap() )
+    : distance( distance )
+    , pos( pos )
+    , fid( fid )
+    , attributes( attributes )
+  {
+  }
+};
+
+struct RayCastContext
+{
+  bool singleResult;
+  int screenWidth;
+  int screenHeight;
+  RayCastContext( bool singleResult = true, int screenWidth = 0, int screenHeight = 0 )
+    : singleResult( singleResult )
+    , screenWidth( screenWidth )
+    , screenHeight( screenHeight )
+  {}
+};
+
 /**
  * \ingroup 3d
  * \brief Miscellaneous utility functions used from 3D code.
@@ -244,6 +271,8 @@ class _3D_EXPORT Qgs3DUtils
      * \since QGIS 3.32
      */
     static QgsBox3d aabbToBox( const QgsAABB &aabb ) { return QgsBox3d( aabb.xMin, aabb.yMin, aabb.zMin, aabb.xMax, aabb.yMax, aabb.zMax ); }
+
+    static QHash<QgsMapLayer *, QVector<RayHit>> castRay( const QgsRay3D &ray, Qgs3DMapScene *scene );
 };
 
 #endif // QGS3DUTILS_H

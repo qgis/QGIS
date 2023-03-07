@@ -26,7 +26,6 @@
 #include "qgsterraintextureimage_p.h"
 #include "qgsterraintileentity_p.h"
 #include "qgs3dutils.h"
-#include "qgs3dmapscene.h" //TODO: REMOVE
 
 #include "qgscoordinatetransform.h"
 
@@ -133,6 +132,7 @@ bool QgsTerrainEntity::rayIntersection( const QgsRayCastingUtils::Ray3D &ray, QV
 
 QVector<RayHit> QgsTerrainEntity::intersectEntity( const QgsRay3D &ray, const RayCastContext &context ) const
 {
+  Q_UNUSED( context )
   QVector<RayHit> result;
 
   float minDist = -1;

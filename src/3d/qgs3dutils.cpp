@@ -32,6 +32,8 @@
 #include "qgsabstract3dengine.h"
 #include "qgsterraingenerator.h"
 #include "qgscameracontroller.h"
+#include "qgschunkedentity_p.h"
+#include "qgsterrainentity_p.h"
 
 #include "qgsline3dsymbol.h"
 #include "qgspoint3dsymbol.h"
@@ -791,4 +793,28 @@ std::unique_ptr<QgsPointCloudLayer3DRenderer> Qgs3DUtils::convert2DPointCloudRen
     return renderer3D;
   }
   return nullptr;
+}
+
+QHash<QgsMapLayer *, QVector<RayHit>> Qgs3DUtils::castRay( const QgsRay3D &ray, Qgs3DMapScene *scene )
+{
+  QHash<QgsMapLayer *, QVector<RayHit>> results;
+  const QList<QgsMapLayer *> keys = scene->getLayers();
+  for ( const auto &layer : keys )
+  {
+    Qt3DCore::QEntity *entity = scene->getLayerEntity( layer );
+
+    if ( QgsChunkedEntity *chunkedEntity = qobject_cast<QgsChunkedEntity *>( entity ) )
+    {
+      auto result = chunkedEntity->intersectEntity( ray, RayCastContext( false, scene->engine()->size().width(), scene->engine()->size().height() ) );
+      if ( !result.isEmpty() )
+        results[ layer ] = result;
+    }
+  }
+  if ( QgsTerrainEntity *terrain = scene->terrainEntity() )
+  {
+    const auto result = terrain->intersectEntity( ray, RayCastContext() );
+    if ( !result.isEmpty() )
+      results[ nullptr ] = result;
+  }
+  return results;
 }

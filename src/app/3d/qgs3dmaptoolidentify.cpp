@@ -62,88 +62,80 @@ void Qgs3DMapToolIdentify::mouseReleaseEvent( QMouseEvent *event )
   Qgs3DMapCanvas *canvas = this->canvas();
 
   const QgsRay3D ray = Qgs3DUtils::rayFromScreenPoint( event->pos(), canvas->windowSize(), canvas->cameraController()->camera() );
-  const QVector<RayHit> allHits = mCanvas->scene()->castRay( ray );
+  QHash<QgsMapLayer *, QVector<RayHit>> allHits = Qgs3DUtils::castRay( ray, mCanvas->scene() );
 
-
-  QMap<QgsMapLayer *, QVector<QVariantMap>> pointCloudResults;
+  QHash<QgsPointCloudLayer *, QVector<QVariantMap>> pointCloudResults;
 
   QList<QgsMapToolIdentify::IdentifyResult> identifyResults;
   QgsMapToolIdentifyAction *identifyTool2D = QgisApp::instance()->identifyMapTool();
 
   bool showTerrainResults = true;
 
-  for ( const auto &hit : allHits )
+  for ( auto it = allHits.constKeyValueBegin(); it != allHits.constKeyValueEnd(); ++it )
   {
-    if ( !pointCloudResults.contains( hit.layer ) &&
-         qobject_cast<QgsPointCloudLayer * >( hit.layer ) )
+    //  We can directly show vector layer results
+    if ( QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer * >( it->first ) )
     {
-      pointCloudResults[ hit.layer ] = QVector<QVariantMap>();
-    }
-
-    if ( qobject_cast<QgsPointCloudLayer * >( hit.layer ) )
-    {
-      pointCloudResults[ hit.layer ].append( hit.attributes );
-      showTerrainResults = false;
-    }
-    else if ( hit.layer && !FID_IS_NULL( hit.fid ) )
-    {
+      const RayHit hit = it->second.first();
       const QgsVector3D mapCoords = Qgs3DUtils::worldToMapCoordinates( hit.pos, mCanvas->map()->origin() );
       const QgsPoint pt( mapCoords.x(), mapCoords.y(), mapCoords.z() );
-      QgsVectorLayer *vLayer = qobject_cast<QgsVectorLayer * >( hit.layer );
-      identifyTool2D->showResultsForFeature( vLayer, hit.fid, pt );
+      identifyTool2D->showResultsForFeature( vlayer, hit.fid, pt );
       showTerrainResults = false;
     }
-    else if ( showTerrainResults )
+    // We need to restructure point cloud layer results to display them later
+    else if ( QgsPointCloudLayer *pclayer = qobject_cast<QgsPointCloudLayer * >( it->first ) )
     {
-      // estimate search radius
-      Qgs3DMapScene *scene = mCanvas->scene();
-      const double searchRadiusMM = QgsMapTool::searchRadiusMM();
-      const double pixelsPerMM = mCanvas->logicalDpiX() / 25.4;
-      const double searchRadiusPx = searchRadiusMM * pixelsPerMM;
-      const double searchRadiusMapUnits = scene->worldSpaceError( searchRadiusPx, hit.distance );
-
-      QgsMapCanvas *canvas2D = identifyTool2D->canvas();
-
-      // transform the point and search radius to CRS of the map canvas (if they are different)
-      const QgsCoordinateTransform ct( mCanvas->map()->crs(), canvas2D->mapSettings().destinationCrs(), canvas2D->mapSettings().transformContext() );
-
-      const QgsVector3D mapCoords = Qgs3DUtils::worldToMapCoordinates( hit.pos, mCanvas->map()->origin() );
-      const QgsPointXY mapPoint( mapCoords.x(), mapCoords.y() );
-
-      QgsPointXY mapPointCanvas2D = mapPoint;
-      double searchRadiusCanvas2D = searchRadiusMapUnits;
-      try
+      pointCloudResults[ pclayer ] = QVector<QVariantMap>();
+      for ( const auto &hit : it->second )
       {
-        mapPointCanvas2D = ct.transform( mapPoint );
-        const QgsPointXY mapPointSearchRadius( mapPoint.x() + searchRadiusMapUnits, mapPoint.y() );
-        const QgsPointXY mapPointSearchRadiusCanvas2D = ct.transform( mapPointSearchRadius );
-        searchRadiusCanvas2D = mapPointCanvas2D.distance( mapPointSearchRadiusCanvas2D );
+        pointCloudResults[ pclayer ].append( hit.attributes );
       }
-      catch ( QgsException &e )
-      {
-        Q_UNUSED( e )
-        QgsDebugMsg( QStringLiteral( "Caught exception %1" ).arg( e.what() ) );
-      }
-
-      identifyTool2D->identifyAndShowResults( QgsGeometry::fromPointXY( mapPointCanvas2D ), searchRadiusCanvas2D );
     }
   }
 
+  // We only handle terrain results if there were no vector layer results
+  if ( showTerrainResults && allHits.contains( nullptr ) )
+  {
+    const RayHit hit = allHits.value( nullptr ).first();
+    // estimate search radius
+    Qgs3DMapScene *scene = mCanvas->scene();
+    const double searchRadiusMM = QgsMapTool::searchRadiusMM();
+    const double pixelsPerMM = mCanvas->logicalDpiX() / 25.4;
+    const double searchRadiusPx = searchRadiusMM * pixelsPerMM;
+    const double searchRadiusMapUnits = scene->worldSpaceError( searchRadiusPx, hit.distance );
 
+    QgsMapCanvas *canvas2D = identifyTool2D->canvas();
 
+    // transform the point and search radius to CRS of the map canvas (if they are different)
+    const QgsCoordinateTransform ct( mCanvas->map()->crs(), canvas2D->mapSettings().destinationCrs(), canvas2D->mapSettings().transformContext() );
 
+    const QgsVector3D mapCoords = Qgs3DUtils::worldToMapCoordinates( hit.pos, mCanvas->map()->origin() );
+    const QgsPointXY mapPoint( mapCoords.x(), mapCoords.y() );
+
+    QgsPointXY mapPointCanvas2D = mapPoint;
+    double searchRadiusCanvas2D = searchRadiusMapUnits;
+    try
+    {
+      mapPointCanvas2D = ct.transform( mapPoint );
+      const QgsPointXY mapPointSearchRadius( mapPoint.x() + searchRadiusMapUnits, mapPoint.y() );
+      const QgsPointXY mapPointSearchRadiusCanvas2D = ct.transform( mapPointSearchRadius );
+      searchRadiusCanvas2D = mapPointCanvas2D.distance( mapPointSearchRadiusCanvas2D );
+    }
+    catch ( QgsException &e )
+    {
+      Q_UNUSED( e )
+      QgsDebugMsg( QStringLiteral( "Caught exception %1" ).arg( e.what() ) );
+    }
+
+    identifyTool2D->identifyAndShowResults( QgsGeometry::fromPointXY( mapPointCanvas2D ), searchRadiusCanvas2D );
+  }
+
+  // Finally add all point cloud layers' results
   for ( auto it = pointCloudResults.constKeyValueBegin(); it != pointCloudResults.constKeyValueEnd(); ++it )
   {
-    if ( QgsPointCloudLayer *pcLayer = qobject_cast<QgsPointCloudLayer * >( ( *it ).first ) )
-    {
-      QgsMapToolIdentify::fromPointCloudIdentificationToIdentifyResults( pcLayer, ( *it ).second, identifyResults );
-      identifyTool2D->showIdentifyResults( identifyResults );
-    }
+    QgsMapToolIdentify::fromPointCloudIdentificationToIdentifyResults( it->first, it->second, identifyResults );
+    identifyTool2D->showIdentifyResults( identifyResults );
   }
-
-
-
-
 }
 
 void Qgs3DMapToolIdentify::activate()
