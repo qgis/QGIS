@@ -20,7 +20,7 @@
 
 #include <memory>
 #include <QDebug>
-
+#include <QPoint>
 
 class Qgs3DMapToolIdentify : public Qgs3DMapTool
 {
@@ -32,7 +32,7 @@ class Qgs3DMapToolIdentify : public Qgs3DMapTool
 
     void mousePressEvent( QMouseEvent *event ) override;
     void mouseReleaseEvent( QMouseEvent *event ) override;
-    void mouseMoveEvent( QMouseEvent *event ) override {Q_UNUSED( event )}
+    void mouseMoveEvent( QMouseEvent *event ) override;
 
     void activate() override;
     void deactivate() override;
@@ -46,6 +46,9 @@ class Qgs3DMapToolIdentify : public Qgs3DMapTool
   private:
     bool mIsActive = false;
 
+    //! Check if mouse was moved between mousePress and mouseRelease
+    bool mMouseHasMoved = false;
+    QPoint mMouseClickPos;
 };
 
 #endif // QGS3DMAPTOOLIDENTIFY_H

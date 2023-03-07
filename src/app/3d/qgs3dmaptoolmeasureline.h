@@ -17,7 +17,6 @@
 #define QGS3DMAPTOOLMEASURELINE_H
 
 #include "qgs3dmaptool.h"
-#include "qgsvector3d.h"
 #include "qgspoint.h"
 
 #include <memory>
@@ -59,7 +58,7 @@ class Qgs3DMapToolMeasureLine : public Qgs3DMapTool
     QCursor cursor() const override;
 
   private slots:
-    void handleClick( QPoint screenPos );
+    void handleClick( const QPoint &screenPos );
     void mousePressEvent( QMouseEvent *event ) override;
     void mouseReleaseEvent( QMouseEvent *event ) override;
     void mouseMoveEvent( QMouseEvent *event ) override;

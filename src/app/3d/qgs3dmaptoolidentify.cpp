@@ -19,7 +19,6 @@
 #include "qgs3dmapcanvas.h"
 #include "qgs3dmapscene.h"
 #include "qgs3dutils.h"
-#include "qgsterrainentity_p.h"
 #include "qgsvector3d.h"
 
 #include "qgisapp.h"
@@ -27,14 +26,7 @@
 #include "qgsmaptoolidentifyaction.h"
 
 #include "qgspointcloudlayer.h"
-#include "qgspointcloudlayerelevationproperties.h"
-#include "qgspointcloudattribute.h"
-#include "qgspointcloudrequest.h"
-#include "qgspointcloudlayer3drenderer.h"
-
-#include "qgs3dutils.h"
 #include "qgscameracontroller.h"
-#include "qgswindow3dengine.h"
 
 
 Qgs3DMapToolIdentify::Qgs3DMapToolIdentify( Qgs3DMapCanvas *canvas )
@@ -47,21 +39,28 @@ Qgs3DMapToolIdentify::~Qgs3DMapToolIdentify() = default;
 
 void Qgs3DMapToolIdentify::mousePressEvent( QMouseEvent *event )
 {
-  Q_UNUSED( event )
+  mMouseHasMoved = false;
+  mMouseClickPos = event->pos();
 
   QgsMapToolIdentifyAction *identifyTool2D = QgisApp::instance()->identifyMapTool();
   identifyTool2D->clearResults();
 }
 
+void Qgs3DMapToolIdentify::mouseMoveEvent( QMouseEvent *event )
+{
+  if ( !mMouseHasMoved &&
+       ( event->pos() - mMouseClickPos ).manhattanLength() > 3 )
+  {
+    mMouseHasMoved = true;
+  }
+}
+
 void Qgs3DMapToolIdentify::mouseReleaseEvent( QMouseEvent *event )
 {
-  if ( event->button() != Qt::MouseButton::LeftButton )
+  if ( event->button() != Qt::MouseButton::LeftButton || mMouseHasMoved )
     return;
 
-  // point cloud identification
-  Qgs3DMapCanvas *canvas = this->canvas();
-
-  const QgsRay3D ray = Qgs3DUtils::rayFromScreenPoint( event->pos(), canvas->windowSize(), canvas->cameraController()->camera() );
+  const QgsRay3D ray = Qgs3DUtils::rayFromScreenPoint( event->pos(), mCanvas->windowSize(), mCanvas->cameraController()->camera() );
   QHash<QgsMapLayer *, QVector<RayHit>> allHits = Qgs3DUtils::castRay( ray, mCanvas->scene() );
 
   QHash<QgsPointCloudLayer *, QVector<QVariantMap>> pointCloudResults;

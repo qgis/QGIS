@@ -15,17 +15,11 @@
 
 #include <QKeyEvent>
 
-#include "qgsterrainentity_p.h"
 #include "qgs3dmaptoolmeasureline.h"
 #include "qgs3dutils.h"
 #include "qgs3dmapscene.h"
 #include "qgs3dmapcanvas.h"
-#include "qgsvectorlayer.h"
-#include "qgslinestring.h"
 #include "qgspoint.h"
-#include "qgsfeature.h"
-#include "qgsline3dsymbol.h"
-#include "qgsvectorlayer3drenderer.h"
 #include "qgsmaplayer.h"
 #include "qgs3dmeasuredialog.h"
 #include "qgsrubberband3d.h"
@@ -77,16 +71,15 @@ QCursor Qgs3DMapToolMeasureLine::cursor() const
   return Qt::CrossCursor;
 }
 
-void Qgs3DMapToolMeasureLine::handleClick( QPoint screenPos )
+void Qgs3DMapToolMeasureLine::handleClick( const QPoint &screenPos )
 {
   if ( mDone )
   {
-    mDialog->restart();
+    restart();
   }
   mDone = false;
 
-  Qgs3DMapCanvas *canvas = this->canvas();
-  const QgsRay3D ray = Qgs3DUtils::rayFromScreenPoint( screenPos, canvas->windowSize(), canvas->cameraController()->camera() );
+  const QgsRay3D ray = Qgs3DUtils::rayFromScreenPoint( screenPos, mCanvas->windowSize(), mCanvas->cameraController()->camera() );
   const auto allHits = Qgs3DUtils::castRay( ray, mCanvas->scene() );
 
   if ( allHits.isEmpty() )
@@ -97,25 +90,20 @@ void Qgs3DMapToolMeasureLine::handleClick( QPoint screenPos )
   for ( const auto &results : allHits )
   {
     const RayHit &result = results.first();
-    QgsVector3D resPt = QgsVector3D( result.pos.x(),
-                                     result.pos.y(),
-                                     result.pos.z()
-                                   );
     const double resDist = result.distance;
     if ( minDist < 0 || resDist < minDist )
     {
       minDist = resDist;
-      worldIntersection = resPt;
+      worldIntersection = QgsVector3D( result.pos.x(),
+                                       result.pos.y(),
+                                       result.pos.z()
+                                     );
     }
   }
-  const QgsVector3D mapCoords = Qgs3DUtils::worldToMapCoordinates( QgsVector3D( worldIntersection.x(),
-                                worldIntersection.y(),
-                                worldIntersection.z() ), mCanvas->map()->origin() );
+  const QgsVector3D mapCoords = Qgs3DUtils::worldToMapCoordinates( worldIntersection, mCanvas->map()->origin() );
   addPoint( QgsPoint( mapCoords.x(), mapCoords.y(), mapCoords.z() ) );
   mDialog->show();
 }
-
-
 
 void Qgs3DMapToolMeasureLine::updateSettings()
 {
@@ -175,7 +163,6 @@ void Qgs3DMapToolMeasureLine::undo()
   {
     //removing first point, so restart everything
     restart();
-    mDialog->restart();
   }
   else
   {
@@ -205,7 +192,7 @@ void Qgs3DMapToolMeasureLine::mouseMoveEvent( QMouseEvent *event )
     mMouseHasMoved = true;
   }
 
-  if ( mPoints.isEmpty() )
+  if ( mPoints.isEmpty() || mDone )
     return;
 
   const QgsRay3D ray = Qgs3DUtils::rayFromScreenPoint( event->pos(), mCanvas->windowSize(), mCanvas->cameraController()->camera() );
@@ -223,9 +210,15 @@ void Qgs3DMapToolMeasureLine::mouseReleaseEvent( QMouseEvent *event )
   }
   else if ( event->button() == Qt::RightButton && !mMouseHasMoved )
   {
+    if ( mDone || mPoints.size() <= 1 )
+    {
+      restart();
+      return;
+    }
+
     // Finish measurement
+    mRubberBand->removeLastPoint();
     mDone = true;
-    restart();
   }
 }
 
@@ -239,6 +232,5 @@ void Qgs3DMapToolMeasureLine::keyPressEvent( QKeyEvent *event )
   else if ( event->key() == Qt::Key_Escape )
   {
     restart();
-    mDialog->restart();
   }
 }
