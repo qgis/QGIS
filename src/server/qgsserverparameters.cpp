@@ -170,7 +170,7 @@ QStringList QgsServerParameterDefinition::toExpressionList() const
 
   auto isOgcFilter = [filter]()
   {
-    return filter.contains( QStringLiteral( "<Filter>" ) ) or filter.contains( QStringLiteral( "()" ) );
+    return filter.contains( QStringLiteral( "<Filter>" ) ) || filter.contains( QStringLiteral( "()" ) );
   };
 
   while ( pos < filter.size() )
