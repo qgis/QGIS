@@ -47,7 +47,6 @@ void QgsPointDistanceRenderer::toSld( QDomDocument &doc, QDomElement &element, c
   mRenderer->toSld( doc, element, props );
 }
 
-
 bool QgsPointDistanceRenderer::renderFeature( const QgsFeature &feature, QgsRenderContext &context, int layer, bool selected, bool drawVertexMarker )
 {
   Q_UNUSED( drawVertexMarker )

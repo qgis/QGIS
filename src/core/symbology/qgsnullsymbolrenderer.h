@@ -41,7 +41,6 @@ class CORE_EXPORT QgsNullSymbolRenderer : public QgsFeatureRenderer
     bool renderFeature( const QgsFeature &feature, QgsRenderContext &context, int layer = -1, bool selected = false, bool drawVertexMarker = false ) override SIP_THROW( QgsCsException );
     void stopRender( QgsRenderContext &context ) override;
     bool willRenderFeature( const QgsFeature &feature, QgsRenderContext &context ) const override;
-
     QSet<QString> usedAttributes( const QgsRenderContext &context ) const override;
     QString dump() const override;
     QgsFeatureRenderer *clone() const override SIP_FACTORY;

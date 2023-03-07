@@ -36,7 +36,6 @@ and diagrams for the layer. Selected features will also be drawn with a default 
 
     virtual bool willRenderFeature( const QgsFeature &feature, QgsRenderContext &context ) const;
 
-
     virtual QSet<QString> usedAttributes( const QgsRenderContext &context ) const;
 
     virtual QString dump() const;
