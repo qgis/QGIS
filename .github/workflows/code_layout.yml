@@ -188,15 +188,16 @@ jobs:
       - name: Sip Files Up To Date
         run: ./tests/code_layout/sipify/test_sipfiles.sh
 
-  cppcheck_18_04:
-    runs-on: ubuntu-18.04
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-
-      - name: Install Requirements
-        run: |
-          sudo apt install -y cppcheck
-
-      - name: Run cppcheck test
-        run: ./scripts/cppcheck.sh
+# cppcheck is too slow to run on newer versions
+#  cppcheck_18_04:
+#    runs-on: ubuntu-18.04
+#    steps:
+#      - name: Checkout
+#        uses: actions/checkout@v3
+#
+#      - name: Install Requirements
+#        run: |
+#          sudo apt install -y cppcheck
+#
+#      - name: Run cppcheck test
+#        run: ./scripts/cppcheck.sh
