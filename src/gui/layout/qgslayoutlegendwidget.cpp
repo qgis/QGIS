@@ -40,6 +40,7 @@
 #include "qgsexpressioncontextutils.h"
 #include "qgscolorramplegendnodewidget.h"
 #include "qgssymbol.h"
+#include "qgslayoutundostack.h"
 
 #include <QMenu>
 #include <QMessageBox>
@@ -121,6 +122,15 @@ QgsLayoutLegendWidget::QgsLayoutLegendWidget( QgsLayoutItemLegend *legend, QgsMa
   connect( mAddGroupToolButton, &QToolButton::clicked, this, &QgsLayoutLegendWidget::mAddGroupToolButton_clicked );
   connect( mFilterLegendByAtlasCheckBox, &QCheckBox::toggled, this, &QgsLayoutLegendWidget::mFilterLegendByAtlasCheckBox_toggled );
   connect( mItemTreeView, &QgsLayerTreeView::doubleClicked, this, &QgsLayoutLegendWidget::mItemTreeView_doubleClicked );
+
+  connect( mFilterByMapCheckBox, &QCheckBox::toggled, mButtonLinkedMaps, &QWidget::setEnabled );
+  mButtonLinkedMaps->setEnabled( false );
+  connect( mButtonLinkedMaps, &QToolButton::clicked, this, [ = ]
+  {
+    mMapFilteringWidget = new QgsLayoutLegendMapFilteringWidget( mLegend );
+    openPanel( mMapFilteringWidget );
+  } );
+
   setPanelTitle( tr( "Legend Properties" ) );
 
   mTitleFontButton->setMode( QgsFontButton::ModeTextRenderer );
@@ -249,6 +259,7 @@ void QgsLayoutLegendWidget::setGuiElements()
   whileBlocking( mItemAlignCombo )->setCurrentAlignment( mLegend->style( QgsLegendStyle::SymbolLabel ).alignment() );
   whileBlocking( mArrangementCombo )->setCurrentAlignment( mLegend->symbolAlignment() );
   mFilterByMapCheckBox->setChecked( mLegend->legendFilterByMapEnabled() );
+  mButtonLinkedMaps->setEnabled( mLegend->legendFilterByMapEnabled() );
   mColumnCountSpinBox->setValue( mLegend->columnCount() );
   mSplitLayerCheckBox->setChecked( mLegend->splitLayer() );
   mEqualColumnWidthCheckBox->setChecked( mLegend->equalColumnWidth() );
@@ -1255,6 +1266,9 @@ bool QgsLayoutLegendWidget::setNewItem( QgsLayoutItem *item )
   mLegend = qobject_cast< QgsLayoutItemLegend * >( item );
   mItemPropertiesWidget->setItem( mLegend );
 
+  if ( mMapFilteringWidget )
+    mMapFilteringWidget->setItem( mLegend );
+
   if ( mLegend )
   {
     mItemTreeView->setModel( mLegend->model() );
@@ -1886,4 +1900,204 @@ void QgsLayoutLegendNodeWidget::columnSplitChanged()
   mLegend->endCommand();
 }
 
+//
+// QgsLayoutLegendMapFilteringWidget
+//
+
+QgsLayoutLegendMapFilteringWidget::QgsLayoutLegendMapFilteringWidget( QgsLayoutItemLegend *legend )
+  : QgsLayoutItemBaseWidget( nullptr, legend )
+  , mLegendItem( legend )
+{
+  setupUi( this );
+  setPanelTitle( tr( "Legend Filtering" ) );
+
+  setNewItem( legend );
+}
+
+bool QgsLayoutLegendMapFilteringWidget::setNewItem( QgsLayoutItem *item )
+{
+  if ( item->type() != QgsLayoutItemRegistry::LayoutLegend )
+    return false;
+
+  if ( mLegendItem )
+  {
+    disconnect( mLegendItem, &QgsLayoutObject::changed, this, &QgsLayoutLegendMapFilteringWidget::updateGuiElements );
+  }
+
+  mLegendItem = qobject_cast< QgsLayoutItemLegend * >( item );
+
+  if ( mLegendItem )
+  {
+    connect( mLegendItem, &QgsLayoutObject::changed, this, &QgsLayoutLegendMapFilteringWidget::updateGuiElements );
+  }
+
+  updateGuiElements();
+
+  return true;
+}
+
+void QgsLayoutLegendMapFilteringWidget::updateGuiElements()
+{
+  if ( mBlockUpdates )
+    return;
+
+  mBlockUpdates = true;
+
+  if ( mFilterMapItemsListView->model() )
+  {
+    QAbstractItemModel *oldModel = mFilterMapItemsListView->model();
+    mFilterMapItemsListView->setModel( nullptr );
+    oldModel->deleteLater();
+  }
+
+  QgsLayoutLegendMapFilteringModel *model = new QgsLayoutLegendMapFilteringModel( mLegendItem, mLegendItem->layout()->itemsModel(), mFilterMapItemsListView );
+  mFilterMapItemsListView->setModel( model );
+
+  mBlockUpdates = false;
+}
+
+//
+// QgsLayoutLegendMapFilteringModel
+//
+
+QgsLayoutLegendMapFilteringModel::QgsLayoutLegendMapFilteringModel( QgsLayoutItemLegend *legend, QgsLayoutModel *layoutModel, QObject *parent )
+  : QSortFilterProxyModel( parent )
+  , mLayoutModel( layoutModel )
+  , mLegendItem( legend )
+{
+  setSourceModel( layoutModel );
+}
+
+int QgsLayoutLegendMapFilteringModel::columnCount( const QModelIndex & ) const
+{
+  return 1;
+}
+
+QVariant QgsLayoutLegendMapFilteringModel::data( const QModelIndex &i, int role ) const
+{
+  if ( !i.isValid() )
+    return QVariant();
+
+  if ( i.column() != 0 )
+    return QVariant();
+
+  const QModelIndex sourceIndex = mapToSource( index( i.row(), QgsLayoutModel::ItemId, i.parent() ) );
+
+  QgsLayoutItemMap *mapItem = qobject_cast< QgsLayoutItemMap * >( mLayoutModel->itemFromIndex( mapToSource( i ) ) );
+  if ( !mapItem )
+  {
+    return QVariant();
+  }
+
+  switch ( role )
+  {
+    case Qt::CheckStateRole:
+      switch ( i.column() )
+      {
+        case 0:
+        {
+          if ( !mLegendItem )
+            return Qt::Unchecked;
+
+          return mLegendItem->filterByMapItems().contains( mapItem ) ? Qt::Checked : Qt::Unchecked;
+        }
+
+        default:
+          return QVariant();
+      }
+
+    default:
+      return mLayoutModel->data( sourceIndex, role );
+  }
+}
+
+bool QgsLayoutLegendMapFilteringModel::setData( const QModelIndex &index, const QVariant &value, int role )
+{
+  Q_UNUSED( role )
+
+  if ( !index.isValid() )
+    return false;
+
+  QgsLayoutItemMap *mapItem = qobject_cast< QgsLayoutItemMap * >( mLayoutModel->itemFromIndex( mapToSource( index ) ) );
+  if ( !mapItem || !mLegendItem )
+  {
+    return false;
+  }
+
+  mLegendItem->layout()->undoStack()->beginCommand( mLegendItem, tr( "Change Legend Linked Maps" ) );
+
+  QList< QgsLayoutItemMap * > linkedMaps = mLegendItem->filterByMapItems();
+  if ( value.toBool() )
+  {
+    if ( !linkedMaps.contains( mapItem ) )
+    {
+      linkedMaps.append( mapItem );
+      mLegendItem->setFilterByMapItems( linkedMaps );
+    }
+  }
+  else
+  {
+    linkedMaps.removeAll( mapItem );
+    mLegendItem->setFilterByMapItems( linkedMaps );
+  }
+  emit dataChanged( index, index, QVector<int>() << role );
+
+  mLegendItem->layout()->undoStack()->endCommand();
+  mLegendItem->invalidateCache();
+
+  return true;
+}
+
+Qt::ItemFlags QgsLayoutLegendMapFilteringModel::flags( const QModelIndex &index ) const
+{
+  Qt::ItemFlags flags = QAbstractItemModel::flags( index );
+
+  if ( ! index.isValid() )
+  {
+    return flags ;
+  }
+
+  QgsLayoutItemMap *mapItem = qobject_cast< QgsLayoutItemMap * >( mLayoutModel->itemFromIndex( mapToSource( index ) ) );
+  const bool isMainLinkedMapItem = mLegendItem ? ( mLegendItem->linkedMap() == mapItem ) : false;
+
+  // the main linked map item will always be considered checked in this panel.
+  // otherwise we have a potentially confusing user situation where they have selected a main linked map for their legend
+  // and enabled the filter by map option, but the filtering isn't applying to that main linked map (ie. things don't work
+  // as they did in < 3.32)
+  if ( !isMainLinkedMapItem )
+  {
+    flags |= Qt::ItemIsEnabled;
+  }
+  else
+  {
+    flags &= ~Qt::ItemIsEnabled;
+  }
+
+  switch ( index.column() )
+  {
+    case 0:
+      if ( !isMainLinkedMapItem )
+        return flags | Qt::ItemIsSelectable | Qt::ItemIsUserCheckable;
+      else
+        return flags | Qt::ItemIsSelectable;
+
+    default:
+      return flags | Qt::ItemIsSelectable;
+  }
+}
+
+bool QgsLayoutLegendMapFilteringModel::filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const
+{
+  QgsLayoutItem *item = mLayoutModel->itemFromIndex( mLayoutModel->index( source_row, 0, source_parent ) );
+  if ( !item || item->type() != QgsLayoutItemRegistry::ItemType::LayoutMap )
+  {
+    return false;
+  }
+
+  return true;
+}
+
+
 ///@endcond
+
+

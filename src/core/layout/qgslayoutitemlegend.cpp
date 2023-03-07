@@ -189,6 +189,20 @@ void QgsLayoutItemLegend::finalizeRestoreFromXml()
   {
     setLinkedMap( qobject_cast< QgsLayoutItemMap * >( mLayout->itemByUuid( mMapUuid, true ) ) );
   }
+
+  if ( !mFilterByMapUuids.isEmpty() )
+  {
+    QList< QgsLayoutItemMap * > maps;
+    maps.reserve( mFilterByMapUuids.size() );
+    for ( const QString &uuid : std::as_const( mFilterByMapUuids ) )
+    {
+      if ( QgsLayoutItemMap *map = qobject_cast< QgsLayoutItemMap * >( mLayout->itemByUuid( uuid, true ) ) )
+      {
+        maps << map;
+      }
+    }
+    setFilterByMapItems( maps );
+  }
 }
 
 void QgsLayoutItemLegend::refresh()
@@ -228,9 +242,6 @@ void QgsLayoutItemLegend::draw( QgsLayoutItemRenderContext &context )
     mSettings.setDpi( mLayout->renderContext().dpi() );
     Q_NOWARN_DEPRECATED_POP
   }
-
-
-
 
   QgsLegendRenderer legendRenderer( mLegendModel.get(), mSettings );
   legendRenderer.setLegendSize( rect().size() );
@@ -617,6 +628,21 @@ bool QgsLayoutItemLegend::writePropertiesToElement( QDomElement &legendElem, QDo
     legendElem.setAttribute( QStringLiteral( "map_uuid" ), mMap->uuid() );
   }
 
+  if ( !mFilterByMapItems.empty() )
+  {
+    QDomElement filterByMapsElem = doc.createElement( QStringLiteral( "filterByMaps" ) );
+    for ( QgsLayoutItemMap *map : mFilterByMapItems )
+    {
+      if ( map )
+      {
+        QDomElement mapElem = doc.createElement( QStringLiteral( "map" ) );
+        mapElem.setAttribute( QStringLiteral( "uuid" ), map->uuid() );
+        filterByMapsElem.appendChild( mapElem );
+      }
+    }
+    legendElem.appendChild( filterByMapsElem );
+  }
+
   QDomElement legendStyles = doc.createElement( QStringLiteral( "styles" ) );
   legendElem.appendChild( legendStyles );
 
@@ -743,6 +769,26 @@ bool QgsLayoutItemLegend::readPropertiesFromElement( const QDomElement &itemElem
   {
     mMapUuid = itemElem.attribute( QStringLiteral( "map_uuid" ) );
   }
+
+  mFilterByMapUuids.clear();
+  {
+    const QDomElement filterByMapsElem = itemElem.firstChildElement( QStringLiteral( "filterByMaps" ) );
+    if ( !filterByMapsElem.isNull() )
+    {
+      QDomElement mapsElem = filterByMapsElem.firstChildElement( QStringLiteral( "map" ) );
+      while ( !mapsElem.isNull() )
+      {
+        mFilterByMapUuids << mapsElem.attribute( QStringLiteral( "uuid" ) );
+        mapsElem = mapsElem.nextSiblingElement( QStringLiteral( "map" ) );
+      }
+    }
+    else if ( !mMapUuid.isEmpty() )
+    {
+      // for compatibility with < QGIS 3.32 projects
+      mFilterByMapUuids << mMapUuid;
+    }
+  }
+
   // disconnect current map
   setupMapConnections( mMap, false );
   mMap = nullptr;
@@ -835,6 +881,42 @@ void QgsLayoutItemLegend::setLinkedMap( QgsLayoutItemMap *map )
   }
 
   updateFilterByMap();
+}
+
+void QgsLayoutItemLegend::setFilterByMapItems( const QList<QgsLayoutItemMap *> &maps )
+{
+  if ( filterByMapItems() == maps )
+    return;
+
+  for ( QgsLayoutItemMap *map : std::as_const( mFilterByMapItems ) )
+  {
+    setupMapConnections( map, false );
+  }
+
+  mFilterByMapItems.clear();
+  mFilterByMapItems.reserve( maps.size() );
+  for ( QgsLayoutItemMap *map : maps )
+  {
+    if ( map )
+    {
+      mFilterByMapItems.append( map );
+      setupMapConnections( map, true );
+    }
+  }
+
+  updateFilterByMap();
+}
+
+QList<QgsLayoutItemMap *> QgsLayoutItemLegend::filterByMapItems() const
+{
+  QList<QgsLayoutItemMap *> res;
+  res.reserve( mFilterByMapItems.size() );
+  for ( QgsLayoutItemMap *map : mFilterByMapItems )
+  {
+    if ( map )
+      res.append( map );
+  }
+  return res;
 }
 
 void QgsLayoutItemLegend::invalidateCurrentMap()
@@ -999,26 +1081,89 @@ void QgsLayoutItemLegend::doUpdateFilterByMap()
 
   const bool filterByExpression = QgsLayerTreeUtils::hasLegendFilterExpression( *( mCustomLayerTree ? mCustomLayerTree.get() : mLayout->project()->layerTreeRoot() ) );
 
-  if ( mMap && ( mLegendFilterByMap || filterByExpression || mInAtlas ) )
+  const bool hasValidFilter = filterByExpression
+                              || ( mLegendFilterByMap && ( mMap || !mFilterByMapItems.empty() ) )
+                              || mInAtlas;
+
+  if ( hasValidFilter )
   {
     const double dpi = mLayout->renderContext().dpi();
 
-    const QgsRectangle requestRectangle = mMap->requestedExtent();
+    QSet< QgsLayoutItemMap * > linkedFilterMaps;
+    if ( mLegendFilterByMap )
+    {
+      linkedFilterMaps = qgis::listToSet( filterByMapItems() );
+      if ( mMap )
+        linkedFilterMaps.insert( mMap );
+    }
 
-    QSizeF size( requestRectangle.width(), requestRectangle.height() );
-    size *= mLayout->convertFromLayoutUnits( mMap->mapUnitsToLayoutUnits(), Qgis::LayoutUnit::Millimeters ).length() * dpi / 25.4;
+    QgsMapSettings ms;
+    if ( mMap )
+    {
+      // if a specific linked map has been set, use it for the reference scale and extent
+      const QgsRectangle requestRectangle = mMap->requestedExtent();
+      QSizeF size( requestRectangle.width(), requestRectangle.height() );
+      size *= mLayout->convertFromLayoutUnits( mMap->mapUnitsToLayoutUnits(), Qgis::LayoutUnit::Millimeters ).length() * dpi / 25.4;
+      ms = mMap->mapSettings( requestRectangle, size, dpi, true );
+    }
+    else if ( !linkedFilterMaps.empty() )
+    {
+      // otherwise just take the first linked filter map
+      const QgsRectangle requestRectangle = ( *linkedFilterMaps.constBegin() )->requestedExtent();
+      QSizeF size( requestRectangle.width(), requestRectangle.height() );
+      size *= mLayout->convertFromLayoutUnits( ( *linkedFilterMaps.constBegin() )->mapUnitsToLayoutUnits(), Qgis::LayoutUnit::Millimeters ).length() * dpi / 25.4;
+      ms = ( *linkedFilterMaps.constBegin() )->mapSettings( requestRectangle, size, dpi, true );
+    }
 
-    const QgsMapSettings ms = mMap->mapSettings( requestRectangle, size, dpi, true );
+    QgsGeometry filterGeometry;
+    if ( !linkedFilterMaps.empty() )
+    {
+      QVector< QgsGeometry > filterMapGeometries;
+      filterMapGeometries.reserve( linkedFilterMaps.size() );
+      for ( QgsLayoutItemMap *map : std::as_const( linkedFilterMaps ) )
+      {
+        QgsGeometry mapExtent = QgsGeometry::fromQPolygonF( map->visibleExtentPolygon() );
 
-    QgsGeometry filterPolygon;
+        //transform back to destination CRS
+        const QgsCoordinateTransform mapTransform( map->crs(), ms.destinationCrs(), mLayout->project() );
+        try
+        {
+          mapExtent.transform( mapTransform );
+        }
+        catch ( QgsCsException &cse )
+        {
+          continue;
+        }
+        filterMapGeometries.append( mapExtent );
+      }
+      filterGeometry = QgsGeometry::unaryUnion( filterMapGeometries );
+    }
+    else if ( mMap )
+    {
+      filterGeometry = QgsGeometry::fromQPolygonF( mMap->visibleExtentPolygon() );
+    }
+
     if ( mInAtlas )
     {
-      filterPolygon = mLayout->reportContext().currentGeometry( mMap->crs() );
+      if ( !filterGeometry.isEmpty() )
+        filterGeometry = mLayout->reportContext().currentGeometry( ms.destinationCrs() );
+      else
+        filterGeometry = filterGeometry.intersection( mLayout->reportContext().currentGeometry( ms.destinationCrs() ) );
     }
-    mLegendModel->setLegendFilter( &ms, /* useExtent */ mInAtlas || mLegendFilterByMap, filterPolygon, /* useExpressions */ true );
+
+    if ( !filterGeometry.isNull() )
+    {
+      mLegendModel->setLegendFilter( &ms, true, filterGeometry, true );
+    }
+    else
+    {
+      mLegendModel->setLegendFilter( &ms, false, QgsGeometry(), true );
+    }
   }
   else
+  {
     mLegendModel->setLegendFilterByMap( nullptr );
+  }
 
   clearLegendCachedData();
   mForceResize = true;

@@ -235,7 +235,7 @@ class GUI_EXPORT QgsLayoutMapLabelingWidget: public QgsLayoutItemBaseWidget, pri
     explicit QgsLayoutMapLabelingWidget( QgsLayoutItemMap *map );
 
   protected:
-    bool setNewItem( QgsLayoutItem *item ) override;
+    bool setNewItem( QgsLayoutItem *item ) final;
 
   private slots:
     void updateGuiElements();
@@ -266,7 +266,7 @@ class GUI_EXPORT QgsLayoutMapClippingWidget: public QgsLayoutItemBaseWidget, pri
     void setReportTypeString( const QString &string ) override;
 
   protected:
-    bool setNewItem( QgsLayoutItem *item ) override;
+    bool setNewItem( QgsLayoutItem *item ) final;
 
   private slots:
     void updateGuiElements();
