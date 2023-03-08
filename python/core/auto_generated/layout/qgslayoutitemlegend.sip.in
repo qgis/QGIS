@@ -585,7 +585,7 @@ Sets the ``maps`` to use when filtering legend content by map extents.
 
     QList< QgsLayoutItemMap * > filterByMapItems() const;
 %Docstring
-Returns the \maps to use when filtering legend content by map extents.
+Returns the maps to use when filtering legend content by map extents.
 
 .. seealso:: :py:func:`setFilterByMapItems`
 
