@@ -80,7 +80,7 @@ void Qgs3DMapToolMeasureLine::handleClick( const QPoint &screenPos )
   mDone = false;
 
   const QgsRay3D ray = Qgs3DUtils::rayFromScreenPoint( screenPos, mCanvas->windowSize(), mCanvas->cameraController()->camera() );
-  const auto allHits = Qgs3DUtils::castRay( ray, mCanvas->scene() );
+  const auto allHits = Qgs3DUtils::castRay( mCanvas->scene(), ray, RayCastContext( true, mCanvas->windowSize() ) );
 
   if ( allHits.isEmpty() )
     return;
@@ -90,7 +90,7 @@ void Qgs3DMapToolMeasureLine::handleClick( const QPoint &screenPos )
   for ( const auto &results : allHits )
   {
     const RayHit &result = results.first();
-    const double resDist = result.distance;
+    const float resDist = result.distance;
     if ( minDist < 0 || resDist < minDist )
     {
       minDist = resDist;
@@ -217,7 +217,7 @@ void Qgs3DMapToolMeasureLine::mouseReleaseEvent( QMouseEvent *event )
     }
 
     // Finish measurement
-    mRubberBand->removeLastPoint();
+    mRubberBand->setShowLastMarker( true );
     mDone = true;
   }
 }

@@ -92,12 +92,15 @@ class _3D_EXPORT QgsRubberBand3D
 
     void moveLastPoint( const QgsPoint &pt );
 
+    void setShowLastMarker( bool show ) { mShowLastMarker = show; }
+
   private:
     void updateGeometry();
     void updateMarkerMaterial();
 
   private:
     QgsLineString mLineString;
+    bool mShowLastMarker = false;
 
     Qgs3DMapSettings *mMapSettings = nullptr;  // not owned
     QgsWindow3DEngine *mEngine = nullptr;

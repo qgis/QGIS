@@ -232,15 +232,10 @@ QVector<RayHit> QgsVectorLayerChunkedEntity::rayIntersection( const QgsRay3D &ra
       if ( !polygonGeom )
         return result; // other QGeometry types are not supported for now
       Qt3DCore::QTransform *tr = node->entity()->findChild<Qt3DCore::QTransform *>();
-      if ( !tr )
-      {
-        // todo: don't add unused transform, use a default matrix instead
-        tr = new Qt3DCore::QTransform( node->entity() );
-        node->entity()->addComponent( tr );
-      }
+      const QMatrix4x4 matrix = tr ? tr->matrix() : QMatrix4x4();
 
       QVector3D nodeIntPoint;
-      if ( polygonGeom->rayIntersection( ray, tr->matrix(), nodeIntPoint, fid ) )
+      if ( polygonGeom->rayIntersection( ray, matrix, nodeIntPoint, fid ) )
       {
         hits++;
         float dist = ( ray.origin() - nodeIntPoint ).length();

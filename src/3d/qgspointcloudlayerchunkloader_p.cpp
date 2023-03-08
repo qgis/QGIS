@@ -271,7 +271,7 @@ QVector<RayHit> QgsPointCloudLayerChunkedEntity::rayIntersection( const QgsRay3D
   const QVector3D rayOriginMapCoords( originMapCoords.x(), originMapCoords.y(), originMapCoords.z() );
   const QVector3D rayDirectionMapCoords( directionMapCoords.x(), directionMapCoords.y(), directionMapCoords.z() );
 
-  const int screenSizePx = std::max( context.screenWidth, context.screenHeight );
+  const int screenSizePx = std::max( context.screenSize.height(), context.screenSize.width() );
 
   const QgsPointCloud3DSymbol *symbol = factory->mSymbol.get();
   // Symbol can be null in case of no rendering enabled
@@ -294,6 +294,7 @@ QVector<RayHit> QgsPointCloudLayerChunkedEntity::rayIntersection( const QgsRay3D
   QgsPointCloudRequest request;
   request.setAttributes( attributeCollection );
 
+  float minDist = -1;
   const QList<QgsChunkNode *> activeNodes = this->activeNodes();
   for ( const auto &node : activeNodes )
   {
@@ -334,14 +335,25 @@ QVector<RayHit> QgsPointCloudLayerChunkedEntity::rayIntersection( const QgsRay3D
       if ( layerRay.angleToPoint( point ) > limitAngle )
         continue;
 
+      const float dist = originMapCoords.distance( point );
+
+      if ( minDist < 0 || dist < minDist )
+      {
+        minDist = dist;
+      }
+      else if ( context.singleResult )
+      {
+        continue;
+      }
+
       // Note : applying elevation properties is done in fromPointCloudIdentificationToIdentifyResults
       QVariantMap pointAttr = QgsPointCloudAttribute::getAttributeMap( ptr, i * recordSize, blockAttributes );
       pointAttr[ QStringLiteral( "X" ) ] = x;
       pointAttr[ QStringLiteral( "Y" ) ] = y;
       pointAttr[ QStringLiteral( "Z" ) ] = z;
 
-      // TODO: compute distance or remove it from RayHit if not needed
-      RayHit hit( 0, QVector3D( x, y, z ), QgsFeatureId(), pointAttr );
+
+      RayHit hit( dist, point, FID_NULL, pointAttr );
       result.append( hit );
     }
   }

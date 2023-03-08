@@ -129,6 +129,7 @@ void QgsRubberBand3D::setColor( QColor color )
 void QgsRubberBand3D::reset()
 {
   mLineString.clear();
+  mShowLastMarker = false;
   updateGeometry();
 }
 
@@ -166,8 +167,8 @@ void QgsRubberBand3D::updateGeometry()
   // first entry is empty for primitive restart
   lineData.vertices.pop_front();
 
-  // we don't want a marker on the last point as it's tracked by the mouse cursor
-  if ( !lineData.vertices.isEmpty() )
+  // we may not want a marker on the last point as it's tracked by the mouse cursor
+  if ( !mShowLastMarker && !lineData.vertices.isEmpty() )
     lineData.vertices.pop_back();
 
   mMarkerGeometry->setPoints( lineData.vertices );

@@ -39,6 +39,7 @@ namespace Qt3DExtras
 #include "qgsaabb.h"
 #include "qgsray3d.h"
 
+#include <QSize>
 #include <Qt3DRender/QCamera>
 
 #include <memory>
@@ -47,7 +48,7 @@ namespace Qt3DExtras
 
 struct RayHit
 {
-  RayHit( const float distance, const QVector3D pos, const QgsFeatureId fid = QgsFeatureId(), const QVariantMap attributes = QVariantMap() )
+  RayHit( const float distance, const QVector3D pos, const QgsFeatureId fid = FID_NULL, const QVariantMap attributes = QVariantMap() )
     : distance( distance )
     , pos( pos )
     , fid( fid )
@@ -62,14 +63,12 @@ struct RayHit
 
 struct RayCastContext
 {
-  RayCastContext( bool singleResult = true, int screenWidth = 0, int screenHeight = 0 )
+  RayCastContext( bool singleResult = true, QSize screenSize = QSize() )
     : singleResult( singleResult )
-    , screenWidth( screenWidth )
-    , screenHeight( screenHeight )
+    , screenSize( screenSize )
   {}
   bool singleResult;
-  int screenWidth;
-  int screenHeight;
+  QSize screenSize;
 };
 
 /**
@@ -279,7 +278,7 @@ class _3D_EXPORT Qgs3DUtils
      *
      * \since QGIS 3.32
      */
-    static QHash<QgsMapLayer *, QVector<RayHit>> castRay( const QgsRay3D &ray, Qgs3DMapScene *scene );
+    static QHash<QgsMapLayer *, QVector<RayHit>> castRay( Qgs3DMapScene *scene, const QgsRay3D &ray, const RayCastContext &context );
 };
 
 #endif // QGS3DUTILS_H
