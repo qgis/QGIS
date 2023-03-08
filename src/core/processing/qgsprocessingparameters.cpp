@@ -4918,7 +4918,7 @@ QString QgsProcessingParameterEnum::valueAsPythonString( const QVariant &value, 
 
   if ( mUsesStaticStrings )
   {
-    if ( value.type() == QVariant::StringList )
+    if ( value.type() == QVariant::List || value.type() == QVariant::StringList )
     {
       QStringList parts;
       const QStringList constList = value.toStringList();
