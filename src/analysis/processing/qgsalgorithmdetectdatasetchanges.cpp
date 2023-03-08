@@ -17,7 +17,7 @@
 
 #include "qgsalgorithmdetectdatasetchanges.h"
 #include "qgsvectorlayer.h"
-#include "qgsgeometryengine.h"
+#include "qgsspatialindex.h"
 
 ///@cond PRIVATE
 

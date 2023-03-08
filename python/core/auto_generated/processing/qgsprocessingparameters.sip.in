@@ -34,7 +34,7 @@ Encapsulates settings relating to a feature source input to a processing algorit
 
 
     QgsProcessingFeatureSourceDefinition( const QString &source = QString(), bool selectedFeaturesOnly = false, long long featureLimit = -1,
-                                          QgsProcessingFeatureSourceDefinition::Flags flags = QgsProcessingFeatureSourceDefinition::Flags(), QgsFeatureRequest::InvalidGeometryCheck geometryCheck = QgsFeatureRequest::GeometryAbortOnInvalid );
+                                          QgsProcessingFeatureSourceDefinition::Flags flags = QgsProcessingFeatureSourceDefinition::Flags(), QgsFeatureRequest::InvalidGeometryCheck geometryCheck = QgsFeatureRequest::GeometryAbortOnInvalid, const QString &filterExpression = QString() );
 %Docstring
 Constructor for QgsProcessingFeatureSourceDefinition, accepting a static string ``source``.
 
@@ -43,6 +43,9 @@ If ``selectedFeaturesOnly`` is ``True``, then only selected features from the so
 The optional ``featureLimit`` can be set to a value > 0 to place a hard limit on the maximum number
 of features which will be read from the source.
 
+Since QGIS 3.32, the optional ``filterExpression`` argument can be used to specify a expression to use
+to filter the features read from the source.
+
 The ``flags`` argument can be used to specify flags which dictate the source behavior.
 
 If the QgsProcessingFeatureSourceDefinition.Flag.FlagOverrideDefaultGeometryCheck is set in ``flags``, then the value of ``geometryCheck`` will override
@@ -50,7 +53,7 @@ the default geometry check method (as dictated by :py:class:`QgsProcessingContex
 %End
 
     QgsProcessingFeatureSourceDefinition( const QgsProperty &source, bool selectedFeaturesOnly = false, long long featureLimit = -1,
-                                          QgsProcessingFeatureSourceDefinition::Flags flags = QgsProcessingFeatureSourceDefinition::Flags(), QgsFeatureRequest::InvalidGeometryCheck geometryCheck = QgsFeatureRequest::GeometryAbortOnInvalid );
+                                          QgsProcessingFeatureSourceDefinition::Flags flags = QgsProcessingFeatureSourceDefinition::Flags(), QgsFeatureRequest::InvalidGeometryCheck geometryCheck = QgsFeatureRequest::GeometryAbortOnInvalid, const QString &filterExpression = QString() );
 %Docstring
 Constructor for QgsProcessingFeatureSourceDefinition, accepting a QgsProperty source.
 
@@ -58,6 +61,9 @@ If ``selectedFeaturesOnly`` is ``True``, then only selected features from the so
 
 The optional ``featureLimit`` can be set to a value > 0 to place a hard limit on the maximum number
 of features which will be read from the source.
+
+Since QGIS 3.32, the optional ``filterExpression`` argument can be used to specify a expression to use
+to filter the features read from the source.
 
 The ``flags`` argument can be used to specify flags which dictate the source behavior.
 
@@ -70,6 +76,8 @@ the default geometry check method (as dictated by :py:class:`QgsProcessingContex
     bool selectedFeaturesOnly;
 
     long long featureLimit;
+
+    QString filterExpression;
 
     Flags flags;
 

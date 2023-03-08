@@ -20,6 +20,7 @@
 #include "qgsfeaturerequest.h"
 #include "qgsfeaturesource.h"
 #include "qgsprocessingcontext.h"
+#include "qgsspatialindex.h"
 
 ///@cond PRIVATE
 

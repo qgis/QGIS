@@ -76,16 +76,20 @@ class CORE_EXPORT QgsProcessingFeatureSourceDefinition
      * The optional \a featureLimit can be set to a value > 0 to place a hard limit on the maximum number
      * of features which will be read from the source.
      *
+     * Since QGIS 3.32, the optional \a filterExpression argument can be used to specify a expression to use
+     * to filter the features read from the source.
+     *
      * The \a flags argument can be used to specify flags which dictate the source behavior.
      *
      * If the QgsProcessingFeatureSourceDefinition::Flag::FlagOverrideDefaultGeometryCheck is set in \a flags, then the value of \a geometryCheck will override
      * the default geometry check method (as dictated by QgsProcessingContext) for this source.
      */
     QgsProcessingFeatureSourceDefinition( const QString &source = QString(), bool selectedFeaturesOnly = false, long long featureLimit = -1,
-                                          QgsProcessingFeatureSourceDefinition::Flags flags = QgsProcessingFeatureSourceDefinition::Flags(), QgsFeatureRequest::InvalidGeometryCheck geometryCheck = QgsFeatureRequest::GeometryAbortOnInvalid )
+                                          QgsProcessingFeatureSourceDefinition::Flags flags = QgsProcessingFeatureSourceDefinition::Flags(), QgsFeatureRequest::InvalidGeometryCheck geometryCheck = QgsFeatureRequest::GeometryAbortOnInvalid, const QString &filterExpression = QString() )
       : source( QgsProperty::fromValue( source ) )
       , selectedFeaturesOnly( selectedFeaturesOnly )
       , featureLimit( featureLimit )
+      , filterExpression( filterExpression )
       , flags( flags )
       , geometryCheck( geometryCheck )
     {}
@@ -98,16 +102,20 @@ class CORE_EXPORT QgsProcessingFeatureSourceDefinition
      * The optional \a featureLimit can be set to a value > 0 to place a hard limit on the maximum number
      * of features which will be read from the source.
      *
+     * Since QGIS 3.32, the optional \a filterExpression argument can be used to specify a expression to use
+     * to filter the features read from the source.
+     *
      * The \a flags argument can be used to specify flags which dictate the source behavior.
      *
      * If the QgsProcessingFeatureSourceDefinition::Flag::FlagOverrideDefaultGeometryCheck is set in \a flags, then the value of \a geometryCheck will override
      * the default geometry check method (as dictated by QgsProcessingContext) for this source.
      */
     QgsProcessingFeatureSourceDefinition( const QgsProperty &source, bool selectedFeaturesOnly = false, long long featureLimit = -1,
-                                          QgsProcessingFeatureSourceDefinition::Flags flags = QgsProcessingFeatureSourceDefinition::Flags(), QgsFeatureRequest::InvalidGeometryCheck geometryCheck = QgsFeatureRequest::GeometryAbortOnInvalid )
+                                          QgsProcessingFeatureSourceDefinition::Flags flags = QgsProcessingFeatureSourceDefinition::Flags(), QgsFeatureRequest::InvalidGeometryCheck geometryCheck = QgsFeatureRequest::GeometryAbortOnInvalid, const QString &filterExpression = QString() )
       : source( source )
       , selectedFeaturesOnly( selectedFeaturesOnly )
       , featureLimit( featureLimit )
+      , filterExpression( filterExpression )
       , flags( flags )
       , geometryCheck( geometryCheck )
     {}
@@ -129,6 +137,13 @@ class CORE_EXPORT QgsProcessingFeatureSourceDefinition
      * \since QGIS 3.14
      */
     long long featureLimit = -1;
+
+    /**
+     * Optional expression filter to use for filtering features which will be read from the source.
+     *
+     * \since QGIS 3.32
+     */
+    QString filterExpression;
 
     /**
      * Flags which dictate source behavior.
@@ -169,6 +184,7 @@ class CORE_EXPORT QgsProcessingFeatureSourceDefinition
       return source == other.source
              && selectedFeaturesOnly == other.selectedFeaturesOnly
              && featureLimit == other.featureLimit
+             && filterExpression == other.filterExpression
              && flags == other.flags
              && geometryCheck == other.geometryCheck;
     }

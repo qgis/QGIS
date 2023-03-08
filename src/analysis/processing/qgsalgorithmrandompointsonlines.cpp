@@ -17,7 +17,9 @@
 
 
 #include "qgsalgorithmrandompointsonlines.h"
-#include "random"
+#include "qgsspatialindex.h"
+
+#include <random>
 
 // The algorithm parameter names:
 static const QString INPUT = QStringLiteral( "INPUT" );

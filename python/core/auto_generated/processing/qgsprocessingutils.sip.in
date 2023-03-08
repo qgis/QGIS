@@ -352,7 +352,9 @@ a specified ``algorithm``.
         const QStringList &compatibleFormats,
         const QString &preferredFormat,
         QgsProcessingContext &context,
-        QgsProcessingFeedback *feedback, long long featureLimit = -1 );
+        QgsProcessingFeedback *feedback,
+        long long featureLimit = -1,
+        const QString &filterExpression = QString() );
 %Docstring
 Converts a source vector ``layer`` to a file path of a vector layer of compatible format.
 
@@ -367,6 +369,9 @@ layer export is required. This defaults to shapefiles.
 
 The ``featureLimit`` argument can be used to specify a limit on the number of features read from the layer.
 
+Since QGIS 3.32, the optional ``filterExpression`` argument can be used to specify a expression to use
+to filter the features read from the layer.
+
 When an algorithm is capable of handling multi-layer input files (such as Geopackage), it is preferable
 to use :py:func:`~QgsProcessingUtils.convertToCompatibleFormatAndLayerName` which may avoid conversion in more situations.
 
@@ -380,7 +385,9 @@ to use :py:func:`~QgsProcessingUtils.convertToCompatibleFormatAndLayerName` whic
         const QString &preferredFormat,
         QgsProcessingContext &context,
         QgsProcessingFeedback *feedback,
-        QString &layerName /Out/, long long featureLimit = -1 );
+        QString &layerName /Out/,
+        long long featureLimit = -1,
+        const QString &filterExpression = QString() );
 %Docstring
 Converts a source vector ``layer`` to a file path and layer name of a vector layer of compatible format.
 
@@ -406,10 +413,11 @@ a conversion in this case and will return the target layer name in the ``layerNa
 :param preferredFormat: preferred format extension to use if conversion if required
 :param context: processing context
 :param feedback: feedback object
+:param layerName: will be set to the target layer name for multi-layer sources (e.g. Geopackage)
 :param featureLimit: can be used to place a limit on the maximum number of features read from the layer
+:param filterExpression: optional expression for filtering features read from the layer (since QGIS 3.32)
 
-:return: - path to source layer, or nearly converted compatible layer
-         - layerName: will be set to the target layer name for multi-layer sources (e.g. Geopackage)
+:return: path to source layer, or nearly converted compatible layer
 
 
 .. seealso:: :py:func:`convertToCompatibleFormat`
@@ -531,7 +539,7 @@ results according to the settings in a :py:class:`QgsProcessingContext`.
 
 
     QgsProcessingFeatureSource( QgsFeatureSource *originalSource, const QgsProcessingContext &context, bool ownsOriginalSource = false,
-                                long long featureLimit = -1 );
+                                long long featureLimit = -1, const QString &filterExpression = QString() );
 %Docstring
 Constructor for QgsProcessingFeatureSource, accepting an original feature source ``originalSource``
 and processing ``context``.
@@ -541,6 +549,8 @@ If ``ownsOriginalSource`` is ``True``, then this object will take ownership of `
 
 If ``featureLimit`` is set to a value > 0, then a limit is placed on the maximum number of features which will be
 read from the source.
+
+Since QGIS 3.32, the optional ``filterExpression`` can be used to specify an expression based filter for the source.
 %End
 
     ~QgsProcessingFeatureSource();

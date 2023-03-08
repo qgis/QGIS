@@ -17,6 +17,7 @@
 
 #include "qgsalgorithmlineintersection.h"
 #include "qgsgeometryengine.h"
+#include "qgsspatialindex.h"
 
 ///@cond PRIVATE
 

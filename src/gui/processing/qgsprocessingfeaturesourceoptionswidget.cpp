@@ -34,6 +34,12 @@ QgsProcessingFeatureSourceOptionsWidget::QgsProcessingFeatureSourceOptionsWidget
 
   connect( mFeatureLimitSpinBox, qOverload<int>( &QSpinBox::valueChanged ), this, &QgsPanelWidget::widgetChanged );
   connect( mComboInvalidFeatureFiltering, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsPanelWidget::widgetChanged );
+  connect( mFilterExpressionWidget, &QgsExpressionLineEdit::expressionChanged, this, &QgsPanelWidget::widgetChanged );
+}
+
+void QgsProcessingFeatureSourceOptionsWidget::setLayer( QgsVectorLayer *layer )
+{
+  mFilterExpressionWidget->setLayer( layer );
 }
 
 void QgsProcessingFeatureSourceOptionsWidget::setGeometryCheckMethod( bool isOverridden, QgsFeatureRequest::InvalidGeometryCheck check )
@@ -49,6 +55,11 @@ void QgsProcessingFeatureSourceOptionsWidget::setFeatureLimit( int limit )
   mFeatureLimitSpinBox->setValue( limit );
 }
 
+void QgsProcessingFeatureSourceOptionsWidget::setFilterExpression( const QString &expression )
+{
+  mFilterExpressionWidget->setExpression( expression );
+}
+
 QgsFeatureRequest::InvalidGeometryCheck QgsProcessingFeatureSourceOptionsWidget::geometryCheckMethod() const
 {
   return mComboInvalidFeatureFiltering->currentData().isValid() ? static_cast< QgsFeatureRequest::InvalidGeometryCheck >( mComboInvalidFeatureFiltering->currentData().toInt() ) : QgsFeatureRequest::GeometryAbortOnInvalid;
@@ -62,6 +73,11 @@ bool QgsProcessingFeatureSourceOptionsWidget::isOverridingInvalidGeometryCheck()
 int QgsProcessingFeatureSourceOptionsWidget::featureLimit() const
 {
   return mFeatureLimitSpinBox->value() > 0 ? mFeatureLimitSpinBox->value() : -1;
+}
+
+QString QgsProcessingFeatureSourceOptionsWidget::filterExpression() const
+{
+  return mFilterExpressionWidget->expression();
 }
 
 ///@endcond
