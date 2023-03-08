@@ -2519,6 +2519,12 @@ QgsLayoutItemMapGrid::AnnotationDirection QgsLayoutItemMapGrid::annotationDirect
   return mLeftGridAnnotationDirection; // no warnings
 }
 
+void QgsLayoutItemMapGrid::setAnnotationExpression( const QString &expression )
+{
+  mGridAnnotationExpressionString = expression;
+  mGridAnnotationExpression.reset();
+}
+
 void QgsLayoutItemMapGrid::setFrameDivisions( const QgsLayoutItemMapGrid::DisplayMode divisions, const QgsLayoutItemMapGrid::BorderSide border )
 {
   switch ( border )
