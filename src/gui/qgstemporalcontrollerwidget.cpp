@@ -186,7 +186,7 @@ void QgsTemporalControllerWidget::keyPressEvent( QKeyEvent *e )
   {
     togglePause();
   }
-  QWidget::keyPressEvent( e );
+  QgsPanelWidget::keyPressEvent( e );
 }
 
 void QgsTemporalControllerWidget::aboutToShowRangeMenu()
