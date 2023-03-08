@@ -2050,7 +2050,7 @@ bool QgsLayoutLegendMapFilteringModel::setData( const QModelIndex &index, const 
 
 Qt::ItemFlags QgsLayoutLegendMapFilteringModel::flags( const QModelIndex &index ) const
 {
-  Qt::ItemFlags flags = QAbstractItemModel::flags( index );
+  Qt::ItemFlags flags = QSortFilterProxyModel::flags( index );
 
   if ( ! index.isValid() )
   {
