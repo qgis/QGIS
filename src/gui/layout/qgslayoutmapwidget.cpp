@@ -1928,7 +1928,7 @@ bool QgsLayoutMapItemBlocksLabelsModel::setData( const QModelIndex &index, const
 
 Qt::ItemFlags QgsLayoutMapItemBlocksLabelsModel::flags( const QModelIndex &index ) const
 {
-  Qt::ItemFlags flags = QAbstractItemModel::flags( index );
+  Qt::ItemFlags flags = QSortFilterProxyModel::flags( index );
 
   if ( ! index.isValid() )
   {
