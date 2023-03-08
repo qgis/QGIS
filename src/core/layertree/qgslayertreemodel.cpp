@@ -664,7 +664,7 @@ void QgsLayerTreeModel::setLegendFilter( const QgsMapSettings *settings, bool us
     {
       blockingHitTest->run();
       mHitTestResults = blockingHitTest->results();
-      onHitTestResultsChanged();
+      handleHitTestResults();
     }
   }
   else
@@ -675,11 +675,11 @@ void QgsLayerTreeModel::setLegendFilter( const QgsMapSettings *settings, bool us
 
     mLegendFilterMapSettings.reset();
 
-    onHitTestResultsChanged();
+    handleHitTestResults();
   }
 }
 
-void QgsLayerTreeModel::onHitTestResultsChanged()
+void QgsLayerTreeModel::handleHitTestResults()
 {
   // temporarily disable autocollapse so that legend nodes stay visible
   int bkAutoCollapse = autoCollapseLegendNodes();
@@ -909,7 +909,7 @@ void QgsLayerTreeModel::hitTestTaskCompleted()
   if ( mHitTestTask )
   {
     mHitTestResults = mHitTestTask->results();
-    onHitTestResultsChanged();
+    handleHitTestResults();
   }
 }
 
