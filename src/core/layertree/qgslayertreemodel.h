@@ -484,7 +484,7 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
     void hitTestTaskCompleted();
 
   private:
-    void onHitTestResultsChanged();
+    void handleHitTestResults();
 
 
 };
