@@ -387,7 +387,7 @@ bool QgsMapHitTestTask::run()
   const std::size_t totalCount = mPreparedData.size();
   for ( auto &layerData : mPreparedData )
   {
-    mFeedback->setProgress( static_cast< double >( layerIdx ) / totalCount * 100.0 );
+    mFeedback->setProgress( static_cast< double >( layerIdx ) / static_cast< double >( totalCount ) * 100.0 );
     if ( mFeedback->isCanceled() )
       break;
 
