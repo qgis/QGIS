@@ -258,35 +258,38 @@ void QgsExpressionTreeView::updateFunctionTree()
   mModel->clear();
   mExpressionGroups.clear();
 
-  // TODO Can we move this stuff to QgsExpression, like the functions?
-  registerItem( QStringLiteral( "Operators" ), QStringLiteral( "+" ), QStringLiteral( " + " ) );
-  registerItem( QStringLiteral( "Operators" ), QStringLiteral( "-" ), QStringLiteral( " - " ) );
-  registerItem( QStringLiteral( "Operators" ), QStringLiteral( "*" ), QStringLiteral( " * " ) );
-  registerItem( QStringLiteral( "Operators" ), QStringLiteral( "/" ), QStringLiteral( " / " ) );
-  registerItem( QStringLiteral( "Operators" ), QStringLiteral( "%" ), QStringLiteral( " % " ) );
-  registerItem( QStringLiteral( "Operators" ), QStringLiteral( "^" ), QStringLiteral( " ^ " ) );
-  registerItem( QStringLiteral( "Operators" ), QStringLiteral( "=" ), QStringLiteral( " = " ) );
-  registerItem( QStringLiteral( "Operators" ), QStringLiteral( "~" ), QStringLiteral( " ~ " ) );
-  registerItem( QStringLiteral( "Operators" ), QStringLiteral( ">" ), QStringLiteral( " > " ) );
-  registerItem( QStringLiteral( "Operators" ), QStringLiteral( "<" ), QStringLiteral( " < " ) );
-  registerItem( QStringLiteral( "Operators" ), QStringLiteral( "<>" ), QStringLiteral( " <> " ) );
-  registerItem( QStringLiteral( "Operators" ), QStringLiteral( "<=" ), QStringLiteral( " <= " ) );
-  registerItem( QStringLiteral( "Operators" ), QStringLiteral( ">=" ), QStringLiteral( " >= " ) );
-  registerItem( QStringLiteral( "Operators" ), QStringLiteral( "[]" ), QStringLiteral( "[ ]" ) );
-  registerItem( QStringLiteral( "Operators" ), QStringLiteral( "||" ), QStringLiteral( " || " ) );
-  registerItem( QStringLiteral( "Operators" ), QStringLiteral( "BETWEEN" ), QStringLiteral( " BETWEEN " ) );
-  registerItem( QStringLiteral( "Operators" ), QStringLiteral( "NOT BETWEEN" ), QStringLiteral( " NOT BETWEEN " ) );
-  registerItem( QStringLiteral( "Operators" ), QStringLiteral( "IN" ), QStringLiteral( " IN " ) );
-  registerItem( QStringLiteral( "Operators" ), QStringLiteral( "LIKE" ), QStringLiteral( " LIKE " ) );
-  registerItem( QStringLiteral( "Operators" ), QStringLiteral( "ILIKE" ), QStringLiteral( " ILIKE " ) );
-  registerItem( QStringLiteral( "Operators" ), QStringLiteral( "IS" ), QStringLiteral( " IS " ) );
-  registerItem( QStringLiteral( "Operators" ), QStringLiteral( "IS NOT" ), QStringLiteral( " IS NOT " ) );
-  registerItem( QStringLiteral( "Operators" ), QStringLiteral( "OR" ), QStringLiteral( " OR " ) );
-  registerItem( QStringLiteral( "Operators" ), QStringLiteral( "AND" ), QStringLiteral( " AND " ) );
-  registerItem( QStringLiteral( "Operators" ), QStringLiteral( "NOT" ), QStringLiteral( " NOT " ) );
+  static const QStringList operators = QStringList() << QStringLiteral( "+" )
+                                       << QStringLiteral( "-" )
+                                       << QStringLiteral( "*" )
+                                       << QStringLiteral( "/" )
+                                       << QStringLiteral( "%" )
+                                       << QStringLiteral( "^" )
+                                       << QStringLiteral( "=" )
+                                       << QStringLiteral( "~" )
+                                       << QStringLiteral( ">" )
+                                       << QStringLiteral( "<" )
+                                       << QStringLiteral( "<>" )
+                                       << QStringLiteral( "<=" )
+                                       << QStringLiteral( ">=" )
+                                       << QStringLiteral( "[]" )
+                                       << QStringLiteral( "||" )
+                                       << QStringLiteral( "BETWEEN" )
+                                       << QStringLiteral( "NOT BETWEEN" )
+                                       << QStringLiteral( "IN" )
+                                       << QStringLiteral( "LIKE" )
+                                       << QStringLiteral( "ILIKE" )
+                                       << QStringLiteral( "IS" )
+                                       << QStringLiteral( "IS NOT" )
+                                       << QStringLiteral( "OR" )
+                                       << QStringLiteral( "AND" )
+                                       << QStringLiteral( "NOT" );
+  for ( const auto &name : operators )
+  {
+    registerItem( QStringLiteral( "Operators" ), name,  ' ' + name + ' ', QString(), QgsExpressionItem::ExpressionNode, false, -1, QIcon(), QgsExpression::tags( name ) );
+  }
 
   QString casestring = QStringLiteral( "CASE WHEN condition THEN result END" );
-  registerItem( QStringLiteral( "Conditionals" ), QStringLiteral( "CASE" ), casestring );
+  registerItem( QStringLiteral( "Conditionals" ), QStringLiteral( "CASE" ), casestring, QString(), QgsExpressionItem::ExpressionNode, false, -1, QIcon(), QgsExpression::tags( "CASE" ) );
 
   // use -1 as sort order here -- NULL should always show before the field list
   registerItem( QStringLiteral( "Fields and Values" ), QStringLiteral( "NULL" ), QStringLiteral( "NULL" ), QString(), QgsExpressionItem::ExpressionNode, false, -1 );
