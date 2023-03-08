@@ -549,7 +549,7 @@ class CORE_EXPORT QgsLayoutItemLegend : public QgsLayoutItem
     void setFilterByMapItems( const QList< QgsLayoutItemMap * > &maps );
 
     /**
-     * Returns the \maps to use when filtering legend content by map extents.
+     * Returns the maps to use when filtering legend content by map extents.
      *
      * \see setFilterByMapItems()
      * \see setLinkedMap()
