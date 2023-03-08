@@ -148,7 +148,7 @@ bool QgsMultiLineString::addGeometry( QgsAbstractGeometry *g )
     g->addMValue();
   else if ( !isMeasure() && g->isMeasure() )
     g->dropMValue();
-  return QgsGeometryCollection::addGeometry( g ); // clazy:exclude=skipped-base-method
+  return QgsGeometryCollection::addGeometry( g ); // NOLINT(bugprone-parent-virtual-call) clazy:exclude=skipped-base-method
 }
 
 bool QgsMultiLineString::insertGeometry( QgsAbstractGeometry *g, int index )
@@ -159,7 +159,7 @@ bool QgsMultiLineString::insertGeometry( QgsAbstractGeometry *g, int index )
     return false;
   }
 
-  return QgsMultiCurve::insertGeometry( g, index ); // clazy:exclude=skipped-base-method
+  return QgsMultiCurve::insertGeometry( g, index );
 }
 
 QgsMultiCurve *QgsMultiLineString::toCurveType() const

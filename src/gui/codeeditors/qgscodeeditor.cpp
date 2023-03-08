@@ -179,7 +179,7 @@ void QgsCodeEditor::keyPressEvent( QKeyEvent *event )
   if ( event->key() == Qt::Key_Escape )
   {
     // Shortcut QScintilla and redirect the event to the QWidget handler
-    QWidget::keyPressEvent( event ); // clazy:exclude=skipped-base-method
+    QWidget::keyPressEvent( event ); // NOLINT(bugprone-parent-virtual-call) clazy:exclude=skipped-base-method
     return;
   }
 
