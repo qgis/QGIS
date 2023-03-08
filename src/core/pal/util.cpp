@@ -27,12 +27,8 @@
  *
  */
 
-#include "layer.h"
-#include "internalexception.h"
+#include "qgsgeos.h"
 #include "util.h"
-#include "labelposition.h"
-#include "feature.h"
-#include "geomfunction.h"
 
 #include "qgslogger.h"
 #include <cfloat>

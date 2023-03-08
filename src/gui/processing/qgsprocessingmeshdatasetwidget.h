@@ -54,10 +54,10 @@ class GUI_EXPORT QgsProcessingMeshDatasetGroupsWidget : public QWidget
     const QgsProcessingParameterMeshDatasetGroups *mParam = nullptr;
     QVariantList mValue;
 
-    QPointer<QLineEdit> mLineEdit = nullptr;
-    QPointer<QToolButton> mToolButton = nullptr;
-    QPointer<QAction> mActionCurrentActiveDatasetGroups = nullptr;
-    QPointer<QAction> mActionAvailableDatasetGroups = nullptr;
+    QPointer<QLineEdit> mLineEdit;
+    QPointer<QToolButton> mToolButton;
+    QPointer<QAction> mActionCurrentActiveDatasetGroups;
+    QPointer<QAction> mActionAvailableDatasetGroups;
     QgsMeshLayer *mMeshLayer = nullptr;
     QMap<int, QString> mDatasetGroupsNames; //used to store the dataet groups name if layer is not referenced
 

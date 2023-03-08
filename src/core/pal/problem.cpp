@@ -61,6 +61,11 @@ Problem::Problem( const QgsRectangle &extent )
 
 }
 
+void Problem::addCandidatePosition( std::unique_ptr<LabelPosition> position )
+{
+  mLabelPositions.emplace_back( std::move( position ) );
+}
+
 Problem::~Problem() = default;
 
 void Problem::reduce()

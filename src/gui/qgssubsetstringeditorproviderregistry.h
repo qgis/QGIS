@@ -26,6 +26,7 @@
 class QgsSubsetStringEditorInterface;
 class QgsSubsetStringEditorProvider;
 class QgsProviderGuiRegistry;
+class QgsVectorLayer;
 
 /**
  * \ingroup gui
