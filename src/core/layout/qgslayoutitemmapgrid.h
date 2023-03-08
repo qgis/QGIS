@@ -719,7 +719,7 @@ class CORE_EXPORT QgsLayoutItemMapGrid : public QgsLayoutItemMapItem
      * is QgsLayoutItemMapGrid::CustomFormat.
      * \see annotationExpression()
      */
-    void setAnnotationExpression( const QString &expression ) { mGridAnnotationExpressionString = expression; mGridAnnotationExpression.reset(); }
+    void setAnnotationExpression( const QString &expression );
 
     /**
      * Returns the expression used for drawing grid annotations. This is only used when annotationFormat()

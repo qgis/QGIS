@@ -96,7 +96,7 @@ namespace pal
        * \param position label candidate position. Ownership is transferred to Problem.
        * \since QGIS 2.12
        */
-      void addCandidatePosition( std::unique_ptr< LabelPosition > position ) { mLabelPositions.emplace_back( std::move( position ) ); }
+      void addCandidatePosition( std::unique_ptr< LabelPosition > position );
 
       /**
        * Returns the total number of features considered during the labeling problem.
