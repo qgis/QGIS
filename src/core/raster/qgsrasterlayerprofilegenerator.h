@@ -84,7 +84,7 @@ class CORE_EXPORT QgsRasterLayerProfileGenerator : public QgsAbstractProfileSurf
 
   private:
     QString mId;
-    std::unique_ptr<QgsRasterBlockFeedback> mFeedback = nullptr;
+    std::unique_ptr<QgsRasterBlockFeedback> mFeedback;
 
     std::unique_ptr< QgsCurve > mProfileCurve;
 
