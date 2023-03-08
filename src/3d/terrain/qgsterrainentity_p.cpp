@@ -161,7 +161,7 @@ QVector<RayHit> QgsTerrainEntity::rayIntersection( const QgsRay3D &ray, const Ra
              ray.intersects( Qgs3DUtils::aabbToBox( node->bbox() ) ) )
         {
           Qt3DRender::QGeometryRenderer *rend = node->entity()->findChild<Qt3DRender::QGeometryRenderer *>();
-          auto *geom = rend->geometry();
+          Qt3DRender::QGeometry *geom = rend->geometry();
           Qt3DCore::QTransform *tr = node->entity()->findChild<Qt3DCore::QTransform *>();
           QVector3D nodeIntPoint;
           DemTerrainTileGeometry *demGeom = static_cast<DemTerrainTileGeometry *>( geom );

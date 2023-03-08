@@ -296,7 +296,7 @@ QVector<RayHit> QgsPointCloudLayerChunkedEntity::rayIntersection( const QgsRay3D
 
   float minDist = -1;
   const QList<QgsChunkNode *> activeNodes = this->activeNodes();
-  for ( const auto &node : activeNodes )
+  for ( QgsChunkNode *node : activeNodes )
   {
     const QgsChunkNodeId id = node->tileId();
     const IndexedPointCloudNode n( id.d, id.x, id.y, id.z );

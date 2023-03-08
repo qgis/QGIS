@@ -80,14 +80,14 @@ void Qgs3DMapToolMeasureLine::handleClick( const QPoint &screenPos )
   mDone = false;
 
   const QgsRay3D ray = Qgs3DUtils::rayFromScreenPoint( screenPos, mCanvas->windowSize(), mCanvas->cameraController()->camera() );
-  const auto allHits = Qgs3DUtils::castRay( mCanvas->scene(), ray, RayCastContext( true, mCanvas->windowSize() ) );
+  const QHash<QgsMapLayer *, QVector<RayHit>> allHits = Qgs3DUtils::castRay( mCanvas->scene(), ray, RayCastContext( true, mCanvas->windowSize() ) );
 
   if ( allHits.isEmpty() )
     return;
 
   QgsVector3D worldIntersection;
   float minDist = -1;
-  for ( const auto &results : allHits )
+  for ( const QVector<RayHit> &results : allHits )
   {
     const RayHit &result = results.first();
     const float resDist = result.distance;

@@ -799,20 +799,20 @@ QHash<QgsMapLayer *, QVector<RayHit>> Qgs3DUtils::castRay( Qgs3DMapScene *scene,
 {
   QHash<QgsMapLayer *, QVector<RayHit>> results;
   const QList<QgsMapLayer *> keys = scene->getLayers();
-  for ( const auto &layer : keys )
+  for ( QgsMapLayer *layer : keys )
   {
     Qt3DCore::QEntity *entity = scene->getLayerEntity( layer );
 
     if ( QgsChunkedEntity *chunkedEntity = qobject_cast<QgsChunkedEntity *>( entity ) )
     {
-      auto result = chunkedEntity->rayIntersection( ray, context );
+      const QVector<RayHit> result = chunkedEntity->rayIntersection( ray, context );
       if ( !result.isEmpty() )
         results[ layer ] = result;
     }
   }
   if ( QgsTerrainEntity *terrain = scene->terrainEntity() )
   {
-    const auto result = terrain->rayIntersection( ray, context );
+    const QVector<RayHit> result = terrain->rayIntersection( ray, context );
     if ( !result.isEmpty() )
       results[ nullptr ] = result;
   }

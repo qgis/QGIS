@@ -85,7 +85,7 @@ void Qgs3DMapToolIdentify::mouseReleaseEvent( QMouseEvent *event )
     else if ( QgsPointCloudLayer *pclayer = qobject_cast<QgsPointCloudLayer * >( it->first ) )
     {
       pointCloudResults[ pclayer ] = QVector<QVariantMap>();
-      for ( const auto &hit : it->second )
+      for ( const RayHit &hit : it->second )
       {
         pointCloudResults[ pclayer ].append( hit.attributes );
       }
