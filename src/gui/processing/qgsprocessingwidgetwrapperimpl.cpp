@@ -2445,8 +2445,19 @@ void QgsProcessingEnumPanelWidget::showDialog()
   if ( mParam )
   {
     availableOptions.reserve( mParam->options().size() );
-    for ( int i = 0; i < mParam->options().count(); ++i )
-      availableOptions << i;
+
+    if ( mParam->usesStaticStrings() )
+    {
+      for ( QString o : mParam->options() )
+      {
+        availableOptions << o;
+      }
+    }
+    else
+    {
+      for ( int i = 0; i < mParam->options().count(); ++i )
+        availableOptions << i;
+    }
   }
 
   const QStringList options = mParam ? mParam->options() : QStringList();
