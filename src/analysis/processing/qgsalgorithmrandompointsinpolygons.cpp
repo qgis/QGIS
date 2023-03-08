@@ -17,6 +17,8 @@
 
 
 #include "qgsalgorithmrandompointsinpolygons.h"
+#include "qgsspatialindex.h"
+
 #include <random>
 
 // The algorithm parameter names:

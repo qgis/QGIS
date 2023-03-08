@@ -18,6 +18,8 @@
 #include "qgsalgorithmsplitwithlines.h"
 #include "qgsgeometryengine.h"
 #include "qgsvectorlayer.h"
+#include "qgsspatialindex.h"
+
 ///@cond PRIVATE
 
 QString QgsSplitWithLinesAlgorithm::name() const

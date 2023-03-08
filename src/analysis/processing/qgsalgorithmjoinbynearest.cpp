@@ -18,7 +18,7 @@
 #include "qgsalgorithmjoinbynearest.h"
 #include "qgsprocessingoutputs.h"
 #include "qgslinestring.h"
-
+#include "qgsspatialindex.h"
 #include <algorithm>
 
 ///@cond PRIVATE

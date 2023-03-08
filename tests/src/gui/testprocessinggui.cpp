@@ -6048,6 +6048,12 @@ void TestProcessingGui::mapLayerComboBox()
   sourceDef.flags = QgsProcessingFeatureSourceDefinition::Flags();
   combo->setValue( sourceDef, context );
   QVERIFY( !( combo->value().value< QgsProcessingFeatureSourceDefinition >().flags & QgsProcessingFeatureSourceDefinition::Flag::FlagOverrideDefaultGeometryCheck ) );
+  sourceDef.filterExpression = QStringLiteral( "name='test'" );
+  combo->setValue( sourceDef, context );
+  QCOMPARE( combo->value().value< QgsProcessingFeatureSourceDefinition >().filterExpression, QStringLiteral( "name='test'" ) );
+  sourceDef.filterExpression = QString();
+  combo->setValue( sourceDef, context );
+  QCOMPARE( combo->value().value< QgsProcessingFeatureSourceDefinition >().filterExpression, QString() );
 
   combo.reset();
   param.reset();
@@ -9383,6 +9389,15 @@ void TestProcessingGui::testFeatureSourceOptionsWidget()
   w.setGeometryCheckMethod( false, QgsFeatureRequest::GeometryAbortOnInvalid );
   QVERIFY( !w.isOverridingInvalidGeometryCheck() );
   QCOMPARE( spy.count(), 5 );
+
+  w.setFilterExpression( QStringLiteral( "name='test'" ) );
+  QCOMPARE( spy.count(), 6 );
+  QCOMPARE( w.filterExpression(), QStringLiteral( "name='test'" ) );
+  w.setFilterExpression( QStringLiteral( "name='test'" ) );
+  QCOMPARE( spy.count(), 6 );
+  w.setFilterExpression( QString() );
+  QCOMPARE( spy.count(), 7 );
+  QCOMPARE( w.filterExpression(), QString() );
 }
 
 void TestProcessingGui::testVectorOutWrapper()

@@ -19,6 +19,7 @@
 #include "qgsprocessingutils.h"
 #include "qgsunittypes.h"
 #include "qgsproviderregistry.h"
+#include "qgsprocessing.h"
 
 QgsProcessingContext::QgsProcessingContext()
   : mPreferredVectorFormat( QgsProcessingUtils::defaultVectorExtension() )

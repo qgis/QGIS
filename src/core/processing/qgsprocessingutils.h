@@ -21,9 +21,6 @@
 #include "qgis_core.h"
 
 #include "qgsrasterlayer.h"
-#include "qgsmessagelog.h"
-#include "qgsspatialindex.h"
-#include "qgsprocessing.h"
 #include "qgsfeaturesink.h"
 #include "qgsfeaturesource.h"
 #include "qgsproxyfeaturesink.h"
@@ -376,6 +373,9 @@ class CORE_EXPORT QgsProcessingUtils
      *
      * The \a featureLimit argument can be used to specify a limit on the number of features read from the layer.
      *
+     * Since QGIS 3.32, the optional \a filterExpression argument can be used to specify a expression to use
+     * to filter the features read from the layer.
+     *
      * When an algorithm is capable of handling multi-layer input files (such as Geopackage), it is preferable
      * to use convertToCompatibleFormatAndLayerName() which may avoid conversion in more situations.
      *
@@ -387,7 +387,9 @@ class CORE_EXPORT QgsProcessingUtils
         const QStringList &compatibleFormats,
         const QString &preferredFormat,
         QgsProcessingContext &context,
-        QgsProcessingFeedback *feedback, long long featureLimit = -1 );
+        QgsProcessingFeedback *feedback,
+        long long featureLimit = -1,
+        const QString &filterExpression = QString() );
 
     /**
      * Converts a source vector \a layer to a file path and layer name of a vector layer of compatible format.
@@ -416,6 +418,7 @@ class CORE_EXPORT QgsProcessingUtils
      * \param feedback feedback object
      * \param layerName will be set to the target layer name for multi-layer sources (e.g. Geopackage)
      * \param featureLimit can be used to place a limit on the maximum number of features read from the layer
+     * \param filterExpression optional expression for filtering features read from the layer (since QGIS 3.32)
      *
      * \returns path to source layer, or nearly converted compatible layer
      *
@@ -429,7 +432,9 @@ class CORE_EXPORT QgsProcessingUtils
         const QString &preferredFormat,
         QgsProcessingContext &context,
         QgsProcessingFeedback *feedback,
-        QString &layerName SIP_OUT, long long featureLimit = -1 );
+        QString &layerName SIP_OUT,
+        long long featureLimit = -1,
+        const QString &filterExpression = QString() );
 
     /**
      * Combines two field lists, avoiding duplicate field names (in a case-insensitive manner).
@@ -603,9 +608,11 @@ class CORE_EXPORT QgsProcessingFeatureSource : public QgsFeatureSource
      *
      * If \a featureLimit is set to a value > 0, then a limit is placed on the maximum number of features which will be
      * read from the source.
+     *
+     * Since QGIS 3.32, the optional \a filterExpression can be used to specify an expression based filter for the source.
      */
     QgsProcessingFeatureSource( QgsFeatureSource *originalSource, const QgsProcessingContext &context, bool ownsOriginalSource = false,
-                                long long featureLimit = -1 );
+                                long long featureLimit = -1, const QString &filterExpression = QString() );
 
     ~QgsProcessingFeatureSource() override;
 
@@ -655,6 +662,7 @@ class CORE_EXPORT QgsProcessingFeatureSource : public QgsFeatureSource
     std::function< void( const QgsFeature & ) > mInvalidGeometryCallbackAbort;
 
     long long mFeatureLimit = -1;
+    QString mFilterExpression;
 
 };
 

@@ -18,7 +18,9 @@
 //Disclaimer: The algorithm optimizes the original Random points in extent algorithm, (C) Alexander Bruy, 2014
 
 #include "qgsalgorithmrandompointsextent.h"
-#include "random"
+#include "qgsspatialindex.h"
+
+#include <random>
 
 ///@cond PRIVATE
 
