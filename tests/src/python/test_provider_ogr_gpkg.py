@@ -2638,6 +2638,59 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         got = [feat for feat in vl.getFeatures()]
         self.assertEqual(got[0]["dt"], new_dt)
 
+    def testTransactionModeAutoWithFilter(self):
+
+        temp_dir = QTemporaryDir()
+        temp_path = temp_dir.path()
+        filename = os.path.join(temp_path, "test.gpkg")
+        ds = ogr.GetDriverByName("GPKG").CreateDataSource(filename)
+        lyr = ds.CreateLayer("points", geom_type=ogr.wkbPoint)
+        lyr.CreateField(ogr.FieldDefn('name', ogr.OFTString))
+        f = ogr.Feature(lyr.GetLayerDefn())
+        f['name'] = 'a'
+        f.SetGeometry(ogr.CreateGeometryFromWkt('POINT(1 2)'))
+        lyr.CreateFeature(f)
+        f = None
+        ds = None
+        ds = None
+
+        vl = QgsVectorLayer(filename)
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.featureCount(), 1)
+        self.assertEqual(next(vl.getFeatures())['name'], 'a')
+
+        p = QgsProject()
+        p.setAutoTransaction(True)
+        self.assertTrue(p.addMapLayers([vl]))
+        self.assertTrue(vl.setSubsetString('"name" IN (\'a\', \'b\')'))
+        self.assertEqual(vl.featureCount(), 1)
+        self.assertTrue(vl.startEditing())
+
+        # Add feature
+        f = QgsFeature(vl.fields())
+        f.setAttribute('name', 'b')
+        g = QgsGeometry.fromWkt('POINT(3 4)')
+        f.setGeometry(g)
+
+        # This triggers the issue because it sets the subset filter
+        req = QgsFeatureRequest()
+        req.setFilterExpression('"name" IS NULL')
+        self.assertEqual([f for f in vl.getFeatures(req)], [])
+
+        self.assertTrue(vl.addFeatures([f]))
+        self.assertTrue(vl.commitChanges())
+        self.assertEqual(vl.featureCount(), 2)
+        attrs = [f['name'] for f in vl.getFeatures()]
+        self.assertEqual(attrs, ['a', 'b'])
+
+        # verify
+        del p
+        vl2 = QgsVectorLayer(filename)
+        self.assertTrue(vl2.isValid())
+        self.assertEqual(vl2.featureCount(), 2)
+        attrs = [f['name'] for f in vl2.getFeatures()]
+        self.assertEqual(attrs, ['a', 'b'])
+
 
 if __name__ == '__main__':
     unittest.main()

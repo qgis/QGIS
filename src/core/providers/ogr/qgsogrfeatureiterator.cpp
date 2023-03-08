@@ -517,6 +517,13 @@ bool QgsOgrFeatureIterator::rewind()
 
 bool QgsOgrFeatureIterator::close()
 {
+  // Finally reset the data source filter, in case it was changed by a previous request
+  // this fixes https://github.com/qgis/QGIS/issues/51934
+  if ( mOgrLayer && ! mSource->mSubsetString.isEmpty() )
+  {
+    OGR_L_SetAttributeFilter( mOgrLayer,  mSource->mEncoding->fromUnicode( mSource->mSubsetString ).constData() );
+  }
+
   if ( mSharedDS )
   {
     iteratorClosed();
