@@ -908,6 +908,8 @@ void QgsLayoutItemMap::paint( QPainter *painter, const QStyleOptionGraphicsItem 
 
   if ( mLayout->renderContext().isPreviewRender() )
   {
+    bool renderInProgress = false;
+
     QgsScopedQPainterState painterState( painter );
     painter->setClipRect( thisPaintRect );
     if ( !mCacheFinalImage || mCacheFinalImage->isNull() )
@@ -933,6 +935,7 @@ void QgsLayoutItemMap::paint( QPainter *painter, const QStyleOptionGraphicsItem 
         mPreviewScaleFactor = QgsLayoutUtils::scaleFactorFromItemStyle( style, painter );
         mBackgroundUpdateTimer->start( 1 );
       }
+      renderInProgress = true;
     }
     else
     {
@@ -941,6 +944,7 @@ void QgsLayoutItemMap::paint( QPainter *painter, const QStyleOptionGraphicsItem 
         // cache was invalidated - trigger a background update
         mPreviewScaleFactor = QgsLayoutUtils::scaleFactorFromItemStyle( style, painter );
         mBackgroundUpdateTimer->start( 1 );
+        renderInProgress = true;
       }
 
       //Background color is already included in cached image, so no need to draw
@@ -963,6 +967,11 @@ void QgsLayoutItemMap::paint( QPainter *painter, const QStyleOptionGraphicsItem 
     mGridStack->drawItems( painter );
     drawAnnotations( painter );
     drawMapFrame( painter );
+
+    if ( renderInProgress )
+    {
+      drawRefreshingOverlay( painter, style );
+    }
   }
   else
   {
