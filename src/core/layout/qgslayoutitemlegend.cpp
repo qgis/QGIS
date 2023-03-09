@@ -52,6 +52,13 @@ QgsLayoutItemLegend::QgsLayoutItemLegend( QgsLayout *layout )
 
   mTitle = mSettings.title();
 
+  connect( mLegendModel.get(), &QgsLayerTreeModel::hitTestStarted, this, [ = ] { emit backgroundTaskCountChanged( 1 ); } );
+  connect( mLegendModel.get(), &QgsLayerTreeModel::hitTestCompleted, this, [ = ]
+  {
+    adjustBoxSize();
+    emit backgroundTaskCountChanged( 0 );
+  } );
+
   // Connect to the main layertreeroot.
   // It serves in "auto update mode" as a medium between the main app legend and this one
   connect( mLayout->project()->layerTreeRoot(), &QgsLayerTreeNode::customPropertyChanged, this, &QgsLayoutItemLegend::nodeCustomPropertyChanged );
@@ -104,6 +111,14 @@ void QgsLayoutItemLegend::paint( QPainter *painter, const QStyleOptionGraphicsIt
   {
     mFilterAskedForUpdate = false;
     doUpdateFilterByMap();
+  }
+
+  if ( mLayout )
+  {
+    if ( !mLayout->renderContext().isPreviewRender() && mLegendModel->hitTestInProgress() )
+    {
+      mLegendModel->waitForHitTestBlocking();
+    }
   }
 
   const int dpi = painter->device()->logicalDpiX();
@@ -1270,6 +1285,11 @@ bool QgsLayoutItemLegend::accept( QgsStyleEntityVisitorInterface *visitor ) cons
   return visit( mLegendModel->rootGroup( ) );
 }
 
+bool QgsLayoutItemLegend::isRefreshing() const
+{
+  return mLegendModel->hitTestInProgress();
+}
+
 
 // -------------------------------------------------------------------------
 
@@ -1279,6 +1299,7 @@ QgsLegendModel::QgsLegendModel( QgsLayerTree *rootNode, QObject *parent, QgsLayo
 {
   setFlag( QgsLayerTreeModel::AllowLegendChangeState, false );
   setFlag( QgsLayerTreeModel::AllowNodeReorder, true );
+  setFlag( QgsLayerTreeModel::UseThreadedHitTest, true );
   connect( this, &QgsLegendModel::dataChanged, this, &QgsLegendModel::refreshLegend );
 }
 
@@ -1288,6 +1309,7 @@ QgsLegendModel::QgsLegendModel( QgsLayerTree *rootNode,  QgsLayoutItemLegend *la
 {
   setFlag( QgsLayerTreeModel::AllowLegendChangeState, false );
   setFlag( QgsLayerTreeModel::AllowNodeReorder, true );
+  setFlag( QgsLayerTreeModel::UseThreadedHitTest, true );
   connect( this, &QgsLegendModel::dataChanged, this, &QgsLegendModel::refreshLegend );
 }
 
