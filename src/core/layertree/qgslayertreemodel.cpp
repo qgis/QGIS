@@ -631,12 +631,14 @@ void QgsLayerTreeModel::setLegendFilter( const QgsMapSettings *settings, bool us
     }
     bool polygonValid = !polygon.isNull() && polygon.type() == Qgis::GeometryType::Polygon;
 
+    bool hitTestWasRunning = false;
     if ( mHitTestTask )
     {
       // cancel outdated task -- this is owned by the task manager and will get automatically deleted accordingly
       disconnect( mHitTestTask, &QgsTask::taskCompleted, this, &QgsLayerTreeModel::hitTestTaskCompleted );
       mHitTestTask->cancel();
       mHitTestTask = nullptr;
+      hitTestWasRunning = true;
     }
 
     std::unique_ptr< QgsMapHitTest > blockingHitTest;
@@ -659,6 +661,9 @@ void QgsLayerTreeModel::setLegendFilter( const QgsMapSettings *settings, bool us
     {
       connect( mHitTestTask, &QgsTask::taskCompleted, this, &QgsLayerTreeModel::hitTestTaskCompleted );
       QgsApplication::taskManager()->addTask( mHitTestTask );
+
+      if ( !hitTestWasRunning )
+        emit hitTestStarted();
     }
     else
     {
@@ -731,6 +736,17 @@ void QgsLayerTreeModel::setLayerStyleOverrides( const QMap<QString, QString> &ov
 int QgsLayerTreeModel::scaleIconSize( int standardSize )
 {
   return QgsApplication::scaleIconSize( standardSize, true );
+}
+
+void QgsLayerTreeModel::waitForHitTestBlocking()
+{
+  if ( mHitTestTask )
+    mHitTestTask->waitForFinished();
+}
+
+bool QgsLayerTreeModel::hitTestInProgress() const
+{
+  return static_cast< bool >( mHitTestTask );
 }
 
 void QgsLayerTreeModel::nodeWillAddChildren( QgsLayerTreeNode *node, int indexFrom, int indexTo )
@@ -910,6 +926,7 @@ void QgsLayerTreeModel::hitTestTaskCompleted()
   {
     mHitTestResults = mHitTestTask->results();
     handleHitTestResults();
+    emit hitTestCompleted();
   }
 }
 
