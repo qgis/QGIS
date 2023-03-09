@@ -161,7 +161,7 @@ void QgsMapToolFillRing::createFeature( const QgsGeometry &geometry, QgsFeatureI
 // TODO refactor - shamelessly copied from QgsMapToolDeleteRing::ringUnderPoint
 void QgsMapToolFillRing::fillRingUnderPoint( const QgsPointXY &p )
 {
-  QgsFeatureId fid = -1;
+  QgsFeatureId fid = FID_NULL;
 
   QgsVectorLayer *vlayer = getCheckLayer();
   if ( !vlayer )
