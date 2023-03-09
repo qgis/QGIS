@@ -213,7 +213,7 @@ void QgsMapToolFillRing::fillRingUnderPoint( const QgsPointXY &p )
     }
   }
 
-  if ( fid == -1 )
+  if ( FID_IS_NULL( fid ) )
   {
     emit messageEmitted( tr( "No ring found to fill." ), Qgis::MessageLevel::Critical );
     vlayer->destroyEditCommand();
