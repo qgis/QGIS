@@ -42,7 +42,7 @@
 // QgsOgrProviderResultIterator
 //
 
-QgsOgrProviderResultIterator::QgsOgrProviderResultIterator( gdal::ogr_datasource_unique_ptr hDS, OGRLayerH ogrLayer )
+QgsOgrProviderResultIterator::QgsOgrProviderResultIterator( gdal::dataset_unique_ptr hDS, OGRLayerH ogrLayer )
   : mHDS( std::move( hDS ) )
   , mOgrLayer( ogrLayer )
 {
@@ -455,7 +455,7 @@ void QgsOgrProviderConnection::setDefaultCapabilities()
   mCapabilities |= RenameField;
 #endif
 
-  gdal::ogr_datasource_unique_ptr hDS( GDALOpenEx( uri().toUtf8().constData(), GDAL_OF_VECTOR | GDAL_OF_UPDATE, nullptr, nullptr, nullptr ) );
+  gdal::dataset_unique_ptr hDS( GDALOpenEx( uri().toUtf8().constData(), GDAL_OF_VECTOR | GDAL_OF_UPDATE, nullptr, nullptr, nullptr ) );
   if ( !hDS )
   {
     // fallback to read only otherwise
@@ -464,18 +464,18 @@ void QgsOgrProviderConnection::setDefaultCapabilities()
 
   if ( hDS )
   {
-    if ( OGR_DS_TestCapability( hDS.get(), ODsCCurveGeometries ) )
+    if ( GDALDatasetTestCapability( hDS.get(), ODsCCurveGeometries ) )
       mGeometryColumnCapabilities |= GeometryColumnCapability::Curves;
 
-    if ( OGR_DS_TestCapability( hDS.get(), ODsCMeasuredGeometries ) )
+    if ( GDALDatasetTestCapability( hDS.get(), ODsCMeasuredGeometries ) )
       mGeometryColumnCapabilities |= GeometryColumnCapability::M;
 
     if ( !mSingleTableDataset )
     {
-      if ( OGR_DS_TestCapability( hDS.get(), ODsCCreateLayer ) )
+      if ( GDALDatasetTestCapability( hDS.get(), ODsCCreateLayer ) )
         mCapabilities |= CreateVectorTable;
 
-      if ( OGR_DS_TestCapability( hDS.get(), ODsCDeleteLayer ) )
+      if ( GDALDatasetTestCapability( hDS.get(), ODsCDeleteLayer ) )
         mCapabilities |= DropVectorTable;
     }
   }
@@ -646,7 +646,7 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsOgrProviderConnection::exe
 
   QString errCause;
   // try first using an editable datasource
-  gdal::ogr_datasource_unique_ptr hDS( GDALOpenEx( uri().toUtf8().constData(), GDAL_OF_VECTOR | GDAL_OF_UPDATE, nullptr, nullptr, nullptr ) );
+  gdal::dataset_unique_ptr hDS( GDALOpenEx( uri().toUtf8().constData(), GDAL_OF_VECTOR | GDAL_OF_UPDATE, nullptr, nullptr, nullptr ) );
   if ( !hDS )
   {
     // fallback to read only otherwise
@@ -793,7 +793,7 @@ QList<QgsVectorDataProvider::NativeType> QgsOgrProviderConnection::nativeTypes()
 QStringList QgsOgrProviderConnection::fieldDomainNames() const
 {
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,5,0)
-  gdal::ogr_datasource_unique_ptr hDS( GDALOpenEx( uri().toUtf8().constData(), GDAL_OF_VECTOR, nullptr, nullptr, nullptr ) );
+  gdal::dataset_unique_ptr hDS( GDALOpenEx( uri().toUtf8().constData(), GDAL_OF_VECTOR, nullptr, nullptr, nullptr ) );
   if ( !hDS )
   {
     // In some cases (empty geopackage for example), opening in read-only
@@ -855,7 +855,7 @@ QList<Qgis::FieldDomainType> QgsOgrProviderConnection::supportedFieldDomainTypes
 QgsFieldDomain *QgsOgrProviderConnection::fieldDomain( const QString &name ) const
 {
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,3,0)
-  gdal::ogr_datasource_unique_ptr hDS( GDALOpenEx( uri().toUtf8().constData(), GDAL_OF_VECTOR, nullptr, nullptr, nullptr ) );
+  gdal::dataset_unique_ptr hDS( GDALOpenEx( uri().toUtf8().constData(), GDAL_OF_VECTOR, nullptr, nullptr, nullptr ) );
   if ( !hDS )
   {
     // In some cases (empty geopackage for example), opening in read-only
@@ -933,7 +933,7 @@ void QgsOgrProviderConnection::addFieldDomain( const QgsFieldDomain &domain, con
     QgsMessageLog::logMessage( QStringLiteral( "Schema is not supported by OGR, ignoring" ), QStringLiteral( "OGR" ), Qgis::MessageLevel::Info );
   }
 
-  gdal::ogr_datasource_unique_ptr hDS( GDALOpenEx( uri().toUtf8().constData(), GDAL_OF_VECTOR | GDAL_OF_UPDATE, nullptr, nullptr, nullptr ) );
+  gdal::dataset_unique_ptr hDS( GDALOpenEx( uri().toUtf8().constData(), GDAL_OF_VECTOR | GDAL_OF_UPDATE, nullptr, nullptr, nullptr ) );
   if ( hDS )
   {
     if ( OGRFieldDomainH ogrDomain = QgsOgrUtils::convertFieldDomain( &domain ) )
@@ -1059,7 +1059,7 @@ QList<QgsWeakRelation> QgsOgrProviderConnection::relationships( const QString &s
   }
 
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,6,0)
-  gdal::ogr_datasource_unique_ptr hDS( GDALOpenEx( uri().toUtf8().constData(), GDAL_OF_VECTOR, nullptr, nullptr, nullptr ) );
+  gdal::dataset_unique_ptr hDS( GDALOpenEx( uri().toUtf8().constData(), GDAL_OF_VECTOR, nullptr, nullptr, nullptr ) );
   if ( !hDS )
   {
     // In some cases (empty geopackage for example), opening in read-only
@@ -1111,7 +1111,7 @@ void QgsOgrProviderConnection::addRelationship( const QgsWeakRelation &relations
   checkCapability( Capability::AddRelationship );
 
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,6,0)
-  gdal::ogr_datasource_unique_ptr hDS( GDALOpenEx( uri().toUtf8().constData(), GDAL_OF_UPDATE | GDAL_OF_VECTOR, nullptr, nullptr, nullptr ) );
+  gdal::dataset_unique_ptr hDS( GDALOpenEx( uri().toUtf8().constData(), GDAL_OF_UPDATE | GDAL_OF_VECTOR, nullptr, nullptr, nullptr ) );
   if ( hDS )
   {
     const QVariantMap leftParts = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "ogr" ) )->decodeUri( relationship.referencedLayerSource() );
@@ -1156,7 +1156,7 @@ void QgsOgrProviderConnection::updateRelationship( const QgsWeakRelation &relati
   checkCapability( Capability::UpdateRelationship );
 
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,6,0)
-  gdal::ogr_datasource_unique_ptr hDS( GDALOpenEx( uri().toUtf8().constData(), GDAL_OF_UPDATE | GDAL_OF_VECTOR, nullptr, nullptr, nullptr ) );
+  gdal::dataset_unique_ptr hDS( GDALOpenEx( uri().toUtf8().constData(), GDAL_OF_UPDATE | GDAL_OF_VECTOR, nullptr, nullptr, nullptr ) );
   if ( hDS )
   {
     const QVariantMap leftParts = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "ogr" ) )->decodeUri( relationship.referencedLayerSource() );
@@ -1201,7 +1201,7 @@ void QgsOgrProviderConnection::deleteRelationship( const QgsWeakRelation &relati
   checkCapability( Capability::DeleteRelationship );
 
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,6,0)
-  gdal::ogr_datasource_unique_ptr hDS( GDALOpenEx( uri().toUtf8().constData(), GDAL_OF_UPDATE | GDAL_OF_VECTOR, nullptr, nullptr, nullptr ) );
+  gdal::dataset_unique_ptr hDS( GDALOpenEx( uri().toUtf8().constData(), GDAL_OF_UPDATE | GDAL_OF_VECTOR, nullptr, nullptr, nullptr ) );
   if ( hDS )
   {
     const QString relationshipName = relationship.name();
