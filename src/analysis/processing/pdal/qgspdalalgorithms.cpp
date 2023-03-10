@@ -27,6 +27,7 @@
 #include "qgsalgorithmpdalexportraster.h"
 #include "qgsalgorithmpdalexportrastertin.h"
 #include "qgsalgorithmpdalexportvector.h"
+#include "qgsalgorithmpdalfilter.h"
 #include "qgsalgorithmpdalfixprojection.h"
 #include "qgsalgorithmpdalinformation.h"
 #include "qgsalgorithmpdalmerge.h"
@@ -97,6 +98,7 @@ void QgsPdalAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsPdalExportRasterAlgorithm() );
   addAlgorithm( new QgsPdalExportRasterTinAlgorithm() );
   addAlgorithm( new QgsPdalExportVectorAlgorithm() );
+  addAlgorithm( new QgsPdalFilterAlgorithm() );
   addAlgorithm( new QgsPdalFixProjectionAlgorithm() );
   addAlgorithm( new QgsPdalInformationAlgorithm() );
   addAlgorithm( new QgsPdalMergeAlgorithm() );
