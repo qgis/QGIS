@@ -18,6 +18,7 @@
 #include "qgs3dutils.h"
 #include "qgsflatterraingenerator.h"
 #include "qgsdemterraingenerator.h"
+#include "qgsgeometry.h"
 #include "qgsmeshterraingenerator.h"
 #include "qgsonlineterraingenerator.h"
 #include "qgsprojectviewsettings.h"
@@ -98,8 +99,11 @@ Qgs3DMapSettings::Qgs3DMapSettings( const Qgs3DMapSettings &other )
   , m3dAxisSettings( other.m3dAxisSettings )
   , mIsDebugOverlayEnabled( other.mIsDebugOverlayEnabled )
   , mExtent( other.mExtent )
+  , mZRotation( other.mZRotation )
   , mShowExtentIn2DView( other.mShowExtentIn2DView )
 {
+  updateRotatedExtent();
+
   for ( QgsLightSource *source : std::as_const( other.mLightSources ) )
   {
     if ( source )
@@ -136,12 +140,14 @@ void Qgs3DMapSettings::readXml( const QDomElement &elem, const QgsReadWriteConte
                 elemExtent.attribute( QStringLiteral( "xMax" ) ).toDouble(),
                 elemExtent.attribute( QStringLiteral( "yMax" ) ).toDouble() );
 
+    mZRotation = elemExtent.attribute( QStringLiteral( "rotation" ), QStringLiteral( "0.0" ) ).toDouble();
     mShowExtentIn2DView = elemExtent.attribute( QStringLiteral( "showIn2dView" ), QStringLiteral( "0" ) ).toInt();
   }
   else
   {
     mExtent = QgsProject::instance()->viewSettings()->fullExtent();
   }
+  updateRotatedExtent();
 
   QDomElement elemCamera = elem.firstChildElement( QStringLiteral( "camera" ) );
   if ( !elemCamera.isNull() )
@@ -330,6 +336,7 @@ QDomElement Qgs3DMapSettings::writeXml( QDomDocument &doc, const QgsReadWriteCon
   elemExtent.setAttribute( QStringLiteral( "yMin" ), mExtent.yMinimum() );
   elemExtent.setAttribute( QStringLiteral( "xMax" ), mExtent.xMaximum() );
   elemExtent.setAttribute( QStringLiteral( "yMax" ), mExtent.yMaximum() );
+  elemExtent.setAttribute( QStringLiteral( "rotation" ), mZRotation );
   elemExtent.setAttribute( QStringLiteral( "showIn2dView" ), mShowExtentIn2DView );
   elem.appendChild( elemExtent );
 
@@ -469,7 +476,28 @@ void Qgs3DMapSettings::setExtent( const QgsRectangle &extent )
   mExtent = extent;
   const QgsPointXY center = mExtent.center();
   setOrigin( QgsVector3D( center.x(), center.y(), 0 ) );
+  updateRotatedExtent();
+}
+
+void Qgs3DMapSettings::setZRotation( double rotation )
+{
+  if ( rotation == mZRotation )
+  {
+    return;
+  }
+
+  mZRotation = rotation;
+  updateRotatedExtent();
+}
+
+void Qgs3DMapSettings::updateRotatedExtent()
+{
+  mRotatedExtent = QgsGeometry::fromRect( mExtent );
+  mRotatedExtent.rotate( mZRotation, mExtent.center() );
+  mRotatedExtentBBox.setNull();
+
   updateTerrainGeneratorExtent();
+
   emit extentChanged();
 }
 
@@ -1019,7 +1047,22 @@ void Qgs3DMapSettings::updateTerrainGeneratorExtent()
 {
   if ( mTerrainGenerator )
   {
-    QgsRectangle terrainExtent = Qgs3DUtils::tryReprojectExtent2D( mExtent, mCrs, mTerrainGenerator->crs(), mTransformContext );
+    QgsRectangle terrainExtent = Qgs3DUtils::tryReprojectExtent2D( extent(), mCrs, mTerrainGenerator->crs(), mTransformContext );
     mTerrainGenerator->setExtent( terrainExtent );
   }
+}
+
+QgsGeometry Qgs3DMapSettings::rotatedExtent() const
+{
+  return mRotatedExtent;
+}
+
+QgsRectangle Qgs3DMapSettings::extent() const
+{
+  if ( mRotatedExtentBBox.isNull() )
+  {
+    mRotatedExtentBBox = rotatedExtent().boundingBox();
+  }
+
+  return mRotatedExtentBBox;
 }
