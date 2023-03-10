@@ -41,15 +41,12 @@ void Qgs3DMapToolIdentify::mousePressEvent( QMouseEvent *event )
 {
   mMouseHasMoved = false;
   mMouseClickPos = event->pos();
-
-  QgsMapToolIdentifyAction *identifyTool2D = QgisApp::instance()->identifyMapTool();
-  identifyTool2D->clearResults();
 }
 
 void Qgs3DMapToolIdentify::mouseMoveEvent( QMouseEvent *event )
 {
   if ( !mMouseHasMoved &&
-       ( event->pos() - mMouseClickPos ).manhattanLength() > 3 )
+       ( event->pos() - mMouseClickPos ).manhattanLength() >= QApplication::startDragDistance() )
   {
     mMouseHasMoved = true;
   }
@@ -67,6 +64,7 @@ void Qgs3DMapToolIdentify::mouseReleaseEvent( QMouseEvent *event )
 
   QList<QgsMapToolIdentify::IdentifyResult> identifyResults;
   QgsMapToolIdentifyAction *identifyTool2D = QgisApp::instance()->identifyMapTool();
+  identifyTool2D->clearResults();
 
   bool showTerrainResults = true;
 

@@ -187,7 +187,7 @@ void Qgs3DMapToolMeasureLine::mousePressEvent( QMouseEvent *event )
 void Qgs3DMapToolMeasureLine::mouseMoveEvent( QMouseEvent *event )
 {
   if ( !mMouseHasMoved &&
-       ( event->pos() - mMouseClickPos ).manhattanLength() > 3 )
+       ( event->pos() - mMouseClickPos ).manhattanLength() >= QApplication::startDragDistance() )
   {
     mMouseHasMoved = true;
   }
