@@ -478,7 +478,7 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsSpatiaLiteProviderConnecti
   }
 
   QString errCause;
-  gdal::ogr_datasource_unique_ptr hDS( GDALOpenEx( pathFromUri().toUtf8().constData(), GDAL_OF_VECTOR | GDAL_OF_UPDATE, nullptr, nullptr, nullptr ) );
+  gdal::dataset_unique_ptr hDS( GDALOpenEx( pathFromUri().toUtf8().constData(), GDAL_OF_VECTOR | GDAL_OF_UPDATE, nullptr, nullptr, nullptr ) );
   if ( hDS )
   {
 
@@ -584,7 +584,7 @@ void QgsSpatialiteProviderResultIterator::setFields( const QgsFields &fields )
 }
 
 
-QgsSpatialiteProviderResultIterator::QgsSpatialiteProviderResultIterator( gdal::ogr_datasource_unique_ptr hDS, OGRLayerH ogrLayer )
+QgsSpatialiteProviderResultIterator::QgsSpatialiteProviderResultIterator( gdal::dataset_unique_ptr hDS, OGRLayerH ogrLayer )
   : mHDS( std::move( hDS ) )
   , mOgrLayer( ogrLayer )
 {
