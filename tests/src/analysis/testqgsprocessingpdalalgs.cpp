@@ -67,7 +67,7 @@ void TestQgsProcessingPdalAlgs::initTestCase()
 
   const QString dataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
 
-  const QString pointCloudFileName = dataDir + "/point_clouds/las/cloud.las";
+  const QString pointCloudFileName = dataDir + "/point_clouds/copc/rgb.copc.laz";
   const QFileInfo pointCloudFileInfo( pointCloudFileName );
   mPointCloudLayerPath = pointCloudFileInfo.filePath();
 }
@@ -111,7 +111,7 @@ void TestQgsProcessingPdalAlgs::convertFormat()
 
   QgsProcessingFeedback feedback;
 
-  const QString outputPointCloud = QDir::tempPath() + "/converted.laz";
+  const QString outputPointCloud = QDir::tempPath() + "/converted.las";
 
   QVariantMap parameters;
   parameters.insert( QStringLiteral( "INPUT" ), mPointCloudLayerPath );
@@ -142,7 +142,7 @@ void TestQgsProcessingPdalAlgs::reproject()
 
   QgsProcessingFeedback feedback;
 
-  const QString outputPointCloud = QDir::tempPath() + "/reprojected.laz";
+  const QString outputPointCloud = QDir::tempPath() + "/reprojected.las";
 
   QVariantMap parameters;
   parameters.insert( QStringLiteral( "INPUT" ), mPointCloudLayerPath );
@@ -176,7 +176,7 @@ void TestQgsProcessingPdalAlgs::fixProjection()
 
   QgsProcessingFeedback feedback;
 
-  const QString outputPointCloud = QDir::tempPath() + "/reprojected.laz";
+  const QString outputPointCloud = QDir::tempPath() + "/reprojected.las";
 
   QVariantMap parameters;
   parameters.insert( QStringLiteral( "INPUT" ), mPointCloudLayerPath );
@@ -210,7 +210,7 @@ void TestQgsProcessingPdalAlgs::thin()
 
   QgsProcessingFeedback feedback;
 
-  const QString outputPointCloud = QDir::tempPath() + "/reprojected.laz";
+  const QString outputPointCloud = QDir::tempPath() + "/thinned.laz";
 
   // default values
   QVariantMap parameters;
@@ -298,8 +298,6 @@ void TestQgsProcessingPdalAlgs::density()
   QgsProcessingFeedback feedback;
 
   const QString outputFile = QDir::tempPath() + "/density.tif";
-  if ( QFile::exists( outputFile ) )
-    QFile::remove( outputFile );
 
   QVariantMap parameters;
   // defaults
@@ -380,8 +378,6 @@ void TestQgsProcessingPdalAlgs::exportRasterTin()
   QgsProcessingFeedback feedback;
 
   const QString outputFile = QDir::tempPath() + "/raster.tif";
-  if ( QFile::exists( outputFile ) )
-    QFile::remove( outputFile );
 
   QVariantMap parameters;
   // defaults
@@ -525,8 +521,6 @@ void TestQgsProcessingPdalAlgs::exportRaster()
   QgsProcessingFeedback feedback;
 
   const QString outputFile = QDir::tempPath() + "/raster.tif";
-  if ( QFile::exists( outputFile ) )
-    QFile::remove( outputFile );
 
   // defaults
   QVariantMap parameters;
@@ -664,7 +658,7 @@ void TestQgsProcessingPdalAlgs::merge()
 
   QgsProcessingFeedback feedback;
 
-  const QString pointCloud1 = QString( TEST_DATA_DIR ) + "/point_clouds/copc/rgb.copc.laz";
+  const QString pointCloud1 = QString( TEST_DATA_DIR ) + "/point_clouds/copc/lone-star.copc.laz";
   const QString pointCloud2 = QString( TEST_DATA_DIR ) + "/point_clouds/copc/rgb16.copc.laz";
   const QString outputFile = QDir::tempPath() + "/merged.las";
 
@@ -708,7 +702,7 @@ void TestQgsProcessingPdalAlgs::buildVpc()
 
   QgsProcessingFeedback feedback;
 
-  const QString pointCloud1 = QString( TEST_DATA_DIR ) + "/point_clouds/copc/rgb.copc.laz";
+  const QString pointCloud1 = QString( TEST_DATA_DIR ) + "/point_clouds/copc/lone-star.copc.laz";
   const QString pointCloud2 = QString( TEST_DATA_DIR ) + "/point_clouds/copc/rgb16.copc.laz";
   const QString outputFile = QDir::tempPath() + "/test.vpc";
 
