@@ -692,11 +692,11 @@ void Qgs3DMapCanvasWidget::onExtentChanged()
   mViewExtentHighlight->reset( Qgis::GeometryType::Polygon );
   if ( mapSettings->showExtentIn2DView() )
   {
-    QgsRectangle extent = mapSettings->extent();
-    mViewExtentHighlight->addPoint( QgsPointXY( extent.xMinimum(), extent.yMinimum() ), false );
-    mViewExtentHighlight->addPoint( QgsPointXY( extent.xMinimum(), extent.yMaximum() ), false );
-    mViewExtentHighlight->addPoint( QgsPointXY( extent.xMaximum(), extent.yMaximum() ), false );
-    mViewExtentHighlight->addPoint( QgsPointXY( extent.xMaximum(), extent.yMinimum() ), false );
+    QVector<QgsPointXY> points = mapSettings->rotatedExtent().asPolygon()[0].mid( 0, 4 );
+    for ( const QgsPointXY &point : points )
+    {
+      mViewExtentHighlight->addPoint( point, false );
+    }
     mViewExtentHighlight->closePoints();
   }
 }

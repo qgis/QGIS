@@ -48,9 +48,13 @@ Resolves references to other objects (map layers) after the call to :py:func:`~Q
 
     QgsRectangle extent() const;
 %Docstring
-Returns the 3D scene's 2D extent in the 3D scene's CRS
+Returns the 3D scene's 2D bounding box of the extent in the 3D scene's CRS.
+If the 3D scene is not rotated, this is similar to :py:func:`~Qgs3DMapSettings.rotatedExtent`. Otherwise, this
+is the bounding box of :py:func:`~Qgs3DMapSettings.rotatedExtent`.
 
 .. seealso:: :py:func:`crs`
+
+.. seealso:: :py:func:`rotatedExtent`
 
 .. versionadded:: 3.30
 %End
@@ -83,6 +87,29 @@ to improve the precision.
     QgsVector3D origin() const;
 %Docstring
 Returns coordinates in map CRS at which 3D scene has origin (0,0,0)
+%End
+
+    void setZRotation( double rotation );
+%Docstring
+Sets the z rotation of the 3d scene
+
+:param rotation: the z rotation in degrees clockwise from North
+
+.. versionadded:: 3.40
+%End
+
+    double zRotation() const;
+%Docstring
+Returns the z rotation of the 3d scene in degrees clockwise from North.
+
+.. versionadded:: 3.40
+%End
+
+    QgsGeometry rotatedExtent() const;
+%Docstring
+Returns the 3D scene's 2D geometry in the 3D scene's CRS.
+
+.. versionadded:: 3.40
 %End
 
     QgsVector3D mapToWorldCoordinates( const QgsVector3D &mapCoords ) const;
