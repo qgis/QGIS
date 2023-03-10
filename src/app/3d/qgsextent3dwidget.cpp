@@ -26,6 +26,7 @@
 #include "qgsmaplayerproxymodel.h"
 #include "qgsmaptoolextent.h"
 #include "qgsprintlayout.h"
+#include "qgsspinbox.h"
 #include "qgsreferencedgeometry.h"
 
 
@@ -79,6 +80,9 @@ QgsExtent3DWidget::QgsExtent3DWidget( QWidget *parent )
       return;
     w->setVisible( visible );
   } );
+
+  connect( mRotationSpinBox, qOverload<int>( &QgsSpinBox::valueChanged ), this, &QgsExtent3DWidget::onRotationChanged );
+  connect( mRotationSlider, &QSlider::valueChanged, this, &QgsExtent3DWidget::onRotationChanged );
 }
 
 void QgsExtent3DWidget::setMapCanvas( QgsMapCanvas *canvas )
@@ -350,4 +354,15 @@ QgsRectangle QgsExtent3DWidget::extent() const
                        QgsDoubleValidator::toDouble( mCoordinateTable->item( 1, 0 )->text() ),
                        QgsDoubleValidator::toDouble( mCoordinateTable->item( 0, 1 )->text() ),
                        QgsDoubleValidator::toDouble( mCoordinateTable->item( 1, 1 )->text() ) );
+}
+
+void QgsExtent3DWidget::onRotationChanged( int rotation )
+{
+  setRotation( rotation );
+}
+
+void QgsExtent3DWidget::setRotation( double rotation )
+{
+  whileBlocking( mRotationSpinBox )->setValue( static_cast<int>( rotation ) );
+  whileBlocking( mRotationSlider )->setValue( static_cast<int>( rotation ) );
 }
