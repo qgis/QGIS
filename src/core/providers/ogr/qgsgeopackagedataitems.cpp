@@ -216,7 +216,7 @@ QVector<QgsDataItem *> QgsGeoPackageCollectionItem::createChildren()
   {
     // sniff database to see if it's just empty, or if something went wrong
     // note that we HAVE to use update here, or GDAL won't open an empty database
-    gdal::ogr_datasource_unique_ptr hDS( GDALOpenEx( path.toUtf8().constData(), GDAL_OF_UPDATE | GDAL_OF_VECTOR, nullptr, nullptr, nullptr ) );
+    gdal::dataset_unique_ptr hDS( GDALOpenEx( path.toUtf8().constData(), GDAL_OF_UPDATE | GDAL_OF_VECTOR, nullptr, nullptr, nullptr ) );
     if ( !hDS )
     {
       QString errorMessage;
