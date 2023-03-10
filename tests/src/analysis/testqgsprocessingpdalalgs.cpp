@@ -35,7 +35,7 @@ class TestQgsProcessingPdalAlgs: public QObject
     void cleanup() {} // will be called after every testfunction.
 
     void boundary();
-    void buildVpc();
+    //void buildVpc();
     void clip();
     void convertFormat();
     void density();
@@ -694,6 +694,7 @@ void TestQgsProcessingPdalAlgs::merge()
           );
 }
 
+/*
 void TestQgsProcessingPdalAlgs::buildVpc()
 {
   QgsPdalAlgorithmBase *alg = const_cast<QgsPdalAlgorithmBase *>( static_cast< const QgsPdalAlgorithmBase * >( QgsApplication::processingRegistry()->algorithmById( QStringLiteral( "pdal:virtualpointcloud" ) ) ) );
@@ -737,6 +738,7 @@ void TestQgsProcessingPdalAlgs::buildVpc()
             << pointCloud2
           );
 }
+*/
 
 void TestQgsProcessingPdalAlgs::clip()
 {
