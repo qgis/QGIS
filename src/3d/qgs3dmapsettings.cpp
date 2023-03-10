@@ -18,8 +18,10 @@
 #include "qgs3dutils.h"
 #include "qgsflatterraingenerator.h"
 #include "qgsdemterraingenerator.h"
+#include "qgsgeometry.h"
 #include "qgsmeshterraingenerator.h"
 #include "qgsonlineterraingenerator.h"
+#include "qgsorientedbox3d.h"
 #include "qgsprojectviewsettings.h"
 #include "qgsvectorlayer3drenderer.h"
 #include "qgsmeshlayer3drenderer.h"
@@ -31,6 +33,7 @@
 #include "qgsrasterlayer.h"
 #include "qgspointlightsettings.h"
 #include "qgsdirectionallightsettings.h"
+#include "qgsmatrix4x4.h"
 
 #include <QDomDocument>
 #include <QDomElement>
@@ -97,6 +100,7 @@ Qgs3DMapSettings::Qgs3DMapSettings( const Qgs3DMapSettings &other )
   , mRendererUsage( other.mRendererUsage )
   , m3dAxisSettings( other.m3dAxisSettings )
   , mIsDebugOverlayEnabled( other.mIsDebugOverlayEnabled )
+  , mBox( other.mBox )
   , mExtent( other.mExtent )
   , mShowExtentIn2DView( other.mShowExtentIn2DView )
 {
@@ -127,20 +131,47 @@ void Qgs3DMapSettings::readXml( const QDomElement &elem, const QgsReadWriteConte
               elemOrigin.attribute( QStringLiteral( "y" ) ).toDouble(),
               elemOrigin.attribute( QStringLiteral( "z" ) ).toDouble() );
 
-  QDomElement elemExtent = elem.firstChildElement( QStringLiteral( "extent" ) );
-  if ( !elemExtent.isNull() )
+  QDomElement elemBox = elem.firstChildElement( QStringLiteral( "box" ) );
+  if ( !elemBox.isNull() )
   {
-    mExtent = QgsRectangle(
-                elemExtent.attribute( QStringLiteral( "xMin" ) ).toDouble(),
-                elemExtent.attribute( QStringLiteral( "yMin" ) ).toDouble(),
-                elemExtent.attribute( QStringLiteral( "xMax" ) ).toDouble(),
-                elemExtent.attribute( QStringLiteral( "yMax" ) ).toDouble() );
+    const QgsVector3D halfAxesX = QgsVector3D(
+                                    elemBox.attribute( QStringLiteral( "halfAxes1" ) ).toDouble(),
+                                    elemBox.attribute( QStringLiteral( "halfAxes2" ) ).toDouble(),
+                                    elemBox.attribute( QStringLiteral( "halfAxes3" ) ).toDouble() );
 
+    const QgsVector3D halfAxesY = QgsVector3D(
+                                    elemBox.attribute( QStringLiteral( "halfAxes4" ) ).toDouble(),
+                                    elemBox.attribute( QStringLiteral( "halfAxes5" ) ).toDouble(),
+                                    elemBox.attribute( QStringLiteral( "halfAxes6" ) ).toDouble() );
+
+    const QgsVector3D halfAxesZ = QgsVector3D(
+                                    elemBox.attribute( QStringLiteral( "halfAxes7" ) ).toDouble(),
+                                    elemBox.attribute( QStringLiteral( "halfAxes8" ) ).toDouble(),
+                                    elemBox.attribute( QStringLiteral( "halfAxes9" ) ).toDouble() );
+
+    const QList<QgsVector3D> halfAxes = {halfAxesX, halfAxesY, halfAxesZ };
+    mBox = QgsOrientedBox3D( mOrigin, halfAxes );
+
+    mShowExtentIn2DView = elemBox.attribute( QStringLiteral( "showIn2dView" ), QStringLiteral( "0" ) ).toInt();
+  }
+  // this is only kept for backward compatibility. Only "box" is saved now
+  else if ( !elem.firstChildElement( QStringLiteral( "extent" ) ).isNull() )
+  {
+    QDomElement elemExtent = elem.firstChildElement( QStringLiteral( "extent" ) );
+
+    const QgsRectangle extent = QgsRectangle(
+                                  elemExtent.attribute( QStringLiteral( "xMin" ) ).toDouble(),
+                                  elemExtent.attribute( QStringLiteral( "yMin" ) ).toDouble(),
+                                  elemExtent.attribute( QStringLiteral( "xMax" ) ).toDouble(),
+                                  elemExtent.attribute( QStringLiteral( "yMax" ) ).toDouble() );
+
+    setExtent( extent );
     mShowExtentIn2DView = elemExtent.attribute( QStringLiteral( "showIn2dView" ), QStringLiteral( "0" ) ).toInt();
   }
   else
   {
-    mExtent = QgsProject::instance()->viewSettings()->fullExtent();
+    const QgsRectangle extent = QgsProject::instance()->viewSettings()->fullExtent();
+    setExtent( extent );
   }
 
   QDomElement elemCamera = elem.firstChildElement( QStringLiteral( "camera" ) );
@@ -325,13 +356,20 @@ QDomElement Qgs3DMapSettings::writeXml( QDomDocument &doc, const QgsReadWriteCon
   elemOrigin.setAttribute( QStringLiteral( "z" ), QString::number( mOrigin.z() ) );
   elem.appendChild( elemOrigin );
 
-  QDomElement elemExtent = doc.createElement( QStringLiteral( "extent" ) );
-  elemExtent.setAttribute( QStringLiteral( "xMin" ), mExtent.xMinimum() );
-  elemExtent.setAttribute( QStringLiteral( "yMin" ), mExtent.yMinimum() );
-  elemExtent.setAttribute( QStringLiteral( "xMax" ), mExtent.xMaximum() );
-  elemExtent.setAttribute( QStringLiteral( "yMax" ), mExtent.yMaximum() );
-  elemExtent.setAttribute( QStringLiteral( "showIn2dView" ), mShowExtentIn2DView );
-  elem.appendChild( elemExtent );
+  QDomElement elemBox = doc.createElement( QStringLiteral( "box" ) );
+  const double *halfAxes = mBox.halfAxes();
+  elemBox.setAttribute( QStringLiteral( "halfAxes1" ), halfAxes[0] );
+  elemBox.setAttribute( QStringLiteral( "halfAxes2" ), halfAxes[1] );
+  elemBox.setAttribute( QStringLiteral( "halfAxes3" ), halfAxes[2] );
+  elemBox.setAttribute( QStringLiteral( "halfAxes4" ), halfAxes[3] );
+  elemBox.setAttribute( QStringLiteral( "halfAxes5" ), halfAxes[4] );
+  elemBox.setAttribute( QStringLiteral( "halfAxes6" ), halfAxes[5] );
+  elemBox.setAttribute( QStringLiteral( "halfAxes7" ), halfAxes[6] );
+  elemBox.setAttribute( QStringLiteral( "halfAxes8" ), halfAxes[7] );
+  elemBox.setAttribute( QStringLiteral( "halfAxes9" ), halfAxes[8] );
+
+  elemBox.setAttribute( QStringLiteral( "showIn2dView" ), mShowExtentIn2DView );
+  elem.appendChild( elemBox );
 
   QDomElement elemCamera = doc.createElement( QStringLiteral( "camera" ) );
   elemCamera.setAttribute( QStringLiteral( "field-of-view" ), mFieldOfView );
@@ -463,12 +501,55 @@ void Qgs3DMapSettings::resolveReferences( const QgsProject &project )
 
 void Qgs3DMapSettings::setExtent( const QgsRectangle &extent )
 {
-  if ( extent == mExtent )
+  if ( extent == mBox.extent().toRectangle() )
     return;
 
-  mExtent = extent;
-  const QgsPointXY center = mExtent.center();
-  setOrigin( QgsVector3D( center.x(), center.y(), 0 ) );
+  QgsBox3D aaBox = QgsBox3D( extent );
+  QgsOrientedBox3D box;
+  if ( !mBox.isNull() ) // keep the other parameters from the previous box
+  {
+    aaBox.setZMinimum( - mBox.size().z() / 2 );
+    aaBox.setZMaximum( mBox.size().z() / 2 );
+    box = QgsOrientedBox3D::fromBox3D( aaBox );
+
+    if (mBox.eulerAngles().z() != 0.0 )
+    {
+      QgsVector3D center = box.center();
+
+      QgsMatrix4x4 translation1;
+      translation1.translate( -center );
+
+      // rotation is counter-clockwise
+      QgsMatrix4x4 rotation;
+      rotation.rotate( -mBox.eulerAngles().z(), QgsVector3D( 0.0, 0.0, 1.0 ) );
+
+      QgsMatrix4x4 translation2;
+      translation2.translate( center );
+
+      box = box.transformed( translation2 * rotation * translation1 );
+    }
+  }
+  else
+  {
+    aaBox.setZMinimum( Qgs3DMapSettings::DEFAULT_MIN_DEPTH );
+    aaBox.setZMaximum( Qgs3DMapSettings::DEFAULT_MAX_DEPTH );
+    box = QgsOrientedBox3D::fromBox3D( aaBox );
+  }
+
+  setBox( QgsOrientedBox3D::fromBox3D( aaBox ) );
+}
+
+void Qgs3DMapSettings::setBox( const QgsOrientedBox3D &box )
+{
+  if ( box == mBox )
+  {
+    return;
+  }
+
+  mExtent.setNull();
+  setOrigin( box.center() );
+  mBox = box;
+
   updateTerrainGeneratorExtent();
   emit extentChanged();
 }
@@ -1019,7 +1100,17 @@ void Qgs3DMapSettings::updateTerrainGeneratorExtent()
 {
   if ( mTerrainGenerator )
   {
-    QgsRectangle terrainExtent = Qgs3DUtils::tryReprojectExtent2D( mExtent, mCrs, mTerrainGenerator->crs(), mTransformContext );
+    QgsRectangle terrainExtent = Qgs3DUtils::tryReprojectExtent2D( extent(), mCrs, mTerrainGenerator->crs(), mTransformContext );
     mTerrainGenerator->setExtent( terrainExtent );
   }
+}
+
+QgsRectangle Qgs3DMapSettings::extent() const
+{
+  if ( mExtent.isNull() )
+  {
+    mExtent = mBox.extent().toRectangle();
+  }
+
+  return mExtent;
 }

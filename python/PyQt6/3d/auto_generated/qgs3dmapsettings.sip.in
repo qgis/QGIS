@@ -48,7 +48,7 @@ Resolves references to other objects (map layers) after the call to :py:func:`~Q
 
     QgsRectangle extent() const;
 %Docstring
-Returns the 3D scene's 2D extent in the 3D scene's CRS
+Returns the 3D scene's 2D bounding box of the extent in the 3D scene's CRS.
 
 .. seealso:: :py:func:`crs`
 
@@ -57,13 +57,10 @@ Returns the 3D scene's 2D extent in the 3D scene's CRS
 
     void setExtent( const QgsRectangle &extent );
 %Docstring
-Sets the 3D scene's 2D ``extent`` in the 3D scene's CRS, while also setting the scene's origin to the extent's center
-This needs to be called during initialization, as terrain will only be generated
-within this extent and layer 3D data will only be loaded within this extent too.
+Sets the 3D scene's 2D ``extent`` in the 3D scene's CRS
+This calls setBox to set 3D scene box.
 
-.. seealso:: :py:func:`setOrigin`
-
-.. seealso:: :py:func:`setCrs`
+.. seealso:: :py:func:`setBox`
 
 .. versionadded:: 3.30
 %End
@@ -83,6 +80,26 @@ to improve the precision.
     QgsVector3D origin() const;
 %Docstring
 Returns coordinates in map CRS at which 3D scene has origin (0,0,0)
+%End
+
+    void setBox( const QgsOrientedBox3D &box );
+%Docstring
+Sets the 3D scene's ``box`` in the 3D scene's CRS, while also setting the scene's origin to the box's center
+This needs to be called during initialization, as terrain will only be generated
+within this extent and layer 3D data will only be loaded within this extent too.
+
+.. seealso:: :py:func:`setOrigin`
+
+.. seealso:: :py:func:`setCrs`
+
+.. versionadded:: 3.40
+%End
+
+    QgsOrientedBox3D box() const;
+%Docstring
+Returns the 3D scene's box in the 3D scene's CRS.
+
+.. versionadded:: 3.40
 %End
 
     QgsVector3D mapToWorldCoordinates( const QgsVector3D &mapCoords ) const;
@@ -934,9 +951,9 @@ Emitted when the debug overaly is enabled or disabled
 
     void extentChanged();
 %Docstring
-Emitted when the 3d view's 2d extent has changed
+Emitted when the 3d view's extent has changed
 
-.. seealso:: :py:func:`setExtent`
+.. seealso:: :py:func:`setBox`
 
 .. versionadded:: 3.30
 %End
