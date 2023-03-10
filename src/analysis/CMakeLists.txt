@@ -431,6 +431,7 @@ if (WITH_PDAL)
     processing/pdal/qgsalgorithmpdalexportraster.cpp
     processing/pdal/qgsalgorithmpdalexportrastertin.cpp
     processing/pdal/qgsalgorithmpdalexportvector.cpp
+    processing/pdal/qgsalgorithmpdalfilter.cpp
     processing/pdal/qgsalgorithmpdalfixprojection.cpp
     processing/pdal/qgsalgorithmpdalinformation.cpp
     processing/pdal/qgsalgorithmpdalmerge.cpp
