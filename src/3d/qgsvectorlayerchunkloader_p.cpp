@@ -216,6 +216,7 @@ QVector<RayHit> QgsVectorLayerChunkedEntity::rayIntersection( const QgsRay3D &ra
   float minDist = -1;
   QVector3D intersectionPoint;
   QgsFeatureId fid;
+  QgsFeatureId nearestFid;
 
   const QList<QgsChunkNode *> activeNodes = this->activeNodes();
   for ( QgsChunkNode *node : activeNodes )
@@ -226,30 +227,32 @@ QVector<RayHit> QgsVectorLayerChunkedEntity::rayIntersection( const QgsRay3D &ra
          ray.intersects( Qgs3DUtils::aabbToBox( node->bbox() ) ) )
     {
       nodeUsed++;
-      Qt3DRender::QGeometryRenderer *rend = node->entity()->findChild<Qt3DRender::QGeometryRenderer *>();
-      Qt3DRender::QGeometry *geom = rend->geometry();
-      QgsTessellatedPolygonGeometry *polygonGeom = qobject_cast<QgsTessellatedPolygonGeometry *>( geom );
-      if ( !polygonGeom )
-        return result; // other QGeometry types are not supported for now
-      Qt3DCore::QTransform *tr = node->entity()->findChild<Qt3DCore::QTransform *>();
-      const QMatrix4x4 matrix = tr ? tr->matrix() : QMatrix4x4();
-
-      QVector3D nodeIntPoint;
-      if ( polygonGeom->rayIntersection( ray, matrix, nodeIntPoint, fid ) )
+      const QList<Qt3DRender::QGeometryRenderer *> rendLst = node->entity()->findChildren<Qt3DRender::QGeometryRenderer *>();
+      for ( const auto &rend : rendLst )
       {
-        hits++;
-        float dist = ( ray.origin() - nodeIntPoint ).length();
-        if ( minDist < 0 || dist < minDist )
+        Qt3DRender::QGeometry *geom = rend->geometry();
+        QgsTessellatedPolygonGeometry *polygonGeom = qobject_cast<QgsTessellatedPolygonGeometry *>( geom );
+        if ( !polygonGeom )
+          continue; // other QGeometry types are not supported for now
+
+        QVector3D nodeIntPoint;
+        if ( polygonGeom->rayIntersection( ray, mTransform->matrix(), nodeIntPoint, fid ) )
         {
-          minDist = dist;
-          intersectionPoint = nodeIntPoint;
+          hits++;
+          float dist = ( ray.origin() - nodeIntPoint ).length();
+          if ( minDist < 0 || dist < minDist )
+          {
+            minDist = dist;
+            intersectionPoint = nodeIntPoint;
+            nearestFid = fid;
+          }
         }
       }
     }
   }
   if ( !intersectionPoint.isNull() )
   {
-    RayHit hit( minDist, intersectionPoint, fid );
+    RayHit hit( minDist, intersectionPoint, nearestFid );
     result.append( hit );
   }
   QgsDebugMsgLevel( QStringLiteral( "Active Nodes: %1, checked nodes: %2, hits found: %3" ).arg( nodesAll ).arg( nodeUsed ).arg( hits ), 2 );

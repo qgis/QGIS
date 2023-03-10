@@ -80,26 +80,26 @@ QgsTessellatedPolygonGeometry::QgsTessellatedPolygonGeometry( bool _withNormals,
   }
 }
 
-static bool intersectionTriangles( const QByteArray &vertexBuf, const QgsRayCastingUtils::Ray3D &r, const QMatrix4x4 &worldTransform, QVector3D &intPt, int &triangleIndex )
+static bool intersectionTriangles( const QByteArray &vertexBuf, const int &stride, const QgsRayCastingUtils::Ray3D &r, const QMatrix4x4 &worldTransform, QVector3D &intPt, int &triangleIndex )
 {
   const float *vertices = reinterpret_cast<const float *>( vertexBuf.constData() );
 
-  int dataCount = vertexBuf.size() / sizeof( float );
-  int vertexCount = dataCount / 6;
-  int triangleCount = vertexCount / 3;
+  const int vertexCount = vertexBuf.size() / stride;
+  const int triangleCount = vertexCount / 3;
 
   QVector3D intersectionPt, minIntersectionPt;
   float distance;
   float minDistance = -1;
 
-  int vertexSize = 6;
-  int triangleSize = 3 * vertexSize;
+  const int vertexSize = stride / sizeof( float );
+  const int triangleSize = 3 * vertexSize;
   for ( int i = 0; i < triangleCount; ++i )
   {
-    int v0 = i * triangleSize, v1 = i * triangleSize + vertexSize, v2 = i * triangleSize + vertexSize + vertexSize;
-    QVector3D a( vertices[v0], vertices[v0 + 1], vertices[v0 + 2] );
-    QVector3D b( vertices[v1], vertices[v1 + 1], vertices[v1 + 2] );
-    QVector3D c( vertices[v2], vertices[v2 + 1], vertices[v2 + 2] );
+    const int v0 = i * triangleSize, v1 = i * triangleSize + vertexSize, v2 = i * triangleSize + vertexSize + vertexSize;
+
+    const QVector3D a( vertices[v0], vertices[v0 + 1], vertices[v0 + 2] );
+    const QVector3D b( vertices[v1], vertices[v1 + 1], vertices[v1 + 2] );
+    const QVector3D c( vertices[v2], vertices[v2 + 1], vertices[v2 + 2] );
 
     const QVector3D tA = worldTransform * a;
     const QVector3D tB = worldTransform * b;
@@ -117,7 +117,7 @@ static bool intersectionTriangles( const QByteArray &vertexBuf, const QgsRayCast
       // we only want the first intersection of the ray with the mesh (closest to the ray origin)
       if ( minDistance == -1 || distance < minDistance )
       {
-        triangleIndex = i;
+        triangleIndex = static_cast<int>( i );
         minDistance = distance;
         minIntersectionPt = intersectionPt;
       }
@@ -180,24 +180,27 @@ void QgsTessellatedPolygonGeometry::setData( const QByteArray &vertexBufferData,
 
 bool QgsTessellatedPolygonGeometry::rayIntersection( const QgsRay3D &ray, const QMatrix4x4 &worldTransform, QVector3D &intersectionPoint, QgsFeatureId &fid )
 {
-  QgsRayCastingUtils::Ray3D r( ray.origin(), ray.direction(), 500 );
+  QgsRayCastingUtils::Ray3D r( ray.origin(), ray.direction(), 10000 );
   int triangleIndex = -1;
-  bool success = intersectionTriangles( mVertexBuffer->data(), r, worldTransform, intersectionPoint, triangleIndex );
+  const int stride = static_cast<int>( mPositionAttribute->byteStride() );
+  bool success = intersectionTriangles( mVertexBuffer->data(), stride, r, worldTransform, intersectionPoint, triangleIndex );
 
-  fid = FID_NULL;
-  fid = triangleIndexToFeatureId( triangleIndex );
+  fid = success ? triangleIndexToFeatureId( triangleIndex ) : FID_NULL;
 
   return success;
 }
 
-// run binary search on a sorted array, return index i where data[i] <= x < data[i+1]
+// run binary search on a sorted array, return index i where data[i] <= v < data[i+1]
 static int binary_search( uint v, const uint *data, int count )
 {
   int idx0 = 0;
   int idx1 = count - 1;
 
-  if ( v < data[0] || v >= data[count - 1] )
+  if ( v < data[0] )
     return -1;  // not in the array
+
+  if ( v >= data[count - 1] )
+    return count - 1;  // for larger values the last bin is returned
 
   while ( idx0 != idx1 )
   {
