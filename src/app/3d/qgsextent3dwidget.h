@@ -78,6 +78,8 @@ class QgsExtent3DWidget : public QgsCollapsibleGroupBox, private Ui::QgsExtent3D
     void extentDrawn( const QgsRectangle &extent );
     void mapToolDeactivated();
 
+    void onRotationChanged( int rotation );
+
   public slots:
 
     /**
@@ -110,6 +112,10 @@ class QgsExtent3DWidget : public QgsCollapsibleGroupBox, private Ui::QgsExtent3D
     void setShowIn2DView( bool show ) { mPreviewExtentCheckBox->setChecked( show ); };
 
     QgsRectangle extent() const ;
+
+    void setRotation( double rotation );
+
+    double rotation() const { return mRotationSpinBox->value(); };
 };
 
 #endif // QGSEXTENT3DWIDGET_H

@@ -246,6 +246,7 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
 
   mExtent3D->setDefaultExtent( mMap->extent(), mMap->crs() );
   mExtent3D->setMapCanvas( mMainCanvas );
+  mExtent3D->setRotation( mMap->zRotation() );
   mExtent3D->setShowIn2DView( mMap->showExtentIn2DView() );
 
   onTerrainTypeChanged();
@@ -261,6 +262,7 @@ Qgs3DMapConfigWidget::~Qgs3DMapConfigWidget()
 void Qgs3DMapConfigWidget::apply()
 {
   mMap->setExtent( mExtent3D->extent() );
+  mMap->setZRotation( mExtent3D->rotation() );
   mMap->setShowExtentIn2DView( mExtent3D->showIn2DView() );
 
   const QgsTerrainGenerator::Type terrainType = static_cast<QgsTerrainGenerator::Type>( cboTerrainType->currentData().toInt() );
