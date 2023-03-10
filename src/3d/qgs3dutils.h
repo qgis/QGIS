@@ -46,8 +46,12 @@ namespace Qt3DExtras
 
 #define SIP_NO_FILE
 
+/**
+ * Helper struct to store ray casting results.
+ */
 struct RayHit
 {
+  //! Constructor
   RayHit( const float distance, const QVector3D pos, const QgsFeatureId fid = FID_NULL, const QVariantMap attributes = QVariantMap() )
     : distance( distance )
     , pos( pos )
@@ -55,20 +59,23 @@ struct RayHit
     , attributes( attributes )
   {
   }
-  float distance;
-  QVector3D pos;
-  QgsFeatureId fid;
-  QVariantMap attributes;
+  float distance;  //!< Distance from ray's origin
+  QVector3D pos;  //!< Hit position in world coordinates
+  QgsFeatureId fid;  //!< Fid of feature hit closest to ray origin, FID_NULL if no features hit
+  QVariantMap attributes;  //!< Point cloud point attributes, empty map if no point cloud points hit
 };
 
+/**
+ * Helper struct to store ray casting parameters.
+ */
 struct RayCastContext
 {
   RayCastContext( bool singleResult = true, QSize screenSize = QSize() )
     : singleResult( singleResult )
     , screenSize( screenSize )
   {}
-  bool singleResult;
-  QSize screenSize;
+  bool singleResult;  //!< If set to TRUE, only the closest point cloud hit will be returned (other entities always return only closest hit)
+  QSize screenSize;  //!< QSize of the 3d engine window
 };
 
 /**
@@ -272,7 +279,7 @@ class _3D_EXPORT Qgs3DUtils
     static QgsBox3d aabbToBox( const QgsAABB &aabb ) { return QgsBox3d( aabb.xMin, aabb.yMin, aabb.zMin, aabb.xMax, aabb.yMax, aabb.zMax ); }
 
     /**
-     * Casts a \a ray through the \a scene and returns information about the intersecting entities
+     * Casts a \a ray through the \a scene and returns information about the intersecting entities (ray uses World coordinates).
      * The resulting hits are grouped by layer in a QHash.
      * \note Hits on the terrain have nullptr as their key in the returning QHash.
      *

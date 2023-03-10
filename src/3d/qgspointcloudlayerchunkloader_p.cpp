@@ -333,10 +333,7 @@ QVector<RayHit> QgsPointCloudLayerChunkedEntity::rayIntersection( const QgsRay3D
 
       // calculate the angle between the point and the projected point
       // similar to QgsRay3D::angleToPoint(), but using doubles
-      // project point onto the ray
       const QgsVector3D projPoint = adjustedRayOrigin + adjustedRayDirection * QgsVector3D::dotProduct( point - adjustedRayOrigin, adjustedRayDirection );
-
-      // calculate the angle between the point and the projected point
       const QgsVector3D v1 = projPoint - adjustedRayOrigin ;
       const QgsVector3D v2 = point - projPoint;
       double angle = std::atan2( v2.length(), v1.length() ) * 180 / M_PI;

@@ -120,6 +120,11 @@ class QgsChunkedEntity : public Qt3DCore::QEntity
 
     static double calculateEntityGpuMemorySize( Qt3DCore::QEntity *entity );
 
+    /**
+     * Checks if \a ray intersects the entity and returns information about the hits.
+     * \note The ray uses World coordinates.
+     * \since QGIS 3.32
+     */
     virtual QVector<RayHit> rayIntersection( const QgsRay3D &ray, const RayCastContext &context ) const;
 
   protected:

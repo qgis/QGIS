@@ -133,14 +133,14 @@ class _3D_EXPORT Qgs3DMapScene : public Qt3DCore::QEntity
      *
      * \since QGIS 3.32
      */
-    QList<QgsMapLayer *> getLayers() { return mLayerEntities.keys(); }
+    QList<QgsMapLayer *> layers() { return mLayerEntities.keys(); }
 
     /**
      * Returns the entity belonging to \a layer
      *
      * \since QGIS 3.32
      */
-    Qt3DCore::QEntity *getLayerEntity( QgsMapLayer *layer ) const { return mLayerEntities.value( layer ); }
+    Qt3DCore::QEntity *layerEntity( QgsMapLayer *layer ) const { return mLayerEntities.value( layer ); }
 
     /**
      * Returns the scene extent in the map's CRS
