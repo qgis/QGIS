@@ -258,10 +258,9 @@ QgsPointCloudLayerChunkedEntity::~QgsPointCloudLayerChunkedEntity()
 
 QVector<RayHit> QgsPointCloudLayerChunkedEntity::rayIntersection( const QgsRay3D &ray, const RayCastContext &context ) const
 {
-
+  QVector<RayHit> result;
   QgsPointCloudLayerChunkLoaderFactory *factory = static_cast<QgsPointCloudLayerChunkLoaderFactory *>( mChunkLoaderFactory );
 
-  QVector<RayHit> result;
   // transform ray
   const QgsVector3D originMapCoords = factory->mMap.worldToMapCoordinates( ray.origin() );
   const QgsVector3D pointMapCoords = factory->mMap.worldToMapCoordinates( ray.origin() + ray.origin().length() * ray.direction().normalized() );
@@ -282,11 +281,9 @@ QVector<RayHit> QgsPointCloudLayerChunkedEntity::rayIntersection( const QgsRay3D
   const double limitAngle = 2 * pointSize / screenSizePx * factory->mMap.fieldOfView();
 
   // adjust ray to elevation properties
-  const QVector3D adjutedRayOrigin = QVector3D( rayOriginMapCoords.x(), rayOriginMapCoords.y(), ( rayOriginMapCoords.z() -  factory->mZValueOffset ) / factory->mZValueScale );
-  QVector3D adjutedRayDirection = QVector3D( rayDirectionMapCoords.x(), rayDirectionMapCoords.y(), rayDirectionMapCoords.z() / factory->mZValueScale );
-  adjutedRayDirection.normalize();
-
-  const QgsRay3D layerRay( adjutedRayOrigin, adjutedRayDirection );
+  const QgsVector3D adjustedRayOrigin = QgsVector3D( rayOriginMapCoords.x(), rayOriginMapCoords.y(), ( rayOriginMapCoords.z() -  factory->mZValueOffset ) / factory->mZValueScale );
+  QgsVector3D adjustedRayDirection = QgsVector3D( rayDirectionMapCoords.x(), rayDirectionMapCoords.y(), rayDirectionMapCoords.z() / factory->mZValueScale );
+  adjustedRayDirection.normalize();
 
   QgsPointCloudIndex *index = factory->mPointCloudIndex;
 
@@ -294,7 +291,7 @@ QVector<RayHit> QgsPointCloudLayerChunkedEntity::rayIntersection( const QgsRay3D
   QgsPointCloudRequest request;
   request.setAttributes( attributeCollection );
 
-  float minDist = -1;
+  double minDist = -1;
   const QList<QgsChunkNode *> activeNodes = this->activeNodes();
   for ( QgsChunkNode *node : activeNodes )
   {
@@ -325,17 +322,28 @@ QVector<RayHit> QgsPointCloudLayerChunkedEntity::rayIntersection( const QgsRay3D
     {
       double x, y, z;
       QgsPointCloudAttribute::getPointXYZ( ptr, i, recordSize, xOffset, xType, yOffset, yType, zOffset, zType, blockScale, blockOffset, x, y, z );
-      const QVector3D point( x, y, z );
+      const QgsVector3D point( x, y, z );
 
       // check whether point is in front of the ray
-      if ( !layerRay.isInFront( point ) )
+      // similar to QgsRay3D::isInFront(), but using doubles
+      QgsVector3D vectorToPoint = point - adjustedRayOrigin;
+      vectorToPoint.normalize();
+      if ( QgsVector3D::dotProduct( vectorToPoint, adjustedRayDirection ) < 0.0 )
         continue;
 
       // calculate the angle between the point and the projected point
-      if ( layerRay.angleToPoint( point ) > limitAngle )
+      // similar to QgsRay3D::angleToPoint(), but using doubles
+      // project point onto the ray
+      const QgsVector3D projPoint = adjustedRayOrigin + adjustedRayDirection * QgsVector3D::dotProduct( point - adjustedRayOrigin, adjustedRayDirection );
+
+      // calculate the angle between the point and the projected point
+      const QgsVector3D v1 = projPoint - adjustedRayOrigin ;
+      const QgsVector3D v2 = point - projPoint;
+      double angle = std::atan2( v2.length(), v1.length() ) * 180 / M_PI;
+      if ( angle > limitAngle )
         continue;
 
-      const float dist = originMapCoords.distance( point );
+      const double dist = originMapCoords.distance( point );
 
       if ( minDist < 0 || dist < minDist )
       {
@@ -352,8 +360,10 @@ QVector<RayHit> QgsPointCloudLayerChunkedEntity::rayIntersection( const QgsRay3D
       pointAttr[ QStringLiteral( "Y" ) ] = y;
       pointAttr[ QStringLiteral( "Z" ) ] = z;
 
-
-      RayHit hit( dist, point, FID_NULL, pointAttr );
+      const QgsVector3D worldPoint = factory->mMap.mapToWorldCoordinates( point );
+      RayHit hit( dist, worldPoint.toVector3D(), FID_NULL, pointAttr );
+      if ( context.singleResult )
+        result.clear();
       result.append( hit );
     }
   }
