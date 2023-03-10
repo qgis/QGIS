@@ -25,7 +25,7 @@
 
 struct QgsSpatialiteProviderResultIterator: public QgsAbstractDatabaseProviderConnection::QueryResult::QueryResultIterator
 {
-    QgsSpatialiteProviderResultIterator( gdal::ogr_datasource_unique_ptr hDS, OGRLayerH ogrLayer );
+    QgsSpatialiteProviderResultIterator( gdal::dataset_unique_ptr hDS, OGRLayerH ogrLayer );
 
     ~QgsSpatialiteProviderResultIterator();
 
@@ -35,7 +35,7 @@ struct QgsSpatialiteProviderResultIterator: public QgsAbstractDatabaseProviderCo
 
   private:
 
-    gdal::ogr_datasource_unique_ptr mHDS;
+    gdal::dataset_unique_ptr mHDS;
     OGRLayerH mOgrLayer;
     QgsFields mFields;
     QVariantList mNextRow;
