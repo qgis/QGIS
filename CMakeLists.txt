@@ -400,9 +400,15 @@ if(WITH_CORE)
     set (HAVE_POSTGRESQL TRUE)
   endif()
 
-  set (WITH_QTWEBKIT TRUE CACHE BOOL "Enable QtWebkit support")
   if (BUILD_WITH_QT6)
-    set (WITH_QTWEBKIT FALSE CACHE BOOL "Enable QtWebkit support" FORCE)
+    set (WITH_QTWEBKIT_DEFAULT FALSE)
+  else()
+    set (WITH_QTWEBKIT_DEFAULT TRUE)
+  endif()
+  set (WITH_QTWEBKIT ${WITH_QTWEBKIT_DEFAULT} CACHE BOOL "Enable QtWebkit support")
+  
+  if (BUILD_WITH_QT6 AND WITH_QTWEBKIT)
+    message(FATAL_ERROR "QtWebkit is not supported on Qt6. Disable WITH_QTWEBKIT or BUILD_WITH_QT6.")
   endif()
 
   if (WITH_QTWEBKIT)
