@@ -24,7 +24,7 @@
 void showError( std::string message, std::string title )
 {
   std::string newmessage = "Oops, looks like an error loading QGIS \n\n Details: \n\n" + message;
-  MessageBox(
+  MessageBoxA(
     NULL,
     newmessage.c_str(),
     title.c_str(),
@@ -40,7 +40,7 @@ std::string moduleExeBaseName( void )
   for ( ;; )
   {
     filepath.reset( new char[l] );
-    if ( GetModuleFileName( nullptr, filepath.get(), l ) < l )
+    if ( GetModuleFileNameA( nullptr, filepath.get(), l ) < l )
       break;
 
     l += MAX_PATH;
@@ -129,7 +129,7 @@ int CALLBACK WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdL
     return EXIT_FAILURE;
   }
 
-  HINSTANCE hKernelDLL = LoadLibrary( "kernel32.dll" );
+  HINSTANCE hKernelDLL = LoadLibraryA( "kernel32.dll" );
   BOOL ( *SetDefaultDllDirectories )( DWORD ) = hKernelDLL ? reinterpret_cast<BOOL( * )( DWORD )>( GetProcAddress( hKernelDLL, "SetDefaultDllDirectories" ) ) : 0;
   DLL_DIRECTORY_COOKIE( *AddDllDirectory )( PCWSTR ) = hKernelDLL ? reinterpret_cast<DLL_DIRECTORY_COOKIE( * )( PCWSTR )>( GetProcAddress( hKernelDLL, "AddDllDirectory" ) ) : 0;
 
@@ -165,20 +165,20 @@ int CALLBACK WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdL
   HINSTANCE hGetProcIDDLL = LoadLibrary( "qgis_app.dll" );
 #else
 // MinGW
-  HINSTANCE hGetProcIDDLL = LoadLibrary( "libqgis_app.dll" );
+  HINSTANCE hGetProcIDDLL = LoadLibraryA( "libqgis_app.dll" );
 #endif
 
   if ( !hGetProcIDDLL )
   {
     DWORD error = GetLastError();
-    LPTSTR errorText = NULL;
+    LPSTR errorText = NULL;
 
-    FormatMessage(
+    FormatMessageA(
       FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_IGNORE_INSERTS,
       NULL,
       error,
       MAKELANGID( LANG_NEUTRAL, SUBLANG_DEFAULT ),
-      ( LPTSTR )&errorText,
+      ( LPSTR )&errorText,
       0,
       NULL );
 

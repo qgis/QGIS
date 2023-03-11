@@ -100,7 +100,7 @@ void QgsOpenClUtils::init()
     }
 
 #ifdef Q_OS_WIN
-    HMODULE hModule = GetModuleHandle( "OpenCL.dll" );
+    HMODULE hModule = GetModuleHandleA( "OpenCL.dll" );
     if ( hModule )
     {
       TCHAR pszFileName[1024];
@@ -114,13 +114,13 @@ void QgsOpenClUtils::init()
         DWORD dwLen = GetFileVersionInfoSize( pszFileName, &dwUseless );
         if ( dwLen )
         {
-          LPTSTR lpVI = ( LPSTR ) malloc( dwLen );
+          LPSTR lpVI = ( LPSTR ) malloc( dwLen );
           if ( lpVI )
           {
             if ( GetFileVersionInfo( pszFileName, NULL, dwLen, lpVI ) )
             {
               VS_FIXEDFILEINFO *lpFFI;
-              if ( VerQueryValue( lpVI, "\\", ( LPVOID * ) &lpFFI, ( UINT * ) &dwUseless ) )
+              if ( VerQueryValueA( lpVI, "\\", ( LPVOID * ) &lpFFI, ( UINT * ) &dwUseless ) )
               {
                 QgsMessageLog::logMessage( QObject::tr( "OpenCL Product version: %1.%2.%3.%4" )
                                            .arg( lpFFI->dwProductVersionMS >> 16 )
@@ -155,7 +155,7 @@ void QgsOpenClUtils::init()
                                     << QStringLiteral( "SpecialBuild" );
                 for ( auto d : items )
                 {
-                  LPTSTR lpBuffer;
+                  LPSTR lpBuffer;
                   QString subBlock = QString( QStringLiteral( "\\StringFileInfo\\%1%2\\%3" ) )
                                      .arg( lpTranslate[0].wLanguage, 4, 16, QLatin1Char( '0' ) )
                                      .arg( lpTranslate[0].wCodePage, 4, 16, QLatin1Char( '0' ) )
@@ -163,7 +163,7 @@ void QgsOpenClUtils::init()
 
                   QgsDebugMsg( QString( "d:%1 subBlock:%2" ).arg( d ).arg( subBlock ) );
 
-                  BOOL r = VerQueryValue( lpVI, subBlock.toUtf8(), ( LPVOID * )&lpBuffer, ( UINT * )&dwUseless );
+                  BOOL r = VerQueryValueA( lpVI, subBlock.toUtf8(), ( LPVOID * )&lpBuffer, ( UINT * )&dwUseless );
 
                   if ( r && lpBuffer && lpBuffer != INVALID_HANDLE_VALUE && dwUseless < 1023 )
                   {
