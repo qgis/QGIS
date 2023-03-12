@@ -656,7 +656,7 @@ class PythonConsoleWidget(QWidget):
         self.tabEditorWidget.currentWidget().toggleComment()
 
     def reformatCode(self):
-        self.tabEditorWidget.currentWidget().newEditor.reformatCode()
+        self.tabEditorWidget.currentWidget().reformatCode()
 
     def openScriptFileExtEditor(self):
         tabWidget = self.tabEditorWidget.currentWidget()
