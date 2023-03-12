@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1055</width>
+    <width>888</width>
     <height>731</height>
    </rect>
   </property>
@@ -54,8 +54,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>1041</width>
-        <height>854</height>
+        <width>874</width>
+        <height>914</height>
        </rect>
       </property>
       <layout class="QGridLayout" name="gridLayout">
@@ -456,26 +456,16 @@
          </property>
          <layout class="QGridLayout" name="gridLayout_4">
           <item row="2" column="0">
-           <widget class="QLabel" name="label_8">
+           <widget class="QLabel" name="label">
             <property name="text">
-             <string>Maximum line length</string>
+             <string>Formatter</string>
             </property>
            </widget>
           </item>
-          <item row="1" column="0">
-           <widget class="QLabel" name="label_7">
+          <item row="4" column="0" colspan="2">
+           <widget class="QCheckBox" name="blackNormalizeQuotes">
             <property name="text">
-             <string>Autopep8 agressiveness</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="1">
-           <widget class="QSpinBox" name="autopep8Aggressiveness">
-            <property name="maximum">
-             <number>3</number>
-            </property>
-            <property name="value">
-             <number>1</number>
+             <string>Normalize quotes</string>
             </property>
            </widget>
           </item>
@@ -486,7 +476,51 @@
             </property>
            </widget>
           </item>
+          <item row="3" column="0">
+           <widget class="QLabel" name="autopep8AggressivenessLabel">
+            <property name="text">
+             <string>Autopep8 agressiveness</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="1">
+           <widget class="QSpinBox" name="autopep8Aggressiveness">
+            <property name="maximum">
+             <number>3</number>
+            </property>
+            <property name="value">
+             <number>1</number>
+            </property>
+           </widget>
+          </item>
           <item row="2" column="1">
+           <widget class="QComboBox" name="formatter">
+            <property name="minimumSize">
+             <size>
+              <width>100</width>
+              <height>0</height>
+             </size>
+            </property>
+            <item>
+             <property name="text">
+              <string>autopep8</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>black</string>
+             </property>
+            </item>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="label_8">
+            <property name="text">
+             <string>Maximum line length</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
            <widget class="QSpinBox" name="maxLineLength">
             <property name="minimum">
              <number>60</number>
@@ -499,7 +533,7 @@
             </property>
            </widget>
           </item>
-          <item row="1" column="2">
+          <item row="0" column="2">
            <spacer name="horizontalSpacer">
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
@@ -540,8 +574,9 @@
   <tabstop>autoSurround</tabstop>
   <tabstop>autoInsertImport</tabstop>
   <tabstop>formatOnSave</tabstop>
+  <tabstop>formatter</tabstop>
   <tabstop>autopep8Aggressiveness</tabstop>
-  <tabstop>maxLineLength</tabstop>
+  <tabstop>blackNormalizeQuotes</tabstop>
   <tabstop>enableObjectInspector</tabstop>
   <tabstop>autoSaveScript</tabstop>
   <tabstop>preloadAPI</tabstop>

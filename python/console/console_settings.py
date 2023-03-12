@@ -90,6 +90,8 @@ class ConsoleOptionsWidget(QWidget, Ui_SettingsDialogPythonConsole):
         self.compileAPIs.clicked.connect(self._prepareAPI)
 
         self.generateToken.clicked.connect(self.generateGHToken)
+        self.formatter.currentTextChanged.connect(self.onFormatterChanged)
+        self.onFormatterChanged()
 
     def generateGHToken(self):
         description = self.tr("PyQGIS Console")
@@ -207,7 +209,9 @@ class ConsoleOptionsWidget(QWidget, Ui_SettingsDialogPythonConsole):
         settings.setValue("pythonConsole/autoInsertImport", self.autoInsertImport.isChecked())
 
         settings.setValue("pythonConsole/formatOnSave", self.formatOnSave.isChecked())
+        settings.setValue("pythonConsole/formatter", self.formatter.currentText())
         settings.setValue("pythonConsole/autopep8Aggressiveness", self.autopep8Aggressiveness.value())
+        settings.setValue("pythonConsole/blackNormalizeQuotes", self.blackNormalizeQuotes.isChecked())
         settings.setValue("pythonConsole/maxLineLength", self.maxLineLength.value())
 
     def restoreSettings(self):
@@ -236,7 +240,9 @@ class ConsoleOptionsWidget(QWidget, Ui_SettingsDialogPythonConsole):
         self.autoInsertImport.setChecked(settings.value("pythonConsole/autoInsertImport", False, type=bool))
 
         self.formatOnSave.setChecked(settings.value("pythonConsole/formatOnSave", False, type=bool))
+        self.formatter.setCurrentText(settings.value("pythonConsole/formatter", "autopep8", type=str))
         self.autopep8Aggressiveness.setValue(settings.value("pythonConsole/autopep8Aggressiveness", 1, type=int))
+        self.blackNormalizeQuotes.setChecked(settings.value("pythonConsole/blackNormalizeQuotes", True, type=bool))
         self.maxLineLength.setValue(settings.value("pythonConsole/maxLineLength", 80, type=int))
 
         if settings.value("pythonConsole/autoCompleteSource") == 'fromDoc':
@@ -245,3 +251,14 @@ class ConsoleOptionsWidget(QWidget, Ui_SettingsDialogPythonConsole):
             self.autoCompFromAPI.setChecked(True)
         elif settings.value("pythonConsole/autoCompleteSource") == 'fromDocAPI':
             self.autoCompFromDocAPI.setChecked(True)
+
+    def onFormatterChanged(self):
+        """ Toggle formatter-specific options visibility when the formatter is changed """
+        if self.formatter.currentText() == 'autopep8':
+            self.autopep8Aggressiveness.setVisible(True)
+            self.autopep8AggressivenessLabel.setVisible(True)
+            self.blackNormalizeQuotes.setVisible(False)
+        else:  # black
+            self.autopep8Aggressiveness.setVisible(False)
+            self.autopep8AggressivenessLabel.setVisible(False)
+            self.blackNormalizeQuotes.setVisible(True)
