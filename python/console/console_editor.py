@@ -301,7 +301,9 @@ class Editor(QgsCodeEditorPython):
 
     def createTempFile(self):
         name = tempfile.NamedTemporaryFile(delete=False).name
-        Path(name).write_text(self.text(), encoding='utf-8')
+        # Need to use newline='' to avoid adding extra \r characters on Windows
+        with open(name, 'w', encoding='utf-8', newline='') as f:
+            f.write(self.text())
         return name
 
     def runScriptCode(self):
@@ -427,7 +429,9 @@ class Editor(QgsCodeEditorPython):
             self.pythonconsole.callWidgetMessageBarEditor(msgText, 0, True)
 
         # Save the new contents
-        Path(self.path).write_text(self.text(), encoding='utf-8')
+        # Need to use newline='' to avoid adding extra \r characters on Windows
+        with open(self.path, 'w', encoding='utf-8', newline='') as f:
+            f.write(self.text())
         tabwidget.setTabTitle(index, Path(self.path).name)
         tabwidget.setTabToolTip(index, self.path)
         self.setModified(False)
