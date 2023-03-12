@@ -27,6 +27,7 @@ set(TESTS
   testqgsmaterialregistry.cpp
   testqgs3dmaterial.cpp
   testqgstessellator.cpp
+  testqgstilingscheme.cpp
   testqgs3dsymbolregistry.cpp
   testqgspointcloud3drendering.cpp
   testqgsaabb.cpp
