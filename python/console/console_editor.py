@@ -69,27 +69,29 @@ def findMinimalDistanceIndex(source, target):
 
     ref_dist_more = d0
     ref_index_more = index
-    while True:
-        new_dist = lev(source[:ref_index_more + 1], target)
-        if new_dist <= ref_dist_more:
-            ref_dist_more = new_dist
-            ref_index_more = ref_index_more + 1
-            if ref_index_more == len(source) - 1:
+    if index < len(source) - 1:
+        while True:
+            new_dist = lev(source[:ref_index_more + 1], target)
+            if new_dist <= ref_dist_more:
+                ref_dist_more = new_dist
+                ref_index_more = ref_index_more + 1
+                if ref_index_more == len(source) - 1:
+                    break
+            else:
                 break
-        else:
-            break
 
     ref_dist_less = d0
     ref_index_less = index
-    while True:
-        new_dist = lev(source[:ref_index_less - 1], target)
-        if new_dist <= ref_dist_less:
-            ref_dist_less = new_dist
-            ref_index_less = ref_index_less - 1
-            if ref_index_less == 0:
+    if index > 0:
+        while True:
+            new_dist = lev(source[:ref_index_less - 1], target)
+            if new_dist <= ref_dist_less:
+                ref_dist_less = new_dist
+                ref_index_less = ref_index_less - 1
+                if ref_index_less == 0:
+                    break
+            else:
                 break
-        else:
-            break
 
     if ref_dist_more < ref_dist_less:
         return ref_index_more
@@ -110,11 +112,11 @@ class Editor(QgsCodeEditorPython):
         self.setMinimumHeight(120)
         self.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
 
-        # Disable command key
+        # Disable default scintilla shortcuts
         ctrl, shift = self.SCMOD_CTRL << 16, self.SCMOD_SHIFT << 16
-        self.SendScintilla(QsciScintilla.SCI_CLEARCMDKEY, ord('L') + ctrl)
-        self.SendScintilla(QsciScintilla.SCI_CLEARCMDKEY, ord('T') + ctrl)
-        self.SendScintilla(QsciScintilla.SCI_CLEARCMDKEY, ord('D') + ctrl)
+        self.SendScintilla(QsciScintilla.SCI_CLEARCMDKEY, ord('T') + ctrl) # Switch current line with the next one
+        self.SendScintilla(QsciScintilla.SCI_CLEARCMDKEY, ord('D') + ctrl) # Duplicate current line / selection
+        self.SendScintilla(QsciScintilla.SCI_CLEARCMDKEY, ord('L') + ctrl) # Delete current line
         self.SendScintilla(QsciScintilla.SCI_CLEARCMDKEY, ord('L') + ctrl + shift)
 
         # New QShortcut = ctrl+space/ctrl+alt+space for Autocomplete
