@@ -232,8 +232,12 @@ class Editor(QgsCodeEditorPython):
         self.findText(False)
 
     def formatCode(self):
-
-        new_text = autopep8.fix_code(self.text())
+        """ Format the code using autopep8 """
+        options = {
+            "aggressive": self.settings.value("pythonConsole/autopep8Aggressiveness", 1, type=int),
+            "max_line_length": self.settings.value("pythonConsole/maxLineLength", 80, type=int),
+        }
+        new_text = autopep8.fix_code(self.text(), options=options)
         if new_text == self.text():
             return
 
@@ -426,6 +430,10 @@ class Editor(QgsCodeEditorPython):
     def save(self, filename=None):
         if self.isReadOnly():
             return
+
+        if self.pythonconsole.settings.value("pythonConsole/formatOnSave", False, type=bool):
+            self.formatCode()
+
         tabwidget = self.tabwidget
         index = tabwidget.indexOf(self.parent)
         if filename:

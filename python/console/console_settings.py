@@ -206,6 +206,10 @@ class ConsoleOptionsWidget(QWidget, Ui_SettingsDialogPythonConsole):
         settings.setValue("pythonConsole/autoSurround", self.autoSurround.isChecked())
         settings.setValue("pythonConsole/autoInsertImport", self.autoInsertImport.isChecked())
 
+        settings.setValue("pythonConsole/formatOnSave", self.formatOnSave.isChecked())
+        settings.setValue("pythonConsole/autopep8Aggressiveness", self.autopep8Aggressiveness.value())
+        settings.setValue("pythonConsole/maxLineLength", self.maxLineLength.value())
+
     def restoreSettings(self):
         settings = QgsSettings()
         self.preloadAPI.setChecked(settings.value("pythonConsole/preloadAPI", True, type=bool))
@@ -230,6 +234,10 @@ class ConsoleOptionsWidget(QWidget, Ui_SettingsDialogPythonConsole):
         self.autoCloseBracket.setChecked(settings.value("pythonConsole/autoCloseBracket", True, type=bool))
         self.autoSurround.setChecked(settings.value("pythonConsole/autoSurround", True, type=bool))
         self.autoInsertImport.setChecked(settings.value("pythonConsole/autoInsertImport", False, type=bool))
+
+        self.formatOnSave.setChecked(settings.value("pythonConsole/formatOnSave", False, type=bool))
+        self.autopep8Aggressiveness.setValue(settings.value("pythonConsole/autopep8Aggressiveness", 1, type=int))
+        self.maxLineLength.setValue(settings.value("pythonConsole/maxLineLength", 80, type=int))
 
         if settings.value("pythonConsole/autoCompleteSource") == 'fromDoc':
             self.autoCompFromDoc.setChecked(True)
