@@ -489,7 +489,7 @@
           <item row="0" column="0" colspan="2">
            <widget class="QCheckBox" name="formatOnSave">
             <property name="text">
-             <string>Format on save</string>
+             <string>Reformat on save</string>
             </property>
            </widget>
           </item>

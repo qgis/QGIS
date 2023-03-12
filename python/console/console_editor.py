@@ -274,8 +274,8 @@ class Editor(QgsCodeEditorPython):
     def textBeforeCursor(self):
         return self.text(0, self.positionFromLineIndex(*self.getCursorPosition()))
 
-    def formatCode(self):
-        """ Format the code using the selected formatter """
+    def reformatCode(self):
+        """ Reformat the code using the selected formatter """
 
         formatter = self.settings.value("pythonConsole/formatter", "autopep8", type=str)
         max_line_length = self.settings.value("pythonConsole/maxLineLength", 80, type=int)
@@ -509,7 +509,7 @@ class Editor(QgsCodeEditorPython):
             return
 
         if self.pythonconsole.settings.value("pythonConsole/formatOnSave", False, type=bool):
-            self.formatCode()
+            self.reformatCode()
 
         tabwidget = self.tabwidget
         index = tabwidget.indexOf(self.parent)
