@@ -165,6 +165,7 @@
         <file>themes/default/console/iconNewTabEditorConsole.svg</file>
         <file>themes/default/console/iconRestoreTabsConsole.svg</file>
         <file>themes/default/console/iconFileTabsMenuConsole.svg</file>
+        <file>themes/default/console/iconFormatCode.svg</file>
         <file>themes/default/console/iconShowEditorConsole.svg</file>
         <file>themes/default/console/iconCommentEditorConsole.svg</file>
         <file>themes/default/console/iconUncommentEditorConsole.svg</file>
