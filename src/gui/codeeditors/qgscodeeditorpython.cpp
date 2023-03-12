@@ -66,9 +66,11 @@ Qgis::ScriptLanguage QgsCodeEditorPython::language() const
 
 void QgsCodeEditorPython::initializeLexer()
 {
+  const QgsSettings settings;
+
   // current line
   setEdgeMode( QsciScintilla::EdgeLine );
-  setEdgeColumn( 80 );
+  setEdgeColumn( settings.value( QStringLiteral( "pythonConsole/maxLineLength" ), 80 ).toInt() );
   setEdgeColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::Edge ) );
 
   setWhitespaceVisibility( QsciScintilla::WsVisibleAfterIndent );
@@ -112,8 +114,6 @@ void QgsCodeEditorPython::initializeLexer()
   pyLexer->setColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::TripleDoubleQuote ), QsciLexerPython::TripleDoubleQuotedString );
 
   std::unique_ptr< QsciAPIs > apis = std::make_unique< QsciAPIs >( pyLexer );
-
-  const QgsSettings settings;
 
   if ( mAPISFilesList.isEmpty() )
   {
