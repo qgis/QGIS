@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>888</width>
-    <height>731</height>
+    <width>809</width>
+    <height>860</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -30,7 +30,7 @@
   </property>
   <layout class="QGridLayout" name="gridLayout_16">
    <property name="leftMargin">
-    <number>0</number>
+    <number>20</number>
    </property>
    <property name="topMargin">
     <number>0</number>
@@ -54,8 +54,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>874</width>
-        <height>914</height>
+        <width>789</width>
+        <height>860</height>
        </rect>
       </property>
       <layout class="QGridLayout" name="gridLayout">
@@ -95,9 +95,15 @@
         </widget>
        </item>
        <item row="5" column="0">
-        <widget class="QgsCollapsibleGroupBox" name="groupBox_2">
+        <widget class="QgsCollapsibleGroupBox" name="groupBoxApi">
          <property name="title">
           <string>APIs</string>
+         </property>
+         <property name="collapsed" stdset="0">
+          <bool>true</bool>
+         </property>
+         <property name="saveCollapsedState" stdset="0">
+          <bool>true</bool>
          </property>
          <layout class="QGridLayout" name="gridLayout_7">
           <item row="0" column="0">
@@ -178,7 +184,7 @@
               <property name="minimumSize">
                <size>
                 <width>0</width>
-                <height>150</height>
+                <height>100</height>
                </size>
               </property>
               <property name="editTriggers">
@@ -291,17 +297,20 @@
         </widget>
        </item>
        <item row="1" column="0">
-        <widget class="QgsCollapsibleGroupBox" name="groupBox_4">
+        <widget class="QgsCollapsibleGroupBox" name="groupBoxTyping">
          <property name="title">
           <string>Typing</string>
          </property>
          <property name="collapsed" stdset="0">
-          <bool>true</bool>
+          <bool>false</bool>
          </property>
          <property name="saveCollapsedState" stdset="0">
           <bool>true</bool>
          </property>
          <layout class="QGridLayout" name="gridLayout_11">
+          <property name="verticalSpacing">
+           <number>2</number>
+          </property>
           <item row="0" column="0">
            <widget class="QCheckBox" name="autoCloseBracket">
             <property name="text">
@@ -332,12 +341,15 @@
           <string>Run and Debug</string>
          </property>
          <property name="collapsed" stdset="0">
-          <bool>false</bool>
+          <bool>true</bool>
          </property>
          <property name="saveCollapsedState" stdset="0">
           <bool>true</bool>
          </property>
          <layout class="QGridLayout" name="gridLayout_21">
+          <property name="verticalSpacing">
+           <number>2</number>
+          </property>
           <item row="1" column="0">
            <widget class="QCheckBox" name="autoSaveScript">
             <property name="text">
@@ -379,6 +391,9 @@
           <bool>true</bool>
          </property>
          <layout class="QGridLayout" name="gridLayout_5">
+          <property name="verticalSpacing">
+           <number>2</number>
+          </property>
           <item row="0" column="2">
            <widget class="QLabel" name="label_36">
             <property name="text">
@@ -444,56 +459,48 @@
         </widget>
        </item>
        <item row="2" column="0">
-        <widget class="QgsCollapsibleGroupBox" name="formattingGroupBox">
+        <widget class="QgsCollapsibleGroupBox" name="groupBoxFromatting">
          <property name="title">
           <string>Formatting</string>
          </property>
          <property name="collapsed" stdset="0">
-          <bool>true</bool>
+          <bool>false</bool>
          </property>
          <property name="saveCollapsedState" stdset="0">
           <bool>true</bool>
          </property>
          <layout class="QGridLayout" name="gridLayout_4">
-          <item row="2" column="0">
-           <widget class="QLabel" name="label">
-            <property name="text">
-             <string>Formatter</string>
+          <property name="verticalSpacing">
+           <number>2</number>
+          </property>
+          <item row="2" column="1">
+           <widget class="QSpinBox" name="maxLineLength">
+            <property name="minimum">
+             <number>60</number>
+            </property>
+            <property name="maximum">
+             <number>200</number>
+            </property>
+            <property name="value">
+             <number>80</number>
             </property>
            </widget>
           </item>
-          <item row="4" column="0" colspan="2">
-           <widget class="QCheckBox" name="blackNormalizeQuotes">
-            <property name="text">
-             <string>Normalize quotes</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="0">
+          <item row="0" column="0" colspan="2">
            <widget class="QCheckBox" name="formatOnSave">
             <property name="text">
              <string>Format on save</string>
             </property>
            </widget>
           </item>
-          <item row="3" column="0">
-           <widget class="QLabel" name="autopep8AggressivenessLabel">
+          <item row="5" column="0" colspan="2">
+           <widget class="QCheckBox" name="blackNormalizeQuotes">
             <property name="text">
-             <string>Autopep8 agressiveness</string>
+             <string>Normalize quotes</string>
             </property>
            </widget>
           </item>
           <item row="3" column="1">
-           <widget class="QSpinBox" name="autopep8Aggressiveness">
-            <property name="maximum">
-             <number>3</number>
-            </property>
-            <property name="value">
-             <number>1</number>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="1">
            <widget class="QComboBox" name="formatter">
             <property name="minimumSize">
              <size>
@@ -513,28 +520,46 @@
             </item>
            </widget>
           </item>
-          <item row="1" column="0">
+          <item row="1" column="0" colspan="2">
+           <widget class="QCheckBox" name="sortImports">
+            <property name="text">
+             <string>Sort imports</string>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="0">
+           <widget class="QLabel" name="autopep8LevelLabel">
+            <property name="text">
+             <string>Autopep8 level</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0">
            <widget class="QLabel" name="label_8">
             <property name="text">
              <string>Maximum line length</string>
             </property>
            </widget>
           </item>
-          <item row="1" column="1">
-           <widget class="QSpinBox" name="maxLineLength">
-            <property name="minimum">
-             <number>60</number>
+          <item row="3" column="0">
+           <widget class="QLabel" name="label">
+            <property name="text">
+             <string>Formatter</string>
             </property>
+           </widget>
+          </item>
+          <item row="4" column="1">
+           <widget class="QSpinBox" name="autopep8Level">
             <property name="maximum">
-             <number>200</number>
+             <number>3</number>
             </property>
             <property name="value">
-             <number>80</number>
+             <number>1</number>
             </property>
            </widget>
           </item>
           <item row="0" column="2">
-           <spacer name="horizontalSpacer">
+           <spacer name="horizontalSpacer_2">
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
             </property>
@@ -564,8 +589,8 @@
   </customwidget>
  </customwidgets>
  <tabstops>
-  <tabstop>scrollArea</tabstop>
   <tabstop>groupBoxAutoCompletion</tabstop>
+  <tabstop>scrollArea</tabstop>
   <tabstop>autoCompThreshold</tabstop>
   <tabstop>autoCompFromDoc</tabstop>
   <tabstop>autoCompFromAPI</tabstop>
@@ -574,8 +599,10 @@
   <tabstop>autoSurround</tabstop>
   <tabstop>autoInsertImport</tabstop>
   <tabstop>formatOnSave</tabstop>
+  <tabstop>sortImports</tabstop>
+  <tabstop>maxLineLength</tabstop>
   <tabstop>formatter</tabstop>
-  <tabstop>autopep8Aggressiveness</tabstop>
+  <tabstop>autopep8Level</tabstop>
   <tabstop>blackNormalizeQuotes</tabstop>
   <tabstop>enableObjectInspector</tabstop>
   <tabstop>autoSaveScript</tabstop>
