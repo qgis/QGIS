@@ -32,6 +32,7 @@ from pathlib import Path
 
 import autopep8
 import black
+import isort
 
 from qgis.core import Qgis, QgsApplication, QgsBlockingNetworkRequest, QgsFileUtils, QgsSettings
 from qgis.gui import QgsCodeEditorPython, QgsMessageBar
@@ -237,11 +238,23 @@ class Editor(QgsCodeEditorPython):
 
         formatter = self.settings.value("pythonConsole/formatter", "autopep8", type=str)
         max_line_length = self.settings.value("pythonConsole/maxLineLength", 80, type=int)
+
+        new_text = self.text()
+
+        # isort
+        if self.settings.value("pythonConsole/sortImports", True, type=bool):
+            options = {
+                "line_length": max_line_length,
+                "profile": "black" if formatter == "black" else "",
+                "known_first_party": ["qgis", "console", "processing", "plugins"],
+            }
+            new_text = isort.code(new_text, **options)
+
         # autopep8
         if formatter == "autopep8":
-            aggressive = self.settings.value("pythonConsole/autopep8Aggressiveness", 1, type=int)
-            options = {"aggressive": aggressive, "max_line_length": max_line_length}
-            new_text = autopep8.fix_code(self.text(), options=options)
+            level = self.settings.value("pythonConsole/autopep8Level", 1, type=int)
+            options = {"aggressive": level, "max_line_length": max_line_length}
+            new_text = autopep8.fix_code(new_text, options=options)
 
         # black
         else:
@@ -256,7 +269,7 @@ class Editor(QgsCodeEditorPython):
 
             normalize = self.settings.value("pythonConsole/blackNormalizeQuotes", True, type=bool)
             options = {"string_normalization": normalize, "line_length": max_line_length}
-            new_text = black.format_str(self.text(), mode=black.Mode(**options))
+            new_text = black.format_str(new_text, mode=black.Mode(**options))
 
         if new_text == self.text():
             return

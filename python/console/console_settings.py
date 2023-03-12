@@ -209,8 +209,9 @@ class ConsoleOptionsWidget(QWidget, Ui_SettingsDialogPythonConsole):
         settings.setValue("pythonConsole/autoInsertImport", self.autoInsertImport.isChecked())
 
         settings.setValue("pythonConsole/formatOnSave", self.formatOnSave.isChecked())
+        settings.setValue("pythonConsole/sortImports", self.sortImports.isChecked())
         settings.setValue("pythonConsole/formatter", self.formatter.currentText())
-        settings.setValue("pythonConsole/autopep8Aggressiveness", self.autopep8Aggressiveness.value())
+        settings.setValue("pythonConsole/autopep8Level", self.autopep8Level.value())
         settings.setValue("pythonConsole/blackNormalizeQuotes", self.blackNormalizeQuotes.isChecked())
         settings.setValue("pythonConsole/maxLineLength", self.maxLineLength.value())
 
@@ -240,8 +241,9 @@ class ConsoleOptionsWidget(QWidget, Ui_SettingsDialogPythonConsole):
         self.autoInsertImport.setChecked(settings.value("pythonConsole/autoInsertImport", False, type=bool))
 
         self.formatOnSave.setChecked(settings.value("pythonConsole/formatOnSave", False, type=bool))
+        self.sortImports.setChecked(settings.value("pythonConsole/sortImports", True, type=bool))
         self.formatter.setCurrentText(settings.value("pythonConsole/formatter", "autopep8", type=str))
-        self.autopep8Aggressiveness.setValue(settings.value("pythonConsole/autopep8Aggressiveness", 1, type=int))
+        self.autopep8Level.setValue(settings.value("pythonConsole/autopep8Level", 1, type=int))
         self.blackNormalizeQuotes.setChecked(settings.value("pythonConsole/blackNormalizeQuotes", True, type=bool))
         self.maxLineLength.setValue(settings.value("pythonConsole/maxLineLength", 80, type=int))
 
@@ -255,10 +257,10 @@ class ConsoleOptionsWidget(QWidget, Ui_SettingsDialogPythonConsole):
     def onFormatterChanged(self):
         """ Toggle formatter-specific options visibility when the formatter is changed """
         if self.formatter.currentText() == 'autopep8':
-            self.autopep8Aggressiveness.setVisible(True)
-            self.autopep8AggressivenessLabel.setVisible(True)
+            self.autopep8Level.setVisible(True)
+            self.autopep8LevelLabel.setVisible(True)
             self.blackNormalizeQuotes.setVisible(False)
         else:  # black
-            self.autopep8Aggressiveness.setVisible(False)
-            self.autopep8AggressivenessLabel.setVisible(False)
+            self.autopep8Level.setVisible(False)
+            self.autopep8LevelLabel.setVisible(False)
             self.blackNormalizeQuotes.setVisible(True)
