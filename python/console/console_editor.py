@@ -33,6 +33,7 @@ from pathlib import Path
 import autopep8
 import black
 import isort
+from Levenshtein import distance as lev
 
 from qgis.core import Qgis, QgsApplication, QgsBlockingNetworkRequest, QgsFileUtils, QgsSettings
 from qgis.gui import QgsCodeEditorPython, QgsMessageBar
@@ -57,6 +58,43 @@ from qgis.PyQt.QtWidgets import (
     QWidget,
 )
 from qgis.utils import OverrideCursor, iface
+
+
+def findMinimalDistanceIndex(source, target):
+    """ Find the source substring index that most closely matches the target string"""
+    index = min(len(source), len(target))
+    d0 = lev(source[:index], target)
+    if d0 == 0:
+        return index
+
+    ref_dist_more = d0
+    ref_index_more = index
+    while True:
+        new_dist = lev(source[:ref_index_more + 1], target)
+        if new_dist <= ref_dist_more:
+            ref_dist_more = new_dist
+            ref_index_more = ref_index_more + 1
+            if ref_index_more == len(source) - 1:
+                break
+        else:
+            break
+
+    ref_dist_less = d0
+    ref_index_less = index
+    while True:
+        new_dist = lev(source[:ref_index_less - 1], target)
+        if new_dist <= ref_dist_less:
+            ref_dist_less = new_dist
+            ref_index_less = ref_index_less - 1
+            if ref_index_less == 0:
+                break
+        else:
+            break
+
+    if ref_dist_more < ref_dist_less:
+        return ref_index_more
+    else:
+        return ref_index_less
 
 
 class Editor(QgsCodeEditorPython):
@@ -233,6 +271,9 @@ class Editor(QgsCodeEditorPython):
     def findPrevious(self):
         self.findText(False)
 
+    def textBeforeCursor(self):
+        return self.text(0, self.positionFromLineIndex(*self.getCursorPosition()))
+
     def formatCode(self):
         """ Format the code using the selected formatter """
 
@@ -240,6 +281,8 @@ class Editor(QgsCodeEditorPython):
         max_line_length = self.settings.value("pythonConsole/maxLineLength", 80, type=int)
 
         new_text = self.text()
+
+        target = self.textBeforeCursor()
 
         # isort
         if self.settings.value("pythonConsole/sortImports", True, type=bool):
@@ -275,13 +318,14 @@ class Editor(QgsCodeEditorPython):
             return
 
         # Try to preserve the cursor position and scroll position
-        old_pos = self.getCursorPosition()
         old_scroll_value = self.verticalScrollBar().value()
+        linearPosition = findMinimalDistanceIndex(new_text, target)
+
         self.beginUndoAction()
         self.selectAll()
         self.removeSelectedText()
         self.insert(new_text)
-        self.setCursorPosition(*old_pos)
+        self.setCursorPosition(*self.lineIndexFromPosition(linearPosition))
         self.verticalScrollBar().setValue(old_scroll_value)
         self.endUndoAction()
 
