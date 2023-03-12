@@ -258,34 +258,36 @@ void QgsExpressionTreeView::updateFunctionTree()
   mModel->clear();
   mExpressionGroups.clear();
 
-  static const QStringList operators = QStringList() << QStringLiteral( "+" )
-                                       << QStringLiteral( "-" )
-                                       << QStringLiteral( "*" )
-                                       << QStringLiteral( "/" )
-                                       << QStringLiteral( "%" )
-                                       << QStringLiteral( "^" )
-                                       << QStringLiteral( "=" )
-                                       << QStringLiteral( "~" )
-                                       << QStringLiteral( ">" )
-                                       << QStringLiteral( "<" )
-                                       << QStringLiteral( "<>" )
-                                       << QStringLiteral( "<=" )
-                                       << QStringLiteral( ">=" )
-                                       << QStringLiteral( "[]" )
-                                       << QStringLiteral( "||" )
-                                       << QStringLiteral( "BETWEEN" )
-                                       << QStringLiteral( "NOT BETWEEN" )
-                                       << QStringLiteral( "IN" )
-                                       << QStringLiteral( "LIKE" )
-                                       << QStringLiteral( "ILIKE" )
-                                       << QStringLiteral( "IS" )
-                                       << QStringLiteral( "IS NOT" )
-                                       << QStringLiteral( "OR" )
-                                       << QStringLiteral( "AND" )
-                                       << QStringLiteral( "NOT" );
+  //list of pairs where the first is the name and the second is the expression value when adding it
+  static const QList< QPair<QString, QString> > operators = QList< QPair<QString, QString> >()
+      << QPair<QString, QString>( QStringLiteral( "+" ),  QStringLiteral( " + " ) )
+      << QPair<QString, QString>( QStringLiteral( "-" ),  QStringLiteral( " - " ) )
+      << QPair<QString, QString>( QStringLiteral( "*" ),  QStringLiteral( " * " ) )
+      << QPair<QString, QString>( QStringLiteral( "/" ),  QStringLiteral( " / " ) )
+      << QPair<QString, QString>( QStringLiteral( "%" ),  QStringLiteral( " % " ) )
+      << QPair<QString, QString>( QStringLiteral( "^" ),  QStringLiteral( " ^ " ) )
+      << QPair<QString, QString>( QStringLiteral( "=" ),  QStringLiteral( " = " ) )
+      << QPair<QString, QString>( QStringLiteral( "~" ),  QStringLiteral( " ~ " ) )
+      << QPair<QString, QString>( QStringLiteral( ">" ),  QStringLiteral( " > " ) )
+      << QPair<QString, QString>( QStringLiteral( "<" ),  QStringLiteral( " < " ) )
+      << QPair<QString, QString>( QStringLiteral( "<>" ),  QStringLiteral( " <> " ) )
+      << QPair<QString, QString>( QStringLiteral( "<=" ),  QStringLiteral( " <= " ) )
+      << QPair<QString, QString>( QStringLiteral( ">=" ),  QStringLiteral( " >= " ) )
+      << QPair<QString, QString>( QStringLiteral( "[]" ),  QStringLiteral( "[ ]" ) )
+      << QPair<QString, QString>( QStringLiteral( "||" ),  QStringLiteral( " || " ) )
+      << QPair<QString, QString>( QStringLiteral( "BETWEEN" ),  QStringLiteral( " BETWEEN " ) )
+      << QPair<QString, QString>( QStringLiteral( "NOT BETWEEN" ),  QStringLiteral( " NOT BETWEEN " ) )
+      << QPair<QString, QString>( QStringLiteral( "IN" ),  QStringLiteral( " IN " ) )
+      << QPair<QString, QString>( QStringLiteral( "LIKE" ),  QStringLiteral( " LIKE " ) )
+      << QPair<QString, QString>( QStringLiteral( "ILIKE" ),  QStringLiteral( " ILIKE " ) )
+      << QPair<QString, QString>( QStringLiteral( "IS" ),  QStringLiteral( " IS " ) )
+      << QPair<QString, QString>( QStringLiteral( "IS NOT" ),  QStringLiteral( " IS NOT " ) )
+      << QPair<QString, QString>( QStringLiteral( "OR" ),  QStringLiteral( " OR " ) )
+      << QPair<QString, QString>( QStringLiteral( "AND" ),  QStringLiteral( " AND " ) )
+      << QPair<QString, QString>( QStringLiteral( "NOT" ),  QStringLiteral( " NOT " ) );
   for ( const auto &name : operators )
   {
-    registerItem( QStringLiteral( "Operators" ), name,  ' ' + name + ' ', QString(), QgsExpressionItem::ExpressionNode, false, -1, QIcon(), QgsExpression::tags( name ) );
+    registerItem( QStringLiteral( "Operators" ), name.first, name.second, QString(), QgsExpressionItem::ExpressionNode, false, -1, QIcon(), QgsExpression::tags( name.first ) );
   }
 
   QString casestring = QStringLiteral( "CASE WHEN condition THEN result END" );
