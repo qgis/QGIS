@@ -31,6 +31,7 @@ from operator import itemgetter
 from pathlib import Path
 
 import autopep8
+import black
 
 from qgis.core import Qgis, QgsApplication, QgsBlockingNetworkRequest, QgsFileUtils, QgsSettings
 from qgis.gui import QgsCodeEditorPython, QgsMessageBar
@@ -54,7 +55,7 @@ from qgis.PyQt.QtWidgets import (
     QTreeWidgetItem,
     QWidget,
 )
-from qgis.utils import OverrideCursor
+from qgis.utils import OverrideCursor, iface
 
 
 class Editor(QgsCodeEditorPython):
@@ -232,12 +233,31 @@ class Editor(QgsCodeEditorPython):
         self.findText(False)
 
     def formatCode(self):
-        """ Format the code using autopep8 """
-        options = {
-            "aggressive": self.settings.value("pythonConsole/autopep8Aggressiveness", 1, type=int),
-            "max_line_length": self.settings.value("pythonConsole/maxLineLength", 80, type=int),
-        }
-        new_text = autopep8.fix_code(self.text(), options=options)
+        """ Format the code using the selected formatter """
+
+        formatter = self.settings.value("pythonConsole/formatter", "autopep8", type=str)
+        max_line_length = self.settings.value("pythonConsole/maxLineLength", 80, type=int)
+        # autopep8
+        if formatter == "autopep8":
+            aggressive = self.settings.value("pythonConsole/autopep8Aggressiveness", 1, type=int)
+            options = {"aggressive": aggressive, "max_line_length": max_line_length}
+            new_text = autopep8.fix_code(self.text(), options=options)
+
+        # black
+        else:
+            if not self.syntaxCheck():
+                iface.messageBar().pushMessage(
+                    QCoreApplication.translate("PythonConsole", "Code formatting failed"),
+                    QCoreApplication.translate("PythonConsole", "The code contains syntax errors"),
+                    level=Qgis.Warning,
+                    duration=2,
+                )
+                return
+
+            normalize = self.settings.value("pythonConsole/blackNormalizeQuotes", True, type=bool)
+            options = {"string_normalization": normalize, "line_length": max_line_length}
+            new_text = black.format_str(self.text(), mode=black.Mode(**options))
+
         if new_text == self.text():
             return
 
