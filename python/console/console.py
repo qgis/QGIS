@@ -289,6 +289,18 @@ class PythonConsoleWidget(QWidget):
         self.toggleCommentEditorButton.setToolTip(toggleText + " <b>Ctrl+:</b>")
         self.toggleCommentEditorButton.setText(toggleText)
 
+        # Action Format code
+        formatCodeText = QCoreApplication.translate("PythonConsole", "Format Code")
+        self.formatCodeEditorButton = QAction(self)
+        self.formatCodeEditorButton.setCheckable(False)
+        self.formatCodeEditorButton.setEnabled(True)
+        self.formatCodeEditorButton.setIcon(QgsApplication.getThemeIcon("console/iconFormatCode.svg"))
+        self.formatCodeEditorButton.setMenuRole(QAction.PreferencesRole)
+        self.formatCodeEditorButton.setIconVisibleInMenu(True)
+        self.formatCodeEditorButton.setToolTip(formatCodeText + " <b>Ctrl+Alt+F</b>")
+        self.formatCodeEditorButton.setShortcut("Ctrl+Alt+F")
+        self.formatCodeEditorButton.setText(formatCodeText)
+
         # Action for Object browser
         objList = QCoreApplication.translate("PythonConsole", "Object Inspector…")
         self.objectListButton = QAction(self)
@@ -417,6 +429,7 @@ class PythonConsoleWidget(QWidget):
         self.toolBarEditor.addAction(self.findTextButton)
         self.toolBarEditor.addSeparator()
         self.toolBarEditor.addAction(self.toggleCommentEditorButton)
+        self.toolBarEditor.addAction(self.formatCodeEditorButton)
         self.toolBarEditor.addSeparator()
         self.toolBarEditor.addAction(self.objectListButton)
 
@@ -510,6 +523,7 @@ class PythonConsoleWidget(QWidget):
         self.findTextButton.triggered.connect(self._toggleFind)
         self.objectListButton.toggled.connect(self.toggleObjectListWidget)
         self.toggleCommentEditorButton.triggered.connect(self.toggleComment)
+        self.formatCodeEditorButton.triggered.connect(self.formatCode)
         self.runScriptEditorButton.triggered.connect(self.runScriptEditor)
         self.cutEditorButton.triggered.connect(self.cutEditor)
         self.copyEditorButton.triggered.connect(self.copyEditor)
@@ -640,6 +654,9 @@ class PythonConsoleWidget(QWidget):
 
     def toggleComment(self):
         self.tabEditorWidget.currentWidget().toggleComment()
+
+    def formatCode(self):
+        self.tabEditorWidget.currentWidget().newEditor.formatCode()
 
     def openScriptFileExtEditor(self):
         tabWidget = self.tabEditorWidget.currentWidget()

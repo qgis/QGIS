@@ -30,6 +30,8 @@ from functools import partial
 from operator import itemgetter
 from pathlib import Path
 
+import autopep8
+
 from qgis.core import Qgis, QgsApplication, QgsBlockingNetworkRequest, QgsFileUtils, QgsSettings
 from qgis.gui import QgsCodeEditorPython, QgsMessageBar
 from qgis.PyQt.Qsci import QsciScintilla
@@ -228,6 +230,23 @@ class Editor(QgsCodeEditorPython):
 
     def findPrevious(self):
         self.findText(False)
+
+    def formatCode(self):
+
+        new_text = autopep8.fix_code(self.text())
+        if new_text == self.text():
+            return
+
+        # Try to preserve the cursor position and scroll position
+        old_pos = self.getCursorPosition()
+        old_scroll_value = self.verticalScrollBar().value()
+        self.beginUndoAction()
+        self.selectAll()
+        self.removeSelectedText()
+        self.insert(new_text)
+        self.setCursorPosition(*old_pos)
+        self.verticalScrollBar().setValue(old_scroll_value)
+        self.endUndoAction()
 
     def objectListEditor(self):
         listObj = self.pythonconsole.listClassMethod
