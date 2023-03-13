@@ -2010,6 +2010,12 @@ The development version
       ScreenUnits
     };
 
+    enum class InputControllerType
+    {
+      Map2D,
+      Map3D
+    };
+
     enum class PostgresRelKind
     {
       NotSet,
