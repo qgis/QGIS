@@ -1179,6 +1179,70 @@ class TestQgsRuleBasedRenderer: public QgsTest
       QCOMPARE( renderer->legendKeys(), expected );
     }
 
+    void testLegendKeysForFeature()
+    {
+      QgsRuleBasedRenderer::Rule *rootRule = new QgsRuleBasedRenderer::Rule( nullptr );
+      std::unique_ptr< QgsRuleBasedRenderer > renderer = std::make_unique< QgsRuleBasedRenderer >( rootRule );
+      std::unique_ptr< QgsMarkerSymbol > symbol( QgsMarkerSymbol::createSimple( {} ) );
+
+      QgsRuleBasedRenderer::Rule *lessThanTwoRule = new QgsRuleBasedRenderer::Rule( symbol->clone(), 0, 0, "\"Importance\" <= 2" );
+      rootRule->appendChild( lessThanTwoRule );
+
+      QgsRuleBasedRenderer::Rule *elseRule = new QgsRuleBasedRenderer::Rule( nullptr, 0, 0, QString(), QString(), QString(), true );
+      rootRule->appendChild( elseRule );
+
+      QgsRuleBasedRenderer::Rule *oneRule = new QgsRuleBasedRenderer::Rule( symbol->clone(), 0, 0, "\"Pilots\" = 1" );
+      elseRule->appendChild( oneRule );
+
+      QgsRuleBasedRenderer::Rule *twoRule = new QgsRuleBasedRenderer::Rule( symbol->clone(), 0, 0, "\"Pilots\" = 2" );
+      elseRule->appendChild( twoRule );
+
+      QgsRuleBasedRenderer::Rule *threeRule = new QgsRuleBasedRenderer::Rule( symbol->clone(), 0, 0, "\"Pilots\" = 3" );
+      elseRule->appendChild( threeRule );
+
+      QgsFields fields;
+      fields.append( QgsField( QStringLiteral( "Importance" ), QVariant::Int ) );
+      fields.append( QgsField( QStringLiteral( "Pilots" ), QVariant::Int ) );
+
+      QgsFeature feature( fields );
+      QgsExpressionContext expContext;
+      expContext.setFields( fields );
+      QgsRenderContext rc;
+      rc.setExpressionContext( expContext );
+
+      renderer->startRender( rc, fields );
+
+      QSet< QString > expected{rootRule->ruleKey(), elseRule->ruleKey() };
+      QCOMPARE( renderer->legendKeysForFeature( feature, rc ), expected );
+
+      feature.setAttributes( QgsAttributes() << 1 << 2 );
+      expected = {rootRule->ruleKey(), lessThanTwoRule->ruleKey() };
+      QCOMPARE( renderer->legendKeysForFeature( feature, rc ), expected );
+
+      feature.setAttributes( QgsAttributes() << 2 << 2 );
+      expected = {rootRule->ruleKey(), lessThanTwoRule->ruleKey() };
+      QCOMPARE( renderer->legendKeysForFeature( feature, rc ), expected );
+
+      feature.setAttributes( QgsAttributes() << 3 << 1 );
+      expected = {rootRule->ruleKey(), elseRule->ruleKey(), oneRule->ruleKey() };
+      QCOMPARE( renderer->legendKeysForFeature( feature, rc ), expected );
+
+      feature.setAttributes( QgsAttributes() << 3 << 2 );
+      expected = {rootRule->ruleKey(), elseRule->ruleKey(), twoRule->ruleKey() };
+      QCOMPARE( renderer->legendKeysForFeature( feature, rc ), expected );
+
+      feature.setAttributes( QgsAttributes() << 3 << 3 );
+      expected = {rootRule->ruleKey(), elseRule->ruleKey(), threeRule->ruleKey() };
+      QCOMPARE( renderer->legendKeysForFeature( feature, rc ), expected );
+
+      feature.setAttributes( QgsAttributes() << 3 << 4 );
+      expected = {rootRule->ruleKey(), elseRule->ruleKey() };
+      QCOMPARE( renderer->legendKeysForFeature( feature, rc ), expected );
+
+      renderer->stopRender( rc );
+    }
+
+
     void testLegendKeyToExpression()
     {
       QgsRuleBasedRenderer::Rule *rootRule = new QgsRuleBasedRenderer::Rule( nullptr );
