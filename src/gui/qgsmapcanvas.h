@@ -77,6 +77,8 @@ class QgsTemporaryCursorOverride;
 class QgsTemporalController;
 class QgsScreenHelper;
 
+class QgsAbstract2DMapController;
+
 class QMenu;
 class QgsMapMouseEvent;
 
@@ -866,6 +868,15 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView, public QgsExpressionContex
      */
     bool allowInteraction( QgsMapCanvasInteractionBlocker::Interaction interaction ) const;
 
+    /**
+     * Sets the input controller device to use for controlling the canvas.
+     *
+     * Ownership of \a controller is transferred to the canvas.
+     *
+     * \since QGIS 3.32
+     */
+    void setMapController( QgsAbstract2DMapController *controller SIP_TRANSFER );
+
   public slots:
 
     //! Repaints the canvas map
@@ -1447,6 +1458,9 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView, public QgsExpressionContex
      *
      */
     QMap <QString, QDateTime> mRendererErrors;
+
+
+    QPointer< QgsAbstract2DMapController > mMapController;
 
     /**
      * Returns the last cursor position on the canvas in geographical coordinates

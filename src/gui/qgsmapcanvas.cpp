@@ -91,6 +91,7 @@ email                : sherman at mrcc.com
 #include "qgssymbollayerutils.h"
 #include "qgsvectortilelayer.h"
 #include "qgsscreenhelper.h"
+#include "qgsinputcontroller.h"
 
 /**
  * \ingroup gui
@@ -1309,6 +1310,24 @@ bool QgsMapCanvas::allowInteraction( QgsMapCanvasInteractionBlocker::Interaction
       return false;
   }
   return true;
+}
+
+void QgsMapCanvas::setMapController( QgsAbstract2DMapController *controller )
+{
+  if ( mMapController )
+  {
+    delete mMapController;
+    mMapController = nullptr;
+  }
+
+  if ( !controller )
+    return;
+
+  mMapController = controller;
+  mMapController->setParent( this );
+
+  // connect high level signals to the canvas
+  connect( mMapController, &QgsAbstract2DMapController::zoomMap, this, [ = ]( double factor ) { zoomByFactor( factor ); } );
 }
 
 void QgsMapCanvas::mapUpdateTimeout()

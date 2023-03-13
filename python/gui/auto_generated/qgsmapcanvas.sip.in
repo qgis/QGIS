@@ -22,6 +22,7 @@
 
 
 
+
 class QgsMapCanvas : QGraphicsView, QgsExpressionContextGenerator
 {
 %Docstring(signature="appended")
@@ -912,6 +913,15 @@ Removes an interaction ``blocker`` from the canvas.
 Returns ``True`` if the specified ``interaction`` is currently permitted on the canvas.
 
 .. versionadded:: 3.14
+%End
+
+    void setMapController( QgsAbstract2DMapController *controller /Transfer/ );
+%Docstring
+Sets the input controller device to use for controlling the canvas.
+
+Ownership of ``controller`` is transferred to the canvas.
+
+.. versionadded:: 3.32
 %End
 
   public slots:
