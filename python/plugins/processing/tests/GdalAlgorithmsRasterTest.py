@@ -2533,7 +2533,47 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
                 ['gdal2xyz.py',
                  '-band 1 -csv ' +
                  source + ' ' +
-                 outsource])
+                    outsource])
+
+            if GdalUtils.version() >= 3030000:
+                # skip nodata output
+                self.assertEqual(
+                    alg.getConsoleCommands({'INPUT': source,
+                                            'BAND': 1,
+                                            'CSV': False,
+                                            'SKIPNODATA': True,
+                                            'OUTPUT': outsource}, context, feedback),
+                    ['gdal2xyz.py',
+                     '-band 1 -skipnodata ' +
+                     source + ' ' +
+                     outsource])
+
+            if GdalUtils.version() > 3060300:
+                # srcnodata output
+                self.assertEqual(
+                    alg.getConsoleCommands({'INPUT': source,
+                                            'BAND': 1,
+                                            'CSV': False,
+                                            'SRCNODATA': -999,
+                                            'SKIPNODATA': False,
+                                            'OUTPUT': outsource}, context, feedback),
+                    ['gdal2xyz.py',
+                     '-band 1 -srcnodata -999 ' +
+                     source + ' ' +
+                     outsource])
+
+                # dstnodata output
+                self.assertEqual(
+                    alg.getConsoleCommands({'INPUT': source,
+                                            'BAND': 1,
+                                            'CSV': False,
+                                            'DSTNODATA': -999,
+                                            'SKIPNODATA': False,
+                                            'OUTPUT': outsource}, context, feedback),
+                    ['gdal2xyz.py',
+                     '-band 1 -dstnodata -999 ' +
+                     source + ' ' +
+                     outsource])
 
     def testGdalPolygonize(self):
         context = QgsProcessingContext()
