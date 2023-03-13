@@ -59,6 +59,21 @@ class GUI_EXPORT QgsInputControllerManager : public QObject
      */
     QStringList available2DMapControllers() const;
 
+    /*
+     * IMPORTANT: While it seems like /Factory/ would be the correct annotation here, that's not
+     * the case.
+     * As per Phil Thomson's advice on https://www.riverbankcomputing.com/pipermail/pyqt/2017-July/039450.html:
+     *
+     * "
+     * /Factory/ is used when the instance returned is guaranteed to be new to Python.
+     * In this case it isn't because it has already been seen when being returned by QgsProcessingAlgorithm::createInstance()
+     * (However for a different sub-class implemented in C++ then it would be the first time it was seen
+     * by Python so the /Factory/ on create() would be correct.)
+     *
+     * You might try using /TransferBack/ on create() instead - that might be the best compromise.
+     * "
+     */
+
     /**
      * Returns a new instance of the 2D map controller with the specified \a deviceId.
      *
@@ -68,7 +83,7 @@ class GUI_EXPORT QgsInputControllerManager : public QObject
      *
      * \see available2DMapControllers()
      */
-    QgsAbstract2DMapController *create2DMapController( const QString &deviceId ) const SIP_FACTORY;
+    QgsAbstract2DMapController *create2DMapController( const QString &deviceId ) const SIP_TRANSFERBACK;
 
     /**
      * Registers a new 2D map \a controller.
@@ -90,6 +105,21 @@ class GUI_EXPORT QgsInputControllerManager : public QObject
      */
     QStringList available3DMapControllers() const;
 
+    /*
+     * IMPORTANT: While it seems like /Factory/ would be the correct annotation here, that's not
+     * the case.
+     * As per Phil Thomson's advice on https://www.riverbankcomputing.com/pipermail/pyqt/2017-July/039450.html:
+     *
+     * "
+     * /Factory/ is used when the instance returned is guaranteed to be new to Python.
+     * In this case it isn't because it has already been seen when being returned by QgsProcessingAlgorithm::createInstance()
+     * (However for a different sub-class implemented in C++ then it would be the first time it was seen
+     * by Python so the /Factory/ on create() would be correct.)
+     *
+     * You might try using /TransferBack/ on create() instead - that might be the best compromise.
+     * "
+     */
+
     /**
      * Returns a new instance of the 3D map controller with the specified \a deviceId.
      *
@@ -99,7 +129,7 @@ class GUI_EXPORT QgsInputControllerManager : public QObject
      *
      * \see available3DMapControllers()
      */
-    QgsAbstract3DMapController *create3DMapController( const QString &deviceId ) const SIP_FACTORY;
+    QgsAbstract3DMapController *create3DMapController( const QString &deviceId ) const SIP_TRANSFERBACK;
 
     /**
      * Registers a new 3D map \a controller.

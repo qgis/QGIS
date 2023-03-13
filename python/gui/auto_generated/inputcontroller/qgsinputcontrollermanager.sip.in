@@ -46,7 +46,8 @@ Returns a list of the device IDs of available 2D map controllers.
 .. seealso:: :py:func:`register2DMapController`
 %End
 
-    QgsAbstract2DMapController *create2DMapController( const QString &deviceId ) const /Factory/;
+
+    QgsAbstract2DMapController *create2DMapController( const QString &deviceId ) const /TransferBack/;
 %Docstring
 Returns a new instance of the 2D map controller with the specified ``deviceId``.
 
@@ -78,7 +79,8 @@ Returns a list of the device IDs of available 3D map controllers.
 .. seealso:: :py:func:`register3DMapController`
 %End
 
-    QgsAbstract3DMapController *create3DMapController( const QString &deviceId ) const /Factory/;
+
+    QgsAbstract3DMapController *create3DMapController( const QString &deviceId ) const /TransferBack/;
 %Docstring
 Returns a new instance of the 3D map controller with the specified ``deviceId``.
 
