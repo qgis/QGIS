@@ -58,7 +58,7 @@ void Qgs3DMapToolIdentify::mouseReleaseEvent( QMouseEvent *event )
     return;
 
   const QgsRay3D ray = Qgs3DUtils::rayFromScreenPoint( event->pos(), mCanvas->windowSize(), mCanvas->cameraController()->camera() );
-  QHash<QgsMapLayer *, QVector<RayHit>> allHits = Qgs3DUtils::castRay( mCanvas->scene(), ray, RayCastContext( false, mCanvas->windowSize(), mCanvas->cameraController()->camera()->farPlane() ) );
+  QHash<QgsMapLayer *, QVector<QgsRayCastingUtils::RayHit>> allHits = Qgs3DUtils::castRay( mCanvas->scene(), ray, QgsRayCastingUtils::RayCastContext( false, mCanvas->windowSize(), mCanvas->cameraController()->camera()->farPlane() ) );
 
   QHash<QgsPointCloudLayer *, QVector<QVariantMap>> pointCloudResults;
 
@@ -73,7 +73,7 @@ void Qgs3DMapToolIdentify::mouseReleaseEvent( QMouseEvent *event )
     //  We can directly show vector layer results
     if ( QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer * >( it->first ) )
     {
-      const RayHit hit = it->second.first();
+      const QgsRayCastingUtils::RayHit hit = it->second.first();
       const QgsVector3D mapCoords = Qgs3DUtils::worldToMapCoordinates( hit.pos, mCanvas->map()->origin() );
       const QgsPoint pt( mapCoords.x(), mapCoords.y(), mapCoords.z() );
       identifyTool2D->showResultsForFeature( vlayer, hit.fid, pt );
@@ -83,7 +83,7 @@ void Qgs3DMapToolIdentify::mouseReleaseEvent( QMouseEvent *event )
     else if ( QgsPointCloudLayer *pclayer = qobject_cast<QgsPointCloudLayer * >( it->first ) )
     {
       pointCloudResults[ pclayer ] = QVector<QVariantMap>();
-      for ( const RayHit &hit : it->second )
+      for ( const QgsRayCastingUtils::RayHit &hit : it->second )
       {
         pointCloudResults[ pclayer ].append( hit.attributes );
       }
@@ -93,7 +93,7 @@ void Qgs3DMapToolIdentify::mouseReleaseEvent( QMouseEvent *event )
   // We only handle terrain results if there were no vector layer results
   if ( showTerrainResults && allHits.contains( nullptr ) )
   {
-    const RayHit hit = allHits.value( nullptr ).first();
+    const QgsRayCastingUtils::RayHit hit = allHits.value( nullptr ).first();
     // estimate search radius
     Qgs3DMapScene *scene = mCanvas->scene();
     const double searchRadiusMM = QgsMapTool::searchRadiusMM();

@@ -257,9 +257,9 @@ QgsPointCloudLayerChunkedEntity::~QgsPointCloudLayerChunkedEntity()
   cancelActiveJobs();
 }
 
-QVector<RayHit> QgsPointCloudLayerChunkedEntity::rayIntersection( const QgsRayCastingUtils::Ray3D &ray, const RayCastContext &context ) const
+QVector<QgsRayCastingUtils::RayHit> QgsPointCloudLayerChunkedEntity::rayIntersection( const QgsRayCastingUtils::Ray3D &ray, const QgsRayCastingUtils::RayCastContext &context ) const
 {
-  QVector<RayHit> result;
+  QVector<QgsRayCastingUtils::RayHit> result;
   QgsPointCloudLayerChunkLoaderFactory *factory = static_cast<QgsPointCloudLayerChunkLoaderFactory *>( mChunkLoaderFactory );
 
   // transform ray
@@ -359,7 +359,7 @@ QVector<RayHit> QgsPointCloudLayerChunkedEntity::rayIntersection( const QgsRayCa
       pointAttr[ QStringLiteral( "Z" ) ] = z;
 
       const QgsVector3D worldPoint = factory->mMap.mapToWorldCoordinates( point );
-      RayHit hit( dist, worldPoint.toVector3D(), FID_NULL, pointAttr );
+      QgsRayCastingUtils::RayHit hit( dist, worldPoint.toVector3D(), FID_NULL, pointAttr );
       if ( context.singleResult )
         result.clear();
       result.append( hit );

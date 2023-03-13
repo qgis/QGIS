@@ -45,6 +45,8 @@ class RayCastContext;
 namespace QgsRayCastingUtils
 {
   class Ray3D;
+  class RayCastContext;
+  class RayHit;
 }
 
 #include <QVector3D>
@@ -129,7 +131,7 @@ class QgsChunkedEntity : public Qt3DCore::QEntity
      * \note The ray uses World coordinates.
      * \since QGIS 3.32
      */
-    virtual QVector<RayHit> rayIntersection( const QgsRayCastingUtils::Ray3D &ray, const RayCastContext &context ) const;
+    virtual QVector<QgsRayCastingUtils::RayHit> rayIntersection( const QgsRayCastingUtils::Ray3D &ray, const QgsRayCastingUtils::RayCastContext &context ) const;
 
   protected:
     //! Cancels the background job that is currently in progress

@@ -120,7 +120,7 @@ class QgsVectorLayerChunkedEntity : public QgsChunkedEntity
     //! Constructs the entity. The argument maxLevel determines how deep the tree of tiles will be
     explicit QgsVectorLayerChunkedEntity( QgsVectorLayer *vl, double zMin, double zMax, const QgsVectorLayer3DTilingSettings &tilingSettings, QgsAbstract3DSymbol *symbol, const Qgs3DMapSettings &map );
 
-    QVector<RayHit> rayIntersection( const QgsRayCastingUtils::Ray3D &ray, const RayCastContext &context ) const override;
+    QVector<QgsRayCastingUtils::RayHit> rayIntersection( const QgsRayCastingUtils::Ray3D &ray, const QgsRayCastingUtils::RayCastContext &context ) const override;
 
     ~QgsVectorLayerChunkedEntity();
   private slots:

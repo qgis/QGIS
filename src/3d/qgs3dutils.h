@@ -38,6 +38,7 @@ namespace Qt3DExtras
 #include "qgs3dtypes.h"
 #include "qgsaabb.h"
 #include "qgsray3d.h"
+#include "qgsraycastingutils_p.h"
 
 #include <QSize>
 #include <Qt3DRender/QCamera>
@@ -46,39 +47,6 @@ namespace Qt3DExtras
 
 #define SIP_NO_FILE
 
-/**
- * Helper struct to store ray casting results.
- */
-struct RayHit
-{
-  //! Constructor
-  RayHit( const float distance, const QVector3D pos, const QgsFeatureId fid = FID_NULL, const QVariantMap attributes = QVariantMap() )
-    : distance( distance )
-    , pos( pos )
-    , fid( fid )
-    , attributes( attributes )
-  {
-  }
-  float distance;  //!< Distance from ray's origin
-  QVector3D pos;  //!< Hit position in world coordinates
-  QgsFeatureId fid;  //!< Fid of feature hit closest to ray origin, FID_NULL if no features hit
-  QVariantMap attributes;  //!< Point cloud point attributes, empty map if no point cloud points hit
-};
-
-/**
- * Helper struct to store ray casting parameters.
- */
-struct RayCastContext
-{
-  RayCastContext( bool singleResult = true, QSize screenSize = QSize(), float maxDistance = 1 )
-    : singleResult( singleResult )
-    , screenSize( screenSize )
-    , maxDistance( maxDistance )
-  {}
-  bool singleResult;  //!< If set to TRUE, only the closest point cloud hit will be returned (other entities always return only closest hit)
-  QSize screenSize;  //!< QSize of the 3d engine window
-  float maxDistance;  //!< The maximum distance from ray origin to look for hits when casting a ray
-};
 
 /**
  * \ingroup 3d
@@ -287,7 +255,7 @@ class _3D_EXPORT Qgs3DUtils
      *
      * \since QGIS 3.32
      */
-    static QHash<QgsMapLayer *, QVector<RayHit>> castRay( Qgs3DMapScene *scene, const QgsRay3D &ray, const RayCastContext &context );
+    static QHash<QgsMapLayer *, QVector<QgsRayCastingUtils::RayHit>> castRay( Qgs3DMapScene *scene, const QgsRay3D &ray, const QgsRayCastingUtils::RayCastContext &context );
 };
 
 #endif // QGS3DUTILS_H

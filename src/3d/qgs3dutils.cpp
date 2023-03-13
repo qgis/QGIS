@@ -796,10 +796,10 @@ std::unique_ptr<QgsPointCloudLayer3DRenderer> Qgs3DUtils::convert2DPointCloudRen
   return nullptr;
 }
 
-QHash<QgsMapLayer *, QVector<RayHit>> Qgs3DUtils::castRay( Qgs3DMapScene *scene, const QgsRay3D &ray, const RayCastContext &context )
+QHash<QgsMapLayer *, QVector<QgsRayCastingUtils::RayHit>> Qgs3DUtils::castRay( Qgs3DMapScene *scene, const QgsRay3D &ray, const QgsRayCastingUtils::RayCastContext &context )
 {
   QgsRayCastingUtils::Ray3D r( ray.origin(), ray.direction(), context.maxDistance );
-  QHash<QgsMapLayer *, QVector<RayHit>> results;
+  QHash<QgsMapLayer *, QVector<QgsRayCastingUtils:: RayHit>> results;
   const QList<QgsMapLayer *> keys = scene->layers();
   for ( QgsMapLayer *layer : keys )
   {
@@ -807,14 +807,14 @@ QHash<QgsMapLayer *, QVector<RayHit>> Qgs3DUtils::castRay( Qgs3DMapScene *scene,
 
     if ( QgsChunkedEntity *chunkedEntity = qobject_cast<QgsChunkedEntity *>( entity ) )
     {
-      const QVector<RayHit> result = chunkedEntity->rayIntersection( r, context );
+      const QVector<QgsRayCastingUtils::RayHit> result = chunkedEntity->rayIntersection( r, context );
       if ( !result.isEmpty() )
         results[ layer ] = result;
     }
   }
   if ( QgsTerrainEntity *terrain = scene->terrainEntity() )
   {
-    const QVector<RayHit> result = terrain->rayIntersection( r, context );
+    const QVector<QgsRayCastingUtils::RayHit> result = terrain->rayIntersection( r, context );
     if ( !result.isEmpty() )
       results[ nullptr ] = result;
   }

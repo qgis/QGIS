@@ -130,10 +130,10 @@ bool QgsTerrainEntity::rayIntersection( const QgsRayCastingUtils::Ray3D &ray, QV
   return minDist >= 0;
 }
 
-QVector<RayHit> QgsTerrainEntity::rayIntersection( const QgsRayCastingUtils::Ray3D &ray, const RayCastContext &context ) const
+QVector<QgsRayCastingUtils::RayHit> QgsTerrainEntity::rayIntersection( const QgsRayCastingUtils::Ray3D &ray, const QgsRayCastingUtils::RayCastContext &context ) const
 {
   Q_UNUSED( context )
-  QVector<RayHit> result;
+  QVector<QgsRayCastingUtils::RayHit> result;
 
   float minDist = -1;
   QVector3D intersectionPoint;
@@ -185,7 +185,7 @@ QVector<RayHit> QgsTerrainEntity::rayIntersection( const QgsRayCastingUtils::Ray
   }
   if ( !intersectionPoint.isNull() )
   {
-    RayHit hit( minDist, intersectionPoint );
+    QgsRayCastingUtils::RayHit hit( minDist, intersectionPoint );
     result.append( hit );
   }
   return result;

@@ -205,14 +205,14 @@ void QgsRuleBasedChunkedEntity::onTerrainElevationOffsetChanged( float newOffset
   mTransform->setTranslation( QVector3D( 0.0f, newOffset, 0.0f ) );
 }
 
-QVector<RayHit> QgsRuleBasedChunkedEntity::rayIntersection( const QgsRayCastingUtils::Ray3D &ray, const RayCastContext &context ) const
+QVector<QgsRayCastingUtils::RayHit> QgsRuleBasedChunkedEntity::rayIntersection( const QgsRayCastingUtils::Ray3D &ray, const QgsRayCastingUtils::RayCastContext &context ) const
 {
   Q_UNUSED( context )
   QgsDebugMsgLevel( QStringLiteral( "Ray cast on vector layer" ), 2 );
   int nodeUsed = 0;
   int nodesAll = 0;
   int hits = 0;
-  QVector<RayHit> result;
+  QVector<QgsRayCastingUtils::RayHit> result;
 
   float minDist = -1;
   QVector3D intersectionPoint;
@@ -253,7 +253,7 @@ QVector<RayHit> QgsRuleBasedChunkedEntity::rayIntersection( const QgsRayCastingU
   }
   if ( !intersectionPoint.isNull() )
   {
-    RayHit hit( minDist, intersectionPoint, nearestFid );
+    QgsRayCastingUtils::RayHit hit( minDist, intersectionPoint, nearestFid );
     result.append( hit );
   }
   QgsDebugMsgLevel( QStringLiteral( "Active Nodes: %1, checked nodes: %2, hits found: %3" ).arg( nodesAll ).arg( nodeUsed ).arg( hits ), 2 );
