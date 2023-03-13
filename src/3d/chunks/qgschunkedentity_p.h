@@ -39,14 +39,12 @@ class QgsChunkQueueJob;
 class QgsChunkLoaderFactory;
 class QgsChunkBoundsEntity;
 class QgsChunkQueueJobFactory;
-class RayHit;
-class RayCastContext;
 
 namespace QgsRayCastingUtils
 {
   class Ray3D;
-  class RayCastContext;
-  class RayHit;
+  struct RayCastContext;
+  struct RayHit;
 }
 
 #include <QVector3D>

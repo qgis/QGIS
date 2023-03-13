@@ -40,18 +40,12 @@ namespace Qt3DCore
   class QTransform;
 }
 
-namespace QgsRayCastingUtils
-{
-  class Ray3D;
-}
-
 class Qgs3DMapSettings;
 class QgsTerrainTextureGenerator;
 class QgsCoordinateTransform;
 class QgsMapLayer;
 class QgsTerrainGenerator;
 class TerrainMapUpdateJobFactory;
-class RayHit;
 
 /**
  * \ingroup 3d
