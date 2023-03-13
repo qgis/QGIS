@@ -592,6 +592,8 @@ void QgsFeaturePickerModelBase::setFetchLimit( int fetchLimit )
 
   mFetchLimit = fetchLimit;
   emit fetchLimitChanged();
+
+  reload();
 }
 
 
