@@ -37,7 +37,7 @@ if(HAVE_GSL)
   set(TESTS ${TESTS} testqgsgcptransformer.cpp)
 endif()
 
-if(HAVE_PDAL_QGIS)
+if (WITH_PDAL AND PDAL_2_5_OR_HIGHER)
   set(TESTS ${TESTS} testqgsprocessingpdalalgs.cpp)
 endif()
 

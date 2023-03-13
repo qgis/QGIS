@@ -193,6 +193,10 @@ set (PY_MODULES core)
 
 if(WITH_ANALYSIS)
   set(PY_MODULES ${PY_MODULES} analysis)
+
+  if (NOT WITH_PDAL OR (WITH_PDAL AND NOT PDAL_2_5_OR_HIGHER))
+    set(SIP_DISABLE_FEATURES ${SIP_DISABLE_FEATURES} HAVE_PDAL_PROVIDER)
+  endif()
 endif()
 
 # gui module
@@ -282,13 +286,16 @@ endif()
 if(WITH_ANALYSIS)
   include_directories(BEFORE
     ${CMAKE_BINARY_DIR}/src/analysis/processing
-    ${CMAKE_BINARY_DIR}/src/analysis/processing/pdal
     ${CMAKE_BINARY_DIR}/src/analysis/georeferencing
     ${CMAKE_BINARY_DIR}/src/analysis/vector
     ${CMAKE_BINARY_DIR}/src/analysis/mesh
     ${CMAKE_BINARY_DIR}/src/analysis/raster
     ${CMAKE_BINARY_DIR}/src/analysis/network
     ${CMAKE_BINARY_DIR}/src/analysis/interpolation
+
+    if (WITH_PDAL AND NOT PDAL_2_5_OR_HIGHER)
+       ${CMAKE_SOURCE_DIR}/src/analysis/processing/pdal
+    endif()
   )
 
   # analysis module

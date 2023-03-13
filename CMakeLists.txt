@@ -433,6 +433,9 @@ if(WITH_CORE)
     endif()
     find_package(PDAL REQUIRED) # PDAL provider
     set(HAVE_PDAL_QGIS TRUE)  # used in qgisconfig.h. note -- we can't use HAVE_PDAL here as the grass public headers redefine this!
+    if (PDAL_VERSION_MAJOR GREATER 3 OR (PDAL_VERSION_MAJOR EQUAL 2 AND PDAL_VERSION_MINOR GREATER_EQUAL 5))
+      set(PDAL_2_5_OR_HIGHER TRUE)
+    endif()
   endif()
 
   #############################################################

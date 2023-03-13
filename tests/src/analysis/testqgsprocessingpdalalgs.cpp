@@ -20,8 +20,8 @@
 #include "qgstest.h"
 #include "qgsprocessingregistry.h"
 #include "qgsprocessingcontext.h"
-#include "processing/pdal/qgspdalalgorithms.h"
-#include "processing/pdal/qgspdalalgorithmbase.h"
+#include "qgspdalalgorithms.h"
+#include "qgspdalalgorithmbase.h"
 
 
 class TestQgsProcessingPdalAlgs: public QObject

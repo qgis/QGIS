@@ -172,23 +172,25 @@ else()
   target_include_directories(untwine PRIVATE ${CMAKE_SOURCE_DIR}/external)
 endif()
 
-add_executable(pdal_wrench ${PDAL_WRENCH_SRCS})
-target_compile_features(pdal_wrench PRIVATE cxx_std_17)
+if (PDAL_2_5_OR_HIGHER)
+  add_executable(pdal_wrench ${PDAL_WRENCH_SRCS})
+  target_compile_features(pdal_wrench PRIVATE cxx_std_17)
 
-set_target_properties(pdal_wrench PROPERTIES
-  RUNTIME_OUTPUT_DIRECTORY ${QGIS_OUTPUT_DIRECTORY}/${QGIS_LIBEXEC_SUBDIR}
-)
+  set_target_properties(pdal_wrench PROPERTIES
+    RUNTIME_OUTPUT_DIRECTORY ${QGIS_OUTPUT_DIRECTORY}/${QGIS_LIBEXEC_SUBDIR}
+  )
 
-target_include_directories(pdal_wrench PRIVATE
-  ${PDAL_INCLUDE_DIR}
-  ${GDAL_INCLUDE_DIR}
-  ${CMAKE_SOURCE_DIR}/external
-)
+  target_include_directories(pdal_wrench PRIVATE
+    ${PDAL_INCLUDE_DIR}
+    ${GDAL_INCLUDE_DIR}
+    ${CMAKE_SOURCE_DIR}/external
+  )
 
-target_link_libraries (pdal_wrench PRIVATE
-  ${PDAL_LIBRARIES}
-  ${GDAL_LIBRARY}
-)
+  target_link_libraries (pdal_wrench PRIVATE
+    ${PDAL_LIBRARIES}
+    ${GDAL_LIBRARY}
+  )
+endif()
 
 add_library (provider_pdal MODULE ${PDAL_SRCS} ${PDAL_HDRS} ${PDAL_GUI_SRCS} ${PDAL_GUI_HDRS})
 
