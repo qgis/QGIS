@@ -221,17 +221,18 @@ class OARecSearch(SearchBase):
             rec1 = {
                 'identifier': rec['id'],
                 'type': rec['properties']['type'],
-
-
-
                 'bbox': None,
                 'title': rec['properties']['title'],
                 'links': rec.get('links', [])
             }
             try:
-                bbox2 = rec['properties']['extent']['spatial']['bbox'][0]
-                if bbox2:
-                    rec1['bbox'] = bbox_list_to_dict(bbox2)
+                if rec.get('geometry') is not None:
+                    rec1['bbox'] = bbox_list_to_dict([
+                        rec['geometry']['coordinates'][0][0][0],
+                        rec['geometry']['coordinates'][0][0][1],
+                        rec['geometry']['coordinates'][0][2][0],
+                        rec['geometry']['coordinates'][0][2][1]
+                    ])
             except KeyError:
                 pass
 
