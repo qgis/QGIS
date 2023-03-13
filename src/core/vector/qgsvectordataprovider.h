@@ -149,7 +149,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
     /**
      * Returns the geometry type which is returned by this layer
      */
-    QgsWkbTypes::Type wkbType() const override = 0;
+    Qgis::WkbType wkbType() const override = 0;
 
     /**
      * Number of features in the layer

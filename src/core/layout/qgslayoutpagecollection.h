@@ -29,6 +29,7 @@
 
 class QgsLayout;
 class QgsLayoutGuideCollection;
+class QgsMargins;
 
 /**
  * \ingroup core
@@ -364,7 +365,7 @@ class CORE_EXPORT QgsLayoutPageCollection : public QObject, public QgsLayoutSeri
      * repositioned so that the new top-left bounds of the layout is at the point
      * (marginLeft, marginTop). An optional margin can be specified.
      */
-    void resizeToContents( const QgsMargins &margins, QgsUnitTypes::LayoutUnit marginUnits );
+    void resizeToContents( const QgsMargins &margins, Qgis::LayoutUnit marginUnits );
 
     /**
      * Stores the collection's state in a DOM element. The \a parentElement should refer to the parent layout's DOM element.

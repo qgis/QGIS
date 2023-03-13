@@ -16,8 +16,6 @@
 #ifndef QGS3DUTILS_H
 #define QGS3DUTILS_H
 
-#include "qgis_sip.h"
-
 class QgsLineString;
 class QgsPolygon;
 class QgsFeedback;

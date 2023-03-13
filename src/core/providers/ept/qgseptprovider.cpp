@@ -16,8 +16,6 @@
  ***************************************************************************/
 
 #include "qgis.h"
-#include "qgslogger.h"
-#include "qgsproviderregistry.h"
 #include "qgseptprovider.h"
 #include "qgseptpointcloudindex.h"
 #include "qgsremoteeptpointcloudindex.h"
@@ -159,7 +157,7 @@ QList<QgsProviderSublayerDetails> QgsEptProviderMetadata::querySublayers( const 
     QgsProviderSublayerDetails details;
     details.setUri( uri );
     details.setProviderKey( QStringLiteral( "ept" ) );
-    details.setType( QgsMapLayerType::PointCloudLayer );
+    details.setType( Qgis::LayerType::PointCloud );
     details.setName( QgsProviderUtils::suggestLayerNameFromFilePath( uri ) );
     return {details};
   }
@@ -178,13 +176,13 @@ int QgsEptProviderMetadata::priorityForUri( const QString &uri ) const
   return 0;
 }
 
-QList<QgsMapLayerType> QgsEptProviderMetadata::validLayerTypesForUri( const QString &uri ) const
+QList<Qgis::LayerType> QgsEptProviderMetadata::validLayerTypesForUri( const QString &uri ) const
 {
   const QVariantMap parts = decodeUri( uri );
   if ( parts.value( QStringLiteral( "file-name" ) ).toString().compare( QLatin1String( "ept.json" ), Qt::CaseInsensitive ) == 0 )
-    return QList< QgsMapLayerType>() << QgsMapLayerType::PointCloudLayer;
+    return QList< Qgis::LayerType>() << Qgis::LayerType::PointCloud;
 
-  return QList< QgsMapLayerType>();
+  return QList< Qgis::LayerType>();
 }
 
 bool QgsEptProviderMetadata::uriIsBlocklisted( const QString &uri ) const
@@ -232,9 +230,9 @@ QgsProviderMetadata::ProviderCapabilities QgsEptProviderMetadata::providerCapabi
   return FileBasedUris;
 }
 
-QList<QgsMapLayerType> QgsEptProviderMetadata::supportedLayerTypes() const
+QList<Qgis::LayerType> QgsEptProviderMetadata::supportedLayerTypes() const
 {
-  return { QgsMapLayerType::PointCloudLayer };
+  return { Qgis::LayerType::PointCloud };
 }
 
 QString QgsEptProviderMetadata::encodeUri( const QVariantMap &parts ) const

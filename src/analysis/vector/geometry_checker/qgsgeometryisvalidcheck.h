@@ -62,7 +62,7 @@ class ANALYSIS_EXPORT QgsGeometryIsValidCheck : public QgsSingleGeometryCheck
      */
     explicit QgsGeometryIsValidCheck( const QgsGeometryCheckContext *context, const QVariantMap &configuration );
 
-    QList<QgsWkbTypes::GeometryType> compatibleGeometryTypes() const override;
+    QList<Qgis::GeometryType> compatibleGeometryTypes() const override;
     QList<QgsSingleGeometryCheckError *> processGeometry( const QgsGeometry &geometry ) const override;
     Q_DECL_DEPRECATED QStringList resolutionMethods() const override;
     QString description() const override { return factoryDescription(); }
@@ -70,7 +70,7 @@ class ANALYSIS_EXPORT QgsGeometryIsValidCheck : public QgsSingleGeometryCheck
     QgsGeometryCheck::CheckType checkType() const override { return factoryCheckType(); }
 
 ///@cond private
-    static QList<QgsWkbTypes::GeometryType> factoryCompatibleGeometryTypes() SIP_SKIP;
+    static QList<Qgis::GeometryType> factoryCompatibleGeometryTypes() SIP_SKIP;
     static bool factoryIsCompatible( QgsVectorLayer *layer ) SIP_SKIP;
     static QString factoryDescription() SIP_SKIP;
     static QString factoryId() SIP_SKIP;

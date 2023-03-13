@@ -95,7 +95,7 @@ Sets the size of the buffer. The size units are specified using :py:func:`~QgsTe
 .. seealso:: :py:func:`setSizeUnit`
 %End
 
-    QgsUnitTypes::RenderUnit sizeUnit() const;
+    Qgis::RenderUnit sizeUnit() const;
 %Docstring
 Returns the units for the buffer size.
 
@@ -104,7 +104,7 @@ Returns the units for the buffer size.
 .. seealso:: :py:func:`setSizeUnit`
 %End
 
-    void setSizeUnit( QgsUnitTypes::RenderUnit unit );
+    void setSizeUnit( Qgis::RenderUnit unit );
 %Docstring
 Sets the units used for the buffer size.
 

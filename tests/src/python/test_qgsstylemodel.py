@@ -11,6 +11,7 @@ __copyright__ = 'Copyright 2018, The QGIS Project'
 
 import qgis  # NOQA
 from qgis.PyQt.QtCore import QModelIndex, QSize, Qt
+from qgis.testing import start_app, unittest
 from qgis.PyQt.QtGui import QColor
 from qgis.core import (
     QgsAbstract3DSymbol,
@@ -18,6 +19,7 @@ from qgis.core import (
     QgsGeometry,
     QgsLegendPatchShape,
     QgsLimitedRandomColorRamp,
+    QgsLinePatternFillSymbolLayer,
     QgsLineSymbol,
     QgsMarkerSymbol,
     QgsPalLayerSettings,
@@ -28,7 +30,6 @@ from qgis.core import (
     QgsTextFormat,
     QgsWkbTypes,
 )
-from qgis.testing import start_app, unittest
 
 start_app()
 
@@ -37,7 +38,7 @@ class Dummy3dSymbol(QgsAbstract3DSymbol):
 
     def __init__(self):
         super().__init__()
-        self.layer_types = [int(QgsWkbTypes.PointGeometry), int(QgsWkbTypes.LineGeometry)]
+        self.layer_types = [QgsWkbTypes.PointGeometry, QgsWkbTypes.LineGeometry]
 
     @staticmethod
     def create():
@@ -2022,10 +2023,10 @@ class TestQgsStyleModel(unittest.TestCase):
         self.assertTrue(style.addSymbol3D('sym3d a', symbol3d_a, True))
         style.tagSymbol(QgsStyle.Symbol3DEntity, 'sym3d a', ['tag 1', 'tag 2'])
         symbol3d_B = Dummy3dSymbol()
-        symbol3d_B.layer_types = [2]
+        symbol3d_B.layer_types = [QgsWkbTypes.PolygonGeometry]
         self.assertTrue(style.addSymbol3D('sym3d BB', symbol3d_B, True))
         symbol3d_B = Dummy3dSymbol()
-        symbol3d_B.layer_types = [1]
+        symbol3d_B.layer_types = [QgsWkbTypes.LineGeometry]
         self.assertTrue(style.addSymbol3D('sym3d c', symbol3d_B, True))
 
         model = QgsStyleProxyModel(style)
@@ -2731,6 +2732,37 @@ class TestQgsStyleModel(unittest.TestCase):
         self.assertTrue(model.setData(model.index(5, 0), 'symbol3d new name', Qt.EditRole))
         self.assertEqual(model.data(model.index(5, 0), Qt.DisplayRole), 'symbol3d new name')
         self.assertEqual(style.symbol3DNames(), ['symbol3d new name'])
+
+    def test_reset_symbollayer_ids(self):
+        """
+        Test that we have different symbol layer ids every time we get symbol from style
+        """
+        style = QgsStyle()
+        style.createMemoryDatabase()
+
+        layer = QgsLinePatternFillSymbolLayer()
+        fill_symbol = QgsFillSymbol([layer])
+
+        self.assertEqual(len(fill_symbol.symbolLayers()), 1)
+        subsymbol = fill_symbol.symbolLayers()[0].subSymbol()
+        self.assertTrue(subsymbol)
+        self.assertEqual(len(subsymbol.symbolLayers()), 1)
+        child_sl = subsymbol.symbolLayers()[0]
+        self.assertTrue(child_sl)
+        old_id = child_sl.id()
+        self.assertTrue(child_sl.id())
+
+        self.assertTrue(style.addSymbol('fillsymbol', fill_symbol, True))
+
+        new_fill_symbol = style.symbol('fillsymbol')
+        self.assertEqual(len(new_fill_symbol.symbolLayers()), 1)
+        subsymbol = new_fill_symbol.symbolLayers()[0].subSymbol()
+        self.assertTrue(subsymbol)
+        self.assertEqual(len(subsymbol.symbolLayers()), 1)
+        child_sl = subsymbol.symbolLayers()[0]
+        self.assertTrue(child_sl)
+        self.assertTrue(child_sl.id())
+        self.assertTrue(child_sl.id() != old_id)
 
 
 if __name__ == '__main__':

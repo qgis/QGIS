@@ -67,7 +67,7 @@ QgsZonalStatistics::Result QgsZonalStatistics::calculateStatistics( QgsFeedback 
     return RasterBandInvalid;
   }
 
-  if ( !mPolygonLayer || mPolygonLayer->geometryType() != QgsWkbTypes::PolygonGeometry )
+  if ( !mPolygonLayer || mPolygonLayer->geometryType() != Qgis::GeometryType::Polygon )
   {
     return LayerTypeWrong;
   }

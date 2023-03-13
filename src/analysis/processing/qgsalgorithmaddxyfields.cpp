@@ -16,7 +16,6 @@
  ***************************************************************************/
 
 #include "qgsalgorithmaddxyfields.h"
-#include "qgsfeaturerequest.h"
 #include "qgsvectorlayer.h"
 
 ///@cond PRIVATE
@@ -181,7 +180,7 @@ bool QgsAddXYFieldsAlgorithm::supportInPlaceEdit( const QgsMapLayer *layer ) con
 {
   if ( const QgsVectorLayer *vl = qobject_cast< const QgsVectorLayer * >( layer ) )
   {
-    return vl->geometryType() == QgsWkbTypes::PointGeometry;
+    return vl->geometryType() == Qgis::GeometryType::Point;
   }
   return false;
 }

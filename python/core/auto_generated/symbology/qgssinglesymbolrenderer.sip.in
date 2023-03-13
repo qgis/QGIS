@@ -62,7 +62,7 @@ of the symbol is transferred to the renderer.
     virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props = QVariantMap() ) const;
 
 
-    static QgsFeatureRenderer *createFromSld( QDomElement &element, QgsWkbTypes::GeometryType geomType ) /Factory/;
+    static QgsFeatureRenderer *createFromSld( QDomElement &element, Qgis::GeometryType geomType ) /Factory/;
 %Docstring
 Creates a new single symbol renderer from an SLD ``element``.
 

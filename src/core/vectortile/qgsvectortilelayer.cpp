@@ -38,12 +38,13 @@
 #include "qgsgeometryengine.h"
 #include "qgsvectortilemvtdecoder.h"
 #include "qgsthreadingutils.h"
+#include "qgsproviderregistry.h"
 
 #include <QUrl>
 #include <QUrlQuery>
 
 QgsVectorTileLayer::QgsVectorTileLayer( const QString &uri, const QString &baseName, const LayerOptions &options )
-  : QgsMapLayer( QgsMapLayerType::VectorTileLayer, baseName )
+  : QgsMapLayer( Qgis::LayerType::VectorTile, baseName )
   , mTransformContext( options.transformContext )
 {
   mMatrixSet = QgsVectorTileMatrixSet::fromWebMercator();
@@ -390,7 +391,7 @@ bool QgsVectorTileLayer::writeXml( QDomNode &layerNode, QDomDocument &doc, const
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
   QDomElement mapLayerNode = layerNode.toElement();
-  mapLayerNode.setAttribute( QStringLiteral( "type" ), QgsMapLayerFactory::typeToString( QgsMapLayerType::VectorTileLayer ) );
+  mapLayerNode.setAttribute( QStringLiteral( "type" ), QgsMapLayerFactory::typeToString( Qgis::LayerType::VectorTile ) );
 
   mapLayerNode.appendChild( mMatrixSet.writeXml( doc, context ) );
 
@@ -726,7 +727,7 @@ bool QgsVectorTileLayer::loadDefaultStyleAndSubLayersPrivate( QString &error, QS
   {
     // convert automatically from pixel sizes to millimeters, because pixel sizes
     // are a VERY edge case in QGIS and don't play nice with hidpi map renders or print layouts
-    context.setTargetUnit( QgsUnitTypes::RenderMillimeters );
+    context.setTargetUnit( Qgis::RenderUnit::Millimeters );
     //assume source uses 96 dpi
     context.setPixelSizeConversionFactor( 25.4 / 96.0 );
 
@@ -812,32 +813,7 @@ QString QgsVectorTileLayer::encodedSource( const QString &source, const QgsReadW
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  QgsDataSourceUri dsUri;
-  dsUri.setEncodedUri( source );
-
-  const QString sourceType = dsUri.param( QStringLiteral( "type" ) );
-  QString sourcePath = dsUri.param( QStringLiteral( "url" ) );
-  if ( sourceType == QLatin1String( "xyz" ) )
-  {
-    const QUrl sourceUrl( sourcePath );
-    if ( sourceUrl.isLocalFile() )
-    {
-      // relative path will become "file:./x.txt"
-      const QString relSrcUrl = context.pathResolver().writePath( sourceUrl.toLocalFile() );
-      dsUri.removeParam( QStringLiteral( "url" ) );  // needed because setParam() would insert second "url" key
-      dsUri.setParam( QStringLiteral( "url" ), QUrl::fromLocalFile( relSrcUrl ).toString() );
-      return dsUri.encodedUri();
-    }
-  }
-  else if ( sourceType == QLatin1String( "mbtiles" ) )
-  {
-    sourcePath = context.pathResolver().writePath( sourcePath );
-    dsUri.removeParam( QStringLiteral( "url" ) );  // needed because setParam() would insert second "url" key
-    dsUri.setParam( QStringLiteral( "url" ), sourcePath );
-    return dsUri.encodedUri();
-  }
-
-  return source;
+  return QgsProviderRegistry::instance()->absoluteToRelativeUri( QStringLiteral( "vectortile" ), source, context );
 }
 
 QString QgsVectorTileLayer::decodedSource( const QString &source, const QString &provider, const QgsReadWriteContext &context ) const
@@ -846,31 +822,7 @@ QString QgsVectorTileLayer::decodedSource( const QString &source, const QString 
 
   Q_UNUSED( provider )
 
-  QgsDataSourceUri dsUri;
-  dsUri.setEncodedUri( source );
-
-  const QString sourceType = dsUri.param( QStringLiteral( "type" ) );
-  QString sourcePath = dsUri.param( QStringLiteral( "url" ) );
-  if ( sourceType == QLatin1String( "xyz" ) )
-  {
-    const QUrl sourceUrl( sourcePath );
-    if ( sourceUrl.isLocalFile() )  // file-based URL? convert to relative path
-    {
-      const QString absSrcUrl = context.pathResolver().readPath( sourceUrl.toLocalFile() );
-      dsUri.removeParam( QStringLiteral( "url" ) );  // needed because setParam() would insert second "url" key
-      dsUri.setParam( QStringLiteral( "url" ), QUrl::fromLocalFile( absSrcUrl ).toString() );
-      return dsUri.encodedUri();
-    }
-  }
-  else if ( sourceType == QLatin1String( "mbtiles" ) )
-  {
-    sourcePath = context.pathResolver().readPath( sourcePath );
-    dsUri.removeParam( QStringLiteral( "url" ) );  // needed because setParam() would insert second "url" key
-    dsUri.setParam( QStringLiteral( "url" ), sourcePath );
-    return dsUri.encodedUri();
-  }
-
-  return source;
+  return QgsProviderRegistry::instance()->relativeToAbsoluteUri( QStringLiteral( "vectortile" ), source, context );
 }
 
 QString QgsVectorTileLayer::htmlMetadata() const
@@ -1030,7 +982,7 @@ void QgsVectorTileLayer::selectByGeometry( const QgsGeometry &geometry, const Qg
   QgsGeometry selectionGeom = geometry;
   bool isPointOrRectangle;
   QgsPointXY point;
-  bool isSinglePoint = selectionGeom.type() == QgsWkbTypes::PointGeometry;
+  bool isSinglePoint = selectionGeom.type() == Qgis::GeometryType::Point;
   if ( isSinglePoint )
   {
     isPointOrRectangle = true;
@@ -1218,31 +1170,31 @@ void QgsVectorTileLayer::selectByGeometry( const QgsGeometry &geometry, const Qg
 
         switch ( candidate.geometry().type() )
         {
-          case QgsWkbTypes::PointGeometry:
+          case Qgis::GeometryType::Point:
             bestCandidate = candidate;
             break;
-          case QgsWkbTypes::LineGeometry:
+          case Qgis::GeometryType::Line:
           {
             const double length = candidate.geometry().length();
-            if ( length < smallestLength && bestCandidate.geometry().type() != QgsWkbTypes::PointGeometry )
+            if ( length < smallestLength && bestCandidate.geometry().type() != Qgis::GeometryType::Point )
             {
               bestCandidate = candidate;
               smallestLength = length;
             }
             break;
           }
-          case QgsWkbTypes::PolygonGeometry:
+          case Qgis::GeometryType::Polygon:
           {
             const double area = candidate.geometry().area();
-            if ( area < smallestArea && bestCandidate.geometry().type() != QgsWkbTypes::PointGeometry && bestCandidate.geometry().type() != QgsWkbTypes::LineGeometry )
+            if ( area < smallestArea && bestCandidate.geometry().type() != Qgis::GeometryType::Point && bestCandidate.geometry().type() != Qgis::GeometryType::Line )
             {
               bestCandidate = candidate;
               smallestArea = area;
             }
             break;
           }
-          case QgsWkbTypes::UnknownGeometry:
-          case QgsWkbTypes::NullGeometry:
+          case Qgis::GeometryType::Unknown:
+          case Qgis::GeometryType::Null:
             break;
         }
       }
@@ -1257,31 +1209,31 @@ void QgsVectorTileLayer::selectByGeometry( const QgsGeometry &geometry, const Qg
       {
         switch ( candidate.geometry().type() )
         {
-          case QgsWkbTypes::PointGeometry:
+          case Qgis::GeometryType::Point:
             bestCandidate = candidate;
             break;
-          case QgsWkbTypes::LineGeometry:
+          case Qgis::GeometryType::Line:
           {
             const double length = candidate.geometry().length();
-            if ( length < smallestLength && bestCandidate.geometry().type() != QgsWkbTypes::PointGeometry )
+            if ( length < smallestLength && bestCandidate.geometry().type() != Qgis::GeometryType::Point )
             {
               bestCandidate = candidate;
               smallestLength = length;
             }
             break;
           }
-          case QgsWkbTypes::PolygonGeometry:
+          case Qgis::GeometryType::Polygon:
           {
             const double area = candidate.geometry().area();
-            if ( area < smallestArea && bestCandidate.geometry().type() != QgsWkbTypes::PointGeometry && bestCandidate.geometry().type() != QgsWkbTypes::LineGeometry )
+            if ( area < smallestArea && bestCandidate.geometry().type() != Qgis::GeometryType::Point && bestCandidate.geometry().type() != Qgis::GeometryType::Line )
             {
               bestCandidate = candidate;
               smallestArea = area;
             }
             break;
           }
-          case QgsWkbTypes::UnknownGeometry:
-          case QgsWkbTypes::NullGeometry:
+          case Qgis::GeometryType::Unknown:
+          case Qgis::GeometryType::Null:
             break;
         }
       }

@@ -373,7 +373,7 @@ void TestQgsGpsIntegration::testMultiPartLayers()
   QCOMPARE( multiLineString->featureCount(), 1L );
   QgsFeature f;
   QVERIFY( multiLineString->getFeatures().nextFeature( f ) );
-  QCOMPARE( f.geometry().wkbType(), QgsWkbTypes::MultiLineString );
+  QCOMPARE( f.geometry().wkbType(), Qgis::WkbType::MultiLineString );
   multiLineString->rollBack();
 
   // multipolygon
@@ -403,7 +403,7 @@ void TestQgsGpsIntegration::testMultiPartLayers()
   gpsDigitizing.createFeature();
   QCOMPARE( multiPolygon->featureCount(), 1L );
   QVERIFY( multiPolygon->getFeatures().nextFeature( f ) );
-  QCOMPARE( f.geometry().wkbType(), QgsWkbTypes::MultiPolygon );
+  QCOMPARE( f.geometry().wkbType(), Qgis::WkbType::MultiPolygon );
   multiPolygon->rollBack();
 }
 

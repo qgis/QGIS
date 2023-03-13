@@ -61,7 +61,7 @@ QColor QgsMapToolEdit::digitizingFillColor()
 }
 
 
-QgsRubberBand *QgsMapToolEdit::createRubberBand( QgsWkbTypes::GeometryType geometryType, bool alternativeBand )
+QgsRubberBand *QgsMapToolEdit::createRubberBand( Qgis::GeometryType geometryType, bool alternativeBand )
 {
   QgsRubberBand *rb = new QgsRubberBand( mCanvas, geometryType );
   rb->setWidth( digitizingStrokeWidth() );
@@ -136,7 +136,7 @@ QgsMapToolEdit::TopologicalResult QgsMapToolEdit::addTopologicalPoints( const QV
   return QgsMapToolEdit::Success;
 }
 
-QgsGeometryRubberBand *QgsMapToolEdit::createGeometryRubberBand( QgsWkbTypes::GeometryType geometryType, bool alternativeBand ) const
+QgsGeometryRubberBand *QgsMapToolEdit::createGeometryRubberBand( Qgis::GeometryType geometryType, bool alternativeBand ) const
 {
   QgsGeometryRubberBand *rb = new QgsGeometryRubberBand( mCanvas, geometryType );
   QColor color = QgsSettingsRegistryCore::settingsDigitizingLineColor->value();

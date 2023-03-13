@@ -189,22 +189,22 @@ QIcon QgsFieldItem::icon()
     {
       return QgsIconUtils::iconRaster();
     }
-    const QgsWkbTypes::GeometryType geomType { QgsWkbTypes::geometryType( parentFields->tableProperty()->geometryColumnTypes().first().wkbType ) };
+    const Qgis::GeometryType geomType { QgsWkbTypes::geometryType( parentFields->tableProperty()->geometryColumnTypes().first().wkbType ) };
     switch ( geomType )
     {
-      case QgsWkbTypes::GeometryType::LineGeometry:
+      case Qgis::GeometryType::Line:
         return QgsIconUtils::iconLine();
-      case QgsWkbTypes::GeometryType::PointGeometry:
+      case Qgis::GeometryType::Point:
         return QgsIconUtils::iconPoint();
-      case QgsWkbTypes::GeometryType::PolygonGeometry:
+      case Qgis::GeometryType::Polygon:
         return QgsIconUtils::iconPolygon();
-      case QgsWkbTypes::GeometryType::UnknownGeometry:
+      case Qgis::GeometryType::Unknown:
         return QgsIconUtils::iconGeometryCollection();
-      case QgsWkbTypes::GeometryType::NullGeometry:
+      case Qgis::GeometryType::Null:
         return QgsIconUtils::iconDefaultLayer();
     }
   }
-  const QIcon icon { QgsFields::iconForFieldType( mField.type(), mField.subType() ) };
+  const QIcon icon { QgsFields::iconForFieldType( mField.type(), mField.subType(), mField.typeName() ) };
   // Try subtype if icon is null
   if ( icon.isNull() )
   {

@@ -105,7 +105,7 @@ QVariantMap QgsSplitVectorLayerAlgorithm::processAlgorithm( const QVariantMap &p
 
   const QgsFields fields = source->fields();
   const QgsCoordinateReferenceSystem crs = source->sourceCrs();
-  const QgsWkbTypes::Type geometryType = source->wkbType();
+  const Qgis::WkbType geometryType = source->wkbType();
   const int fieldIndex = fields.lookupField( fieldName );
   const QSet< QVariant > uniqueValues = source->uniqueValues( fieldIndex );
   QString baseName = outputDir + QDir::separator();

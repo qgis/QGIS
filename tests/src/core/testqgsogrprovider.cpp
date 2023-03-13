@@ -24,6 +24,7 @@
 #include <qgsproviderregistry.h>
 #include <qgsvectorlayer.h>
 #include <qgsnetworkaccessmanager.h>
+#include <qgsprovidermetadata.h>
 
 #include <QObject>
 #include <QThread>
@@ -51,6 +52,7 @@ class TestQgsOgrProvider : public QgsTest
     void encodeUri();
     void testThread();
     void testCsvFeatureAddition();
+    void absoluteRelativeUri();
 
   private:
     QString mTestDataDir;
@@ -397,6 +399,25 @@ void TestQgsOgrProvider::testCsvFeatureAddition()
 
   delete csvLayer;
   QFile::remove( csvFilename );
+}
+
+void TestQgsOgrProvider::absoluteRelativeUri()
+{
+  QgsReadWriteContext context;
+  context.setPathResolver( QgsPathResolver( QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/project.qgs" ) ) );
+
+  QgsProviderMetadata *ogrMetadata = QgsProviderRegistry::instance()->providerMetadata( "ogr" );
+  QVERIFY( ogrMetadata );
+
+  QString absoluteUri = QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/points.shp" );
+  QString relativeUri = QStringLiteral( "./points.shp" );
+  QCOMPARE( ogrMetadata->absoluteToRelativeUri( absoluteUri, context ), relativeUri );
+  QCOMPARE( ogrMetadata->relativeToAbsoluteUri( relativeUri, context ), absoluteUri );
+
+  absoluteUri = QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/points_gpkg.gpkg|layername=points_small" );
+  relativeUri = QStringLiteral( "./points_gpkg.gpkg|layername=points_small" );
+  QCOMPARE( ogrMetadata->absoluteToRelativeUri( absoluteUri, context ), relativeUri );
+  QCOMPARE( ogrMetadata->relativeToAbsoluteUri( relativeUri, context ), absoluteUri );
 }
 
 

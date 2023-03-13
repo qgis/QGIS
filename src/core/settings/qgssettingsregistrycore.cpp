@@ -189,7 +189,7 @@ void QgsSettingsRegistryCore::migrateOldSettings()
     const QStringList childKeys = settings.childKeys();
     for ( const QString &childKey : childKeys )
     {
-      if ( childKey.startsWith( QStringLiteral( "enabled" ) ) )
+      if ( childKey.startsWith( QLatin1String( "enabled" ) ) )
       {
         QString filter = childKey;
         filter.remove( QStringLiteral( "enabled_" ) );

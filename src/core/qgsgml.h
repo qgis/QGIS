@@ -131,7 +131,7 @@ class CORE_EXPORT QgsGmlStreamingParser
     const QgsRectangle &layerExtent() const { return mLayerExtent; }
 
     //! Returns the geometry type
-    QgsWkbTypes::Type wkbType() const { return mWkbType; }
+    Qgis::WkbType wkbType() const { return mWkbType; }
 
     //! Returns WFS 2.0 "numberMatched" attribute, or -1 if invalid/not found
     int numberMatched() const { return mNumberMatched; }
@@ -273,7 +273,7 @@ class CORE_EXPORT QgsGmlStreamingParser
     const char *mTypeNamePtr = nullptr;
     size_t mTypeNameUTF8Len;
 
-    QgsWkbTypes::Type mWkbType;
+    Qgis::WkbType mWkbType;
 
     //results are members such that handler routines are able to manipulate them
 
@@ -384,7 +384,7 @@ class CORE_EXPORT QgsGml : public QObject
      *  \note available in Python as getFeaturesUri
      */
     int getFeatures( const QString &uri,
-                     QgsWkbTypes::Type *wkbType,
+                     Qgis::WkbType *wkbType,
                      QgsRectangle *extent = nullptr,
                      const QString &userName = QString(),
                      const QString &password = QString(),
@@ -393,7 +393,7 @@ class CORE_EXPORT QgsGml : public QObject
     /**
      * Read from GML data. Constructor uri param is ignored
      */
-    int getFeatures( const QByteArray &data, QgsWkbTypes::Type *wkbType, QgsRectangle *extent = nullptr );
+    int getFeatures( const QByteArray &data, Qgis::WkbType *wkbType, QgsRectangle *extent = nullptr );
 
     //! Gets parsed features for given type name
     QMap<QgsFeatureId, QgsFeature * > featuresMap() const { return mFeatures; }

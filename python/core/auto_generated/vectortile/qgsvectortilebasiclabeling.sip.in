@@ -51,11 +51,11 @@ Sets name of the sub-layer to render (empty layer means that all layers match)
 Returns name of the sub-layer to render (empty layer means that all layers match)
 %End
 
-    void setGeometryType( QgsWkbTypes::GeometryType geomType );
+    void setGeometryType( Qgis::GeometryType geomType );
 %Docstring
 Sets type of the geometry that will be used (point / line / polygon)
 %End
-    QgsWkbTypes::GeometryType geometryType() const;
+    Qgis::GeometryType geometryType() const;
 %Docstring
 Returns type of the geometry that will be used (point / line / polygon)
 %End

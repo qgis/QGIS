@@ -278,8 +278,9 @@ class TestPyQgsMemoryProvider(unittest.TestCase, ProviderTestCase):
                                 QgsField("stringlist", QVariant.List, subType=QVariant.String),
                                 QgsField("reallist", QVariant.List, subType=QVariant.Double),
                                 QgsField("longlist", QVariant.List, subType=QVariant.LongLong),
-                                QgsField("dict", QVariant.Map)])
-        self.assertEqual(len(provider.fields()), 8)
+                                QgsField("dict", QVariant.Map),
+                                QgsField("geom", QVariant.UserType, typeName='geometry')])
+        self.assertEqual(len(provider.fields()), 9)
         self.assertEqual(provider.fields()[0].name(), "name")
         self.assertEqual(provider.fields()[0].type(), QVariant.String)
         self.assertEqual(provider.fields()[0].subType(), QVariant.Invalid)
@@ -303,8 +304,11 @@ class TestPyQgsMemoryProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(provider.fields()[6].subType(), QVariant.LongLong)
         self.assertEqual(provider.fields()[7].name(), "dict")
         self.assertEqual(provider.fields()[7].type(), QVariant.Map)
+        self.assertEqual(provider.fields()[8].name(), "geom")
+        self.assertEqual(provider.fields()[8].type(), QVariant.UserType)
+        self.assertEqual(provider.fields()[8].typeName(), 'geometry')
 
-        ft = QgsFeature()
+        ft = QgsFeature(provider.fields())
         ft.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(10, 10)))
         ft.setAttributes(["Johny",
                           20,
@@ -313,11 +317,13 @@ class TestPyQgsMemoryProvider(unittest.TestCase, ProviderTestCase):
                           ['a', 'b', 'c'],
                           [1.1, 2.2, 3.3],
                           [1, 2, 3],
-                          {'a': 1, 'b': 2}])
-        provider.addFeatures([ft])
+                          {'a': 1, 'b': 2},
+                          QgsGeometry.fromWkt('Point( 1 2)')])
+        self.assertTrue(provider.addFeatures([ft]))
 
         for f in provider.getFeatures(QgsFeatureRequest()):
-            self.assertEqual(f.attributes(), ['Johny', 20, 0.3, [1, 2, 3], ['a', 'b', 'c'], [1.1, 2.2, 3.3], [1, 2, 3], {'a': 1, 'b': 2}])
+            self.assertEqual(f.attributes()[:8], ['Johny', 20, 0.3, [1, 2, 3], ['a', 'b', 'c'], [1.1, 2.2, 3.3], [1, 2, 3], {'a': 1, 'b': 2}])
+            self.assertEqual(f.attributes()[8].asWkt(), 'Point (1 2)')
 
     def testFromUri(self):
         """Test we can construct the mem provider from a uri"""
@@ -398,6 +404,15 @@ class TestPyQgsMemoryProvider(unittest.TestCase, ProviderTestCase):
             'memory')
         self.assertEqual(layer.fields().field('a').type(), QVariant.Map)
 
+    def testGeomFieldFromUri(self):
+        """Test we can create geometry type fields from a uri"""
+        layer = QgsVectorLayer(
+            ('Point?crs=epsg:4326&field=a:geometry&index=yes'),
+            'test',
+            'memory')
+        self.assertEqual(layer.fields().field('a').type(), QVariant.UserType)
+        self.assertEqual(layer.fields().field('a').typeName(), 'geometry')
+
     def testFromUriWithEncodedField(self):
         """Test we can construct the mem provider from a uri when a field name is encoded"""
         layer = QgsVectorLayer(
@@ -428,7 +443,8 @@ class TestPyQgsMemoryProvider(unittest.TestCase, ProviderTestCase):
                     QgsField("stringlist2", QVariant.List, subType=QVariant.String),
                     QgsField("reallist", QVariant.List, subType=QVariant.Double),
                     QgsField("longlist", QVariant.List, subType=QVariant.LongLong),
-                    QgsField("dict", QVariant.Map)]
+                    QgsField("dict", QVariant.Map),
+                    QgsField("geom", QVariant.UserType, typeName="geometry")]
         self.assertTrue(myMemoryLayer.startEditing())
         for f in myFields:
             assert myMemoryLayer.addAttribute(f)
@@ -573,6 +589,7 @@ class TestPyQgsMemoryProvider(unittest.TestCase, ProviderTestCase):
         fields.append(QgsField("reallist", QVariant.List, subType=QVariant.Double))
         fields.append(QgsField("longlist", QVariant.List, subType=QVariant.LongLong))
         fields.append(QgsField("dict", QVariant.Map))
+        fields.append(QgsField("geom", QVariant.UserType, typeName="geometry"))
 
         layer = QgsMemoryProviderUtils.createMemoryLayer('my name', fields)
         self.assertTrue(layer.isValid())
@@ -633,6 +650,19 @@ class TestPyQgsMemoryProvider(unittest.TestCase, ProviderTestCase):
         saved_feature = next(provider.getFeatures())
         # saved feature must have a QDateTime value for field, not string
         self.assertEqual(saved_feature.attributes(), [5, -200, QDateTime(2021, 2, 12, 0, 0)])
+
+        layer = QgsVectorLayer(
+            'Point?crs=epsg:4326&index=yes&field=pk:integer&field=geom:geometry', 'test', 'memory')
+        provider = layer.dataProvider()
+        f = QgsFeature()
+        # string value specified for geom field -- must be converted when adding the feature
+        f.setAttributes([5, 'Point(1 2)'])
+        self.assertTrue(provider.addFeatures([f]))
+
+        saved_feature = next(provider.getFeatures())
+        # saved feature must have a QgsGeometry value for field, not string
+        self.assertEqual(saved_feature.attributes()[0], 5)
+        self.assertEqual(saved_feature.attributes()[1].asWkt(), 'Point (1 2)')
 
     def testThreadSafetyWithIndex(self):
         layer = QgsVectorLayer(
@@ -933,7 +963,8 @@ class TestPyQgsMemoryProvider(unittest.TestCase, ProviderTestCase):
                           QgsField("stringlistfield", QVariant.StringList, "stringlist"),
                           QgsField("integerlistfield", QVariant.List, "integerlist"),
                           QgsField("doublelistfield", QVariant.List, "doublelist"),
-                          QgsField("dict", QVariant.Map)])
+                          QgsField("dict", QVariant.Map),
+                          QgsField("geom", QVariant.UserType, typeName="geometry")])
 
         self.assertEqual(pr.fields()[0].typeName(), "string")
         self.assertEqual(pr.fields()[1].typeName(), "integer")
@@ -948,6 +979,7 @@ class TestPyQgsMemoryProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(pr.fields()[10].typeName(), "integerlist")
         self.assertEqual(pr.fields()[11].typeName(), "doublelist")
         self.assertEqual(pr.fields()[12].typeName(), "map")
+        self.assertEqual(pr.fields()[13].typeName(), "geometry")
 
         vl2 = vl.clone()
 
@@ -964,6 +996,7 @@ class TestPyQgsMemoryProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(pr.fields()[10].name(), vl2.fields()[10].name())
         self.assertEqual(pr.fields()[11].name(), vl2.fields()[11].name())
         self.assertEqual(pr.fields()[12].name(), vl2.fields()[12].name())
+        self.assertEqual(pr.fields()[13].name(), vl2.fields()[13].name())
 
         self.assertEqual(pr.fields()[0].typeName(), vl2.fields()[0].typeName())
         self.assertEqual(pr.fields()[1].typeName(), vl2.fields()[1].typeName())
@@ -978,6 +1011,7 @@ class TestPyQgsMemoryProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(pr.fields()[10].typeName(), vl2.fields()[10].typeName())
         self.assertEqual(pr.fields()[11].typeName(), vl2.fields()[11].typeName())
         self.assertEqual(pr.fields()[12].typeName(), vl2.fields()[12].typeName())
+        self.assertEqual(pr.fields()[13].typeName(), vl2.fields()[13].typeName())
 
 
 class TestPyQgsMemoryProviderIndexed(unittest.TestCase, ProviderTestCase):

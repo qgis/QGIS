@@ -155,7 +155,7 @@ void QgsPostgresProviderConnection::dropTablePrivate( const QString &schema, con
 void QgsPostgresProviderConnection::createVectorTable( const QString &schema,
     const QString &name,
     const QgsFields &fields,
-    QgsWkbTypes::Type wkbType,
+    Qgis::WkbType wkbType,
     const QgsCoordinateReferenceSystem &srs,
     bool overwrite,
     const QMap<QString,
@@ -168,7 +168,7 @@ void QgsPostgresProviderConnection::createVectorTable( const QString &schema,
   newUri.setSchema( schema );
   newUri.setTable( name );
   // Set geometry column if it's not aspatial
-  if ( wkbType != QgsWkbTypes::Type::Unknown &&  wkbType != QgsWkbTypes::Type::NoGeometry )
+  if ( wkbType != Qgis::WkbType::Unknown &&  wkbType != Qgis::WkbType::NoGeometry )
   {
     newUri.setGeometryColumn( options->value( QStringLiteral( "geometryColumn" ), QStringLiteral( "geom" ) ).toString() );
   }
@@ -647,7 +647,7 @@ QList<QgsPostgresProviderConnection::TableProperty> QgsPostgresProviderConnectio
         {
           // retrieve layer types if needed
           if ( ! dontResolveType && ( !pr.geometryColName.isNull() &&
-                                      ( pr.types.value( 0, QgsWkbTypes::Unknown ) == QgsWkbTypes::Unknown ||
+                                      ( pr.types.value( 0, Qgis::WkbType::Unknown ) == Qgis::WkbType::Unknown ||
                                         pr.srids.value( 0, std::numeric_limits<int>::min() ) == std::numeric_limits<int>::min() ) ) )
           {
             conn->retrieveLayerTypes( pr, useEstimatedMetadata );

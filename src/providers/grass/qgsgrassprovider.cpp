@@ -32,14 +32,10 @@
 #include "qgsrectangle.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayereditbuffer.h"
-
 #include "qgsgrass.h"
 #include "qgsgrassprovider.h"
 #include "qgsgrassfeatureiterator.h"
-#include "qgsgrassvector.h"
 #include "qgsgrassundocommand.h"
-
-#include "qgsapplication.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgslogger.h"
 
@@ -214,16 +210,16 @@ QgsGrassProvider::QgsGrassProvider( const QString &uri )
     case Centroid:
     case TopoPoint:
     case TopoNode:
-      mQgisType = QgsWkbTypes::Point;
+      mQgisType = Qgis::WkbType::Point;
       break;
     case Line:
     case Boundary:
     case TopoLine:
-      mQgisType = QgsWkbTypes::LineString;
+      mQgisType = Qgis::WkbType::LineString;
       break;
     case Polygon:
     case Face:
-      mQgisType = QgsWkbTypes::Polygon;
+      mQgisType = Qgis::WkbType::Polygon;
       break;
   }
 
@@ -423,7 +419,7 @@ QgsRectangle QgsGrassProvider::extent() const
 /**
 * Return the feature type
 */
-QgsWkbTypes::Type QgsGrassProvider::wkbType() const
+Qgis::WkbType QgsGrassProvider::wkbType() const
 {
   return mQgisType;
 }
@@ -1124,7 +1120,7 @@ void QgsGrassProvider::setPoints( struct line_pnts *points, const QgsAbstractGeo
   {
     return;
   }
-  if ( geometry->wkbType() == QgsWkbTypes::Point || geometry->wkbType() == QgsWkbTypes::PointZ )
+  if ( geometry->wkbType() == Qgis::WkbType::Point || geometry->wkbType() == Qgis::WkbType::PointZ )
   {
     const QgsPoint *point = dynamic_cast<const QgsPoint *>( geometry );
     if ( point )
@@ -1133,7 +1129,7 @@ void QgsGrassProvider::setPoints( struct line_pnts *points, const QgsAbstractGeo
       QgsDebugMsg( QString( "x = %1 y = %2" ).arg( point->x() ).arg( point->y() ) );
     }
   }
-  else if ( geometry->wkbType() == QgsWkbTypes::LineString || geometry->wkbType() == QgsWkbTypes::LineStringZ )
+  else if ( geometry->wkbType() == Qgis::WkbType::LineString || geometry->wkbType() == Qgis::WkbType::LineStringZ )
   {
     const QgsLineString *lineString = dynamic_cast<const QgsLineString *>( geometry );
     if ( lineString )
@@ -1145,7 +1141,7 @@ void QgsGrassProvider::setPoints( struct line_pnts *points, const QgsAbstractGeo
       }
     }
   }
-  else if ( geometry->wkbType() == QgsWkbTypes::Polygon || geometry->wkbType() == QgsWkbTypes::PolygonZ )
+  else if ( geometry->wkbType() == Qgis::WkbType::Polygon || geometry->wkbType() == Qgis::WkbType::PolygonZ )
   {
     const QgsPolygon *polygon = dynamic_cast<const QgsPolygon *>( geometry );
     if ( polygon && polygon->exteriorRing() )
@@ -1223,8 +1219,8 @@ void QgsGrassProvider::onFeatureAdded( QgsFeatureId fid )
     QgsFeatureMap &addedFeatures = mEditBuffer->mAddedFeatures;
 
     // change polygon to linestring
-    QgsWkbTypes::Type wkbType = QgsWkbTypes::flatType( geometry->wkbType() );
-    if ( wkbType == QgsWkbTypes::Polygon )
+    Qgis::WkbType wkbType = QgsWkbTypes::flatType( geometry->wkbType() );
+    if ( wkbType == Qgis::WkbType::Polygon )
     {
       QgsGeometry addedFeatureGeom = addedFeatures[fid].geometry();
       const QgsPolygon *polygon = dynamic_cast<const QgsPolygon *>( addedFeatureGeom.constGet() );

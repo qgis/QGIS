@@ -452,7 +452,7 @@ class CORE_EXPORT QgsMeshDataProvider: public QgsDataProvider, public QgsMeshDat
      *
      * \since QGIS 3.14
      */
-    void setTemporalUnit( QgsUnitTypes::TemporalUnit unit );
+    void setTemporalUnit( Qgis::TemporalUnit unit );
 
 
     /**

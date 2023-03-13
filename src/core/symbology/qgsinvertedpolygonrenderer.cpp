@@ -35,7 +35,7 @@ QgsInvertedPolygonRenderer::QgsInvertedPolygonRenderer( QgsFeatureRenderer *subR
 {
   if ( !subRenderer )
   {
-    mSubRenderer.reset( QgsFeatureRenderer::defaultRenderer( QgsWkbTypes::PolygonGeometry ) );
+    mSubRenderer.reset( QgsFeatureRenderer::defaultRenderer( Qgis::GeometryType::Polygon ) );
   }
   mOperation = InvertOnly;
 }

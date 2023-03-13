@@ -18,10 +18,7 @@
 #include "qgslabelinggui.h"
 #include "qgsvectorlayer.h"
 #include "qgsmapcanvas.h"
-#include "qgsvectorlayerlabeling.h"
 #include "qgsproject.h"
-#include "qgsauxiliarystorage.h"
-#include "qgsnewauxiliarylayerdialog.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsexpressionbuilderdialog.h"
 #include "qgshelp.h"
@@ -111,9 +108,9 @@ void QgsLabelingGui::updateCalloutWidget( QgsCallout *callout )
     if ( QgsCalloutWidget *w = am->createCalloutWidget( mLayer ) )
     {
 
-      QgsWkbTypes::GeometryType geometryType = mGeomType;
+      Qgis::GeometryType geometryType = mGeomType;
       if ( mGeometryGeneratorGroupBox->isChecked() )
-        geometryType = mGeometryGeneratorType->currentData().value<QgsWkbTypes::GeometryType>();
+        geometryType = mGeometryGeneratorType->currentData().value<Qgis::GeometryType>();
       else if ( mLayer )
         geometryType = mLayer->geometryType();
       w->setGeometryType( geometryType );
@@ -142,7 +139,7 @@ void QgsLabelingGui::showObstacleSettings()
   QgsLabelObstacleSettingsWidget *widget = new QgsLabelObstacleSettingsWidget( nullptr, mLayer );
   widget->setDataDefinedProperties( mDataDefinedProperties );
   widget->setSettings( mObstacleSettings );
-  widget->setGeometryType( mLayer ? mLayer->geometryType() : QgsWkbTypes::UnknownGeometry );
+  widget->setGeometryType( mLayer ? mLayer->geometryType() : Qgis::GeometryType::Unknown );
   widget->setContext( symbolContext );
 
   auto applySettings = [ = ]
@@ -192,7 +189,7 @@ void QgsLabelingGui::showLineAnchorSettings()
   QgsLabelLineAnchorWidget *widget = new QgsLabelLineAnchorWidget( nullptr, mLayer );
   widget->setDataDefinedProperties( mDataDefinedProperties );
   widget->setSettings( mLineSettings );
-  widget->setGeometryType( mLayer ? mLayer->geometryType() : QgsWkbTypes::UnknownGeometry );
+  widget->setGeometryType( mLayer ? mLayer->geometryType() : Qgis::GeometryType::Unknown );
   widget->setContext( symbolContext );
 
   auto applySettings = [ = ]
@@ -235,7 +232,7 @@ void QgsLabelingGui::showLineAnchorSettings()
   }
 }
 
-QgsLabelingGui::QgsLabelingGui( QgsVectorLayer *layer, QgsMapCanvas *mapCanvas, const QgsPalLayerSettings &layerSettings, QWidget *parent, QgsWkbTypes::GeometryType geomType )
+QgsLabelingGui::QgsLabelingGui( QgsVectorLayer *layer, QgsMapCanvas *mapCanvas, const QgsPalLayerSettings &layerSettings, QWidget *parent, Qgis::GeometryType geomType )
   : QgsTextFormatWidget( mapCanvas, parent, QgsTextFormatWidget::Labeling, layer )
   , mSettings( layerSettings )
   , mMode( NoLabels )
@@ -253,14 +250,14 @@ QgsLabelingGui::QgsLabelingGui( QgsVectorLayer *layer, QgsMapCanvas *mapCanvas, 
   mFontMultiLineAlignComboBox->addItem( tr( "Right" ), static_cast< int >( Qgis::LabelMultiLineAlignment::Right ) );
   mFontMultiLineAlignComboBox->addItem( tr( "Justify" ), static_cast< int >( Qgis::LabelMultiLineAlignment::Justify ) );
 
-  mCoordRotationUnitComboBox->addItem( QgsUnitTypes::toString( QgsUnitTypes::AngleDegrees ), QgsUnitTypes::AngleDegrees );
-  mCoordRotationUnitComboBox->addItem( QgsUnitTypes::toString( QgsUnitTypes::AngleRadians ), QgsUnitTypes::AngleRadians );
-  mCoordRotationUnitComboBox->addItem( QgsUnitTypes::toString( QgsUnitTypes::AngleGon ), QgsUnitTypes::AngleGon );
-  mCoordRotationUnitComboBox->addItem( QgsUnitTypes::toString( QgsUnitTypes::AngleMinutesOfArc ), QgsUnitTypes::AngleMinutesOfArc );
-  mCoordRotationUnitComboBox->addItem( QgsUnitTypes::toString( QgsUnitTypes::AngleSecondsOfArc ), QgsUnitTypes::AngleSecondsOfArc );
-  mCoordRotationUnitComboBox->addItem( QgsUnitTypes::toString( QgsUnitTypes::AngleTurn ), QgsUnitTypes::AngleTurn );
-  mCoordRotationUnitComboBox->addItem( QgsUnitTypes::toString( QgsUnitTypes::AngleMilliradiansSI ), QgsUnitTypes::AngleMilliradiansSI );
-  mCoordRotationUnitComboBox->addItem( QgsUnitTypes::toString( QgsUnitTypes::AngleMilNATO ), QgsUnitTypes::AngleMilNATO );
+  mCoordRotationUnitComboBox->addItem( QgsUnitTypes::toString( Qgis::AngleUnit::Degrees ), static_cast< int >( Qgis::AngleUnit::Degrees ) );
+  mCoordRotationUnitComboBox->addItem( QgsUnitTypes::toString( Qgis::AngleUnit::Radians ), static_cast< int >( Qgis::AngleUnit::Radians ) );
+  mCoordRotationUnitComboBox->addItem( QgsUnitTypes::toString( Qgis::AngleUnit::Gon ), static_cast< int >( Qgis::AngleUnit::Gon ) );
+  mCoordRotationUnitComboBox->addItem( QgsUnitTypes::toString( Qgis::AngleUnit::MinutesOfArc ), static_cast< int >( Qgis::AngleUnit::MinutesOfArc ) );
+  mCoordRotationUnitComboBox->addItem( QgsUnitTypes::toString( Qgis::AngleUnit::SecondsOfArc ), static_cast< int >( Qgis::AngleUnit::SecondsOfArc ) );
+  mCoordRotationUnitComboBox->addItem( QgsUnitTypes::toString( Qgis::AngleUnit::Turn ), static_cast< int >( Qgis::AngleUnit::Turn ) );
+  mCoordRotationUnitComboBox->addItem( QgsUnitTypes::toString( Qgis::AngleUnit::MilliradiansSI ), static_cast< int >( Qgis::AngleUnit::MilliradiansSI ) );
+  mCoordRotationUnitComboBox->addItem( QgsUnitTypes::toString( Qgis::AngleUnit::MilNATO ), static_cast< int >( Qgis::AngleUnit::MilNATO ) );
 
   // connections for groupboxes with separate activation checkboxes (that need to honor data defined setting)
   connect( mBufferDrawChkBx, &QAbstractButton::toggled, this, &QgsLabelingGui::updateUi );
@@ -315,7 +312,7 @@ void QgsLabelingGui::setLayer( QgsMapLayer *mapLayer )
 {
   mPreviewFeature = QgsFeature();
 
-  if ( ( !mapLayer || mapLayer->type() != QgsMapLayerType::VectorLayer ) && mGeomType == QgsWkbTypes::UnknownGeometry )
+  if ( ( !mapLayer || mapLayer->type() != Qgis::LayerType::Vector ) && mGeomType == Qgis::GeometryType::Unknown )
   {
     setEnabled( false );
     return;
@@ -349,7 +346,7 @@ void QgsLabelingGui::setLayer( QgsMapLayer *mapLayer )
   mGeometryGeneratorGroupBox->setChecked( mSettings.geometryGeneratorEnabled );
   if ( !mSettings.geometryGeneratorEnabled )
     mGeometryGeneratorGroupBox->setCollapsed( true );
-  mGeometryGeneratorType->setCurrentIndex( mGeometryGeneratorType->findData( mSettings.geometryGeneratorType ) );
+  mGeometryGeneratorType->setCurrentIndex( mGeometryGeneratorType->findData( QVariant::fromValue( mSettings.geometryGeneratorType ) ) );
 
   updateWidgetForFormat( mSettings.format().isValid() ? mSettings.format() : QgsStyle::defaultTextFormatForProject( QgsProject::instance(), QgsStyle::TextFormatContext::Labeling ) );
 
@@ -634,9 +631,9 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
   lyr.useMaxLineLengthForAutoWrap = mAutoWrapTypeComboBox->currentIndex() == 0;
   lyr.multilineAlign = static_cast< Qgis::LabelMultiLineAlignment >( mFontMultiLineAlignComboBox->currentData().toInt() );
   lyr.preserveRotation = chkPreserveRotation->isChecked();
-  lyr.setRotationUnit( static_cast< QgsUnitTypes::AngleUnit >( mCoordRotationUnitComboBox->currentData().toInt() ) );
+  lyr.setRotationUnit( static_cast< Qgis::AngleUnit >( mCoordRotationUnitComboBox->currentData().toInt() ) );
   lyr.geometryGenerator = mGeometryGenerator->text();
-  lyr.geometryGeneratorType = mGeometryGeneratorType->currentData().value<QgsWkbTypes::GeometryType>();
+  lyr.geometryGeneratorType = mGeometryGeneratorType->currentData().value<Qgis::GeometryType>();
   lyr.geometryGeneratorEnabled = mGeometryGeneratorGroupBox->isChecked();
 
   lyr.layerType = mLayer ? mLayer->geometryType() : mGeomType;
@@ -830,18 +827,18 @@ void QgsLabelingGui::saveFormat()
 
 void QgsLabelingGui::updateGeometryTypeBasedWidgets()
 {
-  QgsWkbTypes::GeometryType geometryType = mGeomType;
+  Qgis::GeometryType geometryType = mGeomType;
 
   if ( mGeometryGeneratorGroupBox->isChecked() )
-    geometryType = mGeometryGeneratorType->currentData().value<QgsWkbTypes::GeometryType>();
+    geometryType = mGeometryGeneratorType->currentData().value<Qgis::GeometryType>();
   else if ( mLayer )
     geometryType = mLayer->geometryType();
 
   // show/hide options based upon geometry type
-  chkMergeLines->setVisible( geometryType == QgsWkbTypes::LineGeometry );
-  mDirectSymbolsFrame->setVisible( geometryType == QgsWkbTypes::LineGeometry );
-  mMinSizeFrame->setVisible( geometryType != QgsWkbTypes::PointGeometry );
-  mPolygonFeatureOptionsFrame->setVisible( geometryType == QgsWkbTypes::PolygonGeometry );
+  chkMergeLines->setVisible( geometryType == Qgis::GeometryType::Line );
+  mDirectSymbolsFrame->setVisible( geometryType == Qgis::GeometryType::Line );
+  mMinSizeFrame->setVisible( geometryType != Qgis::GeometryType::Point );
+  mPolygonFeatureOptionsFrame->setVisible( geometryType == Qgis::GeometryType::Polygon );
 
 
   const Qgis::LabelPlacement prevPlacement = static_cast< Qgis::LabelPlacement >( mPlacementModeComboBox->currentData().toInt() );
@@ -849,19 +846,19 @@ void QgsLabelingGui::updateGeometryTypeBasedWidgets()
 
   switch ( geometryType )
   {
-    case QgsWkbTypes::PointGeometry:
+    case Qgis::GeometryType::Point:
       mPlacementModeComboBox->addItem( tr( "Cartographic" ), static_cast< int >( Qgis::LabelPlacement::OrderedPositionsAroundPoint ) );
       mPlacementModeComboBox->addItem( tr( "Around Point" ), static_cast< int >( Qgis::LabelPlacement::AroundPoint ) );
       mPlacementModeComboBox->addItem( tr( "Offset from Point" ), static_cast< int >( Qgis::LabelPlacement::OverPoint ) );
       break;
 
-    case QgsWkbTypes::LineGeometry:
+    case Qgis::GeometryType::Line:
       mPlacementModeComboBox->addItem( tr( "Parallel" ), static_cast< int >( Qgis::LabelPlacement::Line ) );
       mPlacementModeComboBox->addItem( tr( "Curved" ), static_cast< int >( Qgis::LabelPlacement::Curved ) );
       mPlacementModeComboBox->addItem( tr( "Horizontal" ), static_cast< int >( Qgis::LabelPlacement::Horizontal ) );
       break;
 
-    case QgsWkbTypes::PolygonGeometry:
+    case Qgis::GeometryType::Polygon:
       mPlacementModeComboBox->addItem( tr( "Offset from Centroid" ), static_cast< int >( Qgis::LabelPlacement::OverPoint ) );
       mPlacementModeComboBox->addItem( tr( "Around Centroid" ), static_cast< int >( Qgis::LabelPlacement::AroundPoint ) );
       mPlacementModeComboBox->addItem( tr( "Horizontal" ), static_cast< int >( Qgis::LabelPlacement::Horizontal ) );
@@ -871,9 +868,9 @@ void QgsLabelingGui::updateGeometryTypeBasedWidgets()
       mPlacementModeComboBox->addItem( tr( "Outside Polygons" ), static_cast< int >( Qgis::LabelPlacement::OutsidePolygons ) );
       break;
 
-    case QgsWkbTypes::NullGeometry:
+    case Qgis::GeometryType::Null:
       break;
-    case QgsWkbTypes::UnknownGeometry:
+    case Qgis::GeometryType::Unknown:
       qFatal( "unknown geometry type unexpected" );
   }
 
@@ -882,7 +879,7 @@ void QgsLabelingGui::updateGeometryTypeBasedWidgets()
     mPlacementModeComboBox->setCurrentIndex( mPlacementModeComboBox->findData( static_cast< int >( prevPlacement ) ) );
   }
 
-  if ( geometryType == QgsWkbTypes::PointGeometry || geometryType == QgsWkbTypes::PolygonGeometry )
+  if ( geometryType == Qgis::GeometryType::Point || geometryType == Qgis::GeometryType::Polygon )
   {
     // follow placement alignment is only valid for point or polygon layers
     if ( mFontMultiLineAlignComboBox->findData( static_cast< int >( Qgis::LabelMultiLineAlignment::FollowPlacement ) ) == -1 )
@@ -936,7 +933,7 @@ void QgsLabelingGui::validateGeometryGeneratorExpression()
     {
       const QVariant result = expression.evaluate( &context );
       const QgsGeometry geometry = result.value<QgsGeometry>();
-      const QgsWkbTypes::GeometryType configuredGeometryType = mGeometryGeneratorType->currentData().value<QgsWkbTypes::GeometryType>();
+      const Qgis::GeometryType configuredGeometryType = mGeometryGeneratorType->currentData().value<Qgis::GeometryType>();
       if ( geometry.isNull() )
       {
         mGeometryGeneratorWarningLabel->setText( tr( "Result of the expression is not a geometry" ) );
@@ -975,7 +972,7 @@ void QgsLabelingGui::determineGeometryGeneratorType()
   expression.prepare( &context );
   const QgsGeometry geometry = expression.evaluate( &context ).value<QgsGeometry>();
 
-  mGeometryGeneratorType->setCurrentIndex( mGeometryGeneratorType->findData( geometry.type() ) );
+  mGeometryGeneratorType->setCurrentIndex( mGeometryGeneratorType->findData( QVariant::fromValue( geometry.type() ) ) );
 }
 
 void QgsLabelingGui::calloutTypeChanged()
@@ -1010,7 +1007,7 @@ void QgsLabelingGui::calloutTypeChanged()
 //
 
 QgsLabelSettingsDialog::QgsLabelSettingsDialog( const QgsPalLayerSettings &settings, QgsVectorLayer *layer, QgsMapCanvas *mapCanvas, QWidget *parent,
-    QgsWkbTypes::GeometryType geomType )
+    Qgis::GeometryType geomType )
   : QDialog( parent )
 {
   QVBoxLayout *vLayout = new QVBoxLayout();

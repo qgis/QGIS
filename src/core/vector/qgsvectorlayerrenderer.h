@@ -123,7 +123,7 @@ class QgsVectorLayerRenderer : public QgsMapLayerRenderer
     Qgis::VertexMarkerType mVertexMarkerStyle = Qgis::VertexMarkerType::SemiTransparentCircle;
     double mVertexMarkerSize = 2.0;
 
-    QgsWkbTypes::GeometryType mGeometryType;
+    Qgis::GeometryType mGeometryType;
 
     QSet<QString> mAttrNames;
 

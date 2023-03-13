@@ -45,10 +45,10 @@ class GUI_EXPORT QgsSymbolLayerSelectionWidget : public QWidget
     void setLayer( const QgsVectorLayer *layer );
 
     //! Returns current symbol layer selection
-    QSet<QgsSymbolLayerId> selection() const;
+    QSet<QString> selection() const;
 
     //! Sets the symbol layer selection
-    void setSelection( const QSet<QgsSymbolLayerId> &sel );
+    void setSelection( const QSet<QString> &sel );
 
   signals:
     //! Signal emitted when something the configuration is changed
@@ -61,7 +61,7 @@ class GUI_EXPORT QgsSymbolLayerSelectionWidget : public QWidget
     const QgsVectorLayer *mLayer = nullptr;
 
     // Mapping between symbol layer id and tree elements
-    QHash<QgsSymbolLayerId, QTreeWidgetItem *> mItems;
+    QHash<QString, QTreeWidgetItem *> mItems;
 };
 
 #endif

@@ -40,7 +40,7 @@ void QgsGeometryPointCoveredByLineCheck::collectErrors( const QMap<QString, QgsF
       bool touches = false;
       const QgsRectangle rect( point->x() - mContext->tolerance, point->y() - mContext->tolerance,
                                point->x() + mContext->tolerance, point->y() + mContext->tolerance );
-      const QgsGeometryCheckerUtils::LayerFeatures checkFeatures( featurePools, featureIds.keys(), rect, {QgsWkbTypes::LineGeometry}, mContext );
+      const QgsGeometryCheckerUtils::LayerFeatures checkFeatures( featurePools, featureIds.keys(), rect, {Qgis::GeometryType::Line}, mContext );
       for ( const QgsGeometryCheckerUtils::LayerFeature &checkFeature : checkFeatures )
       {
         const QgsAbstractGeometry *testGeom = checkFeature.geometry().constGet();

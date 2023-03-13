@@ -81,14 +81,14 @@ Returns the time extent using an external ``reference`` date time
 and the first and last times available from the all the dataset
 %End
 
-    void setTemporalUnit( QgsUnitTypes::TemporalUnit temporalUnit );
+    void setTemporalUnit( Qgis::TemporalUnit temporalUnit );
 %Docstring
 Sets the temporal unit (``temporalUnit``) used to read data by the data provider
 
 Temporal units supported are milliseconds, seconds, minutes, hors, days and weeks
 %End
 
-    QgsUnitTypes::TemporalUnit temporalUnit() const;
+    Qgis::TemporalUnit temporalUnit() const;
 %Docstring
 Returns the temporal unit used to read data by the data provider
 %End

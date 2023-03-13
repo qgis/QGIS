@@ -18,6 +18,7 @@
 #include "qgslogger.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsrendercontext.h"
+#include "qgsunittypes.h"
 
 QgsTileMatrix QgsTileMatrix::fromWebMercator( int zoomLevel )
 {
@@ -39,7 +40,7 @@ QgsTileMatrix QgsTileMatrix::fromCustomDef( int zoomLevel, const QgsCoordinateRe
   // Constant for scale denominator calculation
   constexpr double TILE_SIZE = 256.0;
   constexpr double PIXELS_TO_M = 2.8 / 10000.0;  // WMS/WMTS define "standardized rendering pixel size" as 0.28mm
-  const double unitToMeters = QgsUnitTypes::fromUnitToUnitFactor( crs.mapUnits(), QgsUnitTypes::DistanceMeters );
+  const double unitToMeters = QgsUnitTypes::fromUnitToUnitFactor( crs.mapUnits(), Qgis::DistanceUnit::Meters );
   // Scale denominator calculation
   const double scaleDenom0 = ( z0Dimension / TILE_SIZE ) * ( unitToMeters / PIXELS_TO_M );
 

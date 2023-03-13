@@ -18,7 +18,7 @@
 #include "qgsmapcanvasitem.h"
 #include "qgis_sip.h"
 #include "qgsgeometry.h"
-#include "qgscoordinatetransform.h"
+#include "qgscoordinatereferencesystem.h"
 
 #include <QBrush>
 #include <QVector>
@@ -139,7 +139,7 @@ class GUI_EXPORT QgsRubberBand : public QgsMapCanvasItem
      *  \param geometryType Defines how the data should be drawn onto the screen.
      *         QgsWkbTypes::LineGeometry, QgsWkbTypes::PolygonGeometry or QgsWkbTypes::PointGeometry
      */
-    QgsRubberBand( QgsMapCanvas *mapCanvas SIP_TRANSFERTHIS, QgsWkbTypes::GeometryType geometryType = QgsWkbTypes::LineGeometry );
+    QgsRubberBand( QgsMapCanvas *mapCanvas SIP_TRANSFERTHIS, Qgis::GeometryType geometryType = Qgis::GeometryType::Line );
     ~QgsRubberBand() override;
 
     /**
@@ -243,7 +243,7 @@ class GUI_EXPORT QgsRubberBand : public QgsMapCanvasItem
      * Sets the representation type according to geometryType.
      *  \param geometryType Defines how the data should be drawn onto the screen. (Use Qgis::Line, Qgis::Polygon or Qgis::Point)
      */
-    void reset( QgsWkbTypes::GeometryType geometryType = QgsWkbTypes::LineGeometry );
+    void reset( Qgis::GeometryType geometryType = Qgis::GeometryType::Line );
 
     /**
      * Adds a vertex to the rubberband and update canvas.
@@ -467,7 +467,7 @@ class GUI_EXPORT QgsRubberBand : public QgsMapCanvasItem
      * Nested lists used for multitypes
      */
     QVector< QVector< QVector <QgsPointXY> > > mPoints;
-    QgsWkbTypes::GeometryType mGeometryType = QgsWkbTypes::PolygonGeometry;
+    Qgis::GeometryType mGeometryType = Qgis::GeometryType::Polygon;
     double mTranslationOffsetX = 0.0;
     double mTranslationOffsetY = 0.0;
 

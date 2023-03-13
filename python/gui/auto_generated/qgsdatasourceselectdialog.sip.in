@@ -33,7 +33,7 @@ will return a (possibly invalid) :py:class:`QgsMimeDataUtils`.Uri.
 
     QgsDataSourceSelectWidget( QgsBrowserGuiModel *browserModel = 0,
                                bool setFilterByLayerType = false,
-                               QgsMapLayerType layerType = QgsMapLayerType::VectorLayer,
+                               Qgis::LayerType layerType = Qgis::LayerType::Vector,
                                QWidget *parent = 0 );
 %Docstring
 Constructs a QgsDataSourceSelectWidget, optionally filtering by layer type
@@ -47,7 +47,7 @@ Constructs a QgsDataSourceSelectWidget, optionally filtering by layer type
 
     ~QgsDataSourceSelectWidget();
 
-    void setLayerTypeFilter( QgsMapLayerType layerType );
+    void setLayerTypeFilter( Qgis::LayerType layerType );
 %Docstring
 Sets layer type filter to ``layerType`` and activates the filtering
 %End
@@ -147,7 +147,7 @@ will return a (possibly invalid) :py:class:`QgsMimeDataUtils`.Uri.
 
     QgsDataSourceSelectDialog( QgsBrowserGuiModel *browserModel = 0,
                                bool setFilterByLayerType = false,
-                               QgsMapLayerType layerType = QgsMapLayerType::VectorLayer,
+                               Qgis::LayerType layerType = Qgis::LayerType::Vector,
                                QWidget *parent = 0 );
 %Docstring
 Constructs a QgsDataSourceSelectDialog, optionally filtering by layer type
@@ -158,7 +158,7 @@ Constructs a QgsDataSourceSelectDialog, optionally filtering by layer type
 :param parent: the object
 %End
 
-    void setLayerTypeFilter( QgsMapLayerType layerType );
+    void setLayerTypeFilter( Qgis::LayerType layerType );
 %Docstring
 Sets layer type filter to ``layerType`` and activates the filtering
 %End

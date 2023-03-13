@@ -111,7 +111,7 @@ Sets the radius for the heatmap
 .. seealso:: :py:func:`setRadiusMapUnitScale`
 %End
 
-    QgsUnitTypes::RenderUnit radiusUnit() const;
+    Qgis::RenderUnit radiusUnit() const;
 %Docstring
 Returns the units used for the heatmap's radius
 
@@ -124,7 +124,7 @@ Returns the units used for the heatmap's radius
 .. seealso:: :py:func:`radiusMapUnitScale`
 %End
 
-    void setRadiusUnit( const QgsUnitTypes::RenderUnit unit );
+    void setRadiusUnit( const Qgis::RenderUnit unit );
 %Docstring
 Sets the units used for the heatmap's radius
 

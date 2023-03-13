@@ -120,14 +120,14 @@ QVariantMap QgsGridAlgorithm::processAlgorithm( const QVariantMap &parameters, Q
   fields.append( QgsField( QStringLiteral( "right" ), QVariant::Double ) );
   fields.append( QgsField( QStringLiteral( "bottom" ), QVariant::Double ) );
 
-  QgsWkbTypes::Type outputWkb = QgsWkbTypes::Polygon;
+  Qgis::WkbType outputWkb = Qgis::WkbType::Polygon;
   switch ( mIdx )
   {
     case 0:
-      outputWkb = QgsWkbTypes::Point;
+      outputWkb = Qgis::WkbType::Point;
       break;
     case 1:
-      outputWkb = QgsWkbTypes::LineString;
+      outputWkb = Qgis::WkbType::LineString;
       break;
   }
 

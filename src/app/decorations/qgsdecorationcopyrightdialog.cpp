@@ -14,7 +14,6 @@
 #include "qgsdecorationcopyright.h"
 
 #include "qgisapp.h"
-#include "qgsexpression.h"
 #include "qgsexpressionbuilderdialog.h"
 #include "qgsexpressioncontext.h"
 #include "qgshelp.h"
@@ -75,7 +74,10 @@ QgsDecorationCopyrightDialog::QgsDecorationCopyrightDialog( QgsDecorationCopyrig
   spnHorizontal->setClearValue( 0 );
   spnHorizontal->setValue( mDeco.mMarginHorizontal );
   spnVertical->setValue( mDeco.mMarginVertical );
-  wgtUnitSelection->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderPercentage << QgsUnitTypes::RenderPixels );
+  wgtUnitSelection->setUnits( { Qgis::RenderUnit::Millimeters,
+                                Qgis::RenderUnit::Percentage,
+                                Qgis::RenderUnit::Pixels
+                              } );
   wgtUnitSelection->setUnit( mDeco.mMarginUnit );
 
   // font settings

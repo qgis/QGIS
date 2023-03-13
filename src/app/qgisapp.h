@@ -159,6 +159,7 @@ class QgsScreenHelper;
 class QgsAppGpsConnection;
 class QgsGpsToolBar;
 class QgsAppGpsSettingsMenu;
+class Qgs3DMapScene;
 
 #include <QMainWindow>
 #include <QToolBar>
@@ -264,6 +265,11 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * Returns a list of all map canvases open in the app.
      */
     QList< QgsMapCanvas * > mapCanvases();
+
+    /**
+     * Returns a map of all 3D map scenes (by name) open in the app.
+     */
+    QMap<QString, Qgs3DMapScene *> map3DScenes();
 
     /**
      * Create a new map canvas with the specified unique \a name.
@@ -643,6 +649,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     //! Menus
     QMenu *projectMenu() { return mProjectMenu; }
+    QMenu *projectImportExportMenu() { return menuImport_Export; }
     QMenu *editMenu() { return mEditMenu; }
     QMenu *viewMenu() { return mViewMenu; }
     QMenu *layerMenu() { return mLayerMenu; }
@@ -1890,7 +1897,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void extentChanged();
     void showRotation();
 
-    void showPanMessage( double distance, QgsUnitTypes::DistanceUnit unit, double bearing );
+    void showPanMessage( double distance, Qgis::DistanceUnit unit, double bearing );
 
     void selectionModeChanged( QgsMapToolSelect::Mode mode );
 

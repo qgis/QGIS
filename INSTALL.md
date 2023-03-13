@@ -235,7 +235,7 @@ changes.
 
 ```bash
 cd ${HOME}/dev/cpp
-git clone git://github.com/qgis/QGIS.git
+git clone https://github.com/qgis/QGIS.git
 ```
 
 2. Developer Checkout

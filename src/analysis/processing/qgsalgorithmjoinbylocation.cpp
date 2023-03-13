@@ -561,17 +561,17 @@ bool QgsJoinByLocationAlgorithm::processFeatureFromInputSource( QgsFeature &base
           double overlap = 0;
           switch ( QgsWkbTypes::geometryType( intersection->wkbType() ) )
           {
-            case QgsWkbTypes::LineGeometry:
+            case Qgis::GeometryType::Line:
               overlap = intersection->length();
               break;
 
-            case QgsWkbTypes::PolygonGeometry:
+            case Qgis::GeometryType::Polygon:
               overlap = intersection->area();
               break;
 
-            case QgsWkbTypes::UnknownGeometry:
-            case QgsWkbTypes::PointGeometry:
-            case QgsWkbTypes::NullGeometry:
+            case Qgis::GeometryType::Unknown:
+            case Qgis::GeometryType::Point:
+            case Qgis::GeometryType::Null:
               break;
           }
 

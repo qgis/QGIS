@@ -16,23 +16,23 @@
 
 #include <QDomElement>
 
-#include "qgslogger.h"
 #include "qgsrectangle.h"
 #include "qgsproperty.h"
 #include "qgssymbollayerutils.h"
 #include "qgsprocessingparameters.h"
 #include "qgsremappingproxyfeaturesink.h"
+#include "qgsunittypes.h"
 
-QgsUnitTypes::DistanceUnit QgsXmlUtils::readMapUnits( const QDomElement &element )
+Qgis::DistanceUnit QgsXmlUtils::readMapUnits( const QDomElement &element )
 {
   if ( "unknown" == element.text() )
   {
-    return QgsUnitTypes::DistanceUnknownUnit;
+    return Qgis::DistanceUnit::Unknown;
   }
   else
   {
-    const QgsUnitTypes::DistanceUnit unit = QgsUnitTypes::decodeDistanceUnit( element.text() );
-    return unit == QgsUnitTypes::DistanceUnknownUnit ? QgsUnitTypes::DistanceDegrees : unit;
+    const Qgis::DistanceUnit unit = QgsUnitTypes::decodeDistanceUnit( element.text() );
+    return unit == Qgis::DistanceUnit::Unknown ? Qgis::DistanceUnit::Degrees : unit;
   }
 }
 
@@ -66,11 +66,11 @@ QgsRectangle QgsXmlUtils::readRectangle( const QDomElement &element )
 
 
 
-QDomElement QgsXmlUtils::writeMapUnits( QgsUnitTypes::DistanceUnit units, QDomDocument &doc )
+QDomElement QgsXmlUtils::writeMapUnits( Qgis::DistanceUnit units, QDomDocument &doc )
 {
   QString unitsString = QgsUnitTypes::encodeUnit( units );
   // maintain compatibility with old projects
-  if ( units == QgsUnitTypes::DistanceUnknownUnit )
+  if ( units == Qgis::DistanceUnit::Unknown )
     unitsString = QStringLiteral( "unknown" );
 
   QDomElement unitsNode = doc.createElement( QStringLiteral( "units" ) );

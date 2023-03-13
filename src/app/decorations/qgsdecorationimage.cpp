@@ -17,11 +17,8 @@
 #include "qgsdecorationimagedialog.h"
 
 #include "qgisapp.h"
-#include "qgscoordinatetransform.h"
-#include "qgsexception.h"
 #include "qgsimagecache.h"
 #include "qgslogger.h"
-#include "qgsmaplayer.h"
 #include "qgsproject.h"
 #include "qgssymbollayerutils.h"
 #include "qgssvgcache.h"
@@ -41,7 +38,7 @@ QgsDecorationImage::QgsDecorationImage( QObject *parent )
   : QgsDecorationItem( parent )
 {
   mPlacement = BottomLeft;
-  mMarginUnit = QgsUnitTypes::RenderMillimeters;
+  mMarginUnit = Qgis::RenderUnit::Millimeters;
 
   setDisplayName( tr( "Image" ) );
   mConfigurationName = QStringLiteral( "Image" );
@@ -212,7 +209,7 @@ void QgsDecorationImage::render( const QgsMapSettings &mapSettings, QgsRenderCon
   int yOffset = 0;
   switch ( mMarginUnit )
   {
-    case QgsUnitTypes::RenderMillimeters:
+    case Qgis::RenderUnit::Millimeters:
     {
       const int pixelsInchX = context.painter()->device()->logicalDpiX();
       const int pixelsInchY = context.painter()->device()->logicalDpiY();
@@ -221,20 +218,20 @@ void QgsDecorationImage::render( const QgsMapSettings &mapSettings, QgsRenderCon
       break;
     }
 
-    case QgsUnitTypes::RenderPixels:
+    case Qgis::RenderUnit::Pixels:
       xOffset = mMarginHorizontal - 5; // Minus 5 to shift tight into corner
       yOffset = mMarginVertical - 5;
       break;
 
-    case QgsUnitTypes::RenderPercentage:
+    case Qgis::RenderUnit::Percentage:
       xOffset = ( ( deviceWidth - size.width() ) / 100. ) * mMarginHorizontal;
       yOffset = ( ( deviceHeight - size.width() ) / 100. ) * mMarginVertical;
       break;
-    case QgsUnitTypes::RenderMapUnits:
-    case QgsUnitTypes::RenderPoints:
-    case QgsUnitTypes::RenderInches:
-    case QgsUnitTypes::RenderUnknownUnit:
-    case QgsUnitTypes::RenderMetersInMapUnits:
+    case Qgis::RenderUnit::MapUnits:
+    case Qgis::RenderUnit::Points:
+    case Qgis::RenderUnit::Inches:
+    case Qgis::RenderUnit::Unknown:
+    case Qgis::RenderUnit::MetersInMapUnits:
       break;
   }
 

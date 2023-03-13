@@ -22,11 +22,11 @@
 #include "qgsfeature.h"
 #include "qgsfeatureiterator.h"
 #include "qgsgeometry.h"
-#include "qgsproviderregistry.h"
 #include "qgsrasterdataprovider.h"
 #include "qgsrasteriterator.h"
-
 #include "qgsgrassimport.h"
+
+#include <QFileInfo>
 
 extern "C"
 {
@@ -267,6 +267,7 @@ bool QgsGrassRasterImport::import()
     {
       case Qgis::DataType::Byte:
       case Qgis::DataType::UInt16:
+      case Qgis::DataType::Int8:
       case Qgis::DataType::Int16:
       case Qgis::DataType::UInt32:
       case Qgis::DataType::Int32:
@@ -593,8 +594,8 @@ bool QgsGrassVectorImport::import()
   QDataStream outStream( mProcess );
   mProcess->setReadChannel( QProcess::StandardOutput );
 
-  QgsWkbTypes::Type wkbType = mProvider->wkbType();
-  bool isPolygon = QgsWkbTypes::singleType( QgsWkbTypes::flatType( wkbType ) ) == QgsWkbTypes::Polygon;
+  Qgis::WkbType wkbType = mProvider->wkbType();
+  bool isPolygon = QgsWkbTypes::singleType( QgsWkbTypes::flatType( wkbType ) ) == Qgis::WkbType::Polygon;
   outStream << ( qint32 )wkbType;
 
   outStream << mProvider->fields();

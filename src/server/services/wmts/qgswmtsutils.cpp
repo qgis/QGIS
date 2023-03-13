@@ -104,7 +104,7 @@ namespace QgsWmts
     double scaleDenominator = 0.0;
     const int colRes = ( tmi.extent.xMaximum() - tmi.extent.xMinimum() ) / tileSize;
     const int rowRes = ( tmi.extent.yMaximum() - tmi.extent.yMinimum() ) / tileSize;
-    const double UNIT_TO_M = QgsUnitTypes::fromUnitToUnitFactor( tmi.unit, QgsUnitTypes::DistanceMeters );
+    const double UNIT_TO_M = QgsUnitTypes::fromUnitToUnitFactor( tmi.unit, Qgis::DistanceUnit::Meters );
     if ( colRes > rowRes )
       scaleDenominator = std::ceil( colRes * UNIT_TO_M / POINTS_TO_M );
     else
@@ -152,7 +152,7 @@ namespace QgsWmts
     QList< tileMatrixDef > tileMatrixList;
     double scaleDenominator = tmi.scaleDenominator;
     const QgsRectangle extent = tmi.extent;
-    const QgsUnitTypes::DistanceUnit unit = tmi.unit;
+    const Qgis::DistanceUnit unit = tmi.unit;
 
     // constant
     double resolution = tmi.resolution;
@@ -295,7 +295,7 @@ namespace QgsWmts
             // firstly transform CRS bounds expressed in WGS84 to CRS
             const QgsRectangle extent = crsTransform.transformBoundingBox( crs.bounds() );
             // Calculate resolution based on scale denominator
-            resolution = POINTS_TO_M * minScale / QgsUnitTypes::fromUnitToUnitFactor( tmi.unit, QgsUnitTypes::DistanceMeters );
+            resolution = POINTS_TO_M * minScale / QgsUnitTypes::fromUnitToUnitFactor( tmi.unit, Qgis::DistanceUnit::Meters );
             // Get numbers of column and row for the resolution to cover the extent
             col = std::ceil( ( extent.xMaximum() - extent.xMinimum() ) / ( tileSize * resolution ) );
             row = std::ceil( ( extent.yMaximum() - extent.yMinimum() ) / ( tileSize * resolution ) );
@@ -822,7 +822,7 @@ namespace QgsWmts
       tmi3857.extent = QgsRectangle( -20037508.3427892480, -20037508.3427892480, 20037508.3427892480, 20037508.3427892480 );
       tmi3857.resolution = 156543.0339280410;
       tmi3857.scaleDenominator = 559082264.0287179;
-      tmi3857.unit = QgsUnitTypes::DistanceMeters;
+      tmi3857.unit = Qgis::DistanceUnit::Meters;
       m[tmi3857.ref] = tmi3857;
 
       // To build tile matrix set like mapcache for WGS84
@@ -833,7 +833,7 @@ namespace QgsWmts
       tmi4326.extent = QgsRectangle( -180, -90, 180, 90 );
       tmi4326.resolution = 0.703125000000000;
       tmi4326.scaleDenominator = 279541132.0143588675418869;
-      tmi4326.unit = QgsUnitTypes::DistanceDegrees;
+      tmi4326.unit = Qgis::DistanceUnit::Meters;
       tmi4326.hasAxisInverted = true;
       m[tmi4326.ref] = tmi4326;
 

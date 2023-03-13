@@ -17,7 +17,6 @@
 #include "qgsexpressionfunction.h"
 #include "qgsexpressionnodeimpl.h"
 #include "qgsfeaturerequest.h"
-#include "qgscolorrampimpl.h"
 #include "qgslogger.h"
 #include "qgsexpressioncontext.h"
 #include "qgsgeometry.h"
@@ -26,6 +25,7 @@
 #include "qgsexpressionutils.h"
 #include "qgsexpression_p.h"
 #include "qgsvariantutils.h"
+#include "qgsunittypes.h"
 
 #include <QRegularExpression>
 
@@ -289,7 +289,7 @@ void QgsExpression::initGeomCalculator( const QgsExpressionContext *context )
   }
 
   // Set the distance units from the context if it has not been set by setDistanceUnits()
-  if ( context && distanceUnits() == QgsUnitTypes::DistanceUnknownUnit )
+  if ( context && distanceUnits() == Qgis::DistanceUnit::Unknown )
   {
     QString distanceUnitsStr = context->variable( QStringLiteral( "project_distance_units" ) ).toString();
     if ( ! distanceUnitsStr.isEmpty() )
@@ -297,7 +297,7 @@ void QgsExpression::initGeomCalculator( const QgsExpressionContext *context )
   }
 
   // Set the area units from the context if it has not been set by setAreaUnits()
-  if ( context && areaUnits() == QgsUnitTypes::AreaUnknownUnit )
+  if ( context && areaUnits() == Qgis::AreaUnit::Unknown )
   {
     QString areaUnitsStr = context->variable( QStringLiteral( "project_area_units" ) ).toString();
     if ( ! areaUnitsStr.isEmpty() )
@@ -413,22 +413,22 @@ QgsDistanceArea *QgsExpression::geomCalculator()
   return d->mCalc.get();
 }
 
-QgsUnitTypes::DistanceUnit QgsExpression::distanceUnits() const
+Qgis::DistanceUnit QgsExpression::distanceUnits() const
 {
   return d->mDistanceUnit;
 }
 
-void QgsExpression::setDistanceUnits( QgsUnitTypes::DistanceUnit unit )
+void QgsExpression::setDistanceUnits( Qgis::DistanceUnit unit )
 {
   d->mDistanceUnit = unit;
 }
 
-QgsUnitTypes::AreaUnit QgsExpression::areaUnits() const
+Qgis::AreaUnit QgsExpression::areaUnits() const
 {
   return d->mAreaUnit;
 }
 
-void QgsExpression::setAreaUnits( QgsUnitTypes::AreaUnit unit )
+void QgsExpression::setAreaUnits( Qgis::AreaUnit unit )
 {
   d->mAreaUnit = unit;
 }

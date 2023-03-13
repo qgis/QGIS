@@ -53,7 +53,7 @@ void QgsMapToolFeatureAction::canvasReleaseEvent( QgsMapMouseEvent *e )
 {
   QgsMapLayer *layer = mCanvas->currentLayer();
 
-  if ( !layer || layer->type() != QgsMapLayerType::VectorLayer )
+  if ( !layer || layer->type() != Qgis::LayerType::Vector )
   {
     emit messageEmitted( tr( "To run an action, you must choose an active vector layer." ), Qgis::MessageLevel::Info );
     return;

@@ -29,6 +29,8 @@
 #include "qgswebpage.h"
 #include "qgswebframe.h"
 #include "qgslayoutitemmap.h"
+#include "qgslayoutreportcontext.h"
+#include "qgslayoutrendercontext.h"
 
 #include <QCoreApplication>
 #include <QPainter>
@@ -323,7 +325,7 @@ double QgsLayoutItemHtml::htmlUnitsToLayoutUnits()
     return 1.0;
   }
 
-  return mLayout->convertToLayoutUnits( QgsLayoutMeasurement( mLayout->renderContext().dpi() / 72.0, QgsUnitTypes::LayoutMillimeters ) ); //webkit seems to assume a standard dpi of 96
+  return mLayout->convertToLayoutUnits( QgsLayoutMeasurement( mLayout->renderContext().dpi() / 72.0, Qgis::LayoutUnit::Millimeters ) ); //webkit seems to assume a standard dpi of 96
 }
 
 bool candidateSort( QPair<int, int> c1, QPair<int, int> c2 )

@@ -30,6 +30,8 @@
 #include "qgslayoutitemmap.h"
 #include "qgssettings.h"
 #include "qgslayout.h"
+#include "qgslayoutrendercontext.h"
+#include "qgslayoutreportcontext.h"
 
 #include "qgswebpage.h"
 #include "qgswebframe.h"
@@ -60,7 +62,7 @@ QgsLayoutItemLabel::QgsLayoutItemLabel( QgsLayout *layout )
 
   //default to a 10 point font size
   mFormat.setSize( 10 );
-  mFormat.setSizeUnit( QgsUnitTypes::RenderPoints );
+  mFormat.setSizeUnit( Qgis::RenderUnit::Points );
 
   //default to no background
   setBackgroundEnabled( false );
@@ -239,7 +241,7 @@ double QgsLayoutItemLabel::htmlUnitsToLayoutUnits()
   }
 
   //TODO : fix this more precisely so that the label's default text size is the same with or without "display as html"
-  return mLayout->convertToLayoutUnits( QgsLayoutMeasurement( mLayout->renderContext().dpi() / 72.0, QgsUnitTypes::LayoutMillimeters ) ); //webkit seems to assume a standard dpi of 72
+  return mLayout->convertToLayoutUnits( QgsLayoutMeasurement( mLayout->renderContext().dpi() / 72.0, Qgis::LayoutUnit::Millimeters ) ); //webkit seems to assume a standard dpi of 72
 }
 
 void QgsLayoutItemLabel::setText( const QString &text )
@@ -387,15 +389,15 @@ QSizeF QgsLayoutItemLabel::sizeForText() const
   QgsRenderContext context = QgsLayoutUtils::createRenderContextForLayout( mLayout, nullptr );
 
   const QStringList lines = currentText().split( '\n' );
-  const double textWidth = QgsTextRenderer::textWidth( context, mFormat, lines ) / context.convertToPainterUnits( 1, QgsUnitTypes::RenderMillimeters );
-  const double fontHeight = QgsTextRenderer::textHeight( context, mFormat, lines ) / context.convertToPainterUnits( 1, QgsUnitTypes::RenderMillimeters );
+  const double textWidth = QgsTextRenderer::textWidth( context, mFormat, lines ) / context.convertToPainterUnits( 1, Qgis::RenderUnit::Millimeters );
+  const double fontHeight = QgsTextRenderer::textHeight( context, mFormat, lines ) / context.convertToPainterUnits( 1, Qgis::RenderUnit::Millimeters );
 
   const double penWidth = frameEnabled() ? ( pen().widthF() / 2.0 ) : 0;
 
   const double width = textWidth + 2 * mMarginX + 2 * penWidth;
   const double height = fontHeight + 2 * mMarginY + 2 * penWidth;
 
-  return mLayout->convertToLayoutUnits( QgsLayoutSize( width, height, QgsUnitTypes::LayoutMillimeters ) );
+  return mLayout->convertToLayoutUnits( QgsLayoutSize( width, height, Qgis::LayoutUnit::Millimeters ) );
 }
 
 QFont QgsLayoutItemLabel::font() const
@@ -466,12 +468,12 @@ bool QgsLayoutItemLabel::readPropertiesFromElement( const QDomElement &itemElem,
     if ( f.pointSizeF() > 0 )
     {
       mFormat.setSize( f.pointSizeF() );
-      mFormat.setSizeUnit( QgsUnitTypes::RenderPoints );
+      mFormat.setSizeUnit( Qgis::RenderUnit::Points );
     }
     else if ( f.pixelSize() > 0 )
     {
       mFormat.setSize( f.pixelSize() );
-      mFormat.setSizeUnit( QgsUnitTypes::RenderPixels );
+      mFormat.setSizeUnit( Qgis::RenderUnit::Pixels );
     }
 
     //font color
@@ -668,22 +670,22 @@ QUrl QgsLayoutItemLabel::createStylesheetUrl() const
   QFont f = mFormat.font();
   switch ( mFormat.sizeUnit() )
   {
-    case QgsUnitTypes::RenderMillimeters:
+    case Qgis::RenderUnit::Millimeters:
       f.setPointSizeF( mFormat.size() / 0.352778 );
       break;
-    case QgsUnitTypes::RenderPixels:
+    case Qgis::RenderUnit::Pixels:
       f.setPixelSize( mFormat.size() );
       break;
-    case QgsUnitTypes::RenderPoints:
+    case Qgis::RenderUnit::Points:
       f.setPointSizeF( mFormat.size() );
       break;
-    case QgsUnitTypes::RenderInches:
+    case Qgis::RenderUnit::Inches:
       f.setPointSizeF( mFormat.size() * 72 );
       break;
-    case QgsUnitTypes::RenderUnknownUnit:
-    case QgsUnitTypes::RenderPercentage:
-    case QgsUnitTypes::RenderMetersInMapUnits:
-    case QgsUnitTypes::RenderMapUnits:
+    case Qgis::RenderUnit::Unknown:
+    case Qgis::RenderUnit::Percentage:
+    case Qgis::RenderUnit::MetersInMapUnits:
+    case Qgis::RenderUnit::MapUnits:
       break;
   }
 

@@ -106,7 +106,7 @@ QVariantMap QgsExportLayersInformationAlgorithm::processAlgorithm( const QVarian
 
   QString outputDest;
   std::unique_ptr< QgsFeatureSink > outputSink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, outputDest, outFields,
-      QgsWkbTypes::Polygon, mCrs ) );
+      Qgis::WkbType::Polygon, mCrs ) );
 
   const QList< QgsMapLayer * > layers = parameterAsLayerList( parameters, QStringLiteral( "LAYERS" ), context );
 

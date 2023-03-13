@@ -18,10 +18,8 @@
 #ifndef QGSPDALPROVIDER_H
 #define QGSPDALPROVIDER_H
 
-#include "qgis_core.h"
 #include "qgspointclouddataprovider.h"
 #include "qgsprovidermetadata.h"
-#include "qgscopcpointcloudindex.h"
 #include <memory>
 
 class QgsEptPointCloudIndex;
@@ -80,11 +78,11 @@ class QgsPdalProviderMetadata : public QgsProviderMetadata
     QString encodeUri( const QVariantMap &parts ) const override;
     QVariantMap decodeUri( const QString &uri ) const override;
     int priorityForUri( const QString &uri ) const override;
-    QList< QgsMapLayerType > validLayerTypesForUri( const QString &uri ) const override;
+    QList< Qgis::LayerType > validLayerTypesForUri( const QString &uri ) const override;
     QList< QgsProviderSublayerDetails > querySublayers( const QString &uri, Qgis::SublayerQueryFlags flags = Qgis::SublayerQueryFlags(), QgsFeedback *feedback = nullptr ) const override;
     QString filters( FilterType type ) override;
     ProviderCapabilities providerCapabilities() const override;
-    QList< QgsMapLayerType > supportedLayerTypes() const override;
+    QList< Qgis::LayerType > supportedLayerTypes() const override;
 
   private:
     static QString sFilterString;

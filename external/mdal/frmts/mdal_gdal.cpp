@@ -111,7 +111,7 @@ bool MDAL::DriverGdal::initVertices( Vertices &vertices )
   return is_longitude_shifted;
 }
 
-void MDAL::DriverGdal::initFaces( Vertices &Vertexs, Faces &Faces, bool is_longitude_shifted )
+void MDAL::DriverGdal::initFaces( const Vertices &Vertexs, Faces &Faces, bool is_longitude_shifted )
 {
   int reconnected = 0;
   unsigned int mXSize = meshGDALDataset()->mXSize;
@@ -587,7 +587,7 @@ std::unique_ptr<MDAL::Mesh> MDAL::DriverGdal::load( const std::string &fileName,
       }
     }
 
-    for ( std::shared_ptr<MDAL::GdalDataset> ds : datasets )
+    for ( std::shared_ptr<MDAL::GdalDataset> &ds : datasets )
       if ( gdal_datasets.empty() || meshes_equals( meshGDALDataset(), ds.get() ) )
         gdal_datasets.push_back( ds );
 
@@ -645,26 +645,28 @@ void MDAL::DriverGdal::parseBandIsVector( std::string &band_name, bool *is_vecto
 {
   band_name = MDAL::trim( band_name );
 
-  if ( MDAL::startsWith( band_name, "u-", MDAL::CaseInsensitive ) ||
-       MDAL::startsWith( band_name, "x-", MDAL::CaseInsensitive ) ||
+  if ( MDAL::contains( band_name, "U wind component", MDAL::CaseInsensitive ) ||
        MDAL::contains( band_name, "u-component", MDAL::CaseInsensitive ) ||
        MDAL::contains( band_name, "u component", MDAL::CaseInsensitive ) ||
-       MDAL::contains( band_name, "U wind component", MDAL::CaseInsensitive ) ||
-       MDAL::startsWith( band_name, "Northward", MDAL::CaseInsensitive ) ||
+       MDAL::startsWith( band_name, "u-", MDAL::CaseInsensitive ) ||
        MDAL::contains( band_name, "x-component", MDAL::CaseInsensitive ) ||
-       MDAL::contains( band_name, "x component", MDAL::CaseInsensitive ) )
+       MDAL::contains( band_name, "x component", MDAL::CaseInsensitive ) ||
+       MDAL::startsWith( band_name, "x-", MDAL::CaseInsensitive ) ||
+       MDAL::contains( band_name, "eastward", MDAL::CaseInsensitive ) ||
+       MDAL::contains( band_name, "zonal", MDAL::CaseInsensitive ) )
   {
     *is_vector = true; // vector
     *is_x =  true; //X-Axis
   }
-  else if ( MDAL::startsWith( band_name, "v-", MDAL::CaseInsensitive ) ||
-            MDAL::startsWith( band_name, "y-", MDAL::CaseInsensitive ) ||
+  else if ( MDAL::contains( band_name, "V wind component", MDAL::CaseInsensitive ) ||
             MDAL::contains( band_name, "v-component", MDAL::CaseInsensitive ) ||
             MDAL::contains( band_name, "v component", MDAL::CaseInsensitive ) ||
-            MDAL::contains( band_name, "V wind component", MDAL::CaseInsensitive ) ||
-            MDAL::startsWith( band_name, "Eastward", MDAL::CaseInsensitive ) ||
+            MDAL::startsWith( band_name, "v-", MDAL::CaseInsensitive ) ||
             MDAL::contains( band_name, "y-component", MDAL::CaseInsensitive ) ||
-            MDAL::contains( band_name, "y component", MDAL::CaseInsensitive ) )
+            MDAL::contains( band_name, "y component", MDAL::CaseInsensitive ) ||
+            MDAL::startsWith( band_name, "y-", MDAL::CaseInsensitive ) ||
+            MDAL::contains( band_name, "northward", MDAL::CaseInsensitive ) ||
+            MDAL::contains( band_name, "meridional", MDAL::CaseInsensitive ) )
   {
     *is_vector = true; // vector
     *is_x =  false; //Y-Axis
@@ -677,30 +679,48 @@ void MDAL::DriverGdal::parseBandIsVector( std::string &band_name, bool *is_vecto
 
   if ( *is_vector )
   {
-    band_name = MDAL::replace( band_name, "u-component of", "", MDAL::CaseInsensitive );
-    band_name = MDAL::replace( band_name, "v-component of", "", MDAL::CaseInsensitive );
+
     band_name = MDAL::replace( band_name, "U wind component", "wind", MDAL::CaseInsensitive );
     band_name = MDAL::replace( band_name, "V wind component", "wind", MDAL::CaseInsensitive );
-    band_name = MDAL::replace( band_name, "Northward", "", MDAL::CaseInsensitive );
-    band_name = MDAL::replace( band_name, "Eastward", "", MDAL::CaseInsensitive );
-    band_name = MDAL::replace( band_name, "x-component of", "", MDAL::CaseInsensitive );
-    band_name = MDAL::replace( band_name, "y-component of", "", MDAL::CaseInsensitive );
+
+    band_name = MDAL::replace( band_name, "u-component of", "", MDAL::CaseInsensitive );
+    band_name = MDAL::replace( band_name, "v-component of", "", MDAL::CaseInsensitive );
     band_name = MDAL::replace( band_name, "u-component", "", MDAL::CaseInsensitive );
     band_name = MDAL::replace( band_name, "v-component", "", MDAL::CaseInsensitive );
-    band_name = MDAL::replace( band_name, "x-component", "", MDAL::CaseInsensitive );
-    band_name = MDAL::replace( band_name, "y-component", "", MDAL::CaseInsensitive );
-    band_name = MDAL::replace( band_name, "u component of", "", MDAL::CaseInsensitive );
-    band_name = MDAL::replace( band_name, "v component of", "", MDAL::CaseInsensitive );
-    band_name = MDAL::replace( band_name, "x component of", "", MDAL::CaseInsensitive );
-    band_name = MDAL::replace( band_name, "y component of", "", MDAL::CaseInsensitive );
-    band_name = MDAL::replace( band_name, "u component", "", MDAL::CaseInsensitive );
-    band_name = MDAL::replace( band_name, "v component", "", MDAL::CaseInsensitive );
-    band_name = MDAL::replace( band_name, "x component", "", MDAL::CaseInsensitive );
-    band_name = MDAL::replace( band_name, "y component", "", MDAL::CaseInsensitive );
     band_name = MDAL::replace( band_name, "u-", "", MDAL::CaseInsensitive );
     band_name = MDAL::replace( band_name, "v-", "", MDAL::CaseInsensitive );
+
+    band_name = MDAL::replace( band_name, "u component of", "", MDAL::CaseInsensitive );
+    band_name = MDAL::replace( band_name, "v component of", "", MDAL::CaseInsensitive );
+    band_name = MDAL::replace( band_name, "u component", "", MDAL::CaseInsensitive );
+    band_name = MDAL::replace( band_name, "v component", "", MDAL::CaseInsensitive );
+
+    band_name = MDAL::replace( band_name, "x-component of", "", MDAL::CaseInsensitive );
+    band_name = MDAL::replace( band_name, "y-component of", "", MDAL::CaseInsensitive );
+    band_name = MDAL::replace( band_name, "x-component", "", MDAL::CaseInsensitive );
+    band_name = MDAL::replace( band_name, "y-component", "", MDAL::CaseInsensitive );
     band_name = MDAL::replace( band_name, "x-", "", MDAL::CaseInsensitive );
     band_name = MDAL::replace( band_name, "y-", "", MDAL::CaseInsensitive );
+
+    band_name = MDAL::replace( band_name, "x component of", "", MDAL::CaseInsensitive );
+    band_name = MDAL::replace( band_name, "y component of", "", MDAL::CaseInsensitive );
+    band_name = MDAL::replace( band_name, "x component", "", MDAL::CaseInsensitive );
+    band_name = MDAL::replace( band_name, "y component", "", MDAL::CaseInsensitive );
+
+    band_name = MDAL::replace( band_name, "eastward component of", "", MDAL::CaseInsensitive );
+    band_name = MDAL::replace( band_name, "northward component of", "", MDAL::CaseInsensitive );
+    band_name = MDAL::replace( band_name, "eastward component", "", MDAL::CaseInsensitive );
+    band_name = MDAL::replace( band_name, "northward component", "", MDAL::CaseInsensitive );
+    band_name = MDAL::replace( band_name, "eastward", "", MDAL::CaseInsensitive );
+    band_name = MDAL::replace( band_name, "northward", "", MDAL::CaseInsensitive );
+
+    band_name = MDAL::replace( band_name, "zonal component of", "", MDAL::CaseInsensitive );
+    band_name = MDAL::replace( band_name, "meridional component of", "", MDAL::CaseInsensitive );
+    band_name = MDAL::replace( band_name, "zonal component", "", MDAL::CaseInsensitive );
+    band_name = MDAL::replace( band_name, "meridional component", "", MDAL::CaseInsensitive );
+    band_name = MDAL::replace( band_name, "zonal", "", MDAL::CaseInsensitive );
+    band_name = MDAL::replace( band_name, "meridional", "", MDAL::CaseInsensitive );
+
     band_name = MDAL::trim( band_name );
   }
 }

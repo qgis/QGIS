@@ -82,7 +82,7 @@ class APP_EXPORT QgsGCPListModel : public QAbstractTableModel
     void pointEnabled( QgsGeorefDataPoint *pnt, int i );
 
   private:
-    QgsUnitTypes::RenderUnit residualUnit() const;
+    Qgis::RenderUnit residualUnit() const;
 
     QgsCoordinateReferenceSystem mTargetCrs;
     QgsCoordinateTransformContext mTransformContext;

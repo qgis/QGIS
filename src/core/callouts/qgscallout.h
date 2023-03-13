@@ -19,7 +19,7 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgsexpressioncontext.h"
+#include "qgis.h"
 #include "qgsreadwritecontext.h"
 #include "qgspropertycollection.h"
 #include "qgsmapunitscale.h"
@@ -574,14 +574,14 @@ class CORE_EXPORT QgsSimpleLineCallout : public QgsCallout
      * \see minimumLengthUnit()
      * \see setMinimumLength()
     */
-    void setMinimumLengthUnit( QgsUnitTypes::RenderUnit unit ) { mMinCalloutLengthUnit = unit; }
+    void setMinimumLengthUnit( Qgis::RenderUnit unit ) { mMinCalloutLengthUnit = unit; }
 
     /**
      * Returns the units for the minimum length of callout lines.
      * \see setMinimumLengthUnit()
      * \see minimumLength()
     */
-    QgsUnitTypes::RenderUnit minimumLengthUnit() const { return mMinCalloutLengthUnit; }
+    Qgis::RenderUnit minimumLengthUnit() const { return mMinCalloutLengthUnit; }
 
     /**
      * Sets the map unit \a scale for the minimum callout length.
@@ -619,14 +619,14 @@ class CORE_EXPORT QgsSimpleLineCallout : public QgsCallout
      * \see offsetFromAnchor()
      * \see setOffsetFromAnchor()
     */
-    void setOffsetFromAnchorUnit( QgsUnitTypes::RenderUnit unit ) { mOffsetFromAnchorUnit = unit; }
+    void setOffsetFromAnchorUnit( Qgis::RenderUnit unit ) { mOffsetFromAnchorUnit = unit; }
 
     /**
      * Returns the units for the offset from anchor point.
      * \see setOffsetFromAnchorUnit()
      * \see offsetFromAnchor()
     */
-    QgsUnitTypes::RenderUnit offsetFromAnchorUnit() const { return mOffsetFromAnchorUnit; }
+    Qgis::RenderUnit offsetFromAnchorUnit() const { return mOffsetFromAnchorUnit; }
 
     /**
      * Sets the map unit \a scale for the offset from anchor.
@@ -663,14 +663,14 @@ class CORE_EXPORT QgsSimpleLineCallout : public QgsCallout
      * \see offsetFromLabel()
      * \see setOffsetFromLabel()
     */
-    void setOffsetFromLabelUnit( QgsUnitTypes::RenderUnit unit ) { mOffsetFromLabelUnit = unit; }
+    void setOffsetFromLabelUnit( Qgis::RenderUnit unit ) { mOffsetFromLabelUnit = unit; }
 
     /**
      * Returns the units for the offset from label area.
      * \see setOffsetFromLabelUnit()
      * \see offsetFromLabel()
     */
-    QgsUnitTypes::RenderUnit offsetFromLabelUnit() const { return mOffsetFromLabelUnit; }
+    Qgis::RenderUnit offsetFromLabelUnit() const { return mOffsetFromLabelUnit; }
 
     /**
      * Sets the map unit \a scale for the offset from label area.
@@ -723,15 +723,15 @@ class CORE_EXPORT QgsSimpleLineCallout : public QgsCallout
 
     std::unique_ptr< QgsLineSymbol > mLineSymbol;
     double mMinCalloutLength = 0;
-    QgsUnitTypes::RenderUnit mMinCalloutLengthUnit = QgsUnitTypes::RenderMillimeters;
+    Qgis::RenderUnit mMinCalloutLengthUnit = Qgis::RenderUnit::Millimeters;
     QgsMapUnitScale mMinCalloutLengthScale;
 
     double mOffsetFromAnchorDistance = 0;
-    QgsUnitTypes::RenderUnit mOffsetFromAnchorUnit = QgsUnitTypes::RenderMillimeters;
+    Qgis::RenderUnit mOffsetFromAnchorUnit = Qgis::RenderUnit::Millimeters;
     QgsMapUnitScale mOffsetFromAnchorScale;
 
     double mOffsetFromLabelDistance = 0;
-    QgsUnitTypes::RenderUnit mOffsetFromLabelUnit = QgsUnitTypes::RenderMillimeters;
+    Qgis::RenderUnit mOffsetFromLabelUnit = Qgis::RenderUnit::Millimeters;
     QgsMapUnitScale mOffsetFromLabelScale;
 
     bool mDrawCalloutToAllParts = false;
@@ -954,14 +954,14 @@ class CORE_EXPORT QgsBalloonCallout : public QgsCallout
      * \see offsetFromAnchor()
      * \see setOffsetFromAnchor()
     */
-    void setOffsetFromAnchorUnit( QgsUnitTypes::RenderUnit unit ) { mOffsetFromAnchorUnit = unit; }
+    void setOffsetFromAnchorUnit( Qgis::RenderUnit unit ) { mOffsetFromAnchorUnit = unit; }
 
     /**
      * Returns the units for the offset from anchor point.
      * \see setOffsetFromAnchorUnit()
      * \see offsetFromAnchor()
     */
-    QgsUnitTypes::RenderUnit offsetFromAnchorUnit() const { return mOffsetFromAnchorUnit; }
+    Qgis::RenderUnit offsetFromAnchorUnit() const { return mOffsetFromAnchorUnit; }
 
     /**
      * Sets the map unit \a scale for the offset from anchor.
@@ -1009,7 +1009,7 @@ class CORE_EXPORT QgsBalloonCallout : public QgsCallout
      * \see margins()
      * \see marginsUnit()
     */
-    void setMarginsUnit( QgsUnitTypes::RenderUnit unit ) { mMarginUnit = unit; }
+    void setMarginsUnit( Qgis::RenderUnit unit ) { mMarginUnit = unit; }
 
     /**
      * Returns the units for the margins between the outside of the callout frame and the label's bounding rectangle.
@@ -1017,7 +1017,7 @@ class CORE_EXPORT QgsBalloonCallout : public QgsCallout
      * \see setMarginsUnit()
      * \see margins()
     */
-    QgsUnitTypes::RenderUnit marginsUnit() const { return mMarginUnit; }
+    Qgis::RenderUnit marginsUnit() const { return mMarginUnit; }
 
     /**
      * Returns the width of the wedge shape at the side it connects with the label.
@@ -1045,7 +1045,7 @@ class CORE_EXPORT QgsBalloonCallout : public QgsCallout
      * \see wedgeWidthUnit()
      * \see setWedgeWidth()
     */
-    void setWedgeWidthUnit( QgsUnitTypes::RenderUnit unit ) { mWedgeWidthUnit = unit; }
+    void setWedgeWidthUnit( Qgis::RenderUnit unit ) { mWedgeWidthUnit = unit; }
 
     /**
      * Returns the units for the wedge width.
@@ -1053,7 +1053,7 @@ class CORE_EXPORT QgsBalloonCallout : public QgsCallout
      * \see setWedgeWidthUnit()
      * \see wedgeWidth()
     */
-    QgsUnitTypes::RenderUnit wedgeWidthUnit() const { return mWedgeWidthUnit; }
+    Qgis::RenderUnit wedgeWidthUnit() const { return mWedgeWidthUnit; }
 
     /**
      * Sets the map unit \a scale for the wedge width.
@@ -1099,7 +1099,7 @@ class CORE_EXPORT QgsBalloonCallout : public QgsCallout
      * \see cornerRadiusUnit()
      * \see setCornerRadius()
     */
-    void setCornerRadiusUnit( QgsUnitTypes::RenderUnit unit ) { mCornerRadiusUnit = unit; }
+    void setCornerRadiusUnit( Qgis::RenderUnit unit ) { mCornerRadiusUnit = unit; }
 
     /**
      * Returns the units for the corner radius.
@@ -1107,7 +1107,7 @@ class CORE_EXPORT QgsBalloonCallout : public QgsCallout
      * \see setCornerRadiusUnit()
      * \see cornerRadius()
     */
-    QgsUnitTypes::RenderUnit cornerRadiusUnit() const { return mCornerRadiusUnit; }
+    Qgis::RenderUnit cornerRadiusUnit() const { return mCornerRadiusUnit; }
 
     /**
      * Sets the map unit \a scale for the corner radius.
@@ -1143,18 +1143,18 @@ class CORE_EXPORT QgsBalloonCallout : public QgsCallout
     std::unique_ptr< QgsFillSymbol > mFillSymbol;
 
     double mOffsetFromAnchorDistance = 0;
-    QgsUnitTypes::RenderUnit mOffsetFromAnchorUnit = QgsUnitTypes::RenderMillimeters;
+    Qgis::RenderUnit mOffsetFromAnchorUnit = Qgis::RenderUnit::Millimeters;
     QgsMapUnitScale mOffsetFromAnchorScale;
 
     QgsMargins mMargins;
-    QgsUnitTypes::RenderUnit mMarginUnit = QgsUnitTypes::RenderMillimeters;
+    Qgis::RenderUnit mMarginUnit = Qgis::RenderUnit::Millimeters;
 
     double mWedgeWidth = 2.64;
-    QgsUnitTypes::RenderUnit mWedgeWidthUnit = QgsUnitTypes::RenderMillimeters;
+    Qgis::RenderUnit mWedgeWidthUnit = Qgis::RenderUnit::Millimeters;
     QgsMapUnitScale mWedgeWidthScale;
 
     double mCornerRadius = 0.0;
-    QgsUnitTypes::RenderUnit mCornerRadiusUnit = QgsUnitTypes::RenderMillimeters;
+    Qgis::RenderUnit mCornerRadiusUnit = Qgis::RenderUnit::Millimeters;
     QgsMapUnitScale mCornerRadiusScale;
 
 };

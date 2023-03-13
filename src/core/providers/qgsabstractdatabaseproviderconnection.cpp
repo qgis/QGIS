@@ -1053,7 +1053,7 @@ QgsProviderSqlQueryBuilder *QgsAbstractDatabaseProviderConnection::queryBuilder(
 void QgsAbstractDatabaseProviderConnection::createVectorTable( const QString &schema,
     const QString &name,
     const QgsFields &fields,
-    QgsWkbTypes::Type wkbType,
+    Qgis::WkbType wkbType,
     const QgsCoordinateReferenceSystem &srs,
     bool overwrite,
     const QMap<QString, QVariant> *
@@ -1301,7 +1301,7 @@ void QgsAbstractDatabaseProviderConnection::TableProperty::setTableName( const Q
   mTableName = name;
 }
 
-void QgsAbstractDatabaseProviderConnection::TableProperty::addGeometryColumnType( const QgsWkbTypes::Type &type, const QgsCoordinateReferenceSystem &crs )
+void QgsAbstractDatabaseProviderConnection::TableProperty::addGeometryColumnType( Qgis::WkbType type, const QgsCoordinateReferenceSystem &crs )
 {
   // Do not add the type if it's already present
   const QgsAbstractDatabaseProviderConnection::TableProperty::GeometryColumnType toAdd { type, crs };

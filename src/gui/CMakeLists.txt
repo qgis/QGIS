@@ -185,6 +185,8 @@ set(QGIS_GUI_SRCS
   editorwidgets/qgsexternalresourceconfigdlg.cpp
   editorwidgets/qgsexternalresourcewidgetwrapper.cpp
   editorwidgets/qgsexternalresourcewidgetfactory.cpp
+  editorwidgets/qgsgeometrywidgetfactory.cpp
+  editorwidgets/qgsgeometrywidgetwrapper.cpp
   editorwidgets/qgshiddenwidgetwrapper.cpp
   editorwidgets/qgshiddenwidgetfactory.cpp
   editorwidgets/qgshtmlwidgetwrapper.cpp
@@ -533,6 +535,7 @@ set(QGIS_GUI_SRCS
   qgsformannotation.cpp
   qgsgeocoderlocatorfilter.cpp
   qgsgeometryrubberband.cpp
+  qgsgeometrywidget.cpp
   qgsgradientcolorrampdialog.cpp
   qgsgradientstopeditor.cpp
   qgsgraphicsviewmousehandles.cpp
@@ -802,6 +805,7 @@ set(QGIS_GUI_HDRS
   qgsformlabelformatwidget.h
   qgsgeocoderlocatorfilter.h
   qgsgeometryrubberband.h
+  qgsgeometrywidget.h
   qgsgradientcolorrampdialog.h
   qgsgradientstopeditor.h
   qgsgraphicsviewmousehandles.h
@@ -1070,6 +1074,8 @@ set(QGIS_GUI_HDRS
   editorwidgets/qgsexternalresourceconfigdlg.h
   editorwidgets/qgsexternalresourcewidgetfactory.h
   editorwidgets/qgsexternalresourcewidgetwrapper.h
+  editorwidgets/qgsgeometrywidgetfactory.h
+  editorwidgets/qgsgeometrywidgetwrapper.h
   editorwidgets/qgshiddenwidgetfactory.h
   editorwidgets/qgshiddenwidgetwrapper.h
   editorwidgets/qgshtmlwidgetwrapper.h

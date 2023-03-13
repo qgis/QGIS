@@ -33,9 +33,10 @@ struct QgsMaskedLayer
   bool hasEffects = false;
 
   // masked symbol layers
-  QSet<QgsSymbolLayerId> symbolLayerIds;
+  QSet<QString> symbolLayerIds;
 };
 
+//! masked layers where key is the layer id
 typedef QHash<QString, QgsMaskedLayer> QgsMaskedLayers;
 
 #endif

@@ -272,7 +272,7 @@ bool QgsPGConnectionItem::handleDrop( const QMimeData *data, const QString &toSc
         geomColumn = srcLayer->dataProvider()->uri().geometryColumn();
       }
 
-      uri.setDataSource( QString(), u.name,  srcLayer->geometryType() != QgsWkbTypes::NullGeometry ? geomColumn : QString() );
+      uri.setDataSource( QString(), u.name,  srcLayer->geometryType() != Qgis::GeometryType::Null ? geomColumn : QString() );
 
       QgsDebugMsg( "URI " + uri.uri( false ) );
 
@@ -374,7 +374,7 @@ QString QgsPGLayerItem::createUri()
 
   uri.setDataSource( mLayerProperty.schemaName, mLayerProperty.tableName, mLayerProperty.geometryColName, mLayerProperty.sql, cols.join( ',' ) );
   uri.setWkbType( mLayerProperty.types.at( 0 ) );
-  if ( uri.wkbType() != QgsWkbTypes::NoGeometry && mLayerProperty.srids.at( 0 ) != std::numeric_limits<int>::min() )
+  if ( uri.wkbType() != Qgis::WkbType::NoGeometry && mLayerProperty.srids.at( 0 ) != std::numeric_limits<int>::min() )
     uri.setSrid( QString::number( mLayerProperty.srids.at( 0 ) ) );
 
   QgsDebugMsg( QStringLiteral( "layer uri: %1" ).arg( uri.uri( false ) ) );
@@ -455,7 +455,7 @@ QVector<QgsDataItem *> QgsPGSchemaItem::createChildren()
 
     if ( !layerProperty.geometryColName.isNull() &&
          !layerProperty.isRaster &&
-         ( layerProperty.types.value( 0, QgsWkbTypes::Unknown ) == QgsWkbTypes::Unknown  ||
+         ( layerProperty.types.value( 0, Qgis::WkbType::Unknown ) == Qgis::WkbType::Unknown  ||
            layerProperty.srids.value( 0, std::numeric_limits<int>::min() ) == std::numeric_limits<int>::min() ) )
     {
       if ( dontResolveType )
@@ -539,7 +539,7 @@ QgsPGLayerItem *QgsPGSchemaItem::createLayer( QgsPostgresLayerProperty layerProp
     tip = tr( "Table" );
   }
 
-  QgsWkbTypes::Type wkbType = layerProperty.types.at( 0 );
+  Qgis::WkbType wkbType = layerProperty.types.at( 0 );
   if ( ! layerProperty.isRaster )
   {
     tip += tr( "\n%1 as %2" ).arg( layerProperty.geometryColName, QgsPostgresConn::displayStringForWkbType( wkbType ) );
@@ -559,16 +559,16 @@ QgsPGLayerItem *QgsPGSchemaItem::createLayer( QgsPostgresLayerProperty layerProp
   Qgis::BrowserLayerType layerType = Qgis::BrowserLayerType::Raster;
   if ( ! layerProperty.isRaster )
   {
-    QgsWkbTypes::GeometryType geomType = QgsWkbTypes::geometryType( ( QgsWkbTypes::Type )wkbType );
+    Qgis::GeometryType geomType = QgsWkbTypes::geometryType( wkbType );
     switch ( geomType )
     {
-      case QgsWkbTypes::PointGeometry:
+      case Qgis::GeometryType::Point:
         layerType = Qgis::BrowserLayerType::Point;
         break;
-      case QgsWkbTypes::LineGeometry:
+      case Qgis::GeometryType::Line:
         layerType = Qgis::BrowserLayerType::Line;
         break;
-      case QgsWkbTypes::PolygonGeometry:
+      case Qgis::GeometryType::Polygon:
         layerType = Qgis::BrowserLayerType::Polygon;
         break;
       default:

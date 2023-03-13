@@ -49,7 +49,7 @@ class CORE_EXPORT QgsVectorLayerLabelProvider : public QgsAbstractLabelProvider
                                           const QString &layerName = QString() );
 
     //! Constructor to initialize the provider from any map layer (e.g. vector tile layer)
-    explicit QgsVectorLayerLabelProvider( QgsWkbTypes::GeometryType geometryType,
+    explicit QgsVectorLayerLabelProvider( Qgis::GeometryType geometryType,
                                           const QgsFields &fields,
                                           const QgsCoordinateReferenceSystem &crs,
                                           const QString &providerId,
@@ -128,7 +128,7 @@ class CORE_EXPORT QgsVectorLayerLabelProvider : public QgsAbstractLabelProvider
     //! Layer's labeling configuration
     QgsPalLayerSettings mSettings;
     //! Geometry type of layer
-    QgsWkbTypes::GeometryType mLayerGeometryType;
+    Qgis::GeometryType mLayerGeometryType;
 
     QgsFeatureRenderer *mRenderer = nullptr;
 

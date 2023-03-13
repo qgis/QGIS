@@ -118,7 +118,7 @@ class ANALYSIS_EXPORT QgsFeaturePool : public QgsFeatureSink SIP_ABSTRACT
     /**
      * The geometry type of this layer.
      */
-    QgsWkbTypes::GeometryType geometryType() const;
+    Qgis::GeometryType geometryType() const;
 
     /**
      * The coordinate reference system of this layer.
@@ -182,7 +182,7 @@ class ANALYSIS_EXPORT QgsFeaturePool : public QgsFeatureSink SIP_ABSTRACT
     mutable QReadWriteLock mCacheLock;
     QgsFeatureIds mFeatureIds;
     QgsSpatialIndex mIndex;
-    QgsWkbTypes::GeometryType mGeometryType;
+    Qgis::GeometryType mGeometryType;
     std::unique_ptr<QgsVectorLayerFeatureSource> mFeatureSource;
     QString mLayerName;
 };

@@ -249,7 +249,7 @@ Returns the topmost layout item at a specified ``position`` which is below a spe
 If ``ignoreLocked`` is set to ``True`` any locked items will be ignored.
 %End
 
-    void setUnits( QgsUnitTypes::LayoutUnit units );
+    void setUnits( Qgis::LayoutUnit units );
 %Docstring
 Sets the native measurement ``units`` for the layout. These also form the default unit
 for measurements for the layout.
@@ -259,7 +259,7 @@ for measurements for the layout.
 .. seealso:: :py:func:`convertToLayoutUnits`
 %End
 
-    QgsUnitTypes::LayoutUnit units() const;
+    Qgis::LayoutUnit units() const;
 %Docstring
 Returns the native units for the layout.
 
@@ -301,7 +301,7 @@ Converts a ``point`` into the layout's native units.
 .. seealso:: :py:func:`units`
 %End
 
-    QgsLayoutMeasurement convertFromLayoutUnits( double length, QgsUnitTypes::LayoutUnit unit ) const;
+    QgsLayoutMeasurement convertFromLayoutUnits( double length, Qgis::LayoutUnit unit ) const;
 %Docstring
 Converts a ``length`` measurement from the layout's native units to a specified target ``unit``.
 
@@ -312,7 +312,7 @@ Converts a ``length`` measurement from the layout's native units to a specified 
 .. seealso:: :py:func:`units`
 %End
 
-    QgsLayoutSize convertFromLayoutUnits( QSizeF size, QgsUnitTypes::LayoutUnit unit ) const;
+    QgsLayoutSize convertFromLayoutUnits( QSizeF size, Qgis::LayoutUnit unit ) const;
 %Docstring
 Converts a ``size`` from the layout's native units to a specified target ``unit``.
 
@@ -323,7 +323,7 @@ Converts a ``size`` from the layout's native units to a specified target ``unit`
 .. seealso:: :py:func:`units`
 %End
 
-    QgsLayoutPoint convertFromLayoutUnits( QPointF point, QgsUnitTypes::LayoutUnit unit ) const;
+    QgsLayoutPoint convertFromLayoutUnits( QPointF point, Qgis::LayoutUnit unit ) const;
 %Docstring
 Converts a ``point`` from the layout's native units to a specified target ``unit``.
 

@@ -17,6 +17,8 @@
 
 
 #include "qgsalgorithmrandompointsinpolygons.h"
+#include "qgsspatialindex.h"
+
 #include <random>
 
 // The algorithm parameter names:
@@ -189,7 +191,7 @@ QVariantMap QgsRandomPointsInPolygonsAlgorithm::processAlgorithm( const QVariant
 
   QString ldest;
   std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, OUTPUT,
-                                          context, ldest, fields, QgsWkbTypes::Point, polygonSource->sourceCrs() ) );
+                                          context, ldest, fields, Qgis::WkbType::Point, polygonSource->sourceCrs() ) );
   if ( !sink )
     throw QgsProcessingException( invalidSinkError( parameters, OUTPUT ) );
 

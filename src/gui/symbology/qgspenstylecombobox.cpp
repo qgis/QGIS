@@ -29,7 +29,7 @@ QgsPenStyleComboBox::QgsPenStyleComboBox( QWidget *parent )
 {
   QList < QPair<Qt::PenStyle, QString> > styles;
   styles << qMakePair( Qt::SolidLine, tr( "Solid Line" ) )
-         << qMakePair( Qt::NoPen, tr( "No Pen" ) )
+         << qMakePair( Qt::NoPen, tr( "No Line" ) )
          << qMakePair( Qt::DashLine, tr( "Dash Line" ) )
          << qMakePair( Qt::DotLine, tr( "Dot Line" ) )
          << qMakePair( Qt::DashDotLine, tr( "Dash Dot Line" ) )

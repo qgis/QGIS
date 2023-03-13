@@ -101,7 +101,7 @@ class QgsAnnotationLayerSpatialIndex : public RTree<QString, float, 2, float>
 ///@endcond
 
 QgsAnnotationLayer::QgsAnnotationLayer( const QString &name, const LayerOptions &options )
-  : QgsMapLayer( QgsMapLayerType::AnnotationLayer, name )
+  : QgsMapLayer( Qgis::LayerType::Annotation, name )
   , mTransformContext( options.transformContext )
   , mSpatialIndex( std::make_unique< QgsAnnotationLayerSpatialIndex >() )
 {
@@ -398,7 +398,7 @@ bool QgsAnnotationLayer::writeXml( QDomNode &layer_node, QDomDocument &doc, cons
     return false;
   }
 
-  mapLayerNode.setAttribute( QStringLiteral( "type" ), QgsMapLayerFactory::typeToString( QgsMapLayerType::AnnotationLayer ) );
+  mapLayerNode.setAttribute( QStringLiteral( "type" ), QgsMapLayerFactory::typeToString( Qgis::LayerType::Annotation ) );
 
   QString errorMsg;
   writeItems( layer_node, doc, errorMsg, context );

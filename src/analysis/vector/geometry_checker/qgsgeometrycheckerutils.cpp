@@ -209,7 +209,7 @@ bool QgsGeometryCheckerUtils::LayerFeatures::iterator::nextFeature( bool begin )
 
 QgsGeometryCheckerUtils::LayerFeatures::LayerFeatures( const QMap<QString, QgsFeaturePool *> &featurePools,
     const QMap<QString, QgsFeatureIds> &featureIds,
-    const QList<QgsWkbTypes::GeometryType> &geometryTypes,
+    const QList<Qgis::GeometryType> &geometryTypes,
     QgsFeedback *feedback,
     const QgsGeometryCheckContext *context,
     bool useMapCrs )
@@ -224,7 +224,7 @@ QgsGeometryCheckerUtils::LayerFeatures::LayerFeatures( const QMap<QString, QgsFe
 
 QgsGeometryCheckerUtils::LayerFeatures::LayerFeatures( const QMap<QString, QgsFeaturePool *> &featurePools,
     const QList<QString> &layerIds, const QgsRectangle &extent,
-    const QList<QgsWkbTypes::GeometryType> &geometryTypes,
+    const QList<Qgis::GeometryType> &geometryTypes,
     const QgsGeometryCheckContext *context )
   : mFeaturePools( featurePools )
   , mLayerIds( layerIds )

@@ -386,7 +386,7 @@ void Qgs3DMapCanvasWidget::setMainCanvas( QgsMapCanvas *canvas )
 
   if ( mViewFrustumHighlight )
     delete mViewFrustumHighlight;
-  mViewFrustumHighlight = new QgsRubberBand( canvas, QgsWkbTypes::PolygonGeometry );
+  mViewFrustumHighlight = new QgsRubberBand( canvas, Qgis::GeometryType::Polygon );
   mViewFrustumHighlight->setColor( QColor::fromRgba( qRgba( 0, 0, 255, 50 ) ) );
 }
 
@@ -610,7 +610,7 @@ void Qgs3DMapCanvasWidget::onViewed2DExtentFrom3DChanged( QVector<QgsPointXY> ex
 
 void Qgs3DMapCanvasWidget::onViewFrustumVisualizationEnabledChanged()
 {
-  mViewFrustumHighlight->reset( QgsWkbTypes::PolygonGeometry );
+  mViewFrustumHighlight->reset( Qgis::GeometryType::Polygon );
   if ( mCanvas->map()->viewFrustumVisualizationEnabled() )
   {
     for ( QgsPointXY &pt : mCanvas->viewFrustum2DExtent() )

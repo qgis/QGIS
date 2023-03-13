@@ -25,25 +25,19 @@
 
 #include "qgscoordinatereferencesystem.h"
 #include "qgsmaplayerref.h"
-#include "qgsmesh3dsymbol.h"
 #include "qgsphongmaterialsettings.h"
-#include "qgspointlightsettings.h"
-#include "qgsdirectionallightsettings.h"
 #include "qgsterraingenerator.h"
 #include "qgsvector3d.h"
 #include "qgs3daxissettings.h"
 #include "qgsskyboxsettings.h"
 #include "qgsshadowsettings.h"
-#include "qgscameracontroller.h"
 #include "qgstemporalrangeobject.h"
 #include "qgsambientocclusionsettings.h"
 
 class QgsMapLayer;
 class QgsRasterLayer;
-
+class QgsLightSource;
 class QgsAbstract3DRenderer;
-
-
 class QgsReadWriteContext;
 class QgsProject;
 
@@ -500,13 +494,13 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
      * Returns the navigation mode used by the camera
      * \since QGIS 3.18
      */
-    QgsCameraController::NavigationMode cameraNavigationMode() const { return mCameraNavigationMode; }
+    Qgis::NavigationMode cameraNavigationMode() const { return mCameraNavigationMode; }
 
     /**
      * Sets the navigation mode for the camera
      * \since QGIS 3.18
      */
-    void setCameraNavigationMode( QgsCameraController::NavigationMode navigationMode );
+    void setCameraNavigationMode( Qgis::NavigationMode navigationMode );
 #endif
 
     /**
@@ -926,7 +920,7 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     QList< QgsLightSource * > mLightSources; //!< List of light sources in the scene (owned by the settings)
     float mFieldOfView = 45.0f; //<! Camera lens field of view value
     Qt3DRender::QCameraLens::ProjectionType mProjectionType = Qt3DRender::QCameraLens::PerspectiveProjection;  //<! Camera lens projection type
-    QgsCameraController::NavigationMode mCameraNavigationMode = QgsCameraController::NavigationMode::TerrainBasedNavigation;
+    Qgis::NavigationMode mCameraNavigationMode = Qgis::NavigationMode::TerrainBased;
     double mCameraMovementSpeed = 5.0;
     QList<QgsMapLayerRef> mLayers;   //!< Layers to be rendered
     QList<QgsAbstract3DRenderer *> mRenderers;  //!< Extra stuff to render as 3D object

@@ -55,7 +55,7 @@ bool QgsProcessingParameterTinInputLayers::checkValueIsAcceptable( const QVarian
       continue;  // when called without context, we will skip checking whether the layer can be resolved
 
     QgsMapLayer *mapLayer = QgsProcessingUtils::mapLayerFromString( layerMap.value( QStringLiteral( "source" ) ).toString(), *context );
-    if ( !mapLayer || mapLayer->type() != QgsMapLayerType::VectorLayer )
+    if ( !mapLayer || mapLayer->type() != Qgis::LayerType::Vector )
       return false;
 
     QgsVectorLayer *vectorLayer = static_cast<QgsVectorLayer *>( mapLayer );

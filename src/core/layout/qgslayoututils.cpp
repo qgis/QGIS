@@ -22,6 +22,7 @@
 #include "qgsprojectviewsettings.h"
 #include "qgsrendercontext.h"
 #include "qgssettings.h"
+#include "qgslayoutrendercontext.h"
 
 #include <QStyleOptionGraphicsItem>
 #include <QPainter>
@@ -127,7 +128,7 @@ QgsRenderContext QgsLayoutUtils::createRenderContextForMap( QgsLayoutItemMap *ma
     // get map settings from reference map
     QgsRectangle extent = map->extent();
     QSizeF mapSizeLayoutUnits = map->rect().size();
-    QSizeF mapSizeMM = map->layout()->convertFromLayoutUnits( mapSizeLayoutUnits, QgsUnitTypes::LayoutMillimeters ).toQSizeF();
+    QSizeF mapSizeMM = map->layout()->convertFromLayoutUnits( mapSizeLayoutUnits, Qgis::LayoutUnit::Millimeters ).toQSizeF();
     QgsMapSettings ms = map->mapSettings( extent, mapSizeMM * dotsPerMM, dpi, false );
     QgsRenderContext context = QgsRenderContext::fromMapSettings( ms );
     if ( painter )

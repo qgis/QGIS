@@ -159,7 +159,7 @@ class CORE_EXPORT QgsVectorLayerProfileGenerator : public QgsAbstractProfileSurf
     QgsFields mFields;
     QgsPropertyCollection mDataDefinedProperties;
 
-    QgsWkbTypes::Type mWkbType = QgsWkbTypes::Unknown;
+    Qgis::WkbType mWkbType = Qgis::WkbType::Unknown;
     QgsCoordinateTransform mLayerToTargetTransform;
     QgsCoordinateTransform mTargetToTerrainProviderTransform;
 

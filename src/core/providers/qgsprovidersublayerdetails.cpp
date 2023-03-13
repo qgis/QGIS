@@ -32,29 +32,29 @@ QgsMimeDataUtils::Uri QgsProviderSublayerDetails::toMimeUri() const
   QgsMimeDataUtils::Uri u;
   switch ( mType )
   {
-    case QgsMapLayerType::VectorLayer:
+    case Qgis::LayerType::Vector:
       u.layerType = QStringLiteral( "vector" );
       u.wkbType = mWkbType;
       break;
-    case QgsMapLayerType::RasterLayer:
+    case Qgis::LayerType::Raster:
       u.layerType = QStringLiteral( "raster" );
       break;
-    case QgsMapLayerType::MeshLayer:
+    case Qgis::LayerType::Mesh:
       u.layerType = QStringLiteral( "mesh" );
       break;
-    case QgsMapLayerType::VectorTileLayer:
+    case Qgis::LayerType::VectorTile:
       u.layerType = QStringLiteral( "vector-tile" );
       break;
-    case QgsMapLayerType::PointCloudLayer:
+    case Qgis::LayerType::PointCloud:
       u.layerType = QStringLiteral( "pointcloud" );
       break;
-    case QgsMapLayerType::PluginLayer:
+    case Qgis::LayerType::Plugin:
       u.layerType = QStringLiteral( "plugin" );
       break;
-    case QgsMapLayerType::GroupLayer:
+    case Qgis::LayerType::Group:
       u.layerType = QStringLiteral( "group" );
       break;
-    case QgsMapLayerType::AnnotationLayer:
+    case Qgis::LayerType::Annotation:
       u.layerType = QStringLiteral( "annotation" );
       break;
   }

@@ -33,17 +33,17 @@ for use in QGIS layouts. Measurement units are stored alongside the position.
 %End
   public:
 
-    QgsLayoutPoint( double x, double y, QgsUnitTypes::LayoutUnit units = QgsUnitTypes::LayoutMillimeters );
+    QgsLayoutPoint( double x, double y, Qgis::LayoutUnit units = Qgis::LayoutUnit::Millimeters );
 %Docstring
 Constructor for QgsLayoutPoint.
 %End
 
-    explicit QgsLayoutPoint( QPointF point, QgsUnitTypes::LayoutUnit units = QgsUnitTypes::LayoutMillimeters );
+    explicit QgsLayoutPoint( QPointF point, Qgis::LayoutUnit units = Qgis::LayoutUnit::Millimeters );
 %Docstring
 Constructor for QgsLayoutPoint.
 %End
 
-    explicit QgsLayoutPoint( QgsUnitTypes::LayoutUnit units = QgsUnitTypes::LayoutMillimeters );
+    explicit QgsLayoutPoint( Qgis::LayoutUnit units = Qgis::LayoutUnit::Millimeters );
 %Docstring
 Constructor for an empty point, where both x and y are set to 0.
 
@@ -97,14 +97,14 @@ Sets y coordinate of point.
 .. seealso:: :py:func:`setX`
 %End
 
-    QgsUnitTypes::LayoutUnit units() const;
+    Qgis::LayoutUnit units() const;
 %Docstring
 Returns the units for the point.
 
 .. seealso:: :py:func:`setUnits`
 %End
 
-    void setUnits( const QgsUnitTypes::LayoutUnit units );
+    void setUnits( const Qgis::LayoutUnit units );
 %Docstring
 Sets the ``units`` for the point. Does not alter the stored coordinates,
 ie. no conversion is done.

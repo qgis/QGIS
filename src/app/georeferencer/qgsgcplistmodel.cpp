@@ -19,7 +19,6 @@
 #include "qgsgeorefdatapoint.h"
 #include "qgsgeoreftransform.h"
 #include "qgssettings.h"
-#include "qgsproject.h"
 
 #include <cmath>
 
@@ -336,19 +335,19 @@ QVariant QgsGCPListModel::headerData( int section, Qt::Orientation orientation, 
           QString residualUnitType;
           switch ( residualUnit() )
           {
-            case QgsUnitTypes::RenderMapUnits:
+            case Qgis::RenderUnit::MapUnits:
               residualUnitType = tr( "map units" );
               break;
-            case QgsUnitTypes::RenderPixels:
+            case Qgis::RenderUnit::Pixels:
               residualUnitType = tr( "pixels" );
               break;
 
-            case QgsUnitTypes::RenderMillimeters:
-            case QgsUnitTypes::RenderPercentage:
-            case QgsUnitTypes::RenderPoints:
-            case QgsUnitTypes::RenderInches:
-            case QgsUnitTypes::RenderUnknownUnit:
-            case QgsUnitTypes::RenderMetersInMapUnits:
+            case Qgis::RenderUnit::Millimeters:
+            case Qgis::RenderUnit::Percentage:
+            case Qgis::RenderUnit::Points:
+            case Qgis::RenderUnit::Inches:
+            case Qgis::RenderUnit::Unknown:
+            case Qgis::RenderUnit::MetersInMapUnits:
               break;
           }
 
@@ -404,7 +403,7 @@ QVariant QgsGCPListModel::headerData( int section, Qt::Orientation orientation, 
   return QVariant();
 }
 
-QgsUnitTypes::RenderUnit QgsGCPListModel::residualUnit() const
+Qgis::RenderUnit QgsGCPListModel::residualUnit() const
 {
   bool mapUnitsPossible = false;
   if ( mGeorefTransform )
@@ -414,11 +413,11 @@ QgsUnitTypes::RenderUnit QgsGCPListModel::residualUnit() const
 
   if ( mapUnitsPossible && QgsSettings().value( QStringLiteral( "/Plugin-GeoReferencer/Config/ResidualUnits" ) ) == "mapUnits" )
   {
-    return QgsUnitTypes::RenderUnit::RenderMapUnits;
+    return Qgis::RenderUnit::MapUnits;
   }
   else
   {
-    return QgsUnitTypes::RenderUnit::RenderPixels;
+    return Qgis::RenderUnit::Pixels;
   }
 }
 

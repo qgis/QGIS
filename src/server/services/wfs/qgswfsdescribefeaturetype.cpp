@@ -164,11 +164,13 @@ namespace QgsWfs
                                     QgsDateTimeFieldFormatter::defaultFormat( field.type() )
                                   ).toString();
       // Define type from field format
-      if ( fieldFormat == QgsDateTimeFieldFormatter::TIME_FORMAT ) // const TIME_FORMAT
+      if ( fieldFormat == QgsDateTimeFieldFormatter::TIME_FORMAT ) // const QgsDateTimeFieldFormatter::TIME_FORMAT
         fieldType = QStringLiteral( "time" );
-      else if ( fieldFormat == QLatin1String( "yyyy-MM-dd" ) ) // QgsDateTimeFieldFormatter provide a local date format
+      else if ( fieldFormat == QgsDateTimeFieldFormatter::DATE_FORMAT ) // const QgsDateTimeFieldFormatter::DATE_FORMAT since QGIS 3.30
         fieldType = QStringLiteral( "date" );
-      else
+      else if ( fieldFormat == QgsDateTimeFieldFormatter::DATETIME_FORMAT ) // const QgsDateTimeFieldFormatter::DATETIME_FORMAT since QGIS 3.30
+        fieldType = QStringLiteral( "dateTime" );
+      else if ( fieldFormat == QgsDateTimeFieldFormatter::QT_ISO_FORMAT )
         fieldType = QStringLiteral( "dateTime" );
     }
     else if ( setup.type() ==  QStringLiteral( "Range" ) )

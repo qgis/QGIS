@@ -201,7 +201,7 @@ class CORE_EXPORT QgsTransaction : public QObject SIP_ABSTRACT
 
     void setLayerTransactionIds( QgsTransaction *transaction );
 
-    static QString removeLayerIdOrName( const QString &str );
+    static QString cleanupConnectionString( const QString &str );
 
     virtual bool beginTransaction( QString &error, int statementTimeout ) = 0;
     virtual bool commitTransaction( QString &error ) = 0;

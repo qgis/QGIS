@@ -34,7 +34,6 @@
 #include "qgshanautils.h"
 #include "qgshanadataitems.h"
 #include "qgslogger.h"
-#include "qgsmessagelog.h"
 #include "qgsrectangle.h"
 
 #include <QtGlobal>
@@ -466,9 +465,9 @@ void QgsHanaProvider::updateExtents()
   mLayerExtent.setMinimal();
 }
 
-QgsWkbTypes::Type QgsHanaProvider::wkbType() const
+Qgis::WkbType QgsHanaProvider::wkbType() const
 {
-  return mRequestedGeometryType != QgsWkbTypes::Unknown ? mRequestedGeometryType : mDetectedGeometryType;
+  return mRequestedGeometryType != Qgis::WkbType::Unknown ? mRequestedGeometryType : mDetectedGeometryType;
 }
 
 QgsLayerMetadata QgsHanaProvider::layerMetadata() const
@@ -1428,7 +1427,7 @@ void QgsHanaProvider::readGeometryType( QgsHanaConnection &conn )
 {
   if ( mGeometryColumn.isNull() || mGeometryColumn.isEmpty() )
   {
-    mDetectedGeometryType = QgsWkbTypes::NoGeometry;
+    mDetectedGeometryType = Qgis::WkbType::NoGeometry;
     return;
   }
 
@@ -1588,16 +1587,15 @@ QgsCoordinateReferenceSystem QgsHanaProvider::crs() const
   return srs;
 }
 
-Qgis::VectorExportResult QgsHanaProvider::createEmptyLayer(
-  const QString &uri,
-  const QgsFields &fields,
-  QgsWkbTypes::Type wkbType,
-  const QgsCoordinateReferenceSystem &srs,
-  bool overwrite,
-  QMap<int, int> *oldToNewAttrIdxMap,
-  QString *errorMessage,
-  const QMap<QString, QVariant> *
-)
+Qgis::VectorExportResult QgsHanaProvider::createEmptyLayer( const QString &uri,
+    const QgsFields &fields,
+    Qgis::WkbType wkbType,
+    const QgsCoordinateReferenceSystem &srs,
+    bool overwrite,
+    QMap<int, int> *oldToNewAttrIdxMap,
+    QString *errorMessage,
+    const QMap<QString, QVariant> *
+                                                          )
 {
   QgsDataSourceUri dsUri( uri );
   QgsHanaConnectionRef conn( dsUri );
@@ -1618,7 +1616,7 @@ Qgis::VectorExportResult QgsHanaProvider::createEmptyLayer(
     return Qgis::VectorExportResult::ErrorCreatingLayer;
   }
 
-  if ( wkbType != QgsWkbTypes::Unknown && wkbType != QgsWkbTypes::NoGeometry &&
+  if ( wkbType != Qgis::WkbType::Unknown && wkbType != Qgis::WkbType::NoGeometry &&
        !QgsHanaUtils::isGeometryTypeSupported( wkbType ) )
   {
     if ( errorMessage )
@@ -1637,7 +1635,7 @@ Qgis::VectorExportResult QgsHanaProvider::createEmptyLayer(
     fieldsInUpperCase = count > fields.size() / 2;
   }
 
-  if ( wkbType != QgsWkbTypes::NoGeometry && geometryColumn.isEmpty() )
+  if ( wkbType != Qgis::WkbType::NoGeometry && geometryColumn.isEmpty() )
     geometryColumn = fieldsInUpperCase ? QStringLiteral( "GEOM" ) : QStringLiteral( "geom" );
 
   QString keyColumn = !dsUri.keyColumn().isEmpty() ? dsUri.keyColumn() : ( fieldsInUpperCase ? QStringLiteral( "ID" ) : QStringLiteral( "id" ) );
@@ -1816,15 +1814,14 @@ QList< QgsDataItemProvider *> QgsHanaProviderMetadata::dataItemProviders() const
   return providers;
 }
 
-Qgis::VectorExportResult QgsHanaProviderMetadata::createEmptyLayer(
-  const QString &uri,
-  const QgsFields &fields,
-  QgsWkbTypes::Type wkbType,
-  const QgsCoordinateReferenceSystem &srs,
-  bool overwrite,
-  QMap<int, int> &oldToNewAttrIdxMap,
-  QString &errorMessage,
-  const QMap<QString, QVariant> *options )
+Qgis::VectorExportResult QgsHanaProviderMetadata::createEmptyLayer( const QString &uri,
+    const QgsFields &fields,
+    Qgis::WkbType wkbType,
+    const QgsCoordinateReferenceSystem &srs,
+    bool overwrite,
+    QMap<int, int> &oldToNewAttrIdxMap,
+    QString &errorMessage,
+    const QMap<QString, QVariant> *options )
 {
   return QgsHanaProvider::createEmptyLayer(
            uri, fields, wkbType, srs, overwrite,
@@ -1887,8 +1884,8 @@ QVariantMap QgsHanaProviderMetadata::decodeUri( const QString &uri ) const
     uriParts[ QStringLiteral( "password" ) ] = dsUri.password();
   if ( ! dsUri.authConfigId().isEmpty() )
     uriParts[ QStringLiteral( "authcfg" ) ] = dsUri.authConfigId();
-  if ( dsUri.wkbType() != QgsWkbTypes::Type::Unknown )
-    uriParts[ QStringLiteral( "type" ) ] = dsUri.wkbType();
+  if ( dsUri.wkbType() != Qgis::WkbType::Unknown )
+    uriParts[ QStringLiteral( "type" ) ] = static_cast< quint32>( dsUri.wkbType() );
   if ( ! dsUri.schema().isEmpty() )
     uriParts[ QStringLiteral( "schema" ) ] = dsUri.schema();
   if ( ! dsUri.table().isEmpty() )
@@ -1948,7 +1945,7 @@ QString QgsHanaProviderMetadata::encodeUri( const QVariantMap &parts ) const
   if ( parts.contains( QStringLiteral( "authcfg" ) ) )
     dsUri.setAuthConfigId( parts.value( QStringLiteral( "authcfg" ) ).toString() );
   if ( parts.contains( QStringLiteral( "type" ) ) )
-    dsUri.setParam( QStringLiteral( "type" ), QgsWkbTypes::displayString( static_cast<QgsWkbTypes::Type>( parts.value( QStringLiteral( "type" ) ).toInt() ) ) );
+    dsUri.setParam( QStringLiteral( "type" ), QgsWkbTypes::displayString( static_cast<Qgis::WkbType>( parts.value( QStringLiteral( "type" ) ).toInt() ) ) );
   if ( parts.contains( QStringLiteral( "schema" ) ) )
     dsUri.setSchema( parts.value( QStringLiteral( "schema" ) ).toString() );
   if ( parts.contains( QStringLiteral( "table" ) ) )
@@ -1987,9 +1984,9 @@ QGISEXTERN QgsProviderMetadata *providerMetadataFactory()
   return new QgsHanaProviderMetadata();
 }
 
-QList<QgsMapLayerType> QgsHanaProviderMetadata::supportedLayerTypes() const
+QList<Qgis::LayerType> QgsHanaProviderMetadata::supportedLayerTypes() const
 {
-  return { QgsMapLayerType::VectorLayer };
+  return { Qgis::LayerType::Vector };
 }
 
 QIcon QgsHanaProviderMetadata::icon() const

@@ -22,13 +22,7 @@
 #include "qgscompositionconverter.h"
 #include "qgsproject.h"
 #include "qgsreadwritecontext.h"
-#include "qgslayoutexporter.h"
 #include "qgsmultirenderchecker.h"
-#include "qgssettings.h"
-
-#include "qgsmultibandcolorrenderer.h"
-#include "qgsrasterlayer.h"
-
 #include "qgslayoutmanager.h"
 #include "qgslayoutpagecollection.h"
 #include "qgslayoutitemlabel.h"
@@ -43,7 +37,7 @@
 #include "qgslayoutatlas.h"
 #include "qgslayoutitemhtml.h"
 #include "qgslayoutitemattributetable.h"
-
+#include "qgslayoutrendercontext.h"
 
 // Debug output for dom nodes
 QDebug operator<<( QDebug dbg, const QDomNode &node )
@@ -235,7 +229,7 @@ void TestQgsCompositionConverter::importComposerTemplateShape()
   QCOMPARE( shape->pos().y(), 83.1791 );
   QCOMPARE( shape->sizeWithUnits().width(), 12.0988 );
   QCOMPARE( shape->sizeWithUnits().height(), 33.2716 );
-  QCOMPARE( shape->sizeWithUnits().units(), QgsUnitTypes::LayoutUnit::LayoutMillimeters );
+  QCOMPARE( shape->sizeWithUnits().units(), Qgis::LayoutUnit::Millimeters );
   QCOMPARE( shape->referencePoint(), QgsLayoutItem::ReferencePoint::MiddleRight );
   QCOMPARE( shape->frameStrokeColor(), QColor( 0, 0, 0, 255 ) );
   QCOMPARE( shape->frameStrokeWidth().length(), 0.3 );

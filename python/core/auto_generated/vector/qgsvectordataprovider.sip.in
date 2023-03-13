@@ -107,7 +107,7 @@ Query the provider for features specified in request.
 :return: iterator for matching features from provider
 %End
 
-    virtual QgsWkbTypes::Type wkbType() const = 0;
+    virtual Qgis::WkbType wkbType() const = 0;
 
 %Docstring
 Returns the geometry type which is returned by this layer

@@ -337,7 +337,7 @@ Returns the space between pages, in layout units.
 Returns the size of the page shadow, in layout units.
 %End
 
-    void resizeToContents( const QgsMargins &margins, QgsUnitTypes::LayoutUnit marginUnits );
+    void resizeToContents( const QgsMargins &margins, Qgis::LayoutUnit marginUnits );
 %Docstring
 Resizes the layout to a single page which fits the current contents of the layout.
 

@@ -31,6 +31,7 @@ class QgsLayerTreeNode;
 class QgsLayerTreeGroup;
 class QgsLayerTreeLayer;
 class QgsMapHitTest;
+class QgsMapHitTestTask;
 class QgsMapSettings;
 class QgsExpression;
 class QgsRenderContext;
@@ -107,6 +108,7 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
       AllowNodeChangeVisibility  = 0x4000,  //!< Allow user to set node visibility with a checkbox
       AllowLegendChangeState     = 0x8000,  //!< Allow check boxes for legend nodes (if supported by layer's legend)
       ActionHierarchical         = 0x10000, //!< Check/uncheck action has consequences on children (or parents for leaf node)
+      UseThreadedHitTest         = 0x20000, //!< Run legend hit tests in a background thread (since QGIS 3.30)
     };
     Q_DECLARE_FLAGS( Flags, Flag )
 
@@ -463,8 +465,11 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
     //! scale denominator for filtering of legend nodes (<= 0 means no filtering)
     double mLegendFilterByScale;
 
+    QPointer< QgsMapHitTestTask > mHitTestTask;
+
+    bool mUseHitTest = false;
+    QMap<QString, QSet<QString>> mHitTestResults;
     std::unique_ptr<QgsMapSettings> mLegendFilterMapSettings;
-    std::unique_ptr<QgsMapHitTest> mLegendFilterHitTest;
 
     //! whether to use map filtering
     bool mLegendFilterUsesExtent;
@@ -476,8 +481,10 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
 
   private slots:
     void legendNodeSizeChanged();
+    void hitTestTaskCompleted();
 
   private:
+    void handleHitTestResults();
 
 
 };

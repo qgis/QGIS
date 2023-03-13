@@ -20,8 +20,8 @@
 #include "qgis_core.h"
 #include "qgspainteffect.h"
 #include "qgis_sip.h"
-#include "qgsunittypes.h"
 #include "qgsmapunitscale.h"
+#include "qgis.h"
 
 #include <QPainter>
 
@@ -71,7 +71,7 @@ class CORE_EXPORT QgsShadowEffect : public QgsPaintEffect SIP_NODEFAULTCTORS
      * \see setBlurMapUnitScale
      * \since QGIS 3.4.9
      */
-    void setBlurUnit( const QgsUnitTypes::RenderUnit unit ) { mBlurUnit = unit; }
+    void setBlurUnit( const Qgis::RenderUnit unit ) { mBlurUnit = unit; }
 
     /**
      * Returns the units used for the shadow blur level (radius).
@@ -81,7 +81,7 @@ class CORE_EXPORT QgsShadowEffect : public QgsPaintEffect SIP_NODEFAULTCTORS
      * \see blurMapUnitScale
      * \since QGIS 3.4.9
      */
-    QgsUnitTypes::RenderUnit blurUnit() const { return mBlurUnit; }
+    Qgis::RenderUnit blurUnit() const { return mBlurUnit; }
 
     /**
      * Sets the map unit scale used for the shadow blur strength (radius).
@@ -144,7 +144,7 @@ class CORE_EXPORT QgsShadowEffect : public QgsPaintEffect SIP_NODEFAULTCTORS
      * \see setOffsetDistance
      * \see setOffsetMapUnitScale
      */
-    void setOffsetUnit( const QgsUnitTypes::RenderUnit unit ) { mOffsetUnit = unit; }
+    void setOffsetUnit( const Qgis::RenderUnit unit ) { mOffsetUnit = unit; }
 
     /**
      * Returns the units used for the shadow offset distance.
@@ -153,7 +153,7 @@ class CORE_EXPORT QgsShadowEffect : public QgsPaintEffect SIP_NODEFAULTCTORS
      * \see offsetDistance
      * \see offsetMapUnitScale
      */
-    QgsUnitTypes::RenderUnit offsetUnit() const { return mOffsetUnit; }
+    Qgis::RenderUnit offsetUnit() const { return mOffsetUnit; }
 
     /**
      * Sets the map unit scale used for the shadow offset distance.
@@ -233,11 +233,11 @@ class CORE_EXPORT QgsShadowEffect : public QgsPaintEffect SIP_NODEFAULTCTORS
     virtual bool exteriorShadow() const = 0;
 
     double mBlurLevel = 2.645;
-    QgsUnitTypes::RenderUnit mBlurUnit = QgsUnitTypes::RenderMillimeters;
+    Qgis::RenderUnit mBlurUnit = Qgis::RenderUnit::Millimeters;
     QgsMapUnitScale mBlurMapUnitScale;
     int mOffsetAngle = 135;
     double mOffsetDist = 2.0;
-    QgsUnitTypes::RenderUnit mOffsetUnit = QgsUnitTypes::RenderMillimeters;
+    Qgis::RenderUnit mOffsetUnit = Qgis::RenderUnit::Millimeters;
     QgsMapUnitScale mOffsetMapUnitScale;
     double mOpacity = 1.0;
     QColor mColor;

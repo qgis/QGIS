@@ -123,7 +123,7 @@ void addLayerItems( QVector< QgsDataItem * > &items, const QVariantMap &serviceD
   QMultiMap< QString, QgsDataItem * > layerItems;
   QMap< QString, QString > parents;
 
-  QgsArcGisRestQueryUtils::addLayerItems( [parent, &layerItems, &parents, authcfg, headers, serviceTypeFilter, supportedFormats]( const QString & parentLayerId, QgsArcGisRestQueryUtils::ServiceTypeFilter serviceType, QgsWkbTypes::GeometryType geometryType, const QString & id, const QString & name, const QString & description, const QString & url, bool isParent, const QString & authid, const QString & format )
+  QgsArcGisRestQueryUtils::addLayerItems( [parent, &layerItems, &parents, authcfg, headers, serviceTypeFilter, supportedFormats]( const QString & parentLayerId, QgsArcGisRestQueryUtils::ServiceTypeFilter serviceType, Qgis::GeometryType geometryType, const QString & id, const QString & name, const QString & description, const QString & url, bool isParent, const QString & authid, const QString & format )
   {
     Q_UNUSED( description )
 
@@ -144,9 +144,9 @@ void addLayerItems( QVector< QgsDataItem * > &items, const QVariantMap &serviceD
       switch ( serviceTypeFilter == QgsArcGisRestQueryUtils::ServiceTypeFilter::AllTypes ? serviceType : serviceTypeFilter )
       {
         case QgsArcGisRestQueryUtils::ServiceTypeFilter::Vector:
-          layerItem = std::make_unique< QgsArcGisFeatureServiceLayerItem >( parent, name, url, name, authid, authcfg, headers, geometryType == QgsWkbTypes::PolygonGeometry ? Qgis::BrowserLayerType::Polygon :
-                      geometryType == QgsWkbTypes::LineGeometry ? Qgis::BrowserLayerType::Line
-                      : geometryType == QgsWkbTypes::PointGeometry ? Qgis::BrowserLayerType::Point : Qgis::BrowserLayerType::Vector );
+          layerItem = std::make_unique< QgsArcGisFeatureServiceLayerItem >( parent, name, url, name, authid, authcfg, headers, geometryType == Qgis::GeometryType::Polygon ? Qgis::BrowserLayerType::Polygon :
+                      geometryType == Qgis::GeometryType::Line ? Qgis::BrowserLayerType::Line
+                      : geometryType == Qgis::GeometryType::Point ? Qgis::BrowserLayerType::Point : Qgis::BrowserLayerType::Vector );
           break;
 
         case QgsArcGisRestQueryUtils::ServiceTypeFilter::Raster:

@@ -15,14 +15,12 @@
  ***************************************************************************/
 
 #include "qgslayoutpolygonwidget.h"
-#include "qgssymbolselectordialog.h"
-#include "qgsstyle.h"
 #include "qgslayout.h"
-#include "qgssymbollayerutils.h"
 #include "qgslayoutitemregistry.h"
 #include "qgslayoutundostack.h"
 #include "qgsvectorlayer.h"
 #include "qgsfillsymbol.h"
+#include "qgslayoutreportcontext.h"
 
 QgsLayoutPolygonWidget::QgsLayoutPolygonWidget( QgsLayoutItemPolygon *polygon )
   : QgsLayoutItemBaseWidget( nullptr, polygon )

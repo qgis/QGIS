@@ -288,11 +288,11 @@ void TestQgsGdalUtils::testPathIsCheapToOpen()
 
 void TestQgsGdalUtils::testVrtMatchesLayerType()
 {
-  QVERIFY( QgsGdalUtils::vrtMatchesLayerType( QStringLiteral( TEST_DATA_DIR ) + "/raster/hub13263.vrt", QgsMapLayerType::RasterLayer ) );
-  QVERIFY( !QgsGdalUtils::vrtMatchesLayerType( QStringLiteral( TEST_DATA_DIR ) + "/raster/hub13263.vrt", QgsMapLayerType::VectorLayer ) );
+  QVERIFY( QgsGdalUtils::vrtMatchesLayerType( QStringLiteral( TEST_DATA_DIR ) + "/raster/hub13263.vrt", Qgis::LayerType::Raster ) );
+  QVERIFY( !QgsGdalUtils::vrtMatchesLayerType( QStringLiteral( TEST_DATA_DIR ) + "/raster/hub13263.vrt", Qgis::LayerType::Vector ) );
 
-  QVERIFY( !QgsGdalUtils::vrtMatchesLayerType( QStringLiteral( TEST_DATA_DIR ) + "/vector_vrt.vrt", QgsMapLayerType::RasterLayer ) );
-  QVERIFY( QgsGdalUtils::vrtMatchesLayerType( QStringLiteral( TEST_DATA_DIR ) + "/vector_vrt.vrt", QgsMapLayerType::VectorLayer ) );
+  QVERIFY( !QgsGdalUtils::vrtMatchesLayerType( QStringLiteral( TEST_DATA_DIR ) + "/vector_vrt.vrt", Qgis::LayerType::Raster ) );
+  QVERIFY( QgsGdalUtils::vrtMatchesLayerType( QStringLiteral( TEST_DATA_DIR ) + "/vector_vrt.vrt", Qgis::LayerType::Vector ) );
 }
 
 void TestQgsGdalUtils::testMultilayerExtensions()

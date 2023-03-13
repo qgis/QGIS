@@ -18,8 +18,6 @@
 
 #include "qgsmaptool.h"
 #include "qgis_gui.h"
-#include "qgspointxy.h"
-#include "qgsdistancearea.h"
 
 class QgsMapCanvas;
 
@@ -67,7 +65,7 @@ class GUI_EXPORT QgsMapToolPan : public QgsMapTool
      *
      * \since QGIS 3.12
      */
-    void panDistanceBearingChanged( double distance, QgsUnitTypes::DistanceUnit unit, double bearing );
+    void panDistanceBearingChanged( double distance, Qgis::DistanceUnit unit, double bearing );
 
   private:
 

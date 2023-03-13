@@ -318,7 +318,7 @@ class CORE_EXPORT QgsOgrUtils
      *
      * \since QGIS 3.4.9
      */
-    static QgsWkbTypes::Type ogrGeometryTypeToQgsWkbType( OGRwkbGeometryType ogrGeomType );
+    static Qgis::WkbType ogrGeometryTypeToQgsWkbType( OGRwkbGeometryType ogrGeomType );
 
     /**
      * Returns a WKT string corresponding to the specified OGR \a srs object.

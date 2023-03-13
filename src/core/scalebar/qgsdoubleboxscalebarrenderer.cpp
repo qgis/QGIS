@@ -16,7 +16,6 @@
 
 #include "qgsdoubleboxscalebarrenderer.h"
 #include "qgsscalebarsettings.h"
-#include "qgslayoututils.h"
 #include "qgssymbol.h"
 #include "qgstextrenderer.h"
 #include "qgslinesymbol.h"
@@ -66,11 +65,11 @@ void QgsDoubleBoxScaleBarRenderer::draw( QgsRenderContext &context, const QgsSca
   }
   QPainter *painter = context.painter();
 
-  const double scaledLabelBarSpace = context.convertToPainterUnits( settings.labelBarSpace(), QgsUnitTypes::RenderMillimeters );
-  const double scaledBoxContentSpace = context.convertToPainterUnits( settings.boxContentSpace(), QgsUnitTypes::RenderMillimeters );
+  const double scaledLabelBarSpace = context.convertToPainterUnits( settings.labelBarSpace(), Qgis::RenderUnit::Millimeters );
+  const double scaledBoxContentSpace = context.convertToPainterUnits( settings.boxContentSpace(), Qgis::RenderUnit::Millimeters );
   const QFontMetricsF fontMetrics = QgsTextRenderer::fontMetrics( context, settings.textFormat() );
   const double barTopPosition = scaledBoxContentSpace + ( settings.labelVerticalPlacement() == QgsScaleBarSettings::LabelAboveSegment ? fontMetrics.ascent() + scaledLabelBarSpace : 0 );
-  const double segmentHeight = context.convertToPainterUnits( settings.height() / 2, QgsUnitTypes::RenderMillimeters );
+  const double segmentHeight = context.convertToPainterUnits( settings.height() / 2, Qgis::RenderUnit::Millimeters );
 
   painter->save();
   context.setPainterFlagsUsingContext( painter );
@@ -109,8 +108,8 @@ void QgsDoubleBoxScaleBarRenderer::draw( QgsRenderContext &context, const QgsSca
       currentSymbol = fillSymbol2.get();
     }
 
-    const double thisX = context.convertToPainterUnits( positions.at( i ), QgsUnitTypes::RenderMillimeters ) + xOffset;
-    const double thisWidth = context.convertToPainterUnits( widths.at( i ), QgsUnitTypes::RenderMillimeters );
+    const double thisX = context.convertToPainterUnits( positions.at( i ), Qgis::RenderUnit::Millimeters ) + xOffset;
+    const double thisWidth = context.convertToPainterUnits( widths.at( i ), Qgis::RenderUnit::Millimeters );
 
     if ( i == 0 )
       minX = thisX;
@@ -158,7 +157,7 @@ void QgsDoubleBoxScaleBarRenderer::draw( QgsRenderContext &context, const QgsSca
     // vertical lines
     for ( int i = 1; i < positions.size(); ++i )
     {
-      const double lineX = context.convertToPainterUnits( positions.at( i ), QgsUnitTypes::RenderMillimeters ) + xOffset;
+      const double lineX = context.convertToPainterUnits( positions.at( i ), Qgis::RenderUnit::Millimeters ) + xOffset;
       lineSymbol->renderPolyline( QPolygonF()
                                   << QPointF( lineX, barTopPosition )
                                   << QPointF( lineX, barTopPosition + segmentHeight * 2 ),

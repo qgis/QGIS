@@ -76,7 +76,7 @@ void QgsPointRotationItem::paint( QPainter *painter )
   bufferPen.setWidthF( QgsGuiUtils::scaleIconSize( 4 ) );
   const QFontMetricsF fm( mFont );
   QPainterPath label;
-  const double rotationText = mRotation * QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::AngleDegrees,
+  const double rotationText = mRotation * QgsUnitTypes::fromUnitToUnitFactor( Qgis::AngleUnit::Degrees,
                               mRotationUnit );
   label.addText( mPixmap.width(),
                  mPixmap.height() / 2.0 + fm.height() / 2.0,
@@ -98,7 +98,7 @@ void QgsPointRotationItem::setPointLocation( const QgsPointXY &p )
   setPos( transformedPoint.x() - mPixmap.width() / 2.0, transformedPoint.y() - mPixmap.height() / 2.0 );
 }
 
-void QgsPointRotationItem::setRotationUnit( const QgsUnitTypes::AngleUnit &rotationUnit )
+void QgsPointRotationItem::setRotationUnit( Qgis::AngleUnit rotationUnit )
 {
   mRotationUnit = rotationUnit;
 }

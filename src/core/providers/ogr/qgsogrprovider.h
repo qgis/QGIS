@@ -44,7 +44,7 @@ class QgsOgrProvider final: public QgsVectorDataProvider
     static Qgis::VectorExportResult createEmptyLayer(
       const QString &uri,
       const QgsFields &fields,
-      QgsWkbTypes::Type wkbType,
+      Qgis::WkbType wkbType,
       const QgsCoordinateReferenceSystem &srs,
       bool overwrite,
       QMap<int, int> *oldToNewAttrIdxMap,
@@ -91,7 +91,7 @@ class QgsOgrProvider final: public QgsVectorDataProvider
     QString subsetString() const override;
     bool supportsSubsetString() const override { return true; }
     bool setSubsetString( const QString &theSQL, bool updateFeatureCount = true ) override;
-    QgsWkbTypes::Type wkbType() const override;
+    Qgis::WkbType wkbType() const override;
     virtual size_t layerCount() const;
     long long featureCount() const override;
     QgsFields fields() const override;

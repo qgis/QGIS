@@ -203,7 +203,7 @@ class CORE_EXPORT QgsAbstractGeometry
      * \see geometryType
      * \see wktTypeStr
      */
-    inline QgsWkbTypes::Type wkbType() const SIP_HOLDGIL { return mWkbType; }
+    inline Qgis::WkbType wkbType() const SIP_HOLDGIL { return mWkbType; }
 
     /**
      * Returns the WKT type string of the geometry.
@@ -708,7 +708,7 @@ class CORE_EXPORT QgsAbstractGeometry
      * \returns TRUE if conversion was successful
      * \since QGIS 2.14
      */
-    virtual bool convertTo( QgsWkbTypes::Type type );
+    virtual bool convertTo( Qgis::WkbType type );
 
     /**
      * Returns a reference to the simplest lossless representation of this geometry,
@@ -1117,12 +1117,12 @@ class CORE_EXPORT QgsAbstractGeometry
     virtual QgsPoint childPoint( int index ) const;
 
   protected:
-    QgsWkbTypes::Type mWkbType = QgsWkbTypes::Unknown;
+    Qgis::WkbType mWkbType = Qgis::WkbType::Unknown;
 
     /**
      * Updates the geometry type based on whether sub geometries contain z or m values.
      */
-    void setZMTypeFromSubGeometry( const QgsAbstractGeometry *subggeom, QgsWkbTypes::Type baseGeomType );
+    void setZMTypeFromSubGeometry( const QgsAbstractGeometry *subggeom, Qgis::WkbType baseGeomType );
 
     /**
      * Default calculator for the minimal bounding box for the geometry. Derived classes should override this method

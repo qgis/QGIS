@@ -13,18 +13,15 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsoracledataitems.h"
-
-#include "qgsoracletablemodel.h"
 #include "qgsoraclenewconnection.h"
 #include "qgsoraclecolumntypetask.h"
 #include "qgsoracleprovider.h"
-
 #include "qgslogger.h"
 #include "qgsdatasourceuri.h"
 #include "qgsapplication.h"
 #include "qgsmessageoutput.h"
 #include "qgsvectorlayer.h"
-#include "qgsproxyprogresstask.h"
+#include "qgsdbquerylog.h"
 #include "qgsvectorlayerexporter.h"
 
 #include <QMessageBox>
@@ -237,8 +234,8 @@ void QgsOracleConnectionItem::setLayerType( const QgsOracleLayerProperty &layerP
 
   for ( int i = 0 ; i < layerProperty.size(); i++ )
   {
-    QgsWkbTypes::Type wkbType = layerProperty.types.at( i );
-    if ( wkbType == QgsWkbTypes::Unknown )
+    Qgis::WkbType wkbType = layerProperty.types.at( i );
+    if ( wkbType == Qgis::WkbType::Unknown )
     {
       QgsDebugMsgLevel( QStringLiteral( "skip unknown geometry type" ), 3 );
       continue;
@@ -491,23 +488,23 @@ void QgsOracleOwnerItem::addLayer( const QgsOracleLayerProperty &layerProperty )
   QgsDebugMsgLevel( layerProperty.toString(), 3 );
 
   Q_ASSERT( layerProperty.size() == 1 );
-  QgsWkbTypes::Type wkbType = layerProperty.types.at( 0 );
+  Qgis::WkbType wkbType = layerProperty.types.at( 0 );
   QString tip = tr( "%1 as %2 in %3" ).arg( layerProperty.geometryColName, QgsWkbTypes::translatedDisplayString( wkbType ) ).arg( layerProperty.srids.at( 0 ) );
 
   Qgis::BrowserLayerType layerType;
   switch ( QgsWkbTypes::geometryType( wkbType ) )
   {
-    case QgsWkbTypes::PointGeometry:
+    case Qgis::GeometryType::Point:
       layerType = Qgis::BrowserLayerType::Point;
       break;
-    case QgsWkbTypes::LineGeometry:
+    case Qgis::GeometryType::Line:
       layerType = Qgis::BrowserLayerType::Line;
       break;
-    case QgsWkbTypes::PolygonGeometry:
+    case Qgis::GeometryType::Polygon:
       layerType = Qgis::BrowserLayerType::Polygon;
       break;
     default:
-      if ( wkbType == QgsWkbTypes::NoGeometry && layerProperty.geometryColName.isEmpty() )
+      if ( wkbType == Qgis::WkbType::NoGeometry && layerProperty.geometryColName.isEmpty() )
       {
         layerType = Qgis::BrowserLayerType::TableLayer;
         tip = tr( "as geometryless table" );

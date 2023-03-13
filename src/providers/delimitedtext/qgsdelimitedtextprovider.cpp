@@ -43,7 +43,6 @@
 #include "qgsspatialindex.h"
 #include "qgis.h"
 #include "qgsexpressioncontextutils.h"
-#include "qgsproviderregistry.h"
 #include "qgsvariantutils.h"
 
 #include "qgsdelimitedtextfeatureiterator.h"
@@ -91,13 +90,17 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider( const QString &uri, const Pr
   if ( query.hasQueryItem( QStringLiteral( "geomType" ) ) )
   {
     const QString gtype = query.queryItemValue( QStringLiteral( "geomType" ) ).toLower();
-    if ( gtype == QLatin1String( "point" ) ) mGeometryType = QgsWkbTypes::PointGeometry;
-    else if ( gtype == QLatin1String( "line" ) ) mGeometryType = QgsWkbTypes::LineGeometry;
-    else if ( gtype == QLatin1String( "polygon" ) ) mGeometryType = QgsWkbTypes::PolygonGeometry;
-    else if ( gtype == QLatin1String( "none" ) ) mGeometryType = QgsWkbTypes::NullGeometry;
+    if ( gtype == QLatin1String( "point" ) )
+      mGeometryType = Qgis::GeometryType::Point;
+    else if ( gtype == QLatin1String( "line" ) )
+      mGeometryType = Qgis::GeometryType::Line;
+    else if ( gtype == QLatin1String( "polygon" ) )
+      mGeometryType = Qgis::GeometryType::Polygon;
+    else if ( gtype == QLatin1String( "none" ) )
+      mGeometryType = Qgis::GeometryType::Null;
   }
 
-  if ( mGeometryType != QgsWkbTypes::NullGeometry )
+  if ( mGeometryType != Qgis::GeometryType::Null )
   {
     if ( query.hasQueryItem( QStringLiteral( "wktField" ) ) )
     {
@@ -108,7 +111,7 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider( const QString &uri, const Pr
     else if ( query.hasQueryItem( QStringLiteral( "xField" ) ) && query.hasQueryItem( QStringLiteral( "yField" ) ) )
     {
       mGeomRep = GeomAsXy;
-      mGeometryType = QgsWkbTypes::PointGeometry;
+      mGeometryType = Qgis::GeometryType::Point;
       mXFieldName = query.queryItemValue( QStringLiteral( "xField" ) );
       mYFieldName = query.queryItemValue( QStringLiteral( "yField" ) );
       if ( query.hasQueryItem( QStringLiteral( "zField" ) ) )
@@ -127,7 +130,7 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider( const QString &uri, const Pr
     }
     else
     {
-      mGeometryType = QgsWkbTypes::NullGeometry;
+      mGeometryType = Qgis::GeometryType::Null;
     }
   }
 
@@ -488,10 +491,10 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes, bool forceFullScan, 
 
         if ( !geom.isNull() )
         {
-          const QgsWkbTypes::Type type = geom.wkbType();
-          if ( type != QgsWkbTypes::NoGeometry )
+          const Qgis::WkbType type = geom.wkbType();
+          if ( type != Qgis::WkbType::NoGeometry )
           {
-            if ( mGeometryType == QgsWkbTypes::UnknownGeometry || geom.type() == mGeometryType )
+            if ( mGeometryType == Qgis::GeometryType::Unknown || geom.type() == mGeometryType )
             {
               mGeometryType = geom.type();
               if ( !foundFirstGeometry )
@@ -567,12 +570,12 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes, bool forceFullScan, 
           {
             // Extent for the first point is just the first point
             mExtent.set( pt.x(), pt.y(), pt.x(), pt.y() );
-            mWkbType = QgsWkbTypes::Point;
+            mWkbType = Qgis::WkbType::Point;
             if ( mZFieldIndex > -1 )
               mWkbType = QgsWkbTypes::addZ( mWkbType );
             if ( mMFieldIndex > -1 )
               mWkbType = QgsWkbTypes::addM( mWkbType );
-            mGeometryType = QgsWkbTypes::PointGeometry;
+            mGeometryType = Qgis::GeometryType::Point;
             foundFirstGeometry = true;
           }
           mNumberFeatures++;
@@ -594,7 +597,7 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes, bool forceFullScan, 
     }
     else
     {
-      mWkbType = QgsWkbTypes::NoGeometry;
+      mWkbType = Qgis::WkbType::NoGeometry;
       mNumberFeatures++;
     }
 
@@ -864,7 +867,7 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes, bool forceFullScan, 
   }
 
   QgsDebugMsgLevel( "Field count for the delimited text file is " + QString::number( attributeFields.size() ), 2 );
-  QgsDebugMsgLevel( "geometry type is: " + QString::number( mWkbType ), 2 );
+  QgsDebugMsgLevel( "geometry type is: " + QString::number( static_cast< quint32>( mWkbType ) ), 2 );
   QgsDebugMsgLevel( "feature count is: " + QString::number( mNumberFeatures ), 2 );
 
   QStringList warnings;
@@ -896,7 +899,7 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes, bool forceFullScan, 
 
   mUseSpatialIndex = buildSpatialIndex;
 
-  mValid = mGeometryType != QgsWkbTypes::UnknownGeometry;
+  mValid = mGeometryType != Qgis::GeometryType::Unknown;
   mLayerValid = mValid;
 
   // If it is valid, then watch for changes to the file
@@ -973,7 +976,7 @@ void QgsDelimitedTextProvider::rescanFile() const
   bool foundFirstGeometry = false;
   while ( fi.nextFeature( f ) )
   {
-    if ( mGeometryType != QgsWkbTypes::NullGeometry && f.hasGeometry() )
+    if ( mGeometryType != Qgis::GeometryType::Null && f.hasGeometry() )
     {
       if ( !foundFirstGeometry )
       {
@@ -1315,7 +1318,7 @@ QgsRectangle QgsDelimitedTextProvider::extent() const
   return mExtent;
 }
 
-QgsWkbTypes::Type QgsDelimitedTextProvider::wkbType() const
+Qgis::WkbType QgsDelimitedTextProvider::wkbType() const
 {
   return mWkbType;
 }
@@ -1415,14 +1418,38 @@ QString QgsDelimitedTextProviderMetadata::encodeUri( const QVariantMap &parts ) 
   return QString::fromLatin1( url.toEncoded() );
 }
 
+QString QgsDelimitedTextProviderMetadata::absoluteToRelativeUri( const QString &uri, const QgsReadWriteContext &context ) const
+{
+  QUrl urlSource = QUrl::fromEncoded( uri.toLatin1() );
+  QUrl urlDest = QUrl::fromLocalFile( context.pathResolver().writePath( urlSource.toLocalFile() ) );
+  urlDest.setQuery( urlSource.query() );
+  return QString::fromLatin1( urlDest.toEncoded() );
+}
+
+QString QgsDelimitedTextProviderMetadata::relativeToAbsoluteUri( const QString &uri, const QgsReadWriteContext &context ) const
+{
+  QUrl urlSource = QUrl::fromEncoded( uri.toLatin1() );
+
+  if ( !uri.startsWith( QLatin1String( "file:" ) ) )
+  {
+    QUrl file = QUrl::fromLocalFile( uri.left( uri.indexOf( '?' ) ) );
+    urlSource.setScheme( QStringLiteral( "file" ) );
+    urlSource.setPath( file.path() );
+  }
+
+  QUrl urlDest = QUrl::fromLocalFile( context.pathResolver().readPath( urlSource.toLocalFile() ) );
+  urlDest.setQuery( urlSource.query() );
+  return QString::fromLatin1( urlDest.toEncoded() );
+}
+
 QgsProviderMetadata::ProviderCapabilities QgsDelimitedTextProviderMetadata::providerCapabilities() const
 {
   return FileBasedUris;
 }
 
-QList<QgsMapLayerType> QgsDelimitedTextProviderMetadata::supportedLayerTypes() const
+QList<Qgis::LayerType> QgsDelimitedTextProviderMetadata::supportedLayerTypes() const
 {
-  return { QgsMapLayerType::VectorLayer };
+  return { Qgis::LayerType::Vector };
 }
 
 QgsDataProvider *QgsDelimitedTextProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags )

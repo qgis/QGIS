@@ -15,7 +15,7 @@
  ***************************************************************************/
 #include "qgsoracleproviderconnection.h"
 #include "qgsoracleconn.h"
-#include "qgsoracleconnpool.h"
+#include "qgsdbquerylog.h"
 #include "qgssettings.h"
 #include "qgsoracleprovider.h"
 #include "qgsexception.h"
@@ -215,53 +215,53 @@ QgsVectorLayer *QgsOracleProviderConnection::createSqlVectorLayer( const QgsAbst
         if ( ok )
         {
 
-          QgsWkbTypes::Type geomType { QgsWkbTypes::Type::Unknown };
+          Qgis::WkbType geomType { Qgis::WkbType::Unknown };
 
           switch ( type )
           {
             case 2001:
-              geomType = QgsWkbTypes::Point;
+              geomType = Qgis::WkbType::Point;
               break;
             case 2002:
-              geomType = QgsWkbTypes::LineString;
+              geomType = Qgis::WkbType::LineString;
               break;
             case 2003:
-              geomType = QgsWkbTypes::Polygon;
+              geomType = Qgis::WkbType::Polygon;
               break;
             // Note: 2004 is missing
             case 2005:
-              geomType = QgsWkbTypes::MultiPoint;
+              geomType = Qgis::WkbType::MultiPoint;
               break;
             case 2006:
-              geomType = QgsWkbTypes::MultiLineString;
+              geomType = Qgis::WkbType::MultiLineString;
               break;
             case 2007:
-              geomType = QgsWkbTypes::MultiPolygon;
+              geomType = Qgis::WkbType::MultiPolygon;
               break;
             // 3K...
             case 3001:
-              geomType = QgsWkbTypes::PointZ;
+              geomType = Qgis::WkbType::PointZ;
               break;
             case 3002:
-              geomType = QgsWkbTypes::LineStringZ;
+              geomType = Qgis::WkbType::LineStringZ;
               break;
             case 3003:
-              geomType = QgsWkbTypes::PolygonZ;
+              geomType = Qgis::WkbType::PolygonZ;
               break;
             // Note: 3004 is missing
             case 3005:
-              geomType = QgsWkbTypes::MultiPointZ;
+              geomType = Qgis::WkbType::MultiPointZ;
               break;
             case 3006:
-              geomType = QgsWkbTypes::MultiLineStringZ;
+              geomType = Qgis::WkbType::MultiLineStringZ;
               break;
             case 3007:
-              geomType = QgsWkbTypes::MultiPolygonZ;
+              geomType = Qgis::WkbType::MultiPolygonZ;
               break;
             default:
-              geomType = QgsWkbTypes::Type::Unknown;
+              geomType = Qgis::WkbType::Unknown;
           }
-          if ( geomType != QgsWkbTypes::Type::Unknown )
+          if ( geomType != Qgis::WkbType::Unknown )
           {
             tUri.setSrid( QString::number( srid ) );
             tUri.setWkbType( geomType );
@@ -1442,7 +1442,7 @@ long long QgsOracleProviderResultIterator::rowCountPrivate() const
 void QgsOracleProviderConnection::createVectorTable( const QString &schema,
     const QString &name,
     const QgsFields &fields,
-    QgsWkbTypes::Type wkbType,
+    Qgis::WkbType wkbType,
     const QgsCoordinateReferenceSystem &srs,
     bool overwrite,
     const QMap<QString,
@@ -1454,7 +1454,7 @@ void QgsOracleProviderConnection::createVectorTable( const QString &schema,
   newUri.setSchema( schema );
   newUri.setTable( name );
   // Set geometry column and if it's not aspatial
-  if ( wkbType != QgsWkbTypes::Type::Unknown &&  wkbType != QgsWkbTypes::Type::NoGeometry )
+  if ( wkbType != Qgis::WkbType::Unknown &&  wkbType != Qgis::WkbType::NoGeometry )
   {
     newUri.setGeometryColumn( options->value( QStringLiteral( "geometryColumn" ), QStringLiteral( "GEOM" ) ).toString() );
   }

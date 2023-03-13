@@ -26,10 +26,8 @@ email                : tim@linfiniti.com
 
 #include "qgisapp.h"
 #include "qgsbearingutils.h"
-#include "qgscoordinatetransform.h"
 #include "qgsexception.h"
 #include "qgslogger.h"
-#include "qgsmaplayer.h"
 #include "qgsproject.h"
 #include "qgssymbollayerutils.h"
 #include "qgssvgcache.h"
@@ -54,7 +52,7 @@ QgsDecorationNorthArrow::QgsDecorationNorthArrow( QObject *parent )
   : QgsDecorationItem( parent )
 {
   mPlacement = BottomLeft;
-  mMarginUnit = QgsUnitTypes::RenderMillimeters;
+  mMarginUnit = Qgis::RenderUnit::Millimeters;
 
   setDisplayName( tr( "North Arrow" ) );
   mConfigurationName = QStringLiteral( "NorthArrow" );
@@ -181,7 +179,7 @@ void QgsDecorationNorthArrow::render( const QgsMapSettings &mapSettings, QgsRend
     int yOffset = 0;
     switch ( mMarginUnit )
     {
-      case QgsUnitTypes::RenderMillimeters:
+      case Qgis::RenderUnit::Millimeters:
       {
         const int pixelsInchX = context.painter()->device()->logicalDpiX();
         const int pixelsInchY = context.painter()->device()->logicalDpiY();
@@ -190,20 +188,20 @@ void QgsDecorationNorthArrow::render( const QgsMapSettings &mapSettings, QgsRend
         break;
       }
 
-      case QgsUnitTypes::RenderPixels:
+      case Qgis::RenderUnit::Pixels:
         xOffset = mMarginHorizontal - 5; // Minus 5 to shift tight into corner
         yOffset = mMarginVertical - 5;
         break;
 
-      case QgsUnitTypes::RenderPercentage:
+      case Qgis::RenderUnit::Percentage:
         xOffset = ( ( deviceWidth - size.width() ) / 100. ) * mMarginHorizontal;
         yOffset = ( ( deviceHeight - size.width() ) / 100. ) * mMarginVertical;
         break;
-      case QgsUnitTypes::RenderMapUnits:
-      case QgsUnitTypes::RenderPoints:
-      case QgsUnitTypes::RenderInches:
-      case QgsUnitTypes::RenderUnknownUnit:
-      case QgsUnitTypes::RenderMetersInMapUnits:
+      case Qgis::RenderUnit::MapUnits:
+      case Qgis::RenderUnit::Points:
+      case Qgis::RenderUnit::Inches:
+      case Qgis::RenderUnit::Unknown:
+      case Qgis::RenderUnit::MetersInMapUnits:
         break;
     }
     //Determine placement of label from form combo box

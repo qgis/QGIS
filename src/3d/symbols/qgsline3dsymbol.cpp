@@ -98,9 +98,9 @@ void QgsLine3DSymbol::setMaterialSettings( QgsAbstractMaterialSettings *material
   mMaterialSettings.reset( materialSettings );
 }
 
-QList<QgsWkbTypes::GeometryType> QgsLine3DSymbol::compatibleGeometryTypes() const
+QList<Qgis::GeometryType> QgsLine3DSymbol::compatibleGeometryTypes() const
 {
-  return QList< QgsWkbTypes::GeometryType >() << QgsWkbTypes::LineGeometry;
+  return QList< Qgis::GeometryType >() << Qgis::GeometryType::Line;
 }
 
 void QgsLine3DSymbol::setDefaultPropertiesFromLayer( const QgsVectorLayer *layer )

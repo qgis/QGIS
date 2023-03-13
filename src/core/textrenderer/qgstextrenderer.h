@@ -19,7 +19,6 @@
 #include "qgis_sip.h"
 #include "qgis_core.h"
 #include "qgstextblock.h"
-#include "qgsunittypes.h"
 #include "qgsmapunitscale.h"
 #include "qgis.h"
 
@@ -67,7 +66,7 @@ class CORE_EXPORT QgsTextRenderer
      * \param mapUnitScale a mapUnitScale clamper
      * \returns font pixel size
      */
-    static int sizeToPixel( double size, const QgsRenderContext &c, QgsUnitTypes::RenderUnit unit, const QgsMapUnitScale &mapUnitScale = QgsMapUnitScale() );
+    static int sizeToPixel( double size, const QgsRenderContext &c, Qgis::RenderUnit unit, const QgsMapUnitScale &mapUnitScale = QgsMapUnitScale() );
 
     // TODO QGIS 4.0 -- remove drawAsOutlines from below methods!
 

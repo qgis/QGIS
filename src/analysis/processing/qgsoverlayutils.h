@@ -65,7 +65,7 @@ namespace QgsOverlayUtils
   void intersection( const QgsFeatureSource &sourceA, const QgsFeatureSource &sourceB, QgsFeatureSink &sink, QgsProcessingContext &context, QgsProcessingFeedback *feedback, long &count, long totalCount, const QList<int> &fieldIndicesA, const QList<int> &fieldIndicesB, const QgsGeometryParameters &parameters = QgsGeometryParameters() );
 
   //! Makes sure that what came out from intersection of two geometries is good to be used in the output
-  bool sanitizeIntersectionResult( QgsGeometry &geom, QgsWkbTypes::GeometryType geometryType, SanitizeFlags flags = SanitizeFlags() );
+  bool sanitizeIntersectionResult( QgsGeometry &geom, Qgis::GeometryType geometryType, SanitizeFlags flags = SanitizeFlags() );
 
   /**
    * Copies features from the source to the sink and resolves overlaps: for each pair of overlapping features A and B

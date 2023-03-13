@@ -313,8 +313,8 @@ class PyQgsTextRenderer(unittest.TestCase):
         s.setSizeMapUnitScale(QgsMapUnitScale(1, 2))
         s.setOpacity(0.5)
         s.setJoinStyle(Qt.RoundJoin)
-        s.setMaskedSymbolLayers([QgsSymbolLayerReference("layerid1", QgsSymbolLayerId("symbol", 1)),
-                                 QgsSymbolLayerReference("layerid2", QgsSymbolLayerId("symbol2", 2))])
+        s.setMaskedSymbolLayers([QgsSymbolLayerReference("layerid1", "symbol1"),
+                                 QgsSymbolLayerReference("layerid2", "symbol2")])
         return s
 
     def testMaskEquality(self):
@@ -346,8 +346,8 @@ class PyQgsTextRenderer(unittest.TestCase):
         self.assertNotEqual(s, s2)
         s = self.createMaskSettings()
 
-        s.setMaskedSymbolLayers([QgsSymbolLayerReference("layerid11", QgsSymbolLayerId("symbol", 1)),
-                                 QgsSymbolLayerReference("layerid21", QgsSymbolLayerId("symbol2", 2))])
+        s.setMaskedSymbolLayers([QgsSymbolLayerReference("layerid11", "symbol1"),
+                                 QgsSymbolLayerReference("layerid21", "symbol2")])
         self.assertNotEqual(s, s2)
 
     def checkMaskSettings(self, s):
@@ -359,8 +359,8 @@ class PyQgsTextRenderer(unittest.TestCase):
         self.assertEqual(s.sizeMapUnitScale(), QgsMapUnitScale(1, 2))
         self.assertEqual(s.opacity(), 0.5)
         self.assertEqual(s.joinStyle(), Qt.RoundJoin)
-        self.assertEqual(s.maskedSymbolLayers(), [QgsSymbolLayerReference("layerid1", QgsSymbolLayerId("symbol", 1)),
-                                                  QgsSymbolLayerReference("layerid2", QgsSymbolLayerId("symbol2", 2))])
+        self.assertEqual(s.maskedSymbolLayers(), [QgsSymbolLayerReference("layerid1", "symbol1"),
+                                                  QgsSymbolLayerReference("layerid2", "symbol2")])
 
     def testMaskGettersSetters(self):
         s = self.createMaskSettings()

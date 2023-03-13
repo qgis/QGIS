@@ -767,6 +767,33 @@ class TestQgsMapCanvas(unittest.TestCase):
         self.assertEqual(canvas.mapSettings().frameRate(), -1)
         self.assertEqual(canvas.mapSettings().currentFrame(), -1)
 
+    def test_crs_change_signals(self):
+        """
+        Test behavior of signals when crs is changed
+        """
+        canvas = QgsMapCanvas()
+        canvas.setDestinationCrs(QgsCoordinateReferenceSystem('EPSG:4326'))
+        canvas.setFrameStyle(0)
+        canvas.resize(600, 400)
+        self.assertEqual(canvas.width(), 600)
+        self.assertEqual(canvas.height(), 400)
+        canvas.setExtent(QgsRectangle(10, 30, 20, 35))
+
+        def on_extent_changed():
+            TestQgsMapCanvas.new_extent = canvas.extent()
+            TestQgsMapCanvas.new_crs = canvas.mapSettings().destinationCrs()
+
+        canvas.extentsChanged.connect(on_extent_changed)
+
+        TestQgsMapCanvas.new_extent = None
+        TestQgsMapCanvas.new_crs = None
+
+        canvas.setDestinationCrs(QgsCoordinateReferenceSystem('EPSG:3857'))
+
+        self.assertAlmostEqual(TestQgsMapCanvas.new_extent.xMinimum(), 1008988, places=-3)
+
+        self.assertEqual(TestQgsMapCanvas.new_crs, QgsCoordinateReferenceSystem('EPSG:3857'))
+
 
 if __name__ == '__main__':
     unittest.main()

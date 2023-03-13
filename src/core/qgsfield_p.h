@@ -33,6 +33,7 @@
 #include "qgseditorwidgetsetup.h"
 #include "qgsdefaultvalue.h"
 #include "qgsfield.h"
+#include "qgis.h"
 
 #include <QString>
 #include <QVariant>
@@ -78,6 +79,7 @@ class QgsFieldPrivate : public QSharedData
       , flags( other.flags )
       , defaultValueDefinition( other.defaultValueDefinition )
       , constraints( other.constraints )
+      , splitPolicy( other.splitPolicy )
       , isReadOnly( other.isReadOnly )
     {
     }
@@ -91,6 +93,7 @@ class QgsFieldPrivate : public QSharedData
                && ( length == other.length ) && ( precision == other.precision )
                && ( alias == other.alias ) && ( defaultValueDefinition == other.defaultValueDefinition )
                && ( constraints == other.constraints )  && ( flags == other.flags )
+               && ( splitPolicy == other.splitPolicy )
                && ( isReadOnly == other.isReadOnly ) );
     }
 
@@ -128,6 +131,9 @@ class QgsFieldPrivate : public QSharedData
     QgsFieldConstraints constraints;
 
     QgsEditorWidgetSetup editorWidgetSetup;
+
+    //! Split policy
+    Qgis::FieldDomainSplitPolicy splitPolicy = Qgis::FieldDomainSplitPolicy::Duplicate;
 
     //! Read-only
     bool isReadOnly = false;

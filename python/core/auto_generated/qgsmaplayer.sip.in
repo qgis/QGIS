@@ -33,28 +33,28 @@ This is the base class for all map layer types (vector, raster).
     {
       switch ( layer->type() )
       {
-        case QgsMapLayerType::VectorLayer:
+        case Qgis::LayerType::Vector:
           sipType = sipType_QgsVectorLayer;
           break;
-        case QgsMapLayerType::RasterLayer:
+        case Qgis::LayerType::Raster:
           sipType = sipType_QgsRasterLayer;
           break;
-        case QgsMapLayerType::PluginLayer:
+        case Qgis::LayerType::Plugin:
           sipType = sipType_QgsPluginLayer;
           break;
-        case QgsMapLayerType::MeshLayer:
+        case Qgis::LayerType::Mesh:
           sipType = sipType_QgsMeshLayer;
           break;
-        case QgsMapLayerType::VectorTileLayer:
+        case Qgis::LayerType::VectorTile:
           sipType = sipType_QgsVectorTileLayer;
           break;
-        case QgsMapLayerType::AnnotationLayer:
+        case Qgis::LayerType::Annotation:
           sipType = sipType_QgsAnnotationLayer;
           break;
-        case QgsMapLayerType::PointCloudLayer:
+        case Qgis::LayerType::PointCloud:
           sipType = sipType_QgsPointCloudLayer;
           break;
-        case QgsMapLayerType::GroupLayer:
+        case Qgis::LayerType::Group:
           sipType = sipType_QgsGroupLayer;
           break;
         default:
@@ -106,7 +106,7 @@ This is the base class for all map layer types (vector, raster).
     typedef QFlags<QgsMapLayer::StyleCategory> StyleCategories;
 
 
-    QgsMapLayer( QgsMapLayerType type = QgsMapLayerType::VectorLayer, const QString &name = QString(), const QString &source = QString() );
+    QgsMapLayer( Qgis::LayerType type = Qgis::LayerType::Vector, const QString &name = QString(), const QString &source = QString() );
 %Docstring
 Constructor for QgsMapLayer
 
@@ -128,7 +128,7 @@ is still unique.
 .. versionadded:: 3.0
 %End
 
-    QgsMapLayerType type() const;
+    Qgis::LayerType type() const;
 %Docstring
 Returns the type of the layer.
 %End

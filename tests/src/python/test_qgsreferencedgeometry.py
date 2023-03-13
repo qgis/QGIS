@@ -17,6 +17,8 @@ from qgis.core import (
     QgsRectangle,
     QgsReferencedPointXY,
     QgsReferencedRectangle,
+    QgsReferencedGeometry,
+    QgsGeometry
 )
 from qgis.testing import start_app, unittest
 
@@ -96,6 +98,27 @@ class TestQgsReferencedGeometry(unittest.TestCase):
         self.assertNotEqual(point, point2)
         point2 = QgsReferencedPointXY(QgsPointXY(1.1, 2.0), QgsCoordinateReferenceSystem('epsg:3111'))
         self.assertNotEqual(point, point2)
+
+    def test_equality(self):
+        self.assertEqual(QgsReferencedGeometry(), QgsReferencedGeometry())
+        self.assertEqual(QgsReferencedGeometry(QgsGeometry.fromPointXY(QgsPointXY(1, 2)), QgsCoordinateReferenceSystem('EPSG:3111')),
+                         QgsReferencedGeometry(QgsGeometry.fromPointXY(QgsPointXY(1, 2)),
+                                               QgsCoordinateReferenceSystem('EPSG:3111')))
+        self.assertEqual(QgsReferencedGeometry(QgsGeometry.fromPointXY(QgsPointXY(1, 2)),
+                                               QgsCoordinateReferenceSystem()),
+                         QgsReferencedGeometry(QgsGeometry.fromPointXY(QgsPointXY(1, 2)),
+                                               QgsCoordinateReferenceSystem()))
+        self.assertNotEqual(QgsReferencedGeometry(QgsGeometry.fromPointXY(QgsPointXY(1, 2)),
+                                                  QgsCoordinateReferenceSystem('EPSG:3111')),
+                            QgsReferencedGeometry(QgsGeometry.fromPointXY(QgsPointXY(1, 22)),
+                                                  QgsCoordinateReferenceSystem('EPSG:3111')))
+        self.assertNotEqual(QgsReferencedGeometry(QgsGeometry.fromPointXY(QgsPointXY(1, 2)), QgsCoordinateReferenceSystem('EPSG:3111')),
+                            QgsReferencedGeometry(QgsGeometry.fromPointXY(QgsPointXY(1, 2)),
+                                                  QgsCoordinateReferenceSystem('EPSG:4326')))
+        self.assertNotEqual(QgsReferencedGeometry(QgsGeometry.fromPointXY(QgsPointXY(1, 2)),
+                                                  QgsCoordinateReferenceSystem()),
+                            QgsReferencedGeometry(QgsGeometry.fromPointXY(QgsPointXY(1, 22)),
+                                                  QgsCoordinateReferenceSystem()))
 
 
 if __name__ == '__main__':

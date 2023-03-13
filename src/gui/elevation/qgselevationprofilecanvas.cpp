@@ -29,12 +29,10 @@
 #include "qgspoint.h"
 #include "qgsgeos.h"
 #include "qgsplot.h"
-#include "qgsguiutils.h"
 #include "qgsnumericformat.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsprofilesnapping.h"
 #include "qgsmaplayerelevationproperties.h"
-#include "qgsapplication.h"
 #include "qgsscreenhelper.h"
 
 #include <QWheelEvent>
@@ -466,7 +464,7 @@ void QgsElevationProfileCanvas::setupLayerConnections( QgsMapLayer *layer, bool 
 
   switch ( layer->type() )
   {
-    case QgsMapLayerType::VectorLayer:
+    case Qgis::LayerType::Vector:
     {
       QgsVectorLayer *vl = qobject_cast< QgsVectorLayer * >( layer );
       if ( isDisconnect )
@@ -485,13 +483,13 @@ void QgsElevationProfileCanvas::setupLayerConnections( QgsMapLayer *layer, bool 
       }
       break;
     }
-    case QgsMapLayerType::RasterLayer:
-    case QgsMapLayerType::PluginLayer:
-    case QgsMapLayerType::MeshLayer:
-    case QgsMapLayerType::VectorTileLayer:
-    case QgsMapLayerType::AnnotationLayer:
-    case QgsMapLayerType::PointCloudLayer:
-    case QgsMapLayerType::GroupLayer:
+    case Qgis::LayerType::Raster:
+    case Qgis::LayerType::Plugin:
+    case Qgis::LayerType::Mesh:
+    case Qgis::LayerType::VectorTile:
+    case Qgis::LayerType::Annotation:
+    case Qgis::LayerType::PointCloud:
+    case Qgis::LayerType::Group:
       break;
   }
 }

@@ -348,7 +348,7 @@ void QgsStyleItemsListWidget::setSymbolType( Qgis::SymbolType type )
   mModel->setSymbolType( type );
 }
 
-void QgsStyleItemsListWidget::setLayerType( QgsWkbTypes::GeometryType type )
+void QgsStyleItemsListWidget::setLayerType( Qgis::GeometryType type )
 {
   mModel->setLayerType( type );
 }

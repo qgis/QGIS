@@ -718,14 +718,14 @@ QString QgsPostgresRasterProviderMetadata::encodeUri( const QVariantMap &parts )
   return dsUri.uri( false );
 }
 
-QList<QgsMapLayerType> QgsPostgresRasterProviderMetadata::supportedLayerTypes() const
+QList<Qgis::LayerType> QgsPostgresRasterProviderMetadata::supportedLayerTypes() const
 {
-  return { QgsMapLayerType::RasterLayer };
+  return { Qgis::LayerType::Raster };
 }
 
 bool QgsPostgresRasterProviderMetadata::saveLayerMetadata( const QString &uri, const QgsLayerMetadata &metadata, QString &errorMessage )
 {
-  return QgsPostgresProviderMetadataUtils::saveLayerMetadata( QgsMapLayerType::RasterLayer, uri, metadata, errorMessage );
+  return QgsPostgresProviderMetadataUtils::saveLayerMetadata( Qgis::LayerType::Raster, uri, metadata, errorMessage );
 }
 
 QgsProviderMetadata::ProviderCapabilities QgsPostgresRasterProviderMetadata::providerCapabilities() const

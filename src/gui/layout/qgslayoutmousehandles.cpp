@@ -17,8 +17,6 @@
 
 #include "qgslayoutmousehandles.h"
 #include "qgis.h"
-#include "qgslogger.h"
-#include "qgsproject.h"
 #include "qgslayout.h"
 #include "qgslayoutitem.h"
 #include "qgslayoututils.h"
@@ -27,6 +25,7 @@
 #include "qgslayoutsnapper.h"
 #include "qgslayoutitemgroup.h"
 #include "qgslayoutundostack.h"
+#include "qgslayoutrendercontext.h"
 #include <QGraphicsView>
 #include <QGraphicsSceneHoverEvent>
 #include <QPainter>

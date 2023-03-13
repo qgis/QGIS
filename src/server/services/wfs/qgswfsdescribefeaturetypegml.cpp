@@ -26,7 +26,6 @@
 #include "qgswfsparameters.h"
 #include "qgsproject.h"
 #include "qgsvectorlayer.h"
-#include "qgsdatetimefieldformatter.h"
 
 using namespace QgsWfs;
 
@@ -231,36 +230,36 @@ void QgsWfsDescribeFeatureTypeGml::setSchemaLayer( QDomElement &parentElement, Q
 
 QString QgsWfsDescribeFeatureTypeGml::getGmlGeometryType( const QgsVectorLayer *layer ) const
 {
-  const QgsWkbTypes::Type wkbType = layer->wkbType();
+  const Qgis::WkbType wkbType = layer->wkbType();
   switch ( wfsParameters.outputFormat() )
   {
     case QgsWfsParameters::Format::GML2:
       switch ( wkbType )
       {
-        case QgsWkbTypes::Point25D:
-        case QgsWkbTypes::Point:
+        case Qgis::WkbType::Point25D:
+        case Qgis::WkbType::Point:
           return QStringLiteral( "gml:PointPropertyType" );
 
-        case QgsWkbTypes::LineString25D:
-        case QgsWkbTypes::LineString:
+        case Qgis::WkbType::LineString25D:
+        case Qgis::WkbType::LineString:
           return QStringLiteral( "gml:LineStringPropertyType" );
 
-        case QgsWkbTypes::Polygon25D:
-        case QgsWkbTypes::Polygon:
+        case Qgis::WkbType::Polygon25D:
+        case Qgis::WkbType::Polygon:
           return QStringLiteral( "gml:PolygonPropertyType" );
 
-        case QgsWkbTypes::MultiPoint25D:
-        case QgsWkbTypes::MultiPoint:
+        case Qgis::WkbType::MultiPoint25D:
+        case Qgis::WkbType::MultiPoint:
           return QStringLiteral( "gml:MultiPointPropertyType" );
 
-        case QgsWkbTypes::MultiCurve:
-        case QgsWkbTypes::MultiLineString25D:
-        case QgsWkbTypes::MultiLineString:
+        case Qgis::WkbType::MultiCurve:
+        case Qgis::WkbType::MultiLineString25D:
+        case Qgis::WkbType::MultiLineString:
           return QStringLiteral( "gml:MultiLineStringPropertyType" );
 
-        case QgsWkbTypes::MultiSurface:
-        case QgsWkbTypes::MultiPolygon25D:
-        case QgsWkbTypes::MultiPolygon:
+        case Qgis::WkbType::MultiSurface:
+        case Qgis::WkbType::MultiPolygon25D:
+        case Qgis::WkbType::MultiPolygon:
           return QStringLiteral( "gml:MultiPolygonPropertyType" );
 
         default:
@@ -270,30 +269,30 @@ QString QgsWfsDescribeFeatureTypeGml::getGmlGeometryType( const QgsVectorLayer *
     case QgsWfsParameters::Format::GML3:
       switch ( wkbType )
       {
-        case QgsWkbTypes::Point25D:
-        case QgsWkbTypes::Point:
+        case Qgis::WkbType::Point25D:
+        case Qgis::WkbType::Point:
           return QStringLiteral( "gml:PointPropertyType" );
 
-        case QgsWkbTypes::LineString25D:
-        case QgsWkbTypes::LineString:
+        case Qgis::WkbType::LineString25D:
+        case Qgis::WkbType::LineString:
           return QStringLiteral( "gml:LineStringPropertyType" );
 
-        case QgsWkbTypes::Polygon25D:
-        case QgsWkbTypes::Polygon:
+        case Qgis::WkbType::Polygon25D:
+        case Qgis::WkbType::Polygon:
           return QStringLiteral( "gml:PolygonPropertyType" );
 
-        case QgsWkbTypes::MultiPoint25D:
-        case QgsWkbTypes::MultiPoint:
+        case Qgis::WkbType::MultiPoint25D:
+        case Qgis::WkbType::MultiPoint:
           return QStringLiteral( "gml:MultiPointPropertyType" );
 
-        case QgsWkbTypes::MultiCurve:
-        case QgsWkbTypes::MultiLineString25D:
-        case QgsWkbTypes::MultiLineString:
+        case Qgis::WkbType::MultiCurve:
+        case Qgis::WkbType::MultiLineString25D:
+        case Qgis::WkbType::MultiLineString:
           return QStringLiteral( "gml:MultiCurvePropertyType" );
 
-        case QgsWkbTypes::MultiSurface:
-        case QgsWkbTypes::MultiPolygon25D:
-        case QgsWkbTypes::MultiPolygon:
+        case Qgis::WkbType::MultiSurface:
+        case Qgis::WkbType::MultiPolygon25D:
+        case Qgis::WkbType::MultiPolygon:
           return QStringLiteral( "gml:MultiSurfacePropertyType" );
 
         default:

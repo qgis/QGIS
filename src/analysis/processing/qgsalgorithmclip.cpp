@@ -100,7 +100,7 @@ QVariantMap QgsClipAlgorithm::processAlgorithm( const QVariantMap &parameters, Q
     feedback->pushWarning( QObject::tr( "No spatial index exists for input layer, performance will be severely degraded" ) );
 
   QString dest;
-  const QgsWkbTypes::GeometryType sinkType = QgsWkbTypes::geometryType( featureSource->wkbType() );
+  const Qgis::GeometryType sinkType = QgsWkbTypes::geometryType( featureSource->wkbType() );
   std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, featureSource->fields(), QgsWkbTypes::promoteNonPointTypesToMulti( featureSource->wkbType() ), featureSource->sourceCrs() ) );
 
   if ( !sink )
@@ -195,7 +195,7 @@ QVariantMap QgsClipAlgorithm::processAlgorithm( const QVariantMap &parameters, Q
       {
         const QgsGeometry currentGeometry = inputFeature.geometry();
         newGeometry = combinedClipGeom.intersection( currentGeometry );
-        if ( newGeometry.wkbType() == QgsWkbTypes::Unknown || QgsWkbTypes::flatType( newGeometry.wkbType() ) == QgsWkbTypes::GeometryCollection )
+        if ( newGeometry.wkbType() == Qgis::WkbType::Unknown || QgsWkbTypes::flatType( newGeometry.wkbType() ) == Qgis::WkbType::GeometryCollection )
         {
           const QgsGeometry intCom = inputFeature.geometry().combine( newGeometry );
           const QgsGeometry intSym = inputFeature.geometry().symDifference( newGeometry );

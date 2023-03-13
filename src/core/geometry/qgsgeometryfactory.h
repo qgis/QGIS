@@ -78,13 +78,13 @@ class CORE_EXPORT QgsGeometryFactory
     //! Construct geometry from a multipolygon
     static std::unique_ptr<QgsMultiPolygon> fromMultiPolygonXY( const QgsMultiPolygonXY &multipoly );
     //! Returns empty geometry from wkb type
-    static std::unique_ptr< QgsAbstractGeometry > geomFromWkbType( QgsWkbTypes::Type t );
+    static std::unique_ptr< QgsAbstractGeometry > geomFromWkbType( Qgis::WkbType t );
 
     /**
      * Returns a new geometry collection matching a specified WKB \a type. For instance, if
      * type is PolygonM the returned geometry will be a QgsMultiPolygon with M values.
      */
-    static std::unique_ptr< QgsGeometryCollection > createCollectionOfType( QgsWkbTypes::Type type );
+    static std::unique_ptr< QgsGeometryCollection > createCollectionOfType( Qgis::WkbType type );
 
   private:
     static std::unique_ptr< QgsLineString > linestringFromPolyline( const QgsPolylineXY &polyline );

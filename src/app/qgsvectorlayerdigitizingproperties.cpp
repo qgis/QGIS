@@ -24,6 +24,7 @@
 #include "qgsgeometryoptions.h"
 #include "qgsmaplayercombobox.h"
 #include "qgsproject.h"
+#include "qgsunittypes.h"
 
 #include <QFormLayout>
 
@@ -181,5 +182,5 @@ QgsMapLayerConfigWidget *QgsVectorLayerDigitizingPropertiesFactory::createWidget
 
 bool QgsVectorLayerDigitizingPropertiesFactory::supportsLayer( QgsMapLayer *layer ) const
 {
-  return layer->type() == QgsMapLayerType::VectorLayer;
+  return layer->type() == Qgis::LayerType::Vector;
 }

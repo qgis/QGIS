@@ -168,7 +168,7 @@ class GUI_EXPORT QgsTextFormatWidget : public QWidget, public QgsExpressionConte
      *
      * \since QGIS 3.16
      */
-    QgsWkbTypes::GeometryType labelGeometryType() const;
+    Qgis::GeometryType labelGeometryType() const;
 
     //! Text substitution list
     QgsStringReplacementCollection mSubstitutions;
@@ -196,7 +196,7 @@ class GUI_EXPORT QgsTextFormatWidget : public QWidget, public QgsExpressionConte
     QList<QgsSymbolLayerReference> mMaskedSymbolLayers;
 
     //! Geometry type for layer, if known
-    QgsWkbTypes::GeometryType mGeomType = QgsWkbTypes::UnknownGeometry;
+    Qgis::GeometryType mGeomType = Qgis::GeometryType::Unknown;
 
   protected slots:
 

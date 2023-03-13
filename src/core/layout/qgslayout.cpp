@@ -28,12 +28,14 @@
 #include "qgslayoutitemmap.h"
 #include "qgslayoutundostack.h"
 #include "qgscompositionconverter.h"
-#include "qgsvectorlayer.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsstyleentityvisitor.h"
 #include "qgsruntimeprofiler.h"
 #include "qgssettingsentryimpl.h"
 #include "qgssettingstree.h"
+#include "qgslayoutrendercontext.h"
+#include "qgslayoutreportcontext.h"
+#include "qgsunittypes.h"
 
 const QgsSettingsEntryStringList *QgsLayout::settingsSearchPathForTemplates = new QgsSettingsEntryStringList( QStringLiteral( "search-paths-for-templates" ), QgsSettingsTree::sTreeLayout, QStringList(), QObject::tr( "Search path for templates" ) );
 
@@ -107,7 +109,7 @@ void QgsLayout::initializeDefaults()
 {
   // default to a A4 landscape page
   QgsLayoutItemPage *page = new QgsLayoutItemPage( this );
-  page->setPageSize( QgsLayoutSize( 297, 210, QgsUnitTypes::LayoutMillimeters ) );
+  page->setPageSize( QgsLayoutSize( 297, 210, Qgis::LayoutUnit::Millimeters ) );
   mPageCollection->addPage( page );
   mUndoStack->stack()->clear();
 }
@@ -345,17 +347,17 @@ QPointF QgsLayout::convertToLayoutUnits( const QgsLayoutPoint &point ) const
   return mRenderContext->measurementConverter().convert( point, mUnits ).toQPointF();
 }
 
-QgsLayoutMeasurement QgsLayout::convertFromLayoutUnits( const double length, const QgsUnitTypes::LayoutUnit unit ) const
+QgsLayoutMeasurement QgsLayout::convertFromLayoutUnits( const double length, const Qgis::LayoutUnit unit ) const
 {
   return mRenderContext->measurementConverter().convert( QgsLayoutMeasurement( length, mUnits ), unit );
 }
 
-QgsLayoutSize QgsLayout::convertFromLayoutUnits( QSizeF size, const QgsUnitTypes::LayoutUnit unit ) const
+QgsLayoutSize QgsLayout::convertFromLayoutUnits( QSizeF size, const Qgis::LayoutUnit unit ) const
 {
   return mRenderContext->measurementConverter().convert( QgsLayoutSize( size.width(), size.height(), mUnits ), unit );
 }
 
-QgsLayoutPoint QgsLayout::convertFromLayoutUnits( QPointF point, const QgsUnitTypes::LayoutUnit unit ) const
+QgsLayoutPoint QgsLayout::convertFromLayoutUnits( QPointF point, const Qgis::LayoutUnit unit ) const
 {
   return mRenderContext->measurementConverter().convert( QgsLayoutPoint( point.x(), point.y(), mUnits ), unit );
 }

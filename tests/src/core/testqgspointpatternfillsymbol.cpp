@@ -32,9 +32,7 @@
 #include <qgssymbol.h>
 #include <qgssinglesymbolrenderer.h>
 #include <qgsfillsymbollayer.h>
-#include "qgslinesymbollayer.h"
 #include "qgsproperty.h"
-#include "qgslinesymbol.h"
 #include "qgsmarkersymbol.h"
 #include "qgsfillsymbol.h"
 
@@ -530,8 +528,8 @@ void TestQgsPointPatternFillSymbol::pointPatternRandomOffsetPercent()
   pointPatternFill->setDistanceY( 10 );
   pointPatternFill->setMaximumRandomDeviationX( 50 );
   pointPatternFill->setMaximumRandomDeviationY( 30 );
-  pointPatternFill->setRandomDeviationXUnit( QgsUnitTypes::RenderPercentage );
-  pointPatternFill->setRandomDeviationYUnit( QgsUnitTypes::RenderPercentage );
+  pointPatternFill->setRandomDeviationXUnit( Qgis::RenderUnit::Percentage );
+  pointPatternFill->setRandomDeviationYUnit( Qgis::RenderUnit::Percentage );
   pointPatternFill->setSeed( 1 );
 
   const bool res = imageCheck( "symbol_pointfill_percent_random_offset", layer.get() );

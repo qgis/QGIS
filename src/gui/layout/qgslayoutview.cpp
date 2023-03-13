@@ -200,7 +200,7 @@ void QgsLayoutView::setZoomLevel( double level )
   if ( !currentLayout() )
     return;
 
-  if ( currentLayout()->units() == QgsUnitTypes::LayoutPixels )
+  if ( currentLayout()->units() == Qgis::LayoutUnit::Pixels )
   {
     setTransform( QTransform::fromScale( level, level ) );
   }
@@ -213,7 +213,7 @@ void QgsLayoutView::setZoomLevel( double level )
 
     //desired pixel width for 1mm on screen
     level = std::clamp( level, MIN_VIEW_SCALE, MAX_VIEW_SCALE );
-    double mmLevel = currentLayout()->convertFromLayoutUnits( level, QgsUnitTypes::LayoutMillimeters ).length() * dpi / 25.4;
+    double mmLevel = currentLayout()->convertFromLayoutUnits( level, Qgis::LayoutUnit::Millimeters ).length() * dpi / 25.4;
     setTransform( QTransform::fromScale( mmLevel, mmLevel ) );
   }
   emit zoomLevelChanged();

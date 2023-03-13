@@ -38,13 +38,13 @@ class CORE_EXPORT QgsIconUtils
     /**
      * Returns the icon for a vector layer whose geometry \a type is provided.
      */
-    static QIcon iconForWkbType( QgsWkbTypes::Type type );
+    static QIcon iconForWkbType( Qgis::WkbType type );
 
     /**
      * Returns the icon for a vector layer whose geometry \a typeGroup is provided.
      * 1since QGIS 3.28
      */
-    static QIcon iconForGeometryType( QgsWkbTypes::GeometryType typeGroup );
+    static QIcon iconForGeometryType( Qgis::GeometryType typeGroup );
 
     /**
      * Returns an icon representing point geometries.
@@ -108,7 +108,7 @@ class CORE_EXPORT QgsIconUtils
      *
      * \since QGIS 3.22
      */
-    static QIcon iconForLayerType( QgsMapLayerType type );
+    static QIcon iconForLayerType( Qgis::LayerType type );
 
 };
 

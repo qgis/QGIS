@@ -125,8 +125,8 @@ class APP_EXPORT QgsDecorationGrid: public QgsDecorationItem
     const QgsMarkerSymbol *markerSymbol() const { return mMarkerSymbol.get(); }
 
     //! Sets map unit type
-    void setMapUnits( QgsUnitTypes::DistanceUnit t ) { mMapUnits = t; }
-    QgsUnitTypes::DistanceUnit mapUnits() const { return mMapUnits; }
+    void setMapUnits( Qgis::DistanceUnit t ) { mMapUnits = t; }
+    Qgis::DistanceUnit mapUnits() const { return mMapUnits; }
 
     //! Sets mapUnits value
     void setDirty( bool dirty = true );
@@ -188,7 +188,7 @@ class APP_EXPORT QgsDecorationGrid: public QgsDecorationItem
     std::unique_ptr< QgsLineSymbol > mLineSymbol;
     std::unique_ptr< QgsMarkerSymbol > mMarkerSymbol;
 
-    QgsUnitTypes::DistanceUnit mMapUnits;
+    Qgis::DistanceUnit mMapUnits;
 
     /**
      * Draw coordinates for mGridAnnotationType Coordinate

@@ -122,7 +122,7 @@ class GUI_EXPORT QgsStyleItemsListWidget : public QWidget, private Ui::QgsStyleI
      *
      * This setting only applies to label settings and 3d style entities.
      */
-    void setLayerType( QgsWkbTypes::GeometryType type );
+    void setLayerType( Qgis::GeometryType type );
 
     /**
      * Returns the current tag filter set for the widget, if any is set.

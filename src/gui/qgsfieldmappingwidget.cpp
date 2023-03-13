@@ -313,7 +313,7 @@ QWidget *QgsFieldMappingTypeDelegate::createEditor( QWidget *parent, const QStyl
   const QList<QgsVectorDataProvider::NativeType> typeList = QgsFieldMappingModel::supportedDataTypes();
   for ( int i = 0; i < typeList.size(); i++ )
   {
-    editor->addItem( QgsFields::iconForFieldType( typeList[i].mType, typeList[i].mSubType ), typeList[i].mTypeDesc );
+    editor->addItem( QgsFields::iconForFieldType( typeList[i].mType, typeList[i].mSubType, typeList[i].mTypeName ), typeList[i].mTypeDesc );
     editor->setItemData( i, typeList[i].mTypeName, Qt::UserRole );
   }
 

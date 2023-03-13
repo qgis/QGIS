@@ -91,7 +91,7 @@ QVariantMap QgsIntersectionAlgorithm::processAlgorithm( const QVariantMap &param
   if ( !sourceB )
     throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "OVERLAY" ) ) );
 
-  const QgsWkbTypes::Type geomType = QgsWkbTypes::multiType( sourceA->wkbType() );
+  const Qgis::WkbType geomType = QgsWkbTypes::multiType( sourceA->wkbType() );
 
   const QStringList fieldsA = parameterAsFields( parameters, QStringLiteral( "INPUT_FIELDS" ), context );
   const QStringList fieldsB = parameterAsFields( parameters, QStringLiteral( "OVERLAY_FIELDS" ), context );

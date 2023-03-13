@@ -42,7 +42,7 @@ Returns a list of warning messages generated during the conversion.
 Clears the list of warning messages.
 %End
 
-    QgsUnitTypes::RenderUnit targetUnit() const;
+    Qgis::RenderUnit targetUnit() const;
 %Docstring
 Returns the target unit type.
 
@@ -54,7 +54,7 @@ type is often more appropriate.
 .. seealso:: :py:func:`setTargetUnit`
 %End
 
-    void setTargetUnit( QgsUnitTypes::RenderUnit targetUnit );
+    void setTargetUnit( Qgis::RenderUnit targetUnit );
 %Docstring
 Sets the target unit type.
 

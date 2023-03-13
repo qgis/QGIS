@@ -1,6 +1,6 @@
 name: Remove Labels
 
-on: [issue_comment]
+on: [issue_comment, pull_request]
 
 permissions:
   contents: read

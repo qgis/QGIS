@@ -18,12 +18,12 @@
 #include <string>
 
 #include "qgsmdalprovider.h"
-#include "qgstriangularmesh.h"
 #include "qgslogger.h"
 #include "qgsapplication.h"
 #include "qgsmeshdataprovidertemporalcapabilities.h"
 #include "qgsprovidersublayerdetails.h"
 #include "qgsproviderutils.h"
+#include "qgsreadwritecontext.h"
 
 #include <QFileInfo>
 #include <QRegularExpression>
@@ -61,7 +61,7 @@ QStringList QgsMdalProvider::subLayers() const
 QgsMdalProvider::QgsMdalProvider( const QString &uri, const ProviderOptions &options, QgsDataProvider::ReadFlags flags )
   : QgsMeshDataProvider( uri, options, flags )
 {
-  temporalCapabilities()->setTemporalUnit( QgsUnitTypes::TemporalHours );
+  temporalCapabilities()->setTemporalUnit( Qgis::TemporalUnit::Hours );
   QByteArray curi = dataSourceUri().toUtf8();
 
   if ( uri.contains( "\":" ) ) //contains a mesh name, so can be directly loaded;
@@ -1115,6 +1115,32 @@ QString QgsMdalProviderMetadata::encodeUri( const QVariantMap &parts ) const
   }
 }
 
+QString QgsMdalProviderMetadata::absoluteToRelativeUri( const QString &uri, const QgsReadWriteContext &context ) const
+{
+  QVariantMap uriParts = decodeUri( uri );
+  if ( uriParts.contains( QStringLiteral( "path" ) ) )
+  {
+    QString filePath = uriParts.value( QStringLiteral( "path" ) ).toString();
+    filePath = context.pathResolver().writePath( filePath );
+    uriParts.insert( QStringLiteral( "path" ), filePath );
+    return encodeUri( uriParts );
+  }
+  return uri;
+}
+
+QString QgsMdalProviderMetadata::relativeToAbsoluteUri( const QString &uri, const QgsReadWriteContext &context ) const
+{
+  QVariantMap uriParts = decodeUri( uri );
+  if ( uriParts.contains( QStringLiteral( "path" ) ) )
+  {
+    QString filePath = uriParts.value( QStringLiteral( "path" ) ).toString();
+    filePath = context.pathResolver().readPath( filePath );
+    uriParts.insert( QStringLiteral( "path" ), filePath );
+    return encodeUri( uriParts );
+  }
+  return uri;
+}
+
 QgsProviderMetadata::ProviderCapabilities QgsMdalProviderMetadata::providerCapabilities() const
 {
   return FileBasedUris;
@@ -1169,7 +1195,7 @@ QList<QgsProviderSublayerDetails> QgsMdalProviderMetadata::querySublayers( const
       return {};
 
     QgsProviderSublayerDetails details;
-    details.setType( QgsMapLayerType::MeshLayer );
+    details.setType( Qgis::LayerType::Mesh );
     details.setProviderKey( QStringLiteral( "mdal" ) );
     details.setUri( uri );
     details.setName( QgsProviderUtils::suggestLayerNameFromFilePath( path ) );
@@ -1196,7 +1222,7 @@ QList<QgsProviderSublayerDetails> QgsMdalProviderMetadata::querySublayers( const
     QgsProviderSublayerDetails details;
     details.setUri( layerUri );
     details.setProviderKey( QStringLiteral( "mdal" ) );
-    details.setType( QgsMapLayerType::MeshLayer );
+    details.setType( Qgis::LayerType::Mesh );
     details.setLayerNumber( layerIndex );
     details.setDriverName( layerUriParts.value( QStringLiteral( "driver" ) ).toString() );
 
@@ -1215,9 +1241,9 @@ QList<QgsProviderSublayerDetails> QgsMdalProviderMetadata::querySublayers( const
   return res;
 }
 
-QList<QgsMapLayerType> QgsMdalProviderMetadata::supportedLayerTypes() const
+QList<Qgis::LayerType> QgsMdalProviderMetadata::supportedLayerTypes() const
 {
-  return { QgsMapLayerType::MeshLayer };
+  return { Qgis::LayerType::Mesh };
 }
 
 QString QgsMdalProviderMetadata::filters( FilterType type )

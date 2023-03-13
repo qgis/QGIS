@@ -14,11 +14,9 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsfields.h"
 #include "qgsfield_p.h"
 #include "qgis.h"
 #include "qgsapplication.h"
-#include "qgssettings.h"
 #include "qgsreferencedgeometry.h"
 #include "qgsvariantutils.h"
 
@@ -101,7 +99,7 @@ QString QgsField::displayNameWithAlias() const
   {
     return name();
   }
-  return QStringLiteral( "%1 (%2)" ).arg( name() ).arg( alias() );
+  return QStringLiteral( "%1 (%2)" ).arg( name(), alias() );
 }
 
 QString QgsField::displayType( const bool showConstraints ) const
@@ -125,6 +123,18 @@ QString QgsField::displayType( const bool showConstraints ) const
   }
 
   return typeStr;
+}
+
+QString QgsField::friendlyTypeString() const
+{
+  if ( d->type == QVariant::UserType )
+  {
+    if ( d->typeName.compare( QLatin1String( "geometry" ), Qt::CaseInsensitive ) == 0 )
+    {
+      return QObject::tr( "Geometry" );
+    }
+  }
+  return QgsVariantUtils::typeToDisplayString( d->type, d->subType );
 }
 
 QVariant::Type QgsField::type() const
@@ -270,7 +280,7 @@ QString QgsField::displayString( const QVariant &v ) const
       QString wkt = geom.asWkt();
       if ( wkt.length() >= 1050 )
       {
-        wkt = wkt.left( 999 ) + QChar( 0x2026 );
+        wkt = wkt.left( MAX_WKT_LENGTH ) + QChar( 0x2026 );
       }
       QString formattedText = QStringLiteral( "%1 [%2]" ).arg( wkt, geom.crs().userFriendlyIdentifier() );
       return formattedText;
@@ -589,14 +599,45 @@ bool QgsField::convertCompatible( QVariant &v, QString *errorMessage ) const
     return false;
   }
 
-  if ( !v.convert( d->type ) )
+  // Handle referenced geometries (e.g. from additional geometry fields)
+  if ( d->type == QVariant::String && v.userType() == QMetaType::type( "QgsReferencedGeometry" ) )
+  {
+    const QgsReferencedGeometry geom { v.value<QgsReferencedGeometry>( ) };
+    if ( geom.isNull() )
+    {
+      v = QVariant( d->type );
+    }
+    else
+    {
+      v = QVariant( geom.asWkt() );
+    }
+    return true;
+  }
+  else if ( d->type == QVariant::UserType && d->typeName.compare( QLatin1String( "geometry" ), Qt::CaseInsensitive ) == 0 )
+  {
+    if ( v.userType() == QMetaType::type( "QgsReferencedGeometry" ) || v.userType() == QMetaType::type( "QgsGeometry" ) )
+    {
+      return true;
+    }
+    else if ( v.type() == QVariant::String )
+    {
+      const QgsGeometry geom = QgsGeometry::fromWkt( v.toString() );
+      if ( !geom.isNull() )
+      {
+        v = QVariant::fromValue( geom );
+        return true;
+      }
+    }
+    return false;
+  }
+  else if ( !v.convert( d->type ) )
   {
     v = QVariant( d->type );
 
     if ( errorMessage )
       *errorMessage = QObject::tr( "Could not convert value \"%1\" to target type \"%2\"" )
-                      .arg( original.toString() )
-                      .arg( d->typeName );
+                      .arg( original.toString(),
+                            d->typeName );
 
     return false;
   }
@@ -643,6 +684,15 @@ bool QgsField::isReadOnly() const
   return d->isReadOnly;
 }
 
+Qgis::FieldDomainSplitPolicy QgsField::splitPolicy() const
+{
+  return d->splitPolicy;
+}
+
+void QgsField::setSplitPolicy( Qgis::FieldDomainSplitPolicy policy )
+{
+  d->splitPolicy = policy;
+}
 
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with
@@ -671,6 +721,7 @@ QDataStream &operator<<( QDataStream &out, const QgsField &field )
   out << field.constraints().constraintExpression();
   out << field.constraints().constraintDescription();
   out << static_cast< quint32 >( field.subType() );
+  out << static_cast< int >( field.splitPolicy() );
   return out;
 }
 
@@ -687,6 +738,7 @@ QDataStream &operator>>( QDataStream &in, QgsField &field )
   quint32 strengthNotNull;
   quint32 strengthUnique;
   quint32 strengthExpression;
+  int splitPolicy;
 
   bool applyOnUpdate;
 
@@ -700,7 +752,7 @@ QDataStream &operator>>( QDataStream &in, QgsField &field )
 
   in >> name >> type >> typeName >> length >> precision >> comment >> alias
      >> defaultValueExpression >> applyOnUpdate >> constraints >> originNotNull >> originUnique >> originExpression >> strengthNotNull >> strengthUnique >> strengthExpression >>
-     constraintExpression >> constraintDescription >> subType;
+     constraintExpression >> constraintDescription >> subType >> splitPolicy;
   field.setName( name );
   field.setType( static_cast< QVariant::Type >( type ) );
   field.setTypeName( typeName );
@@ -709,6 +761,7 @@ QDataStream &operator>>( QDataStream &in, QgsField &field )
   field.setComment( comment );
   field.setAlias( alias );
   field.setDefaultValueDefinition( QgsDefaultValue( defaultValueExpression, applyOnUpdate ) );
+  field.setSplitPolicy( static_cast< Qgis::FieldDomainSplitPolicy >( splitPolicy ) );
   QgsFieldConstraints fieldConstraints;
   if ( constraints & QgsFieldConstraints::ConstraintNotNull )
   {

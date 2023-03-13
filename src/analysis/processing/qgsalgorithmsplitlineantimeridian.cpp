@@ -87,7 +87,7 @@ QString QgsSplitGeometryAtAntimeridianAlgorithm::outputName() const
   return QObject::tr( "Split" );
 }
 
-QgsWkbTypes::Type QgsSplitGeometryAtAntimeridianAlgorithm::outputWkbType( QgsWkbTypes::Type inputWkbType ) const
+Qgis::WkbType QgsSplitGeometryAtAntimeridianAlgorithm::outputWkbType( Qgis::WkbType inputWkbType ) const
 {
   return QgsWkbTypes::multiType( inputWkbType );
 }

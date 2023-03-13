@@ -467,7 +467,7 @@ QList<QgsGrassProvider *> QgsGrassModuleStandardOptions::grassProviders()
   QList<QgsGrassProvider *> providers;
   for ( QgsMapLayer *layer : QgsProject::instance()->mapLayers().values() )
   {
-    if ( layer->type() == QgsMapLayerType::VectorLayer )
+    if ( layer->type() == Qgis::LayerType::Vector )
     {
       QgsVectorLayer *vector = qobject_cast<QgsVectorLayer *>( layer );
       if ( vector  && vector->providerType() == QLatin1String( "grass" ) )
@@ -488,7 +488,7 @@ QList<QgsGrassRasterProvider *> QgsGrassModuleStandardOptions::grassRasterProvid
   QList<QgsGrassRasterProvider *> providers;
   for ( QgsMapLayer *layer : QgsProject::instance()->mapLayers().values() )
   {
-    if ( layer->type() == QgsMapLayerType::RasterLayer )
+    if ( layer->type() == Qgis::LayerType::Raster )
     {
       QgsRasterLayer *raster = qobject_cast<QgsRasterLayer *>( layer );
       if ( raster  && raster->providerType() == QLatin1String( "grassraster" ) )

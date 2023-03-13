@@ -24,6 +24,7 @@ class TestQgsCoordinateUtils : public QObject
     Q_OBJECT
   private slots:
 
+    void testPrecisionForCrs();
     void testDegreeWithSuffix();
     void testLocale();
     void initTestCase();
@@ -40,6 +41,16 @@ void TestQgsCoordinateUtils::initTestCase()
 void TestQgsCoordinateUtils::cleanupTestCase()
 {
   QgsApplication::exitQgis();
+}
+
+void TestQgsCoordinateUtils::testPrecisionForCrs()
+{
+  // 8 decimal places for degrees based crs
+  QCOMPARE( QgsCoordinateUtils::calculateCoordinatePrecision( QgsCoordinateReferenceSystem( "EPSG:4326" ) ), 8 );
+  // 3 decimal places for others
+  QCOMPARE( QgsCoordinateUtils::calculateCoordinatePrecision( QgsCoordinateReferenceSystem( "EPSG:3857" ) ), 3 );
+  QCOMPARE( QgsCoordinateUtils::calculateCoordinatePrecision( QgsCoordinateReferenceSystem( "EPSG:3111" ) ), 3 );
+  QCOMPARE( QgsCoordinateUtils::calculateCoordinatePrecision( QgsCoordinateReferenceSystem() ), 3 );
 }
 
 void TestQgsCoordinateUtils::testDegreeWithSuffix()

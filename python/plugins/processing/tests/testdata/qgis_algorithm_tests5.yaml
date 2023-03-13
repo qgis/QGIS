@@ -70,3 +70,57 @@ tests:
             gml_id: skip
           geometry:
             normalize: True
+
+  - algorithm: native:buffer
+    name: Buffer, dissolve with separate disjoint
+    params:
+      DISSOLVE: true
+      DISTANCE: 0.6
+      END_CAP_STYLE: 0
+      INPUT:
+        name: multipolys.gml
+        type: vector
+      JOIN_STYLE: 0
+      MITER_LIMIT: 2.0
+      SEGMENTS: 5
+      SEPARATE_DISJOINT: true
+    results:
+      OUTPUT:
+        name: expected/buffer_dissolve_keep_disjoint.gml
+        type: vector
+
+  - algorithm: native:buffer
+    name: Buffer, separate disjoint with disjoint results
+    params:
+      DISSOLVE: false
+      DISTANCE: 0.3
+      END_CAP_STYLE: 1
+      INPUT:
+        name: multilines.gml
+        type: vector
+      JOIN_STYLE: 1
+      MITER_LIMIT: 2.0
+      SEGMENTS: 5
+      SEPARATE_DISJOINT: true
+    results:
+      OUTPUT:
+        name: expected/buffer_keep_disjoint_features_disjoint.gml
+        type: vector
+
+  - algorithm: native:buffer
+    name: Buffer, separate disjoint with non-disjoint results
+    params:
+      DISSOLVE: false
+      DISTANCE: 1.0
+      END_CAP_STYLE: 1
+      INPUT:
+        name: multilines.gml
+        type: vector
+      JOIN_STYLE: 1
+      MITER_LIMIT: 2.0
+      SEGMENTS: 5
+      SEPARATE_DISJOINT: true
+    results:
+      OUTPUT:
+        name: expected/buffer_keep_disjoint.gml
+        type: vector

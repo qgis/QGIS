@@ -321,7 +321,7 @@ Returns the DPI (dots per inch) for the profie, to be used in size conversions.
 .. seealso:: :py:func:`setDpi`
 %End
 
-    double convertDistanceToPixels( double size, QgsUnitTypes::RenderUnit unit ) const;
+    double convertDistanceToPixels( double size, Qgis::RenderUnit unit ) const;
 %Docstring
 Converts a distance size from the specified units to pixels.
 %End

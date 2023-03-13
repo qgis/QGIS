@@ -25,7 +25,6 @@
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerexporter.h"
 #include "qgsdatasourceuri.h"
-#include "qgsmssqlprovider.h"
 #include "qgssettings.h"
 #include "qgsmessageoutput.h"
 #include "qgsmssqlconnection.h"
@@ -355,8 +354,8 @@ void QgsMssqlConnectionItem::setLayerType( QgsMssqlLayerProperty layerProperty )
 
   for ( int i = 0; i < typeList.size(); i++ )
   {
-    QgsWkbTypes::Type wkbType = QgsMssqlTableModel::wkbTypeFromMssql( typeList[i] );
-    if ( wkbType == QgsWkbTypes::Unknown )
+    Qgis::WkbType wkbType = QgsMssqlTableModel::wkbTypeFromMssql( typeList[i] );
+    if ( wkbType == Qgis::WkbType::Unknown )
     {
       QgsDebugMsg( QStringLiteral( "unsupported geometry type:%1" ).arg( typeList[i] ) );
       continue;
@@ -424,7 +423,7 @@ bool QgsMssqlConnectionItem::handleDrop( const QMimeData *data, const QString &t
       }
 
       QString uri = connInfo() + " table=" + tableName;
-      if ( srcLayer->geometryType() != QgsWkbTypes::NullGeometry )
+      if ( srcLayer->geometryType() != Qgis::GeometryType::Null )
         uri += QLatin1String( " (geom)" );
 
       std::unique_ptr< QgsVectorLayerExporterTask > exportTask( QgsVectorLayerExporterTask::withLayerOwnership( srcLayer, uri, QStringLiteral( "mssql" ), srcLayer->crs() ) );
@@ -560,23 +559,23 @@ void QgsMssqlSchemaItem::addLayers( QgsDataItem *newLayers )
 
 QgsMssqlLayerItem *QgsMssqlSchemaItem::addLayer( const QgsMssqlLayerProperty &layerProperty, bool refresh )
 {
-  QgsWkbTypes::Type wkbType = QgsMssqlTableModel::wkbTypeFromMssql( layerProperty.type );
+  Qgis::WkbType wkbType = QgsMssqlTableModel::wkbTypeFromMssql( layerProperty.type );
   QString tip = tr( "%1 as %2 in %3" ).arg( layerProperty.geometryColName, QgsWkbTypes::displayString( wkbType ), layerProperty.srid );
 
   Qgis::BrowserLayerType layerType;
-  QgsWkbTypes::Type flatType = QgsWkbTypes::flatType( wkbType );
+  Qgis::WkbType flatType = QgsWkbTypes::flatType( wkbType );
   switch ( flatType )
   {
-    case QgsWkbTypes::Point:
-    case QgsWkbTypes::MultiPoint:
+    case Qgis::WkbType::Point:
+    case Qgis::WkbType::MultiPoint:
       layerType = Qgis::BrowserLayerType::Point;
       break;
-    case QgsWkbTypes::LineString:
-    case QgsWkbTypes::MultiLineString:
+    case Qgis::WkbType::LineString:
+    case Qgis::WkbType::MultiLineString:
       layerType = Qgis::BrowserLayerType::Line;
       break;
-    case QgsWkbTypes::Polygon:
-    case QgsWkbTypes::MultiPolygon:
+    case Qgis::WkbType::Polygon:
+    case Qgis::WkbType::MultiPolygon:
       layerType = Qgis::BrowserLayerType::Polygon;
       break;
     default:

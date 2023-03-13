@@ -25,6 +25,7 @@
 #include "qgssymbollayerutils.h"
 #include "qgsmarkersymbol.h"
 #include "qgsfillsymbol.h"
+#include "qgsunittypes.h"
 
 #include <optional>
 
@@ -73,7 +74,7 @@ Qgis::TextVerticalAlignment QgsTextRenderer::convertQtVAlignment( Qt::Alignment 
   return Qgis::TextVerticalAlignment::Top;
 }
 
-int QgsTextRenderer::sizeToPixel( double size, const QgsRenderContext &c, QgsUnitTypes::RenderUnit unit, const QgsMapUnitScale &mapUnitScale )
+int QgsTextRenderer::sizeToPixel( double size, const QgsRenderContext &c, Qgis::RenderUnit unit, const QgsMapUnitScale &mapUnitScale )
 {
   return static_cast< int >( c.convertToPainterUnits( size, unit, mapUnitScale ) + 0.5 ); //NOLINT
 }
@@ -335,7 +336,7 @@ double QgsTextRenderer::drawBuffer( QgsRenderContext &context, const QgsTextRend
 
   QgsTextBufferSettings buffer = format.buffer();
 
-  const double penSize =  buffer.sizeUnit() == QgsUnitTypes::RenderPercentage
+  const double penSize =  buffer.sizeUnit() == Qgis::RenderUnit::Percentage
                           ? context.convertToPainterUnits( format.size(), format.sizeUnit(), format.sizeMapUnitScale() ) * buffer.size() / 100
                           : context.convertToPainterUnits( buffer.size(), buffer.sizeUnit(), buffer.sizeMapUnitScale() );
 
@@ -504,7 +505,7 @@ void QgsTextRenderer::drawMask( QgsRenderContext &context, const QgsTextRenderer
   if ( ! p )
     return;
 
-  double penSize = mask.sizeUnit() == QgsUnitTypes::RenderPercentage
+  double penSize = mask.sizeUnit() == Qgis::RenderUnit::Percentage
                    ? context.convertToPainterUnits( format.size(), format.sizeUnit(), format.sizeMapUnitScale() ) * mask.size() / 100
                    : context.convertToPainterUnits( mask.size(), mask.sizeUnit(), mask.sizeMapUnitScale() );
 
@@ -658,17 +659,17 @@ double QgsTextRenderer::textHeight( const QgsRenderContext &context, const QgsTe
   const double fontSize = context.convertToPainterUnits( format.size(), format.sizeUnit(), format.sizeMapUnitScale() );
   if ( format.buffer().enabled() )
   {
-    maxExtension += format.buffer().sizeUnit() == QgsUnitTypes::RenderPercentage
+    maxExtension += format.buffer().sizeUnit() == Qgis::RenderUnit::Percentage
                     ? fontSize * format.buffer().size() / 100
                     : context.convertToPainterUnits( format.buffer().size(), format.buffer().sizeUnit(), format.buffer().sizeMapUnitScale() );
   }
   if ( format.shadow().enabled() )
   {
-    maxExtension += ( format.shadow().offsetUnit() == QgsUnitTypes::RenderPercentage
+    maxExtension += ( format.shadow().offsetUnit() == Qgis::RenderUnit::Percentage
                       ? fontSize * format.shadow().offsetDistance() / 100
                       : context.convertToPainterUnits( format.shadow().offsetDistance(), format.shadow().offsetUnit(), format.shadow().offsetMapUnitScale() )
                     )
-                    + ( format.shadow().blurRadiusUnit() == QgsUnitTypes::RenderPercentage
+                    + ( format.shadow().blurRadiusUnit() == Qgis::RenderUnit::Percentage
                         ? fontSize * format.shadow().blurRadius() / 100
                         : context.convertToPainterUnits( format.shadow().blurRadius(), format.shadow().blurRadiusUnit(), format.shadow().blurRadiusMapUnitScale() )
                       );
@@ -925,7 +926,7 @@ void QgsTextRenderer::drawBackground( QgsRenderContext &context, QgsTextRenderer
         QVariantMap map; // for SVG symbology marker
         map[QStringLiteral( "name" )] = background.svgFile().trimmed();
         map[QStringLiteral( "size" )] = QString::number( sizeOut );
-        map[QStringLiteral( "size_unit" )] = QgsUnitTypes::encodeUnit( QgsUnitTypes::RenderPixels );
+        map[QStringLiteral( "size_unit" )] = QgsUnitTypes::encodeUnit( Qgis::RenderUnit::Pixels );
         map[QStringLiteral( "angle" )] = QString::number( 0.0 ); // angle is handled by this local painter
 
         // offset is handled by this local painter
@@ -966,7 +967,7 @@ void QgsTextRenderer::drawBackground( QgsRenderContext &context, QgsTextRenderer
 
           std::unique_ptr< QgsSymbolLayer > symShdwL( QgsSvgMarkerSymbolLayer::create( shdwmap ) );
           QgsSvgMarkerSymbolLayer *svgShdwM = static_cast<QgsSvgMarkerSymbolLayer *>( symShdwL.get() );
-          QgsSymbolRenderContext svgShdwContext( shdwContext, QgsUnitTypes::RenderUnknownUnit, background.opacity() );
+          QgsSymbolRenderContext svgShdwContext( shdwContext, Qgis::RenderUnit::Unknown, background.opacity() );
 
           svgShdwM->renderPoint( QPointF( sizeOut / 2, -sizeOut / 2 ), svgShdwContext );
           svgp.end();
@@ -1001,7 +1002,7 @@ void QgsTextRenderer::drawBackground( QgsRenderContext &context, QgsTextRenderer
       {
         renderedSymbol.reset( background.markerSymbol()->clone() );
         renderedSymbol->setSize( sizeOut );
-        renderedSymbol->setSizeUnit( QgsUnitTypes::RenderPixels );
+        renderedSymbol->setSizeUnit( Qgis::RenderUnit::Pixels );
       }
 
       renderedSymbol->setOpacity( renderedSymbol->opacity() * background.opacity() );
@@ -1103,7 +1104,7 @@ void QgsTextRenderer::drawBackground( QgsRenderContext &context, QgsTextRenderer
       if ( background.type() == QgsTextBackgroundSettings::ShapeRectangle
            || background.type() == QgsTextBackgroundSettings::ShapeSquare )
       {
-        if ( background.radiiUnit() == QgsUnitTypes::RenderPercentage )
+        if ( background.radiiUnit() == Qgis::RenderUnit::Percentage )
         {
           path.addRoundedRect( rect, background.radii().width(), background.radii().height(), Qt::RelativeSize );
         }
@@ -1186,10 +1187,10 @@ void QgsTextRenderer::drawShadow( QgsRenderContext &context, const QgsTextRender
   double pictbuffer = component.pictureBuffer;
 
   // generate pixmap representation of label component drawing
-  bool mapUnits = shadow.blurRadiusUnit() == QgsUnitTypes::RenderMapUnits;
+  bool mapUnits = shadow.blurRadiusUnit() == Qgis::RenderUnit::MapUnits;
 
   const double fontSize = context.convertToPainterUnits( format.size(), format.sizeUnit(), format.sizeMapUnitScale() );
-  double radius = shadow.blurRadiusUnit() == QgsUnitTypes::RenderPercentage
+  double radius = shadow.blurRadiusUnit() == Qgis::RenderUnit::Percentage
                   ? fontSize * shadow.blurRadius() / 100
                   : context.convertToPainterUnits( shadow.blurRadius(), shadow.blurRadiusUnit(), shadow.blurRadiusMapUnitScale() );
   radius /= ( mapUnits ? context.scaleFactor() / component.dpiRatio : 1 );
@@ -1251,7 +1252,7 @@ void QgsTextRenderer::drawShadow( QgsRenderContext &context, const QgsTextRender
   picti.end();
 #endif
 
-  const double offsetDist = shadow.offsetUnit() == QgsUnitTypes::RenderPercentage
+  const double offsetDist = shadow.offsetUnit() == Qgis::RenderUnit::Percentage
                             ? fontSize * shadow.offsetDistance() / 100
                             : context.convertToPainterUnits( shadow.offsetDistance(), shadow.offsetUnit(), shadow.offsetMapUnitScale() );
   double angleRad = shadow.offsetAngle() * M_PI / 180; // to radians

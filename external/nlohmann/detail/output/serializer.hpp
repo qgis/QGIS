@@ -2,15 +2,13 @@
 
 #include <algorithm> // reverse, remove, fill, find, none_of
 #include <array> // array
-#include <cassert> // assert
-#include <ciso646> // and, or
 #include <clocale> // localeconv, lconv
 #include <cmath> // labs, isfinite, isnan, signbit
 #include <cstddef> // size_t, ptrdiff_t
 #include <cstdint> // uint8_t
 #include <cstdio> // snprintf
 #include <limits> // numeric_limits
-#include <string> // string
+#include <string> // string, char_traits
 #include <type_traits> // is_same
 #include <utility> // move
 
@@ -45,6 +43,7 @@ class serializer
     using number_float_t = typename BasicJsonType::number_float_t;
     using number_integer_t = typename BasicJsonType::number_integer_t;
     using number_unsigned_t = typename BasicJsonType::number_unsigned_t;
+    using binary_char_t = typename BasicJsonType::binary_t::value_type;
     static constexpr std::uint8_t UTF8_ACCEPT = 0;
     static constexpr std::uint8_t UTF8_REJECT = 1;
 
@@ -58,8 +57,8 @@ class serializer
                error_handler_t error_handler_ = error_handler_t::strict)
         : o(std::move(s))
         , loc(std::localeconv())
-        , thousands_sep(loc->thousands_sep == nullptr ? '\0' : * (loc->thousands_sep))
-        , decimal_point(loc->decimal_point == nullptr ? '\0' : * (loc->decimal_point))
+        , thousands_sep(loc->thousands_sep == nullptr ? '\0' : std::char_traits<char>::to_char_type(* (loc->thousands_sep)))
+        , decimal_point(loc->decimal_point == nullptr ? '\0' : std::char_traits<char>::to_char_type(* (loc->decimal_point)))
         , indent_char(ichar)
         , indent_string(512, indent_char)
         , error_handler(error_handler_)
@@ -83,13 +82,19 @@ class serializer
     - strings and object keys are escaped using `escape_string()`
     - integer numbers are converted implicitly via `operator<<`
     - floating-point numbers are converted to a string using `"%g"` format
+    - binary values are serialized as objects containing the subtype and the
+      byte array
 
-    @param[in] val             value to serialize
-    @param[in] pretty_print    whether the output shall be pretty-printed
-    @param[in] indent_step     the indent level
-    @param[in] current_indent  the current indent level (only used internally)
+    @param[in] val               value to serialize
+    @param[in] pretty_print      whether the output shall be pretty-printed
+    @param[in] ensure_ascii If @a ensure_ascii is true, all non-ASCII characters
+    in the output are escaped with `\uXXXX` sequences, and the result consists
+    of ASCII characters only.
+    @param[in] indent_step       the indent level
+    @param[in] current_indent    the current indent level (only used internally)
     */
-    void dump(const BasicJsonType& val, const bool pretty_print,
+    void dump(const BasicJsonType& val,
+              const bool pretty_print,
               const bool ensure_ascii,
               const unsigned int indent_step,
               const unsigned int current_indent = 0)
@@ -110,7 +115,7 @@ class serializer
 
                     // variable to hold indentation for recursive calls
                     const auto new_indent = current_indent + indent_step;
-                    if (JSON_UNLIKELY(indent_string.size() < new_indent))
+                    if (JSON_HEDLEY_UNLIKELY(indent_string.size() < new_indent))
                     {
                         indent_string.resize(indent_string.size() * 2, ' ');
                     }
@@ -128,8 +133,8 @@ class serializer
                     }
 
                     // last element
-                    assert(i != val.m_value.object->cend());
-                    assert(std::next(i) == val.m_value.object->cend());
+                    JSON_ASSERT(i != val.m_value.object->cend());
+                    JSON_ASSERT(std::next(i) == val.m_value.object->cend());
                     o->write_characters(indent_string.c_str(), new_indent);
                     o->write_character('\"');
                     dump_escaped(i->first, ensure_ascii);
@@ -156,8 +161,8 @@ class serializer
                     }
 
                     // last element
-                    assert(i != val.m_value.object->cend());
-                    assert(std::next(i) == val.m_value.object->cend());
+                    JSON_ASSERT(i != val.m_value.object->cend());
+                    JSON_ASSERT(std::next(i) == val.m_value.object->cend());
                     o->write_character('\"');
                     dump_escaped(i->first, ensure_ascii);
                     o->write_characters("\":", 2);
@@ -183,7 +188,7 @@ class serializer
 
                     // variable to hold indentation for recursive calls
                     const auto new_indent = current_indent + indent_step;
-                    if (JSON_UNLIKELY(indent_string.size() < new_indent))
+                    if (JSON_HEDLEY_UNLIKELY(indent_string.size() < new_indent))
                     {
                         indent_string.resize(indent_string.size() * 2, ' ');
                     }
@@ -198,7 +203,7 @@ class serializer
                     }
 
                     // last element
-                    assert(not val.m_value.array->empty());
+                    JSON_ASSERT(!val.m_value.array->empty());
                     o->write_characters(indent_string.c_str(), new_indent);
                     dump(val.m_value.array->back(), true, ensure_ascii, indent_step, new_indent);
 
@@ -219,7 +224,7 @@ class serializer
                     }
 
                     // last element
-                    assert(not val.m_value.array->empty());
+                    JSON_ASSERT(!val.m_value.array->empty());
                     dump(val.m_value.array->back(), false, ensure_ascii, indent_step, current_indent);
 
                     o->write_character(']');
@@ -233,6 +238,79 @@ class serializer
                 o->write_character('\"');
                 dump_escaped(*val.m_value.string, ensure_ascii);
                 o->write_character('\"');
+                return;
+            }
+
+            case value_t::binary:
+            {
+                if (pretty_print)
+                {
+                    o->write_characters("{\n", 2);
+
+                    // variable to hold indentation for recursive calls
+                    const auto new_indent = current_indent + indent_step;
+                    if (JSON_HEDLEY_UNLIKELY(indent_string.size() < new_indent))
+                    {
+                        indent_string.resize(indent_string.size() * 2, ' ');
+                    }
+
+                    o->write_characters(indent_string.c_str(), new_indent);
+
+                    o->write_characters("\"bytes\": [", 10);
+
+                    if (!val.m_value.binary->empty())
+                    {
+                        for (auto i = val.m_value.binary->cbegin();
+                                i != val.m_value.binary->cend() - 1; ++i)
+                        {
+                            dump_integer(*i);
+                            o->write_characters(", ", 2);
+                        }
+                        dump_integer(val.m_value.binary->back());
+                    }
+
+                    o->write_characters("],\n", 3);
+                    o->write_characters(indent_string.c_str(), new_indent);
+
+                    o->write_characters("\"subtype\": ", 11);
+                    if (val.m_value.binary->has_subtype())
+                    {
+                        dump_integer(val.m_value.binary->subtype());
+                    }
+                    else
+                    {
+                        o->write_characters("null", 4);
+                    }
+                    o->write_character('\n');
+                    o->write_characters(indent_string.c_str(), current_indent);
+                    o->write_character('}');
+                }
+                else
+                {
+                    o->write_characters("{\"bytes\":[", 10);
+
+                    if (!val.m_value.binary->empty())
+                    {
+                        for (auto i = val.m_value.binary->cbegin();
+                                i != val.m_value.binary->cend() - 1; ++i)
+                        {
+                            dump_integer(*i);
+                            o->write_character(',');
+                        }
+                        dump_integer(val.m_value.binary->back());
+                    }
+
+                    o->write_characters("],\"subtype\":", 12);
+                    if (val.m_value.binary->has_subtype())
+                    {
+                        dump_integer(val.m_value.binary->subtype());
+                        o->write_character('}');
+                    }
+                    else
+                    {
+                        o->write_characters("null}", 5);
+                    }
+                }
                 return;
             }
 
@@ -280,7 +358,7 @@ class serializer
             }
 
             default:            // LCOV_EXCL_LINE
-                assert(false);  // LCOV_EXCL_LINE
+                JSON_ASSERT(false);  // LCOV_EXCL_LINE
         }
     }
 
@@ -372,7 +450,7 @@ class serializer
                         {
                             // escape control characters (0x00..0x1F) or, if
                             // ensure_ascii parameter is used, non-ASCII characters
-                            if ((codepoint <= 0x1F) or (ensure_ascii and (codepoint >= 0x7F)))
+                            if ((codepoint <= 0x1F) || (ensure_ascii && (codepoint >= 0x7F)))
                             {
                                 if (codepoint <= 0xFFFF)
                                 {
@@ -479,14 +557,14 @@ class serializer
                         }
 
                         default:            // LCOV_EXCL_LINE
-                            assert(false);  // LCOV_EXCL_LINE
+                            JSON_ASSERT(false);  // LCOV_EXCL_LINE
                     }
                     break;
                 }
 
                 default:  // decode found yet incomplete multi-byte code point
                 {
-                    if (not ensure_ascii)
+                    if (!ensure_ascii)
                     {
                         // code point will not be escaped - copy byte to buffer
                         string_buffer[bytes++] = s[i];
@@ -498,7 +576,7 @@ class serializer
         }
 
         // we finished processing the string
-        if (JSON_LIKELY(state == UTF8_ACCEPT))
+        if (JSON_HEDLEY_LIKELY(state == UTF8_ACCEPT))
         {
             // write buffer
             if (bytes > 0)
@@ -542,7 +620,7 @@ class serializer
                 }
 
                 default:            // LCOV_EXCL_LINE
-                    assert(false);  // LCOV_EXCL_LINE
+                    JSON_ASSERT(false);  // LCOV_EXCL_LINE
             }
         }
     }
@@ -590,10 +668,11 @@ class serializer
     @param[in] x  integer number (signed or unsigned) to dump
     @tparam NumberType either @a number_integer_t or @a number_unsigned_t
     */
-    template<typename NumberType, detail::enable_if_t<
-                 std::is_same<NumberType, number_unsigned_t>::value or
-                 std::is_same<NumberType, number_integer_t>::value,
-                 int> = 0>
+    template < typename NumberType, detail::enable_if_t <
+                   std::is_same<NumberType, number_unsigned_t>::value ||
+                   std::is_same<NumberType, number_integer_t>::value ||
+                   std::is_same<NumberType, binary_char_t>::value,
+                   int > = 0 >
     void dump_integer(NumberType x)
     {
         static constexpr std::array<std::array<char, 2>, 100> digits_to_99
@@ -622,7 +701,7 @@ class serializer
         // use a pointer to fill the buffer
         auto buffer_ptr = number_buffer.begin();
 
-        const bool is_negative = std::is_same<NumberType, number_integer_t>::value and not(x >= 0); // see issue #755
+        const bool is_negative = std::is_same<NumberType, number_integer_t>::value && !(x >= 0); // see issue #755
         number_unsigned_t abs_value;
 
         unsigned int n_chars;
@@ -630,7 +709,7 @@ class serializer
         if (is_negative)
         {
             *buffer_ptr = '-';
-            abs_value = static_cast<number_unsigned_t>(std::abs(static_cast<std::intmax_t>(x)));
+            abs_value = remove_sign(static_cast<number_integer_t>(x));
 
             // account one more byte for the minus sign
             n_chars = 1 + count_digits(abs_value);
@@ -642,7 +721,7 @@ class serializer
         }
 
         // spare 1 byte for '\0'
-        assert(n_chars < number_buffer.size() - 1);
+        JSON_ASSERT(n_chars < number_buffer.size() - 1);
 
         // jump to the end to generate the string from backward
         // so we later avoid reversing the result
@@ -683,7 +762,7 @@ class serializer
     void dump_float(number_float_t x)
     {
         // NaN / inf
-        if (not std::isfinite(x))
+        if (!std::isfinite(x))
         {
             o->write_characters("null", 4);
             return;
@@ -695,8 +774,8 @@ class serializer
         //
         // NB: The test below works if <long double> == <double>.
         static constexpr bool is_ieee_single_or_double
-            = (std::numeric_limits<number_float_t>::is_iec559 and std::numeric_limits<number_float_t>::digits == 24 and std::numeric_limits<number_float_t>::max_exponent == 128) or
-              (std::numeric_limits<number_float_t>::is_iec559 and std::numeric_limits<number_float_t>::digits == 53 and std::numeric_limits<number_float_t>::max_exponent == 1024);
+            = (std::numeric_limits<number_float_t>::is_iec559 && std::numeric_limits<number_float_t>::digits == 24 && std::numeric_limits<number_float_t>::max_exponent == 128) ||
+              (std::numeric_limits<number_float_t>::is_iec559 && std::numeric_limits<number_float_t>::digits == 53 && std::numeric_limits<number_float_t>::max_exponent == 1024);
 
         dump_float(x, std::integral_constant<bool, is_ieee_single_or_double>());
     }
@@ -718,9 +797,9 @@ class serializer
         std::ptrdiff_t len = (std::snprintf)(number_buffer.data(), number_buffer.size(), "%.*g", d, x);
 
         // negative value indicates an error
-        assert(len > 0);
+        JSON_ASSERT(len > 0);
         // check if buffer was large enough
-        assert(static_cast<std::size_t>(len) < number_buffer.size());
+        JSON_ASSERT(static_cast<std::size_t>(len) < number_buffer.size());
 
         // erase thousands separator
         if (thousands_sep != '\0')
@@ -728,12 +807,12 @@ class serializer
             const auto end = std::remove(number_buffer.begin(),
                                          number_buffer.begin() + len, thousands_sep);
             std::fill(end, number_buffer.end(), '\0');
-            assert((end - number_buffer.begin()) <= len);
+            JSON_ASSERT((end - number_buffer.begin()) <= len);
             len = (end - number_buffer.begin());
         }
 
         // convert decimal point to '.'
-        if (decimal_point != '\0' and decimal_point != '.')
+        if (decimal_point != '\0' && decimal_point != '.')
         {
             const auto dec_pos = std::find(number_buffer.begin(), number_buffer.end(), decimal_point);
             if (dec_pos != number_buffer.end())
@@ -749,7 +828,7 @@ class serializer
             std::none_of(number_buffer.begin(), number_buffer.begin() + len + 1,
                          [](char c)
         {
-            return c == '.' or c == 'e';
+            return c == '.' || c == 'e';
         });
 
         if (value_is_int_like)
@@ -807,8 +886,36 @@ class serializer
                 ? (byte & 0x3fu) | (codep << 6u)
                 : (0xFFu >> type) & (byte);
 
-        state = utf8d[256u + state * 16u + type];
+        std::size_t index = 256u + static_cast<size_t>(state) * 16u + static_cast<size_t>(type);
+        JSON_ASSERT(index < 400);
+        state = utf8d[index];
         return state;
+    }
+
+    /*
+     * Overload to make the compiler happy while it is instantiating
+     * dump_integer for number_unsigned_t.
+     * Must never be called.
+     */
+    number_unsigned_t remove_sign(number_unsigned_t x)
+    {
+        JSON_ASSERT(false); // LCOV_EXCL_LINE
+        return x; // LCOV_EXCL_LINE
+    }
+
+    /*
+     * Helper function for dump_integer
+     *
+     * This function takes a negative signed integer and returns its absolute
+     * value as unsigned integer. The plus/minus shuffling is necessary as we can
+     * not directly remove the sign of an arbitrary signed integer as the
+     * absolute values of INT_MIN and INT_MAX are usually not the same. See
+     * #1708 for details.
+     */
+    inline number_unsigned_t remove_sign(number_integer_t x) noexcept
+    {
+        JSON_ASSERT(x < 0 && x < (std::numeric_limits<number_integer_t>::max)());
+        return static_cast<number_unsigned_t>(-(x + 1)) + 1;
     }
 
   private:

@@ -42,20 +42,6 @@ to automatically register a settings entry on its creation when a parent is prov
     static const QMetaObject staticMetaObject;
 
   public:
-    enum class Type
-    {
-      Root,
-      Standard,
-      NamedList,
-    };
-
-    enum class Option
-    {
-      NamedListSelectedItemSetting,
-    };
-
-    typedef QFlags<QgsSettingsTreeNode::Option> Options;
-
 
     virtual ~QgsSettingsTreeNode();
 
@@ -68,14 +54,14 @@ It will return the existing child node if it exists at the given key
 :raises QgsSettingsException: if a setting exists with the same key
 %End
 
-    QgsSettingsTreeNamedListNode *createNamedListNode( const QString &key, const QgsSettingsTreeNode::Options &options = QgsSettingsTreeNode::Options() ) throw( QgsSettingsException ) /KeepReference/;
+    QgsSettingsTreeNamedListNode *createNamedListNode( const QString &key, const Qgis::SettingsTreeNodeOptions &options = Qgis::SettingsTreeNodeOptions() ) throw( QgsSettingsException ) /KeepReference/;
 %Docstring
 Creates a named list tree node.
 This is useful to register groups of settings for several named items (for instance credentials for several named services)
 %End
 
 
-    Type type() const;
+    Qgis::SettingsTreeNodeType type() const;
 %Docstring
 Returns the type of node
 %End
@@ -154,7 +140,7 @@ Returns the number of named nodes in the complete key
 
     SIP_PYOBJECT __repr__();
 %MethodCode
-    const QMetaEnum metaEnum = QMetaEnum::fromType<QgsSettingsTreeNode::Type>();
+    const QMetaEnum metaEnum = QMetaEnum::fromType<Qgis::SettingsTreeNodeType>();
 
     QString str = QStringLiteral( "<QgsSettingsTreeNode (%1): %2>" ).arg( metaEnum.valueToKey( static_cast<int>( sipCpp->type() ) ), sipCpp->key() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
@@ -260,7 +246,7 @@ Returns the setting used to store the selected item
 %End
 
   protected:
-    void initNamedList( const QgsSettingsTreeNode::Options &options );
+    void initNamedList( const Qgis::SettingsTreeNodeOptions &options );
 %Docstring
 Init the nodes with the specific ``options``
 %End
@@ -277,9 +263,6 @@ Init the nodes with the specific ``options``
 %End
     QgsSettingsTreeNamedListNode( const QgsSettingsTreeNamedListNode &other );
 };
-
-QFlags<QgsSettingsTreeNode::Option> operator|(QgsSettingsTreeNode::Option f1, QFlags<QgsSettingsTreeNode::Option> f2);
-
 
 /************************************************************************
  * This file has been generated automatically from                      *

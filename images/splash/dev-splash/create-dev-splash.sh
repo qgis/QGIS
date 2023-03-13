@@ -64,7 +64,7 @@ mkdir -p mosaic
 rm -f mosaic/*.png
 for (( t=0; t<number_of_tiles; t++ )); do
   echo "tile $t"
-  montage -background '#2e2e2eff' -geometry 200x200+2+2 -tile 3x3 avatars_${t}/*.png mosaic/mosaic$(printf "%02d" ${t})0.png
+  montage -background "${grey}" -geometry 200x200+${tile_side-1}+${tile_side-1} -tile ${tile_side}x${tile_side} avatars_${t}/*.png mosaic/mosaic$(printf "%02d" ${t})0.png
 done
 
 # create QGIS block

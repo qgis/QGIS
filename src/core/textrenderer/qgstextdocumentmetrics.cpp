@@ -240,8 +240,8 @@ QgsTextDocumentMetrics QgsTextDocumentMetrics::calculateMetrics( const QgsTextDo
     }
     else
     {
-      const double thisLineHeightUsingAscentDescent = format.lineHeightUnit() == QgsUnitTypes::RenderPercentage ? ( format.lineHeight() * ( maxBlockAscent + maxBlockDescent ) ) : lineHeightPainterUnits;
-      const double thisLineHeightUsingLineSpacing = format.lineHeightUnit() == QgsUnitTypes::RenderPercentage ? ( format.lineHeight() * maxLineSpacing ) : lineHeightPainterUnits;
+      const double thisLineHeightUsingAscentDescent = format.lineHeightUnit() == Qgis::RenderUnit::Percentage ? ( format.lineHeight() * ( maxBlockAscent + maxBlockDescent ) ) : lineHeightPainterUnits;
+      const double thisLineHeightUsingLineSpacing = format.lineHeightUnit() == Qgis::RenderUnit::Percentage ? ( format.lineHeight() * maxLineSpacing ) : lineHeightPainterUnits;
 
       currentLabelBaseline += thisLineHeightUsingAscentDescent;
       currentRectBaseline += thisLineHeightUsingLineSpacing;
@@ -265,7 +265,7 @@ QgsTextDocumentMetrics QgsTextDocumentMetrics::calculateMetrics( const QgsTextDo
         outerYMaxLabel = blockYMaxAdjustLabel - maxBlockDescent;
     }
 
-    blockVerticalLineSpacing << ( format.lineHeightUnit() == QgsUnitTypes::RenderPercentage ? ( maxBlockMaxWidth * format.lineHeight() ) : lineHeightPainterUnits );
+    blockVerticalLineSpacing << ( format.lineHeightUnit() == Qgis::RenderUnit::Percentage ? ( maxBlockMaxWidth * format.lineHeight() ) : lineHeightPainterUnits );
 
     res.mBlockHeights << blockHeightUsingLineSpacing;
 

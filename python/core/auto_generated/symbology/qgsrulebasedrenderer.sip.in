@@ -292,7 +292,7 @@ clone this rule, return new instance
 Saves the symbol layer as SLD
 %End
 
-        static QgsRuleBasedRenderer::Rule *createFromSld( QDomElement &element, QgsWkbTypes::GeometryType geomType ) /Factory/;
+        static QgsRuleBasedRenderer::Rule *createFromSld( QDomElement &element, Qgis::GeometryType geomType ) /Factory/;
 %Docstring
 Create a rule from the SLD provided in element and for the specified geometry type.
 %End
@@ -302,6 +302,17 @@ Create a rule from the SLD provided in element and for the specified geometry ty
         bool startRender( QgsRenderContext &context, const QgsFields &fields, QString &filter );
 %Docstring
 prepare the rule for rendering and its children (build active children array)
+%End
+
+        bool hasActiveChildren() const;
+%Docstring
+Returns ``True`` if the rule has any active children.
+
+.. note::
+
+   Must be called after :py:func:`~Rule.startRender`
+
+.. versionadded:: 3.30
 %End
 
         QSet<int> collectZLevels();
@@ -485,6 +496,7 @@ Returns symbol for current feature. Should not be used individually: there could
 
     virtual void startRender( QgsRenderContext &context, const QgsFields &fields );
 
+    virtual bool canSkipRender();
 
     virtual void stopRender( QgsRenderContext &context );
 
@@ -504,7 +516,10 @@ Returns symbol for current feature. Should not be used individually: there could
     virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props = QVariantMap() ) const;
 
 
-    static QgsFeatureRenderer *createFromSld( QDomElement &element, QgsWkbTypes::GeometryType geomType ) /Factory/;
+    static QgsFeatureRenderer *createFromSld( QDomElement &element, Qgis::GeometryType geomType ) /Factory/;
+%Docstring
+Creates a new rule based renderer from an SLD XML element.
+%End
 
     virtual QgsSymbolList symbols( QgsRenderContext &context ) const;
 

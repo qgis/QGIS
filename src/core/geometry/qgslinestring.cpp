@@ -20,7 +20,6 @@
 #include "qgscompoundcurve.h"
 #include "qgscoordinatetransform.h"
 #include "qgsgeometryutils.h"
-#include "qgsmaptopixel.h"
 #include "qgswkbptr.h"
 #include "qgslinesegment.h"
 #include "qgsgeometrytransformer.h"
@@ -44,18 +43,18 @@
 
 QgsLineString::QgsLineString()
 {
-  mWkbType = QgsWkbTypes::LineString;
+  mWkbType = Qgis::WkbType::LineString;
 }
 
 QgsLineString::QgsLineString( const QVector<QgsPoint> &points )
 {
   if ( points.isEmpty() )
   {
-    mWkbType = QgsWkbTypes::LineString;
+    mWkbType = Qgis::WkbType::LineString;
     return;
   }
-  QgsWkbTypes::Type ptType = points.at( 0 ).wkbType();
-  mWkbType = QgsWkbTypes::zmType( QgsWkbTypes::LineString, QgsWkbTypes::hasZ( ptType ), QgsWkbTypes::hasM( ptType ) );
+  Qgis::WkbType ptType = points.at( 0 ).wkbType();
+  mWkbType = QgsWkbTypes::zmType( Qgis::WkbType::LineString, QgsWkbTypes::hasZ( ptType ), QgsWkbTypes::hasM( ptType ) );
   mX.resize( points.count() );
   mY.resize( points.count() );
   double *x = mX.data();
@@ -86,7 +85,7 @@ QgsLineString::QgsLineString( const QVector<QgsPoint> &points )
 
 QgsLineString::QgsLineString( const QVector<double> &x, const QVector<double> &y, const QVector<double> &z, const QVector<double> &m, bool is25DType )
 {
-  mWkbType = QgsWkbTypes::LineString;
+  mWkbType = Qgis::WkbType::LineString;
   int pointCount = std::min( x.size(), y.size() );
   if ( x.size() == pointCount )
   {
@@ -106,7 +105,7 @@ QgsLineString::QgsLineString( const QVector<double> &x, const QVector<double> &y
   }
   if ( !z.isEmpty() && z.count() >= pointCount )
   {
-    mWkbType = is25DType ? QgsWkbTypes::LineString25D : QgsWkbTypes::LineStringZ;
+    mWkbType = is25DType ? Qgis::WkbType::LineString25D : Qgis::WkbType::LineStringZ;
     if ( z.size() == pointCount )
     {
       mZ = z;
@@ -132,7 +131,7 @@ QgsLineString::QgsLineString( const QVector<double> &x, const QVector<double> &y
 
 QgsLineString::QgsLineString( const QgsPoint &p1, const QgsPoint &p2 )
 {
-  mWkbType = QgsWkbTypes::LineString;
+  mWkbType = Qgis::WkbType::LineString;
   mX.resize( 2 );
   mX[ 0 ] = p1.x();
   mX[ 1 ] = p2.x();
@@ -157,7 +156,7 @@ QgsLineString::QgsLineString( const QgsPoint &p1, const QgsPoint &p2 )
 
 QgsLineString::QgsLineString( const QVector<QgsPointXY> &points )
 {
-  mWkbType = QgsWkbTypes::LineString;
+  mWkbType = Qgis::WkbType::LineString;
   mX.reserve( points.size() );
   mY.reserve( points.size() );
   for ( const QgsPointXY &p : points )
@@ -169,7 +168,7 @@ QgsLineString::QgsLineString( const QVector<QgsPointXY> &points )
 
 QgsLineString::QgsLineString( const QgsLineSegment2D &segment )
 {
-  mWkbType = QgsWkbTypes::LineString;
+  mWkbType = Qgis::WkbType::LineString;
   mX.resize( 2 );
   mY.resize( 2 );
   mX[0] = segment.startX();
@@ -304,7 +303,7 @@ void QgsLineString::clear()
   mY.clear();
   mZ.clear();
   mM.clear();
-  mWkbType = QgsWkbTypes::LineString;
+  mWkbType = Qgis::WkbType::LineString;
   clearCache();
 }
 
@@ -564,8 +563,8 @@ bool QgsLineString::fromWkb( QgsConstWkbPtr &wkbPtr )
     return false;
   }
 
-  QgsWkbTypes::Type type = wkbPtr.readHeader();
-  if ( QgsWkbTypes::flatType( type ) != QgsWkbTypes::LineString )
+  Qgis::WkbType type = wkbPtr.readHeader();
+  if ( QgsWkbTypes::flatType( type ) != Qgis::WkbType::LineString )
   {
     return false;
   }
@@ -664,9 +663,9 @@ bool QgsLineString::fromWkt( const QString &wkt )
 {
   clear();
 
-  QPair<QgsWkbTypes::Type, QString> parts = QgsGeometryUtils::wktReadBlock( wkt );
+  QPair<Qgis::WkbType, QString> parts = QgsGeometryUtils::wktReadBlock( wkt );
 
-  if ( QgsWkbTypes::flatType( parts.first ) != QgsWkbTypes::LineString )
+  if ( QgsWkbTypes::flatType( parts.first ) != Qgis::WkbType::LineString )
     return false;
   mWkbType = parts.first;
 
@@ -1016,22 +1015,22 @@ QgsPoint QgsLineString::pointN( int i ) const
     m = mM.at( i );
   }
 
-  QgsWkbTypes::Type t = QgsWkbTypes::Point;
-  if ( mWkbType == QgsWkbTypes::LineString25D )
+  Qgis::WkbType t = Qgis::WkbType::Point;
+  if ( mWkbType == Qgis::WkbType::LineString25D )
   {
-    t = QgsWkbTypes::Point25D;
+    t = Qgis::WkbType::Point25D;
   }
   else if ( hasZ && hasM )
   {
-    t = QgsWkbTypes::PointZM;
+    t = Qgis::WkbType::PointZM;
   }
   else if ( hasZ )
   {
-    t = QgsWkbTypes::PointZ;
+    t = Qgis::WkbType::PointZ;
   }
   else if ( hasM )
   {
-    t = QgsWkbTypes::PointM;
+    t = Qgis::WkbType::PointM;
   }
   return QgsPoint( t, x, y, z, m );
 }
@@ -1104,19 +1103,19 @@ void QgsLineString::setPoints( size_t size, const double *x, const double *y, co
 
   if ( hasZ && hasM )
   {
-    mWkbType = QgsWkbTypes::LineStringZM;
+    mWkbType = Qgis::WkbType::LineStringZM;
   }
   else if ( hasZ )
   {
-    mWkbType = QgsWkbTypes::LineStringZ;
+    mWkbType = Qgis::WkbType::LineStringZ;
   }
   else if ( hasM )
   {
-    mWkbType = QgsWkbTypes::LineStringM;
+    mWkbType = Qgis::WkbType::LineStringM;
   }
   else
   {
-    mWkbType = QgsWkbTypes::LineString;
+    mWkbType = Qgis::WkbType::LineString;
   }
 
   mX.resize( size );
@@ -1174,7 +1173,7 @@ void QgsLineString::setPoints( const QgsPointSequence &points )
   bool hasZ = firstPt.is3D();
   bool hasM = firstPt.isMeasure();
 
-  setZMTypeFromSubGeometry( &firstPt, QgsWkbTypes::LineString );
+  setZMTypeFromSubGeometry( &firstPt, Qgis::WkbType::LineString );
 
   mX.resize( points.size() );
   mY.resize( points.size() );
@@ -1227,7 +1226,7 @@ void QgsLineString::append( const QgsLineString *line )
 
   if ( numPoints() < 1 )
   {
-    setZMTypeFromSubGeometry( line, QgsWkbTypes::LineString );
+    setZMTypeFromSubGeometry( line, Qgis::WkbType::LineString );
   }
 
   // do not store duplicate points
@@ -1361,9 +1360,9 @@ QgsPoint *QgsLineString::interpolatePoint( const double distance ) const
   if ( distance < 0 )
     return nullptr;
 
-  QgsWkbTypes::Type pointType = QgsWkbTypes::Point;
+  Qgis::WkbType pointType = Qgis::WkbType::Point;
   if ( is3D() )
-    pointType = QgsWkbTypes::PointZ;
+    pointType = Qgis::WkbType::PointZ;
   if ( isMeasure() )
     pointType = QgsWkbTypes::addM( pointType );
 
@@ -1390,9 +1389,9 @@ QgsLineString *QgsLineString::curveSubstring( double startDistance, double endDi
   QVector< QgsPoint > substringPoints;
   substringPoints.reserve( totalPoints );
 
-  QgsWkbTypes::Type pointType = QgsWkbTypes::Point;
+  Qgis::WkbType pointType = Qgis::WkbType::Point;
   if ( is3D() )
-    pointType = QgsWkbTypes::PointZ;
+    pointType = Qgis::WkbType::PointZ;
   if ( isMeasure() )
     pointType = QgsWkbTypes::addM( pointType );
 
@@ -1710,9 +1709,9 @@ bool QgsLineString::insertVertex( QgsVertexId position, const QgsPoint &vertex )
     return false;
   }
 
-  if ( mWkbType == QgsWkbTypes::Unknown || mX.isEmpty() )
+  if ( mWkbType == Qgis::WkbType::Unknown || mX.isEmpty() )
   {
-    setZMTypeFromSubGeometry( &vertex, QgsWkbTypes::LineString );
+    setZMTypeFromSubGeometry( &vertex, Qgis::WkbType::LineString );
   }
 
   mX.insert( position.vertex, vertex.x() );
@@ -1784,9 +1783,9 @@ bool QgsLineString::deleteVertex( QgsVertexId position )
 
 void QgsLineString::addVertex( const QgsPoint &pt )
 {
-  if ( mWkbType == QgsWkbTypes::Unknown || mX.isEmpty() )
+  if ( mWkbType == Qgis::WkbType::Unknown || mX.isEmpty() )
   {
-    setZMTypeFromSubGeometry( &pt, QgsWkbTypes::LineString );
+    setZMTypeFromSubGeometry( &pt, Qgis::WkbType::LineString );
   }
 
   mX.append( pt.x() );
@@ -1946,8 +1945,11 @@ void QgsLineString::sumUpArea( double &sum ) const
 
   mSummedUpArea = 0;
   const int maxIndex = mX.size();
-  if ( maxIndex == 0 )
+  if ( maxIndex < 2 )
+  {
+    mHasCachedSummedUpArea = true;
     return;
+  }
 
   const double *x = mX.constData();
   const double *y = mY.constData();
@@ -1955,7 +1957,7 @@ void QgsLineString::sumUpArea( double &sum ) const
   double prevY = *y++;
   for ( int i = 1; i < maxIndex; ++i )
   {
-    mSummedUpArea += prevX * ( *y ) - prevY * ( *x );
+    mSummedUpArea += prevX * ( *y - prevY ) - prevY * ( *x - prevX );
     prevX = *x++;
     prevY = *y++;
   }
@@ -2075,9 +2077,9 @@ bool QgsLineString::addZValue( double zValue )
     return false;
 
   clearCache();
-  if ( mWkbType == QgsWkbTypes::Unknown )
+  if ( mWkbType == Qgis::WkbType::Unknown )
   {
-    mWkbType = QgsWkbTypes::LineStringZ;
+    mWkbType = Qgis::WkbType::LineStringZ;
     return true;
   }
 
@@ -2099,15 +2101,15 @@ bool QgsLineString::addMValue( double mValue )
     return false;
 
   clearCache();
-  if ( mWkbType == QgsWkbTypes::Unknown )
+  if ( mWkbType == Qgis::WkbType::Unknown )
   {
-    mWkbType = QgsWkbTypes::LineStringM;
+    mWkbType = Qgis::WkbType::LineStringM;
     return true;
   }
 
-  if ( mWkbType == QgsWkbTypes::LineString25D )
+  if ( mWkbType == Qgis::WkbType::LineString25D )
   {
-    mWkbType = QgsWkbTypes::LineStringZM;
+    mWkbType = Qgis::WkbType::LineStringZM;
   }
   else
   {
@@ -2152,18 +2154,18 @@ void QgsLineString::swapXy()
   clearCache();
 }
 
-bool QgsLineString::convertTo( QgsWkbTypes::Type type )
+bool QgsLineString::convertTo( Qgis::WkbType type )
 {
   if ( type == mWkbType )
     return true;
 
   clearCache();
-  if ( type == QgsWkbTypes::LineString25D )
+  if ( type == Qgis::WkbType::LineString25D )
   {
     //special handling required for conversion to LineString25D
     dropMValue();
     addZValue( std::numeric_limits<double>::quiet_NaN() );
-    mWkbType = QgsWkbTypes::LineString25D;
+    mWkbType = Qgis::WkbType::LineString25D;
     return true;
   }
   else

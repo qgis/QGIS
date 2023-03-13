@@ -18,7 +18,6 @@
 
 #include "qgsactionmanager.h"
 #include "qgseditorwidgetregistry.h"
-#include "qgseditorwidgetfactory.h"
 #include "qgsexpression.h"
 #include "qgsfeatureiterator.h"
 #include "qgsconditionalstyle.h"
@@ -49,7 +48,7 @@ QgsAttributeTableModel::QgsAttributeTableModel( QgsVectorLayerCache *layerCache,
 {
   mExpressionContext.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( layerCache->layer() ) );
 
-  if ( mLayer->geometryType() == QgsWkbTypes::NullGeometry )
+  if ( mLayer->geometryType() == Qgis::GeometryType::Null )
   {
     mFeatureRequest.setFlags( QgsFeatureRequest::NoGeometry );
   }
@@ -862,12 +861,32 @@ void QgsAttributeTableModel::bulkEditCommandEnded()
   mBulkEditCommandRunning = false;
   // Full model update if the changed rows are more than half the total rows
   // or if their count is > layer cache size
-  const int changeCount( std::max( mAttributeValueChanges.count(), mInsertedRowsChanges.count() ) );
-  const bool fullModelUpdate = changeCount > mLayerCache->cacheSize() ||
-                               changeCount > rowCount() * 0.5;
 
-  QgsDebugMsgLevel( QStringLiteral( "Bulk edit command ended with %1 modified rows over (%4), cache size is %2, starting %3 update." )
-                    .arg( changeCount )
+  const long long fullModelUpdateThreshold = std::min<long long >( mLayerCache->cacheSize(), std::ceil( rowCount() * 0.5 ) );
+  bool fullModelUpdate = false;
+
+  // try the cheaper check first
+  if ( mInsertedRowsChanges.size() > fullModelUpdateThreshold )
+  {
+    fullModelUpdate = true;
+  }
+  else
+  {
+    QSet< QgsFeatureId > changedRows;
+    changedRows.reserve( mAttributeValueChanges.size() );
+    // we need to count changed features, not the total of changed attributes (which may all apply to one feature)
+    for ( auto it = mAttributeValueChanges.constBegin(); it != mAttributeValueChanges.constEnd(); ++it )
+    {
+      changedRows.insert( it.key().first );
+      if ( changedRows.size() > fullModelUpdateThreshold )
+      {
+        fullModelUpdate = true;
+        break;
+      }
+    }
+  }
+
+  QgsDebugMsgLevel( QStringLiteral( "Bulk edit command ended modified rows over (%3), cache size is %1, starting %2 update." )
                     .arg( mLayerCache->cacheSize() )
                     .arg( fullModelUpdate ? QStringLiteral( "full" ) :  QStringLiteral( "incremental" ) )
                     .arg( rowCount() ),

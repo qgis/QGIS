@@ -40,7 +40,7 @@ void QgsGeometryLineLayerIntersectionCheck::collectErrors( const QMap<QString, Q
       }
 
       // Check whether the line intersects with any other features of the specified layer
-      const QgsGeometryCheckerUtils::LayerFeatures checkFeatures( featurePools, QStringList() << mCheckLayer, line->boundingBox(), {QgsWkbTypes::LineGeometry, QgsWkbTypes::PolygonGeometry}, mContext );
+      const QgsGeometryCheckerUtils::LayerFeatures checkFeatures( featurePools, QStringList() << mCheckLayer, line->boundingBox(), {Qgis::GeometryType::Line, Qgis::GeometryType::Polygon}, mContext );
       for ( const QgsGeometryCheckerUtils::LayerFeature &checkFeature : checkFeatures )
       {
         const QgsAbstractGeometry *testGeom = checkFeature.geometry().constGet();

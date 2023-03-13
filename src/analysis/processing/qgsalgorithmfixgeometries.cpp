@@ -55,7 +55,7 @@ QString QgsFixGeometriesAlgorithm::outputName() const
   return QObject::tr( "Fixed geometries" );
 }
 
-QgsWkbTypes::Type QgsFixGeometriesAlgorithm::outputWkbType( QgsWkbTypes::Type type ) const
+Qgis::WkbType QgsFixGeometriesAlgorithm::outputWkbType( Qgis::WkbType type ) const
 {
   return QgsWkbTypes::promoteNonPointTypesToMulti( type );
 }
@@ -128,8 +128,8 @@ QgsFeatureList QgsFixGeometriesAlgorithm::processFeature( const QgsFeature &feat
     return QgsFeatureList() << outputFeature;
   }
 
-  if ( outputGeometry.wkbType() == QgsWkbTypes::Unknown ||
-       QgsWkbTypes::flatType( outputGeometry.wkbType() ) == QgsWkbTypes::GeometryCollection )
+  if ( outputGeometry.wkbType() == Qgis::WkbType::Unknown ||
+       QgsWkbTypes::flatType( outputGeometry.wkbType() ) == Qgis::WkbType::GeometryCollection )
   {
     // keep only the parts of the geometry collection with correct type
     const QVector< QgsGeometry > tmpGeometries = outputGeometry.asGeometryCollection();
@@ -145,7 +145,7 @@ QgsFeatureList QgsFixGeometriesAlgorithm::processFeature( const QgsFeature &feat
       outputGeometry = QgsGeometry();
   }
 
-  if ( outputGeometry.type() != QgsWkbTypes::GeometryType::PointGeometry )
+  if ( outputGeometry.type() != Qgis::GeometryType::Point )
   {
     // some data providers are picky about the geometries we pass to them: we can't add single-part geometries
     // when we promised multi-part geometries, so ensure we have the right type

@@ -290,7 +290,7 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
           sipRes = PyUnicode_FromString( str.toUtf8().constData() );
           % End
 #endif
-          QgsWkbTypes::Type wkbType;
+          Qgis::WkbType wkbType;
           QgsCoordinateReferenceSystem crs;
 
           // TODO c++20 - replace with = default
@@ -319,7 +319,7 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
         /**
          * Appends the geometry column \a type with the given \a srid to the geometry column types list.
          */
-        void addGeometryColumnType( const QgsWkbTypes::Type &type, const QgsCoordinateReferenceSystem &crs );
+        void addGeometryColumnType( Qgis::WkbType type, const QgsCoordinateReferenceSystem &crs );
 
         /**
          * Returns the list of geometry column types and CRSs.
@@ -589,7 +589,7 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
      *
      * \throws QgsProviderConnectionException if any errors are encountered.
      */
-    virtual void createVectorTable( const QString &schema, const QString &name, const QgsFields &fields, QgsWkbTypes::Type wkbType, const QgsCoordinateReferenceSystem &srs, bool overwrite, const QMap<QString, QVariant> *options ) const SIP_THROW( QgsProviderConnectionException );
+    virtual void createVectorTable( const QString &schema, const QString &name, const QgsFields &fields, Qgis::WkbType wkbType, const QgsCoordinateReferenceSystem &srs, bool overwrite, const QMap<QString, QVariant> *options ) const SIP_THROW( QgsProviderConnectionException );
 
     /**
      * Checks whether a table \a name exists in the given \a schema.

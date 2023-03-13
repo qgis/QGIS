@@ -167,7 +167,7 @@ Sets the query execution time to ``queryExecutionTime`` milliseconds.
           QString str = QStringLiteral( "<QgsAbstractDatabaseProviderConnection.TableProperty.GeometryColumnType: '%1, %2'>" ).arg( QgsWkbTypes::displayString( sipCpp->wkbType ), sipCpp->crs.authid() );
           sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
-          QgsWkbTypes::Type wkbType;
+          Qgis::WkbType wkbType;
           QgsCoordinateReferenceSystem crs;
 
           bool operator==( const GeometryColumnType &other ) const;
@@ -189,7 +189,7 @@ Sets the table name to ``name``.
 .. seealso:: :py:func:`defaultName`
 %End
 
-        void addGeometryColumnType( const QgsWkbTypes::Type &type, const QgsCoordinateReferenceSystem &crs );
+        void addGeometryColumnType( Qgis::WkbType type, const QgsCoordinateReferenceSystem &crs );
 %Docstring
 Appends the geometry column ``type`` with the given ``srid`` to the geometry column types list.
 %End
@@ -425,7 +425,7 @@ Returns the URI string for the given ``table`` and ``schema``.
 .. versionadded:: 3.12
 %End
 
-    virtual void createVectorTable( const QString &schema, const QString &name, const QgsFields &fields, QgsWkbTypes::Type wkbType, const QgsCoordinateReferenceSystem &srs, bool overwrite, const QMap<QString, QVariant> *options ) const throw( QgsProviderConnectionException );
+    virtual void createVectorTable( const QString &schema, const QString &name, const QgsFields &fields, Qgis::WkbType wkbType, const QgsCoordinateReferenceSystem &srs, bool overwrite, const QMap<QString, QVariant> *options ) const throw( QgsProviderConnectionException );
 %Docstring
 Creates an empty table with ``name`` in the given ``schema`` (schema is ignored if not supported by the backend).
 

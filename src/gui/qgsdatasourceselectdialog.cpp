@@ -35,7 +35,7 @@
 QgsDataSourceSelectWidget::QgsDataSourceSelectWidget(
   QgsBrowserGuiModel *browserModel,
   bool setFilterByLayerType,
-  QgsMapLayerType layerType,
+  Qgis::LayerType layerType,
   QWidget *parent )
   : QgsPanelWidget( parent )
 {
@@ -268,7 +268,7 @@ void QgsDataSourceSelectWidget::setCaseSensitive( bool caseSensitive )
   mBrowserProxyModel.setFilterCaseSensitivity( caseSensitive ? Qt::CaseSensitive : Qt::CaseInsensitive );
 }
 
-void QgsDataSourceSelectWidget::setLayerTypeFilter( QgsMapLayerType layerType )
+void QgsDataSourceSelectWidget::setLayerTypeFilter( Qgis::LayerType layerType )
 {
   mBrowserProxyModel.setFilterByLayerType( true );
   mBrowserProxyModel.setLayerType( layerType );
@@ -318,7 +318,7 @@ void QgsDataSourceSelectWidget::itemDoubleClicked( const QModelIndex &index )
 // QgsDataSourceSelectDialog
 //
 
-QgsDataSourceSelectDialog::QgsDataSourceSelectDialog( QgsBrowserGuiModel *browserModel, bool setFilterByLayerType, QgsMapLayerType layerType, QWidget *parent )
+QgsDataSourceSelectDialog::QgsDataSourceSelectDialog( QgsBrowserGuiModel *browserModel, bool setFilterByLayerType, Qgis::LayerType layerType, QWidget *parent )
   : QDialog( parent )
 {
   setWindowTitle( tr( "Select a Data Source" ) );
@@ -344,7 +344,7 @@ QgsDataSourceSelectDialog::QgsDataSourceSelectDialog( QgsBrowserGuiModel *browse
   setLayout( vl );
 }
 
-void QgsDataSourceSelectDialog::setLayerTypeFilter( QgsMapLayerType layerType )
+void QgsDataSourceSelectDialog::setLayerTypeFilter( Qgis::LayerType layerType )
 {
   mWidget->setLayerTypeFilter( layerType );
 }

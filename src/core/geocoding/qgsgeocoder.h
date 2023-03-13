@@ -78,7 +78,7 @@ class CORE_EXPORT QgsGeocoderInterface
      * in the case that a geocoder may return different geometry types depending on the
      * quality of the match).
      */
-    virtual QgsWkbTypes::Type wkbType() const;
+    virtual Qgis::WkbType wkbType() const;
 
     /**
      * Geocodes a \a string.

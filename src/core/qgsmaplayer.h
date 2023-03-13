@@ -77,7 +77,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     Q_PROPERTY( int autoRefreshInterval READ autoRefreshInterval WRITE setAutoRefreshInterval NOTIFY autoRefreshIntervalChanged )
     Q_PROPERTY( QgsLayerMetadata metadata READ metadata WRITE setMetadata NOTIFY metadataChanged )
     Q_PROPERTY( QgsCoordinateReferenceSystem crs READ crs WRITE setCrs NOTIFY crsChanged )
-    Q_PROPERTY( QgsMapLayerType type READ type CONSTANT )
+    Q_PROPERTY( Qgis::LayerType type READ type CONSTANT )
     Q_PROPERTY( bool isValid READ isValid NOTIFY isValidChanged )
     Q_PROPERTY( double opacity READ opacity WRITE setOpacity NOTIFY opacityChanged )
     Q_PROPERTY( QString mapTipTemplate READ mapTipTemplate WRITE setMapTipTemplate NOTIFY mapTipTemplateChanged )
@@ -92,28 +92,28 @@ class CORE_EXPORT QgsMapLayer : public QObject
     {
       switch ( layer->type() )
       {
-        case QgsMapLayerType::VectorLayer:
+        case Qgis::LayerType::Vector:
           sipType = sipType_QgsVectorLayer;
           break;
-        case QgsMapLayerType::RasterLayer:
+        case Qgis::LayerType::Raster:
           sipType = sipType_QgsRasterLayer;
           break;
-        case QgsMapLayerType::PluginLayer:
+        case Qgis::LayerType::Plugin:
           sipType = sipType_QgsPluginLayer;
           break;
-        case QgsMapLayerType::MeshLayer:
+        case Qgis::LayerType::Mesh:
           sipType = sipType_QgsMeshLayer;
           break;
-        case QgsMapLayerType::VectorTileLayer:
+        case Qgis::LayerType::VectorTile:
           sipType = sipType_QgsVectorTileLayer;
           break;
-        case QgsMapLayerType::AnnotationLayer:
+        case Qgis::LayerType::Annotation:
           sipType = sipType_QgsAnnotationLayer;
           break;
-        case QgsMapLayerType::PointCloudLayer:
+        case Qgis::LayerType::PointCloud:
           sipType = sipType_QgsPointCloudLayer;
           break;
-        case QgsMapLayerType::GroupLayer:
+        case Qgis::LayerType::Group:
           sipType = sipType_QgsGroupLayer;
           break;
         default:
@@ -189,7 +189,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * \param name display name for the layer
      * \param source datasource of layer
      */
-    QgsMapLayer( QgsMapLayerType type = QgsMapLayerType::VectorLayer, const QString &name = QString(), const QString &source = QString() );
+    QgsMapLayer( Qgis::LayerType type = Qgis::LayerType::Vector, const QString &name = QString(), const QString &source = QString() );
 
     ~QgsMapLayer() override;
 
@@ -209,7 +209,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     /**
      * Returns the type of the layer.
      */
-    QgsMapLayerType type() const;
+    Qgis::LayerType type() const;
 
     /**
      * Returns the flags for this layer.
@@ -2118,7 +2118,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     QString mID;
 
     //! Type of the layer (e.g., vector, raster)
-    QgsMapLayerType mLayerType;
+    Qgis::LayerType mLayerType;
 
     LayerFlags mFlags = LayerFlags( Identifiable | Removable | Searchable );
 

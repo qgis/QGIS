@@ -14,9 +14,7 @@ email                : marco.hugentobler at sourcepole dot com
  ***************************************************************************/
 
 #include "qgsmultipolygon.h"
-#include "qgsapplication.h"
 #include "qgsgeometryutils.h"
-#include "qgssurface.h"
 #include "qgslinestring.h"
 #include "qgspolygon.h"
 #include "qgscurvepolygon.h"
@@ -27,7 +25,7 @@ email                : marco.hugentobler at sourcepole dot com
 
 QgsMultiPolygon::QgsMultiPolygon()
 {
-  mWkbType = QgsWkbTypes::MultiPolygon;
+  mWkbType = Qgis::WkbType::MultiPolygon;
 }
 
 QgsPolygon *QgsMultiPolygon::polygonN( int index )
@@ -48,7 +46,7 @@ QString QgsMultiPolygon::geometryType() const
 void QgsMultiPolygon::clear()
 {
   QgsMultiSurface::clear();
-  mWkbType = QgsWkbTypes::MultiPolygon;
+  mWkbType = Qgis::WkbType::MultiPolygon;
 }
 
 QgsMultiPolygon *QgsMultiPolygon::createEmptyWithSameType() const
@@ -152,7 +150,7 @@ bool QgsMultiPolygon::addGeometry( QgsAbstractGeometry *g )
 
   if ( mGeometries.empty() )
   {
-    setZMTypeFromSubGeometry( g, QgsWkbTypes::MultiPolygon );
+    setZMTypeFromSubGeometry( g, Qgis::WkbType::MultiPolygon );
   }
   if ( is3D() && !g->is3D() )
     g->addZValue();
@@ -163,7 +161,7 @@ bool QgsMultiPolygon::addGeometry( QgsAbstractGeometry *g )
   else if ( !isMeasure() && g->isMeasure() )
     g->dropMValue();
 
-  return QgsGeometryCollection::addGeometry( g ); // clazy:exclude=skipped-base-method
+  return QgsGeometryCollection::addGeometry( g ); // NOLINT(bugprone-parent-virtual-call) clazy:exclude=skipped-base-method
 }
 
 bool QgsMultiPolygon::insertGeometry( QgsAbstractGeometry *g, int index )

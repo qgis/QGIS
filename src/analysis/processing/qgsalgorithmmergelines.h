@@ -50,7 +50,7 @@ class QgsMergeLinesAlgorithm : public QgsProcessingFeatureBasedAlgorithm
   protected:
     QString outputName() const override;
     QgsProcessing::SourceType outputLayerType() const override;
-    QgsWkbTypes::Type outputWkbType( QgsWkbTypes::Type ) const override;
+    Qgis::WkbType outputWkbType( Qgis::WkbType ) const override;
     QgsFeatureList processFeature( const QgsFeature &feature,  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
 };

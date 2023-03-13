@@ -13,10 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
-
 #include "qgssymbolslistwidget.h"
-
-#include "qgsstylemanagerdialog.h"
 #include "qgsstylesavedialog.h"
 #include "qgsstyleitemslistwidget.h"
 #include "qgsvectorlayer.h"
@@ -24,11 +21,12 @@
 #include "qgsauxiliarystorage.h"
 #include "qgsmarkersymbol.h"
 #include "qgslinesymbol.h"
-#include "qgsfillsymbol.h"
 #include "qgssymbolanimationsettingswidget.h"
 #include "qgsprojectstylesettings.h"
 
 #include <QMessageBox>
+#include <QAction>
+#include <QMenu>
 
 QgsSymbolsListWidget::QgsSymbolsListWidget( QgsSymbol *symbol, QgsStyle *style, QMenu *menu, QWidget *parent, QgsVectorLayer *layer )
   : QWidget( parent )
@@ -107,8 +105,12 @@ QgsSymbolsListWidget::QgsSymbolsListWidget( QgsSymbol *symbol, QgsStyle *style, 
 
   stackedWidget->setCurrentIndex( 0 );
 
-  mSymbolUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
-                               << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
+  mSymbolUnitWidget->setUnits( { Qgis::RenderUnit::Millimeters,
+                                 Qgis::RenderUnit::MetersInMapUnits,
+                                 Qgis::RenderUnit::MapUnits,
+                                 Qgis::RenderUnit::Pixels,
+                                 Qgis::RenderUnit::Points,
+                                 Qgis::RenderUnit::Inches } );
 
   if ( mSymbol )
   {

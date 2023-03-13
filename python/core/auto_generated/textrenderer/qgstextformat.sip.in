@@ -327,7 +327,7 @@ Sets the size for rendered text.
 .. seealso:: :py:func:`setSizeUnit`
 %End
 
-    QgsUnitTypes::RenderUnit sizeUnit() const;
+    Qgis::RenderUnit sizeUnit() const;
 %Docstring
 Returns the units for the size of rendered text.
 
@@ -338,7 +338,7 @@ Returns the units for the size of rendered text.
 .. seealso:: :py:func:`sizeMapUnitScale`
 %End
 
-    void setSizeUnit( QgsUnitTypes::RenderUnit unit );
+    void setSizeUnit( Qgis::RenderUnit unit );
 %Docstring
 Sets the units for the size of rendered text.
 
@@ -477,7 +477,7 @@ Otherwise ``height`` is an absolute measurement in :py:func:`~QgsTextFormat.line
 .. seealso:: :py:func:`setLineHeightUnit`
 %End
 
-    QgsUnitTypes::RenderUnit lineHeightUnit() const;
+    Qgis::RenderUnit lineHeightUnit() const;
 %Docstring
 Returns the units for the line height for text.
 
@@ -488,7 +488,7 @@ Returns the units for the line height for text.
 .. versionadded:: 3.28
 %End
 
-    void setLineHeightUnit( QgsUnitTypes::RenderUnit unit );
+    void setLineHeightUnit( Qgis::RenderUnit unit );
 %Docstring
 Sets the ``unit`` for the line height for text.
 

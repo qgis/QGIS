@@ -33,7 +33,7 @@ class QgsRasterBlock;
  * Elevations are encoded as colors in QImage, thanks to this it is not
  * only possible to set elevation for each pixel, but also to use QPainter
  * for more complex updates of elevations. We encode elevations to 24 bits
- * in range of [-8000, 8777] with precision of three decimal digits, which
+ * in range of [-7900, 8877] with precision of three decimal digits, which
  * should give millimiter precision and enough range for elevation values
  * in meters.
  *

@@ -21,7 +21,6 @@
 #include "qgsidentifycontext.h"
 #include "qgsmaptool.h"
 #include "qgspointxy.h"
-#include "qgsunittypes.h"
 
 #include <QObject>
 #include <QPointer>
@@ -260,14 +259,14 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
      * \see displayAreaUnits()
      * \since QGIS 2.14
      */
-    virtual QgsUnitTypes::DistanceUnit displayDistanceUnits() const;
+    virtual Qgis::DistanceUnit displayDistanceUnits() const;
 
     /**
      * Desired units for area display.
      * \see displayDistanceUnits()
      * \since QGIS 2.14
      */
-    virtual QgsUnitTypes::AreaUnit displayAreaUnits() const;
+    virtual Qgis::AreaUnit displayAreaUnits() const;
 
     /**
      * Format a distance into a suitable string for display to the user
@@ -287,13 +286,13 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
      * Format a distance into a suitable string for display to the user
      * \see formatArea()
      */
-    QString formatDistance( double distance, QgsUnitTypes::DistanceUnit unit ) const;
+    QString formatDistance( double distance, Qgis::DistanceUnit unit ) const;
 
     /**
      * Format a distance into a suitable string for display to the user
      * \see formatDistance()
      */
-    QString formatArea( double area, QgsUnitTypes::AreaUnit unit ) const;
+    QString formatArea( double area, Qgis::AreaUnit unit ) const;
 
     QMap< QString, QString > featureDerivedAttributes( const QgsFeature &feature, QgsMapLayer *layer, const QgsPointXY &layerPoint = QgsPointXY() );
 

@@ -19,7 +19,6 @@
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgslabeling.h"
-#include "qgsunittypes.h"
 #include "qgsmapunitscale.h"
 #include <QString>
 
@@ -245,7 +244,7 @@ class CORE_EXPORT QgsLabelLineSettings
      * \see overrunDistance()
      * \see overrunDistanceMapUnitScale()
      */
-    QgsUnitTypes::RenderUnit overrunDistanceUnit() const {return mOverrunDistanceUnit; }
+    Qgis::RenderUnit overrunDistanceUnit() const {return mOverrunDistanceUnit; }
 
     /**
      * Sets the \a unit for label overrun distance.
@@ -253,7 +252,7 @@ class CORE_EXPORT QgsLabelLineSettings
      * \see overrunDistance()
      * \see overrunDistanceMapUnitScale()
      */
-    void setOverrunDistanceUnit( const QgsUnitTypes::RenderUnit &unit ) { mOverrunDistanceUnit = unit;}
+    void setOverrunDistanceUnit( const Qgis::RenderUnit &unit ) { mOverrunDistanceUnit = unit;}
 
     /**
      * Returns the map unit scale for label overrun distance.
@@ -374,7 +373,7 @@ class CORE_EXPORT QgsLabelLineSettings
     bool mReverseDirectionSymbol = false;
     DirectionSymbolPlacement mPlaceDirectionSymbol = DirectionSymbolPlacement::SymbolLeftRight;
     double mOverrunDistance = 0;
-    QgsUnitTypes::RenderUnit mOverrunDistanceUnit = QgsUnitTypes::RenderMillimeters;
+    Qgis::RenderUnit mOverrunDistanceUnit = Qgis::RenderUnit::Millimeters;
     QgsMapUnitScale mOverrunDistanceMapUnitScale;
 
     double mLineAnchorPercent = 0.5;

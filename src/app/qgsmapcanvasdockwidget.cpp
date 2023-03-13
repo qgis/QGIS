@@ -22,7 +22,6 @@
 #include "qgsmaptoolpan.h"
 #include "qgsmapthemecollection.h"
 #include "qgsproject.h"
-#include "qgsmapthemes.h"
 #include "qgslayertreeview.h"
 #include "qgslayertreeviewdefaultactions.h"
 #include "qgisapp.h"
@@ -56,7 +55,7 @@ QgsMapCanvasDockWidget::QgsMapCanvasDockWidget( const QString &name, QWidget *pa
   mXyMarker->setColor( QColor( 30, 30, 30, 225 ) );
   mXyMarker->setFillColor( QColor( 255, 255, 255, 225 ) );
 
-  mExtentRubberBand = new QgsRubberBand( mMapCanvas, QgsWkbTypes::PolygonGeometry );
+  mExtentRubberBand = new QgsRubberBand( mMapCanvas, Qgis::GeometryType::Polygon );
   mExtentRubberBand->setStrokeColor( Qt::red );
   mExtentRubberBand->setSecondaryStrokeColor( QColor( 255, 255, 255, 225 ) );
   mExtentRubberBand->setFillColor( Qt::transparent );

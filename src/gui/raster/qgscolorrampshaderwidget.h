@@ -140,7 +140,7 @@ class GUI_EXPORT QgsColorRampShaderWidget: public QWidget, protected Ui::QgsColo
     void mLoadFromBandButton_clicked();
     void mLoadFromFileButton_clicked();
     void mExportToFileButton_clicked();
-    void mUnitLineEdit_textEdited( const QString &text ) { Q_UNUSED( text ) autoLabel(); }
+    void mUnitLineEdit_textEdited( const QString &text );
     void mColormapTreeWidget_itemDoubleClicked( QTreeWidgetItem *item, int column );
     void mColormapTreeWidget_itemEdited( QTreeWidgetItem *item, int column );
     void mColorInterpolationComboBox_currentIndexChanged( int index );
@@ -170,6 +170,8 @@ class GUI_EXPORT QgsColorRampShaderWidget: public QWidget, protected Ui::QgsColo
     QgsRectangle mExtent;
     QgsLocaleAwareNumericLineEditDelegate *mValueDelegate = nullptr;
     QgsColorRampLegendNodeSettings mLegendSettings;
+
+    int mBlockChanges = 0;
 
 
 };

@@ -136,7 +136,7 @@ If not explicitly set, the ellipsoid will default to the :py:func:`~QgsProcessin
 .. versionadded:: 3.16
 %End
 
-    QgsUnitTypes::DistanceUnit distanceUnit() const;
+    Qgis::DistanceUnit distanceUnit() const;
 %Docstring
 Returns the distance unit to use for distance calculations.
 
@@ -147,7 +147,7 @@ Returns the distance unit to use for distance calculations.
 .. versionadded:: 3.16
 %End
 
-    void setDistanceUnit( QgsUnitTypes::DistanceUnit unit );
+    void setDistanceUnit( Qgis::DistanceUnit unit );
 %Docstring
 Sets the ``unit`` to use for distance calculations.
 
@@ -160,7 +160,7 @@ If not explicitly set, the unit will default to the :py:func:`~QgsProcessingCont
 .. versionadded:: 3.16
 %End
 
-    QgsUnitTypes::AreaUnit areaUnit() const;
+    Qgis::AreaUnit areaUnit() const;
 %Docstring
 Returns the area unit to use for area calculations.
 
@@ -171,7 +171,7 @@ Returns the area unit to use for area calculations.
 .. versionadded:: 3.16
 %End
 
-    void setAreaUnit( QgsUnitTypes::AreaUnit areaUnit );
+    void setAreaUnit( Qgis::AreaUnit areaUnit );
 %Docstring
 Sets the ``unit`` to use for area calculations.
 

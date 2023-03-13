@@ -294,7 +294,7 @@ class QgsPluginInstaller(QObject):
     def exportSettingsGroup(self):
         """ Return QgsSettings settingsGroup value """
         # todo QGIS 4 remove
-        return "plugins/_plugin_manager"
+        return "plugin-manager"
 
     # ----------------------------------------- #
     def upgradeAllUpgradeable(self):
@@ -578,7 +578,7 @@ class QgsPluginInstaller(QObject):
         if not os.path.isfile(filePath):
             return
 
-        QgsSettingsTree.createPluginTreeNode("_plugin_manager").childSetting("last-zip-directory").setValue(QFileInfo(filePath).absoluteDir().absolutePath())
+        QgsSettingsTree.node("plugin-manager").childSetting("last-zip-directory").setValue(QFileInfo(filePath).absoluteDir().absolutePath())
 
         pluginName = None
         with zipfile.ZipFile(filePath, 'r') as zf:

@@ -64,7 +64,7 @@ for tracking the mouse while drawing polylines or polygons.
       ICON_SVG
     };
 
-    QgsRubberBand( QgsMapCanvas *mapCanvas /TransferThis/, QgsWkbTypes::GeometryType geometryType = QgsWkbTypes::LineGeometry );
+    QgsRubberBand( QgsMapCanvas *mapCanvas /TransferThis/, Qgis::GeometryType geometryType = Qgis::GeometryType::Line );
 %Docstring
 Creates a new RubberBand.
 
@@ -183,7 +183,7 @@ Sets the style of the line
 Sets the style of the brush
 %End
 
-    void reset( QgsWkbTypes::GeometryType geometryType = QgsWkbTypes::LineGeometry );
+    void reset( Qgis::GeometryType geometryType = Qgis::GeometryType::Line );
 %Docstring
 Clears all the geometries in this rubberband.
 Sets the representation type according to geometryType.

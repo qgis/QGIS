@@ -76,16 +76,20 @@ class CORE_EXPORT QgsProcessingFeatureSourceDefinition
      * The optional \a featureLimit can be set to a value > 0 to place a hard limit on the maximum number
      * of features which will be read from the source.
      *
+     * Since QGIS 3.32, the optional \a filterExpression argument can be used to specify a expression to use
+     * to filter the features read from the source.
+     *
      * The \a flags argument can be used to specify flags which dictate the source behavior.
      *
      * If the QgsProcessingFeatureSourceDefinition::Flag::FlagOverrideDefaultGeometryCheck is set in \a flags, then the value of \a geometryCheck will override
      * the default geometry check method (as dictated by QgsProcessingContext) for this source.
      */
     QgsProcessingFeatureSourceDefinition( const QString &source = QString(), bool selectedFeaturesOnly = false, long long featureLimit = -1,
-                                          QgsProcessingFeatureSourceDefinition::Flags flags = QgsProcessingFeatureSourceDefinition::Flags(), QgsFeatureRequest::InvalidGeometryCheck geometryCheck = QgsFeatureRequest::GeometryAbortOnInvalid )
+                                          QgsProcessingFeatureSourceDefinition::Flags flags = QgsProcessingFeatureSourceDefinition::Flags(), QgsFeatureRequest::InvalidGeometryCheck geometryCheck = QgsFeatureRequest::GeometryAbortOnInvalid, const QString &filterExpression = QString() )
       : source( QgsProperty::fromValue( source ) )
       , selectedFeaturesOnly( selectedFeaturesOnly )
       , featureLimit( featureLimit )
+      , filterExpression( filterExpression )
       , flags( flags )
       , geometryCheck( geometryCheck )
     {}
@@ -98,16 +102,20 @@ class CORE_EXPORT QgsProcessingFeatureSourceDefinition
      * The optional \a featureLimit can be set to a value > 0 to place a hard limit on the maximum number
      * of features which will be read from the source.
      *
+     * Since QGIS 3.32, the optional \a filterExpression argument can be used to specify a expression to use
+     * to filter the features read from the source.
+     *
      * The \a flags argument can be used to specify flags which dictate the source behavior.
      *
      * If the QgsProcessingFeatureSourceDefinition::Flag::FlagOverrideDefaultGeometryCheck is set in \a flags, then the value of \a geometryCheck will override
      * the default geometry check method (as dictated by QgsProcessingContext) for this source.
      */
     QgsProcessingFeatureSourceDefinition( const QgsProperty &source, bool selectedFeaturesOnly = false, long long featureLimit = -1,
-                                          QgsProcessingFeatureSourceDefinition::Flags flags = QgsProcessingFeatureSourceDefinition::Flags(), QgsFeatureRequest::InvalidGeometryCheck geometryCheck = QgsFeatureRequest::GeometryAbortOnInvalid )
+                                          QgsProcessingFeatureSourceDefinition::Flags flags = QgsProcessingFeatureSourceDefinition::Flags(), QgsFeatureRequest::InvalidGeometryCheck geometryCheck = QgsFeatureRequest::GeometryAbortOnInvalid, const QString &filterExpression = QString() )
       : source( source )
       , selectedFeaturesOnly( selectedFeaturesOnly )
       , featureLimit( featureLimit )
+      , filterExpression( filterExpression )
       , flags( flags )
       , geometryCheck( geometryCheck )
     {}
@@ -129,6 +137,13 @@ class CORE_EXPORT QgsProcessingFeatureSourceDefinition
      * \since QGIS 3.14
      */
     long long featureLimit = -1;
+
+    /**
+     * Optional expression filter to use for filtering features which will be read from the source.
+     *
+     * \since QGIS 3.32
+     */
+    QString filterExpression;
 
     /**
      * Flags which dictate source behavior.
@@ -169,6 +184,7 @@ class CORE_EXPORT QgsProcessingFeatureSourceDefinition
       return source == other.source
              && selectedFeaturesOnly == other.selectedFeaturesOnly
              && featureLimit == other.featureLimit
+             && filterExpression == other.filterExpression
              && flags == other.flags
              && geometryCheck == other.geometryCheck;
     }
@@ -305,7 +321,7 @@ class CORE_EXPORT QgsProcessingOutputLayerDefinition
   private:
 
     bool mUseRemapping = false;
-    QgsRemappingSinkDefinition mRemappingDefinition;
+    QgsRemappingSinkDefinition mRemappingDefinition = QgsRemappingSinkDefinition();
 
 };
 
@@ -1159,7 +1175,7 @@ class CORE_EXPORT QgsProcessingParameters
      * This function creates a new object and the caller takes responsibility for deleting the returned object.
      */
     static QgsFeatureSink *parameterAsSink( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters,
-                                            const QgsFields &fields, QgsWkbTypes::Type geometryType, const QgsCoordinateReferenceSystem &crs,
+                                            const QgsFields &fields, Qgis::WkbType geometryType, const QgsCoordinateReferenceSystem &crs,
                                             QgsProcessingContext &context, QString &destinationIdentifier SIP_OUT, QgsFeatureSink::SinkFlags sinkFlags = QgsFeatureSink::SinkFlags(), const QVariantMap &createOptions = QVariantMap(), const QStringList &datasourceOptions = QStringList(), const QStringList &layerOptions = QStringList() ) SIP_FACTORY;
 
     /**
@@ -1182,7 +1198,7 @@ class CORE_EXPORT QgsProcessingParameters
      * \since QGIS 3.4
      */
     static QgsFeatureSink *parameterAsSink( const QgsProcessingParameterDefinition *definition, const QVariant &value,
-                                            const QgsFields &fields, QgsWkbTypes::Type geometryType, const QgsCoordinateReferenceSystem &crs,
+                                            const QgsFields &fields, Qgis::WkbType geometryType, const QgsCoordinateReferenceSystem &crs,
                                             QgsProcessingContext &context, QString &destinationIdentifier SIP_OUT, QgsFeatureSink::SinkFlags sinkFlags = QgsFeatureSink::SinkFlags(), const QVariantMap &createOptions = QVariantMap(), const QStringList &datasourceOptions = QStringList(), const QStringList &layerOptions = QStringList() ) SIP_THROW( QgsProcessingException ) SIP_FACTORY;
 
     /**
@@ -2366,7 +2382,7 @@ class CORE_EXPORT QgsProcessingParameterDistance : public QgsProcessingParameter
      * \see setDefaultUnit()
      * \since QGIS 3.4.3
      */
-    QgsUnitTypes::DistanceUnit defaultUnit() const { return mDefaultUnit; }
+    Qgis::DistanceUnit defaultUnit() const { return mDefaultUnit; }
 
     /**
      * Sets the default distance \a unit for the parameter.
@@ -2374,7 +2390,7 @@ class CORE_EXPORT QgsProcessingParameterDistance : public QgsProcessingParameter
      * \see defaultUnit()
      * \since QGIS 3.4.3
      */
-    void setDefaultUnit( QgsUnitTypes::DistanceUnit unit ) { mDefaultUnit = unit; }
+    void setDefaultUnit( Qgis::DistanceUnit unit ) { mDefaultUnit = unit; }
 
     QVariantMap toVariantMap() const override;
     bool fromVariantMap( const QVariantMap &map ) override;
@@ -2382,7 +2398,7 @@ class CORE_EXPORT QgsProcessingParameterDistance : public QgsProcessingParameter
   private:
 
     QString mParentParameterName;
-    QgsUnitTypes::DistanceUnit mDefaultUnit = QgsUnitTypes::DistanceUnknownUnit;
+    Qgis::DistanceUnit mDefaultUnit = Qgis::DistanceUnit::Unknown;
 
 };
 
@@ -2421,21 +2437,21 @@ class CORE_EXPORT QgsProcessingParameterDuration : public QgsProcessingParameter
      *
      * \see setDefaultUnit()
      */
-    QgsUnitTypes::TemporalUnit defaultUnit() const { return mDefaultUnit; }
+    Qgis::TemporalUnit defaultUnit() const { return mDefaultUnit; }
 
     /**
      * Sets the default duration \a unit for the parameter.
      *
      * \see defaultUnit()
      */
-    void setDefaultUnit( QgsUnitTypes::TemporalUnit unit ) { mDefaultUnit = unit; }
+    void setDefaultUnit( Qgis::TemporalUnit unit ) { mDefaultUnit = unit; }
 
     QVariantMap toVariantMap() const override;
     bool fromVariantMap( const QVariantMap &map ) override;
 
   private:
 
-    QgsUnitTypes::TemporalUnit mDefaultUnit = QgsUnitTypes::TemporalMilliseconds;
+    Qgis::TemporalUnit mDefaultUnit = Qgis::TemporalUnit::Milliseconds;
 
 };
 

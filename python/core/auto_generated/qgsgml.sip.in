@@ -32,7 +32,7 @@ request is finished
       const QgsFields &fields );
 
     int getFeatures( const QString &uri,
-                     QgsWkbTypes::Type *wkbType,
+                     Qgis::WkbType *wkbType,
                      QgsRectangle *extent = 0,
                      const QString &userName = QString(),
                      const QString &password = QString(),
@@ -54,7 +54,7 @@ Does the Http GET request to the wfs server
    available in Python as getFeaturesUri
 %End
 
-    int getFeatures( const QByteArray &data, QgsWkbTypes::Type *wkbType, QgsRectangle *extent = 0 );
+    int getFeatures( const QByteArray &data, Qgis::WkbType *wkbType, QgsRectangle *extent = 0 );
 %Docstring
 Read from GML data. Constructor uri param is ignored
 %End

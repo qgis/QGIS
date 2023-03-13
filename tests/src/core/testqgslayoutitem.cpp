@@ -33,6 +33,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsfillsymbol.h"
+#include "qgslayoutrendercontext.h"
 
 #include <QObject>
 #include <QPainter>
@@ -87,7 +88,7 @@ class MinSizedItem : public TestItem
   public:
     MinSizedItem( QgsLayout *layout ) : TestItem( layout )
     {
-      setMinimumSize( QgsLayoutSize( 5.0, 10.0, QgsUnitTypes::LayoutCentimeters ) );
+      setMinimumSize( QgsLayoutSize( 5.0, 10.0, Qgis::LayoutUnit::Centimeters ) );
     }
 
     void updateMinSize( QgsLayoutSize size )
@@ -106,7 +107,7 @@ class FixedSizedItem : public TestItem
 
     FixedSizedItem( QgsLayout *layout ) : TestItem( layout )
     {
-      setFixedSize( QgsLayoutSize( 2.0, 4.0, QgsUnitTypes::LayoutInches ) );
+      setFixedSize( QgsLayoutSize( 2.0, 4.0, Qgis::LayoutUnit::Inches ) );
     }
 
     void updateFixedSize( QgsLayoutSize size )
@@ -124,8 +125,8 @@ class FixedMinSizedItem : public TestItem
 
     FixedMinSizedItem( QgsLayout *layout ) : TestItem( layout )
     {
-      setFixedSize( QgsLayoutSize( 2.0, 4.0, QgsUnitTypes::LayoutCentimeters ) );
-      setMinimumSize( QgsLayoutSize( 5.0, 9.0, QgsUnitTypes::LayoutCentimeters ) );
+      setFixedSize( QgsLayoutSize( 2.0, 4.0, Qgis::LayoutUnit::Centimeters ) );
+      setMinimumSize( QgsLayoutSize( 5.0, 9.0, Qgis::LayoutUnit::Centimeters ) );
     }
 };
 
@@ -373,14 +374,14 @@ void TestQgsLayoutItem::positionWithUnits()
   QgsLayout l( &p );
 
   std::unique_ptr< TestItem > item( new TestItem( &l ) );
-  item->attemptMove( QgsLayoutPoint( 60.0, 15.0, QgsUnitTypes::LayoutMillimeters ) );
+  item->attemptMove( QgsLayoutPoint( 60.0, 15.0, Qgis::LayoutUnit::Millimeters ) );
   QCOMPARE( item->positionWithUnits().x(), 60.0 );
   QCOMPARE( item->positionWithUnits().y(), 15.0 );
-  QCOMPARE( item->positionWithUnits().units(), QgsUnitTypes::LayoutMillimeters );
-  item->attemptMove( QgsLayoutPoint( 50.0, 100.0, QgsUnitTypes::LayoutPixels ) );
+  QCOMPARE( item->positionWithUnits().units(), Qgis::LayoutUnit::Millimeters );
+  item->attemptMove( QgsLayoutPoint( 50.0, 100.0, Qgis::LayoutUnit::Pixels ) );
   QCOMPARE( item->positionWithUnits().x(), 50.0 );
   QCOMPARE( item->positionWithUnits().y(), 100.0 );
-  QCOMPARE( item->positionWithUnits().units(), QgsUnitTypes::LayoutPixels );
+  QCOMPARE( item->positionWithUnits().units(), Qgis::LayoutUnit::Pixels );
 }
 
 void TestQgsLayoutItem::sizeWithUnits()
@@ -389,14 +390,14 @@ void TestQgsLayoutItem::sizeWithUnits()
   QgsLayout l( &p );
 
   TestItem *item = new TestItem( &l );
-  item->attemptResize( QgsLayoutSize( 60.0, 15.0, QgsUnitTypes::LayoutMillimeters ) );
+  item->attemptResize( QgsLayoutSize( 60.0, 15.0, Qgis::LayoutUnit::Millimeters ) );
   QCOMPARE( item->sizeWithUnits().width(), 60.0 );
   QCOMPARE( item->sizeWithUnits().height(), 15.0 );
-  QCOMPARE( item->sizeWithUnits().units(), QgsUnitTypes::LayoutMillimeters );
-  item->attemptResize( QgsLayoutSize( 50.0, 100.0, QgsUnitTypes::LayoutPixels ) );
+  QCOMPARE( item->sizeWithUnits().units(), Qgis::LayoutUnit::Millimeters );
+  item->attemptResize( QgsLayoutSize( 50.0, 100.0, Qgis::LayoutUnit::Pixels ) );
   QCOMPARE( item->sizeWithUnits().width(), 50.0 );
   QCOMPARE( item->sizeWithUnits().height(), 100.0 );
-  QCOMPARE( item->sizeWithUnits().units(), QgsUnitTypes::LayoutPixels );
+  QCOMPARE( item->sizeWithUnits().units(), Qgis::LayoutUnit::Pixels );
 
   delete item;
 }
@@ -408,22 +409,22 @@ void TestQgsLayoutItem::dataDefinedPosition()
 
   //test setting data defined position
   TestItem *item = new TestItem( &l );
-  l.setUnits( QgsUnitTypes::LayoutMillimeters );
-  item->attemptMove( QgsLayoutPoint( 6.0, 1.50, QgsUnitTypes::LayoutCentimeters ) );
-  item->attemptResize( QgsLayoutSize( 2.0, 4.0, QgsUnitTypes::LayoutCentimeters ) );
+  l.setUnits( Qgis::LayoutUnit::Millimeters );
+  item->attemptMove( QgsLayoutPoint( 6.0, 1.50, Qgis::LayoutUnit::Centimeters ) );
+  item->attemptResize( QgsLayoutSize( 2.0, 4.0, Qgis::LayoutUnit::Centimeters ) );
 
   // position x
   item->dataDefinedProperties().setProperty( QgsLayoutObject::PositionX, QgsProperty::fromExpression( QStringLiteral( "4+7" ) ) );
   item->refreshDataDefinedProperty( QgsLayoutObject::PositionX );
   QCOMPARE( item->positionWithUnits().x(), 11.0 );
-  QCOMPARE( item->positionWithUnits().units(), QgsUnitTypes::LayoutCentimeters );
+  QCOMPARE( item->positionWithUnits().units(), Qgis::LayoutUnit::Centimeters );
   QCOMPARE( item->scenePos().x(), 110.0 ); //mm
 
   //position y
   item->dataDefinedProperties().setProperty( QgsLayoutObject::PositionY, QgsProperty::fromExpression( QStringLiteral( "2+3" ) ) );
   item->refreshDataDefinedProperty( QgsLayoutObject::PositionY );
   QCOMPARE( item->positionWithUnits().y(), 5.0 );
-  QCOMPARE( item->positionWithUnits().units(), QgsUnitTypes::LayoutCentimeters );
+  QCOMPARE( item->positionWithUnits().units(), Qgis::LayoutUnit::Centimeters );
   QCOMPARE( item->scenePos().y(), 50.0 ); //mm
 
   //refreshPosition should also respect data defined positioning
@@ -433,33 +434,33 @@ void TestQgsLayoutItem::dataDefinedPosition()
   item->refreshItemPosition();
   QCOMPARE( item->positionWithUnits().x(), 12.0 );
   QCOMPARE( item->positionWithUnits().y(), 6.0 );
-  QCOMPARE( item->positionWithUnits().units(), QgsUnitTypes::LayoutCentimeters );
+  QCOMPARE( item->positionWithUnits().units(), Qgis::LayoutUnit::Centimeters );
   QCOMPARE( item->scenePos().x(), 120.0 ); //mm
   QCOMPARE( item->scenePos().y(), 60.0 ); //mm
 
   //also check that data defined position overrides when attempting to move
-  item->attemptMove( QgsLayoutPoint( 6.0, 1.50, QgsUnitTypes::LayoutCentimeters ) );
+  item->attemptMove( QgsLayoutPoint( 6.0, 1.50, Qgis::LayoutUnit::Centimeters ) );
   QCOMPARE( item->positionWithUnits().x(), 12.0 );
   QCOMPARE( item->positionWithUnits().y(), 6.0 );
-  QCOMPARE( item->positionWithUnits().units(), QgsUnitTypes::LayoutCentimeters );
+  QCOMPARE( item->positionWithUnits().units(), Qgis::LayoutUnit::Centimeters );
   QCOMPARE( item->scenePos().x(), 120.0 ); //mm
   QCOMPARE( item->scenePos().y(), 60.0 ); //mm
   //restriction only for x position
   item->dataDefinedProperties().setProperty( QgsLayoutObject::PositionX, QgsProperty::fromExpression( QStringLiteral( "4+8" ) ) );
   item->dataDefinedProperties().setProperty( QgsLayoutObject::PositionY, QgsProperty() );
-  item->attemptMove( QgsLayoutPoint( 6.0, 1.5, QgsUnitTypes::LayoutCentimeters ) );
+  item->attemptMove( QgsLayoutPoint( 6.0, 1.5, Qgis::LayoutUnit::Centimeters ) );
   QCOMPARE( item->positionWithUnits().x(), 12.0 );
   QCOMPARE( item->positionWithUnits().y(), 1.5 );
-  QCOMPARE( item->positionWithUnits().units(), QgsUnitTypes::LayoutCentimeters );
+  QCOMPARE( item->positionWithUnits().units(), Qgis::LayoutUnit::Centimeters );
   QCOMPARE( item->scenePos().x(), 120.0 ); //mm
   QCOMPARE( item->scenePos().y(), 15.0 ); //mm
   //restriction only for y position
   item->dataDefinedProperties().setProperty( QgsLayoutObject::PositionX, QgsProperty() );
   item->dataDefinedProperties().setProperty( QgsLayoutObject::PositionY, QgsProperty::fromExpression( QStringLiteral( "2+4" ) ) );
-  item->attemptMove( QgsLayoutPoint( 7.0, 1.5, QgsUnitTypes::LayoutCentimeters ) );
+  item->attemptMove( QgsLayoutPoint( 7.0, 1.5, Qgis::LayoutUnit::Centimeters ) );
   QCOMPARE( item->positionWithUnits().x(), 7.0 );
   QCOMPARE( item->positionWithUnits().y(), 6.0 );
-  QCOMPARE( item->positionWithUnits().units(), QgsUnitTypes::LayoutCentimeters );
+  QCOMPARE( item->positionWithUnits().units(), Qgis::LayoutUnit::Centimeters );
   QCOMPARE( item->scenePos().x(), 70.0 ); //mm
   QCOMPARE( item->scenePos().y(), 60.0 ); //mm
 
@@ -467,20 +468,20 @@ void TestQgsLayoutItem::dataDefinedPosition()
   item->dataDefinedProperties().setProperty( QgsLayoutObject::PositionX, QgsProperty::fromExpression( QStringLiteral( "4+8" ) ) );
   item->dataDefinedProperties().setProperty( QgsLayoutObject::PositionY, QgsProperty::fromExpression( QStringLiteral( "2+4" ) ) );
   //first set to same as existing position, but with different units
-  item->attemptMove( QgsLayoutPoint( 120.0, 60.0, QgsUnitTypes::LayoutMillimeters ) );
+  item->attemptMove( QgsLayoutPoint( 120.0, 60.0, Qgis::LayoutUnit::Millimeters ) );
   //data defined position should utilize new units
   QCOMPARE( item->positionWithUnits().x(), 12.0 ); //mm
   QCOMPARE( item->positionWithUnits().y(), 6.0 ); //mm
-  QCOMPARE( item->positionWithUnits().units(), QgsUnitTypes::LayoutMillimeters );
+  QCOMPARE( item->positionWithUnits().units(), Qgis::LayoutUnit::Millimeters );
   QCOMPARE( item->scenePos().x(), 12.0 ); //mm
   QCOMPARE( item->scenePos().y(), 6.0 ); //mm
 
   //test that data defined position applies to item's reference point
-  item->attemptMove( QgsLayoutPoint( 12.0, 6.0, QgsUnitTypes::LayoutCentimeters ) );
+  item->attemptMove( QgsLayoutPoint( 12.0, 6.0, Qgis::LayoutUnit::Centimeters ) );
   item->setReferencePoint( QgsLayoutItem::LowerRight );
   QCOMPARE( item->positionWithUnits().x(), 12.0 ); //cm
   QCOMPARE( item->positionWithUnits().y(), 6.0 ); //cm
-  QCOMPARE( item->positionWithUnits().units(), QgsUnitTypes::LayoutCentimeters );
+  QCOMPARE( item->positionWithUnits().units(), Qgis::LayoutUnit::Centimeters );
   QCOMPARE( item->scenePos().x(), 100.0 ); //mm
   QCOMPARE( item->scenePos().y(), 20.0 ); //mm
 
@@ -491,7 +492,7 @@ void TestQgsLayoutItem::dataDefinedPosition()
   item->refreshItemPosition();
   QCOMPARE( item->positionWithUnits().x(), 16.0 ); //cm
   QCOMPARE( item->positionWithUnits().y(), 8.0 ); //cm
-  QCOMPARE( item->positionWithUnits().units(), QgsUnitTypes::LayoutCentimeters );
+  QCOMPARE( item->positionWithUnits().units(), Qgis::LayoutUnit::Centimeters );
   QCOMPARE( item->scenePos().x(), 140.0 ); //mm
   QCOMPARE( item->scenePos().y(), 40.0 ); //mm
 
@@ -505,22 +506,22 @@ void TestQgsLayoutItem::dataDefinedSize()
 
   //test setting data defined size
   TestItem *item = new TestItem( &l );
-  l.setUnits( QgsUnitTypes::LayoutMillimeters );
-  item->attemptMove( QgsLayoutPoint( 6.0, 1.50, QgsUnitTypes::LayoutCentimeters ) );
-  item->attemptResize( QgsLayoutSize( 2.0, 4.0, QgsUnitTypes::LayoutCentimeters ) );
+  l.setUnits( Qgis::LayoutUnit::Millimeters );
+  item->attemptMove( QgsLayoutPoint( 6.0, 1.50, Qgis::LayoutUnit::Centimeters ) );
+  item->attemptResize( QgsLayoutSize( 2.0, 4.0, Qgis::LayoutUnit::Centimeters ) );
 
   //width
   item->dataDefinedProperties().setProperty( QgsLayoutObject::ItemWidth, QgsProperty::fromExpression( QStringLiteral( "4+7" ) ) );
   item->refreshDataDefinedProperty( QgsLayoutObject::ItemWidth );
   QCOMPARE( item->sizeWithUnits().width(), 11.0 );
-  QCOMPARE( item->sizeWithUnits().units(), QgsUnitTypes::LayoutCentimeters );
+  QCOMPARE( item->sizeWithUnits().units(), Qgis::LayoutUnit::Centimeters );
   QCOMPARE( item->rect().width(), 110.0 ); //mm
 
   //height
   item->dataDefinedProperties().setProperty( QgsLayoutObject::ItemHeight, QgsProperty::fromExpression( QStringLiteral( "2+3" ) ) );
   item->refreshDataDefinedProperty( QgsLayoutObject::ItemHeight );
   QCOMPARE( item->sizeWithUnits().height(), 5.0 );
-  QCOMPARE( item->sizeWithUnits().units(), QgsUnitTypes::LayoutCentimeters );
+  QCOMPARE( item->sizeWithUnits().units(), Qgis::LayoutUnit::Centimeters );
   QCOMPARE( item->rect().height(), 50.0 ); //mm
 
   //refreshSize should also respect data defined size
@@ -530,33 +531,33 @@ void TestQgsLayoutItem::dataDefinedSize()
   item->refreshItemSize();
   QCOMPARE( item->sizeWithUnits().width(), 12.0 );
   QCOMPARE( item->sizeWithUnits().height(), 6.0 );
-  QCOMPARE( item->sizeWithUnits().units(), QgsUnitTypes::LayoutCentimeters );
+  QCOMPARE( item->sizeWithUnits().units(), Qgis::LayoutUnit::Centimeters );
   QCOMPARE( item->rect().width(), 120.0 ); //mm
   QCOMPARE( item->rect().height(), 60.0 ); //mm
 
   //also check that data defined size overrides when attempting to resize
-  item->attemptResize( QgsLayoutSize( 6.0, 1.50, QgsUnitTypes::LayoutCentimeters ) );
+  item->attemptResize( QgsLayoutSize( 6.0, 1.50, Qgis::LayoutUnit::Centimeters ) );
   QCOMPARE( item->sizeWithUnits().width(), 12.0 );
   QCOMPARE( item->sizeWithUnits().height(), 6.0 );
-  QCOMPARE( item->sizeWithUnits().units(), QgsUnitTypes::LayoutCentimeters );
+  QCOMPARE( item->sizeWithUnits().units(), Qgis::LayoutUnit::Centimeters );
   QCOMPARE( item->rect().width(), 120.0 ); //mm
   QCOMPARE( item->rect().height(), 60.0 ); //mm
   //restriction only for width
   item->dataDefinedProperties().setProperty( QgsLayoutObject::ItemWidth, QgsProperty::fromExpression( QStringLiteral( "4+8" ) ) );
   item->dataDefinedProperties().setProperty( QgsLayoutObject::ItemHeight, QgsProperty() );
-  item->attemptResize( QgsLayoutSize( 6.0, 1.50, QgsUnitTypes::LayoutCentimeters ) );
+  item->attemptResize( QgsLayoutSize( 6.0, 1.50, Qgis::LayoutUnit::Centimeters ) );
   QCOMPARE( item->sizeWithUnits().width(), 12.0 );
   QCOMPARE( item->sizeWithUnits().height(), 1.5 );
-  QCOMPARE( item->sizeWithUnits().units(), QgsUnitTypes::LayoutCentimeters );
+  QCOMPARE( item->sizeWithUnits().units(), Qgis::LayoutUnit::Centimeters );
   QCOMPARE( item->rect().width(), 120.0 ); //mm
   QCOMPARE( item->rect().height(), 15.0 ); //mm
   //restriction only for y position
   item->dataDefinedProperties().setProperty( QgsLayoutObject::ItemWidth, QgsProperty() );
   item->dataDefinedProperties().setProperty( QgsLayoutObject::ItemHeight, QgsProperty::fromExpression( QStringLiteral( "2+4" ) ) );
-  item->attemptResize( QgsLayoutSize( 7.0, 1.50, QgsUnitTypes::LayoutCentimeters ) );
+  item->attemptResize( QgsLayoutSize( 7.0, 1.50, Qgis::LayoutUnit::Centimeters ) );
   QCOMPARE( item->sizeWithUnits().width(), 7.0 );
   QCOMPARE( item->sizeWithUnits().height(), 6.0 );
-  QCOMPARE( item->sizeWithUnits().units(), QgsUnitTypes::LayoutCentimeters );
+  QCOMPARE( item->sizeWithUnits().units(), Qgis::LayoutUnit::Centimeters );
   QCOMPARE( item->rect().width(), 70.0 ); //mm
   QCOMPARE( item->rect().height(), 60.0 ); //mm
 
@@ -564,33 +565,33 @@ void TestQgsLayoutItem::dataDefinedSize()
   item->dataDefinedProperties().setProperty( QgsLayoutObject::ItemWidth, QgsProperty() );
   item->dataDefinedProperties().setProperty( QgsLayoutObject::ItemHeight, QgsProperty() );
   item->dataDefinedProperties().setProperty( QgsLayoutObject::PresetPaperSize, QgsProperty::fromValue( QStringLiteral( "A5" ) ) );
-  item->attemptResize( QgsLayoutSize( 7.0, 1.50, QgsUnitTypes::LayoutCentimeters ) );
+  item->attemptResize( QgsLayoutSize( 7.0, 1.50, Qgis::LayoutUnit::Centimeters ) );
   QCOMPARE( item->sizeWithUnits().width(), 14.8 );
   QCOMPARE( item->sizeWithUnits().height(), 21.0 );
-  QCOMPARE( item->sizeWithUnits().units(), QgsUnitTypes::LayoutCentimeters );
+  QCOMPARE( item->sizeWithUnits().units(), Qgis::LayoutUnit::Centimeters );
   QCOMPARE( item->rect().width(), 148.0 ); //mm
   QCOMPARE( item->rect().height(), 210.0 ); //mm
   // data defined height/width should override page size
   item->dataDefinedProperties().setProperty( QgsLayoutObject::ItemWidth, QgsProperty::fromValue( "13.0" ) );
-  item->attemptResize( QgsLayoutSize( 7.0, 1.50, QgsUnitTypes::LayoutCentimeters ) );
+  item->attemptResize( QgsLayoutSize( 7.0, 1.50, Qgis::LayoutUnit::Centimeters ) );
   QCOMPARE( item->sizeWithUnits().width(), 13.0 );
   QCOMPARE( item->sizeWithUnits().height(), 21.0 );
-  QCOMPARE( item->sizeWithUnits().units(), QgsUnitTypes::LayoutCentimeters );
+  QCOMPARE( item->sizeWithUnits().units(), Qgis::LayoutUnit::Centimeters );
   QCOMPARE( item->rect().width(), 130.0 ); //mm
   QCOMPARE( item->rect().height(), 210.0 ); //mm
   item->dataDefinedProperties().setProperty( QgsLayoutObject::ItemHeight, QgsProperty::fromValue( "3.0" ) );
-  item->attemptResize( QgsLayoutSize( 7.0, 1.50, QgsUnitTypes::LayoutCentimeters ) );
+  item->attemptResize( QgsLayoutSize( 7.0, 1.50, Qgis::LayoutUnit::Centimeters ) );
   QCOMPARE( item->sizeWithUnits().width(), 13.0 );
   QCOMPARE( item->sizeWithUnits().height(), 3.0 );
-  QCOMPARE( item->sizeWithUnits().units(), QgsUnitTypes::LayoutCentimeters );
+  QCOMPARE( item->sizeWithUnits().units(), Qgis::LayoutUnit::Centimeters );
   QCOMPARE( item->rect().width(), 130.0 ); //mm
   QCOMPARE( item->rect().height(), 30.0 ); //mm
   // data defined orientation
   item->dataDefinedProperties().setProperty( QgsLayoutObject::PaperOrientation, QgsProperty::fromValue( "portrait" ) );
-  item->attemptResize( QgsLayoutSize( 7.0, 1.50, QgsUnitTypes::LayoutCentimeters ) );
+  item->attemptResize( QgsLayoutSize( 7.0, 1.50, Qgis::LayoutUnit::Centimeters ) );
   QCOMPARE( item->sizeWithUnits().width(), 3.0 );
   QCOMPARE( item->sizeWithUnits().height(), 13.0 );
-  QCOMPARE( item->sizeWithUnits().units(), QgsUnitTypes::LayoutCentimeters );
+  QCOMPARE( item->sizeWithUnits().units(), Qgis::LayoutUnit::Centimeters );
   QCOMPARE( item->rect().width(), 30.0 ); //mm
   QCOMPARE( item->rect().height(), 130.0 ); //mm
 
@@ -598,10 +599,10 @@ void TestQgsLayoutItem::dataDefinedSize()
   item->dataDefinedProperties().setProperty( QgsLayoutObject::ItemHeight, QgsProperty() );
   item->dataDefinedProperties().setProperty( QgsLayoutObject::PresetPaperSize, QgsProperty() );
   item->dataDefinedProperties().setProperty( QgsLayoutObject::PaperOrientation, QgsProperty::fromValue( "landscape" ) );
-  item->attemptResize( QgsLayoutSize( 1.0, 1.50, QgsUnitTypes::LayoutCentimeters ) );
+  item->attemptResize( QgsLayoutSize( 1.0, 1.50, Qgis::LayoutUnit::Centimeters ) );
   QCOMPARE( item->sizeWithUnits().width(), 1.5 );
   QCOMPARE( item->sizeWithUnits().height(), 1.0 );
-  QCOMPARE( item->sizeWithUnits().units(), QgsUnitTypes::LayoutCentimeters );
+  QCOMPARE( item->sizeWithUnits().units(), Qgis::LayoutUnit::Centimeters );
   QCOMPARE( item->rect().width(), 15.0 ); //mm
   QCOMPARE( item->rect().height(), 10.0 ); //mm
   item->dataDefinedProperties().setProperty( QgsLayoutObject::PaperOrientation, QgsProperty() );
@@ -610,19 +611,19 @@ void TestQgsLayoutItem::dataDefinedSize()
   item->dataDefinedProperties().setProperty( QgsLayoutObject::ItemWidth, QgsProperty::fromExpression( QStringLiteral( "4+8" ) ) );
   item->dataDefinedProperties().setProperty( QgsLayoutObject::ItemHeight, QgsProperty::fromExpression( QStringLiteral( "2+4" ) ) );
   //first set to same as existing size, but with different units
-  item->attemptResize( QgsLayoutSize( 120.0, 60.0, QgsUnitTypes::LayoutMillimeters ) );
+  item->attemptResize( QgsLayoutSize( 120.0, 60.0, Qgis::LayoutUnit::Millimeters ) );
   //data defined size should utilize new units
   QCOMPARE( item->sizeWithUnits().width(), 12.0 ); //mm
   QCOMPARE( item->sizeWithUnits().height(), 6.0 ); //mm
-  QCOMPARE( item->sizeWithUnits().units(), QgsUnitTypes::LayoutMillimeters );
+  QCOMPARE( item->sizeWithUnits().units(), Qgis::LayoutUnit::Millimeters );
   QCOMPARE( item->rect().width(), 12.0 ); //mm
   QCOMPARE( item->rect().height(), 6.0 ); //mm
 
   //test that data defined size applies to item's reference point
   item->dataDefinedProperties().setProperty( QgsLayoutObject::ItemWidth, QgsProperty() );
   item->dataDefinedProperties().setProperty( QgsLayoutObject::ItemHeight, QgsProperty() );
-  item->attemptResize( QgsLayoutSize( 10.0, 5.0, QgsUnitTypes::LayoutMillimeters ) );
-  item->attemptMove( QgsLayoutPoint( 20.0, 10.0, QgsUnitTypes::LayoutMillimeters ) );
+  item->attemptResize( QgsLayoutSize( 10.0, 5.0, Qgis::LayoutUnit::Millimeters ) );
+  item->attemptMove( QgsLayoutPoint( 20.0, 10.0, Qgis::LayoutUnit::Millimeters ) );
   item->dataDefinedProperties().setProperty( QgsLayoutObject::ItemWidth, QgsProperty::fromExpression( QStringLiteral( "5" ) ) );
   item->dataDefinedProperties().setProperty( QgsLayoutObject::ItemHeight, QgsProperty::fromExpression( QStringLiteral( "6" ) ) );
   item->setReferencePoint( QgsLayoutItem::LowerRight );
@@ -634,8 +635,8 @@ void TestQgsLayoutItem::dataDefinedSize()
   item->dataDefinedProperties().setProperty( QgsLayoutObject::ItemWidth, QgsProperty() );
   item->dataDefinedProperties().setProperty( QgsLayoutObject::ItemHeight, QgsProperty() );
   item->setReferencePoint( QgsLayoutItem::UpperLeft );
-  item->attemptResize( QgsLayoutSize( 10.0, 5.0, QgsUnitTypes::LayoutMillimeters ) );
-  item->attemptMove( QgsLayoutPoint( 20.0, 10.0, QgsUnitTypes::LayoutMillimeters ) );
+  item->attemptResize( QgsLayoutSize( 10.0, 5.0, Qgis::LayoutUnit::Millimeters ) );
+  item->attemptMove( QgsLayoutPoint( 20.0, 10.0, Qgis::LayoutUnit::Millimeters ) );
   item->setReferencePoint( QgsLayoutItem::LowerRight );
   item->dataDefinedProperties().setProperty( QgsLayoutObject::ItemWidth, QgsProperty::fromExpression( QStringLiteral( "7" ) ) );
   item->dataDefinedProperties().setProperty( QgsLayoutObject::ItemHeight, QgsProperty::fromExpression( QStringLiteral( "9" ) ) );
@@ -653,9 +654,9 @@ void TestQgsLayoutItem::combinedDataDefinedPositionAndSize()
 
   //test setting data defined size
   TestItem *item = new TestItem( &l );
-  l.setUnits( QgsUnitTypes::LayoutMillimeters );
-  item->attemptMove( QgsLayoutPoint( 6.0, 1.50, QgsUnitTypes::LayoutCentimeters ) );
-  item->attemptResize( QgsLayoutSize( 2.0, 4.0, QgsUnitTypes::LayoutCentimeters ) );
+  l.setUnits( Qgis::LayoutUnit::Millimeters );
+  item->attemptMove( QgsLayoutPoint( 6.0, 1.50, Qgis::LayoutUnit::Centimeters ) );
+  item->attemptResize( QgsLayoutSize( 2.0, 4.0, Qgis::LayoutUnit::Centimeters ) );
 
   //test item with all of data defined x, y, width, height set
   item->dataDefinedProperties().setProperty( QgsLayoutObject::PositionX, QgsProperty::fromExpression( QStringLiteral( "4+7" ) ) );
@@ -665,10 +666,10 @@ void TestQgsLayoutItem::combinedDataDefinedPositionAndSize()
   item->refreshDataDefinedProperty( QgsLayoutObject::AllProperties );
   QCOMPARE( item->positionWithUnits().x(), 11.0 );
   QCOMPARE( item->positionWithUnits().y(), 5.0 );
-  QCOMPARE( item->positionWithUnits().units(), QgsUnitTypes::LayoutCentimeters );
+  QCOMPARE( item->positionWithUnits().units(), Qgis::LayoutUnit::Centimeters );
   QCOMPARE( item->sizeWithUnits().width(), 13.0 );
   QCOMPARE( item->sizeWithUnits().height(), 6.0 );
-  QCOMPARE( item->sizeWithUnits().units(), QgsUnitTypes::LayoutCentimeters );
+  QCOMPARE( item->sizeWithUnits().units(), Qgis::LayoutUnit::Centimeters );
   QCOMPARE( item->scenePos().x(), 110.0 ); //mm
   QCOMPARE( item->scenePos().y(), 50.0 ); //mm
   QCOMPARE( item->rect().width(), 130.0 ); //mm
@@ -683,10 +684,10 @@ void TestQgsLayoutItem::combinedDataDefinedPositionAndSize()
   item->refreshDataDefinedProperty( QgsLayoutObject::AllProperties );
   QCOMPARE( item->positionWithUnits().x(), 12.0 );
   QCOMPARE( item->positionWithUnits().y(), 6.0 );
-  QCOMPARE( item->positionWithUnits().units(), QgsUnitTypes::LayoutCentimeters );
+  QCOMPARE( item->positionWithUnits().units(), Qgis::LayoutUnit::Centimeters );
   QCOMPARE( item->sizeWithUnits().width(), 10.0 );
   QCOMPARE( item->sizeWithUnits().height(), 4.0 );
-  QCOMPARE( item->sizeWithUnits().units(), QgsUnitTypes::LayoutCentimeters );
+  QCOMPARE( item->sizeWithUnits().units(), Qgis::LayoutUnit::Centimeters );
   QCOMPARE( item->scenePos().x(), 70.0 ); //mm
   QCOMPARE( item->scenePos().y(), 40.0 ); //mm
   QCOMPARE( item->rect().width(), 100.0 ); //mm
@@ -703,14 +704,14 @@ void TestQgsLayoutItem::resize()
   QgsLayout l( &p );
 
   //resize test item (no restrictions), same units as layout
-  l.setUnits( QgsUnitTypes::LayoutMillimeters );
+  l.setUnits( Qgis::LayoutUnit::Millimeters );
   std::unique_ptr< TestItem > item( new TestItem( &l ) );
   const QSignalSpy spySizeChanged( item.get(), &QgsLayoutItem::sizePositionChanged );
 
   item->setRect( 0, 0, 55, 45 );
   item->attemptMove( QgsLayoutPoint( 27, 29 ) );
   QCOMPARE( spySizeChanged.count(), 1 );
-  item->attemptResize( QgsLayoutSize( 100.0, 200.0, QgsUnitTypes::LayoutMillimeters ) );
+  item->attemptResize( QgsLayoutSize( 100.0, 200.0, Qgis::LayoutUnit::Millimeters ) );
   QCOMPARE( spySizeChanged.count(), 2 );
   QCOMPARE( item->rect().width(), 100.0 );
   QCOMPARE( item->rect().height(), 200.0 );
@@ -718,20 +719,20 @@ void TestQgsLayoutItem::resize()
   QCOMPARE( item->scenePos().y(), 29.0 );
 
   //test conversion of units
-  l.setUnits( QgsUnitTypes::LayoutCentimeters );
+  l.setUnits( Qgis::LayoutUnit::Centimeters );
   item->setRect( 0, 0, 100, 200 );
-  item->attemptResize( QgsLayoutSize( 0.30, 0.45, QgsUnitTypes::LayoutMeters ) );
+  item->attemptResize( QgsLayoutSize( 0.30, 0.45, Qgis::LayoutUnit::Meters ) );
   QCOMPARE( item->rect().width(), 30.0 );
   QCOMPARE( item->rect().height(), 45.0 );
   QCOMPARE( spySizeChanged.count(), 4 );
 
   //test pixel -> page conversion
-  l.setUnits( QgsUnitTypes::LayoutInches );
+  l.setUnits( Qgis::LayoutUnit::Inches );
   l.renderContext().setDpi( 100.0 );
   item->refresh();
   QCOMPARE( spySizeChanged.count(), 6 );
   item->setRect( 0, 0, 1, 2 );
-  item->attemptResize( QgsLayoutSize( 140, 280, QgsUnitTypes::LayoutPixels ) );
+  item->attemptResize( QgsLayoutSize( 140, 280, Qgis::LayoutUnit::Pixels ) );
   QCOMPARE( item->rect().width(), 1.4 );
   QCOMPARE( item->rect().height(), 2.8 );
   QCOMPARE( spySizeChanged.count(), 7 );
@@ -743,12 +744,12 @@ void TestQgsLayoutItem::resize()
   QCOMPARE( spySizeChanged.count(), 8 );
 
   //test page -> pixel conversion
-  l.setUnits( QgsUnitTypes::LayoutPixels );
+  l.setUnits( Qgis::LayoutUnit::Pixels );
   l.renderContext().setDpi( 100.0 );
   item->refresh();
   item->setRect( 0, 0, 2, 2 );
   QCOMPARE( spySizeChanged.count(), 10 );
-  item->attemptResize( QgsLayoutSize( 1, 3, QgsUnitTypes::LayoutInches ) );
+  item->attemptResize( QgsLayoutSize( 1, 3, Qgis::LayoutUnit::Inches ) );
   QCOMPARE( item->rect().width(), 100.0 );
   QCOMPARE( item->rect().height(), 300.0 );
   QCOMPARE( spySizeChanged.count(), 11 );
@@ -759,11 +760,11 @@ void TestQgsLayoutItem::resize()
   QCOMPARE( item->rect().height(), 600.0 );
   QCOMPARE( spySizeChanged.count(), 13 );
 
-  l.setUnits( QgsUnitTypes::LayoutMillimeters );
+  l.setUnits( Qgis::LayoutUnit::Millimeters );
 
   // try override item size in item
   item->forceResize = true;
-  item->attemptResize( QgsLayoutSize( 10.0, 15.0, QgsUnitTypes::LayoutMillimeters ) );
+  item->attemptResize( QgsLayoutSize( 10.0, 15.0, Qgis::LayoutUnit::Millimeters ) );
   QCOMPARE( item->rect().width(), 17.0 );
   QCOMPARE( item->rect().height(), 27.0 );
 }
@@ -816,7 +817,7 @@ void TestQgsLayoutItem::referencePoint()
   item.reset( new TestItem( &l ) );
 
   //test that setting item position is done relative to reference point
-  l.setUnits( QgsUnitTypes::LayoutMillimeters );
+  l.setUnits( Qgis::LayoutUnit::Millimeters );
   item->attemptResize( QgsLayoutSize( 2, 4 ) );
   item->setReferencePoint( QgsLayoutItem::UpperLeft );
   item->attemptMove( QgsLayoutPoint( 1, 2 ) );
@@ -1058,25 +1059,25 @@ void TestQgsLayoutItem::fixedSize()
   QgsProject p;
   QgsLayout l( &p );
 
-  l.setUnits( QgsUnitTypes::LayoutMillimeters );
+  l.setUnits( Qgis::LayoutUnit::Millimeters );
   std::unique_ptr< FixedSizedItem > item( new FixedSizedItem( &l ) );
   QCOMPARE( item->fixedSize().width(), 2.0 );
   QCOMPARE( item->fixedSize().height(), 4.0 );
-  QCOMPARE( item->fixedSize().units(), QgsUnitTypes::LayoutInches );
+  QCOMPARE( item->fixedSize().units(), Qgis::LayoutUnit::Inches );
 
   item->setRect( 0, 0, 5.0, 6.0 ); //temporarily set rect to random size
-  item->attemptResize( QgsLayoutSize( 7.0, 8.0, QgsUnitTypes::LayoutPoints ) );
+  item->attemptResize( QgsLayoutSize( 7.0, 8.0, Qgis::LayoutUnit::Points ) );
   //check size matches fixed item size converted to mm
   QGSCOMPARENEAR( item->rect().width(), 2.0 * 25.4, 4 * std::numeric_limits<double>::epsilon() );
   QGSCOMPARENEAR( item->rect().height(), 4.0 * 25.4, 4 * std::numeric_limits<double>::epsilon() );
 
-  item->attemptResize( QgsLayoutSize( 7.0, 8.0, QgsUnitTypes::LayoutInches ) );
+  item->attemptResize( QgsLayoutSize( 7.0, 8.0, Qgis::LayoutUnit::Inches ) );
   //check size matches fixed item size converted to mm
   QGSCOMPARENEAR( item->rect().width(), 2.0 * 25.4, 4 * std::numeric_limits<double>::epsilon() );
   QGSCOMPARENEAR( item->rect().height(), 4.0 * 25.4, 4 * std::numeric_limits<double>::epsilon() );
 
   //check that setting a fixed size applies this size immediately
-  item->updateFixedSize( QgsLayoutSize( 150, 250, QgsUnitTypes::LayoutMillimeters ) );
+  item->updateFixedSize( QgsLayoutSize( 150, 250, Qgis::LayoutUnit::Millimeters ) );
   QGSCOMPARENEAR( item->rect().width(), 150.0, 4 * std::numeric_limits<double>::epsilon() );
   QGSCOMPARENEAR( item->rect().height(), 250.0, 4 * std::numeric_limits<double>::epsilon() );
 }
@@ -1086,26 +1087,26 @@ void TestQgsLayoutItem::minSize()
   QgsProject p;
   QgsLayout l( &p );
 
-  l.setUnits( QgsUnitTypes::LayoutMillimeters );
+  l.setUnits( Qgis::LayoutUnit::Millimeters );
   std::unique_ptr< MinSizedItem > item( new MinSizedItem( &l ) );
   QCOMPARE( item->minimumSize().width(), 5.0 );
   QCOMPARE( item->minimumSize().height(), 10.0 );
-  QCOMPARE( item->minimumSize().units(), QgsUnitTypes::LayoutCentimeters );
+  QCOMPARE( item->minimumSize().units(), Qgis::LayoutUnit::Centimeters );
 
   item->setRect( 0, 0, 9.0, 6.0 ); //temporarily set rect to random size
   //try to resize to less than minimum size
-  item->attemptResize( QgsLayoutSize( 1.0, 0.5, QgsUnitTypes::LayoutPoints ) );
+  item->attemptResize( QgsLayoutSize( 1.0, 0.5, Qgis::LayoutUnit::Points ) );
   //check size matches min item size converted to mm
   QGSCOMPARENEAR( item->rect().width(), 50.0, 4 * std::numeric_limits<double>::epsilon() );
   QGSCOMPARENEAR( item->rect().height(), 100.0, 4 * std::numeric_limits<double>::epsilon() );
 
   //check that resize to larger than min size works
-  item->attemptResize( QgsLayoutSize( 0.1, 0.2, QgsUnitTypes::LayoutMeters ) );
+  item->attemptResize( QgsLayoutSize( 0.1, 0.2, Qgis::LayoutUnit::Meters ) );
   QGSCOMPARENEAR( item->rect().width(), 100.0, 4 * std::numeric_limits<double>::epsilon() );
   QGSCOMPARENEAR( item->rect().height(), 200.0, 4 * std::numeric_limits<double>::epsilon() );
 
   //check that setting a minimum size applies this size immediately
-  item->updateMinSize( QgsLayoutSize( 150, 250, QgsUnitTypes::LayoutMillimeters ) );
+  item->updateMinSize( QgsLayoutSize( 150, 250, Qgis::LayoutUnit::Millimeters ) );
   QGSCOMPARENEAR( item->rect().width(), 150.0, 4 * std::numeric_limits<double>::epsilon() );
   QGSCOMPARENEAR( item->rect().height(), 250.0, 4 * std::numeric_limits<double>::epsilon() );
 
@@ -1113,12 +1114,12 @@ void TestQgsLayoutItem::minSize()
   std::unique_ptr< FixedMinSizedItem > fixedMinItem( new FixedMinSizedItem( &l ) );
   QCOMPARE( fixedMinItem->minimumSize().width(), 5.0 );
   QCOMPARE( fixedMinItem->minimumSize().height(), 9.0 );
-  QCOMPARE( fixedMinItem->minimumSize().units(), QgsUnitTypes::LayoutCentimeters );
+  QCOMPARE( fixedMinItem->minimumSize().units(), Qgis::LayoutUnit::Centimeters );
   QCOMPARE( fixedMinItem->fixedSize().width(), 2.0 );
   QCOMPARE( fixedMinItem->fixedSize().height(), 4.0 );
-  QCOMPARE( fixedMinItem->fixedSize().units(), QgsUnitTypes::LayoutCentimeters );
+  QCOMPARE( fixedMinItem->fixedSize().units(), Qgis::LayoutUnit::Centimeters );
   //try to resize to less than minimum size
-  fixedMinItem->attemptResize( QgsLayoutSize( 1.0, 0.5, QgsUnitTypes::LayoutPoints ) );
+  fixedMinItem->attemptResize( QgsLayoutSize( 1.0, 0.5, Qgis::LayoutUnit::Points ) );
   //check size matches fixed item size, not minimum size (converted to mm)
   QGSCOMPARENEAR( fixedMinItem->rect().width(), 20.0, 4 * std::numeric_limits<double>::epsilon() );
   QGSCOMPARENEAR( fixedMinItem->rect().height(), 40.0, 4 * std::numeric_limits<double>::epsilon() );
@@ -1130,29 +1131,29 @@ void TestQgsLayoutItem::move()
   QgsLayout l( &p );
 
   //move test item, same units as layout
-  l.setUnits( QgsUnitTypes::LayoutMillimeters );
+  l.setUnits( Qgis::LayoutUnit::Millimeters );
   std::unique_ptr< TestItem > item( new TestItem( &l ) );
   item->setRect( 0, 0, 55, 45 );
   item->setPos( 27, 29 );
-  item->attemptMove( QgsLayoutPoint( 60.0, 15.0, QgsUnitTypes::LayoutMillimeters ) );
+  item->attemptMove( QgsLayoutPoint( 60.0, 15.0, Qgis::LayoutUnit::Millimeters ) );
   QCOMPARE( item->rect().width(), 55.0 ); //size should not change
   QCOMPARE( item->rect().height(), 45.0 );
   QCOMPARE( item->scenePos().x(), 60.0 );
   QCOMPARE( item->scenePos().y(), 15.0 );
 
   //test conversion of units
-  l.setUnits( QgsUnitTypes::LayoutCentimeters );
+  l.setUnits( Qgis::LayoutUnit::Centimeters );
   item->setPos( 100, 200 );
-  item->attemptMove( QgsLayoutPoint( 0.30, 0.45, QgsUnitTypes::LayoutMeters ) );
+  item->attemptMove( QgsLayoutPoint( 0.30, 0.45, Qgis::LayoutUnit::Meters ) );
   QCOMPARE( item->scenePos().x(), 30.0 );
   QCOMPARE( item->scenePos().y(), 45.0 );
 
   //test pixel -> page conversion
-  l.setUnits( QgsUnitTypes::LayoutInches );
+  l.setUnits( Qgis::LayoutUnit::Inches );
   l.renderContext().setDpi( 100.0 );
   item->refresh();
   item->setPos( 1, 2 );
-  item->attemptMove( QgsLayoutPoint( 140, 280, QgsUnitTypes::LayoutPixels ) );
+  item->attemptMove( QgsLayoutPoint( 140, 280, Qgis::LayoutUnit::Pixels ) );
   QCOMPARE( item->scenePos().x(), 1.4 );
   QCOMPARE( item->scenePos().y(), 2.8 );
   //changing the dpi should move the item
@@ -1162,11 +1163,11 @@ void TestQgsLayoutItem::move()
   QCOMPARE( item->scenePos().y(), 1.4 );
 
   //test page -> pixel conversion
-  l.setUnits( QgsUnitTypes::LayoutPixels );
+  l.setUnits( Qgis::LayoutUnit::Pixels );
   l.renderContext().setDpi( 100.0 );
   item->refresh();
   item->setPos( 2, 2 );
-  item->attemptMove( QgsLayoutPoint( 1, 3, QgsUnitTypes::LayoutInches ) );
+  item->attemptMove( QgsLayoutPoint( 1, 3, Qgis::LayoutUnit::Inches ) );
   QCOMPARE( item->scenePos().x(), 100.0 );
   QCOMPARE( item->scenePos().y(), 300.0 );
   //changing dpi results in item move
@@ -1175,7 +1176,7 @@ void TestQgsLayoutItem::move()
   QCOMPARE( item->scenePos().x(), 200.0 );
   QCOMPARE( item->scenePos().y(), 600.0 );
 
-  l.setUnits( QgsUnitTypes::LayoutMillimeters );
+  l.setUnits( Qgis::LayoutUnit::Millimeters );
 
   //reference points
   item->attemptMove( QgsLayoutPoint( 5, 9 ) );
@@ -1198,7 +1199,7 @@ void TestQgsLayoutItem::move()
 
   //moveBy
   item.reset( new TestItem( &l ) );
-  item->attemptMove( QgsLayoutPoint( 5, 9, QgsUnitTypes::LayoutCentimeters ) );
+  item->attemptMove( QgsLayoutPoint( 5, 9, Qgis::LayoutUnit::Centimeters ) );
   item->attemptResize( QgsLayoutSize( 4, 6 ) );
   QCOMPARE( item->positionWithUnits().x(), 5.0 );
   QCOMPARE( item->positionWithUnits().y(), 9.0 );
@@ -1207,7 +1208,7 @@ void TestQgsLayoutItem::move()
   item->attemptMoveBy( 5, -6 );
   QCOMPARE( item->positionWithUnits().x(), 5.5 );
   QCOMPARE( item->positionWithUnits().y(), 8.4 );
-  QCOMPARE( item->positionWithUnits().units(), QgsUnitTypes::LayoutCentimeters );
+  QCOMPARE( item->positionWithUnits().units(), Qgis::LayoutUnit::Centimeters );
   QCOMPARE( item->scenePos().x(), 55.0 );
   QCOMPARE( item->scenePos().y(), 84.0 );
 
@@ -1231,7 +1232,7 @@ void TestQgsLayoutItem::setSceneRect()
   QgsLayout l( &p );
 
   //resize test item (no restrictions), same units as layout
-  l.setUnits( QgsUnitTypes::LayoutMillimeters );
+  l.setUnits( Qgis::LayoutUnit::Millimeters );
   std::unique_ptr< TestItem > item( new TestItem( &l ) );
   const QSignalSpy spySizeChanged( item.get(), &QgsLayoutItem::sizePositionChanged );
 
@@ -1243,14 +1244,14 @@ void TestQgsLayoutItem::setSceneRect()
   QCOMPARE( item->scenePos().y(), 29.0 );
   QCOMPARE( item->positionWithUnits().x(), 27.0 );
   QCOMPARE( item->positionWithUnits().y(), 29.0 );
-  QCOMPARE( item->positionWithUnits().units(), QgsUnitTypes::LayoutMillimeters );
+  QCOMPARE( item->positionWithUnits().units(), Qgis::LayoutUnit::Millimeters );
   QCOMPARE( item->sizeWithUnits().width(), 100.0 );
   QCOMPARE( item->sizeWithUnits().height(), 200.0 );
-  QCOMPARE( item->sizeWithUnits().units(), QgsUnitTypes::LayoutMillimeters );
+  QCOMPARE( item->sizeWithUnits().units(), Qgis::LayoutUnit::Millimeters );
 
   //test conversion of units
-  item->attemptMove( QgsLayoutPoint( 1, 2, QgsUnitTypes::LayoutCentimeters ) );
-  item->attemptResize( QgsLayoutSize( 3, 4, QgsUnitTypes::LayoutCentimeters ) );
+  item->attemptMove( QgsLayoutPoint( 1, 2, Qgis::LayoutUnit::Centimeters ) );
+  item->attemptResize( QgsLayoutSize( 3, 4, Qgis::LayoutUnit::Centimeters ) );
   QCOMPARE( spySizeChanged.count(), 3 );
   item->attemptSetSceneRect( QRectF( 27.0, 29.0, 100, 200 ) );
   QCOMPARE( item->rect().width(), 100.0 );
@@ -1261,10 +1262,10 @@ void TestQgsLayoutItem::setSceneRect()
 
   QCOMPARE( item->positionWithUnits().x(), 2.70 );
   QCOMPARE( item->positionWithUnits().y(), 2.90 );
-  QCOMPARE( item->positionWithUnits().units(), QgsUnitTypes::LayoutCentimeters );
+  QCOMPARE( item->positionWithUnits().units(), Qgis::LayoutUnit::Centimeters );
   QCOMPARE( item->sizeWithUnits().width(), 10.0 );
   QCOMPARE( item->sizeWithUnits().height(), 20.0 );
-  QCOMPARE( item->sizeWithUnits().units(), QgsUnitTypes::LayoutCentimeters );
+  QCOMPARE( item->sizeWithUnits().units(), Qgis::LayoutUnit::Centimeters );
 }
 
 void TestQgsLayoutItem::page()
@@ -1289,7 +1290,7 @@ void TestQgsLayoutItem::page()
 
   // add pages
   std::unique_ptr< QgsLayoutItemPage > page( new QgsLayoutItemPage( &l ) );
-  page->setPageSize( QgsLayoutSize( 500, 100, QgsUnitTypes::LayoutMillimeters ) );
+  page->setPageSize( QgsLayoutSize( 500, 100, Qgis::LayoutUnit::Millimeters ) );
   l.pageCollection()->addPage( page.release() );
   QCOMPARE( item->page(), 0 );
   QCOMPARE( item->pagePos(), QPointF( 5, 5 ) );
@@ -1305,7 +1306,7 @@ void TestQgsLayoutItem::page()
 
   // second page
   page.reset( new QgsLayoutItemPage( &l ) );
-  page->setPageSize( QgsLayoutSize( 500, 200, QgsUnitTypes::LayoutMillimeters ) );
+  page->setPageSize( QgsLayoutSize( 500, 200, Qgis::LayoutUnit::Millimeters ) );
   l.pageCollection()->addPage( page.release() );
   QCOMPARE( item->page(), 1 );
   item->attemptMove( QgsLayoutPoint( 5, 190 ) );
@@ -1318,7 +1319,7 @@ void TestQgsLayoutItem::page()
   QCOMPARE( item->pagePositionWithUnits(), QgsLayoutPoint( 5, 240 ) );
 
   page.reset( new QgsLayoutItemPage( &l ) );
-  page->setPageSize( QgsLayoutSize( 500, 200, QgsUnitTypes::LayoutMillimeters ) );
+  page->setPageSize( QgsLayoutSize( 500, 200, Qgis::LayoutUnit::Millimeters ) );
   l.pageCollection()->addPage( page.release() );
   QCOMPARE( item->page(), 2 );
   QCOMPARE( item->pagePos(), QPointF( 5, 30 ) );
@@ -1335,33 +1336,33 @@ void TestQgsLayoutItem::page()
   QCOMPARE( item->pagePositionWithUnits(), QgsLayoutPoint( 55555, 30 ) );
 
   // with units
-  item->attemptMove( QgsLayoutPoint( 5, 35, QgsUnitTypes::LayoutCentimeters ) );
+  item->attemptMove( QgsLayoutPoint( 5, 35, Qgis::LayoutUnit::Centimeters ) );
   QCOMPARE( item->page(), 2 );
   QCOMPARE( item->pagePos(), QPointF( 50, 30 ) );
-  QCOMPARE( item->pagePositionWithUnits(), QgsLayoutPoint( 5, 3, QgsUnitTypes::LayoutCentimeters ) );
+  QCOMPARE( item->pagePositionWithUnits(), QgsLayoutPoint( 5, 3, Qgis::LayoutUnit::Centimeters ) );
 
   // move with page
   item->attemptMove( QgsLayoutPoint( 5, 6 ), true, false, 0 );
   QCOMPARE( item->page(), 0 );
-  QCOMPARE( item->positionWithUnits(), QgsLayoutPoint( 5, 6, QgsUnitTypes::LayoutMillimeters ) );
+  QCOMPARE( item->positionWithUnits(), QgsLayoutPoint( 5, 6, Qgis::LayoutUnit::Millimeters ) );
   item->attemptMove( QgsLayoutPoint( 5, 6 ), true, false, -1 );
   QCOMPARE( item->page(), 0 );
-  QCOMPARE( item->positionWithUnits(), QgsLayoutPoint( 5, 6, QgsUnitTypes::LayoutMillimeters ) );
+  QCOMPARE( item->positionWithUnits(), QgsLayoutPoint( 5, 6, Qgis::LayoutUnit::Millimeters ) );
   item->attemptMove( QgsLayoutPoint( 5, 6 ), true, false, 10000 );
   QCOMPARE( item->page(), 0 );
-  QCOMPARE( item->positionWithUnits(), QgsLayoutPoint( 5, 6, QgsUnitTypes::LayoutMillimeters ) );
+  QCOMPARE( item->positionWithUnits(), QgsLayoutPoint( 5, 6, Qgis::LayoutUnit::Millimeters ) );
   item->attemptMove( QgsLayoutPoint( 5, 6 ), true, false, 1 );
   QCOMPARE( item->page(), 1 );
-  QCOMPARE( item->pagePositionWithUnits(), QgsLayoutPoint( 5, 6, QgsUnitTypes::LayoutMillimeters ) );
-  QCOMPARE( item->positionWithUnits(), QgsLayoutPoint( 5, 116, QgsUnitTypes::LayoutMillimeters ) );
+  QCOMPARE( item->pagePositionWithUnits(), QgsLayoutPoint( 5, 6, Qgis::LayoutUnit::Millimeters ) );
+  QCOMPARE( item->positionWithUnits(), QgsLayoutPoint( 5, 116, Qgis::LayoutUnit::Millimeters ) );
   item->attemptMove( QgsLayoutPoint( 5, 6 ), true, false, 2 );
   QCOMPARE( item->page(), 2 );
-  QCOMPARE( item->pagePositionWithUnits(), QgsLayoutPoint( 5, 6, QgsUnitTypes::LayoutMillimeters ) );
-  QCOMPARE( item->positionWithUnits(), QgsLayoutPoint( 5, 326, QgsUnitTypes::LayoutMillimeters ) );
-  item->attemptMove( QgsLayoutPoint( 5, 6, QgsUnitTypes::LayoutCentimeters ), true, false, 2 );
+  QCOMPARE( item->pagePositionWithUnits(), QgsLayoutPoint( 5, 6, Qgis::LayoutUnit::Millimeters ) );
+  QCOMPARE( item->positionWithUnits(), QgsLayoutPoint( 5, 326, Qgis::LayoutUnit::Millimeters ) );
+  item->attemptMove( QgsLayoutPoint( 5, 6, Qgis::LayoutUnit::Centimeters ), true, false, 2 );
   QCOMPARE( item->page(), 2 );
-  QCOMPARE( item->pagePositionWithUnits(), QgsLayoutPoint( 5, 6, QgsUnitTypes::LayoutCentimeters ) );
-  QCOMPARE( item->positionWithUnits(), QgsLayoutPoint( 5, 38, QgsUnitTypes::LayoutCentimeters ) );
+  QCOMPARE( item->pagePositionWithUnits(), QgsLayoutPoint( 5, 6, Qgis::LayoutUnit::Centimeters ) );
+  QCOMPARE( item->positionWithUnits(), QgsLayoutPoint( 5, 38, Qgis::LayoutUnit::Centimeters ) );
 
   // non-top-left reference
   item->setReferencePoint( QgsLayoutItem::Middle );
@@ -1371,7 +1372,7 @@ void TestQgsLayoutItem::page()
   item->attemptMove( QgsLayoutPoint( 5, 6 ), true, false, 1 );
   QCOMPARE( item->page(), 1 );
   QCOMPARE( item->pagePos(), QPointF( 5, 6 ) );
-  QCOMPARE( item->pagePositionWithUnits(), QgsLayoutPoint( 5, 6, QgsUnitTypes::LayoutMillimeters ) );
+  QCOMPARE( item->pagePositionWithUnits(), QgsLayoutPoint( 5, 6, Qgis::LayoutUnit::Millimeters ) );
 }
 
 void TestQgsLayoutItem::itemVariablesFunction()
@@ -1516,7 +1517,7 @@ void TestQgsLayoutItem::rotation()
 
   const QSignalSpy spyRotationChanged( item, &QgsLayoutItem::rotationChanged );
 
-  l.setUnits( QgsUnitTypes::LayoutMillimeters );
+  l.setUnits( Qgis::LayoutUnit::Millimeters );
   item->setPos( 6.0, 10.0 );
   item->setRect( 0.0, 0.0, 10.0, 8.0 );
   item->setPen( Qt::NoPen );
@@ -1728,8 +1729,8 @@ void TestQgsLayoutItem::writeReadXmlProperties()
   original->dataDefinedProperties().setProperty( QgsLayoutObject::TestProperty, QgsProperty::fromExpression( QStringLiteral( "10 + 40" ) ) );
 
   original->setReferencePoint( QgsLayoutItem::MiddleRight );
-  original->attemptResize( QgsLayoutSize( 6, 8, QgsUnitTypes::LayoutCentimeters ) );
-  original->attemptMove( QgsLayoutPoint( 0.05, 0.09, QgsUnitTypes::LayoutMeters ) );
+  original->attemptResize( QgsLayoutSize( 6, 8, Qgis::LayoutUnit::Centimeters ) );
+  original->attemptMove( QgsLayoutPoint( 0.05, 0.09, Qgis::LayoutUnit::Meters ) );
   original->setItemRotation( 45.0 );
   original->setId( QStringLiteral( "test" ) );
   original->setLocked( true );
@@ -1737,7 +1738,7 @@ void TestQgsLayoutItem::writeReadXmlProperties()
   original->setVisible( false );
   original->setFrameEnabled( true );
   original->setFrameStrokeColor( QColor( 100, 150, 200 ) );
-  original->setFrameStrokeWidth( QgsLayoutMeasurement( 5, QgsUnitTypes::LayoutCentimeters ) );
+  original->setFrameStrokeWidth( QgsLayoutMeasurement( 5, Qgis::LayoutUnit::Centimeters ) );
   original->setFrameJoinStyle( Qt::MiterJoin );
   original->setBackgroundEnabled( false );
   original->setBackgroundColor( QColor( 200, 150, 100 ) );
@@ -1766,7 +1767,7 @@ void TestQgsLayoutItem::writeReadXmlProperties()
   QVERIFY( !copy->isVisible() );
   QVERIFY( copy->frameEnabled() );
   QCOMPARE( copy->frameStrokeColor(), QColor( 100, 150, 200 ) );
-  QCOMPARE( copy->frameStrokeWidth(), QgsLayoutMeasurement( 5, QgsUnitTypes::LayoutCentimeters ) );
+  QCOMPARE( copy->frameStrokeWidth(), QgsLayoutMeasurement( 5, Qgis::LayoutUnit::Centimeters ) );
   QCOMPARE( copy->frameJoinStyle(), Qt::MiterJoin );
   QVERIFY( !copy->hasBackground() );
   QCOMPARE( copy->backgroundColor(), QColor( 200, 150, 100 ) );
@@ -2068,7 +2069,7 @@ void TestQgsLayoutItem::excludeFromExports()
   QgsLayout l( &proj );
 
   std::unique_ptr< QgsLayoutItemPage > page( new QgsLayoutItemPage( &l ) );
-  page->setPageSize( QgsLayoutSize( 297, 210, QgsUnitTypes::LayoutMillimeters ) );
+  page->setPageSize( QgsLayoutSize( 297, 210, Qgis::LayoutUnit::Millimeters ) );
   l.pageCollection()->addPage( page.release() );
 
   QgsSimpleFillSymbolLayer *simpleFill = new QgsSimpleFillSymbolLayer();

@@ -21,9 +21,7 @@
 #include "qgsfields.h"
 #include "qgsstyle.h"
 #include "qgssymbolselectordialog.h"
-#include "qgssymbollayerutils.h"
 #include "qgsvectorlayer.h"
-#include "qgsguiutils.h"
 #include "qgsapplication.h"
 #include "qgsmarkersymbol.h"
 
@@ -42,7 +40,7 @@ QgsPointDisplacementRendererWidget::QgsPointDisplacementRendererWidget( QgsVecto
   }
 
   //the renderer only applies to point vector layers
-  if ( QgsWkbTypes::geometryType( layer->wkbType() ) != QgsWkbTypes::PointGeometry )
+  if ( QgsWkbTypes::geometryType( layer->wkbType() ) != Qgis::GeometryType::Point )
   {
     //setup blank dialog
     mRenderer = nullptr;
@@ -65,8 +63,8 @@ QgsPointDisplacementRendererWidget::QgsPointDisplacementRendererWidget( QgsVecto
   this->layout()->setContentsMargins( 0, 0, 0, 0 );
 
   mLabelFontButton->setMode( QgsFontButton::ModeQFont );
-  mDistanceUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
-                                 << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
+  mDistanceUnitWidget->setUnits( { Qgis::RenderUnit::Millimeters, Qgis::RenderUnit::MetersInMapUnits, Qgis::RenderUnit::MapUnits, Qgis::RenderUnit::Pixels,
+                                   Qgis::RenderUnit::Points, Qgis::RenderUnit::Inches} );
   mCenterSymbolToolButton->setSymbolType( Qgis::SymbolType::Marker );
 
   if ( renderer )

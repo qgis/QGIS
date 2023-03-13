@@ -84,7 +84,7 @@ Returns the blur level (radius)
 .. seealso:: :py:func:`blurMethod`
 %End
 
-    void setBlurUnit( const QgsUnitTypes::RenderUnit unit );
+    void setBlurUnit( const Qgis::RenderUnit unit );
 %Docstring
 Sets the units used for the blur level (radius).
 
@@ -99,7 +99,7 @@ Sets the units used for the blur level (radius).
 .. versionadded:: 3.4.9
 %End
 
-    QgsUnitTypes::RenderUnit blurUnit() const;
+    Qgis::RenderUnit blurUnit() const;
 %Docstring
 Returns the units used for the blur level (radius).
 

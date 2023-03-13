@@ -48,7 +48,7 @@ QgsPointCloudLayer::QgsPointCloudLayer( const QString &uri,
                                         const QString &baseName,
                                         const QString &providerLib,
                                         const QgsPointCloudLayer::LayerOptions &options )
-  : QgsMapLayer( QgsMapLayerType::PointCloudLayer, baseName, uri )
+  : QgsMapLayer( Qgis::LayerType::PointCloud, baseName, uri )
   , mElevationProperties( new QgsPointCloudLayerElevationProperties( this ) )
   , mLayerOptions( options )
 {
@@ -194,7 +194,7 @@ bool QgsPointCloudLayer::writeXml( QDomNode &layerNode, QDomDocument &doc, const
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
   QDomElement mapLayerNode = layerNode.toElement();
-  mapLayerNode.setAttribute( QStringLiteral( "type" ), QgsMapLayerFactory::typeToString( QgsMapLayerType::PointCloudLayer ) );
+  mapLayerNode.setAttribute( QStringLiteral( "type" ), QgsMapLayerFactory::typeToString( Qgis::LayerType::PointCloud ) );
 
   if ( !subsetString().isEmpty() )
   {
@@ -484,32 +484,14 @@ QString QgsPointCloudLayer::encodedSource( const QString &source, const QgsReadW
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  QVariantMap parts = QgsProviderRegistry::instance()->decodeUri( providerType(), source );
-  if ( parts.contains( QStringLiteral( "path" ) ) )
-  {
-    parts.insert( QStringLiteral( "path" ), context.pathResolver().writePath( parts.value( QStringLiteral( "path" ) ).toString() ) );
-    return QgsProviderRegistry::instance()->encodeUri( providerType(), parts );
-  }
-  else
-  {
-    return source;
-  }
+  return QgsProviderRegistry::instance()->absoluteToRelativeUri( mProviderKey, source, context );
 }
 
 QString QgsPointCloudLayer::decodedSource( const QString &source, const QString &dataProvider, const QgsReadWriteContext &context ) const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  QVariantMap parts = QgsProviderRegistry::instance()->decodeUri( dataProvider, source );
-  if ( parts.contains( QStringLiteral( "path" ) ) )
-  {
-    parts.insert( QStringLiteral( "path" ), context.pathResolver().readPath( parts.value( QStringLiteral( "path" ) ).toString() ) );
-    return QgsProviderRegistry::instance()->encodeUri( dataProvider, parts );
-  }
-  else
-  {
-    return source;
-  }
+  return QgsProviderRegistry::instance()->relativeToAbsoluteUri( dataProvider, source, context );
 }
 
 void QgsPointCloudLayer::onPointCloudIndexGenerationStateChanged( QgsPointCloudDataProvider::PointCloudIndexGenerationState state )

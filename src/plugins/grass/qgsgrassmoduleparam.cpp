@@ -872,7 +872,7 @@ void QgsGrassModuleGdalInput::updateQgisLayers()
   {
     if ( !layer ) continue;
 
-    if ( mType == Ogr && layer->type() == QgsMapLayerType::VectorLayer )
+    if ( mType == Ogr && layer->type() == Qgis::LayerType::Vector )
     {
       QgsVectorLayer *vector = qobject_cast<QgsVectorLayer *>( layer );
       if ( !vector ||
@@ -953,7 +953,7 @@ void QgsGrassModuleGdalInput::updateQgisLayers()
       mOgrLayers.push_back( ogrLayer );
       mOgrWheres.push_back( ogrWhere );
     }
-    else if ( mType == Gdal && layer->type() == QgsMapLayerType::RasterLayer )
+    else if ( mType == Gdal && layer->type() == Qgis::LayerType::Raster )
     {
       QString uri = layer->source();
       mLayerComboBox->addItem( layer->name() );

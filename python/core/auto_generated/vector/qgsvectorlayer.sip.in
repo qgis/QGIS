@@ -367,7 +367,7 @@ Constructor for LayerOptions.
 
       QgsCoordinateTransformContext transformContext;
 
-      QgsWkbTypes::Type fallbackWkbType;
+      Qgis::WkbType fallbackWkbType;
 
       QgsCoordinateReferenceSystem fallbackCrs;
 
@@ -890,12 +890,12 @@ Returns a list of the feature renderer generators owned by the layer.
 .. versionadded:: 3.18
 %End
 
-    QgsWkbTypes::GeometryType geometryType() const;
+    Qgis::GeometryType geometryType() const;
 %Docstring
 Returns point, line or polygon
 %End
 
-    virtual QgsWkbTypes::Type wkbType() const ${SIP_FINAL};
+    virtual Qgis::WkbType wkbType() const ${SIP_FINAL};
 
 %Docstring
 Returns the WKBType or WKBUnknown in case of error
@@ -2036,6 +2036,28 @@ Convenience function that returns the attribute alias if defined or the field na
     QgsStringMap attributeAliases() const;
 %Docstring
 Returns a map of field name to attribute alias
+%End
+
+
+    void setFieldSplitPolicy( int index, Qgis::FieldDomainSplitPolicy policy );
+%Docstring
+Sets a split ``policy`` for the field with the specified index.
+
+:raises KeyError: if no field with the specified index exists
+
+.. versionadded:: 3.30
+%End
+
+%MethodCode
+    if ( a0 < 0 || a0 >= sipCpp->fields().count() )
+    {
+      PyErr_SetString( PyExc_KeyError, QByteArray::number( a0 ) );
+      sipIsErr = 1;
+    }
+    else
+    {
+      sipCpp->setFieldSplitPolicy( a0, a1 );
+    }
 %End
 
  QSet<QString> excludeAttributesWms() const /Deprecated/;

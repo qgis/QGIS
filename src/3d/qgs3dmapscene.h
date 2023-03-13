@@ -23,6 +23,7 @@
 #include "qgsrectangle.h"
 #include "qgscameracontroller.h"
 
+#ifndef SIP_RUN
 namespace Qt3DRender
 {
   class QRenderSettings;
@@ -39,6 +40,8 @@ namespace Qt3DExtras
   class QForwardRenderer;
   class QSkyboxEntity;
 }
+#endif
+
 
 class Qgs3DAxis;
 class QgsAbstract3DEngine;
@@ -55,8 +58,6 @@ class QgsPostprocessingEntity;
 class QgsChunkNode;
 class QgsDoubleRange;
 
-#define SIP_NO_FILE
-
 
 /**
  * \ingroup 3d
@@ -64,17 +65,27 @@ class QgsDoubleRange;
  * \note Not available in Python bindings
  * \since QGIS 3.0
  */
+#ifndef SIP_RUN
 class _3D_EXPORT Qgs3DMapScene : public Qt3DCore::QEntity
 {
+#else
+class _3D_EXPORT Qgs3DMapScene : public QObject
+{
+#endif
+
     Q_OBJECT
   public:
     //! Constructs a 3D scene based on map settings and Qt 3D renderer configuration
-    Qgs3DMapScene( Qgs3DMapSettings &map, QgsAbstract3DEngine *engine );
+    Qgs3DMapScene( Qgs3DMapSettings &map, QgsAbstract3DEngine *engine ) SIP_SKIP;
 
     //! Returns camera controller
     QgsCameraController *cameraController() { return mCameraController; }
-    //! Returns terrain entity (may be temporarily NULLPTR)
-    QgsTerrainEntity *terrainEntity() { return mTerrain; }
+
+    /**
+     * Returns terrain entity (may be temporarily NULLPTR)
+     * \note Not available in Python bindings
+     */
+    QgsTerrainEntity *terrainEntity() SIP_SKIP { return mTerrain; }
 
     //! Resets camera view to show the whole scene (top view)
     void viewZoomFull();
@@ -162,14 +173,35 @@ class _3D_EXPORT Qgs3DMapScene : public Qt3DCore::QEntity
      *
      * \since QGIS 3.26
      */
-    Qgs3DAxis *get3DAxis() { return m3DAxis; }
+    Qgs3DAxis *get3DAxis() SIP_SKIP { return m3DAxis; }
 
     /**
      * Returns the abstract 3D engine
      *
      * \since QGIS 3.26
      */
-    QgsAbstract3DEngine *engine() { return mEngine; }
+    QgsAbstract3DEngine *engine() SIP_SKIP { return mEngine; }
+
+    /**
+     * Returns the 3D map settings.
+     *
+     * \since QGIS 3.30
+     */
+    Qgs3DMapSettings *mapSettings() const { return &mMap; }
+
+    /**
+     * Returns a map of 3D map scenes (by name) open in the QGIS application.
+     *
+     * \note Only available from the QGIS desktop application.
+     *
+     * \since QGIS 3.30
+     */
+    static QMap< QString, Qgs3DMapScene * > openScenes();
+
+#ifndef SIP_RUN
+    //! Static function for returning open 3D map scenes
+    static std::function< QMap< QString, Qgs3DMapScene * >() > sOpenScenesFunction;
+#endif
 
   signals:
     //! Emitted when the current terrain entity is replaced by a new one
@@ -227,6 +259,11 @@ class _3D_EXPORT Qgs3DMapScene : public Qt3DCore::QEntity
     bool updateCameraNearFarPlanes();
 
   private:
+#ifdef SIP_RUN
+    Qgs3DMapScene();
+    Qgs3DMapScene( const Qgs3DMapScene &other );
+#endif
+
     void addLayerEntity( QgsMapLayer *layer );
     void removeLayerEntity( QgsMapLayer *layer );
     void addCameraViewCenterEntity( Qt3DRender::QCamera *camera );

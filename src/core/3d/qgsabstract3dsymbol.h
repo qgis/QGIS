@@ -63,7 +63,7 @@ class CORE_EXPORT QgsAbstract3DSymbol
      *
      * \since QGIS 3.16
      */
-    virtual QList< QgsWkbTypes::GeometryType > compatibleGeometryTypes() const;
+    virtual QList< Qgis::GeometryType > compatibleGeometryTypes() const;
 
     //! Data definable properties.
     enum Property

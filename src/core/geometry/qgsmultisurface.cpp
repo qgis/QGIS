@@ -15,7 +15,6 @@ email                : marco.hugentobler at sourcepole dot com
  ***************************************************************************/
 
 #include "qgsmultisurface.h"
-#include "qgsapplication.h"
 #include "qgsgeometryutils.h"
 #include "qgssurface.h"
 #include "qgslinestring.h"
@@ -28,7 +27,7 @@ email                : marco.hugentobler at sourcepole dot com
 
 QgsMultiSurface::QgsMultiSurface()
 {
-  mWkbType = QgsWkbTypes::MultiSurface;
+  mWkbType = Qgis::WkbType::MultiSurface;
 }
 
 QgsSurface *QgsMultiSurface::surfaceN( int index )
@@ -49,7 +48,7 @@ QString QgsMultiSurface::geometryType() const
 void QgsMultiSurface::clear()
 {
   QgsGeometryCollection::clear();
-  mWkbType = QgsWkbTypes::MultiSurface;
+  mWkbType = Qgis::WkbType::MultiSurface;
 }
 
 QgsMultiSurface *QgsMultiSurface::createEmptyWithSameType() const
@@ -162,7 +161,7 @@ bool QgsMultiSurface::addGeometry( QgsAbstractGeometry *g )
 
   if ( mGeometries.empty() )
   {
-    setZMTypeFromSubGeometry( g, QgsWkbTypes::MultiSurface );
+    setZMTypeFromSubGeometry( g, Qgis::WkbType::MultiSurface );
   }
   if ( is3D() && !g->is3D() )
     g->addZValue();

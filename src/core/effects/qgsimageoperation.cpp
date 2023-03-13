@@ -771,7 +771,7 @@ inline QRgb QgsImageOperation::GaussianBlurOperation::gaussianBlurVertical( cons
   for ( int i = 0; i <= mRadius * 2; ++i )
   {
     y = std::clamp( posy + ( i - mRadius ), 0, height - 1 );
-    ref = sourceFirstLine + sourceBpl * y;
+    ref = sourceFirstLine + static_cast< std::size_t >( sourceBpl ) * y;
 
     QRgb *refRgb = reinterpret_cast< QRgb * >( ref );
     r += mKernel[i] * qRed( *refRgb );

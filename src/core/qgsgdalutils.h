@@ -226,7 +226,7 @@ class CORE_EXPORT QgsGdalUtils
      *
      * \since QGIS 3.22
      */
-    static bool vrtMatchesLayerType( const QString &vrtPath, QgsMapLayerType type );
+    static bool vrtMatchesLayerType( const QString &vrtPath, Qgis::LayerType type );
 
     friend class TestQgsGdalUtils;
 };

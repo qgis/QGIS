@@ -329,7 +329,7 @@ namespace QgsWms
       const QString property = QStringLiteral( "showFeatureCount" );
       lt->setCustomProperty( property, showFeatureCount );
 
-      if ( ml->type() != QgsMapLayerType::VectorLayer || !showFeatureCount )
+      if ( ml->type() != Qgis::LayerType::Vector || !showFeatureCount )
         continue;
 
       QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( ml );

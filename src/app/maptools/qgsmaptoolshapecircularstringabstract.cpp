@@ -20,9 +20,7 @@
 #include "qgsgeometryrubberband.h"
 #include "qgsgeometryutils.h"
 #include "qgslinestring.h"
-#include "qgsmapcanvas.h"
 #include "qgspoint.h"
-#include "qgisapp.h"
 #include "qgsmaptoolcapture.h"
 
 QgsMapToolShapeCircularStringAbstract::QgsMapToolShapeCircularStringAbstract( const QString &id, QgsMapToolCapture *parentTool )
@@ -104,7 +102,7 @@ void QgsMapToolShapeCircularStringAbstract::activate( QgsMapToolCapture::Capture
     mPoints.append( lastCapturedMapPoint );
     if ( !mTempRubberBand )
     {
-      QgsWkbTypes::GeometryType type = mode == QgsMapToolCapture::CapturePolygon ? QgsWkbTypes::PolygonGeometry : QgsWkbTypes::LineGeometry;
+      Qgis::GeometryType type = mode == QgsMapToolCapture::CapturePolygon ? Qgis::GeometryType::Polygon : Qgis::GeometryType::Line;
       mTempRubberBand = mParentTool->createGeometryRubberBand( type, true );
       mTempRubberBand->show();
     }
@@ -123,7 +121,7 @@ void QgsMapToolShapeCircularStringAbstract::createCenterPointRubberBand()
     return;
   }
 
-  mCenterPointRubberBand = mParentTool->createGeometryRubberBand( QgsWkbTypes::PolygonGeometry );
+  mCenterPointRubberBand = mParentTool->createGeometryRubberBand( Qgis::GeometryType::Polygon );
   mCenterPointRubberBand->show();
 
   if ( mTempRubberBand )

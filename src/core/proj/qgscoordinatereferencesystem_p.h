@@ -96,7 +96,7 @@ class QgsCoordinateReferenceSystemPrivate : public QSharedData
     bool mIsGeographic = false;
 
     //! The map units for the CRS
-    QgsUnitTypes::DistanceUnit mMapUnits = QgsUnitTypes::DistanceUnknownUnit;
+    Qgis::DistanceUnit mMapUnits = Qgis::DistanceUnit::Unknown;
 
     //! If available, the PostGIS spatial_ref_sys identifier for this CRS (defaults to 0)
     long mSRID = 0;

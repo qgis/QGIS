@@ -196,7 +196,7 @@ class GUI_EXPORT QgsUnitSelectionWidget : public QWidget, private Ui::QgsUnitSel
      * \returns selected output unit, or QgsUnitTypes::RenderUnknownUnit if the widget was populated with custom unit types
      * \since QGIS 2.9
      */
-    QgsUnitTypes::RenderUnit unit() const;
+    Qgis::RenderUnit unit() const;
 
     /**
      * Sets the selected unit index
@@ -209,7 +209,7 @@ class GUI_EXPORT QgsUnitSelectionWidget : public QWidget, private Ui::QgsUnitSel
      * Sets the selected unit
      * \param unit predefined unit to set as current
      */
-    void setUnit( QgsUnitTypes::RenderUnit unit );
+    void setUnit( Qgis::RenderUnit unit );
 
     //! Returns the map unit scale
     QgsMapUnitScale getMapUnitScale() const { return mMapUnitScale; }

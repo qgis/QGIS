@@ -146,6 +146,7 @@ class GUI_EXPORT QgsProcessingMapLayerComboBox : public QWidget
     QCheckBox *mUseSelectionCheckBox = nullptr;
     bool mDragActive = false;
     long long mFeatureLimit = -1;
+    QString mFilterExpression;
     bool mIsOverridingDefaultGeometryCheck = false;
     QgsFeatureRequest::InvalidGeometryCheck mGeometryCheck = QgsFeatureRequest::GeometryAbortOnInvalid;
     QPointer< QgsMapLayer> mPrevLayer;

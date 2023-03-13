@@ -57,7 +57,7 @@ class QgsOgrFeatureSource final: public QgsAbstractFeatureSource
     OGRwkbGeometryType mOgrGeometryTypeFilter;
     QString mDriverName;
     QgsCoordinateReferenceSystem mCrs;
-    QgsWkbTypes::Type mWkbType = QgsWkbTypes::Unknown;
+    Qgis::WkbType mWkbType = Qgis::WkbType::Unknown;
     QgsOgrDatasetSharedPtr mSharedDS = nullptr;
     QgsTransaction *mTransaction = nullptr;
 

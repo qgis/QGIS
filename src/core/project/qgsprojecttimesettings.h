@@ -19,7 +19,7 @@
 
 #include "qgis_core.h"
 #include "qgsrange.h"
-#include "qgsunittypes.h"
+#include "qgis.h"
 #include <QObject>
 
 class QDomElement;
@@ -94,7 +94,7 @@ class CORE_EXPORT QgsProjectTimeSettings : public QObject
      * \see setTimeStepUnit()
      * \see timeStep()
      */
-    QgsUnitTypes::TemporalUnit timeStepUnit() const;
+    Qgis::TemporalUnit timeStepUnit() const;
 
     /**
      * Sets the project's time step (length of one animation frame) \a unit, which is used as the default value when
@@ -103,7 +103,7 @@ class CORE_EXPORT QgsProjectTimeSettings : public QObject
      * \see timeStepUnit()
      * \see setTimeStep()
      */
-    void setTimeStepUnit( QgsUnitTypes::TemporalUnit unit );
+    void setTimeStepUnit( Qgis::TemporalUnit unit );
 
     /**
      * Returns the project's time step (length of one animation frame), which is used as the default value when
@@ -168,7 +168,7 @@ class CORE_EXPORT QgsProjectTimeSettings : public QObject
   private:
 
     QgsDateTimeRange mRange;
-    QgsUnitTypes::TemporalUnit mTimeStepUnit = QgsUnitTypes::TemporalHours;
+    Qgis::TemporalUnit mTimeStepUnit = Qgis::TemporalUnit::Hours;
     double mTimeStep = 1;
     double mFrameRate = 1;
     bool mCumulativeTemporalRange = false;

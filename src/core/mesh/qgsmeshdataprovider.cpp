@@ -40,11 +40,11 @@ const QgsMeshDataProviderTemporalCapabilities *QgsMeshDataProvider::temporalCapa
   return mTemporalCapabilities.get();
 }
 
-void QgsMeshDataProvider::setTemporalUnit( QgsUnitTypes::TemporalUnit unit )
+void QgsMeshDataProvider::setTemporalUnit( Qgis::TemporalUnit unit )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  const QgsUnitTypes::TemporalUnit oldUnit = mTemporalCapabilities->temporalUnit();
+  const Qgis::TemporalUnit oldUnit = mTemporalCapabilities->temporalUnit();
   mTemporalCapabilities->setTemporalUnit( unit );
   if ( oldUnit != unit )
     reloadData();

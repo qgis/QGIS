@@ -28,22 +28,22 @@ bool QgsProviderUtils::sublayerDetailsAreIncomplete( const QList<QgsProviderSubl
   {
     switch ( sublayer.type() )
     {
-      case QgsMapLayerType::VectorLayer:
+      case Qgis::LayerType::Vector:
         if ( sublayer.skippedContainerScan()
-             || ( !ignoreUnknownGeometryTypes && sublayer.wkbType() == QgsWkbTypes::Unknown )
+             || ( !ignoreUnknownGeometryTypes && sublayer.wkbType() == Qgis::WkbType::Unknown )
              || ( !ignoreUnknownFeatureCount &&
                   ( sublayer.featureCount() == static_cast< long long >( Qgis::FeatureCountState::Uncounted )
                     || sublayer.featureCount() == static_cast< long long >( Qgis::FeatureCountState::UnknownCount ) ) ) )
           return true;
         break;
 
-      case QgsMapLayerType::RasterLayer:
-      case QgsMapLayerType::PluginLayer:
-      case QgsMapLayerType::MeshLayer:
-      case QgsMapLayerType::VectorTileLayer:
-      case QgsMapLayerType::AnnotationLayer:
-      case QgsMapLayerType::PointCloudLayer:
-      case QgsMapLayerType::GroupLayer:
+      case Qgis::LayerType::Raster:
+      case Qgis::LayerType::Plugin:
+      case Qgis::LayerType::Mesh:
+      case Qgis::LayerType::VectorTile:
+      case Qgis::LayerType::Annotation:
+      case Qgis::LayerType::PointCloud:
+      case Qgis::LayerType::Group:
         break;
     }
   }

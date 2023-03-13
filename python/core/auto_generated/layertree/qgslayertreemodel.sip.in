@@ -90,6 +90,7 @@ The root node is not transferred by the model.
       AllowNodeChangeVisibility,
       AllowLegendChangeState,
       ActionHierarchical,
+      UseThreadedHitTest,
     };
     typedef QFlags<QgsLayerTreeModel::Flag> Flags;
 
@@ -412,6 +413,7 @@ Filter nodes from :py:class:`QgsMapLayerLegend` according to the current filteri
     void legendInvalidateMapBasedData();
 
   protected:
+
 
 
 

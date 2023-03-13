@@ -181,7 +181,7 @@ class CORE_EXPORT QgsCircularString: public QgsCurve
      */
     inline static const QgsCircularString *cast( const QgsAbstractGeometry *geom )
     {
-      if ( geom && QgsWkbTypes::flatType( geom->wkbType() ) == QgsWkbTypes::CircularString )
+      if ( geom && QgsWkbTypes::flatType( geom->wkbType() ) == Qgis::WkbType::CircularString )
         return static_cast<const QgsCircularString *>( geom );
       return nullptr;
     }

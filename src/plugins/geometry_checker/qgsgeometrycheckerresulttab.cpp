@@ -266,7 +266,7 @@ bool QgsGeometryCheckerResultTab::exportErrorsDo( const QString &file )
   QString driver = QgsVectorFileWriter::driverForExtension( ext );
 
   QString createError;
-  bool success = QgsOgrProviderUtils::createEmptyDataSource( file, driver, "UTF-8", QgsWkbTypes::Point, attributes, QgsProject::instance()->crs(), createError );
+  bool success = QgsOgrProviderUtils::createEmptyDataSource( file, driver, "UTF-8", Qgis::WkbType::Point, attributes, QgsProject::instance()->crs(), createError );
   if ( !success )
   {
     return false;
@@ -373,7 +373,7 @@ void QgsGeometryCheckerResultTab::highlightErrors( bool current )
 
     if ( ui.radioButtonError->isChecked() || current || error->status() == QgsGeometryCheckError::StatusFixed )
     {
-      QgsRubberBand *pointRubberBand = new QgsRubberBand( mIface->mapCanvas(), QgsWkbTypes::PointGeometry );
+      QgsRubberBand *pointRubberBand = new QgsRubberBand( mIface->mapCanvas(), Qgis::GeometryType::Point );
       pointRubberBand->addPoint( error->location() );
       pointRubberBand->setWidth( 20 );
       pointRubberBand->setColor( Qt::red );

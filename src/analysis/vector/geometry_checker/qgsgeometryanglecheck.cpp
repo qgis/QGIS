@@ -19,7 +19,7 @@
 #include "qgsfeaturepool.h"
 #include "qgsgeometrycheckerror.h"
 
-QList<QgsWkbTypes::GeometryType> QgsGeometryAngleCheck::compatibleGeometryTypes() const
+QList<Qgis::GeometryType> QgsGeometryAngleCheck::compatibleGeometryTypes() const
 {
   return factoryCompatibleGeometryTypes();
 }
@@ -181,9 +181,9 @@ QgsGeometryCheck::CheckType QgsGeometryAngleCheck::checkType() const
   return factoryCheckType();
 }
 
-QList<QgsWkbTypes::GeometryType> QgsGeometryAngleCheck::factoryCompatibleGeometryTypes()
+QList<Qgis::GeometryType> QgsGeometryAngleCheck::factoryCompatibleGeometryTypes()
 {
-  return {QgsWkbTypes::LineGeometry, QgsWkbTypes::PolygonGeometry};
+  return {Qgis::GeometryType::Line, Qgis::GeometryType::Polygon};
 }
 
 bool QgsGeometryAngleCheck::factoryIsCompatible( QgsVectorLayer *layer )

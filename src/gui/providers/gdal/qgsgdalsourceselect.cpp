@@ -163,12 +163,57 @@ void QgsGdalSourceSelect::addButtonClicked()
   if ( mDataSources.isEmpty() )
   {
     QMessageBox::information( this,
-                              tr( "Add raster layer" ),
+                              tr( "Add Raster Layer" ),
                               tr( "No layers selected." ) );
     return;
   }
 
-  emit addRasterLayers( mDataSources );
+  // validate sources
+  QStringList sources;
+  enum class PromoteToVsiCurlStatus
+  {
+    NotAsked,
+    AutoPromote,
+    DontPromote
+  };
+
+  PromoteToVsiCurlStatus promoteToVsiCurlStatus = PromoteToVsiCurlStatus::NotAsked;
+
+  for ( const QString &originalSource : std::as_const( mDataSources ) )
+  {
+    QVariantMap parts = QgsProviderRegistry::instance()->decodeUri( QStringLiteral( "gdal" ), originalSource );
+
+    const QString vsiPrefix = parts.value( QStringLiteral( "vsiPrefix" ) ).toString();
+    const QString scheme = QUrl( parts.value( QStringLiteral( "path" ) ).toString() ).scheme();
+    const bool isRemoteNonVsiCurlUrl = vsiPrefix.isEmpty() && ( scheme.startsWith( QLatin1String( "http" ) ) || scheme == QLatin1String( "ftp" ) );
+    if ( isRemoteNonVsiCurlUrl )
+    {
+      if ( promoteToVsiCurlStatus == PromoteToVsiCurlStatus::NotAsked )
+      {
+        if ( QMessageBox::warning( this,
+                                   tr( "Add Raster Layer" ),
+                                   tr( "Directly adding HTTP(S) or FTP sources can be very slow, as it requires a full download of the dataset.\n\n"
+                                       "Would you like to use a streaming method to access this dataset instead (recommended)?" ), QMessageBox::Button::Yes | QMessageBox::Button::No, QMessageBox::Button::Yes )
+             == QMessageBox::Yes )
+        {
+          promoteToVsiCurlStatus = PromoteToVsiCurlStatus::AutoPromote;
+        }
+        else
+        {
+          promoteToVsiCurlStatus = PromoteToVsiCurlStatus::DontPromote;
+        }
+      }
+
+      if ( promoteToVsiCurlStatus == PromoteToVsiCurlStatus::AutoPromote )
+      {
+        parts.insert( QStringLiteral( "vsiPrefix" ), QStringLiteral( "/vsicurl/" ) );
+      }
+    }
+
+    sources << QgsProviderRegistry::instance()->encodeUri( QStringLiteral( "gdal" ), parts );
+  }
+
+  emit addRasterLayers( sources );
 }
 
 void QgsGdalSourceSelect::computeDataSources()
@@ -259,8 +304,20 @@ void QgsGdalSourceSelect::fillOpenOptions()
   if ( mDataSources.isEmpty() )
     return;
 
+  const QString firstDataSource = mDataSources.at( 0 );
+  const QString vsiPrefix = qgsVsiPrefix( firstDataSource );
+  const QString scheme = QUrl( firstDataSource ).scheme();
+  const bool isRemoteNonVsiCurlUrl = vsiPrefix.isEmpty() && ( scheme.startsWith( QLatin1String( "http" ) ) || scheme == QLatin1String( "ftp" ) );
+  if ( isRemoteNonVsiCurlUrl )
+  {
+    // it can be very expensive to determine open options for non /vsicurl/ http uris -- it may require a full download of the remote dataset,
+    // so just be safe and don't show any open options. Users can always manually append the /vsicurl/ prefix if they desire these, OR
+    // correctly use the HTTP "Protocol" option instead.
+    return;
+  }
+
   GDALDriverH hDriver;
-  hDriver = GDALIdentifyDriverEx( mDataSources[0].toUtf8().toStdString().c_str(), GDAL_OF_RASTER, nullptr, nullptr );
+  hDriver = GDALIdentifyDriverEx( firstDataSource.toUtf8().toStdString().c_str(), GDAL_OF_RASTER, nullptr, nullptr );
   if ( hDriver == nullptr )
     return;
 

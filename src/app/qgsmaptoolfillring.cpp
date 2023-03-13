@@ -23,7 +23,7 @@
 #include "qgisapp.h"
 #include "qgsvectorlayerutils.h"
 #include "qgsmapmouseevent.h"
-#include "qgspolygon.h"
+#include "qgscurvepolygon.h"
 
 #include <limits>
 
@@ -161,7 +161,7 @@ void QgsMapToolFillRing::createFeature( const QgsGeometry &geometry, QgsFeatureI
 // TODO refactor - shamelessly copied from QgsMapToolDeleteRing::ringUnderPoint
 void QgsMapToolFillRing::fillRingUnderPoint( const QgsPointXY &p )
 {
-  QgsFeatureId fid;
+  QgsFeatureId fid = FID_NULL;
 
   QgsVectorLayer *vlayer = getCheckLayer();
   if ( !vlayer )
@@ -180,7 +180,7 @@ void QgsMapToolFillRing::fillRingUnderPoint( const QgsPointXY &p )
   while ( fit.nextFeature( f ) )
   {
     const QgsGeometry g = f.geometry();
-    if ( g.isNull() || QgsWkbTypes::geometryType( g.wkbType() ) != QgsWkbTypes::PolygonGeometry )
+    if ( g.isNull() || QgsWkbTypes::geometryType( g.wkbType() ) != Qgis::GeometryType::Polygon )
       continue;
 
     QgsMultiPolygonXY pol;
@@ -213,7 +213,7 @@ void QgsMapToolFillRing::fillRingUnderPoint( const QgsPointXY &p )
     }
   }
 
-  if ( fid == -1 )
+  if ( FID_IS_NULL( fid ) )
   {
     emit messageEmitted( tr( "No ring found to fill." ), Qgis::MessageLevel::Critical );
     vlayer->destroyEditCommand();

@@ -35,7 +35,7 @@ QString QgsMultipartToSinglepartAlgorithm::outputName() const
   return QObject::tr( "Single parts" );
 }
 
-QgsWkbTypes::Type QgsMultipartToSinglepartAlgorithm::outputWkbType( QgsWkbTypes::Type inputWkbType ) const
+Qgis::WkbType QgsMultipartToSinglepartAlgorithm::outputWkbType( Qgis::WkbType inputWkbType ) const
 {
   return QgsWkbTypes::singleType( inputWkbType );
 }

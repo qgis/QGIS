@@ -24,14 +24,11 @@
 #include "qgsmarkersymbollayer.h"
 #include "qgsrendererregistry.h"
 #include "qgssymbollayer.h"
-#include "qgssymbollayerutils.h"
 #include "qgssymbol.h"
 #include "qgsmarkersymbol.h"
-#include "qgslinesymbol.h"
-#include "qgsfillsymbol.h"
+#include "qgsgrassvectormap.h"
 
 #include "qgsgrasseditrenderer.h"
-#include "qgsgrassprovider.h"
 
 QgsGrassEditRenderer::QgsGrassEditRenderer()
   : QgsFeatureRenderer( QStringLiteral( "grassEdit" ) )
@@ -69,7 +66,7 @@ QgsGrassEditRenderer::QgsGrassEditRenderer()
   lastVertexMarkerLine->setPlacements( Qgis::MarkerLinePlacement::LastVertex );
   for ( int value : colors.keys() )
   {
-    QgsSymbol *symbol = QgsSymbol::defaultSymbol( QgsWkbTypes::LineGeometry );
+    QgsSymbol *symbol = QgsSymbol::defaultSymbol( Qgis::GeometryType::Line );
     symbol->setColor( colors.value( value ) );
     symbol->appendSymbolLayer( firstVertexMarkerLine->clone() );
     symbol->appendSymbolLayer( lastVertexMarkerLine->clone() );
@@ -96,7 +93,7 @@ QgsGrassEditRenderer::QgsGrassEditRenderer()
 
   for ( int value : colors.keys() )
   {
-    QgsSymbol *symbol = QgsSymbol::defaultSymbol( QgsWkbTypes::PointGeometry );
+    QgsSymbol *symbol = QgsSymbol::defaultSymbol( Qgis::GeometryType::Point );
     symbol->setColor( colors.value( value ) );
     categoryList << QgsRendererCategory( QVariant( value ), symbol, labels.value( value ) );
   }

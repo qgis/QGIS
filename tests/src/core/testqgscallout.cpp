@@ -42,6 +42,7 @@
 #include "qgslinesymbol.h"
 #include "qgsfillsymbol.h"
 #include "qgsmarkersymbol.h"
+#include "qgslayoutexporter.h"
 
 //qgis test includes
 #include "qgsmultirenderchecker.h"
@@ -207,7 +208,7 @@ void TestQgsCallout::init()
   const QString filename = QStringLiteral( TEST_DATA_DIR ) + "/points.shp";
   vl = new QgsVectorLayer( filename, QStringLiteral( "points" ), QStringLiteral( "ogr" ) );
   QVERIFY( vl->isValid() );
-  QgsMarkerSymbol *marker = static_cast< QgsMarkerSymbol * >( QgsSymbol::defaultSymbol( QgsWkbTypes::PointGeometry ) );
+  QgsMarkerSymbol *marker = static_cast< QgsMarkerSymbol * >( QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ) );
   marker->setColor( QColor( 255, 0, 0 ) );
   marker->setSize( 3 );
   static_cast< QgsSimpleMarkerSymbolLayer * >( marker->symbolLayer( 0 ) )->setStrokeStyle( Qt::NoPen );
@@ -1790,7 +1791,7 @@ void TestQgsCallout::calloutBehindIndividualLabels()
 void TestQgsCallout::calloutNoDrawToAllParts()
 {
   std::unique_ptr< QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "MultiPoint?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
-  QgsMarkerSymbol *marker = static_cast< QgsMarkerSymbol * >( QgsSymbol::defaultSymbol( QgsWkbTypes::PointGeometry ) );
+  QgsMarkerSymbol *marker = static_cast< QgsMarkerSymbol * >( QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ) );
   marker->setColor( QColor( 255, 0, 0 ) );
   marker->setSize( 3 );
   static_cast< QgsSimpleMarkerSymbolLayer * >( marker->symbolLayer( 0 ) )->setStrokeStyle( Qt::NoPen );
@@ -1858,7 +1859,7 @@ void TestQgsCallout::calloutNoDrawToAllParts()
 void TestQgsCallout::calloutDrawToAllParts()
 {
   std::unique_ptr< QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "MultiPoint?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
-  QgsMarkerSymbol *marker = static_cast< QgsMarkerSymbol * >( QgsSymbol::defaultSymbol( QgsWkbTypes::PointGeometry ) );
+  QgsMarkerSymbol *marker = static_cast< QgsMarkerSymbol * >( QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ) );
   marker->setColor( QColor( 255, 0, 0 ) );
   marker->setSize( 3 );
   static_cast< QgsSimpleMarkerSymbolLayer * >( marker->symbolLayer( 0 ) )->setStrokeStyle( Qt::NoPen );
@@ -1927,7 +1928,7 @@ void TestQgsCallout::calloutDrawToAllParts()
 void TestQgsCallout::calloutDataDefinedDrawToAllParts()
 {
   std::unique_ptr< QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "MultiPoint?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
-  QgsMarkerSymbol *marker = static_cast< QgsMarkerSymbol * >( QgsSymbol::defaultSymbol( QgsWkbTypes::PointGeometry ) );
+  QgsMarkerSymbol *marker = static_cast< QgsMarkerSymbol * >( QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ) );
   marker->setColor( QColor( 255, 0, 0 ) );
   marker->setSize( 3 );
   static_cast< QgsSimpleMarkerSymbolLayer * >( marker->symbolLayer( 0 ) )->setStrokeStyle( Qt::NoPen );
@@ -1996,7 +1997,7 @@ void TestQgsCallout::calloutDataDefinedDrawToAllParts()
 void TestQgsCallout::calloutPointOnExterior()
 {
   std::unique_ptr< QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "Polygon?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
-  QgsFillSymbol *fill = static_cast< QgsFillSymbol * >( QgsSymbol::defaultSymbol( QgsWkbTypes::PolygonGeometry ) );
+  QgsFillSymbol *fill = static_cast< QgsFillSymbol * >( QgsSymbol::defaultSymbol( Qgis::GeometryType::Polygon ) );
   fill->setColor( QColor( 255, 0, 0 ) );
   vl2->setRenderer( new QgsSingleSymbolRenderer( fill ) );
 
@@ -2059,7 +2060,7 @@ void TestQgsCallout::calloutPointOnExterior()
 void TestQgsCallout::calloutDataDefinedAnchorPoint()
 {
   std::unique_ptr< QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "Polygon?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
-  QgsFillSymbol *fill = static_cast< QgsFillSymbol * >( QgsSymbol::defaultSymbol( QgsWkbTypes::PolygonGeometry ) );
+  QgsFillSymbol *fill = static_cast< QgsFillSymbol * >( QgsSymbol::defaultSymbol( Qgis::GeometryType::Polygon ) );
   fill->setColor( QColor( 255, 0, 0 ) );
   vl2->setRenderer( new QgsSingleSymbolRenderer( fill ) );
 
@@ -2122,7 +2123,7 @@ void TestQgsCallout::calloutDataDefinedAnchorPoint()
 void TestQgsCallout::calloutDataDefinedDestination()
 {
   std::unique_ptr< QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "Polygon?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
-  QgsFillSymbol *fill = static_cast< QgsFillSymbol * >( QgsSymbol::defaultSymbol( QgsWkbTypes::PolygonGeometry ) );
+  QgsFillSymbol *fill = static_cast< QgsFillSymbol * >( QgsSymbol::defaultSymbol( Qgis::GeometryType::Polygon ) );
   fill->setColor( QColor( 255, 0, 0 ) );
   vl2->setRenderer( new QgsSingleSymbolRenderer( fill ) );
 
@@ -2187,7 +2188,7 @@ void TestQgsCallout::calloutDataDefinedDestination()
 void TestQgsCallout::calloutDataDefinedOrigin()
 {
   std::unique_ptr< QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "Polygon?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
-  QgsFillSymbol *fill = static_cast< QgsFillSymbol * >( QgsSymbol::defaultSymbol( QgsWkbTypes::PolygonGeometry ) );
+  QgsFillSymbol *fill = static_cast< QgsFillSymbol * >( QgsSymbol::defaultSymbol( Qgis::GeometryType::Polygon ) );
   fill->setColor( QColor( 255, 0, 0 ) );
   vl2->setRenderer( new QgsSingleSymbolRenderer( fill ) );
 
@@ -2357,7 +2358,7 @@ void TestQgsCallout::manhattanRotated()
 void TestQgsCallout::manhattanNoDrawToAllParts()
 {
   std::unique_ptr< QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "MultiPoint?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
-  QgsMarkerSymbol *marker = static_cast< QgsMarkerSymbol * >( QgsSymbol::defaultSymbol( QgsWkbTypes::PointGeometry ) );
+  QgsMarkerSymbol *marker = static_cast< QgsMarkerSymbol * >( QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ) );
   marker->setColor( QColor( 255, 0, 0 ) );
   marker->setSize( 3 );
   static_cast< QgsSimpleMarkerSymbolLayer * >( marker->symbolLayer( 0 ) )->setStrokeStyle( Qt::NoPen );
@@ -2425,7 +2426,7 @@ void TestQgsCallout::manhattanNoDrawToAllParts()
 void TestQgsCallout::manhattanDrawToAllParts()
 {
   std::unique_ptr< QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "MultiPoint?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
-  QgsMarkerSymbol *marker = static_cast< QgsMarkerSymbol * >( QgsSymbol::defaultSymbol( QgsWkbTypes::PointGeometry ) );
+  QgsMarkerSymbol *marker = static_cast< QgsMarkerSymbol * >( QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ) );
   marker->setColor( QColor( 255, 0, 0 ) );
   marker->setSize( 3 );
   static_cast< QgsSimpleMarkerSymbolLayer * >( marker->symbolLayer( 0 ) )->setStrokeStyle( Qt::NoPen );
@@ -2494,7 +2495,7 @@ void TestQgsCallout::manhattanDrawToAllParts()
 void TestQgsCallout::manhattanDataDefinedDrawToAllParts()
 {
   std::unique_ptr< QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "MultiPoint?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
-  QgsMarkerSymbol *marker = static_cast< QgsMarkerSymbol * >( QgsSymbol::defaultSymbol( QgsWkbTypes::PointGeometry ) );
+  QgsMarkerSymbol *marker = static_cast< QgsMarkerSymbol * >( QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ) );
   marker->setColor( QColor( 255, 0, 0 ) );
   marker->setSize( 3 );
   static_cast< QgsSimpleMarkerSymbolLayer * >( marker->symbolLayer( 0 ) )->setStrokeStyle( Qt::NoPen );
@@ -2563,7 +2564,7 @@ void TestQgsCallout::manhattanDataDefinedDrawToAllParts()
 void TestQgsCallout::manhattanDataDefinedDestination()
 {
   std::unique_ptr< QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "Polygon?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
-  QgsFillSymbol *fill = static_cast< QgsFillSymbol * >( QgsSymbol::defaultSymbol( QgsWkbTypes::PolygonGeometry ) );
+  QgsFillSymbol *fill = static_cast< QgsFillSymbol * >( QgsSymbol::defaultSymbol( Qgis::GeometryType::Polygon ) );
   fill->setColor( QColor( 255, 0, 0 ) );
   vl2->setRenderer( new QgsSingleSymbolRenderer( fill ) );
 
@@ -2628,7 +2629,7 @@ void TestQgsCallout::manhattanDataDefinedDestination()
 void TestQgsCallout::manhattanDataDefinedOrigin()
 {
   std::unique_ptr< QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "Polygon?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
-  QgsFillSymbol *fill = static_cast< QgsFillSymbol * >( QgsSymbol::defaultSymbol( QgsWkbTypes::PolygonGeometry ) );
+  QgsFillSymbol *fill = static_cast< QgsFillSymbol * >( QgsSymbol::defaultSymbol( Qgis::GeometryType::Polygon ) );
   fill->setColor( QColor( 255, 0, 0 ) );
   vl2->setRenderer( new QgsSingleSymbolRenderer( fill ) );
 

@@ -614,11 +614,12 @@ bool QgsWmsProvider::setImageCrs( QString const &crs )
 
 void QgsWmsProvider::setQueryItem( QUrlQuery &url, const QString &item, const QString &value )
 {
-  url.removeQueryItem( item );
+  QString key = QUrl::toPercentEncoding( item );
+  url.removeQueryItem( key );
   if ( value.isNull() )
-    url.addQueryItem( item, "" );
+    url.addQueryItem( key, "" );
   else
-    url.addQueryItem( item, value );
+    url.addQueryItem( key, QUrl::toPercentEncoding( value ) );
 }
 
 void QgsWmsProvider::setFormatQueryItem( QUrlQuery &url )
@@ -1238,8 +1239,8 @@ QUrl QgsWmsProvider::createRequestUrlWMS( const QgsRectangle &viewExtent, int pi
   {
     if ( mActiveSubLayerVisibility.constFind( *it ).value() )
     {
-      visibleLayers += QUrl::toPercentEncoding( *it );
-      visibleStyles += QUrl::toPercentEncoding( *it2 );
+      visibleLayers += *it;
+      visibleStyles += *it2;
     }
 
     ++it2;
@@ -3196,13 +3197,13 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPointXY &point, Qgis:
       // set resolution approximately to 1mm
       switch ( crs.mapUnits() )
       {
-        case QgsUnitTypes::DistanceMeters:
+        case Qgis::DistanceUnit::Meters:
           xRes = 0.001;
           break;
-        case QgsUnitTypes::DistanceFeet:
+        case Qgis::DistanceUnit::Feet:
           xRes = 0.003;
           break;
-        case QgsUnitTypes::DistanceDegrees:
+        case Qgis::DistanceUnit::Degrees:
           // max length of degree of latitude on pole is 111694 m
           xRes = 1e-8;
           break;
@@ -3658,7 +3659,7 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPointXY &point, Qgis:
 
         QgsDebugMsgLevel( "GML UTF-8 (first 2000 bytes):\n" + gmlByteArray.left( 2000 ), 2 );
 
-        QgsWkbTypes::Type wkbType;
+        Qgis::WkbType wkbType;
         QgsGmlSchema gmlSchema;
 
         if ( xsdPart >= 0 )  // XSD available
@@ -5216,9 +5217,44 @@ QString QgsWmsProviderMetadata::encodeUri( const QVariantMap &parts ) const
   return query.toString();
 }
 
-QList<QgsMapLayerType> QgsWmsProviderMetadata::supportedLayerTypes() const
+QString QgsWmsProviderMetadata::absoluteToRelativeUri( const QString &src, const QgsReadWriteContext &context ) const
 {
-  return { QgsMapLayerType::RasterLayer };
+  // handle relative paths to XYZ tiles
+  QgsDataSourceUri uri;
+  uri.setEncodedUri( src );
+  const QUrl srcUrl( uri.param( QStringLiteral( "url" ) ) );
+  if ( srcUrl.isLocalFile() )
+  {
+    // relative path will become "file:./x.txt"
+    const QString relSrcUrl = context.pathResolver().writePath( srcUrl.toLocalFile() );
+    uri.removeParam( QStringLiteral( "url" ) );  // needed because setParam() would insert second "url" key
+    uri.setParam( QStringLiteral( "url" ), QUrl::fromLocalFile( relSrcUrl ).toString() );
+    return uri.encodedUri();
+  }
+
+  return src;
+}
+
+QString QgsWmsProviderMetadata::relativeToAbsoluteUri( const QString &src, const QgsReadWriteContext &context ) const
+{
+  // handle relative paths to XYZ tiles
+  QgsDataSourceUri uri;
+  uri.setEncodedUri( src );
+  const QUrl srcUrl( uri.param( QStringLiteral( "url" ) ) );
+  if ( srcUrl.isLocalFile() )  // file-based URL? convert to relative path
+  {
+    const QString absSrcUrl = context.pathResolver().readPath( srcUrl.toLocalFile() );
+    uri.removeParam( QStringLiteral( "url" ) );  // needed because setParam() would insert second "url" key
+    uri.setParam( QStringLiteral( "url" ), QUrl::fromLocalFile( absSrcUrl ).toString() );
+    return uri.encodedUri();
+  }
+
+  return src;
+}
+
+QList<Qgis::LayerType> QgsWmsProviderMetadata::supportedLayerTypes() const
+{
+  return { Qgis::LayerType::Raster };
 }
 
 #ifndef HAVE_STATIC_PROVIDERS

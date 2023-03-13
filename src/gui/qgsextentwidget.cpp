@@ -227,18 +227,18 @@ void QgsExtentWidget::setOutputExtent( const QgsRectangle &r, const QgsCoordinat
   int decimals = 4;
   switch ( mOutputCrs.mapUnits() )
   {
-    case QgsUnitTypes::DistanceDegrees:
-    case QgsUnitTypes::DistanceUnknownUnit:
+    case Qgis::DistanceUnit::Degrees:
+    case Qgis::DistanceUnit::Unknown:
       decimals = 9;
       break;
-    case QgsUnitTypes::DistanceMeters:
-    case QgsUnitTypes::DistanceKilometers:
-    case QgsUnitTypes::DistanceFeet:
-    case QgsUnitTypes::DistanceNauticalMiles:
-    case QgsUnitTypes::DistanceYards:
-    case QgsUnitTypes::DistanceMiles:
-    case QgsUnitTypes::DistanceCentimeters:
-    case QgsUnitTypes::DistanceMillimeters:
+    case Qgis::DistanceUnit::Meters:
+    case Qgis::DistanceUnit::Kilometers:
+    case Qgis::DistanceUnit::Feet:
+    case Qgis::DistanceUnit::NauticalMiles:
+    case Qgis::DistanceUnit::Yards:
+    case Qgis::DistanceUnit::Miles:
+    case Qgis::DistanceUnit::Centimeters:
+    case Qgis::DistanceUnit::Millimeters:
       decimals = 4;
       break;
   }

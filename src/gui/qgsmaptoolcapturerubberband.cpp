@@ -20,7 +20,7 @@
 ///@cond PRIVATE
 
 
-QgsMapToolCaptureRubberBand::QgsMapToolCaptureRubberBand( QgsMapCanvas *mapCanvas, QgsWkbTypes::GeometryType geomType ):
+QgsMapToolCaptureRubberBand::QgsMapToolCaptureRubberBand( QgsMapCanvas *mapCanvas, Qgis::GeometryType geomType ):
   QgsGeometryRubberBand( mapCanvas, geomType )
 {
   setVertexDrawingEnabled( false );
@@ -33,10 +33,10 @@ QgsCurve *QgsMapToolCaptureRubberBand::curve()
 
   switch ( mStringType )
   {
-    case QgsWkbTypes::LineString:
+    case Qgis::WkbType::LineString:
       return new QgsLineString( mPoints ) ;
       break;
-    case QgsWkbTypes::CircularString:
+    case Qgis::WkbType::CircularString:
       if ( mPoints.count() != 3 )
         return nullptr;
       return new QgsCircularString(
@@ -51,13 +51,13 @@ QgsCurve *QgsMapToolCaptureRubberBand::curve()
 
 bool QgsMapToolCaptureRubberBand::curveIsComplete() const
 {
-  return ( mStringType == QgsWkbTypes::LineString && mPoints.count() > 1 ) ||
-         ( mStringType == QgsWkbTypes::CircularString && mPoints.count() > 2 );
+  return ( mStringType == Qgis::WkbType::LineString && mPoints.count() > 1 ) ||
+         ( mStringType == Qgis::WkbType::CircularString && mPoints.count() > 2 );
 }
 
-void QgsMapToolCaptureRubberBand::reset( QgsWkbTypes::GeometryType geomType, QgsWkbTypes::Type stringType,  const QgsPoint &firstPolygonPoint )
+void QgsMapToolCaptureRubberBand::reset( Qgis::GeometryType geomType, Qgis::WkbType stringType,  const QgsPoint &firstPolygonPoint )
 {
-  if ( !( geomType == QgsWkbTypes::LineGeometry || geomType == QgsWkbTypes::PolygonGeometry ) )
+  if ( !( geomType == Qgis::GeometryType::Line || geomType == Qgis::GeometryType::Polygon ) )
     return;
 
   mPoints.clear();
@@ -66,7 +66,7 @@ void QgsMapToolCaptureRubberBand::reset( QgsWkbTypes::GeometryType geomType, Qgs
   setRubberBandGeometryType( geomType );
 }
 
-void QgsMapToolCaptureRubberBand::setRubberBandGeometryType( QgsWkbTypes::GeometryType geomType )
+void QgsMapToolCaptureRubberBand::setRubberBandGeometryType( Qgis::GeometryType geomType )
 {
   QgsGeometryRubberBand::setGeometryType( geomType );
   updateCurve();
@@ -104,23 +104,23 @@ int QgsMapToolCaptureRubberBand::pointsCount()
   return mPoints.size();
 }
 
-QgsWkbTypes::Type QgsMapToolCaptureRubberBand::stringType() const
+Qgis::WkbType QgsMapToolCaptureRubberBand::stringType() const
 {
   return mStringType;
 }
 
-void QgsMapToolCaptureRubberBand::setStringType( const QgsWkbTypes::Type &type )
+void QgsMapToolCaptureRubberBand::setStringType( Qgis::WkbType type )
 {
-  if ( ( type != QgsWkbTypes::CircularString && type != QgsWkbTypes::LineString ) || type == mStringType )
+  if ( ( type != Qgis::WkbType::CircularString && type != Qgis::WkbType::LineString ) || type == mStringType )
     return;
 
   mStringType = type;
-  if ( type == QgsWkbTypes::LineString && mPoints.count() == 3 )
+  if ( type == Qgis::WkbType::LineString && mPoints.count() == 3 )
   {
     mPoints.removeAt( 1 );
   }
 
-  setVertexDrawingEnabled( type == QgsWkbTypes::CircularString );
+  setVertexDrawingEnabled( type == Qgis::WkbType::CircularString );
   updateCurve();
 }
 
@@ -158,10 +158,10 @@ void QgsMapToolCaptureRubberBand::updateCurve()
   std::unique_ptr<QgsCurve> curve;
   switch ( mStringType )
   {
-    case  QgsWkbTypes::LineString:
+    case Qgis::WkbType::LineString:
       curve.reset( createLinearString() );
       break;
-    case  QgsWkbTypes::CircularString:
+    case Qgis::WkbType::CircularString:
       curve.reset( createCircularString() );
       break;
     default:
@@ -169,7 +169,7 @@ void QgsMapToolCaptureRubberBand::updateCurve()
       break;
   }
 
-  if ( geometryType() == QgsWkbTypes::PolygonGeometry )
+  if ( geometryType() == Qgis::GeometryType::Polygon )
   {
     std::unique_ptr<QgsCurvePolygon> geom( new QgsCurvePolygon );
     geom->setExteriorRing( curve.release() );
@@ -184,7 +184,7 @@ void QgsMapToolCaptureRubberBand::updateCurve()
 QgsCurve *QgsMapToolCaptureRubberBand::createLinearString()
 {
   std::unique_ptr<QgsLineString> curve( new QgsLineString );
-  if ( geometryType() == QgsWkbTypes::PolygonGeometry )
+  if ( geometryType() == Qgis::GeometryType::Polygon )
   {
     QgsPointSequence points = mPoints;
     points.prepend( mFirstPolygonPoint );
@@ -200,7 +200,7 @@ QgsCurve *QgsMapToolCaptureRubberBand::createCircularString()
 {
   std::unique_ptr<QgsCircularString> curve( new QgsCircularString );
   curve->setPoints( mPoints );
-  if ( geometryType() == QgsWkbTypes::PolygonGeometry )
+  if ( geometryType() == Qgis::GeometryType::Polygon )
   {
     // add a linear string to close the polygon
     std::unique_ptr<QgsCompoundCurve> polygonCurve( new QgsCompoundCurve );

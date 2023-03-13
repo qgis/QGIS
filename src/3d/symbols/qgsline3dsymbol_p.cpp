@@ -147,12 +147,12 @@ void QgsBufferedLine3DSymbolHandler::processFeature( const QgsFeature &f, const 
   if ( !buffered )
     return;
 
-  if ( QgsWkbTypes::flatType( buffered->wkbType() ) == QgsWkbTypes::Polygon )
+  if ( QgsWkbTypes::flatType( buffered->wkbType() ) == Qgis::WkbType::Polygon )
   {
     QgsPolygon *polyBuffered = static_cast<QgsPolygon *>( buffered );
     processPolygon( polyBuffered, f.id(), mSymbol->height(), mSymbol->extrusionHeight(), context, out );
   }
-  else if ( QgsWkbTypes::flatType( buffered->wkbType() ) == QgsWkbTypes::MultiPolygon )
+  else if ( QgsWkbTypes::flatType( buffered->wkbType() ) == Qgis::WkbType::MultiPolygon )
   {
     QgsMultiPolygon *mpolyBuffered = static_cast<QgsMultiPolygon *>( buffered );
     for ( int i = 0; i < mpolyBuffered->numGeometries(); ++i )

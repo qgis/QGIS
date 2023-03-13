@@ -42,7 +42,7 @@ void QgsGeometryLineIntersectionCheck::collectErrors( const QMap<QString, QgsFea
       }
 
       // Check whether the line intersects with any other lines
-      const QgsGeometryCheckerUtils::LayerFeatures layerFeaturesB( featurePools, QList<QString>() << layerFeatureA.layer()->id() << layerIds, line->boundingBox(), {QgsWkbTypes::LineGeometry}, mContext );
+      const QgsGeometryCheckerUtils::LayerFeatures layerFeaturesB( featurePools, QList<QString>() << layerFeatureA.layer()->id() << layerIds, line->boundingBox(), {Qgis::GeometryType::Line}, mContext );
       for ( const QgsGeometryCheckerUtils::LayerFeature &layerFeatureB : layerFeaturesB )
       {
         // > : only report intersections within same layer once

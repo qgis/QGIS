@@ -18,13 +18,10 @@
 #ifndef QGSCOPCPROVIDER_H
 #define QGSCOPCPROVIDER_H
 
-#include "qgis_core.h"
 #include "qgspointclouddataprovider.h"
 #include "qgsprovidermetadata.h"
 
 #include <memory>
-
-#include "qgis_sip.h"
 
 ///@cond PRIVATE
 #define SIP_NO_FILE
@@ -74,12 +71,12 @@ class QgsCopcProviderMetadata : public QgsProviderMetadata
     QgsCopcProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() ) override;
     QList< QgsProviderSublayerDetails > querySublayers( const QString &uri, Qgis::SublayerQueryFlags flags = Qgis::SublayerQueryFlags(), QgsFeedback *feedback = nullptr ) const override;
     int priorityForUri( const QString &uri ) const override;
-    QList< QgsMapLayerType > validLayerTypesForUri( const QString &uri ) const override;
+    QList< Qgis::LayerType > validLayerTypesForUri( const QString &uri ) const override;
     QString encodeUri( const QVariantMap &parts ) const override;
     QVariantMap decodeUri( const QString &uri ) const override;
     QString filters( FilterType type ) override;
     ProviderCapabilities providerCapabilities() const override;
-    QList< QgsMapLayerType > supportedLayerTypes() const override;
+    QList< Qgis::LayerType > supportedLayerTypes() const override;
 };
 
 ///@endcond

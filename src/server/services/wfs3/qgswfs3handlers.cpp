@@ -473,7 +473,7 @@ void QgsWfs3CollectionsHandler::handleRequest( const QgsServerApiContext &contex
       {
         continue;
       }
-      if ( layer->type() != QgsMapLayerType::VectorLayer )
+      if ( layer->type() != Qgis::LayerType::Vector )
       {
         continue;
       }
@@ -1383,6 +1383,10 @@ void QgsWfs3CollectionsItemsHandler::handleRequest( const QgsServerApiContext &c
       {
         cleanedUrlAsString += '?';
       }
+      else
+      {
+        cleanedUrlAsString += '&';
+      }
 
       // Get the self link
       json selfLink;
@@ -1399,18 +1403,18 @@ void QgsWfs3CollectionsItemsHandler::handleRequest( const QgsServerApiContext &c
       if ( offset != 0 )
       {
         json prevLink = selfLink;
-        prevLink["href"] = QStringLiteral( "%1&offset=%2&limit=%3" ).arg( cleanedUrlAsString ).arg( std::max<long>( 0, limit - offset ) ).arg( limit ).toStdString();
+        prevLink["href"] = cleanedUrlAsString.toStdString() + QStringLiteral( "offset=%1&limit=%2" ).arg( std::max<long>( 0, offset - limit ) ).arg( limit ).toStdString();
         prevLink["rel"] = "prev";
-        prevLink["name"] = "Previous page";
+        prevLink["title"] = "Previous page";
         data["links"].push_back( prevLink );
       }
 
       if ( limit + offset < matchedFeaturesCount )
       {
         json nextLink = selfLink;
-        nextLink["href"] = QStringLiteral( "%1&offset=%2&limit=%3" ).arg( cleanedUrlAsString ).arg( std::min<long>( matchedFeaturesCount, limit + offset ) ).arg( limit ).toStdString();
+        nextLink["href"] = cleanedUrlAsString.toStdString() + QStringLiteral( "offset=%1&limit=%2" ).arg( std::min<long>( matchedFeaturesCount, limit + offset ) ).arg( limit ).toStdString();
         nextLink["rel"] = "next";
-        nextLink["name"] = "Next page";
+        nextLink["title"] = "Next page";
         data["links"].push_back( nextLink );
       }
 
@@ -1465,7 +1469,7 @@ void QgsWfs3CollectionsItemsHandler::handleRequest( const QgsServerApiContext &c
       try
       {
         // Parse
-        json postData = json::parse( context.request()->data() );
+        json postData = json::parse( context.request()->data().toStdString() );
 
         // Process data: extract geometry (because we need to process attributes in a much more complex way)
         const QgsFields fields = QgsOgrUtils::stringToFields( context.request()->data(), QTextCodec::codecForName( "UTF-8" ) );
@@ -1729,7 +1733,7 @@ void QgsWfs3CollectionsFeatureHandler::handleRequest( const QgsServerApiContext 
       try
       {
         // Parse
-        json postData = json::parse( context.request()->data() );
+        json postData = json::parse( context.request()->data().toStdString() );
         // Process data: extract geometry (because we need to process attributes in a much more complex way)
         const QgsFields fields( QgsOgrUtils::stringToFields( context.request()->data(), QTextCodec::codecForName( "UTF-8" ) ) );
         const QgsFeatureList features = QgsOgrUtils::stringToFeatureList( context.request()->data(), fields, QTextCodec::codecForName( "UTF-8" ) );
@@ -1867,7 +1871,7 @@ void QgsWfs3CollectionsFeatureHandler::handleRequest( const QgsServerApiContext 
       try
       {
         // Parse
-        json postData = json::parse( context.request()->data() );
+        json postData = json::parse( context.request()->data().toStdString() );
 
         // If the request contains "add" we raise
         if ( postData.contains( "add" ) )

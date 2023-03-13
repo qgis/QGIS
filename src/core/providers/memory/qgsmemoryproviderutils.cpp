@@ -20,7 +20,7 @@
 #include "qgsvectorlayer.h"
 #include <QUrl>
 
-QString memoryLayerFieldType( QVariant::Type type )
+QString memoryLayerFieldType( QVariant::Type type, const QString &typeString )
 {
   switch ( type )
   {
@@ -54,13 +54,20 @@ QString memoryLayerFieldType( QVariant::Type type )
     case QVariant::Map:
       return QStringLiteral( "map" );
 
+    case QVariant::UserType:
+      if ( typeString.compare( QLatin1String( "geometry" ), Qt::CaseInsensitive ) == 0 )
+      {
+        return QStringLiteral( "geometry" );
+      }
+      break;
+
     default:
       break;
   }
   return QStringLiteral( "string" );
 }
 
-QgsVectorLayer *QgsMemoryProviderUtils::createMemoryLayer( const QString &name, const QgsFields &fields, QgsWkbTypes::Type geometryType, const QgsCoordinateReferenceSystem &crs, bool loadDefaultStyle )
+QgsVectorLayer *QgsMemoryProviderUtils::createMemoryLayer( const QString &name, const QgsFields &fields, Qgis::WkbType geometryType, const QgsCoordinateReferenceSystem &crs, bool loadDefaultStyle )
 {
   QString geomType = QgsWkbTypes::displayString( geometryType );
   if ( geomType.isNull() )
@@ -74,11 +81,11 @@ QgsVectorLayer *QgsMemoryProviderUtils::createMemoryLayer( const QString &name, 
     else
       parts << QStringLiteral( "crs=wkt:%1" ).arg( crs.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED ) );
   }
-  for ( const auto &field : fields )
+  for ( const QgsField &field : fields )
   {
     const QString lengthPrecision = QStringLiteral( "(%1,%2)" ).arg( field.length() ).arg( field.precision() );
     parts << QStringLiteral( "field=%1:%2%3%4" ).arg( QString( QUrl::toPercentEncoding( field.name() ) ),
-          memoryLayerFieldType( field.type() == QVariant::List || field.type() == QVariant::StringList ? field.subType() : field.type() ),
+          memoryLayerFieldType( field.type() == QVariant::List || field.type() == QVariant::StringList ? field.subType() : field.type(), field.typeName() ),
           lengthPrecision,
           field.type() == QVariant::List || field.type() == QVariant::StringList ? QStringLiteral( "[]" ) : QString() );
   }

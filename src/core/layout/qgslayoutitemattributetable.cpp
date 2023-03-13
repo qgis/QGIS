@@ -29,13 +29,14 @@
 #include "qgsfieldformatterregistry.h"
 #include "qgsgeometry.h"
 #include "qgsexception.h"
-#include "qgsmapsettings.h"
+#include "qgslayoutreportcontext.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsexpressionnodeimpl.h"
 #include "qgsgeometryengine.h"
 #include "qgsconditionalstyle.h"
 #include "qgsfontutils.h"
 #include "qgsvariantutils.h"
+#include "qgslayoutrendercontext.h"
 
 //
 // QgsLayoutItemAttributeTable

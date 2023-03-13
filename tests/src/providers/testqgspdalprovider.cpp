@@ -28,12 +28,12 @@
 #include "qgis.h"
 #include "qgsapplication.h"
 #include "qgsproviderregistry.h"
-#include "qgspdalprovider.h"
 #include "qgsmaplayer.h"
 #include "qgspointcloudlayer.h"
 #include "qgspdalindexingtask.h"
 #include "qgsprovidersublayerdetails.h"
 #include "qgsgeometry.h"
+#include "qgsprovidermetadata.h"
 
 /**
  * \ingroup UnitTests
@@ -128,8 +128,8 @@ void TestQgsPdalProvider::layerTypesForUri()
   QgsProviderMetadata *pdalMetadata = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "pdal" ) );
   QVERIFY( pdalMetadata->capabilities() & QgsProviderMetadata::LayerTypesForUri );
 
-  QCOMPARE( pdalMetadata->validLayerTypesForUri( QStringLiteral( "/home/test/cloud.las" ) ), QList< QgsMapLayerType >() << QgsMapLayerType::PointCloudLayer );
-  QCOMPARE( pdalMetadata->validLayerTypesForUri( QStringLiteral( "/home/test/cloud.shp" ) ), QList< QgsMapLayerType >() );
+  QCOMPARE( pdalMetadata->validLayerTypesForUri( QStringLiteral( "/home/test/cloud.las" ) ), QList< Qgis::LayerType >() << Qgis::LayerType::PointCloud );
+  QCOMPARE( pdalMetadata->validLayerTypesForUri( QStringLiteral( "/home/test/cloud.shp" ) ), QList< Qgis::LayerType >() );
 }
 
 void TestQgsPdalProvider::preferredUri()
@@ -141,22 +141,22 @@ void TestQgsPdalProvider::preferredUri()
   QList<QgsProviderRegistry::ProviderCandidateDetails> candidates = QgsProviderRegistry::instance()->preferredProvidersForUri( QStringLiteral( "/home/test/cloud.las" ) );
   QCOMPARE( candidates.size(), 1 );
   QCOMPARE( candidates.at( 0 ).metadata()->key(), QStringLiteral( "pdal" ) );
-  QCOMPARE( candidates.at( 0 ).layerTypes(), QList< QgsMapLayerType >() << QgsMapLayerType::PointCloudLayer );
+  QCOMPARE( candidates.at( 0 ).layerTypes(), QList< Qgis::LayerType >() << Qgis::LayerType::PointCloud );
 
   candidates = QgsProviderRegistry::instance()->preferredProvidersForUri( QStringLiteral( "/home/test/CLOUD.LAS" ) );
   QCOMPARE( candidates.size(), 1 );
   QCOMPARE( candidates.at( 0 ).metadata()->key(), QStringLiteral( "pdal" ) );
-  QCOMPARE( candidates.at( 0 ).layerTypes(), QList< QgsMapLayerType >() << QgsMapLayerType::PointCloudLayer );
+  QCOMPARE( candidates.at( 0 ).layerTypes(), QList< Qgis::LayerType >() << Qgis::LayerType::PointCloud );
 
   candidates = QgsProviderRegistry::instance()->preferredProvidersForUri( QStringLiteral( "/home/test/cloud.laz" ) );
   QCOMPARE( candidates.size(), 1 );
   QCOMPARE( candidates.at( 0 ).metadata()->key(), QStringLiteral( "pdal" ) );
-  QCOMPARE( candidates.at( 0 ).layerTypes(), QList< QgsMapLayerType >() << QgsMapLayerType::PointCloudLayer );
+  QCOMPARE( candidates.at( 0 ).layerTypes(), QList< Qgis::LayerType >() << Qgis::LayerType::PointCloud );
 
   candidates = QgsProviderRegistry::instance()->preferredProvidersForUri( QStringLiteral( "/home/test/CLOUD.LAZ" ) );
   QCOMPARE( candidates.size(), 1 );
   QCOMPARE( candidates.at( 0 ).metadata()->key(), QStringLiteral( "pdal" ) );
-  QCOMPARE( candidates.at( 0 ).layerTypes(), QList< QgsMapLayerType >() << QgsMapLayerType::PointCloudLayer );
+  QCOMPARE( candidates.at( 0 ).layerTypes(), QList< Qgis::LayerType >() << Qgis::LayerType::PointCloud );
 
   QVERIFY( !QgsProviderRegistry::instance()->shouldDeferUriForOtherProviders( QStringLiteral( "/home/test/cloud.las" ), QStringLiteral( "pdal" ) ) );
   QVERIFY( QgsProviderRegistry::instance()->shouldDeferUriForOtherProviders( QStringLiteral( "/home/test/cloud.las" ), QStringLiteral( "ept" ) ) );
@@ -181,7 +181,7 @@ void TestQgsPdalProvider::querySublayers()
   QCOMPARE( res.at( 0 ).name(), QStringLiteral( "cloud" ) );
   QCOMPARE( res.at( 0 ).uri(), mTestDataDir + "/point_clouds/las/cloud.las" );
   QCOMPARE( res.at( 0 ).providerKey(), QStringLiteral( "pdal" ) );
-  QCOMPARE( res.at( 0 ).type(), QgsMapLayerType::PointCloudLayer );
+  QCOMPARE( res.at( 0 ).type(), Qgis::LayerType::PointCloud );
 
   // make sure result is valid to load layer from
   const QgsProviderSublayerDetails::LayerOptions options{ QgsCoordinateTransformContext() };

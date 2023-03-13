@@ -298,16 +298,16 @@ Set the geometry, feeding in the buffer containing OGC Well-Known Binary
 .. versionadded:: 3.0
 %End
 
-    QgsWkbTypes::Type wkbType() const /HoldGIL/;
+    Qgis::WkbType wkbType() const /HoldGIL/;
 %Docstring
 Returns type of the geometry as a WKB type (point / linestring / polygon etc.)
 
 .. seealso:: :py:func:`type`
 %End
 
-    QgsWkbTypes::GeometryType type() const /HoldGIL/;
+    Qgis::GeometryType type() const /HoldGIL/;
 %Docstring
-Returns type of the geometry as a :py:class:`QgsWkbTypes`.GeometryType
+Returns type of the geometry as a Qgis.GeometryType
 
 .. seealso:: :py:func:`wkbType`
 %End
@@ -855,7 +855,7 @@ Adds a new ring to this geometry. This makes only sense for polygon and multipol
 :return: OperationResult a result code: success or reason of failure
 %End
 
-    Qgis::GeometryOperationResult addPart( const QVector<QgsPointXY> &points, QgsWkbTypes::GeometryType geomType = QgsWkbTypes::UnknownGeometry ) /PyName=addPointsXY/;
+    Qgis::GeometryOperationResult addPart( const QVector<QgsPointXY> &points, Qgis::GeometryType geomType = Qgis::GeometryType::Unknown ) /PyName=addPointsXY/;
 %Docstring
 Adds a new part to a the geometry.
 
@@ -865,7 +865,7 @@ Adds a new part to a the geometry.
 :return: OperationResult a result code: success or reason of failure
 %End
 
-    Qgis::GeometryOperationResult addPart( const QgsPointSequence &points, QgsWkbTypes::GeometryType geomType = QgsWkbTypes::UnknownGeometry ) /PyName=addPoints/;
+    Qgis::GeometryOperationResult addPart( const QgsPointSequence &points, Qgis::GeometryType geomType = Qgis::GeometryType::Unknown ) /PyName=addPoints/;
 %Docstring
 Adds a new part to a the geometry.
 
@@ -875,7 +875,7 @@ Adds a new part to a the geometry.
 :return: OperationResult a result code: success or reason of failure
 %End
 
-    Qgis::GeometryOperationResult addPart( QgsAbstractGeometry *part /Transfer/, QgsWkbTypes::GeometryType geomType = QgsWkbTypes::UnknownGeometry );
+    Qgis::GeometryOperationResult addPart( QgsAbstractGeometry *part /Transfer/, Qgis::GeometryType geomType = Qgis::GeometryType::Unknown );
 %Docstring
 Adds a new part to this geometry.
 
@@ -1934,13 +1934,13 @@ This method works only with (multi)polygon geometry types.
 .. versionadded:: 3.10
 %End
 %MethodCode
-    const QgsWkbTypes::GeometryType type = sipCpp->type();
+    const Qgis::GeometryType type = sipCpp->type();
     if ( sipCpp->isNull() )
     {
       PyErr_SetString( PyExc_ValueError, QStringLiteral( "Cannot generate points inside a null geometry." ).toUtf8().constData() );
       sipIsErr = 1;
     }
-    else if ( type != QgsWkbTypes::PolygonGeometry )
+    else if ( type != Qgis::GeometryType::Polygon )
     {
       PyErr_SetString( PyExc_TypeError, QStringLiteral( "Cannot generate points inside a %1 geometry. Only Polygon types are permitted." ).arg( QgsWkbTypes::displayString( sipCpp->wkbType() ) ).toUtf8().constData() );
       sipIsErr = 1;
@@ -2004,7 +2004,7 @@ Exports the geometry to a GeoJSON string.
 %End
 
 
-    QVector< QgsGeometry > coerceToType( QgsWkbTypes::Type type, double defaultZ = 0, double defaultM = 0 ) const;
+    QVector< QgsGeometry > coerceToType( Qgis::WkbType type, double defaultZ = 0, double defaultM = 0 ) const;
 %Docstring
 Attempts to coerce this geometry into the specified destination ``type``.
 
@@ -2034,7 +2034,7 @@ By default 0.0 is used for Z and M.
 .. versionadded:: 3.14
 %End
 
-    QgsGeometry convertToType( QgsWkbTypes::GeometryType destType, bool destMultipart = false ) const;
+    QgsGeometry convertToType( Qgis::GeometryType destType, bool destMultipart = false ) const;
 %Docstring
 Try to convert the geometry to the requested type
 
@@ -2075,7 +2075,7 @@ This method works only with single-point geometry types.
     else
     {
       const QgsAbstractGeometry *geom = sipCpp->constGet();
-      if ( QgsWkbTypes::flatType( geom->simplifiedTypeRef()->wkbType() ) != QgsWkbTypes::Point )
+      if ( QgsWkbTypes::flatType( geom->simplifiedTypeRef()->wkbType() ) != Qgis::WkbType::Point )
       {
         PyErr_SetString( PyExc_TypeError, QStringLiteral( "%1 geometry cannot be converted to a point. Only Point types are permitted." ).arg( QgsWkbTypes::displayString( geom->wkbType() ) ).toUtf8().constData() );
         sipIsErr = 1;
@@ -2102,13 +2102,13 @@ This method works only with single-line (or single-curve).
 :raises ValueError: if the geometry is null
 %End
 %MethodCode
-    const QgsWkbTypes::Type type = sipCpp->wkbType();
+    const Qgis::WkbType type = sipCpp->wkbType();
     if ( sipCpp->isNull() )
     {
       PyErr_SetString( PyExc_ValueError, QStringLiteral( "Null geometry cannot be converted to a polyline." ).toUtf8().constData() );
       sipIsErr = 1;
     }
-    else if ( QgsWkbTypes::geometryType( type ) != QgsWkbTypes::LineGeometry || QgsWkbTypes::isMultiType( type ) )
+    else if ( QgsWkbTypes::geometryType( type ) != Qgis::GeometryType::Line || QgsWkbTypes::isMultiType( type ) )
     {
       PyErr_SetString( PyExc_TypeError, QStringLiteral( "%1 geometry cannot be converted to a polyline. Only single line or curve types are permitted." ).arg( QgsWkbTypes::displayString( type ) ).toUtf8().constData() );
       sipIsErr = 1;
@@ -2135,13 +2135,13 @@ This method works only with single-polygon (or single-curve polygon) geometry ty
 :raises ValueError: if the geometry is null
 %End
 %MethodCode
-    const QgsWkbTypes::Type type = sipCpp->wkbType();
+    const Qgis::WkbType type = sipCpp->wkbType();
     if ( sipCpp->isNull() )
     {
       PyErr_SetString( PyExc_ValueError, QStringLiteral( "Null geometry cannot be converted to a polygon." ).toUtf8().constData() );
       sipIsErr = 1;
     }
-    else if ( QgsWkbTypes::geometryType( type ) != QgsWkbTypes::PolygonGeometry || QgsWkbTypes::isMultiType( type ) )
+    else if ( QgsWkbTypes::geometryType( type ) != Qgis::GeometryType::Polygon || QgsWkbTypes::isMultiType( type ) )
     {
       PyErr_SetString( PyExc_TypeError, QStringLiteral( "%1 geometry cannot be converted to a polygon. Only single polygon or curve polygon types are permitted." ).arg( QgsWkbTypes::displayString( type ) ).toUtf8().constData() );
       sipIsErr = 1;
@@ -2167,13 +2167,13 @@ This method works only with multi-point geometry types.
 :raises ValueError: if the geometry is null
 %End
 %MethodCode
-    const QgsWkbTypes::Type type = sipCpp->wkbType();
+    const Qgis::WkbType type = sipCpp->wkbType();
     if ( sipCpp->isNull() )
     {
       PyErr_SetString( PyExc_ValueError, QStringLiteral( "Null geometry cannot be converted to a multipoint." ).toUtf8().constData() );
       sipIsErr = 1;
     }
-    else if ( QgsWkbTypes::geometryType( type ) != QgsWkbTypes::PointGeometry || !QgsWkbTypes::isMultiType( type ) )
+    else if ( QgsWkbTypes::geometryType( type ) != Qgis::GeometryType::Point || !QgsWkbTypes::isMultiType( type ) )
     {
       PyErr_SetString( PyExc_TypeError, QStringLiteral( "%1 geometry cannot be converted to a multipoint. Only multipoint types are permitted." ).arg( QgsWkbTypes::displayString( type ) ).toUtf8().constData() );
       sipIsErr = 1;
@@ -2200,13 +2200,13 @@ This method works only with multi-linestring (or multi-curve) geometry types.
 :raises ValueError: if the geometry is null
 %End
 %MethodCode
-    const QgsWkbTypes::Type type = sipCpp->wkbType();
+    const Qgis::WkbType type = sipCpp->wkbType();
     if ( sipCpp->isNull() )
     {
       PyErr_SetString( PyExc_ValueError, QStringLiteral( "Null geometry cannot be converted to a multilinestring." ).toUtf8().constData() );
       sipIsErr = 1;
     }
-    else if ( QgsWkbTypes::geometryType( type ) != QgsWkbTypes::LineGeometry || !QgsWkbTypes::isMultiType( type ) )
+    else if ( QgsWkbTypes::geometryType( type ) != Qgis::GeometryType::Line || !QgsWkbTypes::isMultiType( type ) )
     {
       PyErr_SetString( PyExc_TypeError, QStringLiteral( "%1 geometry cannot be converted to a multilinestring. Only multi linestring or curves are permitted." ).arg( QgsWkbTypes::displayString( type ) ).toUtf8().constData() );
       sipIsErr = 1;
@@ -2233,13 +2233,13 @@ This method works only with multi-polygon (or multi-curve polygon) geometry type
 :raises ValueError: if the geometry is null
 %End
 %MethodCode
-    const QgsWkbTypes::Type type = sipCpp->wkbType();
+    const Qgis::WkbType type = sipCpp->wkbType();
     if ( sipCpp->isNull() )
     {
       PyErr_SetString( PyExc_ValueError, QStringLiteral( "Null geometry cannot be converted to a multipolygon." ).toUtf8().constData() );
       sipIsErr = 1;
     }
-    else if ( QgsWkbTypes::geometryType( type ) != QgsWkbTypes::PolygonGeometry || !QgsWkbTypes::isMultiType( type ) )
+    else if ( QgsWkbTypes::geometryType( type ) != Qgis::GeometryType::Polygon || !QgsWkbTypes::isMultiType( type ) )
     {
       PyErr_SetString( PyExc_TypeError, QStringLiteral( "%1 geometry cannot be converted to a multipolygon. Only multi polygon or curves are permitted." ).arg( QgsWkbTypes::displayString( type ) ).toUtf8().constData() );
       sipIsErr = 1;
@@ -2337,7 +2337,7 @@ not change the geometry.
 :return: ``True`` in case of success and ``False`` else
 %End
 
-    bool convertGeometryCollectionToSubclass( QgsWkbTypes::GeometryType geomType );
+    bool convertGeometryCollectionToSubclass( Qgis::GeometryType geomType );
 %Docstring
 Converts geometry collection to a the desired geometry type subclass (multi-point,
 multi-linestring or multi-polygon). Child geometries of different type are filtered out.

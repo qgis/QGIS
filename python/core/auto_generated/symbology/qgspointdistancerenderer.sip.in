@@ -232,7 +232,7 @@ Returns the tolerance distance for grouping points. Units are retrieved using
 .. seealso:: :py:func:`toleranceUnit`
 %End
 
-    void setToleranceUnit( QgsUnitTypes::RenderUnit unit );
+    void setToleranceUnit( Qgis::RenderUnit unit );
 %Docstring
 Sets the units for the tolerance distance.
 
@@ -245,7 +245,7 @@ Sets the units for the tolerance distance.
 .. versionadded:: 2.12
 %End
 
-    QgsUnitTypes::RenderUnit toleranceUnit() const;
+    Qgis::RenderUnit toleranceUnit() const;
 %Docstring
 Returns the units for the tolerance distance.
 

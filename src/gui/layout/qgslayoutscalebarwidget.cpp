@@ -19,12 +19,12 @@
 #include "qgslayoutitemscalebar.h"
 #include "qgsscalebarrendererregistry.h"
 #include "qgslayout.h"
-#include "qgsguiutils.h"
 #include "qgsvectorlayer.h"
 #include "qgsnumericformatselectorwidget.h"
 #include "qgslayoutundostack.h"
 #include "qgsfillsymbol.h"
 #include "qgslinesymbol.h"
+#include "qgslayoutreportcontext.h"
 
 #include <QColorDialog>
 #include <QFontDialog>
@@ -105,15 +105,15 @@ QgsLayoutScaleBarWidget::QgsLayoutScaleBarWidget( QgsLayoutItemScaleBar *scaleBa
   mAlignmentComboBox->setAvailableAlignments( Qt::AlignLeft | Qt::AlignHCenter | Qt::AlignRight );
 
   //units combo box
-  mUnitsComboBox->addItem( tr( "Map units" ), QgsUnitTypes::DistanceUnknownUnit );
-  mUnitsComboBox->addItem( tr( "Meters" ), QgsUnitTypes::DistanceMeters );
-  mUnitsComboBox->addItem( tr( "Kilometers" ), QgsUnitTypes::DistanceKilometers );
-  mUnitsComboBox->addItem( tr( "Feet" ), QgsUnitTypes::DistanceFeet );
-  mUnitsComboBox->addItem( tr( "Yards" ), QgsUnitTypes::DistanceYards );
-  mUnitsComboBox->addItem( tr( "Miles" ), QgsUnitTypes::DistanceMiles );
-  mUnitsComboBox->addItem( tr( "Nautical Miles" ), QgsUnitTypes::DistanceNauticalMiles );
-  mUnitsComboBox->addItem( tr( "Centimeters" ), QgsUnitTypes::DistanceCentimeters );
-  mUnitsComboBox->addItem( tr( "Millimeters" ), QgsUnitTypes::DistanceMillimeters );
+  mUnitsComboBox->addItem( tr( "Map units" ), static_cast< int >( Qgis::DistanceUnit::Unknown ) );
+  mUnitsComboBox->addItem( tr( "Meters" ), static_cast< int >( Qgis::DistanceUnit::Meters ) );
+  mUnitsComboBox->addItem( tr( "Kilometers" ), static_cast< int >( Qgis::DistanceUnit::Kilometers ) );
+  mUnitsComboBox->addItem( tr( "Feet" ), static_cast< int >( Qgis::DistanceUnit::Feet ) );
+  mUnitsComboBox->addItem( tr( "Yards" ), static_cast< int >( Qgis::DistanceUnit::Yards ) );
+  mUnitsComboBox->addItem( tr( "Miles" ), static_cast< int >( Qgis::DistanceUnit::Miles ) );
+  mUnitsComboBox->addItem( tr( "Nautical Miles" ), static_cast< int >( Qgis::DistanceUnit::NauticalMiles ) );
+  mUnitsComboBox->addItem( tr( "Centimeters" ), static_cast< int >( Qgis::DistanceUnit::Centimeters ) );
+  mUnitsComboBox->addItem( tr( "Millimeters" ), static_cast< int >( Qgis::DistanceUnit::Millimeters ) );
 
   mLineStyleButton->setSymbolType( Qgis::SymbolType::Line );
   connect( mLineStyleButton, &QgsSymbolButton::changed, this, &QgsLayoutScaleBarWidget::lineSymbolChanged );
@@ -668,7 +668,7 @@ void QgsLayoutScaleBarWidget::mUnitsComboBox_currentIndexChanged( int index )
 
   disconnectUpdateSignal();
   mScalebar->beginCommand( tr( "Set Scalebar Units" ) );
-  mScalebar->applyDefaultSize( static_cast<  QgsUnitTypes::DistanceUnit >( unitData.toInt() ) );
+  mScalebar->applyDefaultSize( static_cast<  Qgis::DistanceUnit >( unitData.toInt() ) );
   mScalebar->update();
 
   mNumberOfSegmentsSpinBox->setValue( mScalebar->numberOfSegments() );

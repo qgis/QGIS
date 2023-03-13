@@ -34,8 +34,6 @@
 #include <QMap>
 #include <QVector>
 
-#include "qgis_sip.h"
-
 ///@cond PRIVATE
 #define SIP_NO_FILE
 
@@ -376,6 +374,8 @@ class QgsGdalProviderMetadata final: public QgsProviderMetadata
     QIcon icon() const override;
     QVariantMap decodeUri( const QString &uri ) const override;
     QString encodeUri( const QVariantMap &parts ) const override;
+    QString absoluteToRelativeUri( const QString &uri, const QgsReadWriteContext &context ) const override;
+    QString relativeToAbsoluteUri( const QString &uri, const QgsReadWriteContext &context ) const override;
     bool uriIsBlocklisted( const QString &uri ) const override;
     QgsGdalProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() ) override;
     QgsGdalProvider *createRasterDataProvider(
@@ -394,7 +394,7 @@ class QgsGdalProviderMetadata final: public QgsProviderMetadata
     ProviderCapabilities providerCapabilities() const override;
     QList< QgsProviderSublayerDetails > querySublayers( const QString &uri, Qgis::SublayerQueryFlags flags = Qgis::SublayerQueryFlags(), QgsFeedback *feedback = nullptr ) const override;
     QStringList sidecarFilesForUri( const QString &uri ) const override;
-    QList< QgsMapLayerType > supportedLayerTypes() const override;
+    QList< Qgis::LayerType > supportedLayerTypes() const override;
 };
 
 ///@endcond

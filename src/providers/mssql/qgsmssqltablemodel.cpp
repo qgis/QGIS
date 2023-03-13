@@ -17,7 +17,6 @@
 
 #include "qgsmssqltablemodel.h"
 #include "qgsmssqlconnection.h"
-#include "qgsapplication.h"
 #include "qgslogger.h"
 #include "qgsdatasourceuri.h"
 #include "qgsiconutils.h"
@@ -98,13 +97,13 @@ void QgsMssqlTableModel::addTableEntry( const QgsMssqlLayerProperty &layerProper
     invisibleRootItem()->setChild( invisibleRootItem()->rowCount(), schemaItem );
   }
 
-  QgsWkbTypes::Type wkbType = QgsMssqlTableModel::wkbTypeFromMssql( layerProperty.type );
-  if ( wkbType == QgsWkbTypes::Unknown && layerProperty.geometryColName.isEmpty() )
+  Qgis::WkbType wkbType = QgsMssqlTableModel::wkbTypeFromMssql( layerProperty.type );
+  if ( wkbType == Qgis::WkbType::Unknown && layerProperty.geometryColName.isEmpty() )
   {
-    wkbType = QgsWkbTypes::NoGeometry;
+    wkbType = Qgis::WkbType::NoGeometry;
   }
 
-  bool needToDetect = wkbType == QgsWkbTypes::Unknown && layerProperty.type != QLatin1String( "GEOMETRYCOLLECTION" );
+  bool needToDetect = wkbType == Qgis::WkbType::Unknown && layerProperty.type != QLatin1String( "GEOMETRYCOLLECTION" );
 
   QList<QStandardItem *> childItemList;
 
@@ -116,7 +115,7 @@ void QgsMssqlTableModel::addTableEntry( const QgsMssqlLayerProperty &layerProper
       ? tr( "Detecting…" )
       : QgsWkbTypes::displayString( wkbType ) );
   typeItem->setData( needToDetect, Qt::UserRole + 1 );
-  typeItem->setData( wkbType, Qt::UserRole + 2 );
+  typeItem->setData( static_cast< quint32>( wkbType ), Qt::UserRole + 2 );
 
   QStandardItem *tableItem = new QStandardItem( layerProperty.tableName );
   QStandardItem *geomItem = new QStandardItem( layerProperty.geometryColName );
@@ -166,7 +165,7 @@ void QgsMssqlTableModel::addTableEntry( const QgsMssqlLayerProperty &layerProper
   childItemList << isViewItem;
 
   bool detailsFromThread = needToDetect ||
-                           ( wkbType != QgsWkbTypes::NoGeometry && layerProperty.srid.isEmpty() );
+                           ( wkbType != Qgis::WkbType::NoGeometry && layerProperty.srid.isEmpty() );
 
   if ( detailsFromThread || pkText == tr( "Select…" ) )
   {
@@ -308,12 +307,12 @@ void QgsMssqlTableModel::setGeometryTypesForTable( QgsMssqlLayerProperty layerPr
       else
       {
         // update existing row
-        QgsWkbTypes::Type wkbType = QgsMssqlTableModel::wkbTypeFromMssql( typeList.at( 0 ) );
+        Qgis::WkbType wkbType = QgsMssqlTableModel::wkbTypeFromMssql( typeList.at( 0 ) );
 
         row[ DbtmType ]->setIcon( QgsIconUtils::iconForWkbType( wkbType ) );
         row[ DbtmType ]->setText( QgsWkbTypes::translatedDisplayString( wkbType ) );
         row[ DbtmType ]->setData( false, Qt::UserRole + 1 );
-        row[ DbtmType ]->setData( wkbType, Qt::UserRole + 2 );
+        row[ DbtmType ]->setData( static_cast< quint32>( wkbType ), Qt::UserRole + 2 );
 
         row[ DbtmSrid ]->setText( sridList.at( 0 ) );
 
@@ -344,11 +343,11 @@ bool QgsMssqlTableModel::setData( const QModelIndex &idx, const QVariant &value,
 
   if ( idx.column() == DbtmType || idx.column() == DbtmSrid || idx.column() == DbtmPkCol )
   {
-    QgsWkbTypes::Type wkbType = static_cast< QgsWkbTypes::Type >( idx.sibling( idx.row(), DbtmType ).data( Qt::UserRole + 2 ).toInt() );
+    Qgis::WkbType wkbType = static_cast< Qgis::WkbType >( idx.sibling( idx.row(), DbtmType ).data( Qt::UserRole + 2 ).toInt() );
 
-    bool ok = wkbType != QgsWkbTypes::Unknown;
+    bool ok = wkbType != Qgis::WkbType::Unknown;
 
-    if ( ok && wkbType != QgsWkbTypes::NoGeometry )
+    if ( ok && wkbType != Qgis::WkbType::NoGeometry )
       idx.sibling( idx.row(), DbtmSrid ).data().toInt( &ok );
 
     QStringList pkCols = idx.sibling( idx.row(), DbtmPkCol ).data( Qt::UserRole + 1 ).toStringList();
@@ -373,8 +372,8 @@ QString QgsMssqlTableModel::layerURI( const QModelIndex &index, const QString &c
   if ( !index.isValid() )
     return QString();
 
-  QgsWkbTypes::Type wkbType = static_cast< QgsWkbTypes::Type >( itemFromIndex( index.sibling( index.row(), DbtmType ) )->data( Qt::UserRole + 2 ).toInt() );
-  if ( wkbType == QgsWkbTypes::Unknown )
+  Qgis::WkbType wkbType = static_cast< Qgis::WkbType >( itemFromIndex( index.sibling( index.row(), DbtmType ) )->data( Qt::UserRole + 2 ).toInt() );
+  if ( wkbType == Qgis::WkbType::Unknown )
     // no geometry type selected
     return QString();
 
@@ -391,7 +390,7 @@ QString QgsMssqlTableModel::layerURI( const QModelIndex &index, const QString &c
 
   QString geomColumnName;
   QString srid;
-  if ( wkbType != QgsWkbTypes::NoGeometry )
+  if ( wkbType != Qgis::WkbType::NoGeometry )
   {
     geomColumnName = index.sibling( index.row(), DbtmGeomCol ).data( Qt::DisplayRole ).toString();
 
@@ -427,7 +426,7 @@ QString QgsMssqlTableModel::layerURI( const QModelIndex &index, const QString &c
   return uri.uri();
 }
 
-QgsWkbTypes::Type QgsMssqlTableModel::wkbTypeFromMssql( QString type )
+Qgis::WkbType QgsMssqlTableModel::wkbTypeFromMssql( QString type )
 {
   type = type.toUpper();
   return QgsWkbTypes::parseType( type );

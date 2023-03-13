@@ -17,8 +17,6 @@
 #include "qgsapplication.h"
 #include "qgssettings.h"
 #include "qgis.h"
-#include "qgsgui.h"
-#include "qgscameracontroller.h"
 #include <Qt3DRender/QCamera>
 
 //
@@ -32,25 +30,25 @@ Qgs3DOptionsWidget::Qgs3DOptionsWidget( QWidget *parent )
 
   layout()->setContentsMargins( 0, 0, 0, 0 );
 
-  mCameraNavigationModeCombo->addItem( tr( "Terrain Based" ), QgsCameraController::TerrainBasedNavigation );
-  mCameraNavigationModeCombo->addItem( tr( "Walk Mode (First Person)" ), QgsCameraController::WalkNavigation );
+  mCameraNavigationModeCombo->addItem( tr( "Terrain Based" ), QVariant::fromValue( Qgis::NavigationMode::TerrainBased ) );
+  mCameraNavigationModeCombo->addItem( tr( "Walk Mode (First Person)" ), QVariant::fromValue( Qgis::NavigationMode::Walk ) );
 
   cboCameraProjectionType->addItem( tr( "Perspective Projection" ), Qt3DRender::QCameraLens::PerspectiveProjection );
   cboCameraProjectionType->addItem( tr( "Orthogonal Projection" ), Qt3DRender::QCameraLens::OrthographicProjection );
 
-  mInvertVerticalAxisCombo->addItem( tr( "Never" ), QgsCameraController::Never );
-  mInvertVerticalAxisCombo->addItem( tr( "Only When Dragging" ), QgsCameraController::WhenDragging );
-  mInvertVerticalAxisCombo->addItem( tr( "Always" ), QgsCameraController::Always );
+  mInvertVerticalAxisCombo->addItem( tr( "Never" ), QVariant::fromValue( Qgis::VerticalAxisInversion::Never ) );
+  mInvertVerticalAxisCombo->addItem( tr( "Only When Dragging" ), QVariant::fromValue( Qgis::VerticalAxisInversion::WhenDragging ) );
+  mInvertVerticalAxisCombo->addItem( tr( "Always" ), QVariant::fromValue( Qgis::VerticalAxisInversion::Always ) );
 
   mCameraMovementSpeed->setClearValue( 4 );
   spinCameraFieldOfView->setClearValue( 45.0 );
 
   QgsSettings settings;
-  const QgsCameraController::NavigationMode defaultNavMode = settings.enumValue( QStringLiteral( "map3d/defaultNavigation" ), QgsCameraController::TerrainBasedNavigation, QgsSettings::App );
-  mCameraNavigationModeCombo->setCurrentIndex( mCameraNavigationModeCombo->findData( static_cast< int >( defaultNavMode ) ) );
+  const Qgis::NavigationMode defaultNavMode = settings.enumValue( QStringLiteral( "map3d/defaultNavigation" ), Qgis::NavigationMode::TerrainBased, QgsSettings::App );
+  mCameraNavigationModeCombo->setCurrentIndex( mCameraNavigationModeCombo->findData( QVariant::fromValue( defaultNavMode ) ) );
 
-  const QgsCameraController::VerticalAxisInversion axisInversion = settings.enumValue( QStringLiteral( "map3d/axisInversion" ), QgsCameraController::WhenDragging, QgsSettings::App );
-  mInvertVerticalAxisCombo->setCurrentIndex( mInvertVerticalAxisCombo->findData( static_cast< int >( axisInversion ) ) );
+  const Qgis::VerticalAxisInversion axisInversion = settings.enumValue( QStringLiteral( "map3d/axisInversion" ), Qgis::VerticalAxisInversion::WhenDragging, QgsSettings::App );
+  mInvertVerticalAxisCombo->setCurrentIndex( mInvertVerticalAxisCombo->findData( QVariant::fromValue( axisInversion ) ) );
 
   const Qt3DRender::QCameraLens::ProjectionType defaultProjection = settings.enumValue( QStringLiteral( "map3d/defaultProjection" ), Qt3DRender::QCameraLens::PerspectiveProjection, QgsSettings::App );
   cboCameraProjectionType->setCurrentIndex( cboCameraProjectionType->findData( static_cast< int >( defaultProjection ) ) );
@@ -62,8 +60,8 @@ Qgs3DOptionsWidget::Qgs3DOptionsWidget( QWidget *parent )
 void Qgs3DOptionsWidget::apply()
 {
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "map3d/defaultNavigation" ), static_cast< QgsCameraController::NavigationMode >( mCameraNavigationModeCombo->currentData().toInt() ), QgsSettings::App );
-  settings.setValue( QStringLiteral( "map3d/axisInversion" ), static_cast< QgsCameraController::VerticalAxisInversion >( mInvertVerticalAxisCombo->currentData().toInt() ), QgsSettings::App );
+  settings.setEnumValue( QStringLiteral( "map3d/defaultNavigation" ), mCameraNavigationModeCombo->currentData().value< Qgis::NavigationMode >(), QgsSettings::App );
+  settings.setEnumValue( QStringLiteral( "map3d/axisInversion" ), mInvertVerticalAxisCombo->currentData().value< Qgis::VerticalAxisInversion >(), QgsSettings::App );
   settings.setValue( QStringLiteral( "map3d/defaultProjection" ), static_cast< Qt3DRender::QCameraLens::ProjectionType >( cboCameraProjectionType->currentData().toInt() ), QgsSettings::App );
   settings.setValue( QStringLiteral( "map3d/defaultMovementSpeed" ), mCameraMovementSpeed->value(), QgsSettings::App );
   settings.setValue( QStringLiteral( "map3d/defaultFieldOfView" ), spinCameraFieldOfView->value(), QgsSettings::App );

@@ -53,7 +53,7 @@ void QgsTextPreview::paintEvent( QPaintEvent *e )
   const double fontSize = mContext.convertToPainterUnits( mFormat.size(), mFormat.sizeUnit(), mFormat.sizeMapUnitScale() );
   double xtrans = 0;
   if ( mFormat.buffer().enabled() )
-    xtrans = mFormat.buffer().sizeUnit() == QgsUnitTypes::RenderPercentage
+    xtrans = mFormat.buffer().sizeUnit() == Qgis::RenderUnit::Percentage
              ? fontSize * mFormat.buffer().size() / 100
              : mContext.convertToPainterUnits( mFormat.buffer().size(), mFormat.buffer().sizeUnit(), mFormat.buffer().sizeMapUnitScale() );
   if ( mFormat.background().enabled() && mFormat.background().sizeType() != QgsTextBackgroundSettings::SizeFixed )
@@ -62,7 +62,7 @@ void QgsTextPreview::paintEvent( QPaintEvent *e )
 
   double ytrans = 0.0;
   if ( mFormat.buffer().enabled() )
-    ytrans = std::max( ytrans, mFormat.buffer().sizeUnit() == QgsUnitTypes::RenderPercentage
+    ytrans = std::max( ytrans, mFormat.buffer().sizeUnit() == Qgis::RenderUnit::Percentage
                        ? fontSize * mFormat.buffer().size() / 100
                        : mContext.convertToPainterUnits( mFormat.buffer().size(), mFormat.buffer().sizeUnit(), mFormat.buffer().sizeMapUnitScale() ) );
   if ( mFormat.background().enabled() )
@@ -105,7 +105,7 @@ void QgsTextPreview::setScale( double scale )
   updateContext();
 }
 
-void QgsTextPreview::setMapUnits( QgsUnitTypes::DistanceUnit unit )
+void QgsTextPreview::setMapUnits( Qgis::DistanceUnit unit )
 {
   mMapUnits = unit;
   updateContext();

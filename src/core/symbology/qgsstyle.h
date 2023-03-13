@@ -448,7 +448,7 @@ class CORE_EXPORT QgsStyle : public QObject
      *
      * \since QGIS 3.16
      */
-    QList< QgsWkbTypes::GeometryType > symbol3DCompatibleGeometryTypes( const QString &name ) const;
+    QList< Qgis::GeometryType > symbol3DCompatibleGeometryTypes( const QString &name ) const;
 
     /**
      * Returns the layer geometry type corresponding to the label settings
@@ -457,7 +457,7 @@ class CORE_EXPORT QgsStyle : public QObject
      *
      * \since QGIS 3.10
      */
-    QgsWkbTypes::GeometryType labelSettingsLayerType( const QString &name ) const;
+    Qgis::GeometryType labelSettingsLayerType( const QString &name ) const;
 
     /**
      * Returns count of label settings in the style.

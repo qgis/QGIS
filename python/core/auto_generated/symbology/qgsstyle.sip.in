@@ -389,7 +389,7 @@ Returns count of 3D symbols in the style.
 .. versionadded:: 3.16
 %End
 
-    QList< QgsWkbTypes::GeometryType > symbol3DCompatibleGeometryTypes( const QString &name ) const;
+    QList< Qgis::GeometryType > symbol3DCompatibleGeometryTypes( const QString &name ) const;
 %Docstring
 Returns the list of the vector layer geometry types which are compatible with the 3D symbol
 with the specified ``name``, or an empty list if a matching 3d symbol is not present.
@@ -397,7 +397,7 @@ with the specified ``name``, or an empty list if a matching 3d symbol is not pre
 .. versionadded:: 3.16
 %End
 
-    QgsWkbTypes::GeometryType labelSettingsLayerType( const QString &name ) const;
+    Qgis::GeometryType labelSettingsLayerType( const QString &name ) const;
 %Docstring
 Returns the layer geometry type corresponding to the label settings
 with the specified ``name``, or :py:class:`QgsWkbTypes`.UnknownGeometry

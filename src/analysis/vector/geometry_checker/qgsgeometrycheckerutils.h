@@ -119,7 +119,7 @@ class ANALYSIS_EXPORT QgsGeometryCheckerUtils
          */
         LayerFeatures( const QMap<QString, QgsFeaturePool *> &featurePools,
                        const QMap<QString, QgsFeatureIds> &featureIds,
-                       const QList<QgsWkbTypes::GeometryType> &geometryTypes,
+                       const QList<Qgis::GeometryType> &geometryTypes,
                        QgsFeedback *feedback,
                        const QgsGeometryCheckContext *context,
                        bool useMapCrs = false );
@@ -129,7 +129,7 @@ class ANALYSIS_EXPORT QgsGeometryCheckerUtils
          */
         LayerFeatures( const QMap<QString, QgsFeaturePool *> &featurePools,
                        const QList<QString> &layerIds, const QgsRectangle &extent,
-                       const QList<QgsWkbTypes::GeometryType> &geometryTypes,
+                       const QList<Qgis::GeometryType> &geometryTypes,
                        const QgsGeometryCheckContext *context );
 
         /**
@@ -204,7 +204,7 @@ class ANALYSIS_EXPORT QgsGeometryCheckerUtils
         QMap<QString, QgsFeatureIds> mFeatureIds;
         QList<QString> mLayerIds;
         QgsRectangle mExtent;
-        QList<QgsWkbTypes::GeometryType> mGeometryTypes;
+        QList<Qgis::GeometryType> mGeometryTypes;
         QgsFeedback *mFeedback = nullptr;
         const QgsGeometryCheckContext *mContext = nullptr;
         bool mUseMapCrs = true;

@@ -35,7 +35,7 @@
 
 QgsCurvePolygon::QgsCurvePolygon()
 {
-  mWkbType = QgsWkbTypes::CurvePolygon;
+  mWkbType = Qgis::WkbType::CurvePolygon;
 }
 
 QgsCurvePolygon::~QgsCurvePolygon()
@@ -144,7 +144,7 @@ QgsCurvePolygon *QgsCurvePolygon::clone() const
 
 void QgsCurvePolygon::clear()
 {
-  mWkbType = QgsWkbTypes::CurvePolygon;
+  mWkbType = Qgis::WkbType::CurvePolygon;
   mExteriorRing.reset();
   qDeleteAll( mInteriorRings );
   mInteriorRings.clear();
@@ -160,8 +160,8 @@ bool QgsCurvePolygon::fromWkb( QgsConstWkbPtr &wkbPtr )
     return false;
   }
 
-  QgsWkbTypes::Type type = wkbPtr.readHeader();
-  if ( QgsWkbTypes::flatType( type ) != QgsWkbTypes::CurvePolygon )
+  Qgis::WkbType type = wkbPtr.readHeader();
+  if ( QgsWkbTypes::flatType( type ) != Qgis::WkbType::CurvePolygon )
   {
     return false;
   }
@@ -172,18 +172,18 @@ bool QgsCurvePolygon::fromWkb( QgsConstWkbPtr &wkbPtr )
   std::unique_ptr< QgsCurve > currentCurve;
   for ( int i = 0; i < nRings; ++i )
   {
-    QgsWkbTypes::Type curveType = wkbPtr.readHeader();
+    Qgis::WkbType curveType = wkbPtr.readHeader();
     wkbPtr -= 1 + sizeof( int );
-    QgsWkbTypes::Type flatCurveType = QgsWkbTypes::flatType( curveType );
-    if ( flatCurveType == QgsWkbTypes::LineString )
+    Qgis::WkbType flatCurveType = QgsWkbTypes::flatType( curveType );
+    if ( flatCurveType == Qgis::WkbType::LineString )
     {
       currentCurve.reset( new QgsLineString() );
     }
-    else if ( flatCurveType == QgsWkbTypes::CircularString )
+    else if ( flatCurveType == Qgis::WkbType::CircularString )
     {
       currentCurve.reset( new QgsCircularString() );
     }
-    else if ( flatCurveType == QgsWkbTypes::CompoundCurve )
+    else if ( flatCurveType == Qgis::WkbType::CompoundCurve )
     {
       currentCurve.reset( new QgsCompoundCurve() );
     }
@@ -209,9 +209,9 @@ bool QgsCurvePolygon::fromWkt( const QString &wkt )
 {
   clear();
 
-  QPair<QgsWkbTypes::Type, QString> parts = QgsGeometryUtils::wktReadBlock( wkt );
+  QPair<Qgis::WkbType, QString> parts = QgsGeometryUtils::wktReadBlock( wkt );
 
-  if ( QgsWkbTypes::geometryType( parts.first ) != QgsWkbTypes::PolygonGeometry )
+  if ( QgsWkbTypes::geometryType( parts.first ) != Qgis::GeometryType::Polygon )
     return false;
 
   mWkbType = parts.first;
@@ -227,14 +227,14 @@ bool QgsCurvePolygon::fromWkt( const QString &wkt )
   const QStringList blocks = QgsGeometryUtils::wktGetChildBlocks( parts.second, defaultChildWkbType );
   for ( const QString &childWkt : blocks )
   {
-    QPair<QgsWkbTypes::Type, QString> childParts = QgsGeometryUtils::wktReadBlock( childWkt );
+    QPair<Qgis::WkbType, QString> childParts = QgsGeometryUtils::wktReadBlock( childWkt );
 
-    QgsWkbTypes::Type flatCurveType = QgsWkbTypes::flatType( childParts.first );
-    if ( flatCurveType == QgsWkbTypes::LineString )
+    Qgis::WkbType flatCurveType = QgsWkbTypes::flatType( childParts.first );
+    if ( flatCurveType == Qgis::WkbType::LineString )
       mInteriorRings.append( new QgsLineString() );
-    else if ( flatCurveType == QgsWkbTypes::CircularString )
+    else if ( flatCurveType == Qgis::WkbType::CircularString )
       mInteriorRings.append( new QgsCircularString() );
-    else if ( flatCurveType == QgsWkbTypes::CompoundCurve )
+    else if ( flatCurveType == Qgis::WkbType::CompoundCurve )
       mInteriorRings.append( new QgsCompoundCurve() );
     else
     {
@@ -704,13 +704,13 @@ void QgsCurvePolygon::setExteriorRing( QgsCurve *ring )
   mExteriorRing.reset( ring );
 
   //set proper wkb type
-  if ( QgsWkbTypes::flatType( wkbType() ) == QgsWkbTypes::Polygon )
+  if ( QgsWkbTypes::flatType( wkbType() ) == Qgis::WkbType::Polygon )
   {
-    setZMTypeFromSubGeometry( ring, QgsWkbTypes::Polygon );
+    setZMTypeFromSubGeometry( ring, Qgis::WkbType::Polygon );
   }
-  else if ( QgsWkbTypes::flatType( wkbType() ) == QgsWkbTypes::CurvePolygon )
+  else if ( QgsWkbTypes::flatType( wkbType() ) == Qgis::WkbType::CurvePolygon )
   {
-    setZMTypeFromSubGeometry( ring, QgsWkbTypes::CurvePolygon );
+    setZMTypeFromSubGeometry( ring, Qgis::WkbType::CurvePolygon );
   }
 
   //match dimensionality for rings

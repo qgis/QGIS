@@ -178,7 +178,7 @@ void QgsVectorLayerProfileResults::visitFeaturesAtPoint( const QgsProfilePoint &
       {
         switch ( feature.crossSectionGeometry.type() )
         {
-          case QgsWkbTypes::PointGeometry:
+          case Qgis::GeometryType::Point:
           {
             for ( auto partIt = feature.crossSectionGeometry.const_parts_begin(); partIt != feature.crossSectionGeometry.const_parts_end(); ++partIt )
             {
@@ -199,7 +199,7 @@ void QgsVectorLayerProfileResults::visitFeaturesAtPoint( const QgsProfilePoint &
             break;
           }
 
-          case QgsWkbTypes::LineGeometry:
+          case Qgis::GeometryType::Line:
           {
             for ( auto partIt = feature.crossSectionGeometry.const_parts_begin(); partIt != feature.crossSectionGeometry.const_parts_end(); ++partIt )
             {
@@ -271,7 +271,7 @@ void QgsVectorLayerProfileResults::visitFeaturesAtPoint( const QgsProfilePoint &
             break;
           }
 
-          case QgsWkbTypes::PolygonGeometry:
+          case Qgis::GeometryType::Polygon:
           {
             if ( visitWithin )
             {
@@ -309,8 +309,8 @@ void QgsVectorLayerProfileResults::visitFeaturesAtPoint( const QgsProfilePoint &
             }
             break;
           }
-          case QgsWkbTypes::UnknownGeometry:
-          case QgsWkbTypes::NullGeometry:
+          case Qgis::GeometryType::Unknown:
+          case Qgis::GeometryType::Null:
             break;
         }
       }
@@ -334,7 +334,7 @@ void QgsVectorLayerProfileResults::visitFeaturesInRange( const QgsDoubleRange &d
       {
         switch ( feature.crossSectionGeometry.type() )
         {
-          case QgsWkbTypes::PointGeometry:
+          case Qgis::GeometryType::Point:
           {
             for ( auto partIt = feature.crossSectionGeometry.const_parts_begin(); partIt != feature.crossSectionGeometry.const_parts_end(); ++partIt )
             {
@@ -349,8 +349,8 @@ void QgsVectorLayerProfileResults::visitFeaturesInRange( const QgsDoubleRange &d
             break;
           }
 
-          case QgsWkbTypes::LineGeometry:
-          case QgsWkbTypes::PolygonGeometry:
+          case Qgis::GeometryType::Line:
+          case Qgis::GeometryType::Polygon:
           {
             if ( profileRangeGeos.intersects( feature.crossSectionGeometry.constGet() ) )
             {
@@ -359,8 +359,8 @@ void QgsVectorLayerProfileResults::visitFeaturesInRange( const QgsDoubleRange &d
             break;
           }
 
-          case QgsWkbTypes::UnknownGeometry:
-          case QgsWkbTypes::NullGeometry:
+          case Qgis::GeometryType::Unknown:
+          case Qgis::GeometryType::Null:
             break;
         }
       }
@@ -421,7 +421,7 @@ void QgsVectorLayerProfileResults::renderResultsAsIndividualFeatures( QgsProfile
     // we can take some shortcuts here, because we know that the geometry will already be segmentized and can't be a curved type
     switch ( transformed.type() )
     {
-      case QgsWkbTypes::PointGeometry:
+      case Qgis::GeometryType::Point:
       {
         if ( const QgsPoint *point = qgsgeometry_cast< const QgsPoint * >( transformed.constGet() ) )
         {
@@ -438,7 +438,7 @@ void QgsVectorLayerProfileResults::renderResultsAsIndividualFeatures( QgsProfile
         break;
       }
 
-      case QgsWkbTypes::LineGeometry:
+      case Qgis::GeometryType::Line:
       {
         if ( const QgsLineString *line = qgsgeometry_cast< const QgsLineString * >( transformed.constGet() ) )
         {
@@ -455,7 +455,7 @@ void QgsVectorLayerProfileResults::renderResultsAsIndividualFeatures( QgsProfile
         break;
       }
 
-      case QgsWkbTypes::PolygonGeometry:
+      case Qgis::GeometryType::Polygon:
       {
         if ( const QgsPolygon *polygon = qgsgeometry_cast< const QgsPolygon * >( transformed.constGet() ) )
         {
@@ -473,8 +473,8 @@ void QgsVectorLayerProfileResults::renderResultsAsIndividualFeatures( QgsProfile
         break;
       }
 
-      case QgsWkbTypes::UnknownGeometry:
-      case QgsWkbTypes::NullGeometry:
+      case Qgis::GeometryType::Unknown:
+      case Qgis::GeometryType::Null:
         return;
     }
   };
@@ -697,23 +697,23 @@ bool QgsVectorLayerProfileGenerator::generateProfile( const QgsProfileGeneration
 
   switch ( QgsWkbTypes::geometryType( mWkbType ) )
   {
-    case QgsWkbTypes::PointGeometry:
+    case Qgis::GeometryType::Point:
       if ( !generateProfileForPoints() )
         return false;
       break;
 
-    case QgsWkbTypes::LineGeometry:
+    case Qgis::GeometryType::Line:
       if ( !generateProfileForLines() )
         return false;
       break;
 
-    case QgsWkbTypes::PolygonGeometry:
+    case Qgis::GeometryType::Polygon:
       if ( !generateProfileForPolygons() )
         return false;
       break;
 
-    case QgsWkbTypes::UnknownGeometry:
-    case QgsWkbTypes::NullGeometry:
+    case Qgis::GeometryType::Unknown:
+    case Qgis::GeometryType::Null:
       return false;
   }
 
@@ -934,7 +934,7 @@ bool QgsVectorLayerProfileGenerator::generateProfileForPolygons()
     // intersect may be a (multi)point or (multi)linestring
     switch ( QgsWkbTypes::geometryType( intersect->wkbType() ) )
     {
-      case QgsWkbTypes::PointGeometry:
+      case Qgis::GeometryType::Point:
         if ( const QgsMultiPoint *mp = qgsgeometry_cast< const QgsMultiPoint * >( intersect ) )
         {
           const int numPoint = mp->numGeometries();
@@ -972,7 +972,7 @@ bool QgsVectorLayerProfileGenerator::generateProfileForPolygons()
           }
         }
         break;
-      case QgsWkbTypes::LineGeometry:
+      case Qgis::GeometryType::Line:
         if ( const QgsMultiLineString *ml = qgsgeometry_cast< const QgsMultiLineString * >( intersect ) )
         {
           const int numLines = ml->numGeometries();
@@ -1064,9 +1064,9 @@ bool QgsVectorLayerProfileGenerator::generateProfileForPolygons()
         }
         break;
 
-      case QgsWkbTypes::PolygonGeometry:
-      case QgsWkbTypes::UnknownGeometry:
-      case QgsWkbTypes::NullGeometry:
+      case Qgis::GeometryType::Polygon:
+      case Qgis::GeometryType::Unknown:
+      case Qgis::GeometryType::Null:
         return;
     }
   };
@@ -1161,7 +1161,7 @@ bool QgsVectorLayerProfileGenerator::generateProfileForPolygons()
     if ( !crossSectionParts.empty() )
     {
       QgsGeometry unioned = QgsGeometry::unaryUnion( crossSectionParts );
-      if ( unioned.type() == QgsWkbTypes::LineGeometry )
+      if ( unioned.type() == Qgis::GeometryType::Line )
         unioned = unioned.mergeLines();
       resultFeature.crossSectionGeometry = unioned;
     }

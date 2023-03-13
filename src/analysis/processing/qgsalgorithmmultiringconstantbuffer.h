@@ -51,7 +51,7 @@ class QgsMultiRingConstantBufferAlgorithm : public QgsProcessingFeatureBasedAlgo
     QgsProcessing::SourceType outputLayerType() const override { return QgsProcessing::TypeVectorPolygon; }
     QgsProcessingFeatureSource::Flag sourceFlags() const override;
     QgsFeatureSink::SinkFlags sinkFlags() const override;
-    QgsWkbTypes::Type outputWkbType( QgsWkbTypes::Type inputWkbType ) const override { Q_UNUSED( inputWkbType ) return QgsWkbTypes::MultiPolygon; }
+    Qgis::WkbType outputWkbType( Qgis::WkbType inputWkbType ) const override { Q_UNUSED( inputWkbType ) return Qgis::WkbType::MultiPolygon; }
     bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
     QgsFeatureList processFeature( const QgsFeature &feature,  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 

@@ -19,6 +19,7 @@
 
 #include "qgselevationmap.h"
 #include "qgsrendercontext.h"
+#include "qgsunittypes.h"
 
 QgsElevationShadingRenderer::QgsElevationShadingRenderer()
 {
@@ -143,7 +144,7 @@ void QgsElevationShadingRenderer::readXml( const QDomElement &element, const Qgs
     mEyeDomeLightingDistance = element.attribute( QStringLiteral( "edl-distance" ) ).toDouble();
 
   if ( element.hasAttribute( QStringLiteral( "edl-distance-unit" ) ) )
-    mEyeDomeLightingDistanceUnit = static_cast<QgsUnitTypes::RenderUnit>( element.attribute( QStringLiteral( "edl-distance-unit" ) ).toInt() );
+    mEyeDomeLightingDistanceUnit = static_cast<Qgis::RenderUnit>( element.attribute( QStringLiteral( "edl-distance-unit" ) ).toInt() );
 
   if ( element.hasAttribute( QStringLiteral( "hillshading-is-active" ) ) )
     mRenderHillshading = element.attribute( QStringLiteral( "hillshading-is-active" ) ).toInt() == 1;
@@ -171,12 +172,12 @@ void QgsElevationShadingRenderer::setCombinedElevationMethod( Qgis::ElevationMap
   mCombinedElevationMethod = newCombinedElevationMethod;
 }
 
-QgsUnitTypes::RenderUnit QgsElevationShadingRenderer::eyeDomeLightingDistanceUnit() const
+Qgis::RenderUnit QgsElevationShadingRenderer::eyeDomeLightingDistanceUnit() const
 {
   return mEyeDomeLightingDistanceUnit;
 }
 
-void QgsElevationShadingRenderer::setEyeDomeLightingDistanceUnit( QgsUnitTypes::RenderUnit newEyeDomeLightingDistanceUnit )
+void QgsElevationShadingRenderer::setEyeDomeLightingDistanceUnit( Qgis::RenderUnit newEyeDomeLightingDistanceUnit )
 {
   mEyeDomeLightingDistanceUnit = newEyeDomeLightingDistanceUnit;
 }
@@ -215,10 +216,10 @@ void QgsElevationShadingRenderer::renderHillshading( const QgsElevationMap &elev
   double pixelSize = context.mapToPixel().mapUnitsPerPixel();
 
   // We suppose that the elevation are in meter, so we need to use meter for pixel size if possible
-  QgsUnitTypes::DistanceUnit destinationUnit = context.distanceArea().lengthUnits();
+  Qgis::DistanceUnit destinationUnit = context.distanceArea().lengthUnits();
   double effPixelSize;
-  if ( destinationUnit != QgsUnitTypes::DistanceUnknownUnit )
-    effPixelSize = QgsUnitTypes::fromUnitToUnitFactor( destinationUnit, QgsUnitTypes::DistanceMeters ) * pixelSize;
+  if ( destinationUnit != Qgis::DistanceUnit::Unknown )
+    effPixelSize = QgsUnitTypes::fromUnitToUnitFactor( destinationUnit, Qgis::DistanceUnit::Meters ) * pixelSize;
   else
     effPixelSize = pixelSize;
 

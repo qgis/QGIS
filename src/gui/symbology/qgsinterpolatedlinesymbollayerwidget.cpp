@@ -16,10 +16,6 @@
 #include "qgsinterpolatedlinesymbollayerwidget.h"
 
 #include "qgsvectorlayer.h"
-#include "qgsexpressioncontextutils.h"
-#include "qgsproject.h"
-#include "qgstemporalcontroller.h"
-#include "qgsmapcanvas.h"
 #include "qgsdoublevalidator.h"
 
 
@@ -43,21 +39,25 @@ QgsInterpolatedLineSymbolLayerWidget::QgsInterpolatedLineSymbolLayerWidget( QgsV
   mColorStartFieldExpression->setLayer( layer );
   mColorEndFieldExpression->setLayer( layer );
 
-  mWidthUnitSelectionFixed->setUnits( QgsUnitTypes::RenderUnitList()
-                                      << QgsUnitTypes::RenderUnit::RenderInches
-                                      << QgsUnitTypes::RenderUnit::RenderMapUnits
-                                      << QgsUnitTypes::RenderUnit::RenderMetersInMapUnits
-                                      << QgsUnitTypes::RenderUnit::RenderMillimeters
-                                      << QgsUnitTypes::RenderUnit::RenderPixels
-                                      << QgsUnitTypes::RenderUnit::RenderPoints );
+  mWidthUnitSelectionFixed->setUnits(
+  {
+    Qgis::RenderUnit::Inches,
+    Qgis::RenderUnit::MapUnits,
+    Qgis::RenderUnit::MetersInMapUnits,
+    Qgis::RenderUnit::Millimeters,
+    Qgis::RenderUnit::Pixels,
+    Qgis::RenderUnit::Points,
+  } );
 
-  mWidthUnitSelectionVarying->setUnits( QgsUnitTypes::RenderUnitList()
-                                        << QgsUnitTypes::RenderUnit::RenderInches
-                                        << QgsUnitTypes::RenderUnit::RenderMapUnits
-                                        << QgsUnitTypes::RenderUnit::RenderMetersInMapUnits
-                                        << QgsUnitTypes::RenderUnit::RenderMillimeters
-                                        << QgsUnitTypes::RenderUnit::RenderPixels
-                                        << QgsUnitTypes::RenderUnit::RenderPoints );
+  mWidthUnitSelectionVarying->setUnits(
+  {
+    Qgis::RenderUnit::Inches,
+    Qgis::RenderUnit::MapUnits,
+    Qgis::RenderUnit::MetersInMapUnits,
+    Qgis::RenderUnit::Millimeters,
+    Qgis::RenderUnit::Pixels,
+    Qgis::RenderUnit::Points,
+  } );
 
   connect( mWidthMethodComboBox, qOverload<int>( &QComboBox::currentIndexChanged ),
            this, &QgsInterpolatedLineSymbolLayerWidget::updateVisibleWidget );

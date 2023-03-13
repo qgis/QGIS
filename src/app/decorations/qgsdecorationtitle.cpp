@@ -39,7 +39,7 @@ QgsDecorationTitle::QgsDecorationTitle( QObject *parent )
   : QgsDecorationItem( parent )
 {
   mPlacement = TopCenter;
-  mMarginUnit = QgsUnitTypes::RenderMillimeters;
+  mMarginUnit = Qgis::RenderUnit::Millimeters;
 
   setDisplayName( tr( "Title Label" ) );
   mConfigurationName = QStringLiteral( "TitleLabel" );
@@ -122,7 +122,7 @@ void QgsDecorationTitle::render( const QgsMapSettings &mapSettings, QgsRenderCon
   // Set  margin according to selected units
   switch ( mMarginUnit )
   {
-    case QgsUnitTypes::RenderMillimeters:
+    case Qgis::RenderUnit::Millimeters:
     {
       const int pixelsInchX = context.painter()->device()->logicalDpiX();
       const int pixelsInchY = context.painter()->device()->logicalDpiY();
@@ -130,23 +130,23 @@ void QgsDecorationTitle::render( const QgsMapSettings &mapSettings, QgsRenderCon
       yOffset = pixelsInchY * INCHES_TO_MM * mMarginVertical;
       break;
     }
-    case QgsUnitTypes::RenderPixels:
+    case Qgis::RenderUnit::Pixels:
     {
       xOffset = mMarginHorizontal;
       yOffset = mMarginVertical;
       break;
     }
-    case QgsUnitTypes::RenderPercentage:
+    case Qgis::RenderUnit::Percentage:
     {
       xOffset = ( ( deviceWidth - textWidth ) / 100. ) * mMarginHorizontal;
       yOffset = ( ( deviceHeight - textHeight ) / 100. ) * mMarginVertical;
       break;
     }
-    case QgsUnitTypes::RenderMapUnits:
-    case QgsUnitTypes::RenderPoints:
-    case QgsUnitTypes::RenderInches:
-    case QgsUnitTypes::RenderUnknownUnit:
-    case QgsUnitTypes::RenderMetersInMapUnits:
+    case Qgis::RenderUnit::MapUnits:
+    case Qgis::RenderUnit::Points:
+    case Qgis::RenderUnit::Inches:
+    case Qgis::RenderUnit::Unknown:
+    case Qgis::RenderUnit::MetersInMapUnits:
       break;
   }
 

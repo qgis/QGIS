@@ -65,7 +65,7 @@ double QgsDiagram::sizePainterUnits( double l, const QgsDiagramSettings &s, cons
 QFont QgsDiagram::scaledFont( const QgsDiagramSettings &s, const QgsRenderContext &c )
 {
   QFont f = s.font;
-  if ( s.sizeType == QgsUnitTypes::RenderMapUnits )
+  if ( s.sizeType == Qgis::RenderUnit::MapUnits )
   {
     const int pixelsize = s.font.pointSizeF() / c.mapToPixel().mapUnitsPerPixel();
     f.setPixelSize( pixelsize > 0 ? pixelsize : 1 );

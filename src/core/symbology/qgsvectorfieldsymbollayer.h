@@ -94,8 +94,8 @@ class CORE_EXPORT QgsVectorFieldSymbolLayer: public QgsMarkerSymbolLayer
     void setAngleUnits( AngleUnits units ) { mAngleUnits = units; }
     AngleUnits angleUnits() const { return mAngleUnits; }
 
-    void setOutputUnit( QgsUnitTypes::RenderUnit unit ) override;
-    QgsUnitTypes::RenderUnit outputUnit() const override;
+    void setOutputUnit( Qgis::RenderUnit unit ) override;
+    Qgis::RenderUnit outputUnit() const override;
 
     void setMapUnitScale( const QgsMapUnitScale &scale ) override;
     QgsMapUnitScale mapUnitScale() const override;
@@ -105,13 +105,13 @@ class CORE_EXPORT QgsVectorFieldSymbolLayer: public QgsMarkerSymbolLayer
      * \param unit distance units
      * \see distanceUnit()
     */
-    void setDistanceUnit( QgsUnitTypes::RenderUnit unit ) { mDistanceUnit = unit; }
+    void setDistanceUnit( Qgis::RenderUnit unit ) { mDistanceUnit = unit; }
 
     /**
      * Returns the units for the distance.
      * \see setDistanceUnit()
     */
-    QgsUnitTypes::RenderUnit distanceUnit() const { return mDistanceUnit; }
+    Qgis::RenderUnit distanceUnit() const { return mDistanceUnit; }
 
     void setDistanceMapUnitScale( const QgsMapUnitScale &scale ) { mDistanceMapUnitScale = scale; }
     const QgsMapUnitScale &distanceMapUnitScale() const { return mDistanceMapUnitScale; }
@@ -126,7 +126,7 @@ class CORE_EXPORT QgsVectorFieldSymbolLayer: public QgsMarkerSymbolLayer
 
     QString mXAttribute;
     QString mYAttribute;
-    QgsUnitTypes::RenderUnit mDistanceUnit = QgsUnitTypes::RenderMillimeters;
+    Qgis::RenderUnit mDistanceUnit = Qgis::RenderUnit::Millimeters;
     QgsMapUnitScale mDistanceMapUnitScale;
     double mScale = 1.0;
     VectorFieldType mVectorFieldType = Cartesian;

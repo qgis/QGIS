@@ -128,18 +128,18 @@ Qgis::TextOrientation QgsTextRendererUtils::decodeTextOrientation( const QString
   return Qgis::TextOrientation::Horizontal;
 }
 
-QgsUnitTypes::RenderUnit QgsTextRendererUtils::convertFromOldLabelUnit( int val )
+Qgis::RenderUnit QgsTextRendererUtils::convertFromOldLabelUnit( int val )
 {
   if ( val == 0 )
-    return QgsUnitTypes::RenderPoints;
+    return Qgis::RenderUnit::Points;
   else if ( val == 1 )
-    return QgsUnitTypes::RenderMillimeters;
+    return Qgis::RenderUnit::Millimeters;
   else if ( val == 2 )
-    return QgsUnitTypes::RenderMapUnits;
+    return Qgis::RenderUnit::MapUnits;
   else if ( val == 3 )
-    return QgsUnitTypes::RenderPercentage;
+    return Qgis::RenderUnit::Percentage;
   else
-    return QgsUnitTypes::RenderMillimeters;
+    return Qgis::RenderUnit::Millimeters;
 }
 
 QColor QgsTextRendererUtils::readColor( QgsVectorLayer *layer, const QString &property, const QColor &defaultColor, bool withAlpha )

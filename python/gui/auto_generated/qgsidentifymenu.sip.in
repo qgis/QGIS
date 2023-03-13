@@ -57,7 +57,7 @@ QgsIdentifyMenu is a menu to be used to choose within a list of QgsMapTool.Ident
     ~QgsIdentifyMenu();
 
 
-    static QList<QgsMapToolIdentify::IdentifyResult> findFeaturesOnCanvas( QgsMapMouseEvent *event, QgsMapCanvas *canvas, const QList<QgsWkbTypes::GeometryType> &geometryTypes );
+    static QList<QgsMapToolIdentify::IdentifyResult> findFeaturesOnCanvas( QgsMapMouseEvent *event, QgsMapCanvas *canvas, const QList<Qgis::GeometryType> &geometryTypes );
 %Docstring
 Searches for features on the map ``canvas``, which are located at the specified ``event`` point.
 

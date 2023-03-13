@@ -138,7 +138,7 @@ void QgsCreateMarkerItemMapTool::cadCanvasReleaseEvent( QgsMapMouseEvent *event 
 
   std::unique_ptr< QgsMarkerSymbol > markerSymbol = QgsApplication::recentStyleHandler()->recentSymbol< QgsMarkerSymbol >( QStringLiteral( "marker_annotation_item" ) );
   if ( !markerSymbol )
-    markerSymbol.reset( qgis::down_cast< QgsMarkerSymbol * >( QgsSymbol::defaultSymbol( QgsWkbTypes::PointGeometry ) ) );
+    markerSymbol.reset( qgis::down_cast< QgsMarkerSymbol * >( QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ) ) );
   createdItem->setSymbol( markerSymbol.release() );
 
   // set reference scale to match canvas scale, but don't enable it by default for marker items
@@ -171,7 +171,7 @@ void QgsCreateLineItemMapTool::lineCaptured( const QgsCurve *line )
 
     std::unique_ptr< QgsLineSymbol > lineSymbol = QgsApplication::recentStyleHandler()->recentSymbol< QgsLineSymbol >( QStringLiteral( "line_annotation_item" ) );
     if ( !lineSymbol )
-      lineSymbol.reset( qgis::down_cast< QgsLineSymbol * >( QgsSymbol::defaultSymbol( QgsWkbTypes::LineGeometry ) ) );
+      lineSymbol.reset( qgis::down_cast< QgsLineSymbol * >( QgsSymbol::defaultSymbol( Qgis::GeometryType::Line ) ) );
     createdItem->setSymbol( lineSymbol.release() );
 
     // set reference scale to match canvas scale, but don't enable it by default for marker items
@@ -202,7 +202,7 @@ void QgsCreatePolygonItemMapTool::polygonCaptured( const QgsCurvePolygon *polygo
 
     std::unique_ptr< QgsFillSymbol > fillSymbol = QgsApplication::recentStyleHandler()->recentSymbol< QgsFillSymbol >( QStringLiteral( "polygon_annotation_item" ) );
     if ( !fillSymbol )
-      fillSymbol.reset( qgis::down_cast< QgsFillSymbol * >( QgsSymbol::defaultSymbol( QgsWkbTypes::PolygonGeometry ) ) );
+      fillSymbol.reset( qgis::down_cast< QgsFillSymbol * >( QgsSymbol::defaultSymbol( Qgis::GeometryType::Polygon ) ) );
     createdItem->setSymbol( fillSymbol.release() );
 
     // set reference scale to match canvas scale, but don't enable it by default for marker items

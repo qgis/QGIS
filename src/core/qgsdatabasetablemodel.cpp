@@ -116,33 +116,33 @@ QVariant QgsDatabaseTableModel::data( const QModelIndex &index, int role ) const
 
       if ( role == Qt::DecorationRole )
       {
-        const QgsWkbTypes::GeometryType geomType = QgsWkbTypes::geometryType( table.geometryColumnTypes().at( 0 ).wkbType );
+        const Qgis::GeometryType geomType = QgsWkbTypes::geometryType( table.geometryColumnTypes().at( 0 ).wkbType );
         switch ( geomType )
         {
-          case QgsWkbTypes::PointGeometry:
+          case Qgis::GeometryType::Point:
           {
             return QgsIconUtils::iconPoint();
           }
-          case QgsWkbTypes::PolygonGeometry:
+          case Qgis::GeometryType::Polygon:
           {
             return QgsIconUtils::iconPolygon();
           }
-          case QgsWkbTypes::LineGeometry:
+          case Qgis::GeometryType::Line:
           {
             return QgsIconUtils::iconLine();
           }
-          case QgsWkbTypes::UnknownGeometry:
+          case Qgis::GeometryType::Unknown:
           {
             return QgsIconUtils::iconGeometryCollection();
           }
-          case QgsWkbTypes::NullGeometry:
+          case Qgis::GeometryType::Null:
             return QgsIconUtils::iconTable();
         }
 
         return QgsIconUtils::iconTable();
       }
       else if ( role == RoleWkbType )
-        return table.geometryColumnTypes().at( 0 ).wkbType;
+        return static_cast< quint32>( table.geometryColumnTypes().at( 0 ).wkbType );
       else if ( role == RoleCrs )
         return table.geometryColumnTypes().at( 0 ).crs;
 

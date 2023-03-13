@@ -110,26 +110,26 @@ void TestQgsLayoutUnits::cleanup()
 
 void TestQgsLayoutUnits::encodeDecode()
 {
-  QCOMPARE( QgsUnitTypes::decodeLayoutUnit( QgsUnitTypes::encodeUnit( QgsUnitTypes::LayoutMillimeters ) ), QgsUnitTypes::LayoutMillimeters );
-  QCOMPARE( QgsUnitTypes::decodeLayoutUnit( QgsUnitTypes::encodeUnit( QgsUnitTypes::LayoutCentimeters ) ), QgsUnitTypes::LayoutCentimeters );
-  QCOMPARE( QgsUnitTypes::decodeLayoutUnit( QgsUnitTypes::encodeUnit( QgsUnitTypes::LayoutMeters ) ), QgsUnitTypes::LayoutMeters );
-  QCOMPARE( QgsUnitTypes::decodeLayoutUnit( QgsUnitTypes::encodeUnit( QgsUnitTypes::LayoutInches ) ), QgsUnitTypes::LayoutInches );
-  QCOMPARE( QgsUnitTypes::decodeLayoutUnit( QgsUnitTypes::encodeUnit( QgsUnitTypes::LayoutFeet ) ), QgsUnitTypes::LayoutFeet );
-  QCOMPARE( QgsUnitTypes::decodeLayoutUnit( QgsUnitTypes::encodeUnit( QgsUnitTypes::LayoutPoints ) ), QgsUnitTypes::LayoutPoints );
-  QCOMPARE( QgsUnitTypes::decodeLayoutUnit( QgsUnitTypes::encodeUnit( QgsUnitTypes::LayoutPicas ) ), QgsUnitTypes::LayoutPicas );
-  QCOMPARE( QgsUnitTypes::decodeLayoutUnit( QgsUnitTypes::encodeUnit( QgsUnitTypes::LayoutPixels ) ), QgsUnitTypes::LayoutPixels );
+  QCOMPARE( QgsUnitTypes::decodeLayoutUnit( QgsUnitTypes::encodeUnit( Qgis::LayoutUnit::Millimeters ) ), Qgis::LayoutUnit::Millimeters );
+  QCOMPARE( QgsUnitTypes::decodeLayoutUnit( QgsUnitTypes::encodeUnit( Qgis::LayoutUnit::Centimeters ) ), Qgis::LayoutUnit::Centimeters );
+  QCOMPARE( QgsUnitTypes::decodeLayoutUnit( QgsUnitTypes::encodeUnit( Qgis::LayoutUnit::Meters ) ), Qgis::LayoutUnit::Meters );
+  QCOMPARE( QgsUnitTypes::decodeLayoutUnit( QgsUnitTypes::encodeUnit( Qgis::LayoutUnit::Inches ) ), Qgis::LayoutUnit::Inches );
+  QCOMPARE( QgsUnitTypes::decodeLayoutUnit( QgsUnitTypes::encodeUnit( Qgis::LayoutUnit::Feet ) ), Qgis::LayoutUnit::Feet );
+  QCOMPARE( QgsUnitTypes::decodeLayoutUnit( QgsUnitTypes::encodeUnit( Qgis::LayoutUnit::Points ) ), Qgis::LayoutUnit::Points );
+  QCOMPARE( QgsUnitTypes::decodeLayoutUnit( QgsUnitTypes::encodeUnit( Qgis::LayoutUnit::Picas ) ), Qgis::LayoutUnit::Picas );
+  QCOMPARE( QgsUnitTypes::decodeLayoutUnit( QgsUnitTypes::encodeUnit( Qgis::LayoutUnit::Pixels ) ), Qgis::LayoutUnit::Pixels );
 }
 
 void TestQgsLayoutUnits::create()
 {
   const QgsLayoutMeasurement defaultUnits( 5.0 );
   //default units should be millimeters
-  QCOMPARE( defaultUnits.units(), QgsUnitTypes::LayoutMillimeters );
+  QCOMPARE( defaultUnits.units(), Qgis::LayoutUnit::Millimeters );
   QCOMPARE( defaultUnits.length(), 5.0 );
 
   //test overriding default unit
-  const QgsLayoutMeasurement inches( 7.0, QgsUnitTypes::LayoutInches );
-  QCOMPARE( inches.units(), QgsUnitTypes::LayoutInches );
+  const QgsLayoutMeasurement inches( 7.0, Qgis::LayoutUnit::Inches );
+  QCOMPARE( inches.units(), Qgis::LayoutUnit::Inches );
   QCOMPARE( inches.length(), 7.0 );
 }
 
@@ -139,23 +139,23 @@ void TestQgsLayoutUnits::gettersSetters()
 
   measurement.setLength( 9.0 );
   QCOMPARE( measurement.length(), 9.0 );
-  measurement.setUnits( QgsUnitTypes::LayoutInches );
-  QCOMPARE( measurement.units(), QgsUnitTypes::LayoutInches );
+  measurement.setUnits( Qgis::LayoutUnit::Inches );
+  QCOMPARE( measurement.units(), Qgis::LayoutUnit::Inches );
 }
 
 void TestQgsLayoutUnits::copyConstructor()
 {
-  const QgsLayoutMeasurement source( 6.0, QgsUnitTypes::LayoutInches );
+  const QgsLayoutMeasurement source( 6.0, Qgis::LayoutUnit::Inches );
   const QgsLayoutMeasurement dest( source );
   QCOMPARE( source, dest );
 }
 
 void TestQgsLayoutUnits::equality()
 {
-  const QgsLayoutMeasurement m1( 6.0, QgsUnitTypes::LayoutInches );
-  const QgsLayoutMeasurement m2( 6.0, QgsUnitTypes::LayoutInches );
-  const QgsLayoutMeasurement m3( 7.0, QgsUnitTypes::LayoutInches );
-  const QgsLayoutMeasurement m4( 6.0, QgsUnitTypes::LayoutPoints );
+  const QgsLayoutMeasurement m1( 6.0, Qgis::LayoutUnit::Inches );
+  const QgsLayoutMeasurement m2( 6.0, Qgis::LayoutUnit::Inches );
+  const QgsLayoutMeasurement m3( 7.0, Qgis::LayoutUnit::Inches );
+  const QgsLayoutMeasurement m4( 6.0, Qgis::LayoutUnit::Points );
 
   QVERIFY( m1 == m2 );
   QVERIFY( !( m1 == m3 ) );
@@ -169,8 +169,8 @@ void TestQgsLayoutUnits::equality()
 
 void TestQgsLayoutUnits::assignment()
 {
-  const QgsLayoutMeasurement m1( 6.0, QgsUnitTypes::LayoutInches );
-  QgsLayoutMeasurement m2( 9.0, QgsUnitTypes::LayoutPoints );
+  const QgsLayoutMeasurement m1( 6.0, Qgis::LayoutUnit::Inches );
+  QgsLayoutMeasurement m2( 9.0, Qgis::LayoutUnit::Points );
   m2 = m1;
   QCOMPARE( m2, m1 );
 }
@@ -178,15 +178,15 @@ void TestQgsLayoutUnits::assignment()
 void TestQgsLayoutUnits::operators()
 {
   // +
-  const QgsLayoutMeasurement m1( 6.0, QgsUnitTypes::LayoutInches );
+  const QgsLayoutMeasurement m1( 6.0, Qgis::LayoutUnit::Inches );
   const QgsLayoutMeasurement m2 = m1 + 3.0;
   QCOMPARE( m2.units(), m1.units() );
   QCOMPARE( m2.length(), 9.0 );
 
   // +=
-  QgsLayoutMeasurement m4( 6.0, QgsUnitTypes::LayoutInches );
+  QgsLayoutMeasurement m4( 6.0, Qgis::LayoutUnit::Inches );
   m4 += 2.0;
-  QCOMPARE( m4.units(), QgsUnitTypes::LayoutInches );
+  QCOMPARE( m4.units(), Qgis::LayoutUnit::Inches );
   QCOMPARE( m4.length(), 8.0 );
 
   // -
@@ -195,9 +195,9 @@ void TestQgsLayoutUnits::operators()
   QCOMPARE( m3.length(), 3.0 );
 
   // -=
-  QgsLayoutMeasurement m5( 6.0, QgsUnitTypes::LayoutInches );
+  QgsLayoutMeasurement m5( 6.0, Qgis::LayoutUnit::Inches );
   m5 -= 2.0;
-  QCOMPARE( m5.units(), QgsUnitTypes::LayoutInches );
+  QCOMPARE( m5.units(), Qgis::LayoutUnit::Inches );
   QCOMPARE( m5.length(), 4.0 );
 
   // *
@@ -206,9 +206,9 @@ void TestQgsLayoutUnits::operators()
   QCOMPARE( m6.length(), 18.0 );
 
   // *=
-  QgsLayoutMeasurement m7( 6.0, QgsUnitTypes::LayoutInches );
+  QgsLayoutMeasurement m7( 6.0, Qgis::LayoutUnit::Inches );
   m7 *= 2.0;
-  QCOMPARE( m7.units(), QgsUnitTypes::LayoutInches );
+  QCOMPARE( m7.units(), Qgis::LayoutUnit::Inches );
   QCOMPARE( m7.length(), 12.0 );
 
   // /
@@ -217,21 +217,21 @@ void TestQgsLayoutUnits::operators()
   QCOMPARE( m8.length(), 2.0 );
 
   // /=
-  QgsLayoutMeasurement m9( 6.0, QgsUnitTypes::LayoutInches );
+  QgsLayoutMeasurement m9( 6.0, Qgis::LayoutUnit::Inches );
   m9 /= 2.0;
-  QCOMPARE( m9.units(), QgsUnitTypes::LayoutInches );
+  QCOMPARE( m9.units(), Qgis::LayoutUnit::Inches );
   QCOMPARE( m9.length(), 3.0 );
 }
 
 void TestQgsLayoutUnits::unitTypes()
 {
-  QCOMPARE( QgsUnitTypes::unitType( QgsUnitTypes::LayoutCentimeters ), QgsUnitTypes::LayoutPaperUnits );
-  QCOMPARE( QgsUnitTypes::unitType( QgsUnitTypes::LayoutPixels ), QgsUnitTypes::LayoutScreenUnits );
+  QCOMPARE( QgsUnitTypes::unitType( Qgis::LayoutUnit::Centimeters ), Qgis::LayoutUnitType::PaperUnits );
+  QCOMPARE( QgsUnitTypes::unitType( Qgis::LayoutUnit::Pixels ), Qgis::LayoutUnitType::ScreenUnits );
 }
 
 void TestQgsLayoutUnits::measurementEncodeDecode()
 {
-  const QgsLayoutMeasurement original( 6.0, QgsUnitTypes::LayoutPixels );
+  const QgsLayoutMeasurement original( 6.0, Qgis::LayoutUnit::Pixels );
   QgsLayoutMeasurement result = QgsLayoutMeasurement::decodeMeasurement( original.encodeMeasurement() );
   QCOMPARE( original, result );
 
@@ -244,63 +244,63 @@ void TestQgsLayoutUnits::createSize()
 {
   const QgsLayoutSize defaultUnits( 5.0, 6.0 );
   //default units should be millimeters
-  QCOMPARE( defaultUnits.units(), QgsUnitTypes::LayoutMillimeters );
+  QCOMPARE( defaultUnits.units(), Qgis::LayoutUnit::Millimeters );
   QCOMPARE( defaultUnits.width(), 5.0 );
   QCOMPARE( defaultUnits.height(), 6.0 );
 
   //test overriding default unit
-  const QgsLayoutSize inches( 7.0, 8.0, QgsUnitTypes::LayoutInches );
-  QCOMPARE( inches.units(), QgsUnitTypes::LayoutInches );
+  const QgsLayoutSize inches( 7.0, 8.0, Qgis::LayoutUnit::Inches );
+  QCOMPARE( inches.units(), Qgis::LayoutUnit::Inches );
   QCOMPARE( inches.width(), 7.0 );
   QCOMPARE( inches.height(), 8.0 );
 
   //test empty constructor
-  const QgsLayoutSize empty( QgsUnitTypes::LayoutPixels );
-  QCOMPARE( empty.units(), QgsUnitTypes::LayoutPixels );
+  const QgsLayoutSize empty( Qgis::LayoutUnit::Pixels );
+  QCOMPARE( empty.units(), Qgis::LayoutUnit::Pixels );
   QCOMPARE( empty.width(), 0.0 );
   QCOMPARE( empty.height(), 0.0 );
 
   //test constructing from QSizeF
-  const QgsLayoutSize fromQSizeF( QSizeF( 17.0, 18.0 ), QgsUnitTypes::LayoutInches );
-  QCOMPARE( fromQSizeF.units(), QgsUnitTypes::LayoutInches );
+  const QgsLayoutSize fromQSizeF( QSizeF( 17.0, 18.0 ), Qgis::LayoutUnit::Inches );
+  QCOMPARE( fromQSizeF.units(), Qgis::LayoutUnit::Inches );
   QCOMPARE( fromQSizeF.width(), 17.0 );
   QCOMPARE( fromQSizeF.height(), 18.0 );
 }
 
 void TestQgsLayoutUnits::sizeGettersSetters()
 {
-  QgsLayoutSize size( 5.0, 6.0, QgsUnitTypes::LayoutPicas );
+  QgsLayoutSize size( 5.0, 6.0, Qgis::LayoutUnit::Picas );
 
   size.setWidth( 9.0 );
   size.setHeight( 10.0 );
   QCOMPARE( size.width(), 9.0 );
   QCOMPARE( size.height(), 10.0 );
-  QCOMPARE( size.units(), QgsUnitTypes::LayoutPicas );
+  QCOMPARE( size.units(), Qgis::LayoutUnit::Picas );
 
-  size.setUnits( QgsUnitTypes::LayoutInches );
+  size.setUnits( Qgis::LayoutUnit::Inches );
   QCOMPARE( size.width(), 9.0 );
   QCOMPARE( size.height(), 10.0 );
-  QCOMPARE( size.units(), QgsUnitTypes::LayoutInches );
+  QCOMPARE( size.units(), Qgis::LayoutUnit::Inches );
 
   size.setSize( 11.0, 12.0 );
   QCOMPARE( size.width(), 11.0 );
   QCOMPARE( size.height(), 12.0 );
-  QCOMPARE( size.units(), QgsUnitTypes::LayoutInches );
+  QCOMPARE( size.units(), Qgis::LayoutUnit::Inches );
 }
 
 void TestQgsLayoutUnits::sizeCopyConstructor()
 {
-  const QgsLayoutSize source( 6.0, 7.0, QgsUnitTypes::LayoutInches );
+  const QgsLayoutSize source( 6.0, 7.0, Qgis::LayoutUnit::Inches );
   const QgsLayoutSize dest( source );
   QCOMPARE( source, dest );
 }
 
 void TestQgsLayoutUnits::sizeEquality()
 {
-  const QgsLayoutSize s1( 6.0, 7.0, QgsUnitTypes::LayoutInches );
-  const QgsLayoutSize s2( 6.0, 7.0, QgsUnitTypes::LayoutInches );
-  const QgsLayoutSize s3( 7.0, 8.0, QgsUnitTypes::LayoutInches );
-  const QgsLayoutSize s4( 6.0, 7.0, QgsUnitTypes::LayoutPoints );
+  const QgsLayoutSize s1( 6.0, 7.0, Qgis::LayoutUnit::Inches );
+  const QgsLayoutSize s2( 6.0, 7.0, Qgis::LayoutUnit::Inches );
+  const QgsLayoutSize s3( 7.0, 8.0, Qgis::LayoutUnit::Inches );
+  const QgsLayoutSize s4( 6.0, 7.0, Qgis::LayoutUnit::Points );
 
   QVERIFY( s1 == s2 );
   QVERIFY( !( s1 == s3 ) );
@@ -314,15 +314,15 @@ void TestQgsLayoutUnits::sizeEquality()
 
 void TestQgsLayoutUnits::sizeAssignment()
 {
-  const QgsLayoutSize s1( 6.0, 7.0, QgsUnitTypes::LayoutInches );
-  QgsLayoutSize s2( 9.0, 10.0, QgsUnitTypes::LayoutPoints );
+  const QgsLayoutSize s1( 6.0, 7.0, Qgis::LayoutUnit::Inches );
+  QgsLayoutSize s2( 9.0, 10.0, Qgis::LayoutUnit::Points );
   s2 = s1;
   QCOMPARE( s2, s1 );
 }
 
 void TestQgsLayoutUnits::sizeOperators()
 {
-  const QgsLayoutSize s1( 6.0, 12.0, QgsUnitTypes::LayoutInches );
+  const QgsLayoutSize s1( 6.0, 12.0, Qgis::LayoutUnit::Inches );
 
   // *
   const QgsLayoutSize s2 = s1 * 3.0;
@@ -331,9 +331,9 @@ void TestQgsLayoutUnits::sizeOperators()
   QCOMPARE( s2.height(), 36.0 );
 
   // *=
-  QgsLayoutSize s3( 6.0, 12.0, QgsUnitTypes::LayoutInches );
+  QgsLayoutSize s3( 6.0, 12.0, Qgis::LayoutUnit::Inches );
   s3 *= 2.0;
-  QCOMPARE( s3.units(), QgsUnitTypes::LayoutInches );
+  QCOMPARE( s3.units(), Qgis::LayoutUnit::Inches );
   QCOMPARE( s3.width(), 12.0 );
   QCOMPARE( s3.height(), 24.0 );
 
@@ -344,26 +344,26 @@ void TestQgsLayoutUnits::sizeOperators()
   QCOMPARE( s4.height(), 4.0 );
 
   // /=
-  QgsLayoutSize s5( 6.0, 12.0, QgsUnitTypes::LayoutInches );
+  QgsLayoutSize s5( 6.0, 12.0, Qgis::LayoutUnit::Inches );
   s5 /= 2.0;
-  QCOMPARE( s5.units(), QgsUnitTypes::LayoutInches );
+  QCOMPARE( s5.units(), Qgis::LayoutUnit::Inches );
   QCOMPARE( s5.width(), 3.0 );
   QCOMPARE( s5.height(), 6.0 );
 }
 
 void TestQgsLayoutUnits::isEmpty()
 {
-  QgsLayoutSize size( 6.0, 12.0, QgsUnitTypes::LayoutInches );
+  QgsLayoutSize size( 6.0, 12.0, Qgis::LayoutUnit::Inches );
   QVERIFY( !size.isEmpty() );
   size.setSize( 0, 0 );
   QVERIFY( size.isEmpty() );
-  const QgsLayoutSize size2( QgsUnitTypes::LayoutMillimeters ); //test empty constructor
+  const QgsLayoutSize size2( Qgis::LayoutUnit::Millimeters ); //test empty constructor
   QVERIFY( size2.isEmpty() );
 }
 
 void TestQgsLayoutUnits::toQSizeF()
 {
-  const QgsLayoutSize size( 6.0, 12.0, QgsUnitTypes::LayoutInches );
+  const QgsLayoutSize size( 6.0, 12.0, Qgis::LayoutUnit::Inches );
   const QSizeF converted = size.toQSizeF();
   QCOMPARE( converted.width(), size.width() );
   QCOMPARE( converted.height(), size.height() );
@@ -371,7 +371,7 @@ void TestQgsLayoutUnits::toQSizeF()
 
 void TestQgsLayoutUnits::sizeEncodeDecode()
 {
-  const QgsLayoutSize original( 6.0, 12.0, QgsUnitTypes::LayoutPoints );
+  const QgsLayoutSize original( 6.0, 12.0, Qgis::LayoutUnit::Points );
   QgsLayoutSize result = QgsLayoutSize::decodeSize( original.encodeSize() );
   QCOMPARE( original, result );
 
@@ -384,63 +384,63 @@ void TestQgsLayoutUnits::createPoint()
 {
   const QgsLayoutPoint defaultUnits( 5.0, 6.0 );
   //default units should be millimeters
-  QCOMPARE( defaultUnits.units(), QgsUnitTypes::LayoutMillimeters );
+  QCOMPARE( defaultUnits.units(), Qgis::LayoutUnit::Millimeters );
   QCOMPARE( defaultUnits.x(), 5.0 );
   QCOMPARE( defaultUnits.y(), 6.0 );
 
   //test overriding default unit
-  const QgsLayoutPoint inches( 7.0, 8.0, QgsUnitTypes::LayoutInches );
-  QCOMPARE( inches.units(), QgsUnitTypes::LayoutInches );
+  const QgsLayoutPoint inches( 7.0, 8.0, Qgis::LayoutUnit::Inches );
+  QCOMPARE( inches.units(), Qgis::LayoutUnit::Inches );
   QCOMPARE( inches.x(), 7.0 );
   QCOMPARE( inches.y(), 8.0 );
 
   //test empty constructor
-  const QgsLayoutPoint empty( QgsUnitTypes::LayoutPixels );
-  QCOMPARE( empty.units(), QgsUnitTypes::LayoutPixels );
+  const QgsLayoutPoint empty( Qgis::LayoutUnit::Pixels );
+  QCOMPARE( empty.units(), Qgis::LayoutUnit::Pixels );
   QCOMPARE( empty.x(), 0.0 );
   QCOMPARE( empty.y(), 0.0 );
 
   //test constructing from QPointF
-  const QgsLayoutPoint fromQPointF( QPointF( 17.0, 18.0 ), QgsUnitTypes::LayoutInches );
-  QCOMPARE( fromQPointF.units(), QgsUnitTypes::LayoutInches );
+  const QgsLayoutPoint fromQPointF( QPointF( 17.0, 18.0 ), Qgis::LayoutUnit::Inches );
+  QCOMPARE( fromQPointF.units(), Qgis::LayoutUnit::Inches );
   QCOMPARE( fromQPointF.x(), 17.0 );
   QCOMPARE( fromQPointF.y(), 18.0 );
 }
 
 void TestQgsLayoutUnits::pointGettersSetters()
 {
-  QgsLayoutPoint point( 5.0, 6.0, QgsUnitTypes::LayoutPicas );
+  QgsLayoutPoint point( 5.0, 6.0, Qgis::LayoutUnit::Picas );
 
   point.setX( 9.0 );
   point.setY( 10.0 );
   QCOMPARE( point.x(), 9.0 );
   QCOMPARE( point.y(), 10.0 );
-  QCOMPARE( point.units(), QgsUnitTypes::LayoutPicas );
+  QCOMPARE( point.units(), Qgis::LayoutUnit::Picas );
 
-  point.setUnits( QgsUnitTypes::LayoutInches );
+  point.setUnits( Qgis::LayoutUnit::Inches );
   QCOMPARE( point.x(), 9.0 );
   QCOMPARE( point.y(), 10.0 );
-  QCOMPARE( point.units(), QgsUnitTypes::LayoutInches );
+  QCOMPARE( point.units(), Qgis::LayoutUnit::Inches );
 
   point.setPoint( 11.0, 12.0 );
   QCOMPARE( point.x(), 11.0 );
   QCOMPARE( point.y(), 12.0 );
-  QCOMPARE( point.units(), QgsUnitTypes::LayoutInches );
+  QCOMPARE( point.units(), Qgis::LayoutUnit::Inches );
 }
 
 void TestQgsLayoutUnits::pointCopyConstructor()
 {
-  const QgsLayoutPoint source( 6.0, 7.0, QgsUnitTypes::LayoutInches );
+  const QgsLayoutPoint source( 6.0, 7.0, Qgis::LayoutUnit::Inches );
   const QgsLayoutPoint dest( source );
   QCOMPARE( source, dest );
 }
 
 void TestQgsLayoutUnits::pointEquality()
 {
-  const QgsLayoutPoint p1( 6.0, 7.0, QgsUnitTypes::LayoutInches );
-  const QgsLayoutPoint p2( 6.0, 7.0, QgsUnitTypes::LayoutInches );
-  const QgsLayoutPoint p3( 7.0, 8.0, QgsUnitTypes::LayoutInches );
-  const QgsLayoutPoint p4( 6.0, 7.0, QgsUnitTypes::LayoutPoints );
+  const QgsLayoutPoint p1( 6.0, 7.0, Qgis::LayoutUnit::Inches );
+  const QgsLayoutPoint p2( 6.0, 7.0, Qgis::LayoutUnit::Inches );
+  const QgsLayoutPoint p3( 7.0, 8.0, Qgis::LayoutUnit::Inches );
+  const QgsLayoutPoint p4( 6.0, 7.0, Qgis::LayoutUnit::Points );
 
   QVERIFY( p1 == p2 );
   QVERIFY( !( p1 == p3 ) );
@@ -454,15 +454,15 @@ void TestQgsLayoutUnits::pointEquality()
 
 void TestQgsLayoutUnits::pointAssignment()
 {
-  const QgsLayoutPoint p1( 6.0, 7.0, QgsUnitTypes::LayoutInches );
-  QgsLayoutPoint p2( 9.0, 10.0, QgsUnitTypes::LayoutPoints );
+  const QgsLayoutPoint p1( 6.0, 7.0, Qgis::LayoutUnit::Inches );
+  QgsLayoutPoint p2( 9.0, 10.0, Qgis::LayoutUnit::Points );
   p2 = p1;
   QCOMPARE( p2, p1 );
 }
 
 void TestQgsLayoutUnits::pointOperators()
 {
-  const QgsLayoutPoint p1( 6.0, 12.0, QgsUnitTypes::LayoutInches );
+  const QgsLayoutPoint p1( 6.0, 12.0, Qgis::LayoutUnit::Inches );
 
   // *
   const QgsLayoutPoint p2 = p1 * 3.0;
@@ -471,9 +471,9 @@ void TestQgsLayoutUnits::pointOperators()
   QCOMPARE( p2.y(), 36.0 );
 
   // *=
-  QgsLayoutPoint p3( 6.0, 12.0, QgsUnitTypes::LayoutInches );
+  QgsLayoutPoint p3( 6.0, 12.0, Qgis::LayoutUnit::Inches );
   p3 *= 2.0;
-  QCOMPARE( p3.units(), QgsUnitTypes::LayoutInches );
+  QCOMPARE( p3.units(), Qgis::LayoutUnit::Inches );
   QCOMPARE( p3.x(), 12.0 );
   QCOMPARE( p3.y(), 24.0 );
 
@@ -484,26 +484,26 @@ void TestQgsLayoutUnits::pointOperators()
   QCOMPARE( p4.y(), 4.0 );
 
   // /=
-  QgsLayoutPoint p5( 6.0, 12.0, QgsUnitTypes::LayoutInches );
+  QgsLayoutPoint p5( 6.0, 12.0, Qgis::LayoutUnit::Inches );
   p5 /= 2.0;
-  QCOMPARE( p5.units(), QgsUnitTypes::LayoutInches );
+  QCOMPARE( p5.units(), Qgis::LayoutUnit::Inches );
   QCOMPARE( p5.x(), 3.0 );
   QCOMPARE( p5.y(), 6.0 );
 }
 
 void TestQgsLayoutUnits::isNull()
 {
-  QgsLayoutPoint point( 6.0, 12.0, QgsUnitTypes::LayoutInches );
+  QgsLayoutPoint point( 6.0, 12.0, Qgis::LayoutUnit::Inches );
   QVERIFY( !point.isNull() );
   point.setPoint( 0, 0 );
   QVERIFY( point.isNull() );
-  const QgsLayoutPoint point2( QgsUnitTypes::LayoutMillimeters ); //test empty constructor
+  const QgsLayoutPoint point2( Qgis::LayoutUnit::Millimeters ); //test empty constructor
   QVERIFY( point2.isNull() );
 }
 
 void TestQgsLayoutUnits::toQPointF()
 {
-  const QgsLayoutPoint point( 6.0, 12.0, QgsUnitTypes::LayoutInches );
+  const QgsLayoutPoint point( 6.0, 12.0, Qgis::LayoutUnit::Inches );
   const QPointF converted = point.toQPointF();
   QCOMPARE( converted.x(), point.x() );
   QCOMPARE( converted.y(), point.y() );
@@ -511,7 +511,7 @@ void TestQgsLayoutUnits::toQPointF()
 
 void TestQgsLayoutUnits::pointEncodeDecode()
 {
-  const QgsLayoutPoint original( 6.0, 12.0, QgsUnitTypes::LayoutInches );
+  const QgsLayoutPoint original( 6.0, 12.0, Qgis::LayoutUnit::Inches );
   QgsLayoutPoint result = QgsLayoutPoint::decodePoint( original.encodePoint() );
   QCOMPARE( original, result );
 
@@ -537,30 +537,30 @@ void TestQgsLayoutUnits::converterCopy()
 
 void TestQgsLayoutUnits::conversionToMM()
 {
-  const QgsLayoutMeasurement measurementInMillimeters( 1.0, QgsUnitTypes::LayoutMillimeters );
-  const QgsLayoutMeasurement measurementInCentimeters( 1.0, QgsUnitTypes::LayoutCentimeters );
-  const QgsLayoutMeasurement measurementInMeters( 1.0, QgsUnitTypes::LayoutMeters );
-  const QgsLayoutMeasurement measurementInInches( 1.0, QgsUnitTypes::LayoutInches );
-  const QgsLayoutMeasurement measurementInFeet( 1.0, QgsUnitTypes::LayoutFeet );
-  const QgsLayoutMeasurement measurementInPoints( 1.0, QgsUnitTypes::LayoutPoints );
-  const QgsLayoutMeasurement measurementInPicas( 1.0, QgsUnitTypes::LayoutPicas );
+  const QgsLayoutMeasurement measurementInMillimeters( 1.0, Qgis::LayoutUnit::Millimeters );
+  const QgsLayoutMeasurement measurementInCentimeters( 1.0, Qgis::LayoutUnit::Centimeters );
+  const QgsLayoutMeasurement measurementInMeters( 1.0, Qgis::LayoutUnit::Meters );
+  const QgsLayoutMeasurement measurementInInches( 1.0, Qgis::LayoutUnit::Inches );
+  const QgsLayoutMeasurement measurementInFeet( 1.0, Qgis::LayoutUnit::Feet );
+  const QgsLayoutMeasurement measurementInPoints( 1.0, Qgis::LayoutUnit::Points );
+  const QgsLayoutMeasurement measurementInPicas( 1.0, Qgis::LayoutUnit::Picas );
 
   const QgsLayoutMeasurementConverter converter;
-  const QgsLayoutMeasurement convertedFromMillimeters = converter.convert( measurementInMillimeters, QgsUnitTypes::LayoutMillimeters );
-  const QgsLayoutMeasurement convertedFromCentimeters = converter.convert( measurementInCentimeters, QgsUnitTypes::LayoutMillimeters );
-  const QgsLayoutMeasurement convertedFromMeters = converter.convert( measurementInMeters, QgsUnitTypes::LayoutMillimeters );
-  const QgsLayoutMeasurement convertedFromInches = converter.convert( measurementInInches, QgsUnitTypes::LayoutMillimeters );
-  const QgsLayoutMeasurement convertedFromFeet = converter.convert( measurementInFeet, QgsUnitTypes::LayoutMillimeters );
-  const QgsLayoutMeasurement convertedFromPoints = converter.convert( measurementInPoints, QgsUnitTypes::LayoutMillimeters );
-  const QgsLayoutMeasurement convertedFromPicas = converter.convert( measurementInPicas, QgsUnitTypes::LayoutMillimeters );
+  const QgsLayoutMeasurement convertedFromMillimeters = converter.convert( measurementInMillimeters, Qgis::LayoutUnit::Millimeters );
+  const QgsLayoutMeasurement convertedFromCentimeters = converter.convert( measurementInCentimeters, Qgis::LayoutUnit::Millimeters );
+  const QgsLayoutMeasurement convertedFromMeters = converter.convert( measurementInMeters, Qgis::LayoutUnit::Millimeters );
+  const QgsLayoutMeasurement convertedFromInches = converter.convert( measurementInInches, Qgis::LayoutUnit::Millimeters );
+  const QgsLayoutMeasurement convertedFromFeet = converter.convert( measurementInFeet, Qgis::LayoutUnit::Millimeters );
+  const QgsLayoutMeasurement convertedFromPoints = converter.convert( measurementInPoints, Qgis::LayoutUnit::Millimeters );
+  const QgsLayoutMeasurement convertedFromPicas = converter.convert( measurementInPicas, Qgis::LayoutUnit::Millimeters );
 
-  QCOMPARE( convertedFromMillimeters.units(), QgsUnitTypes::LayoutMillimeters );
-  QCOMPARE( convertedFromCentimeters.units(), QgsUnitTypes::LayoutMillimeters );
-  QCOMPARE( convertedFromMeters.units(), QgsUnitTypes::LayoutMillimeters );
-  QCOMPARE( convertedFromInches.units(), QgsUnitTypes::LayoutMillimeters );
-  QCOMPARE( convertedFromFeet.units(), QgsUnitTypes::LayoutMillimeters );
-  QCOMPARE( convertedFromPoints.units(), QgsUnitTypes::LayoutMillimeters );
-  QCOMPARE( convertedFromPicas.units(), QgsUnitTypes::LayoutMillimeters );
+  QCOMPARE( convertedFromMillimeters.units(), Qgis::LayoutUnit::Millimeters );
+  QCOMPARE( convertedFromCentimeters.units(), Qgis::LayoutUnit::Millimeters );
+  QCOMPARE( convertedFromMeters.units(), Qgis::LayoutUnit::Millimeters );
+  QCOMPARE( convertedFromInches.units(), Qgis::LayoutUnit::Millimeters );
+  QCOMPARE( convertedFromFeet.units(), Qgis::LayoutUnit::Millimeters );
+  QCOMPARE( convertedFromPoints.units(), Qgis::LayoutUnit::Millimeters );
+  QCOMPARE( convertedFromPicas.units(), Qgis::LayoutUnit::Millimeters );
 
   QCOMPARE( convertedFromMillimeters.length(), 1.0 );
   QCOMPARE( convertedFromCentimeters.length(), 10.0 );
@@ -573,30 +573,30 @@ void TestQgsLayoutUnits::conversionToMM()
 
 void TestQgsLayoutUnits::conversionToCM()
 {
-  const QgsLayoutMeasurement measurementInMillimeters( 1.0, QgsUnitTypes::LayoutMillimeters );
-  const QgsLayoutMeasurement measurementInCentimeters( 1.0, QgsUnitTypes::LayoutCentimeters );
-  const QgsLayoutMeasurement measurementInMeters( 1.0, QgsUnitTypes::LayoutMeters );
-  const QgsLayoutMeasurement measurementInInches( 1.0, QgsUnitTypes::LayoutInches );
-  const QgsLayoutMeasurement measurementInFeet( 1.0, QgsUnitTypes::LayoutFeet );
-  const QgsLayoutMeasurement measurementInPoints( 1.0, QgsUnitTypes::LayoutPoints );
-  const QgsLayoutMeasurement measurementInPicas( 1.0, QgsUnitTypes::LayoutPicas );
+  const QgsLayoutMeasurement measurementInMillimeters( 1.0, Qgis::LayoutUnit::Millimeters );
+  const QgsLayoutMeasurement measurementInCentimeters( 1.0, Qgis::LayoutUnit::Centimeters );
+  const QgsLayoutMeasurement measurementInMeters( 1.0, Qgis::LayoutUnit::Meters );
+  const QgsLayoutMeasurement measurementInInches( 1.0, Qgis::LayoutUnit::Inches );
+  const QgsLayoutMeasurement measurementInFeet( 1.0, Qgis::LayoutUnit::Feet );
+  const QgsLayoutMeasurement measurementInPoints( 1.0, Qgis::LayoutUnit::Points );
+  const QgsLayoutMeasurement measurementInPicas( 1.0, Qgis::LayoutUnit::Picas );
 
   const QgsLayoutMeasurementConverter converter;
-  const QgsLayoutMeasurement convertedFromMillimeters = converter.convert( measurementInMillimeters, QgsUnitTypes::LayoutCentimeters );
-  const QgsLayoutMeasurement convertedFromCentimeters = converter.convert( measurementInCentimeters, QgsUnitTypes::LayoutCentimeters );
-  const QgsLayoutMeasurement convertedFromMeters = converter.convert( measurementInMeters, QgsUnitTypes::LayoutCentimeters );
-  const QgsLayoutMeasurement convertedFromInches = converter.convert( measurementInInches, QgsUnitTypes::LayoutCentimeters );
-  const QgsLayoutMeasurement convertedFromFeet = converter.convert( measurementInFeet, QgsUnitTypes::LayoutCentimeters );
-  const QgsLayoutMeasurement convertedFromPoints = converter.convert( measurementInPoints, QgsUnitTypes::LayoutCentimeters );
-  const QgsLayoutMeasurement convertedFromPicas = converter.convert( measurementInPicas, QgsUnitTypes::LayoutCentimeters );
+  const QgsLayoutMeasurement convertedFromMillimeters = converter.convert( measurementInMillimeters, Qgis::LayoutUnit::Centimeters );
+  const QgsLayoutMeasurement convertedFromCentimeters = converter.convert( measurementInCentimeters, Qgis::LayoutUnit::Centimeters );
+  const QgsLayoutMeasurement convertedFromMeters = converter.convert( measurementInMeters, Qgis::LayoutUnit::Centimeters );
+  const QgsLayoutMeasurement convertedFromInches = converter.convert( measurementInInches, Qgis::LayoutUnit::Centimeters );
+  const QgsLayoutMeasurement convertedFromFeet = converter.convert( measurementInFeet, Qgis::LayoutUnit::Centimeters );
+  const QgsLayoutMeasurement convertedFromPoints = converter.convert( measurementInPoints, Qgis::LayoutUnit::Centimeters );
+  const QgsLayoutMeasurement convertedFromPicas = converter.convert( measurementInPicas, Qgis::LayoutUnit::Centimeters );
 
-  QCOMPARE( convertedFromMillimeters.units(), QgsUnitTypes::LayoutCentimeters );
-  QCOMPARE( convertedFromCentimeters.units(), QgsUnitTypes::LayoutCentimeters );
-  QCOMPARE( convertedFromMeters.units(), QgsUnitTypes::LayoutCentimeters );
-  QCOMPARE( convertedFromInches.units(), QgsUnitTypes::LayoutCentimeters );
-  QCOMPARE( convertedFromFeet.units(), QgsUnitTypes::LayoutCentimeters );
-  QCOMPARE( convertedFromPoints.units(), QgsUnitTypes::LayoutCentimeters );
-  QCOMPARE( convertedFromPicas.units(), QgsUnitTypes::LayoutCentimeters );
+  QCOMPARE( convertedFromMillimeters.units(), Qgis::LayoutUnit::Centimeters );
+  QCOMPARE( convertedFromCentimeters.units(), Qgis::LayoutUnit::Centimeters );
+  QCOMPARE( convertedFromMeters.units(), Qgis::LayoutUnit::Centimeters );
+  QCOMPARE( convertedFromInches.units(), Qgis::LayoutUnit::Centimeters );
+  QCOMPARE( convertedFromFeet.units(), Qgis::LayoutUnit::Centimeters );
+  QCOMPARE( convertedFromPoints.units(), Qgis::LayoutUnit::Centimeters );
+  QCOMPARE( convertedFromPicas.units(), Qgis::LayoutUnit::Centimeters );
 
   QCOMPARE( convertedFromMillimeters.length(), 0.1 );
   QCOMPARE( convertedFromCentimeters.length(), 1.0 );
@@ -609,30 +609,30 @@ void TestQgsLayoutUnits::conversionToCM()
 
 void TestQgsLayoutUnits::conversionToM()
 {
-  const QgsLayoutMeasurement measurementInMillimeters( 1.0, QgsUnitTypes::LayoutMillimeters );
-  const QgsLayoutMeasurement measurementInCentimeters( 1.0, QgsUnitTypes::LayoutCentimeters );
-  const QgsLayoutMeasurement measurementInMeters( 1.0, QgsUnitTypes::LayoutMeters );
-  const QgsLayoutMeasurement measurementInInches( 1.0, QgsUnitTypes::LayoutInches );
-  const QgsLayoutMeasurement measurementInFeet( 1.0, QgsUnitTypes::LayoutFeet );
-  const QgsLayoutMeasurement measurementInPoints( 1.0, QgsUnitTypes::LayoutPoints );
-  const QgsLayoutMeasurement measurementInPicas( 1.0, QgsUnitTypes::LayoutPicas );
+  const QgsLayoutMeasurement measurementInMillimeters( 1.0, Qgis::LayoutUnit::Millimeters );
+  const QgsLayoutMeasurement measurementInCentimeters( 1.0, Qgis::LayoutUnit::Centimeters );
+  const QgsLayoutMeasurement measurementInMeters( 1.0, Qgis::LayoutUnit::Meters );
+  const QgsLayoutMeasurement measurementInInches( 1.0, Qgis::LayoutUnit::Inches );
+  const QgsLayoutMeasurement measurementInFeet( 1.0, Qgis::LayoutUnit::Feet );
+  const QgsLayoutMeasurement measurementInPoints( 1.0, Qgis::LayoutUnit::Points );
+  const QgsLayoutMeasurement measurementInPicas( 1.0, Qgis::LayoutUnit::Picas );
 
   const QgsLayoutMeasurementConverter converter;
-  const QgsLayoutMeasurement convertedFromMillimeters = converter.convert( measurementInMillimeters, QgsUnitTypes::LayoutMeters );
-  const QgsLayoutMeasurement convertedFromCentimeters = converter.convert( measurementInCentimeters, QgsUnitTypes::LayoutMeters );
-  const QgsLayoutMeasurement convertedFromMeters = converter.convert( measurementInMeters, QgsUnitTypes::LayoutMeters );
-  const QgsLayoutMeasurement convertedFromInches = converter.convert( measurementInInches, QgsUnitTypes::LayoutMeters );
-  const QgsLayoutMeasurement convertedFromFeet = converter.convert( measurementInFeet, QgsUnitTypes::LayoutMeters );
-  const QgsLayoutMeasurement convertedFromPoints = converter.convert( measurementInPoints, QgsUnitTypes::LayoutMeters );
-  const QgsLayoutMeasurement convertedFromPicas = converter.convert( measurementInPicas, QgsUnitTypes::LayoutMeters );
+  const QgsLayoutMeasurement convertedFromMillimeters = converter.convert( measurementInMillimeters, Qgis::LayoutUnit::Meters );
+  const QgsLayoutMeasurement convertedFromCentimeters = converter.convert( measurementInCentimeters, Qgis::LayoutUnit::Meters );
+  const QgsLayoutMeasurement convertedFromMeters = converter.convert( measurementInMeters, Qgis::LayoutUnit::Meters );
+  const QgsLayoutMeasurement convertedFromInches = converter.convert( measurementInInches, Qgis::LayoutUnit::Meters );
+  const QgsLayoutMeasurement convertedFromFeet = converter.convert( measurementInFeet, Qgis::LayoutUnit::Meters );
+  const QgsLayoutMeasurement convertedFromPoints = converter.convert( measurementInPoints, Qgis::LayoutUnit::Meters );
+  const QgsLayoutMeasurement convertedFromPicas = converter.convert( measurementInPicas, Qgis::LayoutUnit::Meters );
 
-  QCOMPARE( convertedFromMillimeters.units(), QgsUnitTypes::LayoutMeters );
-  QCOMPARE( convertedFromCentimeters.units(), QgsUnitTypes::LayoutMeters );
-  QCOMPARE( convertedFromMeters.units(), QgsUnitTypes::LayoutMeters );
-  QCOMPARE( convertedFromInches.units(), QgsUnitTypes::LayoutMeters );
-  QCOMPARE( convertedFromFeet.units(), QgsUnitTypes::LayoutMeters );
-  QCOMPARE( convertedFromPoints.units(), QgsUnitTypes::LayoutMeters );
-  QCOMPARE( convertedFromPicas.units(), QgsUnitTypes::LayoutMeters );
+  QCOMPARE( convertedFromMillimeters.units(), Qgis::LayoutUnit::Meters );
+  QCOMPARE( convertedFromCentimeters.units(), Qgis::LayoutUnit::Meters );
+  QCOMPARE( convertedFromMeters.units(), Qgis::LayoutUnit::Meters );
+  QCOMPARE( convertedFromInches.units(), Qgis::LayoutUnit::Meters );
+  QCOMPARE( convertedFromFeet.units(), Qgis::LayoutUnit::Meters );
+  QCOMPARE( convertedFromPoints.units(), Qgis::LayoutUnit::Meters );
+  QCOMPARE( convertedFromPicas.units(), Qgis::LayoutUnit::Meters );
 
   QCOMPARE( convertedFromMillimeters.length(), 0.001 );
   QCOMPARE( convertedFromCentimeters.length(), 0.01 );
@@ -645,30 +645,30 @@ void TestQgsLayoutUnits::conversionToM()
 
 void TestQgsLayoutUnits::conversionToInches()
 {
-  const QgsLayoutMeasurement measurementInMillimeters( 1.0, QgsUnitTypes::LayoutMillimeters );
-  const QgsLayoutMeasurement measurementInCentimeters( 1.0, QgsUnitTypes::LayoutCentimeters );
-  const QgsLayoutMeasurement measurementInMeters( 1.0, QgsUnitTypes::LayoutMeters );
-  const QgsLayoutMeasurement measurementInInches( 1.0, QgsUnitTypes::LayoutInches );
-  const QgsLayoutMeasurement measurementInFeet( 1.0, QgsUnitTypes::LayoutFeet );
-  const QgsLayoutMeasurement measurementInPoints( 1.0, QgsUnitTypes::LayoutPoints );
-  const QgsLayoutMeasurement measurementInPicas( 1.0, QgsUnitTypes::LayoutPicas );
+  const QgsLayoutMeasurement measurementInMillimeters( 1.0, Qgis::LayoutUnit::Millimeters );
+  const QgsLayoutMeasurement measurementInCentimeters( 1.0, Qgis::LayoutUnit::Centimeters );
+  const QgsLayoutMeasurement measurementInMeters( 1.0, Qgis::LayoutUnit::Meters );
+  const QgsLayoutMeasurement measurementInInches( 1.0, Qgis::LayoutUnit::Inches );
+  const QgsLayoutMeasurement measurementInFeet( 1.0, Qgis::LayoutUnit::Feet );
+  const QgsLayoutMeasurement measurementInPoints( 1.0, Qgis::LayoutUnit::Points );
+  const QgsLayoutMeasurement measurementInPicas( 1.0, Qgis::LayoutUnit::Picas );
 
   const QgsLayoutMeasurementConverter converter;
-  const QgsLayoutMeasurement convertedFromMillimeters = converter.convert( measurementInMillimeters, QgsUnitTypes::LayoutInches );
-  const QgsLayoutMeasurement convertedFromCentimeters = converter.convert( measurementInCentimeters, QgsUnitTypes::LayoutInches );
-  const QgsLayoutMeasurement convertedFromMeters = converter.convert( measurementInMeters, QgsUnitTypes::LayoutInches );
-  const QgsLayoutMeasurement convertedFromInches = converter.convert( measurementInInches, QgsUnitTypes::LayoutInches );
-  const QgsLayoutMeasurement convertedFromFeet = converter.convert( measurementInFeet, QgsUnitTypes::LayoutInches );
-  const QgsLayoutMeasurement convertedFromPoints = converter.convert( measurementInPoints, QgsUnitTypes::LayoutInches );
-  const QgsLayoutMeasurement convertedFromPicas = converter.convert( measurementInPicas, QgsUnitTypes::LayoutInches );
+  const QgsLayoutMeasurement convertedFromMillimeters = converter.convert( measurementInMillimeters, Qgis::LayoutUnit::Inches );
+  const QgsLayoutMeasurement convertedFromCentimeters = converter.convert( measurementInCentimeters, Qgis::LayoutUnit::Inches );
+  const QgsLayoutMeasurement convertedFromMeters = converter.convert( measurementInMeters, Qgis::LayoutUnit::Inches );
+  const QgsLayoutMeasurement convertedFromInches = converter.convert( measurementInInches, Qgis::LayoutUnit::Inches );
+  const QgsLayoutMeasurement convertedFromFeet = converter.convert( measurementInFeet, Qgis::LayoutUnit::Inches );
+  const QgsLayoutMeasurement convertedFromPoints = converter.convert( measurementInPoints, Qgis::LayoutUnit::Inches );
+  const QgsLayoutMeasurement convertedFromPicas = converter.convert( measurementInPicas, Qgis::LayoutUnit::Inches );
 
-  QCOMPARE( convertedFromMillimeters.units(), QgsUnitTypes::LayoutInches );
-  QCOMPARE( convertedFromCentimeters.units(), QgsUnitTypes::LayoutInches );
-  QCOMPARE( convertedFromMeters.units(), QgsUnitTypes::LayoutInches );
-  QCOMPARE( convertedFromInches.units(), QgsUnitTypes::LayoutInches );
-  QCOMPARE( convertedFromFeet.units(), QgsUnitTypes::LayoutInches );
-  QCOMPARE( convertedFromPoints.units(), QgsUnitTypes::LayoutInches );
-  QCOMPARE( convertedFromPicas.units(), QgsUnitTypes::LayoutInches );
+  QCOMPARE( convertedFromMillimeters.units(), Qgis::LayoutUnit::Inches );
+  QCOMPARE( convertedFromCentimeters.units(), Qgis::LayoutUnit::Inches );
+  QCOMPARE( convertedFromMeters.units(), Qgis::LayoutUnit::Inches );
+  QCOMPARE( convertedFromInches.units(), Qgis::LayoutUnit::Inches );
+  QCOMPARE( convertedFromFeet.units(), Qgis::LayoutUnit::Inches );
+  QCOMPARE( convertedFromPoints.units(), Qgis::LayoutUnit::Inches );
+  QCOMPARE( convertedFromPicas.units(), Qgis::LayoutUnit::Inches );
 
   QGSCOMPARENEAR( convertedFromMillimeters.length(), 0.0393701, 0.000001 );
   QGSCOMPARENEAR( convertedFromCentimeters.length(), 0.3937008, 0.000001 );
@@ -681,30 +681,30 @@ void TestQgsLayoutUnits::conversionToInches()
 
 void TestQgsLayoutUnits::conversionToFeet()
 {
-  const QgsLayoutMeasurement measurementInMillimeters( 1.0, QgsUnitTypes::LayoutMillimeters );
-  const QgsLayoutMeasurement measurementInCentimeters( 1.0, QgsUnitTypes::LayoutCentimeters );
-  const QgsLayoutMeasurement measurementInMeters( 1.0, QgsUnitTypes::LayoutMeters );
-  const QgsLayoutMeasurement measurementInInches( 1.0, QgsUnitTypes::LayoutInches );
-  const QgsLayoutMeasurement measurementInFeet( 1.0, QgsUnitTypes::LayoutFeet );
-  const QgsLayoutMeasurement measurementInPoints( 1.0, QgsUnitTypes::LayoutPoints );
-  const QgsLayoutMeasurement measurementInPicas( 1.0, QgsUnitTypes::LayoutPicas );
+  const QgsLayoutMeasurement measurementInMillimeters( 1.0, Qgis::LayoutUnit::Millimeters );
+  const QgsLayoutMeasurement measurementInCentimeters( 1.0, Qgis::LayoutUnit::Centimeters );
+  const QgsLayoutMeasurement measurementInMeters( 1.0, Qgis::LayoutUnit::Meters );
+  const QgsLayoutMeasurement measurementInInches( 1.0, Qgis::LayoutUnit::Inches );
+  const QgsLayoutMeasurement measurementInFeet( 1.0, Qgis::LayoutUnit::Feet );
+  const QgsLayoutMeasurement measurementInPoints( 1.0, Qgis::LayoutUnit::Points );
+  const QgsLayoutMeasurement measurementInPicas( 1.0, Qgis::LayoutUnit::Picas );
 
   const QgsLayoutMeasurementConverter converter;
-  const QgsLayoutMeasurement convertedFromMillimeters = converter.convert( measurementInMillimeters, QgsUnitTypes::LayoutFeet );
-  const QgsLayoutMeasurement convertedFromCentimeters = converter.convert( measurementInCentimeters, QgsUnitTypes::LayoutFeet );
-  const QgsLayoutMeasurement convertedFromMeters = converter.convert( measurementInMeters, QgsUnitTypes::LayoutFeet );
-  const QgsLayoutMeasurement convertedFromInches = converter.convert( measurementInInches, QgsUnitTypes::LayoutFeet );
-  const QgsLayoutMeasurement convertedFromFeet = converter.convert( measurementInFeet, QgsUnitTypes::LayoutFeet );
-  const QgsLayoutMeasurement convertedFromPoints = converter.convert( measurementInPoints, QgsUnitTypes::LayoutFeet );
-  const QgsLayoutMeasurement convertedFromPicas = converter.convert( measurementInPicas, QgsUnitTypes::LayoutFeet );
+  const QgsLayoutMeasurement convertedFromMillimeters = converter.convert( measurementInMillimeters, Qgis::LayoutUnit::Feet );
+  const QgsLayoutMeasurement convertedFromCentimeters = converter.convert( measurementInCentimeters, Qgis::LayoutUnit::Feet );
+  const QgsLayoutMeasurement convertedFromMeters = converter.convert( measurementInMeters, Qgis::LayoutUnit::Feet );
+  const QgsLayoutMeasurement convertedFromInches = converter.convert( measurementInInches, Qgis::LayoutUnit::Feet );
+  const QgsLayoutMeasurement convertedFromFeet = converter.convert( measurementInFeet, Qgis::LayoutUnit::Feet );
+  const QgsLayoutMeasurement convertedFromPoints = converter.convert( measurementInPoints, Qgis::LayoutUnit::Feet );
+  const QgsLayoutMeasurement convertedFromPicas = converter.convert( measurementInPicas, Qgis::LayoutUnit::Feet );
 
-  QCOMPARE( convertedFromMillimeters.units(), QgsUnitTypes::LayoutFeet );
-  QCOMPARE( convertedFromCentimeters.units(), QgsUnitTypes::LayoutFeet );
-  QCOMPARE( convertedFromMeters.units(), QgsUnitTypes::LayoutFeet );
-  QCOMPARE( convertedFromInches.units(), QgsUnitTypes::LayoutFeet );
-  QCOMPARE( convertedFromFeet.units(), QgsUnitTypes::LayoutFeet );
-  QCOMPARE( convertedFromPoints.units(), QgsUnitTypes::LayoutFeet );
-  QCOMPARE( convertedFromPicas.units(), QgsUnitTypes::LayoutFeet );
+  QCOMPARE( convertedFromMillimeters.units(), Qgis::LayoutUnit::Feet );
+  QCOMPARE( convertedFromCentimeters.units(), Qgis::LayoutUnit::Feet );
+  QCOMPARE( convertedFromMeters.units(), Qgis::LayoutUnit::Feet );
+  QCOMPARE( convertedFromInches.units(), Qgis::LayoutUnit::Feet );
+  QCOMPARE( convertedFromFeet.units(), Qgis::LayoutUnit::Feet );
+  QCOMPARE( convertedFromPoints.units(), Qgis::LayoutUnit::Feet );
+  QCOMPARE( convertedFromPicas.units(), Qgis::LayoutUnit::Feet );
 
   QGSCOMPARENEAR( convertedFromMillimeters.length(), 0.0032808399, 0.000001 );
   QGSCOMPARENEAR( convertedFromCentimeters.length(), 0.032808399, 0.000001 );
@@ -717,30 +717,30 @@ void TestQgsLayoutUnits::conversionToFeet()
 
 void TestQgsLayoutUnits::conversionToPoints()
 {
-  const QgsLayoutMeasurement measurementInMillimeters( 1.0, QgsUnitTypes::LayoutMillimeters );
-  const QgsLayoutMeasurement measurementInCentimeters( 1.0, QgsUnitTypes::LayoutCentimeters );
-  const QgsLayoutMeasurement measurementInMeters( 1.0, QgsUnitTypes::LayoutMeters );
-  const QgsLayoutMeasurement measurementInInches( 1.0, QgsUnitTypes::LayoutInches );
-  const QgsLayoutMeasurement measurementInFeet( 1.0, QgsUnitTypes::LayoutFeet );
-  const QgsLayoutMeasurement measurementInPoints( 1.0, QgsUnitTypes::LayoutPoints );
-  const QgsLayoutMeasurement measurementInPicas( 1.0, QgsUnitTypes::LayoutPicas );
+  const QgsLayoutMeasurement measurementInMillimeters( 1.0, Qgis::LayoutUnit::Millimeters );
+  const QgsLayoutMeasurement measurementInCentimeters( 1.0, Qgis::LayoutUnit::Centimeters );
+  const QgsLayoutMeasurement measurementInMeters( 1.0, Qgis::LayoutUnit::Meters );
+  const QgsLayoutMeasurement measurementInInches( 1.0, Qgis::LayoutUnit::Inches );
+  const QgsLayoutMeasurement measurementInFeet( 1.0, Qgis::LayoutUnit::Feet );
+  const QgsLayoutMeasurement measurementInPoints( 1.0, Qgis::LayoutUnit::Points );
+  const QgsLayoutMeasurement measurementInPicas( 1.0, Qgis::LayoutUnit::Picas );
 
   const QgsLayoutMeasurementConverter converter;
-  const QgsLayoutMeasurement convertedFromMillimeters = converter.convert( measurementInMillimeters, QgsUnitTypes::LayoutPoints );
-  const QgsLayoutMeasurement convertedFromCentimeters = converter.convert( measurementInCentimeters, QgsUnitTypes::LayoutPoints );
-  const QgsLayoutMeasurement convertedFromMeters = converter.convert( measurementInMeters, QgsUnitTypes::LayoutPoints );
-  const QgsLayoutMeasurement convertedFromInches = converter.convert( measurementInInches, QgsUnitTypes::LayoutPoints );
-  const QgsLayoutMeasurement convertedFromFeet = converter.convert( measurementInFeet, QgsUnitTypes::LayoutPoints );
-  const QgsLayoutMeasurement convertedFromPoints = converter.convert( measurementInPoints, QgsUnitTypes::LayoutPoints );
-  const QgsLayoutMeasurement convertedFromPicas = converter.convert( measurementInPicas, QgsUnitTypes::LayoutPoints );
+  const QgsLayoutMeasurement convertedFromMillimeters = converter.convert( measurementInMillimeters, Qgis::LayoutUnit::Points );
+  const QgsLayoutMeasurement convertedFromCentimeters = converter.convert( measurementInCentimeters, Qgis::LayoutUnit::Points );
+  const QgsLayoutMeasurement convertedFromMeters = converter.convert( measurementInMeters, Qgis::LayoutUnit::Points );
+  const QgsLayoutMeasurement convertedFromInches = converter.convert( measurementInInches, Qgis::LayoutUnit::Points );
+  const QgsLayoutMeasurement convertedFromFeet = converter.convert( measurementInFeet, Qgis::LayoutUnit::Points );
+  const QgsLayoutMeasurement convertedFromPoints = converter.convert( measurementInPoints, Qgis::LayoutUnit::Points );
+  const QgsLayoutMeasurement convertedFromPicas = converter.convert( measurementInPicas, Qgis::LayoutUnit::Points );
 
-  QCOMPARE( convertedFromMillimeters.units(), QgsUnitTypes::LayoutPoints );
-  QCOMPARE( convertedFromCentimeters.units(), QgsUnitTypes::LayoutPoints );
-  QCOMPARE( convertedFromMeters.units(), QgsUnitTypes::LayoutPoints );
-  QCOMPARE( convertedFromInches.units(), QgsUnitTypes::LayoutPoints );
-  QCOMPARE( convertedFromFeet.units(), QgsUnitTypes::LayoutPoints );
-  QCOMPARE( convertedFromPoints.units(), QgsUnitTypes::LayoutPoints );
-  QCOMPARE( convertedFromPicas.units(), QgsUnitTypes::LayoutPoints );
+  QCOMPARE( convertedFromMillimeters.units(), Qgis::LayoutUnit::Points );
+  QCOMPARE( convertedFromCentimeters.units(), Qgis::LayoutUnit::Points );
+  QCOMPARE( convertedFromMeters.units(), Qgis::LayoutUnit::Points );
+  QCOMPARE( convertedFromInches.units(), Qgis::LayoutUnit::Points );
+  QCOMPARE( convertedFromFeet.units(), Qgis::LayoutUnit::Points );
+  QCOMPARE( convertedFromPoints.units(), Qgis::LayoutUnit::Points );
+  QCOMPARE( convertedFromPicas.units(), Qgis::LayoutUnit::Points );
 
   QGSCOMPARENEAR( convertedFromMillimeters.length(), 2.83464567, 0.000001 );
   QGSCOMPARENEAR( convertedFromCentimeters.length(), 28.3464567, 0.000001 );
@@ -753,30 +753,30 @@ void TestQgsLayoutUnits::conversionToPoints()
 
 void TestQgsLayoutUnits::conversionToPicas()
 {
-  const QgsLayoutMeasurement measurementInMillimeters( 1.0, QgsUnitTypes::LayoutMillimeters );
-  const QgsLayoutMeasurement measurementInCentimeters( 1.0, QgsUnitTypes::LayoutCentimeters );
-  const QgsLayoutMeasurement measurementInMeters( 1.0, QgsUnitTypes::LayoutMeters );
-  const QgsLayoutMeasurement measurementInInches( 1.0, QgsUnitTypes::LayoutInches );
-  const QgsLayoutMeasurement measurementInFeet( 1.0, QgsUnitTypes::LayoutFeet );
-  const QgsLayoutMeasurement measurementInPoints( 1.0, QgsUnitTypes::LayoutPoints );
-  const QgsLayoutMeasurement measurementInPicas( 1.0, QgsUnitTypes::LayoutPicas );
+  const QgsLayoutMeasurement measurementInMillimeters( 1.0, Qgis::LayoutUnit::Millimeters );
+  const QgsLayoutMeasurement measurementInCentimeters( 1.0, Qgis::LayoutUnit::Centimeters );
+  const QgsLayoutMeasurement measurementInMeters( 1.0, Qgis::LayoutUnit::Meters );
+  const QgsLayoutMeasurement measurementInInches( 1.0, Qgis::LayoutUnit::Inches );
+  const QgsLayoutMeasurement measurementInFeet( 1.0, Qgis::LayoutUnit::Feet );
+  const QgsLayoutMeasurement measurementInPoints( 1.0, Qgis::LayoutUnit::Points );
+  const QgsLayoutMeasurement measurementInPicas( 1.0, Qgis::LayoutUnit::Picas );
 
   const QgsLayoutMeasurementConverter converter;
-  const QgsLayoutMeasurement convertedFromMillimeters = converter.convert( measurementInMillimeters, QgsUnitTypes::LayoutPicas );
-  const QgsLayoutMeasurement convertedFromCentimeters = converter.convert( measurementInCentimeters, QgsUnitTypes::LayoutPicas );
-  const QgsLayoutMeasurement convertedFromMeters = converter.convert( measurementInMeters, QgsUnitTypes::LayoutPicas );
-  const QgsLayoutMeasurement convertedFromInches = converter.convert( measurementInInches, QgsUnitTypes::LayoutPicas );
-  const QgsLayoutMeasurement convertedFromFeet = converter.convert( measurementInFeet, QgsUnitTypes::LayoutPicas );
-  const QgsLayoutMeasurement convertedFromPoints = converter.convert( measurementInPoints, QgsUnitTypes::LayoutPicas );
-  const QgsLayoutMeasurement convertedFromPicas = converter.convert( measurementInPicas, QgsUnitTypes::LayoutPicas );
+  const QgsLayoutMeasurement convertedFromMillimeters = converter.convert( measurementInMillimeters, Qgis::LayoutUnit::Picas );
+  const QgsLayoutMeasurement convertedFromCentimeters = converter.convert( measurementInCentimeters, Qgis::LayoutUnit::Picas );
+  const QgsLayoutMeasurement convertedFromMeters = converter.convert( measurementInMeters, Qgis::LayoutUnit::Picas );
+  const QgsLayoutMeasurement convertedFromInches = converter.convert( measurementInInches, Qgis::LayoutUnit::Picas );
+  const QgsLayoutMeasurement convertedFromFeet = converter.convert( measurementInFeet, Qgis::LayoutUnit::Picas );
+  const QgsLayoutMeasurement convertedFromPoints = converter.convert( measurementInPoints, Qgis::LayoutUnit::Picas );
+  const QgsLayoutMeasurement convertedFromPicas = converter.convert( measurementInPicas, Qgis::LayoutUnit::Picas );
 
-  QCOMPARE( convertedFromMillimeters.units(), QgsUnitTypes::LayoutPicas );
-  QCOMPARE( convertedFromCentimeters.units(), QgsUnitTypes::LayoutPicas );
-  QCOMPARE( convertedFromMeters.units(), QgsUnitTypes::LayoutPicas );
-  QCOMPARE( convertedFromInches.units(), QgsUnitTypes::LayoutPicas );
-  QCOMPARE( convertedFromFeet.units(), QgsUnitTypes::LayoutPicas );
-  QCOMPARE( convertedFromPoints.units(), QgsUnitTypes::LayoutPicas );
-  QCOMPARE( convertedFromPicas.units(), QgsUnitTypes::LayoutPicas );
+  QCOMPARE( convertedFromMillimeters.units(), Qgis::LayoutUnit::Picas );
+  QCOMPARE( convertedFromCentimeters.units(), Qgis::LayoutUnit::Picas );
+  QCOMPARE( convertedFromMeters.units(), Qgis::LayoutUnit::Picas );
+  QCOMPARE( convertedFromInches.units(), Qgis::LayoutUnit::Picas );
+  QCOMPARE( convertedFromFeet.units(), Qgis::LayoutUnit::Picas );
+  QCOMPARE( convertedFromPoints.units(), Qgis::LayoutUnit::Picas );
+  QCOMPARE( convertedFromPicas.units(), Qgis::LayoutUnit::Picas );
 
   QGSCOMPARENEAR( convertedFromMillimeters.length(), 0.236220472, 0.000001 );
   QGSCOMPARENEAR( convertedFromCentimeters.length(), 2.36220472, 0.000001 );
@@ -796,95 +796,95 @@ void TestQgsLayoutUnits::converterGettersSetters()
 
 void TestQgsLayoutUnits::conversionFromPixels()
 {
-  const QgsLayoutMeasurement measurementInPixels( 300.0, QgsUnitTypes::LayoutPixels );
+  const QgsLayoutMeasurement measurementInPixels( 300.0, Qgis::LayoutUnit::Pixels );
 
   QgsLayoutMeasurementConverter converter;
   //try initially with 300 dpi
   converter.setDpi( 300.0 );
-  QgsLayoutMeasurement convertedToInches = converter.convert( measurementInPixels, QgsUnitTypes::LayoutInches );
-  QCOMPARE( convertedToInches.units(), QgsUnitTypes::LayoutInches );
+  QgsLayoutMeasurement convertedToInches = converter.convert( measurementInPixels, Qgis::LayoutUnit::Inches );
+  QCOMPARE( convertedToInches.units(), Qgis::LayoutUnit::Inches );
   QGSCOMPARENEAR( convertedToInches.length(), 1.0, 0.000001 );
-  QgsLayoutMeasurement convertedToMM = converter.convert( measurementInPixels, QgsUnitTypes::LayoutMillimeters );
-  QCOMPARE( convertedToMM.units(), QgsUnitTypes::LayoutMillimeters );
+  QgsLayoutMeasurement convertedToMM = converter.convert( measurementInPixels, Qgis::LayoutUnit::Millimeters );
+  QCOMPARE( convertedToMM.units(), Qgis::LayoutUnit::Millimeters );
   QGSCOMPARENEAR( convertedToMM.length(), 25.4, 0.000001 );
 
   //try with 96 dpi
   converter.setDpi( 96.0 );
-  convertedToInches = converter.convert( measurementInPixels, QgsUnitTypes::LayoutInches );
-  QCOMPARE( convertedToInches.units(), QgsUnitTypes::LayoutInches );
+  convertedToInches = converter.convert( measurementInPixels, Qgis::LayoutUnit::Inches );
+  QCOMPARE( convertedToInches.units(), Qgis::LayoutUnit::Inches );
   QGSCOMPARENEAR( convertedToInches.length(), 3.125, 0.000001 );
-  convertedToMM = converter.convert( measurementInPixels, QgsUnitTypes::LayoutMillimeters );
-  QCOMPARE( convertedToMM.units(), QgsUnitTypes::LayoutMillimeters );
+  convertedToMM = converter.convert( measurementInPixels, Qgis::LayoutUnit::Millimeters );
+  QCOMPARE( convertedToMM.units(), Qgis::LayoutUnit::Millimeters );
   QGSCOMPARENEAR( convertedToMM.length(), 79.375, 0.000001 );
 }
 
 void TestQgsLayoutUnits::conversionToPixels()
 {
-  const QgsLayoutMeasurement measurementInInches( 1.0, QgsUnitTypes::LayoutInches );
-  const QgsLayoutMeasurement measurementInMM( 1.0, QgsUnitTypes::LayoutMillimeters );
+  const QgsLayoutMeasurement measurementInInches( 1.0, Qgis::LayoutUnit::Inches );
+  const QgsLayoutMeasurement measurementInMM( 1.0, Qgis::LayoutUnit::Millimeters );
 
   QgsLayoutMeasurementConverter converter;
   //try initially with 300 dpi
   converter.setDpi( 300.0 );
-  QgsLayoutMeasurement convertedToPixels = converter.convert( measurementInInches, QgsUnitTypes::LayoutPixels );
-  QCOMPARE( convertedToPixels.units(), QgsUnitTypes::LayoutPixels );
+  QgsLayoutMeasurement convertedToPixels = converter.convert( measurementInInches, Qgis::LayoutUnit::Pixels );
+  QCOMPARE( convertedToPixels.units(), Qgis::LayoutUnit::Pixels );
   QGSCOMPARENEAR( convertedToPixels.length(), 300.0, 0.000001 );
-  convertedToPixels = converter.convert( measurementInMM, QgsUnitTypes::LayoutPixels );
-  QCOMPARE( convertedToPixels.units(), QgsUnitTypes::LayoutPixels );
+  convertedToPixels = converter.convert( measurementInMM, Qgis::LayoutUnit::Pixels );
+  QCOMPARE( convertedToPixels.units(), Qgis::LayoutUnit::Pixels );
   QGSCOMPARENEAR( convertedToPixels.length(), 11.811023622, 0.000001 );
 
   //try with 96 dpi
   converter.setDpi( 96.0 );
-  convertedToPixels = converter.convert( measurementInInches, QgsUnitTypes::LayoutPixels );
-  QCOMPARE( convertedToPixels.units(), QgsUnitTypes::LayoutPixels );
+  convertedToPixels = converter.convert( measurementInInches, Qgis::LayoutUnit::Pixels );
+  QCOMPARE( convertedToPixels.units(), Qgis::LayoutUnit::Pixels );
   QGSCOMPARENEAR( convertedToPixels.length(), 96.0, 0.000001 );
-  convertedToPixels = converter.convert( measurementInMM, QgsUnitTypes::LayoutPixels );
-  QCOMPARE( convertedToPixels.units(), QgsUnitTypes::LayoutPixels );
+  convertedToPixels = converter.convert( measurementInMM, Qgis::LayoutUnit::Pixels );
+  QCOMPARE( convertedToPixels.units(), Qgis::LayoutUnit::Pixels );
   QGSCOMPARENEAR( convertedToPixels.length(), 3.77952755906, 0.000001 );
 }
 
 void TestQgsLayoutUnits::sizeConversion()
 {
-  const QgsLayoutSize sizeInMM( 1.0, 2.0, QgsUnitTypes::LayoutMillimeters );
+  const QgsLayoutSize sizeInMM( 1.0, 2.0, Qgis::LayoutUnit::Millimeters );
   QgsLayoutMeasurementConverter converter;
 
   //test conversion to same units
-  QgsLayoutSize convertedSize = converter.convert( sizeInMM, QgsUnitTypes::LayoutMillimeters );
+  QgsLayoutSize convertedSize = converter.convert( sizeInMM, Qgis::LayoutUnit::Millimeters );
   QCOMPARE( convertedSize, sizeInMM );
 
   //convert to other units
-  convertedSize = converter.convert( sizeInMM, QgsUnitTypes::LayoutCentimeters );
-  const QgsLayoutSize expectedSize( 0.1, 0.2, QgsUnitTypes::LayoutCentimeters );
+  convertedSize = converter.convert( sizeInMM, Qgis::LayoutUnit::Centimeters );
+  const QgsLayoutSize expectedSize( 0.1, 0.2, Qgis::LayoutUnit::Centimeters );
   QCOMPARE( convertedSize, expectedSize );
 
   //pixel conversion
   converter.setDpi( 96.0 );
-  const QgsLayoutSize convertedToInches = converter.convert( QgsLayoutSize( 96, 192, QgsUnitTypes::LayoutPixels ), QgsUnitTypes::LayoutInches );
+  const QgsLayoutSize convertedToInches = converter.convert( QgsLayoutSize( 96, 192, Qgis::LayoutUnit::Pixels ), Qgis::LayoutUnit::Inches );
   QCOMPARE( convertedToInches.width(), 1.0 );
   QCOMPARE( convertedToInches.height(), 2.0 );
-  QCOMPARE( convertedToInches.units(), QgsUnitTypes::LayoutInches );
+  QCOMPARE( convertedToInches.units(), Qgis::LayoutUnit::Inches );
 }
 
 void TestQgsLayoutUnits::pointConversion()
 {
-  const QgsLayoutPoint pointInMM( 1.0, 2.0, QgsUnitTypes::LayoutMillimeters );
+  const QgsLayoutPoint pointInMM( 1.0, 2.0, Qgis::LayoutUnit::Millimeters );
   QgsLayoutMeasurementConverter converter;
 
   //test conversion to same units
-  QgsLayoutPoint convertedPoint = converter.convert( pointInMM, QgsUnitTypes::LayoutMillimeters );
+  QgsLayoutPoint convertedPoint = converter.convert( pointInMM, Qgis::LayoutUnit::Millimeters );
   QCOMPARE( convertedPoint, pointInMM );
 
   //convert to other units
-  convertedPoint = converter.convert( pointInMM, QgsUnitTypes::LayoutCentimeters );
-  const QgsLayoutPoint expectedPoint( 0.1, 0.2, QgsUnitTypes::LayoutCentimeters );
+  convertedPoint = converter.convert( pointInMM, Qgis::LayoutUnit::Centimeters );
+  const QgsLayoutPoint expectedPoint( 0.1, 0.2, Qgis::LayoutUnit::Centimeters );
   QCOMPARE( convertedPoint, expectedPoint );
 
   //pixel conversion
   converter.setDpi( 96.0 );
-  const QgsLayoutPoint convertedToInches = converter.convert( QgsLayoutPoint( 96, 192, QgsUnitTypes::LayoutPixels ), QgsUnitTypes::LayoutInches );
+  const QgsLayoutPoint convertedToInches = converter.convert( QgsLayoutPoint( 96, 192, Qgis::LayoutUnit::Pixels ), Qgis::LayoutUnit::Inches );
   QCOMPARE( convertedToInches.x(), 1.0 );
   QCOMPARE( convertedToInches.y(), 2.0 );
-  QCOMPARE( convertedToInches.units(), QgsUnitTypes::LayoutInches );
+  QCOMPARE( convertedToInches.units(), Qgis::LayoutUnit::Inches );
 }
 
 QTEST_MAIN( TestQgsLayoutUnits )

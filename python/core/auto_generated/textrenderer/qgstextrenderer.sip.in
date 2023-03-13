@@ -43,7 +43,7 @@ Converts a Qt vertical ``alignment`` flag to a Qgis.TextVerticalAlignment value.
 .. versionadded:: 3.16
 %End
 
-    static int sizeToPixel( double size, const QgsRenderContext &c, QgsUnitTypes::RenderUnit unit, const QgsMapUnitScale &mapUnitScale = QgsMapUnitScale() );
+    static int sizeToPixel( double size, const QgsRenderContext &c, Qgis::RenderUnit unit, const QgsMapUnitScale &mapUnitScale = QgsMapUnitScale() );
 %Docstring
 Calculates pixel size (considering output size should be in pixel or map units, scale factors and optionally oversampling)
 

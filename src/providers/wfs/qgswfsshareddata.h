@@ -118,7 +118,7 @@ class QgsWFSSharedData : public QObject, public QgsBackgroundCachedSharedData
     bool mServerPrefersCoordinatesForTransactions_1_1 = false;
 
     //! Geometry type of the features in this layer
-    QgsWkbTypes::Type mWKBType = QgsWkbTypes::Unknown;
+    Qgis::WkbType mWKBType = Qgis::WkbType::Unknown;
 
     //! Geometry type filter to ensure geometries returned by the layer are of type mWKBType.
     QString mWFSGeometryTypeFilter;

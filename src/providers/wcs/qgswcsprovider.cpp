@@ -45,11 +45,6 @@
 #include <QDir>
 #endif
 
-#include "gdalwarper.h"
-#include "ogr_srs_api.h"
-#include "cpl_conv.h"
-#include "cpl_string.h"
-
 #define ERR(message) QGS_ERROR_MESSAGE(message,"WCS provider")
 #define SRVERR(message) QGS_ERROR_MESSAGE(message,"WCS server")
 #define QGS_ERROR(message) QgsError(message,"WCS provider")
@@ -1445,13 +1440,13 @@ QgsRasterIdentifyResult QgsWcsProvider::identify( const QgsPointXY &point, Qgis:
       // set resolution approximately to 1mm
       switch ( mCrs.mapUnits() )
       {
-        case QgsUnitTypes::DistanceMeters:
+        case Qgis::DistanceUnit::Meters:
           xRes = 0.001;
           break;
-        case QgsUnitTypes::DistanceFeet:
+        case Qgis::DistanceUnit::Feet:
           xRes = 0.003;
           break;
-        case QgsUnitTypes::DistanceDegrees:
+        case Qgis::DistanceUnit::Degrees:
           // max length of degree of latitude on pole is 111694 m
           xRes = 1e-8;
           break;
@@ -2040,9 +2035,9 @@ QString QgsWcsProviderMetadata::encodeUri( const QVariantMap &parts ) const
   return query.toString();
 }
 
-QList<QgsMapLayerType> QgsWcsProviderMetadata::supportedLayerTypes() const
+QList<Qgis::LayerType> QgsWcsProviderMetadata::supportedLayerTypes() const
 {
-  return { QgsMapLayerType::RasterLayer };
+  return { Qgis::LayerType::Raster };
 }
 
 

@@ -230,9 +230,9 @@ Creates a new QgsSimpleMarkerSymbolLayer from an SLD XML element.
 
     virtual bool writeDxf( QgsDxfExport &e, double mmMapUnitScaleFactor, const QString &layerName, QgsSymbolRenderContext &context, QPointF shift = QPointF( 0.0, 0.0 ) ) const;
 
-    virtual void setOutputUnit( QgsUnitTypes::RenderUnit unit );
+    virtual void setOutputUnit( Qgis::RenderUnit unit );
 
-    virtual QgsUnitTypes::RenderUnit outputUnit() const;
+    virtual Qgis::RenderUnit outputUnit() const;
 
     virtual void setMapUnitScale( const QgsMapUnitScale &scale );
 
@@ -388,7 +388,7 @@ Sets the width of the marker's stroke.
 .. seealso:: :py:func:`setStrokeWidthMapUnitScale`
 %End
 
-    void setStrokeWidthUnit( QgsUnitTypes::RenderUnit u );
+    void setStrokeWidthUnit( Qgis::RenderUnit u );
 %Docstring
 Sets the unit for the width of the marker's stroke.
 
@@ -401,7 +401,7 @@ Sets the unit for the width of the marker's stroke.
 .. seealso:: :py:func:`setStrokeWidthMapUnitScale`
 %End
 
-    QgsUnitTypes::RenderUnit strokeWidthUnit() const;
+    Qgis::RenderUnit strokeWidthUnit() const;
 %Docstring
 Returns the unit for the width of the marker's stroke.
 
@@ -530,7 +530,7 @@ Creates a new QgsFilledMarkerSymbolLayer.
 
     virtual bool usesMapUnits() const;
 
-    virtual void setOutputUnit( QgsUnitTypes::RenderUnit unit );
+    virtual void setOutputUnit( Qgis::RenderUnit unit );
 
 
   private:
@@ -688,7 +688,7 @@ Sets the dynamic SVG parameters
 .. versionadded:: 3.18
 %End
 
-    void setStrokeWidthUnit( QgsUnitTypes::RenderUnit unit );
+    void setStrokeWidthUnit( Qgis::RenderUnit unit );
 %Docstring
 Sets the units for the stroke width.
 
@@ -697,7 +697,7 @@ Sets the units for the stroke width.
 .. seealso:: :py:func:`strokeWidthUnit`
 %End
 
-    QgsUnitTypes::RenderUnit strokeWidthUnit() const;
+    Qgis::RenderUnit strokeWidthUnit() const;
 %Docstring
 Returns the units for the stroke width.
 
@@ -707,9 +707,9 @@ Returns the units for the stroke width.
     void setStrokeWidthMapUnitScale( const QgsMapUnitScale &scale );
     const QgsMapUnitScale &strokeWidthMapUnitScale() const;
 
-    virtual void setOutputUnit( QgsUnitTypes::RenderUnit unit );
+    virtual void setOutputUnit( Qgis::RenderUnit unit );
 
-    virtual QgsUnitTypes::RenderUnit outputUnit() const;
+    virtual Qgis::RenderUnit outputUnit() const;
 
 
     virtual void setMapUnitScale( const QgsMapUnitScale &scale );
@@ -989,7 +989,7 @@ required fonts are not available on the system.
 
     virtual bool usesMapUnits() const;
 
-    virtual void setOutputUnit( QgsUnitTypes::RenderUnit unit );
+    virtual void setOutputUnit( Qgis::RenderUnit unit );
 
 
 
@@ -1068,7 +1068,7 @@ Set's the marker's stroke ``width``. Units are set by :py:func:`~QgsFontMarkerSy
 .. versionadded:: 2.16
 %End
 
-    QgsUnitTypes::RenderUnit strokeWidthUnit() const;
+    Qgis::RenderUnit strokeWidthUnit() const;
 %Docstring
 Returns the stroke width unit.
 
@@ -1081,7 +1081,7 @@ Returns the stroke width unit.
 .. versionadded:: 2.16
 %End
 
-    void setStrokeWidthUnit( QgsUnitTypes::RenderUnit unit );
+    void setStrokeWidthUnit( Qgis::RenderUnit unit );
 %Docstring
 Sets the stroke width ``unit``.
 

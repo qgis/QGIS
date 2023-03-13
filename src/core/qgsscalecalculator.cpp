@@ -18,10 +18,11 @@
 
 #include <cmath>
 #include "qgslogger.h"
-#include "qgsrectangle.h"
 #include "qgsscalecalculator.h"
+#include "qgsrectangle.h"
+#include <QSizeF>
 
-QgsScaleCalculator::QgsScaleCalculator( double dpi, QgsUnitTypes::DistanceUnit mapUnits )
+QgsScaleCalculator::QgsScaleCalculator( double dpi, Qgis::DistanceUnit mapUnits )
   : mDpi( dpi )
   , mMapUnits( mapUnits )
 {}
@@ -35,15 +36,15 @@ double QgsScaleCalculator::dpi() const
   return mDpi;
 }
 
-void QgsScaleCalculator::setMapUnits( QgsUnitTypes::DistanceUnit mapUnits )
+void QgsScaleCalculator::setMapUnits( Qgis::DistanceUnit mapUnits )
 {
-  QgsDebugMsgLevel( QStringLiteral( "Map units set to %1" ).arg( QString::number( mapUnits ) ), 3 );
+  QgsDebugMsgLevel( QStringLiteral( "Map units set to %1" ).arg( qgsEnumValueToKey( mapUnits ) ), 3 );
   mMapUnits = mapUnits;
 }
 
-QgsUnitTypes::DistanceUnit QgsScaleCalculator::mapUnits() const
+Qgis::DistanceUnit QgsScaleCalculator::mapUnits() const
 {
-  QgsDebugMsgLevel( QStringLiteral( "Map units returned as %1" ).arg( QString::number( mMapUnits ) ), 4 );
+  QgsDebugMsgLevel( QStringLiteral( "Map units returned as %1" ).arg( qgsEnumValueToKey( mMapUnits ) ), 4 );
   return mMapUnits;
 }
 
@@ -90,19 +91,19 @@ void QgsScaleCalculator::calculateMetrics( const QgsRectangle &mapExtent, double
   delta = mapExtent.xMaximum() - mapExtent.xMinimum();
   switch ( mMapUnits )
   {
-    case QgsUnitTypes::DistanceMeters:
+    case Qgis::DistanceUnit::Meters:
       // convert meters to inches
       conversionFactor = 39.3700787;
       break;
-    case QgsUnitTypes::DistanceFeet:
+    case Qgis::DistanceUnit::Feet:
       conversionFactor = 12.0;
       break;
-    case QgsUnitTypes::DistanceNauticalMiles:
+    case Qgis::DistanceUnit::NauticalMiles:
       // convert nautical miles to inches
       conversionFactor = 72913.4;
       break;
     default:
-    case QgsUnitTypes::DistanceDegrees:
+    case Qgis::DistanceUnit::Degrees:
       // degrees require conversion to meters first
       conversionFactor = 39.3700787;
       delta = calculateGeographicDistance( mapExtent );

@@ -14,13 +14,12 @@
  ***************************************************************************/
 
 #include "qgscameracontroller.h"
-#include "qgsterrainentity_p.h"
 #include "qgsvector3d.h"
-#include "qgs3dutils.h"
 #include "qgswindow3dengine.h"
 #include "qgs3dmapscene.h"
-
+#include "qgsterrainentity_p.h"
 #include "qgis.h"
+#include "qgs3dutils.h"
 
 #include <QDomDocument>
 #include <Qt3DRender/QCamera>
@@ -68,13 +67,15 @@ QgsCameraController::QgsCameraController( Qgs3DMapScene *scene )
   mFpsNavTimer->start();
 }
 
+QgsCameraController::~QgsCameraController() = default;
+
 QWindow *QgsCameraController::window() const
 {
   QgsWindow3DEngine *windowEngine = qobject_cast<QgsWindow3DEngine *>( mScene->engine() );
   return windowEngine ? windowEngine->window() : nullptr;
 }
 
-void QgsCameraController::setCameraNavigationMode( QgsCameraController::NavigationMode navigationMode )
+void QgsCameraController::setCameraNavigationMode( Qgis::NavigationMode navigationMode )
 {
   if ( navigationMode == mCameraNavigationMode )
     return;
@@ -93,7 +94,7 @@ void QgsCameraController::setCameraMovementSpeed( double movementSpeed )
   emit cameraMovementSpeedChanged( mCameraMovementSpeed );
 }
 
-void QgsCameraController::setVerticalAxisInversion( QgsCameraController::VerticalAxisInversion inversion )
+void QgsCameraController::setVerticalAxisInversion( Qgis::VerticalAxisInversion inversion )
 {
   mVerticalAxisInversion = inversion;
 }
@@ -270,11 +271,11 @@ void QgsCameraController::onPositionChanged( Qt3DInput::QMouseEvent *mouse )
 {
   switch ( mCameraNavigationMode )
   {
-    case TerrainBasedNavigation:
+    case Qgis::NavigationMode::TerrainBased:
       onPositionChangedTerrainNavigation( mouse );
       break;
 
-    case WalkNavigation:
+    case Qgis::NavigationMode::Walk:
       onPositionChangedFlyNavigation( mouse );
       break;
   }
@@ -578,14 +579,14 @@ void QgsCameraController::onWheel( Qt3DInput::QWheelEvent *wheel )
 {
   switch ( mCameraNavigationMode )
   {
-    case QgsCameraController::WalkNavigation:
+    case Qgis::NavigationMode::Walk:
     {
       const float scaling = ( ( wheel->modifiers() & Qt::ControlModifier ) != 0 ? 0.1f : 1.0f ) / 1000.f;
       setCameraMovementSpeed( mCameraMovementSpeed + mCameraMovementSpeed * scaling * wheel->angleDelta().y() );
       break;
     }
 
-    case TerrainBasedNavigation:
+    case Qgis::NavigationMode::TerrainBased:
     {
 
       const float scaling = ( ( wheel->modifiers() & Qt::ControlModifier ) != 0 ? 0.5f : 5.f );
@@ -687,11 +688,11 @@ void QgsCameraController::onKeyPressed( Qt3DInput::QKeyEvent *event )
     // switch navigation mode
     switch ( mCameraNavigationMode )
     {
-      case NavigationMode::WalkNavigation:
-        setCameraNavigationMode( NavigationMode::TerrainBasedNavigation );
+      case Qgis::NavigationMode::Walk:
+        setCameraNavigationMode( Qgis::NavigationMode::TerrainBased );
         break;
-      case NavigationMode::TerrainBasedNavigation:
-        setCameraNavigationMode( NavigationMode::WalkNavigation );
+      case Qgis::NavigationMode::TerrainBased:
+        setCameraNavigationMode( Qgis::NavigationMode::Walk );
         break;
     }
     return;
@@ -699,13 +700,13 @@ void QgsCameraController::onKeyPressed( Qt3DInput::QKeyEvent *event )
 
   switch ( mCameraNavigationMode )
   {
-    case WalkNavigation:
+    case Qgis::NavigationMode::Walk:
     {
       onKeyPressedFlyNavigation( event );
       break;
     }
 
-    case TerrainBasedNavigation:
+    case Qgis::NavigationMode::TerrainBased:
     {
       onKeyPressedTerrainNavigation( event );
       break;
@@ -816,7 +817,7 @@ void QgsCameraController::onKeyPressedFlyNavigation( Qt3DInput::QKeyEvent *event
   mDepressedKeys.insert( event->key() );
 }
 
-void QgsCameraController::applyFlyModeKeyMovements()
+void QgsCameraController::walkView( double tx, double ty, double tz )
 {
   const QVector3D cameraUp = mCamera->upVector().normalized();
   const QVector3D cameraFront = ( QVector3D( mCameraPose.centerPoint().x(), mCameraPose.centerPoint().y(), mCameraPose.centerPoint().z() ) - mCamera->position() ).normalized();
@@ -824,6 +825,24 @@ void QgsCameraController::applyFlyModeKeyMovements()
 
   QVector3D cameraPosDiff( 0.0f, 0.0f, 0.0f );
 
+  if ( tx != 0.0 )
+  {
+    cameraPosDiff += tx * cameraFront;
+  }
+  if ( ty != 0.0 )
+  {
+    cameraPosDiff += ty * cameraLeft;
+  }
+  if ( tz != 0.0 )
+  {
+    cameraPosDiff += tz * QVector3D( 0.0f, 1.0f, 0.0f );
+  }
+
+  moveCameraPositionBy( cameraPosDiff );
+}
+
+void QgsCameraController::applyFlyModeKeyMovements()
+{
   // shift = "run", ctrl = "slow walk"
   const bool shiftPressed = mDepressedKeys.contains( Qt::Key_Shift );
   const bool ctrlPressed = mDepressedKeys.contains( Qt::Key_Control );
@@ -831,28 +850,31 @@ void QgsCameraController::applyFlyModeKeyMovements()
   const double movementSpeed = mCameraMovementSpeed * ( shiftPressed ? 2 : 1 ) * ( ctrlPressed ? 0.1 : 1 );
 
   bool changed = false;
+  double x = 0.0;
+  double y = 0.0;
+  double z = 0.0;
   if ( mDepressedKeys.contains( Qt::Key_Left ) || mDepressedKeys.contains( Qt::Key_A ) )
   {
     changed = true;
-    cameraPosDiff += movementSpeed * cameraLeft;
+    y += movementSpeed;
   }
 
   if ( mDepressedKeys.contains( Qt::Key_Right ) || mDepressedKeys.contains( Qt::Key_D ) )
   {
     changed = true;
-    cameraPosDiff += - movementSpeed * cameraLeft;
+    y -= movementSpeed;
   }
 
   if ( mDepressedKeys.contains( Qt::Key_Up ) || mDepressedKeys.contains( Qt::Key_W ) )
   {
     changed = true;
-    cameraPosDiff += movementSpeed * cameraFront;
+    x += movementSpeed;
   }
 
   if ( mDepressedKeys.contains( Qt::Key_Down ) || mDepressedKeys.contains( Qt::Key_S ) )
   {
     changed = true;
-    cameraPosDiff += - movementSpeed * cameraFront;
+    x -= movementSpeed;
   }
 
   // note -- vertical axis movements are slower by default then horizontal ones, as GIS projects
@@ -861,17 +883,17 @@ void QgsCameraController::applyFlyModeKeyMovements()
   if ( mDepressedKeys.contains( Qt::Key_PageUp ) || mDepressedKeys.contains( Qt::Key_E ) )
   {
     changed = true;
-    cameraPosDiff += ELEVATION_MOVEMENT_SCALE * movementSpeed * QVector3D( 0.0f, 1.0f, 0.0f );
+    z += ELEVATION_MOVEMENT_SCALE * movementSpeed;
   }
 
   if ( mDepressedKeys.contains( Qt::Key_PageDown ) || mDepressedKeys.contains( Qt::Key_Q ) )
   {
     changed = true;
-    cameraPosDiff += ELEVATION_MOVEMENT_SCALE * - movementSpeed * QVector3D( 0.0f, 1.0f, 0.0f );
+    z -= ELEVATION_MOVEMENT_SCALE * movementSpeed;
   }
 
   if ( changed )
-    moveCameraPositionBy( cameraPosDiff );
+    walkView( x, y, z );
 }
 
 void QgsCameraController::onPositionChangedFlyNavigation( Qt3DInput::QMouseEvent *mouse )
@@ -912,12 +934,12 @@ void QgsCameraController::onPositionChangedFlyNavigation( Qt3DInput::QMouseEvent
       float diffPitch = -0.2f * dy;
       switch ( mVerticalAxisInversion )
       {
-        case Always:
+        case Qgis::VerticalAxisInversion::Always:
           diffPitch *= -1;
           break;
 
-        case WhenDragging:
-        case Never:
+        case Qgis::VerticalAxisInversion::WhenDragging:
+        case Qgis::VerticalAxisInversion::Never:
           break;
       }
 
@@ -929,12 +951,12 @@ void QgsCameraController::onPositionChangedFlyNavigation( Qt3DInput::QMouseEvent
       float diffPitch = -0.2f * dy;
       switch ( mVerticalAxisInversion )
       {
-        case Always:
-        case WhenDragging:
+        case Qgis::VerticalAxisInversion::Always:
+        case Qgis::VerticalAxisInversion::WhenDragging:
           diffPitch *= -1;
           break;
 
-        case Never:
+        case Qgis::VerticalAxisInversion::Never:
           break;
       }
       const float diffYaw = - 0.2f * dx;
@@ -1009,7 +1031,7 @@ bool QgsCameraController::willHandleKeyEvent( QKeyEvent *event )
 
   switch ( mCameraNavigationMode )
   {
-    case WalkNavigation:
+    case Qgis::NavigationMode::Walk:
     {
       switch ( event->key() )
       {
@@ -1038,7 +1060,7 @@ bool QgsCameraController::willHandleKeyEvent( QKeyEvent *event )
       break;
     }
 
-    case TerrainBasedNavigation:
+    case Qgis::NavigationMode::TerrainBased:
     {
       switch ( event->key() )
       {

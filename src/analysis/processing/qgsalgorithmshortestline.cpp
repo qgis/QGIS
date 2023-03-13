@@ -19,6 +19,7 @@
 
 #include "qgsalgorithmshortestline.h"
 #include "qgsdistancearea.h"
+#include "qgsspatialindex.h"
 
 ///@cond PRIVATE
 
@@ -109,7 +110,7 @@ QVariantMap QgsShortestLineAlgorithm::processAlgorithm( const QVariantMap &param
   fields.append( QgsField( QStringLiteral( "distance" ), QVariant::Double ) );
 
   QString dest;
-  std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, fields, QgsWkbTypes::MultiLineString, mSource->sourceCrs() ) );
+  std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, fields, Qgis::WkbType::MultiLineString, mSource->sourceCrs() ) );
   if ( !sink )
     throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
 

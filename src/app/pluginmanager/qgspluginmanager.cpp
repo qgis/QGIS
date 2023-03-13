@@ -69,8 +69,8 @@ const QgsSettingsEntryBool *QgsPluginManager::settingsAllowExperimental = new Qg
 const QgsSettingsEntryBool *QgsPluginManager::settingsAllowDeprecated = new QgsSettingsEntryBool( QStringLiteral( "allow-deprecated" ), sTreePluginManager, false, QStringLiteral( "Allow deprecated plugins." ) );
 const QgsSettingsEntryVariant *QgsPluginManager::settingsCheckOnStartLastDate = new QgsSettingsEntryVariant( QStringLiteral( "check-on-start-last-date" ), sTreePluginManager, QVariant( QVariant::Date ), QStringLiteral( "Date last time the check was performed." ) );
 const QgsSettingsEntryStringList *QgsPluginManager::settingsSeenPlugins = new QgsSettingsEntryStringList( QStringLiteral( "seen-plugins" ), sTreePluginManager, {}, QStringLiteral( "Date last time the check was performed." ) );
-const QgsSettingsEntryString *QgsPluginManager::settingsLastZipDirectory = new QgsSettingsEntryString( QStringLiteral( "last-zip-directory" ), sTreeUi, QString(), QStringLiteral( "Last ZIP directory." ) );
-const QgsSettingsEntryBool *QgsPluginManager::settingsShowInstallFromZipWarning = new QgsSettingsEntryBool( QStringLiteral( "show-install-from-zip-warning" ), QgsPluginManager::sTreeUi, true );
+const QgsSettingsEntryString *QgsPluginManager::settingsLastZipDirectory = new QgsSettingsEntryString( QStringLiteral( "last-zip-directory" ), sTreePluginManager, QString(), QStringLiteral( "Last ZIP directory." ) );
+const QgsSettingsEntryBool *QgsPluginManager::settingsShowInstallFromZipWarning = new QgsSettingsEntryBool( QStringLiteral( "show-install-from-zip-warning" ), sTreePluginManager, true );
 
 
 QgsPluginManager::QgsPluginManager( QWidget *parent, bool pluginsAreEnabled, Qt::WindowFlags fl )
@@ -357,10 +357,11 @@ void QgsPluginManager::getCppPluginsMetadata()
   QStringList myPathList( pr->libraryDirectory().path() );
 
   const QgsSettings settings;
-  const QString myPaths = settings.value( QStringLiteral( "plugins/searchPathsForPlugins" ), "" ).toString();
+  const QStringList myPaths = settings.value( QStringLiteral( "plugins/searchPathsForPlugins" ) ).toStringList();
   if ( !myPaths.isEmpty() )
   {
-    myPathList.append( myPaths.split( '|' ) );
+    myPathList.append( myPaths );
+    myPathList.removeDuplicates();
   }
 
   for ( int j = 0; j < myPathList.size(); ++j )
@@ -371,7 +372,7 @@ void QgsPluginManager::getCppPluginsMetadata()
     if ( pluginDir.count() == 0 )
     {
       QMessageBox::information( this, tr( "No Plugins" ), tr( "No QGIS plugins found in %1" ).arg( myPluginDir ) );
-      return;
+      continue;
     }
 
     for ( uint i = 0; i < pluginDir.count(); i++ )

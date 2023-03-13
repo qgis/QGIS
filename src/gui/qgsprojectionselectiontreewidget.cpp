@@ -25,6 +25,7 @@
 #include "qgsdatums.h"
 #include "qgsprojoperation.h"
 #include "qgsstringutils.h"
+#include "qgsunittypes.h"
 
 //qt includes
 #include <QFileInfo>

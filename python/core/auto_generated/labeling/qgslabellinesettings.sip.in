@@ -229,7 +229,7 @@ Sets the ``distance`` which labels are allowed to overrun past the start or end 
 .. seealso:: :py:func:`overrunDistanceMapUnitScale`
 %End
 
-    QgsUnitTypes::RenderUnit overrunDistanceUnit() const;
+    Qgis::RenderUnit overrunDistanceUnit() const;
 %Docstring
 Returns the units for label overrun distance.
 
@@ -240,7 +240,7 @@ Returns the units for label overrun distance.
 .. seealso:: :py:func:`overrunDistanceMapUnitScale`
 %End
 
-    void setOverrunDistanceUnit( const QgsUnitTypes::RenderUnit &unit );
+    void setOverrunDistanceUnit( const Qgis::RenderUnit &unit );
 %Docstring
 Sets the ``unit`` for label overrun distance.
 

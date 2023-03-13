@@ -22,8 +22,6 @@
 #include "qgspoint.h"
 
 #include "qgslogger.h"
-#include "qgsgeometry.h"
-
 #include "qgsgrass.h"
 #include "qgsgrassvectormap.h"
 #include "qgsgrassvectormaplayer.h"
@@ -626,7 +624,7 @@ QgsAbstractGeometry *QgsGrassVectorMap::lineGeometry( int id )
   pointList.reserve( points->n_points );
   for ( int i = 0; i < points->n_points; i++ )
   {
-    pointList << QgsPoint( is3d() ? QgsWkbTypes::PointZ : QgsWkbTypes::Point, points->x[i], points->y[i], points->z[i] );
+    pointList << QgsPoint( is3d() ? Qgis::WkbType::PointZ : Qgis::WkbType::Point, points->x[i], points->y[i], points->z[i] );
   }
 
   Vect_destroy_line_struct( points );
@@ -659,7 +657,7 @@ QgsAbstractGeometry *QgsGrassVectorMap::nodeGeometry( int id )
   QgsDebugMsgLevel( QString( "id = %1" ).arg( id ), 3 );
   double x, y, z;
   Vect_get_node_coor( mMap, id, &x, &y, &z );
-  return new QgsPoint( is3d() ? QgsWkbTypes::PointZ : QgsWkbTypes::Point, x, y, z );
+  return new QgsPoint( is3d() ? Qgis::WkbType::PointZ : Qgis::WkbType::Point, x, y, z );
 }
 
 QgsAbstractGeometry *QgsGrassVectorMap::areaGeometry( int id )
@@ -678,7 +676,7 @@ QgsAbstractGeometry *QgsGrassVectorMap::areaGeometry( int id )
   pointList.reserve( points->n_points );
   for ( int i = 0; i < points->n_points; i++ )
   {
-    pointList << QgsPoint( is3d() ? QgsWkbTypes::PointZ : QgsWkbTypes::Point, points->x[i], points->y[i], points->z[i] );
+    pointList << QgsPoint( is3d() ? Qgis::WkbType::PointZ : Qgis::WkbType::Point, points->x[i], points->y[i], points->z[i] );
   }
 
   QgsLineString *ring = new QgsLineString();
@@ -695,7 +693,7 @@ QgsAbstractGeometry *QgsGrassVectorMap::areaGeometry( int id )
     pointList.reserve( points->n_points );
     for ( int i = 0; i < points->n_points; i++ )
     {
-      pointList <<  QgsPoint( is3d() ? QgsWkbTypes::PointZ : QgsWkbTypes::Point, points->x[i], points->y[i], points->z[i] );
+      pointList <<  QgsPoint( is3d() ? Qgis::WkbType::PointZ : Qgis::WkbType::Point, points->x[i], points->y[i], points->z[i] );
     }
     ring = new QgsLineString();
     ring->setPoints( pointList );

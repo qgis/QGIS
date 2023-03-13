@@ -59,7 +59,7 @@ Dialog for selecting provider sublayers.
                                 const QString &providerKey,
                                 const QString &filePath,
                                 const QList< QgsProviderSublayerDetails> initialDetails = QList< QgsProviderSublayerDetails>(),
-                                const QList< QgsMapLayerType > &acceptableTypes = QList< QgsMapLayerType >(),
+                                const QList< Qgis::LayerType > &acceptableTypes = QList< Qgis::LayerType >(),
                                 QWidget *parent /TransferThis/ = 0,
                                 Qt::WindowFlags fl = Qt::WindowFlags() );
 %Docstring

@@ -300,12 +300,12 @@ class QgsPointLocator_VisitorNearestLineEndpoint : public IVisitor
 
       switch ( QgsWkbTypes::geometryType( geom->wkbType() ) )
       {
-        case QgsWkbTypes::PointGeometry:
-        case QgsWkbTypes::UnknownGeometry:
-        case QgsWkbTypes::NullGeometry:
+        case Qgis::GeometryType::Point:
+        case Qgis::GeometryType::Unknown:
+        case Qgis::GeometryType::Null:
           return;
 
-        case QgsWkbTypes::LineGeometry:
+        case Qgis::GeometryType::Line:
         {
           int partStartVertexNum = 0;
           for ( auto partIt = geom->const_parts_begin(); partIt != geom->const_parts_end(); ++partIt )
@@ -320,7 +320,7 @@ class QgsPointLocator_VisitorNearestLineEndpoint : public IVisitor
           break;
         }
 
-        case QgsWkbTypes::PolygonGeometry:
+        case Qgis::GeometryType::Polygon:
         {
           int partStartVertexNum = 0;
           for ( auto partIt = geom->const_parts_begin(); partIt != geom->const_parts_end(); ++partIt )
@@ -571,7 +571,7 @@ static QgsPointLocator::MatchList _geometrySegmentsInRect( QgsGeometry *geom, co
   QgsPointLocator::MatchList lst;
 
   // geom is converted to a MultiCurve
-  QgsGeometry straightGeom = geom->convertToType( QgsWkbTypes::LineGeometry, true );
+  QgsGeometry straightGeom = geom->convertToType( Qgis::GeometryType::Line, true );
   // and convert to straight segemnt / converts curve to linestring
   straightGeom.convertToStraightSegment();
 
@@ -579,7 +579,7 @@ static QgsPointLocator::MatchList _geometrySegmentsInRect( QgsGeometry *geom, co
   //
   // Special case: Intersections cannot be done on an empty linestring like
   // QgsGeometry(QgsLineString()) or QgsGeometry::fromWkt("LINESTRING EMPTY")
-  if ( straightGeom.isEmpty() || ( ( straightGeom.type() != QgsWkbTypes::LineGeometry ) && ( !straightGeom.isMultipart() ) ) )
+  if ( straightGeom.isEmpty() || ( ( straightGeom.type() != Qgis::GeometryType::Line ) && ( !straightGeom.isMultipart() ) ) )
     return lst;
 
   _CohenSutherland cs( rect );
@@ -960,8 +960,8 @@ void QgsPointLocator::onInitTaskFinished()
 
 bool QgsPointLocator::init( int maxFeaturesToIndex, bool relaxed )
 {
-  const QgsWkbTypes::GeometryType geomType = mLayer->geometryType();
-  if ( geomType == QgsWkbTypes::NullGeometry // nothing to index
+  const Qgis::GeometryType geomType = mLayer->geometryType();
+  if ( geomType == Qgis::GeometryType::Null // nothing to index
        || hasIndex()
        || mIsIndexing ) // already indexing, return!
     return true;
@@ -1382,8 +1382,8 @@ QgsPointLocator::Match QgsPointLocator::nearestEdge( const QgsPointXY &point, do
   if ( !prepare( relaxed ) )
     return Match();
 
-  const QgsWkbTypes::GeometryType geomType = mLayer->geometryType();
-  if ( geomType == QgsWkbTypes::PointGeometry )
+  const Qgis::GeometryType geomType = mLayer->geometryType();
+  if ( geomType == Qgis::GeometryType::Point )
     return Match();
 
   Match m;
@@ -1412,8 +1412,8 @@ QgsPointLocator::Match QgsPointLocator::nearestArea( const QgsPointXY &point, do
   }
 
   // discard point and line layers to keep only polygons
-  const QgsWkbTypes::GeometryType geomType = mLayer->geometryType();
-  if ( geomType == QgsWkbTypes::PointGeometry || geomType == QgsWkbTypes::LineGeometry )
+  const Qgis::GeometryType geomType = mLayer->geometryType();
+  if ( geomType == Qgis::GeometryType::Point || geomType == Qgis::GeometryType::Line )
     return Match();
 
   // use edges for adding tolerance
@@ -1430,8 +1430,8 @@ QgsPointLocator::MatchList QgsPointLocator::edgesInRect( const QgsRectangle &rec
   if ( !prepare( relaxed ) )
     return MatchList();
 
-  const QgsWkbTypes::GeometryType geomType = mLayer->geometryType();
-  if ( geomType == QgsWkbTypes::PointGeometry )
+  const Qgis::GeometryType geomType = mLayer->geometryType();
+  if ( geomType == Qgis::GeometryType::Point )
     return MatchList();
 
   MatchList lst;
@@ -1470,8 +1470,8 @@ QgsPointLocator::MatchList QgsPointLocator::pointInPolygon( const QgsPointXY &po
   if ( !prepare( relaxed ) )
     return MatchList();
 
-  const QgsWkbTypes::GeometryType geomType = mLayer->geometryType();
-  if ( geomType == QgsWkbTypes::PointGeometry || geomType == QgsWkbTypes::LineGeometry )
+  const Qgis::GeometryType geomType = mLayer->geometryType();
+  if ( geomType == Qgis::GeometryType::Point || geomType == Qgis::GeometryType::Line )
     return MatchList();
 
   MatchList lst;

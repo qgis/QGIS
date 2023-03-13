@@ -24,6 +24,7 @@
 #include "qgsprocessingalgorithm.h"
 #include "qgsapplication.h"
 #include "qgsdistancearea.h"
+#include "qgsspatialindex.h"
 
 ///@cond PRIVATE
 

@@ -23,6 +23,7 @@
 #include "qgsrenderchecker.h"
 #include "qgsvectorlayer.h"
 #include "qgslayout.h"
+#include "qgslayoutrendercontext.h"
 
 #include <QStyleOptionGraphicsItem>
 

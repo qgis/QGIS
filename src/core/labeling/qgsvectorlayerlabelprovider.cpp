@@ -65,7 +65,7 @@ QgsVectorLayerLabelProvider::QgsVectorLayerLabelProvider( QgsVectorLayer *layer,
   init();
 }
 
-QgsVectorLayerLabelProvider::QgsVectorLayerLabelProvider( QgsWkbTypes::GeometryType geometryType, const QgsFields &fields, const QgsCoordinateReferenceSystem &crs, const QString &providerId, const QgsPalLayerSettings *settings, QgsMapLayer *layer, const QString &layerName )
+QgsVectorLayerLabelProvider::QgsVectorLayerLabelProvider( Qgis::GeometryType geometryType, const QgsFields &fields, const QgsCoordinateReferenceSystem &crs, const QString &providerId, const QgsPalLayerSettings *settings, QgsMapLayer *layer, const QString &layerName )
   : QgsAbstractLabelProvider( layer, providerId )
   , mSettings( settings ? * settings : QgsPalLayerSettings() ) // TODO: all providers should have valid settings?
   , mLayerGeometryType( geometryType )
@@ -92,7 +92,7 @@ void QgsVectorLayerLabelProvider::init()
 
   mPriority = 1 - mSettings.priority / 10.0; // convert 0..10 --> 1..0
 
-  if ( mLayerGeometryType == QgsWkbTypes::PointGeometry && mRenderer )
+  if ( mLayerGeometryType == Qgis::GeometryType::Point && mRenderer )
   {
     //override obstacle type to treat any intersection of a label with the point symbol as a high cost conflict
     mObstacleType = QgsLabelObstacleSettings::PolygonWhole;
@@ -170,7 +170,7 @@ QList<QgsLabelFeature *> QgsVectorLayerLabelProvider::labelFeatures( QgsRenderCo
     if ( mRenderer )
     {
       QgsSymbolList symbols = mRenderer->originalSymbolsForFeature( fet, ctx );
-      if ( !symbols.isEmpty() && fet.geometry().type() == QgsWkbTypes::PointGeometry )
+      if ( !symbols.isEmpty() && fet.geometry().type() == Qgis::GeometryType::Point )
       {
         //point feature, use symbol bounds as obstacle
         obstacleGeometry = QgsVectorLayerLabelProvider::getPointObstacleGeometry( fet, ctx, symbols );
@@ -208,7 +208,7 @@ QList< QgsLabelFeature * > QgsVectorLayerLabelProvider::registerFeature( const Q
 
 QgsGeometry QgsVectorLayerLabelProvider::getPointObstacleGeometry( QgsFeature &fet, QgsRenderContext &context, const QgsSymbolList &symbols )
 {
-  if ( !fet.hasGeometry() || fet.geometry().type() != QgsWkbTypes::PointGeometry )
+  if ( !fet.hasGeometry() || fet.geometry().type() != Qgis::GeometryType::Point )
     return QgsGeometry();
 
   bool isMultiPoint = fet.geometry().constGet()->nCoordinates() > 1;
@@ -381,7 +381,7 @@ void QgsVectorLayerLabelProvider::drawLabel( QgsRenderContext &context, pal::Lab
   // size has already been calculated and stored in the defined font - this calculated size
   // is in pixels
   format.setSize( dFont.pixelSize() );
-  format.setSizeUnit( QgsUnitTypes::RenderPixels );
+  format.setSizeUnit( Qgis::RenderUnit::Pixels );
   tmpLyr.setFormat( format );
 
   if ( tmpLyr.multilineAlign == Qgis::LabelMultiLineAlignment::FollowPlacement )
@@ -666,8 +666,8 @@ void QgsVectorLayerLabelProvider::drawLabelPrivate( pal::LabelPosition *label, Q
       QgsScopedRenderContextReferenceScaleOverride referenceScaleOverride( context, -1.0 );
 
       // convert label size to render units
-      double labelWidthPx = context.convertToPainterUnits( label->getWidth(), QgsUnitTypes::RenderMapUnits, QgsMapUnitScale() );
-      double labelHeightPx = context.convertToPainterUnits( label->getHeight(), QgsUnitTypes::RenderMapUnits, QgsMapUnitScale() );
+      double labelWidthPx = context.convertToPainterUnits( label->getWidth(), Qgis::RenderUnit::MapUnits, QgsMapUnitScale() );
+      double labelHeightPx = context.convertToPainterUnits( label->getHeight(), Qgis::RenderUnit::MapUnits, QgsMapUnitScale() );
 
       component.size = QSizeF( labelWidthPx, labelHeightPx );
     }
@@ -757,7 +757,31 @@ void QgsVectorLayerLabelProvider::drawLabelPrivate( pal::LabelPosition *label, Q
 
     QgsTextDocument document;
     QgsTextDocumentMetrics metrics;
-    if ( !tmpLyr.format().allowHtmlFormatting() || tmpLyr.placement == Qgis::LabelPlacement::Curved )
+
+    // If we are using non-curved, HTML formatted labels then we've already precalculated the text metrics.
+    // Otherwise we'll need to calculate them now.
+    bool metricsRequired = !tmpLyr.format().allowHtmlFormatting();
+    if ( !metricsRequired )
+    {
+      switch ( tmpLyr.placement )
+      {
+        case Qgis::LabelPlacement::Curved:
+        case Qgis::LabelPlacement::PerimeterCurved:
+          metricsRequired = true;
+          break;
+
+        case Qgis::LabelPlacement::AroundPoint:
+        case Qgis::LabelPlacement::OverPoint:
+        case Qgis::LabelPlacement::Line:
+        case Qgis::LabelPlacement::Horizontal:
+        case Qgis::LabelPlacement::Free:
+        case Qgis::LabelPlacement::OrderedPositionsAroundPoint:
+        case Qgis::LabelPlacement::OutsidePolygons:
+          break;
+      }
+    }
+
+    if ( metricsRequired )
     {
       const QgsTextCharacterFormat c = lf->characterFormat( label->getPartId() );
       const QStringList multiLineList = QgsPalLabeling::splitToLines( txt, tmpLyr.wrapChar, tmpLyr.autoWrapLength, tmpLyr.useMaxLineLengthForAutoWrap );

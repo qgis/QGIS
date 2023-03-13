@@ -177,7 +177,7 @@ class CORE_EXPORT QgsCompoundCurve: public QgsCurve
      */
     inline static const QgsCompoundCurve *cast( const QgsAbstractGeometry *geom )
     {
-      if ( geom && QgsWkbTypes::flatType( geom->wkbType() ) == QgsWkbTypes::CompoundCurve )
+      if ( geom && QgsWkbTypes::flatType( geom->wkbType() ) == Qgis::WkbType::CompoundCurve )
         return static_cast<const QgsCompoundCurve *>( geom );
       return nullptr;
     }

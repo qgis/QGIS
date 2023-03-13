@@ -59,7 +59,7 @@ QgsLayoutSize QgsLayoutFrame::minimumSize() const
   //calculate index of frame
   const int frameIndex = mMultiFrame->frameIndex( const_cast< QgsLayoutFrame * >( this ) );
   //check minimum size
-  return QgsLayoutSize( mMultiFrame->minFrameSize( frameIndex ), QgsUnitTypes::LayoutMillimeters );
+  return QgsLayoutSize( mMultiFrame->minFrameSize( frameIndex ), Qgis::LayoutUnit::Millimeters );
 }
 
 QgsLayoutSize QgsLayoutFrame::fixedSize() const
@@ -70,7 +70,7 @@ QgsLayoutSize QgsLayoutFrame::fixedSize() const
   //calculate index of frame
   const int frameIndex = mMultiFrame->frameIndex( const_cast< QgsLayoutFrame * >( this ) );
   //check fixed size
-  return QgsLayoutSize( mMultiFrame->fixedFrameSize( frameIndex ), QgsUnitTypes::LayoutMillimeters );
+  return QgsLayoutSize( mMultiFrame->fixedFrameSize( frameIndex ), Qgis::LayoutUnit::Millimeters );
 }
 
 int QgsLayoutFrame::type() const

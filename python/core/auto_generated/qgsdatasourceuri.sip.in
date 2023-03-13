@@ -301,12 +301,12 @@ Returns the name of the (primary) key column for the referenced table.
 Sets the name of the (primary) key ``column``.
 %End
 
-    QgsWkbTypes::Type wkbType() const;
+    Qgis::WkbType wkbType() const;
 %Docstring
 Returns the WKB type associated with the URI.
 %End
 
-    void setWkbType( QgsWkbTypes::Type type );
+    void setWkbType( Qgis::WkbType type );
 %Docstring
 Sets the WKB ``type`` associated with the URI.
 %End

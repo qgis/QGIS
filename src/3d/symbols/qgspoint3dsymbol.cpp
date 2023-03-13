@@ -40,7 +40,7 @@ QgsAbstract3DSymbol *QgsPoint3DSymbol::create()
 QgsPoint3DSymbol::QgsPoint3DSymbol()
   : mMaterialSettings( std::make_unique< QgsPhongMaterialSettings >() )
 {
-  setBillboardSymbol( static_cast<QgsMarkerSymbol *>( QgsSymbol::defaultSymbol( QgsWkbTypes::PointGeometry ) ) );
+  setBillboardSymbol( static_cast<QgsMarkerSymbol *>( QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ) ) );
 }
 
 QgsPoint3DSymbol::QgsPoint3DSymbol( const QgsPoint3DSymbol &other )
@@ -116,9 +116,9 @@ void QgsPoint3DSymbol::readXml( const QDomElement &elem, const QgsReadWriteConte
   setBillboardSymbol( QgsSymbolLayerUtils::loadSymbol< QgsMarkerSymbol >( symbolElem, context ) );
 }
 
-QList<QgsWkbTypes::GeometryType> QgsPoint3DSymbol::compatibleGeometryTypes() const
+QList<Qgis::GeometryType> QgsPoint3DSymbol::compatibleGeometryTypes() const
 {
-  return QList< QgsWkbTypes::GeometryType >() << QgsWkbTypes::PointGeometry;
+  return QList< Qgis::GeometryType >() << Qgis::GeometryType::Point;
 }
 
 void QgsPoint3DSymbol::setDefaultPropertiesFromLayer( const QgsVectorLayer *layer )

@@ -17,12 +17,11 @@
 #include "qgslayoutpagecollection.h"
 #include "qgslayout.h"
 #include "qgsreadwritecontext.h"
-#include "qgsproject.h"
-#include "qgslayoutitemundocommand.h"
 #include "qgssymbollayerutils.h"
 #include "qgslayoutframe.h"
 #include "qgslayoutundostack.h"
 #include "qgsfillsymbol.h"
+#include "qgsmargins.h"
 
 QgsLayoutPageCollection::QgsLayoutPageCollection( QgsLayout *layout )
   : QObject( layout )
@@ -292,7 +291,7 @@ double QgsLayoutPageCollection::pageShadowWidth() const
   return spaceBetweenPages() / 2;
 }
 
-void QgsLayoutPageCollection::resizeToContents( const QgsMargins &margins, QgsUnitTypes::LayoutUnit marginUnits )
+void QgsLayoutPageCollection::resizeToContents( const QgsMargins &margins, Qgis::LayoutUnit marginUnits )
 {
   //calculate current bounds
   QRectF bounds = mLayout->layoutBounds( true, 0.0 );

@@ -21,7 +21,7 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgsunittypes.h"
+#include "qgis.h"
 
 class QString;
 class QgsRectangle;
@@ -41,7 +41,7 @@ class CORE_EXPORT QgsScaleCalculator
      * \param mapUnits Units of the data on the map
      */
     QgsScaleCalculator( double dpi = 0,
-                        QgsUnitTypes::DistanceUnit mapUnits = QgsUnitTypes::DistanceMeters );
+                        Qgis::DistanceUnit mapUnits = Qgis::DistanceUnit::Meters );
 
     /**
      * Sets the \a dpi (dots per inch) for the output resolution, to be used in scale calculations.
@@ -59,10 +59,10 @@ class CORE_EXPORT QgsScaleCalculator
      * Set the map units
      * \param mapUnits Units of the data on the map. Must match a value from the
      */
-    void setMapUnits( QgsUnitTypes::DistanceUnit mapUnits );
+    void setMapUnits( Qgis::DistanceUnit mapUnits );
 
     //! Returns current map units
-    QgsUnitTypes::DistanceUnit mapUnits() const;
+    Qgis::DistanceUnit mapUnits() const;
 
     /**
      * Calculate the scale denominator
@@ -98,7 +98,7 @@ class CORE_EXPORT QgsScaleCalculator
     double mDpi;
 
     //! map unit member
-    QgsUnitTypes::DistanceUnit mMapUnits;
+    Qgis::DistanceUnit mMapUnits;
 };
 
 #endif // #ifndef QGSSCALECALCULATOR_H

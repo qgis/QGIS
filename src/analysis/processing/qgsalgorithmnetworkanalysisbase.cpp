@@ -20,6 +20,7 @@
 #include "qgsgraphanalyzer.h"
 #include "qgsnetworkspeedstrategy.h"
 #include "qgsnetworkdistancestrategy.h"
+#include "qgsunittypes.h"
 
 ///@cond PRIVATE
 
@@ -119,8 +120,8 @@ void QgsNetworkAnalysisAlgorithmBase::loadCommonParams( const QVariantMap &param
 
   mDirector = new QgsVectorLayerDirector( mNetwork.get(), directionField, forwardValue, backwardValue, bothValue, defaultDirection );
 
-  const QgsUnitTypes::DistanceUnit distanceUnits = context.project()->crs().mapUnits();
-  mMultiplier = QgsUnitTypes::fromUnitToUnitFactor( distanceUnits, QgsUnitTypes::DistanceMeters );
+  const Qgis::DistanceUnit distanceUnits = context.project()->crs().mapUnits();
+  mMultiplier = QgsUnitTypes::fromUnitToUnitFactor( distanceUnits, Qgis::DistanceUnit::Meters );
 
   if ( strategy )
   {

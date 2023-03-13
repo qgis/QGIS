@@ -42,6 +42,7 @@
 #include "qgsuuidwidgetfactory.h"
 #include "qgsvaluemapwidgetfactory.h"
 #include "qgsvaluerelationwidgetfactory.h"
+#include "qgsgeometrywidgetfactory.h"
 
 QgsEditorWidgetRegistry::QgsEditorWidgetRegistry()
 {
@@ -68,6 +69,7 @@ void QgsEditorWidgetRegistry::initEditors( QgsMapCanvas *mapCanvas, QgsMessageBa
   registerWidget( QStringLiteral( "List" ), new QgsListWidgetFactory( tr( "List" ) ) );
   registerWidget( QStringLiteral( "Binary" ), new QgsBinaryWidgetFactory( tr( "Binary (BLOB)" ), messageBar ) );
   registerWidget( QStringLiteral( "JsonEdit" ), new QgsJsonEditWidgetFactory( tr( "Json View" ) ) );
+  registerWidget( QStringLiteral( "Geometry" ), new QgsGeometryWidgetFactory( tr( "Geometry" ), messageBar ) );
 }
 
 QgsEditorWidgetRegistry::~QgsEditorWidgetRegistry()

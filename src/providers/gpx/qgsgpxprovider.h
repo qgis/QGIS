@@ -51,7 +51,7 @@ class QgsGPXProvider final: public QgsVectorDataProvider
     QgsAbstractFeatureSource *featureSource() const override;
     QString storageType() const override;
     QgsFeatureIterator getFeatures( const QgsFeatureRequest &request ) const override;
-    QgsWkbTypes::Type wkbType() const override;
+    Qgis::WkbType wkbType() const override;
     long long featureCount() const override;
     QgsFields fields() const override;
     bool addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() ) override;
@@ -127,7 +127,9 @@ class QgsGpxProviderMetadata final: public QgsProviderMetadata
     QgsProviderMetadata::ProviderCapabilities providerCapabilities() const override;
     QString encodeUri( const QVariantMap &parts ) const override;
     QVariantMap decodeUri( const QString &uri ) const override;
-    QList< QgsMapLayerType > supportedLayerTypes() const override;
+    QString absoluteToRelativeUri( const QString &uri, const QgsReadWriteContext &context ) const override;
+    QString relativeToAbsoluteUri( const QString &uri, const QgsReadWriteContext &context ) const override;
+    QList< Qgis::LayerType > supportedLayerTypes() const override;
 };
 
 #endif

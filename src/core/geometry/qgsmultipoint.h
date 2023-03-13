@@ -106,7 +106,7 @@ class CORE_EXPORT QgsMultiPoint: public QgsGeometryCollection
      */
     inline static const QgsMultiPoint *cast( const QgsAbstractGeometry *geom )
     {
-      if ( geom && QgsWkbTypes::flatType( geom->wkbType() ) == QgsWkbTypes::MultiPoint )
+      if ( geom && QgsWkbTypes::flatType( geom->wkbType() ) == Qgis::WkbType::MultiPoint )
         return static_cast<const QgsMultiPoint *>( geom );
       return nullptr;
     }

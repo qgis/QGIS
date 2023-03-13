@@ -24,10 +24,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsfeedback.h"
-#include "qgsexpression.h"
-#include "qgsexpressionutils.h"
 #include "qgsoffscreen3dengine.h"
-
 #include "qgs3dmapscene.h"
 #include "qgsabstract3dengine.h"
 #include "qgsterraingenerator.h"

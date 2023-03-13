@@ -75,9 +75,9 @@ QgsProcessing::SourceType QgsInterpolatePointAlgorithm::outputLayerType() const
   return QgsProcessing::TypeVectorPoint;
 }
 
-QgsWkbTypes::Type QgsInterpolatePointAlgorithm::outputWkbType( QgsWkbTypes::Type inputType ) const
+Qgis::WkbType QgsInterpolatePointAlgorithm::outputWkbType( Qgis::WkbType inputType ) const
 {
-  QgsWkbTypes::Type out = QgsWkbTypes::Point;
+  Qgis::WkbType out = Qgis::WkbType::Point;
   if ( QgsWkbTypes::hasZ( inputType ) )
     out = QgsWkbTypes::addZ( out );
   if ( QgsWkbTypes::hasM( inputType ) )

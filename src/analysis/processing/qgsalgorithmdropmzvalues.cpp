@@ -71,9 +71,9 @@ void QgsDropMZValuesAlgorithm::initParameters( const QVariantMap & )
   addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "DROP_Z_VALUES" ), QObject::tr( "Drop Z Values" ), false ) );
 }
 
-QgsWkbTypes::Type QgsDropMZValuesAlgorithm::outputWkbType( QgsWkbTypes::Type inputWkbType ) const
+Qgis::WkbType QgsDropMZValuesAlgorithm::outputWkbType( Qgis::WkbType inputWkbType ) const
 {
-  QgsWkbTypes::Type wkb = inputWkbType;
+  Qgis::WkbType wkb = inputWkbType;
   if ( mDropM )
     wkb = QgsWkbTypes::dropM( wkb );
   if ( mDropZ )

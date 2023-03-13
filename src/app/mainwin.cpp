@@ -144,7 +144,11 @@ int CALLBACK WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdL
 
     wchar_t *path = wcsdup( _wgetenv( L"PATH" ) );
 
+#ifdef _UCRT
+    for ( wchar_t *p = wcstok( path, L";", nullptr ); p; p = wcstok( NULL, L";", nullptr ) )
+#else
     for ( wchar_t *p = wcstok( path, L";" ); p; p = wcstok( NULL, L";" ) )
+#endif
     {
       if ( wcsicmp( p, windir ) == 0 )
         continue;

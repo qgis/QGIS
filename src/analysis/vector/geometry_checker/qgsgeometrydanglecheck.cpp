@@ -50,7 +50,7 @@ void QgsGeometryDangleCheck::collectErrors( const QMap<QString, QgsFeaturePool *
       }
 
       // Check whether endpoints line on another line in the layer
-      const QgsGeometryCheckerUtils::LayerFeatures checkFeatures( featurePools, QList<QString>() << layerFeature.layer()->id(), line->boundingBox(), {QgsWkbTypes::LineGeometry}, mContext );
+      const QgsGeometryCheckerUtils::LayerFeatures checkFeatures( featurePools, QList<QString>() << layerFeature.layer()->id(), line->boundingBox(), {Qgis::GeometryType::Line}, mContext );
       for ( const QgsGeometryCheckerUtils::LayerFeature &checkFeature : checkFeatures )
       {
         const QgsAbstractGeometry *testGeom = checkFeature.geometry().constGet();

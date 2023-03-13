@@ -17,12 +17,13 @@
 #include "qgssymbollayerutils.h"
 #include "qgsfillsymbol.h"
 #include "qgsrendercontext.h"
+#include "qgsunittypes.h"
 
 QgsArrowSymbolLayer::QgsArrowSymbolLayer()
 {
   /* default values */
   setOffset( 0.0 );
-  setOffsetUnit( QgsUnitTypes::RenderMillimeters );
+  setOffsetUnit( Qgis::RenderUnit::Millimeters );
 
   mSymbol.reset( static_cast<QgsFillSymbol *>( QgsFillSymbol::createSimple( QVariantMap() ) ) );
 }
@@ -185,15 +186,15 @@ bool QgsArrowSymbolLayer::hasDataDefinedProperties() const
 
 bool QgsArrowSymbolLayer::usesMapUnits() const
 {
-  return mArrowWidthUnit == QgsUnitTypes::RenderMapUnits || mArrowWidthUnit == QgsUnitTypes::RenderMetersInMapUnits
-         || mArrowStartWidthUnit == QgsUnitTypes::RenderMapUnits || mArrowStartWidthUnit == QgsUnitTypes::RenderMetersInMapUnits
-         || mHeadLengthUnit == QgsUnitTypes::RenderMapUnits || mHeadLengthUnit == QgsUnitTypes::RenderMetersInMapUnits
-         || mHeadThicknessUnit == QgsUnitTypes::RenderMapUnits || mHeadThicknessUnit == QgsUnitTypes::RenderMetersInMapUnits
-         || mWidthUnit == QgsUnitTypes::RenderMapUnits || mWidthUnit == QgsUnitTypes::RenderMetersInMapUnits
-         || mOffsetUnit == QgsUnitTypes::RenderMapUnits || mOffsetUnit == QgsUnitTypes::RenderMetersInMapUnits;
+  return mArrowWidthUnit == Qgis::RenderUnit::MapUnits || mArrowWidthUnit == Qgis::RenderUnit::MetersInMapUnits
+         || mArrowStartWidthUnit == Qgis::RenderUnit::MapUnits || mArrowStartWidthUnit == Qgis::RenderUnit::MetersInMapUnits
+         || mHeadLengthUnit == Qgis::RenderUnit::MapUnits || mHeadLengthUnit == Qgis::RenderUnit::MetersInMapUnits
+         || mHeadThicknessUnit == Qgis::RenderUnit::MapUnits || mHeadThicknessUnit == Qgis::RenderUnit::MetersInMapUnits
+         || mWidthUnit == Qgis::RenderUnit::MapUnits || mWidthUnit == Qgis::RenderUnit::MetersInMapUnits
+         || mOffsetUnit == Qgis::RenderUnit::MapUnits || mOffsetUnit == Qgis::RenderUnit::MetersInMapUnits;
 }
 
-void QgsArrowSymbolLayer::setOutputUnit( QgsUnitTypes::RenderUnit unit )
+void QgsArrowSymbolLayer::setOutputUnit( Qgis::RenderUnit unit )
 {
   QgsLineSymbolLayer::setOutputUnit( unit );
   mArrowWidthUnit = unit;

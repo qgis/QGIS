@@ -58,7 +58,7 @@ class GUI_EXPORT QgsDataSourceSelectWidget: public QgsPanelWidget, private Ui::Q
      */
     QgsDataSourceSelectWidget( QgsBrowserGuiModel *browserModel = nullptr,
                                bool setFilterByLayerType = false,
-                               QgsMapLayerType layerType = QgsMapLayerType::VectorLayer,
+                               Qgis::LayerType layerType = Qgis::LayerType::Vector,
                                QWidget *parent = nullptr );
 
 
@@ -67,7 +67,7 @@ class GUI_EXPORT QgsDataSourceSelectWidget: public QgsPanelWidget, private Ui::Q
     /**
      * Sets layer type filter to \a layerType and activates the filtering
      */
-    void setLayerTypeFilter( QgsMapLayerType layerType );
+    void setLayerTypeFilter( Qgis::LayerType layerType );
 
     /**
      * Sets a description label
@@ -174,13 +174,13 @@ class GUI_EXPORT QgsDataSourceSelectDialog: public QDialog
      */
     QgsDataSourceSelectDialog( QgsBrowserGuiModel *browserModel = nullptr,
                                bool setFilterByLayerType = false,
-                               QgsMapLayerType layerType = QgsMapLayerType::VectorLayer,
+                               Qgis::LayerType layerType = Qgis::LayerType::Vector,
                                QWidget *parent = nullptr );
 
     /**
      * Sets layer type filter to \a layerType and activates the filtering
      */
-    void setLayerTypeFilter( QgsMapLayerType layerType );
+    void setLayerTypeFilter( Qgis::LayerType layerType );
 
     /**
      * Sets a description label

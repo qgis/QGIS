@@ -26,12 +26,15 @@
 #include "qgspointcloudlayer3drenderer.h"
 #include "qgsprojectelevationproperties.h"
 #include "qgsterrainprovider.h"
+#include "qgslightsource.h"
+#include "qgssymbollayerutils.h"
+#include "qgsrasterlayer.h"
+#include "qgspointlightsettings.h"
+#include "qgsdirectionallightsettings.h"
 
 #include <QDomDocument>
 #include <QDomElement>
 
-#include "qgssymbollayerutils.h"
-#include "qgsrasterlayer.h"
 
 Qgs3DMapSettings::Qgs3DMapSettings()
   : QObject( nullptr )
@@ -151,9 +154,9 @@ void Qgs3DMapSettings::readXml( const QDomElement &elem, const QgsReadWriteConte
     mProjectionType = static_cast< Qt3DRender::QCameraLens::ProjectionType >( elemCamera.attribute( QStringLiteral( "projection-type" ), QStringLiteral( "1" ) ).toInt() );
     QString cameraNavigationMode = elemCamera.attribute( QStringLiteral( "camera-navigation-mode" ), QStringLiteral( "basic-navigation" ) );
     if ( cameraNavigationMode == QLatin1String( "terrain-based-navigation" ) )
-      mCameraNavigationMode = QgsCameraController::NavigationMode::TerrainBasedNavigation;
+      mCameraNavigationMode = Qgis::NavigationMode::TerrainBased;
     else if ( cameraNavigationMode == QLatin1String( "walk-navigation" ) )
-      mCameraNavigationMode = QgsCameraController::NavigationMode::WalkNavigation;
+      mCameraNavigationMode = Qgis::NavigationMode::Walk;
     mCameraMovementSpeed = elemCamera.attribute( QStringLiteral( "camera-movement-speed" ), QStringLiteral( "5.0" ) ).toDouble();
   }
 
@@ -368,10 +371,10 @@ QDomElement Qgs3DMapSettings::writeXml( QDomDocument &doc, const QgsReadWriteCon
   elemCamera.setAttribute( QStringLiteral( "projection-type" ), static_cast< int >( mProjectionType ) );
   switch ( mCameraNavigationMode )
   {
-    case QgsCameraController::TerrainBasedNavigation:
+    case Qgis::NavigationMode::TerrainBased:
       elemCamera.setAttribute( QStringLiteral( "camera-navigation-mode" ), QStringLiteral( "terrain-based-navigation" ) );
       break;
-    case QgsCameraController::WalkNavigation:
+    case Qgis::NavigationMode::Walk:
       elemCamera.setAttribute( QStringLiteral( "camera-navigation-mode" ), QStringLiteral( "walk-navigation" ) );
       break;
   }
@@ -903,7 +906,7 @@ void Qgs3DMapSettings::setProjectionType( const Qt3DRender::QCameraLens::Project
   emit projectionTypeChanged();
 }
 
-void Qgs3DMapSettings::setCameraNavigationMode( QgsCameraController::NavigationMode navigationMode )
+void Qgs3DMapSettings::setCameraNavigationMode( Qgis::NavigationMode navigationMode )
 {
   if ( mCameraNavigationMode == navigationMode )
     return;

@@ -32,7 +32,7 @@ QgsQuadrilateral::QgsQuadrilateral( const QgsPointXY &p1, const QgsPointXY &p2, 
 
 QgsQuadrilateral QgsQuadrilateral::rectangleFrom3Points( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &p3, ConstructionOption mode )
 {
-  QgsWkbTypes::Type pType( QgsWkbTypes::Point );
+  Qgis::WkbType pType( Qgis::WkbType::Point );
 
   double z = std::numeric_limits< double >::quiet_NaN();
   double m = std::numeric_limits< double >::quiet_NaN();
@@ -110,7 +110,7 @@ QgsQuadrilateral QgsQuadrilateral::rectangleFrom3Points( const QgsPoint &p1, con
   QgsPoint fp3 = point2.project( distance, azimuth, inclination );
   QgsPoint fp4 = point1.project( distance, azimuth, inclination ) ;
 
-  if ( pType != QgsWkbTypes::PointZ )
+  if ( pType != Qgis::WkbType::PointZ )
   {
     fp1.dropZValue();
     fp2.dropZValue();

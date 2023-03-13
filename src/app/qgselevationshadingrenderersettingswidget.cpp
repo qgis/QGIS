@@ -81,13 +81,15 @@ void QgsElevationShadingRendererSettingsWidget::syncToProject()
   mEdlGroupBox->setChecked( shadingRenderer.isActiveEyeDomeLighting() );
   mEdlStrengthSpinBox->setValue( shadingRenderer.eyeDomeLightingStrength() );
   mEdlDistanceSpinBox->setValue( shadingRenderer.eyeDomeLightingDistance() );
-  mEdlDistanceUnit->setUnits( QgsUnitTypes::RenderUnitList() <<
-                              QgsUnitTypes::RenderMillimeters <<
-                              QgsUnitTypes::RenderMetersInMapUnits <<
-                              QgsUnitTypes::RenderMapUnits <<
-                              QgsUnitTypes::RenderPixels <<
-                              QgsUnitTypes::RenderPoints <<
-                              QgsUnitTypes::RenderInches );
+  mEdlDistanceUnit->setUnits(
+  {
+    Qgis::RenderUnit::Millimeters,
+    Qgis::RenderUnit::MetersInMapUnits,
+    Qgis::RenderUnit::MapUnits,
+    Qgis::RenderUnit::Pixels,
+    Qgis::RenderUnit::Points,
+    Qgis::RenderUnit::Inches
+  } );
   mEdlDistanceUnit->setUnit( shadingRenderer.eyeDomeLightingDistanceUnit() );
   mHillshadingGroupBox->setChecked( shadingRenderer.isActiveHillshading() );
   mHillshadingMultidirCheckBox->setChecked( shadingRenderer.isHillshadingMultidirectional() );

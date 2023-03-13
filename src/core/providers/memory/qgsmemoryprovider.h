@@ -49,7 +49,7 @@ class QgsMemoryProvider final: public QgsVectorDataProvider
     QString dataSourceUri( bool expandAuthConfig = true ) const override;
     QString storageType() const override;
     QgsFeatureIterator getFeatures( const QgsFeatureRequest &request ) const override;
-    QgsWkbTypes::Type wkbType() const override;
+    Qgis::WkbType wkbType() const override;
     long long featureCount() const override;
     QgsFields fields() const override;
     bool addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() ) override;
@@ -83,7 +83,7 @@ class QgsMemoryProvider final: public QgsVectorDataProvider
 
     // fields
     QgsFields mFields;
-    QgsWkbTypes::Type mWkbType;
+    Qgis::WkbType mWkbType;
     mutable QgsRectangle mExtent;
 
     // features
@@ -107,7 +107,7 @@ class QgsMemoryProviderMetadata final: public QgsProviderMetadata
     QgsMemoryProviderMetadata();
     QIcon icon() const override;
     QgsDataProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() ) override;
-    QList< QgsMapLayerType > supportedLayerTypes() const override;
+    QList< Qgis::LayerType > supportedLayerTypes() const override;
 };
 
 ///@endcond

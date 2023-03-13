@@ -54,6 +54,16 @@ QString QgsRectanglesOvalsDiamondsAlgorithm::shortHelpString() const
                       "to singleparts first." );
 }
 
+QIcon QgsRectanglesOvalsDiamondsAlgorithm::icon() const
+{
+  return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmRectanglesOvalsDiamonds.svg" ) );
+}
+
+QString QgsRectanglesOvalsDiamondsAlgorithm::svgIconPath() const
+{
+  return QgsApplication::iconPath( QStringLiteral( "/algorithms/mAlgorithmRectanglesOvalsDiamonds.svg" ) );
+}
+
 QString QgsRectanglesOvalsDiamondsAlgorithm::outputName() const
 {
   return QObject::tr( "Polygon" );
@@ -69,9 +79,9 @@ QgsProcessing::SourceType QgsRectanglesOvalsDiamondsAlgorithm::outputLayerType()
   return QgsProcessing::TypeVectorPolygon;
 }
 
-QgsWkbTypes::Type QgsRectanglesOvalsDiamondsAlgorithm::outputWkbType( QgsWkbTypes::Type inputWkbType ) const
+Qgis::WkbType QgsRectanglesOvalsDiamondsAlgorithm::outputWkbType( Qgis::WkbType inputWkbType ) const
 {
-  QgsWkbTypes::Type outputWkbType = QgsWkbTypes::Polygon;
+  Qgis::WkbType outputWkbType = Qgis::WkbType::Polygon;
   if ( QgsWkbTypes::hasM( inputWkbType ) )
   {
     outputWkbType = QgsWkbTypes::addM( outputWkbType );

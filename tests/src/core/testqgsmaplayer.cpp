@@ -404,29 +404,29 @@ void TestQgsMapLayer::customEnumFlagProperties()
   ml->setCustomProperty( QStringLiteral( "my_property_for_units" ), -1 );
   ml->setCustomProperty( QStringLiteral( "my_property_for_units_as_string" ), QStringLiteral( "myString" ) );
   // just to be sure it really doesn't exist
-  QVERIFY( static_cast<int>( QgsUnitTypes::LayoutMeters ) != -1 );
+  QVERIFY( static_cast<int>( Qgis::LayoutUnit::Meters ) != -1 );
 
   // standard method returns invalid property
-  const int v1 = ml->customProperty( QStringLiteral( "my_property_for_units" ), QgsUnitTypes::LayoutMeters ).toInt();
+  const int v1 = ml->customProperty( QStringLiteral( "my_property_for_units" ), static_cast< int >( Qgis::LayoutUnit::Meters ) ).toInt();
   QCOMPARE( v1, -1 );
 
   // enum method returns default property if current property is incorrect
-  const QgsUnitTypes::LayoutUnit v2 = ml->customEnumProperty( QStringLiteral( "my_property_for_units" ), QgsUnitTypes::LayoutMeters );
-  QCOMPARE( v2, QgsUnitTypes::LayoutMeters );
-  const QgsUnitTypes::LayoutUnit v2s = ml->customEnumProperty( QStringLiteral( "my_property_for_units_as_string" ), QgsUnitTypes::LayoutMeters );
-  QCOMPARE( v2s, QgsUnitTypes::LayoutMeters );
+  const Qgis::LayoutUnit v2 = ml->customEnumProperty( QStringLiteral( "my_property_for_units" ), Qgis::LayoutUnit::Meters );
+  QCOMPARE( v2, Qgis::LayoutUnit::Meters );
+  const Qgis::LayoutUnit v2s = ml->customEnumProperty( QStringLiteral( "my_property_for_units_as_string" ), Qgis::LayoutUnit::Meters );
+  QCOMPARE( v2s, Qgis::LayoutUnit::Meters );
 
   // test a different property than default
-  ml->setCustomEnumProperty( QStringLiteral( "my_property_for_units" ), QgsUnitTypes::LayoutCentimeters );
-  const QgsUnitTypes::LayoutUnit v3 = ml->customEnumProperty( QStringLiteral( "my_property_for_units" ), QgsUnitTypes::LayoutMeters );
-  QCOMPARE( v3, QgsUnitTypes::LayoutCentimeters );
-  ml->setCustomEnumProperty( QStringLiteral( "my_property_for_units" ), QgsUnitTypes::LayoutCentimeters );
+  ml->setCustomEnumProperty( QStringLiteral( "my_property_for_units" ), Qgis::LayoutUnit::Centimeters );
+  const Qgis::LayoutUnit v3 = ml->customEnumProperty( QStringLiteral( "my_property_for_units" ), Qgis::LayoutUnit::Meters );
+  QCOMPARE( v3, Qgis::LayoutUnit::Centimeters );
+  ml->setCustomEnumProperty( QStringLiteral( "my_property_for_units" ), Qgis::LayoutUnit::Centimeters );
   // auto conversion of old ml (int to str)
-  QCOMPARE( ml->customProperty( "my_property_for_units" ).toString(), QStringLiteral( "LayoutCentimeters" ) );
-  const QgsUnitTypes::LayoutUnit v3s = ml->customEnumProperty( QStringLiteral( "my_property_for_units" ), QgsUnitTypes::LayoutMeters );
-  QCOMPARE( v3s, QgsUnitTypes::LayoutCentimeters );
+  QCOMPARE( ml->customProperty( "my_property_for_units" ).toString(), QStringLiteral( "Centimeters" ) );
+  const Qgis::LayoutUnit v3s = ml->customEnumProperty( QStringLiteral( "my_property_for_units" ), Qgis::LayoutUnit::Meters );
+  QCOMPARE( v3s, Qgis::LayoutUnit::Centimeters );
   const QString v3ss = ml->customProperty( QStringLiteral( "my_property_for_units" ), QStringLiteral( "myDummyValue" ) ).toString();
-  QCOMPARE( v3ss, QStringLiteral( "LayoutCentimeters" ) );
+  QCOMPARE( v3ss, QStringLiteral( "Centimeters" ) );
 
   // Flags
   const QgsMapLayerProxyModel::Filters pointAndLine = QgsMapLayerProxyModel::Filters( QgsMapLayerProxyModel::PointLayer | QgsMapLayerProxyModel::LineLayer );

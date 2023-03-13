@@ -12,9 +12,6 @@
 
 
 
-
-
-
 class Qgs3DMapSettings : QObject, QgsTemporalRangeObject
 {
 %Docstring(signature="appended")

@@ -20,6 +20,7 @@
 #include "qgspainting.h"
 #include "qgspallabeling.h"
 #include "qgstextrendererutils.h"
+#include "qgsunittypes.h"
 
 QgsTextShadowSettings::QgsTextShadowSettings()
 {
@@ -110,12 +111,12 @@ void QgsTextShadowSettings::setOffsetDistance( double distance )
   d->offsetDist = distance;
 }
 
-QgsUnitTypes::RenderUnit QgsTextShadowSettings::offsetUnit() const
+Qgis::RenderUnit QgsTextShadowSettings::offsetUnit() const
 {
   return d->offsetUnits;
 }
 
-void QgsTextShadowSettings::setOffsetUnit( QgsUnitTypes::RenderUnit units )
+void QgsTextShadowSettings::setOffsetUnit( Qgis::RenderUnit units )
 {
   d->offsetUnits = units;
 }
@@ -150,12 +151,12 @@ void QgsTextShadowSettings::setBlurRadius( double radius )
   d->radius = radius;
 }
 
-QgsUnitTypes::RenderUnit QgsTextShadowSettings::blurRadiusUnit() const
+Qgis::RenderUnit QgsTextShadowSettings::blurRadiusUnit() const
 {
   return d->radiusUnits;
 }
 
-void QgsTextShadowSettings::setBlurRadiusUnit( QgsUnitTypes::RenderUnit units )
+void QgsTextShadowSettings::setBlurRadiusUnit( Qgis::RenderUnit units )
 {
   d->radiusUnits = units;
 }
@@ -412,7 +413,7 @@ void QgsTextShadowSettings::updateDataDefinedProperties( QgsRenderContext &conte
     if ( !units.isEmpty() )
     {
       bool ok;
-      const QgsUnitTypes::RenderUnit res = QgsUnitTypes::decodeRenderUnit( units, &ok );
+      const Qgis::RenderUnit res = QgsUnitTypes::decodeRenderUnit( units, &ok );
       if ( ok )
         d->offsetUnits = res;
     }
@@ -431,7 +432,7 @@ void QgsTextShadowSettings::updateDataDefinedProperties( QgsRenderContext &conte
     if ( !units.isEmpty() )
     {
       bool ok;
-      const QgsUnitTypes::RenderUnit res = QgsUnitTypes::decodeRenderUnit( units, &ok );
+      const Qgis::RenderUnit res = QgsUnitTypes::decodeRenderUnit( units, &ok );
       if ( ok )
         d->radiusUnits = res;
     }

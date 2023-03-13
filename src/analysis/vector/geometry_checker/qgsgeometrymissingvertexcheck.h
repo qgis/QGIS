@@ -110,12 +110,12 @@ class ANALYSIS_EXPORT QgsGeometryMissingVertexCheck : public QgsGeometryCheck
 
     QString description() const override;
     QString id() const override;
-    QList<QgsWkbTypes::GeometryType> compatibleGeometryTypes() const override;
+    QList<Qgis::GeometryType> compatibleGeometryTypes() const override;
     QgsGeometryCheck::Flags flags() const override;
     QgsGeometryCheck::CheckType checkType() const override;
 
 ///@cond private
-    static QList<QgsWkbTypes::GeometryType> factoryCompatibleGeometryTypes() SIP_SKIP;
+    static QList<Qgis::GeometryType> factoryCompatibleGeometryTypes() SIP_SKIP;
     static bool factoryIsCompatible( QgsVectorLayer *layer ) SIP_SKIP;
     static QString factoryDescription() SIP_SKIP;
     static QString factoryId() SIP_SKIP;

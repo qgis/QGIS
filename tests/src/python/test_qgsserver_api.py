@@ -627,6 +627,15 @@ class QgsServerAPITest(QgsServerAPITestBase):
         self.assertEqual(response.body(),
                          b'[{"code":"Bad request error","description":"Argument \'limit\' is not valid. Number of features to retrieve [0-10000]"}]')  # Bad request
 
+    def test_wfs3_collection_items_limit_offset_2(self):
+        """Test WFS3 API offset 2"""
+        project = QgsProject()
+        project.read(os.path.join(self.temporary_path, 'qgis_server', 'test_project_api.qgs'))
+        request = QgsBufferServerRequest(
+            'http://server.qgis.org/wfs3/collections/testlayer%20èé/items?limit=1&offset=2')
+        self.compareApi(
+            request, project, 'test_wfs3_collections_items_testlayer_èé_limit_1_offset_2.json')
+
     def test_wfs3_collection_items_bbox(self):
         """Test WFS3 API bbox"""
         project = QgsProject()

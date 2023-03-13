@@ -32,6 +32,7 @@
 #include <QtTest/QSignalSpy>
 #include "qgstest.h"
 #include "qgsfillsymbol.h"
+#include "qgslayoutrendercontext.h"
 
 class TestQgsLayoutAtlas : public QgsTest
 {
@@ -157,7 +158,7 @@ void TestQgsLayoutAtlas::init()
   QgsTextFormat format;
   format.setFont( QgsFontUtils::getStandardTestFont() );
   format.setSize( 12 );
-  format.setSizeUnit( QgsUnitTypes::RenderPoints );
+  format.setSizeUnit( Qgis::RenderUnit::Points );
   mLabel1->setTextFormat( format );
   mLabel1->setMarginX( 1 );
   mLabel1->setMarginY( 1 );

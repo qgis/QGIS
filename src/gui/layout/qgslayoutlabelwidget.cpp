@@ -19,10 +19,10 @@
 #include "qgslayoutitemlabel.h"
 #include "qgslayout.h"
 #include "qgsexpressionbuilderdialog.h"
-#include "qgsguiutils.h"
 #include "qgslayoutitemmap.h"
 #include "qgsvectorlayer.h"
 #include "qgsprojoperation.h"
+#include "qgslayoutreportcontext.h"
 
 #include <QColorDialog>
 #include <QFontDialog>
@@ -146,7 +146,7 @@ void QgsLayoutLabelWidget::buildInsertDynamicTextMenu( QgsLayout *layout, QMenu 
     QMenu *mapMenu = new QMenu( map->displayName(), mapsMenu );
     for ( const std::pair< QString, QString > &expression :
           {
-            std::make_pair( tr( "Scale (%1)" ).arg( map->scale() ), QStringLiteral( "item_variables('%1')['map_scale']" ).arg( map->id() ) ),
+            std::make_pair( tr( "Scale (%1)" ).arg( map->scale() ), QStringLiteral( "format_number(item_variables('%1')['map_scale'], places:=6, omit_group_separators:=true, trim_trailing_zeroes:=true)" ).arg( map->id() ) ),
             std::make_pair( tr( "Rotation (%1)" ).arg( map->rotation() ), QStringLiteral( "item_variables('%1')['map_rotation']" ).arg( map->id() ) ),
           } )
     {

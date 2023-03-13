@@ -97,7 +97,7 @@ void TestQgsPolygon::constructor()
   QCOMPARE( pl.partCount(), 0 );
   QVERIFY( !pl.is3D() );
   QVERIFY( !pl.isMeasure() );
-  QCOMPARE( pl.wkbType(), QgsWkbTypes::Polygon );
+  QCOMPARE( pl.wkbType(), Qgis::WkbType::Polygon );
   QCOMPARE( pl.wktTypeStr(), QString( "Polygon" ) );
   QCOMPARE( pl.geometryType(), QString( "Polygon" ) );
   QCOMPARE( pl.dimension(), 2 );
@@ -130,54 +130,54 @@ void TestQgsPolygon::polygon25D()
   //test handling of 25D rings/polygons
   QgsPolygon pl;
   QgsLineString *ext = new QgsLineString();
-  ext->setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::Point25D, 0, 0, 1 )
-                  << QgsPoint( QgsWkbTypes::Point25D, 0, 10, 2 )
-                  << QgsPoint( QgsWkbTypes::Point25D, 10, 10, 3 )
-                  << QgsPoint( QgsWkbTypes::Point25D, 10, 0, 4 )
-                  << QgsPoint( QgsWkbTypes::Point25D, 0, 0, 1 ) );
+  ext->setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::Point25D, 0, 0, 1 )
+                  << QgsPoint( Qgis::WkbType::Point25D, 0, 10, 2 )
+                  << QgsPoint( Qgis::WkbType::Point25D, 10, 10, 3 )
+                  << QgsPoint( Qgis::WkbType::Point25D, 10, 0, 4 )
+                  << QgsPoint( Qgis::WkbType::Point25D, 0, 0, 1 ) );
   pl.setExteriorRing( ext );
 
   QVERIFY( pl.is3D() );
   QVERIFY( !pl.isMeasure() );
-  QCOMPARE( pl.wkbType(), QgsWkbTypes::Polygon25D );
+  QCOMPARE( pl.wkbType(), Qgis::WkbType::Polygon25D );
 
   //adding a LineStringZ, should become LineString25D
   QgsLineString *ring1 = new QgsLineString();
-  ring1->setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZ, 0.1, 0.1, 1 )
-                    << QgsPoint( QgsWkbTypes::PointZ, 0.1, 0.2, 2 )
-                    << QgsPoint( QgsWkbTypes::PointZ, 0.2, 0.2, 3 )
-                    << QgsPoint( QgsWkbTypes::PointZ, 0.2, 0.1, 4 )
-                    << QgsPoint( QgsWkbTypes::PointZ, 0.1, 0.1, 1 ) );
+  ring1->setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZ, 0.1, 0.1, 1 )
+                    << QgsPoint( Qgis::WkbType::PointZ, 0.1, 0.2, 2 )
+                    << QgsPoint( Qgis::WkbType::PointZ, 0.2, 0.2, 3 )
+                    << QgsPoint( Qgis::WkbType::PointZ, 0.2, 0.1, 4 )
+                    << QgsPoint( Qgis::WkbType::PointZ, 0.1, 0.1, 1 ) );
 
-  QCOMPARE( ring1->wkbType(), QgsWkbTypes::LineStringZ );
+  QCOMPARE( ring1->wkbType(), Qgis::WkbType::LineStringZ );
 
   pl.addInteriorRing( ring1 );
 
   QVERIFY( pl.interiorRing( 0 ) );
   QVERIFY( pl.interiorRing( 0 )->is3D() );
   QVERIFY( !pl.interiorRing( 0 )->isMeasure() );
-  QCOMPARE( pl.interiorRing( 0 )->wkbType(), QgsWkbTypes::LineString25D );
+  QCOMPARE( pl.interiorRing( 0 )->wkbType(), Qgis::WkbType::LineString25D );
   QCOMPARE( pl.interiorRing( 0 )->vertexAt( QgsVertexId( 0, 0, 0 ) ),
-            QgsPoint( QgsWkbTypes::Point25D, 0.1, 0.1, 1 ) );
+            QgsPoint( Qgis::WkbType::Point25D, 0.1, 0.1, 1 ) );
 
   //add a LineStringM, should become LineString25D
   ring1 = new QgsLineString();
-  ring1->setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointM, 0.1, 0.1, 0, 1 )
-                    << QgsPoint( QgsWkbTypes::PointM, 0.1, 0.2, 0, 2 )
-                    << QgsPoint( QgsWkbTypes::PointM, 0.2, 0.2, 0, 3 )
-                    << QgsPoint( QgsWkbTypes::PointM, 0.2, 0.1, 0, 4 )
-                    << QgsPoint( QgsWkbTypes::PointM, 0.1, 0.1, 0, 1 ) );
+  ring1->setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointM, 0.1, 0.1, 0, 1 )
+                    << QgsPoint( Qgis::WkbType::PointM, 0.1, 0.2, 0, 2 )
+                    << QgsPoint( Qgis::WkbType::PointM, 0.2, 0.2, 0, 3 )
+                    << QgsPoint( Qgis::WkbType::PointM, 0.2, 0.1, 0, 4 )
+                    << QgsPoint( Qgis::WkbType::PointM, 0.1, 0.1, 0, 1 ) );
 
-  QCOMPARE( ring1->wkbType(), QgsWkbTypes::LineStringM );
+  QCOMPARE( ring1->wkbType(), Qgis::WkbType::LineStringM );
 
   pl.addInteriorRing( ring1 );
 
   QVERIFY( pl.interiorRing( 1 ) );
   QVERIFY( pl.interiorRing( 1 )->is3D() );
   QVERIFY( !pl.interiorRing( 1 )->isMeasure() );
-  QCOMPARE( pl.interiorRing( 1 )->wkbType(), QgsWkbTypes::LineString25D );
+  QCOMPARE( pl.interiorRing( 1 )->wkbType(), Qgis::WkbType::LineString25D );
   QCOMPARE( pl.interiorRing( 1 )->vertexAt( QgsVertexId( 0, 0, 0 ) ),
-            QgsPoint( QgsWkbTypes::Point25D, 0.1, 0.1 ) );
+            QgsPoint( Qgis::WkbType::Point25D, 0.1, 0.1 ) );
 
   //add curved ring to polygon
   QgsCircularString *ring2 = new QgsCircularString();
@@ -193,7 +193,7 @@ void TestQgsPolygon::polygon25D()
   QVERIFY( !pl.interiorRing( 2 )->hasCurvedSegments() );
   QVERIFY( pl.interiorRing( 2 )->is3D() );
   QVERIFY( !pl.interiorRing( 2 )->isMeasure() );
-  QCOMPARE( pl.interiorRing( 2 )->wkbType(), QgsWkbTypes::LineString25D );
+  QCOMPARE( pl.interiorRing( 2 )->wkbType(), Qgis::WkbType::LineString25D );
 }
 
 void TestQgsPolygon::clear()
@@ -201,19 +201,19 @@ void TestQgsPolygon::clear()
   QgsPolygon pl;
 
   QgsLineString *ext = new QgsLineString();
-  ext->setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZ, 0, 0, 1 )
-                  << QgsPoint( QgsWkbTypes::PointZ, 0, 10, 2 )
-                  << QgsPoint( QgsWkbTypes::PointZ, 10, 10, 3 )
-                  << QgsPoint( QgsWkbTypes::PointZ, 10, 0, 4 )
-                  << QgsPoint( QgsWkbTypes::PointZ, 0, 0, 1 ) );
+  ext->setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZ, 0, 0, 1 )
+                  << QgsPoint( Qgis::WkbType::PointZ, 0, 10, 2 )
+                  << QgsPoint( Qgis::WkbType::PointZ, 10, 10, 3 )
+                  << QgsPoint( Qgis::WkbType::PointZ, 10, 0, 4 )
+                  << QgsPoint( Qgis::WkbType::PointZ, 0, 0, 1 ) );
   pl.setExteriorRing( ext );
 
   QgsLineString *ring = new QgsLineString();
-  ring->setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZ, 1, 1, 1 )
-                   << QgsPoint( QgsWkbTypes::PointZ, 1, 9, 2 )
-                   << QgsPoint( QgsWkbTypes::PointZ, 9, 9, 3 )
-                   << QgsPoint( QgsWkbTypes::PointZ, 9, 1, 4 )
-                   << QgsPoint( QgsWkbTypes::PointZ, 1, 1, 1 ) );
+  ring->setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZ, 1, 1, 1 )
+                   << QgsPoint( Qgis::WkbType::PointZ, 1, 9, 2 )
+                   << QgsPoint( Qgis::WkbType::PointZ, 9, 9, 3 )
+                   << QgsPoint( Qgis::WkbType::PointZ, 9, 1, 4 )
+                   << QgsPoint( Qgis::WkbType::PointZ, 1, 1, 1 ) );
   pl.addInteriorRing( ring );
 
   QCOMPARE( pl.numInteriorRings(), 1 );
@@ -227,7 +227,7 @@ void TestQgsPolygon::clear()
   QCOMPARE( pl.partCount(), 0 );
   QVERIFY( !pl.is3D() );
   QVERIFY( !pl.isMeasure() );
-  QCOMPARE( pl.wkbType(), QgsWkbTypes::Polygon );
+  QCOMPARE( pl.wkbType(), Qgis::WkbType::Polygon );
 }
 
 void TestQgsPolygon::equality()
@@ -266,11 +266,11 @@ void TestQgsPolygon::equality()
   QVERIFY( pl1 != pl2 );
 
   ext = new QgsLineString();
-  ext->setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZ, 0, 0, 1 )
-                  << QgsPoint( QgsWkbTypes::PointZ, 0, 10, 2 )
-                  << QgsPoint( QgsWkbTypes::PointZ, 10, 10, 3 )
-                  << QgsPoint( QgsWkbTypes::PointZ, 10, 0, 4 )
-                  << QgsPoint( QgsWkbTypes::PointZ, 0, 0, 1 ) );
+  ext->setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZ, 0, 0, 1 )
+                  << QgsPoint( Qgis::WkbType::PointZ, 0, 10, 2 )
+                  << QgsPoint( Qgis::WkbType::PointZ, 10, 10, 3 )
+                  << QgsPoint( Qgis::WkbType::PointZ, 10, 0, 4 )
+                  << QgsPoint( Qgis::WkbType::PointZ, 0, 0, 1 ) );
   pl2.setExteriorRing( ext );
 
   QVERIFY( !( pl1 == pl2 ) );
@@ -318,19 +318,19 @@ void TestQgsPolygon::clone()
   QCOMPARE( pl, *cloned );
 
   QgsLineString *ext = new QgsLineString();
-  ext->setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZM, 0, 0, 1, 5 )
-                  << QgsPoint( QgsWkbTypes::PointZM, 0, 10, 2, 6 )
-                  << QgsPoint( QgsWkbTypes::PointZM, 10, 10, 3, 7 )
-                  << QgsPoint( QgsWkbTypes::PointZM, 10, 0, 4, 8 )
-                  << QgsPoint( QgsWkbTypes::PointZM, 0, 0, 1, 9 ) );
+  ext->setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 0, 0, 1, 5 )
+                  << QgsPoint( Qgis::WkbType::PointZM, 0, 10, 2, 6 )
+                  << QgsPoint( Qgis::WkbType::PointZM, 10, 10, 3, 7 )
+                  << QgsPoint( Qgis::WkbType::PointZM, 10, 0, 4, 8 )
+                  << QgsPoint( Qgis::WkbType::PointZM, 0, 0, 1, 9 ) );
   pl.setExteriorRing( ext );
 
   QgsLineString *ring = new QgsLineString();
-  ring->setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZM, 1, 1, 1, 2 )
-                   << QgsPoint( QgsWkbTypes::PointZM, 1, 9, 2, 3 )
-                   << QgsPoint( QgsWkbTypes::PointZM, 9, 9, 3, 6 )
-                   << QgsPoint( QgsWkbTypes::PointZM, 9, 1, 4, 4 )
-                   << QgsPoint( QgsWkbTypes::PointZM, 1, 1, 1, 7 ) );
+  ring->setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 1, 1, 1, 2 )
+                   << QgsPoint( Qgis::WkbType::PointZM, 1, 9, 2, 3 )
+                   << QgsPoint( Qgis::WkbType::PointZM, 9, 9, 3, 6 )
+                   << QgsPoint( Qgis::WkbType::PointZM, 9, 1, 4, 4 )
+                   << QgsPoint( Qgis::WkbType::PointZM, 1, 1, 1, 7 ) );
   pl.addInteriorRing( ring );
 
   cloned.reset( pl.clone() );
@@ -345,19 +345,19 @@ void TestQgsPolygon::copy()
   QCOMPARE( pl1, pl2 );
 
   QgsLineString *ext = new QgsLineString();
-  ext->setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZM, 0, 0, 1, 5 )
-                  << QgsPoint( QgsWkbTypes::PointZM, 0, 10, 2, 6 )
-                  << QgsPoint( QgsWkbTypes::PointZM, 10, 10, 3, 7 )
-                  << QgsPoint( QgsWkbTypes::PointZM, 10, 0, 4, 8 )
-                  << QgsPoint( QgsWkbTypes::PointZM, 0, 0, 1, 9 ) );
+  ext->setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 0, 0, 1, 5 )
+                  << QgsPoint( Qgis::WkbType::PointZM, 0, 10, 2, 6 )
+                  << QgsPoint( Qgis::WkbType::PointZM, 10, 10, 3, 7 )
+                  << QgsPoint( Qgis::WkbType::PointZM, 10, 0, 4, 8 )
+                  << QgsPoint( Qgis::WkbType::PointZM, 0, 0, 1, 9 ) );
   pl1.setExteriorRing( ext );
 
   QgsLineString *ring = new QgsLineString();
-  ring->setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZM, 1, 1, 1, 2 )
-                   << QgsPoint( QgsWkbTypes::PointZM, 1, 9, 2, 3 )
-                   << QgsPoint( QgsWkbTypes::PointZM, 9, 9, 3, 6 )
-                   << QgsPoint( QgsWkbTypes::PointZM, 9, 1, 4, 4 )
-                   << QgsPoint( QgsWkbTypes::PointZM, 1, 1, 1, 7 ) );
+  ring->setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 1, 1, 1, 2 )
+                   << QgsPoint( Qgis::WkbType::PointZM, 1, 9, 2, 3 )
+                   << QgsPoint( Qgis::WkbType::PointZM, 9, 9, 3, 6 )
+                   << QgsPoint( Qgis::WkbType::PointZM, 9, 1, 4, 4 )
+                   << QgsPoint( Qgis::WkbType::PointZM, 1, 1, 1, 7 ) );
   pl1.addInteriorRing( ring );
 
   pl2 = QgsPolygon( pl1 );
@@ -374,19 +374,19 @@ void TestQgsPolygon::assignment()
 
   QgsPolygon pl3;
   QgsLineString *ext = new QgsLineString();
-  ext->setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZM, 0, 0, 1, 5 )
-                  << QgsPoint( QgsWkbTypes::PointZM, 0, 10, 2, 6 )
-                  << QgsPoint( QgsWkbTypes::PointZM, 10, 10, 3, 7 )
-                  << QgsPoint( QgsWkbTypes::PointZM, 10, 0, 4, 8 )
-                  << QgsPoint( QgsWkbTypes::PointZM, 0, 0, 1, 9 ) );
+  ext->setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 0, 0, 1, 5 )
+                  << QgsPoint( Qgis::WkbType::PointZM, 0, 10, 2, 6 )
+                  << QgsPoint( Qgis::WkbType::PointZM, 10, 10, 3, 7 )
+                  << QgsPoint( Qgis::WkbType::PointZM, 10, 0, 4, 8 )
+                  << QgsPoint( Qgis::WkbType::PointZM, 0, 0, 1, 9 ) );
   pl3.setExteriorRing( ext );
 
   QgsLineString *ring = new QgsLineString();
-  ring->setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZM, 1, 1, 1, 2 )
-                   << QgsPoint( QgsWkbTypes::PointZM, 1, 9, 2, 3 )
-                   << QgsPoint( QgsWkbTypes::PointZM, 9, 9, 3, 6 )
-                   << QgsPoint( QgsWkbTypes::PointZM, 9, 1, 4, 4 )
-                   << QgsPoint( QgsWkbTypes::PointZM, 1, 1, 1, 7 ) );
+  ring->setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 1, 1, 1, 2 )
+                   << QgsPoint( Qgis::WkbType::PointZM, 1, 9, 2, 3 )
+                   << QgsPoint( Qgis::WkbType::PointZM, 9, 9, 3, 6 )
+                   << QgsPoint( Qgis::WkbType::PointZM, 9, 1, 4, 4 )
+                   << QgsPoint( Qgis::WkbType::PointZM, 1, 1, 1, 7 ) );
   pl3.addInteriorRing( ring );
 
   pl1 = pl3;
@@ -408,7 +408,7 @@ void TestQgsPolygon::setBadExteriorRing()
   QCOMPARE( pl.partCount(), 0 );
   QVERIFY( !pl.exteriorRing() );
   QVERIFY( !pl.interiorRing( 0 ) );
-  QCOMPARE( pl.wkbType(), QgsWkbTypes::Polygon );
+  QCOMPARE( pl.wkbType(), Qgis::WkbType::Polygon );
 
   // empty exterior ring
   ext = new QgsLineString();
@@ -421,7 +421,7 @@ void TestQgsPolygon::setBadExteriorRing()
   QCOMPARE( pl.partCount(), 1 );
   QVERIFY( pl.exteriorRing() );
   QVERIFY( !pl.interiorRing( 0 ) );
-  QCOMPARE( pl.wkbType(), QgsWkbTypes::Polygon );
+  QCOMPARE( pl.wkbType(), Qgis::WkbType::Polygon );
 
   //test that a non closed exterior ring will be automatically closed
   ext = new QgsLineString();
@@ -454,7 +454,7 @@ void TestQgsPolygon::setExteriorRing()
   QCOMPARE( pl.partCount(), 1 );
   QVERIFY( !pl.is3D() );
   QVERIFY( !pl.isMeasure() );
-  QCOMPARE( pl.wkbType(), QgsWkbTypes::Polygon );
+  QCOMPARE( pl.wkbType(), Qgis::WkbType::Polygon );
   QCOMPARE( pl.wktTypeStr(), QString( "Polygon" ) );
   QCOMPARE( pl.geometryType(), QString( "Polygon" ) );
   QCOMPARE( pl.dimension(), 2 );
@@ -474,62 +474,62 @@ void TestQgsPolygon::setExteriorRingZM()
 
   //initial setting of exterior ring should set z/m type
   QgsLineString *ext = new QgsLineString();
-  ext->setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZ, 0, 0, 1 )
-                  << QgsPoint( QgsWkbTypes::PointZ, 0, 10, 2 )
-                  << QgsPoint( QgsWkbTypes::PointZ, 10, 10, 3 )
-                  << QgsPoint( QgsWkbTypes::PointZ, 10, 0, 4 )
-                  << QgsPoint( QgsWkbTypes::PointZ, 0, 0, 1 ) );
+  ext->setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZ, 0, 0, 1 )
+                  << QgsPoint( Qgis::WkbType::PointZ, 0, 10, 2 )
+                  << QgsPoint( Qgis::WkbType::PointZ, 10, 10, 3 )
+                  << QgsPoint( Qgis::WkbType::PointZ, 10, 0, 4 )
+                  << QgsPoint( Qgis::WkbType::PointZ, 0, 0, 1 ) );
   pl.setExteriorRing( ext );
 
   QVERIFY( pl.is3D() );
   QVERIFY( !pl.isMeasure() );
-  QCOMPARE( pl.wkbType(), QgsWkbTypes::PolygonZ );
+  QCOMPARE( pl.wkbType(), Qgis::WkbType::PolygonZ );
   QCOMPARE( pl.wktTypeStr(), QString( "PolygonZ" ) );
   QCOMPARE( pl.geometryType(), QString( "Polygon" ) );
   QCOMPARE( *( static_cast< const QgsLineString * >( pl.exteriorRing() ) ), *ext );
 
   pl.clear();
   ext = new QgsLineString();
-  ext->setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointM, 0, 0, 0, 1 )
-                  << QgsPoint( QgsWkbTypes::PointM, 0, 10, 0, 2 )
-                  << QgsPoint( QgsWkbTypes::PointM, 10, 10, 0, 3 )
-                  << QgsPoint( QgsWkbTypes::PointM, 10, 0, 0, 4 )
-                  << QgsPoint( QgsWkbTypes::PointM, 0, 0, 0, 1 ) );
+  ext->setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointM, 0, 0, 0, 1 )
+                  << QgsPoint( Qgis::WkbType::PointM, 0, 10, 0, 2 )
+                  << QgsPoint( Qgis::WkbType::PointM, 10, 10, 0, 3 )
+                  << QgsPoint( Qgis::WkbType::PointM, 10, 0, 0, 4 )
+                  << QgsPoint( Qgis::WkbType::PointM, 0, 0, 0, 1 ) );
   pl.setExteriorRing( ext );
 
   QVERIFY( !pl.is3D() );
   QVERIFY( pl.isMeasure() );
-  QCOMPARE( pl.wkbType(), QgsWkbTypes::PolygonM );
+  QCOMPARE( pl.wkbType(), Qgis::WkbType::PolygonM );
   QCOMPARE( pl.wktTypeStr(), QString( "PolygonM" ) );
   QCOMPARE( *( static_cast< const QgsLineString * >( pl.exteriorRing() ) ), *ext );
 
   pl.clear();
   ext = new QgsLineString();
-  ext->setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZM, 0, 0, 2, 1 )
-                  << QgsPoint( QgsWkbTypes::PointZM, 0, 10, 3, 2 )
-                  << QgsPoint( QgsWkbTypes::PointZM, 10, 10, 5, 3 )
-                  << QgsPoint( QgsWkbTypes::PointZM, 10, 0, 0, 4 )
-                  << QgsPoint( QgsWkbTypes::PointZM, 0, 0, 2, 1 ) );
+  ext->setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 0, 0, 2, 1 )
+                  << QgsPoint( Qgis::WkbType::PointZM, 0, 10, 3, 2 )
+                  << QgsPoint( Qgis::WkbType::PointZM, 10, 10, 5, 3 )
+                  << QgsPoint( Qgis::WkbType::PointZM, 10, 0, 0, 4 )
+                  << QgsPoint( Qgis::WkbType::PointZM, 0, 0, 2, 1 ) );
   pl.setExteriorRing( ext );
 
   QVERIFY( pl.is3D() );
   QVERIFY( pl.isMeasure() );
-  QCOMPARE( pl.wkbType(), QgsWkbTypes::PolygonZM );
+  QCOMPARE( pl.wkbType(), Qgis::WkbType::PolygonZM );
   QCOMPARE( pl.wktTypeStr(), QString( "PolygonZM" ) );
   QCOMPARE( *( static_cast< const QgsLineString * >( pl.exteriorRing() ) ), *ext );
 
   pl.clear();
   ext = new QgsLineString();
-  ext->setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::Point25D, 0, 0, 1 )
-                  << QgsPoint( QgsWkbTypes::Point25D, 0, 10, 2 )
-                  << QgsPoint( QgsWkbTypes::Point25D, 10, 10, 3 )
-                  << QgsPoint( QgsWkbTypes::Point25D, 10, 0, 4 )
-                  << QgsPoint( QgsWkbTypes::Point25D, 0, 0, 1 ) );
+  ext->setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::Point25D, 0, 0, 1 )
+                  << QgsPoint( Qgis::WkbType::Point25D, 0, 10, 2 )
+                  << QgsPoint( Qgis::WkbType::Point25D, 10, 10, 3 )
+                  << QgsPoint( Qgis::WkbType::Point25D, 10, 0, 4 )
+                  << QgsPoint( Qgis::WkbType::Point25D, 0, 0, 1 ) );
   pl.setExteriorRing( ext );
 
   QVERIFY( pl.is3D() );
   QVERIFY( !pl.isMeasure() );
-  QCOMPARE( pl.wkbType(), QgsWkbTypes::Polygon25D );
+  QCOMPARE( pl.wkbType(), Qgis::WkbType::Polygon25D );
   QCOMPARE( pl.wktTypeStr(), QString( "PolygonZ" ) );
   QCOMPARE( *( static_cast< const QgsLineString * >( pl.exteriorRing() ) ), *ext );
 }
@@ -549,7 +549,7 @@ void TestQgsPolygon::setCurvedExteriorRing()
   pl.setExteriorRing( cs );
 
   QVERIFY( !pl.exteriorRing()->hasCurvedSegments() );
-  QCOMPARE( pl.exteriorRing()->wkbType(), QgsWkbTypes::LineString );
+  QCOMPARE( pl.exteriorRing()->wkbType(), Qgis::WkbType::LineString );
 }
 
 void TestQgsPolygon::setExteriorRingChangesInteriorRings()
@@ -558,30 +558,30 @@ void TestQgsPolygon::setExteriorRingChangesInteriorRings()
 
   //change dimensionality of interior rings using setExteriorRing
   QgsLineString *ext = new QgsLineString();
-  ext->setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZ, 0, 0, 1 )
-                  << QgsPoint( QgsWkbTypes::PointZ, 0, 10, 2 )
-                  << QgsPoint( QgsWkbTypes::PointZ, 10, 10, 1 )
-                  << QgsPoint( QgsWkbTypes::PointZ, 10, 0, 3 )
-                  << QgsPoint( QgsWkbTypes::PointZ, 0, 0, 1 ) );
+  ext->setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZ, 0, 0, 1 )
+                  << QgsPoint( Qgis::WkbType::PointZ, 0, 10, 2 )
+                  << QgsPoint( Qgis::WkbType::PointZ, 10, 10, 1 )
+                  << QgsPoint( Qgis::WkbType::PointZ, 10, 0, 3 )
+                  << QgsPoint( Qgis::WkbType::PointZ, 0, 0, 1 ) );
   pl.setExteriorRing( ext );
 
   QVector< QgsCurve * > rings;
 
   QgsPointSequence pts;
-  pts << QgsPoint( QgsWkbTypes::PointZ, 0.1, 0.1, 1 )
-      << QgsPoint( QgsWkbTypes::PointZ, 0.1, 0.2, 2 )
-      << QgsPoint( QgsWkbTypes::PointZ, 0.2, 0.2, 3 )
-      << QgsPoint( QgsWkbTypes::PointZ, 0.2, 0.1, 4 )
-      << QgsPoint( QgsWkbTypes::PointZ, 0.1, 0.1, 1 );
+  pts << QgsPoint( Qgis::WkbType::PointZ, 0.1, 0.1, 1 )
+      << QgsPoint( Qgis::WkbType::PointZ, 0.1, 0.2, 2 )
+      << QgsPoint( Qgis::WkbType::PointZ, 0.2, 0.2, 3 )
+      << QgsPoint( Qgis::WkbType::PointZ, 0.2, 0.1, 4 )
+      << QgsPoint( Qgis::WkbType::PointZ, 0.1, 0.1, 1 );
   rings << new QgsLineString();
   static_cast< QgsLineString *>( rings[0] )->setPoints( pts );
 
   pts = QgsPointSequence();
-  pts << QgsPoint( QgsWkbTypes::PointZ, 0.3, 0.3, 1 )
-      << QgsPoint( QgsWkbTypes::PointZ, 0.3, 0.4, 2 )
-      << QgsPoint( QgsWkbTypes::PointZ, 0.4, 0.4, 3 )
-      << QgsPoint( QgsWkbTypes::PointZ, 0.4, 0.3, 4 )
-      << QgsPoint( QgsWkbTypes::PointZ, 0.3, 0.3,  1 );
+  pts << QgsPoint( Qgis::WkbType::PointZ, 0.3, 0.3, 1 )
+      << QgsPoint( Qgis::WkbType::PointZ, 0.3, 0.4, 2 )
+      << QgsPoint( Qgis::WkbType::PointZ, 0.4, 0.4, 3 )
+      << QgsPoint( Qgis::WkbType::PointZ, 0.4, 0.3, 4 )
+      << QgsPoint( Qgis::WkbType::PointZ, 0.3, 0.3,  1 );
   rings << new QgsLineString();
   static_cast< QgsLineString *>( rings[1] )->setPoints( pts );
 
@@ -608,11 +608,11 @@ void TestQgsPolygon::setExteriorRingChangesInteriorRings()
 
   //reset exterior ring to LineStringM
   ext = new QgsLineString();
-  ext->setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointM, 0, 0 )
-                  << QgsPoint( QgsWkbTypes::PointM, 0, 10 )
-                  << QgsPoint( QgsWkbTypes::PointM, 10, 10 )
-                  << QgsPoint( QgsWkbTypes::PointM, 10, 0 )
-                  << QgsPoint( QgsWkbTypes::PointM, 0, 0 ) );
+  ext->setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointM, 0, 0 )
+                  << QgsPoint( Qgis::WkbType::PointM, 0, 10 )
+                  << QgsPoint( Qgis::WkbType::PointM, 10, 10 )
+                  << QgsPoint( Qgis::WkbType::PointM, 10, 0 )
+                  << QgsPoint( Qgis::WkbType::PointM, 0, 0 ) );
 
   pl.setExteriorRing( ext );
 
@@ -622,11 +622,11 @@ void TestQgsPolygon::setExteriorRingChangesInteriorRings()
 
   //25D exterior ring
   ext = new QgsLineString();
-  ext->setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::Point25D, 0, 0 )
-                  << QgsPoint( QgsWkbTypes::Point25D, 0, 10 )
-                  << QgsPoint( QgsWkbTypes::Point25D, 10, 10 )
-                  << QgsPoint( QgsWkbTypes::Point25D, 10, 0 )
-                  << QgsPoint( QgsWkbTypes::Point25D, 0, 0 ) );
+  ext->setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::Point25D, 0, 0 )
+                  << QgsPoint( Qgis::WkbType::Point25D, 0, 10 )
+                  << QgsPoint( Qgis::WkbType::Point25D, 10, 10 )
+                  << QgsPoint( Qgis::WkbType::Point25D, 10, 0 )
+                  << QgsPoint( Qgis::WkbType::Point25D, 0, 0 ) );
 
   pl.setExteriorRing( ext );
 
@@ -636,8 +636,8 @@ void TestQgsPolygon::setExteriorRingChangesInteriorRings()
   QVERIFY( !pl.interiorRing( 0 )->isMeasure() );
   QVERIFY( pl.interiorRing( 1 )->is3D() );
   QVERIFY( !pl.interiorRing( 1 )->isMeasure() );
-  QCOMPARE( pl.interiorRing( 0 )->wkbType(), QgsWkbTypes::LineString25D );
-  QCOMPARE( pl.interiorRing( 1 )->wkbType(), QgsWkbTypes::LineString25D );
+  QCOMPARE( pl.interiorRing( 0 )->wkbType(), Qgis::WkbType::LineString25D );
+  QCOMPARE( pl.interiorRing( 1 )->wkbType(), Qgis::WkbType::LineString25D );
 }
 
 void TestQgsPolygon::deleteExteriorRing()
@@ -746,85 +746,85 @@ void TestQgsPolygon::addInteriorRingZM()
 
   //try adding an interior ring with z to a 2d polygon, z should be dropped
   ring = new QgsLineString();
-  ring->setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZ, 0.1, 0.1, 1 )
-                   << QgsPoint( QgsWkbTypes::PointZ, 0.1, 0.2, 2 )
-                   << QgsPoint( QgsWkbTypes::PointZ, 0.2, 0.2, 3 )
-                   << QgsPoint( QgsWkbTypes::PointZ, 0.2, 0.1, 4 )
-                   << QgsPoint( QgsWkbTypes::PointZ, 0.1, 0.1, 1 ) );
+  ring->setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZ, 0.1, 0.1, 1 )
+                   << QgsPoint( Qgis::WkbType::PointZ, 0.1, 0.2, 2 )
+                   << QgsPoint( Qgis::WkbType::PointZ, 0.2, 0.2, 3 )
+                   << QgsPoint( Qgis::WkbType::PointZ, 0.2, 0.1, 4 )
+                   << QgsPoint( Qgis::WkbType::PointZ, 0.1, 0.1, 1 ) );
   pl.addInteriorRing( ring );
 
   QCOMPARE( pl.numInteriorRings(), 3 );
   QVERIFY( !pl.is3D() );
   QVERIFY( !pl.isMeasure() );
-  QCOMPARE( pl.wkbType(), QgsWkbTypes::Polygon );
+  QCOMPARE( pl.wkbType(), Qgis::WkbType::Polygon );
   QVERIFY( pl.interiorRing( 2 ) );
   QVERIFY( !pl.interiorRing( 2 )->is3D() );
   QVERIFY( !pl.interiorRing( 2 )->isMeasure() );
-  QCOMPARE( pl.interiorRing( 2 )->wkbType(), QgsWkbTypes::LineString );
+  QCOMPARE( pl.interiorRing( 2 )->wkbType(), Qgis::WkbType::LineString );
 
   //try adding an interior ring with m to a 2d polygon, m should be dropped
   ring = new QgsLineString();
-  ring->setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointM, 0.1, 0.1, 0, 1 )
-                   << QgsPoint( QgsWkbTypes::PointM, 0.1, 0.2, 0, 2 )
-                   << QgsPoint( QgsWkbTypes::PointM, 0.2, 0.2, 0, 3 )
-                   << QgsPoint( QgsWkbTypes::PointM, 0.2, 0.1, 0, 4 )
-                   << QgsPoint( QgsWkbTypes::PointM, 0.1, 0.1, 0, 1 ) );
+  ring->setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointM, 0.1, 0.1, 0, 1 )
+                   << QgsPoint( Qgis::WkbType::PointM, 0.1, 0.2, 0, 2 )
+                   << QgsPoint( Qgis::WkbType::PointM, 0.2, 0.2, 0, 3 )
+                   << QgsPoint( Qgis::WkbType::PointM, 0.2, 0.1, 0, 4 )
+                   << QgsPoint( Qgis::WkbType::PointM, 0.1, 0.1, 0, 1 ) );
   pl.addInteriorRing( ring );
 
   QCOMPARE( pl.numInteriorRings(), 4 );
   QVERIFY( !pl.is3D() );
   QVERIFY( !pl.isMeasure() );
-  QCOMPARE( pl.wkbType(), QgsWkbTypes::Polygon );
+  QCOMPARE( pl.wkbType(), Qgis::WkbType::Polygon );
   QVERIFY( pl.interiorRing( 3 ) );
   QVERIFY( !pl.interiorRing( 3 )->is3D() );
   QVERIFY( !pl.interiorRing( 3 )->isMeasure() );
-  QCOMPARE( pl.interiorRing( 3 )->wkbType(), QgsWkbTypes::LineString );
+  QCOMPARE( pl.interiorRing( 3 )->wkbType(), Qgis::WkbType::LineString );
 
   //addInteriorRing without z/m to PolygonZM
   pl.clear();
   ext = new QgsLineString();
-  ext->setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZM, 0, 0, 1 )
-                  << QgsPoint( QgsWkbTypes::PointZM, 0, 10, 2 )
-                  << QgsPoint( QgsWkbTypes::PointZM, 10, 10, 3 )
-                  << QgsPoint( QgsWkbTypes::PointZM, 10, 0, 4 )
-                  << QgsPoint( QgsWkbTypes::PointZM, 0, 0, 1 ) );
+  ext->setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 0, 0, 1 )
+                  << QgsPoint( Qgis::WkbType::PointZM, 0, 10, 2 )
+                  << QgsPoint( Qgis::WkbType::PointZM, 10, 10, 3 )
+                  << QgsPoint( Qgis::WkbType::PointZM, 10, 0, 4 )
+                  << QgsPoint( Qgis::WkbType::PointZM, 0, 0, 1 ) );
   pl.setExteriorRing( ext );
 
   QVERIFY( pl.is3D() );
   QVERIFY( pl.isMeasure() );
-  QCOMPARE( pl.wkbType(), QgsWkbTypes::PolygonZM );
+  QCOMPARE( pl.wkbType(), Qgis::WkbType::PolygonZM );
 
   //ring has no z
   ring = new QgsLineString();
-  ring->setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointM, 1, 1, 0, 2 )
-                   << QgsPoint( QgsWkbTypes::PointM, 1, 9 )
-                   << QgsPoint( QgsWkbTypes::PointM, 9, 9 )
-                   << QgsPoint( QgsWkbTypes::PointM, 9, 1 )
-                   << QgsPoint( QgsWkbTypes::PointM, 1, 1 ) );
+  ring->setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointM, 1, 1, 0, 2 )
+                   << QgsPoint( Qgis::WkbType::PointM, 1, 9 )
+                   << QgsPoint( Qgis::WkbType::PointM, 9, 9 )
+                   << QgsPoint( Qgis::WkbType::PointM, 9, 1 )
+                   << QgsPoint( Qgis::WkbType::PointM, 1, 1 ) );
   pl.addInteriorRing( ring );
 
   QVERIFY( pl.interiorRing( 0 ) );
   QVERIFY( pl.interiorRing( 0 )->is3D() );
   QVERIFY( pl.interiorRing( 0 )->isMeasure() );
-  QCOMPARE( pl.interiorRing( 0 )->wkbType(), QgsWkbTypes::LineStringZM );
+  QCOMPARE( pl.interiorRing( 0 )->wkbType(), Qgis::WkbType::LineStringZM );
   QCOMPARE( pl.interiorRing( 0 )->vertexAt( QgsVertexId( 0, 0, 0 ) ),
-            QgsPoint( QgsWkbTypes::PointZM, 1, 1, 0, 2 ) );
+            QgsPoint( Qgis::WkbType::PointZM, 1, 1, 0, 2 ) );
 
   //ring has no m
   ring = new QgsLineString();
-  ring->setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZ, 0.1, 0.1, 1 )
-                   << QgsPoint( QgsWkbTypes::PointZ, 0.1, 0.2, 2 )
-                   << QgsPoint( QgsWkbTypes::PointZ, 0.2, 0.2, 3 )
-                   << QgsPoint( QgsWkbTypes::PointZ, 0.2, 0.1, 4 )
-                   << QgsPoint( QgsWkbTypes::PointZ, 0.1, 0.1, 1 ) );
+  ring->setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZ, 0.1, 0.1, 1 )
+                   << QgsPoint( Qgis::WkbType::PointZ, 0.1, 0.2, 2 )
+                   << QgsPoint( Qgis::WkbType::PointZ, 0.2, 0.2, 3 )
+                   << QgsPoint( Qgis::WkbType::PointZ, 0.2, 0.1, 4 )
+                   << QgsPoint( Qgis::WkbType::PointZ, 0.1, 0.1, 1 ) );
   pl.addInteriorRing( ring );
 
   QVERIFY( pl.interiorRing( 1 ) );
   QVERIFY( pl.interiorRing( 1 )->is3D() );
   QVERIFY( pl.interiorRing( 1 )->isMeasure() );
-  QCOMPARE( pl.interiorRing( 1 )->wkbType(), QgsWkbTypes::LineStringZM );
+  QCOMPARE( pl.interiorRing( 1 )->wkbType(), Qgis::WkbType::LineStringZM );
   QCOMPARE( pl.interiorRing( 1 )->vertexAt( QgsVertexId( 0, 0, 0 ) ),
-            QgsPoint( QgsWkbTypes::PointZM, 0.1, 0.1, 1, 0 ) );
+            QgsPoint( Qgis::WkbType::PointZM, 0.1, 0.1, 1, 0 ) );
 }
 
 void TestQgsPolygon::setInteriorRings()
@@ -841,20 +841,20 @@ void TestQgsPolygon::setInteriorRings()
   QVector< QgsCurve * > rings;
 
   QgsPointSequence pts;
-  pts << QgsPoint( QgsWkbTypes::PointZ, 0.1, 0.1, 1 )
-      << QgsPoint( QgsWkbTypes::PointZ, 0.1, 0.2, 2 )
-      << QgsPoint( QgsWkbTypes::PointZ, 0.2, 0.2, 3 )
-      << QgsPoint( QgsWkbTypes::PointZ, 0.2, 0.1, 4 )
-      << QgsPoint( QgsWkbTypes::PointZ, 0.1, 0.1, 1 );
+  pts << QgsPoint( Qgis::WkbType::PointZ, 0.1, 0.1, 1 )
+      << QgsPoint( Qgis::WkbType::PointZ, 0.1, 0.2, 2 )
+      << QgsPoint( Qgis::WkbType::PointZ, 0.2, 0.2, 3 )
+      << QgsPoint( Qgis::WkbType::PointZ, 0.2, 0.1, 4 )
+      << QgsPoint( Qgis::WkbType::PointZ, 0.1, 0.1, 1 );
   rings << new QgsLineString();
   static_cast< QgsLineString *>( rings[0] )->setPoints( pts );
 
   pts = QgsPointSequence();
-  pts << QgsPoint( QgsWkbTypes::PointM, 0.3, 0.3, 0, 1 )
-      << QgsPoint( QgsWkbTypes::PointM, 0.3, 0.4, 0, 2 )
-      << QgsPoint( QgsWkbTypes::PointM, 0.4, 0.4, 0, 3 )
-      << QgsPoint( QgsWkbTypes::PointM, 0.4, 0.3, 0, 4 )
-      << QgsPoint( QgsWkbTypes::PointM, 0.3, 0.3, 0, 1 );
+  pts << QgsPoint( Qgis::WkbType::PointM, 0.3, 0.3, 0, 1 )
+      << QgsPoint( Qgis::WkbType::PointM, 0.3, 0.4, 0, 2 )
+      << QgsPoint( Qgis::WkbType::PointM, 0.4, 0.4, 0, 3 )
+      << QgsPoint( Qgis::WkbType::PointM, 0.4, 0.3, 0, 4 )
+      << QgsPoint( Qgis::WkbType::PointM, 0.3, 0.3, 0, 1 );
   rings << new QgsLineString();
   static_cast< QgsLineString *>( rings[1] )->setPoints( pts );
 
@@ -874,21 +874,21 @@ void TestQgsPolygon::setInteriorRings()
   QVERIFY( pl.interiorRing( 0 ) );
   QVERIFY( !pl.interiorRing( 0 )->is3D() );
   QVERIFY( !pl.interiorRing( 0 )->isMeasure() );
-  QCOMPARE( pl.interiorRing( 0 )->wkbType(), QgsWkbTypes::LineString );
+  QCOMPARE( pl.interiorRing( 0 )->wkbType(), Qgis::WkbType::LineString );
   QCOMPARE( pl.interiorRing( 0 )->vertexAt( QgsVertexId( 0, 0, 0 ) ),
-            QgsPoint( QgsWkbTypes::Point, 0.1, 0.1 ) );
+            QgsPoint( Qgis::WkbType::Point, 0.1, 0.1 ) );
 
   QVERIFY( pl.interiorRing( 1 ) );
   QVERIFY( !pl.interiorRing( 1 )->is3D() );
   QVERIFY( !pl.interiorRing( 1 )->isMeasure() );
-  QCOMPARE( pl.interiorRing( 1 )->wkbType(), QgsWkbTypes::LineString );
+  QCOMPARE( pl.interiorRing( 1 )->wkbType(), Qgis::WkbType::LineString );
   QCOMPARE( pl.interiorRing( 1 )->vertexAt( QgsVertexId( 0, 0, 0 ) ),
-            QgsPoint( QgsWkbTypes::Point, 0.3, 0.3 ) );
+            QgsPoint( Qgis::WkbType::Point, 0.3, 0.3 ) );
 
   QVERIFY( pl.interiorRing( 2 ) );
   QVERIFY( !pl.interiorRing( 2 )->is3D() );
   QVERIFY( !pl.interiorRing( 2 )->isMeasure() );
-  QCOMPARE( pl.interiorRing( 2 )->wkbType(), QgsWkbTypes::LineString );
+  QCOMPARE( pl.interiorRing( 2 )->wkbType(), Qgis::WkbType::LineString );
 
   //set rings with existing
   rings.clear();
@@ -905,9 +905,9 @@ void TestQgsPolygon::setInteriorRings()
   QVERIFY( pl.interiorRing( 0 ) );
   QVERIFY( !pl.interiorRing( 0 )->is3D() );
   QVERIFY( !pl.interiorRing( 0 )->isMeasure() );
-  QCOMPARE( pl.interiorRing( 0 )->wkbType(), QgsWkbTypes::LineString );
+  QCOMPARE( pl.interiorRing( 0 )->wkbType(), Qgis::WkbType::LineString );
   QCOMPARE( pl.interiorRing( 0 )->vertexAt( QgsVertexId( 0, 0, 0 ) ),
-            QgsPoint( QgsWkbTypes::Point, 0.8, 0.8 ) );
+            QgsPoint( Qgis::WkbType::Point, 0.8, 0.8 ) );
 
   rings.clear();
   pl.setInteriorRings( rings );
@@ -976,10 +976,10 @@ void TestQgsPolygon::removeInteriorRings()
   pl.removeInteriorRings();
 
   QgsLineString ext;
-  ext.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZ, 0, 0, 10 )
-                 << QgsPoint( QgsWkbTypes::PointZ, 1, 0, 15 )
-                 << QgsPoint( QgsWkbTypes::PointZ, 1, 1, 20 )
-                 << QgsPoint( QgsWkbTypes::PointZ, 0, 0, 10 ) );
+  ext.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZ, 0, 0, 10 )
+                 << QgsPoint( Qgis::WkbType::PointZ, 1, 0, 15 )
+                 << QgsPoint( Qgis::WkbType::PointZ, 1, 1, 20 )
+                 << QgsPoint( Qgis::WkbType::PointZ, 0, 0, 10 ) );
 
   pl.setExteriorRing( ext.clone() );
   pl.removeInteriorRings();
@@ -1013,25 +1013,25 @@ void TestQgsPolygon::removeInvalidRings()
   pl.removeInvalidRings(); // no crash
 
   QgsLineString ls;
-  ls.setPoints( QgsPointSequence() << QgsPoint( 11, 2, 3, 4, QgsWkbTypes::PointZM )
-                << QgsPoint( 4, 12, 13, 14, QgsWkbTypes::PointZM )
-                << QgsPoint( 11, 12, 13, 14, QgsWkbTypes::PointZM )
-                << QgsPoint( 11, 22, 23, 24, QgsWkbTypes::PointZM )
-                << QgsPoint( 11, 2, 3, 4, QgsWkbTypes::PointZM ) );
+  ls.setPoints( QgsPointSequence() << QgsPoint( 11, 2, 3, 4, Qgis::WkbType::PointZM )
+                << QgsPoint( 4, 12, 13, 14, Qgis::WkbType::PointZM )
+                << QgsPoint( 11, 12, 13, 14, Qgis::WkbType::PointZM )
+                << QgsPoint( 11, 22, 23, 24, Qgis::WkbType::PointZM )
+                << QgsPoint( 11, 2, 3, 4, Qgis::WkbType::PointZM ) );
   pl.setExteriorRing( ls.clone() );
 
   pl.removeInvalidRings();
   QCOMPARE( pl.asWkt(), QStringLiteral( "PolygonZM ((11 2 3 4, 4 12 13 14, 11 12 13 14, 11 22 23 24, 11 2 3 4))" ) );
 
-  ls.setPoints( QgsPointSequence() << QgsPoint( 10, 2, 5, 6, QgsWkbTypes::PointZM )
-                << QgsPoint( 11, 2, 5, 6, QgsWkbTypes::PointZM )
-                << QgsPoint( 10, 2, 5, 6, QgsWkbTypes::PointZM ) );
+  ls.setPoints( QgsPointSequence() << QgsPoint( 10, 2, 5, 6, Qgis::WkbType::PointZM )
+                << QgsPoint( 11, 2, 5, 6, Qgis::WkbType::PointZM )
+                << QgsPoint( 10, 2, 5, 6, Qgis::WkbType::PointZM ) );
   pl.addInteriorRing( ls.clone() );
 
-  ls.setPoints( QgsPointSequence() << QgsPoint( 1, 2, 5, 6, QgsWkbTypes::PointZM )
-                << QgsPoint( 11.01, 2.01, 15, 16, QgsWkbTypes::PointZM )
-                << QgsPoint( 11, 2.01, 25, 26, QgsWkbTypes::PointZM )
-                << QgsPoint( 1, 2, 5, 6, QgsWkbTypes::PointZM ) );
+  ls.setPoints( QgsPointSequence() << QgsPoint( 1, 2, 5, 6, Qgis::WkbType::PointZM )
+                << QgsPoint( 11.01, 2.01, 15, 16, Qgis::WkbType::PointZM )
+                << QgsPoint( 11, 2.01, 25, 26, Qgis::WkbType::PointZM )
+                << QgsPoint( 1, 2, 5, 6, Qgis::WkbType::PointZM ) );
   pl.addInteriorRing( ls.clone() );
 
   pl.removeInvalidRings();
@@ -1599,7 +1599,7 @@ void TestQgsPolygon::dropZValue()
   QgsPolygon pl;
 
   pl.dropZValue();
-  QCOMPARE( pl.wkbType(), QgsWkbTypes::Polygon );
+  QCOMPARE( pl.wkbType(), Qgis::WkbType::Polygon );
 
   QgsLineString ls;
   ls.setPoints( QgsPointSequence() << QgsPoint( 1, 2 ) << QgsPoint( 11, 12 )
@@ -1607,14 +1607,14 @@ void TestQgsPolygon::dropZValue()
   pl.setExteriorRing( ls.clone() );
   pl.addInteriorRing( ls.clone() );
 
-  QCOMPARE( pl.wkbType(), QgsWkbTypes::Polygon );
+  QCOMPARE( pl.wkbType(), Qgis::WkbType::Polygon );
 
   pl.dropZValue(); // not z
-  QCOMPARE( pl.wkbType(), QgsWkbTypes::Polygon );
+  QCOMPARE( pl.wkbType(), Qgis::WkbType::Polygon );
 
-  QCOMPARE( pl.exteriorRing()->wkbType(), QgsWkbTypes::LineString );
+  QCOMPARE( pl.exteriorRing()->wkbType(), Qgis::WkbType::LineString );
   QCOMPARE( static_cast< const QgsLineString *>( pl.exteriorRing() )->pointN( 0 ), QgsPoint( 1, 2 ) );
-  QCOMPARE( pl.interiorRing( 0 )->wkbType(), QgsWkbTypes::LineString );
+  QCOMPARE( pl.interiorRing( 0 )->wkbType(), Qgis::WkbType::LineString );
   QCOMPARE( static_cast< const QgsLineString *>( pl.interiorRing( 0 ) )->pointN( 0 ), QgsPoint( 1, 2 ) );
 
   // with z
@@ -1624,14 +1624,14 @@ void TestQgsPolygon::dropZValue()
   pl.setExteriorRing( ls.clone() );
   pl.addInteriorRing( ls.clone() );
 
-  QCOMPARE( pl.wkbType(), QgsWkbTypes::PolygonZ );
+  QCOMPARE( pl.wkbType(), Qgis::WkbType::PolygonZ );
 
   pl.dropZValue();
-  QCOMPARE( pl.wkbType(), QgsWkbTypes::Polygon );
+  QCOMPARE( pl.wkbType(), Qgis::WkbType::Polygon );
 
-  QCOMPARE( pl.exteriorRing()->wkbType(), QgsWkbTypes::LineString );
+  QCOMPARE( pl.exteriorRing()->wkbType(), Qgis::WkbType::LineString );
   QCOMPARE( static_cast< const QgsLineString *>( pl.exteriorRing() )->pointN( 0 ), QgsPoint( 1, 2 ) );
-  QCOMPARE( pl.interiorRing( 0 )->wkbType(), QgsWkbTypes::LineString );
+  QCOMPARE( pl.interiorRing( 0 )->wkbType(), Qgis::WkbType::LineString );
   QCOMPARE( static_cast< const QgsLineString *>( pl.interiorRing( 0 ) )->pointN( 0 ), QgsPoint( 1, 2 ) );
 
   // with zm
@@ -1643,18 +1643,18 @@ void TestQgsPolygon::dropZValue()
   pl.setExteriorRing( ls.clone() );
   pl.addInteriorRing( ls.clone() );
 
-  QCOMPARE( pl.wkbType(), QgsWkbTypes::PolygonZM );
+  QCOMPARE( pl.wkbType(), Qgis::WkbType::PolygonZM );
 
   pl.dropZValue();
-  QCOMPARE( pl.wkbType(), QgsWkbTypes::PolygonM );
+  QCOMPARE( pl.wkbType(), Qgis::WkbType::PolygonM );
 
-  QCOMPARE( pl.exteriorRing()->wkbType(), QgsWkbTypes::LineStringM );
+  QCOMPARE( pl.exteriorRing()->wkbType(), Qgis::WkbType::LineStringM );
   QCOMPARE( static_cast< const QgsLineString *>( pl.exteriorRing() )->pointN( 0 ),
-            QgsPoint( QgsWkbTypes::PointM, 1, 2, 0, 4 ) );
+            QgsPoint( Qgis::WkbType::PointM, 1, 2, 0, 4 ) );
 
-  QCOMPARE( pl.interiorRing( 0 )->wkbType(), QgsWkbTypes::LineStringM );
+  QCOMPARE( pl.interiorRing( 0 )->wkbType(), Qgis::WkbType::LineStringM );
   QCOMPARE( static_cast< const QgsLineString *>( pl.interiorRing( 0 ) )->pointN( 0 ),
-            QgsPoint( QgsWkbTypes::PointM, 1, 2, 0, 4 ) );
+            QgsPoint( Qgis::WkbType::PointM, 1, 2, 0, 4 ) );
 }
 
 void TestQgsPolygon::dropMValue()
@@ -1662,7 +1662,7 @@ void TestQgsPolygon::dropMValue()
   QgsPolygon pl;
 
   pl.dropMValue();
-  QCOMPARE( pl.wkbType(), QgsWkbTypes::Polygon );
+  QCOMPARE( pl.wkbType(), Qgis::WkbType::Polygon );
 
   QgsLineString ls;
   ls.setPoints( QgsPointSequence() << QgsPoint( 1, 2 ) << QgsPoint( 11, 12 )
@@ -1670,32 +1670,32 @@ void TestQgsPolygon::dropMValue()
   pl.setExteriorRing( ls.clone() );
   pl.addInteriorRing( ls.clone() );
 
-  QCOMPARE( pl.wkbType(), QgsWkbTypes::Polygon );
+  QCOMPARE( pl.wkbType(), Qgis::WkbType::Polygon );
 
   pl.dropMValue(); // not zm
-  QCOMPARE( pl.wkbType(), QgsWkbTypes::Polygon );
+  QCOMPARE( pl.wkbType(), Qgis::WkbType::Polygon );
 
-  QCOMPARE( pl.exteriorRing()->wkbType(), QgsWkbTypes::LineString );
+  QCOMPARE( pl.exteriorRing()->wkbType(), Qgis::WkbType::LineString );
   QCOMPARE( static_cast< const QgsLineString *>( pl.exteriorRing() )->pointN( 0 ), QgsPoint( 1, 2 ) );
-  QCOMPARE( pl.interiorRing( 0 )->wkbType(), QgsWkbTypes::LineString );
+  QCOMPARE( pl.interiorRing( 0 )->wkbType(), Qgis::WkbType::LineString );
   QCOMPARE( static_cast< const QgsLineString *>( pl.interiorRing( 0 ) )->pointN( 0 ), QgsPoint( 1, 2 ) );
 
   // with m
   pl.clear();
-  ls.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointM,  1, 2, 0, 3 )
-                << QgsPoint( QgsWkbTypes::PointM, 11, 12, 0, 13 )
-                << QgsPoint( QgsWkbTypes::PointM, 1, 12, 0, 23 )
-                << QgsPoint( QgsWkbTypes::PointM,  1, 2, 0, 3 ) );
+  ls.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointM,  1, 2, 0, 3 )
+                << QgsPoint( Qgis::WkbType::PointM, 11, 12, 0, 13 )
+                << QgsPoint( Qgis::WkbType::PointM, 1, 12, 0, 23 )
+                << QgsPoint( Qgis::WkbType::PointM,  1, 2, 0, 3 ) );
   pl.setExteriorRing( ls.clone() );
   pl.addInteriorRing( ls.clone() );
 
-  QCOMPARE( pl.wkbType(), QgsWkbTypes::PolygonM );
+  QCOMPARE( pl.wkbType(), Qgis::WkbType::PolygonM );
   pl.dropMValue();
 
-  QCOMPARE( pl.wkbType(), QgsWkbTypes::Polygon );
-  QCOMPARE( pl.exteriorRing()->wkbType(), QgsWkbTypes::LineString );
+  QCOMPARE( pl.wkbType(), Qgis::WkbType::Polygon );
+  QCOMPARE( pl.exteriorRing()->wkbType(), Qgis::WkbType::LineString );
   QCOMPARE( static_cast< const QgsLineString *>( pl.exteriorRing() )->pointN( 0 ), QgsPoint( 1, 2 ) );
-  QCOMPARE( pl.interiorRing( 0 )->wkbType(), QgsWkbTypes::LineString );
+  QCOMPARE( pl.interiorRing( 0 )->wkbType(), Qgis::WkbType::LineString );
   QCOMPARE( static_cast< const QgsLineString *>( pl.interiorRing( 0 ) )->pointN( 0 ), QgsPoint( 1, 2 ) );
 
   // with zm
@@ -1705,17 +1705,17 @@ void TestQgsPolygon::dropMValue()
   pl.setExteriorRing( ls.clone() );
   pl.addInteriorRing( ls.clone() );
 
-  QCOMPARE( pl.wkbType(), QgsWkbTypes::PolygonZM );
+  QCOMPARE( pl.wkbType(), Qgis::WkbType::PolygonZM );
   pl.dropMValue();
 
-  QCOMPARE( pl.wkbType(), QgsWkbTypes::PolygonZ );
-  QCOMPARE( pl.exteriorRing()->wkbType(), QgsWkbTypes::LineStringZ );
+  QCOMPARE( pl.wkbType(), Qgis::WkbType::PolygonZ );
+  QCOMPARE( pl.exteriorRing()->wkbType(), Qgis::WkbType::LineStringZ );
   QCOMPARE( static_cast< const QgsLineString *>( pl.exteriorRing() )->pointN( 0 ),
-            QgsPoint( QgsWkbTypes::PointZ, 1, 2, 3 ) );
+            QgsPoint( Qgis::WkbType::PointZ, 1, 2, 3 ) );
 
-  QCOMPARE( pl.interiorRing( 0 )->wkbType(), QgsWkbTypes::LineStringZ );
+  QCOMPARE( pl.interiorRing( 0 )->wkbType(), Qgis::WkbType::LineStringZ );
   QCOMPARE( static_cast< const QgsLineString *>( pl.interiorRing( 0 ) )->pointN( 0 ),
-            QgsPoint( QgsWkbTypes::PointZ, 1, 2, 3 ) );
+            QgsPoint( Qgis::WkbType::PointZ, 1, 2, 3 ) );
 }
 
 void TestQgsPolygon::swapXy()
@@ -1724,19 +1724,19 @@ void TestQgsPolygon::swapXy()
   pl.swapXy(); //no crash
 
   QgsLineString ls;
-  ls.setPoints( QgsPointSequence() << QgsPoint( 11, 2, 3, 4, QgsWkbTypes::PointZM )
-                << QgsPoint( 11, 12, 13, 14, QgsWkbTypes::PointZM )
-                << QgsPoint( 11, 22, 23, 24, QgsWkbTypes::PointZM )
-                << QgsPoint( 11, 2, 3, 4, QgsWkbTypes::PointZM ) );
+  ls.setPoints( QgsPointSequence() << QgsPoint( 11, 2, 3, 4, Qgis::WkbType::PointZM )
+                << QgsPoint( 11, 12, 13, 14, Qgis::WkbType::PointZM )
+                << QgsPoint( 11, 22, 23, 24, Qgis::WkbType::PointZM )
+                << QgsPoint( 11, 2, 3, 4, Qgis::WkbType::PointZM ) );
   pl.setExteriorRing( ls.clone() );
 
   pl.swapXy();
   QCOMPARE( pl.asWkt(), QStringLiteral( "PolygonZM ((2 11 3 4, 12 11 13 14, 22 11 23 24, 2 11 3 4))" ) );
 
-  ls.setPoints( QgsPointSequence() << QgsPoint( 1, 2, 5, 6, QgsWkbTypes::PointZM )
-                << QgsPoint( 11.01, 2.01, 15, 16, QgsWkbTypes::PointZM )
-                << QgsPoint( 11, 2.01, 25, 26, QgsWkbTypes::PointZM )
-                << QgsPoint( 11, 2, 5, 6, QgsWkbTypes::PointZM ) );
+  ls.setPoints( QgsPointSequence() << QgsPoint( 1, 2, 5, 6, Qgis::WkbType::PointZM )
+                << QgsPoint( 11.01, 2.01, 15, 16, Qgis::WkbType::PointZM )
+                << QgsPoint( 11, 2.01, 25, 26, Qgis::WkbType::PointZM )
+                << QgsPoint( 11, 2, 5, 6, Qgis::WkbType::PointZM ) );
   pl.addInteriorRing( ls.clone() );
 
   pl.swapXy();
@@ -1824,10 +1824,10 @@ void TestQgsPolygon::boundary()
   delete boundary;
 
   //test boundary with z
-  ext.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZ, 0, 0, 10 )
-                 << QgsPoint( QgsWkbTypes::PointZ, 1, 0, 15 )
-                 << QgsPoint( QgsWkbTypes::PointZ, 1, 1, 20 )
-                 << QgsPoint( QgsWkbTypes::PointZ, 0, 0, 10 ) );
+  ext.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZ, 0, 0, 10 )
+                 << QgsPoint( Qgis::WkbType::PointZ, 1, 0, 15 )
+                 << QgsPoint( Qgis::WkbType::PointZ, 1, 1, 20 )
+                 << QgsPoint( Qgis::WkbType::PointZ, 0, 0, 10 ) );
   pl.setExteriorRing( ext.clone() );
 
   boundary = pl.boundary();
@@ -1835,7 +1835,7 @@ void TestQgsPolygon::boundary()
 
   QVERIFY( lineBoundary );
   QCOMPARE( lineBoundary->numPoints(), 4 );
-  QCOMPARE( lineBoundary->wkbType(), QgsWkbTypes::LineStringZ );
+  QCOMPARE( lineBoundary->wkbType(), Qgis::WkbType::LineStringZ );
   QCOMPARE( lineBoundary->zAt( 0 ), 10.0 );
   QCOMPARE( lineBoundary->zAt( 1 ), 15.0 );
   QCOMPARE( lineBoundary->zAt( 2 ), 20.0 );
@@ -2150,29 +2150,29 @@ void TestQgsPolygon::filterVertices()
   pl.filterVertices( filter ); // no crash
 
   QgsLineString ls;
-  ls.setPoints( QgsPointSequence() << QgsPoint( 11, 2, 3, 4, QgsWkbTypes::PointZM )
-                << QgsPoint( 4, 12, 13, 14, QgsWkbTypes::PointZM )
-                << QgsPoint( 11, 12, 13, 14, QgsWkbTypes::PointZM )
-                << QgsPoint( 11, 22, 23, 24, QgsWkbTypes::PointZM )
-                << QgsPoint( 11, 2, 3, 4, QgsWkbTypes::PointZM ) );
+  ls.setPoints( QgsPointSequence() << QgsPoint( 11, 2, 3, 4, Qgis::WkbType::PointZM )
+                << QgsPoint( 4, 12, 13, 14, Qgis::WkbType::PointZM )
+                << QgsPoint( 11, 12, 13, 14, Qgis::WkbType::PointZM )
+                << QgsPoint( 11, 22, 23, 24, Qgis::WkbType::PointZM )
+                << QgsPoint( 11, 2, 3, 4, Qgis::WkbType::PointZM ) );
   pl.setExteriorRing( ls.clone() );
 
   pl.filterVertices( filter );
 
   QCOMPARE( pl.asWkt(), QStringLiteral( "PolygonZM ((11 2 3 4, 11 12 13 14, 11 22 23 24, 11 2 3 4))" ) );
 
-  ls.setPoints( QgsPointSequence() << QgsPoint( 10, 2, 5, 6, QgsWkbTypes::PointZM )
-                << QgsPoint( 4, 12, 13, 14, QgsWkbTypes::PointZM )
-                << QgsPoint( 11.01, 2.01, 15, 16, QgsWkbTypes::PointZM )
-                << QgsPoint( 11, 2.01, 25, 26, QgsWkbTypes::PointZM )
-                << QgsPoint( 11, 2, 5, 6, QgsWkbTypes::PointZM )
-                << QgsPoint( 10, 2, 5, 6, QgsWkbTypes::PointZM ) );
+  ls.setPoints( QgsPointSequence() << QgsPoint( 10, 2, 5, 6, Qgis::WkbType::PointZM )
+                << QgsPoint( 4, 12, 13, 14, Qgis::WkbType::PointZM )
+                << QgsPoint( 11.01, 2.01, 15, 16, Qgis::WkbType::PointZM )
+                << QgsPoint( 11, 2.01, 25, 26, Qgis::WkbType::PointZM )
+                << QgsPoint( 11, 2, 5, 6, Qgis::WkbType::PointZM )
+                << QgsPoint( 10, 2, 5, 6, Qgis::WkbType::PointZM ) );
   pl.addInteriorRing( ls.clone() );
 
-  ls.setPoints( QgsPointSequence() << QgsPoint( 1, 2, 5, 6, QgsWkbTypes::PointZM )
-                << QgsPoint( 11.01, 2.01, 15, 16, QgsWkbTypes::PointZM )
-                << QgsPoint( 11, 2.01, 25, 26, QgsWkbTypes::PointZM )
-                << QgsPoint( 1, 2, 5, 6, QgsWkbTypes::PointZM ) );
+  ls.setPoints( QgsPointSequence() << QgsPoint( 1, 2, 5, 6, Qgis::WkbType::PointZM )
+                << QgsPoint( 11.01, 2.01, 15, 16, Qgis::WkbType::PointZM )
+                << QgsPoint( 11, 2.01, 25, 26, Qgis::WkbType::PointZM )
+                << QgsPoint( 1, 2, 5, 6, Qgis::WkbType::PointZM ) );
   pl.addInteriorRing( ls.clone() );
 
   pl.filterVertices( filter );
@@ -2191,28 +2191,28 @@ void TestQgsPolygon::transformVertices()
   pl.transformVertices( transform ); // no crash
 
   QgsLineString ls;
-  ls.setPoints( QgsPointSequence() << QgsPoint( 11, 2, 3, 4, QgsWkbTypes::PointZM )
-                << QgsPoint( 4, 12, 13, 14, QgsWkbTypes::PointZM )
-                << QgsPoint( 11, 12, 13, 14, QgsWkbTypes::PointZM )
-                << QgsPoint( 11, 22, 23, 24, QgsWkbTypes::PointZM )
-                << QgsPoint( 11, 2, 3, 4, QgsWkbTypes::PointZM ) );
+  ls.setPoints( QgsPointSequence() << QgsPoint( 11, 2, 3, 4, Qgis::WkbType::PointZM )
+                << QgsPoint( 4, 12, 13, 14, Qgis::WkbType::PointZM )
+                << QgsPoint( 11, 12, 13, 14, Qgis::WkbType::PointZM )
+                << QgsPoint( 11, 22, 23, 24, Qgis::WkbType::PointZM )
+                << QgsPoint( 11, 2, 3, 4, Qgis::WkbType::PointZM ) );
   pl.setExteriorRing( ls.clone() );
 
   pl.transformVertices( transform );
   QCOMPARE( pl.asWkt(), QStringLiteral( "PolygonZM ((13 5 7 9, 6 15 17 19, 13 15 17 19, 13 25 27 29, 13 5 7 9))" ) );
 
-  ls.setPoints( QgsPointSequence() << QgsPoint( 10, 2, 5, 6, QgsWkbTypes::PointZM )
-                << QgsPoint( 4, 12, 13, 14, QgsWkbTypes::PointZM )
-                << QgsPoint( 11.01, 2.01, 15, 16, QgsWkbTypes::PointZM )
-                << QgsPoint( 11, 2.01, 25, 26, QgsWkbTypes::PointZM )
-                << QgsPoint( 11, 2, 5, 6, QgsWkbTypes::PointZM )
-                << QgsPoint( 10, 2, 5, 6, QgsWkbTypes::PointZM ) );
+  ls.setPoints( QgsPointSequence() << QgsPoint( 10, 2, 5, 6, Qgis::WkbType::PointZM )
+                << QgsPoint( 4, 12, 13, 14, Qgis::WkbType::PointZM )
+                << QgsPoint( 11.01, 2.01, 15, 16, Qgis::WkbType::PointZM )
+                << QgsPoint( 11, 2.01, 25, 26, Qgis::WkbType::PointZM )
+                << QgsPoint( 11, 2, 5, 6, Qgis::WkbType::PointZM )
+                << QgsPoint( 10, 2, 5, 6, Qgis::WkbType::PointZM ) );
   pl.addInteriorRing( ls.clone() );
 
-  ls.setPoints( QgsPointSequence() << QgsPoint( 1, 2, 5, 6, QgsWkbTypes::PointZM )
-                << QgsPoint( 11.01, 2.01, 15, 16, QgsWkbTypes::PointZM )
-                << QgsPoint( 11, 2.01, 25, 26, QgsWkbTypes::PointZM )
-                << QgsPoint( 1, 2, 5, 6, QgsWkbTypes::PointZM ) );
+  ls.setPoints( QgsPointSequence() << QgsPoint( 1, 2, 5, 6, Qgis::WkbType::PointZM )
+                << QgsPoint( 11.01, 2.01, 15, 16, Qgis::WkbType::PointZM )
+                << QgsPoint( 11, 2.01, 25, 26, Qgis::WkbType::PointZM )
+                << QgsPoint( 1, 2, 5, 6, Qgis::WkbType::PointZM ) );
   pl.addInteriorRing( ls.clone() );
 
   pl.transformVertices( transform );
@@ -2228,28 +2228,28 @@ void TestQgsPolygon::transformWithClass()
   QVERIFY( pl.transform( &transformer ) );
 
   QgsLineString ls;
-  ls.setPoints( QgsPointSequence() << QgsPoint( 11, 2, 3, 4, QgsWkbTypes::PointZM )
-                << QgsPoint( 4, 12, 13, 14, QgsWkbTypes::PointZM )
-                << QgsPoint( 11, 12, 13, 14, QgsWkbTypes::PointZM )
-                << QgsPoint( 11, 22, 23, 24, QgsWkbTypes::PointZM )
-                << QgsPoint( 11, 2, 3, 4, QgsWkbTypes::PointZM ) );
+  ls.setPoints( QgsPointSequence() << QgsPoint( 11, 2, 3, 4, Qgis::WkbType::PointZM )
+                << QgsPoint( 4, 12, 13, 14, Qgis::WkbType::PointZM )
+                << QgsPoint( 11, 12, 13, 14, Qgis::WkbType::PointZM )
+                << QgsPoint( 11, 22, 23, 24, Qgis::WkbType::PointZM )
+                << QgsPoint( 11, 2, 3, 4, Qgis::WkbType::PointZM ) );
   pl.setExteriorRing( ls.clone() );
 
   QVERIFY( pl.transform( &transformer ) );
   QCOMPARE( pl.asWkt( 2 ), QStringLiteral( "PolygonZM ((33 16 8 3, 12 26 18 13, 33 26 18 13, 33 36 28 23, 33 16 8 3))" ) );
 
-  ls.setPoints( QgsPointSequence() << QgsPoint( 10, 2, 5, 6, QgsWkbTypes::PointZM )
-                << QgsPoint( 4, 12, 13, 14, QgsWkbTypes::PointZM )
-                << QgsPoint( 11.01, 2.01, 15, 16, QgsWkbTypes::PointZM )
-                << QgsPoint( 11, 2.01, 25, 26, QgsWkbTypes::PointZM )
-                << QgsPoint( 11, 2, 5, 6, QgsWkbTypes::PointZM )
-                << QgsPoint( 10, 2, 5, 6, QgsWkbTypes::PointZM ) );
+  ls.setPoints( QgsPointSequence() << QgsPoint( 10, 2, 5, 6, Qgis::WkbType::PointZM )
+                << QgsPoint( 4, 12, 13, 14, Qgis::WkbType::PointZM )
+                << QgsPoint( 11.01, 2.01, 15, 16, Qgis::WkbType::PointZM )
+                << QgsPoint( 11, 2.01, 25, 26, Qgis::WkbType::PointZM )
+                << QgsPoint( 11, 2, 5, 6, Qgis::WkbType::PointZM )
+                << QgsPoint( 10, 2, 5, 6, Qgis::WkbType::PointZM ) );
   pl.addInteriorRing( ls.clone() );
 
-  ls.setPoints( QgsPointSequence() << QgsPoint( 1, 2, 5, 6, QgsWkbTypes::PointZM )
-                << QgsPoint( 11.01, 2.01, 15, 16, QgsWkbTypes::PointZM )
-                << QgsPoint( 11, 2.01, 25, 26, QgsWkbTypes::PointZM )
-                << QgsPoint( 1, 2, 5, 6, QgsWkbTypes::PointZM ) );
+  ls.setPoints( QgsPointSequence() << QgsPoint( 1, 2, 5, 6, Qgis::WkbType::PointZM )
+                << QgsPoint( 11.01, 2.01, 15, 16, Qgis::WkbType::PointZM )
+                << QgsPoint( 11, 2.01, 25, 26, Qgis::WkbType::PointZM )
+                << QgsPoint( 1, 2, 5, 6, Qgis::WkbType::PointZM ) );
   pl.addInteriorRing( ls.clone() );
 
   QVERIFY( pl.transform( &transformer ) );
@@ -2320,10 +2320,10 @@ void TestQgsPolygon::transform3D()
   QgsPolygon pl;
 
   QgsLineString ls;
-  ls.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZM, 6374985, -3626584, 1, 2 )
-                << QgsPoint( QgsWkbTypes::PointZM, 6274985, -3526584, 3, 4 )
-                << QgsPoint( QgsWkbTypes::PointZM, 6474985, -3526584, 5, 6 )
-                << QgsPoint( QgsWkbTypes::PointZM, 6374985, -3626584, 1, 2 ) );
+  ls.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 6374985, -3626584, 1, 2 )
+                << QgsPoint( Qgis::WkbType::PointZM, 6274985, -3526584, 3, 4 )
+                << QgsPoint( Qgis::WkbType::PointZM, 6474985, -3526584, 5, 6 )
+                << QgsPoint( Qgis::WkbType::PointZM, 6374985, -3626584, 1, 2 ) );
   pl.setExteriorRing( ls.clone() );
   pl.addInteriorRing( ls.clone() );
 
@@ -2389,10 +2389,10 @@ void TestQgsPolygon::transformReverse()
   QgsPolygon pl;
 
   QgsLineString ls;
-  ls.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZM, 6374985, -3626584, 1, 2 )
-                << QgsPoint( QgsWkbTypes::PointZM, 6274985, -3526584, 3, 4 )
-                << QgsPoint( QgsWkbTypes::PointZM, 6474985, -3526584, 5, 6 )
-                << QgsPoint( QgsWkbTypes::PointZM, 6374985, -3626584, 1, 2 ) );
+  ls.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 6374985, -3626584, 1, 2 )
+                << QgsPoint( Qgis::WkbType::PointZM, 6274985, -3526584, 3, 4 )
+                << QgsPoint( Qgis::WkbType::PointZM, 6474985, -3526584, 5, 6 )
+                << QgsPoint( Qgis::WkbType::PointZM, 6374985, -3626584, 1, 2 ) );
   pl.setExteriorRing( ls.clone() );
   pl.addInteriorRing( ls.clone() );
 
@@ -2456,10 +2456,10 @@ void TestQgsPolygon::transformOldVersion()
   QgsPolygon pl;
 
   QgsLineString ls;
-  ls.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZM, 6374985, -3626584, 1, 2 )
-                << QgsPoint( QgsWkbTypes::PointZM, 6274985, -3526584, 3, 4 )
-                << QgsPoint( QgsWkbTypes::PointZM, 6474985, -3526584, 5, 6 )
-                << QgsPoint( QgsWkbTypes::PointZM, 6374985, -3626584, 1, 2 ) );
+  ls.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 6374985, -3626584, 1, 2 )
+                << QgsPoint( Qgis::WkbType::PointZM, 6274985, -3526584, 3, 4 )
+                << QgsPoint( Qgis::WkbType::PointZM, 6474985, -3526584, 5, 6 )
+                << QgsPoint( Qgis::WkbType::PointZM, 6374985, -3626584, 1, 2 ) );
   pl.setExteriorRing( ls.clone() );
   pl.addInteriorRing( ls.clone() );
 
@@ -2496,10 +2496,10 @@ void TestQgsPolygon::Qtransform()
 
   QgsPolygon pl;
   QgsLineString ls;
-  ls.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZM, 1, 2, 3, 4 )
-                << QgsPoint( QgsWkbTypes::PointZM, 11, 12, 13, 14 )
-                << QgsPoint( QgsWkbTypes::PointZM, 1, 12, 23, 24 )
-                << QgsPoint( QgsWkbTypes::PointZM, 1, 2, 3, 4 ) );
+  ls.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 1, 2, 3, 4 )
+                << QgsPoint( Qgis::WkbType::PointZM, 11, 12, 13, 14 )
+                << QgsPoint( Qgis::WkbType::PointZM, 1, 12, 23, 24 )
+                << QgsPoint( Qgis::WkbType::PointZM, 1, 2, 3, 4 ) );
   pl.setExteriorRing( ls.clone() );
   pl.addInteriorRing( ls.clone() );
 
@@ -2576,19 +2576,19 @@ void TestQgsPolygon::toPolygon()
   QgsPolygon pl;
 
   QgsLineString *ext = new QgsLineString();
-  ext->setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZM, 0, 0, 1, 5 )
-                  << QgsPoint( QgsWkbTypes::PointZM, 0, 10, 2, 6 )
-                  << QgsPoint( QgsWkbTypes::PointZM, 10, 10, 3, 7 )
-                  << QgsPoint( QgsWkbTypes::PointZM, 10, 0, 4, 8 )
-                  << QgsPoint( QgsWkbTypes::PointZM, 0, 0, 1, 9 ) );
+  ext->setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 0, 0, 1, 5 )
+                  << QgsPoint( Qgis::WkbType::PointZM, 0, 10, 2, 6 )
+                  << QgsPoint( Qgis::WkbType::PointZM, 10, 10, 3, 7 )
+                  << QgsPoint( Qgis::WkbType::PointZM, 10, 0, 4, 8 )
+                  << QgsPoint( Qgis::WkbType::PointZM, 0, 0, 1, 9 ) );
   pl.setExteriorRing( ext );
 
   QgsLineString *ring = new QgsLineString();
-  ring->setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZM, 1, 1, 1, 2 )
-                   << QgsPoint( QgsWkbTypes::PointZM, 1, 9, 2, 3 )
-                   << QgsPoint( QgsWkbTypes::PointZM, 9, 9, 3, 6 )
-                   << QgsPoint( QgsWkbTypes::PointZM, 9, 1, 4, 4 )
-                   << QgsPoint( QgsWkbTypes::PointZM, 1, 1, 1, 7 ) );
+  ring->setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 1, 1, 1, 2 )
+                   << QgsPoint( Qgis::WkbType::PointZM, 1, 9, 2, 3 )
+                   << QgsPoint( Qgis::WkbType::PointZM, 9, 9, 3, 6 )
+                   << QgsPoint( Qgis::WkbType::PointZM, 9, 1, 4, 4 )
+                   << QgsPoint( Qgis::WkbType::PointZM, 1, 1, 1, 7 ) );
   pl.addInteriorRing( ring );
 
   //surfaceToPolygon - should be identical given polygon has no curves
@@ -2605,64 +2605,64 @@ void TestQgsPolygon::toCurveType()
   QgsPolygon pl; // empty
 
   std::unique_ptr< QgsCurvePolygon > curveType( pl.toCurveType() );
-  QCOMPARE( curveType->wkbType(), QgsWkbTypes::CurvePolygon );
+  QCOMPARE( curveType->wkbType(), Qgis::WkbType::CurvePolygon );
 
   QgsLineString *ext = new QgsLineString();
-  ext->setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZM, 0, 0, 1, 5 )
-                  << QgsPoint( QgsWkbTypes::PointZM, 0, 10, 2, 6 )
-                  << QgsPoint( QgsWkbTypes::PointZM, 10, 10, 3, 7 )
-                  << QgsPoint( QgsWkbTypes::PointZM, 10, 0, 4, 8 )
-                  << QgsPoint( QgsWkbTypes::PointZM, 0, 0, 1, 9 ) );
+  ext->setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 0, 0, 1, 5 )
+                  << QgsPoint( Qgis::WkbType::PointZM, 0, 10, 2, 6 )
+                  << QgsPoint( Qgis::WkbType::PointZM, 10, 10, 3, 7 )
+                  << QgsPoint( Qgis::WkbType::PointZM, 10, 0, 4, 8 )
+                  << QgsPoint( Qgis::WkbType::PointZM, 0, 0, 1, 9 ) );
   pl.setExteriorRing( ext );
 
   QgsLineString *ring = new QgsLineString();
-  ring->setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZM, 1, 1, 1, 2 )
-                   << QgsPoint( QgsWkbTypes::PointZM, 1, 9, 2, 3 )
-                   << QgsPoint( QgsWkbTypes::PointZM, 9, 9, 3, 6 )
-                   << QgsPoint( QgsWkbTypes::PointZM, 9, 1, 4, 4 )
-                   << QgsPoint( QgsWkbTypes::PointZM, 1, 1, 1, 7 ) );
+  ring->setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 1, 1, 1, 2 )
+                   << QgsPoint( Qgis::WkbType::PointZM, 1, 9, 2, 3 )
+                   << QgsPoint( Qgis::WkbType::PointZM, 9, 9, 3, 6 )
+                   << QgsPoint( Qgis::WkbType::PointZM, 9, 1, 4, 4 )
+                   << QgsPoint( Qgis::WkbType::PointZM, 1, 1, 1, 7 ) );
   pl.addInteriorRing( ring );
 
   curveType.reset( pl.toCurveType() );
 
-  QCOMPARE( curveType->wkbType(), QgsWkbTypes::CurvePolygonZM );
+  QCOMPARE( curveType->wkbType(), Qgis::WkbType::CurvePolygonZM );
 
   const QgsLineString *exteriorRing = static_cast< const QgsLineString * >( curveType->exteriorRing() );
   QCOMPARE( exteriorRing->numPoints(), 5 );
-  QCOMPARE( exteriorRing->vertexAt( QgsVertexId( 0, 0, 0 ) ), QgsPoint( QgsWkbTypes::PointZM, 0, 0, 1, 5 ) );
-  QCOMPARE( exteriorRing->vertexAt( QgsVertexId( 0, 0, 1 ) ), QgsPoint( QgsWkbTypes::PointZM, 0, 10, 2, 6 ) );
-  QCOMPARE( exteriorRing->vertexAt( QgsVertexId( 0, 0, 2 ) ), QgsPoint( QgsWkbTypes::PointZM, 10, 10, 3, 7 ) );
-  QCOMPARE( exteriorRing->vertexAt( QgsVertexId( 0, 0, 3 ) ), QgsPoint( QgsWkbTypes::PointZM, 10, 0, 4, 8 ) );
-  QCOMPARE( exteriorRing->vertexAt( QgsVertexId( 0, 0, 4 ) ), QgsPoint( QgsWkbTypes::PointZM, 0, 0, 1, 9 ) );
+  QCOMPARE( exteriorRing->vertexAt( QgsVertexId( 0, 0, 0 ) ), QgsPoint( Qgis::WkbType::PointZM, 0, 0, 1, 5 ) );
+  QCOMPARE( exteriorRing->vertexAt( QgsVertexId( 0, 0, 1 ) ), QgsPoint( Qgis::WkbType::PointZM, 0, 10, 2, 6 ) );
+  QCOMPARE( exteriorRing->vertexAt( QgsVertexId( 0, 0, 2 ) ), QgsPoint( Qgis::WkbType::PointZM, 10, 10, 3, 7 ) );
+  QCOMPARE( exteriorRing->vertexAt( QgsVertexId( 0, 0, 3 ) ), QgsPoint( Qgis::WkbType::PointZM, 10, 0, 4, 8 ) );
+  QCOMPARE( exteriorRing->vertexAt( QgsVertexId( 0, 0, 4 ) ), QgsPoint( Qgis::WkbType::PointZM, 0, 0, 1, 9 ) );
 
   QCOMPARE( curveType->numInteriorRings(), 1 );
 
   const QgsLineString *interiorRing = static_cast< const QgsLineString * >( curveType->interiorRing( 0 ) );
   QCOMPARE( interiorRing->numPoints(), 5 );
-  QCOMPARE( interiorRing->vertexAt( QgsVertexId( 0, 0, 0 ) ), QgsPoint( QgsWkbTypes::PointZM, 1, 1, 1, 2 ) );
-  QCOMPARE( interiorRing->vertexAt( QgsVertexId( 0, 0, 1 ) ), QgsPoint( QgsWkbTypes::PointZM, 1, 9, 2, 3 ) );
-  QCOMPARE( interiorRing->vertexAt( QgsVertexId( 0, 0, 2 ) ), QgsPoint( QgsWkbTypes::PointZM, 9, 9, 3, 6 ) );
-  QCOMPARE( interiorRing->vertexAt( QgsVertexId( 0, 0, 3 ) ), QgsPoint( QgsWkbTypes::PointZM, 9, 1, 4, 4 ) );
-  QCOMPARE( interiorRing->vertexAt( QgsVertexId( 0, 0, 4 ) ), QgsPoint( QgsWkbTypes::PointZM, 1, 1, 1, 7 ) );
+  QCOMPARE( interiorRing->vertexAt( QgsVertexId( 0, 0, 0 ) ), QgsPoint( Qgis::WkbType::PointZM, 1, 1, 1, 2 ) );
+  QCOMPARE( interiorRing->vertexAt( QgsVertexId( 0, 0, 1 ) ), QgsPoint( Qgis::WkbType::PointZM, 1, 9, 2, 3 ) );
+  QCOMPARE( interiorRing->vertexAt( QgsVertexId( 0, 0, 2 ) ), QgsPoint( Qgis::WkbType::PointZM, 9, 9, 3, 6 ) );
+  QCOMPARE( interiorRing->vertexAt( QgsVertexId( 0, 0, 3 ) ), QgsPoint( Qgis::WkbType::PointZM, 9, 1, 4, 4 ) );
+  QCOMPARE( interiorRing->vertexAt( QgsVertexId( 0, 0, 4 ) ), QgsPoint( Qgis::WkbType::PointZM, 1, 1, 1, 7 ) );
 }
 
 void TestQgsPolygon::toFromWkb()
 {
   QgsPolygon pl1;
   QgsLineString *ext = new QgsLineString();
-  ext->setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::Point, 0, 0 )
-                  << QgsPoint( QgsWkbTypes::Point, 0, 10 )
-                  << QgsPoint( QgsWkbTypes::Point, 10, 10 )
-                  << QgsPoint( QgsWkbTypes::Point, 10, 0 )
-                  << QgsPoint( QgsWkbTypes::Point, 0, 0 ) );
+  ext->setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::Point, 0, 0 )
+                  << QgsPoint( Qgis::WkbType::Point, 0, 10 )
+                  << QgsPoint( Qgis::WkbType::Point, 10, 10 )
+                  << QgsPoint( Qgis::WkbType::Point, 10, 0 )
+                  << QgsPoint( Qgis::WkbType::Point, 0, 0 ) );
   pl1.setExteriorRing( ext );
 
   QgsLineString *ring = new QgsLineString();
-  ring->setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::Point, 1, 1 )
-                   << QgsPoint( QgsWkbTypes::Point, 1, 9 )
-                   << QgsPoint( QgsWkbTypes::Point, 9, 9 )
-                   << QgsPoint( QgsWkbTypes::Point, 9, 1 )
-                   << QgsPoint( QgsWkbTypes::Point, 1, 1 ) );
+  ring->setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::Point, 1, 1 )
+                   << QgsPoint( Qgis::WkbType::Point, 1, 9 )
+                   << QgsPoint( Qgis::WkbType::Point, 9, 9 )
+                   << QgsPoint( Qgis::WkbType::Point, 9, 1 )
+                   << QgsPoint( Qgis::WkbType::Point, 1, 1 ) );
   pl1.addInteriorRing( ring );
 
   QByteArray wkb = pl1.asWkb();
@@ -2680,19 +2680,19 @@ void TestQgsPolygon::toFromWkbZM()
   //PolygonZ
   QgsPolygon pl1;
   QgsLineString *ext = new QgsLineString();
-  ext->setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZ, 0, 0, 1 )
-                  << QgsPoint( QgsWkbTypes::PointZ, 0, 10, 2 )
-                  << QgsPoint( QgsWkbTypes::PointZ, 10, 10, 3 )
-                  << QgsPoint( QgsWkbTypes::PointZ, 10, 0, 4 )
-                  << QgsPoint( QgsWkbTypes::PointZ, 0, 0, 1 ) );
+  ext->setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZ, 0, 0, 1 )
+                  << QgsPoint( Qgis::WkbType::PointZ, 0, 10, 2 )
+                  << QgsPoint( Qgis::WkbType::PointZ, 10, 10, 3 )
+                  << QgsPoint( Qgis::WkbType::PointZ, 10, 0, 4 )
+                  << QgsPoint( Qgis::WkbType::PointZ, 0, 0, 1 ) );
   pl1.setExteriorRing( ext );
 
   QgsLineString *ring = new QgsLineString();
-  ring->setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZ, 1, 1, 1 )
-                   << QgsPoint( QgsWkbTypes::PointZ, 1, 9, 2 )
-                   << QgsPoint( QgsWkbTypes::PointZ, 9, 9, 3 )
-                   << QgsPoint( QgsWkbTypes::PointZ, 9, 1, 4 )
-                   << QgsPoint( QgsWkbTypes::PointZ, 1, 1, 1 ) );
+  ring->setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZ, 1, 1, 1 )
+                   << QgsPoint( Qgis::WkbType::PointZ, 1, 9, 2 )
+                   << QgsPoint( Qgis::WkbType::PointZ, 9, 9, 3 )
+                   << QgsPoint( Qgis::WkbType::PointZ, 9, 1, 4 )
+                   << QgsPoint( Qgis::WkbType::PointZ, 1, 1, 1 ) );
   pl1.addInteriorRing( ring );
 
   QByteArray wkb = pl1.asWkb();
@@ -2708,19 +2708,19 @@ void TestQgsPolygon::toFromWkbZM()
   pl2.clear();
 
   ext = new QgsLineString();
-  ext->setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointM, 0, 0, 0, 1 )
-                  << QgsPoint( QgsWkbTypes::PointM, 0, 10,  0, 2 )
-                  << QgsPoint( QgsWkbTypes::PointM, 10, 10, 0, 3 )
-                  << QgsPoint( QgsWkbTypes::PointM, 10, 0,  0, 4 )
-                  << QgsPoint( QgsWkbTypes::PointM, 0, 0, 0, 1 ) );
+  ext->setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointM, 0, 0, 0, 1 )
+                  << QgsPoint( Qgis::WkbType::PointM, 0, 10,  0, 2 )
+                  << QgsPoint( Qgis::WkbType::PointM, 10, 10, 0, 3 )
+                  << QgsPoint( Qgis::WkbType::PointM, 10, 0,  0, 4 )
+                  << QgsPoint( Qgis::WkbType::PointM, 0, 0, 0, 1 ) );
   pl1.setExteriorRing( ext );
 
   ring = new QgsLineString();
-  ring->setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointM, 1, 1, 0, 1 )
-                   << QgsPoint( QgsWkbTypes::PointM, 1, 9, 0, 2 )
-                   << QgsPoint( QgsWkbTypes::PointM, 9, 9, 0, 3 )
-                   << QgsPoint( QgsWkbTypes::PointM, 9, 1, 0, 4 )
-                   << QgsPoint( QgsWkbTypes::PointM, 1, 1, 0, 1 ) );
+  ring->setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointM, 1, 1, 0, 1 )
+                   << QgsPoint( Qgis::WkbType::PointM, 1, 9, 0, 2 )
+                   << QgsPoint( Qgis::WkbType::PointM, 9, 9, 0, 3 )
+                   << QgsPoint( Qgis::WkbType::PointM, 9, 1, 0, 4 )
+                   << QgsPoint( Qgis::WkbType::PointM, 1, 1, 0, 1 ) );
   pl1.addInteriorRing( ring );
 
   wkb = pl1.asWkb();
@@ -2734,19 +2734,19 @@ void TestQgsPolygon::toFromWkbZM()
   pl2.clear();
 
   ext = new QgsLineString();
-  ext->setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZM, 0, 0, 1, 5 )
-                  << QgsPoint( QgsWkbTypes::PointZM, 0, 10, 2, 6 )
-                  << QgsPoint( QgsWkbTypes::PointZM, 10, 10, 3, 7 )
-                  << QgsPoint( QgsWkbTypes::PointZM, 10, 0, 4, 8 )
-                  << QgsPoint( QgsWkbTypes::PointZM, 0, 0, 1, 9 ) );
+  ext->setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 0, 0, 1, 5 )
+                  << QgsPoint( Qgis::WkbType::PointZM, 0, 10, 2, 6 )
+                  << QgsPoint( Qgis::WkbType::PointZM, 10, 10, 3, 7 )
+                  << QgsPoint( Qgis::WkbType::PointZM, 10, 0, 4, 8 )
+                  << QgsPoint( Qgis::WkbType::PointZM, 0, 0, 1, 9 ) );
   pl1.setExteriorRing( ext );
 
   ring = new QgsLineString();
-  ring->setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZM, 1, 1, 1, 2 )
-                   << QgsPoint( QgsWkbTypes::PointZM, 1, 9, 2, 3 )
-                   << QgsPoint( QgsWkbTypes::PointZM, 9, 9, 3, 6 )
-                   << QgsPoint( QgsWkbTypes::PointZM, 9, 1, 4, 4 )
-                   << QgsPoint( QgsWkbTypes::PointZM, 1, 1, 1, 7 ) );
+  ring->setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 1, 1, 1, 2 )
+                   << QgsPoint( Qgis::WkbType::PointZM, 1, 9, 2, 3 )
+                   << QgsPoint( Qgis::WkbType::PointZM, 9, 9, 3, 6 )
+                   << QgsPoint( Qgis::WkbType::PointZM, 9, 1, 4, 4 )
+                   << QgsPoint( Qgis::WkbType::PointZM, 1, 1, 1, 7 ) );
   pl1.addInteriorRing( ring );
 
   wkb = pl1.asWkb();
@@ -2760,19 +2760,19 @@ void TestQgsPolygon::toFromWkb25D()
 {
   QgsPolygon pl1;
   QgsLineString *ext = new QgsLineString();
-  ext->setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::Point25D, 0, 0, 1 )
-                  << QgsPoint( QgsWkbTypes::Point25D, 0, 10, 2 )
-                  << QgsPoint( QgsWkbTypes::Point25D, 10, 10, 3 )
-                  << QgsPoint( QgsWkbTypes::Point25D, 10, 0, 4 )
-                  << QgsPoint( QgsWkbTypes::Point25D, 0, 0, 1 ) );
+  ext->setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::Point25D, 0, 0, 1 )
+                  << QgsPoint( Qgis::WkbType::Point25D, 0, 10, 2 )
+                  << QgsPoint( Qgis::WkbType::Point25D, 10, 10, 3 )
+                  << QgsPoint( Qgis::WkbType::Point25D, 10, 0, 4 )
+                  << QgsPoint( Qgis::WkbType::Point25D, 0, 0, 1 ) );
   pl1.setExteriorRing( ext );
 
   QgsLineString *ring = new QgsLineString();
-  ring->setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::Point25D, 1, 1, 1 )
-                   << QgsPoint( QgsWkbTypes::Point25D, 1, 9, 2 )
-                   << QgsPoint( QgsWkbTypes::Point25D, 9, 9, 3 )
-                   << QgsPoint( QgsWkbTypes::Point25D, 9, 1, 4 )
-                   << QgsPoint( QgsWkbTypes::Point25D, 1, 1, 1 ) );
+  ring->setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::Point25D, 1, 1, 1 )
+                   << QgsPoint( Qgis::WkbType::Point25D, 1, 9, 2 )
+                   << QgsPoint( Qgis::WkbType::Point25D, 9, 9, 3 )
+                   << QgsPoint( Qgis::WkbType::Point25D, 9, 1, 4 )
+                   << QgsPoint( Qgis::WkbType::Point25D, 1, 1, 1 ) );
   pl1.addInteriorRing( ring );
 
   QgsPolygon pl2;
@@ -2788,14 +2788,14 @@ void TestQgsPolygon::toFromWkb25D()
   QgsConstWkbPtr nullPtr( nullptr, 0 );
 
   QVERIFY( !pl2.fromWkb( nullPtr ) );
-  QCOMPARE( pl2.wkbType(), QgsWkbTypes::Polygon );
+  QCOMPARE( pl2.wkbType(), Qgis::WkbType::Polygon );
 
   QgsPoint point( 1, 2 );
   QByteArray wkbPoint = point.asWkb();
   QgsConstWkbPtr wkbPointPtr( wkbPoint );
 
   QVERIFY( !pl2.fromWkb( wkbPointPtr ) );
-  QCOMPARE( pl2.wkbType(), QgsWkbTypes::Polygon );
+  QCOMPARE( pl2.wkbType(), Qgis::WkbType::Polygon );
 }
 
 void TestQgsPolygon::toFromWKT()
@@ -2803,19 +2803,19 @@ void TestQgsPolygon::toFromWKT()
   QgsPolygon pl1;
 
   QgsLineString *ext = new QgsLineString();
-  ext->setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZM, 0, 0, 1, 5 )
-                  << QgsPoint( QgsWkbTypes::PointZM, 0, 10, 2, 6 )
-                  << QgsPoint( QgsWkbTypes::PointZM, 10, 10, 3, 7 )
-                  << QgsPoint( QgsWkbTypes::PointZM, 10, 0, 4, 8 )
-                  << QgsPoint( QgsWkbTypes::PointZM, 0, 0, 1, 9 ) );
+  ext->setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 0, 0, 1, 5 )
+                  << QgsPoint( Qgis::WkbType::PointZM, 0, 10, 2, 6 )
+                  << QgsPoint( Qgis::WkbType::PointZM, 10, 10, 3, 7 )
+                  << QgsPoint( Qgis::WkbType::PointZM, 10, 0, 4, 8 )
+                  << QgsPoint( Qgis::WkbType::PointZM, 0, 0, 1, 9 ) );
   pl1.setExteriorRing( ext );
 
   QgsLineString *ring = new QgsLineString();
-  ring->setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZM, 1, 1, 1, 2 )
-                   << QgsPoint( QgsWkbTypes::PointZM, 1, 9, 2, 3 )
-                   << QgsPoint( QgsWkbTypes::PointZM, 9, 9, 3, 6 )
-                   << QgsPoint( QgsWkbTypes::PointZM, 9, 1, 4, 4 )
-                   << QgsPoint( QgsWkbTypes::PointZM, 1, 1, 1, 7 ) );
+  ring->setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 1, 1, 1, 2 )
+                   << QgsPoint( Qgis::WkbType::PointZM, 1, 9, 2, 3 )
+                   << QgsPoint( Qgis::WkbType::PointZM, 9, 9, 3, 6 )
+                   << QgsPoint( Qgis::WkbType::PointZM, 9, 1, 4, 4 )
+                   << QgsPoint( Qgis::WkbType::PointZM, 1, 1, 1, 7 ) );
   pl1.addInteriorRing( ring );
 
   QString wkt = pl1.asWkt();
@@ -2832,7 +2832,7 @@ void TestQgsPolygon::toFromWKT()
   QCOMPARE( pl2.numInteriorRings(), 0 );
   QVERIFY( !pl2.is3D() );
   QVERIFY( !pl2.isMeasure() );
-  QCOMPARE( pl2.wkbType(), QgsWkbTypes::Polygon );
+  QCOMPARE( pl2.wkbType(), Qgis::WkbType::Polygon );
 }
 
 void TestQgsPolygon::exportImport()
@@ -2840,11 +2840,11 @@ void TestQgsPolygon::exportImport()
   //as JSON
   QgsPolygon exportPolygon;
   QgsLineString *ext = new QgsLineString();
-  ext->setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::Point, 0, 0 )
-                  << QgsPoint( QgsWkbTypes::Point, 0, 10 )
-                  << QgsPoint( QgsWkbTypes::Point, 10, 10 )
-                  << QgsPoint( QgsWkbTypes::Point, 10, 0 )
-                  << QgsPoint( QgsWkbTypes::Point, 0, 0 ) );
+  ext->setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::Point, 0, 0 )
+                  << QgsPoint( Qgis::WkbType::Point, 0, 10 )
+                  << QgsPoint( Qgis::WkbType::Point, 10, 10 )
+                  << QgsPoint( Qgis::WkbType::Point, 10, 0 )
+                  << QgsPoint( Qgis::WkbType::Point, 0, 0 ) );
   exportPolygon.setExteriorRing( ext );
 
   // GML document for compare
@@ -2869,11 +2869,11 @@ void TestQgsPolygon::exportImport()
   QCOMPARE( exportPolygon.asJson(), expectedSimpleJson );
 
   QgsLineString *ring = new QgsLineString();
-  ring->setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::Point, 1, 1 )
-                   << QgsPoint( QgsWkbTypes::Point, 1, 9 )
-                   << QgsPoint( QgsWkbTypes::Point, 9, 9 )
-                   << QgsPoint( QgsWkbTypes::Point, 9, 1 )
-                   << QgsPoint( QgsWkbTypes::Point, 1, 1 ) );
+  ring->setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::Point, 1, 1 )
+                   << QgsPoint( Qgis::WkbType::Point, 1, 9 )
+                   << QgsPoint( Qgis::WkbType::Point, 9, 9 )
+                   << QgsPoint( Qgis::WkbType::Point, 9, 1 )
+                   << QgsPoint( Qgis::WkbType::Point, 1, 1 ) );
   exportPolygon.addInteriorRing( ring );
 
   QString expectedJson( QStringLiteral( "{\"coordinates\":[[[0.0,0.0],[0.0,10.0],[10.0,10.0],[10.0,0.0],[0.0,0.0]],[[1.0,1.0],[1.0,9.0],[9.0,9.0],[9.0,1.0],[1.0,1.0]]],\"type\":\"Polygon\"}" ) );
@@ -2881,19 +2881,19 @@ void TestQgsPolygon::exportImport()
 
   QgsPolygon exportPolygonFloat;
   ext = new QgsLineString();
-  ext->setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::Point, 10 / 9.0, 10 / 9.0 )
-                  << QgsPoint( QgsWkbTypes::Point, 10 / 9.0, 100 / 9.0 )
-                  << QgsPoint( QgsWkbTypes::Point, 100 / 9.0, 100 / 9.0 )
-                  << QgsPoint( QgsWkbTypes::Point, 100 / 9.0, 10 / 9.0 )
-                  << QgsPoint( QgsWkbTypes::Point, 10 / 9.0, 10 / 9.0 ) );
+  ext->setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::Point, 10 / 9.0, 10 / 9.0 )
+                  << QgsPoint( Qgis::WkbType::Point, 10 / 9.0, 100 / 9.0 )
+                  << QgsPoint( Qgis::WkbType::Point, 100 / 9.0, 100 / 9.0 )
+                  << QgsPoint( Qgis::WkbType::Point, 100 / 9.0, 10 / 9.0 )
+                  << QgsPoint( Qgis::WkbType::Point, 10 / 9.0, 10 / 9.0 ) );
   exportPolygonFloat.setExteriorRing( ext );
 
   ring = new QgsLineString();
-  ring->setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::Point, 2 / 3.0, 2 / 3.0 )
-                   << QgsPoint( QgsWkbTypes::Point, 2 / 3.0, 4 / 3.0 )
-                   << QgsPoint( QgsWkbTypes::Point, 4 / 3.0, 4 / 3.0 )
-                   << QgsPoint( QgsWkbTypes::Point, 4 / 3.0, 2 / 3.0 )
-                   << QgsPoint( QgsWkbTypes::Point, 2 / 3.0, 2 / 3.0 ) );
+  ring->setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::Point, 2 / 3.0, 2 / 3.0 )
+                   << QgsPoint( Qgis::WkbType::Point, 2 / 3.0, 4 / 3.0 )
+                   << QgsPoint( Qgis::WkbType::Point, 4 / 3.0, 4 / 3.0 )
+                   << QgsPoint( Qgis::WkbType::Point, 4 / 3.0, 2 / 3.0 )
+                   << QgsPoint( Qgis::WkbType::Point, 2 / 3.0, 2 / 3.0 ) );
   exportPolygonFloat.addInteriorRing( ring );
 
   QString expectedJsonPrec3( QStringLiteral( "{\"coordinates\":[[[1.111,1.111],[1.111,11.111],[11.111,11.111],[11.111,1.111],[1.111,1.111]],[[0.667,0.667],[0.667,1.333],[1.333,1.333],[1.333,0.667],[0.667,0.667]]],\"type\":\"Polygon\"}" ) );

@@ -20,7 +20,7 @@
 #include <QCheckBox>
 #include <QPointer>
 
-#include "qgsgui.h"
+#include "qgis_gui.h"
 #include "ui_qgsprovidersublayersdialogbase.h"
 #include "qgsprovidersublayerdetails.h"
 #include "qgsprovidersublayermodel.h"
@@ -81,7 +81,7 @@ class GUI_EXPORT QgsProviderSublayersDialog : public QDialog, private Ui::QgsPro
                                 const QString &providerKey,
                                 const QString &filePath,
                                 const QList< QgsProviderSublayerDetails> initialDetails = QList< QgsProviderSublayerDetails>(),
-                                const QList< QgsMapLayerType > &acceptableTypes = QList< QgsMapLayerType >(),
+                                const QList< Qgis::LayerType > &acceptableTypes = QList< Qgis::LayerType >(),
                                 QWidget *parent SIP_TRANSFERTHIS = nullptr,
                                 Qt::WindowFlags fl = Qt::WindowFlags() );
 

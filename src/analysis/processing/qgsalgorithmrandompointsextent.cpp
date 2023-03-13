@@ -18,7 +18,9 @@
 //Disclaimer: The algorithm optimizes the original Random points in extent algorithm, (C) Alexander Bruy, 2014
 
 #include "qgsalgorithmrandompointsextent.h"
-#include "random"
+#include "qgsspatialindex.h"
+
+#include <random>
 
 ///@cond PRIVATE
 
@@ -97,7 +99,7 @@ QVariantMap QgsRandomPointsExtentAlgorithm::processAlgorithm( const QVariantMap 
   fields.append( QgsField( QStringLiteral( "id" ), QVariant::LongLong ) );
 
   QString dest;
-  std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, fields, QgsWkbTypes::Point, mCrs ) );
+  std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, fields, Qgis::WkbType::Point, mCrs ) );
   if ( !sink )
     throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
 

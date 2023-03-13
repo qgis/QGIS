@@ -13,6 +13,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+
 #include "qgsrasterattributetable.h"
 #include "qgsvectorfilewriter.h"
 #include "qgsogrprovider.h"
@@ -22,6 +23,9 @@
 #include "qgssinglebandpseudocolorrenderer.h"
 #include "qgsrastershader.h"
 #include "qgsrastershaderfunction.h"
+
+#include <QLocale>
+
 #include <mutex>
 #include <cmath>
 
@@ -507,7 +511,7 @@ bool QgsRasterAttributeTable::writeToFile( const QString &path, QString *errorMe
 
   cleanedPath = QgsFileUtils::ensureFileNameHasExtension( cleanedPath, {{ QStringLiteral( ".vat" ) } } );
 
-  writer.reset( QgsVectorFileWriter::create( cleanedPath, qgisFields(), QgsWkbTypes::Type::NoGeometry, QgsCoordinateReferenceSystem(), QgsCoordinateTransformContext(), options ) );
+  writer.reset( QgsVectorFileWriter::create( cleanedPath, qgisFields(), Qgis::WkbType::NoGeometry, QgsCoordinateReferenceSystem(), QgsCoordinateTransformContext(), options ) );
 
   cleanedPath.append( QStringLiteral( ".dbf" ) );
 

@@ -46,7 +46,7 @@ class QgsMinimumEnclosingCircleAlgorithm : public QgsProcessingFeatureBasedAlgor
 
   protected:
     QString outputName() const override;
-    QgsWkbTypes::Type outputWkbType( QgsWkbTypes::Type ) const override;
+    Qgis::WkbType outputWkbType( Qgis::WkbType ) const override;
     QgsFields outputFields( const QgsFields &inputFields ) const override;
     bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
     QgsFeatureList processFeature( const QgsFeature &feature,  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;

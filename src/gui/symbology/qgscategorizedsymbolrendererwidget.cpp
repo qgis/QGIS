@@ -28,13 +28,9 @@
 #include "qgslogger.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgstemporalcontroller.h"
-
 #include "qgssymbolselectordialog.h"
-#include "qgsexpressionbuilderdialog.h"
-
 #include "qgsvectorlayer.h"
 #include "qgsfeatureiterator.h"
-
 #include "qgsproject.h"
 #include "qgsprojectstylesettings.h"
 #include "qgsexpression.h"
@@ -1185,8 +1181,8 @@ int QgsCategorizedSymbolRendererWidget::matchToSymbols( QgsStyle *style )
   if ( !mLayer || !style )
     return 0;
 
-  const Qgis::SymbolType type = mLayer->geometryType() == QgsWkbTypes::PointGeometry ? Qgis::SymbolType::Marker
-                                : mLayer->geometryType() == QgsWkbTypes::LineGeometry ? Qgis::SymbolType::Line
+  const Qgis::SymbolType type = mLayer->geometryType() == Qgis::GeometryType::Point ? Qgis::SymbolType::Marker
+                                : mLayer->geometryType() == Qgis::GeometryType::Line ? Qgis::SymbolType::Line
                                 : Qgis::SymbolType::Fill;
 
   QVariantList unmatchedCategories;

@@ -12,6 +12,7 @@ __copyright__ = 'Copyright 2012, The QGIS Project'
 import os
 import platform
 import re
+import stat
 import sys
 import tempfile
 
@@ -195,6 +196,9 @@ def getTempfilePath(sufx='png'):
         suffix=f".{sufx}", delete=False)
     filepath = tmp.name
     tmp.close()
+    # set read permission for group and other so we can access docker test generated file
+    # to build artifact for instance
+    os.chmod(filepath, stat.S_IRUSR | stat.S_IWUSR | stat.S_IROTH | stat.S_IRGRP)
     return filepath
 
 

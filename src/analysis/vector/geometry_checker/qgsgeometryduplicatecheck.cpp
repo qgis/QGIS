@@ -59,7 +59,7 @@ void QgsGeometryDuplicateCheck::collectErrors( const QMap<QString, QgsFeaturePoo
     }
     QMap<QString, QList<QgsFeatureId>> duplicates;
 
-    const QgsWkbTypes::GeometryType geomType = geomA.type();
+    const Qgis::GeometryType geomType = geomA.type();
     const QgsGeometryCheckerUtils::LayerFeatures layerFeaturesB( featurePools, QList<QString>() << layerFeatureA.layer()->id() << layerIds, bboxA, {geomType}, mContext );
     for ( const QgsGeometryCheckerUtils::LayerFeature &layerFeatureB : layerFeaturesB )
     {

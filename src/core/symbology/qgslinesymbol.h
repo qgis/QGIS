@@ -56,8 +56,7 @@ class CORE_EXPORT QgsLineSymbol : public QgsSymbol
      * \param unit size units
      * \since QGIS 3.16
      */
-    void setWidthUnit( QgsUnitTypes::RenderUnit unit ) const;
-
+    void setWidthUnit( Qgis::RenderUnit unit ) const;
 
     /**
      * Returns the estimated width for the whole symbol, which is the maximum width of

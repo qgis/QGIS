@@ -92,14 +92,14 @@ Sets the ``destination`` crs used for reprojecting incoming features to the sink
 .. seealso:: :py:func:`destinationCrs`
 %End
 
-    QgsWkbTypes::Type destinationWkbType() const;
+    Qgis::WkbType destinationWkbType() const;
 %Docstring
 Returns the WKB geometry type for the destination.
 
 .. seealso:: :py:func:`setDestinationWkbType`
 %End
 
-    void setDestinationWkbType( QgsWkbTypes::Type type );
+    void setDestinationWkbType( Qgis::WkbType type );
 %Docstring
 Sets the WKB geometry ``type`` for the destination.
 

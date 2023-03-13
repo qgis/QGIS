@@ -16,7 +16,6 @@
 #include "qgspointxy.h"
 #include "qgsgeorefdatapoint.h"
 #include "qgscoordinatereferencesystem.h"
-#include "qgscoordinatetransform.h"
 #include "qgsproject.h"
 #include "qgsgeoreftransform.h"
 
@@ -65,7 +64,7 @@ int QgsGCPList::countEnabledPoints() const
   return s;
 }
 
-void QgsGCPList::updateResiduals( QgsGeorefTransform *georefTransform, const QgsCoordinateReferenceSystem &targetCrs, const QgsCoordinateTransformContext &context, QgsUnitTypes::RenderUnit residualUnit )
+void QgsGCPList::updateResiduals( QgsGeorefTransform *georefTransform, const QgsCoordinateReferenceSystem &targetCrs, const QgsCoordinateTransformContext &context, Qgis::RenderUnit residualUnit )
 {
   bool bTransformUpdated = false;
   QVector<QgsPointXY> sourceCoordinates;
@@ -96,7 +95,7 @@ void QgsGCPList::updateResiduals( QgsGeorefTransform *georefTransform, const Qgs
     {
       QgsPointXY dst;
       const QgsPointXY pixel = georefTransform->toSourcePixel( p->sourcePoint() );
-      if ( residualUnit == QgsUnitTypes::RenderPixels )
+      if ( residualUnit == Qgis::RenderUnit::Pixels )
       {
         // Transform from world to raster coordinate:
         // This is the transform direction used by the warp operation.
@@ -108,7 +107,7 @@ void QgsGCPList::updateResiduals( QgsGeorefTransform *georefTransform, const Qgs
           dY = -( dst.y() - pixel.y() );
         }
       }
-      else if ( residualUnit == QgsUnitTypes::RenderMapUnits )
+      else if ( residualUnit == Qgis::RenderUnit::MapUnits )
       {
         if ( georefTransform->transformRasterToWorld( pixel, dst ) )
         {
@@ -187,7 +186,6 @@ QList<QgsGcpPoint> QgsGCPList::loadGcps( const QString &filePath, const QgsCoord
   QString line = points.readLine();
   lineNumber++;
 
-  int i = 0;
   if ( line.contains( QLatin1String( "#CRS: " ) ) )
   {
     const QString crsDef = line.remove( QStringLiteral( "#CRS: " ) );
@@ -230,8 +228,6 @@ QList<QgsGcpPoint> QgsGCPList::loadGcps( const QString &filePath, const QgsCoord
       enable = ls.at( 4 ).toInt();
     }
     res.append( QgsGcpPoint( sourcePoint, destinationPoint, actualDestinationCrs, enable ) );
-
-    ++i;
   }
   return res;
 }

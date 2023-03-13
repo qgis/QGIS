@@ -22,6 +22,7 @@
 #include <Qt3DInput/QMouseEvent>
 #include <QImage>
 
+#ifndef SIP_RUN
 namespace Qt3DInput
 {
   class QKeyEvent;
@@ -36,6 +37,8 @@ namespace Qt3DRender
   class QCamera;
 }
 
+#endif
+
 #include "qgscamerapose.h"
 
 class QDomDocument;
@@ -46,48 +49,41 @@ class QgsVector3D;
 class QgsWindow3DEngine;
 class Qgs3DMapScene;
 
-#define SIP_NO_FILE
-
 /**
  * \ingroup 3d
  * \brief Object that controls camera movement based on user input
  * \note Not available in Python bindings
  * \since QGIS 3.0
  */
+#ifndef SIP_RUN
 class _3D_EXPORT QgsCameraController : public Qt3DCore::QEntity
 {
+#else
+class _3D_EXPORT QgsCameraController : public QObject
+{
+#endif
+
     Q_OBJECT
   public:
 
-    //! The navigation mode used by the camera
-    enum NavigationMode
-    {
-      TerrainBasedNavigation, //!< The default navigation based on the terrain
-      WalkNavigation //!< Uses WASD keys or arrows to navigate in walking (first person) manner
-    };
-    Q_ENUM( NavigationMode )
-
-    //! Vertical axis inversion options
-    enum VerticalAxisInversion
-    {
-      Never, //!< Never invert vertical axis movements
-      WhenDragging, //!< Invert vertical axis movements when dragging in first person modes
-      Always, //!< Always invert vertical axis movements
-    };
-    Q_ENUM( VerticalAxisInversion )
-
-  public:
     //! Constructs the camera controller with optional parent node that will take ownership
-    QgsCameraController( Qgs3DMapScene *scene );
+    QgsCameraController( Qgs3DMapScene *scene ) SIP_SKIP;
+    ~QgsCameraController() override;
 
-    //! Returns camera that is being controlled
+#ifndef SIP_RUN
+
+    /**
+     * Returns camera that is being controlled
+     * \note Not available in Python bindings
+     */
     Qt3DRender::QCamera *camera() const { return mCamera; }
+#endif
 
     /**
      * Returns the navigation mode used by the camera controller.
      * \since QGIS 3.18
      */
-    QgsCameraController::NavigationMode cameraNavigationMode() const { return mCameraNavigationMode; }
+    Qgis::NavigationMode cameraNavigationMode() const { return mCameraNavigationMode; }
 
     /**
      * Returns the camera movement speed
@@ -105,13 +101,13 @@ class _3D_EXPORT QgsCameraController : public Qt3DCore::QEntity
      * Returns the vertical axis inversion behavior.
      * \since QGIS 3.18
      */
-    QgsCameraController::VerticalAxisInversion verticalAxisInversion() const { return mVerticalAxisInversion; }
+    Qgis::VerticalAxisInversion verticalAxisInversion() const { return mVerticalAxisInversion; }
 
     /**
      * Sets the vertical axis \a inversion behavior.
      * \since QGIS 3.18
      */
-    void setVerticalAxisInversion( QgsCameraController::VerticalAxisInversion inversion );
+    void setVerticalAxisInversion( Qgis::VerticalAxisInversion inversion );
 
     //! Called internally from 3D scene when a new frame is generated. Updates camera according to keyboard/mouse input
     void frameTriggered( float dt );
@@ -183,6 +179,20 @@ class _3D_EXPORT QgsCameraController : public Qt3DCore::QEntity
     void moveView( float tx, float ty );
 
     /**
+     * Walks into the map by \a tx, \a ty, and \a tz
+     * \since QGIS 3.30
+     */
+    void walkView( double tx, double ty, double tz );
+
+    /**
+     * Rotates the camera on itself.
+     * \param diffPitch the pitch difference
+     * \param diffYaw the yaw difference
+     * \since QGIS 3.30
+     */
+    void rotateCamera( float diffPitch, float diffYaw );
+
+    /**
      * Returns TRUE if the camera controller will handle the specified key \a event,
      * preventing it from being instead handled by parents of the 3D window before
      * the controller ever receives it.
@@ -195,7 +205,7 @@ class _3D_EXPORT QgsCameraController : public Qt3DCore::QEntity
      * Sets the navigation mode used by the camera controller.
      * \since QGIS 3.18
      */
-    void setCameraNavigationMode( QgsCameraController::NavigationMode navigationMode );
+    void setCameraNavigationMode( Qgis::NavigationMode navigationMode );
 
     /**
      * Sets the depth buffer image used by the camera controller to calculate world position from a pixel's coordinates and depth
@@ -204,7 +214,11 @@ class _3D_EXPORT QgsCameraController : public Qt3DCore::QEntity
     void depthBufferCaptured( const QImage &depthImage );
 
   private:
-    void rotateCamera( float diffPitch, float diffYaw );
+#ifdef SIP_RUN
+    QgsCameraController();
+    QgsCameraController( const QgsCameraController &other );
+#endif
+
     void updateCameraFromPose();
     void moveCameraPositionBy( const QVector3D &posDiff );
     //! Returns a pointer to the scene's engine's window or nullptr if engine is QgsOffscreen3DEngine
@@ -215,7 +229,7 @@ class _3D_EXPORT QgsCameraController : public Qt3DCore::QEntity
     void cameraChanged();
 
     //! Emitted when the navigation mode is changed using the hotkey ctrl + ~
-    void navigationModeChanged( QgsCameraController::NavigationMode mode );
+    void navigationModeChanged( Qgis::NavigationMode mode );
 
     /**
      * Emitted whenever the camera movement speed is changed by the controller.
@@ -304,8 +318,8 @@ class _3D_EXPORT QgsCameraController : public Qt3DCore::QEntity
 
     Qt3DInput::QMouseHandler *mMouseHandler = nullptr;
     Qt3DInput::QKeyboardHandler *mKeyboardHandler = nullptr;
-    NavigationMode mCameraNavigationMode = NavigationMode::TerrainBasedNavigation;
-    VerticalAxisInversion mVerticalAxisInversion = WhenDragging;
+    Qgis::NavigationMode mCameraNavigationMode = Qgis::NavigationMode::TerrainBased;
+    Qgis::VerticalAxisInversion mVerticalAxisInversion = Qgis::VerticalAxisInversion::WhenDragging;
     double mCameraMovementSpeed = 5.0;
 
     QSet< int > mDepressedKeys;

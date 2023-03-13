@@ -82,7 +82,7 @@ class QgsFeatureRenderer
 %End
   public:
 
-    static QgsFeatureRenderer *defaultRenderer( QgsWkbTypes::GeometryType geomType ) /Factory/;
+    static QgsFeatureRenderer *defaultRenderer( Qgis::GeometryType geomType ) /Factory/;
 %Docstring
 Returns a new renderer - used by default in vector layers
 %End
@@ -148,6 +148,18 @@ Calls to :py:func:`~QgsFeatureRenderer.stopRender` must always be preceded by a 
    the renderer should instead be cloned and :py:func:`~QgsFeatureRenderer.startRender`/:py:func:`~QgsFeatureRenderer.stopRender` called on the clone.
 
 .. seealso:: :py:func:`startRender`
+%End
+
+    virtual bool canSkipRender();
+%Docstring
+Returns ``True`` if the renderer can be entirely skipped, i.e. if it is known in advance
+that no features will be rendered.
+
+.. warning::
+
+   Must be called between :py:func:`~QgsFeatureRenderer.startRender` and :py:func:`~QgsFeatureRenderer.stopRender` calls.
+
+.. versionadded:: 3.30
 %End
 
     virtual QString filter( const QgsFields &fields = QgsFields() );
@@ -272,7 +284,7 @@ create the SLD UserStyle element following the SLD v1.1 specs with the given nam
 .. versionadded:: 2.8
 %End
 
-    static QgsFeatureRenderer *loadSld( const QDomNode &node, QgsWkbTypes::GeometryType geomType, QString &errorMessage ) /Factory/;
+    static QgsFeatureRenderer *loadSld( const QDomNode &node, Qgis::GeometryType geomType, QString &errorMessage ) /Factory/;
 %Docstring
 Create a new renderer according to the information contained in
 the UserStyle element of a SLD style document
@@ -292,23 +304,40 @@ the UserStyle element of a SLD style document
 used from subclasses to create SLD Rule elements following SLD v1.1 specs
 %End
 
+    QSet< QString > legendKeys() const;
+%Docstring
+Returns the set of all legend keys used by the renderer.
+
+.. seealso:: :py:func:`legendSymbolItems`
+
+.. versionadded:: 3.32
+%End
+
     virtual bool legendSymbolItemsCheckable() const;
 %Docstring
-items of symbology items in legend should be checkable
+Returns ``True`` if symbology items in legend are checkable.
 
 .. versionadded:: 2.5
 %End
 
     virtual bool legendSymbolItemChecked( const QString &key );
 %Docstring
-items of symbology items in legend is checked
+Returns ``True`` if the legend symbology item with the specified ``key`` is checked.
+
+.. seealso:: :py:func:`checkLegendSymbolItem`
+
+.. seealso:: :py:func:`legendKeys`
 
 .. versionadded:: 2.5
 %End
 
     virtual void checkLegendSymbolItem( const QString &key, bool state = true );
 %Docstring
-item in symbology was checked
+Sets whether the legend symbology item with the specified ``ley`` should be checked.
+
+.. seealso:: :py:func:`legendSymbolItemChecked`
+
+.. seealso:: :py:func:`legendKeys`
 
 .. versionadded:: 2.5
 %End
@@ -319,6 +348,8 @@ Sets the symbol to be used for a legend symbol item.
 
 :param key: rule key for legend symbol
 :param symbol: new symbol for legend item. Ownership is transferred to renderer.
+
+.. seealso:: :py:func:`legendKeys`
 
 .. versionadded:: 2.14
 %End
@@ -335,12 +366,17 @@ the features displayed using that key.
          - ok: will be set to ``True`` if legend key was successfully converted to a filter expression
 
 
+.. seealso:: :py:func:`legendKeys`
+
+
 .. versionadded:: 3.26
 %End
 
     virtual QgsLegendSymbolList legendSymbolItems() const;
 %Docstring
 Returns a list of symbology items for the legend
+
+.. seealso:: :py:func:`legendKeys`
 
 .. versionadded:: 2.6
 %End

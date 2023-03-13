@@ -225,9 +225,9 @@ bool QgsDrapeToZAlgorithm::supportInPlaceEdit( const QgsMapLayer *l ) const
   return QgsWkbTypes::hasZ( layer->wkbType() );
 }
 
-QgsWkbTypes::Type QgsDrapeToZAlgorithm::outputWkbType( QgsWkbTypes::Type inputWkbType ) const
+Qgis::WkbType QgsDrapeToZAlgorithm::outputWkbType( Qgis::WkbType inputWkbType ) const
 {
-  const QgsWkbTypes::Type wkb = inputWkbType;
+  const Qgis::WkbType wkb = inputWkbType;
   return QgsWkbTypes::addZ( wkb );
 }
 
@@ -288,9 +288,9 @@ bool QgsDrapeToMAlgorithm::supportInPlaceEdit( const QgsMapLayer *l ) const
   return QgsWkbTypes::hasM( layer->wkbType() );
 }
 
-QgsWkbTypes::Type QgsDrapeToMAlgorithm::outputWkbType( QgsWkbTypes::Type inputWkbType ) const
+Qgis::WkbType QgsDrapeToMAlgorithm::outputWkbType( Qgis::WkbType inputWkbType ) const
 {
-  const QgsWkbTypes::Type wkb = inputWkbType;
+  const Qgis::WkbType wkb = inputWkbType;
   return QgsWkbTypes::addM( wkb );
 }
 

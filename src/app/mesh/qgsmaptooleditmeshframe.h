@@ -98,7 +98,7 @@ class QgsMeshEditForceByLineAction : public QWidgetAction
     double toleranceValue() const;
 
     //! Returns the tolerance unit
-    QgsUnitTypes::RenderUnit toleranceUnit() const;
+    Qgis::RenderUnit toleranceUnit() const;
 
   private slots:
     void updateSettings();

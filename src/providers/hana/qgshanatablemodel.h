@@ -18,7 +18,6 @@
 #define QGSHANATABLEMODEL_H
 
 #include "qgis.h"
-#include "qgswkbtypes.h"
 #include "qgsabstractdbtablemodel.h"
 
 //! Schema properties structure
@@ -35,7 +34,7 @@ struct QgsHanaLayerProperty
   QString     tableName;
   QString     tableComment;
   QString     geometryColName;
-  QgsWkbTypes::Type type;
+  Qgis::WkbType type;
   QStringList pkCols;
   int         srid;
   QString     sql;
@@ -52,7 +51,7 @@ struct QgsHanaLayerProperty
     return ret;
   }
 
-  bool isGeometryValid() const { return type != QgsWkbTypes::Unknown && srid >= 0; }
+  bool isGeometryValid() const { return type != Qgis::WkbType::Unknown && srid >= 0; }
 };
 
 class QIcon;
@@ -99,7 +98,7 @@ class QgsHanaTableModel : public QgsAbstractDbTableModel
 
     QString layerURI( const QModelIndex &index, const QString &connName, const QString &connInfo );
 
-    static QIcon iconForWkbType( QgsWkbTypes::Type type );
+    static QIcon iconForWkbType( Qgis::WkbType type );
 
   private:
     //! Number of tables in the model
