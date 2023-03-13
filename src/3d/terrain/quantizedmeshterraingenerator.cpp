@@ -116,11 +116,6 @@ QuantizedMeshTerrainGenerator::QuantizedMeshTerrainGenerator()
   terrainTilingScheme = TilingScheme( QgsRectangle( -180, -90, 0, 90 ), QgsCoordinateReferenceSystem( "EPSG:4326" ) );
 }
 
-void QuantizedMeshTerrainGenerator::setBaseTileFromExtent( const QgsRectangle &extentInTerrainCrs )
-{
-  terrainTilingScheme.extentToTile( extentInTerrainCrs, terrainBaseX, terrainBaseY, terrainBaseZ );
-}
-
 void QuantizedMeshTerrainGenerator::quadTreeTileToBaseTile( int x, int y, int z, int &tx, int &ty, int &tz ) const
 {
   // true tile coords (using the base tile pos)
