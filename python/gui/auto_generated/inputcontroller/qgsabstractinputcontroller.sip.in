@@ -19,6 +19,16 @@ Abstract base class for all input controllers.
 
 %TypeHeaderCode
 #include "qgsabstractinputcontroller.h"
+#include "qgs2dmapcontroller.h"
+#include "qgs3dmapcontroller.h"
+%ConvertToSubClassCode
+    if ( qobject_cast< QgsAbstract2DMapController * >( sipCpp ) )
+      sipType = sipType_QgsAbstract2DMapController;
+    else if ( qobject_cast< QgsAbstract3DMapController * >( sipCpp ) )
+      sipType = sipType_QgsAbstract3DMapController;
+    else
+      sipType = nullptr;
+%End
 %End
   public:
 
