@@ -417,7 +417,7 @@ if (${QT_VERSION_BASE}PrintSupport_FOUND)
   )
 endif()
 
-if (WITH_PDAL)
+if (WITH_PDAL AND PDAL_2_5_OR_HIGHER)
   set(QGIS_ANALYSIS_SRCS ${QGIS_ANALYSIS_SRCS}
     processing/pdal/qgspdalalgorithms.cpp
 
@@ -510,6 +510,10 @@ target_include_directories(qgis_analysis PUBLIC
   ${CMAKE_SOURCE_DIR}/src/analysis/vector/geometry_checker
 
   ${CMAKE_BINARY_DIR}/src/analysis
+
+  if (WITH_PDAL AND NOT PDAL_2_5_OR_HIGHER)
+     ${CMAKE_SOURCE_DIR}/src/analysis/processing/pdal
+  endif()
 )
 
 GENERATE_EXPORT_HEADER(

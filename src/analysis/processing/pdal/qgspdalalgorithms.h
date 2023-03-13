@@ -22,12 +22,15 @@
 #include "qgis_sip.h"
 #include "qgsprocessingprovider.h"
 
+SIP_IF_MODULE( HAVE_PDAL_PROVIDER )
+
 /**
  * \ingroup analysis
  * \class QgsPdalAlgorithms
  * \brief PDAL Processing algorithm provider.
  * \since QGIS 3.32
  */
+
 class ANALYSIS_EXPORT QgsPdalAlgorithms: public QgsProcessingProvider
 {
     Q_OBJECT

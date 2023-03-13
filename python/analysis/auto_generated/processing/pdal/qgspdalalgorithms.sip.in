@@ -9,6 +9,8 @@
 
 
 
+
+
 class QgsPdalAlgorithms: QgsProcessingProvider
 {
 %Docstring(signature="appended")
@@ -18,7 +20,7 @@ PDAL Processing algorithm provider.
 %End
 
 %TypeHeaderCode
-#include "processing/pdal/qgspdalalgorithms.h"
+#include "qgspdalalgorithms.h"
 %End
   public:
 
