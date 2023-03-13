@@ -34,6 +34,9 @@ class GUI_EXPORT QgsAbstractInputController : public QObject
 #ifdef SIP_RUN
 #include "qgs2dmapcontroller.h"
 #include "qgs3dmapcontroller.h"
+#endif
+
+#ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
     if ( qobject_cast< QgsAbstract2DMapController * >( sipCpp ) )
       sipType = sipType_QgsAbstract2DMapController;
