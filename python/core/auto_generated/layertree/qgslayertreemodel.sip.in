@@ -339,7 +339,7 @@ Returns ``True`` if a hit test for visible legend items is currently in progress
 
 .. seealso:: :py:func:`hitTestCompleted`
 
-.. versionadded:: 3.2
+.. versionadded:: 3.32
 %End
 
   signals:

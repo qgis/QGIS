@@ -304,7 +304,7 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
      * \see hitTestStarted()
      * \see hitTestCompleted()
      *
-     * \since QGIS 3.2
+     * \since QGIS 3.32
      */
     bool hitTestInProgress() const;
 

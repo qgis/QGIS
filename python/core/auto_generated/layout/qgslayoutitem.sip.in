@@ -1218,7 +1218,7 @@ Draws the background for the item.
 %Docstring
 Draws a "refreshing" overlay icon on the item.
 
-.. versionadded:: 3.2
+.. versionadded:: 3.32
 %End
 
     virtual void setFixedSize( const QgsLayoutSize &size );
