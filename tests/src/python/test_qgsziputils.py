@@ -121,6 +121,19 @@ class TestQgsZip(unittest.TestCase):
         self.assertTrue(rc)
         self.assertEqual(len(files), 3)
 
+    def test_zip_files(self):
+        zip = tmpPath()
+
+        f0 = os.path.join(unitTestDataPath(), 'multipoint.shp')
+        f1 = os.path.join(unitTestDataPath(), 'lines.shp')
+        f2 = os.path.join(unitTestDataPath(), 'joins.qgs')
+
+        rc = QgsZipUtils.zip(zip, [f0, f1, f2])
+        self.assertTrue(rc)
+
+        files = QgsZipUtils.files(zip)
+        self.assertEqual(files, ['multipoint.shp', 'lines.shp', 'joins.qgs'])
+
 
 if __name__ == '__main__':
     unittest.main()

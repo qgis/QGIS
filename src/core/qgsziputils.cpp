@@ -293,3 +293,35 @@ bool QgsZipUtils::encodeGzip( const QByteArray &bytesIn, QByteArray &bytesOut )
   deflateEnd( &strm );
   return true;
 }
+
+const QStringList QgsZipUtils::files( const QString &zip )
+{
+  if ( zip.isEmpty() && !QFileInfo::exists( zip ) )
+  {
+    return QStringList();
+  }
+  QStringList files;
+
+  int rc = 0;
+  const QByteArray fileNamePtr = zip.toUtf8();
+  struct zip *z = zip_open( fileNamePtr.constData(), 0, &rc );
+
+  if ( rc == ZIP_ER_OK && z )
+  {
+    const int count = zip_get_num_files( z );
+    if ( count != -1 )
+    {
+      struct zip_stat stat;
+
+      for ( int i = 0; i < count; i++ )
+      {
+        zip_stat_index( z, i, 0, &stat );
+        files << QString( stat.name );
+      }
+    }
+
+    zip_close( z );
+  }
+
+  return files;
+}
