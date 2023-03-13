@@ -30,11 +30,6 @@ from functools import partial
 from operator import itemgetter
 from pathlib import Path
 
-import autopep8
-import black
-import isort
-from Levenshtein import distance as lev
-
 from qgis.core import Qgis, QgsApplication, QgsBlockingNetworkRequest, QgsFileUtils, QgsSettings
 from qgis.gui import QgsCodeEditorPython, QgsMessageBar
 from qgis.PyQt.Qsci import QsciScintilla
@@ -57,12 +52,16 @@ from qgis.PyQt.QtWidgets import (
     QTreeWidgetItem,
     QWidget,
 )
-from qgis.utils import OverrideCursor, iface
+from qgis.utils import OverrideCursor
 
 
 def findMinimalDistanceIndex(source, target):
     """ Find the source substring index that most closely matches the target string"""
     index = min(len(source), len(target))
+    try:
+        from Levenshtein import distance as lev
+    except ImportError:
+        return index
     d0 = lev(source[:index], target)
     if d0 == 0:
         return index
@@ -114,9 +113,9 @@ class Editor(QgsCodeEditorPython):
 
         # Disable default scintilla shortcuts
         ctrl, shift = self.SCMOD_CTRL << 16, self.SCMOD_SHIFT << 16
-        self.SendScintilla(QsciScintilla.SCI_CLEARCMDKEY, ord('T') + ctrl) # Switch current line with the next one
-        self.SendScintilla(QsciScintilla.SCI_CLEARCMDKEY, ord('D') + ctrl) # Duplicate current line / selection
-        self.SendScintilla(QsciScintilla.SCI_CLEARCMDKEY, ord('L') + ctrl) # Delete current line
+        self.SendScintilla(QsciScintilla.SCI_CLEARCMDKEY, ord('T') + ctrl)  # Switch current line with the next one
+        self.SendScintilla(QsciScintilla.SCI_CLEARCMDKEY, ord('D') + ctrl)  # Duplicate current line / selection
+        self.SendScintilla(QsciScintilla.SCI_CLEARCMDKEY, ord('L') + ctrl)  # Delete current line
         self.SendScintilla(QsciScintilla.SCI_CLEARCMDKEY, ord('L') + ctrl + shift)
 
         # New QShortcut = ctrl+space/ctrl+alt+space for Autocomplete
@@ -288,23 +287,52 @@ class Editor(QgsCodeEditorPython):
 
         # isort
         if self.settings.value("pythonConsole/sortImports", True, type=bool):
-            options = {
-                "line_length": max_line_length,
-                "profile": "black" if formatter == "black" else "",
-                "known_first_party": ["qgis", "console", "processing", "plugins"],
-            }
-            new_text = isort.code(new_text, **options)
+            try:
+                import isort
+                options = {
+                    "line_length": max_line_length,
+                    "profile": "black" if formatter == "black" else "",
+                    "known_first_party": ["qgis", "console", "processing", "plugins"],
+                }
+                new_text = isort.code(new_text, **options)
+
+            except ImportError:
+                self.parent.infoBar.pushMessage(
+                    QCoreApplication.translate("PythonConsole", "Python Console"),
+                    QCoreApplication.translate("PythonConsole", "Module {0} is missing").format("isort"),
+                    duration=2,
+                )
 
         # autopep8
         if formatter == "autopep8":
+            try:
+                import autopep8
+            except ImportError:
+                self.parent.infoBar.pushMessage(
+                    QCoreApplication.translate("PythonConsole", "Python Console"),
+                    QCoreApplication.translate("PythonConsole", "Module {0} is missing").format("autopep8"),
+                    duration=2,
+                    level=Qgis.Warning,
+                )
+                return
             level = self.settings.value("pythonConsole/autopep8Level", 1, type=int)
             options = {"aggressive": level, "max_line_length": max_line_length}
             new_text = autopep8.fix_code(new_text, options=options)
 
         # black
         else:
+            try:
+                import black
+            except ImportError:
+                self.parent.infoBar.pushMessage(
+                    QCoreApplication.translate("PythonConsole", "Python Console"),
+                    QCoreApplication.translate("PythonConsole", "Module {0} is missing").format("black"),
+                    duration=2,
+                    level=Qgis.Warning,
+                )
+                return
             if not self.syntaxCheck():
-                iface.messageBar().pushMessage(
+                self.parent.infoBar.pushMessage(
                     QCoreApplication.translate("PythonConsole", "Code formatting failed"),
                     QCoreApplication.translate("PythonConsole", "The code contains syntax errors"),
                     level=Qgis.Warning,
