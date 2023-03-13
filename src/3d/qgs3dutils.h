@@ -241,12 +241,6 @@ class _3D_EXPORT Qgs3DUtils
     static std::unique_ptr< QgsPointCloudLayer3DRenderer > convert2DPointCloudRendererTo3D( QgsPointCloudRenderer *renderer );
 
     /**
-     * Creates a QgsBox3d from the given \a aabb
-     * \since QGIS 3.32
-     */
-    static QgsBox3d aabbToBox( const QgsAABB &aabb ) { return QgsBox3d( aabb.xMin, aabb.yMin, aabb.zMin, aabb.xMax, aabb.yMax, aabb.zMax ); }
-
-    /**
      * Casts a \a ray through the \a scene and returns information about the intersecting entities (ray uses World coordinates).
      * The resulting hits are grouped by layer in a QHash.
      * \note Hits on the terrain have nullptr as their key in the returning QHash.

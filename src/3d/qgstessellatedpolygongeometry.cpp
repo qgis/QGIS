@@ -112,7 +112,6 @@ static bool intersectionTriangles( const QByteArray &vertexBuf, const int &strid
       intersectionPt = r.point( t * r.distance() );
       distance = r.projectedDistance( intersectionPt );
 
-      float dist = intersectionPt.distanceToPoint( r.origin() );
       // we only want the first intersection of the ray with the mesh (closest to the ray origin)
       if ( minDistance == -1 || distance < minDistance )
       {
