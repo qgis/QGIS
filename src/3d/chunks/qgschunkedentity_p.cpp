@@ -668,7 +668,7 @@ double QgsChunkedEntity::calculateEntityGpuMemorySize( Qt3DCore::QEntity *entity
   return usedGpuMemory / 1024.0 / 1024.0;
 }
 
-QVector<RayHit> QgsChunkedEntity::rayIntersection( const QgsRay3D &ray, const RayCastContext &context ) const
+QVector<RayHit> QgsChunkedEntity::rayIntersection( const QgsRayCastingUtils::Ray3D &ray, const RayCastContext &context ) const
 {
   Q_UNUSED( ray )
   Q_UNUSED( context )

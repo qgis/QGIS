@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgstessellatedpolygongeometry.h"
-#include "qgsray3d.h"
 #include "qgsraycastingutils_p.h"
 
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
@@ -178,12 +177,11 @@ void QgsTessellatedPolygonGeometry::setData( const QByteArray &vertexBufferData,
     mTextureCoordsAttribute->setCount( vertexCount );
 }
 
-bool QgsTessellatedPolygonGeometry::rayIntersection( const QgsRay3D &ray, const QMatrix4x4 &worldTransform, QVector3D &intersectionPoint, QgsFeatureId &fid )
+bool QgsTessellatedPolygonGeometry::rayIntersection( const QgsRayCastingUtils::Ray3D &ray, const QMatrix4x4 &worldTransform, QVector3D &intersectionPoint, QgsFeatureId &fid )
 {
-  QgsRayCastingUtils::Ray3D r( ray.origin(), ray.direction(), 10000 );
   int triangleIndex = -1;
   const int stride = static_cast<int>( mPositionAttribute->byteStride() );
-  bool success = intersectionTriangles( mVertexBuffer->data(), stride, r, worldTransform, intersectionPoint, triangleIndex );
+  bool success = intersectionTriangles( mVertexBuffer->data(), stride, ray, worldTransform, intersectionPoint, triangleIndex );
 
   fid = success ? triangleIndexToFeatureId( triangleIndex ) : FID_NULL;
 

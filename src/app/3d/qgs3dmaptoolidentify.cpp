@@ -58,7 +58,7 @@ void Qgs3DMapToolIdentify::mouseReleaseEvent( QMouseEvent *event )
     return;
 
   const QgsRay3D ray = Qgs3DUtils::rayFromScreenPoint( event->pos(), mCanvas->windowSize(), mCanvas->cameraController()->camera() );
-  QHash<QgsMapLayer *, QVector<RayHit>> allHits = Qgs3DUtils::castRay( mCanvas->scene(), ray, RayCastContext( false, mCanvas->windowSize() ) );
+  QHash<QgsMapLayer *, QVector<RayHit>> allHits = Qgs3DUtils::castRay( mCanvas->scene(), ray, RayCastContext( false, mCanvas->windowSize(), mCanvas->cameraController()->camera()->farPlane() ) );
 
   QHash<QgsPointCloudLayer *, QVector<QVariantMap>> pointCloudResults;
 

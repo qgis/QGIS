@@ -51,7 +51,6 @@ class QgsCoordinateTransform;
 class QgsMapLayer;
 class QgsTerrainGenerator;
 class TerrainMapUpdateJobFactory;
-class QgsRay3D;
 class RayHit;
 
 /**
@@ -84,7 +83,7 @@ class QgsTerrainEntity : public QgsChunkedEntity
     //! Tests whether the ray intersects the terrain - if it does, it sets the intersection point (in world coordinates)
     bool rayIntersection( const QgsRayCastingUtils::Ray3D &ray, QVector3D &intersectionPoint );
 
-    QVector<RayHit> rayIntersection( const QgsRay3D &ray, const RayCastContext &context ) const override;
+    QVector<RayHit> rayIntersection( const QgsRayCastingUtils::Ray3D &ray, const RayCastContext &context ) const override;
 
   private slots:
     void onShowBoundingBoxesChanged();

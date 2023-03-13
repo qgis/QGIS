@@ -16,6 +16,7 @@
 #include "qgsrulebasedchunkloader_p.h"
 
 #include "qgs3dutils.h"
+#include "qgsraycastingutils_p.h"
 #include "qgschunknode_p.h"
 #include "qgspolygon3dsymbol_p.h"
 #include "qgseventtracing.h"
@@ -204,7 +205,7 @@ void QgsRuleBasedChunkedEntity::onTerrainElevationOffsetChanged( float newOffset
   mTransform->setTranslation( QVector3D( 0.0f, newOffset, 0.0f ) );
 }
 
-QVector<RayHit> QgsRuleBasedChunkedEntity::rayIntersection( const QgsRay3D &ray, const RayCastContext &context ) const
+QVector<RayHit> QgsRuleBasedChunkedEntity::rayIntersection( const QgsRayCastingUtils::Ray3D &ray, const RayCastContext &context ) const
 {
   Q_UNUSED( context )
   QgsDebugMsgLevel( QStringLiteral( "Ray cast on vector layer" ), 2 );
@@ -224,7 +225,7 @@ QVector<RayHit> QgsRuleBasedChunkedEntity::rayIntersection( const QgsRay3D &ray,
     nodesAll++;
     if ( node->entity() &&
          ( minDist < 0 || node->bbox().distanceFromPoint( ray.origin() ) < minDist ) &&
-         ray.intersects( Qgs3DUtils::aabbToBox( node->bbox() ) ) )
+         QgsRayCastingUtils::rayBoxIntersection( ray, node->bbox() ) )
     {
       nodeUsed++;
       const QList<Qt3DRender::QGeometryRenderer *> rendLst = node->entity()->findChildren<Qt3DRender::QGeometryRenderer *>();

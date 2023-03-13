@@ -27,6 +27,7 @@
 #include "qgspointcloud3dsymbol.h"
 #include "qgspointcloudattribute.h"
 #include "qgspointcloud3dsymbol_p.h"
+#include "qgsraycastingutils_p.h"
 
 #include <QtConcurrent>
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
@@ -256,7 +257,7 @@ QgsPointCloudLayerChunkedEntity::~QgsPointCloudLayerChunkedEntity()
   cancelActiveJobs();
 }
 
-QVector<RayHit> QgsPointCloudLayerChunkedEntity::rayIntersection( const QgsRay3D &ray, const RayCastContext &context ) const
+QVector<RayHit> QgsPointCloudLayerChunkedEntity::rayIntersection( const QgsRayCastingUtils::Ray3D &ray, const RayCastContext &context ) const
 {
   QVector<RayHit> result;
   QgsPointCloudLayerChunkLoaderFactory *factory = static_cast<QgsPointCloudLayerChunkLoaderFactory *>( mChunkLoaderFactory );
@@ -301,7 +302,7 @@ QVector<RayHit> QgsPointCloudLayerChunkedEntity::rayIntersection( const QgsRay3D
     if ( !index->hasNode( n ) )
       continue;
 
-    if ( !ray.intersects( Qgs3DUtils::aabbToBox( node->bbox() ) ) )
+    if ( !QgsRayCastingUtils::rayBoxIntersection( ray, node->bbox() ) )
       continue;
 
     std::unique_ptr<QgsPointCloudBlock> block( index->nodeData( n, request ) );

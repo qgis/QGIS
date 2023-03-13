@@ -27,7 +27,11 @@
 class Qgs3DSceneExporter;
 class QgsPolygon;
 class QgsPointXY;
-class QgsRay3D;
+
+namespace QgsRayCastingUtils
+{
+  class Ray3D;
+}
 
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 namespace Qt3DRender
@@ -104,7 +108,7 @@ class QgsTessellatedPolygonGeometry : public Qt3DCore::QGeometry
      */
     QgsFeatureId triangleIndexToFeatureId( uint triangleIndex ) const;
 
-    bool rayIntersection( const QgsRay3D &ray, const QMatrix4x4 &worldTransform, QVector3D &intersectionPoint, QgsFeatureId &fid );
+    bool rayIntersection( const QgsRayCastingUtils::Ray3D &ray, const QMatrix4x4 &worldTransform, QVector3D &intersectionPoint, QgsFeatureId &fid );
 
     friend class Qgs3DSceneExporter;
   private:

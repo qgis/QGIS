@@ -130,7 +130,7 @@ bool QgsTerrainEntity::rayIntersection( const QgsRayCastingUtils::Ray3D &ray, QV
   return minDist >= 0;
 }
 
-QVector<RayHit> QgsTerrainEntity::rayIntersection( const QgsRay3D &ray, const RayCastContext &context ) const
+QVector<RayHit> QgsTerrainEntity::rayIntersection( const QgsRayCastingUtils::Ray3D &ray, const RayCastContext &context ) const
 {
   Q_UNUSED( context )
   QVector<RayHit> result;
@@ -158,7 +158,7 @@ QVector<RayHit> QgsTerrainEntity::rayIntersection( const QgsRay3D &ray, const Ra
       {
         if ( node->entity() &&
              ( minDist < 0 || node->bbox().distanceFromPoint( ray.origin() ) < minDist ) &&
-             ray.intersects( Qgs3DUtils::aabbToBox( node->bbox() ) ) )
+             QgsRayCastingUtils::rayBoxIntersection( ray, node->bbox() ) )
         {
           Qt3DRender::QGeometryRenderer *rend = node->entity()->findChild<Qt3DRender::QGeometryRenderer *>();
           Qt3DRender::QGeometry *geom = rend->geometry();

@@ -70,12 +70,14 @@ struct RayHit
  */
 struct RayCastContext
 {
-  RayCastContext( bool singleResult = true, QSize screenSize = QSize() )
+  RayCastContext( bool singleResult = true, QSize screenSize = QSize(), float maxDistance = 1 )
     : singleResult( singleResult )
     , screenSize( screenSize )
+    , maxDistance( maxDistance )
   {}
   bool singleResult;  //!< If set to TRUE, only the closest point cloud hit will be returned (other entities always return only closest hit)
   QSize screenSize;  //!< QSize of the 3d engine window
+  float maxDistance;  //!< The maximum distance from ray origin to look for hits when casting a ray
 };
 
 /**

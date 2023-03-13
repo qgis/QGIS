@@ -80,7 +80,7 @@ void Qgs3DMapToolMeasureLine::handleClick( const QPoint &screenPos )
   mDone = false;
 
   const QgsRay3D ray = Qgs3DUtils::rayFromScreenPoint( screenPos, mCanvas->windowSize(), mCanvas->cameraController()->camera() );
-  const QHash<QgsMapLayer *, QVector<RayHit>> allHits = Qgs3DUtils::castRay( mCanvas->scene(), ray, RayCastContext( true, mCanvas->windowSize() ) );
+  const QHash<QgsMapLayer *, QVector<RayHit>> allHits = Qgs3DUtils::castRay( mCanvas->scene(), ray, RayCastContext( true, mCanvas->windowSize(), mCanvas->cameraController()->camera()->farPlane() ) );
 
   if ( allHits.isEmpty() )
     return;
