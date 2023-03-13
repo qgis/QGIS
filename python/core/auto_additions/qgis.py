@@ -3330,3 +3330,9 @@ QgsUnitTypes.LayoutScreenUnits.__doc__ = "Unit is a screen based measurement uni
 Qgis.LayoutUnitType.__doc__ = 'Types of layout units\n\n.. note::\n\n   Prior to QGIS 3.30 this was available as :py:class:`QgsUnitTypes`.LayoutUnitType.\n\n.. versionadded:: 3.30\n\n' + '* ``LayoutPaperUnits``: ' + Qgis.LayoutUnitType.PaperUnits.__doc__ + '\n' + '* ``LayoutScreenUnits``: ' + Qgis.LayoutUnitType.ScreenUnits.__doc__
 # --
 Qgis.LayoutUnitType.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.InputControllerType.Map2D.__doc__ = "2D map controller"
+Qgis.InputControllerType.Map3D.__doc__ = "3D map controller"
+Qgis.InputControllerType.__doc__ = 'Input controller types.\n\n.. versionadded:: 3.32\n\n' + '* ``Map2D``: ' + Qgis.InputControllerType.Map2D.__doc__ + '\n' + '* ``Map3D``: ' + Qgis.InputControllerType.Map3D.__doc__
+# --
+Qgis.InputControllerType.baseClass = Qgis

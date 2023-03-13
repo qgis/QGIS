@@ -47,6 +47,7 @@ class QgsProviderSourceWidgetProviderRegistry;
 class QgsRelationWidgetRegistry;
 class QgsMapToolShapeRegistry;
 class QgsHistoryProviderRegistry;
+class QgsInputControllerManager;
 
 /**
  * \ingroup gui
@@ -226,6 +227,12 @@ class GUI_EXPORT QgsGui : public QObject
     static void setWindowManager( QgsWindowManagerInterface *manager SIP_TRANSFER );
 
     /**
+     * Returns the global input controller manager.
+     * \since QGIS 3.32
+     */
+    static QgsInputControllerManager *inputControllerManager() SIP_KEEPREFERENCE;
+
+    /**
      * HIG flags, which indicate the Human Interface Guidelines for the current platform.
      * \since QGIS 3.4
     */
@@ -313,6 +320,7 @@ class GUI_EXPORT QgsGui : public QObject
     QgsRelationWidgetRegistry *mRelationEditorRegistry = nullptr;
     QgsMapToolShapeRegistry *mShapeMapToolRegistry = nullptr;
     QgsHistoryProviderRegistry *mHistoryProviderRegistry = nullptr;
+    QgsInputControllerManager *mInputControllerManager = nullptr;
     std::unique_ptr< QgsWindowManagerInterface > mWindowManager;
 
 #ifdef SIP_RUN

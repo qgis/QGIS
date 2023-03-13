@@ -185,6 +185,13 @@ Sets the global window ``manager``. Ownership is transferred to the QgsGui insta
 .. versionadded:: 3.4
 %End
 
+    static QgsInputControllerManager *inputControllerManager() /KeepReference/;
+%Docstring
+Returns the global input controller manager.
+
+.. versionadded:: 3.32
+%End
+
     enum HigFlag
     {
       HigMenuTextIsTitleCase,

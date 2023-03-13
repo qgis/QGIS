@@ -1872,6 +1872,12 @@ The development version
       ScreenUnits
     };
 
+    enum class InputControllerType
+    {
+      Map2D,
+      Map3D
+    };
+
     static const double DEFAULT_SEARCH_RADIUS_MM;
 
     static const float DEFAULT_MAPTOPIXEL_THRESHOLD;

@@ -108,6 +108,7 @@ if(WITH_APIDOC)
       ${CMAKE_SOURCE_DIR}/src/gui/effects
       ${CMAKE_SOURCE_DIR}/src/gui/elevation
       ${CMAKE_SOURCE_DIR}/src/gui/history
+      ${CMAKE_SOURCE_DIR}/src/gui/inputcontroller
       ${CMAKE_SOURCE_DIR}/src/gui/labeling
       ${CMAKE_SOURCE_DIR}/src/gui/layertree
       ${CMAKE_SOURCE_DIR}/src/gui/layout

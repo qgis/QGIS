@@ -3220,6 +3220,18 @@ class CORE_EXPORT Qgis
     Q_ENUM( LayoutUnitType )
 
     /**
+     * Input controller types.
+     *
+     * \since QGIS 3.32
+     */
+    enum class InputControllerType : int
+    {
+      Map2D, //!< 2D map controller
+      Map3D //!< 3D map controller
+    };
+    Q_ENUM( InputControllerType );
+
+    /**
      * Identify search radius in mm
      * \since QGIS 2.3
      */

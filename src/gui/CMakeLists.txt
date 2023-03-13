@@ -238,6 +238,11 @@ set(QGIS_GUI_SRCS
   history/qgshistoryprovider.cpp
   history/qgshistoryproviderregistry.cpp
 
+  inputcontroller/qgs2dmapcontroller.cpp
+  inputcontroller/qgs3dmapcontroller.cpp
+  inputcontroller/qgsabstractinputcontroller.cpp
+  inputcontroller/qgsinputcontrollermanager.cpp
+
   labeling/qgslabelengineconfigdialog.cpp
   labeling/qgslabelinggui.cpp
   labeling/qgslabelingwidget.cpp
@@ -1132,6 +1137,11 @@ set(QGIS_GUI_HDRS
   history/qgshistoryprovider.h
   history/qgshistoryproviderregistry.h
 
+  inputcontroller/qgs2dmapcontroller.h
+  inputcontroller/qgs3dmapcontroller.h
+  inputcontroller/qgsabstractinputcontroller.h
+  inputcontroller/qgsinputcontrollermanager.h
+
   labeling/qgslabelengineconfigdialog.h
   labeling/qgslabelinggui.h
   labeling/qgslabelingwidget.h
@@ -1463,7 +1473,6 @@ if (WITH_COPC)
   )
 endif()
 
-
 # disable deprecation warnings for classes re-exporting deprecated methods
 if(MSVC)
   set_source_files_properties(
@@ -1527,6 +1536,7 @@ target_include_directories(qgis_gui PUBLIC
   ${CMAKE_SOURCE_DIR}/src/gui/effects
   ${CMAKE_SOURCE_DIR}/src/gui/elevation
   ${CMAKE_SOURCE_DIR}/src/gui/history
+  ${CMAKE_SOURCE_DIR}/src/gui/inputcontroller
   ${CMAKE_SOURCE_DIR}/src/gui/labeling
   ${CMAKE_SOURCE_DIR}/src/gui/layertree
   ${CMAKE_SOURCE_DIR}/src/gui/layout
