@@ -1146,7 +1146,7 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
     /**
      * Draws a "refreshing" overlay icon on the item.
      *
-     * \since QGIS 3.2
+     * \since QGIS 3.32
      */
     void drawRefreshingOverlay( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle );
 
