@@ -91,7 +91,7 @@ email                : sherman at mrcc.com
 #include "qgssymbollayerutils.h"
 #include "qgsvectortilelayer.h"
 #include "qgsscreenhelper.h"
-#include "qgsinputcontroller.h"
+#include "qgs2dmapcontroller.h"
 
 /**
  * \ingroup gui
