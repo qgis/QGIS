@@ -5,7 +5,7 @@
 # ---------------------------------------------------------
 # QGIS Catalog Service client.
 #
-# Copyright (C) 2021 Tom Kralidis (tomkralidis@gmail.com)
+# Copyright (C) 2023 Tom Kralidis (tomkralidis@gmail.com)
 #
 # This source is free software; you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free
@@ -200,7 +200,7 @@ class OARecSearch(SearchBase):
         params = {
             'collection_id': self.record_collection,
             'limit': limit,
-            'offset': offset2
+            'startindex': offset2
         }
 
         if keywords:
