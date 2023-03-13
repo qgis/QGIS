@@ -74,6 +74,8 @@ class APP_EXPORT QgsMapToolsDigitizingTechniqueManager : public QObject
   private:
     void setupTool( QgsMapToolCapture *tool );
 
+    void updateDigitizeModeButton( const Qgis::CaptureTechnique technique );
+
     QMap<Qgis::CaptureTechnique, QAction *> mTechniqueActions;
     QHash<QString, QAction *> mShapeActions;
     QMap<QgsMapToolShapeAbstract::ShapeCategory, QToolButton *> mShapeCategoryButtons;

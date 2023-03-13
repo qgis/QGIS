@@ -93,22 +93,7 @@ void QgsMapToolsDigitizingTechniqueManager::setupToolBars()
 
   mDigitizeModeToolButton->setMenu( digitizeMenu );
 
-  const Qgis::CaptureTechnique technique = settingsDigitizingTechnique->value();
-  switch ( technique )
-  {
-    case Qgis::CaptureTechnique::StraightSegments:
-      mDigitizeModeToolButton->setDefaultAction( QgisApp::instance()->mActionDigitizeWithSegment );
-      break;
-    case Qgis::CaptureTechnique::CircularString:
-      mDigitizeModeToolButton->setDefaultAction( QgisApp::instance()->mActionDigitizeWithCurve );
-      break;
-    case Qgis::CaptureTechnique::Streaming:
-      mDigitizeModeToolButton->setDefaultAction( QgisApp::instance()->mActionStreamDigitize );
-      break;
-    case Qgis::CaptureTechnique::Shape:
-      mDigitizeModeToolButton->setDefaultAction( QgisApp::instance()->mActionDigitizeShape );
-      break;
-  }
+  updateDigitizeModeButton( settingsDigitizingTechnique->value() );
 
   QgisApp::instance()->mDigitizeToolBar->insertWidget( QgisApp::instance()->mDigitizeToolBar->actions().at( 3 ), mDigitizeModeToolButton );
 
@@ -163,21 +148,7 @@ void QgsMapToolsDigitizingTechniqueManager::setCaptureTechnique( Qgis::CaptureTe
 
   mTechniqueActions.value( technique )->setChecked( true );
 
-  switch ( technique )
-  {
-    case Qgis::CaptureTechnique::StraightSegments:
-      mDigitizeModeToolButton->setDefaultAction( QgisApp::instance()->mActionDigitizeWithSegment );
-      break;
-    case Qgis::CaptureTechnique::CircularString:
-      mDigitizeModeToolButton->setDefaultAction( QgisApp::instance()->mActionDigitizeWithCurve );
-      break;
-    case Qgis::CaptureTechnique::Streaming:
-      mDigitizeModeToolButton->setDefaultAction( QgisApp::instance()->mActionStreamDigitize );
-      break;
-    case Qgis::CaptureTechnique::Shape:
-      mDigitizeModeToolButton->setDefaultAction( QgisApp::instance()->mActionDigitizeShape );
-      break;
-  }
+  updateDigitizeModeButton( technique );
 
   // QgisApp::captureTools returns all registered capture tools + the eventual current capture tool
   const QList< QgsMapToolCapture * > tools = QgisApp::instance()->captureTools();
@@ -263,6 +234,25 @@ void QgsMapToolsDigitizingTechniqueManager::setupTool( QgsMapToolCapture *tool )
   } );
 }
 
+void QgsMapToolsDigitizingTechniqueManager::updateDigitizeModeButton( const Qgis::CaptureTechnique technique )
+{
+  switch ( technique )
+  {
+    case Qgis::CaptureTechnique::StraightSegments:
+      mDigitizeModeToolButton->setDefaultAction( QgisApp::instance()->mActionDigitizeWithSegment );
+      break;
+    case Qgis::CaptureTechnique::CircularString:
+      mDigitizeModeToolButton->setDefaultAction( QgisApp::instance()->mActionDigitizeWithCurve );
+      break;
+    case Qgis::CaptureTechnique::Streaming:
+      mDigitizeModeToolButton->setDefaultAction( QgisApp::instance()->mActionStreamDigitize );
+      break;
+    case Qgis::CaptureTechnique::Shape:
+      mDigitizeModeToolButton->setDefaultAction( QgisApp::instance()->mActionDigitizeShape );
+      break;
+  }
+}
+
 void QgsMapToolsDigitizingTechniqueManager::enableDigitizingTechniqueActions( bool enabled, QAction *triggeredFromToolAction )
 {
   QgsSettings settings;
@@ -303,21 +293,7 @@ void QgsMapToolsDigitizingTechniqueManager::enableDigitizingTechniqueActions( bo
   }
 
   // Ensure the digitizing mode tool button is set to the correct action
-  switch ( actualCurrentTechnique )
-  {
-    case Qgis::CaptureTechnique::StraightSegments:
-      mDigitizeModeToolButton->setDefaultAction( QgisApp::instance()->mActionDigitizeWithSegment );
-      break;
-    case Qgis::CaptureTechnique::CircularString:
-      mDigitizeModeToolButton->setDefaultAction( QgisApp::instance()->mActionDigitizeWithCurve );
-      break;
-    case Qgis::CaptureTechnique::Streaming:
-      mDigitizeModeToolButton->setDefaultAction( QgisApp::instance()->mActionStreamDigitize );
-      break;
-    case Qgis::CaptureTechnique::Shape:
-      mDigitizeModeToolButton->setDefaultAction( QgisApp::instance()->mActionDigitizeShape );
-      break;
-  }
+  updateDigitizeModeButton( actualCurrentTechnique );
 
   QMap<Qgis::CaptureTechnique, QAction *>::const_iterator cit = mTechniqueActions.constBegin();
   for ( ; cit != mTechniqueActions.constEnd(); ++ cit )
