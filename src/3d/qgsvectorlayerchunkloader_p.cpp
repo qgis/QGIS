@@ -231,7 +231,7 @@ QVector<QgsRayCastingUtils::RayHit> QgsVectorLayerChunkedEntity::rayIntersection
       const QList<Qt3DRender::QGeometryRenderer *> rendLst = node->entity()->findChildren<Qt3DRender::QGeometryRenderer *>();
       for ( const auto &rend : rendLst )
       {
-        Qt3DRender::QGeometry *geom = rend->geometry();
+        auto *geom = rend->geometry();
         QgsTessellatedPolygonGeometry *polygonGeom = qobject_cast<QgsTessellatedPolygonGeometry *>( geom );
         if ( !polygonGeom )
           continue; // other QGeometry types are not supported for now
