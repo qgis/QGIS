@@ -94,6 +94,12 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     void setCurrentCaptureTechnique( Qgis::CaptureTechnique technique );
 
     /**
+     * Returns the active capture technique
+     * \since QGIS 3.32
+     */
+    Qgis::CaptureTechnique currentCaptureTechnique() const { return mCurrentCaptureTechnique; }
+
+    /**
      * Sets the current shape tool
      * \see QgsMapToolShapeRegistry
      * \since QGIS 3.26
