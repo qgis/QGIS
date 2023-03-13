@@ -34,7 +34,7 @@ bool QgsZipUtils::isZipFile( const QString &filename )
   return QFileInfo( filename ).suffix().compare( QLatin1String( "qgz" ), Qt::CaseInsensitive ) == 0;
 }
 
-bool QgsZipUtils::unzip( const QString &zipFilename, const QString &dir, QStringList &files )
+bool QgsZipUtils::unzip( const QString &zipFilename, const QString &dir, QStringList &files, bool checkConsistency )
 {
   files.clear();
 
@@ -66,7 +66,7 @@ bool QgsZipUtils::unzip( const QString &zipFilename, const QString &dir, QString
 
   int rc = 0;
   const QByteArray fileNamePtr = zipFilename.toUtf8();
-  struct zip *z = zip_open( fileNamePtr.constData(), ZIP_CHECKCONS, &rc );
+  struct zip *z = zip_open( fileNamePtr.constData(), checkConsistency ? ZIP_CHECKCONS : 0, &rc );
 
   if ( rc == ZIP_ER_OK && z )
   {
