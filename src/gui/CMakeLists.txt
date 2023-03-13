@@ -246,7 +246,9 @@ set(QGIS_GUI_SRCS
   history/qgshistorywidgetcontext.cpp
 
   inputcontroller/qgs2dmapcontroller.cpp
+  inputcontroller/qgs2dgamepadcontroller.cpp
   inputcontroller/qgs3dmapcontroller.cpp
+  inputcontroller/qgs3dgamepadcontroller.cpp
   inputcontroller/qgsabstractinputcontroller.cpp
   inputcontroller/qgsinputcontrollermanager.cpp
 
@@ -1175,7 +1177,9 @@ set(QGIS_GUI_HDRS
   history/qgshistorywidgetcontext.h
 
   inputcontroller/qgs2dmapcontroller.h
+  inputcontroller/qgs2dgamepadcontroller.h
   inputcontroller/qgs3dmapcontroller.h
+  inputcontroller/qgs3dgamepadcontroller.h
   inputcontroller/qgsabstractinputcontroller.h
   inputcontroller/qgsinputcontrollermanager.h
 
@@ -1699,6 +1703,12 @@ if (BUILD_WITH_QT6)
   target_link_libraries(qgis_gui
     Qt6::SvgWidgets
   )
+endif()
+
+if (WITH_QTGAMEPAD)
+    target_link_libraries(qgis_gui
+      ${QT_VERSION_BASE}::Gamepad
+    )
 endif()
 
 if (FORCE_STATIC_LIBS)

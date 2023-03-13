@@ -96,6 +96,8 @@
 
 #cmakedefine HAVE_QTSERIALPORT
 
+#cmakedefine HAVE_QTGAMEPAD
+
 #cmakedefine HAVE_STATIC_PROVIDERS
 
 #cmakedefine HAVE_EPT
