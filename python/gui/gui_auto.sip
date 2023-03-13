@@ -343,7 +343,13 @@
 %Include auto_generated/history/qgshistoryprovider.sip
 %Include auto_generated/history/qgshistoryproviderregistry.sip
 %Include auto_generated/inputcontroller/qgs2dmapcontroller.sip
+%If ( HAVE_QTGAMEPAD )
+%Include auto_generated/inputcontroller/qgs2dgamepadcontroller.sip
+%End
 %Include auto_generated/inputcontroller/qgs3dmapcontroller.sip
+%If ( HAVE_QTGAMEPAD )
+%Include auto_generated/inputcontroller/qgs3dgamepadcontroller.sip
+%End
 %Include auto_generated/inputcontroller/qgsabstractinputcontroller.sip
 %Include auto_generated/inputcontroller/qgsinputcontrollermanager.sip
 %Include auto_generated/labeling/qgslabellineanchorwidget.sip

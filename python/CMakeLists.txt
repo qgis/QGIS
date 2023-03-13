@@ -218,6 +218,11 @@ if (WITH_GUI)
     set(SIP_DISABLE_FEATURES ${SIP_DISABLE_FEATURES} HAVE_QSCI_SIP)
   endif()
 
+  if(NOT WITH_QTGAMEPAD)
+    message(STATUS "QtGamepad not enabled - disabling bindings for derived classes")
+    set(SIP_DISABLE_FEATURES ${SIP_DISABLE_FEATURES} HAVE_QTGAMEPAD)
+  endif()
+
   configure_file(${CMAKE_CURRENT_SOURCE_DIR}/gui/project.py.in ${CMAKE_CURRENT_BINARY_DIR}/gui/project.py @ONLY)
   configure_file(${CMAKE_CURRENT_SOURCE_DIR}/gui/pyproject.toml.in ${CMAKE_CURRENT_BINARY_DIR}/gui/pyproject.toml @ONLY)
   GENERATE_SIP_PYTHON_MODULE_CODE(qgis._gui gui/gui.sip "${sip_files_gui}" cpp_files)

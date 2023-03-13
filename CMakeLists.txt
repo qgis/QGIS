@@ -454,12 +454,20 @@ if(WITH_CORE)
     set(HAS_KDE_QT5_FONT_STRETCH_FIX FALSE CACHE BOOL "Using KDE's Qt 5.15 fork with the QFont stretch fix")
   endif()
 
-  # Use Qt5SerialPort optionally for GPS
-  set (WITH_QTSERIALPORT TRUE CACHE BOOL "Determines whether Qt5SerialPort should be tried for GPS positioning")
+  # Use QtSerialPort optionally for GPS
+  set (WITH_QTSERIALPORT TRUE CACHE BOOL "Determines whether QtSerialPort should be tried for GPS positioning")
   if (WITH_QTSERIALPORT)
       find_package(${QT_VERSION_BASE} COMPONENTS SerialPort REQUIRED)
       # following variable is used in qgsconfig.h
       set (HAVE_QTSERIALPORT TRUE)
+  endif()
+
+  # Use QtGamepad optionally for input control
+  set (WITH_QTGAMEPAD TRUE CACHE BOOL "Determines whether QtGamepad should be tried for GPS positioning")
+  if (WITH_QTGAMEPAD)
+      find_package(${QT_VERSION_BASE} COMPONENTS Gamepad REQUIRED)
+      # following variable is used in qgsconfig.h
+      set (HAVE_QTGAMEPAD TRUE)
   endif()
 
   find_package(${QT_VERSION_BASE} COMPONENTS Core Gui Widgets Network Xml Svg Concurrent Test Sql Positioning REQUIRED)

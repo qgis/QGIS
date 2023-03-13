@@ -4,6 +4,7 @@
 ${DEFAULTDOCSTRINGSIGNATURE}
 
 %Feature HAVE_QSCI_SIP
+%Feature HAVE_QTGAMEPAD
 
 %Import core/core.sip
 
