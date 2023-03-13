@@ -144,14 +144,14 @@ class _3D_EXPORT Qgs3DMapScene : public QObject
      *
      * \since QGIS 3.32
      */
-    QList<QgsMapLayer *> layers() { return mLayerEntities.keys(); }
+    QList<QgsMapLayer *> layers() SIP_SKIP { return mLayerEntities.keys(); }
 
     /**
      * Returns the entity belonging to \a layer
      *
      * \since QGIS 3.32
      */
-    Qt3DCore::QEntity *layerEntity( QgsMapLayer *layer ) const { return mLayerEntities.value( layer ); }
+    Qt3DCore::QEntity *layerEntity( QgsMapLayer *layer ) const SIP_SKIP { return mLayerEntities.value( layer ); }
 
     /**
      * Returns the scene extent in the map's CRS

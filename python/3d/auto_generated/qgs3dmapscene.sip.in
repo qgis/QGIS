@@ -91,19 +91,7 @@ Exports the scene according to the scene export settings
 %End
 
 
-    QList<QgsMapLayer *> layers();
-%Docstring
-Returns the layers that contain chunked entities
 
-.. versionadded:: 3.32
-%End
-
-    Qt3DCore::QEntity *layerEntity( QgsMapLayer *layer ) const;
-%Docstring
-Returns the entity belonging to ``layer``
-
-.. versionadded:: 3.32
-%End
 
     QgsRectangle sceneExtent();
 %Docstring
