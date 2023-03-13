@@ -466,7 +466,7 @@ if(WITH_CORE)
   endif()
 
   # Use QtGamepad optionally for input control
-  set (WITH_QTGAMEPAD TRUE CACHE BOOL "Determines whether QtGamepad should be tried for GPS positioning")
+  set (WITH_QTGAMEPAD FALSE CACHE BOOL "Determines whether QtGamepad should be tried for GPS positioning")
   if (WITH_QTGAMEPAD)
       find_package(${QT_VERSION_BASE} COMPONENTS Gamepad REQUIRED)
       # following variable is used in qgsconfig.h
