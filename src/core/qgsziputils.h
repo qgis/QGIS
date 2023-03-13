@@ -84,6 +84,13 @@ namespace QgsZipUtils
    */
   CORE_EXPORT bool encodeGzip( const QByteArray &bytesIn, QByteArray &bytesOut ) SIP_SKIP;
 
+  /**
+   * Returns the list of files within a \a zip file
+   *
+   * \since QGIS 3.30
+   */
+  CORE_EXPORT const QStringList files( const QString &zip );
+
 };
 
 #endif //QGSZIPUTILS_H
