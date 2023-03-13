@@ -352,6 +352,10 @@
 %Include auto_generated/history/qgshistoryproviderregistry.sip
 %Include auto_generated/history/qgshistorywidget.sip
 %Include auto_generated/history/qgshistorywidgetcontext.sip
+%Include auto_generated/inputcontroller/qgs2dmapcontroller.sip
+%Include auto_generated/inputcontroller/qgs3dmapcontroller.sip
+%Include auto_generated/inputcontroller/qgsabstractinputcontroller.sip
+%Include auto_generated/inputcontroller/qgsinputcontrollermanager.sip
 %Include auto_generated/labeling/qgslabellineanchorwidget.sip
 %Include auto_generated/labeling/qgslabelobstaclesettingswidget.sip
 %Include auto_generated/labeling/qgslabelsettingswidgetbase.sip

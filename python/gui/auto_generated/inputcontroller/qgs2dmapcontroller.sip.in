@@ -1,0 +1,50 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/inputcontroller/qgs2dmapcontroller.h                         *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+class QgsAbstract2DMapController : QgsAbstractInputController
+{
+%Docstring(signature="appended")
+Abstract base class for all 2D map controllers.
+
+.. versionadded:: 3.32
+%End
+
+%TypeHeaderCode
+#include "qgs2dmapcontroller.h"
+%End
+  public:
+
+    QgsAbstract2DMapController( QObject *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsAbstract2DMapController, with the specified ``parent`` object.
+%End
+
+    virtual Qgis::InputControllerType type() const;
+
+
+  signals:
+
+
+    void zoomMap( double factor );
+%Docstring
+Emitted when the controller should change the scale of a map by the given ``factor``.
+%End
+
+
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/inputcontroller/qgs2dmapcontroller.h                         *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

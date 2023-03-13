@@ -60,6 +60,7 @@
 #include "qgssettingsregistrygui.h"
 #include "qgshistoryproviderregistry.h"
 #include "qgslayermetadatasourceselectprovider.h"
+#include "qgsinputcontrollermanager.h"
 #include "qgssensorguiregistry.h"
 #include "qgshistoryentry.h"
 
@@ -204,6 +205,11 @@ QgsWindowManagerInterface *QgsGui::windowManager()
   return instance()->mWindowManager.get();
 }
 
+QgsInputControllerManager *QgsGui::inputControllerManager()
+{
+  return instance()->mInputControllerManager;
+}
+
 void QgsGui::setWindowManager( QgsWindowManagerInterface *manager )
 {
   instance()->mWindowManager.reset( manager );
@@ -244,6 +250,7 @@ QgsGui::~QgsGui()
   delete mProviderSourceWidgetProviderRegistry;
   delete mShapeMapToolRegistry;
   delete mRelationEditorRegistry;
+  delete mInputControllerManager;
   delete mSettingsRegistryGui;
   delete mSensorGuiRegistry;
   delete mSettingsEditorRegistry;
@@ -307,6 +314,8 @@ QgsGui::QgsGui()
 
   mHistoryProviderRegistry = new QgsHistoryProviderRegistry();
   mHistoryProviderRegistry->addDefaultProviders();
+
+  mInputControllerManager = new QgsInputControllerManager();
 
   mProviderGuiRegistry = new QgsProviderGuiRegistry( QgsApplication::pluginPath() );
   mProjectStorageGuiRegistry = new QgsProjectStorageGuiRegistry();

@@ -3540,6 +3540,12 @@ Qgis.LayoutUnitType.__doc__ = 'Types of layout units\n\n.. note::\n\n   Prior to
 # --
 Qgis.LayoutUnitType.baseClass = Qgis
 # monkey patching scoped based enum
+Qgis.InputControllerType.Map2D.__doc__ = "2D map controller"
+Qgis.InputControllerType.Map3D.__doc__ = "3D map controller"
+Qgis.InputControllerType.__doc__ = 'Input controller types.\n\n.. versionadded:: 3.32\n\n' + '* ``Map2D``: ' + Qgis.InputControllerType.Map2D.__doc__ + '\n' + '* ``Map3D``: ' + Qgis.InputControllerType.Map3D.__doc__
+# --
+Qgis.InputControllerType.baseClass = Qgis
+# monkey patching scoped based enum
 Qgis.PostgresRelKind.NotSet.__doc__ = "Not set"
 Qgis.PostgresRelKind.Unknown.__doc__ = "Unknown"
 Qgis.PostgresRelKind.OrdinaryTable.__doc__ = "Ordinary table"
