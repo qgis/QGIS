@@ -66,8 +66,8 @@ QStringList QgsPdalAlgorithmBase::createArgumentLists( const QVariantMap &parame
 
 QVariantMap QgsPdalAlgorithmBase::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  QStringList processArgs = createArgumentLists( parameters, context, feedback );
-  QString wrenchPath = wrenchExecutableBinary();
+  const QStringList processArgs = createArgumentLists( parameters, context, feedback );
+  const QString wrenchPath = wrenchExecutableBinary();
 
   feedback->pushCommandInfo( QObject::tr( "wrench command: " ) + wrenchPath + ' ' + processArgs.join( ' ' ) );
 
