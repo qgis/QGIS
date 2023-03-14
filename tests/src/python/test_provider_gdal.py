@@ -308,6 +308,18 @@ class PyQgsGdalProvider(unittest.TestCase):
         value_sample = raster_layer.dataProvider().sample(pos, 1)[0]
         self.assertEqual(value_sample, full_content[3])
 
+    @unittest.skipIf(int(gdal.VersionInfo('VERSION_NUM')) < GDAL_COMPUTE_VERSION(3, 7, 0), "GDAL 3.7.0 required")
+    def testGdbMetadata(self):
+        """Test reading GDB layer metadata"""
+        path = os.path.join(unitTestDataPath(), 'raster_metadata.gdb')
+        rl = QgsRasterLayer('OpenFileGDB:{}:int'.format(path), 'gdb', 'gdal')
+        self.assertTrue(rl.isValid())
+
+        self.assertEqual(rl.metadata().identifier(), 'int')
+        self.assertEqual(rl.metadata().title(), 'Raster title')
+        self.assertEqual(rl.metadata().type(), 'dataset')
+        self.assertEqual(rl.metadata().abstract(), 'My description (abstract)\n\nmy raster summary')
+
 
 if __name__ == '__main__':
     unittest.main()
