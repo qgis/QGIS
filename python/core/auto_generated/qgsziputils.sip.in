@@ -25,12 +25,13 @@ extension, ``False`` otherwise.
 :return: ``True`` if the file is zipped, ``False`` otherwise
 %End
 
-  bool unzip( const QString &zip, const QString &dir, QStringList &files /Out/ );
+  bool unzip( const QString &zip, const QString &dir, QStringList &files /Out/, bool checkConsistency = true );
 %Docstring
 Unzip a zip file in an output directory.
 
 :param zip: The zip filename
 :param dir: The output directory
+:param checkConsistency: Perform additional stricter consistency checks on the archive, and error if they fail (since QGIS 3.30)
 
 :return: - ``False`` if the zip filename does not exist, the output directory
          - files: The absolute path of unzipped files
@@ -54,6 +55,13 @@ also returned.
 
 
 
+
+  const QStringList files( const QString &zip );
+%Docstring
+Returns the list of files within a ``zip`` file
+
+.. versionadded:: 3.30
+%End
 
 };
 
