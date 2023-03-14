@@ -186,7 +186,15 @@ void QgsVectorTileBasicRenderer::renderTile( const QgsVectorTileRendererData &ti
     {
       QgsFillSymbol *fillSym = dynamic_cast<QgsFillSymbol *>( sym );
       if ( fillSym )
-        fillSym->renderPolygon( tile.tilePolygon(), nullptr, nullptr, context );
+      {
+        QPolygon tilePolygon = tile.tilePolygon();
+        // Order of points set in QgsVectorTileUtils::tilePolygon
+        tilePolygon.setPoint( 0, QPoint( tilePolygon.point( 0 ).x() - 10, tilePolygon.point( 0 ).y() + 10 ) );
+        tilePolygon.setPoint( 1, QPoint( tilePolygon.point( 1 ).x() - 10, tilePolygon.point( 1 ).y() - 10 ) );
+        tilePolygon.setPoint( 2, QPoint( tilePolygon.point( 2 ).x() + 10, tilePolygon.point( 2 ).y() - 10 ) );
+        tilePolygon.setPoint( 3, QPoint( tilePolygon.point( 3 ).x() + 10, tilePolygon.point( 3 ).y() + 10 ) );
+        fillSym->renderPolygon( tilePolygon, nullptr, nullptr, context );
+      }
     }
     else if ( layerStyle.layerName().isEmpty() )
     {
