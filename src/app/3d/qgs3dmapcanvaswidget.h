@@ -19,6 +19,7 @@
 #include "qmenu.h"
 #include "qgsdockwidget.h"
 #include "qgis_app.h"
+#include "qobjectuniqueptr.h"
 #include "qtoolbutton.h"
 #include "qgsrectangle.h"
 
@@ -116,7 +117,7 @@ class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
     QAction *mShowFrustumPolyogon = nullptr;
     QToolButton *mBtnOptions = nullptr;
     QgsDockableWidgetHelper *mDockableWidgetHelper = nullptr;
-    QgsRubberBand *mViewFrustumHighlight = nullptr;
+    QObjectUniquePtr< QgsRubberBand > mViewFrustumHighlight;
     QPointer<QDialog> mConfigureDialog;
 };
 

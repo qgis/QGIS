@@ -55,7 +55,6 @@
 Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
   : QWidget( nullptr )
   , mCanvasName( name )
-  , mViewFrustumHighlight( nullptr )
 {
   const QgsSettings setting;
 
@@ -272,8 +271,6 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
 Qgs3DMapCanvasWidget::~Qgs3DMapCanvasWidget()
 {
   delete mDockableWidgetHelper;
-  if ( mViewFrustumHighlight )
-    delete mViewFrustumHighlight;
 }
 
 void Qgs3DMapCanvasWidget::resizeEvent( QResizeEvent *event )
@@ -384,10 +381,11 @@ void Qgs3DMapCanvasWidget::setMainCanvas( QgsMapCanvas *canvas )
   connect( mMainCanvas, &QgsMapCanvas::canvasColorChanged, this, &Qgs3DMapCanvasWidget::onMainCanvasColorChanged );
   connect( mMainCanvas, &QgsMapCanvas::extentsChanged, this, &Qgs3DMapCanvasWidget::onMainMapCanvasExtentChanged );
 
-  if ( mViewFrustumHighlight )
-    delete mViewFrustumHighlight;
-  mViewFrustumHighlight = new QgsRubberBand( canvas, Qgis::GeometryType::Polygon );
-  mViewFrustumHighlight->setColor( QColor::fromRgba( qRgba( 0, 0, 255, 50 ) ) );
+  if ( !mViewFrustumHighlight )
+  {
+    mViewFrustumHighlight.reset( new QgsRubberBand( canvas, Qgis::GeometryType::Polygon ) );
+    mViewFrustumHighlight->setColor( QColor::fromRgba( qRgba( 0, 0, 255, 50 ) ) );
+  }
 }
 
 void Qgs3DMapCanvasWidget::resetView()
