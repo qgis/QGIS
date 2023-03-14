@@ -42,6 +42,7 @@
 #include "qgsprovidersublayerdetails.h"
 #include "qgsproviderutils.h"
 #include "qgscplerrorhandler_p.h"
+#include "qgsmetadatautils.h"
 
 #include <QImage>
 #include <QColor>
@@ -483,6 +484,29 @@ void QgsGdalProvider::reloadProviderData()
 
   mHasInit = false;
   ( void )initIfNeeded();
+}
+
+void QgsGdalProvider::loadMetadata()
+{
+  // Set default, may be overridden by stored metadata
+  mLayerMetadata.setCrs( crs() );
+
+  if ( mDriverName == QLatin1String( "OpenFileGDB" ) )
+  {
+    // read ESRI FileGeodatabase/Personal Geodatabase layer metadata
+    if ( char **GDALmetadata = GDALGetMetadata( mGdalDataset, "xml:documentation" ) )
+    {
+      const QString metadata( GDALmetadata[0] );
+      if ( !metadata.isEmpty() )
+      {
+        QDomDocument metadataDoc;
+        metadataDoc.setContent( metadata );
+        mLayerMetadata = QgsMetadataUtils::convertFromEsri( metadataDoc );
+      }
+    }
+  }
+
+  mLayerMetadata.setType( QStringLiteral( "dataset" ) );
 }
 
 QString QgsGdalProvider::htmlMetadata()
@@ -1288,6 +1312,11 @@ QString QgsGdalProvider::generateBandName( int bandNumber ) const
   return generatedBandName;
 }
 
+QgsLayerMetadata QgsGdalProvider::layerMetadata() const
+{
+  return mLayerMetadata;
+}
+
 QgsRasterIdentifyResult QgsGdalProvider::identify( const QgsPointXY &point, Qgis::RasterIdentifyFormat format, const QgsRectangle &boundingBox, int width, int height, int /*dpi*/ )
 {
   QMutexLocker locker( mpMutex );
@@ -1725,7 +1754,8 @@ QgsRasterDataProvider::ProviderCapabilities QgsGdalProvider::providerCapabilitie
   return ProviderCapability::ProviderHintBenefitsFromResampling |
          ProviderCapability::ProviderHintCanPerformProviderResampling |
          ProviderCapability::ReloadData |
-         ProviderCapability::NativeRasterAttributeTable;
+         ProviderCapability::NativeRasterAttributeTable |
+         ProviderCapability::ReadLayerMetadata;
 }
 
 QList<QgsProviderSublayerDetails> QgsGdalProvider::sublayerDetails( GDALDatasetH dataset, const QString &baseUri )
@@ -3786,6 +3816,8 @@ void QgsGdalProvider::initBaseDataset()
     mUseSrcNoDataValue.append( false );
     mGdalDataType.append( GDT_Byte );
   }
+
+  loadMetadata();
 }
 
 QgsGdalProvider *QgsGdalProviderMetadata::createRasterDataProvider(
