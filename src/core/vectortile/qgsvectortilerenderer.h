@@ -135,6 +135,9 @@ class CORE_EXPORT QgsVectorTileRenderer
     //! Finishes rendering and cleans up any resources
     virtual void stopRender( QgsRenderContext &context ) = 0;
 
+    //! Renders the background if defined
+    virtual void renderBackground( QgsRenderContext &context ) = 0;
+
     //! Renders given vector tile. Must be called between startRender/stopRender.
     virtual void renderTile( const QgsVectorTileRendererData &tile, QgsRenderContext &context ) = 0;
 
