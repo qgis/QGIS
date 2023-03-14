@@ -803,21 +803,21 @@
                   <item row="0" column="0">
                    <widget class="QCheckBox" name="mSync2DTo3DCheckbox">
                     <property name="text">
-                     <string>2D Map View Follows 3D Camera</string>
+                     <string>2D map view follows 3D camera</string>
                     </property>
                    </widget>
                   </item>
                   <item row="1" column="0">
                    <widget class="QCheckBox" name="mSync3DTo2DCheckbox">
                     <property name="text">
-                     <string>3D Camera Follows 2D Map View</string>
+                     <string>3D camera follows 2D map view</string>
                     </property>
                    </widget>
                   </item>
                   <item row="2" column="0">
                    <widget class="QCheckBox" name="mVisualizeExtentCheckBox">
                     <property name="text">
-                     <string>Show Visible Camera Area in 2D Map View</string>
+                     <string>Show visible camera area in 2D map view</string>
                     </property>
                    </widget>
                   </item>
