@@ -114,16 +114,16 @@ void QgsElevationShadingRenderer::writeXml( QDomElement &elem, const QgsReadWrit
   elem.setAttribute( QStringLiteral( "combined-method" ), static_cast<int>( mCombinedElevationMethod ) );
 
   elem.setAttribute( QStringLiteral( "edl-is-active" ), mRenderEdl ? 1 : 0 );
-  elem.setAttribute( QStringLiteral( "edl-strength" ), mEyeDomeLightingStrength );
-  elem.setAttribute( QStringLiteral( "edl-distance" ), mEyeDomeLightingDistance );
+  elem.setAttribute( QStringLiteral( "edl-strength" ),  QString::number( mEyeDomeLightingStrength ) );
+  elem.setAttribute( QStringLiteral( "edl-distance" ),  QString::number( mEyeDomeLightingDistance ) );
   elem.setAttribute( QStringLiteral( "edl-distance-unit" ), static_cast<int>( mEyeDomeLightingDistanceUnit ) );
 
   elem.setAttribute( QStringLiteral( "hillshading-is-active" ), mRenderHillshading ? 1 : 0 );
-  elem.setAttribute( QStringLiteral( "hillshading-z-factor" ), mHillshadingZFactor );
+  elem.setAttribute( QStringLiteral( "hillshading-z-factor" ), QString::number( mHillshadingZFactor ) );
   elem.setAttribute( QStringLiteral( "hillshading-is-multidirectional" ), mHillshadingMultiDir ? 1 : 0 );
 
-  elem.setAttribute( QStringLiteral( "light-altitude" ), mLightAltitude );
-  elem.setAttribute( QStringLiteral( "light-azimuth" ), mLightAzimuth );
+  elem.setAttribute( QStringLiteral( "light-altitude" ),  QString::number( mLightAltitude ) );
+  elem.setAttribute( QStringLiteral( "light-azimuth" ),  QString::number( mLightAzimuth ) );
 }
 
 void QgsElevationShadingRenderer::readXml( const QDomElement &element, const QgsReadWriteContext & )
