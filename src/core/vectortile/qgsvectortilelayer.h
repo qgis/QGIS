@@ -341,6 +341,7 @@ class QgsVectorTileDataProvider : public QgsDataProvider
     bool renderInPreview( const QgsDataProvider::PreviewContext &context ) override;
 
     virtual QString sourcePath() const = 0;
+    virtual QgsVectorTileDataProvider *clone() const = 0 SIP_FACTORY;
 
 };
 
@@ -353,6 +354,7 @@ class QgsXyzVectorTileDataProvider : public QgsVectorTileDataProvider
                                   const QgsDataProvider::ProviderOptions &providerOptions,
                                   QgsDataProvider::ReadFlags flags );
 
+    QgsVectorTileDataProvider *clone() const override;
     QString sourcePath() const override;
     bool isValid() const override;
     QgsCoordinateReferenceSystem crs() const override;
@@ -367,6 +369,7 @@ class QgsMbTilesVectorTileDataProvider : public QgsVectorTileDataProvider
                                       const QgsDataProvider::ProviderOptions &providerOptions,
                                       QgsDataProvider::ReadFlags flags );
 
+    QgsVectorTileDataProvider *clone() const override;
     QString sourcePath() const override;
     bool isValid() const override;
     QgsCoordinateReferenceSystem crs() const override;
@@ -381,6 +384,7 @@ class QgsVtpkVectorTileDataProvider : public QgsVectorTileDataProvider
                                    const QgsDataProvider::ProviderOptions &providerOptions,
                                    QgsDataProvider::ReadFlags flags );
 
+    QgsVectorTileDataProvider *clone() const override;
     QString sourcePath() const override;
     bool isValid() const override;
     QgsCoordinateReferenceSystem crs() const override;
@@ -395,6 +399,7 @@ class QgsArcGisVectorTileServiceDataProvider : public QgsVectorTileDataProvider
                                             const QString &sourcePath,
                                             const QgsDataProvider::ProviderOptions &providerOptions,
                                             QgsDataProvider::ReadFlags flags );
+    QgsVectorTileDataProvider *clone() const override;
     QString sourcePath() const override;
     bool isValid() const override;
     QgsCoordinateReferenceSystem crs() const override;

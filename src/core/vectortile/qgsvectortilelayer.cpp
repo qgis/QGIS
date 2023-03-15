@@ -1372,6 +1372,15 @@ QgsXyzVectorTileDataProvider::QgsXyzVectorTileDataProvider( const QString &uri, 
 
 }
 
+QgsVectorTileDataProvider *QgsXyzVectorTileDataProvider::clone() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  ProviderOptions options;
+  options.transformContext = transformContext();
+  return new QgsXyzVectorTileDataProvider( dataSourceUri(), options, mReadFlags );
+}
+
 QString QgsXyzVectorTileDataProvider::sourcePath() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
@@ -1403,6 +1412,15 @@ QgsMbTilesVectorTileDataProvider::QgsMbTilesVectorTileDataProvider( const QStrin
   : QgsVectorTileDataProvider( uri, providerOptions, flags )
 {
 
+}
+
+QgsVectorTileDataProvider *QgsMbTilesVectorTileDataProvider::clone() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  ProviderOptions options;
+  options.transformContext = transformContext();
+  return new QgsMbTilesVectorTileDataProvider( dataSourceUri(), options, mReadFlags );
 }
 
 QString QgsMbTilesVectorTileDataProvider::sourcePath() const
@@ -1438,6 +1456,15 @@ QgsVtpkVectorTileDataProvider::QgsVtpkVectorTileDataProvider( const QString &uri
 
 }
 
+QgsVectorTileDataProvider *QgsVtpkVectorTileDataProvider::clone() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  ProviderOptions options;
+  options.transformContext = transformContext();
+  return new QgsVtpkVectorTileDataProvider( dataSourceUri(), options, mReadFlags );
+}
+
 QString QgsVtpkVectorTileDataProvider::sourcePath() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
@@ -1470,6 +1497,15 @@ QgsArcGisVectorTileServiceDataProvider::QgsArcGisVectorTileServiceDataProvider( 
   , mSourcePath( sourcePath )
 {
 
+}
+
+QgsVectorTileDataProvider *QgsArcGisVectorTileServiceDataProvider::clone() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  ProviderOptions options;
+  options.transformContext = transformContext();
+  return new QgsArcGisVectorTileServiceDataProvider( dataSourceUri(), mSourcePath, options, mReadFlags );
 }
 
 QString QgsArcGisVectorTileServiceDataProvider::sourcePath() const
