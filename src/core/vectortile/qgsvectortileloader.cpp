@@ -18,21 +18,16 @@
 #include <QEventLoop>
 
 #include "qgslogger.h"
-#include "qgsnetworkaccessmanager.h"
 #include "qgsvectortileutils.h"
 #include "qgsapplication.h"
-#include "qgsauthmanager.h"
-#include "qgsmessagelog.h"
 #include "qgsvectortilelayer.h"
 #include "qgsfeedback.h"
 
 #include "qgstiledownloadmanager.h"
 
-QgsVectorTileLoader::QgsVectorTileLoader( const QString &uri, const QgsTileMatrix &tileMatrix, const QgsTileRange &range, const QPointF &viewCenter, const QString &authid, const QgsHttpHeaders &headers, QgsFeedback *feedback )
+QgsVectorTileLoader::QgsVectorTileLoader( const QgsVectorTileDataProvider *provider, const QgsTileMatrix &tileMatrix, const QgsTileRange &range, const QPointF &viewCenter, QgsFeedback *feedback )
   : mEventLoop( new QEventLoop )
   , mFeedback( feedback )
-  , mAuthCfg( authid )
-  , mHeaders( headers )
 {
   if ( feedback )
   {
@@ -49,7 +44,7 @@ QgsVectorTileLoader::QgsVectorTileLoader( const QString &uri, const QgsTileMatri
   QgsVectorTileUtils::sortTilesByDistanceFromCenter( tiles, viewCenter );
   for ( QgsTileXYZ id : std::as_const( tiles ) )
   {
-    loadFromNetworkAsync( id, tileMatrix, uri );
+    loadFromNetworkAsync( id, tileMatrix, provider );
   }
 }
 
@@ -82,26 +77,9 @@ void QgsVectorTileLoader::downloadBlocking()
   Q_ASSERT( mReplies.isEmpty() );
 }
 
-void QgsVectorTileLoader::loadFromNetworkAsync( const QgsTileXYZ &id, const QgsTileMatrix &tileMatrix, const QString &requestUrl )
+void QgsVectorTileLoader::loadFromNetworkAsync( const QgsTileXYZ &id, const QgsTileMatrix &tileMatrix, const QgsVectorTileDataProvider *provider )
 {
-  QString url = QgsVectorTileUtils::formatXYZUrlTemplate( requestUrl, id, tileMatrix );
-  QNetworkRequest request( url );
-  QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsVectorTileLoader" ) );
-  QgsSetRequestInitiatorId( request, id.toString() );
-
-  request.setAttribute( static_cast<QNetworkRequest::Attribute>( QNetworkRequest::User + 1 ), id.column() );
-  request.setAttribute( static_cast<QNetworkRequest::Attribute>( QNetworkRequest::User + 2 ), id.row() );
-  request.setAttribute( static_cast<QNetworkRequest::Attribute>( QNetworkRequest::User + 3 ), id.zoomLevel() );
-
-  request.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferCache );
-  request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
-
-  mHeaders.updateNetworkRequest( request );
-
-  if ( !mAuthCfg.isEmpty() &&  !QgsApplication::authManager()->updateNetworkRequest( request, mAuthCfg ) )
-  {
-    QgsMessageLog::logMessage( tr( "network request update failed for authentication config" ), tr( "Network" ) );
-  }
+  QNetworkRequest request = provider->tileRequest( tileMatrix, id );
 
   QgsTileDownloadManagerReply *reply = QgsApplication::tileDownloadManager()->get( request );
   connect( reply, &QgsTileDownloadManagerReply::finished, this, &QgsVectorTileLoader::tileReplyFinished );
