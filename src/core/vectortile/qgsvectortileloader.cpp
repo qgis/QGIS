@@ -25,7 +25,7 @@
 
 #include "qgstiledownloadmanager.h"
 
-QgsVectorTileLoader::QgsVectorTileLoader( const QgsVectorTileDataProvider *provider, const QgsTileMatrix &tileMatrix, const QgsTileRange &range, const QPointF &viewCenter, QgsFeedback *feedback )
+QgsVectorTileLoader::QgsVectorTileLoader( const QgsVectorTileDataProvider *provider, const QgsTileMatrix &tileMatrix, const QgsTileRange &range, const QPointF &viewCenter, QgsFeedback *feedback, Qgis::RendererUsage usage )
   : mEventLoop( new QEventLoop )
   , mFeedback( feedback )
 {
@@ -44,7 +44,7 @@ QgsVectorTileLoader::QgsVectorTileLoader( const QgsVectorTileDataProvider *provi
   QgsVectorTileUtils::sortTilesByDistanceFromCenter( tiles, viewCenter );
   for ( QgsTileXYZ id : std::as_const( tiles ) )
   {
-    loadFromNetworkAsync( id, tileMatrix, provider );
+    loadFromNetworkAsync( id, tileMatrix, provider, usage );
   }
 }
 
@@ -77,9 +77,9 @@ void QgsVectorTileLoader::downloadBlocking()
   Q_ASSERT( mReplies.isEmpty() );
 }
 
-void QgsVectorTileLoader::loadFromNetworkAsync( const QgsTileXYZ &id, const QgsTileMatrix &tileMatrix, const QgsVectorTileDataProvider *provider )
+void QgsVectorTileLoader::loadFromNetworkAsync( const QgsTileXYZ &id, const QgsTileMatrix &tileMatrix, const QgsVectorTileDataProvider *provider, Qgis::RendererUsage usage )
 {
-  QNetworkRequest request = provider->tileRequest( tileMatrix, id );
+  QNetworkRequest request = provider->tileRequest( tileMatrix, id, usage );
 
   QgsTileDownloadManagerReply *reply = QgsApplication::tileDownloadManager()->get( request );
   connect( reply, &QgsTileDownloadManagerReply::finished, this, &QgsVectorTileLoader::tileReplyFinished );
