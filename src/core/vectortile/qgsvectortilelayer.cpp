@@ -1574,29 +1574,47 @@ QgsCoordinateReferenceSystem QgsVtpkVectorTileDataProvider::crs() const
   return QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) );
 }
 
-QByteArray QgsVtpkVectorTileDataProvider::readTile( const QgsTileMatrix &tileMatrix, const QgsTileXYZ &id, QgsFeedback *feedback ) const
+QByteArray QgsVtpkVectorTileDataProvider::readTile( const QgsTileMatrix &, const QgsTileXYZ &id, QgsFeedback *feedback ) const
 {
   QgsDataSourceUri dsUri;
   dsUri.setEncodedUri( dataSourceUri() );
-  const QString authcfg = dsUri.authConfigId();
-
-  const QgsTileRange tileRange( id.column(), id.column(), id.row(), id.row() );
-
-  QList<QgsVectorTileRawData> rawTiles = QgsVectorTileLoader::blockingFetchTileRawData( QStringLiteral( "vtpk" ),
-                                         dsUri.param( QStringLiteral( "url" ) ),
-                                         tileMatrix,
-                                         QPointF(),
-                                         tileRange,
-                                         authcfg,
-                                         dsUri.httpHeaders() );
-  if ( rawTiles.isEmpty() )
-    return QByteArray();
-  return rawTiles.first().data;
+  QgsVtpkTiles reader( dsUri.param( QStringLiteral( "url" ) ) );
+  reader.open();
+  return loadFromVtpk( reader, id, feedback );
 }
 
 QList<QgsVectorTileRawData> QgsVtpkVectorTileDataProvider::readTiles( const QgsTileMatrix &, const QVector<QgsTileXYZ> &tiles, QgsFeedback *feedback ) const
 {
+  QgsDataSourceUri dsUri;
+  dsUri.setEncodedUri( dataSourceUri() );
 
+  QgsVtpkTiles reader( dsUri.param( QStringLiteral( "url" ) ) );
+  reader.open();
+
+  QList<QgsVectorTileRawData> rawTiles;
+  rawTiles.reserve( tiles.size() );
+  for ( QgsTileXYZ id : std::as_const( tiles ) )
+  {
+    if ( feedback && feedback->isCanceled() )
+      break;
+
+    const QByteArray rawData = loadFromVtpk( reader, id, feedback );
+    if ( !rawData.isEmpty() )
+    {
+      rawTiles.append( QgsVectorTileRawData( id, rawData ) );
+    }
+  }
+  return rawTiles;
+}
+
+QByteArray QgsVtpkVectorTileDataProvider::loadFromVtpk( QgsVtpkTiles &vtpkTileReader, const QgsTileXYZ &id, QgsFeedback * )
+{
+  const QByteArray tileData = vtpkTileReader.tileData( id.zoomLevel(), id.column(), id.row() );
+  if ( tileData.isEmpty() )
+  {
+    return QByteArray();
+  }
+  return tileData;
 }
 
 //

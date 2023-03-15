@@ -399,6 +399,8 @@ class QgsMbTilesVectorTileDataProvider : public QgsVectorTileDataProvider
 
 };
 
+class QgsVtpkTiles;
+
 class QgsVtpkVectorTileDataProvider : public QgsVectorTileDataProvider
 {
     Q_OBJECT
@@ -414,6 +416,11 @@ class QgsVtpkVectorTileDataProvider : public QgsVectorTileDataProvider
     QgsCoordinateReferenceSystem crs() const override;
     QByteArray readTile( const QgsTileMatrix &tileMatrix, const QgsTileXYZ &id, QgsFeedback *feedback = nullptr ) const override;
     QList<QgsVectorTileRawData> readTiles( const QgsTileMatrix &, const QVector<QgsTileXYZ> &tiles, QgsFeedback *feedback = nullptr ) const override;
+
+  private:
+
+    //! Returns raw tile data for a single tile loaded from VTPK file
+    static QByteArray loadFromVtpk( QgsVtpkTiles &vtpkTileReader, const QgsTileXYZ &id, QgsFeedback *feedback = nullptr );
 
 };
 
