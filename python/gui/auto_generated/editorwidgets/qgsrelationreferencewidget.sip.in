@@ -241,14 +241,14 @@ Set the name of the referenced layer to ``referencedLayerName``
 %Docstring
 Returns the limit of fetched features (0 means all features)
 
-.. versionadded:: 3.30
+.. versionadded:: 3.32
 %End
 
     void setFetchLimit( int fetchLimit );
 %Docstring
 Set the limit of fetched features (0 means all features)
 
-.. versionadded:: 3.30
+.. versionadded:: 3.32
 %End
 
 

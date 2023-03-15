@@ -253,13 +253,13 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
 
     /**
      * Returns the limit of fetched features (0 means all features)
-     * \since QGIS 3.30
+     * \since QGIS 3.32
      */
     int fetchLimit() const {return mFetchLimit; }
 
     /**
      * Set the limit of fetched features (0 means all features)
-     * \since QGIS 3.30
+     * \since QGIS 3.32
      */
     void setFetchLimit( int fetchLimit ) {mFetchLimit = fetchLimit; }
 
