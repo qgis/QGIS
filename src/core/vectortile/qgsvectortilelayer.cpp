@@ -85,19 +85,17 @@ bool QgsVectorTileLayer::loadDataSource()
   const QgsDataProvider::ReadFlags flags;
 
   mSourceType = dsUri.param( QStringLiteral( "type" ) );
-  mSourcePath = dsUri.param( QStringLiteral( "url" ) );
+  const QString sourcePath = dsUri.param( QStringLiteral( "url" ) );
   if ( mSourceType == QLatin1String( "xyz" ) && dsUri.param( QStringLiteral( "serviceType" ) ) == QLatin1String( "arcgis" ) )
   {
-    if ( !setupArcgisVectorTileServiceConnection( mSourcePath, dsUri ) )
+    if ( !setupArcgisVectorTileServiceConnection( sourcePath, dsUri ) )
       return false;
-
-    mDataProvider = std::make_unique< QgsArcGisVectorTileServiceDataProvider >( providerOptions, flags );
   }
   else if ( mSourceType == QLatin1String( "xyz" ) )
   {
-    if ( !QgsVectorTileUtils::checkXYZUrlTemplate( mSourcePath ) )
+    if ( !QgsVectorTileUtils::checkXYZUrlTemplate( sourcePath ) )
     {
-      QgsDebugMsg( QStringLiteral( "Invalid format of URL for XYZ source: " ) + mSourcePath );
+      QgsDebugMsg( QStringLiteral( "Invalid format of URL for XYZ source: " ) + sourcePath );
       return false;
     }
 
@@ -113,14 +111,14 @@ bool QgsVectorTileLayer::loadDataSource()
     mMatrixSet = QgsVectorTileMatrixSet::fromWebMercator( zMin, zMax );
     setExtent( QgsRectangle( -20037508.3427892, -20037508.3427892, 20037508.3427892, 20037508.3427892 ) );
 
-    mDataProvider = std::make_unique< QgsXyzVectorTileDataProvider >( providerOptions, flags );
+    mDataProvider = std::make_unique< QgsXyzVectorTileDataProvider >( mDataSource, providerOptions, flags );
   }
   else if ( mSourceType == QLatin1String( "mbtiles" ) )
   {
-    QgsMbTiles reader( mSourcePath );
+    QgsMbTiles reader( sourcePath );
     if ( !reader.open() )
     {
-      QgsDebugMsg( QStringLiteral( "failed to open MBTiles file: " ) + mSourcePath );
+      QgsDebugMsg( QStringLiteral( "failed to open MBTiles file: " ) + sourcePath );
       return false;
     }
 
@@ -148,14 +146,14 @@ bool QgsVectorTileLayer::loadDataSource()
     r = ct.transformBoundingBox( r );
     setExtent( r );
 
-    mDataProvider = std::make_unique< QgsMbTilesVectorTileDataProvider >( providerOptions, flags );
+    mDataProvider = std::make_unique< QgsMbTilesVectorTileDataProvider >( mDataSource, providerOptions, flags );
   }
   else if ( mSourceType == QLatin1String( "vtpk" ) )
   {
-    QgsVtpkTiles reader( mSourcePath );
+    QgsVtpkTiles reader( sourcePath );
     if ( !reader.open() )
     {
-      QgsDebugMsg( QStringLiteral( "failed to open VTPK file: " ) + mSourcePath );
+      QgsDebugMsg( QStringLiteral( "failed to open VTPK file: " ) + sourcePath );
       return false;
     }
 
@@ -171,7 +169,7 @@ bool QgsVectorTileLayer::loadDataSource()
     setCrs( mMatrixSet.crs() );
     setExtent( reader.extent( transformContext() ) );
 
-    mDataProvider = std::make_unique< QgsVtpkVectorTileDataProvider >( providerOptions, flags );
+    mDataProvider = std::make_unique< QgsVtpkVectorTileDataProvider >( mDataSource, providerOptions, flags );
   }
   else
   {
@@ -281,10 +279,10 @@ bool QgsVectorTileLayer::setupArcgisVectorTileServiceConnection( const QString &
     }
   }
 
-  mSourcePath = tileServiceUri + '/' + mArcgisLayerConfiguration.value( QStringLiteral( "tiles" ) ).toList().value( 0 ).toString();
-  if ( !QgsVectorTileUtils::checkXYZUrlTemplate( mSourcePath ) )
+  const QString sourcePath = tileServiceUri + '/' + mArcgisLayerConfiguration.value( QStringLiteral( "tiles" ) ).toList().value( 0 ).toString();
+  if ( !QgsVectorTileUtils::checkXYZUrlTemplate( sourcePath ) )
   {
-    QgsDebugMsg( QStringLiteral( "Invalid format of URL for XYZ source: " ) + mSourcePath );
+    QgsDebugMsg( QStringLiteral( "Invalid format of URL for XYZ source: " ) + sourcePath );
     return false;
   }
 
@@ -335,6 +333,10 @@ bool QgsVectorTileLayer::setupArcgisVectorTileServiceConnection( const QString &
       QgsDebugMsg( QStringLiteral( "Could not transform layer extent to layer CRS" ) );
     }
   }
+
+  const QgsDataProvider::ProviderOptions providerOptions { mTransformContext };
+  const QgsDataProvider::ReadFlags flags;
+  mDataProvider = std::make_unique< QgsArcGisVectorTileServiceDataProvider >( mDataSource, sourcePath, providerOptions, flags );
 
   return true;
 }
@@ -622,10 +624,10 @@ bool QgsVectorTileLayer::loadDefaultStyleAndSubLayersPrivate( QString &error, QS
 
   if ( mSourceType == QLatin1String( "vtpk" ) )
   {
-    QgsVtpkTiles reader( mSourcePath );
+    QgsVtpkTiles reader( sourcePath() );
     if ( !reader.open() )
     {
-      QgsDebugMsg( QStringLiteral( "failed to open VTPK file: " ) + mSourcePath );
+      QgsDebugMsg( QStringLiteral( "failed to open VTPK file: " ) + sourcePath() );
       return false;
     }
 
@@ -796,10 +798,10 @@ QString QgsVectorTileLayer::loadDefaultMetadata( bool &resultFlag )
   }
   else if ( mSourceType == QLatin1String( "vtpk" ) )
   {
-    QgsVtpkTiles reader( mSourcePath );
+    QgsVtpkTiles reader( sourcePath() );
     if ( !reader.open() )
     {
-      QgsDebugMsg( QStringLiteral( "failed to open VTPK file: " ) + mSourcePath );
+      QgsDebugMsg( QStringLiteral( "failed to open VTPK file: " ) + sourcePath() );
       resultFlag = false;
     }
     else
@@ -891,9 +893,20 @@ QString QgsVectorTileLayer::htmlMetadata() const
   return info;
 }
 
+QString QgsVectorTileLayer::sourcePath() const
+{
+  if ( QgsVectorTileDataProvider *vtProvider = qobject_cast< QgsVectorTileDataProvider * >( mDataProvider.get() ) )
+    return vtProvider->sourcePath();
+
+  return QString();
+}
+
 QByteArray QgsVectorTileLayer::getRawTile( QgsTileXYZ tileID )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+  QgsVectorTileDataProvider *vtProvider = qobject_cast< QgsVectorTileDataProvider * >( mDataProvider.get() );
+  if ( !vtProvider )
+    return QByteArray();
 
   const QgsTileMatrix tileMatrix = mMatrixSet.tileMatrix( tileID.zoomLevel() );
   const QgsTileRange tileRange( tileID.column(), tileID.column(), tileID.row(), tileID.row() );
@@ -902,7 +915,7 @@ QByteArray QgsVectorTileLayer::getRawTile( QgsTileXYZ tileID )
   dsUri.setEncodedUri( mDataSource );
   const QString authcfg = dsUri.authConfigId();
 
-  QList<QgsVectorTileRawData> rawTiles = QgsVectorTileLoader::blockingFetchTileRawData( mSourceType, mSourcePath, tileMatrix, QPointF(), tileRange, authcfg, dsUri.httpHeaders() );
+  QList<QgsVectorTileRawData> rawTiles = QgsVectorTileLoader::blockingFetchTileRawData( mSourceType, vtProvider->sourcePath(), tileMatrix, QPointF(), tileRange, authcfg, dsUri.httpHeaders() );
   if ( rawTiles.isEmpty() )
     return QByteArray();
   return rawTiles.first().data;
@@ -1312,10 +1325,10 @@ void QgsVectorTileLayer::removeSelection()
 // QgsVectorTileDataProvider
 //
 ///@cond PRIVATE
-QgsVectorTileDataProvider::QgsVectorTileDataProvider(
-  const ProviderOptions &options,
-  QgsDataProvider::ReadFlags flags )
-  : QgsDataProvider( QString(), options, flags )
+QgsVectorTileDataProvider::QgsVectorTileDataProvider( const QString &uri,
+    const ProviderOptions &options,
+    QgsDataProvider::ReadFlags flags )
+  : QgsDataProvider( uri, options, flags )
 {}
 
 QgsCoordinateReferenceSystem QgsVectorTileDataProvider::crs() const
@@ -1367,40 +1380,67 @@ bool QgsVectorTileDataProvider::renderInPreview( const PreviewContext &context )
 // QgsXyzVectorTileDataProvider
 //
 
-QgsXyzVectorTileDataProvider::QgsXyzVectorTileDataProvider( const ProviderOptions &providerOptions, ReadFlags flags )
-  : QgsVectorTileDataProvider( providerOptions, flags )
+QgsXyzVectorTileDataProvider::QgsXyzVectorTileDataProvider( const QString &uri, const ProviderOptions &providerOptions, ReadFlags flags )
+  : QgsVectorTileDataProvider( uri, providerOptions, flags )
 {
 
+}
+
+QString QgsXyzVectorTileDataProvider::sourcePath() const
+{
+  QgsDataSourceUri dsUri;
+  dsUri.setEncodedUri( dataSourceUri() );
+  return dsUri.param( QStringLiteral( "url" ) );
 }
 
 //
 // QgsMbTilesVectorTileDataProvider
 //
 
-QgsMbTilesVectorTileDataProvider::QgsMbTilesVectorTileDataProvider( const ProviderOptions &providerOptions, ReadFlags flags )
-  : QgsVectorTileDataProvider( providerOptions, flags )
+QgsMbTilesVectorTileDataProvider::QgsMbTilesVectorTileDataProvider( const QString &uri, const ProviderOptions &providerOptions, ReadFlags flags )
+  : QgsVectorTileDataProvider( uri, providerOptions, flags )
 {
 
+}
+
+QString QgsMbTilesVectorTileDataProvider::sourcePath() const
+{
+  QgsDataSourceUri dsUri;
+  dsUri.setEncodedUri( dataSourceUri() );
+  return dsUri.param( QStringLiteral( "url" ) );
 }
 
 //
 // QgsVtpkVectorTileDataProvider
 //
 
-QgsVtpkVectorTileDataProvider::QgsVtpkVectorTileDataProvider( const ProviderOptions &providerOptions, ReadFlags flags )
-  : QgsVectorTileDataProvider( providerOptions, flags )
+QgsVtpkVectorTileDataProvider::QgsVtpkVectorTileDataProvider( const QString &uri, const ProviderOptions &providerOptions, ReadFlags flags )
+  : QgsVectorTileDataProvider( uri, providerOptions, flags )
 {
 
+}
+
+QString QgsVtpkVectorTileDataProvider::sourcePath() const
+{
+  QgsDataSourceUri dsUri;
+  dsUri.setEncodedUri( dataSourceUri() );
+  return dsUri.param( QStringLiteral( "url" ) );
 }
 
 //
 // QgsArcGisVectorTileServiceDataProvider
 //
 
-QgsArcGisVectorTileServiceDataProvider::QgsArcGisVectorTileServiceDataProvider( const ProviderOptions &providerOptions, ReadFlags flags )
-  : QgsVectorTileDataProvider( providerOptions, flags )
+QgsArcGisVectorTileServiceDataProvider::QgsArcGisVectorTileServiceDataProvider( const QString &uri, const QString &sourcePath, const ProviderOptions &providerOptions, ReadFlags flags )
+  : QgsVectorTileDataProvider( uri, providerOptions, flags )
+  , mSourcePath( sourcePath )
 {
 
+}
+
+QString QgsArcGisVectorTileServiceDataProvider::sourcePath() const
+{
+  return mSourcePath;
 }
 
 ///@endcond
