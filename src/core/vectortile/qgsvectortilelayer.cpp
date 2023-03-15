@@ -1587,7 +1587,7 @@ QList<QgsVectorTileRawData> QgsMbTilesVectorTileDataProvider::readTiles( const Q
 QByteArray QgsMbTilesVectorTileDataProvider::loadFromMBTiles( QgsMbTiles &mbTileReader, const QgsTileXYZ &id, QgsFeedback *feedback )
 {
   // MBTiles uses TMS specs with Y starting at the bottom while XYZ uses Y starting at the top
-  int rowTMS = pow( 2, id.zoomLevel() ) - id.row() - 1;
+  const int rowTMS = static_cast<int>( pow( 2, id.zoomLevel() ) - id.row() - 1 );
   QByteArray gzippedTileData = mbTileReader.tileData( id.zoomLevel(), id.column(), rowTMS );
   if ( gzippedTileData.isEmpty() )
   {
