@@ -1363,7 +1363,7 @@ bool QgsVectorTileDataProvider::supportsAsync() const
   return false;
 }
 
-QNetworkRequest QgsVectorTileDataProvider::tileRequest( const QgsTileMatrix &, const QgsTileXYZ & ) const
+QNetworkRequest QgsVectorTileDataProvider::tileRequest( const QgsTileMatrix &, const QgsTileXYZ &, Qgis::RendererUsage ) const
 {
   return QNetworkRequest();
 }
@@ -1443,9 +1443,25 @@ QList<QgsVectorTileRawData> QgsXyzVectorTileDataProvider::readTiles( const QgsTi
   return rawTiles;
 }
 
-QNetworkRequest QgsXyzVectorTileDataProvider::tileRequest( const QgsTileMatrix &tileMatrix, const QgsTileXYZ &id ) const
+QNetworkRequest QgsXyzVectorTileDataProvider::tileRequest( const QgsTileMatrix &tileMatrix, const QgsTileXYZ &id, Qgis::RendererUsage usage ) const
 {
   QString urlTemplate = sourcePath();
+
+  if ( urlTemplate.contains( QLatin1String( "{usage}" ) ) )
+  {
+    switch ( usage )
+    {
+      case Qgis::RendererUsage::View:
+        urlTemplate.replace( QLatin1String( "{usage}" ), QLatin1String( "view" ) );
+        break;
+      case Qgis::RendererUsage::Export:
+        urlTemplate.replace( QLatin1String( "{usage}" ), QLatin1String( "export" ) );
+        break;
+      case Qgis::RendererUsage::Unknown:
+        urlTemplate.replace( QLatin1String( "{usage}" ), QString() );
+        break;
+    }
+  }
 
   const QString url = QgsVectorTileUtils::formatXYZUrlTemplate( urlTemplate, id, tileMatrix );
 

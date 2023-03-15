@@ -77,7 +77,7 @@ class QgsVectorTileLoader : public QObject
 
     //! Constructs tile loader for doing asynchronous requests and starts network requests
     QgsVectorTileLoader( const QgsVectorTileDataProvider *provider, const QgsTileMatrix &tileMatrix, const QgsTileRange &range, const QPointF &viewCenter,
-                         QgsFeedback *feedback );
+                         QgsFeedback *feedback, Qgis::RendererUsage usage );
     ~QgsVectorTileLoader();
 
     //! Blocks the caller until all asynchronous requests are finished (with a success or a failure)
@@ -87,7 +87,7 @@ class QgsVectorTileLoader : public QObject
     QString error() const;
 
   private:
-    void loadFromNetworkAsync( const QgsTileXYZ &id, const QgsTileMatrix &tileMatrix, const QgsVectorTileDataProvider *provider );
+    void loadFromNetworkAsync( const QgsTileXYZ &id, const QgsTileMatrix &tileMatrix, const QgsVectorTileDataProvider *provider, Qgis::RendererUsage usage );
 
   private slots:
     void tileReplyFinished();

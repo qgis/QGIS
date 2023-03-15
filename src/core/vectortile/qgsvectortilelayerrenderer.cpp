@@ -114,22 +114,6 @@ bool QgsVectorTileLayerRenderer::render()
     return true;   // nothing to do
   }
 
-  if ( mSourceType == QLatin1String( "xyz" ) && mSourcePath.contains( QLatin1String( "{usage}" ) ) )
-  {
-    switch ( renderContext()->rendererUsage() )
-    {
-      case Qgis::RendererUsage::View:
-        mSourcePath.replace( QLatin1String( "{usage}" ), QLatin1String( "view" ) );
-        break;
-      case Qgis::RendererUsage::Export:
-        mSourcePath.replace( QLatin1String( "{usage}" ), QLatin1String( "export" ) );
-        break;
-      case Qgis::RendererUsage::Unknown:
-        mSourcePath.replace( QLatin1String( "{usage}" ), QString() );
-        break;
-    }
-  }
-
   std::unique_ptr<QgsVectorTileLoader> asyncLoader;
   QList<QgsVectorTileRawData> rawTiles;
   if ( !mDataProvider->supportsAsync() )
@@ -142,7 +126,7 @@ bool QgsVectorTileLayerRenderer::render()
   }
   else
   {
-    asyncLoader.reset( new QgsVectorTileLoader( mDataProvider.get(), mTileMatrix, mTileRange, viewCenter, mFeedback.get() ) );
+    asyncLoader.reset( new QgsVectorTileLoader( mDataProvider.get(), mTileMatrix, mTileRange, viewCenter, mFeedback.get(), renderContext()->rendererUsage() ) );
     QObject::connect( asyncLoader.get(), &QgsVectorTileLoader::tileRequestFinished, asyncLoader.get(), [this]( const QgsVectorTileRawData & rawTile )
     {
       QgsDebugMsgLevel( QStringLiteral( "Got tile asynchronously: " ) + rawTile.id.toString(), 2 );
