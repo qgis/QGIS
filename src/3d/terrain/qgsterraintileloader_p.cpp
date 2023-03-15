@@ -32,8 +32,6 @@
 #include <Qt3DExtras/QDiffuseSpecularMaterial>
 #include <Qt3DExtras/QPhongMaterial>
 
-#include "quantizedmeshterraingenerator.h"
-
 /// @cond PRIVATE
 
 QgsTerrainTileLoader::QgsTerrainTileLoader( QgsTerrainEntity *terrain, QgsChunkNode *node )
@@ -41,16 +39,6 @@ QgsTerrainTileLoader::QgsTerrainTileLoader( QgsTerrainEntity *terrain, QgsChunkN
   , mTerrain( terrain )
 {
   const Qgs3DMapSettings &map = mTerrain->map3D();
-#if 0
-  int tx, ty, tz;
-  if ( map.terrainGenerator->type() == TerrainGenerator::QuantizedMesh )
-  {
-    // TODO: sort out - should not be here
-    QuantizedMeshTerrainGenerator *generator = static_cast<QuantizedMeshTerrainGenerator *>( map.terrainGenerator.get() );
-    generator->quadTreeTileToBaseTile( node->x, node->y, node->z, tx, ty, tz );
-  }
-#endif
-
   const QgsChunkNodeId nodeId = node->tileId();
   const QgsRectangle extentTerrainCrs = map.terrainGenerator()->tilingScheme().tileToExtent( nodeId );
   QgsCoordinateTransform transform = terrain->terrainToMapTransform();
