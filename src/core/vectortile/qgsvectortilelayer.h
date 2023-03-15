@@ -343,6 +343,13 @@ class QgsVectorTileDataProvider : public QgsDataProvider
     virtual QString sourcePath() const = 0;
     virtual QgsVectorTileDataProvider *clone() const = 0 SIP_FACTORY;
 
+    /**
+     * Returns TRUE if the provider supports async tile reading.
+     *
+     * The default implementation returns FALSE.
+     */
+    virtual bool supportsAsync() const;
+
     //! Returns raw tile data for a single tile
     virtual QByteArray readTile( const QgsTileMatrix &tileMatrix, const QgsTileXYZ &id ) const = 0;
 
@@ -361,6 +368,7 @@ class QgsXyzVectorTileDataProvider : public QgsVectorTileDataProvider
     QString sourcePath() const override;
     bool isValid() const override;
     QgsCoordinateReferenceSystem crs() const override;
+    bool supportsAsync() const override;
     QByteArray readTile( const QgsTileMatrix &tileMatrix, const QgsTileXYZ &id ) const override;
 };
 
