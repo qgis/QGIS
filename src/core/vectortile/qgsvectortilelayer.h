@@ -341,7 +341,10 @@ class QgsVectorTileDataProvider : public QgsDataProvider
     QgsRectangle extent() const override;
     bool renderInPreview( const QgsDataProvider::PreviewContext &context ) override;
 
+    //! Renders the source path for the data
     virtual QString sourcePath() const = 0;
+
+    //! Returns a clone of the data provider
     virtual QgsVectorTileDataProvider *clone() const = 0 SIP_FACTORY;
 
     /**
