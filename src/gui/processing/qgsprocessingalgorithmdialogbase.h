@@ -472,6 +472,8 @@ class GUI_EXPORT QgsProcessingAlgorithmDialogBase : public QDialog, public QgsPr
     QPointer< QgsProcessingContextOptionsWidget > mContextOptionsWidget;
     bool mOverrideDefaultContextSettings = false;
     QgsFeatureRequest::InvalidGeometryCheck mGeometryCheck = QgsFeatureRequest::InvalidGeometryCheck::GeometryAbortOnInvalid;
+    Qgis::DistanceUnit mDistanceUnits = Qgis::DistanceUnit::Unknown;
+    Qgis::AreaUnit mAreaUnits = Qgis::AreaUnit::Unknown;
 
     QString formatHelp( QgsProcessingAlgorithm *algorithm );
     void scrollToBottomOfLog();
@@ -545,6 +547,16 @@ class GUI_EXPORT QgsProcessingContextOptionsWidget : public QgsPanelWidget, priv
      * Returns the invalid geometry check selected in the widget.
      */
     QgsFeatureRequest::InvalidGeometryCheck invalidGeometryCheck() const;
+
+    /**
+     * Returns the distance unit selected in the widget.
+     */
+    Qgis::DistanceUnit distanceUnit() const;
+
+    /**
+     * Returns the area unit selected in the widget.
+     */
+    Qgis::AreaUnit areaUnit() const;
 
 };
 

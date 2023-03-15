@@ -26,6 +26,7 @@
 #include "qgsapplication.h"
 #include "qgspanelwidget.h"
 #include "qgsjsonutils.h"
+#include "qgsunittypes.h"
 #include <QToolButton>
 #include <QDesktopServices>
 #include <QScrollBar>
@@ -263,6 +264,8 @@ QgsProcessingAlgorithmDialogBase::QgsProcessingAlgorithmDialogBase( QWidget *par
             {
               mOverrideDefaultContextSettings = true;
               mGeometryCheck = mContextOptionsWidget->invalidGeometryCheck();
+              mDistanceUnits = mContextOptionsWidget->distanceUnit();
+              mAreaUnits = mContextOptionsWidget->areaUnit();
             } );
           }
         }
@@ -856,6 +859,8 @@ void QgsProcessingAlgorithmDialogBase::applyContextOverrides( QgsProcessingConte
   if ( mOverrideDefaultContextSettings )
   {
     context->setInvalidGeometryCheck( mGeometryCheck );
+    context->setDistanceUnit( mDistanceUnits );
+    context->setAreaUnit( mAreaUnits );
   }
 }
 
@@ -935,17 +940,67 @@ QgsProcessingContextOptionsWidget::QgsProcessingContextOptionsWidget( QWidget *p
   mComboInvalidFeatureFiltering->addItem( tr( "Skip (Ignore) Features with Invalid Geometries" ), QgsFeatureRequest::GeometrySkipInvalid );
   mComboInvalidFeatureFiltering->addItem( tr( "Stop Algorithm Execution When a Geometry is Invalid" ), QgsFeatureRequest::GeometryAbortOnInvalid );
 
+  mDistanceUnitsCombo->addItem( tr( "Default" ), QVariant::fromValue( Qgis::DistanceUnit::Unknown ) );
+  for ( Qgis::DistanceUnit unit :
+        {
+          Qgis::DistanceUnit::Meters,
+          Qgis::DistanceUnit::Kilometers,
+          Qgis::DistanceUnit::Centimeters,
+          Qgis::DistanceUnit::Millimeters,
+          Qgis::DistanceUnit::Feet,
+          Qgis::DistanceUnit::Miles,
+          Qgis::DistanceUnit::NauticalMiles,
+          Qgis::DistanceUnit::Yards,
+          Qgis::DistanceUnit::Degrees,
+        } )
+  {
+    mDistanceUnitsCombo->addItem( QgsUnitTypes::toString( unit ), QVariant::fromValue( unit ) );
+  }
+
+  mAreaUnitsCombo->addItem( tr( "Default" ), QVariant::fromValue( Qgis::AreaUnit::Unknown ) );
+  for ( Qgis::AreaUnit unit :
+        {
+          Qgis::AreaUnit::SquareMeters,
+          Qgis::AreaUnit::Hectares,
+          Qgis::AreaUnit::SquareKilometers,
+          Qgis::AreaUnit::SquareCentimeters,
+          Qgis::AreaUnit::SquareMillimeters,
+          Qgis::AreaUnit::SquareFeet,
+          Qgis::AreaUnit::SquareMiles,
+          Qgis::AreaUnit::SquareNauticalMiles,
+          Qgis::AreaUnit::SquareYards,
+          Qgis::AreaUnit::Acres,
+          Qgis::AreaUnit::SquareDegrees,
+        } )
+  {
+    mAreaUnitsCombo->addItem( QgsUnitTypes::toString( unit ), QVariant::fromValue( unit ) );
+  }
+
   connect( mComboInvalidFeatureFiltering, qOverload< int >( &QComboBox::currentIndexChanged ), this, &QgsPanelWidget::widgetChanged );
+  connect( mDistanceUnitsCombo, qOverload< int >( &QComboBox::currentIndexChanged ), this, &QgsPanelWidget::widgetChanged );
+  connect( mAreaUnitsCombo, qOverload< int >( &QComboBox::currentIndexChanged ), this, &QgsPanelWidget::widgetChanged );
 }
 
 void QgsProcessingContextOptionsWidget::setFromContext( const QgsProcessingContext *context )
 {
   whileBlocking( mComboInvalidFeatureFiltering )->setCurrentIndex( mComboInvalidFeatureFiltering->findData( static_cast< int >( context->invalidGeometryCheck() ) ) );
+  whileBlocking( mDistanceUnitsCombo )->setCurrentIndex( mDistanceUnitsCombo->findData( QVariant::fromValue( context->distanceUnit() ) ) );
+  whileBlocking( mAreaUnitsCombo )->setCurrentIndex( mAreaUnitsCombo->findData( QVariant::fromValue( context->areaUnit() ) ) );
 }
 
 QgsFeatureRequest::InvalidGeometryCheck QgsProcessingContextOptionsWidget::invalidGeometryCheck() const
 {
   return static_cast< QgsFeatureRequest::InvalidGeometryCheck >( mComboInvalidFeatureFiltering->currentData().toInt() );
+}
+
+Qgis::DistanceUnit QgsProcessingContextOptionsWidget::distanceUnit() const
+{
+  return mDistanceUnitsCombo->currentData().value< Qgis::DistanceUnit >();
+}
+
+Qgis::AreaUnit QgsProcessingContextOptionsWidget::areaUnit() const
+{
+  return mAreaUnitsCombo->currentData().value< Qgis::AreaUnit >();
 }
 
 ///@endcond
