@@ -21,7 +21,7 @@
      </property>
     </widget>
    </item>
-   <item row="6" column="0" colspan="2">
+   <item row="7" column="0" colspan="2">
     <widget class="QCheckBox" name="mCbxAllowAddFeatures">
      <property name="text">
       <string>Allow adding new features</string>
@@ -45,14 +45,14 @@
      </property>
     </widget>
    </item>
-   <item row="5" column="0" colspan="2">
+   <item row="6" column="0" colspan="2">
     <widget class="QCheckBox" name="mCbxReadOnly">
      <property name="text">
       <string>Use a read-only line edit instead of a combobox</string>
      </property>
     </widget>
    </item>
-   <item row="4" column="0" colspan="2">
+   <item row="5" column="0" colspan="2">
     <widget class="QCheckBox" name="mCbxMapIdentification">
      <property name="text">
       <string>On map identification (for geometric layers only)</string>
@@ -76,7 +76,7 @@
      </property>
     </widget>
    </item>
-   <item row="8" column="0" colspan="2">
+   <item row="9" column="0" colspan="2">
     <widget class="QgsCollapsibleGroupBox" name="mFilterGroupBox">
      <property name="title">
       <string>Filters</string>
@@ -193,7 +193,7 @@
      </layout>
     </widget>
    </item>
-   <item row="7" column="0" colspan="2">
+   <item row="8" column="0" colspan="2">
     <widget class="QGroupBox" name="mFetchLimitGroupBox">
      <property name="toolTip">
       <string>If no limit is set, all entries are loaded.</string>
@@ -225,6 +225,13 @@
      </property>
     </widget>
    </item>
+   <item row="4" column="0" colspan="2">
+    <widget class="QCheckBox" name="mCbxShowOpenFormButton">
+     <property name="text">
+      <string>Show open form button</string>
+     </property>
+    </widget>
+   </item>
   </layout>
  </widget>
  <customwidgets>
@@ -251,6 +258,7 @@
   <tabstop>mComboRelation</tabstop>
   <tabstop>mCbxAllowNull</tabstop>
   <tabstop>mCbxShowForm</tabstop>
+  <tabstop>mCbxShowOpenFormButton</tabstop>
   <tabstop>mCbxMapIdentification</tabstop>
   <tabstop>mCbxReadOnly</tabstop>
   <tabstop>mCbxAllowAddFeatures</tabstop>
