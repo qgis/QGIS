@@ -40,6 +40,9 @@
 #include "qgsthreadingutils.h"
 #include "qgsproviderregistry.h"
 #include "qgsziputils.h"
+#include "qgsapplication.h"
+#include "qgsmessagelog.h"
+#include "qgsauthmanager.h"
 
 #include <QUrl>
 #include <QUrlQuery>
@@ -1360,6 +1363,11 @@ bool QgsVectorTileDataProvider::supportsAsync() const
   return false;
 }
 
+QNetworkRequest QgsVectorTileDataProvider::tileRequest( const QgsTileMatrix &, const QgsTileXYZ & ) const
+{
+  return QNetworkRequest();
+}
+
 //
 // QgsXyzVectorTileDataProvider
 //
@@ -1433,6 +1441,33 @@ QList<QgsVectorTileRawData> QgsXyzVectorTileDataProvider::readTiles( const QgsTi
     }
   }
   return rawTiles;
+}
+
+QNetworkRequest QgsXyzVectorTileDataProvider::tileRequest( const QgsTileMatrix &tileMatrix, const QgsTileXYZ &id ) const
+{
+  QString urlTemplate = sourcePath();
+
+  const QString url = QgsVectorTileUtils::formatXYZUrlTemplate( urlTemplate, id, tileMatrix );
+
+  QNetworkRequest request( url );
+  QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsXyzVectorTileDataProvider" ) );
+  QgsSetRequestInitiatorId( request, id.toString() );
+
+  request.setAttribute( static_cast<QNetworkRequest::Attribute>( QNetworkRequest::User + 1 ), id.column() );
+  request.setAttribute( static_cast<QNetworkRequest::Attribute>( QNetworkRequest::User + 2 ), id.row() );
+  request.setAttribute( static_cast<QNetworkRequest::Attribute>( QNetworkRequest::User + 3 ), id.zoomLevel() );
+
+  request.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferCache );
+  request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
+
+  mHeaders.updateNetworkRequest( request );
+
+  if ( !mAuthCfg.isEmpty() &&  !QgsApplication::authManager()->updateNetworkRequest( request, mAuthCfg ) )
+  {
+    QgsMessageLog::logMessage( tr( "network request update failed for authentication config" ), tr( "Network" ) );
+  }
+
+  return request;
 }
 
 QByteArray QgsXyzVectorTileDataProvider::loadFromNetwork( const QgsTileXYZ &id, const QgsTileMatrix &tileMatrix, const QString &requestUrl, const QString &authid, const QgsHttpHeaders &headers, QgsFeedback *feedback )

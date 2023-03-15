@@ -18,10 +18,11 @@
 
 #define SIP_NO_FILE
 
-class QByteArray;
+#include "qgstiles.h"
 
-#include "qgsvectortilerenderer.h"
-#include "qgshttpheaders.h"
+class QByteArray;
+class QgsFeedback;
+
 
 /**
  * \ingroup core
@@ -75,8 +76,8 @@ class QgsVectorTileLoader : public QObject
     //
 
     //! Constructs tile loader for doing asynchronous requests and starts network requests
-    QgsVectorTileLoader( const QString &uri, const QgsTileMatrix &tileMatrix, const QgsTileRange &range, const QPointF &viewCenter,
-                         const QString &authid, const QgsHttpHeaders &headers, QgsFeedback *feedback );
+    QgsVectorTileLoader( const QgsVectorTileDataProvider *provider, const QgsTileMatrix &tileMatrix, const QgsTileRange &range, const QPointF &viewCenter,
+                         QgsFeedback *feedback );
     ~QgsVectorTileLoader();
 
     //! Blocks the caller until all asynchronous requests are finished (with a success or a failure)
@@ -86,7 +87,7 @@ class QgsVectorTileLoader : public QObject
     QString error() const;
 
   private:
-    void loadFromNetworkAsync( const QgsTileXYZ &id, const QgsTileMatrix &tileMatrix, const QString &requestUrl );
+    void loadFromNetworkAsync( const QgsTileXYZ &id, const QgsTileMatrix &tileMatrix, const QgsVectorTileDataProvider *provider );
 
   private slots:
     void tileReplyFinished();
@@ -101,9 +102,6 @@ class QgsVectorTileLoader : public QObject
     std::unique_ptr<QEventLoop> mEventLoop;
     //! Feedback object that allows cancellation of pending requests
     QgsFeedback *mFeedback;
-
-    QString mAuthCfg;
-    QgsHttpHeaders mHeaders;
 
     //! Running tile requests
     QList<QgsTileDownloadManagerReply *> mReplies;
