@@ -25,6 +25,8 @@
 
 class QgsVectorTileLabeling;
 class QgsVectorTileRenderer;
+class QgsVectorTileRawData;
+class QgsVectorTileDataProvider;
 
 class QgsTileXYZ;
 class QgsFeature;
@@ -342,6 +344,45 @@ class QgsVectorTileDataProvider : public QgsDataProvider
     bool renderInPreview( const QgsDataProvider::PreviewContext &context ) override;
 
 };
+
+class QgsXyzVectorTileDataProvider : public QgsVectorTileDataProvider
+{
+    Q_OBJECT
+
+  public:
+    QgsXyzVectorTileDataProvider( const QgsDataProvider::ProviderOptions &providerOptions,
+                                  QgsDataProvider::ReadFlags flags );
+
+};
+
+class QgsMbTilesVectorTileDataProvider : public QgsVectorTileDataProvider
+{
+    Q_OBJECT
+
+  public:
+    QgsMbTilesVectorTileDataProvider( const QgsDataProvider::ProviderOptions &providerOptions,
+                                      QgsDataProvider::ReadFlags flags );
+
+};
+
+class QgsVtpkVectorTileDataProvider : public QgsVectorTileDataProvider
+{
+    Q_OBJECT
+
+  public:
+    QgsVtpkVectorTileDataProvider( const QgsDataProvider::ProviderOptions &providerOptions,
+                                   QgsDataProvider::ReadFlags flags );
+};
+
+class QgsArcGisVectorTileServiceDataProvider : public QgsVectorTileDataProvider
+{
+    Q_OBJECT
+
+  public:
+    QgsArcGisVectorTileServiceDataProvider( const QgsDataProvider::ProviderOptions &providerOptions,
+                                            QgsDataProvider::ReadFlags flags );
+};
+
 ///@endcond
 #endif
 

@@ -81,12 +81,17 @@ bool QgsVectorTileLayer::loadDataSource()
 
   setCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) ) );
 
+  const QgsDataProvider::ProviderOptions providerOptions { mTransformContext };
+  const QgsDataProvider::ReadFlags flags;
+
   mSourceType = dsUri.param( QStringLiteral( "type" ) );
   mSourcePath = dsUri.param( QStringLiteral( "url" ) );
   if ( mSourceType == QLatin1String( "xyz" ) && dsUri.param( QStringLiteral( "serviceType" ) ) == QLatin1String( "arcgis" ) )
   {
     if ( !setupArcgisVectorTileServiceConnection( mSourcePath, dsUri ) )
       return false;
+
+    mDataProvider = std::make_unique< QgsArcGisVectorTileServiceDataProvider >( providerOptions, flags );
   }
   else if ( mSourceType == QLatin1String( "xyz" ) )
   {
@@ -107,6 +112,8 @@ bool QgsVectorTileLayer::loadDataSource()
 
     mMatrixSet = QgsVectorTileMatrixSet::fromWebMercator( zMin, zMax );
     setExtent( QgsRectangle( -20037508.3427892, -20037508.3427892, 20037508.3427892, 20037508.3427892 ) );
+
+    mDataProvider = std::make_unique< QgsXyzVectorTileDataProvider >( providerOptions, flags );
   }
   else if ( mSourceType == QLatin1String( "mbtiles" ) )
   {
@@ -140,6 +147,8 @@ bool QgsVectorTileLayer::loadDataSource()
     ct.setBallparkTransformsAreAppropriate( true );
     r = ct.transformBoundingBox( r );
     setExtent( r );
+
+    mDataProvider = std::make_unique< QgsMbTilesVectorTileDataProvider >( providerOptions, flags );
   }
   else if ( mSourceType == QLatin1String( "vtpk" ) )
   {
@@ -161,6 +170,8 @@ bool QgsVectorTileLayer::loadDataSource()
     mMatrixSet = reader.matrixSet();
     setCrs( mMatrixSet.crs() );
     setExtent( reader.extent( transformContext() ) );
+
+    mDataProvider = std::make_unique< QgsVtpkVectorTileDataProvider >( providerOptions, flags );
   }
   else
   {
@@ -168,9 +179,6 @@ bool QgsVectorTileLayer::loadDataSource()
     return false;
   }
 
-  const QgsDataProvider::ProviderOptions providerOptions { mTransformContext };
-  const QgsDataProvider::ReadFlags flags;
-  mDataProvider.reset( new QgsVectorTileDataProvider( providerOptions, flags ) );
   mProviderKey = mDataProvider->name();
 
   return true;
@@ -1355,4 +1363,46 @@ bool QgsVectorTileDataProvider::renderInPreview( const PreviewContext &context )
   return context.lastRenderingTimeMs <= 1000;
 }
 
+//
+// QgsXyzVectorTileDataProvider
+//
+
+QgsXyzVectorTileDataProvider::QgsXyzVectorTileDataProvider( const ProviderOptions &providerOptions, ReadFlags flags )
+  : QgsVectorTileDataProvider( providerOptions, flags )
+{
+
+}
+
+//
+// QgsMbTilesVectorTileDataProvider
+//
+
+QgsMbTilesVectorTileDataProvider::QgsMbTilesVectorTileDataProvider( const ProviderOptions &providerOptions, ReadFlags flags )
+  : QgsVectorTileDataProvider( providerOptions, flags )
+{
+
+}
+
+//
+// QgsVtpkVectorTileDataProvider
+//
+
+QgsVtpkVectorTileDataProvider::QgsVtpkVectorTileDataProvider( const ProviderOptions &providerOptions, ReadFlags flags )
+  : QgsVectorTileDataProvider( providerOptions, flags )
+{
+
+}
+
+//
+// QgsArcGisVectorTileServiceDataProvider
+//
+
+QgsArcGisVectorTileServiceDataProvider::QgsArcGisVectorTileServiceDataProvider( const ProviderOptions &providerOptions, ReadFlags flags )
+  : QgsVectorTileDataProvider( providerOptions, flags )
+{
+
+}
+
 ///@endcond
+
+
