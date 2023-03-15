@@ -241,6 +241,33 @@ QgsProcessingAlgorithmDialogBase::QgsProcessingAlgorithmDialogBase( QWidget *par
         setParameters( preparedValues );
       } );
 
+      mAdvancedMenu->addSeparator();
+
+      mContextSettingsAction = new QAction( tr( "Algorithm Settings" ), mAdvancedMenu );
+      mContextSettingsAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/propertyicons/settings.svg" ) ) );
+      mAdvancedMenu->addAction( mContextSettingsAction );
+
+      connect( mContextSettingsAction, &QAction::triggered, this, [this]
+      {
+        if ( QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( mMainWidget ) )
+        {
+          mTabWidget->setCurrentIndex( 0 );
+
+          if ( !mContextOptionsWidget )
+          {
+            mContextOptionsWidget = new QgsProcessingContextOptionsWidget();
+            mContextOptionsWidget->setFromContext( processingContext() );
+            panel->openPanel( mContextOptionsWidget );
+
+            connect( mContextOptionsWidget, &QgsPanelWidget::widgetChanged, this, [ = ]
+            {
+              mOverrideDefaultContextSettings = true;
+              mGeometryCheck = mContextOptionsWidget->invalidGeometryCheck();
+            } );
+          }
+        }
+      } );
+
       mButtonBox->addButton( mAdvancedButton, QDialogButtonBox::ResetRole );
       break;
     }
@@ -825,6 +852,11 @@ void QgsProcessingAlgorithmDialogBase::applyContextOverrides( QgsProcessingConte
     return;
 
   context->setLogLevel( logLevel() );
+
+  if ( mOverrideDefaultContextSettings )
+  {
+    context->setInvalidGeometryCheck( mGeometryCheck );
+  }
 }
 
 void QgsProcessingAlgorithmDialogBase::setInfo( const QString &message, bool isError, bool escapeHtml, bool isWarning )
@@ -889,5 +921,31 @@ void QgsProcessingAlgorithmProgressDialog::reject()
 }
 
 
+//
+// QgsProcessingContextOptionsWidget
+//
+
+QgsProcessingContextOptionsWidget::QgsProcessingContextOptionsWidget( QWidget *parent )
+  : QgsPanelWidget( parent )
+{
+  setupUi( this );
+  setPanelTitle( tr( "Algorithm Settings" ) );
+
+  mComboInvalidFeatureFiltering->addItem( tr( "Do not Filter (Better Performance)" ), QgsFeatureRequest::GeometryNoCheck );
+  mComboInvalidFeatureFiltering->addItem( tr( "Skip (Ignore) Features with Invalid Geometries" ), QgsFeatureRequest::GeometrySkipInvalid );
+  mComboInvalidFeatureFiltering->addItem( tr( "Stop Algorithm Execution When a Geometry is Invalid" ), QgsFeatureRequest::GeometryAbortOnInvalid );
+
+  connect( mComboInvalidFeatureFiltering, qOverload< int >( &QComboBox::currentIndexChanged ), this, &QgsPanelWidget::widgetChanged );
+}
+
+void QgsProcessingContextOptionsWidget::setFromContext( const QgsProcessingContext *context )
+{
+  whileBlocking( mComboInvalidFeatureFiltering )->setCurrentIndex( mComboInvalidFeatureFiltering->findData( static_cast< int >( context->invalidGeometryCheck() ) ) );
+}
+
+QgsFeatureRequest::InvalidGeometryCheck QgsProcessingContextOptionsWidget::invalidGeometryCheck() const
+{
+  return static_cast< QgsFeatureRequest::InvalidGeometryCheck >( mComboInvalidFeatureFiltering->currentData().toInt() );
+}
 
 ///@endcond
