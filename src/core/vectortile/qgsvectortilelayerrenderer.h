@@ -27,7 +27,6 @@ class QgsVectorTileDataProvider;
 
 #include "qgsvectortilerenderer.h"
 #include "qgsmapclippingregion.h"
-#include "qgshttpheaders.h"
 #include "qgsvectortilematrixset.h"
 
 /**
@@ -56,14 +55,6 @@ class QgsVectorTileLayerRenderer : public QgsMapLayerRenderer
     void decodeAndDrawTile( const QgsVectorTileRawData &rawTile );
 
     // data coming from the vector tile layer
-
-    //! Type of the source from which we will be loading tiles (e.g. "xyz" or "mbtiles")
-    QString mSourceType;
-    //! Path/URL of the source. Format depends on source type
-    QString mSourcePath;
-
-    QString mAuthCfg;
-    QgsHttpHeaders mHeaders;
 
     std::unique_ptr< QgsVectorTileDataProvider > mDataProvider;
 
