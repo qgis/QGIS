@@ -244,8 +244,8 @@ class GUI_EXPORT QgsShortcutsManager : public QObject
 
   private slots:
 
-    void actionDestroyed();
-    void shortcutDestroyed();
+    void actionDestroyed( QAction *action );
+    void shortcutDestroyed( QShortcut *shortcut );
 
   private:
 
