@@ -75,8 +75,6 @@ class QgsTerrainEntity : public QgsChunkedEntity
     const Qgs3DMapSettings &map3D() const { return mMap; }
     //! Returns pointer to the generator of textures for terrain tiles
     QgsTerrainTextureGenerator *textureGenerator() { return mTextureGenerator; }
-    //! Returns transform from terrain's CRS to map CRS
-    const QgsCoordinateTransform &terrainToMapTransform() const { return *mTerrainToMapTransform; }
 
     //! Returns object picker attached to the terrain entity - used by camera controller
     Qt3DRender::QObjectPicker *terrainPicker() const { return mTerrainPicker; }
@@ -102,7 +100,6 @@ class QgsTerrainEntity : public QgsChunkedEntity
     //! picker of terrain to know height of terrain when dragging
     Qt3DRender::QObjectPicker *mTerrainPicker = nullptr;
     QgsTerrainTextureGenerator *mTextureGenerator = nullptr;
-    QgsCoordinateTransform *mTerrainToMapTransform = nullptr;
     Qt3DCore::QTransform *mTerrainTransform = nullptr;
 
     std::unique_ptr<TerrainMapUpdateJobFactory> mUpdateJobFactory;
