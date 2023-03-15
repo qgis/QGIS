@@ -39,6 +39,7 @@
 #include "qgsvectortilemvtdecoder.h"
 #include "qgsthreadingutils.h"
 #include "qgsproviderregistry.h"
+#include "qgsziputils.h"
 
 #include <QUrl>
 #include <QUrlQuery>
@@ -1406,7 +1407,7 @@ bool QgsXyzVectorTileDataProvider::supportsAsync() const
   return true;
 }
 
-QByteArray QgsXyzVectorTileDataProvider::readTile( const QgsTileMatrix &tileMatrix, const QgsTileXYZ &id ) const
+QByteArray QgsXyzVectorTileDataProvider::readTile( const QgsTileMatrix &tileMatrix, const QgsTileXYZ &id, QgsFeedback *feedback ) const
 {
   QgsDataSourceUri dsUri;
   dsUri.setEncodedUri( dataSourceUri() );
@@ -1424,6 +1425,11 @@ QByteArray QgsXyzVectorTileDataProvider::readTile( const QgsTileMatrix &tileMatr
   if ( rawTiles.isEmpty() )
     return QByteArray();
   return rawTiles.first().data;
+}
+
+QList<QgsVectorTileRawData> QgsXyzVectorTileDataProvider::readTiles( const QgsTileMatrix &, const QVector<QgsTileXYZ> &tiles, QgsFeedback *feedback ) const
+{
+
 }
 
 //
@@ -1468,24 +1474,62 @@ QgsCoordinateReferenceSystem QgsMbTilesVectorTileDataProvider::crs() const
   return QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) );
 }
 
-QByteArray QgsMbTilesVectorTileDataProvider::readTile( const QgsTileMatrix &tileMatrix, const QgsTileXYZ &id ) const
+QByteArray QgsMbTilesVectorTileDataProvider::readTile( const QgsTileMatrix &tileMatrix, const QgsTileXYZ &id, QgsFeedback *feedback ) const
 {
   QgsDataSourceUri dsUri;
   dsUri.setEncodedUri( dataSourceUri() );
-  const QString authcfg = dsUri.authConfigId();
 
-  const QgsTileRange tileRange( id.column(), id.column(), id.row(), id.row() );
+  QgsMbTiles mbReader( dsUri.param( QStringLiteral( "url" ) ) );
+  mbReader.open();
+  return loadFromMBTiles( mbReader, id, feedback );
+}
 
-  QList<QgsVectorTileRawData> rawTiles = QgsVectorTileLoader::blockingFetchTileRawData( QStringLiteral( "mbtiles" ),
-                                         dsUri.param( QStringLiteral( "url" ) ),
-                                         tileMatrix,
-                                         QPointF(),
-                                         tileRange,
-                                         authcfg,
-                                         dsUri.httpHeaders() );
-  if ( rawTiles.isEmpty() )
+QList<QgsVectorTileRawData> QgsMbTilesVectorTileDataProvider::readTiles( const QgsTileMatrix &, const QVector<QgsTileXYZ> &tiles, QgsFeedback *feedback ) const
+{
+  QgsDataSourceUri dsUri;
+  dsUri.setEncodedUri( dataSourceUri() );
+
+  QgsMbTiles mbReader( dsUri.param( QStringLiteral( "url" ) ) );
+  mbReader.open();
+
+  QList<QgsVectorTileRawData> rawTiles;
+  rawTiles.reserve( tiles.size() );
+  for ( QgsTileXYZ id : std::as_const( tiles ) )
+  {
+    if ( feedback && feedback->isCanceled() )
+      break;
+
+    const QByteArray rawData = loadFromMBTiles( mbReader, id, feedback );
+    if ( !rawData.isEmpty() )
+    {
+      rawTiles.append( QgsVectorTileRawData( id, rawData ) );
+    }
+  }
+  return rawTiles;
+}
+
+QByteArray QgsMbTilesVectorTileDataProvider::loadFromMBTiles( QgsMbTiles &mbTileReader, const QgsTileXYZ &id, QgsFeedback *feedback )
+{
+  // MBTiles uses TMS specs with Y starting at the bottom while XYZ uses Y starting at the top
+  int rowTMS = pow( 2, id.zoomLevel() ) - id.row() - 1;
+  QByteArray gzippedTileData = mbTileReader.tileData( id.zoomLevel(), id.column(), rowTMS );
+  if ( gzippedTileData.isEmpty() )
+  {
     return QByteArray();
-  return rawTiles.first().data;
+  }
+
+  if ( feedback && feedback->isCanceled() )
+    return QByteArray();
+
+  QByteArray data;
+  if ( !QgsZipUtils::decodeGzip( gzippedTileData, data ) )
+  {
+    QgsDebugMsg( QStringLiteral( "Failed to decompress tile " ) + id.toString() );
+    return QByteArray();
+  }
+
+  QgsDebugMsgLevel( QStringLiteral( "Tile blob size %1 -> uncompressed size %2" ).arg( gzippedTileData.size() ).arg( data.size() ), 2 );
+  return data;
 }
 
 //
@@ -1530,7 +1574,7 @@ QgsCoordinateReferenceSystem QgsVtpkVectorTileDataProvider::crs() const
   return QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) );
 }
 
-QByteArray QgsVtpkVectorTileDataProvider::readTile( const QgsTileMatrix &tileMatrix, const QgsTileXYZ &id ) const
+QByteArray QgsVtpkVectorTileDataProvider::readTile( const QgsTileMatrix &tileMatrix, const QgsTileXYZ &id, QgsFeedback *feedback ) const
 {
   QgsDataSourceUri dsUri;
   dsUri.setEncodedUri( dataSourceUri() );
@@ -1548,6 +1592,11 @@ QByteArray QgsVtpkVectorTileDataProvider::readTile( const QgsTileMatrix &tileMat
   if ( rawTiles.isEmpty() )
     return QByteArray();
   return rawTiles.first().data;
+}
+
+QList<QgsVectorTileRawData> QgsVtpkVectorTileDataProvider::readTiles( const QgsTileMatrix &, const QVector<QgsTileXYZ> &tiles, QgsFeedback *feedback ) const
+{
+
 }
 
 //
@@ -1591,7 +1640,7 @@ QgsCoordinateReferenceSystem QgsArcGisVectorTileServiceDataProvider::crs() const
   return QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) );
 }
 
-QByteArray QgsArcGisVectorTileServiceDataProvider::readTile( const QgsTileMatrix &tileMatrix, const QgsTileXYZ &id ) const
+QByteArray QgsArcGisVectorTileServiceDataProvider::readTile( const QgsTileMatrix &tileMatrix, const QgsTileXYZ &id, QgsFeedback *feedback ) const
 {
   QgsDataSourceUri dsUri;
   dsUri.setEncodedUri( dataSourceUri() );
@@ -1609,6 +1658,11 @@ QByteArray QgsArcGisVectorTileServiceDataProvider::readTile( const QgsTileMatrix
   if ( rawTiles.isEmpty() )
     return QByteArray();
   return rawTiles.first().data;
+}
+
+QList<QgsVectorTileRawData> QgsArcGisVectorTileServiceDataProvider::readTiles( const QgsTileMatrix &, const QVector<QgsTileXYZ> &tiles, QgsFeedback *feedback ) const
+{
+
 }
 
 ///@endcond

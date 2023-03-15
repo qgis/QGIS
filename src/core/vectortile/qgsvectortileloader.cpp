@@ -242,26 +242,7 @@ QByteArray QgsVectorTileLoader::loadFromNetwork( const QgsTileXYZ &id, const Qgs
 
 QByteArray QgsVectorTileLoader::loadFromMBTiles( const QgsTileXYZ &id, QgsMbTiles &mbTileReader, QgsFeedback *feedback )
 {
-  // MBTiles uses TMS specs with Y starting at the bottom while XYZ uses Y starting at the top
-  int rowTMS = pow( 2, id.zoomLevel() ) - id.row() - 1;
-  QByteArray gzippedTileData = mbTileReader.tileData( id.zoomLevel(), id.column(), rowTMS );
-  if ( gzippedTileData.isEmpty() )
-  {
-    return QByteArray();
-  }
 
-  if ( feedback && feedback->isCanceled() )
-    return QByteArray();
-
-  QByteArray data;
-  if ( !QgsZipUtils::decodeGzip( gzippedTileData, data ) )
-  {
-    QgsDebugMsg( QStringLiteral( "Failed to decompress tile " ) + id.toString() );
-    return QByteArray();
-  }
-
-  QgsDebugMsgLevel( QStringLiteral( "Tile blob size %1 -> uncompressed size %2" ).arg( gzippedTileData.size() ).arg( data.size() ), 2 );
-  return data;
 }
 
 QByteArray QgsVectorTileLoader::loadFromVtpk( const QgsTileXYZ &id, QgsVtpkTiles &vtpkTileReader )

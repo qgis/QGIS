@@ -32,6 +32,7 @@ class QgsTileXYZ;
 class QgsFeature;
 class QgsGeometry;
 class QgsSelectionContext;
+class QgsMbTiles;
 
 /**
  * \ingroup core
@@ -351,8 +352,10 @@ class QgsVectorTileDataProvider : public QgsDataProvider
     virtual bool supportsAsync() const;
 
     //! Returns raw tile data for a single tile
-    virtual QByteArray readTile( const QgsTileMatrix &tileMatrix, const QgsTileXYZ &id ) const = 0;
+    virtual QByteArray readTile( const QgsTileMatrix &tileMatrix, const QgsTileXYZ &id, QgsFeedback *feedback = nullptr ) const = 0;
 
+    //! Returns raw tile data for a range of tiles
+    virtual QList<QgsVectorTileRawData> readTiles( const QgsTileMatrix &, const QVector<QgsTileXYZ> &tiles, QgsFeedback *feedback = nullptr ) const = 0;
 };
 
 class QgsXyzVectorTileDataProvider : public QgsVectorTileDataProvider
@@ -369,7 +372,8 @@ class QgsXyzVectorTileDataProvider : public QgsVectorTileDataProvider
     bool isValid() const override;
     QgsCoordinateReferenceSystem crs() const override;
     bool supportsAsync() const override;
-    QByteArray readTile( const QgsTileMatrix &tileMatrix, const QgsTileXYZ &id ) const override;
+    QByteArray readTile( const QgsTileMatrix &tileMatrix, const QgsTileXYZ &id, QgsFeedback *feedback = nullptr ) const override;
+    QList<QgsVectorTileRawData> readTiles( const QgsTileMatrix &, const QVector<QgsTileXYZ> &tiles, QgsFeedback *feedback = nullptr ) const override;
 };
 
 class QgsMbTilesVectorTileDataProvider : public QgsVectorTileDataProvider
@@ -385,7 +389,14 @@ class QgsMbTilesVectorTileDataProvider : public QgsVectorTileDataProvider
     QString sourcePath() const override;
     bool isValid() const override;
     QgsCoordinateReferenceSystem crs() const override;
-    QByteArray readTile( const QgsTileMatrix &tileMatrix, const QgsTileXYZ &id ) const override;
+    QByteArray readTile( const QgsTileMatrix &tileMatrix, const QgsTileXYZ &id, QgsFeedback *feedback = nullptr ) const override;
+    QList<QgsVectorTileRawData> readTiles( const QgsTileMatrix &, const QVector<QgsTileXYZ> &tiles, QgsFeedback *feedback = nullptr ) const override;
+
+  private:
+
+    //! Returns raw tile data for a single tile loaded from MBTiles file
+    static QByteArray loadFromMBTiles( QgsMbTiles &mbTileReader, const QgsTileXYZ &id, QgsFeedback *feedback = nullptr );
+
 };
 
 class QgsVtpkVectorTileDataProvider : public QgsVectorTileDataProvider
@@ -401,7 +412,9 @@ class QgsVtpkVectorTileDataProvider : public QgsVectorTileDataProvider
     QString sourcePath() const override;
     bool isValid() const override;
     QgsCoordinateReferenceSystem crs() const override;
-    QByteArray readTile( const QgsTileMatrix &tileMatrix, const QgsTileXYZ &id ) const override;
+    QByteArray readTile( const QgsTileMatrix &tileMatrix, const QgsTileXYZ &id, QgsFeedback *feedback = nullptr ) const override;
+    QList<QgsVectorTileRawData> readTiles( const QgsTileMatrix &, const QVector<QgsTileXYZ> &tiles, QgsFeedback *feedback = nullptr ) const override;
+
 };
 
 class QgsArcGisVectorTileServiceDataProvider : public QgsVectorTileDataProvider
@@ -417,7 +430,8 @@ class QgsArcGisVectorTileServiceDataProvider : public QgsVectorTileDataProvider
     QString sourcePath() const override;
     bool isValid() const override;
     QgsCoordinateReferenceSystem crs() const override;
-    QByteArray readTile( const QgsTileMatrix &tileMatrix, const QgsTileXYZ &id ) const override;
+    QByteArray readTile( const QgsTileMatrix &tileMatrix, const QgsTileXYZ &id, QgsFeedback *feedback = nullptr ) const override;
+    QList<QgsVectorTileRawData> readTiles( const QgsTileMatrix &, const QVector<QgsTileXYZ> &tiles, QgsFeedback *feedback = nullptr ) const override;
 
   private:
 
