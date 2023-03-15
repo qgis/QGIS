@@ -188,7 +188,7 @@ class CORE_EXPORT QgsVectorTileLayer : public QgsMapLayer
     //! Returns type of the data source
     QString sourceType() const { return mSourceType; }
     //! Returns URL/path of the data source (syntax different to each data source type)
-    QString sourcePath() const { return mSourcePath; }
+    QString sourcePath() const;
 
     //! Returns minimum zoom level at which source has any valid tiles (negative = unconstrained)
     int sourceMinZoom() const { return mMatrixSet.minimumZoom(); }
@@ -290,8 +290,6 @@ class CORE_EXPORT QgsVectorTileLayer : public QgsMapLayer
   private:
     //! Type of the data source
     QString mSourceType;
-    //! URL/Path of the data source
-    QString mSourcePath;
 
     QgsVectorTileMatrixSet mMatrixSet;
 
@@ -334,7 +332,8 @@ class QgsVectorTileDataProvider : public QgsDataProvider
     Q_OBJECT
 
   public:
-    QgsVectorTileDataProvider( const QgsDataProvider::ProviderOptions &providerOptions,
+    QgsVectorTileDataProvider( const QString &uri,
+                               const QgsDataProvider::ProviderOptions &providerOptions,
                                QgsDataProvider::ReadFlags flags );
     QgsCoordinateReferenceSystem crs() const override;
     QString name() const override;
@@ -343,6 +342,8 @@ class QgsVectorTileDataProvider : public QgsDataProvider
     bool isValid() const override;
     bool renderInPreview( const QgsDataProvider::PreviewContext &context ) override;
 
+    virtual QString sourcePath() const = 0;
+
 };
 
 class QgsXyzVectorTileDataProvider : public QgsVectorTileDataProvider
@@ -350,8 +351,11 @@ class QgsXyzVectorTileDataProvider : public QgsVectorTileDataProvider
     Q_OBJECT
 
   public:
-    QgsXyzVectorTileDataProvider( const QgsDataProvider::ProviderOptions &providerOptions,
+    QgsXyzVectorTileDataProvider( const QString &uri,
+                                  const QgsDataProvider::ProviderOptions &providerOptions,
                                   QgsDataProvider::ReadFlags flags );
+
+    QString sourcePath() const override;
 
 };
 
@@ -360,8 +364,11 @@ class QgsMbTilesVectorTileDataProvider : public QgsVectorTileDataProvider
     Q_OBJECT
 
   public:
-    QgsMbTilesVectorTileDataProvider( const QgsDataProvider::ProviderOptions &providerOptions,
+    QgsMbTilesVectorTileDataProvider( const QString &uri,
+                                      const QgsDataProvider::ProviderOptions &providerOptions,
                                       QgsDataProvider::ReadFlags flags );
+
+    QString sourcePath() const override;
 
 };
 
@@ -370,8 +377,11 @@ class QgsVtpkVectorTileDataProvider : public QgsVectorTileDataProvider
     Q_OBJECT
 
   public:
-    QgsVtpkVectorTileDataProvider( const QgsDataProvider::ProviderOptions &providerOptions,
+    QgsVtpkVectorTileDataProvider( const QString &uri,
+                                   const QgsDataProvider::ProviderOptions &providerOptions,
                                    QgsDataProvider::ReadFlags flags );
+
+    QString sourcePath() const override;
 };
 
 class QgsArcGisVectorTileServiceDataProvider : public QgsVectorTileDataProvider
@@ -379,8 +389,15 @@ class QgsArcGisVectorTileServiceDataProvider : public QgsVectorTileDataProvider
     Q_OBJECT
 
   public:
-    QgsArcGisVectorTileServiceDataProvider( const QgsDataProvider::ProviderOptions &providerOptions,
+    QgsArcGisVectorTileServiceDataProvider( const QString &uri,
+                                            const QString &sourcePath,
+                                            const QgsDataProvider::ProviderOptions &providerOptions,
                                             QgsDataProvider::ReadFlags flags );
+    QString sourcePath() const override;
+
+  private:
+
+    QString mSourcePath;
 };
 
 ///@endcond
