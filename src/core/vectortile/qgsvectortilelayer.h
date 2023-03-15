@@ -339,7 +339,6 @@ class QgsVectorTileDataProvider : public QgsDataProvider
     QString name() const override;
     QString description() const override;
     QgsRectangle extent() const override;
-    bool isValid() const override;
     bool renderInPreview( const QgsDataProvider::PreviewContext &context ) override;
 
     virtual QString sourcePath() const = 0;
@@ -356,7 +355,7 @@ class QgsXyzVectorTileDataProvider : public QgsVectorTileDataProvider
                                   QgsDataProvider::ReadFlags flags );
 
     QString sourcePath() const override;
-
+    bool isValid() const override;
 };
 
 class QgsMbTilesVectorTileDataProvider : public QgsVectorTileDataProvider
@@ -369,6 +368,7 @@ class QgsMbTilesVectorTileDataProvider : public QgsVectorTileDataProvider
                                       QgsDataProvider::ReadFlags flags );
 
     QString sourcePath() const override;
+    bool isValid() const override;
 
 };
 
@@ -382,6 +382,7 @@ class QgsVtpkVectorTileDataProvider : public QgsVectorTileDataProvider
                                    QgsDataProvider::ReadFlags flags );
 
     QString sourcePath() const override;
+    bool isValid() const override;
 };
 
 class QgsArcGisVectorTileServiceDataProvider : public QgsVectorTileDataProvider
@@ -394,6 +395,7 @@ class QgsArcGisVectorTileServiceDataProvider : public QgsVectorTileDataProvider
                                             const QgsDataProvider::ProviderOptions &providerOptions,
                                             QgsDataProvider::ReadFlags flags );
     QString sourcePath() const override;
+    bool isValid() const override;
 
   private:
 
