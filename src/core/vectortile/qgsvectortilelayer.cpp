@@ -1331,13 +1331,6 @@ QgsVectorTileDataProvider::QgsVectorTileDataProvider( const QString &uri,
   : QgsDataProvider( uri, options, flags )
 {}
 
-QgsCoordinateReferenceSystem QgsVectorTileDataProvider::crs() const
-{
-  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
-
-  return QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) );
-}
-
 QString QgsVectorTileDataProvider::name() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
@@ -1395,6 +1388,13 @@ bool QgsXyzVectorTileDataProvider::isValid() const
   return true;
 }
 
+QgsCoordinateReferenceSystem QgsXyzVectorTileDataProvider::crs() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) );
+}
+
 //
 // QgsMbTilesVectorTileDataProvider
 //
@@ -1419,6 +1419,13 @@ bool QgsMbTilesVectorTileDataProvider::isValid() const
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
   return true;
+}
+
+QgsCoordinateReferenceSystem QgsMbTilesVectorTileDataProvider::crs() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) );
 }
 
 //
@@ -1447,6 +1454,13 @@ bool QgsVtpkVectorTileDataProvider::isValid() const
   return true;
 }
 
+QgsCoordinateReferenceSystem QgsVtpkVectorTileDataProvider::crs() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) );
+}
+
 //
 // QgsArcGisVectorTileServiceDataProvider
 //
@@ -1470,6 +1484,13 @@ bool QgsArcGisVectorTileServiceDataProvider::isValid() const
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
   return true;
+}
+
+QgsCoordinateReferenceSystem QgsArcGisVectorTileServiceDataProvider::crs() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) );
 }
 
 ///@endcond
