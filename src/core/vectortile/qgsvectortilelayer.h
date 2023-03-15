@@ -343,6 +343,9 @@ class QgsVectorTileDataProvider : public QgsDataProvider
     virtual QString sourcePath() const = 0;
     virtual QgsVectorTileDataProvider *clone() const = 0 SIP_FACTORY;
 
+    //! Returns raw tile data for a single tile
+    virtual QByteArray readTile( const QgsTileMatrix &tileMatrix, const QgsTileXYZ &id ) const = 0;
+
 };
 
 class QgsXyzVectorTileDataProvider : public QgsVectorTileDataProvider
@@ -358,6 +361,7 @@ class QgsXyzVectorTileDataProvider : public QgsVectorTileDataProvider
     QString sourcePath() const override;
     bool isValid() const override;
     QgsCoordinateReferenceSystem crs() const override;
+    QByteArray readTile( const QgsTileMatrix &tileMatrix, const QgsTileXYZ &id ) const override;
 };
 
 class QgsMbTilesVectorTileDataProvider : public QgsVectorTileDataProvider
@@ -373,6 +377,7 @@ class QgsMbTilesVectorTileDataProvider : public QgsVectorTileDataProvider
     QString sourcePath() const override;
     bool isValid() const override;
     QgsCoordinateReferenceSystem crs() const override;
+    QByteArray readTile( const QgsTileMatrix &tileMatrix, const QgsTileXYZ &id ) const override;
 };
 
 class QgsVtpkVectorTileDataProvider : public QgsVectorTileDataProvider
@@ -388,6 +393,7 @@ class QgsVtpkVectorTileDataProvider : public QgsVectorTileDataProvider
     QString sourcePath() const override;
     bool isValid() const override;
     QgsCoordinateReferenceSystem crs() const override;
+    QByteArray readTile( const QgsTileMatrix &tileMatrix, const QgsTileXYZ &id ) const override;
 };
 
 class QgsArcGisVectorTileServiceDataProvider : public QgsVectorTileDataProvider
@@ -403,6 +409,7 @@ class QgsArcGisVectorTileServiceDataProvider : public QgsVectorTileDataProvider
     QString sourcePath() const override;
     bool isValid() const override;
     QgsCoordinateReferenceSystem crs() const override;
+    QByteArray readTile( const QgsTileMatrix &tileMatrix, const QgsTileXYZ &id ) const override;
 
   private:
 

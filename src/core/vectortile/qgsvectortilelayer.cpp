@@ -904,21 +904,13 @@ QString QgsVectorTileLayer::sourcePath() const
 QByteArray QgsVectorTileLayer::getRawTile( QgsTileXYZ tileID )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   QgsVectorTileDataProvider *vtProvider = qobject_cast< QgsVectorTileDataProvider * >( mDataProvider.get() );
   if ( !vtProvider )
     return QByteArray();
 
   const QgsTileMatrix tileMatrix = mMatrixSet.tileMatrix( tileID.zoomLevel() );
-  const QgsTileRange tileRange( tileID.column(), tileID.column(), tileID.row(), tileID.row() );
-
-  QgsDataSourceUri dsUri;
-  dsUri.setEncodedUri( mDataSource );
-  const QString authcfg = dsUri.authConfigId();
-
-  QList<QgsVectorTileRawData> rawTiles = QgsVectorTileLoader::blockingFetchTileRawData( mSourceType, vtProvider->sourcePath(), tileMatrix, QPointF(), tileRange, authcfg, dsUri.httpHeaders() );
-  if ( rawTiles.isEmpty() )
-    return QByteArray();
-  return rawTiles.first().data;
+  return vtProvider->readTile( tileMatrix, tileID );
 }
 
 void QgsVectorTileLayer::setRenderer( QgsVectorTileRenderer *r )
@@ -1404,6 +1396,26 @@ QgsCoordinateReferenceSystem QgsXyzVectorTileDataProvider::crs() const
   return QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) );
 }
 
+QByteArray QgsXyzVectorTileDataProvider::readTile( const QgsTileMatrix &tileMatrix, const QgsTileXYZ &id ) const
+{
+  QgsDataSourceUri dsUri;
+  dsUri.setEncodedUri( dataSourceUri() );
+  const QString authcfg = dsUri.authConfigId();
+
+  const QgsTileRange tileRange( id.column(), id.column(), id.row(), id.row() );
+
+  QList<QgsVectorTileRawData> rawTiles = QgsVectorTileLoader::blockingFetchTileRawData( QStringLiteral( "xyz" ),
+                                         dsUri.param( QStringLiteral( "url" ) ),
+                                         tileMatrix,
+                                         QPointF(),
+                                         tileRange,
+                                         authcfg,
+                                         dsUri.httpHeaders() );
+  if ( rawTiles.isEmpty() )
+    return QByteArray();
+  return rawTiles.first().data;
+}
+
 //
 // QgsMbTilesVectorTileDataProvider
 //
@@ -1444,6 +1456,26 @@ QgsCoordinateReferenceSystem QgsMbTilesVectorTileDataProvider::crs() const
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
   return QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) );
+}
+
+QByteArray QgsMbTilesVectorTileDataProvider::readTile( const QgsTileMatrix &tileMatrix, const QgsTileXYZ &id ) const
+{
+  QgsDataSourceUri dsUri;
+  dsUri.setEncodedUri( dataSourceUri() );
+  const QString authcfg = dsUri.authConfigId();
+
+  const QgsTileRange tileRange( id.column(), id.column(), id.row(), id.row() );
+
+  QList<QgsVectorTileRawData> rawTiles = QgsVectorTileLoader::blockingFetchTileRawData( QStringLiteral( "mbtiles" ),
+                                         dsUri.param( QStringLiteral( "url" ) ),
+                                         tileMatrix,
+                                         QPointF(),
+                                         tileRange,
+                                         authcfg,
+                                         dsUri.httpHeaders() );
+  if ( rawTiles.isEmpty() )
+    return QByteArray();
+  return rawTiles.first().data;
 }
 
 //
@@ -1488,6 +1520,26 @@ QgsCoordinateReferenceSystem QgsVtpkVectorTileDataProvider::crs() const
   return QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) );
 }
 
+QByteArray QgsVtpkVectorTileDataProvider::readTile( const QgsTileMatrix &tileMatrix, const QgsTileXYZ &id ) const
+{
+  QgsDataSourceUri dsUri;
+  dsUri.setEncodedUri( dataSourceUri() );
+  const QString authcfg = dsUri.authConfigId();
+
+  const QgsTileRange tileRange( id.column(), id.column(), id.row(), id.row() );
+
+  QList<QgsVectorTileRawData> rawTiles = QgsVectorTileLoader::blockingFetchTileRawData( QStringLiteral( "vtpk" ),
+                                         dsUri.param( QStringLiteral( "url" ) ),
+                                         tileMatrix,
+                                         QPointF(),
+                                         tileRange,
+                                         authcfg,
+                                         dsUri.httpHeaders() );
+  if ( rawTiles.isEmpty() )
+    return QByteArray();
+  return rawTiles.first().data;
+}
+
 //
 // QgsArcGisVectorTileServiceDataProvider
 //
@@ -1527,6 +1579,26 @@ QgsCoordinateReferenceSystem QgsArcGisVectorTileServiceDataProvider::crs() const
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
   return QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) );
+}
+
+QByteArray QgsArcGisVectorTileServiceDataProvider::readTile( const QgsTileMatrix &tileMatrix, const QgsTileXYZ &id ) const
+{
+  QgsDataSourceUri dsUri;
+  dsUri.setEncodedUri( dataSourceUri() );
+  const QString authcfg = dsUri.authConfigId();
+
+  const QgsTileRange tileRange( id.column(), id.column(), id.row(), id.row() );
+
+  QList<QgsVectorTileRawData> rawTiles = QgsVectorTileLoader::blockingFetchTileRawData( QStringLiteral( "xyz" ),
+                                         mSourcePath,
+                                         tileMatrix,
+                                         QPointF(),
+                                         tileRange,
+                                         authcfg,
+                                         dsUri.httpHeaders() );
+  if ( rawTiles.isEmpty() )
+    return QByteArray();
+  return rawTiles.first().data;
 }
 
 ///@endcond
