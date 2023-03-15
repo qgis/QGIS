@@ -302,10 +302,9 @@ class Editor(QgsCodeEditorPython):
                 new_text = isort.code(new_text, **options)
 
             except ImportError:
-                self.parent.infoBar.pushMessage(
+                self.parent.infoBar.pushWarning(
                     QCoreApplication.translate("PythonConsole", "Python Console"),
                     QCoreApplication.translate("PythonConsole", "Module {0} is missing").format("isort"),
-                    duration=2,
                 )
 
         # autopep8
@@ -313,11 +312,9 @@ class Editor(QgsCodeEditorPython):
             try:
                 import autopep8
             except ImportError:
-                self.parent.infoBar.pushMessage(
+                self.parent.infoBar.pushWarning(
                     QCoreApplication.translate("PythonConsole", "Python Console"),
                     QCoreApplication.translate("PythonConsole", "Module {0} is missing").format("autopep8"),
-                    duration=2,
-                    level=Qgis.Warning,
                 )
                 return
             level = self.settings.value("pythonConsole/autopep8Level", 1, type=int)
@@ -329,19 +326,15 @@ class Editor(QgsCodeEditorPython):
             try:
                 import black
             except ImportError:
-                self.parent.infoBar.pushMessage(
+                self.parent.infoBar.pushWarning(
                     QCoreApplication.translate("PythonConsole", "Python Console"),
                     QCoreApplication.translate("PythonConsole", "Module {0} is missing").format("black"),
-                    duration=2,
-                    level=Qgis.Warning,
                 )
                 return
             if not self.syntaxCheck():
-                self.parent.infoBar.pushMessage(
+                self.parent.infoBar.pushWarning(
                     QCoreApplication.translate("PythonConsole", "Code formatting failed"),
                     QCoreApplication.translate("PythonConsole", "The code contains syntax errors"),
-                    level=Qgis.Warning,
-                    duration=2,
                 )
                 return
 
