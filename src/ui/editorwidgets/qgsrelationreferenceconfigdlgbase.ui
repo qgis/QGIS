@@ -7,17 +7,31 @@
     <x>0</x>
     <y>0</y>
     <width>470</width>
-    <height>553</height>
+    <height>601</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string notr="true">Dialog</string>
   </property>
   <layout class="QGridLayout" name="gridLayout_2">
-   <item row="6" column="0" colspan="2">
-    <widget class="QCheckBox" name="mCbxReadOnly">
+   <item row="1" column="0">
+    <widget class="QLabel" name="label_2">
      <property name="text">
-      <string>Use a read-only line edit instead of a combobox</string>
+      <string>Relation</string>
+     </property>
+    </widget>
+   </item>
+   <item row="6" column="0" colspan="2">
+    <widget class="QCheckBox" name="mCbxAllowAddFeatures">
+     <property name="text">
+      <string>Allow adding new features</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="0" colspan="2">
+    <widget class="QCheckBox" name="mCbxAllowNull">
+     <property name="text">
+      <string>Allow NULL value</string>
      </property>
     </widget>
    </item>
@@ -28,6 +42,37 @@
      </property>
      <property name="text">
       <string>Display expression Ⓘ</string>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="0" colspan="2">
+    <widget class="QCheckBox" name="mCbxReadOnly">
+     <property name="text">
+      <string>Use a read-only line edit instead of a combobox</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="0" colspan="2">
+    <widget class="QCheckBox" name="mCbxMapIdentification">
+     <property name="text">
+      <string>On map identification (for geometric layers only)</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="1">
+    <widget class="QgsFieldExpressionWidget" name="mExpressionWidget">
+     <property name="focusPolicy">
+      <enum>Qt::TabFocus</enum>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="1">
+    <widget class="QComboBox" name="mComboRelation">
+     <property name="toolTip">
+      <string>The generated relations for a polymorphic relation cannot be used.</string>
+     </property>
+     <property name="sizeAdjustPolicy">
+      <enum>QComboBox::AdjustToMinimumContentsLengthWithIcon</enum>
      </property>
     </widget>
    </item>
@@ -148,56 +193,29 @@
      </layout>
     </widget>
    </item>
-   <item row="4" column="0" colspan="2">
-    <widget class="QCheckBox" name="mCbxShowOpenFormButton">
-     <property name="text">
-      <string>Show open form button</string>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="0">
-    <widget class="QLabel" name="label_2">
-     <property name="text">
-      <string>Relation</string>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="0" colspan="2">
-    <widget class="QCheckBox" name="mCbxAllowNull">
-     <property name="text">
-      <string>Allow NULL value</string>
-     </property>
-    </widget>
-   </item>
-   <item row="5" column="0" colspan="2">
-    <widget class="QCheckBox" name="mCbxMapIdentification">
-     <property name="text">
-      <string>On map identification (for geometric layers only)</string>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="1">
-    <widget class="QComboBox" name="mComboRelation">
-     <property name="toolTip">
-      <string>The generated relations for a polymorphic relation cannot be used.</string>
-     </property>
-     <property name="sizeAdjustPolicy">
-      <enum>QComboBox::AdjustToMinimumContentsLengthWithIcon</enum>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="1">
-    <widget class="QgsFieldExpressionWidget" name="mExpressionWidget">
-     <property name="focusPolicy">
-      <enum>Qt::TabFocus</enum>
-     </property>
-    </widget>
-   </item>
    <item row="7" column="0" colspan="2">
-    <widget class="QCheckBox" name="mCbxAllowAddFeatures">
-     <property name="text">
-      <string>Allow adding new features</string>
+    <widget class="QGroupBox" name="mFetchLimitGroupBox">
+     <property name="toolTip">
+      <string>If no limit is set, all entries are loaded.</string>
      </property>
+     <property name="title">
+      <string>Limit number of entries</string>
+     </property>
+     <property name="checkable">
+      <bool>true</bool>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_3">
+      <item row="0" column="0">
+       <widget class="QLabel" name="label_fetchLimit">
+        <property name="text">
+         <string>Maximum number of entries</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QgsSpinBox" name="mFetchLimit"/>
+      </item>
+     </layout>
     </widget>
    </item>
    <item row="3" column="0" colspan="2">
@@ -222,13 +240,17 @@
    <header>qgsfieldexpressionwidget.h</header>
    <container>1</container>
   </customwidget>
+  <customwidget>
+   <class>QgsSpinBox</class>
+   <extends>QSpinBox</extends>
+   <header>qgsspinbox.h</header>
+  </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>mExpressionWidget</tabstop>
   <tabstop>mComboRelation</tabstop>
   <tabstop>mCbxAllowNull</tabstop>
   <tabstop>mCbxShowForm</tabstop>
-  <tabstop>mCbxShowOpenFormButton</tabstop>
   <tabstop>mCbxMapIdentification</tabstop>
   <tabstop>mCbxReadOnly</tabstop>
   <tabstop>mCbxAllowAddFeatures</tabstop>

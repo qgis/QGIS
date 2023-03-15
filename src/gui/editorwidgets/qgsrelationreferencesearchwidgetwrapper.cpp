@@ -212,6 +212,16 @@ void QgsRelationReferenceSearchWidgetWrapper::initWidget( QWidget *editor )
   mWidget->setAllowAddFeatures( false );
   mWidget->setOpenFormButtonVisible( false );
 
+  const bool fetchLimitActive = config( QStringLiteral( "FetchLimitActive" ), QgsSettings().value( QStringLiteral( "maxEntriesRelationWidget" ), 100, QgsSettings::Gui ).toInt() > 0 ).toBool();
+  if ( fetchLimitActive )
+  {
+    mWidget->setFetchLimit( config( QStringLiteral( "FetchLimitNumber" ), QgsSettings().value( QStringLiteral( "maxEntriesRelationWidget" ), 100, QgsSettings::Gui ) ).toInt() );
+  }
+  else
+  {
+    mWidget->setFetchLimit( 0 );
+  }
+
   if ( config( QStringLiteral( "FilterFields" ), QVariant() ).isValid() )
   {
     mWidget->setFilterFields( config( QStringLiteral( "FilterFields" ) ).toStringList() );

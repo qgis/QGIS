@@ -251,6 +251,19 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
      */
     void setReferencedLayerName( const QString &referencedLayerName );
 
+    /**
+     * Returns the limit of fetched features (0 means all features)
+     * \since QGIS 3.30
+     */
+    int fetchLimit() const {return mFetchLimit; }
+
+    /**
+     * Set the limit of fetched features (0 means all features)
+     * \since QGIS 3.30
+     */
+    void setFetchLimit( int fetchLimit ) {mFetchLimit = fetchLimit; }
+
+
   public slots:
     //! open the form of the related feature in a new dialog
     void openForm();
@@ -328,6 +341,7 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
     QStringList mFilterFields;
     QMap<QString, QMap<QString, QSet<QString> > > mFilterCache;
     bool mInitialized = false;
+    int mFetchLimit = 0;
 
     // Q_PROPERTY
     bool mEmbedForm = false;

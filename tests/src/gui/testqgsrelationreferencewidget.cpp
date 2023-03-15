@@ -818,31 +818,58 @@ void TestQgsRelationReferenceWidget::testComboLimit()
   QEventLoop loop;
   connect( qobject_cast<QgsFeatureFilterModel *>( w.mComboBox->model() ), &QgsFeatureFilterModel::filterJobCompleted, &loop, &QEventLoop::quit );
   w.setRelation( mRelation, false );
-  w.init();
   loop.exec();
   QVERIFY( w.relation().isValid() );
 
+  // check fetch limit of combobox directly
   QSignalSpy spy( w.mComboBox, &QgsFeatureListComboBox::modelUpdated );
 
-  w.mComboBox->setFetchLimit( 200 );
-  spy.wait( 1000 );
-  QCOMPARE( w.mComboBox->count(), 200 );
-
   w.mComboBox->setFetchLimit( 20 );
-  spy.wait( 1000 );
+  spy.wait();
   QCOMPARE( w.mComboBox->count(), 20 );
 
   w.mComboBox->setFetchLimit( -1 );
-  spy.wait( 1000 );
+  spy.wait();
   QCOMPARE( w.mComboBox->count(), 200 );
 
+  w.mComboBox->setFetchLimit( 120 );
+  spy.wait();
+  QCOMPARE( w.mComboBox->count(), 120 );
+
   w.mComboBox->setFetchLimit( 0 );
-  spy.wait( 1000 );
+  spy.wait();
   QCOMPARE( w.mComboBox->count(), 200 );
 
   w.mComboBox->setFetchLimit( 300 );
-  spy.wait( 1000 );
+  spy.wait();
   QCOMPARE( w.mComboBox->count(), 200 );
+
+  // check the setting in relation reference
+  w.setFetchLimit( 22 );
+  w.init();
+  spy.wait();
+  QCOMPARE( w.mComboBox->count(), 22 );
+
+  w.setFetchLimit( -1 );
+  w.init();
+  spy.wait();
+  QCOMPARE( w.mComboBox->count(), 200 );
+
+  w.setFetchLimit( 122 );
+  w.init();
+  spy.wait();
+  QCOMPARE( w.mComboBox->count(), 122 );
+
+  w.setFetchLimit( 0 );
+  w.setRelation( mRelation, false );
+  spy.wait();
+  QCOMPARE( w.mComboBox->count(), 200 );
+
+  w.setFetchLimit( 300 );
+  w.setRelation( mRelation, true );
+  spy.wait();
+  QCOMPARE( w.mComboBox->count(), 201 );
+
 }
 
 QGSTEST_MAIN( TestQgsRelationReferenceWidget )
