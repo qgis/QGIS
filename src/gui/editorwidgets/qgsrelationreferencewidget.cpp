@@ -365,11 +365,6 @@ void QgsRelationReferenceWidget::setAllowMapIdentification( bool allowMapIdentif
   mAllowMapIdentification = allowMapIdentification;
 }
 
-void QgsRelationReferenceWidget::setOrderByValue( bool orderByValue )
-{
-  mOrderByValue = orderByValue;
-}
-
 void QgsRelationReferenceWidget::setFilterFields( const QStringList &filterFields )
 {
   mFilterFields = filterFields;

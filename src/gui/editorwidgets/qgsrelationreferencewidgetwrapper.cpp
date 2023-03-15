@@ -51,13 +51,11 @@ void QgsRelationReferenceWidgetWrapper::initWidget( QWidget *editor )
   const bool showForm = config( QStringLiteral( "ShowForm" ), false ).toBool();
   const bool mapIdent = config( QStringLiteral( "MapIdentification" ), false ).toBool();
   const bool readOnlyWidget = config( QStringLiteral( "ReadOnly" ), false ).toBool();
-  const bool orderByValue = config( QStringLiteral( "OrderByValue" ), false ).toBool();
   const bool showOpenFormButton = config( QStringLiteral( "ShowOpenFormButton" ), true ).toBool();
 
   mWidget->setEmbedForm( showForm );
   mWidget->setReadOnlySelector( readOnlyWidget );
   mWidget->setAllowMapIdentification( mapIdent );
-  mWidget->setOrderByValue( orderByValue );
   mWidget->setOpenFormButtonVisible( showOpenFormButton );
   if ( config( QStringLiteral( "FilterFields" ), QVariant() ).isValid() )
   {
