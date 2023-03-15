@@ -35,8 +35,6 @@
 
 QgsVectorTileLayerRenderer::QgsVectorTileLayerRenderer( QgsVectorTileLayer *layer, QgsRenderContext &context )
   : QgsMapLayerRenderer( layer->id(), &context )
-  , mSourceType( layer->sourceType() )
-  , mSourcePath( layer->sourcePath() )
   , mDataProvider( qgis::down_cast< const QgsVectorTileDataProvider* >( layer->dataProvider() )->clone() )
   , mRenderer( layer->renderer()->clone() )
   , mDrawTileBoundaries( layer->isTileBorderRenderingEnabled() )
@@ -45,12 +43,6 @@ QgsVectorTileLayerRenderer::QgsVectorTileLayerRenderer( QgsVectorTileLayer *laye
   , mLayerOpacity( layer->opacity() )
   , mTileMatrixSet( layer->tileMatrixSet() )
 {
-
-  QgsDataSourceUri dsUri;
-  dsUri.setEncodedUri( layer->source() );
-  mAuthCfg = dsUri.authConfigId();
-  mHeaders = dsUri.httpHeaders();
-
   if ( QgsLabelingEngine *engine = context.labelingEngine() )
   {
     if ( layer->labeling() )
