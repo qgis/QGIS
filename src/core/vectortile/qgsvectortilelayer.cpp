@@ -1359,13 +1359,6 @@ QgsRectangle QgsVectorTileDataProvider::extent() const
   return QgsRectangle();
 }
 
-bool QgsVectorTileDataProvider::isValid() const
-{
-  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
-
-  return true;
-}
-
 bool QgsVectorTileDataProvider::renderInPreview( const PreviewContext &context )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
@@ -1388,9 +1381,18 @@ QgsXyzVectorTileDataProvider::QgsXyzVectorTileDataProvider( const QString &uri, 
 
 QString QgsXyzVectorTileDataProvider::sourcePath() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   QgsDataSourceUri dsUri;
   dsUri.setEncodedUri( dataSourceUri() );
   return dsUri.param( QStringLiteral( "url" ) );
+}
+
+bool QgsXyzVectorTileDataProvider::isValid() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return true;
 }
 
 //
@@ -1405,9 +1407,18 @@ QgsMbTilesVectorTileDataProvider::QgsMbTilesVectorTileDataProvider( const QStrin
 
 QString QgsMbTilesVectorTileDataProvider::sourcePath() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   QgsDataSourceUri dsUri;
   dsUri.setEncodedUri( dataSourceUri() );
   return dsUri.param( QStringLiteral( "url" ) );
+}
+
+bool QgsMbTilesVectorTileDataProvider::isValid() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return true;
 }
 
 //
@@ -1422,9 +1433,18 @@ QgsVtpkVectorTileDataProvider::QgsVtpkVectorTileDataProvider( const QString &uri
 
 QString QgsVtpkVectorTileDataProvider::sourcePath() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   QgsDataSourceUri dsUri;
   dsUri.setEncodedUri( dataSourceUri() );
   return dsUri.param( QStringLiteral( "url" ) );
+}
+
+bool QgsVtpkVectorTileDataProvider::isValid() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return true;
 }
 
 //
@@ -1440,7 +1460,16 @@ QgsArcGisVectorTileServiceDataProvider::QgsArcGisVectorTileServiceDataProvider( 
 
 QString QgsArcGisVectorTileServiceDataProvider::sourcePath() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return mSourcePath;
+}
+
+bool QgsArcGisVectorTileServiceDataProvider::isValid() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return true;
 }
 
 ///@endcond
