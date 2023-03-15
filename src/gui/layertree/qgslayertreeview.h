@@ -353,7 +353,7 @@ class GUI_EXPORT QgsLayerTreeView : public QTreeView
     /**
      * Emitted when the context menu is about to show.
      *
-     * Allows customisation of the menu.
+     * Allows customization of the menu.
      *
      * \since QGIS 3.32
      */
