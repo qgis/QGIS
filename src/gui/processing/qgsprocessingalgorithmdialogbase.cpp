@@ -961,7 +961,17 @@ QgsProcessingContextOptionsWidget::QgsProcessingContextOptionsWidget( QWidget *p
           Qgis::DistanceUnit::Degrees,
         } )
   {
-    mDistanceUnitsCombo->addItem( QgsUnitTypes::toString( unit ), QVariant::fromValue( unit ) );
+    QString title;
+    if ( ( QgsGui::higFlags() & QgsGui::HigDialogTitleIsTitleCase ) )
+    {
+      title = QgsStringUtils::capitalize( QgsUnitTypes::toString( unit ), Qgis::Capitalization::TitleCase );
+    }
+    else
+    {
+      title = QgsUnitTypes::toString( unit );
+    }
+
+    mDistanceUnitsCombo->addItem( title, QVariant::fromValue( unit ) );
   }
 
   mAreaUnitsCombo->addItem( tr( "Default" ), QVariant::fromValue( Qgis::AreaUnit::Unknown ) );
@@ -980,7 +990,17 @@ QgsProcessingContextOptionsWidget::QgsProcessingContextOptionsWidget( QWidget *p
           Qgis::AreaUnit::SquareDegrees,
         } )
   {
-    mAreaUnitsCombo->addItem( QgsUnitTypes::toString( unit ), QVariant::fromValue( unit ) );
+    QString title;
+    if ( ( QgsGui::higFlags() & QgsGui::HigDialogTitleIsTitleCase ) )
+    {
+      title = QgsStringUtils::capitalize( QgsUnitTypes::toString( unit ), Qgis::Capitalization::TitleCase );
+    }
+    else
+    {
+      title = QgsUnitTypes::toString( unit );
+    }
+
+    mAreaUnitsCombo->addItem( title, QVariant::fromValue( unit ) );
   }
 
   connect( mComboInvalidFeatureFiltering, qOverload< int >( &QComboBox::currentIndexChanged ), this, &QgsPanelWidget::widgetChanged );
