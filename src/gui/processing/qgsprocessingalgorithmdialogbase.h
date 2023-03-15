@@ -20,6 +20,7 @@
 #include "qgis_gui.h"
 #include "ui_qgsprocessingalgorithmdialogbase.h"
 #include "ui_qgsprocessingalgorithmprogressdialogbase.h"
+#include "ui_qgsprocessingcontextoptionsbase.h"
 #include "qgsprocessingcontext.h"
 #include "qgsprocessingfeedback.h"
 #include "qgsprocessingwidgetwrapper.h"
@@ -29,6 +30,7 @@
 class QgsProcessingAlgorithm;
 class QToolButton;
 class QgsProcessingAlgorithmDialogBase;
+class QgsProcessingContextOptionsWidget;
 class QgsMessageBar;
 class QgsProcessingAlgRunnerTask;
 class QgsTask;
@@ -452,6 +454,7 @@ class GUI_EXPORT QgsProcessingAlgorithmDialogBase : public QDialog, public QgsPr
     QMenu *mAdvancedMenu = nullptr;
     QAction *mCopyAsQgisProcessCommand = nullptr;
     QAction *mPasteJsonAction = nullptr;
+    QAction *mContextSettingsAction = nullptr;
 
     bool mExecuted = false;
     bool mExecutedAnyResult = false;
@@ -465,6 +468,10 @@ class GUI_EXPORT QgsProcessingAlgorithmDialogBase : public QDialog, public QgsPr
     int mMessageLoggedCount = 0;
 
     QgsProcessingContext::LogLevel mLogLevel = QgsProcessingContext::DefaultLevel;
+
+    QPointer< QgsProcessingContextOptionsWidget > mContextOptionsWidget;
+    bool mOverrideDefaultContextSettings = false;
+    QgsFeatureRequest::InvalidGeometryCheck mGeometryCheck = QgsFeatureRequest::InvalidGeometryCheck::GeometryAbortOnInvalid;
 
     QString formatHelp( QgsProcessingAlgorithm *algorithm );
     void scrollToBottomOfLog();
@@ -509,6 +516,35 @@ class QgsProcessingAlgorithmProgressDialog : public QDialog, private Ui::QgsProc
   public slots:
 
     void reject() override;
+
+};
+
+/**
+ * \ingroup gui
+ * \brief Widget for configuring settings for a Processing context.
+ * \note Not stable API
+ * \since QGIS 3.32
+ */
+class GUI_EXPORT QgsProcessingContextOptionsWidget : public QgsPanelWidget, private Ui::QgsProcessingContextOptionsBase
+{
+    Q_OBJECT
+
+  public:
+
+    /**
+     * Constructor for QgsProcessingContextOptionsWidget, with the specified \a parent widget.
+     */
+    QgsProcessingContextOptionsWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr );
+
+    /**
+     * Sets the widget state using the specified \a context.
+     */
+    void setFromContext( const QgsProcessingContext *context );
+
+    /**
+     * Returns the invalid geometry check selected in the widget.
+     */
+    QgsFeatureRequest::InvalidGeometryCheck invalidGeometryCheck() const;
 
 };
 
