@@ -513,6 +513,11 @@ void QgsProcessingAlgorithmDialogBase::algExecuted( bool successful, const QVari
   }
   else
   {
+    if ( isFinalized() && successful )
+    {
+      progressBar->setFormat( tr( "Complete" ) );
+    }
+
     // delete dialog if closed
     if ( isFinalized() && !isVisible() )
     {
@@ -766,6 +771,8 @@ void QgsProcessingAlgorithmDialogBase::updateRunButtonVisibility()
   // Activate run button if current tab is Parameters
   const bool runButtonVisible = mTabWidget->currentIndex() == 0;
   mButtonRun->setVisible( runButtonVisible );
+  if ( runButtonVisible )
+    progressBar->resetFormat();
   mButtonChangeParameters->setVisible( !runButtonVisible && mExecutedAnyResult && mButtonChangeParameters->isEnabled() );
 }
 
