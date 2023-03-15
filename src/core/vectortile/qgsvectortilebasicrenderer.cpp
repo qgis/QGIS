@@ -169,9 +169,6 @@ void QgsVectorTileBasicRenderer::renderBackground( QgsRenderContext &context )
     if ( !layerStyle.symbol() || layerStyle.layerName() != QLatin1String( "background" ) )
       continue;
 
-    QgsExpression filterExpression( layerStyle.filterExpression() );
-    filterExpression.prepare( &context.expressionContext() );
-
     QgsSymbol *sym = layerStyle.symbol();
     sym->startRender( context, QgsFields() );
 
