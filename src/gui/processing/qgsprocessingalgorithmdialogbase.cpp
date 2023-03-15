@@ -819,6 +819,14 @@ bool QgsProcessingAlgorithmDialogBase::isFinalized()
   return true;
 }
 
+void QgsProcessingAlgorithmDialogBase::applyContextOverrides( QgsProcessingContext *context )
+{
+  if ( !context )
+    return;
+
+  context->setLogLevel( logLevel() );
+}
+
 void QgsProcessingAlgorithmDialogBase::setInfo( const QString &message, bool isError, bool escapeHtml, bool isWarning )
 {
   constexpr int MESSAGE_COUNT_LIMIT = 10000;

@@ -390,6 +390,15 @@ class GUI_EXPORT QgsProcessingAlgorithmDialogBase : public QDialog, public QgsPr
      */
     virtual bool isFinalized();
 
+    /**
+     * Applies any defined overrides for Processing context settings to the specified \a context.
+     *
+     * This allows the dialog to override default Processing settings for an individual algorithm execution.
+     *
+     * \since QGIS 3.32
+     */
+    void applyContextOverrides( QgsProcessingContext *context );
+
   signals:
 
     /**
