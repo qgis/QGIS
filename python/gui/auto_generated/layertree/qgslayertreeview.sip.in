@@ -357,7 +357,7 @@ Emitted when a current layer is changed
 %Docstring
 Emitted when the context menu is about to show.
 
-Allows customisation of the menu.
+Allows customization of the menu.
 
 .. versionadded:: 3.32
 %End
