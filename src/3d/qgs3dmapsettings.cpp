@@ -520,20 +520,7 @@ void Qgs3DMapSettings::setExtent( const QgsRectangle &extent )
   setOrigin( QgsVector3D( center.x(), center.y(), 0 ) );
   if ( mTerrainGenerator )
   {
-    QgsRectangle terrainExtent = mExtent;
-    if ( mCrs != mTerrainGenerator->crs() )
-    {
-      QgsCoordinateTransform ct = QgsCoordinateTransform( mCrs, mTerrainGenerator->crs(), mTransformContext );
-      ct.setBallparkTransformsAreAppropriate( true );
-      try
-      {
-        terrainExtent = ct.transformBoundingBox( mExtent );
-      }
-      catch ( const QgsCsException & )
-      {
-        QgsDebugMsg( QStringLiteral( "Transformation of map extent to terrain crs failed." ) );
-      }
-    }
+    QgsRectangle terrainExtent = Qgs3DUtils::tryReprojectExtent2D( mExtent, mCrs, mTerrainGenerator->crs(), mTransformContext );
     mTerrainGenerator->setExtent( terrainExtent );
   }
   emit extentChanged();
@@ -737,20 +724,7 @@ void Qgs3DMapSettings::setTerrainGenerator( QgsTerrainGenerator *gen )
     disconnect( mTerrainGenerator.get(), &QgsTerrainGenerator::terrainChanged, this, &Qgs3DMapSettings::terrainGeneratorChanged );
   }
 
-  QgsRectangle terrainExtent = mExtent;
-  if ( mCrs != gen->crs() )
-  {
-    QgsCoordinateTransform ct = QgsCoordinateTransform( mCrs, gen->crs(), mTransformContext );
-    ct.setBallparkTransformsAreAppropriate( true );
-    try
-    {
-      terrainExtent = ct.transformBoundingBox( mExtent );
-    }
-    catch ( const QgsCsException & )
-    {
-      QgsDebugMsg( QStringLiteral( "Transformation of map extent to terrain crs failed." ) );
-    }
-  }
+  QgsRectangle terrainExtent = Qgs3DUtils::tryReprojectExtent2D( mExtent, mCrs, gen->crs(), mTransformContext );
   gen->setExtent( terrainExtent );
   mTerrainGenerator.reset( gen );
   connect( mTerrainGenerator.get(), &QgsTerrainGenerator::terrainChanged, this, &Qgs3DMapSettings::terrainGeneratorChanged );

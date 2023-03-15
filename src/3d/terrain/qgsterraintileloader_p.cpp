@@ -16,6 +16,7 @@
 #include "qgsterraintileloader_p.h"
 
 #include "qgs3dmapsettings.h"
+#include "qgs3dutils.h"
 #include "qgschunknode_p.h"
 #include "qgsterrainentity_p.h"
 #include "qgsterraingenerator.h"
@@ -41,9 +42,7 @@ QgsTerrainTileLoader::QgsTerrainTileLoader( QgsTerrainEntity *terrain, QgsChunkN
   const Qgs3DMapSettings &map = mTerrain->map3D();
   const QgsChunkNodeId nodeId = node->tileId();
   const QgsRectangle extentTerrainCrs = map.terrainGenerator()->tilingScheme().tileToExtent( nodeId );
-  QgsCoordinateTransform transform = terrain->terrainToMapTransform();
-  transform.setBallparkTransformsAreAppropriate( true );
-  mExtentMapCrs = transform.transformBoundingBox( extentTerrainCrs );
+  mExtentMapCrs = Qgs3DUtils::tryReprojectExtent2D( extentTerrainCrs, map.terrainGenerator()->crs(), map.crs(), map.transformContext() );
   mTileDebugText = nodeId.text();
 }
 
