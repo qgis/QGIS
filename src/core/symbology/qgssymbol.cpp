@@ -1314,24 +1314,28 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
     }
   }
 
-  bool clippingEnabled = clipFeaturesToExtent();
-  // do any symbol layers prevent feature clipping?
-  for ( QgsSymbolLayer *layer : std::as_const( mLayers ) )
+  bool clippingEnabled = clipFeaturesToExtent() && ! context.testFlag( Qgis::RenderContextFlag::DisableFeatureClipping );
+
+  if ( clippingEnabled )
   {
-    if ( layer->flags() & Qgis::SymbolLayerFlag::DisableFeatureClipping )
+    // do any symbol layers prevent feature clipping?
+    for ( QgsSymbolLayer *layer : std::as_const( mLayers ) )
     {
-      clippingEnabled = false;
-      break;
+      if ( layer->flags() & Qgis::SymbolLayerFlag::DisableFeatureClipping )
+      {
+        clippingEnabled = false;
+        break;
+      }
     }
-  }
-  if ( clippingEnabled && context.testFlag( Qgis::RenderContextFlag::RenderMapTile ) )
-  {
-    // If the "avoid artifacts between adjacent tiles" flag is set (RenderMapTile), then we'll force disable
-    // the geometry clipping IF (and only if) this symbol can potentially have rendering artifacts when rendered as map tiles.
-    // If the symbol won't have any artifacts anyway, then it's pointless and incredibly expensive to skip the clipping!
-    if ( canCauseArtifactsBetweenAdjacentTiles() )
+    if ( clippingEnabled && context.testFlag( Qgis::RenderContextFlag::RenderMapTile ) )
     {
-      clippingEnabled = false;
+      // If the "avoid artifacts between adjacent tiles" flag is set (RenderMapTile), then we'll force disable
+      // the geometry clipping IF (and only if) this symbol can potentially have rendering artifacts when rendered as map tiles.
+      // If the symbol won't have any artifacts anyway, then it's pointless and incredibly expensive to skip the clipping!
+      if ( canCauseArtifactsBetweenAdjacentTiles() )
+      {
+        clippingEnabled = false;
+      }
     }
   }
   if ( context.extent().isEmpty() )

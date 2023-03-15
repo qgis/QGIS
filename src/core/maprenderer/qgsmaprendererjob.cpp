@@ -545,7 +545,16 @@ std::vector<LayerRenderJob> QgsMapRendererJob::prepareJobs( QPainter *painter, Q
     job.context()->setCoordinateTransform( ct );
     job.context()->setExtent( r1 );
     if ( !haveExtentInLayerCrs )
+    {
       job.context()->setFlag( Qgis::RenderContextFlag::ApplyClipAfterReprojection, true );
+    }
+
+    // Disable clipping if source or dest CRS geographic status differs
+    // Fix #45200 and possibly othe issues
+    if ( ct.isValid() && ( ct.sourceCrs().isGeographic() != ct.destinationCrs().isGeographic() ) )
+    {
+      job.context()->setFlag( Qgis::RenderContextFlag::DisableFeatureClipping, true );
+    }
 
     if ( mFeatureFilterProvider )
       job.context()->setFeatureFilterProvider( mFeatureFilterProvider );

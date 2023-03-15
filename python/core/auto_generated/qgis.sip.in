@@ -1103,6 +1103,7 @@ The development version
       RenderingSubSymbol,
       HighQualityImageTransforms,
       SkipSymbolRendering,
+      DisableFeatureClipping,
     };
     typedef QFlags<Qgis::RenderContextFlag> RenderContextFlags;
 
