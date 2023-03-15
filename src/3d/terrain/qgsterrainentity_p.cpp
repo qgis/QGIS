@@ -74,8 +74,6 @@ QgsTerrainEntity::QgsTerrainEntity( const Qgs3DMapSettings &map, Qt3DCore::QNode
 
   connectToLayersRepaintRequest();
 
-  mTerrainToMapTransform = new QgsCoordinateTransform( map.terrainGenerator()->crs(), map.crs(), map.transformContext() );
-
   mTextureGenerator = new QgsTerrainTextureGenerator( map );
 
   mUpdateJobFactory.reset( new TerrainMapUpdateJobFactory( mTextureGenerator ) );
@@ -97,7 +95,6 @@ QgsTerrainEntity::~QgsTerrainEntity()
   cancelActiveJobs();
 
   delete mTextureGenerator;
-  delete mTerrainToMapTransform;
 }
 
 bool QgsTerrainEntity::rayIntersection( const QgsRayCastingUtils::Ray3D &ray, QVector3D &intersectionPoint )
