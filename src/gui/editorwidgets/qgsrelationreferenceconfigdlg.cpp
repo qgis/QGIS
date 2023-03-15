@@ -84,7 +84,7 @@ void QgsRelationReferenceConfigDlg::mEditExpression_clicked()
 
   context.setHighlightedFunctions( QStringList() << QStringLiteral( "current_value" ) << QStringLiteral( "current_parent_value" ) );
   context.setHighlightedVariables( QStringList() << QStringLiteral( "current_geometry" )
-                                   << QStringLiteral( "cumaximumDoubleSpinBox->setMaximum( std::numeric_limits<double>::max() );rrent_feature" )
+                                   << QStringLiteral( "current_feature" )
                                    << QStringLiteral( "form_mode" )
                                    << QStringLiteral( "current_parent_geometry" )
                                    << QStringLiteral( "current_parent_feature" ) );

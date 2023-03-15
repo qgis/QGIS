@@ -63,10 +63,6 @@ void QgsRelationReferenceWidgetWrapper::initWidget( QWidget *editor )
   {
     mWidget->setFetchLimit( config( QStringLiteral( "FetchLimitNumber" ), QgsSettings().value( QStringLiteral( "maxEntriesRelationWidget" ), 100, QgsSettings::Gui ) ).toInt() );
   }
-  else
-  {
-    mWidget->setFetchLimit( 0 );
-  }
 
   if ( config( QStringLiteral( "FilterFields" ), QVariant() ).isValid() )
   {
