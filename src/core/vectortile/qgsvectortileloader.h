@@ -46,10 +46,10 @@ class QgsVectorTileRawData
 class QNetworkReply;
 class QEventLoop;
 
-class QgsMbTiles;
 class QgsVtpkTiles;
 
 class QgsTileDownloadManagerReply;
+class QgsVectorTileDataProvider;
 
 /**
  * \ingroup core
@@ -63,26 +63,12 @@ class QgsVectorTileLoader : public QObject
   public:
 
     //! Returns raw tile data for the specified range of tiles. Blocks the caller until all tiles are fetched.
-    static QList<QgsVectorTileRawData> blockingFetchTileRawData( const QString &sourceType,
-        const QString &sourcePath,
-        const QgsTileMatrix &tileMatrix,
-        const QPointF &viewCenter,
-        const QgsTileRange &range,
-        const QString &authid,
-        const QgsHttpHeaders &headers,
-        QgsFeedback *feedback = nullptr );
-
-    //! Returns raw tile data for a single tile, doing a HTTP request. Block the caller until tile data are downloaded.
-    static QByteArray loadFromNetwork( const QgsTileXYZ &id,
-                                       const QgsTileMatrix &tileMatrix,
-                                       const QString &requestUrl,
-                                       const QString &authid,
-                                       const QgsHttpHeaders &headers,
-                                       QgsFeedback *feedback = nullptr );
-    static QByteArray loadFromMBTiles( const QgsTileXYZ &id, QgsMbTiles &mbTileReader, QgsFeedback *feedback = nullptr );
-
-    //! Returns raw tile data for a single tile loaded from VTPK file
-    static QByteArray loadFromVtpk( const QgsTileXYZ &id, QgsVtpkTiles &vtpkTileReader );
+    static QList<QgsVectorTileRawData> blockingFetchTileRawData(
+      const QgsVectorTileDataProvider *provider,
+      const QgsTileMatrix &tileMatrix,
+      const QPointF &viewCenter,
+      const QgsTileRange &range,
+      QgsFeedback *feedback = nullptr );
 
     //
     // non-static stuff
