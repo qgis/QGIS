@@ -353,6 +353,15 @@ Returns the show private layers status
 Emitted when a current layer is changed
 %End
 
+    void contextMenuAboutToShow( QMenu *menu );
+%Docstring
+Emitted when the context menu is about to show.
+
+Allows customisation of the menu.
+
+.. versionadded:: 3.32
+%End
+
   protected:
     virtual void contextMenuEvent( QContextMenuEvent *event );
 
