@@ -58,11 +58,16 @@ from qgis.utils import OverrideCursor
 def findMinimalDistanceIndex(source, target):
     """ Find the source substring index that most closely matches the target string"""
     index = min(len(source), len(target))
+
+    # Fallback to difflib if Levenshtein is not available
+    # Levenshtein is faster than difflib
     try:
-        from Levenshtein import distance as lev
+        from Levenshtein import distance
     except ImportError:
-        return index
-    d0 = lev(source[:index], target)
+        from difflib import SequenceMatcher
+        def distance(s, t): return 1 - SequenceMatcher(None, s, t).ratio()
+
+    d0 = distance(source[:index], target)
     if d0 == 0:
         return index
 
@@ -70,7 +75,7 @@ def findMinimalDistanceIndex(source, target):
     ref_index_more = index
     if index < len(source) - 1:
         while True:
-            new_dist = lev(source[:ref_index_more + 1], target)
+            new_dist = distance(source[:ref_index_more + 1], target)
             if new_dist <= ref_dist_more:
                 ref_dist_more = new_dist
                 ref_index_more = ref_index_more + 1
@@ -83,7 +88,7 @@ def findMinimalDistanceIndex(source, target):
     ref_index_less = index
     if index > 0:
         while True:
-            new_dist = lev(source[:ref_index_less - 1], target)
+            new_dist = distance(source[:ref_index_less - 1], target)
             if new_dist <= ref_dist_less:
                 ref_dist_less = new_dist
                 ref_index_less = ref_index_less - 1
