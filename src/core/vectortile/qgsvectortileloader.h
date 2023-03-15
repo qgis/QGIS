@@ -79,7 +79,6 @@ class QgsVectorTileLoader : public QObject
                                        const QString &authid,
                                        const QgsHttpHeaders &headers,
                                        QgsFeedback *feedback = nullptr );
-    //! Returns raw tile data for a single tile loaded from MBTiles file
     static QByteArray loadFromMBTiles( const QgsTileXYZ &id, QgsMbTiles &mbTileReader, QgsFeedback *feedback = nullptr );
 
     //! Returns raw tile data for a single tile loaded from VTPK file
