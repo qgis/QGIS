@@ -1367,7 +1367,11 @@ bool QgsVectorTileDataProvider::supportsAsync() const
 QgsXyzVectorTileDataProvider::QgsXyzVectorTileDataProvider( const QString &uri, const ProviderOptions &providerOptions, ReadFlags flags )
   : QgsVectorTileDataProvider( uri, providerOptions, flags )
 {
+  QgsDataSourceUri dsUri;
+  dsUri.setEncodedUri( uri );
 
+  mAuthCfg = dsUri.authConfigId();
+  mHeaders = dsUri.httpHeaders();
 }
 
 QgsVectorTileDataProvider *QgsXyzVectorTileDataProvider::clone() const
@@ -1409,27 +1413,48 @@ bool QgsXyzVectorTileDataProvider::supportsAsync() const
 
 QByteArray QgsXyzVectorTileDataProvider::readTile( const QgsTileMatrix &tileMatrix, const QgsTileXYZ &id, QgsFeedback *feedback ) const
 {
-  QgsDataSourceUri dsUri;
-  dsUri.setEncodedUri( dataSourceUri() );
-  const QString authcfg = dsUri.authConfigId();
-
-  const QgsTileRange tileRange( id.column(), id.column(), id.row(), id.row() );
-
-  QList<QgsVectorTileRawData> rawTiles = QgsVectorTileLoader::blockingFetchTileRawData( QStringLiteral( "xyz" ),
-                                         dsUri.param( QStringLiteral( "url" ) ),
-                                         tileMatrix,
-                                         QPointF(),
-                                         tileRange,
-                                         authcfg,
-                                         dsUri.httpHeaders() );
-  if ( rawTiles.isEmpty() )
-    return QByteArray();
-  return rawTiles.first().data;
+  return loadFromNetwork( id, tileMatrix, sourcePath(), mAuthCfg, mHeaders, feedback );
 }
 
-QList<QgsVectorTileRawData> QgsXyzVectorTileDataProvider::readTiles( const QgsTileMatrix &, const QVector<QgsTileXYZ> &tiles, QgsFeedback *feedback ) const
+QList<QgsVectorTileRawData> QgsXyzVectorTileDataProvider::readTiles( const QgsTileMatrix &tileMatrix, const QVector<QgsTileXYZ> &tiles, QgsFeedback *feedback ) const
 {
+  QList<QgsVectorTileRawData> rawTiles;
+  rawTiles.reserve( tiles.size() );
+  const QString source = sourcePath();
+  for ( QgsTileXYZ id : std::as_const( tiles ) )
+  {
+    if ( feedback && feedback->isCanceled() )
+      break;
 
+    const QByteArray rawData = loadFromNetwork( id, tileMatrix, source, mAuthCfg, mHeaders, feedback );
+    if ( !rawData.isEmpty() )
+    {
+      rawTiles.append( QgsVectorTileRawData( id, rawData ) );
+    }
+  }
+  return rawTiles;
+}
+
+QByteArray QgsXyzVectorTileDataProvider::loadFromNetwork( const QgsTileXYZ &id, const QgsTileMatrix &tileMatrix, const QString &requestUrl, const QString &authid, const QgsHttpHeaders &headers, QgsFeedback *feedback )
+{
+  QString url = QgsVectorTileUtils::formatXYZUrlTemplate( requestUrl, id, tileMatrix );
+  QNetworkRequest nr;
+  nr.setUrl( QUrl( url ) );
+
+  headers.updateNetworkRequest( nr );
+
+  QgsBlockingNetworkRequest req;
+  req.setAuthCfg( authid );
+  QgsDebugMsgLevel( QStringLiteral( "Blocking request: " ) + url, 2 );
+  QgsBlockingNetworkRequest::ErrorCode errCode = req.get( nr, false, feedback );
+  if ( errCode != QgsBlockingNetworkRequest::NoError )
+  {
+    QgsDebugMsg( QStringLiteral( "Request failed: " ) + url );
+    return QByteArray();
+  }
+  QgsNetworkReplyContent reply = req.reply();
+  QgsDebugMsgLevel( QStringLiteral( "Request successful, content size %1" ).arg( reply.content().size() ), 2 );
+  return reply.content();
 }
 
 //
@@ -1474,7 +1499,7 @@ QgsCoordinateReferenceSystem QgsMbTilesVectorTileDataProvider::crs() const
   return QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) );
 }
 
-QByteArray QgsMbTilesVectorTileDataProvider::readTile( const QgsTileMatrix &tileMatrix, const QgsTileXYZ &id, QgsFeedback *feedback ) const
+QByteArray QgsMbTilesVectorTileDataProvider::readTile( const QgsTileMatrix &, const QgsTileXYZ &id, QgsFeedback *feedback ) const
 {
   QgsDataSourceUri dsUri;
   dsUri.setEncodedUri( dataSourceUri() );
@@ -1622,7 +1647,7 @@ QByteArray QgsVtpkVectorTileDataProvider::loadFromVtpk( QgsVtpkTiles &vtpkTileRe
 //
 
 QgsArcGisVectorTileServiceDataProvider::QgsArcGisVectorTileServiceDataProvider( const QString &uri, const QString &sourcePath, const ProviderOptions &providerOptions, ReadFlags flags )
-  : QgsVectorTileDataProvider( uri, providerOptions, flags )
+  : QgsXyzVectorTileDataProvider( uri, providerOptions, flags )
   , mSourcePath( sourcePath )
 {
 
@@ -1649,38 +1674,6 @@ bool QgsArcGisVectorTileServiceDataProvider::isValid() const
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
   return true;
-}
-
-QgsCoordinateReferenceSystem QgsArcGisVectorTileServiceDataProvider::crs() const
-{
-  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
-
-  return QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) );
-}
-
-QByteArray QgsArcGisVectorTileServiceDataProvider::readTile( const QgsTileMatrix &tileMatrix, const QgsTileXYZ &id, QgsFeedback *feedback ) const
-{
-  QgsDataSourceUri dsUri;
-  dsUri.setEncodedUri( dataSourceUri() );
-  const QString authcfg = dsUri.authConfigId();
-
-  const QgsTileRange tileRange( id.column(), id.column(), id.row(), id.row() );
-
-  QList<QgsVectorTileRawData> rawTiles = QgsVectorTileLoader::blockingFetchTileRawData( QStringLiteral( "xyz" ),
-                                         mSourcePath,
-                                         tileMatrix,
-                                         QPointF(),
-                                         tileRange,
-                                         authcfg,
-                                         dsUri.httpHeaders() );
-  if ( rawTiles.isEmpty() )
-    return QByteArray();
-  return rawTiles.first().data;
-}
-
-QList<QgsVectorTileRawData> QgsArcGisVectorTileServiceDataProvider::readTiles( const QgsTileMatrix &, const QVector<QgsTileXYZ> &tiles, QgsFeedback *feedback ) const
-{
-
 }
 
 ///@endcond

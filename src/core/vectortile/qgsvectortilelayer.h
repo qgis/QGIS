@@ -374,6 +374,22 @@ class QgsXyzVectorTileDataProvider : public QgsVectorTileDataProvider
     bool supportsAsync() const override;
     QByteArray readTile( const QgsTileMatrix &tileMatrix, const QgsTileXYZ &id, QgsFeedback *feedback = nullptr ) const override;
     QList<QgsVectorTileRawData> readTiles( const QgsTileMatrix &, const QVector<QgsTileXYZ> &tiles, QgsFeedback *feedback = nullptr ) const override;
+
+  protected:
+
+    QString mAuthCfg;
+    QgsHttpHeaders mHeaders;
+
+  private:
+
+    //! Returns raw tile data for a single tile, doing a HTTP request. Block the caller until tile data are downloaded.
+    static QByteArray loadFromNetwork( const QgsTileXYZ &id,
+                                       const QgsTileMatrix &tileMatrix,
+                                       const QString &requestUrl,
+                                       const QString &authid,
+                                       const QgsHttpHeaders &headers,
+                                       QgsFeedback *feedback = nullptr );
+
 };
 
 class QgsMbTilesVectorTileDataProvider : public QgsVectorTileDataProvider
@@ -424,7 +440,7 @@ class QgsVtpkVectorTileDataProvider : public QgsVectorTileDataProvider
 
 };
 
-class QgsArcGisVectorTileServiceDataProvider : public QgsVectorTileDataProvider
+class QgsArcGisVectorTileServiceDataProvider : public QgsXyzVectorTileDataProvider
 {
     Q_OBJECT
 
@@ -436,9 +452,6 @@ class QgsArcGisVectorTileServiceDataProvider : public QgsVectorTileDataProvider
     QgsVectorTileDataProvider *clone() const override;
     QString sourcePath() const override;
     bool isValid() const override;
-    QgsCoordinateReferenceSystem crs() const override;
-    QByteArray readTile( const QgsTileMatrix &tileMatrix, const QgsTileXYZ &id, QgsFeedback *feedback = nullptr ) const override;
-    QList<QgsVectorTileRawData> readTiles( const QgsTileMatrix &, const QVector<QgsTileXYZ> &tiles, QgsFeedback *feedback = nullptr ) const override;
 
   private:
 
