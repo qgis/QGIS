@@ -1354,6 +1354,11 @@ bool QgsVectorTileDataProvider::renderInPreview( const PreviewContext &context )
   return context.lastRenderingTimeMs <= 1000;
 }
 
+bool QgsVectorTileDataProvider::supportsAsync() const
+{
+  return false;
+}
+
 //
 // QgsXyzVectorTileDataProvider
 //
@@ -1394,6 +1399,11 @@ QgsCoordinateReferenceSystem QgsXyzVectorTileDataProvider::crs() const
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
   return QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) );
+}
+
+bool QgsXyzVectorTileDataProvider::supportsAsync() const
+{
+  return true;
 }
 
 QByteArray QgsXyzVectorTileDataProvider::readTile( const QgsTileMatrix &tileMatrix, const QgsTileXYZ &id ) const

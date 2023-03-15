@@ -16,6 +16,7 @@
 #include "qgsvectortilelayerrenderer.h"
 
 #include <QElapsedTimer>
+#include <QThread>
 
 #include "qgsexpressioncontextutils.h"
 #include "qgsfeedback.h"
@@ -36,6 +37,7 @@ QgsVectorTileLayerRenderer::QgsVectorTileLayerRenderer( QgsVectorTileLayer *laye
   : QgsMapLayerRenderer( layer->id(), &context )
   , mSourceType( layer->sourceType() )
   , mSourcePath( layer->sourcePath() )
+  , mDataProvider( qgis::down_cast< const QgsVectorTileDataProvider* >( layer->dataProvider() )->clone() )
   , mRenderer( layer->renderer()->clone() )
   , mDrawTileBoundaries( layer->isTileBorderRenderingEnabled() )
   , mFeedback( new QgsFeedback )
@@ -62,7 +64,11 @@ QgsVectorTileLayerRenderer::QgsVectorTileLayerRenderer( QgsVectorTileLayer *laye
   }
 
   mClippingRegions = QgsMapClippingUtils::collectClippingRegionsForLayer( *renderContext(), layer );
+
+  mDataProvider->moveToThread( nullptr );
 }
+
+QgsVectorTileLayerRenderer::~QgsVectorTileLayerRenderer() = default;
 
 bool QgsVectorTileLayerRenderer::render()
 {
@@ -70,6 +76,8 @@ bool QgsVectorTileLayerRenderer::render()
 
   if ( ctx.renderingStopped() )
     return false;
+
+  mDataProvider->moveToThread( QThread::currentThread() );
 
   const QgsScopedQPainterState painterState( ctx.painter() );
 
@@ -107,8 +115,6 @@ bool QgsVectorTileLayerRenderer::render()
     return true;   // nothing to do
   }
 
-  const bool isAsync = ( mSourceType == QLatin1String( "xyz" ) );
-
   if ( mSourceType == QLatin1String( "xyz" ) && mSourcePath.contains( QLatin1String( "{usage}" ) ) )
   {
     switch ( renderContext()->rendererUsage() )
@@ -127,7 +133,7 @@ bool QgsVectorTileLayerRenderer::render()
 
   std::unique_ptr<QgsVectorTileLoader> asyncLoader;
   QList<QgsVectorTileRawData> rawTiles;
-  if ( !isAsync )
+  if ( !mDataProvider->supportsAsync() )
   {
     QElapsedTimer tFetch;
     tFetch.start();
@@ -191,7 +197,7 @@ bool QgsVectorTileLayerRenderer::render()
     }
   }
 
-  if ( !isAsync )
+  if ( !mDataProvider->supportsAsync() )
   {
     for ( const QgsVectorTileRawData &rawTile : std::as_const( rawTiles ) )
     {
