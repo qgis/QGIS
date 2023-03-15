@@ -65,7 +65,9 @@ def findMinimalDistanceIndex(source, target):
         from Levenshtein import distance
     except ImportError:
         from difflib import SequenceMatcher
-        def distance(s, t): return 1 - SequenceMatcher(None, s, t).ratio()
+
+        def distance(s, t):
+            return 1 - SequenceMatcher(None, s, t).ratio()
 
     d0 = distance(source[:index], target)
     if d0 == 0:
