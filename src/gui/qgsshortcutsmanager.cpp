@@ -100,7 +100,7 @@ bool QgsShortcutsManager::registerAction( QAction *action, const QString &defaul
 #endif
 
   mActions.insert( action, defaultSequence );
-  connect( action, &QObject::destroyed, this, &QgsShortcutsManager::actionDestroyed );
+  connect( action, &QObject::destroyed, this, [action, this]() { actionDestroyed( action ); } );
 
   QString actionText = action->text();
   actionText.remove( '&' ); // remove the accelerator
@@ -138,7 +138,7 @@ bool QgsShortcutsManager::registerShortcut( QShortcut *shortcut, const QString &
 #endif
 
   mShortcuts.insert( shortcut, defaultSequence );
-  connect( shortcut, &QObject::destroyed, this, &QgsShortcutsManager::shortcutDestroyed );
+  connect( shortcut, &QObject::destroyed, this, [shortcut, this]() { shortcutDestroyed( shortcut ); } );
 
   const QString shortcutName = shortcut->objectName();
 
@@ -321,14 +321,14 @@ QShortcut *QgsShortcutsManager::shortcutByName( const QString &name ) const
   return nullptr;
 }
 
-void QgsShortcutsManager::actionDestroyed()
+void QgsShortcutsManager::actionDestroyed( QAction *action )
 {
-  mActions.remove( qobject_cast<QAction *>( sender() ) );
+  mActions.remove( action );
 }
 
-void QgsShortcutsManager::shortcutDestroyed()
+void QgsShortcutsManager::shortcutDestroyed( QShortcut *shortcut )
 {
-  mShortcuts.remove( qobject_cast<QShortcut *>( sender() ) );
+  mShortcuts.remove( shortcut );
 }
 
 void QgsShortcutsManager::updateActionToolTip( QAction *action, const QString &sequence )
