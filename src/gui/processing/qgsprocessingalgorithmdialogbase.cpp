@@ -137,6 +137,34 @@ QgsProcessingAlgorithmDialogBase::QgsProcessingAlgorithmDialogBase( QWidget *par
       mAdvancedMenu = new QMenu( this );
       mAdvancedButton->setMenu( mAdvancedMenu );
 
+      mContextSettingsAction = new QAction( tr( "Algorithm Settings…" ), mAdvancedMenu );
+      mContextSettingsAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/propertyicons/settings.svg" ) ) );
+      mAdvancedMenu->addAction( mContextSettingsAction );
+
+      connect( mContextSettingsAction, &QAction::triggered, this, [this]
+      {
+        if ( QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( mMainWidget ) )
+        {
+          mTabWidget->setCurrentIndex( 0 );
+
+          if ( !mContextOptionsWidget )
+          {
+            mContextOptionsWidget = new QgsProcessingContextOptionsWidget();
+            mContextOptionsWidget->setFromContext( processingContext() );
+            panel->openPanel( mContextOptionsWidget );
+
+            connect( mContextOptionsWidget, &QgsPanelWidget::widgetChanged, this, [ = ]
+            {
+              mOverrideDefaultContextSettings = true;
+              mGeometryCheck = mContextOptionsWidget->invalidGeometryCheck();
+              mDistanceUnits = mContextOptionsWidget->distanceUnit();
+              mAreaUnits = mContextOptionsWidget->areaUnit();
+            } );
+          }
+        }
+      } );
+      mAdvancedMenu->addSeparator();
+
       QAction *copyAsPythonCommand = new QAction( tr( "Copy as Python Command" ), mAdvancedMenu );
       copyAsPythonCommand->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mIconPythonFile.svg" ) ) );
 
@@ -240,35 +268,6 @@ QgsProcessingAlgorithmDialogBase::QgsProcessingAlgorithmDialogBase( QWidget *par
         const QVariantMap preparedValues = QgsProcessingUtils::preprocessQgisProcessParameters( parameterValues, ok, error );
 
         setParameters( preparedValues );
-      } );
-
-      mAdvancedMenu->addSeparator();
-
-      mContextSettingsAction = new QAction( tr( "Algorithm Settings" ), mAdvancedMenu );
-      mContextSettingsAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/propertyicons/settings.svg" ) ) );
-      mAdvancedMenu->addAction( mContextSettingsAction );
-
-      connect( mContextSettingsAction, &QAction::triggered, this, [this]
-      {
-        if ( QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( mMainWidget ) )
-        {
-          mTabWidget->setCurrentIndex( 0 );
-
-          if ( !mContextOptionsWidget )
-          {
-            mContextOptionsWidget = new QgsProcessingContextOptionsWidget();
-            mContextOptionsWidget->setFromContext( processingContext() );
-            panel->openPanel( mContextOptionsWidget );
-
-            connect( mContextOptionsWidget, &QgsPanelWidget::widgetChanged, this, [ = ]
-            {
-              mOverrideDefaultContextSettings = true;
-              mGeometryCheck = mContextOptionsWidget->invalidGeometryCheck();
-              mDistanceUnits = mContextOptionsWidget->distanceUnit();
-              mAreaUnits = mContextOptionsWidget->areaUnit();
-            } );
-          }
-        }
       } );
 
       mButtonBox->addButton( mAdvancedButton, QDialogButtonBox::ResetRole );
