@@ -87,7 +87,7 @@ Qt3DRender::QFrameGraphNode *QgsShadowRenderingFrameGraph::constructForwardRende
   //  |  QLayerFilter   |  transparent             |  QLayerFilter   |  transparent
   //  +-----------------+    objects               +-----------------+    objects
   //         |                                              |
-  //  +-----------------+  use depth test          +-----------------+   sort entites
+  //  +-----------------+  use depth test          +-----------------+   sort entities
   //  | QRenderStateSet |  cull back faces         |  QSortPolicy    |  back to front
   //  +-----------------+                          +-----------------+
   //         |                                              |
