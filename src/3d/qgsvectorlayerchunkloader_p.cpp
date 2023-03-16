@@ -207,6 +207,11 @@ void QgsVectorLayerChunkedEntity::onTerrainElevationOffsetChanged( float newOffs
 
 QVector<QgsRayCastingUtils::RayHit> QgsVectorLayerChunkedEntity::rayIntersection( const QgsRayCastingUtils::Ray3D &ray, const QgsRayCastingUtils::RayCastContext &context ) const
 {
+  return QgsVectorLayerChunkedEntity::rayIntersection( activeNodes(), mTransform->matrix(), ray, context );
+}
+
+QVector<QgsRayCastingUtils::RayHit> QgsVectorLayerChunkedEntity::rayIntersection( const QList<QgsChunkNode *> &activeNodes, const QMatrix4x4 &transformMatrix, const QgsRayCastingUtils::Ray3D &ray, const QgsRayCastingUtils::RayCastContext &context )
+{
   Q_UNUSED( context )
   QgsDebugMsgLevel( QStringLiteral( "Ray cast on vector layer" ), 2 );
   int nodeUsed = 0;
@@ -219,7 +224,6 @@ QVector<QgsRayCastingUtils::RayHit> QgsVectorLayerChunkedEntity::rayIntersection
   QgsFeatureId fid;
   QgsFeatureId nearestFid;
 
-  const QList<QgsChunkNode *> activeNodes = this->activeNodes();
   for ( QgsChunkNode *node : activeNodes )
   {
     nodesAll++;
@@ -237,7 +241,7 @@ QVector<QgsRayCastingUtils::RayHit> QgsVectorLayerChunkedEntity::rayIntersection
           continue; // other QGeometry types are not supported for now
 
         QVector3D nodeIntPoint;
-        if ( polygonGeom->rayIntersection( ray, mTransform->matrix(), nodeIntPoint, fid ) )
+        if ( polygonGeom->rayIntersection( ray, transformMatrix, nodeIntPoint, fid ) )
         {
           hits++;
           float dist = ( ray.origin() - nodeIntPoint ).length();

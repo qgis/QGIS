@@ -101,12 +101,19 @@ static bool intersectionTriangles( const QByteArray &vertexBuf, const int &strid
     const QVector3D b( vertices[v1], vertices[v1 + 1], vertices[v1 + 2] );
     const QVector3D c( vertices[v2], vertices[v2 + 1], vertices[v2 + 2] );
 
+    // Currently the worldTransform only has vertical offset, so this could be optimized by applying the transform
+    // to the ray and the resulting intersecting point instead of all triangles
+    // Need to check for potential performance gains.
     const QVector3D tA = worldTransform * a;
     const QVector3D tB = worldTransform * b;
     const QVector3D tC = worldTransform * c;
 
     QVector3D uvw;
     float t = 0;
+
+    // We're testing both triangle orientations here and ignoring the culling mode.
+    // We should probably respect the culling mode used for the entity and perform a
+    // single test using the properly oriented triangle.
     if ( QgsRayCastingUtils::rayTriangleIntersection( r, tA, tB, tC, uvw, t ) ||
          QgsRayCastingUtils::rayTriangleIntersection( r, tA, tC, tB, uvw, t ) )
     {

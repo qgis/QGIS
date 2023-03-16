@@ -263,13 +263,10 @@ QVector<QgsRayCastingUtils::RayHit> QgsPointCloudLayerChunkedEntity::rayIntersec
   QgsPointCloudLayerChunkLoaderFactory *factory = static_cast<QgsPointCloudLayerChunkLoaderFactory *>( mChunkLoaderFactory );
 
   // transform ray
-  const QgsVector3D originMapCoords = factory->mMap.worldToMapCoordinates( ray.origin() );
+  const QgsVector3D rayOriginMapCoords = factory->mMap.worldToMapCoordinates( ray.origin() );
   const QgsVector3D pointMapCoords = factory->mMap.worldToMapCoordinates( ray.origin() + ray.origin().length() * ray.direction().normalized() );
-  QgsVector3D directionMapCoords = pointMapCoords - originMapCoords;
-  directionMapCoords.normalize();
-
-  const QVector3D rayOriginMapCoords( originMapCoords.x(), originMapCoords.y(), originMapCoords.z() );
-  const QVector3D rayDirectionMapCoords( directionMapCoords.x(), directionMapCoords.y(), directionMapCoords.z() );
+  QgsVector3D rayDirectionMapCoords = pointMapCoords - rayOriginMapCoords;
+  rayDirectionMapCoords.normalize();
 
   const int screenSizePx = std::max( context.screenSize.height(), context.screenSize.width() );
 
@@ -279,6 +276,9 @@ QVector<QgsRayCastingUtils::RayHit> QgsPointCloudLayerChunkedEntity::rayIntersec
     return result;
   const double pointSize = symbol->pointSize();
 
+  // We're using the angle as a tolerace, effectively meaning we're fetching points intersecting a cone.
+  // This may be revisited to use a cylinder instead, if the balance between near/far points does not scale
+  // well with different point sizes, screen sizes and fov values.
   const double limitAngle = 2 * pointSize / screenSizePx * factory->mMap.fieldOfView();
 
   // adjust ray to elevation properties
@@ -341,7 +341,7 @@ QVector<QgsRayCastingUtils::RayHit> QgsPointCloudLayerChunkedEntity::rayIntersec
       if ( angle > limitAngle )
         continue;
 
-      const double dist = originMapCoords.distance( point );
+      const double dist = rayOriginMapCoords.distance( point );
 
       if ( minDist < 0 || dist < minDist )
       {

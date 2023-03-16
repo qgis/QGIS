@@ -141,6 +141,9 @@ QVector<QgsRayCastingUtils::RayHit> QgsTerrainEntity::rayIntersection( const Qgs
   {
     case QgsTerrainGenerator::Flat:
     {
+      if ( ray.direction().y() == 0 )
+        break;  // the ray is parallel to the flat terrain
+
       const float dist = static_cast<float>( mMap.terrainElevationOffset() - ray.origin().y() ) / ray.direction().y();
       const QVector3D terrainPlanePoint = ray.origin() + ray.direction() * dist;
       const QgsVector3D mapCoords = Qgs3DUtils::worldToMapCoordinates( terrainPlanePoint, mMap.origin() );

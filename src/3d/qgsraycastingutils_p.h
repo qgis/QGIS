@@ -132,14 +132,19 @@ namespace QgsRayCastingUtils
    */
   struct RayCastContext
   {
-    RayCastContext( bool singleResult = true, QSize screenSize = QSize(), float maxDistance = 1 )
+    RayCastContext( bool singleResult, QSize screenSize, float maxDistance )
       : singleResult( singleResult )
       , screenSize( screenSize )
       , maxDistance( maxDistance )
     {}
     bool singleResult;  //!< If set to TRUE, only the closest point cloud hit will be returned (other entities always return only closest hit)
     QSize screenSize;  //!< QSize of the 3d engine window
-    float maxDistance;  //!< The maximum distance from ray origin to look for hits when casting a ray
+
+    /**
+     * The maximum distance from ray origin to look for hits when casting a ray.
+     * Should be normally set to far plane, to ignore data that will not get displayed in the 3D view
+     */
+    float maxDistance;
   };
 }
 
