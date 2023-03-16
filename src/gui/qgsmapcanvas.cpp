@@ -1208,6 +1208,9 @@ void QgsMapCanvas::showContextMenu( QgsMapMouseEvent *event )
     if ( !mapTool()->populateContextMenuWithEvent( &menu, event ) )
       mMapTool->populateContextMenu( &menu );
 
+  if ( menu.isEmpty() ) // menu can be empty after populateContextMenu()
+    return;
+
   emit contextMenuAboutToShow( &menu, event );
 
   menu.exec( event->globalPos() );
