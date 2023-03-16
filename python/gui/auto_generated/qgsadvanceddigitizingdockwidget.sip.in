@@ -45,7 +45,7 @@ by implementing filters called from :py:class:`QgsMapToolAdvancedDigitizing`.
     class CadConstraint
 {
 %Docstring(signature="appended")
-The CadConstraint is an abstract class for all basic constraints (angle/distance/x/y).
+The CadConstraint is a class for all basic constraints (angle/distance/x/y).
 It contains all values (locked, value, relative) and pointers to corresponding widgets.
 
 .. note::
@@ -63,6 +63,17 @@ It contains all values (locked, value, relative) and pointers to corresponding w
           NoLock,
           SoftLock,
           HardLock
+        };
+
+        enum ConstraintType
+        {
+          Generic,
+          Angle,
+          Distance,
+          XCoordinate,
+          YCoordinate,
+          ZValue,
+          MValue,
         };
 
         CadConstraint( QLineEdit *lineEdit, QToolButton *lockerButton, QToolButton *relativeButton = 0, QToolButton *repeatingLockButton = 0 );
@@ -142,6 +153,13 @@ Set the value of the constraint
 :param updateWidget: set to ``False`` to prevent automatically updating the associated widget's value
 %End
 
+        QString displayValue() const;
+%Docstring
+Returns a localized formatted string representation of the value.
+
+.. versionadded:: 3.32
+%End
+
         void toggleLocked();
 %Docstring
 Toggle lock mode
@@ -168,6 +186,27 @@ Sets the numeric precision (decimal places) to show in the associated widget.
 .. seealso:: :py:func:`precision`
 
 .. versionadded:: 3.22
+%End
+
+        ConstraintType constraintType() const;
+%Docstring
+Returns the constraint type
+
+.. versionadded:: 3.32
+%End
+
+        void setConstraintType( ConstraintType constraintType );
+%Docstring
+Sets the constraint type to ``constraintType``
+
+.. versionadded:: 3.32
+%End
+
+        void setMapCanvas( QgsMapCanvas *mapCanvas );
+%Docstring
+Sets the map canvas to ``mapCanvas``
+
+.. versionadded:: 3.32
 %End
 
     };

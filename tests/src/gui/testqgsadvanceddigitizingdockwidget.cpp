@@ -67,38 +67,67 @@ void TestQgsAdvancedDigitizingDockWidget::parseUserInput()
 
   QLocale::setDefault( QLocale::English );
 
-  result = widget.parseUserInput( QStringLiteral( "1.2345" ), ok );
+  result = widget.parseUserInput( QStringLiteral( "1.2345" ), QgsAdvancedDigitizingDockWidget::CadConstraint::ConstraintType::Generic, ok );
   QCOMPARE( result, 1.2345 );
   QVERIFY( ok );
 
-  result = widget.parseUserInput( QStringLiteral( "1,234.5" ), ok );
+  result = widget.parseUserInput( QStringLiteral( "1,234.5" ), QgsAdvancedDigitizingDockWidget::CadConstraint::ConstraintType::Generic, ok );
   QCOMPARE( result, 1234.5 );
   QVERIFY( ok );
 
-  result = widget.parseUserInput( QStringLiteral( "1,200.6/2" ), ok );
+  result = widget.parseUserInput( QStringLiteral( "1,200.6/2" ), QgsAdvancedDigitizingDockWidget::CadConstraint::ConstraintType::Generic, ok );
   QCOMPARE( result, 600.3 );
   QVERIFY( ok );
 
-  result = widget.parseUserInput( QStringLiteral( "1200.6/2" ), ok );
+  result = widget.parseUserInput( QStringLiteral( "1200.6/2" ), QgsAdvancedDigitizingDockWidget::CadConstraint::ConstraintType::Generic, ok );
   QCOMPARE( result, 600.3 );
   QVERIFY( ok );
 
+  // Italian locale (comma as decimal separator)
   QLocale::setDefault( QLocale::Italian );
 
-  result = widget.parseUserInput( QStringLiteral( "1,2345" ), ok );
+  result = widget.parseUserInput( QStringLiteral( "1,2345" ), QgsAdvancedDigitizingDockWidget::CadConstraint::ConstraintType::Generic, ok );
   QCOMPARE( result, 1.2345 );
   QVERIFY( ok );
 
-  result = widget.parseUserInput( QStringLiteral( "1.234,5" ), ok );
+  result = widget.parseUserInput( QStringLiteral( "1.234,5" ), QgsAdvancedDigitizingDockWidget::CadConstraint::ConstraintType::Generic, ok );
   QCOMPARE( result, 1234.5 );
   QVERIFY( ok );
 
-  result = widget.parseUserInput( QStringLiteral( "1.200,6/2" ), ok );
+  result = widget.parseUserInput( QStringLiteral( "1.200,6/2" ), QgsAdvancedDigitizingDockWidget::CadConstraint::ConstraintType::Generic, ok );
   QCOMPARE( result, 600.3 );
   QVERIFY( ok );
 
-  result = widget.parseUserInput( QStringLiteral( "1200,6/2" ), ok );
+  result = widget.parseUserInput( QStringLiteral( "1200,6/2" ), QgsAdvancedDigitizingDockWidget::CadConstraint::ConstraintType::Generic, ok );
   QCOMPARE( result, 600.3 );
+  QVERIFY( ok );
+
+  // Test UOMs for angles and distance
+  QLocale::setDefault( QLocale::English );
+  result = widget.parseUserInput( QStringLiteral( "120.123" ), QgsAdvancedDigitizingDockWidget::CadConstraint::ConstraintType::Angle, ok );
+  QCOMPARE( result, 120.123 );
+  QVERIFY( ok );
+
+  result = widget.parseUserInput( QStringLiteral( "120.123°" ), QgsAdvancedDigitizingDockWidget::CadConstraint::ConstraintType::Angle, ok );
+  QCOMPARE( result, 120.123 );
+  QVERIFY( ok );
+
+  result = widget.parseUserInput( QStringLiteral( "120.123 °" ), QgsAdvancedDigitizingDockWidget::CadConstraint::ConstraintType::Angle, ok );
+  QCOMPARE( result, 120.123 );
+  QVERIFY( ok );
+
+  QgsProject::instance()->setDistanceUnits( Qgis::DistanceUnit::NauticalMiles );
+
+  result = widget.parseUserInput( QStringLiteral( "120.123" ), QgsAdvancedDigitizingDockWidget::CadConstraint::ConstraintType::Distance, ok );
+  QCOMPARE( result, 222467.796 );
+  QVERIFY( ok );
+
+  result = widget.parseUserInput( QStringLiteral( "120.123 NM" ), QgsAdvancedDigitizingDockWidget::CadConstraint::ConstraintType::Distance, ok );
+  QCOMPARE( result, 222467.796 );
+  QVERIFY( ok );
+
+  result = widget.parseUserInput( QStringLiteral( "120.123NM" ), QgsAdvancedDigitizingDockWidget::CadConstraint::ConstraintType::Distance, ok );
+  QCOMPARE( result, 222467.796 );
   QVERIFY( ok );
 
 }
