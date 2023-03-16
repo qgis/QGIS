@@ -23,6 +23,7 @@
 #include "qgslinematerial_p.h"
 #include "qgsvertexid.h"
 #include "qgslinestring.h"
+#include "qgssymbollayer.h"
 
 #include <Qt3DCore/QEntity>
 
@@ -87,8 +88,13 @@ QgsRubberBand3D::QgsRubberBand3D( Qgs3DMapSettings &map, QgsWindow3DEngine *engi
   mMarkerGeometryRenderer->setGeometry( mMarkerGeometry );
   mMarkerGeometryRenderer->setVertexCount( mMarkerGeometry->count() );
 
-  const QVariantMap props {{QStringLiteral( "color" ), QStringLiteral( "red" )},
-    {QStringLiteral( "size" ), 6 }};
+  const QVariantMap props
+  {
+    {QStringLiteral( "color" ), QStringLiteral( "red" ) },
+    {QStringLiteral( "size" ), 6 },
+    {QStringLiteral( "outline_color" ), QStringLiteral( "green" ) },
+    {QStringLiteral( "outline_width" ), 0.5 }
+  };
 
   mMarkerSymbol = QgsMarkerSymbol::createSimple( props );
   updateMarkerMaterial();
@@ -122,7 +128,11 @@ QColor QgsRubberBand3D::color() const
 void QgsRubberBand3D::setColor( QColor color )
 {
   mLineMaterial->setLineColor( color );
-  mMarkerSymbol->setColor( color );
+  mMarkerSymbol->setColor( color.lighter( 130 ) );
+  if ( mMarkerSymbol->symbolLayerCount() > 0 && mMarkerSymbol->symbolLayer( 0 )->layerType() == QStringLiteral( "SimpleMarker" ) )
+  {
+    static_cast<QgsMarkerSymbolLayer *>( mMarkerSymbol->symbolLayer( 0 ) )->setStrokeColor( color );
+  }
   updateMarkerMaterial();
 }
 
