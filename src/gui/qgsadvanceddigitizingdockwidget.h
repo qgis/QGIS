@@ -30,7 +30,6 @@
 #include "qgspointxy.h"
 #include "qgspointlocator.h"
 #include "qgssnapindicator.h"
-#include "qgscadutils.h"
 
 
 class QgsAdvancedDigitizingCanvasItem;
@@ -81,7 +80,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
 
     /**
      * \ingroup gui
-     * \brief The CadConstraint is an abstract class for all basic constraints (angle/distance/x/y).
+     * \brief The CadConstraint is a class for all basic constraints (angle/distance/x/y).
      * It contains all values (locked, value, relative) and pointers to corresponding widgets.
      * \note Relative is not mandatory since it is not used for distance.
      */
@@ -97,6 +96,21 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
           NoLock,
           SoftLock,
           HardLock
+        };
+
+        /**
+         * Constraint type
+         * \since QGIS 3.32
+         */
+        enum ConstraintType
+        {
+          Generic,      //!< Generic value
+          Angle,        //!< Angle value
+          Distance,     //!< Distance value
+          XCoordinate,  //!< X Coordinate value
+          YCoordinate,  //!< Y Coordinate value
+          ZValue,       //!< Z value
+          MValue,       //!< M value
         };
 
         /**
@@ -178,6 +192,12 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
         void setValue( double value, bool updateWidget = true );
 
         /**
+         * Returns a localized formatted string representation of the value.
+         * \since QGIS 3.32
+         */
+        QString displayValue() const;
+
+        /**
          * Toggle lock mode
          */
         void toggleLocked();
@@ -203,6 +223,24 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
          */
         void setPrecision( int precision );
 
+        /**
+         * Returns the constraint type
+         * \since QGIS 3.32
+         */
+        ConstraintType constraintType() const;
+
+        /**
+         * Sets the constraint type to \a constraintType
+         * \since QGIS 3.32
+         */
+        void setConstraintType( ConstraintType constraintType );
+
+        /**
+         * Sets the map canvas to \a mapCanvas
+         * \since QGIS 3.32
+         */
+        void setMapCanvas( QgsMapCanvas *mapCanvas );
+
       private:
         QLineEdit *mLineEdit = nullptr;
         QToolButton *mLockerButton = nullptr;
@@ -213,6 +251,8 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
         bool mRelative;
         double mValue;
         int mPrecision = 6;
+        ConstraintType mConstraintType = ConstraintType::Generic;
+        QgsMapCanvas *mMapCanvas = nullptr;
     };
 
     /**
@@ -969,7 +1009,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     CadConstraint *objectToConstraint( const QObject *obj ) const;
 
     //! Attempts to convert a user input value to double, either directly or via expression
-    double parseUserInput( const QString &inputValue, bool &ok ) const;
+    double parseUserInput( const QString &inputValue, const CadConstraint::ConstraintType type, bool &ok ) const;
 
     /**
      * Updates a constraint value based on a text input.
