@@ -161,6 +161,8 @@ Constructs renderer with no styles
 
     virtual void stopRender( QgsRenderContext &context );
 
+    virtual void renderBackground( QgsRenderContext &context );
+
     virtual void renderTile( const QgsVectorTileRendererData &tile, QgsRenderContext &context );
 
     virtual void renderSelectedFeatures( const QList< QgsFeature > &selection, QgsRenderContext &context );

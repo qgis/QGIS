@@ -136,6 +136,7 @@ class CORE_EXPORT QgsVectorTileBasicRenderer : public QgsVectorTileRenderer
     QMap<QString, QSet<QString> > usedAttributes( const QgsRenderContext & ) override SIP_SKIP;
     QSet< QString > requiredLayers( QgsRenderContext &context, int tileZoom ) const override;
     void stopRender( QgsRenderContext &context ) override;
+    void renderBackground( QgsRenderContext &context ) override;
     void renderTile( const QgsVectorTileRendererData &tile, QgsRenderContext &context ) override;
     void renderSelectedFeatures( const QList< QgsFeature > &selection, QgsRenderContext &context ) override;
     bool willRenderFeature( const QgsFeature &feature, int tileZoom, const QString &layerName, QgsRenderContext &context ) override;
