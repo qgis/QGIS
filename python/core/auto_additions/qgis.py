@@ -2589,6 +2589,13 @@ Qgis.ScriptLanguage.__doc__ = 'Scripting languages.\n\n.. versionadded:: 3.30\n\
 # --
 Qgis.ScriptLanguage.baseClass = Qgis
 # monkey patching scoped based enum
+Qgis.ScriptLanguageCapability.Reformat.__doc__ = "Language supports automatic code reformatting"
+Qgis.ScriptLanguageCapability.__doc__ = 'Script language capabilities.\n\nThe flags reflect the support capabilities of a scripting language.\n\n.. versionadded:: 3.32\n\n' + '* ``Reformat``: ' + Qgis.ScriptLanguageCapability.Reformat.__doc__
+# --
+Qgis.ScriptLanguageCapability.baseClass = Qgis
+Qgis.ScriptLanguageCapabilities.baseClass = Qgis
+ScriptLanguageCapabilities = Qgis  # dirty hack since SIP seems to introduce the flags in module
+# monkey patching scoped based enum
 Qgis.LayerTreeInsertionMethod.AboveInsertionPoint.__doc__ = "Layers are added in the tree above the insertion point"
 Qgis.LayerTreeInsertionMethod.TopOfTree.__doc__ = "Layers are added at the top of the layer tree"
 Qgis.LayerTreeInsertionMethod.OptimalInInsertionGroup.__doc__ = "Layers are added at optimal locations across the insertion point's group"

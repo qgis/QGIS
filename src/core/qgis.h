@@ -2726,6 +2726,27 @@ class CORE_EXPORT Qgis
     Q_ENUM( ScriptLanguage )
 
     /**
+     * Script language capabilities.
+     *
+     * The flags reflect the support capabilities of a scripting language.
+     *
+     * \since QGIS 3.32
+     */
+    enum class ScriptLanguageCapability : int
+    {
+      Reformat = 1 << 0, //!< Language supports automatic code reformatting
+    };
+    Q_ENUM( ScriptLanguageCapability )
+
+    /**
+     * Script language capabilities.
+     *
+     * \since QGIS 3.32
+     */
+    Q_DECLARE_FLAGS( ScriptLanguageCapabilities, ScriptLanguageCapability )
+    Q_FLAG( ScriptLanguageCapabilities )
+
+    /**
      * Layer tree insertion methods
      *
      * \since QGIS 3.30
@@ -3372,6 +3393,7 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::MapLayerActionTargets )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::MapLayerActionFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::RelationshipCapabilities )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SettingsTreeNodeOptions )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::ScriptLanguageCapabilities )
 
 
 // hack to workaround warnings when casting void pointers

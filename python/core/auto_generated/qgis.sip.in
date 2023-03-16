@@ -1589,6 +1589,14 @@ The development version
       Unknown,
     };
 
+    enum class ScriptLanguageCapability
+    {
+      Reformat,
+    };
+
+    typedef QFlags<Qgis::ScriptLanguageCapability> ScriptLanguageCapabilities;
+
+
     enum class LayerTreeInsertionMethod
     {
       AboveInsertionPoint,
@@ -2011,6 +2019,8 @@ QFlags<Qgis::MapLayerActionFlag> operator|(Qgis::MapLayerActionFlag f1, QFlags<Q
 QFlags<Qgis::RelationshipCapability> operator|(Qgis::RelationshipCapability f1, QFlags<Qgis::RelationshipCapability> f2);
 
 QFlags<Qgis::SettingsTreeNodeOption> operator|(Qgis::SettingsTreeNodeOption f1, QFlags<Qgis::SettingsTreeNodeOption> f2);
+
+QFlags<Qgis::ScriptLanguageCapability> operator|(Qgis::ScriptLanguageCapability f1, QFlags<Qgis::ScriptLanguageCapability> f2);
 
 
 
