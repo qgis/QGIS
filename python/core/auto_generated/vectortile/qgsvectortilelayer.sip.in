@@ -9,8 +9,6 @@
 
 
 
-
-
 class QgsVectorTileLayer : QgsMapLayer
 {
 %Docstring(signature="appended")
@@ -280,8 +278,6 @@ Emitted whenever the selected features in the layer are changed.
 %End
 
 };
-
-
 
 /************************************************************************
  * This file has been generated automatically from                      *

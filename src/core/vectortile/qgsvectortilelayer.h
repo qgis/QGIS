@@ -18,21 +18,15 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
-
 #include "qgsmaplayer.h"
 #include "qgsvectortilematrixset.h"
 #include "qgsfeatureid.h"
 
-class QgsVectorTileLabeling;
 class QgsVectorTileRenderer;
-class QgsVectorTileRawData;
-class QgsVectorTileDataProvider;
-
-class QgsTileXYZ;
+class QgsVectorTileLabeling;
 class QgsFeature;
 class QgsGeometry;
 class QgsSelectionContext;
-class QgsMbTiles;
 
 /**
  * \ingroup core
@@ -317,160 +311,6 @@ class CORE_EXPORT QgsVectorTileLayer : public QgsMapLayer
 
     bool loadDefaultStyleAndSubLayersPrivate( QString &error, QStringList &warnings, QList< QgsMapLayer * > *subLayers );
 
-
 };
-
-#ifndef SIP_RUN
-///@cond PRIVATE
-
-/**
- * A minimal data provider for vector tile layers.
- *
- * \since QGIS 3.22
- */
-class QgsVectorTileDataProvider : public QgsDataProvider
-{
-    Q_OBJECT
-
-  public:
-    QgsVectorTileDataProvider( const QString &uri,
-                               const QgsDataProvider::ProviderOptions &providerOptions,
-                               QgsDataProvider::ReadFlags flags );
-    QString name() const override;
-    QString description() const override;
-    QgsRectangle extent() const override;
-    bool renderInPreview( const QgsDataProvider::PreviewContext &context ) override;
-
-    //! Renders the source path for the data
-    virtual QString sourcePath() const = 0;
-
-    //! Returns a clone of the data provider
-    virtual QgsVectorTileDataProvider *clone() const = 0 SIP_FACTORY;
-
-    /**
-     * Returns TRUE if the provider supports async tile reading.
-     *
-     * The default implementation returns FALSE.
-     */
-    virtual bool supportsAsync() const;
-
-    //! Returns raw tile data for a single tile
-    virtual QByteArray readTile( const QgsTileMatrix &tileMatrix, const QgsTileXYZ &id, QgsFeedback *feedback = nullptr ) const = 0;
-
-    //! Returns raw tile data for a range of tiles
-    virtual QList<QgsVectorTileRawData> readTiles( const QgsTileMatrix &, const QVector<QgsTileXYZ> &tiles, QgsFeedback *feedback = nullptr ) const = 0;
-
-    /**
-     * Returns a network request for a tile.
-     *
-     * The default implementation returns an invalid request.
-     */
-    virtual QNetworkRequest tileRequest( const QgsTileMatrix &tileMatrix, const QgsTileXYZ &id, Qgis::RendererUsage usage ) const;
-};
-
-class QgsXyzVectorTileDataProvider : public QgsVectorTileDataProvider
-{
-    Q_OBJECT
-
-  public:
-    QgsXyzVectorTileDataProvider( const QString &uri,
-                                  const QgsDataProvider::ProviderOptions &providerOptions,
-                                  QgsDataProvider::ReadFlags flags );
-
-    QgsVectorTileDataProvider *clone() const override;
-    QString sourcePath() const override;
-    bool isValid() const override;
-    QgsCoordinateReferenceSystem crs() const override;
-    bool supportsAsync() const override;
-    QByteArray readTile( const QgsTileMatrix &tileMatrix, const QgsTileXYZ &id, QgsFeedback *feedback = nullptr ) const override;
-    QList<QgsVectorTileRawData> readTiles( const QgsTileMatrix &, const QVector<QgsTileXYZ> &tiles, QgsFeedback *feedback = nullptr ) const override;
-    QNetworkRequest tileRequest( const QgsTileMatrix &tileMatrix, const QgsTileXYZ &id, Qgis::RendererUsage usage ) const override;
-
-  protected:
-
-    QString mAuthCfg;
-    QgsHttpHeaders mHeaders;
-
-  private:
-
-    //! Returns raw tile data for a single tile, doing a HTTP request. Block the caller until tile data are downloaded.
-    static QByteArray loadFromNetwork( const QgsTileXYZ &id,
-                                       const QgsTileMatrix &tileMatrix,
-                                       const QString &requestUrl,
-                                       const QString &authid,
-                                       const QgsHttpHeaders &headers,
-                                       QgsFeedback *feedback = nullptr );
-
-};
-
-class QgsMbTilesVectorTileDataProvider : public QgsVectorTileDataProvider
-{
-    Q_OBJECT
-
-  public:
-    QgsMbTilesVectorTileDataProvider( const QString &uri,
-                                      const QgsDataProvider::ProviderOptions &providerOptions,
-                                      QgsDataProvider::ReadFlags flags );
-
-    QgsVectorTileDataProvider *clone() const override;
-    QString sourcePath() const override;
-    bool isValid() const override;
-    QgsCoordinateReferenceSystem crs() const override;
-    QByteArray readTile( const QgsTileMatrix &tileMatrix, const QgsTileXYZ &id, QgsFeedback *feedback = nullptr ) const override;
-    QList<QgsVectorTileRawData> readTiles( const QgsTileMatrix &, const QVector<QgsTileXYZ> &tiles, QgsFeedback *feedback = nullptr ) const override;
-
-  private:
-
-    //! Returns raw tile data for a single tile loaded from MBTiles file
-    static QByteArray loadFromMBTiles( QgsMbTiles &mbTileReader, const QgsTileXYZ &id, QgsFeedback *feedback = nullptr );
-
-};
-
-class QgsVtpkTiles;
-
-class QgsVtpkVectorTileDataProvider : public QgsVectorTileDataProvider
-{
-    Q_OBJECT
-
-  public:
-    QgsVtpkVectorTileDataProvider( const QString &uri,
-                                   const QgsDataProvider::ProviderOptions &providerOptions,
-                                   QgsDataProvider::ReadFlags flags );
-
-    QgsVectorTileDataProvider *clone() const override;
-    QString sourcePath() const override;
-    bool isValid() const override;
-    QgsCoordinateReferenceSystem crs() const override;
-    QByteArray readTile( const QgsTileMatrix &tileMatrix, const QgsTileXYZ &id, QgsFeedback *feedback = nullptr ) const override;
-    QList<QgsVectorTileRawData> readTiles( const QgsTileMatrix &, const QVector<QgsTileXYZ> &tiles, QgsFeedback *feedback = nullptr ) const override;
-
-  private:
-
-    //! Returns raw tile data for a single tile loaded from VTPK file
-    static QByteArray loadFromVtpk( QgsVtpkTiles &vtpkTileReader, const QgsTileXYZ &id, QgsFeedback *feedback = nullptr );
-
-};
-
-class QgsArcGisVectorTileServiceDataProvider : public QgsXyzVectorTileDataProvider
-{
-    Q_OBJECT
-
-  public:
-    QgsArcGisVectorTileServiceDataProvider( const QString &uri,
-                                            const QString &sourcePath,
-                                            const QgsDataProvider::ProviderOptions &providerOptions,
-                                            QgsDataProvider::ReadFlags flags );
-    QgsVectorTileDataProvider *clone() const override;
-    QString sourcePath() const override;
-    bool isValid() const override;
-
-  private:
-
-    QString mSourcePath;
-};
-
-///@endcond
-#endif
-
 
 #endif // QGSVECTORTILELAYER_H

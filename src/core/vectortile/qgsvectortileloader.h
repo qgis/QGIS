@@ -20,9 +20,13 @@
 
 #include "qgstiles.h"
 
-class QByteArray;
 class QgsFeedback;
+class QgsTileDownloadManagerReply;
+class QgsVectorTileDataProvider;
 
+class QByteArray;
+class QNetworkReply;
+class QEventLoop;
 
 /**
  * \ingroup core
@@ -43,14 +47,6 @@ class QgsVectorTileRawData
     QByteArray data;
 };
 
-
-class QNetworkReply;
-class QEventLoop;
-
-class QgsVtpkTiles;
-
-class QgsTileDownloadManagerReply;
-class QgsVectorTileDataProvider;
 
 /**
  * \ingroup core
