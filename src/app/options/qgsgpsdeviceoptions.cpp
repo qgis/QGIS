@@ -92,25 +92,20 @@ QgsGpsDeviceOptionsWidget::QgsGpsDeviceOptionsWidget( QWidget *parent )
 
 void QgsGpsDeviceOptionsWidget::apply()
 {
-  QStringList deviceNames;
-  QgsSettings settings;
-  const QString devPath = QStringLiteral( "babelDevices/%1" );
-  settings.remove( QStringLiteral( "babelDevices" ), QgsSettings::Gps );
+  QgsBabelFormatRegistry::sTreeBabelDevices->deleteAllItems();
 
   for ( auto iter = mDevices.constBegin(); iter != mDevices.constEnd(); ++iter )
   {
     const QString name = iter.key();
-    deviceNames << name;
     const QStringList commands = iter.value();
-    settings.setValue( devPath.arg( name ) + "/wptdownload", commands.value( 0 ), QgsSettings::Gps );
-    settings.setValue( devPath.arg( name ) + "/wptupload", commands.value( 1 ), QgsSettings::Gps );
-    settings.setValue( devPath.arg( name ) + "/rtedownload", commands.value( 2 ), QgsSettings::Gps );
-    settings.setValue( devPath.arg( name ) + "/rteupload", commands.value( 3 ), QgsSettings::Gps );
-    settings.setValue( devPath.arg( name ) + "/trkdownload", commands.value( 4 ), QgsSettings::Gps );
-    settings.setValue( devPath.arg( name ) + "/trkupload", commands.value( 5 ), QgsSettings::Gps );
-  }
-  settings.setValue( QStringLiteral( "babelDeviceList" ), deviceNames, QgsSettings::Gps );
 
+    QgsBabelFormatRegistry::settingsBabelWptDownload->setValue( commands.value( 0 ), name );
+    QgsBabelFormatRegistry::settingsBabelWptUpload->setValue( commands.value( 1 ), name );
+    QgsBabelFormatRegistry::settingsBabelRteDownload->setValue( commands.value( 2 ), name );
+    QgsBabelFormatRegistry::settingsBabelRteUpload->setValue( commands.value( 3 ), name );
+    QgsBabelFormatRegistry::settingsBabelTrkDownload->setValue( commands.value( 4 ), name );
+    QgsBabelFormatRegistry::settingsBabelTrkUpload->setValue( commands.value( 5 ), name );
+  }
   QgsSettingsRegistryCore::settingsGpsBabelPath->setValue( mGpsBabelFileWidget->filePath() );
 
   QgsApplication::gpsBabelFormatRegistry()->reloadFromSettings();
