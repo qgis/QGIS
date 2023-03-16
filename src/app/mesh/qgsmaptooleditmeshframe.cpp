@@ -1438,6 +1438,7 @@ void QgsMapToolEditMeshFrame::setCurrentLayer( QgsMapLayer *layer )
   {
     disconnect( mCurrentLayer, &QgsMeshLayer::editingStarted, this, &QgsMapToolEditMeshFrame::onEditingStarted );
     disconnect( mCurrentLayer, &QgsMeshLayer::editingStopped, this, &QgsMapToolEditMeshFrame::onEditingStopped );
+    disconnect( mCurrentLayer->undoStack(), &QUndoStack::indexChanged, this, &QgsMapToolEditMeshFrame::onUndoRedo );
   }
 
   mCurrentLayer = meshLayer;
@@ -1454,6 +1455,7 @@ void QgsMapToolEditMeshFrame::setCurrentLayer( QgsMapLayer *layer )
   {
     connect( mCurrentLayer, &QgsMeshLayer::editingStarted, this, &QgsMapToolEditMeshFrame::onEditingStarted );
     connect( mCurrentLayer, &QgsMeshLayer::editingStopped, this, &QgsMapToolEditMeshFrame::onEditingStopped );
+    connect( mCurrentLayer->undoStack(), &QUndoStack::indexChanged, this, &QgsMapToolEditMeshFrame::onUndoRedo );
 
     if ( mCurrentLayer->isEditable() )
     {
@@ -1924,6 +1926,33 @@ void QgsMapToolEditMeshFrame::reindexMesh()
 
   QgsTemporaryCursorOverride waitCursor( Qt::WaitCursor );
   mCurrentLayer->reindex( transform, true );
+}
+
+void QgsMapToolEditMeshFrame::onUndoRedo()
+{
+  switch ( mCurrentState )
+  {
+    case Digitizing:
+      break;
+    case AddingNewFace:
+      mNewFaceBand->reset( Qgis::GeometryType::Polygon );
+      mNewFaceCandidate.clear();
+      mNewVerticesForNewFaceCandidate.clear();
+      mCurrentState = Digitizing;
+      break;
+    case MovingSelection:
+      mCurrentState = Digitizing;
+      mMovingEdgesRubberband->reset( Qgis::GeometryType::Line );
+      mMovingFacesRubberband->reset( Qgis::GeometryType::Polygon );
+      mMovingFreeVertexRubberband->reset( Qgis::GeometryType::Point );
+      mCadDockWidget->setEnabledZ( mCadDockWidget->cadEnabled() );
+      break;
+    case ForceByLines:
+      break;
+    case Selecting:
+    case SelectingByPolygon:
+      break;
+  }
 }
 
 void QgsMapToolEditMeshFrame::selectByGeometry( const QgsGeometry &geometry, Qt::KeyboardModifiers modifiers )

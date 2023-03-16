@@ -165,6 +165,7 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
     void selectByExpression( const QString &textExpression, Qgis::SelectBehavior behavior, QgsMesh::ElementType elementType );
     void onZoomToSelected();
     void reindexMesh();
+    void onUndoRedo();
 
   private:
 
