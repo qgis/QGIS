@@ -73,6 +73,9 @@ class ConsoleOptionsWidget(QWidget, Ui_SettingsDialogPythonConsole):
         self.parent = parent
         self.setupUi(self)
 
+        # Set up the formatter combo box
+        self.formatter.addItems(["autopep8", "black"])
+
         self.listPath = []
         self.lineEdit.setReadOnly(True)
 
