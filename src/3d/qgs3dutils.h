@@ -248,6 +248,19 @@ class _3D_EXPORT Qgs3DUtils
      * \since QGIS 3.32
      */
     static QHash<QgsMapLayer *, QVector<QgsRayCastingUtils::RayHit>> castRay( Qgs3DMapScene *scene, const QgsRay3D &ray, const QgsRayCastingUtils::RayCastContext &context );
+
+    /**
+     * Reprojects \a extent from \a crs1 to \a crs2 coordinate reference system with context \a context.
+     * If \a crs1 and \a crs2 are identical, \a extent is returned.
+     * \param extent extent to reproject
+     * \param crs1 source coordinate reference system
+     * \param crs2 destination coordinate reference system
+     * \param context the context under which the transform is applied
+     * \returns reprojected extent. In case of failure, \a extent is returned
+     *
+     * \since QGIS 3.32
+     */
+    static QgsRectangle tryReprojectExtent2D( const QgsRectangle &extent, const QgsCoordinateReferenceSystem &crs1, const QgsCoordinateReferenceSystem &crs2, const QgsCoordinateTransformContext &context );
 };
 
 #endif // QGS3DUTILS_H

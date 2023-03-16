@@ -359,6 +359,15 @@ Emitted when a current layer is changed
 Emitted when datasets are dropped onto the layer tree view
 %End
 
+    void contextMenuAboutToShow( QMenu *menu );
+%Docstring
+Emitted when the context menu is about to show.
+
+Allows customization of the menu.
+
+.. versionadded:: 3.32
+%End
+
   protected:
     virtual void contextMenuEvent( QContextMenuEvent *event );
 

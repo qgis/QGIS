@@ -94,8 +94,6 @@ set(QGIS_3D_SRCS
   terrain/qgsterraintexturegenerator_p.cpp
   terrain/qgsterraintextureimage_p.cpp
   terrain/qgsterraintileloader_p.cpp
-  #terrain/quantizedmeshgeometry.cpp
-  #terrain/quantizedmeshterraingenerator.cpp
 
   mesh/qgsmesh3dgeometry_p.cpp
   mesh/qgsmesh3dentity_p.cpp

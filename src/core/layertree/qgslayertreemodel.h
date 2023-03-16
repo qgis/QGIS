@@ -290,6 +290,24 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
      */
     static int scaleIconSize( int standardSize );
 
+    /**
+     * When a current hit test for visible legend items is in progress, calling this
+     * method will block until that hit test is complete.
+     *
+     * \since QGIS 3.32
+     */
+    void waitForHitTestBlocking();
+
+    /**
+     * Returns TRUE if a hit test for visible legend items is currently in progress.
+     *
+     * \see hitTestStarted()
+     * \see hitTestCompleted()
+     *
+     * \since QGIS 3.32
+     */
+    bool hitTestInProgress() const;
+
   signals:
 
     /**
@@ -297,6 +315,26 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
      * \since QGIS 3.14
      */
     void messageEmitted( const QString &message, Qgis::MessageLevel level = Qgis::MessageLevel::Info, int duration = 5 );
+
+    /**
+     * Emitted when a hit test for visible legend items starts.
+     *
+     * \see hitTestInProgress()
+     * \see hitTestCompleted()
+     *
+     * \since QGIS 3.32
+     */
+    void hitTestStarted();
+
+    /**
+     * Emitted when a hit test for visible legend items completes.
+     *
+     * \see hitTestInProgress()
+     * \see hitTestStarted()
+     *
+     * \since QGIS 3.32
+     */
+    void hitTestCompleted();
 
   protected slots:
     void nodeWillAddChildren( QgsLayerTreeNode *node, int indexFrom, int indexTo );

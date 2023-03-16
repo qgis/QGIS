@@ -17,6 +17,7 @@
 
 #include "qgsdemterraintileloader_p.h"
 
+#include "qgs3dutils.h"
 #include "qgsrasterlayer.h"
 #include "qgscoordinatetransform.h"
 
@@ -115,20 +116,7 @@ void QgsDemTerrainGenerator::setExtent( const QgsRectangle &extent )
     return;
   }
 
-  QgsRectangle layerExtent = mLayer->extent();
-  if ( mCrs != mLayer->crs() )
-  {
-    QgsCoordinateTransform ct( mLayer->crs(), mCrs, mTransformContext );
-    ct.setBallparkTransformsAreAppropriate( true );
-    try
-    {
-      layerExtent = ct.transformBoundingBox( layerExtent );
-    }
-    catch ( const QgsCsException & )
-    {
-      QgsDebugMsg( QStringLiteral( "Transformation of layer extent to terrain crs failed." ) );
-    }
-  }
+  QgsRectangle layerExtent = Qgs3DUtils::tryReprojectExtent2D( mLayer->extent(), mLayer->crs(), mCrs, mTransformContext );
   // no need to have an mExtent larger than the actual layer's extent
   mExtent = extent.intersect( layerExtent );
   updateGenerator();

@@ -209,7 +209,6 @@ void QgsRelationReferenceSearchWidgetWrapper::initWidget( QWidget *editor )
   mWidget->setEmbedForm( false );
   mWidget->setReadOnlySelector( false );
   mWidget->setAllowMapIdentification( config( QStringLiteral( "MapIdentification" ), false ).toBool() );
-  mWidget->setOrderByValue( config( QStringLiteral( "OrderByValue" ), false ).toBool() );
   mWidget->setAllowAddFeatures( false );
   mWidget->setOpenFormButtonVisible( false );
 

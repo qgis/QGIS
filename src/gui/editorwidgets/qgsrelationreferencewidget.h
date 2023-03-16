@@ -131,10 +131,6 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
     bool allowMapIdentification() { return mAllowMapIdentification; }
     void setAllowMapIdentification( bool allowMapIdentification );
 
-    //! If the widget will order the combobox entries by value
-    bool orderByValue() { return mOrderByValue; }
-    //! Sets if the widget will order the combobox entries by value
-    void setOrderByValue( bool orderByValue );
     //! Sets the fields for which filter comboboxes will be created
     void setFilterFields( const QStringList &filterFields );
 
@@ -337,7 +333,6 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
     bool mEmbedForm = false;
     bool mReadOnlySelector = false;
     bool mAllowMapIdentification = false;
-    bool mOrderByValue = false;
     bool mOpenFormButtonVisible = true;
     bool mChainFilters = false;
     bool mAllowAddFeatures = false;

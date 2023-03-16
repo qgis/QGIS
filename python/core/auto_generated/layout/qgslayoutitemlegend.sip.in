@@ -630,6 +630,8 @@ Returns the legend's renderer settings object.
 
     virtual bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
 
+    virtual bool isRefreshing() const;
+
 
   public slots:
 

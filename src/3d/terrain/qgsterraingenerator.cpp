@@ -17,14 +17,12 @@
 
 #include "qgsaabb.h"
 #include "qgs3dmapsettings.h"
+#include "qgs3dutils.h"
 #include "qgscoordinatetransform.h"
 
 QgsAABB QgsTerrainGenerator::rootChunkBbox( const Qgs3DMapSettings &map ) const
 {
-  QgsRectangle te = rootChunkExtent();
-  QgsCoordinateTransform terrainToMapTransform( crs(), map.crs(), map.transformContext() );
-  terrainToMapTransform.setBallparkTransformsAreAppropriate( true );
-  te = terrainToMapTransform.transformBoundingBox( te );
+  QgsRectangle te = Qgs3DUtils::tryReprojectExtent2D( rootChunkExtent(), crs(), map.crs(), map.transformContext() );
 
   float hMin, hMax;
   rootChunkHeightRange( hMin, hMax );
@@ -34,10 +32,7 @@ QgsAABB QgsTerrainGenerator::rootChunkBbox( const Qgs3DMapSettings &map ) const
 
 float QgsTerrainGenerator::rootChunkError( const Qgs3DMapSettings &map ) const
 {
-  QgsRectangle te = rootChunkExtent();
-  QgsCoordinateTransform terrainToMapTransform( crs(), map.crs(), map.transformContext() );
-  terrainToMapTransform.setBallparkTransformsAreAppropriate( true );
-  te = terrainToMapTransform.transformBoundingBox( te );
+  QgsRectangle te = Qgs3DUtils::tryReprojectExtent2D( rootChunkExtent(), crs(), map.crs(), map.transformContext() );
 
   // use texel size as the error
   return te.width() / map.mapTileResolution();

@@ -5,7 +5,7 @@
 # ---------------------------------------------------------
 # QGIS Catalog Service client.
 #
-# Copyright (C) 2021 Tom Kralidis (tomkralidis@gmail.com)
+# Copyright (C) 2023 Tom Kralidis (tomkralidis@gmail.com)
 #
 # This source is free software; you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free
@@ -200,7 +200,7 @@ class OARecSearch(SearchBase):
         params = {
             'collection_id': self.record_collection,
             'limit': limit,
-            'offset': offset2
+            'startindex': offset2
         }
 
         if keywords:
@@ -221,17 +221,18 @@ class OARecSearch(SearchBase):
             rec1 = {
                 'identifier': rec['id'],
                 'type': rec['properties']['type'],
-
-
-
                 'bbox': None,
                 'title': rec['properties']['title'],
                 'links': rec.get('links', [])
             }
             try:
-                bbox2 = rec['properties']['extent']['spatial']['bbox'][0]
-                if bbox2:
-                    rec1['bbox'] = bbox_list_to_dict(bbox2)
+                if rec.get('geometry') is not None:
+                    rec1['bbox'] = bbox_list_to_dict([
+                        rec['geometry']['coordinates'][0][0][0],
+                        rec['geometry']['coordinates'][0][0][1],
+                        rec['geometry']['coordinates'][0][2][0],
+                        rec['geometry']['coordinates'][0][2][1]
+                    ])
             except KeyError:
                 pass
 

@@ -323,6 +323,25 @@ displays.
 .. versionadded:: 3.6
 %End
 
+    void waitForHitTestBlocking();
+%Docstring
+When a current hit test for visible legend items is in progress, calling this
+method will block until that hit test is complete.
+
+.. versionadded:: 3.32
+%End
+
+    bool hitTestInProgress() const;
+%Docstring
+Returns ``True`` if a hit test for visible legend items is currently in progress.
+
+.. seealso:: :py:func:`hitTestStarted`
+
+.. seealso:: :py:func:`hitTestCompleted`
+
+.. versionadded:: 3.32
+%End
+
   signals:
 
     void messageEmitted( const QString &message, Qgis::MessageLevel level = Qgis::MessageLevel::Info, int duration = 5 );
@@ -330,6 +349,28 @@ displays.
 Emits a message than can be displayed to the user in a GUI class
 
 .. versionadded:: 3.14
+%End
+
+    void hitTestStarted();
+%Docstring
+Emitted when a hit test for visible legend items starts.
+
+.. seealso:: :py:func:`hitTestInProgress`
+
+.. seealso:: :py:func:`hitTestCompleted`
+
+.. versionadded:: 3.32
+%End
+
+    void hitTestCompleted();
+%Docstring
+Emitted when a hit test for visible legend items completes.
+
+.. seealso:: :py:func:`hitTestInProgress`
+
+.. seealso:: :py:func:`hitTestStarted`
+
+.. versionadded:: 3.32
 %End
 
   protected slots:

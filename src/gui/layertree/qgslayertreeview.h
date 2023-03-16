@@ -354,6 +354,15 @@ class GUI_EXPORT QgsLayerTreeView : public QTreeView
     //! Emitted when datasets are dropped onto the layer tree view
     void datasetsDropped( QDropEvent *event );
 
+    /**
+     * Emitted when the context menu is about to show.
+     *
+     * Allows customization of the menu.
+     *
+     * \since QGIS 3.32
+     */
+    void contextMenuAboutToShow( QMenu *menu );
+
   protected:
     void contextMenuEvent( QContextMenuEvent *event ) override;
 

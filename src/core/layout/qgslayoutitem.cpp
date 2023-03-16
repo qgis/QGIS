@@ -30,6 +30,7 @@
 #include "qgsimageoperation.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgslayoutrendercontext.h"
+#include "qgssvgcache.h"
 
 #include <QPainter>
 #include <QStyleOptionGraphicsItem>
@@ -415,6 +416,11 @@ void QgsLayoutItem::paint( QPainter *painter, const QStyleOptionGraphicsItem *it
 
     painter->scale( context.scaleFactor(), context.scaleFactor() );
     drawFrame( context );
+  }
+
+  if ( isRefreshing() && previewRender )
+  {
+    drawRefreshingOverlay( painter, itemStyle );
   }
 }
 
@@ -1162,6 +1168,11 @@ void QgsLayoutItem::rotateItem( const double angle, const QPointF transformOrigi
   refreshItemRotation( &itemTransformOrigin );
 }
 
+bool QgsLayoutItem::isRefreshing() const
+{
+  return false;
+}
+
 QgsExpressionContext QgsLayoutItem::createExpressionContext() const
 {
   QgsExpressionContext context = QgsLayoutObject::createExpressionContext();
@@ -1253,6 +1264,18 @@ void QgsLayoutItem::drawBackground( QgsRenderContext &context )
   context.setPainterFlagsUsingContext( p );
 
   p->drawPath( framePath() );
+}
+
+void QgsLayoutItem::drawRefreshingOverlay( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle )
+{
+  const QgsScopedQPainterState painterState( painter );
+  bool fitsInCache = false;
+  const int xSize = QFontMetrics( QFont() ).horizontalAdvance( 'X' );
+  const QImage refreshingImage = QgsApplication::svgCache()->svgAsImage( QStringLiteral( ":/images/composer/refreshing_item.svg" ), xSize * 3, QColor(), QColor(), 1, 1, fitsInCache );
+
+  const double previewScaleFactor = QgsLayoutUtils::scaleFactorFromItemStyle( itemStyle, painter );
+  painter->scale( 1.0 / previewScaleFactor, 1.0 / previewScaleFactor );
+  painter->drawImage( xSize, xSize, refreshingImage );
 }
 
 void QgsLayoutItem::setFixedSize( const QgsLayoutSize &size )
