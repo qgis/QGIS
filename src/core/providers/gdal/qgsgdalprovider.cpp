@@ -494,6 +494,8 @@ void QgsGdalProvider::loadMetadata()
   if ( mDriverName == QLatin1String( "OpenFileGDB" ) )
   {
     // read ESRI FileGeodatabase/Personal Geodatabase layer metadata
+    // (This branch is only possible on GDAL 3.7+, in earlier releases there was
+    // no raster OpenFileGDB driver)
     if ( char **GDALmetadata = GDALGetMetadata( mGdalDataset, "xml:documentation" ) )
     {
       const QString metadata( GDALmetadata[0] );
