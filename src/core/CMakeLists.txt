@@ -890,11 +890,14 @@ set(QGIS_CORE_SRCS
   vector/qgsvectorlayerundopassthroughcommand.cpp
   vector/qgsvectorlayerutils.cpp
 
+  vectortile/qgsarcgisvectortileservicedataprovider.cpp
   vectortile/qgsmapboxglstyleconverter.cpp
+  vectortile/qgsmbtilesvectortiledataprovider.cpp
   vectortile/qgsvectortilebasiclabeling.cpp
   vectortile/qgsvectortilebasicrenderer.cpp
   vectortile/qgsvectortileconnection.cpp
   vectortile/qgsvectortiledataitems.cpp
+  vectortile/qgsvectortiledataprovider.cpp
   vectortile/qgsvectortilelabeling.cpp
   vectortile/qgsvectortilelayer.cpp
   vectortile/qgsvectortilelayerrenderer.cpp
@@ -907,6 +910,8 @@ set(QGIS_CORE_SRCS
   vectortile/qgsvectortileutils.cpp
   vectortile/qgsvectortilewriter.cpp
   vectortile/qgsvtpktiles.cpp
+  vectortile/qgsvtpkvectortiledataprovider.cpp
+  vectortile/qgsxyzvectortiledataprovider.cpp
 
   ${CMAKE_CURRENT_BINARY_DIR}/qgsexpression_texts.cpp
 
@@ -1899,11 +1904,14 @@ set(QGIS_CORE_HDRS
   vector/qgsvectorlayerundopassthroughcommand.h
   vector/qgsvectorlayerutils.h
 
+  vectortile/qgsarcgisvectortileservicedataprovider.h
   vectortile/qgsmapboxglstyleconverter.h
+  vectortile/qgsmbtilesvectortiledataprovider.h
   vectortile/qgsvectortilebasiclabeling.h
   vectortile/qgsvectortilebasicrenderer.h
   vectortile/qgsvectortileconnection.h
   vectortile/qgsvectortiledataitems.h
+  vectortile/qgsvectortiledataprovider.h
   vectortile/qgsvectortilelabeling.h
   vectortile/qgsvectortilelayer.h
   vectortile/qgsvectortilelayerrenderer.h
@@ -1917,6 +1925,8 @@ set(QGIS_CORE_HDRS
   vectortile/qgsvectortileutils.h
   vectortile/qgsvectortilewriter.h
   vectortile/qgsvtpktiles.h
+  vectortile/qgsvtpkvectortiledataprovider.h
+  vectortile/qgsxyzvectortiledataprovider.h
 )
 
 set(QGIS_CORE_PRIVATE_HDRS
