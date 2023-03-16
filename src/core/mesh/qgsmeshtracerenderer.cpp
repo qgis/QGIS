@@ -398,7 +398,9 @@ void QgsMeshStreamField::addRandomTraces()
 {
   if ( mMaximumMagnitude > 0 )
     while ( ( mPixelFillingCount < mMaxPixelFillingCount ) &&
-            mRenderContext.feedback() && !mRenderContext.feedback()->isCanceled() )
+            ( !mRenderContext.feedback() ||
+              !mRenderContext.feedback()->isCanceled() ||
+              !mRenderContext.renderingStopped() ) )
       addRandomTrace();
 }
 
