@@ -30,7 +30,7 @@ from functools import partial
 from operator import itemgetter
 from pathlib import Path
 
-from qgis.core import Qgis, QgsApplication, QgsBlockingNetworkRequest, QgsFileUtils, QgsSettings
+from qgis.core import Qgis, QgsApplication, QgsBlockingNetworkRequest, QgsStringUtils, QgsSettings
 from qgis.gui import QgsCodeEditorPython, QgsMessageBar
 from qgis.PyQt.Qsci import QsciScintilla
 from qgis.PyQt.QtCore import QByteArray, QCoreApplication, QDir, QEvent, QFileInfo, QJsonDocument, QSize, Qt, QUrl
@@ -59,15 +59,7 @@ def findMinimalDistanceIndex(source, target):
     """ Find the source substring index that most closely matches the target string"""
     index = min(len(source), len(target))
 
-    # Fallback to difflib if Levenshtein is not available
-    # Levenshtein is faster than difflib
-    try:
-        from Levenshtein import distance
-    except ImportError:
-        from difflib import SequenceMatcher
-
-        def distance(s, t):
-            return 1 - SequenceMatcher(None, s, t).ratio()
+    distance = QgsStringUtils.levenshteinDistance
 
     d0 = distance(source[:index], target)
     if d0 == 0:
