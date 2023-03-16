@@ -15,7 +15,6 @@
 
 #include "qgsgpsdeviceoptions.h"
 #include "qgsbabelgpsdevice.h"
-#include "qgssettings.h"
 #include "qgsapplication.h"
 #include "qgsbabelformatregistry.h"
 #include "qgssettingsregistrycore.h"
