@@ -407,12 +407,11 @@ void QgsPluginManager::getCppPluginsMetadata()
       QgsDebugMsgLevel( "Examining: " + lib, 2 );
       try
       {
-        QLibrary *myLib = new QLibrary( lib );
+        std::unique_ptr< QLibrary > myLib = std::make_unique< QLibrary >( lib );
         const bool loaded = myLib->load();
         if ( !loaded )
         {
           QgsDebugMsgLevel( QStringLiteral( "Failed to load: %1 (%2)" ).arg( myLib->fileName(), myLib->errorString() ), 2 );
-          delete myLib;
           continue;
         }
 
@@ -420,7 +419,6 @@ void QgsPluginManager::getCppPluginsMetadata()
         //Type is only used in non-provider plugins, so data providers are not picked
         if ( !myLib->resolve( "type" ) )
         {
-          delete myLib;
           continue;
         }
 
@@ -495,7 +493,6 @@ void QgsPluginManager::getCppPluginsMetadata()
         if ( !pName || !pDesc || !pVersion )
         {
           QgsDebugMsgLevel( "Failed to get name, description, or type for " + myLib->fileName(), 2 );
-          delete myLib;
           continue;
         }
 
@@ -518,8 +515,6 @@ void QgsPluginManager::getCppPluginsMetadata()
         metadata[QStringLiteral( "create_date" )] = ( pCreateDate ? *pCreateDate() : QString() );
         metadata[QStringLiteral( "update_date" )] = ( pUpdateDate ? *pUpdateDate() : QString() );
         mPlugins.insert( baseName, metadata );
-
-        delete myLib;
       }
       catch ( QgsSettingsException &ex )
       {
