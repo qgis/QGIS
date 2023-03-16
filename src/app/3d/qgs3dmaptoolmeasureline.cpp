@@ -219,6 +219,7 @@ void Qgs3DMapToolMeasureLine::mouseReleaseEvent( QMouseEvent *event )
 
     // Finish measurement
     mRubberBand->setShowLastMarker( true );
+    mRubberBand->removeLastPoint();
     mDone = true;
   }
 }
