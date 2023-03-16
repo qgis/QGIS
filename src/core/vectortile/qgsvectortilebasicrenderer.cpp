@@ -163,6 +163,31 @@ void QgsVectorTileBasicRenderer::stopRender( QgsRenderContext &context )
   Q_UNUSED( context )
 }
 
+void QgsVectorTileBasicRenderer::renderBackground( QgsRenderContext &context )
+{
+  for ( const QgsVectorTileBasicRendererStyle &layerStyle : std::as_const( mStyles ) )
+  {
+    if ( !layerStyle.symbol() || layerStyle.layerName() != QLatin1String( "background" ) )
+      continue;
+
+    QgsSymbol *sym = layerStyle.symbol();
+    sym->startRender( context, QgsFields() );
+
+    QgsFillSymbol *fillSym = dynamic_cast<QgsFillSymbol *>( sym );
+    if ( fillSym )
+    {
+      QPolygon polygon;
+      polygon << QPoint( 0, 0 );
+      polygon << QPoint( 0, context.outputSize().height() );
+      polygon << QPoint( context.outputSize().width(), context.outputSize().height() );
+      polygon << QPoint( context.outputSize().width(), 0 );
+      fillSym->renderPolygon( polygon, nullptr, nullptr, context );
+    }
+    sym->stopRender( context );
+    break;
+  }
+}
+
 void QgsVectorTileBasicRenderer::renderTile( const QgsVectorTileRendererData &tile, QgsRenderContext &context )
 {
   const QgsVectorTileFeatures tileData = tile.features();
@@ -170,7 +195,7 @@ void QgsVectorTileBasicRenderer::renderTile( const QgsVectorTileRendererData &ti
 
   for ( const QgsVectorTileBasicRendererStyle &layerStyle : std::as_const( mStyles ) )
   {
-    if ( !layerStyle.isActive( zoomLevel ) || !layerStyle.symbol() )
+    if ( !layerStyle.isActive( zoomLevel ) || !layerStyle.symbol() || layerStyle.layerName() == QLatin1String( "background" ) )
       continue;
 
     QgsExpressionContextScope *scope = new QgsExpressionContextScope( QObject::tr( "Layer" ) ); // will be deleted by popper
@@ -182,13 +207,7 @@ void QgsVectorTileBasicRenderer::renderTile( const QgsVectorTileRendererData &ti
 
     QgsSymbol *sym = layerStyle.symbol();
     sym->startRender( context, QgsFields() );
-    if ( layerStyle.layerName() == QLatin1String( "background" ) )
-    {
-      QgsFillSymbol *fillSym = dynamic_cast<QgsFillSymbol *>( sym );
-      if ( fillSym )
-        fillSym->renderPolygon( tile.tilePolygon(), nullptr, nullptr, context );
-    }
-    else if ( layerStyle.layerName().isEmpty() )
+    if ( layerStyle.layerName().isEmpty() )
     {
       // matching all layers
       for ( QString layerName : tileData.keys() )

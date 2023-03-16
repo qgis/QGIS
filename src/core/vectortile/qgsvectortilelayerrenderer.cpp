@@ -21,6 +21,7 @@
 #include "qgsfeedback.h"
 #include "qgslogger.h"
 
+#include "qgsvectortilebasicrenderer.h"
 #include "qgsvectortilemvtdecoder.h"
 #include "qgsvectortilelayer.h"
 #include "qgsvectortileloader.h"
@@ -155,6 +156,9 @@ bool QgsVectorTileLayerRenderer::render()
   const QgsExpressionContextScopePopper popper( ctx.expressionContext(), scope );
 
   mRenderer->startRender( *renderContext(), mTileZoom, mTileRange );
+
+  // Draw background style if present
+  mRenderer->renderBackground( ctx );
 
   QMap<QString, QSet<QString> > requiredFields = mRenderer->usedAttributes( ctx );
 

@@ -126,6 +126,11 @@ An empty string present in the list indicates that all layer in the tiles are re
 Finishes rendering and cleans up any resources
 %End
 
+    virtual void renderBackground( QgsRenderContext &context ) = 0;
+%Docstring
+Renders the background if defined
+%End
+
     virtual void renderTile( const QgsVectorTileRendererData &tile, QgsRenderContext &context ) = 0;
 %Docstring
 Renders given vector tile. Must be called between startRender/stopRender.
