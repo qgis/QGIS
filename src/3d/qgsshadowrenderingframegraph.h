@@ -296,6 +296,7 @@ class QgsShadowRenderingFrameGraph : public Qt3DCore::QEntity
     Qt3DRender::QCameraSelector *mRubberBandsCameraSelector = nullptr;
     Qt3DRender::QLayerFilter *mRubberBandsLayerFilter = nullptr;
     Qt3DRender::QRenderStateSet *mRubberBandsStateSet = nullptr;
+    Qt3DRender::QRenderTargetSelector *mRubberBandsRenderTargetSelector = nullptr;
 
     // Texture preview:
     Qt3DRender::QLayerFilter *mPreviewLayerFilter = nullptr;
