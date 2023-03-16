@@ -32,7 +32,6 @@ class QgsMapClippingRegion;
 
 #include <QList>
 #include <QPainter>
-#include <QElapsedTimer>
 
 typedef QList<int> QgsAttributeList;
 
@@ -71,8 +70,6 @@ class QgsVectorLayerRenderer : public QgsMapLayerRenderer
     QgsFeatureRenderer *featureRenderer() SIP_SKIP { return mRenderer; }
 
     bool render() override;
-
-    void setLayerRenderingTimeHint( int time ) override;
 
   private:
 
@@ -153,9 +150,6 @@ class QgsVectorLayerRenderer : public QgsMapLayerRenderer
     bool mApplyLabelClipGeometries = false;
     bool mForceRasterRender = false;
 
-    int mRenderTimeHint = 0;
-    bool mBlockRenderUpdates = false;
-    QElapsedTimer mElapsedTimer;
 
     bool mNoSetLayerExpressionContext = false;
 

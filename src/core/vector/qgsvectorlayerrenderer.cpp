@@ -173,16 +173,9 @@ QgsVectorLayerRenderer::QgsVectorLayerRenderer( QgsVectorLayer *layer, QgsRender
     //layer properties require rasterization
     mForceRasterRender = true;
   }
-
-  mReadyToCompose = false;
 }
 
 QgsVectorLayerRenderer::~QgsVectorLayerRenderer() = default;
-
-void QgsVectorLayerRenderer::setLayerRenderingTimeHint( int time )
-{
-  mRenderTimeHint = time;
-}
 
 QgsFeedback *QgsVectorLayerRenderer::feedback() const
 {
@@ -198,23 +191,12 @@ bool QgsVectorLayerRenderer::render()
 {
   if ( mGeometryType == Qgis::GeometryType::Null || mGeometryType == Qgis::GeometryType::Unknown )
   {
-    mReadyToCompose = true;
     return true;
   }
-
   if ( mRenderers.empty() )
   {
-    mReadyToCompose = true;
     mErrors.append( QObject::tr( "No renderer for drawing." ) );
     return false;
-  }
-
-  // if the previous layer render was relatively quick (e.g. less than 3 seconds), the we show any previously
-  // cached version of the layer during rendering instead of the usual progressive updates
-  if ( mRenderTimeHint > 0 && mRenderTimeHint <= MAX_TIME_TO_USE_CACHED_PREVIEW_IMAGE )
-  {
-    mBlockRenderUpdates = true;
-    mElapsedTimer.start();
   }
 
   bool res = true;
@@ -223,7 +205,6 @@ bool QgsVectorLayerRenderer::render()
     res = renderInternal( renderer.get() ) && res;
   }
 
-  mReadyToCompose = true;
   return res && !renderContext()->renderingStopped();
 }
 
@@ -483,14 +464,6 @@ void QgsVectorLayerRenderer::drawRenderer( QgsFeatureRenderer *renderer, QgsFeat
       // labeling - register feature
       if ( rendered )
       {
-        // as soon as first feature is rendered, we can start showing layer updates.
-        // but if we are blocking render updates (so that a previously cached image is being shown), we wait
-        // at most e.g. 3 seconds before we start forcing progressive updates.
-        if ( !mBlockRenderUpdates || mElapsedTimer.elapsed() > MAX_TIME_TO_USE_CACHED_PREVIEW_IMAGE )
-        {
-          mReadyToCompose = true;
-        }
-
         // new labeling engine
         if ( isMainRenderer && context.labelingEngine() && ( mLabelProvider || mDiagramProvider ) )
         {
@@ -696,14 +669,6 @@ void QgsVectorLayerRenderer::drawRendererLevels( QgsFeatureRenderer *renderer, Q
         try
         {
           renderer->renderFeature( *fit, context, layer, sel, drawMarker );
-
-          // as soon as first feature is rendered, we can start showing layer updates.
-          // but if we are blocking render updates (so that a previously cached image is being shown), we wait
-          // at most e.g. 3 seconds before we start forcing progressive updates.
-          if ( !mBlockRenderUpdates || mElapsedTimer.elapsed() > MAX_TIME_TO_USE_CACHED_PREVIEW_IMAGE )
-          {
-            mReadyToCompose = true;
-          }
         }
         catch ( const QgsCsException &cse )
         {
