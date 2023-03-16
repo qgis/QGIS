@@ -1430,7 +1430,8 @@ QgsAbstractProfileGenerator *QgsMeshLayer::createProfileGenerator( const QgsProf
 void QgsMeshLayer::checkSymbologyConsistency()
 {
   const QList<int> groupIndexes = mDatasetGroupStore->datasetGroupIndexes();
-  if ( !groupIndexes.contains( mRendererSettings.activeScalarDatasetGroup() ) )
+  if ( !groupIndexes.contains( mRendererSettings.activeScalarDatasetGroup() ) &&
+       mRendererSettings.activeScalarDatasetGroup() != -1 )
   {
     if ( !groupIndexes.empty() )
       mRendererSettings.setActiveScalarDatasetGroup( groupIndexes.first() );
@@ -1438,7 +1439,8 @@ void QgsMeshLayer::checkSymbologyConsistency()
       mRendererSettings.setActiveScalarDatasetGroup( -1 );
   }
 
-  if ( !groupIndexes.contains( mRendererSettings.activeVectorDatasetGroup() ) )
+  if ( !groupIndexes.contains( mRendererSettings.activeVectorDatasetGroup() )  &&
+       mRendererSettings.activeVectorDatasetGroup() != -1 )
   {
     mRendererSettings.setActiveVectorDatasetGroup( -1 );
   }
