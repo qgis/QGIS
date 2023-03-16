@@ -508,16 +508,6 @@
               <height>0</height>
              </size>
             </property>
-            <item>
-             <property name="text">
-              <string>autopep8</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>black</string>
-             </property>
-            </item>
            </widget>
           </item>
           <item row="1" column="0" colspan="2">
