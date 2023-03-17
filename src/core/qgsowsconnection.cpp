@@ -300,5 +300,5 @@ void QgsOwsConnection::addCommonConnectionSettings( QgsDataSourceUri &uri, const
 
 void QgsOwsConnection::deleteConnection( const QString &service, const QString &name )
 {
-  sTreeOwsConnections->deleteItem( service.toLower(), {name} );
+  sTreeOwsConnections->deleteItem( name, {service.toLower()} );
 }
