@@ -217,6 +217,7 @@ QVector<QgsRayCastingUtils::RayHit> QgsVectorLayerChunkedEntity::rayIntersection
   int nodeUsed = 0;
   int nodesAll = 0;
   int hits = 0;
+  int ignoredGeometries = 0;
   QVector<QgsRayCastingUtils::RayHit> result;
 
   float minDist = -1;
@@ -238,7 +239,10 @@ QVector<QgsRayCastingUtils::RayHit> QgsVectorLayerChunkedEntity::rayIntersection
         auto *geom = rend->geometry();
         QgsTessellatedPolygonGeometry *polygonGeom = qobject_cast<QgsTessellatedPolygonGeometry *>( geom );
         if ( !polygonGeom )
+        {
+          ignoredGeometries++;
           continue; // other QGeometry types are not supported for now
+        }
 
         QVector3D nodeIntPoint;
         if ( polygonGeom->rayIntersection( ray, transformMatrix, nodeIntPoint, fid ) )
@@ -260,7 +264,7 @@ QVector<QgsRayCastingUtils::RayHit> QgsVectorLayerChunkedEntity::rayIntersection
     QgsRayCastingUtils::RayHit hit( minDist, intersectionPoint, nearestFid );
     result.append( hit );
   }
-  QgsDebugMsgLevel( QStringLiteral( "Active Nodes: %1, checked nodes: %2, hits found: %3" ).arg( nodesAll ).arg( nodeUsed ).arg( hits ), 2 );
+  QgsDebugMsgLevel( QStringLiteral( "Active Nodes: %1, checked nodes: %2, hits found: %3, incompatible geometries: %4" ).arg( nodesAll ).arg( nodeUsed ).arg( hits ).arg( ignoredGeometries ), 2 );
   return result;
 }
 

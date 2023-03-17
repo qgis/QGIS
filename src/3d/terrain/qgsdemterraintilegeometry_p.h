@@ -58,7 +58,6 @@ namespace QgsRayCastingUtils
   class Ray3D;
 }
 
-
 /**
  * \ingroup 3d
  * \brief Stores attributes and vertex/index buffers for one terrain tile based on DEM.

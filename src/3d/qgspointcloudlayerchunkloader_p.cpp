@@ -276,10 +276,10 @@ QVector<QgsRayCastingUtils::RayHit> QgsPointCloudLayerChunkedEntity::rayIntersec
     return result;
   const double pointSize = symbol->pointSize();
 
-  // We're using the angle as a tolerace, effectively meaning we're fetching points intersecting a cone.
+  // We're using the angle as a tolerance, effectively meaning we're fetching points intersecting a cone.
   // This may be revisited to use a cylinder instead, if the balance between near/far points does not scale
   // well with different point sizes, screen sizes and fov values.
-  const double limitAngle = 2 * pointSize / screenSizePx * factory->mMap.fieldOfView();
+  const double limitAngle = 2. * pointSize / screenSizePx * factory->mMap.fieldOfView();
 
   // adjust ray to elevation properties
   const QgsVector3D adjustedRayOrigin = QgsVector3D( rayOriginMapCoords.x(), rayOriginMapCoords.y(), ( rayOriginMapCoords.z() -  factory->mZValueOffset ) / factory->mZValueScale );
@@ -292,7 +292,7 @@ QVector<QgsRayCastingUtils::RayHit> QgsPointCloudLayerChunkedEntity::rayIntersec
   QgsPointCloudRequest request;
   request.setAttributes( attributeCollection );
 
-  double minDist = -1;
+  double minDist = -1.;
   const QList<QgsChunkNode *> activeNodes = this->activeNodes();
   for ( QgsChunkNode *node : activeNodes )
   {

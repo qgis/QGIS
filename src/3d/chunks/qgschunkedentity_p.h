@@ -125,7 +125,11 @@ class QgsChunkedEntity : public Qt3DCore::QEntity
     static double calculateEntityGpuMemorySize( Qt3DCore::QEntity *entity );
 
     /**
-     * Checks if \a ray intersects the entity and returns information about the hits.
+     * Checks if \a ray intersects the entity by using the specified parameters in \a context and returns information about the hits.
+     * This method is typically used by map tools that need to identify the exact location on a 3d entity that the mouse cursor points at,
+     * as well as properties of the intersected entity (fid for vector layers, point cloud attributes for point cloud layers etc). The camera position
+     * is used as the ray's origin in that case.
+     * The number of successful hits returned depends on the entity's implementation (eg. point cloud entities use a tolerance and return multiple 'near' hits
      * \note The ray uses World coordinates.
      * \since QGIS 3.32
      */

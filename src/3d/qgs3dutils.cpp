@@ -813,7 +813,7 @@ QHash<QgsMapLayer *, QVector<QgsRayCastingUtils::RayHit>> Qgs3DUtils::castRay( Q
   {
     const QVector<QgsRayCastingUtils::RayHit> result = terrain->rayIntersection( r, context );
     if ( !result.isEmpty() )
-      results[ nullptr ] = result;
+      results[ nullptr ] = result;  // Terrain hits are not tied to a layer so we use nullptr as their key here
   }
   return results;
 }

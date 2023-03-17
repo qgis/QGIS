@@ -92,6 +92,7 @@ class _3D_EXPORT QgsRubberBand3D
 
     void moveLastPoint( const QgsPoint &pt );
 
+    //! Sets whether the marker on the last vertex is displayed. We typically do not want it displayed while it is still tracked by the mouse.
     void setShowLastMarker( bool show ) { mShowLastMarker = show; }
 
   private:
