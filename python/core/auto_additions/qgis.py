@@ -2590,7 +2590,8 @@ Qgis.ScriptLanguage.__doc__ = 'Scripting languages.\n\n.. versionadded:: 3.30\n\
 Qgis.ScriptLanguage.baseClass = Qgis
 # monkey patching scoped based enum
 Qgis.ScriptLanguageCapability.Reformat.__doc__ = "Language supports automatic code reformatting"
-Qgis.ScriptLanguageCapability.__doc__ = 'Script language capabilities.\n\nThe flags reflect the support capabilities of a scripting language.\n\n.. versionadded:: 3.32\n\n' + '* ``Reformat``: ' + Qgis.ScriptLanguageCapability.Reformat.__doc__
+Qgis.ScriptLanguageCapability.CheckSyntax.__doc__ = "Language supports syntax checking"
+Qgis.ScriptLanguageCapability.__doc__ = 'Script language capabilities.\n\nThe flags reflect the support capabilities of a scripting language.\n\n.. versionadded:: 3.32\n\n' + '* ``Reformat``: ' + Qgis.ScriptLanguageCapability.Reformat.__doc__ + '\n' + '* ``CheckSyntax``: ' + Qgis.ScriptLanguageCapability.CheckSyntax.__doc__
 # --
 Qgis.ScriptLanguageCapability.baseClass = Qgis
 Qgis.ScriptLanguageCapabilities.baseClass = Qgis

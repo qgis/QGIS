@@ -374,13 +374,13 @@ QString QgsCodeEditorPython::reformatCodeString( const QString &string )
   if ( settings.value( "pythonConsole/sortImports", true ).toBool() )
   {
     const QString defineSortImports = QStringLiteral(
-                                        "def __qgis_sort_imports(str):\n"
+                                        "def __qgis_sort_imports(script):\n"
                                         "  try:\n"
                                         "    import isort\n"
                                         "  except ImportError:\n"
                                         "    return '_ImportError'\n"
                                         "  options={'line_length': %1, 'profile': '%2', 'known_first_party': ['qgis', 'console', 'processing', 'plugins']}\n"
-                                        "  return isort.code(str, **options)\n" )
+                                        "  return isort.code(script, **options)\n" )
                                       .arg( maxLineLength )
                                       .arg( formatter == QLatin1String( "black" ) ? QStringLiteral( "black" ) : QString() );
 
@@ -415,13 +415,13 @@ QString QgsCodeEditorPython::reformatCodeString( const QString &string )
     const int level = settings.value( QStringLiteral( "pythonConsole/autopep8Level" ), 1 ).toInt();
 
     const QString defineReformat = QStringLiteral(
-                                     "def __qgis_reformat(str):\n"
+                                     "def __qgis_reformat(script):\n"
                                      "  try:\n"
                                      "    import autopep8\n"
                                      "  except ImportError:\n"
                                      "    return '_ImportError'\n"
                                      "  options={'aggressive': %1, 'max_line_length': %2}\n"
-                                     "  return autopep8.fix_code(str, options=options)\n" )
+                                     "  return autopep8.fix_code(script, options=options)\n" )
                                    .arg( level )
                                    .arg( maxLineLength );
 
@@ -455,13 +455,13 @@ QString QgsCodeEditorPython::reformatCodeString( const QString &string )
     const bool normalize = settings.value( QStringLiteral( "pythonConsole/blackNormalizeQuotes" ), true ).toBool();
 
     const QString defineReformat = QStringLiteral(
-                                     "def __qgis_reformat(str):\n"
+                                     "def __qgis_reformat(script):\n"
                                      "  try:\n"
                                      "    import black\n"
                                      "  except ImportError:\n"
                                      "    return '_ImportError'\n"
                                      "  options={'string_normalization': %1, 'line_length': %2}\n"
-                                     "  return black.format_str(str, mode=black.Mode(**options))\n" )
+                                     "  return black.format_str(script, mode=black.Mode(**options))\n" )
                                    .arg( QgsProcessingUtils::variantToPythonLiteral( normalize ) )
                                    .arg( maxLineLength );
 
@@ -621,10 +621,70 @@ void QgsCodeEditorPython::updateCapabilities()
   if ( !QgsPythonRunner::isValid() )
     return;
 
+  mCapabilities |= Qgis::ScriptLanguageCapability::CheckSyntax;
+
   // we could potentially check for autopep8/black import here and reflect the capabilty accordingly.
   // (current approach is to to always indicate this capability and raise a user-friendly warning
   // when attempting to reformat if the libraries can't be imported)
   mCapabilities |= Qgis::ScriptLanguageCapability::Reformat;
+}
+
+bool QgsCodeEditorPython::checkSyntax()
+{
+  clearWarnings();
+
+  if ( !QgsPythonRunner::isValid() )
+  {
+    return true;
+  }
+
+  const QString originalText = text();
+
+  const QString defineCheckSyntax = QStringLiteral(
+                                      "def __check_syntax(script):\n"
+                                      "  try:\n"
+                                      "    compile(script.encode('utf-8'), '', 'exec')\n"
+                                      "  except SyntaxError as detail:\n"
+                                      "    eline = detail.lineno or 1\n"
+                                      "    eline -= 1\n"
+                                      "    ecolumn = detail.offset or 1\n"
+                                      "    edescr = detail.msg\n"
+                                      "    return '!!!!'.join([str(eline), str(ecolumn), edescr])\n"
+                                      "  return ''" );
+
+  if ( !QgsPythonRunner::run( defineCheckSyntax ) )
+  {
+    QgsDebugMsg( QStringLiteral( "Error running script: %1" ).arg( defineCheckSyntax ) );
+    return true;
+  }
+
+  const QString script = QStringLiteral( "__check_syntax(%1)" ).arg( QgsProcessingUtils::stringToPythonLiteral( originalText ) );
+  QString result;
+  if ( QgsPythonRunner::eval( script, result ) )
+  {
+    if ( result.size() == 0 )
+    {
+      return true;
+    }
+    else
+    {
+      const QStringList parts = result.split( QStringLiteral( "!!!!" ) );
+      if ( parts.size() == 3 )
+      {
+        const int line = parts.at( 0 ).toInt();
+        const int column = parts.at( 1 ).toInt();
+        addWarning( line, parts.at( 2 ) );
+        setCursorPosition( line, column - 1 );
+        ensureLineVisible( line );
+      }
+      return false;
+    }
+  }
+  else
+  {
+    QgsDebugMsg( QStringLiteral( "Error running script: %1" ).arg( script ) );
+    return true;
+  }
 }
 
 void QgsCodeEditorPython::searchSelectedTextInPyQGISDocs()

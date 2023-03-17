@@ -2735,6 +2735,7 @@ class CORE_EXPORT Qgis
     enum class ScriptLanguageCapability : int
     {
       Reformat = 1 << 0, //!< Language supports automatic code reformatting
+      CheckSyntax = 1 << 1, //!< Language supports syntax checking
     };
     Q_ENUM( ScriptLanguageCapability )
 

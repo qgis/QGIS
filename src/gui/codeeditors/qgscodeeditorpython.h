@@ -104,6 +104,8 @@ class GUI_EXPORT QgsCodeEditorPython : public QgsCodeEditor
      */
     void updateCapabilities();
 
+    bool checkSyntax() override;
+
   public slots:
 
     /**

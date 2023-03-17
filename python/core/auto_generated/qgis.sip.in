@@ -1592,6 +1592,7 @@ The development version
     enum class ScriptLanguageCapability
     {
       Reformat,
+      CheckSyntax,
     };
 
     typedef QFlags<Qgis::ScriptLanguageCapability> ScriptLanguageCapabilities;
