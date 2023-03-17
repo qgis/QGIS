@@ -216,30 +216,56 @@ void QgsCodeEditor::keyPressEvent( QKeyEvent *event )
 
 void QgsCodeEditor::contextMenuEvent( QContextMenuEvent *event )
 {
-  if ( mMode != QgsCodeEditor::Mode::CommandInput )
+  switch ( mMode )
   {
-    QsciScintilla::contextMenuEvent( event );
-    return;
+    case Mode::ScriptEditor:
+    {
+      QMenu *menu = createStandardContextMenu();
+      menu->setAttribute( Qt::WA_DeleteOnClose );
+
+      if ( languageCapabilities() & Qgis::ScriptLanguageCapability::Reformat )
+      {
+        menu->addSeparator();
+
+        QAction *reformatAction = new QAction( tr( "Reformat Code" ), menu );
+        reformatAction->setEnabled( !isReadOnly() );
+        connect( reformatAction, &QAction::triggered, this, &QgsCodeEditor::reformatCode );
+        menu->addAction( reformatAction );
+      }
+
+      populateContextMenu( menu );
+
+      menu->exec( mapToGlobal( event->pos() ) );
+      break;
+    }
+
+    case Mode::CommandInput:
+    {
+      QMenu *menu = new QMenu( this );
+      QMenu *historySubMenu = new QMenu( tr( "Command History" ), menu );
+
+      historySubMenu->addAction( tr( "Show" ), this, &QgsCodeEditor::showHistory, QStringLiteral( "Ctrl+Shift+SPACE" ) );
+      historySubMenu->addAction( tr( "Clear File" ), this, &QgsCodeEditor::clearPersistentHistory );
+      historySubMenu->addAction( tr( "Clear Session" ), this, &QgsCodeEditor::clearSessionHistory );
+
+      menu->addMenu( historySubMenu );
+      menu->addSeparator();
+
+      QAction *copyAction = menu->addAction( QgsApplication::getThemeIcon( "mActionEditCopy.svg" ), tr( "Copy" ), this, &QgsCodeEditor::copy, QKeySequence::Copy );
+      QAction *pasteAction = menu->addAction( QgsApplication::getThemeIcon( "mActionEditPaste.svg" ), tr( "Paste" ), this, &QgsCodeEditor::paste, QKeySequence::Paste );
+      copyAction->setEnabled( hasSelectedText() );
+      pasteAction->setEnabled( !QApplication::clipboard()->text().isEmpty() );
+
+      populateContextMenu( menu );
+
+      menu->exec( mapToGlobal( event->pos() ) );
+      break;
+    }
+
+    case Mode::OutputDisplay:
+      QsciScintilla::contextMenuEvent( event );
+      break;
   }
-
-  QMenu *menu = new QMenu( this );
-  QMenu *historySubMenu = new QMenu( tr( "Command History" ), menu );
-
-  historySubMenu->addAction( tr( "Show" ), this, &QgsCodeEditor::showHistory, QStringLiteral( "Ctrl+Shift+SPACE" ) );
-  historySubMenu->addAction( tr( "Clear File" ), this, &QgsCodeEditor::clearPersistentHistory );
-  historySubMenu->addAction( tr( "Clear Session" ), this, &QgsCodeEditor::clearSessionHistory );
-
-  menu->addMenu( historySubMenu );
-  menu->addSeparator();
-
-  QAction *copyAction = menu->addAction( QgsApplication::getThemeIcon( "mActionEditCopy.svg" ), tr( "Copy" ), this, &QgsCodeEditor::copy, QKeySequence::Copy );
-  QAction *pasteAction = menu->addAction( QgsApplication::getThemeIcon( "mActionEditPaste.svg" ), tr( "Paste" ), this, &QgsCodeEditor::paste, QKeySequence::Paste );
-  copyAction->setEnabled( hasSelectedText() );
-  pasteAction->setEnabled( !QApplication::clipboard()->text().isEmpty() );
-
-  populateContextMenu( menu );
-
-  menu->exec( mapToGlobal( event->pos() ) );
 }
 
 void QgsCodeEditor::initializeLexer()
