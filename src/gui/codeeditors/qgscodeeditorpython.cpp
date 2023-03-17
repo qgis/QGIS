@@ -454,6 +454,12 @@ QString QgsCodeEditorPython::reformatCodeString( const QString &string )
   {
     const bool normalize = settings.value( QStringLiteral( "pythonConsole/blackNormalizeQuotes" ), true ).toBool();
 
+    if ( !checkSyntax() )
+    {
+      showMessage( tr( "Reformat Code" ), tr( "Code formatting failed -- the code contains syntax errors" ), Qgis::MessageLevel::Warning );
+      return newText;
+    }
+
     const QString defineReformat = QStringLiteral(
                                      "def __qgis_reformat(script):\n"
                                      "  try:\n"
