@@ -519,11 +519,20 @@ actions to the context menu.
 .. versionadded:: 3.30
 %End
 
-    virtual QString reformatCodeString( const QString &string, bool &ok /Out/, QString &error /Out/ ) const;
+    virtual QString reformatCodeString( const QString &string );
 %Docstring
 Applies code reformatting to a ``string`` and returns the result.
 
 This is only supported for editors which return the Qgis.ScriptLanguageCapability.Reformat capability from :py:func:`~QgsCodeEditor.languageCapabilities`.
+
+.. versionadded:: 3.32
+%End
+
+    virtual void showMessage( const QString &title, const QString &message, Qgis::MessageLevel level );
+%Docstring
+Shows a user facing message (eg a warning message).
+
+The default implementation uses QMessageBox.
 
 .. versionadded:: 3.32
 %End
