@@ -224,14 +224,27 @@ void QgsCodeEditor::contextMenuEvent( QContextMenuEvent *event )
       QMenu *menu = createStandardContextMenu();
       menu->setAttribute( Qt::WA_DeleteOnClose );
 
-      if ( languageCapabilities() & Qgis::ScriptLanguageCapability::Reformat )
+      if ( ( languageCapabilities() & Qgis::ScriptLanguageCapability::Reformat ) ||
+           ( languageCapabilities() & Qgis::ScriptLanguageCapability::CheckSyntax ) )
       {
         menu->addSeparator();
+      }
 
+      if ( languageCapabilities() & Qgis::ScriptLanguageCapability::Reformat )
+      {
         QAction *reformatAction = new QAction( tr( "Reformat Code" ), menu );
+        reformatAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "console/iconFormatCode.svg" ) ) );
         reformatAction->setEnabled( !isReadOnly() );
         connect( reformatAction, &QAction::triggered, this, &QgsCodeEditor::reformatCode );
         menu->addAction( reformatAction );
+      }
+
+      if ( languageCapabilities() & Qgis::ScriptLanguageCapability::Reformat )
+      {
+        QAction *syntaxCheckAction = new QAction( tr( "Check Syntax" ), menu );
+        syntaxCheckAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "console/iconSyntaxErrorConsole.svg" ) ) );
+        connect( syntaxCheckAction, &QAction::triggered, this, &QgsCodeEditor::checkSyntax );
+        menu->addAction( syntaxCheckAction );
       }
 
       populateContextMenu( menu );
@@ -707,6 +720,11 @@ void QgsCodeEditor::reformatCode()
   setCursorPosition( line, index );
   verticalScrollBar()->setValue( oldScrollValue );
   endUndoAction();
+}
+
+bool QgsCodeEditor::checkSyntax()
+{
+  return true;
 }
 
 QStringList QgsCodeEditor::history() const

@@ -446,6 +446,15 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
      */
     void reformatCode();
 
+    /**
+     * Applies syntax checking to the editor.
+     *
+     * This is only supported for editors which return the Qgis::ScriptLanguageCapability::CheckSyntax capability from languageCapabilities().
+     *
+     * \since QGIS 3.32
+     */
+    virtual bool checkSyntax();
+
   signals:
 
     /**

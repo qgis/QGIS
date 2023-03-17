@@ -85,6 +85,9 @@ Updates the editor capabilities.
 .. versionadded:: 3.32
 %End
 
+    virtual bool checkSyntax();
+
+
   public slots:
 
     void searchSelectedTextInPyQGISDocs();
