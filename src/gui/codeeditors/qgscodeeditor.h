@@ -169,6 +169,13 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
     virtual Qgis::ScriptLanguage language() const;
 
     /**
+     * Returns the associated scripting language capabilities.
+     *
+     * \since QGIS 3.32
+     */
+    virtual Qgis::ScriptLanguageCapabilities languageCapabilities() const;
+
+    /**
      * Returns a user-friendly, translated name of the specified script \a language.
      *
      * \since QGIS 3.30
@@ -430,6 +437,15 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
      */
     bool writeHistoryFile();
 
+    /**
+     * Applies code reformatting to the editor.
+     *
+     * This is only supported for editors which return the Qgis::ScriptLanguageCapability::Reformat capability from languageCapabilities().
+     *
+     * \since QGIS 3.32
+     */
+    void reformatCode();
+
   signals:
 
     /**
@@ -513,6 +529,15 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
      * \since QGIS 3.30
      */
     virtual void populateContextMenu( QMenu *menu );
+
+    /**
+     * Applies code reformatting to a \a string and returns the result.
+     *
+     * This is only supported for editors which return the Qgis::ScriptLanguageCapability::Reformat capability from languageCapabilities().
+     *
+     * \since QGIS 3.32
+     */
+    virtual QString reformatCodeString( const QString &string, bool &ok SIP_OUT, QString &error SIP_OUT ) const;
 
   private:
 

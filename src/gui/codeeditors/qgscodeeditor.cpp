@@ -21,6 +21,7 @@
 #include "qgsgui.h"
 #include "qgscodeeditorcolorschemeregistry.h"
 #include "qgscodeeditorhistorydialog.h"
+#include "qgsstringutils.h"
 
 #include <QLabel>
 #include <QWidget>
@@ -31,6 +32,7 @@
 #include <Qsci/qscistyle.h>
 #include <QMenu>
 #include <QClipboard>
+#include <QScrollBar>
 
 QMap< QgsCodeEditorColorScheme::ColorRole, QString > QgsCodeEditor::sColorRoleToSettingsKey
 {
@@ -377,6 +379,11 @@ Qgis::ScriptLanguage QgsCodeEditor::language() const
   return Qgis::ScriptLanguage::Unknown;
 }
 
+Qgis::ScriptLanguageCapabilities QgsCodeEditor::languageCapabilities() const
+{
+  return Qgis::ScriptLanguageCapabilities();
+}
+
 QString QgsCodeEditor::languageToString( Qgis::ScriptLanguage language )
 {
   switch ( language )
@@ -542,6 +549,12 @@ void QgsCodeEditor::populateContextMenu( QMenu * )
 
 }
 
+QString QgsCodeEditor::reformatCodeString( const QString &string, bool &ok, QString & ) const
+{
+  ok = false;
+  return string;
+}
+
 void QgsCodeEditor::updatePrompt()
 {
   if ( mInterpreter )
@@ -560,6 +573,103 @@ void QgsCodeEditor::setInterpreter( QgsCodeInterpreter *newInterpreter )
 {
   mInterpreter = newInterpreter;
   updatePrompt();
+}
+
+// Find the source substring index that most closely matches the target string
+int findMinimalDistanceIndex( const QString &source, const QString &target )
+{
+  const int index = std::min( source.length(), target.length() );
+
+  const int d0 = QgsStringUtils::levenshteinDistance( source.left( index ), target );
+  if ( d0 == 0 )
+    return index;
+
+  int refDistanceMore = d0;
+  int refIndexMore = index;
+  if ( index < source.length() - 1 )
+  {
+    while ( true )
+    {
+      const int newDistance = QgsStringUtils::levenshteinDistance( source.left( refIndexMore + 1 ), target );
+      if ( newDistance <= refDistanceMore )
+      {
+        refDistanceMore = newDistance;
+        refIndexMore++;
+        if ( refIndexMore == source.length() - 1 )
+          break;
+      }
+      else
+      {
+        break;
+      }
+    }
+  }
+
+  int refDistanceLess = d0;
+  int refIndexLess = index;
+  if ( index > 0 )
+  {
+    while ( true )
+    {
+      const int newDistance = QgsStringUtils::levenshteinDistance( source.left( refIndexLess - 1 ), target );
+      if ( newDistance <= refDistanceLess )
+      {
+        refDistanceLess = newDistance;
+        refIndexLess--;
+        if ( refIndexLess == 0 )
+          break;
+      }
+      else
+      {
+        break;
+      }
+    }
+  }
+
+  if ( refDistanceMore < refDistanceLess )
+    return refIndexMore;
+  else
+    return refIndexLess;
+}
+
+void QgsCodeEditor::reformatCode()
+{
+  if ( !( languageCapabilities() & Qgis::ScriptLanguageCapability::Reformat ) )
+    return;
+
+  int line = 0;
+  int index = 0;
+  getCursorPosition( &line, &index );
+  const QString textBeforeCursor = text( 0, positionFromLineIndex( line, index ) );
+
+  const QString originalText = text();
+
+  bool ok = false;
+  QString error;
+  const QString newText = reformatCodeString( originalText, ok, error );
+  if ( !ok )
+  {
+    if ( !error.isEmpty() )
+    {
+      // TODO raise
+    }
+  }
+
+  if ( originalText == newText )
+    return;
+
+  // try to preserve the cursor position and scroll position
+  const int oldScrollValue = verticalScrollBar()->value();
+  const int linearPosition = findMinimalDistanceIndex( newText, textBeforeCursor );
+
+  beginUndoAction();
+  selectAll();
+  removeSelectedText();
+  insert( newText );
+  lineIndexFromPosition( linearPosition, &line, &index );
+  setCursorPosition( line, index );
+  verticalScrollBar()->setValue( oldScrollValue );
+  endUndoAction();
 }
 
 QStringList QgsCodeEditor::history() const
