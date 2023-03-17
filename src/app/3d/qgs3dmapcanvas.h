@@ -20,6 +20,8 @@
 #include <Qt3DRender/QRenderCapture>
 #include <QSplitter>
 
+#include "qgis_app.h"
+
 #include "qgsrange.h"
 #include "qgscameracontroller.h"
 #include "qgsrectangle.h"
@@ -43,7 +45,7 @@ class Qgs3DNavigationWidget;
 class QgsTemporalController;
 class QgsRubberBand;
 
-class Qgs3DMapCanvas : public QWidget
+class APP_EXPORT Qgs3DMapCanvas : public QWidget
 {
     Q_OBJECT
   public:
