@@ -33,6 +33,7 @@
 #include <QMenu>
 #include <QClipboard>
 #include <QScrollBar>
+#include <QMessageBox>
 
 QMap< QgsCodeEditorColorScheme::ColorRole, QString > QgsCodeEditor::sColorRoleToSettingsKey
 {
@@ -575,10 +576,29 @@ void QgsCodeEditor::populateContextMenu( QMenu * )
 
 }
 
-QString QgsCodeEditor::reformatCodeString( const QString &string, bool &ok, QString & ) const
+QString QgsCodeEditor::reformatCodeString( const QString &string )
 {
-  ok = false;
   return string;
+}
+
+void QgsCodeEditor::showMessage( const QString &title, const QString &message, Qgis::MessageLevel level )
+{
+  switch ( level )
+  {
+    case Qgis::Info:
+    case Qgis::Success:
+    case Qgis::NoLevel:
+      QMessageBox::information( this, title, message );
+      break;
+
+    case Qgis::Warning:
+      QMessageBox::warning( this, title, message );
+      break;
+
+    case Qgis::Critical:
+      QMessageBox::critical( this, title, message );
+      break;
+  }
 }
 
 void QgsCodeEditor::updatePrompt()
@@ -670,16 +690,7 @@ void QgsCodeEditor::reformatCode()
 
   const QString originalText = text();
 
-  bool ok = false;
-  QString error;
-  const QString newText = reformatCodeString( originalText, ok, error );
-  if ( !ok )
-  {
-    if ( !error.isEmpty() )
-    {
-      // TODO raise
-    }
-  }
+  const QString newText = reformatCodeString( originalText );
 
   if ( originalText == newText )
     return;

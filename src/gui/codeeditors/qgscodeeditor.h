@@ -537,7 +537,16 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
      *
      * \since QGIS 3.32
      */
-    virtual QString reformatCodeString( const QString &string, bool &ok SIP_OUT, QString &error SIP_OUT ) const;
+    virtual QString reformatCodeString( const QString &string );
+
+    /**
+     * Shows a user facing message (eg a warning message).
+     *
+     * The default implementation uses QMessageBox.
+     *
+     * \since QGIS 3.32
+     */
+    virtual void showMessage( const QString &title, const QString &message, Qgis::MessageLevel level );
 
   private:
 

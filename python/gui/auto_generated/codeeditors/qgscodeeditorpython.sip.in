@@ -42,6 +42,8 @@ Construct a new Python editor.
 
     virtual Qgis::ScriptLanguage language() const;
 
+    virtual Qgis::ScriptLanguageCapabilities languageCapabilities() const;
+
 
     void loadAPIs( const QList<QString> &filenames );
 %Docstring
@@ -76,6 +78,13 @@ Returns the character after the cursor, or an empty string if the cursot is set 
 .. versionadded:: 3.30
 %End
 
+    void updateCapabilities();
+%Docstring
+Updates the editor capabilities.
+
+.. versionadded:: 3.32
+%End
+
   public slots:
 
     void searchSelectedTextInPyQGISDocs();
@@ -96,8 +105,9 @@ Toggle comment for the selected text.
 
     virtual void initializeLexer();
 
-
     virtual void keyPressEvent( QKeyEvent *event );
+    virtual QString reformatCodeString( const QString &string );
+
 
   protected slots:
 

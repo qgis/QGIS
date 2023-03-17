@@ -63,6 +63,7 @@ class GUI_EXPORT QgsCodeEditorPython : public QgsCodeEditor
                          QgsCodeEditor::Mode mode = QgsCodeEditor::Mode::ScriptEditor );
 
     Qgis::ScriptLanguage language() const override;
+    Qgis::ScriptLanguageCapabilities languageCapabilities() const override;
 
     /**
      * Load APIs from one or more files
@@ -96,6 +97,13 @@ class GUI_EXPORT QgsCodeEditorPython : public QgsCodeEditor
      */
     QString characterAfterCursor() const;
 
+    /**
+     * Updates the editor capabilities.
+     *
+     * \since QGIS 3.32
+     */
+    void updateCapabilities();
+
   public slots:
 
     /**
@@ -115,8 +123,8 @@ class GUI_EXPORT QgsCodeEditorPython : public QgsCodeEditor
   protected:
 
     void initializeLexer() override;
-
     virtual void keyPressEvent( QKeyEvent *event ) override;
+    QString reformatCodeString( const QString &string ) override;
 
   protected slots:
 
@@ -131,6 +139,8 @@ class GUI_EXPORT QgsCodeEditorPython : public QgsCodeEditor
 
     QList<QString> mAPISFilesList;
     QString mPapFile;
+
+    Qgis::ScriptLanguageCapabilities mCapabilities;
 
     static const QMap<QString, QString> sCompletionPairs;
 
