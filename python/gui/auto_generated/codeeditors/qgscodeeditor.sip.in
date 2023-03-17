@@ -130,6 +130,13 @@ Returns the associated scripting language.
 .. versionadded:: 3.30
 %End
 
+    virtual Qgis::ScriptLanguageCapabilities languageCapabilities() const;
+%Docstring
+Returns the associated scripting language capabilities.
+
+.. versionadded:: 3.32
+%End
+
     static QString languageToString( Qgis::ScriptLanguage language );
 %Docstring
 Returns a user-friendly, translated name of the specified script ``language``.
@@ -414,6 +421,15 @@ Stores the commands executed in the editor to the persistent history file.
 .. versionadded:: 3.30
 %End
 
+    void reformatCode();
+%Docstring
+Applies code reformatting to the editor.
+
+This is only supported for editors which return the Qgis.ScriptLanguageCapability.Reformat capability from :py:func:`~QgsCodeEditor.languageCapabilities`.
+
+.. versionadded:: 3.32
+%End
+
   signals:
 
     void sessionHistoryCleared();
@@ -501,6 +517,15 @@ This method provides an opportunity for subclasses to add additional non-standar
 actions to the context menu.
 
 .. versionadded:: 3.30
+%End
+
+    virtual QString reformatCodeString( const QString &string, bool &ok /Out/, QString &error /Out/ ) const;
+%Docstring
+Applies code reformatting to a ``string`` and returns the result.
+
+This is only supported for editors which return the Qgis.ScriptLanguageCapability.Reformat capability from :py:func:`~QgsCodeEditor.languageCapabilities`.
+
+.. versionadded:: 3.32
 %End
 
 };
