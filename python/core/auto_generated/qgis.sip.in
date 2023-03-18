@@ -687,8 +687,8 @@ The development version
       Gpsd,
     };
 
-    enum class GpsConnectionStatus
-    {
+    enum class DeviceConnectionStatus
+      {
       Disconnected,
       Connecting,
       Connected,
