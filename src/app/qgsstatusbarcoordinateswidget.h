@@ -26,11 +26,9 @@ class QValidator;
 
 class QgsMapCanvas;
 
+#include <QWidget>
 #include "qgis_app.h"
 #include "qgspointxy.h"
-
-#include <QWidget>
-#include <QElapsedTimer>
 
 class APP_EXPORT QgsStatusBarCoordinatesWidget : public QWidget
 {
@@ -58,6 +56,7 @@ class APP_EXPORT QgsStatusBarCoordinatesWidget : public QWidget
 
   private slots:
     void showMouseCoordinates( const QgsPointXY &p );
+    //void showMouseGeoCoordinates(const QgsPointXY& Qp);
     void extentsViewToggled( bool flag );
     void validateCoordinates();
     void dizzy();
@@ -68,7 +67,24 @@ class APP_EXPORT QgsStatusBarCoordinatesWidget : public QWidget
     void showExtent();
     void ensureCoordinatesVisible();
     void updateCoordinateDisplay();
+    void updateCoordinateDisplayUpdated(const QgsPointXY& Qp);
     void coordinateDisplaySettingsChanged();
+
+//Mil Grid Function declaration Nihcas added
+  inline QString LatLongToMilgridConversion(const QgsPointXY& p);
+  inline QString LatLongTopoSheetConversion(const QgsPointXY& p);
+  inline QString eveLatLongToMilgridConversion(const QgsPointXY& p);
+  inline QString eveLatLongTopoSheetConversion(const QgsPointXY& p);
+
+  char* check_row_2_sides(int r);
+  int check_domain_2_sides(float lat1, float long1, float lat2, float long2, double latitude, double longitude);
+  char* check_row_3_sides(int r);
+  int check_domain_3_sides(float lat1, float long1, float lat2, float long2, double latitude, double longitude);
+  char* check_row_4_sides(int r);
+  int check_domain_4_sides(float lat1, float long1, float lat2, float long2, double latitude, double longitude);
+  int* checkarray(int pe_local, int pn_local);
+  //Nihcas added above
+
 
   private:
     void refreshMapCanvas();
@@ -77,7 +93,11 @@ class APP_EXPORT QgsStatusBarCoordinatesWidget : public QWidget
     QToolButton *mToggleExtentsViewButton = nullptr;
     //! Widget that will live on the statusbar to display "Coordinate / Extent"
     QLabel *mLabel = nullptr;
-
+	  QLabel* mLabeldgr = nullptr;
+	  QLabel* mLabeldsheet = nullptr;
+	  QLabel* mLabelegr = nullptr;
+	  QLabel* mLabelesheet = nullptr;
+    QLabel* mLabelgeocord = nullptr;
     QValidator *mCoordsEditValidator = nullptr;
     QTimer *mDizzyTimer = nullptr;
     QgsMapCanvas *mMapCanvas = nullptr;
@@ -86,11 +106,19 @@ class APP_EXPORT QgsStatusBarCoordinatesWidget : public QWidget
 
     //! The number of decimal places to use if not automatic
     unsigned int mMousePrecisionDecimalPlaces;
+	
+	//Variables for milgrid controls Nihcas added
+
+    QLineEdit* mCoordsGeocord = nullptr;
+    QLineEdit* mCoordsEditMgrid = nullptr;
+	  QLineEdit* mCoordsEditMgrideve = nullptr;
+	  QLineEdit * mCoordsEditMsheet = nullptr;
+	  QLineEdit * mCoordsEditMsheeteve = nullptr;
+    //! The validator for the mCoordsEdit
+	QValidator* mCoordsEditMgridValidator;
+	QValidator* mCoordsEditMgrideveValidator;
 
     QgsPointXY mLastCoordinate;
-
-    bool mIsFirstSizeChange = true;
-    QElapsedTimer mLastSizeChangeTimer;
 
 };
 
