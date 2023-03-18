@@ -1,0 +1,18 @@
+{
+  "name": "sensor_data",
+  "type": "function",
+  "groups": ["Sensors"],
+  "description": "Returns the last captured value (or values as a map for sensors which report multiple values) from a registered sensor.",
+  "arguments": [{
+    "arg": "name",
+    "description": "the sensor name"
+  },{
+    "arg": "expiration",
+    "description": "maximum millisecond since last captured value allowed",
+    "optional": true
+  }],
+  "examples": [{
+    "expression": "sensor_data('geiger_1')",
+    "returns": "'2000'"
+  }]
+}

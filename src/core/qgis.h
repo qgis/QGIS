@@ -1121,13 +1121,13 @@ class CORE_EXPORT Qgis
      *
      * \since QGIS 3.30
      */
-    enum class GpsConnectionStatus : int
-    {
+    enum class DeviceConnectionStatus SIP_MONKEYPATCH_SCOPEENUM_UNNEST( Qgis, GpsConnectionStatus ) : int
+      {
       Disconnected, //!< Device is disconnected
       Connecting, //!< Device is connecting
       Connected, //!< Device is successfully connected
     };
-    Q_ENUM( GpsConnectionStatus )
+    Q_ENUM( DeviceConnectionStatus )
 
     /**
      * GPS fix status.

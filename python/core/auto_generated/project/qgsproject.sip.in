@@ -782,6 +782,15 @@ the project.
 %End
 
 
+    QgsSensorManager *sensorManager();
+%Docstring
+Returns the project's sensor manager, which manages sensors within
+the project.
+
+.. versionadded:: 3.32
+%End
+
+
     QgsProjectViewSettings *viewSettings();
 %Docstring
 Returns the project's view settings, which contains settings and properties

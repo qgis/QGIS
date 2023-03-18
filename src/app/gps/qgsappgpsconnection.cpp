@@ -136,7 +136,7 @@ void QgsAppGpsConnection::connectGps()
         QgisApp::instance()->statusBarIface()->clearMessage();
         showGpsConnectFailureWarning( tr( "No path to the GPS port is specified. Please set a path then try again." ) );
         emit connectionError( tr( "No path to the GPS port is specified. Please set a path then try again." ) );
-        emit statusChanged( Qgis::GpsConnectionStatus::Disconnected );
+        emit statusChanged( Qgis::DeviceConnectionStatus::Disconnected );
         return;
       }
       break;
@@ -148,7 +148,7 @@ void QgsAppGpsConnection::connectGps()
   }
 
   emit connecting();
-  emit statusChanged( Qgis::GpsConnectionStatus::Connecting );
+  emit statusChanged( Qgis::DeviceConnectionStatus::Connecting );
   emit fixStatusChanged( Qgis::GpsFixStatus::NoData );
 
   QgisApp::instance()->statusBarIface()->clearMessage();
@@ -167,7 +167,7 @@ void QgsAppGpsConnection::disconnectGps()
   mConnection = nullptr;
 
   emit disconnected();
-  emit statusChanged( Qgis::GpsConnectionStatus::Disconnected );
+  emit statusChanged( Qgis::DeviceConnectionStatus::Disconnected );
   emit fixStatusChanged( Qgis::GpsFixStatus::NoData );
 
   QgisApp::instance()->statusBarIface()->clearMessage();
@@ -204,7 +204,7 @@ void QgsAppGpsConnection::onConnected( QgsGpsConnection *conn )
   QgsApplication::gpsConnectionRegistry()->registerConnection( mConnection );
 
   emit connected();
-  emit statusChanged( Qgis::GpsConnectionStatus::Connected );
+  emit statusChanged( Qgis::DeviceConnectionStatus::Connected );
   showMessage( Qgis::MessageLevel::Success, tr( "Connected to GPS device." ) );
 }
 

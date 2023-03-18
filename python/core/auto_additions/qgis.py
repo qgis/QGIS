@@ -1161,13 +1161,20 @@ Qgis.GpsConnectionType.Gpsd.__doc__ = "GPSD device"
 Qgis.GpsConnectionType.__doc__ = 'GPS connection types.\n\n.. versionadded:: 3.30\n\n' + '* ``Automatic``: ' + Qgis.GpsConnectionType.Automatic.__doc__ + '\n' + '* ``Internal``: ' + Qgis.GpsConnectionType.Internal.__doc__ + '\n' + '* ``Serial``: ' + Qgis.GpsConnectionType.Serial.__doc__ + '\n' + '* ``Gpsd``: ' + Qgis.GpsConnectionType.Gpsd.__doc__
 # --
 Qgis.GpsConnectionType.baseClass = Qgis
+Qgis.GpsConnectionStatus = Qgis.DeviceConnectionStatus
 # monkey patching scoped based enum
-Qgis.GpsConnectionStatus.Disconnected.__doc__ = "Device is disconnected"
-Qgis.GpsConnectionStatus.Connecting.__doc__ = "Device is connecting"
-Qgis.GpsConnectionStatus.Connected.__doc__ = "Device is successfully connected"
-Qgis.GpsConnectionStatus.__doc__ = 'GPS connection status.\n\n.. versionadded:: 3.30\n\n' + '* ``Disconnected``: ' + Qgis.GpsConnectionStatus.Disconnected.__doc__ + '\n' + '* ``Connecting``: ' + Qgis.GpsConnectionStatus.Connecting.__doc__ + '\n' + '* ``Connected``: ' + Qgis.GpsConnectionStatus.Connected.__doc__
+Qgis.Disconnected = Qgis.DeviceConnectionStatus.Disconnected
+Qgis.Disconnected.is_monkey_patched = True
+Qgis.Disconnected.__doc__ = "Device is disconnected"
+Qgis.Connecting = Qgis.DeviceConnectionStatus.Connecting
+Qgis.Connecting.is_monkey_patched = True
+Qgis.Connecting.__doc__ = "Device is connecting"
+Qgis.Connected = Qgis.DeviceConnectionStatus.Connected
+Qgis.Connected.is_monkey_patched = True
+Qgis.Connected.__doc__ = "Device is successfully connected"
+Qgis.DeviceConnectionStatus.__doc__ = 'GPS connection status.\n\n.. versionadded:: 3.30\n\n' + '* ``Disconnected``: ' + Qgis.DeviceConnectionStatus.Disconnected.__doc__ + '\n' + '* ``Connecting``: ' + Qgis.DeviceConnectionStatus.Connecting.__doc__ + '\n' + '* ``Connected``: ' + Qgis.DeviceConnectionStatus.Connected.__doc__
 # --
-Qgis.GpsConnectionStatus.baseClass = Qgis
+Qgis.DeviceConnectionStatus.baseClass = Qgis
 QgsGpsInformation.FixStatus = Qgis.GpsFixStatus
 # monkey patching scoped based enum
 QgsGpsInformation.NoData = Qgis.GpsFixStatus.NoData

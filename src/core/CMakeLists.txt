@@ -332,6 +332,11 @@ set(QGIS_CORE_SRCS
   textrenderer/qgstextrendererutils.cpp
   textrenderer/qgstextshadowsettings.cpp
 
+  sensor/qgssensormanager.cpp
+  sensor/qgssensorregistry.cpp
+  sensor/qgsabstractsensor.cpp
+  sensor/qgsiodevicesensor.cpp
+
   fromencodedcomponenthelper.cpp
   qgis.cpp
   qgsabstractcontentcache.cpp
@@ -1865,6 +1870,11 @@ set(QGIS_CORE_HDRS
   textrenderer/qgstextrendererutils.h
   textrenderer/qgstextshadowsettings.h
 
+  sensor/qgssensormanager.h
+  sensor/qgssensorregistry.h
+  sensor/qgsabstractsensor.h
+  sensor/qgsiodevicesensor.h
+
   settings/qgssettings.h
   settings/qgssettingsentry.h
   settings/qgssettingsentrygroup.h
@@ -2230,6 +2240,7 @@ target_include_directories(qgis_core PUBLIC
   renderer
   scalebar
   settings
+  sensor
   symbology
   textrenderer
   validity
