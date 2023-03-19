@@ -791,7 +791,7 @@ QString QgsPostgresUtils::andWhereClauses( const QString &c1, const QString &c2 
 
 void QgsPostgresUtils::replaceInvalidXmlChars( QString &xml )
 {
-  static const QRegularExpression replaceRe { QStringLiteral( "([\x00-\x08\x0B-\x1F\x7F])" ) };
+  static const QRegularExpression replaceRe { QStringLiteral( "([\\x00-\\x08\\x0B-\\x1F\\x7F])" ) };
   QRegularExpressionMatchIterator it {replaceRe.globalMatch( xml ) };
   while ( it.hasNext() )
   {

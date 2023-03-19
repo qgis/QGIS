@@ -1491,7 +1491,7 @@ bool QgsExpressionNodeColumnRef::prepareNode( QgsExpression *parent, const QgsEx
 
 QString QgsExpressionNodeColumnRef::dump() const
 {
-  const thread_local QRegularExpression re( QStringLiteral( "^[A-Za-z_\x80-\xff][A-Za-z0-9_\x80-\xff]*$" ) );
+  const thread_local QRegularExpression re( QStringLiteral( "^[A-Za-z_\\x80-\\xff][A-Za-z0-9_\\x80-\\xff]*$" ) );
   const QRegularExpressionMatch match = re.match( mName );
   return match.hasMatch() ? mName : QgsExpression::quotedColumnRef( mName );
 }
