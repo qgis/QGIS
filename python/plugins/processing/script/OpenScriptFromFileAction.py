@@ -26,6 +26,7 @@ from qgis.PyQt.QtWidgets import QFileDialog
 from qgis.PyQt.QtCore import QFileInfo, QCoreApplication
 
 from qgis.core import QgsApplication, QgsSettings
+from qgis.utils import iface
 
 from processing.gui.ToolboxAction import ToolboxAction
 from processing.script.ScriptEditorDialog import ScriptEditorDialog
@@ -52,5 +53,5 @@ class OpenScriptFromFileAction(ToolboxAction):
             settings.setValue('Processing/lastScriptsDir',
                               QFileInfo(filename).absoluteDir().absolutePath())
 
-            dlg = ScriptEditorDialog(filePath=filename)
+            dlg = ScriptEditorDialog(filePath=filename, parent=iface.mainWindow())
             dlg.show()
