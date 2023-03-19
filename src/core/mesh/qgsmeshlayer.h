@@ -1004,6 +1004,7 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer, public QgsAbstractProfileSo
 
     void updateActiveDatasetGroups();
 
+    QgsMeshRendererSettings accordSymbologyWithGroupName( const QgsMeshRendererSettings &settings, const QMap<QString, int> &nameToIndex );
     void checkSymbologyConsistency();
 
     void setDataSourcePrivate( const QString &dataSource, const QString &baseName, const QString &provider,
