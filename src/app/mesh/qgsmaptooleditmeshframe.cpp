@@ -1626,7 +1626,7 @@ bool QgsMapToolEditMeshFrame::isFaceSelected( int faceIndex )
   return true;
 }
 
-void QgsMapToolEditMeshFrame::setSelectedVertices( const QList<int> newSelectedVertices, Qgis::SelectBehavior behavior )
+void QgsMapToolEditMeshFrame::setSelectedVertices( const QList<int> &newSelectedVertices, Qgis::SelectBehavior behavior )
 {
   if ( mSelectedVertices.isEmpty() )
   {
@@ -1662,7 +1662,7 @@ void QgsMapToolEditMeshFrame::setSelectedVertices( const QList<int> newSelectedV
   prepareSelection();
 }
 
-void QgsMapToolEditMeshFrame::setSelectedFaces( const QList<int> newSelectedFaces, Qgis::SelectBehavior behavior )
+void QgsMapToolEditMeshFrame::setSelectedFaces( const QList<int> &newSelectedFaces, Qgis::SelectBehavior behavior )
 {
   bool removeFaces = false;
 
@@ -1948,7 +1948,6 @@ void QgsMapToolEditMeshFrame::onUndoRedo()
       mCadDockWidget->setEnabledZ( mCadDockWidget->cadEnabled() );
       break;
     case ForceByLines:
-      break;
     case Selecting:
     case SelectingByPolygon:
       break;
