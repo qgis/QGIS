@@ -23,7 +23,7 @@
 
 void showError( std::string message, std::string title )
 {
-  std::string newmessage = "Oops, looks like an error loading QGIS \n\n Details: \n\n" + message;
+  std::string newmessage = "Oops, looks like an error loading SURVEYKSHAK \n\n Details: \n\n" + message;
   MessageBox(
     NULL,
     newmessage.c_str(),
@@ -80,7 +80,7 @@ int CALLBACK WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdL
       catch ( std::ifstream::failure e )
       {
         std::string message = "Could not read environment variable list " + basename + ".vars" + " [" + e.what() + "]";
-        showError( message, "Error loading QGIS" );
+        showError( message, "Error loading SURVEYKSHAK" );
         return EXIT_FAILURE;
       }
 
@@ -98,7 +98,7 @@ int CALLBACK WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdL
       catch ( std::ifstream::failure e )
       {
         std::string message = "Could not write environment file " + basename + ".env" + " [" + e.what() + "]";
-        showError( message, "Error loading QGIS" );
+        showError( message, "Error loading SURVEYKSHAK" );
         return EXIT_FAILURE;
       }
     }
@@ -117,7 +117,7 @@ int CALLBACK WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdL
       if ( _putenv( var.c_str() ) < 0 )
       {
         std::string message = "Could not set environment variable:" + var;
-        showError( message, "Error loading QGIS" );
+        showError( message, "Error loading SURVEYKSHAK" );
         return EXIT_FAILURE;
       }
     }
@@ -125,7 +125,7 @@ int CALLBACK WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdL
   catch ( std::ifstream::failure e )
   {
     std::string message = "Could not read environment file " + basename + ".env" + " [" + e.what() + "]";
-    showError( message, "Error loading QGIS" );
+    showError( message, "Error loading SURVEYKSHAK" );
     return EXIT_FAILURE;
   }
 
@@ -184,7 +184,7 @@ int CALLBACK WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdL
 
     std::string message = "Could not load qgis_app.dll \n Windows Error: " + std::string( errorText )
                           + "\n Help: \n\n Check " + basename + ".env for correct environment paths";
-    showError( message, "Error loading QGIS" );
+    showError( message, "Error loading SURVEYKSHAK" );
 
     LocalFree( errorText );
     errorText = NULL;
@@ -194,7 +194,7 @@ int CALLBACK WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdL
   int ( *realmain )( int, char *[] ) = ( int ( * )( int, char *[] ) ) GetProcAddress( hGetProcIDDLL, "main" );
   if ( !realmain )
   {
-    showError( "Could not locate main function in qgis_app.dll", "Error loading QGIS" );
+    showError( "Could not locate main function in qgis_app.dll", "Error loading SURVEYKSHAK" );
     return EXIT_FAILURE;
   }
 

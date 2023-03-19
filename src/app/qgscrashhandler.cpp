@@ -80,16 +80,16 @@ void QgsCrashHandler::handleCrash( int processID, int threadID,
     arguments << QStringLiteral( "\"%1\"" ).arg( projectFile );
 
   QStringList reportData;
-  reportData.append( QStringLiteral( "QGIS Version: %1" ).arg( Qgis::version() ) );
+  reportData.append( QStringLiteral( "SURVEYKSHAK Version: %1" ).arg( Qgis::version() ) );
 
   if ( QString( Qgis::devVersion() ) == QLatin1String( "exported" ) )
   {
-    reportData.append( QStringLiteral( "QGIS code branch: Release %1.%2" )
+    reportData.append( QStringLiteral( "SURVEYKSHAK code branch: Release %1.%2" )
                        .arg( Qgis::versionInt() / 10000 ).arg( Qgis::versionInt() / 100 % 100 ) );
   }
   else
   {
-    reportData.append( QStringLiteral( "QGIS code revision: %1" ).arg( Qgis::devVersion() ) );
+    reportData.append( QStringLiteral( "SURVEYKSHAK code revision: %1" ).arg( Qgis::devVersion() ) );
   }
 
   reportData.append( QStringLiteral( "Compiled against Qt: %1" ).arg( QT_VERSION_STR ) );

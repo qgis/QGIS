@@ -307,7 +307,7 @@ void QgsAuthGuiUtils::eraseAuthenticationDatabase( QgsMessageBar *msgbar, QWidge
     level = Qgis::MessageLevel::Critical;
   }
 
-  msgbar->pushMessage( QObject::tr( "RESTART QGIS" ), msg, level );
+  msgbar->pushMessage( QObject::tr( "RESTART SURVEYKSHAK" ), msg, level );
 }
 
 void QgsAuthGuiUtils::fileFound( bool found, QWidget *widget )

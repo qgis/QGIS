@@ -115,7 +115,7 @@ typedef SInt32 SRefCon;
  */
 void version( )
 {
-  const QString msg = QStringLiteral( "QGIS %1 '%2' (%3)\n" ).arg( VERSION ).arg( RELEASE_NAME ).arg( QGSVERSION );
+  const QString msg = QStringLiteral( "SURVEYKSHAK %1 '%2' (%3)\n" ).arg( VERSION ).arg( RELEASE_NAME ).arg( QGSVERSION );
   std::cout << msg.toStdString();
 }
 
@@ -127,7 +127,7 @@ void usage( const QString &appName )
   QStringList msg;
 
   msg
-      << QStringLiteral( "QGIS is a user friendly Open Source Geographic Information System.\n" )
+      << QStringLiteral( "SURVEYKSHAK is a user friendly Open Source Geographic Information System.\n" )
       << QStringLiteral( "Usage: " ) << appName <<  QStringLiteral( " [OPTION] [FILE]\n" )
       << QStringLiteral( "  OPTION:\n" )
       << QStringLiteral( "\t[-v, --version]\tdisplay version information and exit\n" )
@@ -307,7 +307,7 @@ static void dumpBacktrace( unsigned int depth )
 #ifdef QGIS_CRASH
 void qgisCrash( int signal )
 {
-  fprintf( stderr, "QGIS died on signal %d", signal );
+  fprintf( stderr, "SURVEYKSHAK died on signal %d", signal );
 
   QgsCrashHandler::handle( 0 );
 
@@ -980,11 +980,11 @@ int main( int argc, char *argv[] )
   {
     if ( !QgsSettings::setGlobalSettingsPath( globalsettingsfile ) )
     {
-      preApplicationLogMessages << QObject::tr( "Invalid globalsettingsfile path: %1" ).arg( globalsettingsfile ), QStringLiteral( "QGIS" );
+      preApplicationLogMessages << QObject::tr( "Invalid globalsettingsfile path: %1" ).arg( globalsettingsfile ), QStringLiteral( "SURVEYKSHAK" );
     }
     else
     {
-      preApplicationLogMessages << QObject::tr( "Successfully loaded globalsettingsfile path: %1" ).arg( globalsettingsfile ), QStringLiteral( "QGIS" );
+      preApplicationLogMessages << QObject::tr( "Successfully loaded globalsettingsfile path: %1" ).arg( globalsettingsfile ), QStringLiteral( "SURVEYKSHAK" );
     }
   }
 
@@ -1238,7 +1238,7 @@ int main( int argc, char *argv[] )
   else
   {
     // Use the default file location
-    customizationfile = profileFolder + QDir::separator() + QStringLiteral( "QGIS" ) + QDir::separator() + QStringLiteral( "QGISCUSTOMIZATION3.ini" ) ;
+    customizationfile = profileFolder + QDir::separator() + QStringLiteral( "SURVEYKSHAK" ) + QDir::separator() + QStringLiteral( "QGISCUSTOMIZATION3.ini" ) ;
   }
 
   customizationsettings = new QSettings( customizationfile, QSettings::IniFormat );

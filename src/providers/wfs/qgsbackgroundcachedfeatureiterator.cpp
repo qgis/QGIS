@@ -160,7 +160,7 @@ void QgsFeatureDownloaderImpl::createProgressDialog( int numberMatched )
 
   mProgressDialog = new QgsFeatureDownloaderProgressDialog( QObject::tr( "Loading features for layer %1" ).arg( mSharedBase->layerName() ),
       QObject::tr( "Abort" ), 0, numberMatched, mMainWindow );
-  mProgressDialog->setWindowTitle( QObject::tr( "QGIS" ) );
+  mProgressDialog->setWindowTitle( QObject::tr( "SURVEYKSHAK_3_30_0" ) );
   mProgressDialog->setValue( 0 );
   if ( mProgressDialogShowImmediately )
     mProgressDialog->show();

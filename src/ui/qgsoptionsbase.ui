@@ -255,7 +255,7 @@
                     <item>
                      <widget class="QLabel" name="label_18">
                       <property name="text">
-                       <string>Style &lt;i&gt;(QGIS restart required)&lt;/i&gt;</string>
+                       <string>Style &lt;i&gt;(SURVEYKSHAK restart required)&lt;/i&gt;</string>
                       </property>
                      </widget>
                     </item>
@@ -5098,6 +5098,16 @@ p, li { white-space: pre-wrap; }
       <property name="bottomMargin">
        <number>0</number>
       </property>
+      <item>
+       <widget class="QLabel" name="label_6811">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <property name="text">
+         <string>Compiled by Sachin Kumar</string>
+        </property>
+       </widget>
+      </item>
       <item>
        <widget class="QDialogButtonBox" name="buttonBox">
         <property name="orientation">

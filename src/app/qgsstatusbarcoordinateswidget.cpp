@@ -517,9 +517,7 @@ void QgsStatusBarCoordinatesWidget::showMouseCoordinates( const QgsPointXY &Qp )
 
   }
 
-
-
- //Nihcas added below
+//Nihcas added below
 //Mil Grid Display for dsm series map 
 
   QString str, str1, str2, str3;
@@ -816,6 +814,8 @@ inline QString QgsStatusBarCoordinatesWidget::LatLongTopoSheetConversion(const Q
   }
   return arr_ndsm;
 }
+
+
 inline QString QgsStatusBarCoordinatesWidget::LatLongToMilgridConversion(const QgsPointXY &mp)
 {
   int false_easting = 500000, false_northing = 500000;

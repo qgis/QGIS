@@ -579,7 +579,7 @@ static void setTitleBarText_( QWidget &qgisApp )
   if ( QgsProject::instance()->isDirty() )
     caption.prepend( '*' );
 
-  caption += QgisApp::tr( "QGIS" );
+  caption += QgisApp::tr( "SURVEYKSHAK-3.30.0" );
 
   if ( Qgis::version().endsWith( QLatin1String( "Master" ) ) )
   {
@@ -1510,10 +1510,10 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipBadLayers
   connect( QgsGui::mapLayerActionRegistry(), &QgsMapLayerActionRegistry::changed, this, &QgisApp::refreshActionFeatureAction );
 
   // set application's caption
-  QString caption = tr( "QGIS - %1 ('%2')" ).arg( Qgis::version(), Qgis::releaseName() );
+  QString caption = tr( "SURVEYKSHAK - %1 ('%2')" ).arg( Qgis::version(), Qgis::releaseName() );
   setWindowTitle( caption );
 
-  // QgsMessageLog::logMessage( tr( "QGIS starting…" ), QString(), Qgis::MessageLevel::Info );
+  // QgsMessageLog::logMessage( tr( "SURVEYKSHAK starting… by Sachin Kumar" ), QString(), Qgis::MessageLevel::Info );
 
   connect( QgsProject::instance(), &QgsProject::isDirtyChanged, this, [ = ] { setTitleBarText_( *this ); } );
 
@@ -1704,7 +1704,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipBadLayers
   QgsStyle::defaultStyle();
   endProfile();
 
-  mSplash->showMessage( tr( "QGIS Ready!" ), Qt::AlignHCenter | Qt::AlignBottom, splashTextColor );
+  mSplash->showMessage( tr( "SURVEYKSHAK Ready!.......... by Sachin Kumar!" ), Qt::AlignHCenter | Qt::AlignBottom, splashTextColor );
 
   QgsMessageLog::logMessage( QgsApplication::showSettings(), QString(), Qgis::MessageLevel::Info );
 
@@ -5324,11 +5324,11 @@ void QgisApp::about()
     sAbt = new QgsAbout( this );
     QString versionString = QStringLiteral( "<html><body><div align='center'><table width='100%'>" );
 
-    versionString += QStringLiteral( "<tr><td>%1</td><td>%2</td><td>" ).arg( tr( "QGIS version" ), Qgis::version() );
+    versionString += QStringLiteral( "<tr><td>%1</td><td>%2</td><td>" ).arg( tr( "SURVEYKSHAK version" ), Qgis::version() );
 
     if ( QString( Qgis::devVersion() ) == QLatin1String( "exported" ) )
     {
-      versionString += tr( "QGIS code branch" );
+      versionString += tr( "SURVEYKSHAK code branch" );
       if ( Qgis::version().endsWith( QLatin1String( "Master" ) ) )
       {
         versionString += QLatin1String( "</td><td><a href=\"https://github.com/qgis/QGIS/tree/master\">master</a></td>" );
@@ -12241,15 +12241,15 @@ void QgisApp::versionReplyFinished()
 
     if ( versionInfo->newVersionAvailable() )
     {
-      info = tr( "There is a new version of QGIS available" );
+      info = tr( "There is a new version of SURVEYKSHAK available" );
     }
     else if ( versionInfo->isDevelopmentVersion() )
     {
-      info = tr( "You are running a development version of QGIS" );
+      info = tr( "You are running a development version of SURVEYKSHAK" );
     }
     else
     {
-      info = tr( "You are running the current version of QGIS" );
+      info = tr( "You are running the current version of SURVEYKSHAK" );
     }
 
     info = QStringLiteral( "<b>%1</b>" ).arg( info );
@@ -12257,13 +12257,13 @@ void QgisApp::versionReplyFinished()
     if ( versionInfo->newVersionAvailable() )
       info += "<br>" + QgsStringUtils::insertLinks( versionInfo->downloadInfo() );
 
-    QMessageBox mb( QMessageBox::Information, tr( "QGIS Version Information" ), info );
+    QMessageBox mb( QMessageBox::Information, tr( "SURVEYKSHAK Version Information" ), info );
     mb.setInformativeText( versionInfo->html() );
     mb.exec();
   }
   else
   {
-    QMessageBox mb( QMessageBox::Warning, tr( "QGIS Version Information" ), tr( "Unable to get current version information from server" ) );
+    QMessageBox mb( QMessageBox::Warning, tr( "SURVEYKSHAK Version Information" ), tr( "Unable to get current version information from server" ) );
     mb.setDetailedText( versionInfo->errorString() );
     mb.exec();
   }
@@ -12658,7 +12658,7 @@ void QgisApp::adjustGamma( double delta )
 
 void QgisApp::helpContents()
 {
-  QgsHelp::openHelp( QStringLiteral( "index.html" ) );
+  QgsHelp::openHelp( QStringLiteral( "/resources/data/surveykshak.chm" ) );
 }
 
 void QgisApp::apiDocumentation()
@@ -12720,7 +12720,7 @@ void QgisApp::helpQgisHomePage()
 {
   QgsSettings settings;
   QString  helpQgisHomePageUrl = settings.value( QStringLiteral( "qgis/helpQgisHomePageUrl" ),
-                                 QStringLiteral( "https://qgis.org" ) ).toString();
+                                 QStringLiteral( "https://surveykshak.org" ) ).toString();
   openURL( helpQgisHomePageUrl, false );
 }
 
@@ -15608,8 +15608,8 @@ void QgisApp::keyReleaseEvent( QKeyEvent *event )
   if ( event->key() == Qt::Key_Close )
   {
     // do something useful here
-    int ret = QMessageBox::question( this, tr( "Exit QGIS" ),
-                                     tr( "Do you really want to quit QGIS?" ),
+    int ret = QMessageBox::question( this, tr( "Exit SURVEYKSHAK" ),
+                                     tr( "Do you really want to quit SURVEYKSHAK?" ),
                                      QMessageBox::Yes | QMessageBox::No );
     switch ( ret )
     {
@@ -15829,9 +15829,9 @@ void QgisApp::projectVersionMismatchOccurred( const QString &projectVersion )
 
     if ( settings.value( QStringLiteral( "qgis/warnOldProjectVersion" ), QVariant( true ) ).toBool() )
     {
-      QString smalltext = tr( "This project file was saved by QGIS version %1."
-                              " When saving this project file, QGIS will update it to version %2, "
-                              "possibly rendering it useless for older versions of QGIS." ).arg( projectVersion, Qgis::version() );
+      QString smalltext = tr( "This project file was saved by SURVEYKSHAK version %1."
+                              " When saving this project file, SURVEYKSHAK will update it to version %2, "
+                              "possibly rendering it useless for older versions of SURVEYKSHAK." ).arg( projectVersion, Qgis::version() );
 
       QString title = tr( "Project file is older" );
 
@@ -15840,7 +15840,7 @@ void QgisApp::projectVersionMismatchOccurred( const QString &projectVersion )
   }
   else
   {
-    visibleMessageBar()->pushWarning( QString(), tr( "This project file was created by a newer version of QGIS (%1) and could not be completely loaded." ).arg( projectVersion ) );
+    visibleMessageBar()->pushWarning( QString(), tr( "This project file was created by a newer version of SURVEYKSHAK (%1) and could not be completely loaded." ).arg( projectVersion ) );
   }
 }
 
@@ -16514,7 +16514,7 @@ void QgisApp::authMessageOut( const QString &message, const QString &authtag, Qg
   // push message to the message bar if the main window is active
   if ( qApp->activeWindow() != this )
   {
-    showSystemNotification( tr( "QGIS Authentication" ), message );
+    showSystemNotification( tr( "SURVEYKSHAK Authentication" ), message );
   }
   else
   {
