@@ -106,6 +106,7 @@ class TestQgsMeshLayer : public QObject
     void testSetDataSourceRetainStyle();
 
     void keepDatasetIndexConsistency();
+    void symbologyConsistencyWithName();
     void updateTimePropertiesWhenReloading();
 };
 
@@ -2102,6 +2103,81 @@ void TestQgsMeshLayer::keepDatasetIndexConsistency()
   QVERIFY( layer->rendererSettings().activeScalarDatasetGroup() != vectorIndex );
   QVERIFY( layer->rendererSettings().activeVectorDatasetGroup() != vectorIndex );
 
+}
+
+void TestQgsMeshLayer::symbologyConsistencyWithName()
+{
+  const QString uri_1( mDataDir + QStringLiteral( "/mesh_z_ws_d_vel.nc" ) ); //mesh with dataset group "Bed Elevation", "Water level", "Depth" and "Velocity"
+  const QString uri_2( mDataDir + QStringLiteral( "/mesh_z_ws_d.nc" ) ); //exactly the same mesh except without "Velocity"
+
+  std::unique_ptr< QgsMeshLayer > layer_1 = std::make_unique< QgsMeshLayer >( uri_1, QStringLiteral( "mesh" ), QStringLiteral( "mdal" ) );
+  std::unique_ptr< QgsMeshLayer > layer_2 = std::make_unique< QgsMeshLayer >( uri_2, QStringLiteral( "mesh" ), QStringLiteral( "mdal" ) );
+
+  QMap<QString, int> nameToindex_1;
+  QList<int> indexes = layer_1->datasetGroupsIndexes();
+  for ( int index : indexes )
+    nameToindex_1.insert( layer_1->datasetGroupMetadata( index ).name(), index );
+
+  QMap<QString, int> nameToindex_2;
+  indexes = layer_2->datasetGroupsIndexes();
+  for ( int index : std::as_const( indexes ) )
+    nameToindex_2.insert( layer_2->datasetGroupMetadata( index ).name(), index );
+
+  QStringList names_1 = nameToindex_1.keys();
+  QgsMeshRendererSettings settings_1 = layer_1->rendererSettings();
+  for ( int i = 0; i < names_1.count(); ++i )
+  {
+    const QString name = names_1.at( i );
+    int index = nameToindex_1.value( name );
+    QgsMeshRendererScalarSettings scalSettings = settings_1.scalarSettings( index );
+    QgsColorRampShader cl = scalSettings.colorRampShader();
+    cl.setClassificationMode( QgsColorRampShader::EqualInterval );
+    cl.classifyColorRamp( 10 + i, -1 );
+    QCOMPARE( cl.colorRampItemList().count(), 10 + i );
+    scalSettings.setColorRampShader( cl );
+    settings_1.setScalarSettings( index, scalSettings );
+  }
+  layer_1->setRendererSettings( settings_1 );
+
+  QStringList names_2 = nameToindex_2.keys();
+  QgsMeshRendererSettings settings_2 = layer_2->rendererSettings();
+  for ( int i = 0; i < names_2.count(); ++i )
+  {
+    const QString name = names_2.at( i );
+    int index = nameToindex_2.value( name );
+    QgsMeshRendererScalarSettings scalSettings = settings_2.scalarSettings( index );
+    QgsColorRampShader cl = scalSettings.colorRampShader();
+    cl.setClassificationMode( QgsColorRampShader::EqualInterval );
+    cl.classifyColorRamp( 30 + i, -1 );
+    QCOMPARE( cl.colorRampItemList().count(), 30 + i );
+    scalSettings.setColorRampShader( cl );
+    settings_2.setScalarSettings( index, scalSettings );
+  }
+  layer_2->setRendererSettings( settings_2 );
+
+  QDomDocument doc( QStringLiteral( "dataset-symbology" ) );
+  QDomElement elem_1 = doc.createElement( "dataset-symbology" );
+  QString err;
+  QgsReadWriteContext rwContext;
+  QVERIFY( layer_1->writeStyle( elem_1, doc, err, rwContext ) );
+
+  QDomElement elem_2 = doc.createElement( "dataset-symbology" );
+  QVERIFY( layer_2->writeStyle( elem_2, doc, err, rwContext ) );
+
+  QVERIFY( layer_2->readStyle( elem_1, err, rwContext ) );
+  QVERIFY( layer_1->readStyle( elem_2, err, rwContext ) );
+
+  settings_1 = layer_1->rendererSettings();
+  QCOMPARE( 30, settings_1.scalarSettings( nameToindex_1.value( names_1.at( 0 ) ) ).colorRampShader().colorRampItemList().count() );
+  // following group is not present in layer_2, so symbology is unchanged
+  QCOMPARE( 11, settings_1.scalarSettings( nameToindex_1.value( names_1.at( 1 ) ) ).colorRampShader().colorRampItemList().count() );
+  QCOMPARE( 31, settings_1.scalarSettings( nameToindex_1.value( names_1.at( 2 ) ) ).colorRampShader().colorRampItemList().count() );
+  QCOMPARE( 32, settings_1.scalarSettings( nameToindex_1.value( names_1.at( 3 ) ) ).colorRampShader().colorRampItemList().count() );
+
+  settings_2 = layer_2->rendererSettings();
+  QCOMPARE( 10, settings_2.scalarSettings( nameToindex_2.value( names_2.at( 0 ) ) ).colorRampShader().colorRampItemList().count() );
+  QCOMPARE( 12, settings_2.scalarSettings( nameToindex_2.value( names_2.at( 1 ) ) ).colorRampShader().colorRampItemList().count() );
+  QCOMPARE( 13, settings_2.scalarSettings( nameToindex_2.value( names_2.at( 2 ) ) ).colorRampShader().colorRampItemList().count() );
 }
 
 void TestQgsMeshLayer::test_temporal()

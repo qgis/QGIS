@@ -1382,6 +1382,64 @@ void QgsMeshLayer::updateActiveDatasetGroups()
     emit activeVectorDatasetGroupChanged( settings.activeVectorDatasetGroup() );
 }
 
+QgsMeshRendererSettings QgsMeshLayer::accordSymbologyWithGroupName( const QgsMeshRendererSettings &settings, const QMap<QString, int> &nameToIndex )
+{
+  QString activeScalarName;
+  QString activeVectorName;
+  QgsMeshRendererSettings consistentSettings = settings;
+  int activeScalar = consistentSettings.activeScalarDatasetGroup();
+  int activeVector = consistentSettings.activeScalarDatasetGroup();
+
+  for ( auto it = nameToIndex.constBegin(); it != nameToIndex.cend(); ++it )
+  {
+    int index = it.value();
+    const QString name = it.key() ;
+    int globalIndex = mDatasetGroupStore->indexFromGroupName( name );
+    if ( globalIndex >= 0 )
+    {
+      QgsMeshRendererScalarSettings scalarSettings = settings.scalarSettings( index );
+      consistentSettings.setScalarSettings( globalIndex, scalarSettings );
+      if ( settings.hasVectorSettings( it.value() ) && mDatasetGroupStore->datasetGroupMetadata( globalIndex ).isVector() )
+      {
+        QgsMeshRendererVectorSettings vectorSettings = settings.vectorSettings( index );
+        consistentSettings.setVectorSettings( globalIndex, vectorSettings );
+      }
+    }
+    else
+    {
+      consistentSettings.removeScalarSettings( index );
+      if ( settings.hasVectorSettings( it.value() ) )
+        consistentSettings.removeVectorSettings( index );
+    }
+
+    if ( index == activeScalar )
+      activeScalarName = name;
+    if ( index == activeVector )
+      activeVectorName = name;
+  }
+
+  const QList<int> globalIndexes = datasetGroupsIndexes();
+  for ( int globalIndex : globalIndexes )
+  {
+    const QString name = mDatasetGroupStore->groupName( globalIndex );
+    if ( !nameToIndex.contains( name ) )
+    {
+      consistentSettings.setScalarSettings( globalIndex, mRendererSettings.scalarSettings( globalIndex ) );
+      if ( mDatasetGroupStore->datasetGroupMetadata( globalIndex ).isVector() )
+      {
+        consistentSettings.setVectorSettings( globalIndex, mRendererSettings.vectorSettings( globalIndex ) );
+      }
+    }
+  }
+
+  if ( !activeScalarName.isEmpty() )
+    consistentSettings.setActiveScalarDatasetGroup( mDatasetGroupStore->indexFromGroupName( activeScalarName ) );
+  if ( activeVectorName.isEmpty() )
+    consistentSettings.setActiveVectorDatasetGroup( mDatasetGroupStore->indexFromGroupName( activeVectorName ) );
+
+  return consistentSettings;
+}
+
 void QgsMeshLayer::setDataSourcePrivate( const QString &dataSource, const QString &baseName, const QString &provider, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
@@ -1632,9 +1690,22 @@ bool QgsMeshLayer::readSymbology( const QDomNode &node, QString &errorMessage,
 
   readCommonStyle( elem, context, categories );
 
+  QgsMeshRendererSettings rendererSettings;
   const QDomElement elemRendererSettings = elem.firstChildElement( "mesh-renderer-settings" );
   if ( !elemRendererSettings.isNull() )
-    mRendererSettings.readXml( elemRendererSettings, context );
+    rendererSettings.readXml( elemRendererSettings, context );
+
+  QMap<QString, int> groupNameToGlobalIndex;
+  QDomElement nameToIndexElem = elem.firstChildElement( "name-to-global-index" );
+  while ( !nameToIndexElem.isNull() )
+  {
+    QString name = nameToIndexElem.attribute( QStringLiteral( "name" ) );
+    int globalIndex = nameToIndexElem.attribute( QStringLiteral( "global-index" ) ).toInt();
+    groupNameToGlobalIndex.insert( name, globalIndex );
+    nameToIndexElem = nameToIndexElem.nextSiblingElement( QStringLiteral( "name-to-global-index" ) );
+  }
+
+  mRendererSettings = accordSymbologyWithGroupName( rendererSettings, groupNameToGlobalIndex );
 
   checkSymbologyConsistency();
 
@@ -1678,6 +1749,16 @@ bool QgsMeshLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QString &e
 
   const QDomElement elemRendererSettings = mRendererSettings.writeXml( doc, context );
   elem.appendChild( elemRendererSettings );
+
+  const QList<int> groupIndexes = datasetGroupsIndexes();
+  // we store the relation between name and indexes to be able to retrieve the consistency between name and symbology
+  for ( int index : groupIndexes )
+  {
+    QDomElement elemNameToIndex = doc.createElement( QStringLiteral( "name-to-global-index" ) );
+    elemNameToIndex.setAttribute( QStringLiteral( "name" ), mDatasetGroupStore->groupName( index ) );
+    elemNameToIndex.setAttribute( QStringLiteral( "global-index" ), index );
+    elem.appendChild( elemNameToIndex );
+  }
 
   const QDomElement elemSimplifySettings = mSimplificationSettings.writeXml( doc, context );
   elem.appendChild( elemSimplifySettings );

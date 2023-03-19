@@ -619,13 +619,38 @@ class CORE_EXPORT QgsMeshRendererSettings
 
     //! Returns renderer settings
     QgsMeshRendererScalarSettings scalarSettings( int groupIndex ) const { return mRendererScalarSettings.value( groupIndex ); }
+
     //! Sets new renderer settings
     void setScalarSettings( int groupIndex, const QgsMeshRendererScalarSettings &settings ) { mRendererScalarSettings[groupIndex] = settings; }
+
+    /**
+     * Returns whether \a groupIndex has exisiting scalar settings
+     * \since QGIS 3.30.1
+     */
+    bool hasScalarSettings( int groupIndex ) const {return mRendererScalarSettings.contains( groupIndex );}
+
+    /**
+     * Removes scalar settings with \a groupIndex
+     * \since QGIS 3.30.1
+     */
+    bool removeScalarSettings( int groupIndex )  {return mRendererScalarSettings.remove( groupIndex );}
 
     //! Returns renderer settings
     QgsMeshRendererVectorSettings vectorSettings( int groupIndex ) const { return mRendererVectorSettings.value( groupIndex ); }
     //! Sets new renderer settings
     void setVectorSettings( int groupIndex, const QgsMeshRendererVectorSettings &settings ) { mRendererVectorSettings[groupIndex] = settings; }
+
+    /**
+     * Returns whether \a groupIndex has exisiting vector settings
+     * \since QGIS 3.30.1
+     */
+    bool hasVectorSettings( int groupIndex ) const {return mRendererVectorSettings.contains( groupIndex );}
+
+    /**
+     * Removes vector settings for \a groupIndex
+     * \since QGIS 3.30.1
+     */
+    bool removeVectorSettings( int groupIndex )  {return mRendererVectorSettings.remove( groupIndex );}
 
     /**
      * Returns averaging method for conversion of 3d stacked mesh data to 2d data
