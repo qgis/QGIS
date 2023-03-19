@@ -37,7 +37,7 @@ QgsVirtualLayerDefinition QgsVirtualLayerDefinition::fromUrl( const QUrl &url )
   def.setFilePath( url.toLocalFile() );
 
   // regexp for column name
-  const QString columnNameRx( QStringLiteral( "[a-zA-Z_\x80-\xFF][a-zA-Z0-9_\x80-\xFF]*" ) );
+  const QString columnNameRx( QStringLiteral( "[a-zA-Z_\\x80-\\xFF][a-zA-Z0-9_\\x80-\\xFF]*" ) );
 
   QgsFields fields;
 
