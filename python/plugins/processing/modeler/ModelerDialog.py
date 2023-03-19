@@ -392,7 +392,7 @@ class ModelerDialog(QgsModelDesignerDialog):
         return QPointF(newX, newY)
 
     def exportAsScriptAlgorithm(self):
-        dlg = ScriptEditorDialog(None)
+        dlg = ScriptEditorDialog(parent=iface.mainWindow())
 
         dlg.editor.setText('\n'.join(self.model().asPythonCode(QgsProcessing.PythonQgsProcessingAlgorithmSubclass, 4)))
         dlg.show()

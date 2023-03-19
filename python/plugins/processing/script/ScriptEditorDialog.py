@@ -59,6 +59,7 @@ class ScriptEditorDialog(BASE, WIDGET):
     def __init__(self, filePath=None, parent=None):
         super(ScriptEditorDialog, self).__init__(parent)
         self.setupUi(self)
+        self.setAttribute(Qt.WA_DeleteOnClose)
 
         QgsGui.instance().enableAutoGeometryRestore(self)
 
