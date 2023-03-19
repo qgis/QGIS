@@ -34,24 +34,24 @@
 #include "qgsvectorlayerjoininfo.h"
 #include "qgscoordinatereferencesystemutils.h"
 
-QgsStatusBarCoordinatesWidget::QgsStatusBarCoordinatesWidget( QWidget *parent )
-  : QWidget( parent )
-  , mMousePrecisionDecimalPlaces( 0 )
+QgsStatusBarCoordinatesWidget::QgsStatusBarCoordinatesWidget(QWidget* parent)
+  : QWidget(parent)
+  , mMousePrecisionDecimalPlaces(0)
 {
   // calculate the size of two chars
-  mTwoCharSize = fontMetrics().boundingRect( 'O' ).width();
+  mTwoCharSize = fontMetrics().boundingRect('O').width();
   mMinimumWidth = mTwoCharSize * 4;
 
   // add a label to show current position
-  mLabel = new QLabel( QString(), this );
-  mLabel->setObjectName( QStringLiteral( "mCoordsLabel" ) );
-  mLabel->setMinimumWidth( 10 );
+  mLabel = new QLabel(QString(), this);
+  mLabel->setObjectName(QStringLiteral("mCoordsLabel"));
+  mLabel->setMinimumWidth(10);
   //mCoordsLabel->setMaximumHeight( 20 );
-  mLabel->setMargin( 3 );
-  mLabel->setAlignment( Qt::AlignCenter );
-  mLabel->setFrameStyle( QFrame::NoFrame );
-  mLabel->setText( tr( "Projected" ) );
-  mLabel->setToolTip( tr( "Current map coordinate" ) );
+  mLabel->setMargin(3);
+  mLabel->setAlignment(Qt::AlignCenter);
+  mLabel->setFrameStyle(QFrame::NoFrame);
+  mLabel->setText(tr("Projected"));
+  mLabel->setToolTip(tr("Current map coordinate"));
 
   // add a label to show DSM GR
   mLabelgeocord = new QLabel(QString(), this);
@@ -65,70 +65,70 @@ QgsStatusBarCoordinatesWidget::QgsStatusBarCoordinatesWidget( QWidget *parent )
   mLabelgeocord->setToolTip(tr("Show Geographic Coordinate"));
 
   // add a label to show DSM GR
-  mLabeldgr = new QLabel( QString(), this );
-  mLabeldgr->setObjectName( QStringLiteral( "mCoordsLabeldgr" ) );
-  mLabeldgr->setMinimumWidth( 10 );
+  mLabeldgr = new QLabel(QString(), this);
+  mLabeldgr->setObjectName(QStringLiteral("mCoordsLabeldgr"));
+  mLabeldgr->setMinimumWidth(10);
   //mLabeldgr->setMaximumHeight( 20 );
-  mLabeldgr->setMargin( 3 );
-  mLabeldgr->setAlignment( Qt::AlignCenter );
-  mLabeldgr->setFrameStyle( QFrame::NoFrame );
-  mLabeldgr->setText( tr( "DSM GR" ) );
-  mLabeldgr->setToolTip( tr( "Show DSM GR" ) );
+  mLabeldgr->setMargin(3);
+  mLabeldgr->setAlignment(Qt::AlignCenter);
+  mLabeldgr->setFrameStyle(QFrame::NoFrame);
+  mLabeldgr->setText(tr("DSM GR"));
+  mLabeldgr->setToolTip(tr("Show DSM GR"));
 
-// add a label to show DSM Sheet No
-  mLabeldsheet = new QLabel( QString(), this );
-  mLabeldsheet->setObjectName( QStringLiteral( "mCoordsLabeldsheet" ) );
-  mLabeldsheet->setMinimumWidth( 10 );
-  //mLabeldsheet->setMaximumHeight( 20 );
-  mLabeldsheet->setMargin( 3 );
-  mLabeldsheet->setAlignment( Qt::AlignCenter );
-  mLabeldsheet->setFrameStyle( QFrame::NoFrame );
-  mLabeldsheet->setText( tr( "DSM No." ) );
-  mLabeldsheet->setToolTip( tr( "Show DSM Sheet No" ) );
-  
-  // add a label to show ESM GR
-  mLabelegr = new QLabel( QString(), this );
-  mLabelegr->setObjectName( QStringLiteral( "mCoordsLabelegr" ) );
-  mLabelegr->setMinimumWidth( 10 );
-  //mLabelegr->setMaximumHeight( 20 );
-  mLabelegr->setMargin( 3 );
-  mLabelegr->setAlignment( Qt::AlignCenter );
-  mLabelegr->setFrameStyle( QFrame::NoFrame );
-  mLabelegr->setText( tr( "ESM GR" ) );
-  mLabelegr->setToolTip( tr( "Show ESM GR" ) );
-  
   // add a label to show DSM Sheet No
-  mLabelesheet = new QLabel( QString(), this );
-  mLabelesheet->setObjectName( QStringLiteral( "mCoordsLabelesheet" ) );
-  mLabelesheet->setMinimumWidth( 10 );
-  //mLabelesheet->setMaximumHeight( 20 );
-  mLabelesheet->setMargin( 3 );
-  mLabelesheet->setAlignment( Qt::AlignCenter );
-  mLabelesheet->setFrameStyle( QFrame::NoFrame );
-  mLabelesheet->setText( tr( "ESM No." ) );
-  mLabelesheet->setToolTip( tr( "Show ESM Sheet No" ) );
-  
-  mLineEdit = new QLineEdit( this );
-  mLineEdit->setMinimumWidth( 10 );
-  //mLineEdit->setMaximumHeight( 20 );
-  mLineEdit->setContentsMargins( 0, 0, 0, 0 );
-  mLineEdit->setAlignment( Qt::AlignCenter );
-  connect( mLineEdit, &QLineEdit::returnPressed, this, &QgsStatusBarCoordinatesWidget::validateCoordinates );
+  mLabeldsheet = new QLabel(QString(), this);
+  mLabeldsheet->setObjectName(QStringLiteral("mCoordsLabeldsheet"));
+  mLabeldsheet->setMinimumWidth(10);
+  //mLabeldsheet->setMaximumHeight( 20 );
+  mLabeldsheet->setMargin(3);
+  mLabeldsheet->setAlignment(Qt::AlignCenter);
+  mLabeldsheet->setFrameStyle(QFrame::NoFrame);
+  mLabeldsheet->setText(tr("DSM No."));
+  mLabeldsheet->setToolTip(tr("Show DSM Sheet No"));
 
-  const QRegularExpression coordValidator( "[+-]?\\d+\\.?\\d*\\s*,\\s*[+-]?\\d+\\.?\\d*" );
-  mCoordsEditValidator = new QRegularExpressionValidator( coordValidator, this );
-  mLineEdit->setToolTip( tr( "Current map coordinate (longitude,latitude or east,north)" ) );
+  // add a label to show ESM GR
+  mLabelegr = new QLabel(QString(), this);
+  mLabelegr->setObjectName(QStringLiteral("mCoordsLabelegr"));
+  mLabelegr->setMinimumWidth(10);
+  //mLabelegr->setMaximumHeight( 20 );
+  mLabelegr->setMargin(3);
+  mLabelegr->setAlignment(Qt::AlignCenter);
+  mLabelegr->setFrameStyle(QFrame::NoFrame);
+  mLabelegr->setText(tr("ESM GR"));
+  mLabelegr->setToolTip(tr("Show ESM GR"));
+
+  // add a label to show DSM Sheet No
+  mLabelesheet = new QLabel(QString(), this);
+  mLabelesheet->setObjectName(QStringLiteral("mCoordsLabelesheet"));
+  mLabelesheet->setMinimumWidth(10);
+  //mLabelesheet->setMaximumHeight( 20 );
+  mLabelesheet->setMargin(3);
+  mLabelesheet->setAlignment(Qt::AlignCenter);
+  mLabelesheet->setFrameStyle(QFrame::NoFrame);
+  mLabelesheet->setText(tr("ESM No."));
+  mLabelesheet->setToolTip(tr("Show ESM Sheet No"));
+
+  mLineEdit = new QLineEdit(this);
+  mLineEdit->setMinimumWidth(10);
+  //mLineEdit->setMaximumHeight( 20 );
+  mLineEdit->setContentsMargins(0, 0, 0, 0);
+  mLineEdit->setAlignment(Qt::AlignCenter);
+  connect(mLineEdit, &QLineEdit::returnPressed, this, &QgsStatusBarCoordinatesWidget::validateCoordinates);
+
+  const QRegularExpression coordValidator("[+-]?\\d+\\.?\\d*\\s*,\\s*[+-]?\\d+\\.?\\d*");
+  mCoordsEditValidator = new QRegularExpressionValidator(coordValidator, this);
+  mLineEdit->setToolTip(tr("Current map coordinate (longitude,latitude or east,north)"));
 
   //toggle to switch between mouse pos and extents display in status bar widget
-  mToggleExtentsViewButton = new QToolButton( this );
-  mToggleExtentsViewButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "tracking.svg" ) ) );
-  mToggleExtentsViewButton->setToolTip( tr( "Toggle extents and mouse position display" ) );
-  mToggleExtentsViewButton->setCheckable( true );
-  mToggleExtentsViewButton->setAutoRaise( true );
-  connect( mToggleExtentsViewButton, &QAbstractButton::toggled, this, &QgsStatusBarCoordinatesWidget::extentsViewToggled );
+  mToggleExtentsViewButton = new QToolButton(this);
+  mToggleExtentsViewButton->setIcon(QgsApplication::getThemeIcon(QStringLiteral("tracking.svg")));
+  mToggleExtentsViewButton->setToolTip(tr("Toggle extents and mouse position display"));
+  mToggleExtentsViewButton->setCheckable(true);
+  mToggleExtentsViewButton->setAutoRaise(true);
+  connect(mToggleExtentsViewButton, &QAbstractButton::toggled, this, &QgsStatusBarCoordinatesWidget::extentsViewToggled);
 
-//Nihcas below
-  //Coordinate status bar widget GeoCoord
+  //Nihcas below
+    //Coordinate status bar widget GeoCoord
   mCoordsGeocord = new QLineEdit(this);
   mCoordsGeocord->setObjectName("mCoordsGeocord");
   mCoordsGeocord->setMinimumWidth(10);
@@ -151,7 +151,7 @@ QgsStatusBarCoordinatesWidget::QgsStatusBarCoordinatesWidget( QWidget *parent )
   mCoordsEditMgrid->setWhatsThis(tr("Shows DSM GR at the current cursor position."));
   mCoordsEditMgrid->setToolTip(tr("Shows the Mil grid of DSM series maps"));
   connect(mCoordsEditMgrid, &QLineEdit::returnPressed, this, &QgsStatusBarCoordinatesWidget::validateCoordinates);
-  
+
   //DSM Sheet Number widget 
   mCoordsEditMsheet = new QLineEdit(this);
   mCoordsEditMsheet->setObjectName("mCoordsEditMsheet");
@@ -161,10 +161,10 @@ QgsStatusBarCoordinatesWidget::QgsStatusBarCoordinatesWidget( QWidget *parent )
   mCoordsEditMsheet->setAlignment(Qt::AlignLeft);
   mCoordsEditMgridValidator = new QRegularExpressionValidator(coordValidator, mCoordsEditMsheet);
   mCoordsEditMsheet->setWhatsThis(tr("Shows the DSM Sheet No."));
-  mCoordsEditMsheet->setToolTip(tr("Shows the DSM series Map Sheet No."));  
+  mCoordsEditMsheet->setToolTip(tr("Shows the DSM series Map Sheet No."));
   connect(mCoordsEditMsheet, &QLineEdit::returnPressed, this, &QgsStatusBarCoordinatesWidget::validateCoordinates);
-  
-  
+
+
   //Cordinate status bar widget Everest
   mCoordsEditMgrideve = new QLineEdit(this);
   mCoordsEditMgrideve->setObjectName("mCoordsEditMgrideve");
@@ -177,7 +177,7 @@ QgsStatusBarCoordinatesWidget::QgsStatusBarCoordinatesWidget( QWidget *parent )
   mCoordsEditMgrideve->setToolTip(tr("Show the ESM GR of Everest series maps)"));
   connect(mCoordsEditMgrideve, &QLineEdit::returnPressed, this, &QgsStatusBarCoordinatesWidget::validateCoordinates);
   //Nihcas above
-  
+
   //Everest Series Map Sheet Number 
   mCoordsEditMsheeteve = new QLineEdit(this);
   mCoordsEditMsheeteve->setObjectName("mCoordsEditMsheeteve");
@@ -189,109 +189,109 @@ QgsStatusBarCoordinatesWidget::QgsStatusBarCoordinatesWidget( QWidget *parent )
   mCoordsEditMsheeteve->setWhatsThis(tr("Shows ESM Sheet No."));
   mCoordsEditMsheeteve->setToolTip(tr("Shows the ESM series Map Sheet No."));
   connect(mCoordsEditMsheeteve, &QLineEdit::returnPressed, this, &QgsStatusBarCoordinatesWidget::validateCoordinates);
-  
 
-  QHBoxLayout *layout = new QHBoxLayout( this );
-  setLayout( layout );
-  layout->addItem( new QSpacerItem( 0, 0, QSizePolicy::Expanding ) );
-  layout->addWidget( mLabel );
-  layout->addWidget( mLineEdit );
+
+  QHBoxLayout* layout = new QHBoxLayout(this);
+  setLayout(layout);
+  layout->addItem(new QSpacerItem(0, 0, QSizePolicy::Expanding));
+  layout->addWidget(mLabel);
+  layout->addWidget(mLineEdit);
   //Nihcas add below
   layout->addWidget(mLabelgeocord);
   layout->addWidget(mCoordsGeocord);
-  layout->addWidget( mLabeldgr );
-  layout->addWidget(mCoordsEditMgrid);  
-  layout->addWidget( mLabeldsheet );
+  layout->addWidget(mLabeldgr);
+  layout->addWidget(mCoordsEditMgrid);
+  layout->addWidget(mLabeldsheet);
   layout->addWidget(mCoordsEditMsheet);
-  layout->addWidget( mLabelegr );
+  layout->addWidget(mLabelegr);
   layout->addWidget(mCoordsEditMgrideve);
-  layout->addWidget( mLabelesheet );
+  layout->addWidget(mLabelesheet);
   layout->addWidget(mCoordsEditMsheeteve);
   //Nihcas add above
-  layout->addWidget( mToggleExtentsViewButton );
-  layout->setContentsMargins( 0, 0, 0, 0 );
-  layout->setAlignment( Qt::AlignLeft );
-  layout->setSpacing( 0 );
+  layout->addWidget(mToggleExtentsViewButton);
+  layout->setContentsMargins(0, 0, 0, 0);
+  layout->setAlignment(Qt::AlignLeft);
+  layout->setSpacing(0);
 
   // When you feel dizzy
-  mDizzyTimer = new QTimer( this );
-  connect( mDizzyTimer, &QTimer::timeout, this, &QgsStatusBarCoordinatesWidget::dizzy );
+  mDizzyTimer = new QTimer(this);
+  connect(mDizzyTimer, &QTimer::timeout, this, &QgsStatusBarCoordinatesWidget::dizzy);
 
-  connect( QgsProject::instance()->displaySettings(), &QgsProjectDisplaySettings::coordinateCrsChanged, this, &QgsStatusBarCoordinatesWidget::coordinateDisplaySettingsChanged );
-  connect( QgsProject::instance()->displaySettings(), &QgsProjectDisplaySettings::geographicCoordinateFormatChanged, this, &QgsStatusBarCoordinatesWidget::coordinateDisplaySettingsChanged );
-  connect( QgsProject::instance()->displaySettings(), &QgsProjectDisplaySettings::coordinateTypeChanged, this, &QgsStatusBarCoordinatesWidget::coordinateDisplaySettingsChanged );
+  connect(QgsProject::instance()->displaySettings(), &QgsProjectDisplaySettings::coordinateCrsChanged, this, &QgsStatusBarCoordinatesWidget::coordinateDisplaySettingsChanged);
+  connect(QgsProject::instance()->displaySettings(), &QgsProjectDisplaySettings::geographicCoordinateFormatChanged, this, &QgsStatusBarCoordinatesWidget::coordinateDisplaySettingsChanged);
+  connect(QgsProject::instance()->displaySettings(), &QgsProjectDisplaySettings::coordinateTypeChanged, this, &QgsStatusBarCoordinatesWidget::coordinateDisplaySettingsChanged);
 
   coordinateDisplaySettingsChanged();
 }
 
-void QgsStatusBarCoordinatesWidget::setMapCanvas( QgsMapCanvas *mapCanvas )
+void QgsStatusBarCoordinatesWidget::setMapCanvas(QgsMapCanvas* mapCanvas)
 {
-  if ( mMapCanvas )
+  if (mMapCanvas)
   {
-    disconnect( mMapCanvas, &QgsMapCanvas::xyCoordinates, this, &QgsStatusBarCoordinatesWidget::showMouseCoordinates );
-    disconnect( mMapCanvas, &QgsMapCanvas::extentsChanged, this, &QgsStatusBarCoordinatesWidget::showExtent );
+    disconnect(mMapCanvas, &QgsMapCanvas::xyCoordinates, this, &QgsStatusBarCoordinatesWidget::showMouseCoordinates);
+    disconnect(mMapCanvas, &QgsMapCanvas::extentsChanged, this, &QgsStatusBarCoordinatesWidget::showExtent);
   }
 
   mMapCanvas = mapCanvas;
-  connect( mMapCanvas, &QgsMapCanvas::xyCoordinates, this, &QgsStatusBarCoordinatesWidget::showMouseCoordinates );
-  connect( mMapCanvas, &QgsMapCanvas::extentsChanged, this, &QgsStatusBarCoordinatesWidget::showExtent );
+  connect(mMapCanvas, &QgsMapCanvas::xyCoordinates, this, &QgsStatusBarCoordinatesWidget::showMouseCoordinates);
+  connect(mMapCanvas, &QgsMapCanvas::extentsChanged, this, &QgsStatusBarCoordinatesWidget::showExtent);
 }
 
-void QgsStatusBarCoordinatesWidget::setFont( const QFont &myFont )
+void QgsStatusBarCoordinatesWidget::setFont(const QFont& myFont)
 {
-  mLineEdit->setFont( myFont );
-  mLabel->setFont( myFont );
+  mLineEdit->setFont(myFont);
+  mLabel->setFont(myFont);
 }
 
-void QgsStatusBarCoordinatesWidget::setMouseCoordinatesPrecision( unsigned int precision )
+void QgsStatusBarCoordinatesWidget::setMouseCoordinatesPrecision(unsigned int precision)
 {
   mMousePrecisionDecimalPlaces = precision;
 }
 
 void QgsStatusBarCoordinatesWidget::validateCoordinates()
 {
-  if ( !mMapCanvas )
+  if (!mMapCanvas)
   {
     return;
   }
-  else if ( mLineEdit->text() == QLatin1String( "world" ) )
+  else if (mLineEdit->text() == QLatin1String("world"))
   {
     world();
   }
-  if ( mLineEdit->text() == QLatin1String( "contributors" ) )
+  if (mLineEdit->text() == QLatin1String("contributors"))
   {
     contributors();
   }
-  else if ( mLineEdit->text() == QLatin1String( "hackfests" ) )
+  else if (mLineEdit->text() == QLatin1String("hackfests"))
   {
     hackfests();
   }
-  else if ( mLineEdit->text() == QLatin1String( "user groups" ) )
+  else if (mLineEdit->text() == QLatin1String("user groups"))
   {
     userGroups();
   }
-  else if ( mLineEdit->text() == QLatin1String( "dizzy" ) )
+  else if (mLineEdit->text() == QLatin1String("dizzy"))
   {
     // sometimes you may feel a bit dizzy...
-    if ( mDizzyTimer->isActive() )
+    if (mDizzyTimer->isActive())
     {
       mDizzyTimer->stop();
-      mMapCanvas->setSceneRect( mMapCanvas->viewport()->rect() );
-      mMapCanvas->setTransform( QTransform() );
+      mMapCanvas->setSceneRect(mMapCanvas->viewport()->rect());
+      mMapCanvas->setTransform(QTransform());
     }
     else
     {
-      mDizzyTimer->start( 100 );
+      mDizzyTimer->start(100);
     }
     return;
   }
-  else if ( mLineEdit->text() == QLatin1String( "retro" ) )
+  else if (mLineEdit->text() == QLatin1String("retro"))
   {
-    mMapCanvas->setProperty( "retro", !mMapCanvas->property( "retro" ).toBool() );
+    mMapCanvas->setProperty("retro", !mMapCanvas->property("retro").toBool());
     refreshMapCanvas();
     return;
   }
-  else if ( mLineEdit->text() == QLatin1String( "bored" ) )
+  else if (mLineEdit->text() == QLatin1String("bored"))
   {
     // it's friday afternoon and too late to start another piece of work...
     emit weAreBored();
@@ -302,42 +302,42 @@ void QgsStatusBarCoordinatesWidget::validateCoordinates()
   double first = 0;
   double second = 0;
   QString coordText = mLineEdit->text();
-  const thread_local QRegularExpression sMultipleWhitespaceRx( QStringLiteral( " {2,}" ) );
-  coordText.replace( sMultipleWhitespaceRx, QStringLiteral( " " ) );
+  const thread_local QRegularExpression sMultipleWhitespaceRx(QStringLiteral(" {2,}"));
+  coordText.replace(sMultipleWhitespaceRx, QStringLiteral(" "));
 
-  QStringList parts = coordText.split( ',' );
-  if ( parts.size() == 2 )
+  QStringList parts = coordText.split(',');
+  if (parts.size() == 2)
   {
-    first = parts.at( 0 ).toDouble( &xOk );
-    second = parts.at( 1 ).toDouble( &yOk );
+    first = parts.at(0).toDouble(&xOk);
+    second = parts.at(1).toDouble(&yOk);
   }
 
-  if ( !xOk || !yOk )
+  if (!xOk || !yOk)
   {
-    parts = coordText.split( ' ' );
-    if ( parts.size() == 2 )
+    parts = coordText.split(' ');
+    if (parts.size() == 2)
     {
-      first = parts.at( 0 ).toDouble( &xOk );
-      second = parts.at( 1 ).toDouble( &yOk );
+      first = parts.at(0).toDouble(&xOk);
+      second = parts.at(1).toDouble(&yOk);
     }
   }
 
-  if ( !xOk || !yOk )
+  if (!xOk || !yOk)
     return;
 
   const Qgis::CoordinateOrder projectAxisOrder = QgsProject::instance()->displaySettings()->coordinateAxisOrder();
 
-  const Qgis::CoordinateOrder coordinateOrder = projectAxisOrder == Qgis::CoordinateOrder::Default ? QgsCoordinateReferenceSystemUtils::defaultCoordinateOrderForCrs( mMapCanvas->mapSettings().destinationCrs() ) : projectAxisOrder;
+  const Qgis::CoordinateOrder coordinateOrder = projectAxisOrder == Qgis::CoordinateOrder::Default ? QgsCoordinateReferenceSystemUtils::defaultCoordinateOrderForCrs(mMapCanvas->mapSettings().destinationCrs()) : projectAxisOrder;
   // we may need to flip coordinates depending on crs axis ordering
-  switch ( coordinateOrder )
+  switch (coordinateOrder)
   {
-    case Qgis::CoordinateOrder::Default:
-    case Qgis::CoordinateOrder::XY:
-      mMapCanvas->setCenter( QgsPointXY( first, second ) );
-      break;
-    case Qgis::CoordinateOrder::YX:
-      mMapCanvas->setCenter( QgsPointXY( second, first ) );
-      break;
+  case Qgis::CoordinateOrder::Default:
+  case Qgis::CoordinateOrder::XY:
+    mMapCanvas->setCenter(QgsPointXY(first, second));
+    break;
+  case Qgis::CoordinateOrder::YX:
+    mMapCanvas->setCenter(QgsPointXY(second, first));
+    break;
   }
 
   mMapCanvas->refresh();
@@ -346,7 +346,7 @@ void QgsStatusBarCoordinatesWidget::validateCoordinates()
 
 void QgsStatusBarCoordinatesWidget::dizzy()
 {
-  if ( !mMapCanvas )
+  if (!mMapCanvas)
   {
     return;
   }
@@ -354,125 +354,125 @@ void QgsStatusBarCoordinatesWidget::dizzy()
   const int d = 10; // max. translational dizziness offset
   const int r = 4;  // max. rotational dizzines angle
   QRectF rect = mMapCanvas->sceneRect();
-  if ( rect.x() < -d || rect.x() > d || rect.y() < -d || rect.y() > d )
+  if (rect.x() < -d || rect.x() > d || rect.y() < -d || rect.y() > d)
     return; // do not affect panning
 
-  rect.moveTo( static_cast< int >( QRandomGenerator::global()->generate() % ( 2 * d ) ) - d, static_cast< int >( QRandomGenerator::global()->generate() % ( 2 * d ) ) - d );
-  mMapCanvas->setSceneRect( rect );
+  rect.moveTo(static_cast<int>(QRandomGenerator::global()->generate() % (2 * d)) - d, static_cast<int>(QRandomGenerator::global()->generate() % (2 * d)) - d);
+  mMapCanvas->setSceneRect(rect);
   QTransform matrix;
-  matrix.rotate( static_cast<int >( QRandomGenerator::global()->generate() % ( 2 * r ) ) - r );
-  mMapCanvas->setTransform( matrix );
+  matrix.rotate(static_cast<int>(QRandomGenerator::global()->generate() % (2 * r)) - r);
+  mMapCanvas->setTransform(matrix);
 }
 
 void QgsStatusBarCoordinatesWidget::contributors()
 {
-  if ( !mMapCanvas )
+  if (!mMapCanvas)
   {
     return;
   }
-  const QString fileName = QgsApplication::pkgDataPath() + QStringLiteral( "/resources/data/contributors.json" );
-  const QFileInfo fileInfo = QFileInfo( fileName );
-  const QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
-  QgsVectorLayer *layer = new QgsVectorLayer( fileInfo.absoluteFilePath(),
-      tr( "QGIS Contributors" ), QStringLiteral( "ogr" ), options );
+  const QString fileName = QgsApplication::pkgDataPath() + QStringLiteral("/resources/data/contributors.json");
+  const QFileInfo fileInfo = QFileInfo(fileName);
+  const QgsVectorLayer::LayerOptions options{ QgsProject::instance()->transformContext() };
+  QgsVectorLayer* layer = new QgsVectorLayer(fileInfo.absoluteFilePath(),
+    tr("QGIS Contributors"), QStringLiteral("ogr"), options);
   // Register this layer with the layers registry
-  QgsProject::instance()->addMapLayer( layer );
-  layer->setAutoRefreshInterval( 500 );
-  layer->setAutoRefreshEnabled( true );
+  QgsProject::instance()->addMapLayer(layer);
+  layer->setAutoRefreshInterval(500);
+  layer->setAutoRefreshEnabled(true);
 }
 
 void QgsStatusBarCoordinatesWidget::world()
 {
-  if ( !mMapCanvas )
+  if (!mMapCanvas)
   {
     return;
   }
-  const QString fileName = QgsApplication::pkgDataPath() + QStringLiteral( "/resources/data/world_map.gpkg|layername=countries" );
-  const QFileInfo fileInfo = QFileInfo( fileName );
-  QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
+  const QString fileName = QgsApplication::pkgDataPath() + QStringLiteral("/resources/data/world_map.gpkg|layername=countries");
+  const QFileInfo fileInfo = QFileInfo(fileName);
+  QgsVectorLayer::LayerOptions options{ QgsProject::instance()->transformContext() };
   options.forceReadOnly = true;
-  QgsVectorLayer *layer = new QgsVectorLayer( fileInfo.absoluteFilePath(),
-      tr( "World Map" ), QStringLiteral( "ogr" ), options );
+  QgsVectorLayer* layer = new QgsVectorLayer(fileInfo.absoluteFilePath(),
+    tr("World Map"), QStringLiteral("ogr"), options);
   // Register this layer with the layers registry
-  QgsProject::instance()->addMapLayer( layer );
+  QgsProject::instance()->addMapLayer(layer);
 }
 
 void QgsStatusBarCoordinatesWidget::hackfests()
 {
-  if ( !mMapCanvas )
+  if (!mMapCanvas)
   {
     return;
   }
-  const QString fileName = QgsApplication::pkgDataPath() + QStringLiteral( "/resources/data/qgis-hackfests.json" );
-  const QFileInfo fileInfo = QFileInfo( fileName );
-  const QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
-  QgsVectorLayer *layer = new QgsVectorLayer( fileInfo.absoluteFilePath(),
-      tr( "QGIS Hackfests" ), QStringLiteral( "ogr" ), options );
+  const QString fileName = QgsApplication::pkgDataPath() + QStringLiteral("/resources/data/qgis-hackfests.json");
+  const QFileInfo fileInfo = QFileInfo(fileName);
+  const QgsVectorLayer::LayerOptions options{ QgsProject::instance()->transformContext() };
+  QgsVectorLayer* layer = new QgsVectorLayer(fileInfo.absoluteFilePath(),
+    tr("QGIS Hackfests"), QStringLiteral("ogr"), options);
   // Register this layer with the layers registry
-  QgsProject::instance()->addMapLayer( layer );
-  layer->setAutoRefreshInterval( 500 );
-  layer->setAutoRefreshEnabled( true );
+  QgsProject::instance()->addMapLayer(layer);
+  layer->setAutoRefreshInterval(500);
+  layer->setAutoRefreshEnabled(true);
 }
 
 void QgsStatusBarCoordinatesWidget::userGroups()
 {
-  if ( !mMapCanvas )
+  if (!mMapCanvas)
   {
     return;
   }
-  const QString fileName = QgsApplication::pkgDataPath() + QStringLiteral( "/resources/data/world_map.gpkg|layername=countries" );
-  const QFileInfo fileInfo = QFileInfo( fileName );
-  const QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
-  QgsVectorLayer *layer = new QgsVectorLayer( fileInfo.absoluteFilePath(),
-      tr( "User Groups" ), QStringLiteral( "ogr" ), options );
+  const QString fileName = QgsApplication::pkgDataPath() + QStringLiteral("/resources/data/world_map.gpkg|layername=countries");
+  const QFileInfo fileInfo = QFileInfo(fileName);
+  const QgsVectorLayer::LayerOptions options{ QgsProject::instance()->transformContext() };
+  QgsVectorLayer* layer = new QgsVectorLayer(fileInfo.absoluteFilePath(),
+    tr("User Groups"), QStringLiteral("ogr"), options);
 
-  const QString fileNameData = QgsApplication::pkgDataPath() + QStringLiteral( "/resources/data/user_groups_data.json" );
-  const QFileInfo fileInfoData = QFileInfo( fileNameData );
-  QgsVectorLayer *layerData = new QgsVectorLayer( fileInfoData.absoluteFilePath(),
-      tr( "user_groups_data" ), QStringLiteral( "ogr" ), options );
+  const QString fileNameData = QgsApplication::pkgDataPath() + QStringLiteral("/resources/data/user_groups_data.json");
+  const QFileInfo fileInfoData = QFileInfo(fileNameData);
+  QgsVectorLayer* layerData = new QgsVectorLayer(fileInfoData.absoluteFilePath(),
+    tr("user_groups_data"), QStringLiteral("ogr"), options);
 
   // Register layers with the layers registry
-  QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << layer << layerData );
+  QgsProject::instance()->addMapLayers(QList<QgsMapLayer*>() << layer << layerData);
 
   // Create join
   QgsVectorLayerJoinInfo joinInfo;
-  joinInfo.setTargetFieldName( QStringLiteral( "iso_a2" ) );
-  joinInfo.setJoinLayer( layerData );
-  joinInfo.setJoinFieldName( QStringLiteral( "country" ) );
-  joinInfo.setUsingMemoryCache( true );
-  joinInfo.setPrefix( QStringLiteral( "ug_" ) );
-  joinInfo.setJoinFieldNamesSubset( nullptr );  // Use all join fields
-  layer->addJoin( joinInfo );
+  joinInfo.setTargetFieldName(QStringLiteral("iso_a2"));
+  joinInfo.setJoinLayer(layerData);
+  joinInfo.setJoinFieldName(QStringLiteral("country"));
+  joinInfo.setUsingMemoryCache(true);
+  joinInfo.setPrefix(QStringLiteral("ug_"));
+  joinInfo.setJoinFieldNamesSubset(nullptr);  // Use all join fields
+  layer->addJoin(joinInfo);
 
   // Load QML for polygon symbology and maptips
-  const QString fileNameStyle = QgsApplication::pkgDataPath() + QStringLiteral( "/resources/data/user_groups.qml" );
+  const QString fileNameStyle = QgsApplication::pkgDataPath() + QStringLiteral("/resources/data/user_groups.qml");
   bool styleFlag = false;
-  layer->loadNamedStyle( fileNameStyle, styleFlag, true );
+  layer->loadNamedStyle(fileNameStyle, styleFlag, true);
 }
 
-void QgsStatusBarCoordinatesWidget::extentsViewToggled( bool flag )
+void QgsStatusBarCoordinatesWidget::extentsViewToggled(bool flag)
 {
-  if ( flag )
+  if (flag)
   {
     //extents view mode!
-    mToggleExtentsViewButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "extents.svg" ) ) );
-    mLineEdit->setToolTip( tr( "Map coordinates for the current view extents" ) );
-    mLineEdit->setReadOnly( true );
+    mToggleExtentsViewButton->setIcon(QgsApplication::getThemeIcon(QStringLiteral("extents.svg")));
+    mLineEdit->setToolTip(tr("Map coordinates for the current view extents"));
+    mLineEdit->setReadOnly(true);
     showExtent();
   }
   else
   {
     //mouse cursor pos view mode!
-    mToggleExtentsViewButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "tracking.svg" ) ) );
-    mLineEdit->setToolTip( tr( "Map coordinates at mouse cursor position" ) );
-    mLineEdit->setReadOnly( false );
-    mLabel->setText( tr( "Coordinate" ) );
+    mToggleExtentsViewButton->setIcon(QgsApplication::getThemeIcon(QStringLiteral("tracking.svg")));
+    mLineEdit->setToolTip(tr("Map coordinates at mouse cursor position"));
+    mLineEdit->setReadOnly(false);
+    mLabel->setText(tr("Coordinate"));
   }
 }
 
 void QgsStatusBarCoordinatesWidget::refreshMapCanvas()
 {
-  if ( !mMapCanvas )
+  if (!mMapCanvas)
     return;
 
   //stop any current rendering
@@ -480,13 +480,13 @@ void QgsStatusBarCoordinatesWidget::refreshMapCanvas()
   mMapCanvas->redrawAllLayers();
 }
 
-void QgsStatusBarCoordinatesWidget::showMouseCoordinates( const QgsPointXY &Qp )
+void QgsStatusBarCoordinatesWidget::showMouseCoordinates(const QgsPointXY& Qp)
 {
-  mLastCoordinate = Qp;  
+  mLastCoordinate = Qp;
   //updateCoordinateDisplay();
   //updateCoordinateDisplayUpdated(p);
 
-  
+
   //Nihcas added below
 
   QgsPointXY p;
@@ -499,7 +499,7 @@ void QgsStatusBarCoordinatesWidget::showMouseCoordinates( const QgsPointXY &Qp )
     QgsCoordinateTransform xform = QgsCoordinateTransform(crsSrc, crsWgs, QgsProject::instance());
     p = xform.transform(p1);
     //QString qs = p.toString();
-  
+
     mCoordsGeocord->setText(QgsCoordinateUtils::formatCoordinateForProject(QgsProject::instance(), p, crsSrc, 4));  //precision for latitude and longitude to show on screen
     ensureCoordinatesVisible();
   }
@@ -517,8 +517,10 @@ void QgsStatusBarCoordinatesWidget::showMouseCoordinates( const QgsPointXY &Qp )
 
   }
 
-//Nihcas added below
-//Mil Grid Display for dsm series map 
+
+
+  //Nihcas added below
+ //Mil Grid Display for dsm series map 
 
   QString str, str1, str2, str3;
   if ((p.x() > -180 && p.x() < 180) && (p.y() > -90 && p.y() < 90))
@@ -566,21 +568,21 @@ void QgsStatusBarCoordinatesWidget::showMouseCoordinates( const QgsPointXY &Qp )
   mCoordsEditMsheeteve->setText(str3); //Display ESM Sheet No
   //mCoordsGeocord->setText(" T");
   updateCoordinateDisplay();
-  
-//Nihcas above 
+
+  //Nihcas above 
 }
 
 
 void QgsStatusBarCoordinatesWidget::showExtent()
 {
-  if ( !mToggleExtentsViewButton->isChecked() )
+  if (!mToggleExtentsViewButton->isChecked())
   {
     return;
   }
 
-  mLabel->setText( tr( "Extents" ) );
-  mLineEdit->setText( QgsCoordinateUtils::formatExtentForProject( QgsProject::instance(), mMapCanvas->extent(), mMapCanvas->mapSettings().destinationCrs(),
-                      mMousePrecisionDecimalPlaces ) );
+  mLabel->setText(tr("Extents"));
+  mLineEdit->setText(QgsCoordinateUtils::formatExtentForProject(QgsProject::instance(), mMapCanvas->extent(), mMapCanvas->mapSettings().destinationCrs(),
+    mMousePrecisionDecimalPlaces));
   ensureCoordinatesVisible();
 }
 
@@ -588,16 +590,16 @@ void QgsStatusBarCoordinatesWidget::ensureCoordinatesVisible()
 {
 
   //ensure the label is big (and small) enough
-  const int width = std::max( mLineEdit->fontMetrics().boundingRect( mLineEdit->text() ).width() + 16, mMinimumWidth );
-  if ( mLineEdit->minimumWidth() < width || ( mLineEdit->minimumWidth() - width ) > mTwoCharSize )
+  const int width = std::max(mLineEdit->fontMetrics().boundingRect(mLineEdit->text()).width() + 16, mMinimumWidth);
+  if (mLineEdit->minimumWidth() < width || (mLineEdit->minimumWidth() - width) > mTwoCharSize)
   {
-    mLineEdit->setMinimumWidth( width );
-    mLineEdit->setMaximumWidth( width );
+    mLineEdit->setMinimumWidth(width);
+    mLineEdit->setMaximumWidth(width);
   }
 }
 
 //Nihcas below Function for Mil Grid
-QString QgsStatusBarCoordinatesWidget::eveLatLongTopoSheetConversion(const QgsPointXY &mp)
+QString QgsStatusBarCoordinatesWidget::eveLatLongTopoSheetConversion(const QgsPointXY& mp)
 {
   double LAT = mp.y();
   double LONG = mp.x();
@@ -691,7 +693,7 @@ QString QgsStatusBarCoordinatesWidget::eveLatLongTopoSheetConversion(const QgsPo
   }
   return finalarr;								//a pointer to an array is returned
 }
-inline QString QgsStatusBarCoordinatesWidget::LatLongTopoSheetConversion(const QgsPointXY &mp)
+inline QString QgsStatusBarCoordinatesWidget::LatLongTopoSheetConversion(const QgsPointXY& mp)
 {
   double LAT = mp.y();
   double LONG = mp.x();
@@ -707,7 +709,7 @@ inline QString QgsStatusBarCoordinatesWidget::LatLongTopoSheetConversion(const Q
   QString arr_ndsm;
   QChar matrix2[4][6] = { { 'S','T','U','V','W','X' },{ 'M','N','O','P','Q','R' },{ 'G','H','I','J','K','L' },{ 'A','B','C','D','E','F' } };
   int matrix3[4][4] = { { 4, 8, 12, 16 },{ 3, 7, 11, 15 },{ 2, 6, 10, 14 },{ 1, 5, 9, 13 } };
-//NEW SERIES ADDED
+  //NEW SERIES ADDED
   QChar matrix1[46] = { 'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W' };
   int matrix1_part1[61] = { 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61 };
   //QChar matrix1[14] = { 'A','B','C','D','E','F','G','H','I','J','K','L','M','N' };
@@ -763,9 +765,9 @@ inline QString QgsStatusBarCoordinatesWidget::LatLongTopoSheetConversion(const Q
   {
     long1 = int(long_ndsm / 6);
   }
-   
+
   */
-  long1= int(long_ndsm/6);								//longitude are at a distance of 6 degrees
+  long1 = int(long_ndsm / 6);								//longitude are at a distance of 6 degrees
   temp[0] = matrix1[lat1];
   if ((long_ndsm >= 0) && (long_ndsm < 180))
   {
@@ -775,7 +777,7 @@ inline QString QgsStatusBarCoordinatesWidget::LatLongTopoSheetConversion(const Q
   {
     longskc = long1 + 29;
   }
-  
+
   int first_part1 = matrix1_part1[longskc];			       //Value at matrix1(lat1,long1)  will be the toposheet number for level I
   int lat2 = int(abs(lat_ndsm) - abs(lat1) * 4);
   lat2 = lat2 - 1;
@@ -814,9 +816,7 @@ inline QString QgsStatusBarCoordinatesWidget::LatLongTopoSheetConversion(const Q
   }
   return arr_ndsm;
 }
-
-
-inline QString QgsStatusBarCoordinatesWidget::LatLongToMilgridConversion(const QgsPointXY &mp)
+inline QString QgsStatusBarCoordinatesWidget::LatLongToMilgridConversion(const QgsPointXY& mp)
 {
   int false_easting = 500000, false_northing = 500000;
   double ecc = 298.2572, semi_minor_axis = 6356752.3142, e1 = 0.081819190842622, e = 2.718281828, semi_major_axis = 6378137.0;
@@ -845,14 +845,14 @@ inline QString QgsStatusBarCoordinatesWidget::LatLongToMilgridConversion(const Q
   double LONG = mp.x();           //78.01554444;//mp.x();
              /*LAT = 28;
              LONG = 68;*/
- // for (i = 0; i < 20; i++)
+             // for (i = 0; i < 20; i++)
   for (i = 0; i < 22; i++)
     milgrid[i] = ' ';
   // Find out the grid zone
   k = -1;
-//  for (i = 36; i <= 132; i = i + 8)
-//  {
-//    for (j = 54; j > (-13); j = j - 6)
+  //  for (i = 36; i <= 132; i = i + 8)
+  //  {
+  //    for (j = 54; j > (-13); j = j - 6)
   for (i = -180; i <= 180; i = i + 8)
   {
     for (j = 90; j > (-91); j = j - 6)
@@ -883,63 +883,63 @@ inline QString QgsStatusBarCoordinatesWidget::LatLongToMilgridConversion(const Q
   std_para2 = std_para2 - diff;
   central_meridian = limiting_meridian + 4;
   temp1 = 0.0;
-  temp2 = (1 - e1 * sin(std_para1*correct)) / (1 + e1 * sin(std_para1*correct));
+  temp2 = (1 - e1 * sin(std_para1 * correct)) / (1 + e1 * sin(std_para1 * correct));
   temp1 = pow(temp2, (e1 / 2));
-  q1 = tan(((pi / 4) + (std_para1 / 2))*correct);
+  q1 = tan(((pi / 4) + (std_para1 / 2)) * correct);
   q1 = temp1 * q1;
   q1 = log(q1);
   temp1 = 0.0;
   temp2 = 0.0;
   double sinph2, sinq2;
-  sinph2 = sin(std_para2*correct);
+  sinph2 = sin(std_para2 * correct);
   sinq2 = e1 * sinph2;
   temp2 = (1 - sinq2) / (1 + sinq2);
-  temp2 = (1 - e1 * sinf(std_para2*correct)) / (1 + e1 * sinf(std_para2*correct));
+  temp2 = (1 - e1 * sinf(std_para2 * correct)) / (1 + e1 * sinf(std_para2 * correct));
   temp1 = powf(temp2, (e1 / 2));
-  q2 = temp1 * (tan(((pi / 4) + (std_para2 / 2))*correct));
+  q2 = temp1 * (tan(((pi / 4) + (std_para2 / 2)) * correct));
   q2 = logf(q2);
   temp1 = 0.0;
   temp2 = 0.0;
-  temp2 = (1 - e1 * sinf(LAT*correct)) / (1 + e1 * sinf(LAT*correct));
+  temp2 = (1 - e1 * sinf(LAT * correct)) / (1 + e1 * sinf(LAT * correct));
   temp1 = powf(temp2, (e1 / 2));
-  q = temp1 * (tan(((pi / 4) + (LAT / 2))*correct));
+  q = temp1 * (tan(((pi / 4) + (LAT / 2)) * correct));
   q = logf(q);
   temp1 = 0.0;
   temp2 = 0.0;
-  temp1 = powf(e1, 2.0)*powf(sinf(std_para1*correct), 2);
+  temp1 = powf(e1, 2.0) * powf(sinf(std_para1 * correct), 2);
   n1 = semi_major_axis / sqrt(1 - temp1);
   temp1 = 0.0;
-  temp1 = powf(e1, 2.0)*powf(sinf(std_para2*correct), 2);
+  temp1 = powf(e1, 2.0) * powf(sinf(std_para2 * correct), 2);
   n2 = semi_major_axis / sqrt(1 - temp1);
   temp1 = 0.0;
-  temp1 = powf(e1, 2.0)*powf(sinf(LAT*correct), 2);
+  temp1 = powf(e1, 2.0) * powf(sinf(LAT * correct), 2);
   n = semi_major_axis / sqrt(1 - temp1);
   temp1 = 0.0;
-  temp1 = logf(n1*cosf(std_para1*correct));
-  temp2 = logf(n2*cosf(std_para2*correct));
+  temp1 = logf(n1 * cosf(std_para1 * correct));
+  temp2 = logf(n2 * cosf(std_para2 * correct));
   temp1 = temp1 - temp2;
   l1 = temp1 / (q2 - q1);
   temp1 = 0.0;
   temp1 = asinf(l1);
   central_parallel = temp1 / correct;  // central parallel by calculation
   temp1 = 0.0;
-  temp2 = (1 - e1 * sinf(central_parallel*correct)) / (1 + e1 * sinf(central_parallel*correct));
+  temp2 = (1 - e1 * sinf(central_parallel * correct)) / (1 + e1 * sinf(central_parallel * correct));
   temp1 = powf(temp2, (e1 / 2));
-  q0 = temp1 * (tan(((pi / 4) + (central_parallel / 2))*correct));
+  q0 = temp1 * (tan(((pi / 4) + (central_parallel / 2)) * correct));
   q0 = logf(q0);
   temp1 = 0.0;
   temp2 = 0.0;
-  temp1 = powf(e1, 2.0)*powf(sinf(central_parallel*correct), 2);
+  temp1 = powf(e1, 2.0) * powf(sinf(central_parallel * correct), 2);
   n0 = semi_major_axis / sqrt(1 - temp1);
   temp1 = 0.0;
-  zone_constant = (n1*cosf(std_para1*correct)) / (l1*expf(-l1 * q1));
-  zone_constant = (n2*cosf(std_para2*correct)) / (l1*expf(-l1 * q2));
-  scale_factor = (zone_constant*l1*expf(-l1 * q)) / (n*cosf(LAT*correct));
-  scale_factor_center = (zone_constant*l1*expf(-l1 * q0)) / (n0*cosf(central_parallel*correct));
-  r0 = scale_factor_center * n0*(1 / (tanf(central_parallel*correct)));
+  zone_constant = (n1 * cosf(std_para1 * correct)) / (l1 * expf(-l1 * q1));
+  zone_constant = (n2 * cosf(std_para2 * correct)) / (l1 * expf(-l1 * q2));
+  scale_factor = (zone_constant * l1 * expf(-l1 * q)) / (n * cosf(LAT * correct));
+  scale_factor_center = (zone_constant * l1 * expf(-l1 * q0)) / (n0 * cosf(central_parallel * correct));
+  r0 = scale_factor_center * n0 * (1 / (tanf(central_parallel * correct)));
   r = zone_constant * expf(-l1 * q);//scale_factor*expf(-l1*q);//zone_constant*expf(-l1*q);
-  dist_east = r * sinf(l1*(LONG - central_meridian)*correct); //distance from false eassting
-  dist_north = r0 - r * cosf(l1*(LONG - central_meridian)*correct);// distance from false northing
+  dist_east = r * sinf(l1 * (LONG - central_meridian) * correct); //distance from false eassting
+  dist_north = r0 - r * cosf(l1 * (LONG - central_meridian) * correct);// distance from false northing
   pe = false_easting + dist_east;
   pn = false_northing + dist_north + 11;
   i = int(pe);
@@ -1018,8 +1018,8 @@ inline QString QgsStatusBarCoordinatesWidget::LatLongToMilgridConversion(const Q
   sprintf(str_temp, "%d", j);
   i1 = strlen(str_temp);
   for (l = 1; l < i1; l++)
- //   milgrid[5 + l + k] = str_temp[l];
- // milgrid[5 + l + k + 1] = '\0';
+    //   milgrid[5 + l + k] = str_temp[l];
+    // milgrid[5 + l + k + 1] = '\0';
     milgrid[7 + l + k] = str_temp[l];
   milgrid[7 + l + k + 1] = '\0';
   //for (i = 0; i < 18; i++)
@@ -1031,9 +1031,9 @@ inline QString QgsStatusBarCoordinatesWidget::LatLongToMilgridConversion(const Q
   //else return("OUT OF BOUND AREA" );
   return str;
 }
-inline QString QgsStatusBarCoordinatesWidget::eveLatLongToMilgridConversion(const QgsPointXY &mp)
+inline QString QgsStatusBarCoordinatesWidget::eveLatLongToMilgridConversion(const QgsPointXY& mp)
 {
-  
+
   double std_para1 = 0.0, std_para2 = 0.0, temp1 = 0.0, temp2 = 0.0;
   double central_meridian, central_parallel, theta, deltalongitude;
   double dist_east = 0.0, dist_north = 0.0, pe = 0.0, pn = 0.0;
@@ -1083,8 +1083,8 @@ inline QString QgsStatusBarCoordinatesWidget::eveLatLongToMilgridConversion(cons
   //for four sides
   if (var != 1) {
     for (row = 0; row < 9; row++) {
-        int var = check_domain_4_sides(grid_4_sides[row][0], grid_4_sides[row][1], grid_4_sides[row][2], grid_4_sides[row][3], LAT, LONG);
-        if (var == 1) {
+      int var = check_domain_4_sides(grid_4_sides[row][0], grid_4_sides[row][1], grid_4_sides[row][2], grid_4_sides[row][3], LAT, LONG);
+      if (var == 1) {
         p2 = check_row_4_sides(row);
         break;
       }
@@ -1095,167 +1095,167 @@ inline QString QgsStatusBarCoordinatesWidget::eveLatLongToMilgridConversion(cons
   row = -1;
   try
   {
-  if(p2!=nullptr)
-  if (strcmp(p2, "GRID IA") == 0) {
-  row = 0;
-  }
-  else if (strcmp(p2, "GRID IB") == 0) {
-  row = 1;
-  }
-  else if (strcmp(p2, "GRID IIA") == 0) {
-  row = 2;
-  }
-  else if (strcmp(p2, "GRID IIB") == 0) {
-  row = 3;
-  }
-  else if (strcmp(p2, "GRID IIIA") == 0) {
-  row = 4;
-  }
-  else if (strcmp(p2, "GRID IIIB") == 0) {
-  row = 5;
-  }
-  else if (strcmp(p2, "GRID IVA") == 0) {
-  row = 6;
-  }
-  else if (strcmp(p2, "GRID IVB") == 0) {
-  row = 7;
-  }
-  else if (strcmp(p2, "GRID O") == 0) {
-  row = 8;
-  }
-  else { row = -1; }
-  if (row == -1)
-  {
-    finaloutput2 = "OUT OF BOUND AREA";
-    return finaloutput2;
-  }
-  else
-  {
-    for (int i = 0; i < 29; i++)
+    if (p2 != nullptr)
+      if (strcmp(p2, "G-IA") == 0) {
+        row = 0;
+      }
+      else if (strcmp(p2, "G-IB") == 0) {
+        row = 1;
+      }
+      else if (strcmp(p2, "G-IIA") == 0) {
+        row = 2;
+      }
+      else if (strcmp(p2, "G-IIB") == 0) {
+        row = 3;
+      }
+      else if (strcmp(p2, "G-IIIA") == 0) {
+        row = 4;
+      }
+      else if (strcmp(p2, "G-IIIB") == 0) {
+        row = 5;
+      }
+      else if (strcmp(p2, "G-IVA") == 0) {
+        row = 6;
+      }
+      else if (strcmp(p2, "G-IVB") == 0) {
+        row = 7;
+      }
+      else if (strcmp(p2, "G-O") == 0) {
+        row = 8;
+      }
+      else { row = -1; }
+    if (row == -1)
     {
-    p2arr[i] = ' ';
+      finaloutput2 = "OUT OF BOUND AREA";
+      return finaloutput2;
     }
-    for (int i = 0; i < 9; i++)
+    else
     {
-    p2arr[i] = p2[i];  //*(p2+i)
+      for (int i = 0; i < 29; i++)
+      {
+        p2arr[i] = ' ';
+      }
+      for (int i = 0; i < 9; i++)
+      {
+        p2arr[i] = p2[i];  //*(p2+i)
+      }
+      central_meridian = grid_data[row][0];
+      central_parallel = grid_data[row][1];
+      std_para1 = grid_data[row][2];
+      std_para2 = grid_data[row][3];
+      false_easting = grid_data[row][4];
+      false_northing = grid_data[row][5];
+      //this is to find q1
+      temp2 = (1 - e1 * sin(std_para1 * correct)) / (1 + e1 * sin(std_para1 * correct));
+      temp1 = pow(temp2, (e1 / 2));
+      q1 = tan(((pi / 4) + (std_para1 / 2)) * correct);
+      q1 = temp1 * q1;
+      q1 = log(q1);
+      //this is to find q2
+      temp1 = 0.0;
+      temp2 = 0.0;
+      temp2 = (1 - e1 * sinf(std_para2 * correct)) / (1 + e1 * sinf(std_para2 * correct));
+      temp1 = powf(temp2, (e1 / 2));
+      q2 = temp1 * (tan(((pi / 4) + (std_para2 / 2)) * correct));
+      q2 = logf(q2);
+      //this is to find q
+      temp1 = 0.0;
+      temp2 = 0.0;
+      temp2 = (1 - e1 * sinf(LAT * correct)) / (1 + e1 * sinf(LAT * correct));
+      temp1 = powf(temp2, (e1 / 2));
+      q = temp1 * (tan(((pi / 4) + (LAT / 2)) * correct));
+      q = logf(q);
+      //this is to find n1
+      temp1 = 0.0;
+      temp2 = 0.0;
+      temp1 = powf(e1, 2.0) * powf(sinf(std_para1 * correct), 2);
+      n1 = semi_major_axis / sqrt(1 - temp1);
+      //this is to find n2
+      temp1 = 0.0;
+      temp1 = powf(e1, 2.0) * powf(sinf(std_para2 * correct), 2);
+      n2 = semi_major_axis / sqrt(1 - temp1);
+      //this is to find n
+      temp1 = 0.0;
+      temp1 = powf(e1, 2.0) * powf(sinf(LAT * correct), 2);
+      n = semi_major_axis / sqrt(1 - temp1);
+      //this is to find l1
+      temp1 = 0.0;
+      temp1 = logf(n1 * cosf(std_para1 * correct));
+      temp2 = logf(n2 * cosf(std_para2 * correct));
+      temp1 = temp1 - temp2;
+      l1 = temp1 / (q2 - q1);
+      temp1 = 0.0;
+      temp1 = asinf(l1);
+      central_parallel = temp1 / correct;  // central parallel by calculation
+      //this is to find q0
+      temp1 = 0.0;
+      temp2 = (1 - e1 * sinf(central_parallel * correct)) / (1 + e1 * sinf(central_parallel * correct));
+      temp1 = powf(temp2, (e1 / 2));
+      q0 = temp1 * (tan(((pi / 4) + (central_parallel / 2)) * correct));
+      q0 = logf(q0);
+      //this is to find n0
+      temp1 = 0.0;
+      temp2 = 0.0;
+      temp1 = powf(e1, 2.0) * powf(sinf(central_parallel * correct), 2);
+      n0 = semi_major_axis / sqrt(1 - temp1);
+      //this is to find zone_consant(K)
+      zone_constant = (n1 * cosf(std_para1 * correct)) / (l1 * expf(-l1 * q1));
+      zone_constant = (n2 * cosf(std_para2 * correct)) / (l1 * expf(-l1 * q2));
+      //this is to find k
+      scale_factor = (zone_constant * l1 * expf(-l1 * q)) / (n * cosf(LAT * correct));
+      //this is to find k0
+      scale_factor_center = (zone_constant * l1 * expf(-l1 * q0)) / (n0 * cosf(central_parallel * correct));
+      //this is to find r0 and r
+      r0 = scale_factor_center * n0 * (1 / (tanf(central_parallel * correct)));
+      r = zone_constant * expf(-l1 * q);
+      //this is to find dist_east and dist_north
+      dist_east = r * sinf(l1 * (LONG - central_meridian) * correct); //distance from false easting
+      dist_north = r0 - r * cosf(l1 * (LONG - central_meridian) * correct);// distance from false northing
+      //this is to find pe and pn
+      pe = false_easting + dist_east;
+      pn = false_northing + dist_north - 34;
+      //cout<<pe<<"\n\n";
+      //cout<<pn;
+      pe = int(pe);
+      pn = int(pn);
+      int pe1 = pe / 1000;
+      int pn1 = pn / 1000;
+      int* pointer = checkarray(pe1, pn1);
+      int* pointer1 = grid_return;
+      grid_return[0] = pointer[0];
+      grid_return[1] = pointer[1];
+      grid_return[2] = pe;
+      grid_return[3] = pn;
+      sprintf(str_temp1, "%c", grid_return[0]);
+      p2arr[10] = str_temp1[0];
+      sprintf(str_temp2, "%c", grid_return[1]);
+      p2arr[11] = str_temp2[0];
+      p2arr[12] = ' ';
+      sprintf(str_temp3, "%d", grid_return[2]);
+      sprintf(str_temp4, "%d", grid_return[3]);
+      int k = 0;
+      k = strlen(str_temp3);
+      for (int i = 0; i < k - 1; i++)
+      {
+        p2arr[13 + i] = str_temp3[i + 2];
+      }
+      p2arr[11 + k] = ' ';
+      int a = 0;
+      int getresult = 5;
+      a = strlen(str_temp4);
+      for (int w = (a - getresult); w < a; w++)
+      {
+        p2arr[11 + k + 1 + 1 + w] = str_temp4[w];
+      }
+      for (int y = 0; y < 28; y++)
+      {
+        finaloutput1[y] = p2arr[y];
+      }
+      return finaloutput1;
+      /*
+      return "check";
+      */
     }
-    central_meridian = grid_data[row][0];
-    central_parallel = grid_data[row][1];
-    std_para1 = grid_data[row][2];
-    std_para2 = grid_data[row][3];
-    false_easting = grid_data[row][4];
-    false_northing = grid_data[row][5];
-    //this is to find q1
-    temp2 = (1 - e1*sin(std_para1*correct)) / (1 + e1*sin(std_para1*correct));
-    temp1 = pow(temp2, (e1 / 2));
-    q1 = tan(((pi / 4) + (std_para1 / 2))*correct);
-    q1 = temp1*q1;
-    q1 = log(q1);
-    //this is to find q2
-    temp1 = 0.0;
-    temp2 = 0.0;
-    temp2 = (1 - e1*sinf(std_para2*correct)) / (1 + e1*sinf(std_para2*correct));
-    temp1 = powf(temp2, (e1 / 2));
-    q2 = temp1*(tan(((pi / 4) + (std_para2 / 2))*correct));
-    q2 = logf(q2);
-    //this is to find q
-    temp1 = 0.0;
-    temp2 = 0.0;
-    temp2 = (1 - e1*sinf(LAT*correct)) / (1 + e1*sinf(LAT*correct));
-    temp1 = powf(temp2, (e1 / 2));
-    q = temp1*(tan(((pi / 4) + (LAT / 2))*correct));
-    q = logf(q);
-    //this is to find n1
-    temp1 = 0.0;
-    temp2 = 0.0;
-    temp1 = powf(e1, 2.0)*powf(sinf(std_para1*correct), 2);
-    n1 = semi_major_axis / sqrt(1 - temp1);
-    //this is to find n2
-    temp1 = 0.0;
-    temp1 = powf(e1, 2.0)*powf(sinf(std_para2*correct), 2);
-    n2 = semi_major_axis / sqrt(1 - temp1);
-    //this is to find n
-    temp1 = 0.0;
-    temp1 = powf(e1, 2.0)*powf(sinf(LAT*correct), 2);
-    n = semi_major_axis / sqrt(1 - temp1);
-    //this is to find l1
-    temp1 = 0.0;
-    temp1 = logf(n1*cosf(std_para1*correct));
-    temp2 = logf(n2*cosf(std_para2*correct));
-    temp1 = temp1 - temp2;
-    l1 = temp1 / (q2 - q1);
-    temp1 = 0.0;
-    temp1 = asinf(l1);
-    central_parallel = temp1 / correct;  // central parallel by calculation
-    //this is to find q0
-    temp1 = 0.0;
-    temp2 = (1 - e1*sinf(central_parallel*correct)) / (1 + e1*sinf(central_parallel*correct));
-    temp1 = powf(temp2, (e1 / 2));
-    q0 = temp1*(tan(((pi / 4) + (central_parallel / 2))*correct));
-    q0 = logf(q0);
-    //this is to find n0
-    temp1 = 0.0;
-    temp2 = 0.0;
-    temp1 = powf(e1, 2.0)*powf(sinf(central_parallel*correct), 2);
-    n0 = semi_major_axis / sqrt(1 - temp1);
-    //this is to find zone_consant(K)
-    zone_constant = (n1*cosf(std_para1*correct)) / (l1*expf(-l1*q1));
-    zone_constant = (n2*cosf(std_para2*correct)) / (l1*expf(-l1*q2));
-    //this is to find k
-    scale_factor = (zone_constant*l1*expf(-l1*q)) / (n*cosf(LAT*correct));
-    //this is to find k0
-    scale_factor_center = (zone_constant*l1*expf(-l1*q0)) / (n0*cosf(central_parallel*correct));
-    //this is to find r0 and r
-    r0 = scale_factor_center*n0*(1 / (tanf(central_parallel*correct)));
-    r = zone_constant*expf(-l1*q);
-    //this is to find dist_east and dist_north
-    dist_east = r*sinf(l1*(LONG - central_meridian)*correct); //distance from false easting
-    dist_north = r0 - r*cosf(l1*(LONG - central_meridian)*correct);// distance from false northing
-    //this is to find pe and pn
-    pe = false_easting + dist_east;
-    pn = false_northing + dist_north - 34;
-    //cout<<pe<<"\n\n";
-    //cout<<pn;
-    pe = int(pe);
-    pn = int(pn);
-    int pe1 = pe / 1000;
-    int pn1 = pn / 1000;
-    int *pointer = checkarray(pe1, pn1);
-    int *pointer1 = grid_return;
-    grid_return[0] = pointer[0];
-    grid_return[1] = pointer[1];
-    grid_return[2] = pe;
-    grid_return[3] = pn;
-    sprintf(str_temp1, "%c", grid_return[0]);
-    p2arr[10] = str_temp1[0];
-    sprintf(str_temp2, "%c", grid_return[1]);
-    p2arr[11] = str_temp2[0];
-    p2arr[12] = ' ';
-    sprintf(str_temp3, "%d", grid_return[2]);
-    sprintf(str_temp4, "%d", grid_return[3]);
-    int k = 0;
-    k = strlen(str_temp3);
-    for (int i = 0; i < k - 1; i++)
-    {
-    p2arr[13 + i] = str_temp3[i + 2];
-    }
-    p2arr[11 + k] = ' ';
-    int a = 0;
-    int getresult = 5;
-    a = strlen(str_temp4);
-    for (int w = (a - getresult); w < a; w++)
-    {
-    p2arr[11 + k + 1 + 1 + w] = str_temp4[w];
-    }
-    for (int y = 0; y < 28; y++)
-    {
-    finaloutput1[y] = p2arr[y];
-    }
-    return finaloutput1;
-    /*
-    return "check";
-    */
-  }
   }
   catch (...)
   {
@@ -1265,19 +1265,19 @@ inline QString QgsStatusBarCoordinatesWidget::eveLatLongToMilgridConversion(cons
 //all above used functions a defined below
 char* QgsStatusBarCoordinatesWidget::check_row_2_sides(int r)
 {
-  char *a1;
+  char* a1;
   if (r == 0 || r == 1) {
-    a1 = "GRID IB";
+    a1 = "G-IB";
     //int pointer = a1;
     return a1;
   }
   else if (r == 2 || r == 3 || r == 4 || r == 5 || r == 6 || r == 7) {
-    a1 = "GRID IIB";
+    a1 = "G-IIB";
     //int pointer = a1;
     return a1;
   }
   else if (r == 8 || r == 9 || r == 10) {
-    a1 = "GRID IIIB";
+    a1 = "G-IIIB";
     //int pointer = a1;
     return a1;
   }
@@ -1286,8 +1286,8 @@ char* QgsStatusBarCoordinatesWidget::check_row_2_sides(int r)
 
 int QgsStatusBarCoordinatesWidget::check_domain_2_sides(float lat1, float long1, float lat2, float long2, double latitude, double longitude)
 {
-  if (latitude > lat1&&latitude <= lat2) {
-    if (longitude > long1&&longitude <= long2) {
+  if (latitude > lat1 && latitude <= lat2) {
+    if (longitude > long1 && longitude <= long2) {
       return 1;
     }
   }
@@ -1299,21 +1299,21 @@ int QgsStatusBarCoordinatesWidget::check_domain_2_sides(float lat1, float long1,
 
 char* QgsStatusBarCoordinatesWidget::check_row_3_sides(int r)
 {
-  char *a1;
+  char* a1;
   if (r == 0) {
-    a1 = "GRID O";
+    a1 = "G-O";
     return a1;
   }
   else if (r == 1 || r == 2) {
-    a1 = "GRID IA";
+    a1 = "G-IA";
     return a1;
   }
   else if (r == 3 || r == 4 || r == 5 || r == 6 || r == 7) {
-    a1 = "GRID IIA";
+    a1 = "G-IIA";
     return a1;
   }
   else if (r == 8 || r == 9 || r == 10) {
-    a1 = "GRID IIIA";
+    a1 = "G-IIIA";
     return a1;
   }
   return 0;
@@ -1321,7 +1321,7 @@ char* QgsStatusBarCoordinatesWidget::check_row_3_sides(int r)
 
 int QgsStatusBarCoordinatesWidget::check_domain_3_sides(float lat1, float long1, float lat2, float long2, double latitude, double longitude)
 {
-  if (latitude > lat1&&latitude <= lat2) {
+  if (latitude > lat1 && latitude <= lat2) {
     if (longitude >= long1 && longitude <= long2) {
       return 1;
     }
@@ -1332,13 +1332,13 @@ int QgsStatusBarCoordinatesWidget::check_domain_3_sides(float lat1, float long1,
   return 0;
 }
 char* QgsStatusBarCoordinatesWidget::check_row_4_sides(int r) {
-  char *a1;
+  char* a1;
   if (r == 0 || r == 1 || r == 2 || r == 3) {
-    a1 = "GRID IVA";
+    a1 = "G-IVA";
     return a1;
   }
   else if (r == 4 || r == 5 || r == 6 || r == 7) {
-    a1 = "GRID IVB";
+    a1 = "G-IVB";
     return a1;
   }
   return 0;
@@ -1388,11 +1388,11 @@ int* QgsStatusBarCoordinatesWidget::checkarray(int pe_local, int pn_local)
   int pe2_local = int((pe_local - (pe1_local * 500))) / 100;
   int pn2_local = int((pn_local - (pn1_local * 500))) / 100;
   int var1 = arr[pn2_local][pe2_local];
-  int *pointer = temp;
+  int* pointer = temp;
   temp[0] = var;
   temp[1] = var1;
   return pointer;						//returns value of array
-  
+
 }
 //Nihcas above
 
@@ -1421,7 +1421,7 @@ void QgsStatusBarCoordinatesWidget::updateCoordinateDisplayUpdated(const QgsPoin
   }
 
   if (mLastCoordinate.isEmpty())
- //   mLineEdit->clear();
+    //   mLineEdit->clear();
     mCoordsGeocord->clear();
   else {
     /* mLineEdit->setText(QgsCoordinateUtils::formatCoordinateForProject(QgsProject::instance(), mLastCoordinate, mMapCanvas->mapSettings().destinationCrs(),
@@ -1447,7 +1447,7 @@ void QgsStatusBarCoordinatesWidget::updateCoordinateDisplayUpdated(const QgsPoin
 
       ensureCoordinatesVisible();
     }
-    
+
   }
 
   ensureCoordinatesVisible();
@@ -1459,25 +1459,25 @@ void QgsStatusBarCoordinatesWidget::coordinateDisplaySettingsChanged()
 
   const Qgis::CoordinateOrder projectOrder = QgsProject::instance()->displaySettings()->coordinateAxisOrder();
   const Qgis::CoordinateOrder order = projectOrder == Qgis::CoordinateOrder::Default
-                                      ? QgsCoordinateReferenceSystemUtils::defaultCoordinateOrderForCrs( coordinateCrs )
-                                      : projectOrder;
+    ? QgsCoordinateReferenceSystemUtils::defaultCoordinateOrderForCrs(coordinateCrs)
+    : projectOrder;
 
-  switch ( order )
+  switch (order)
   {
-    case Qgis::CoordinateOrder::XY:
-      if ( coordinateCrs.isGeographic() )
-        mLineEdit->setToolTip( tr( "Current map coordinate (Longitude, Latitude)" ) );
-      else
-        mLineEdit->setToolTip( tr( "Current map coordinate (Easting, Northing)" ) );
-      break;
-    case Qgis::CoordinateOrder::YX:
-      if ( coordinateCrs.isGeographic() )
-        mLineEdit->setToolTip( tr( "Current map coordinate (Latitude, Longitude)" ) );
-      else
-        mLineEdit->setToolTip( tr( "Current map coordinate (Northing, Easting)" ) );
-      break;
-    case Qgis::CoordinateOrder::Default:
-      break;
+  case Qgis::CoordinateOrder::XY:
+    if (coordinateCrs.isGeographic())
+      mLineEdit->setToolTip(tr("Current map coordinate (Longitude, Latitude)"));
+    else
+      mLineEdit->setToolTip(tr("Current map coordinate (Easting, Northing)"));
+    break;
+  case Qgis::CoordinateOrder::YX:
+    if (coordinateCrs.isGeographic())
+      mLineEdit->setToolTip(tr("Current map coordinate (Latitude, Longitude)"));
+    else
+      mLineEdit->setToolTip(tr("Current map coordinate (Northing, Easting)"));
+    break;
+  case Qgis::CoordinateOrder::Default:
+    break;
   }
 
   updateCoordinateDisplay();
