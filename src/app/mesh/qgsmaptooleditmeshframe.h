@@ -229,8 +229,8 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
     void addNewSelectedVertex( int vertexIndex );
     void removeFromSelection( int vertexIndex );
     bool isFaceSelected( int faceIndex );
-    void setSelectedVertices( const QList<int> newSelectedVertices,  Qgis::SelectBehavior behavior );
-    void setSelectedFaces( const QList<int> newSelectedFaces,  Qgis::SelectBehavior behavior );
+    void setSelectedVertices( const QList<int> &newSelectedVertices,  Qgis::SelectBehavior behavior );
+    void setSelectedFaces( const QList<int> &newSelectedFaces,  Qgis::SelectBehavior behavior );
     void selectByGeometry( const QgsGeometry &geometry,  Qt::KeyboardModifiers modifiers );
     void selectTouchedByGeometry( const QgsGeometry &geometry, Qgis::SelectBehavior behavior );
     void selectContainedByGeometry( const QgsGeometry &geometry, Qgis::SelectBehavior behavior );
