@@ -92,7 +92,7 @@ QString QgsSQLStatement::quotedIdentifierIfNeeded( const QString &name )
       return quotedIdentifier( name );
     }
   }
-  const thread_local QRegularExpression IDENTIFIER_RE( "^[A-Za-z_\x80-\xff][A-Za-z0-9_\x80-\xff]*$" );
+  const thread_local QRegularExpression IDENTIFIER_RE( "^[A-Za-z_\\x80-\\xff][A-Za-z0-9_\\x80-\\xff]*$" );
   return IDENTIFIER_RE.match( name ).hasMatch() ? name : quotedIdentifier( name );
 }
 
