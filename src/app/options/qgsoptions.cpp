@@ -806,6 +806,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
 
   setZoomFactorValue();
   spinZoomFactor->setClearValue( 200 );
+  reverseWheelZoom->setChecked( mSettings->value( QStringLiteral( "/qgis/reverse_wheel_zoom" ), false ).toBool() );
 
   // predefined scales for scale combobox
   const QStringList scalePaths = QgsSettingsRegistryCore::settingsMapScales->value();
@@ -1680,6 +1681,7 @@ void QgsOptions::saveOptions()
   mSettings->setValue( QStringLiteral( "/qgis/default_measure_color_blue" ), myColor.blue() );
 
   mSettings->setValue( QStringLiteral( "/qgis/zoom_factor" ), zoomFactorValue() );
+  mSettings->setValue( QStringLiteral( "/qgis/reverse_wheel_zoom" ), reverseWheelZoom->isChecked() );
 
   //digitizing
   QgsSettingsRegistryCore::settingsDigitizingLineWidth->setValue( mLineWidthSpinBox->value() );
