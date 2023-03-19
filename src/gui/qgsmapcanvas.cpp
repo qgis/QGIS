@@ -2621,7 +2621,7 @@ void QgsMapCanvas::wheelEvent( QWheelEvent *e )
 
 void QgsMapCanvas::setWheelFactor( double factor )
 {
-  mWheelZoomFactor = factor;
+  mWheelZoomFactor = std::max( factor, 1.01 );
 }
 
 void QgsMapCanvas::zoomIn()
