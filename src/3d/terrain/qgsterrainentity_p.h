@@ -72,9 +72,6 @@ class QgsTerrainEntity : public QgsChunkedEntity
     //! Returns the terrain elevation offset (adjusts the terrain position up and down)
     float terrainElevationOffset() const;
 
-    //! Tests whether the ray intersects the terrain - if it does, it sets the intersection point (in world coordinates)
-    bool rayIntersection( const QgsRayCastingUtils::Ray3D &ray, QVector3D &intersectionPoint );
-
     QVector<QgsRayCastingUtils::RayHit> rayIntersection( const QgsRayCastingUtils::Ray3D &ray, const QgsRayCastingUtils::RayCastContext &context ) const override;
 
   private slots:

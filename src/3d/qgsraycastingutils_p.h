@@ -132,7 +132,7 @@ namespace QgsRayCastingUtils
    */
   struct RayCastContext
   {
-    RayCastContext( bool singleResult, QSize screenSize, float maxDistance )
+    RayCastContext( bool singleResult = true, QSize screenSize = QSize(), float maxDistance = 0.f )
       : singleResult( singleResult )
       , screenSize( screenSize )
       , maxDistance( maxDistance )
