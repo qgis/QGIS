@@ -21,6 +21,9 @@
 #include "qgis_gui.h"
 #include <Qsci/qscilexerpython.h>
 
+class QgsSettingsEntryInteger;
+class QgsSettingsEntryBool;
+
 SIP_IF_MODULE( HAVE_QSCI_SIP )
 
 #ifndef SIP_RUN
@@ -50,6 +53,46 @@ class GUI_EXPORT QgsCodeEditorPython : public QgsCodeEditor
     Q_OBJECT
 
   public:
+
+#ifndef SIP_RUN
+
+    static inline QgsSettingsTreeNode *sTreePythonCodeEditor = QgsCodeEditor::sTreeCodeEditor->createChildNode( QStringLiteral( "python" ) );
+
+    /**
+     * Code auto formatter.
+     *
+     * \since QGIS 3.32
+     */
+    static const QgsSettingsEntryString *settingCodeFormatter;
+
+    /**
+     * Maximum line length.
+     *
+     * \since QGIS 3.32
+     */
+    static const QgsSettingsEntryInteger *settingMaxLineLength;
+
+    /**
+     * Whether imports should be sorted when auto formatting code.
+     *
+     * \since QGIS 3.32
+     */
+    static const QgsSettingsEntryBool *settingSortImports;
+
+    /**
+     * Autopep8 aggressive level.
+     *
+     * \since QGIS 3.32
+     */
+    static const QgsSettingsEntryInteger *settingAutopep8Level;
+
+    /**
+     * Whether imports should be sorted when auto formatting code.
+     *
+     * \since QGIS 3.32
+     */
+    static const QgsSettingsEntryBool *settingBlackNormalizeQuotes;
+#endif
 
     /**
      * Construct a new Python editor.

@@ -212,11 +212,11 @@ class ConsoleOptionsWidget(QWidget, Ui_SettingsDialogPythonConsole):
         settings.setValue("pythonConsole/autoInsertImport", self.autoInsertImport.isChecked())
 
         settings.setValue("pythonConsole/formatOnSave", self.formatOnSave.isChecked())
-        settings.setValue("pythonConsole/sortImports", self.sortImports.isChecked())
-        settings.setValue("pythonConsole/formatter", self.formatter.currentText())
-        settings.setValue("pythonConsole/autopep8Level", self.autopep8Level.value())
-        settings.setValue("pythonConsole/blackNormalizeQuotes", self.blackNormalizeQuotes.isChecked())
-        settings.setValue("pythonConsole/maxLineLength", self.maxLineLength.value())
+        settings.setValue("gui/code-editor/python/sortImports", self.sortImports.isChecked())
+        settings.setValue("gui/code-editor/python/formatter", self.formatter.currentText())
+        settings.setValue("gui/code-editor/python/autopep8Level", self.autopep8Level.value())
+        settings.setValue("gui/code-editor/python/blackNormalizeQuotes", self.blackNormalizeQuotes.isChecked())
+        settings.setValue("gui/code-editor/python/maxLineLength", self.maxLineLength.value())
 
     def restoreSettings(self):
         settings = QgsSettings()
@@ -244,11 +244,11 @@ class ConsoleOptionsWidget(QWidget, Ui_SettingsDialogPythonConsole):
         self.autoInsertImport.setChecked(settings.value("pythonConsole/autoInsertImport", False, type=bool))
 
         self.formatOnSave.setChecked(settings.value("pythonConsole/formatOnSave", False, type=bool))
-        self.sortImports.setChecked(settings.value("pythonConsole/sortImports", True, type=bool))
-        self.formatter.setCurrentText(settings.value("pythonConsole/formatter", "autopep8", type=str))
-        self.autopep8Level.setValue(settings.value("pythonConsole/autopep8Level", 1, type=int))
-        self.blackNormalizeQuotes.setChecked(settings.value("pythonConsole/blackNormalizeQuotes", True, type=bool))
-        self.maxLineLength.setValue(settings.value("pythonConsole/maxLineLength", 80, type=int))
+        self.sortImports.setChecked(settings.value("gui/code-editor/python/sortImports", True, type=bool))
+        self.formatter.setCurrentText(settings.value("gui/code-editor/python/formatter", "autopep8", type=str))
+        self.autopep8Level.setValue(settings.value("gui/code-editor/python/autopep8Level", 1, type=int))
+        self.blackNormalizeQuotes.setChecked(settings.value("gui/code-editor/python/blackNormalizeQuotes", True, type=bool))
+        self.maxLineLength.setValue(settings.value("gui/code-editor/python/maxLineLength", 80, type=int))
 
         if settings.value("pythonConsole/autoCompleteSource") == 'fromDoc':
             self.autoCompFromDoc.setChecked(True)

@@ -20,6 +20,7 @@
 #include <QString>
 #include "qgscodeeditorcolorscheme.h"
 #include "qgis.h"
+#include "qgssettingstree.h"
 
 // qscintilla includes
 #include <Qsci/qsciapis.h>
@@ -94,6 +95,13 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
     Q_OBJECT
 
   public:
+
+
+#ifndef SIP_RUN
+
+    static inline QgsSettingsTreeNode *sTreeCodeEditor = QgsSettingsTree::sTreeGui->createChildNode( QStringLiteral( "code-editor" ) );
+
+#endif
 
     /**
      * Code editor modes.
