@@ -17,8 +17,16 @@
 #include "qgsthreadingutils.h"
 #include "qgsvtpktiles.h"
 #include "qgsvectortileloader.h"
+#include "qgsapplication.h"
+
+#include <QIcon>
 
 ///@cond PRIVATE
+
+
+QString QgsVtpkVectorTileDataProvider::DATA_PROVIDER_KEY = QStringLiteral( "vtpkvectortiles" );
+QString QgsVtpkVectorTileDataProvider::DATA_PROVIDER_DESCRIPTION = QObject::tr( "VTPK Vector Tiles data provider" );
+
 
 QgsVtpkVectorTileDataProvider::QgsVtpkVectorTileDataProvider( const QString &uri, const ProviderOptions &providerOptions, ReadFlags flags )
   : QgsVectorTileDataProvider( uri, providerOptions, flags )
@@ -30,14 +38,14 @@ QString QgsVtpkVectorTileDataProvider::name() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  return QStringLiteral( "vtpkvectortiles" );
+  return DATA_PROVIDER_KEY;
 }
 
 QString QgsVtpkVectorTileDataProvider::description() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  return tr( "VTPK Vector Tiles data provider" );
+  return DATA_PROVIDER_DESCRIPTION;
 }
 
 QgsVectorTileDataProvider *QgsVtpkVectorTileDataProvider::clone() const
@@ -118,6 +126,124 @@ QByteArray QgsVtpkVectorTileDataProvider::loadFromVtpk( QgsVtpkTiles &vtpkTileRe
   }
   return tileData;
 }
+
+
+//
+// QgsVtpkVectorTileDataProviderMetadata
+//
+
+QgsVtpkVectorTileDataProviderMetadata::QgsVtpkVectorTileDataProviderMetadata()
+  : QgsProviderMetadata( QgsVtpkVectorTileDataProvider::DATA_PROVIDER_KEY, QgsVtpkVectorTileDataProvider::DATA_PROVIDER_DESCRIPTION )
+{
+}
+
+QIcon QgsVtpkVectorTileDataProviderMetadata::icon() const
+{
+  return QgsApplication::getThemeIcon( QStringLiteral( "mIconVectorTileLayer.svg" ) );
+}
+
+QgsProviderMetadata::ProviderCapabilities QgsVtpkVectorTileDataProviderMetadata::providerCapabilities() const
+{
+  return FileBasedUris;
+}
+
+QVariantMap QgsVtpkVectorTileDataProviderMetadata::decodeUri( const QString &uri ) const
+{
+  // TODO -- carefully thin out options which don't apply to vtpk
+
+  QgsDataSourceUri dsUri;
+  dsUri.setEncodedUri( uri );
+
+  QVariantMap uriComponents;
+  uriComponents.insert( QStringLiteral( "type" ), dsUri.param( QStringLiteral( "type" ) ) );
+  if ( dsUri.hasParam( QStringLiteral( "serviceType" ) ) )
+    uriComponents.insert( QStringLiteral( "serviceType" ), dsUri.param( QStringLiteral( "serviceType" ) ) );
+
+  if ( uriComponents[ QStringLiteral( "type" ) ] == QLatin1String( "mbtiles" ) ||
+       ( uriComponents[ QStringLiteral( "type" ) ] == QLatin1String( "xyz" ) &&
+         !dsUri.param( QStringLiteral( "url" ) ).startsWith( QLatin1String( "http" ) ) ) )
+  {
+    uriComponents.insert( QStringLiteral( "path" ), dsUri.param( QStringLiteral( "url" ) ) );
+  }
+  else
+  {
+    uriComponents.insert( QStringLiteral( "url" ), dsUri.param( QStringLiteral( "url" ) ) );
+  }
+
+  if ( dsUri.hasParam( QStringLiteral( "zmin" ) ) )
+    uriComponents.insert( QStringLiteral( "zmin" ), dsUri.param( QStringLiteral( "zmin" ) ) );
+  if ( dsUri.hasParam( QStringLiteral( "zmax" ) ) )
+    uriComponents.insert( QStringLiteral( "zmax" ), dsUri.param( QStringLiteral( "zmax" ) ) );
+
+  dsUri.httpHeaders().updateMap( uriComponents );
+
+  if ( dsUri.hasParam( QStringLiteral( "styleUrl" ) ) )
+    uriComponents.insert( QStringLiteral( "styleUrl" ), dsUri.param( QStringLiteral( "styleUrl" ) ) );
+
+  const QString authcfg = dsUri.authConfigId();
+  if ( !authcfg.isEmpty() )
+    uriComponents.insert( QStringLiteral( "authcfg" ), authcfg );
+
+  return uriComponents;
+}
+
+QString QgsVtpkVectorTileDataProviderMetadata::encodeUri( const QVariantMap &parts ) const
+{
+  // TODO -- carefully thin out options which don't apply to vtpk
+
+  QgsDataSourceUri dsUri;
+  dsUri.setParam( QStringLiteral( "type" ), parts.value( QStringLiteral( "type" ) ).toString() );
+  if ( parts.contains( QStringLiteral( "serviceType" ) ) )
+    dsUri.setParam( QStringLiteral( "serviceType" ), parts[ QStringLiteral( "serviceType" ) ].toString() );
+  dsUri.setParam( QStringLiteral( "url" ), parts.value( parts.contains( QStringLiteral( "path" ) ) ? QStringLiteral( "path" ) : QStringLiteral( "url" ) ).toString() );
+
+  if ( parts.contains( QStringLiteral( "zmin" ) ) )
+    dsUri.setParam( QStringLiteral( "zmin" ), parts[ QStringLiteral( "zmin" ) ].toString() );
+  if ( parts.contains( QStringLiteral( "zmax" ) ) )
+    dsUri.setParam( QStringLiteral( "zmax" ), parts[ QStringLiteral( "zmax" ) ].toString() );
+
+  dsUri.httpHeaders().setFromMap( parts );
+
+  if ( parts.contains( QStringLiteral( "styleUrl" ) ) )
+    dsUri.setParam( QStringLiteral( "styleUrl" ), parts[ QStringLiteral( "styleUrl" ) ].toString() );
+
+  if ( parts.contains( QStringLiteral( "authcfg" ) ) )
+    dsUri.setAuthConfigId( parts[ QStringLiteral( "authcfg" ) ].toString() );
+
+  return dsUri.encodedUri();
+}
+
+QString QgsVtpkVectorTileDataProviderMetadata::absoluteToRelativeUri( const QString &uri, const QgsReadWriteContext &context ) const
+{
+  QgsDataSourceUri dsUri;
+  dsUri.setEncodedUri( uri );
+
+  QString sourcePath = dsUri.param( QStringLiteral( "url" ) );
+
+  sourcePath = context.pathResolver().writePath( sourcePath );
+  dsUri.removeParam( QStringLiteral( "url" ) );  // needed because setParam() would insert second "url" key
+  dsUri.setParam( QStringLiteral( "url" ), sourcePath );
+  return dsUri.encodedUri();
+}
+
+QString QgsVtpkVectorTileDataProviderMetadata::relativeToAbsoluteUri( const QString &uri, const QgsReadWriteContext &context ) const
+{
+  QgsDataSourceUri dsUri;
+  dsUri.setEncodedUri( uri );
+
+  QString sourcePath = dsUri.param( QStringLiteral( "url" ) );
+
+  sourcePath = context.pathResolver().readPath( sourcePath );
+  dsUri.removeParam( QStringLiteral( "url" ) );  // needed because setParam() would insert second "url" key
+  dsUri.setParam( QStringLiteral( "url" ), sourcePath );
+  return dsUri.encodedUri();
+}
+
+QList<Qgis::LayerType> QgsVtpkVectorTileDataProviderMetadata::supportedLayerTypes() const
+{
+  return { Qgis::LayerType::VectorTile };
+}
+
 
 ///@endcond
 

@@ -24,10 +24,13 @@
 #include "qgsmessagelog.h"
 #include "qgsblockingnetworkrequest.h"
 #include "qgslogger.h"
-
+#include <QIcon>
 #include <QNetworkRequest>
 
 ///@cond PRIVATE
+
+QString QgsXyzVectorTileDataProvider::DATA_PROVIDER_KEY = QStringLiteral( "xyzvectortiles" );
+QString QgsXyzVectorTileDataProvider::DATA_PROVIDER_DESCRIPTION = QObject::tr( "XYZ Vector Tiles data provider" );
 
 QgsXyzVectorTileDataProvider::QgsXyzVectorTileDataProvider( const QString &uri, const ProviderOptions &providerOptions, ReadFlags flags )
   : QgsVectorTileDataProvider( uri, providerOptions, flags )
@@ -43,15 +46,14 @@ QString QgsXyzVectorTileDataProvider::name() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  return QStringLiteral( "xyzvectortiles" );
+  return DATA_PROVIDER_KEY;
 }
 
 QString QgsXyzVectorTileDataProvider::description() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  return tr( "XYZ Vector Tiles data provider" );
-
+  return DATA_PROVIDER_DESCRIPTION;
 }
 
 QgsVectorTileDataProvider *QgsXyzVectorTileDataProvider::clone() const
@@ -180,6 +182,136 @@ QByteArray QgsXyzVectorTileDataProvider::loadFromNetwork( const QgsTileXYZ &id, 
   return reply.content();
 }
 
+
+//
+// QgsXyzVectorTileDataProviderMetadata
+//
+
+
+QgsXyzVectorTileDataProviderMetadata::QgsXyzVectorTileDataProviderMetadata()
+  : QgsProviderMetadata( QgsXyzVectorTileDataProvider::DATA_PROVIDER_KEY, QgsXyzVectorTileDataProvider::DATA_PROVIDER_DESCRIPTION )
+{
+}
+
+QIcon QgsXyzVectorTileDataProviderMetadata::icon() const
+{
+  return QgsApplication::getThemeIcon( QStringLiteral( "mIconVectorTileLayer.svg" ) );
+}
+
+QgsProviderMetadata::ProviderCapabilities QgsXyzVectorTileDataProviderMetadata::providerCapabilities() const
+{
+  return FileBasedUris;
+}
+
+QVariantMap QgsXyzVectorTileDataProviderMetadata::decodeUri( const QString &uri ) const
+{
+  // TODO -- carefully thin out options which don't apply to xyz vector tile services
+
+  QgsDataSourceUri dsUri;
+  dsUri.setEncodedUri( uri );
+
+  QVariantMap uriComponents;
+  uriComponents.insert( QStringLiteral( "type" ), dsUri.param( QStringLiteral( "type" ) ) );
+  if ( dsUri.hasParam( QStringLiteral( "serviceType" ) ) )
+    uriComponents.insert( QStringLiteral( "serviceType" ), dsUri.param( QStringLiteral( "serviceType" ) ) );
+
+  if ( uriComponents[ QStringLiteral( "type" ) ] == QLatin1String( "mbtiles" ) ||
+       ( uriComponents[ QStringLiteral( "type" ) ] == QLatin1String( "xyz" ) &&
+         !dsUri.param( QStringLiteral( "url" ) ).startsWith( QLatin1String( "http" ) ) ) )
+  {
+    uriComponents.insert( QStringLiteral( "path" ), dsUri.param( QStringLiteral( "url" ) ) );
+  }
+  else
+  {
+    uriComponents.insert( QStringLiteral( "url" ), dsUri.param( QStringLiteral( "url" ) ) );
+  }
+
+  if ( dsUri.hasParam( QStringLiteral( "zmin" ) ) )
+    uriComponents.insert( QStringLiteral( "zmin" ), dsUri.param( QStringLiteral( "zmin" ) ) );
+  if ( dsUri.hasParam( QStringLiteral( "zmax" ) ) )
+    uriComponents.insert( QStringLiteral( "zmax" ), dsUri.param( QStringLiteral( "zmax" ) ) );
+
+  dsUri.httpHeaders().updateMap( uriComponents );
+
+  if ( dsUri.hasParam( QStringLiteral( "styleUrl" ) ) )
+    uriComponents.insert( QStringLiteral( "styleUrl" ), dsUri.param( QStringLiteral( "styleUrl" ) ) );
+
+  const QString authcfg = dsUri.authConfigId();
+  if ( !authcfg.isEmpty() )
+    uriComponents.insert( QStringLiteral( "authcfg" ), authcfg );
+
+  return uriComponents;
+}
+
+QString QgsXyzVectorTileDataProviderMetadata::encodeUri( const QVariantMap &parts ) const
+{
+  // TODO -- carefully thin out options which don't apply to xyz vector tile services
+
+  QgsDataSourceUri dsUri;
+  dsUri.setParam( QStringLiteral( "type" ), parts.value( QStringLiteral( "type" ) ).toString() );
+  if ( parts.contains( QStringLiteral( "serviceType" ) ) )
+    dsUri.setParam( QStringLiteral( "serviceType" ), parts[ QStringLiteral( "serviceType" ) ].toString() );
+  dsUri.setParam( QStringLiteral( "url" ), parts.value( parts.contains( QStringLiteral( "path" ) ) ? QStringLiteral( "path" ) : QStringLiteral( "url" ) ).toString() );
+
+  if ( parts.contains( QStringLiteral( "zmin" ) ) )
+    dsUri.setParam( QStringLiteral( "zmin" ), parts[ QStringLiteral( "zmin" ) ].toString() );
+  if ( parts.contains( QStringLiteral( "zmax" ) ) )
+    dsUri.setParam( QStringLiteral( "zmax" ), parts[ QStringLiteral( "zmax" ) ].toString() );
+
+  dsUri.httpHeaders().setFromMap( parts );
+
+  if ( parts.contains( QStringLiteral( "styleUrl" ) ) )
+    dsUri.setParam( QStringLiteral( "styleUrl" ), parts[ QStringLiteral( "styleUrl" ) ].toString() );
+
+  if ( parts.contains( QStringLiteral( "authcfg" ) ) )
+    dsUri.setAuthConfigId( parts[ QStringLiteral( "authcfg" ) ].toString() );
+
+  return dsUri.encodedUri();
+}
+
+QString QgsXyzVectorTileDataProviderMetadata::absoluteToRelativeUri( const QString &uri, const QgsReadWriteContext &context ) const
+{
+  QgsDataSourceUri dsUri;
+  dsUri.setEncodedUri( uri );
+
+  QString sourcePath = dsUri.param( QStringLiteral( "url" ) );
+
+  const QUrl sourceUrl( sourcePath );
+  if ( sourceUrl.isLocalFile() )
+  {
+    // relative path will become "file:./x.txt"
+    const QString relSrcUrl = context.pathResolver().writePath( sourceUrl.toLocalFile() );
+    dsUri.removeParam( QStringLiteral( "url" ) );  // needed because setParam() would insert second "url" key
+    dsUri.setParam( QStringLiteral( "url" ), QUrl::fromLocalFile( relSrcUrl ).toString() );
+    return dsUri.encodedUri();
+  }
+
+  return uri;
+}
+
+QString QgsXyzVectorTileDataProviderMetadata::relativeToAbsoluteUri( const QString &uri, const QgsReadWriteContext &context ) const
+{
+  QgsDataSourceUri dsUri;
+  dsUri.setEncodedUri( uri );
+
+  QString sourcePath = dsUri.param( QStringLiteral( "url" ) );
+
+  const QUrl sourceUrl( sourcePath );
+  if ( sourceUrl.isLocalFile() )  // file-based URL? convert to relative path
+  {
+    const QString absSrcUrl = context.pathResolver().readPath( sourceUrl.toLocalFile() );
+    dsUri.removeParam( QStringLiteral( "url" ) );  // needed because setParam() would insert second "url" key
+    dsUri.setParam( QStringLiteral( "url" ), QUrl::fromLocalFile( absSrcUrl ).toString() );
+    return dsUri.encodedUri();
+  }
+
+  return uri;
+}
+
+QList<Qgis::LayerType> QgsXyzVectorTileDataProviderMetadata::supportedLayerTypes() const
+{
+  return { Qgis::LayerType::VectorTile };
+}
 ///@endcond
 
 

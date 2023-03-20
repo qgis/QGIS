@@ -25,20 +25,6 @@ QgsVectorTileDataProvider::QgsVectorTileDataProvider(
   : QgsDataProvider( uri, options, flags )
 {}
 
-QString QgsVectorTileDataProvider::name() const
-{
-  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
-
-  return QStringLiteral( "vectortile" );
-}
-
-QString QgsVectorTileDataProvider::description() const
-{
-  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
-
-  return QString();
-}
-
 QgsRectangle QgsVectorTileDataProvider::extent() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS

@@ -19,6 +19,7 @@
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgsxyzvectortiledataprovider.h"
+#include "qgsprovidermetadata.h"
 
 #define SIP_NO_FILE
 
@@ -34,13 +35,32 @@ class CORE_EXPORT QgsArcGisVectorTileServiceDataProvider : public QgsXyzVectorTi
                                             const QgsDataProvider::ProviderOptions &providerOptions,
                                             QgsDataProvider::ReadFlags flags );
     QString name() const override;
+    QString description() const override;
     QgsVectorTileDataProvider *clone() const override;
     QString sourcePath() const override;
     bool isValid() const override;
 
+    static QString DATA_PROVIDER_KEY;
+    static QString DATA_PROVIDER_DESCRIPTION;
+
   private:
 
     QString mSourcePath;
+};
+
+
+class QgsArcGisVectorTileServiceDataProviderMetadata : public QgsProviderMetadata
+{
+    Q_OBJECT
+  public:
+    QgsArcGisVectorTileServiceDataProviderMetadata();
+    QIcon icon() const override;
+    ProviderCapabilities providerCapabilities() const override;
+    QVariantMap decodeUri( const QString &uri ) const override;
+    QString encodeUri( const QVariantMap &parts ) const override;
+    QString absoluteToRelativeUri( const QString &uri, const QgsReadWriteContext &context ) const override;
+    QString relativeToAbsoluteUri( const QString &uri, const QgsReadWriteContext &context ) const override;
+    QList< Qgis::LayerType > supportedLayerTypes() const override;
 };
 
 ///@endcond

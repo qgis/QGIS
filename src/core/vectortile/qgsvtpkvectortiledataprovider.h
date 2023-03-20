@@ -19,6 +19,7 @@
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgsvectortiledataprovider.h"
+#include "qgsprovidermetadata.h"
 
 #define SIP_NO_FILE
 
@@ -36,6 +37,7 @@ class CORE_EXPORT QgsVtpkVectorTileDataProvider : public QgsVectorTileDataProvid
                                    QgsDataProvider::ReadFlags flags );
 
     QString name() const override;
+    QString description() const override;
     QgsVectorTileDataProvider *clone() const override;
     QString sourcePath() const override;
     bool isValid() const override;
@@ -43,12 +45,31 @@ class CORE_EXPORT QgsVtpkVectorTileDataProvider : public QgsVectorTileDataProvid
     QByteArray readTile( const QgsTileMatrix &tileMatrix, const QgsTileXYZ &id, QgsFeedback *feedback = nullptr ) const override;
     QList<QgsVectorTileRawData> readTiles( const QgsTileMatrix &, const QVector<QgsTileXYZ> &tiles, QgsFeedback *feedback = nullptr ) const override;
 
+    static QString DATA_PROVIDER_KEY;
+    static QString DATA_PROVIDER_DESCRIPTION;
+
   private:
 
     //! Returns raw tile data for a single tile loaded from VTPK file
     static QByteArray loadFromVtpk( QgsVtpkTiles &vtpkTileReader, const QgsTileXYZ &id, QgsFeedback *feedback = nullptr );
 
 };
+
+
+class QgsVtpkVectorTileDataProviderMetadata : public QgsProviderMetadata
+{
+    Q_OBJECT
+  public:
+    QgsVtpkVectorTileDataProviderMetadata();
+    QIcon icon() const override;
+    ProviderCapabilities providerCapabilities() const override;
+    QVariantMap decodeUri( const QString &uri ) const override;
+    QString encodeUri( const QVariantMap &parts ) const override;
+    QString absoluteToRelativeUri( const QString &uri, const QgsReadWriteContext &context ) const override;
+    QString relativeToAbsoluteUri( const QString &uri, const QgsReadWriteContext &context ) const override;
+    QList< Qgis::LayerType > supportedLayerTypes() const override;
+};
+
 
 ///@endcond
 

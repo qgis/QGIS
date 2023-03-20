@@ -19,6 +19,7 @@
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgsvectortiledataprovider.h"
+#include "qgsprovidermetadata.h"
 
 class QgsMbTiles;
 
@@ -44,12 +45,30 @@ class CORE_EXPORT QgsMbTilesVectorTileDataProvider : public QgsVectorTileDataPro
     QByteArray readTile( const QgsTileMatrix &tileMatrix, const QgsTileXYZ &id, QgsFeedback *feedback = nullptr ) const override;
     QList<QgsVectorTileRawData> readTiles( const QgsTileMatrix &, const QVector<QgsTileXYZ> &tiles, QgsFeedback *feedback = nullptr ) const override;
 
+    static QString MB_TILES_VECTOR_TILE_DATA_PROVIDER_KEY;
+    static QString MB_TILES_VECTOR_TILE_DATA_PROVIDER_DESCRIPTION;
+
   private:
 
     //! Returns raw tile data for a single tile loaded from MBTiles file
     static QByteArray loadFromMBTiles( QgsMbTiles &mbTileReader, const QgsTileXYZ &id, QgsFeedback *feedback = nullptr );
 
 };
+
+class QgsMbTilesVectorTileDataProviderMetadata : public QgsProviderMetadata
+{
+    Q_OBJECT
+  public:
+    QgsMbTilesVectorTileDataProviderMetadata();
+    QIcon icon() const override;
+    ProviderCapabilities providerCapabilities() const override;
+    QVariantMap decodeUri( const QString &uri ) const override;
+    QString encodeUri( const QVariantMap &parts ) const override;
+    QString absoluteToRelativeUri( const QString &uri, const QgsReadWriteContext &context ) const override;
+    QString relativeToAbsoluteUri( const QString &uri, const QgsReadWriteContext &context ) const override;
+    QList< Qgis::LayerType > supportedLayerTypes() const override;
+};
+
 
 ///@endcond
 
