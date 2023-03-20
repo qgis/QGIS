@@ -26,7 +26,7 @@
 
 class QgsVtpkTiles;
 
-class QgsVtpkVectorTileDataProvider : public QgsVectorTileDataProvider
+class CORE_EXPORT QgsVtpkVectorTileDataProvider : public QgsVectorTileDataProvider
 {
     Q_OBJECT
 
