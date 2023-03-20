@@ -221,7 +221,7 @@ QuickInfo getQuickInfo(std::string inputFile);
 
 MetadataNode getReaderMetadata(std::string inputFile, MetadataNode *pointLayoutMeta = nullptr);
 
-void runPipelineParallel(point_count_t totalPoints, bool isStreaming, std::vector<std::unique_ptr<PipelineManager>>& pipelines, int max_threads);
+void runPipelineParallel(point_count_t totalPoints, bool isStreaming, std::vector<std::unique_ptr<PipelineManager>>& pipelines, int max_threads, bool verbose);
 
 std::string box_to_pdal_bounds(const BOX2D &box);
 

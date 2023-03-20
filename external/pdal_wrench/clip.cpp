@@ -74,7 +74,7 @@ bool loadPolygons(const std::string &polygonFile, pdal::Options& crop_opts, BOX2
     GDALDatasetH hDS = GDALOpenEx( polygonFile.c_str(), GDAL_OF_VECTOR, NULL, NULL, NULL );
     if( hDS == NULL )
     {
-        std::cout << "cannot open polygon " << polygonFile << std::endl;
+        std::cerr << "Could not open input polygon file: " << polygonFile << std::endl;
         return false;
     }
 
@@ -148,7 +148,7 @@ void Clip::preparePipelines(std::vector<std::unique_ptr<PipelineManager>>& pipel
     {
         if (!ends_with(outputFile, ".vpc"))
         {
-            std::cout << "output should be VPC too" << std::endl;
+            std::cerr << "If input file is a VPC, output should be VPC too." << std::endl;
             return;
         }
 
@@ -167,11 +167,13 @@ void Clip::preparePipelines(std::vector<std::unique_ptr<PipelineManager>>& pipel
             if (!bbox.overlaps(f.bbox.to2d()))
             {
                 totalPoints -= f.count;
-                //std::cout << "skipping " << f.filename << std::endl;
                 continue;  // we can safely skip
             }
 
-            std::cout << "using " << f.filename << std::endl;
+            if (verbose)
+            {
+              std::cout << "using " << f.filename << std::endl;
+            }
 
             ParallelJobInfo tile(ParallelJobInfo::FileBased, BOX2D(), filterExpression);
             tile.inputFilenames.push_back(f.filename);

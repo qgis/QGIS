@@ -57,7 +57,7 @@ QuickInfo getQuickInfo(std::string inputFile)
     std::string driver = StageFactory::inferReaderDriver(inputFile);
     if (driver.empty())
     {
-        std::cout << "cannot infer driver for: " << inputFile << std::endl;
+        std::cerr << "Could not infer driver for input file: " << inputFile << std::endl;
         return QuickInfo();
     }
 
@@ -66,7 +66,6 @@ QuickInfo getQuickInfo(std::string inputFile)
     pdal::Options opts;
     opts.add("filename", inputFile);
     reader->setOptions(opts);
-    //std::cout << "name " << reader->getName() << std::endl;
     return reader->preview();
 
     // PipelineManager m;
@@ -90,19 +89,22 @@ MetadataNode getReaderMetadata(std::string inputFile, MetadataNode *pointLayoutM
 }
 
 
-void runPipelineParallel(point_count_t totalPoints, bool isStreaming, std::vector<std::unique_ptr<PipelineManager>>& pipelines, int max_threads)
+void runPipelineParallel(point_count_t totalPoints, bool isStreaming, std::vector<std::unique_ptr<PipelineManager>>& pipelines, int max_threads, bool verbose)
 {
     const int CHUNK_SIZE = 100'000;
     int num_chunks = totalPoints / CHUNK_SIZE;
 
-    std::cout << "total points: " << (float)totalPoints / 1'000'000 << "M" << std::endl;
+    if (verbose)
+    {
+        std::cout << "total points: " << (float)totalPoints / 1'000'000 << "M" << std::endl;
+
+        std::cout << "jobs " << pipelines.size() << std::endl;
+        std::cout << "max threads " << max_threads << std::endl;
+        if (!isStreaming)
+            std::cout << "running in non-streaming mode!" << std::endl;
+    }
 
     auto start = std::chrono::high_resolution_clock::now();
-
-    std::cout << "jobs " << pipelines.size() << std::endl;
-    std::cout << "max threads " << max_threads << std::endl;
-    if (!isStreaming)
-        std::cout << "running in non-streaming mode!" << std::endl;
 
     sProgressBar.init(isStreaming ? num_chunks : pipelines.size());
 
@@ -144,7 +146,10 @@ void runPipelineParallel(point_count_t totalPoints, bool isStreaming, std::vecto
 
     auto stop = std::chrono::high_resolution_clock::now();
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);
-    std::cout << "time " << duration.count()/1000. << " s" << std::endl;
+    if (verbose)
+    {
+        std::cout << "time " << duration.count()/1000. << " s" << std::endl;
+    }
 }
 
 

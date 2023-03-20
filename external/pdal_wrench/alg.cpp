@@ -70,7 +70,7 @@ bool runAlg(std::vector<std::string> args, Alg &alg)
     if (pipelines.empty())
         return false;
 
-    runPipelineParallel(totalPoints, alg.isStreaming, pipelines, alg.max_threads);
+    runPipelineParallel(totalPoints, alg.isStreaming, pipelines, alg.max_threads, alg.verbose);
 
     alg.finalize(pipelines);
 
@@ -92,6 +92,8 @@ bool Alg::parseArgs(std::vector<std::string> args)
 
     // parallel run support (generic)
     pdal::Arg& argThreads = programArgs.add("threads", "Max number of concurrent threads for parallel runs", max_threads);
+
+    programArgs.add("verbose", "Print extra debugging output", verbose);
 
     try
     {
@@ -115,9 +117,9 @@ bool Alg::parseArgs(std::vector<std::string> args)
 
     if (!args.empty())
     {
-        std::cout << "unexpected args!" << std::endl;
+        std::cerr << "unexpected args!" << std::endl;
         for ( auto & a : args )
-            std::cout << " - " << a << std::endl;
+            std::cerr << " - " << a << std::endl;
         return false;
     }
 

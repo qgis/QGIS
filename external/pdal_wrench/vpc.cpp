@@ -52,7 +52,7 @@ bool VirtualPointCloud::read(std::string filename)
     std::ifstream inputJson(filename);
     if (!inputJson.good())
     {
-        std::cout << "failed to read file " << filename << std::endl;
+        std::cerr << "Failed to read input VPC file: " << filename << std::endl;
         return false;
     }
 
@@ -65,17 +65,17 @@ bool VirtualPointCloud::read(std::string filename)
     }
     catch (std::exception &e)
     {
-        std::cout << "json parsing error: " << e.what() << std::endl;
+        std::cerr << "JSON parsing error: " << e.what() << std::endl;
         return false;
     }
     if (!data.contains("vpc"))
     {
-        std::cout << "not a VPC file " << filename << std::endl;
+        std::cerr << "The input file is not a VPC file: " << filename << std::endl;
         return false;
     }
     if (data["vpc"] != "1.0.0")
     {
-        std::cout << "unsupported VPC file version " << data["vpc"] << std::endl;
+        std::cerr << "Unsupported VPC file version: " << data["vpc"] << std::endl;
         return false;
     }
 
@@ -108,7 +108,7 @@ bool VirtualPointCloud::write(std::string filename)
     std::ofstream outputJson(filename);
     if (!outputJson.good())
     {
-        std::cout << "failed to create file" << std::endl;
+        std::cerr << "Failed to create file: " << filename << std::endl;
         return false;
     }
 
@@ -157,8 +157,8 @@ void buildVpc(std::vector<std::string> args)
         return;
     }
 
-    std::cout << "input " << inputFiles.size() << std::endl;
-    std::cout << "output " << outputFile << std::endl;
+//    std::cout << "input " << inputFiles.size() << std::endl;
+//    std::cout << "output " << outputFile << std::endl;
 
     if (inputFiles.empty())
     {
@@ -200,7 +200,7 @@ void buildVpc(std::vector<std::string> args)
     }
     else
     {
-        std::cout << "found a mixture of multiple CRS in input files (" << vpcCrsWkt.size() << ")" << std::endl;
+        std::cerr << "found a mixture of multiple CRS in input files (" << vpcCrsWkt.size() << ")" << std::endl;
         vpc.crsWkt = "_mix_";
     }
 
