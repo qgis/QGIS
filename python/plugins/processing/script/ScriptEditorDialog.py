@@ -122,7 +122,7 @@ class ScriptEditorDialog(BASE, WIDGET):
         self.actionIncreaseFontSize.triggered.connect(self.editor.zoomIn)
         self.actionDecreaseFontSize.triggered.connect(self.editor.zoomOut)
         self.actionToggleComment.triggered.connect(self.editor.toggleComment)
-        self.editor.textChanged.connect(lambda: self.setHasChanged(True))
+        self.editor.textChanged.connect(self._on_text_modified)
 
         self.leFindText.returnPressed.connect(self.find)
         self.btnFind.clicked.connect(self.find)
@@ -228,6 +228,9 @@ class ScriptEditorDialog(BASE, WIDGET):
             self.setHasChanged(False)
 
         QgsApplication.processingRegistry().providerById("script").refreshAlgorithms()
+
+    def _on_text_modified(self):
+        self.setHasChanged(True)
 
     def setHasChanged(self, hasChanged):
         self.hasChanged = hasChanged
