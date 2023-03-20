@@ -225,7 +225,7 @@ unless( defined $dopoint ) {
 		$newminor=99;
 	}
 
-	run( "perl -i -pe \"s#Earlier versions of the documentation are also available on the QGIS website:#\$&\\n<a href=\\\"https://qgis.org/api/$apiv\\\">$apiv" . ($doltr ? " (LTR)" : "") . "</a>#\" doc/index.dox", "index.dox update failed");
+	run( "perl -i -pe \"s#Earlier versions of the documentation are also available on the QGIS website:#\$&\\n<a href=\\\"https://qgis.org/api/$apiv\\\">$apiv" . ($doltr ? " (LTR)" : "") . "</a>,#\" doc/index.dox", "index.dox update failed");
 
 	updateCMakeLists($newmajor,$newminor,0,"Master");
 	run( "cp /tmp/changelog debian", "restore changelog failed" );
