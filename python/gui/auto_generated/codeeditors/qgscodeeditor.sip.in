@@ -439,6 +439,15 @@ This is only supported for editors which return the Qgis.ScriptLanguageCapabilit
 .. versionadded:: 3.32
 %End
 
+    virtual void toggleComment();
+%Docstring
+Toggle comment for the selected text.
+
+This is only supported for editors which return the Qgis.ScriptLanguageCapability.ToggleComment capability from :py:func:`~QgsCodeEditor.languageCapabilities`.
+
+.. versionadded:: 3.32
+%End
+
   signals:
 
     void sessionHistoryCleared();

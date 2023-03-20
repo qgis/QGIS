@@ -1593,6 +1593,7 @@ The development version
     {
       Reformat,
       CheckSyntax,
+      ToggleComment,
     };
 
     typedef QFlags<Qgis::ScriptLanguageCapability> ScriptLanguageCapabilities;

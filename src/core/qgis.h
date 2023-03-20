@@ -2736,6 +2736,7 @@ class CORE_EXPORT Qgis
     {
       Reformat = 1 << 0, //!< Language supports automatic code reformatting
       CheckSyntax = 1 << 1, //!< Language supports syntax checking
+      ToggleComment = 1 << 2, //!< Language supports comment toggling
     };
     Q_ENUM( ScriptLanguageCapability )
 

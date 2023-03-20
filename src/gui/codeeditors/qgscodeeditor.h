@@ -455,6 +455,15 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
      */
     virtual bool checkSyntax();
 
+    /**
+     * Toggle comment for the selected text.
+     *
+     * This is only supported for editors which return the Qgis::ScriptLanguageCapability::ToggleComment capability from languageCapabilities().
+     *
+     * \since QGIS 3.32
+     */
+    virtual void toggleComment();
+
   signals:
 
     /**

@@ -120,7 +120,7 @@ class GUI_EXPORT QgsCodeEditorPython : public QgsCodeEditor
      *
      * \since QGIS 3.30
      */
-    void toggleComment();
+    void toggleComment() override;
 
   protected:
 
