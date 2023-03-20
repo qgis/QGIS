@@ -18,6 +18,7 @@
 #include "qgsvtpktiles.h"
 #include "qgsvectortileloader.h"
 #include "qgsapplication.h"
+#include "qgslogger.h"
 
 #include <QIcon>
 
@@ -31,7 +32,32 @@ QString QgsVtpkVectorTileDataProvider::DATA_PROVIDER_DESCRIPTION = QObject::tr( 
 QgsVtpkVectorTileDataProvider::QgsVtpkVectorTileDataProvider( const QString &uri, const ProviderOptions &providerOptions, ReadFlags flags )
   : QgsVectorTileDataProvider( uri, providerOptions, flags )
 {
+  QgsDataSourceUri dsUri;
+  dsUri.setEncodedUri( dataSourceUri() );
+  const QString sourcePath = dsUri.param( QStringLiteral( "url" ) );
 
+  QgsVtpkTiles reader( sourcePath );
+  if ( !reader.open() )
+  {
+    QgsDebugMsg( QStringLiteral( "failed to open VTPK file: " ) + sourcePath );
+    mIsValid = false;
+    return;
+  }
+
+  const QVariantMap metadata = reader.metadata();
+  const QString format = metadata.value( QStringLiteral( "tileInfo" ) ).toMap().value( QStringLiteral( "format" ) ).toString();
+  if ( format != QLatin1String( "pbf" ) )
+  {
+    QgsDebugMsg( QStringLiteral( "Cannot open VTPK for vector tiles. Format = " ) + format );
+    mIsValid = false;
+    return;
+  }
+
+  mMatrixSet = reader.matrixSet();
+  mCrs = mMatrixSet.crs();
+  mExtent = reader.extent( transformContext() );
+
+  mIsValid = true;
 }
 
 QString QgsVtpkVectorTileDataProvider::name() const
@@ -70,14 +96,28 @@ bool QgsVtpkVectorTileDataProvider::isValid() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  return true;
+  return mIsValid;
 }
 
 QgsCoordinateReferenceSystem QgsVtpkVectorTileDataProvider::crs() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  return QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) );
+  return mCrs;
+}
+
+QgsRectangle QgsVtpkVectorTileDataProvider::extent() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return mExtent;
+}
+
+const QgsVectorTileMatrixSet &QgsVtpkVectorTileDataProvider::tileMatrixSet() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return mMatrixSet;
 }
 
 QByteArray QgsVtpkVectorTileDataProvider::readTile( const QgsTileMatrix &, const QgsTileXYZ &id, QgsFeedback *feedback ) const

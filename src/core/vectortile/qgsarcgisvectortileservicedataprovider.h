@@ -18,6 +18,7 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
+#include "qgsvectortilematrixset.h"
 #include "qgsxyzvectortiledataprovider.h"
 #include "qgsprovidermetadata.h"
 
@@ -31,7 +32,6 @@ class CORE_EXPORT QgsArcGisVectorTileServiceDataProvider : public QgsXyzVectorTi
 
   public:
     QgsArcGisVectorTileServiceDataProvider( const QString &uri,
-                                            const QString &sourcePath,
                                             const QgsDataProvider::ProviderOptions &providerOptions,
                                             QgsDataProvider::ReadFlags flags );
     QString name() const override;
@@ -39,13 +39,26 @@ class CORE_EXPORT QgsArcGisVectorTileServiceDataProvider : public QgsXyzVectorTi
     QgsVectorTileDataProvider *clone() const override;
     QString sourcePath() const override;
     bool isValid() const override;
+    QgsRectangle extent() const override;
+    QgsCoordinateReferenceSystem crs() const override;
 
     static QString ARCGIS_VT_SERVICE_DATA_PROVIDER_KEY;
     static QString ARCGIS_VT_SERVICE_DATA_PROVIDER_DESCRIPTION;
 
   private:
 
+    bool setupArcgisVectorTileServiceConnection();
+
+    bool mIsValid = false;
     QString mSourcePath;
+
+    QVariantMap mArcgisLayerConfiguration;
+    QVariantMap mArcgisStyleConfiguration;
+
+    QgsRectangle mExtent;
+    QgsCoordinateReferenceSystem mCrs;
+
+    QgsVectorTileMatrixSet mMatrixSet;
 };
 
 
@@ -56,6 +69,7 @@ class QgsArcGisVectorTileServiceDataProviderMetadata : public QgsProviderMetadat
     QgsArcGisVectorTileServiceDataProviderMetadata();
     QIcon icon() const override;
     ProviderCapabilities providerCapabilities() const override;
+    QgsArcGisVectorTileServiceDataProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() ) override;
     QVariantMap decodeUri( const QString &uri ) const override;
     QString encodeUri( const QVariantMap &parts ) const override;
     QString absoluteToRelativeUri( const QString &uri, const QgsReadWriteContext &context ) const override;

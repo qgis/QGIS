@@ -20,6 +20,7 @@
 #include "qgis_sip.h"
 #include "qgsvectortiledataprovider.h"
 #include "qgsprovidermetadata.h"
+#include "qgsvectortilematrixset.h"
 
 class QgsMbTiles;
 
@@ -41,7 +42,9 @@ class CORE_EXPORT QgsMbTilesVectorTileDataProvider : public QgsVectorTileDataPro
     QgsVectorTileDataProvider *clone() const override;
     QString sourcePath() const override;
     bool isValid() const override;
+    QgsRectangle extent() const override;
     QgsCoordinateReferenceSystem crs() const override;
+    const QgsVectorTileMatrixSet &tileMatrixSet() const override;
     QByteArray readTile( const QgsTileMatrix &tileMatrix, const QgsTileXYZ &id, QgsFeedback *feedback = nullptr ) const override;
     QList<QgsVectorTileRawData> readTiles( const QgsTileMatrix &, const QVector<QgsTileXYZ> &tiles, QgsFeedback *feedback = nullptr ) const override;
 
@@ -52,6 +55,9 @@ class CORE_EXPORT QgsMbTilesVectorTileDataProvider : public QgsVectorTileDataPro
 
     //! Returns raw tile data for a single tile loaded from MBTiles file
     static QByteArray loadFromMBTiles( QgsMbTiles &mbTileReader, const QgsTileXYZ &id, QgsFeedback *feedback = nullptr );
+    bool mIsValid = false;
+    QgsRectangle mExtent;
+    QgsVectorTileMatrixSet mMatrixSet;
 
 };
 
