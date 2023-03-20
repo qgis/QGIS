@@ -73,6 +73,9 @@ class ConsoleOptionsWidget(QWidget, Ui_SettingsDialogPythonConsole):
         self.parent = parent
         self.setupUi(self)
 
+        self.autopep8Level.setClearValue(1)
+        self.maxLineLength.setClearValue(80)
+
         # Set up the formatter combo box
         self.formatter.addItems(["autopep8", "black"])
 
