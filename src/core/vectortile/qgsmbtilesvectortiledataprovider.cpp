@@ -29,6 +29,20 @@ QgsMbTilesVectorTileDataProvider::QgsMbTilesVectorTileDataProvider( const QStrin
 
 }
 
+QString QgsMbTilesVectorTileDataProvider::name() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return QStringLiteral( "mbtilesvectortiles" );
+}
+
+QString QgsMbTilesVectorTileDataProvider::description() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return tr( "MBTile Vector Tiles data provider" );
+}
+
 QgsVectorTileDataProvider *QgsMbTilesVectorTileDataProvider::clone() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS

@@ -47,8 +47,6 @@ class CORE_EXPORT QgsVectorTileDataProvider : public QgsDataProvider
                                const QgsDataProvider::ProviderOptions &providerOptions,
                                QgsDataProvider::ReadFlags flags );
 
-    QString name() const override;
-    QString description() const override;
     QgsRectangle extent() const override;
     bool renderInPreview( const QgsDataProvider::PreviewContext &context ) override;
 

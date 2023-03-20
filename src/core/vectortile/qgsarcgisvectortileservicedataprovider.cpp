@@ -25,6 +25,20 @@ QgsArcGisVectorTileServiceDataProvider::QgsArcGisVectorTileServiceDataProvider( 
 
 }
 
+QString QgsArcGisVectorTileServiceDataProvider::name() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return QStringLiteral( "arcgisvectortileservice" );
+}
+
+QString QgsArcGisVectorTileServiceDataProvider::description() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return tr( "ArcGIS Vector Tile Service" );
+}
+
 QgsVectorTileDataProvider *QgsArcGisVectorTileServiceDataProvider::clone() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
