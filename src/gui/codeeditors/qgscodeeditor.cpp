@@ -239,7 +239,7 @@ void QgsCodeEditor::contextMenuEvent( QContextMenuEvent *event )
         menu->addAction( reformatAction );
       }
 
-      if ( languageCapabilities() & Qgis::ScriptLanguageCapability::Reformat )
+      if ( languageCapabilities() & Qgis::ScriptLanguageCapability::CheckSyntax )
       {
         QAction *syntaxCheckAction = new QAction( tr( "Check Syntax" ), menu );
         syntaxCheckAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "console/iconSyntaxErrorConsole.svg" ) ) );
