@@ -17,6 +17,7 @@
 #include "qgsthreadingutils.h"
 
 #include <QNetworkRequest>
+#include <QImage>
 
 QgsVectorTileDataProvider::QgsVectorTileDataProvider(
   const QString &uri,
@@ -59,6 +60,34 @@ QNetworkRequest QgsVectorTileDataProvider::tileRequest( const QgsTileMatrix &, c
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
   return QNetworkRequest();
+}
+
+QVariantMap QgsVectorTileDataProvider::styleDefinition() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return QVariantMap();
+}
+
+QString QgsVectorTileDataProvider::styleUrl() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return QString();
+}
+
+QVariantMap QgsVectorTileDataProvider::spriteDefinition() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return QVariantMap();
+}
+
+QImage QgsVectorTileDataProvider::spriteImage() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return QImage();
 }
 
 

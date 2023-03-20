@@ -295,9 +295,6 @@ class CORE_EXPORT QgsVectorTileLayer : public QgsMapLayer
     //! Whether we draw borders of tiles
     bool mTileBorderRendering = false;
 
-    QVariantMap mArcgisLayerConfiguration;
-    QVariantMap mArcgisStyleConfiguration;
-
     QgsCoordinateTransformContext mTransformContext;
 
     std::unique_ptr< QgsDataProvider > mDataProvider;

@@ -57,6 +57,12 @@ QgsVtpkVectorTileDataProvider::QgsVtpkVectorTileDataProvider( const QString &uri
   mCrs = mMatrixSet.crs();
   mExtent = reader.extent( transformContext() );
   mLayerMetadata = reader.layerMetadata();
+  mStyleDefinition = reader.styleDefinition();
+  mSpriteDefinition = reader.spriteDefinition();
+  if ( !mSpriteDefinition.isEmpty() )
+  {
+    mSpriteImage = reader.spriteImage();
+  }
 
   mIsValid = true;
 }
@@ -129,6 +135,27 @@ const QgsVectorTileMatrixSet &QgsVtpkVectorTileDataProvider::tileMatrixSet() con
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
   return mMatrixSet;
+}
+
+QVariantMap QgsVtpkVectorTileDataProvider::styleDefinition() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return mStyleDefinition;
+}
+
+QVariantMap QgsVtpkVectorTileDataProvider::spriteDefinition() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return mSpriteDefinition;
+}
+
+QImage QgsVtpkVectorTileDataProvider::spriteImage() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return mSpriteImage;
 }
 
 QByteArray QgsVtpkVectorTileDataProvider::readTile( const QgsTileMatrix &, const QgsTileXYZ &id, QgsFeedback *feedback ) const

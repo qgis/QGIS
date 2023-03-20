@@ -108,6 +108,37 @@ class CORE_EXPORT QgsVectorTileDataProvider : public QgsDataProvider
      * The default implementation returns an invalid request.
      */
     virtual QNetworkRequest tileRequest( const QgsTileMatrix &tileMatrix, const QgsTileXYZ &id, Qgis::RendererUsage usage ) const;
+
+    /**
+     * Returns the style definition for the provider, if available.
+     *
+     * \see styleUrl()
+     * \see spriteDefinition()
+     */
+    virtual QVariantMap styleDefinition() const;
+
+    /**
+     * Returns the URL for the provider style, if available.
+     *
+     * If styleDefinition() is empty, then the layer style may be available
+     * from this URL.
+     */
+    virtual QString styleUrl() const;
+
+    /**
+     * Returns the sprite definition for the provider, if available.
+     *
+     * \see spriteImage()
+     * \see styleDefinition()
+     */
+    virtual QVariantMap spriteDefinition() const;
+
+    /**
+     * Returns the sprite image for the provider, if available.
+     *
+     * \see spriteDefinition()
+     */
+    virtual QImage spriteImage() const;
 };
 
 
