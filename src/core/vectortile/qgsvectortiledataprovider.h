@@ -31,6 +31,7 @@ class QgsVectorTileRawData;
  *
  * \note Not available in Python bindings
  *
+ * \ingroup core
  * \since QGIS 3.22
  */
 class CORE_EXPORT QgsVectorTileDataProvider : public QgsDataProvider
