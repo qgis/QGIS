@@ -37,6 +37,7 @@ class CORE_EXPORT QgsVtpkVectorTileDataProvider : public QgsVectorTileDataProvid
                                    const QgsDataProvider::ProviderOptions &providerOptions,
                                    QgsDataProvider::ReadFlags flags );
 
+    QgsVectorTileDataProvider::ProviderCapabilities providerCapabilities() const override;
     QString name() const override;
     QString description() const override;
     QgsVectorTileDataProvider *clone() const override;
@@ -44,6 +45,7 @@ class CORE_EXPORT QgsVtpkVectorTileDataProvider : public QgsVectorTileDataProvid
     bool isValid() const override;
     QgsCoordinateReferenceSystem crs() const override;
     QgsRectangle extent() const override;
+    QgsLayerMetadata layerMetadata() const override;
     const QgsVectorTileMatrixSet &tileMatrixSet() const override;
     QByteArray readTile( const QgsTileMatrix &tileMatrix, const QgsTileXYZ &id, QgsFeedback *feedback = nullptr ) const override;
     QList<QgsVectorTileRawData> readTiles( const QgsTileMatrix &, const QVector<QgsTileXYZ> &tiles, QgsFeedback *feedback = nullptr ) const override;
@@ -59,6 +61,7 @@ class CORE_EXPORT QgsVtpkVectorTileDataProvider : public QgsVectorTileDataProvid
     QgsCoordinateReferenceSystem mCrs;
     QgsRectangle mExtent;
     QgsVectorTileMatrixSet mMatrixSet;
+    QgsLayerMetadata mLayerMetadata;
 
 };
 

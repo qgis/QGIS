@@ -56,8 +56,14 @@ QgsVtpkVectorTileDataProvider::QgsVtpkVectorTileDataProvider( const QString &uri
   mMatrixSet = reader.matrixSet();
   mCrs = mMatrixSet.crs();
   mExtent = reader.extent( transformContext() );
+  mLayerMetadata = reader.layerMetadata();
 
   mIsValid = true;
+}
+
+QgsVectorTileDataProvider::ProviderCapabilities QgsVtpkVectorTileDataProvider::providerCapabilities() const
+{
+  return QgsVectorTileDataProvider::ProviderCapability::ReadLayerMetadata;
 }
 
 QString QgsVtpkVectorTileDataProvider::name() const
@@ -111,6 +117,11 @@ QgsRectangle QgsVtpkVectorTileDataProvider::extent() const
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
   return mExtent;
+}
+
+QgsLayerMetadata QgsVtpkVectorTileDataProvider::layerMetadata() const
+{
+  return mLayerMetadata;
 }
 
 const QgsVectorTileMatrixSet &QgsVtpkVectorTileDataProvider::tileMatrixSet() const

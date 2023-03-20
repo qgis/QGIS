@@ -34,13 +34,14 @@ class CORE_EXPORT QgsArcGisVectorTileServiceDataProvider : public QgsXyzVectorTi
     QgsArcGisVectorTileServiceDataProvider( const QString &uri,
                                             const QgsDataProvider::ProviderOptions &providerOptions,
                                             QgsDataProvider::ReadFlags flags );
+
+    QgsVectorTileDataProvider::ProviderCapabilities providerCapabilities() const override;
     QString name() const override;
     QString description() const override;
     QgsVectorTileDataProvider *clone() const override;
     QString sourcePath() const override;
-    bool isValid() const override;
-    QgsRectangle extent() const override;
     QgsCoordinateReferenceSystem crs() const override;
+    QgsLayerMetadata layerMetadata() const override;
 
     static QString ARCGIS_VT_SERVICE_DATA_PROVIDER_KEY;
     static QString ARCGIS_VT_SERVICE_DATA_PROVIDER_DESCRIPTION;
@@ -49,16 +50,14 @@ class CORE_EXPORT QgsArcGisVectorTileServiceDataProvider : public QgsXyzVectorTi
 
     bool setupArcgisVectorTileServiceConnection();
 
-    bool mIsValid = false;
     QString mSourcePath;
 
     QVariantMap mArcgisLayerConfiguration;
     QVariantMap mArcgisStyleConfiguration;
 
-    QgsRectangle mExtent;
     QgsCoordinateReferenceSystem mCrs;
 
-    QgsVectorTileMatrixSet mMatrixSet;
+    QgsLayerMetadata mLayerMetadata;
 };
 
 

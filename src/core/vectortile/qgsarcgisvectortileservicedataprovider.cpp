@@ -42,6 +42,28 @@ QgsArcGisVectorTileServiceDataProvider::QgsArcGisVectorTileServiceDataProvider( 
   mMatrixSet = QgsVectorTileMatrixSet::fromWebMercator();
 
   mIsValid = setupArcgisVectorTileServiceConnection();
+
+  if ( !mIsValid )
+    return;
+
+  // populate default metadata
+  mLayerMetadata.setIdentifier( mArcgisLayerConfiguration.value( QStringLiteral( "serviceUri" ) ).toString() );
+  const QString parentIdentifier = mArcgisLayerConfiguration.value( QStringLiteral( "serviceItemId" ) ).toString();
+  if ( !parentIdentifier.isEmpty() )
+  {
+    mLayerMetadata.setParentIdentifier( parentIdentifier );
+  }
+  mLayerMetadata.setType( QStringLiteral( "dataset" ) );
+  mLayerMetadata.setTitle( mArcgisLayerConfiguration.value( QStringLiteral( "name" ) ).toString() );
+  const QString copyright = mArcgisLayerConfiguration.value( QStringLiteral( "copyrightText" ) ).toString();
+  if ( !copyright.isEmpty() )
+    mLayerMetadata.setRights( QStringList() << copyright );
+  mLayerMetadata.addLink( QgsAbstractMetadataBase::Link( tr( "Source" ), QStringLiteral( "WWW:LINK" ), mArcgisLayerConfiguration.value( QStringLiteral( "serviceUri" ) ).toString() ) );
+}
+
+QgsVectorTileDataProvider::ProviderCapabilities QgsArcGisVectorTileServiceDataProvider::providerCapabilities() const
+{
+  return QgsVectorTileDataProvider::ProviderCapability::ReadLayerMetadata;
 }
 
 QString QgsArcGisVectorTileServiceDataProvider::name() const
@@ -74,25 +96,16 @@ QString QgsArcGisVectorTileServiceDataProvider::sourcePath() const
   return mSourcePath;
 }
 
-bool QgsArcGisVectorTileServiceDataProvider::isValid() const
-{
-  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
-
-  return mIsValid;
-}
-
-QgsRectangle QgsArcGisVectorTileServiceDataProvider::extent() const
-{
-  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
-
-  return mExtent;
-}
-
 QgsCoordinateReferenceSystem QgsArcGisVectorTileServiceDataProvider::crs() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
   return mCrs;
+}
+
+QgsLayerMetadata QgsArcGisVectorTileServiceDataProvider::layerMetadata() const
+{
+  return mLayerMetadata;
 }
 
 bool QgsArcGisVectorTileServiceDataProvider::setupArcgisVectorTileServiceConnection()
@@ -196,7 +209,7 @@ bool QgsArcGisVectorTileServiceDataProvider::setupArcgisVectorTileServiceConnect
   }
 
   mSourcePath = tileServiceUri + '/' + mArcgisLayerConfiguration.value( QStringLiteral( "tiles" ) ).toList().value( 0 ).toString();
-  if ( !QgsVectorTileUtils::checkXYZUrlTemplate( tileServiceUri ) )
+  if ( !QgsVectorTileUtils::checkXYZUrlTemplate( mSourcePath ) )
   {
     QgsDebugMsg( QStringLiteral( "Invalid format of URL for XYZ source: " ) + tileServiceUri );
     return false;
