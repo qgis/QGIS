@@ -61,6 +61,12 @@ void QgsPdalReprojectAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterPointCloudLayer( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ) ) );
   addParameter( new QgsProcessingParameterCrs( QStringLiteral( "CRS" ), QObject::tr( "Target CRS" ), QStringLiteral( "EPSG:4326" ) ) );
+
+  std::unique_ptr< QgsProcessingParameterCoordinateOperation > crsOpParam = std::make_unique< QgsProcessingParameterCoordinateOperation >( QStringLiteral( "OPERATION" ), QObject::tr( "Coordinate operation" ),
+      QVariant(), QStringLiteral( "INPUT" ), QStringLiteral( "CRS" ), QVariant(), QVariant(), true );
+  crsOpParam->setFlags( crsOpParam->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
+  addParameter( crsOpParam.release() );
+
   addParameter( new QgsProcessingParameterPointCloudDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Output layer" ) ) );
 }
 
@@ -82,6 +88,12 @@ QStringList QgsPdalReprojectAlgorithm::createArgumentLists( const QVariantMap &p
                        QStringLiteral( "--output=%1" ).arg( outputFile ),
                        QStringLiteral( "--transform-crs=%1" ).arg( crs.authid() )
                      };
+
+  const QString coordOp = parameterAsString( parameters, QStringLiteral( "OPERATION" ), context );
+  if ( !coordOp.isEmpty() )
+  {
+    args << QStringLiteral( "--transform-coord-op=%1" ).arg( coordOp );
+  }
 
   addThreadsParameter( args );
   return args;
