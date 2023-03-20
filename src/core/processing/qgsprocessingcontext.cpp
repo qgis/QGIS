@@ -147,6 +147,16 @@ void QgsProcessingContext::setLogLevel( LogLevel level )
   mLogLevel = level;
 }
 
+QString QgsProcessingContext::temporaryFolder() const
+{
+  return mTemporaryFolderOverride;
+}
+
+void QgsProcessingContext::setTemporaryFolder( const QString &folder )
+{
+  mTemporaryFolderOverride = folder;
+}
+
 QVariantMap QgsProcessingContext::exportToMap() const
 {
   QVariantMap res;

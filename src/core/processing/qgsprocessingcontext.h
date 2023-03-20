@@ -100,6 +100,7 @@ class CORE_EXPORT QgsProcessingContext
       mDistanceUnit = other.mDistanceUnit;
       mAreaUnit = other.mAreaUnit;
       mLogLevel = other.mLogLevel;
+      mTemporaryFolderOverride = other.mTemporaryFolderOverride;
     }
 
     /**
@@ -658,6 +659,28 @@ class CORE_EXPORT QgsProcessingContext
     void setLogLevel( LogLevel level );
 
     /**
+     * Returns the (optional) temporary folder to use when running algorithms.
+     *
+     * If set, this overrides the standard global Processing temporary folder and should be used
+     * for all temporary files created during algorithm execution.
+     *
+     * \see setTemporaryFolder()
+     * \since QGIS 3.32
+     */
+    QString temporaryFolder() const;
+
+    /**
+     * Sets the (optional) temporary \a folder to use when running algorithms.
+     *
+     * If set, this overrides the standard global Processing temporary folder and should be used
+     * for all temporary files created during algorithm execution.
+     *
+     * \see temporaryFolder()
+     * \since QGIS 3.32
+     */
+    void setTemporaryFolder( const QString &folder );
+
+    /**
      * Exports the context's settings to a variant map.
      *
      * \since QGIS 3.24
@@ -712,6 +735,8 @@ class CORE_EXPORT QgsProcessingContext
     QString mPreferredRasterFormat;
 
     LogLevel mLogLevel = DefaultLevel;
+
+    QString mTemporaryFolderOverride;
 
 #ifdef SIP_RUN
     QgsProcessingContext( const QgsProcessingContext &other );

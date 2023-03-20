@@ -1037,7 +1037,13 @@ QString QgsProcessingUtils::tempFolder( const QgsProcessingContext *context )
   static QString sFolder;
   static QMutex sMutex;
   QMutexLocker locker( &sMutex );
-  const QString basePath = QgsProcessing::settingsTempPath->value();
+  QString basePath;
+
+  if ( context )
+    basePath = context->temporaryFolder();
+  if ( basePath.isEmpty() )
+    basePath = QgsProcessing::settingsTempPath->value();
+
   if ( basePath.isEmpty() )
   {
     // default setting -- automatically create a temp folder
