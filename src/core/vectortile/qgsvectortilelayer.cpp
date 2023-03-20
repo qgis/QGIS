@@ -547,51 +547,20 @@ QString QgsVectorTileLayer::loadDefaultMetadata( bool &resultFlag )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  QgsDataSourceUri dsUri;
-  dsUri.setEncodedUri( mDataSource );
-  if ( mSourceType == QLatin1String( "xyz" ) && dsUri.param( QStringLiteral( "serviceType" ) ) == QLatin1String( "arcgis" ) )
-  {
-    // populate default metadata
-    QgsLayerMetadata metadata;
-    metadata.setIdentifier( mArcgisLayerConfiguration.value( QStringLiteral( "serviceUri" ) ).toString() );
-    const QString parentIdentifier = mArcgisLayerConfiguration.value( QStringLiteral( "serviceItemId" ) ).toString();
-    if ( !parentIdentifier.isEmpty() )
-    {
-      metadata.setParentIdentifier( parentIdentifier );
-    }
-    metadata.setType( QStringLiteral( "dataset" ) );
-    metadata.setTitle( mArcgisLayerConfiguration.value( QStringLiteral( "name" ) ).toString() );
-    const QString copyright = mArcgisLayerConfiguration.value( QStringLiteral( "copyrightText" ) ).toString();
-    if ( !copyright.isEmpty() )
-      metadata.setRights( QStringList() << copyright );
-    metadata.addLink( QgsAbstractMetadataBase::Link( tr( "Source" ), QStringLiteral( "WWW:LINK" ), mArcgisLayerConfiguration.value( QStringLiteral( "serviceUri" ) ).toString() ) );
-
-    setMetadata( metadata );
-
-    resultFlag = true;
+  resultFlag = false;
+  if ( !mDataProvider || !mDataProvider->isValid() )
     return QString();
-  }
-  else if ( mSourceType == QLatin1String( "vtpk" ) )
+
+  if ( qgis::down_cast< QgsVectorTileDataProvider * >( mDataProvider.get() )->providerCapabilities() & QgsVectorTileDataProvider::ProviderCapability::ReadLayerMetadata )
   {
-    QgsVtpkTiles reader( sourcePath() );
-    if ( !reader.open() )
-    {
-      QgsDebugMsg( QStringLiteral( "failed to open VTPK file: " ) + sourcePath() );
-      resultFlag = false;
-    }
-    else
-    {
-      setMetadata( reader.layerMetadata() );
-      resultFlag = true;
-    }
-    return QString();
+    setMetadata( mDataProvider->layerMetadata() );
   }
   else
   {
     QgsMapLayer::loadDefaultMetadata( resultFlag );
-    resultFlag = true;
-    return QString();
   }
+  resultFlag = true;
+  return QString();
 }
 
 QString QgsVectorTileLayer::encodedSource( const QString &source, const QgsReadWriteContext &context ) const

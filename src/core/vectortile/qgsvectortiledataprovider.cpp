@@ -25,6 +25,11 @@ QgsVectorTileDataProvider::QgsVectorTileDataProvider(
   : QgsDataProvider( uri, options, flags )
 {}
 
+QgsVectorTileDataProvider::ProviderCapabilities QgsVectorTileDataProvider::providerCapabilities() const
+{
+  return QgsVectorTileDataProvider::ProviderCapabilities();
+}
+
 QgsRectangle QgsVectorTileDataProvider::extent() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS

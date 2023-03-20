@@ -54,12 +54,11 @@ class CORE_EXPORT QgsXyzVectorTileDataProvider : public QgsVectorTileDataProvide
 
     QString mAuthCfg;
     QgsHttpHeaders mHeaders;
-
-  private:
-
     bool mIsValid = false;
     QgsRectangle mExtent;
     QgsVectorTileMatrixSet mMatrixSet;
+
+  private:
 
     //! Returns raw tile data for a single tile, doing a HTTP request. Block the caller until tile data are downloaded.
     static QByteArray loadFromNetwork( const QgsTileXYZ &id,
