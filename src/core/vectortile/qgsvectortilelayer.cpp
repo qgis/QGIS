@@ -38,10 +38,7 @@
 #include "qgsthreadingutils.h"
 #include "qgsproviderregistry.h"
 #include "qgsvectortiledataprovider.h"
-#include "qgsmbtilesvectortiledataprovider.h"
 #include "qgsarcgisvectortileservicedataprovider.h"
-#include "qgsxyzvectortiledataprovider.h"
-#include "qgsvtpkvectortiledataprovider.h"
 
 #include <QUrl>
 #include <QUrlQuery>
@@ -114,7 +111,7 @@ bool QgsVectorTileLayer::loadDataSource()
     mMatrixSet = QgsVectorTileMatrixSet::fromWebMercator( zMin, zMax );
     setExtent( QgsRectangle( -20037508.3427892, -20037508.3427892, 20037508.3427892, 20037508.3427892 ) );
 
-    mDataProvider = std::make_unique< QgsXyzVectorTileDataProvider >( mDataSource, providerOptions, flags );
+    mDataProvider.reset( qobject_cast<QgsVectorTileDataProvider *>( QgsProviderRegistry::instance()->createProvider( QStringLiteral( "xyzvectortiles" ), mDataSource, providerOptions, flags ) ) );
   }
   else if ( mSourceType == QLatin1String( "mbtiles" ) )
   {
@@ -149,7 +146,7 @@ bool QgsVectorTileLayer::loadDataSource()
     r = ct.transformBoundingBox( r );
     setExtent( r );
 
-    mDataProvider = std::make_unique< QgsMbTilesVectorTileDataProvider >( mDataSource, providerOptions, flags );
+    mDataProvider.reset( qobject_cast<QgsVectorTileDataProvider *>( QgsProviderRegistry::instance()->createProvider( QStringLiteral( "mbtilesvectortiles" ), mDataSource, providerOptions, flags ) ) );
   }
   else if ( mSourceType == QLatin1String( "vtpk" ) )
   {
@@ -172,7 +169,7 @@ bool QgsVectorTileLayer::loadDataSource()
     setCrs( mMatrixSet.crs() );
     setExtent( reader.extent( transformContext() ) );
 
-    mDataProvider = std::make_unique< QgsVtpkVectorTileDataProvider >( mDataSource, providerOptions, flags );
+    mDataProvider.reset( qobject_cast<QgsVectorTileDataProvider *>( QgsProviderRegistry::instance()->createProvider( QStringLiteral( "vtpkvectortiles" ), mDataSource, providerOptions, flags ) ) );
   }
   else
   {
@@ -339,6 +336,9 @@ bool QgsVectorTileLayer::setupArcgisVectorTileServiceConnection( const QString &
 
   const QgsDataProvider::ProviderOptions providerOptions { mTransformContext };
   const QgsDataProvider::ReadFlags flags;
+
+  // TODO -- call QgsProviderRegistry::instance()->createProvider instead, but that first requires moving above logic for
+  // determination of the service URI to the data provider
   mDataProvider = std::make_unique< QgsArcGisVectorTileServiceDataProvider >( mDataSource, sourcePath, providerOptions, flags );
 
   return true;
