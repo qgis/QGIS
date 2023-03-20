@@ -30,8 +30,11 @@ import warnings
 from qgis.PyQt import uic, sip
 from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtGui import QCursor
-from qgis.PyQt.QtWidgets import (QMessageBox,
-                                 QFileDialog)
+from qgis.PyQt.QtWidgets import (
+    QMessageBox,
+    QFileDialog,
+    QVBoxLayout
+)
 
 from qgis.gui import QgsGui, QgsErrorDialog
 from qgis.core import (QgsApplication,
@@ -44,6 +47,8 @@ from qgis.processing import alg as algfactory
 
 from processing.gui.AlgorithmDialog import AlgorithmDialog
 from processing.script import ScriptUtils
+
+from .ScriptEdit import ScriptEdit
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
 
@@ -62,6 +67,13 @@ class ScriptEditorDialog(BASE, WIDGET):
         self.setAttribute(Qt.WA_DeleteOnClose)
 
         QgsGui.instance().enableAutoGeometryRestore(self)
+
+        vl = QVBoxLayout()
+        vl.setContentsMargins(0, 0, 0, 0)
+        self.editor_container.setLayout(vl)
+
+        self.editor = ScriptEdit()
+        vl.addWidget(self.editor)
 
         self.searchWidget.setVisible(False)
 
