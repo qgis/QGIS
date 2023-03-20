@@ -30,7 +30,7 @@ from functools import partial
 from operator import itemgetter
 from pathlib import Path
 
-from qgis.core import Qgis, QgsApplication, QgsBlockingNetworkRequest, QgsStringUtils, QgsSettings
+from qgis.core import Qgis, QgsApplication, QgsBlockingNetworkRequest, QgsSettings
 from qgis.gui import QgsCodeEditorPython, QgsMessageBar
 from qgis.PyQt.Qsci import QsciScintilla
 from qgis.PyQt.QtCore import QByteArray, QCoreApplication, QDir, QEvent, QFileInfo, QJsonDocument, QSize, Qt, QUrl
@@ -53,48 +53,6 @@ from qgis.PyQt.QtWidgets import (
     QWidget,
 )
 from qgis.utils import OverrideCursor
-
-
-def findMinimalDistanceIndex(source, target):
-    """ Find the source substring index that most closely matches the target string"""
-    index = min(len(source), len(target))
-
-    distance = QgsStringUtils.levenshteinDistance
-
-    d0 = distance(source[:index], target)
-    if d0 == 0:
-        return index
-
-    ref_dist_more = d0
-    ref_index_more = index
-    if index < len(source) - 1:
-        while True:
-            new_dist = distance(source[:ref_index_more + 1], target)
-            if new_dist <= ref_dist_more:
-                ref_dist_more = new_dist
-                ref_index_more = ref_index_more + 1
-                if ref_index_more == len(source) - 1:
-                    break
-            else:
-                break
-
-    ref_dist_less = d0
-    ref_index_less = index
-    if index > 0:
-        while True:
-            new_dist = distance(source[:ref_index_less - 1], target)
-            if new_dist <= ref_dist_less:
-                ref_dist_less = new_dist
-                ref_index_less = ref_index_less - 1
-                if ref_index_less == 0:
-                    break
-            else:
-                break
-
-    if ref_dist_more < ref_dist_less:
-        return ref_index_more
-    else:
-        return ref_index_less
 
 
 class Editor(QgsCodeEditorPython):
@@ -270,86 +228,6 @@ class Editor(QgsCodeEditorPython):
 
     def findPrevious(self):
         self.findText(False)
-
-    def textBeforeCursor(self):
-        return self.text(0, self.positionFromLineIndex(*self.getCursorPosition()))
-
-    def reformatCode(self):
-        """ Reformat the code using the selected formatter """
-
-        formatter = self.settings.value("pythonConsole/formatter", "autopep8", type=str)
-        max_line_length = self.settings.value("pythonConsole/maxLineLength", 80, type=int)
-
-        new_text = self.text()
-
-        target = self.textBeforeCursor()
-
-        # isort
-        if self.settings.value("pythonConsole/sortImports", True, type=bool):
-            try:
-                import isort
-                options = {
-                    "line_length": max_line_length,
-                    "profile": "black" if formatter == "black" else "",
-                    "known_first_party": ["qgis", "console", "processing", "plugins"],
-                }
-                new_text = isort.code(new_text, **options)
-
-            except ImportError:
-                self.parent.infoBar.pushWarning(
-                    QCoreApplication.translate("PythonConsole", "Python Console"),
-                    QCoreApplication.translate("PythonConsole", "Module {0} is missing").format("isort"),
-                )
-
-        # autopep8
-        if formatter == "autopep8":
-            try:
-                import autopep8
-            except ImportError:
-                self.parent.infoBar.pushWarning(
-                    QCoreApplication.translate("PythonConsole", "Python Console"),
-                    QCoreApplication.translate("PythonConsole", "Module {0} is missing").format("autopep8"),
-                )
-                return
-            level = self.settings.value("pythonConsole/autopep8Level", 1, type=int)
-            options = {"aggressive": level, "max_line_length": max_line_length}
-            new_text = autopep8.fix_code(new_text, options=options)
-
-        # black
-        else:
-            try:
-                import black
-            except ImportError:
-                self.parent.infoBar.pushWarning(
-                    QCoreApplication.translate("PythonConsole", "Python Console"),
-                    QCoreApplication.translate("PythonConsole", "Module {0} is missing").format("black"),
-                )
-                return
-            if not self.syntaxCheck():
-                self.parent.infoBar.pushWarning(
-                    QCoreApplication.translate("PythonConsole", "Code formatting failed"),
-                    QCoreApplication.translate("PythonConsole", "The code contains syntax errors"),
-                )
-                return
-
-            normalize = self.settings.value("pythonConsole/blackNormalizeQuotes", True, type=bool)
-            options = {"string_normalization": normalize, "line_length": max_line_length}
-            new_text = black.format_str(new_text, mode=black.Mode(**options))
-
-        if new_text == self.text():
-            return
-
-        # Try to preserve the cursor position and scroll position
-        old_scroll_value = self.verticalScrollBar().value()
-        linearPosition = findMinimalDistanceIndex(new_text, target)
-
-        self.beginUndoAction()
-        self.selectAll()
-        self.removeSelectedText()
-        self.insert(new_text)
-        self.setCursorPosition(*self.lineIndexFromPosition(linearPosition))
-        self.verticalScrollBar().setValue(old_scroll_value)
-        self.endUndoAction()
 
     def objectListEditor(self):
         listObj = self.pythonconsole.listClassMethod
