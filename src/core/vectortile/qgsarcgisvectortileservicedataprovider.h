@@ -40,8 +40,8 @@ class CORE_EXPORT QgsArcGisVectorTileServiceDataProvider : public QgsXyzVectorTi
     QString sourcePath() const override;
     bool isValid() const override;
 
-    static QString DATA_PROVIDER_KEY;
-    static QString DATA_PROVIDER_DESCRIPTION;
+    static QString ARCGIS_VT_SERVICE_DATA_PROVIDER_KEY;
+    static QString ARCGIS_VT_SERVICE_DATA_PROVIDER_DESCRIPTION;
 
   private:
 

@@ -44,8 +44,8 @@ class CORE_EXPORT QgsXyzVectorTileDataProvider : public QgsVectorTileDataProvide
     QList<QgsVectorTileRawData> readTiles( const QgsTileMatrix &, const QVector<QgsTileXYZ> &tiles, QgsFeedback *feedback = nullptr ) const override;
     QNetworkRequest tileRequest( const QgsTileMatrix &tileMatrix, const QgsTileXYZ &id, Qgis::RendererUsage usage ) const override;
 
-    static QString DATA_PROVIDER_KEY;
-    static QString DATA_PROVIDER_DESCRIPTION;
+    static QString XYZ_DATA_PROVIDER_KEY;
+    static QString XYZ_DATA_PROVIDER_DESCRIPTION;
 
   protected:
 
