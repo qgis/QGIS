@@ -10,6 +10,7 @@
 
 
 
+
 class QgsCodeEditorPython : QgsCodeEditor
 {
 %Docstring(signature="appended")
@@ -27,6 +28,7 @@ code autocompletion.
 #include "qgscodeeditorpython.h"
 %End
   public:
+
 
     QgsCodeEditorPython( QWidget *parent /TransferThis/ = 0, const QList<QString> &filenames = QList<QString>(),
                          QgsCodeEditor::Mode mode = QgsCodeEditor::Mode::ScriptEditor );

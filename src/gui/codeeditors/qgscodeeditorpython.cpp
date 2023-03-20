@@ -17,10 +17,11 @@
 #include "qgscodeeditorpython.h"
 #include "qgslogger.h"
 #include "qgssymbollayerutils.h"
-#include "qgssettings.h"
 #include "qgis.h"
 #include "qgspythonrunner.h"
 #include "qgsprocessingutils.h"
+#include "qgssettingsentryimpl.h"
+#include "qgssettings.h"
 #include <QWidget>
 #include <QString>
 #include <QFont>
@@ -41,6 +42,13 @@ const QMap<QString, QString> QgsCodeEditorPython::sCompletionPairs
   {"\"", "\""}
 };
 const QStringList QgsCodeEditorPython::sCompletionSingleCharacters{"`", "*"};
+
+const QgsSettingsEntryString *QgsCodeEditorPython::settingCodeFormatter = new QgsSettingsEntryString( QStringLiteral( "formatter" ), sTreePythonCodeEditor, QStringLiteral( "autopep8" ), QStringLiteral( "Python code autoformatter" ) );
+const QgsSettingsEntryInteger *QgsCodeEditorPython::settingMaxLineLength = new QgsSettingsEntryInteger( QStringLiteral( "maxLineLength" ), sTreePythonCodeEditor, 80, QStringLiteral( "Maximum line length" ) );
+const QgsSettingsEntryBool *QgsCodeEditorPython::settingSortImports = new QgsSettingsEntryBool( QStringLiteral( "sortImports" ), sTreePythonCodeEditor, true, QStringLiteral( "Whether imports should be sorted when auto-formatting code" ) );
+const QgsSettingsEntryInteger *QgsCodeEditorPython::settingAutopep8Level = new QgsSettingsEntryInteger( QStringLiteral( "autopep8Level" ), sTreePythonCodeEditor, 1, QStringLiteral( "Autopep8 aggressive level" ) );
+const QgsSettingsEntryBool *QgsCodeEditorPython::settingBlackNormalizeQuotes = new QgsSettingsEntryBool( QStringLiteral( "blackNormalizeQuotes" ), sTreePythonCodeEditor, true, QStringLiteral( "Whether quotes should be normalized when auto-formatting code using black" ) );
+
 
 QgsCodeEditorPython::QgsCodeEditorPython( QWidget *parent, const QList<QString> &filenames, Mode mode )
   : QgsCodeEditor( parent,
@@ -74,11 +82,9 @@ Qgis::ScriptLanguageCapabilities QgsCodeEditorPython::languageCapabilities() con
 
 void QgsCodeEditorPython::initializeLexer()
 {
-  const QgsSettings settings;
-
   // current line
   setEdgeMode( QsciScintilla::EdgeLine );
-  setEdgeColumn( settings.value( QStringLiteral( "pythonConsole/maxLineLength" ), 80 ).toInt() );
+  setEdgeColumn( settingMaxLineLength->value() );
   setEdgeColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::Edge ) );
 
   setWhitespaceVisibility( QsciScintilla::WsVisibleAfterIndent );
@@ -123,6 +129,7 @@ void QgsCodeEditorPython::initializeLexer()
 
   std::unique_ptr< QsciAPIs > apis = std::make_unique< QsciAPIs >( pyLexer );
 
+  QgsSettings settings;
   if ( mAPISFilesList.isEmpty() )
   {
     if ( settings.value( QStringLiteral( "pythonConsole/preloadAPI" ), true ).toBool() )
@@ -363,15 +370,14 @@ QString QgsCodeEditorPython::reformatCodeString( const QString &string )
     return string;
   }
 
-  QgsSettings settings;
-  const QString formatter = settings.value( QStringLiteral( "pythonConsole/formatter" ), QStringLiteral( "autopep8" ) ).toString();
-  const int maxLineLength = settings.value( QStringLiteral( "pythonConsole/maxLineLength" ), 80 ).toInt();
+  const QString formatter = settingCodeFormatter->value();
+  const int maxLineLength = settingMaxLineLength->value();
 
   QString newText = string;
 
   QStringList missingModules;
 
-  if ( settings.value( "pythonConsole/sortImports", true ).toBool() )
+  if ( settingSortImports->value() )
   {
     const QString defineSortImports = QStringLiteral(
                                         "def __qgis_sort_imports(script):\n"
@@ -412,7 +418,7 @@ QString QgsCodeEditorPython::reformatCodeString( const QString &string )
 
   if ( formatter == QLatin1String( "autopep8" ) )
   {
-    const int level = settings.value( QStringLiteral( "pythonConsole/autopep8Level" ), 1 ).toInt();
+    const int level = settingAutopep8Level->value();
 
     const QString defineReformat = QStringLiteral(
                                      "def __qgis_reformat(script):\n"
@@ -452,7 +458,7 @@ QString QgsCodeEditorPython::reformatCodeString( const QString &string )
   }
   else if ( formatter == QLatin1String( "black" ) )
   {
-    const bool normalize = settings.value( QStringLiteral( "pythonConsole/blackNormalizeQuotes" ), true ).toBool();
+    const bool normalize = settingBlackNormalizeQuotes->value();
 
     if ( !checkSyntax() )
     {
