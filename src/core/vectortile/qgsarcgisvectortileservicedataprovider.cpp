@@ -61,6 +61,16 @@ QgsArcGisVectorTileServiceDataProvider::QgsArcGisVectorTileServiceDataProvider( 
   mLayerMetadata.addLink( QgsAbstractMetadataBase::Link( tr( "Source" ), QStringLiteral( "WWW:LINK" ), mArcgisLayerConfiguration.value( QStringLiteral( "serviceUri" ) ).toString() ) );
 }
 
+QgsArcGisVectorTileServiceDataProvider::QgsArcGisVectorTileServiceDataProvider( const QgsArcGisVectorTileServiceDataProvider &other )
+  : QgsXyzVectorTileDataProvider( other )
+{
+  mSourcePath = other.mSourcePath;
+  mArcgisLayerConfiguration = other.mArcgisLayerConfiguration;
+  mArcgisStyleConfiguration = other.mArcgisStyleConfiguration;
+  mCrs = other.mCrs;
+  mLayerMetadata = other.mLayerMetadata;
+}
+
 QgsVectorTileDataProvider::ProviderCapabilities QgsArcGisVectorTileServiceDataProvider::providerCapabilities() const
 {
   return QgsVectorTileDataProvider::ProviderCapability::ReadLayerMetadata;
@@ -84,9 +94,7 @@ QgsVectorTileDataProvider *QgsArcGisVectorTileServiceDataProvider::clone() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  ProviderOptions options;
-  options.transformContext = transformContext();
-  return new QgsArcGisVectorTileServiceDataProvider( dataSourceUri(), options, mReadFlags );
+  return new QgsArcGisVectorTileServiceDataProvider( *this );
 }
 
 QString QgsArcGisVectorTileServiceDataProvider::sourcePath() const

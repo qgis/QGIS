@@ -18,7 +18,6 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgsvectortilematrixset.h"
 #include "qgsxyzvectortiledataprovider.h"
 #include "qgsprovidermetadata.h"
 
@@ -35,6 +34,8 @@ class CORE_EXPORT QgsArcGisVectorTileServiceDataProvider : public QgsXyzVectorTi
                                             const QgsDataProvider::ProviderOptions &providerOptions,
                                             QgsDataProvider::ReadFlags flags );
 
+    QgsArcGisVectorTileServiceDataProvider( const QgsArcGisVectorTileServiceDataProvider &other );
+
     QgsVectorTileDataProvider::ProviderCapabilities providerCapabilities() const override;
     QString name() const override;
     QString description() const override;
@@ -43,7 +44,7 @@ class CORE_EXPORT QgsArcGisVectorTileServiceDataProvider : public QgsXyzVectorTi
     QgsCoordinateReferenceSystem crs() const override;
     QgsLayerMetadata layerMetadata() const override;
     QVariantMap styleDefinition() const override;
-    QString styleUrl() const;
+    QString styleUrl() const override;
 
     static QString ARCGIS_VT_SERVICE_DATA_PROVIDER_KEY;
     static QString ARCGIS_VT_SERVICE_DATA_PROVIDER_DESCRIPTION;

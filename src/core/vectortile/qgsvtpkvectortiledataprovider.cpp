@@ -67,6 +67,19 @@ QgsVtpkVectorTileDataProvider::QgsVtpkVectorTileDataProvider( const QString &uri
   mIsValid = true;
 }
 
+QgsVtpkVectorTileDataProvider::QgsVtpkVectorTileDataProvider( const QgsVtpkVectorTileDataProvider &other )
+  : QgsVectorTileDataProvider( other )
+{
+  mIsValid = other.mIsValid;
+  mCrs = other.mCrs;;
+  mExtent = other.mExtent;
+  mMatrixSet = other.mMatrixSet;
+  mLayerMetadata = other.mLayerMetadata;
+  mStyleDefinition = other.mStyleDefinition;
+  mSpriteDefinition = other.mSpriteDefinition;
+  mSpriteImage = other.mSpriteImage;
+}
+
 QgsVectorTileDataProvider::ProviderCapabilities QgsVtpkVectorTileDataProvider::providerCapabilities() const
 {
   return QgsVectorTileDataProvider::ProviderCapability::ReadLayerMetadata;
@@ -89,10 +102,7 @@ QString QgsVtpkVectorTileDataProvider::description() const
 QgsVectorTileDataProvider *QgsVtpkVectorTileDataProvider::clone() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
-
-  ProviderOptions options;
-  options.transformContext = transformContext();
-  return new QgsVtpkVectorTileDataProvider( dataSourceUri(), options, mReadFlags );
+  return new QgsVtpkVectorTileDataProvider( *this );
 }
 
 QString QgsVtpkVectorTileDataProvider::sourcePath() const

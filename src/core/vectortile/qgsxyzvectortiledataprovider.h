@@ -33,6 +33,7 @@ class CORE_EXPORT QgsXyzVectorTileDataProvider : public QgsVectorTileDataProvide
     QgsXyzVectorTileDataProvider( const QString &uri,
                                   const QgsDataProvider::ProviderOptions &providerOptions,
                                   QgsDataProvider::ReadFlags flags );
+    QgsXyzVectorTileDataProvider( const QgsXyzVectorTileDataProvider &other );
 
     QString name() const override;
     QString description() const override;

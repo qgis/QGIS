@@ -37,6 +37,8 @@ class CORE_EXPORT QgsMbTilesVectorTileDataProvider : public QgsVectorTileDataPro
                                       const QgsDataProvider::ProviderOptions &providerOptions,
                                       QgsDataProvider::ReadFlags flags );
 
+    QgsMbTilesVectorTileDataProvider( const QgsMbTilesVectorTileDataProvider &other );
+
     QString name() const override;
     QString description() const override;
     QgsVectorTileDataProvider *clone() const override;

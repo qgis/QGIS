@@ -38,6 +38,7 @@ class CORE_EXPORT QgsVtpkVectorTileDataProvider : public QgsVectorTileDataProvid
     QgsVtpkVectorTileDataProvider( const QString &uri,
                                    const QgsDataProvider::ProviderOptions &providerOptions,
                                    QgsDataProvider::ReadFlags flags );
+    QgsVtpkVectorTileDataProvider( const QgsVtpkVectorTileDataProvider &other );
 
     QgsVectorTileDataProvider::ProviderCapabilities providerCapabilities() const override;
     QString name() const override;

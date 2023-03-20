@@ -81,6 +81,14 @@ QgsMbTilesVectorTileDataProvider::QgsMbTilesVectorTileDataProvider( const QStrin
   mIsValid = true;
 }
 
+QgsMbTilesVectorTileDataProvider::QgsMbTilesVectorTileDataProvider( const QgsMbTilesVectorTileDataProvider &other )
+  : QgsVectorTileDataProvider( other )
+{
+  mIsValid = other.mIsValid;
+  mExtent = other.mExtent;
+  mMatrixSet = other.mMatrixSet;
+}
+
 QString QgsMbTilesVectorTileDataProvider::name() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
@@ -98,10 +106,7 @@ QString QgsMbTilesVectorTileDataProvider::description() const
 QgsVectorTileDataProvider *QgsMbTilesVectorTileDataProvider::clone() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
-
-  ProviderOptions options;
-  options.transformContext = transformContext();
-  return new QgsMbTilesVectorTileDataProvider( dataSourceUri(), options, mReadFlags );
+  return new QgsMbTilesVectorTileDataProvider( *this );
 }
 
 QString QgsMbTilesVectorTileDataProvider::sourcePath() const
