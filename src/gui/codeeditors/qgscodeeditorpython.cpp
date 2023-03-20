@@ -42,12 +42,13 @@ const QMap<QString, QString> QgsCodeEditorPython::sCompletionPairs
   {"\"", "\""}
 };
 const QStringList QgsCodeEditorPython::sCompletionSingleCharacters{"`", "*"};
-
+///@cond PRIVATE
 const QgsSettingsEntryString *QgsCodeEditorPython::settingCodeFormatter = new QgsSettingsEntryString( QStringLiteral( "formatter" ), sTreePythonCodeEditor, QStringLiteral( "autopep8" ), QStringLiteral( "Python code autoformatter" ) );
 const QgsSettingsEntryInteger *QgsCodeEditorPython::settingMaxLineLength = new QgsSettingsEntryInteger( QStringLiteral( "max-line-length" ), sTreePythonCodeEditor, 80, QStringLiteral( "Maximum line length" ) );
 const QgsSettingsEntryBool *QgsCodeEditorPython::settingSortImports = new QgsSettingsEntryBool( QStringLiteral( "sort-imports" ), sTreePythonCodeEditor, true, QStringLiteral( "Whether imports should be sorted when auto-formatting code" ) );
 const QgsSettingsEntryInteger *QgsCodeEditorPython::settingAutopep8Level = new QgsSettingsEntryInteger( QStringLiteral( "autopep8-level" ), sTreePythonCodeEditor, 1, QStringLiteral( "Autopep8 aggressive level" ) );
 const QgsSettingsEntryBool *QgsCodeEditorPython::settingBlackNormalizeQuotes = new QgsSettingsEntryBool( QStringLiteral( "black-normalize-quotes" ), sTreePythonCodeEditor, true, QStringLiteral( "Whether quotes should be normalized when auto-formatting code using black" ) );
+///@endcond PRIVATE
 
 
 QgsCodeEditorPython::QgsCodeEditorPython( QWidget *parent, const QList<QString> &filenames, Mode mode )
