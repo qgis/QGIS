@@ -37,10 +37,8 @@ QString QgsArcGisVectorTileServiceDataProvider::ARCGIS_VT_SERVICE_DATA_PROVIDER_
 
 
 QgsArcGisVectorTileServiceDataProvider::QgsArcGisVectorTileServiceDataProvider( const QString &uri, const ProviderOptions &providerOptions, ReadFlags flags )
-  : QgsXyzVectorTileDataProvider( uri, providerOptions, flags )
+  : QgsXyzVectorTileDataProviderBase( uri, providerOptions, flags )
 {
-  mMatrixSet = QgsVectorTileMatrixSet::fromWebMercator();
-
   mIsValid = setupArcgisVectorTileServiceConnection();
 
   if ( !mIsValid )
@@ -62,8 +60,11 @@ QgsArcGisVectorTileServiceDataProvider::QgsArcGisVectorTileServiceDataProvider( 
 }
 
 QgsArcGisVectorTileServiceDataProvider::QgsArcGisVectorTileServiceDataProvider( const QgsArcGisVectorTileServiceDataProvider &other )
-  : QgsXyzVectorTileDataProvider( other )
+  : QgsXyzVectorTileDataProviderBase( other )
 {
+  mIsValid = other.mIsValid;
+  mExtent = other.mExtent;
+  mMatrixSet = other.mMatrixSet;
   mSourcePath = other.mSourcePath;
   mArcgisLayerConfiguration = other.mArcgisLayerConfiguration;
   mArcgisStyleConfiguration = other.mArcgisStyleConfiguration;
@@ -102,6 +103,27 @@ QString QgsArcGisVectorTileServiceDataProvider::sourcePath() const
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
   return mSourcePath;
+}
+
+bool QgsArcGisVectorTileServiceDataProvider::isValid() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return mIsValid;
+}
+
+QgsRectangle QgsArcGisVectorTileServiceDataProvider::extent() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return mExtent;
+}
+
+const QgsVectorTileMatrixSet &QgsArcGisVectorTileServiceDataProvider::tileMatrixSet() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return mMatrixSet;
 }
 
 QgsCoordinateReferenceSystem QgsArcGisVectorTileServiceDataProvider::crs() const

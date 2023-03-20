@@ -25,7 +25,7 @@
 
 ///@cond PRIVATE
 
-class CORE_EXPORT QgsArcGisVectorTileServiceDataProvider : public QgsXyzVectorTileDataProvider
+class CORE_EXPORT QgsArcGisVectorTileServiceDataProvider : public QgsXyzVectorTileDataProviderBase
 {
     Q_OBJECT
 
@@ -41,6 +41,9 @@ class CORE_EXPORT QgsArcGisVectorTileServiceDataProvider : public QgsXyzVectorTi
     QString description() const override;
     QgsVectorTileDataProvider *clone() const override;
     QString sourcePath() const override;
+    bool isValid() const override;
+    QgsRectangle extent() const override;
+    const QgsVectorTileMatrixSet &tileMatrixSet() const override;
     QgsCoordinateReferenceSystem crs() const override;
     QgsLayerMetadata layerMetadata() const override;
     QVariantMap styleDefinition() const override;
@@ -52,6 +55,10 @@ class CORE_EXPORT QgsArcGisVectorTileServiceDataProvider : public QgsXyzVectorTi
   private:
 
     bool setupArcgisVectorTileServiceConnection();
+
+    bool mIsValid = false;
+    QgsRectangle mExtent;
+    QgsVectorTileMatrixSet mMatrixSet;
 
     QString mSourcePath;
 
