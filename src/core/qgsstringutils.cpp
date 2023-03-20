@@ -193,13 +193,12 @@ int QgsStringUtils::levenshteinDistance( const QString &string1, const QString &
   }
 
   //levenshtein algorithm begins here
-  QVector< int > col;
-  col.fill( 0, length2 + 1 );
-  QVector< int > prevCol;
+  std::vector< int > col( length2 + 1, 0 );
+  std::vector< int > prevCol;
   prevCol.reserve( length2 + 1 );
   for ( int i = 0; i < length2 + 1; ++i )
   {
-    prevCol << i;
+    prevCol.emplace_back( i );
   }
   const QChar *s2start = s2Char;
   for ( int i = 0; i < length1; ++i )
