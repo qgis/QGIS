@@ -55,43 +55,14 @@ class GUI_EXPORT QgsCodeEditorPython : public QgsCodeEditor
   public:
 
 #ifndef SIP_RUN
-
+///@cond PRIVATE
     static inline QgsSettingsTreeNode *sTreePythonCodeEditor = QgsCodeEditor::sTreeCodeEditor->createChildNode( QStringLiteral( "python" ) );
-
-    /**
-     * Code auto formatter.
-     *
-     * \since QGIS 3.32
-     */
     static const QgsSettingsEntryString *settingCodeFormatter;
-
-    /**
-     * Maximum line length.
-     *
-     * \since QGIS 3.32
-     */
     static const QgsSettingsEntryInteger *settingMaxLineLength;
-
-    /**
-     * Whether imports should be sorted when auto formatting code.
-     *
-     * \since QGIS 3.32
-     */
     static const QgsSettingsEntryBool *settingSortImports;
-
-    /**
-     * Autopep8 aggressive level.
-     *
-     * \since QGIS 3.32
-     */
     static const QgsSettingsEntryInteger *settingAutopep8Level;
-
-    /**
-     * Whether imports should be sorted when auto formatting code.
-     *
-     * \since QGIS 3.32
-     */
     static const QgsSettingsEntryBool *settingBlackNormalizeQuotes;
+///@endcond PRIVATE
 #endif
 
     /**
