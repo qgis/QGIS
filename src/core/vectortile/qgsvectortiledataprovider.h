@@ -23,6 +23,7 @@
 class QgsTileMatrix;
 class QgsTileXYZ;
 class QgsVectorTileRawData;
+class QgsVectorTileMatrixSet;
 
 #define SIP_NO_FILE
 
@@ -59,6 +60,11 @@ class CORE_EXPORT QgsVectorTileDataProvider : public QgsDataProvider
      * Returns a clone of the data provider.
      */
     virtual QgsVectorTileDataProvider *clone() const = 0 SIP_FACTORY;
+
+    /**
+     * Returns the tile matrix set associated with the provider.
+     */
+    virtual const QgsVectorTileMatrixSet &tileMatrixSet() const = 0;
 
     /**
      * Returns TRUE if the provider supports async tile reading.

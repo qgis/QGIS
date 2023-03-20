@@ -21,6 +21,7 @@
 #include "qgsziputils.h"
 #include "qgslogger.h"
 #include "qgsapplication.h"
+#include "qgscoordinatetransform.h"
 #include <QIcon>
 
 ///@cond PRIVATE
@@ -31,7 +32,53 @@ QString QgsMbTilesVectorTileDataProvider::MB_TILES_VECTOR_TILE_DATA_PROVIDER_DES
 QgsMbTilesVectorTileDataProvider::QgsMbTilesVectorTileDataProvider( const QString &uri, const ProviderOptions &providerOptions, ReadFlags flags )
   : QgsVectorTileDataProvider( uri, providerOptions, flags )
 {
+  QgsDataSourceUri dsUri;
+  dsUri.setEncodedUri( uri );
+  const QString sourcePath = dsUri.param( QStringLiteral( "url" ) );
 
+  QgsMbTiles reader( sourcePath );
+  if ( !reader.open() )
+  {
+    QgsDebugMsg( QStringLiteral( "failed to open MBTiles file: " ) + sourcePath );
+    mIsValid = false;
+    return;
+  }
+
+  const QString format = reader.metadataValue( QStringLiteral( "format" ) );
+  if ( format != QLatin1String( "pbf" ) )
+  {
+    QgsDebugMsg( QStringLiteral( "Cannot open MBTiles for vector tiles. Format = " ) + format );
+    mIsValid = false;
+    return;
+  }
+
+  QgsDebugMsgLevel( QStringLiteral( "name: " ) + reader.metadataValue( QStringLiteral( "name" ) ), 2 );
+
+  mMatrixSet = QgsVectorTileMatrixSet::fromWebMercator();
+
+  bool minZoomOk, maxZoomOk;
+  const int minZoom = reader.metadataValue( QStringLiteral( "minzoom" ) ).toInt( &minZoomOk );
+  const int maxZoom = reader.metadataValue( QStringLiteral( "maxzoom" ) ).toInt( &maxZoomOk );
+  if ( minZoomOk )
+    mMatrixSet.dropMatricesOutsideZoomRange( minZoom, 99 );
+  if ( maxZoomOk )
+    mMatrixSet.dropMatricesOutsideZoomRange( 0, maxZoom );
+  QgsDebugMsgLevel( QStringLiteral( "zoom range: %1 - %2" ).arg( mMatrixSet.minimumZoom() ).arg( mMatrixSet.maximumZoom() ), 2 );
+
+  QgsRectangle r = reader.extent();
+  QgsCoordinateTransform ct( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ),
+                             QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) ), transformContext() );
+  ct.setBallparkTransformsAreAppropriate( true );
+  try
+  {
+    mExtent = ct.transformBoundingBox( r );
+  }
+  catch ( QgsCsException & )
+  {
+    QgsDebugMsg( QStringLiteral( "Could not transform layer extent to layer CRS" ) );
+  }
+
+  mIsValid = true;
 }
 
 QString QgsMbTilesVectorTileDataProvider::name() const
@@ -70,7 +117,14 @@ bool QgsMbTilesVectorTileDataProvider::isValid() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  return true;
+  return mIsValid;
+}
+
+QgsRectangle QgsMbTilesVectorTileDataProvider::extent() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return mExtent;
 }
 
 QgsCoordinateReferenceSystem QgsMbTilesVectorTileDataProvider::crs() const
@@ -78,6 +132,13 @@ QgsCoordinateReferenceSystem QgsMbTilesVectorTileDataProvider::crs() const
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
   return QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) );
+}
+
+const QgsVectorTileMatrixSet &QgsMbTilesVectorTileDataProvider::tileMatrixSet() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return mMatrixSet;
 }
 
 QByteArray QgsMbTilesVectorTileDataProvider::readTile( const QgsTileMatrix &, const QgsTileXYZ &id, QgsFeedback *feedback ) const

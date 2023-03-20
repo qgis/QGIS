@@ -20,6 +20,7 @@
 #include "qgis_sip.h"
 #include "qgsvectortiledataprovider.h"
 #include "qgsprovidermetadata.h"
+#include "qgsvectortilematrixset.h"
 
 #define SIP_NO_FILE
 
@@ -38,7 +39,9 @@ class CORE_EXPORT QgsXyzVectorTileDataProvider : public QgsVectorTileDataProvide
     QgsVectorTileDataProvider *clone() const override;
     QString sourcePath() const override;
     bool isValid() const override;
+    QgsRectangle extent() const override;
     QgsCoordinateReferenceSystem crs() const override;
+    const QgsVectorTileMatrixSet &tileMatrixSet() const override;
     bool supportsAsync() const override;
     QByteArray readTile( const QgsTileMatrix &tileMatrix, const QgsTileXYZ &id, QgsFeedback *feedback = nullptr ) const override;
     QList<QgsVectorTileRawData> readTiles( const QgsTileMatrix &, const QVector<QgsTileXYZ> &tiles, QgsFeedback *feedback = nullptr ) const override;
@@ -53,6 +56,10 @@ class CORE_EXPORT QgsXyzVectorTileDataProvider : public QgsVectorTileDataProvide
     QgsHttpHeaders mHeaders;
 
   private:
+
+    bool mIsValid = false;
+    QgsRectangle mExtent;
+    QgsVectorTileMatrixSet mMatrixSet;
 
     //! Returns raw tile data for a single tile, doing a HTTP request. Block the caller until tile data are downloaded.
     static QByteArray loadFromNetwork( const QgsTileXYZ &id,

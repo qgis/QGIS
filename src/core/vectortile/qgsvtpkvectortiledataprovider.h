@@ -20,6 +20,7 @@
 #include "qgis_sip.h"
 #include "qgsvectortiledataprovider.h"
 #include "qgsprovidermetadata.h"
+#include "qgsvectortilematrixset.h"
 
 #define SIP_NO_FILE
 
@@ -42,6 +43,8 @@ class CORE_EXPORT QgsVtpkVectorTileDataProvider : public QgsVectorTileDataProvid
     QString sourcePath() const override;
     bool isValid() const override;
     QgsCoordinateReferenceSystem crs() const override;
+    QgsRectangle extent() const override;
+    const QgsVectorTileMatrixSet &tileMatrixSet() const override;
     QByteArray readTile( const QgsTileMatrix &tileMatrix, const QgsTileXYZ &id, QgsFeedback *feedback = nullptr ) const override;
     QList<QgsVectorTileRawData> readTiles( const QgsTileMatrix &, const QVector<QgsTileXYZ> &tiles, QgsFeedback *feedback = nullptr ) const override;
 
@@ -52,6 +55,10 @@ class CORE_EXPORT QgsVtpkVectorTileDataProvider : public QgsVectorTileDataProvid
 
     //! Returns raw tile data for a single tile loaded from VTPK file
     static QByteArray loadFromVtpk( QgsVtpkTiles &vtpkTileReader, const QgsTileXYZ &id, QgsFeedback *feedback = nullptr );
+    bool mIsValid = false;
+    QgsCoordinateReferenceSystem mCrs;
+    QgsRectangle mExtent;
+    QgsVectorTileMatrixSet mMatrixSet;
 
 };
 

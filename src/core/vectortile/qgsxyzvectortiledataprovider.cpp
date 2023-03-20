@@ -38,8 +38,29 @@ QgsXyzVectorTileDataProvider::QgsXyzVectorTileDataProvider( const QString &uri, 
   QgsDataSourceUri dsUri;
   dsUri.setEncodedUri( uri );
 
+  const QString sourcePath = dsUri.param( QStringLiteral( "url" ) );
+  if ( !QgsVectorTileUtils::checkXYZUrlTemplate( sourcePath ) )
+  {
+    QgsDebugMsg( QStringLiteral( "Invalid format of URL for XYZ source: " ) + sourcePath );
+    mIsValid = false;
+    return;
+  }
+
   mAuthCfg = dsUri.authConfigId();
   mHeaders = dsUri.httpHeaders();
+
+  int zMin = 0;
+  if ( dsUri.hasParam( QStringLiteral( "zmin" ) ) )
+    zMin = dsUri.param( QStringLiteral( "zmin" ) ).toInt();
+
+  int zMax = 14;
+  if ( dsUri.hasParam( QStringLiteral( "zmax" ) ) )
+    zMax = dsUri.param( QStringLiteral( "zmax" ) ).toInt();
+
+  mMatrixSet = QgsVectorTileMatrixSet::fromWebMercator( zMin, zMax );
+  mExtent = QgsRectangle( -20037508.3427892, -20037508.3427892, 20037508.3427892, 20037508.3427892 );
+
+  mIsValid = true;
 }
 
 QString QgsXyzVectorTileDataProvider::name() const
@@ -78,7 +99,14 @@ bool QgsXyzVectorTileDataProvider::isValid() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  return true;
+  return mIsValid;
+}
+
+QgsRectangle QgsXyzVectorTileDataProvider::extent() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return mExtent;
 }
 
 QgsCoordinateReferenceSystem QgsXyzVectorTileDataProvider::crs() const
@@ -86,6 +114,13 @@ QgsCoordinateReferenceSystem QgsXyzVectorTileDataProvider::crs() const
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
   return QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) );
+}
+
+const QgsVectorTileMatrixSet &QgsXyzVectorTileDataProvider::tileMatrixSet() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return mMatrixSet;
 }
 
 bool QgsXyzVectorTileDataProvider::supportsAsync() const

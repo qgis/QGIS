@@ -304,8 +304,6 @@ class CORE_EXPORT QgsVectorTileLayer : public QgsMapLayer
 
     QHash< QgsFeatureId, QgsFeature > mSelectedFeatures;
 
-    bool setupArcgisVectorTileServiceConnection( const QString &uri, const QgsDataSourceUri &dataSourceUri );
-
     void setDataSourcePrivate( const QString &dataSource, const QString &baseName, const QString &provider,
                                const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags ) override;
 
