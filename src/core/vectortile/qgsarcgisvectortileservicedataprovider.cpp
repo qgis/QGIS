@@ -105,7 +105,25 @@ QgsCoordinateReferenceSystem QgsArcGisVectorTileServiceDataProvider::crs() const
 
 QgsLayerMetadata QgsArcGisVectorTileServiceDataProvider::layerMetadata() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return mLayerMetadata;
+}
+
+QVariantMap QgsArcGisVectorTileServiceDataProvider::styleDefinition() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return mArcgisStyleConfiguration;
+}
+
+QString QgsArcGisVectorTileServiceDataProvider::styleUrl() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  // for ArcMap VectorTileServices we default to the defaultStyles URL from the layer configuration
+  return mArcgisLayerConfiguration.value( QStringLiteral( "serviceUri" ) ).toString()
+         + '/' + mArcgisLayerConfiguration.value( QStringLiteral( "defaultStyles" ) ).toString();
 }
 
 bool QgsArcGisVectorTileServiceDataProvider::setupArcgisVectorTileServiceConnection()

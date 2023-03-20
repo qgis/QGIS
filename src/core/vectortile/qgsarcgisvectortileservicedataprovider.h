@@ -42,6 +42,8 @@ class CORE_EXPORT QgsArcGisVectorTileServiceDataProvider : public QgsXyzVectorTi
     QString sourcePath() const override;
     QgsCoordinateReferenceSystem crs() const override;
     QgsLayerMetadata layerMetadata() const override;
+    QVariantMap styleDefinition() const override;
+    QString styleUrl() const;
 
     static QString ARCGIS_VT_SERVICE_DATA_PROVIDER_KEY;
     static QString ARCGIS_VT_SERVICE_DATA_PROVIDER_DESCRIPTION;

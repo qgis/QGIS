@@ -22,6 +22,8 @@
 #include "qgsprovidermetadata.h"
 #include "qgsvectortilematrixset.h"
 
+#include <QImage>
+
 #define SIP_NO_FILE
 
 ///@cond PRIVATE
@@ -47,6 +49,9 @@ class CORE_EXPORT QgsVtpkVectorTileDataProvider : public QgsVectorTileDataProvid
     QgsRectangle extent() const override;
     QgsLayerMetadata layerMetadata() const override;
     const QgsVectorTileMatrixSet &tileMatrixSet() const override;
+    QVariantMap styleDefinition() const override;
+    QVariantMap spriteDefinition() const override;
+    QImage spriteImage() const override;
     QByteArray readTile( const QgsTileMatrix &tileMatrix, const QgsTileXYZ &id, QgsFeedback *feedback = nullptr ) const override;
     QList<QgsVectorTileRawData> readTiles( const QgsTileMatrix &, const QVector<QgsTileXYZ> &tiles, QgsFeedback *feedback = nullptr ) const override;
 
@@ -62,6 +67,9 @@ class CORE_EXPORT QgsVtpkVectorTileDataProvider : public QgsVectorTileDataProvid
     QgsRectangle mExtent;
     QgsVectorTileMatrixSet mMatrixSet;
     QgsLayerMetadata mLayerMetadata;
+    QVariantMap mStyleDefinition;
+    QVariantMap mSpriteDefinition;
+    QImage mSpriteImage;
 
 };
 

@@ -17,7 +17,6 @@
 
 #include "qgslogger.h"
 #include "qgsvectortilelayerrenderer.h"
-#include "qgsvtpktiles.h"
 #include "qgsvectortilebasiclabeling.h"
 #include "qgsvectortilebasicrenderer.h"
 #include "qgsvectortilelabeling.h"
@@ -36,7 +35,6 @@
 #include "qgsthreadingutils.h"
 #include "qgsproviderregistry.h"
 #include "qgsvectortiledataprovider.h"
-#include "qgsarcgisvectortileservicedataprovider.h"
 
 #include <QUrl>
 #include <QUrlQuery>
@@ -379,6 +377,9 @@ bool QgsVectorTileLayer::loadDefaultStyleAndSubLayers( QString &error, QStringLi
 bool QgsVectorTileLayer::loadDefaultStyleAndSubLayersPrivate( QString &error, QStringList &warnings, QList<QgsMapLayer *> *subLayers )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+  QgsVectorTileDataProvider *vtProvider = qgis::down_cast< QgsVectorTileDataProvider *> ( mDataProvider.get() );
+  if ( !vtProvider )
+    return false;
 
   QgsDataSourceUri dsUri;
   dsUri.setEncodedUri( mDataSource );
@@ -390,38 +391,22 @@ bool QgsVectorTileLayer::loadDefaultStyleAndSubLayersPrivate( QString &error, QS
   {
     styleUrl = dsUri.param( QStringLiteral( "styleUrl" ) );
   }
-  else if ( mSourceType == QLatin1String( "xyz" ) && dsUri.param( QStringLiteral( "serviceType" ) ) == QLatin1String( "arcgis" ) )
+  else
   {
-    // for ArcMap VectorTileServices we default to the defaultStyles URL from the layer configuration
-    styleUrl = mArcgisLayerConfiguration.value( QStringLiteral( "serviceUri" ) ).toString()
-               + '/' + mArcgisLayerConfiguration.value( QStringLiteral( "defaultStyles" ) ).toString();
+    styleUrl = vtProvider->styleUrl();
   }
 
-  if ( mSourceType == QLatin1String( "vtpk" ) )
+  styleDefinition = vtProvider->styleDefinition();
+  const QVariantMap spriteDefinition = vtProvider->spriteDefinition();
+  if ( !spriteDefinition.isEmpty() )
   {
-    QgsVtpkTiles reader( sourcePath() );
-    if ( !reader.open() )
-    {
-      QgsDebugMsg( QStringLiteral( "failed to open VTPK file: " ) + sourcePath() );
-      return false;
-    }
-
-    styleDefinition = reader.styleDefinition();
-
-    const QVariantMap spriteDefinition = reader.spriteDefinition();
-    if ( !spriteDefinition.isEmpty() )
-    {
-      const QImage spriteImage = reader.spriteImage();
-      context.setSprites( spriteImage, spriteDefinition );
-    }
+    const QImage spriteImage = vtProvider->spriteImage();
+    context.setSprites( spriteImage, spriteDefinition );
   }
-  else if ( !mArcgisStyleConfiguration.isEmpty() || !styleUrl.isEmpty() )
+
+  if ( !styleDefinition.isEmpty() || !styleUrl.isEmpty() )
   {
-    if ( !mArcgisStyleConfiguration.isEmpty() )
-    {
-      styleDefinition = mArcgisStyleConfiguration;
-    }
-    else
+    if ( styleDefinition.isEmpty() )
     {
       QNetworkRequest request = QNetworkRequest( QUrl( styleUrl ) );
 
