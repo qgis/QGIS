@@ -682,9 +682,24 @@ Sets new edge mesh renderer settings
 %Docstring
 Returns renderer settings
 %End
+
     void setScalarSettings( int groupIndex, const QgsMeshRendererScalarSettings &settings );
 %Docstring
 Sets new renderer settings
+%End
+
+    bool hasScalarSettings( int groupIndex ) const;
+%Docstring
+Returns whether ``groupIndex`` has existing scalar settings
+
+.. versionadded:: 3.30.1
+%End
+
+    bool removeScalarSettings( int groupIndex );
+%Docstring
+Removes scalar settings with ``groupIndex``
+
+.. versionadded:: 3.30.1
 %End
 
     QgsMeshRendererVectorSettings vectorSettings( int groupIndex ) const;
@@ -694,6 +709,20 @@ Returns renderer settings
     void setVectorSettings( int groupIndex, const QgsMeshRendererVectorSettings &settings );
 %Docstring
 Sets new renderer settings
+%End
+
+    bool hasVectorSettings( int groupIndex ) const;
+%Docstring
+Returns whether ``groupIndex`` has existing vector settings
+
+.. versionadded:: 3.30.1
+%End
+
+    bool removeVectorSettings( int groupIndex );
+%Docstring
+Removes vector settings for ``groupIndex``
+
+.. versionadded:: 3.30.1
 %End
 
     QgsMesh3dAveragingMethod *averagingMethod() const;

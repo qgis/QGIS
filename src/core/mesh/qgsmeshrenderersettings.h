@@ -624,7 +624,7 @@ class CORE_EXPORT QgsMeshRendererSettings
     void setScalarSettings( int groupIndex, const QgsMeshRendererScalarSettings &settings ) { mRendererScalarSettings[groupIndex] = settings; }
 
     /**
-     * Returns whether \a groupIndex has exisiting scalar settings
+     * Returns whether \a groupIndex has existing scalar settings
      * \since QGIS 3.30.1
      */
     bool hasScalarSettings( int groupIndex ) const {return mRendererScalarSettings.contains( groupIndex );}
@@ -641,7 +641,7 @@ class CORE_EXPORT QgsMeshRendererSettings
     void setVectorSettings( int groupIndex, const QgsMeshRendererVectorSettings &settings ) { mRendererVectorSettings[groupIndex] = settings; }
 
     /**
-     * Returns whether \a groupIndex has exisiting vector settings
+     * Returns whether \a groupIndex has existing vector settings
      * \since QGIS 3.30.1
      */
     bool hasVectorSettings( int groupIndex ) const {return mRendererVectorSettings.contains( groupIndex );}
