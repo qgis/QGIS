@@ -474,6 +474,7 @@ class GUI_EXPORT QgsProcessingAlgorithmDialogBase : public QDialog, public QgsPr
     QgsFeatureRequest::InvalidGeometryCheck mGeometryCheck = QgsFeatureRequest::InvalidGeometryCheck::GeometryAbortOnInvalid;
     Qgis::DistanceUnit mDistanceUnits = Qgis::DistanceUnit::Unknown;
     Qgis::AreaUnit mAreaUnits = Qgis::AreaUnit::Unknown;
+    QString mTemporaryFolderOverride;
 
     QString formatHelp( QgsProcessingAlgorithm *algorithm );
     void scrollToBottomOfLog();
@@ -557,6 +558,11 @@ class GUI_EXPORT QgsProcessingContextOptionsWidget : public QgsPanelWidget, priv
      * Returns the area unit selected in the widget.
      */
     Qgis::AreaUnit areaUnit() const;
+
+    /**
+     * Returns the optional temporary folder override location.
+     */
+    QString temporaryFolder();
 
 };
 
