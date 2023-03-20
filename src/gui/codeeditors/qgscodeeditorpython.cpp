@@ -622,7 +622,7 @@ QString QgsCodeEditorPython::characterAfterCursor() const
 
 void QgsCodeEditorPython::updateCapabilities()
 {
-  mCapabilities = Qgis::ScriptLanguageCapabilities();
+  mCapabilities = Qgis::ScriptLanguageCapability::ToggleComment;
 
   if ( !QgsPythonRunner::isValid() )
     return;

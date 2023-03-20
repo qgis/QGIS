@@ -247,6 +247,15 @@ void QgsCodeEditor::contextMenuEvent( QContextMenuEvent *event )
         menu->addAction( syntaxCheckAction );
       }
 
+      if ( languageCapabilities() & Qgis::ScriptLanguageCapability::ToggleComment )
+      {
+        QAction *toggleCommentAction = new QAction( tr( "Toggle Comment" ), menu );
+        toggleCommentAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "console/iconCommentEditorConsole.svg" ) ) );
+        toggleCommentAction->setEnabled( !isReadOnly() );
+        connect( toggleCommentAction, &QAction::triggered, this, &QgsCodeEditor::toggleComment );
+        menu->addAction( toggleCommentAction );
+      }
+
       populateContextMenu( menu );
 
       menu->exec( mapToGlobal( event->pos() ) );
@@ -725,6 +734,11 @@ void QgsCodeEditor::reformatCode()
 bool QgsCodeEditor::checkSyntax()
 {
   return true;
+}
+
+void QgsCodeEditor::toggleComment()
+{
+
 }
 
 QStringList QgsCodeEditor::history() const
