@@ -61,8 +61,15 @@ class TestQgsVectorTileLayer : public QgsTest
     void test_render();
     void test_render_withClip();
     void test_labeling();
-    void test_relativePaths();
-    void test_absoluteRelativeUri();
+    void test_relativePathsMbTiles();
+    void test_absoluteRelativeUriMbTiles();
+
+    void test_relativePathsXyz();
+    void test_absoluteRelativeUriXyz();
+
+    void test_relativePathsVtpk();
+    void test_absoluteRelativeUriVtpk();
+
     void test_polygonWithLineStyle();
     void test_polygonWithMarker();
 };
@@ -206,7 +213,57 @@ void TestQgsVectorTileLayer::test_labeling()
   QVERIFY( res );
 }
 
-void TestQgsVectorTileLayer::test_relativePaths()
+void TestQgsVectorTileLayer::test_relativePathsMbTiles()
+{
+  QgsReadWriteContext contextRel;
+  contextRel.setPathResolver( QgsPathResolver( QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/project.qgs" ) ) );
+  const QgsReadWriteContext contextAbs;
+
+  const QString srcMbtiles = QStringLiteral( "type=mbtiles&url=%1/vector_tile/mbtiles_vt.mbtiles" ).arg( TEST_DATA_DIR );
+
+  std::unique_ptr< QgsVectorTileLayer > layer = std::make_unique< QgsVectorTileLayer >( srcMbtiles );
+  QVERIFY( layer->isValid() );
+  QCOMPARE( layer->providerType(), QStringLiteral( "mbtilesvectortiles" ) );
+
+  // encode source: converting absolute paths to relative
+  const QString srcMbtilesRel = layer->encodedSource( srcMbtiles, contextRel );
+  QCOMPARE( srcMbtilesRel, QStringLiteral( "type=mbtiles&url=./vector_tile/mbtiles_vt.mbtiles" ) );
+
+  // encode source: keeping absolute paths
+  QCOMPARE( layer->encodedSource( srcMbtiles, contextAbs ), srcMbtiles );
+
+  // decode source: converting relative paths to absolute
+  QCOMPARE( layer->decodedSource( srcMbtilesRel, QStringLiteral( "mbtilesvectortiles" ), contextRel ), srcMbtiles );
+
+  // decode source: keeping absolute paths
+  QCOMPARE( layer->decodedSource( srcMbtiles, QStringLiteral( "mbtilesvectortiles" ), contextAbs ), srcMbtiles );
+}
+
+void TestQgsVectorTileLayer::test_absoluteRelativeUriMbTiles()
+{
+  QgsReadWriteContext context;
+  context.setPathResolver( QgsPathResolver( QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/project.qgs" ) ) );
+
+  QgsProviderMetadata *vectorTileMetadata = QgsProviderRegistry::instance()->providerMetadata( "mbtilesvectortiles" );
+  QVERIFY( vectorTileMetadata );
+
+  QgsDataSourceUri dsAbs;
+  dsAbs.setParam( "type", "mbtiles" );
+  dsAbs.setParam( "url", QString( "%1/vector_tile/mbtiles_vt.mbtiles" ).arg( TEST_DATA_DIR ) );
+  dsAbs.setParam( "zmax", "1" );
+
+  QgsDataSourceUri dsRel;
+  dsRel.setParam( "type", "mbtiles" );
+  dsRel.setParam( "url", "./vector_tile/mbtiles_vt.mbtiles" );
+  dsRel.setParam( "zmax", "1" );
+
+  QString absoluteUri = dsAbs.encodedUri();
+  QString relativeUri = dsRel.encodedUri();
+  QCOMPARE( vectorTileMetadata->absoluteToRelativeUri( absoluteUri, context ), relativeUri );
+  QCOMPARE( vectorTileMetadata->relativeToAbsoluteUri( relativeUri, context ), absoluteUri );
+}
+
+void TestQgsVectorTileLayer::test_relativePathsXyz()
 {
   QgsReadWriteContext contextRel;
   contextRel.setPathResolver( QgsPathResolver( "/home/qgis/project.qgs" ) );
@@ -214,39 +271,34 @@ void TestQgsVectorTileLayer::test_relativePaths()
 
   const QString srcXyzLocal = "type=xyz&url=file:///home/qgis/%7Bz%7D/%7Bx%7D/%7By%7D.pbf";
   const QString srcXyzRemote = "type=xyz&url=http://www.example.com/%7Bz%7D/%7Bx%7D/%7By%7D.pbf";
-  const QString srcMbtiles = "type=mbtiles&url=/home/qgis/test/map.mbtiles";
 
-  const QgsVectorTileLayer layer;
+  std::unique_ptr< QgsVectorTileLayer > layer = std::make_unique< QgsVectorTileLayer >( srcXyzLocal );
+  QCOMPARE( layer->providerType(), QStringLiteral( "xyzvectortiles" ) );
 
   // encode source: converting absolute paths to relative
-  const QString srcXyzLocalRel = layer.encodedSource( srcXyzLocal, contextRel );
+  const QString srcXyzLocalRel = layer->encodedSource( srcXyzLocal, contextRel );
   QCOMPARE( srcXyzLocalRel, QStringLiteral( "type=xyz&url=file:./%7Bz%7D/%7Bx%7D/%7By%7D.pbf" ) );
-  const QString srcMbtilesRel = layer.encodedSource( srcMbtiles, contextRel );
-  QCOMPARE( srcMbtilesRel, QStringLiteral( "type=mbtiles&url=./test/map.mbtiles" ) );
-  QCOMPARE( layer.encodedSource( srcXyzRemote, contextRel ), srcXyzRemote );
+  QCOMPARE( layer->encodedSource( srcXyzRemote, contextRel ), srcXyzRemote );
 
   // encode source: keeping absolute paths
-  QCOMPARE( layer.encodedSource( srcXyzLocal, contextAbs ), srcXyzLocal );
-  QCOMPARE( layer.encodedSource( srcXyzRemote, contextAbs ), srcXyzRemote );
-  QCOMPARE( layer.encodedSource( srcMbtiles, contextAbs ), srcMbtiles );
+  QCOMPARE( layer->encodedSource( srcXyzLocal, contextAbs ), srcXyzLocal );
+  QCOMPARE( layer->encodedSource( srcXyzRemote, contextAbs ), srcXyzRemote );
 
   // decode source: converting relative paths to absolute
-  QCOMPARE( layer.decodedSource( srcXyzLocalRel, QString(), contextRel ), srcXyzLocal );
-  QCOMPARE( layer.decodedSource( srcMbtilesRel, QString(), contextRel ), srcMbtiles );
-  QCOMPARE( layer.decodedSource( srcXyzRemote, QString(), contextRel ), srcXyzRemote );
+  QCOMPARE( layer->decodedSource( srcXyzLocalRel, QStringLiteral( "xyzvectortiles" ), contextRel ), srcXyzLocal );
+  QCOMPARE( layer->decodedSource( srcXyzRemote, QStringLiteral( "xyzvectortilesx" ), contextRel ), srcXyzRemote );
 
   // decode source: keeping absolute paths
-  QCOMPARE( layer.decodedSource( srcXyzLocal, QString(), contextAbs ), srcXyzLocal );
-  QCOMPARE( layer.decodedSource( srcXyzRemote, QString(), contextAbs ), srcXyzRemote );
-  QCOMPARE( layer.decodedSource( srcMbtiles, QString(), contextAbs ), srcMbtiles );
+  QCOMPARE( layer->decodedSource( srcXyzLocal, QStringLiteral( "xyzvectortiles" ), contextAbs ), srcXyzLocal );
+  QCOMPARE( layer->decodedSource( srcXyzRemote, QStringLiteral( "xyzvectortiles" ), contextAbs ), srcXyzRemote );
 }
 
-void TestQgsVectorTileLayer::test_absoluteRelativeUri()
+void TestQgsVectorTileLayer::test_absoluteRelativeUriXyz()
 {
   QgsReadWriteContext context;
   context.setPathResolver( QgsPathResolver( QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/project.qgs" ) ) );
 
-  QgsProviderMetadata *vectorTileMetadata = QgsProviderRegistry::instance()->providerMetadata( "vectortile" );
+  QgsProviderMetadata *vectorTileMetadata = QgsProviderRegistry::instance()->providerMetadata( "xyzvectortiles" );
   QVERIFY( vectorTileMetadata );
 
   QgsDataSourceUri dsAbs;
@@ -264,6 +316,57 @@ void TestQgsVectorTileLayer::test_absoluteRelativeUri()
   QCOMPARE( vectorTileMetadata->absoluteToRelativeUri( absoluteUri, context ), relativeUri );
   QCOMPARE( vectorTileMetadata->relativeToAbsoluteUri( relativeUri, context ), absoluteUri );
 }
+
+void TestQgsVectorTileLayer::test_relativePathsVtpk()
+{
+  QgsReadWriteContext contextRel;
+  contextRel.setPathResolver( QgsPathResolver( QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/project.qgs" ) ) );
+  const QgsReadWriteContext contextAbs;
+
+  const QString srcVtpk = QStringLiteral( "type=vtpk&url=%1/testvtpk.vtpk" ).arg( TEST_DATA_DIR );
+
+  std::unique_ptr< QgsVectorTileLayer > layer = std::make_unique< QgsVectorTileLayer >( srcVtpk );
+  QVERIFY( layer->isValid() );
+  QCOMPARE( layer->providerType(), QStringLiteral( "vtpkvectortiles" ) );
+
+  // encode source: converting absolute paths to relative
+  const QString srcVtpkRel = layer->encodedSource( srcVtpk, contextRel );
+  QCOMPARE( srcVtpkRel, QStringLiteral( "type=vtpk&url=./testvtpk.vtpk" ) );
+
+  // encode source: keeping absolute paths
+  QCOMPARE( layer->encodedSource( srcVtpk, contextAbs ), srcVtpk );
+
+  // decode source: converting relative paths to absolute
+  QCOMPARE( layer->decodedSource( srcVtpkRel, QStringLiteral( "vtpkvectortiles" ), contextRel ), srcVtpk );
+
+  // decode source: keeping absolute paths
+  QCOMPARE( layer->decodedSource( srcVtpk, QStringLiteral( "vtpkvectortiles" ), contextAbs ), srcVtpk );
+}
+
+void TestQgsVectorTileLayer::test_absoluteRelativeUriVtpk()
+{
+  QgsReadWriteContext context;
+  context.setPathResolver( QgsPathResolver( QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/project.qgs" ) ) );
+
+  QgsProviderMetadata *vectorTileMetadata = QgsProviderRegistry::instance()->providerMetadata( "vtpkvectortiles" );
+  QVERIFY( vectorTileMetadata );
+
+  QgsDataSourceUri dsAbs;
+  dsAbs.setParam( "type", "vtpk" );
+  dsAbs.setParam( "url", QString( "%1/testvtpk.vtpk" ).arg( TEST_DATA_DIR ) );
+  dsAbs.setParam( "zmax", "1" );
+
+  QgsDataSourceUri dsRel;
+  dsRel.setParam( "type", "vtpk" );
+  dsRel.setParam( "url", "./testvtpk.vtpk" );
+  dsRel.setParam( "zmax", "1" );
+
+  QString absoluteUri = dsAbs.encodedUri();
+  QString relativeUri = dsRel.encodedUri();
+  QCOMPARE( vectorTileMetadata->absoluteToRelativeUri( absoluteUri, context ), relativeUri );
+  QCOMPARE( vectorTileMetadata->relativeToAbsoluteUri( relativeUri, context ), absoluteUri );
+}
+
 
 void TestQgsVectorTileLayer::test_polygonWithLineStyle()
 {
