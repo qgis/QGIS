@@ -29,8 +29,8 @@
 
 ///@cond PRIVATE
 
-QString QgsXyzVectorTileDataProvider::DATA_PROVIDER_KEY = QStringLiteral( "xyzvectortiles" );
-QString QgsXyzVectorTileDataProvider::DATA_PROVIDER_DESCRIPTION = QObject::tr( "XYZ Vector Tiles data provider" );
+QString QgsXyzVectorTileDataProvider::XYZ_DATA_PROVIDER_KEY = QStringLiteral( "xyzvectortiles" );
+QString QgsXyzVectorTileDataProvider::XYZ_DATA_PROVIDER_DESCRIPTION = QObject::tr( "XYZ Vector Tiles data provider" );
 
 QgsXyzVectorTileDataProvider::QgsXyzVectorTileDataProvider( const QString &uri, const ProviderOptions &providerOptions, ReadFlags flags )
   : QgsVectorTileDataProvider( uri, providerOptions, flags )
@@ -46,14 +46,14 @@ QString QgsXyzVectorTileDataProvider::name() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  return DATA_PROVIDER_KEY;
+  return XYZ_DATA_PROVIDER_KEY;
 }
 
 QString QgsXyzVectorTileDataProvider::description() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  return DATA_PROVIDER_DESCRIPTION;
+  return XYZ_DATA_PROVIDER_DESCRIPTION;
 }
 
 QgsVectorTileDataProvider *QgsXyzVectorTileDataProvider::clone() const
@@ -189,7 +189,7 @@ QByteArray QgsXyzVectorTileDataProvider::loadFromNetwork( const QgsTileXYZ &id, 
 
 
 QgsXyzVectorTileDataProviderMetadata::QgsXyzVectorTileDataProviderMetadata()
-  : QgsProviderMetadata( QgsXyzVectorTileDataProvider::DATA_PROVIDER_KEY, QgsXyzVectorTileDataProvider::DATA_PROVIDER_DESCRIPTION )
+  : QgsProviderMetadata( QgsXyzVectorTileDataProvider::XYZ_DATA_PROVIDER_KEY, QgsXyzVectorTileDataProvider::XYZ_DATA_PROVIDER_DESCRIPTION )
 {
 }
 

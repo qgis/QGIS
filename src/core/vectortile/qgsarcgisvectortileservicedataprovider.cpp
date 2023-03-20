@@ -20,8 +20,8 @@
 
 ///@cond PRIVATE
 
-QString QgsArcGisVectorTileServiceDataProvider::DATA_PROVIDER_KEY = QStringLiteral( "arcgisvectortileservice" );
-QString QgsArcGisVectorTileServiceDataProvider::DATA_PROVIDER_DESCRIPTION = QObject::tr( "ArcGIS Vector Tile Service data provider" );
+QString QgsArcGisVectorTileServiceDataProvider::ARCGIS_VT_SERVICE_DATA_PROVIDER_KEY = QStringLiteral( "arcgisvectortileservice" );
+QString QgsArcGisVectorTileServiceDataProvider::ARCGIS_VT_SERVICE_DATA_PROVIDER_DESCRIPTION = QObject::tr( "ArcGIS Vector Tile Service data provider" );
 
 
 QgsArcGisVectorTileServiceDataProvider::QgsArcGisVectorTileServiceDataProvider( const QString &uri, const QString &sourcePath, const ProviderOptions &providerOptions, ReadFlags flags )
@@ -35,14 +35,14 @@ QString QgsArcGisVectorTileServiceDataProvider::name() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  return DATA_PROVIDER_KEY;
+  return ARCGIS_VT_SERVICE_DATA_PROVIDER_KEY;
 }
 
 QString QgsArcGisVectorTileServiceDataProvider::description() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  return DATA_PROVIDER_DESCRIPTION;
+  return ARCGIS_VT_SERVICE_DATA_PROVIDER_DESCRIPTION;
 }
 
 QgsVectorTileDataProvider *QgsArcGisVectorTileServiceDataProvider::clone() const
@@ -74,7 +74,8 @@ bool QgsArcGisVectorTileServiceDataProvider::isValid() const
 //
 
 QgsArcGisVectorTileServiceDataProviderMetadata::QgsArcGisVectorTileServiceDataProviderMetadata()
-  : QgsProviderMetadata( QgsArcGisVectorTileServiceDataProvider::DATA_PROVIDER_KEY, QgsArcGisVectorTileServiceDataProvider::DATA_PROVIDER_DESCRIPTION )
+  : QgsProviderMetadata( QgsArcGisVectorTileServiceDataProvider::ARCGIS_VT_SERVICE_DATA_PROVIDER_KEY,
+                         QgsArcGisVectorTileServiceDataProvider::ARCGIS_VT_SERVICE_DATA_PROVIDER_DESCRIPTION )
 {
 }
 
