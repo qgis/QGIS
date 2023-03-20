@@ -156,12 +156,14 @@ class GUI_EXPORT QgsFeatureListComboBox : public QComboBox
 
     /**
      * Returns the feature request fetch limit
+     * \since QGIS 3.32
      */
     int fetchLimit() const;
 
     /**
      * Defines the feature request fetch limit
      * If set to 0, no limit is applied when fetching
+     * \since QGIS 3.32
      */
     void setFetchLimit( int fetchLimit );
 
