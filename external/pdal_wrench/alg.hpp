@@ -45,6 +45,8 @@ struct Alg
     bool needsSingleCrs = true;  // most algs assume that all input files in VPC are in the same CRS,
                                  // and only few exceptions (e.g. info) tolerate mixture of multiple CRS
 
+    bool verbose = false;        // write extra debugging output from the algorithm
+
     pdal::ProgramArgs programArgs;
 
     Alg() = default;
@@ -99,6 +101,7 @@ struct Translate : public Alg
     std::string outputFile;
     std::string assignCrs;
     std::string transformCrs;
+    std::string transformCoordOp;
     std::string outputFormat;  // las / laz / copc
 
     // args - initialized in addArgs()
@@ -147,9 +150,13 @@ struct Boundary : public Alg
 {
     // parameters from the user
     std::string outputFile;
+    double resolution = 0;    // cell size of the hexbin filter (if zero, it will be estimated by PDAL)
+    int pointsThreshold = 0;  // min. number of points in order to have a cell considered occupied
 
     // args - initialized in addArgs()
     pdal::Arg* argOutput = nullptr;
+    pdal::Arg* argResolution = nullptr;
+    pdal::Arg* argPointsThreshold = nullptr;
 
     // impl
     virtual void addArgs() override;

@@ -198,10 +198,10 @@ void Density::preparePipelines(std::vector<std::unique_ptr<PipelineManager>>& pi
 
         if (unalignedFiles)
         {
-            std::cout << std::endl;
-            std::cout << "Warning: input files not perfectly aligned with tile grid - processing may take longer." << std::endl;
-            std::cout << "Consider using --tile-size, --tile-origin-x, --tile-origin-y arguments" << std::endl;
-            std::cout << std::endl;
+            std::cerr << std::endl;
+            std::cerr << "Warning: input files not perfectly aligned with tile grid - processing may take longer." << std::endl;
+            std::cerr << "Consider using --tile-size, --tile-origin-x, --tile-origin-y arguments" << std::endl;
+            std::cerr << std::endl;
         }
     }
     else if (ends_with(inputFile, ".copc.laz"))

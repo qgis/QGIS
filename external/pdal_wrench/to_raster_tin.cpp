@@ -157,11 +157,14 @@ void ToRasterTin::preparePipelines(std::vector<std::unique_ptr<PipelineManager>>
         TileAlignment gridAlignment = tileAlignment;
         gridAlignment.tileSize = resolution;
         Tiling gridTiling = gridAlignment.coverBounds(bounds.to2d());
-        std::cout << "grid " << gridTiling.tileCountX << "x" << gridTiling.tileCountY << std::endl;
         BOX2D gridBounds = gridTiling.fullBox();
-
         Tiling t = tileAlignment.coverBounds(gridBounds);
-        std::cout << "tiles " << t.tileCountX << " " << t.tileCountY << std::endl;
+
+        if (verbose)
+        {
+          std::cout << "grid " << gridTiling.tileCountX << "x" << gridTiling.tileCountY << std::endl;
+          std::cout << "tiles " << t.tileCountX << " " << t.tileCountY << std::endl;
+        }
 
         totalPoints = 0;  // we need to recalculate as we may use some points multiple times
         for (int iy = 0; iy < t.tileCountY; ++iy)

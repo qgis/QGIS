@@ -137,7 +137,7 @@ void Thin::preparePipelines(std::vector<std::unique_ptr<PipelineManager>>& pipel
     {
         if (!ends_with(outputFile, ".vpc"))
         {
-            std::cout << "output should be VPC too" << std::endl;
+            std::cerr << "If input file is a VPC, output should be VPC too." << std::endl;
             return;
         }
 

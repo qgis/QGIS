@@ -36,7 +36,10 @@ void Translate::addArgs()
     argOutput = &programArgs.add("output,o", "Output point cloud file", outputFile);
     argOutputFormat = &programArgs.add("output-format", "Output format (las/laz/copc)", outputFormat);
     programArgs.add("assign-crs", "Assigns CRS to data (no reprojection)", assignCrs);
-    programArgs.add("transform-crs", "Transforms (reprojects) data to anoter CRS", transformCrs);
+    programArgs.add("transform-crs", "Transforms (reprojects) data to another CRS", transformCrs);
+    programArgs.add("transform-coord-op", "Details on how to do the transform of coordinates when --transform-crs is used. "
+                    "It can be a PROJ pipeline or a WKT2 CoordinateOperation. "
+                    "When not specified, PROJ will pick the default transform.", transformCoordOp);
 }
 
 bool Translate::checkArgs()
@@ -59,11 +62,17 @@ bool Translate::checkArgs()
     else
         outputFormat = "las";  // uncompressed by default
 
+    if (!transformCoordOp.empty() && transformCrs.empty())
+    {
+        std::cerr << "Need to specify also --transform-crs when --transform-coord-op is used." << std::endl;
+        return false;
+    }
+
     return true;
 }
 
 
-static std::unique_ptr<PipelineManager> pipeline(ParallelJobInfo *tile, std::string assignCrs, std::string transformCrs)
+static std::unique_ptr<PipelineManager> pipeline(ParallelJobInfo *tile, std::string assignCrs, std::string transformCrs, std::string transformCoordOp)
 {
     std::unique_ptr<PipelineManager> manager( new PipelineManager );
 
@@ -79,7 +88,15 @@ static std::unique_ptr<PipelineManager> pipeline(ParallelJobInfo *tile, std::str
     {
         Options transform_opts;
         transform_opts.add(pdal::Option("out_srs", transformCrs));
-        reproject = &manager->makeFilter( "filters.reprojection", r, transform_opts);
+        if (!transformCoordOp.empty())
+        {
+            transform_opts.add(pdal::Option("coord_op", transformCoordOp));
+            reproject = &manager->makeFilter( "filters.projpipeline", r, transform_opts);
+        }
+        else
+        {
+            reproject = &manager->makeFilter( "filters.reprojection", r, transform_opts);
+        }
     }
 
     pdal::Options writer_opts;
@@ -120,7 +137,7 @@ void Translate::preparePipelines(std::vector<std::unique_ptr<PipelineManager>>& 
     {
         if (!ends_with(outputFile, ".vpc"))
         {
-            std::cout << "output should be VPC too" << std::endl;
+            std::cerr << "If input file is a VPC, output should be VPC too." << std::endl;
             return;
         }
 
@@ -146,7 +163,7 @@ void Translate::preparePipelines(std::vector<std::unique_ptr<PipelineManager>>& 
 
             tileOutputFiles.push_back(tile.outputFilename);
 
-            pipelines.push_back(pipeline(&tile, assignCrs, transformCrs));
+            pipelines.push_back(pipeline(&tile, assignCrs, transformCrs, transformCoordOp));
         }
     }
     else
@@ -154,7 +171,7 @@ void Translate::preparePipelines(std::vector<std::unique_ptr<PipelineManager>>& 
         ParallelJobInfo tile(ParallelJobInfo::Single, BOX2D(), filterExpression);
         tile.inputFilenames.push_back(inputFile);
         tile.outputFilename = outputFile;
-        pipelines.push_back(pipeline(&tile, assignCrs, transformCrs));
+        pipelines.push_back(pipeline(&tile, assignCrs, transformCrs, transformCoordOp));
     }
 }
 
