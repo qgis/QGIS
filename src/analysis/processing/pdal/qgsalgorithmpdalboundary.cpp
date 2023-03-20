@@ -61,6 +61,8 @@ void QgsPdalBoundaryAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterPointCloudLayer( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ) ) );
   addParameter( new QgsProcessingParameterVectorDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Boundary" ), QgsProcessing::TypeVectorPolygon ) );
+  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "RESOLUTION" ), QObject::tr( "Resolution of cells used to calculate boundary" ), QgsProcessingParameterNumber::Integer, QVariant(), true, 1 ) );
+  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "THRESHOLD" ), QObject::tr( "Minimal number of points in a cell to consider cell occupied" ), QgsProcessingParameterNumber::Integer, QVariant(), true, 1 ) );
 }
 
 QStringList QgsPdalBoundaryAlgorithm::createArgumentLists( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
@@ -74,11 +76,28 @@ QStringList QgsPdalBoundaryAlgorithm::createArgumentLists( const QVariantMap &pa
   const QString outputFile = parameterAsOutputLayer( parameters, QStringLiteral( "OUTPUT" ), context );
   setOutputValue( QStringLiteral( "OUTPUT" ), outputFile );
 
-
   QStringList args = { QStringLiteral( "boundary" ),
                        QStringLiteral( "--input=%1" ).arg( layer->source() ),
                        QStringLiteral( "--output=%1" ).arg( outputFile )
                      };
+
+  bool hasResolution = parameters.value( QStringLiteral( "RESOLUTION" ) ).isValid();
+  bool hasThreshold = parameters.value( QStringLiteral( "THRESHOLD" ) ).isValid();
+
+  if ( hasThreshold && !hasResolution )
+  {
+    throw QgsProcessingException( QObject::tr( "Resolution parameter must be set when points threshold is set." ) );
+  }
+
+  if ( hasResolution )
+  {
+    args << QStringLiteral( "--resolution=%1" ).arg( parameterAsInt( parameters, QStringLiteral( "RESOLUTION" ), context ) );
+  }
+
+  if ( hasThreshold )
+  {
+    args << QStringLiteral( "--threshold=%1" ).arg( parameterAsInt( parameters, QStringLiteral( "THRESHOLD" ), context ) );
+  }
 
   addThreadsParameter( args );
   return args;
