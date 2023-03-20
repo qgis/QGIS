@@ -26,6 +26,12 @@ QgsVectorTileDataProvider::QgsVectorTileDataProvider(
   : QgsDataProvider( uri, options, flags )
 {}
 
+QgsVectorTileDataProvider::QgsVectorTileDataProvider( const QgsVectorTileDataProvider &other )
+  : QgsDataProvider( other.dataSourceUri( false ), ProviderOptions(), other.mReadFlags )
+{
+  setTransformContext( other.transformContext() );
+}
+
 QgsVectorTileDataProvider::ProviderCapabilities QgsVectorTileDataProvider::providerCapabilities() const
 {
   return QgsVectorTileDataProvider::ProviderCapabilities();

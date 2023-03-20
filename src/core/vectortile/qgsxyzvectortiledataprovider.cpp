@@ -63,6 +63,16 @@ QgsXyzVectorTileDataProvider::QgsXyzVectorTileDataProvider( const QString &uri, 
   mIsValid = true;
 }
 
+QgsXyzVectorTileDataProvider::QgsXyzVectorTileDataProvider( const QgsXyzVectorTileDataProvider &other )
+  : QgsVectorTileDataProvider( other )
+{
+  mAuthCfg = other.mAuthCfg;
+  mHeaders = other.mHeaders;
+  mIsValid = other.mIsValid;
+  mExtent = other.mExtent;
+  mMatrixSet = other.mMatrixSet;
+}
+
 QString QgsXyzVectorTileDataProvider::name() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
@@ -81,9 +91,7 @@ QgsVectorTileDataProvider *QgsXyzVectorTileDataProvider::clone() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  ProviderOptions options;
-  options.transformContext = transformContext();
-  return new QgsXyzVectorTileDataProvider( dataSourceUri(), options, mReadFlags );
+  return new QgsXyzVectorTileDataProvider( *this );
 }
 
 QString QgsXyzVectorTileDataProvider::sourcePath() const

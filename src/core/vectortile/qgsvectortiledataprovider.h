@@ -61,6 +61,8 @@ class CORE_EXPORT QgsVectorTileDataProvider : public QgsDataProvider
                                const QgsDataProvider::ProviderOptions &providerOptions,
                                QgsDataProvider::ReadFlags flags );
 
+    QgsVectorTileDataProvider( const QgsVectorTileDataProvider &other );
+
     /**
      * Returns flags containing the supported capabilities of the data provider.
      * \since QGIS 3.32
