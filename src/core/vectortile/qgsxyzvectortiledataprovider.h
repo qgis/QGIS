@@ -70,6 +70,7 @@ class QgsXyzVectorTileDataProviderMetadata : public QgsProviderMetadata
     Q_OBJECT
   public:
     QgsXyzVectorTileDataProviderMetadata();
+    QgsXyzVectorTileDataProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() ) override;
     QIcon icon() const override;
     ProviderCapabilities providerCapabilities() const override;
     QVariantMap decodeUri( const QString &uri ) const override;

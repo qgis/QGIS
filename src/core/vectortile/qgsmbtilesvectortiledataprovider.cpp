@@ -153,6 +153,11 @@ QgsMbTilesVectorTileDataProviderMetadata::QgsMbTilesVectorTileDataProviderMetada
 {
 }
 
+QgsMbTilesVectorTileDataProvider *QgsMbTilesVectorTileDataProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags )
+{
+  return new QgsMbTilesVectorTileDataProvider( uri, options, flags );
+}
+
 QIcon QgsMbTilesVectorTileDataProviderMetadata::icon() const
 {
   return QgsApplication::getThemeIcon( QStringLiteral( "mIconVectorTileLayer.svg" ) );

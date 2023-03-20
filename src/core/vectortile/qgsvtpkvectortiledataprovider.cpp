@@ -137,6 +137,11 @@ QgsVtpkVectorTileDataProviderMetadata::QgsVtpkVectorTileDataProviderMetadata()
 {
 }
 
+QgsVtpkVectorTileDataProvider *QgsVtpkVectorTileDataProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags )
+{
+  return new QgsVtpkVectorTileDataProvider( uri, options, flags );
+}
+
 QIcon QgsVtpkVectorTileDataProviderMetadata::icon() const
 {
   return QgsApplication::getThemeIcon( QStringLiteral( "mIconVectorTileLayer.svg" ) );
