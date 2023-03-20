@@ -23,7 +23,7 @@ from qgis.PyQt.QtCore import QCoreApplication, QUrl
 from qgis.PyQt.QtWidgets import QWidget, QFileDialog, QMessageBox, QTableWidgetItem, QHBoxLayout
 from qgis.PyQt.QtGui import QIcon, QDesktopServices
 
-from qgis.core import QgsSettings, QgsApplication
+from qgis.core import QgsSettings, QgsApplication, QgsSettingsTree
 from qgis.gui import QgsOptionsPageWidget, QgsOptionsWidgetFactory
 
 from .console_compile_apis import PrepareAPIDialog
@@ -215,11 +215,13 @@ class ConsoleOptionsWidget(QWidget, Ui_SettingsDialogPythonConsole):
         settings.setValue("pythonConsole/autoInsertImport", self.autoInsertImport.isChecked())
 
         settings.setValue("pythonConsole/formatOnSave", self.formatOnSave.isChecked())
-        settings.setValue("gui/code-editor/python/sortImports", self.sortImports.isChecked())
-        settings.setValue("gui/code-editor/python/formatter", self.formatter.currentText())
-        settings.setValue("gui/code-editor/python/autopep8Level", self.autopep8Level.value())
-        settings.setValue("gui/code-editor/python/blackNormalizeQuotes", self.blackNormalizeQuotes.isChecked())
-        settings.setValue("gui/code-editor/python/maxLineLength", self.maxLineLength.value())
+
+        pythonSettingsTreeNode = QgsSettingsTree.node("gui").childNode("code-editor").childNode("python")
+        pythonSettingsTreeNode.childSetting("sort-imports").setValue(self.sortImports.isChecked())
+        pythonSettingsTreeNode.childSetting("formatter").setValue(self.formatter.currentText())
+        pythonSettingsTreeNode.childSetting("autopep8-level").setValue(self.autopep8Level.value())
+        pythonSettingsTreeNode.childSetting("black-normalize-quotes").setValue(self.blackNormalizeQuotes.isChecked())
+        pythonSettingsTreeNode.childSetting("max-line-length").setValue(self.maxLineLength.value())
 
     def restoreSettings(self):
         settings = QgsSettings()
@@ -246,12 +248,14 @@ class ConsoleOptionsWidget(QWidget, Ui_SettingsDialogPythonConsole):
         self.autoSurround.setChecked(settings.value("pythonConsole/autoSurround", True, type=bool))
         self.autoInsertImport.setChecked(settings.value("pythonConsole/autoInsertImport", False, type=bool))
 
+        pythonSettingsTreeNode = QgsSettingsTree.node("gui").childNode("code-editor").childNode("python")
+
         self.formatOnSave.setChecked(settings.value("pythonConsole/formatOnSave", False, type=bool))
-        self.sortImports.setChecked(settings.value("gui/code-editor/python/sortImports", True, type=bool))
-        self.formatter.setCurrentText(settings.value("gui/code-editor/python/formatter", "autopep8", type=str))
-        self.autopep8Level.setValue(settings.value("gui/code-editor/python/autopep8Level", 1, type=int))
-        self.blackNormalizeQuotes.setChecked(settings.value("gui/code-editor/python/blackNormalizeQuotes", True, type=bool))
-        self.maxLineLength.setValue(settings.value("gui/code-editor/python/maxLineLength", 80, type=int))
+        self.sortImports.setChecked(pythonSettingsTreeNode.childSetting("sort-imports").value())
+        self.formatter.setCurrentText(pythonSettingsTreeNode.childSetting("formatter").value())
+        self.autopep8Level.setValue(pythonSettingsTreeNode.childSetting("autopep8-level").value())
+        self.blackNormalizeQuotes.setChecked(pythonSettingsTreeNode.childSetting("black-normalize-quotes").value())
+        self.maxLineLength.setValue(pythonSettingsTreeNode.childSetting("max-line-length").value())
 
         if settings.value("pythonConsole/autoCompleteSource") == 'fromDoc':
             self.autoCompFromDoc.setChecked(True)
