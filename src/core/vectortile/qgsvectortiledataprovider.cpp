@@ -70,6 +70,5 @@ QNetworkRequest QgsVectorTileDataProvider::tileRequest( const QgsTileMatrix &, c
   return QNetworkRequest();
 }
 
-///@endcond
 
 
