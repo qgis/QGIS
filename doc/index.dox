@@ -19,6 +19,8 @@ fixes, bug reports, contributed documentation, advocacy and supporting other
 users on our mailing lists and forums. Financial contributions are also
 welcome.
 
+QGIS source code is available at https://github.com/qgis/QGIS.
+
 You can also <a href="https://qgis.org/downloads/qgis-api-doc.7z">download</a>
 this documentation or a <a href="qgis.qch">Qt help file</a>
 for offline use.
@@ -31,7 +33,7 @@ the documentation</a> available.
 See \ref api_break for information about incompatible changes to API between releases.
 
 Earlier versions of the documentation are also available on the QGIS website:
-<a href="https://qgis.org/api/3.30">3.30</a>
+<a href="https://qgis.org/api/3.30">3.30</a>,
 <a href="https://qgis.org/api/3.28">3.28 (LTR)</a>,
 <a href="https://qgis.org/api/3.26">3.26</a>,
 <a href="https://qgis.org/api/3.24">3.24</a>,
@@ -69,15 +71,14 @@ See \ref qgsquick for information about QGIS Quick (QML) components library
 For support we encourage you to join our <a
 href="https://qgis.org/en/site/forusers/support.html#mailing-lists">mailing lists</a> for
 users and developers.
+Some QGIS users and developers can also often be found on channels such as Matrix, Telegram, ...
 
 \section index_bugs Bug Reporting
 If you think you have found a bug, please report it using our <a
 href="https://github.com/qgis/QGIS/issues">bug tracker</a>. When reporting bugs,
 please be available to follow up on your initial report.
 
-\section index_ircchannel IRC channel
-Some QGIS users and developers can also often be found in the 
-<a href="irc://irc.freenode.net/#qgis">\#qgis</a> IRC channel on irc.freenode.net.<p>
+<p>
 
 \htmlonly
 <p>
