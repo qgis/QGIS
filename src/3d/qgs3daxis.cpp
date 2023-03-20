@@ -745,7 +745,7 @@ void Qgs3DAxis::onCameraViewChange( float pitch, float yaw )
       QgsDebugMsgLevel( "Unable to obtain elevation from terrain", 2 );
 
   }
-  pos.set( pos.x(), elevation, pos.z() );
+  pos.set( pos.x(), elevation + mMapSettings->terrainElevationOffset(), pos.z() );
 
   mCameraController->setLookingAtPoint( pos, ( mCameraController->camera()->position() - pos.toVector3D() ).length(),
                                         pitch, yaw );
