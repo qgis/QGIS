@@ -24,7 +24,6 @@
   </property>
   <property name="font">
    <font>
-    <weight>50</weight>
     <bold>false</bold>
    </font>
   </property>
@@ -54,8 +53,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>789</width>
-        <height>860</height>
+        <width>775</width>
+        <height>879</height>
        </rect>
       </property>
       <layout class="QGridLayout" name="gridLayout">
@@ -474,7 +473,7 @@
            <number>2</number>
           </property>
           <item row="2" column="1">
-           <widget class="QSpinBox" name="maxLineLength">
+           <widget class="QgsSpinBox" name="maxLineLength">
             <property name="minimum">
              <number>60</number>
             </property>
@@ -539,7 +538,7 @@
            </widget>
           </item>
           <item row="4" column="1">
-           <widget class="QSpinBox" name="autopep8Level">
+           <widget class="QgsSpinBox" name="autopep8Level">
             <property name="maximum">
              <number>3</number>
             </property>
@@ -576,6 +575,11 @@
    <extends>QGroupBox</extends>
    <header>qgis.gui</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsSpinBox</class>
+   <extends>QSpinBox</extends>
+   <header>qgis.gui</header>
   </customwidget>
  </customwidgets>
  <tabstops>
