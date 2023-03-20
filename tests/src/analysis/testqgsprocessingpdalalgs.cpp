@@ -279,12 +279,27 @@ void TestQgsProcessingPdalAlgs::boundary()
             << QStringLiteral( "--output=%1" ).arg( outputGpkg )
           );
 
+  // threshold requires resolution parameter
+  parameters.insert( QStringLiteral( "THRESHOLD" ), 10 );
+  QVERIFY_EXCEPTION_THROWN( alg->createArgumentLists( parameters, *context, &feedback ), QgsProcessingException );
+
+  parameters.insert( QStringLiteral( "RESOLUTION" ), 3000 );
+  args = alg->createArgumentLists( parameters, *context, &feedback );
+  QCOMPARE( args, QStringList() << QStringLiteral( "boundary" )
+            << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath )
+            << QStringLiteral( "--output=%1" ).arg( outputGpkg )
+            << QStringLiteral( "--resolution=%1" ).arg( 3000 )
+            << QStringLiteral( "--threshold=%1" ).arg( 10 )
+          );
+
   // set max threads to 2, a --threads argument should be added
   QgsSettings().setValue( QStringLiteral( "/Processing/Configuration/MAX_THREADS" ), 2 );
   args = alg->createArgumentLists( parameters, *context, &feedback );
   QCOMPARE( args, QStringList() << QStringLiteral( "boundary" )
             << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath )
             << QStringLiteral( "--output=%1" ).arg( outputGpkg )
+            << QStringLiteral( "--resolution=%1" ).arg( 3000 )
+            << QStringLiteral( "--threshold=%1" ).arg( 10 )
             << QStringLiteral( "--threads=2" )
           );
 }
