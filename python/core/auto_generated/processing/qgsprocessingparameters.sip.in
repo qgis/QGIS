@@ -3342,7 +3342,7 @@ Returns the default file extension for destination file paths
 associated with this parameter.
 %End
 
-    virtual QString generateTemporaryDestination() const;
+    virtual QString generateTemporaryDestination( const QgsProcessingContext *context = 0 ) const;
 %Docstring
 Generates a temporary destination value for this parameter. The returned
 value will be a file path or QGIS data provider URI suitable for
@@ -3501,7 +3501,7 @@ Sets whether the sink supports appending features to an existing table.
 
     virtual bool fromVariantMap( const QVariantMap &map );
 
-    virtual QString generateTemporaryDestination() const;
+    virtual QString generateTemporaryDestination( const QgsProcessingContext *context = 0 ) const;
 
 
     static QgsProcessingParameterFeatureSink *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) /Factory/;

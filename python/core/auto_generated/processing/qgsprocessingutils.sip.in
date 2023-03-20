@@ -324,14 +324,14 @@ The ``id`` parameter represents the unique ID for this output, which is embedded
 parameter value.
 %End
 
-    static QString tempFolder();
+    static QString tempFolder( const QgsProcessingContext *context = 0 );
 %Docstring
 Returns a session specific processing temporary folder for use in processing algorithms.
 
 .. seealso:: :py:func:`generateTempFilename`
 %End
 
-    static QString generateTempFilename( const QString &basename );
+    static QString generateTempFilename( const QString &basename, const QgsProcessingContext *context = 0 );
 %Docstring
 Returns a temporary filename for a given file, putting it into
 a temporary folder (creating that folder in the process),

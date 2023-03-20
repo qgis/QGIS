@@ -43,7 +43,7 @@ def processInputs(alg, parameters, context, feedback):
     for idx, layer in enumerate(rasters):
         layerName = 'map_{}'.format(idx)
         # Add a raster layer
-        alg.loadRasterLayer(layerName, layer, False, None)
+        alg.loadRasterLayer(layerName, layer, context, False, None)
 
     # Optional raster layer to copy from
     raster = alg.parameterAsString(parameters, 'raster', context)
@@ -58,7 +58,7 @@ def processCommand(alg, parameters, context, feedback):
     txtRules = alg.parameterAsString(parameters, 'txtrules', context)
     if txtRules:
         # Creates a temporary txt file
-        tempRulesName = getTempFilename()
+        tempRulesName = getTempFilename(context=context)
 
         # Inject rules into temporary txt file
         with open(tempRulesName, "w") as tempRules:

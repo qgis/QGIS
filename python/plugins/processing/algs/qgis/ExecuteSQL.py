@@ -135,7 +135,7 @@ class ExecuteSQL(QgisAlgorithm):
             # So, we write them to disk is this is the case.
             if context.project() and not context.project().mapLayer(layer.id()):
                 basename = "memorylayer." + QgsVectorFileWriter.supportedFormatExtensions()[0]
-                tmp_path = QgsProcessingUtils.generateTempFilename(basename)
+                tmp_path = QgsProcessingUtils.generateTempFilename(basename, context)
                 QgsVectorFileWriter.writeAsVectorFormat(
                     layer, tmp_path, layer.dataProvider().encoding())
                 df.addSource('input{}'.format(layerIdx + 1), tmp_path, "ogr")

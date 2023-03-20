@@ -343,7 +343,7 @@ class CORE_EXPORT QgsProcessingUtils
      * Returns a session specific processing temporary folder for use in processing algorithms.
      * \see generateTempFilename()
      */
-    static QString tempFolder();
+    static QString tempFolder( const QgsProcessingContext *context = nullptr );
 
     /**
      * Returns a temporary filename for a given file, putting it into
@@ -351,7 +351,7 @@ class CORE_EXPORT QgsProcessingUtils
      * but not changing the \a basename.
      * \see tempFolder()
      */
-    static QString generateTempFilename( const QString &basename );
+    static QString generateTempFilename( const QString &basename, const QgsProcessingContext *context = nullptr );
 
     /**
      * Returns a HTML formatted version of the help text encoded in a variant \a map for

@@ -38,7 +38,7 @@ def orderedInput(alg, parameters, context, src, tgt, numSeq=None):
     :param tgt: Name of a new input parameter.
     :param numSeq: List of a sequence for naming layers.
     """
-    rootFilename = 'rast_{}.'.format(os.path.basename(getTempFilename()))
+    rootFilename = 'rast_{}.'.format(os.path.basename(getTempFilename(context=context)))
     # parameters[tgt] = rootFilename
     param = QgsProcessingParameterString(tgt, 'virtual input',
                                          rootFilename, False, False)
@@ -51,7 +51,7 @@ def orderedInput(alg, parameters, context, src, tgt, numSeq=None):
 
     for idx, raster in enumerate(rasters):
         rasterName = '{}{}'.format(rootFilename, numSeq[idx])
-        alg.loadRasterLayer(rasterName, raster, False, None, rasterName)
+        alg.loadRasterLayer(rasterName, raster, context, False, None, rasterName)
 
     # Don't forget to remove the old input parameter
     alg.removeParameter(src)
@@ -71,7 +71,7 @@ def regroupRasters(alg, parameters, context, src, group, subgroup=None, extFile=
     :param extFile: dict : parameterName:directory name
     """
     # Create a group parameter
-    groupName = 'group_{}'.format(os.path.basename(getTempFilename()))
+    groupName = 'group_{}'.format(os.path.basename(getTempFilename(context=context)))
     param = QgsProcessingParameterString(group, 'virtual group',
                                          groupName, False, False)
     alg.addParameter(param)
@@ -79,7 +79,7 @@ def regroupRasters(alg, parameters, context, src, group, subgroup=None, extFile=
     # Create a subgroup
     subgroupName = None
     if subgroup:
-        subgroupName = 'subgroup_{}'.format(os.path.basename(getTempFilename()))
+        subgroupName = 'subgroup_{}'.format(os.path.basename(getTempFilename(context=context)))
         param = QgsProcessingParameterString(subgroup, 'virtual subgroup',
                                              subgroupName, False, False)
         alg.addParameter(param)
