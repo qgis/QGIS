@@ -611,6 +611,32 @@ for all temporary files created during algorithm execution.
 .. versionadded:: 3.32
 %End
 
+    int numberOfThreads() const;
+%Docstring
+Returns the (optional) number of threads to use when running algorithms.
+
+If set, this overrides the standard global Processing number of threads setting.
+Note that if algorithm implementation does not support multhreaded execution, this
+setting will be ignored.
+
+.. seealso:: :py:func:`setNumberOfThreads`
+
+.. versionadded:: 3.32
+%End
+
+    void setNumberOfThreads( int threads );
+%Docstring
+Sets the (optional) number of ``threads`` to use when running algorithms.
+
+If set, this overrides the standard global Processing number of threads setting.
+Note that if algorithm implementation does not support multhreaded execution, this
+setting will be ignored.
+
+.. seealso:: :py:func:`numberOfThreads`
+
+.. versionadded:: 3.32
+%End
+
     QVariantMap exportToMap() const;
 %Docstring
 Exports the context's settings to a variant map.

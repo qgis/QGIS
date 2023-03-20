@@ -101,6 +101,7 @@ class CORE_EXPORT QgsProcessingContext
       mAreaUnit = other.mAreaUnit;
       mLogLevel = other.mLogLevel;
       mTemporaryFolderOverride = other.mTemporaryFolderOverride;
+      mThreadsToUse = other.mThreadsToUse;
     }
 
     /**
@@ -681,6 +682,30 @@ class CORE_EXPORT QgsProcessingContext
     void setTemporaryFolder( const QString &folder );
 
     /**
+     * Returns the (optional) number of threads to use when running algorithms.
+     *
+     * If set, this overrides the standard global Processing number of threads setting.
+     * Note that if algorithm implementation does not support multhreaded execution, this
+     * setting will be ignored.
+     *
+     * \see setNumberOfThreads()
+     * \since QGIS 3.32
+     */
+    int numberOfThreads() const;
+
+    /**
+     * Sets the (optional) number of \a threads to use when running algorithms.
+     *
+     * If set, this overrides the standard global Processing number of threads setting.
+     * Note that if algorithm implementation does not support multhreaded execution, this
+     * setting will be ignored.
+     *
+     * \see numberOfThreads()
+     * \since QGIS 3.32
+     */
+    void setNumberOfThreads( int threads );
+
+    /**
      * Exports the context's settings to a variant map.
      *
      * \since QGIS 3.24
@@ -737,6 +762,7 @@ class CORE_EXPORT QgsProcessingContext
     LogLevel mLogLevel = DefaultLevel;
 
     QString mTemporaryFolderOverride;
+    int mThreadsToUse = QThread::idealThreadCount();
 
 #ifdef SIP_RUN
     QgsProcessingContext( const QgsProcessingContext &other );

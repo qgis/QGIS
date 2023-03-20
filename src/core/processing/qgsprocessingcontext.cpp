@@ -157,6 +157,16 @@ void QgsProcessingContext::setTemporaryFolder( const QString &folder )
   mTemporaryFolderOverride = folder;
 }
 
+int QgsProcessingContext::numberOfThreads() const
+{
+  return mThreadsToUse;
+}
+
+void QgsProcessingContext::setNumberOfThreads( int threads )
+{
+  mThreadsToUse = threads;
+}
+
 QVariantMap QgsProcessingContext::exportToMap() const
 {
   QVariantMap res;
