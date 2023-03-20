@@ -629,7 +629,7 @@ void QgsCodeEditorPython::updateCapabilities()
 
   mCapabilities |= Qgis::ScriptLanguageCapability::CheckSyntax;
 
-  // we could potentially check for autopep8/black import here and reflect the capabilty accordingly.
+  // we could potentially check for autopep8/black import here and reflect the capability accordingly.
   // (current approach is to to always indicate this capability and raise a user-friendly warning
   // when attempting to reformat if the libraries can't be imported)
   mCapabilities |= Qgis::ScriptLanguageCapability::Reformat;
