@@ -1058,7 +1058,7 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
         Set the session projection to the specified CRS
         """
         self.destination_crs = crs
-        file_name = Grass7Utils.exportCrsWktToFile(crs)
+        file_name = Grass7Utils.exportCrsWktToFile(crs, context)
         command = 'g.proj -c wkt="{}"'.format(file_name)
         self.commands.append(command)
         Grass7Utils.projectionSet = True
