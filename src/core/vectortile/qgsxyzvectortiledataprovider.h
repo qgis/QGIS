@@ -32,6 +32,7 @@ class CORE_EXPORT QgsXyzVectorTileDataProvider : public QgsVectorTileDataProvide
                                   const QgsDataProvider::ProviderOptions &providerOptions,
                                   QgsDataProvider::ReadFlags flags );
 
+    QString name() const override;
     QgsVectorTileDataProvider *clone() const override;
     QString sourcePath() const override;
     bool isValid() const override;

@@ -26,6 +26,20 @@ QgsVtpkVectorTileDataProvider::QgsVtpkVectorTileDataProvider( const QString &uri
 
 }
 
+QString QgsVtpkVectorTileDataProvider::name() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return QStringLiteral( "vtpkvectortiles" );
+}
+
+QString QgsVtpkVectorTileDataProvider::description() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return tr( "VTPK Vector Tiles data provider" );
+}
+
 QgsVectorTileDataProvider *QgsVtpkVectorTileDataProvider::clone() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS

@@ -39,6 +39,21 @@ QgsXyzVectorTileDataProvider::QgsXyzVectorTileDataProvider( const QString &uri, 
   mHeaders = dsUri.httpHeaders();
 }
 
+QString QgsXyzVectorTileDataProvider::name() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return QStringLiteral( "xyzvectortiles" );
+}
+
+QString QgsXyzVectorTileDataProvider::description() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return tr( "XYZ Vector Tiles data provider" );
+
+}
+
 QgsVectorTileDataProvider *QgsXyzVectorTileDataProvider::clone() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
