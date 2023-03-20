@@ -1027,7 +1027,7 @@ QVariant QgsProcessingUtils::generateIteratingDestination( const QVariant &input
   }
 }
 
-QString QgsProcessingUtils::tempFolder()
+QString QgsProcessingUtils::tempFolder( const QgsProcessingContext *context )
 {
   // we maintain a list of temporary folders -- this allows us to append additional
   // folders when a setting change causes the base temp folder to change, while deferring
@@ -1062,10 +1062,10 @@ QString QgsProcessingUtils::tempFolder()
   return sFolder;
 }
 
-QString QgsProcessingUtils::generateTempFilename( const QString &basename )
+QString QgsProcessingUtils::generateTempFilename( const QString &basename, const QgsProcessingContext *context )
 {
   QString subPath = QUuid::createUuid().toString().remove( '-' ).remove( '{' ).remove( '}' );
-  QString path = tempFolder() + '/' + subPath;
+  QString path = tempFolder( context ) + '/' + subPath;
   if ( !QDir( path ).exists() ) //make sure the directory exists - it shouldn't, but lets be safe...
   {
     QDir tmpDir;
@@ -1188,7 +1188,7 @@ QString convertToCompatibleFormatInternal( const QgsVectorLayer *vl, bool select
 
   if ( requiresTranslation )
   {
-    QString temp = QgsProcessingUtils::generateTempFilename( baseName + '.' + preferredFormat );
+    QString temp = QgsProcessingUtils::generateTempFilename( baseName + '.' + preferredFormat, &context );
 
     QgsVectorFileWriter::SaveVectorOptions saveOptions;
     saveOptions.fileEncoding = context.defaultEncoding();

@@ -460,7 +460,7 @@ class GdalUtils:
 
     @staticmethod
     def writeLayerParameterToTextFile(filename, alg, parameters, parameter_name, context, quote=True, executing=False):
-        listFile = QgsProcessingUtils.generateTempFilename(filename)
+        listFile = QgsProcessingUtils.generateTempFilename(filename, context)
 
         if executing:
             layers = []

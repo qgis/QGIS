@@ -40,7 +40,7 @@ def processCommand(alg, parameters, context, feedback):
     inlinePoints = alg.parameterAsString(parameters, 'inline_points', context)
     if inlinePoints:
         # Creates a temporary txt file
-        pointsName = getTempFilename()
+        pointsName = getTempFilename(context=context)
 
         # Inject rules into temporary txt file
         with open(pointsName, "w") as tempPoints:

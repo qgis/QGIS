@@ -27,5 +27,5 @@ from grassprovider.Grass7Utils import Grass7Utils
 def processOutputs(alg, parameters, context, feedback):
     crs = alg.parameterAsCrs(parameters, 'sourceproj', context)
 
-    wkt_file_name = Grass7Utils.exportCrsWktToFile(crs)
+    wkt_file_name = Grass7Utils.exportCrsWktToFile(crs, context)
     alg.commands.insert(0, 'g.proj -c wkt="{}"'.format(wkt_file_name))

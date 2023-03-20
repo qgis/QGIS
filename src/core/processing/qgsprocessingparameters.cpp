@@ -147,7 +147,7 @@ QString QgsProcessingParameters::parameterAsString( const QgsProcessingParameter
   if ( val == QgsProcessing::TEMPORARY_OUTPUT )
   {
     if ( const QgsProcessingDestinationParameter *destParam = dynamic_cast< const QgsProcessingDestinationParameter * >( definition ) )
-      return destParam->generateTemporaryDestination();
+      return destParam->generateTemporaryDestination( &context );
   }
 
   return val.toString();
@@ -714,7 +714,7 @@ QgsFeatureSink *QgsProcessingParameters::parameterAsSink( const QgsProcessingPar
   if ( dest == QgsProcessing::TEMPORARY_OUTPUT )
   {
     if ( const QgsProcessingDestinationParameter *destParam = dynamic_cast< const QgsProcessingDestinationParameter * >( definition ) )
-      dest = destParam->generateTemporaryDestination();
+      dest = destParam->generateTemporaryDestination( &context );
   }
 
   if ( dest.isEmpty() )
@@ -966,7 +966,7 @@ QString QgsProcessingParameters::parameterAsOutputLayer( const QgsProcessingPara
   if ( dest == QgsProcessing::TEMPORARY_OUTPUT )
   {
     if ( const QgsProcessingDestinationParameter *destParam = dynamic_cast< const QgsProcessingDestinationParameter * >( definition ) )
-      dest = destParam->generateTemporaryDestination();
+      dest = destParam->generateTemporaryDestination( &context );
   }
 
   if ( destinationProject )
@@ -1031,7 +1031,7 @@ QString QgsProcessingParameters::parameterAsFileOutput( const QgsProcessingParam
   if ( dest == QgsProcessing::TEMPORARY_OUTPUT )
   {
     if ( const QgsProcessingDestinationParameter *destParam = dynamic_cast< const QgsProcessingDestinationParameter * >( definition ) )
-      dest = destParam->generateTemporaryDestination();
+      dest = destParam->generateTemporaryDestination( &context );
   }
   return dest;
 }
@@ -6427,12 +6427,12 @@ bool QgsProcessingParameterFeatureSink::fromVariantMap( const QVariantMap &map )
   return true;
 }
 
-QString QgsProcessingParameterFeatureSink::generateTemporaryDestination() const
+QString QgsProcessingParameterFeatureSink::generateTemporaryDestination( const QgsProcessingContext *context ) const
 {
   if ( supportsNonFileBasedOutput() )
     return QStringLiteral( "memory:%1" ).arg( description() );
   else
-    return QgsProcessingDestinationParameter::generateTemporaryDestination();
+    return QgsProcessingDestinationParameter::generateTemporaryDestination( context );
 }
 
 QgsProcessingParameterFeatureSink *QgsProcessingParameterFeatureSink::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
@@ -6858,7 +6858,7 @@ QString QgsProcessingDestinationParameter::createFileFilter() const
   return QObject::tr( "Default extension" ) + QStringLiteral( " (*." ) + defaultFileExtension() + ')';
 }
 
-QString QgsProcessingDestinationParameter::generateTemporaryDestination() const
+QString QgsProcessingDestinationParameter::generateTemporaryDestination( const QgsProcessingContext *context ) const
 {
   // sanitize name to avoid multiple . in the filename. E.g. when name() contain
   // backend command name having a "." inside as in case of grass commands
@@ -6868,11 +6868,11 @@ QString QgsProcessingDestinationParameter::generateTemporaryDestination() const
 
   if ( defaultFileExtension().isEmpty() )
   {
-    return QgsProcessingUtils::generateTempFilename( sanitizedName );
+    return QgsProcessingUtils::generateTempFilename( sanitizedName, context );
   }
   else
   {
-    return QgsProcessingUtils::generateTempFilename( sanitizedName + '.' + defaultFileExtension() );
+    return QgsProcessingUtils::generateTempFilename( sanitizedName + '.' + defaultFileExtension(), context );
   }
 }
 
