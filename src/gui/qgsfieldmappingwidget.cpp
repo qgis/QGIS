@@ -284,12 +284,11 @@ QWidget *QgsFieldMappingExpressionDelegate::createEditor( QWidget *parent, const
 
   editor->setField( index.model()->data( index, Qt::DisplayRole ).toString() );
   connect( editor,
-           qOverload<const  QString &, bool >( &QgsFieldExpressionWidget::fieldChanged ),
+           qOverload<const  QString & >( &QgsFieldExpressionWidget::fieldChanged ),
            this,
-           [ = ]( const QString & fieldName, bool isValid )
+           [ = ]( const QString & fieldName )
   {
     Q_UNUSED( fieldName )
-    Q_UNUSED( isValid )
     const_cast< QgsFieldMappingExpressionDelegate *>( this )->emit commitData( editor );
   } );
   return editor;
