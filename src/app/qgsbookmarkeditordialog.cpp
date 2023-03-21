@@ -48,8 +48,8 @@ QgsBookmarkEditorDialog::QgsBookmarkEditorDialog( QgsBookmark bookmark, bool inP
 
   mExtentGroupBox->setOutputCrs( mBookmark.extent().crs() );
   mExtentGroupBox->setCurrentExtent( mBookmark.extent(), mBookmark.extent().crs() );
-  mExtentGroupBox->setOutputExtentFromCurrent();
   mExtentGroupBox->setMapCanvas( mMapCanvas );
+  mExtentGroupBox->setOutputExtentFromCurrent();
   mCrsSelector->setCrs( mBookmark.extent().crs() );
   mRotation->setValue( mBookmark.rotation() );
 
