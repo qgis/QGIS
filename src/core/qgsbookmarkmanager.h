@@ -96,6 +96,19 @@ class CORE_EXPORT QgsBookmark
      */
     void setExtent( const QgsReferencedRectangle &extent );
 
+
+    /**
+     * Returns the bookmark's map rotation.
+     * \see setRotation()
+     */
+    double rotation() const;
+
+    /**
+     * Sets the bookmark's spatial map \a rotation.
+     * \see rotation()
+     */
+    void setRotation( double rotation );
+
     /**
      * Creates a bookmark using the properties from a DOM \a element.
      * \see writeXml()
@@ -126,6 +139,7 @@ class CORE_EXPORT QgsBookmark
     QString mName;
     QString mGroup;
     QgsReferencedRectangle mExtent;
+    double mRotation;
 
 };
 

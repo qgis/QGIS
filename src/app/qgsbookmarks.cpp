@@ -39,7 +39,7 @@
 #include <QToolButton>
 #include <QUrl>
 
-const int QgsDoubleSpinBoxBookmarksDelegate::DECIMAL_PLACES = 6;
+const int QgsDoubleSpinBoxBookmarksDelegate::DEFAULT_DECIMAL_PLACES = 6;
 
 QgsBookmarks::QgsBookmarks( QWidget *parent )
   : QgsDockWidget( parent )
@@ -78,6 +78,7 @@ QgsBookmarks::QgsBookmarks( QWidget *parent )
 
   lstBookmarks->setModel( mBookmarkModel );
   lstBookmarks->setItemDelegate( new QgsDoubleSpinBoxBookmarksDelegate( this ) );
+  lstBookmarks->setItemDelegateForColumn( QgsBookmarkManagerModel::ColumnRotation, new QgsDoubleSpinBoxBookmarksDelegate( this, 1 ) );
   lstBookmarks->setSortingEnabled( true );
   lstBookmarks->sortByColumn( 0, Qt::AscendingOrder );
 
@@ -104,6 +105,7 @@ void QgsBookmarks::addClicked()
   QgsBookmark bookmark;
   bookmark.setName( tr( "New bookmark" ) );
   bookmark.setExtent( QgsReferencedRectangle( canvas->extent(), canvas->mapSettings().destinationCrs() ) );
+  bookmark.setRotation( canvas->rotation() );
   QgsBookmarkEditorDialog *dlg = new QgsBookmarkEditorDialog( bookmark, false, this, canvas );
   dlg->setAttribute( Qt::WA_DeleteOnClose );
   dlg->show();
@@ -158,6 +160,7 @@ void QgsBookmarks::zoomToBookmarkIndex( const QModelIndex &index )
   {
     if ( QgisApp::instance()->mapCanvas()->setReferencedExtent( rect ) )
     {
+      QgisApp::instance()->mapCanvas()->setRotation( index.data( QgsBookmarkManagerModel::RoleRotation ).toDouble() );
       QgisApp::instance()->mapCanvas()->refresh();
     }
     else
@@ -253,8 +256,8 @@ void QgsBookmarks::exportToXml()
 // QgsDoubleSpinBoxBookmarksDelegate
 //
 
-QgsDoubleSpinBoxBookmarksDelegate::QgsDoubleSpinBoxBookmarksDelegate( QObject *parent )
-  : QStyledItemDelegate( parent )
+QgsDoubleSpinBoxBookmarksDelegate::QgsDoubleSpinBoxBookmarksDelegate( QObject *parent, int decimals )
+  : QStyledItemDelegate( parent ), mDecimals( decimals == -1 ? QgsDoubleSpinBoxBookmarksDelegate::DEFAULT_DECIMAL_PLACES : decimals )
 {
 
 }
@@ -263,12 +266,9 @@ QString QgsDoubleSpinBoxBookmarksDelegate::displayText( const QVariant &value, c
 {
   if ( value.userType() == QVariant::Double )
   {
-    return locale.toString( value.toDouble(), 'f', QgsDoubleSpinBoxBookmarksDelegate::DECIMAL_PLACES );
+    return locale.toString( value.toDouble(), 'f', mDecimals );
   }
-  else
-  {
-    return QStyledItemDelegate::displayText( value, locale );
-  }
+  return QStyledItemDelegate::displayText( value, locale );
 }
 
 QWidget *QgsDoubleSpinBoxBookmarksDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const
@@ -276,6 +276,12 @@ QWidget *QgsDoubleSpinBoxBookmarksDelegate::createEditor( QWidget *parent, const
   QWidget *widget = QStyledItemDelegate::createEditor( parent, option, index );
   QDoubleSpinBox *spinbox = qobject_cast<QDoubleSpinBox *>( widget );
   if ( spinbox )
-    spinbox->setDecimals( QgsDoubleSpinBoxBookmarksDelegate::DECIMAL_PLACES );
+  {
+    if ( index.column() == QgsBookmarkManagerModel::ColumnRotation )
+    {
+      spinbox->setRange( -360, 360 );
+    }
+    spinbox->setDecimals( mDecimals );
+  }
   return widget;
 }

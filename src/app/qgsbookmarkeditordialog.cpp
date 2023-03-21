@@ -51,6 +51,7 @@ QgsBookmarkEditorDialog::QgsBookmarkEditorDialog( QgsBookmark bookmark, bool inP
   mExtentGroupBox->setOutputExtentFromCurrent();
   mExtentGroupBox->setMapCanvas( mMapCanvas );
   mCrsSelector->setCrs( mBookmark.extent().crs() );
+  mRotation->setValue( mBookmark.rotation() );
 
   mSaveLocation->addItem( tr( "User Bookmarks" ), ApplicationManager );
   mSaveLocation->addItem( tr( "Project Bookmarks" ), ProjectManager );
@@ -80,6 +81,7 @@ void QgsBookmarkEditorDialog::onAccepted()
   bookmark.setName( mName->text() );
   bookmark.setGroup( mGroup->currentText() );
   bookmark.setExtent( QgsReferencedRectangle( mExtentGroupBox->outputExtent(), mExtentGroupBox->outputCrs() ) );
+  bookmark.setRotation( mRotation->value() );
 
   if ( bookmark.id().isEmpty() )
   {
