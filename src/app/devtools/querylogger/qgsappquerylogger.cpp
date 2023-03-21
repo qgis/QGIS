@@ -22,6 +22,7 @@
 #include <QThread>
 #include <QApplication>
 #include <QUrlQuery>
+#include <QPainter>
 
 QgsAppQueryLogger::QgsAppQueryLogger( QObject *parent )
   : QAbstractItemModel( parent )
@@ -40,6 +41,7 @@ void QgsAppQueryLogger::clear()
 {
   beginResetModel();
   mQueryGroups.clear();
+  mMaxCost = 0;
   mRootNode->clear();
   endResetModel();
 }
@@ -72,12 +74,20 @@ void QgsAppQueryLogger::queryFinished( const QgsDatabaseQueryLogEntry &query )
     queryGroup->setSql( query.query );
   }
 
+  const long long newMaxCost = std::max< long long >( query.finishedTime - query.startedTime, mMaxCost );
+
   // Calculate the number of children: if error or not fetched rows 1 row is added else 2 rows are added
   beginInsertRows( requestIndex, queryGroup->childCount(), queryGroup->childCount() + ( query.fetchedRows != -1 ? 1 : 0 ) );
   queryGroup->setFinished( query );
   endInsertRows();
 
   emit dataChanged( requestIndex, requestIndex );
+
+  if ( newMaxCost > mMaxCost )
+  {
+    mMaxCost = newMaxCost;
+    emit dataChanged( index( 0, 1 ), index( rowCount(), 1 ) );
+  }
 }
 
 QgsDevToolsModelNode *QgsAppQueryLogger::index2node( const QModelIndex &index ) const
@@ -156,7 +166,7 @@ int QgsAppQueryLogger::rowCount( const QModelIndex &parent ) const
 int QgsAppQueryLogger::columnCount( const QModelIndex &parent ) const
 {
   Q_UNUSED( parent )
-  return 1;
+  return 2;
 }
 
 QModelIndex QgsAppQueryLogger::index( int row, int column, const QModelIndex &parent ) const
@@ -190,14 +200,38 @@ QModelIndex QgsAppQueryLogger::parent( const QModelIndex &child ) const
 
 QVariant QgsAppQueryLogger::data( const QModelIndex &index, int role ) const
 {
-  if ( !index.isValid() || index.column() > 1 )
+  if ( !index.isValid() || index.column() > columnCount() )
     return QVariant();
 
   QgsDevToolsModelNode *node = index2node( index );
   if ( !node )
     return QVariant();
 
-  return node->data( role );
+  switch ( index.column() )
+  {
+    case 0:
+      return node->data( role );
+
+    case 1:
+    {
+      switch ( role )
+      {
+        case Qt::DisplayRole:
+          return node->data( QgsDevToolsModelNode::RoleElapsedTime );
+
+        case QgsDevToolsModelNode::RoleElapsedTime:
+          return node->data( QgsDevToolsModelNode::RoleElapsedTime );
+
+        case QgsDevToolsModelNode::RoleMaximumTime:
+          return mMaxCost;
+
+        default:
+          break;
+      }
+      return node->data( role );
+    }
+  }
+  return QVariant();
 }
 
 Qt::ItemFlags QgsAppQueryLogger::flags( const QModelIndex &index ) const
@@ -214,8 +248,16 @@ Qt::ItemFlags QgsAppQueryLogger::flags( const QModelIndex &index ) const
 
 QVariant QgsAppQueryLogger::headerData( int section, Qt::Orientation orientation, int role ) const
 {
-  if ( section == 0 && orientation == Qt::Horizontal && role == Qt::DisplayRole )
-    return tr( "Requests" );
+  if ( orientation == Qt::Horizontal && role == Qt::DisplayRole )
+  {
+    switch ( section )
+    {
+      case 0:
+        return tr( "Query" );
+      case 1:
+        return tr( "Time (ms)" );
+    }
+  }
   return QVariant();
 }
 
@@ -259,4 +301,64 @@ bool QgsDatabaseQueryLoggerProxyModel::filterAcceptsRow( int source_row, const Q
     }
   }
   return true;
+}
+
+//
+// QueryCostDelegate
+//
+
+QueryCostDelegate::QueryCostDelegate( quint32 sortRole, quint32 totalCostRole, QObject *parent )
+  : QStyledItemDelegate( parent )
+  , m_sortRole( sortRole )
+  , m_totalCostRole( totalCostRole )
+{
+}
+
+QueryCostDelegate::~QueryCostDelegate() = default;
+
+void QueryCostDelegate::paint( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index ) const
+{
+  const auto cost = index.data( m_sortRole ).toDouble();
+  if ( cost <= 0 )
+  {
+    QStyledItemDelegate::paint( painter, option, index );
+    return;
+  }
+
+  const auto totalCost = index.data( m_totalCostRole ).toDouble();
+  const auto fraction = std::abs( float( cost ) / totalCost );
+
+  auto rect = option.rect;
+  rect.setWidth( rect.width() * fraction );
+
+  const auto &brush = painter->brush();
+  const auto &pen = painter->pen();
+
+  painter->setPen( Qt::NoPen );
+
+  if ( option.features & QStyleOptionViewItem::Alternate )
+  {
+    // we must handle this ourselves as otherwise the custom background
+    // would get painted over with the alternate background color
+    painter->setBrush( option.palette.alternateBase() );
+    painter->drawRect( option.rect );
+  }
+
+  const auto color = QColor::fromHsv( 120 - fraction * 120, 255, 255, ( -( ( fraction - 1 ) * ( fraction - 1 ) ) ) * 120 + 120 );
+  painter->setBrush( color );
+  painter->drawRect( rect );
+
+  painter->setBrush( brush );
+  painter->setPen( pen );
+
+  if ( option.features & QStyleOptionViewItem::Alternate )
+  {
+    auto o = option;
+    o.features &= ~QStyleOptionViewItem::Alternate;
+    QStyledItemDelegate::paint( painter, o, index );
+  }
+  else
+  {
+    QStyledItemDelegate::paint( painter, option, index );
+  }
 }

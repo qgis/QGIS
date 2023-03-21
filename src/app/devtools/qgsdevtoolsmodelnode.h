@@ -39,6 +39,8 @@ class QgsDevToolsModelNode
     {
       RoleStatus = Qt::UserRole + 1, //!< Request status role
       RoleId, //!< Request ID role
+      RoleElapsedTime, //!< Elapsed time
+      RoleMaximumTime, //!< Maximum encountered elapsed time
     };
 
     virtual ~QgsDevToolsModelNode();

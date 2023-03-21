@@ -47,6 +47,21 @@ QgsDatabaseQueryLoggerTreeView::QgsDatabaseQueryLoggerTreeView( QgsAppQueryLogge
   mProxyModel = new QgsDatabaseQueryLoggerProxyModel( mLogger, this );
   setModel( mProxyModel );
 
+  connect( mProxyModel, &QAbstractItemModel::rowsInserted, this, [this]( const QModelIndex & parent, int first, int last )
+  {
+    // we want all second level items to be spanned
+    for ( int row = first; row <= last; ++row )
+    {
+      setFirstColumnSpanned( row, parent, parent.isValid() );
+
+      const QModelIndex childIndex = mProxyModel->index( row, 0, parent );
+      for ( int childRow = 0; childRow < mProxyModel->rowCount( childIndex ); ++childRow )
+      {
+        setFirstColumnSpanned( childRow, childIndex, true );
+      }
+    }
+  } );
+
   setContextMenuPolicy( Qt::CustomContextMenu );
   connect( this, &QgsDatabaseQueryLoggerTreeView::customContextMenuRequested, this, &QgsDatabaseQueryLoggerTreeView::contextMenu );
 
@@ -152,6 +167,8 @@ QgsDatabaseQueryLoggerPanelWidget::QgsDatabaseQueryLoggerPanelWidget( QgsAppQuer
   setupUi( this );
 
   mTreeView = new QgsDatabaseQueryLoggerTreeView( mLogger );
+  mTreeView->setItemDelegateForColumn( 1, new QueryCostDelegate( QgsDevToolsModelNode::RoleElapsedTime, QgsDevToolsModelNode::RoleMaximumTime, mTreeView ) );
+
   verticalLayout->addWidget( mTreeView );
   mToolbar->setIconSize( QgsGuiUtils::iconSize( true ) );
 

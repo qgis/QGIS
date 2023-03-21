@@ -124,6 +124,9 @@ QVariant QgsDatabaseQueryLoggerQueryGroup::data( int role ) const
     case RoleId:
       return mQueryId;
 
+    case RoleElapsedTime:
+      return mElapsed;
+
     case Qt::ForegroundRole:
     {
       switch ( mStatus )
@@ -202,7 +205,8 @@ void QgsDatabaseQueryLoggerQueryGroup::setFinished( const QgsDatabaseQueryLogEnt
   if ( query.error.isEmpty() )
   {
     mStatus = query.canceled ? Status::Canceled : Status::Complete;
-    addKeyValueNode( QObject::tr( "Total time (ms)" ), QLocale().toString( query.finishedTime - query.startedTime ) );
+    mElapsed = query.finishedTime - query.startedTime;
+    addKeyValueNode( QObject::tr( "Total time (ms)" ), QLocale().toString( mElapsed ) );
     if ( query.fetchedRows != -1 )
     {
       addKeyValueNode( QObject::tr( "Row count" ), QLocale().toString( query.fetchedRows ) );
