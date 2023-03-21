@@ -132,7 +132,7 @@ QVector<QgsRayCastingUtils::RayHit> QgsTerrainEntity::rayIntersection( const Qgs
           DemTerrainTileGeometry *demGeom = static_cast<DemTerrainTileGeometry *>( geom );
           if ( demGeom->rayIntersection( ray, tr->matrix(), nodeIntPoint ) )
           {
-            float dist = ( ray.origin() - intersectionPoint ).length();
+            const float dist = ( ray.origin() - intersectionPoint ).length();
             if ( minDist < 0 || dist < minDist )
             {
               minDist = dist;

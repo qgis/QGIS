@@ -88,7 +88,6 @@ static bool intersectionTriangles( const QByteArray &vertexBuf, const int &strid
   const int triangleCount = vertexCount / 3;
 
   QVector3D intersectionPt, minIntersectionPt;
-  float distance;
   float minDistance = -1;
 
   const int vertexSize = stride / sizeof( float );
@@ -118,7 +117,7 @@ static bool intersectionTriangles( const QByteArray &vertexBuf, const int &strid
          QgsRayCastingUtils::rayTriangleIntersection( r, tA, tC, tB, uvw, t ) )
     {
       intersectionPt = r.point( t * r.distance() );
-      distance = r.projectedDistance( intersectionPt );
+      const float distance = r.projectedDistance( intersectionPt );
 
       // we only want the first intersection of the ray with the mesh (closest to the ray origin)
       if ( minDistance == -1 || distance < minDistance )
