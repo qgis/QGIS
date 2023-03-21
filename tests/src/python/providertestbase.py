@@ -10,7 +10,7 @@ __author__ = 'Matthias Kuhn'
 __date__ = '2015-04-27'
 __copyright__ = 'Copyright 2015, The QGIS Project'
 
-from qgis.PyQt.QtCore import QDate, QTime, QDateTime, QVariant
+from qgis.PyQt.QtCore import QDate, QTime, QDateTime, Qt, QVariant
 from qgis.PyQt.QtTest import QSignalSpy
 from qgis.core import (
     QgsApplication,
@@ -468,9 +468,14 @@ class ProviderTestCase(FeatureSourceTestCase):
                              {'2021-05-04 13:13:14', '2020-05-04 12:14:14', '2020-05-04 12:13:14',
                               '2020-05-03 12:13:14', NULL})
         else:
-            self.assertEqual(set(self.source.uniqueValues(self.source.fields().lookupField('dt'))),
-                             {QDateTime(2021, 5, 4, 13, 13, 14), QDateTime(2020, 5, 4, 12, 14, 14),
-                              QDateTime(2020, 5, 4, 12, 13, 14), QDateTime(2020, 5, 3, 12, 13, 14), NULL})
+            if self.treat_datetime_tz_as_utc():
+                self.assertEqual(set(self.source.uniqueValues(self.source.fields().lookupField('dt'))),
+                                 set([QDateTime(2021, 5, 4, 13, 13, 14, 0, Qt.UTC), QDateTime(2020, 5, 4, 12, 14, 14, 0, Qt.UTC),
+                                      QDateTime(2020, 5, 4, 12, 13, 14, 0, Qt.UTC), QDateTime(2020, 5, 3, 12, 13, 14, 0, Qt.UTC), NULL]))
+            else:
+                self.assertEqual(set(self.source.uniqueValues(self.source.fields().lookupField('dt'))),
+                                 set([QDateTime(2021, 5, 4, 13, 13, 14), QDateTime(2020, 5, 4, 12, 14, 14),
+                                      QDateTime(2020, 5, 4, 12, 13, 14), QDateTime(2020, 5, 3, 12, 13, 14), NULL]))
 
         if self.treat_date_as_string():
             self.assertEqual(set(self.source.uniqueValues(self.source.fields().lookupField('date'))),

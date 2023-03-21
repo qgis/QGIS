@@ -22,7 +22,7 @@ from sqlite3 import OperationalError
 
 import qgis  # NOQA
 from osgeo import gdal, ogr
-from qgis.PyQt.QtCore import QCoreApplication, QVariant, QDate, QDateTime, QTemporaryDir, QFileInfo
+from qgis.PyQt.QtCore import QCoreApplication, QVariant, QDate, QDateTime, Qt, QTemporaryDir, QTime, QFileInfo
 from qgis.PyQt.QtXml import QDomDocument
 from qgis.core import (Qgis,
                        QgsFeature,
@@ -146,6 +146,9 @@ class TestPyQgsOGRProviderGpkgConformance(unittest.TestCase, ProviderTestCase):
         QgsSettings().setValue('/qgis/compileExpressions', False)
 
     def treat_time_as_string(self):
+        return True
+
+    def treat_datetime_tz_as_utc(self):
         return True
 
     def uncompiledFilters(self):
@@ -2184,7 +2187,8 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
 
         self.assertTrue(vl.startEditing())
 
-        for f in vl.getFeatures():
+        features = [f for f in vl.getFeatures()]
+        for f in features:
             self.assertTrue(vl.changeAttributeValue(1, 1, 'new value'))
 
         # Test that QGIS sees the new changes
@@ -2594,6 +2598,34 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
             ok, err = metadata.createDatabase(database_path)
             self.assertFalse(ok)
             self.assertTrue(err)
+
+    def testDateTimeTimeZoneMilliseconds(self):
+
+        tmpfile = os.path.join(self.basetestpath, 'testDateTimeTimeZoneMilliseconds.gpkg')
+        ds = ogr.GetDriverByName('GPKG').CreateDataSource(tmpfile)
+        lyr = ds.CreateLayer('test', geom_type=ogr.wkbMultiPolygon)
+        lyr.CreateField(ogr.FieldDefn('dt', ogr.OFTDateTime))
+        ds = None
+
+        vl = QgsVectorLayer(tmpfile, 'test', 'ogr')
+
+        f = QgsFeature(vl.fields())
+        dt = QDateTime(QDate(2023, 1, 28), QTime(12, 34, 56, 789), Qt.OffsetFromUTC, 1 * 3600 + 30 * 60)
+        f.setAttribute(1, dt)
+        self.assertTrue(vl.startEditing())
+        self.assertTrue(vl.addFeatures([f]))
+        self.assertTrue(vl.commitChanges())
+
+        got = [feat for feat in vl.getFeatures()]
+        self.assertEqual(got[0]["dt"], dt)
+
+        self.assertTrue(vl.startEditing())
+        new_dt = QDateTime(QDate(2023, 1, 27), QTime(12, 34, 56, 987), Qt.OffsetFromUTC, 2 * 3600 + 30 * 60)
+        self.assertTrue(vl.changeAttributeValue(1, 1, new_dt))
+        self.assertTrue(vl.commitChanges())
+
+        got = [feat for feat in vl.getFeatures()]
+        self.assertEqual(got[0]["dt"], new_dt)
 
 
 if __name__ == '__main__':
