@@ -1711,9 +1711,11 @@ void QgsDatabaseItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *
         // Create the SQL dialog: this might become an independent class dialog in the future, for now
         // we are still prototyping the features that this dialog will have.
 
-        QgsDialog dialog;
-        dialog.setObjectName( QStringLiteral( "SQLCommandsDialog" ) );
-        dialog.setWindowTitle( tr( "%1 — Execute SQL" ).arg( item->name() ) );
+        QMainWindow *dialog = new QMainWindow();
+        dialog->setObjectName( QStringLiteral( "SQLCommandsDialog" ) );
+        dialog->setWindowTitle( tr( "%1 — Execute SQL" ).arg( item->name() ) );
+        QgsGui::enableAutoGeometryRestore( dialog );
+        dialog->setAttribute( Qt::WA_DeleteOnClose );
 
         // If this is a layer item (or below the hierarchy) we can pre-set the query to something
         // meaningful
@@ -1737,11 +1739,9 @@ void QgsDatabaseItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *
                   tableName, 10 );
         }
 
-        QgsGui::enableAutoGeometryRestore( &dialog );
-        QgsQueryResultWidget *widget { new QgsQueryResultWidget( &dialog, conn2.release() ) };
+        QgsQueryResultWidget *widget { new QgsQueryResultWidget( nullptr, conn2.release() ) };
         widget->setQuery( sql );
-        widget->layout()->setContentsMargins( 0, 0, 0, 0 );
-        dialog.layout()->addWidget( widget );
+        dialog->setCentralWidget( widget );
 
         connect( widget, &QgsQueryResultWidget::createSqlVectorLayer, widget, [ item, context ]( const QString &, const QString &, const QgsAbstractDatabaseProviderConnection::SqlVectorLayerOptions & options )
         {
@@ -1757,9 +1757,7 @@ void QgsDatabaseItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *
           }
 
         } );
-        dialog.exec();
-
-
+        dialog->show();
       } );
       menu->addAction( sqlAction );
     }
