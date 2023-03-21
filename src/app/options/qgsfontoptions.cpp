@@ -140,7 +140,7 @@ void QgsFontOptionsWidget::apply()
 // QgsFontOptionsFactory
 //
 QgsFontOptionsFactory::QgsFontOptionsFactory()
-  : QgsOptionsWidgetFactory( tr( "Fonts" ), QIcon() )
+  : QgsOptionsWidgetFactory( tr( "Fonts" ), QIcon(), QStringLiteral( "fonts" ) )
 {
 }
 

@@ -364,7 +364,7 @@ void QgsCodeEditorOptionsWidget::updatePreview()
 // QgsCodeEditorOptionsFactory
 //
 QgsCodeEditorOptionsFactory::QgsCodeEditorOptionsFactory()
-  : QgsOptionsWidgetFactory( tr( "Code Editor" ), QIcon() )
+  : QgsOptionsWidgetFactory( tr( "Code Editor" ), QIcon(), QStringLiteral("code_editor") )
 {
 
 }

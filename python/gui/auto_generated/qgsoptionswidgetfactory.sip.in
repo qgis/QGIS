@@ -82,7 +82,7 @@ class QgsOptionsWidgetFactory : QObject
 Constructor
 %End
 
-    QgsOptionsWidgetFactory( const QString &title, const QIcon &icon );
+    QgsOptionsWidgetFactory( const QString &title, const QIcon &icon, const QString &key = QString() );
 %Docstring
 Constructor
 %End
@@ -115,6 +115,22 @@ The title of the panel.
 Set the ``title`` for the interface.
 
 .. seealso:: :py:func:`title`
+%End
+
+    virtual QString key() const;
+%Docstring
+The key of the panel (untranslated title).
+
+.. seealso:: :py:func:`setKey`
+
+.. versionadded:: 3.32
+%End
+
+    void setKey( const QString &key );
+%Docstring
+Set the ``key`` for the interface.
+
+.. seealso:: :py:func:`key`
 %End
 
     virtual QString pagePositionHint() const;

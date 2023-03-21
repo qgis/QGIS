@@ -72,7 +72,7 @@ void Qgs3DOptionsWidget::apply()
 // Qgs3DOptionsFactory
 //
 Qgs3DOptionsFactory::Qgs3DOptionsFactory()
-  : QgsOptionsWidgetFactory( tr( "3D" ), QIcon() )
+  : QgsOptionsWidgetFactory( tr( "3D" ), QIcon(), QStringLiteral( "3d" ) )
 {
 
 }
