@@ -2658,10 +2658,7 @@ void QgsMapCanvas::zoomWithCenter( int x, int y, bool zoomIn )
   }
   else
   {
-    QgsRectangle r = mapSettings().visibleExtent();
-    r.scale( scaleFactor, &center );
-    setExtent( r, true );
-    refresh();
+    zoomByFactor( scaleFactor, &center );
   }
 }
 
