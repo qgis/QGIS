@@ -59,6 +59,7 @@ void QgsStatusBar::addPermanentWidget( QWidget *widget, int stretch, Anchor anch
 void QgsStatusBar::removeWidget( QWidget *widget )
 {
   mLayout->removeWidget( widget );
+  widget->hide();
 }
 
 QString QgsStatusBar::currentMessage() const
