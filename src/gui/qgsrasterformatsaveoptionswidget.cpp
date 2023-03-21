@@ -43,7 +43,9 @@ QgsRasterFormatSaveOptionsWidget::QgsRasterFormatSaveOptionsWidget( QWidget *par
   , mProvider( provider )
 {
   setupUi( this );
-  setMinimumSize( this->fontMetrics().height() * 5, 240 );
+
+  // Set the table minimum size to fit at least 4 rows
+  mOptionsTable->setMinimumSize(200, mOptionsTable->verticalHeader()->defaultSectionSize() * 4 + mOptionsTable->horizontalHeader()->height() + 2 );
 
   connect( mProfileNewButton, &QPushButton::clicked, this, &QgsRasterFormatSaveOptionsWidget::mProfileNewButton_clicked );
   connect( mProfileDeleteButton, &QPushButton::clicked, this, &QgsRasterFormatSaveOptionsWidget::mProfileDeleteButton_clicked );
