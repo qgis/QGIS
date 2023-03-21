@@ -168,6 +168,7 @@ QgsDatabaseQueryLoggerPanelWidget::QgsDatabaseQueryLoggerPanelWidget( QgsAppQuer
 
   mTreeView = new QgsDatabaseQueryLoggerTreeView( mLogger );
   mTreeView->setItemDelegateForColumn( 1, new QueryCostDelegate( QgsDevToolsModelNode::RoleElapsedTime, QgsDevToolsModelNode::RoleMaximumTime, mTreeView ) );
+  mTreeView->setSortingEnabled( true );
 
   verticalLayout->addWidget( mTreeView );
   mToolbar->setIconSize( QgsGuiUtils::iconSize( true ) );
