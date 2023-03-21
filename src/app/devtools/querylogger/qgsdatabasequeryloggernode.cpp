@@ -91,6 +91,9 @@ QVariant QgsDatabaseQueryLoggerQueryGroup::data( int role ) const
       return QStringLiteral( "%1 %2" ).arg( QString::number( mQueryId ),
                                             mSql );
 
+    case QgsDevToolsModelNode::RoleSort:
+      return mQueryId;
+
     case Qt::ToolTipRole:
     {
       // Show no more than 255 characters

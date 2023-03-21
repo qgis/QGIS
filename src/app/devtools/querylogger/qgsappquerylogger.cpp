@@ -218,6 +218,7 @@ QVariant QgsAppQueryLogger::data( const QModelIndex &index, int role ) const
       {
         case Qt::DisplayRole:
         case QgsDevToolsModelNode::RoleElapsedTime:
+        case QgsDevToolsModelNode::RoleSort:
           return node->data( QgsDevToolsModelNode::RoleElapsedTime );
 
         case QgsDevToolsModelNode::RoleMaximumTime:
