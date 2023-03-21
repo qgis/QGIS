@@ -64,7 +64,11 @@ QDomElement QgsBookmark::writeXml( QDomDocument &doc ) const
 
 bool QgsBookmark::operator==( const QgsBookmark &other ) const
 {
-  return mId == other.mId && mName == other.mName && mExtent == other.mExtent && mGroup == other.mGroup && mRotation == other.mRotation;
+  return mId == other.mId
+         && mName == other.mName
+         && mExtent == other.mExtent
+         && mGroup == other.mGroup
+         && qgsDoubleNear( mRotation, other.mRotation );
 }
 
 bool QgsBookmark::operator!=( const QgsBookmark &other ) const
