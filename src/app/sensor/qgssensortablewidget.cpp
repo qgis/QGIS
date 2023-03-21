@@ -17,11 +17,85 @@
 
 #include "qgisapp.h"
 #include "qgsapplication.h"
+#include "qgsgui.h"
+#include "qgsiodevicesensor.h"
+#include "qgssensorguiregistry.h"
 #include "qgssensormanager.h"
 #include "qgssensormodel.h"
+#include "qgssensorwidget.h"
 #include "qgsproject.h"
 
+#include <QDialogButtonBox>
 #include <QTableWidget>
+
+
+QgsSensorSettingsWidget::QgsSensorSettingsWidget( QgsAbstractSensor *sensor, QWidget *parent )
+  : QgsPanelWidget( parent )
+  , mSensor( sensor )
+{
+  setupUi( this );
+  setPanelTitle( tr( "Sensor Settings" ) );
+  setObjectName( QStringLiteral( "SensorSettings" ) );
+
+  mNameLineEdit->setText( sensor->name() );
+  connect( mNameLineEdit, &QLineEdit::textChanged, this, [ = ]() { mButtonBox->button( QDialogButtonBox::Apply )->setEnabled( true ); } );
+
+  const QMap<QString, QString> sensorTypes = QgsGui::sensorGuiRegistry()->sensorTypes();
+  for ( auto sensorIt = sensorTypes.begin(); sensorIt != sensorTypes.end(); ++sensorIt )
+  {
+    mTypeComboBox->addItem( QgsGui::sensorGuiRegistry()->sensorMetadata( sensorIt.key() )->creationIcon(), sensorIt.value(), sensorIt.key() );
+  }
+  mTypeComboBox->setCurrentIndex( mTypeComboBox->findData( sensor->type() ) );
+  connect( mTypeComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [ = ]()
+  {
+    mButtonBox->button( QDialogButtonBox::Apply )->setEnabled( true );
+    setSensorWidget();
+  } );
+
+  mButtonBox->button( QDialogButtonBox::Apply )->setEnabled( false );
+  connect( mButtonBox->button( QDialogButtonBox::Apply ), &QAbstractButton::clicked, this, [ = ]()
+  {
+    apply();
+  } );
+
+  setSensorWidget();
+}
+
+void QgsSensorSettingsWidget::setSensorWidget()
+{
+  if ( mSensorWidget )
+  {
+    mSensorWidget->deleteLater();
+    mSensorWidget = nullptr;
+  }
+
+  mSensorWidget = QgsGui::sensorGuiRegistry()->sensorMetadata( mTypeComboBox->currentData().toString() )->createSensorWidget( mSensor );
+  if ( mSensorWidget )
+  {
+    mSensorWidget->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
+    mSensorWidget->setSensor( mSensor );
+    mTypeLayout->addWidget( mSensorWidget );
+    connect( mSensorWidget, &QgsAbstractSensorWidget::changed, this, [ = ]() { mButtonBox->button( QDialogButtonBox::Apply )->setEnabled( true ); } );
+  }
+}
+
+void QgsSensorSettingsWidget::apply()
+{
+  if ( mSensorWidget && mSensor )
+  {
+    mSensor->disconnectSensor();
+    if ( !mSensorWidget->updateSensor( mSensor ) )
+    {
+      // The sensor type has changed, remove sensor and add a fresh one
+      QgsProject::instance()->sensorManager()->removeSensor( mSensor->id() );
+      mSensor = mSensorWidget->createSensor();
+      QgsProject::instance()->sensorManager()->addSensor( mSensor );
+    }
+    mSensor->setName( mNameLineEdit->text() );
+  }
+}
+
+//----------------
 
 QgsSensorTableWidget::QgsSensorTableWidget( QWidget *parent )
   : QgsPanelWidget( parent )
@@ -31,6 +105,8 @@ QgsSensorTableWidget::QgsSensorTableWidget( QWidget *parent )
   setObjectName( QStringLiteral( "SensorsList" ) );
 
   mActionConnection->setEnabled( false );
+  mActionRemoveSensor->setEnabled( false );
+  mActionEditSensor->setEnabled( false );
 
   mSensorModel = new QgsSensorModel( QgsProject::instance()->sensorManager(), this );
 
@@ -38,6 +114,15 @@ QgsSensorTableWidget::QgsSensorTableWidget( QWidget *parent )
   mSensorTable->horizontalHeader()->setSectionResizeMode( static_cast<int>( QgsSensorModel::Column::Name ), QHeaderView::Stretch );
   mSensorTable->setSelectionBehavior( QAbstractItemView::SelectRows );
   mSensorTable->setSelectionMode( QAbstractItemView::SingleSelection );
+
+  connect( mSensorTable, &QAbstractItemView::doubleClicked, this, [ = ]( const QModelIndex & index )
+  {
+    if ( index.isValid() )
+    {
+      QgsSensorSettingsWidget *settingsWidget = new QgsSensorSettingsWidget( mSensorModel->data( index, QgsSensorModel::Sensor ).value<QgsAbstractSensor *>(), this );
+      showPanel( settingsWidget );
+    }
+  } );
 
   connect( QgsProject::instance()->sensorManager(), &QgsSensorManager::sensorStatusChanged, this, [ = ]( const QString & id )
   {
@@ -65,6 +150,8 @@ QgsSensorTableWidget::QgsSensorTableWidget( QWidget *parent )
   connect( mSensorTable->selectionModel(), &QItemSelectionModel::currentChanged, this, [ = ]( const QModelIndex & current, const QModelIndex & )
   {
     mActionConnection->setEnabled( current.isValid() );
+    mActionRemoveSensor->setEnabled( current.isValid() );
+    mActionEditSensor->setEnabled( current.isValid() );
     if ( current.isValid() && mSensorModel->data( current, QgsSensorModel::SensorStatus ).value<Qgis::DeviceConnectionStatus>() == Qgis::DeviceConnectionStatus::Connected )
     {
       mActionConnection->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionStop.svg" ) ) );
@@ -92,6 +179,35 @@ QgsSensorTableWidget::QgsSensorTableWidget( QWidget *parent )
           sensor->disconnectSensor();
         }
       }
+    }
+  } );
+
+  connect( mActionAddSensor, &QToolButton::clicked, this, [ = ]()
+  {
+    QgsTcpSocketSensor *sensor = new QgsTcpSocketSensor();
+    sensor->setName( tr( "New sensor" ) );
+    QgsProject::instance()->sensorManager()->addSensor( sensor );
+
+    QgsSensorSettingsWidget *settingsWidget = new QgsSensorSettingsWidget( sensor, this );
+    showPanel( settingsWidget );
+  } );
+
+  connect( mActionRemoveSensor, &QToolButton::clicked, this, [ = ]()
+  {
+    const QModelIndex index = mSensorTable->currentIndex();
+    if ( index.isValid() )
+    {
+      QgsProject::instance()->sensorManager()->removeSensor( mSensorModel->data( index, QgsSensorModel::SensorId ).toString() );
+    }
+  } );
+
+  connect( mActionEditSensor, &QToolButton::clicked, this, [ = ]()
+  {
+    const QModelIndex index = mSensorTable->currentIndex();
+    if ( index.isValid() )
+    {
+      QgsSensorSettingsWidget *settingsWidget = new QgsSensorSettingsWidget( mSensorModel->data( index, QgsSensorModel::Sensor ).value<QgsAbstractSensor *>(), this );
+      showPanel( settingsWidget );
     }
   } );
 }

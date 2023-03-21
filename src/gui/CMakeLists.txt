@@ -424,6 +424,9 @@ set(QGIS_GUI_SRCS
   providers/ogr/qgsogritemguiprovider.cpp
   providers/ogr/qgsgeopackageprojectstorageguiprovider.cpp
 
+  sensor/qgssensorguiregistry.cpp
+  sensor/qgssensorwidget.cpp
+
   settings/qgssettingsregistrygui.cpp
 
   tableeditor/qgstableeditordialog.cpp
@@ -1400,6 +1403,9 @@ set(QGIS_GUI_HDRS
   symbology/qgssymbolwidgetcontext.h
   symbology/qgsvectorfieldsymbollayerwidget.h
 
+  sensor/qgssensorguiregistry.h
+  sensor/qgssensorwidget.h
+
   settings/qgssettingsregistrygui.h
 
   tableeditor/qgstableeditordialog.h
@@ -1547,6 +1553,7 @@ target_include_directories(qgis_gui PUBLIC
   ${CMAKE_SOURCE_DIR}/src/gui/providers/ogr
   ${CMAKE_SOURCE_DIR}/src/gui/pointcloud
   ${CMAKE_SOURCE_DIR}/src/gui/raster
+  ${CMAKE_SOURCE_DIR}/src/gui/sensor
   ${CMAKE_SOURCE_DIR}/src/gui/settings
   ${CMAKE_SOURCE_DIR}/src/gui/tableeditor
   ${CMAKE_SOURCE_DIR}/src/gui/vector

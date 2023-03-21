@@ -2854,6 +2854,21 @@ Shift+click to snap rotation to 45 degree steps.</string>
     <string>Show Statistical Summary</string>
    </property>
   </action>
+  <action name="mActionSensorDock">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mSensorDock.svg</normaloff>:/images/themes/default/mSensorDock.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Sensors</string>
+   </property>
+   <property name="toolTip">
+    <string>Show Sensors</string>
+   </property>
+  </action>
   <action name="mActionShowAlignRasterTool">
    <property name="text">
     <string>Align Rasters…</string>
