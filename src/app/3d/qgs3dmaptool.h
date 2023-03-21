@@ -20,6 +20,7 @@
 
 class Qgs3DMapCanvas;
 class QMouseEvent;
+class QKeyEvent;
 
 /**
  * Base class for map tools operating on 3D map canvas.
@@ -34,6 +35,7 @@ class Qgs3DMapTool : public QObject
     virtual void mousePressEvent( QMouseEvent *event );
     virtual void mouseReleaseEvent( QMouseEvent *event );
     virtual void mouseMoveEvent( QMouseEvent *event );
+    virtual void keyPressEvent( QKeyEvent *event );
 
     //! Called when set as currently active map tool
     virtual void activate();

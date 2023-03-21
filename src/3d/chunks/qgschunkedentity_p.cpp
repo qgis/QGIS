@@ -17,8 +17,6 @@
 
 #include <QElapsedTimer>
 #include <QVector4D>
-#include <Qt3DRender/QObjectPicker>
-#include <Qt3DRender/QPickTriangleEvent>
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 #include <Qt3DRender/QBuffer>
 typedef Qt3DRender::QBuffer Qt3DQBuffer;
@@ -547,13 +545,6 @@ void QgsChunkedEntity::onActiveJobFinished()
 
       mReplacementQueue->insertFirst( node->replacementQueueEntry() );
 
-      if ( mPickingEnabled )
-      {
-        Qt3DRender::QObjectPicker *picker = new Qt3DRender::QObjectPicker( node->entity() );
-        node->entity()->addComponent( picker );
-        connect( picker, &Qt3DRender::QObjectPicker::clicked, this, &QgsChunkedEntity::onPickEvent );
-      }
-
       emit newEntityCreated( entity );
     }
     else
@@ -662,72 +653,6 @@ void QgsChunkedEntity::cancelActiveJobs()
   }
 }
 
-
-void QgsChunkedEntity::setPickingEnabled( bool enabled )
-{
-  if ( mPickingEnabled == enabled )
-    return;
-
-  mPickingEnabled = enabled;
-
-  if ( enabled )
-  {
-    QgsChunkListEntry *entry = mReplacementQueue->first();
-    while ( entry )
-    {
-      QgsChunkNode *node = entry->chunk;
-      Qt3DRender::QObjectPicker *picker = new Qt3DRender::QObjectPicker( node->entity() );
-      node->entity()->addComponent( picker );
-      connect( picker, &Qt3DRender::QObjectPicker::clicked, this, &QgsChunkedEntity::onPickEvent );
-
-      entry = entry->next;
-    }
-  }
-  else
-  {
-    for ( Qt3DRender::QObjectPicker *picker : findChildren<Qt3DRender::QObjectPicker *>() )
-      picker->deleteLater();
-  }
-}
-
-void QgsChunkedEntity::onPickEvent( Qt3DRender::QPickEvent *event )
-{
-  Qt3DRender::QPickTriangleEvent *triangleEvent = qobject_cast<Qt3DRender::QPickTriangleEvent *>( event );
-  if ( !triangleEvent )
-    return;
-
-  Qt3DRender::QObjectPicker *picker = qobject_cast<Qt3DRender::QObjectPicker *>( sender() );
-  if ( !picker )
-    return;
-
-  Qt3DCore::QEntity *entity = qobject_cast<Qt3DCore::QEntity *>( picker->parent() );
-  if ( !entity )
-    return;
-
-  // go figure out feature ID from the triangle index
-  QgsFeatureId fid = FID_NULL;
-  for ( Qt3DRender::QGeometryRenderer *geomRenderer : entity->findChildren<Qt3DRender::QGeometryRenderer *>() )
-  {
-    // unfortunately we can't access which sub-entity triggered the pick event
-    // so as a temporary workaround let's just ignore the entity with selection
-    // and hope the event was the main entity (QTBUG-58206)
-    if ( geomRenderer->objectName() != QLatin1String( "main" ) )
-      continue;
-
-    if ( QgsTessellatedPolygonGeometry *g = qobject_cast<QgsTessellatedPolygonGeometry *>( geomRenderer->geometry() ) )
-    {
-      fid = g->triangleIndexToFeatureId( triangleEvent->triangleIndex() );
-      if ( !FID_IS_NULL( fid ) )
-        break;
-    }
-  }
-
-  if ( !FID_IS_NULL( fid ) )
-  {
-    emit pickedObject( event, fid );
-  }
-}
-
 double QgsChunkedEntity::calculateEntityGpuMemorySize( Qt3DCore::QEntity *entity )
 {
   long long usedGpuMemory = 0;
@@ -741,6 +666,13 @@ double QgsChunkedEntity::calculateEntityGpuMemorySize( Qt3DCore::QEntity *entity
     usedGpuMemory += tex->width() * tex->height() * 4;
   }
   return usedGpuMemory / 1024.0 / 1024.0;
+}
+
+QVector<QgsRayCastingUtils::RayHit> QgsChunkedEntity::rayIntersection( const QgsRayCastingUtils::Ray3D &ray, const QgsRayCastingUtils::RayCastContext &context ) const
+{
+  Q_UNUSED( ray )
+  Q_UNUSED( context )
+  return QVector<QgsRayCastingUtils::RayHit>();
 }
 
 /// @endcond

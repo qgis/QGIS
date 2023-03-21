@@ -125,6 +125,8 @@ void QgsPoint3DBillboardMaterial::setTexture2DFromSymbol( QgsMarkerSymbol *marke
   QgsRenderContext context;
   context.setSelectionColor( map.selectionColor() );
   context.setScaleFactor( map.outputDpi() / 25.4 );
+  context.setFlag( Qgis::RenderContextFlag::Antialiasing );
+  context.setFlag( Qgis::RenderContextFlag::HighQualityImageTransforms );
   const double pixelSize = context.convertToPainterUnits( markerSymbol->size( context ),  markerSymbol->sizeUnit() );
 
   // This number is an max estimation ratio between stroke width and symbol size.

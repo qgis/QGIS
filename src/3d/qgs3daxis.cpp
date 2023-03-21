@@ -733,17 +733,18 @@ void Qgs3DAxis::onCameraViewChange( float pitch, float yaw )
   if ( mMapSettings->terrainRenderingEnabled() )
   {
     QgsDebugMsgLevel( "Checking elevation from terrain...", 2 );
-    QVector3D intersectionPoint;
     QVector3D camPos = mCameraController->camera()->position();
-    QgsRayCastingUtils::Ray3D r( camPos, pos.toVector3D() - camPos );
-    if ( mMapScene->terrainEntity()->rayIntersection( r, intersectionPoint ) )
+    QgsRayCastingUtils::Ray3D ray( camPos, pos.toVector3D() - camPos, mCameraController->camera()->farPlane() );
+    const QVector<QgsRayCastingUtils::RayHit> hits = mMapScene->terrainEntity()->rayIntersection( ray, QgsRayCastingUtils::RayCastContext() );
+    if ( !hits.isEmpty() )
     {
-      elevation = intersectionPoint.y();
+      elevation = hits.at( 0 ).pos.y();
       QgsDebugMsgLevel( QString( "Computed elevation from terrain: %1" ).arg( elevation ), 2 );
     }
     else
+    {
       QgsDebugMsgLevel( "Unable to obtain elevation from terrain", 2 );
-
+    }
   }
   pos.set( pos.x(), elevation + mMapSettings->terrainElevationOffset(), pos.z() );
 

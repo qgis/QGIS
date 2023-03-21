@@ -20,9 +20,7 @@
 
 #include <Qt3DCore/QEntity>
 
-#include "qgsfeatureid.h"
-#include "qgsshadowrenderingframegraph.h"
-#include "qgsray3d.h"
+#include "qgsrectangle.h"
 #include "qgscameracontroller.h"
 
 #ifndef SIP_RUN
@@ -30,8 +28,6 @@ namespace Qt3DRender
 {
   class QRenderSettings;
   class QCamera;
-  class QPickEvent;
-  class QObjectPicker;
 }
 
 namespace Qt3DLogic
@@ -51,7 +47,6 @@ class Qgs3DAxis;
 class QgsAbstract3DEngine;
 class QgsAbstract3DRenderer;
 class QgsMapLayer;
-class Qgs3DMapScenePickHandler;
 class Qgs3DMapSettings;
 class QgsTerrainEntity;
 class QgsChunkedEntity;
@@ -62,6 +57,7 @@ class QgsShadowRenderingFrameGraph;
 class QgsPostprocessingEntity;
 class QgsChunkNode;
 class QgsDoubleRange;
+
 
 /**
  * \ingroup 3d
@@ -127,11 +123,6 @@ class _3D_EXPORT Qgs3DMapScene : public QObject
     //! Returns the current state of the scene
     SceneState sceneState() const { return mSceneState; }
 
-    //! Registers an object that will get results of pick events on 3D entities. Does not take ownership of the pick handler. Adds object picker components to 3D entities.
-    void registerPickHandler( Qgs3DMapScenePickHandler *pickHandler ) SIP_SKIP;
-    //! Unregisters previously registered pick handler. Pick handler is not deleted. Also removes object picker components from 3D entities.
-    void unregisterPickHandler( Qgs3DMapScenePickHandler *pickHandler ) SIP_SKIP;
-
     /**
      * Given screen error (in pixels) and distance from camera (in 3D world coordinates), this function
      * estimates the error in world space. Takes into account camera's field of view and the screen (3D view) size.
@@ -147,6 +138,20 @@ class _3D_EXPORT Qgs3DMapScene : public QObject
      * \since QGIS 3.18
      */
     QVector<const QgsChunkNode *> getLayerActiveChunkNodes( QgsMapLayer *layer ) SIP_SKIP;
+
+    /**
+     * Returns the layers that contain chunked entities
+     *
+     * \since QGIS 3.32
+     */
+    QList<QgsMapLayer *> layers() SIP_SKIP { return mLayerEntities.keys(); }
+
+    /**
+     * Returns the entity belonging to \a layer
+     *
+     * \since QGIS 3.32
+     */
+    Qt3DCore::QEntity *layerEntity( QgsMapLayer *layer ) const SIP_SKIP { return mLayerEntities.value( layer ); }
 
     /**
      * Returns the scene extent in the map's CRS
@@ -236,7 +241,6 @@ class _3D_EXPORT Qgs3DMapScene : public QObject
     void onLayersChanged();
     void createTerrainDeferred();
     void onBackgroundColorChanged();
-    void onLayerEntityPickedObject( Qt3DRender::QPickEvent *pickEvent, QgsFeatureId fid );
     void updateLights();
     void updateCameraLens();
     void onRenderersChanged();
@@ -285,8 +289,6 @@ class _3D_EXPORT Qgs3DMapScene : public QObject
     QMap<const QgsAbstract3DRenderer *, Qt3DCore::QEntity *> mRenderersEntities;
     bool mTerrainUpdateScheduled = false;
     SceneState mSceneState = Ready;
-    //! List of currently registered pick handlers (used by identify tool)
-    QList<Qgs3DMapScenePickHandler *> mPickHandlers;
     //! List of lights in the scene
     QList<Qt3DCore::QEntity *> mLightEntities;
     QList<QgsMapLayer *> mModelVectorLayers;
@@ -298,5 +300,4 @@ class _3D_EXPORT Qgs3DMapScene : public QObject
     Qgs3DAxis *m3DAxis = nullptr;
 
 };
-
 #endif // QGS3DMAPSCENE_H
