@@ -1576,7 +1576,7 @@ void QgsMapCanvas::zoomToFullExtent()
   {
     // Add a 5% margin around the full extent
     extent.scale( 1.05 );
-    setExtent( extent );
+    setExtent( extent, true );
   }
   refresh();
 }
@@ -1590,7 +1590,7 @@ void QgsMapCanvas::zoomToProjectExtent()
   {
     // Add a 5% margin around the full extent
     extent.scale( 1.05 );
-    setExtent( extent );
+    setExtent( extent, true );
   }
   refresh();
 }
