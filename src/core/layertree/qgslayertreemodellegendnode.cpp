@@ -687,11 +687,15 @@ QSizeF QgsSymbolLegendNode::drawSymbol( const QgsLegendSettings &settings, ItemC
   if ( QgsMarkerSymbol *markerSymbol = dynamic_cast<QgsMarkerSymbol *>( s ) )
   {
     const double size = markerSymbol->size( *context ) / context->scaleFactor();
-    height = size;
-    width = size;
+    if ( size > 0 )
+    {
+      height = size;
+      width = size;
+    }
   }
 
-  const std::unique_ptr<QgsSymbol> minMaxSizeSymbol( QgsSymbolLayerUtils::restrictedSizeSymbol( s, minSymbolSize, maxSymbolSize, context, width, height ) );
+  bool restrictedSizeSymbolOK;
+  const std::unique_ptr<QgsSymbol> minMaxSizeSymbol( QgsSymbolLayerUtils::restrictedSizeSymbol( s, minSymbolSize, maxSymbolSize, context, width, height, &restrictedSizeSymbolOK ) );
   if ( minMaxSizeSymbol )
   {
     s = minMaxSizeSymbol.get();
@@ -739,12 +743,14 @@ QSizeF QgsSymbolLegendNode::drawSymbol( const QgsLegendSettings &settings, ItemC
     // QGIS 4.0 -- ctx->context will be mandatory
     const bool useAdvancedEffects = ctx->context ? ctx->context->flags() & Qgis::RenderContextFlag::UseAdvancedEffects : settings.useAdvancedEffects();
     Q_NOWARN_DEPRECATED_POP
+
     if ( opacity != 255 && useAdvancedEffects )
     {
+      // if this is a semi transparent layer, we need to draw symbol to an image (to flatten it first)
+
       const int maxBleed = static_cast< int >( std::ceil( QgsSymbolLayerUtils::estimateMaxSymbolBleed( s, *context ) ) );
 
-      //semi transparent layer, so need to draw symbol to an image (to flatten it first)
-      //create image which is same size as legend rect, in case symbol bleeds outside its allotted space
+      // create image which is same size as legend rect, in case symbol bleeds outside its allotted space
       const QSize symbolSize( static_cast< int >( std::round( width * dotsPerMM ) ), static_cast<int >( std::round( height * dotsPerMM ) ) );
       const QSize tempImageSize( symbolSize.width() + maxBleed * 2, symbolSize.height() + maxBleed * 2 );
       QImage tempImage = QImage( tempImageSize, QImage::Format_ARGB32 );
@@ -763,6 +769,18 @@ QSizeF QgsSymbolLegendNode::drawSymbol( const QgsLegendSettings &settings, ItemC
       imagePainter.end();
       //draw rendered symbol image
       p->drawImage( -maxBleed, -maxBleed, tempImage );
+    }
+    else if ( !restrictedSizeSymbolOK )
+    {
+      // if there is no restricted symbol size (because of geometry generator mainly) we need to ensure
+      // that there is no drawing outside the given size
+      const int maxBleed = static_cast< int >( std::ceil( QgsSymbolLayerUtils::estimateMaxSymbolBleed( s, *context ) ) );
+      const QSize symbolSize( static_cast< int >( std::round( width * dotsPerMM ) ), static_cast<int >( std::round( height * dotsPerMM ) ) );
+      const QSize maxSize( symbolSize.width() + maxBleed * 2, symbolSize.height() + maxBleed * 2 );
+      p->save();
+      p->setClipRect( -maxBleed, -maxBleed, maxSize.width(), maxSize.height(), Qt::IntersectClip );
+      s->drawPreviewIcon( p, symbolSize, context, false, nullptr, &patchShape );
+      p->restore();
     }
     else
     {

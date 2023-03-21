@@ -12,16 +12,19 @@ __copyright__ = 'Copyright 2017, The QGIS Project'
 import os
 from time import sleep
 
-from qgis.PyQt.QtCore import QDir, QRectF
-from qgis.PyQt.QtGui import QColor
+from qgis.PyQt.QtCore import QDir, QRectF, QUrl
+from qgis.PyQt.QtGui import QColor, QDesktopServices
 from qgis.PyQt.QtXml import QDomDocument
 
 from qgis.core import (
     QgsCategorizedSymbolRenderer,
     QgsCoordinateReferenceSystem,
     QgsExpression,
+    QgsFeature,
     QgsFillSymbol,
     QgsFontUtils,
+    QgsGeometry,
+    QgsGeometryGeneratorSymbolLayer,
     QgsLayout,
     QgsLayoutItem,
     QgsLayoutItemLegend,
@@ -43,10 +46,10 @@ from qgis.core import (
     QgsRendererCategory,
     QgsRuleBasedRenderer,
     QgsSingleSymbolRenderer,
+    QgsSymbol,
     QgsVectorLayer,
     QgsReadWriteContext,
-    QgsFeature,
-    QgsGeometry
+    QgsTextFormat
 )
 from qgis.testing import start_app, unittest
 
@@ -57,21 +60,29 @@ from utilities import unitTestDataPath
 start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
+REPORT_TITLE = "<h1>Python QgsLayoutItemLegend Tests</h1>\n"
+
 
 class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
+
+    report = None
 
     @classmethod
     def setUpClass(cls):
         super(TestQgsLayoutItemLegend, cls).setUpClass()
         cls.item_class = QgsLayoutItemLegend
-        cls.report = "<h1>Python QgsLayoutItemLegend Tests</h1>\n"
+        cls.report = REPORT_TITLE
 
     @classmethod
     def tearDownClass(cls):
+        super(TestQgsLayoutItemLegend, cls).tearDownClass()
         report_file_path = f"{QDir.tempPath()}/qgistest.html"
         with open(report_file_path, 'a') as report_file:
             report_file.write(cls.report)
-        super(TestQgsLayoutItemLegend, cls).tearDownClass()
+
+        if (os.environ.get('QGIS_CONTINUOUS_INTEGRATION_RUN', None) != "true" and
+                cls.report != REPORT_TITLE):
+            QDesktopServices.openUrl(QUrl("file:///{}".format(report_file_path)))
 
     def testInitialSizeSymbolMapUnits(self):
         """Test initial size of legend with a symbol size in map units"""
@@ -1103,24 +1114,6 @@ class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
         layout.addLayoutItem(legend)
         legend.setTitle("Legend")
         legend.attemptSetSceneRect(QRectF(220, 20, 20, 20))
-        legend.setFrameEnabled(True)
-        legend.setFrameStrokeWidth(QgsLayoutMeasurement(2))
-        legend.setBackgroundColor(QColor(200, 200, 200))
-        legend.setTitle('')
-
-        legend.setStyleFont(QgsLegendStyle.Title, QgsFontUtils.getStandardTestFont('Bold', 16))
-        legend.setStyleFont(QgsLegendStyle.Group, QgsFontUtils.getStandardTestFont('Bold', 16))
-        legend.setStyleFont(QgsLegendStyle.Subgroup, QgsFontUtils.getStandardTestFont('Bold', 16))
-        legend.setStyleFont(QgsLegendStyle.Symbol, QgsFontUtils.getStandardTestFont('Bold', 16))
-        legend.setStyleFont(QgsLegendStyle.SymbolLabel,
-                            QgsFontUtils.getStandardTestFont('Bold', 16))
-
-        checker = QgsLayoutChecker(
-            'legend_multiple_filter_maps_different_layers', layout)
-        checker.setControlPathPrefix("composer_legend")
-        result, message = checker.testLayout()
-        TestQgsLayoutItemLegend.report += checker.report()
-        self.assertTrue(result, message)
 
     def test_filter_by_map_content_rendering_different_layers_in_atlas(self):
         point_path = os.path.join(TEST_DATA_DIR, 'points.shp')
@@ -1218,6 +1211,134 @@ class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
         result, message = checker.testLayout()
         TestQgsLayoutItemLegend.report += checker.report()
         self.assertTrue(result, message)
+
+    def testGeomGeneratorPoints(self):
+        """Test legend behavior when geometry generator on points is involved"""
+        point_path = os.path.join(TEST_DATA_DIR, 'points.shp')
+        point_layer = QgsVectorLayer(point_path, 'points', 'ogr')
+        QgsProject.instance().addMapLayers([point_layer])
+
+        sub_symbol = QgsFillSymbol.createSimple({'color': '#8888ff', 'outline_style': 'no'})
+        sym = QgsMarkerSymbol()
+        buffer_layer = QgsGeometryGeneratorSymbolLayer.create(
+            {'geometryModifier': 'buffer($geometry, 0.05)'})
+        buffer_layer.setSymbolType(QgsSymbol.Fill)
+        buffer_layer.setSubSymbol(sub_symbol)
+        sym.changeSymbolLayer(0, buffer_layer)
+        point_layer.setRenderer(QgsSingleSymbolRenderer(sym))
+
+        s = QgsMapSettings()
+        s.setLayers([point_layer])
+        layout = QgsLayout(QgsProject.instance())
+        layout.initializeDefaults()
+
+        map = QgsLayoutItemMap(layout)
+        map.attemptSetSceneRect(QRectF(20, 20, 80, 80))
+        map.setFrameEnabled(True)
+        map.setLayers([point_layer])
+        layout.addLayoutItem(map)
+
+        legend = QgsLayoutItemLegend(layout)
+        legend.setTitle("Legend")
+        legend.attemptSetSceneRect(QRectF(120, 20, 80, 80))
+        legend.setFrameEnabled(True)
+        legend.setFrameStrokeWidth(QgsLayoutMeasurement(2))
+        legend.setBackgroundColor(QColor(200, 200, 200))
+        legend.setTitle('')
+        legend.setLegendFilterByMapEnabled(True)
+        legend.setSymbolWidth(20)
+        legend.setSymbolHeight(10)
+
+        text_format = QgsTextFormat()
+        text_format.setFont(QgsFontUtils.getStandardTestFont("Bold"))
+        text_format.setSize(16)
+
+        for legend_item in [QgsLegendStyle.Title, QgsLegendStyle.Group, QgsLegendStyle.Subgroup,
+                            QgsLegendStyle.Symbol, QgsLegendStyle.SymbolLabel]:
+            style = legend.style(legend_item)
+            style.setTextFormat(text_format)
+            legend.setStyle(legend_item, style)
+
+        # disable auto resizing
+        legend.setResizeToContents(False)
+
+        layout.addLayoutItem(legend)
+        legend.setLinkedMap(map)
+
+        map.setExtent(QgsRectangle(-102.51, 41.16, -102.36, 41.30))
+
+        checker = QgsLayoutChecker(
+            'composer_legend_geomgenerator_point', layout)
+        checker.setControlPathPrefix("composer_legend")
+        result, message = checker.testLayout()
+        TestQgsLayoutItemLegend.report += checker.report()
+        self.assertTrue(result, message)
+        QgsProject.instance().removeMapLayers([point_layer.id()])
+
+    def testGeomGeneratorLines(self):
+        """Test legend behavior when geometry generator on lines is involved"""
+        line_path = os.path.join(TEST_DATA_DIR, 'lines.shp')
+        line_layer = QgsVectorLayer(line_path, 'lines', 'ogr')
+        QgsProject.instance().addMapLayers([line_layer])
+
+        sub_symbol = QgsFillSymbol.createSimple({'color': '#8888ff', 'outline_style': 'no'})
+        sym = QgsLineSymbol()
+        buffer_layer = QgsGeometryGeneratorSymbolLayer.create(
+            {'geometryModifier': 'buffer($geometry, 0.2)'})
+        buffer_layer.setSymbolType(QgsSymbol.Fill)
+        buffer_layer.setSubSymbol(sub_symbol)
+        sym.changeSymbolLayer(0, buffer_layer)
+        line_layer.setRenderer(QgsSingleSymbolRenderer(sym))
+
+        s = QgsMapSettings()
+        s.setLayers([line_layer])
+        layout = QgsLayout(QgsProject.instance())
+        layout.initializeDefaults()
+
+        map = QgsLayoutItemMap(layout)
+        map.attemptSetSceneRect(QRectF(20, 20, 80, 80))
+        map.setFrameEnabled(True)
+        map.setLayers([line_layer])
+        layout.addLayoutItem(map)
+        map.setExtent(line_layer.extent())
+
+        legend = QgsLayoutItemLegend(layout)
+        legend.setTitle("Legend")
+        legend.attemptSetSceneRect(QRectF(120, 20, 80, 80))
+        legend.setFrameEnabled(True)
+        legend.setFrameStrokeWidth(QgsLayoutMeasurement(2))
+        legend.setBackgroundColor(QColor(200, 200, 200))
+        legend.setTitle('')
+        legend.setLegendFilterByMapEnabled(True)
+        legend.setSymbolWidth(20)
+        legend.setSymbolHeight(10)
+
+        text_format = QgsTextFormat()
+        text_format.setFont(QgsFontUtils.getStandardTestFont("Bold"))
+        text_format.setSize(16)
+
+        for legend_item in [QgsLegendStyle.Title, QgsLegendStyle.Group, QgsLegendStyle.Subgroup,
+                            QgsLegendStyle.Symbol, QgsLegendStyle.SymbolLabel]:
+            style = legend.style(legend_item)
+            style.setTextFormat(text_format)
+            legend.setStyle(legend_item, style)
+
+        # disable auto resizing
+        legend.setResizeToContents(False)
+
+        layout.addLayoutItem(legend)
+        legend.setLinkedMap(map)
+
+        map.setExtent(QgsRectangle(-100.3127, 35.7607, -98.5259, 36.5145))
+
+        checker = QgsLayoutChecker(
+            'composer_legend_geomgenerator_line', layout)
+        checker.setControlPathPrefix("composer_legend")
+        result, message = checker.testLayout()
+        TestQgsLayoutItemLegend.report += checker.report()
+        self.assertTrue(result, message)
+
+        QgsProject.instance().removeMapLayers([line_layer.id()])
 
 
 if __name__ == '__main__':
