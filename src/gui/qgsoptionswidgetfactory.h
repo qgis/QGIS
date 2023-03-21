@@ -113,9 +113,10 @@ class GUI_EXPORT QgsOptionsWidgetFactory : public QObject
     QgsOptionsWidgetFactory() = default;
 
     //! Constructor
-    QgsOptionsWidgetFactory( const QString &title, const QIcon &icon )
+    QgsOptionsWidgetFactory( const QString &title, const QIcon &icon, const QString &key = QString() )
       : mTitle( title )
       , mIcon( icon )
+      , mKey( key )
     {}
 
     /**
@@ -142,6 +143,20 @@ class GUI_EXPORT QgsOptionsWidgetFactory : public QObject
      * \see title()
      */
     void setTitle( const QString &title ) { mTitle = title; }
+
+    /**
+     * The key of the panel (untranslated title).
+     * \see setKey()
+     *
+     * \since QGIS 3.32
+     */
+    virtual QString key() const { return mKey; }
+
+    /**
+     * Set the \a key for the interface.
+     * \see key()
+     */
+    void setKey( const QString &key ) { mKey = key; }
 
     /**
      * Returns a tab name hinting at where this page should be inserted into the
@@ -178,6 +193,7 @@ class GUI_EXPORT QgsOptionsWidgetFactory : public QObject
   private:
     QString mTitle;
     QIcon mIcon;
+    QString mKey;
 
 
 };

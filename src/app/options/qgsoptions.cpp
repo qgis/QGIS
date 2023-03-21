@@ -1157,9 +1157,9 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
     mAdditionalOptionWidgets << page;
     const QString beforePage = factory->pagePositionHint();
     if ( beforePage.isEmpty() )
-      addPage( factory->title(), factory->title(), factory->icon(), page, factory->path() );
+      addPage( factory->title(), factory->title(), factory->icon(), page, factory->path(), factory->key() );
     else
-      insertPage( factory->title(), factory->title(), factory->icon(), page, beforePage, factory->path() );
+      insertPage( factory->title(), factory->title(), factory->icon(), page, beforePage, factory->path(), factory->key() );
 
     if ( QgsAdvancedSettingsWidget *advancedPage = qobject_cast< QgsAdvancedSettingsWidget * >( page ) )
     {
