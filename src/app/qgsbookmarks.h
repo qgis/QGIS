@@ -73,6 +73,7 @@ class APP_EXPORT QgsBookmarks : public QgsDockWidget, private Ui::QgsBookmarksBa
     void importFromXml();
 
     void lstBookmarks_doubleClicked( const QModelIndex & );
+    void lstBookmarks_customContextMenuRequested( QPoint pos );
 
   private:
     QgsBookmarkManagerProxyModel *mBookmarkModel = nullptr;

@@ -49,6 +49,8 @@ QgsBookmarks::QgsBookmarks( QWidget *parent )
   QgsGui::enableAutoGeometryRestore( this );
 
   connect( lstBookmarks, &QTreeView::doubleClicked, this, &QgsBookmarks::lstBookmarks_doubleClicked );
+  lstBookmarks->setContextMenuPolicy( Qt::CustomContextMenu );
+  connect( lstBookmarks, &QTreeView::customContextMenuRequested, this, &QgsBookmarks::lstBookmarks_customContextMenuRequested );
 
   bookmarksDockContents->layout()->setContentsMargins( 0, 0, 0, 0 );
   static_cast< QGridLayout * >( bookmarksDockContents->layout() )->setVerticalSpacing( 0 );
@@ -60,17 +62,15 @@ QgsBookmarks::QgsBookmarks( QWidget *parent )
   btnImpExp->setPopupMode( QToolButton::InstantPopup );
 
   QMenu *share = new QMenu( this );
-  QAction *btnExport = share->addAction( tr( "&Export" ) );
-  QAction *btnImport = share->addAction( tr( "&Import" ) );
-  btnExport->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionSharingExport.svg" ) ) );
-  btnImport->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionSharingImport.svg" ) ) );
-  connect( btnExport, &QAction::triggered, this, &QgsBookmarks::exportToXml );
-  connect( btnImport, &QAction::triggered, this, &QgsBookmarks::importFromXml );
+  share->addAction( actionExport );
+  share->addAction( actionImport );
   btnImpExp->setMenu( share );
 
   connect( actionAdd, &QAction::triggered, this, &QgsBookmarks::addClicked );
   connect( actionDelete, &QAction::triggered, this, &QgsBookmarks::deleteClicked );
   connect( actionZoomTo, &QAction::triggered, this, &QgsBookmarks::zoomToBookmark );
+  connect( actionExport, &QAction::triggered, this, &QgsBookmarks::exportToXml );
+  connect( actionImport, &QAction::triggered, this, &QgsBookmarks::importFromXml );
 
   mBookmarkToolbar->addWidget( btnImpExp );
 
@@ -143,6 +143,51 @@ void QgsBookmarks::lstBookmarks_doubleClicked( const QModelIndex &index )
 {
   Q_UNUSED( index )
   zoomToBookmark();
+}
+
+void QgsBookmarks::lstBookmarks_customContextMenuRequested( QPoint pos )
+{
+  // Get index of item under mouse
+  QModelIndex index = lstBookmarks->indexAt( pos );
+  if ( !index.isValid() )
+  {
+    // No bookmark under mouse, display generic menu
+    QMenu menu;
+    menu.addAction( actionAdd );
+    menu.addSeparator();
+    menu.addAction( actionExport );
+    menu.addAction( actionImport );
+    menu.exec( lstBookmarks->mapToGlobal( pos ) );
+    return;
+  }
+
+  // Create the context menu
+  QMenu menu;
+
+  // Add zoom and delete actions
+  menu.addAction( actionZoomTo );
+  menu.addAction( actionDelete );
+
+  // Get the bookmark
+  const QString id = lstBookmarks->model()->data( index, QgsBookmarkManagerModel::RoleId ).toString();
+  QgsBookmark bookmark = QgsApplication::bookmarkManager()->bookmarkById( id );
+  bool inProject = false;
+  if ( bookmark.id().isEmpty() )
+  {
+    inProject = true;
+    bookmark = QgsProject::instance()->bookmarkManager()->bookmarkById( id );
+  }
+
+  // Add an edit action (similar to the one in QgsBookmarksItemGuiProvider)
+  QAction *actionEdit = new QAction( tr( "Edit Spatial Bookmark…" ), &menu );
+  connect( actionEdit, &QAction::triggered, this, [bookmark, inProject]
+  {
+    QgsBookmarkEditorDialog *dlg = new QgsBookmarkEditorDialog( bookmark, inProject, QgisApp::instance(), QgisApp::instance()->mapCanvas() );
+    dlg->setAttribute( Qt::WA_DeleteOnClose );
+    dlg->show();
+  } );
+  menu.addAction( actionEdit );
+  menu.exec( lstBookmarks->viewport()->mapToGlobal( pos ) );
 }
 
 void QgsBookmarks::zoomToBookmark()
