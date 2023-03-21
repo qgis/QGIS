@@ -107,6 +107,8 @@ QgsFeatureList QgsTransformAlgorithm::processFeature( const QgsFeature &f, QgsPr
   if ( feature.hasGeometry() )
   {
     QgsGeometry g = feature.geometry();
+    // convert to straight segments to avoid issues with distorted curves
+    g.convertToStraightSegment();
     try
     {
       if ( g.transform( mTransform ) == Qgis::GeometryOperationResult::Success )
