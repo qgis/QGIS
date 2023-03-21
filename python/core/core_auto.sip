@@ -702,6 +702,7 @@
 %Include auto_generated/textrenderer/qgstextrenderer.sip
 %Include auto_generated/textrenderer/qgstextrendererutils.sip
 %Include auto_generated/textrenderer/qgstextshadowsettings.sip
+%Include auto_generated/sensor/qgssensormodel.sip
 %Include auto_generated/sensor/qgssensormanager.sip
 %Include auto_generated/sensor/qgssensorregistry.sip
 %Include auto_generated/sensor/qgsabstractsensor.sip

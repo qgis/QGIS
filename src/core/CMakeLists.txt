@@ -332,6 +332,7 @@ set(QGIS_CORE_SRCS
   textrenderer/qgstextrendererutils.cpp
   textrenderer/qgstextshadowsettings.cpp
 
+  sensor/qgssensormodel.cpp
   sensor/qgssensormanager.cpp
   sensor/qgssensorregistry.cpp
   sensor/qgsabstractsensor.cpp
@@ -1870,6 +1871,7 @@ set(QGIS_CORE_HDRS
   textrenderer/qgstextrendererutils.h
   textrenderer/qgstextshadowsettings.h
 
+  sensor/qgssensormodel.h
   sensor/qgssensormanager.h
   sensor/qgssensorregistry.h
   sensor/qgsabstractsensor.h
