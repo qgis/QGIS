@@ -21,6 +21,11 @@
 #include "qgscameracontroller.h"
 #include <QMenu>
 #include "qgs3dmapcanvaswidget.h"
+#include "qgsmapviewsmanager.h"
+#include "qgsoffscreen3dengine.h"
+#include "qgs3dmapscene.h"
+#include "qscreen.h"
+#include "qgsmapcanvas.h"
 
 float _normalizedAngle( float x )
 {
@@ -28,22 +33,55 @@ float _normalizedAngle( float x )
   if ( x < 0 ) x += 360;
   return x;
 }
-void _prepare3DViewsMenu( QMenu *menu, QgsLayout3DMapWidget *w, const std::function< void( Qgs3DMapCanvasWidget * ) > &slot )
+void _prepare3DViewsMenu( QMenu *menu, QgsLayout3DMapWidget *w, const std::function< void( Qgs3DMapScene * ) > &slot )
 {
   QObject::connect( menu, &QMenu::aboutToShow, w, [menu, slot]
   {
-    const QList<Qgs3DMapCanvasWidget *> lst = QgisApp::instance()->get3DMapViews();
+    const QList< QDomElement > views = QgsProject::instance()->viewsManager()->get3DViews();
+
     menu->clear();
-    for ( Qgs3DMapCanvasWidget *widget : lst )
+
+    for ( const QDomElement &viewConfig : views )
     {
-      QAction *a = new QAction( widget->canvasName(), menu );
+      QString viewName = viewConfig.attribute( QStringLiteral( "name" ) );
+      QAction *a = new QAction( viewName, menu );
       menu->addAction( a );
-      QObject::connect( a, &QAction::triggered, a, [slot, widget]
+      QObject::connect( a, &QAction::triggered, a, [slot, viewName]
       {
-        slot( widget );
+        QgsReadWriteContext readWriteContext;
+        readWriteContext.setPathResolver( QgsProject::instance()->pathResolver() );
+
+        QDomElement elem3DMap = QgsProject::instance()->viewsManager()->get3DViewSettings( viewName );
+
+        QDomElement elem3D = elem3DMap.firstChildElement( QStringLiteral( "qgis3d" ) );
+        Qgs3DMapSettings mapSettings = Qgs3DMapSettings();
+
+        mapSettings.readXml( elem3D, readWriteContext );
+        mapSettings.resolveReferences( *QgsProject::instance() );
+
+        mapSettings.setTransformContext( QgsProject::instance()->transformContext() );
+        mapSettings.setPathResolver( QgsProject::instance()->pathResolver() );
+        mapSettings.setMapThemeCollection( QgsProject::instance()->mapThemeCollection() );
+
+        // these things are not saved in project
+        mapSettings.setSelectionColor( QgisApp::instance()->mapCanvas()->selectionColor() );
+        mapSettings.setBackgroundColor( QgisApp::instance()->mapCanvas()->canvasColor() );
+        mapSettings.setOutputDpi( QGuiApplication::primaryScreen()->logicalDotsPerInch() );
+
+        QgsOffscreen3DEngine *engine = new QgsOffscreen3DEngine;
+        Qgs3DMapScene *scene = new Qgs3DMapScene( mapSettings, engine );
+
+        QDomElement elemCamera = elem3DMap.firstChildElement( QStringLiteral( "camera" ) );
+        if ( !elemCamera.isNull() )
+        {
+          scene->cameraController()->readXml( elemCamera );
+        }
+
+        slot( scene );
       } );
     }
-    if ( lst.isEmpty() )
+
+    if ( views.isEmpty() )
     {
       menu->addAction( QObject::tr( "No 3D maps defined" ) )->setEnabled( false );
     }
@@ -67,14 +105,14 @@ QgsLayout3DMapWidget::QgsLayout3DMapWidget( QgsLayoutItem3DMap *map3D )
 
   mMenu3DCanvases = new QMenu( this );
   mCopySettingsButton->setMenu( mMenu3DCanvases );
-  _prepare3DViewsMenu( mMenu3DCanvases, this, [ = ]( Qgs3DMapCanvasWidget * widget )
+  _prepare3DViewsMenu( mMenu3DCanvases, this, [ = ]( Qgs3DMapScene * scene )
   {
-    copy3DMapSettings( widget );
+    copy3DMapSettings( scene );
   } );
 
   mMenu3DCanvasesPose = new QMenu( this );
   mPoseFromViewButton->setMenu( mMenu3DCanvasesPose );
-  _prepare3DViewsMenu( mMenu3DCanvasesPose, this, [ = ]( Qgs3DMapCanvasWidget * widget ) { copyCameraPose( widget ); } );
+  _prepare3DViewsMenu( mMenu3DCanvasesPose, this, [ = ]( Qgs3DMapScene * scene ) { copyCameraPose( scene ); } );
 
   QList<QgsDoubleSpinBox *> lst;
   lst << mCenterXSpinBox << mCenterYSpinBox << mCenterZSpinBox << mDistanceToCenterSpinBox << mPitchAngleSpinBox << mHeadingAngleSpinBox;
@@ -101,11 +139,11 @@ void QgsLayout3DMapWidget::updateCameraPoseWidgetsFromItem()
   whileBlocking( mHeadingAngleSpinBox )->setValue( _normalizedAngle( pose.headingAngle() ) );
 }
 
-void QgsLayout3DMapWidget::copy3DMapSettings( Qgs3DMapCanvasWidget *widget )
+void QgsLayout3DMapWidget::copy3DMapSettings( Qgs3DMapScene *scene )
 {
-  if ( !widget )
+  if ( !scene )
     return;
-  Qgs3DMapSettings *settings = new Qgs3DMapSettings( *widget->mapCanvas3D()->map() );
+  Qgs3DMapSettings *settings = new Qgs3DMapSettings( *scene->mapSettings() );
 
   // first setting passed on
   if ( !mMap3D->mapSettings() )
@@ -114,18 +152,19 @@ void QgsLayout3DMapWidget::copy3DMapSettings( Qgs3DMapCanvasWidget *widget )
     mMap3D->setBackgroundColor( settings->backgroundColor() );
 
     // copy camera position details
-    mMap3D->setCameraPose( widget->mapCanvas3D()->cameraController()->cameraPose() );
+    mMap3D->setCameraPose( scene->cameraController()->cameraPose() );
     updateCameraPoseWidgetsFromItem();
   }
 
   mMap3D->setMapSettings( settings );
 }
 
-void QgsLayout3DMapWidget::copyCameraPose( Qgs3DMapCanvasWidget *widget )
+void QgsLayout3DMapWidget::copyCameraPose( Qgs3DMapScene *scene )
 {
-  if ( widget )
+  if ( scene )
   {
-    mMap3D->setCameraPose( widget->mapCanvas3D()->cameraController()->cameraPose() );
+    QgsCameraPose cameraPose = QgsCameraPose( scene->cameraController()->cameraPose() );
+    mMap3D->setCameraPose( cameraPose );
     updateCameraPoseWidgetsFromItem();
   }
 }
