@@ -74,7 +74,7 @@ void QgsAppQueryLogger::queryFinished( const QgsDatabaseQueryLogEntry &query )
     queryGroup->setSql( query.query );
   }
 
-  const long long newMaxCost = std::max< long long >( query.finishedTime - query.startedTime, mMaxCost );
+  const long long newMaxCost = std::max< long long >( static_cast< long long >( query.finishedTime - query.startedTime ), mMaxCost );
 
   // Calculate the number of children: if error or not fetched rows 1 row is added else 2 rows are added
   beginInsertRows( requestIndex, queryGroup->childCount(), queryGroup->childCount() + ( query.fetchedRows != -1 ? 1 : 0 ) );
@@ -217,8 +217,6 @@ QVariant QgsAppQueryLogger::data( const QModelIndex &index, int role ) const
       switch ( role )
       {
         case Qt::DisplayRole:
-          return node->data( QgsDevToolsModelNode::RoleElapsedTime );
-
         case QgsDevToolsModelNode::RoleElapsedTime:
           return node->data( QgsDevToolsModelNode::RoleElapsedTime );
 
@@ -307,10 +305,10 @@ bool QgsDatabaseQueryLoggerProxyModel::filterAcceptsRow( int source_row, const Q
 // QueryCostDelegate
 //
 
-QueryCostDelegate::QueryCostDelegate( quint32 sortRole, quint32 totalCostRole, QObject *parent )
+QueryCostDelegate::QueryCostDelegate( int sortRole, int totalCostRole, QObject *parent )
   : QStyledItemDelegate( parent )
-  , m_sortRole( sortRole )
-  , m_totalCostRole( totalCostRole )
+  , mSortRole( sortRole )
+  , mTotalCostRole( totalCostRole )
 {
 }
 
@@ -318,18 +316,18 @@ QueryCostDelegate::~QueryCostDelegate() = default;
 
 void QueryCostDelegate::paint( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index ) const
 {
-  const auto cost = index.data( m_sortRole ).toDouble();
+  const auto cost = index.data( mSortRole ).toDouble();
   if ( cost <= 0 )
   {
     QStyledItemDelegate::paint( painter, option, index );
     return;
   }
 
-  const auto totalCost = index.data( m_totalCostRole ).toDouble();
+  const auto totalCost = index.data( mTotalCostRole ).toDouble();
   const auto fraction = std::abs( float( cost ) / totalCost );
 
   auto rect = option.rect;
-  rect.setWidth( rect.width() * fraction );
+  rect.setWidth( static_cast< int >( rect.width() * fraction ) );
 
   const auto &brush = painter->brush();
   const auto &pen = painter->pen();
@@ -344,7 +342,7 @@ void QueryCostDelegate::paint( QPainter *painter, const QStyleOptionViewItem &op
     painter->drawRect( option.rect );
   }
 
-  const auto color = QColor::fromHsv( 120 - fraction * 120, 255, 255, ( -( ( fraction - 1 ) * ( fraction - 1 ) ) ) * 120 + 120 );
+  const auto color = QColor::fromHsv( static_cast< int >( 120 - fraction * 120 ), 255, 255, static_cast< int >( ( -( ( fraction - 1 ) * ( fraction - 1 ) ) ) * 120 + 120 ) );
   painter->setBrush( color );
   painter->drawRect( rect );
 
