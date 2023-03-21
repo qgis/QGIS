@@ -17,6 +17,7 @@
 
 #include "qgsalgorithmpdaltile.h"
 
+#include "qgsprocessingutils.h"
 #include "qgsrunprocess.h"
 #include "qgspointcloudlayer.h"
 
@@ -66,10 +67,6 @@ void QgsPdalTileAlgorithm::initAlgorithm( const QVariantMap & )
   paramCrs->setFlags( paramCrs->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
   addParameter( paramCrs.release() );
 
-  std::unique_ptr< QgsProcessingParameterFile > paramTempDir = std::make_unique< QgsProcessingParameterFile >( QStringLiteral( "TEMP_DIR" ), QObject::tr( "Temp directory" ), QgsProcessingParameterFile::Folder, QString(), QVariant(), true );
-  paramTempDir->setFlags( paramTempDir->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
-  addParameter( paramTempDir.release() );
-
   addParameter( new QgsProcessingParameterFolderDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Output directory" ) ) );
 }
 
@@ -91,23 +88,17 @@ QStringList QgsPdalTileAlgorithm::createArgumentLists( const QVariantMap &parame
   QStringList args;
   args.reserve( layers.count() + 4 );
 
+  const QString tempDir = context.temporaryFolder().isEmpty() ? QgsProcessingUtils::tempFolder( &context ) : context.temporaryFolder();
+
   args << QStringLiteral( "tile" )
        << QStringLiteral( "--length=%1" ).arg( length )
-       << QStringLiteral( "--output=%1" ).arg( outputDir );
+       << QStringLiteral( "--output=%1" ).arg( outputDir )
+       << QStringLiteral( "--temp_dir=%1" ).arg( tempDir );
 
   if ( parameters.value( QStringLiteral( "CRS" ) ).isValid() )
   {
     QgsCoordinateReferenceSystem crs = parameterAsCrs( parameters, QStringLiteral( "CRS" ), context );
     args << QStringLiteral( "--a_srs=%1" ).arg( crs.authid() );
-  }
-
-  if ( parameters.value( QStringLiteral( "TEMP_DIR" ) ).isValid() )
-  {
-    QString tempPath = parameterAsString( parameters, QStringLiteral( "TEMP_DIR" ), context );
-    if ( !tempPath.isEmpty() )
-    {
-      args << QStringLiteral( "--temp_dir=%1" ).arg( tempPath );
-    }
   }
 
   addThreadsParameter( args );

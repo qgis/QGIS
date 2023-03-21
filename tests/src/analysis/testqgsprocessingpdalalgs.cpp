@@ -476,6 +476,8 @@ void TestQgsProcessingPdalAlgs::tile()
   const QString outputDir = QDir::tempPath() + "/tiles";
   const QString tempDir = QDir::tempPath() + "/tmp_tiles";
 
+  QString tempFolder = QgsProcessingUtils::tempFolder();
+
   QVariantMap parameters;
   parameters.insert( QStringLiteral( "LAYERS" ), mPointCloudLayerPath );
   parameters.insert( QStringLiteral( "OUTPUT" ), outputDir );
@@ -484,33 +486,38 @@ void TestQgsProcessingPdalAlgs::tile()
   QCOMPARE( args, QStringList() << QStringLiteral( "tile" )
             << QStringLiteral( "--length=1000" )
             << QStringLiteral( "--output=%1" ).arg( outputDir )
+            << QStringLiteral( "--temp_dir=%1" ).arg( tempFolder )
             << mPointCloudLayerPath
           );
 
+  // override temp folder
+  context->setTemporaryFolder( tempDir );
+  args = alg->createArgumentLists( parameters, *context, &feedback );
+  QCOMPARE( args, QStringList() << QStringLiteral( "tile" )
+            << QStringLiteral( "--length=1000" )
+            << QStringLiteral( "--output=%1" ).arg( outputDir )
+            << QStringLiteral( "--temp_dir=%1" ).arg( tempDir )
+            << mPointCloudLayerPath
+          );
+
+  // set tile length
   parameters.insert( QStringLiteral( "LENGTH" ), 150 );
   args = alg->createArgumentLists( parameters, *context, &feedback );
   QCOMPARE( args, QStringList() << QStringLiteral( "tile" )
             << QStringLiteral( "--length=150" )
             << QStringLiteral( "--output=%1" ).arg( outputDir )
+            << QStringLiteral( "--temp_dir=%1" ).arg( tempDir )
             << mPointCloudLayerPath
           );
 
+  // assign crs
   parameters.insert( QStringLiteral( "CRS" ), QStringLiteral( "EPSG:4326" ) );
   args = alg->createArgumentLists( parameters, *context, &feedback );
   QCOMPARE( args, QStringList() << QStringLiteral( "tile" )
             << QStringLiteral( "--length=150" )
             << QStringLiteral( "--output=%1" ).arg( outputDir )
-            << QStringLiteral( "--a_srs=EPSG:4326" )
-            << mPointCloudLayerPath
-          );
-
-  parameters.insert( QStringLiteral( "TEMP_DIR" ), tempDir );
-  args = alg->createArgumentLists( parameters, *context, &feedback );
-  QCOMPARE( args, QStringList() << QStringLiteral( "tile" )
-            << QStringLiteral( "--length=150" )
-            << QStringLiteral( "--output=%1" ).arg( outputDir )
-            << QStringLiteral( "--a_srs=EPSG:4326" )
             << QStringLiteral( "--temp_dir=%1" ).arg( tempDir )
+            << QStringLiteral( "--a_srs=EPSG:4326" )
             << mPointCloudLayerPath
           );
 
@@ -520,8 +527,8 @@ void TestQgsProcessingPdalAlgs::tile()
   QCOMPARE( args, QStringList() << QStringLiteral( "tile" )
             << QStringLiteral( "--length=150" )
             << QStringLiteral( "--output=%1" ).arg( outputDir )
-            << QStringLiteral( "--a_srs=EPSG:4326" )
             << QStringLiteral( "--temp_dir=%1" ).arg( tempDir )
+            << QStringLiteral( "--a_srs=EPSG:4326" )
             << QStringLiteral( "--threads=2" )
             << mPointCloudLayerPath
           );
