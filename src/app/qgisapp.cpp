@@ -442,7 +442,9 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "pointcloud/qgspointcloudlayerstylewidget.h"
 #include "pointcloud/qgspointcloudlayersaveasdialog.h"
 #include "pointcloud/qgspointcloudlayerexporter.h"
+
 #include "project/qgsprojectelevationsettingswidget.h"
+#include "sensor/qgsprojectsensorsettingswidget.h"
 
 #include "qgsmaptoolsdigitizingtechniquemanager.h"
 #include "qgsmaptoolshaperegistry.h"
@@ -1507,6 +1509,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipBadLayers
 
   registerMapLayerPropertiesFactory( new QgsElevationShadingRendererSettingsWidgetFactory( this ) );
   registerProjectPropertiesWidgetFactory( new QgsProjectElevationSettingsWidgetFactory( this ) );
+  registerProjectPropertiesWidgetFactory( new QgsProjectSensorSettingsWidgetFactory( this ) );
 
   activateDeactivateLayerRelatedActions( nullptr ); // after members were created
 

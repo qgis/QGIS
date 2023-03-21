@@ -77,6 +77,12 @@ class GUI_EXPORT QgsOptionsPageWidget : public QWidget
      */
     virtual void apply() = 0;
 
+    /**
+     * Called to cancel settings changed in the options page (e.g. save them to
+     * QgsSettings objects). This is usually called when the options dialog is canceled.
+     */
+    virtual void cancel() { return; }
+
   protected:
 
     /**

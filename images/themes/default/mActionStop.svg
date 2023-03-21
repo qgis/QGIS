@@ -1,1 +1,5 @@
-<svg height="48" width="48" xmlns="http://www.w3.org/2000/svg"><path d="m12 12h24v24h-24z" fill="#747474"/></svg>
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="48" height="48" version="1.1" xmlns="http://www.w3.org/2000/svg">
+ <path d="m12 12h24v24h-24z" fill="#505050" stroke="#fff" stroke-opacity=".50196" stroke-width="2"/>
+ <path d="m12 12h24v24h-24z" fill="#505050"/>
+</svg>

@@ -182,6 +182,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   projectionSelector->setShowNoProjection( true );
 
   connect( buttonBox->button( QDialogButtonBox::Apply ), &QAbstractButton::clicked, this, &QgsProjectProperties::apply );
+  connect( this, &QDialog::finished, this, [ = ]( int result ) { if ( result == QDialog::Rejected ) cancel(); } );
 
   // disconnect default connection setup by initOptionsBase for accepting dialog, and insert logic
   // to validate widgets before allowing dialog to be closed
@@ -1735,6 +1736,14 @@ void QgsProjectProperties::apply()
   for ( QgsMapCanvas *canvas : constMapCanvases )
   {
     canvas->redrawAllLayers();
+  }
+}
+
+void QgsProjectProperties::cancel()
+{
+  for ( QgsOptionsPageWidget *widget : std::as_const( mAdditionalProjectPropertiesWidgets ) )
+  {
+    widget->cancel();
   }
 }
 
