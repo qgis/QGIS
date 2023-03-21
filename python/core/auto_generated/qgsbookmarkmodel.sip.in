@@ -35,6 +35,7 @@ model data is a merge of the bookmarks stored in both managers.
       RoleName,
       RoleId,
       RoleGroup,
+      RoleRotation,
     };
 
     enum Columns
@@ -45,6 +46,7 @@ model data is a merge of the bookmarks stored in both managers.
       ColumnYMin,
       ColumnXMax,
       ColumnYMax,
+      ColumnRotation,
       ColumnCrs,
       ColumnStore,
     };
