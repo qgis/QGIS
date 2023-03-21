@@ -141,14 +141,14 @@ class QueryCostDelegate : public QStyledItemDelegate
 {
     Q_OBJECT
   public:
-    explicit QueryCostDelegate( quint32 sortRole, quint32 totalCostRole, QObject *parent = nullptr );
+    explicit QueryCostDelegate( int sortRole, int totalCostRole, QObject *parent = nullptr );
     ~QueryCostDelegate();
 
     void paint( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
 
   private:
-    quint32 m_sortRole;
-    quint32 m_totalCostRole;
+    int mSortRole = 0;
+    int mTotalCostRole = 0;
 };
 
 #endif // QGSAPPQUERYLOGGER_H
