@@ -100,12 +100,16 @@ class CORE_EXPORT QgsBookmark
     /**
      * Returns the bookmark's map rotation.
      * \see setRotation()
+     *
+     * \since QGIS 3.32
      */
     double rotation() const;
 
     /**
      * Sets the bookmark's spatial map \a rotation.
      * \see rotation()
+     *
+     * \since QGIS 3.32
      */
     void setRotation( double rotation );
 
