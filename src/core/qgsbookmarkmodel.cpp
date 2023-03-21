@@ -276,7 +276,7 @@ QVariant QgsBookmarkManagerModel::headerData( int section, Qt::Orientation orien
       case ColumnYMax:
         return tr( "yMax" );
       case ColumnRotation:
-        return tr( "rotation" );
+        return tr( "Rotation" );
       case ColumnCrs:
         return tr( "CRS" );
       case ColumnStore:

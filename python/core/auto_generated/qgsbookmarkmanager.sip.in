@@ -97,6 +97,8 @@ Sets the bookmark's spatial ``extent``.
 Returns the bookmark's map rotation.
 
 .. seealso:: :py:func:`setRotation`
+
+.. versionadded:: 3.32
 %End
 
     void setRotation( double rotation );
@@ -104,6 +106,8 @@ Returns the bookmark's map rotation.
 Sets the bookmark's spatial map ``rotation``.
 
 .. seealso:: :py:func:`rotation`
+
+.. versionadded:: 3.32
 %End
 
     static QgsBookmark fromXml( const QDomElement &element, const QDomDocument &doc );
