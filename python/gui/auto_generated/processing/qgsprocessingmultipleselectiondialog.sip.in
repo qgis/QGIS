@@ -103,13 +103,13 @@ Adds a new option to the widget.
 Returns pointer to the list view
 %End
 
+
     virtual void dragEnterEvent( QDragEnterEvent *event );
 
 %Docstring
 Value formatter
 %End
     virtual void dropEvent( QDropEvent *event );
-
 
 
 };
