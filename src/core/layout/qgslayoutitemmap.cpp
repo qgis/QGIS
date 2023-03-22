@@ -1596,7 +1596,7 @@ QgsMapSettings QgsLayoutItemMap::mapSettings( const QgsRectangle &extent, QSizeF
   if ( mAtlasClippingSettings->enabled() && mLayout->reportContext().feature().isValid() )
   {
     QgsGeometry clipGeom( atlasGeometry( jobMapSettings.destinationCrs() ) );
-    if ( clipGeom.type() != QgsWkbTypes::PolygonGeometry )
+    if ( QgsWkbTypes::geometryType( clipGeom.wkbType() ) != Qgis::GeometryType::Polygon )
       return jobMapSettings;
     QgsMapClippingRegion region( clipGeom );
     region.setFeatureClip( mAtlasClippingSettings->featureClippingType() );

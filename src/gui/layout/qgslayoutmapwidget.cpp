@@ -950,7 +950,7 @@ void QgsLayoutMapWidget::toggleAtlasScalingOptionsByLayerType()
     return;
   }
 
-  if ( QgsWkbTypes::geometryType( layer->mMapItem->atlasGeometry( mMapItem->crs() ).wkbType() ) == Qgis::GeometryType::Point && !mDataDefinedProperties.isActive( QgsLayoutObject::AtlasGeometryOverride ) )
+  if ( QgsWkbTypes::geometryType( layer->mMapItem->atlasGeometry( mMapItem->crs() ).wkbType() ) == Qgis::GeometryType::Point )
   {
     //For point layers buffer setting makes no sense, so set "fixed scale" on and disable margin control
     if ( mMapItem->atlasScalingMode() == QgsLayoutItemMap::Auto )
@@ -2160,7 +2160,7 @@ void QgsLayoutMapClippingWidget::updateGuiElements()
 
 void QgsLayoutMapClippingWidget::atlasLayerChanged( QgsVectorLayer *layer )
 {
-  if ( !layer || QgsWkbTypes::geometryType( layer->mMapItem->atlasGeometry( mMapItem->crs() ).wkbType() ) == Qgis::GeometryType::Point )
+  if ( !layer || QgsWkbTypes::geometryType( layer->mMapItem->atlasGeometry( mMapItem->crs() ).wkbType() ) != Qgis::GeometryType::Polygon )
   {
     //non-polygon layer, disable atlas control
     mClipToAtlasCheckBox->setChecked( false );
@@ -2177,7 +2177,7 @@ void QgsLayoutMapClippingWidget::atlasToggled( bool atlasEnabled )
 {
   if ( atlasEnabled &&
        mMapItem && mMapItem->layout() && mMapItem->layout()->reportContext().layer() &&
-       QgsWkbTypes::geometryType( layer->mMapItem->atlasGeometry( mMapItem->crs() ).wkbType() ) != Qgis::GeometryType::Point )
+       QgsWkbTypes::geometryType( layer->mMapItem->atlasGeometry( mMapItem->crs() ).wkbType() ) == Qgis::GeometryType::Polygon )
   {
     mClipToAtlasCheckBox->setEnabled( true );
   }
