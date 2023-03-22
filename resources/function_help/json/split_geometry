@@ -2,7 +2,7 @@
   "name": "split_geometry",
   "type": "function",
   "groups": ["GeometryGroup"],
-  "description": "Returns a multipart geometry if the provided geometry is not a point and is crossed by an edge of the second geometry provided. Otherwise will return the unchanged geometry.",
+  "description": "Splits an input geometry by another geometry. Returns a multipart geometry if the input geometry is not a point and is crossed by an edge of the second geometry provided. Otherwise will return the input geometry unchanged.",
   "arguments": [{
     "arg": "geometry",
     "description": "The line or polygon geometry to split"

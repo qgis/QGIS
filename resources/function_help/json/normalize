@@ -2,7 +2,7 @@
   "name": "normalize",
   "type": "function",
   "groups": ["GeometryGroup"],
-  "description": "Reorganizes the vertices and geometry part in a predictable order. The first vertices are in the bottom left.",
+  "description": "Reorganizes the vertices and geometry parts in a predictable order.",
   "arguments": [{
     "arg": "geometry",
     "description": "The geometry to normalize."
