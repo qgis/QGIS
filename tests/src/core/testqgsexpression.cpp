@@ -5618,20 +5618,20 @@ class TestQgsExpression: public QObject
       QgsExpressionContext context;
 
       QLocale::setDefault( QLocale::Italian );
-      QgsExpression exp( QStringLiteral( "toint('3.2')" ) );
-      QVERIFY( exp.prepare( &context ) );
-      QCOMPARE( exp.evaluate( &context ), QVariant( 3 ) );
-      exp( QStringLiteral( "toint('3,2')" ) );
-      QVERIFY( exp.prepare( &context ) );
-      QCOMPARE( exp.evaluate( &context ), QVariant( 3 ) );
+      QgsExpression exp1( QStringLiteral( "toint('3.2')" ) );
+      QVERIFY( exp1.prepare( &context ) );
+      QCOMPARE( exp1.evaluate( &context ), QVariant( 3 ) );
+      QgsExpression exp2( QStringLiteral( "toint('3,2')" ) );
+      QVERIFY( exp2.prepare( &context ) );
+      QCOMPARE( exp2.evaluate( &context ), QVariant( 3 ) );
 
       QLocale::setDefault( QLocale::English );
-      exp( QStringLiteral( "toint('3.2')" ) );
-      QVERIFY( exp.prepare( &context ) );
-      QCOMPARE( exp.evaluate( &context ), QVariant( 3 ) );
-      exp( QStringLiteral( "toint('3,2')" ) );
-      QVERIFY( exp.prepare( &context ) );
-      QCOMPARE( exp.evaluate( &context ), QVariant() );
+      QgsExpression exp3( QStringLiteral( "toint('3.2')" ) );
+      QVERIFY( exp3.prepare( &context ) );
+      QCOMPARE( exp3.evaluate( &context ), QVariant( 3 ) );
+      QgsExpression exp4( QStringLiteral( "toint('3,2')" ) );
+      QVERIFY( exp4.prepare( &context ) );
+      QCOMPARE( exp4.evaluate( &context ), QVariant() );
     }
 
     void testNodeSetCachedStaticValue()
