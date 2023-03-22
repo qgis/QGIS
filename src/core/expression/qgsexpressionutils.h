@@ -234,7 +234,7 @@ class CORE_EXPORT QgsExpressionUtils
       bool ok;
       if ( value.type() == QVariant::String )
       {
-        const double doubleValue = value.toDouble( ok );
+        const double doubleValue = value.toDouble( &ok );
         if ( ok )
         {
           return qRound64( doubleValue );

@@ -5622,7 +5622,7 @@ class TestQgsExpression: public QObject
       QVERIFY( exp1.prepare( &context ) );
       QCOMPARE( exp1.evaluate( &context ), QVariant( 3 ) );
       QgsExpression exp2( QStringLiteral( "toint('3,2')" ) );
-       QVERIFY( exp2.hasParserError() );
+      QVERIFY( exp2.hasParserError() );
 
       QLocale::setDefault( QLocale::English );
       QgsExpression exp3( QStringLiteral( "toint('3.2')" ) );
