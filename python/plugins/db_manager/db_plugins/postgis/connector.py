@@ -648,9 +648,6 @@ class PostGisDBConnector(DBConnector):
         schema, tablename = self.getSchemaTableName(table)
         schema_where = " AND nspname=%s " % self.quoteString(schema) if schema is not None else ""
 
-        version_number = int(self.getInfo()[0].split(' ')[1].split('.')[0])
-        ad_col_name = 'adsrc' if version_number < 12 else 'adbin'
-
         sql = """SELECT a.attnum AS ordinal_position,
                                 a.attname AS column_name,
                                 t.typname AS data_type,
@@ -658,7 +655,7 @@ class PostGisDBConnector(DBConnector):
                                 a.atttypmod AS modifier,
                                 a.attnotnull AS notnull,
                                 a.atthasdef AS hasdefault,
-                                adef.%s AS default_value,
+                                pg_catalog.pg_get_expr(adef.adbin, adef.adrelid) AS default_value,
                                 pg_catalog.format_type(a.atttypid,a.atttypmod) AS formatted_type
                         FROM pg_class c
                         JOIN pg_attribute a ON a.attrelid = c.oid
@@ -667,7 +664,7 @@ class PostGisDBConnector(DBConnector):
                         LEFT JOIN pg_attrdef adef ON adef.adrelid = a.attrelid AND adef.adnum = a.attnum
                         WHERE
                           a.attnum > 0 AND c.relname=%s %s
-                        ORDER BY a.attnum""" % (ad_col_name, self.quoteString(tablename), schema_where)
+                        ORDER BY a.attnum""" % (self.quoteString(tablename), schema_where)
 
         c = self._execute(None, sql)
         res = self._fetchall(c)
