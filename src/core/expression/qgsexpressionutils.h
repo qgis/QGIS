@@ -226,7 +226,7 @@ class CORE_EXPORT QgsExpressionUtils
         parent->setEvalErrorString( QObject::tr( "Cannot convert '%1' to double" ).arg( value.toString() ) );
         return 0;
       }
-      return x;
+      return converted;
     }
 
     static double getDoubleInternal( const QVariant &value, bool *validation )
