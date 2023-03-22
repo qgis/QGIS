@@ -36,6 +36,11 @@ class CORE_EXPORT QgsXyzVectorTileDataProviderBase : public QgsVectorTileDataPro
                                       QgsDataProvider::ReadFlags flags );
     QgsXyzVectorTileDataProviderBase( const QgsXyzVectorTileDataProviderBase &other );
 
+    /**
+     * QgsXyzVectorTileDataProviderBase cannot be assigned.
+     */
+    QgsXyzVectorTileDataProviderBase &operator=( const QgsXyzVectorTileDataProviderBase &other ) = delete;
+
     bool supportsAsync() const override;
     QByteArray readTile( const QgsTileMatrix &tileMatrix, const QgsTileXYZ &id, QgsFeedback *feedback = nullptr ) const override;
     QList<QgsVectorTileRawData> readTiles( const QgsTileMatrix &, const QVector<QgsTileXYZ> &tiles, QgsFeedback *feedback = nullptr ) const override;
@@ -67,6 +72,11 @@ class CORE_EXPORT QgsXyzVectorTileDataProvider : public QgsXyzVectorTileDataProv
                                   const QgsDataProvider::ProviderOptions &providerOptions,
                                   QgsDataProvider::ReadFlags flags );
     QgsXyzVectorTileDataProvider( const QgsXyzVectorTileDataProvider &other );
+
+    /**
+     * QgsXyzVectorTileDataProvider cannot be assigned.
+     */
+    QgsXyzVectorTileDataProvider &operator=( const QgsXyzVectorTileDataProvider &other ) = delete;
 
     QString name() const override;
     QString description() const override;
