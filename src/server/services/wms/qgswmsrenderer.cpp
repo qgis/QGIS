@@ -127,10 +127,26 @@ namespace QgsWms
     QgsLegendSettings settings = legendSettings();
     QgsLegendRenderer renderer( &model, settings );
 
-    // create image
+    // create context
+    QgsRenderContext context;
+    if ( !mWmsParameters.bbox().isEmpty() )
+    {
+      QgsMapSettings mapSettings;
+      mapSettings.setFlag( Qgis::MapSettingsFlag::RenderBlocking );
+      std::unique_ptr<QImage> tmp( createImage( mContext.mapSize( false ) ) );
+      configureMapSettings( tmp.get(), mapSettings );
+      context = QgsRenderContext::fromMapSettings( mapSettings );
+    }
+    else
+    {
+      //use default scale settings
+      context = configureDefaultRenderContext();
+    }
+
+    // create image according to context
     std::unique_ptr<QImage> image;
     const qreal dpmm = mContext.dotsPerMm();
-    const QSizeF minSize = renderer.minimumSize();
+    const QSizeF minSize = renderer.minimumSize( &context );
     const QSize size( static_cast<int>( minSize.width() * dpmm ), static_cast<int>( minSize.height() * dpmm ) );
     if ( !mContext.isValidWidthHeight( size.width(), size.height() ) )
     {
@@ -138,16 +154,17 @@ namespace QgsWms
     }
     image.reset( createImage( size ) );
 
-    // configure painter
+    // configure painter and addapt to the context
     QPainter painter( image.get() );
-    QgsRenderContext context = QgsRenderContext::fromQPainter( &painter );
+
+    context.setPainter( &painter );
+    if ( painter.renderHints() & QPainter::SmoothPixmapTransform )
+      context.setFlag( Qgis::RenderContextFlag::HighQualityImageTransforms, true );
+    if ( painter.renderHints() & QPainter::LosslessImageRendering )
+      context.setFlag( Qgis::RenderContextFlag::LosslessImageRendering, true );
+
     context.setFlag( Qgis::RenderContextFlag::Antialiasing, true );
     QgsScopedRenderContextScaleToMm scaleContext( context );
-    // QGIS 4.0 -- take from real render context instead
-    Q_NOWARN_DEPRECATED_PUSH
-    context.setRendererScale( settings.mapScale() );
-    context.setMapToPixel( QgsMapToPixel( 1 / ( settings.mmPerMapUnit() * context.scaleFactor() ) ) );
-    Q_NOWARN_DEPRECATED_POP
 
     // rendering
     renderer.drawLegend( context );
@@ -186,6 +203,11 @@ namespace QgsWms
     QgsLegendSettings settings = legendSettings();
     QgsLayerTreeModelLegendNode::ItemContext ctx;
     ctx.painter = painter.get();
+
+    // create context
+    QgsRenderContext context = configureDefaultRenderContext( painter.get() );
+    ctx.context = &context;
+
     nodeModel.drawSymbol( settings, &ctx, size.height() / dpmm );
     painter->end();
 
@@ -1351,6 +1373,19 @@ namespace QgsWms
       }
 
     }
+  }
+
+  QgsRenderContext QgsRenderer::configureDefaultRenderContext( QPainter *painter )
+  {
+    QgsRenderContext context = QgsRenderContext::fromQPainter( painter );
+    context.setScaleFactor( mContext.dotsPerMm() );
+    const double mmPerMapUnit = 1 / QgsServerProjectUtils::wmsDefaultMapUnitsPerMm( *mProject );
+    context.setMapToPixel( QgsMapToPixel( 1 / ( mmPerMapUnit * context.scaleFactor() ) ) );
+    QgsDistanceArea distanceArea = QgsDistanceArea();
+    distanceArea.setSourceCrs( QgsCoordinateReferenceSystem( mWmsParameters.crs() ), mProject->transformContext() );
+    distanceArea.setEllipsoid( geoNone() );
+    context.setDistanceArea( distanceArea );
+    return context;
   }
 
   QDomDocument QgsRenderer::featureInfoDocument( QList<QgsMapLayer *> &layers, const QgsMapSettings &mapSettings,
