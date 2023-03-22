@@ -232,7 +232,6 @@ void QgsProcessingMultipleSelectionPanelWidget::dragEnterEvent( QDragEnterEvent 
     // dragged an acceptable layer, phew
     event->setDropAction( Qt::CopyAction );
     event->accept();
-    update();
   }
 }
 
@@ -241,7 +240,7 @@ void QgsProcessingMultipleSelectionPanelWidget::dropEvent( QDropEvent *event )
   if ( !( event->possibleActions() & Qt::CopyAction ) )
     return;
 
-  QList< int> indexes =  existingMapLayerFromMimeData( event->mimeData() );
+  const QList< int> indexes =  existingMapLayerFromMimeData( event->mimeData() );
   if ( !indexes.isEmpty() )
   {
     // dropped an acceptable layer, phew
@@ -255,7 +254,6 @@ void QgsProcessingMultipleSelectionPanelWidget::dropEvent( QDropEvent *event )
     }
     emit selectionChanged();
   }
-  update();
 }
 
 void QgsProcessingMultipleSelectionPanelWidget::addOption( const QVariant &value, const QString &title, bool selected, bool updateExistingTitle )
@@ -436,7 +434,6 @@ void QgsProcessingMultipleInputPanelWidget::dragEnterEvent( QDragEnterEvent *eve
     // dragged an acceptable layer, phew
     event->setDropAction( Qt::CopyAction );
     event->accept();
-    update();
   }
 }
 
@@ -445,7 +442,7 @@ void QgsProcessingMultipleInputPanelWidget::dropEvent( QDropEvent *event )
   if ( !( event->possibleActions() & Qt::CopyAction ) )
     return;
 
-  QList< int> indexes =  existingMapLayerFromMimeData( event->mimeData() );
+  const QList< int> indexes =  existingMapLayerFromMimeData( event->mimeData() );
   if ( !indexes.isEmpty() )
   {
     // dropped an acceptable layer, phew
@@ -459,7 +456,6 @@ void QgsProcessingMultipleInputPanelWidget::dropEvent( QDropEvent *event )
     }
     emit selectionChanged();
   }
-  update();
 }
 
 void QgsProcessingMultipleInputPanelWidget::populateFromProject( QgsProject *project )
