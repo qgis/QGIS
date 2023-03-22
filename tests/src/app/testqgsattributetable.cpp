@@ -891,9 +891,8 @@ void TestQgsAttributeTable::testEnsureEditSelection()
   // we reload the layer
   layer->reload();
   spy.wait( 1 );
-  // ... and the currentEditSelection jumps to the first one (instead of staying at 2, since it's NOT persistend)
-  QVERIFY( dlg->mMainView->mFeatureListView->currentEditSelection().contains( 1 ) );
-
+  // ... and the currentEditSelection stays on 2 (since lastEditSelectionFid is persisted)
+  QVERIFY( dlg->mMainView->mFeatureListView->currentEditSelection().contains( 2 ) );
 }
 
 QGSTEST_MAIN( TestQgsAttributeTable )
