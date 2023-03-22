@@ -112,7 +112,7 @@ bool QgsVectorTileLayer::loadDataSource()
     setExtent( mDataProvider->extent() );
   }
 
-  return true;
+  return mDataProvider && mDataProvider->isValid();
 }
 
 QgsVectorTileLayer::~QgsVectorTileLayer() = default;
