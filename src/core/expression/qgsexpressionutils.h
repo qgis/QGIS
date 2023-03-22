@@ -220,21 +220,11 @@ class CORE_EXPORT QgsExpressionUtils
     static double getDoubleValue( const QVariant &value, QgsExpression *parent )
     {
       bool ok;
-      const double converted = getDoubleInternal( value, &ok );
+      const double converted = value.toDouble( &ok );
       if ( !ok || std::isnan( converted ) || !std::isfinite( converted ) )
       {
         parent->setEvalErrorString( QObject::tr( "Cannot convert '%1' to double" ).arg( value.toString() ) );
         return 0;
-      }
-      return converted;
-    }
-
-    static double getDoubleInternal( const QVariant &value, bool *validation )
-    {
-      const double converted = value.toDouble( validation );
-      if ( validation && *validation == false )
-      {
-        return QLocale().toDouble( value.toString(), validation );
       }
       return converted;
     }
@@ -244,7 +234,7 @@ class CORE_EXPORT QgsExpressionUtils
       bool ok;
       if ( value.type() == QVariant::String )
       {
-        const double doubleValue = getDoubleInternal( value, &ok );
+        const double doubleValue = value.toDouble( ok );
         if ( ok )
         {
           return qRound64( doubleValue );
