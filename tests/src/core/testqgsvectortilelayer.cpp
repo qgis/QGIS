@@ -354,12 +354,10 @@ void TestQgsVectorTileLayer::test_absoluteRelativeUriVtpk()
   QgsDataSourceUri dsAbs;
   dsAbs.setParam( "type", "vtpk" );
   dsAbs.setParam( "url", QString( "%1/testvtpk.vtpk" ).arg( TEST_DATA_DIR ) );
-  dsAbs.setParam( "zmax", "1" );
 
   QgsDataSourceUri dsRel;
   dsRel.setParam( "type", "vtpk" );
   dsRel.setParam( "url", "./testvtpk.vtpk" );
-  dsRel.setParam( "zmax", "1" );
 
   QString absoluteUri = dsAbs.encodedUri();
   QString relativeUri = dsRel.encodedUri();
