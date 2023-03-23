@@ -66,6 +66,11 @@ Sets the map of layer IDs to legend filter expression.
 .. seealso:: :py:func:`layerFilterExpressions`
 %End
 
+    void setLayerFilterExpressionsFromLayerTree( QgsLayerTree *tree );
+%Docstring
+Sets layer filter expressions using a layer ``tree``.
+%End
+
     QString layerFilterExpression( const QString &layerId ) const;
 %Docstring
 Returns the filter expression to use for the layer with the specified

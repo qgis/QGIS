@@ -1168,21 +1168,7 @@ void QgsLayoutItemLegend::doUpdateFilterByMap()
     }
 
     QgsLayerTreeFilterSettings filterSettings( ms );
-
-    // set filter expressions
-    QMap<QString, QString> legendFilterExpressions;
-    const QList<QgsLayerTreeLayer *> layers = mLegendModel->rootGroup()->findLayers();
-    for ( QgsLayerTreeLayer *nodeLayer : layers )
-    {
-      bool enabled = false;
-      const QString legendFilterExpression = QgsLayerTreeUtils::legendFilterByExpression( *nodeLayer, &enabled );
-      if ( enabled && !legendFilterExpression.isEmpty() )
-      {
-        legendFilterExpressions[ nodeLayer->layerId()] = legendFilterExpression;
-      }
-    }
-    filterSettings.setLayerFilterExpressions( legendFilterExpressions );
-
+    filterSettings.setLayerFilterExpressionsFromLayerTree( mLegendModel->rootGroup() );
     if ( !filterGeometry.isNull() )
     {
       filterSettings.setFilterPolygon( filterGeometry );
@@ -1195,7 +1181,7 @@ void QgsLayoutItemLegend::doUpdateFilterByMap()
   }
   else
   {
-    mLegendModel->setLegendFilterByMap( nullptr );
+    mLegendModel->setFilterSettings( nullptr );
   }
 
   clearLegendCachedData();

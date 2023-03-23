@@ -15,6 +15,8 @@
 
 #include "qgslayertreefiltersettings.h"
 #include "qgsmapsettings.h"
+#include "qgslayertreeutils.h"
+#include "qgslayertree.h"
 
 QgsLayerTreeFilterSettings::QgsLayerTreeFilterSettings( const QgsMapSettings &settings )
   : mMapSettings( std::make_unique<QgsMapSettings>( settings ) )
@@ -58,6 +60,22 @@ QMap<QString, QString> QgsLayerTreeFilterSettings::layerFilterExpressions() cons
 void QgsLayerTreeFilterSettings::setLayerFilterExpressions( const QMap<QString, QString> &expressions )
 {
   mLayerFilterExpressions = expressions;
+}
+
+void QgsLayerTreeFilterSettings::setLayerFilterExpressionsFromLayerTree( QgsLayerTree *tree )
+{
+  QMap<QString, QString> legendFilterExpressions;
+  const QList<QgsLayerTreeLayer *> layers = tree->findLayers();
+  for ( QgsLayerTreeLayer *nodeLayer : layers )
+  {
+    bool enabled = false;
+    const QString legendFilterExpression = QgsLayerTreeUtils::legendFilterByExpression( *nodeLayer, &enabled );
+    if ( enabled && !legendFilterExpression.isEmpty() )
+    {
+      legendFilterExpressions[ nodeLayer->layerId()] = legendFilterExpression;
+    }
+  }
+  mLayerFilterExpressions = legendFilterExpressions;
 }
 
 QString QgsLayerTreeFilterSettings::layerFilterExpression( const QString &layerId ) const

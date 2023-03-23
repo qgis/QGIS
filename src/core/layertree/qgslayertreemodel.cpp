@@ -20,7 +20,6 @@
 
 #include "qgsapplication.h"
 #include "qgslayertree.h"
-#include "qgslayertreeutils.h"
 #include "qgslayertreemodellegendnode.h"
 #include "qgsproject.h"
 #include "qgsmaphittest.h"
@@ -598,7 +597,9 @@ void QgsLayerTreeModel::setLegendFilterByScale( double scale )
 
 void QgsLayerTreeModel::setLegendFilterByMap( const QgsMapSettings *settings )
 {
+  Q_NOWARN_DEPRECATED_PUSH
   setLegendFilter( settings, /* useExtent = */ true );
+  Q_NOWARN_DEPRECATED_POP
 }
 
 void QgsLayerTreeModel::setLegendFilter( const QgsMapSettings *settings, bool useExtent, const QgsGeometry &polygon, bool useExpressions )
@@ -618,18 +619,7 @@ void QgsLayerTreeModel::setLegendFilter( const QgsMapSettings *settings, bool us
 
     if ( useExpressions )
     {
-      QMap<QString, QString> legendFilterExpressions;
-      const QList<QgsLayerTreeLayer *> layers = mRootNode->findLayers();
-      for ( QgsLayerTreeLayer *nodeLayer : layers )
-      {
-        bool enabled = false;
-        const QString legendFilterExpression = QgsLayerTreeUtils::legendFilterByExpression( *nodeLayer, &enabled );
-        if ( enabled && !legendFilterExpression.isEmpty() )
-        {
-          legendFilterExpressions[ nodeLayer->layerId()] = legendFilterExpression;
-        }
-      }
-      filterSettings->setLayerFilterExpressions( legendFilterExpressions );
+      filterSettings->setLayerFilterExpressionsFromLayerTree( mRootNode );
     }
 
     setFilterSettings( filterSettings.get() );
