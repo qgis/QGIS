@@ -341,26 +341,13 @@ QgsArcGisVectorTileServiceDataProvider *QgsArcGisVectorTileServiceDataProviderMe
 
 QVariantMap QgsArcGisVectorTileServiceDataProviderMetadata::decodeUri( const QString &uri ) const
 {
-  // TODO -- carefully thin out options which don't apply to arcgis vector tile services
-
   QgsDataSourceUri dsUri;
   dsUri.setEncodedUri( uri );
 
   QVariantMap uriComponents;
   uriComponents.insert( QStringLiteral( "type" ), dsUri.param( QStringLiteral( "type" ) ) );
-  if ( dsUri.hasParam( QStringLiteral( "serviceType" ) ) )
-    uriComponents.insert( QStringLiteral( "serviceType" ), dsUri.param( QStringLiteral( "serviceType" ) ) );
-
-  if ( uriComponents[ QStringLiteral( "type" ) ] == QLatin1String( "mbtiles" ) ||
-       ( uriComponents[ QStringLiteral( "type" ) ] == QLatin1String( "xyz" ) &&
-         !dsUri.param( QStringLiteral( "url" ) ).startsWith( QLatin1String( "http" ) ) ) )
-  {
-    uriComponents.insert( QStringLiteral( "path" ), dsUri.param( QStringLiteral( "url" ) ) );
-  }
-  else
-  {
-    uriComponents.insert( QStringLiteral( "url" ), dsUri.param( QStringLiteral( "url" ) ) );
-  }
+  uriComponents.insert( QStringLiteral( "serviceType" ), dsUri.param( QStringLiteral( "serviceType" ) ) );
+  uriComponents.insert( QStringLiteral( "url" ), dsUri.param( QStringLiteral( "url" ) ) );
 
   if ( dsUri.hasParam( QStringLiteral( "zmin" ) ) )
     uriComponents.insert( QStringLiteral( "zmin" ), dsUri.param( QStringLiteral( "zmin" ) ) );
@@ -381,13 +368,10 @@ QVariantMap QgsArcGisVectorTileServiceDataProviderMetadata::decodeUri( const QSt
 
 QString QgsArcGisVectorTileServiceDataProviderMetadata::encodeUri( const QVariantMap &parts ) const
 {
-  // TODO -- carefully thin out options which don't apply to arcgis vector tile services
-
   QgsDataSourceUri dsUri;
   dsUri.setParam( QStringLiteral( "type" ), parts.value( QStringLiteral( "type" ) ).toString() );
-  if ( parts.contains( QStringLiteral( "serviceType" ) ) )
-    dsUri.setParam( QStringLiteral( "serviceType" ), parts[ QStringLiteral( "serviceType" ) ].toString() );
-  dsUri.setParam( QStringLiteral( "url" ), parts.value( parts.contains( QStringLiteral( "path" ) ) ? QStringLiteral( "path" ) : QStringLiteral( "url" ) ).toString() );
+  dsUri.setParam( QStringLiteral( "serviceType" ), parts[ QStringLiteral( "serviceType" ) ].toString() );
+  dsUri.setParam( QStringLiteral( "url" ), parts.value( QStringLiteral( "url" ) ).toString() );
 
   if ( parts.contains( QStringLiteral( "zmin" ) ) )
     dsUri.setParam( QStringLiteral( "zmin" ), parts[ QStringLiteral( "zmin" ) ].toString() );
