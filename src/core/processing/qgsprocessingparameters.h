@@ -1280,7 +1280,7 @@ class CORE_EXPORT QgsProcessingParameters
      * sources and stored temporarily in the \a context. In either case, callers do not
      * need to handle deletion of the returned layer.
      */
-    static QgsMapLayer *parameterAsLayer( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingUtils::LayerHint layerHint = QgsProcessingUtils::LayerHint::UnknownType );
+    static QgsMapLayer *parameterAsLayer( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingUtils::LayerHint layerHint = QgsProcessingUtils::LayerHint::UnknownType, QgsProcessing::LayerOptionsFlags flags = QgsProcessing::LayerOptionsFlags() );
 
     /**
      * Evaluates the parameter with matching \a definition and \a value to a map layer.
@@ -1291,7 +1291,7 @@ class CORE_EXPORT QgsProcessingParameters
      *
      * \since QGIS 3.4
      */
-    static QgsMapLayer *parameterAsLayer( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context, QgsProcessingUtils::LayerHint layerHint = QgsProcessingUtils::LayerHint::UnknownType );
+    static QgsMapLayer *parameterAsLayer( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context, QgsProcessingUtils::LayerHint layerHint = QgsProcessingUtils::LayerHint::UnknownType, QgsProcessing::LayerOptionsFlags flags = QgsProcessing::LayerOptionsFlags() );
 
     /**
      * Evaluates the parameter with matching \a definition to a raster layer.
@@ -1678,6 +1678,7 @@ class CORE_EXPORT QgsProcessingParameters
 
     /**
      * Evaluates the parameter with matching \a definition to a point cloud layer.
+     * The \a flags are used to set options for loading layer (e.g. skip index generation).
      *
      * Layers will either be taken from \a context's active project, or loaded from external
      * sources and stored temporarily in the \a context. In either case, callers do not
@@ -1685,10 +1686,11 @@ class CORE_EXPORT QgsProcessingParameters
      *
      * \since QGIS 3.22
      */
-    static QgsPointCloudLayer *parameterAsPointCloudLayer( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );
+    static QgsPointCloudLayer *parameterAsPointCloudLayer( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessing::LayerOptionsFlags flags = QgsProcessing::LayerOptionsFlags() );
 
     /**
      * Evaluates the parameter with matching \a definition and \a value to a point cloud layer.
+     * The \a flags are used to set options for loading layer (e.g. skip index generation).
      *
      * Layers will either be taken from \a context's active project, or loaded from external
      * sources and stored temporarily in the \a context. In either case, callers do not
@@ -1696,7 +1698,7 @@ class CORE_EXPORT QgsProcessingParameters
      *
      * \since QGIS 3.22
      */
-    static QgsPointCloudLayer *parameterAsPointCloudLayer( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context );
+    static QgsPointCloudLayer *parameterAsPointCloudLayer( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context, QgsProcessing::LayerOptionsFlags flags = QgsProcessing::LayerOptionsFlags() );
 
     /**
      * Evaluates the parameter with matching \a definition to an annotation layer.

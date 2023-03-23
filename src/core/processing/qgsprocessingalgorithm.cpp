@@ -875,9 +875,9 @@ QString QgsProcessingAlgorithm::parameterAsDatabaseTableName( const QVariantMap 
   return QgsProcessingParameters::parameterAsDatabaseTableName( parameterDefinition( name ), parameters, context );
 }
 
-QgsPointCloudLayer *QgsProcessingAlgorithm::parameterAsPointCloudLayer( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const
+QgsPointCloudLayer *QgsProcessingAlgorithm::parameterAsPointCloudLayer( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context, QgsProcessing::LayerOptionsFlags flags ) const
 {
-  return QgsProcessingParameters::parameterAsPointCloudLayer( parameterDefinition( name ), parameters, context );
+  return QgsProcessingParameters::parameterAsPointCloudLayer( parameterDefinition( name ), parameters, context, flags );
 }
 
 QgsAnnotationLayer *QgsProcessingAlgorithm::parameterAsAnnotationLayer( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const

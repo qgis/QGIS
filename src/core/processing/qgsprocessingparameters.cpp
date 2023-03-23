@@ -847,15 +847,15 @@ QString QgsProcessingParameters::parameterAsCompatibleSourceLayerPathAndLayerNam
   return parameterAsCompatibleSourceLayerPathInternal( definition, parameters, context, compatibleFormats, preferredFormat, feedback, destLayer );
 }
 
-QgsMapLayer *QgsProcessingParameters::parameterAsLayer( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingUtils::LayerHint layerHint )
+QgsMapLayer *QgsProcessingParameters::parameterAsLayer( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingUtils::LayerHint layerHint, QgsProcessing::LayerOptionsFlags flags )
 {
   if ( !definition )
     return nullptr;
 
-  return parameterAsLayer( definition, parameters.value( definition->name() ), context, layerHint );
+  return parameterAsLayer( definition, parameters.value( definition->name() ), context, layerHint, flags );
 }
 
-QgsMapLayer *QgsProcessingParameters::parameterAsLayer( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context, QgsProcessingUtils::LayerHint layerHint )
+QgsMapLayer *QgsProcessingParameters::parameterAsLayer( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context, QgsProcessingUtils::LayerHint layerHint, QgsProcessing::LayerOptionsFlags flags )
 {
   if ( !definition )
     return nullptr;
@@ -901,7 +901,7 @@ QgsMapLayer *QgsProcessingParameters::parameterAsLayer( const QgsProcessingParam
   if ( layerRef.isEmpty() )
     return nullptr;
 
-  return QgsProcessingUtils::mapLayerFromString( layerRef, context, true, layerHint );
+  return QgsProcessingUtils::mapLayerFromString( layerRef, context, true, layerHint, flags );
 }
 
 QgsRasterLayer *QgsProcessingParameters::parameterAsRasterLayer( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context )
@@ -2166,14 +2166,14 @@ QString QgsProcessingParameters::parameterAsDatabaseTableName( const QgsProcessi
   return parameterAsString( definition, value, context );
 }
 
-QgsPointCloudLayer *QgsProcessingParameters::parameterAsPointCloudLayer( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context )
+QgsPointCloudLayer *QgsProcessingParameters::parameterAsPointCloudLayer( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessing::LayerOptionsFlags flags )
 {
-  return qobject_cast< QgsPointCloudLayer *>( parameterAsLayer( definition, parameters, context, QgsProcessingUtils::LayerHint::PointCloud ) );
+  return qobject_cast< QgsPointCloudLayer *>( parameterAsLayer( definition, parameters, context, QgsProcessingUtils::LayerHint::PointCloud, flags ) );
 }
 
-QgsPointCloudLayer *QgsProcessingParameters::parameterAsPointCloudLayer( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context )
+QgsPointCloudLayer *QgsProcessingParameters::parameterAsPointCloudLayer( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context, QgsProcessing::LayerOptionsFlags flags )
 {
-  return qobject_cast< QgsPointCloudLayer *>( parameterAsLayer( definition, value, context, QgsProcessingUtils::LayerHint::PointCloud ) );
+  return qobject_cast< QgsPointCloudLayer *>( parameterAsLayer( definition, value, context, QgsProcessingUtils::LayerHint::PointCloud, flags ) );
 }
 
 QgsAnnotationLayer *QgsProcessingParameters::parameterAsAnnotationLayer( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context )
@@ -8770,7 +8770,7 @@ bool QgsProcessingParameterPointCloudLayer::checkValueIsAcceptable( const QVaria
   }
 
   // try to load as layer
-  if ( QgsProcessingUtils::mapLayerFromString( var.toString(), *context, true, QgsProcessingUtils::LayerHint::PointCloud ) )
+  if ( QgsProcessingUtils::mapLayerFromString( var.toString(), *context, true, QgsProcessingUtils::LayerHint::PointCloud, QgsProcessing::LayerOptionsFlag::SkipIndexGeneration ) )
     return true;
 
   return false;

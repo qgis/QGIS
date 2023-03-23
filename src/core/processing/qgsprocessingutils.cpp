@@ -257,7 +257,7 @@ QgsMapLayer *QgsProcessingUtils::mapLayerFromStore( const QString &string, QgsMa
   return nullptr;
 }
 
-QgsMapLayer *QgsProcessingUtils::loadMapLayerFromString( const QString &string, const QgsCoordinateTransformContext &transformContext, LayerHint typeHint )
+QgsMapLayer *QgsProcessingUtils::loadMapLayerFromString( const QString &string, const QgsCoordinateTransformContext &transformContext, LayerHint typeHint, QgsProcessing::LayerOptionsFlags flags )
 {
   QString provider;
   QString uri;
@@ -355,6 +355,11 @@ QgsMapLayer *QgsProcessingUtils::loadMapLayerFromString( const QString &string, 
     QgsPointCloudLayer::LayerOptions pointCloudOptions;
     pointCloudOptions.skipCrsValidation = true;
 
+    if ( flags & QgsProcessing::LayerOptionsFlag::SkipIndexGeneration )
+    {
+      pointCloudOptions.skipIndexGeneration = true;
+    }
+
     std::unique_ptr< QgsPointCloudLayer > pointCloudLayer;
     if ( useProvider )
     {
@@ -376,7 +381,7 @@ QgsMapLayer *QgsProcessingUtils::loadMapLayerFromString( const QString &string, 
   return nullptr;
 }
 
-QgsMapLayer *QgsProcessingUtils::mapLayerFromString( const QString &string, QgsProcessingContext &context, bool allowLoadingNewLayers, LayerHint typeHint )
+QgsMapLayer *QgsProcessingUtils::mapLayerFromString( const QString &string, QgsProcessingContext &context, bool allowLoadingNewLayers, LayerHint typeHint, QgsProcessing::LayerOptionsFlags flags )
 {
   if ( string.isEmpty() )
     return nullptr;
@@ -400,7 +405,7 @@ QgsMapLayer *QgsProcessingUtils::mapLayerFromString( const QString &string, QgsP
   if ( !allowLoadingNewLayers )
     return nullptr;
 
-  layer = loadMapLayerFromString( string, context.transformContext(), typeHint );
+  layer = loadMapLayerFromString( string, context.transformContext(), typeHint, flags );
   if ( layer )
   {
     context.temporaryLayerStore()->addMapLayer( layer );
