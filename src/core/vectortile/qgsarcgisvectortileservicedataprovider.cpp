@@ -345,8 +345,8 @@ QVariantMap QgsArcGisVectorTileServiceDataProviderMetadata::decodeUri( const QSt
   dsUri.setEncodedUri( uri );
 
   QVariantMap uriComponents;
-  uriComponents.insert( QStringLiteral( "type" ), dsUri.param( QStringLiteral( "type" ) ) );
-  uriComponents.insert( QStringLiteral( "serviceType" ), dsUri.param( QStringLiteral( "serviceType" ) ) );
+  uriComponents.insert( QStringLiteral( "type" ), QStringLiteral( "xyz" ) );
+  uriComponents.insert( QStringLiteral( "serviceType" ), QStringLiteral( "arcgis" ) );
   uriComponents.insert( QStringLiteral( "url" ), dsUri.param( QStringLiteral( "url" ) ) );
 
   if ( dsUri.hasParam( QStringLiteral( "zmin" ) ) )
@@ -369,8 +369,8 @@ QVariantMap QgsArcGisVectorTileServiceDataProviderMetadata::decodeUri( const QSt
 QString QgsArcGisVectorTileServiceDataProviderMetadata::encodeUri( const QVariantMap &parts ) const
 {
   QgsDataSourceUri dsUri;
-  dsUri.setParam( QStringLiteral( "type" ), parts.value( QStringLiteral( "type" ) ).toString() );
-  dsUri.setParam( QStringLiteral( "serviceType" ), parts[ QStringLiteral( "serviceType" ) ].toString() );
+  dsUri.setParam( QStringLiteral( "type" ), QStringLiteral( "xyz" ) );
+  dsUri.setParam( QStringLiteral( "serviceType" ), QStringLiteral( "arcgis" ) );
   dsUri.setParam( QStringLiteral( "url" ), parts.value( QStringLiteral( "url" ) ).toString() );
 
   if ( parts.contains( QStringLiteral( "zmin" ) ) )
