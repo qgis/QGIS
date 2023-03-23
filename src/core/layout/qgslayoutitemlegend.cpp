@@ -36,6 +36,7 @@
 #include "qgsvectorlayer.h"
 #include "qgslayoutrendercontext.h"
 #include "qgslayoutreportcontext.h"
+#include "qgslayertreefiltersettings.h"
 
 #include <QDomDocument>
 #include <QDomElement>
@@ -1166,14 +1167,31 @@ void QgsLayoutItemLegend::doUpdateFilterByMap()
         filterGeometry = filterGeometry.intersection( mLayout->reportContext().currentGeometry( ms.destinationCrs() ) );
     }
 
+    QgsLayerTreeFilterSettings filterSettings( ms );
+
+    // set filter expressions
+    QMap<QString, QString> legendFilterExpressions;
+    const QList<QgsLayerTreeLayer *> layers = mLegendModel->rootGroup()->findLayers();
+    for ( QgsLayerTreeLayer *nodeLayer : layers )
+    {
+      bool enabled = false;
+      const QString legendFilterExpression = QgsLayerTreeUtils::legendFilterByExpression( *nodeLayer, &enabled );
+      if ( enabled && !legendFilterExpression.isEmpty() )
+      {
+        legendFilterExpressions[ nodeLayer->layerId()] = legendFilterExpression;
+      }
+    }
+    filterSettings.setLayerFilterExpressions( legendFilterExpressions );
+
     if ( !filterGeometry.isNull() )
     {
-      mLegendModel->setLegendFilter( &ms, true, filterGeometry, true );
+      filterSettings.setFilterPolygon( filterGeometry );
     }
     else
     {
-      mLegendModel->setLegendFilter( &ms, false, QgsGeometry(), true );
+      filterSettings.setFlags( Qgis::LayerTreeFilterFlag::SkipVisibilityCheck );
     }
+    mLegendModel->setFilterSettings( &filterSettings );
   }
   else
   {
