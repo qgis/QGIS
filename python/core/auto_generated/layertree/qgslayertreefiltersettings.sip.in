@@ -1,0 +1,130 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/layertree/qgslayertreefiltersettings.h                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsLayerTreeFilterSettings
+{
+%Docstring(signature="appended")
+Contains settings relating to filtering the contents of :py:class:`QgsLayerTreeModel` and views.
+
+.. versionadded:: 3.32
+%End
+
+%TypeHeaderCode
+#include "qgslayertreefiltersettings.h"
+%End
+  public:
+
+    explicit QgsLayerTreeFilterSettings( const QgsMapSettings &settings );
+%Docstring
+Constructor for QgsLayerTreeFilterSettings, using the specified map ``settings``.
+%End
+
+    ~QgsLayerTreeFilterSettings();
+
+    QgsLayerTreeFilterSettings( const QgsLayerTreeFilterSettings &other );
+%Docstring
+Copy constructor.
+%End
+
+
+    void setMapSettings( const QgsMapSettings &settings );
+%Docstring
+Sets the map ``settings`` used to filter the legend content.
+
+.. seealso:: :py:func:`mapSettings`
+%End
+
+    QgsMapSettings &mapSettings();
+%Docstring
+Returns the map settings used to filter the legend content.
+
+.. seealso:: :py:func:`setMapSettings`
+%End
+
+    QMap<QString, QString> layerFilterExpressions() const;
+%Docstring
+Returns the map of layer IDs to legend filter expression.
+
+.. seealso:: :py:func:`layerFilterExpression`
+
+.. seealso:: :py:func:`setLayerFilterExpressions`
+%End
+
+    void setLayerFilterExpressions( const QMap<QString, QString> &expressions );
+%Docstring
+Sets the map of layer IDs to legend filter expression.
+
+.. seealso:: :py:func:`layerFilterExpressions`
+%End
+
+    QString layerFilterExpression( const QString &layerId ) const;
+%Docstring
+Returns the filter expression to use for the layer with the specified
+``layerId``, or an empty string if no expression is set for the layer.
+
+.. seealso:: :py:func:`layerFilterExpressions`
+
+.. seealso:: :py:func:`setLayerFilterExpressions`
+%End
+
+    QgsGeometry filterPolygon() const;
+%Docstring
+Returns the optional filter polygon, used when testing for symbols to show in
+the legend.
+
+The CRS of the polygon will match the destination CRS of :py:func:`~QgsLayerTreeFilterSettings.mapSettings`.
+
+If not set then the filter visibility extent will use the extent of :py:func:`~QgsLayerTreeFilterSettings.mapSettings`.
+
+.. seealso:: :py:func:`setFilterPolygon`
+%End
+
+    void setFilterPolygon( const QgsGeometry &polygon );
+%Docstring
+Sets the optional filter ``polygon``, used when testing for symbols to show in
+the legend.
+
+The CRS of the polygon must match the destination CRS of :py:func:`~QgsLayerTreeFilterSettings.mapSettings`.
+
+If not set then the filter visibility extent will use the extent of :py:func:`~QgsLayerTreeFilterSettings.mapSettings`.
+
+.. seealso:: :py:func:`filterPolygon`
+%End
+
+    Qgis::LayerTreeFilterFlags flags() const;
+%Docstring
+Returns the filter flags.
+
+.. seealso:: :py:func:`setFlags`
+%End
+
+    void setFlags( Qgis::LayerTreeFilterFlags flags );
+%Docstring
+Sets the filter ``flags``.
+
+.. seealso:: :py:func:`flags`
+%End
+
+    QList<QgsMapLayer *> layers() const;
+%Docstring
+Returns the layers which should be shown in the legend.
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/layertree/qgslayertreefiltersettings.h                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

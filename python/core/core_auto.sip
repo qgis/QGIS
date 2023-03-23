@@ -380,6 +380,7 @@
 %Include auto_generated/layertree/qgscolorramplegendnode.sip
 %Include auto_generated/layertree/qgscolorramplegendnodesettings.sip
 %Include auto_generated/layertree/qgslayertree.sip
+%Include auto_generated/layertree/qgslayertreefiltersettings.sip
 %Include auto_generated/layertree/qgslayertreegroup.sip
 %Include auto_generated/layertree/qgslayertreelayer.sip
 %Include auto_generated/layertree/qgslayertreemodel.sip

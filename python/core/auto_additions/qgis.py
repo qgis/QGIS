@@ -2619,6 +2619,13 @@ Qgis.LayerTreeInsertionMethod.__doc__ = 'Layer tree insertion methods\n\n.. vers
 # --
 Qgis.LayerTreeInsertionMethod.baseClass = Qgis
 # monkey patching scoped based enum
+Qgis.LayerTreeFilterFlag.SkipVisibilityCheck.__doc__ = "If set, the standard visibility check should be skipped"
+Qgis.LayerTreeFilterFlag.__doc__ = 'Layer tree filter flags.\n\n.. versionadded:: 3.32\n\n' + '* ``SkipVisibilityCheck``: ' + Qgis.LayerTreeFilterFlag.SkipVisibilityCheck.__doc__
+# --
+Qgis.LayerTreeFilterFlag.baseClass = Qgis
+Qgis.LayerTreeFilterFlags.baseClass = Qgis
+LayerTreeFilterFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
+# monkey patching scoped based enum
 Qgis.ActionType.Invalid.__doc__ = "Invalid"
 Qgis.ActionType.MapLayerAction.__doc__ = "Standard actions (defined by core or plugins), corresponds to QgsMapLayerAction class."
 Qgis.ActionType.AttributeAction.__doc__ = "Custom actions (manually defined in layer properties), corresponds to QgsAction class."
