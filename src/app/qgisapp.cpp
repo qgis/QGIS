@@ -7521,8 +7521,21 @@ void QgisApp::changeDataSource( QgsMapLayer *layer )
     const QString path = sourceParts.value( QStringLiteral( "path" ) ).toString();
     const QString closestPath = QFile::exists( path ) ? path : QgsFileUtils::findClosestExistingPath( path );
     dlg.expandPath( closestPath );
-    source.replace( path, QStringLiteral( "<a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( closestPath ).toString(),
-                    path ) );
+    if ( source.contains( path ) )
+    {
+      source.replace( path, QStringLiteral( "<a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( closestPath ).toString(),
+                      path ) );
+    }
+    else
+    {
+      // source might contain the original path using a "QUrl::FullyEncoded" encoding
+      const QString uriEncodedPath = QUrl( path ).toString( QUrl::FullyEncoded );
+      if ( source.contains( uriEncodedPath ) )
+      {
+        source.replace( uriEncodedPath, QStringLiteral( "<a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( closestPath ).toString(),
+                        uriEncodedPath ) );
+      }
+    }
   }
   dlg.setDescription( tr( "Original source URI: %1" ).arg( source ) );
 
