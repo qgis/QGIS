@@ -429,7 +429,7 @@ bool QgsVectorTileLayer::loadDefaultStyleAndSubLayersPrivate( QString &error, QS
       styleDefinition = QgsJsonUtils::parseJson( content.content() ).toMap();
     }
 
-    if ( styleDefinition.contains( QStringLiteral( "sprite" ) ) )
+    if ( styleDefinition.contains( QStringLiteral( "sprite" ) ) && ( context.spriteDefinitions().empty() || context.spriteImage().isNull() ) )
     {
       // retrieve sprite definition
       QString spriteUriBase;
