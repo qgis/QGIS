@@ -250,12 +250,10 @@ void TestQgsVectorTileLayer::test_absoluteRelativeUriMbTiles()
   QgsDataSourceUri dsAbs;
   dsAbs.setParam( "type", "mbtiles" );
   dsAbs.setParam( "url", QString( "%1/vector_tile/mbtiles_vt.mbtiles" ).arg( TEST_DATA_DIR ) );
-  dsAbs.setParam( "zmax", "1" );
 
   QgsDataSourceUri dsRel;
   dsRel.setParam( "type", "mbtiles" );
   dsRel.setParam( "url", "./vector_tile/mbtiles_vt.mbtiles" );
-  dsRel.setParam( "zmax", "1" );
 
   QString absoluteUri = dsAbs.encodedUri();
   QString relativeUri = dsRel.encodedUri();
