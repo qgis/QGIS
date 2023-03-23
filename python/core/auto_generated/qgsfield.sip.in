@@ -183,7 +183,7 @@ Map keys should match values from the Qgis.FieldMetadataProperty enum.
 
 .. seealso:: :py:func:`setMetadata`
 
-.. versionadded:: 3.30
+.. versionadded:: 3.32
 %End
 
 
@@ -193,7 +193,7 @@ Returns a specific metadata ``property``.
 
 .. seealso:: :py:func:`setMetadata`
 
-.. versionadded:: 3.30
+.. versionadded:: 3.32
 %End
 
     void setMetadata( const QMap< int, QVariant > metadata );
@@ -204,7 +204,7 @@ Map keys should match values from the Qgis.FieldMetadataProperty enum.
 
 .. seealso:: :py:func:`metadata`
 
-.. versionadded:: 3.30
+.. versionadded:: 3.32
 %End
 
 
@@ -214,7 +214,7 @@ Sets a metadata ``property`` to ``value``.
 
 .. seealso:: :py:func:`metadata`
 
-.. versionadded:: 3.30
+.. versionadded:: 3.32
 %End
 
     bool isNumeric() const;

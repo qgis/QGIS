@@ -223,7 +223,7 @@ class CORE_EXPORT QgsField
      * Map keys should match values from the Qgis::FieldMetadataProperty enum.
      *
      * \see setMetadata()
-     * \since QGIS 3.30
+     * \since QGIS 3.32
      */
     QMap< int, QVariant > metadata() const;
 
@@ -231,7 +231,7 @@ class CORE_EXPORT QgsField
      * Returns a specific metadata \a property.
      *
      * \see setMetadata()
-     * \since QGIS 3.30
+     * \since QGIS 3.32
      */
     QVariant metadata( Qgis::FieldMetadataProperty property ) const SIP_SKIP;
 
@@ -239,7 +239,7 @@ class CORE_EXPORT QgsField
      * Returns a specific metadata \a property.
      *
      * \see setMetadata()
-     * \since QGIS 3.30
+     * \since QGIS 3.32
      */
     QVariant metadata( int property ) const;
 
@@ -249,7 +249,7 @@ class CORE_EXPORT QgsField
      * Map keys should match values from the Qgis::FieldMetadataProperty enum.
      *
      * \see metadata()
-     * \since QGIS 3.30
+     * \since QGIS 3.32
      */
     void setMetadata( const QMap< int, QVariant > metadata );
 
@@ -257,7 +257,7 @@ class CORE_EXPORT QgsField
      * Sets a metadata \a property to \a value.
      *
      * \see metadata()
-     * \since QGIS 3.30
+     * \since QGIS 3.32
      */
     void setMetadata( Qgis::FieldMetadataProperty property, const QVariant &value ) SIP_SKIP;
 
@@ -265,7 +265,7 @@ class CORE_EXPORT QgsField
      * Sets a metadata \a property to \a value.
      *
      * \see metadata()
-     * \since QGIS 3.30
+     * \since QGIS 3.32
      */
     void setMetadata( int property, const QVariant &value );
 
