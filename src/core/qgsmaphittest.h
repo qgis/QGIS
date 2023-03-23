@@ -116,24 +116,24 @@ class CORE_EXPORT QgsMapHitTest
      * Runs test for visible symbols from a feature \a source
      * \param source feature source
      * \param layerId associated layer id
-     * \param crs layer crs
      * \param fields layer fields
      * \param renderer layer renderer
      * \param usedSymbols set for storage of visible symbols
      * \param usedSymbolsRuleKey set of storage of visible legend rule keys
      * \param context render context
      * \param feedback optional feedback argument for cancel support
+     * \param visibleExtent total visible area of layer
      * \note not available in Python bindings
      */
     void runHitTestFeatureSource( QgsAbstractFeatureSource *source,
                                   const QString &layerId,
-                                  const QgsCoordinateReferenceSystem &crs,
                                   const QgsFields &fields,
                                   const QgsFeatureRenderer *renderer,
                                   SymbolSet &usedSymbols,
                                   SymbolSet &usedSymbolsRuleKey,
                                   QgsRenderContext &context,
-                                  QgsFeedback *feedback );
+                                  QgsFeedback *feedback,
+                                  const QgsGeometry &visibleExtent );
 
     //! The hit test
     HitTest mHitTest;
@@ -194,10 +194,9 @@ class CORE_EXPORT QgsMapHitTestTask : public QgsTask
     {
       std::unique_ptr< QgsAbstractFeatureSource > source;
       QString layerId;
-      QgsCoordinateReferenceSystem crs;
       QgsFields fields;
       std::unique_ptr< QgsFeatureRenderer > renderer;
-      QgsRectangle extent;
+      QgsGeometry extent;
       QgsCoordinateTransform transform;
       std::unique_ptr< QgsExpressionContextScope > layerScope;
     };

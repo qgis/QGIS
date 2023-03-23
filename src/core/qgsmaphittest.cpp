@@ -59,13 +59,14 @@ void QgsMapHitTest::run()
   QgsRenderContext context = QgsRenderContext::fromMapSettings( mapSettings );
   context.setPainter( &painter ); // we are not going to draw anything, but we still need a working painter
 
-  const QList< QgsMapLayer * > layers = mapSettings.layers( true );
+  const QList< QgsMapLayer * > layers = mSettings.layers();
   for ( QgsMapLayer *layer : layers )
   {
     QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer );
     if ( !vl || !vl->renderer() )
       continue;
 
+    QgsGeometry extent;
     if ( !( mSettings.flags() & Qgis::LayerTreeFilterFlag::SkipVisibilityCheck ) )
     {
       if ( !vl->isInScaleRange( mapSettings.scale() ) )
@@ -73,8 +74,10 @@ void QgsMapHitTest::run()
         continue;
       }
 
+      extent = mSettings.combinedVisibleExtentForLayer( vl );
+
       context.setCoordinateTransform( mapSettings.layerTransform( vl ) );
-      context.setExtent( mapSettings.outputExtentToLayerExtent( vl, mapSettings.visibleExtent() ) );
+      context.setExtent( extent.boundingBox() );
     }
 
     context.expressionContext() << QgsExpressionContextUtils::layerScope( vl );
@@ -87,9 +90,9 @@ void QgsMapHitTest::run()
 
     std::unique_ptr< QgsVectorLayerFeatureSource > source = std::make_unique< QgsVectorLayerFeatureSource >( vl );
     runHitTestFeatureSource( source.get(),
-                             vl->id(), vl->crs(), vl->fields(), vl->renderer(),
+                             vl->id(), vl->fields(), vl->renderer(),
                              usedSymbols, usedSymbolsRuleKey, context,
-                             nullptr );
+                             nullptr, extent );
   }
 
   painter.end();
@@ -138,16 +141,14 @@ bool QgsMapHitTest::legendKeyVisible( const QString &ruleKey, QgsVectorLayer *la
 
 void QgsMapHitTest::runHitTestFeatureSource( QgsAbstractFeatureSource *source,
     const QString &layerId,
-    const QgsCoordinateReferenceSystem &crs,
     const QgsFields &fields,
     const QgsFeatureRenderer *renderer,
     SymbolSet &usedSymbols,
     SymbolSet &usedSymbolsRuleKey,
     QgsRenderContext &context,
-    QgsFeedback *feedback )
+    QgsFeedback *feedback,
+    const QgsGeometry &visibleExtent )
 {
-  const QgsMapSettings &mapSettings = mSettings.mapSettings();
-
   std::unique_ptr< QgsFeatureRenderer > r( renderer->clone() );
   const bool moreSymbolsPerFeature = r->capabilities() & QgsFeatureRenderer::MoreSymbolsPerFeature;
   r->startRender( context, fields );
@@ -179,19 +180,10 @@ void QgsMapHitTest::runHitTestFeatureSource( QgsAbstractFeatureSource *source,
 
   QSet<QString> requiredAttributes = r->usedAttributes( context );
 
-  QgsGeometry transformedPolygon = mSettings.filterPolygon();
+  QgsGeometry transformedPolygon = visibleExtent;
   if ( transformedPolygon.type() != Qgis::GeometryType::Polygon )
   {
     transformedPolygon = QgsGeometry();
-  }
-
-  if ( !( mSettings.flags() & Qgis::LayerTreeFilterFlag::SkipVisibilityCheck ) && !transformedPolygon.isNull() )
-  {
-    if ( mapSettings.destinationCrs() != crs )
-    {
-      const QgsCoordinateTransform ct( mapSettings.destinationCrs(), crs, mapSettings.transformContext() );
-      transformedPolygon.transform( ct );
-    }
   }
 
   if ( feedback && feedback->isCanceled() )
@@ -324,7 +316,7 @@ void QgsMapHitTestTask::prepare()
 {
   const QgsMapSettings &mapSettings = mSettings.mapSettings();
 
-  const QList< QgsMapLayer * > layers = mapSettings.layers( true );
+  const QList< QgsMapLayer * > layers = mSettings.layers();
   for ( QgsMapLayer *layer : layers )
   {
     QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer );
@@ -335,22 +327,24 @@ void QgsMapHitTestTask::prepare()
     if ( mapSettings.layerStyleOverrides().contains( vl->id() ) )
       styleOverride.setOverrideStyle( mapSettings.layerStyleOverrides().value( vl->id() ) );
 
+    QgsGeometry extent;
     if ( !( mSettings.flags() & Qgis::LayerTreeFilterFlag::SkipVisibilityCheck ) )
     {
       if ( !vl->isInScaleRange( mapSettings.scale() ) )
       {
         continue;
       }
+
+      extent = mSettings.combinedVisibleExtentForLayer( vl );
     }
 
     PreparedLayerData layerData;
     layerData.source = std::make_unique< QgsVectorLayerFeatureSource >( vl );
     layerData.layerId = vl->id();
-    layerData.crs = vl->crs();
     layerData.fields = vl->fields();
     layerData.renderer.reset( vl->renderer()->clone() );
     layerData.transform = mapSettings.layerTransform( vl );
-    layerData.extent = mapSettings.outputExtentToLayerExtent( vl, mapSettings.visibleExtent() );
+    layerData.extent = extent;
     layerData.layerScope.reset( QgsExpressionContextUtils::layerScope( vl ) );
 
     mPreparedData.emplace_back( std::move( layerData ) );
@@ -395,20 +389,20 @@ bool QgsMapHitTestTask::run()
     QgsMapHitTest::SymbolSet &usedSymbolsRuleKey = hitTest->mHitTestRuleKey[layerData.layerId];
 
     context.setCoordinateTransform( layerData.transform );
-    context.setExtent( layerData.extent );
+    context.setExtent( layerData.extent.boundingBox() );
 
     QgsExpressionContextScope *layerScope = layerData.layerScope.release();
     QgsExpressionContextScopePopper scopePopper( context.expressionContext(), layerScope );
 
     hitTest->runHitTestFeatureSource( layerData.source.get(),
                                       layerData.layerId,
-                                      layerData.crs,
                                       layerData.fields,
                                       layerData.renderer.get(),
                                       usedSymbols,
                                       usedSymbolsRuleKey,
                                       context,
-                                      mFeedback.get() );
+                                      mFeedback.get(),
+                                      layerData.extent );
     layerIdx++;
   }
 
