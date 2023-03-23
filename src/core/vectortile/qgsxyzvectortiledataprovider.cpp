@@ -174,15 +174,11 @@ QgsProviderMetadata::ProviderCapabilities QgsXyzVectorTileDataProviderMetadata::
 
 QVariantMap QgsXyzVectorTileDataProviderMetadata::decodeUri( const QString &uri ) const
 {
-  // TODO -- carefully thin out options which don't apply to xyz vector tile services
-
   QgsDataSourceUri dsUri;
   dsUri.setEncodedUri( uri );
 
   QVariantMap uriComponents;
   uriComponents.insert( QStringLiteral( "type" ), dsUri.param( QStringLiteral( "type" ) ) );
-  if ( dsUri.hasParam( QStringLiteral( "serviceType" ) ) )
-    uriComponents.insert( QStringLiteral( "serviceType" ), dsUri.param( QStringLiteral( "serviceType" ) ) );
 
   if ( uriComponents[ QStringLiteral( "type" ) ] == QLatin1String( "mbtiles" ) ||
        ( uriComponents[ QStringLiteral( "type" ) ] == QLatin1String( "xyz" ) &&
@@ -214,12 +210,8 @@ QVariantMap QgsXyzVectorTileDataProviderMetadata::decodeUri( const QString &uri 
 
 QString QgsXyzVectorTileDataProviderMetadata::encodeUri( const QVariantMap &parts ) const
 {
-  // TODO -- carefully thin out options which don't apply to xyz vector tile services
-
   QgsDataSourceUri dsUri;
   dsUri.setParam( QStringLiteral( "type" ), parts.value( QStringLiteral( "type" ) ).toString() );
-  if ( parts.contains( QStringLiteral( "serviceType" ) ) )
-    dsUri.setParam( QStringLiteral( "serviceType" ), parts[ QStringLiteral( "serviceType" ) ].toString() );
   dsUri.setParam( QStringLiteral( "url" ), parts.value( parts.contains( QStringLiteral( "path" ) ) ? QStringLiteral( "path" ) : QStringLiteral( "url" ) ).toString() );
 
   if ( parts.contains( QStringLiteral( "zmin" ) ) )
