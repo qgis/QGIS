@@ -19,6 +19,7 @@
 #include "qgis_core.h"
 #include "qgis.h"
 #include "qgsgeometry.h"
+#include "qgsmaplayer.h"
 
 #include <QString>
 #include <QMap>
@@ -26,6 +27,7 @@
 
 class QgsMapSettings;
 class QgsLayerTree;
+class QgsReferencedGeometry;
 
 /**
  * \ingroup core
@@ -52,16 +54,7 @@ class CORE_EXPORT QgsLayerTreeFilterSettings
     QgsLayerTreeFilterSettings &operator=( const QgsLayerTreeFilterSettings &other );
 
     /**
-     * Sets the map \a settings used to filter the legend content.
-     *
-     * \see mapSettings()
-     */
-    void setMapSettings( const QgsMapSettings &settings );
-
-    /**
      * Returns the map settings used to filter the legend content.
-     *
-     * \see setMapSettings()
      */
     QgsMapSettings &mapSettings();
 
@@ -133,7 +126,34 @@ class CORE_EXPORT QgsLayerTreeFilterSettings
     void setFlags( Qgis::LayerTreeFilterFlags flags );
 
     /**
+     * Adds a visible extent \a polygon for a map \a layer.
+     *
+     * If \a layer is already included in the layers contained within mapSettings() (or previously added by
+     * calling this method) then this \a polygon extent will be unioned with the existing extent.
+     *
+     * The \a layer will be appended to the list of layers to use during the legend hit test. (See layers()).
+     */
+    void addVisibleExtentForLayer( QgsMapLayer *layer, const QgsReferencedGeometry &polygon );
+
+    /**
+     * Returns the combined visible extent for a \a layer.
+     *
+     * The combined visible extent includes:
+     *
+     * - the mapSettings() extent (respecting filterPolygon() if set) IF the layer is contained in mapSettings()
+     * - all additional extents added by calls to addVisibleExtentForLayer()
+     *
+     * The returned geometry will always be in the layer's CRS.
+     */
+    QgsGeometry combinedVisibleExtentForLayer( const QgsMapLayer *layer );
+
+    /**
      * Returns the layers which should be shown in the legend.
+     *
+     * This includes all layers from the mapSettings() and any additional layers added by calls to
+     * addVisibleExtentForLayer().
+     *
+     * \see addVisibleExtentForLayer()
      */
     QList<QgsMapLayer *> layers() const;
 
@@ -146,6 +166,11 @@ class CORE_EXPORT QgsLayerTreeFilterSettings
     QgsGeometry mFilterPolygon;
 
     Qgis::LayerTreeFilterFlags mFlags;
+
+    QgsWeakMapLayerPointerList mLayers;
+
+    // geometry must be in layer CRS
+    QMap<QString, QVector< QgsGeometry > > mLayerExtents;
 
 };
 

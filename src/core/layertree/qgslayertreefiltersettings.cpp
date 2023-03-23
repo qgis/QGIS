@@ -17,10 +17,16 @@
 #include "qgsmapsettings.h"
 #include "qgslayertreeutils.h"
 #include "qgslayertree.h"
+#include "qgsmaplayerlistutils_p.h"
+#include "qgsreferencedgeometry.h"
+#include "qgscoordinatetransform.h"
+#include "qgslogger.h"
 
 QgsLayerTreeFilterSettings::QgsLayerTreeFilterSettings( const QgsMapSettings &settings )
   : mMapSettings( std::make_unique<QgsMapSettings>( settings ) )
-{}
+{
+  mLayers = _qgis_listRawToQPointer( mMapSettings->layers( true ) );
+}
 
 QgsLayerTreeFilterSettings::~QgsLayerTreeFilterSettings() = default;
 
@@ -29,6 +35,8 @@ QgsLayerTreeFilterSettings::QgsLayerTreeFilterSettings( const QgsLayerTreeFilter
   , mMapSettings( other.mMapSettings ? new QgsMapSettings( *other.mMapSettings ) : nullptr )
   , mFilterPolygon( other.mFilterPolygon )
   , mFlags( other.mFlags )
+  , mLayers( other.mLayers )
+  , mLayerExtents( other.mLayerExtents )
 {
 
 }
@@ -39,12 +47,9 @@ QgsLayerTreeFilterSettings &QgsLayerTreeFilterSettings::operator=( const QgsLaye
   mMapSettings.reset( other.mMapSettings ? new QgsMapSettings( *other.mMapSettings ) : nullptr );
   mFilterPolygon = other.mFilterPolygon;
   mFlags = other.mFlags;
+  mLayers = other.mLayers;
+  mLayerExtents = other.mLayerExtents;
   return *this;
-}
-
-void QgsLayerTreeFilterSettings::setMapSettings( const QgsMapSettings &settings )
-{
-  mMapSettings.reset( new QgsMapSettings( settings ) );
 }
 
 QgsMapSettings &QgsLayerTreeFilterSettings::mapSettings()
@@ -103,7 +108,61 @@ void QgsLayerTreeFilterSettings::setFlags( Qgis::LayerTreeFilterFlags flags )
   mFlags = flags;
 }
 
+void QgsLayerTreeFilterSettings::addVisibleExtentForLayer( QgsMapLayer *layer, const QgsReferencedGeometry &polygon )
+{
+  const QgsCoordinateTransform polygonToLayerTransform( polygon.crs(), layer->crs(), mMapSettings->transformContext() );
+  try
+  {
+    QgsGeometry transformedPoly = polygon;
+    transformedPoly.transform( polygonToLayerTransform );
+    mLayerExtents[ layer->id() ].append( transformedPoly );
+  }
+  catch ( QgsCsException & )
+  {
+    QgsDebugMsg( QStringLiteral( "Error transforming polygon to layer CRS for legend filtering" ) );
+  }
+  if ( !mLayers.contains( layer ) )
+    mLayers << layer;
+}
+
+QgsGeometry QgsLayerTreeFilterSettings::combinedVisibleExtentForLayer( const QgsMapLayer *layer )
+{
+  QVector< QgsGeometry > parts;
+
+  if ( mMapSettings->layerIds( true ).contains( layer->id() ) )
+  {
+    // add visible polygon in layer CRS
+    QgsGeometry mapExtent = mFilterPolygon;
+    if ( mapExtent.isEmpty() )
+    {
+      mapExtent = QgsGeometry::fromQPolygonF( mMapSettings->visiblePolygon() );
+    }
+
+    const QgsCoordinateTransform layerToMapTransform = mMapSettings->layerTransform( layer );
+    try
+    {
+      mapExtent.transform( layerToMapTransform, Qgis::TransformDirection::Reverse );
+      parts << mapExtent;
+    }
+    catch ( QgsCsException & )
+    {
+      QgsDebugMsg( QStringLiteral( "Error transforming map extent to layer CRS for legend filtering" ) );
+    }
+  }
+
+  auto additionalIt = mLayerExtents.constFind( layer->id() );
+  if ( additionalIt != mLayerExtents.constEnd() )
+  {
+    parts.append( additionalIt.value() );
+  }
+
+  if ( !parts.empty() )
+    return QgsGeometry::unaryUnion( parts );
+  else
+    return QgsGeometry();
+}
+
 QList<QgsMapLayer *> QgsLayerTreeFilterSettings::layers() const
 {
-  return mMapSettings->layers( true );
+  return _qgis_listQPointerToRaw( mLayers );
 }

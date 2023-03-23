@@ -36,18 +36,9 @@ Copy constructor.
 %End
 
 
-    void setMapSettings( const QgsMapSettings &settings );
-%Docstring
-Sets the map ``settings`` used to filter the legend content.
-
-.. seealso:: :py:func:`mapSettings`
-%End
-
     QgsMapSettings &mapSettings();
 %Docstring
 Returns the map settings used to filter the legend content.
-
-.. seealso:: :py:func:`setMapSettings`
 %End
 
     QMap<QString, QString> layerFilterExpressions() const;
@@ -119,9 +110,36 @@ Sets the filter ``flags``.
 .. seealso:: :py:func:`flags`
 %End
 
+    void addVisibleExtentForLayer( QgsMapLayer *layer, const QgsReferencedGeometry &polygon );
+%Docstring
+Adds a visible extent ``polygon`` for a map ``layer``.
+
+If ``layer`` is already included in the layers contained within :py:func:`~QgsLayerTreeFilterSettings.mapSettings` (or previously added by
+calling this method) then this ``polygon`` extent will be unioned with the existing extent.
+
+The ``layer`` will be appended to the list of layers to use during the legend hit test. (See :py:func:`~QgsLayerTreeFilterSettings.layers`).
+%End
+
+    QgsGeometry combinedVisibleExtentForLayer( const QgsMapLayer *layer );
+%Docstring
+Returns the combined visible extent for a ``layer``.
+
+The combined visible extent includes:
+
+- the :py:func:`~QgsLayerTreeFilterSettings.mapSettings` extent (respecting :py:func:`~QgsLayerTreeFilterSettings.filterPolygon` if set) IF the layer is contained in :py:func:`~QgsLayerTreeFilterSettings.mapSettings`
+- all additional extents added by calls to :py:func:`~QgsLayerTreeFilterSettings.addVisibleExtentForLayer`
+
+The returned geometry will always be in the layer's CRS.
+%End
+
     QList<QgsMapLayer *> layers() const;
 %Docstring
 Returns the layers which should be shown in the legend.
+
+This includes all layers from the :py:func:`~QgsLayerTreeFilterSettings.mapSettings` and any additional layers added by calls to
+:py:func:`~QgsLayerTreeFilterSettings.addVisibleExtentForLayer`.
+
+.. seealso:: :py:func:`addVisibleExtentForLayer`
 %End
 
 };
