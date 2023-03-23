@@ -1613,6 +1613,14 @@ The development version
       OptimalInInsertionGroup,
     };
 
+    enum class LayerTreeFilterFlag
+    {
+      SkipVisibilityCheck,
+    };
+
+    typedef QFlags<Qgis::LayerTreeFilterFlag> LayerTreeFilterFlags;
+
+
     enum class ActionType
     {
       Invalid,
@@ -2030,6 +2038,8 @@ QFlags<Qgis::RelationshipCapability> operator|(Qgis::RelationshipCapability f1, 
 QFlags<Qgis::SettingsTreeNodeOption> operator|(Qgis::SettingsTreeNodeOption f1, QFlags<Qgis::SettingsTreeNodeOption> f2);
 
 QFlags<Qgis::ScriptLanguageCapability> operator|(Qgis::ScriptLanguageCapability f1, QFlags<Qgis::ScriptLanguageCapability> f2);
+
+QFlags<Qgis::LayerTreeFilterFlag> operator|(Qgis::LayerTreeFilterFlag f1, QFlags<Qgis::LayerTreeFilterFlag> f2);
 
 
 

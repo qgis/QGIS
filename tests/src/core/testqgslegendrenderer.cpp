@@ -1310,9 +1310,7 @@ void TestQgsLegendRenderer::testFilterByExpression()
   QImage res = _renderLegend( &legendModel, settings );
   QVERIFY( _verifyImage( res, testName ) );
 
-
   // test again with setLegendFilter and only expressions
-  legendModel.setLegendFilterByMap( nullptr );
   legendModel.setLegendFilter( &mapSettings, /*useExtent*/ false );
 
   const QString testName2 = testName + "2";

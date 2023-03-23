@@ -282,6 +282,26 @@ Returns the current map settings used for the current legend filter (or ``None``
 .. versionadded:: 2.14
 %End
 
+    void setFilterSettings( const QgsLayerTreeFilterSettings *settings = 0 );
+%Docstring
+Sets the filter ``settings`` to use to filter legend nodes.
+
+Set to ``None`` to disable legend filter.
+
+.. seealso:: :py:func:`filterSettings`
+
+.. versionadded:: 3.32
+%End
+
+    const QgsLayerTreeFilterSettings *filterSettings() const;
+%Docstring
+Returns the filter settings to use to filter legend nodes. May be ``None``.
+
+.. seealso:: :py:func:`setFilterSettings`
+
+.. versionadded:: 3.32
+%End
+
     void setLegendMapViewData( double mapUnitsPerPixel, int dpi, double scale );
 %Docstring
 Give the layer tree model hints about the currently associated map view

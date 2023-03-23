@@ -33,6 +33,7 @@
 #include "qgssettingsregistrycore.h"
 #include "qgsmaplayerstyle.h"
 #include "qgsrendercontext.h"
+#include "qgslayertreefiltersettings.h"
 
 #include <QPalette>
 
@@ -40,12 +41,6 @@ QgsLayerTreeModel::QgsLayerTreeModel( QgsLayerTree *rootNode, QObject *parent )
   : QAbstractItemModel( parent )
   , mRootNode( rootNode )
   , mFlags( ShowLegend | AllowLegendChangeState | DeferredLegendInvalidation )
-  , mAutoCollapseLegendNodesCount( -1 )
-  , mLegendFilterByScale( 0 )
-  , mLegendFilterUsesExtent( false )
-  , mLegendMapViewMupp( 0 )
-  , mLegendMapViewDpi( 0 )
-  , mLegendMapViewScale( 0 )
 {
   connectToRootNode();
 
@@ -610,26 +605,52 @@ void QgsLayerTreeModel::setLegendFilter( const QgsMapSettings *settings, bool us
 {
   if ( settings && settings->hasValidSettings() )
   {
-    mUseHitTest = true;
-    mLegendFilterMapSettings.reset( new QgsMapSettings( *settings ) );
-    mLegendFilterMapSettings->setLayerStyleOverrides( mLayerStyleOverrides );
-    QgsMapHitTest::LayerFilterExpression exprs;
-    mLegendFilterUsesExtent = useExtent;
-    // collect expression filters
+    std::unique_ptr< QgsLayerTreeFilterSettings > filterSettings = std::make_unique< QgsLayerTreeFilterSettings >( *settings );
+
+    if ( !useExtent ) // only expressions
+    {
+      filterSettings->setFlags( Qgis::LayerTreeFilterFlag::SkipVisibilityCheck );
+    }
+    else if ( polygon.type() == Qgis::GeometryType::Polygon )
+    {
+      filterSettings->setFilterPolygon( polygon );
+    }
+
     if ( useExpressions )
     {
-      const auto layers = mRootNode->findLayers();
+      QMap<QString, QString> legendFilterExpressions;
+      const QList<QgsLayerTreeLayer *> layers = mRootNode->findLayers();
       for ( QgsLayerTreeLayer *nodeLayer : layers )
       {
-        bool enabled;
-        QString expr = QgsLayerTreeUtils::legendFilterByExpression( *nodeLayer, &enabled );
-        if ( enabled && !expr.isEmpty() )
+        bool enabled = false;
+        const QString legendFilterExpression = QgsLayerTreeUtils::legendFilterByExpression( *nodeLayer, &enabled );
+        if ( enabled && !legendFilterExpression.isEmpty() )
         {
-          exprs[ nodeLayer->layerId()] = expr;
+          legendFilterExpressions[ nodeLayer->layerId()] = legendFilterExpression;
         }
       }
+      filterSettings->setLayerFilterExpressions( legendFilterExpressions );
     }
-    bool polygonValid = !polygon.isNull() && polygon.type() == Qgis::GeometryType::Polygon;
+
+    setFilterSettings( filterSettings.get() );
+  }
+  else
+  {
+    setFilterSettings( nullptr );
+  }
+}
+
+const QgsMapSettings *QgsLayerTreeModel::legendFilterMapSettings() const
+{
+  return mFilterSettings ? &mFilterSettings->mapSettings() : nullptr;
+}
+
+void QgsLayerTreeModel::setFilterSettings( const QgsLayerTreeFilterSettings *settings )
+{
+  if ( settings )
+  {
+    mFilterSettings = std::make_unique< QgsLayerTreeFilterSettings >( *settings );
+    mFilterSettings->mapSettings().setLayerStyleOverrides( mLayerStyleOverrides );
 
     bool hitTestWasRunning = false;
     if ( mHitTestTask )
@@ -642,20 +663,10 @@ void QgsLayerTreeModel::setLegendFilter( const QgsMapSettings *settings, bool us
     }
 
     std::unique_ptr< QgsMapHitTest > blockingHitTest;
-    if ( useExpressions && !useExtent && !polygonValid ) // only expressions
-    {
-      if ( mFlags & QgsLayerTreeModel::Flag::UseThreadedHitTest )
-        mHitTestTask = new QgsMapHitTestTask( *mLegendFilterMapSettings, exprs );
-      else
-        blockingHitTest = std::make_unique< QgsMapHitTest >( *mLegendFilterMapSettings, exprs );
-    }
+    if ( mFlags & QgsLayerTreeModel::Flag::UseThreadedHitTest )
+      mHitTestTask = new QgsMapHitTestTask( *mFilterSettings );
     else
-    {
-      if ( mFlags & QgsLayerTreeModel::Flag::UseThreadedHitTest )
-        mHitTestTask = new QgsMapHitTestTask( *mLegendFilterMapSettings, polygon, exprs );
-      else
-        blockingHitTest = std::make_unique< QgsMapHitTest >( *mLegendFilterMapSettings, polygon, exprs );
-    }
+      blockingHitTest = std::make_unique< QgsMapHitTest >( *mFilterSettings );
 
     if ( mHitTestTask )
     {
@@ -674,14 +685,17 @@ void QgsLayerTreeModel::setLegendFilter( const QgsMapSettings *settings, bool us
   }
   else
   {
-    mUseHitTest = false;
-    if ( !mLegendFilterMapSettings )
-      return; // no change
+    if ( !mFilterSettings )
+      return;
 
-    mLegendFilterMapSettings.reset();
-
+    mFilterSettings.reset();
     handleHitTestResults();
   }
+}
+
+const QgsLayerTreeFilterSettings *QgsLayerTreeModel::filterSettings() const
+{
+  return mFilterSettings.get();
 }
 
 void QgsLayerTreeModel::handleHitTestResults()
@@ -1267,9 +1281,9 @@ QList<QgsLayerTreeModelLegendNode *> QgsLayerTreeModel::filterLegendNodes( const
         filtered << node;
     }
   }
-  else if ( mUseHitTest )
+  else if ( mFilterSettings )
   {
-    if ( !nodes.isEmpty() && mLegendFilterMapSettings->layers().contains( nodes.at( 0 )->layerNode()->layer() ) )
+    if ( !nodes.isEmpty() && mFilterSettings->layers().contains( nodes.at( 0 )->layerNode()->layer() ) )
     {
       for ( QgsLayerTreeModelLegendNode *node : std::as_const( nodes ) )
       {
@@ -1288,7 +1302,9 @@ QList<QgsLayerTreeModelLegendNode *> QgsLayerTreeModel::filterLegendNodes( const
           case QgsLayerTreeModelLegendNode::ColorRampLegend:
           {
             const QString ruleKey = node->data( QgsSymbolLegendNode::RuleKeyRole ).toString();
-            bool checked = mLegendFilterUsesExtent || node->data( Qt::CheckStateRole ).toInt() == Qt::Checked;
+            const bool checked = ( mFilterSettings && !( mFilterSettings->flags() & Qgis::LayerTreeFilterFlag::SkipVisibilityCheck ) )
+                                 || node->data( Qt::CheckStateRole ).toInt() == Qt::Checked;
+
             if ( checked )
             {
               if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( node->layerNode()->layer() ) )

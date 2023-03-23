@@ -2775,6 +2775,25 @@ class CORE_EXPORT Qgis
     Q_ENUM( LayerTreeInsertionMethod )
 
     /**
+     * Layer tree filter flags.
+     *
+     * \since QGIS 3.32
+     */
+    enum class LayerTreeFilterFlag : int
+    {
+      SkipVisibilityCheck = 1 << 0, //!< If set, the standard visibility check should be skipped
+    };
+    Q_ENUM( LayerTreeFilterFlag )
+
+    /**
+     * Layer tree filter flags.
+     *
+     * \since QGIS 3.32
+     */
+    Q_DECLARE_FLAGS( LayerTreeFilterFlags, LayerTreeFilterFlag )
+    Q_FLAG( LayerTreeFilterFlags )
+
+    /**
      * Action types.
      *
      * Prior to QGIS 3.30 this was available as QgsActionMenu::ActionType
@@ -3409,6 +3428,7 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::MapLayerActionFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::RelationshipCapabilities )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SettingsTreeNodeOptions )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::ScriptLanguageCapabilities )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::LayerTreeFilterFlags )
 
 
 // hack to workaround warnings when casting void pointers

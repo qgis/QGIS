@@ -27,50 +27,54 @@
 #include "qgsvectorlayerfeatureiterator.h"
 
 QgsMapHitTest::QgsMapHitTest( const QgsMapSettings &settings, const QgsGeometry &polygon, const LayerFilterExpression &layerFilterExpression )
-  : mSettings( settings )
-  , mLayerFilterExpression( layerFilterExpression )
-  , mOnlyExpressions( false )
+  : mSettings( QgsLayerTreeFilterSettings( settings ) )
 {
-  if ( !polygon.isNull() && polygon.type() == Qgis::GeometryType::Polygon )
-  {
-    mPolygon = polygon;
-  }
+  mSettings.setLayerFilterExpressions( layerFilterExpression );
+  mSettings.setFilterPolygon( polygon );
 }
 
 QgsMapHitTest::QgsMapHitTest( const QgsMapSettings &settings, const LayerFilterExpression &layerFilterExpression )
-  : mSettings( settings )
-  , mLayerFilterExpression( layerFilterExpression )
-  , mOnlyExpressions( true )
+  : mSettings( QgsLayerTreeFilterSettings( settings ) )
 {
+  mSettings.setLayerFilterExpressions( layerFilterExpression );
+  mSettings.setFlags( Qgis::LayerTreeFilterFlag::SkipVisibilityCheck );
+}
+
+QgsMapHitTest::QgsMapHitTest( const QgsLayerTreeFilterSettings &settings )
+  : mSettings( settings )
+{
+
 }
 
 void QgsMapHitTest::run()
 {
+  const QgsMapSettings &mapSettings = mSettings.mapSettings();
+
   // TODO: do we need this temp image?
-  QImage tmpImage( mSettings.outputSize(), mSettings.outputImageFormat() );
-  tmpImage.setDotsPerMeterX( static_cast< int >( std::round( mSettings.outputDpi() * 25.4 ) ) );
-  tmpImage.setDotsPerMeterY( static_cast< int >( std::round( mSettings.outputDpi() * 25.4 ) ) );
+  QImage tmpImage( mapSettings.outputSize(), mapSettings.outputImageFormat() );
+  tmpImage.setDotsPerMeterX( static_cast< int >( std::round( mapSettings.outputDpi() * 25.4 ) ) );
+  tmpImage.setDotsPerMeterY( static_cast< int >( std::round( mapSettings.outputDpi() * 25.4 ) ) );
   QPainter painter( &tmpImage );
 
-  QgsRenderContext context = QgsRenderContext::fromMapSettings( mSettings );
+  QgsRenderContext context = QgsRenderContext::fromMapSettings( mapSettings );
   context.setPainter( &painter ); // we are not going to draw anything, but we still need a working painter
 
-  const QList< QgsMapLayer * > layers = mSettings.layers( true );
+  const QList< QgsMapLayer * > layers = mapSettings.layers( true );
   for ( QgsMapLayer *layer : layers )
   {
     QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer );
     if ( !vl || !vl->renderer() )
       continue;
 
-    if ( !mOnlyExpressions )
+    if ( !( mSettings.flags() & Qgis::LayerTreeFilterFlag::SkipVisibilityCheck ) )
     {
-      if ( !vl->isInScaleRange( mSettings.scale() ) )
+      if ( !vl->isInScaleRange( mapSettings.scale() ) )
       {
         continue;
       }
 
-      context.setCoordinateTransform( mSettings.layerTransform( vl ) );
-      context.setExtent( mSettings.outputExtentToLayerExtent( vl, mSettings.visibleExtent() ) );
+      context.setCoordinateTransform( mapSettings.layerTransform( vl ) );
+      context.setExtent( mapSettings.outputExtentToLayerExtent( vl, mapSettings.visibleExtent() ) );
     }
 
     context.expressionContext() << QgsExpressionContextUtils::layerScope( vl );
@@ -78,8 +82,8 @@ void QgsMapHitTest::run()
     SymbolSet &usedSymbolsRuleKey = mHitTestRuleKey[vl->id()];
 
     QgsMapLayerStyleOverride styleOverride( vl );
-    if ( mSettings.layerStyleOverrides().contains( vl->id() ) )
-      styleOverride.setOverrideStyle( mSettings.layerStyleOverrides().value( vl->id() ) );
+    if ( mapSettings.layerStyleOverrides().contains( vl->id() ) )
+      styleOverride.setOverrideStyle( mapSettings.layerStyleOverrides().value( vl->id() ) );
 
     std::unique_ptr< QgsVectorLayerFeatureSource > source = std::make_unique< QgsVectorLayerFeatureSource >( vl );
     runHitTestFeatureSource( source.get(),
@@ -142,6 +146,8 @@ void QgsMapHitTest::runHitTestFeatureSource( QgsAbstractFeatureSource *source,
     QgsRenderContext &context,
     QgsFeedback *feedback )
 {
+  const QgsMapSettings &mapSettings = mSettings.mapSettings();
+
   std::unique_ptr< QgsFeatureRenderer > r( renderer->clone() );
   const bool moreSymbolsPerFeature = r->capabilities() & QgsFeatureRenderer::MoreSymbolsPerFeature;
   r->startRender( context, fields );
@@ -173,12 +179,17 @@ void QgsMapHitTest::runHitTestFeatureSource( QgsAbstractFeatureSource *source,
 
   QSet<QString> requiredAttributes = r->usedAttributes( context );
 
-  QgsGeometry transformedPolygon = mPolygon;
-  if ( !mOnlyExpressions && !mPolygon.isNull() )
+  QgsGeometry transformedPolygon = mSettings.filterPolygon();
+  if ( transformedPolygon.type() != Qgis::GeometryType::Polygon )
   {
-    if ( mSettings.destinationCrs() != crs )
+    transformedPolygon = QgsGeometry();
+  }
+
+  if ( !( mSettings.flags() & Qgis::LayerTreeFilterFlag::SkipVisibilityCheck ) && !transformedPolygon.isNull() )
+  {
+    if ( mapSettings.destinationCrs() != crs )
     {
-      const QgsCoordinateTransform ct( mSettings.destinationCrs(), crs, mSettings.transformContext() );
+      const QgsCoordinateTransform ct( mapSettings.destinationCrs(), crs, mapSettings.transformContext() );
       transformedPolygon.transform( ct );
     }
   }
@@ -189,7 +200,8 @@ void QgsMapHitTest::runHitTestFeatureSource( QgsAbstractFeatureSource *source,
     return;
   }
 
-  if ( auto it = mLayerFilterExpression.constFind( layerId ); it != mLayerFilterExpression.constEnd() )
+  const QMap<QString, QString> layerFilterExpressions = mSettings.layerFilterExpressions();
+  if ( auto it = layerFilterExpressions.constFind( layerId ); it != layerFilterExpressions.constEnd() )
   {
     const QString expression = *it;
     QgsExpression expr( expression );
@@ -202,9 +214,9 @@ void QgsMapHitTest::runHitTestFeatureSource( QgsAbstractFeatureSource *source,
   request.setSubsetOfAttributes( requiredAttributes, fields );
 
   std::unique_ptr< QgsGeometryEngine > polygonEngine;
-  if ( !mOnlyExpressions )
+  if ( !( mSettings.flags() & Qgis::LayerTreeFilterFlag::SkipVisibilityCheck ) )
   {
-    if ( mPolygon.isNull() )
+    if ( transformedPolygon.isNull() )
     {
       request.setFilterRect( context.extent() );
       request.setFlags( QgsFeatureRequest::ExactIntersect );
@@ -284,21 +296,9 @@ void QgsMapHitTest::runHitTestFeatureSource( QgsAbstractFeatureSource *source,
 // QgsMapHitTestTask
 //
 
-QgsMapHitTestTask::QgsMapHitTestTask( const QgsMapSettings &settings, const QgsGeometry &polygon, const QgsMapHitTest::LayerFilterExpression &layerFilterExpression )
+QgsMapHitTestTask::QgsMapHitTestTask( const QgsLayerTreeFilterSettings &settings )
   : QgsTask( tr( "Updating Legend" ), QgsTask::Flag::CanCancel | QgsTask::Flag::CancelWithoutPrompt | QgsTask::Flag::Silent )
   , mSettings( settings )
-  , mLayerFilterExpression( layerFilterExpression )
-  , mPolygon( polygon )
-  , mOnlyExpressions( false )
-{
-  prepare();
-}
-
-QgsMapHitTestTask::QgsMapHitTestTask( const QgsMapSettings &settings, const QgsMapHitTest::LayerFilterExpression &layerFilterExpression )
-  : QgsTask( tr( "Updating Legend" ), QgsTask::Flag::CanCancel | QgsTask::Flag::CancelWithoutPrompt | QgsTask::Flag::Silent )
-  , mSettings( settings )
-  , mLayerFilterExpression( layerFilterExpression )
-  , mOnlyExpressions( true )
 {
   prepare();
 }
@@ -322,7 +322,9 @@ QMap<QString, QList<QString> > QgsMapHitTestTask::resultsPy() const
 
 void QgsMapHitTestTask::prepare()
 {
-  const QList< QgsMapLayer * > layers = mSettings.layers( true );
+  const QgsMapSettings &mapSettings = mSettings.mapSettings();
+
+  const QList< QgsMapLayer * > layers = mapSettings.layers( true );
   for ( QgsMapLayer *layer : layers )
   {
     QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer );
@@ -330,12 +332,12 @@ void QgsMapHitTestTask::prepare()
       continue;
 
     QgsMapLayerStyleOverride styleOverride( vl );
-    if ( mSettings.layerStyleOverrides().contains( vl->id() ) )
-      styleOverride.setOverrideStyle( mSettings.layerStyleOverrides().value( vl->id() ) );
+    if ( mapSettings.layerStyleOverrides().contains( vl->id() ) )
+      styleOverride.setOverrideStyle( mapSettings.layerStyleOverrides().value( vl->id() ) );
 
-    if ( !mOnlyExpressions )
+    if ( !( mSettings.flags() & Qgis::LayerTreeFilterFlag::SkipVisibilityCheck ) )
     {
-      if ( !vl->isInScaleRange( mSettings.scale() ) )
+      if ( !vl->isInScaleRange( mapSettings.scale() ) )
       {
         continue;
       }
@@ -347,8 +349,8 @@ void QgsMapHitTestTask::prepare()
     layerData.crs = vl->crs();
     layerData.fields = vl->fields();
     layerData.renderer.reset( vl->renderer()->clone() );
-    layerData.transform = mSettings.layerTransform( vl );
-    layerData.extent = mSettings.outputExtentToLayerExtent( vl, mSettings.visibleExtent() );
+    layerData.transform = mapSettings.layerTransform( vl );
+    layerData.extent = mapSettings.outputExtentToLayerExtent( vl, mapSettings.visibleExtent() );
     layerData.layerScope.reset( QgsExpressionContextUtils::layerScope( vl ) );
 
     mPreparedData.emplace_back( std::move( layerData ) );
@@ -368,19 +370,17 @@ bool QgsMapHitTestTask::run()
   mFeedback = std::make_unique< QgsFeedback >();
   connect( mFeedback.get(), &QgsFeedback::progressChanged, this, &QgsTask::progressChanged );
 
-  std::unique_ptr< QgsMapHitTest > hitTest;
-  if ( !mOnlyExpressions )
-    hitTest = std::make_unique< QgsMapHitTest >( mSettings, mPolygon, mLayerFilterExpression );
-  else
-    hitTest = std::make_unique< QgsMapHitTest >( mSettings, mLayerFilterExpression );
+  std::unique_ptr< QgsMapHitTest > hitTest = std::make_unique< QgsMapHitTest >( mSettings );
 
   // TODO: do we need this temp image?
-  QImage tmpImage( mSettings.outputSize(), mSettings.outputImageFormat() );
-  tmpImage.setDotsPerMeterX( static_cast< int >( std::round( mSettings.outputDpi() * 25.4 ) ) );
-  tmpImage.setDotsPerMeterY( static_cast< int >( std::round( mSettings.outputDpi() * 25.4 ) ) );
+  const QgsMapSettings &mapSettings = mSettings.mapSettings();
+
+  QImage tmpImage( mapSettings.outputSize(), mapSettings.outputImageFormat() );
+  tmpImage.setDotsPerMeterX( static_cast< int >( std::round( mapSettings.outputDpi() * 25.4 ) ) );
+  tmpImage.setDotsPerMeterY( static_cast< int >( std::round( mapSettings.outputDpi() * 25.4 ) ) );
   QPainter painter( &tmpImage );
 
-  QgsRenderContext context = QgsRenderContext::fromMapSettings( mSettings );
+  QgsRenderContext context = QgsRenderContext::fromMapSettings( mapSettings );
   context.setPainter( &painter ); // we are not going to draw anything, but we still need a working painter
 
   std::size_t layerIdx = 0;
