@@ -89,6 +89,7 @@ void QgsConfigureShortcutsDialog::populateActions()
     QString actionText;
     QString sequence;
     QIcon icon;
+    const QString settingKey = mManager->objectSettingKey( obj );
 
     if ( QAction *action = qobject_cast< QAction * >( obj ) )
     {
@@ -118,6 +119,7 @@ void QgsConfigureShortcutsDialog::populateActions()
     QTreeWidgetItem *item = new QTreeWidgetItem( lst );
     item->setIcon( 0, icon );
     item->setData( 0, Qt::UserRole, QVariant::fromValue( obj ) );
+    item->setToolTip( 0, settingKey );
     items.append( item );
   }
 
@@ -158,7 +160,7 @@ void QgsConfigureShortcutsDialog::saveShortcuts( bool saveAll )
 
   QDomDocument doc( QStringLiteral( "shortcuts" ) );
   QDomElement root = doc.createElement( QStringLiteral( "qgsshortcuts" ) );
-  root.setAttribute( QStringLiteral( "version" ), QStringLiteral( "1.0" ) );
+  root.setAttribute( QStringLiteral( "version" ), QStringLiteral( "1.1" ) );
   root.setAttribute( QStringLiteral( "locale" ), settings.value( QgsApplication::settingsLocaleUserLocale->key(), "en_US" ).toString() );
   doc.appendChild( root );
 
@@ -167,6 +169,7 @@ void QgsConfigureShortcutsDialog::saveShortcuts( bool saveAll )
   {
     QString actionText;
     QString actionShortcut;
+    QString actionSettingKey;
     QKeySequence sequence;
 
     if ( QAction *action = qobject_cast< QAction * >( obj ) )
@@ -186,7 +189,9 @@ void QgsConfigureShortcutsDialog::saveShortcuts( bool saveAll )
       continue;
     }
 
-    if ( actionText.isEmpty() || actionShortcut.isEmpty() )
+    actionSettingKey = mManager->objectSettingKey( obj );
+
+    if ( actionSettingKey.isEmpty() )
     {
       continue;
     }
@@ -200,6 +205,7 @@ void QgsConfigureShortcutsDialog::saveShortcuts( bool saveAll )
     QDomElement el = doc.createElement( QStringLiteral( "action" ) );
     el.setAttribute( QStringLiteral( "name" ), actionText );
     el.setAttribute( QStringLiteral( "shortcut" ), actionShortcut );
+    el.setAttribute( QStringLiteral( "setting" ), actionSettingKey );
     root.appendChild( el );
   }
 
@@ -227,7 +233,7 @@ void QgsConfigureShortcutsDialog::loadShortcuts()
     return;
   }
 
-  QDomDocument  doc;
+  QDomDocument doc;
   QString errorStr;
   int errorLine;
   int errorColumn;
@@ -262,22 +268,44 @@ void QgsConfigureShortcutsDialog::loadShortcuts()
     currentLocale = QLocale().name();
   }
 
+  const QString version = root.attribute( QStringLiteral( "version" ) );
+
   if ( root.attribute( QStringLiteral( "locale" ) ) != currentLocale )
   {
-    QMessageBox::information( this, tr( "Loading Shortcuts" ),
-                              tr( "The file contains shortcuts created with different locale, so you can't use it." ) );
-    return;
+    if ( version < "1.1" )
+    {
+      QMessageBox::information( this, tr( "Loading Shortcuts" ),
+                                tr( "The file contains shortcuts created with different locale, so you can't use it." ) );
+      return;
+    }
+    else // From version 1.1, if objectName is not empty, it is used as key.
+    {
+      QMessageBox::information( this, tr( "Loading Shortcuts" ),
+                                tr( "The file contains shortcuts created with different locale, so some shortcuts may not work." ) );
+    }
   }
 
   QString actionName;
   QString actionShortcut;
+  QString actionSettingKey;
 
   QDomElement child = root.firstChildElement();
   while ( !child.isNull() )
   {
-    actionName = child.attribute( QStringLiteral( "name" ) );
     actionShortcut = child.attribute( QStringLiteral( "shortcut" ) );
-    mManager->setKeySequence( actionName, actionShortcut );
+    if ( version < "1.1" )
+    {
+      actionName = child.attribute( QStringLiteral( "name" ) );
+      mManager->setKeySequence( actionName, actionShortcut );
+    }
+    else
+    {
+      actionSettingKey = child.attribute( QStringLiteral( "setting" ) );
+      QObject *obj = mManager->objectForSettingKey( actionSettingKey );
+      if ( obj )
+        mManager->setObjectKeySequence( obj, actionShortcut );
+
+    }
 
     child = child.nextSiblingElement();
   }
