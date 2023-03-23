@@ -94,6 +94,16 @@ class CORE_EXPORT QgsProjectVersion
      */
     bool operator>( const QgsProjectVersion &other ) const;
 
+    /**
+     * Boolean < operator
+     */
+    bool operator<( const QgsProjectVersion &other ) const;
+
+    /**
+     * Boolean <= operator
+     */
+    bool operator<=( const QgsProjectVersion &other ) const;
+
   private:
     int mMajor = 0;
     int mMinor = 0;
