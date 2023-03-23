@@ -25,7 +25,7 @@ using namespace nlohmann;
 
 #include <QTextCodec>
 
-bool QgsOapifCollection::deserialize( const json &j )
+bool QgsOapifCollection::deserialize( const json &j, const json &jCollections )
 {
   if ( !j.is_object() )
     return false;
@@ -121,7 +121,6 @@ bool QgsOapifCollection::deserialize( const json &j )
             crs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( QString::fromStdString( jCrs.get<std::string>() ) );
           }
         }
-        mLayerMetadata.setCrs( crs );
 
         const auto jBboxes = spatial["bbox"];
         if ( jBboxes.is_array() )
@@ -148,6 +147,7 @@ bool QgsOapifCollection::deserialize( const json &j )
               {
                 if ( firstBbox )
                 {
+                  mBboxCrs = crs;
                   mBbox.set( values[0], values[1], values[2], values[3] );
                 }
                 spatialExtent.bounds = QgsBox3d( mBbox );
@@ -156,6 +156,7 @@ bool QgsOapifCollection::deserialize( const json &j )
               {
                 if ( firstBbox )
                 {
+                  mBboxCrs = crs;
                   mBbox.set( values[0], values[1], values[3], values[4] );
                 }
                 spatialExtent.bounds = QgsBox3d( values[0], values[1], values[2],
@@ -298,23 +299,72 @@ bool QgsOapifCollection::deserialize( const json &j )
     }
   }
 
+  // Usage storageCrs from Part 2 in priority
+  bool layerCrsSet = false;
+  if ( j.contains( "storageCrs" ) )
+  {
+    const auto crsUrl = j["storageCrs"];
+    if ( crsUrl.is_string() )
+    {
+      QString crsStr = QString::fromStdString( crsUrl.get<std::string>() );
+      QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( crsStr );
+
+      if ( j.contains( "storageCrsCoordinateEpoch" ) )
+      {
+        const auto storageCrsCoordinateEpoch = j["storageCrsCoordinateEpoch"];
+        if ( storageCrsCoordinateEpoch.is_number() )
+        {
+          crs.setCoordinateEpoch( storageCrsCoordinateEpoch.get<double>() );
+        }
+      }
+
+      layerCrsSet = true;
+      mLayerMetadata.setCrs( crs );
+      mCrsList.append( crs.authid() );
+    }
+  }
+
   if ( j.contains( "crs" ) )
   {
-    const auto crsUrls = j["crs"];
-    if ( crsUrls.is_array() )
+    json jCrs = j["crs"];
+    // Resolve "#/crs" link
+    if ( jCrs.is_array() && jCrs.size() == 1 &&
+         jCrs[0].is_string() && jCrs[0].get<std::string>() == "#/crs" &&
+         jCollections.is_object() && jCollections.contains( "crs" ) )
     {
-      for ( const auto &crsUrl : crsUrls )
+      jCrs = jCollections["crs"];
+    }
+
+    if ( jCrs.is_array() )
+    {
+      for ( const auto &crsUrl : jCrs )
       {
         if ( crsUrl.is_string() )
         {
-          QString crs = QString::fromStdString( crsUrl.get<std::string>() );
-          mLayerMetadata.setCrs( QgsCoordinateReferenceSystem::fromOgcWmsCrs( crs ) );
+          QString crsStr = QString::fromStdString( crsUrl.get<std::string>() );
+          QgsCoordinateReferenceSystem crs( QgsCoordinateReferenceSystem::fromOgcWmsCrs( crsStr ) );
+          if ( !layerCrsSet )
+          {
+            // Take the first CRS of the list
+            layerCrsSet = true;
+            mLayerMetadata.setCrs( crs );
+          }
 
-          // Take the first CRS of the list
-          break;
+          if ( !mCrsList.contains( crs.authid() ) )
+          {
+            mCrsList.append( crs.authid() );
+          }
         }
       }
     }
+  }
+
+  if ( mCrsList.isEmpty() )
+  {
+    QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem::fromOgcWmsCrs(
+                                         QgsOapifProvider::OAPIF_PROVIDER_DEFAULT_CRS );
+    mLayerMetadata.setCrs( QgsCoordinateReferenceSystem::fromOgcWmsCrs( crs.authid() ) );
+    mCrsList.append( crs.authid() );
   }
 
   return true;
@@ -408,7 +458,7 @@ void QgsOapifCollectionsRequest::processReply()
         for ( const auto &jCollection : collections )
         {
           QgsOapifCollection collection;
-          if ( collection.deserialize( jCollection ) )
+          if ( collection.deserialize( jCollection, j ) )
           {
             if ( collection.mLayerMetadata.licenses().isEmpty() )
             {
@@ -502,7 +552,7 @@ void QgsOapifCollectionRequest::processReply()
   try
   {
     const json j = json::parse( utf8Text.toStdString() );
-    mCollection.deserialize( j );
+    mCollection.deserialize( j, json() );
   }
   catch ( const json::parse_error &ex )
   {
