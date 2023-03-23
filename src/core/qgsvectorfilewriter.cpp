@@ -1439,13 +1439,13 @@ class QgsVectorFileWriterMetadataContainer
                              ) );
 
       datasetOptions.insert( QStringLiteral( "FORMAT" ), new QgsVectorFileWriter::SetOption(
-                               QObject::tr( "If not specified, GML2 will be used." ),
+                               QObject::tr( "GML version to use." ),
                                QStringList()
+                               << QStringLiteral( "GML2" )
                                << QStringLiteral( "GML3" )
                                << QStringLiteral( "GML3Deegree" )
                                << QStringLiteral( "GML3.2" ),
-                               QString(), // Default value
-                               true // Allow None
+                               QStringLiteral( "GML3.2" ) // Default value
                              ) );
 
       datasetOptions.insert( QStringLiteral( "GML3_LONGSRS" ), new QgsVectorFileWriter::BoolOption(
