@@ -201,9 +201,15 @@ QString QgsLayerItem::iconName( Qgis::BrowserLayerType layerType )
       return QStringLiteral( "/mIconMeshLayer.svg" );
     case Qgis::BrowserLayerType::PointCloud:
       return QStringLiteral( "/mIconPointCloudLayer.svg" );
-    default:
-      return QStringLiteral( "/mIconLayer.png" );
+    case Qgis::BrowserLayerType::VectorTile:
+      return QStringLiteral( "/mIconVectorTileLayer.svg" );
+
+    case Qgis::BrowserLayerType::NoType:
+    case Qgis::BrowserLayerType::Database:
+    case Qgis::BrowserLayerType::Plugin:
+      return QStringLiteral( "/mIconLayer.png" );;
   }
+  BUILTIN_UNREACHABLE
 }
 
 bool QgsLayerItem::deleteLayer()
