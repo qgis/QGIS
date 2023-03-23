@@ -20,7 +20,7 @@
 #include <pdal/pdal_types.hpp>
 #include <pdal/Polygon.hpp>
 
-#include <gdal/gdal_utils.h>
+#include <gdal_utils.h>
 
 #include "utils.hpp"
 #include "alg.hpp"

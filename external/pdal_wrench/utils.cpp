@@ -20,7 +20,7 @@
 #include <pdal/StageFactory.hpp>
 #include <pdal/util/ThreadPool.hpp>
 
-#include <gdal/gdal_utils.h>
+#include <gdal_utils.h>
 
 using namespace pdal;
 
