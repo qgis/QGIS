@@ -226,7 +226,7 @@ void QgsProcessingMultipleSelectionPanelWidget::dragEnterEvent( QDragEnterEvent 
   if ( !( event->possibleActions() & Qt::CopyAction ) )
     return;
 
-  QList< int> indexes =  existingMapLayerFromMimeData( event->mimeData() );
+  const QList< int> indexes = existingMapLayerFromMimeData( event->mimeData() );
   if ( !indexes.isEmpty() )
   {
     // dragged an acceptable layer, phew
@@ -240,7 +240,7 @@ void QgsProcessingMultipleSelectionPanelWidget::dropEvent( QDropEvent *event )
   if ( !( event->possibleActions() & Qt::CopyAction ) )
     return;
 
-  const QList< int> indexes =  existingMapLayerFromMimeData( event->mimeData() );
+  const QList< int> indexes = existingMapLayerFromMimeData( event->mimeData() );
   if ( !indexes.isEmpty() )
   {
     // dropped an acceptable layer, phew
@@ -412,7 +412,7 @@ QList< int> QgsProcessingMultipleInputPanelWidget::existingMapLayerFromMimeData(
       for ( int i = 0; i < mModel->rowCount(); ++i )
       {
         // try to match project layers to current layers
-        QString userRole = mModel->item( i )->data( Qt::UserRole ).toString();
+        const QString userRole = mModel->item( i )->data( Qt::UserRole ).toString();
         if ( userRole == layer->id() || userRole == layer->source() )
         {
           indexes.append( i );
@@ -428,7 +428,7 @@ void QgsProcessingMultipleInputPanelWidget::dragEnterEvent( QDragEnterEvent *eve
   if ( !( event->possibleActions() & Qt::CopyAction ) )
     return;
 
-  QList< int> indexes =  existingMapLayerFromMimeData( event->mimeData() );
+  const QList< int> indexes = existingMapLayerFromMimeData( event->mimeData() );
   if ( !indexes.isEmpty() )
   {
     // dragged an acceptable layer, phew
@@ -442,7 +442,7 @@ void QgsProcessingMultipleInputPanelWidget::dropEvent( QDropEvent *event )
   if ( !( event->possibleActions() & Qt::CopyAction ) )
     return;
 
-  const QList< int> indexes =  existingMapLayerFromMimeData( event->mimeData() );
+  const QList< int> indexes = existingMapLayerFromMimeData( event->mimeData() );
   if ( !indexes.isEmpty() )
   {
     // dropped an acceptable layer, phew
