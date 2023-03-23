@@ -240,7 +240,7 @@ QVariantMap QgsMbTilesVectorTileDataProviderMetadata::decodeUri( const QString &
   dsUri.setEncodedUri( uri );
 
   QVariantMap uriComponents;
-  uriComponents.insert( QStringLiteral( "type" ), dsUri.param( QStringLiteral( "type" ) ) );
+  uriComponents.insert( QStringLiteral( "type" ), QStringLiteral( "mbtiles" ) );
   uriComponents.insert( QStringLiteral( "path" ), dsUri.param( QStringLiteral( "url" ) ) );
 
   return uriComponents;
@@ -249,7 +249,7 @@ QVariantMap QgsMbTilesVectorTileDataProviderMetadata::decodeUri( const QString &
 QString QgsMbTilesVectorTileDataProviderMetadata::encodeUri( const QVariantMap &parts ) const
 {
   QgsDataSourceUri dsUri;
-  dsUri.setParam( QStringLiteral( "type" ), parts.value( QStringLiteral( "type" ) ).toString() );
+  dsUri.setParam( QStringLiteral( "type" ), QStringLiteral( "mbtiles" ) );
   dsUri.setParam( QStringLiteral( "url" ), parts.value( parts.contains( QStringLiteral( "path" ) ) ? QStringLiteral( "path" ) : QStringLiteral( "url" ) ).toString() );
   return dsUri.encodedUri();
 }

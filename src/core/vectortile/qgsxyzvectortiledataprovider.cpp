@@ -178,7 +178,7 @@ QVariantMap QgsXyzVectorTileDataProviderMetadata::decodeUri( const QString &uri 
   dsUri.setEncodedUri( uri );
 
   QVariantMap uriComponents;
-  uriComponents.insert( QStringLiteral( "type" ), dsUri.param( QStringLiteral( "type" ) ) );
+  uriComponents.insert( QStringLiteral( "type" ), QStringLiteral( "xyz" ) );
 
   if ( uriComponents[ QStringLiteral( "type" ) ] == QLatin1String( "mbtiles" ) ||
        ( uriComponents[ QStringLiteral( "type" ) ] == QLatin1String( "xyz" ) &&
@@ -211,7 +211,7 @@ QVariantMap QgsXyzVectorTileDataProviderMetadata::decodeUri( const QString &uri 
 QString QgsXyzVectorTileDataProviderMetadata::encodeUri( const QVariantMap &parts ) const
 {
   QgsDataSourceUri dsUri;
-  dsUri.setParam( QStringLiteral( "type" ), parts.value( QStringLiteral( "type" ) ).toString() );
+  dsUri.setParam( QStringLiteral( "type" ), QStringLiteral( "xyz" ) );
   dsUri.setParam( QStringLiteral( "url" ), parts.value( parts.contains( QStringLiteral( "path" ) ) ? QStringLiteral( "path" ) : QStringLiteral( "url" ) ).toString() );
 
   if ( parts.contains( QStringLiteral( "zmin" ) ) )
