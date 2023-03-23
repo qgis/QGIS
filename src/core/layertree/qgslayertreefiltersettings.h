@@ -25,6 +25,7 @@
 #include <memory>
 
 class QgsMapSettings;
+class QgsLayerTree;
 
 /**
  * \ingroup core
@@ -78,6 +79,11 @@ class CORE_EXPORT QgsLayerTreeFilterSettings
      * \see layerFilterExpressions()
      */
     void setLayerFilterExpressions( const QMap<QString, QString> &expressions );
+
+    /**
+     * Sets layer filter expressions using a layer \a tree.
+     */
+    void setLayerFilterExpressionsFromLayerTree( QgsLayerTree *tree );
 
     /**
      * Returns the filter expression to use for the layer with the specified

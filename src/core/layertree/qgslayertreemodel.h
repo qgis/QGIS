@@ -234,9 +234,9 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
      * Force only display of legend nodes which are valid for given map settings.
      * Setting NULLPTR or invalid map settings will disable the functionality.
      * Ownership of map settings pointer does not change, a copy is made.
-     * \since QGIS 2.6
+     * \deprecated QGIS 3.32. Use setFilterSettings() instead.
      */
-    void setLegendFilterByMap( const QgsMapSettings *settings );
+    Q_DECL_DEPRECATED void setLegendFilterByMap( const QgsMapSettings *settings ) SIP_DEPRECATED;
 
     /**
      * Filter display of legend nodes for given map settings
@@ -244,9 +244,9 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
      * \param useExtent Whether to use the extent of the map settings as a first spatial filter on legend nodes
      * \param polygon If not empty, this polygon will be used instead of the map extent to filter legend nodes
      * \param useExpressions Whether to use legend node filter expressions
-     * \since QGIS 2.14
+     * \deprecated QGIS 3.32. Use setFilterSettings() instead.
      */
-    void setLegendFilter( const QgsMapSettings *settings, bool useExtent = true, const QgsGeometry &polygon = QgsGeometry(), bool useExpressions = true );
+    Q_DECL_DEPRECATED void setLegendFilter( const QgsMapSettings *settings, bool useExtent = true, const QgsGeometry &polygon = QgsGeometry(), bool useExpressions = true ) SIP_DEPRECATED;
 
     /**
      * Returns the current map settings used for the current legend filter (or NULLPTR if none is enabled)

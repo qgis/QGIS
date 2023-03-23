@@ -254,16 +254,17 @@ A scale <= 0 indicates that no scale filtering is being performed.
 .. versionadded:: 2.6
 %End
 
-    void setLegendFilterByMap( const QgsMapSettings *settings );
+ void setLegendFilterByMap( const QgsMapSettings *settings ) /Deprecated/;
 %Docstring
 Force only display of legend nodes which are valid for given map settings.
 Setting ``None`` or invalid map settings will disable the functionality.
 Ownership of map settings pointer does not change, a copy is made.
 
-.. versionadded:: 2.6
+.. deprecated::
+   QGIS 3.32. Use :py:func:`~QgsLayerTreeModel.setFilterSettings` instead.
 %End
 
-    void setLegendFilter( const QgsMapSettings *settings, bool useExtent = true, const QgsGeometry &polygon = QgsGeometry(), bool useExpressions = true );
+ void setLegendFilter( const QgsMapSettings *settings, bool useExtent = true, const QgsGeometry &polygon = QgsGeometry(), bool useExpressions = true ) /Deprecated/;
 %Docstring
 Filter display of legend nodes for given map settings
 
@@ -272,7 +273,8 @@ Filter display of legend nodes for given map settings
 :param polygon: If not empty, this polygon will be used instead of the map extent to filter legend nodes
 :param useExpressions: Whether to use legend node filter expressions
 
-.. versionadded:: 2.14
+.. deprecated::
+   QGIS 3.32. Use :py:func:`~QgsLayerTreeModel.setFilterSettings` instead.
 %End
 
     const QgsMapSettings *legendFilterMapSettings() const;
