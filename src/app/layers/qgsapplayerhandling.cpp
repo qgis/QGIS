@@ -883,24 +883,6 @@ QList< QgsMapLayer * > QgsAppLayerHandling::openLayer( const QString &fileName, 
       }
     }
   }
-  else if ( fileName.endsWith( QStringLiteral( ".vtpk" ), Qt::CaseInsensitive ) )
-  {
-    // these are vector tiles
-    QUrlQuery uq;
-    uq.addQueryItem( QStringLiteral( "type" ), QStringLiteral( "vtpk" ) );
-    uq.addQueryItem( QStringLiteral( "url" ), fileName );
-    const QgsVectorTileLayer::LayerOptions options( QgsProject::instance()->transformContext() );
-    std::unique_ptr<QgsVectorTileLayer> vtLayer( new QgsVectorTileLayer( uq.toString(), fileInfo.completeBaseName(), options ) );
-    if ( vtLayer->isValid() )
-    {
-      openedLayers << vtLayer.get();
-      QgsAppLayerHandling::postProcessAddedLayer( vtLayer.get() );
-      QgsProject::instance()->addMapLayer( vtLayer.release(), addToLegend );
-      postProcessAddedLayers();
-      ok = true;
-      return openedLayers;
-    }
-  }
 
   QList< QgsProviderSublayerModel::NonLayerItem > nonLayerItems;
   if ( QgsProjectStorage *ps = QgsApplication::projectStorageRegistry()->projectStorageFromUri( fileName ) )
