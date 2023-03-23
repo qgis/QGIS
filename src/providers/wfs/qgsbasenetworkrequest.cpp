@@ -78,12 +78,6 @@ bool QgsBaseNetworkRequest::sendGET( const QUrl &url, const QString &acceptHeade
     }
 #endif
 
-    // For REST API using URL subpaths, normalize the subpaths
-    const int afterEndpointStartPos = modifiedUrlString.indexOf( "fake_qgis_http_endpoint" ) + strlen( "fake_qgis_http_endpoint" );
-    QString afterEndpointStart = modifiedUrlString.mid( afterEndpointStartPos );
-    afterEndpointStart.replace( QLatin1String( "/" ), QLatin1String( "_" ) );
-    modifiedUrlString = modifiedUrlString.mid( 0, afterEndpointStartPos ) + afterEndpointStart;
-
     if ( !acceptHeader.isEmpty() )
     {
       if ( modifiedUrlString.indexOf( '?' ) > 0 )
@@ -95,6 +89,13 @@ bool QgsBaseNetworkRequest::sendGET( const QUrl &url, const QString &acceptHeade
         modifiedUrlString += QStringLiteral( "?Accept=" ) + acceptHeader;
       }
     }
+
+    // For REST API using URL subpaths, normalize the subpaths
+    const int afterEndpointStartPos = static_cast<int>( modifiedUrlString.indexOf( "fake_qgis_http_endpoint" ) + strlen( "fake_qgis_http_endpoint" ) );
+    QString afterEndpointStart = modifiedUrlString.mid( afterEndpointStartPos );
+    afterEndpointStart.replace( QLatin1String( "/" ), QLatin1String( "_" ) );
+    modifiedUrlString = modifiedUrlString.mid( 0, afterEndpointStartPos ) + afterEndpointStart;
+
     const auto posQuotationMark = modifiedUrlString.indexOf( '?' );
     if ( posQuotationMark > 0 )
     {
