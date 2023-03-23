@@ -2541,7 +2541,7 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
                     alg.getConsoleCommands({'INPUT': source,
                                             'BAND': 1,
                                             'CSV': False,
-                                            'SKIPNODATA': True,
+                                            'SKIP_NODATA': True,
                                             'OUTPUT': outsource}, context, feedback),
                     ['gdal2xyz.py',
                      '-band 1 -skipnodata ' +
@@ -2554,8 +2554,8 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
                     alg.getConsoleCommands({'INPUT': source,
                                             'BAND': 1,
                                             'CSV': False,
-                                            'SRCNODATA': -999,
-                                            'SKIPNODATA': False,
+                                            'NODATA_INPUT': -999,
+                                            'SKIP_NODATA': False,
                                             'OUTPUT': outsource}, context, feedback),
                     ['gdal2xyz.py',
                      '-band 1 -srcnodata -999 ' +
@@ -2567,8 +2567,8 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
                     alg.getConsoleCommands({'INPUT': source,
                                             'BAND': 1,
                                             'CSV': False,
-                                            'DSTNODATA': -999,
-                                            'SKIPNODATA': False,
+                                            'NODATA_OUTPUT': -999,
+                                            'SKIP_NODATA': False,
                                             'OUTPUT': outsource}, context, feedback),
                     ['gdal2xyz.py',
                      '-band 1 -dstnodata -999 ' +
