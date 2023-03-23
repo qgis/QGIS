@@ -19,8 +19,11 @@
 #include "qgsvectortileloader.h"
 #include "qgsapplication.h"
 #include "qgslogger.h"
+#include "qgsprovidersublayerdetails.h"
+#include "qgsproviderutils.h"
 
 #include <QIcon>
+#include <QFileInfo>
 
 ///@cond PRIVATE
 
@@ -225,6 +228,13 @@ QgsVtpkVectorTileDataProviderMetadata::QgsVtpkVectorTileDataProviderMetadata()
 {
 }
 
+QgsProviderMetadata::ProviderMetadataCapabilities QgsVtpkVectorTileDataProviderMetadata::capabilities() const
+{
+  return ProviderMetadataCapability::LayerTypesForUri
+         | ProviderMetadataCapability::PriorityForUri
+         | ProviderMetadataCapability::QuerySublayers;
+}
+
 QgsVtpkVectorTileDataProvider *QgsVtpkVectorTileDataProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags )
 {
   return new QgsVtpkVectorTileDataProvider( uri, options, flags );
@@ -240,13 +250,71 @@ QgsProviderMetadata::ProviderCapabilities QgsVtpkVectorTileDataProviderMetadata:
   return FileBasedUris;
 }
 
+QList<QgsProviderSublayerDetails> QgsVtpkVectorTileDataProviderMetadata::querySublayers( const QString &uri, Qgis::SublayerQueryFlags, QgsFeedback * ) const
+{
+  QString fileName;
+  const QFileInfo fi( uri );
+  if ( fi.isFile() )
+  {
+    fileName = uri;
+  }
+  else
+  {
+    const QVariantMap parts = decodeUri( uri );
+    fileName = parts.value( QStringLiteral( "path" ) ).toString();
+  }
+
+  if ( fileName.isEmpty() )
+    return {};
+
+  if ( QFileInfo( fileName ).suffix().compare( QLatin1String( "vtpk" ), Qt::CaseInsensitive ) == 0 )
+  {
+    QVariantMap parts;
+    parts.insert( QStringLiteral( "path" ), fileName );
+
+    QgsProviderSublayerDetails details;
+    details.setUri( encodeUri( parts ) );
+    details.setProviderKey( key() );
+    details.setType( Qgis::LayerType::VectorTile );
+    details.setName( QgsProviderUtils::suggestLayerNameFromFilePath( fileName ) );
+    return {details};
+  }
+  else
+  {
+    return {};
+  }
+}
+
+int QgsVtpkVectorTileDataProviderMetadata::priorityForUri( const QString &uri ) const
+{
+  if ( validLayerTypesForUri( uri ).contains( Qgis::LayerType::VectorTile ) )
+    return 100;
+
+  return 0;
+}
+
+QList<Qgis::LayerType> QgsVtpkVectorTileDataProviderMetadata::validLayerTypesForUri( const QString &uri ) const
+{
+  const QFileInfo fi( uri );
+  if ( fi.isFile() && fi.suffix().compare( QLatin1String( "vtpk" ), Qt::CaseInsensitive ) == 0 )
+  {
+    return { Qgis::LayerType::VectorTile };
+  }
+
+  const QVariantMap parts = decodeUri( uri );
+  if ( parts.value( QStringLiteral( "path" ) ).toString().endsWith( ".vtpk", Qt::CaseSensitivity::CaseInsensitive ) )
+    return { Qgis::LayerType::VectorTile };
+
+  return {};
+}
+
 QVariantMap QgsVtpkVectorTileDataProviderMetadata::decodeUri( const QString &uri ) const
 {
   QgsDataSourceUri dsUri;
   dsUri.setEncodedUri( uri );
 
   QVariantMap uriComponents;
-  uriComponents.insert( QStringLiteral( "type" ), dsUri.param( QStringLiteral( "type" ) ) );
+  uriComponents.insert( QStringLiteral( "type" ), QStringLiteral( "vtpk" ) );
   uriComponents.insert( QStringLiteral( "path" ), dsUri.param( QStringLiteral( "url" ) ) );
 
   return uriComponents;
@@ -255,7 +323,7 @@ QVariantMap QgsVtpkVectorTileDataProviderMetadata::decodeUri( const QString &uri
 QString QgsVtpkVectorTileDataProviderMetadata::encodeUri( const QVariantMap &parts ) const
 {
   QgsDataSourceUri dsUri;
-  dsUri.setParam( QStringLiteral( "type" ), parts.value( QStringLiteral( "type" ) ).toString() );
+  dsUri.setParam( QStringLiteral( "type" ), QStringLiteral( "vtpk" ) );
   dsUri.setParam( QStringLiteral( "url" ), parts.value( parts.contains( QStringLiteral( "path" ) ) ? QStringLiteral( "path" ) : QStringLiteral( "url" ) ).toString() );
   return dsUri.encodedUri();
 }
