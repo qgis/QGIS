@@ -135,6 +135,41 @@ Draws text at a point origin using the specified settings.
                        as of QGIS 3.4.3 and the text format should be set using :py:func:`QgsRenderContext.setTextRenderFormat()` instead.
 %End
 
+    static void drawTextOnLine( const QPolygonF &line, const QString &text,
+                                QgsRenderContext &context, const QgsTextFormat &format,
+                                double offsetAlongLine = 0, double offsetFromLine = 0 );
+%Docstring
+Draws text along a line using the specified settings.
+
+:param line: line to render text along
+:param text: text to draw
+:param context: render context
+:param format: text format
+:param offsetAlongLine: offset along the line (in painter units) to start text at
+:param offsetFromLine: offset from the line (in painter units). Negative values will shift the text to the left of the line, positive values will shift the text to the right.
+
+.. versionadded:: 3.32
+%End
+
+    static void drawDocumentOnLine( const QPolygonF &line,
+                                    const QgsTextFormat &format,
+                                    const QgsTextDocument &document,
+                                    QgsRenderContext &context,
+                                    double offsetAlongLine = 0,
+                                    double offsetFromLine = 0 );
+%Docstring
+Draws a text document along a line using the specified settings.
+
+:param line: line to render text along
+:param format: text format
+:param document: text document to draw
+:param context: render context
+:param offsetAlongLine: offset along the line (in painter units) to start text at
+:param offsetFromLine: offset from the line (in painter units). Negative values will shift the text to the left of the line, positive values will shift the text to the right.
+
+.. versionadded:: 3.32
+%End
+
  static void drawPart( const QRectF &rect, double rotation, Qgis::TextHorizontalAlignment alignment, const QStringList &textLines,
                                             QgsRenderContext &context, const QgsTextFormat &format,
                                             Qgis::TextComponent part, bool drawAsOutlines = true ) /Deprecated/;
@@ -254,6 +289,9 @@ Wraps a ``text`` string to multiple lines, such that each individual line will f
 %End
 
     static const double FONT_WORKAROUND_SCALE;
+
+
+    static const double SUPERSCRIPT_SUBSCRIPT_FONT_SIZE_SCALING_FACTOR;
 
 };
 
