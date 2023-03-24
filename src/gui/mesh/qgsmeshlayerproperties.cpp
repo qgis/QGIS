@@ -259,6 +259,7 @@ void QgsMeshLayerProperties::loadDefaultStyle()
   if ( defaultLoadedFlag )
   {
     syncToLayer();
+    apply();
   }
   else
   {
@@ -318,6 +319,7 @@ void QgsMeshLayerProperties::loadStyle()
   {
     settings.setValue( QStringLiteral( "style/lastStyleDir" ), QFileInfo( fileName ).absolutePath() );
     syncToLayer();
+    apply();
   }
   else
   {

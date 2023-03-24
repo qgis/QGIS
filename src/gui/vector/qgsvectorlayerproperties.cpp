@@ -1011,6 +1011,7 @@ void QgsVectorLayerProperties::loadDefaultStyle_clicked()
         else
         {
           syncToLayer();
+          apply();
         }
 
         return;
@@ -1026,6 +1027,7 @@ void QgsVectorLayerProperties::loadDefaultStyle_clicked()
   {
     // all worked OK so no need to inform user
     syncToLayer();
+    apply();
   }
   else
   {
@@ -1494,6 +1496,7 @@ void QgsVectorLayerProperties::loadStyle()
         if ( defaultLoadedFlag )
         {
           syncToLayer();
+          apply();
         }
         else
         {
@@ -1519,6 +1522,7 @@ void QgsVectorLayerProperties::loadStyle()
         if ( mLayer->importNamedStyle( myDocument, errorMsg, categories ) )
         {
           syncToLayer();
+          apply();
         }
         else
         {
@@ -1535,6 +1539,7 @@ void QgsVectorLayerProperties::loadStyle()
         if ( defaultLoadedFlag )
         {
           syncToLayer();
+          apply();
         }
         else
         {
