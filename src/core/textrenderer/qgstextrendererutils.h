@@ -141,10 +141,21 @@ class CORE_EXPORT QgsTextRendererUtils
       FollowLineDirection //!< Curved text placement will respect the line direction and ignore painter orientation
     };
 
-#if 0
-    // TODO - refine API when used. We probably want to use QPolygonF here instead of QgsLineString!
-    static CurvePlacementProperties *generateCurvedTextPlacement( const QgsPrecalculatedTextMetrics &metrics, const QgsLineString *line, double offsetAlongLine, LabelLineDirection direction = RespectPainterOrientation, double maxConcaveAngle = -1, double maxConvexAngle = -1, bool uprightOnly = true ) SIP_FACTORY;
-#endif
+    /**
+     * Calculates curved text placement properties.
+     *
+     * \param metrics precalculated text metrics for text to render
+     * \param line line to render text along
+     * \param offsetAlongLine offset along line at which to start the curved text placement
+     * \param direction controls placement of text with respect to painter orientation or line direction
+     * \param maxConcaveAngle maximum angle between characters for concave text, or -1 if not set
+     * \param maxConvexAngle maximum angle between characters for convex text, or -1 if not set
+     * \param uprightOnly set to TRUE if text should be placed in an upright orientation only, or FALSE to allow upside down text placement
+     *
+     * \returns calculated placement properties, or NULLPTR if placement could not be calculated. Caller takes ownership of the returned placement.
+     * \since QGIS 3.20
+     */
+    static std::unique_ptr< CurvePlacementProperties > generateCurvedTextPlacement( const QgsPrecalculatedTextMetrics &metrics, const QPolygonF &line, double offsetAlongLine, LabelLineDirection direction = RespectPainterOrientation, double maxConcaveAngle = -1, double maxConvexAngle = -1, bool uprightOnly = true ) SIP_SKIP;
 
     /**
      * Calculates curved text placement properties.
@@ -163,12 +174,12 @@ class CORE_EXPORT QgsTextRendererUtils
      * \returns calculated placement properties, or NULLPTR if placement could not be calculated. Caller takes ownership of the returned placement.
      * \since QGIS 3.20
      */
-    static CurvePlacementProperties *generateCurvedTextPlacement( const QgsPrecalculatedTextMetrics &metrics, const double *x, const double *y, int numPoints, const std::vector< double> &pathDistances, double offsetAlongLine, LabelLineDirection direction = RespectPainterOrientation, double maxConcaveAngle = -1, double maxConvexAngle = -1, bool uprightOnly = true ) SIP_SKIP;
+    static std::unique_ptr< CurvePlacementProperties > generateCurvedTextPlacement( const QgsPrecalculatedTextMetrics &metrics, const double *x, const double *y, int numPoints, const std::vector< double> &pathDistances, double offsetAlongLine, LabelLineDirection direction = RespectPainterOrientation, double maxConcaveAngle = -1, double maxConvexAngle = -1, bool uprightOnly = true ) SIP_SKIP;
 #endif
 
   private:
 
-    static CurvePlacementProperties *generateCurvedTextPlacementPrivate( const QgsPrecalculatedTextMetrics &metrics, const double *x, const double *y, int numPoints, const std::vector< double> &pathDistances, double offsetAlongLine, LabelLineDirection direction, double maxConcaveAngle = -1, double maxConvexAngle = -1, bool uprightOnly = true, bool isSecondAttempt = false ) SIP_SKIP;
+    static std::unique_ptr< CurvePlacementProperties > generateCurvedTextPlacementPrivate( const QgsPrecalculatedTextMetrics &metrics, const double *x, const double *y, int numPoints, const std::vector< double> &pathDistances, double offsetAlongLine, LabelLineDirection direction, double maxConcaveAngle = -1, double maxConvexAngle = -1, bool uprightOnly = true, bool isSecondAttempt = false, bool calculateBaselinePlacement = false ) SIP_SKIP;
 
     //! Returns TRUE if the next char position is found. The referenced parameters are updated.
     static bool nextCharPosition( double charWidth, double segmentLength, const double *x, const double *y, int numPoints, int &index, double &currentDistanceAlongSegment,

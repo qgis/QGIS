@@ -145,6 +145,41 @@ class CORE_EXPORT QgsTextRenderer
                           bool drawAsOutlines = true );
 
     /**
+     * Draws text along a line using the specified settings.
+     *
+     * \param line line to render text along
+     * \param text text to draw
+     * \param context render context
+     * \param format text format
+     * \param offsetAlongLine offset along the line (in painter units) to start text at
+     * \param offsetFromLine offset from the line (in painter units). Negative values will shift the text to the left of the line, positive values will shift the text to the right.
+     *
+     * \since QGIS 3.32
+     */
+    static void drawTextOnLine( const QPolygonF &line, const QString &text,
+                                QgsRenderContext &context, const QgsTextFormat &format,
+                                double offsetAlongLine = 0, double offsetFromLine = 0 );
+
+    /**
+     * Draws a text document along a line using the specified settings.
+     *
+     * \param line line to render text along
+     * \param format text format
+     * \param document text document to draw
+     * \param context render context
+     * \param offsetAlongLine offset along the line (in painter units) to start text at
+     * \param offsetFromLine offset from the line (in painter units). Negative values will shift the text to the left of the line, positive values will shift the text to the right.
+     *
+     * \since QGIS 3.32
+     */
+    static void drawDocumentOnLine( const QPolygonF &line,
+                                    const QgsTextFormat &format,
+                                    const QgsTextDocument &document,
+                                    QgsRenderContext &context,
+                                    double offsetAlongLine = 0,
+                                    double offsetFromLine = 0 );
+
+    /**
      * Draws a single component of rendered text using the specified settings.
      * \param rect destination rectangle for text
      * \param rotation text rotation
@@ -263,6 +298,15 @@ class CORE_EXPORT QgsTextRenderer
      * \since QGIS 3.16
      */
     static constexpr double FONT_WORKAROUND_SCALE = 10;
+
+    // to match QTextEngine handling of superscript/subscript font sizes
+
+    /**
+     * Scale factor to use for super or subscript text which doesn't have an explicit font size set.
+     *
+     * \since QGIS 3.32
+     */
+    static constexpr double SUPERSCRIPT_SUBSCRIPT_FONT_SIZE_SCALING_FACTOR = 2.0 / 3.0;
 
   private:
 

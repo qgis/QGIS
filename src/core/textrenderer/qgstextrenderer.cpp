@@ -26,6 +26,8 @@
 #include "qgsmarkersymbol.h"
 #include "qgsfillsymbol.h"
 #include "qgsunittypes.h"
+#include "qgstextmetrics.h"
+#include "qgstextrendererutils.h"
 
 #include <optional>
 
@@ -148,6 +150,215 @@ void QgsTextRenderer::drawText( QPointF point, double rotation, Qgis::TextHorizo
   }
 
   drawPart( point, rotation, alignment, document, metrics, context, tmpFormat, Qgis::TextComponent::Text, Qgis::TextLayoutMode::Point );
+}
+
+void QgsTextRenderer::drawTextOnLine( const QPolygonF &line, const QString &text, QgsRenderContext &context, const QgsTextFormat &format, double offsetAlongLine, double offsetFromLine )
+{
+  QgsTextFormat tmpFormat = format;
+  if ( format.dataDefinedProperties().hasActiveProperties() ) // note, we use format instead of tmpFormat here, it's const and potentially avoids a detach
+    tmpFormat.updateDataDefinedProperties( context );
+  tmpFormat = updateShadowPosition( tmpFormat );
+
+  // todo handle newlines??
+  QgsTextDocument document = format.allowHtmlFormatting() ? QgsTextDocument::fromHtml( { text  } ) : QgsTextDocument::fromPlainText( { text  } );
+  document.applyCapitalization( format.capitalization() );
+
+  drawDocumentOnLine( line, tmpFormat, document, context, offsetAlongLine, offsetFromLine );
+}
+
+void QgsTextRenderer::drawDocumentOnLine( const QPolygonF &line, const QgsTextFormat &format, const QgsTextDocument &document, QgsRenderContext &context, double offsetAlongLine, double offsetFromLine )
+{
+  QPolygonF labelBaselineCurve = line;
+  if ( !qgsDoubleNear( offsetFromLine, 0 ) )
+  {
+    QgsGeometry curve = QgsGeometry::fromQPolygonF( line );
+    labelBaselineCurve = curve.offsetCurve( offsetFromLine, 4, Qgis::JoinStyle::Round, 2 ).asQPolygonF();
+  }
+
+  const double fontScale = calculateScaleFactorForFormat( context, format );
+
+  const QFont baseFont = format.scaledFont( context, fontScale );
+  const double letterSpacing = baseFont.letterSpacing() / fontScale;
+  const double wordSpacing = baseFont.wordSpacing() / fontScale;
+
+  QStringList graphemes;
+  QVector< QgsTextCharacterFormat > graphemeFormats;
+  QVector< QgsTextDocument > graphemeDocuments;
+  QVector< QgsTextDocumentMetrics > graphemeMetrics;
+
+  for ( const QgsTextBlock &block : std::as_const( document ) )
+  {
+    for ( const QgsTextFragment &fragment : block )
+    {
+      const QStringList fragmentGraphemes = QgsPalLabeling::splitToGraphemes( fragment.text() );
+      for ( const QString &grapheme : fragmentGraphemes )
+      {
+        graphemes.append( grapheme );
+        graphemeFormats.append( fragment.characterFormat() );
+
+        QgsTextDocument document;
+        document.append( QgsTextBlock( QgsTextFragment( grapheme, fragment.characterFormat() ) ) );
+
+        graphemeDocuments.append( document );
+        graphemeMetrics.append( QgsTextDocumentMetrics::calculateMetrics( document, format, context, fontScale ) );
+      }
+    }
+  }
+
+  QVector< double > characterWidths( graphemes.count() );
+  QVector< double > characterHeights( graphemes.count() );
+  QVector< double > characterDescents( graphemes.count() );
+  QFont previousNonSuperSubScriptFont;
+
+  for ( int i = 0; i < graphemes.count(); i++ )
+  {
+    // reconstruct how Qt creates word spacing, then adjust per individual stored character
+    // this will allow PAL to create each candidate width = character width + correct spacing
+
+    double graphemeFirstCharHorizontalAdvanceWithLetterSpacing = 0;
+    double graphemeFirstCharHorizontalAdvance = 0;
+    double graphemeHorizontalAdvance = 0;
+    double characterDescent = 0;
+    double characterHeight = 0;
+    const QgsTextCharacterFormat *graphemeFormat = &graphemeFormats[i];
+
+    QFont graphemeFont = baseFont;
+    graphemeFormat->updateFontForFormat( graphemeFont, context, fontScale );
+
+    if ( i == 0 )
+      previousNonSuperSubScriptFont = graphemeFont;
+
+    if ( graphemeFormat->hasVerticalAlignmentSet() )
+    {
+      switch ( graphemeFormat->verticalAlignment() )
+      {
+        case Qgis::TextCharacterVerticalAlignment::Normal:
+          previousNonSuperSubScriptFont = graphemeFont;
+          break;
+
+        case Qgis::TextCharacterVerticalAlignment::SuperScript:
+        case Qgis::TextCharacterVerticalAlignment::SubScript:
+        {
+          if ( graphemeFormat->fontPointSize() < 0 )
+          {
+            // if fragment has no explicit font size set, then we scale the inherited font size to 60% of base font size
+            // this allows for easier use of super/subscript in labels as "my text<sup>2</sup>" will automatically render
+            // the superscript in a smaller font size. BUT if the fragment format HAS a non -1 font size then it indicates
+            // that the document has an explicit font size for the super/subscript element, eg "my text<sup style="font-size: 6pt">2</sup>"
+            // which we should respect
+            graphemeFont.setPixelSize( static_cast< int >( std::round( graphemeFont.pixelSize() * SUPERSCRIPT_SUBSCRIPT_FONT_SIZE_SCALING_FACTOR ) ) );
+          }
+          break;
+        }
+      }
+    }
+    else
+    {
+      previousNonSuperSubScriptFont = graphemeFont;
+    }
+
+    const QFontMetricsF graphemeFontMetrics( graphemeFont );
+    graphemeFirstCharHorizontalAdvance = graphemeFontMetrics.horizontalAdvance( QString( graphemes[i].at( 0 ) ) ) / fontScale;
+    graphemeFirstCharHorizontalAdvanceWithLetterSpacing = graphemeFontMetrics.horizontalAdvance( graphemes[i].at( 0 ) )  / fontScale + letterSpacing;
+    graphemeHorizontalAdvance = graphemeFontMetrics.horizontalAdvance( QString( graphemes[i] ) )  / fontScale;
+    characterDescent = graphemeFontMetrics.descent() / fontScale;
+    characterHeight = graphemeFontMetrics.height() / fontScale;
+
+    qreal wordSpaceFix = qreal( 0.0 );
+    if ( graphemes[i] == QLatin1String( " " ) )
+    {
+      // word spacing only gets added once at end of consecutive run of spaces, see QTextEngine::shapeText()
+      int nxt = i + 1;
+      wordSpaceFix = ( nxt < graphemes.count() && graphemes[nxt] != QLatin1String( " " ) ) ? wordSpacing : qreal( 0.0 );
+    }
+
+    // this workaround only works for clusters with a single character. Not sure how it should be handled
+    // with multi-character clusters.
+    if ( graphemes[i].length() == 1 &&
+         !qgsDoubleNear( graphemeFirstCharHorizontalAdvance, graphemeFirstCharHorizontalAdvanceWithLetterSpacing ) )
+    {
+      // word spacing applied when it shouldn't be
+      wordSpaceFix -= wordSpacing;
+    }
+
+    const double charWidth = graphemeHorizontalAdvance + wordSpaceFix;
+    characterWidths[i] = charWidth;
+    characterHeights[i] = characterHeight;
+    characterDescents[i] = characterDescent;
+  }
+
+  QgsPrecalculatedTextMetrics metrics( graphemes, std::move( characterWidths ), std::move( characterHeights ), std::move( characterDescents ) );
+  metrics.setGraphemeFormats( graphemeFormats );
+
+  std::unique_ptr< QgsTextRendererUtils::CurvePlacementProperties > placement = QgsTextRendererUtils::generateCurvedTextPlacement( metrics, labelBaselineCurve, offsetAlongLine );
+  if ( placement->graphemePlacement.empty() )
+    return;
+
+  std::vector< QgsTextRenderer::Component > components;
+  components.reserve( placement->graphemePlacement.size() );
+  for ( const QgsTextRendererUtils::CurvedGraphemePlacement &grapheme : std::as_const( placement->graphemePlacement ) )
+  {
+    QgsTextRenderer::Component component;
+    component.origin = QPointF( grapheme.x, grapheme.y );
+    component.rotation = -grapheme.angle;
+
+    QgsTextDocumentMetrics &metrics = graphemeMetrics[ grapheme.graphemeIndex ];
+    const double verticalOffset = metrics.fragmentVerticalOffset( 0, 0, Qgis::TextLayoutMode::Point );
+    if ( !qgsDoubleNear( verticalOffset, 0 ) )
+    {
+      component.origin.rx() += verticalOffset * std::cos( grapheme.angle + M_PI_2 );
+      component.origin.ry() += verticalOffset * std::sin( grapheme.angle + M_PI_2 );
+    }
+
+    components.emplace_back( component );
+  }
+
+  if ( format.background().enabled() )
+  {
+    for ( const QgsTextRendererUtils::CurvedGraphemePlacement &grapheme : std::as_const( placement->graphemePlacement ) )
+    {
+      const QgsTextDocumentMetrics &metrics = graphemeMetrics.at( grapheme.graphemeIndex );
+      const QgsTextRenderer::Component &component = components[grapheme.graphemeIndex ];
+      drawBackground( context, component, format, metrics, Qgis::TextLayoutMode::Point );
+    }
+  }
+
+  if ( format.buffer().enabled() )
+  {
+    for ( const QgsTextRendererUtils::CurvedGraphemePlacement &grapheme : std::as_const( placement->graphemePlacement ) )
+    {
+      const QgsTextDocument &document = graphemeDocuments.at( grapheme.graphemeIndex );
+      const QgsTextDocumentMetrics &metrics = graphemeMetrics.at( grapheme.graphemeIndex );
+      const QgsTextRenderer::Component &component = components[grapheme.graphemeIndex ];
+
+      drawTextInternal( Qgis::TextComponent::Buffer,
+                        context,
+                        format,
+                        component,
+                        document,
+                        metrics,
+                        Qgis::TextHorizontalAlignment::Left,
+                        Qgis::TextVerticalAlignment::Top,
+                        Qgis::TextLayoutMode::Point );
+    }
+  }
+
+  for ( const QgsTextRendererUtils::CurvedGraphemePlacement &grapheme : std::as_const( placement->graphemePlacement ) )
+  {
+    const QgsTextDocument &document = graphemeDocuments.at( grapheme.graphemeIndex );
+    const QgsTextDocumentMetrics &metrics = graphemeMetrics.at( grapheme.graphemeIndex );
+    const QgsTextRenderer::Component &component = components[grapheme.graphemeIndex ];
+
+    drawTextInternal( Qgis::TextComponent::Text,
+                      context,
+                      format,
+                      component,
+                      document,
+                      metrics,
+                      Qgis::TextHorizontalAlignment::Left,
+                      Qgis::TextVerticalAlignment::Top,
+                      Qgis::TextLayoutMode::Point );
+  }
 }
 
 QgsTextFormat QgsTextRenderer::updateShadowPosition( const QgsTextFormat &format )
@@ -399,8 +610,7 @@ double QgsTextRenderer::drawBuffer( QgsRenderContext &context, const QgsTextRend
 
         const QFontMetricsF fragmentMetrics( fragmentFont );
 
-        const double fragmentYOffset = metrics.fragmentVerticalOffset( component.blockIndex, fragmentIndex, mode )
-                                       / 1;
+        const double fragmentYOffset = metrics.fragmentVerticalOffset( component.blockIndex, fragmentIndex, mode );
 
         const QStringList parts = QgsPalLabeling::splitToGraphemes( fragment.text() );
         for ( const QString &part : parts )
