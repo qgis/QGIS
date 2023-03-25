@@ -77,7 +77,7 @@ void QgsLayerTreeFilterSettings::setLayerFilterExpressionsFromLayerTree( QgsLaye
     const QString legendFilterExpression = QgsLayerTreeUtils::legendFilterByExpression( *nodeLayer, &enabled );
     if ( enabled && !legendFilterExpression.isEmpty() )
     {
-      legendFilterExpressions[ nodeLayer->layerId()] = legendFilterExpression;
+      legendFilterExpressions[nodeLayer->layerId()] = legendFilterExpression;
     }
   }
   mLayerFilterExpressions = legendFilterExpressions;
