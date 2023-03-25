@@ -98,7 +98,7 @@ bool loadPolygons(const std::string &polygonFile, pdal::Options& crop_opts, BOX2
                 fullEnvelope = envelope;
             else
                 fullEnvelope.Merge(envelope);
-            crop_opts.add(pdal::Option("polygon", Polygon(hGeometry)));
+            crop_opts.add(pdal::Option("polygon", pdal::Polygon(hGeometry)));
         }
         OGR_F_Destroy( hFeature );
     }

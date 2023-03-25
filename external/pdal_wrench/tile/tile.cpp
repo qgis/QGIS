@@ -525,7 +525,7 @@ static void tilingPass1(BaseInfo &m_b, TileGrid &m_grid, FileInfo &m_srsFileInfo
   //---------
   // pass 1: read input files and write temporary files with raw point data
 
-  std::unique_ptr<Writer> m_writer;
+  std::unique_ptr<untwine::epf::Writer> m_writer;
   untwine::ThreadPool m_pool(m_b.opts.max_threads);
 
   // Create the file infos. As each info is created, the N x N x N grid is expanded to
@@ -583,7 +583,7 @@ static void tilingPass1(BaseInfo &m_b, TileGrid &m_grid, FileInfo &m_srsFileInfo
   // TODO: ideally we should check also for space in the output directory (but that's harder to estimate)
 
   // Make a writer with NumWriters threads.
-  m_writer.reset(new Writer(m_b.opts.tempDir, NumWriters, layout->pointSize()));
+  m_writer.reset(new untwine::epf::Writer(m_b.opts.tempDir, NumWriters, layout->pointSize()));
 
   // Sort file infos so the largest files come first. This helps to make sure we don't delay
   // processing big files that take the longest (use threads more efficiently).
@@ -637,7 +637,7 @@ static void tilingPass2(BaseInfo &m_b, TileGrid &m_grid, FileInfo &m_srsFileInfo
   int outFileIdx = 0;
   for ( const std::string &binFile : lstBinFiles )
   {
-      std::string fileStem = fs::path(binFile).stem();
+      std::string fileStem = fs::path(binFile).stem().string();
       std::string outFilename = m_b.opts.outputDir + "/" + fileStem + "." + m_b.opts.outputFormat;
       outFiles.push_back(outFilename);
       outFileIdx++;

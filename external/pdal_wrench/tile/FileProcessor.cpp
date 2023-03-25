@@ -25,7 +25,7 @@ namespace epf
 {
 
 FileProcessor::FileProcessor(const FileInfo& fi, size_t pointSize, const TileGrid& grid,
-        Writer *writer, ProgressBar& progressBar) :
+        untwine::epf::Writer *writer, ProgressBar& progressBar) :
     m_fi(fi), m_cellMgr(pointSize, writer), m_grid(grid), m_progressBar(progressBar)
 {}
 

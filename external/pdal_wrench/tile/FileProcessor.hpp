@@ -15,7 +15,7 @@
 #include "TileGrid.hpp"
 #include "Cell.hpp"
 
-class ProgressBar;
+struct ProgressBar;
 
 namespace untwine
 {

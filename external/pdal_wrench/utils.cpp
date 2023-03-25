@@ -115,7 +115,7 @@ void runPipelineParallel(point_count_t totalPoints, bool isStreaming, std::vecto
         PipelineManager* pipeline = pipelines[i].get();
         if (isStreaming)
         {
-            p.add([pipeline]() {
+            p.add([pipeline, CHUNK_SIZE]() {
 
                 MyTable table(CHUNK_SIZE);
                 pipeline->executeStream(table);
