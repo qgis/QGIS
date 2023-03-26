@@ -14,6 +14,8 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsconfig.h"
+
 #include "qgssensorregistry.h"
 #include "qgsiodevicesensor.h"
 #include "qgsproject.h"
@@ -36,7 +38,9 @@ bool QgsSensorRegistry::populate()
 
   addSensorType( new QgsSensorMetadata( QLatin1String( "tcp_socket" ), QObject::tr( "TCP socket sensor" ), QgsTcpSocketSensor::create ) );
   addSensorType( new QgsSensorMetadata( QLatin1String( "udp_socket" ), QObject::tr( "UDP socket sensor" ), QgsUdpSocketSensor::create ) );
+#if defined( HAVE_QTSERIALPORT )
   addSensorType( new QgsSensorMetadata( QLatin1String( "serial_port" ), QObject::tr( "Serial port sensor" ), QgsSerialPortSensor::create ) );
+#endif
 
   return true;
 }

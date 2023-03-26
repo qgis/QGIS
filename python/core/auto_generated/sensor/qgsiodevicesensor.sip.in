@@ -8,6 +8,8 @@
 
 
 
+
+
 class QgsIODeviceSensor : QgsAbstractSensor
 {
 %Docstring(signature="appended")
@@ -181,6 +183,7 @@ Sets the ``port`` the socket connects to.
 
 
 };
+
 
 class QgsSerialPortSensor : QgsIODeviceSensor
 {
