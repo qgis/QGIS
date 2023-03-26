@@ -14,6 +14,8 @@
  ***************************************************************************/
 
 #include "qgscodeeditorhtml.h"
+#include "qgspythonrunner.h"
+#include "qgsprocessingutils.h"
 
 #include <QWidget>
 #include <QString>
@@ -33,11 +35,24 @@ QgsCodeEditorHTML::QgsCodeEditorHTML( QWidget *parent )
     setTitle( tr( "HTML Editor" ) );
   }
   QgsCodeEditorHTML::initializeLexer();
+
+  if ( QgsPythonRunner::isValid() )
+  {
+    // we could potentially check for beautifulsoup4 import here and reflect the capability accordingly.
+    // (current approach is to to always indicate this capability and raise a user-friendly warning
+    // when attempting to reformat if the libraries can't be imported)
+    mCapabilities |= Qgis::ScriptLanguageCapability::Reformat;
+  }
 }
 
 Qgis::ScriptLanguage QgsCodeEditorHTML::language() const
 {
   return Qgis::ScriptLanguage::Html;
+}
+
+Qgis::ScriptLanguageCapabilities QgsCodeEditorHTML::languageCapabilities() const
+{
+  return mCapabilities;
 }
 
 void QgsCodeEditorHTML::initializeLexer()
@@ -75,4 +90,47 @@ void QgsCodeEditorHTML::initializeLexer()
 
   setLexer( lexer );
   runPostLexerConfigurationTasks();
+}
+
+QString QgsCodeEditorHTML::reformatCodeString( const QString &string )
+{
+  if ( !QgsPythonRunner::isValid() )
+  {
+    return string;
+  }
+  QString newText = string;
+  const QString definePrettify = QStringLiteral(
+                                   "def __qgis_prettify(html):\n"
+                                   "  try:\n"
+                                   "    from bs4 import BeautifulSoup\n"
+                                   "  except ImportError:\n"
+                                   "    return '_ImportError'\n"
+                                   "  return BeautifulSoup(html, 'html.parser').prettify()\n" );
+
+  if ( !QgsPythonRunner::run( definePrettify ) )
+  {
+    QgsDebugMsg( QStringLiteral( "Error running script: %1" ).arg( definePrettify ) );
+    return string;
+  }
+
+  const QString script = QStringLiteral( "__qgis_prettify(%1)" ).arg( QgsProcessingUtils::stringToPythonLiteral( newText ) );
+  QString result;
+  if ( QgsPythonRunner::eval( script, result ) )
+  {
+    if ( result == QLatin1String( "_ImportError" ) )
+    {
+      showMessage( tr( "Reformat Code" ), tr( "The Python module %1 is missing" ).arg( QStringLiteral( "bs4" ) ), Qgis::MessageLevel::Warning );
+    }
+    else
+    {
+      newText = result;
+    }
+  }
+  else
+  {
+    QgsDebugMsg( QStringLiteral( "Error running script: %1" ).arg( script ) );
+    return newText;
+  }
+
+  return newText;
 }

@@ -34,9 +34,14 @@ Constructor for QgsCodeEditorHTML
 
     virtual Qgis::ScriptLanguage language() const;
 
+    virtual Qgis::ScriptLanguageCapabilities languageCapabilities() const;
+
 
   protected:
     virtual void initializeLexer();
+
+    virtual QString reformatCodeString( const QString &string );
+
 
 };
 
