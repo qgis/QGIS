@@ -20,6 +20,7 @@
 #include "qgslogger.h"
 #include "qgssettings.h"
 #include "qgsgui.h"
+#include "qgsprojectversion.h"
 
 #include <QKeyEvent>
 #include <QKeySequence>
@@ -268,11 +269,12 @@ void QgsConfigureShortcutsDialog::loadShortcuts()
     currentLocale = QLocale().name();
   }
 
-  const QString version = root.attribute( QStringLiteral( "version" ) );
+  const QString versionStr = root.attribute( QStringLiteral( "version" ) );
+  const QgsProjectVersion version( versionStr );
 
   if ( root.attribute( QStringLiteral( "locale" ) ) != currentLocale )
   {
-    if ( version < "1.1" )
+    if ( version < QgsProjectVersion( QStringLiteral( "1.1" ) ) )
     {
       QMessageBox::information( this, tr( "Loading Shortcuts" ),
                                 tr( "The file contains shortcuts created with different locale, so you can't use it." ) );
@@ -293,7 +295,7 @@ void QgsConfigureShortcutsDialog::loadShortcuts()
   while ( !child.isNull() )
   {
     actionShortcut = child.attribute( QStringLiteral( "shortcut" ) );
-    if ( version < "1.1" )
+    if ( version < QgsProjectVersion( QStringLiteral( "1.1" ) ) )
     {
       actionName = child.attribute( QStringLiteral( "name" ) );
       mManager->setKeySequence( actionName, actionShortcut );
