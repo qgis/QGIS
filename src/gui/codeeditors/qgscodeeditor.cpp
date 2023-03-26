@@ -211,6 +211,17 @@ void QgsCodeEditor::keyPressEvent( QKeyEvent *event )
     }
   }
 
+  const bool ctrlModifier = event->modifiers() & Qt::ControlModifier;
+  const bool altModifier = event->modifiers() & Qt::AltModifier;
+
+  // Ctrl+Alt+F: reformat code
+  if ( ctrlModifier && altModifier && event->key() == Qt::Key_F )
+  {
+    event->accept();
+    reformatCode();
+    return;
+  }
+
   QsciScintilla::keyPressEvent( event );
 
 }
