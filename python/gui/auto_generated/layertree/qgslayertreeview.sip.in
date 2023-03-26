@@ -226,18 +226,48 @@ Gets current legend node. May be ``None`` if current node is not a legend node.
 
     QList<QgsLayerTreeNode *> selectedNodes( bool skipInternal = false ) const;
 %Docstring
-Returns list of selected nodes
+Returns the list of selected layer tree nodes.
 
 :param skipInternal: If ``True``, will ignore nodes which have an ancestor in the selection
+
+.. seealso:: :py:func:`selectedLayerNodes`
+
+.. seealso:: :py:func:`selectedLegendNodes`
+
+.. seealso:: :py:func:`selectedLayers`
 %End
+
     QList<QgsLayerTreeLayer *> selectedLayerNodes() const;
 %Docstring
-Returns list of selected nodes filtered to just layer nodes
+Returns the list of selected nodes filtered to just layer nodes (:py:class:`QgsLayerTreeLayer`).
+
+.. seealso:: :py:func:`selectedNodes`
+
+.. seealso:: :py:func:`selectedLayers`
+
+.. seealso:: :py:func:`selectedLegendNodes`
 %End
 
     QList<QgsMapLayer *> selectedLayers() const;
 %Docstring
-Gets list of selected layers
+Returns the list of selected layers.
+
+.. seealso:: :py:func:`selectedNodes`
+
+.. seealso:: :py:func:`selectedLayerNodes`
+
+.. seealso:: :py:func:`selectedLegendNodes`
+%End
+
+    QList<QgsLayerTreeModelLegendNode *> selectedLegendNodes() const;
+%Docstring
+Returns the list of selected legend nodes.
+
+.. seealso:: :py:func:`selectedNodes`
+
+.. seealso:: :py:func:`selectedLayerNodes`
+
+.. versionadded:: 3.32
 %End
 
     QList<QgsMapLayer *> selectedLayersRecursive() const;
