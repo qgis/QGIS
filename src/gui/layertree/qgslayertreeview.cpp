@@ -618,9 +618,9 @@ void QgsLayerTreeView::keyPressEvent( QKeyEvent *event )
 {
   if ( event->key() == Qt::Key_Space )
   {
-    const auto constSelectedNodes = selectedNodes();
+    const QList<QgsLayerTreeNode *> constSelectedNodes = selectedNodes();
 
-    if ( ! constSelectedNodes.isEmpty() )
+    if ( !constSelectedNodes.isEmpty() )
     {
       const bool isFirstNodeChecked = constSelectedNodes[0]->itemVisibilityChecked();
       for ( QgsLayerTreeNode *node : constSelectedNodes )
