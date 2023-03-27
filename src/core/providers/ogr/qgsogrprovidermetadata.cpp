@@ -1047,6 +1047,9 @@ bool QgsOgrProviderMetadata::saveLayerMetadata( const QString &uri, const QgsLay
       if ( qmdFile.open( QFile::WriteOnly | QFile::Truncate ) )
       {
         QTextStream fileStream( &qmdFile );
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+        fileStream.setCodec( "UTF-8" );
+#endif
         fileStream << metadataXml;
         qmdFile.close();
         return true;
