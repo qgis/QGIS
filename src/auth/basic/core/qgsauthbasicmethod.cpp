@@ -172,7 +172,8 @@ bool QgsAuthBasicMethod::updateDataSourceUriItems( QStringList &connectionItems,
         }
         else if ( uri.startsWith( QLatin1String( "SDE:" ) ) )
         {
-          uri = uri.replace( QRegularExpression( ",$" ), QStringLiteral( ",%1,%2" ).arg( username, password ) );
+          const thread_local QRegularExpression sRx = QRegularExpression( ",$" );
+          uri = uri.replace( sRx, QStringLiteral( ",%1,%2" ).arg( username, password ) );
         }
         else if ( uri.startsWith( QLatin1String( "IDB" ) ) )
         {
@@ -210,7 +211,8 @@ bool QgsAuthBasicMethod::updateDataSourceUriItems( QStringList &connectionItems,
         }
         else if ( uri.startsWith( QLatin1String( "ODBC:" ) ) )
         {
-          uri = uri.replace( QRegularExpression( "^ODBC:@?" ), "ODBC:" + username + '/' + password + '@' );
+          const thread_local QRegularExpression sOdbcRx = QRegularExpression( "^ODBC:@?" );
+          uri = uri.replace( sOdbcRx, "ODBC:" + username + '/' + password + '@' );
         }
         else if ( uri.startsWith( QLatin1String( "couchdb" ) )
                   || uri.startsWith( QLatin1String( "DODS" ) )
