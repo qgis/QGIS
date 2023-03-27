@@ -120,10 +120,6 @@ class PythonConsole(QgsCodeEditorDockWidget):
         self.setLayout(vl)
         self.setFocusProxy(self.console)
 
-        # try to restore position from stored main window state
-        #if iface and not iface.mainWindow().restoreDockWidget(self):
-        #    iface.mainWindow().addDockWidget(Qt.BottomDockWidgetArea, self)
-
         # closeEvent is not always called for this widget -- so we also trigger a settings
         # save on application exit
         QgsApplication.instance().aboutToQuit.connect(self.on_app_exit)
