@@ -215,7 +215,8 @@ void QgsCodeEditor::keyPressEvent( QKeyEvent *event )
   const bool altModifier = event->modifiers() & Qt::AltModifier;
 
   // Ctrl+Alt+F: reformat code
-  if ( ctrlModifier && altModifier && event->key() == Qt::Key_F )
+  const bool canReformat = languageCapabilities() & Qgis::ScriptLanguageCapability::Reformat;
+  if ( canReformat && ctrlModifier && altModifier && event->key() == Qt::Key_F )
   {
     event->accept();
     reformatCode();
