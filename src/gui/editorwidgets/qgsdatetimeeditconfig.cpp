@@ -392,6 +392,16 @@ QgsDateTimeEditConfig::QgsDateTimeEditConfig( QgsVectorLayer *vl, int fieldIdx, 
   connect( mDisplayFormatEdit, &QLineEdit::textChanged, this, &QgsEditorConfigWidget::changed );
   connect( mCalendarPopupCheckBox, &QAbstractButton::toggled, this, &QgsEditorConfigWidget::changed );
   connect( mAllowNullCheckBox, &QAbstractButton::toggled, this, &QgsEditorConfigWidget::changed );
+  connect( mFieldFormatGroupBox, &QGroupBox::toggled, this, [ = ]( bool checked )
+  {
+    //reset to default value when unchecking
+    if ( !checked )
+    {
+      const QgsField fieldDef = layer()->fields().at( field() );
+      const QString fieldFormat = QgsDateTimeFieldFormatter::defaultFormat( fieldDef.type() );
+      setFieldFormatCombo( fieldFormat );
+    }
+  } );
 
   // initialize
   updateFieldFormat( mFieldFormatComboBox->currentIndex() );
@@ -488,6 +498,7 @@ QVariantMap QgsDateTimeEditConfig::config()
 {
   QVariantMap myConfig;
 
+  myConfig.insert( QStringLiteral( "field_format_overwrite" ), mFieldFormatGroupBox->isChecked() );
   myConfig.insert( QStringLiteral( "field_iso_format" ), mFieldFormatEdit->text() == QgsDateTimeFieldFormatter::QT_ISO_FORMAT );
   myConfig.insert( QStringLiteral( "field_format" ), mFieldFormatEdit->text() );
   myConfig.insert( QStringLiteral( "display_format" ), mDisplayFormatEdit->text() );
@@ -499,19 +510,10 @@ QVariantMap QgsDateTimeEditConfig::config()
 
 void QgsDateTimeEditConfig::setConfig( const QVariantMap &config )
 {
+  mFieldFormatGroupBox->setChecked( config.value( QStringLiteral( "field_format_overwrite" ), false ).toBool() );
   const QgsField fieldDef = layer()->fields().at( field() );
   const QString fieldFormat = config.value( QStringLiteral( "field_format" ), QgsDateTimeFieldFormatter::defaultFormat( fieldDef.type() ) ).toString();
-  mFieldFormatEdit->setText( fieldFormat );
-
-  const int idx = mFieldFormatComboBox->findData( fieldFormat );
-  if ( idx >= 0 )
-  {
-    mFieldFormatComboBox->setCurrentIndex( idx );
-  }
-  else
-  {
-    mFieldFormatComboBox->setCurrentIndex( 4 );
-  }
+  setFieldFormatCombo( fieldFormat );
 
   const QString displayFormat = config.value( QStringLiteral( "display_format" ), QgsDateTimeFieldFormatter::defaultDisplayFormat( fieldDef.type() ) ).toString();
   mDisplayFormatEdit->setText( displayFormat );
@@ -526,4 +528,19 @@ void QgsDateTimeEditConfig::setConfig( const QVariantMap &config )
 
   mCalendarPopupCheckBox->setChecked( config.value( QStringLiteral( "calendar_popup" ), true ).toBool() );
   mAllowNullCheckBox->setChecked( config.value( QStringLiteral( "allow_null" ), true ).toBool() );
+}
+
+void QgsDateTimeEditConfig::setFieldFormatCombo( const QString &fieldFormat )
+{
+  mFieldFormatEdit->setText( fieldFormat );
+
+  const int idx = mFieldFormatComboBox->findData( fieldFormat );
+  if ( idx >= 0 )
+  {
+    mFieldFormatComboBox->setCurrentIndex( idx );
+  }
+  else
+  {
+    mFieldFormatComboBox->setCurrentIndex( 4 );
+  }
 }
