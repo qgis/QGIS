@@ -72,7 +72,7 @@ class CORE_EXPORT QgsTextRenderer
 
     /**
      * Draws text within a rectangle using the specified settings.
-     * \param rect destination rectangle for text
+     * \param rect destination rectangle for text, in painter units
      * \param rotation text rotation
      * \param alignment horizontal alignment
      * \param textLines list of lines of text to draw
@@ -103,7 +103,7 @@ class CORE_EXPORT QgsTextRenderer
      * \warning Unlike drawText(), this method does not automatically update data defined properties in the text \a format. This
      * is the caller's responsibility to do, and must be done prior to generating the text \a document and \a metrics.
      *
-     * \param rect destination rectangle for text
+     * \param rect destination rectangle for text, in painter units
      * \param format base text format
      * \param document text document to draw
      * \param metrics precalculated text metrics
@@ -129,7 +129,7 @@ class CORE_EXPORT QgsTextRenderer
 
     /**
      * Draws text at a point origin using the specified settings.
-     * \param point origin of text
+     * \param point origin of text, in painter units
      * \param rotation text rotation
      * \param alignment horizontal alignment
      * \param textLines list of lines of text to draw
@@ -147,7 +147,7 @@ class CORE_EXPORT QgsTextRenderer
     /**
      * Draws text along a line using the specified settings.
      *
-     * \param line line to render text along
+     * \param line line to render text along, in painter units
      * \param text text to draw
      * \param context render context
      * \param format text format
@@ -163,7 +163,7 @@ class CORE_EXPORT QgsTextRenderer
     /**
      * Draws a text document along a line using the specified settings.
      *
-     * \param line line to render text along
+     * \param line line to render text along, in painter units
      * \param format text format
      * \param document text document to draw
      * \param context render context
@@ -181,7 +181,7 @@ class CORE_EXPORT QgsTextRenderer
 
     /**
      * Draws a single component of rendered text using the specified settings.
-     * \param rect destination rectangle for text
+     * \param rect destination rectangle for text, in painter units
      * \param rotation text rotation
      * \param alignment horizontal alignment
      * \param textLines list of lines of text to draw
@@ -203,7 +203,7 @@ class CORE_EXPORT QgsTextRenderer
 
     /**
      * Draws a single component of rendered text using the specified settings.
-     * \param origin origin for start of text. Y coordinate will be used as baseline.
+     * \param origin origin for start of text, in painter units. Y coordinate will be used as baseline.
      * \param rotation text rotation
      * \param alignment horizontal alignment
      * \param textLines list of lines of text to draw
