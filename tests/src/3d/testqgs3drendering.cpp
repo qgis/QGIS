@@ -95,6 +95,7 @@ class TestQgs3DRendering : public QgsTest
     void testFilteredExtrudedPolygons();
     void testDepthBuffer();
     void testAmbientOcclusion();
+    void testDebugMap();
 
   private:
     // color tolerance < 2 was failing polygon3d_extrusion test
@@ -1671,6 +1672,67 @@ void TestQgs3DRendering::testDepthBuffer()
   // Checking camera position
   QVector3D diff = scene->cameraController()->camera()->position() - startPos;
   QGSCOMPARENEARVECTOR3D( diff, QVector3D( 125, -850, -700 ), 3.0 );
+
+  delete scene;
+  mapSettings.setLayers( {} );
+  demTerrain->deleteLater();
+}
+
+void TestQgs3DRendering::testDebugMap()
+{
+  // =============================================
+  // =========== creating Qgs3DMapSettings
+  const QString dataDir( TEST_DATA_DIR );
+  QgsRasterLayer *layerDtm = new QgsRasterLayer( dataDir + "/3d/dtm.tif", "dtm", "gdal" );
+  QVERIFY( layerDtm->isValid() );
+
+  const QgsRectangle fullExtent = layerDtm->extent();
+
+  QgsProject project;
+  project.addMapLayer( layerDtm );
+
+  Qgs3DMapSettings mapSettings;
+  mapSettings.setCrs( project.crs() );
+  mapSettings.setExtent( fullExtent );
+  mapSettings.setLayers( {layerDtm, mLayerBuildings} );
+
+  mapSettings.setTransformContext( project.transformContext() );
+  mapSettings.setPathResolver( project.pathResolver() );
+  mapSettings.setMapThemeCollection( project.mapThemeCollection() );
+
+  QgsDemTerrainGenerator *demTerrain = new QgsDemTerrainGenerator();
+  demTerrain->setLayer( layerDtm );
+  mapSettings.setTerrainGenerator( demTerrain );
+  mapSettings.setTerrainVerticalScale( 3 );
+
+  QgsPointLightSettings defaultPointLight;
+  defaultPointLight.setPosition( QgsVector3D( 0, 400, 0 ) );
+  defaultPointLight.setConstantAttenuation( 0 );
+  mapSettings.setLightSources( {defaultPointLight.clone() } );
+  mapSettings.setOutputDpi( 92 );
+
+  // =========== creating Qgs3DMapScene
+  QPoint winSize = QPoint( 640, 480 ); // default window size
+
+  QgsOffscreen3DEngine engine;
+  engine.setSize( QSize( winSize.x(), winSize.y() ) );
+  Qgs3DMapScene *scene = new Qgs3DMapScene( mapSettings, &engine );
+  engine.setRootEntity( scene );
+
+  // =========== set camera position
+  scene->cameraController()->setLookingAtPoint( QVector3D( 0, 0, 0 ), 1500, 40.0, -10.0 );
+
+  // =========== activate debug depth map
+  mapSettings.setDebugDepthMapSettings( true, Qt::Corner::BottomRightCorner, 0.5 );
+
+  QImage img = Qgs3DUtils::captureSceneImage( engine, scene );
+  QVERIFY( renderCheck( "debug_map_1", img, 100, 15 ) );
+
+  // =========== activate debug shadow map
+  mapSettings.setDebugShadowMapSettings( true, Qt::Corner::TopLeftCorner, 0.5 );
+
+  img = Qgs3DUtils::captureSceneImage( engine, scene );
+  QVERIFY( renderCheck( "debug_map_2", img, 100, 15 ) );
 
   delete scene;
   mapSettings.setLayers( {} );
