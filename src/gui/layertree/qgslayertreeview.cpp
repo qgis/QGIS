@@ -621,21 +621,21 @@ void QgsLayerTreeView::keyPressEvent( QKeyEvent *event )
     const QModelIndexList selected = selectionModel()->selectedIndexes();
     if ( ! selected.isEmpty() )
     {
-      QModelIndex layerTreeIndex = mProxyModel->mapToSource( selected.at( 0 ) );
-      bool isFirstNodeChecked;
+      const QModelIndex firstLayerTreeIndex = mProxyModel->mapToSource( selected.at( 0 ) );
+      bool isFirstNodeChecked = false;
 
-      if ( QgsLayerTreeNode *node = layerTreeModel()->index2node( layerTreeIndex ) )
+      if ( QgsLayerTreeNode *node = layerTreeModel()->index2node( firstLayerTreeIndex ) )
       {
         isFirstNodeChecked = node->itemVisibilityChecked();
       }
-      else if ( QgsLayerTreeModelLegendNode *legendNode = layerTreeModel()->index2legendNode( layerTreeIndex ) )
+      else if ( QgsLayerTreeModelLegendNode *legendNode = layerTreeModel()->index2legendNode( firstLayerTreeIndex ) )
       {
          isFirstNodeChecked = legendNode->data( Qt::CheckStateRole ).toInt() == Qt::Checked;
       }
 
       for ( const QModelIndex &index : selected )
       {
-        layerTreeIndex = mProxyModel->mapToSource( index );
+        const QModelIndex layerTreeIndex = mProxyModel->mapToSource( index );
         if ( QgsLayerTreeNode *node = layerTreeModel()->index2node( layerTreeIndex ) )
         {
           node->setItemVisibilityChecked( ! isFirstNodeChecked );
