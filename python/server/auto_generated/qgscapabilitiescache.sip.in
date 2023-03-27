@@ -20,7 +20,7 @@ A cache for capabilities xml documents (by configuration file path)
 #include "qgscapabilitiescache.h"
 %End
   public:
-    QgsCapabilitiesCache();
+    QgsCapabilitiesCache( int size );
 
     const QDomDocument *searchCapabilitiesDocument( const QString &configFilePath, const QString &key );
 %Docstring
