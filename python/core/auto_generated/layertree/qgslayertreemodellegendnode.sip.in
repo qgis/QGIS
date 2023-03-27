@@ -233,6 +233,12 @@ Draws label on the right side of the item
 :return: Size of the label (may span multiple lines)
 %End
 
+    SIP_PYOBJECT __repr__();
+%MethodCode
+    QString str = QStringLiteral( "<QgsLayerTreeModelLegendNode: \"%1\">" ).arg( sipCpp->data( Qt::DisplayRole ).toString() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
+
   public slots:
 
     void checkAllItems();
@@ -488,6 +494,14 @@ Evaluates  and returns the text label of the current node
 .. versionadded:: 3.10
 %End
 
+    SIP_PYOBJECT __repr__();
+%MethodCode
+    QString str = QStringLiteral( "<QgsSymbolLegendNode: %1 \"%2\"" ).arg(
+                    sipCpp->data( QgsLayerTreeModelLegendNode::RuleKeyRole ).toString(),
+                    sipCpp->data( Qt::DisplayRole ).toString() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
+
 };
 
 
@@ -517,6 +531,12 @@ Constructor for QgsSimpleLegendNode.
 
     virtual QVariant data( int role ) const;
 
+
+    SIP_PYOBJECT __repr__();
+%MethodCode
+    QString str = QStringLiteral( "<QgsSimpleLegendNode: \"%1\">" ).arg( sipCpp->data( Qt::DisplayRole ).toString() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
 
 };
 
@@ -551,6 +571,12 @@ Constructor for QgsImageLegendNode.
 
     virtual QJsonObject exportSymbolToJson( const QgsLegendSettings &settings, const QgsRenderContext &context ) const;
 
+
+    SIP_PYOBJECT __repr__();
+%MethodCode
+    QString str = QStringLiteral( "<QgsImageLegendNode: \"%1\">" ).arg( sipCpp->data( Qt::DisplayRole ).toString() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
 
 };
 
@@ -604,6 +630,12 @@ Returns whether the item is user-checkable - whether renderer supports enabling/
 .. versionadded:: 3.18
 %End
 
+    SIP_PYOBJECT __repr__();
+%MethodCode
+    QString str = QStringLiteral( "<QgsRasterSymbolLegendNode: \"%1\">" ).arg( sipCpp->data( Qt::DisplayRole ).toString() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
+
 };
 
 
@@ -642,6 +674,12 @@ Constructor for QgsWmsLegendNode.
     virtual void invalidateMapBasedData();
 
 
+    SIP_PYOBJECT __repr__();
+%MethodCode
+    QString str = QStringLiteral( "<QgsWmsLegendNode: \"%1\">" ).arg( sipCpp->data( Qt::DisplayRole ).toString() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
+
 };
 
 
@@ -668,6 +706,12 @@ Construct the node using :py:class:`QgsDataDefinedSizeLegend` as definition of t
 
     virtual ItemMetrics draw( const QgsLegendSettings &settings, ItemContext *ctx );
 
+
+    SIP_PYOBJECT __repr__();
+%MethodCode
+    QString str = QStringLiteral( "<QgsDataDefinedSizeLegendNode: \"%1\">" ).arg( sipCpp->data( Qt::DisplayRole ).toString() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
 
 };
 
@@ -725,6 +769,12 @@ exportSymbolToJson
 :param context: the item context
 
 :return: the json object
+%End
+
+    SIP_PYOBJECT __repr__();
+%MethodCode
+    QString str = QStringLiteral( "<QgsVectorLabelLegendNode: \"%1\">" ).arg( sipCpp->data( Qt::DisplayRole ).toString() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
 };
