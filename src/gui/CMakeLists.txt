@@ -497,6 +497,7 @@ set(QGIS_GUI_SRCS
   qgsdial.cpp
   qgsdialog.cpp
   qgsdirectionallightwidget.cpp
+  qgsdockablewidgethelper.cpp
   qgsdoublevalidator.cpp
   qgsdockwidget.cpp
   qgsencodingfiledialog.cpp
@@ -766,6 +767,7 @@ set(QGIS_GUI_HDRS
   qgsdial.h
   qgsdialog.h
   qgsdirectionallightwidget.h
+  qgsdockablewidgethelper.h
   qgsdockwidget.h
   qgsdoublevalidator.h
   qgsencodingfiledialog.h

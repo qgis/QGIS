@@ -128,6 +128,8 @@
 
 #include "canvas/qgscanvasrefreshblocker.h"
 
+#include "qgsdockablewidgethelper.h"
+
 #ifdef HAVE_3D
 #include "qgs3d.h"
 #include "qgs3danimationsettings.h"
@@ -972,6 +974,15 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipBadLayers
   mScreenHelper = new QgsScreenHelper( this );
 
   setDockOptions( dockOptions() | QMainWindow::GroupedDragging );
+
+  QgsDockableWidgetHelper::sAddTabifiedDockWidgetFunction = []( Qt::DockWidgetArea dockArea, QDockWidget * dock, const QStringList & tabSiblings, bool raiseTab )
+  {
+    QgisApp::instance()->addTabifiedDockWidget( dockArea, dock, tabSiblings, raiseTab );
+  };
+  QgsDockableWidgetHelper::sAppStylesheetFunction = []()->QString
+  {
+    return QgisApp::instance()->styleSheet();
+  };
 
   //////////
 
