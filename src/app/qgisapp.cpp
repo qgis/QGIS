@@ -983,6 +983,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipBadLayers
   {
     return QgisApp::instance()->styleSheet();
   };
+  QgsDockableWidgetHelper::sOwnerWindow = QgisApp::instance();
 
   //////////
 

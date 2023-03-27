@@ -141,6 +141,7 @@ set(QGIS_GUI_SRCS
   codeeditors/qgscodeeditorcolorscheme.cpp
   codeeditors/qgscodeeditorcolorschemeregistry.cpp
   codeeditors/qgscodeeditorcss.cpp
+  codeeditors/qgscodeeditordockwidget.cpp
   codeeditors/qgscodeeditorhistorydialog.cpp
   codeeditors/qgscodeeditorhtml.cpp
   codeeditors/qgscodeeditorjs.cpp
@@ -1033,6 +1034,7 @@ set(QGIS_GUI_HDRS
   codeeditors/qgscodeeditorcolorscheme.h
   codeeditors/qgscodeeditorcolorschemeregistry.h
   codeeditors/qgscodeeditorcss.h
+  codeeditors/qgscodeeditordockwidget.h
   codeeditors/qgscodeeditorexpression.h
   codeeditors/qgscodeeditorhistorydialog.h
   codeeditors/qgscodeeditorhtml.h

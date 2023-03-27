@@ -43,7 +43,8 @@ from qgis.gui import (
     QgsHelp,
     QgsDockWidget,
     QgsGui,
-    QgsApplicationExitBlockerInterface
+    QgsApplicationExitBlockerInterface,
+    QgsCodeEditorDockWidget
 )
 from functools import partial
 
@@ -104,34 +105,42 @@ class ConsoleExitBlocker(QgsApplicationExitBlockerInterface):
         return self.console.allowExit()
 
 
-class PythonConsole(QgsDockWidget):
+class PythonConsole(QgsCodeEditorDockWidget):
 
     def __init__(self, parent=None):
-        super().__init__(parent)
-        self.setObjectName("PythonConsole")
-        self.setWindowTitle(QCoreApplication.translate("PythonConsole", "Python Console"))
+        super().__init__("PythonConsoleWindow", True)
+        self.setDockObjectName("PythonConsole")
+        self.setTitle(QCoreApplication.translate("PythonConsole", "Python Console"))
 
         self.console = PythonConsoleWidget(self)
         QgsGui.instance().optionsChanged.connect(self.console.updateSettings)
-        self.setWidget(self.console)
+        vl = QVBoxLayout()
+        vl.setContentsMargins(0, 0, 0, 0)
+        vl.addWidget(self.console)
+        self.setLayout(vl)
         self.setFocusProxy(self.console)
 
         # try to restore position from stored main window state
-        if iface and not iface.mainWindow().restoreDockWidget(self):
-            iface.mainWindow().addDockWidget(Qt.BottomDockWidgetArea, self)
+        #if iface and not iface.mainWindow().restoreDockWidget(self):
+        #    iface.mainWindow().addDockWidget(Qt.BottomDockWidgetArea, self)
 
         # closeEvent is not always called for this widget -- so we also trigger a settings
         # save on application exit
-        QgsApplication.instance().aboutToQuit.connect(self.console.saveSettingsConsole)
+        QgsApplication.instance().aboutToQuit.connect(self.on_app_exit)
+
+    def on_app_exit(self):
+        self.console.saveSettingsConsole()
+        self.deleteLater()
 
     def activate(self):
         self.activateWindow()
         self.raise_()
-        QgsDockWidget.setFocus(self)
+        self.setFocus()
 
     def closeEvent(self, event):
         self.console.saveSettingsConsole()
-        QWidget.closeEvent(self, event)
+        self.hide()
+        event.ignore()
 
 
 class PythonConsoleWidget(QWidget):
@@ -405,6 +414,8 @@ class PythonConsoleWidget(QWidget):
         self.toolBar.addSeparator()
         self.toolBar.addAction(self.optionsButton)
         self.toolBar.addWidget(self.helpButton)
+        self.toolBar.addSeparator()
+        self.toolBar.addWidget(parent.dockToggleButton())
 
         self.toolBarEditor = QToolBar()
         self.toolBarEditor.setEnabled(False)

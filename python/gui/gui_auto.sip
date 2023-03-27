@@ -285,6 +285,7 @@
 %If ( HAVE_QSCI_SIP )
 %Include auto_generated/codeeditors/qgscodeeditorcss.sip
 %End
+%Include auto_generated/codeeditors/qgscodeeditordockwidget.sip
 %If ( HAVE_QSCI_SIP )
 %Include auto_generated/codeeditors/qgscodeeditorexpression.sip
 %End

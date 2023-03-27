@@ -1,0 +1,81 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/codeeditors/qgscodeeditordockwidget.h                        *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+class QgsCodeEditorDockWidget : QWidget
+{
+%Docstring(signature="appended")
+A custom dock widget for code editors.
+
+.. warning::
+
+   Exposed to Python for internal use only -- this class is not considered stable API.
+
+.. versionadded:: 3.32
+%End
+
+%TypeHeaderCode
+#include "qgscodeeditordockwidget.h"
+%End
+  public:
+
+    QgsCodeEditorDockWidget( const QString &windowGeometrySettingsKey = QString(), bool usePersistentWidget = false );
+%Docstring
+Constructor for QgsCodeEditorDockWidget, with the specified window geometry settings key.
+
+If ``usePersistentWidget`` is ``True`` then the widget (either as a dock or window) cannot be destroyed and must be hidden instead.
+%End
+    ~QgsCodeEditorDockWidget();
+
+    void setTitle( const QString &title );
+%Docstring
+Sets the title to use for the code editor dock widget or window.
+%End
+
+    QToolButton *dockToggleButton();
+%Docstring
+Returns the dock toggle button for the widget, which is used to toggle between dock or full window mode.
+%End
+
+    void setDockObjectName( const QString &name );
+%Docstring
+Sets the object name of the dock widget
+%End
+
+    bool isUserVisible() const;
+%Docstring
+Returns ``True`` if the widget is user visible.
+%End
+
+  public slots:
+
+    void setUserVisible( bool visible );
+%Docstring
+Sets whether the editor is user visible.
+%End
+
+  signals:
+
+    void visibilityChanged( bool isVisible );
+%Docstring
+Emitted when the editor's visibility is changed.
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/codeeditors/qgscodeeditordockwidget.h                        *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
