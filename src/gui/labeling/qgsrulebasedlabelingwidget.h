@@ -92,13 +92,13 @@ class GUI_EXPORT QgsRuleBasedLabelingModel : public QAbstractItemModel
     void finishedAddingRules(); // call endInsertRows
 
   signals:
+
     /**
      * Signals emitted when a modified key is held and the state is toggled.
-     * 
-     * \since QGIS 3.28
+     *
+     * \since QGIS 3.32
      */
     void toggleSelectedSymbols( const bool state );
-
 
   protected:
     QgsRuleBasedLabeling::Rule *mRootRule = nullptr;
@@ -138,12 +138,14 @@ class GUI_EXPORT QgsRuleBasedLabelingWidget : public QgsPanelWidget, private Ui:
     void paste();
     void ruleWidgetPanelAccepted( QgsPanelWidget *panel );
     void liveUpdateRuleFromPanel();
+
     /**
      * Slot used to change the state of all selected items.
-     * 
-     * \since QGIS 3.28
+     *
+     * \since QGIS 3.32
      */
     void toggleSelectedSymbols( const bool state );
+
   private:
     QgsRuleBasedLabeling::Rule *currentRule();
 

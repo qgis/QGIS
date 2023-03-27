@@ -83,6 +83,14 @@ transferred to the renderer.
 
     void clearFeatureCounts();
 
+  signals:
+    void toggleSelectedSymbols( const bool state );
+%Docstring
+Signals emitted when a modified key is held and the state is toggled.
+
+.. versionadded:: 3.32
+%End
+
   protected:
 };
 

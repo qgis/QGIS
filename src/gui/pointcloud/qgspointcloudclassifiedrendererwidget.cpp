@@ -688,7 +688,7 @@ void QgsPointCloudClassifiedRendererWidget::toggleSelectedSymbols( const bool st
         viewCategories->update( idx );
       }
     }
-  emit widgetChanged();
+    emit widgetChanged();
   }
 }
 
