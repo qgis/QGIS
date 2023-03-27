@@ -16,7 +16,7 @@
 #ifndef QGSDOCKABLEWIDGETHELPER_H
 #define QGSDOCKABLEWIDGETHELPER_H
 
-#include "qgis_app.h"
+#include "qgis_gui.h"
 
 #include <QDialog>
 #include <QToolButton>
@@ -27,14 +27,19 @@
 
 class QgsDockWidget;
 
+///@cond PRIVATE
+
 /**
  * This class is responible of displaying a QWidget inside a top level window or a dock widget (only one of the 2 is alive at most).
  * The widget is not owned by this class and its ownership is passed to the owner window before this class's object is deleted or
  * another widget is set using setWidget() function
  *
+ * \note Not available from Python bindings
+ *
+ * \ingroup gui
  * \since QGIS 3.24
  */
-class APP_EXPORT QgsDockableWidgetHelper : public QObject
+class GUI_EXPORT QgsDockableWidgetHelper : public QObject
 {
     Q_OBJECT
   public:
@@ -79,6 +84,9 @@ class APP_EXPORT QgsDockableWidgetHelper : public QObject
      */
     QAction *createDockUndockAction( const QString &title, QWidget *parent );
 
+    static std::function< void( Qt::DockWidgetArea, QDockWidget *, const QStringList &, bool ) > sAddTabifiedDockWidgetFunction;
+    static std::function< QString( ) > sAppStylesheetFunction;
+
   signals:
     void closed();
 
@@ -112,5 +120,7 @@ class APP_EXPORT QgsDockableWidgetHelper : public QObject
     // Unique identifier of dock
     QString mUuid;
 };
+
+///@endcond
 
 #endif // QGSDOCKABLEWIDGETHELPER_H

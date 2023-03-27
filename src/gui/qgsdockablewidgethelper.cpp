@@ -17,9 +17,17 @@
 
 #include "qgsdockwidget.h"
 #include "qgsapplication.h"
-#include "qgisapp.h"
+#include "qgssettings.h"
+
 #include <QLayout>
 #include <QAction>
+#include <QUuid>
+
+///@cond PRIVATE
+
+
+std::function< void( Qt::DockWidgetArea, QDockWidget *, const QStringList &, bool ) > QgsDockableWidgetHelper::sAddTabifiedDockWidgetFunction = []( Qt::DockWidgetArea, QDockWidget *, const QStringList &, bool ) {};
+std::function< QString( ) > QgsDockableWidgetHelper::sAppStylesheetFunction = [] { return QString(); };
 
 QgsDockableWidgetHelper::QgsDockableWidgetHelper( bool isDocked, const QString &windowTitle, QWidget *widget, QMainWindow *ownerWindow,
     Qt::DockWidgetArea defaultDockArea,
@@ -243,7 +251,7 @@ void QgsDockableWidgetHelper::toggleDockMode( bool docked )
     // note -- we explicitly DO NOT set the parent for the dialog, as we want these treated as
     // proper top level windows and have their own taskbar entries. See https://github.com/qgis/QGIS/issues/49286
     mDialog = new QDialog( nullptr, Qt::Window );
-    mDialog->setStyleSheet( QgisApp::instance()->styleSheet() );
+    mDialog->setStyleSheet( sAppStylesheetFunction() );
 
     mDialog->setWindowTitle( mWindowTitle );
     QVBoxLayout *vl = new QVBoxLayout();
@@ -304,11 +312,11 @@ void QgsDockableWidgetHelper::setupDockWidget( const QStringList &tabSiblings )
   }
   if ( !tabSiblings.isEmpty() )
   {
-    QgisApp::instance()->addTabifiedDockWidget( mDockArea, mDock, tabSiblings, false );
+    sAddTabifiedDockWidgetFunction( mDockArea, mDock, tabSiblings, false );
   }
   else if ( mRaiseTab )
   {
-    QgisApp::instance()->addTabifiedDockWidget( mDockArea, mDock, mTabifyWith, mRaiseTab );
+    sAddTabifiedDockWidgetFunction( mDockArea, mDock, mTabifyWith, mRaiseTab );
   }
   else
   {
@@ -341,3 +349,5 @@ QAction *QgsDockableWidgetHelper::createDockUndockAction( const QString &title, 
   connect( toggleAction, &QAction::toggled, this, &QgsDockableWidgetHelper::toggleDockMode );
   return toggleAction;
 }
+
+///@endcond
