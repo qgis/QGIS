@@ -99,13 +99,23 @@ QString QgsCodeEditorHTML::reformatCodeString( const QString &string )
     return string;
   }
   QString newText = string;
+
   const QString definePrettify = QStringLiteral(
-                                   "def __qgis_prettify(html):\n"
+                                   "def __qgis_prettify(text):\n"
                                    "  try:\n"
                                    "    from bs4 import BeautifulSoup\n"
+                                   "    return BeautifulSoup(text, 'html.parser').prettify()\n"
                                    "  except ImportError:\n"
-                                   "    return '_ImportError'\n"
-                                   "  return BeautifulSoup(html, 'html.parser').prettify()\n" );
+                                   "    try:\n"
+                                   "      import re\n"
+                                   "      from lxml import etree, html\n"
+                                   "      text = re.sub('>\\\\s+<', '><', text)\n"
+                                   "      text = re.sub('\\n\\\\s*', '', text)\n"
+                                   "      document_root = html.fromstring(text)\n"
+                                   "      return etree.tostring(document_root, encoding='utf-8', pretty_print=True).decode('utf-8')\n"
+                                   "    except ImportError:\n"
+                                   "      return '_ImportError'\n" );
+
 
   if ( !QgsPythonRunner::run( definePrettify ) )
   {
@@ -119,7 +129,7 @@ QString QgsCodeEditorHTML::reformatCodeString( const QString &string )
   {
     if ( result == QLatin1String( "_ImportError" ) )
     {
-      showMessage( tr( "Reformat Code" ), tr( "The Python module %1 is missing" ).arg( QStringLiteral( "bs4" ) ), Qgis::MessageLevel::Warning );
+      showMessage( tr( "Reformat Code" ), tr( "HTML reformatting requires bs4 or lxml python modules to be installed" ), Qgis::MessageLevel::Warning );
     }
     else
     {
