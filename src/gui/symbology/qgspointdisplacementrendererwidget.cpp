@@ -64,7 +64,7 @@ QgsPointDisplacementRendererWidget::QgsPointDisplacementRendererWidget( QgsVecto
   mLabelFontButton->setDialogTitle( tr( "Label Font" ) );
   mLabelFontButton->registerExpressionContextGenerator( this );
   mDistanceUnitWidget->setUnits( { Qgis::RenderUnit::Millimeters, Qgis::RenderUnit::MetersInMapUnits, Qgis::RenderUnit::MapUnits, Qgis::RenderUnit::Pixels,
-                                   Qgis::RenderUnit::Points, Qgis::RenderUnit::Inches}  );
+                                   Qgis::RenderUnit::Points, Qgis::RenderUnit::Inches} );
   mCenterSymbolToolButton->setSymbolType( Qgis::SymbolType::Marker );
 
   if ( renderer )
