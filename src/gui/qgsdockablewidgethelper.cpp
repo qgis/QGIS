@@ -28,11 +28,12 @@
 
 std::function< void( Qt::DockWidgetArea, QDockWidget *, const QStringList &, bool ) > QgsDockableWidgetHelper::sAddTabifiedDockWidgetFunction = []( Qt::DockWidgetArea, QDockWidget *, const QStringList &, bool ) {};
 std::function< QString( ) > QgsDockableWidgetHelper::sAppStylesheetFunction = [] { return QString(); };
+QMainWindow *QgsDockableWidgetHelper::sOwnerWindow = nullptr;
 
 QgsDockableWidgetHelper::QgsDockableWidgetHelper( bool isDocked, const QString &windowTitle, QWidget *widget, QMainWindow *ownerWindow,
     Qt::DockWidgetArea defaultDockArea,
     const QStringList &tabifyWith,
-    bool raiseTab, const QString &windowGeometrySettingsKey )
+    bool raiseTab, const QString &windowGeometrySettingsKey, bool usePersistentWidget )
   : QObject( nullptr )
   , mWidget( widget )
   , mDialogGeometry( 0, 0, 0, 0 )
@@ -44,6 +45,7 @@ QgsDockableWidgetHelper::QgsDockableWidgetHelper( bool isDocked, const QString &
   , mRaiseTab( raiseTab )
   , mWindowGeometrySettingsKey( windowGeometrySettingsKey )
   , mUuid( QUuid::createUuid().toString() )
+  , mUsePersistentWidget( usePersistentWidget )
 {
   toggleDockMode( isDocked );
 }
@@ -186,6 +188,16 @@ void QgsDockableWidgetHelper::setWidget( QWidget *widget )
   toggleDockMode( mIsDocked );
 }
 
+QgsDockWidget *QgsDockableWidgetHelper::dockWidget()
+{
+  return mDock.data();
+}
+
+QDialog *QgsDockableWidgetHelper::dialog()
+{
+  return mDialog.data();
+}
+
 void QgsDockableWidgetHelper::toggleDockMode( bool docked )
 {
   // Make sure the old mWidget is not stuck as a child of mDialog or mDock
@@ -234,6 +246,7 @@ void QgsDockableWidgetHelper::toggleDockMode( bool docked )
     mDock = new QgsDockWidget( mOwnerWindow );
     mDock->setWindowTitle( mWindowTitle );
     mDock->setWidget( mWidget );
+    mDock->setObjectName( mObjectName );
     mDock->setProperty( "dock_uuid", mUuid );
     setupDockWidget();
 
@@ -244,6 +257,13 @@ void QgsDockableWidgetHelper::toggleDockMode( bool docked )
       mDockArea = mOwnerWindow->dockWidgetArea( mDock );
       emit closed();
     } );
+
+    if ( mUsePersistentWidget )
+      mDock->installEventFilter( this );
+
+    connect( mDock, &QgsDockWidget::visibilityChanged, this, &QgsDockableWidgetHelper::visibilityChanged );
+    mDock->setUserVisible( true );
+    emit visibilityChanged( true );
   }
   else
   {
@@ -254,6 +274,11 @@ void QgsDockableWidgetHelper::toggleDockMode( bool docked )
     mDialog->setStyleSheet( sAppStylesheetFunction() );
 
     mDialog->setWindowTitle( mWindowTitle );
+    mDialog->setObjectName( mObjectName );
+
+    if ( mUsePersistentWidget )
+      mDialog->installEventFilter( this );
+
     QVBoxLayout *vl = new QVBoxLayout();
     vl->setContentsMargins( 0, 0, 0, 0 );
     vl->addWidget( mWidget );
@@ -278,9 +303,34 @@ void QgsDockableWidgetHelper::toggleDockMode( bool docked )
     {
       mDialogGeometry = mDialog->geometry();
       emit closed();
+      emit visibilityChanged( false );
     } );
+
+    emit visibilityChanged( true );
   }
   emit dockModeToggled( docked );
+}
+
+void QgsDockableWidgetHelper::setUserVisible( bool visible )
+{
+  if ( mDialog )
+  {
+    if ( visible )
+    {
+      mDialog->show();
+      mDialog->raise();
+      mDialog->setWindowState( mDialog->windowState() & ~Qt::WindowMinimized );
+      mDialog->activateWindow();
+    }
+    else
+    {
+      mDialog->hide();
+    }
+  }
+  if ( mDock )
+  {
+    mDock->setUserVisible( visible );
+  }
 }
 
 void QgsDockableWidgetHelper::setWindowTitle( const QString &title )
@@ -294,6 +344,34 @@ void QgsDockableWidgetHelper::setWindowTitle( const QString &title )
   {
     mDock->setWindowTitle( title );
   }
+}
+
+void QgsDockableWidgetHelper::setDockObjectName( const QString &name )
+{
+  mObjectName = name;
+  if ( mDialog )
+  {
+    mDialog->setObjectName( name );
+  }
+  if ( mDock )
+  {
+    mDock->setObjectName( name );
+  }
+}
+
+QString QgsDockableWidgetHelper::dockObjectName() const { return mObjectName; }
+
+bool QgsDockableWidgetHelper::isUserVisible() const
+{
+  if ( mDialog )
+  {
+    return mDialog->isVisible();
+  }
+  if ( mDock )
+  {
+    return mDock->isUserVisible();
+  }
+  return false;
 }
 
 void QgsDockableWidgetHelper::setupDockWidget( const QStringList &tabSiblings )
@@ -348,6 +426,31 @@ QAction *QgsDockableWidgetHelper::createDockUndockAction( const QString &title, 
 
   connect( toggleAction, &QAction::toggled, this, &QgsDockableWidgetHelper::toggleDockMode );
   return toggleAction;
+}
+
+bool QgsDockableWidgetHelper::eventFilter( QObject *watched, QEvent *event )
+{
+  if ( watched == mDialog )
+  {
+    if ( event->type() == QEvent::Close )
+    {
+      event->ignore();
+      mDialog->hide();
+      emit visibilityChanged( false );
+      return true;
+    }
+  }
+  else if ( watched == mDock )
+  {
+    if ( event->type() == QEvent::Close )
+    {
+      event->ignore();
+      mDock->hide();
+      emit visibilityChanged( false );
+      return true;
+    }
+  }
+  return QObject::eventFilter( watched, event );
 }
 
 ///@endcond

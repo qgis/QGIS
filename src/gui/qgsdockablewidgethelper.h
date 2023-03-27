@@ -22,6 +22,7 @@
 #include <QToolButton>
 #include <QMainWindow>
 #include <QDomElement>
+#include <QPointer>
 
 #define SIP_NO_FILE
 
@@ -47,11 +48,13 @@ class GUI_EXPORT QgsDockableWidgetHelper : public QObject
     /**
      * Constructs an object that is responsible of making a docked widget or a window titled \a windowTitle that holds the \a widget
      * The ownership of \a widget is returned to \a ownerWindow once the object is destroyed.
+     *
+     * If \a usePersistentWidget is TRUE then the \a widget (either as a dock or window) cannot be destroyed and must be hidden instead.
      */
     QgsDockableWidgetHelper( bool isDocked, const QString &windowTitle, QWidget *widget, QMainWindow *ownerWindow,
                              Qt::DockWidgetArea defaultDockArea = Qt::NoDockWidgetArea,
                              const QStringList &tabifyWith = QStringList(), bool raiseTab = false,
-                             const QString &windowGeometrySettingsKey = QString() );
+                             const QString &windowGeometrySettingsKey = QString(), bool usePersistentWidget = false );
     ~QgsDockableWidgetHelper();
 
     //! Reads the dimensions of both the dock widget and the top level window
@@ -64,14 +67,25 @@ class GUI_EXPORT QgsDockableWidgetHelper : public QObject
     QWidget *widget() { return mWidget; }
 
     //! Returns the dock widget if we are in docking mode and nullptr otherwise.
-    QgsDockWidget *dockWidget() { return mDock; }
+    QgsDockWidget *dockWidget();
     //! Returns the dialog window if we are in top level window mode and nullptr otherwise.
-    QDialog *dialog() { return mDialog; }
+    QDialog *dialog();
 
     //! Sets the displayed title of the dialog and the dock widget
     void setWindowTitle( const QString &title );
     //! Returns the displayed title of the dialog and the dock widget
     QString windowTitle() const { return mWindowTitle; }
+
+    //! Sets the object name of the dock widget
+    void setDockObjectName( const QString &name );
+    //! Returns the object name of the dock widget
+    QString dockObjectName() const;
+
+    /**
+     * Returns TRUE if the widget is a visible dialog or a user-visible
+     * dock widget.
+     */
+    bool isUserVisible() const;
 
     /**
      * Create a tool button for docking/undocking the widget
@@ -84,16 +98,24 @@ class GUI_EXPORT QgsDockableWidgetHelper : public QObject
      */
     QAction *createDockUndockAction( const QString &title, QWidget *parent );
 
+    bool eventFilter( QObject *watched, QEvent *event ) override;
+
     static std::function< void( Qt::DockWidgetArea, QDockWidget *, const QStringList &, bool ) > sAddTabifiedDockWidgetFunction;
     static std::function< QString( ) > sAppStylesheetFunction;
+
+    static QMainWindow *sOwnerWindow;
 
   signals:
     void closed();
 
     void dockModeToggled( bool docked );
 
+    void visibilityChanged( bool isVisible );
+
   public slots:
     void toggleDockMode( bool docked );
+
+    void setUserVisible( bool visible );
 
   private:
     void setupDockWidget( const QStringList &tabSiblings = QStringList() );
@@ -101,15 +123,16 @@ class GUI_EXPORT QgsDockableWidgetHelper : public QObject
     bool mIsDocked = true;
     QWidget *mWidget = nullptr;
 
-    QDialog *mDialog = nullptr;
+    QPointer< QDialog > mDialog;
     QRect mDialogGeometry;
 
-    QgsDockWidget *mDock = nullptr;
+    QPointer< QgsDockWidget > mDock;
     QRect mDockGeometry;
     bool mIsDockFloating = true;
     Qt::DockWidgetArea mDockArea = Qt::RightDockWidgetArea;
 
     QString mWindowTitle;
+    QString mObjectName;
     QMainWindow *mOwnerWindow = nullptr;
 
     QStringList mTabifyWith;
@@ -119,6 +142,8 @@ class GUI_EXPORT QgsDockableWidgetHelper : public QObject
 
     // Unique identifier of dock
     QString mUuid;
+
+    bool mUsePersistentWidget = false;
 };
 
 ///@endcond
