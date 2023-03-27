@@ -213,7 +213,7 @@ void QgsTextRenderer::drawDocumentOnLine( const QPolygonF &line, const QgsTextFo
   for ( int i = 0; i < graphemes.count(); i++ )
   {
     // reconstruct how Qt creates word spacing, then adjust per individual stored character
-    // this will allow PAL to create each candidate width = character width + correct spacing
+    // this will allow the text renderer to create each candidate width = character width + correct spacing
 
     double graphemeFirstCharHorizontalAdvanceWithLetterSpacing = 0;
     double graphemeFirstCharHorizontalAdvance = 0;
