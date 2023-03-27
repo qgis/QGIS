@@ -57,10 +57,13 @@ QgsDockableWidgetHelper::~QgsDockableWidgetHelper()
   {
     mDockGeometry = mDock->geometry();
     mIsDockFloating = mDock->isFloating();
-    mDockArea = mOwnerWindow->dockWidgetArea( mDock );
+    if ( mOwnerWindow )
+      mDockArea = mOwnerWindow->dockWidgetArea( mDock );
 
     mDock->setWidget( nullptr );
-    mOwnerWindow->removeDockWidget( mDock );
+
+    if ( mOwnerWindow )
+      mOwnerWindow->removeDockWidget( mDock );
     mDock->deleteLater();
     mDock = nullptr;
   }
@@ -88,7 +91,8 @@ void QgsDockableWidgetHelper::writeXml( QDomElement &viewDom )
   {
     mDockGeometry = mDock->geometry();
     mIsDockFloating = mDock->isFloating();
-    mDockArea = mOwnerWindow->dockWidgetArea( mDock );
+    if ( mOwnerWindow )
+      mDockArea = mOwnerWindow->dockWidgetArea( mDock );
   }
 
   viewDom.setAttribute( QStringLiteral( "x" ), mDockGeometry.x() );
@@ -101,7 +105,7 @@ void QgsDockableWidgetHelper::writeXml( QDomElement &viewDom )
 
   if ( mDock )
   {
-    const QList<QDockWidget * > tabSiblings = mOwnerWindow->tabifiedDockWidgets( mDock );
+    const QList<QDockWidget * > tabSiblings = mOwnerWindow ? mOwnerWindow->tabifiedDockWidgets( mDock ) : QList<QDockWidget * >();
     QDomElement tabSiblingsElement = viewDom.ownerDocument().createElement( QStringLiteral( "tab_siblings" ) );
     for ( QDockWidget *dock : tabSiblings )
     {
@@ -171,7 +175,7 @@ void QgsDockableWidgetHelper::readXml( const QDomElement &viewDom )
 void QgsDockableWidgetHelper::setWidget( QWidget *widget )
 {
   // Make sure the old mWidget is not stuck as a child of mDialog or mDock
-  if ( mWidget )
+  if ( mWidget && mOwnerWindow )
   {
     mWidget->setParent( mOwnerWindow );
   }
@@ -201,7 +205,7 @@ QDialog *QgsDockableWidgetHelper::dialog()
 void QgsDockableWidgetHelper::toggleDockMode( bool docked )
 {
   // Make sure the old mWidget is not stuck as a child of mDialog or mDock
-  if ( mWidget )
+  if ( mWidget && mOwnerWindow )
   {
     mWidget->setParent( mOwnerWindow );
   }
@@ -211,10 +215,12 @@ void QgsDockableWidgetHelper::toggleDockMode( bool docked )
   {
     mDockGeometry = mDock->geometry();
     mIsDockFloating = mDock->isFloating();
-    mDockArea = mOwnerWindow->dockWidgetArea( mDock );
+    if ( mOwnerWindow )
+      mDockArea = mOwnerWindow->dockWidgetArea( mDock );
 
     mDock->setWidget( nullptr );
-    mOwnerWindow->removeDockWidget( mDock );
+    if ( mOwnerWindow )
+      mOwnerWindow->removeDockWidget( mDock );
     delete mDock;
     mDock = nullptr;
   }
@@ -254,7 +260,8 @@ void QgsDockableWidgetHelper::toggleDockMode( bool docked )
     {
       mDockGeometry = mDock->geometry();
       mIsDockFloating = mDock->isFloating();
-      mDockArea = mOwnerWindow->dockWidgetArea( mDock );
+      if ( mOwnerWindow )
+        mDockArea = mOwnerWindow->dockWidgetArea( mDock );
       emit closed();
     } );
 
@@ -380,7 +387,7 @@ void QgsDockableWidgetHelper::setupDockWidget( const QStringList &tabSiblings )
     return;
 
   mDock->setFloating( mIsDockFloating );
-  if ( mDockGeometry.isEmpty() )
+  if ( mDockGeometry.isEmpty() && mOwnerWindow )
   {
     const QFontMetrics fm( mOwnerWindow->font() );
     const int initialDockSize = fm.horizontalAdvance( '0' ) * 50;
@@ -396,7 +403,7 @@ void QgsDockableWidgetHelper::setupDockWidget( const QStringList &tabSiblings )
   {
     sAddTabifiedDockWidgetFunction( mDockArea, mDock, mTabifyWith, mRaiseTab );
   }
-  else
+  else if ( mOwnerWindow )
   {
     mOwnerWindow->addDockWidget( mDockArea, mDock );
   }
