@@ -52,7 +52,6 @@ QgsDockableWidgetHelper::QgsDockableWidgetHelper( bool isDocked, const QString &
 
 QgsDockableWidgetHelper::~QgsDockableWidgetHelper()
 {
-  setWidget( nullptr );
   if ( mDock )
   {
     mDockGeometry = mDock->geometry();
