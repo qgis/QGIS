@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsElevationProfileCanvas
 
 .. note:: This program is free software; you can redistribute it and/or modify

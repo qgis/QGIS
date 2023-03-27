@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsLayoutItemComboBox
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -11,7 +10,7 @@ __date__ = '11/03/2019'
 __copyright__ = 'Copyright 2019, The QGIS Project'
 
 import qgis  # NOQA
-
+from qgis.PyQt.QtTest import QSignalSpy
 from qgis.core import (QgsProject,
                        QgsPrintLayout,
                        QgsLayoutItemMap,
@@ -20,10 +19,9 @@ from qgis.core import (QgsProject,
                        QgsLayoutItemShape,
                        QgsLayoutItem)
 from qgis.gui import QgsLayoutItemComboBox
-from qgis.PyQt.QtCore import Qt, QModelIndex
 from qgis.testing import start_app, unittest
+
 from utilities import unitTestDataPath
-from qgis.PyQt.QtTest import QSignalSpy
 
 start_app()
 TEST_DATA_DIR = unitTestDataPath()

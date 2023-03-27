@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for annotations.
 
 From build dir, run: ctest -R PyQgsAnnotation -V
@@ -13,7 +12,15 @@ __date__ = '24/1/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
 
 import qgis  # NOQA
-
+from qgis.PyQt.QtCore import (QDir,
+                              QPointF,
+                              QSize,
+                              QSizeF,
+                              QRectF)
+from qgis.PyQt.QtGui import (QColor,
+                             QPainter,
+                             QImage,
+                             QTextDocument)
 from qgis.core import (QgsTextAnnotation,
                        QgsSvgAnnotation,
                        QgsHtmlAnnotation,
@@ -32,18 +39,9 @@ from qgis.core import (QgsTextAnnotation,
                        QgsLayoutItemMap,
                        QgsPointXY)
 from qgis.gui import QgsFormAnnotation
-from qgis.PyQt.QtCore import (QDir,
-                              QPointF,
-                              QSize,
-                              QSizeF,
-                              QRectF)
-from qgis.PyQt.QtGui import (QColor,
-                             QPainter,
-                             QImage,
-                             QTextDocument)
-from qgslayoutchecker import QgsLayoutChecker
-
 from qgis.testing import start_app, unittest
+
+from qgslayoutchecker import QgsLayoutChecker
 from utilities import unitTestDataPath
 
 start_app()
@@ -288,7 +286,7 @@ class TestQgsAnnotation(unittest.TestCase):
         return result
 
     def imageCheck(self, name, reference_image, image):
-        self.report += "<h2>Render {}</h2>\n".format(name)
+        self.report += f"<h2>Render {name}</h2>\n"
         temp_dir = QDir.tempPath() + '/'
         file_name = temp_dir + 'annotation_' + name + ".png"
         image.save(file_name, "PNG")
@@ -299,7 +297,7 @@ class TestQgsAnnotation(unittest.TestCase):
         checker.setColorTolerance(2)
         result = checker.runTest(name, 20)
         self.report += checker.report()
-        print((self.report))
+        print(self.report)
         return result
 
 

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsAggregateCalculator.
 
 From build dir, run: ctest -R PyQgsAggregateCalculator -V
@@ -13,7 +12,7 @@ __date__ = '16/05/2016'
 __copyright__ = 'Copyright 2016, The QGIS Project'
 
 import qgis  # NOQA
-
+from qgis.PyQt.QtCore import QDateTime, QDate, QTime
 from qgis.core import (QgsAggregateCalculator,
                        QgsVectorLayer,
                        QgsFeature,
@@ -24,7 +23,6 @@ from qgis.core import (QgsAggregateCalculator,
                        QgsFeatureRequest,
                        NULL
                        )
-from qgis.PyQt.QtCore import QDateTime, QDate, QTime
 from qgis.testing import unittest, start_app
 
 from utilities import compareWkt
@@ -81,7 +79,7 @@ class TestQgsAggregateCalculator(unittest.TestCase):
         self.assertTrue(ok)
         expwkt = "MultiPoint ((0 0), (1 1), (2 2))"
         wkt = val.asWkt()
-        self.assertTrue(compareWkt(expwkt, wkt), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt))
+        self.assertTrue(compareWkt(expwkt, wkt), f"Expected:\n{expwkt}\nGot:\n{wkt}\n")
 
     def testNumeric(self):
         """ Test calculation of aggregates on numeric fields"""

@@ -495,24 +495,15 @@ void QgsOracleOwnerItem::addLayer( const QgsOracleLayerProperty &layerProperty )
   QString tip = tr( "%1 as %2 in %3" ).arg( layerProperty.geometryColName, QgsWkbTypes::translatedDisplayString( wkbType ) ).arg( layerProperty.srids.at( 0 ) );
 
   Qgis::BrowserLayerType layerType;
-  switch ( wkbType )
+  switch ( QgsWkbTypes::geometryType( wkbType ) )
   {
-    case QgsWkbTypes::Point:
-    case QgsWkbTypes::Point25D:
-    case QgsWkbTypes::MultiPoint:
-    case QgsWkbTypes::MultiPoint25D:
+    case QgsWkbTypes::PointGeometry:
       layerType = Qgis::BrowserLayerType::Point;
       break;
-    case QgsWkbTypes::LineString:
-    case QgsWkbTypes::LineString25D:
-    case QgsWkbTypes::MultiLineString:
-    case QgsWkbTypes::MultiLineString25D:
+    case QgsWkbTypes::LineGeometry:
       layerType = Qgis::BrowserLayerType::Line;
       break;
-    case QgsWkbTypes::Polygon:
-    case QgsWkbTypes::Polygon25D:
-    case QgsWkbTypes::MultiPolygon:
-    case QgsWkbTypes::MultiPolygon25D:
+    case QgsWkbTypes::PolygonGeometry:
       layerType = Qgis::BrowserLayerType::Polygon;
       break;
     default:

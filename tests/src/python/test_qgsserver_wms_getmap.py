@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsServer WMS GetMap.
 
 From build dir, run: ctest -R PyQgsServerWMSGetMap -V
@@ -19,7 +18,6 @@ import os
 # Needed on Qt 5 so that the serialization of XML is consistent among all executions
 os.environ['QT_HASH_SEED'] = '1'
 
-import re
 import urllib.request
 import urllib.parse
 import urllib.error
@@ -27,7 +25,7 @@ import urllib.error
 from lxml import etree as et
 
 from qgis.testing import unittest
-from qgis.PyQt.QtCore import QSize, QDate, QDateTime, QTime
+from qgis.PyQt.QtCore import QDate, QDateTime, QTime
 from qgis.PyQt.QtGui import QImage, QColor
 
 import osgeo.gdal  # NOQA
@@ -35,7 +33,6 @@ import osgeo.gdal  # NOQA
 from test_qgsserver import QgsServerTestBase
 from utilities import unitTestDataPath
 from qgis.core import QgsProject, QgsVectorLayer, QgsVectorLayerTemporalProperties, QgsGeometry, QgsFeature
-from qgis.server import QgsServerProjectUtils
 
 # Strip path and content length because path may vary
 RE_STRIP_UNCHECKABLE = br'MAP=[^"]+|Content-Length: \d+'
@@ -1042,7 +1039,7 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
         filter_country = ("(<Filter><PropertyIsEqualTo><PropertyName>name"
                           "</PropertyName><Literal>eurasia</Literal>"
                           "</PropertyIsEqualTo></Filter>)")
-        filter = "{}{}".format(filter_hello, filter_country)
+        filter = f"{filter_hello}{filter_country}"
         qs = "?" + "&".join(["%s=%s" % i for i in list({
             "MAP": urllib.parse.quote(self.projectPath),
             "SERVICE": "WMS",

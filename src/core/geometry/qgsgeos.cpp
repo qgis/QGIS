@@ -1064,7 +1064,11 @@ geos::unique_ptr QgsGeos::linePointDifference( GEOSGeometry *GEOSsplitPoint ) co
       line->closestSegment( *intersectionPoint, segmentPoint2D, nextVertex );
       const QgsLineString segment = QgsLineString( line->pointN( nextVertex.vertex - 1 ), line->pointN( nextVertex.vertex ) );
       const double distance = segmentPoint2D.distance( line->pointN( nextVertex.vertex - 1 ) );
-      std::unique_ptr< QgsPoint > correctSegmentPoint( segment.interpolatePoint( distance ) );
+
+      // Due to precision issues, distance can be a tad larger than the actual segment length, making interpolatePoint() return nullptr
+      // In that case we'll use the segment's endpoint instead of interpolating
+      std::unique_ptr< QgsPoint > correctSegmentPoint( distance > segment.length() ? segment.endPoint().clone() : segment.interpolatePoint( distance ) );
+
       const QPair< double, QgsPoint > pair = qMakePair( distance, *correctSegmentPoint.get() );
       if ( pointMap.contains( nextVertex.vertex - 1 ) )
         pointMap[ nextVertex.vertex - 1 ].append( pair );
@@ -1131,7 +1135,7 @@ QgsGeometryEngine::EngineOperationResult QgsGeos::splitLinearGeometry( GEOSGeome
     return InvalidBaseGeometry;
 
   geos::unique_ptr intersectGeom( GEOSIntersection_r( geosinit()->ctxt, splitLine, mGeos.get() ) );
-  if ( !intersectGeom )
+  if ( !intersectGeom || GEOSisEmpty_r( geosinit()->ctxt, intersectGeom.get() ) )
     return NothingHappened;
 
   //check that split line has no linear intersection

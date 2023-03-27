@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 ***************************************************************************
     test_qgssymbolexpressionvariables.py
@@ -21,12 +19,10 @@ __author__ = 'Matthias Kuhn'
 __date__ = 'January 2016'
 __copyright__ = '(C) 2016, Matthiasd Kuhn'
 
-import qgis  # NOQA
-
 import os
 
+import qgis  # NOQA
 from qgis.PyQt.QtCore import QSize
-
 from qgis.core import (
     QgsVectorLayer,
     QgsProject,
@@ -38,9 +34,9 @@ from qgis.core import (
     QgsProperty,
     QgsSymbolLayer
 )
-
 from qgis.testing import unittest, start_app
 from qgis.testing.mocked import get_iface
+
 from utilities import unitTestDataPath
 
 start_app()

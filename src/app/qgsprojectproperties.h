@@ -252,7 +252,7 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
     void setCurrentEllipsoid( const QString &ellipsoidAcronym );
 
     //! Create a new scale item and add it to the list of scales
-    QListWidgetItem *addScaleToScaleList( const QString &newScale );
+    QListWidgetItem *addScaleToScaleList( double newScaleDenominator );
 
     //! Add a scale item to the list of scales
     void addScaleToScaleList( QListWidgetItem *newItem );

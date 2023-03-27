@@ -29,6 +29,8 @@ QgsFeatureListComboBox::QgsFeatureListComboBox( QWidget *parent )
   , mModel( new QgsFeatureFilterModel( this ) )
   , mCompleter( new QCompleter( mModel ) )
 {
+  setMinimumContentsLength( 1 );
+  setSizeAdjustPolicy( QComboBox::SizeAdjustPolicy::AdjustToMinimumContentsLengthWithIcon );
   mCompleter->setCaseSensitivity( Qt::CaseInsensitive );
   mCompleter->setFilterMode( Qt::MatchContains );
   setEditable( true );

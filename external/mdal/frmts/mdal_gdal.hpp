@@ -79,7 +79,7 @@ namespace MDAL
 
       void registerDriver();
 
-      void initFaces( Vertices &nodes, Faces &Faces, bool is_longitude_shifted );
+      void initFaces( const Vertices &nodes, Faces &Faces, bool is_longitude_shifted );
       bool initVertices( Vertices &vertices ); //returns is_longitude_shifted
 
       const GdalDataset *meshGDALDataset();

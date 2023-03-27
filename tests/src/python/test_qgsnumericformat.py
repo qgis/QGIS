@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsNumericFormat
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -11,7 +10,7 @@ __date__ = '6/01/2020'
 __copyright__ = 'Copyright 2020, The QGIS Project'
 
 import qgis  # NOQA
-
+from qgis.PyQt.QtXml import QDomDocument
 from qgis.core import (QgsFallbackNumericFormat,
                        QgsBasicNumericFormat,
                        QgsNumericFormatContext,
@@ -25,7 +24,6 @@ from qgis.core import (QgsFallbackNumericFormat,
                        QgsGeographicCoordinateNumericFormat,
                        QgsReadWriteContext)
 from qgis.testing import start_app, unittest
-from qgis.PyQt.QtXml import QDomDocument
 
 start_app()
 

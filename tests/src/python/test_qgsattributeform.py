@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for the attribute form
 
 
@@ -14,7 +13,7 @@ __author__ = 'Alessandro Pasotti'
 __date__ = '2019-06-06'
 __copyright__ = 'Copyright 2019, The QGIS Project'
 
-from qgis.testing import start_app, unittest
+from qgis.PyQt.QtCore import QVariant
 from qgis.core import (
     QgsVectorLayer,
     QgsFeature,
@@ -30,7 +29,7 @@ from qgis.gui import (
     QgsAttributeEditorContext,
     QgsFilterLineEdit
 )
-from qgis.PyQt.QtCore import QVariant
+from qgis.testing import start_app, unittest
 
 QGISAPP = start_app()
 
@@ -178,6 +177,38 @@ class TestQgsAttributeForm(unittest.TestCase):
         self.assertEqual(form.currentFormFeature()['numbers'], [1, 1])
         form.changeAttribute('age', 7)
         self.assertEqual(form.currentFormFeature()['numbers'], [1, 7])
+
+    def test_default_value_always_updated(self):
+        """Test that default values are not updated on every edit operation
+        when containing an 'attribute' expression"""
+
+        layer = QgsVectorLayer("Point?field=age:int&field=number:int", "vl", "memory")
+
+        layer.setEditorWidgetSetup(0, QgsEditorWidgetSetup('Range', {}))
+
+        # set default value for numbers to attribute("age"), it will depend on the field age and should not update
+        layer.setDefaultValueDefinition(1, QgsDefaultValue("attribute(@feature, 'age')", False))
+        layer.setEditorWidgetSetup(1, QgsEditorWidgetSetup('Range', {}))
+
+        layer.startEditing()
+
+        feature = QgsFeature(layer.fields())
+        feature.setAttribute('age', 15)
+
+        form = QgsAttributeForm(layer)
+        form.setMode(QgsAttributeEditorContext.AddFeatureMode)
+        form.setFeature(feature)
+
+        QGISAPP.processEvents()
+
+        self.assertEqual(form.currentFormFeature()['age'], 15)
+        self.assertEqual(form.currentFormFeature()['number'], 15)
+        # return
+        form.changeAttribute('number', 12)
+        form.changeAttribute('age', 1)
+        self.assertEqual(form.currentFormFeature()['number'], 12)
+        form.changeAttribute('age', 7)
+        self.assertEqual(form.currentFormFeature()['number'], 12)
 
 
 if __name__ == '__main__':

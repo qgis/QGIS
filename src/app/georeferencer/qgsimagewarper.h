@@ -20,6 +20,7 @@
 
 #include <gdalwarper.h>
 #include <vector>
+#include "qgis_app.h"
 #include "qgspointxy.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsogrutils.h"
@@ -28,7 +29,7 @@
 class QgsGeorefTransform;
 class QgsFeedback;
 
-class QgsImageWarper
+class APP_EXPORT QgsImageWarper
 {
     Q_DECLARE_TR_FUNCTIONS( QgsImageWarper )
     Q_GADGET

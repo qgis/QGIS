@@ -390,7 +390,7 @@ QString QgsAction::html() const
     }
     case Mac:
     {
-      typeText = QObject::tr( "Mac" );
+      typeText = QObject::tr( "macOS" );
       break;
     }
     case Windows:

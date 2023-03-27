@@ -513,6 +513,12 @@ void QgsMapCanvas::setDestinationCrs( const QgsCoordinateReferenceSystem &crs )
     }
   }
 
+  // defer extent and scale changed signals until we've correctly
+  // set the destination crs, otherwise slots which connect to these signals
+  // may retrieve an outdated CRS for the map canvas
+  mBlockExtentChangedSignal++;
+  mBlockScaleChangedSignal++;
+
   if ( !rect.isEmpty() )
   {
     // we will be manually calling updateCanvasItemPositions() later, AFTER setting the updating the mSettings destination CRS, and we don't
@@ -522,8 +528,13 @@ void QgsMapCanvas::setDestinationCrs( const QgsCoordinateReferenceSystem &crs )
     mBlockItemPositionUpdates--;
   }
 
+  mBlockExtentChangedSignal--;
+  mBlockScaleChangedSignal--;
+
   mSettings.setDestinationCrs( crs );
   updateScale();
+  emitExtentsChanged();
+
   updateCanvasItemPositions();
 
   QgsDebugMsgLevel( QStringLiteral( "refreshing after destination CRS changed" ), 2 );
@@ -1199,7 +1210,8 @@ void QgsMapCanvas::showContextMenu( QgsMapMouseEvent *event )
 
   emit contextMenuAboutToShow( &menu, event );
 
-  menu.exec( event->globalPos() );
+  if ( !menu.isEmpty() ) // menu can be empty after populateContextMenu() and contextMenuAboutToShow()
+    menu.exec( event->globalPos() );
 }
 
 void QgsMapCanvas::notifyRendererErrors( const QgsMapRendererJob::Errors &errors )
@@ -1426,6 +1438,7 @@ void QgsMapCanvas::setExtent( const QgsRectangle &r, bool magnified )
 
     // ### QGIS 3: do not allow empty extent - require users to call setCenter() explicitly
     QgsDebugMsgLevel( QStringLiteral( "Empty extent - keeping old scale with new center!" ), 2 );
+
     setCenter( r.center() );
   }
   else
@@ -1448,7 +1461,7 @@ void QgsMapCanvas::setExtent( const QgsRectangle &r, bool magnified )
       mSettings.setExtent( r, magnified );
     }
   }
-  emit extentsChanged();
+  emitExtentsChanged();
   updateScale();
 
   //clear all extent items after current index
@@ -1524,7 +1537,7 @@ QgsPointXY QgsMapCanvas::cursorPoint() const
 double QgsMapCanvas::rotation() const
 {
   return mapSettings().rotation();
-} // rotation
+}
 
 void QgsMapCanvas::setRotation( double degrees )
 {
@@ -1535,13 +1548,13 @@ void QgsMapCanvas::setRotation( double degrees )
 
   mSettings.setRotation( degrees );
   emit rotationChanged( degrees );
-  emit extentsChanged(); // visible extent changes with rotation
-} // setRotation
-
+  emitExtentsChanged(); // visible extent changes with rotation
+}
 
 void QgsMapCanvas::updateScale()
 {
-  emit scaleChanged( mapSettings().scale() );
+  if ( !mBlockScaleChangedSignal )
+    emit scaleChanged( mapSettings().scale() );
 }
 
 void QgsMapCanvas::zoomToFullExtent()
@@ -1577,7 +1590,7 @@ void QgsMapCanvas::zoomToPreviousExtent()
   {
     mLastExtentIndex--;
     mSettings.setExtent( mLastExtent[mLastExtentIndex] );
-    emit extentsChanged();
+    emitExtentsChanged();
     updateScale();
     refresh();
     // update controls' enabled state
@@ -1593,7 +1606,7 @@ void QgsMapCanvas::zoomToNextExtent()
   {
     mLastExtentIndex++;
     mSettings.setExtent( mLastExtent[mLastExtentIndex] );
-    emit extentsChanged();
+    emitExtentsChanged();
     updateScale();
     refresh();
     // update controls' enabled state
@@ -2524,7 +2537,7 @@ void QgsMapCanvas::resizeEvent( QResizeEvent *e )
     updateScale();
   }
 
-  emit extentsChanged();
+  emitExtentsChanged();
 }
 
 void QgsMapCanvas::paintEvent( QPaintEvent *e )
@@ -3075,6 +3088,12 @@ void QgsMapCanvas::showEvent( QShowEvent *event )
 {
   Q_UNUSED( event )
   updateDevicePixelFromScreen();
+}
+
+void QgsMapCanvas::emitExtentsChanged()
+{
+  if ( !mBlockExtentChangedSignal )
+    emit extentsChanged();
 }
 
 QPoint QgsMapCanvas::mouseLastXY()

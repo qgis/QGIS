@@ -45,7 +45,7 @@ QString QgsLayoutAtlasToPdfAlgorithmBase::groupId() const
 
 QgsProcessingAlgorithm::Flags QgsLayoutAtlasToPdfAlgorithmBase::flags() const
 {
-  return QgsProcessingAlgorithm::flags() | FlagNoThreading;
+  return QgsProcessingAlgorithm::flags() | FlagNoThreading | FlagRequiresProject;
 }
 
 void QgsLayoutAtlasToPdfAlgorithmBase::initAlgorithm( const QVariantMap & )

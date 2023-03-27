@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsAnnotationItemEditOperation
 
 From build dir, run: ctest -R QgsAnnotationItemEditOperation -V
@@ -19,8 +18,7 @@ from qgis.core import (
     QgsAnnotationItemEditOperationTranslateItem,
     QgsAnnotationItemEditOperationAddNode,
     QgsVertexId,
-    QgsPoint,
-    QgsPointXY
+    QgsPoint
 )
 from qgis.testing import start_app, unittest
 

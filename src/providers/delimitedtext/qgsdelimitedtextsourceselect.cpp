@@ -588,8 +588,8 @@ void QgsDelimitedTextSourceSelect::updateFieldLists()
   cmbWktField->setCurrentIndex( cmbWktField->findText( columnWkt ) );
   cmbXField->setCurrentIndex( cmbXField->findText( columnX ) );
   cmbYField->setCurrentIndex( cmbYField->findText( columnY ) );
-  cmbZField->setCurrentIndex( cmbYField->findText( columnZ ) );
-  cmbMField->setCurrentIndex( cmbYField->findText( columnM ) );
+  cmbZField->setCurrentIndex( cmbZField->findText( columnZ ) );
+  cmbMField->setCurrentIndex( cmbMField->findText( columnM ) );
 
   // Now try setting optional X,Y fields - will only reset the fields if
   // not already set.

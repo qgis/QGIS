@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsMessageLog.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -11,15 +10,13 @@ __date__ = '18/06/2018'
 __copyright__ = 'Copyright 2018, The QGIS Project'
 
 import qgis  # NOQA
-
+from qgis.PyQt.QtTest import QSignalSpy
 from qgis.core import (Qgis,
                        QgsApplication,
                        QgsMessageLog,
                        QgsMessageLogNotifyBlocker)
-
-from qgis.PyQt.QtTest import QSignalSpy
-
 from qgis.testing import start_app, unittest
+
 from utilities import (unitTestDataPath)
 
 app = start_app()

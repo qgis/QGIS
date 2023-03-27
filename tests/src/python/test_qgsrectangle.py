@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsRectangle.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -11,10 +10,9 @@ __date__ = '20/08/2012'
 __copyright__ = 'Copyright 2012, The QGIS Project'
 
 import qgis  # NOQA
-
 from qgis.core import QgsRectangle, QgsPointXY, QgsVector
-
 from qgis.testing import start_app, unittest
+
 from utilities import compareWkt
 
 start_app()

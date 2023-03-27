@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsLayoutItemMapItemClipPathSettings.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -11,8 +10,13 @@ __date__ = '03/07/2020'
 __copyright__ = 'Copyright 2020, The QGIS Project'
 
 import qgis  # NOQA
-
-
+from qgis.PyQt.QtCore import (
+    QCoreApplication,
+    QEvent,
+    QRectF
+)
+from qgis.PyQt.QtTest import QSignalSpy
+from qgis.PyQt.QtXml import QDomDocument
 from qgis.core import (QgsLayoutItemMap,
                        QgsLayout,
                        QgsProject,
@@ -22,16 +26,9 @@ from qgis.core import (QgsLayoutItemMap,
                        QgsLayoutItemShape,
                        QgsReadWriteContext,
                        QgsRectangle)
-from qgis.PyQt.QtCore import (
-    QCoreApplication,
-    QEvent,
-    QRectF
-)
 from qgis.testing import start_app, unittest
-from utilities import unitTestDataPath
-from qgis.PyQt.QtTest import QSignalSpy
-from qgis.PyQt.QtXml import QDomDocument
 
+from utilities import unitTestDataPath
 
 start_app()
 TEST_DATA_DIR = unitTestDataPath()

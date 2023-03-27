@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS unit tests for QgsPalLabeling: label rendering output to map canvas
 
 From build dir, run: ctest -R PyQgsPalLabelingCanvas -V
@@ -15,24 +14,23 @@ __author__ = 'Larry Shaffer'
 __date__ = '07/09/2013'
 __copyright__ = 'Copyright 2013, The QGIS Project'
 
-import qgis  # NOQA
-
-import sys
 import os
-from qgis.PyQt.QtCore import qDebug, QThreadPool
-from qgis.core import QgsVectorLayerSimpleLabeling
+import sys
 
-from utilities import (
-    getTempfilePath,
-    renderMapToImage,
-    mapSettingsString
-)
+import qgis  # NOQA
+from qgis.PyQt.QtCore import qDebug
+from qgis.core import QgsVectorLayerSimpleLabeling
 
 from test_qgspallabeling_base import TestQgsPalLabeling, runSuite
 from test_qgspallabeling_tests import (
     TestPointBase,
     TestLineBase,
     suiteTests
+)
+from utilities import (
+    getTempfilePath,
+    renderMapToImage,
+    mapSettingsString
 )
 
 
@@ -54,7 +52,7 @@ class TestCanvasBase(TestQgsPalLabeling):
 
     def setUp(self):
         """Run before each test."""
-        super(TestCanvasBase, self).setUp()
+        super().setUp()
         self._TestImage = ''
         # ensure per test map settings stay encapsulated
         self._TestMapSettings = self.cloneMapSettings(self._MapSettings)
@@ -72,7 +70,7 @@ class TestCanvasBase(TestQgsPalLabeling):
             ms = self._TestMapSettings  # per test settings
             settings_type = 'Test'
         if 'PAL_VERBOSE' in os.environ:
-            qDebug('MapSettings type: {0}'.format(settings_type))
+            qDebug(f'MapSettings type: {settings_type}')
             qDebug(mapSettingsString(ms))
 
         img = renderMapToImage(ms, parallel=False)
@@ -110,7 +108,7 @@ class TestCanvasPoint(TestCanvasBasePoint, TestPointBase):
 
     def setUp(self):
         """Run before each test."""
-        super(TestCanvasPoint, self).setUp()
+        super().setUp()
         self.configTest('pal_canvas', 'sp')
 
 
@@ -126,7 +124,7 @@ class TestCanvasLine(TestCanvasBaseLine, TestLineBase):
 
     def setUp(self):
         """Run before each test."""
-        super(TestCanvasLine, self).setUp()
+        super().setUp()
         self.configTest('pal_canvas_line', 'sp')
 
 

@@ -27,6 +27,7 @@
 QgsGeorefTransform::QgsGeorefTransform( const QgsGeorefTransform &other )
 {
   setMethod( other.mTransformParametrisation );
+  mRasterChangeCoords = other.mRasterChangeCoords;
 }
 
 QgsGeorefTransform::QgsGeorefTransform( TransformMethod parametrisation )

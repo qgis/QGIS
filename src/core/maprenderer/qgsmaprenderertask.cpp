@@ -323,7 +323,7 @@ bool QgsMapRendererTask::run()
       if ( mSaveWorldFile || mExportMetadata )
       {
         CPLSetThreadLocalConfigOption( "GDAL_PDF_DPI", QString::number( mMapSettings.outputDpi() ).toLocal8Bit().constData() );
-        const gdal::dataset_unique_ptr outputDS( GDALOpen( mFileName.toLocal8Bit().constData(), GA_Update ) );
+        const gdal::dataset_unique_ptr outputDS( GDALOpen( mFileName.toUtf8().constData(), GA_Update ) );
         if ( outputDS )
         {
           if ( mSaveWorldFile )
@@ -385,7 +385,7 @@ bool QgsMapRendererTask::run()
     else if ( mFileFormat != QLatin1String( "PDF" ) )
     {
       QImageWriter writer( mFileName, mFileFormat.toLocal8Bit().data() );
-      if ( mFileFormat == QLatin1String( "TIF" ) || mFileFormat == QLatin1String( "TIFF" ) )
+      if ( mFileFormat.compare( QLatin1String( "TIF" ), Qt::CaseInsensitive ) == 0 || mFileFormat.compare( QLatin1String( "TIFF" ), Qt::CaseInsensitive ) == 0 )
       {
         // Enable LZW compression
         writer.setCompression( 1 );
@@ -404,9 +404,9 @@ bool QgsMapRendererTask::run()
         // build the world file name
         const QString outputSuffix = info.suffix();
         bool skipWorldFile = false;
-        if ( outputSuffix == QLatin1String( "tif" ) || outputSuffix == QLatin1String( "tiff" ) )
+        if ( outputSuffix.compare( QLatin1String( "TIF" ), Qt::CaseInsensitive ) == 0 || outputSuffix.compare( QLatin1String( "TIFF" ), Qt::CaseInsensitive ) == 0 )
         {
-          const gdal::dataset_unique_ptr outputDS( GDALOpen( mFileName.toLocal8Bit().constData(), GA_Update ) );
+          const gdal::dataset_unique_ptr outputDS( GDALOpen( mFileName.toUtf8().constData(), GA_Update ) );
           if ( outputDS )
           {
             skipWorldFile = true;

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsCombinedStyleModel
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -9,8 +8,6 @@ the Free Software Foundation; either version 2 of the License, or
 __author__ = 'Nyall Dawson'
 __date__ = '18/03/2022'
 __copyright__ = 'Copyright 2022, The QGIS Project'
-
-import os
 
 import qgis  # NOQA
 

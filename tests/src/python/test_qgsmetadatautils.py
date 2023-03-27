@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsMetadataUtils.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -33,7 +32,7 @@ class TestPyQgsMetadataUtils(unittest.TestCase):
         """
         src = TEST_DATA_DIR + '/esri_metadata.xml'
         doc = QDomDocument()
-        with open(src, 'rt') as f:
+        with open(src) as f:
             doc.setContent('\n'.join(f.readlines()))
 
         metadata = QgsMetadataUtils.convertFromEsri(doc)
@@ -84,7 +83,7 @@ class TestPyQgsMetadataUtils(unittest.TestCase):
         """
         src = TEST_DATA_DIR + '/esri_metadata2.xml'
         doc = QDomDocument()
-        with open(src, 'rt') as f:
+        with open(src) as f:
             doc.setContent('\n'.join(f.readlines()))
 
         metadata = QgsMetadataUtils.convertFromEsri(doc)

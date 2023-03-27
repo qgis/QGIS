@@ -1383,6 +1383,14 @@ void TestQgsProcessing::contextToProcessArguments()
     QStringLiteral( "--distance_units=meters" ), QStringLiteral( "--area_units=m2" ), QStringLiteral( "--ellipsoid=NONE" ),
     QStringLiteral( "--project_path=%1" ).arg( TEST_DATA_DIR + QStringLiteral( "/projects/custom_crs.qgs" ) )
   } ) );
+
+  QTemporaryDir tmpDir;
+  p.write( tmpDir.filePath( QStringLiteral( "project name with spaces.qgs" ) ) );
+  QCOMPARE( context2.asQgisProcessArguments( QgsProcessingContext::ProcessArgumentFlag::IncludeProjectPath ), QStringList(
+  {
+    QStringLiteral( "--distance_units=meters" ), QStringLiteral( "--area_units=m2" ), QStringLiteral( "--ellipsoid=NONE" ),
+    QStringLiteral( "--project_path='%1'" ).arg( p.fileName() )
+  } ) );
 }
 
 void TestQgsProcessing::contextToMap()

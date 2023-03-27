@@ -11,13 +11,11 @@
 ***************************************************************************
 """
 
-from qgis.PyQt.QtCore import QCoreApplication
-from qgis.core import (QgsProcessing,
-                       QgsFeatureSink,
-                       QgsProcessingException,
-                       QgsProcessingAlgorithm,
-                       QgsProcessingParameterString,
-                       QgsProcessingOutputString)
+from qgis.core import (
+    QgsProcessingAlgorithm,
+    QgsProcessingOutputString,
+    QgsProcessingParameterString,
+)
 
 
 class ConvertStringToUppercase(QgsProcessingAlgorithm):

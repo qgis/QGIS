@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsEllipsoidUtils
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -189,7 +188,7 @@ class TestQgsEllipsoidUtils(unittest.TestCase):
 
         # ensure that all old QGIS custom ellipsoid definitions map across to new PROJ6 ones
         for o in old_qgis_ellipsoids:
-            self.assertTrue(QgsEllipsoidUtils.ellipsoidParameters(o).valid, 'no defs for {}'.format(o))
+            self.assertTrue(QgsEllipsoidUtils.ellipsoidParameters(o).valid, f'no defs for {o}')
 
 
 if __name__ == '__main__':

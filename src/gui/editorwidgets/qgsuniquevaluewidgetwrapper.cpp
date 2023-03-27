@@ -51,7 +51,12 @@ QWidget *QgsUniqueValuesWidgetWrapper::createWidget( QWidget *parent )
   if ( config( QStringLiteral( "Editable" ) ).toBool() )
     return new QgsFilterLineEdit( parent );
   else
-    return new QComboBox( parent );
+  {
+    QComboBox *combo = new QComboBox( parent );
+    combo->setMinimumContentsLength( 1 );
+    combo->setSizeAdjustPolicy( QComboBox::SizeAdjustPolicy::AdjustToMinimumContentsLengthWithIcon );
+    return combo;
+  }
 }
 
 void QgsUniqueValuesWidgetWrapper::initWidget( QWidget *editor )

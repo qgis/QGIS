@@ -116,6 +116,8 @@ void QgsTemporalControllerDockWidget::exportAnimation()
     animationSettings.outputDirectory = outputDir;
     animationSettings.fileNameTemplate = fileNameExpression;
     animationSettings.decorations = decorations;
+    if ( frameDuration.originalUnit() == QgsUnitTypes::TemporalIrregularStep )
+      animationSettings.availableTemporalRanges = QgsTemporalUtils::usedTemporalRangesForProject( QgsProject::instance() );
 
     const bool success = QgsTemporalUtils::exportAnimation( s, animationSettings, error, &progressFeedback );
 

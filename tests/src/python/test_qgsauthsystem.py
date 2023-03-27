@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for bindings to core authentication system classes
 
 From build dir: LC_ALL=en_US.UTF-8 ctest -R PyQgsAuthenticationSystem -V
@@ -15,12 +14,13 @@ __copyright__ = 'Copyright 2014, Boundless Spatial, Inc.'
 import os
 import tempfile
 
-from qgis.core import QgsAuthCertUtils, QgsPkiBundle, QgsAuthMethodConfig, QgsAuthMethod, QgsAuthConfigSslServer, QgsApplication
-from qgis.gui import QgsAuthEditorWidgets
 from qgis.PyQt.QtCore import QFileInfo, qDebug
 from qgis.PyQt.QtNetwork import QSsl, QSslError, QSslCertificate, QSslSocket
 from qgis.PyQt.QtTest import QTest
 from qgis.PyQt.QtWidgets import QDialog, QDialogButtonBox, QVBoxLayout
+from qgis.core import QgsAuthCertUtils, QgsPkiBundle, QgsAuthMethodConfig, QgsAuthMethod, QgsAuthConfigSslServer, \
+    QgsApplication
+from qgis.gui import QgsAuthEditorWidgets
 from qgis.testing import start_app, unittest
 
 from utilities import unitTestDataPath
@@ -386,7 +386,7 @@ class TestQgsAuthManager(unittest.TestCase):
         for _ in range(50):
             # time.sleep(0.01)  # or else the salt is not random enough
             uids.append(self.authm.uniqueConfigId())
-        msg = 'Generated 50 config ids are not unique:\n{0}\n{1}'.format(
+        msg = 'Generated 50 config ids are not unique:\n{}\n{}'.format(
             uids,
             list(set(uids))
         )
@@ -451,65 +451,65 @@ class TestQgsAuthManager(unittest.TestCase):
         # these list items need to match the QgsAuthType provider type strings
         for kind in self.config_list():
             config = self.config_obj(kind, base=False)
-            msg = 'Could not validate {0} config'.format(kind)
+            msg = f'Could not validate {kind} config'
             self.assertTrue(config.isValid(), msg)
 
-            msg = 'Could not store {0} config'.format(kind)
+            msg = f'Could not store {kind} config'
             self.assertTrue(self.authm.storeAuthenticationConfig(config), msg)
 
             configid = config.id()
-            msg = 'Could not retrieve {0} config id from store op'.format(kind)
+            msg = f'Could not retrieve {kind} config id from store op'
             self.assertIsNotNone(configid, msg)
 
-            msg = 'Config id {0} not in db'.format(configid)
+            msg = f'Config id {configid} not in db'
             self.assertFalse(self.authm.configIdUnique(configid), msg)
 
-            msg = 'Could not retrieve {0} config id from db'.format(kind)
+            msg = f'Could not retrieve {kind} config id from db'
             self.assertTrue(configid in self.authm.configIds(), msg)
 
-            msg = 'Could not retrieve method key for {0} config'.format(kind)
+            msg = f'Could not retrieve method key for {kind} config'
             self.assertTrue(
                 self.authm.configAuthMethodKey(configid) == kind, msg)
 
-            msg = 'Could not retrieve method ptr for {0} config'.format(kind)
+            msg = f'Could not retrieve method ptr for {kind} config'
             self.assertTrue(
                 isinstance(self.authm.configAuthMethod(configid),
                            QgsAuthMethod), msg)
 
             config2 = self.config_obj(kind, base=True)
-            msg = 'Could not load {0} config'.format(kind)
+            msg = f'Could not load {kind} config'
             self.assertTrue(
                 self.authm.loadAuthenticationConfig(configid, config2, True),
                 msg)
 
-            msg = 'Could not validate loaded {0} config values'.format(kind)
+            msg = f'Could not validate loaded {kind} config values'
             self.assertTrue(self.config_values_valid(kind, config2), msg)
 
             # values haven't been changed, but the db update still takes place
-            msg = 'Could not update {0} config values'.format(kind)
+            msg = f'Could not update {kind} config values'
             self.assertTrue(self.authm.updateAuthenticationConfig(config2), msg)
 
             config3 = self.config_obj(kind, base=True)
-            msg = 'Could not load updated {0} config'.format(kind)
+            msg = f'Could not load updated {kind} config'
             self.assertTrue(
                 self.authm.loadAuthenticationConfig(configid, config3, True),
                 msg)
 
-            msg = 'Could not validate updated {0} config values'.format(kind)
+            msg = f'Could not validate updated {kind} config values'
             self.assertTrue(self.config_values_valid(kind, config3), msg)
 
-            msg = 'Could not remove {0} config (by id) from db'.format(kind)
+            msg = f'Could not remove {kind} config (by id) from db'
             self.assertTrue(
                 self.authm.removeAuthenticationConfig(configid), msg)
 
-            msg = 'Did not remove {0} config id from db'.format(kind)
+            msg = f'Did not remove {kind} config id from db'
             self.assertFalse(configid in self.authm.configIds(), msg)
 
     def test_100_auth_db(self):
 
         for kind in self.config_list():
             config = self.config_obj(kind, base=False)
-            msg = 'Could not store {0} config'.format(kind)
+            msg = f'Could not store {kind} config'
             self.assertTrue(self.authm.storeAuthenticationConfig(config), msg)
 
         msg = 'Could not store a sample of all configs in auth db'

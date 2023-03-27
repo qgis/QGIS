@@ -428,7 +428,7 @@ bool QgsAlignRaster::createAndWarp( const Item &raster )
   }
 
   // Open the source file.
-  const gdal::dataset_unique_ptr hSrcDS( GDALOpen( raster.inputFilename.toLocal8Bit().constData(), GA_ReadOnly ) );
+  const gdal::dataset_unique_ptr hSrcDS( GDALOpen( raster.inputFilename.toUtf8().constData(), GA_ReadOnly ) );
   if ( !hSrcDS )
   {
     mErrorMessage = QObject::tr( "Unable to open input file: %1" ).arg( raster.inputFilename );
@@ -441,7 +441,7 @@ bool QgsAlignRaster::createAndWarp( const Item &raster )
   const GDALDataType eDT = GDALGetRasterDataType( GDALGetRasterBand( hSrcDS.get(), 1 ) );
 
   // Create the output file.
-  const gdal::dataset_unique_ptr hDstDS( GDALCreate( hDriver, raster.outputFilename.toLocal8Bit().constData(), mXSize, mYSize,
+  const gdal::dataset_unique_ptr hDstDS( GDALCreate( hDriver, raster.outputFilename.toUtf8().constData(), mXSize, mYSize,
                                          bandCount, eDT, nullptr ) );
   if ( !hDstDS )
   {
@@ -550,7 +550,7 @@ bool QgsAlignRaster::suggestedWarpOutput( const QgsAlignRaster::RasterInfo &info
 
 QgsAlignRaster::RasterInfo::RasterInfo( const QString &layerpath )
 {
-  mDataset.reset( GDALOpen( layerpath.toLocal8Bit().constData(), GA_ReadOnly ) );
+  mDataset.reset( GDALOpen( layerpath.toUtf8().constData(), GA_ReadOnly ) );
   if ( !mDataset )
     return;
 

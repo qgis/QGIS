@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsMapLayerProxyModel
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -17,10 +16,8 @@ from qgis.core import (
     QgsMeshLayer,
     QgsAnnotationLayer,
     QgsProject,
-    QgsMapLayerModel,
     QgsMapLayerProxyModel
 )
-from qgis.PyQt.QtCore import Qt, QModelIndex
 
 from qgis.testing import start_app, unittest
 

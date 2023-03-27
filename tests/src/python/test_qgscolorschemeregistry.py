@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsColorSchemeRegistry.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -11,9 +10,8 @@ __date__ = '25/07/2014'
 __copyright__ = 'Copyright 2014, The QGIS Project'
 
 import qgis  # NOQA
-
-from qgis.testing import start_app, unittest
 from qgis.core import QgsColorSchemeRegistry, QgsRecentColorScheme, QgsApplication, QgsColorScheme
+from qgis.testing import start_app, unittest
 
 start_app()
 

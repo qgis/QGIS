@@ -148,6 +148,14 @@ void TestQgsHttpheaders::createQgsOwsConnection()
   QgsDataSourceUri uri( QString( "https://www.ogc.org/?p1=v1" ) );
   QgsDataSourceUri uri2 = ows.addWmsWcsConnectionSettings( uri, "service", "name" );
   QCOMPARE( uri2.encodedUri(), "https://www.ogc.org/?p1=v1&http-header:other_http_header=value&http-header:referer=http://test.com" );
+
+  // check space separated string
+  QCOMPARE( uri2.uri(), " https://www.ogc.org/?p1='v1' http-header:other_http_header='value' http-header:referer='http://test.com' referer='http://test.com'" );
+  // build new QgsDataSourceUri according to space separated string
+  QgsDataSourceUri uri3( uri2.uri() );
+  QCOMPARE( uri3.httpHeader( QgsHttpHeaders::KEY_REFERER ), "http://test.com" );
+  QCOMPARE( uri3.httpHeader( "other_http_header" ), "value" );
+  QCOMPARE( uri3.encodedUri(), "https://www.ogc.org/?p1=v1&referer=http://test.com&http-header:other_http_header=value&http-header:referer=http://test.com" );
 }
 
 

@@ -65,6 +65,7 @@ class TestQgsGdalProvider : public QgsTest
     void bandName(); // test band name based on `gtiff` tags (#7317)
     void bandNameNoDescription(); // test band name for when no description or tags available (#16047)
     void bandNameWithDescription(); // test band name for when description available (#16047)
+    void colorTable();
     void interactionBetweenRasterChangeAndCache(); // test that updading a raster invalidates the GDAL dataset cache (#20104)
     void scale0(); //test when data has scale 0 (#20493)
     void transformCoordinates();
@@ -351,6 +352,18 @@ void TestQgsGdalProvider::bandNameWithDescription()
   QgsRasterDataProvider *rp = dynamic_cast< QgsRasterDataProvider * >( provider );
   QVERIFY( rp );
   QCOMPARE( rp->generateBandName( 1 ), QStringLiteral( "Band 1: 1.234 um" ) );
+  delete provider;
+}
+
+void TestQgsGdalProvider::colorTable()
+{
+  const QString raster = QStringLiteral( TEST_DATA_DIR ) + "/raster/band1_byte_ct_epsg4326.tif";
+  QgsDataProvider *provider = QgsProviderRegistry::instance()->createProvider( QStringLiteral( "gdal" ), raster, QgsDataProvider::ProviderOptions() );
+  QgsRasterDataProvider *rp = dynamic_cast< QgsRasterDataProvider * >( provider );
+  QVERIFY( rp );
+  QCOMPARE( rp->colorTable( 1 ).size(), 256 );
+  // invalid band
+  QVERIFY( rp->colorTable( 2 ).isEmpty() );
   delete provider;
 }
 

@@ -680,7 +680,7 @@ Set maximum concurrent thread count
 
 .. note::
 
-   must be between 1 and \#cores, -1 means use all available cores
+   must be between 2 and \#cores, -1 means use all available cores
 
 .. versionadded:: 2.4
 %End

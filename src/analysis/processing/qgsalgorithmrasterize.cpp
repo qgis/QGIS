@@ -162,7 +162,7 @@ QVariantMap QgsRasterizeAlgorithm::processAlgorithm( const QVariantMap &paramete
     throw QgsProcessingException( QObject::tr( "Error creating GDAL driver" ) );
   }
 
-  gdal::dataset_unique_ptr hOutputDataset( GDALCreate( hOutputFileDriver, outputLayerFileName.toLocal8Bit().constData(), width, height, nBands, GDALDataType::GDT_Byte, nullptr ) );
+  gdal::dataset_unique_ptr hOutputDataset( GDALCreate( hOutputFileDriver, outputLayerFileName.toUtf8().constData(), width, height, nBands, GDALDataType::GDT_Byte, nullptr ) );
   if ( !hOutputDataset )
   {
     throw QgsProcessingException( QObject::tr( "Error creating GDAL output layer" ) );

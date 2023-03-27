@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for the attribute table model.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -13,10 +12,9 @@ __copyright__ = 'Copyright 2015, The QGIS Project'
 
 import os
 
-from qgis.gui import (
-    QgsAttributeTableModel,
-    QgsGui
-)
+from qgis.PyQt.QtCore import Qt, QTemporaryDir, QVariant
+from qgis.PyQt.QtGui import QColor
+from qgis.PyQt.QtTest import QSignalSpy
 from qgis.core import (
     QgsProject,
     Qgis,
@@ -30,13 +28,12 @@ from qgis.core import (
     QgsMemoryProviderUtils,
     QgsField,
     QgsFields,
-    QgsWkbTypes,
     QgsFeatureRequest
 )
-from qgis.PyQt.QtCore import Qt, QTemporaryDir, QVariant
-from qgis.PyQt.QtGui import QColor
-from qgis.PyQt.QtTest import QSignalSpy
-
+from qgis.gui import (
+    QgsAttributeTableModel,
+    QgsGui
+)
 from qgis.testing import (start_app,
                           unittest
                           )
@@ -251,10 +248,10 @@ class TestQgsAttributeTableModel(unittest.TestCase):
 
         err = QgsVectorLayerExporter.exportLayer(vl, tmpfile, "ogr", vl.crs(), False, options)
         self.assertEqual(err[0], QgsVectorLayerExporter.NoError,
-                         'unexpected import error {0}'.format(err))
+                         f'unexpected import error {err}')
 
         vl = QgsVectorLayer(
-            'dbname=\'{}\' table="test" () sql='.format(tmpfile), 'test', 'spatialite')
+            f'dbname=\'{tmpfile}\' table="test" () sql=', 'test', 'spatialite')
 
         self.assertTrue(vl.isValid())
 

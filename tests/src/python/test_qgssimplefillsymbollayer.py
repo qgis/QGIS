@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 ***************************************************************************
     test_qgssimplefillsymbollayer.py
@@ -21,14 +19,11 @@ __author__ = 'Nyall Dawson'
 __date__ = 'September 2020'
 __copyright__ = '(C) 2020, Nyall Dawson'
 
-import qgis  # NOQA
 import os
 
-from utilities import unitTestDataPath
-
+import qgis  # NOQA
 from qgis.PyQt.QtCore import QDir, QPointF, Qt, QSize
 from qgis.PyQt.QtGui import QImage, QColor, QPainter
-
 from qgis.core import (QgsGeometry,
                        QgsFillSymbol,
                        QgsRenderContext,
@@ -44,8 +39,9 @@ from qgis.core import (QgsGeometry,
                        QgsMultiRenderChecker,
                        QgsSymbol
                        )
-
 from qgis.testing import unittest, start_app
+
+from utilities import unitTestDataPath
 
 start_app()
 TEST_DATA_DIR = unitTestDataPath()
@@ -221,7 +217,7 @@ class TestQgsSimpleFillSymbolLayer(unittest.TestCase):
         return image
 
     def imageCheck(self, name, reference_image, image):
-        TestQgsSimpleFillSymbolLayer.report += "<h2>Render {}</h2>\n".format(name)
+        TestQgsSimpleFillSymbolLayer.report += f"<h2>Render {name}</h2>\n"
         temp_dir = QDir.tempPath() + '/'
         file_name = temp_dir + 'symbol_' + name + ".png"
         image.save(file_name, "PNG")
@@ -232,7 +228,7 @@ class TestQgsSimpleFillSymbolLayer(unittest.TestCase):
         checker.setColorTolerance(2)
         result = checker.compareImages(name, 20)
         TestQgsSimpleFillSymbolLayer.report += checker.report()
-        print((TestQgsSimpleFillSymbolLayer.report))
+        print(TestQgsSimpleFillSymbolLayer.report)
         return result
 
 

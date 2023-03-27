@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsLogger.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -10,10 +9,10 @@ __author__ = 'Tim Sutton'
 __date__ = '20/08/2012'
 __copyright__ = 'Copyright 2012, The QGIS Project'
 
-import qgis  # NOQA
-
-import tempfile
 import os
+import tempfile
+
+import qgis  # NOQA
 
 (myFileHandle, myFilename) = tempfile.mkstemp()
 os.environ['QGIS_DEBUG'] = '2'
@@ -40,7 +39,7 @@ class TestQgsLogger(unittest.TestCase):
             myLogger.warning('This is a warning')
             myLogger.critical('This is critical')
             # myLogger.fatal('Aaaargh...fatal');  #kills QGIS not testable
-            myFile = open(myFilename, 'rt')
+            myFile = open(myFilename)
             myText = myFile.readlines()
             myFile.close()
             myExpectedText = ['QGIS Logger Unit Test\n',

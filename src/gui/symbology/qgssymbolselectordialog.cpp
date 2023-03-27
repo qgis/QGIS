@@ -457,7 +457,7 @@ void QgsSymbolSelectorWidget::updatePreview()
     return;
 
   std::unique_ptr< QgsSymbol > symbolClone( mSymbol->clone() );
-  const QImage preview = symbolClone->bigSymbolPreviewImage( &mPreviewExpressionContext, Qgis::SymbolPreviewFlags() );
+  const QImage preview = symbolClone->bigSymbolPreviewImage( &mPreviewExpressionContext, Qgis::SymbolPreviewFlag::FlagIncludeCrosshairsForMarkerSymbols );
   lblPreview->setPixmap( QPixmap::fromImage( preview ) );
   // Hope this is a appropriate place
   if ( !mBlockModified )

@@ -32,6 +32,7 @@
 #include <QTextCodec>
 #include <QSpinBox>
 #include <QRegularExpression>
+#include <limits>
 #include "gdal.h"
 #include "qgsdatums.h"
 #include "qgsiconutils.h"
@@ -246,6 +247,7 @@ QList<QPair<QLabel *, QWidget *> > QgsVectorLayerSaveAsDialog::createControls( c
         {
           QSpinBox *sb = new QSpinBox();
           sb->setObjectName( it.key() );
+          sb->setMaximum( std::numeric_limits<int>::max() ); // the default is 99
           sb->setValue( opt->defaultValue );
           control = sb;
         }
@@ -492,6 +494,7 @@ void QgsVectorLayerSaveAsDialog::mFormatComboBox_currentIndexChanged( int idx )
                            sFormat == QLatin1String( "XLSX" ) ||
                            sFormat == QLatin1String( "ODS" ) ||
                            sFormat == QLatin1String( "FileGDB" ) ||
+                           sFormat == QLatin1String( "OpenFileGDB" ) ||
                            sFormat == QLatin1String( "SQLite" ) ||
                            sFormat == QLatin1String( "SpatiaLite" ) );
 

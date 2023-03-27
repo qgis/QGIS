@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for the DBManager SQL Window
 
 From build dir, run: ctest -R PyQgsDBManagerSQLWindow -V
@@ -12,8 +11,8 @@ __author__ = 'Stephen Knox'
 __date__ = '2019-08-27'
 __copyright__ = 'Copyright 2019, Stephen Knox'
 
-from qgis.testing import unittest
 from plugins.db_manager.dlg_sql_window import check_comments_in_sql
+from qgis.testing import unittest
 
 
 class TestPyQgsDBManagerSQLWindow(unittest.TestCase):

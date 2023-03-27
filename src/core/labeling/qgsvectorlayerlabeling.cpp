@@ -501,18 +501,34 @@ void QgsAbstractVectorLayerLabeling::writeTextSymbolizer( QDomNode &parent, QgsP
     const QDomElement vo =  QgsSymbolLayerUtils::createVendorOptionElement( doc, QStringLiteral( "maxDisplacement" ), qgsDoubleToString( maxDisplacement, 2 ) );
     textSymbolizerElement.appendChild( vo );
   }
-  if ( settings.placement == Qgis::LabelPlacement::Curved || settings.placement == Qgis::LabelPlacement::PerimeterCurved )
+
+  switch ( settings.placement )
   {
-    const QDomElement vo =  QgsSymbolLayerUtils::createVendorOptionElement( doc, QStringLiteral( "followLine" ), QStringLiteral( "true" ) );
-    textSymbolizerElement.appendChild( vo );
-    if ( settings.maxCurvedCharAngleIn > 0 || settings.maxCurvedCharAngleOut > 0 )
+    case Qgis::LabelPlacement::Curved:
+    case Qgis::LabelPlacement::PerimeterCurved:
     {
-      // SLD has no notion for this, the GeoTools ecosystem can only do a single angle
-      const double angle = std::min( std::fabs( settings.maxCurvedCharAngleIn ), std::fabs( settings.maxCurvedCharAngleOut ) );
-      const QDomElement vo =  QgsSymbolLayerUtils::createVendorOptionElement( doc, QStringLiteral( "maxAngleDelta" ), qgsDoubleToString( angle ) );
+      const QDomElement vo =  QgsSymbolLayerUtils::createVendorOptionElement( doc, QStringLiteral( "followLine" ), QStringLiteral( "true" ) );
       textSymbolizerElement.appendChild( vo );
+      if ( settings.maxCurvedCharAngleIn > 0 || settings.maxCurvedCharAngleOut > 0 )
+      {
+        // SLD has no notion for this, the GeoTools ecosystem can only do a single angle
+        const double angle = std::min( std::fabs( settings.maxCurvedCharAngleIn ), std::fabs( settings.maxCurvedCharAngleOut ) );
+        const QDomElement vo =  QgsSymbolLayerUtils::createVendorOptionElement( doc, QStringLiteral( "maxAngleDelta" ), qgsDoubleToString( angle ) );
+        textSymbolizerElement.appendChild( vo );
+      }
+      break;
     }
+
+    case Qgis::LabelPlacement::AroundPoint:
+    case Qgis::LabelPlacement::OverPoint:
+    case Qgis::LabelPlacement::Line:
+    case Qgis::LabelPlacement::Horizontal:
+    case Qgis::LabelPlacement::Free:
+    case Qgis::LabelPlacement::OrderedPositionsAroundPoint:
+    case Qgis::LabelPlacement::OutsidePolygons:
+      break;
   }
+
   if ( repeatDistance > 0 )
   {
     const QDomElement vo =  QgsSymbolLayerUtils::createVendorOptionElement( doc, QStringLiteral( "repeat" ), qgsDoubleToString( repeatDistance, 2 ) );

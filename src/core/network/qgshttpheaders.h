@@ -175,6 +175,13 @@ class CORE_EXPORT QgsHttpHeaders
     QgsHttpHeaders &operator = ( const QMap<QString, QVariant> &headers ) SIP_SKIP;
 
     /**
+     * \brief insert a \a key with the specific \a value
+     * \param key a key to add
+     * \param value a value to add for the key
+     */
+    void insert( const QString &key, const QVariant &value );
+
+    /**
      * \return the list of all http header keys
      */
     QList<QString> keys() const;

@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 
 From build dir, run: ctest -R PyQgsServerServices -V
@@ -27,13 +25,12 @@ __copyright__ = '(C) 2016, David Marteau'
 """ QGIS test for server services
 """
 from qgis.PyQt.QtCore import QBuffer, QIODevice, QTextStream
-from qgis.testing import unittest
+from qgis.core import QgsApplication
 from qgis.server import (QgsServiceRegistry,
                          QgsService,
                          QgsServerRequest,
                          QgsServerResponse)
-
-from qgis.core import QgsApplication
+from qgis.testing import unittest
 
 
 class Response(QgsServerResponse):

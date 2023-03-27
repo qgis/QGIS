@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsRasterFileWriter.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -10,12 +9,11 @@ __author__ = 'Radim Blazek'
 __date__ = '20/08/2012'
 __copyright__ = 'Copyright 2012, The QGIS Project'
 
-import qgis  # NOQA
-
-import os
 import glob
+import os
 import tempfile
 
+import qgis  # NOQA
 from osgeo import gdal
 from qgis.PyQt.QtCore import QTemporaryFile, QDir
 from qgis.core import (QgsContrastEnhancement,
@@ -26,8 +24,8 @@ from qgis.core import (QgsContrastEnhancement,
                        QgsRasterFileWriter,
                        QgsRasterProjector,
                        QgsRectangle)
-
 from qgis.testing import start_app, unittest
+
 from utilities import unitTestDataPath
 
 start_app()
@@ -43,7 +41,7 @@ class TestQgsRasterFileWriter(unittest.TestCase):
     def write(self, theRasterName):
         print(theRasterName)
 
-        path = "%s/%s" % (self.testDataDir, theRasterName)
+        path = f"{self.testDataDir}/{theRasterName}"
         rasterLayer = QgsRasterLayer(path, "test")
         if not rasterLayer.isValid():
             return False

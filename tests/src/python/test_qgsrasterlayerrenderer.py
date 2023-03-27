@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsRasterLayerRenderer
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -10,23 +9,20 @@ __author__ = 'Nyall Dawson'
 __date__ = '2020-06'
 __copyright__ = 'Copyright 2020, The QGIS Project'
 
-import qgis  # NOQA
-
 import os
 
+import qgis  # NOQA
 from qgis.PyQt.QtCore import QSize, QDir
-
 from qgis.core import (QgsRasterLayer,
                        QgsMapClippingRegion,
                        QgsRectangle,
                        QgsMultiRenderChecker,
                        QgsGeometry,
-                       QgsSingleSymbolRenderer,
                        QgsMapSettings,
-                       QgsFillSymbol,
                        QgsCoordinateReferenceSystem
                        )
 from qgis.testing import start_app, unittest
+
 from utilities import (unitTestDataPath)
 
 # Convenience instances in case you may need them

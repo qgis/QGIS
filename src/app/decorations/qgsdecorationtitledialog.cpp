@@ -140,5 +140,5 @@ void QgsDecorationTitleDialog::apply()
 
 void QgsDecorationTitleDialog::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "introduction/general_tools.html#title_label_decoration" ) );
+  QgsHelp::openHelp( QStringLiteral( "map_views/map_view.html#titlelabel-decoration" ) );
 }

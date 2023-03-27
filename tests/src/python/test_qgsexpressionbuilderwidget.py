@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsExpressionBuilderWidget
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -11,18 +10,17 @@ __date__ = '30/07/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
 
 import qgis  # NOQA
-
 from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtWidgets import QListView
-from qgis.testing import start_app, unittest
-from qgis.gui import QgsExpressionBuilderWidget
 from qgis.core import (QgsExpressionContext,
                        QgsExpressionContextScope,
                        QgsProject,
                        QgsVectorLayer,
                        QgsRelation,
-                       QgsFeature,
-                       QgsGeometry)
+                       QgsFeature)
+from qgis.gui import QgsExpressionBuilderWidget
+from qgis.testing import start_app, unittest
+
 start_app()
 
 

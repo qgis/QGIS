@@ -88,7 +88,7 @@ QString QgsMeshSelectByExpressionDialog::expression() const
 
 void QgsMeshSelectByExpressionDialog::showHelp() const
 {
-  QgsHelp::openHelp( QStringLiteral( "introduction/general_tools.html" ) );
+  QgsHelp::openHelp( QStringLiteral( "working_with_mesh/mesh_properties.html#select-mesh-elements" ) );
 }
 
 void QgsMeshSelectByExpressionDialog::saveRecent() const

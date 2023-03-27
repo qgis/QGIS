@@ -434,7 +434,7 @@ QgsSvgSelectorWidget::QgsSvgSelectorWidget( QWidget *parent )
       mParametersModel->removeParameters( selectedRows );
   } );
 
-  connect( mSourceLineEdit, &QgsPictureSourceLineEditBase::sourceChanged, this, &QgsSvgSelectorWidget::svgSelected );
+  connect( mSourceLineEdit, &QgsPictureSourceLineEditBase::sourceChanged, this, &QgsSvgSelectorWidget::updateCurrentSvgPath );
 }
 
 void QgsSvgSelectorWidget::initParametersModel( const QgsExpressionContextGenerator *generator, QgsVectorLayer *layer )

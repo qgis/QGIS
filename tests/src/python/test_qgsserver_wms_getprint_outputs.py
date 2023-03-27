@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsServer WMS GetPrint.
 
 From build dir, run: ctest -R PyQgsServerWMSGetPrintOutputs -V
@@ -24,7 +23,7 @@ import urllib.parse
 from qgis.testing import unittest
 from qgis.PyQt.QtCore import QSize, Qt
 from qgis.PyQt.QtGui import QImage, QPainter
-from qgis.PyQt.QtSvg import QSvgRenderer, QSvgGenerator
+from qgis.PyQt.QtSvg import QSvgRenderer
 
 import osgeo.gdal  # NOQA
 import tempfile
@@ -78,14 +77,14 @@ class PyQgsServerWMSGetPrintOutputs(QgsServerTestBase):
         else:
             return False, ''
 
-        print("exportToPdf call: {0}".format(' '.join(call)))
+        print("exportToPdf call: {}".format(' '.join(call)))
         try:
             subprocess.check_call(call)
         except subprocess.CalledProcessError as e:
             assert False, ("exportToPdf failed!\n"
-                           "cmd: {0}\n"
-                           "returncode: {1}\n"
-                           "message: {2}".format(e.cmd, e.returncode, e.message))
+                           "cmd: {}\n"
+                           "returncode: {}\n"
+                           "message: {}".format(e.cmd, e.returncode, e.message))
 
     def _pdf_diff(self, pdf, control_image, max_diff, max_size_diff=QSize(), dpi=96):
 
@@ -113,25 +112,25 @@ class PyQgsServerWMSGetPrintOutputs(QgsServerTestBase):
 
         self.assertEqual(
             headers.get("Content-Type"), 'application/pdf',
-            "Content type is wrong: %s instead of %s\n%s" % (headers.get("Content-Type"), 'application/pdf', response))
+            "Content type is wrong: {} instead of {}\n{}".format(headers.get("Content-Type"), 'application/pdf', response))
 
         test, report = self._pdf_diff(response, image, max_diff, max_size_diff, dpi)
 
         with open(os.path.join(tempfile.gettempdir(), image + "_result.pdf"), "rb") as rendered_file:
             if not os.environ.get('ENCODED_OUTPUT'):
-                message = "PDF is wrong: rendered file %s/%s_result.%s" % (tempfile.gettempdir(), image, 'pdf')
+                message = "PDF is wrong: rendered file {}/{}_result.{}".format(tempfile.gettempdir(), image, 'pdf')
             else:
                 encoded_rendered_file = base64.b64encode(rendered_file.read())
-                message = "PDF is wrong\n%sFile:\necho '%s' | base64 -d >%s/%s_result.%s" % (
+                message = "PDF is wrong\n{}File:\necho '{}' | base64 -d >{}/{}_result.{}".format(
                     report, encoded_rendered_file.strip().decode('utf8'), tempfile.gettempdir(), image, 'pdf'
                 )
 
         with open(os.path.join(tempfile.gettempdir(), image + "_result.png"), "rb") as rendered_file:
             if not os.environ.get('ENCODED_OUTPUT'):
-                message = "Image is wrong: rendered file %s/%s_result.%s" % (tempfile.gettempdir(), image, 'png')
+                message = "Image is wrong: rendered file {}/{}_result.{}".format(tempfile.gettempdir(), image, 'png')
             else:
                 encoded_rendered_file = base64.b64encode(rendered_file.read())
-                message = "Image is wrong\n%s\nImage:\necho '%s' | base64 -d >%s/%s_result.%s" % (
+                message = "Image is wrong\n{}\nImage:\necho '{}' | base64 -d >{}/{}_result.{}".format(
                     report, encoded_rendered_file.strip().decode('utf8'), tempfile.gettempdir(), image, 'png'
                 )
 
@@ -139,10 +138,10 @@ class PyQgsServerWMSGetPrintOutputs(QgsServerTestBase):
         if os.path.exists(os.path.join(tempfile.gettempdir(), image + "_result_diff.png")):
             with open(os.path.join(tempfile.gettempdir(), image + "_result_diff.png"), "rb") as diff_file:
                 if not os.environ.get('ENCODED_OUTPUT'):
-                    message = "Image is wrong: diff file %s/%s_result_diff.%s" % (tempfile.gettempdir(), image, 'png')
+                    message = "Image is wrong: diff file {}/{}_result_diff.{}".format(tempfile.gettempdir(), image, 'png')
                 else:
                     encoded_diff_file = base64.b64encode(diff_file.read())
-                    message += "\nDiff:\necho '%s' | base64 -d > %s/%s_result_diff.%s" % (
+                    message += "\nDiff:\necho '{}' | base64 -d > {}/{}_result_diff.{}".format(
                         encoded_diff_file.strip().decode('utf8'), tempfile.gettempdir(), image, 'png'
                     )
 

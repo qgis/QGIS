@@ -150,7 +150,7 @@ void QgsDecorationGridDialog::updateDecoFromGui()
 
 void QgsDecorationGridDialog::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "introduction/general_tools.html#grid" ) );
+  QgsHelp::openHelp( QStringLiteral( "map_views/map_view.html#grid-decoration" ) );
 }
 
 void QgsDecorationGridDialog::buttonBox_accepted()

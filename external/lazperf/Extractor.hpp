@@ -36,6 +36,7 @@
 
 #include <cstring>
 #include <vector>
+#include <cstdint>
 
 #include "portable_endian.hpp"
 

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsProjectTimeSettings.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -11,20 +10,17 @@ __date__ = '6/3/2020'
 __copyright__ = 'Copyright 2020, The QGIS Project'
 
 import qgis  # NOQA
-
-from qgis.core import (QgsProject,
-                       QgsUnitTypes,
-                       QgsProjectTimeSettings,
-                       QgsReadWriteContext,
-                       QgsDateTimeRange)
-
 from qgis.PyQt.QtCore import (QDate,
                               QTime,
                               QDateTime)
-
 from qgis.PyQt.QtTest import QSignalSpy
-from qgis.PyQt.QtXml import QDomDocument, QDomElement
+from qgis.PyQt.QtXml import QDomDocument
+from qgis.core import (QgsUnitTypes,
+                       QgsProjectTimeSettings,
+                       QgsReadWriteContext,
+                       QgsDateTimeRange)
 from qgis.testing import start_app, unittest
+
 from utilities import (unitTestDataPath)
 
 app = start_app()

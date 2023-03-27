@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsProviderSourceWidgetProviderRegistry
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -14,7 +13,6 @@ import qgis  # NOQA
 
 from qgis.core import QgsVectorLayer
 from qgis.gui import (QgsGui,
-                      QgsQueryBuilder,
                       QgsProviderSourceWidget,
                       QgsProviderSourceWidgetProvider)
 from qgis.testing import start_app, unittest

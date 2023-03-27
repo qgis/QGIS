@@ -1248,10 +1248,19 @@ bool QgsGeometry::intersects( const QgsRectangle &r ) const
   if ( !boundingBoxIntersects( r ) )
     return false;
 
+  const QgsWkbTypes::Type flatType { QgsWkbTypes::flatType( d->geometry->wkbType() ) };
   // optimise trivial case for point intersections -- the bounding box test has already given us the answer
-  if ( QgsWkbTypes::flatType( d->geometry->wkbType() ) == QgsWkbTypes::Point )
+  if ( flatType == QgsWkbTypes::Point )
   {
     return true;
+  }
+
+  // Workaround for issue issue GH #51429
+  // in case of multi polygon, intersection with an empty rect fails
+  if ( flatType == QgsWkbTypes::MultiPolygon && r.isEmpty() )
+  {
+    const QgsPointXY center { r.xMinimum(), r.yMinimum() };
+    return contains( QgsGeometry::fromPointXY( center ) );
   }
 
   QgsGeometry g = fromRect( r );

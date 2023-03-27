@@ -56,6 +56,12 @@ QList<QgsColorRampShader::ColorRampItem> QgsGdalProviderBase::colorTable( GDALDa
   }
 
   GDALRasterBandH myGdalBand = GDALGetRasterBand( gdalDataset, bandNumber );
+  if ( ! myGdalBand )
+  {
+    QgsDebugMsg( QStringLiteral( "Could not get raster band %1" ).arg( bandNumber ) );
+    return ct;
+  }
+
   GDALColorTableH myGdalColorTable = GDALGetRasterColorTable( myGdalBand );
 
   if ( myGdalColorTable )
@@ -152,6 +158,11 @@ Qgis::DataType QgsGdalProviderBase::dataTypeFromGdal( const GDALDataType gdalDat
 {
   switch ( gdalDataType )
   {
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,7,0)
+    case GDT_Int8:
+      // Promote to Int16 due to lack of native Qgis data type for Int8
+      return Qgis::DataType::Int16;
+#endif
     case GDT_Byte:
       return Qgis::DataType::Byte;
     case GDT_UInt16:

@@ -240,23 +240,23 @@ QgsVectorLayer *QgsOracleProviderConnection::createSqlVectorLayer( const QgsAbst
               break;
             // 3K...
             case 3001:
-              geomType = QgsWkbTypes::Point25D;
+              geomType = QgsWkbTypes::PointZ;
               break;
             case 3002:
-              geomType = QgsWkbTypes::LineString25D;
+              geomType = QgsWkbTypes::LineStringZ;
               break;
             case 3003:
-              geomType = QgsWkbTypes::Polygon25D;
+              geomType = QgsWkbTypes::PolygonZ;
               break;
             // Note: 3004 is missing
             case 3005:
-              geomType = QgsWkbTypes::MultiPoint25D;
+              geomType = QgsWkbTypes::MultiPointZ;
               break;
             case 3006:
-              geomType = QgsWkbTypes::MultiLineString25D;
+              geomType = QgsWkbTypes::MultiLineStringZ;
               break;
             case 3007:
-              geomType = QgsWkbTypes::MultiPolygon25D;
+              geomType = QgsWkbTypes::MultiPolygonZ;
               break;
             default:
               geomType = QgsWkbTypes::Type::Unknown;

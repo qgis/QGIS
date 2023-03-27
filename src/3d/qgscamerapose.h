@@ -94,7 +94,16 @@ class _3D_EXPORT QgsCameraPose
     //! distance of camera from the point it is looking at
     float mDistanceFromCenterPoint = 1000;
     //! aircraft nose up/down (0 = looking straight down to the plane). angle in degrees
-    float mPitchAngle = 0;
+    // prevent bug in QgsCameraPose::updateCamera when updating camera rotation.
+    // With a mPitchAngle < 0.2 or > 179.8, QQuaternion::fromEulerAngles( mPitchAngle, mHeadingAngle, 0 )
+    // will return bad rotation angle.
+    // See https://bugreports.qt.io/browse/QTBUG-72103
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+    float mPitchAngle = 0.2f;
+#else
+    float mPitchAngle = 0.0f;
+#endif
+
     //! aircraft nose left/right. angle in degrees
     float mHeadingAngle = 0;
 };

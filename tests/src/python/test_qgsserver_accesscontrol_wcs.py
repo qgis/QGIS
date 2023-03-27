@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsServer.
 
 From build dir, run: ctest -R PyQgsServerAccessControlWCS -V
@@ -12,10 +11,12 @@ __author__ = 'Stephane Brunner'
 __date__ = '28/08/2015'
 __copyright__ = 'Copyright 2015, The QGIS Project'
 
-from qgis.testing import unittest
-import urllib.request
-import urllib.parse
 import urllib.error
+import urllib.parse
+import urllib.request
+
+from qgis.testing import unittest
+
 from test_qgsserver_accesscontrol import TestQgsServerAccessControl
 
 

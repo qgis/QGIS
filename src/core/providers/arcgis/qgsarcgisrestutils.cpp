@@ -1576,6 +1576,9 @@ QVariant QgsArcGisRestUtils::variantToAttributeValue( const QVariant &variant, Q
 
   switch ( expectedType )
   {
+    case QVariant::String:
+      return QString( QUrl::toPercentEncoding( variant.toString() ) );
+
     case QVariant::DateTime:
     case QVariant::Date:
     {

@@ -53,6 +53,7 @@ SOFTWARE.
 #include <cmath>
 #include <cstring>
 #include <iostream>
+#include <cstdint>
 
 namespace textio
 {

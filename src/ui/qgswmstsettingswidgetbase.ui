@@ -305,7 +305,7 @@
       <item row="2" column="0" colspan="2">
        <widget class="QCheckBox" name="mDisableTime">
         <property name="toolTip">
-         <string>If checked the time component of temporal queries will be discarded and only the data component will be used in server requests</string>
+         <string>If checked the time component of temporal queries will be discarded and only the date component will be used in server requests</string>
         </property>
         <property name="text">
          <string>Ignore time components (use dates only)</string>

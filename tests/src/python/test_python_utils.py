@@ -13,8 +13,8 @@ __copyright__ = 'Copyright 2021, The QGIS Project'
 
 import os
 
-from qgis.testing import unittest, start_app
 from qgis import utils
+from qgis.testing import unittest, start_app
 
 from utilities import unitTestDataPath
 

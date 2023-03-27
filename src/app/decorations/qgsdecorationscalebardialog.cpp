@@ -98,7 +98,7 @@ QgsDecorationScaleBarDialog::QgsDecorationScaleBarDialog( QgsDecorationScaleBar 
 
 void QgsDecorationScaleBarDialog::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "introduction/general_tools.html#scale-bar" ) );
+  QgsHelp::openHelp( QStringLiteral( "map_views/map_view.html#scalebar-decoration" ) );
 }
 
 void QgsDecorationScaleBarDialog::apply()

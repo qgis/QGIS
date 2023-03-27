@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsFontButton.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -11,12 +10,12 @@ __date__ = '04/06/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
 
 import qgis  # NOQA
-
+from qgis.PyQt.QtGui import QColor
+from qgis.PyQt.QtTest import QSignalSpy
 from qgis.core import QgsTextFormat
 from qgis.gui import QgsFontButton, QgsMapCanvas
 from qgis.testing import start_app, unittest
-from qgis.PyQt.QtGui import QColor, QFont
-from qgis.PyQt.QtTest import QSignalSpy
+
 from utilities import getTestFont
 
 start_app()

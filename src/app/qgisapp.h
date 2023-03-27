@@ -564,6 +564,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QAction *actionAddXyzLayer() { return mActionAddXyzLayer; }
     QAction *actionAddVectorTileLayer() { return mActionAddVectorTileLayer; }
     QAction *actionAddPointCloudLayer() { return mActionAddPointCloudLayer; }
+    QAction *actionAddGpsLayer() { return mActionAddGpsLayer; }
     QAction *actionAddWcsLayer() { return mActionAddWcsLayer; }
 #ifdef HAVE_SPATIALITE
     QAction *actionAddWfsLayer() { return mActionAddWfsLayer; }

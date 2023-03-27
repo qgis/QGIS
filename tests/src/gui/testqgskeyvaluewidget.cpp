@@ -70,6 +70,13 @@ class TestQgsKeyValueWidget : public QObject
       QCOMPARE( eventValue.toMap(), expected );
       QCOMPARE( wrapper->value().toMap(), expected );
       QCOMPARE( spy.count(), 1 );
+
+      const QSignalSpy rowSpy( wrapper, &QgsEditorWidgetWrapper::valuesChanged );
+      model->removeRow( 0, QModelIndex() );
+      QCOMPARE( rowSpy.count(), 1 );
+      model->insertRow( 0, QModelIndex() );
+      QCOMPARE( rowSpy.count(), 2 );
+
     }
 };
 

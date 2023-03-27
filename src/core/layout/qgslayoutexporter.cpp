@@ -1632,8 +1632,8 @@ bool QgsLayoutExporter::georeferenceOutputPrivate( const QString &file, QgsLayou
 
   // important - we need to manually specify the DPI in advance, as GDAL will otherwise
   // assume a DPI of 150
-  CPLSetConfigOption( "GDAL_PDF_DPI", QString::number( dpi ).toLocal8Bit().constData() );
-  gdal::dataset_unique_ptr outputDS( GDALOpen( file.toLocal8Bit().constData(), GA_Update ) );
+  CPLSetConfigOption( "GDAL_PDF_DPI", QString::number( dpi ).toUtf8().constData() );
+  gdal::dataset_unique_ptr outputDS( GDALOpen( file.toUtf8().constData(), GA_Update ) );
   if ( outputDS )
   {
     if ( t )

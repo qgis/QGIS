@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsScaleCalculator
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -11,9 +10,6 @@ __date__ = '30/12/2021'
 __copyright__ = 'Copyright 2021, The QGIS Project'
 
 import qgis  # NOQA
-import math
-from qgis.PyQt.QtCore import Qt, QSizeF
-from qgis.PyQt.QtTest import QSignalSpy
 
 from qgis.core import QgsScaleCalculator, QgsRectangle, QgsUnitTypes
 from qgis.testing import start_app, unittest

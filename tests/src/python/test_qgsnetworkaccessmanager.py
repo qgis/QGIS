@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsNetworkAccessManager.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -10,34 +9,26 @@ __author__ = '(C) 2022 by Nyall Dawson'
 __date__ = '27/04/2022'
 __copyright__ = 'Copyright 2022, The QGIS Project'
 
-import qgis  # NOQA
-
+import http.server
 import os
 import socketserver
 import threading
-import http.server
 from functools import partial
 
+import qgis  # NOQA
+from qgis.PyQt.QtCore import (
+    QUrl
+)
 from qgis.PyQt.QtNetwork import (
     QNetworkRequest,
     QNetworkReply
 )
-from qgis.PyQt.QtCore import (
-    QUrl,
-    QCoreApplication
-)
 from qgis.PyQt.QtTest import QSignalSpy
-from qgis.core import (QgsNetworkAccessManager,
-                       QgsLayout,
-                       QgsLayoutItemMap,
-                       QgsRectangle,
-                       QgsCoordinateReferenceSystem,
-                       QgsProject,
-                       QgsReadWriteContext
+from qgis.core import (QgsNetworkAccessManager
                        )
 from qgis.testing import start_app, unittest
+
 from utilities import unitTestDataPath
-from qgslayoutchecker import QgsLayoutChecker
 
 start_app()
 TEST_DATA_DIR = unitTestDataPath()

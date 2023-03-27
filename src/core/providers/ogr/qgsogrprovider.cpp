@@ -300,6 +300,28 @@ Qgis::VectorExportResult QgsOgrProvider::createEmptyLayer( const QString &uri,
     }
   }
 
+  QgsFields cleanedFields = fields;
+#if GDAL_VERSION_NUM < GDAL_COMPUTE_VERSION(3, 6, 3)
+  // Temporary solution. Proper fix in https://github.com/OSGeo/gdal/pull/7147
+  if ( driverName == QLatin1String( "OpenFileGDB" ) )
+  {
+    QString fidColumn = QStringLiteral( "OBJECTID" );
+    for ( const QString &layerOption : layerOptions )
+    {
+      if ( layerOption.startsWith( QLatin1String( "FID=" ), Qt::CaseInsensitive ) )
+      {
+        fidColumn = layerOption.mid( static_cast<int>( strlen( "FID=" ) ) );
+        break;
+      }
+    }
+    const int objectIdIndex = cleanedFields.lookupField( fidColumn );
+    if ( objectIdIndex >= 0 )
+    {
+      cleanedFields.remove( objectIdIndex );
+    }
+  }
+#endif
+
   QString newLayerName( layerName );
 
   QgsVectorFileWriter::SaveVectorOptions saveOptions;
@@ -310,7 +332,7 @@ Qgis::VectorExportResult QgsOgrProvider::createEmptyLayer( const QString &uri,
   saveOptions.layerOptions = layerOptions;
   saveOptions.actionOnExistingFile = action;
   saveOptions.symbologyExport = QgsVectorFileWriter::NoSymbology;
-  std::unique_ptr< QgsVectorFileWriter > writer( QgsVectorFileWriter::create( uri, fields, wkbType, srs, QgsCoordinateTransformContext(), saveOptions, QgsFeatureSink::SinkFlags(), nullptr, &newLayerName ) );
+  std::unique_ptr< QgsVectorFileWriter > writer( QgsVectorFileWriter::create( uri, cleanedFields, wkbType, srs, QgsCoordinateTransformContext(), saveOptions, QgsFeatureSink::SinkFlags(), nullptr, &newLayerName ) );
   layerName = newLayerName;
 
   QgsVectorFileWriter::WriterError error = writer->hasError();
@@ -341,7 +363,7 @@ Qgis::VectorExportResult QgsOgrProvider::createEmptyLayer( const QString &uri,
           const QString ogrFidColumnName { OGR_L_GetFIDColumn( hLayer ) };
           firstFieldIsFid = !( EQUAL( OGR_L_GetFIDColumn( hLayer ), "" ) ) &&
                             OGR_FD_GetFieldIndex( OGR_L_GetLayerDefn( hLayer ), ogrFidColumnName.toUtf8() ) < 0 &&
-                            fields.indexFromName( ogrFidColumnName.toUtf8() ) < 0;
+                            cleanedFields.indexFromName( ogrFidColumnName.toUtf8() ) < 0;
           // At this point we must check if there is a real FID field in the the fields argument,
           // because in that case we don't want to shift all fields (see issue GH #34333)
           // Check for unique values should be performed in client code.
@@ -1475,24 +1497,31 @@ bool QgsOgrProvider::addFeaturePrivate( QgsFeature &f, Flags flags, QgsFeatureId
           break;
 
         case OFTTime:
-          OGR_F_SetFieldDateTime( feature.get(), ogrAttributeId,
-                                  0, 0, 0,
-                                  attrVal.toTime().hour(),
-                                  attrVal.toTime().minute(),
-                                  attrVal.toTime().second(),
-                                  0 );
+        {
+          const QTime time = attrVal.toTime();
+          OGR_F_SetFieldDateTimeEx( feature.get(), ogrAttributeId,
+                                    0, 0, 0,
+                                    time.hour(),
+                                    time.minute(),
+                                    static_cast<float>( time.second() + static_cast< double >( time.msec() ) / 1000 ),
+                                    0 );
           break;
-
+        }
         case OFTDateTime:
-          OGR_F_SetFieldDateTime( feature.get(), ogrAttributeId,
-                                  attrVal.toDateTime().date().year(),
-                                  attrVal.toDateTime().date().month(),
-                                  attrVal.toDateTime().date().day(),
-                                  attrVal.toDateTime().time().hour(),
-                                  attrVal.toDateTime().time().minute(),
-                                  attrVal.toDateTime().time().second(),
-                                  0 );
+        {
+          const QDateTime dt =  attrVal.toDateTime();
+          const QDate date = dt.date();
+          const QTime time = dt.time();
+          OGR_F_SetFieldDateTimeEx( feature.get(), ogrAttributeId,
+                                    date.year(),
+                                    date.month(),
+                                    date.day(),
+                                    time.hour(),
+                                    time.minute(),
+                                    static_cast<float>( time.second() + static_cast< double >( time.msec() ) / 1000 ),
+                                    QgsOgrUtils::OGRTZFlagFromQt( dt ) );
           break;
+        }
 
         case OFTString:
         {
@@ -2168,11 +2197,9 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
   // But this is undesirable in general, so don't do this when we know that
   // we don't need to.
   bool mayNeedResetReadingAfterGetFeature = true;
-  if ( mGDALDriverName == QLatin1String( "ESRI Shapefile" ) )
-  {
-    mayNeedResetReadingAfterGetFeature = false;
-  }
-  else if ( mGDALDriverName == QLatin1String( "GPKG" ) )
+  if ( mGDALDriverName == QLatin1String( "ESRI Shapefile" ) ||
+       mGDALDriverName == QLatin1String( "GPKG" ) ||
+       mGDALDriverName == QLatin1String( "CSV" ) )
   {
     mayNeedResetReadingAfterGetFeature = false;
   }
@@ -2264,23 +2291,31 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
                                     0 );
             break;
           case OFTTime:
-            OGR_F_SetFieldDateTime( of.get(), f,
-                                    0, 0, 0,
-                                    it2->toTime().hour(),
-                                    it2->toTime().minute(),
-                                    it2->toTime().second(),
-                                    0 );
+          {
+            const QTime time = it2->toTime();
+            OGR_F_SetFieldDateTimeEx( of.get(), f,
+                                      0, 0, 0,
+                                      time.hour(),
+                                      time.minute(),
+                                      static_cast<float>( time.second() + static_cast< double >( time.msec() ) / 1000 ),
+                                      0 );
             break;
+          }
           case OFTDateTime:
-            OGR_F_SetFieldDateTime( of.get(), f,
-                                    it2->toDateTime().date().year(),
-                                    it2->toDateTime().date().month(),
-                                    it2->toDateTime().date().day(),
-                                    it2->toDateTime().time().hour(),
-                                    it2->toDateTime().time().minute(),
-                                    it2->toDateTime().time().second(),
-                                    0 );
+          {
+            const QDateTime dt = it2->toDateTime();
+            const QDate date = dt.date();
+            const QTime time = dt.time();
+            OGR_F_SetFieldDateTimeEx( of.get(), f,
+                                      date.year(),
+                                      date.month(),
+                                      date.day(),
+                                      time.hour(),
+                                      time.minute(),
+                                      static_cast<float>( time.second() + static_cast< double >( time.msec() ) / 1000 ),
+                                      QgsOgrUtils::OGRTZFlagFromQt( dt ) );
             break;
+          }
           case OFTString:
           {
             QString stringValue;

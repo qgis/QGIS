@@ -36,6 +36,7 @@ set(TESTS
   testqgsmaptoolsplitfeatures.cpp
   testqgsmeasuretool.cpp
   testqgsmeasurebearingtool.cpp
+  testqgsvertexeditor.cpp
   testqgsvertextool.cpp
   testqgsvectorlayersaveasdialog.cpp
   testqgsmaptoolreverseline.cpp

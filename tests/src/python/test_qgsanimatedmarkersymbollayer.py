@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 ***************************************************************************
     test_qgsanimatedmarkersymbollayer.py
@@ -21,46 +19,23 @@ __author__ = 'Nyall Dawson'
 __date__ = 'April 2022'
 __copyright__ = '(C) 2022, Nyall Dawson'
 
-import qgis  # NOQA
-
 import os
-from utilities import unitTestDataPath
 
-from qgis.PyQt.QtCore import QDir, Qt, QSize
-from qgis.PyQt.QtGui import QImage, QColor, QPainter
-from qgis.PyQt.QtXml import QDomDocument
-
-from qgis.core import (Qgis,
-                       QgsGeometry,
-                       QgsFillSymbol,
-                       QgsRenderContext,
-                       QgsFeature,
-                       QgsMapSettings,
-                       QgsRenderChecker,
-                       QgsVectorLayer,
-                       QgsReadWriteContext,
-                       QgsSymbolLayerUtils,
-                       QgsSimpleMarkerSymbolLayer,
-                       QgsLineSymbolLayer,
-                       QgsTemplatedLineSymbolLayerBase,
-                       QgsMarkerLineSymbolLayer,
-                       QgsMarkerSymbol,
-                       QgsGeometryGeneratorSymbolLayer,
-                       QgsSymbol,
-                       QgsFontMarkerSymbolLayer,
-                       QgsFontUtils,
-                       QgsLineSymbol,
-                       QgsSymbolLayer,
-                       QgsProperty,
-                       QgsRectangle,
-                       QgsUnitTypes,
-                       QgsMultiRenderChecker,
-                       QgsSingleSymbolRenderer,
-                       QgsAnimatedMarkerSymbolLayer,
-                       QgsMarkerSymbol
-                       )
-
+import qgis  # NOQA
+from qgis.PyQt.QtCore import QDir, QSize
+from qgis.core import (
+    QgsMapSettings,
+    QgsRenderChecker,
+    QgsVectorLayer,
+    QgsRectangle,
+    QgsMultiRenderChecker,
+    QgsSingleSymbolRenderer,
+    QgsAnimatedMarkerSymbolLayer,
+    QgsMarkerSymbol
+)
 from qgis.testing import unittest, start_app
+
+from utilities import unitTestDataPath
 
 start_app()
 TEST_DATA_DIR = unitTestDataPath()
@@ -139,7 +114,7 @@ class TestQgsAnimatedMarkerSymbolLayer(unittest.TestCase):
         self.assertTrue(res)
 
     def imageCheck(self, name, reference_image, image):
-        self.report += "<h2>Render {}</h2>\n".format(name)
+        self.report += f"<h2>Render {name}</h2>\n"
         temp_dir = QDir.tempPath() + '/'
         file_name = temp_dir + 'symbol_' + name + ".png"
         image.save(file_name, "PNG")
@@ -150,7 +125,7 @@ class TestQgsAnimatedMarkerSymbolLayer(unittest.TestCase):
         checker.setColorTolerance(2)
         result = checker.compareImages(name, 20)
         self.report += checker.report()
-        print((self.report))
+        print(self.report)
         return result
 
 

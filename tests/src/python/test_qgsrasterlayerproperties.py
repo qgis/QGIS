@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsRasterLayerProperties.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -11,15 +10,17 @@ __author__ = 'Benjamin Jakimow'
 __date__ = '14/01/2022'
 __copyright__ = 'Copyright 2022, The QGIS Project'
 
-import qgis  # NOQA
 import pathlib
 import typing
-from qgis.PyQt.QtWidgets import QWidget
+
+import qgis  # NOQA
 from qgis.PyQt.QtGui import QIcon
-from qgis.gui import QgsMapCanvas, QgsMapLayerConfigWidgetFactory, QgsMapLayerConfigWidget, QgsRasterLayerProperties
+from qgis.PyQt.QtWidgets import QWidget
 from qgis.core import QgsMapLayer, QgsProject, QgsRasterLayer
-from utilities import unitTestDataPath
+from qgis.gui import QgsMapCanvas, QgsMapLayerConfigWidgetFactory, QgsMapLayerConfigWidget, QgsRasterLayerProperties
 from qgis.testing import start_app, unittest
+
+from utilities import unitTestDataPath
 
 # Convenience instances in case you may need them
 # not used in this test
@@ -57,7 +58,7 @@ class TestQgsRasterLayerProperties(unittest.TestCase):
             COUNT = 0
 
             def __init__(self, title: str, icon: QIcon):
-                super(MyFactory, self).__init__(title, icon)
+                super().__init__(title, icon)
 
             def supportsLayer(self, layer):
                 return True

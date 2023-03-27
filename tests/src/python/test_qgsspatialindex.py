@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsSpatialIndex.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -41,7 +40,7 @@ class TestQgsSpatialIndex(unittest.TestCase):
         fids = idx.intersects(rect)
         myExpectedValue = 4
         myValue = len(fids)
-        myMessage = 'Expected: %s Got: %s' % (myExpectedValue, myValue)
+        myMessage = f'Expected: {myExpectedValue} Got: {myValue}'
         self.assertEqual(myValue, myExpectedValue, myMessage)
         fids.sort()
         myMessage = ('Expected: %s\nGot: %s\n' %
@@ -52,7 +51,7 @@ class TestQgsSpatialIndex(unittest.TestCase):
         fids = idx.nearestNeighbor(QgsPointXY(8.75, 6.25), 3)
         myExpectedValue = 0
         myValue = len(fids)
-        myMessage = 'Expected: %s Got: %s' % (myExpectedValue, myValue)
+        myMessage = f'Expected: {myExpectedValue} Got: {myValue}'
 
         fids.sort()
         myMessage = ('Expected: %s\nGot: %s\n' %

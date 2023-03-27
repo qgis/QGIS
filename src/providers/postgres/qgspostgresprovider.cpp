@@ -420,7 +420,11 @@ QgsReferencedGeometry QgsPostgresProvider::fromEwkt( const QString &ewkt, QgsPos
 
   QRegularExpressionMatch regularExpressionMatch = regularExpressionSRID.match( ewkt );
   if ( !regularExpressionMatch.hasMatch() )
-    return QgsReferencedGeometry();
+  {
+    QgsGeometry geom = QgsGeometry::fromWkt( ewkt );
+    QgsCoordinateReferenceSystem crs; // TODO: use projects' crs ?
+    return QgsReferencedGeometry( geom, crs );
+  }
 
   QString wkt = ewkt.mid( regularExpressionMatch.captured( 0 ).size() );
   int srid = regularExpressionMatch.captured( 1 ).toInt();
@@ -446,74 +450,17 @@ QString QgsPostgresProvider::geomAttrToString( const QVariant &attr, QgsPostgres
     return toEwkt( attr.value<QgsReferencedGeometry>(), conn );
 }
 
-static QMutex sMutex;
-static QMap<int, QgsCoordinateReferenceSystem> sCrsCache;
-
 int QgsPostgresProvider::crsToSrid( const QgsCoordinateReferenceSystem &crs, QgsPostgresConn *conn )
 {
-  QMutexLocker locker( &sMutex );
-  int srid = sCrsCache.key( crs );
-
-  if ( srid > -1 )
-    return srid;
-  else
-  {
-    if ( conn )
-    {
-      QStringList authParts = crs.authid().split( ':' );
-      if ( authParts.size() != 2 )
-        return -1;
-      const QString authName = authParts.first();
-      const QString authId = authParts.last();
-      QgsPostgresResult result( conn->PQexec( QStringLiteral( "SELECT srid FROM spatial_ref_sys WHERE auth_name='%1' AND auth_srid=%2" ).arg( authName, authId ) ) );
-
-      if ( result.PQresultStatus() == PGRES_TUPLES_OK )
-      {
-        int srid = result.PQgetvalue( 0, 0 ).toInt();
-        sCrsCache.insert( srid, crs );
-        return srid;
-      }
-    }
-  }
-
-  return -1;
+  int srid = -1;
+  if ( conn ) srid = conn->crsToSrid( crs );
+  return srid;
 }
 
 QgsCoordinateReferenceSystem QgsPostgresProvider::sridToCrs( int srid, QgsPostgresConn *conn )
 {
   QgsCoordinateReferenceSystem crs;
-
-  QMutexLocker locker( &sMutex );
-  if ( sCrsCache.contains( srid ) )
-    crs = sCrsCache.value( srid );
-  else
-  {
-    if ( conn )
-    {
-      QgsPostgresResult result( conn->LoggedPQexec( QStringLiteral( "QgsPostgresProvider" ), QStringLiteral( "SELECT auth_name, auth_srid, srtext, proj4text FROM spatial_ref_sys WHERE srid=%1" ).arg( srid ) ) );
-      if ( result.PQresultStatus() == PGRES_TUPLES_OK )
-      {
-        if ( result.PQntuples() > 0 )
-        {
-          const QString authName = result.PQgetvalue( 0, 0 );
-          const QString authSRID = result.PQgetvalue( 0, 1 );
-          const QString srText = result.PQgetvalue( 0, 2 );
-          bool ok = false;
-          if ( authName == QLatin1String( "EPSG" ) || authName == QLatin1String( "ESRI" ) )
-          {
-            ok = crs.createFromUserInput( authName + ':' + authSRID );
-          }
-          if ( !ok && !srText.isEmpty() )
-          {
-            ok = crs.createFromUserInput( srText );
-          }
-          if ( !ok )
-            crs = QgsCoordinateReferenceSystem::fromProj( result.PQgetvalue( 0, 3 ) );
-        }
-        sCrsCache.insert( srid, crs );
-      }
-    }
-  }
+  if ( conn ) crs = conn->sridToCrs( srid );
   return crs;
 }
 
@@ -844,7 +791,7 @@ QString QgsPostgresUtils::andWhereClauses( const QString &c1, const QString &c2 
 
 void QgsPostgresUtils::replaceInvalidXmlChars( QString &xml )
 {
-  static const QRegularExpression replaceRe { QStringLiteral( "([\x00-\x08\x0B-\x1F\x7F])" ) };
+  static const QRegularExpression replaceRe { QStringLiteral( "([\\x00-\\x08\\x0B-\\x1F\\x7F])" ) };
   QRegularExpressionMatchIterator it {replaceRe.globalMatch( xml ) };
   while ( it.hasNext() )
   {
@@ -1417,20 +1364,13 @@ bool QgsPostgresProvider::loadFields()
          && uniqueMap[tableoid][attnum]
          && defValMap[tableoid][attnum].isEmpty() )
     {
-      const QString seqName { mTableName + '_' + fieldName + QStringLiteral( "_seq" ) };
-      const QString seqSql = QStringLiteral( "SELECT c.oid::regclass "
-                                             "  FROM pg_class c "
-                                             "  LEFT JOIN pg_namespace n "
-                                             "    ON ( n.oid = c.relnamespace ) "
-                                             "  WHERE c.relkind = 'S' "
-                                             "    AND c.relname = %1 "
-                                             "    AND n.nspname = %2" )
-                             .arg( quotedValue( seqName ) )
-                             .arg( quotedValue( mSchemaName ) );
+      const QString seqSql = QStringLiteral( "SELECT pg_get_serial_sequence(%1, %2)" )
+                             .arg( quotedValue( mQuery ) )
+                             .arg( quotedValue( fieldName ) );
       QgsPostgresResult seqResult( connectionRO()->PQexec( seqSql ) );
       if ( seqResult.PQntuples() == 1 )
       {
-        defValMap[tableoid][attnum] = QStringLiteral( "nextval(%1::regclass)" ).arg( quotedValue( seqResult.PQgetvalue( 0, 0 ) ) );
+        defValMap[tableoid][attnum] = QStringLiteral( "nextval(%1)" ).arg( quotedValue( seqResult.PQgetvalue( 0, 0 ) ) );
       }
     }
 

@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 QGIS Server HTTP wrapper for testing purposes
 ================================================================================
@@ -115,17 +114,7 @@ the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
 
-import copy
 import os
-import signal
-import ssl
-import sys
-import urllib.parse
-
-from http.server import BaseHTTPRequestHandler, HTTPServer
-from qgis.core import QgsApplication
-from qgis.server import (QgsBufferServerRequest, QgsBufferServerResponse,
-                         QgsServer, QgsServerRequest)
 
 __author__ = 'Alessandro Pasotti'
 __date__ = '05/15/2016'
@@ -143,9 +132,8 @@ import copy
 import urllib.parse
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from socketserver import ThreadingMixIn
-import threading
 
-from qgis.core import QgsApplication, QgsCoordinateTransform, QgsCoordinateReferenceSystem
+from qgis.core import QgsApplication
 from qgis.server import QgsServer, QgsServerRequest, QgsBufferServerRequest, QgsBufferServerResponse, QgsServerFilter
 
 QGIS_SERVER_PORT = int(os.environ.get('QGIS_SERVER_PORT', '8081'))
@@ -201,7 +189,6 @@ qgs_app = QgsApplication([], False)
 qgs_server = QgsServer()
 
 if QGIS_SERVER_HTTP_BASIC_AUTH:
-    from qgis.server import QgsServerFilter
     import base64
 
     class HTTPBasicFilter(QgsServerFilter):
@@ -264,7 +251,7 @@ class XYZFilter(QgsServerFilter):
             handler.setParameter('SRS', 'EPSG:4326')
             handler.setParameter('HEIGHT', '256')
             handler.setParameter('WIDTH', '256')
-            handler.setParameter('BBOX', "{},{},{},{}".format(lat_deg2, lon_deg, lat_deg, lon_deg2))
+            handler.setParameter('BBOX', f"{lat_deg2},{lon_deg},{lat_deg},{lon_deg2}")
 
 
 xyzfilter = XYZFilter(qgs_server.serverInterface())
@@ -273,7 +260,6 @@ qgs_server.serverInterface().registerFilter(xyzfilter)
 if QGIS_SERVER_OAUTH2_AUTH:
     from qgis.server import QgsServerFilter
     from oauthlib.oauth2 import RequestValidator, LegacyApplicationServer
-    import base64
     from datetime import datetime
 
     # Naive token storage implementation
@@ -417,7 +403,7 @@ class Handler(BaseHTTPRequestHandler):
         for k, v in self.headers.items():
             headers['HTTP_%s' % k.replace(' ', '-').replace('-', '_').replace(' ', '-').upper()] = v
         if not self.path.startswith('http'):
-            self.path = "%s://%s:%s%s" % ('https' if HTTPS_ENABLED else 'http', QGIS_SERVER_HOST, self.server.server_port, self.path)
+            self.path = "{}://{}:{}{}".format('https' if HTTPS_ENABLED else 'http', QGIS_SERVER_HOST, self.server.server_port, self.path)
         request = QgsBufferServerRequest(
             self.path, (QgsServerRequest.PostMethod if post_body is not None else QgsServerRequest.GetMethod), headers, post_body)
         response = QgsBufferServerResponse()

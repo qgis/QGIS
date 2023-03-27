@@ -57,7 +57,7 @@ class QgsGeorefDockWidget : public QgsDockWidget
     QgsGeorefDockWidget( const QString &title, QWidget *parent = nullptr, Qt::WindowFlags flags = Qt::WindowFlags() );
 };
 
-class QgsGeoreferencerMainWindow : public QMainWindow, private Ui::QgsGeorefPluginGuiBase
+class APP_EXPORT QgsGeoreferencerMainWindow : public QMainWindow, private Ui::QgsGeorefPluginGuiBase
 {
     Q_OBJECT
 
@@ -293,6 +293,8 @@ class QgsGeoreferencerMainWindow : public QMainWindow, private Ui::QgsGeorefPlug
 
 
     QgsDockWidget *mDock = nullptr;
+
+    friend class TestQgsGeoreferencer;
 };
 
 #endif

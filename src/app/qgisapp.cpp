@@ -1559,10 +1559,10 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipBadLayers
     QgsPluginRegistry::instance()->restoreSessionPlugins( QgsApplication::pluginPath() );
 
     // Also restore plugins from user specified plugin directories
-    QString myPaths = settings.value( QStringLiteral( "plugins/searchPathsForPlugins" ), "" ).toString();
-    if ( !myPaths.isEmpty() )
+    QStringList myPathList = settings.value( QStringLiteral( "plugins/searchPathsForPlugins" ) ).toStringList();
+    if ( !myPathList.isEmpty() )
     {
-      QStringList myPathList = myPaths.split( '|' );
+      myPathList.removeDuplicates();
       QgsPluginRegistry::instance()->restoreSessionPlugins( myPathList );
     }
   }
@@ -2815,6 +2815,7 @@ void QgisApp::createActions()
   connect( mActionAddXyzLayer, &QAction::triggered, this, [ = ] { dataSourceManager( QStringLiteral( "xyz" ) ); } );
   connect( mActionAddVectorTileLayer, &QAction::triggered, this, [ = ] { dataSourceManager( QStringLiteral( "vectortile" ) ); } );
   connect( mActionAddPointCloudLayer, &QAction::triggered, this, [ = ] { dataSourceManager( QStringLiteral( "pointcloud" ) ); } );
+  connect( mActionAddGpsLayer, &QAction::triggered, this, [ = ] { dataSourceManager( QStringLiteral( "gpx" ) ); } );
   connect( mActionAddWcsLayer, &QAction::triggered, this, [ = ] { dataSourceManager( QStringLiteral( "wcs" ) ); } );
 #ifdef HAVE_SPATIALITE
   connect( mActionAddWfsLayer, &QAction::triggered, this, [ = ] { dataSourceManager( QStringLiteral( "WFS" ) ); } );
@@ -5461,23 +5462,12 @@ void QgisApp::addSelectedVectorLayer( const QString &uri, const QString &layerNa
 
 void QgisApp::replaceSelectedVectorLayer( const QString &oldId, const QString &uri, const QString &layerName, const QString &provider )
 {
-  QgsMapLayer *old = QgsProject::instance()->mapLayer( oldId );
-  if ( !old )
-    return;
-  QgsVectorLayer *oldLayer = static_cast<QgsVectorLayer *>( old );
-  const QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
-  QgsVectorLayer *newLayer = new QgsVectorLayer( uri, layerName, provider, options );
-  if ( !newLayer || !newLayer->isValid() )
+  QgsVectorLayer *oldLayer = qobject_cast<QgsVectorLayer *>( QgsProject::instance()->mapLayer( oldId ) );
+  if ( !oldLayer )
     return;
 
-  QgsProject::instance()->addMapLayer( newLayer, /*addToLegend*/ false, /*takeOwnership*/ true );
-  duplicateVectorStyle( oldLayer, newLayer );
-
-  // insert the new layer just below the old one
-  QgsLayerTreeUtils::insertLayerBelow( QgsProject::instance()->layerTreeRoot(), oldLayer, newLayer );
-  // and remove the old layer
-  QgsProject::instance()->removeMapLayer( oldLayer );
-} // QgisApp:replaceSelectedVectorLayer
+  oldLayer->setDataSource( uri, layerName, provider );
+}
 
 void QgisApp::fileExit()
 {
@@ -15315,7 +15305,7 @@ void QgisApp::renameView()
   renameDlg.buttonBox()->addButton( QDialogButtonBox::Help );
   connect( renameDlg.buttonBox(), &QDialogButtonBox::helpRequested, this, [ = ]
   {
-    QgsHelp::openHelp( QStringLiteral( "introduction/qgis_gui.html#map-view" ) );
+    QgsHelp::openHelp( QStringLiteral( "map_views/map_view.html" ) );
   } );
 
   if ( renameDlg.exec() || renameDlg.name().isEmpty() )

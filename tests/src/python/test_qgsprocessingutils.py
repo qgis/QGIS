@@ -11,8 +11,8 @@ __author__ = 'Germán Carrillo'
 __date__ = '7.3.2022'
 __copyright__ = 'Copyright 2022, The QGIS Project'
 
-from qgis.testing import unittest, start_app
 from qgis.core import QgsFields, QgsField, QgsProcessingUtils
+from qgis.testing import unittest, start_app
 
 
 class TestQgsProcessingUtils(unittest.TestCase):

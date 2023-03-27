@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsLabelSettingsWidget and subclasses.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -11,16 +10,14 @@ __date__ = '04/02/2019'
 __copyright__ = 'Copyright 2019, The QGIS Project'
 
 import qgis  # NOQA
-
+from qgis.PyQt.QtTest import QSignalSpy
 from qgis.core import (QgsPropertyCollection,
                        QgsPalLayerSettings,
                        QgsLabelObstacleSettings,
                        QgsProperty)
 from qgis.gui import (QgsLabelSettingsWidgetBase,
                       QgsLabelObstacleSettingsWidget)
-
 from qgis.testing import start_app, unittest
-from qgis.PyQt.QtTest import QSignalSpy
 
 start_app()
 

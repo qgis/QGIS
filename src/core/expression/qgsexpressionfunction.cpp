@@ -201,6 +201,11 @@ bool QgsStaticExpressionFunction::usesGeometry( const QgsExpressionNodeFunction 
     return mUsesGeometry;
 }
 
+void QgsStaticExpressionFunction::setUsesGeometryFunction( const std::function<bool ( const QgsExpressionNodeFunction * )> &usesGeometry )
+{
+  mUsesGeometryFunc = usesGeometry;
+}
+
 QSet<QString> QgsStaticExpressionFunction::referencedColumns( const QgsExpressionNodeFunction *node ) const
 {
   if ( mReferencedColumnsFunc )
@@ -5190,9 +5195,42 @@ static QVariant fcnFormatNumber( const QVariantList &values, const QgsExpression
     return QVariant();
   }
 
+  const bool omitGroupSeparator = values.value( 3 ).toBool();
+  const bool trimTrailingZeros = values.value( 4 ).toBool();
+
   QLocale locale = !language.isEmpty() ? QLocale( language ) : QLocale();
-  locale.setNumberOptions( locale.numberOptions() &= ~QLocale::NumberOption::OmitGroupSeparator );
-  return locale.toString( value, 'f', places );
+  if ( !omitGroupSeparator )
+    locale.setNumberOptions( locale.numberOptions() & ~QLocale::NumberOption::OmitGroupSeparator );
+  else
+    locale.setNumberOptions( locale.numberOptions() | QLocale::NumberOption::OmitGroupSeparator );
+
+  QString res = locale.toString( value, 'f', places );
+
+  if ( trimTrailingZeros )
+  {
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+    const QChar decimal = locale.decimalPoint();
+    const QChar zeroDigit = locale.zeroDigit();
+#else
+    const QChar decimal = locale.decimalPoint().at( 0 );
+    const QChar zeroDigit = locale.zeroDigit().at( 0 );
+#endif
+
+    if ( res.contains( decimal ) )
+    {
+      int trimPoint = res.length() - 1;
+
+      while ( res.at( trimPoint ) == zeroDigit )
+        trimPoint--;
+
+      if ( res.at( trimPoint ) == decimal )
+        trimPoint--;
+
+      res.truncate( trimPoint + 1 );
+    }
+  }
+
+  return res;
 }
 
 static QVariant fcnFormatDate( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
@@ -6322,8 +6360,23 @@ static QVariant fcnArrayRemoveAt( const QVariantList &values, const QgsExpressio
 
 static QVariant fcnArrayRemoveAll( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
+  if ( QgsVariantUtils::isNull( values.at( 0 ) ) )
+    return QVariant();
+
   QVariantList list = QgsExpressionUtils::getListValue( values.at( 0 ), parent );
-  list.removeAll( values.at( 1 ) );
+
+  const QVariant toRemove = values.at( 1 );
+  if ( QgsVariantUtils::isNull( toRemove ) )
+  {
+    list.erase( std::remove_if( list.begin(), list.end(), []( const QVariant & element )
+    {
+      return QgsVariantUtils::isNull( element );
+    } ), list.end() );
+  }
+  else
+  {
+    list.removeAll( toRemove );
+  }
   return convertToSameType( list, values.at( 0 ).type() );
 }
 
@@ -7656,7 +7709,12 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
         << new QgsStaticExpressionFunction( QStringLiteral( "rpad" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "string" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "width" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "fill" ) ), fcnRPad, QStringLiteral( "String" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "lpad" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "string" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "width" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "fill" ) ), fcnLPad, QStringLiteral( "String" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "format" ), -1, fcnFormatString, QStringLiteral( "String" ) )
-        << new QgsStaticExpressionFunction( QStringLiteral( "format_number" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "number" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "places" ), true, 0 ) << QgsExpressionFunction::Parameter( QStringLiteral( "language" ), true, QVariant() ), fcnFormatNumber, QStringLiteral( "String" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "format_number" ), QgsExpressionFunction::ParameterList()
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "number" ) )
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "places" ), true, 0 )
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "language" ), true, QVariant() )
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "omit_group_separators" ), true, false )
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "trim_trailing_zeroes" ), true, false ), fcnFormatNumber, QStringLiteral( "String" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "format_date" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "datetime" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "format" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "language" ), true, QVariant() ), fcnFormatDate, QStringList() << QStringLiteral( "String" ) << QStringLiteral( "Date and Time" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "color_grayscale_average" ),  QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "color" ) ), fcnColorGrayscaleAverage, QStringLiteral( "Color" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "color_mix_rgb" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "color1" ) )
@@ -8415,6 +8473,21 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
       return false;
     }
     );
+    varFunction->setUsesGeometryFunction(
+      []( const QgsExpressionNodeFunction * node ) -> bool
+    {
+      if ( node && node->args()->count() > 0 )
+      {
+        QgsExpressionNode *argNode = node->args()->at( 0 );
+        if ( QgsExpressionNodeLiteral *literal = dynamic_cast<QgsExpressionNodeLiteral *>( argNode ) )
+        {
+          if ( literal->value() == QLatin1String( "geometry" ) || literal->value() == QLatin1String( "feature" ) )
+            return true;
+        }
+      }
+      return false;
+    }
+    );
 
     functions
         << varFunction;
@@ -8495,7 +8568,7 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
         << new QgsStaticExpressionFunction( QStringLiteral( "array_prepend" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "array" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "value" ) ), fcnArrayPrepend, QStringLiteral( "Arrays" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "array_insert" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "array" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "pos" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "value" ) ), fcnArrayInsert, QStringLiteral( "Arrays" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "array_remove_at" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "array" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "pos" ) ), fcnArrayRemoveAt, QStringLiteral( "Arrays" ) )
-        << new QgsStaticExpressionFunction( QStringLiteral( "array_remove_all" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "array" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "value" ) ), fcnArrayRemoveAll, QStringLiteral( "Arrays" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "array_remove_all" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "array" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "value" ) ), fcnArrayRemoveAll, QStringLiteral( "Arrays" ), QString(), false, QSet<QString>(), false, QStringList(), true )
         << new QgsStaticExpressionFunction( QStringLiteral( "array_replace" ), -1, fcnArrayReplace, QStringLiteral( "Arrays" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "array_prioritize" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "array" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "array_prioritize" ) ), fcnArrayPrioritize, QStringLiteral( "Arrays" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "array_cat" ), -1, fcnArrayCat, QStringLiteral( "Arrays" ) )

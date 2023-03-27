@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsServer WMS GetPrint.
 
 From build dir, run: ctest -R PyQgsServerWMSGetMapDxf -V
@@ -15,16 +14,13 @@ __date__ = '27/01/2021'
 __copyright__ = 'Copyright 2020, The QGIS Project'
 
 import os
-
 import urllib.parse
 
+from qgis.PyQt import QtCore
+from qgis.core import (QgsVectorLayer)
 from qgis.testing import unittest
 
 from test_qgsserver import QgsServerTestBase
-
-from qgis.core import (QgsVectorLayer)
-
-from qgis.PyQt import QtCore
 
 # Needed on Qt 5 so that the serialization of XML is consistent among all executions
 os.environ['QT_HASH_SEED'] = '1'

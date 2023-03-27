@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsMapBoxGlStyleConverter.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -19,7 +18,6 @@ from qgis.core import (QgsMapBoxGlStyleConverter,
                        QgsSymbolLayer,
                        QgsWkbTypes,
                        QgsApplication,
-                       QgsFontManager,
                        QgsSettings,
                        Qgis,
                        QgsRasterLayer,

@@ -656,7 +656,7 @@ class CORE_EXPORT QgsApplication : public QApplication
 
     /**
      * Set maximum concurrent thread count
-     * \note must be between 1 and \#cores, -1 means use all available cores
+     * \note must be between 2 and \#cores, -1 means use all available cores
      * \since QGIS 2.4
     */
     static void setMaxThreads( int maxThreads );

@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 ***************************************************************************
     test_qgsrandommarkersymbollayer.py
@@ -21,21 +19,17 @@ __author__ = 'Nyall Dawson'
 __date__ = 'October 2019'
 __copyright__ = '(C) 2019, Nyall Dawson'
 
-import qgis  # NOQA
-
 import os
-from utilities import unitTestDataPath
 
+import qgis  # NOQA
 from qgis.PyQt.QtCore import QDir, Qt, QSize
 from qgis.PyQt.QtGui import QImage, QColor, QPainter
 from qgis.PyQt.QtXml import QDomDocument
-
 from qgis.core import (QgsGeometry,
                        QgsFillSymbol,
                        QgsRenderContext,
                        QgsFeature,
                        QgsMapSettings,
-                       QgsMultiRenderChecker,
                        QgsReadWriteContext,
                        QgsSymbolLayerUtils,
                        QgsSimpleMarkerSymbolLayer,
@@ -50,8 +44,9 @@ from qgis.core import (QgsGeometry,
                        QgsMultiRenderChecker,
                        QgsSymbol
                        )
-
 from qgis.testing import unittest, start_app
+
+from utilities import unitTestDataPath
 
 start_app()
 TEST_DATA_DIR = unitTestDataPath()
@@ -325,7 +320,7 @@ class TestQgsRandomMarkerSymbolLayer(unittest.TestCase):
         return image
 
     def imageCheck(self, name, reference_image, image, expect_fail=False):
-        self.report += "<h2>Render {}</h2>\n".format(name)
+        self.report += f"<h2>Render {name}</h2>\n"
         temp_dir = QDir.tempPath() + '/'
         file_name = temp_dir + 'symbol_' + name + ".png"
         image.save(file_name, "PNG")

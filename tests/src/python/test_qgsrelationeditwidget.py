@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for edit widgets.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -10,10 +9,17 @@ __author__ = 'Matthias Kuhn'
 __date__ = '28/11/2015'
 __copyright__ = 'Copyright 2015, The QGIS Project'
 
-import qgis  # NOQA
-
 import os
 
+import qgis  # NOQA
+from qgis.PyQt.QtCore import QTimer
+from qgis.PyQt.QtWidgets import (
+    QToolButton,
+    QMessageBox,
+    QDialogButtonBox,
+    QTableView,
+    QDialog
+)
 from qgis.core import (
     QgsFeature,
     QgsVectorLayer,
@@ -24,22 +30,12 @@ from qgis.core import (
     QgsVectorLayerTools,
     QgsGeometry
 )
-
 from qgis.gui import (
     QgsGui,
     QgsRelationWidgetWrapper,
     QgsAttributeEditorContext,
     QgsMapCanvas,
     QgsAdvancedDigitizingDockWidget
-)
-
-from qgis.PyQt.QtCore import QTimer
-from qgis.PyQt.QtWidgets import (
-    QToolButton,
-    QMessageBox,
-    QDialogButtonBox,
-    QTableView,
-    QDialog
 )
 from qgis.testing import start_app, unittest
 
@@ -161,7 +157,7 @@ class TestQgsRelationEditWidget(unittest.TestCase):
             # box
             widget = self.widget.findChild(QMessageBox)
             buttonBox = widget.findChild(QDialogButtonBox)
-            deleteButton = next((b for b in buttonBox.buttons() if buttonBox.buttonRole(b) == QDialogButtonBox.AcceptRole))
+            deleteButton = next(b for b in buttonBox.buttons() if buttonBox.buttonRole(b) == QDialogButtonBox.AcceptRole)
             deleteButton.click()
 
         QTimer.singleShot(1, clickOk)
@@ -221,7 +217,7 @@ class TestQgsRelationEditWidget(unittest.TestCase):
         dlg.accept()
 
         # magically the above code selects the feature here...
-        link_feature = next(self.vl_link_books_authors.getFeatures(QgsFeatureRequest().setFilterExpression('"fk_book"={}'.format(f[0]))))
+        link_feature = next(self.vl_link_books_authors.getFeatures(QgsFeatureRequest().setFilterExpression(f'"fk_book"={f[0]}')))
         self.assertIsNotNone(link_feature[0])
 
         self.assertEqual(self.table_view.model().rowCount(), 1)

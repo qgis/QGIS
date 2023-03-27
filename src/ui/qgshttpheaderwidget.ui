@@ -44,7 +44,7 @@
       <item>
        <widget class="QFrame" name="mRefererFrame">
         <property name="frameShape">
-         <enum>QFrame::StyledPanel</enum>
+         <enum>QFrame::NoFrame</enum>
         </property>
         <property name="frameShadow">
          <enum>QFrame::Raised</enum>
@@ -213,6 +213,9 @@
                     <iconset resource="../../images/images.qrc">
                      <normaloff>:/images/themes/default/symbologyAdd.svg</normaloff>:/images/themes/default/symbologyAdd.svg</iconset>
                    </property>
+                   <property name="toolTip">
+                    <string>Add HTTP header</string>
+                   </property>
                   </widget>
                  </item>
                  <item>
@@ -229,6 +232,9 @@
                    <property name="icon">
                     <iconset resource="../../images/images.qrc">
                      <normaloff>:/images/themes/default/symbologyRemove.svg</normaloff>:/images/themes/default/symbologyRemove.svg</iconset>
+                   </property>
+                   <property name="toolTip">
+                    <string>Remove selected HTTP header</string>
                    </property>
                   </widget>
                  </item>

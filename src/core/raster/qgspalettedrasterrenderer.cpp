@@ -212,7 +212,16 @@ QgsRasterBlock *QgsPalettedRasterRenderer::block( int, QgsRectangle  const &exte
       }
       if ( mAlphaBand > 0 )
       {
-        currentOpacity *= alphaBlock->value( i ) / 255.0;
+        const double alpha = alphaBlock->value( i );
+        if ( alpha == 0 )
+        {
+          outputBlock->setColor( i, myDefaultColor );
+          continue;
+        }
+        else
+        {
+          currentOpacity *= alpha / 255.0;
+        }
       }
 
       const QRgb c = mColors.value( value );
@@ -610,16 +619,25 @@ QgsPalettedRasterRenderer::ClassData QgsPalettedRasterRenderer::classDataFromRas
 
       const double interval = ( histogram.maximum - histogram.minimum + 1 ) / histogram.binCount;
       double currentValue = histogram.minimum;
-      for ( int idx = 0; idx < histogram.binCount; ++idx )
+
+      if ( histogram.valid )
       {
-        const int count = histogram.histogramVector.at( idx );
-        if ( count > 0 )
+        for ( int idx = 0; idx < histogram.binCount; ++idx )
         {
-          data << Class( currentValue, QColor(), QLocale().toString( currentValue ) );
-          numClasses++;
+          const int count = histogram.histogramVector.at( idx );
+          if ( count > 0 )
+          {
+            data << Class( currentValue, QColor(), QLocale().toString( currentValue ) );
+            numClasses++;
+          }
+          currentValue += interval;
         }
-        currentValue += interval;
       }
+      else if ( histogram.maximum == histogram.minimum && histogram.binCount == 1 ) // Constant raster
+      {
+        data << Class( histogram.maximum, QColor(), QLocale().toString( histogram.maximum ) );
+      }
+
     }
 
     // assign colors from ramp

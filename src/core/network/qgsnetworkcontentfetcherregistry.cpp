@@ -22,6 +22,8 @@
 #include <QUrl>
 #include <QFileInfo>
 #include <QDir>
+#include <QMimeType>
+#include <QMimeDatabase>
 
 QgsNetworkContentFetcherRegistry::~QgsNetworkContentFetcherRegistry()
 {
@@ -167,9 +169,27 @@ void QgsFetchedContent::taskCompleted()
     QNetworkReply *reply = mFetchingTask->reply();
     if ( reply->error() == QNetworkReply::NoError )
     {
-      // keep extension, it can be useful when guessing file content
+
+      // keep or guess extension, it can be useful when guessing file content
       // (when loading this file in a Qt WebView for instance)
-      const QString extension = QFileInfo( reply->request().url().fileName() ).completeSuffix();
+
+      // extension from file name
+      QString extension = QFileInfo( reply->request().url().fileName() ).completeSuffix();
+
+      // extension from contentType header if not found from file name
+      const QString contentType = reply->header( QNetworkRequest::ContentTypeHeader ).toString();
+      if ( extension.isEmpty() && !contentType.isEmpty() )
+      {
+        const QList<QMimeType> mimeTypes = QMimeDatabase().allMimeTypes();
+        auto it = std::find_if( mimeTypes.constBegin(), mimeTypes.constEnd(), [ = ]( QMimeType mimeType )
+        {
+          return mimeType.name() == contentType;
+        } );
+        if ( it != mimeTypes.constEnd() )
+        {
+          extension = ( *it ).preferredSuffix();
+        }
+      }
 
       QTemporaryFile *tf = new QTemporaryFile( extension.isEmpty() ? QString( "XXXXXX" ) :
           QString( "%1/XXXXXX.%2" ).arg( QDir::tempPath(), extension ) );

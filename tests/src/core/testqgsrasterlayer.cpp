@@ -13,6 +13,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+
 #include "qgstest.h"
 #include <QObject>
 #include <QString>
@@ -91,6 +92,7 @@ class TestQgsRasterLayer : public QgsTest
     void multiBandColorRendererNoDataColor();
     void palettedRendererNoData();
     void palettedRendererNoDataColor();
+    void palettedRendererConstantInt();
     void singleBandGrayRendererNoData();
     void singleBandGrayRendererNoDataColor();
     void singleBandPseudoRendererNoData();
@@ -580,7 +582,7 @@ void TestQgsRasterLayer::buildExternalOverviews()
 
   // Check that the overview is Deflate compressed
   const QString ovrFilename( myTempPath + "landsat.tif.ovr" );
-  GDALDatasetH hDS = GDALOpen( ovrFilename.toLocal8Bit().constData(), GA_ReadOnly );
+  GDALDatasetH hDS = GDALOpen( ovrFilename.toUtf8().constData(), GA_ReadOnly );
   QVERIFY( hDS );
   const char *pszCompression = GDALGetMetadataItem( hDS, "COMPRESSION", "IMAGE_STRUCTURE" );
   QVERIFY( pszCompression && EQUAL( pszCompression, "DEFLATE" ) );
@@ -748,6 +750,20 @@ void TestQgsRasterLayer::palettedRendererNoDataColor()
   mMapSettings->setDestinationCrs( rl->crs() );
   mMapSettings->setExtent( rl->extent() );
   QVERIFY( render( QStringLiteral( "raster_palettedrenderer_nodata_color" ) ) );
+}
+
+void TestQgsRasterLayer::palettedRendererConstantInt()
+{
+  char data { 2 };
+  std::unique_ptr< QgsRasterLayer> rl = std::make_unique< QgsRasterLayer >( QStringLiteral( "MEM:::DATAPOINTER=0x%1,PIXELS=1,LINES=1,BANDS=1,DATATYPE=Byte" )
+                                        .arg( reinterpret_cast<quintptr>( &data ),
+                                            QT_POINTER_SIZE * 2, 16, QChar( '0' ) ).toStdString().c_str(),
+                                        QStringLiteral( "rl" ) );
+  Q_ASSERT( rl->isValid() );
+  const auto classData { QgsPalettedRasterRenderer::classDataFromRaster( rl->dataProvider(), 1 ) };
+  QCOMPARE( classData.size(), 1 );
+  QCOMPARE( classData.first().value, 2.0 );
+  rl.reset( );
 }
 
 void TestQgsRasterLayer::singleBandGrayRendererNoData()

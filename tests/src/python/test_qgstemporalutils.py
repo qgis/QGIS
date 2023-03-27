@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsTemporalUtils.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -11,7 +10,10 @@ __date__ = '13/3/2020'
 __copyright__ = 'Copyright 2020, The QGIS Project'
 
 import qgis  # NOQA
-
+from qgis.PyQt.QtCore import (QDate,
+                              QTime,
+                              QDateTime,
+                              Qt)
 from qgis.core import (QgsProject,
                        QgsTemporalUtils,
                        QgsRasterLayer,
@@ -19,13 +21,8 @@ from qgis.core import (QgsProject,
                        QgsInterval,
                        QgsUnitTypes,
                        QgsRasterLayerTemporalProperties)
-
-from qgis.PyQt.QtCore import (QDate,
-                              QTime,
-                              QDateTime,
-                              Qt)
-
 from qgis.testing import start_app, unittest
+
 from utilities import (unitTestDataPath)
 
 app = start_app()

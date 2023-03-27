@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 ***************************************************************************
     test_qgsarrowsymbollayer.py
@@ -21,13 +19,11 @@ __author__ = 'Hugo Mercier'
 __date__ = 'March 2016'
 __copyright__ = '(C) 2016, Hugo Mercier'
 
-import qgis  # NOQA
-
 import os
 
+import qgis  # NOQA
 from qgis.PyQt.QtCore import QSize, QDir
 from qgis.PyQt.QtGui import QColor, QPainter, QImage
-
 from qgis.core import (
     QgsVectorLayer,
     QgsSingleSymbolRenderer,
@@ -46,9 +42,9 @@ from qgis.core import (
     QgsRenderContext,
     QgsRenderChecker
 )
-
 from qgis.testing import start_app, unittest
 from qgis.testing.mocked import get_iface
+
 from utilities import unitTestDataPath
 
 # Convenience instances in case you may need them
@@ -290,7 +286,7 @@ class TestQgsArrowSymbolLayer(unittest.TestCase):
         return image
 
     def imageCheck(self, name, reference_image, image):
-        self.report += "<h2>Render {}</h2>\n".format(name)
+        self.report += f"<h2>Render {name}</h2>\n"
         temp_dir = QDir.tempPath() + '/'
         file_name = temp_dir + 'symbol_' + name + ".png"
         image.save(file_name, "PNG")
@@ -301,7 +297,7 @@ class TestQgsArrowSymbolLayer(unittest.TestCase):
         checker.setColorTolerance(2)
         result = checker.compareImages(name, 20)
         self.report += checker.report()
-        print((self.report))
+        print(self.report)
         return result
 
 

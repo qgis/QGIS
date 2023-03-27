@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsCoordinateTransform.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -16,9 +15,7 @@ from qgis.core import (QgsRectangle,
                        QgsCoordinateReferenceSystem,
                        QgsCoordinateTransform,
                        QgsCoordinateTransformContext,
-                       QgsDatumTransform,
-                       QgsProject,
-                       QgsProjUtils)
+                       QgsProject)
 from qgis.testing import start_app, unittest
 
 start_app()

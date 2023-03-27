@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsTreeWidgetItem.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -11,11 +10,10 @@ __date__ = '12/07/2016'
 __copyright__ = 'Copyright 2016, The QGIS Project'
 
 import qgis  # NOQA switch sip api
-
-from qgis.core import NULL
-from qgis.gui import QgsTreeWidgetItem, QgsTreeWidgetItemObject
 from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtWidgets import QTreeWidget
+from qgis.core import NULL
+from qgis.gui import QgsTreeWidgetItem, QgsTreeWidgetItemObject
 from qgis.testing import start_app, unittest
 
 try:

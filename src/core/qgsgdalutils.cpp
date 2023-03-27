@@ -94,7 +94,7 @@ gdal::dataset_unique_ptr QgsGdalUtils::createSingleBandTiffDataset( const QStrin
   }
 
   // Create the output file.
-  gdal::dataset_unique_ptr hDstDS( GDALCreate( hDriver, filename.toLocal8Bit().constData(), width, height, 1, dataType, nullptr ) );
+  gdal::dataset_unique_ptr hDstDS( GDALCreate( hDriver, filename.toUtf8().constData(), width, height, 1, dataType, nullptr ) );
   if ( !hDstDS )
   {
     return gdal::dataset_unique_ptr();

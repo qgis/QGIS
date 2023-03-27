@@ -1,4 +1,3 @@
-# coding=utf-8
 """"Base test for layer metadata models
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -13,13 +12,15 @@ __date__ = '2022-08-19'
 __copyright__ = 'Copyright 2022, ItOpen'
 
 import os
-from osgeo import ogr
+import unittest
 
+from osgeo import ogr
+from qgis.PyQt.QtCore import QCoreApplication, QTemporaryDir, QVariant, Qt
+from qgis.PyQt.QtTest import QAbstractItemModelTester
 from qgis.core import (
     QgsVectorLayer,
     QgsProviderRegistry,
     QgsWkbTypes,
-    QgsMapLayerType,
     QgsLayerMetadata,
     QgsProviderMetadata,
     QgsBox3d,
@@ -31,18 +32,11 @@ from qgis.core import (
     QgsFeature,
     QgsGeometry,
 )
-
 from qgis.gui import (
     QgsLayerMetadataResultsModel,
     QgsLayerMetadataResultsProxyModel,
 )
-
-from qgis.PyQt.QtTest import QAbstractItemModelTester
-
-from qgis.PyQt.QtCore import QCoreApplication, QTemporaryDir, QVariant, Qt
-from utilities import compareWkt, unitTestDataPath
 from qgis.testing import start_app, TestCase
-import unittest
 
 QGIS_APP = start_app()
 NUM_LAYERS = 20
@@ -80,11 +74,11 @@ class TestQgsLayerMetadataResultModels(TestCase):
             lyr.CreateField(ogr.FieldDefn('text_field', ogr.OFTString))
             f = ogr.Feature(lyr.GetLayerDefn())
             f['text_field'] = 'foo'
-            f.SetGeometry(ogr.CreateGeometryFromWkt('POINT(%s %s)' % (i, i + 0.01)))
+            f.SetGeometry(ogr.CreateGeometryFromWkt(f'POINT({i} {i + 0.01})'))
             lyr.CreateFeature(f)
             f = ogr.Feature(lyr.GetLayerDefn())
             f['text_field'] = 'bar'
-            f.SetGeometry(ogr.CreateGeometryFromWkt('POINT(%s %s)' % (i + 0.03, i + 0.04)))
+            f.SetGeometry(ogr.CreateGeometryFromWkt(f'POINT({i + 0.03} {i + 0.04})'))
             lyr.CreateFeature(f)
             f = None
 
@@ -143,7 +137,7 @@ class TestQgsLayerMetadataResultModels(TestCase):
         proxy_model.setFilterString('')
         self.assertEqual(proxy_model.rowCount(), len(self.conn.tables()))
         proxy_model.setFilterExtent(QgsRectangle(0, 0, 2, 2.001))
-        self.assertEqual(set([proxy_model.data(proxy_model.index(i, 0)) for i in range(proxy_model.rowCount())]), set(('layer_0', 'layer_1', 'linestring', 'polygon')))
+        self.assertEqual({proxy_model.data(proxy_model.index(i, 0)) for i in range(proxy_model.rowCount())}, {'layer_0', 'layer_1', 'linestring', 'polygon'})
 
         self.assertEqual(proxy_model.rowCount(), 4)
         model.reload()
@@ -158,7 +152,7 @@ class TestQgsLayerMetadataResultModels(TestCase):
 
         proxy_model.setFilterGeometryType(QgsWkbTypes.PolygonGeometry)
         proxy_model.setFilterGeometryTypeEnabled(True)
-        self.assertEqual(set([proxy_model.data(proxy_model.index(i, 0)) for i in range(proxy_model.rowCount())]), set(('polygon',)))
+        self.assertEqual({proxy_model.data(proxy_model.index(i, 0)) for i in range(proxy_model.rowCount())}, {'polygon'})
         proxy_model.setFilterGeometryTypeEnabled(False)
         self.assertEqual(proxy_model.rowCount(), len(self.conn.tables()))
 

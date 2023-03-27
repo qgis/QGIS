@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for edit widgets.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -11,13 +10,11 @@ __date__ = '20/05/2015'
 __copyright__ = 'Copyright 2015, The QGIS Project'
 
 import qgis  # NOQA
-
-from qgis.core import (QgsProject, QgsFeature, QgsGeometry, QgsPointXY, QgsVectorLayer, NULL, QgsField)
-from qgis.gui import QgsGui
-
-from qgis.testing import start_app, unittest
 from qgis.PyQt.QtCore import Qt, QVariant
 from qgis.PyQt.QtWidgets import QTextEdit, QTableWidgetItem
+from qgis.core import (QgsProject, QgsFeature, QgsGeometry, QgsPointXY, QgsVectorLayer, NULL, QgsField)
+from qgis.gui import QgsGui
+from qgis.testing import start_app, unittest
 
 start_app()
 

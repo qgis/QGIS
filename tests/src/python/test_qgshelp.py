@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsHelp class
 
 From build dir, run: ctest -R PyQgsHelp -V
@@ -13,10 +12,10 @@ __date__ = '2022-09-21'
 __copyright__ = 'Copyright 2022, Julien Cabieces'
 
 from qgis.PyQt.QtCore import QCoreApplication
-
 from qgis.core import QgsSettings
 from qgis.gui import QgsHelp
 from qgis.testing import start_app, unittest
+
 import mockedwebserver
 
 
@@ -45,7 +44,7 @@ class TestQgsHelp(unittest.TestCase):
         Tests returned url according to help key
         """
 
-        server_url = 'http://localhost:{}/'.format(TestQgsHelp.port)
+        server_url = f'http://localhost:{TestQgsHelp.port}/'
 
         QgsSettings().setValue(
             "help/helpSearchPath",
@@ -62,8 +61,8 @@ class TestQgsHelp(unittest.TestCase):
         handler.add('HEAD', '/first_search_path/error_url.html', 404, {})
         handler.add('HEAD', '/second_search_path/error_url.html', 404, {})
         with mockedwebserver.install_http_handler(handler):
-            self.assertEquals(server_url + "first_search_path/first_url.html", QgsHelp.helpUrl("first_url.html").toDisplayString())
-            self.assertEquals(server_url + "second_search_path/second_url.html", QgsHelp.helpUrl("second_url.html").toDisplayString())
+            self.assertEqual(server_url + "first_search_path/first_url.html", QgsHelp.helpUrl("first_url.html").toDisplayString())
+            self.assertEqual(server_url + "second_search_path/second_url.html", QgsHelp.helpUrl("second_url.html").toDisplayString())
             self.assertTrue(QgsHelp.helpUrl("error_url.html").toDisplayString().endswith("nohelp.html"))
 
 

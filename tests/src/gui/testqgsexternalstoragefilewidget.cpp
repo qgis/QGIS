@@ -71,18 +71,18 @@ class QgsTestExternalStorageStoredContent : public QgsExternalStorageStoredConte
 
     void store() override
     {
-      mStatus = Qgis::ContentStatus::Running;
+      setStatus( Qgis::ContentStatus::Running );
     }
 
     void cancel() override
     {
-      mStatus = Qgis::ContentStatus::Canceled;
+      setStatus( Qgis::ContentStatus::Canceled );
       emit canceled();
     };
 
     void error()
     {
-      mStatus = Qgis::ContentStatus::Failed;
+      setStatus( Qgis::ContentStatus::Failed );
       mErrorString = QStringLiteral( "error" );
       emit errorOccurred( mErrorString );
     }
@@ -94,7 +94,7 @@ class QgsTestExternalStorageStoredContent : public QgsExternalStorageStoredConte
 
     void finish()
     {
-      mStatus = Qgis::ContentStatus::Finished;
+      setStatus( Qgis::ContentStatus::Finished );
       emit stored();
     }
 

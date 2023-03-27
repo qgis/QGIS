@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsLayoutItemLegend.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -10,9 +9,11 @@ __author__ = '(C) 2017 by Nyall Dawson'
 __date__ = '24/10/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
 
+import os
+from time import sleep
+
 from qgis.PyQt.QtCore import QRectF, QDir
 from qgis.PyQt.QtGui import QColor
-
 from qgis.core import (QgsPrintLayout,
                        QgsLayoutItemLegend,
                        QgsLayoutItemMap,
@@ -37,16 +38,14 @@ from qgis.core import (QgsPrintLayout,
                        QgsMapThemeCollection,
                        QgsCategorizedSymbolRenderer,
                        QgsRendererCategory,
-                       QgsFillSymbol,
-                       QgsApplication)
+                       QgsFillSymbol)
 from qgis.testing import (start_app,
                           unittest
                           )
-from utilities import unitTestDataPath
+
 from qgslayoutchecker import QgsLayoutChecker
-import os
-from time import sleep
 from test_qgslayoutitem import LayoutItemTestCase
+from utilities import unitTestDataPath
 
 start_app()
 TEST_DATA_DIR = unitTestDataPath()

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsPointCloudAttributeByRampRenderer
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -11,7 +10,8 @@ __date__ = '09/11/2020'
 __copyright__ = 'Copyright 2020, The QGIS Project'
 
 import qgis  # NOQA
-
+from qgis.PyQt.QtCore import QDir, QSize, Qt
+from qgis.PyQt.QtXml import QDomDocument
 from qgis.core import (
     QgsProviderRegistry,
     QgsPointCloudLayer,
@@ -34,12 +34,8 @@ from qgis.core import (
     QgsColorRampLegendNode,
     QgsSimpleLegendNode
 )
-
-from qgis.PyQt.QtCore import QDir, QSize, Qt
-from qgis.PyQt.QtGui import QPainter
-from qgis.PyQt.QtXml import QDomDocument
-
 from qgis.testing import start_app, unittest
+
 from utilities import unitTestDataPath
 
 start_app()

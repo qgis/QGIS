@@ -9,13 +9,13 @@ __author__ = 'Tim Sutton (tim@linfiniti.com)'
 __date__ = '20/01/2011'
 __copyright__ = 'Copyright 2012, The QGIS Project'
 
-import qgis  # NOQA
-
 import os
-import sys
 import platform
-import tempfile
 import re
+import sys
+import tempfile
+
+import qgis  # NOQA
 
 try:
     from urllib2 import urlopen, HTTPError, URLError
@@ -118,7 +118,7 @@ def writeShape(theMemoryLayer, theFileName):
         myOptions,
         myLayerOptions,
         mySkipAttributesFlag)
-    assert myResult == QgsVectorFileWriter.NoError, 'Writing shape failed, Error {} ({})'.format(myResult, myErrorMessage)
+    assert myResult == QgsVectorFileWriter.NoError, f'Writing shape failed, Error {myResult} ({myErrorMessage})'
 
     return myFileName
 
@@ -194,7 +194,7 @@ def getTempfilePath(sufx='png'):
     Caller should delete tempfile if not used
     """
     tmp = tempfile.NamedTemporaryFile(
-        suffix=".{0}".format(sufx), delete=False)
+        suffix=f".{sufx}", delete=False)
     filepath = tmp.name
     tmp.close()
     return filepath
@@ -226,38 +226,38 @@ def mapSettingsString(ms):
     full_ext = ms.visibleExtent().toString()
 
     s = 'MapSettings...\n'
-    s += '  layers(): {0}\n'.format(
+    s += '  layers(): {}\n'.format(
         [layer.name() for layer in ms.layers()])
-    s += '  backgroundColor(): rgba {0},{1},{2},{3}\n'.format(
+    s += '  backgroundColor(): rgba {},{},{},{}\n'.format(
         ms.backgroundColor().red(), ms.backgroundColor().green(),
         ms.backgroundColor().blue(), ms.backgroundColor().alpha())
-    s += '  selectionColor(): rgba {0},{1},{2},{3}\n'.format(
+    s += '  selectionColor(): rgba {},{},{},{}\n'.format(
         ms.selectionColor().red(), ms.selectionColor().green(),
         ms.selectionColor().blue(), ms.selectionColor().alpha())
-    s += '  outputSize(): {0} x {1}\n'.format(
+    s += '  outputSize(): {} x {}\n'.format(
         ms.outputSize().width(), ms.outputSize().height())
-    s += '  outputDpi(): {0}\n'.format(ms.outputDpi())
-    s += '  mapUnits(): {0}\n'.format(ms.mapUnits())
-    s += '  scale(): {0}\n'.format(ms.scale())
-    s += '  mapUnitsPerPixel(): {0}\n'.format(ms.mapUnitsPerPixel())
-    s += '  extent():\n    {0}\n'.format(
+    s += f'  outputDpi(): {ms.outputDpi()}\n'
+    s += f'  mapUnits(): {ms.mapUnits()}\n'
+    s += f'  scale(): {ms.scale()}\n'
+    s += f'  mapUnitsPerPixel(): {ms.mapUnitsPerPixel()}\n'
+    s += '  extent():\n    {}\n'.format(
         ms.extent().toString().replace(' : ', '\n    '))
-    s += '  visibleExtent():\n    {0}\n'.format(
+    s += '  visibleExtent():\n    {}\n'.format(
         ms.visibleExtent().toString().replace(' : ', '\n    '))
-    s += '  fullExtent():\n    {0}\n'.format(full_ext.replace(' : ', '\n    '))
-    s += '  destinationCrs(): {0}\n'.format(
+    s += '  fullExtent():\n    {}\n'.format(full_ext.replace(' : ', '\n    '))
+    s += '  destinationCrs(): {}\n'.format(
         ms.destinationCrs().authid())
-    s += '  flag.Antialiasing: {0}\n'.format(
+    s += '  flag.Antialiasing: {}\n'.format(
         ms.testFlag(QgsMapSettings.Antialiasing))
-    s += '  flag.UseAdvancedEffects: {0}\n'.format(
+    s += '  flag.UseAdvancedEffects: {}\n'.format(
         ms.testFlag(QgsMapSettings.UseAdvancedEffects))
-    s += '  flag.ForceVectorOutput: {0}\n'.format(
+    s += '  flag.ForceVectorOutput: {}\n'.format(
         ms.testFlag(QgsMapSettings.ForceVectorOutput))
-    s += '  flag.DrawLabeling: {0}\n'.format(
+    s += '  flag.DrawLabeling: {}\n'.format(
         ms.testFlag(QgsMapSettings.DrawLabeling))
-    s += '  flag.DrawEditingInfo: {0}\n'.format(
+    s += '  flag.DrawEditingInfo: {}\n'.format(
         ms.testFlag(QgsMapSettings.DrawEditingInfo))
-    s += '  outputImageFormat(): {0}\n'.format(ms.outputImageFormat())
+    s += f'  outputImageFormat(): {ms.outputImageFormat()}\n'
     return s
 
 
@@ -313,7 +313,7 @@ def openInBrowserTab(url):
     else:
         # some Linux OS pause execution on webbrowser open, so background it
         cmd = 'import webbrowser;' \
-              'webbrowser.open_new_tab("{0}")'.format(url)
+              'webbrowser.open_new_tab("{}")'.format(url)
         subprocess.Popen([sys.executable, "-c", cmd],
                          stdout=subprocess.PIPE,
                          stderr=subprocess.STDOUT)
@@ -328,7 +328,7 @@ def printImportant(info):
 
     print(info)
     with open(os.path.join(tempfile.gettempdir(), 'ctest-important.log'), 'a+') as f:
-        f.write('{}\n'.format(info))
+        f.write(f'{info}\n')
 
 
 def waitServer(url, timeout=10):

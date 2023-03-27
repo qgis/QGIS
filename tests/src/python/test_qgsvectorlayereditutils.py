@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsVectorLayerEditUtils.
 
 From build dir, run:
@@ -36,7 +35,6 @@ from qgis.core import (Qgis,
                        QgsFields,
                        QgsGeometry,
                        QgsLineString,
-                       QgsPolygon,
                        QgsPoint,
                        QgsPointXY,
                        QgsCoordinateReferenceSystem,
@@ -52,11 +50,19 @@ from qgis.testing import start_app, unittest
 start_app()
 
 
-def createEmptyPolygonLayer():
-    layer = QgsVectorLayer("Polygon",
-                           "polygon", "memory")
+def createEmptyLayer(geomType):
+    layer = QgsVectorLayer(geomType,
+                           geomType.lower(), "memory")
     assert layer.isValid()
     return layer
+
+
+def createEmptyPolygonLayer():
+    return createEmptyLayer("Polygon")
+
+
+def createEmptyMultiPolygonLayer():
+    return createEmptyLayer("MultiPolygon")
 
 
 class TestQgsVectorLayerEditUtils(unittest.TestCase):

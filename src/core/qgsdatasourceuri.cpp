@@ -209,6 +209,10 @@ QgsDataSourceUri::QgsDataSourceUri( const QString &u )
       {
         QgsDebugMsg( QStringLiteral( "gsslib ignored" ) );
       }
+      else if ( pname.startsWith( QgsHttpHeaders::PARAM_PREFIX ) )
+      {
+        mHttpHeaders.insert( pname, pval );
+      }
       else
       {
         QgsDebugMsgLevel( "parameter \"" + pname + "\":\"" + pval + "\" added", 4 );

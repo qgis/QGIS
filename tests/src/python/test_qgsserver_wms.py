@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsServer WMS.
 
 From build dir, run: ctest -R PyQgsServerWMS -V
@@ -14,8 +13,8 @@ __author__ = 'Alessandro Pasotti'
 __date__ = '25/05/2015'
 __copyright__ = 'Copyright 2015, The QGIS Project'
 
-import os
 import json
+import os
 
 # Needed on Qt 5 so that the serialization of XML is consistent among all executions
 os.environ['QT_HASH_SEED'] = '1'
@@ -53,7 +52,7 @@ class TestQgsServerWMSTestBase(QgsServerTestBase):
         if not os.path.exists(project):
             project = os.path.join(self.testdata_path, project)
         assert os.path.exists(project), "Project file not found: " + project
-        query_string = 'https://www.qgis.org/?MAP=%s&SERVICE=WMS&VERSION=%s&REQUEST=%s' % (urllib.parse.quote(project), version, request)
+        query_string = f'https://www.qgis.org/?MAP={urllib.parse.quote(project)}&SERVICE=WMS&VERSION={version}&REQUEST={request}'
         if extra is not None:
             query_string += extra
         header, body = self._execute_request(query_string)
@@ -86,7 +85,7 @@ class TestQgsServerWMSTestBase(QgsServerTestBase):
             response = re.sub(RE_STRIP_EXTENTS, b'*****', response)
             expected = re.sub(RE_STRIP_EXTENTS, b'*****', expected)
 
-        msg = "request %s failed.\nQuery: %s\nExpected file: %s\nResponse:\n%s" % (query_string, request, reference_path, response.decode('utf-8'))
+        msg = "request {} failed.\nQuery: {}\nExpected file: {}\nResponse:\n{}".format(query_string, request, reference_path, response.decode('utf-8'))
         self.assertXMLEqual(response, expected, msg=msg, raw=raw)
 
 
@@ -115,7 +114,7 @@ class TestQgsServerWMS(TestQgsServerWMSTestBase):
         rh = response.headers()
         rk = sorted(rh.keys())
         for k in rk:
-            headers.append(("%s: %s" % (k, rh[k])).encode('utf-8'))
+            headers.append((f"{k}: {rh[k]}").encode())
 
         reference_path = os.path.join(self.testdata_path, 'wms_getcapabilities_rewriting.txt')
         f = open(reference_path, 'rb')
@@ -224,7 +223,7 @@ class TestQgsServerWMS(TestQgsServerWMSTestBase):
         response = re.sub(RE_STRIP_UNCHECKABLE, b'*****', response)
         expected = re.sub(RE_STRIP_UNCHECKABLE, b'*****', expected)
 
-        self.assertXMLEqual(response, expected, msg="request %s failed.\nQuery: %s\nExpected file: %s\nResponse:\n%s" % (query_string, request, reference_path, response.decode('utf-8')))
+        self.assertXMLEqual(response, expected, msg="request {} failed.\nQuery: {}\nExpected file: {}\nResponse:\n{}".format(query_string, request, reference_path, response.decode('utf-8')))
 
     def test_wms_getcapabilities_project(self):
         """WMS GetCapabilities without map parameter"""
@@ -240,7 +239,7 @@ class TestQgsServerWMS(TestQgsServerWMSTestBase):
         project = self.testdata_path + "test_project_inspire.qgs"
         assert os.path.exists(project), "Project file not found: " + project
 
-        query_string = '?MAP=%s&SERVICE=WMS&VERSION=1.3.0&REQUEST=%s' % (urllib.parse.quote(project), request)
+        query_string = f'?MAP={urllib.parse.quote(project)}&SERVICE=WMS&VERSION=1.3.0&REQUEST={request}'
         header, body = self._execute_request(query_string)
         response = header + body
         reference_path = self.testdata_path + request.lower() + '_inspire.txt'
@@ -250,7 +249,7 @@ class TestQgsServerWMS(TestQgsServerWMSTestBase):
         f.close()
         response = re.sub(RE_STRIP_UNCHECKABLE, b'', response)
         expected = re.sub(RE_STRIP_UNCHECKABLE, b'', expected)
-        self.assertXMLEqual(response, expected, msg="request %s failed.\nQuery: %s\nExpected file: %s\nResponse:\n%s" % (query_string, request, reference_path, response.decode('utf-8')))
+        self.assertXMLEqual(response, expected, msg="request {} failed.\nQuery: {}\nExpected file: {}\nResponse:\n{}".format(query_string, request, reference_path, response.decode('utf-8')))
 
     def test_project_wms_inspire(self):
         """Test some WMS request"""
@@ -390,7 +389,7 @@ class TestQgsServerWMS(TestQgsServerWMSTestBase):
 
         # read getcapabilities document
         docPath = self.testdata_path + 'getcapabilities.txt'
-        f = open(docPath, 'r')
+        f = open(docPath)
         doc = f.read()
         f.close()
 

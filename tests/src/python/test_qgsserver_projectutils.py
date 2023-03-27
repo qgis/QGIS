@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsServerProject.
 
 ctest -R PyQgsServerProjectUtils -V
@@ -15,9 +14,10 @@ __copyright__ = 'Copyright 2016, The QGIS Project'
 
 import os
 
-from qgis.server import QgsServerProjectUtils
 from qgis.core import QgsProject
+from qgis.server import QgsServerProjectUtils
 from qgis.testing import unittest
+
 from utilities import unitTestDataPath
 
 

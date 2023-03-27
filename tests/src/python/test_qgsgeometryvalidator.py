@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsGeometryValidator.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -10,18 +9,16 @@ __author__ = 'Nyall Dawson'
 __date__ = '03/10/2016'
 __copyright__ = 'Copyright 2016, The QGIS Project'
 
+from qgis.PyQt.QtTest import QSignalSpy
 from qgis.core import (
     QgsGeometry,
     QgsGeometryValidator,
     QgsPointXY
 )
-
 from qgis.testing import (
     unittest,
     start_app
 )
-
-from qgis.PyQt.QtTest import QSignalSpy
 
 app = start_app()
 

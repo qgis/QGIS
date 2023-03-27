@@ -146,15 +146,27 @@ class ExtractLabelSink : public QgsLabelSink
       }
 
       const QgsFeatureId fid = label->getFeaturePart()->featureId();
-      if ( settings.placement == Qgis::LabelPlacement::Curved ||
-           settings.placement == Qgis::LabelPlacement::PerimeterCurved )
+      switch ( settings.placement )
       {
-        if ( !mCurvedWarningPushed.contains( layerId ) )
+        case Qgis::LabelPlacement::Curved:
+        case Qgis::LabelPlacement::PerimeterCurved:
         {
-          mCurvedWarningPushed << layerId;
-          mFeedback->pushWarning( QObject::tr( "Curved placement not supported, skipping labels from layer %1" ).arg( mMapLayerNames.value( layerId ) ) );
+          if ( !mCurvedWarningPushed.contains( layerId ) )
+          {
+            mCurvedWarningPushed << layerId;
+            mFeedback->pushWarning( QObject::tr( "Curved placement not supported, skipping labels from layer %1" ).arg( mMapLayerNames.value( layerId ) ) );
+          }
+          return;
         }
-        return;
+
+        case Qgis::LabelPlacement::AroundPoint:
+        case Qgis::LabelPlacement::OverPoint:
+        case Qgis::LabelPlacement::Line:
+        case Qgis::LabelPlacement::Horizontal:
+        case Qgis::LabelPlacement::Free:
+        case Qgis::LabelPlacement::OrderedPositionsAroundPoint:
+        case Qgis::LabelPlacement::OutsidePolygons:
+          break;
       }
 
       QgsTextLabelFeature *labelFeature = dynamic_cast<QgsTextLabelFeature *>( label->getFeaturePart()->feature() );

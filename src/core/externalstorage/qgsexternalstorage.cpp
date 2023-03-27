@@ -17,9 +17,14 @@
 
 void QgsExternalStorageContent::reportError( const QString &errorMsg )
 {
-  mStatus = Qgis::ContentStatus::Failed;
+  setStatus( Qgis::ContentStatus::Failed );
   mErrorString = errorMsg;
   emit errorOccurred( mErrorString );
+}
+
+void QgsExternalStorageContent::setStatus( Qgis::ContentStatus status )
+{
+  mStatus = status;
 }
 
 Qgis::ContentStatus QgsExternalStorageContent::status() const

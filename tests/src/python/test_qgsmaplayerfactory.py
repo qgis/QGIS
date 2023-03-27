@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsMapLayerFactory.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -10,10 +9,9 @@ __author__ = 'Nyall Dawson'
 __date__ = '10/03/2021'
 __copyright__ = 'Copyright 2021, The QGIS Project'
 
-import qgis  # NOQA
-
 import os
 
+import qgis  # NOQA
 from qgis.core import (
     QgsMapLayerFactory,
     QgsMapLayerType,
@@ -27,6 +25,7 @@ from qgis.core import (
     QgsCoordinateTransformContext
 )
 from qgis.testing import start_app, unittest
+
 from utilities import unitTestDataPath
 
 start_app()

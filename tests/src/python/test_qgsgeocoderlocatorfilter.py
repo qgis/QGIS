@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsGeocoderLocatorFilter.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -22,7 +21,6 @@ from qgis.core import (
     QgsCoordinateReferenceSystem,
     QgsLocatorContext,
     QgsFeedback,
-    QgsGeocoderContext,
     QgsRectangle
 )
 from qgis.gui import (

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsExpression.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -11,11 +10,10 @@ __date__ = '4/11/2012'
 __copyright__ = 'Copyright 2012, The QGIS Project'
 
 import qgis  # NOQA
-
 from qgis.PyQt.QtCore import QVariant
+from qgis.core import QgsExpression, QgsFeatureRequest, QgsFields, QgsExpressionContext, NULL
 from qgis.testing import unittest
 from qgis.utils import qgsfunction
-from qgis.core import QgsExpression, QgsFeatureRequest, QgsFields, QgsExpressionContext, NULL
 
 
 class TestQgsExpressionCustomFunctions(unittest.TestCase):
@@ -174,7 +172,7 @@ class TestQgsExpressionCustomFunctions(unittest.TestCase):
     def testReferencedColumnsSet(self):
         QgsExpression.registerFunction(self.referenced_columns_set)
         exp = QgsExpression('referenced_columns_set()')
-        self.assertEqual(set(exp.referencedColumns()), set(['a', 'b']))
+        self.assertEqual(set(exp.referencedColumns()), {'a', 'b'})
 
     def testHandlesNull(self):
         context = QgsExpressionContext()

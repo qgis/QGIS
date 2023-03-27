@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 ***************************************************************************
     test_qgsgeometrygeneratorsymbollayer.py
@@ -21,10 +19,9 @@ __author__ = 'Matthias Kuhn'
 __date__ = 'December 2015'
 __copyright__ = '(C) 2015, Matthias Kuhn'
 
-import qgis  # NOQA
-
 import os
 
+import qgis  # NOQA
 from qgis.PyQt.QtCore import QSize, QDir, QPointF
 from qgis.PyQt.QtGui import QColor, QImage, QPainter, QPolygonF
 from qgis.core import (
@@ -53,9 +50,9 @@ from qgis.core import (
     QgsSymbolLayer,
     QgsProperty
 )
-
 from qgis.testing import start_app, unittest
 from qgis.testing.mocked import get_iface
+
 from utilities import unitTestDataPath
 
 # Convenience instances in case you may need them
@@ -486,8 +483,42 @@ class TestQgsGeometryGeneratorSymbolLayerV2(unittest.TestCase):
         self.report += renderchecker.report()
         self.assertTrue(res)
 
+    def test_clipped_results_with_z(self):
+        """
+        See https://github.com/qgis/QGIS/issues/51796
+        """
+        lines = QgsVectorLayer('LineString?crs=epsg:2154', 'Lines', 'memory')
+        self.assertTrue(lines.isValid())
+        f = QgsFeature()
+        f.setGeometry(QgsGeometry.fromWkt('LineStringZ (704425.82266868802253157 7060014.33574043028056622 19.51000000000000156, 704439.59844558802433312 7060023.7300771102309227 19.69000000000000128, 704441.67482289997860789 7060020.65665366966277361 19.62999999999999901, 704428.333267995971255 7060011.65915509033948183 19.42000000000000171)'))
+        lines.dataProvider().addFeature(f)
+
+        subsymbol = QgsFillSymbol.createSimple({'color': '#0000ff', 'line_style': 'no'})
+
+        parent_generator = QgsGeometryGeneratorSymbolLayer.create(
+            {'geometryModifier': 'single_sided_buffer($geometry,-0.32, 1, 2)'})
+        parent_generator.setSymbolType(QgsSymbol.Fill)
+
+        parent_generator.setSubSymbol(subsymbol)
+
+        geom_symbol = QgsLineSymbol()
+        geom_symbol.changeSymbolLayer(0, parent_generator)
+        lines.renderer().setSymbol(geom_symbol)
+
+        mapsettings = QgsMapSettings(self.mapsettings)
+        mapsettings.setDestinationCrs(lines.crs())
+        mapsettings.setExtent(QgsRectangle(704433.77, 7060006.64, 704454.78, 7060027.95))
+        mapsettings.setLayers([lines])
+
+        renderchecker = QgsMultiRenderChecker()
+        renderchecker.setMapSettings(mapsettings)
+        renderchecker.setControlName('expected_geometrygenerator_z_clipping')
+        res = renderchecker.runTest('geometrygenerator_z_clipping')
+        self.report += renderchecker.report()
+        self.assertTrue(res)
+
     def imageCheck(self, name, reference_image, image):
-        self.report += "<h2>Render {}</h2>\n".format(name)
+        self.report += f"<h2>Render {name}</h2>\n"
         temp_dir = QDir.tempPath() + '/'
         file_name = temp_dir + name + ".png"
         image.save(file_name, "PNG")
@@ -497,7 +528,7 @@ class TestQgsGeometryGeneratorSymbolLayerV2(unittest.TestCase):
         checker.setColorTolerance(2)
         result = checker.compareImages(name, 0)
         self.report += checker.report()
-        print((self.report))
+        print(self.report)
         return result
 
 

@@ -473,6 +473,13 @@ class QgsStaticExpressionFunction : public QgsExpressionFunction
 
     bool usesGeometry( const QgsExpressionNodeFunction *node ) const override;
 
+    /**
+     * Set a function that will be called when determining if the function requires feature geometry or not.
+     *
+     * \since QGIS 3.30
+     */
+    void setUsesGeometryFunction( const std::function< bool( const QgsExpressionNodeFunction *node )> &usesGeometry );
+
     QSet<QString> referencedColumns( const QgsExpressionNodeFunction *node ) const override;
 
     bool isStatic( const QgsExpressionNodeFunction *node, QgsExpression *parent, const QgsExpressionContext *context ) const override;
@@ -486,6 +493,7 @@ class QgsStaticExpressionFunction : public QgsExpressionFunction
      * and if all of them are static, it will be assumed that the function is static as well.
      */
     void setIsStaticFunction( const std::function< bool ( const QgsExpressionNodeFunction *, QgsExpression *, const QgsExpressionContext * ) > &isStatic );
+
 
     /**
      * Tag this function as either static or not static.

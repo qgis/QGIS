@@ -153,7 +153,16 @@ QgsRasterBlock *QgsSingleBandGrayRenderer::block( int bandNo, const QgsRectangle
     }
     if ( mAlphaBand > 0 )
     {
-      currentAlpha *= alphaBlock->value( i ) / 255.0;
+      const double alpha = alphaBlock->value( i );
+      if ( alpha == 0 )
+      {
+        outputBlock->setColor( i, myDefaultColor );
+        continue;
+      }
+      else
+      {
+        currentAlpha *= alpha / 255.0;
+      }
     }
 
     if ( mContrastEnhancement )

@@ -340,8 +340,6 @@ Creates the symbol layer
 
     virtual void renderPolyline( const QPolygonF &points, QgsSymbolRenderContext &context );
 
-    virtual bool isCompatibleWithSymbol( QgsSymbol *symbol ) const;
-
     virtual bool canCauseArtifactsBetweenAdjacentTiles() const;
 
 

@@ -2980,17 +2980,27 @@ bool QgsSymbolLayerUtils::createExpressionElement( QDomDocument &doc, QDomElemen
 
 bool QgsSymbolLayerUtils::createFunctionElement( QDomDocument &doc, QDomElement &element, const QString &function )
 {
-  // let's use QgsExpression to generate the SLD for the function
-  const QgsExpression expr( function );
-  if ( expr.hasParserError() )
+  // else rule is not a valid expression
+  if ( function == QLatin1String( "ELSE" ) )
   {
-    element.appendChild( doc.createComment( "Parser Error: " + expr.parserErrorString() + " - Expression was: " + function ) );
-    return false;
-  }
-  const QDomElement filterElem = QgsOgcUtils::expressionToOgcFilter( expr, doc );
-  if ( !filterElem.isNull() )
+    const QDomElement filterElem = QgsOgcUtils::elseFilterExpression( doc );
     element.appendChild( filterElem );
-  return true;
+    return true;
+  }
+  else
+  {
+    // let's use QgsExpression to generate the SLD for the function
+    const QgsExpression expr( function );
+    if ( expr.hasParserError() )
+    {
+      element.appendChild( doc.createComment( "Parser Error: " + expr.parserErrorString() + " - Expression was: " + function ) );
+      return false;
+    }
+    const QDomElement filterElem = QgsOgcUtils::expressionToOgcFilter( expr, doc );
+    if ( !filterElem.isNull() )
+      element.appendChild( filterElem );
+    return true;
+  }
 }
 
 bool QgsSymbolLayerUtils::functionFromSldElement( QDomElement &element, QString &function )

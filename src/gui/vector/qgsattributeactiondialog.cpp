@@ -249,7 +249,7 @@ QString QgsAttributeActionDialog::textForType( QgsAction::ActionType type )
     case QgsAction::GenericPython:
       return tr( "Python" );
     case QgsAction::Mac:
-      return tr( "Mac" );
+      return tr( "macOS" );
     case QgsAction::Windows:
       return tr( "Windows" );
     case QgsAction::Unix:

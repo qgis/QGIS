@@ -184,6 +184,15 @@ with default values for the geometry name, srs name, honourAsisOrientation and i
          otherwise null QDomElement
 %End
 
+    static QDomElement elseFilterExpression( QDomDocument &doc );
+%Docstring
+Creates an ElseFilter from ``doc``
+
+:return: valid OGC ElseFilter QDomElement
+
+.. versionadded:: 3.28
+%End
+
     static QDomElement expressionToOgcExpression( const QgsExpression &exp,
         QDomDocument &doc,
         QgsOgcUtils::GMLVersion gmlVersion,

@@ -221,6 +221,13 @@ class CORE_EXPORT QgsOgcUtils
         bool requiresFilterElement = false );
 
     /**
+     * Creates an ElseFilter from \a doc
+     * \returns valid OGC ElseFilter QDomElement
+     * \since QGIS 3.28
+     */
+    static QDomElement elseFilterExpression( QDomDocument &doc );
+
+    /**
      * Creates an OGC expression XML element from the \a exp expression.
      * \returns valid OGC expression QDomElement on success or a valid \verbatim <Filter> \endverbatim QDomElement when \a requiresFilterElement is set.
      * otherwise null QDomElement

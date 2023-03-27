@@ -34,7 +34,7 @@ QgsFontOptionsWidget::QgsFontOptionsWidget( QWidget *parent )
   mTableReplacements->horizontalHeader()->setSectionResizeMode( QHeaderView::Stretch );
 
   mTableUserFonts->setHorizontalHeaderLabels( {tr( "File" ), tr( "Font Families" ) } );
-  mTableUserFonts->horizontalHeader()->setSectionResizeMode( QHeaderView::Stretch );
+  mTableUserFonts->horizontalHeader()->setSectionResizeMode( QHeaderView::Interactive );
 
   const QMap< QString, QString > replacements = QgsApplication::fontManager()->fontFamilyReplacements();
   mTableReplacements->setRowCount( replacements.size() );

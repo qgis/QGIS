@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for core QgsFontUtils class
 
 From build dir: ctest -R PyQgsFontUtils -V
@@ -12,12 +11,13 @@ __author__ = 'Larry Shaffer'
 __date__ = '2014/02/19'
 __copyright__ = 'Copyright 2014, The QGIS Project'
 
+from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import QgsFontUtils, QgsSettings
 from qgis.testing import (
     start_app,
     unittest
 )
-from qgis.PyQt.QtCore import QCoreApplication
+
 from utilities import (
     getTestFontFamily,
     loadTestFonts

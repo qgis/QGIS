@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for OGR GeoPackage QgsAbastractProviderConnection API.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -13,11 +12,9 @@ __copyright__ = 'Copyright 2019, The QGIS Project'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-import os
 import shutil
-from osgeo import gdal  # NOQA
 
-from test_qgsproviderconnection_base import TestPyQgsProviderConnectionBase
+from osgeo import gdal  # NOQA
 from qgis.PyQt.QtCore import QTemporaryDir, QVariant
 from qgis.core import (
     Qgis,
@@ -35,6 +32,8 @@ from qgis.core import (
     QgsCodedValue
 )
 from qgis.testing import unittest
+
+from test_qgsproviderconnection_base import TestPyQgsProviderConnectionBase
 from utilities import unitTestDataPath
 
 TEST_DATA_DIR = unitTestDataPath()
@@ -71,16 +70,16 @@ class TestPyQgsProviderConnectionGpkg(unittest.TestCase, TestPyQgsProviderConnec
     def setUpClass(cls):
         """Run before all tests"""
         TestPyQgsProviderConnectionBase.setUpClass()
-        gpkg_original_path = '{}/qgis_server/test_project_wms_grouped_layers.gpkg'.format(TEST_DATA_DIR)
+        gpkg_original_path = f'{TEST_DATA_DIR}/qgis_server/test_project_wms_grouped_layers.gpkg'
         cls.temp_dir = QTemporaryDir()
-        cls.gpkg_path = '{}/test_project_wms_grouped_layers.gpkg'.format(cls.temp_dir.path())
+        cls.gpkg_path = f'{cls.temp_dir.path()}/test_project_wms_grouped_layers.gpkg'
         shutil.copy(gpkg_original_path, cls.gpkg_path)
 
-        gpkg_domains_original_path = '{}/domains.gpkg'.format(TEST_DATA_DIR)
-        cls.gpkg_domains_path = '{}/domains.gpkg'.format(cls.temp_dir.path())
+        gpkg_domains_original_path = f'{TEST_DATA_DIR}/domains.gpkg'
+        cls.gpkg_domains_path = f'{cls.temp_dir.path()}/domains.gpkg'
         shutil.copy(gpkg_domains_original_path, cls.gpkg_domains_path)
 
-        vl = QgsVectorLayer('{}|layername=cdb_lines'.format(cls.gpkg_path), 'test', 'ogr')
+        vl = QgsVectorLayer(f'{cls.gpkg_path}|layername=cdb_lines', 'test', 'ogr')
         assert vl.isValid()
         cls.uri = cls.gpkg_path
 
@@ -88,7 +87,7 @@ class TestPyQgsProviderConnectionGpkg(unittest.TestCase, TestPyQgsProviderConnec
         """Create a connection from a layer uri and retrieve it"""
 
         md = QgsProviderRegistry.instance().providerMetadata('ogr')
-        vl = QgsVectorLayer('{}|layername=cdb_lines'.format(self.gpkg_path), 'test', 'ogr')
+        vl = QgsVectorLayer(f'{self.gpkg_path}|layername=cdb_lines', 'test', 'ogr')
         conn = md.createConnection(vl.dataProvider().dataSourceUri(), {})
         self.assertEqual(conn.uri(), self.gpkg_path)
 
@@ -97,7 +96,7 @@ class TestPyQgsProviderConnectionGpkg(unittest.TestCase, TestPyQgsProviderConnec
 
         md = QgsProviderRegistry.instance().providerMetadata('ogr')
         conn = md.createConnection(self.uri, {})
-        self.assertEqual(conn.tableUri('', 'cdb_lines'), '{}|layername=cdb_lines'.format(self.gpkg_path))
+        self.assertEqual(conn.tableUri('', 'cdb_lines'), f'{self.gpkg_path}|layername=cdb_lines')
         vl = QgsVectorLayer(conn.tableUri('', 'cdb_lines'), 'lines', 'ogr')
         self.assertTrue(vl.isValid())
 
@@ -209,8 +208,8 @@ class TestPyQgsProviderConnectionGpkg(unittest.TestCase, TestPyQgsProviderConnec
         """
         Test creating field domains
         """
-        gpkg_domains_original_path = '{}/domains.gpkg'.format(TEST_DATA_DIR)
-        temp_domains_path = '{}/domains_create.gpkg'.format(self.temp_dir.path())
+        gpkg_domains_original_path = f'{TEST_DATA_DIR}/domains.gpkg'
+        temp_domains_path = f'{self.temp_dir.path()}/domains_create.gpkg'
         shutil.copy(gpkg_domains_original_path, temp_domains_path)
 
         md = QgsProviderRegistry.instance().providerMetadata('ogr')
@@ -267,8 +266,8 @@ class TestPyQgsProviderConnectionGpkg(unittest.TestCase, TestPyQgsProviderConnec
         """
         Test setting field domains
         """
-        gpkg_domains_original_path = '{}/bug_17878.gpkg'.format(TEST_DATA_DIR)
-        temp_domains_path = '{}/domain_set.gpkg'.format(self.temp_dir.path())
+        gpkg_domains_original_path = f'{TEST_DATA_DIR}/bug_17878.gpkg'
+        temp_domains_path = f'{self.temp_dir.path()}/domain_set.gpkg'
         shutil.copy(gpkg_domains_original_path, temp_domains_path)
 
         md = QgsProviderRegistry.instance().providerMetadata('ogr')
@@ -330,8 +329,8 @@ class TestPyQgsProviderConnectionGpkg(unittest.TestCase, TestPyQgsProviderConnec
                                       'POLYGON((612694.674 5807839.658, 612668.715 5808176.815, 612547.354 5808414.452, 612509.527 5808425.73, 612522.932 5808473.02, 612407.901 5808519.082, 612505.836 5808632.763, 612463.449 5808781.115, 612433.57 5808819.061, 612422.685 5808980.281999, 612473.423 5808995.424999, 612333.856 5809647.731, 612307.316 5809781.446, 612267.099 5809852.803, 612308.221 5810040.995, 613920.397 5811079.478, 613947.16 5811129.3, 614022.726 5811154.456, 614058.436 5811260.36, 614194.037 5811331.972, 614307.176 5811360.06, 614343.842 5811323.238, 614443.449 5811363.03, 614526.199 5811059.031, 614417.83 5811057.603, 614787.296 5809648.422, 614772.062 5809583.246, 614981.93 5809245.35, 614811.885 5809138.271, 615063.452 5809100.954, 615215.476 5809029.413, 615469.441 5808883.282, 615569.846 5808829.522, 615577.239 5808806.242, 615392.964 5808736.873, 615306.34 5808662.171, 615335.445 5808290.588, 615312.192 5808290.397, 614890.582 5808077.956, 615018.854 5807799.895, 614837.326 5807688.363, 614435.698 5807646.847, 614126.351 5807661.841, 613555.813 5807814.801, 612826.66 5807964.828, 612830.113 5807856.315, 612694.674 5807839.658))'])
 
     def test_rename_field(self):
-        gpkg_domains_original_path = '{}/bug_17878.gpkg'.format(TEST_DATA_DIR)
-        temp_domains_path = '{}/rename_field.gpkg'.format(self.temp_dir.path())
+        gpkg_domains_original_path = f'{TEST_DATA_DIR}/bug_17878.gpkg'
+        temp_domains_path = f'{self.temp_dir.path()}/rename_field.gpkg'
         shutil.copy(gpkg_domains_original_path, temp_domains_path)
 
         md = QgsProviderRegistry.instance().providerMetadata('ogr')

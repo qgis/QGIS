@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsSvgSourceLineEdit
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -10,12 +9,13 @@ __author__ = 'Nyall Dawson'
 __date__ = '19/07/2018'
 __copyright__ = 'Copyright 2018, The QGIS Project'
 
-import qgis  # NOQA
 import os
-from qgis.gui import QgsSvgSourceLineEdit
 
+import qgis  # NOQA
 from qgis.PyQt.QtTest import QSignalSpy
+from qgis.gui import QgsSvgSourceLineEdit
 from qgis.testing import start_app, unittest
+
 from utilities import unitTestDataPath
 
 start_app()

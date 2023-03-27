@@ -15,6 +15,7 @@
 #include "qgstest.h"
 #include <QDomDocument>
 #include <QFile>
+#include <QTemporaryFile>
 //header for class being tested
 #include <qgsrulebasedrenderer.h>
 
@@ -1211,6 +1212,56 @@ class TestQgsRuleBasedRenderer: public QgsTest
       QVERIFY( ok );
       QCOMPARE( exp, "(TRUE) AND ((\"field_name\" = 6) AND (@map_scale >= 2000))" );
     }
+
+    void testElseRuleSld()
+    {
+      QgsRuleBasedRenderer::Rule *rootRule = new QgsRuleBasedRenderer::Rule( nullptr );
+      std::unique_ptr< QgsRuleBasedRenderer > renderer = std::make_unique< QgsRuleBasedRenderer >( rootRule );
+
+      QgsRuleBasedRenderer::Rule *rule1 = new QgsRuleBasedRenderer::Rule( QgsSymbol::defaultSymbol( QgsWkbTypes::GeometryType::PointGeometry ), 0, 0, "\"field_name\" = 1" );
+      QgsRuleBasedRenderer::Rule *rule2 = new QgsRuleBasedRenderer::Rule( QgsSymbol::defaultSymbol( QgsWkbTypes::GeometryType::PointGeometry ), 0, 0, "\"field_name\" = 6" );
+      QgsRuleBasedRenderer::Rule *ruleElse = new QgsRuleBasedRenderer::Rule( QgsSymbol::defaultSymbol( QgsWkbTypes::GeometryType::PointGeometry ), 0, 0, "ELSE" );
+
+      Q_ASSERT( ruleElse->isElse() );
+
+      rootRule->appendChild( rule1 );
+      rootRule->appendChild( rule2 );
+      rootRule->appendChild( ruleElse );
+
+      bool ok;
+
+      QString exp = renderer->legendKeyToExpression( ruleElse->ruleKey(), nullptr, ok );
+      QVERIFY( ok );
+      QCOMPARE( exp, "NOT ((\"field_name\" = 1) OR (\"field_name\" = 6))" );
+
+      QgsFields fields;
+      std::unique_ptr<QgsVectorLayer> vl = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?crs=epsg:4326&field=field_name:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
+      vl->setRenderer( renderer.release() );
+      QString error;
+      QDomDocument dom;
+      vl->exportSldStyle( dom, error );
+
+      const QString sld = dom.toString();
+
+      Q_ASSERT( sld.contains( QStringLiteral( "<se:ElseFilter" ) ) );
+
+      QTemporaryFile sldFile;
+      sldFile.open();
+      sldFile.write( sld.toUtf8() );
+      sldFile.close();
+
+      // Recreate the test layer for round trip test
+      vl = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?crs=epsg:4326&field=field_name:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
+      vl->loadSldStyle( sldFile.fileName(), ok );
+
+      Q_ASSERT( ok );
+
+      QgsRuleBasedRenderer *renderer2 = static_cast<QgsRuleBasedRenderer *>( vl->renderer() );
+      ruleElse = renderer2->rootRule()->children().last();
+      Q_ASSERT( ruleElse->isElse() );
+
+    }
+
 
   private:
     void xml2domElement( const QString &testFile, QDomDocument &doc )

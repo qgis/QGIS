@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS python layer provider test.
 
 This module is a Python implementation of (a clone of) the core memory
@@ -13,42 +12,28 @@ __author__ = 'Alessandro Pasotti'
 __date__ = '2018-03-18'
 __copyright__ = 'Copyright 2018, The QGIS Project'
 
+from qgis.PyQt.QtCore import QVariant
 from qgis.core import (
     Qgis,
-    QgsField,
     QgsFields,
-    QgsLayerDefinition,
-    QgsPointXY,
-    QgsReadWriteContext,
     QgsVectorLayer,
     QgsFeatureRequest,
     QgsFeature,
     QgsGeometry,
     QgsProject,
-    QgsWkbTypes,
     QgsExpression,
     QgsExpressionContext,
     QgsExpressionContextUtils,
-    NULL,
     QgsCoordinateTransform,
-    QgsMemoryProviderUtils,
-    QgsCoordinateReferenceSystem,
     QgsRectangle,
-    QgsTestUtils,
     QgsVectorDataProvider,
     QgsAbstractFeatureSource,
     QgsAbstractFeatureIterator,
     QgsFeatureIterator,
-    QgsApplication,
-    QgsProviderRegistry,
-    QgsProviderMetadata,
-    QgsGeometryEngine,
     QgsSpatialIndex,
     QgsDataProvider,
     QgsCsException,
 )
-
-from qgis.PyQt.QtCore import QVariant
 
 
 class PyFeatureIterator(QgsAbstractFeatureIterator):
@@ -176,7 +161,7 @@ class PyFeatureIterator(QgsAbstractFeatureIterator):
 class PyFeatureSource(QgsAbstractFeatureSource):
 
     def __init__(self, provider):
-        super(PyFeatureSource, self).__init__()
+        super().__init__()
         self._provider = provider
         self._features = provider._features
 

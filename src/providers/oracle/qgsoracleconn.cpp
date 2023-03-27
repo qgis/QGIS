@@ -781,6 +781,8 @@ QString QgsOracleConn::databaseTypeFilter( const QString &alias, QString geomCol
     case QgsWkbTypes::LineStringZ:
     case QgsWkbTypes::CircularString:
     case QgsWkbTypes::CircularStringZ:
+    case QgsWkbTypes::CompoundCurve:
+    case QgsWkbTypes::CompoundCurveZ:
     case QgsWkbTypes::MultiLineString:
     case QgsWkbTypes::MultiLineString25D:
     case QgsWkbTypes::MultiLineStringZ:
@@ -827,7 +829,7 @@ QgsWkbTypes::Type QgsOracleConn::wkbTypeFromDatabase( int gtype )
       case 1:
         return QgsWkbTypes::Point;
       case 2:
-        return QgsWkbTypes::LineString;
+        return QgsWkbTypes::CompoundCurve;
       case 3:
         return QgsWkbTypes::Polygon;
       case 4:
@@ -836,7 +838,7 @@ QgsWkbTypes::Type QgsOracleConn::wkbTypeFromDatabase( int gtype )
       case 5:
         return QgsWkbTypes::MultiPoint;
       case 6:
-        return QgsWkbTypes::MultiLineString;
+        return QgsWkbTypes::MultiCurve;
       case 7:
         return QgsWkbTypes::MultiPolygon;
       default:
@@ -849,20 +851,20 @@ QgsWkbTypes::Type QgsOracleConn::wkbTypeFromDatabase( int gtype )
     switch ( t )
     {
       case 1:
-        return QgsWkbTypes::Point25D;
+        return QgsWkbTypes::PointZ;
       case 2:
-        return QgsWkbTypes::LineString25D;
+        return QgsWkbTypes::CompoundCurveZ;
       case 3:
-        return QgsWkbTypes::Polygon25D;
+        return QgsWkbTypes::PolygonZ;
       case 4:
         QgsDebugMsg( QStringLiteral( "geometry collection type %1 unsupported" ).arg( gtype ) );
         return QgsWkbTypes::Unknown;
       case 5:
-        return QgsWkbTypes::MultiPoint25D;
+        return QgsWkbTypes::MultiPointZ;
       case 6:
-        return QgsWkbTypes::MultiLineString25D;
+        return QgsWkbTypes::MultiCurveZ;
       case 7:
-        return QgsWkbTypes::MultiPolygon25D;
+        return QgsWkbTypes::MultiPolygonZ;
       default:
         QgsDebugMsg( QStringLiteral( "gtype %1 unsupported" ).arg( gtype ) );
         return QgsWkbTypes::Unknown;

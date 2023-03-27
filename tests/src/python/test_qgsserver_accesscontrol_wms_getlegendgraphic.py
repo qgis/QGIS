@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsServer.
 
 ctest -R PyQgsServerAccessControlWMSGetlegendgraphic -V
@@ -12,11 +11,12 @@ __author__ = 'Stephane Brunner'
 __date__ = '28/08/2015'
 __copyright__ = 'Copyright 2015, The QGIS Project'
 
-import qgis  # NOQA
-
-from qgis.testing import unittest
-from qgis.PyQt.QtCore import QSize
 import urllib.parse
+
+import qgis  # NOQA
+from qgis.PyQt.QtCore import QSize
+from qgis.testing import unittest
+
 from test_qgsserver_accesscontrol import TestQgsServerAccessControl
 
 

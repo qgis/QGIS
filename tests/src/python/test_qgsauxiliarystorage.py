@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for Auxiliary Storage.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -10,10 +9,9 @@ __author__ = 'Paul Blottiere'
 __date__ = '06/09/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
 
-import qgis  # NOQA
-
 import os
 
+import qgis  # NOQA
 from qgis.PyQt.QtCore import QTemporaryFile, QVariant
 from qgis.core import (QgsAuxiliaryStorage,
                        QgsAuxiliaryLayer,
@@ -35,7 +33,8 @@ from qgis.core import (QgsAuxiliaryStorage,
                        QgsDiagramLayerSettings,
                        QgsSingleCategoryDiagramRenderer)
 from qgis.testing import start_app, unittest
-from utilities import unitTestDataPath, writeShape
+
+from utilities import writeShape
 
 start_app()
 
@@ -846,10 +845,10 @@ class TestQgsAuxiliaryStorage(unittest.TestCase):
 
         qgd = p1.auxiliaryStorage().currentFileName()
 
-        layer = QgsVectorLayer(f"{qgd}|layername={vl0.id()}", 'test', u'ogr')
+        layer = QgsVectorLayer(f"{qgd}|layername={vl0.id()}", 'test', 'ogr')
         self.assertTrue(layer.isValid())
 
-        layer = QgsVectorLayer(f"{qgd}|layername={vl1.id()}", 'test', u'ogr')
+        layer = QgsVectorLayer(f"{qgd}|layername={vl1.id()}", 'test', 'ogr')
         self.assertTrue(layer.isValid())
 
         # remove layer from project
@@ -868,11 +867,11 @@ class TestQgsAuxiliaryStorage(unittest.TestCase):
         qgd = p2.auxiliaryStorage().currentFileName()
 
         uri = f"{qgd}|layername={vl0.id()}"
-        layer = QgsVectorLayer(uri, 'test', u'ogr')
+        layer = QgsVectorLayer(uri, 'test', 'ogr')
         self.assertFalse(layer.isValid())
 
         uri = f"{qgd}|layername={vl1.id()}"
-        layer = QgsVectorLayer(uri, 'test', u'ogr')
+        layer = QgsVectorLayer(uri, 'test', 'ogr')
         self.assertTrue(layer.isValid())
 
 

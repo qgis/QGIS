@@ -140,9 +140,6 @@ class OtbChoiceWidgetWrapper(WidgetWrapper):
                     self.__setWrapperVisibility(wrapper, v)
 
 
-from qgis.core import QgsProcessingParameterDefinition
-
-
 class OtbParameterChoice(QgsProcessingParameterDefinition):
 
     def __init__(self, name='', description='', options=[], default=None, isSource=False,

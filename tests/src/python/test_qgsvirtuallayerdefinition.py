@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsVirtualLayerDefinition
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -10,17 +9,16 @@ __author__ = 'Hugo Mercier'
 __date__ = '10/12/2015'
 __copyright__ = 'Copyright 2015, The QGIS Project'
 
-import qgis  # NOQA
+import os
 
+import qgis  # NOQA
+from qgis.PyQt.QtCore import QVariant, QUrl
 from qgis.core import (QgsField,
                        QgsWkbTypes,
                        QgsFields,
                        QgsVirtualLayerDefinition
                        )
-
 from qgis.testing import unittest
-from qgis.PyQt.QtCore import QVariant, QUrl
-import os
 
 
 def strToUrl(s):

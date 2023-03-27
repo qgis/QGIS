@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 ***************************************************************************
     test_qgshashlinesymbollayer.py
@@ -21,15 +19,12 @@ __author__ = 'Nyall Dawson'
 __date__ = 'March 2019'
 __copyright__ = '(C) 2019, Nyall Dawson'
 
-import qgis  # NOQA
-
 import os
-from utilities import unitTestDataPath
 
-from qgis.PyQt.QtCore import QDir, Qt, QSize
+import qgis  # NOQA
+from qgis.PyQt.QtCore import QDir, QSize
 from qgis.PyQt.QtGui import QImage, QColor, QPainter
 from qgis.PyQt.QtXml import QDomDocument
-
 from qgis.core import (QgsGeometry,
                        QgsFillSymbol,
                        QgsRenderContext,
@@ -38,13 +33,8 @@ from qgis.core import (QgsGeometry,
                        QgsRenderChecker,
                        QgsReadWriteContext,
                        QgsSymbolLayerUtils,
-                       QgsSimpleMarkerSymbolLayer,
                        QgsLineSymbolLayer,
-                       QgsMarkerLineSymbolLayer,
-                       QgsMarkerSymbol,
-                       QgsGeometryGeneratorSymbolLayer,
                        QgsSymbol,
-                       QgsFontMarkerSymbolLayer,
                        QgsMultiRenderChecker,
                        QgsLineSymbol,
                        QgsSymbolLayer,
@@ -57,8 +47,9 @@ from qgis.core import (QgsGeometry,
                        QgsVectorLayer,
                        QgsSingleSymbolRenderer
                        )
-
 from qgis.testing import unittest, start_app
+
+from utilities import unitTestDataPath
 
 start_app()
 TEST_DATA_DIR = unitTestDataPath()
@@ -134,7 +125,7 @@ class TestQgsHashedLineSymbolLayer(unittest.TestCase):
         rendered_image = self.renderGeometry(s, g)
         assert self.imageCheck('line_hash_no_rotate', 'line_hash_no_rotate', rendered_image)
 
-    def testHashAverageAngle(self):
+    def testHashAverageAngleInterval(self):
         s = QgsLineSymbol()
         s.deleteSymbolLayer(0)
 
@@ -157,7 +148,7 @@ class TestQgsHashedLineSymbolLayer(unittest.TestCase):
         rendered_image = self.renderGeometry(s, g)
         assert self.imageCheck('line_hash_average_angle', 'line_hash_average_angle', rendered_image)
 
-    def testHashAverageAngle(self):
+    def testHashAverageAngleCentralPoint(self):
         s = QgsLineSymbol()
         s.deleteSymbolLayer(0)
 
@@ -475,7 +466,7 @@ class TestQgsHashedLineSymbolLayer(unittest.TestCase):
         return image
 
     def imageCheck(self, name, reference_image, image):
-        self.report += "<h2>Render {}</h2>\n".format(name)
+        self.report += f"<h2>Render {name}</h2>\n"
         temp_dir = QDir.tempPath() + '/'
         file_name = temp_dir + 'symbol_' + name + ".png"
         image.save(file_name, "PNG")
@@ -486,7 +477,7 @@ class TestQgsHashedLineSymbolLayer(unittest.TestCase):
         checker.setColorTolerance(2)
         result = checker.compareImages(name, 20)
         self.report += checker.report()
-        print((self.report))
+        print(self.report)
         return result
 
 

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for core additions
 
 From build dir, run: ctest -R PyPythonRepr -V
@@ -13,9 +12,7 @@ __date__ = '05.06.2018'
 __copyright__ = 'Copyright 2015, The QGIS Project'
 
 import qgis  # NOQA
-
 from PyQt5.QtCore import QVariant
-from qgis.testing import unittest, start_app
 from qgis.core import (
     QgsGeometry,
     QgsPoint,
@@ -64,6 +61,7 @@ from qgis.core import (
     QgsRendererRange,
     QgsRendererCategory
 )
+from qgis.testing import unittest, start_app
 
 start_app()
 

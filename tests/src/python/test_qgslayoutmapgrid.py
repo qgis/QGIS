@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsLayoutItemMapGrid.
 
 .. note. This program is free software; you can redistribute it and/or modify
@@ -11,24 +10,22 @@ __date__ = '20/10/2017'
 __copyright__ = 'Copyright 2012, The QGIS Project'
 
 import qgis  # NOQA
-
 from qgis.PyQt.QtCore import QRectF, QDir
 from qgis.PyQt.QtGui import QPainter, QColor
 from qgis.PyQt.QtTest import QSignalSpy
-
 from qgis.core import (QgsLayoutItemMap,
                        QgsLayoutItemMapGrid,
                        QgsRectangle,
                        QgsLayout,
                        QgsProperty,
                        QgsLayoutObject,
-                       QgsFontUtils,
                        QgsTextFormat,
                        QgsProject,
                        QgsCoordinateReferenceSystem)
 from qgis.testing import start_app, unittest
-from utilities import unitTestDataPath, getTestFont
+
 from qgslayoutchecker import QgsLayoutChecker
+from utilities import unitTestDataPath, getTestFont
 
 start_app()
 TEST_DATA_DIR = unitTestDataPath()
