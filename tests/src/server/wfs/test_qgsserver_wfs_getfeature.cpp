@@ -51,9 +51,9 @@ void TestQgsServerWfsGetFeature::cleanupTestCase()
 void TestQgsServerWfsGetFeature::nullValueProperty()
 {
   // init server iface
-  QgsCapabilitiesCache cache;
   QgsServiceRegistry registry;
   QgsServerSettings settings;
+  QgsCapabilitiesCache cache( settings.capabilitiesCacheSize() );
   QgsServerInterfaceImpl interface( &cache, &registry, &settings );
 
   // init project

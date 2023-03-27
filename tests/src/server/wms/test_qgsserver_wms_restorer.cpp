@@ -57,9 +57,9 @@ void TestQgsServerWmsRestorer::restorer_layer()
   const QgsWms::QgsWmsParameters parameters( query );
 
   // init context
-  QgsCapabilitiesCache cache;
   QgsServiceRegistry registry;
   QgsServerSettings settings;
+  QgsCapabilitiesCache cache( settings.capabilitiesCacheSize() );
   QgsServerInterfaceImpl interface( &cache, &registry, &settings );
 
   QgsWms::QgsWmsRenderContext context( &project, &interface );
