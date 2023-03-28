@@ -215,7 +215,7 @@ std::unique_ptr< QgsTextRendererUtils::CurvePlacementProperties > QgsTextRendere
     return output;
   }
 
-  const int characterCount = metrics.count();
+  int characterCount = metrics.count();
 
   if ( direction == RespectPainterOrientation && !isSecondAttempt )
   {
@@ -234,7 +234,15 @@ std::unique_ptr< QgsTextRendererUtils::CurvePlacementProperties > QgsTextRendere
       double characterStartX, characterStartY;
       if ( !nextCharPosition( characterWidth, pathDistances[endindex], x, y, numPoints, endindex, distance, characterStartX, characterStartY, endLabelX, endLabelY ) )
       {
-        return output;
+        if ( flags & QgsTextRendererUtils::CurvedTextFlag::TruncateStringWhenLineIsTooShort )
+        {
+          characterCount = i + 1;
+          break;
+        }
+        else
+        {
+          return output;
+        }
       }
       if ( i == 0 )
       {
@@ -289,8 +297,16 @@ std::unique_ptr< QgsTextRendererUtils::CurvePlacementProperties > QgsTextRendere
     double characterEndY = 0;
     if ( !nextCharPosition( characterWidth, pathDistances[index], x, y, numPoints, index, offsetAlongSegment, characterStartX, characterStartY, characterEndX, characterEndY ) )
     {
-      output->graphemePlacement.clear();
-      return output;
+      if ( flags & QgsTextRendererUtils::CurvedTextFlag::TruncateStringWhenLineIsTooShort )
+      {
+        characterCount = i + 1;
+        break;
+      }
+      else
+      {
+        output->graphemePlacement.clear();
+        return output;
+      }
     }
 
     // Calculate angle from the start of the character to the end based on start/end of character

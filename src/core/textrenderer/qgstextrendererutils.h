@@ -148,6 +148,7 @@ class CORE_EXPORT QgsTextRendererUtils
      */
     enum class CurvedTextFlag : int
     {
+      TruncateStringWhenLineIsTooShort = 1 << 0, //!< When a string is too long for the line, truncate characters instead of aborting the placement
       UseBaselinePlacement = 1 << 1, //!< Generate placement based on the character baselines instead of centers
       UprightCharactersOnly = 1 << 2, //!< Permit upright characters only. If not present then upside down text placement is permitted.
     };
