@@ -86,6 +86,20 @@ class GUI_EXPORT QgsMapTip : public QWidget
      */
     void applyFontSettings();
 
+    /**
+     * Returns the html that would be displayed in a maptip for a given layer. If the layer has features, the first feature is used
+     * to evaluate the expressions.
+     * \since QGIS 3.32
+     */
+    static QString vectorMapTipPreviewText( QgsMapLayer *layer, QgsMapCanvas *mapCanvas, const QString &mapTemplate, const QString &displayExpression );
+
+    /**
+     * Returns the html that would be displayed in a maptip for a given layer. The center pixel of the raster is used to
+     * evaluate the expressions.
+     * \since QGIS 3.32
+     */
+    static QString rasterMapTipPreviewText( QgsMapLayer *layer, QgsMapCanvas *mapCanvas, const QString &mapTemplate );
+
   private slots:
     void onLinkClicked( const QUrl &url );
     void resizeContent();

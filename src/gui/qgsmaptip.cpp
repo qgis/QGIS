@@ -379,3 +379,71 @@ void QgsMapTip::onLinkClicked( const QUrl &url )
 {
   QDesktopServices::openUrl( url );
 }
+
+
+QString QgsMapTip::vectorMapTipPreviewText( QgsMapLayer *layer, QgsMapCanvas *mapCanvas, const QString &mapTemplate, const QString &displayExpression )
+{
+  // Only spatial layers can have map tips
+  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
+  if ( !vlayer || !vlayer->isSpatial() )
+    return QString();
+
+  // If no map tip template or display expression is set, return an empty string
+  if ( mapTemplate.isEmpty() && displayExpression.isEmpty() )
+    return QString();
+
+  // Create an expression context
+  QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( vlayer ) );
+  context.appendScope( QgsExpressionContextUtils::mapSettingsScope( mapCanvas->mapSettings() ) );
+
+  // Get the first feature if any, and add it to the expression context
+  QgsFeature previewFeature;
+  if ( vlayer->featureCount() > 0 )
+  {
+    QgsFeatureIterator it = vlayer->getFeatures( QgsFeatureRequest().setLimit( 1 ) );
+    it.nextFeature( previewFeature );
+  }
+  else
+  {
+    previewFeature = QgsFeature( vlayer->fields() );
+  }
+  context.setFeature( previewFeature );
+
+  // Generate the map tip text from the context and the mapTipTemplate/displayExpression
+  QString tipText;
+  if ( mapTemplate.isEmpty() )
+  {
+    QgsExpression exp( displayExpression );
+    exp.prepare( &context );
+    tipText = exp.evaluate( &context ).toString();
+  }
+  else
+  {
+    tipText = QgsExpression::replaceExpressionText( mapTemplate, &context );
+  }
+
+  // Insert the map tip text into the html template
+  return QgsMapTip::htmlText( tipText );
+
+}
+
+QString QgsMapTip::rasterMapTipPreviewText( QgsMapLayer *layer, QgsMapCanvas *mapCanvas, const QString &mapTemplate )
+{
+  QgsRasterLayer *rlayer = qobject_cast<QgsRasterLayer *>( layer );
+  if ( !rlayer || mapTemplate.isEmpty() )
+    return QString();
+
+  // Create an expression context
+  QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( layer ) );
+  context.appendScope( QgsExpressionContextUtils::mapSettingsScope( mapCanvas->mapSettings() ) );
+
+  // Get the position of the center of the layer, and add it to the expression context
+  const QgsPointXY mappedPosition { layer->extent().center() };
+  context.appendScope( QgsExpressionContextUtils::mapLayerPositionScope( mappedPosition ) );
+
+  // Generate the map tip text from the context and the mapTipTemplate
+  const QString tipText = QgsExpression::replaceExpressionText( mapTemplate, &context );
+
+  // Insert the map tip text into the html template
+  return QgsMapTip::htmlText( tipText );
+}
