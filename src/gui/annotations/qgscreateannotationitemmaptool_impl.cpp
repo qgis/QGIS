@@ -28,6 +28,7 @@
 #include "qgsadvanceddigitizingdockwidget.h"
 #include "qgsapplication.h"
 #include "qgsrecentstylehandler.h"
+#include "qgscurvepolygon.h"
 
 ///@cond PRIVATE
 
