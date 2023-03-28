@@ -272,7 +272,7 @@ class TestQgsAnnotationLineTextItem(unittest.TestCase):
     def imageCheck(self, name, reference_image, image):
         TestQgsAnnotationLineTextItem.report += f"<h2>Render {name}</h2>\n"
         temp_dir = QDir.tempPath() + '/'
-        file_name = temp_dir + 'patch_' + name + ".png"
+        file_name = temp_dir + 'annotation_' + name + ".png"
         image.save(file_name, "PNG")
         checker = QgsRenderChecker()
         checker.setControlPathPrefix("annotation_layer")

@@ -290,7 +290,13 @@ void QgsTextRenderer::drawDocumentOnLine( const QPolygonF &line, const QgsTextFo
   QgsPrecalculatedTextMetrics metrics( graphemes, std::move( characterWidths ), std::move( characterHeights ), std::move( characterDescents ) );
   metrics.setGraphemeFormats( graphemeFormats );
 
-  std::unique_ptr< QgsTextRendererUtils::CurvePlacementProperties > placement = QgsTextRendererUtils::generateCurvedTextPlacement( metrics, labelBaselineCurve, offsetAlongLine );
+  std::unique_ptr< QgsTextRendererUtils::CurvePlacementProperties > placement = QgsTextRendererUtils::generateCurvedTextPlacement(
+        metrics, labelBaselineCurve, offsetAlongLine,
+        QgsTextRendererUtils::RespectPainterOrientation,
+        -1, -1,
+        QgsTextRendererUtils::CurvedTextFlag::UseBaselinePlacement
+        | QgsTextRendererUtils::CurvedTextFlag::UprightCharactersOnly );
+
   if ( placement->graphemePlacement.empty() )
     return;
 
