@@ -216,10 +216,19 @@ void QgsCodeEditor::keyPressEvent( QKeyEvent *event )
 
   // Ctrl+Alt+F: reformat code
   const bool canReformat = languageCapabilities() & Qgis::ScriptLanguageCapability::Reformat;
-  if ( canReformat && ctrlModifier && altModifier && event->key() == Qt::Key_F )
+  if ( !isReadOnly() && canReformat && ctrlModifier && altModifier && event->key() == Qt::Key_F )
   {
     event->accept();
     reformatCode();
+    return;
+  }
+
+  // Toggle comment when user presses  Ctrl+:
+  const bool canToggle = languageCapabilities() & Qgis::ScriptLanguageCapability::ToggleComment;
+  if ( !isReadOnly() && canToggle && ctrlModifier && event->key() == Qt::Key_Colon )
+  {
+    event->accept();
+    toggleComment();
     return;
   }
 

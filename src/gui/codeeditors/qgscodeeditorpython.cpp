@@ -221,15 +221,6 @@ void QgsCodeEditorPython::keyPressEvent( QKeyEvent *event )
   {
     return QgsCodeEditor::keyPressEvent( event );
   }
-  const bool ctrlModifier = event->modifiers() & Qt::ControlModifier;
-
-  // Toggle comment when user presses  Ctrl+:
-  if ( ctrlModifier && event->key() == Qt::Key_Colon )
-  {
-    event->accept();
-    toggleComment();
-    return;
-  }
 
   const QgsSettings settings;
 
