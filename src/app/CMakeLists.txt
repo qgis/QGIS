@@ -272,6 +272,9 @@ set(QGIS_APP_SRCS
   gps/qgsgpsmarker.cpp
   gps/qgsgpstoolbar.cpp
 
+  sensor/qgssensortablewidget.cpp
+  sensor/qgsprojectsensorsettingswidget.cpp
+
   project/qgsprojectelevationsettingswidget.cpp
 
   pluginmanager/qgspluginmanager.cpp
@@ -525,6 +528,7 @@ target_include_directories(qgis_app PUBLIC
   ${CMAKE_SOURCE_DIR}/src/app/layout
   ${CMAKE_SOURCE_DIR}/src/app/pluginmanager
   ${CMAKE_SOURCE_DIR}/src/app/gps
+  ${CMAKE_SOURCE_DIR}/src/app/sensor
   ${CMAKE_SOURCE_DIR}/src/app/dwg
   ${CMAKE_SOURCE_DIR}/src/app/maptools
   ${CMAKE_SOURCE_DIR}/src/app/mesh
