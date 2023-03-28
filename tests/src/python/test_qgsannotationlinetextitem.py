@@ -205,6 +205,37 @@ class TestQgsAnnotationLineTextItem(unittest.TestCase):
 
         self.assertTrue(self.imageCheck('linetext_item', 'linetext_item', image))
 
+    def testRenderLineTruncate(self):
+        item = QgsAnnotationLineTextItem('my text', QgsLineString(((12, 13), (13, 13.1), (14, 12))))
+
+        format = QgsTextFormat.fromQFont(getTestFont('Bold'))
+        format.setColor(QColor(255, 0, 0))
+        format.setOpacity(150 / 255)
+        format.setSize(75)
+        item.setFormat(format)
+
+        settings = QgsMapSettings()
+        settings.setDestinationCrs(QgsCoordinateReferenceSystem('EPSG:4326'))
+        settings.setExtent(QgsRectangle(11.9, 11.9, 14.5, 14))
+        settings.setOutputSize(QSize(600, 300))
+
+        settings.setFlag(QgsMapSettings.Antialiasing, False)
+
+        rc = QgsRenderContext.fromMapSettings(settings)
+        image = QImage(600, 300, QImage.Format_ARGB32)
+        image.setDotsPerMeterX(int(96 / 25.4 * 1000))
+        image.setDotsPerMeterY(int(96 / 25.4 * 1000))
+        image.fill(QColor(255, 255, 255))
+        painter = QPainter(image)
+        rc.setPainter(painter)
+
+        try:
+            item.render(rc, None)
+        finally:
+            painter.end()
+
+        self.assertTrue(self.imageCheck('linetext_item_truncate', 'linetext_item_truncate', image))
+
     def testRenderLineTextExpression(self):
         item = QgsAnnotationLineTextItem('[% 1 + 1.5 %]', QgsLineString(((12, 13), (13, 13.1), (14, 12))))
 
