@@ -3020,10 +3020,10 @@ static QVariant fcnSplitGeometry( const QVariantList &values, const QgsExpressio
 {
   QgsGeometry initGeom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
   QgsGeometry inGeom = initGeom;
-  if ( inGeom.isNull() || inGeom.type() == QgsWkbTypes::PointGeometry )
+  if ( inGeom.isNull() || inGeom.type() == Qgis::GeometryType::Point )
     return QVariant::fromValue( initGeom );
   QgsGeometry splitGeom = QgsExpressionUtils::getGeometry( values.at( 1 ), parent );
-  if ( splitGeom.isNull() || splitGeom.type() == QgsWkbTypes::PointGeometry )
+  if ( splitGeom.isNull() )
     return QVariant::fromValue( initGeom );
 
   QVector< QgsGeometry > outGeoms = initGeom.asGeometryCollection();
@@ -3055,15 +3055,12 @@ static QVariant fcnSplitGeometry( const QVariantList &values, const QgsExpressio
 
   for ( auto splitPart = splitGeom.const_parts_begin(); splitPart != splitGeom.const_parts_end(); ++splitPart )
   {
-    QgsGeometry partGeom( ( *splitPart )->clone() );
     QVector<QgsPoint> splitter;
-    for ( auto pointIt = partGeom.vertices_begin(); pointIt != partGeom.vertices_end(); ++pointIt )
+    for ( auto pointIt = splitPart->vertices_begin(); pointIt != splitPart->vertices_end(); ++pointIt )
       splitter.append( ( *pointIt ) );
-    if ( splitter.size() < 2 )
-      continue;
-    if ( partGeom.type() == QgsWkbTypes::PolygonGeometry )
+    if ( splitPart->type() == QgsWkbTypes::PolygonGeometry )
     {
-      QgsPoint firstVertex = partGeom.vertexAt( 0 );
+      QgsPoint firstVertex = splitPart->vertexAt( 0 );
       if ( splitter.last() != firstVertex )
         splitter.append( firstVertex );
     }
