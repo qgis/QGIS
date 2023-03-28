@@ -99,6 +99,7 @@ A text editor based on QScintilla2.
     enum class Flag
     {
       CodeFolding,
+      ImmediatelyUpdateHistory,
     };
 
     typedef QFlags<QgsCodeEditor::Flag> Flags;

@@ -51,12 +51,13 @@ const QgsSettingsEntryBool *QgsCodeEditorPython::settingBlackNormalizeQuotes = n
 ///@endcond PRIVATE
 
 
-QgsCodeEditorPython::QgsCodeEditorPython( QWidget *parent, const QList<QString> &filenames, Mode mode )
+QgsCodeEditorPython::QgsCodeEditorPython( QWidget *parent, const QList<QString> &filenames, Mode mode, Flags flags )
   : QgsCodeEditor( parent,
                    QString(),
                    false,
                    false,
-                   QgsCodeEditor::Flag::CodeFolding, mode )
+                   flags,
+                   mode )
   , mAPISFilesList( filenames )
 {
   if ( !parent )

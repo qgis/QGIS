@@ -761,7 +761,11 @@ QStringList QgsCodeEditor::history() const
 void QgsCodeEditor::runCommand( const QString &command, bool skipHistory )
 {
   if ( !skipHistory )
+  {
     updateHistory( { command } );
+    if ( mFlags & QgsCodeEditor::Flag::ImmediatelyUpdateHistory )
+      writeHistoryFile();
+  }
 
   if ( mInterpreter )
     mInterpreter->exec( command );

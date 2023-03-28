@@ -71,10 +71,11 @@ class GUI_EXPORT QgsCodeEditorPython : public QgsCodeEditor
      * \param parent The parent QWidget
      * \param filenames The list of apis files to load for the Python lexer
      * \param mode code editor mode (since QGIS 3.30)
+     * \param flags code editor flags (since QGIS 3.32)
      * \since QGIS 2.6
      */
     QgsCodeEditorPython( QWidget *parent SIP_TRANSFERTHIS = nullptr, const QList<QString> &filenames = QList<QString>(),
-                         QgsCodeEditor::Mode mode = QgsCodeEditor::Mode::ScriptEditor );
+                         QgsCodeEditor::Mode mode = QgsCodeEditor::Mode::ScriptEditor, QgsCodeEditor::Flags flags = QgsCodeEditor::Flag::CodeFolding );
 
     Qgis::ScriptLanguage language() const override;
     Qgis::ScriptLanguageCapabilities languageCapabilities() const override;

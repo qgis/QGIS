@@ -31,13 +31,14 @@ code autocompletion.
 
 
     QgsCodeEditorPython( QWidget *parent /TransferThis/ = 0, const QList<QString> &filenames = QList<QString>(),
-                         QgsCodeEditor::Mode mode = QgsCodeEditor::Mode::ScriptEditor );
+                         QgsCodeEditor::Mode mode = QgsCodeEditor::Mode::ScriptEditor, QgsCodeEditor::Flags flags = QgsCodeEditor::Flag::CodeFolding );
 %Docstring
 Construct a new Python editor.
 
 :param parent: The parent QWidget
 :param filenames: The list of apis files to load for the Python lexer
 :param mode: code editor mode (since QGIS 3.30)
+:param flags: code editor flags (since QGIS 3.32)
 
 .. versionadded:: 2.6
 %End
