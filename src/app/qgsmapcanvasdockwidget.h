@@ -173,8 +173,8 @@ class APP_EXPORT QgsMapCanvasDockWidget : public QgsDockWidget, private Ui::QgsM
     QgsMapCanvas *mMainCanvas = nullptr;
     QMenu *mMenu = nullptr;
     QList<QAction *> mMenuPresetActions;
-    QRadioButton *mSyncExtentRadio = nullptr;
-    QRadioButton *mSyncSelectionRadio = nullptr;
+    QCheckBox *mSyncExtentCheck = nullptr;
+    QCheckBox *mSyncSelectionCheck = nullptr;
     QgsScaleComboBox *mScaleCombo = nullptr;
     QgsDoubleSpinBox *mRotationEdit = nullptr;
     QgsDoubleSpinBox *mMagnificationEdit = nullptr;
@@ -206,8 +206,8 @@ class QgsMapSettingsAction: public QWidgetAction
 
     QgsMapSettingsAction( QWidget *parent = nullptr );
 
-    QRadioButton *syncExtentRadio() { return mSyncExtentRadio; }
-    QRadioButton *syncSelectionRadio() { return mSyncSelectionRadio; }
+    QCheckBox *syncExtentCheck() { return mSyncExtentCheck; }
+    QCheckBox *syncSelectionCheck() { return mSyncSelectionCheck; }
     QgsScaleComboBox *scaleCombo() { return mScaleCombo; }
     QgsDoubleSpinBox *rotationSpinBox() { return mRotationWidget; }
     QgsDoubleSpinBox *magnifierSpinBox() { return mMagnifierWidget; }
@@ -215,8 +215,8 @@ class QgsMapSettingsAction: public QWidgetAction
     QCheckBox *syncScaleCheckBox() { return mSyncScaleCheckBox; }
 
   private:
-    QRadioButton *mSyncSelectionRadio = nullptr;
-    QRadioButton *mSyncExtentRadio = nullptr;
+    QCheckBox *mSyncSelectionCheck = nullptr;
+    QCheckBox *mSyncExtentCheck = nullptr;
     QgsScaleComboBox *mScaleCombo = nullptr;
     QgsDoubleSpinBox *mRotationWidget = nullptr;
     QgsDoubleSpinBox *mMagnifierWidget = nullptr;
