@@ -123,29 +123,34 @@ QgsMapCanvasDockWidget::QgsMapCanvasDockWidget( const QString &name, QWidget *pa
   mActionShowLabels->setChecked( true );
   connect( mActionShowLabels, &QAction::toggled, this, &QgsMapCanvasDockWidget::showLabels );
 
-
-  mSyncExtentRadio = settingsAction->syncExtentRadio();
-  mSyncSelectionRadio = settingsAction->syncSelectionRadio();
+  mSyncExtentCheck = settingsAction->syncExtentCheck();
+  mSyncSelectionCheck = settingsAction->syncSelectionCheck();
   mScaleCombo = settingsAction->scaleCombo();
   mRotationEdit = settingsAction->rotationSpinBox();
   mMagnificationEdit = settingsAction->magnifierSpinBox();
   mSyncScaleCheckBox = settingsAction->syncScaleCheckBox();
   mScaleFactorWidget = settingsAction->scaleFactorSpinBox();
 
-  connect( mSyncSelectionRadio, &QRadioButton::toggled, this, [ = ]( bool checked )
+  connect( mSyncSelectionCheck, &QCheckBox::toggled, this, [ = ]( bool checked )
   {
     autoZoomToSelection( checked );
     if ( checked )
     {
       syncSelection();
+
+      // sync extent and selection options are mutually exclusive
+      whileBlocking( mSyncExtentCheck )->setChecked( false );
     }
   } );
 
-  connect( mSyncExtentRadio, &QRadioButton::toggled, this, [ = ]( bool checked )
+  connect( mSyncExtentCheck, &QCheckBox::toggled, this, [ = ]( bool checked )
   {
     if ( checked )
     {
       syncViewCenter( mMainCanvas );
+
+      // sync extent and selection options are mutually exclusive
+      whileBlocking( mSyncSelectionCheck )->setChecked( false );
     }
   } );
 
@@ -222,7 +227,7 @@ QgsMapCanvasDockWidget::QgsMapCanvasDockWidget( const QString &name, QWidget *pa
   connect( &mResizeTimer, &QTimer::timeout, this, [ = ]
   {
     mBlockExtentSync = false;
-    if ( mSyncExtentRadio->isChecked() )
+    if ( mSyncExtentCheck->isChecked() )
       syncViewCenter( mMainCanvas );
   } );
 
@@ -257,22 +262,22 @@ QgsMapCanvas *QgsMapCanvasDockWidget::mapCanvas()
 
 void QgsMapCanvasDockWidget::setViewCenterSynchronized( bool enabled )
 {
-  mSyncExtentRadio->setChecked( enabled );
+  mSyncExtentCheck->setChecked( enabled );
 }
 
 bool QgsMapCanvasDockWidget::isViewCenterSynchronized() const
 {
-  return mSyncExtentRadio->isChecked();
+  return mSyncExtentCheck->isChecked();
 }
 
 bool QgsMapCanvasDockWidget::isAutoZoomToSelected() const
 {
-  return mSyncSelectionRadio->isChecked();
+  return mSyncSelectionCheck->isChecked();
 }
 
 void QgsMapCanvasDockWidget::setAutoZoomToSelected( bool autoZoom )
 {
-  mSyncSelectionRadio->setChecked( autoZoom );
+  mSyncSelectionCheck->setChecked( autoZoom );
 }
 
 void QgsMapCanvasDockWidget::setCursorMarkerVisible( bool visible )
@@ -392,7 +397,7 @@ void QgsMapCanvasDockWidget::mapExtentChanged()
     mScaleFactorWidget->setValue( newScaleFactor );
   }
 
-  if ( mSyncExtentRadio->isChecked() )
+  if ( mSyncExtentCheck->isChecked() )
     syncViewCenter( sourceCanvas );
 }
 
@@ -537,11 +542,11 @@ QgsMapSettingsAction::QgsMapSettingsAction( QWidget *parent )
   QGridLayout *gLayout = new QGridLayout();
   gLayout->setContentsMargins( 3, 2, 3, 2 );
 
-  mSyncExtentRadio = new QRadioButton( tr( "Synchronize View Center with Main Map" ) );
-  gLayout->addWidget( mSyncExtentRadio, 0, 0, 1, 2 );
+  mSyncExtentCheck = new QCheckBox( tr( "Synchronize View Center with Main Map" ) );
+  gLayout->addWidget( mSyncExtentCheck, 0, 0, 1, 2 );
 
-  mSyncSelectionRadio = new QRadioButton( tr( "Synchronize View to Selection" ) );
-  gLayout->addWidget( mSyncSelectionRadio, 1, 0, 1, 2 );
+  mSyncSelectionCheck = new QCheckBox( tr( "Synchronize View to Selection" ) );
+  gLayout->addWidget( mSyncSelectionCheck, 1, 0, 1, 2 );
 
   QLabel *label = new QLabel( tr( "Scale" ) );
   gLayout->addWidget( label, 2, 0 );
