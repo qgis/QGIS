@@ -27,6 +27,9 @@ class QgsVectorLayerProperties : QgsOptionsDialogBase
 Adds a properties page factory to the vector layer properties dialog.
 %End
 
+    virtual bool eventFilter( QObject *obj, QEvent *ev );
+
+
   protected slots:
     void optionsStackedWidget_CurrentChanged( int index ) final;
 
