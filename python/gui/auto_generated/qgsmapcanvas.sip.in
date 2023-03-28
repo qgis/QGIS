@@ -132,12 +132,20 @@ as a result of an ongoing canvas render) will not be returned, and instead ``Non
 %Docstring
 Set whether to cache images of rendered layers
 
+.. seealso:: :py:func:`isCachingEnabled`
+
+.. seealso:: :py:func:`cache`
+
 .. versionadded:: 2.4
 %End
 
     bool isCachingEnabled() const;
 %Docstring
 Check whether images of rendered layers are curerently being cached
+
+.. seealso:: :py:func:`setCachingEnabled`
+
+.. seealso:: :py:func:`cache`
 
 .. versionadded:: 2.4
 %End
@@ -147,6 +155,17 @@ Check whether images of rendered layers are curerently being cached
 Make sure to remove any rendered images from cache (does nothing if cache is not enabled)
 
 .. versionadded:: 2.4
+%End
+
+    QgsMapRendererCache *cache();
+%Docstring
+Returns the map renderer cache, if caching is enabled.
+
+.. seealso:: :py:func:`isCachingEnabled`
+
+.. seealso:: :py:func:`setCachingEnabled`
+
+.. versionadded:: 3.32
 %End
 
 

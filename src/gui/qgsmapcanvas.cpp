@@ -652,6 +652,11 @@ void QgsMapCanvas::clearCache()
     mRenderedItemResults.reset();
 }
 
+QgsMapRendererCache *QgsMapCanvas::cache()
+{
+  return mCache;
+}
+
 void QgsMapCanvas::setParallelRenderingEnabled( bool enabled )
 {
   mUseParallelRendering = enabled;

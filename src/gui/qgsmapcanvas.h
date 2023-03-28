@@ -187,12 +187,20 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView, public QgsExpressionContex
 
     /**
      * Set whether to cache images of rendered layers
+     *
+     * \see isCachingEnabled()
+     * \see cache()
+     *
      * \since QGIS 2.4
      */
     void setCachingEnabled( bool enabled );
 
     /**
      * Check whether images of rendered layers are curerently being cached
+     *
+     * \see setCachingEnabled()
+     * \see cache()
+     *
      * \since QGIS 2.4
      */
     bool isCachingEnabled() const;
@@ -202,6 +210,16 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView, public QgsExpressionContex
      * \since QGIS 2.4
      */
     void clearCache();
+
+    /**
+     * Returns the map renderer cache, if caching is enabled.
+     *
+     * \see isCachingEnabled()
+     * \see setCachingEnabled()
+     *
+     * \since QGIS 3.32
+     */
+    QgsMapRendererCache *cache();
 
     /**
      * Cancel any rendering job, in a blocking way. Used for application closing.
