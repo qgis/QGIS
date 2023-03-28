@@ -44,7 +44,7 @@ void QgsScaleComboBox::updateScales( const QStringList &scales )
 
   if ( scales.isEmpty() )
   {
-    const QStringList scales = QgsSettingsRegistryCore::settingsMapScales->value();
+    myScalesList = QgsSettingsRegistryCore::settingsMapScales->value();
   }
   else
   {
