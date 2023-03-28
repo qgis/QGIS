@@ -20,187 +20,6 @@
    <string>Table Background Colors</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="14" column="0" colspan="2">
-    <widget class="QCheckBox" name="mFirstRowCheckBox">
-     <property name="text">
-      <string>First row</string>
-     </property>
-    </widget>
-   </item>
-   <item row="13" column="0" colspan="2">
-    <widget class="QCheckBox" name="mHeaderRowCheckBox">
-     <property name="text">
-      <string>Header row</string>
-     </property>
-    </widget>
-   </item>
-   <item row="15" column="2">
-    <widget class="QgsColorButton" name="mLastRowColorButton">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="minimumSize">
-      <size>
-       <width>120</width>
-       <height>0</height>
-      </size>
-     </property>
-     <property name="maximumSize">
-      <size>
-       <width>120</width>
-       <height>16777215</height>
-      </size>
-     </property>
-     <property name="text">
-      <string/>
-     </property>
-    </widget>
-   </item>
-   <item row="7" column="2">
-    <widget class="QgsColorButton" name="mEvenColumnsColorButton">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="minimumSize">
-      <size>
-       <width>120</width>
-       <height>0</height>
-      </size>
-     </property>
-     <property name="maximumSize">
-      <size>
-       <width>120</width>
-       <height>16777215</height>
-      </size>
-     </property>
-     <property name="text">
-      <string/>
-     </property>
-    </widget>
-   </item>
-   <item row="7" column="0" colspan="2">
-    <widget class="QCheckBox" name="mEvenColumnsCheckBox">
-     <property name="text">
-      <string>Even columns</string>
-     </property>
-    </widget>
-   </item>
-   <item row="11" column="0" colspan="2">
-    <widget class="QCheckBox" name="mFirstColumnCheckBox">
-     <property name="text">
-      <string>First column</string>
-     </property>
-    </widget>
-   </item>
-   <item row="10" column="0" colspan="2">
-    <widget class="QCheckBox" name="mEvenRowsCheckBox">
-     <property name="text">
-      <string>Even rows</string>
-     </property>
-    </widget>
-   </item>
-   <item row="5" column="2">
-    <widget class="QgsColorButton" name="mOddColumnsColorButton">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="minimumSize">
-      <size>
-       <width>120</width>
-       <height>0</height>
-      </size>
-     </property>
-     <property name="maximumSize">
-      <size>
-       <width>120</width>
-       <height>16777215</height>
-      </size>
-     </property>
-     <property name="text">
-      <string/>
-     </property>
-    </widget>
-   </item>
-   <item row="13" column="2">
-    <widget class="QgsColorButton" name="mHeaderRowColorButton">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="minimumSize">
-      <size>
-       <width>120</width>
-       <height>0</height>
-      </size>
-     </property>
-     <property name="maximumSize">
-      <size>
-       <width>120</width>
-       <height>16777215</height>
-      </size>
-     </property>
-     <property name="text">
-      <string/>
-     </property>
-    </widget>
-   </item>
-   <item row="5" column="0" colspan="2">
-    <widget class="QCheckBox" name="mOddColumnsCheckBox">
-     <property name="text">
-      <string>Odd columns</string>
-     </property>
-    </widget>
-   </item>
-   <item row="15" column="0" colspan="2">
-    <widget class="QCheckBox" name="mLastRowCheckBox">
-     <property name="text">
-      <string>Last row</string>
-     </property>
-    </widget>
-   </item>
-   <item row="11" column="2">
-    <widget class="QgsColorButton" name="mFirstColumnColorButton">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="minimumSize">
-      <size>
-       <width>120</width>
-       <height>0</height>
-      </size>
-     </property>
-     <property name="maximumSize">
-      <size>
-       <width>120</width>
-       <height>16777215</height>
-      </size>
-     </property>
-     <property name="text">
-      <string/>
-     </property>
-    </widget>
-   </item>
-   <item row="12" column="0" colspan="2">
-    <widget class="QCheckBox" name="mLastColumnCheckBox">
-     <property name="text">
-      <string>Last column</string>
-     </property>
-    </widget>
-   </item>
    <item row="3" column="0">
     <widget class="QLabel" name="label_2">
      <property name="text">
@@ -208,8 +27,8 @@
      </property>
     </widget>
    </item>
-   <item row="3" column="2">
-    <widget class="QgsColorButton" name="mDefaultColorButton">
+   <item row="15" column="2">
+    <widget class="QgsColorButton" name="mLastRowColorButton">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
        <horstretch>0</horstretch>
@@ -243,8 +62,61 @@
      </property>
     </widget>
    </item>
-   <item row="14" column="2">
-    <widget class="QgsColorButton" name="mFirstRowColorButton">
+   <item row="13" column="0" colspan="2">
+    <widget class="QCheckBox" name="mHeaderRowCheckBox">
+     <property name="text">
+      <string>Header row</string>
+     </property>
+    </widget>
+   </item>
+   <item row="9" column="0" colspan="2">
+    <widget class="QCheckBox" name="mOddRowsCheckBox">
+     <property name="text">
+      <string>Odd rows</string>
+     </property>
+    </widget>
+   </item>
+   <item row="14" column="0" colspan="2">
+    <widget class="QCheckBox" name="mFirstRowCheckBox">
+     <property name="text">
+      <string>First row</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="2">
+    <widget class="QgsColorButton" name="mDefaultColorButton">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="minimumSize">
+      <size>
+       <width>120</width>
+       <height>0</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>120</width>
+       <height>16777215</height>
+      </size>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+   </item>
+   <item row="7" column="0" colspan="2">
+    <widget class="QCheckBox" name="mEvenColumnsCheckBox">
+     <property name="text">
+      <string>Even columns</string>
+     </property>
+    </widget>
+   </item>
+   <item row="7" column="2">
+    <widget class="QgsColorButton" name="mEvenColumnsColorButton">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
        <horstretch>0</horstretch>
@@ -293,10 +165,19 @@
      </property>
     </widget>
    </item>
-   <item row="9" column="0" colspan="2">
-    <widget class="QCheckBox" name="mOddRowsCheckBox">
+   <item row="2" column="0" colspan="3">
+    <widget class="QLabel" name="label">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
      <property name="text">
-      <string>Odd rows</string>
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Check options to enable shading for matching cells. Options lower in this list will take precedence over higher options. For example, if both &amp;quot;&lt;span style=&quot; font-style:italic;&quot;&gt;First row&lt;/span&gt;&amp;quot; and &amp;quot;&lt;span style=&quot; font-style:italic;&quot;&gt;Odd rows&lt;/span&gt;&amp;quot; are checked, the cells in the first row will be shaded using the color specified for &amp;quot;&lt;span style=&quot; font-style:italic;&quot;&gt;First row&lt;/span&gt;&amp;quot;.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+     <property name="wordWrap">
+      <bool>true</bool>
      </property>
     </widget>
    </item>
@@ -325,6 +206,127 @@
      </property>
     </widget>
    </item>
+   <item row="14" column="2">
+    <widget class="QgsColorButton" name="mFirstRowColorButton">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="minimumSize">
+      <size>
+       <width>120</width>
+       <height>0</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>120</width>
+       <height>16777215</height>
+      </size>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+   </item>
+   <item row="13" column="2">
+    <widget class="QgsColorButton" name="mHeaderRowColorButton">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="minimumSize">
+      <size>
+       <width>120</width>
+       <height>0</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>120</width>
+       <height>16777215</height>
+      </size>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+   </item>
+   <item row="10" column="0" colspan="2">
+    <widget class="QCheckBox" name="mEvenRowsCheckBox">
+     <property name="text">
+      <string>Even rows</string>
+     </property>
+    </widget>
+   </item>
+   <item row="11" column="0" colspan="2">
+    <widget class="QCheckBox" name="mFirstColumnCheckBox">
+     <property name="text">
+      <string>First column</string>
+     </property>
+    </widget>
+   </item>
+   <item row="11" column="2">
+    <widget class="QgsColorButton" name="mFirstColumnColorButton">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="minimumSize">
+      <size>
+       <width>120</width>
+       <height>0</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>120</width>
+       <height>16777215</height>
+      </size>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="2">
+    <widget class="QgsColorButton" name="mOddColumnsColorButton">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="minimumSize">
+      <size>
+       <width>120</width>
+       <height>0</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>120</width>
+       <height>16777215</height>
+      </size>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="0" colspan="2">
+    <widget class="QCheckBox" name="mOddColumnsCheckBox">
+     <property name="text">
+      <string>Odd columns</string>
+     </property>
+    </widget>
+   </item>
    <item row="12" column="2">
     <widget class="QgsColorButton" name="mLastColumnColorButton">
      <property name="sizePolicy">
@@ -350,19 +352,45 @@
      </property>
     </widget>
    </item>
-   <item row="2" column="0" colspan="3">
-    <widget class="QLabel" name="label">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
+   <item row="4" column="0">
+    <widget class="QLabel" name="label_3">
      <property name="text">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Check options to enable shading for matching cells. Options lower in this list will take precedence over higher options. For example, if both &amp;quot;&lt;span style=&quot; font-style:italic;&quot;&gt;First row&lt;/span&gt;&amp;quot; and &amp;quot;&lt;span style=&quot; font-style:italic;&quot;&gt;Odd rows&lt;/span&gt;&amp;quot; are checked, the cells in the first row will be shaded using the color specified for &amp;quot;&lt;span style=&quot; font-style:italic;&quot;&gt;First row&lt;/span&gt;&amp;quot;.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      <string>Number of columns before alternating color</string>
      </property>
-     <property name="wordWrap">
-      <bool>true</bool>
+    </widget>
+   </item>
+   <item row="12" column="0" colspan="2">
+    <widget class="QCheckBox" name="mLastColumnCheckBox">
+     <property name="text">
+      <string>Last column</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="2">
+    <widget class="QSpinBox" name="mSpinColumnAlternate">
+     <property name="minimum">
+      <number>1</number>
+     </property>
+    </widget>
+   </item>
+   <item row="15" column="0" colspan="2">
+    <widget class="QCheckBox" name="mLastRowCheckBox">
+     <property name="text">
+      <string>Last row</string>
+     </property>
+    </widget>
+   </item>
+   <item row="8" column="2">
+    <widget class="QSpinBox" name="mSpinRowAlternate">
+     <property name="minimum">
+      <number>1</number>
+     </property>
+    </widget>
+   </item>
+   <item row="8" column="0">
+    <widget class="QLabel" name="label_4">
+     <property name="text">
+      <string>Number of rows before alternating color</string>
      </property>
     </widget>
    </item>

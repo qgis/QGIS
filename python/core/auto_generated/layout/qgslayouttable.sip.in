@@ -514,6 +514,45 @@ Returns the color used for the background of the table.
 .. seealso:: :py:func:`gridColor`
 %End
 
+    void setNumberAlternatingRows( int rows );
+%Docstring
+Sets the number of rows before alternating to other color.
+
+.. seealso:: :py:func:`setBackgroundColor`
+
+.. seealso:: :py:func:`gridColor`
+%End
+
+
+    int numberAlternatingRows() const;
+%Docstring
+Returns the number of rows before alternating to other color.
+
+.. seealso:: :py:func:`setBackgroundColor`
+
+.. seealso:: :py:func:`gridColor`
+%End
+
+    void setNumberAlternatingColumns( int columns );
+%Docstring
+Sets the number of columns before alternating to other color.
+
+.. seealso:: :py:func:`setBackgroundColor`
+
+.. seealso:: :py:func:`gridColor`
+%End
+
+
+    int numberAlternatingColumns() const;
+%Docstring
+Returns the number of columns before alternating to other color.
+
+.. seealso:: :py:func:`setBackgroundColor`
+
+.. seealso:: :py:func:`gridColor`
+%End
+
+
     void setWrapBehavior( WrapBehavior behavior );
 %Docstring
 Sets the wrap ``behavior`` for the table, which controls how text within cells is
@@ -649,6 +688,8 @@ new data.
 
 
   protected:
+
+
 
 
 

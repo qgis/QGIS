@@ -91,6 +91,8 @@ bool QgsLayoutTable::writePropertiesToElement( QDomElement &elem, QDomDocument &
   elem.setAttribute( QStringLiteral( "showGrid" ), mShowGrid );
   elem.setAttribute( QStringLiteral( "backgroundColor" ), QgsSymbolLayerUtils::encodeColor( mBackgroundColor ) );
   elem.setAttribute( QStringLiteral( "wrapBehavior" ), QString::number( static_cast< int >( mWrapBehavior ) ) );
+  elem.setAttribute( QStringLiteral( "numberAlternatingRows" ), QString::number( mRowAlternate ) );
+  elem.setAttribute( QStringLiteral( "numberAlternatingColumns" ), QString::number( mColAlternate ) );
 
   // display columns
   QDomElement displayColumnsElem = doc.createElement( QStringLiteral( "displayColumns" ) );
@@ -205,6 +207,8 @@ bool QgsLayoutTable::readPropertiesFromElement( const QDomElement &itemElem, con
   mGridColor = QgsSymbolLayerUtils::decodeColor( itemElem.attribute( QStringLiteral( "gridColor" ), QStringLiteral( "0,0,0,255" ) ) );
   mBackgroundColor = QgsSymbolLayerUtils::decodeColor( itemElem.attribute( QStringLiteral( "backgroundColor" ), QStringLiteral( "255,255,255,0" ) ) );
   mWrapBehavior = QgsLayoutTable::WrapBehavior( itemElem.attribute( QStringLiteral( "wrapBehavior" ), QStringLiteral( "0" ) ).toInt() );
+  mRowAlternate = itemElem.attribute( QStringLiteral( "numberAlternatingRows" ), QStringLiteral( "2" ) ).toInt();
+  mColAlternate = itemElem.attribute( QStringLiteral( "numberAlternatingColumns" ), QStringLiteral( "2" ) ).toInt();
 
   //restore display column specifications
   mColumns.clear();
@@ -917,6 +921,32 @@ void QgsLayoutTable::setBackgroundColor( const QColor &color )
   emit changed();
 }
 
+void QgsLayoutTable::setNumberAlternatingRows( int rows )
+{
+  if ( rows == mRowAlternate || rows < 0 )
+  {
+    return;
+  }
+
+  mRowAlternate = rows;
+  update();
+
+  emit changed();
+}
+
+void QgsLayoutTable::setNumberAlternatingColumns( int columns )
+{
+  if ( columns == mColAlternate || columns < 0 )
+  {
+    return;
+  }
+
+  mColAlternate = columns;
+  update();
+
+  emit changed();
+}
+
 void QgsLayoutTable::setWrapBehavior( QgsLayoutTable::WrapBehavior behavior )
 {
   if ( behavior == mWrapBehavior )
@@ -1362,17 +1392,39 @@ void QgsLayoutTable::drawHorizontalGridLines( QgsLayoutItemRenderContext &contex
 QColor QgsLayoutTable::backgroundColor( int row, int column ) const
 {
   QColor color = mBackgroundColor;
+
+  int shouldAlternateRow;
+  int shouldAlternateCol;
+
+  if ( mRowAlternate > 0 )
+  {
+    shouldAlternateRow = ( row / mRowAlternate ) % 2;
+  }
+  else
+  {
+    shouldAlternateRow = -1; // Do not set even rows to different color
+  }
+
+  if ( mColAlternate > 0 )
+  {
+    shouldAlternateCol = ( column / mColAlternate ) % 2;
+  }
+  else
+  {
+    shouldAlternateCol = -1; // Do not set even columns to different color
+  }
+
   if ( QgsLayoutTableStyle *style = mCellStyles.value( OddColumns ) )
-    if ( style->enabled && column % 2 == 0 )
+    if ( style->enabled && shouldAlternateCol <= 0 )
       color = style->cellBackgroundColor;
   if ( QgsLayoutTableStyle *style = mCellStyles.value( EvenColumns ) )
-    if ( style->enabled && column % 2 == 1 )
+    if ( style->enabled && shouldAlternateCol == 1 && shouldAlternateCol != -1 )
       color = style->cellBackgroundColor;
   if ( QgsLayoutTableStyle *style = mCellStyles.value( OddRows ) )
-    if ( style->enabled && row % 2 == 0 )
+    if ( style->enabled && shouldAlternateRow <= 0 )
       color = style->cellBackgroundColor;
   if ( QgsLayoutTableStyle *style = mCellStyles.value( EvenRows ) )
-    if ( style->enabled && row % 2 == 1 )
+    if ( style->enabled && shouldAlternateRow == 1 && shouldAlternateRow != -1 )
       color = style->cellBackgroundColor;
   if ( QgsLayoutTableStyle *style = mCellStyles.value( FirstColumn ) )
     if ( style->enabled && column == 0 )

@@ -462,6 +462,37 @@ class CORE_EXPORT QgsLayoutTable: public QgsLayoutMultiFrame
     QColor backgroundColor() const { return mBackgroundColor; }
 
     /**
+     * Sets the number of rows before alternating to other color.
+     * \see setBackgroundColor()
+     * \see gridColor()
+     */
+    void setNumberAlternatingRows( int rows );
+
+
+    /**
+     * Returns the number of rows before alternating to other color.
+     * \see setBackgroundColor()
+     * \see gridColor()
+     */
+    int numberAlternatingRows() const {return mRowAlternate; }
+
+    /**
+     * Sets the number of columns before alternating to other color.
+     * \see setBackgroundColor()
+     * \see gridColor()
+     */
+    void setNumberAlternatingColumns( int columns );
+
+
+    /**
+     * Returns the number of columns before alternating to other color.
+     * \see setBackgroundColor()
+     * \see gridColor()
+     */
+    int numberAlternatingColumns() const {return mColAlternate; }
+
+
+    /**
      * Sets the wrap \a behavior for the table, which controls how text within cells is
      * automatically wrapped.
      * \see wrapBehavior()
@@ -634,6 +665,12 @@ class CORE_EXPORT QgsLayoutTable: public QgsLayoutMultiFrame
 
     //! Map of maximum height for each row
     QMap<int, double> mMaxRowHeightMap;
+
+    //! Number of rows before alternating between colors
+    int mRowAlternate = 1;
+
+    //! Number of columns before alternating between colors
+    int mColAlternate = 1;
 
     QSizeF mTableSize;
 

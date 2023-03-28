@@ -78,6 +78,8 @@ void QgsLayoutTableBackgroundColorsDialog::apply()
   }
 
   mTable->setBackgroundColor( mDefaultColorButton->color() );
+  mTable->setNumberAlternatingRows( mSpinRowAlternate->value() );
+  mTable->setNumberAlternatingColumns( mSpinColumnAlternate->value() );
   mTable->endCommand();
   mTable->update();
 }
@@ -116,6 +118,8 @@ void QgsLayoutTableBackgroundColorsDialog::setGuiElementValues()
   }
 
   mDefaultColorButton->setColor( mTable->backgroundColor() );
+  mSpinRowAlternate->setValue( mTable->numberAlternatingRows() );
+  mSpinColumnAlternate->setValue( mTable->numberAlternatingColumns() );
   mDefaultColorButton->setAllowOpacity( true );
   mDefaultColorButton->setColorDialogTitle( tr( "Select Background Color" ) );
   mDefaultColorButton->setShowNoColor( true );
