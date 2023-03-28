@@ -22,6 +22,7 @@
 #include "qgis_sip.h"
 #include "qgsannotationitem.h"
 
+class QgsCurvePolygon;
 
 /**
  * \ingroup core
@@ -71,7 +72,7 @@ class CORE_EXPORT QgsAnnotationPolygonItem : public QgsAnnotationItem
      *
      * \see geometry()
      */
-    void setGeometry( QgsCurvePolygon *geometry SIP_TRANSFER ) { mPolygon.reset( geometry ); }
+    void setGeometry( QgsCurvePolygon *geometry SIP_TRANSFER );
 
     /**
      * Returns the symbol used to render the item.

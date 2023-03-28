@@ -1,8 +1,8 @@
 /***************************************************************************
-    qgsannotationlineitem.h
+    qgsannotationlinetextitem.h
     ----------------
-    begin                : July 2020
-    copyright            : (C) 2020 by Nyall Dawson
+    begin                : March 2023
+    copyright            : (C) 2023 by Nyall Dawson
     email                : nyall dot dawson at gmail dot com
  ***************************************************************************/
 
@@ -15,31 +15,33 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSANNOTATIONLINEITEM_H
-#define QGSANNOTATIONLINEITEM_H
+#ifndef QGSANNOTATIONLINETEXTITEM_H
+#define QGSANNOTATIONLINETEXTITEM_H
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgsannotationitem.h"
+#include "qgstextformat.h"
 
 class QgsCurve;
 
 /**
  * \ingroup core
- * \brief An annotation item which renders a line symbol along a line geometry.
+ * \brief An annotation item which renders text along a line geometry.
  *
- * \since QGIS 3.16
+ * \since QGIS 3.32
  */
-class CORE_EXPORT QgsAnnotationLineItem : public QgsAnnotationItem
+class CORE_EXPORT QgsAnnotationLineTextItem : public QgsAnnotationItem
 {
   public:
 
     /**
-     * Constructor for QgsAnnotationLineItem, with the specified \a curve.
+     * Constructor for QgsAnnotationLineTextItem, with the specified \a curve and \a text.
      */
-    QgsAnnotationLineItem( QgsCurve *curve SIP_TRANSFER );
-    ~QgsAnnotationLineItem() override;
+    QgsAnnotationLineTextItem( const QString &text, QgsCurve *curve SIP_TRANSFER );
+    ~QgsAnnotationLineTextItem() override;
 
+    Qgis::AnnotationItemFlags flags() const override;
     QString type() const override;
     void render( QgsRenderContext &context, QgsFeedback *feedback ) override;
     bool writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const override;
@@ -50,12 +52,13 @@ class CORE_EXPORT QgsAnnotationLineItem : public QgsAnnotationItem
     /**
      * Creates a new linestring annotation item.
      */
-    static QgsAnnotationLineItem *create() SIP_FACTORY;
+    static QgsAnnotationLineTextItem *create() SIP_FACTORY;
 
     bool readXml( const QDomElement &element, const QgsReadWriteContext &context ) override;
     QgsRectangle boundingBox() const override;
+    QgsRectangle boundingBox( QgsRenderContext &context ) const override;
 
-    QgsAnnotationLineItem *clone() override SIP_FACTORY;
+    QgsAnnotationLineTextItem *clone() override SIP_FACTORY;
 
     /**
      * Returns the geometry of the item.
@@ -76,30 +79,43 @@ class CORE_EXPORT QgsAnnotationLineItem : public QgsAnnotationItem
     void setGeometry( QgsCurve *geometry SIP_TRANSFER );
 
     /**
-     * Returns the symbol used to render the item.
+     * Returns the text rendered by the item.
      *
-     * \see setSymbol()
+     * \see setText()
      */
-    const QgsLineSymbol *symbol() const;
+    QString text() const { return mText; }
 
     /**
-     * Sets the \a symbol used to render the marker item.
+     * Sets the \a text rendered by the item.
      *
-     * The item takes ownership of the symbol.
-     *
-     * \see symbol()
+     * \see text()
      */
-    void setSymbol( QgsLineSymbol *symbol SIP_TRANSFER );
+    void setText( const QString &text ) { mText = text; }
+
+    /**
+     * Returns the text format used to render the text.
+     *
+     * \see setFormat()
+     */
+    QgsTextFormat format() const;
+
+    /**
+     * Sets the text \a format used to render the text.
+     *
+     * \see format()
+     */
+    void setFormat( const QgsTextFormat &format );
 
   private:
 
+    QString mText;
     std::unique_ptr< QgsCurve > mCurve;
-    std::unique_ptr< QgsLineSymbol > mSymbol;
+    QgsTextFormat mTextFormat;
 
 #ifdef SIP_RUN
-    QgsAnnotationLineItem( const QgsAnnotationLineItem &other );
+    QgsAnnotationLineTextItem( const QgsAnnotationLineTextItem &other );
 #endif
 
 };
 
-#endif // QGSANNOTATIONLINEITEM_H
+#endif // QGSANNOTATIONLINETEXTITEM_H

@@ -1,8 +1,8 @@
 /***************************************************************************
-    qgsannotationlineitem.cpp
+    qgsannotationlinetextitem.cpp
     ----------------
-    begin                : July 2020
-    copyright            : (C) 2020 by Nyall Dawson
+    begin                : March 2023
+    copyright            : (C) 2023 by Nyall Dawson
     email                : nyall dot dawson at gmail dot com
  ***************************************************************************/
 
@@ -15,33 +15,42 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsannotationlineitem.h"
-#include "qgssymbol.h"
-#include "qgssymbollayerutils.h"
-#include "qgslinesymbol.h"
+#include "qgsannotationlinetextitem.h"
 #include "qgsannotationitemnode.h"
 #include "qgsannotationitemeditoperation.h"
+#include "qgsrendercontext.h"
 #include "qgscurve.h"
 #include "qgslinestring.h"
+#include "qgstextrenderer.h"
 
-QgsAnnotationLineItem::QgsAnnotationLineItem( QgsCurve *curve )
+QgsAnnotationLineTextItem::QgsAnnotationLineTextItem( const QString &text, QgsCurve *curve )
   : QgsAnnotationItem()
+  , mText( text )
   , mCurve( curve )
-  , mSymbol( std::make_unique< QgsLineSymbol >() )
 {
 
 }
 
-QgsAnnotationLineItem::~QgsAnnotationLineItem() = default;
-
-QString QgsAnnotationLineItem::type() const
+Qgis::AnnotationItemFlags QgsAnnotationLineTextItem::flags() const
 {
-  return QStringLiteral( "linestring" );
+  // in truth this should depend on whether the text format is scale dependent or not!
+  return Qgis::AnnotationItemFlag::ScaleDependentBoundingBox;
 }
 
-void QgsAnnotationLineItem::render( QgsRenderContext &context, QgsFeedback * )
+QgsAnnotationLineTextItem::~QgsAnnotationLineTextItem() = default;
+
+QString QgsAnnotationLineTextItem::type() const
 {
-  QPolygonF pts = mCurve->asQPolygonF();
+  return QStringLiteral( "linetext" );
+}
+
+void QgsAnnotationLineTextItem::render( QgsRenderContext &context, QgsFeedback * )
+{
+  // TODO -- expose as an option!
+  QgsGeometry smoothed( mCurve->clone() );
+  smoothed = smoothed.smooth( );
+
+  QPolygonF pts = smoothed.asQPolygonF();
 
   //transform the QPolygonF to screen coordinates
   if ( context.coordinateTransform().isValid() )
@@ -69,21 +78,24 @@ void QgsAnnotationLineItem::render( QgsRenderContext &context, QgsFeedback * )
     context.mapToPixel().transformInPlace( ptr->rx(), ptr->ry() );
   }
 
-  mSymbol->startRender( context );
-  mSymbol->renderPolyline( pts, nullptr, context );
-  mSymbol->stopRender( context );
+  const QString displayText = QgsExpression::replaceExpressionText( mText, &context.expressionContext(), &context.distanceArea() );
+  QgsTextRenderer::drawTextOnLine( pts, displayText, context, mTextFormat );
 }
 
-bool QgsAnnotationLineItem::writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const
+bool QgsAnnotationLineTextItem::writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const
 {
   element.setAttribute( QStringLiteral( "wkt" ), mCurve->asWkt() );
-  element.appendChild( QgsSymbolLayerUtils::saveSymbol( QStringLiteral( "lineSymbol" ), mSymbol.get(), document, context ) );
+  element.setAttribute( QStringLiteral( "text" ), mText );
+  QDomElement textFormatElem = document.createElement( QStringLiteral( "lineTextFormat" ) );
+  textFormatElem.appendChild( mTextFormat.writeXml( document, context ) );
+  element.appendChild( textFormatElem );
+
   writeCommonProperties( element, document, context );
 
   return true;
 }
 
-QList<QgsAnnotationItemNode> QgsAnnotationLineItem::nodes() const
+QList<QgsAnnotationItemNode> QgsAnnotationLineTextItem::nodes() const
 {
   QList< QgsAnnotationItemNode > res;
   int i = 0;
@@ -94,7 +106,7 @@ QList<QgsAnnotationItemNode> QgsAnnotationLineItem::nodes() const
   return res;
 }
 
-Qgis::AnnotationItemEditOperationResult QgsAnnotationLineItem::applyEdit( QgsAbstractAnnotationItemEditOperation *operation )
+Qgis::AnnotationItemEditOperationResult QgsAnnotationLineTextItem::applyEdit( QgsAbstractAnnotationItemEditOperation *operation )
 {
   switch ( operation->type() )
   {
@@ -138,7 +150,7 @@ Qgis::AnnotationItemEditOperationResult QgsAnnotationLineItem::applyEdit( QgsAbs
   return Qgis::AnnotationItemEditOperationResult::Invalid;
 }
 
-QgsAnnotationItemEditOperationTransientResults *QgsAnnotationLineItem::transientEditResults( QgsAbstractAnnotationItemEditOperation *operation )
+QgsAnnotationItemEditOperationTransientResults *QgsAnnotationLineTextItem::transientEditResults( QgsAbstractAnnotationItemEditOperation *operation )
 {
   switch ( operation->type() )
   {
@@ -169,48 +181,70 @@ QgsAnnotationItemEditOperationTransientResults *QgsAnnotationLineItem::transient
   return nullptr;
 }
 
-QgsAnnotationLineItem *QgsAnnotationLineItem::create()
+QgsAnnotationLineTextItem *QgsAnnotationLineTextItem::create()
 {
-  return new QgsAnnotationLineItem( new QgsLineString() );
+  return new QgsAnnotationLineTextItem( QString(), new QgsLineString() );
 }
 
-bool QgsAnnotationLineItem::readXml( const QDomElement &element, const QgsReadWriteContext &context )
+bool QgsAnnotationLineTextItem::readXml( const QDomElement &element, const QgsReadWriteContext &context )
 {
   const QString wkt = element.attribute( QStringLiteral( "wkt" ) );
   const QgsGeometry geometry = QgsGeometry::fromWkt( wkt );
   if ( const QgsCurve *curve = qgsgeometry_cast< const QgsCurve * >( geometry.constGet() ) )
     mCurve.reset( curve->clone() );
 
-  const QDomElement symbolElem = element.firstChildElement( QStringLiteral( "symbol" ) );
-  if ( !symbolElem.isNull() )
-    setSymbol( QgsSymbolLayerUtils::loadSymbol< QgsLineSymbol >( symbolElem, context ) );
+  mText = element.attribute( QStringLiteral( "text" ) );
+  const QDomElement textFormatElem = element.firstChildElement( QStringLiteral( "lineTextFormat" ) );
+  if ( !textFormatElem.isNull() )
+  {
+    const QDomNodeList textFormatNodeList = textFormatElem.elementsByTagName( QStringLiteral( "text-style" ) );
+    const QDomElement textFormatElem = textFormatNodeList.at( 0 ).toElement();
+    mTextFormat.readXml( textFormatElem, context );
+  }
 
   readCommonProperties( element, context );
 
   return true;
 }
 
-QgsRectangle QgsAnnotationLineItem::boundingBox() const
+QgsRectangle QgsAnnotationLineTextItem::boundingBox() const
 {
   return mCurve->boundingBox();
 }
 
-QgsAnnotationLineItem *QgsAnnotationLineItem::clone()
+QgsRectangle QgsAnnotationLineTextItem::boundingBox( QgsRenderContext &context ) const
 {
-  std::unique_ptr< QgsAnnotationLineItem > item = std::make_unique< QgsAnnotationLineItem >( mCurve->clone() );
-  item->setSymbol( mSymbol->clone() );
+  const QString displayText = QgsExpression::replaceExpressionText( mText, &context.expressionContext(), &context.distanceArea() );
+
+  const double heightInPixels = QgsTextRenderer::textHeight( context, mTextFormat, { displayText} );
+
+  // text size has already been calculated using any symbology reference scale factor above -- we need
+  // to temporarily remove the reference scale here or we'll be undoing the scaling
+  QgsScopedRenderContextReferenceScaleOverride resetScaleFactor( context, -1.0 );
+  const double heightInMapUnits = context.convertToMapUnits( heightInPixels, Qgis::RenderUnit::Pixels );
+
+  return mCurve->boundingBox().buffered( heightInMapUnits );
+}
+
+QgsAnnotationLineTextItem *QgsAnnotationLineTextItem::clone()
+{
+  std::unique_ptr< QgsAnnotationLineTextItem > item = std::make_unique< QgsAnnotationLineTextItem >( mText, mCurve->clone() );
+  item->setFormat( mTextFormat );
   item->copyCommonProperties( this );
   return item.release();
 }
 
-void QgsAnnotationLineItem::setGeometry( QgsCurve *geometry ) { mCurve.reset( geometry ); }
-
-const QgsLineSymbol *QgsAnnotationLineItem::symbol() const
+void QgsAnnotationLineTextItem::setGeometry( QgsCurve *geometry )
 {
-  return mSymbol.get();
+  mCurve.reset( geometry );
 }
 
-void QgsAnnotationLineItem::setSymbol( QgsLineSymbol *symbol )
+QgsTextFormat QgsAnnotationLineTextItem::format() const
 {
-  mSymbol.reset( symbol );
+  return mTextFormat;
+}
+
+void QgsAnnotationLineTextItem::setFormat( const QgsTextFormat &format )
+{
+  mTextFormat = format;
 }
