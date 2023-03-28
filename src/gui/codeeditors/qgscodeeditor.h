@@ -366,9 +366,12 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
      *
      * An interpreter() must be set.
      *
+     * Since QGIS 3.32, if \a skipHistory is TRUE then the command will not be automatically
+     * added to the widget's history.
+     *
      * \since QGIS 3.30
      */
-    void runCommand( const QString &command );
+    void runCommand( const QString &command, bool skipHistory = false );
 
     /**
      * Moves the cursor to the start of the document and scrolls to ensure
