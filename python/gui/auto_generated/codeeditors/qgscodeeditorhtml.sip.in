@@ -37,6 +37,17 @@ Constructor for QgsCodeEditorHTML
     virtual Qgis::ScriptLanguageCapabilities languageCapabilities() const;
 
 
+  public slots:
+
+    virtual void toggleComment();
+
+%Docstring
+Toggle comment for the selected text.
+
+.. versionadded:: 3.32
+%End
+
+
   protected:
     virtual void initializeLexer();
 

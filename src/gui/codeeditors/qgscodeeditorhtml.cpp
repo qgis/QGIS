@@ -36,6 +36,7 @@ QgsCodeEditorHTML::QgsCodeEditorHTML( QWidget *parent )
   }
   QgsCodeEditorHTML::initializeLexer();
 
+  mCapabilities = Qgis::ScriptLanguageCapability::ToggleComment;
   if ( QgsPythonRunner::isValid() )
   {
     // we could potentially check for beautifulsoup4 import here and reflect the capability accordingly.
@@ -143,4 +144,105 @@ QString QgsCodeEditorHTML::reformatCodeString( const QString &string )
   }
 
   return newText;
+}
+
+void QgsCodeEditorHTML::toggleComment()
+{
+  if ( isReadOnly() )
+  {
+    return;
+  }
+
+  const QString commentStart( "<!--" );
+  const QString commentEnd( "-->" );
+
+  int startLine, startPos, endLine, endPos;
+  if ( hasSelectedText() )
+  {
+    getSelection( &startLine, &startPos, &endLine, &endPos );
+  }
+  else
+  {
+    getCursorPosition( &startLine, &startPos );
+    endLine = startLine;
+    endPos = startPos;
+  }
+
+
+  // Compute first and last non-blank lines
+  while ( text( startLine ).trimmed().isEmpty() )
+  {
+    startLine++;
+    if ( startLine > endLine )
+    {
+      // Only blank lines selected
+      return;
+    }
+  }
+  while ( text( endLine ).trimmed().isEmpty() )
+  {
+    endLine--;
+  }
+
+  // Remove leading spaces from the start line
+  QString startLineTrimmed  = text( startLine );
+  startLineTrimmed.remove( QRegularExpression( "^\\s+" ) );
+  // Remove trailing spaces from the end line
+  QString endLineTrimmed  = text( endLine );
+  endLineTrimmed.remove( QRegularExpression( "\\s+$" ) );
+
+  const bool commented = startLineTrimmed.startsWith( commentStart ) && endLineTrimmed.endsWith( commentEnd );
+
+  // Special case, selected text is <!--> or <!--->
+  if ( commented && startLine == endLine && text( endLine ).trimmed() < commentStart.size() + commentEnd.size() )
+  {
+    return;
+  }
+
+  beginUndoAction();
+
+  // Selection is commented: uncomment it
+  if ( commented )
+  {
+    int c1, c2;
+
+    // Remove trailing comment tag ( --> )
+    c2 = endLineTrimmed.size();
+    if ( endLineTrimmed.endsWith( QStringLiteral( " " ) + commentEnd ) )
+    {
+      c1 = c2 - commentEnd.size() - 1;
+    }
+    else
+    {
+      c1 = c2 - commentEnd.size();
+    }
+
+    setSelection( endLine, c1, endLine, c2 );
+    removeSelectedText();
+
+    // Remove leading comment tag ( <!-- )
+    c1 = indentation( startLine );
+    if ( startLineTrimmed.startsWith( commentStart + QStringLiteral( " " ) ) )
+    {
+      c2 = c1 + commentStart.size() + 1;
+    }
+    else
+    {
+      c2 = c1 + commentStart.size();
+    }
+
+    setSelection( startLine, c1, startLine, c2 );
+    removeSelectedText();
+  }
+  // Selection is not commented: comment it
+  else
+  {
+    insertAt( QStringLiteral( " " ) + commentEnd, endLine, endLineTrimmed.size() );
+    insertAt( commentStart  + QStringLiteral( " " ), startLine, indentation( startLine ) );
+  }
+
+  endUndoAction();
+
+  // Restore selection
+  setSelection( startLine, startPos, endLine, endPos );
 }
