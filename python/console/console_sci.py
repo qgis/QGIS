@@ -137,7 +137,11 @@ class PythonInterpreter(QgsCodeInterpreter, code.InteractiveInterpreter):
 class ShellScintilla(QgsCodeEditorPython):
 
     def __init__(self, parent=None):
-        super().__init__(parent, [], QgsCodeEditor.Mode.CommandInput)
+        # We set the ImmediatelyUpdateHistory flag here, as users can easily
+        # crash QGIS by entering a Python command, and we don't want the
+        # history leading to the crash lost..
+        super().__init__(parent, [], QgsCodeEditor.Mode.CommandInput,
+                         flags=QgsCodeEditor.Flags(QgsCodeEditor.Flag.CodeFolding | QgsCodeEditor.Flag.ImmediatelyUpdateHistory))
 
         self.parent = parent
         self._interpreter = PythonInterpreter()

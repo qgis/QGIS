@@ -139,6 +139,7 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
     enum class Flag : int
     {
       CodeFolding = 1 << 0, //!< Indicates that code folding should be enabled for the editor
+      ImmediatelyUpdateHistory = 1 << 1, //!< Indicates that the history file should be immediately updated whenever a command is executed, instead of the default behavior of only writing the history on widget close. Since QGIS 3.32.
     };
     Q_ENUM( Flag )
 
