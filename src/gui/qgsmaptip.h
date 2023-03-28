@@ -102,8 +102,8 @@ class GUI_EXPORT QgsMapTip : public QWidget
                          QgsPointXY &mapPosition,
                          QgsMapCanvas *mapCanvas );
 
-    QString replaceText(
-      QString displayText, QgsVectorLayer *layer, QgsFeature &feat );
+    // Insert the raw map tip text into an HTML template and return the result
+    static QString htmlText( const QString &text );
 
     // Flag to indicate if a maptip is currently being displayed
     bool mMapTipVisible;
