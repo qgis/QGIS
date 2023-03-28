@@ -39,16 +39,16 @@ QgsScaleComboBox::QgsScaleComboBox( QWidget *parent )
 
 void QgsScaleComboBox::updateScales( const QStringList &scales )
 {
-  QStringList myScalesList;
+  QStringList myScalesList = scales;
   const QString oldScale = currentText();
 
   if ( scales.isEmpty() )
   {
-    const QStringList scales = QgsSettingsRegistryCore::settingsMapScales->value();
+    myScalesList = QgsSettingsRegistryCore::settingsMapScales->value();
   }
   else
   {
-    QStringList::const_iterator scaleIt = scales.constBegin();
+    QStringList::const_iterator scaleIt = myScalesList.constBegin();
     for ( ; scaleIt != scales.constEnd(); ++scaleIt )
     {
       myScalesList.append( *scaleIt );
