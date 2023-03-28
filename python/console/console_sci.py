@@ -303,7 +303,7 @@ class ShellScintilla(QgsCodeEditorPython):
 
         try:
             # Run the file
-            self.runCommand("exec(Path('{0}').read_text())".format(filename))
+            self.runCommand("exec(Path('{0}').read_text())".format(filename), skipHistory=True)
         finally:
             # Remove the directory from the path and delete the __file__ variable
             self._interpreter.execCommandImpl("del __file__", False)

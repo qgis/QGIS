@@ -329,11 +329,14 @@ is in the QgsCodeEditor.Mode.CommandInput mode.
 
   public slots:
 
-    void runCommand( const QString &command );
+    void runCommand( const QString &command, bool skipHistory = false );
 %Docstring
 Runs a command in the editor.
 
 An :py:func:`~QgsCodeEditor.interpreter` must be set.
+
+Since QGIS 3.32, if ``skipHistory`` is ``True`` then the command will not be automatically
+added to the widget's history.
 
 .. versionadded:: 3.30
 %End

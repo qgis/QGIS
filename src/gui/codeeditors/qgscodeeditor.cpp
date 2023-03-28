@@ -758,9 +758,10 @@ QStringList QgsCodeEditor::history() const
   return mHistory;
 }
 
-void QgsCodeEditor::runCommand( const QString &command )
+void QgsCodeEditor::runCommand( const QString &command, bool skipHistory )
 {
-  updateHistory( { command } );
+  if ( !skipHistory )
+    updateHistory( { command } );
 
   if ( mInterpreter )
     mInterpreter->exec( command );
