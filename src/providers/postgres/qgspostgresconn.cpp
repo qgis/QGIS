@@ -451,7 +451,7 @@ QgsPostgresConn::QgsPostgresConn( const QString &conninfo, bool readOnly, bool s
     // Quoting floating point values and application name for PostgreSQL connection in 1 request
     LoggedPQexecNR(
       "QgsPostgresConn",
-      QStringLiteral( "SET extra_float_digits=3; SET application_name=%1" ).arg( quotedValue( QgsApplication::applicationFullName() ) )
+      QStringLiteral( "SET extra_float_digits=3; SET application_name=%1; SET datestyle='ISO'" ).arg( quotedValue( QgsApplication::applicationFullName() ) )
     );
   }
 
