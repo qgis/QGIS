@@ -75,11 +75,12 @@ void QgsMapTip::showMapTip( QgsMapLayer *pLayer,
 
   // Do not render a new map tip when the mouse hovers an existing one
   if ( mWidget && mWidget->underMouse() )
+  {
     return;
+  }
 
   // Show the maptip on the canvas
-  QString tipText, lastTipText, tipHtml, bodyStyle, containerStyle,
-          backgroundColor, strokeColor, textColor;
+  QString tipText, lastTipText, tipHtml, backgroundColor, strokeColor;
 
   if ( ! mWidget )
   {
@@ -193,11 +194,15 @@ void QgsMapTip::resizeContent()
 void QgsMapTip::clear( QgsMapCanvas *, int msDelay )
 {
   if ( !mMapTipVisible )
+  {
     return;
+  }
 
   // Skip clearing the map tip if the user interacts with it or the timer still runs
   if ( mDelayedClearTimer.isActive() || mWidget->underMouse() )
+  {
     return;
+  }
 
   if ( msDelay > 0 )
   {
@@ -215,7 +220,9 @@ QString QgsMapTip::fetchFeature( QgsMapLayer *layer, QgsPointXY &mapPosition, Qg
 {
   QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
   if ( !vlayer || !vlayer->isSpatial() )
+  {
     return QString();
+  }
 
   if ( !layer->isInScaleRange( mapCanvas->mapSettings().scale() ) ||
        ( mapCanvas->mapSettings().isTemporal() && !layer->temporalProperties()->isVisibleInTemporalRange( mapCanvas->temporalRange() ) ) )
@@ -239,7 +246,9 @@ QString QgsMapTip::fetchFeature( QgsMapLayer *layer, QgsPointXY &mapPosition, Qg
 
   const QString canvasFilter = QgsMapCanvasUtils::filterForLayer( mapCanvas, vlayer );
   if ( canvasFilter ==  QLatin1String( "FALSE" ) )
+  {
     return QString();
+  }
 
   const QString mapTip = vlayer->mapTipTemplate();
   QString tipString;
@@ -250,7 +259,9 @@ QString QgsMapTip::fetchFeature( QgsMapLayer *layer, QgsPointXY &mapPosition, Qg
   request.setFilterRect( r );
   request.setFlags( QgsFeatureRequest::ExactIntersect );
   if ( !canvasFilter.isEmpty() )
+  {
     request.setFilterExpression( canvasFilter );
+  }
 
   if ( mapTip.isEmpty() )
   {
@@ -307,7 +318,9 @@ QString QgsMapTip::fetchFeature( QgsMapLayer *layer, QgsPointXY &mapPosition, Qg
   }
 
   if ( renderer )
+  {
     renderer->stopRender( renderCtx );
+  }
 
   return tipString;
 }
@@ -316,19 +329,27 @@ QString QgsMapTip::fetchRaster( QgsMapLayer *layer, QgsPointXY &mapPosition, Qgs
 {
   QgsRasterLayer *rlayer = qobject_cast<QgsRasterLayer *>( layer );
   if ( !rlayer )
+  {
     return QString();
+  }
 
   if ( !layer->isInScaleRange( mapCanvas->mapSettings().scale() ) ||
        ( mapCanvas->mapSettings().isTemporal() && !layer->temporalProperties()->isVisibleInTemporalRange( mapCanvas->temporalRange() ) ) )
+  {
     return QString();
+  }
 
   if ( rlayer->mapTipTemplate().isEmpty() )
+  {
     return QString();
+  }
 
   const QgsPointXY mappedPosition { mapCanvas->mapSettings().mapToLayerCoordinates( layer, mapPosition ) };
 
   if ( ! layer->extent().contains( mappedPosition ) )
-    return QString( );
+  {
+    return QString();
+  }
 
   QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( layer ) );
   context.appendScope( QgsExpressionContextUtils::mapSettingsScope( mapCanvas->mapSettings() ) );
@@ -385,7 +406,7 @@ QString QgsMapTip::vectorMapTipPreviewText( QgsMapLayer *layer, QgsMapCanvas *ma
 {
   // Only spatial layers can have map tips
   QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
-  if ( !vlayer || !vlayer->isSpatial() )
+  if ( !mapCanvas || !vlayer || !vlayer->isSpatial() )
     return QString();
 
   // If no map tip template or display expression is set, return an empty string
@@ -430,8 +451,10 @@ QString QgsMapTip::vectorMapTipPreviewText( QgsMapLayer *layer, QgsMapCanvas *ma
 QString QgsMapTip::rasterMapTipPreviewText( QgsMapLayer *layer, QgsMapCanvas *mapCanvas, const QString &mapTemplate )
 {
   QgsRasterLayer *rlayer = qobject_cast<QgsRasterLayer *>( layer );
-  if ( !rlayer || mapTemplate.isEmpty() )
+  if ( !mapCanvas || !rlayer || mapTemplate.isEmpty() )
+  {
     return QString();
+  }
 
   // Create an expression context
   QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( layer ) );

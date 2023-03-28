@@ -267,7 +267,7 @@ class GUI_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
 
     QWidget *mMapTipPreviewWidget = nullptr;
     QgsWebView *mMapTipPreview = nullptr;
-    const int MARGIN_VALUE = 5;
+    static const int MARGIN_VALUE = 5;
 
   private slots:
     void openPanel( QgsPanelWidget *panel );
