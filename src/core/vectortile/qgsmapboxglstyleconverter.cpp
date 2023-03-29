@@ -1595,7 +1595,7 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer( const QVariantMap &jsonLayer, 
     if ( symbolPlacement == QLatin1String( "line" ) )
     {
       labelSettings.placement = Qgis::LabelPlacement::Curved;
-      labelSettings.lineSettings().setPlacementFlags( QgsLabeling::OnLine );
+      labelSettings.lineSettings().setPlacementFlags( Qgis::LabelLinePlacementFlag::OnLine );
       geometryType = Qgis::GeometryType::Line;
 
       if ( jsonLayout.contains( QStringLiteral( "text-rotation-alignment" ) ) )
@@ -1646,7 +1646,7 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer( const QVariantMap &jsonLayer, 
           {
             labelSettings.distUnits = context.targetUnit();
             labelSettings.dist = std::abs( textOffset.y() ) - textSize;
-            labelSettings.lineSettings().setPlacementFlags( textOffset.y() > 0.0 ? QgsLabeling::BelowLine : QgsLabeling::AboveLine );
+            labelSettings.lineSettings().setPlacementFlags( textOffset.y() > 0.0 ? Qgis::LabelLinePlacementFlag::BelowLine : Qgis::LabelLinePlacementFlag::AboveLine );
             if ( textSizeProperty && !textOffsetProperty )
             {
               ddLabelProperties.setProperty( QgsPalLayerSettings::LabelDistance, QStringLiteral( "with_variable('text_size',%2,%1*@text_size-@text_size)" ).arg( std::abs( textOffset.y() / textSize ) ).arg( textSizeProperty.asExpression() ) );
@@ -1656,7 +1656,7 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer( const QVariantMap &jsonLayer, 
 
         if ( textOffset.isNull() )
         {
-          labelSettings.lineSettings().setPlacementFlags( QgsLabeling::OnLine );
+          labelSettings.lineSettings().setPlacementFlags( Qgis::LabelLinePlacementFlag::OnLine );
         }
       }
     }

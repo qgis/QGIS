@@ -281,7 +281,7 @@ Returns the :py:class:`QgsExpression` for this label settings. May be ``None`` i
 
     Qgis::LabelPlacement placement;
 
-    QgsLabeling::PolygonPlacementFlags polygonPlacementFlags() const;
+    Qgis::LabelPolygonPlacementFlags polygonPlacementFlags() const;
 %Docstring
 Returns the polygon placement flags, which dictate how polygon labels can be placed.
 
@@ -290,7 +290,7 @@ Returns the polygon placement flags, which dictate how polygon labels can be pla
 .. versionadded:: 3.14
 %End
 
-    void setPolygonPlacementFlags( QgsLabeling::PolygonPlacementFlags flags );
+    void setPolygonPlacementFlags( Qgis::LabelPolygonPlacementFlags flags );
 %Docstring
 Sets the polygon placement ``flags``, which dictate how polygon labels can be placed.
 

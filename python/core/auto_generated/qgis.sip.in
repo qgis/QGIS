@@ -471,7 +471,6 @@ The development version
       OutsidePolygons,
     };
 
-
     enum class LabelPredefinedPointPosition
       {
       TopLeft,
@@ -506,6 +505,26 @@ The development version
       Below,
       BelowRight,
     };
+
+    enum class LabelLinePlacementFlag
+      {
+      OnLine,
+      AboveLine,
+      BelowLine,
+      MapOrientation,
+    };
+
+    typedef QFlags<Qgis::LabelLinePlacementFlag> LabelLinePlacementFlags;
+
+
+    enum class LabelPolygonPlacementFlag
+      {
+      AllowPlacementOutsideOfPolygon,
+      AllowPlacementInsideOfPolygon,
+    };
+
+    typedef QFlags<Qgis::LabelPolygonPlacementFlag> LabelPolygonPlacementFlags;
+
 
     enum class UpsideDownLabelHandling
       {
@@ -2041,6 +2060,9 @@ QFlags<Qgis::ScriptLanguageCapability> operator|(Qgis::ScriptLanguageCapability 
 
 QFlags<Qgis::LayerTreeFilterFlag> operator|(Qgis::LayerTreeFilterFlag f1, QFlags<Qgis::LayerTreeFilterFlag> f2);
 
+QFlags<Qgis::LabelLinePlacementFlag> operator|(Qgis::LabelLinePlacementFlag f1, QFlags<Qgis::LabelLinePlacementFlag> f2);
+
+QFlags<Qgis::LabelPolygonPlacementFlag> operator|(Qgis::LabelPolygonPlacementFlag f1, QFlags<Qgis::LabelPolygonPlacementFlag> f2);
 
 
 
