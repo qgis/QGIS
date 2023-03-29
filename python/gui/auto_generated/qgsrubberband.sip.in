@@ -72,7 +72,7 @@ Creates a new RubberBand.
                   Its CRS will be used to map points onto screen coordinates.
                   The ownership is transferred to this canvas.
 :param geometryType: Defines how the data should be drawn onto the screen.
-                     :py:class:`QgsWkbTypes`.LineGeometry, :py:class:`QgsWkbTypes`.PolygonGeometry or :py:class:`QgsWkbTypes`.PointGeometry
+                     Qgis.GeometryType.Line, Qgis.GeometryType.Polygon or Qgis.GeometryType.Point
 %End
     ~QgsRubberBand();
 
