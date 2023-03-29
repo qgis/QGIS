@@ -49,6 +49,7 @@ class QgsDoubleSpinBox;
 class QgsMaskingWidget;
 class QgsVectorLayerTemporalPropertiesWidget;
 class QgsProviderSourceWidget;
+class QgsWebView;
 
 /**
  * \ingroup gui
@@ -74,6 +75,8 @@ class GUI_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
 
     //! Adds a properties page factory to the vector layer properties dialog.
     void addPropertiesPageFactory( const QgsMapLayerConfigWidgetFactory *factory );
+
+    bool eventFilter( QObject *obj, QEvent *ev ) override;
 
   protected slots:
     void optionsStackedWidget_CurrentChanged( int index ) final;
@@ -161,6 +164,11 @@ class GUI_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
     void onAuxiliaryLayerAddField();
 
     void urlClicked( const QUrl &url );
+
+    // Update the preview of the map tip
+    void updateMapTipPreview();
+    // Resize the map tip preview
+    void resizeMapTip();
 
   private:
 
@@ -254,6 +262,12 @@ class GUI_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
     QgsProviderSourceWidget *mSourceWidget = nullptr;
 
     QgsCoordinateReferenceSystem mBackupCrs;
+
+    void initMapTipPreview();
+
+    QWidget *mMapTipPreviewWidget = nullptr;
+    QgsWebView *mMapTipPreview = nullptr;
+    static const int MARGIN_VALUE = 5;
 
   private slots:
     void openPanel( QgsPanelWidget *panel );

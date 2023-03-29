@@ -75,11 +75,12 @@ void QgsMapTip::showMapTip( QgsMapLayer *pLayer,
 
   // Do not render a new map tip when the mouse hovers an existing one
   if ( mWidget && mWidget->underMouse() )
+  {
     return;
+  }
 
   // Show the maptip on the canvas
-  QString tipText, lastTipText, tipHtml, bodyStyle, containerStyle,
-          backgroundColor, strokeColor, textColor;
+  QString tipText, lastTipText, tipHtml, backgroundColor, strokeColor;
 
   if ( ! mWidget )
   {
@@ -119,9 +120,8 @@ void QgsMapTip::showMapTip( QgsMapLayer *pLayer,
     // The content will automatically make it grow up to MaximumSize
     mWidget->resize( 0, 0 );
 
-    backgroundColor = mWidget->palette().base().color().name();
-    strokeColor = mWidget->palette().shadow().color().name();
-    textColor = mWidget->palette().text().color().name();
+    backgroundColor = QgsApplication::palette().base().color().name();
+    strokeColor = QgsApplication::palette().shadow().color().name();
     mWidget->setStyleSheet( QString(
                               ".QWidget{"
                               "border: 1px solid %1;"
@@ -154,22 +154,7 @@ void QgsMapTip::showMapTip( QgsMapLayer *pLayer,
     return;
   }
 
-  bodyStyle = QString(
-                "background-color: %1;"
-                "margin: 0;"
-                "font: %2pt \"%3\";"
-                "color: %4;" ).arg( backgroundColor ).arg( mFontSize ).arg( mFontFamily, textColor );
-
-  containerStyle = QString(
-                     "display: inline-block;"
-                     "margin: 0px" );
-
-  tipHtml = QString(
-              "<html>"
-              "<body style='%1'>"
-              "<div id='QgsWebViewContainer' style='%2'>%3</div>"
-              "</body>"
-              "</html>" ).arg( bodyStyle, containerStyle, tipText );
+  tipHtml = QgsMapTip::htmlText( tipText );
 
   QgsDebugMsg( tipHtml );
 
@@ -209,11 +194,15 @@ void QgsMapTip::resizeContent()
 void QgsMapTip::clear( QgsMapCanvas *, int msDelay )
 {
   if ( !mMapTipVisible )
+  {
     return;
+  }
 
   // Skip clearing the map tip if the user interacts with it or the timer still runs
   if ( mDelayedClearTimer.isActive() || mWidget->underMouse() )
+  {
     return;
+  }
 
   if ( msDelay > 0 )
   {
@@ -231,7 +220,9 @@ QString QgsMapTip::fetchFeature( QgsMapLayer *layer, QgsPointXY &mapPosition, Qg
 {
   QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
   if ( !vlayer || !vlayer->isSpatial() )
+  {
     return QString();
+  }
 
   if ( !layer->isInScaleRange( mapCanvas->mapSettings().scale() ) ||
        ( mapCanvas->mapSettings().isTemporal() && !layer->temporalProperties()->isVisibleInTemporalRange( mapCanvas->temporalRange() ) ) )
@@ -255,7 +246,9 @@ QString QgsMapTip::fetchFeature( QgsMapLayer *layer, QgsPointXY &mapPosition, Qg
 
   const QString canvasFilter = QgsMapCanvasUtils::filterForLayer( mapCanvas, vlayer );
   if ( canvasFilter ==  QLatin1String( "FALSE" ) )
+  {
     return QString();
+  }
 
   const QString mapTip = vlayer->mapTipTemplate();
   QString tipString;
@@ -266,7 +259,9 @@ QString QgsMapTip::fetchFeature( QgsMapLayer *layer, QgsPointXY &mapPosition, Qg
   request.setFilterRect( r );
   request.setFlags( QgsFeatureRequest::ExactIntersect );
   if ( !canvasFilter.isEmpty() )
+  {
     request.setFilterExpression( canvasFilter );
+  }
 
   if ( mapTip.isEmpty() )
   {
@@ -323,7 +318,9 @@ QString QgsMapTip::fetchFeature( QgsMapLayer *layer, QgsPointXY &mapPosition, Qg
   }
 
   if ( renderer )
+  {
     renderer->stopRender( renderCtx );
+  }
 
   return tipString;
 }
@@ -332,10 +329,17 @@ QString QgsMapTip::fetchRaster( QgsMapLayer *layer, QgsPointXY &mapPosition, Qgs
 {
   QgsRasterLayer *rlayer = qobject_cast<QgsRasterLayer *>( layer );
   if ( !rlayer )
+  {
     return QString();
+  }
 
   if ( !layer->isInScaleRange( mapCanvas->mapSettings().scale() ) ||
        ( mapCanvas->mapSettings().isTemporal() && !layer->temporalProperties()->isVisibleInTemporalRange( mapCanvas->temporalRange() ) ) )
+  {
+    return QString();
+  }
+
+  if ( rlayer->mapTipTemplate().isEmpty() )
   {
     return QString();
   }
@@ -344,20 +348,43 @@ QString QgsMapTip::fetchRaster( QgsMapLayer *layer, QgsPointXY &mapPosition, Qgs
 
   if ( ! layer->extent().contains( mappedPosition ) )
   {
-    return QString( );
+    return QString();
   }
 
-  QString tipText { rlayer->mapTipTemplate() };
+  QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( layer ) );
+  context.appendScope( QgsExpressionContextUtils::mapSettingsScope( mapCanvas->mapSettings() ) );
+  context.appendScope( QgsExpressionContextUtils::mapLayerPositionScope( mappedPosition ) );
+  return  QgsExpression::replaceExpressionText( rlayer->mapTipTemplate(), &context );
+}
 
-  if ( ! tipText.isEmpty() )
-  {
-    QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( layer ) );
-    context.appendScope( QgsExpressionContextUtils::mapSettingsScope( mapCanvas->mapSettings() ) );
-    context.appendScope( QgsExpressionContextUtils::mapLayerPositionScope( mappedPosition ) );
-    tipText = QgsExpression::replaceExpressionText( tipText, &context );
-  }
+QString QgsMapTip::htmlText( const QString &text )
+{
+  const QgsSettings settings;
+  const QFont defaultFont = qApp->font();
+  const int fontSize = settings.value( QStringLiteral( "/qgis/stylesheet/fontPointSize" ), defaultFont.pointSize() ).toInt();
+  const QString fontFamily = settings.value( QStringLiteral( "/qgis/stylesheet/fontFamily" ), defaultFont.family() ).toString();
+  QString bodyStyle, containerStyle, backgroundColor, strokeColor, textColor;
 
-  return tipText;
+  backgroundColor = QgsApplication::palette().base().color().name();
+  strokeColor = QgsApplication::palette().shadow().color().name();
+  textColor = QgsApplication::palette().windowText().color().name();
+
+  bodyStyle = QString(
+                "background-color: %1;"
+                "margin: 0;"
+                "font: %2pt \"%3\";"
+                "color: %4;" ).arg( backgroundColor ).arg( fontSize ).arg( fontFamily, textColor );
+
+  containerStyle = QString(
+                     "display: inline-block;"
+                     "margin: 0px" );
+
+  return QString(
+           "<html>"
+           "<body style='%1'>"
+           "<div id='QgsWebViewContainer' style='%2'>%3</div>"
+           "</body>"
+           "</html>" ).arg( bodyStyle, containerStyle, text );
 }
 
 void QgsMapTip::applyFontSettings()
@@ -372,4 +399,74 @@ void QgsMapTip::applyFontSettings()
 void QgsMapTip::onLinkClicked( const QUrl &url )
 {
   QDesktopServices::openUrl( url );
+}
+
+
+QString QgsMapTip::vectorMapTipPreviewText( QgsMapLayer *layer, QgsMapCanvas *mapCanvas, const QString &mapTemplate, const QString &displayExpression )
+{
+  // Only spatial layers can have map tips
+  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
+  if ( !mapCanvas || !vlayer || !vlayer->isSpatial() )
+    return QString();
+
+  // If no map tip template or display expression is set, return an empty string
+  if ( mapTemplate.isEmpty() && displayExpression.isEmpty() )
+    return QString();
+
+  // Create an expression context
+  QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( vlayer ) );
+  context.appendScope( QgsExpressionContextUtils::mapSettingsScope( mapCanvas->mapSettings() ) );
+
+  // Get the first feature if any, and add it to the expression context
+  QgsFeature previewFeature;
+  if ( vlayer->featureCount() > 0 )
+  {
+    QgsFeatureIterator it = vlayer->getFeatures( QgsFeatureRequest().setLimit( 1 ) );
+    it.nextFeature( previewFeature );
+  }
+  else
+  {
+    previewFeature = QgsFeature( vlayer->fields() );
+  }
+  context.setFeature( previewFeature );
+
+  // Generate the map tip text from the context and the mapTipTemplate/displayExpression
+  QString tipText;
+  if ( mapTemplate.isEmpty() )
+  {
+    QgsExpression exp( displayExpression );
+    exp.prepare( &context );
+    tipText = exp.evaluate( &context ).toString();
+  }
+  else
+  {
+    tipText = QgsExpression::replaceExpressionText( mapTemplate, &context );
+  }
+
+  // Insert the map tip text into the html template
+  return QgsMapTip::htmlText( tipText );
+
+}
+
+QString QgsMapTip::rasterMapTipPreviewText( QgsMapLayer *layer, QgsMapCanvas *mapCanvas, const QString &mapTemplate )
+{
+  QgsRasterLayer *rlayer = qobject_cast<QgsRasterLayer *>( layer );
+  if ( !mapCanvas || !rlayer || mapTemplate.isEmpty() )
+  {
+    return QString();
+  }
+
+  // Create an expression context
+  QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( layer ) );
+  context.appendScope( QgsExpressionContextUtils::mapSettingsScope( mapCanvas->mapSettings() ) );
+
+  // Get the position of the center of the layer, and add it to the expression context
+  const QgsPointXY mappedPosition { layer->extent().center() };
+  context.appendScope( QgsExpressionContextUtils::mapLayerPositionScope( mappedPosition ) );
+
+  // Generate the map tip text from the context and the mapTipTemplate
+  const QString tipText = QgsExpression::replaceExpressionText( mapTemplate, &context );
+
+  // Insert the map tip text into the html template
+  return QgsMapTip::htmlText( tipText );
 }
