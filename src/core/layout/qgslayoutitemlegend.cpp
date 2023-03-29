@@ -1137,6 +1137,8 @@ void QgsLayoutItemLegend::doUpdateFilterByMap()
       filterGeometry = QgsGeometry::fromQPolygonF( ( *linkedFilterMaps.constBegin() )->visibleExtentPolygon() );
     }
 
+    const QgsGeometry atlasGeometry = mInAtlas ? mLayout->reportContext().currentGeometry( ms.destinationCrs() ) : QgsGeometry();
+
     QgsLayerTreeFilterSettings filterSettings( ms );
 
     if ( !linkedFilterMaps.empty() )
@@ -1162,6 +1164,11 @@ void QgsLayoutItemLegend::doUpdateFilterByMap()
         const QList< QgsMapLayer * > layersForMap = map->layersToRender();
         for ( QgsMapLayer *layer : layersForMap )
         {
+          if ( !atlasGeometry.isNull() )
+          {
+            mapExtent = mapExtent.intersection( atlasGeometry );
+          }
+
           filterSettings.addVisibleExtentForLayer( layer, QgsReferencedGeometry( mapExtent, ms.destinationCrs() ) );
         }
       }
