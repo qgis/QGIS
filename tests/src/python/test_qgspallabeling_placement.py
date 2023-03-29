@@ -19,6 +19,7 @@ import sys
 import qgis  # NOQA
 from qgis.PyQt.QtCore import qDebug
 from qgis.core import (
+    Qgis,
     QgsLabeling,
     QgsLabelingEngineSettings,
     QgsLabelObstacleSettings,
@@ -838,7 +839,7 @@ class TestPointPlacement(TestPlacementBase):
         self.layer = TestQgsPalLabeling.loadFeatureLayer('polygon_small')
         self._TestMapSettings = self.cloneMapSettings(self._MapSettings)
         self.lyr.placement = QgsPalLayerSettings.OverPoint
-        self.lyr.setPolygonPlacementFlags(QgsLabeling.AllowPlacementOutsideOfPolygon | QgsLabeling.AllowPlacementInsideOfPolygon)
+        self.lyr.setPolygonPlacementFlags(Qgis.LabelPolygonPlacementFlags(QgsLabeling.AllowPlacementOutsideOfPolygon | QgsLabeling.AllowPlacementInsideOfPolygon))
         self.checkTest()
         self.removeMapLayer(self.layer)
         self.layer = None
@@ -849,7 +850,7 @@ class TestPointPlacement(TestPlacementBase):
         self.layer = TestQgsPalLabeling.loadFeatureLayer('polygon_small')
         self._TestMapSettings = self.cloneMapSettings(self._MapSettings)
         self.lyr.placement = QgsPalLayerSettings.OverPoint
-        self.lyr.setPolygonPlacementFlags(QgsLabeling.AllowPlacementOutsideOfPolygon | QgsLabeling.AllowPlacementInsideOfPolygon)
+        self.lyr.setPolygonPlacementFlags(Qgis.LabelPolygonPlacementFlags(QgsLabeling.AllowPlacementOutsideOfPolygon | QgsLabeling.AllowPlacementInsideOfPolygon))
         f = self.lyr.format()
         f.setSize(8)
         self.lyr.setFormat(f)
@@ -863,7 +864,7 @@ class TestPointPlacement(TestPlacementBase):
         self.layer = TestQgsPalLabeling.loadFeatureLayer('polygon_small')
         self._TestMapSettings = self.cloneMapSettings(self._MapSettings)
         self.lyr.placement = QgsPalLayerSettings.OverPoint
-        self.lyr.setPolygonPlacementFlags(QgsLabeling.AllowPlacementOutsideOfPolygon)
+        self.lyr.setPolygonPlacementFlags(Qgis.LabelPolygonPlacementFlags(QgsLabeling.AllowPlacementOutsideOfPolygon))
         f = self.lyr.format()
         f.setSize(8)
         self.lyr.setFormat(f)
