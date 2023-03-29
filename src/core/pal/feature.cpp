@@ -905,7 +905,6 @@ std::size_t FeaturePart::createCandidatesAlongLineNearStraightSegments( std::vec
   straightSegmentAngles.reserve( extremeAngleNodes.size() + 1 );
   double currentStraightSegmentLength = 0;
   double longestSegmentLength = 0;
-  int segmentIndex = 0;
   double segmentStartX = x[0];
   double segmentStartY = y[0];
   for ( int i = 0; i < numberNodes - 1; i++ )
@@ -923,7 +922,6 @@ std::size_t FeaturePart::createCandidatesAlongLineNearStraightSegments( std::vec
       straightSegmentLengths << currentStraightSegmentLength;
       straightSegmentAngles << QgsGeometryUtils::normalizedAngle( std::atan2( y[i] - segmentStartY, x[i] - segmentStartX ) );
       longestSegmentLength = std::max( longestSegmentLength, currentStraightSegmentLength );
-      segmentIndex++;
       currentStraightSegmentLength = 0;
       segmentStartX = x[i];
       segmentStartY = y[i];

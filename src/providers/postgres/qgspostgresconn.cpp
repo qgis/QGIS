@@ -1949,7 +1949,9 @@ void QgsPostgresConn::deduceEndian()
   // return data in the endian of the server
 
   QgsPostgresResult resOID;
+#ifdef QGISDEBUG
   int queryCounter = 0;
+#endif
   int errorCounter = 0;
   int oidStatus = 0;
   int oidSelectSet = 1 << 0;
@@ -1974,7 +1976,9 @@ void QgsPostgresConn::deduceEndian()
     if ( resOID.result() == nullptr )
       break;
 
+#ifdef QGISDEBUG
     queryCounter++;
+#endif
     if ( resOID.PQresultStatus() == PGRES_FATAL_ERROR )
     {
       errorCounter++;
