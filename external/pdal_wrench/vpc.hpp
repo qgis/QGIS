@@ -26,11 +26,23 @@ void buildVpc(std::vector<std::string> args);
 
 struct VirtualPointCloud
 {
+    struct SchemaItem
+    {
+      SchemaItem(const std::string &n, const std::string &t, int s): name(n), type(t), size(s) {}
+
+      std::string name;
+      std::string type;
+      int size;
+    };
+
     struct File
     {
         std::string filename;
         point_count_t count;
         BOX3D bbox;
+        std::string crsWkt;
+        std::string datetime;  // RFC 3339 encoded date/time - e.g. 2023-01-01T12:00:00Z
+        std::vector<SchemaItem> schema;  // we're not using it, just for STAC export
     };
 
     std::vector<File> files;
