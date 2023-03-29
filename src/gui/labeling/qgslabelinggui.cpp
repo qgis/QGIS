@@ -369,12 +369,12 @@ void QgsLabelingGui::setLayer( QgsMapLayer *mapLayer )
   mPointOffsetUnitWidget->setUnit( mSettings.offsetUnits );
   mPointOffsetUnitWidget->setMapUnitScale( mSettings.labelOffsetMapUnitScale );
   mPointAngleSpinBox->setValue( mSettings.angleOffset );
-  chkLineAbove->setChecked( mSettings.lineSettings().placementFlags() & QgsLabeling::LinePlacementFlag::AboveLine );
-  chkLineBelow->setChecked( mSettings.lineSettings().placementFlags() & QgsLabeling::LinePlacementFlag::BelowLine );
-  chkLineOn->setChecked( mSettings.lineSettings().placementFlags() & QgsLabeling::LinePlacementFlag::OnLine );
-  chkLineOrientationDependent->setChecked( !( mSettings.lineSettings().placementFlags() & QgsLabeling::LinePlacementFlag::MapOrientation ) );
+  chkLineAbove->setChecked( mSettings.lineSettings().placementFlags() & Qgis::LabelLinePlacementFlag::AboveLine );
+  chkLineBelow->setChecked( mSettings.lineSettings().placementFlags() & Qgis::LabelLinePlacementFlag::BelowLine );
+  chkLineOn->setChecked( mSettings.lineSettings().placementFlags() & Qgis::LabelLinePlacementFlag::OnLine );
+  chkLineOrientationDependent->setChecked( !( mSettings.lineSettings().placementFlags() & Qgis::LabelLinePlacementFlag::MapOrientation ) );
 
-  mCheckAllowLabelsOutsidePolygons->setChecked( mSettings.polygonPlacementFlags() & QgsLabeling::PolygonPlacementFlag::AllowPlacementOutsideOfPolygon );
+  mCheckAllowLabelsOutsidePolygons->setChecked( mSettings.polygonPlacementFlags() & Qgis::LabelPolygonPlacementFlag::AllowPlacementOutsideOfPolygon );
 
   const int placementIndex = mPlacementModeComboBox->findData( static_cast< int >( mSettings.placement ) );
   if ( placementIndex >= 0 )
@@ -529,9 +529,9 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
 
   lyr.dist = 0;
 
-  QgsLabeling::PolygonPlacementFlags polygonPlacementFlags = QgsLabeling::PolygonPlacementFlag::AllowPlacementInsideOfPolygon;
+  Qgis::LabelPolygonPlacementFlags polygonPlacementFlags = Qgis::LabelPolygonPlacementFlag::AllowPlacementInsideOfPolygon;
   if ( mCheckAllowLabelsOutsidePolygons->isChecked() )
-    polygonPlacementFlags |= QgsLabeling::PolygonPlacementFlag::AllowPlacementOutsideOfPolygon;
+    polygonPlacementFlags |= Qgis::LabelPolygonPlacementFlag::AllowPlacementOutsideOfPolygon;
   lyr.setPolygonPlacementFlags( polygonPlacementFlags );
 
   lyr.centroidWhole = mCentroidRadioWhole->isChecked();
@@ -551,15 +551,15 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
   lyr.labelOffsetMapUnitScale = mPointOffsetUnitWidget->getMapUnitScale();
   lyr.angleOffset = mPointAngleSpinBox->value();
 
-  QgsLabeling::LinePlacementFlags linePlacementFlags = QgsLabeling::LinePlacementFlags();
+  Qgis::LabelLinePlacementFlags linePlacementFlags = Qgis::LabelLinePlacementFlags();
   if ( chkLineAbove->isChecked() )
-    linePlacementFlags |= QgsLabeling::LinePlacementFlag::AboveLine;
+    linePlacementFlags |= Qgis::LabelLinePlacementFlag::AboveLine;
   if ( chkLineBelow->isChecked() )
-    linePlacementFlags |= QgsLabeling::LinePlacementFlag::BelowLine;
+    linePlacementFlags |= Qgis::LabelLinePlacementFlag::BelowLine;
   if ( chkLineOn->isChecked() )
-    linePlacementFlags |= QgsLabeling::LinePlacementFlag::OnLine;
+    linePlacementFlags |= Qgis::LabelLinePlacementFlag::OnLine;
   if ( ! chkLineOrientationDependent->isChecked() )
-    linePlacementFlags |= QgsLabeling::LinePlacementFlag::MapOrientation;
+    linePlacementFlags |= Qgis::LabelLinePlacementFlag::MapOrientation;
   lyr.lineSettings().setPlacementFlags( linePlacementFlags );
 
   lyr.placement = static_cast< Qgis::LabelPlacement >( mPlacementModeComboBox->currentData().toInt() );

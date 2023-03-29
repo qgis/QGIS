@@ -2992,7 +2992,7 @@ namespace QgsWms
             if ( param.mHali.isEmpty() || param.mVali.isEmpty() || QgsWkbTypes::flatType( param.mGeom.wkbType() ) != Qgis::WkbType::Point )
             {
               placement = Qgis::LabelPlacement::AroundPoint;
-              palSettings.lineSettings().setPlacementFlags( QgsLabeling::LinePlacementFlags() );
+              palSettings.lineSettings().setPlacementFlags( Qgis::LabelLinePlacementFlags() );
             }
             else //set label directly on point if there is hali/vali
             {
@@ -3037,7 +3037,7 @@ namespace QgsWms
           default:
           {
             placement = Qgis::LabelPlacement::Line;
-            palSettings.lineSettings().setPlacementFlags( QgsLabeling::LinePlacementFlag::AboveLine | QgsLabeling::LinePlacementFlag::MapOrientation );
+            palSettings.lineSettings().setPlacementFlags( Qgis::LabelLinePlacementFlag::AboveLine | Qgis::LabelLinePlacementFlag::MapOrientation );
             break;
           }
         }

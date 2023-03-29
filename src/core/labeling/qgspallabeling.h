@@ -41,7 +41,6 @@
 #include "qgslabelobstaclesettings.h"
 #include "qgslabelthinningsettings.h"
 #include "qgslabellinesettings.h"
-#include "qgslabeling.h"
 #include "qgscoordinatetransform.h"
 #include "qgsexpression.h"
 
@@ -98,7 +97,7 @@ class CORE_EXPORT QgsPalLayerSettings
     /**
      * Line placement flags, which control how candidates are generated for a linear feature.
      *
-     * \deprecated Use QgsLabeling::LinePlacementFlags instead
+     * \deprecated Use Qgis::LabelLinePlacementFlags instead
      */
     enum LinePlacementFlags
     {
@@ -439,7 +438,7 @@ class CORE_EXPORT QgsPalLayerSettings
      * \see setPolygonPlacementFlags()
      * \since QGIS 3.14
      */
-    QgsLabeling::PolygonPlacementFlags polygonPlacementFlags() const { return mPolygonPlacementFlags; }
+    Qgis::LabelPolygonPlacementFlags polygonPlacementFlags() const { return mPolygonPlacementFlags; }
 
     /**
      * Sets the polygon placement \a flags, which dictate how polygon labels can be placed.
@@ -447,7 +446,7 @@ class CORE_EXPORT QgsPalLayerSettings
      * \see polygonPlacementFlags()
      * \since QGIS 3.14
      */
-    void setPolygonPlacementFlags( QgsLabeling::PolygonPlacementFlags flags ) { mPolygonPlacementFlags = flags; }
+    void setPolygonPlacementFlags( Qgis::LabelPolygonPlacementFlags flags ) { mPolygonPlacementFlags = flags; }
 
     /**
      * TRUE if feature centroid should be calculated from the whole feature, or
@@ -695,7 +694,7 @@ class CORE_EXPORT QgsPalLayerSettings
     ObstacleType _getObstacleType() const { return static_cast< ObstacleType>( mObstacleSettings.type() ); }
     void _setObstacleType( ObstacleType type ) { mObstacleSettings.setType( static_cast< QgsLabelObstacleSettings::ObstacleType>( type ) ); }
     unsigned int _getLinePlacementFlags() const { return static_cast< unsigned int >( mLineSettings.placementFlags() ); }
-    void _setLinePlacementFlags( unsigned int flags ) { mLineSettings.setPlacementFlags( static_cast< QgsLabeling::LinePlacementFlags >( flags ) ); }
+    void _setLinePlacementFlags( unsigned int flags ) { mLineSettings.setPlacementFlags( static_cast< Qgis::LabelLinePlacementFlags >( flags ) ); }
     bool _getMergeLines() const { return mLineSettings.mergeLines(); }
     void _setMergeLines( bool merge ) { mLineSettings.setMergeLines( merge ); }
     bool _getAddDirectionSymbol() const { return mLineSettings.addDirectionSymbol(); }
@@ -1088,7 +1087,7 @@ class CORE_EXPORT QgsPalLayerSettings
     QgsLabelObstacleSettings mObstacleSettings;
     QgsLabelThinningSettings mThinningSettings;
 
-    QgsLabeling::PolygonPlacementFlags mPolygonPlacementFlags = QgsLabeling::PolygonPlacementFlag::AllowPlacementInsideOfPolygon;
+    Qgis::LabelPolygonPlacementFlags mPolygonPlacementFlags = Qgis::LabelPolygonPlacementFlag::AllowPlacementInsideOfPolygon;
 
     QgsExpression mGeometryGeneratorExpression;
 

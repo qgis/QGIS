@@ -741,7 +741,6 @@ class CORE_EXPORT Qgis
     };
     Q_ENUM( LabelPlacement )
 
-
     /**
      * Positions for labels when using the Qgis::LabelPlacement::OrderedPositionsAroundPoint placement mode.
      *
@@ -801,6 +800,53 @@ class CORE_EXPORT Qgis
       BelowRight SIP_MONKEYPATCH_COMPAT_NAME( QuadrantBelowRight ), //!< BelowRight
     };
     Q_ENUM( LabelQuadrantPosition )
+
+    /**
+     * Line placement flags, which control how candidates are generated for a linear feature.
+     *
+     * \note Prior to QGIS 3.32 this was available as QgsLabeling::LinePlacementFlag
+     * \since QGIS 3.32
+     */
+    enum class LabelLinePlacementFlag SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsLabeling, LinePlacementFlag ) : int
+      {
+      OnLine = 1, //!< Labels can be placed directly over a line feature.
+      AboveLine = 2, //!< Labels can be placed above a line feature. Unless MapOrientation is also specified this mode respects the direction of the line feature, so a line from right to left labels will have labels placed placed below the line feature.
+      BelowLine = 4, //!< Labels can be placed below a line feature. Unless MapOrientation is also specified this mode respects the direction of the line feature, so a line from right to left labels will have labels placed placed above the line feature.
+      MapOrientation = 8, //!< Signifies that the AboveLine and BelowLine flags should respect the map's orientation rather than the feature's orientation. For example, AboveLine will always result in label's being placed above a line, regardless of the line's direction.
+    };
+    Q_ENUM( LabelLinePlacementFlag )
+
+    /**
+     * Line placement flags, which control how candidates are generated for a linear feature.
+     *
+     * \note Prior to QGIS 3.32 this was available as QgsLabeling::LinePlacementFlags
+     *
+     * \since QGIS 3.32
+     */
+    Q_DECLARE_FLAGS( LabelLinePlacementFlags, LabelLinePlacementFlag ) SIP_MONKEYPATCH_FLAGS_UNNEST( QgsLabeling, LinePlacementFlags )
+    Q_FLAG( LabelLinePlacementFlags )
+
+    /**
+     * Polygon placement flags, which control how candidates are generated for a polygon feature.
+     *
+     * \note Prior to QGIS 3.32 this was available as QgsLabeling::PolygonPlacementFlag
+     * \since QGIS 3.32
+     */
+    enum class LabelPolygonPlacementFlag SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsLabeling, PolygonPlacementFlag ) : int
+      {
+      AllowPlacementOutsideOfPolygon = 1 << 0, //!< Labels can be placed outside of a polygon feature
+      AllowPlacementInsideOfPolygon = 1 << 1, //!< Labels can be placed inside a polygon feature
+    };
+    Q_ENUM( LabelPolygonPlacementFlag )
+
+    /**
+     * Polygon placement flags, which control how candidates are generated for a polygon feature.
+     *
+     * \note Prior to QGIS 3.32 this was available as QgsLabeling::PolygonPlacementFlags
+     * \since QGIS 3.32
+     */
+    Q_DECLARE_FLAGS( LabelPolygonPlacementFlags, LabelPolygonPlacementFlag )
+    Q_FLAG( LabelPolygonPlacementFlags )
 
     /**
      * Handling techniques for upside down labels.
@@ -3429,7 +3475,8 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::RelationshipCapabilities )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SettingsTreeNodeOptions )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::ScriptLanguageCapabilities )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::LayerTreeFilterFlags )
-
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::LabelLinePlacementFlags )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::LabelPolygonPlacementFlags )
 
 // hack to workaround warnings when casting void pointers
 // retrieved from QLibrary::resolve to function pointers.

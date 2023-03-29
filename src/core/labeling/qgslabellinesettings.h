@@ -18,7 +18,6 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgslabeling.h"
 #include "qgsmapunitscale.h"
 #include <QString>
 
@@ -94,7 +93,7 @@ class CORE_EXPORT QgsLabelLineSettings
      *
      * \see setPlacementFlags()
      */
-    QgsLabeling::LinePlacementFlags placementFlags() const { return mPlacementFlags; }
+    Qgis::LabelLinePlacementFlags placementFlags() const { return mPlacementFlags; }
 
     /**
      * Returns the line placement \a flags, which dictate how line labels can be placed
@@ -102,7 +101,7 @@ class CORE_EXPORT QgsLabelLineSettings
      *
      * \see placementFlags()
      */
-    void setPlacementFlags( QgsLabeling::LinePlacementFlags flags ) { mPlacementFlags = flags; }
+    void setPlacementFlags( Qgis::LabelLinePlacementFlags flags ) { mPlacementFlags = flags; }
 
     /**
      * Returns TRUE if connected line features with identical label text should be merged
@@ -365,7 +364,7 @@ class CORE_EXPORT QgsLabelLineSettings
     void setAnchorTextPoint( AnchorTextPoint point ) { mAnchorTextPoint = point; }
 
   private:
-    QgsLabeling::LinePlacementFlags mPlacementFlags = QgsLabeling::LinePlacementFlag::AboveLine | QgsLabeling::LinePlacementFlag::MapOrientation;
+    Qgis::LabelLinePlacementFlags mPlacementFlags = Qgis::LabelLinePlacementFlag::AboveLine | Qgis::LabelLinePlacementFlag::MapOrientation;
     bool mMergeLines = false;
     bool mAddDirectionSymbol = false;
     QString mLeftDirectionSymbol = QString( '<' );

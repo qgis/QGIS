@@ -904,6 +904,39 @@ QgsPalLayerSettings.QuadrantBelowRight.__doc__ = "BelowRight"
 Qgis.LabelQuadrantPosition.__doc__ = 'Label quadrant positions\n\n.. note::\n\n   Prior to QGIS 3.26 this was available as :py:class:`QgsPalLayerSettings`.QuadrantPosition\n\n.. versionadded:: 3.26\n\n' + '* ``QuadrantAboveLeft``: ' + Qgis.LabelQuadrantPosition.AboveLeft.__doc__ + '\n' + '* ``QuadrantAbove``: ' + Qgis.LabelQuadrantPosition.Above.__doc__ + '\n' + '* ``QuadrantAboveRight``: ' + Qgis.LabelQuadrantPosition.AboveRight.__doc__ + '\n' + '* ``QuadrantLeft``: ' + Qgis.LabelQuadrantPosition.Left.__doc__ + '\n' + '* ``QuadrantOver``: ' + Qgis.LabelQuadrantPosition.Over.__doc__ + '\n' + '* ``QuadrantRight``: ' + Qgis.LabelQuadrantPosition.Right.__doc__ + '\n' + '* ``QuadrantBelowLeft``: ' + Qgis.LabelQuadrantPosition.BelowLeft.__doc__ + '\n' + '* ``QuadrantBelow``: ' + Qgis.LabelQuadrantPosition.Below.__doc__ + '\n' + '* ``QuadrantBelowRight``: ' + Qgis.LabelQuadrantPosition.BelowRight.__doc__
 # --
 Qgis.LabelQuadrantPosition.baseClass = Qgis
+QgsLabeling.LinePlacementFlag = Qgis.LabelLinePlacementFlag
+# monkey patching scoped based enum
+QgsLabeling.OnLine = Qgis.LabelLinePlacementFlag.OnLine
+QgsLabeling.OnLine.is_monkey_patched = True
+QgsLabeling.OnLine.__doc__ = "Labels can be placed directly over a line feature."
+QgsLabeling.AboveLine = Qgis.LabelLinePlacementFlag.AboveLine
+QgsLabeling.AboveLine.is_monkey_patched = True
+QgsLabeling.AboveLine.__doc__ = "Labels can be placed above a line feature. Unless MapOrientation is also specified this mode respects the direction of the line feature, so a line from right to left labels will have labels placed placed below the line feature."
+QgsLabeling.BelowLine = Qgis.LabelLinePlacementFlag.BelowLine
+QgsLabeling.BelowLine.is_monkey_patched = True
+QgsLabeling.BelowLine.__doc__ = "Labels can be placed below a line feature. Unless MapOrientation is also specified this mode respects the direction of the line feature, so a line from right to left labels will have labels placed placed above the line feature."
+QgsLabeling.MapOrientation = Qgis.LabelLinePlacementFlag.MapOrientation
+QgsLabeling.MapOrientation.is_monkey_patched = True
+QgsLabeling.MapOrientation.__doc__ = "Signifies that the AboveLine and BelowLine flags should respect the map's orientation rather than the feature's orientation. For example, AboveLine will always result in label's being placed above a line, regardless of the line's direction."
+Qgis.LabelLinePlacementFlag.__doc__ = 'Line placement flags, which control how candidates are generated for a linear feature.\n\n.. note::\n\n   Prior to QGIS 3.32 this was available as :py:class:`QgsLabeling`.LinePlacementFlag\n\n.. versionadded:: 3.32\n\n' + '* ``OnLine``: ' + Qgis.LabelLinePlacementFlag.OnLine.__doc__ + '\n' + '* ``AboveLine``: ' + Qgis.LabelLinePlacementFlag.AboveLine.__doc__ + '\n' + '* ``BelowLine``: ' + Qgis.LabelLinePlacementFlag.BelowLine.__doc__ + '\n' + '* ``MapOrientation``: ' + Qgis.LabelLinePlacementFlag.MapOrientation.__doc__
+# --
+Qgis.LabelLinePlacementFlag.baseClass = Qgis
+QgsLabeling.LinePlacementFlags = Qgis.LabelLinePlacementFlags
+Qgis.LabelLinePlacementFlags.baseClass = Qgis
+LabelLinePlacementFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
+QgsLabeling.PolygonPlacementFlag = Qgis.LabelPolygonPlacementFlag
+# monkey patching scoped based enum
+QgsLabeling.AllowPlacementOutsideOfPolygon = Qgis.LabelPolygonPlacementFlag.AllowPlacementOutsideOfPolygon
+QgsLabeling.AllowPlacementOutsideOfPolygon.is_monkey_patched = True
+QgsLabeling.AllowPlacementOutsideOfPolygon.__doc__ = "Labels can be placed outside of a polygon feature"
+QgsLabeling.AllowPlacementInsideOfPolygon = Qgis.LabelPolygonPlacementFlag.AllowPlacementInsideOfPolygon
+QgsLabeling.AllowPlacementInsideOfPolygon.is_monkey_patched = True
+QgsLabeling.AllowPlacementInsideOfPolygon.__doc__ = "Labels can be placed inside a polygon feature"
+Qgis.LabelPolygonPlacementFlag.__doc__ = 'Polygon placement flags, which control how candidates are generated for a polygon feature.\n\n.. note::\n\n   Prior to QGIS 3.32 this was available as :py:class:`QgsLabeling`.PolygonPlacementFlag\n\n.. versionadded:: 3.32\n\n' + '* ``AllowPlacementOutsideOfPolygon``: ' + Qgis.LabelPolygonPlacementFlag.AllowPlacementOutsideOfPolygon.__doc__ + '\n' + '* ``AllowPlacementInsideOfPolygon``: ' + Qgis.LabelPolygonPlacementFlag.AllowPlacementInsideOfPolygon.__doc__
+# --
+Qgis.LabelPolygonPlacementFlag.baseClass = Qgis
+Qgis.LabelPolygonPlacementFlags.baseClass = Qgis
+LabelPolygonPlacementFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
 QgsPalLayerSettings.UpsideDownLabels = Qgis.UpsideDownLabelHandling
 # monkey patching scoped based enum
 QgsPalLayerSettings.Upright = Qgis.UpsideDownLabelHandling.FlipUpsideDownLabels
