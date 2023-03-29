@@ -196,6 +196,7 @@ class TestQgsAnnotationPointTextItem(unittest.TestCase):
         settings.setFlag(QgsMapSettings.Antialiasing, False)
 
         rc = QgsRenderContext.fromMapSettings(settings)
+        rc.setScaleFactor(96 / 25.4)  # 96 DPI
         image = QImage(200, 200, QImage.Format_ARGB32)
         image.setDotsPerMeterX(int(96 / 25.4 * 1000))
         image.setDotsPerMeterY(int(96 / 25.4 * 1000))
@@ -230,6 +231,7 @@ class TestQgsAnnotationPointTextItem(unittest.TestCase):
         settings.setFlag(QgsMapSettings.Antialiasing, False)
 
         rc = QgsRenderContext.fromMapSettings(settings)
+        rc.setScaleFactor(96 / 25.4)  # 96 DPI
         image = QImage(200, 200, QImage.Format_ARGB32)
         image.setDotsPerMeterX(int(96 / 25.4 * 1000))
         image.setDotsPerMeterY(int(96 / 25.4 * 1000))
@@ -264,6 +266,7 @@ class TestQgsAnnotationPointTextItem(unittest.TestCase):
         settings.setFlag(QgsMapSettings.Antialiasing, False)
 
         rc = QgsRenderContext.fromMapSettings(settings)
+        rc.setScaleFactor(96 / 25.4)  # 96 DPI
         rc.setCoordinateTransform(QgsCoordinateTransform(QgsCoordinateReferenceSystem('EPSG:4326'), settings.destinationCrs(), QgsProject.instance()))
         image = QImage(200, 200, QImage.Format_ARGB32)
         image.setDotsPerMeterX(int(96 / 25.4 * 1000))

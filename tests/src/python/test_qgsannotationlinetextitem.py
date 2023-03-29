@@ -31,7 +31,7 @@ from qgis.core import (
     QgsProject,
     QgsReadWriteContext,
     QgsRectangle,
-    QgsRenderChecker,
+    QgsMultiRenderChecker,
     QgsRenderContext,
     QgsTextFormat,
     QgsVertexId,
@@ -226,6 +226,7 @@ class TestQgsAnnotationLineTextItem(unittest.TestCase):
         settings.setFlag(QgsMapSettings.Antialiasing, False)
 
         rc = QgsRenderContext.fromMapSettings(settings)
+        rc.setScaleFactor(96 / 25.4)  # 96 DPI
         image = QImage(600, 300, QImage.Format_ARGB32)
         image.setDotsPerMeterX(int(96 / 25.4 * 1000))
         image.setDotsPerMeterY(int(96 / 25.4 * 1000))
@@ -259,6 +260,7 @@ class TestQgsAnnotationLineTextItem(unittest.TestCase):
         settings.setFlag(QgsMapSettings.Antialiasing, False)
 
         rc = QgsRenderContext.fromMapSettings(settings)
+        rc.setScaleFactor(96 / 25.4)  # 96 DPI
         image = QImage(600, 300, QImage.Format_ARGB32)
         image.setDotsPerMeterX(int(96 / 25.4 * 1000))
         image.setDotsPerMeterY(int(96 / 25.4 * 1000))
@@ -292,6 +294,7 @@ class TestQgsAnnotationLineTextItem(unittest.TestCase):
         settings.setFlag(QgsMapSettings.Antialiasing, False)
 
         rc = QgsRenderContext.fromMapSettings(settings)
+        rc.setScaleFactor(96 / 25.4)  # 96 DPI
         image = QImage(600, 300, QImage.Format_ARGB32)
         image.setDotsPerMeterX(int(96 / 25.4 * 1000))
         image.setDotsPerMeterY(int(96 / 25.4 * 1000))
@@ -323,6 +326,7 @@ class TestQgsAnnotationLineTextItem(unittest.TestCase):
         settings.setFlag(QgsMapSettings.Antialiasing, False)
 
         rc = QgsRenderContext.fromMapSettings(settings)
+        rc.setScaleFactor(96 / 25.4)  # 96 DPI
         image = QImage(600, 300, QImage.Format_ARGB32)
         image.setDotsPerMeterX(int(96 / 25.4 * 1000))
         image.setDotsPerMeterY(int(96 / 25.4 * 1000))
@@ -354,6 +358,7 @@ class TestQgsAnnotationLineTextItem(unittest.TestCase):
         settings.setFlag(QgsMapSettings.Antialiasing, False)
 
         rc = QgsRenderContext.fromMapSettings(settings)
+        rc.setScaleFactor(96 / 25.4)  # 96 DPI
         image = QImage(600, 300, QImage.Format_ARGB32)
         image.setDotsPerMeterX(int(96 / 25.4 * 1000))
         image.setDotsPerMeterY(int(96 / 25.4 * 1000))
@@ -386,6 +391,7 @@ class TestQgsAnnotationLineTextItem(unittest.TestCase):
         settings.setFlag(QgsMapSettings.Antialiasing, False)
 
         rc = QgsRenderContext.fromMapSettings(settings)
+        rc.setScaleFactor(96 / 25.4)  # 96 DPI
         rc.setCoordinateTransform(QgsCoordinateTransform(QgsCoordinateReferenceSystem('EPSG:4326'), settings.destinationCrs(), QgsProject.instance()))
         image = QImage(600, 300, QImage.Format_ARGB32)
         image.setDotsPerMeterX(int(96 / 25.4 * 1000))
@@ -406,12 +412,12 @@ class TestQgsAnnotationLineTextItem(unittest.TestCase):
         temp_dir = QDir.tempPath() + '/'
         file_name = temp_dir + 'annotation_' + name + ".png"
         image.save(file_name, "PNG")
-        checker = QgsRenderChecker()
+        checker = QgsMultiRenderChecker()
         checker.setControlPathPrefix("annotation_layer")
         checker.setControlName("expected_" + reference_image)
         checker.setRenderedImage(file_name)
         checker.setColorTolerance(2)
-        result = checker.compareImages(name, 20)
+        result = checker.runTest(name, 20)
         TestQgsAnnotationLineTextItem.report += checker.report()
         return result
 
