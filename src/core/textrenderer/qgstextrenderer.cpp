@@ -28,6 +28,7 @@
 #include "qgsunittypes.h"
 #include "qgstextmetrics.h"
 #include "qgstextrendererutils.h"
+#include "qgsgeos.h"
 
 #include <optional>
 
@@ -171,8 +172,25 @@ void QgsTextRenderer::drawDocumentOnLine( const QPolygonF &line, const QgsTextFo
   QPolygonF labelBaselineCurve = line;
   if ( !qgsDoubleNear( offsetFromLine, 0 ) )
   {
-    QgsGeometry curve = QgsGeometry::fromQPolygonF( line );
-    labelBaselineCurve = curve.offsetCurve( offsetFromLine, 4, Qgis::JoinStyle::Round, 2 ).asQPolygonF();
+    std::unique_ptr < QgsLineString > ring( QgsLineString::fromQPolygonF( line ) );
+    QgsGeos geos( ring.get() );
+    std::unique_ptr < QgsLineString > offsetCurve( dynamic_cast< QgsLineString * >( geos.offsetCurve( offsetFromLine, 4, Qgis::JoinStyle::Round, 2 ) ) );
+    if ( !offsetCurve )
+      return;
+
+#if GEOS_VERSION_MAJOR==3 && GEOS_VERSION_MINOR<11
+    if ( offsetFromLine < 0 )
+    {
+      // geos < 3.11 reverses the direction of offset curves with negative distances -- we don't want that!
+      std::unique_ptr < QgsLineString > reversed( offsetCurve->reversed() );
+      if ( !reversed )
+        return;
+
+      offsetCurve = std::move( reversed );
+    }
+#endif
+
+    labelBaselineCurve = offsetCurve->asQPolygonF();
   }
 
   const double fontScale = calculateScaleFactorForFormat( context, format );

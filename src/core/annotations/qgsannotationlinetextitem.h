@@ -106,11 +106,65 @@ class CORE_EXPORT QgsAnnotationLineTextItem : public QgsAnnotationItem
      */
     void setFormat( const QgsTextFormat &format );
 
+    /**
+     * Returns the offset distance from the line geometry() to the text's baseline. Units are specified through offsetFromLineUnit().
+     *
+     * \see setOffsetFromLine()
+     * \see offsetFromLineUnit()
+     */
+    double offsetFromLine() const { return mOffsetFromLineDistance; }
+
+    /**
+     * Sets the offset \a distance from the line geometry() to the text's baseline. Units are specified through setOffsetFromLineUnit().
+     *
+     * \see offsetFromLine()
+     * \see setOffsetFromLineUnit()
+     */
+    void setOffsetFromLine( double distance ) { mOffsetFromLineDistance = distance; }
+
+    /**
+     * Sets the \a unit for the offset from line geometry() distance.
+     *
+     * \see offsetFromLineUnit()
+     * \see setOffsetFromLine()
+    */
+    void setOffsetFromLineUnit( Qgis::RenderUnit unit ) { mOffsetFromLineUnit = unit; }
+
+    /**
+     * Returns the units for the offset from line geometry() distance.
+     *
+     * \see setOffsetFromLineUnit()
+     * \see offsetFromLine()
+    */
+    Qgis::RenderUnit offsetFromLineUnit() const { return mOffsetFromLineUnit; }
+
+    /**
+     * Sets the map unit \a scale for the offset from line geometry() distance.
+     *
+     * \see offsetFromLineMapUnitScale()
+     * \see setOffsetFromLineUnit()
+     * \see setOffsetFromLine()
+     */
+    void setOffsetFromLineMapUnitScale( const QgsMapUnitScale &scale ) { mOffsetFromLineScale = scale; }
+
+    /**
+     * Returns the map unit scale for the offset from line geometry() distance.
+     *
+     * \see setOffsetFromLineMapUnitScale()
+     * \see offsetFromLineUnit()
+     * \see offsetFromLine()
+     */
+    const QgsMapUnitScale &offsetFromLineMapUnitScale() const { return mOffsetFromLineScale; }
+
   private:
 
     QString mText;
     std::unique_ptr< QgsCurve > mCurve;
     QgsTextFormat mTextFormat;
+
+    double mOffsetFromLineDistance = 0;
+    Qgis::RenderUnit mOffsetFromLineUnit = Qgis::RenderUnit::Millimeters;
+    QgsMapUnitScale mOffsetFromLineScale;
 
 #ifdef SIP_RUN
     QgsAnnotationLineTextItem( const QgsAnnotationLineTextItem &other );
