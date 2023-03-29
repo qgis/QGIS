@@ -1752,15 +1752,15 @@ QVariantList QgsProcessingParameters::parameterAsMatrix( const QgsProcessingPara
   return result;
 }
 
-QList<QgsMapLayer *> QgsProcessingParameters::parameterAsLayerList( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context )
+QList<QgsMapLayer *> QgsProcessingParameters::parameterAsLayerList( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessing::LayerOptionsFlags flags )
 {
   if ( !definition )
     return QList<QgsMapLayer *>();
 
-  return parameterAsLayerList( definition, parameters.value( definition->name() ), context );
+  return parameterAsLayerList( definition, parameters.value( definition->name() ), context, flags );
 }
 
-QList<QgsMapLayer *> QgsProcessingParameters::parameterAsLayerList( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context )
+QList<QgsMapLayer *> QgsProcessingParameters::parameterAsLayerList( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context, QgsProcessing::LayerOptionsFlags flags )
 {
   if ( !definition )
     return QList<QgsMapLayer *>();
@@ -1774,7 +1774,7 @@ QList<QgsMapLayer *> QgsProcessingParameters::parameterAsLayerList( const QgsPro
   QList<QgsMapLayer *> layers;
 
   std::function< void( const QVariant &var ) > processVariant;
-  processVariant = [ &layers, &context, &definition, &processVariant ]( const QVariant & var )
+  processVariant = [ &layers, &context, &definition, &processVariant, flags ]( const QVariant & var )
   {
     if ( var.type() == QVariant::List )
     {
@@ -1810,7 +1810,7 @@ QList<QgsMapLayer *> QgsProcessingParameters::parameterAsLayerList( const QgsPro
     }
     else
     {
-      QgsMapLayer *alayer = QgsProcessingUtils::mapLayerFromString( var.toString(), context );
+      QgsMapLayer *alayer = QgsProcessingUtils::mapLayerFromString( var.toString(), context, flags );
       if ( alayer )
         layers << alayer;
     }
@@ -4156,7 +4156,7 @@ bool QgsProcessingParameterMultipleLayers::checkValueIsAcceptable( const QVarian
       return true;
 
     if ( mLayerType != QgsProcessing::TypeFile )
-      return QgsProcessingUtils::mapLayerFromString( input.toString(), *context );
+      return QgsProcessingUtils::mapLayerFromString( input.toString(), *context, true, QgsProcessingUtils::LayerHint::UnknownType, QgsProcessing::LayerOptionsFlag::SkipIndexGeneration );
     else
       return true;
   }
@@ -4179,7 +4179,7 @@ bool QgsProcessingParameterMultipleLayers::checkValueIsAcceptable( const QVarian
         if ( qobject_cast< QgsMapLayer * >( qvariant_cast<QObject *>( v ) ) )
           continue;
 
-        if ( !QgsProcessingUtils::mapLayerFromString( v.toString(), *context ) )
+        if ( !QgsProcessingUtils::mapLayerFromString( v.toString(), *context, true, QgsProcessingUtils::LayerHint::UnknownType, QgsProcessing::LayerOptionsFlag::SkipIndexGeneration ) )
           return false;
       }
     }
@@ -4201,7 +4201,7 @@ bool QgsProcessingParameterMultipleLayers::checkValueIsAcceptable( const QVarian
       const auto constToStringList = input.toStringList();
       for ( const QString &v : constToStringList )
       {
-        if ( !QgsProcessingUtils::mapLayerFromString( v, *context ) )
+        if ( !QgsProcessingUtils::mapLayerFromString( v, *context, true, QgsProcessingUtils::LayerHint::UnknownType, QgsProcessing::LayerOptionsFlag::SkipIndexGeneration ) )
           return false;
       }
     }
