@@ -1774,7 +1774,7 @@ QList<QgsMapLayer *> QgsProcessingParameters::parameterAsLayerList( const QgsPro
   QList<QgsMapLayer *> layers;
 
   std::function< void( const QVariant &var ) > processVariant;
-  processVariant = [ &layers, &context, &definition, &processVariant, flags ]( const QVariant & var )
+  processVariant = [ &layers, &context, &definition, flags, &processVariant]( const QVariant & var )
   {
     if ( var.type() == QVariant::List )
     {
@@ -1810,7 +1810,7 @@ QList<QgsMapLayer *> QgsProcessingParameters::parameterAsLayerList( const QgsPro
     }
     else
     {
-      QgsMapLayer *alayer = QgsProcessingUtils::mapLayerFromString( var.toString(), context, flags );
+      QgsMapLayer *alayer = QgsProcessingUtils::mapLayerFromString( var.toString(), context, true, QgsProcessingUtils::LayerHint::UnknownType, flags );
       if ( alayer )
         layers << alayer;
     }
@@ -4242,7 +4242,7 @@ QString QgsProcessingParameterMultipleLayers::valueAsPythonString( const QVarian
   {
     QVariantMap p;
     p.insert( name(), value );
-    const QList<QgsMapLayer *> list = QgsProcessingParameters::parameterAsLayerList( this, p, context );
+    const QList<QgsMapLayer *> list = QgsProcessingParameters::parameterAsLayerList( this, p, context, QgsProcessing::LayerOptionsFlag::SkipIndexGeneration );
     if ( !list.isEmpty() )
     {
       QStringList parts;
