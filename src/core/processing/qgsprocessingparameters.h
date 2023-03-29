@@ -1903,7 +1903,7 @@ class CORE_EXPORT QgsProcessingParameterGeometry : public QgsProcessingParameter
     /**
      * Constructor for QgsProcessingParameterGeometry.
      *
-     * The \a geometryTypes argument allows for specifying a list of geometry types (see QgsWkbTypes::GeometryType) acceptable for this
+     * The \a geometryTypes argument allows for specifying a list of geometry types (see Qgis::GeometryType) acceptable for this
      * parameter. Passing a empty list will allow for any type of geometry.
      * The \a allowMultiPart argument allows specifying a multi part geometry
      */
@@ -1923,13 +1923,13 @@ class CORE_EXPORT QgsProcessingParameterGeometry : public QgsProcessingParameter
     bool fromVariantMap( const QVariantMap &map ) override;
 
     /**
-     * Returns the parameter allowed geometries, as a list of QgsWkbTypes::GeometryType values.
+     * Returns the parameter allowed geometries, as a list of Qgis::GeometryType values.
      * \see setGeometryTypes()
      */
     QList<int>  geometryTypes() const { return mGeomTypes; }
 
     /**
-     * Sets the allowed  \a geometryTypes, as a list of QgsWkbTypes::GeometryType values.
+     * Sets the allowed  \a geometryTypes, as a list of Qgis::GeometryType values.
      * \see geometryTypes()
      */
     void setGeometryTypes( const QList<int> &geometryTypes ) { mGeomTypes = geometryTypes; }

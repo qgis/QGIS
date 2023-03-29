@@ -860,7 +860,7 @@ class CORE_EXPORT QgsWkbTypes
     /**
      * Returns the geometry type for a WKB type, e.g., both MultiPolygon and CurvePolygon would have a
      * PolygonGeometry geometry type.
-     * GeometryCollections are reported as QgsWkbTypes::UnknownGeometry.
+     * GeometryCollections are reported as Qgis::GeometryType::Unknown.
      */
     static Qgis::GeometryType geometryType( Qgis::WkbType type ) SIP_HOLDGIL
     {

@@ -191,7 +191,7 @@ Invalid geometry types will return a dimension of 0.
 %Docstring
 Returns the geometry type for a WKB type, e.g., both MultiPolygon and CurvePolygon would have a
 PolygonGeometry geometry type.
-GeometryCollections are reported as QgsWkbTypes.UnknownGeometry.
+GeometryCollections are reported as Qgis.GeometryType.Unknown.
 %End
 
     static QString displayString( Qgis::WkbType type ) /HoldGIL/;

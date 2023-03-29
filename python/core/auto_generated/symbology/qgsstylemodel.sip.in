@@ -234,7 +234,7 @@ no effect on non-symbol entities (i.e. color ramps).
 
     Qgis::GeometryType layerType() const;
 %Docstring
-Returns the layer type filter, or :py:class:`QgsWkbTypes`.UnknownGeometry if no
+Returns the layer type filter, or Qgis.GeometryType.Unknown if no
 layer type filter is present.
 
 This setting has an effect on label settings entities and 3d symbols only.
@@ -244,7 +244,7 @@ This setting has an effect on label settings entities and 3d symbols only.
 
     void setLayerType( Qgis::GeometryType type );
 %Docstring
-Sets the layer ``type`` filter. Set ``type`` to :py:class:`QgsWkbTypes`.UnknownGeometry if no
+Sets the layer ``type`` filter. Set ``type`` to Qgis.GeometryType.Unknown if no
 layer type filter is desired.
 
 .. seealso:: :py:func:`layerType`
