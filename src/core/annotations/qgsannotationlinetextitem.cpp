@@ -22,6 +22,8 @@
 #include "qgscurve.h"
 #include "qgslinestring.h"
 #include "qgstextrenderer.h"
+#include "qgsunittypes.h"
+#include "qgssymbollayerutils.h"
 
 QgsAnnotationLineTextItem::QgsAnnotationLineTextItem( const QString &text, QgsCurve *curve )
   : QgsAnnotationItem()
@@ -79,13 +81,21 @@ void QgsAnnotationLineTextItem::render( QgsRenderContext &context, QgsFeedback *
   }
 
   const QString displayText = QgsExpression::replaceExpressionText( mText, &context.expressionContext(), &context.distanceArea() );
-  QgsTextRenderer::drawTextOnLine( pts, displayText, context, mTextFormat );
+
+  const double offsetFromLine = context.convertToPainterUnits( mOffsetFromLineDistance, mOffsetFromLineUnit, mOffsetFromLineScale );
+
+  QgsTextRenderer::drawTextOnLine( pts, displayText, context, mTextFormat, 0, offsetFromLine );
 }
 
 bool QgsAnnotationLineTextItem::writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const
 {
   element.setAttribute( QStringLiteral( "wkt" ), mCurve->asWkt() );
   element.setAttribute( QStringLiteral( "text" ), mText );
+
+  element.setAttribute( QStringLiteral( "offsetFromLine" ), qgsDoubleToString( mOffsetFromLineDistance ) );
+  element.setAttribute( QStringLiteral( "offsetFromLineUnit" ), QgsUnitTypes::encodeUnit( mOffsetFromLineUnit ) );
+  element.setAttribute( QStringLiteral( "offsetFromLineScale" ), QgsSymbolLayerUtils::encodeMapUnitScale( mOffsetFromLineScale ) );
+
   QDomElement textFormatElem = document.createElement( QStringLiteral( "lineTextFormat" ) );
   textFormatElem.appendChild( mTextFormat.writeXml( document, context ) );
   element.appendChild( textFormatElem );
@@ -202,6 +212,14 @@ bool QgsAnnotationLineTextItem::readXml( const QDomElement &element, const QgsRe
     mTextFormat.readXml( textFormatElem, context );
   }
 
+  mOffsetFromLineDistance = element.attribute( QStringLiteral( "offsetFromLine" ) ).toDouble();
+  bool ok = false;
+  mOffsetFromLineUnit = QgsUnitTypes::decodeRenderUnit( element.attribute( QStringLiteral( "offsetFromLineUnit" ) ), &ok );
+  if ( !ok )
+    mOffsetFromLineUnit = Qgis::RenderUnit::Millimeters;
+
+  mOffsetFromLineScale =  QgsSymbolLayerUtils::decodeMapUnitScale( element.attribute( QStringLiteral( "offsetFromLineScale" ) ) );
+
   readCommonProperties( element, context );
 
   return true;
@@ -216,6 +234,8 @@ QgsRectangle QgsAnnotationLineTextItem::boundingBox( QgsRenderContext &context )
 {
   const QString displayText = QgsExpression::replaceExpressionText( mText, &context.expressionContext(), &context.distanceArea() );
 
+  const double lineOffsetInMapUnits = context.convertToMapUnits( mOffsetFromLineDistance, mOffsetFromLineUnit, mOffsetFromLineScale );
+
   const double heightInPixels = QgsTextRenderer::textHeight( context, mTextFormat, { displayText} );
 
   // text size has already been calculated using any symbology reference scale factor above -- we need
@@ -223,13 +243,16 @@ QgsRectangle QgsAnnotationLineTextItem::boundingBox( QgsRenderContext &context )
   QgsScopedRenderContextReferenceScaleOverride resetScaleFactor( context, -1.0 );
   const double heightInMapUnits = context.convertToMapUnits( heightInPixels, Qgis::RenderUnit::Pixels );
 
-  return mCurve->boundingBox().buffered( heightInMapUnits );
+  return mCurve->boundingBox().buffered( heightInMapUnits + lineOffsetInMapUnits );
 }
 
 QgsAnnotationLineTextItem *QgsAnnotationLineTextItem::clone()
 {
   std::unique_ptr< QgsAnnotationLineTextItem > item = std::make_unique< QgsAnnotationLineTextItem >( mText, mCurve->clone() );
   item->setFormat( mTextFormat );
+  item->setOffsetFromLine( mOffsetFromLineDistance );
+  item->setOffsetFromLineUnit( mOffsetFromLineUnit );
+  item->setOffsetFromLineMapUnitScale( mOffsetFromLineScale );
   item->copyCommonProperties( this );
   return item.release();
 }

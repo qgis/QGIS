@@ -36,6 +36,7 @@ from qgis.core import (
     QgsTextFormat,
     QgsVertexId,
     QgsLineString,
+    QgsMapUnitScale,
 )
 from qgis.testing import start_app, unittest
 
@@ -63,9 +64,16 @@ class TestQgsAnnotationLineTextItem(unittest.TestCase):
         self.assertEqual(item.text(), 'my text')
         self.assertEqual(item.geometry().asWkt(1), 'LineString (12 13, 13 13.1, 14 13)')
 
+        self.assertEqual(item.offsetFromLine(), 0)
+        self.assertEqual(item.offsetFromLineUnit(),
+                         Qgis.RenderUnit.Millimeters)
+
         item.setText('tttttt')
         item.setGeometry(QgsLineString(((12, 13), (13, 13.1))))
         item.setZIndex(11)
+        item.setOffsetFromLine(3.4)
+        item.setOffsetFromLineUnit(Qgis.RenderUnit.Inches)
+        item.setOffsetFromLineMapUnitScale(QgsMapUnitScale(5, 15))
 
         format = QgsTextFormat()
         format.setSize(37)
@@ -75,6 +83,13 @@ class TestQgsAnnotationLineTextItem(unittest.TestCase):
         self.assertEqual(item.geometry().asWkt(1), 'LineString (12 13, 13 13.1)')
         self.assertEqual(item.zIndex(), 11)
         self.assertEqual(item.format().size(), 37)
+        self.assertEqual(item.offsetFromLine(), 3.4)
+        self.assertEqual(item.offsetFromLineUnit(),
+                         Qgis.RenderUnit.Inches)
+        self.assertEqual(item.offsetFromLineMapUnitScale().minScale,
+                         5)
+        self.assertEqual(item.offsetFromLineMapUnitScale().maxScale,
+                         15)
 
     def test_nodes(self):
         """
@@ -145,6 +160,9 @@ class TestQgsAnnotationLineTextItem(unittest.TestCase):
         item.setFormat(format)
         item.setUseSymbologyReferenceScale(True)
         item.setSymbologyReferenceScale(5000)
+        item.setOffsetFromLine(3.4)
+        item.setOffsetFromLineUnit(Qgis.RenderUnit.Inches)
+        item.setOffsetFromLineMapUnitScale(QgsMapUnitScale(5, 15))
 
         self.assertTrue(item.writeXml(elem, doc, QgsReadWriteContext()))
 
@@ -156,6 +174,13 @@ class TestQgsAnnotationLineTextItem(unittest.TestCase):
         self.assertEqual(s2.format().size(), 37)
         self.assertTrue(s2.useSymbologyReferenceScale())
         self.assertEqual(s2.symbologyReferenceScale(), 5000)
+        self.assertEqual(s2.offsetFromLine(), 3.4)
+        self.assertEqual(s2.offsetFromLineUnit(),
+                         Qgis.RenderUnit.Inches)
+        self.assertEqual(s2.offsetFromLineMapUnitScale().minScale,
+                         5)
+        self.assertEqual(s2.offsetFromLineMapUnitScale().maxScale,
+                         15)
 
     def testClone(self):
         item = QgsAnnotationLineTextItem('my text', QgsLineString(((12, 13), (13, 13.1), (14, 13))))
@@ -165,6 +190,9 @@ class TestQgsAnnotationLineTextItem(unittest.TestCase):
         item.setFormat(format)
         item.setUseSymbologyReferenceScale(True)
         item.setSymbologyReferenceScale(5000)
+        item.setOffsetFromLine(3.4)
+        item.setOffsetFromLineUnit(Qgis.RenderUnit.Inches)
+        item.setOffsetFromLineMapUnitScale(QgsMapUnitScale(5, 15))
 
         item2 = item.clone()
         self.assertEqual(item2.text(), 'my text')
@@ -173,6 +201,13 @@ class TestQgsAnnotationLineTextItem(unittest.TestCase):
         self.assertEqual(item2.format().size(), 37)
         self.assertTrue(item2.useSymbologyReferenceScale())
         self.assertEqual(item2.symbologyReferenceScale(), 5000)
+        self.assertEqual(item2.offsetFromLine(), 3.4)
+        self.assertEqual(item2.offsetFromLineUnit(),
+                         Qgis.RenderUnit.Inches)
+        self.assertEqual(item2.offsetFromLineMapUnitScale().minScale,
+                         5)
+        self.assertEqual(item2.offsetFromLineMapUnitScale().maxScale,
+                         15)
 
     def testRenderLine(self):
         item = QgsAnnotationLineTextItem('my text', QgsLineString(((12, 13), (13, 13.1), (14, 12))))
@@ -204,6 +239,72 @@ class TestQgsAnnotationLineTextItem(unittest.TestCase):
             painter.end()
 
         self.assertTrue(self.imageCheck('linetext_item', 'linetext_item', image))
+
+    def testRenderLineOffsetPositive(self):
+        item = QgsAnnotationLineTextItem('my text', QgsLineString(((12, 13), (13, 13.1), (14, 12))))
+
+        format = QgsTextFormat.fromQFont(getTestFont('Bold'))
+        format.setColor(QColor(255, 0, 0))
+        format.setOpacity(150 / 255)
+        format.setSize(55)
+        item.setFormat(format)
+
+        item.setOffsetFromLine(6)
+
+        settings = QgsMapSettings()
+        settings.setDestinationCrs(QgsCoordinateReferenceSystem('EPSG:4326'))
+        settings.setExtent(QgsRectangle(11.9, 11.9, 14.5, 14))
+        settings.setOutputSize(QSize(600, 300))
+
+        settings.setFlag(QgsMapSettings.Antialiasing, False)
+
+        rc = QgsRenderContext.fromMapSettings(settings)
+        image = QImage(600, 300, QImage.Format_ARGB32)
+        image.setDotsPerMeterX(int(96 / 25.4 * 1000))
+        image.setDotsPerMeterY(int(96 / 25.4 * 1000))
+        image.fill(QColor(255, 255, 255))
+        painter = QPainter(image)
+        rc.setPainter(painter)
+
+        try:
+            item.render(rc, None)
+        finally:
+            painter.end()
+
+        self.assertTrue(self.imageCheck('linetext_item_offset_positive', 'linetext_item_offset_positive', image))
+
+    def testRenderLineOffsetNegative(self):
+        item = QgsAnnotationLineTextItem('my text', QgsLineString(((12, 13), (13, 13.1), (14, 12))))
+
+        format = QgsTextFormat.fromQFont(getTestFont('Bold'))
+        format.setColor(QColor(255, 0, 0))
+        format.setOpacity(150 / 255)
+        format.setSize(55)
+        item.setFormat(format)
+
+        item.setOffsetFromLine(-6)
+
+        settings = QgsMapSettings()
+        settings.setDestinationCrs(QgsCoordinateReferenceSystem('EPSG:4326'))
+        settings.setExtent(QgsRectangle(11.9, 11.9, 14.5, 14))
+        settings.setOutputSize(QSize(600, 300))
+
+        settings.setFlag(QgsMapSettings.Antialiasing, False)
+
+        rc = QgsRenderContext.fromMapSettings(settings)
+        image = QImage(600, 300, QImage.Format_ARGB32)
+        image.setDotsPerMeterX(int(96 / 25.4 * 1000))
+        image.setDotsPerMeterY(int(96 / 25.4 * 1000))
+        image.fill(QColor(255, 255, 255))
+        painter = QPainter(image)
+        rc.setPainter(painter)
+
+        try:
+            item.render(rc, None)
+        finally:
+            painter.end()
+
+        self.assertTrue(self.imageCheck('linetext_item_offset_negative', 'linetext_item_offset_negative', image))
 
     def testRenderLineTruncate(self):
         item = QgsAnnotationLineTextItem('my text', QgsLineString(((12, 13), (13, 13.1), (14, 12))))

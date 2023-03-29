@@ -105,6 +105,64 @@ Sets the text ``format`` used to render the text.
 .. seealso:: :py:func:`format`
 %End
 
+    double offsetFromLine() const;
+%Docstring
+Returns the offset distance from the line :py:func:`~QgsAnnotationLineTextItem.geometry` to the text's baseline. Units are specified through :py:func:`~QgsAnnotationLineTextItem.offsetFromLineUnit`.
+
+.. seealso:: :py:func:`setOffsetFromLine`
+
+.. seealso:: :py:func:`offsetFromLineUnit`
+%End
+
+    void setOffsetFromLine( double distance );
+%Docstring
+Sets the offset ``distance`` from the line :py:func:`~QgsAnnotationLineTextItem.geometry` to the text's baseline. Units are specified through :py:func:`~QgsAnnotationLineTextItem.setOffsetFromLineUnit`.
+
+.. seealso:: :py:func:`offsetFromLine`
+
+.. seealso:: :py:func:`setOffsetFromLineUnit`
+%End
+
+    void setOffsetFromLineUnit( Qgis::RenderUnit unit );
+%Docstring
+Sets the ``unit`` for the offset from line :py:func:`~QgsAnnotationLineTextItem.geometry` distance.
+
+.. seealso:: :py:func:`offsetFromLineUnit`
+
+.. seealso:: :py:func:`setOffsetFromLine`
+%End
+
+    Qgis::RenderUnit offsetFromLineUnit() const;
+%Docstring
+Returns the units for the offset from line :py:func:`~QgsAnnotationLineTextItem.geometry` distance.
+
+.. seealso:: :py:func:`setOffsetFromLineUnit`
+
+.. seealso:: :py:func:`offsetFromLine`
+%End
+
+    void setOffsetFromLineMapUnitScale( const QgsMapUnitScale &scale );
+%Docstring
+Sets the map unit ``scale`` for the offset from line :py:func:`~QgsAnnotationLineTextItem.geometry` distance.
+
+.. seealso:: :py:func:`offsetFromLineMapUnitScale`
+
+.. seealso:: :py:func:`setOffsetFromLineUnit`
+
+.. seealso:: :py:func:`setOffsetFromLine`
+%End
+
+    const QgsMapUnitScale &offsetFromLineMapUnitScale() const;
+%Docstring
+Returns the map unit scale for the offset from line :py:func:`~QgsAnnotationLineTextItem.geometry` distance.
+
+.. seealso:: :py:func:`setOffsetFromLineMapUnitScale`
+
+.. seealso:: :py:func:`offsetFromLineUnit`
+
+.. seealso:: :py:func:`offsetFromLine`
+%End
+
   private:
     QgsAnnotationLineTextItem( const QgsAnnotationLineTextItem &other );
 };
