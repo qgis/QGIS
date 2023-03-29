@@ -193,7 +193,7 @@ class CORE_EXPORT QgsTextRendererUtils
      * \returns calculated placement properties, or NULLPTR if placement could not be calculated. Caller takes ownership of the returned placement.
      * \since QGIS 3.20
      */
-    static std::unique_ptr< CurvePlacementProperties > generateCurvedTextPlacement( const QgsPrecalculatedTextMetrics &metrics, const double *x, const double *y, int numPoints, const std::vector< double> &pathDistances, double offsetAlongLine, LabelLineDirection direction = RespectPainterOrientation, double maxConcaveAngle = -1, double maxConvexAngle = -1, bool uprightOnly = true, CurvedTextFlags flags = CurvedTextFlags() ) SIP_SKIP;
+    static std::unique_ptr< CurvePlacementProperties > generateCurvedTextPlacement( const QgsPrecalculatedTextMetrics &metrics, const double *x, const double *y, int numPoints, const std::vector< double> &pathDistances, double offsetAlongLine, LabelLineDirection direction = RespectPainterOrientation, double maxConcaveAngle = -1, double maxConvexAngle = -1, CurvedTextFlags flags = CurvedTextFlags() ) SIP_SKIP;
 #endif
 
   private:
