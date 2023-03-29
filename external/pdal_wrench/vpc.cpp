@@ -21,6 +21,8 @@ namespace fs = std::filesystem;
 
 #include "nlohmann/json.hpp"
 
+#include <pdal/Polygon.hpp>
+
 
 using json = nlohmann::json;
 
@@ -45,6 +47,7 @@ void VirtualPointCloud::dump()
     }
 }
 
+
 bool VirtualPointCloud::read(std::string filename)
 {
     clear();
@@ -68,28 +71,49 @@ bool VirtualPointCloud::read(std::string filename)
         std::cerr << "JSON parsing error: " << e.what() << std::endl;
         return false;
     }
-    if (!data.contains("vpc"))
+
+    if (data["type"] != "FeatureCollection")
     {
         std::cerr << "The input file is not a VPC file: " << filename << std::endl;
         return false;
     }
-    if (data["vpc"] != "1.0.0")
+    if (!data.contains("features"))
     {
-        std::cerr << "Unsupported VPC file version: " << data["vpc"] << std::endl;
+        std::cerr << "Missing 'features' key in a VPC file" << std::endl;
         return false;
     }
 
-    crsWkt = data["metadata"]["crs"];
+    std::set<std::string> vpcCrsWkt;
 
-    for (auto& f : data["files"])
+    for (auto& f : data["features"])
     {
+        if (!f.contains("type") || f["type"] != "Feature" ||
+            !f.contains("stac_version") ||
+            !f.contains("assets") || !f["assets"].is_object() ||
+            !f.contains("properties") || !f["properties"].is_object())
+        {
+            std::cerr << "Malformed STAC item: " << f << std::endl;
+            continue;
+        }
+
+        if (f["stac_version"] != "1.0.0")
+        {
+            std::cerr << "Unsupported STAC version: " << f["stac_version"] << std::endl;
+            continue;
+        }
+
+        nlohmann::json firstAsset = *f["assets"].begin();
+
         File vpcf;
-        vpcf.filename = f["filename"];
-        vpcf.count = f["count"];
-        json jb = f["bbox"];
+        vpcf.filename = firstAsset["href"];
+        vpcf.count = f["properties"]["pc:count"];
+        vpcf.crsWkt = f["properties"]["proj:wkt2"];
+        vpcCrsWkt.insert(vpcf.crsWkt);
+
+        nlohmann::json nativeBbox = f["properties"]["proj:bbox"];
         vpcf.bbox = BOX3D(
-            jb[0].get<double>(), jb[1].get<double>(), jb[2].get<double>(),
-            jb[3].get<double>(),jb[4].get<double>(), jb[5].get<double>() );
+            nativeBbox[0].get<double>(), nativeBbox[1].get<double>(), nativeBbox[2].get<double>(),
+            nativeBbox[3].get<double>(), nativeBbox[4].get<double>(), nativeBbox[5].get<double>() );
 
         if (vpcf.filename.substr(0, 2) == "./")
         {
@@ -97,7 +121,22 @@ bool VirtualPointCloud::read(std::string filename)
             vpcf.filename = fs::weakly_canonical(filenameParent / vpcf.filename).string();
         }
 
+        for (auto &schemaItem : f["properties"]["pc:schemas"])
+        {
+            vpcf.schema.push_back(VirtualPointCloud::SchemaItem(schemaItem["name"], schemaItem["type"], schemaItem["size"].get<int>()));
+        }
+
         files.push_back(vpcf);
+    }
+
+    if (vpcCrsWkt.size() == 1)
+    {
+        crsWkt = *vpcCrsWkt.begin();
+    }
+    else
+    {
+        std::cerr << "found a mixture of multiple CRS in input files (" << vpcCrsWkt.size() << ")" << std::endl;
+        crsWkt = "_mix_";
     }
 
     return true;
@@ -117,24 +156,132 @@ bool VirtualPointCloud::write(std::string filename)
     std::vector<nlohmann::ordered_json> jFiles;
     for ( const File &f : files )
     {
-        fs::path fRelative = fs::relative(f.filename, outputPath);
+        std::string assetFilename;
+        if (Utils::startsWith(f.filename, "http://") || Utils::startsWith(f.filename, "https://"))
+        {
+            // keep remote URLs as they are
+            assetFilename = f.filename;
+        }
+        else
+        {
+            // turn local paths to relative
+            fs::path fRelative = fs::relative(f.filename, outputPath);
+            assetFilename = "./" + fRelative.string();
+        }
+        std::string fileId = fs::path(f.filename).stem().string();  // TODO: we should make sure the ID is unique
 
-        jFiles.push_back({
-            { "filename", "./" + fRelative.string() },
-            { "count", f.count },
-            { "bbox", { f.bbox.minx, f.bbox.miny, f.bbox.minz, f.bbox.maxx, f.bbox.maxy, f.bbox.maxz } },
+        // bounding box in WGS 84: reproject if possible, or keep it as is
+        BOX3D bboxWgs84 = f.bbox;
+        if (!f.crsWkt.empty())
+        {
+            pdal::Polygon p(f.bbox);
+            p.setSpatialReference(pdal::SpatialReference(f.crsWkt));
+            if (p.transform("EPSG:4326"))
+            {
+                bboxWgs84 = p.bounds();
+            }
+        }
+
+        std::vector<nlohmann::json> schemas;
+        for ( auto &si : f.schema )
+        {
+            schemas.push_back(nlohmann::json{
+              { "name", si.name },
+              { "type", si.type },
+              { "size", si.size },
+            });
+        }
+
+        nlohmann::json props = {
+          // Acquisition time: readers.las and readers.copc provide "creation_year" and "creation_doy"
+          // metadata - they are not always valid, but that's not really our problem...
+          // Alternatively if there is no single datetime, STAC defines that "start_datetime" and "end_datetime"
+          // may be used when the acquisition was done in a longer time period...
+          { "datetime", f.datetime },
+
+          // required pointcloud extension properties
+          { "pc:count", f.count },
+          { "pc:type", "lidar" },   // TODO: how could we know?
+          { "pc:encoding", "?" },   // TODO: what value to use?
+          { "pc:schemas", schemas },
+
+          // TODO: write pc:statistics if we have it (optional)
+
+          // projection extension properties (none are required)
+          { "proj:wkt2", f.crsWkt },
+          { "proj:bbox", { f.bbox.minx, f.bbox.miny, f.bbox.minz, f.bbox.maxx, f.bbox.maxy, f.bbox.maxz } },
+          // TODO: add "proj:geometry" if we know exact boundary
+        };
+        nlohmann::json links = json::array();
+
+        nlohmann::json asset = {
+            { "href", assetFilename },
+        };
+
+        jFiles.push_back(
+        {
+            { "type", "Feature" },
+            { "stac_version", "1.0.0" },
+            { "stac_extensions",
+                {
+                  "https://stac-extensions.github.io/pointcloud/v1.0.0/schema.json",
+                  "https://stac-extensions.github.io/projection/v1.1.0/schema.json"
+                }
+            },
+            { "id", fileId },
+            { "geometry", nullptr },  // TODO: use WGS 84 (multi-)polygon if we have exact boundary
+            { "bbox", { bboxWgs84.minx, bboxWgs84.miny, bboxWgs84.minz, bboxWgs84.maxx, bboxWgs84.maxy, bboxWgs84.maxz } },
+            { "properties", props },
+            { "links", links },
+            { "assets", { { "data", asset } } },
+
         });
+
     }
 
-    nlohmann::ordered_json jMeta = {
-      { "crs", crsWkt },
-    };
-
-    nlohmann::ordered_json j = { { "vpc", "1.0.0" }, { "metadata", jMeta }, { "files", jFiles } };
+    nlohmann::ordered_json j = { { "type", "FeatureCollection" }, { "features", jFiles } };
 
     outputJson << std::setw(2) << j << std::endl;
     outputJson.close();
     return true;
+}
+
+
+bool isLeapYear(int year) {
+    if (year % 400 == 0) return true;
+    if (year % 100 == 0) return false;
+    if (year % 4 == 0) return true;
+    return false;
+}
+
+
+// https://www.rfc-editor.org/rfc/rfc3339#section-5.6
+//  e.g. 2023-01-01T12:00:00Z
+std::string dateTimeStringFromYearAndDay(int year, int dayOfYear)
+{
+    bool leapYear = isLeapYear(year);
+
+    if (year < 0) return "";  // Year is negative
+    if ((dayOfYear < 1) || (dayOfYear > (leapYear ? 366 : 365))) return ""; // Day of year is out of range
+
+    // Figure out month and day of month, from day of year.
+    int daysInMonth[] = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
+    if (leapYear) daysInMonth[1]++;
+
+    int month = 0;
+    int daysLeft = dayOfYear;
+    while (daysLeft > daysInMonth[month])
+        daysLeft -= daysInMonth[month++];
+    ++month;
+
+    std::tm tm{};
+    tm.tm_year = year - 1900;
+    tm.tm_mon = month - 1;
+    tm.tm_mday = daysLeft;
+
+    char timeString[std::size("yyyy-mm-ddThh:mm:ssZ")];
+    std::strftime(std::data(timeString), std::size(timeString), "%FT%TZ", &tm);
+    return std::string(timeString);
 }
 
 
@@ -169,11 +316,11 @@ void buildVpc(std::vector<std::string> args)
     // TODO: would be nice to support input directories too (recursive)
 
     VirtualPointCloud vpc;
-    std::set<std::string> vpcCrsWkt;
 
     for (const std::string &inputFile : inputFiles)
     {
-        MetadataNode n = getReaderMetadata(inputFile);
+        MetadataNode layout;
+        MetadataNode n = getReaderMetadata(inputFile, &layout);
         point_count_t cnt = n.findChild("count").value<point_count_t>();
         BOX3D bbox(
                 n.findChild("minx").value<double>(),
@@ -185,23 +332,26 @@ void buildVpc(std::vector<std::string> args)
         );
 
         std::string crsWkt = n.findChild("srs").findChild("compoundwkt").value();
-        vpcCrsWkt.insert(crsWkt);
+
+        int dayOfYear = n.findChild("creation_doy").value<int>();
+        int year = n.findChild("creation_year").value<int>();
 
         VirtualPointCloud::File f;
         f.filename = inputFile;
         f.count = cnt;
         f.bbox = bbox;
-        vpc.files.push_back(f);
-    }
+        f.crsWkt = crsWkt;
+        f.datetime = dateTimeStringFromYearAndDay(year, dayOfYear);
 
-    if (vpcCrsWkt.size() == 1)
-    {
-        vpc.crsWkt = *vpcCrsWkt.begin();
-    }
-    else
-    {
-        std::cerr << "found a mixture of multiple CRS in input files (" << vpcCrsWkt.size() << ")" << std::endl;
-        vpc.crsWkt = "_mix_";
+        for (auto &dim : layout.children("dimensions"))
+        {
+            f.schema.push_back(VirtualPointCloud::SchemaItem(
+                  dim.findChild("name").value(),
+                  dim.findChild("type").value(),
+                  dim.findChild("size").value<int>()));
+        }
+
+        vpc.files.push_back(f);
     }
 
     vpc.dump();
