@@ -60,13 +60,14 @@ void QgsScaleComboBox::updateScales( const QStringList &scales )
     }
   }
 
-  QStringList parts;
-  double denominator;
-  bool ok;
   for ( int i = 0; i < myScalesList.size(); ++i )
   {
-    parts = myScalesList[ i ] .split( ':' );
-    denominator = QLocale().toDouble( parts[1], &ok );
+    const QStringList parts = myScalesList[ i ] .split( ':' );
+    if ( parts.size() < 2 )
+      continue;
+
+    bool ok = false;
+    const double denominator = QLocale().toDouble( parts[1], &ok );
     if ( ok )
     {
       myScalesList[ i ] = toString( denominator );
