@@ -641,8 +641,6 @@ void TestQgsDxfExport::testTextAlign()
   d.setFlags( QgsDxfExport::FlagNoMText );
   d.setExtent( mapSettings.extent() );
 
-  static int testNumber = 0;
-  ++testNumber;
   const QString file = getTempFileName( QStringLiteral( "text_dxf_%1_%2" ).arg( hali, vali ) );
   QFile dxfFile( file );
   QCOMPARE( d.writeToFile( &dxfFile, QStringLiteral( "CP1252" ) ), QgsDxfExport::ExportResult::Success );
@@ -784,8 +782,6 @@ void TestQgsDxfExport::testTextQuadrant()
   d.setFlags( QgsDxfExport::FlagNoMText );
   d.setExtent( mapSettings.extent() );
 
-  static int testNumber = 0;
-  ++testNumber;
   const QString file = getTempFileName( QStringLiteral( "text_dxf_offset_quad_%1_%2" ).arg( offsetQuad ).arg( angle ) );
   QFile dxfFile( file );
   QCOMPARE( d.writeToFile( &dxfFile, QStringLiteral( "CP1252" ) ), QgsDxfExport::ExportResult::Success );

@@ -663,10 +663,8 @@ bool QgsOracleProvider::loadFields()
 
     if ( LoggedExecStatic( qry, sql, args, mUri.uri() ) )
     {
-      long long fetchedRows { 0 };
       while ( qry.next() )
       {
-        fetchedRows++;
         QString name      = qry.value( 0 ).toString();
         QString type      = qry.value( 1 ).toString();
         int prec          = qry.value( 2 ).toInt();
@@ -825,10 +823,8 @@ bool QgsOracleProvider::hasSufficientPermsAndCapabilities()
                              QVariantList() << mOwnerName << mTableName, mUri.uri() ) )
       {
         // check grants
-        long long fetchedRows { 0 };
         while ( qry.next() )
         {
-          fetchedRows++;
           QString priv = qry.value( 0 ).toString();
 
           if ( priv == "DELETE" )
