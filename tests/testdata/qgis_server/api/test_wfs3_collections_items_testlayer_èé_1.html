@@ -20,9 +20,9 @@
 
     <!-- template for the WFS3 API links list, to be included in HEAD -->
 
-    <link rel="alternate" href="http://server.qgis.org/wfs3/collections/testlayer%20%C3%A8%C3%A9/items.geojson" title="Retrieve the features of the collection as GEOJSON" type="application/geo+json">
+    <link rel="alternate" href="http://server.qgis.org/wfs3/collections/testlayer%20%C3%A8%C3%A9/items.geojson?limit=0" title="Retrieve the features of the collection as GEOJSON" type="application/geo+json">
 
-    <link rel="self" href="http://server.qgis.org/wfs3/collections/testlayer%20%C3%A8%C3%A9/items.html" title="Retrieve the features of the collection as HTML" type="text/html">
+    <link rel="self" href="http://server.qgis.org/wfs3/collections/testlayer%20%C3%A8%C3%A9/items.html?limit=0" title="Retrieve the features of the collection as HTML" type="text/html">
 
 
 
@@ -46,7 +46,7 @@
               </ol>
               <ul class="list-unstyled list-separated m-0 p-0 text-muted">
               
-                  <li><a rel="alternate" href="http://server.qgis.org/wfs3/collections/testlayer%20%C3%A8%C3%A9/items.geojson" target="_blank">GEOJSON</a></li>
+                  <li><a rel="alternate" href="http://server.qgis.org/wfs3/collections/testlayer%20%C3%A8%C3%A9/items.geojson?limit=0" target="_blank">GEOJSON</a></li>
               
               </ul>
           </div>
@@ -73,48 +73,6 @@
             <h1>Features in layer A test vector layer èé</h1>
 
             
-                <h2><a href="http://server.qgis.org/wfs3/collections/testlayer èé/items/0.html">A test vector layer èé 0</a></h2>
-                <dl class="row">
-                
-                    <dt class="col-sm-12">id</dt>
-                    <dd class="col-sm-12">1</dd>
-                
-                    <dt class="col-sm-12">name</dt>
-                    <dd class="col-sm-12">one</dd>
-                
-                    <dt class="col-sm-12">utf8nameè</dt>
-                    <dd class="col-sm-12">one èé</dd>
-                
-                </dl>
-            
-                <h2><a href="http://server.qgis.org/wfs3/collections/testlayer èé/items/1.html">A test vector layer èé 1</a></h2>
-                <dl class="row">
-                
-                    <dt class="col-sm-12">id</dt>
-                    <dd class="col-sm-12">2</dd>
-                
-                    <dt class="col-sm-12">name</dt>
-                    <dd class="col-sm-12">two</dd>
-                
-                    <dt class="col-sm-12">utf8nameè</dt>
-                    <dd class="col-sm-12">two àò</dd>
-                
-                </dl>
-            
-                <h2><a href="http://server.qgis.org/wfs3/collections/testlayer èé/items/2.html">A test vector layer èé 2</a></h2>
-                <dl class="row">
-                
-                    <dt class="col-sm-12">id</dt>
-                    <dd class="col-sm-12">3</dd>
-                
-                    <dt class="col-sm-12">name</dt>
-                    <dd class="col-sm-12">three</dd>
-                
-                    <dt class="col-sm-12">utf8nameè</dt>
-                    <dd class="col-sm-12">three èé↓</dd>
-                
-                </dl>
-            
         </div>
 
         <!-- template for the WFS3 API leaflet map -->
@@ -128,7 +86,7 @@
         L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         }).addTo(map)
-        $.get( "http://server.qgis.org/wfs3/collections/testlayer%20%C3%A8%C3%A9/items.geojson", function( data ) {
+        $.get( "http://server.qgis.org/wfs3/collections/testlayer%20%C3%A8%C3%A9/items.geojson?limit=0", function( data ) {
           var jl = L.geoJSON( data, {
               onEachFeature: function (feature, layer) {
                     layer.bindPopup('<h1>'+feature.id +'</h1>');

@@ -989,6 +989,18 @@ Content-Type: application/geo+json
       "rel": "next",
       "title": "Next page",
       "type": "application/geo+json"
+    },
+    {
+      "href": "http://server.qgis.org/wfs3/collections/as-areas-short-name/items?crs=http%3A%2F%2Fwww.opengis.net%2Fdef%2Fcrs%2FEPSG%2F0%2F3857&offset=0&limit=10",
+      "rel": "first",
+      "title": "First page",
+      "type": "application/geo+json"
+    },
+    {
+      "href": "http://server.qgis.org/wfs3/collections/as-areas-short-name/items?crs=http%3A%2F%2Fwww.opengis.net%2Fdef%2Fcrs%2FEPSG%2F0%2F3857&offset=30&limit=10",
+      "rel": "last",
+      "title": "Last page",
+      "type": "application/geo+json"
     }
   ],
   "numberMatched": 38,
