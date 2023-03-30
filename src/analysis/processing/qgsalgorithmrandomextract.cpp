@@ -67,6 +67,10 @@ void QgsRandomExtractAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterNumber( QStringLiteral( "NUMBER" ), QObject::tr( "Number/percentage of features" ),
                 QgsProcessingParameterNumber::Integer, 10, false, 0 ) );
 
+  std::unique_ptr< QgsProcessingParameterBoolean > noDuplicates = std::make_unique< QgsProcessingParameterBoolean >( QStringLiteral( "NO_DUPLICATES" ), QObject::tr( "No duplicates" ), false );
+  noDuplicates->setHelp( QObject::tr( "If checked, ensure the resulting subset contains no duplicated feature, at the cost of slightly worse performance" ) ) ;
+  addParameter( noDuplicates.release() );
+
   addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Extracted (random)" ) ) );
 }
 
@@ -84,6 +88,7 @@ QVariantMap QgsRandomExtractAlgorithm::processAlgorithm( const QVariantMap &para
 
   const int method = parameterAsEnum( parameters, QStringLiteral( "METHOD" ), context );
   int number = parameterAsInt( parameters, QStringLiteral( "NUMBER" ), context );
+  const bool noDuplicates = parameterAsBool( parameters, QStringLiteral( "NO_DUPLICATES" ), context );
 
   const long count = source->featureCount();
 
@@ -104,37 +109,106 @@ QVariantMap QgsRandomExtractAlgorithm::processAlgorithm( const QVariantMap &para
 
   // initialize random engine
   std::random_device randomDevice;
-  const std::mt19937 mersenneTwister( randomDevice() );
-  const std::uniform_int_distribution<int> fidsDistribution( 0, count );
+  std::mt19937 mersenneTwister( randomDevice() );
 
-  QVector< QgsFeatureId > fids( number );
-  std::generate( fids.begin(), fids.end(), bind( fidsDistribution, mersenneTwister ) );
-
-  QHash< QgsFeatureId, int > idsCount;
-  for ( const QgsFeatureId id : fids )
+  if ( !noDuplicates )
   {
-    if ( feedback->isCanceled() )
+    const std::uniform_int_distribution<int> fidsDistribution( 1, count );
+
+    QVector< QgsFeatureId > fids( number );
+    std::generate( fids.begin(), fids.end(), bind( fidsDistribution, mersenneTwister ) );
+
+    QHash< QgsFeatureId, int > idsCount;
+    for ( const QgsFeatureId id : fids )
     {
-      break;
+      if ( feedback->isCanceled() )
+      {
+        break;
+      }
+
+      idsCount[ id ] += 1;
     }
 
-    idsCount[ id ] += 1;
+    const QgsFeatureIds ids = qgis::listToSet( idsCount.keys() );
+    QgsFeatureIterator fit = source->getFeatures( QgsFeatureRequest().setFilterFids( ids ), QgsProcessingFeatureSource::FlagSkipGeometryValidityChecks );
+
+    QgsFeature f;
+    while ( fit.nextFeature( f ) )
+    {
+      if ( feedback->isCanceled() )
+      {
+        break;
+      }
+
+      const int count = idsCount.value( f.id() );
+      for ( int i = 0; i < count; ++i )
+      {
+        if ( !sink->addFeature( f, QgsFeatureSink::FastInsert ) )
+          throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
+      }
+    }
   }
 
-  const QgsFeatureIds ids = qgis::listToSet( idsCount.keys() );
-  QgsFeatureIterator fit = source->getFeatures( QgsFeatureRequest().setFilterFids( ids ), QgsProcessingFeatureSource::FlagSkipGeometryValidityChecks );
-
-  QgsFeature f;
-  while ( fit.nextFeature( f ) )
+  // No duplicates
+  else
   {
-    if ( feedback->isCanceled() )
+    // Build a list of all feature ids
+    QgsFeatureIterator fit = source->getFeatures( QgsFeatureRequest()
+                             .setFlags( QgsFeatureRequest::NoGeometry )
+                             .setNoAttributes() );
+    std::vector< QgsFeatureId > allFeats;
+    allFeats.reserve( count );
+    QgsFeature f;
+    while ( fit.nextFeature( f ) )
     {
-      break;
+      if ( feedback->isCanceled() )
+        break;
+      allFeats.push_back( f.id() );
     }
 
-    const int count = idsCount.value( f.id() );
-    for ( int i = 0; i < count; ++i )
+    std::uniform_int_distribution<int> fidsDistribution;
+
+    int nb = count;
+
+    // If the number of features to select is greater than half the total number of features
+    // we will instead randomly select features to *exclude* from the output layer
+    bool invertSelection = number > count / 2;
+    if ( invertSelection )
+      number = count - number;
+
+    // Shuffle <number> features at the start of the iterator
+    auto cursor = allFeats.begin();
+    while ( number-- )
     {
+      if ( feedback->isCanceled() )
+        return QVariantMap();
+
+      // Update the distribution to match the number of unshuffled features
+      fidsDistribution.param( std::uniform_int_distribution<int>::param_type( 0, nb - 1 ) );
+      // Swap the current feature with a random one
+      std::swap( *cursor, *( cursor + fidsDistribution( mersenneTwister ) ) );
+      // Move the cursor to the next feature
+      ++cursor;
+
+      // Decrement the number of unshuffled features
+      --nb;
+    }
+
+    // Insert the selected features into a QgsFeatureIds set
+    QgsFeatureIds selected;
+    if ( invertSelection )
+      for ( auto it = cursor; it != allFeats.end(); ++it )
+        selected.insert( *it );
+    else
+      for ( auto it = allFeats.begin(); it != cursor; ++it )
+        selected.insert( *it );
+
+    fit = source->getFeatures( QgsFeatureRequest().setFilterFids( selected ), QgsProcessingFeatureSource::FlagSkipGeometryValidityChecks );
+    while ( fit.nextFeature( f ) )
+    {
+      if ( feedback->isCanceled() )
+        return QVariantMap();
+
       if ( !sink->addFeature( f, QgsFeatureSink::FastInsert ) )
         throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
     }
