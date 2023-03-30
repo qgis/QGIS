@@ -46,6 +46,7 @@ set(TESTS
   testqgsmeshcalculatordialog.cpp
   testqgsgpsinformationwidget.cpp
   testqgslabelpropertydialog.cpp
+  testqgsmergeattributesdialog.cpp
 )
 
 if (HAVE_GEOREFERENCER)

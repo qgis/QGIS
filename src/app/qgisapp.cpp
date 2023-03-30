@@ -102,6 +102,7 @@
 #include "qgsdockablewidgethelper.h"
 #include "vertextool/qgsvertexeditor.h"
 #include "qgsvectorlayerutils.h"
+#include "qgsvectorlayereditutils.h"
 #include "qgsadvanceddigitizingdockwidget.h"
 #include "qgsabstractdatasourcewidget.h"
 #include "qgsmeshlayer.h"
@@ -9517,9 +9518,8 @@ void QgisApp::mergeSelectedFeatures()
     return;
   }
 
-  //get selected feature ids (as a QSet<int> )
-  const QgsFeatureIds &featureIdSet = vl->selectedFeatureIds();
-  if ( featureIdSet.size() < 2 )
+  // Check at least two features are selected
+  if ( vl->selectedFeatureIds().size() < 2 )
   {
     visibleMessageBar()->pushMessage(
       tr( "Not enough features selected" ),
@@ -9593,73 +9593,38 @@ void QgisApp::mergeSelectedFeatures()
       }
       return;
     }
-  }
-
-  QgsAttributes attrs = d.mergedAttributes();
-  QgsAttributeMap newAttributes;
-  QString errorMessage;
-  QgsFeatureId mergeFeatureId = FID_NULL;
-  for ( int i = 0; i < attrs.count(); ++i )
-  {
-    QVariant val = attrs.at( i );
-    bool isDefaultValue = vl->fields().fieldOrigin( i ) == QgsFields::OriginProvider &&
-                          vl->dataProvider() &&
-                          vl->dataProvider()->defaultValueClause( vl->fields().fieldOriginIndex( i ) ) == val;
-    bool isPrimaryKey =  vl->fields().fieldOrigin( i ) == QgsFields::OriginProvider &&
-                         vl->dataProvider() &&
-                         vl->dataProvider()->pkAttributeIndexes().contains( vl->fields().fieldOriginIndex( i ) );
-
-    if ( isPrimaryKey && !isDefaultValue )
-      mergeFeatureId = val.toLongLong();
-
-    // convert to destination data type
-    if ( !isDefaultValue && !vl->fields().at( i ).convertCompatible( val, &errorMessage ) )
+    else if ( !QgsWkbTypes::isMultiType( vl->wkbType() ) )
     {
-      visibleMessageBar()->pushMessage(
-        tr( "Invalid result" ),
-        tr( "Could not store value '%1' in field of type %2: %3" ).arg( attrs.at( i ).toString(), vl->fields().at( i ).typeName(), errorMessage ),
-        Qgis::MessageLevel::Warning );
+      const QgsGeometryCollection *c = qgsgeometry_cast<const QgsGeometryCollection *>( unionGeom.constGet() );
+      if ( ( c && c->partCount() > 1 ) || !unionGeom.convertToSingleType() )
+      {
+        visibleMessageBar()->pushMessage(
+          tr( "Merge failed" ),
+          tr( "Resulting geometry type (multipart) is incompatible with layer type (singlepart)." ),
+          Qgis::MessageLevel::Critical );
+        return;
+      }
     }
-    newAttributes[ i ] = val;
   }
 
-  vl->beginEditCommand( tr( "Merged features" ) );
+  QString errorMessage;
+  QgsVectorLayerEditUtils vectorLayerEditUtils( vl );
+  bool success = vectorLayerEditUtils.mergeFeatures( d.targetFeatureId(), vl->selectedFeatureIds(), d.mergedAttributes(), unionGeom, errorMessage );
 
-  QgsFeature mergeFeature;
-  if ( mergeFeatureId == FID_NULL )
+  if ( !success )
   {
-    // Create new feature
-    mergeFeature = QgsVectorLayerUtils::createFeature( vl, unionGeom, newAttributes );
+    visibleMessageBar()->pushMessage(
+      tr( "Merge failed" ),
+      errorMessage,
+      Qgis::MessageLevel::Critical );
   }
-  else
+  else if ( success && !errorMessage.isEmpty() )
   {
-    // Merge into existing feature
-    featureIdsAfter.remove( mergeFeatureId );
+    visibleMessageBar()->pushMessage(
+      tr( "Invalid result" ),
+      errorMessage,
+      Qgis::MessageLevel::Warning );
   }
-
-  // Delete other features
-  QgsFeatureIds::const_iterator feature_it = featureIdsAfter.constBegin();
-  for ( ; feature_it != featureIdsAfter.constEnd(); ++feature_it )
-  {
-    vl->deleteFeature( *feature_it );
-  }
-
-
-  if ( mergeFeatureId == FID_NULL )
-  {
-    // Add the new feature
-    vl->addFeature( mergeFeature );
-  }
-  else
-  {
-    // Modify merge feature
-    vl->changeGeometry( mergeFeatureId, unionGeom );
-    vl->changeAttributeValues( mergeFeatureId, newAttributes );
-  }
-
-  vl->endEditCommand();
-
-  vl->triggerRepaint();
 }
 
 void QgisApp::vertexTool()
