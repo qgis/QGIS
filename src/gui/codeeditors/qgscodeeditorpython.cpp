@@ -337,8 +337,12 @@ void QgsCodeEditorPython::keyPressEvent( QKeyEvent *event )
       }
 
       // Else, if not inside a string or comment and an opening character
-      // is entered, also insert the closing character
-      else if ( !isCursorInsideStringLiteralOrComment() && sCompletionPairs.contains( eText ) )
+      // is entered, also insert the closing character, provided the next
+      // character is a space, a colon, or a closing character
+      else if ( !isCursorInsideStringLiteralOrComment()
+                && sCompletionPairs.contains( eText )
+                && ( nextChar.isEmpty() || nextChar.at( 0 ).isSpace() || nextChar == ":" || sCompletionPairs.key( nextChar ) != "" )
+              )
       {
         // Check if user is not entering triple quotes
         if ( !( ( eText == "\"" || eText == "'" ) && prevChar == eText ) )
