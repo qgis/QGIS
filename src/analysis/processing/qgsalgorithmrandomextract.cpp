@@ -124,12 +124,13 @@ QVariantMap QgsRandomExtractAlgorithm::processAlgorithm( const QVariantMap &para
 
   // If the number of features to select is greater than half the total number of features
   // we will instead randomly select features to *exclude* from the output layer
+  size_t actualFeatureCount = allFeats.size();
   size_t shuffledFeatureCount = number;
-  bool invertSelection = number > count / 2;
+  bool invertSelection = static_cast< size_t>( number ) > actualFeatureCount / 2;
   if ( invertSelection )
-    shuffledFeatureCount = count - number;
+    shuffledFeatureCount = actualFeatureCount - number;
 
-  size_t nb = count;
+  size_t nb = actualFeatureCount;
 
   // Shuffle <number> features at the start of the iterator
   feedback->pushInfo( QObject::tr( "Randomly select %1 features" ).arg( number ) );
