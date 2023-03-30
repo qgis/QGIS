@@ -148,6 +148,11 @@ void QgsDockableWidgetHelper::readXml( const QDomElement &viewDom )
     mIsDockFloating = viewDom.attribute( QStringLiteral( "floating" ), QStringLiteral( "0" ) ).toInt();
     mDockArea = static_cast< Qt::DockWidgetArea >( viewDom.attribute( QStringLiteral( "area" ), QString::number( Qt::RightDockWidgetArea ) ).toInt() );
 
+    if ( mDockArea == Qt::DockWidgetArea::NoDockWidgetArea && !mIsDockFloating )
+    {
+      mDockArea = Qt::RightDockWidgetArea;
+    }
+
     QStringList tabSiblings;
     const QDomElement tabSiblingsElement = viewDom.firstChildElement( QStringLiteral( "tab_siblings" ) );
     const QDomNodeList tabSiblingNodes = tabSiblingsElement.childNodes();

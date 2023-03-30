@@ -29,6 +29,8 @@
 #include "qgsrubberband.h"
 #include "qgsvectorlayer.h"
 #include "qgsapplication.h"
+#include "qgsdockablewidgethelper.h"
+
 #include <QMessageBox>
 #include <QMenu>
 #include <QToolBar>
@@ -36,16 +38,17 @@
 #include <QRadioButton>
 
 
-QgsMapCanvasDockWidget::QgsMapCanvasDockWidget( const QString &name, QWidget *parent )
-  : QgsDockWidget( parent )
+QgsMapCanvasDockWidget::QgsMapCanvasDockWidget( const QString &name, QWidget *parent, bool isDocked )
+  : QWidget( parent )
+  , mCanvasName( name )
 {
   setupUi( this );
   setAttribute( Qt::WA_DeleteOnClose );
 
-  mContents->layout()->setContentsMargins( 0, 0, 0, 0 );
-  static_cast< QVBoxLayout * >( mContents->layout() )->setSpacing( 0 );
+  layout()->setContentsMargins( 0, 0, 0, 0 );
+  qgis::down_cast< QVBoxLayout * >( layout() )->setSpacing( 0 );
 
-  setWindowTitle( name );
+  setWindowTitle( mCanvasName );
   mToolbar->setIconSize( QgisApp::instance()->iconSize( true ) );
 
   mMapCanvas = new QgsMapCanvas( this );
@@ -240,6 +243,25 @@ QgsMapCanvasDockWidget::QgsMapCanvasDockWidget( const QString &name, QWidget *pa
   } );
 
   connect( QgsProject::instance()->mapThemeCollection(), &QgsMapThemeCollection::mapThemeRenamed, this, &QgsMapCanvasDockWidget::currentMapThemeRenamed );
+
+  mDockableWidgetHelper = new QgsDockableWidgetHelper( isDocked, mCanvasName, this, QgisApp::instance(), Qt::RightDockWidgetArea );
+  QToolButton *toggleButton = mDockableWidgetHelper->createDockUndockToolButton();
+  toggleButton->setToolTip( tr( "Dock 2D Map View" ) );
+  mToolbar->addWidget( toggleButton );
+  connect( mDockableWidgetHelper, &QgsDockableWidgetHelper::closed, this, [ = ]()
+  {
+    close();
+  } );
+}
+
+QgsMapCanvasDockWidget::~QgsMapCanvasDockWidget()
+{
+  delete mDockableWidgetHelper;
+}
+
+QgsDockableWidgetHelper *QgsMapCanvasDockWidget::dockableWidgetHelper()
+{
+  return mDockableWidgetHelper;
 }
 
 void QgsMapCanvasDockWidget::setMainCanvas( QgsMapCanvas *canvas )
@@ -266,6 +288,12 @@ void QgsMapCanvasDockWidget::setMainCanvas( QgsMapCanvas *canvas )
 QgsMapCanvas *QgsMapCanvasDockWidget::mapCanvas()
 {
   return mMapCanvas;
+}
+
+void QgsMapCanvasDockWidget::setCanvasName( const QString &name )
+{
+  mCanvasName = name;
+  mDockableWidgetHelper->setWindowTitle( name );
 }
 
 void QgsMapCanvasDockWidget::setViewCenterSynchronized( bool enabled )
