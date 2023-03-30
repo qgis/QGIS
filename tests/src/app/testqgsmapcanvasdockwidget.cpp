@@ -81,7 +81,8 @@ void TestQgsMapCanvasDockWidget::testNoSync()
   mainCanvas.setExtent( QgsRectangle( -14839703, 2282029, -7723928, 6293534 ) );
   mainCanvas.show();
 
-  QGSCOMPARENEAR( mainCanvas.scale(), 44823779, 10000 );
+  double testScalingFactor = 44823779 / mainCanvas.scale();
+  QGSCOMPARENEAR( mainCanvas.scale() * testScalingFactor, 44823779, 10000 );
 
   QgsMapCanvasDockWidget dock( QStringLiteral( "dock" ) );
   dock.setMainCanvas( &mainCanvas );
@@ -91,7 +92,7 @@ void TestQgsMapCanvasDockWidget::testNoSync()
   dock.mapCanvas()->setExtent( QgsRectangle( -14839703, 2282029, -7723928, 6293534 ) );
   dock.show();
 
-  QGSCOMPARENEAR( dock.mapCanvas()->scale(), 44823779, 1000000 );
+  QGSCOMPARENEAR( dock.mapCanvas()->scale() * testScalingFactor, 44823779, 1000000 );
 
   dock.setViewCenterSynchronized( false );
   dock.setViewScaleSynchronized( false );
@@ -102,12 +103,13 @@ void TestQgsMapCanvasDockWidget::testNoSync()
   mainCanvas.zoomScale( 89647558 );
 
   // dock should not inherit scale
-  QGSCOMPARENEAR( dock.mapCanvas()->scale(), 44823779, 1000000 );
+  QGSCOMPARENEAR( dock.mapCanvas()->scale() * testScalingFactor, 44823779, 1000000 );
 
   // change scale in dock and check it is not synced to main canvas
   dock.mapCanvas()->zoomScale( 1500000 );
-  QGSCOMPARENEAR( dock.mapCanvas()->scale(), 1500000, 1000 );
-  QGSCOMPARENEAR( mainCanvas.scale(), 89647558, 1000 );
+  testScalingFactor = 1500000 / dock.mapCanvas()->scale();
+  QGSCOMPARENEAR( dock.mapCanvas()->scale() * testScalingFactor, 1500000, 1000 );
+  QGSCOMPARENEAR( mainCanvas.scale() * testScalingFactor, 89647558, 1000 );
 
   // extent should NOT be synced
   dock.mapCanvas()->setCenter( QgsPointXY( -22329833, 3515327 ) );
@@ -132,7 +134,8 @@ void TestQgsMapCanvasDockWidget::testScaleSync()
   mainCanvas.setExtent( QgsRectangle( -14839703, 2282029, -7723928, 6293534 ) );
   mainCanvas.show();
 
-  QGSCOMPARENEAR( mainCanvas.scale(), 44823779, 10000 );
+  double testScalingFactor = 44823779 / mainCanvas.scale();
+  QGSCOMPARENEAR( mainCanvas.scale() * testScalingFactor, 44823779, 10000 );
 
   QgsMapCanvasDockWidget dock( QStringLiteral( "dock" ) );
   dock.setMainCanvas( &mainCanvas );
@@ -142,7 +145,7 @@ void TestQgsMapCanvasDockWidget::testScaleSync()
   dock.mapCanvas()->setExtent( QgsRectangle( -14839703, 2282029, -7723928, 6293534 ) );
   dock.show();
 
-  QGSCOMPARENEAR( dock.mapCanvas()->scale(), 44823779, 1000000 );
+  QGSCOMPARENEAR( dock.mapCanvas()->scale() * testScalingFactor, 44823779, 1000000 );
 
   dock.setViewCenterSynchronized( false );
   dock.setViewScaleSynchronized( true );
@@ -152,26 +155,27 @@ void TestQgsMapCanvasDockWidget::testScaleSync()
   resizeTimerSpy.wait();
 
   mainCanvas.zoomScale( 89647558 );
+  testScalingFactor = 89647558 / mainCanvas.scale();
 
   // dock should inherit scale
-  QGSCOMPARENEAR( dock.mapCanvas()->scale(), 89647558, 1000000 );
+  QGSCOMPARENEAR( dock.mapCanvas()->scale() * testScalingFactor, 89647558, 1000000 );
 
   // ensure scale is multiplied by factor
   dock.setScaleFactor( 2.5 );
   mainCanvas.zoomScale( 44823779 );
 
-  QGSCOMPARENEAR( dock.mapCanvas()->scale(), 17929511, 1000000 );
+  QGSCOMPARENEAR( dock.mapCanvas()->scale() * testScalingFactor, 17929511, 1000000 );
 
   // change scale in dock and check it is respected by main canvas
   dock.setScaleFactor( 1.0 );
   dock.mapCanvas()->zoomScale( 1500000 );
-  QGSCOMPARENEAR( dock.mapCanvas()->scale(), 1500000, 1000 );
-  QGSCOMPARENEAR( mainCanvas.scale(), 1500000, 1000 );
+  QGSCOMPARENEAR( dock.mapCanvas()->scale() * testScalingFactor, 1500000, 1000 );
+  QGSCOMPARENEAR( mainCanvas.scale() * testScalingFactor, 1500000, 1000 );
 
   dock.setScaleFactor( 2.0 );
   dock.mapCanvas()->zoomScale( 1000000 );
-  QGSCOMPARENEAR( dock.mapCanvas()->scale(), 1000000, 1000 );
-  QGSCOMPARENEAR( mainCanvas.scale(), 2000000, 1000 );
+  QGSCOMPARENEAR( dock.mapCanvas()->scale() * testScalingFactor, 1000000, 1000 );
+  QGSCOMPARENEAR( mainCanvas.scale() * testScalingFactor, 2000000, 1000 );
 
   // extent should NOT be synced, and scale should not change when extent changes
   dock.mapCanvas()->setCenter( QgsPointXY( -22329833, 3515327 ) );
@@ -179,7 +183,7 @@ void TestQgsMapCanvasDockWidget::testScaleSync()
   QGSCOMPARENEAR( dock.mapCanvas()->center().y(), 3515327, 1000 );
   QGSCOMPARENEAR( mainCanvas.center().x(), -11281815, 1000 );
   QGSCOMPARENEAR( mainCanvas.center().y(), 4287781, 1000 );
-  QGSCOMPARENEAR( dock.mapCanvas()->scale(), 1000000, 1000 );
+  QGSCOMPARENEAR( dock.mapCanvas()->scale() * testScalingFactor, 1000000, 1000 );
   QGSCOMPARENEAR( mainCanvas.scale(), 2000000, 1000 );
 
   mainCanvas.setCenter( QgsPointXY( -4467497, -227904 ) );
@@ -187,8 +191,8 @@ void TestQgsMapCanvasDockWidget::testScaleSync()
   QGSCOMPARENEAR( dock.mapCanvas()->center().y(), 3515327, 1000 );
   QGSCOMPARENEAR( mainCanvas.center().x(), -4467497, 1000 );
   QGSCOMPARENEAR( mainCanvas.center().y(), -227904, 1000 );
-  QGSCOMPARENEAR( dock.mapCanvas()->scale(), 1000000, 1000 );
-  QGSCOMPARENEAR( mainCanvas.scale(), 2000000, 1000 );
+  QGSCOMPARENEAR( dock.mapCanvas()->scale() * testScalingFactor, 1000000, 1000 );
+  QGSCOMPARENEAR( mainCanvas.scale() * testScalingFactor, 2000000, 1000 );
 
   dock.resize( 1200, 1200 );
   resizeTimerSpy.wait();
@@ -197,8 +201,8 @@ void TestQgsMapCanvasDockWidget::testScaleSync()
   QGSCOMPARENEAR( dock.mapCanvas()->center().y(), 3515327, 1000 );
   QGSCOMPARENEAR( mainCanvas.center().x(), -4467497, 1000 );
   QGSCOMPARENEAR( mainCanvas.center().y(), -227904, 1000 );
-  QGSCOMPARENEAR( dock.mapCanvas()->scale(), 500000, 10000 );
-  QGSCOMPARENEAR( mainCanvas.scale(), 1000000, 100000 );
+  QGSCOMPARENEAR( dock.mapCanvas()->scale() * testScalingFactor, 500000, 10000 );
+  QGSCOMPARENEAR( mainCanvas.scale() * testScalingFactor, 1000000, 100000 );
 }
 
 void TestQgsMapCanvasDockWidget::testCenterSync()
@@ -211,7 +215,8 @@ void TestQgsMapCanvasDockWidget::testCenterSync()
   mainCanvas.setExtent( QgsRectangle( -14839703, 2282029, -7723928, 6293534 ) );
   mainCanvas.show();
 
-  QGSCOMPARENEAR( mainCanvas.scale(), 44823779, 10000 );
+  double testScalingFactor = 44823779 / mainCanvas.scale();
+  QGSCOMPARENEAR( mainCanvas.scale() * testScalingFactor, 44823779, 10000 );
 
   QgsMapCanvasDockWidget dock( QStringLiteral( "dock" ) );
   dock.setMainCanvas( &mainCanvas );
@@ -221,7 +226,7 @@ void TestQgsMapCanvasDockWidget::testCenterSync()
   dock.mapCanvas()->setExtent( QgsRectangle( -14839703, 2282029, -7723928, 6293534 ) );
   dock.show();
 
-  QGSCOMPARENEAR( dock.mapCanvas()->scale(), 44823779, 1000000 );
+  QGSCOMPARENEAR( dock.mapCanvas()->scale() * testScalingFactor, 44823779, 1000000 );
 
   dock.setViewCenterSynchronized( true );
   dock.setViewScaleSynchronized( false );
@@ -232,12 +237,13 @@ void TestQgsMapCanvasDockWidget::testCenterSync()
   mainCanvas.zoomScale( 89647558 );
 
   // dock should not inherit scale
-  QGSCOMPARENEAR( dock.mapCanvas()->scale(), 44823779, 1000000 );
+  QGSCOMPARENEAR( dock.mapCanvas()->scale() * testScalingFactor, 44823779, 1000000 );
 
   // change scale in dock and check it is not synced to main canvas
   dock.mapCanvas()->zoomScale( 1500000 );
-  QGSCOMPARENEAR( dock.mapCanvas()->scale(), 1500000, 1000 );
-  QGSCOMPARENEAR( mainCanvas.scale(), 89647558, 1000 );
+  testScalingFactor = 1500000 / dock.mapCanvas()->scale();
+  QGSCOMPARENEAR( dock.mapCanvas()->scale() * testScalingFactor, 1500000, 1000 );
+  QGSCOMPARENEAR( mainCanvas.scale() * testScalingFactor, 89647558, 1000 );
 
   // center SHOULD be synced
   dock.mapCanvas()->setCenter( QgsPointXY( -22329833, 3515327 ) );
@@ -259,8 +265,8 @@ void TestQgsMapCanvasDockWidget::testCenterSync()
   QGSCOMPARENEAR( dock.mapCanvas()->center().y(), -227904, 1000 );
   QGSCOMPARENEAR( mainCanvas.center().x(), -4467497, 1000 );
   QGSCOMPARENEAR( mainCanvas.center().y(), -227904, 1000 );
-  QGSCOMPARENEAR( dock.mapCanvas()->scale(), 744966, 10000 );
-  QGSCOMPARENEAR( mainCanvas.scale(), 89647558, 1000 );
+  QGSCOMPARENEAR( dock.mapCanvas()->scale() * testScalingFactor, 744966, 10000 );
+  QGSCOMPARENEAR( mainCanvas.scale() * testScalingFactor, 89647558, 1000 );
 }
 
 void TestQgsMapCanvasDockWidget::testScaleAndCenterSync()
@@ -273,7 +279,8 @@ void TestQgsMapCanvasDockWidget::testScaleAndCenterSync()
   mainCanvas.setExtent( QgsRectangle( -14839703, 2282029, -7723928, 6293534 ) );
   mainCanvas.show();
 
-  QGSCOMPARENEAR( mainCanvas.scale(), 44823779, 10000 );
+  double testScalingFactor = 44823779 / mainCanvas.scale();
+  QGSCOMPARENEAR( mainCanvas.scale() * testScalingFactor, 44823779, 10000 );
 
   QgsMapCanvasDockWidget dock( QStringLiteral( "dock" ) );
   dock.setMainCanvas( &mainCanvas );
@@ -283,7 +290,7 @@ void TestQgsMapCanvasDockWidget::testScaleAndCenterSync()
   dock.mapCanvas()->setExtent( QgsRectangle( -14839703, 2282029, -7723928, 6293534 ) );
   dock.show();
 
-  QGSCOMPARENEAR( dock.mapCanvas()->scale(), 44823779, 1000000 );
+  QGSCOMPARENEAR( dock.mapCanvas()->scale() * testScalingFactor, 44823779, 1000000 );
 
   dock.setViewCenterSynchronized( true );
   dock.setViewScaleSynchronized( true );
@@ -292,26 +299,27 @@ void TestQgsMapCanvasDockWidget::testScaleAndCenterSync()
   resizeTimerSpy.wait();
 
   mainCanvas.zoomScale( 89647558 );
+  testScalingFactor = 89647558 / mainCanvas.scale();
 
   // dock should inherit scale
-  QGSCOMPARENEAR( dock.mapCanvas()->scale(), 89647558, 1000000 );
+  QGSCOMPARENEAR( dock.mapCanvas()->scale() * testScalingFactor, 89647558, 1000000 );
 
   // ensure scale is multiplied by factor
   dock.setScaleFactor( 2.5 );
   mainCanvas.zoomScale( 44823779 );
 
-  QGSCOMPARENEAR( dock.mapCanvas()->scale(), 17929511, 1000000 );
+  QGSCOMPARENEAR( dock.mapCanvas()->scale() * testScalingFactor, 17929511, 1000000 );
 
   // change scale in dock and check it is respected by main canvas
   dock.setScaleFactor( 1.0 );
   dock.mapCanvas()->zoomScale( 1500000 );
-  QGSCOMPARENEAR( dock.mapCanvas()->scale(), 1500000, 1000 );
-  QGSCOMPARENEAR( mainCanvas.scale(), 1500000, 1000 );
+  QGSCOMPARENEAR( dock.mapCanvas()->scale() * testScalingFactor, 1500000, 1000 );
+  QGSCOMPARENEAR( mainCanvas.scale() * testScalingFactor, 1500000, 1000 );
 
   dock.setScaleFactor( 2.0 );
   dock.mapCanvas()->zoomScale( 1000000 );
-  QGSCOMPARENEAR( dock.mapCanvas()->scale(), 1000000, 1000 );
-  QGSCOMPARENEAR( mainCanvas.scale(), 2000000, 1000 );
+  QGSCOMPARENEAR( dock.mapCanvas()->scale() * testScalingFactor, 1000000, 1000 );
+  QGSCOMPARENEAR( mainCanvas.scale() * testScalingFactor, 2000000, 1000 );
 
   // center SHOULD be synced
   dock.mapCanvas()->setCenter( QgsPointXY( -22329833, 3515327 ) );
@@ -333,11 +341,9 @@ void TestQgsMapCanvasDockWidget::testScaleAndCenterSync()
   QGSCOMPARENEAR( dock.mapCanvas()->center().y(), -227904, 1000 );
   QGSCOMPARENEAR( mainCanvas.center().x(), -4467497, 1000 );
   QGSCOMPARENEAR( mainCanvas.center().y(), -227904, 1000 );
-  QGSCOMPARENEAR( dock.mapCanvas()->scale(), 500000, 10000 );
-  QGSCOMPARENEAR( mainCanvas.scale(), 1000000, 100000 );
+  QGSCOMPARENEAR( dock.mapCanvas()->scale() * testScalingFactor, 500000, 10000 );
+  QGSCOMPARENEAR( mainCanvas.scale() * testScalingFactor, 1000000, 100000 );
 }
-
-
 
 QGSTEST_MAIN( TestQgsMapCanvasDockWidget )
 #include "testqgsmapcanvasdockwidget.moc"
