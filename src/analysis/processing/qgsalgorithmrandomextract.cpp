@@ -130,12 +130,12 @@ QVariantMap QgsRandomExtractAlgorithm::processAlgorithm( const QVariantMap &para
   if ( !noDuplicates )
   {
     feedback->pushInfo( QObject::tr( "Randomly select %1 features" ).arg( number ) );
-    const std::uniform_int_distribution<int> fidsDistribution( 0, allFeats.size() - 1 );
+    const std::uniform_int_distribution<size_t> fidsDistribution( 0, allFeats.size() - 1 );
 
-    std::vector< int > indexes( number );
+    std::vector< size_t > indexes( number );
     std::generate( indexes.begin(), indexes.end(), bind( fidsDistribution, mersenneTwister ) );
     QHash< QgsFeatureId, int > idsCount;
-    for ( int i : indexes )
+    for ( size_t i : indexes )
     {
       const QgsFeatureId id = allFeats.at( i );
       if ( feedback->isCanceled() )
@@ -166,27 +166,29 @@ QVariantMap QgsRandomExtractAlgorithm::processAlgorithm( const QVariantMap &para
   else
   {
     feedback->pushInfo( QObject::tr( "Randomly select %1 features" ).arg( number ) );
-    std::uniform_int_distribution<int> fidsDistribution;
-
-    int nb = count;
+    std::uniform_int_distribution<size_t> fidsDistribution;
 
     // If the number of features to select is greater than half the total number of features
     // we will instead randomly select features to *exclude* from the output layer
+    size_t shuffledFeatureCount = number;
     bool invertSelection = number > count / 2;
     if ( invertSelection )
-      number = count - number;
+      shuffledFeatureCount = count - number;
+
+    size_t nb = count;
 
     // Shuffle <number> features at the start of the iterator
     auto cursor = allFeats.begin();
-    while ( number-- )
+    using difference_type = std::vector<QgsFeatureId>::difference_type;
+    while ( shuffledFeatureCount-- )
     {
       if ( feedback->isCanceled() )
         return QVariantMap();
 
       // Update the distribution to match the number of unshuffled features
-      fidsDistribution.param( std::uniform_int_distribution<int>::param_type( 0, nb - 1 ) );
+      fidsDistribution.param( std::uniform_int_distribution<size_t>::param_type( 0, nb - 1 ) );
       // Swap the current feature with a random one
-      std::swap( *cursor, *( cursor + fidsDistribution( mersenneTwister ) ) );
+      std::swap( *cursor, *( cursor + static_cast<difference_type>( fidsDistribution( mersenneTwister ) ) ) );
       // Move the cursor to the next feature
       ++cursor;
 
