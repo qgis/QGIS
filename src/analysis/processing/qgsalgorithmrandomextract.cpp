@@ -67,7 +67,7 @@ void QgsRandomExtractAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterNumber( QStringLiteral( "NUMBER" ), QObject::tr( "Number/percentage of features" ),
                 QgsProcessingParameterNumber::Integer, 10, false, 0 ) );
 
-  std::unique_ptr< QgsProcessingParameterBoolean > noDuplicates = std::make_unique< QgsProcessingParameterBoolean >( QStringLiteral( "NO_DUPLICATES" ), QObject::tr( "No duplicates" ), false );
+  std::unique_ptr< QgsProcessingParameterBoolean > noDuplicates = std::make_unique< QgsProcessingParameterBoolean >( QStringLiteral( "NO_DUPLICATES" ), QObject::tr( "Avoid duplicates" ), false );
   noDuplicates->setHelp( QObject::tr( "If checked, ensure the resulting subset contains no duplicated feature, at the cost of slightly worse performance" ) ) ;
   addParameter( noDuplicates.release() );
 
@@ -107,38 +107,51 @@ QVariantMap QgsRandomExtractAlgorithm::processAlgorithm( const QVariantMap &para
     number = static_cast< int >( std::ceil( number * count / 100 ) );
   }
 
+  // Build a list of all feature ids
+  QgsFeatureIterator fit = source->getFeatures( QgsFeatureRequest()
+                           .setFlags( QgsFeatureRequest::NoGeometry )
+                           .setNoAttributes() );
+  std::vector< QgsFeatureId > allFeats;
+  allFeats.reserve( count );
+  QgsFeature f;
+  feedback->pushInfo( QObject::tr( "Building list of all features..." ) );
+  while ( fit.nextFeature( f ) )
+  {
+    if ( feedback->isCanceled() )
+      return QVariantMap();
+    allFeats.push_back( f.id() );
+  }
+  feedback->pushInfo( QObject::tr( "Done." ) );
+
   // initialize random engine
   std::random_device randomDevice;
   std::mt19937 mersenneTwister( randomDevice() );
 
   if ( !noDuplicates )
   {
-    const std::uniform_int_distribution<int> fidsDistribution( 1, count );
+    feedback->pushInfo( QObject::tr( "Randomly select %1 features" ).arg( number ) );
+    const std::uniform_int_distribution<int> fidsDistribution( 0, allFeats.size() - 1 );
 
-    QVector< QgsFeatureId > fids( number );
-    std::generate( fids.begin(), fids.end(), bind( fidsDistribution, mersenneTwister ) );
-
+    std::vector< int > indexes( number );
+    std::generate( indexes.begin(), indexes.end(), bind( fidsDistribution, mersenneTwister ) );
     QHash< QgsFeatureId, int > idsCount;
-    for ( const QgsFeatureId id : fids )
+    for ( int i : indexes )
     {
+      const QgsFeatureId id = allFeats.at( i );
       if ( feedback->isCanceled() )
-      {
-        break;
-      }
+        return QVariantMap();
 
       idsCount[ id ] += 1;
     }
 
     const QgsFeatureIds ids = qgis::listToSet( idsCount.keys() );
-    QgsFeatureIterator fit = source->getFeatures( QgsFeatureRequest().setFilterFids( ids ), QgsProcessingFeatureSource::FlagSkipGeometryValidityChecks );
 
-    QgsFeature f;
+    feedback->pushInfo( QObject::tr( "Adding selected features" ) );
+    QgsFeatureIterator fit = source->getFeatures( QgsFeatureRequest().setFilterFids( ids ), QgsProcessingFeatureSource::FlagSkipGeometryValidityChecks );
     while ( fit.nextFeature( f ) )
     {
       if ( feedback->isCanceled() )
-      {
-        break;
-      }
+        return QVariantMap();
 
       const int count = idsCount.value( f.id() );
       for ( int i = 0; i < count; ++i )
@@ -152,20 +165,7 @@ QVariantMap QgsRandomExtractAlgorithm::processAlgorithm( const QVariantMap &para
   // No duplicates
   else
   {
-    // Build a list of all feature ids
-    QgsFeatureIterator fit = source->getFeatures( QgsFeatureRequest()
-                             .setFlags( QgsFeatureRequest::NoGeometry )
-                             .setNoAttributes() );
-    std::vector< QgsFeatureId > allFeats;
-    allFeats.reserve( count );
-    QgsFeature f;
-    while ( fit.nextFeature( f ) )
-    {
-      if ( feedback->isCanceled() )
-        break;
-      allFeats.push_back( f.id() );
-    }
-
+    feedback->pushInfo( QObject::tr( "Randomly select %1 features" ).arg( number ) );
     std::uniform_int_distribution<int> fidsDistribution;
 
     int nb = count;
@@ -203,6 +203,7 @@ QVariantMap QgsRandomExtractAlgorithm::processAlgorithm( const QVariantMap &para
       for ( auto it = allFeats.begin(); it != cursor; ++it )
         selected.insert( *it );
 
+    feedback->pushInfo( QObject::tr( "Adding selected features" ) );
     fit = source->getFeatures( QgsFeatureRequest().setFilterFids( selected ), QgsProcessingFeatureSource::FlagSkipGeometryValidityChecks );
     while ( fit.nextFeature( f ) )
     {
