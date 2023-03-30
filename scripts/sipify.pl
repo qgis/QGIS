@@ -684,6 +684,14 @@ while ($LINE_IDX < $LINE_COUNT){
         next;
     }
 
+    # do not process SIP code %If %End
+    if ( $SIP_RUN == 1 && $LINE =~ m/^ *% (If|End)(.*)?$/ ){
+        $LINE = "%$1$2";
+        $COMMENT = '';
+        write_output("COD", $LINE."\n");
+        next;
+    }
+
     # Skip preprocessor stuff
     if ($LINE =~ m/^\s*#/){
         # skip #if 0 blocks
@@ -825,11 +833,8 @@ while ($LINE_IDX < $LINE_COUNT){
             dbg_info("Q_ENUM/Q_FLAG $enum_helper");
             if ($python_output ne ''){
                 if ($enum_helper ne ''){
-                    push @OUTPUT_PYTHON, "$enum_helper\n";
-                    if ($is_flag == 1){
-                        # SIP seems to introduce the flags in the module rather than in the class itself
-                        # as a dirty hack, inject directly in module, hopefully we don't have flags with the same name....
-                        push @OUTPUT_PYTHON, "$2 = $ACTUAL_CLASS  # dirty hack since SIP seems to introduce the flags in module\n";
+                    if ($is_flag != 1){
+                      push @OUTPUT_PYTHON, "$enum_helper\n";
                     }
                 }
             }
@@ -1098,15 +1103,27 @@ while ($LINE_IDX < $LINE_COUNT){
         }
     }
 
+    if ( $LINE =~ m/^\s*Q_DECLARE_FLAGS\s*\(\s*(?<flags_name>\w+)\s*,\s*(?<flag_name>\w+)\s*\)/ ){
+
+        # In PyQt6 Flags are mapped to Python enum flag and the plural doesn't exist anymore
+        # https://www.riverbankcomputing.com/static/Docs/PyQt6/pyqt5_differences.html
+        # So we mock it to avoid API break
+        push @OUTPUT_PYTHON, "$ACTUAL_CLASS.$+{flags_name} = lambda flags=0 : $ACTUAL_CLASS.$+{flag_name}(flags)\n";
+    }
+
     # Enum declaration
     # For scoped and type based enum, the type has to be removed
     if ( $LINE =~ m/^\s*Q_DECLARE_FLAGS\s*\(\s*(?<flags_name>\w+)\s*,\s*(?<flag_name>\w+)\s*\)\s*SIP_MONKEYPATCH_FLAGS_UNNEST\s*\(\s*(?<emkb>\w+)\s*,\s*(?<emkf>\w+)\s*\)\s*$/ ){
+
         push @OUTPUT_PYTHON, "$+{emkb}.$+{emkf} = $ACTUAL_CLASS.$+{flags_name}\n";
         $LINE =~ s/\s*SIP_MONKEYPATCH_FLAGS_UNNEST\(.*?\)//;
     }
-    if ( $LINE =~ m/^(\s*enum(\s+Q_DECL_DEPRECATED)?\s+(?<isclass>class\s+)?(?<enum_qualname>\w+))(:?\s+SIP_.*)?(\s*:\s*\w+)?(?<oneliner>.*)$/ ){
+    if ( $LINE =~ m/^(\s*enum(\s+Q_DECL_DEPRECATED)?\s+(?<isclass>class\s+)?(?<enum_qualname>\w+))(:?\s+SIP_[^:]*)?(\s*:\s*(?<enum_type>\w+))?(?<oneliner>.*)$/ ){
         my $enum_decl = $1;
         $enum_decl =~ s/\s*\bQ_DECL_DEPRECATED\b//;
+        if ( defined $+{enum_type} and $+{enum_type} eq "int" ) {
+          $enum_decl .= " /BaseType=IntFlag/"
+        }
         write_output("ENU1", "$enum_decl");
         write_output("ENU1", $+{oneliner}) if defined $+{oneliner};
         write_output("ENU1", "\n");

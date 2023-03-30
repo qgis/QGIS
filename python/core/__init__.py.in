@@ -92,11 +92,6 @@ QgsVectorLayer.NoMarker = Qgis.VertexMarkerType.NoMarker
 QgsVectorLayer.NoMarker.is_monkey_patched = True
 QgsVectorLayer.NoMarker.__doc__ = "No marker"
 
-QgsSymbol.RenderHints = Qgis.SymbolRenderHints
-QgsSymbol.PreviewFlags = Qgis.SymbolPreviewFlags
-QgsDataItem.Capabilities = Qgis.BrowserItemCapabilities
-QgsGeometry.ValidityFlags = Qgis.GeometryValidityFlags
-
 # Monkey patch static const "QgsDataProvider.SUBLAYER_SEPARATOR" which was removed for QGIS 3.12
 QgsDataProvider.SUBLAYER_SEPARATOR = QgsDataProvider.sublayerSeparator()
 
