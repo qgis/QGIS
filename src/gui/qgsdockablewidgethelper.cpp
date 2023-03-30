@@ -411,8 +411,10 @@ void QgsDockableWidgetHelper::setupDockWidget( const QStringList &tabSiblings )
   {
     mOwnerWindow->addDockWidget( mDockArea, mDock );
   }
-  QgsApplication::processEvents(); // required to resize properly!
-  mDock->setGeometry( mDockGeometry );
+
+  // can only resize properly and set the dock geometry after pending events have been processed,
+  // so queue the geometry setting on the end of the event loop
+  QMetaObject::invokeMethod( mDock, [this] { mDock->setGeometry( mDockGeometry ); }, Qt::QueuedConnection );
 }
 
 QToolButton *QgsDockableWidgetHelper::createDockUndockToolButton()
