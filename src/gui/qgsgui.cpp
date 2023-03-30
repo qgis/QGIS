@@ -60,6 +60,7 @@
 #include "qgssettingsregistrygui.h"
 #include "qgshistoryproviderregistry.h"
 #include "qgslayermetadatasourceselectprovider.h"
+#include "qgssensorguiregistry.h"
 
 #include <QPushButton>
 #include <QToolButton>
@@ -170,6 +171,11 @@ QgsProviderGuiRegistry *QgsGui::providerGuiRegistry()
   return instance()->mProviderGuiRegistry;
 }
 
+QgsSensorGuiRegistry *QgsGui::sensorGuiRegistry()
+{
+  return instance()->mSensorGuiRegistry;
+}
+
 QgsHistoryProviderRegistry *QgsGui::historyProviderRegistry()
 {
   return instance()->mHistoryProviderRegistry;
@@ -230,6 +236,7 @@ QgsGui::~QgsGui()
   delete mShapeMapToolRegistry;
   delete mRelationEditorRegistry;
   delete mSettingsRegistryGui;
+  delete mSensorGuiRegistry;
 }
 
 QColor QgsGui::sampleColor( QPoint point )
@@ -283,6 +290,9 @@ QgsGui::QgsGui()
   mCodeEditorColorSchemeRegistry = new QgsCodeEditorColorSchemeRegistry();
 
   // provider gui registry initialize QgsProviderRegistry too
+  mSensorGuiRegistry = new QgsSensorGuiRegistry();
+  mSensorGuiRegistry->populate();
+
   mHistoryProviderRegistry = new QgsHistoryProviderRegistry();
   mHistoryProviderRegistry->addDefaultProviders();
 

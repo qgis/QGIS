@@ -29,11 +29,11 @@
    <item>
     <widget class="QGroupBox" name="groupBox">
      <property name="title">
-      <string>Sensor Settings</string>
+      <string>Sensors</string>
      </property>
      <layout class="QVBoxLayout" name="mainLayout">
       <item>
-       <widget class="QgsSensorTableWidget" name="mSensorTableWidget"/>
+       <widget class="QgsPanelWidgetStack" name="mPanelStack" native="true"/>
       </item>
      </layout>
     </widget>
@@ -42,9 +42,9 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsSensorTableWidget</class>
+   <class>QgsPanelWidgetStack</class>
    <extends>QWidget</extends>
-   <header>qgssensortablewidget.h</header>
+   <header>qgspanelwidgetstack.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

@@ -20,11 +20,15 @@
 #include "qgsapplication.h"
 #include "qgsproject.h"
 #include "qgssensormanager.h"
+#include "qgssensortablewidget.h"
 
 QgsProjectSensorSettingsWidget::QgsProjectSensorSettingsWidget( QWidget *parent )
   : QgsOptionsPageWidget( parent )
 {
   setupUi( this );
+
+  QgsSensorTableWidget *widget = new QgsSensorTableWidget( this );
+  mPanelStack->setMainPanel( widget );
 
   QDomElement sensorElem = QgsProject::instance()->sensorManager()->writeXml( mPreviousSensors );
   mPreviousSensors.appendChild( sensorElem );
@@ -67,6 +71,20 @@ void QgsProjectSensorSettingsWidget::cancel()
 
 void QgsProjectSensorSettingsWidget::apply()
 {
+  mPreviousSensors = QDomDocument();
+  QDomElement sensorElem = QgsProject::instance()->sensorManager()->writeXml( mPreviousSensors );
+  mPreviousSensors.appendChild( sensorElem );
+
+  mConnectedSensors.clear();
+  const QList<QgsAbstractSensor *> sensors = QgsProject::instance()->sensorManager()->sensors();
+  for ( QgsAbstractSensor *sensor : sensors )
+  {
+    if ( sensor->status() == Qgis::DeviceConnectionStatus::Connected )
+    {
+      mConnectedSensors << sensor->id();
+    }
+  }
+
   return;
 }
 

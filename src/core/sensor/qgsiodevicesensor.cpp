@@ -274,6 +274,7 @@ bool QgsUdpSocketSensor::readPropertiesFromElement( const QDomElement &element, 
 
 //--------------
 
+#if defined( HAVE_QTSERIALPORT )
 QgsSerialPortSensor::QgsSerialPortSensor( QObject *parent )
   : QgsIODeviceSensor( parent )
   , mSerialPort( new QSerialPort() )
@@ -336,3 +337,4 @@ bool QgsSerialPortSensor::readPropertiesFromElement( const QDomElement &element,
 
   return true;
 }
+#endif

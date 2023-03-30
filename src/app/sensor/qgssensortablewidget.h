@@ -17,13 +17,33 @@
 #define QGSSENSORTABLEWIDGET_H
 
 #include "ui_qgssensortablewidgetbase.h"
+#include "ui_qgssensorsettingswidgetbase.h"
 
 #include "qgis_app.h"
 #include "qgsdockwidget.h"
+#include "qgsabstractsensor.h"
 #include "qgspanelwidget.h"
-#include "qgspanelwidgetstack.h"
+
 
 class QgsSensorModel;
+class QgsAbstractSensorWidget;
+
+class APP_EXPORT QgsSensorSettingsWidget : public QgsPanelWidget, private Ui::QgsSensorSettingsWidgetBase
+{
+    Q_OBJECT
+
+  public:
+    QgsSensorSettingsWidget( QgsAbstractSensor *sensor = nullptr, QWidget *parent SIP_TRANSFERTHIS = nullptr );
+    ~QgsSensorSettingsWidget() override = default;
+
+    void apply();
+
+  private:
+    void setSensorWidget();
+
+    QgsAbstractSensor *mSensor = nullptr;
+    QgsAbstractSensorWidget *mSensorWidget = nullptr;
+};
 
 class APP_EXPORT QgsSensorTableWidget : public QgsPanelWidget, private Ui::QgsSensorTableWidgetBase
 {

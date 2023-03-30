@@ -10,9 +10,6 @@
     <height>376</height>
    </rect>
   </property>
-  <property name="windowTitle">
-   <string>Sensors Table</string>
-  </property>
   <layout class="QHBoxLayout" name="horizontalLayout">
   <property name="spacing">
     <number>3</number>
@@ -59,6 +56,48 @@
      </widget>
     </item>
     <item>
+     <widget class="QToolButton" name="mActionAddSensor">
+      <property name="toolTip">
+       <string>Create new sensor</string>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+      <property name="icon">
+       <iconset resource="../../images/images.qrc">
+       <normaloff>:/images/themes/default/symbologyAdd.svg</normaloff>:/images/themes/default/symbologyAdd.svg</iconset>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QToolButton" name="mActionRemoveSensor">
+      <property name="toolTip">
+       <string>Create new sensor</string>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+      <property name="icon">
+       <iconset resource="../../images/images.qrc">
+       <normaloff>:/images/themes/default/symbologyRemove.svg</normaloff>:/images/themes/default/symbologyRemove.svg</iconset>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QToolButton" name="mActionEditSensor">
+      <property name="toolTip">
+       <string>Edit sensor</string>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+      <property name="icon">
+       <iconset resource="../../images/images.qrc">
+       <normaloff>:/images/themes/default/symbologyEdit.svg</normaloff>:/images/themes/default/symbologyEdit.svg</iconset>
+      </property>
+     </widget>
+    </item>
+    <item>
      <spacer name="verticalSpacer">
       <property name="orientation">
        <enum>Qt::Vertical</enum>
@@ -78,7 +117,7 @@
  <customwidgets>
   <customwidget>
    <class>QgsPanelWidget</class>
-   <extends>QgsPanelWidget</extends>
+   <extends>QWidget</extends>
    <header>qgspanelwidget.h</header>
    <container>1</container>
   </customwidget>

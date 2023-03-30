@@ -16,15 +16,20 @@
 #ifndef QGSIODEVICESENSOR_H
 #define QGSIODEVICESENSOR_H
 
+#include "qgsconfig.h"
+
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgsabstractsensor.h"
 
 #include <QBuffer>
 #include <QDomElement>
-#include <QSerialPort>
 #include <QTcpSocket>
 #include <QUdpSocket>
+
+#if defined( HAVE_QTSERIALPORT )
+#include <QSerialPort>
+#endif
 
 /**
  * \ingroup core
@@ -212,6 +217,8 @@ class CORE_EXPORT QgsUdpSocketSensor : public QgsIODeviceSensor
 
 };
 
+#if defined( HAVE_QTSERIALPORT )
+
 /**
  * \ingroup core
  * \class QgsSerialPortSensor
@@ -266,6 +273,7 @@ class CORE_EXPORT QgsSerialPortSensor : public QgsIODeviceSensor
     QString mPortName;
 
 };
+#endif
 
 #endif //QGSIODEVICESENSOR_H
 
