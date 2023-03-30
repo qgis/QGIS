@@ -142,6 +142,21 @@ bool VirtualPointCloud::read(std::string filename)
     return true;
 }
 
+void geometryToJson(const Geometry &geom, const BOX3D &bbox, nlohmann::json &jsonGeometry, nlohmann::json &jsonBbox)
+{
+    jsonBbox = { bbox.minx, bbox.miny, bbox.minz, bbox.maxx, bbox.maxy, bbox.maxz };
+
+    std::string strGeom = geom.json();
+    try
+    {
+        jsonGeometry = json::parse(strGeom);
+    }
+    catch (std::exception &e)
+    {
+        std::cerr << "JSON parsing error: " << e.what() << std::endl;
+    }
+}
+
 bool VirtualPointCloud::write(std::string filename)
 {
     std::ofstream outputJson(filename);
@@ -170,15 +185,20 @@ bool VirtualPointCloud::write(std::string filename)
         }
         std::string fileId = fs::path(f.filename).stem().string();  // TODO: we should make sure the ID is unique
 
+        // use bounding box as the geometry
+        // TODO: use calculated boundary polygon when available
+        nlohmann::json jsonGeometry, jsonBbox;
+        geometryToJson(pdal::Polygon(f.bbox), f.bbox, jsonGeometry, jsonBbox);
+
         // bounding box in WGS 84: reproject if possible, or keep it as is
-        BOX3D bboxWgs84 = f.bbox;
+        nlohmann::json jsonGeometryWgs84 = jsonGeometry, jsonBboxWgs84 = jsonBbox;
         if (!f.crsWkt.empty())
         {
             pdal::Polygon p(f.bbox);
             p.setSpatialReference(pdal::SpatialReference(f.crsWkt));
             if (p.transform("EPSG:4326"))
             {
-                bboxWgs84 = p.bounds();
+                geometryToJson(p, p.bounds(), jsonGeometryWgs84, jsonBboxWgs84);
             }
         }
 
@@ -202,15 +222,15 @@ bool VirtualPointCloud::write(std::string filename)
           // required pointcloud extension properties
           { "pc:count", f.count },
           { "pc:type", "lidar" },   // TODO: how could we know?
-          { "pc:encoding", "?" },   // TODO: what value to use?
+          { "pc:encoding", "?" },   // TODO: https://github.com/stac-extensions/pointcloud/issues/6
           { "pc:schemas", schemas },
 
           // TODO: write pc:statistics if we have it (optional)
 
           // projection extension properties (none are required)
           { "proj:wkt2", f.crsWkt },
-          { "proj:bbox", { f.bbox.minx, f.bbox.miny, f.bbox.minz, f.bbox.maxx, f.bbox.maxy, f.bbox.maxz } },
-          // TODO: add "proj:geometry" if we know exact boundary
+          { "proj:geometry", jsonGeometry },
+          { "proj:bbox", jsonBbox },
         };
         nlohmann::json links = json::array();
 
@@ -229,8 +249,8 @@ bool VirtualPointCloud::write(std::string filename)
                 }
             },
             { "id", fileId },
-            { "geometry", nullptr },  // TODO: use WGS 84 (multi-)polygon if we have exact boundary
-            { "bbox", { bboxWgs84.minx, bboxWgs84.miny, bboxWgs84.minz, bboxWgs84.maxx, bboxWgs84.maxy, bboxWgs84.maxz } },
+            { "geometry", jsonGeometryWgs84 },
+            { "bbox", jsonBboxWgs84 },
             { "properties", props },
             { "links", links },
             { "assets", { { "data", asset } } },
