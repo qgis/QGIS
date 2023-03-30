@@ -18,6 +18,7 @@ set(TESTS
   testqgsapplocatorfilters.cpp
   testqgsdecorationscalebar.cpp
   testqgsfieldcalculator.cpp
+  testqgsmapcanvasdockwidget.cpp
   testqgsmaptooleditannotation.cpp
   testqgsmaptoolidentifyaction.cpp
   testqgsmaptoollabel.cpp
