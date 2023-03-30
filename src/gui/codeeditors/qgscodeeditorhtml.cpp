@@ -194,7 +194,7 @@ void QgsCodeEditorHTML::toggleComment()
   const bool commented = startLineTrimmed.startsWith( commentStart ) && endLineTrimmed.endsWith( commentEnd );
 
   // Special case, selected text is <!--> or <!--->
-  if ( commented && startLine == endLine && text( endLine ).trimmed() < commentStart.size() + commentEnd.size() )
+  if ( commented && startLine == endLine && text( endLine ).trimmed().size() < commentStart.size() + commentEnd.size() )
   {
     return;
   }
