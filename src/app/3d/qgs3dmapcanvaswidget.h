@@ -62,9 +62,6 @@ class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
     void setCanvasName( const QString &name );
     QString canvasName() const { return mCanvasName; }
 
-  signals:
-    void toggleDockModeRequested( bool docked );
-
   protected:
     void resizeEvent( QResizeEvent *event ) override;
 
