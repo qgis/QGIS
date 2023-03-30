@@ -10,13 +10,17 @@ __date__ = '02.04.2018'
 __copyright__ = 'Copyright 2018, The QGIS Project'
 
 import qgis  # NOQA
-from qgis.PyQt.QtCore import QStringListModel
+from qgis.PyQt.QtCore import QStringListModel, QItemSelectionModel
 from qgis.PyQt.QtTest import QAbstractItemModelTester, QSignalSpy
 from qgis.core import (
     QgsLayerTree,
     QgsLayerTreeModel,
     QgsProject,
     QgsVectorLayer,
+    QgsCategorizedSymbolRenderer,
+    QgsRendererCategory,
+    QgsMarkerSymbol,
+    QgsMapLayerLegend
 )
 from qgis.gui import QgsLayerTreeView, QgsLayerTreeViewDefaultActions
 from qgis.testing import start_app, unittest
@@ -654,6 +658,43 @@ class TestQgsLayerTreeView(unittest.TestCase):
         source_index = tree_model.index(1, 0)
         tree_layer2_index = view.node2sourceIndex(node2)
         self.assertEqual(tree_layer2_index, view.node2sourceIndex(node2))
+
+    def test_selected_legend_nodes(self):
+        layer = QgsVectorLayer("Point?field=fldtxt:string",
+                               "layer1", "memory")
+
+        cat1 = QgsRendererCategory(1, QgsMarkerSymbol.createSimple({}), 'cat 1')
+        cat2 = QgsRendererCategory(2, QgsMarkerSymbol.createSimple({}),
+                                   'cat 2')
+        cat3 = QgsRendererCategory(1, QgsMarkerSymbol.createSimple({}),
+                                   'cat 3')
+
+        renderer = QgsCategorizedSymbolRenderer('fldtext', [cat1, cat2, cat3])
+        layer.setRenderer(renderer)
+        layer.setLegend(QgsMapLayerLegend.defaultVectorLegend(layer))
+
+        root = QgsLayerTree()
+        model = QgsLayerTreeModel(root)
+        layer_tree_layer = root.addLayer(layer)
+        view = QgsLayerTreeView()
+        view.setModel(model)
+
+        legend_nodes = model.layerLegendNodes(layer_tree_layer)
+        self.assertEqual(len(legend_nodes), 3)
+
+        index = model.legendNode2index(legend_nodes[0])
+        self.assertTrue(index.isValid())
+        self.assertEqual(model.index2legendNode(index), legend_nodes[0])
+        index2 = model.legendNode2index(legend_nodes[2])
+        self.assertTrue(index2.isValid())
+        self.assertEqual(model.index2legendNode(index2), legend_nodes[2])
+
+        self.assertFalse(view.selectedLegendNodes())
+
+        view.selectionModel().select(view.proxyModel().mapFromSource(index), QItemSelectionModel.ClearAndSelect)
+        view.selectionModel().select(view.proxyModel().mapFromSource(index2), QItemSelectionModel.Select)
+
+        self.assertCountEqual(view.selectedLegendNodes(), [legend_nodes[0], legend_nodes[2]])
 
 
 if __name__ == '__main__':
