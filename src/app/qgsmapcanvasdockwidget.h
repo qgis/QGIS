@@ -190,6 +190,8 @@ class APP_EXPORT QgsMapCanvasDockWidget : public QgsDockWidget, private Ui::QgsM
     QgsRubberBand *mExtentRubberBand = nullptr;
     void syncViewCenter( QgsMapCanvas *sourceCanvas );
     void syncSelection();
+
+    friend class TestQgsMapCanvasDockWidget;
 };
 
 /**
