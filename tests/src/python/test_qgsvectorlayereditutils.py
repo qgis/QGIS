@@ -18,12 +18,8 @@ import tempfile
 import os
 
 from qgis.PyQt.QtCore import (
-    QDate,
-    QDateTime,
     QVariant,
     Qt,
-    QDateTime,
-    QDate,
     QTime,
     QTimer,
     QTemporaryDir,
