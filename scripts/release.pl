@@ -136,7 +136,13 @@ if( $domajor ) {
 
 my $splashwidth;
 unless( defined $dopoint ) {
-	pod2usage("Splash images/splash/splash-$newmajor.$newminor.png not found") unless -r "images/splash/splash-$newmajor.$newminor.png";
+	pod2usage("Splash images/splash/splash-${newmajor}.${newminor}rc.png not found") unless -r "images/splash/splash-${newmajor}.${newminor}rc.png";
+} elsif($newpatch == 1) {
+	pod2usage("Splash images/splash/splash-${newmajor}.${newminor}.png not found") unless -r "images/splash/splash-${newmajor}.${newminor}.png";
+} elsif($newpatch == 4) {	# TODO handle EPRs
+	if( system("git tag -l | grep -q '^ltr-${newmajor}_${newminor}$'") == 0) {
+		pod2usage("Splash images/splash/splash-${newmajor}.${newminor}ltr.png not found") unless -r "images/splash/splash-${newmajor}.${newminor}ltr.png";
+	}
 }
 
 print "Last pull rebase...\n";
