@@ -96,7 +96,7 @@ template<> QgsGeometryCheck *QgsGeometryCheckFactoryT<QgsGeometryAreaCheck>::cre
   QgsSettings().setValue( sSettingsGroup + "checkArea", ui.checkBoxArea->isChecked() );
   QgsSettings().setValue( sSettingsGroup + "minimalArea", ui.doubleSpinBoxArea->value() );
   QVariantMap configuration;
-  configuration.insert( "areaThreshold", ui.doubleSpinBoxAngle->value() );
+  configuration.insert( "areaThreshold", ui.doubleSpinBoxArea->value() );
   if ( ui.checkBoxArea->isEnabled() && ui.checkBoxArea->isChecked() )
   {
     return new QgsGeometryAreaCheck( context, configuration );
