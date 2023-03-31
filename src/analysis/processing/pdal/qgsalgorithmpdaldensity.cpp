@@ -60,7 +60,7 @@ QgsPdalDensityAlgorithm *QgsPdalDensityAlgorithm::createInstance() const
 void QgsPdalDensityAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterPointCloudLayer( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ) ) );
-  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "RESOLUTION" ), QObject::tr( "Resoultion of the density raster" ), QgsProcessingParameterNumber::Integer, 1, false, 1 ) );
+  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "RESOLUTION" ), QObject::tr( "Resolution of the density raster" ), QgsProcessingParameterNumber::Integer, 1, false, 1 ) );
   addParameter( new QgsProcessingParameterNumber( QStringLiteral( "TILE_SIZE" ), QObject::tr( "Tile size for parallel runs" ), QgsProcessingParameterNumber::Integer, 1000, false, 1 ) );
 
   std::unique_ptr< QgsProcessingParameterNumber > paramOriginX = std::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "ORIGIN_X" ), QObject::tr( "X origin of a tile for parallel runs" ), QgsProcessingParameterNumber::Integer, QVariant(), true, 0 );
