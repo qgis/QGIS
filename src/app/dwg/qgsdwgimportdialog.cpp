@@ -20,7 +20,6 @@
 #include <QDialogButtonBox>
 #include <QFileInfo>
 #include <QFileDialog>
-#include <QMessageBox>
 
 #include "qgssettings.h"
 #include "qgisapp.h"
@@ -48,6 +47,7 @@
 #include "qgsgui.h"
 #include "qgsfillsymbol.h"
 #include "qgslinesymbol.h"
+#include "qgsmaprenderercustompainterjob.h"
 
 QgsDwgImportDialog::QgsDwgImportDialog( QWidget *parent, Qt::WindowFlags f )
   : QDialog( parent, f )
@@ -66,6 +66,7 @@ QgsDwgImportDialog::QgsDwgImportDialog( QWidget *parent, Qt::WindowFlags f )
   connect( pbDeselectAll, &QPushButton::clicked, this, &QgsDwgImportDialog::pbDeselectAll_clicked );
   connect( leLayerGroup, &QLineEdit::textChanged, this, &QgsDwgImportDialog::leLayerGroup_textChanged );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsDwgImportDialog::showHelp );
+  connect( mLayers, &QTableWidget::itemClicked, this, &QgsDwgImportDialog::layers_clicked );
 
   const QgsSettings s;
   cbExpandInserts->setChecked( s.value( QStringLiteral( "/DwgImport/lastExpandInserts" ), true ).toBool() );
@@ -149,7 +150,7 @@ void QgsDwgImportDialog::pbLoadDatabase_clicked()
   if ( !QFileInfo::exists( mDatabaseFileWidget->filePath() ) )
     return;
 
-  const QgsTemporaryCursorOverride waitCursor( Qt::BusyCursor );
+  const QgsTemporaryCursorOverride waitCursor( Qt::WaitCursor );
 
   bool lblVisible = false;
 
@@ -180,6 +181,9 @@ void QgsDwgImportDialog::pbLoadDatabase_clicked()
           lblMessage->setText( tr( "Drawing file was meanwhile updated (%1 > %2)." ).arg( fi.lastModified().toString(), f.attribute( idxLastModified ).toDateTime().toString() ) );
           lblVisible = true;
         }
+
+
+        leLayerGroup->setText( fi.baseName() );
       }
       else
       {
@@ -216,12 +220,12 @@ void QgsDwgImportDialog::pbLoadDatabase_clicked()
       item = new QTableWidgetItem( f.attribute( idxName ).toString() );
       item->setFlags( Qt::ItemIsUserCheckable | Qt::ItemIsEnabled );
       item->setCheckState( Qt::Checked );
-      mLayers->setItem( row, 0, item );
+      mLayers->setItem( row, static_cast<int>( ColumnIndex::Name ), item );
 
       item = new QTableWidgetItem();
       item->setFlags( Qt::ItemIsUserCheckable | Qt::ItemIsEnabled );
       item->setCheckState( ( f.attribute( idxColor ).toInt() >= 0 && ( f.attribute( idxFlags ).toInt() & 1 ) == 0 ) ? Qt::Checked : Qt::Unchecked );
-      mLayers->setItem( row, 1, item );
+      mLayers->setItem( row, static_cast<int>( ColumnIndex::Visibility ), item );
     }
 
     mLayers->resizeColumnsToContents();
@@ -248,7 +252,7 @@ void QgsDwgImportDialog::pbBrowseDrawing_clicked()
 
 void QgsDwgImportDialog::pbImportDrawing_clicked()
 {
-  const QgsTemporaryCursorOverride waitCursor( Qt::BusyCursor );
+  const QgsTemporaryCursorOverride waitCursor( Qt::WaitCursor );
 
   QgsDwgImporter importer( mDatabaseFileWidget->filePath(), mCrsSelector->crs() );
 
@@ -478,7 +482,7 @@ void QgsDwgImportDialog::createGroup( QgsLayerTreeGroup *group, const QString &n
 void QgsDwgImportDialog::updateCheckState( Qt::CheckState state )
 {
   for ( int i = 0; i < mLayers->rowCount(); i++ )
-    mLayers->item( i, 0 )->setCheckState( state );
+    mLayers->item( i, static_cast<int>( ColumnIndex::Name ) )->setCheckState( state );
 }
 
 void QgsDwgImportDialog::pbSelectAll_clicked()
@@ -493,20 +497,20 @@ void QgsDwgImportDialog::pbDeselectAll_clicked()
 
 void QgsDwgImportDialog::buttonBox_accepted()
 {
-  const QgsTemporaryCursorOverride waitCursor( Qt::BusyCursor );
+  const QgsTemporaryCursorOverride waitCursor( Qt::WaitCursor );
 
   QMap<QString, bool> layers;
   bool allLayers = true;
   for ( int i = 0; i < mLayers->rowCount(); i++ )
   {
-    QTableWidgetItem *item = mLayers->item( i, 0 );
+    QTableWidgetItem *item = mLayers->item( i, static_cast<int>( ColumnIndex::Name ) );
     if ( item->checkState() == Qt::Unchecked )
     {
       allLayers = false;
       continue;
     }
 
-    layers.insert( item->text(), mLayers->item( i, 1 )->checkState() == Qt::Checked );
+    layers.insert( item->text(), mLayers->item( i, static_cast<int>( ColumnIndex::Visibility ) )->checkState() == Qt::Checked );
   }
 
   if ( cbMergeLayers->isChecked() )
@@ -534,4 +538,56 @@ void QgsDwgImportDialog::buttonBox_accepted()
 void QgsDwgImportDialog::showHelp()
 {
   QgsHelp::openHelp( QStringLiteral( "managing_data_source/opening_data.html#importing-a-dxf-or-dwg-file" ) );
+}
+
+void QgsDwgImportDialog::layers_clicked( QTableWidgetItem *item )
+{
+  if ( ! item )
+    return;
+
+  if ( item->column() != static_cast<int>( ColumnIndex::Name ) )
+    item = mLayers->item( item->row(), static_cast<int>( ColumnIndex::Name ) );
+
+  if ( ! item )
+    return;
+
+  const QgsTemporaryCursorOverride waitCursor( Qt::WaitCursor );
+
+  QString layerName = item->text();
+
+  QgsLayerTreeGroup layerGroup;
+  createGroup( &layerGroup, layerName, QStringList( layerName ), true );
+
+  QList<QgsMapLayer *> layers = layerGroup.layerOrderRespectingGroupLayers();
+
+  if ( layers.isEmpty() )
+  {
+    mLabelLayerPreview->setText( tr( "No features in this layer" ) );
+    return;
+  }
+
+  // Create image and painterr
+  QImage image( mLabelLayerPreview->size(), QImage::Format_ARGB32_Premultiplied );
+  QPainter painter;
+  painter.begin( &image );
+  painter.setRenderHint( QPainter::Antialiasing );
+
+  // Set layers to render
+  QgsMapSettings mapSettings;
+  mapSettings.setLayers( layers );
+
+  // Set extent
+  QgsRectangle rect( mapSettings.fullExtent() );
+  rect.scale( 1.1 );
+  mapSettings.setExtent( rect );
+  mapSettings.setOutputSize( image.size() );
+
+  // Setup qgis map renderer
+  QgsMapRendererCustomPainterJob render( mapSettings, &painter );
+  render.start();
+  render.waitForFinished();
+  painter.end();
+
+  // Show the image
+  mLabelLayerPreview->setPixmap( QPixmap::fromImage( image ) );
 }

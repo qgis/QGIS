@@ -41,8 +41,16 @@ class QgsDwgImportDialog : public QDialog, private Ui::QgsDwgImportBase
     void mDatabaseFileWidget_textChanged( const QString &filename );
     void leLayerGroup_textChanged( const QString &text );
     void showHelp();
+    void layers_clicked( QTableWidgetItem *item );
 
   private:
+
+    enum class ColumnIndex : int
+    {
+      Name = 0,
+      Visibility = 1
+    };
+
     QgsVectorLayer *layer( QgsLayerTreeGroup *layerGroup, const QString &layer, const QString &table );
     void createGroup( QgsLayerTreeGroup *group, const QString &name, const QStringList &layers, bool visible );
     void updateUI();
