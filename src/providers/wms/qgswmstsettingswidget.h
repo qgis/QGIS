@@ -31,7 +31,7 @@ class QgsWmstSettingsWidget : public QgsMapLayerConfigWidget, private Ui::QgsWms
   public:
     QgsWmstSettingsWidget( QgsMapLayer *layer, QgsMapCanvas *canvas, QWidget *parent = nullptr );
 
-    void syncToLayer( QgsMapLayer *layer ) override;
+    void syncToLayer( QgsMapLayer *layer ) final;
     void apply() override;
   private slots:
     void temporalPropertiesChange();

@@ -36,8 +36,8 @@ class QgsPointCloudLayer3DRendererWidget : public QgsMapLayerConfigWidget
   public:
     explicit QgsPointCloudLayer3DRendererWidget( QgsPointCloudLayer *layer, QgsMapCanvas *canvas, QWidget *parent = nullptr );
 
-    void syncToLayer( QgsMapLayer *layer ) override;
-    void setDockMode( bool dockMode ) override;
+    void syncToLayer( QgsMapLayer *layer ) final;
+    void setDockMode( bool dockMode ) final;
 
     //! no transfer of ownership
     void setRenderer( const QgsPointCloudLayer3DRenderer *renderer );
