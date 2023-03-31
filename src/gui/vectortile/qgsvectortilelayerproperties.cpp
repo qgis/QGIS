@@ -59,6 +59,9 @@ QgsVectorTileLayerProperties::QgsVectorTileLayerProperties( QgsVectorTileLayer *
 
   connect( mCrsSelector, &QgsProjectionSelectionWidget::crsChanged, this, &QgsVectorTileLayerProperties::crsChanged );
 
+  // scale based layer visibility related widgets
+  mScaleRangeWidget->setMapCanvas( mMapCanvas );
+
   // QgsOptionsDialogBase handles saving/restoring of geometry, splitter and current tab states,
   // switching vertical tabs between icon/text to icon-only modes (splitter collapsed to left),
   // and connecting QDialogButtonBox's accepted/rejected signals to dialog's accept/reject slots
@@ -149,6 +152,10 @@ void QgsVectorTileLayerProperties::apply()
   mRendererWidget->apply();
   mLabelingWidget->apply();
   mMetadataWidget->acceptMetadata();
+
+  mLayer->setScaleBasedVisibility( chkUseScaleDependentRendering->isChecked() );
+  mLayer->setMinimumScale( mScaleRangeWidget->minimumScale() );
+  mLayer->setMaximumScale( mScaleRangeWidget->maximumScale() );
 }
 
 void QgsVectorTileLayerProperties::onCancel()
@@ -215,6 +222,12 @@ void QgsVectorTileLayerProperties::syncToLayer()
    * Labels Tab
    */
   mLabelingWidget->setLayer( mLayer );
+
+  /*
+   * Rendering
+   */
+  chkUseScaleDependentRendering->setChecked( mLayer->hasScaleBasedVisibility() );
+  mScaleRangeWidget->setScaleRange( mLayer->minimumScale(), mLayer->maximumScale() );
 }
 
 
