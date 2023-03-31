@@ -89,13 +89,13 @@ void TestQgsPdalProvider::filters()
   QgsProviderMetadata *metadata = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "pdal" ) );
   QVERIFY( metadata );
 
-  const QString metadataFilters = metadata->filters( QgsProviderMetadata::FilterType::FilterPointCloud );
+  const QString metadataFilters = metadata->filters( Qgis::FileFilterType::PointCloud );
   QVERIFY( metadataFilters.contains( "*.laz" ) );
   QVERIFY( metadataFilters.contains( "*.las" ) );
   QVERIFY( metadataFilters.contains( "*.LAZ" ) );
   QVERIFY( metadataFilters.contains( "*.LAS" ) );
 
-  QCOMPARE( metadata->filters( QgsProviderMetadata::FilterType::FilterVector ), QString() );
+  QCOMPARE( metadata->filters( Qgis::FileFilterType::Vector ), QString() );
 
   const QString registryPointCloudFilters = QgsProviderRegistry::instance()->filePointCloudFilters();
   QVERIFY( registryPointCloudFilters.contains( "*.laz" ) );

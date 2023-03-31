@@ -523,6 +523,16 @@ The development version
       Justify,
     };
 
+    enum class FileFilterType
+      {
+      Vector,
+      Raster,
+      Mesh,
+      MeshDataset,
+      PointCloud,
+      VectorTile,
+    };
+
     enum class SublayerQueryFlag
     {
       FastScan,

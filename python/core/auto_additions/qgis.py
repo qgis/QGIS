@@ -946,6 +946,34 @@ QgsPalLayerSettings.MultiJustify.__doc__ = "Justified"
 Qgis.LabelMultiLineAlignment.__doc__ = 'Text alignment for multi-line labels.\n\n.. note::\n\n   Prior to QGIS 3.26 this was available as :py:class:`QgsPalLayerSettings`.MultiLineAlign\n\n.. versionadded:: 3.26\n\n' + '* ``MultiLeft``: ' + Qgis.LabelMultiLineAlignment.Left.__doc__ + '\n' + '* ``MultiCenter``: ' + Qgis.LabelMultiLineAlignment.Center.__doc__ + '\n' + '* ``MultiRight``: ' + Qgis.LabelMultiLineAlignment.Right.__doc__ + '\n' + '* ``MultiFollowPlacement``: ' + Qgis.LabelMultiLineAlignment.FollowPlacement.__doc__ + '\n' + '* ``MultiJustify``: ' + Qgis.LabelMultiLineAlignment.Justify.__doc__
 # --
 Qgis.LabelMultiLineAlignment.baseClass = Qgis
+QgsProviderMetadata.FilterType = Qgis.FileFilterType
+# monkey patching scoped based enum
+QgsProviderMetadata.FilterVector = Qgis.FileFilterType.Vector
+QgsProviderMetadata.FilterType.FilterVector = Qgis.FileFilterType.Vector
+QgsProviderMetadata.FilterVector.is_monkey_patched = True
+QgsProviderMetadata.FilterVector.__doc__ = "Vector layers"
+QgsProviderMetadata.FilterRaster = Qgis.FileFilterType.Raster
+QgsProviderMetadata.FilterType.FilterRaster = Qgis.FileFilterType.Raster
+QgsProviderMetadata.FilterRaster.is_monkey_patched = True
+QgsProviderMetadata.FilterRaster.__doc__ = "Raster layers"
+QgsProviderMetadata.FilterMesh = Qgis.FileFilterType.Mesh
+QgsProviderMetadata.FilterType.FilterMesh = Qgis.FileFilterType.Mesh
+QgsProviderMetadata.FilterMesh.is_monkey_patched = True
+QgsProviderMetadata.FilterMesh.__doc__ = "Mesh layers"
+QgsProviderMetadata.FilterMeshDataset = Qgis.FileFilterType.MeshDataset
+QgsProviderMetadata.FilterType.FilterMeshDataset = Qgis.FileFilterType.MeshDataset
+QgsProviderMetadata.FilterMeshDataset.is_monkey_patched = True
+QgsProviderMetadata.FilterMeshDataset.__doc__ = "Mesh datasets"
+QgsProviderMetadata.FilterPointCloud = Qgis.FileFilterType.PointCloud
+QgsProviderMetadata.FilterType.FilterPointCloud = Qgis.FileFilterType.PointCloud
+QgsProviderMetadata.FilterPointCloud.is_monkey_patched = True
+QgsProviderMetadata.FilterPointCloud.__doc__ = "Point clouds (since QGIS 3.18)"
+QgsProviderMetadata.VectorTile = Qgis.FileFilterType.VectorTile
+QgsProviderMetadata.VectorTile.is_monkey_patched = True
+QgsProviderMetadata.VectorTile.__doc__ = "Vector tile layers (since QGIS 3.32)"
+Qgis.FileFilterType.__doc__ = 'Type of file filters\n\nPrior to QGIS 3.32 this was available as :py:class:`QgsProviderMetadata`.FilterType\n\n.. versionadded:: 3.32\n\n' + '* ``FilterVector``: ' + Qgis.FileFilterType.Vector.__doc__ + '\n' + '* ``FilterRaster``: ' + Qgis.FileFilterType.Raster.__doc__ + '\n' + '* ``FilterMesh``: ' + Qgis.FileFilterType.Mesh.__doc__ + '\n' + '* ``FilterMeshDataset``: ' + Qgis.FileFilterType.MeshDataset.__doc__ + '\n' + '* ``FilterPointCloud``: ' + Qgis.FileFilterType.PointCloud.__doc__ + '\n' + '* ``VectorTile``: ' + Qgis.FileFilterType.VectorTile.__doc__
+# --
+Qgis.FileFilterType.baseClass = Qgis
 # monkey patching scoped based enum
 Qgis.SublayerQueryFlag.FastScan.__doc__ = "Indicates that the provider must scan for sublayers using the fastest possible approach -- e.g. by first checking that a uri has an extension which is known to be readable by the provider"
 Qgis.SublayerQueryFlag.ResolveGeometryType.__doc__ = "Attempt to resolve the geometry type for vector sublayers"

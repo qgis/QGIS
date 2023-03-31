@@ -234,6 +234,23 @@ QgsProviderMetadata::ProviderCapabilities QgsMbTilesVectorTileDataProviderMetada
   return FileBasedUris;
 }
 
+QString QgsMbTilesVectorTileDataProviderMetadata::filters( Qgis::FileFilterType type )
+{
+  switch ( type )
+  {
+    case Qgis::FileFilterType::Vector:
+    case Qgis::FileFilterType::Raster:
+    case Qgis::FileFilterType::Mesh:
+    case Qgis::FileFilterType::MeshDataset:
+    case Qgis::FileFilterType::PointCloud:
+      return QString();
+
+    case Qgis::FileFilterType::VectorTile:
+      return QObject::tr( "Mbtiles Vector Tiles" ) + QStringLiteral( " (*.mbtiles *.MBTILES)" );
+  }
+  return QString();
+}
+
 QVariantMap QgsMbTilesVectorTileDataProviderMetadata::decodeUri( const QString &uri ) const
 {
   QgsDataSourceUri dsUri;

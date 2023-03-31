@@ -835,6 +835,23 @@ class CORE_EXPORT Qgis
     Q_ENUM( LabelMultiLineAlignment )
 
     /**
+     * Type of file filters
+     *
+     * Prior to QGIS 3.32 this was available as QgsProviderMetadata::FilterType
+     * \since QGIS 3.32
+     */
+    enum class FileFilterType SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsProviderMetadata, FilterType ) : int
+      {
+      Vector SIP_MONKEYPATCH_COMPAT_NAME( FilterVector ) = 1, //!< Vector layers
+      Raster SIP_MONKEYPATCH_COMPAT_NAME( FilterRaster ), //!< Raster layers
+      Mesh SIP_MONKEYPATCH_COMPAT_NAME( FilterMesh ), //!< Mesh layers
+      MeshDataset SIP_MONKEYPATCH_COMPAT_NAME( FilterMeshDataset ), //!< Mesh datasets
+      PointCloud SIP_MONKEYPATCH_COMPAT_NAME( FilterPointCloud ), //!< Point clouds (since QGIS 3.18)
+      VectorTile, //!< Vector tile layers (since QGIS 3.32)
+    };
+    Q_ENUM( FileFilterType )
+
+    /**
      * Flags which control how data providers will scan for sublayers in a dataset.
      *
      * \since QGIS 3.22

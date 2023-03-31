@@ -275,16 +275,7 @@ Cleanup the provider
 .. versionadded:: 3.10
 %End
 
-    enum class FilterType
-    {
-      FilterVector,
-      FilterRaster,
-      FilterMesh,
-      FilterMeshDataset,
-      FilterPointCloud,
-    };
-
-    virtual QString filters( FilterType type );
+    virtual QString filters( Qgis::FileFilterType type );
 %Docstring
 Builds the list of file filter strings (supported formats)
 

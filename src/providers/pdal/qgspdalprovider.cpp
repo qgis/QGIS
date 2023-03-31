@@ -411,17 +411,18 @@ QList<QgsProviderSublayerDetails> QgsPdalProviderMetadata::querySublayers( const
   }
 }
 
-QString QgsPdalProviderMetadata::filters( QgsProviderMetadata::FilterType type )
+QString QgsPdalProviderMetadata::filters( Qgis::FileFilterType type )
 {
   switch ( type )
   {
-    case QgsProviderMetadata::FilterType::FilterVector:
-    case QgsProviderMetadata::FilterType::FilterRaster:
-    case QgsProviderMetadata::FilterType::FilterMesh:
-    case QgsProviderMetadata::FilterType::FilterMeshDataset:
+    case Qgis::FileFilterType::Vector:
+    case Qgis::FileFilterType::Raster:
+    case Qgis::FileFilterType::Mesh:
+    case Qgis::FileFilterType::MeshDataset:
+    case Qgis::FileFilterType::VectorTile:
       return QString();
 
-    case QgsProviderMetadata::FilterType::FilterPointCloud:
+    case Qgis::FileFilterType::PointCloud:
       buildSupportedPointCloudFileFilterAndExtensions();
 
       return sFilterString;
