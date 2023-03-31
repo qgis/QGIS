@@ -222,7 +222,7 @@ class GUI_EXPORT QgsCategorizedSymbolRendererWidget : public QgsRendererWidget, 
 
     /**
      * Slot used to change the state of all selected items.
-     * 
+     *
      * \since QGIS 3.32
      */
     void toggleSelectedSymbols( const bool state );

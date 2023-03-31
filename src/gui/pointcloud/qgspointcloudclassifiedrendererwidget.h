@@ -71,7 +71,7 @@ class GUI_EXPORT QgsPointCloudClassifiedRendererModel : public QAbstractItemMode
 
     /**
      * Signals emitted when a modified key is held and the state is toggled.
-     * 
+     *
      * \since QGIS 3.32
      */
     void toggleSelectedSymbols( const bool state );
@@ -129,6 +129,7 @@ class GUI_EXPORT QgsPointCloudClassifiedRendererWidget: public QgsPointCloudRend
     void deleteCategories();
     void deleteAllCategories();
     void attributeChanged();
+
     /**
      * Slot used to change the state of all selected items.
      *
