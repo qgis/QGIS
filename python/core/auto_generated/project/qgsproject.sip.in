@@ -976,7 +976,7 @@ Returns the edit buffer group
 Should default values be evaluated on provider side when requested and not when committed.
 
 .. deprecated::
-   Test whether the :py:func:`~QgsProject.flags` method returns the Qgis.ProjectFlag.EvaluateDefaultValuesOnProviderSide flag instead.
+   Test whether the :py:func:`~QgsProject.flags` method returns the :py:class:`Qgis`.ProjectFlag.EvaluateDefaultValuesOnProviderSide flag instead.
 %End
 
  void setEvaluateDefaultValues( bool evaluateDefaultValues ) /Deprecated/;
@@ -984,7 +984,7 @@ Should default values be evaluated on provider side when requested and not when 
 Defines if default values should be evaluated on provider side when requested and not when committed.
 
 .. deprecated::
-   use setFlag( Qgis.ProjectFlag.EvaluateDefaultValuesOnProviderSide ) instead.
+   use setFlag( :py:class:`Qgis`.ProjectFlag.EvaluateDefaultValuesOnProviderSide ) instead.
 %End
 
     virtual QgsExpressionContext createExpressionContext() const;
@@ -1348,7 +1348,7 @@ materialized views with Postgres provider.
 :param trust: ``True`` to trust the project, ``False`` otherwise
 
 .. deprecated::
-   Use setFlag( Qgis.ProjectFlag.TrustStoredLayerStatistics ) instead.
+   Use setFlag( :py:class:`Qgis`.ProjectFlag.TrustStoredLayerStatistics ) instead.
 %End
 
  bool trustLayerMetadata() const /Deprecated/;
@@ -1361,7 +1361,7 @@ unicity is not checked for views and materialized views with Postgres
 provider.
 
 .. deprecated::
-   Test whether the :py:func:`~QgsProject.flags` method returns the Qgis.ProjectFlag.TrustStoredLayerStatistics flag instead.
+   Test whether the :py:func:`~QgsProject.flags` method returns the :py:class:`Qgis`.ProjectFlag.TrustStoredLayerStatistics flag instead.
 %End
 
 
@@ -1728,7 +1728,7 @@ Emitted when a layer is loaded
 Emitted when loading layers has produced some messages
 
 :param layerName: the layer name
-:param messages: a list of pairs of Qgis.MessageLevel and messages
+:param messages: a list of pairs of :py:class:`Qgis`.MessageLevel and messages
 
 .. versionadded:: 3.2
 %End

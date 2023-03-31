@@ -23,7 +23,7 @@ int QgisEvent = QEvent::User + 1;
 class Qgis
 {
 %Docstring(signature="appended")
-The Qgis class provides global constants for use throughout the application.
+The :py:class:`Qgis` class provides global constants for use throughout the application.
 %End
 
 %TypeHeaderCode

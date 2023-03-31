@@ -431,7 +431,7 @@ Stores the commands executed in the editor to the persistent history file.
 %Docstring
 Applies code reformatting to the editor.
 
-This is only supported for editors which return the Qgis.ScriptLanguageCapability.Reformat capability from :py:func:`~QgsCodeEditor.languageCapabilities`.
+This is only supported for editors which return the :py:class:`Qgis`.ScriptLanguageCapability.Reformat capability from :py:func:`~QgsCodeEditor.languageCapabilities`.
 
 .. versionadded:: 3.32
 %End
@@ -440,7 +440,7 @@ This is only supported for editors which return the Qgis.ScriptLanguageCapabilit
 %Docstring
 Applies syntax checking to the editor.
 
-This is only supported for editors which return the Qgis.ScriptLanguageCapability.CheckSyntax capability from :py:func:`~QgsCodeEditor.languageCapabilities`.
+This is only supported for editors which return the :py:class:`Qgis`.ScriptLanguageCapability.CheckSyntax capability from :py:func:`~QgsCodeEditor.languageCapabilities`.
 
 .. versionadded:: 3.32
 %End
@@ -449,7 +449,7 @@ This is only supported for editors which return the Qgis.ScriptLanguageCapabilit
 %Docstring
 Toggle comment for the selected text.
 
-This is only supported for editors which return the Qgis.ScriptLanguageCapability.ToggleComment capability from :py:func:`~QgsCodeEditor.languageCapabilities`.
+This is only supported for editors which return the :py:class:`Qgis`.ScriptLanguageCapability.ToggleComment capability from :py:func:`~QgsCodeEditor.languageCapabilities`.
 
 .. versionadded:: 3.32
 %End
@@ -547,7 +547,7 @@ actions to the context menu.
 %Docstring
 Applies code reformatting to a ``string`` and returns the result.
 
-This is only supported for editors which return the Qgis.ScriptLanguageCapability.Reformat capability from :py:func:`~QgsCodeEditor.languageCapabilities`.
+This is only supported for editors which return the :py:class:`Qgis`.ScriptLanguageCapability.Reformat capability from :py:func:`~QgsCodeEditor.languageCapabilities`.
 
 .. versionadded:: 3.32
 %End

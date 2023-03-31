@@ -102,27 +102,27 @@ Depending on the ``component``, the field will either refer to the :py:func:`~Qg
 
 Fields stored in the :py:func:`~QgsVectorLayerGpsLogger.pointsLayer` are:
 
-- Qgis.GpsInformationComponent.Location:
-- Qgis.GpsInformationComponent.Altitude:
-- Qgis.GpsInformationComponent.GroundSpeed:
-- Qgis.GpsInformationComponent.Bearing:
-- Qgis.GpsInformationComponent.Pdop:
-- Qgis.GpsInformationComponent.Hdop:
-- Qgis.GpsInformationComponent.Vdop:
-- Qgis.GpsInformationComponent.HorizontalAccuracy:
-- Qgis.GpsInformationComponent.VerticalAccuracy:
-- Qgis.GpsInformationComponent.HvAccuracy:
-- Qgis.GpsInformationComponent.SatellitesUsed:
-- Qgis.GpsInformationComponent.Timestamp:
-- Qgis.GpsInformationComponent.TrackDistanceSinceLastPoint:
-- Qgis.GpsInformationComponent.TrackTimeSinceLastPoint:
+- :py:class:`Qgis`.GpsInformationComponent.Location:
+- :py:class:`Qgis`.GpsInformationComponent.Altitude:
+- :py:class:`Qgis`.GpsInformationComponent.GroundSpeed:
+- :py:class:`Qgis`.GpsInformationComponent.Bearing:
+- :py:class:`Qgis`.GpsInformationComponent.Pdop:
+- :py:class:`Qgis`.GpsInformationComponent.Hdop:
+- :py:class:`Qgis`.GpsInformationComponent.Vdop:
+- :py:class:`Qgis`.GpsInformationComponent.HorizontalAccuracy:
+- :py:class:`Qgis`.GpsInformationComponent.VerticalAccuracy:
+- :py:class:`Qgis`.GpsInformationComponent.HvAccuracy:
+- :py:class:`Qgis`.GpsInformationComponent.SatellitesUsed:
+- :py:class:`Qgis`.GpsInformationComponent.Timestamp:
+- :py:class:`Qgis`.GpsInformationComponent.TrackDistanceSinceLastPoint:
+- :py:class:`Qgis`.GpsInformationComponent.TrackTimeSinceLastPoint:
 
 Fields stored in the :py:func:`~QgsVectorLayerGpsLogger.tracksLayer` are:
 
-- Qgis.GpsInformationComponent.TrackStartTime:
-- Qgis.GpsInformationComponent.TrackEndTime:
-- Qgis.GpsInformationComponent.TotalTrackLength:
-- Qgis.GpsInformationComponent.TrackDistanceFromStart:
+- :py:class:`Qgis`.GpsInformationComponent.TrackStartTime:
+- :py:class:`Qgis`.GpsInformationComponent.TrackEndTime:
+- :py:class:`Qgis`.GpsInformationComponent.TotalTrackLength:
+- :py:class:`Qgis`.GpsInformationComponent.TrackDistanceFromStart:
 
 .. seealso:: :py:func:`destinationField`
 %End

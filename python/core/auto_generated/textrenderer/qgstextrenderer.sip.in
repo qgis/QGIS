@@ -27,7 +27,7 @@ and background shapes.
 
     static Qgis::TextHorizontalAlignment convertQtHAlignment( Qt::Alignment alignment );
 %Docstring
-Converts a Qt horizontal ``alignment`` flag to a Qgis.TextHorizontalAlignment value.
+Converts a Qt horizontal ``alignment`` flag to a :py:class:`Qgis`.TextHorizontalAlignment value.
 
 .. seealso:: :py:func:`convertQtVAlignment`
 
@@ -36,7 +36,7 @@ Converts a Qt horizontal ``alignment`` flag to a Qgis.TextHorizontalAlignment va
 
     static Qgis::TextVerticalAlignment convertQtVAlignment( Qt::Alignment alignment );
 %Docstring
-Converts a Qt vertical ``alignment`` flag to a Qgis.TextVerticalAlignment value.
+Converts a Qt vertical ``alignment`` flag to a :py:class:`Qgis`.TextVerticalAlignment value.
 
 .. seealso:: :py:func:`convertQtHAlignment`
 
@@ -76,7 +76,7 @@ Draws text within a rectangle using the specified settings.
                        as of QGIS 3.4.3 and the text format should be set using :py:func:`QgsRenderContext.setTextRenderFormat()` instead.
 :param vAlignment: vertical alignment (since QGIS 3.16)
 :param flags: text rendering flags (since QGIS 3.24)
-:param mode: text layout mode. Only Qgis.TextLayoutMode.Rectangle, Qgis.TextLayoutMode.RectangleCapHeightBased and Qgis.TextLayoutMode.RectangleAscentBased are accepted (since QGIS 3.30)
+:param mode: text layout mode. Only :py:class:`Qgis`.TextLayoutMode.Rectangle, :py:class:`Qgis`.TextLayoutMode.RectangleCapHeightBased and :py:class:`Qgis`.TextLayoutMode.RectangleAscentBased are accepted (since QGIS 3.30)
 
 .. seealso:: :py:func:`drawDocument`
 %End
@@ -110,7 +110,7 @@ been calculated.
 :param horizontalAlignment: horizontal alignment
 :param verticalAlignment: vertical alignment
 :param rotation: text rotation
-:param mode: text layout mode. Only Qgis.TextLayoutMode.Rectangle, Qgis.TextLayoutMode.RectangleCapHeightBased and Qgis.TextLayoutMode.RectangleAscentBased are accepted.
+:param mode: text layout mode. Only :py:class:`Qgis`.TextLayoutMode.Rectangle, :py:class:`Qgis`.TextLayoutMode.RectangleCapHeightBased and :py:class:`Qgis`.TextLayoutMode.RectangleAscentBased are accepted.
 :param flags: text rendering flags
 
 
@@ -254,7 +254,7 @@ Returns the height of a text based on a given format.
 :param mode: draw mode
 :param fontMetrics: font metrics
 :param flags: text renderer flags (since QGIS 3.24)
-:param maxLineWidth: maximum line width, in painter units. Used when the Qgis.TextRendererFlag.WrapLines flag is used (since QGIS 3.24)
+:param maxLineWidth: maximum line width, in painter units. Used when the :py:class:`Qgis`.TextRendererFlag.WrapLines flag is used (since QGIS 3.24)
 %End
 
     static double textHeight( const QgsRenderContext &context, const QgsTextFormat &format, QChar character, bool includeEffects = false );

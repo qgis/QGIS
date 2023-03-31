@@ -193,7 +193,7 @@ Returns the symbol type filter.
 
 .. note::
 
-   This filter is only active if Qgis.SymbolTypeFilterEnabled() is ``True``, and has
+   This filter is only active if :py:class:`Qgis`.SymbolTypeFilterEnabled() is ``True``, and has
    no effect on non-symbol entities (i.e. color ramps).
 
 .. seealso:: :py:func:`setSymbolType`
@@ -205,7 +205,7 @@ Sets the symbol ``type`` filter.
 
 .. note::
 
-   This filter is only active if Qgis.SymbolTypeFilterEnabled() is ``True``.
+   This filter is only active if :py:class:`Qgis`.SymbolTypeFilterEnabled() is ``True``.
 
 .. seealso:: Qgis.SymbolType
 %End
@@ -223,7 +223,7 @@ Returns ``True`` if filtering by symbol type is enabled.
 %Docstring
 Sets whether filtering by symbol type is ``enabled``.
 
-If ``enabled`` is ``False``, then the value of Qgis.SymbolType() will have no
+If ``enabled`` is ``False``, then the value of :py:class:`Qgis`.SymbolType() will have no
 effect on the model filtering. This has
 no effect on non-symbol entities (i.e. color ramps).
 
@@ -234,7 +234,7 @@ no effect on non-symbol entities (i.e. color ramps).
 
     Qgis::GeometryType layerType() const;
 %Docstring
-Returns the layer type filter, or Qgis.GeometryType.Unknown if no
+Returns the layer type filter, or :py:class:`Qgis`.GeometryType.Unknown if no
 layer type filter is present.
 
 This setting has an effect on label settings entities and 3d symbols only.
@@ -244,7 +244,7 @@ This setting has an effect on label settings entities and 3d symbols only.
 
     void setLayerType( Qgis::GeometryType type );
 %Docstring
-Sets the layer ``type`` filter. Set ``type`` to Qgis.GeometryType.Unknown if no
+Sets the layer ``type`` filter. Set ``type`` to :py:class:`Qgis`.GeometryType.Unknown if no
 layer type filter is desired.
 
 .. seealso:: :py:func:`layerType`

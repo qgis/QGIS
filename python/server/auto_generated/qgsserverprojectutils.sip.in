@@ -514,8 +514,8 @@ This is calculated from (in order of precedence):
 - Value defined in the project per service
 - The ``QGIS_SERVER_<service>_SERVICE_URL`` environment variable
 - The ``QGIS_SERVER_SERVICE_URL`` environment variable
-- The custom ``X-Qgis-<service>-Service-Url`` header
-- The custom ``X-Qgis-Service-Url`` header
+- The custom ``X-:py:class:`Qgis`-<service>-Service-Url`` header
+- The custom ``X-:py:class:`Qgis`-Service-Url`` header
 - Build from the standard ``Forwarded`` header
 - Build from the pseudo standard ``X-Forwarded-Host`` and ``X-Forwarded-Proto`` headers
 - Build from the standard ``Host`` header and the server protocol

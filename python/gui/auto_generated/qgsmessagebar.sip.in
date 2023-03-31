@@ -56,7 +56,7 @@ Display a ``widget`` as a message on the bar, after hiding the currently visible
 and putting it in a stack.
 
 :param widget: message widget to display
-:param level: is Qgis.MessageLevel.Info, Warning, Critical or Success
+:param level: is :py:class:`Qgis`.MessageLevel.Info, Warning, Critical or Success
 :param duration: timeout duration of message in seconds, 0 value indicates no timeout (i.e.
                  the message must be manually cleared by the user).
 %End

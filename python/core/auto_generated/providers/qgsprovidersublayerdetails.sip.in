@@ -179,7 +179,7 @@ the hierarchy of a dataset which organises layers in schemas or in an internal f
 %Docstring
 Returns the layer's feature count.
 
-Will return Qgis.FeatureCountState.UnknownCount or Qgis.FeatureCountState.Uncounted if no feature count is applicable or available.
+Will return :py:class:`Qgis`.FeatureCountState.UnknownCount or :py:class:`Qgis`.FeatureCountState.Uncounted if no feature count is applicable or available.
 
 .. seealso:: :py:func:`setFeatureCount`
 %End
@@ -188,7 +188,7 @@ Will return Qgis.FeatureCountState.UnknownCount or Qgis.FeatureCountState.Uncoun
 %Docstring
 Sets the layer's feature ``count``.
 
-Set to Qgis.FeatureCountState.UnknownCount or Qgis.FeatureCountState.Uncounted if no feature count is applicable or available.
+Set to :py:class:`Qgis`.FeatureCountState.UnknownCount or :py:class:`Qgis`.FeatureCountState.Uncounted if no feature count is applicable or available.
 
 .. seealso:: :py:func:`featureCount`
 %End

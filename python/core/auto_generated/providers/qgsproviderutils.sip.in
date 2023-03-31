@@ -36,7 +36,7 @@ Returns ``True`` if the sublayer ``details`` are incomplete, and require a more 
 scan.
 
 For instance, if the details contain any vector sublayers with unknown geometry types
-then a query with the Qgis.SublayerQueryFlag.ResolveGeometryType flag is required.
+then a query with the :py:class:`Qgis`.SublayerQueryFlag.ResolveGeometryType flag is required.
 
 The ``flags`` argument can be used to control the level of completeness required during the test.
 %End

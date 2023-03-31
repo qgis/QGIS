@@ -179,7 +179,7 @@ Returns the field comment
 %Docstring
 Returns the map of field metadata.
 
-Map keys should match values from the Qgis.FieldMetadataProperty enum.
+Map keys should match values from the :py:class:`Qgis`.FieldMetadataProperty enum.
 
 .. seealso:: :py:func:`setMetadata`
 
@@ -200,7 +200,7 @@ Returns a specific metadata ``property``.
 %Docstring
 Sets the map of field ``metadata``.
 
-Map keys should match values from the Qgis.FieldMetadataProperty enum.
+Map keys should match values from the :py:class:`Qgis`.FieldMetadataProperty enum.
 
 .. seealso:: :py:func:`metadata`
 
