@@ -88,7 +88,7 @@ void TestQgsMapCanvasDockWidget::testNoSync()
   dock.setMainCanvas( &mainCanvas );
   dock.mapCanvas()->setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) ) );
   dock.mapCanvas()->setFrameStyle( QFrame::NoFrame );
-  dock.resize( 600, 600 );
+  dock.setFixedSize( 600, 600 );
   dock.mapCanvas()->setExtent( QgsRectangle( -14839703, 2282029, -7723928, 6293534 ) );
   dock.show();
 
@@ -130,7 +130,7 @@ void TestQgsMapCanvasDockWidget::testScaleSync()
   QgsMapCanvas mainCanvas;
   mainCanvas.setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) ) );
   mainCanvas.setFrameStyle( QFrame::NoFrame );
-  mainCanvas.resize( 600, 600 );
+  mainCanvas.setFixedSize( 600, 600 );
   mainCanvas.setExtent( QgsRectangle( -14839703, 2282029, -7723928, 6293534 ) );
   mainCanvas.show();
 
@@ -141,7 +141,7 @@ void TestQgsMapCanvasDockWidget::testScaleSync()
   dock.setMainCanvas( &mainCanvas );
   dock.mapCanvas()->setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) ) );
   dock.mapCanvas()->setFrameStyle( QFrame::NoFrame );
-  dock.resize( 600, 600 );
+  dock.setFixedSize( 600, 600 );
   dock.mapCanvas()->setExtent( QgsRectangle( -14839703, 2282029, -7723928, 6293534 ) );
   dock.show();
 
@@ -194,7 +194,7 @@ void TestQgsMapCanvasDockWidget::testScaleSync()
   QGSCOMPARENEAR( dock.mapCanvas()->scale() * testScalingFactor, 1000000, 1000 );
   QGSCOMPARENEAR( mainCanvas.scale() * testScalingFactor, 2000000, 1000 );
 
-  dock.resize( 1200, 1200 );
+  dock.setFixedSize( 1200, 1200 );
   resizeTimerSpy.wait();
 
   QGSCOMPARENEAR( dock.mapCanvas()->center().x(), -22329833, 1000 );
@@ -211,7 +211,7 @@ void TestQgsMapCanvasDockWidget::testCenterSync()
   QgsMapCanvas mainCanvas;
   mainCanvas.setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) ) );
   mainCanvas.setFrameStyle( QFrame::NoFrame );
-  mainCanvas.resize( 600, 600 );
+  mainCanvas.setFixedSize( 600, 600 );
   mainCanvas.setExtent( QgsRectangle( -14839703, 2282029, -7723928, 6293534 ) );
   mainCanvas.show();
 
@@ -222,7 +222,7 @@ void TestQgsMapCanvasDockWidget::testCenterSync()
   dock.setMainCanvas( &mainCanvas );
   dock.mapCanvas()->setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) ) );
   dock.mapCanvas()->setFrameStyle( QFrame::NoFrame );
-  dock.resize( 600, 600 );
+  dock.setFixedSize( 600, 600 );
   dock.mapCanvas()->setExtent( QgsRectangle( -14839703, 2282029, -7723928, 6293534 ) );
   dock.show();
 
@@ -258,7 +258,7 @@ void TestQgsMapCanvasDockWidget::testCenterSync()
   QGSCOMPARENEAR( mainCanvas.center().x(), -4467497, 1000 );
   QGSCOMPARENEAR( mainCanvas.center().y(), -227904, 1000 );
 
-  dock.resize( 1200, 1200 );
+  dock.setFixedSize( 1200, 1200 );
   resizeTimerSpy.wait();
 
   QGSCOMPARENEAR( dock.mapCanvas()->center().x(), -4467497, 1000 );
@@ -275,7 +275,7 @@ void TestQgsMapCanvasDockWidget::testScaleAndCenterSync()
   QgsMapCanvas mainCanvas;
   mainCanvas.setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) ) );
   mainCanvas.setFrameStyle( QFrame::NoFrame );
-  mainCanvas.resize( 600, 600 );
+  mainCanvas.setFixedSize( 600, 600 );
   mainCanvas.setExtent( QgsRectangle( -14839703, 2282029, -7723928, 6293534 ) );
   mainCanvas.show();
 
@@ -286,7 +286,7 @@ void TestQgsMapCanvasDockWidget::testScaleAndCenterSync()
   dock.setMainCanvas( &mainCanvas );
   dock.mapCanvas()->setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) ) );
   dock.mapCanvas()->setFrameStyle( QFrame::NoFrame );
-  dock.resize( 600, 600 );
+  dock.setFixedSize( 600, 600 );
   dock.mapCanvas()->setExtent( QgsRectangle( -14839703, 2282029, -7723928, 6293534 ) );
   dock.show();
 
@@ -334,7 +334,7 @@ void TestQgsMapCanvasDockWidget::testScaleAndCenterSync()
   QGSCOMPARENEAR( mainCanvas.center().x(), -4467497, 1000 );
   QGSCOMPARENEAR( mainCanvas.center().y(), -227904, 1000 );
 
-  dock.resize( 1200, 1200 );
+  dock.setFixedSize( 1200, 1200 );
   resizeTimerSpy.wait();
 
   QGSCOMPARENEAR( dock.mapCanvas()->center().x(), -4467497, 1000 );
