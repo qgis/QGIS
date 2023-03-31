@@ -415,6 +415,9 @@ set(QGIS_GUI_SRCS
   providers/gdal/qgsgdalsourceselect.cpp
   providers/gdal/qgsgdalguiprovider.cpp
 
+  providers/mbtilesvectortiles/qgsmbtilesvectortileguiprovider.cpp
+  providers/mbtilesvectortiles/qgsmbtilesvectortilesourcewidget.cpp
+
   providers/ogr/qgsogrguiprovider.cpp
   providers/ogr/qgsogrdbsourceselect.cpp
   providers/ogr/qgsogrdbtablemodel.cpp
@@ -423,6 +426,9 @@ set(QGIS_GUI_SRCS
   providers/ogr/qgsgeopackageitemguiprovider.cpp
   providers/ogr/qgsogritemguiprovider.cpp
   providers/ogr/qgsgeopackageprojectstorageguiprovider.cpp
+
+  providers/vtpkvectortiles/qgsvtpkvectortileguiprovider.cpp
+  providers/vtpkvectortiles/qgsvtpkvectortilesourcewidget.cpp
 
   sensor/qgssensorguiregistry.cpp
   sensor/qgssensorwidget.cpp
@@ -1317,6 +1323,9 @@ set(QGIS_GUI_HDRS
   providers/gdal/qgsgdalguiprovider.h
   providers/gdal/qgsgdalsourceselect.h
 
+  providers/mbtilesvectortiles/qgsmbtilesvectortileguiprovider.h
+  providers/mbtilesvectortiles/qgsmbtilesvectortilesourcewidget.h
+
   providers/ogr/qgsgeopackageitemguiprovider.h
   providers/ogr/qgsgeopackageprojectstoragedialog.h
   providers/ogr/qgsgeopackageprojectstorageguiprovider.h
@@ -1325,6 +1334,9 @@ set(QGIS_GUI_HDRS
   providers/ogr/qgsogrguiprovider.h
   providers/ogr/qgsogritemguiprovider.h
   providers/ogr/qgsogrsourceselect.h
+
+  providers/vtpkvectortiles/qgsvtpkvectortileguiprovider.h
+  providers/vtpkvectortiles/qgsvtpkvectortilesourcewidget.h
 
   raster/qgsrasterattributetablewidget.h
   raster/qgscreaterasterattributetabledialog.h
@@ -1550,7 +1562,9 @@ target_include_directories(qgis_gui PUBLIC
   ${CMAKE_SOURCE_DIR}/src/gui/processing/models
   ${CMAKE_SOURCE_DIR}/src/gui/providers
   ${CMAKE_SOURCE_DIR}/src/gui/providers/gdal
+  ${CMAKE_SOURCE_DIR}/src/gui/providers/mbtilesvectortiles
   ${CMAKE_SOURCE_DIR}/src/gui/providers/ogr
+  ${CMAKE_SOURCE_DIR}/src/gui/providers/vtpkvectortiles
   ${CMAKE_SOURCE_DIR}/src/gui/pointcloud
   ${CMAKE_SOURCE_DIR}/src/gui/raster
   ${CMAKE_SOURCE_DIR}/src/gui/sensor
