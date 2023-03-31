@@ -963,6 +963,7 @@ QgsProcessingContextOptionsWidget::QgsProcessingContextOptionsWidget( QWidget *p
           Qgis::DistanceUnit::Miles,
           Qgis::DistanceUnit::NauticalMiles,
           Qgis::DistanceUnit::Yards,
+          Qgis::DistanceUnit::Inches,
           Qgis::DistanceUnit::Degrees,
         } )
   {
@@ -991,6 +992,7 @@ QgsProcessingContextOptionsWidget::QgsProcessingContextOptionsWidget( QWidget *p
           Qgis::AreaUnit::SquareMiles,
           Qgis::AreaUnit::SquareNauticalMiles,
           Qgis::AreaUnit::SquareYards,
+          Qgis::AreaUnit::SquareInches,
           Qgis::AreaUnit::Acres,
           Qgis::AreaUnit::SquareDegrees,
         } )

@@ -1094,6 +1094,7 @@ void QgsLayoutMapGridWidget::onCrsChanged()
     case Qgis::DistanceUnit::Miles:
     case Qgis::DistanceUnit::Centimeters:
     case Qgis::DistanceUnit::Millimeters:
+    case Qgis::DistanceUnit::Inches:
       break;
 
     case Qgis::DistanceUnit::Degrees:
