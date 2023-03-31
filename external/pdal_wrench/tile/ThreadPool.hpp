@@ -38,6 +38,7 @@
 #include <condition_variable>
 #include <functional>
 #include <queue>
+#include <string>
 #include <thread>
 
 //#include "Common.hpp"
