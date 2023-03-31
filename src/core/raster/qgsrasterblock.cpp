@@ -190,7 +190,7 @@ bool QgsRasterBlock::typeIsColor( Qgis::DataType dataType )
 
 Qgis::DataType QgsRasterBlock::typeWithNoDataValue( Qgis::DataType dataType, double *noDataValue )
 {
-  Qgis::DataType newDataType;
+  Qgis::DataType newDataType = Qgis::DataType::UnknownDataType;
 
   switch ( dataType )
   {

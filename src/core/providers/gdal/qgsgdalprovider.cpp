@@ -3273,7 +3273,7 @@ bool QgsGdalProvider::readNativeAttributeTable( QString *errorMessage )
         for ( int columnNumber = 0; columnNumber < GDALRATGetColumnCount( hRat ); ++columnNumber )
         {
           const Qgis::RasterAttributeTableFieldUsage usage { static_cast<Qgis::RasterAttributeTableFieldUsage>( GDALRATGetUsageOfCol( hRat, columnNumber ) ) };
-          QVariant::Type type;
+          QVariant::Type type = QVariant::Int;
           switch ( GDALRATGetTypeOfCol( hRat, columnNumber ) )
           {
             case GFT_Integer:
@@ -3290,6 +3290,12 @@ bool QgsGdalProvider::readNativeAttributeTable( QString *errorMessage )
             {
               type = QVariant::String;
               break;
+            }
+
+            default:
+            {
+              QgsDebugMsg( QStringLiteral( "Unhandled RAT type %1" ).arg( GDALRATGetTypeOfCol( hRat, columnNumber ) ) );
+              continue;
             }
           }
           const QString name { GDALRATGetNameOfCol( hRat, columnNumber ) };

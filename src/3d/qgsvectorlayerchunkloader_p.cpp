@@ -14,24 +14,18 @@
  ***************************************************************************/
 
 #include "qgsvectorlayerchunkloader_p.h"
-
 #include "qgs3dutils.h"
 #include "qgsraycastingutils_p.h"
 #include "qgsabstractvectorlayer3drenderer.h"
 #include "qgstessellatedpolygongeometry.h"
 #include "qgschunknode_p.h"
-#include "qgspolygon3dsymbol_p.h"
 #include "qgseventtracing.h"
 #include "qgslogger.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerfeatureiterator.h"
-
-#include "qgsline3dsymbol.h"
-#include "qgspoint3dsymbol.h"
-#include "qgspolygon3dsymbol.h"
-
 #include "qgsapplication.h"
 #include "qgs3dsymbolregistry.h"
+#include "qgsabstract3dsymbol.h"
 
 #include <QtConcurrent>
 #include <Qt3DCore/QTransform>
@@ -222,8 +216,7 @@ QVector<QgsRayCastingUtils::RayHit> QgsVectorLayerChunkedEntity::rayIntersection
 
   float minDist = -1;
   QVector3D intersectionPoint;
-  QgsFeatureId fid;
-  QgsFeatureId nearestFid;
+  QgsFeatureId nearestFid = FID_NULL;
 
   for ( QgsChunkNode *node : activeNodes )
   {
@@ -245,6 +238,7 @@ QVector<QgsRayCastingUtils::RayHit> QgsVectorLayerChunkedEntity::rayIntersection
         }
 
         QVector3D nodeIntPoint;
+        QgsFeatureId fid = FID_NULL;
         if ( polygonGeom->rayIntersection( ray, transformMatrix, nodeIntPoint, fid ) )
         {
           hits++;
@@ -259,7 +253,7 @@ QVector<QgsRayCastingUtils::RayHit> QgsVectorLayerChunkedEntity::rayIntersection
       }
     }
   }
-  if ( !intersectionPoint.isNull() )
+  if ( !FID_IS_NULL( nearestFid ) )
   {
     QgsRayCastingUtils::RayHit hit( minDist, intersectionPoint, nearestFid );
     result.append( hit );
