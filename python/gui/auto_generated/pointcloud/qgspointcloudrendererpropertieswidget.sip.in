@@ -33,10 +33,8 @@ Constructor for QgsPointCloudRendererPropertiesWidget, associated with the speci
 Sets the ``context`` in which the widget is shown, e.g., the associated map canvas and expression contexts.
 %End
 
-    virtual void syncToLayer( QgsMapLayer *layer );
-
-    virtual void setDockMode( bool dockMode );
-
+    void syncToLayer( QgsMapLayer *layer ) final;
+    void setDockMode( bool dockMode ) final;
 
   public slots:
 
