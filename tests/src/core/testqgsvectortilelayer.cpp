@@ -222,6 +222,36 @@ void TestQgsVectorTileLayer::testMbtilesProviderMetadata()
   QgsProviderMetadata *vectorTileMetadata = QgsProviderRegistry::instance()->providerMetadata( "mbtilesvectortiles" );
   QVERIFY( vectorTileMetadata );
 
+  // not mbtile uris
+  QCOMPARE( vectorTileMetadata->priorityForUri( QString() ), 0 );
+  QCOMPARE( vectorTileMetadata->validLayerTypesForUri( QString() ), {} );
+
+  QCOMPARE( vectorTileMetadata->priorityForUri( QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/points.shp" ) ), 0 );
+  QVERIFY( vectorTileMetadata->validLayerTypesForUri( QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/points.shp" ) ).isEmpty() );
+  QVERIFY( vectorTileMetadata->querySublayers( QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/points.shp" ) ).isEmpty() );
+
+  QCOMPARE( vectorTileMetadata->priorityForUri( QStringLiteral( "type=vtpk&url=%1/points.shp" ).arg( TEST_DATA_DIR ) ), 0 );
+  QVERIFY( vectorTileMetadata->validLayerTypesForUri( QStringLiteral( "type=vtpk&url=%1/points.shp" ).arg( TEST_DATA_DIR ) ).isEmpty() );
+  QVERIFY( vectorTileMetadata->querySublayers( QStringLiteral( "type=vtpk&url=%1/points.shp" ).arg( TEST_DATA_DIR ) ).isEmpty() );
+
+  // mbtile uris
+  QCOMPARE( vectorTileMetadata->priorityForUri( QStringLiteral( "%1/vector_tile/mbtiles_vt.mbtiles" ).arg( TEST_DATA_DIR ) ), 100 );
+  QCOMPARE( vectorTileMetadata->validLayerTypesForUri( QStringLiteral( "%1/vector_tile/mbtiles_vt.mbtiles" ).arg( TEST_DATA_DIR ) ), {Qgis::LayerType::VectorTile} );
+
+  QCOMPARE( vectorTileMetadata->priorityForUri( QStringLiteral( "type=mbtiles&url=%1/vector_tile/mbtiles_vt.mbtiles" ).arg( TEST_DATA_DIR ) ), 100 );
+  QCOMPARE( vectorTileMetadata->validLayerTypesForUri( QStringLiteral( "type=mbtiles&url=%1/vector_tile/mbtiles_vt.mbtiles" ).arg( TEST_DATA_DIR ) ), {Qgis::LayerType::VectorTile} );
+
+  // test that mbtilesvectortiles provider is the preferred provider for vector tile mbtiles files
+  QList<QgsProviderRegistry::ProviderCandidateDetails> candidates = QgsProviderRegistry::instance()->preferredProvidersForUri( QStringLiteral( "type=mbtiles&url=%1/vector_tile/mbtiles_vt.mbtiles" ).arg( TEST_DATA_DIR ) );
+  QCOMPARE( candidates.size(), 1 );
+  QCOMPARE( candidates.at( 0 ).metadata()->key(), QStringLiteral( "mbtilesvectortiles" ) );
+  QCOMPARE( candidates.at( 0 ).layerTypes(), QList< Qgis::LayerType >() << Qgis::LayerType::VectorTile );
+
+  candidates = QgsProviderRegistry::instance()->preferredProvidersForUri( QStringLiteral( "%1/vector_tile/mbtiles_vt.mbtiles" ).arg( TEST_DATA_DIR ) );
+  QCOMPARE( candidates.size(), 1 );
+  QCOMPARE( candidates.at( 0 ).metadata()->key(), QStringLiteral( "mbtilesvectortiles" ) );
+  QCOMPARE( candidates.at( 0 ).layerTypes(), QList< Qgis::LayerType >() << Qgis::LayerType::VectorTile );
+
   QCOMPARE( vectorTileMetadata->filters( Qgis::FileFilterType::VectorTile ), QStringLiteral( "Mbtiles Vector Tiles (*.mbtiles *.MBTILES)" ) );
   QCOMPARE( vectorTileMetadata->filters( Qgis::FileFilterType::PointCloud ), QString() );
 
@@ -367,6 +397,16 @@ void TestQgsVectorTileLayer::testVtpkProviderMetadata()
   QCOMPARE( sublayers.at( 0 ).uri(), QStringLiteral( "type=vtpk&url=%1/testvtpk.vtpk" ).arg( TEST_DATA_DIR ) );
   QCOMPARE( sublayers.at( 0 ).type(), Qgis::LayerType::VectorTile );
 
+  // test that vtpk provider is the preferred provider for vtpk files
+  QList<QgsProviderRegistry::ProviderCandidateDetails> candidates = QgsProviderRegistry::instance()->preferredProvidersForUri( QStringLiteral( "type=vtpk&url=%1/testvtpk.vtpk" ).arg( TEST_DATA_DIR ) );
+  QCOMPARE( candidates.size(), 1 );
+  QCOMPARE( candidates.at( 0 ).metadata()->key(), QStringLiteral( "vtpkvectortiles" ) );
+  QCOMPARE( candidates.at( 0 ).layerTypes(), QList< Qgis::LayerType >() << Qgis::LayerType::VectorTile );
+
+  candidates = QgsProviderRegistry::instance()->preferredProvidersForUri( QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/testvtpk.vtpk" ) );
+  QCOMPARE( candidates.size(), 1 );
+  QCOMPARE( candidates.at( 0 ).metadata()->key(), QStringLiteral( "vtpkvectortiles" ) );
+  QCOMPARE( candidates.at( 0 ).layerTypes(), QList< Qgis::LayerType >() << Qgis::LayerType::VectorTile );
 
   QCOMPARE( vectorTileMetadata->filters( Qgis::FileFilterType::VectorTile ), QStringLiteral( "VTPK Vector Tiles (*.vtpk *.VTPK)" ) );
   QCOMPARE( vectorTileMetadata->filters( Qgis::FileFilterType::PointCloud ), QString() );

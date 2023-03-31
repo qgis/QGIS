@@ -22,7 +22,9 @@
 #include "qgslogger.h"
 #include "qgsapplication.h"
 #include "qgscoordinatetransform.h"
+
 #include <QIcon>
+#include <QFileInfo>
 
 ///@cond PRIVATE
 
@@ -219,6 +221,12 @@ QgsMbTilesVectorTileDataProviderMetadata::QgsMbTilesVectorTileDataProviderMetada
 {
 }
 
+QgsProviderMetadata::ProviderMetadataCapabilities QgsMbTilesVectorTileDataProviderMetadata::capabilities() const
+{
+  return ProviderMetadataCapability::LayerTypesForUri
+         | ProviderMetadataCapability::PriorityForUri;
+}
+
 QgsMbTilesVectorTileDataProvider *QgsMbTilesVectorTileDataProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags )
 {
   return new QgsMbTilesVectorTileDataProvider( uri, options, flags );
@@ -249,6 +257,29 @@ QString QgsMbTilesVectorTileDataProviderMetadata::filters( Qgis::FileFilterType 
       return QObject::tr( "Mbtiles Vector Tiles" ) + QStringLiteral( " (*.mbtiles *.MBTILES)" );
   }
   return QString();
+}
+
+int QgsMbTilesVectorTileDataProviderMetadata::priorityForUri( const QString &uri ) const
+{
+  if ( validLayerTypesForUri( uri ).contains( Qgis::LayerType::VectorTile ) )
+    return 100;
+
+  return 0;
+}
+
+QList<Qgis::LayerType> QgsMbTilesVectorTileDataProviderMetadata::validLayerTypesForUri( const QString &uri ) const
+{
+  const QFileInfo fi( uri );
+  if ( fi.isFile() && fi.suffix().compare( QLatin1String( "mbtiles" ), Qt::CaseInsensitive ) == 0 )
+  {
+    return { Qgis::LayerType::VectorTile };
+  }
+
+  const QVariantMap parts = decodeUri( uri );
+  if ( parts.value( QStringLiteral( "path" ) ).toString().endsWith( ".mbtiles", Qt::CaseSensitivity::CaseInsensitive ) )
+    return { Qgis::LayerType::VectorTile };
+
+  return {};
 }
 
 QVariantMap QgsMbTilesVectorTileDataProviderMetadata::decodeUri( const QString &uri ) const
