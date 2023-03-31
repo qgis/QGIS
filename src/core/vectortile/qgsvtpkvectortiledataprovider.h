@@ -89,6 +89,7 @@ class QgsVtpkVectorTileDataProviderMetadata : public QgsProviderMetadata
     QgsVtpkVectorTileDataProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() ) override;
     QIcon icon() const override;
     ProviderCapabilities providerCapabilities() const override;
+    QString filters( Qgis::FileFilterType type ) override;
     QList< QgsProviderSublayerDetails > querySublayers( const QString &uri, Qgis::SublayerQueryFlags flags = Qgis::SublayerQueryFlags(), QgsFeedback *feedback = nullptr ) const override;
     int priorityForUri( const QString &uri ) const override;
     QList< Qgis::LayerType > validLayerTypesForUri( const QString &uri ) const override;

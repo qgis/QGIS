@@ -250,6 +250,23 @@ QgsProviderMetadata::ProviderCapabilities QgsVtpkVectorTileDataProviderMetadata:
   return FileBasedUris;
 }
 
+QString QgsVtpkVectorTileDataProviderMetadata::filters( Qgis::FileFilterType type )
+{
+  switch ( type )
+  {
+    case Qgis::FileFilterType::Vector:
+    case Qgis::FileFilterType::Raster:
+    case Qgis::FileFilterType::Mesh:
+    case Qgis::FileFilterType::MeshDataset:
+    case Qgis::FileFilterType::PointCloud:
+      return QString();
+
+    case Qgis::FileFilterType::VectorTile:
+      return QObject::tr( "VTPK Vector Tiles" ) + QStringLiteral( " (*.vtpk *.VTPK)" );
+  }
+  return QString();
+}
+
 QList<QgsProviderSublayerDetails> QgsVtpkVectorTileDataProviderMetadata::querySublayers( const QString &uri, Qgis::SublayerQueryFlags, QgsFeedback * ) const
 {
   QString fileName;

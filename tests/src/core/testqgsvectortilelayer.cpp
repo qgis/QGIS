@@ -62,6 +62,8 @@ class TestQgsVectorTileLayer : public QgsTest
     void test_render();
     void test_render_withClip();
     void test_labeling();
+
+    void testMbtilesProviderMetadata();
     void test_relativePathsMbTiles();
     void test_absoluteRelativeUriMbTiles();
 
@@ -215,6 +217,18 @@ void TestQgsVectorTileLayer::test_labeling()
   QVERIFY( res );
 }
 
+void TestQgsVectorTileLayer::testMbtilesProviderMetadata()
+{
+  QgsProviderMetadata *vectorTileMetadata = QgsProviderRegistry::instance()->providerMetadata( "mbtilesvectortiles" );
+  QVERIFY( vectorTileMetadata );
+
+  QCOMPARE( vectorTileMetadata->filters( Qgis::FileFilterType::VectorTile ), QStringLiteral( "Mbtiles Vector Tiles (*.mbtiles *.MBTILES)" ) );
+  QCOMPARE( vectorTileMetadata->filters( Qgis::FileFilterType::PointCloud ), QString() );
+
+  const QString registryPointCloudFilters = QgsProviderRegistry::instance()->fileVectorTileFilters();
+  QVERIFY( registryPointCloudFilters.contains( "(*.mbtiles *.MBTILES)" ) );
+}
+
 void TestQgsVectorTileLayer::test_relativePathsMbTiles()
 {
   QgsReadWriteContext contextRel;
@@ -352,6 +366,13 @@ void TestQgsVectorTileLayer::testVtpkProviderMetadata()
   QCOMPARE( sublayers.at( 0 ).name(), QStringLiteral( "testvtpk" ) );
   QCOMPARE( sublayers.at( 0 ).uri(), QStringLiteral( "type=vtpk&url=%1/testvtpk.vtpk" ).arg( TEST_DATA_DIR ) );
   QCOMPARE( sublayers.at( 0 ).type(), Qgis::LayerType::VectorTile );
+
+
+  QCOMPARE( vectorTileMetadata->filters( Qgis::FileFilterType::VectorTile ), QStringLiteral( "VTPK Vector Tiles (*.vtpk *.VTPK)" ) );
+  QCOMPARE( vectorTileMetadata->filters( Qgis::FileFilterType::PointCloud ), QString() );
+
+  const QString registryPointCloudFilters = QgsProviderRegistry::instance()->fileVectorTileFilters();
+  QVERIFY( registryPointCloudFilters.contains( "(*.vtpk *.VTPK)" ) );
 }
 
 void TestQgsVectorTileLayer::test_relativePathsVtpk()

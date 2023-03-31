@@ -3966,11 +3966,11 @@ bool QgsGdalProvider::remove()
  * that contains this list that is suitable for use in a
  * QFileDialog::getOpenFileNames() call.
 */
-QString QgsGdalProviderMetadata::filters( FilterType type )
+QString QgsGdalProviderMetadata::filters( Qgis::FileFilterType type )
 {
   switch ( type )
   {
-    case QgsProviderMetadata::FilterType::FilterRaster:
+    case Qgis::FileFilterType::Raster:
     {
       QString fileFiltersString;
       QStringList exts;
@@ -3979,10 +3979,11 @@ QString QgsGdalProviderMetadata::filters( FilterType type )
       return fileFiltersString;
     }
 
-    case QgsProviderMetadata::FilterType::FilterVector:
-    case QgsProviderMetadata::FilterType::FilterMesh:
-    case QgsProviderMetadata::FilterType::FilterMeshDataset:
-    case QgsProviderMetadata::FilterType::FilterPointCloud:
+    case Qgis::FileFilterType::Vector:
+    case Qgis::FileFilterType::Mesh:
+    case Qgis::FileFilterType::MeshDataset:
+    case Qgis::FileFilterType::PointCloud:
+    case Qgis::FileFilterType::VectorTile:
       return QString();
   }
   return QString();

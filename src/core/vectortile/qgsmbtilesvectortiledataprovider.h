@@ -76,6 +76,7 @@ class QgsMbTilesVectorTileDataProviderMetadata : public QgsProviderMetadata
     QgsMbTilesVectorTileDataProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() ) override;
     QIcon icon() const override;
     ProviderCapabilities providerCapabilities() const override;
+    QString filters( Qgis::FileFilterType type ) override;
     QVariantMap decodeUri( const QString &uri ) const override;
     QString encodeUri( const QVariantMap &parts ) const override;
     QString absoluteToRelativeUri( const QString &uri, const QgsReadWriteContext &context ) const override;
