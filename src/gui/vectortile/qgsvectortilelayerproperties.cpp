@@ -216,7 +216,7 @@ void QgsVectorTileLayerProperties::syncToLayer()
   /*
    * Symbology Tab
    */
-  mRendererWidget->setLayer( mLayer );
+  mRendererWidget->syncToLayer( mLayer );
 
   /*
    * Labels Tab

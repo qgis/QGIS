@@ -23,6 +23,7 @@
 #include "qgsstyle.h"
 #include "qgsmapcanvas.h"
 #include "qgsvectortileutils.h"
+#include "qgsprojectutils.h"
 
 #include <QAbstractListModel>
 #include <QInputDialog>
@@ -371,16 +372,23 @@ QgsVectorTileBasicRendererWidget::QgsVectorTileBasicRendererWidget( QgsVectorTil
     mProxyModel->setFilterString( text );
   } );
 
-  setLayer( layer );
+  syncToLayer( layer );
+
+  connect( mOpacityWidget, &QgsOpacityWidget::opacityChanged, this, &QgsPanelWidget::widgetChanged );
+  connect( mBlendModeComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsPanelWidget::widgetChanged );
 }
 
-void QgsVectorTileBasicRendererWidget::setLayer( QgsVectorTileLayer *layer )
+void QgsVectorTileBasicRendererWidget::syncToLayer( QgsMapLayer *layer )
 {
-  mVTLayer = layer;
+  QgsVectorTileLayer *vtLayer = qobject_cast<QgsVectorTileLayer *>( layer );
+  if ( !vtLayer )
+    return;
 
-  if ( layer && layer->renderer() && layer->renderer()->type() == QLatin1String( "basic" ) )
+  mVTLayer = vtLayer;
+
+  if ( layer && vtLayer->renderer() && vtLayer->renderer()->type() == QLatin1String( "basic" ) )
   {
-    mRenderer.reset( static_cast<QgsVectorTileBasicRenderer *>( layer->renderer()->clone() ) );
+    mRenderer.reset( static_cast<QgsVectorTileBasicRenderer *>( vtLayer->renderer()->clone() ) );
   }
   else
   {
@@ -406,6 +414,12 @@ void QgsVectorTileBasicRendererWidget::setLayer( QgsVectorTileLayer *layer )
   connect( mModel, &QAbstractItemModel::dataChanged, this, &QgsPanelWidget::widgetChanged );
   connect( mModel, &QAbstractItemModel::rowsInserted, this, &QgsPanelWidget::widgetChanged );
   connect( mModel, &QAbstractItemModel::rowsRemoved, this, &QgsPanelWidget::widgetChanged );
+
+  mOpacityWidget->setOpacity( mVTLayer->opacity() );
+
+  //blend mode
+  mBlendModeComboBox->setShowClippingModes( QgsProjectUtils::layerIsContainedInGroupLayer( QgsProject::instance(), mVTLayer ) );
+  mBlendModeComboBox->setBlendMode( mVTLayer->blendMode() );
 }
 
 QgsVectorTileBasicRendererWidget::~QgsVectorTileBasicRendererWidget() = default;
@@ -413,6 +427,8 @@ QgsVectorTileBasicRendererWidget::~QgsVectorTileBasicRendererWidget() = default;
 void QgsVectorTileBasicRendererWidget::apply()
 {
   mVTLayer->setRenderer( mRenderer->clone() );
+  mVTLayer->setBlendMode( mBlendModeComboBox->blendMode() );
+  mVTLayer->setOpacity( mOpacityWidget->opacity() );
 }
 
 void QgsVectorTileBasicRendererWidget::addStyle( Qgis::GeometryType geomType )
