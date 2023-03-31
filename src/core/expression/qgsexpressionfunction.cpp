@@ -3001,21 +3001,6 @@ static QVariant fcnGeometryCollectionAsArray( const QVariantList &values, const 
   return array;
 }
 
-static QVariant fcnGeometryDissolve( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
-{
-  QgsGeometry geom;
-  QVector<QgsGeometry> geometries;
-  for ( int i = 0; i < values.count(); i++ )
-  {
-    geom = QgsExpressionUtils::getGeometry( values.at( i ), parent );
-    if ( geom.isNull() )
-      continue;
-    geometries.append( geom.asGeometryCollection() );
-  }
-  QgsGeometry dissolved = QgsGeometry().unaryUnion( geometries );
-  return QVariant::fromValue( dissolved );
-}
-
 static QVariant fcnSplitGeometry( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   QgsGeometry initGeom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
@@ -5316,10 +5301,17 @@ static QVariant fcnSymDifference( const QVariantList &values, const QgsExpressio
 }
 static QVariant fcnCombine( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
-  QgsGeometry fGeom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
-  QgsGeometry sGeom = QgsExpressionUtils::getGeometry( values.at( 1 ), parent );
-  QgsGeometry geom = fGeom.combine( sGeom );
-  QVariant result = !geom.isNull() ? QVariant::fromValue( geom ) : QVariant();
+  QgsGeometry geom;
+  QVector<QgsGeometry> geometries;
+  for ( int i = 0; i < values.count(); i++ )
+  {
+    geom = QgsExpressionUtils::getGeometry( values.at( i ), parent );
+    if ( geom.isNull() )
+      continue;
+    geometries.append( geom.asGeometryCollection() );
+  }
+  QgsGeometry dissolved = QgsGeometry().unaryUnion( geometries );
+  QVariant result = !dissolved.isNull() ? QVariant::fromValue( dissolved ) : QVariant();
   return result;
 }
 
@@ -8538,8 +8530,6 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
 #endif
       QgsExpressionFunction::Parameter( QStringLiteral( "keep_collapsed" ), true, false )
     }, fcnGeomMakeValid, QStringLiteral( "GeometryGroup" ) )
-        << new QgsStaticExpressionFunction( QStringLiteral( "dissolve_geometries" ), -1,
-                                            fcnGeometryDissolve, QStringLiteral( "GeometryGroup" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "split_geometry" ),  QgsExpressionFunction::ParameterList()
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) )
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "split_by" ) ),
@@ -8796,11 +8786,9 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
         << new QgsStaticExpressionFunction( QStringLiteral( "sym_difference" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry1" ) )
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "geometry2" ) ),
                                             fcnSymDifference, QStringLiteral( "GeometryGroup" ), QString(), false, QSet<QString>(), false, QStringList() << QStringLiteral( "symDifference" ) )
-        << new QgsStaticExpressionFunction( QStringLiteral( "combine" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry1" ) )
-                                            << QgsExpressionFunction::Parameter( QStringLiteral( "geometry2" ) ),
+        << new QgsStaticExpressionFunction( QStringLiteral( "combine" ), -1,
                                             fcnCombine, QStringLiteral( "GeometryGroup" ) )
-        << new QgsStaticExpressionFunction( QStringLiteral( "union" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry1" ) )
-                                            << QgsExpressionFunction::Parameter( QStringLiteral( "geometry2" ) ),
+        << new QgsStaticExpressionFunction( QStringLiteral( "union" ), -1,
                                             fcnCombine, QStringLiteral( "GeometryGroup" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "geom_to_wkt" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) )
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "precision" ), true, 8.0 ),

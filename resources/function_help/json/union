@@ -5,10 +5,14 @@
   "description": "Returns a geometry that represents the point set union of the geometries.",
   "arguments": [{
     "arg": "geometry1",
-    "description": "a geometry"
+    "description": "a geometry or geometry collection"
   }, {
     "arg": "geometry2",
-    "description": "a geometry"
+    "description": "a geometry or geometry collection"
+  }, {
+    "arg": "geometry",
+    "descOnly": true,
+    "description": "a geometry or geometry collection"
   }],
   "examples": [{
     "expression": "geom_to_wkt( union( make_point(4, 4), make_point(5, 5) ) )",

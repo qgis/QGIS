@@ -2,13 +2,17 @@
   "name": "combine",
   "type": "function",
   "groups": ["GeometryGroup"],
-  "description": "Returns the combination of two geometries.",
+  "description": "Returns the combination of the provided geometries",
   "arguments": [{
     "arg": "geometry1",
-    "description": "a geometry"
+    "description": "a geometry or geometry collection"
   }, {
     "arg": "geometry2",
-    "description": "a geometry"
+    "description": "a geometry or geometry collection"
+  }, {
+    "arg": "geometry",
+    "descOnly": true,
+    "description": "a geometry or geometry collection"
   }],
   "examples": [{
     "expression": "geom_to_wkt( combine( geom_from_wkt( 'LINESTRING(3 3, 4 4, 5 5)' ), geom_from_wkt( 'LINESTRING(3 3, 4 4, 2 1)' ) ) )",
@@ -17,5 +21,5 @@
     "expression": "geom_to_wkt( combine( geom_from_wkt( 'LINESTRING(3 3, 4 4)' ), geom_from_wkt( 'LINESTRING(3 3, 6 6, 2 1)' ) ) )",
     "returns": "'LINESTRING(3 3, 4 4, 6 6, 2 1)'"
   }],
-  "tags": ["combination", "union"]
+  "tags": ["combination", "dissolve", "union"]
 }
