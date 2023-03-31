@@ -1816,6 +1816,7 @@ The development version
       Degrees,
       Centimeters,
       Millimeters,
+      Inches,
       Unknown,
     };
 
@@ -1839,6 +1840,7 @@ The development version
       SquareDegrees,
       SquareCentimeters,
       SquareMillimeters,
+      SquareInches,
       Unknown,
     };
 
