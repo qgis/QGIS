@@ -192,9 +192,15 @@ void QgsMapToolShapeCircularStringAbstract::addCurveToParentTool()
   c->setPoints( mPoints );
 
   // Check whether to draw the circle as a polygon or a circular string
-  const QgsCoordinateReferenceSystem layerCrs = mParentTool->layer()->crs();
-  const QgsCoordinateReferenceSystem mapCrs = mParentTool->canvas()->mapSettings().destinationCrs();
-  const bool drawAsPolygon = layerCrs != mapCrs;
+  bool drawAsPolygon = false;
+
+  if ( mParentTool->layer() )
+  {
+    const QgsCoordinateReferenceSystem layerCrs = mParentTool->layer()->crs();
+    const QgsCoordinateReferenceSystem mapCrs = mParentTool->canvas()->mapSettings().destinationCrs();
+    drawAsPolygon = layerCrs != mapCrs;
+  }
+
   if ( drawAsPolygon )
   {
     std::unique_ptr<QgsLineString> ls( c->curveToLine( ) );
