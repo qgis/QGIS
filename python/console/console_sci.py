@@ -37,6 +37,8 @@ from qgis.gui import (
     QgsCodeInterpreter
 )
 
+from .process_wrapper import ProcessWrapper
+
 _init_statements = [
     # Python
     "import sys",
@@ -69,10 +71,12 @@ except ModuleNotFoundError:
 
 class PythonInterpreter(QgsCodeInterpreter, code.InteractiveInterpreter):
 
-    def __init__(self):
+    def __init__(self, shell):
         super(QgsCodeInterpreter, self).__init__()
         code.InteractiveInterpreter.__init__(self, locals=None)
 
+        self.shell = shell
+        self.sub_process = None
         self.buffer = []
 
         for statement in _init_statements:
@@ -82,7 +86,21 @@ class PythonInterpreter(QgsCodeInterpreter, code.InteractiveInterpreter):
                 pass
 
     def execCommandImpl(self, cmd, show_input=True):
-        res = self.currentState()
+
+        # Child process running, input should be sent to it
+        if self.currentState() == 2:
+            sys.stdout.write(cmd + "\n")
+            self.sub_process.write(cmd)
+            return 0
+
+        if self.currentState() == 0:
+            cmd = cmd.strip()
+            if cmd.startswith("!"):
+                self.writeCMD(cmd)
+                cmd = cmd[1:]
+                self.sub_process = ProcessWrapper(cmd)
+                self.sub_process.finished.connect(self.processFinished)
+                return 0
 
         if show_input:
             self.writeCMD(cmd)
@@ -130,8 +148,22 @@ class PythonInterpreter(QgsCodeInterpreter, code.InteractiveInterpreter):
         finally:
             sys.excepthook = hook
 
+    def currentState(self):
+        if self.sub_process:
+            return 2
+        return super().currentState()
+
     def promptForState(self, state):
-        return "..." if state == 1 else ">>>"
+        if state == 2:
+            return " : "
+        elif state == 1:
+            return "..."
+        else:
+            return ">>>"
+
+    def processFinished(self, errorcode):
+        self.sub_process = None
+        self.shell.updatePrompt()
 
 
 class ShellScintilla(QgsCodeEditorPython):
@@ -144,7 +176,7 @@ class ShellScintilla(QgsCodeEditorPython):
                          flags=QgsCodeEditor.Flags(QgsCodeEditor.Flag.CodeFolding | QgsCodeEditor.Flag.ImmediatelyUpdateHistory))
 
         self.parent = parent
-        self._interpreter = PythonInterpreter()
+        self._interpreter = PythonInterpreter(self)
         self.setInterpreter(self._interpreter)
 
         self.opening = ['(', '{', '[', "'", '"']
@@ -201,16 +233,18 @@ class ShellScintilla(QgsCodeEditorPython):
         self.parent.callWidgetMessageBar(msgText)
 
     def keyPressEvent(self, e):
-        # update the live history
-        self.updateSoftHistory()
 
-        # keyboard interrupt
-        if e.modifiers() & (
-                Qt.ControlModifier | Qt.MetaModifier) and e.key() == Qt.Key_C and not self.hasSelectedText():
-            sys.stdout.fire_keyboard_interrupt = True
+        if e.modifiers() & (Qt.ControlModifier | Qt.MetaModifier) and e.key() == Qt.Key_C and not self.hasSelectedText():
+            if self._interpreter.sub_process:
+                sys.stderr.write("Terminate child process\n")
+                self._interpreter.sub_process.kill()
+                self._interpreter.sub_process = None
+                self.updatePrompt()
             return
 
-        QgsCodeEditorPython.keyPressEvent(self, e)
+        # update the live history
+        self.updateSoftHistory()
+        super().keyPressEvent(e)
         self.updatePrompt()
 
     def populateContextMenu(self, menu):
