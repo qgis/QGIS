@@ -29,6 +29,11 @@ QgsProjectSensorSettingsWidget::QgsProjectSensorSettingsWidget( QWidget *parent 
 
   QgsSensorTableWidget *widget = new QgsSensorTableWidget( this );
   mPanelStack->setMainPanel( widget );
+  connect( widget, &QgsPanelWidget::showPanel, this, [ = ]( QgsPanelWidget * panel )
+  {
+    mSensorIntroductionLabel->setVisible( false );
+    connect( panel, &QgsPanelWidget::panelAccepted, this, [ = ]() { mSensorIntroductionLabel->setVisible( true ); } );
+  } );
 
   QDomElement sensorElem = QgsProject::instance()->sensorManager()->writeXml( mPreviousSensors );
   mPreviousSensors.appendChild( sensorElem );
