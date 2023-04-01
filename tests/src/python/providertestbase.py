@@ -10,7 +10,7 @@ __author__ = 'Matthias Kuhn'
 __date__ = '2015-04-27'
 __copyright__ = 'Copyright 2015, The QGIS Project'
 
-from qgis.PyQt.QtCore import QDate, QTime, QDateTime, QVariant
+from qgis.PyQt.QtCore import Qt, QDate, QTime, QDateTime, QVariant
 from qgis.PyQt.QtTest import QSignalSpy
 from qgis.core import (
     QgsApplication,
@@ -32,8 +32,6 @@ from qgis.core import (
     QgsVectorLayerUtils,
     NULL
 )
-from qgis.PyQt.QtCore import Qt, QDate, QTime, QDateTime, QVariant
-from qgis.PyQt.QtTest import QSignalSpy
 
 from utilities import compareWkt
 from featuresourcetestbase import FeatureSourceTestCase
