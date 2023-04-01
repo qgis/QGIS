@@ -1,3 +1,22 @@
+# -*- coding: utf-8 -*-
+
+"""
+***************************************************************************
+    process_wrapper.py
+    ---------------------
+    Date                 : February 2023
+    Copyright            : (C) 2023 by Yoann Quenach de Quivillic
+    Email                : yoann dot quenach at gmail dot com
+***************************************************************************
+*                                                                         *
+*   This program is free software; you can redistribute it and/or modify  *
+*   it under the terms of the GNU General Public License as published by  *
+*   the Free Software Foundation; either version 2 of the License, or     *
+*   (at your option) any later version.                                   *
+*                                                                         *
+***************************************************************************
+"""
+
 
 import locale
 import os
@@ -151,7 +170,7 @@ class ProcessWrapper(QObject):
         """ Kill the managed process """
 
         # Process in run with shell=True, so calling self.p.kill() would only kill the shell
-        # (i.e a text editor lauched with !gedit would not close) so we need to iterate
+        # (i.e a text editor launched with !gedit would not close) so we need to iterate
         # over the child processes to kill them all
 
         try:
