@@ -20,8 +20,9 @@
 #include "qgsgeometryrubberband.h"
 #include "qgsgeometryutils.h"
 #include "qgslinestring.h"
-#include "qgspoint.h"
+#include "qgsmapcanvas.h"
 #include "qgsmaptoolcapture.h"
+#include "qgspoint.h"
 
 QgsMapToolShapeCircularStringAbstract::QgsMapToolShapeCircularStringAbstract( const QString &id, QgsMapToolCapture *parentTool )
   : QgsMapToolShapeAbstract( id, parentTool )
