@@ -280,7 +280,7 @@ void QgsMapTip::clear( QgsMapCanvas *, int msDelay )
 QString QgsMapTip::fetchFeature( QgsMapLayer *layer, QgsPointXY &mapPosition, QgsMapCanvas *mapCanvas )
 {
   QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
-  if ( !vlayer || !vlayer->isSpatial() )
+  if ( !vlayer || !vlayer->isSpatial() || !vlayer->mapTipsEnabled() )
   {
     return QString();
   }
@@ -389,7 +389,7 @@ QString QgsMapTip::fetchFeature( QgsMapLayer *layer, QgsPointXY &mapPosition, Qg
 QString QgsMapTip::fetchRaster( QgsMapLayer *layer, QgsPointXY &mapPosition, QgsMapCanvas *mapCanvas )
 {
   QgsRasterLayer *rlayer = qobject_cast<QgsRasterLayer *>( layer );
-  if ( !rlayer )
+  if ( !rlayer || !rlayer->mapTipsEnabled() )
   {
     return QString();
   }
