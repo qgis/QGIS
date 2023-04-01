@@ -173,6 +173,7 @@ QgsRasterLayer *QgsRasterLayer::clone() const
   layer->mElevationProperties = mElevationProperties->clone();
   layer->mElevationProperties->setParent( layer );
   layer->setMapTipTemplate( mapTipTemplate() );
+  layer->setMapTipsEnabled( mapTipsEnabled() );
 
   // do not clone data provider which is the first element in pipe
   for ( int i = 1; i < mPipe->size(); i++ )
@@ -2262,7 +2263,11 @@ bool QgsRasterLayer::readSymbology( const QDomNode &layer_node, QString &errorMe
     mPipe->dataDefinedProperties().readXml( elemDataDefinedProperties, QgsRasterPipe::propertyDefinitions() );
 
   if ( categories.testFlag( MapTips ) )
-    setMapTipTemplate( layer_node.namedItem( QStringLiteral( "mapTip" ) ).toElement().text() );
+  {
+    QDomElement mapTipElem = layer_node.namedItem( QStringLiteral( "mapTip" ) ).toElement();
+    setMapTipTemplate( mapTipElem.text() );
+    setMapTipsEnabled( mapTipElem.attribute( QStringLiteral( "enabled" ), QStringLiteral( "1" ) ).toInt() == 1 );
+  }
 
   readCustomProperties( layer_node );
 
@@ -2474,6 +2479,7 @@ bool QgsRasterLayer::writeSymbology( QDomNode &layer_node, QDomDocument &documen
   if ( categories.testFlag( MapTips ) )
   {
     QDomElement mapTipElem = document.createElement( QStringLiteral( "mapTip" ) );
+    mapTipElem.setAttribute( QStringLiteral( "enabled" ), mapTipsEnabled() );
     QDomText mapTipText = document.createTextNode( mapTipTemplate() );
     mapTipElem.appendChild( mapTipText );
     layer_node.toElement().appendChild( mapTipElem );

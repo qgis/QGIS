@@ -81,6 +81,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     Q_PROPERTY( bool isValid READ isValid NOTIFY isValidChanged )
     Q_PROPERTY( double opacity READ opacity WRITE setOpacity NOTIFY opacityChanged )
     Q_PROPERTY( QString mapTipTemplate READ mapTipTemplate WRITE setMapTipTemplate NOTIFY mapTipTemplateChanged )
+    Q_PROPERTY( bool mapTipsEnabled READ mapTipsEnabled WRITE setMapTipsEnabled NOTIFY mapTipsEnabledChanged )
 
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
@@ -1571,6 +1572,20 @@ class CORE_EXPORT QgsMapLayer : public QObject
      */
     void setMapTipTemplate( const QString &mapTipTemplate );
 
+    /**
+     *  Enable or disable map tips for this layer
+     *
+     *  \param enabled Whether map tips are enabled for this layer
+     *  \since QGIS 3.32
+     */
+    void setMapTipsEnabled( bool enabled );
+
+    /**
+     *  Returns true if map tips are enabled for this layer
+     *  \since QGIS 3.32
+     */
+    bool mapTipsEnabled() const;
+
   public slots:
 
     /**
@@ -1862,6 +1877,14 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * \since QGIS 3.30
      */
     void mapTipTemplateChanged();
+
+    /**
+     * Emitted when map tips are enabled or disabled for the layer.
+     *
+     * \see setMapTipsEnabled()
+     * \since QGIS 3.32
+     */
+    void mapTipsEnabledChanged();
 
   private slots:
 
@@ -2185,6 +2208,9 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     //! Maptip template
     QString mMapTipTemplate;
+
+    //! Flag indicating whether map tips are enabled for this layer or not
+    bool mMapTipsEnabled = true;
 
     friend class QgsVectorLayer;
     friend class TestQgsMapLayer;

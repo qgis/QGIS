@@ -310,6 +310,7 @@ QgsVectorLayer *QgsVectorLayer::clone() const
     layer->setProviderEncoding( mDataProvider->encoding() );
   layer->setDisplayExpression( displayExpression() );
   layer->setMapTipTemplate( mapTipTemplate() );
+  layer->setMapTipsEnabled( mapTipsEnabled() );
   layer->setReadOnly( isReadOnly() );
   layer->selectByIds( selectedFeatureIds() );
   layer->setAttributeTableConfig( attributeTableConfig() );
@@ -2313,7 +2314,11 @@ bool QgsVectorLayer::readSymbology( const QDomNode &layerNode, QString &errorMes
   readStyle( layerNode, errorMessage, context, categories );
 
   if ( categories.testFlag( MapTips ) )
-    mMapTipTemplate = layerNode.namedItem( QStringLiteral( "mapTip" ) ).toElement().text();
+  {
+    QDomElement mapTipElem = layerNode.namedItem( QStringLiteral( "mapTip" ) ).toElement();
+    setMapTipTemplate( mapTipElem.text() );
+    setMapTipsEnabled( mapTipElem.attribute( QStringLiteral( "enabled" ), QStringLiteral( "1" ) ).toInt() == 1 );
+  }
 
   if ( categories.testFlag( LayerConfiguration ) )
     mDisplayExpression = layerNode.namedItem( QStringLiteral( "previewExpression" ) ).toElement().text();
@@ -2994,6 +2999,7 @@ bool QgsVectorLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QString 
   if ( categories.testFlag( MapTips ) )
   {
     QDomElement mapTipElem = doc.createElement( QStringLiteral( "mapTip" ) );
+    mapTipElem.setAttribute( QStringLiteral( "enabled" ), mapTipsEnabled() );
     QDomText mapTipText = doc.createTextNode( mMapTipTemplate );
     mapTipElem.appendChild( mapTipText );
     node.toElement().appendChild( mapTipElem );
@@ -3952,7 +3958,7 @@ bool QgsVectorLayer::hasMapTips() const
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
   // display expressions are used as a fallback when no explicit map tip template is set
-  return !mapTipTemplate().isEmpty() || !displayExpression().isEmpty();
+  return mapTipsEnabled() && ( !mapTipTemplate().isEmpty() || !displayExpression().isEmpty() );
 }
 
 bool QgsVectorLayer::isEditable() const
