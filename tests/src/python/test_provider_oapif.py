@@ -67,6 +67,7 @@ def GDAL_COMPUTE_VERSION(maj, min, rev):
 ACCEPT_LANDING = 'Accept=application/json'
 ACCEPT_API = 'Accept=application/vnd.oai.openapi+json;version=3.0, application/openapi+json;version=3.0, application/json'
 ACCEPT_COLLECTION = 'Accept=application/json'
+ACCEPT_CONFORMANCE = 'Accept=application/json'
 ACCEPT_ITEMS = 'Accept=application/geo+json, application/json'
 
 
@@ -88,7 +89,8 @@ def create_landing_page_api_collection(endpoint,
         f.write(json.dumps({
             "links": [
                 {"href": "http://" + endpoint + "/api" + questionmark_extraparam, "rel": "service-desc"},
-                {"href": "http://" + endpoint + "/collections" + questionmark_extraparam, "rel": "data"}
+                {"href": "http://" + endpoint + "/collections" + questionmark_extraparam, "rel": "data"},
+                {"href": "http://" + endpoint + "/conformance" + questionmark_extraparam, "rel": "conformance"},
             ]}).encode('UTF-8'))
 
     # API
@@ -104,6 +106,12 @@ def create_landing_page_api_collection(endpoint,
                     }
                 }
             }
+        }).encode('UTF-8'))
+
+    # conformance
+    with open(sanitize(endpoint, '/conformance?' + add_params(extraparam, ACCEPT_CONFORMANCE)), 'wb') as f:
+        f.write(json.dumps({
+            "conformsTo": ["http://www.opengis.net/spec/ogcapi-features-2/1.0/conf/crs"]
         }).encode('UTF-8'))
 
     # collection
@@ -856,6 +864,13 @@ class TestPyQgsOapifProvider(unittest.TestCase, ProviderTestCase):
         source = vl.dataProvider()
 
         self.assertEqual(source.sourceCrs().authid(), 'EPSG:2056')
+
+        # Test srsname parameter overrides default CRS
+        vl = QgsVectorLayer("url='http://" + endpoint + "' typename='mycollection' srsname='OGC:CRS84'", 'test', 'OAPIF')
+        assert vl.isValid()
+        source = vl.dataProvider()
+
+        self.assertEqual(source.sourceCrs().authid(), 'OGC:CRS84')
 
 
 if __name__ == '__main__':
