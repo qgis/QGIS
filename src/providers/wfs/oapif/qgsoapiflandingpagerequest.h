@@ -45,8 +45,11 @@ class QgsOapifLandingPageRequest : public QgsBaseNetworkRequest
     //! Return URL of the api endpoint
     const QString &apiUrl() const { return mApiUrl; }
 
-    //! Return URL of the api endpoint
+    //! Return URL of the collections endpoint
     const QString &collectionsUrl() const { return mCollectionsUrl; }
+
+    //! Return URL of the conformance endpoint
+    const QString &conformanceUrl() const { return mConformanceUrl; }
 
   signals:
     //! emitted when the capabilities have been fully parsed, or an error occurred
@@ -66,6 +69,9 @@ class QgsOapifLandingPageRequest : public QgsBaseNetworkRequest
 
     //! URL of the collections endpoint.
     QString mCollectionsUrl;
+
+    //! URL of the conformance endpoint.
+    QString mConformanceUrl;
 
     ApplicationLevelError mAppLevelError = ApplicationLevelError::NoError;
 
