@@ -41,6 +41,14 @@ QgsProjectSensorSettingsWidget::QgsProjectSensorSettingsWidget( QWidget *parent 
       mConnectedSensors << sensor->id();
     }
   }
+
+  connect( QgsProject::instance()->sensorManager(), &QgsSensorManager::sensorErrorOccurred, this, [ = ]( const QString & id )
+  {
+    if ( QgsAbstractSensor *sensor = QgsProject::instance()->sensorManager()->sensor( id ) )
+    {
+      mMessageBar->pushCritical( tr( "Sensor Error" ), QStringLiteral( "%1: %2" ).arg( sensor->name(), sensor->errorString() ) );
+    }
+  } );
 }
 
 void QgsProjectSensorSettingsWidget::cancel()

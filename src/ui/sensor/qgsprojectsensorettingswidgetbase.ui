@@ -27,6 +27,9 @@
     <number>0</number>
    </property>
    <item>
+    <widget class="QgsMessageBar" name="mMessageBar" native="true"/>
+   </item>
+   <item>
     <widget class="QGroupBox" name="groupBox">
      <property name="title">
       <string>Sensors</string>
@@ -45,6 +48,12 @@
    <class>QgsPanelWidgetStack</class>
    <extends>QWidget</extends>
    <header>qgspanelwidgetstack.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsMessageBar</class>
+   <extends>QWidget</extends>
+   <header>qgsmessagebar.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
