@@ -135,7 +135,8 @@ class CORE_EXPORT QgsTcpSocketSensor : public QgsIODeviceSensor
 
   private slots:
 
-    virtual void socketStateChanged( const QAbstractSocket::SocketState socketState );
+    void socketStateChanged( const QAbstractSocket::SocketState socketState );
+    void handleError( QAbstractSocket::SocketError error );
 
   private:
 
@@ -205,7 +206,8 @@ class CORE_EXPORT QgsUdpSocketSensor : public QgsIODeviceSensor
 
   private slots:
 
-    virtual void socketStateChanged( const QAbstractSocket::SocketState socketState );
+    void socketStateChanged( const QAbstractSocket::SocketState socketState );
+    void handleError( QAbstractSocket::SocketError error );
 
   private:
 
@@ -265,6 +267,10 @@ class CORE_EXPORT QgsSerialPortSensor : public QgsIODeviceSensor
 
     void handleConnect() override;
     void handleDisconnect() override;
+
+  private slots:
+
+    void handleError( QSerialPort::SerialPortError error );
 
   private:
 

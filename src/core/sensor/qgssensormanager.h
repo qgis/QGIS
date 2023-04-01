@@ -131,11 +131,15 @@ class CORE_EXPORT QgsSensorManager : public QObject
     //! Emitted when newly captured data from a sensor has occurred.
     void sensorDataCaptured( const QString &id );
 
+    //! Emitted when a sensor error has occurred.
+    void sensorErrorOccurred( const QString &id );
+
   private slots:
 
     void handleSensorNameChanged();
     void handleSensorStatusChanged();
     void captureSensorData();
+    void handleSensorErrorOccurred( const QString &errorMessage );
 
   private:
 

@@ -27,6 +27,9 @@
     <number>0</number>
    </property>
    <item>
+    <widget class="QgsMessageBar" name="mMessageBar" native="true"/>
+   </item>
+   <item>
     <widget class="QGroupBox" name="groupBox">
      <property name="title">
       <string>Sensors</string>
@@ -34,6 +37,16 @@
      <layout class="QVBoxLayout" name="mainLayout">
       <item>
        <widget class="QgsPanelWidgetStack" name="mPanelStack" native="true"/>
+      </item>
+      <item>
+       <widget class="QLabel" name="mSensorIntroductionLabel">
+        <property name="text">
+         <string>When connected, a sensor will passively capture data in the background. The latest captured data can be accessed within expressions using the &lt;i&gt;sensor_data('sensor name')&lt;/i&gt; function.</string>
+        </property>
+        <property name="wordWrap">
+         <bool>true</bool>
+        </property>
+       </widget>
       </item>
      </layout>
     </widget>
@@ -45,6 +58,12 @@
    <class>QgsPanelWidgetStack</class>
    <extends>QWidget</extends>
    <header>qgspanelwidgetstack.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsMessageBar</class>
+   <extends>QWidget</extends>
+   <header>qgsmessagebar.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

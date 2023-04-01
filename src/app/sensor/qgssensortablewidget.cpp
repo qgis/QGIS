@@ -55,6 +55,7 @@ QgsSensorSettingsWidget::QgsSensorSettingsWidget( QgsAbstractSensor *sensor, QWi
   mButtonBox->button( QDialogButtonBox::Apply )->setEnabled( false );
   connect( mButtonBox->button( QDialogButtonBox::Apply ), &QAbstractButton::clicked, this, [ = ]()
   {
+    mButtonBox->button( QDialogButtonBox::Apply )->setEnabled( false );
     apply();
   } );
 

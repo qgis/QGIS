@@ -29,6 +29,11 @@ QgsProjectSensorSettingsWidget::QgsProjectSensorSettingsWidget( QWidget *parent 
 
   QgsSensorTableWidget *widget = new QgsSensorTableWidget( this );
   mPanelStack->setMainPanel( widget );
+  connect( widget, &QgsPanelWidget::showPanel, this, [ = ]( QgsPanelWidget * panel )
+  {
+    mSensorIntroductionLabel->setVisible( false );
+    connect( panel, &QgsPanelWidget::panelAccepted, this, [ = ]() { mSensorIntroductionLabel->setVisible( true ); } );
+  } );
 
   QDomElement sensorElem = QgsProject::instance()->sensorManager()->writeXml( mPreviousSensors );
   mPreviousSensors.appendChild( sensorElem );
@@ -41,6 +46,14 @@ QgsProjectSensorSettingsWidget::QgsProjectSensorSettingsWidget( QWidget *parent 
       mConnectedSensors << sensor->id();
     }
   }
+
+  connect( QgsProject::instance()->sensorManager(), &QgsSensorManager::sensorErrorOccurred, this, [ = ]( const QString & id )
+  {
+    if ( QgsAbstractSensor *sensor = QgsProject::instance()->sensorManager()->sensor( id ) )
+    {
+      mMessageBar->pushCritical( tr( "Sensor Error" ), QStringLiteral( "%1: %2" ).arg( sensor->name(), sensor->errorString() ) );
+    }
+  } );
 }
 
 void QgsProjectSensorSettingsWidget::cancel()

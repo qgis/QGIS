@@ -144,6 +144,11 @@ class CORE_EXPORT QgsAbstractSensor : public QObject
     void setData( const QgsAbstractSensor::SensorData &data );
 
     /**
+     * Returns the last error message.
+     */
+    QString errorString() const;
+
+    /**
      * Write generic sensor properties into a DOM element.
      * \param parentElement parent DOM element (e.g 'Sensors' element)
      * \param document DOM document
@@ -182,6 +187,9 @@ class CORE_EXPORT QgsAbstractSensor : public QObject
     //! Emitted when the captured sensor data has changed.
     void dataChanged();
 
+    //! Emitted when an error has occurred. The \a errorString describes the error.
+    void errorOccurred( const QString &errorString );
+
   protected:
 
     /**
@@ -197,6 +205,7 @@ class CORE_EXPORT QgsAbstractSensor : public QObject
     virtual void handleDisconnect() = 0;
 
     QgsAbstractSensor::SensorData mData;
+    QString mErrorString;
 
   private:
 
