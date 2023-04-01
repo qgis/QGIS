@@ -140,8 +140,8 @@ class ProcessWrapper(QObject):
     def write(self, data):
         """ Send data to the managed process"""
         try:
-            self.p.stdin.write(data.encode("utf8"))
-            self.p.stdin.close()
+            self.p.stdin.write((data + "\n").encode("utf8"))
+            self.p.stdin.flush()
         except BrokenPipeError as exc:
             self.p.stdout.close()
             self.p.stderr.close()
