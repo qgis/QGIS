@@ -15,7 +15,7 @@ class ProcessWrapper(QObject):
 
     finished = pyqtSignal(int)
 
-    def __init__(self, command, parent=None):
+    def __init__(self, command, interactive=True, parent=None):
         super().__init__(parent)
 
         self.stdout = ""
@@ -36,6 +36,14 @@ class ProcessWrapper(QObject):
 
         # Create and start subprocess
         self.p = subprocess.Popen(command, **options)
+
+        # Start in non-interactive mode, wait for the process to finish
+        if not interactive:
+            out, err = self.p.communicate()
+            self.stdout = self.decode(out)
+            self.stderr = self.decode(err)
+            self.returncode = self.p.returncode
+            return
 
         # Read process stdout and push to out queue
         self.q_out = Queue()

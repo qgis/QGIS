@@ -24,6 +24,8 @@ import os
 import re
 import sys
 import traceback
+from pathlib import Path
+from tempfile import NamedTemporaryFile
 
 from qgis.PyQt.Qsci import QsciScintilla
 from qgis.PyQt.QtCore import Qt, QCoreApplication
@@ -93,17 +95,46 @@ class PythonInterpreter(QgsCodeInterpreter, code.InteractiveInterpreter):
             self.sub_process.write(cmd)
             return 0
 
+        if show_input:
+            self.writeCMD(cmd)
+
         if self.currentState() == 0:
+
+            # This line makes single line commands with leading spaces work
             cmd = cmd.strip()
-            if cmd.startswith("!"):
-                self.writeCMD(cmd)
+
+            # User entered: varname = !cmd
+            # Run the command and assign the output to varname
+            # Mimics IPython's behavior
+            assignment_pattern = r"(\w+)\s*=\s*!(.+)"
+            match = re.match(assignment_pattern, cmd)
+            if match:
+                varname = match[1]
+                cmd = match[2]
+                # Run the command in non-interactive mode
+                self.sub_process = ProcessWrapper(cmd, interactive=False)
+                # Concatenate stdout and stderr
+                res = (self.sub_process.stdout + self.sub_process.stderr).strip()
+
+                # Use a temporary file to communicate the result to the inner interpreter
+                tmp = Path(NamedTemporaryFile(delete=False).name)
+                tmp.write_text(res, encoding="utf-8")
+                self.runsource(f'{varname} = Path("{tmp}").read_text(encoding="utf-8").split("\\n")')
+                tmp.unlink()
+                self.sub_process = None
+                return 0
+
+            # User entered: !cmd
+            # Run the command and stream the output to the console
+            # While the process is running, the console is in state 2 meaning
+            # that all input is sent to the child process
+            # Mimics IPython's behavior
+            elif cmd.startswith("!"):
                 cmd = cmd[1:]
                 self.sub_process = ProcessWrapper(cmd)
                 self.sub_process.finished.connect(self.processFinished)
                 return 0
 
-        if show_input:
-            self.writeCMD(cmd)
         import webbrowser
         version = 'master' if 'master' in Qgis.QGIS_VERSION.lower() else \
             re.findall(r'^\d.[0-9]*', Qgis.QGIS_VERSION)[0]
