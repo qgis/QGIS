@@ -57,6 +57,13 @@ QgsTcpSocketSensor::QgsTcpSocketSensor( QObject *parent )
   , mTcpSocket( new QTcpSocket() )
 {
   connect( mTcpSocket, &QAbstractSocket::stateChanged, this, &QgsTcpSocketSensor::socketStateChanged );
+
+#if QT_VERSION < QT_VERSION_CHECK( 5, 15, 0 )
+  connect( mTcpSocket, qOverload<QAbstractSocket::SocketError>( &QAbstractSocket::error ), this, &QgsTcpSocketSensor::handleError );
+#else
+  connect( mTcpSocket, qOverload<QAbstractSocket::SocketError>( &QAbstractSocket::errorOccurred ), this, &QgsTcpSocketSensor::handleError );
+#endif
+
   initIODevice( mTcpSocket );
 }
 
@@ -110,6 +117,27 @@ void QgsTcpSocketSensor::handleConnect()
 void QgsTcpSocketSensor::handleDisconnect()
 {
   mTcpSocket->close();
+}
+
+void QgsTcpSocketSensor::handleError( QAbstractSocket::SocketError error )
+{
+  switch ( error )
+  {
+    case QAbstractSocket::HostNotFoundError:
+      mErrorString = tr( "Could not find the remote host" );
+      break;
+    case QAbstractSocket::NetworkError:
+      mErrorString = tr( "Attempt to read or write from socket returned an error" );
+      break;
+    case QAbstractSocket::ConnectionRefusedError:
+      mErrorString = tr( "The connection was refused by the remote host" );
+      break;
+    default:
+      mErrorString = tr( "%1" ).arg( QMetaEnum::fromType<QAbstractSocket::SocketError>().valueToKey( error ) );
+      break;
+  }
+
+  emit errorOccurred( mErrorString );
 }
 
 void QgsTcpSocketSensor::socketStateChanged( const QAbstractSocket::SocketState socketState )
@@ -178,6 +206,12 @@ QgsUdpSocketSensor::QgsUdpSocketSensor( QObject *parent )
     }
   } );
 
+#if QT_VERSION < QT_VERSION_CHECK( 5, 15, 0 )
+  connect( mUdpSocket.get(), qOverload<QAbstractSocket::SocketError>( &QAbstractSocket::error ), this, &QgsUdpSocketSensor::handleError );
+#else
+  connect( mUdpSocket.get(), qOverload<QAbstractSocket::SocketError>( &QAbstractSocket::errorOccurred ), this, &QgsUdpSocketSensor::handleError );
+#endif
+
   initIODevice( mBuffer );
 }
 
@@ -236,6 +270,27 @@ void QgsUdpSocketSensor::handleDisconnect()
   mBuffer->close();
 }
 
+void QgsUdpSocketSensor::handleError( QAbstractSocket::SocketError error )
+{
+  switch ( error )
+  {
+    case QAbstractSocket::HostNotFoundError:
+      mErrorString = tr( "Could not find the remote host" );
+      break;
+    case QAbstractSocket::NetworkError:
+      mErrorString = tr( "Attempt to read or write from socket returned an error" );
+      break;
+    case QAbstractSocket::ConnectionRefusedError:
+      mErrorString = tr( "The connection was refused by the remote host" );
+      break;
+    default:
+      mErrorString = tr( "%1" ).arg( QMetaEnum::fromType<QAbstractSocket::SocketError>().valueToKey( error ) );
+      break;
+  }
+
+  emit errorOccurred( mErrorString );
+}
+
 void QgsUdpSocketSensor::socketStateChanged( const QAbstractSocket::SocketState socketState )
 {
   switch ( socketState )
@@ -279,6 +334,8 @@ QgsSerialPortSensor::QgsSerialPortSensor( QObject *parent )
   : QgsIODeviceSensor( parent )
   , mSerialPort( new QSerialPort() )
 {
+  connect( mSerialPort, qOverload<QSerialPort::SerialPortError>( &QSerialPort::errorOccurred ), this, &QgsSerialPortSensor::handleError );
+
   initIODevice( mSerialPort );
 }
 
@@ -322,6 +379,32 @@ void QgsSerialPortSensor::handleConnect()
 void QgsSerialPortSensor::handleDisconnect()
 {
   mSerialPort->close();
+}
+
+void QgsSerialPortSensor::handleError( QSerialPort::SerialPortError error )
+{
+  if ( error == QSerialPort::NoError )
+  {
+    return;
+  }
+
+  switch ( error )
+  {
+    case QSerialPort::DeviceNotFoundError:
+      mErrorString = tr( "Could not find the serial port device" );
+      break;
+    case QSerialPort::ReadError:
+      mErrorString = tr( "Attempt to read from the serial port returned an error" );
+      break;
+    case QSerialPort::PermissionError:
+      mErrorString = tr( "The connection was refused due to not having enough permission" );
+      break;
+    default:
+      mErrorString = tr( "%1" ).arg( QMetaEnum::fromType<QSerialPort::SerialPortError>().valueToKey( error ) );
+      break;
+  }
+
+  emit errorOccurred( mErrorString );
 }
 
 bool QgsSerialPortSensor::writePropertiesToElement( QDomElement &element, QDomDocument & ) const

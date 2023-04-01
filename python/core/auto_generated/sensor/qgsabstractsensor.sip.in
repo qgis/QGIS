@@ -116,6 +116,11 @@ Returns the latest captured data from the sensor.
 Sets the latest captured data from the sensor.
 %End
 
+    QString errorString() const;
+%Docstring
+Returns the last error message.
+%End
+
     bool writeXml( QDomElement &parentElement, QDomDocument &document ) const;
 %Docstring
 Write generic sensor properties into a DOM element.
@@ -163,6 +168,11 @@ Emitted when the sensor status has changed.
     void dataChanged();
 %Docstring
 Emitted when the captured sensor data has changed.
+%End
+
+    void errorOccurred( const QString &errorString );
+%Docstring
+Emitted when an error has occurred. The ``errorString`` describes the error.
 %End
 
   protected:

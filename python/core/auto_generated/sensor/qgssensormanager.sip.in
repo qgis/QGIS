@@ -133,6 +133,11 @@ Emitted when a sensor status has changed.
 Emitted when newly captured data from a sensor has occurred.
 %End
 
+    void sensorErrorOccurred( const QString &id );
+%Docstring
+Emitted when a sensor error has occurred.
+%End
+
 };
 
 /************************************************************************

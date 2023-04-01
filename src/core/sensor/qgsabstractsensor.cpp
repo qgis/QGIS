@@ -63,6 +63,11 @@ void QgsAbstractSensor::setData( const QgsAbstractSensor::SensorData &data )
   emit dataChanged();
 }
 
+QString QgsAbstractSensor::errorString() const
+{
+  return mErrorString;
+}
+
 void QgsAbstractSensor::connectSensor()
 {
   setStatus( Qgis::DeviceConnectionStatus::Connecting );

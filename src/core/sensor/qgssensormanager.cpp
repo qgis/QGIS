@@ -88,6 +88,7 @@ void QgsSensorManager::addSensor( QgsAbstractSensor *sensor )
   connect( sensor, &QgsAbstractSensor::nameChanged, this, &QgsSensorManager::handleSensorNameChanged );
   connect( sensor, &QgsAbstractSensor::statusChanged, this, &QgsSensorManager::handleSensorStatusChanged );
   connect( sensor, &QgsAbstractSensor::dataChanged, this, &QgsSensorManager::captureSensorData );
+  connect( sensor, &QgsAbstractSensor::errorOccurred, this, &QgsSensorManager::handleSensorErrorOccurred );
   mSensors << sensor;
 
   emit sensorAdded( sensor->id() );
@@ -145,6 +146,15 @@ void QgsSensorManager::captureSensorData()
 
   mSensorsData.insert( sensor->name(), sensor->data() );
   emit sensorDataCaptured( sensor->id() );
+}
+
+void QgsSensorManager::handleSensorErrorOccurred( const QString & )
+{
+  const QgsAbstractSensor *sensor = qobject_cast<QgsAbstractSensor *>( sender() );
+  if ( !sensor )
+    return;
+
+  emit sensorErrorOccurred( sensor->id() );
 }
 
 bool QgsSensorManager::readXml( const QDomElement &element, const QDomDocument &document )
