@@ -71,6 +71,12 @@ except ModuleNotFoundError:
 ]
 
 
+# States of the interpreter
+PS1 = 0  # Writing a new command
+PS2 = 1  # Continuation of a multi-line command
+SUBPROCESS = 2  # Sending input to a subprocess
+
+
 class PythonInterpreter(QgsCodeInterpreter, code.InteractiveInterpreter):
 
     def __init__(self, shell):
@@ -90,7 +96,7 @@ class PythonInterpreter(QgsCodeInterpreter, code.InteractiveInterpreter):
     def execCommandImpl(self, cmd, show_input=True):
 
         # Child process running, input should be sent to it
-        if self.currentState() == 2:
+        if self.currentState() == SUBPROCESS:
             sys.stdout.write(cmd + "\n")
             self.sub_process.write(cmd)
             return 0
@@ -98,7 +104,7 @@ class PythonInterpreter(QgsCodeInterpreter, code.InteractiveInterpreter):
         if show_input:
             self.writeCMD(cmd)
 
-        if self.currentState() == 0:
+        if self.currentState() == PS1:
 
             # This line makes single line commands with leading spaces work
             cmd = cmd.strip()
@@ -161,8 +167,7 @@ class PythonInterpreter(QgsCodeInterpreter, code.InteractiveInterpreter):
         if sys.stdout:
             sys.stdout.fire_keyboard_interrupt = False
         if len(txt) > 0:
-            prompt = "... " if self.currentState() == 1 else ">>> "
-            sys.stdout.write(prompt + txt + '\n')
+            sys.stdout.write(f'{self.promptForState()} {txt}\n')
 
     def runsource(self, source, filename='<input>', symbol='single'):
         if sys.stdout:
@@ -181,13 +186,15 @@ class PythonInterpreter(QgsCodeInterpreter, code.InteractiveInterpreter):
 
     def currentState(self):
         if self.sub_process:
-            return 2
+            return SUBPROCESS
         return super().currentState()
 
-    def promptForState(self, state):
-        if state == 2:
+    def promptForState(self, state=-1):
+        if state == -1:
+            state = self.currentState()
+        if state == SUBPROCESS:
             return " : "
-        elif state == 1:
+        elif state == PS2:
             return "..."
         else:
             return ">>>"
