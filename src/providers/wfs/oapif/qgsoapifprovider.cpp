@@ -20,6 +20,7 @@
 #include "qgsoapiflandingpagerequest.h"
 #include "qgsoapifapirequest.h"
 #include "qgsoapifcollection.h"
+#include "qgsoapifconformancerequest.h"
 #include "qgsoapifitemsrequest.h"
 #include "qgswfsconstants.h"
 #include "qgswfsutils.h" // for isCompatibleType()
@@ -152,9 +153,26 @@ bool QgsOapifProvider::init()
     }
   }
 
+  bool implementsPart2 = false;
+  const QString &conformanceUrl = landingPageRequest.conformanceUrl();
+  if ( !conformanceUrl.isEmpty() )
+  {
+    QgsOapifConformanceRequest conformanceRequest( mShared->mURI.uri() );
+    const QStringList conformanceClasses = conformanceRequest.conformanceClasses( conformanceUrl );
+    implementsPart2 = conformanceClasses.contains( QLatin1String( "http://www.opengis.net/spec/ogcapi-features-2/1.0/conf/crs" ) );
+  }
+
   mLayerMetadata = collectionRequest->collection().mLayerMetadata;
 
-  if ( mLayerMetadata.crs().isValid() )
+  QString srsName = mShared->mURI.SRSName();
+  if ( implementsPart2 && !srsName.isEmpty() )
+  {
+    // Use URI SRSName parameter if defined
+    mShared->mSourceCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( srsName );
+    if ( mLayerMetadata.crs().isValid() && mShared->mSourceCrs.authid() == mLayerMetadata.crs().authid() )
+      mShared->mSourceCrs.setCoordinateEpoch( mLayerMetadata.crs().coordinateEpoch() );
+  }
+  else if ( implementsPart2 && mLayerMetadata.crs().isValid() )
   {
     // WORKAROUND: Recreate a CRS object with fromOgcWmsCrs because when copying the
     // CRS his mPj pointer gets deleted and it is impossible to create a transform
