@@ -820,6 +820,7 @@ int QgsMapToolCapture::addCurve( QgsCurve *c )
     // Curve geometries will be converted to segments, so we explicitly set extentPrevious to false
     // to be able to remove the whole curve in undo
     mCaptureCurve.addCurve( segmented, false );
+    delete c;
   }
   else
   {

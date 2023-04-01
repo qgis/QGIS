@@ -198,6 +198,7 @@ void QgsMapToolShapeCircularStringAbstract::addCurveToParentTool()
   {
     std::unique_ptr<QgsLineString> ls( c->curveToLine( ) );
     mParentTool->addCurve( ls.release() );
+    delete c;
   }
   else
   {
