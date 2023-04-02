@@ -43,6 +43,8 @@ class APP_EXPORT QgsSensorSettingsWidget : public QgsPanelWidget, private Ui::Qg
 
     QgsAbstractSensor *mSensor = nullptr;
     QgsAbstractSensorWidget *mSensorWidget = nullptr;
+
+    bool mDirty = false;
 };
 
 class APP_EXPORT QgsSensorTableWidget : public QgsPanelWidget, private Ui::QgsSensorTableWidgetBase
