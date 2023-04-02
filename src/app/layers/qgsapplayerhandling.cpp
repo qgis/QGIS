@@ -845,45 +845,6 @@ QList< QgsMapLayer * > QgsAppLayerHandling::openLayer( const QString &fileName, 
     }
   }
 
-  if ( fileName.endsWith( QStringLiteral( ".mbtiles" ), Qt::CaseInsensitive ) )
-  {
-    QgsMbTiles reader( fileName );
-    if ( reader.open() )
-    {
-      if ( reader.metadataValue( "format" ) == QLatin1String( "pbf" ) )
-      {
-        // these are vector tiles
-        QUrlQuery uq;
-        uq.addQueryItem( QStringLiteral( "type" ), QStringLiteral( "mbtiles" ) );
-        uq.addQueryItem( QStringLiteral( "url" ), fileName );
-        const QgsVectorTileLayer::LayerOptions options( QgsProject::instance()->transformContext() );
-        std::unique_ptr<QgsVectorTileLayer> vtLayer( new QgsVectorTileLayer( uq.toString(), fileInfo.completeBaseName(), options ) );
-        if ( vtLayer->isValid() )
-        {
-          openedLayers << vtLayer.get();
-          QgsProject::instance()->addMapLayer( vtLayer.release(), addToLegend );
-          postProcessAddedLayers();
-          ok = true;
-          return openedLayers;
-        }
-      }
-      else // raster tiles
-      {
-        // prefer to use WMS provider's implementation to open MBTiles rasters
-        QUrlQuery uq;
-        uq.addQueryItem( QStringLiteral( "type" ), QStringLiteral( "mbtiles" ) );
-        uq.addQueryItem( QStringLiteral( "url" ), QUrl::fromLocalFile( fileName ).toString() );
-        if ( QgsRasterLayer *rasterLayer = addRasterLayer( uq.toString(), fileInfo.completeBaseName(), QStringLiteral( "wms" ), addToLegend ) )
-        {
-          openedLayers << rasterLayer;
-          postProcessAddedLayers();
-          ok = true;
-          return openedLayers;
-        }
-      }
-    }
-  }
-
   QList< QgsProviderSublayerModel::NonLayerItem > nonLayerItems;
   if ( QgsProjectStorage *ps = QgsApplication::projectStorageRegistry()->projectStorageFromUri( fileName ) )
   {
