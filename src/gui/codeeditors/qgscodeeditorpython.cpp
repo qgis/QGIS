@@ -508,7 +508,7 @@ QString QgsCodeEditorPython::reformatCodeString( const QString &string )
     }
     else
     {
-      const QString modules = missingModules.join( QStringLiteral( ", " ) );
+      const QString modules = missingModules.join( QLatin1String( ", " ) );
       showMessage( tr( "Reformat Code" ), tr( "The Python modules %1 are missing" ).arg( modules ), Qgis::MessageLevel::Warning );
     }
   }
