@@ -290,14 +290,18 @@ void TestQgsVectorTileLayer::testMbtilesProviderMetadata()
 
   // test that mbtilesvectortiles provider is the preferred provider for vector tile mbtiles files
   QList<QgsProviderRegistry::ProviderCandidateDetails> candidates = QgsProviderRegistry::instance()->preferredProvidersForUri( QStringLiteral( "type=mbtiles&url=%1/vector_tile/mbtiles_vt.mbtiles" ).arg( TEST_DATA_DIR ) );
-  QCOMPARE( candidates.size(), 1 );
-  QCOMPARE( candidates.at( 0 ).metadata()->key(), QStringLiteral( "mbtilesvectortiles" ) );
-  QCOMPARE( candidates.at( 0 ).layerTypes(), QList< Qgis::LayerType >() << Qgis::LayerType::VectorTile );
+  // wms provider also reports handling this url
+  int vtProviderIndex = candidates.at( 0 ).metadata()->key() == QLatin1String( "mbtilesvectortiles" ) ? 0 : 1;
+  QCOMPARE( candidates.size(), 2 );
+  QCOMPARE( candidates.at( vtProviderIndex ).metadata()->key(), QStringLiteral( "mbtilesvectortiles" ) );
+  QCOMPARE( candidates.at( vtProviderIndex ).layerTypes(), QList< Qgis::LayerType >() << Qgis::LayerType::VectorTile );
 
   candidates = QgsProviderRegistry::instance()->preferredProvidersForUri( QStringLiteral( "%1/vector_tile/mbtiles_vt.mbtiles" ).arg( TEST_DATA_DIR ) );
-  QCOMPARE( candidates.size(), 1 );
-  QCOMPARE( candidates.at( 0 ).metadata()->key(), QStringLiteral( "mbtilesvectortiles" ) );
-  QCOMPARE( candidates.at( 0 ).layerTypes(), QList< Qgis::LayerType >() << Qgis::LayerType::VectorTile );
+  // wms provider also reports handling this url
+  QCOMPARE( candidates.size(), 2 );
+  vtProviderIndex = candidates.at( 0 ).metadata()->key() == QLatin1String( "mbtilesvectortiles" ) ? 0 : 1;
+  QCOMPARE( candidates.at( vtProviderIndex ).metadata()->key(), QStringLiteral( "mbtilesvectortiles" ) );
+  QCOMPARE( candidates.at( vtProviderIndex ).layerTypes(), QList< Qgis::LayerType >() << Qgis::LayerType::VectorTile );
 
   QCOMPARE( vectorTileMetadata->filters( Qgis::FileFilterType::VectorTile ), QStringLiteral( "Mbtiles Vector Tiles (*.mbtiles *.MBTILES)" ) );
   QCOMPARE( vectorTileMetadata->filters( Qgis::FileFilterType::PointCloud ), QString() );
