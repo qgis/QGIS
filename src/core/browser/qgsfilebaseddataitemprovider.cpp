@@ -26,8 +26,6 @@
 #include "qgsfielddomainsitem.h"
 #include "qgsrelationshipsitem.h"
 #include "qgsproviderutils.h"
-#include "qgsmbtiles.h"
-#include "qgsvectortiledataitems.h"
 #include "qgsprovidermetadata.h"
 #include <QUrlQuery>
 

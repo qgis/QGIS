@@ -36,7 +36,6 @@
 #include "qgslayertree.h"
 #include "qgslayertreeview.h"
 #include "qgsgui.h"
-#include "qgsmbtiles.h"
 #include "qgsmessagelog.h"
 #include "qgsapplication.h"
 #include "qgsvectortilelayer.h"
