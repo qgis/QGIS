@@ -22,6 +22,8 @@
 #include "qgslogger.h"
 #include "qgsapplication.h"
 #include "qgscoordinatetransform.h"
+#include "qgsproviderutils.h"
+#include "qgsprovidersublayerdetails.h"
 
 #include <QIcon>
 #include <QFileInfo>
@@ -224,7 +226,8 @@ QgsMbTilesVectorTileDataProviderMetadata::QgsMbTilesVectorTileDataProviderMetada
 QgsProviderMetadata::ProviderMetadataCapabilities QgsMbTilesVectorTileDataProviderMetadata::capabilities() const
 {
   return ProviderMetadataCapability::LayerTypesForUri
-         | ProviderMetadataCapability::PriorityForUri;
+         | ProviderMetadataCapability::PriorityForUri
+         | ProviderMetadataCapability::QuerySublayers;
 }
 
 QgsMbTilesVectorTileDataProvider *QgsMbTilesVectorTileDataProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags )
@@ -257,6 +260,60 @@ QString QgsMbTilesVectorTileDataProviderMetadata::filters( Qgis::FileFilterType 
       return QObject::tr( "Mbtiles Vector Tiles" ) + QStringLiteral( " (*.mbtiles *.MBTILES)" );
   }
   return QString();
+}
+
+QList<QgsProviderSublayerDetails> QgsMbTilesVectorTileDataProviderMetadata::querySublayers( const QString &uri, Qgis::SublayerQueryFlags flags, QgsFeedback * ) const
+{
+  QString fileName;
+  const QFileInfo fi( uri );
+  if ( fi.isFile() )
+  {
+    fileName = uri;
+  }
+  else
+  {
+    const QVariantMap parts = decodeUri( uri );
+    fileName = parts.value( QStringLiteral( "path" ) ).toString();
+  }
+
+  if ( fileName.isEmpty() )
+    return {};
+
+  if ( QFileInfo( fileName ).suffix().compare( QLatin1String( "mbtiles" ), Qt::CaseInsensitive ) == 0 )
+  {
+    QVariantMap parts;
+    parts.insert( QStringLiteral( "path" ), fileName );
+
+    if ( flags & Qgis::SublayerQueryFlag::FastScan )
+    {
+      // fast scan -- assume vector tile are available
+      QgsProviderSublayerDetails details;
+      details.setUri( encodeUri( parts ) );
+      details.setProviderKey( key() );
+      details.setType( Qgis::LayerType::VectorTile );
+      details.setSkippedContainerScan( true );
+      details.setName( QgsProviderUtils::suggestLayerNameFromFilePath( fileName ) );
+      return {details};
+    }
+    else
+    {
+      // slower scan, check actual mbtiles format
+      QgsMbTiles reader( fileName );
+      if ( reader.open() )
+      {
+        if ( reader.metadataValue( "format" ) == QLatin1String( "pbf" ) )
+        {
+          QgsProviderSublayerDetails details;
+          details.setUri( encodeUri( parts ) );
+          details.setProviderKey( key() );
+          details.setType( Qgis::LayerType::VectorTile );
+          details.setName( QgsProviderUtils::suggestLayerNameFromFilePath( fileName ) );
+          return {details};
+        }
+      }
+    }
+  }
+  return {};
 }
 
 int QgsMbTilesVectorTileDataProviderMetadata::priorityForUri( const QString &uri ) const
