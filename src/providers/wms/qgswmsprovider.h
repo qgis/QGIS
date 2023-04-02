@@ -729,10 +729,19 @@ class QgsWmsProviderMetadata final: public QgsProviderMetadata
   public:
     QgsWmsProviderMetadata();
     QIcon icon() const override;
+    QgsProviderMetadata::ProviderMetadataCapabilities capabilities() const override;
+
     QgsWmsProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() ) override;
+    ProviderCapabilities providerCapabilities() const override;
+
     QList<QgsDataItemProvider *> dataItemProviders() const override;
     QVariantMap decodeUri( const QString &uri ) const override;
     QString encodeUri( const QVariantMap &parts ) const override;
+
+    QList< QgsProviderSublayerDetails > querySublayers( const QString &uri, Qgis::SublayerQueryFlags flags = Qgis::SublayerQueryFlags(), QgsFeedback *feedback = nullptr ) const override;
+    int priorityForUri( const QString &uri ) const override;
+    QList< Qgis::LayerType > validLayerTypesForUri( const QString &uri ) const override;
+
     QString absoluteToRelativeUri( const QString &uri, const QgsReadWriteContext &context ) const override;
     QString relativeToAbsoluteUri( const QString &uri, const QgsReadWriteContext &context ) const override;
     QList< Qgis::LayerType > supportedLayerTypes() const override;
