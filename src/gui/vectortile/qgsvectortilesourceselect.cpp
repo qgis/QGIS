@@ -87,7 +87,7 @@ QgsVectorTileSourceSelect::QgsVectorTileSourceSelect( QWidget *parent, Qt::Windo
   mFileWidget->setOptions( QFileDialog::HideNameFilterDetails );
   connect( mFileWidget, &QgsFileWidget::fileChanged, this, [ = ]( const QString & path )
   {
-    emit enableButtons( ! path.isEmpty() );
+    emit enableButtons( !path.isEmpty() );
   } );
 }
 
