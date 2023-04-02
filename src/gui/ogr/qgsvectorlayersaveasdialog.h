@@ -23,14 +23,11 @@
 #include "qgsvectorfilewriter.h"
 #include "qgis_gui.h"
 
-#define SIP_NO_FILE
-
 class QgsVectorLayer;
 
 /**
  * \ingroup gui
  * \brief Class to select destination file, type and CRS for ogr layers
- * \note not available in Python bindings
  * \since QGIS 1.0
  */
 class GUI_EXPORT QgsVectorLayerSaveAsDialog : public QDialog, private Ui::QgsVectorLayerSaveAsDialogBase
@@ -226,6 +223,8 @@ class GUI_EXPORT QgsVectorLayerSaveAsDialog : public QDialog, private Ui::QgsVec
     //! Returns creation action
     QgsVectorFileWriter::ActionOnExistingFile creationActionOnExistingFile() const;
 
+    void accept() override;
+
   private slots:
 
     void mFormatComboBox_currentIndexChanged( int idx );
@@ -233,7 +232,6 @@ class GUI_EXPORT QgsVectorLayerSaveAsDialog : public QDialog, private Ui::QgsVec
     void showHelp();
     void mSymbologyExportComboBox_currentIndexChanged( const QString &text );
     void mGeometryTypeComboBox_currentIndexChanged( int index );
-    void accept() override;
     void mSelectAllAttributes_clicked();
     void mDeselectAllAttributes_clicked();
     void mUseAliasesForExportedName_stateChanged( int state );
