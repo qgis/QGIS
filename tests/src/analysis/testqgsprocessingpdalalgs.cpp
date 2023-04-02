@@ -154,7 +154,7 @@ void TestQgsProcessingPdalAlgs::reproject()
   QCOMPARE( args, QStringList() << QStringLiteral( "translate" )
             << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath )
             << QStringLiteral( "--output=%1" ).arg( outputPointCloud )
-            << QStringLiteral( "--transform-crs=%1" ).arg( QStringLiteral( "EPSG:4326" ) )
+            << QStringLiteral( "--transform-crs=%1" ).arg( QLatin1String( "EPSG:4326") )
           );
 
   // set max threads to 2, a --threads argument should be added
@@ -163,7 +163,7 @@ void TestQgsProcessingPdalAlgs::reproject()
   QCOMPARE( args, QStringList() << QStringLiteral( "translate" )
             << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath )
             << QStringLiteral( "--output=%1" ).arg( outputPointCloud )
-            << QStringLiteral( "--transform-crs=%1" ).arg( QStringLiteral( "EPSG:4326" ) )
+            << QStringLiteral( "--transform-crs=%1" ).arg( QLatin1String( "EPSG:4326") )
             << QStringLiteral( "--threads=2" )
           );
 }
@@ -188,7 +188,7 @@ void TestQgsProcessingPdalAlgs::fixProjection()
   QCOMPARE( args, QStringList() << QStringLiteral( "translate" )
             << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath )
             << QStringLiteral( "--output=%1" ).arg( outputPointCloud )
-            << QStringLiteral( "--assign-crs=%1" ).arg( QStringLiteral( "EPSG:4326" ) )
+            << QStringLiteral( "--assign-crs=%1" ).arg( QLatin1String( "EPSG:4326") )
           );
 
   // set max threads to 2, a --threads argument should be added
@@ -197,7 +197,7 @@ void TestQgsProcessingPdalAlgs::fixProjection()
   QCOMPARE( args, QStringList() << QStringLiteral( "translate" )
             << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath )
             << QStringLiteral( "--output=%1" ).arg( outputPointCloud )
-            << QStringLiteral( "--assign-crs=%1" ).arg( QStringLiteral( "EPSG:4326" ) )
+            << QStringLiteral( "--assign-crs=%1" ).arg( QLatin1String( "EPSG:4326") )
             << QStringLiteral( "--threads=2" )
           );
 }
