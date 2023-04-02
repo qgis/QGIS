@@ -464,37 +464,6 @@ QgsDataItem *QgsFileBasedDataItemProvider::createDataItem( const QString &path, 
   {
     suffix = QStringLiteral( "shp.zip" );
   }
-  // special handling for mbtiles files
-  else if ( suffix == QLatin1String( "mbtiles" ) )
-  {
-    QgsMbTiles reader( path );
-    if ( reader.open() )
-    {
-      if ( reader.metadataValue( QStringLiteral( "format" ) ) == QLatin1String( "pbf" ) )
-      {
-        // these are vector tiles
-        QUrlQuery uq;
-        uq.addQueryItem( QStringLiteral( "type" ), QStringLiteral( "mbtiles" ) );
-        uq.addQueryItem( QStringLiteral( "url" ), path );
-        const QString encodedUri = uq.toString();
-        QgsVectorTileLayerItem *item = new QgsVectorTileLayerItem( parentItem, name, path, encodedUri );
-        item->setCapabilities( item->capabilities2() | Qgis::BrowserItemCapability::ItemRepresentsFile );
-        return item;
-      }
-      else
-      {
-        // handled by WMS provider
-        QUrlQuery uq;
-        uq.addQueryItem( QStringLiteral( "type" ), QStringLiteral( "mbtiles" ) );
-        uq.addQueryItem( QStringLiteral( "url" ), QUrl::fromLocalFile( path ).toString() );
-        const QString encodedUri = uq.toString();
-        QgsLayerItem *item = new QgsLayerItem( parentItem, name, path, encodedUri, Qgis::BrowserLayerType::Raster, QStringLiteral( "wms" ) );
-        item->setState( Qgis::BrowserItemState::Populated );
-        item->setCapabilities( item->capabilities2() | Qgis::BrowserItemCapability::ItemRepresentsFile );
-        return item;
-      }
-    }
-  }
 
   // hide blocklisted URIs, such as .aux.xml files
   if ( QgsProviderRegistry::instance()->uriIsBlocklisted( path ) )
