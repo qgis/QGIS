@@ -57,13 +57,6 @@
      <layout class="QVBoxLayout" name="mTypeLayout"/>
     </widget>
    </item>
-   <item>
-    <widget class="QDialogButtonBox" name="mButtonBox">
-     <property name="standardButtons">
-      <set>QDialogButtonBox::Apply</set>
-     </property>
-    </widget>
-   </item>
   </layout>
  </widget>
  <customwidgets>
