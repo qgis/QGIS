@@ -382,6 +382,7 @@
 %Include auto_generated/numericformats/qgsnumericformatselectorwidget.sip
 %Include auto_generated/numericformats/qgsnumericformatwidget.sip
 %Include auto_generated/numericformats/qgsnumericformatguiregistry.sip
+%Include auto_generated/ogr/qgsvectorlayersaveasdialog.sip
 %Include auto_generated/plot/qgsplotcanvas.sip
 %Include auto_generated/plot/qgsplotcanvasitem.sip
 %Include auto_generated/plot/qgsplotmouseevent.sip
