@@ -35,6 +35,7 @@
 #include "qgsprovidermetadata.h"
 #include "qgsproviderregistry.h"
 #include "qgsprovidersublayerdetails.h"
+#include "qgsproviderutils.h"
 
 /**
  * \ingroup UnitTests
@@ -240,6 +241,52 @@ void TestQgsVectorTileLayer::testMbtilesProviderMetadata()
 
   QCOMPARE( vectorTileMetadata->priorityForUri( QStringLiteral( "type=mbtiles&url=%1/vector_tile/mbtiles_vt.mbtiles" ).arg( TEST_DATA_DIR ) ), 100 );
   QCOMPARE( vectorTileMetadata->validLayerTypesForUri( QStringLiteral( "type=mbtiles&url=%1/vector_tile/mbtiles_vt.mbtiles" ).arg( TEST_DATA_DIR ) ), {Qgis::LayerType::VectorTile} );
+
+  // query sublayers
+  QList< QgsProviderSublayerDetails > sublayers = vectorTileMetadata->querySublayers( QStringLiteral( "%1/vector_tile/mbtiles_vt.mbtiles" ).arg( TEST_DATA_DIR ) );
+  QCOMPARE( sublayers.size(), 1 );
+  QCOMPARE( sublayers.at( 0 ).providerKey(), QStringLiteral( "mbtilesvectortiles" ) );
+  QCOMPARE( sublayers.at( 0 ).name(), QStringLiteral( "mbtiles_vt" ) );
+  QCOMPARE( sublayers.at( 0 ).uri(), QStringLiteral( "type=mbtiles&url=%1/vector_tile/mbtiles_vt.mbtiles" ).arg( TEST_DATA_DIR ) );
+  QCOMPARE( sublayers.at( 0 ).type(), Qgis::LayerType::VectorTile );
+  QVERIFY( !sublayers.at( 0 ).skippedContainerScan() );
+  QVERIFY( !QgsProviderUtils::sublayerDetailsAreIncomplete( sublayers ) );
+
+  sublayers = vectorTileMetadata->querySublayers( QStringLiteral( "type=mbtiles&url=%1/vector_tile/mbtiles_vt.mbtiles" ).arg( TEST_DATA_DIR ) );
+  QCOMPARE( sublayers.size(), 1 );
+  QCOMPARE( sublayers.at( 0 ).providerKey(), QStringLiteral( "mbtilesvectortiles" ) );
+  QCOMPARE( sublayers.at( 0 ).name(), QStringLiteral( "mbtiles_vt" ) );
+  QCOMPARE( sublayers.at( 0 ).uri(), QStringLiteral( "type=mbtiles&url=%1/vector_tile/mbtiles_vt.mbtiles" ).arg( TEST_DATA_DIR ) );
+  QCOMPARE( sublayers.at( 0 ).type(), Qgis::LayerType::VectorTile );
+  QVERIFY( !sublayers.at( 0 ).skippedContainerScan() );
+
+  // fast scan flag
+  sublayers = vectorTileMetadata->querySublayers( QStringLiteral( "%1/vector_tile/mbtiles_vt.mbtiles" ).arg( TEST_DATA_DIR ), Qgis::SublayerQueryFlag::FastScan );
+  QCOMPARE( sublayers.size(), 1 );
+  QCOMPARE( sublayers.at( 0 ).providerKey(), QStringLiteral( "mbtilesvectortiles" ) );
+  QCOMPARE( sublayers.at( 0 ).name(), QStringLiteral( "mbtiles_vt" ) );
+  QCOMPARE( sublayers.at( 0 ).uri(), QStringLiteral( "type=mbtiles&url=%1/vector_tile/mbtiles_vt.mbtiles" ).arg( TEST_DATA_DIR ) );
+  QCOMPARE( sublayers.at( 0 ).type(), Qgis::LayerType::VectorTile );
+  QVERIFY( sublayers.at( 0 ).skippedContainerScan() );
+  QVERIFY( QgsProviderUtils::sublayerDetailsAreIncomplete( sublayers ) );
+
+  sublayers = vectorTileMetadata->querySublayers( QStringLiteral( "type=mbtiles&url=%1/vector_tile/mbtiles_vt.mbtiles" ).arg( TEST_DATA_DIR ), Qgis::SublayerQueryFlag::FastScan );
+  QCOMPARE( sublayers.size(), 1 );
+  QCOMPARE( sublayers.at( 0 ).providerKey(), QStringLiteral( "mbtilesvectortiles" ) );
+  QCOMPARE( sublayers.at( 0 ).name(), QStringLiteral( "mbtiles_vt" ) );
+  QCOMPARE( sublayers.at( 0 ).uri(), QStringLiteral( "type=mbtiles&url=%1/vector_tile/mbtiles_vt.mbtiles" ).arg( TEST_DATA_DIR ) );
+  QCOMPARE( sublayers.at( 0 ).type(), Qgis::LayerType::VectorTile );
+  QVERIFY( sublayers.at( 0 ).skippedContainerScan() );
+
+  // fast scan mode means that any mbtile file will be reported, including those with only raster tiles
+  // (we are skipping a potentially expensive db open and format check)
+  sublayers = vectorTileMetadata->querySublayers( QStringLiteral( "%1/isle_of_man.mbtiles" ).arg( TEST_DATA_DIR ), Qgis::SublayerQueryFlag::FastScan );
+  QCOMPARE( sublayers.size(), 1 );
+  QCOMPARE( sublayers.at( 0 ).providerKey(), QStringLiteral( "mbtilesvectortiles" ) );
+  QCOMPARE( sublayers.at( 0 ).name(), QStringLiteral( "isle_of_man" ) );
+  QCOMPARE( sublayers.at( 0 ).uri(), QStringLiteral( "type=mbtiles&url=%1/isle_of_man.mbtiles" ).arg( TEST_DATA_DIR ) );
+  QCOMPARE( sublayers.at( 0 ).type(), Qgis::LayerType::VectorTile );
+  QVERIFY( sublayers.at( 0 ).skippedContainerScan() );
 
   // test that mbtilesvectortiles provider is the preferred provider for vector tile mbtiles files
   QList<QgsProviderRegistry::ProviderCandidateDetails> candidates = QgsProviderRegistry::instance()->preferredProvidersForUri( QStringLiteral( "type=mbtiles&url=%1/vector_tile/mbtiles_vt.mbtiles" ).arg( TEST_DATA_DIR ) );
