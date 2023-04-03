@@ -55,6 +55,8 @@ void QgsScaleComboBox::updateScales( const QStringList &scales )
     }
   }
 
+  QStringList  myCleanedScalesList;
+
   for ( int i = 0; i < myScalesList.size(); ++i )
   {
     const QStringList parts = myScalesList[ i ] .split( ':' );
@@ -65,13 +67,21 @@ void QgsScaleComboBox::updateScales( const QStringList &scales )
     const double denominator = QLocale().toDouble( parts[1], &ok );
     if ( ok )
     {
-      myScalesList[ i ] = toString( denominator );
+      myCleanedScalesList.push_back( toString( denominator ) );
+    }
+    else
+    {
+      const double denominator = parts[1].toDouble( &ok );
+      if ( ok )
+      {
+        myCleanedScalesList.push_back( toString( denominator ) );
+      }
     }
   }
 
   blockSignals( true );
   clear();
-  addItems( myScalesList );
+  addItems( myCleanedScalesList );
   setScaleString( oldScale );
   blockSignals( false );
 }
