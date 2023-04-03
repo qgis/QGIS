@@ -23,7 +23,7 @@
 
 class QgsLayoutItem3DMap;
 class Qgs3DMapCanvasWidget;
-class Qgs3DScene;
+class QDomElement;
 
 class QgsLayout3DMapWidget : public QgsLayoutItemBaseWidget, private Ui::QgsLayout3DMapWidgetBase
 {
@@ -40,8 +40,8 @@ class QgsLayout3DMapWidget : public QgsLayoutItemBaseWidget, private Ui::QgsLayo
     void updateCameraPoseWidgetsFromItem();
 
   private slots:
-    void copy3DMapSettings( Qgs3DMapScene *scene );
-    void copyCameraPose( Qgs3DMapScene *scene );
+    void copy3DMapSettings( const QDomElement &elem3DMap );
+    void copyCameraPose( const QDomElement &elem3DMap );
     void updateCameraPose();
 
   private:
