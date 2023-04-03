@@ -9,22 +9,19 @@ __author__ = 'Benjamin Jakimow'
 __date__ = '2023-04'
 __copyright__ = 'Copyright 2023, The QGIS Project'
 
-
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, TestCase
 from qgis.gui import QgsVectorLayerSaveAsDialog
-from utilities import unitTestDataPath
+from qgis.core import QgsFeature, edit, QgsVectorLayer
 
-# Convenience instances in case you may need them
-# not used in this test
 start_app()
+
 
 class TestQgsMapCanvas(TestCase):
 
-
     def testOpenDialog(self):
 
-        layer = QgsVectorLayer("Polygon?crs=epsg:4326&field=fldtxt:string",
-        "layer", "memory")
+        layer = QgsVectorLayer("Polygon?crs=epsg:4326&field=fldtxt:string", "layer", "memory")
 
         with edit(layer):
             f = QgsFeature(layer.fields())
@@ -40,8 +37,6 @@ class TestQgsMapCanvas(TestCase):
         d = QgsVectorLayerSaveAsDialog(layer, options=options)
         d.setOnlySelected(True)
         self.assertTrue(d.onlySelected())
-        self.assertEqual(layer, d.
-
 
 
 if __name__ == '__main__':
