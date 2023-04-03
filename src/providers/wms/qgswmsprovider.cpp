@@ -5246,6 +5246,16 @@ QList<QgsProviderSublayerDetails> QgsWmsProviderMetadata::querySublayers( const 
   else
   {
     const QVariantMap parts = decodeUri( uri );
+    if ( !parts.contains( QStringLiteral( "path" ) ) )
+    {
+      // online wms source
+      QgsProviderSublayerDetails details;
+      details.setUri( uri );
+      details.setProviderKey( key() );
+      details.setType( Qgis::LayerType::Raster );
+      return {details};
+    }
+
     fileName = parts.value( QStringLiteral( "path" ) ).toString();
   }
 
