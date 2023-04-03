@@ -1695,6 +1695,7 @@ void QgsLayoutLegendNodeWidget::labelChanged()
   }
 
   mLegend->adjustBoxSize();
+  mLegend->invalidateCache();
   mLegend->update();
   mLegend->endCommand();
 }
