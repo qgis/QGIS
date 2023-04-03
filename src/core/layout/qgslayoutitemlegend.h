@@ -572,6 +572,7 @@ class CORE_EXPORT QgsLayoutItemLegend : public QgsLayoutItem
   public slots:
 
     void refresh() override;
+    void invalidateCache() override;
     void refreshDataDefinedProperty( QgsLayoutObject::DataDefinedProperty property = QgsLayoutObject::AllProperties ) override;
 
   protected:

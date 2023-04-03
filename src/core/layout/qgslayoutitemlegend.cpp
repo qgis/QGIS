@@ -198,6 +198,12 @@ void QgsLayoutItemLegend::refresh()
   onAtlasFeature();
 }
 
+void QgsLayoutItemLegend::invalidateCache()
+{
+  clearLegendCachedData();
+  QgsLayoutItem::invalidateCache();
+}
+
 void QgsLayoutItemLegend::draw( QgsLayoutItemRenderContext &context )
 {
   QPainter *painter = context.renderContext().painter();
