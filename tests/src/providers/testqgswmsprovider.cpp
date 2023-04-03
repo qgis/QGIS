@@ -228,6 +228,14 @@ class TestQgsWmsProvider: public QgsTest
       QCOMPARE( sublayers.at( 0 ).type(), Qgis::LayerType::Raster );
       QVERIFY( !sublayers.at( 0 ).skippedContainerScan() );
 
+      // WMS source
+      sublayers = wmsMetadata->querySublayers( QStringLiteral( "http://localhost:8380/mapserv?xxx&layers=agri_zones&styles=fb_style&format=image/jpg" ) );
+      QCOMPARE( sublayers.size(), 1 );
+      QCOMPARE( sublayers.at( 0 ).providerKey(), QStringLiteral( "wms" ) );
+      QCOMPARE( sublayers.at( 0 ).uri(), QStringLiteral( "http://localhost:8380/mapserv?xxx&layers=agri_zones&styles=fb_style&format=image/jpg" ) );
+      QCOMPARE( sublayers.at( 0 ).type(), Qgis::LayerType::Raster );
+      QVERIFY( !sublayers.at( 0 ).skippedContainerScan() );
+
       // fast scan flag
       sublayers = wmsMetadata->querySublayers( QStringLiteral( "%1/isle_of_man.mbtiles" ).arg( TEST_DATA_DIR ), Qgis::SublayerQueryFlag::FastScan );
       QCOMPARE( sublayers.size(), 1 );
@@ -245,6 +253,14 @@ class TestQgsWmsProvider: public QgsTest
       QCOMPARE( sublayers.at( 0 ).uri(), QStringLiteral( "url=file://%1/isle_of_man.mbtiles&type=mbtiles" ).arg( TEST_DATA_DIR ) );
       QCOMPARE( sublayers.at( 0 ).type(), Qgis::LayerType::Raster );
       QVERIFY( sublayers.at( 0 ).skippedContainerScan() );
+
+      // WMS source
+      sublayers = wmsMetadata->querySublayers( QStringLiteral( "http://localhost:8380/mapserv?xxx&layers=agri_zones&styles=fb_style&format=image/jpg" ), Qgis::SublayerQueryFlag::FastScan );
+      QCOMPARE( sublayers.size(), 1 );
+      QCOMPARE( sublayers.at( 0 ).providerKey(), QStringLiteral( "wms" ) );
+      QCOMPARE( sublayers.at( 0 ).uri(), QStringLiteral( "http://localhost:8380/mapserv?xxx&layers=agri_zones&styles=fb_style&format=image/jpg" ) );
+      QCOMPARE( sublayers.at( 0 ).type(), Qgis::LayerType::Raster );
+      QVERIFY( !sublayers.at( 0 ).skippedContainerScan() );
 
       // fast scan mode means that any mbtile file will be reported, including those with only vector tiles
       // (we are skipping a potentially expensive db open and format check)
