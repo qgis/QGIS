@@ -112,7 +112,7 @@ class Editor(QgsCodeEditorPython):
                                      QCoreApplication.translate("PythonConsole", "Run Selected"),
                                      self.runSelectedCode, 'Ctrl+E')  # spellok
         pyQGISHelpAction = menu.addAction(QgsApplication.getThemeIcon("console/iconHelpConsole.svg"),
-                                          QCoreApplication.translate("PythonConsole", "Search Selected in PyQGIS docs"),
+                                          QCoreApplication.translate("PythonConsole", "Search Selection in PyQGIS Documentation"),
                                           self.searchSelectedTextInPyQGISDocs)
         menu.addAction(QgsApplication.getThemeIcon("mActionStart.svg"),
                        QCoreApplication.translate("PythonConsole", "Run Script"),
