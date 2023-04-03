@@ -37,6 +37,7 @@ class QgsPdalProvider: public QgsPointCloudDataProvider
     QgsCoordinateReferenceSystem crs() const override;
     QgsRectangle extent() const override;
     QgsPointCloudAttributeCollection attributes() const override;
+    QStringList attributeNames() const override;
     qint64 pointCount() const override;
     QVariantMap originalMetadata() const override;
     bool isValid() const override;
@@ -60,6 +61,7 @@ class QgsPdalProvider: public QgsPointCloudDataProvider
     qint64 mPointCount = 0;
 
     QVariantMap mOriginalMetadata;
+    QStringList mAttributeNames;
     std::unique_ptr<QgsPointCloudIndex> mIndex;
     QgsPdalIndexingTask *mRunningIndexingTask = nullptr;
     bool mGenerateCopc = true;

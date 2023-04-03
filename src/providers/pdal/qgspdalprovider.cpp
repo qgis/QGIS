@@ -82,6 +82,11 @@ QgsPointCloudAttributeCollection QgsPdalProvider::attributes() const
   return mIndex ? mIndex->attributes() : QgsPointCloudAttributeCollection();
 }
 
+QStringList QgsPdalProvider::attributeNames() const
+{
+  return mAttributeNames;
+}
+
 static QString _outEptDir( const QString &filename )
 {
   const QFileInfo fi( filename );
@@ -308,6 +313,13 @@ bool QgsPdalProvider::load( const QString &uri )
       // projection
       const QString wkt = QString::fromStdString( quickInfo.m_srs.getWKT() );
       mCrs = QgsCoordinateReferenceSystem::fromWkt( wkt );
+
+      // attribute names
+      for ( auto &dim : quickInfo.m_dimNames )
+      {
+        mAttributeNames << QString::fromStdString( dim );
+      }
+
       return quickInfo.valid();
     }
     else
