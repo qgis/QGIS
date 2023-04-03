@@ -31,6 +31,7 @@ RUN dnf -y --refresh install \
     PDAL \
     PDAL-libs \
     PDAL-devel \
+    perl-YAML-Tiny \
     proj-devel \
     protobuf-devel \
     protobuf-lite-devel \
