@@ -65,10 +65,10 @@ QList<QgsGeometryCheckResolutionMethod> QgsGeometryCheck::availableResolutionMet
   const QStringList methods = resolutionMethods();
   Q_NOWARN_DEPRECATED_POP
 
-  const int i = 0;
+  int i = 0;
   for ( const QString &method : methods )
   {
-    fixes.append( QgsGeometryCheckResolutionMethod( i, method, QString(), false ) );
+    fixes.append( QgsGeometryCheckResolutionMethod( i++, method, QString(), false ) );
   }
 
   return fixes;
