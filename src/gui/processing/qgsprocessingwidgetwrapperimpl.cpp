@@ -4308,7 +4308,7 @@ QgsProcessingFieldParameterDefinitionWidget::QgsProcessingFieldParameterDefiniti
   mDefaultLineEdit->setToolTip( tr( "Default field name, or ; separated list of field names for multiple field parameters" ) );
   if ( const QgsProcessingParameterField *fieldParam = dynamic_cast<const QgsProcessingParameterField *>( definition ) )
   {
-    const QStringList fields = QgsProcessingParameters::parameterAsFields( fieldParam, fieldParam->defaultValueForGui(), context );
+    const QStringList fields = QgsProcessingParameters::parameterAsStrings( fieldParam, fieldParam->defaultValueForGui(), context );
     mDefaultLineEdit->setText( fields.join( ';' ) );
   }
   vlayout->addWidget( mDefaultLineEdit );
@@ -4567,7 +4567,7 @@ void QgsProcessingFieldWidgetWrapper::setWidgetValue( const QVariant &value, Qgs
     QVariantList opts;
     if ( value.isValid() )
     {
-      const QStringList v = QgsProcessingParameters::parameterAsFields( parameterDefinition(), value, context );
+      const QStringList v = QgsProcessingParameters::parameterAsStrings( parameterDefinition(), value, context );
       opts.reserve( v.size() );
       for ( const QString &i : v )
         opts << i;
@@ -4580,7 +4580,7 @@ void QgsProcessingFieldWidgetWrapper::setWidgetValue( const QVariant &value, Qgs
     const QgsProcessingParameterField *fieldParam = static_cast< const QgsProcessingParameterField * >( parameterDefinition() );
     if ( fieldParam->allowMultiple() )
     {
-      const QStringList v = QgsProcessingParameters::parameterAsFields( parameterDefinition(), value, context );
+      const QStringList v = QgsProcessingParameters::parameterAsStrings( parameterDefinition(), value, context );
       mLineEdit->setText( v.join( ';' ) );
     }
     else
