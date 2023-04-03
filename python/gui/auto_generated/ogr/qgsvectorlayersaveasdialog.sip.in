@@ -9,15 +9,10 @@
 
 
 
-
 class QgsVectorLayerSaveAsDialog : QDialog
 {
 %Docstring(signature="appended")
 Class to select destination file, type and CRS for ogr layers
-
-.. note::
-
-   not available in Python bindings
 
 .. versionadded:: 1.0
 %End
@@ -232,7 +227,6 @@ Sets whether the include z dimension checkbox should be checked.
 %Docstring
 Returns creation action
 %End
-
 
     virtual void accept();
 
