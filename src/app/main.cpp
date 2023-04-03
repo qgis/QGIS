@@ -400,6 +400,7 @@ void myMessageOutput( QtMsgType type, const QMessageLogContext &, const QString 
        * - QtSVG warnings with regards to lack of implementation beyond Tiny SVG 1.2
        */
       if ( msg.contains( QLatin1String( "QXcbClipboard" ), Qt::CaseInsensitive ) ||
+           msg.contains( QLatin1String( "QGestureManager::deliverEvent" ), Qt::CaseInsensitive ) ||
            msg.startsWith( QLatin1String( "libpng warning: iCCP: known incorrect sRGB profile" ), Qt::CaseInsensitive ) ||
            msg.contains( QLatin1String( "Could not add child element to parent element because the types are incorrect" ), Qt::CaseInsensitive ) ||
            msg.contains( QLatin1String( "OpenType support missing for" ), Qt::CaseInsensitive ) )

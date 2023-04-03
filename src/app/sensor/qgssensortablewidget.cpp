@@ -36,9 +36,10 @@ QgsSensorSettingsWidget::QgsSensorSettingsWidget( QgsAbstractSensor *sensor, QWi
   setupUi( this );
   setPanelTitle( tr( "Sensor Settings" ) );
   setObjectName( QStringLiteral( "SensorSettings" ) );
+  connect( this, &QgsPanelWidget::panelAccepted, this, [ = ]() { apply(); } );
 
   mNameLineEdit->setText( sensor->name() );
-  connect( mNameLineEdit, &QLineEdit::textChanged, this, [ = ]() { mButtonBox->button( QDialogButtonBox::Apply )->setEnabled( true ); } );
+  connect( mNameLineEdit, &QLineEdit::textChanged, this, [ = ]() { mDirty = true; } );
 
   const QMap<QString, QString> sensorTypes = QgsGui::sensorGuiRegistry()->sensorTypes();
   for ( auto sensorIt = sensorTypes.begin(); sensorIt != sensorTypes.end(); ++sensorIt )
@@ -48,15 +49,8 @@ QgsSensorSettingsWidget::QgsSensorSettingsWidget( QgsAbstractSensor *sensor, QWi
   mTypeComboBox->setCurrentIndex( mTypeComboBox->findData( sensor->type() ) );
   connect( mTypeComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [ = ]()
   {
-    mButtonBox->button( QDialogButtonBox::Apply )->setEnabled( true );
+    mDirty = true;
     setSensorWidget();
-  } );
-
-  mButtonBox->button( QDialogButtonBox::Apply )->setEnabled( false );
-  connect( mButtonBox->button( QDialogButtonBox::Apply ), &QAbstractButton::clicked, this, [ = ]()
-  {
-    mButtonBox->button( QDialogButtonBox::Apply )->setEnabled( false );
-    apply();
   } );
 
   setSensorWidget();
@@ -76,13 +70,13 @@ void QgsSensorSettingsWidget::setSensorWidget()
     mSensorWidget->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
     mSensorWidget->setSensor( mSensor );
     mTypeLayout->addWidget( mSensorWidget );
-    connect( mSensorWidget, &QgsAbstractSensorWidget::changed, this, [ = ]() { mButtonBox->button( QDialogButtonBox::Apply )->setEnabled( true ); } );
+    connect( mSensorWidget, &QgsAbstractSensorWidget::changed, this, [ = ]() { mDirty = true; } );
   }
 }
 
 void QgsSensorSettingsWidget::apply()
 {
-  if ( mSensorWidget && mSensor )
+  if ( mDirty && mSensorWidget && mSensor )
   {
     mSensor->disconnectSensor();
     if ( !mSensorWidget->updateSensor( mSensor ) )

@@ -124,6 +124,8 @@ void QgsOapifLandingPageRequest::processReply()
                         apiTypes );
     }
 #endif
+
+    mConformanceUrl = QgsOAPIFJson::findLink( links, QStringLiteral( "conformance" ) );
   }
   catch ( const json::parse_error &ex )
   {
