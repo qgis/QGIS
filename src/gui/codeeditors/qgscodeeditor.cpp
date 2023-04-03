@@ -135,6 +135,10 @@ QgsCodeEditor::QgsCodeEditor( QWidget *parent, const QString &title, bool foldin
       break;
     }
   }
+
+#if QSCINTILLA_VERSION < 0x020d03
+  installEventFilter( this );
+#endif
 }
 
 // Workaround a bug in QScintilla 2.8.X
@@ -238,6 +242,21 @@ void QgsCodeEditor::contextMenuEvent( QContextMenuEvent *event )
   populateContextMenu( menu );
 
   menu->exec( mapToGlobal( event->pos() ) );
+}
+
+bool QgsCodeEditor::eventFilter( QObject *watched, QEvent *event )
+{
+#if QSCINTILLA_VERSION < 0x020d03
+  if ( watched == this && event->type() == QEvent::InputMethod )
+  {
+    // swallow input method events, which cause loss of selected text.
+    // See https://sourceforge.net/p/scintilla/bugs/1913/ , which was ported to QScintilla
+    // in version 2.13.3
+    return true;
+  }
+#endif
+
+  return QsciScintilla::eventFilter( watched, event );
 }
 
 void QgsCodeEditor::initializeLexer()
