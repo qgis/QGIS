@@ -187,8 +187,8 @@ jobs:
       - name: Sip Files Up To Date
         run: ./tests/code_layout/sipify/test_sipfiles.sh
 
-  cppcheck_18_04:
-    runs-on: ubuntu-18.04
+  cppcheck_20_04:
+    runs-on: ubuntu-20.04
     steps:
       - name: Checkout
         uses: actions/checkout@v3
