@@ -31,7 +31,8 @@ float _normalizedAngle( float x )
   if ( x < 0 ) x += 360;
   return x;
 }
-void _prepare3DViewsMenu( QMenu *menu, QgsLayout3DMapWidget *w, const std::function< void( const QDomElement &) > &slot )
+
+void _prepare3DViewsMenu( QMenu *menu, QgsLayout3DMapWidget *w, const std::function< void( const QDomElement & ) > &slot )
 {
   QObject::connect( menu, &QMenu::aboutToShow, w, [menu, slot]
   {
@@ -74,14 +75,14 @@ QgsLayout3DMapWidget::QgsLayout3DMapWidget( QgsLayoutItem3DMap *map3D )
 
   mMenu3DCanvases = new QMenu( this );
   mCopySettingsButton->setMenu( mMenu3DCanvases );
-  _prepare3DViewsMenu( mMenu3DCanvases, this, [ = ](  const QDomElement &elem3DMap )
+  _prepare3DViewsMenu( mMenu3DCanvases, this, [ = ]( const QDomElement & elem3DMap )
   {
     copy3DMapSettings( elem3DMap );
   } );
 
   mMenu3DCanvasesPose = new QMenu( this );
   mPoseFromViewButton->setMenu( mMenu3DCanvasesPose );
-  _prepare3DViewsMenu( mMenu3DCanvasesPose, this, [ = ]( const QDomElement &elem3DMap ) { copyCameraPose( elem3DMap ); } );
+  _prepare3DViewsMenu( mMenu3DCanvasesPose, this, [ = ]( const QDomElement & elem3DMap ) { copyCameraPose( elem3DMap ); } );
 
   QList<QgsDoubleSpinBox *> lst;
   lst << mCenterXSpinBox << mCenterYSpinBox << mCenterZSpinBox << mDistanceToCenterSpinBox << mPitchAngleSpinBox << mHeadingAngleSpinBox;
@@ -112,7 +113,7 @@ void QgsLayout3DMapWidget::copy3DMapSettings( const QDomElement &elem3DMap )
 {
   QDomElement elem3D = elem3DMap.firstChildElement( QStringLiteral( "qgis3d" ) );
 
-  if (elem3D.isNull())
+  if ( elem3D.isNull() )
   {
     return;
   }
@@ -120,8 +121,8 @@ void QgsLayout3DMapWidget::copy3DMapSettings( const QDomElement &elem3DMap )
   QgsReadWriteContext readWriteContext;
   readWriteContext.setPathResolver( QgsProject::instance()->pathResolver() );
 
-  Qgs3DMapSettings * settings= new Qgs3DMapSettings();
-  settings->readXml(elem3D, readWriteContext);
+  Qgs3DMapSettings *settings = new Qgs3DMapSettings();
+  settings->readXml( elem3D, readWriteContext );
   settings->resolveReferences( *QgsProject::instance() );
   settings->setTransformContext( QgsProject::instance()->transformContext() );
   settings->setPathResolver( QgsProject::instance()->pathResolver() );
@@ -131,7 +132,7 @@ void QgsLayout3DMapWidget::copy3DMapSettings( const QDomElement &elem3DMap )
   settings->setBackgroundColor( QgisApp::instance()->mapCanvas()->canvasColor() );
   settings->setOutputDpi( QGuiApplication::primaryScreen()->logicalDotsPerInch() );
 
-  mMap3D->setMapSettings(settings);
+  mMap3D->setMapSettings( settings );
 }
 
 void QgsLayout3DMapWidget::copyCameraPose( const QDomElement &elem3DMap )
@@ -156,7 +157,7 @@ void QgsLayout3DMapWidget::copyCameraPose( const QDomElement &elem3DMap )
   cameraPose.setPitchAngle( pitch );
   cameraPose.setHeadingAngle( yaw );
 
-  mMap3D->setCameraPose(cameraPose);
+  mMap3D->setCameraPose( cameraPose );
   updateCameraPoseWidgetsFromItem();
 }
 
