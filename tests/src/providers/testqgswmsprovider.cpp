@@ -194,10 +194,13 @@ class TestQgsWmsProvider: public QgsTest
       // not mbtile uris
       QCOMPARE( wmsMetadata->priorityForUri( QString() ), 0 );
       QCOMPARE( wmsMetadata->validLayerTypesForUri( QString() ), {} );
+      QVERIFY( wmsMetadata->querySublayers( QString() ).isEmpty() );
+      QVERIFY( wmsMetadata->querySublayers( QStringLiteral( "xxx" ) ).isEmpty() );
 
       QCOMPARE( wmsMetadata->priorityForUri( QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/points.shp" ) ), 0 );
       QVERIFY( wmsMetadata->validLayerTypesForUri( QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/points.shp" ) ).isEmpty() );
       QVERIFY( wmsMetadata->querySublayers( QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/points.shp" ) ).isEmpty() );
+      QVERIFY( wmsMetadata->querySublayers( QStringLiteral( TEST_DATA_DIR ) ).isEmpty() );
 
       QCOMPARE( wmsMetadata->priorityForUri( QStringLiteral( "type=mbtiles&url=%1/points.shp" ).arg( TEST_DATA_DIR ) ), 0 );
       QVERIFY( wmsMetadata->validLayerTypesForUri( QStringLiteral( "type=mbtiles&url=%1/points.shp" ).arg( TEST_DATA_DIR ) ).isEmpty() );
@@ -229,10 +232,10 @@ class TestQgsWmsProvider: public QgsTest
       QVERIFY( !sublayers.at( 0 ).skippedContainerScan() );
 
       // WMS source
-      sublayers = wmsMetadata->querySublayers( QStringLiteral( "http://localhost:8380/mapserv?xxx&layers=agri_zones&styles=fb_style&format=image/jpg" ) );
+      sublayers = wmsMetadata->querySublayers( QStringLiteral( "url=http://localhost:8380/mapserv?xxx&layers=agri_zones&styles=fb_style&format=image/jpg" ) );
       QCOMPARE( sublayers.size(), 1 );
       QCOMPARE( sublayers.at( 0 ).providerKey(), QStringLiteral( "wms" ) );
-      QCOMPARE( sublayers.at( 0 ).uri(), QStringLiteral( "http://localhost:8380/mapserv?xxx&layers=agri_zones&styles=fb_style&format=image/jpg" ) );
+      QCOMPARE( sublayers.at( 0 ).uri(), QStringLiteral( "url=http://localhost:8380/mapserv?xxx&layers=agri_zones&styles=fb_style&format=image/jpg" ) );
       QCOMPARE( sublayers.at( 0 ).type(), Qgis::LayerType::Raster );
       QVERIFY( !sublayers.at( 0 ).skippedContainerScan() );
 
@@ -255,10 +258,10 @@ class TestQgsWmsProvider: public QgsTest
       QVERIFY( sublayers.at( 0 ).skippedContainerScan() );
 
       // WMS source
-      sublayers = wmsMetadata->querySublayers( QStringLiteral( "http://localhost:8380/mapserv?xxx&layers=agri_zones&styles=fb_style&format=image/jpg" ), Qgis::SublayerQueryFlag::FastScan );
+      sublayers = wmsMetadata->querySublayers( QStringLiteral( "url=http://localhost:8380/mapserv?xxx&layers=agri_zones&styles=fb_style&format=image/jpg" ), Qgis::SublayerQueryFlag::FastScan );
       QCOMPARE( sublayers.size(), 1 );
       QCOMPARE( sublayers.at( 0 ).providerKey(), QStringLiteral( "wms" ) );
-      QCOMPARE( sublayers.at( 0 ).uri(), QStringLiteral( "http://localhost:8380/mapserv?xxx&layers=agri_zones&styles=fb_style&format=image/jpg" ) );
+      QCOMPARE( sublayers.at( 0 ).uri(), QStringLiteral( "url=http://localhost:8380/mapserv?xxx&layers=agri_zones&styles=fb_style&format=image/jpg" ) );
       QCOMPARE( sublayers.at( 0 ).type(), Qgis::LayerType::Raster );
       QVERIFY( !sublayers.at( 0 ).skippedContainerScan() );
 
