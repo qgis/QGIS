@@ -587,7 +587,7 @@ class CORE_EXPORT QgsMapRendererJob : public QObject SIP_ABSTRACT
                                 const QgsMapRendererCache *cache = nullptr ) SIP_SKIP;
 
     //! \note not available in Python bindings
-    static QImage layerImageToBeComposed( const QgsMapSettings &settings, const LayerRenderJob &job, const QgsMapRendererCache *cache ) SIP_SKIP;
+    static QImage drawComposedLayerImage( const QgsMapSettings &settings, const LayerRenderJob &job, const QgsMapRendererCache *cache, QPainter &painter ) SIP_SKIP;
 
     //! \note not available in Python bindings
     static QgsElevationMap layerElevationToBeComposed( const QgsMapSettings &settings, const LayerRenderJob &job, const QgsMapRendererCache *cache ) SIP_SKIP;

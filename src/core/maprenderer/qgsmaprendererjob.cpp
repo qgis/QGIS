@@ -15,6 +15,7 @@
 
 #include "qgsmaprendererjob.h"
 
+#include <QBitmap>
 #include <QPainter>
 #include <QElapsedTimer>
 #include <QTimer>
@@ -1148,10 +1149,6 @@ QImage QgsMapRendererJob::composeImage( const QgsMapSettings &settings,
     if ( job.renderAboveLabels )
       continue; // skip layer for now, it will be rendered after labels
 
-    QImage img = layerImageToBeComposed( settings, job, cache );
-    if ( img.isNull() )
-      continue; // image is not prepared and not even in cache
-
     painter.setCompositionMode( job.blendMode );
     painter.setOpacity( job.opacity );
 
@@ -1162,13 +1159,13 @@ QImage QgsMapRendererJob::composeImage( const QgsMapSettings &settings,
         mainElevationMap->combine( layerElevationMap, mapShadingRenderer.combinedElevationMethod() );
     }
 
+    drawComposedLayerImage( settings, job, cache, painter );
 
 #if DEBUG_RENDERING
     img.save( QString( "/tmp/final_%1.png" ).arg( i ) );
     i++;
 #endif
 
-    painter.drawImage( 0, 0, img );
   }
 
   if ( mapShadingRenderer.isActive() &&  mainElevationMap )
@@ -1202,14 +1199,9 @@ QImage QgsMapRendererJob::composeImage( const QgsMapSettings &settings,
     if ( !job.renderAboveLabels )
       continue;
 
-    QImage img = layerImageToBeComposed( settings, job, cache );
-    if ( img.isNull() )
-      continue; // image is not prepared and not even in cache
-
     painter.setCompositionMode( job.blendMode );
     painter.setOpacity( job.opacity );
-
-    painter.drawImage( 0, 0, img );
+    drawComposedLayerImage( settings, job, cache, painter );
   }
 
   painter.end();
@@ -1219,26 +1211,37 @@ QImage QgsMapRendererJob::composeImage( const QgsMapSettings &settings,
   return image;
 }
 
-QImage QgsMapRendererJob::layerImageToBeComposed(
+QImage QgsMapRendererJob::drawComposedLayerImage(
   const QgsMapSettings &settings,
   const LayerRenderJob &job,
-  const QgsMapRendererCache *cache
+  const QgsMapRendererCache *cache,
+  QPainter &painter
 )
 {
+  QImage cached_image;
+  if ( cache && cache->hasAnyCacheImage( job.layerId + QStringLiteral( "_preview" ) ) )
+  {
+    cached_image = cache->transformedCacheImage( job.layerId + QStringLiteral( "_preview" ), settings.mapToPixel() );
+  }
+  if ( !cached_image.isNull() )
+  {
+    painter.drawImage( 0, 0, cached_image );
+  }
   if ( job.imageCanBeComposed() )
   {
     Q_ASSERT( job.img );
-    return *job.img;
-  }
-  else
-  {
-    if ( cache && cache->hasAnyCacheImage( job.layerId + QStringLiteral( "_preview" ) ) )
+    if ( !cached_image.isNull() )
     {
-      return cache->transformedCacheImage( job.layerId + QStringLiteral( "_preview" ), settings.mapToPixel() );
+      QImage invert_image = cached_image.createAlphaMask();
+      invert_image.invertPixels();
+      QRegion region( QBitmap::fromImage( invert_image ) );
+      painter.setClipRegion( region );
+      painter.setClipping( true );
     }
-    else
-      return QImage();
+    painter.drawImage( 0, 0, *job.img );
+    painter.setClipping( false );
   }
+  return cached_image;
 }
 
 QgsElevationMap QgsMapRendererJob::layerElevationToBeComposed( const QgsMapSettings &settings, const LayerRenderJob &job, const QgsMapRendererCache *cache )
