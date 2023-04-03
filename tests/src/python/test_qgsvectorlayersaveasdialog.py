@@ -21,20 +21,21 @@ class TestQgsMapCanvas(TestCase):
 
     def testOpenDialog(self):
 
-        layer = QgsVectorLayer("Polygon?crs=epsg:4326&field=fldtxt:string", "layer", "memory")
+        layer = QgsVectorLayer("Polygon?crs=epsg:4326&field=text:string", "layer", "memory")
 
         with edit(layer):
             f = QgsFeature(layer.fields())
-            f.setAttribute('test', 'foo')
+            f.setAttribute('text', 'foo')
             layer.addFeature(f)
 
             f = QgsFeature(layer.fields())
-            f.setAttribute('test', 'bar')
+            f.setAttribute('text', 'bar')
             layer.addFeature(f)
 
         layer.select(layer.allFeatureIds()[0])
         options = QgsVectorLayerSaveAsDialog.SelectedOnly | QgsVectorLayerSaveAsDialog.Metadata
         d = QgsVectorLayerSaveAsDialog(layer, options=options)
+        self.assertIsInstance(d, QgsVectorLayerSaveAsDialog)
         d.setOnlySelected(True)
         self.assertTrue(d.onlySelected())
 
