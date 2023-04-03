@@ -254,6 +254,7 @@ void QgsCodeEditor::contextMenuEvent( QContextMenuEvent *event )
       if ( languageCapabilities() & Qgis::ScriptLanguageCapability::Reformat )
       {
         QAction *reformatAction = new QAction( tr( "Reformat Code" ), menu );
+        reformatAction->setShortcut( QStringLiteral( "Ctrl+Alt+F" ) );
         reformatAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "console/iconFormatCode.svg" ) ) );
         reformatAction->setEnabled( !isReadOnly() );
         connect( reformatAction, &QAction::triggered, this, &QgsCodeEditor::reformatCode );
@@ -271,6 +272,7 @@ void QgsCodeEditor::contextMenuEvent( QContextMenuEvent *event )
       if ( languageCapabilities() & Qgis::ScriptLanguageCapability::ToggleComment )
       {
         QAction *toggleCommentAction = new QAction( tr( "Toggle Comment" ), menu );
+        toggleCommentAction->setShortcut( QStringLiteral( "Ctrl+:" ) );
         toggleCommentAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "console/iconCommentEditorConsole.svg" ) ) );
         toggleCommentAction->setEnabled( !isReadOnly() );
         connect( toggleCommentAction, &QAction::triggered, this, &QgsCodeEditor::toggleComment );
