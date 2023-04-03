@@ -21,7 +21,9 @@ from qgis.PyQt.QtTest import QSignalSpy
 from qgis.core import (
     QgsApplication,
     QgsBox3d,
+    QgsFeature,
     QgsFeatureRequest,
+    QgsGeometry,
     QgsRectangle,
     QgsSettings,
     QgsVectorLayer,
@@ -132,6 +134,10 @@ def create_landing_page_api_collection(endpoint,
 
     with open(sanitize(endpoint, '/collections/mycollection?' + add_params(extraparam, ACCEPT_COLLECTION)), 'wb') as f:
         f.write(json.dumps(collection).encode('UTF-8'))
+
+    # Options
+    with open(sanitize(endpoint, '/collections/mycollection/items?VERB=OPTIONS'), 'wb') as f:
+        f.write("HEAD, GET".encode("UTF-8"))
 
 
 class TestPyQgsOapifProvider(unittest.TestCase, ProviderTestCase):
@@ -920,6 +926,338 @@ class TestPyQgsOapifProvider(unittest.TestCase, ProviderTestCase):
         source = vl.dataProvider()
 
         self.assertEqual(source.featureCount(), 4)
+
+    def testFeatureInsertionDeletion(self):
+
+        endpoint = self.__class__.basetestpath + '/fake_qgis_http_endpoint_testFeatureInsertion'
+        create_landing_page_api_collection(endpoint)
+
+        # first items
+        first_items = {
+            "type": "FeatureCollection",
+            "features": [
+                {"type": "Feature", "id": "feat.1", "properties": {"pk": 1, "cnt": 100},
+                 "geometry": {"type": "Point", "coordinates": [66.33, -70.332]}}
+            ]
+        }
+        with open(sanitize(endpoint, '/collections/mycollection/items?limit=10&' + ACCEPT_ITEMS), 'wb') as f:
+            f.write(json.dumps(first_items).encode('UTF-8'))
+
+        vl = QgsVectorLayer("url='http://" + endpoint + "' typename='mycollection' restrictToRequestBBOX=1", 'test',
+                            'OAPIF')
+        self.assertTrue(vl.isValid())
+        # Basic OPTIONS response: no AddFeatures capability
+        self.assertEqual(vl.dataProvider().capabilities() & vl.dataProvider().AddFeatures,
+                         vl.dataProvider().NoCapabilities)
+
+        # POST on /items, but no DELETE on /items/id
+        with open(sanitize(endpoint, '/collections/mycollection/items?VERB=OPTIONS'), 'wb') as f:
+            f.write("HEAD, GET, POST".encode("UTF-8"))
+        with open(sanitize(endpoint, '/collections/mycollection/items/feat.1?VERB=OPTIONS'), 'wb') as f:
+            f.write("HEAD, GET".encode("UTF-8"))
+
+        vl = QgsVectorLayer("url='http://" + endpoint + "' typename='mycollection' restrictToRequestBBOX=1", 'test',
+                            'OAPIF')
+        self.assertTrue(vl.isValid())
+        self.assertNotEqual(vl.dataProvider().capabilities() & vl.dataProvider().AddFeatures,
+                            vl.dataProvider().NoCapabilities)
+        self.assertEqual(vl.dataProvider().capabilities() & vl.dataProvider().DeleteFeatures,
+                         vl.dataProvider().NoCapabilities)
+
+        # DELETE on /items/id
+        with open(sanitize(endpoint, '/collections/mycollection/items/feat.1?VERB=OPTIONS'), 'wb') as f:
+            f.write("HEAD, GET, DELETE".encode("UTF-8"))
+
+        vl = QgsVectorLayer("url='http://" + endpoint + "' typename='mycollection' restrictToRequestBBOX=1", 'test',
+                            'OAPIF')
+        self.assertTrue(vl.isValid())
+        self.assertNotEqual(vl.dataProvider().capabilities() & vl.dataProvider().AddFeatures,
+                            vl.dataProvider().NoCapabilities)
+        self.assertNotEqual(vl.dataProvider().capabilities() & vl.dataProvider().DeleteFeatures,
+                            vl.dataProvider().NoCapabilities)
+
+        with open(sanitize(endpoint, '/collections/mycollection/items?POSTDATA={"geometry":{"coordinates":[2.0,49.0],"type":"Point"},"properties":{"cnt":1234567890123,"pk":1},"type":"Feature"}'), 'wb') as f:
+            f.write(b"Location: /collections/mycollection/items/new_id\r\n")
+
+        with open(sanitize(endpoint, '/collections/mycollection/items?POSTDATA={"geometry":null,"properties":{"cnt":null,"pk":null},"type":"Feature"}'), 'wb') as f:
+            f.write(b"Location: /collections/mycollection/items/other_id\r\n")
+
+        f = QgsFeature()
+        f.setFields(vl.fields())
+        f.setAttributes([None, 1, 1234567890123])
+        f.setGeometry(QgsGeometry.fromWkt('Point (2 49)'))
+
+        f2 = QgsFeature()
+        f2.setFields(vl.fields())
+
+        ret, fl = vl.dataProvider().addFeatures([f, f2])
+        self.assertTrue(ret)
+        self.assertEqual(fl[0].id(), 1)
+        self.assertEqual(fl[1].id(), 2)
+
+        # Failed attempt
+        self.assertFalse(vl.dataProvider().deleteFeatures([1]))
+
+        with open(sanitize(endpoint, '/collections/mycollection/items/new_id?VERB=DELETE'), 'wb') as f:
+            f.write(b"")
+
+        with open(sanitize(endpoint, '/collections/mycollection/items/other_id?VERB=DELETE'), 'wb') as f:
+            f.write(b"")
+
+        self.assertTrue(vl.dataProvider().deleteFeatures([1, 2]))
+
+    def testFeatureInsertionNonDefaultCrs(self):
+
+        endpoint = self.__class__.basetestpath + '/fake_qgis_http_endpoint_testFeatureInsertionNonDefaultCrs'
+        create_landing_page_api_collection(endpoint, storageCrs="http://www.opengis.net/def/crs/EPSG/0/4326")
+
+        # first items (lat, long) order
+        first_items = {
+            "type": "FeatureCollection",
+            "features": [
+                {"type": "Feature", "id": "feat.1", "properties": {"pk": 1, "cnt": 100},
+                 "geometry": {"type": "Point", "coordinates": [-70.332, 66.33]}}
+            ]
+        }
+        with open(sanitize(endpoint, '/collections/mycollection/items?limit=10&' + ACCEPT_ITEMS), 'wb') as f:
+            f.write(json.dumps(first_items).encode('UTF-8'))
+
+        # POST on /items, but no DELETE on /items/id
+        with open(sanitize(endpoint, '/collections/mycollection/items?VERB=OPTIONS'), 'wb') as f:
+            f.write("HEAD, GET, POST".encode("UTF-8"))
+        with open(sanitize(endpoint, '/collections/mycollection/items/feat.1?VERB=OPTIONS'), 'wb') as f:
+            f.write("HEAD, GET".encode("UTF-8"))
+
+        vl = QgsVectorLayer("url='http://" + endpoint + "' typename='mycollection' restrictToRequestBBOX=1", 'test',
+                            'OAPIF')
+        self.assertTrue(vl.isValid())
+
+        # (lat, long) order
+        with open(sanitize(endpoint, '/collections/mycollection/items?POSTDATA={"geometry":{"coordinates":[49.0,2.0],"type":"Point"},"properties":{"cnt":1234567890123,"pk":1},"type":"Feature"}&Content-Crs=http://www.opengis.net/def/crs/EPSG/0/4326'), 'wb') as f:
+            f.write(b"Location: /collections/mycollection/items/new_id\r\n")
+
+        f = QgsFeature()
+        f.setFields(vl.fields())
+        f.setAttributes([None, 1, 1234567890123])
+        f.setGeometry(QgsGeometry.fromWkt('Point (2 49)'))
+
+        ret, _ = vl.dataProvider().addFeatures([f])
+        self.assertTrue(ret)
+
+    def testFeatureGeometryChange(self):
+
+        endpoint = self.__class__.basetestpath + '/fake_qgis_http_endpoint_testFeatureGeometryChange'
+        create_landing_page_api_collection(endpoint)
+
+        # first items
+        first_items = {
+            "type": "FeatureCollection",
+            "features": [
+                {"type": "Feature", "id": "feat.1", "properties": {"pk": 1, "cnt": 100},
+                 "geometry": {"type": "Point", "coordinates": [66.33, -70.332]}}
+            ]
+        }
+        with open(sanitize(endpoint, '/collections/mycollection/items?limit=10&' + ACCEPT_ITEMS), 'wb') as f:
+            f.write(json.dumps(first_items).encode('UTF-8'))
+
+        with open(sanitize(endpoint, '/collections/mycollection/items?VERB=OPTIONS'), 'wb') as f:
+            f.write("HEAD, GET, POST".encode("UTF-8"))
+        with open(sanitize(endpoint, '/collections/mycollection/items/feat.1?VERB=OPTIONS'), 'wb') as f:
+            f.write("HEAD, GET, PUT, DELETE".encode("UTF-8"))
+
+        vl = QgsVectorLayer("url='http://" + endpoint + "' typename='mycollection' restrictToRequestBBOX=1", 'test',
+                            'OAPIF')
+        self.assertTrue(vl.isValid())
+        self.assertNotEqual(vl.dataProvider().capabilities() & vl.dataProvider().ChangeGeometries,
+                            vl.dataProvider().NoCapabilities)
+
+        # real page
+        with open(sanitize(endpoint, '/collections/mycollection/items?limit=1000&' + ACCEPT_ITEMS), 'wb') as f:
+            f.write(json.dumps(first_items).encode('UTF-8'))
+
+        values = [f.id() for f in vl.getFeatures()]
+        self.assertEqual(values, [1])
+
+        with open(sanitize(endpoint, '/collections/mycollection/items/feat.1?PUTDATA={"geometry":{"coordinates":[3.0,50.0],"type":"Point"},"id":"feat.1","properties":{"cnt":100,"pk":1},"type":"Feature"}'), 'wb') as f:
+            f.write(b"")
+
+        self.assertTrue(vl.dataProvider().changeGeometryValues({1: QgsGeometry.fromWkt('Point (3 50)')}))
+
+        got_f = [f for f in vl.getFeatures()]
+        got = got_f[0].geometry().constGet()
+        self.assertEqual((got.x(), got.y()), (3.0, 50.0))
+
+    def testFeatureGeometryChangeNonDefaultCrs(self):
+
+        endpoint = self.__class__.basetestpath + '/fake_qgis_http_endpoint_testFeatureGeometryChangeNonDefaultCrs'
+        create_landing_page_api_collection(endpoint, storageCrs="http://www.opengis.net/def/crs/EPSG/0/4326")
+
+        # first items
+        first_items = {
+            "type": "FeatureCollection",
+            "features": [
+                {"type": "Feature", "id": "feat.1", "properties": {"pk": 1, "cnt": 100},
+                 "geometry": {"type": "Point", "coordinates": [-70.332, 66.33]}}
+            ]
+        }
+        with open(sanitize(endpoint, '/collections/mycollection/items?limit=10&' + ACCEPT_ITEMS), 'wb') as f:
+            f.write(json.dumps(first_items).encode('UTF-8'))
+
+        with open(sanitize(endpoint, '/collections/mycollection/items?VERB=OPTIONS'), 'wb') as f:
+            f.write("HEAD, GET, POST".encode("UTF-8"))
+        with open(sanitize(endpoint, '/collections/mycollection/items/feat.1?VERB=OPTIONS'), 'wb') as f:
+            f.write("HEAD, GET, PUT, DELETE".encode("UTF-8"))
+
+        vl = QgsVectorLayer("url='http://" + endpoint + "' typename='mycollection' restrictToRequestBBOX=1", 'test',
+                            'OAPIF')
+        self.assertTrue(vl.isValid())
+        self.assertNotEqual(vl.dataProvider().capabilities() & vl.dataProvider().ChangeGeometries,
+                            vl.dataProvider().NoCapabilities)
+
+        # real page
+        with open(sanitize(endpoint, '/collections/mycollection/items?limit=1000&crs=http://www.opengis.net/def/crs/EPSG/0/4326&' + ACCEPT_ITEMS), 'wb') as f:
+            f.write(json.dumps(first_items).encode('UTF-8'))
+
+        values = [f.id() for f in vl.getFeatures()]
+        self.assertEqual(values, [1])
+
+        # (Lat, Long) order
+        with open(sanitize(endpoint, '/collections/mycollection/items/feat.1?PUTDATA={"geometry":{"coordinates":[50.0,3.0],"type":"Point"},"id":"feat.1","properties":{"cnt":100,"pk":1},"type":"Feature"}&Content-Crs=http://www.opengis.net/def/crs/EPSG/0/4326'), 'wb') as f:
+            f.write(b"")
+
+        self.assertTrue(vl.dataProvider().changeGeometryValues({1: QgsGeometry.fromWkt('Point (3 50)')}))
+
+        got_f = [f for f in vl.getFeatures()]
+        got = got_f[0].geometry().constGet()
+        self.assertEqual((got.x(), got.y()), (3.0, 50.0))
+
+    def testFeatureGeometryChangePatch(self):
+
+        endpoint = self.__class__.basetestpath + '/fake_qgis_http_endpoint_testFeatureGeometryChangePatch'
+        create_landing_page_api_collection(endpoint, storageCrs="http://www.opengis.net/def/crs/EPSG/0/4326")
+
+        # first items
+        first_items = {
+            "type": "FeatureCollection",
+            "features": [
+                {"type": "Feature", "id": "feat.1", "properties": {"pk": 1, "cnt": 100},
+                 "geometry": {"type": "Point", "coordinates": [-70.332, 66.33]}}
+            ]
+        }
+        with open(sanitize(endpoint, '/collections/mycollection/items?limit=10&' + ACCEPT_ITEMS), 'wb') as f:
+            f.write(json.dumps(first_items).encode('UTF-8'))
+
+        with open(sanitize(endpoint, '/collections/mycollection/items?VERB=OPTIONS'), 'wb') as f:
+            f.write("HEAD, GET, POST".encode("UTF-8"))
+        with open(sanitize(endpoint, '/collections/mycollection/items/feat.1?VERB=OPTIONS'), 'wb') as f:
+            f.write("HEAD, GET, PUT, DELETE, PATCH".encode("UTF-8"))
+
+        vl = QgsVectorLayer("url='http://" + endpoint + "' typename='mycollection' restrictToRequestBBOX=1", 'test',
+                            'OAPIF')
+        self.assertTrue(vl.isValid())
+        self.assertNotEqual(vl.dataProvider().capabilities() & vl.dataProvider().ChangeGeometries,
+                            vl.dataProvider().NoCapabilities)
+
+        # real page
+        with open(sanitize(endpoint, '/collections/mycollection/items?limit=1000&crs=http://www.opengis.net/def/crs/EPSG/0/4326&' + ACCEPT_ITEMS), 'wb') as f:
+            f.write(json.dumps(first_items).encode('UTF-8'))
+
+        values = [f.id() for f in vl.getFeatures()]
+        self.assertEqual(values, [1])
+
+        # (Lat, Long) order
+        with open(sanitize(endpoint, '/collections/mycollection/items/feat.1?PATCHDATA={"geometry":{"coordinates":[50.0,3.0],"type":"Point"}}&Content-Crs=http://www.opengis.net/def/crs/EPSG/0/4326&Content-Type=application_merge-patch+json'), 'wb') as f:
+            f.write(b"")
+
+        self.assertTrue(vl.dataProvider().changeGeometryValues({1: QgsGeometry.fromWkt('Point (3 50)')}))
+
+        got_f = [f for f in vl.getFeatures()]
+        got = got_f[0].geometry().constGet()
+        self.assertEqual((got.x(), got.y()), (3.0, 50.0))
+
+    def testFeatureAttributeChange(self):
+
+        endpoint = self.__class__.basetestpath + '/fake_qgis_http_endpoint_testFeatureAttributeChange'
+        create_landing_page_api_collection(endpoint)
+
+        # first items
+        first_items = {
+            "type": "FeatureCollection",
+            "features": [
+                {"type": "Feature", "id": "feat.1", "properties": {"pk": 1, "cnt": 100},
+                 "geometry": {"type": "Point", "coordinates": [66.33, -70.332]}}
+            ]
+        }
+        with open(sanitize(endpoint, '/collections/mycollection/items?limit=10&' + ACCEPT_ITEMS), 'wb') as f:
+            f.write(json.dumps(first_items).encode('UTF-8'))
+
+        with open(sanitize(endpoint, '/collections/mycollection/items?VERB=OPTIONS'), 'wb') as f:
+            f.write("HEAD, GET, POST".encode("UTF-8"))
+        with open(sanitize(endpoint, '/collections/mycollection/items/feat.1?VERB=OPTIONS'), 'wb') as f:
+            f.write("HEAD, GET, PUT, DELETE".encode("UTF-8"))
+
+        vl = QgsVectorLayer("url='http://" + endpoint + "' typename='mycollection' restrictToRequestBBOX=1", 'test',
+                            'OAPIF')
+        self.assertTrue(vl.isValid())
+        self.assertNotEqual(vl.dataProvider().capabilities() & vl.dataProvider().ChangeGeometries,
+                            vl.dataProvider().NoCapabilities)
+
+        # real page
+        with open(sanitize(endpoint, '/collections/mycollection/items?limit=1000&' + ACCEPT_ITEMS), 'wb') as f:
+            f.write(json.dumps(first_items).encode('UTF-8'))
+
+        values = [f.id() for f in vl.getFeatures()]
+        self.assertEqual(values, [1])
+
+        with open(sanitize(endpoint, '/collections/mycollection/items/feat.1?PUTDATA={"geometry":{"coordinates":[66.33,-70.332],"type":"Point"},"id":"feat.1","properties":{"cnt":200,"pk":1},"type":"Feature"}'), 'wb') as f:
+            f.write(b"")
+
+        self.assertTrue(vl.dataProvider().changeAttributeValues({1: {2: 200}}))
+
+        values = [f['cnt'] for f in vl.getFeatures()]
+        self.assertEqual(values, [200])
+
+    def testFeatureAttributeChangePatch(self):
+
+        endpoint = self.__class__.basetestpath + '/fake_qgis_http_endpoint_testFeatureAttributeChangePatch'
+        create_landing_page_api_collection(endpoint)
+
+        # first items
+        first_items = {
+            "type": "FeatureCollection",
+            "features": [
+                {"type": "Feature", "id": "feat.1", "properties": {"pk": 1, "cnt": 100},
+                 "geometry": {"type": "Point", "coordinates": [66.33, -70.332]}}
+            ]
+        }
+        with open(sanitize(endpoint, '/collections/mycollection/items?limit=10&' + ACCEPT_ITEMS), 'wb') as f:
+            f.write(json.dumps(first_items).encode('UTF-8'))
+
+        with open(sanitize(endpoint, '/collections/mycollection/items?VERB=OPTIONS'), 'wb') as f:
+            f.write("HEAD, GET, POST".encode("UTF-8"))
+        with open(sanitize(endpoint, '/collections/mycollection/items/feat.1?VERB=OPTIONS'), 'wb') as f:
+            f.write("HEAD, GET, PUT, DELETE, PATCH".encode("UTF-8"))
+
+        vl = QgsVectorLayer("url='http://" + endpoint + "' typename='mycollection' restrictToRequestBBOX=1", 'test',
+                            'OAPIF')
+        self.assertTrue(vl.isValid())
+        self.assertNotEqual(vl.dataProvider().capabilities() & vl.dataProvider().ChangeGeometries,
+                            vl.dataProvider().NoCapabilities)
+
+        # real page
+        with open(sanitize(endpoint, '/collections/mycollection/items?limit=1000&' + ACCEPT_ITEMS), 'wb') as f:
+            f.write(json.dumps(first_items).encode('UTF-8'))
+
+        values = [f.id() for f in vl.getFeatures()]
+        self.assertEqual(values, [1])
+
+        with open(sanitize(endpoint, '/collections/mycollection/items/feat.1?PATCHDATA={"properties":{"cnt":200}}&Content-Type=application_merge-patch+json'), 'wb') as f:
+            f.write(b"")
+
+        self.assertTrue(vl.dataProvider().changeAttributeValues({1: {2: 200}}))
+
+        values = [f['cnt'] for f in vl.getFeatures()]
+        self.assertEqual(values, [200])
 
 
 if __name__ == '__main__':
