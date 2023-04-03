@@ -32,9 +32,9 @@ QgsMediaWidget::QgsMediaWidget( QWidget *parent )
   mLayout->setContentsMargins( 0, 0, 0, 0 );
 
   mVideoWidget = new QVideoWidget( this );
-  mVideoWidget->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
-  mVideoWidget->setMinimumHeight( 0 );
-  mVideoWidget->setMaximumHeight( 9999 );
+  const int vHeight = QFontMetrics( font() ).height() * 12;
+  mVideoWidget->setMinimumHeight( vHeight );
+  mVideoWidget->setMaximumHeight( vHeight );
   mLayout->addWidget( mVideoWidget );
 
   QHBoxLayout *controlsLayout = new QHBoxLayout();
@@ -126,8 +126,9 @@ int QgsMediaWidget::videoHeight() const
 
 void QgsMediaWidget::setVideoHeight( int height )
 {
-  mVideoWidget->setMinimumHeight( height );
-  mVideoWidget->setMaximumHeight( height > 0 ? height : 9999 );
+  const int vHeight = height > 0 ? height : QFontMetrics( font() ).height() * 12;
+  mVideoWidget->setMinimumHeight( vHeight );
+  mVideoWidget->setMaximumHeight( vHeight );
 }
 
 void QgsMediaWidget::adjustControls()
