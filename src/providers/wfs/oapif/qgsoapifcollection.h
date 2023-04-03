@@ -39,14 +39,20 @@ struct QgsOapifCollection
   //! Description
   QString mDescription;
 
-  //! Bounding box (in CRS84)
+  //! Bounding box
   QgsRectangle mBbox;
+
+  //! Bounding box Crs
+  QgsCoordinateReferenceSystem mBboxCrs;
+
+  //! List of available CRS
+  QList<QString> mCrsList;
 
   //! Layer metadata
   QgsLayerMetadata mLayerMetadata;
 
   //! Fills a collection from its JSON serialization
-  bool deserialize( const json &j );
+  bool deserialize( const json &j, const json &jCollections );
 };
 
 //! Manages the /collections request
