@@ -481,6 +481,8 @@ QgsAnnotationLineTextItemWidget::QgsAnnotationLineTextItemWidget( QWidget *paren
   } );
 }
 
+QgsAnnotationLineTextItemWidget::~QgsAnnotationLineTextItemWidget() = default;
+
 QgsAnnotationItem *QgsAnnotationLineTextItemWidget::createItem()
 {
   QgsAnnotationLineTextItem *newItem = mItem->clone();
@@ -530,8 +532,6 @@ void QgsAnnotationLineTextItemWidget::focusDefaultWidget()
   mTextEdit->selectAll();
   mTextEdit->setFocus();
 }
-
-QgsAnnotationLineTextItemWidget::~QgsAnnotationLineTextItemWidget() = default;
 
 bool QgsAnnotationLineTextItemWidget::setNewItem( QgsAnnotationItem *item )
 {
