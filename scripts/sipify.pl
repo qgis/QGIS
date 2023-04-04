@@ -1379,8 +1379,8 @@ while ($LINE_IDX < $LINE_COUNT){
 
 
     # replace QVector with QList
-    $LINE =~ s/QVector<\s*QVector<\s*/TemporaryStuff/g;
-    $LINE =~ s/QVector<\s*(.*?)>/QList<$1>/g;
+    $LINE =~ s/QVector\s*<\s*QVector\s*<\s*/TemporaryStuff/g;
+    $LINE =~ s/QVector\s*<\s*(.*?)>/QList<$1>/g;
     $LINE =~ s/TemporaryStuff/QVector<QVector</g;
 
     # remove export macro from struct definition
