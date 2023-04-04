@@ -237,8 +237,7 @@ bool QgsManageConnectionsDialog::populateConnections()
   // Export mode. Populate connections list from settings
   if ( mDialogMode == Export )
   {
-    QStringList connections;
-    QgsSettings settings;
+    const QStringList connections;
     switch ( mConnectionType )
     {
       case WMS:
@@ -273,19 +272,12 @@ bool QgsManageConnectionsDialog::populateConnections()
         connections = QgsVectorTileProviderConnection::sTreeConnectionVectorTile->items();
         break;
     }
-    if ( !settings.group().isEmpty() )
-    {
-      QStringList keys = settings.childGroups();
-      QStringList::Iterator it = keys.begin();
-      while ( it != keys.end() )
+      for ( const QString& connection : connections)
       {
         QListWidgetItem *item = new QListWidgetItem();
-        item->setText( *it );
+        item->setText( connection );
         listConnections->addItem( item );
-        ++it;
       }
-      settings.endGroup();
-    }
   }
   // Import mode. Populate connections list from file
   else
