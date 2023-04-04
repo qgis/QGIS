@@ -234,7 +234,7 @@ QgsRectangle QgsAnnotationLineTextItem::boundingBox( QgsRenderContext &context )
 {
   const QString displayText = QgsExpression::replaceExpressionText( mText, &context.expressionContext(), &context.distanceArea() );
 
-  const double lineOffsetInMapUnits = context.convertToMapUnits( mOffsetFromLineDistance, mOffsetFromLineUnit, mOffsetFromLineScale );
+  const double lineOffsetInMapUnits = std::fabs( context.convertToMapUnits( mOffsetFromLineDistance, mOffsetFromLineUnit, mOffsetFromLineScale ) );
 
   const double heightInPixels = QgsTextRenderer::textHeight( context, mTextFormat, { displayText} );
 
