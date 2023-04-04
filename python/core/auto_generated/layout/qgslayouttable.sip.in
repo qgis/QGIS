@@ -407,9 +407,54 @@ Sets the ``width`` in mm for grid lines in the table.
 .. seealso:: :py:func:`setGridColor`
 %End
 
+    void setGridRowStrokeWidth( double width );
+%Docstring
+Sets the ``width`` in mm for grid row lines in the table.
+
+.. seealso:: :py:func:`gridStrokeWidth`
+
+.. seealso:: :py:func:`setShowGrid`
+
+.. seealso:: :py:func:`setGridColor`
+%End
+
+    void setGridColumnStrokeWidth( double width );
+%Docstring
+Sets the ``width`` in mm for grid column lines in the table.
+
+.. seealso:: :py:func:`gridStrokeWidth`
+
+.. seealso:: :py:func:`setShowGrid`
+
+.. seealso:: :py:func:`setGridColor`
+%End
+
+
     double gridStrokeWidth() const;
 %Docstring
 Returns the width of grid lines in the table in mm.
+
+.. seealso:: :py:func:`setGridStrokeWidth`
+
+.. seealso:: :py:func:`showGrid`
+
+.. seealso:: :py:func:`gridColor`
+%End
+
+    double gridRowStrokeWidth() const;
+%Docstring
+Returns the width of grid row lines in the table in mm.
+
+.. seealso:: :py:func:`setGridStrokeWidth`
+
+.. seealso:: :py:func:`showGrid`
+
+.. seealso:: :py:func:`gridColor`
+%End
+
+    double gridColumnStrokeWidth() const;
+%Docstring
+Returns the width of grid column lines in the table in mm.
 
 .. seealso:: :py:func:`setGridStrokeWidth`
 
@@ -429,9 +474,55 @@ Sets the ``color`` used for grid lines in the table.
 .. seealso:: :py:func:`setGridStrokeWidth`
 %End
 
+
+    void setGridRowColor( const QColor &color );
+%Docstring
+Sets the ``color`` used for grid row lines in the table.
+
+.. seealso:: :py:func:`gridColor`
+
+.. seealso:: :py:func:`setShowGrid`
+
+.. seealso:: :py:func:`setGridStrokeWidth`
+%End
+
+
+    void setGridColumnColor( const QColor &color );
+%Docstring
+Sets the ``color`` used for grid column lines in the table.
+
+.. seealso:: :py:func:`gridColor`
+
+.. seealso:: :py:func:`setShowGrid`
+
+.. seealso:: :py:func:`setGridStrokeWidth`
+%End
+
     QColor gridColor() const;
 %Docstring
 Returns the color used for grid lines in the table.
+
+.. seealso:: :py:func:`setGridColor`
+
+.. seealso:: :py:func:`showGrid`
+
+.. seealso:: :py:func:`gridStrokeWidth`
+%End
+
+    QColor gridRowColor() const;
+%Docstring
+Returns the color used for grid row lines in the table.
+
+.. seealso:: :py:func:`setGridColor`
+
+.. seealso:: :py:func:`showGrid`
+
+.. seealso:: :py:func:`gridStrokeWidth`
+%End
+
+    QColor gridColumnColor() const;
+%Docstring
+Returns the color used for grid column lines in the table.
 
 .. seealso:: :py:func:`setGridColor`
 
@@ -688,6 +779,10 @@ new data.
 
 
   protected:
+
+
+
+
 
 
 
