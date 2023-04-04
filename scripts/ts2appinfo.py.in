@@ -22,7 +22,7 @@ import sys
 import os
 from glob import glob
 from xml.etree import ElementTree as et
-from PyQt5.QtCore import QCoreApplication, QTranslator
+from PyQt@PYQT_VERSION_MAJOR@.QtCore import QCoreApplication, QTranslator
 
 strings = {}
 

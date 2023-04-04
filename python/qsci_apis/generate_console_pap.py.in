@@ -22,9 +22,9 @@ Portions of this file contain code from Eric4 APIsManager module.
 import sys
 import os
 
-from PyQt5.Qsci import QsciLexerPython, QsciAPIs
-from PyQt5.QtWidgets import QApplication
-from PyQt5.QtCore import QObject
+from PyQt@PYQT_VERSION_MAJOR@.Qsci import QsciLexerPython, QsciAPIs
+from PyQt@PYQT_VERSION_MAJOR@.QtWidgets import QApplication
+from PyQt@PYQT_VERSION_MAJOR@.QtCore import QObject
 
 
 class PrepareAPIs(QObject):
@@ -92,4 +92,8 @@ if __name__ == '__main__':
     prepap = PrepareAPIs(api_lexer, api_files, pap_file)
     prepap.prepareAPI()
 
-    sys.exit(app.exec_())
+    # TODO QGIS 4.0: remove
+    if (@PYQT_VERSION_MAJOR@ < 6):
+        sys.exit(app.exec_())
+    else:
+        sys.exit(app.exec())

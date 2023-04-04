@@ -352,10 +352,14 @@ if(WITH_QSCIAPI)
   else()
      set(_python ${Python_EXECUTABLE})
   endif()
+
+  # TODO QGIS 4.0: remove configure and call directly script
+  configure_file("${APIS_SRC_DIR}/generate_console_pap.py.in" ${CMAKE_BINARY_DIR}/generate_console_pap.py)
+
   add_custom_command(
     OUTPUT "${QGIS_PYTHON_PAP_FILE}"
     DEPENDS "${QGIS_PYTHON_API_FILE}"
-    COMMAND ${_python} "${APIS_SRC_DIR}/generate_console_pap.py" -platform offscreen "${QGIS_PYTHON_PAP_FILE}" "${APIS_SRC_DIR}" "${APIS_OUT_DIR}"
+    COMMAND ${_python} "${CMAKE_BINARY_DIR}/generate_console_pap.py" -platform offscreen "${QGIS_PYTHON_PAP_FILE}" "${APIS_SRC_DIR}" "${APIS_OUT_DIR}"
     WORKING_DIRECTORY "${CMAKE_BINARY_DIR}"
     COMMENT "Generating pap file for console auto-completion" VERBATIM)
 
