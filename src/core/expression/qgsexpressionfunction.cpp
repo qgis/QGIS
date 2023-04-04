@@ -3045,7 +3045,7 @@ static QVariant fcnSplitGeometry( const QVariantList &values, const QgsExpressio
       QVector<QgsPoint> splitter;
       for ( auto pointIt = partGeom->vertices_begin(); pointIt != partGeom->vertices_end(); ++pointIt )
         splitter.append( ( *pointIt ) );
-      if ( partGeom->type() == QgsWkbTypes::PolygonGeometry )
+      if ( partGeom->type() == Qgis::GeometryType::Polygon )
       {
         QgsPoint firstVertex = partGeom->vertexAt( 0 );
         if ( splitter.last() != firstVertex )
