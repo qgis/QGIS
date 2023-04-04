@@ -223,6 +223,8 @@ it is visible.
 
     virtual void keyPressEvent( QKeyEvent * event );
 
+    virtual bool eventFilter( QObject * watched, QEvent * event );
+
 
     virtual void initializeLexer();
 %Docstring
