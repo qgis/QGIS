@@ -233,4 +233,18 @@ void QgsAnnotationItemGuiRegistry::addDefaultItems()
   {
     return new QgsCreatePointTextItemMapTool( canvas, cadDockWidget );
   } ) );
+
+  addAnnotationItemGuiMetadata( new QgsAnnotationItemGuiMetadata( QStringLiteral( "linetext" ),
+                                QObject::tr( "Text Annotation along Line" ),
+                                QgsApplication::getThemeIcon( QStringLiteral( "/mActionTextAlongLine.svg" ) ),
+                                [ = ]( QgsAnnotationItem * item )->QgsAnnotationItemBaseWidget *
+  {
+    QgsAnnotationLineTextItemWidget *widget = new QgsAnnotationLineTextItemWidget( nullptr );
+    widget->setItem( item );
+    return widget;
+  }, QString(), Qgis::AnnotationItemGuiFlags(), nullptr,
+  [ = ]( QgsMapCanvas * canvas, QgsAdvancedDigitizingDockWidget * cadDockWidget )->QgsCreateAnnotationItemMapToolInterface *
+  {
+    return new QgsCreateLineTextItemMapTool( canvas, cadDockWidget );
+  } ) );
 }
