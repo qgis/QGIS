@@ -88,3 +88,4 @@ RUN unzip instantclient-sqlplus-linux.x64-19.9.0.0.0dbru.zip
 
 ENV PATH="/instantclient_19_9:${PATH}"
 ENV LD_LIBRARY_PATH="/instantclient_19_9:${LD_LIBRARY_PATH}"
+ENV LANG=C.UTF-8
