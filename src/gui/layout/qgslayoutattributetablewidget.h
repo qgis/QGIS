@@ -68,8 +68,10 @@ class GUI_EXPORT QgsLayoutAttributeTableWidget: public QgsLayoutItemBaseWidget, 
     void composerMapChanged( QgsLayoutItem *item );
     void mMaximumRowsSpinBox_valueChanged( int i );
     void mMarginSpinBox_valueChanged( double d );
-    void mGridStrokeWidthSpinBox_valueChanged( double d );
-    void mGridColorButton_colorChanged( const QColor &newColor );
+    void mGridRowStrokeWidthSpinBox_valueChanged( double d );
+    void mGridColumnStrokeWidthSpinBox_valueChanged( double d );
+    void mGridRowColorButton_colorChanged( const QColor &newColor );
+    void mGridColumnColorButton_colorChanged( const QColor &newColor );
     void mBackgroundColorButton_colorChanged( const QColor &newColor );
     void headerFontChanged();
     void contentFontChanged();

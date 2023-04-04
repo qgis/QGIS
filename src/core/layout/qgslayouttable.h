@@ -386,12 +386,45 @@ class CORE_EXPORT QgsLayoutTable: public QgsLayoutMultiFrame
     void setGridStrokeWidth( double width );
 
     /**
+     * Sets the \a width in mm for grid row lines in the table.
+     * \see gridStrokeWidth()
+     * \see setShowGrid()
+     * \see setGridColor()
+     */
+    void setGridRowStrokeWidth( double width );
+
+    /**
+     * Sets the \a width in mm for grid column lines in the table.
+     * \see gridStrokeWidth()
+     * \see setShowGrid()
+     * \see setGridColor()
+     */
+    void setGridColumnStrokeWidth( double width );
+
+
+    /**
      * Returns the width of grid lines in the table in mm.
      * \see setGridStrokeWidth()
      * \see showGrid()
      * \see gridColor()
      */
     double gridStrokeWidth() const { return mGridStrokeWidth; }
+
+    /**
+     * Returns the width of grid row lines in the table in mm.
+     * \see setGridStrokeWidth()
+     * \see showGrid()
+     * \see gridColor()
+     */
+    double gridRowStrokeWidth() const { return mGridRowStrokeWidth; }
+
+    /**
+     * Returns the width of grid column lines in the table in mm.
+     * \see setGridStrokeWidth()
+     * \see showGrid()
+     * \see gridColor()
+     */
+    double gridColumnStrokeWidth() const { return mGridColumnStrokeWidth; }
 
     /**
      * Sets the \a color used for grid lines in the table.
@@ -401,6 +434,24 @@ class CORE_EXPORT QgsLayoutTable: public QgsLayoutMultiFrame
      */
     void setGridColor( const QColor &color );
 
+
+    /**
+     * Sets the \a color used for grid row lines in the table.
+     * \see gridColor()
+     * \see setShowGrid()
+     * \see setGridStrokeWidth()
+     */
+    void setGridRowColor( const QColor &color );
+
+
+    /**
+     * Sets the \a color used for grid column lines in the table.
+     * \see gridColor()
+     * \see setShowGrid()
+     * \see setGridStrokeWidth()
+     */
+    void setGridColumnColor( const QColor &color );
+
     /**
      * Returns the color used for grid lines in the table.
      * \see setGridColor()
@@ -408,6 +459,22 @@ class CORE_EXPORT QgsLayoutTable: public QgsLayoutMultiFrame
      * \see gridStrokeWidth()
      */
     QColor gridColor() const { return mGridColor; }
+
+    /**
+     * Returns the color used for grid row lines in the table.
+     * \see setGridColor()
+     * \see showGrid()
+     * \see gridStrokeWidth()
+     */
+    QColor gridRowColor() const { return mGridRowColor; }
+
+    /**
+     * Returns the color used for grid column lines in the table.
+     * \see setGridColor()
+     * \see showGrid()
+     * \see gridStrokeWidth()
+     */
+    QColor gridColumnColor() const { return mGridColumnColor; }
 
     /**
      * Sets whether the grid's horizontal lines should be drawn in the table
@@ -639,8 +706,20 @@ class CORE_EXPORT QgsLayoutTable: public QgsLayoutMultiFrame
     //! Width of grid lines
     double mGridStrokeWidth = 0.5;
 
+    //! Width of grid row lines
+    double mGridRowStrokeWidth = 0.5;
+
+    //! Width of grid lines
+    double mGridColumnStrokeWidth = 0.5;
+
     //! Color for grid lines
     QColor mGridColor = Qt::black;
+
+    //! Color for grid row lines
+    QColor mGridRowColor = Qt::black;
+
+    //! Color for grid column lines
+    QColor mGridColumnColor = Qt::black;
 
     //! True if grid should be shown
     bool mHorizontalGrid = true;

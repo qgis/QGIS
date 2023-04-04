@@ -41,8 +41,10 @@ QgsLayoutAttributeTableWidget::QgsLayoutAttributeTableWidget( QgsLayoutFrame *fr
   connect( mAttributesPushButton, &QPushButton::clicked, this, &QgsLayoutAttributeTableWidget::mAttributesPushButton_clicked );
   connect( mMaximumRowsSpinBox, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), this, &QgsLayoutAttributeTableWidget::mMaximumRowsSpinBox_valueChanged );
   connect( mMarginSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutAttributeTableWidget::mMarginSpinBox_valueChanged );
-  connect( mGridStrokeWidthSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutAttributeTableWidget::mGridStrokeWidthSpinBox_valueChanged );
-  connect( mGridColorButton, &QgsColorButton::colorChanged, this, &QgsLayoutAttributeTableWidget::mGridColorButton_colorChanged );
+  connect( mGridRowStrokeWidthSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutAttributeTableWidget::mGridRowStrokeWidthSpinBox_valueChanged );
+  connect( mGridColumnStrokeWidthSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutAttributeTableWidget::mGridColumnStrokeWidthSpinBox_valueChanged );
+  connect( mGridRowColorButton, &QgsColorButton::colorChanged, this, &QgsLayoutAttributeTableWidget::mGridRowColorButton_colorChanged );
+  connect( mGridColumnColorButton, &QgsColorButton::colorChanged, this, &QgsLayoutAttributeTableWidget::mGridColumnColorButton_colorChanged );
   connect( mBackgroundColorButton, &QgsColorButton::colorChanged, this, &QgsLayoutAttributeTableWidget::mBackgroundColorButton_colorChanged );
   connect( mDrawHorizontalGrid, &QCheckBox::toggled, this, &QgsLayoutAttributeTableWidget::mDrawHorizontalGrid_toggled );
   connect( mDrawVerticalGrid, &QCheckBox::toggled, this, &QgsLayoutAttributeTableWidget::mDrawVerticalGrid_toggled );
@@ -113,10 +115,16 @@ QgsLayoutAttributeTableWidget::QgsLayoutAttributeTableWidget( QgsLayoutFrame *fr
   mComposerMapComboBox->setItemType( QgsLayoutItemRegistry::LayoutMap );
   connect( mComposerMapComboBox, &QgsLayoutItemComboBox::itemChanged, this, &QgsLayoutAttributeTableWidget::composerMapChanged );
 
-  mGridColorButton->setColorDialogTitle( tr( "Select Grid Color" ) );
-  mGridColorButton->setAllowOpacity( true );
-  mGridColorButton->setContext( QStringLiteral( "composer" ) );
-  mGridColorButton->setDefaultColor( Qt::black );
+  mGridRowColorButton->setColorDialogTitle( tr( "Select Grid Row Color" ) );
+  mGridRowColorButton->setAllowOpacity( true );
+  mGridRowColorButton->setContext( QStringLiteral( "composer" ) );
+  mGridRowColorButton->setDefaultColor( Qt::black );
+
+  mGridColumnColorButton->setColorDialogTitle( tr( "Select Grid Column Color" ) );
+  mGridColumnColorButton->setAllowOpacity( true );
+  mGridColumnColorButton->setContext( QStringLiteral( "composer" ) );
+  mGridColumnColorButton->setDefaultColor( Qt::black );
+
   mBackgroundColorButton->setColorDialogTitle( tr( "Select Background Color" ) );
   mBackgroundColorButton->setAllowOpacity( true );
   mBackgroundColorButton->setContext( QStringLiteral( "composer" ) );
@@ -335,19 +343,31 @@ void QgsLayoutAttributeTableWidget::contentFontChanged()
   mTable->endCommand();
 }
 
-void QgsLayoutAttributeTableWidget::mGridStrokeWidthSpinBox_valueChanged( double d )
+void QgsLayoutAttributeTableWidget::mGridRowStrokeWidthSpinBox_valueChanged( double d )
 {
   if ( !mTable )
   {
     return;
   }
 
-  mTable->beginCommand( tr( "Change Table Line Width" ), QgsLayoutMultiFrame::UndoTableGridStrokeWidth );
-  mTable->setGridStrokeWidth( d );
+  mTable->beginCommand( tr( "Change Table Row Line Width" ), QgsLayoutMultiFrame::UndoTableGridStrokeWidth );
+  mTable->setGridRowStrokeWidth( d );
   mTable->endCommand();
 }
 
-void QgsLayoutAttributeTableWidget::mGridColorButton_colorChanged( const QColor &newColor )
+void QgsLayoutAttributeTableWidget::mGridColumnStrokeWidthSpinBox_valueChanged( double d )
+{
+  if ( !mTable )
+  {
+    return;
+  }
+
+  mTable->beginCommand( tr( "Change Table Column Line Width" ), QgsLayoutMultiFrame::UndoTableGridStrokeWidth );
+  mTable->setGridColumnStrokeWidth( d );
+  mTable->endCommand();
+}
+
+void QgsLayoutAttributeTableWidget::mGridRowColorButton_colorChanged( const QColor &newColor )
 {
   if ( !mTable )
   {
@@ -355,7 +375,19 @@ void QgsLayoutAttributeTableWidget::mGridColorButton_colorChanged( const QColor 
   }
 
   mTable->beginCommand( tr( "Change Table Grid Color" ), QgsLayoutMultiFrame::UndoTableGridColor );
-  mTable->setGridColor( newColor );
+  mTable->setGridRowColor( newColor );
+  mTable->endCommand();
+}
+
+void QgsLayoutAttributeTableWidget::mGridColumnColorButton_colorChanged( const QColor &newColor )
+{
+  if ( !mTable )
+  {
+    return;
+  }
+
+  mTable->beginCommand( tr( "Change Table Grid Color" ), QgsLayoutMultiFrame::UndoTableGridColor );
+  mTable->setGridColumnColor( newColor );
   mTable->endCommand();
 }
 
@@ -444,8 +476,10 @@ void QgsLayoutAttributeTableWidget::updateGuiElements()
   mComposerMapComboBox->setItem( mTable->map() );
   mMaximumRowsSpinBox->setValue( mTable->maximumNumberOfFeatures() );
   mMarginSpinBox->setValue( mTable->cellMargin() );
-  mGridStrokeWidthSpinBox->setValue( mTable->gridStrokeWidth() );
-  mGridColorButton->setColor( mTable->gridColor() );
+  mGridRowStrokeWidthSpinBox->setValue( mTable->gridRowStrokeWidth() );
+  mGridColumnStrokeWidthSpinBox->setValue( mTable->gridColumnStrokeWidth() );
+  mGridRowColorButton->setColor( mTable->gridRowColor() );
+  mGridColumnColorButton->setColor( mTable->gridColumnColor() );
   mDrawHorizontalGrid->setChecked( mTable->horizontalGrid() );
   mDrawVerticalGrid->setChecked( mTable->verticalGrid() );
   if ( mTable->showGrid() )
@@ -591,8 +625,10 @@ void QgsLayoutAttributeTableWidget::blockAllSignals( bool b )
   mComposerMapComboBox->blockSignals( b );
   mMaximumRowsSpinBox->blockSignals( b );
   mMarginSpinBox->blockSignals( b );
-  mGridColorButton->blockSignals( b );
-  mGridStrokeWidthSpinBox->blockSignals( b );
+  mGridRowColorButton->blockSignals( b );
+  mGridColumnColorButton->blockSignals( b );
+  mGridRowStrokeWidthSpinBox->blockSignals( b );
+  mGridColumnStrokeWidthSpinBox->blockSignals( b );
   mBackgroundColorButton->blockSignals( b );
   mDrawHorizontalGrid->blockSignals( b );
   mDrawVerticalGrid->blockSignals( b );

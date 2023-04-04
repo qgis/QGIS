@@ -54,9 +54,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>-551</y>
-        <width>394</width>
-        <height>1343</height>
+        <y>-866</y>
+        <width>392</width>
+        <height>1674</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="mainLayout">
@@ -269,36 +269,13 @@
           <bool>false</bool>
          </property>
          <layout class="QGridLayout" name="gridLayout_6">
-          <item row="6" column="1">
-           <widget class="QLineEdit" name="mEmptyMessageLineEdit"/>
-          </item>
           <item row="5" column="1">
            <widget class="QComboBox" name="mEmptyModeComboBox"/>
           </item>
-          <item row="3" column="1">
-           <widget class="QComboBox" name="mHeaderModeComboBox"/>
-          </item>
-          <item row="10" column="0">
-           <widget class="QLabel" name="label_11">
+          <item row="11" column="0">
+           <widget class="QLabel" name="label_12">
             <property name="text">
-             <string>Wrap text on</string>
-            </property>
-            <property name="wordWrap">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="8" column="1">
-           <widget class="QPushButton" name="mAdvancedCustomizationButton">
-            <property name="text">
-             <string>Advanced Customization…</string>
-            </property>
-           </widget>
-          </item>
-          <item row="7" column="0">
-           <widget class="QLabel" name="label_10">
-            <property name="text">
-             <string>Background color</string>
+             <string>Oversized text</string>
             </property>
            </widget>
           </item>
@@ -309,6 +286,27 @@
             </property>
            </widget>
           </item>
+          <item row="7" column="0">
+           <widget class="QLabel" name="label_10">
+            <property name="text">
+             <string>Background color</string>
+            </property>
+           </widget>
+          </item>
+          <item row="6" column="0">
+           <widget class="QLabel" name="mEmptyMessageLabel">
+            <property name="text">
+             <string>Message to display</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="0">
+           <widget class="QLabel" name="label_7">
+            <property name="text">
+             <string>Display header</string>
+            </property>
+           </widget>
+          </item>
           <item row="1" column="0" colspan="2">
            <widget class="QCheckBox" name="mDrawEmptyCheckBox">
             <property name="text">
@@ -316,10 +314,13 @@
             </property>
            </widget>
           </item>
-          <item row="11" column="0">
-           <widget class="QLabel" name="label_12">
+          <item row="10" column="0">
+           <widget class="QLabel" name="label_11">
             <property name="text">
-             <string>Oversized text</string>
+             <string>Wrap text on</string>
+            </property>
+            <property name="wordWrap">
+             <bool>true</bool>
             </property>
            </widget>
           </item>
@@ -359,19 +360,22 @@
             </item>
            </layout>
           </item>
-          <item row="3" column="0">
-           <widget class="QLabel" name="label_7">
-            <property name="text">
-             <string>Display header</string>
-            </property>
-           </widget>
-          </item>
           <item row="10" column="1">
            <widget class="QLineEdit" name="mWrapStringLineEdit">
             <property name="frame">
              <bool>true</bool>
             </property>
            </widget>
+          </item>
+          <item row="8" column="1">
+           <widget class="QPushButton" name="mAdvancedCustomizationButton">
+            <property name="text">
+             <string>Advanced Customization…</string>
+            </property>
+           </widget>
+          </item>
+          <item row="6" column="1">
+           <widget class="QLineEdit" name="mEmptyMessageLineEdit"/>
           </item>
           <item row="2" column="1">
            <widget class="QgsDoubleSpinBox" name="mMarginSpinBox">
@@ -389,12 +393,8 @@
           <item row="11" column="1">
            <widget class="QComboBox" name="mWrapBehaviorComboBox"/>
           </item>
-          <item row="6" column="0">
-           <widget class="QLabel" name="mEmptyMessageLabel">
-            <property name="text">
-             <string>Message to display</string>
-            </property>
-           </widget>
+          <item row="3" column="1">
+           <widget class="QComboBox" name="mHeaderModeComboBox"/>
           </item>
           <item row="2" column="0">
            <widget class="QLabel" name="mMarginLabel">
@@ -437,43 +437,27 @@
           <bool>false</bool>
          </property>
          <layout class="QGridLayout" name="gridLayout_7">
-          <item row="0" column="0">
-           <widget class="QLabel" name="mGridStrokeWidthLabel">
+          <item row="2" column="0" colspan="2">
+           <widget class="QCheckBox" name="mDrawHorizontalGrid">
+            <property name="text">
+             <string>Draw horizontal lines</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="0">
+           <widget class="QLabel" name="label_3">
             <property name="text">
              <string>Line width</string>
             </property>
-            <property name="wordWrap">
-             <bool>true</bool>
-            </property>
-            <property name="buddy">
-             <cstring>mGridStrokeWidthSpinBox</cstring>
-            </property>
            </widget>
           </item>
-          <item row="0" column="1">
-           <widget class="QgsDoubleSpinBox" name="mGridStrokeWidthSpinBox">
-            <property name="suffix">
-             <string> mm</string>
-            </property>
-            <property name="singleStep">
-             <double>0.100000000000000</double>
-            </property>
-            <property name="showClearButton" stdset="0">
-             <bool>false</bool>
-            </property>
-           </widget>
+          <item row="3" column="1">
+           <widget class="QDoubleSpinBox" name="mGridRowStrokeWidthSpinBox"/>
           </item>
-          <item row="1" column="0">
-           <widget class="QLabel" name="label_6">
-            <property name="text">
-             <string>Color</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="1">
-           <layout class="QHBoxLayout" name="horizontalLayout_2">
+          <item row="4" column="1">
+           <layout class="QHBoxLayout" name="horizontalLayout_3">
             <item>
-             <widget class="QgsColorButton" name="mGridColorButton">
+             <widget class="QgsColorButton" name="mGridRowColorButton">
               <property name="minimumSize">
                <size>
                 <width>120</width>
@@ -492,7 +476,7 @@
              </widget>
             </item>
             <item>
-             <spacer name="horizontalSpacer">
+             <spacer name="horizontalSpacer_2">
               <property name="orientation">
                <enum>Qt::Horizontal</enum>
               </property>
@@ -506,19 +490,72 @@
             </item>
            </layout>
           </item>
-          <item row="2" column="0" colspan="2">
-           <widget class="QCheckBox" name="mDrawHorizontalGrid">
+          <item row="10" column="0">
+           <widget class="QLabel" name="label_24">
             <property name="text">
-             <string>Draw horizontal lines</string>
+             <string>Color</string>
             </property>
            </widget>
           </item>
-          <item row="3" column="0" colspan="2">
+          <item row="9" column="0">
+           <widget class="QLabel" name="label_19">
+            <property name="text">
+             <string>Line width</string>
+            </property>
+           </widget>
+          </item>
+          <item row="9" column="1">
+           <widget class="QDoubleSpinBox" name="mGridColumnStrokeWidthSpinBox"/>
+          </item>
+          <item row="4" column="0">
+           <widget class="QLabel" name="label_4">
+            <property name="text">
+             <string>Color</string>
+            </property>
+           </widget>
+          </item>
+          <item row="7" column="0" colspan="2">
            <widget class="QCheckBox" name="mDrawVerticalGrid">
             <property name="text">
              <string>Draw vertical lines</string>
             </property>
            </widget>
+          </item>
+          <item row="10" column="1">
+           <layout class="QHBoxLayout" name="horizontalLayout_13">
+            <item>
+             <widget class="QgsColorButton" name="mGridColumnColorButton">
+              <property name="minimumSize">
+               <size>
+                <width>120</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>120</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <spacer name="horizontalSpacer_11">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+           </layout>
           </item>
          </layout>
         </widget>
@@ -551,13 +588,6 @@
                </property>
               </widget>
              </item>
-             <item row="0" column="0">
-              <widget class="QLabel" name="label_5">
-               <property name="text">
-                <string>Font</string>
-               </property>
-              </widget>
-             </item>
              <item row="0" column="1">
               <widget class="QgsFontButton" name="mHeaderFontToolButton">
                <property name="sizePolicy">
@@ -578,6 +608,13 @@
                  <horstretch>0</horstretch>
                  <verstretch>0</verstretch>
                 </sizepolicy>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="0">
+              <widget class="QLabel" name="label_5">
+               <property name="text">
+                <string>Font</string>
                </property>
               </widget>
              </item>
@@ -634,23 +671,10 @@
           <bool>false</bool>
          </property>
          <layout class="QGridLayout" name="gridLayout_3">
-          <item row="0" column="0">
-           <widget class="QLabel" name="mResizeModeLabel">
+          <item row="3" column="0" colspan="2">
+           <widget class="QCheckBox" name="mHideEmptyBgCheckBox">
             <property name="text">
-             <string>Resize mode</string>
-            </property>
-            <property name="wordWrap">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1">
-           <widget class="QComboBox" name="mResizeModeComboBox">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
+             <string>Don't draw background if frame is empty</string>
             </property>
            </widget>
           </item>
@@ -661,6 +685,16 @@
             </property>
            </widget>
           </item>
+          <item row="0" column="0">
+           <widget class="QLabel" name="mResizeModeLabel">
+            <property name="text">
+             <string>Resize mode</string>
+            </property>
+            <property name="wordWrap">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
           <item row="2" column="0" colspan="2">
            <widget class="QCheckBox" name="mEmptyFrameCheckBox">
             <property name="text">
@@ -668,10 +702,13 @@
             </property>
            </widget>
           </item>
-          <item row="3" column="0" colspan="2">
-           <widget class="QCheckBox" name="mHideEmptyBgCheckBox">
-            <property name="text">
-             <string>Don't draw background if frame is empty</string>
+          <item row="0" column="1">
+           <widget class="QComboBox" name="mResizeModeComboBox">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
             </property>
            </widget>
           </item>
@@ -686,31 +723,14 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsSpinBox</class>
-   <extends>QSpinBox</extends>
-   <header>qgsspinbox.h</header>
-  </customwidget>
-  <customwidget>
    <class>QgsDoubleSpinBox</class>
    <extends>QDoubleSpinBox</extends>
    <header>qgsdoublespinbox.h</header>
   </customwidget>
   <customwidget>
-   <class>QgsScrollArea</class>
-   <extends>QScrollArea</extends>
-   <header>qgsscrollarea.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsPropertyOverrideButton</class>
-   <extends>QToolButton</extends>
-   <header>qgspropertyoverridebutton.h</header>
-  </customwidget>
-  <customwidget>
-   <class>QgsColorButton</class>
-   <extends>QToolButton</extends>
-   <header>qgscolorbutton.h</header>
-   <container>1</container>
+   <class>QgsSpinBox</class>
+   <extends>QSpinBox</extends>
+   <header>qgsspinbox.h</header>
   </customwidget>
   <customwidget>
    <class>QgsFontButton</class>
@@ -718,9 +738,15 @@
    <header>qgsfontbutton.h</header>
   </customwidget>
   <customwidget>
-   <class>QgsMapLayerComboBox</class>
-   <extends>QComboBox</extends>
-   <header>qgsmaplayercombobox.h</header>
+   <class>QgsPropertyOverrideButton</class>
+   <extends>QToolButton</extends>
+   <header>qgspropertyoverridebutton.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsScrollArea</class>
+   <extends>QScrollArea</extends>
+   <header>qgsscrollarea.h</header>
+   <container>1</container>
   </customwidget>
   <customwidget>
    <class>QgsCollapsibleGroupBoxBasic</class>
@@ -732,6 +758,18 @@
    <class>QgsLayoutItemComboBox</class>
    <extends>QComboBox</extends>
    <header>qgslayoutitemcombobox.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsColorButton</class>
+   <extends>QToolButton</extends>
+   <header>qgscolorbutton.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsMapLayerComboBox</class>
+   <extends>QComboBox</extends>
+   <header>qgsmaplayercombobox.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>
@@ -764,8 +802,6 @@
   <tabstop>mWrapStringLineEdit</tabstop>
   <tabstop>mWrapBehaviorComboBox</tabstop>
   <tabstop>mShowGridGroupCheckBox</tabstop>
-  <tabstop>mGridStrokeWidthSpinBox</tabstop>
-  <tabstop>mGridColorButton</tabstop>
   <tabstop>mDrawHorizontalGrid</tabstop>
   <tabstop>mDrawVerticalGrid</tabstop>
   <tabstop>groupBox_3</tabstop>
@@ -779,6 +815,7 @@
   <tabstop>mHideEmptyBgCheckBox</tabstop>
  </tabstops>
  <resources>
+  <include location="../../../images/images.qrc"/>
   <include location="../../../images/images.qrc"/>
  </resources>
  <connections/>
