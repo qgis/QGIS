@@ -1440,9 +1440,9 @@ void QgsLayoutTable::drawHorizontalGridLines( QgsLayoutItemRenderContext &contex
   double currentY = 0;
   currentY = halfGridStrokeWidth;
   QPen pen;
-  pen.setWidth(mGridRowStrokeWidth);
-  pen.setColor(mGridRowColor);
-  painter->setPen(pen);
+  pen.setWidth( mGridRowStrokeWidth );
+  pen.setColor( mGridRowColor );
+  painter->setPen( pen );
   if ( drawHeaderLines )
   {
     painter->drawLine( QPointF( halfGridStrokeWidth, currentY ), QPointF( mTableSize.width() - halfGridStrokeWidth, currentY ) );
@@ -1551,9 +1551,9 @@ void QgsLayoutTable::drawVerticalGridLines( QgsLayoutItemRenderContext &context,
   double halfGridStrokeWidth = ( mShowGrid && mVerticalGrid ? mGridColumnStrokeWidth : 0 ) / 2.0;
   double currentX = halfGridStrokeWidth;
   QPen pen;
-  pen.setWidth(mGridColumnStrokeWidth);
-  pen.setColor(mGridColumnColor);
-  painter->setPen(pen);
+  pen.setWidth( mGridColumnStrokeWidth );
+  pen.setColor( mGridColumnColor );
+  painter->setPen( pen );
   painter->drawLine( QPointF( currentX, halfGridStrokeWidth ), QPointF( currentX, tableHeight - halfGridStrokeWidth ) );
   currentX += ( mShowGrid && mVerticalGrid ? mGridColumnStrokeWidth : 0 );
   QMap<int, double>::const_iterator maxColWidthIt = maxWidthMap.constBegin();
