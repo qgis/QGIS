@@ -136,8 +136,7 @@ echo "::endgroup::"
 #######
 echo "${bold}Building QGIS...${endbold}"
 echo "::group::build"
-#ctest -VV -S ${CTEST_SOURCE_DIR}/.ci/config_build.ctest
-ninja pycore pyqtcompat pytesting
+ctest -VV -S ${CTEST_SOURCE_DIR}/.ci/config_build.ctest
 echo "::endgroup::"
 
 ########################
