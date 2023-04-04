@@ -3852,6 +3852,45 @@ class PyQgsTextRenderer(unittest.TestCase):
         painter.end()
         self.assertTrue(self.imageCheck('text_on_curved_line', 'text_on_curved_line', image))
 
+    def testDrawTextOnCurvedLineUpsideDown(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setSize(16)
+        format.setSizeUnit(QgsUnitTypes.RenderPoints)
+        format.buffer().setEnabled(True)
+        format.buffer().setSize(2)
+        format.buffer().setSizeUnit(QgsUnitTypes.RenderMillimeters)
+
+        image = QImage(400, 400, QImage.Format_RGB32)
+
+        painter = QPainter()
+        ms = QgsMapSettings()
+        ms.setExtent(QgsRectangle(0, 0, 50, 50))
+        ms.setOutputSize(image.size())
+        context = QgsRenderContext.fromMapSettings(ms)
+        context.setPainter(painter)
+        context.setScaleFactor(96 / 25.4)  # 96 DPI
+        context.setFlag(QgsRenderContext.ApplyScalingWorkaroundForTextRendering, True)
+
+        painter.begin(image)
+        painter.setRenderHint(QPainter.Antialiasing)
+        image.fill(QColor(152, 219, 249))
+
+        painter.setBrush(Qt.NoBrush)
+        painter.setPen(QPen(QColor(0, 0, 0)))
+
+        line = QPolygonF(reversed([QPointF(50, 200), QPointF(100, 230), QPointF(150, 235), QPointF(350, 200)]))
+        painter.drawPolyline(line)
+
+        painter.setBrush(QBrush(QColor(182, 239, 255)))
+        painter.setPen(Qt.NoPen)
+
+        format.setAllowHtmlFormatting(True)
+        QgsTextRenderer.drawTextOnLine(line, 'm<sup>y</sup> <span style="font-size: 29pt; color: red;">curv<sup style="font-size: 10pt">ed</sup></span> te<sub>xt</sub>', context, format, 20, 0)
+
+        painter.end()
+        self.assertTrue(self.imageCheck('text_on_curved_line_upside_down', 'text_on_curved_line_upside_down', image))
+
     def testDrawTextOnCurvedLineBackground(self):
         format = QgsTextFormat()
         format.setFont(getTestFont('bold'))

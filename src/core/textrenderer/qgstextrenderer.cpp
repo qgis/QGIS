@@ -314,7 +314,7 @@ void QgsTextRenderer::drawDocumentOnLine( const QPolygonF &line, const QgsTextFo
         -1, -1,
         QgsTextRendererUtils::CurvedTextFlag::UseBaselinePlacement
         | QgsTextRendererUtils::CurvedTextFlag::TruncateStringWhenLineIsTooShort
-        | QgsTextRendererUtils::CurvedTextFlag::UprightCharactersOnly );
+      );
 
   if ( placement->graphemePlacement.empty() )
     return;
