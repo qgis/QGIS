@@ -277,7 +277,7 @@ bool QgsManageConnectionsDialog::populateConnections()
         connections = QgsVectorTileProviderConnection::sTreeConnectionVectorTile->items();
         break;
     }
-    for ( const QString &connection : connections )
+    for ( const QString &connection : std::as_const( connections ) )
     {
       QListWidgetItem *item = new QListWidgetItem();
       item->setText( connection );
