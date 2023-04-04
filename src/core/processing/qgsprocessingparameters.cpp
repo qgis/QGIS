@@ -8803,7 +8803,7 @@ QString QgsProcessingParameterPointCloudLayer::valueAsPythonString( const QVaria
 
   QVariantMap p;
   p.insert( name(), val );
-  QgsPointCloudLayer *layer = QgsProcessingParameters::parameterAsPointCloudLayer( this, p, context );
+  QgsPointCloudLayer *layer = QgsProcessingParameters::parameterAsPointCloudLayer( this, p, context, QgsProcessing::LayerOptionsFlag::SkipIndexGeneration );
   return layer ? QgsProcessingUtils::stringToPythonLiteral( QgsProcessingUtils::normalizeLayerSource( layer->source() ) )
          : QgsProcessingUtils::stringToPythonLiteral( val.toString() );
 }

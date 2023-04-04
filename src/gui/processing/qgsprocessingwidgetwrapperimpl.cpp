@@ -63,6 +63,8 @@
 #include "qgsdoublevalidator.h"
 #include "qgsmaplayercombobox.h"
 #include "qgsannotationlayer.h"
+#include "qgspointcloudattributecombobox.h"
+#include "qgspointcloudlayer.h"
 #include "qgsunittypes.h"
 #include <QToolButton>
 #include <QLabel>
@@ -7391,6 +7393,449 @@ QVariant QgsProcessingAnnotationLayerWidgetWrapper::widgetValue() const
          : QVariant();
 }
 
+
+//
+// QgsProcessingPointCloudAttributePanelWidget
+//
+
+QgsProcessingPointCloudAttributePanelWidget::QgsProcessingPointCloudAttributePanelWidget( QWidget *parent, const QgsProcessingParameterPointCloudAttribute *param )
+  : QWidget( parent )
+  , mParam( param )
+{
+  QHBoxLayout *hl = new QHBoxLayout();
+  hl->setContentsMargins( 0, 0, 0, 0 );
+
+  mLineEdit = new QLineEdit();
+  mLineEdit->setEnabled( false );
+  hl->addWidget( mLineEdit, 1 );
+
+  mToolButton = new QToolButton();
+  mToolButton->setText( QString( QChar( 0x2026 ) ) );
+  hl->addWidget( mToolButton );
+
+  setLayout( hl );
+
+  if ( mParam )
+  {
+    mLineEdit->setText( tr( "%n attribute(s) selected", nullptr, 0 ) );
+  }
+
+  connect( mToolButton, &QToolButton::clicked, this, &QgsProcessingPointCloudAttributePanelWidget::showDialog );
+}
+
+void QgsProcessingPointCloudAttributePanelWidget::setAttributes( const QgsPointCloudAttributeCollection &attributes )
+{
+  mAttributes = attributes;
+}
+
+void QgsProcessingPointCloudAttributePanelWidget::setValue( const QVariant &value )
+{
+  if ( value.isValid() )
+    mValue = value.type() == QVariant::List ? value.toList() : QVariantList() << value;
+  else
+    mValue.clear();
+
+  updateSummaryText();
+  emit changed();
+}
+
+void QgsProcessingPointCloudAttributePanelWidget::showDialog()
+{
+  QVariantList availableOptions;
+  availableOptions.reserve( mAttributes.count() );
+  const QVector<QgsPointCloudAttribute> attributes = mAttributes.attributes();
+  for ( const QgsPointCloudAttribute &attr : attributes )
+  {
+    availableOptions << attr.name();
+  }
+
+  QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( this );
+  if ( panel && panel->dockMode() )
+  {
+    QgsProcessingMultipleSelectionPanelWidget *widget = new QgsProcessingMultipleSelectionPanelWidget( availableOptions, mValue );
+    widget->setPanelTitle( mParam->description() );
+
+    widget->setValueFormatter( []( const QVariant & v ) -> QString
+    {
+      return v.toString();
+    } );
+
+    connect( widget, &QgsProcessingMultipleSelectionPanelWidget::selectionChanged, this, [ = ]()
+    {
+      setValue( widget->selectedOptions() );
+    } );
+    connect( widget, &QgsProcessingMultipleSelectionPanelWidget::acceptClicked, widget, &QgsPanelWidget::acceptPanel );
+    panel->openPanel( widget );
+  }
+  else
+  {
+    QgsProcessingMultipleSelectionDialog dlg( availableOptions, mValue, this, Qt::WindowFlags() );
+
+    dlg.setValueFormatter( []( const QVariant & v ) -> QString
+    {
+      return v.toString();
+    } );
+    if ( dlg.exec() )
+    {
+      setValue( dlg.selectedOptions() );
+    }
+  }
+}
+
+void QgsProcessingPointCloudAttributePanelWidget::updateSummaryText()
+{
+  if ( !mParam )
+    return;
+
+  if ( mValue.empty() )
+  {
+    mLineEdit->setText( tr( "%n attribute(s) selected", nullptr, 0 ) );
+  }
+  else
+  {
+    QStringList values;
+    values.reserve( mValue.size() );
+    for ( const QVariant &val : std::as_const( mValue ) )
+    {
+      values << val.toString();
+    }
+
+    const QString concatenated = values.join( tr( "," ) );
+    if ( concatenated.length() < 100 )
+      mLineEdit->setText( concatenated );
+    else
+      mLineEdit->setText( tr( "%n attribute(s) selected", nullptr, mValue.count() ) );
+  }
+}
+
+
+//
+// QgsProcessingPointCloudAttributeWidgetWrapper
+//
+
+QgsProcessingPointCloudAttributeParameterDefinitionWidget::QgsProcessingPointCloudAttributeParameterDefinitionWidget( QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingParameterDefinition *definition, const QgsProcessingAlgorithm *algorithm, QWidget *parent )
+  : QgsProcessingAbstractParameterDefinitionWidget( context, widgetContext, definition, algorithm, parent )
+{
+  QVBoxLayout *vlayout = new QVBoxLayout();
+  vlayout->setContentsMargins( 0, 0, 0, 0 );
+
+  vlayout->addWidget( new QLabel( tr( "Parent layer" ) ) );
+  mParentLayerComboBox = new QComboBox();
+
+  QString initialParent;
+  if ( const QgsProcessingParameterPointCloudAttribute *attrParam = dynamic_cast<const QgsProcessingParameterPointCloudAttribute *>( definition ) )
+    initialParent = attrParam->parentLayerParameterName();
+
+  if ( auto *lModel = widgetContext.model() )
+  {
+    // populate combo box with other model input choices
+    const QMap<QString, QgsProcessingModelParameter> components = lModel->parameterComponents();
+    for ( auto it = components.constBegin(); it != components.constEnd(); ++it )
+    {
+      if ( const QgsProcessingParameterPointCloudLayer *definition = dynamic_cast< const QgsProcessingParameterPointCloudLayer * >( lModel->parameterDefinition( it.value().parameterName() ) ) )
+      {
+        mParentLayerComboBox-> addItem( definition->description(), definition->name() );
+        if ( !initialParent.isEmpty() && initialParent == definition->name() )
+        {
+          mParentLayerComboBox->setCurrentIndex( mParentLayerComboBox->count() - 1 );
+        }
+      }
+    }
+  }
+
+  if ( mParentLayerComboBox->count() == 0 && !initialParent.isEmpty() )
+  {
+    // if no parent candidates found, we just add the existing one as a placeholder
+    mParentLayerComboBox->addItem( initialParent, initialParent );
+    mParentLayerComboBox->setCurrentIndex( mParentLayerComboBox->count() - 1 );
+  }
+
+  vlayout->addWidget( mParentLayerComboBox );
+
+  mAllowMultipleCheckBox = new QCheckBox( tr( "Accept multiple attributes" ) );
+  if ( const QgsProcessingParameterPointCloudAttribute *attrParam = dynamic_cast<const QgsProcessingParameterPointCloudAttribute *>( definition ) )
+    mAllowMultipleCheckBox->setChecked( attrParam->allowMultiple() );
+
+  vlayout->addWidget( mAllowMultipleCheckBox );
+
+  mDefaultToAllCheckBox = new QCheckBox( tr( "Select all attributes by default" ) );
+  mDefaultToAllCheckBox->setEnabled( mAllowMultipleCheckBox->isChecked() );
+  if ( const QgsProcessingParameterPointCloudAttribute *attrParam = dynamic_cast<const QgsProcessingParameterPointCloudAttribute *>( definition ) )
+    mDefaultToAllCheckBox->setChecked( attrParam->defaultToAllAttributes() );
+
+  vlayout->addWidget( mDefaultToAllCheckBox );
+
+  connect( mAllowMultipleCheckBox, &QCheckBox::stateChanged, this, [ = ]
+  {
+    mDefaultToAllCheckBox->setEnabled( mAllowMultipleCheckBox->isChecked() );
+  } );
+
+  vlayout->addWidget( new QLabel( tr( "Default value" ) ) );
+
+  mDefaultLineEdit = new QLineEdit();
+  mDefaultLineEdit->setToolTip( tr( "Default attribute name, or ; separated list of attribute names for multiple attribute parameters" ) );
+  if ( const QgsProcessingParameterPointCloudAttribute *attrParam = dynamic_cast<const QgsProcessingParameterPointCloudAttribute *>( definition ) )
+  {
+    const QStringList attributes = QgsProcessingParameters::parameterAsStrings( attrParam, attrParam->defaultValueForGui(), context );
+    mDefaultLineEdit->setText( attributes.join( ';' ) );
+  }
+  vlayout->addWidget( mDefaultLineEdit );
+
+  setLayout( vlayout );
+}
+
+QgsProcessingParameterDefinition *QgsProcessingPointCloudAttributeParameterDefinitionWidget::createParameter( const QString &name, const QString &description, QgsProcessingParameterDefinition::Flags flags ) const
+{
+  QVariant defaultValue;
+  if ( !mDefaultLineEdit->text().trimmed().isEmpty() )
+  {
+    defaultValue = mDefaultLineEdit->text();
+  }
+  auto param = std::make_unique< QgsProcessingParameterPointCloudAttribute >( name, description, defaultValue, mParentLayerComboBox->currentData().toString(), mAllowMultipleCheckBox->isChecked(), false, mDefaultToAllCheckBox->isChecked() );
+  param->setFlags( flags );
+  return param.release();
+}
+
+QgsProcessingPointCloudAttributeWidgetWrapper::QgsProcessingPointCloudAttributeWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type, QWidget *parent )
+  : QgsAbstractProcessingParameterWidgetWrapper( parameter, type, parent )
+{
+}
+
+QWidget *QgsProcessingPointCloudAttributeWidgetWrapper::createWidget()
+{
+  const QgsProcessingParameterPointCloudAttribute *attrParam = dynamic_cast< const QgsProcessingParameterPointCloudAttribute *>( parameterDefinition() );
+  switch ( type() )
+  {
+    case QgsProcessingGui::Standard:
+    case QgsProcessingGui::Batch:
+    {
+      if ( attrParam->allowMultiple() )
+      {
+        mPanel = new QgsProcessingPointCloudAttributePanelWidget( nullptr, attrParam );
+        mPanel->setToolTip( parameterDefinition()->toolTip() );
+        connect( mPanel, &QgsProcessingPointCloudAttributePanelWidget::changed, this, [ = ]
+        {
+          emit widgetValueHasChanged( this );
+        } );
+        return mPanel;
+      }
+      else
+      {
+        mComboBox = new QgsPointCloudAttributeComboBox();
+        mComboBox->setAllowEmptyAttributeName( attrParam->flags() & QgsProcessingParameterDefinition::FlagOptional );
+        mComboBox->setToolTip( parameterDefinition()->toolTip() );
+        connect( mComboBox, &QgsPointCloudAttributeComboBox::attributeChanged, this, [ = ]( const QString & )
+        {
+          emit widgetValueHasChanged( this );
+        } );
+        return mComboBox;
+      }
+    }
+
+    case QgsProcessingGui::Modeler:
+    {
+      mLineEdit = new QLineEdit();
+      mLineEdit->setToolTip( QObject::tr( "Name of attribute (separate attribute names with ; for multiple attribute parameters)" ) );
+      connect( mLineEdit, &QLineEdit::textChanged, this, [ = ]
+      {
+        emit widgetValueHasChanged( this );
+      } );
+      return mLineEdit;
+    }
+
+  }
+  return nullptr;
+}
+
+void QgsProcessingPointCloudAttributeWidgetWrapper::postInitialize( const QList<QgsAbstractProcessingParameterWidgetWrapper *> &wrappers )
+{
+  QgsAbstractProcessingParameterWidgetWrapper::postInitialize( wrappers );
+  switch ( type() )
+  {
+    case QgsProcessingGui::Standard:
+    case QgsProcessingGui::Batch:
+    {
+      for ( const QgsAbstractProcessingParameterWidgetWrapper *wrapper : wrappers )
+      {
+        if ( wrapper->parameterDefinition()->name() == static_cast< const QgsProcessingParameterPointCloudAttribute * >( parameterDefinition() )->parentLayerParameterName() )
+        {
+          setParentLayerWrapperValue( wrapper );
+          connect( wrapper, &QgsAbstractProcessingParameterWidgetWrapper::widgetValueHasChanged, this, [ = ]
+          {
+            setParentLayerWrapperValue( wrapper );
+          } );
+          break;
+        }
+      }
+      break;
+    }
+
+    case QgsProcessingGui::Modeler:
+      break;
+  }
+}
+
+void QgsProcessingPointCloudAttributeWidgetWrapper::setParentLayerWrapperValue( const QgsAbstractProcessingParameterWidgetWrapper *parentWrapper )
+{
+  // evaluate value to layer
+  QgsProcessingContext *context = nullptr;
+  std::unique_ptr< QgsProcessingContext > tmpContext;
+  if ( mProcessingContextGenerator )
+    context = mProcessingContextGenerator->processingContext();
+
+  if ( !context )
+  {
+    tmpContext = std::make_unique< QgsProcessingContext >();
+    context = tmpContext.get();
+  }
+
+  QVariant value = parentWrapper->parameterValue();
+
+  QgsPointCloudLayer *layer = QgsProcessingParameters::parameterAsPointCloudLayer( parentWrapper->parameterDefinition(), value, *context, QgsProcessing::LayerOptionsFlag::SkipIndexGeneration );
+  if ( layer && layer->isValid() )
+  {
+    // need to grab ownership of layer if required - otherwise layer may be deleted when context
+    // goes out of scope
+    std::unique_ptr< QgsMapLayer > ownedLayer( context->takeResultLayer( layer->id() ) );
+    if ( ownedLayer && ownedLayer->type() == Qgis::LayerType::PointCloud )
+    {
+      mParentLayer.reset( qobject_cast< QgsPointCloudLayer * >( ownedLayer.release() ) );
+      layer = mParentLayer.get();
+    }
+    else
+    {
+      // don't need ownership of this layer - it wasn't owned by context (so e.g. is owned by the project)
+    }
+
+    if ( mComboBox )
+      mComboBox->setLayer( layer );
+    else if ( mPanel )
+    {
+      mPanel->setAttributes( layer->attributes() );
+    }
+  }
+  else
+  {
+    if ( mComboBox )
+    {
+      mComboBox->setLayer( nullptr );
+    }
+    else if ( mPanel )
+      mPanel->setAttributes( QgsPointCloudAttributeCollection() );
+
+    if ( value.isValid() && widgetContext().messageBar() )
+    {
+      widgetContext().messageBar()->clearWidgets();
+      widgetContext().messageBar()->pushMessage( QString(), QObject::tr( "Could not load selected layer/table. Dependent attributes could not be populated" ),
+          Qgis::MessageLevel::Info );
+    }
+  }
+
+  const QgsProcessingParameterPointCloudAttribute *attrParam = static_cast< const QgsProcessingParameterPointCloudAttribute * >( parameterDefinition() );
+  if ( mPanel && attrParam->defaultToAllAttributes() )
+  {
+    QVariantList val;
+    val.reserve( mPanel->attributes().attributes().size() );
+    for ( const QgsPointCloudAttribute &attr : mPanel->attributes().attributes() )
+      val << attr.name();
+    setWidgetValue( val, *context );
+  }
+  else if ( attrParam->defaultValueForGui().isValid() )
+    setWidgetValue( parameterDefinition()->defaultValueForGui(), *context );
+}
+
+void QgsProcessingPointCloudAttributeWidgetWrapper::setWidgetValue( const QVariant &value, QgsProcessingContext &context )
+{
+  if ( mComboBox )
+  {
+    if ( !value.isValid() )
+      mComboBox->setAttribute( QString() );
+    else
+    {
+      const QString v = QgsProcessingParameters::parameterAsString( parameterDefinition(), value, context );
+      mComboBox->setAttribute( v );
+    }
+  }
+  else if ( mPanel )
+  {
+    QVariantList opts;
+    if ( value.isValid() )
+    {
+      const QStringList v = QgsProcessingParameters::parameterAsStrings( parameterDefinition(), value, context );
+      opts.reserve( v.size() );
+      for ( const QString &i : v )
+        opts << i;
+    }
+    if ( mPanel )
+      mPanel->setValue( opts );
+  }
+  else if ( mLineEdit )
+  {
+    const QgsProcessingParameterPointCloudAttribute *attrParam = static_cast< const QgsProcessingParameterPointCloudAttribute * >( parameterDefinition() );
+    if ( attrParam->allowMultiple() )
+    {
+      const QStringList v = QgsProcessingParameters::parameterAsStrings( parameterDefinition(), value, context );
+      mLineEdit->setText( v.join( ';' ) );
+    }
+    else
+    {
+      mLineEdit->setText( QgsProcessingParameters::parameterAsString( parameterDefinition(), value, context ) );
+    }
+  }
+}
+
+QVariant QgsProcessingPointCloudAttributeWidgetWrapper::widgetValue() const
+{
+  if ( mComboBox )
+    return mComboBox->currentAttribute();
+  else if ( mPanel )
+    return mPanel->value();
+  else if ( mLineEdit )
+  {
+    const QgsProcessingParameterPointCloudAttribute *attrParam = static_cast< const QgsProcessingParameterPointCloudAttribute * >( parameterDefinition() );
+    if ( attrParam->allowMultiple() )
+    {
+      return mLineEdit->text().split( ';' );
+    }
+    else
+      return mLineEdit->text();
+  }
+  else
+    return QVariant();
+}
+
+QStringList QgsProcessingPointCloudAttributeWidgetWrapper::compatibleParameterTypes() const
+{
+  return QStringList()
+         << QgsProcessingParameterPointCloudAttribute::typeName()
+         << QgsProcessingParameterString::typeName();
+}
+
+QStringList QgsProcessingPointCloudAttributeWidgetWrapper::compatibleOutputTypes() const
+{
+  return QStringList()
+         << QgsProcessingOutputString::typeName();
+}
+
+QString QgsProcessingPointCloudAttributeWidgetWrapper::modelerExpressionFormatString() const
+{
+  return tr( "selected attribute names as an array of names, or semicolon separated string of options (e.g. 'X;Intensity')" );
+}
+
+QString QgsProcessingPointCloudAttributeWidgetWrapper::parameterType() const
+{
+  return QgsProcessingParameterPointCloudAttribute::typeName();
+}
+
+QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingPointCloudAttributeWidgetWrapper::createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type )
+{
+  return new QgsProcessingPointCloudAttributeWidgetWrapper( parameter, type );
+}
+
+QgsProcessingAbstractParameterDefinitionWidget *QgsProcessingPointCloudAttributeWidgetWrapper::createParameterDefinitionWidget( QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingParameterDefinition *definition, const QgsProcessingAlgorithm *algorithm )
+{
+  return new QgsProcessingPointCloudAttributeParameterDefinitionWidget( context, widgetContext, definition, algorithm );
+}
 
 
 //
