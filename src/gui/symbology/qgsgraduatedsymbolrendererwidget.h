@@ -157,6 +157,7 @@ class GUI_EXPORT QgsGraduatedSymbolRendererWidget : public QgsRendererWidget, pr
     void selectionChanged( const QItemSelection &selected, const QItemSelection &deselected );
     void symmetryPointEditingFinished();
     void classifyGraduatedImpl();
+
     /**
      * Slot used to change the state of all selected items.
      *
