@@ -184,6 +184,7 @@ class KPty {
     KPtyPrivate * const d_ptr;
 
   private:
+    // cppcheck-suppress unusedPrivateFunction
     Q_DECLARE_PRIVATE(KPty)
 
     KPty( const KPty& ) = delete;

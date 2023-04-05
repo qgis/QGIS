@@ -48,7 +48,7 @@ Returns list of available providers by their keys
 Returns metadata of the provider or ``None`` if not found
 %End
 
-    void registerGuis( QMainWindow *widget );
+    void registerGuis( QMainWindow *widget ) const;
 %Docstring
 Called during GUI initialization - allows providers to do its internal initialization
 of GUI components, possibly making use of the passed pointer to the QGIS main window.

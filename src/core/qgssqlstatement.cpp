@@ -141,6 +141,7 @@ QgsSQLStatement::QgsSQLStatement( const QString &expr, bool allowFragments )
 }
 
 QgsSQLStatement::QgsSQLStatement( const QgsSQLStatement &other )
+  : mAllowFragments( other.mAllowFragments )
 {
   mRootNode = ::parse( other.mStatement, mParserErrorString, other.mAllowFragments );
   mStatement = other.mStatement;
@@ -154,6 +155,7 @@ QgsSQLStatement &QgsSQLStatement::operator=( const QgsSQLStatement &other )
     mParserErrorString.clear();
     mRootNode = ::parse( other.mStatement, mParserErrorString, other.mAllowFragments );
     mStatement = other.mStatement;
+    mAllowFragments = other.mAllowFragments;
   }
   return *this;
 }

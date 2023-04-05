@@ -47,6 +47,7 @@ QVariantList QgsHanaProviderResultIterator::nextRowPrivate()
     return ret;
 
   ret.reserve( mNumColumns );
+  // cppcheck-suppress unsignedLessThanZero
   for ( unsigned short i = 1; i <= mNumColumns; ++i )
     ret.push_back( mResultSet->getValue( i ) );
   mNextRow = mResultSet->next();

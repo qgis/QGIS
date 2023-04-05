@@ -70,7 +70,7 @@ class GUI_EXPORT QgsProviderGuiRegistry
      * Called during GUI initialization - allows providers to do its internal initialization
      * of GUI components, possibly making use of the passed pointer to the QGIS main window.
      */
-    void registerGuis( QMainWindow *widget );
+    void registerGuis( QMainWindow *widget ) const;
 
     /**
      * Returns all data item gui providers registered in provider with \a providerKey

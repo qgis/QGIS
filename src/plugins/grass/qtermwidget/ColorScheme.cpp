@@ -216,7 +216,7 @@ void ColorScheme::getColorTable( ColorEntry *table, uint randomSeed ) const
 }
 bool ColorScheme::randomizedBackgroundColor() const
 {
-  return _randomTable ? false : !_randomTable[1].isNull();
+  return !_randomTable ? false : !_randomTable[1].isNull();
 }
 void ColorScheme::setRandomizedBackgroundColor( bool randomize )
 {

@@ -26,6 +26,7 @@ QgsSpatiaLiteConnPool *QgsSpatiaLiteConnPool::instance()
   {
     static QMutex sMutex;
     QMutexLocker locker( &sMutex );
+    // cppcheck-suppress identicalInnerCondition
     if ( ! sInstance )
     {
       sInstance = new QgsSpatiaLiteConnPool();

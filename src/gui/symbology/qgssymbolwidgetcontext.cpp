@@ -19,6 +19,8 @@
 #include "qgsexpressioncontextutils.h"
 #include "qgstemporalcontroller.h"
 
+// should mSymbolType be copied?
+// cppcheck-suppress missingMemberCopy
 QgsSymbolWidgetContext::QgsSymbolWidgetContext( const QgsSymbolWidgetContext &other )
   : mMapCanvas( other.mMapCanvas )
   , mMessageBar( other.mMessageBar )
@@ -30,6 +32,8 @@ QgsSymbolWidgetContext::QgsSymbolWidgetContext( const QgsSymbolWidgetContext &ot
   }
 }
 
+// should mSymbolType be copied?
+// cppcheck-suppress operatorEqVarError
 QgsSymbolWidgetContext &QgsSymbolWidgetContext::operator=( const QgsSymbolWidgetContext &other )
 {
   mMapCanvas = other.mMapCanvas;
@@ -43,6 +47,7 @@ QgsSymbolWidgetContext &QgsSymbolWidgetContext::operator=( const QgsSymbolWidget
   {
     mExpressionContext.reset();
   }
+
   return *this;
 }
 

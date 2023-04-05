@@ -226,7 +226,7 @@ QgsProviderGuiRegistry::~QgsProviderGuiRegistry()
   mProviders.clear();
 }
 
-void QgsProviderGuiRegistry::registerGuis( QMainWindow *parent )
+void QgsProviderGuiRegistry::registerGuis( QMainWindow *parent ) const
 {
   GuiProviders::const_iterator it = mProviders.begin();
   while ( it != mProviders.end() )

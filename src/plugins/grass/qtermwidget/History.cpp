@@ -575,13 +575,17 @@ void CompactHistoryBlockList::deallocate(void* ptr)
   Q_ASSERT( !list.isEmpty());
 
   int i=0;
+  // cppcheck-suppress containerOutOfBounds
   CompactHistoryBlock *block = list.at(i);
+  // cppcheck-suppress containerOutOfBounds
   while ( i<list.size() && !block->contains(ptr) )
   {
     i++;
+    // cppcheck-suppress containerOutOfBounds
     block=list.at(i);
   }
 
+  // cppcheck-suppress containerOutOfBounds
   Q_ASSERT( i<list.size() );
 
   block->deallocate();

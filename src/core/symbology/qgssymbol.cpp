@@ -742,6 +742,7 @@ QgsSymbol *QgsSymbol::defaultSymbol( Qgis::GeometryType geomType )
   }
 
   // set opacity
+  // cppcheck-suppress nullPointerRedundantCheck
   s->setOpacity( QgsProject::instance()->styleSettings()->defaultSymbolOpacity() );
 
   // set random color, it project prefs allow

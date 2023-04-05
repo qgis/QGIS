@@ -121,7 +121,7 @@ QgsVirtualRasterProvider::QgsVirtualRasterProvider( const QgsVirtualRasterProvid
   , mYBlockSize( other.mYBlockSize )
   , mFormulaString( other.mFormulaString )
   , mLastError( other.mLastError )
-
+  , mRasterLayers{}
 {
   for ( const auto &it : other.mRasterLayers )
   {

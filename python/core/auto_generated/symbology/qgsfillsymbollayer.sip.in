@@ -2481,7 +2481,6 @@ Sets the rotation ``angle`` of the pattern, in degrees clockwise.
   protected:
 
 
-
     virtual void applyDataDefinedSettings( QgsSymbolRenderContext &context );
 
 
