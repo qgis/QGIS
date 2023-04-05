@@ -19,6 +19,8 @@ LOG_FILE=/tmp/cppcheck_qgis.txt
 rm -f ${LOG_FILE}
 echo "Checking ${SCRIPT_DIR}/../src ..."
 
+# qgsgcptransformer.cpp causes an effective hang on newer cppcheck!
+
 cppcheck --library=qt.cfg --inline-suppr \
          --template='{file}:{line},{severity},{id},{message}' \
          --enable=all --inconclusive --std=c++11 \
@@ -34,6 +36,7 @@ cppcheck --library=qt.cfg --inline-suppr \
          -DQ_NOWARN_DEPRECATED_PUSH= \
          -DQ_NOWARN_DEPRECATED_POP= \
          -DQ_DECLARE_OPAQUE_POINTER= \
+         -i src/analysis/georeferencing/qgsgcptransformer.cpp \
          -j $(nproc) \
          ${SCRIPT_DIR}/../src \
          >>${LOG_FILE} 2>&1 &
