@@ -1352,7 +1352,6 @@ bool QgsPostgresProvider::loadFields()
       fieldTypeName = originalFormattedFieldType;
     }
 
-    mAttrPalIndexName.insert( i, fieldName );
     // If this is an identity field with constraints and there is no default, let's look for a sequence:
     // we might have a default value created by a sequence named <table>_<field>_seq
     if ( ! identityMap[tableoid ][ attnum ].isEmpty()
@@ -5229,11 +5228,6 @@ QList<QgsRelation> QgsPostgresProvider::discoverRelations( const QgsVectorLayer 
     }
   }
   return result;
-}
-
-QgsAttrPalIndexNameHash QgsPostgresProvider::palAttributeIndexNames() const
-{
-  return mAttrPalIndexName;
 }
 
 void QgsPostgresProvider::setQuery( const QString &query )
