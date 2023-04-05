@@ -161,6 +161,7 @@ void QgsNewMemoryLayerDialog::mTypeBox_currentIndexChanged( int )
     mPrecision->clear();
     mPrecision->setEnabled( false );
     mWidth->setValidator( new QIntValidator( 1, 255, this ) );
+    mWidth->setEnabled( true );
   }
   else if ( fieldType == QLatin1String( "integer" ) )
   {
@@ -169,6 +170,7 @@ void QgsNewMemoryLayerDialog::mTypeBox_currentIndexChanged( int )
     mPrecision->clear();
     mPrecision->setEnabled( false );
     mWidth->setValidator( new QIntValidator( 1, 10, this ) );
+    mWidth->setEnabled( true );
   }
   else if ( fieldType == QLatin1String( "double" ) )
   {
@@ -178,6 +180,7 @@ void QgsNewMemoryLayerDialog::mTypeBox_currentIndexChanged( int )
       mPrecision->setText( QStringLiteral( "6" ) );
     mPrecision->setEnabled( true );
     mWidth->setValidator( new QIntValidator( 1, 20, this ) );
+    mWidth->setEnabled( true );
   }
   else if ( fieldType == QLatin1String( "bool" ) )
   {
