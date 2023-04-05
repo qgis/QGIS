@@ -83,7 +83,7 @@ QStringList QgsPdalFixProjectionAlgorithm::createArgumentLists( const QVariantMa
                        QStringLiteral( "--assign-crs=%1" ).arg( crs.authid() )
                      };
 
-  addThreadsParameter( args );
+  applyThreadsParameter( args );
   return args;
 }
 

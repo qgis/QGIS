@@ -42,10 +42,10 @@ class QgsPdalAlgorithmBase : public QgsProcessingAlgorithm
     void setOutputValue( const QString &name, const QVariant &value );
 
     /**
-     * Adds max number of concurrent threads for parallel runs parameter
+     * Applies max number of concurrent threads for parallel runs parameter
      * if user has MAX_THREADS option set in Processing options.
      */
-    void addThreadsParameter( QStringList &arguments );
+    void applyThreadsParameter( QStringList &arguments );
 
     /**
      * Returns path to the pdal_wrench executable binary.

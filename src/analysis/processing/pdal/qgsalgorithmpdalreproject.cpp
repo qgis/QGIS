@@ -95,7 +95,7 @@ QStringList QgsPdalReprojectAlgorithm::createArgumentLists( const QVariantMap &p
     args << QStringLiteral( "--transform-coord-op=%1" ).arg( coordOp );
   }
 
-  addThreadsParameter( args );
+  applyThreadsParameter( args );
   return args;
 }
 

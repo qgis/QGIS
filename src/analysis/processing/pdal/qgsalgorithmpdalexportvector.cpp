@@ -89,7 +89,7 @@ QStringList QgsPdalExportVectorAlgorithm::createArgumentLists( const QVariantMap
     }
   }
 
-  addThreadsParameter( args );
+  applyThreadsParameter( args );
   return args;
 }
 

@@ -82,7 +82,7 @@ QStringList QgsPdalMergeAlgorithm::createArgumentLists( const QVariantMap &param
   args << QStringLiteral( "merge" )
        << QStringLiteral( "--output=%1" ).arg( outputFile );
 
-  addThreadsParameter( args );
+  applyThreadsParameter( args );
 
   for ( const QgsMapLayer *layer : std::as_const( layers ) )
   {

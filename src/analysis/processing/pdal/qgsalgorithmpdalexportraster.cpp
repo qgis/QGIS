@@ -111,7 +111,7 @@ QStringList QgsPdalExportRasterAlgorithm::createArgumentLists( const QVariantMap
     args << QStringLiteral( "--tile-origin-y=%1" ).arg( parameterAsInt( parameters, QStringLiteral( "ORIGIN_Y" ), context ) );
   }
 
-  addThreadsParameter( args );
+  applyThreadsParameter( args );
   return args;
 }
 
