@@ -34,7 +34,7 @@ void QgsMapToolShapeCircleAbstract::addCircleToParentTool()
 
   // Check whether to draw the circle as a polygon or a circular string
   bool drawAsPolygon = false;
-  if ( QgsMapLayer* layer = mParentTool->layer() )
+  if ( QgsMapLayer *layer = mParentTool->layer() )
   {
     const QgsCoordinateReferenceSystem layerCrs = layer->crs();
     const QgsCoordinateReferenceSystem mapCrs = mParentTool->canvas()->mapSettings().destinationCrs();
