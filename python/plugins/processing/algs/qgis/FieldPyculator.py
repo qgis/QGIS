@@ -22,6 +22,24 @@ __copyright__ = '(C) 2012, Victor Olaya & NextGIS'
 import sys
 
 from qgis.PyQt.QtCore import QVariant
+
+# TODO QGIS 4.0: Fix code if PyQt6
+from qgis.PyQt.QtCore import QT_VERSION
+if (QT_VERSION >= 0x060000):
+    from qgis.PyQt.QtCore import QMetaType
+    QVariant.Int = QMetaType.Type.Int
+    QVariant.LongLong = QMetaType.Type.LongLong
+    QVariant.Double = QMetaType.Type.Double
+    QVariant.String = QMetaType.Type.QString
+    QVariant.Invalid = QMetaType.Type.UnknownType
+    QVariant.Bool = QMetaType.Type.Bool
+    QVariant.Date = QMetaType.Type.QDate
+    QVariant.Time = QMetaType.Type.QTime
+    QVariant.DateTime = QMetaType.Type.QDateTime
+    QVariant.ByteArray = QMetaType.Type.QByteArray
+    QVariant.StringList = QMetaType.Type.QStringList
+    QVariant.List = QMetaType.Type.QVariantList
+
 from qgis.core import (QgsProcessingException,
                        QgsField,
                        QgsFields,

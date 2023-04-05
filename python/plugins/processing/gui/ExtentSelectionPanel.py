@@ -25,7 +25,6 @@ import warnings
 from qgis.PyQt import uic
 from qgis.PyQt.QtWidgets import (
     QMenu,
-    QAction,
     QDialog,
     QVBoxLayout,
     QDialogButtonBox,
@@ -33,6 +32,13 @@ from qgis.PyQt.QtWidgets import (
 )
 from qgis.PyQt.QtGui import QCursor
 from qgis.PyQt.QtCore import QCoreApplication, pyqtSignal
+
+# TODO QGIS 4.0: Fix code if PyQt6
+from qgis.PyQt.QtCore import QT_VERSION
+if (QT_VERSION >= 0x060000):
+    from qgis.PyQt.QtGui import QAction
+else:
+    from qgis.PyQt.QtWidgets import QAction
 
 from qgis.gui import QgsMapLayerComboBox
 from qgis.utils import iface
