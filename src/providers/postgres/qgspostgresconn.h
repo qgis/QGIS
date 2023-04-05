@@ -374,6 +374,12 @@ class QgsPostgresConn : public QObject
     static QString quotedJsonValue( const QVariant &value );
 
     /**
+     * Returns the RelKind associated with a value from the relkind column
+     * in pg_class.
+     */
+    static Qgis::PostgresRelKind relKindFromValue( const QString &value );
+
+    /**
      * Gets the list of supported layers
      * \param layers list to store layers in
      * \param searchGeometryColumnsOnly only look for geometry columns which are
