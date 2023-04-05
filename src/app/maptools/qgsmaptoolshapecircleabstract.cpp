@@ -38,7 +38,7 @@ void QgsMapToolShapeCircleAbstract::addCircleToParentTool()
   const bool drawAsPolygon = layerCrs != mapCrs;
   if ( drawAsPolygon )
   {
-    const int segments = QgsSettingsRegistryCore::settingsDigitizingOffsetQuadSeg->value() * 12;
+    const int segments = QgsSettingsRegistryCore::settingsDigitizingOffsetQuadSeg.value() * 12;
     std::unique_ptr<QgsLineString> ls( mCircle.toLineString( segments ) );
     mParentTool->addCurve( ls.release() );
   }
