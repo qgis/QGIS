@@ -187,7 +187,7 @@ jobs:
       - name: Sip Files Up To Date
         run: ./tests/code_layout/sipify/test_sipfiles.sh
 
-  cppcheck_18_04:
+  cppcheck:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
