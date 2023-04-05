@@ -300,7 +300,7 @@ jobs:
 
           - qt-version: 6
             distro-version: 38
-            docker-target: single
+            docker-target: binary-only
 
           - qt-version: 5
             distro-version: 22.04

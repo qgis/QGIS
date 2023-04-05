@@ -1,6 +1,6 @@
 ARG DISTRO_VERSION=38
 
-FROM fedora:${DISTRO_VERSION} as single
+FROM fedora:${DISTRO_VERSION} as binary-for-oracle
 MAINTAINER Matthias Kuhn <matthias@opengis.ch>
 
 RUN dnf -y --refresh install \
@@ -89,3 +89,13 @@ RUN unzip instantclient-sqlplus-linux.x64-19.9.0.0.0dbru.zip
 ENV PATH="/instantclient_19_9:${PATH}"
 ENV LD_LIBRARY_PATH="/instantclient_19_9:${LD_LIBRARY_PATH}"
 ENV LANG=C.UTF-8
+
+FROM binary-for-oracle as binary-only
+
+RUN dnf -y --refresh install \
+    python3-gdal \
+    python3-nose2 \
+    python3-psycopg2 \
+    python3-pyyaml
+
+FROM binary-only
