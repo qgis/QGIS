@@ -18,7 +18,6 @@
 #include "qgspostgresconnpool.h"
 #include "qgspostgresprojectstorage.h"
 #include "qgspostgresprovider.h"
-#include "qgscolumntypethread.h"
 #include "qgslogger.h"
 #include "qgsdatasourceuri.h"
 #include "qgsapplication.h"
@@ -539,11 +538,11 @@ QgsPGLayerItem *QgsPGSchemaItem::createLayer( QgsPostgresLayerProperty layerProp
 {
   //QgsDebugMsg( "schemaName = " + layerProperty.schemaName + " tableName = " + layerProperty.tableName + " geometryColName = " + layerProperty.geometryColName );
   QString tip;
-  if ( layerProperty.isView && ! layerProperty.isMaterializedView )
+  if ( layerProperty.isView && layerProperty.relKind != Qgis::PostgresRelKind::MaterializedView )
   {
     tip = tr( "View" );
   }
-  else if ( layerProperty.isView && layerProperty.isMaterializedView )
+  else if ( layerProperty.isView && layerProperty.relKind == Qgis::PostgresRelKind::MaterializedView )
   {
     tip = tr( "Materialized view" );
   }

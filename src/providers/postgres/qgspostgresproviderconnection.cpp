@@ -622,7 +622,7 @@ QList<QgsPostgresProviderConnection::TableProperty> QgsPostgresProviderConnectio
         {
           prFlags.setFlag( QgsPostgresProviderConnection::TableFlag::View );
         }
-        if ( pr.isMaterializedView )
+        if ( pr.relKind == Qgis::PostgresRelKind::MaterializedView )
         {
           prFlags.setFlag( QgsPostgresProviderConnection::TableFlag::MaterializedView );
         }
@@ -667,7 +667,7 @@ QList<QgsPostgresProviderConnection::TableProperty> QgsPostgresProviderConnectio
           property.setComment( pr.tableComment );
 
           // Get PKs
-          if ( pr.isView || pr.isMaterializedView || pr.isForeignTable )
+          if ( pr.isView || ( pr.relKind == Qgis::PostgresRelKind::MaterializedView ) || pr.isForeignTable )
           {
             // Set the candidates
             property.setPrimaryKeyColumns( pr.pkCols );
