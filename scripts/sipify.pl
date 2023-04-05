@@ -1395,10 +1395,15 @@ while ($LINE_IDX < $LINE_COUNT){
     }
 
 
-    # replace QVector with QList
-    $LINE =~ s/QVector\s*<\s*QVector\s*<\s*/TemporaryStuff/g;
-    $LINE =~ s/QVector\s*<\s*(.*?)>/QList<$1>/g;
-    $LINE =~ s/TemporaryStuff/QVector<QVector</g;
+    if ( $is_qt6 eq 1 ){
+      # replace QVector with QList
+      $LINE =~ s/QVector\s*<\s*QVector\s*<\s*/TemporaryStuff/g;
+      $LINE =~ s/QVector\s*<\s*(.*?)>/QList<$1>/g;
+      $LINE =~ s/TemporaryStuff/QVector<QVector</g;
+
+      #replace QPair with std::pair
+      $LINE =~ s/QPair\s*<([^>]*?)>/std::pair<$1>/g;
+    }
 
     # remove export macro from struct definition
     $LINE =~ s/^(\s*struct )\w+_EXPORT (.+)$/$1$2/;
