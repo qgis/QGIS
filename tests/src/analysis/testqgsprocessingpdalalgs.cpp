@@ -844,14 +844,29 @@ void TestQgsProcessingPdalAlgs::filter()
 
   QVariantMap parameters;
   parameters.insert( QStringLiteral( "INPUT" ), mPointCloudLayerPath );
-  parameters.insert( QStringLiteral( "FILTER" ), QStringLiteral( "Classification == 7 || Classification == 8" ) );
   parameters.insert( QStringLiteral( "OUTPUT" ), outputPointCloud );
 
   QStringList args = alg->createArgumentLists( parameters, *context, &feedback );
   QCOMPARE( args, QStringList() << QStringLiteral( "translate" )
             << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath )
-            << QStringLiteral( "--filter=Classification == 7 || Classification == 8" )
             << QStringLiteral( "--output=%1" ).arg( outputPointCloud )
+          );
+
+  parameters.insert( QStringLiteral( "FILTER_EXPRESSION" ), QStringLiteral( "Classification == 7 || Classification == 8" ) );
+  args = alg->createArgumentLists( parameters, *context, &feedback );
+  QCOMPARE( args, QStringList() << QStringLiteral( "translate" )
+            << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath )
+            << QStringLiteral( "--output=%1" ).arg( outputPointCloud )
+            << QStringLiteral( "--filter=Classification == 7 || Classification == 8" )
+          );
+
+  parameters.insert( QStringLiteral( "FILTER_EXTENT" ), QgsRectangle( 1, 2, 3, 4 ) );
+  args = alg->createArgumentLists( parameters, *context, &feedback );
+  QCOMPARE( args, QStringList() << QStringLiteral( "translate" )
+            << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath )
+            << QStringLiteral( "--output=%1" ).arg( outputPointCloud )
+            << QStringLiteral( "--filter=Classification == 7 || Classification == 8" )
+            << QStringLiteral( "--bounds=([1, 3], [2, 4])" )
           );
 
   // set max threads to 2, a --threads argument should be added
@@ -859,8 +874,9 @@ void TestQgsProcessingPdalAlgs::filter()
   args = alg->createArgumentLists( parameters, *context, &feedback );
   QCOMPARE( args, QStringList() << QStringLiteral( "translate" )
             << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath )
-            << QStringLiteral( "--filter=Classification == 7 || Classification == 8" )
             << QStringLiteral( "--output=%1" ).arg( outputPointCloud )
+            << QStringLiteral( "--filter=Classification == 7 || Classification == 8" )
+            << QStringLiteral( "--bounds=([1, 3], [2, 4])" )
             << QStringLiteral( "--threads=2" )
           );
 }
