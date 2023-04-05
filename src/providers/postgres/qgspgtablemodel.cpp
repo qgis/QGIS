@@ -187,7 +187,7 @@ void QgsPgTableModel::addTableEntry( const QgsPostgresLayerProperty &layerProper
     // Legacy: default value is determined by project option to trust layer's metadata
     // TODO: remove this default from QGIS 4 and leave default value to false?
     // checkPkUnicity has only effect on views and materialized views, so we can safely disable it
-    if ( layerProperty.isView || layerProperty.isMaterializedView )
+    if ( layerProperty.isView || layerProperty.relKind == Qgis::PostgresRelKind::MaterializedView )
     {
       checkPkUnicityItem->setCheckState( ( QgsProject::instance( )->flags() & Qgis::ProjectFlag::TrustStoredLayerStatistics ) ? Qt::CheckState::Unchecked : Qt::CheckState::Checked );
       checkPkUnicityItem->setToolTip( headerData( Columns::DbtmCheckPkUnicity, Qt::Orientation::Horizontal, Qt::ToolTipRole ).toString() );

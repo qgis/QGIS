@@ -82,9 +82,8 @@ struct QgsPostgresLayerProperty
   QList<int>                    srids;
   unsigned int                  nSpCols;
   QString                       sql;
-  QString                       relKind;
+  Qgis::PostgresRelKind         relKind = Qgis::PostgresRelKind::Unknown;
   bool                          isView = false;
-  bool                          isMaterializedView = false;
   bool                          isForeignTable = false;
   bool                          isRaster = false;
   QString                       tableComment;
@@ -117,7 +116,6 @@ struct QgsPostgresLayerProperty
     property.relKind            = relKind;
     property.isView             = isView;
     property.isRaster           = isRaster;
-    property.isMaterializedView = isMaterializedView;
     property.tableComment       = tableComment;
 
     return property;

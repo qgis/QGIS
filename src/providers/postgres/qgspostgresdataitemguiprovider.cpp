@@ -107,7 +107,7 @@ void QgsPostgresDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMe
       maintainMenu->addAction( actionTruncateLayer );
     }
 
-    if ( layerInfo.isMaterializedView )
+    if ( layerInfo.relKind == Qgis::PostgresRelKind::MaterializedView )
     {
       QAction *actionRefreshMaterializedView = new QAction( tr( "Refresh Materialized View…" ), menu );
       connect( actionRefreshMaterializedView, &QAction::triggered, this, [layerItem, context] { refreshMaterializedView( layerItem, context ); } );
@@ -410,7 +410,7 @@ void QgsPostgresDataItemGuiProvider::renameLayer( QgsPGLayerItem *layerItem, Qgs
   QString sql;
   if ( layerInfo.isView )
   {
-    sql = QStringLiteral( "ALTER %1 VIEW %2 RENAME TO %3" ).arg( layerInfo.relKind == QLatin1String( "m" ) ? QStringLiteral( "MATERIALIZED" ) : QString(),
+    sql = QStringLiteral( "ALTER %1 VIEW %2 RENAME TO %3" ).arg( layerInfo.relKind == Qgis::PostgresRelKind::MaterializedView ? QStringLiteral( "MATERIALIZED" ) : QString(),
           oldName, newName );
   }
   else
