@@ -550,7 +550,7 @@ QgsPGLayerItem *QgsPGSchemaItem::createLayer( QgsPostgresLayerProperty layerProp
   {
     tip = tr( "Raster" );
   }
-  else if ( layerProperty.isForeignTable )
+  else if ( layerProperty.relKind == Qgis::PostgresRelKind::ForeignTable )
   {
     tip = tr( "Foreign table" );
   }
