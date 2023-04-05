@@ -3427,3 +3427,18 @@ QgsUnitTypes.LayoutScreenUnits.__doc__ = "Unit is a screen based measurement uni
 Qgis.LayoutUnitType.__doc__ = 'Types of layout units\n\n.. note::\n\n   Prior to QGIS 3.30 this was available as :py:class:`QgsUnitTypes`.LayoutUnitType.\n\n.. versionadded:: 3.30\n\n' + '* ``LayoutPaperUnits``: ' + Qgis.LayoutUnitType.PaperUnits.__doc__ + '\n' + '* ``LayoutScreenUnits``: ' + Qgis.LayoutUnitType.ScreenUnits.__doc__
 # --
 Qgis.LayoutUnitType.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.PostgresRelKind.NotSet.__doc__ = "Not set"
+Qgis.PostgresRelKind.Unknown.__doc__ = "Unknown"
+Qgis.PostgresRelKind.OrdinaryTable.__doc__ = "Ordinary table"
+Qgis.PostgresRelKind.Index.__doc__ = "Index"
+Qgis.PostgresRelKind.Sequence.__doc__ = "Sequence"
+Qgis.PostgresRelKind.View.__doc__ = "View"
+Qgis.PostgresRelKind.MaterializedView.__doc__ = "Materialized view"
+Qgis.PostgresRelKind.CompositeType.__doc__ = "Composition type"
+Qgis.PostgresRelKind.ToastTable.__doc__ = "TOAST table"
+Qgis.PostgresRelKind.ForeignTable.__doc__ = "Foreign table"
+Qgis.PostgresRelKind.PartitionedTable.__doc__ = "PartionedTable"
+Qgis.PostgresRelKind.__doc__ = 'Postgres database relkind options.\n\n.. versionadded:: 3.32\n\n' + '* ``NotSet``: ' + Qgis.PostgresRelKind.NotSet.__doc__ + '\n' + '* ``Unknown``: ' + Qgis.PostgresRelKind.Unknown.__doc__ + '\n' + '* ``OrdinaryTable``: ' + Qgis.PostgresRelKind.OrdinaryTable.__doc__ + '\n' + '* ``Index``: ' + Qgis.PostgresRelKind.Index.__doc__ + '\n' + '* ``Sequence``: ' + Qgis.PostgresRelKind.Sequence.__doc__ + '\n' + '* ``View``: ' + Qgis.PostgresRelKind.View.__doc__ + '\n' + '* ``MaterializedView``: ' + Qgis.PostgresRelKind.MaterializedView.__doc__ + '\n' + '* ``CompositeType``: ' + Qgis.PostgresRelKind.CompositeType.__doc__ + '\n' + '* ``ToastTable``: ' + Qgis.PostgresRelKind.ToastTable.__doc__ + '\n' + '* ``ForeignTable``: ' + Qgis.PostgresRelKind.ForeignTable.__doc__ + '\n' + '* ``PartitionedTable``: ' + Qgis.PostgresRelKind.PartitionedTable.__doc__
+# --
+Qgis.PostgresRelKind.baseClass = Qgis
