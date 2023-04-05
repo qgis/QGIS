@@ -84,7 +84,6 @@ struct QgsPostgresLayerProperty
   QString                       sql;
   Qgis::PostgresRelKind         relKind = Qgis::PostgresRelKind::Unknown;
   bool                          isView = false;
-  bool                          isForeignTable = false;
   bool                          isRaster = false;
   QString                       tableComment;
 

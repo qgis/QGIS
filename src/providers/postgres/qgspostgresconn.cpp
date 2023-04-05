@@ -713,7 +713,6 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
     int dim = result.PQgetvalue( idx, 5 ).toInt();
     QString relkind = result.PQgetvalue( idx, 6 );
     bool isView = relkind == QLatin1String( "v" ) || relkind == QLatin1String( "m" );
-    bool isForeignTable = relkind == QLatin1String( "f" );
     bool isRaster = type == QLatin1String( "RASTER" );
     QString comment = result.PQgetvalue( idx, 7 );
     QString attributes = result.PQgetvalue( idx, 8 );
@@ -769,11 +768,10 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
     layerProperty.sql.clear();
     layerProperty.relKind = relKindFromValue( relkind );
     layerProperty.isView = isView;
-    layerProperty.isForeignTable = isForeignTable;
     layerProperty.isRaster = isRaster;
     layerProperty.tableComment = comment;
     layerProperty.nSpCols = nSpCols;
-    if ( isView || isForeignTable )
+    if ( isView || ( layerProperty.relKind == Qgis::PostgresRelKind::ForeignTable ) )
     {
       // TODO: use std::transform
       for ( const auto &a : QgsPostgresStringUtils::parseArray( attributes ) )
@@ -877,7 +875,6 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
       QString relkind    = result.PQgetvalue( i, 3 ); // relation kind
       QString coltype    = result.PQgetvalue( i, 4 ); // column type
       bool isView = relkind == QLatin1String( "v" ) || relkind == QLatin1String( "m" );
-      bool isForeignTable = relkind == QLatin1String( "f" );
       QString comment    = result.PQgetvalue( i, 5 ); // table comment
 
       QgsPostgresLayerProperty layerProperty;
@@ -888,7 +885,6 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
       layerProperty.geometryColName = column;
       layerProperty.relKind = relKindFromValue( relkind );
       layerProperty.isView = isView;
-      layerProperty.isForeignTable = isForeignTable;
       layerProperty.isRaster = coltype == QLatin1String( "raster" );
       layerProperty.tableComment = comment;
       if ( coltype == QLatin1String( "geometry" ) )
@@ -919,7 +915,7 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
 
       // TODO: use knowledge from already executed query to count
       //       spatial fields and list attribute names...
-      addColumnInfo( layerProperty, schemaName, tableName, isView || isForeignTable );
+      addColumnInfo( layerProperty, schemaName, tableName, isView || ( layerProperty.relKind == Qgis::PostgresRelKind::ForeignTable ) );
 
       if ( isView && layerProperty.pkCols.empty() )
       {
@@ -982,7 +978,6 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
       QString comment = result.PQgetvalue( i, 3 ); // table comment
       QString attributes = result.PQgetvalue( i, 4 ); // attributes array
       bool isView = relkind == QLatin1String( "v" ) || relkind == QLatin1String( "m" );
-      bool isForeignTable = relkind == QLatin1String( "f" );
 
       QgsPostgresLayerProperty layerProperty;
       layerProperty.types = QList<Qgis::WkbType>() << Qgis::WkbType::NoGeometry;
@@ -994,7 +989,6 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
       layerProperty.nSpCols = 0;
       layerProperty.relKind = relKindFromValue( relkind );
       layerProperty.isView = isView;
-      layerProperty.isForeignTable = isForeignTable;
       layerProperty.isRaster = false;
       layerProperty.tableComment = comment;
 
@@ -1013,7 +1007,7 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
       if ( alreadyFound )
         continue;
 
-      if ( isView || isForeignTable )
+      if ( isView || ( layerProperty.relKind == Qgis::PostgresRelKind::ForeignTable ) )
       {
         // TODO: use std::transform
         for ( const auto &a : QgsPostgresStringUtils::parseArray( attributes ) )
