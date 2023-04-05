@@ -30,10 +30,11 @@ use constant PREPEND_CODE_MAKE_PRIVATE => 42;
 my $debug = 0;
 my $sip_output = '';
 my $python_output = '';
+my $is_qt6 = 0;
 #my $SUPPORT_TEMPLATE_DOCSTRING = 0;
 #die("usage: $0 [-debug] [-template-doc] headerfile\n") unless GetOptions ("debug" => \$debug, "template-doc" => \$SUPPORT_TEMPLATE_DOCSTRING) && @ARGV == 1;
-die("usage: $0 [-debug] [-sip_output FILE] [-python_output FILE] headerfile\n")
-  unless GetOptions ("debug" => \$debug, "sip_output=s" => \$sip_output, "python_output=s" => \$python_output) && @ARGV == 1;
+die("usage: $0 [-debug] [-qt6] [-sip_output FILE] [-python_output FILE] headerfile\n")
+  unless GetOptions ("debug" => \$debug, "sip_output=s" => \$sip_output, "python_output=s" => \$python_output, "qt6" => \$is_qt6) && @ARGV == 1;
 my $headerfile = $ARGV[0];
 
 # read file
@@ -51,10 +52,12 @@ my $SIP_RUN = 0;
 my $HEADER_CODE = 0;
 my @ACCESS = (PUBLIC);
 my @CLASSNAME = ();
+my @CLASS_AND_STRUCT = ();
 my @DECLARED_CLASSES = ();
 my @EXPORTED = (0);
 my $MULTILINE_DEFINITION = MULTILINE_NO;
 my $ACTUAL_CLASS = '';
+my $ACTUAL_STRUCT = '';
 my $PYTHON_SIGNATURE = '';
 
 my $INDENT = '';
@@ -894,8 +897,9 @@ while ($LINE_IDX < $LINE_COUNT){
         next;
     }
 
-    if ( $LINE =~ m/^\s*struct(\s+\w+_EXPORT)?\s+\w+$/ ) {
+    if ( $LINE =~ m/^\s*struct(\s+\w+_EXPORT)?\s+(?<structname>\w+)$/ ) {
         dbg_info("  going to struct => public");
+        push @CLASS_AND_STRUCT, $+{structname};
         push @CLASSNAME, $CLASSNAME[$#CLASSNAME]; # fake new class since struct has considered similarly
         push @ACCESS, PUBLIC;
         push @EXPORTED, $EXPORTED[-1];
@@ -915,6 +919,7 @@ while ($LINE_IDX < $LINE_COUNT){
         my @template_inheritance_class3 = ();
         do {no warnings 'uninitialized';
             push @CLASSNAME, $+{classname};
+            push @CLASS_AND_STRUCT, $+{classname};
             if ($#CLASSNAME == 0){
                 # might be worth to add in-class classes later on
                 # in case of a tamplate based class declaration
@@ -1035,6 +1040,7 @@ while ($LINE_IDX < $LINE_COUNT){
                     pop @EXPORTED;
                 }
                 pop(@CLASSNAME);
+                pop(@CLASS_AND_STRUCT);
                 if ($#ACCESS == 0){
                     dbg_info("reached top level");
                     # top level should stay public
@@ -1205,6 +1211,17 @@ while ($LINE_IDX < $LINE_COUNT){
                                 push @enum_members_doc, "'* ``$compat_name``: ' + $enum_qualname.$enum_member.__doc__";
                             }
                         }
+                    }
+                    elsif ( $is_qt6 eq 1 and $enum_member ne "" )
+                    {
+                      my $basename = join( ".", @CLASS_AND_STRUCT );
+                      if ( $basename ne "" ){
+                        $enum_member =~ s/^None$/None_/;
+
+                        # With PyQt6, you have to specify the scope to access the enum: https://www.riverbankcomputing.com/static/Docs/PyQt5/gotchas.html#enums
+                        # so we mock
+                        push @OUTPUT_PYTHON, "$basename.$enum_member = $basename.$enum_qualname.$enum_member\n";
+                      }
                     }
                     $enum_decl = fix_annotations($enum_decl);
                     write_output("ENU3", "$enum_decl\n");

@@ -76,13 +76,18 @@ fi
 git config --global --add safe.directory ${CTEST_SOURCE_DIR}
 git config --global --add safe.directory ${CTEST_BUILD_DIR}
 
+if [[ ${BUILD_WITH_QT6} = "ON" ]]; then
+
 #######
 # Sipify all (for Qt6 binding we need to re-generate binding as they differ from the configured Qt5 ones
 #######
 echo "${bold}Generale sip files...${endbold}"
 echo "::group::generate_sip_files"
-../scripts/sipify_all.sh
+../scripts/sipify_all.sh --qt6
 echo "::endgroup::"
+
+fi
+
 cmake \
  -GNinja \
  -DCMAKE_BUILD_TYPE=${BUILD_TYPE} \

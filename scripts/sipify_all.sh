@@ -37,11 +37,31 @@ pushd ${DIR} > /dev/null
 
 count=0
 
-if [[ -n $1 ]]; then
-  modules=("$1")
-else
+IS_QT6=""
+
+modules=()
+POSITIONAL_ARGS=()
+while [[ $# -gt 0 ]]; do
+  case $1 in
+    --qt6)
+      IS_QT6="--qt6"
+      shift
+      ;;
+    -*|--*)
+      echo "Unknown option $1"
+      exit 1
+      ;;
+    *)
+      modules+=("$1")
+      shift
+      ;;
+  esac
+done
+
+if (( ${#modules[@]} == 0 )); then
   modules=(core gui analysis server 3d)
 fi
+
 for module in "${modules[@]}"; do
 
   # clean auto_additions and auto_generated folders
@@ -62,7 +82,7 @@ It is not aimed to be manually edited
       else
         path=$(${GP}sed -r 's@/[^/]+$@@' <<< $sipfile)
         mkdir -p python/$path
-        ./scripts/sipify.pl -s python/$sipfile.in -p python/${module}/auto_additions/${pyfile} $header &
+        ./scripts/sipify.pl $IS_QT6 -s python/$sipfile.in -p python/${module}/auto_additions/${pyfile} $header &
       fi
       count=$((count+1))
   done < <( ${GP}sed -n -r "s@^%Include auto_generated/(.*\.sip)@${module}/auto_generated/\1@p" python/${module}/${module}_auto.sip )
