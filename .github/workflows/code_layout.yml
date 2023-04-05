@@ -188,7 +188,7 @@ jobs:
         run: ./tests/code_layout/sipify/test_sipfiles.sh
 
   cppcheck_18_04:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v3
