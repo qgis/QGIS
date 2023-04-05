@@ -56,22 +56,6 @@ class QgsPostgresProvider final: public QgsVectorDataProvider
     static const QString POSTGRES_KEY;
     static const QString POSTGRES_DESCRIPTION;
 
-    enum Relkind
-    {
-      NotSet,
-      Unknown,
-      OrdinaryTable, // r
-      Index, // i
-      Sequence, // s
-      View, // v
-      MaterializedView, // m
-      CompositeType, // c
-      ToastTable, // t
-      ForeignTable, // f
-      PartitionedTable // p - PostgreSQL 10
-    };
-    Q_ENUM( Relkind )
-
     /**
      * Import a vector layer into the database
      * \param options options for provider, specified via a map of option name
@@ -256,7 +240,7 @@ class QgsPostgresProvider final: public QgsVectorDataProvider
     /**
      * \returns relation kind
      */
-    Relkind relkind() const;
+    Qgis::PostgresRelKind relkind() const;
 
     /**
      * Change internal query with \a query
@@ -397,7 +381,7 @@ class QgsPostgresProvider final: public QgsVectorDataProvider
     /**
      * Kind of relation
      */
-    mutable Relkind mKind = Relkind::NotSet;
+    mutable Qgis::PostgresRelKind mKind = Qgis::PostgresRelKind::NotSet;
 
     /**
      * Data type for the primary key
