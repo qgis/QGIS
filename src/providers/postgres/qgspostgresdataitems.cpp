@@ -538,11 +538,11 @@ QgsPGLayerItem *QgsPGSchemaItem::createLayer( QgsPostgresLayerProperty layerProp
 {
   //QgsDebugMsg( "schemaName = " + layerProperty.schemaName + " tableName = " + layerProperty.tableName + " geometryColName = " + layerProperty.geometryColName );
   QString tip;
-  if ( layerProperty.isView && layerProperty.relKind != Qgis::PostgresRelKind::MaterializedView )
+  if ( layerProperty.relKind == Qgis::PostgresRelKind::View )
   {
     tip = tr( "View" );
   }
-  else if ( layerProperty.isView && layerProperty.relKind == Qgis::PostgresRelKind::MaterializedView )
+  else if ( layerProperty.relKind == Qgis::PostgresRelKind::MaterializedView )
   {
     tip = tr( "Materialized view" );
   }

@@ -83,7 +83,6 @@ struct QgsPostgresLayerProperty
   unsigned int                  nSpCols;
   QString                       sql;
   Qgis::PostgresRelKind         relKind = Qgis::PostgresRelKind::Unknown;
-  bool                          isView = false;
   bool                          isRaster = false;
   QString                       tableComment;
 
@@ -113,7 +112,6 @@ struct QgsPostgresLayerProperty
     property.nSpCols            = nSpCols;
     property.sql                = sql;
     property.relKind            = relKind;
-    property.isView             = isView;
     property.isRaster           = isRaster;
     property.tableComment       = tableComment;
 
