@@ -2016,46 +2016,7 @@ Qgis::PostgresRelKind QgsPostgresRasterProvider::relkind() const
   QgsPostgresResult res( connectionRO()->PQexec( sql ) );
   QString type = res.PQgetvalue( 0, 0 );
 
-  Qgis::PostgresRelKind kind = Qgis::PostgresRelKind::Unknown;
-
-  if ( type == 'r' )
-  {
-    kind = Qgis::PostgresRelKind::OrdinaryTable;
-  }
-  else if ( type == 'i' )
-  {
-    kind = Qgis::PostgresRelKind::Index;
-  }
-  else if ( type == 's' )
-  {
-    kind = Qgis::PostgresRelKind::Sequence;
-  }
-  else if ( type == 'v' )
-  {
-    kind = Qgis::PostgresRelKind::View;
-  }
-  else if ( type == 'm' )
-  {
-    kind = Qgis::PostgresRelKind::MaterializedView;
-  }
-  else if ( type == 'c' )
-  {
-    kind = Qgis::PostgresRelKind::CompositeType;
-  }
-  else if ( type == 't' )
-  {
-    kind = Qgis::PostgresRelKind::ToastTable;
-  }
-  else if ( type == 'f' )
-  {
-    kind = Qgis::PostgresRelKind::ForeignTable;
-  }
-  else if ( type == 'p' )
-  {
-    kind = Qgis::PostgresRelKind::PartitionedTable;
-  }
-
-  return kind;
+  return QgsPostgresConn::relKindFromValue( type );
 }
 
 bool QgsPostgresRasterProvider::determinePrimaryKey()

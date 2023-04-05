@@ -5252,44 +5252,7 @@ Qgis::PostgresRelKind QgsPostgresProvider::relkind() const
     QgsPostgresResult res( connectionRO()->LoggedPQexec( "QgsPostgresProvider", sql ) );
     QString type = res.PQgetvalue( 0, 0 );
 
-    mKind = Qgis::PostgresRelKind::Unknown;
-
-    if ( type == QLatin1String( "r" ) )
-    {
-      mKind = Qgis::PostgresRelKind::OrdinaryTable;
-    }
-    else if ( type == QLatin1String( "i" ) )
-    {
-      mKind = Qgis::PostgresRelKind::Index;
-    }
-    else if ( type == QLatin1String( "s" ) )
-    {
-      mKind = Qgis::PostgresRelKind::Sequence;
-    }
-    else if ( type == QLatin1String( "v" ) )
-    {
-      mKind = Qgis::PostgresRelKind::View;
-    }
-    else if ( type == QLatin1String( "m" ) )
-    {
-      mKind = Qgis::PostgresRelKind::MaterializedView;
-    }
-    else if ( type == QLatin1String( "c" ) )
-    {
-      mKind = Qgis::PostgresRelKind::CompositeType;
-    }
-    else if ( type == QLatin1String( "t" ) )
-    {
-      mKind = Qgis::PostgresRelKind::ToastTable;
-    }
-    else if ( type == QLatin1String( "f" ) )
-    {
-      mKind = Qgis::PostgresRelKind::ForeignTable;
-    }
-    else if ( type == QLatin1String( "p" ) )
-    {
-      mKind = Qgis::PostgresRelKind::PartitionedTable;
-    }
+    mKind = QgsPostgresConn::relKindFromValue( type );
   }
 
   return mKind;

@@ -1379,6 +1379,48 @@ QString QgsPostgresConn::quotedJsonValue( const QVariant &value )
   return quotedString( QString::fromStdString( j.dump() ) );
 }
 
+Qgis::PostgresRelKind QgsPostgresConn::relKindFromValue( const QString &value )
+{
+  if ( value == 'r' )
+  {
+    return Qgis::PostgresRelKind::OrdinaryTable;
+  }
+  else if ( value == 'i' )
+  {
+    return Qgis::PostgresRelKind::Index;
+  }
+  else if ( value == 's' )
+  {
+    return Qgis::PostgresRelKind::Sequence;
+  }
+  else if ( value == 'v' )
+  {
+    return Qgis::PostgresRelKind::View;
+  }
+  else if ( value == 'm' )
+  {
+    return Qgis::PostgresRelKind::MaterializedView;
+  }
+  else if ( value == 'c' )
+  {
+    return Qgis::PostgresRelKind::CompositeType;
+  }
+  else if ( value == 't' )
+  {
+    return Qgis::PostgresRelKind::ToastTable;
+  }
+  else if ( value == 'f' )
+  {
+    return Qgis::PostgresRelKind::ForeignTable;
+  }
+  else if ( value == 'p' )
+  {
+    return Qgis::PostgresRelKind::PartitionedTable;
+  }
+
+  return Qgis::PostgresRelKind::Unknown;
+}
+
 PGresult *QgsPostgresConn::PQexec( const QString &query, bool logError, bool retry, const QString &originatorClass, const QString &queryOrigin ) const
 {
   QMutexLocker locker( &mLock );
