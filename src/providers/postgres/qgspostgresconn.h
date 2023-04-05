@@ -67,6 +67,7 @@ struct QgsPostgresSchemaProperty
   QString owner;
 };
 
+
 //! Layer Property structure
 // TODO: Fill to Postgres/PostGIS specifications
 struct QgsPostgresLayerProperty
@@ -186,6 +187,21 @@ class QgsPostgresResult
   private:
     PGresult *mRes = nullptr;
 
+};
+
+struct PGException
+{
+    explicit PGException( QgsPostgresResult &r )
+      : mWhat( r.PQresultErrorMessage() )
+    {}
+
+    QString errorMessage() const
+    {
+      return mWhat;
+    }
+
+  private:
+    QString mWhat;
 };
 
 //! Wraps acquireConnection() and releaseConnection() from a QgsPostgresConnPool.

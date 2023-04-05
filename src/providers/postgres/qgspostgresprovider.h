@@ -439,21 +439,6 @@ class QgsPostgresProvider final: public QgsVectorDataProvider
 
     struct PGFieldNotFound {}; //! Exception to throw
 
-    struct PGException
-    {
-        explicit PGException( QgsPostgresResult &r )
-          : mWhat( r.PQresultErrorMessage() )
-        {}
-
-        QString errorMessage() const
-        {
-          return mWhat;
-        }
-
-      private:
-        QString mWhat;
-    };
-
     // A function that determines if the given columns contain unique entries
     bool uniqueData( const QString &quotedColNames );
 
