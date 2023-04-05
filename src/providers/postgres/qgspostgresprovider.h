@@ -209,7 +209,6 @@ class QgsPostgresProvider final: public QgsVectorDataProvider
     static QVariant convertValue( QVariant::Type type, QVariant::Type subType, const QString &value, const QString &typeName, QgsPostgresConn *conn );
 
     QList<QgsRelation> discoverRelations( const QgsVectorLayer *target, const QList<QgsVectorLayer *> &layers ) const override;
-    QgsAttrPalIndexNameHash palAttributeIndexNames() const override;
 
     /**
      * Returns true if the data source has metadata, false otherwise. For
@@ -337,9 +336,6 @@ class QgsPostgresProvider final: public QgsVectorDataProvider
      * \since QGIS 3.12
     */
     void reloadProviderData() override;
-
-    //! Old-style mapping of index to name for QgsPalLabeling fix
-    QgsAttrPalIndexNameHash mAttrPalIndexName;
 
     QgsFields mAttributeFields;
     QHash<int, char> mIdentityFields;
