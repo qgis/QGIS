@@ -81,7 +81,7 @@ QStringList QgsPdalFilterAlgorithm::createArgumentLists( const QVariantMap &para
                        QStringLiteral( "--output=%1" ).arg( outputFile )
                      };
 
-  addThreadsParameter( args );
+  applyThreadsParameter( args );
   return args;
 }
 

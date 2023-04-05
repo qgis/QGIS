@@ -86,7 +86,7 @@ QStringList QgsPdalThinAlgorithm::createArgumentLists( const QVariantMap &parame
                        QStringLiteral( "--%1=%2" ).arg( mode == 0 ? QStringLiteral( "step-every-nth" ) : QStringLiteral( "step-sample" ) ).arg( step )
                      };
 
-  addThreadsParameter( args );
+  applyThreadsParameter( args );
   return args;
 }
 

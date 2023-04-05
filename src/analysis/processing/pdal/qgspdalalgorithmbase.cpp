@@ -45,7 +45,7 @@ QString QgsPdalAlgorithmBase::wrenchExecutableBinary() const
   return QString( wrenchExecutable );
 }
 
-void QgsPdalAlgorithmBase::addThreadsParameter( QStringList &arguments )
+void QgsPdalAlgorithmBase::applyThreadsParameter( QStringList &arguments )
 {
   QgsSettings settings;
   int threads = settings.value( QStringLiteral( "/Processing/Configuration/MAX_THREADS" ), 0 ).toInt();

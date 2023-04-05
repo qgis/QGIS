@@ -87,7 +87,7 @@ QStringList QgsPdalClipAlgorithm::createArgumentLists( const QVariantMap &parame
                         QStringLiteral( "--polygon=%1" ).arg( overlayPath )
                       };
 
-  addThreadsParameter( args );
+  applyThreadsParameter( args );
   return args;
 }
 

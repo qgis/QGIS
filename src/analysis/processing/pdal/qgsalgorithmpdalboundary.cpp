@@ -99,7 +99,7 @@ QStringList QgsPdalBoundaryAlgorithm::createArgumentLists( const QVariantMap &pa
     args << QStringLiteral( "--threshold=%1" ).arg( parameterAsInt( parameters, QStringLiteral( "THRESHOLD" ), context ) );
   }
 
-  addThreadsParameter( args );
+  applyThreadsParameter( args );
   return args;
 }
 

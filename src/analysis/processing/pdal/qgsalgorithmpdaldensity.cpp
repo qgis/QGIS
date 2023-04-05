@@ -108,7 +108,7 @@ QStringList QgsPdalDensityAlgorithm::createArgumentLists( const QVariantMap &par
     args << QStringLiteral( "--tile-origin-y=%1" ).arg( parameterAsInt( parameters, QStringLiteral( "ORIGIN_Y" ), context ) );
   }
 
-  addThreadsParameter( args );
+  applyThreadsParameter( args );
   return args;
 }
 
