@@ -79,12 +79,17 @@ QgsPointCloudAttributeCollection QgsPdalProvider::attributes() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  return mIndex ? mIndex->attributes() : QgsPointCloudAttributeCollection();
-}
+  if ( mIndex )
+  {
+    return mIndex->attributes();
+  }
 
-QStringList QgsPdalProvider::attributeNames() const
-{
-  return mAttributeNames;
+  if ( mDummyAttributes.count() > 0 )
+  {
+    return mDummyAttributes;
+  }
+
+  return QgsPointCloudAttributeCollection();
 }
 
 static QString _outEptDir( const QString &filename )
@@ -317,7 +322,7 @@ bool QgsPdalProvider::load( const QString &uri )
       // attribute names
       for ( auto &dim : quickInfo.m_dimNames )
       {
-        mAttributeNames << QString::fromStdString( dim );
+        mDummyAttributes.push_back( QgsPointCloudAttribute( QString::fromStdString( dim ), QgsPointCloudAttribute::DataType::Float ) );
       }
 
       return quickInfo.valid();

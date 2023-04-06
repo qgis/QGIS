@@ -124,13 +124,6 @@ QgsPointCloudLayer cannot be copied.
 Returns the attributes available from the layer.
 %End
 
-    QStringList attributeNames() const;
-%Docstring
-Returns the names of the attributes available from the layer.
-
-.. versionadded:: 3.32
-%End
-
     qint64 pointCount() const;
 %Docstring
 Returns the total number of points available in the layer.

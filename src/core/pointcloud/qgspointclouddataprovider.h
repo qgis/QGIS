@@ -133,13 +133,6 @@ class CORE_EXPORT QgsPointCloudDataProvider: public QgsDataProvider
     virtual QgsPointCloudAttributeCollection attributes() const = 0;
 
     /**
-     * Returns names of the attributes available from this data provider.
-     *
-     * \since QGIS 3.32
-     */
-    virtual QStringList attributeNames() const = 0;
-
-    /**
      * Triggers loading of the point cloud index
      *
      * \sa index()

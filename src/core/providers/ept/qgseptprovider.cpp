@@ -74,19 +74,6 @@ QgsPointCloudAttributeCollection QgsEptProvider::attributes() const
   return mIndex->attributes();
 }
 
-QStringList QgsEptProvider::attributeNames() const
-{
-  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
-
-  QStringList attributeNames;
-  QVector<QgsPointCloudAttribute> attrs = mIndex->attributes().attributes();
-  for ( const QgsPointCloudAttribute &a : attrs )
-  {
-    attributeNames << a.name();
-  }
-  return attributeNames;
-}
-
 bool QgsEptProvider::isValid() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS

@@ -163,13 +163,6 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer, public QgsAbstractPro
     QgsPointCloudAttributeCollection attributes() const;
 
     /**
-     * Returns the names of the attributes available from the layer.
-     *
-     * \since QGIS 3.32
-     */
-    QStringList attributeNames() const;
-
-    /**
      * Returns the total number of points available in the layer.
      */
     qint64 pointCount() const;

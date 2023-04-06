@@ -43,7 +43,6 @@ class QgsEptProvider: public QgsPointCloudDataProvider
 
     QgsRectangle extent() const override;
     QgsPointCloudAttributeCollection attributes() const override;
-    QStringList attributeNames() const override;
     bool isValid() const override;
     QString name() const override;
     QString description() const override;

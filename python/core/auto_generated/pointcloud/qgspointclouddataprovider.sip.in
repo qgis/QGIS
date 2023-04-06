@@ -98,13 +98,6 @@ Returns the attributes available from this data provider.
 May return empty collection until :py:func:`~QgsPointCloudDataProvider.pointCloudIndexLoaded` is emitted
 %End
 
-    virtual QStringList attributeNames() const = 0;
-%Docstring
-Returns names of the attributes available from this data provider.
-
-.. versionadded:: 3.32
-%End
-
     virtual void loadIndex( ) = 0;
 %Docstring
 Triggers loading of the point cloud index

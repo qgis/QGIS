@@ -726,13 +726,6 @@ QgsPointCloudAttributeCollection QgsPointCloudLayer::attributes() const
   return mDataProvider ? mDataProvider->attributes() : QgsPointCloudAttributeCollection();
 }
 
-QStringList QgsPointCloudLayer::attributeNames() const
-{
-  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
-
-  return mDataProvider ? mDataProvider->attributeNames() : QStringList();
-}
-
 qint64 QgsPointCloudLayer::pointCount() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
