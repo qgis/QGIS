@@ -45,8 +45,13 @@ static const int LINE_DOUBLEHEIGHT    = (1 << 2);
 #define RE_UNDERLINE       (1 << 2)
 #define RE_REVERSE         (1 << 3) // Screen only
 #define RE_INTENSIVE       (1 << 3) // Widget only
-#define RE_CURSOR          (1 << 4)
-#define RE_EXTENDED_CHAR   (1 << 5)
+#define RE_ITALIC          (1 << 4)
+#define RE_CURSOR          (1 << 5)
+#define RE_EXTENDED_CHAR   (1 << 6)
+#define RE_FAINT           (1 << 7)
+#define RE_STRIKEOUT       (1 << 8)
+#define RE_CONCEAL         (1 << 9)
+#define RE_OVERLINE        (1 << 10)
 
 /**
  * A single character in the terminal which consists of a unicode character
@@ -59,10 +64,10 @@ public:
   /**
    * Constructs a new character.
    *
-   * \param _c The unicode character value of this character.
-   * \param _f The foreground color used to draw the character.
-   * \param _b The color used to draw the character's background.
-   * \param _r A set of rendition flags which specify how this character is to be drawn.
+   * @param _c The unicode character value of this character.
+   * @param _f The foreground color used to draw the character.
+   * @param _b The color used to draw the character's background.
+   * @param _r A set of rendition flags which specify how this character is to be drawn.
    */
   inline Character(quint16 _c = ' ',
             CharacterColor  _f = CharacterColor(COLOR_SPACE_DEFAULT,DEFAULT_FORE_COLOR),
@@ -73,7 +78,7 @@ public:
   union
   {
     /** The unicode character value for this character. */
-    quint16 character;
+    wchar_t character;
     /**
      * Experimental addition which allows a single Character instance to contain more than
      * one unicode character.
@@ -187,19 +192,19 @@ public:
      * If the same sequence already exists in the table, the hash
      * of the existing sequence will be returned.
      *
-     * \param unicodePoints An array of unicode character points
-     * \param length Length of @p unicodePoints
+     * @param unicodePoints An array of unicode character points
+     * @param length Length of @p unicodePoints
      */
     ushort createExtendedChar(ushort* unicodePoints , ushort length);
     /**
      * Looks up and returns a pointer to a sequence of unicode characters
      * which was added to the table using createExtendedChar().
      *
-     * \param hash The hash key returned by createExtendedChar()
-     * \param length This variable is set to the length of the
+     * @param hash The hash key returned by createExtendedChar()
+     * @param length This variable is set to the length of the
      * character sequence.
      *
-     * \returns A unicode character sequence of size @p length.
+     * @return A unicode character sequence of size @p length.
      */
     ushort* lookupExtendedChar(ushort hash , ushort& length) const;
 

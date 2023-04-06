@@ -33,8 +33,13 @@ key Return-Shift+NewLine : "\r\n"
 key Return+Shift         : "\EOM"
 
 # Backspace and Delete codes are preserving CTRL-H.
+#
+# Backspace without CTRL sends '^H'; this matches XTerm behaviour
+# BS, hex \x08, \b
+key Backspace -Control : "\b"
 
-key Backspace      : "\x7f"
+# Match xterm behaviour: Backspace sends '^?' when Control is pressed
+key Backspace +Control : "\x7f"
 
 # Arrow keys in VT52 mode
 # shift up/down are reserved for scrolling.
@@ -61,6 +66,11 @@ key Up    -Shift+AnyMod+Ansi           : "\E[1;*A"
 key Down  -Shift+AnyMod+Ansi           : "\E[1;*B"
 key Right -Shift+AnyMod+Ansi           : "\E[1;*C"
 key Left  -Shift+AnyMod+Ansi           : "\E[1;*D"
+
+key Up    +Shift+AppScreen             : "\E[1;*A"
+key Down  +Shift+AppScreen             : "\E[1;*B"
+key Left  +Shift+AppScreen             : "\E[1;*D"
+key Right +Shift+AppScreen             : "\E[1;*C"
 
 # Keypad keys with NumLock ON
 # (see "Numeric Keypad" section at http://www.nw.com/nw/WWW/products/wizcon/vt100.html )
@@ -99,10 +109,13 @@ key End         +AppCuKeys+KeyPad : "\EOF"
 key Home        -AppCuKeys+KeyPad : "\E[H"
 key End         -AppCuKeys+KeyPad : "\E[F"
 
-key Insert      +KeyPad  : "\E[2~"
-key Delete      +KeyPad  : "\E[3~"
-key Prior -Shift+KeyPad  : "\E[5~"
-key Next  -Shift+KeyPad  : "\E[6~"
+key Insert        +KeyPad : "\E[2~"
+key Delete        +KeyPad : "\E[3~"
+key PgUp    -Shift+KeyPad : "\E[5~"
+key PgDown  -Shift+KeyPad : "\E[6~"
+
+key Clear -AnyMod+KeyPad+AppKeyPad : "\E[OE"
+key Clear +AnyMod+KeyPad+AppKeyPad : "\E[1;*E"
 
 # other grey PC keys
 
@@ -121,10 +134,10 @@ key Delete      -AnyMod  : "\E[3~"
 key Insert      +AnyMod  : "\E[2;*~"
 key Delete      +AnyMod  : "\E[3;*~"
 
-key Prior -Shift-AnyMod  : "\E[5~"
-key Next  -Shift-AnyMod  : "\E[6~"
-key Prior -Shift+AnyMod  : "\E[5;*~"
-key Next  -Shift+AnyMod  : "\E[6;*~"
+key PgUp    -Shift-AnyMod : "\E[5~"
+key PgDown  -Shift-AnyMod : "\E[6~"
+key PgUp    -Shift+AnyMod : "\E[5;*~"
+key PgDown  -Shift+AnyMod : "\E[6;*~"
 
 # Function keys
 key F1  -AnyMod  : "\EOP"
@@ -160,10 +173,11 @@ key Space +Control : "\x00"
 # Some keys are used by konsole to cause operations.
 # The scroll* operations refer to the history buffer.
 
-key Up    +Shift-AppScreen  : scrollLineUp
-key Prior +Shift-AppScreen  : scrollPageUp
-key Down  +Shift-AppScreen  : scrollLineDown
-key Next  +Shift-AppScreen  : scrollPageDown
+key Up      +Shift-AppScreen : scrollLineUp
+key PgUp    +Shift-AppScreen : scrollPageUp
+key Home    +Shift-AppScreen : scrollUpToTop
+key Down    +Shift-AppScreen : scrollLineDown
+key PgDown  +Shift-AppScreen : scrollPageDown
+key End     +Shift-AppScreen : scrollDownToBottom
 
 key ScrollLock     : scrollLock
-

@@ -24,7 +24,7 @@
 #include "Emulation.h"
 #include "HistorySearch.h"
 
-HistorySearch::HistorySearch(EmulationPtr emulation, QRegExp regExp,
+HistorySearch::HistorySearch(EmulationPtr emulation, const QRegExp& regExp,
         bool forwards, int startColumn, int startLine,
         QObject* parent) :
 QObject(parent),
@@ -72,7 +72,7 @@ bool HistorySearch::search(int startColumn, int startLine, int endColumn, int en
     // We read process history from (and including) startLine to (and including) endLine in
     // blocks of at most 10K lines so that we do not use unhealthy amounts of memory
     int blockSize;
-    while ((blockSize = std::min(10000, linesToRead - linesRead)) > 0) {
+    while ((blockSize = qMin(10000, linesToRead - linesRead)) > 0) {
 
         QString string;
         QTextStream searchStream(&string);
