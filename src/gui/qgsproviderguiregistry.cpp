@@ -228,11 +228,9 @@ QgsProviderGuiRegistry::~QgsProviderGuiRegistry()
 
 void QgsProviderGuiRegistry::registerGuis( QMainWindow *parent )
 {
-  GuiProviders::const_iterator it = mProviders.begin();
-  while ( it != mProviders.end() )
+  for ( auto it = mProviders.begin(); it != mProviders.end(); ++it )
   {
     it->second->registerGui( parent );
-    ++it;
   }
 }
 
