@@ -58,6 +58,7 @@ class QgsVirtualPointCloudProvider: public QgsPointCloudDataProvider
     void loadIndex( int i ) override;
     bool setSubsetString( const QString &subset, bool updateFeatureCount = false ) override;
     QgsPointCloudRenderer *createRenderer( const QVariantMap &configuration = QVariantMap() ) const override SIP_FACTORY;
+    bool renderInPreview( const QgsDataProvider::PreviewContext & ) override { return false; }
 
   private:
     void parseFile();
