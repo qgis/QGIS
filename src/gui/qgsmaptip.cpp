@@ -412,7 +412,7 @@ QString QgsMapTip::htmlText( const QString &text, int maxWidth )
   const QString fontFamily = settings.value( QStringLiteral( "/qgis/stylesheet/fontFamily" ), defaultFont.family() ).toString();
   const QString backgroundColor = QgsApplication::palette().base().color().name();
   const QString strokeColor = QgsApplication::palette().shadow().color().name();
-  const QString textColor = QgsApplication::palette().text().color().name();
+  const QString textColor = QgsApplication::palette().toolTipText().color().name();
   return sMapTipTemplate.arg( fontSize ).arg( fontFamily ).arg( textColor ).arg( maxWidth == -1 ? "" : QString::number( maxWidth ) ).arg( backgroundColor ).arg( strokeColor ).arg( text );
 }
 
