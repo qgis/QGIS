@@ -3356,7 +3356,7 @@ class CORE_EXPORT Qgis
       CompositeType, //!< Composition type
       ToastTable, //!< TOAST table
       ForeignTable, //!< Foreign table
-      PartitionedTable, //!< PartionedTable
+      PartitionedTable, //!< Partitioned table
     };
     Q_ENUM( PostgresRelKind )
 
