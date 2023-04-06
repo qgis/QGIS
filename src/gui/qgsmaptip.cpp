@@ -117,7 +117,7 @@ void QgsMapTip::showMapTip( QgsMapLayer *pLayer,
     mWebView->page()->setLinkDelegationPolicy( QWebPage::DelegateAllLinks );//Handle link clicks by yourself
     mWebView->setContextMenuPolicy( Qt::NoContextMenu ); //No context menu is allowed if you don't need it
     connect( mWebView, &QWebView::linkClicked, this, &QgsMapTip::onLinkClicked );
-    connect( mWebView, &QWebView::loadFinished, this, [ = ]( bool ) { resizeContent(); } );
+    connect( mWebView, &QWebView::loadFinished, this, [ = ]( bool ) { resizeAndMoveToolTip(); } );
 #endif
 
     mWebView->page()->settings()->setAttribute( QWebSettings::DeveloperExtrasEnabled, true );
@@ -163,26 +163,18 @@ void QgsMapTip::showMapTip( QgsMapLayer *pLayer,
 
   QgsDebugMsg( tipHtml );
 
-  int cursorOffset = 0;
-  // attempt to shift the tip away from the cursor.
-  if ( QgsApplication::instance() )
-  {
-    // The following calculations are taken
-    // from QgsApplication::getThemeCursor, and are used to calculate the correct cursor size
-    // for both hi-dpi and non-hi-dpi screens.
-    double scale = Qgis::UI_SCALE_FACTOR * QgsApplication::instance()->fontMetrics().height() / 32.0;
-    cursorOffset = static_cast< int >( std::ceil( scale * 32 ) );
-  }
-
-  mWebView->move( pixelPosition.x() + cursorOffset, pixelPosition.y() );
+  mPosition = pixelPosition;
+  mMapCanvas = pMapCanvas;
   mWebView->setHtml( tipHtml );
   lastTipText = tipText;
 
-  mWebView->show();
+#if !WITH_QTWEBKIT
+  resizeAndMoveToolTip();
+#endif
 
 }
 
-void QgsMapTip::resizeContent()
+void QgsMapTip::resizeAndMoveToolTip()
 {
 #if WITH_QTWEBKIT
   // Get the content size
@@ -194,6 +186,54 @@ void QgsMapTip::resizeContent()
 #else
   mWebView->adjustSize();
 #endif
+
+  int cursorOffset = 0;
+  // attempt to shift the tip away from the cursor.
+  if ( QgsApplication::instance() )
+  {
+    // The following calculations are taken
+    // from QgsApplication::getThemeCursor, and are used to calculate the correct cursor size
+    // for both hi-dpi and non-hi-dpi screens.
+    double scale = Qgis::UI_SCALE_FACTOR * QgsApplication::instance()->fontMetrics().height() / 32.0;
+    cursorOffset = static_cast< int >( std::ceil( scale * 32 ) );
+  }
+
+  if ( mMapCanvas == nullptr )
+  {
+    mWebView->move( mPosition );
+    mWebView->show();
+    return;
+  }
+
+  // Check if there is enough space to the right of the cursor
+  int availableWidthRight = mMapCanvas->width() - mPosition.x() - cursorOffset;
+  int availableWidthLeft = mPosition.x() - cursorOffset;
+  int availableHeightBottom = mMapCanvas->height() - mPosition.y();
+  int availableHeightTop = mPosition.y();
+  int x, y;
+  // If there is enough space on the right, or more space on the right than on the left, move the map tip to the right of the cursor
+  if ( mWebView->width() < availableWidthRight || availableWidthRight > availableWidthLeft )
+  {
+    x = mPosition.x() + cursorOffset;
+  }
+  // Otherwise, move the map tip to the left of the cursor
+  else
+  {
+    x = mPosition.x() - mWebView->width() - cursorOffset;
+  }
+
+  // If there is enough space on the bottom, or more space on the bottom than on the top, move the map tip to the bottom of the cursor
+  if ( mWebView->height() < availableHeightBottom || availableHeightBottom > availableHeightTop )
+  {
+    y = mPosition.y();
+  }
+  // Otherwise, move the map tip to the top of the cursor
+  else
+  {
+    y = mPosition.y() - mWebView->height();
+  }
+  mWebView->move( x, y );
+  mWebView->show();
 }
 
 void QgsMapTip::clear( QgsMapCanvas *, int msDelay )

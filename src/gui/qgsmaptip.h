@@ -97,7 +97,7 @@ class GUI_EXPORT QgsMapTip : public QWidget
 
   private slots:
     void onLinkClicked( const QUrl &url );
-    void resizeContent();
+    void resizeAndMoveToolTip();
 
   private:
     // Fetch the feature to use for the maptip text.
@@ -125,5 +125,8 @@ class GUI_EXPORT QgsMapTip : public QWidget
 
     // Template for the actual HTML content that will be displayed in QgsWebView
     static const QString sMapTipTemplate;
+
+    QPoint mPosition;
+    const QgsMapCanvas *mMapCanvas = nullptr;
 };
 #endif // QGSMAPTIP_H
