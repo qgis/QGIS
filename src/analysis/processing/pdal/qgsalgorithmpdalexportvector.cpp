@@ -61,6 +61,7 @@ void QgsPdalExportVectorAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterPointCloudLayer( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ) ) );
   addParameter( new QgsProcessingParameterPointCloudAttribute( QStringLiteral( "ATTRIBUTE" ), QObject::tr( "Attribute" ), QVariant(), QStringLiteral( "INPUT" ), true, true ) );
+  createCommonParameters();
   addParameter( new QgsProcessingParameterVectorDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Output vector" ), QgsProcessing::TypeVectorPoint ) );
 }
 
@@ -89,6 +90,7 @@ QStringList QgsPdalExportVectorAlgorithm::createArgumentLists( const QVariantMap
     }
   }
 
+  applyCommonParameters( args, layer->crs(), parameters, context );
   applyThreadsParameter( args );
   return args;
 }

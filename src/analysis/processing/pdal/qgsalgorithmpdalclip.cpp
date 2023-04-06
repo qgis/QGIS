@@ -62,6 +62,7 @@ void QgsPdalClipAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterPointCloudLayer( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ) ) );
   addParameter( new QgsProcessingParameterVectorLayer( QStringLiteral( "OVERLAY" ), QObject::tr( "Clipping polygons" ), QList< int >() << QgsProcessing::TypeVectorPolygon ) );
+  createCommonParameters();
   addParameter( new QgsProcessingParameterPointCloudDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Clipped point cloud" ) ) );
 }
 
@@ -87,6 +88,7 @@ QStringList QgsPdalClipAlgorithm::createArgumentLists( const QVariantMap &parame
                         QStringLiteral( "--polygon=%1" ).arg( overlayPath )
                       };
 
+  applyCommonParameters( args, layer->crs(), parameters, context );
   applyThreadsParameter( args );
   return args;
 }

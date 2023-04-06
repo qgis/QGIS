@@ -62,6 +62,7 @@ void QgsPdalThinAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterPointCloudLayer( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ) ) );
   addParameter( new QgsProcessingParameterEnum( QStringLiteral( "MODE" ), QObject::tr( "Mode" ), QStringList() << QObject::tr( "Every N-th" ) << QObject::tr( "Sample" ), false, 0 ) );
   addParameter( new QgsProcessingParameterNumber( QStringLiteral( "STEP" ), QObject::tr( "Step" ), QgsProcessingParameterNumber::Integer, 20, false, 1 ) );
+  createCommonParameters();
   addParameter( new QgsProcessingParameterPointCloudDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Output layer" ) ) );
 }
 
@@ -86,6 +87,7 @@ QStringList QgsPdalThinAlgorithm::createArgumentLists( const QVariantMap &parame
                        QStringLiteral( "--%1=%2" ).arg( mode == 0 ? QStringLiteral( "step-every-nth" ) : QStringLiteral( "step-sample" ) ).arg( step )
                      };
 
+  applyCommonParameters( args, layer->crs(), parameters, context );
   applyThreadsParameter( args );
   return args;
 }

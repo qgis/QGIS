@@ -45,6 +45,49 @@ QString QgsPdalAlgorithmBase::wrenchExecutableBinary() const
   return QString( wrenchExecutable );
 }
 
+void QgsPdalAlgorithmBase::createCommonParameters()
+{
+  std::unique_ptr< QgsProcessingParameterString > filterParam = std::make_unique< QgsProcessingParameterString >( QStringLiteral( "FILTER_EXPRESSION" ), QObject::tr( "Filter expression" ), QVariant(), false, true );
+  filterParam->setFlags( filterParam->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
+  addParameter( filterParam.release() );
+
+  std::unique_ptr< QgsProcessingParameterExtent > extentParam = std::make_unique< QgsProcessingParameterExtent >( QStringLiteral( "FILTER_EXTENT" ), QObject::tr( "Cropping extent" ), QVariant(), true );
+  extentParam->setFlags( extentParam->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
+  addParameter( extentParam.release() );
+}
+
+void QgsPdalAlgorithmBase::applyCommonParameters( QStringList &arguments, QgsCoordinateReferenceSystem crs, const QVariantMap &parameters, QgsProcessingContext &context )
+{
+  const QString filterExpression = parameterAsString( parameters, QStringLiteral( "FILTER_EXPRESSION" ), context ).trimmed();
+  if ( !filterExpression.isEmpty() )
+  {
+    arguments << QStringLiteral( "--filter=%1" ).arg( filterExpression );
+  }
+
+  if ( parameters.value( QStringLiteral( "FILTER_EXTENT" ) ).isValid() )
+  {
+    if ( crs.isValid() )
+    {
+      const QgsRectangle extent = parameterAsExtent( parameters, QStringLiteral( "FILTER_EXTENT" ), context, crs );
+      arguments << QStringLiteral( "--bounds=([%1, %2], [%3, %4])" )
+                .arg( extent.xMinimum() )
+                .arg( extent.xMaximum() )
+                .arg( extent.yMinimum() )
+                .arg( extent.yMaximum() );
+
+    }
+    else
+    {
+      const QgsRectangle extent = parameterAsExtent( parameters, QStringLiteral( "FILTER_EXTENT" ), context );
+      arguments << QStringLiteral( "--bounds=([%1, %2], [%3, %4])" )
+                .arg( extent.xMinimum() )
+                .arg( extent.xMaximum() )
+                .arg( extent.yMinimum() )
+                .arg( extent.yMaximum() );
+    }
+  }
+}
+
 void QgsPdalAlgorithmBase::applyThreadsParameter( QStringList &arguments )
 {
   QgsSettings settings;

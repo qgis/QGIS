@@ -246,6 +246,29 @@ void TestQgsProcessingPdalAlgs::thin()
             << QStringLiteral( "--step-sample=200" )
           );
 
+  // filter exression
+  parameters.insert( QStringLiteral( "FILTER_EXPRESSION" ), QStringLiteral( "Intensity > 50" ) );
+  args = alg->createArgumentLists( parameters, *context, &feedback );
+  QCOMPARE( args, QStringList() << QStringLiteral( "thin" )
+            << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath )
+            << QStringLiteral( "--output=%1" ).arg( outputPointCloud )
+            << QStringLiteral( "--mode=sample" )
+            << QStringLiteral( "--step-sample=200" )
+            << QStringLiteral( "--filter=Intensity > 50" )
+          );
+
+  // filter extent
+  parameters.insert( QStringLiteral( "FILTER_EXTENT" ), QgsRectangle( 1, 2, 3, 4 ) );
+  args = alg->createArgumentLists( parameters, *context, &feedback );
+  QCOMPARE( args, QStringList() << QStringLiteral( "thin" )
+            << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath )
+            << QStringLiteral( "--output=%1" ).arg( outputPointCloud )
+            << QStringLiteral( "--mode=sample" )
+            << QStringLiteral( "--step-sample=200" )
+            << QStringLiteral( "--filter=Intensity > 50" )
+            << QStringLiteral( "--bounds=([1, 3], [2, 4])" )
+          );
+
   // set max threads to 2, a --threads argument should be added
   QgsSettings().setValue( QStringLiteral( "/Processing/Configuration/MAX_THREADS" ), 2 );
   args = alg->createArgumentLists( parameters, *context, &feedback );
@@ -254,6 +277,8 @@ void TestQgsProcessingPdalAlgs::thin()
             << QStringLiteral( "--output=%1" ).arg( outputPointCloud )
             << QStringLiteral( "--mode=sample" )
             << QStringLiteral( "--step-sample=200" )
+            << QStringLiteral( "--filter=Intensity > 50" )
+            << QStringLiteral( "--bounds=([1, 3], [2, 4])" )
             << QStringLiteral( "--threads=2" )
           );
 }
@@ -292,6 +317,30 @@ void TestQgsProcessingPdalAlgs::boundary()
             << QStringLiteral( "--threshold=%1" ).arg( 10 )
           );
 
+  // with filter expression
+  parameters.insert( QStringLiteral( "FILTER_EXPRESSION" ), QStringLiteral( "Intensity > 50" ) );
+  args = alg->createArgumentLists( parameters, *context, &feedback );
+  QCOMPARE( args, QStringList() << QStringLiteral( "boundary" )
+            << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath )
+            << QStringLiteral( "--output=%1" ).arg( outputGpkg )
+            << QStringLiteral( "--resolution=%1" ).arg( 3000 )
+            << QStringLiteral( "--threshold=%1" ).arg( 10 )
+            << QStringLiteral( "--filter=Intensity > 50" )
+          );
+
+  // with filter extent
+  parameters.insert( QStringLiteral( "FILTER_EXTENT" ), QgsRectangle( 1, 2, 3, 4 ) );
+  args = alg->createArgumentLists( parameters, *context, &feedback );
+  QCOMPARE( args, QStringList() << QStringLiteral( "boundary" )
+            << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath )
+            << QStringLiteral( "--output=%1" ).arg( outputGpkg )
+            << QStringLiteral( "--resolution=%1" ).arg( 3000 )
+            << QStringLiteral( "--threshold=%1" ).arg( 10 )
+            << QStringLiteral( "--filter=Intensity > 50" )
+            << QStringLiteral( "--bounds=([1, 3], [2, 4])" )
+          );
+
+
   // set max threads to 2, a --threads argument should be added
   QgsSettings().setValue( QStringLiteral( "/Processing/Configuration/MAX_THREADS" ), 2 );
   args = alg->createArgumentLists( parameters, *context, &feedback );
@@ -300,6 +349,8 @@ void TestQgsProcessingPdalAlgs::boundary()
             << QStringLiteral( "--output=%1" ).arg( outputGpkg )
             << QStringLiteral( "--resolution=%1" ).arg( 3000 )
             << QStringLiteral( "--threshold=%1" ).arg( 10 )
+            << QStringLiteral( "--filter=Intensity > 50" )
+            << QStringLiteral( "--bounds=([1, 3], [2, 4])" )
             << QStringLiteral( "--threads=2" )
           );
 }
@@ -370,6 +421,33 @@ void TestQgsProcessingPdalAlgs::density()
             << QStringLiteral( "--tile-origin-y=10" )
           );
 
+  // filter expression
+  parameters.insert( QStringLiteral( "FILTER_EXPRESSION" ), QStringLiteral( "Intensity > 50" ) );
+  args = alg->createArgumentLists( parameters, *context, &feedback );
+  QCOMPARE( args, QStringList() << QStringLiteral( "density" )
+            << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath )
+            << QStringLiteral( "--output=%1" ).arg( outputFile )
+            << QStringLiteral( "--resolution=100" )
+            << QStringLiteral( "--tile-size=100" )
+            << QStringLiteral( "--tile-origin-x=1" )
+            << QStringLiteral( "--tile-origin-y=10" )
+            << QStringLiteral( "--filter=Intensity > 50" )
+          );
+
+  // filter extent
+  parameters.insert( QStringLiteral( "FILTER_EXTENT" ), QgsRectangle( 1, 2, 3, 4 ) );
+  args = alg->createArgumentLists( parameters, *context, &feedback );
+  QCOMPARE( args, QStringList() << QStringLiteral( "density" )
+            << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath )
+            << QStringLiteral( "--output=%1" ).arg( outputFile )
+            << QStringLiteral( "--resolution=100" )
+            << QStringLiteral( "--tile-size=100" )
+            << QStringLiteral( "--tile-origin-x=1" )
+            << QStringLiteral( "--tile-origin-y=10" )
+            << QStringLiteral( "--filter=Intensity > 50" )
+            << QStringLiteral( "--bounds=([1, 3], [2, 4])" )
+          );
+
   // set max threads to 2, a --threads argument should be added
   QgsSettings().setValue( QStringLiteral( "/Processing/Configuration/MAX_THREADS" ), 2 );
   args = alg->createArgumentLists( parameters, *context, &feedback );
@@ -380,6 +458,8 @@ void TestQgsProcessingPdalAlgs::density()
             << QStringLiteral( "--tile-size=100" )
             << QStringLiteral( "--tile-origin-x=1" )
             << QStringLiteral( "--tile-origin-y=10" )
+            << QStringLiteral( "--filter=Intensity > 50" )
+            << QStringLiteral( "--bounds=([1, 3], [2, 4])" )
             << QStringLiteral( "--threads=2" )
           );
 }
@@ -450,6 +530,33 @@ void TestQgsProcessingPdalAlgs::exportRasterTin()
             << QStringLiteral( "--tile-origin-y=10" )
           );
 
+  // filter expression
+  parameters.insert( QStringLiteral( "FILTER_EXPRESSION" ), QStringLiteral( "Intensity > 50" ) );
+  args = alg->createArgumentLists( parameters, *context, &feedback );
+  QCOMPARE( args, QStringList() << QStringLiteral( "to_raster_tin" )
+            << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath )
+            << QStringLiteral( "--output=%1" ).arg( outputFile )
+            << QStringLiteral( "--resolution=100" )
+            << QStringLiteral( "--tile-size=100" )
+            << QStringLiteral( "--tile-origin-x=1" )
+            << QStringLiteral( "--tile-origin-y=10" )
+            << QStringLiteral( "--filter=Intensity > 50" )
+          );
+
+  // filter extent
+  parameters.insert( QStringLiteral( "FILTER_EXTENT" ), QgsRectangle( 1, 2, 3, 4 ) );
+  args = alg->createArgumentLists( parameters, *context, &feedback );
+  QCOMPARE( args, QStringList() << QStringLiteral( "to_raster_tin" )
+            << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath )
+            << QStringLiteral( "--output=%1" ).arg( outputFile )
+            << QStringLiteral( "--resolution=100" )
+            << QStringLiteral( "--tile-size=100" )
+            << QStringLiteral( "--tile-origin-x=1" )
+            << QStringLiteral( "--tile-origin-y=10" )
+            << QStringLiteral( "--filter=Intensity > 50" )
+            << QStringLiteral( "--bounds=([1, 3], [2, 4])" )
+          );
+
   // set max threads to 2, a --threads argument should be added
   QgsSettings().setValue( QStringLiteral( "/Processing/Configuration/MAX_THREADS" ), 2 );
   args = alg->createArgumentLists( parameters, *context, &feedback );
@@ -460,6 +567,8 @@ void TestQgsProcessingPdalAlgs::exportRasterTin()
             << QStringLiteral( "--tile-size=100" )
             << QStringLiteral( "--tile-origin-x=1" )
             << QStringLiteral( "--tile-origin-y=10" )
+            << QStringLiteral( "--filter=Intensity > 50" )
+            << QStringLiteral( "--bounds=([1, 3], [2, 4])" )
             << QStringLiteral( "--threads=2" )
           );
 }
@@ -615,6 +724,35 @@ void TestQgsProcessingPdalAlgs::exportRaster()
             << QStringLiteral( "--tile-origin-y=10" )
           );
 
+  // filter expression
+  parameters.insert( QStringLiteral( "FILTER_EXPRESSION" ), QStringLiteral( "Intensity > 50" ) );
+  args = alg->createArgumentLists( parameters, *context, &feedback );
+  QCOMPARE( args, QStringList() << QStringLiteral( "to_raster" )
+            << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath )
+            << QStringLiteral( "--output=%1" ).arg( outputFile )
+            << QStringLiteral( "--attribute=ReturnNumber" )
+            << QStringLiteral( "--resolution=100" )
+            << QStringLiteral( "--tile-size=100" )
+            << QStringLiteral( "--tile-origin-x=1" )
+            << QStringLiteral( "--tile-origin-y=10" )
+            << QStringLiteral( "--filter=Intensity > 50" )
+          );
+
+  // filter extent
+  parameters.insert( QStringLiteral( "FILTER_EXTENT" ), QgsRectangle( 1, 2, 3, 4 ) );
+  args = alg->createArgumentLists( parameters, *context, &feedback );
+  QCOMPARE( args, QStringList() << QStringLiteral( "to_raster" )
+            << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath )
+            << QStringLiteral( "--output=%1" ).arg( outputFile )
+            << QStringLiteral( "--attribute=ReturnNumber" )
+            << QStringLiteral( "--resolution=100" )
+            << QStringLiteral( "--tile-size=100" )
+            << QStringLiteral( "--tile-origin-x=1" )
+            << QStringLiteral( "--tile-origin-y=10" )
+            << QStringLiteral( "--filter=Intensity > 50" )
+            << QStringLiteral( "--bounds=([1, 3], [2, 4])" )
+          );
+
   // set max threads to 2, a --threads argument should be added
   QgsSettings().setValue( QStringLiteral( "/Processing/Configuration/MAX_THREADS" ), 2 );
   args = alg->createArgumentLists( parameters, *context, &feedback );
@@ -626,6 +764,8 @@ void TestQgsProcessingPdalAlgs::exportRaster()
             << QStringLiteral( "--tile-size=100" )
             << QStringLiteral( "--tile-origin-x=1" )
             << QStringLiteral( "--tile-origin-y=10" )
+            << QStringLiteral( "--filter=Intensity > 50" )
+            << QStringLiteral( "--bounds=([1, 3], [2, 4])" )
             << QStringLiteral( "--threads=2" )
           );
 }
@@ -661,6 +801,27 @@ void TestQgsProcessingPdalAlgs::exportVector()
             << QStringLiteral( "--attribute=Z" )
           );
 
+  // filter expression
+  parameters.insert( QStringLiteral( "FILTER_EXPRESSION" ), QStringLiteral( "Intensity > 50" ) );
+  args = alg->createArgumentLists( parameters, *context, &feedback );
+  QCOMPARE( args, QStringList() << QStringLiteral( "to_vector" )
+            << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath )
+            << QStringLiteral( "--output=%1" ).arg( outputFile )
+            << QStringLiteral( "--attribute=Z" )
+            << QStringLiteral( "--filter=Intensity > 50" )
+          );
+
+  // filter extent
+  parameters.insert( QStringLiteral( "FILTER_EXTENT" ), QgsRectangle( 1, 2, 3, 4 ) );
+  args = alg->createArgumentLists( parameters, *context, &feedback );
+  QCOMPARE( args, QStringList() << QStringLiteral( "to_vector" )
+            << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath )
+            << QStringLiteral( "--output=%1" ).arg( outputFile )
+            << QStringLiteral( "--attribute=Z" )
+            << QStringLiteral( "--filter=Intensity > 50" )
+            << QStringLiteral( "--bounds=([1, 3], [2, 4])" )
+          );
+
   // set max threads to 2, a --threads argument should be added
   QgsSettings().setValue( QStringLiteral( "/Processing/Configuration/MAX_THREADS" ), 2 );
   args = alg->createArgumentLists( parameters, *context, &feedback );
@@ -668,6 +829,8 @@ void TestQgsProcessingPdalAlgs::exportVector()
             << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath )
             << QStringLiteral( "--output=%1" ).arg( outputFile )
             << QStringLiteral( "--attribute=Z" )
+            << QStringLiteral( "--filter=Intensity > 50" )
+            << QStringLiteral( "--bounds=([1, 3], [2, 4])" )
             << QStringLiteral( "--threads=2" )
           );
 }
@@ -705,11 +868,34 @@ void TestQgsProcessingPdalAlgs::merge()
             << pointCloud2
           );
 
+  // filter expression
+  parameters.insert( QStringLiteral( "FILTER_EXPRESSION" ), QStringLiteral( "Intensity > 50" ) );
+  args = alg->createArgumentLists( parameters, *context, &feedback );
+  QCOMPARE( args, QStringList() << QStringLiteral( "merge" )
+            << QStringLiteral( "--output=%1" ).arg( outputFile )
+            << QStringLiteral( "--filter=Intensity > 50" )
+            << pointCloud1
+            << pointCloud2
+          );
+
+  // filter extent
+  parameters.insert( QStringLiteral( "FILTER_EXTENT" ), QgsRectangle( 1, 2, 3, 4 ) );
+  args = alg->createArgumentLists( parameters, *context, &feedback );
+  QCOMPARE( args, QStringList() << QStringLiteral( "merge" )
+            << QStringLiteral( "--output=%1" ).arg( outputFile )
+            << QStringLiteral( "--filter=Intensity > 50" )
+            << QStringLiteral( "--bounds=([1, 3], [2, 4])" )
+            << pointCloud1
+            << pointCloud2
+          );
+
   // set max threads to 2, a --threads argument should be added
   QgsSettings().setValue( QStringLiteral( "/Processing/Configuration/MAX_THREADS" ), 2 );
   args = alg->createArgumentLists( parameters, *context, &feedback );
   QCOMPARE( args, QStringList() << QStringLiteral( "merge" )
             << QStringLiteral( "--output=%1" ).arg( outputFile )
+            << QStringLiteral( "--filter=Intensity > 50" )
+            << QStringLiteral( "--bounds=([1, 3], [2, 4])" )
             << QStringLiteral( "--threads=2" )
             << pointCloud1
             << pointCloud2
@@ -820,6 +1006,27 @@ void TestQgsProcessingPdalAlgs::clip()
             << QStringLiteral( "--polygon=%1" ).arg( polygonsFile )
           );
 
+  // filter expression
+  parameters.insert( QStringLiteral( "FILTER_EXPRESSION" ), QStringLiteral( "Intensity > 50" ) );
+  args = alg->createArgumentLists( parameters, *context, &feedback );
+  QCOMPARE( args, QStringList() << QStringLiteral( "clip" )
+            << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath )
+            << QStringLiteral( "--output=%1" ).arg( outputFile )
+            << QStringLiteral( "--polygon=%1" ).arg( polygonsFile )
+            << QStringLiteral( "--filter=Intensity > 50" )
+          );
+
+  // filter extent
+  parameters.insert( QStringLiteral( "FILTER_EXTENT" ), QgsRectangle( 1, 2, 3, 4 ) );
+  args = alg->createArgumentLists( parameters, *context, &feedback );
+  QCOMPARE( args, QStringList() << QStringLiteral( "clip" )
+            << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath )
+            << QStringLiteral( "--output=%1" ).arg( outputFile )
+            << QStringLiteral( "--polygon=%1" ).arg( polygonsFile )
+            << QStringLiteral( "--filter=Intensity > 50" )
+            << QStringLiteral( "--bounds=([1, 3], [2, 4])" )
+          );
+
   // set max threads to 2, a --threads argument should be added
   QgsSettings().setValue( QStringLiteral( "/Processing/Configuration/MAX_THREADS" ), 2 );
   args = alg->createArgumentLists( parameters, *context, &feedback );
@@ -827,6 +1034,8 @@ void TestQgsProcessingPdalAlgs::clip()
             << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath )
             << QStringLiteral( "--output=%1" ).arg( outputFile )
             << QStringLiteral( "--polygon=%1" ).arg( polygonsFile )
+            << QStringLiteral( "--filter=Intensity > 50" )
+            << QStringLiteral( "--bounds=([1, 3], [2, 4])" )
             << QStringLiteral( "--threads=2" )
           );
 }
