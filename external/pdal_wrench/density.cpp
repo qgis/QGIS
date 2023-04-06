@@ -117,7 +117,7 @@ std::unique_ptr<PipelineManager> Density::pipeline(ParallelJobInfo *tile) const
     // TODO: "writers.gdal: Requested driver 'COG' does not support file creation.""
     //   writer_opts.add(pdal::Option("gdaldriver", "COG"));
 
-    pdal::StageCreationOptions opts{ tile->outputFilename, "", nullptr, writer_opts, nullptr };
+    pdal::StageCreationOptions opts{ tile->outputFilename, "", nullptr, writer_opts, "" };
     Stage& w = manager->makeWriter( opts );
     for (Stage *stage : readers)
     {
