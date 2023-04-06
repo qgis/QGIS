@@ -280,6 +280,10 @@ QVector<QVariantMap> QgsPointCloudDataProvider::identify(
   QVector<QVariantMap> acceptedPoints;
 
   QgsPointCloudIndex *index = this->index();
+
+  if ( !index || !index->isValid() )
+    return acceptedPoints;
+
   const IndexedPointCloudNode root = index->root();
 
   const QgsRectangle rootNodeExtent = index->nodeMapExtent( root );

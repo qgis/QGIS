@@ -110,7 +110,7 @@ void QgsPointCloudQueryBuilder::setupGuiViews()
 
 void QgsPointCloudQueryBuilder::populateAttributes()
 {
-  const QgsFields &fields = mLayer->dataProvider()->index()->attributes().toFields();
+  const QgsFields &fields = mLayer->dataProvider()->attributes().toFields();
   mTxtSql->setFields( fields );
   for ( int idx = 0; idx < fields.count(); ++idx )
   {
