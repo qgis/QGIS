@@ -27,16 +27,20 @@
 
 //#error Do not use in KDE 2.1
 
-#define BlockSize (1 << 12)
-#define ENTRIES   ((BlockSize - sizeof(size_t) ))
+#define QTERMWIDGET_BLOCKSIZE (1 << 12)
+#define ENTRIES   ((QTERMWIDGET_BLOCKSIZE - sizeof(size_t) ) / sizeof(unsigned char))
 
 namespace Konsole {
 
 struct Block {
-    unsigned char data[ENTRIES] = {};
-    size_t size = 0;
+    Block() {
+        size = 0;
+    }
+    unsigned char data[ENTRIES];
+    size_t size;
 };
 
+// ///////////////////////////////////////////////////////
 
 class BlockArray {
 public:
@@ -55,7 +59,7 @@ public:
     * adds the Block at the end of history.
     * This may drop other blocks.
     *
-    * The ownership on the block is transfered.
+    * The ownership on the block is transferred.
     * An unique index number is returned for accessing
     * it later (if not yet dropped then)
     *
@@ -69,7 +73,7 @@ public:
     * 0 if the block isn't available any more.
     *
     * The returned block is strictly readonly as only
-    * maped in memory - and will be invalid on the next
+    * mapped in memory - and will be invalid on the next
     * operation on this class.
     */
     const Block * at(size_t index);

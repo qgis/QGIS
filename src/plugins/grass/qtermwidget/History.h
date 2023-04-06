@@ -75,7 +75,7 @@ private:
   //'get' is called.
   //this is used to detect when a large number of lines are being read and processed from the history
   //and automatically mmap the file for better performance (saves the overhead of many lseek-read calls).
-  int readWriteBalance = 0;
+  int readWriteBalance;
 
   //when readWriteBalance goes below this threshold, the file will be mmap'ed automatically
   static const int MAP_THRESHOLD = -1000;
@@ -122,7 +122,7 @@ public:
   // is very unsafe, because those references will no longer
   // be valid if the history scroll is deleted.
   //
-  const HistoryType& getType() const { return *m_histType; }
+  const HistoryType& getType() { return *m_histType; }
 
 protected:
   HistoryType* m_histType;
@@ -184,7 +184,7 @@ public:
 
 
 private:
-  int bufferIndex(int lineNumber);
+  int bufferIndex(int lineNumber) const;
 
   HistoryLine* _historyBuffer;
   QBitArray _wrappedLine;
@@ -293,7 +293,7 @@ public:
 
   CompactHistoryBlock(){
     blockLength = 4096*64; // 256kb
-    head = (quint8*) mmap(0, blockLength, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANON, -1, 0);
+    head = (quint8*) mmap(nullptr, blockLength, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANON, -1, 0);
     //head = (quint8*) malloc(blockLength);
     Q_ASSERT(head != MAP_FAILED);
     tail = blockStart = head;

@@ -27,6 +27,7 @@
 
 // Konsole
 #include "Character.h"
+#include "KeyboardTranslator.h"
 
 namespace Konsole
 {
@@ -64,7 +65,7 @@ public:
      * to notify the window when the associated screen has changed and synchronize selection updates
      * between all views on a session.
      */
-    ScreenWindow(QObject* parent = 0);
+    ScreenWindow(QObject* parent = nullptr);
     ~ScreenWindow() override;
 
     /** Sets the screen which this window looks onto */
@@ -186,9 +187,9 @@ public:
     /**
      * Scrolls the window relative to its current position on the screen.
      *
-     * \param mode Specifies whether @p amount refers to the number of lines or the number
+     * @param mode Specifies whether @p amount refers to the number of lines or the number
      * of pages to scroll.
-     * \param amount The number of lines or pages ( depending on @p mode ) to scroll by.  If
+     * @param amount The number of lines or pages ( depending on @p mode ) to scroll by.  If
      * this number is positive, the view is scrolled down.  If this number is negative, the view
      * is scrolled up.
      */
@@ -211,7 +212,7 @@ public:
     /**
      * Returns the text which is currently selected.
      *
-     * \param preserveLineBreaks See Screen::selectedText()
+     * @param preserveLineBreaks See Screen::selectedText()
      */
     QString selectedText( bool preserveLineBreaks ) const;
 
@@ -223,6 +224,8 @@ public slots:
      */
     void notifyOutputChanged();
 
+    void handleCommandFromKeyboard(KeyboardTranslator::Command command);
+
 signals:
     /**
      * Emitted when the contents of the associated terminal screen (see screen()) changes.
@@ -232,12 +235,14 @@ signals:
     /**
      * Emitted when the screen window is scrolled to a different position.
      *
-     * \param line The line which is now at the top of the window.
+     * @param line The line which is now at the top of the window.
      */
     void scrolled(int line);
 
     /** Emitted when the selection is changed. */
     void selectionChanged();
+
+    void scrollToEnd();
 
 private:
     int endWindowLine() const;

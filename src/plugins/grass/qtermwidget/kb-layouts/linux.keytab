@@ -43,7 +43,7 @@ keyboard "Linux console"
 #
 # If the key is not found here, the text of the
 # key event as provided by QT is emitted, possibly
-# preceeded by ESC if the Alt key is pressed.
+# preceded by ESC if the Alt key is pressed.
 #
 # --------------------------------------------------------------
 
@@ -108,9 +108,9 @@ key F12    : "\E[24~"
 key Home   : "\E[1~"  
 key End    : "\E[4~"  
 
-key Prior -Shift : "\E[5~"  
-key Next  -Shift : "\E[6~"  
-key Insert-Shift : "\E[2~"  
+key PgUp    -Shift : "\E[5~"  
+key PgDown  -Shift : "\E[6~"  
+key Insert  -Shift : "\E[2~"  
 
 # Keypad-Enter. See comment on Return above.
 
@@ -121,10 +121,10 @@ key Space +Control : "\x00"
 
 # some of keys are used by konsole.
 
-key Up    +Shift   : scrollLineUp
-key Prior +Shift   : scrollPageUp
-key Down  +Shift   : scrollLineDown
-key Next  +Shift   : scrollPageDown
+key Up      +Shift : scrollLineUp
+key PgUp    +Shift : scrollPageUp
+key Down    +Shift : scrollLineDown
+key PgDown  +Shift : scrollPageDown
 
 key ScrollLock     : scrollLock
 
