@@ -44,6 +44,7 @@
 
 #ifdef HAVE_COPC
 #include "providers/copc/qgscopcprovider.h"
+#include "providers/vpc/qgsvirtualpointcloudprovider.h"
 #endif
 
 #include "qgsruntimeprofiler.h"
@@ -215,6 +216,11 @@ void QgsProviderRegistry::init()
   {
     const QgsScopedRuntimeProfile profile( QObject::tr( "Create COPC point cloud provider" ) );
     QgsProviderMetadata *pc = new QgsCopcProviderMetadata();
+    mProviders[ pc->key() ] = pc;
+  }
+  {
+    const QgsScopedRuntimeProfile profile( QObject::tr( "Create Virtual point cloud provider" ) );
+    QgsProviderMetadata *pc = new QgsVirtualPointCloudProviderMetadata();
     mProviders[ pc->key() ] = pc;
   }
 #endif

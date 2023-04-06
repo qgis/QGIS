@@ -1597,6 +1597,7 @@ set(QGIS_CORE_HDRS
   pointcloud/qgspointcloudlayerprofilegenerator.h
   pointcloud/qgspointcloudlayerrenderer.h
   pointcloud/qgspointcloudindex.h
+  pointcloud/qgspointcloudsubindex.h
   pointcloud/qgspointclouddataprovider.h
   pointcloud/qgspointcloudrenderer.h
   pointcloud/qgspointcloudrendererregistry.h
@@ -2055,15 +2056,19 @@ endif()
 
 if (WITH_COPC)
   include_directories(providers/copc)
+  include_directories(providers/vpc)
+
 
   set(QGIS_CORE_SRCS ${QGIS_CORE_SRCS}
       providers/copc/qgscopcprovider.cpp
+      providers/vpc/qgsvirtualpointcloudprovider.cpp
       pointcloud/qgscopcpointcloudindex.cpp
       pointcloud/qgsremotecopcpointcloudindex.cpp
       pointcloud/qgscopcpointcloudblockrequest.cpp
   )
   set(QGIS_CORE_HDRS ${QGIS_CORE_HDRS}
       providers/copc/qgscopcprovider.h
+      providers/vpc/qgsvirtualpointcloudprovider.h
       pointcloud/qgscopcpointcloudindex.h
       pointcloud/qgsremotecopcpointcloudindex.h
       pointcloud/qgscopcpointcloudblockrequest.h
@@ -2250,7 +2255,8 @@ endif()
 
 if (WITH_COPC)
   target_include_directories(qgis_core PUBLIC
-    ${CMAKE_SOURCE_DIR}/src/core/providers/copc)
+    ${CMAKE_SOURCE_DIR}/src/core/providers/copc
+    ${CMAKE_SOURCE_DIR}/src/core/providers/vpc)
 endif()
 
 GENERATE_EXPORT_HEADER(
