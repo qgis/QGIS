@@ -158,9 +158,21 @@ void QgsMapTip::showMapTip( QgsMapLayer *pLayer,
     return;
   }
 
-  // Ensures the map tip is never larger than half the map canvas
-  const int MAX_WIDTH = pMapCanvas->width() / 2;
+  // Compute offset from the cursor position
+  int cursorOffset = 0;
+  if ( QgsApplication::instance() )
+  {
+    // The following calculations are taken
+    // from QgsApplication::getThemeCursor, and are used to calculate the correct cursor size
+    // for both hi-dpi and non-hi-dpi screens.
+    double scale = Qgis::UI_SCALE_FACTOR * QgsApplication::instance()->fontMetrics().height() / 32.0;
+    cursorOffset = static_cast< int >( std::ceil( scale * 32 ) );
+  }
+
+  // Ensures the map tip is never larger than half the map canvas minus the cursor size + margin (cursorOffset)
+  const int MAX_WIDTH = pMapCanvas->width() / 2 - cursorOffset;
   const int MAX_HEIGHT = pMapCanvas->height() / 2;
+
   mWebView->setMaximumSize( MAX_WIDTH, MAX_HEIGHT );
 
   tipHtml = QgsMapTip::htmlText( tipText, MAX_WIDTH );
