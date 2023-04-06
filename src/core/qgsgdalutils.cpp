@@ -668,7 +668,13 @@ QStringList QgsGdalUtils::multiLayerFileExtensions()
       const QStringList splitExtensions = driverExtensions.split( ' ', Qt::SkipEmptyParts );
 
       for ( const QString &ext : splitExtensions )
+      {
+        // maintain older behavior -- don't always expose tiff files as containers
+        if ( ext == QLatin1String( "tif" ) || ext == QLatin1String( "tiff" ) )
+          continue;
+
         extensions.insert( ext );
+      }
     }
 
     SUPPORTED_DB_LAYERS_EXTENSIONS = QStringList( extensions.constBegin(), extensions.constEnd() );

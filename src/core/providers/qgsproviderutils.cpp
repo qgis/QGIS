@@ -37,10 +37,14 @@ bool QgsProviderUtils::sublayerDetailsAreIncomplete( const QList<QgsProviderSubl
           return true;
         break;
 
+      case Qgis::LayerType::VectorTile:
       case Qgis::LayerType::Raster:
+        if ( sublayer.skippedContainerScan() )
+          return true;
+        break;
+
       case Qgis::LayerType::Plugin:
       case Qgis::LayerType::Mesh:
-      case Qgis::LayerType::VectorTile:
       case Qgis::LayerType::Annotation:
       case Qgis::LayerType::PointCloud:
       case Qgis::LayerType::Group:

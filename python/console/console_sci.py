@@ -213,14 +213,6 @@ class ShellScintilla(QgsCodeEditorPython):
         QgsCodeEditorPython.keyPressEvent(self, e)
         self.updatePrompt()
 
-    def populateContextMenu(self, menu):
-        pyQGISHelpAction = menu.addAction(
-            QgsApplication.getThemeIcon("console/iconHelpConsole.svg"),
-            QCoreApplication.translate("PythonConsole", "Search Selected in PyQGIS docs"),
-            self.searchSelectedTextInPyQGISDocs
-        )
-        pyQGISHelpAction.setEnabled(self.hasSelectedText())
-
     def mousePressEvent(self, e):
         """
         Re-implemented to handle the mouse press event.

@@ -23,6 +23,7 @@
 #include "qgsannotationlineitem.h"
 #include "qgsannotationmarkeritem.h"
 #include "qgsannotationpointtextitem.h"
+#include "qgsannotationlinetextitem.h"
 #include "qgsexpressionbuilderdialog.h"
 #include "qgstextformatwidget.h"
 #include "qgsapplication.h"
@@ -399,6 +400,162 @@ bool QgsAnnotationPointTextItemWidget::setNewItem( QgsAnnotationItem *item )
 }
 
 void QgsAnnotationPointTextItemWidget::mInsertExpressionButton_clicked()
+{
+  QString selText = mTextEdit->textCursor().selectedText();
+
+  // html editor replaces newlines with Paragraph Separator characters - see https://github.com/qgis/QGIS/issues/27568
+  selText = selText.replace( QChar( 0x2029 ), QChar( '\n' ) );
+
+  // edit the selected expression if there's one
+  if ( selText.startsWith( QLatin1String( "[%" ) ) && selText.endsWith( QLatin1String( "%]" ) ) )
+    selText = selText.mid( 2, selText.size() - 4 );
+
+  QgsExpressionContext expressionContext;
+  if ( context().expressionContext() )
+    expressionContext = *( context().expressionContext() );
+  else
+    expressionContext = QgsProject::instance()->createExpressionContext();
+
+  QgsExpressionBuilderDialog exprDlg( nullptr, selText, this, QStringLiteral( "generic" ), expressionContext );
+
+  exprDlg.setWindowTitle( tr( "Insert Expression" ) );
+  if ( exprDlg.exec() == QDialog::Accepted )
+  {
+    QString expression = exprDlg.expressionText();
+    if ( !expression.isEmpty() )
+    {
+      mTextEdit->insertPlainText( "[%" + expression + "%]" );
+    }
+  }
+}
+
+
+//
+// QgsAnnotationLineTextItemWidget
+//
+
+QgsAnnotationLineTextItemWidget::QgsAnnotationLineTextItemWidget( QWidget *parent )
+  : QgsAnnotationItemBaseWidget( parent )
+{
+  setupUi( this );
+
+  mTextFormatWidget = new QgsTextFormatWidget();
+  QVBoxLayout *vLayout = new QVBoxLayout();
+  vLayout->setContentsMargins( 0, 0, 0, 0 );
+  vLayout->addWidget( mTextFormatWidget );
+  mTextFormatWidgetContainer->setLayout( vLayout );
+
+  mTextEdit->setMaximumHeight( mTextEdit->fontMetrics().height() * 10 );
+
+  mTextFormatWidget->setDockMode( dockMode() );
+  connect( mTextFormatWidget, &QgsTextFormatWidget::widgetChanged, this, [ = ]
+  {
+    if ( !mBlockChangedSignal )
+      emit itemChanged();
+  } );
+  connect( mTextEdit, &QPlainTextEdit::textChanged, this, [ = ]
+  {
+    if ( !mBlockChangedSignal )
+      emit itemChanged();
+  } );
+  connect( mInsertExpressionButton, &QPushButton::clicked, this, &QgsAnnotationLineTextItemWidget::mInsertExpressionButton_clicked );
+  connect( mPropertiesWidget, &QgsAnnotationItemCommonPropertiesWidget::itemChanged, this, [ = ]
+  {
+    if ( !mBlockChangedSignal )
+      emit itemChanged();
+  } );
+
+  mOffsetUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::MetersInMapUnits << Qgis::RenderUnit::MapUnits << Qgis::RenderUnit::Pixels
+                               << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches );
+  mSpinOffset->setClearValue( 0.0 );
+  connect( mSpinOffset, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, [ = ]
+  {
+    if ( !mBlockChangedSignal )
+      emit itemChanged();
+  } );
+
+  connect( mOffsetUnitWidget, &QgsUnitSelectionWidget::changed, this, [ = ]
+  {
+    if ( !mBlockChangedSignal )
+      emit itemChanged();
+  } );
+}
+
+QgsAnnotationLineTextItemWidget::~QgsAnnotationLineTextItemWidget() = default;
+
+QgsAnnotationItem *QgsAnnotationLineTextItemWidget::createItem()
+{
+  QgsAnnotationLineTextItem *newItem = mItem->clone();
+  newItem->setFormat( mTextFormatWidget->format() );
+  newItem->setText( mTextEdit->toPlainText() );
+
+  newItem->setOffsetFromLine( mSpinOffset->value() );
+  newItem->setOffsetFromLineUnit( mOffsetUnitWidget->unit() );
+  newItem->setOffsetFromLineMapUnitScale( mOffsetUnitWidget->getMapUnitScale() );
+
+  mPropertiesWidget->updateItem( newItem );
+  return newItem;
+}
+
+void QgsAnnotationLineTextItemWidget::updateItem( QgsAnnotationItem *item )
+{
+  if ( QgsAnnotationLineTextItem *lineTextItem = dynamic_cast< QgsAnnotationLineTextItem * >( item ) )
+  {
+    lineTextItem->setFormat( mTextFormatWidget->format() );
+    lineTextItem->setText( mTextEdit->toPlainText() );
+
+    lineTextItem->setOffsetFromLine( mSpinOffset->value() );
+    lineTextItem->setOffsetFromLineUnit( mOffsetUnitWidget->unit() );
+    lineTextItem->setOffsetFromLineMapUnitScale( mOffsetUnitWidget->getMapUnitScale() );
+
+    mPropertiesWidget->updateItem( lineTextItem );
+  }
+}
+
+void QgsAnnotationLineTextItemWidget::setDockMode( bool dockMode )
+{
+  QgsAnnotationItemBaseWidget::setDockMode( dockMode );
+  if ( mTextFormatWidget )
+    mTextFormatWidget->setDockMode( dockMode );
+}
+
+void QgsAnnotationLineTextItemWidget::setContext( const QgsSymbolWidgetContext &context )
+{
+  QgsAnnotationItemBaseWidget::setContext( context );
+  if ( mTextFormatWidget )
+    mTextFormatWidget->setContext( context );
+  mPropertiesWidget->setContext( context );
+}
+
+void QgsAnnotationLineTextItemWidget::focusDefaultWidget()
+{
+  mTextEdit->selectAll();
+  mTextEdit->setFocus();
+}
+
+bool QgsAnnotationLineTextItemWidget::setNewItem( QgsAnnotationItem *item )
+{
+  QgsAnnotationLineTextItem *textItem = dynamic_cast< QgsAnnotationLineTextItem * >( item );
+  if ( !textItem )
+    return false;
+
+  mItem.reset( textItem->clone() );
+
+  mBlockChangedSignal = true;
+  mTextFormatWidget->setFormat( mItem->format() );
+  mTextEdit->setPlainText( mItem->text() );
+  mPropertiesWidget->setItem( mItem.get() );
+
+  mSpinOffset->setValue( mItem->offsetFromLine() );
+  mOffsetUnitWidget->setUnit( mItem->offsetFromLineUnit() );
+  mOffsetUnitWidget->setMapUnitScale( mItem->offsetFromLineMapUnitScale() );
+
+  mBlockChangedSignal = false;
+
+  return true;
+}
+
+void QgsAnnotationLineTextItemWidget::mInsertExpressionButton_clicked()
 {
   QString selText = mTextEdit->textCursor().selectedText();
 

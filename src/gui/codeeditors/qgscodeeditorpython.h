@@ -142,6 +142,7 @@ class GUI_EXPORT QgsCodeEditorPython : public QgsCodeEditor
     void initializeLexer() override;
     virtual void keyPressEvent( QKeyEvent *event ) override;
     QString reformatCodeString( const QString &string ) override;
+    void populateContextMenu( QMenu *menu ) override;
 
   protected slots:
 

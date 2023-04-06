@@ -252,15 +252,19 @@ bool QgsManageConnectionsDialog::populateConnections()
         break;
       case PostGIS:
         settings.beginGroup( QStringLiteral( "/PostgreSQL/connections" ) );
+        connections = settings.childGroups();
         break;
       case MSSQL:
         settings.beginGroup( QStringLiteral( "/MSSQL/connections" ) );
+        connections = settings.childGroups();
         break;
       case Oracle:
         settings.beginGroup( QStringLiteral( "/Oracle/connections" ) );
+        connections = settings.childGroups();
         break;
       case HANA:
         settings.beginGroup( QStringLiteral( "/HANA/connections" ) );
+        connections = settings.childGroups();
         break;
       case XyzTiles:
         connections = QgsXyzConnectionSettings::sTreeXyzConnections->items();
@@ -273,18 +277,11 @@ bool QgsManageConnectionsDialog::populateConnections()
         connections = QgsVectorTileProviderConnection::sTreeConnectionVectorTile->items();
         break;
     }
-    if ( !settings.group().isEmpty() )
+    for ( const QString &connection : std::as_const( connections ) )
     {
-      QStringList keys = settings.childGroups();
-      QStringList::Iterator it = keys.begin();
-      while ( it != keys.end() )
-      {
-        QListWidgetItem *item = new QListWidgetItem();
-        item->setText( *it );
-        listConnections->addItem( item );
-        ++it;
-      }
-      settings.endGroup();
+      QListWidgetItem *item = new QListWidgetItem();
+      item->setText( connection );
+      listConnections->addItem( item );
     }
   }
   // Import mode. Populate connections list from file

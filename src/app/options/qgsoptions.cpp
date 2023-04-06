@@ -813,7 +813,10 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   const QStringList scalePaths = QgsSettingsRegistryCore::settingsMapScales->value();
   for ( const QString &scale : scalePaths )
   {
-    addScaleToScaleList( scale );
+    if ( ! scale.isEmpty() )
+    {
+      addScaleToScaleList( scale );
+    }
   }
 
   connect( mListGlobalScales, &QListWidget::itemChanged, this, &QgsOptions::scaleItemChanged );

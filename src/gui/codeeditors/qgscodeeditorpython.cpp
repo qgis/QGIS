@@ -32,6 +32,8 @@
 #include <Qsci/qscilexerpython.h>
 #include <QDesktopServices>
 #include <QKeyEvent>
+#include <QAction>
+#include <QMenu>
 
 const QMap<QString, QString> QgsCodeEditorPython::sCompletionPairs
 {
@@ -514,6 +516,21 @@ QString QgsCodeEditorPython::reformatCodeString( const QString &string )
   }
 
   return newText;
+}
+
+void QgsCodeEditorPython::populateContextMenu( QMenu *menu )
+{
+  QgsCodeEditor::populateContextMenu( menu );
+
+  QAction *pyQgisHelpAction = new QAction(
+    QgsApplication::getThemeIcon( QStringLiteral( "console/iconHelpConsole.svg" ) ),
+    tr( "Search Selection in PyQGIS Documentation" ),
+    menu );
+  pyQgisHelpAction->setEnabled( hasSelectedText() );
+  connect( pyQgisHelpAction, &QAction::triggered, this, &QgsCodeEditorPython::searchSelectedTextInPyQGISDocs );
+
+  menu->addSeparator();
+  menu->addAction( pyQgisHelpAction );
 }
 
 void QgsCodeEditorPython::autoComplete()

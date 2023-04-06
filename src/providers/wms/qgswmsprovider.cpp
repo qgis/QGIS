@@ -52,6 +52,8 @@
 #include "qgsproviderregistry.h"
 #include "qgsruntimeprofiler.h"
 #include "qgstiledownloadmanager.h"
+#include "qgsproviderutils.h"
+#include "qgsprovidersublayerdetails.h"
 
 #include <QNetworkRequest>
 #include <QNetworkReply>
@@ -4418,6 +4420,11 @@ QgsWmsProvider *QgsWmsProviderMetadata::createProvider( const QString &uri, cons
   return new QgsWmsProvider( uri, options );
 }
 
+QgsProviderMetadata::ProviderCapabilities QgsWmsProviderMetadata::providerCapabilities() const
+{
+  return FileBasedUris;
+}
+
 // -----------------
 
 QgsWmsImageDownloadHandler::QgsWmsImageDownloadHandler( const QString &providerUri, const QUrl &url, const QgsWmsAuthorization &auth, QImage *image, QgsRasterBlockFeedback *feedback )
@@ -5160,6 +5167,13 @@ QIcon QgsWmsProviderMetadata::icon() const
   return QgsApplication::getThemeIcon( QStringLiteral( "mIconWms.svg" ) );
 }
 
+QgsProviderMetadata::ProviderMetadataCapabilities QgsWmsProviderMetadata::capabilities() const
+{
+  return ProviderMetadataCapability::LayerTypesForUri
+         | ProviderMetadataCapability::PriorityForUri
+         | ProviderMetadataCapability::QuerySublayers;
+}
+
 QList<QgsDataItemProvider *> QgsWmsProviderMetadata::dataItemProviders() const
 {
   QList<QgsDataItemProvider *> providers;
@@ -5174,9 +5188,9 @@ QList<QgsDataItemProvider *> QgsWmsProviderMetadata::dataItemProviders() const
 QVariantMap QgsWmsProviderMetadata::decodeUri( const QString &uri ) const
 {
   const QUrlQuery query { uri };
-  const auto constItems { query.queryItems() };
+  const QList<QPair<QString, QString> > constItems { query.queryItems() };
   QVariantMap decoded;
-  for ( const auto &item : constItems )
+  for ( const QPair<QString, QString> &item : constItems )
   {
     if ( item.first == QLatin1String( "url" ) )
     {
@@ -5184,6 +5198,10 @@ QVariantMap QgsWmsProviderMetadata::decodeUri( const QString &uri ) const
       if ( url.isLocalFile() )
       {
         decoded[ QStringLiteral( "path" ) ] = url.toLocalFile();
+      }
+      else if ( QFileInfo( item.second ).isFile() )
+      {
+        decoded[ QStringLiteral( "path" ) ] = item.second;
       }
       else
       {
@@ -5215,6 +5233,102 @@ QString QgsWmsProviderMetadata::encodeUri( const QVariantMap &parts ) const
   }
   query.setQueryItems( items );
   return query.toString();
+}
+
+QList<QgsProviderSublayerDetails> QgsWmsProviderMetadata::querySublayers( const QString &uri, Qgis::SublayerQueryFlags flags, QgsFeedback * ) const
+{
+  QString fileName;
+  const QFileInfo fi( uri );
+  if ( fi.isFile() )
+  {
+    fileName = uri;
+  }
+  else
+  {
+    const QVariantMap parts = decodeUri( uri );
+    if ( !parts.contains( QStringLiteral( "path" ) ) )
+    {
+      if ( parts.value( QStringLiteral( "url" ) ).isValid() )
+      {
+        // online wms source
+        QgsProviderSublayerDetails details;
+        details.setUri( uri );
+        details.setProviderKey( key() );
+        details.setType( Qgis::LayerType::Raster );
+        return {details};
+      }
+      else
+      {
+        // not a wms uri
+        return {};
+      }
+    }
+
+    fileName = parts.value( QStringLiteral( "path" ) ).toString();
+  }
+
+  if ( fileName.isEmpty() )
+    return {};
+
+  if ( QFileInfo( fileName ).suffix().compare( QLatin1String( "mbtiles" ), Qt::CaseInsensitive ) == 0 )
+  {
+    QVariantMap parts;
+    parts.insert( QStringLiteral( "path" ), fileName );
+    parts.insert( QStringLiteral( "type" ), QStringLiteral( "mbtiles" ) );
+
+    if ( flags & Qgis::SublayerQueryFlag::FastScan )
+    {
+      // fast scan -- assume raster tiles are available
+      QgsProviderSublayerDetails details;
+      details.setUri( encodeUri( parts ) );
+      details.setProviderKey( key() );
+      details.setType( Qgis::LayerType::Raster );
+      details.setName( QgsProviderUtils::suggestLayerNameFromFilePath( fileName ) );
+      details.setSkippedContainerScan( true );
+      return {details};
+    }
+    else
+    {
+      // slower scan, check actual mbtiles format
+      QgsMbTiles reader( fileName );
+      if ( reader.open() )
+      {
+        if ( reader.metadataValue( "format" ) != QLatin1String( "pbf" ) )
+        {
+          QgsProviderSublayerDetails details;
+          details.setUri( encodeUri( parts ) );
+          details.setProviderKey( key() );
+          details.setType( Qgis::LayerType::Raster );
+          details.setName( QgsProviderUtils::suggestLayerNameFromFilePath( fileName ) );
+          return {details};
+        }
+      }
+    }
+  }
+  return {};
+}
+
+int QgsWmsProviderMetadata::priorityForUri( const QString &uri ) const
+{
+  if ( validLayerTypesForUri( uri ).contains( Qgis::LayerType::Raster ) )
+    return 100;
+
+  return 0;
+}
+
+QList<Qgis::LayerType> QgsWmsProviderMetadata::validLayerTypesForUri( const QString &uri ) const
+{
+  const QFileInfo fi( uri );
+  if ( fi.isFile() && fi.suffix().compare( QLatin1String( "mbtiles" ), Qt::CaseInsensitive ) == 0 )
+  {
+    return { Qgis::LayerType::Raster };
+  }
+
+  const QVariantMap parts = decodeUri( uri );
+  if ( parts.value( QStringLiteral( "path" ) ).toString().endsWith( ".mbtiles", Qt::CaseSensitivity::CaseInsensitive ) )
+    return { Qgis::LayerType::Raster };
+
+  return {};
 }
 
 QString QgsWmsProviderMetadata::absoluteToRelativeUri( const QString &src, const QgsReadWriteContext &context ) const
