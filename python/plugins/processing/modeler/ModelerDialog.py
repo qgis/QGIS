@@ -50,7 +50,8 @@ from qgis.gui import (QgsProcessingParameterDefinitionDialog,
                       QgsModelGraphicsScene,
                       QgsModelDesignerDialog,
                       QgsProcessingContextGenerator,
-                      QgsProcessingParametersGenerator)
+                      QgsProcessingParametersGenerator,
+                      QgsScreenHelper)
 from qgis.utils import iface
 
 from processing.gui.AlgorithmDialog import AlgorithmDialog
@@ -96,7 +97,8 @@ class ModelerDialog(QgsModelDesignerDialog):
         self.setModelScene(scene)
 
         self.view().ensureVisible(0, 0, 10, 10)
-        self.view().scale(QgsApplication.desktop().logicalDpiX() / 96, QgsApplication.desktop().logicalDpiX() / 96)
+        dpi = QgsScreenHelper(self.view()).screenDpi()
+        self.view().scale(dpi / 96, dpi / 96)
 
         self.actionOpen().triggered.connect(self.openModel)
         self.actionSaveInProject().triggered.connect(self.saveInProject)

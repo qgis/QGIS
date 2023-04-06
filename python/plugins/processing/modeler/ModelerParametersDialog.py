@@ -47,6 +47,20 @@ from qgis.gui import (QgsGui,
                       QgsPanelWidgetStack,
                       QgsColorButton,
                       QgsModelChildDependenciesWidget)
+
+# TODO QGIS 4.0: Fix code if PyQt6
+from qgis.PyQt.QtCore import QT_VERSION
+if (QT_VERSION >= 0x060000):
+    QSizePolicy.Minimum = QSizePolicy.Policy.Minimum
+    QSizePolicy.Fixed = QSizePolicy.Policy.Fixed
+    QFrame.HLine = QFrame.Shape.HLine
+    QFrame.NoFrame = QFrame.Shape.NoFrame
+    QFrame.Sunken = QFrame.Shadow.Sunken
+    Qt.Horizontal = Qt.Orientation.Horizontal
+    QDialogButtonBox.Cancel = QDialogButtonBox.StandardButton.Cancel
+    QDialogButtonBox.Ok = QDialogButtonBox.StandardButton.Ok
+    QDialogButtonBox.Help = QDialogButtonBox.StandardButton.Help
+
 from qgis.utils import iface
 
 from processing.gui.wrappers import WidgetWrapperFactory
