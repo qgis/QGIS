@@ -89,10 +89,7 @@ class CORE_EXPORT QgsAuxiliaryLayer : public QgsVectorLayer
     % End
 #endif
 
-#ifdef __clang__
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Woverloaded-virtual"
-#endif
+    using QgsVectorLayer::clone;
 
     /**
      * Returns a new instance equivalent to this one. The underlying table
@@ -102,9 +99,6 @@ class CORE_EXPORT QgsAuxiliaryLayer : public QgsVectorLayer
      * \param layer The layer for which the clone is made
      */
     QgsAuxiliaryLayer *clone( QgsVectorLayer *layer ) const SIP_FACTORY;
-#ifdef __clang__
-#pragma clang diagnostic pop
-#endif
 
     /**
      * An auxiliary layer is not spatial. This method returns a spatial
