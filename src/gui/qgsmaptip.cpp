@@ -112,6 +112,9 @@ void QgsMapTip::showMapTip( QgsMapLayer *pLayer,
   if ( ! mWebView )
   {
     mWebView = new QgsWebView( pMapCanvas );
+    // Make the webwiew transparent
+    mWebView->setStyleSheet( QStringLiteral( "background:transparent;" ) );
+
 
 #if WITH_QTWEBKIT
     mWebView->page()->setLinkDelegationPolicy( QWebPage::DelegateAllLinks );//Handle link clicks by yourself
