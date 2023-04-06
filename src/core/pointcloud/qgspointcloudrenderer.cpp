@@ -262,6 +262,10 @@ QVector<QVariantMap> QgsPointCloudRenderer::identify( QgsPointCloudLayer *layer,
   QVector<QVariantMap> selectedPoints;
 
   QgsPointCloudIndex *index = layer->dataProvider()->index();
+
+  if ( !index || !index->isValid() )
+    return selectedPoints;
+
   const IndexedPointCloudNode root = index->root();
 
   const double maxErrorPixels = renderContext.convertToPainterUnits( maximumScreenError(), maximumScreenErrorUnit() );// in pixels
