@@ -107,7 +107,7 @@ void QgsMapTip::showMapTip( QgsMapLayer *pLayer,
   }
 
   // Show the maptip on the canvas
-  QString tipText, lastTipText, tipHtml, backgroundColor, strokeColor;
+  QString tipText, lastTipText, tipHtml;
 
   if ( ! mWebView )
   {
