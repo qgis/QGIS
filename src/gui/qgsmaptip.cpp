@@ -128,10 +128,6 @@ void QgsMapTip::showMapTip( QgsMapLayer *pLayer,
     mWebView->page()->mainFrame()->setScrollBarPolicy( Qt::Horizontal, Qt::ScrollBarAlwaysOff );
     mWebView->page()->mainFrame()->setScrollBarPolicy( Qt::Vertical, Qt::ScrollBarAlwaysOff );
 
-    // Assure the map tip is never larger than half the map canvas
-    const int MAX_WIDTH = pMapCanvas->width() / 2;
-    const int MAX_HEIGHT = pMapCanvas->height() / 2;
-    mWebView->setMaximumSize( MAX_WIDTH, MAX_HEIGHT );
   }
 
   // Only supported layer types here:
@@ -159,7 +155,12 @@ void QgsMapTip::showMapTip( QgsMapLayer *pLayer,
     return;
   }
 
-  tipHtml = QgsMapTip::htmlText( tipText, pMapCanvas->width() / 2 );
+  // Ensures the map tip is never larger than half the map canvas
+  const int MAX_WIDTH = pMapCanvas->width() / 2;
+  const int MAX_HEIGHT = pMapCanvas->height() / 2;
+  mWebView->setMaximumSize( MAX_WIDTH, MAX_HEIGHT );
+
+  tipHtml = QgsMapTip::htmlText( tipText, MAX_WIDTH );
 
   QgsDebugMsg( tipHtml );
 
