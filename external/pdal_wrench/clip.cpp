@@ -137,7 +137,7 @@ static std::unique_ptr<PipelineManager> pipeline(ParallelJobInfo *tile, const pd
 }
 
 
-void Clip::preparePipelines(std::vector<std::unique_ptr<PipelineManager>>& pipelines, const BOX3D &bounds, point_count_t &totalPoints)
+void Clip::preparePipelines(std::vector<std::unique_ptr<PipelineManager>>& pipelines, const BOX3D &, point_count_t &totalPoints)
 {
     pdal::Options crop_opts;
     BOX2D bbox;
@@ -197,7 +197,7 @@ void Clip::preparePipelines(std::vector<std::unique_ptr<PipelineManager>>& pipel
     }
 }
 
-void Clip::finalize(std::vector<std::unique_ptr<PipelineManager>>& pipelines)
+void Clip::finalize(std::vector<std::unique_ptr<PipelineManager>>&)
 {
     if (tileOutputFiles.empty())
         return;

@@ -131,7 +131,7 @@ static std::unique_ptr<PipelineManager> pipeline(ParallelJobInfo *tile, std::str
 }
 
 
-void Translate::preparePipelines(std::vector<std::unique_ptr<PipelineManager>>& pipelines, const BOX3D &bounds, point_count_t &totalPoints)
+void Translate::preparePipelines(std::vector<std::unique_ptr<PipelineManager>>& pipelines, const BOX3D &, point_count_t &)
 {
     if (ends_with(inputFile, ".vpc"))
     {
@@ -175,7 +175,7 @@ void Translate::preparePipelines(std::vector<std::unique_ptr<PipelineManager>>& 
     }
 }
 
-void Translate::finalize(std::vector<std::unique_ptr<PipelineManager>>& pipelines)
+void Translate::finalize(std::vector<std::unique_ptr<PipelineManager>>&)
 {
     if (tileOutputFiles.empty())
         return;

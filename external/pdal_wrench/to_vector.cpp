@@ -65,13 +65,13 @@ static std::unique_ptr<PipelineManager> pipeline(ParallelJobInfo *tile, const st
         writer_opts.add(pdal::Option("where", tile->filterExpression));
     }
 
-    Stage& w = manager->makeWriter( tile->outputFilename, "writers.ogr", r, writer_opts);
+    (void)manager->makeWriter( tile->outputFilename, "writers.ogr", r, writer_opts);
 
     return manager;
 }
 
 
-void ToVector::preparePipelines(std::vector<std::unique_ptr<PipelineManager>>& pipelines, const BOX3D &bounds, point_count_t &totalPoints)
+void ToVector::preparePipelines(std::vector<std::unique_ptr<PipelineManager>>& pipelines, const BOX3D &, point_count_t &)
 {
     if (ends_with(inputFile, ".vpc"))
     {
@@ -109,7 +109,7 @@ void ToVector::preparePipelines(std::vector<std::unique_ptr<PipelineManager>>& p
     }
 }
 
-void ToVector::finalize(std::vector<std::unique_ptr<PipelineManager>>& pipelines)
+void ToVector::finalize(std::vector<std::unique_ptr<PipelineManager>>&)
 {
     if (tileOutputFiles.empty())
         return;

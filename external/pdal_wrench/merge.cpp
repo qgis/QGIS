@@ -73,7 +73,7 @@ static std::unique_ptr<PipelineManager> pipeline(ParallelJobInfo *tile)
     return manager;
 }
 
-void Merge::preparePipelines(std::vector<std::unique_ptr<PipelineManager>>& pipelines, const BOX3D &bounds, point_count_t &totalPoints)
+void Merge::preparePipelines(std::vector<std::unique_ptr<PipelineManager>>& pipelines, const BOX3D &, point_count_t &totalPoints)
 {
     ParallelJobInfo tile(ParallelJobInfo::Single, BOX2D(), filterExpression);
     tile.inputFilenames = inputFiles;
