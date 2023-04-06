@@ -54,8 +54,10 @@ Construct a QgsTriangle from three QPointF.
 :param p3: third point
 %End
 
-    bool operator==( const QgsTriangle &other ) const /HoldGIL/;
-    bool operator!=( const QgsTriangle &other ) const /HoldGIL/;
+    virtual bool operator==( const QgsAbstractGeometry &other ) const /HoldGIL/;
+
+    virtual bool operator!=( const QgsAbstractGeometry &other ) const /HoldGIL/;
+
 
     virtual QString geometryType() const /HoldGIL/;
 
