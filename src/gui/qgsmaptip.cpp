@@ -50,12 +50,12 @@ const QString QgsMapTip::sMapTipTemplate = "<html>\n"
     "    body {\n"
     "        margin: 0;\n"
     "        font: %1pt \"%2\";\n"
-    "        color: ;\n"
-    "        width: %3px;\n"
+    "        color: %3;\n"
+    "        width: %4px;\n"
     "    }\n"
     "    #QgsWebViewContainer {\n"
-    "        background-color: %4;\n"
-    "        border: 1px solid %5;\n"
+    "        background-color: %5;\n"
+    "        border: 1px solid %6;\n"
     "        display: inline-block;\n"
     "        margin: 0\n"
     "    }\n"
@@ -67,7 +67,7 @@ const QString QgsMapTip::sMapTipTemplate = "<html>\n"
     "  <body>\n"
     "    <div id='QgsWebViewContainer'>\n"
     "      <div id='QgsWebViewContainerInner'>\n"
-    "      %6\n"
+    "      %7\n"
     "      </div>\n"
     "    </div>\n"
     "  </body>\n"
@@ -411,8 +411,8 @@ QString QgsMapTip::htmlText( const QString &text, int maxWidth )
   const QString fontFamily = settings.value( QStringLiteral( "/qgis/stylesheet/fontFamily" ), defaultFont.family() ).toString();
   const QString backgroundColor = QgsApplication::palette().base().color().name();
   const QString strokeColor = QgsApplication::palette().shadow().color().name();
-  const QString textColor = QgsApplication::palette().windowText().color().name();
-  return sMapTipTemplate.arg( fontSize ).arg( fontFamily ).arg( maxWidth == -1 ? "" : QString::number( maxWidth ) ).arg( backgroundColor ).arg( strokeColor ).arg( text );
+  const QString textColor = QgsApplication::palette().text().color().name();
+  return sMapTipTemplate.arg( fontSize ).arg( fontFamily ).arg( textColor ).arg( maxWidth == -1 ? "" : QString::number( maxWidth ) ).arg( backgroundColor ).arg( strokeColor ).arg( text );
 }
 
 // This slot handles all clicks
