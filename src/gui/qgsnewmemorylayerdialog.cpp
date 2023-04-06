@@ -160,6 +160,7 @@ void QgsNewMemoryLayerDialog::mTypeBox_currentIndexChanged( int index )
       mPrecision->clear();
       mPrecision->setEnabled( false );
       mWidth->setValidator( new QIntValidator( 1, 255, this ) );
+      mWidth->setEnabled( true );
       break;
     case 1: // Whole number
       if ( mWidth->text().toInt() < 1 || mWidth->text().toInt() > 10 )
@@ -167,6 +168,7 @@ void QgsNewMemoryLayerDialog::mTypeBox_currentIndexChanged( int index )
       mPrecision->clear();
       mPrecision->setEnabled( false );
       mWidth->setValidator( new QIntValidator( 1, 10, this ) );
+      mWidth->setEnabled( true );
       break;
     case 2: // Decimal number
       if ( mWidth->text().toInt() < 1 || mWidth->text().toInt() > 30 )
@@ -175,6 +177,7 @@ void QgsNewMemoryLayerDialog::mTypeBox_currentIndexChanged( int index )
         mPrecision->setText( QStringLiteral( "6" ) );
       mPrecision->setEnabled( true );
       mWidth->setValidator( new QIntValidator( 1, 20, this ) );
+      mWidth->setEnabled( true );
       break;
     case 3: // Boolean
       mWidth->clear();
