@@ -126,7 +126,7 @@ std::unique_ptr<PipelineManager> pipeline(ParallelJobInfo *tile, double resoluti
     writer_opts.add(pdal::Option("data_type", "float32"));  // default was float64 which seems like too much
     writer_opts.add(pdal::Option("gdalopts", "TILED=YES"));
     writer_opts.add(pdal::Option("gdalopts", "COMPRESS=DEFLATE"));
-    Stage &w = manager->makeWriter(tile->outputFilename, "writers.raster", faceRaster);
+    (void)manager->makeWriter(tile->outputFilename, "writers.raster", faceRaster);
 
     return manager;
 }

@@ -50,6 +50,7 @@ struct Alg
     pdal::ProgramArgs programArgs;
 
     Alg() = default;
+    virtual ~Alg() = default;
 
     // no copying
     Alg(const Alg &other) = delete;
@@ -75,7 +76,7 @@ struct Alg
     /**
      * Runs and post-processing code when pipelines are done executing.
      */
-    virtual void finalize(std::vector<std::unique_ptr<PipelineManager>>& pipelines) {};
+    virtual void finalize(std::vector<std::unique_ptr<PipelineManager>>& pipelines) { ( void )pipelines; };
 };
 
 bool runAlg(std::vector<std::string> args, Alg &alg);
