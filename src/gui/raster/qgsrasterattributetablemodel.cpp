@@ -509,7 +509,8 @@ Qt::ItemFlags QgsRasterAttributeTableModel::flags( const QModelIndex &index ) co
       {
         if ( index.column() < mRat->fields().count( ) )
         {
-          const QgsRasterAttributeTable::Field &field { mRat->fields().at( index.column() ) };
+          const QList<QgsRasterAttributeTable::Field> fields = mRat->fields();
+          const QgsRasterAttributeTable::Field &field { fields.at( index.column() ) };
           if ( ! field.isColor() && ! field.isRamp() )
           {
             flags |= Qt::ItemIsEditable;
