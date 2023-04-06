@@ -89,7 +89,9 @@ class CORE_EXPORT QgsAuxiliaryLayer : public QgsVectorLayer
     % End
 #endif
 
+#ifndef SIP_RUN
     using QgsVectorLayer::clone;
+#endif
 
     /**
      * Returns a new instance equivalent to this one. The underlying table

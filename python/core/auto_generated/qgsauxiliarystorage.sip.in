@@ -61,7 +61,6 @@ Constructor
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
-    using QgsVectorLayer::clone;
 
     QgsAuxiliaryLayer *clone( QgsVectorLayer *layer ) const /Factory/;
 %Docstring
