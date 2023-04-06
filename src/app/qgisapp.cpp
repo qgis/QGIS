@@ -3262,11 +3262,6 @@ void QgisApp::setAppStyleSheet( const QString &stylesheet )
   {
     d->setStyleSheet( stylesheet );
   }
-
-  if ( mpMaptip )
-  {
-    mpMaptip->applyFontSettings();
-  }
 }
 
 void QgisApp::createMenus()
