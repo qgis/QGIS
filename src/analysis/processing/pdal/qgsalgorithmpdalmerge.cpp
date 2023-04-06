@@ -60,6 +60,7 @@ QgsPdalMergeAlgorithm *QgsPdalMergeAlgorithm::createInstance() const
 void QgsPdalMergeAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterMultipleLayers( QStringLiteral( "LAYERS" ), QObject::tr( "Input layers" ), QgsProcessing::TypePointCloud ) );
+  createCommonParameters();
   addParameter( new QgsProcessingParameterPointCloudDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Destination file" ) ) );
 }
 
@@ -82,6 +83,7 @@ QStringList QgsPdalMergeAlgorithm::createArgumentLists( const QVariantMap &param
   args << QStringLiteral( "merge" )
        << QStringLiteral( "--output=%1" ).arg( outputFile );
 
+  applyCommonParameters( args, layers.at( 0 )->crs(), parameters, context );
   applyThreadsParameter( args );
 
   for ( const QgsMapLayer *layer : std::as_const( layers ) )
