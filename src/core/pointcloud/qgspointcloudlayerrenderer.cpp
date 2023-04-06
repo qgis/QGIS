@@ -46,6 +46,7 @@ QgsPointCloudLayerRenderer::QgsPointCloudLayerRenderer( QgsPointCloudLayer *laye
     return;
 
   mRenderer.reset( mLayer->renderer()->clone() );
+  mSubExtentsRenderer.reset( new QgsPointCloudExtentRenderer() );
 
   if ( mLayer->dataProvider()->index() )
   {
@@ -94,9 +95,12 @@ bool QgsPointCloudLayerRenderer::render()
     return true;
   }
 
+  const bool hasMultipleIndexes = mLayer->dataProvider()->capabilities() & QgsPointCloudDataProvider::ContainSubIndexes;
+
   // TODO cache!?
   QgsPointCloudIndex *pc = mLayer->dataProvider()->index();
-  if ( !pc || !pc->isValid() )
+  if ( !hasMultipleIndexes &&
+       ( !pc || !pc->isValid() ) )
   {
     mReadyToCompose = true;
     return false;
@@ -140,7 +144,55 @@ bool QgsPointCloudLayerRenderer::render()
     mAttributes.push_back( mLayerAttributes.at( layerIndex ) );
   }
 
-  QgsPointCloudDataBounds db;
+  const QgsRectangle renderExtent = renderContext()->coordinateTransform().transformBoundingBox( renderContext()->mapExtent(), Qgis::TransformDirection::Reverse );
+  bool canceled = false;
+  if ( !hasMultipleIndexes )
+  {
+    canceled = !renderIndex( pc );
+  }
+  else
+  {
+    const auto subLayers = mLayer->dataProvider()->subIndexes();
+    for ( const auto &sl : subLayers )
+    {
+      if ( canceled )
+        break;
+
+      QgsPointCloudIndex *pc = sl.index.get();
+
+      const auto commonExtent = renderExtent.intersect( sl.extent );
+      if ( commonExtent.isEmpty() )
+        continue;
+
+      if ( !pc || !pc->isValid() || renderExtent.width() > sl.extent.width() )
+      {
+        // when dealing with virtual point clouds, we want to render the individual extents when zoomed out
+        // and only use the selected renderer when zoomed in
+        mSubExtentsRenderer->startRender( context );
+        mSubExtentsRenderer->renderExtent( sl.geometry, context );
+        mSubExtentsRenderer->stopRender( context );
+      }
+      else
+      {
+        canceled = !renderIndex( pc );
+      }
+    }
+  }
+
+  mRenderer->stopRender( context );
+  mReadyToCompose = true;
+  return !canceled;
+}
+
+bool QgsPointCloudLayerRenderer::renderIndex( QgsPointCloudIndex *pc )
+{
+  QgsPointCloudRenderContext context( *renderContext(),
+                                      pc->scale(),
+                                      pc->offset(),
+                                      mZScale,
+                                      mZOffset,
+                                      mFeedback.get() );
+
 
 #ifdef QGISDEBUG
   QElapsedTimer t;
@@ -178,7 +230,6 @@ bool QgsPointCloudLayerRenderer::render()
   if ( ( rootErrorInMapCoordinates < 0.0 ) || ( mapUnitsPerPixel < 0.0 ) || ( maximumError < 0.0 ) )
   {
     QgsDebugMsg( QStringLiteral( "invalid screen error" ) );
-    mReadyToCompose = true;
     return false;
   }
   double rootErrorPixels = rootErrorInMapCoordinates / mapUnitsPerPixel; // in pixels
@@ -225,9 +276,6 @@ bool QgsPointCloudLayerRenderer::render()
   ( void )nodesDrawn;
 #endif
 
-  mRenderer->stopRender( context );
-
-  mReadyToCompose = true;
   return !canceled;
 }
 

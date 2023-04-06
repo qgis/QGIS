@@ -279,6 +279,8 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer, public QgsAbstractPro
 
     void resetRenderer();
 
+    void loadIndexesForRenderContext( QgsRenderContext &rendererContext ) const;
+
 #ifdef SIP_RUN
     QgsPointCloudLayer( const QgsPointCloudLayer &rhs );
 #endif
