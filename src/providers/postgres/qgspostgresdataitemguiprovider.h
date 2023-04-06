@@ -20,7 +20,7 @@
 
 class QgsPGSchemaItem;
 class QgsPGLayerItem;
-class QgsPostgresLayerProperty;
+struct QgsPostgresLayerProperty;
 
 class QgsPostgresDataItemGuiProvider : public QObject, public QgsDataItemGuiProvider
 {
