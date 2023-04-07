@@ -20,7 +20,7 @@
     "arg": "concatenator",
     "optional": true,
     "default": "''",
-    "description": "optional string to use to join values for 'concatenate' aggregate"
+    "description": "optional string to use to join values for 'concatenate' and 'concatenate_unique' aggregates"
   }, {
     "arg": "order_by",
     "optional": true,
