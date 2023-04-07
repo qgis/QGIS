@@ -62,6 +62,7 @@ endif()
 
 if (WITH_COPC)
   add_qgis_test(testqgscopcprovider.cpp MODULE provider LINKEDLIBRARIES qgis_core)
+  add_qgis_test(testqgsvirtualpointcloudprovider.cpp MODULE provider LINKEDLIBRARIES qgis_core)
 endif()
 
 if (WITH_PDAL)
