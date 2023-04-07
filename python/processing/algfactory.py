@@ -185,16 +185,16 @@ class AlgWrapper(QgsProcessingAlgorithm):
     def _create_param(self, type, output=False, **kwargs):
         name = kwargs['name']
         if name in self._inputs or name in self._outputs:
-            raise ProcessingAlgFactoryException("{} already defined".format(name))
+            raise ProcessingAlgFactoryException(f"{name} already defined")
 
         parent = kwargs.get("parent")
         if parent:
             parentname = self._get_parent_id(parent)
             if parentname == name:
-                raise ProcessingAlgFactoryException("{} can't depend on itself. "
-                                                    "We know QGIS is smart but it's not that smart".format(name))
+                raise ProcessingAlgFactoryException(f"{name} can't depend on itself. "
+                                                    f"We know QGIS is smart but it's not that smart")
             if parentname not in self._inputs and parentname not in self._outputs:
-                raise ProcessingAlgFactoryException("Can't find parent named {}".format(parentname))
+                raise ProcessingAlgFactoryException(f"Can't find parent named {parentname}")
 
         kwargs['description'] = kwargs.pop("label", "")
         kwargs['defaultValue'] = kwargs.pop("default", None)
@@ -205,12 +205,12 @@ class AlgWrapper(QgsProcessingAlgorithm):
                 try:
                     make_func = output_type_mapping[type]
                 except KeyError:
-                    raise ProcessingAlgFactoryException("{} is a invalid output type".format(type))
+                    raise ProcessingAlgFactoryException(f"{type} is an invalid output type")
             else:
                 try:
                     make_func = input_type_mapping[type]
                 except KeyError:
-                    raise ProcessingAlgFactoryException("{} is a invalid input type".format(type))
+                    raise ProcessingAlgFactoryException(f"{type} is an invalid input type")
             parm = make_func(**kwargs)
             if advanced:
                 parm.setFlags(parm.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
@@ -218,7 +218,7 @@ class AlgWrapper(QgsProcessingAlgorithm):
                 parm.setHelp(help_str)
             return parm
         except KeyError as ex:
-            raise NotImplementedError("{} not supported".format(str(type)))
+            raise NotImplementedError(f"{str(type)} not supported")
 
     def set_func(self, func):
         self._func = func
@@ -395,8 +395,8 @@ class ProcessingAlgFactory():
 
     def output(self, type, *args, **kwargs):
         """
-        Define a output parameter for this algorithm using @alg.output.
-        Apart from `type` this method will take all arguments and pass them though to the correct `QgsProcessingOutputDefinition ` type.
+        Define an output parameter for this algorithm using @alg.output.
+        Apart from `type` this method will take all arguments and pass them though to the correct `QgsProcessingOutputDefinition` type.
 
         Types:
             str: QgsProcessingOutputString
@@ -417,9 +417,9 @@ class ProcessingAlgFactory():
             alg.POINTCLOUD_LAYER: QgsProcessingOutputPointCloudLayer
             alg.BOOL: QgsProcessingOutputBoolean
 
-        :param type: The type of the input. This should be a type define on `alg` like alg.STRING, alg.DISTANCE
+        :param type: The type of the output. This should be a type defined on `alg` like alg.STRING, alg.DISTANCE
         :keyword label: The label of the output. Will convert into `description` arg.
-        :keyword parent: The string ID of the parent parameter. Parent parameter must be defined before its here.
+        :keyword parent: The string ID of the parent parameter. Parent parameter must be defined before it is here.
         """
 
         def dec(f):
@@ -445,7 +445,7 @@ class ProcessingAlgFactory():
 
     def input(self, type, *args, **kwargs):
         """
-        Define a input parameter for this algorithm using @alg.input.
+        Define an input parameter for this algorithm using @alg.input.
         Apart from `type` this method will take all arguments and pass them though to the correct `QgsProcessingParameterDefinition` type.
 
         Types:
@@ -496,9 +496,9 @@ class ProcessingAlgFactory():
             alg.POINTCLOUD_LAYER: QgsProcessingParameterPointCloudLayer
             alg.ANNOTATION_LAYER: QgsProcessingParameterAnnotationLayer
 
-        :param type: The type of the input. This should be a type define on `alg` like alg.STRING, alg.DISTANCE
-        :keyword label: The label of the output. Translates into `description` arg.
-        :keyword parent: The string ID of the parent parameter. Parent parameter must be defined before its here.
+        :param type: The type of the input. This should be a type defined on `alg` like alg.STRING, alg.DISTANCE
+        :keyword label: The label of the input. Translates into `description` arg.
+        :keyword parent: The string ID of the parent parameter. Parent parameter must be defined before it is here.
         :keyword default: The default value set for that parameter. Translates into `defaultValue` arg.
         """
 
