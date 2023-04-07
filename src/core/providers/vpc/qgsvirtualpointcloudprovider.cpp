@@ -310,6 +310,7 @@ void QgsVirtualPointCloudProvider::parseFile()
       }
     mPolygonBounds->addPart( si.geometry );
     mSubLayers.push_back( si );
+    mPointCount += si.count;
   }
   mExtent = mPolygonBounds->boundingBox();
   populateAttributeCollection( attributeNames );

@@ -34,7 +34,7 @@ class QgsPointCloudSubIndex
     QString uri;
     QgsRectangle extent;
     QgsGeometry geometry;
-    qint64 count;
+    qint64 count = 0;
 };
 
 ///@endcond

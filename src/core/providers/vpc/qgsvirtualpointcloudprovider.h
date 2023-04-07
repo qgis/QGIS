@@ -70,7 +70,7 @@ class QgsVirtualPointCloudProvider: public QgsPointCloudDataProvider
 
     QStringList mUriList;
     QgsRectangle mExtent;
-    qint64 mPointCount;
+    qint64 mPointCount = 0;
     QgsCoordinateReferenceSystem mCrs;
 };
 
