@@ -38,6 +38,7 @@ QgsPointCloudLayerRenderer::QgsPointCloudLayerRenderer( QgsPointCloudLayer *laye
   : QgsMapLayerRenderer( layer->id(), &context )
   , mLayer( layer )
   , mLayerAttributes( layer->attributes() )
+  , mSubIndexes( layer && layer->dataProvider() ? layer->dataProvider()->subIndexes() : QVector<QgsPointCloudSubIndex>() )
   , mFeedback( new QgsFeedback )
 {
   // TODO: we must not keep pointer to mLayer (it's dangerous) - we must copy anything we need for rendering
@@ -95,11 +96,9 @@ bool QgsPointCloudLayerRenderer::render()
     return true;
   }
 
-  const bool hasMultipleIndexes = mLayer->dataProvider()->capabilities() & QgsPointCloudDataProvider::ContainSubIndexes;
-
   // TODO cache!?
   QgsPointCloudIndex *pc = mLayer->dataProvider()->index();
-  if ( !hasMultipleIndexes &&
+  if ( mSubIndexes.isEmpty() &&
        ( !pc || !pc->isValid() ) )
   {
     mReadyToCompose = true;
@@ -144,32 +143,39 @@ bool QgsPointCloudLayerRenderer::render()
     mAttributes.push_back( mLayerAttributes.at( layerIndex ) );
   }
 
-  const QgsRectangle renderExtent = renderContext()->coordinateTransform().transformBoundingBox( renderContext()->mapExtent(), Qgis::TransformDirection::Reverse );
+  QgsRectangle renderExtent;
+  try
+  {
+    renderExtent = renderContext()->coordinateTransform().transformBoundingBox( renderContext()->mapExtent(), Qgis::TransformDirection::Reverse );
+  }
+  catch ( QgsCsException & )
+  {
+    QgsDebugMsg( QStringLiteral( "Transformation of extent failed!" ) );
+  }
+
   bool canceled = false;
-  if ( !hasMultipleIndexes )
+  if ( mSubIndexes.isEmpty() )
   {
     canceled = !renderIndex( pc );
   }
   else
   {
-    const auto subLayers = mLayer->dataProvider()->subIndexes();
-    for ( const auto &sl : subLayers )
+    for ( const auto &si : mSubIndexes )
     {
       if ( canceled )
         break;
 
-      QgsPointCloudIndex *pc = sl.index.get();
+      QgsPointCloudIndex *pc = si.index.get();
 
-      const auto commonExtent = renderExtent.intersect( sl.extent );
-      if ( commonExtent.isEmpty() )
+      if ( !renderExtent.intersects( si.extent ) )
         continue;
 
-      if ( !pc || !pc->isValid() || renderExtent.width() > sl.extent.width() )
+      if ( !pc || !pc->isValid() || renderExtent.width() > si.extent.width() )
       {
         // when dealing with virtual point clouds, we want to render the individual extents when zoomed out
         // and only use the selected renderer when zoomed in
         mSubExtentsRenderer->startRender( context );
-        mSubExtentsRenderer->renderExtent( sl.geometry, context );
+        mSubExtentsRenderer->renderExtent( si.geometry, context );
         mSubExtentsRenderer->stopRender( context );
       }
       else

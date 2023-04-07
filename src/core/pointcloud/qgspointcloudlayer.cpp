@@ -958,16 +958,24 @@ void QgsPointCloudLayer::loadIndexesForRenderContext( QgsRenderContext &renderer
 {
   if ( mDataProvider->capabilities() & QgsPointCloudDataProvider::ContainSubIndexes )
   {
-    const QgsRectangle renderExtent = rendererContext.coordinateTransform().transformBoundingBox( rendererContext.mapExtent(), Qgis::TransformDirection::Reverse );
-    QVector<QgsPointCloudSubIndex> subIndex = mDataProvider->subIndexes();
+    QgsRectangle renderExtent;
+    try
+    {
+      renderExtent = rendererContext.coordinateTransform().transformBoundingBox( rendererContext.mapExtent(), Qgis::TransformDirection::Reverse );
+    }
+    catch ( QgsCsException & )
+    {
+      QgsDebugMsg( QStringLiteral( "Transformation of extent failed!" ) );
+    }
+
+    const QVector<QgsPointCloudSubIndex> subIndex = mDataProvider->subIndexes();
     for ( int i = 0; i < subIndex.size(); ++i )
     {
       // no need to load as it's there
       if ( subIndex.at( i ).index )
         continue;
 
-      const QgsRectangle intersection = subIndex.at( i ).extent.intersect( renderExtent );
-      if ( !intersection.isEmpty() &&
+      if ( subIndex.at( i ).extent.intersects( renderExtent ) &&
            renderExtent.width() < subIndex.at( i ).extent.width() )
       {
         mDataProvider->loadIndex( i );

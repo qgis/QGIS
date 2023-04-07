@@ -42,6 +42,7 @@ class QgsRenderContext;
 class QgsPointCloudLayer;
 class QgsPointCloudRenderer;
 class QgsPointCloudRenderContext;
+class QgsPointCloudSubIndex;
 
 #define SIP_NO_FILE
 
@@ -90,6 +91,7 @@ class CORE_EXPORT QgsPointCloudLayerRenderer: public QgsMapLayerRenderer
     QgsPointCloudAttributeCollection mAttributes;
     QgsGeometry mCloudExtent;
     QList< QgsMapClippingRegion > mClippingRegions;
+    const QVector< QgsPointCloudSubIndex > mSubIndexes;
 
     int mRenderTimeHint = 0;
     bool mBlockRenderUpdates = false;
