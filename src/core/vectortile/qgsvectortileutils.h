@@ -91,7 +91,7 @@ class CORE_EXPORT QgsVectorTileUtils
      * Downloads the sprite image and sets it to the conversion context
      * \param styleDefinition the style definition map
      * \param context the style conversion context
-     * \param optional the style url
+     * \param styleUrl optional the style url
      */
     static void loadSprites( const QVariantMap &styleDefinition, QgsMapBoxGlStyleConversionContext &context, const QString &styleUrl = QString() );
 };
