@@ -316,8 +316,6 @@ class GUI_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
 
     void initMapTipPreview();
 
-    QWidget *mMapTipPreviewWidget = nullptr;
     QgsWebView *mMapTipPreview = nullptr;
-    static const int MARGIN_VALUE = 5;
 };
 #endif
