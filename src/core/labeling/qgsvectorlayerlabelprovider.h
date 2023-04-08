@@ -116,7 +116,7 @@ class CORE_EXPORT QgsVectorLayerLabelProvider : public QgsAbstractLabelProvider
      * a call to prepare() which uses the list of fields.
      * \since QGIS 3.14
      */
-    void setFields( const QgsFields &fields ) { mFields = fields; }
+    void setFields( const QgsFields &fields );
 
   protected:
     //! initialization method - called from constructors
@@ -147,6 +147,8 @@ class CORE_EXPORT QgsVectorLayerLabelProvider : public QgsAbstractLabelProvider
   private:
 
     friend class TestQgsLabelingEngine;
+    friend class QgsVectorTileBasicLabelProvider;
+
     void drawCallout( QgsRenderContext &context, pal::LabelPosition *label ) const;
 };
 

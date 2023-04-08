@@ -712,3 +712,8 @@ const QgsPalLayerSettings &QgsVectorLayerLabelProvider::settings() const
 {
   return mSettings;
 }
+
+void QgsVectorLayerLabelProvider::setFields( const QgsFields &fields )
+{
+  mFields = fields;
+}
