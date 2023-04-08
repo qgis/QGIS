@@ -187,6 +187,8 @@ bool QgsVectorTileBasicLabelProvider::prepare( QgsRenderContext &context, QSet<Q
     QgsExpressionContextScopePopper popper( context.expressionContext(), scope );
 
     mSubProviders[i]->setFields( fields );
+    // check is required as fields are not available through the GUI, which can lead to isExpression wrongly set to true
+    mSubProviders[i]->mSettings.isExpression = !fields.names().contains( mSubProviders[i]->mSettings.fieldName );
     if ( !mSubProviders[i]->prepare( context, attributeNames ) )
     {
       QgsDebugMsg( QStringLiteral( "Failed to prepare labeling for style index" ) + QString::number( i ) );
