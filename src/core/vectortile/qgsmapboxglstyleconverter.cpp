@@ -1375,7 +1375,7 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer( const QVariantMap &jsonLayer, 
   }
 
   // buffer color
-  QColor bufferColor;
+  QColor bufferColor( 0, 0, 0, 0 );
   if ( jsonPaint.contains( QStringLiteral( "text-halo-color" ) ) )
   {
     const QVariant jsonBufferColor = jsonPaint.value( QStringLiteral( "text-halo-color" ) );
@@ -1474,10 +1474,15 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer( const QVariantMap &jsonLayer, 
 
   if ( bufferSize > 0 )
   {
+    // Color and opacity are separate components in QGIS
+    const double opacity = bufferColor.alphaF();
+    bufferColor.setAlphaF( 1.0 );
+
     format.buffer().setEnabled( true );
     format.buffer().setSize( bufferSize );
     format.buffer().setSizeUnit( context.targetUnit() );
     format.buffer().setColor( bufferColor );
+    format.buffer().setOpacity( opacity );
 
     if ( haloBlurSize > 0 )
     {
