@@ -239,7 +239,14 @@ class TilesXYZAlgorithmBase(QgisAlgorithm):
         self.feedback = feedback
         feedback.setProgress(1)
 
-        extent = self.parameterAsExtent(parameters, self.EXTENT, context)
+        project = context.project()
+
+        # Transform extent to match project CRS
+        extent_original = self.parameterAsExtent(parameters, self.EXTENT, context)
+        extent_crs = self.parameterAsExtentCrs(parameters, self.EXTENT, context)
+        self.extentCrsToProjectCrs = QgsCoordinateTransform(extent_crs, project.crs(), context.transformContext())
+        extent = self.extentCrsToProjectCrs.transformBoundingBox(extent_original)
+
         self.min_zoom = self.parameterAsInt(parameters, self.ZOOM_MIN, context)
         self.max_zoom = self.parameterAsInt(parameters, self.ZOOM_MAX, context)
         dpi = self.parameterAsInt(parameters, self.DPI, context)
@@ -258,7 +265,6 @@ class TilesXYZAlgorithmBase(QgisAlgorithm):
         wgs_crs = QgsCoordinateReferenceSystem('EPSG:4326')
         dest_crs = QgsCoordinateReferenceSystem('EPSG:3857')
 
-        project = context.project()
         self.src_to_wgs = QgsCoordinateTransform(project.crs(), wgs_crs, context.transformContext())
         self.wgs_to_dest = QgsCoordinateTransform(wgs_crs, dest_crs, context.transformContext())
         # without re-writing, we need a different settings for each thread to stop async errors
