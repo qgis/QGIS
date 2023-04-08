@@ -41,16 +41,43 @@
 #endif
 #include <QHBoxLayout>
 
-
 #include "qgsmaptip.h"
+
+
+const QString QgsMapTip::sMapTipTemplate = "<html>\n"
+    "  <head>\n"
+    "    <style>\n"
+    "    body {\n"
+    "        margin: 0;\n"
+    "        font: %1pt \"%2\";\n"
+    "        color: %3;\n"
+    "        width: %4px;\n"
+    "    }\n"
+    "    #QgsWebViewContainer {\n"
+    "        background-color: %5;\n"
+    "        border: 1px solid %6;\n"
+    "        display: inline-block;\n"
+    "        margin: 0\n"
+    "    }\n"
+    "    #QgsWebViewContainerInner {\n"
+    "        margin: 5px\n"
+    "    }\n"
+    "    </style>\n"
+    "  </head>\n"
+    "  <body>\n"
+    "    <div id='QgsWebViewContainer'>\n"
+    "      <div id='QgsWebViewContainerInner'>\n"
+    "      %7\n"
+    "      </div>\n"
+    "    </div>\n"
+    "  </body>\n"
+    "</html>\n";
+
 
 QgsMapTip::QgsMapTip()
 {
   // Init the visible flag
   mMapTipVisible = false;
-
-  // Init font-related values
-  applyFontSettings();
 
   mDelayedClearTimer.setSingleShot( true );
   connect( &mDelayedClearTimer, &QTimer::timeout, this, [ = ]() {this->clear();} );
@@ -74,26 +101,26 @@ void QgsMapTip::showMapTip( QgsMapLayer *pLayer,
   }
 
   // Do not render a new map tip when the mouse hovers an existing one
-  if ( mWidget && mWidget->underMouse() )
+  if ( mWebView && mWebView->underMouse() )
   {
     return;
   }
 
   // Show the maptip on the canvas
-  QString tipText, lastTipText, tipHtml, backgroundColor, strokeColor;
+  QString tipText, lastTipText, tipHtml;
 
-  if ( ! mWidget )
+  if ( ! mWebView )
   {
-    mWidget = new QWidget( pMapCanvas );
-    mWidget->setContentsMargins( MARGIN_VALUE, MARGIN_VALUE, MARGIN_VALUE, MARGIN_VALUE );
-    mWebView = new QgsWebView( mWidget );
+    mWebView = new QgsWebView( pMapCanvas );
+    // Make the webwiew transparent
+    mWebView->setStyleSheet( QStringLiteral( "background:transparent;" ) );
 
 
 #if WITH_QTWEBKIT
     mWebView->page()->setLinkDelegationPolicy( QWebPage::DelegateAllLinks );//Handle link clicks by yourself
     mWebView->setContextMenuPolicy( Qt::NoContextMenu ); //No context menu is allowed if you don't need it
     connect( mWebView, &QWebView::linkClicked, this, &QgsMapTip::onLinkClicked );
-    connect( mWebView, &QWebView::loadFinished, this, [ = ]( bool ) { resizeContent(); } );
+    connect( mWebView, &QWebView::loadFinished, this, [ = ]( bool ) { resizeAndMoveToolTip(); } );
 #endif
 
     mWebView->page()->settings()->setAttribute( QWebSettings::DeveloperExtrasEnabled, true );
@@ -104,29 +131,6 @@ void QgsMapTip::showMapTip( QgsMapLayer *pLayer,
     mWebView->page()->mainFrame()->setScrollBarPolicy( Qt::Horizontal, Qt::ScrollBarAlwaysOff );
     mWebView->page()->mainFrame()->setScrollBarPolicy( Qt::Vertical, Qt::ScrollBarAlwaysOff );
 
-    QHBoxLayout *layout = new QHBoxLayout;
-    layout->setContentsMargins( 0, 0, 0, 0 );
-    layout->addWidget( mWebView );
-
-    mWidget->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
-    mWidget->setLayout( layout );
-
-    // Assure the map tip is never larger than half the map canvas
-    const int MAX_WIDTH = pMapCanvas->geometry().width() / 2;
-    const int MAX_HEIGHT = pMapCanvas->geometry().height() / 2;
-    mWidget->setMaximumSize( MAX_WIDTH, MAX_HEIGHT );
-
-    // Start with 0 size,
-    // The content will automatically make it grow up to MaximumSize
-    mWidget->resize( 0, 0 );
-
-    backgroundColor = QgsApplication::palette().base().color().name();
-    strokeColor = QgsApplication::palette().shadow().color().name();
-    mWidget->setStyleSheet( QString(
-                              ".QWidget{"
-                              "border: 1px solid %1;"
-                              "background-color: %2;}" ).arg(
-                              strokeColor, backgroundColor ) );
   }
 
   // Only supported layer types here:
@@ -154,9 +158,50 @@ void QgsMapTip::showMapTip( QgsMapLayer *pLayer,
     return;
   }
 
-  tipHtml = QgsMapTip::htmlText( tipText );
+  // Compute offset from the cursor position
+  int cursorOffset = 0;
+  if ( QgsApplication::instance() )
+  {
+    // The following calculations are taken
+    // from QgsApplication::getThemeCursor, and are used to calculate the correct cursor size
+    // for both hi-dpi and non-hi-dpi screens.
+    double scale = Qgis::UI_SCALE_FACTOR * QgsApplication::instance()->fontMetrics().height() / 32.0;
+    cursorOffset = static_cast< int >( std::ceil( scale * 32 ) );
+  }
+
+  // Ensures the map tip is never larger than half the map canvas minus the cursor size + margin (cursorOffset)
+  const int MAX_WIDTH = pMapCanvas->width() / 2 - cursorOffset;
+  const int MAX_HEIGHT = pMapCanvas->height() / 2;
+
+  mWebView->setMaximumSize( MAX_WIDTH, MAX_HEIGHT );
+
+  tipHtml = QgsMapTip::htmlText( tipText, MAX_WIDTH );
 
   QgsDebugMsg( tipHtml );
+
+  mPosition = pixelPosition;
+  mMapCanvas = pMapCanvas;
+  mWebView->setHtml( tipHtml );
+  lastTipText = tipText;
+
+#if !WITH_QTWEBKIT
+  resizeAndMoveToolTip();
+#endif
+
+}
+
+void QgsMapTip::resizeAndMoveToolTip()
+{
+#if WITH_QTWEBKIT
+  // Get the content size
+  const QWebElement container = mWebView->page()->mainFrame()->findFirstElement(
+                                  QStringLiteral( "#QgsWebViewContainer" ) );
+  const int width = container.geometry().width();
+  const int height = container.geometry().height();
+  mWebView->resize( width, height );
+#else
+  mWebView->adjustSize();
+#endif
 
   int cursorOffset = 0;
   // attempt to shift the tip away from the cursor.
@@ -169,26 +214,42 @@ void QgsMapTip::showMapTip( QgsMapLayer *pLayer,
     cursorOffset = static_cast< int >( std::ceil( scale * 32 ) );
   }
 
-  mWidget->move( pixelPosition.x() + cursorOffset, pixelPosition.y() );
-  mWebView->setHtml( tipHtml );
-  lastTipText = tipText;
+  if ( mMapCanvas == nullptr )
+  {
+    mWebView->move( mPosition );
+    mWebView->show();
+    return;
+  }
 
-  mWidget->show();
+  // Check if there is enough space to the right of the cursor
+  int availableWidthRight = mMapCanvas->width() - mPosition.x() - cursorOffset;
+  int availableWidthLeft = mPosition.x() - cursorOffset;
+  int availableHeightBottom = mMapCanvas->height() - mPosition.y();
+  int availableHeightTop = mPosition.y();
+  int x, y;
+  // If there is enough space on the right, or more space on the right than on the left, move the map tip to the right of the cursor
+  if ( mWebView->width() < availableWidthRight || availableWidthRight > availableWidthLeft )
+  {
+    x = mPosition.x() + cursorOffset;
+  }
+  // Otherwise, move the map tip to the left of the cursor
+  else
+  {
+    x = mPosition.x() - mWebView->width() - cursorOffset;
+  }
 
-}
-
-void QgsMapTip::resizeContent()
-{
-#if WITH_QTWEBKIT
-  // Get the content size
-  const QWebElement container = mWebView->page()->mainFrame()->findFirstElement(
-                                  QStringLiteral( "#QgsWebViewContainer" ) );
-  const int width = container.geometry().width() + MARGIN_VALUE * 2;
-  const int height = container.geometry().height() + MARGIN_VALUE * 2;
-  mWidget->resize( width, height );
-#else
-  mWebView->adjustSize();
-#endif
+  // If there is enough space on the bottom, or more space on the bottom than on the top, move the map tip to the bottom of the cursor
+  if ( mWebView->height() < availableHeightBottom || availableHeightBottom > availableHeightTop )
+  {
+    y = mPosition.y();
+  }
+  // Otherwise, move the map tip to the top of the cursor
+  else
+  {
+    y = mPosition.y() - mWebView->height();
+  }
+  mWebView->move( x, y );
+  mWebView->show();
 }
 
 void QgsMapTip::clear( QgsMapCanvas *, int msDelay )
@@ -199,7 +260,7 @@ void QgsMapTip::clear( QgsMapCanvas *, int msDelay )
   }
 
   // Skip clearing the map tip if the user interacts with it or the timer still runs
-  if ( mDelayedClearTimer.isActive() || mWidget->underMouse() )
+  if ( mDelayedClearTimer.isActive() || mWebView->underMouse() )
   {
     return;
   }
@@ -210,7 +271,7 @@ void QgsMapTip::clear( QgsMapCanvas *, int msDelay )
     return;
   }
   mWebView->setHtml( QString() );
-  mWidget->hide();
+  mWebView->hide();
 
   // Reset the visible flag
   mMapTipVisible = false;
@@ -357,42 +418,17 @@ QString QgsMapTip::fetchRaster( QgsMapLayer *layer, QgsPointXY &mapPosition, Qgs
   return  QgsExpression::replaceExpressionText( rlayer->mapTipTemplate(), &context );
 }
 
-QString QgsMapTip::htmlText( const QString &text )
+QString QgsMapTip::htmlText( const QString &text, int maxWidth )
 {
+
   const QgsSettings settings;
   const QFont defaultFont = qApp->font();
   const int fontSize = settings.value( QStringLiteral( "/qgis/stylesheet/fontPointSize" ), defaultFont.pointSize() ).toInt();
   const QString fontFamily = settings.value( QStringLiteral( "/qgis/stylesheet/fontFamily" ), defaultFont.family() ).toString();
-  QString bodyStyle, containerStyle, backgroundColor, strokeColor, textColor;
-
-  backgroundColor = QgsApplication::palette().base().color().name();
-  strokeColor = QgsApplication::palette().shadow().color().name();
-  textColor = QgsApplication::palette().windowText().color().name();
-
-  bodyStyle = QString(
-                "background-color: %1;"
-                "margin: 0;"
-                "font: %2pt \"%3\";"
-                "color: %4;" ).arg( backgroundColor ).arg( fontSize ).arg( fontFamily, textColor );
-
-  containerStyle = QString(
-                     "display: inline-block;"
-                     "margin: 0px" );
-
-  return QString(
-           "<html>"
-           "<body style='%1'>"
-           "<div id='QgsWebViewContainer' style='%2'>%3</div>"
-           "</body>"
-           "</html>" ).arg( bodyStyle, containerStyle, text );
-}
-
-void QgsMapTip::applyFontSettings()
-{
-  const QgsSettings settings;
-  const QFont defaultFont = qApp->font();
-  mFontSize = settings.value( QStringLiteral( "/qgis/stylesheet/fontPointSize" ), defaultFont.pointSize() ).toInt();
-  mFontFamily = settings.value( QStringLiteral( "/qgis/stylesheet/fontFamily" ), defaultFont.family() ).toString();
+  const QString backgroundColor = QgsApplication::palette().base().color().name();
+  const QString strokeColor = QgsApplication::palette().shadow().color().name();
+  const QString textColor = QgsApplication::palette().toolTipText().color().name();
+  return sMapTipTemplate.arg( fontSize ).arg( fontFamily ).arg( textColor ).arg( maxWidth == -1 ? "" : QString::number( maxWidth ) ).arg( backgroundColor ).arg( strokeColor ).arg( text );
 }
 
 // This slot handles all clicks
@@ -444,7 +480,7 @@ QString QgsMapTip::vectorMapTipPreviewText( QgsMapLayer *layer, QgsMapCanvas *ma
   }
 
   // Insert the map tip text into the html template
-  return QgsMapTip::htmlText( tipText );
+  return QgsMapTip::htmlText( tipText, mapCanvas->width() / 2 );
 
 }
 
@@ -468,5 +504,5 @@ QString QgsMapTip::rasterMapTipPreviewText( QgsMapLayer *layer, QgsMapCanvas *ma
   const QString tipText = QgsExpression::replaceExpressionText( mapTemplate, &context );
 
   // Insert the map tip text into the html template
-  return QgsMapTip::htmlText( tipText );
+  return QgsMapTip::htmlText( tipText, mapCanvas->width() / 2 );
 }
