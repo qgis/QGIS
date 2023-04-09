@@ -43,12 +43,6 @@
 #define HAVE_OPENPTY
 #endif
 
-#if defined(__APPLE__)
-#define HAVE_OPENPTY
-#define HAVE_UTIL_H
-#define HAVE_PTY_H
-#endif
-
 #ifdef __sgi
 #define __svr4__
 #endif
