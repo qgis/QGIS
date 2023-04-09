@@ -161,13 +161,11 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   disconnect( mOptButtonBox, &QDialogButtonBox::accepted, this, &QDialog::accept );
   connect( mOptButtonBox, &QDialogButtonBox::accepted, this, [ = ]
   {
-    for ( QgsOptionsPageWidget *widget : std::as_const( mAdditionalOptionWidgets ) )
+    auto match = std::find_if( mAdditionalOptionWidgets.constBegin(), mAdditionalOptionWidgets.constEnd(), []( QgsOptionsPageWidget * widget ) { return !widget->isValid(); } );
+    if ( QgsOptionsPageWidget *widget = *match )
     {
-      if ( !widget->isValid() )
-      {
-        setCurrentPage( widget->objectName() );
-        return;
-      }
+      setCurrentPage( widget->objectName() );
+      return;
     }
     accept();
   } );
@@ -1429,13 +1427,11 @@ void QgsOptions::selectProjectOnLaunch()
 
 void QgsOptions::saveOptions()
 {
-  for ( QgsOptionsPageWidget *widget : std::as_const( mAdditionalOptionWidgets ) )
+  auto match = std::find_if( mAdditionalOptionWidgets.constBegin(), mAdditionalOptionWidgets.constEnd(), []( QgsOptionsPageWidget * widget ) { return !widget->isValid(); } );
+  if ( QgsOptionsPageWidget *widget = *match )
   {
-    if ( !widget->isValid() )
-    {
-      setCurrentPage( widget->objectName() );
-      return;
-    }
+    setCurrentPage( widget->objectName() );
+    return;
   }
 
   QgsSettings settings;
@@ -2730,13 +2726,10 @@ void QgsOptions::showHelp()
   QString link;
 
   // give first priority to created pages which have specified a help key
-  for ( const QgsOptionsPageWidget *widget : std::as_const( mAdditionalOptionWidgets ) )
+  auto match = std::find_if( mAdditionalOptionWidgets.constBegin(), mAdditionalOptionWidgets.constEnd(), [activeTab]( const QgsOptionsPageWidget * widget ) { return widget == activeTab; } );
+  if ( const QgsOptionsPageWidget *widget = *match )
   {
-    if ( widget == activeTab )
-    {
-      link = widget->helpKey();
-      break;
-    }
+    link = widget->helpKey();
   }
 
   if ( link.isEmpty() )
