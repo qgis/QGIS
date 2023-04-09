@@ -170,20 +170,23 @@ void QgsVectorTileBasicRenderer::renderBackground( QgsRenderContext &context )
     if ( !layerStyle.symbol() || layerStyle.layerName() != QLatin1String( "background" ) )
       continue;
 
-    QgsSymbol *sym = layerStyle.symbol();
-    sym->startRender( context, QgsFields() );
-
-    QgsFillSymbol *fillSym = dynamic_cast<QgsFillSymbol *>( sym );
-    if ( fillSym )
+    if ( layerStyle.isEnabled() )
     {
-      QPolygon polygon;
-      polygon << QPoint( 0, 0 );
-      polygon << QPoint( 0, context.outputSize().height() );
-      polygon << QPoint( context.outputSize().width(), context.outputSize().height() );
-      polygon << QPoint( context.outputSize().width(), 0 );
-      fillSym->renderPolygon( polygon, nullptr, nullptr, context );
+      QgsSymbol *sym = layerStyle.symbol();
+      sym->startRender( context, QgsFields() );
+
+      QgsFillSymbol *fillSym = dynamic_cast<QgsFillSymbol *>( sym );
+      if ( fillSym )
+      {
+        QPolygon polygon;
+        polygon << QPoint( 0, 0 );
+        polygon << QPoint( 0, context.outputSize().height() );
+        polygon << QPoint( context.outputSize().width(), context.outputSize().height() );
+        polygon << QPoint( context.outputSize().width(), 0 );
+        fillSym->renderPolygon( polygon, nullptr, nullptr, context );
+      }
+      sym->stopRender( context );
     }
-    sym->stopRender( context );
     break;
   }
 }
