@@ -119,13 +119,11 @@ class ANALYSIS_EXPORT QgsReclassifyUtils
     static double reclassifyValue( const QVector< RasterClass > &classes, double input, bool &reclassified )
     {
       reclassified = false;
-      for ( const QgsReclassifyUtils::RasterClass &c : classes )
+      auto match = std::find_if( classes.begin(), classes.end(), [&input]( const QgsReclassifyUtils::RasterClass & c ) { return c.contains( input ); } );
+      if ( match != classes.end() )
       {
-        if ( c.contains( input ) )
-        {
-          reclassified = true;
-          return c.value;
-        }
+        reclassified = true;
+        return match->value;
       }
       return input;
     }
