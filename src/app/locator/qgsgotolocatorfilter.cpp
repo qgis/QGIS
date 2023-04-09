@@ -209,21 +209,18 @@ void QgsGotoLocatorFilter::fetchResults( const QString &string, const QgsLocator
     {
       // Check for OSM/Leaflet/OpenLayers pattern (e.g. http://www.openstreetmap.org/#map=6/46.423/4.746)
       const QStringList fragments = url.fragment().split( '&' );
-      for ( const QString &fragment : fragments )
+      auto match = std::find_if( fragments.begin(), fragments.end(), []( const QString & fragment ) { return fragment.startsWith( QLatin1String( "map=" ) ); } );
+      if ( match != fragments.end() )
       {
-        if ( fragment.startsWith( QLatin1String( "map=" ) ) )
+        const QStringList params = match->mid( 4 ).split( '/' );
+        if ( params.size() >= 3 )
         {
-          const QStringList params = fragment.mid( 4 ).split( '/' );
-          if ( params.size() >= 3 )
+          if ( scales.contains( params.at( 0 ).toInt() ) )
           {
-            if ( scales.contains( params.at( 0 ).toInt() ) )
-            {
-              scale = scales.value( params.at( 0 ).toInt() );
-            }
-            posX = params.at( 2 ).toDouble( &okX );
-            posY = params.at( 1 ).toDouble( &okY );
+            scale = scales.value( params.at( 0 ).toInt() );
           }
-          break;
+          posX = params.at( 2 ).toDouble( &okX );
+          posY = params.at( 1 ).toDouble( &okY );
         }
       }
     }
