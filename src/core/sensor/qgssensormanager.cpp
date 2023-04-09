@@ -49,15 +49,8 @@ QList<QgsAbstractSensor *> QgsSensorManager::sensors() const
 
 QgsAbstractSensor *QgsSensorManager::sensor( const QString &id ) const
 {
-  for ( QgsAbstractSensor *sensor : mSensors )
-  {
-    if ( sensor->id() == id )
-    {
-      return sensor;
-    }
-  }
-
-  return nullptr;
+  auto match = std::find_if( mSensors.begin(), mSensors.end(), [&id]( QgsAbstractSensor * sensor ) { return sensor && sensor->id() == id; } );
+  return *match;
 }
 
 QgsAbstractSensor::SensorData QgsSensorManager::sensorData( const QString &name ) const
@@ -98,18 +91,16 @@ void QgsSensorManager::addSensor( QgsAbstractSensor *sensor )
 
 bool QgsSensorManager::removeSensor( const QString &id )
 {
-  for ( QgsAbstractSensor *sensor : mSensors )
+  auto match = std::find_if( mSensors.begin(), mSensors.end(), [&id]( QgsAbstractSensor * sensor ) { return sensor && sensor->id() == id; } );
+  if ( QgsAbstractSensor *sensor = *match )
   {
-    if ( sensor->id() == id )
-    {
-      emit sensorAboutToBeRemoved( id );
-      mSensors.removeAll( sensor );
-      mSensorsData.remove( sensor->name() );
-      sensor->disconnectSensor();
-      sensor->deleteLater();
-      emit sensorRemoved( id );
-      return true;
-    }
+    emit sensorAboutToBeRemoved( id );
+    mSensors.removeAll( sensor );
+    mSensorsData.remove( sensor->name() );
+    sensor->disconnectSensor();
+    sensor->deleteLater();
+    emit sensorRemoved( id );
+    return true;
   }
 
   return false;
