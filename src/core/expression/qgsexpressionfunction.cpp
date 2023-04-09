@@ -3040,19 +3040,17 @@ static QVariant fcnSplitGeometry( const QVariantList &values, const QgsExpressio
 
   for ( auto splitPart = splitGeom.const_parts_begin(); splitPart != splitGeom.const_parts_end(); ++splitPart )
   {
-    if ( const QgsGeometry *partGeom = qgsgeometry_cast< const QgsGeometry * >( *splitPart ) )
+    QgsGeometry partGeom( ( *splitPart )->clone() );
+    QVector<QgsPoint> splitter;
+    for ( auto pointIt = partGeom.vertices_begin(); pointIt != partGeom.vertices_end(); ++pointIt )
+      splitter.append( ( *pointIt ) );
+    if ( partGeom.type() == Qgis::GeometryType::Polygon )
     {
-      QVector<QgsPoint> splitter;
-      for ( auto pointIt = partGeom->vertices_begin(); pointIt != partGeom->vertices_end(); ++pointIt )
-        splitter.append( ( *pointIt ) );
-      if ( partGeom->type() == Qgis::GeometryType::Polygon )
-      {
-        QgsPoint firstVertex = partGeom->vertexAt( 0 );
-        if ( splitter.last() != firstVertex )
-          splitter.append( firstVertex );
-      }
-      outGeoms = { splitterFcn( outGeoms, splitter ) };
+      QgsPoint firstVertex = partGeom.vertexAt( 0 );
+      if ( splitter.last() != firstVertex )
+        splitter.append( firstVertex );
     }
+    outGeoms = { splitterFcn( outGeoms, splitter ) };
   }
   return QgsGeometry::collectGeometry( outGeoms );
 }
