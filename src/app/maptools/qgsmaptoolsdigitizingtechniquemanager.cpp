@@ -269,17 +269,14 @@ void QgsMapToolsDigitizingTechniqueManager::enableDigitizingTechniqueActions( bo
 
   if ( enabled )
   {
-    for ( QgsMapToolCapture *tool : tools )
+    auto match = std::find_if( tools.begin(), tools.end(), [triggeredFromToolAction]( QgsMapToolCapture * tool ) { return triggeredFromToolAction == tool->action() || ( !triggeredFromToolAction && QgisApp::instance()->mapCanvas()->mapTool() == tool ); } );
+    if ( QgsMapToolCapture *tool = *match )
     {
-      if ( triggeredFromToolAction == tool->action() || ( !triggeredFromToolAction && QgisApp::instance()->mapCanvas()->mapTool() == tool ) )
+      currentTool = tool;
+      for ( auto technique = mTechniqueActions.keyBegin(); technique != mTechniqueActions.keyEnd(); technique++ )
       {
-        currentTool = tool;
-        for ( auto technique = mTechniqueActions.keyBegin(); technique != mTechniqueActions.keyEnd(); technique++ )
-        {
-          if ( tool->supportsTechnique( *technique ) )
-            supportedTechniques.insert( *technique );
-        }
-        break;
+        if ( tool->supportsTechnique( *technique ) )
+          supportedTechniques.insert( *technique );
       }
     }
   }

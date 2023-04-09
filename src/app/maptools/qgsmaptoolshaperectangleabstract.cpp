@@ -35,15 +35,11 @@ void QgsMapToolShapeRectangleAbstract::addRectangleToParentTool( )
 
   // keep z value from the first snapped point
   std::unique_ptr<QgsLineString> lineString( mRectangle.toLineString() );
-  for ( const QgsPoint &point : std::as_const( mPoints ) )
+  auto match = std::find_if( mPoints.constBegin(), mPoints.constEnd(), [this]( const QgsPoint & point ) { return QgsWkbTypes::hasZ( point.wkbType() ) && point.z() != mParentTool->defaultZValue(); } );
+  if ( match != mPoints.constEnd() )
   {
-    if ( QgsWkbTypes::hasZ( point.wkbType() ) &&
-         point.z() != mParentTool->defaultZValue() )
-    {
-      lineString->dropZValue();
-      lineString->addZValue( point.z() );
-      break;
-    }
+    lineString->dropZValue();
+    lineString->addZValue( match->z() );
   }
 
   mParentTool->addCurve( lineString.release() );
