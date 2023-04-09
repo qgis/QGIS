@@ -148,16 +148,13 @@ void QgsAppDirectoryItemGuiProvider::populateContextMenu( QgsDataItem *item, QMe
           {
             // find the new item and select it
             const QVector<QgsDataItem *> children = item->children();
-            for ( QgsDataItem *child : children )
+            auto match = std::find_if( children.begin(), children.end(), [&fileName]( QgsDataItem * child ) { return child->path() == fileName; } );
+            if ( QgsDataItem *child = *match )
             {
-              if ( child->path() == fileName )
+              if ( QgsBrowserTreeView *view = context.view() )
               {
-                if ( QgsBrowserTreeView *view = context.view() )
-                {
-                  if ( view->setSelectedItem( child ) )
-                    view->edit( view->currentIndex() );
-                }
-                break;
+                if ( view->setSelectedItem( child ) )
+                  view->edit( view->currentIndex() );
               }
             }
             contextObject->deleteLater();
@@ -980,13 +977,10 @@ void QgsLayerItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *men
     // if there's a "Manage" menu, we want this to come just before it
     QAction *beforeAction = nullptr;
     QList<QAction *> actions = menu->actions();
-    for ( QAction *action : std::as_const( actions ) )
+    auto match = std::find_if( actions.begin(), actions.end(), []( QAction * action ) { return action->text() == tr( "Manage" ); } );
+    if ( QAction *action = *match )
     {
-      if ( action->text() == tr( "Manage" ) )
-      {
-        beforeAction = action;
-        break;
-      }
+      beforeAction = action;
     }
     if ( beforeAction )
       menu->insertMenu( beforeAction, exportMenu );
@@ -1051,14 +1045,11 @@ void QgsLayerItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *men
     // this action should sit in the Manage menu. If one does not exist, create it now
     bool foundExistingManageMenu = false;
     QList<QAction *> actions = menu->actions();
-    for ( QAction *action : std::as_const( actions ) )
+    auto match = std::find_if( actions.begin(), actions.end(), []( QAction * action ) { return action->text() == tr( "Manage" ); } );
+    if ( QAction *action = *match )
     {
-      if ( action->text() == tr( "Manage" ) )
-      {
-        action->menu()->addAction( deleteAction );
-        foundExistingManageMenu = true;
-        break;
-      }
+      action->menu()->addAction( deleteAction );
+      foundExistingManageMenu = true;
     }
     if ( !foundExistingManageMenu )
     {
@@ -1133,15 +1124,13 @@ void QgsLayerItemGuiProvider::addLayersFromItems( const QList<QgsDataItem *> &it
 
   // If any of the layer items are QGIS we just open and exit the loop
   // TODO - maybe this logic is wrong?
-  for ( const QgsDataItem *item : items )
+  auto match = std::find_if( items.begin(), items.end(), []( const QgsDataItem * item ) { return item && item->type() == Qgis::BrowserItemType::Project; } );
+  if ( const QgsDataItem *item = *match )
   {
-    if ( item && item->type() == Qgis::BrowserItemType::Project )
-    {
-      if ( const QgsProjectItem *projectItem = qobject_cast<const QgsProjectItem *>( item ) )
-        QgisApp::instance()->openProject( projectItem->path() );
+    if ( const QgsProjectItem *projectItem = qobject_cast<const QgsProjectItem *>( item ) )
+      QgisApp::instance()->openProject( projectItem->path() );
 
-      return;
-    }
+    return;
   }
 
   QgsMimeDataUtils::UriList layerUriList;
