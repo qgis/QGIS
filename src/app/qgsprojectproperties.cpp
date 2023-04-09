@@ -191,13 +191,11 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   disconnect( mOptButtonBox, &QDialogButtonBox::accepted, this, &QDialog::accept );
   connect( mOptButtonBox, &QDialogButtonBox::accepted, this, [ = ]
   {
-    for ( QgsOptionsPageWidget *widget : std::as_const( mAdditionalProjectPropertiesWidgets ) )
+    auto match = std::find_if( mAdditionalProjectPropertiesWidgets.constBegin(), mAdditionalProjectPropertiesWidgets.constEnd(), []( QgsOptionsPageWidget * widget ) { return !widget->isValid(); } );
+    if ( QgsOptionsPageWidget *widget = *match )
     {
-      if ( !widget->isValid() )
-      {
-        setCurrentPage( widget->objectName() );
-        return;
-      }
+      setCurrentPage( widget->objectName() );
+      return;
     }
     apply();
     accept();

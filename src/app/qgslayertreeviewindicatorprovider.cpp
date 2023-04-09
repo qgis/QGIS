@@ -155,13 +155,10 @@ void QgsLayerTreeViewIndicatorProvider::updateLayerIndicator( QgsMapLayer *layer
 {
   // walk the tree and find layer node that needs to be updated
   const QList<QgsLayerTreeLayer *> layerNodes = mLayerTreeView->layerTreeModel()->rootGroup()->findLayers();
-  for ( QgsLayerTreeLayer *node : layerNodes )
+  auto match = std::find_if( layerNodes.begin(), layerNodes.end(), [layer]( QgsLayerTreeLayer * node ) { return node->layer() && node->layer() == layer; } );
+  if ( QgsLayerTreeLayer *node = *match )
   {
-    if ( node->layer() && node->layer() == layer )
-    {
-      addOrRemoveIndicator( node, layer );
-      break;
-    }
+    addOrRemoveIndicator( node, layer );
   }
 }
 

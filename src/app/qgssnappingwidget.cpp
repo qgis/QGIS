@@ -690,13 +690,10 @@ void QgsSnappingWidget::typeButtonTriggered( QAction *action )
   else
   {
     // user unchecked the action -- find out which ones we should set as new default action
-    for ( QAction *flagAction : std::as_const( mSnappingFlagActions ) )
+    auto match = std::find_if( mSnappingFlagActions.constBegin(), mSnappingFlagActions.constEnd(), [&type]( QAction * flagAction ) { return type & static_cast<Qgis::SnappingTypes>( flagAction->data().toInt() ); } );
+    if ( QAction *flagAction = *match )
     {
-      if ( type & static_cast<Qgis::SnappingTypes>( flagAction->data().toInt() ) )
-      {
-        mTypeButton->setDefaultAction( flagAction );
-        break;
-      }
+      mTypeButton->setDefaultAction( flagAction );
     }
   }
 

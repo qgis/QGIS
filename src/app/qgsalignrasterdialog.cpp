@@ -37,12 +37,8 @@ static QgsMapLayer *_rasterLayer( const QString &filename )
 {
   const QMap<QString, QgsMapLayer *> layers = QgsProject::instance()->mapLayers();
   const auto constLayers = layers;
-  for ( QgsMapLayer *layer : constLayers )
-  {
-    if ( layer->type() == Qgis::LayerType::Raster && layer->source() == filename )
-      return layer;
-  }
-  return nullptr;
+  auto match = std::find_if( constLayers.begin(), constLayers.end(), [&filename]( QgsMapLayer * layer ) { return layer->type() == Qgis::LayerType::Raster && layer->source() == filename; } );
+  return *match;
 }
 
 static QString _rasterLayerName( const QString &filename )

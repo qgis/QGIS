@@ -110,10 +110,10 @@ QString QgsLayerTreeViewBadLayerIndicatorProvider::tooltipText( QgsMapLayer *lay
     return tr( "<b>Unavailable layer!</b><br>Layer data source could not be found. Click to set a new data source" );
   else
   {
-    for ( const Error &error : std::as_const( mErrors ) )
+    auto match = std::find_if( mErrors.constBegin(), mErrors.constEnd(), [layer]( const Error & error ) { return error.layer == layer; } );
+    if ( match != mErrors.constEnd() )
     {
-      if ( error.layer == layer )
-        return error.error;
+      return match->error;
     }
   }
   return QString();

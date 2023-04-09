@@ -382,13 +382,10 @@ void QgsMeasureDialog::updateUi()
     if ( ellipsoid.contains( ':' ) )
     {
       const auto ellipsoidList = QgsEllipsoidUtils::definitions();
-      for ( const auto &ellpsDefinition : ellipsoidList )
+      auto match = std::find_if( ellipsoidList.begin(), ellipsoidList.end(), [&ellipsoid]( const auto & ellpsDefinition ) { return ellpsDefinition.acronym == ellipsoid; } );
+      if ( match != ellipsoidList.end() )
       {
-        if ( ellpsDefinition.acronym == ellipsoid )
-        {
-          ellipsoid = ellpsDefinition.description;
-          break;
-        }
+        ellipsoid = match->description;
       }
     }
     return ellipsoid;

@@ -661,13 +661,11 @@ void QgisAppInterface::addProjectExportAction( QAction *action )
   {
     // export actions come before import actions in the menu, so find separator in menu
     const QList< QAction * > actions = menu->actions();
-    for ( QAction *menuAction : actions )
+    auto match = std::find_if( actions.begin(), actions.end(), []( QAction * menuAction ) { return menuAction->isSeparator(); } );
+    if ( QAction *menuAction = *match )
     {
-      if ( menuAction->isSeparator() )
-      {
-        menu->insertAction( menuAction, action );
-        return;
-      }
+      menu->insertAction( menuAction, action );
+      return;
     }
     // play it safe -- if we change the menu in future and remove the separator, ensure
     // the action is still added somewhere

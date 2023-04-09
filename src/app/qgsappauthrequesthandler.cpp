@@ -88,15 +88,12 @@ void QgsAppAuthRequestHandler::handleAuthRequestCloseBrowser()
   if ( qApp )
   {
     const QList<QWidget *> topWidgets = QgsApplication::topLevelWidgets();
-    for ( QWidget *topWidget : topWidgets )
+    auto match = std::find_if( topWidgets.begin(), topWidgets.end(), []( QWidget * topWidget ) { return topWidget->objectName() == QLatin1String( "MainWindow" ); } );
+    if ( QWidget *topWidget = *match )
     {
-      if ( topWidget->objectName() == QLatin1String( "MainWindow" ) )
-      {
-        topWidget->raise();
-        topWidget->activateWindow();
-        topWidget->show();
-        break;
-      }
+      topWidget->raise();
+      topWidget->activateWindow();
+      topWidget->show();
     }
   }
 }

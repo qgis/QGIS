@@ -173,17 +173,14 @@ void QgsMapThemes::renameCurrentPreset()
 
 void QgsMapThemes::removeCurrentPreset()
 {
-  for ( QAction *actionPreset : std::as_const( mMenuPresetActions ) )
+  auto match = std::find_if( mMenuPresetActions.constBegin(), mMenuPresetActions.constEnd(), []( QAction * actionPreset ) { return actionPreset->isChecked(); } );
+  if ( QAction *actionPreset = *match )
   {
-    if ( actionPreset->isChecked() )
-    {
-      int res = QMessageBox::question( QgisApp::instance(), tr( "Remove Theme" ),
-                                       tr( "Are you sure you want to remove the existing theme “%1”?" ).arg( actionPreset->text() ),
-                                       QMessageBox::Yes | QMessageBox::No, QMessageBox::No );
-      if ( res == QMessageBox::Yes )
-        QgsProject::instance()->mapThemeCollection()->removeMapTheme( actionPreset->text() );
-      break;
-    }
+    int res = QMessageBox::question( QgisApp::instance(), tr( "Remove Theme" ),
+                                     tr( "Are you sure you want to remove the existing theme “%1”?" ).arg( actionPreset->text() ),
+                                     QMessageBox::Yes | QMessageBox::No, QMessageBox::No );
+    if ( res == QMessageBox::Yes )
+      QgsProject::instance()->mapThemeCollection()->removeMapTheme( actionPreset->text() );
   }
 }
 
