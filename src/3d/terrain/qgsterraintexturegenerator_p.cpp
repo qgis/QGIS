@@ -76,17 +76,16 @@ int QgsTerrainTextureGenerator::render( const QgsRectangle &extent, QgsChunkNode
 
 void QgsTerrainTextureGenerator::cancelJob( int jobId )
 {
-  for ( const JobData &jd : std::as_const( mJobs ) )
+  auto match = std::find_if( mJobs.begin(), mJobs.end(), [&jobId]( const JobData & jd ) { return jd.jobId == jobId; } );
+  if ( match != mJobs.end() )
   {
-    if ( jd.jobId == jobId )
-    {
-      // QgsDebugMsgLevel( QStringLiteral("canceling job %1").arg( jobId ), 2 );
-      jd.job->cancelWithoutBlocking();
-      disconnect( jd.job, &QgsMapRendererJob::finished, this, &QgsTerrainTextureGenerator::onRenderingFinished );
-      jd.job->deleteLater();
-      mJobs.remove( jd.job );
-      return;
-    }
+    const JobData &jd = match.value();
+    // QgsDebugMsgLevel( QStringLiteral("canceling job %1").arg( jobId ), 2 );
+    jd.job->cancelWithoutBlocking();
+    disconnect( jd.job, &QgsMapRendererJob::finished, this, &QgsTerrainTextureGenerator::onRenderingFinished );
+    jd.job->deleteLater();
+    mJobs.remove( jd.job );
+    return;
   }
   Q_ASSERT( false && "requested job ID does not exist!" );
 }

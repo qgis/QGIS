@@ -606,15 +606,9 @@ QVector<Qgs3DExportObject *> Qgs3DSceneExporter::processLines( Qt3DCore::QEntity
     if ( renderer->primitiveType() != Qt3DRender::QGeometryRenderer::LineStripAdjacency ) continue;
     Qt3DQGeometry *geom = renderer->geometry();
     Qt3DQAttribute *positionAttribute = findAttribute( geom, Qt3DQAttribute::defaultPositionAttributeName(), Qt3DQAttribute::VertexAttribute );
-    Qt3DQAttribute *indexAttribute = nullptr;
-    for ( Qt3DQAttribute *attribute : geom->attributes() )
-    {
-      if ( attribute->attributeType() == Qt3DQAttribute::IndexAttribute )
-      {
-        indexAttribute = attribute;
-        break;
-      }
-    }
+    auto match = std::find_if( geom->attributes().begin(), geom->attributes().end(), []( Qt3DQAttribute * attribute ) { return attribute->attributeType() == Qt3DQAttribute::IndexAttribute; } );
+    Qt3DQAttribute *indexAttribute = *match;
+
     if ( positionAttribute == nullptr || indexAttribute == nullptr )
     {
       QgsDebugMsg( "Position or index attribute was not found" );
