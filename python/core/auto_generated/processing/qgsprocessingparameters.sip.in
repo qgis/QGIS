@@ -2887,9 +2887,16 @@ An expression parameter for processing algorithms.
 %End
   public:
 
+    enum Type
+    {
+      Qgis,
+      PointCloud,
+    };
+
+
     QgsProcessingParameterExpression( const QString &name, const QString &description = QString(), const QVariant &defaultValue = QVariant(),
                                       const QString &parentLayerParameterName = QString(),
-                                      bool optional = false );
+                                      bool optional = false, Type type = Qgis );
 %Docstring
 Constructor for QgsProcessingParameterExpression.
 %End
@@ -2920,6 +2927,24 @@ Returns the name of the parent layer parameter, or an empty string if this is no
 Sets the name of the parent layer parameter. Use an empty string if this is not required.
 
 .. seealso:: :py:func:`parentLayerParameterName`
+%End
+
+    Type expressionType() const;
+%Docstring
+Returns the parameter's expression type.
+
+.. seealso:: :py:func:`setExpressionType`
+
+.. versionadded:: 3.32
+%End
+
+    void setExpressionType( Type type );
+%Docstring
+Sets the parameter's expression ``type``.
+
+.. seealso:: :py:func:`expressionType`
+
+.. versionadded:: 3.32
 %End
 
     virtual QVariantMap toVariantMap() const;

@@ -2826,12 +2826,20 @@ class CORE_EXPORT QgsProcessingParameterExpression : public QgsProcessingParamet
 {
   public:
 
+    //! Expression type
+    enum Type
+    {
+      Qgis, //!< Native QGIS expression
+      PointCloud, //!< Point cloud expression
+    };
+
+
     /**
      * Constructor for QgsProcessingParameterExpression.
      */
     QgsProcessingParameterExpression( const QString &name, const QString &description = QString(), const QVariant &defaultValue = QVariant(),
                                       const QString &parentLayerParameterName = QString(),
-                                      bool optional = false );
+                                      bool optional = false, Type type = Qgis );
 
     /**
      * Returns the type name for the parameter class.
@@ -2855,6 +2863,22 @@ class CORE_EXPORT QgsProcessingParameterExpression : public QgsProcessingParamet
      */
     void setParentLayerParameterName( const QString &parentLayerParameterName );
 
+    /**
+     * Returns the parameter's expression type.
+     * \see setExpressionType()
+     *
+     * \since QGIS 3.32
+     */
+    Type expressionType() const;
+
+    /**
+     * Sets the parameter's expression \a type.
+     * \see expressionType()
+     *
+     * \since QGIS 3.32
+     */
+    void setExpressionType( Type type );
+
     QVariantMap toVariantMap() const override;
     bool fromVariantMap( const QVariantMap &map ) override;
 
@@ -2866,7 +2890,7 @@ class CORE_EXPORT QgsProcessingParameterExpression : public QgsProcessingParamet
   private:
 
     QString mParentLayerParameterName;
-
+    Type mExpressionType = Qgis;
 };
 
 

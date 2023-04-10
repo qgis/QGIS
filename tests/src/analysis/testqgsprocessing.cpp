@@ -6482,7 +6482,7 @@ void TestQgsProcessing::parameterExpression()
   QVERIFY( ok );
 
   QString pythonCode = def->asPythonString();
-  QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterExpression('non_optional', '', parentLayerParameterName='', defaultValue='1+1')" ) );
+  QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterExpression('non_optional', '', parentLayerParameterName='', defaultValue='1+1', type=QgsProcessingParameterExpression.Qgis)" ) );
 
   QString code = def->asScriptCode();
   QCOMPARE( code, QStringLiteral( "##non_optional=expression 1+1" ) );
@@ -6525,7 +6525,7 @@ void TestQgsProcessing::parameterExpression()
   QCOMPARE( QgsProcessingParameters::parameterAsExpression( def.get(), params, context ), QString( "default" ) );
 
   pythonCode = def->asPythonString();
-  QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterExpression('optional', '', optional=True, parentLayerParameterName='', defaultValue='default')" ) );
+  QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterExpression('optional', '', optional=True, parentLayerParameterName='', defaultValue='default', type=QgsProcessingParameterExpression.Qgis)" ) );
 
   code = def->asScriptCode();
   QCOMPARE( code, QStringLiteral( "##optional=optional expression default" ) );
@@ -6543,6 +6543,10 @@ void TestQgsProcessing::parameterExpression()
   QVERIFY( !def->checkValueIsAcceptable( "" ) );
   QVERIFY( !def->checkValueIsAcceptable( QVariant() ) ); // should NOT be acceptable, because it will fallback to invalid default value
 
+  // set point cloud expression type
+  def.reset( new QgsProcessingParameterExpression( "non_optional", QString(), QString( "default" ), QString(), false, QgsProcessingParameterExpression::PointCloud ) );
+  pythonCode = def->asPythonString();
+  QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterExpression('non_optional', '', parentLayerParameterName='', defaultValue='default', type=QgsProcessingParameterExpression.PointCloud)" ) );
 }
 
 void TestQgsProcessing::parameterField()
