@@ -572,16 +572,28 @@ bool QgsField::convertCompatible( QVariant &v, QString *errorMessage ) const
     }
   }
 
-  if ( d->type == QVariant::String && ( d->typeName.compare( QLatin1String( "json" ), Qt::CaseInsensitive ) == 0 || d->typeName == QLatin1String( "jsonb" ) ) )
+  if ( d->typeName.compare( QLatin1String( "json" ), Qt::CaseInsensitive ) == 0 || d->typeName.compare( QLatin1String( "jsonb" ), Qt::CaseInsensitive ) == 0 )
   {
-    const QJsonDocument doc = QJsonDocument::fromVariant( v );
-    if ( !doc.isNull() )
+    if ( d->type == QVariant::String )
     {
-      v = QString::fromUtf8( doc.toJson( QJsonDocument::Compact ).constData() );
-      return true;
+      const QJsonDocument doc = QJsonDocument::fromVariant( v );
+      if ( !doc.isNull() )
+      {
+        v = QString::fromUtf8( doc.toJson( QJsonDocument::Compact ).constData() );
+        return true;
+      }
+      v = QVariant( d->type );
+      return false;
     }
-    v = QVariant( d->type );
-    return false;
+    else if ( d->type == QVariant::Map )
+    {
+      if ( v.type() == QVariant::StringList || v.type() == QVariant::List || v.type() == QVariant::Map )
+      {
+        return true;
+      }
+      v = QVariant( d->type );
+      return false;
+    }
   }
 
   if ( ( d->type == QVariant::StringList || ( d->type == QVariant::List && d->subType == QVariant::String ) )
