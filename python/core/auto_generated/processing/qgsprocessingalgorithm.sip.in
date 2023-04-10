@@ -939,7 +939,7 @@ Evaluates the parameter with matching ``name`` to a list of files (for :py:class
 Evaluates the parameter with matching ``name`` to a range of values.
 %End
 
- QStringList parameterAsFields( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const;
+ QStringList parameterAsFields( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const /Deprecated/;
 %Docstring
 Evaluates the parameter with matching ``name`` to a list of fields.
 

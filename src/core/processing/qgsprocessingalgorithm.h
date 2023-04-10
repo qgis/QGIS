@@ -946,7 +946,7 @@ class CORE_EXPORT QgsProcessingAlgorithm
      *
      * \deprecated use parameterAsStrings() instead.
      */
-    Q_DECL_DEPRECATED QStringList parameterAsFields( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const;
+    Q_DECL_DEPRECATED QStringList parameterAsFields( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const SIP_DEPRECATED;
 
     /**
      * Evaluates the parameter with matching \a name to a list of strings (e.g. field names or point cloud attributes).

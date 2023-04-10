@@ -1476,7 +1476,7 @@ Evaluates the parameter with matching ``definition`` and ``value`` to a range of
 .. versionadded:: 3.4
 %End
 
- static QStringList parameterAsFields( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );
+ static QStringList parameterAsFields( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context ) /Deprecated/;
 %Docstring
 Evaluates the parameter with matching ``definition`` to a list of fields.
 
@@ -1484,7 +1484,7 @@ Evaluates the parameter with matching ``definition`` to a list of fields.
    use :py:func:`~QgsProcessingParameters.parameterAsStrings` instead.
 %End
 
- static QStringList parameterAsFields( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context );
+ static QStringList parameterAsFields( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context ) /Deprecated/;
 %Docstring
 Evaluates the parameter with matching ``definition`` and ``value`` to a list of fields.
 
