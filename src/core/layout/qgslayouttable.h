@@ -465,6 +465,7 @@ class CORE_EXPORT QgsLayoutTable: public QgsLayoutMultiFrame
      * Sets the number of rows before alternating to other color.
      * \see setBackgroundColor()
      * \see gridColor()
+     * \since QGIS 3.32
      */
     void setNumberAlternatingRows( int rows );
 
@@ -473,6 +474,7 @@ class CORE_EXPORT QgsLayoutTable: public QgsLayoutMultiFrame
      * Returns the number of rows before alternating to other color.
      * \see setBackgroundColor()
      * \see gridColor()
+     * \since QGIS 3.32
      */
     int numberAlternatingRows() const {return mRowAlternate; }
 
@@ -480,6 +482,7 @@ class CORE_EXPORT QgsLayoutTable: public QgsLayoutMultiFrame
      * Sets the number of columns before alternating to other color.
      * \see setBackgroundColor()
      * \see gridColor()
+     * \since QGIS 3.32
      */
     void setNumberAlternatingColumns( int columns );
 
@@ -488,6 +491,7 @@ class CORE_EXPORT QgsLayoutTable: public QgsLayoutMultiFrame
      * Returns the number of columns before alternating to other color.
      * \see setBackgroundColor()
      * \see gridColor()
+     * \since QGIS 3.32
      */
     int numberAlternatingColumns() const {return mColAlternate; }
 
