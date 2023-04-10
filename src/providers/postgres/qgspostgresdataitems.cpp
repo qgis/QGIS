@@ -35,7 +35,7 @@
 
 bool QgsPostgresUtils::deleteLayer( const QString &uri, QString &errCause )
 {
-  QgsDebugMsg( "deleting layer " + uri );
+  QgsDebugMsgLevel( "deleting layer " + uri, 2 );
 
   QgsDataSourceUri dsUri( uri );
   QString schemaName = dsUri.schema();
@@ -151,7 +151,7 @@ bool QgsPostgresUtils::deleteLayer( const QString &uri, QString &errCause )
 
 bool QgsPostgresUtils::deleteSchema( const QString &schema, const QgsDataSourceUri &uri, QString &errCause, bool cascade )
 {
-  QgsDebugMsg( "deleting schema " + schema );
+  QgsDebugMsgLevel( "deleting schema " + schema, 2 );
 
   if ( schema.isEmpty() )
     return false;
@@ -242,7 +242,6 @@ bool QgsPGConnectionItem::equal( const QgsDataItem *other )
   return ( mPath == o->mPath && mName == o->mName );
 }
 
-
 void QgsPGConnectionItem::refreshSchema( const QString &schema )
 {
   const auto constMChildren = mChildren;
@@ -294,7 +293,7 @@ bool QgsPGConnectionItem::handleDrop( const QMimeData *data, const QString &toSc
 
       uri.setDataSource( QString(), u.name,  srcLayer->geometryType() != Qgis::GeometryType::Null ? geomColumn : QString() );
 
-      QgsDebugMsg( "URI " + uri.uri( false ) );
+      QgsDebugMsgLevel( "URI " + uri.uri( false ), 2 );
 
       if ( !toSchema.isNull() )
       {
@@ -397,7 +396,7 @@ QString QgsPGLayerItem::createUri()
   if ( uri.wkbType() != Qgis::WkbType::NoGeometry && mLayerProperty.srids.at( 0 ) != std::numeric_limits<int>::min() )
     uri.setSrid( QString::number( mLayerProperty.srids.at( 0 ) ) );
 
-  QgsDebugMsg( QStringLiteral( "layer uri: %1" ).arg( uri.uri( false ) ) );
+  QgsDebugMsgLevel( QStringLiteral( "layer uri: %1" ).arg( uri.uri( false ) ), 2 );
   return uri.uri( false );
 }
 
