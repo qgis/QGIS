@@ -55,17 +55,17 @@ class QgsFillNoDataAlgorithm : public QgsProcessingAlgorithm
                                   QgsProcessingFeedback *feedback ) override;
 
   private:
-    QgsRasterLayer *mInputRaster;
+    QgsRasterLayer *mInputRaster = nullptr;
     double mFillValue = 0;
-    int mBand;
+    int mBand = 1;
     std::unique_ptr< QgsRasterInterface > mInterface;
     QgsRectangle mExtent;
     QgsCoordinateReferenceSystem mCrs;
-    int mLayerWidth;
-    int mLayerHeight;
+    int mLayerWidth = 0;
+    int mLayerHeight = 0;
     int mNbCellsXProvider = 0;
     int mNbCellsYProvider = 0;
-    double mInputNoDataValue;
+    double mInputNoDataValue = 0;
 };
 
 ///@endcond PRIVATE
