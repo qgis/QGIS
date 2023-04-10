@@ -54,9 +54,9 @@ class CORE_EXPORT QgsTileXYZ
     QString toString() const { return QStringLiteral( "X=%1 Y=%2 Z=%3" ).arg( mColumn ).arg( mRow ).arg( mZoomLevel ); }
 
   private:
-    int mColumn;
-    int mRow;
-    int mZoomLevel;
+    int mColumn = -1;
+    int mRow = -1;
+    int mZoomLevel = -1;
 };
 
 
@@ -87,10 +87,10 @@ class CORE_EXPORT QgsTileRange
     int endRow() const { return mEndRow; }
 
   private:
-    int mStartColumn;
-    int mEndColumn;
-    int mStartRow;
-    int mEndRow;
+    int mStartColumn = -1;
+    int mEndColumn = -1;
+    int mStartRow = -1;
+    int mEndRow = -1;
 };
 
 
@@ -198,17 +198,17 @@ class CORE_EXPORT QgsTileMatrix
     //! Zoom level index associated with the tile matrix
     int mZoomLevel = -1;
     //! Number of columns of the tile matrix
-    int mMatrixWidth;
+    int mMatrixWidth = 0;
     //! Number of rows of the tile matrix
-    int mMatrixHeight;
+    int mMatrixHeight = 0;
     //! Matrix extent in map units in the CRS of tile matrix set
     QgsRectangle mExtent;
     //! Scale denominator of the map scale associated with the tile matrix
-    double mScaleDenom;
+    double mScaleDenom = 0;
     //! Width of a single tile in map units (derived from extent and matrix size)
-    double mTileXSpan;
+    double mTileXSpan = 0;
     //! Height of a single tile in map units (derived from extent and matrix size)
-    double mTileYSpan;
+    double mTileYSpan = 0;
 
     friend class QgsTileMatrixSet;
 };
