@@ -784,19 +784,37 @@ void TestQgsField::convertCompatible()
   QVariant vZero = 0;
   QVERIFY( intField.convertCompatible( vZero ) );
 
-  // Test json field conversion
-  const QgsField jsonField( QStringLiteral( "json" ), QVariant::String, QStringLiteral( "json" ) );
-  QVariant jsonValue = QVariant::fromValue( QVariantList() << 1 << 5 << 8 );
-  QVERIFY( jsonField.convertCompatible( jsonValue ) );
-  QCOMPARE( jsonValue.type(), QVariant::String );
-  QCOMPARE( jsonValue, QString( "[1,5,8]" ) );
-  QVariantMap variantMap;
-  variantMap.insert( QStringLiteral( "a" ), 1 );
-  variantMap.insert( QStringLiteral( "c" ), 3 );
-  jsonValue = QVariant::fromValue( variantMap );
-  QVERIFY( jsonField.convertCompatible( jsonValue ) );
-  QCOMPARE( jsonValue.type(), QVariant::String );
-  QCOMPARE( jsonValue, QString( "{\"a\":1,\"c\":3}" ) );
+  // Test string-based json field conversion
+  {
+    const QgsField jsonField( QStringLiteral( "json" ), QVariant::String, QStringLiteral( "json" ) );
+    QVariant jsonValue = QVariant::fromValue( QVariantList() << 1 << 5 << 8 );
+    QVERIFY( jsonField.convertCompatible( jsonValue ) );
+    QCOMPARE( jsonValue.type(), QVariant::String );
+    QCOMPARE( jsonValue, QString( "[1,5,8]" ) );
+    QVariantMap variantMap;
+    variantMap.insert( QStringLiteral( "a" ), 1 );
+    variantMap.insert( QStringLiteral( "c" ), 3 );
+    jsonValue = QVariant::fromValue( variantMap );
+    QVERIFY( jsonField.convertCompatible( jsonValue ) );
+    QCOMPARE( jsonValue.type(), QVariant::String );
+    QCOMPARE( jsonValue, QString( "{\"a\":1,\"c\":3}" ) );
+  }
+
+  // Test map-based json field (i.e. OGR geopackage JSON fields) conversion
+  {
+    const QgsField jsonField( QStringLiteral( "json" ), QVariant::Map, QStringLiteral( "json" ) );
+    QVariant jsonValue = QVariant::fromValue( QVariantList() << 1 << 5 << 8 );
+    QVERIFY( jsonField.convertCompatible( jsonValue ) );
+    QCOMPARE( jsonValue.type(), QVariant::List );
+    QCOMPARE( jsonValue, QVariantList() << 1 << 5 << 8 );
+    QVariantMap variantMap;
+    variantMap.insert( QStringLiteral( "a" ), 1 );
+    variantMap.insert( QStringLiteral( "c" ), 3 );
+    jsonValue = QVariant::fromValue( variantMap );
+    QVERIFY( jsonField.convertCompatible( jsonValue ) );
+    QCOMPARE( jsonValue.type(), QVariant::Map );
+    QCOMPARE( jsonValue, variantMap );
+  }
 
   // geometry field conversion
   const QgsField geometryField( QStringLiteral( "geometry" ), QVariant::UserType, QStringLiteral( "geometry" ) );
