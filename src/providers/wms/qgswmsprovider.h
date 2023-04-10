@@ -648,8 +648,8 @@ class QgsWmsTiledImageDownloadHandler : public QObject
                                      QImage *image,
                                      const QgsRectangle &viewExtent,
                                      double sourceResolution,
-                                     bool resamplingEnabled,
                                      bool smoothPixmapTransform,
+                                     bool resamplingEnabled,
                                      QgsRasterBlockFeedback *feedback );
     ~QgsWmsTiledImageDownloadHandler() override;
 
