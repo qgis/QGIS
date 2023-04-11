@@ -78,7 +78,7 @@ for f in sorted(glob.glob('resources/function_help/json/*')):
             if not 1 <= len(a_list) <= 2:
                 raise BaseException("%s: 1 or 2 arguments expected for operator found %i" % (f, len(a_list)))
 
-    cpp.write("\n\n    functionHelpTexts().insert( QStringLiteral( {0} ),\n      Help( QStringLiteral( {0} ), tr( \"{1}\" ), tr( \"{2}\" ),\n        QList<HelpVariant>()".format(
+    cpp.write("\n\n    QgsExpression::functionHelpTexts().insert( QStringLiteral( {0} ),\n      Help( QStringLiteral( {0} ), tr( \"{1}\" ), tr( \"{2}\" ),\n        QList<HelpVariant>()".format(
         name, json_params['type'], json_params['description'])
     )
 
@@ -128,7 +128,7 @@ for f in sorted(glob.glob('resources/function_help/text/*')):
     n = os.path.basename(f)
 
     with open(f) as content:
-        cpp.write("\n\n    functionHelpTexts().insert( \"{0}\",\n    Help( tr( \"{0}\" ), tr( \"group\" ), tr( \"{1}\" ), QList<HelpVariant>() ) );\n".format(
+        cpp.write("\n\n    QgsExpression::functionHelpTexts().insert( \"{0}\",\n    Help( tr( \"{0}\" ), tr( \"group\" ), tr( \"{1}\" ), QList<HelpVariant>() ) );\n".format(
             n, content.read().replace("\\", "&#92;").replace('\\', '\\\\').replace('"', '\\"').replace('\n', '\\n')))
 
 cpp.write("\n  } );\n}\n")
