@@ -10,6 +10,7 @@
 
 
 
+
 class QgsExpression
 {
 %Docstring(signature="appended")
@@ -600,6 +601,7 @@ quotations where required.
 
 .. versionadded:: 2.14
 %End
+
 
 
     static QString helpText( QString name );

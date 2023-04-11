@@ -32,13 +32,14 @@
 // from parser
 extern QgsExpressionNode *parseExpression( const QString &str, QString &parserErrorMsg, QList<QgsExpression::ParserError> &parserErrors );
 
-Q_GLOBAL_STATIC( HelpTextHash, sFunctionHelpTexts )
 Q_GLOBAL_STATIC( QgsStringMap, sVariableHelpTexts )
 Q_GLOBAL_STATIC( QgsStringMap, sGroups )
 
-HelpTextHash &functionHelpTexts()
+HelpTextHash QgsExpression::sFunctionHelpTexts;
+
+HelpTextHash &QgsExpression::functionHelpTexts()
 {
-  return *sFunctionHelpTexts();
+  return sFunctionHelpTexts;
 }
 
 bool QgsExpression::checkExpression( const QString &text, const QgsExpressionContext *context, QString &errorMessage )
@@ -549,10 +550,10 @@ QString QgsExpression::helpText( QString name )
 {
   QgsExpression::initFunctionHelp();
 
-  if ( !sFunctionHelpTexts()->contains( name ) )
+  if ( !sFunctionHelpTexts.contains( name ) )
     return tr( "function help for %1 missing" ).arg( name );
 
-  const Help &f = ( *sFunctionHelpTexts() )[ name ];
+  const Help &f = sFunctionHelpTexts[ name ];
 
   name = f.mName;
   if ( f.mType == tr( "group" ) )
@@ -686,9 +687,9 @@ QStringList QgsExpression::tags( const QString &name )
 
   QgsExpression::initFunctionHelp();
 
-  if ( sFunctionHelpTexts()->contains( name ) )
+  if ( sFunctionHelpTexts.contains( name ) )
   {
-    const Help &f = ( *sFunctionHelpTexts() )[ name ];
+    const Help &f = sFunctionHelpTexts[ name ];
 
     for ( const HelpVariant &v : std::as_const( f.mVariants ) )
     {
