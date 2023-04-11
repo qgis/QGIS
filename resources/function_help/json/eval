@@ -8,7 +8,7 @@
     "description": "an expression string"
   }],
   "examples": [{
-    "expression": "eval('\\'nice\\'')",
+    "expression": "eval('\\\\'nice\\\\'')",
     "returns": "'nice'"
   }, {
     "expression": "eval(@expression_var)",
