@@ -5769,6 +5769,11 @@ class TestQgsExpression: public QObject
       const HelpTextHash &functionHelp = QgsExpression::functionHelpTexts();
       for ( auto helpIt = functionHelp.constBegin(); helpIt != functionHelp.constEnd(); ++ helpIt )
       {
+#if GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR<11
+        if ( helpIt->mName == QLatin1String( "concave_hull" ) )
+          continue;
+#endif
+
         for ( auto variantIt = helpIt->mVariants.constBegin(); variantIt != helpIt->mVariants.constEnd(); ++variantIt )
         {
           for ( const HelpExample &example : std::as_const( variantIt->mExamples ) )
