@@ -216,8 +216,7 @@ void QgsMeshLayerProperties::syncToLayer()
   mLayerOrigNameLineEd->setText( mMeshLayer->name() );
   whileBlocking( mCrsSelector )->setCrs( mMeshLayer->crs() );
 
-  if ( mMeshLayer )
-    mDatasetGroupTreeWidget->syncToLayer( mMeshLayer );
+  mDatasetGroupTreeWidget->syncToLayer( mMeshLayer );
 
   QgsDebugMsgLevel( QStringLiteral( "populate config tab" ), 4 );
   for ( QgsMapLayerConfigWidget *w : std::as_const( mConfigWidgets ) )

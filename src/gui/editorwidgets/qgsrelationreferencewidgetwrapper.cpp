@@ -145,7 +145,10 @@ void QgsRelationReferenceWidgetWrapper::showIndeterminateState()
 
 QVariantList QgsRelationReferenceWidgetWrapper::additionalFieldValues() const
 {
-  if ( !mWidget || !mWidget->relation().isValid() )
+  if ( !mWidget )
+    return {};
+
+  if ( !mWidget->relation().isValid() )
   {
     QVariantList values;
     for ( int i = 0; i < mWidget->relation().fieldPairs().count(); i++ )
