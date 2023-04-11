@@ -73,7 +73,7 @@ class QgsDatabaseQueryLoggerPanelWidget : public QgsDevToolWidget, private Ui::Q
      * Constructor for QgsDatabaseQueryLoggerPanelWidget, linked with the specified \a logger.
      */
     QgsDatabaseQueryLoggerPanelWidget( QgsAppQueryLogger *logger, QWidget *parent );
-
+    ~QgsDatabaseQueryLoggerPanelWidget() override;
   private:
 
     QgsDatabaseQueryLoggerTreeView *mTreeView = nullptr;

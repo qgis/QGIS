@@ -20,8 +20,6 @@
 #include "qgscoordinatereferencesystem.h"
 #include "qgsprovidermetadata.h"
 #include "qgspostgresconn.h"
-#include "qgspostgresprovider.h"
-#include "qgsogrutils.h"
 #include "qgspostgresrastershareddata.h"
 
 #include <exception>
@@ -206,7 +204,7 @@ class QgsPostgresRasterProvider : public QgsRasterDataProvider
     static QString quotedValue( const QVariant &value ) { return QgsPostgresConn::quotedValue( value ); }
     static QString quotedJsonValue( const QVariant &value ) { return QgsPostgresConn::quotedJsonValue( value ); }
     static QString quotedByteaValue( const QVariant &value );
-    QgsPostgresProvider::Relkind relkind() const;
+    Qgis::PostgresRelKind relkind() const;
     bool loadFields();
 
     /**

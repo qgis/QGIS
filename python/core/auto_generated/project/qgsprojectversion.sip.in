@@ -71,6 +71,10 @@ Returns ``True`` if this is a NULL project version.
 
     bool operator>( const QgsProjectVersion &other ) const;
 
+    bool operator<( const QgsProjectVersion &other ) const;
+
+    bool operator<=( const QgsProjectVersion &other ) const;
+
 };
 
 /************************************************************************

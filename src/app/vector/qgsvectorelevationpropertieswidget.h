@@ -32,7 +32,7 @@ class QgsVectorElevationPropertiesWidget : public QgsMapLayerConfigWidget, priva
 
     QgsVectorElevationPropertiesWidget( QgsVectorLayer *layer, QgsMapCanvas *canvas, QWidget *parent );
 
-    void syncToLayer( QgsMapLayer *layer ) override;
+    void syncToLayer( QgsMapLayer *layer ) final;
 
     QgsExpressionContext createExpressionContext() const override;
 

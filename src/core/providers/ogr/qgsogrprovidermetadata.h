@@ -43,7 +43,7 @@ class QgsOgrProviderMetadata final: public QgsProviderMetadata
     QString encodeUri( const QVariantMap &parts ) const override;
     QString absoluteToRelativeUri( const QString &uri, const QgsReadWriteContext &context ) const override;
     QString relativeToAbsoluteUri( const QString &uri, const QgsReadWriteContext &context ) const override;
-    QString filters( FilterType type ) override;
+    QString filters( Qgis::FileFilterType type ) override;
     QgsProviderMetadata::ProviderMetadataCapabilities capabilities() const override;
     ProviderCapabilities providerCapabilities() const override;
     bool uriIsBlocklisted( const QString &uri ) const override;

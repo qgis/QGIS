@@ -71,7 +71,7 @@ class QgsEptProviderMetadata : public QgsProviderMetadata
     bool uriIsBlocklisted( const QString &uri ) const override;
     QString encodeUri( const QVariantMap &parts ) const override;
     QVariantMap decodeUri( const QString &uri ) const override;
-    QString filters( FilterType type ) override;
+    QString filters( Qgis::FileFilterType type ) override;
     ProviderCapabilities providerCapabilities() const override;
     QList< Qgis::LayerType > supportedLayerTypes() const override;
 };

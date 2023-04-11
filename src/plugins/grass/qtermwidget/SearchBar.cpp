@@ -26,12 +26,13 @@
 SearchBar::SearchBar(QWidget *parent) : QWidget(parent)
 {
     widget.setupUi(this);
-    connect(widget.closeButton, &QAbstractButton::clicked, this, &QWidget::hide);
-    connect(widget.searchTextEdit, &QLineEdit::textChanged, this, &SearchBar::searchCriteriaChanged);
-    connect(widget.findPreviousButton, &QAbstractButton::clicked, this, &SearchBar::findPrevious);
-    connect(widget.findNextButton, &QAbstractButton::clicked, this, &SearchBar::findNext);
+    setAutoFillBackground(true); // make it always opaque, especially inside translucent windows
+    connect(widget.closeButton, &QAbstractButton::clicked, this, &SearchBar::hide);
+    connect(widget.searchTextEdit, SIGNAL(textChanged(QString)), this, SIGNAL(searchCriteriaChanged()));
+    connect(widget.findPreviousButton, SIGNAL(clicked()), this, SIGNAL(findPrevious()));
+    connect(widget.findNextButton, SIGNAL(clicked()), this, SIGNAL(findNext()));
 
-    connect(this, &SearchBar::searchCriteriaChanged, this, &SearchBar::clearBackgroundColor);
+    connect(this, SIGNAL(searchCriteriaChanged()), this, SLOT(clearBackgroundColor()));
 
     QMenu *optionsMenu = new QMenu(widget.optionsButton);
     widget.optionsButton->setMenu(optionsMenu);
@@ -39,17 +40,17 @@ SearchBar::SearchBar(QWidget *parent) : QWidget(parent)
     m_matchCaseMenuEntry = optionsMenu->addAction(tr("Match case"));
     m_matchCaseMenuEntry->setCheckable(true);
     m_matchCaseMenuEntry->setChecked(true);
-    connect(m_matchCaseMenuEntry, &QAction::toggled, this, &SearchBar::searchCriteriaChanged);
+    connect(m_matchCaseMenuEntry, SIGNAL(toggled(bool)), this, SIGNAL(searchCriteriaChanged()));
 
 
     m_useRegularExpressionMenuEntry = optionsMenu->addAction(tr("Regular expression"));
     m_useRegularExpressionMenuEntry->setCheckable(true);
-    connect(m_useRegularExpressionMenuEntry, &QAction::toggled, this, &SearchBar::searchCriteriaChanged);
+    connect(m_useRegularExpressionMenuEntry, SIGNAL(toggled(bool)), this, SIGNAL(searchCriteriaChanged()));
 
     m_highlightMatchesMenuEntry = optionsMenu->addAction(tr("Highlight all matches"));
     m_highlightMatchesMenuEntry->setCheckable(true);
     m_highlightMatchesMenuEntry->setChecked(true);
-    connect(m_highlightMatchesMenuEntry, &QAction::toggled, this, &SearchBar::highlightMatchesChanged);
+    connect(m_highlightMatchesMenuEntry, SIGNAL(toggled(bool)), this, SIGNAL(highlightMatchesChanged(bool)));
 }
 
 SearchBar::~SearchBar() {
@@ -80,6 +81,16 @@ void SearchBar::show()
 {
     QWidget::show();
     widget.searchTextEdit->setFocus();
+    widget.searchTextEdit->selectAll();
+}
+
+void SearchBar::hide()
+{
+    QWidget::hide();
+    if (QWidget *p = parentWidget())
+    {
+        p->setFocus(Qt::OtherFocusReason); // give the focus to the parent widget on hiding
+    }
 }
 
 void SearchBar::noMatchFound()
@@ -96,11 +107,11 @@ void SearchBar::keyReleaseEvent(QKeyEvent* keyEvent)
     {
         if (keyEvent->modifiers() == Qt::ShiftModifier)
         {
-            findPrevious();
+            Q_EMIT findPrevious();
         }
         else
         {
-            findNext();
+            Q_EMIT findNext();
         }
     }
     else if (keyEvent->key() == Qt::Key_Escape)
@@ -111,8 +122,6 @@ void SearchBar::keyReleaseEvent(QKeyEvent* keyEvent)
 
 void SearchBar::clearBackgroundColor()
 {
-    QPalette p;
-    p.setColor(QPalette::Base, Qt::white);
-    widget.searchTextEdit->setPalette(p);
+    widget.searchTextEdit->setPalette(QWidget::window()->palette());
 
 }

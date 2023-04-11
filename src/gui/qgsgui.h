@@ -47,6 +47,8 @@ class QgsProviderSourceWidgetProviderRegistry;
 class QgsRelationWidgetRegistry;
 class QgsMapToolShapeRegistry;
 class QgsHistoryProviderRegistry;
+class QgsSensorGuiRegistry;
+
 
 /**
  * \ingroup gui
@@ -173,6 +175,12 @@ class GUI_EXPORT QgsGui : public QObject
      * \since QGIS 3.10
      */
     static QgsProviderGuiRegistry *providerGuiRegistry() SIP_KEEPREFERENCE;
+
+    /**
+     * Returns the registry of GUI-related components for sensors
+     * \since QGIS 3.32
+     */
+    static QgsSensorGuiRegistry *sensorGuiRegistry() SIP_KEEPREFERENCE;
 
     /**
      * Returns the registry of subset string editors of data providers
@@ -313,6 +321,7 @@ class GUI_EXPORT QgsGui : public QObject
     QgsRelationWidgetRegistry *mRelationEditorRegistry = nullptr;
     QgsMapToolShapeRegistry *mShapeMapToolRegistry = nullptr;
     QgsHistoryProviderRegistry *mHistoryProviderRegistry = nullptr;
+    QgsSensorGuiRegistry *mSensorGuiRegistry = nullptr;
     std::unique_ptr< QgsWindowManagerInterface > mWindowManager;
 
 #ifdef SIP_RUN

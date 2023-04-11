@@ -20,6 +20,7 @@
 
 class QgsPGSchemaItem;
 class QgsPGLayerItem;
+struct QgsPostgresLayerProperty;
 
 class QgsPostgresDataItemGuiProvider : public QObject, public QgsDataItemGuiProvider
 {
@@ -39,6 +40,8 @@ class QgsPostgresDataItemGuiProvider : public QObject, public QgsDataItemGuiProv
     QWidget *createParamWidget( QgsDataItem *root, QgsDataItemGuiContext ) override;
 
   private:
+
+    static QString typeNameFromLayer( const QgsPostgresLayerProperty &layer );
     static void newConnection( QgsDataItem *item );
     static void editConnection( QgsDataItem *item );
     static void deleteConnection( QgsDataItem *item );

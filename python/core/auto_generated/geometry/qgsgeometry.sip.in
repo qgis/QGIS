@@ -307,7 +307,7 @@ Returns type of the geometry as a WKB type (point / linestring / polygon etc.)
 
     Qgis::GeometryType type() const /HoldGIL/;
 %Docstring
-Returns type of the geometry as a Qgis.GeometryType
+Returns type of the geometry as a :py:class:`Qgis`.GeometryType
 
 .. seealso:: :py:func:`wkbType`
 %End

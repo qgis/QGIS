@@ -357,6 +357,9 @@ void QgsProviderRegistry::init()
   QStringList pointCloudWildcards;
   QStringList pointCloudFilters;
 
+  QStringList vectorTileWildcards;
+  QStringList vectorTileFilters;
+
   // now initialize all providers
   for ( Providers::const_iterator it = mProviders.begin(); it != mProviders.end(); ++it )
   {
@@ -367,7 +370,7 @@ void QgsProviderRegistry::init()
     QgsProviderMetadata *meta = it->second;
 
     // now get vector file filters, if any
-    const QString fileVectorFilters = meta->filters( QgsProviderMetadata::FilterType::FilterVector );
+    const QString fileVectorFilters = meta->filters( Qgis::FileFilterType::Vector );
     if ( !fileVectorFilters.isEmpty() )
     {
       mVectorFileFilters += fileVectorFilters;
@@ -375,7 +378,7 @@ void QgsProviderRegistry::init()
     }
 
     // now get raster file filters, if any
-    const QString fileRasterFilters = meta->filters( QgsProviderMetadata::FilterType::FilterRaster );
+    const QString fileRasterFilters = meta->filters( Qgis::FileFilterType::Raster );
     if ( !fileRasterFilters.isEmpty() )
     {
       QgsDebugMsgLevel( "raster filters: " + fileRasterFilters, 2 );
@@ -384,7 +387,7 @@ void QgsProviderRegistry::init()
     }
 
     // now get mesh file filters, if any
-    const QString fileMeshFilters = meta->filters( QgsProviderMetadata::FilterType::FilterMesh );
+    const QString fileMeshFilters = meta->filters( Qgis::FileFilterType::Mesh );
     if ( !fileMeshFilters.isEmpty() )
     {
       mMeshFileFilters += fileMeshFilters;
@@ -392,7 +395,7 @@ void QgsProviderRegistry::init()
 
     }
 
-    const QString fileMeshDatasetFilters = meta->filters( QgsProviderMetadata::FilterType::FilterMeshDataset );
+    const QString fileMeshDatasetFilters = meta->filters( Qgis::FileFilterType::MeshDataset );
     if ( !fileMeshDatasetFilters.isEmpty() )
     {
       mMeshDatasetFileFilters += fileMeshDatasetFilters;
@@ -400,7 +403,7 @@ void QgsProviderRegistry::init()
     }
 
     // now get point cloud file filters, if any
-    const QString filePointCloudFilters = meta->filters( QgsProviderMetadata::FilterType::FilterPointCloud );
+    const QString filePointCloudFilters = meta->filters( Qgis::FileFilterType::PointCloud );
     if ( !filePointCloudFilters.isEmpty() )
     {
       QgsDebugMsgLevel( "point cloud filters: " + filePointCloudFilters, 2 );
@@ -417,6 +420,24 @@ void QgsProviderRegistry::init()
       }
     }
 
+    // now get vector tile file filters, if any
+    const QString fileVectorTileFilters = meta->filters( Qgis::FileFilterType::VectorTile );
+    if ( !fileVectorTileFilters.isEmpty() )
+    {
+      QgsDebugMsgLevel( "vector tile filters: " + fileVectorTileFilters, 2 );
+
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
+      const QStringList filters = fileVectorTileFilters.split( QStringLiteral( ";;" ), QString::SkipEmptyParts );
+#else
+      const QStringList filters = fileVectorTileFilters.split( QStringLiteral( ";;" ), Qt::SkipEmptyParts );
+#endif
+      for ( const QString &filter : filters )
+      {
+        vectorTileFilters.append( filter );
+        vectorTileWildcards.append( QgsFileUtils::wildcardsFromFilter( filter ).split( ' ' ) );
+      }
+    }
+
     // call initProvider() - allows provider to register its services to QGIS
     meta->initProvider();
   }
@@ -426,6 +447,13 @@ void QgsProviderRegistry::init()
     pointCloudFilters.insert( 0, QObject::tr( "All Supported Files" ) + QStringLiteral( " (%1)" ).arg( pointCloudWildcards.join( ' ' ) ) );
     pointCloudFilters.insert( 1, QObject::tr( "All Files" ) + QStringLiteral( " (*.*)" ) );
     mPointCloudFileFilters = pointCloudFilters.join( QLatin1String( ";;" ) );
+  }
+
+  if ( !vectorTileFilters.empty() )
+  {
+    vectorTileFilters.insert( 0, QObject::tr( "All Supported Files" ) + QStringLiteral( " (%1)" ).arg( vectorTileWildcards.join( ' ' ) ) );
+    vectorTileFilters.insert( 1, QObject::tr( "All Files" ) + QStringLiteral( " (*.*)" ) );
+    mVectorTileFileFilters = vectorTileFilters.join( QLatin1String( ";;" ) );
   }
 
   // load database drivers (only OGR)
@@ -892,6 +920,11 @@ QString QgsProviderRegistry::fileMeshDatasetFilters() const
 QString QgsProviderRegistry::filePointCloudFilters() const
 {
   return mPointCloudFileFilters;
+}
+
+QString QgsProviderRegistry::fileVectorTileFilters() const
+{
+  return mVectorTileFileFilters;
 }
 
 QString QgsProviderRegistry::databaseDrivers() const

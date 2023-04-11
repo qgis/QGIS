@@ -295,16 +295,11 @@ class CORE_EXPORT QgsVectorTileLayer : public QgsMapLayer
     //! Whether we draw borders of tiles
     bool mTileBorderRendering = false;
 
-    QVariantMap mArcgisLayerConfiguration;
-    QVariantMap mArcgisStyleConfiguration;
-
     QgsCoordinateTransformContext mTransformContext;
 
     std::unique_ptr< QgsDataProvider > mDataProvider;
 
     QHash< QgsFeatureId, QgsFeature > mSelectedFeatures;
-
-    bool setupArcgisVectorTileServiceConnection( const QString &uri, const QgsDataSourceUri &dataSourceUri );
 
     void setDataSourcePrivate( const QString &dataSource, const QString &baseName, const QString &provider,
                                const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags ) override;

@@ -17,6 +17,7 @@
 #include "qgsthreadingutils.h"
 
 #include <QNetworkRequest>
+#include <QImage>
 
 QgsVectorTileDataProvider::QgsVectorTileDataProvider(
   const QString &uri,
@@ -24,6 +25,17 @@ QgsVectorTileDataProvider::QgsVectorTileDataProvider(
   QgsDataProvider::ReadFlags flags )
   : QgsDataProvider( uri, options, flags )
 {}
+
+QgsVectorTileDataProvider::QgsVectorTileDataProvider( const QgsVectorTileDataProvider &other )
+  : QgsDataProvider( other.dataSourceUri( false ), ProviderOptions(), other.mReadFlags )
+{
+  setTransformContext( other.transformContext() );
+}
+
+QgsVectorTileDataProvider::ProviderCapabilities QgsVectorTileDataProvider::providerCapabilities() const
+{
+  return QgsVectorTileDataProvider::ProviderCapabilities();
+}
 
 QgsRectangle QgsVectorTileDataProvider::extent() const
 {
@@ -54,6 +66,34 @@ QNetworkRequest QgsVectorTileDataProvider::tileRequest( const QgsTileMatrix &, c
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
   return QNetworkRequest();
+}
+
+QVariantMap QgsVectorTileDataProvider::styleDefinition() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return QVariantMap();
+}
+
+QString QgsVectorTileDataProvider::styleUrl() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return QString();
+}
+
+QVariantMap QgsVectorTileDataProvider::spriteDefinition() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return QVariantMap();
+}
+
+QImage QgsVectorTileDataProvider::spriteImage() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return QImage();
 }
 
 

@@ -167,6 +167,36 @@ QString QgsField::comment() const
   return d->comment;
 }
 
+QVariant QgsField::metadata( int property ) const
+{
+  return d->metadata.value( property );
+}
+
+QMap<int, QVariant> QgsField::metadata() const
+{
+  return d->metadata;
+}
+
+QVariant QgsField::metadata( Qgis::FieldMetadataProperty property ) const
+{
+  return d->metadata.value( static_cast< int >( property ) );
+}
+
+void QgsField::setMetadata( const QMap<int, QVariant> metadata )
+{
+  d->metadata = metadata;
+}
+
+void QgsField::setMetadata( Qgis::FieldMetadataProperty property, const QVariant &value )
+{
+  d->metadata[ static_cast< int >( property )] = value;
+}
+
+void QgsField::setMetadata( int property, const QVariant &value )
+{
+  d->metadata[ property ] = value;
+}
+
 bool QgsField::isNumeric() const
 {
   return d->type == QVariant::Double || d->type == QVariant::Int || d->type == QVariant::UInt || d->type == QVariant::LongLong || d->type == QVariant::ULongLong;
@@ -374,7 +404,7 @@ QString QgsField::displayString( const QVariant &v ) const
   else if ( d->typeName.compare( QLatin1String( "json" ), Qt::CaseInsensitive ) == 0 || d->typeName == QLatin1String( "jsonb" ) )
   {
     const QJsonDocument doc = QJsonDocument::fromVariant( v );
-    return QString::fromUtf8( doc.toJson().data() );
+    return QString::fromUtf8( doc.toJson().constData() );
   }
   else if ( d->type == QVariant::ByteArray )
   {
@@ -722,6 +752,7 @@ QDataStream &operator<<( QDataStream &out, const QgsField &field )
   out << field.constraints().constraintDescription();
   out << static_cast< quint32 >( field.subType() );
   out << static_cast< int >( field.splitPolicy() );
+  out << field.metadata();
   return out;
 }
 
@@ -749,10 +780,11 @@ QDataStream &operator>>( QDataStream &in, QgsField &field )
   QString defaultValueExpression;
   QString constraintExpression;
   QString constraintDescription;
+  QMap< int, QVariant > metadata;
 
   in >> name >> type >> typeName >> length >> precision >> comment >> alias
      >> defaultValueExpression >> applyOnUpdate >> constraints >> originNotNull >> originUnique >> originExpression >> strengthNotNull >> strengthUnique >> strengthExpression >>
-     constraintExpression >> constraintDescription >> subType >> splitPolicy;
+     constraintExpression >> constraintDescription >> subType >> splitPolicy >> metadata;
   field.setName( name );
   field.setType( static_cast< QVariant::Type >( type ) );
   field.setTypeName( typeName );
@@ -787,5 +819,6 @@ QDataStream &operator>>( QDataStream &in, QgsField &field )
   fieldConstraints.setConstraintExpression( constraintExpression, constraintDescription );
   field.setConstraints( fieldConstraints );
   field.setSubType( static_cast< QVariant::Type >( subType ) );
+  field.setMetadata( metadata );
   return in;
 }

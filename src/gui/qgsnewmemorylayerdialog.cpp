@@ -94,7 +94,7 @@ QgsNewMemoryLayerDialog::QgsNewMemoryLayerDialog( QWidget *parent, Qt::WindowFla
   mTypeBox->addItem( QgsFields::iconForFieldType( QVariant::List, QVariant::LongLong ), QgsVariantUtils::typeToDisplayString( QVariant::List, QVariant::LongLong ), "integer64list" );
   mTypeBox->addItem( QgsFields::iconForFieldType( QVariant::Map ), QgsVariantUtils::typeToDisplayString( QVariant::Map ), "map" );
   mTypeBox->addItem( QgsFields::iconForFieldType( QVariant::UserType, QVariant::Invalid, QStringLiteral( "geometry" ) ), tr( "Geometry" ), "geometry" );
-  mTypeBox_currentIndexChanged( 1 );
+  mTypeBox_currentIndexChanged( 0 );
 
   mWidth->setValidator( new QIntValidator( 1, 255, this ) );
   mPrecision->setValidator( new QIntValidator( 0, 30, this ) );
@@ -161,6 +161,7 @@ void QgsNewMemoryLayerDialog::mTypeBox_currentIndexChanged( int )
     mPrecision->clear();
     mPrecision->setEnabled( false );
     mWidth->setValidator( new QIntValidator( 1, 255, this ) );
+    mWidth->setEnabled( true );
   }
   else if ( fieldType == QLatin1String( "integer" ) )
   {
@@ -169,6 +170,7 @@ void QgsNewMemoryLayerDialog::mTypeBox_currentIndexChanged( int )
     mPrecision->clear();
     mPrecision->setEnabled( false );
     mWidth->setValidator( new QIntValidator( 1, 10, this ) );
+    mWidth->setEnabled( true );
   }
   else if ( fieldType == QLatin1String( "double" ) )
   {
@@ -178,6 +180,7 @@ void QgsNewMemoryLayerDialog::mTypeBox_currentIndexChanged( int )
       mPrecision->setText( QStringLiteral( "6" ) );
     mPrecision->setEnabled( true );
     mWidth->setValidator( new QIntValidator( 1, 20, this ) );
+    mWidth->setEnabled( true );
   }
   else if ( fieldType == QLatin1String( "bool" ) )
   {

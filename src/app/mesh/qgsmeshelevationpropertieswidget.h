@@ -30,7 +30,7 @@ class QgsMeshElevationPropertiesWidget : public QgsMapLayerConfigWidget, private
 
     QgsMeshElevationPropertiesWidget( QgsMeshLayer *layer, QgsMapCanvas *canvas, QWidget *parent );
 
-    void syncToLayer( QgsMapLayer *layer ) override;
+    void syncToLayer( QgsMapLayer *layer ) final;
 
   public slots:
     void apply() override;

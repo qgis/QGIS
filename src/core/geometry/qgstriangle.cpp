@@ -66,24 +66,27 @@ QgsTriangle::QgsTriangle( const QPointF p1, const QPointF p2, const QPointF p3 )
   setExteriorRing( ext );
 }
 
-bool QgsTriangle::operator==( const QgsTriangle &other ) const
+bool QgsTriangle::operator==( const QgsAbstractGeometry &other ) const
 {
-  if ( isEmpty() && other.isEmpty() )
+  const QgsTriangle *otherTriangle = qgsgeometry_cast< const QgsTriangle * >( &other );
+  if ( !otherTriangle )
+    return false;
+
+  if ( isEmpty() && otherTriangle->isEmpty() )
   {
     return true;
   }
-  else if ( isEmpty() || other.isEmpty() )
+  else if ( isEmpty() || otherTriangle->isEmpty() )
   {
     return false;
   }
 
-  return ( ( vertexAt( 0 ) == other.vertexAt( 0 ) ) &&
-           ( vertexAt( 1 ) == other.vertexAt( 1 ) ) &&
-           ( vertexAt( 2 ) == other.vertexAt( 2 ) )
-         );
+  return ( ( vertexAt( 0 ) == otherTriangle->vertexAt( 0 ) ) &&
+           ( vertexAt( 1 ) == otherTriangle->vertexAt( 1 ) ) &&
+           ( vertexAt( 2 ) == otherTriangle->vertexAt( 2 ) ) );
 }
 
-bool QgsTriangle::operator!=( const QgsTriangle &other ) const
+bool QgsTriangle::operator!=( const QgsAbstractGeometry &other ) const
 {
   return !operator==( other );
 }

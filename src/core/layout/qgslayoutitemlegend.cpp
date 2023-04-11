@@ -36,6 +36,8 @@
 #include "qgsvectorlayer.h"
 #include "qgslayoutrendercontext.h"
 #include "qgslayoutreportcontext.h"
+#include "qgslayertreefiltersettings.h"
+#include "qgsreferencedgeometry.h"
 
 #include <QDomDocument>
 #include <QDomElement>
@@ -225,6 +227,12 @@ void QgsLayoutItemLegend::refresh()
   QgsLayoutItem::refresh();
   clearLegendCachedData();
   onAtlasFeature();
+}
+
+void QgsLayoutItemLegend::invalidateCache()
+{
+  clearLegendCachedData();
+  QgsLayoutItem::invalidateCache();
 }
 
 void QgsLayoutItemLegend::draw( QgsLayoutItemRenderContext &context )
@@ -1113,6 +1121,7 @@ void QgsLayoutItemLegend::doUpdateFilterByMap()
     }
 
     QgsMapSettings ms;
+    QgsGeometry filterGeometry;
     if ( mMap )
     {
       // if a specific linked map has been set, use it for the reference scale and extent
@@ -1120,6 +1129,8 @@ void QgsLayoutItemLegend::doUpdateFilterByMap()
       QSizeF size( requestRectangle.width(), requestRectangle.height() );
       size *= mLayout->convertFromLayoutUnits( mMap->mapUnitsToLayoutUnits(), Qgis::LayoutUnit::Millimeters ).length() * dpi / 25.4;
       ms = mMap->mapSettings( requestRectangle, size, dpi, true );
+
+      filterGeometry = QgsGeometry::fromQPolygonF( mMap->visibleExtentPolygon() );
     }
     else if ( !linkedFilterMaps.empty() )
     {
@@ -1128,15 +1139,21 @@ void QgsLayoutItemLegend::doUpdateFilterByMap()
       QSizeF size( requestRectangle.width(), requestRectangle.height() );
       size *= mLayout->convertFromLayoutUnits( ( *linkedFilterMaps.constBegin() )->mapUnitsToLayoutUnits(), Qgis::LayoutUnit::Millimeters ).length() * dpi / 25.4;
       ms = ( *linkedFilterMaps.constBegin() )->mapSettings( requestRectangle, size, dpi, true );
+
+      filterGeometry = QgsGeometry::fromQPolygonF( ( *linkedFilterMaps.constBegin() )->visibleExtentPolygon() );
     }
 
-    QgsGeometry filterGeometry;
+    const QgsGeometry atlasGeometry = mInAtlas ? mLayout->reportContext().currentGeometry( ms.destinationCrs() ) : QgsGeometry();
+
+    QgsLayerTreeFilterSettings filterSettings( ms );
+
     if ( !linkedFilterMaps.empty() )
     {
-      QVector< QgsGeometry > filterMapGeometries;
-      filterMapGeometries.reserve( linkedFilterMaps.size() );
       for ( QgsLayoutItemMap *map : std::as_const( linkedFilterMaps ) )
       {
+        if ( map == mMap )
+          continue;
+
         QgsGeometry mapExtent = QgsGeometry::fromQPolygonF( map->visibleExtentPolygon() );
 
         //transform back to destination CRS
@@ -1149,13 +1166,18 @@ void QgsLayoutItemLegend::doUpdateFilterByMap()
         {
           continue;
         }
-        filterMapGeometries.append( mapExtent );
+
+        const QList< QgsMapLayer * > layersForMap = map->layersToRender();
+        for ( QgsMapLayer *layer : layersForMap )
+        {
+          if ( !atlasGeometry.isNull() )
+          {
+            mapExtent = mapExtent.intersection( atlasGeometry );
+          }
+
+          filterSettings.addVisibleExtentForLayer( layer, QgsReferencedGeometry( mapExtent, ms.destinationCrs() ) );
+        }
       }
-      filterGeometry = QgsGeometry::unaryUnion( filterMapGeometries );
-    }
-    else if ( mMap )
-    {
-      filterGeometry = QgsGeometry::fromQPolygonF( mMap->visibleExtentPolygon() );
     }
 
     if ( mInAtlas )
@@ -1166,18 +1188,20 @@ void QgsLayoutItemLegend::doUpdateFilterByMap()
         filterGeometry = filterGeometry.intersection( mLayout->reportContext().currentGeometry( ms.destinationCrs() ) );
     }
 
+    filterSettings.setLayerFilterExpressionsFromLayerTree( mLegendModel->rootGroup() );
     if ( !filterGeometry.isNull() )
     {
-      mLegendModel->setLegendFilter( &ms, true, filterGeometry, true );
+      filterSettings.setFilterPolygon( filterGeometry );
     }
     else
     {
-      mLegendModel->setLegendFilter( &ms, false, QgsGeometry(), true );
+      filterSettings.setFlags( Qgis::LayerTreeFilterFlag::SkipVisibilityCheck );
     }
+    mLegendModel->setFilterSettings( &filterSettings );
   }
   else
   {
-    mLegendModel->setLegendFilterByMap( nullptr );
+    mLegendModel->setFilterSettings( nullptr );
   }
 
   clearLegendCachedData();

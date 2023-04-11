@@ -23,6 +23,7 @@
 #include "qgsrasterlayer.h"
 #include "qgsfeaturesink.h"
 #include "qgsfeaturesource.h"
+#include "qgsprocessing.h"
 #include "qgsproxyfeaturesink.h"
 #include "qgsremappingproxyfeaturesink.h"
 
@@ -218,7 +219,7 @@ class CORE_EXPORT QgsProcessingUtils
      *
      * The \a typeHint can be used to dictate the type of map layer expected.
      */
-    static QgsMapLayer *mapLayerFromString( const QString &string, QgsProcessingContext &context, bool allowLoadingNewLayers = true, QgsProcessingUtils::LayerHint typeHint = QgsProcessingUtils::LayerHint::UnknownType );
+    static QgsMapLayer *mapLayerFromString( const QString &string, QgsProcessingContext &context, bool allowLoadingNewLayers = true, QgsProcessingUtils::LayerHint typeHint = QgsProcessingUtils::LayerHint::UnknownType, QgsProcessing::LayerOptionsFlags flags = QgsProcessing::LayerOptionsFlags() );
 
     /**
      * Converts a variant \a value to a new feature source.
@@ -562,7 +563,7 @@ class CORE_EXPORT QgsProcessingUtils
      *
      * \since QGIS 3.8
      */
-    static QgsMapLayer *loadMapLayerFromString( const QString &string, const QgsCoordinateTransformContext &transformContext, LayerHint typeHint = LayerHint::UnknownType );
+    static QgsMapLayer *loadMapLayerFromString( const QString &string, const QgsCoordinateTransformContext &transformContext, LayerHint typeHint = LayerHint::UnknownType, QgsProcessing::LayerOptionsFlags flags = QgsProcessing::LayerOptionsFlags() );
 
     /**
      * Interprets a string as a map layer. The method will attempt to

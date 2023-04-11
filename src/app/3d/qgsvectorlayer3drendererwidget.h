@@ -65,7 +65,7 @@ class QgsVectorLayer3DRendererWidget : public QgsMapLayerConfigWidget
   public:
     explicit QgsVectorLayer3DRendererWidget( QgsMapLayer *layer, QgsMapCanvas *canvas, QWidget *parent = nullptr );
 
-    void syncToLayer( QgsMapLayer *layer ) override;
+    void syncToLayer( QgsMapLayer *layer ) final;
 
     void setDockMode( bool dockMode ) override;
 

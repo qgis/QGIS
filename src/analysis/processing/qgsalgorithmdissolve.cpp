@@ -36,7 +36,7 @@ QVariantMap QgsCollectorAlgorithm::processCollection( const QVariantMap &paramet
   if ( !sink )
     throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
 
-  const QStringList fields = parameterAsFields( parameters, QStringLiteral( "FIELD" ), context );
+  const QStringList fields = parameterAsStrings( parameters, QStringLiteral( "FIELD" ), context );
 
   const long count = source->featureCount();
 

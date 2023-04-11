@@ -97,7 +97,7 @@ void QgsProviderMetadata::cleanupProvider()
 
 }
 
-QString QgsProviderMetadata::filters( FilterType )
+QString QgsProviderMetadata::filters( Qgis::FileFilterType )
 {
   return QString();
 }

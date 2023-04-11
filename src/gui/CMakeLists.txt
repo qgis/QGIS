@@ -141,6 +141,7 @@ set(QGIS_GUI_SRCS
   codeeditors/qgscodeeditorcolorscheme.cpp
   codeeditors/qgscodeeditorcolorschemeregistry.cpp
   codeeditors/qgscodeeditorcss.cpp
+  codeeditors/qgscodeeditordockwidget.cpp
   codeeditors/qgscodeeditorhistorydialog.cpp
   codeeditors/qgscodeeditorhtml.cpp
   codeeditors/qgscodeeditorjs.cpp
@@ -414,6 +415,9 @@ set(QGIS_GUI_SRCS
   providers/gdal/qgsgdalsourceselect.cpp
   providers/gdal/qgsgdalguiprovider.cpp
 
+  providers/mbtilesvectortiles/qgsmbtilesvectortileguiprovider.cpp
+  providers/mbtilesvectortiles/qgsmbtilesvectortilesourcewidget.cpp
+
   providers/ogr/qgsogrguiprovider.cpp
   providers/ogr/qgsogrdbsourceselect.cpp
   providers/ogr/qgsogrdbtablemodel.cpp
@@ -422,6 +426,12 @@ set(QGIS_GUI_SRCS
   providers/ogr/qgsgeopackageitemguiprovider.cpp
   providers/ogr/qgsogritemguiprovider.cpp
   providers/ogr/qgsgeopackageprojectstorageguiprovider.cpp
+
+  providers/vtpkvectortiles/qgsvtpkvectortileguiprovider.cpp
+  providers/vtpkvectortiles/qgsvtpkvectortilesourcewidget.cpp
+
+  sensor/qgssensorguiregistry.cpp
+  sensor/qgssensorwidget.cpp
 
   settings/qgssettingsregistrygui.cpp
 
@@ -497,6 +507,7 @@ set(QGIS_GUI_SRCS
   qgsdial.cpp
   qgsdialog.cpp
   qgsdirectionallightwidget.cpp
+  qgsdockablewidgethelper.cpp
   qgsdoublevalidator.cpp
   qgsdockwidget.cpp
   qgsencodingfiledialog.cpp
@@ -766,6 +777,7 @@ set(QGIS_GUI_HDRS
   qgsdial.h
   qgsdialog.h
   qgsdirectionallightwidget.h
+  qgsdockablewidgethelper.h
   qgsdockwidget.h
   qgsdoublevalidator.h
   qgsencodingfiledialog.h
@@ -1031,6 +1043,7 @@ set(QGIS_GUI_HDRS
   codeeditors/qgscodeeditorcolorscheme.h
   codeeditors/qgscodeeditorcolorschemeregistry.h
   codeeditors/qgscodeeditorcss.h
+  codeeditors/qgscodeeditordockwidget.h
   codeeditors/qgscodeeditorexpression.h
   codeeditors/qgscodeeditorhistorydialog.h
   codeeditors/qgscodeeditorhtml.h
@@ -1310,6 +1323,9 @@ set(QGIS_GUI_HDRS
   providers/gdal/qgsgdalguiprovider.h
   providers/gdal/qgsgdalsourceselect.h
 
+  providers/mbtilesvectortiles/qgsmbtilesvectortileguiprovider.h
+  providers/mbtilesvectortiles/qgsmbtilesvectortilesourcewidget.h
+
   providers/ogr/qgsgeopackageitemguiprovider.h
   providers/ogr/qgsgeopackageprojectstoragedialog.h
   providers/ogr/qgsgeopackageprojectstorageguiprovider.h
@@ -1318,6 +1334,9 @@ set(QGIS_GUI_HDRS
   providers/ogr/qgsogrguiprovider.h
   providers/ogr/qgsogritemguiprovider.h
   providers/ogr/qgsogrsourceselect.h
+
+  providers/vtpkvectortiles/qgsvtpkvectortileguiprovider.h
+  providers/vtpkvectortiles/qgsvtpkvectortilesourcewidget.h
 
   raster/qgsrasterattributetablewidget.h
   raster/qgscreaterasterattributetabledialog.h
@@ -1395,6 +1414,9 @@ set(QGIS_GUI_HDRS
   symbology/qgssymbolslistwidget.h
   symbology/qgssymbolwidgetcontext.h
   symbology/qgsvectorfieldsymbollayerwidget.h
+
+  sensor/qgssensorguiregistry.h
+  sensor/qgssensorwidget.h
 
   settings/qgssettingsregistrygui.h
 
@@ -1540,9 +1562,12 @@ target_include_directories(qgis_gui PUBLIC
   ${CMAKE_SOURCE_DIR}/src/gui/processing/models
   ${CMAKE_SOURCE_DIR}/src/gui/providers
   ${CMAKE_SOURCE_DIR}/src/gui/providers/gdal
+  ${CMAKE_SOURCE_DIR}/src/gui/providers/mbtilesvectortiles
   ${CMAKE_SOURCE_DIR}/src/gui/providers/ogr
+  ${CMAKE_SOURCE_DIR}/src/gui/providers/vtpkvectortiles
   ${CMAKE_SOURCE_DIR}/src/gui/pointcloud
   ${CMAKE_SOURCE_DIR}/src/gui/raster
+  ${CMAKE_SOURCE_DIR}/src/gui/sensor
   ${CMAKE_SOURCE_DIR}/src/gui/settings
   ${CMAKE_SOURCE_DIR}/src/gui/tableeditor
   ${CMAKE_SOURCE_DIR}/src/gui/vector

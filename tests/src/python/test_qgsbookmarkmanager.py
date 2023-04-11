@@ -66,6 +66,8 @@ class TestQgsBookmarkManager(unittest.TestCase):
         self.assertEqual(b.group(), 'group')
         b.setExtent(QgsReferencedRectangle(QgsRectangle(1, 2, 3, 4), QgsCoordinateReferenceSystem('EPSG:3111')))
         self.assertEqual(b.extent(), QgsReferencedRectangle(QgsRectangle(1, 2, 3, 4), QgsCoordinateReferenceSystem('EPSG:3111')))
+        b.setRotation(45.4)
+        self.assertEqual(b.rotation(), 45.4)
 
     def testBookmarkEquality(self):
         b = QgsBookmark()
@@ -90,6 +92,10 @@ class TestQgsBookmarkManager(unittest.TestCase):
         b2.setGroup('x')
         self.assertNotEqual(b, b2)
         b2.setGroup('group')
+        self.assertEqual(b, b2)
+        b2.setRotation(-1)
+        self.assertNotEqual(b, b2)
+        b2.setRotation(0)
         self.assertEqual(b, b2)
         b2.setExtent(QgsReferencedRectangle(QgsRectangle(1, 2, 3, 5), QgsCoordinateReferenceSystem('EPSG:3111')))
         self.assertNotEqual(b, b2)
@@ -308,17 +314,20 @@ class TestQgsBookmarkManager(unittest.TestCase):
         b = QgsBookmark()
         b.setId('1')
         b.setName('b1')
-        b.setExtent(QgsReferencedRectangle(QgsRectangle(11, 21, 31, 41), QgsCoordinateReferenceSystem('EPSG:4326')))
+        b.setExtent(QgsReferencedRectangle(QgsRectangle(11, 21, 31, 41), QgsCoordinateReferenceSystem('EPSG:3857')))
+        b.setRotation(90)
 
         b2 = QgsBookmark()
         b2.setId('2')
         b2.setName('b2')
         b2.setExtent(QgsReferencedRectangle(QgsRectangle(12, 22, 32, 42), QgsCoordinateReferenceSystem('EPSG:4326')))
+        b2.setRotation(-1.1)
 
         b3 = QgsBookmark()
         b3.setId('3')
         b3.setName('b3')
         b3.setExtent(QgsReferencedRectangle(QgsRectangle(32, 32, 33, 43), QgsCoordinateReferenceSystem('EPSG:4326')))
+        b3.setRotation(280)
 
         manager.addBookmark(b)
         manager.addBookmark(b2)
@@ -335,6 +344,22 @@ class TestQgsBookmarkManager(unittest.TestCase):
         self.assertTrue(manager2.readXml(elem, doc))
 
         self.assertEqual(len(manager2.bookmarks()), 3)
+
+        # Check b1 values
+        self.assertEqual(manager2.bookmarkById('1').name(), 'b1')
+        self.assertEqual(manager2.bookmarkById('1').extent(), QgsReferencedRectangle(QgsRectangle(11, 21, 31, 41), QgsCoordinateReferenceSystem('EPSG:3857')))
+        self.assertEqual(manager2.bookmarkById('1').rotation(), 90)
+
+        # Check b2 values
+        self.assertEqual(manager2.bookmarkById('2').name(), 'b2')
+        self.assertEqual(manager2.bookmarkById('2').extent(), QgsReferencedRectangle(QgsRectangle(12, 22, 32, 42), QgsCoordinateReferenceSystem('EPSG:4326')))
+        self.assertEqual(manager2.bookmarkById('2').rotation(), -1.1)
+
+        # Check b3 values
+        self.assertEqual(manager2.bookmarkById('3').name(), 'b3')
+        self.assertEqual(manager2.bookmarkById('3').extent(), QgsReferencedRectangle(QgsRectangle(32, 32, 33, 43), QgsCoordinateReferenceSystem('EPSG:4326')))
+        self.assertEqual(manager2.bookmarkById('3').rotation(), 280)
+
         names = [c.name() for c in manager2.bookmarks()]
         self.assertCountEqual(names, ['b1', 'b2', 'b3'])
 

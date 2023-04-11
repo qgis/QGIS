@@ -231,7 +231,7 @@ void QgsGpsDeviceOptionsWidget::renameCurrentDevice()
 // QgsGpsDeviceOptionsFactory
 //
 QgsGpsDeviceOptionsFactory::QgsGpsDeviceOptionsFactory()
-  : QgsOptionsWidgetFactory( tr( "GPSBabel" ), QIcon() )
+  : QgsOptionsWidgetFactory( tr( "GPSBabel" ), QIcon(), QStringLiteral( "gpsbabel" ) )
 {
 
 }

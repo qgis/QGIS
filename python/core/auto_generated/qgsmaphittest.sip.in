@@ -37,6 +37,13 @@ will be visible on the map - this is useful for content based legend.
 Constructor version used with only expressions to filter symbols (no extent or polygon intersection)
 %End
 
+    QgsMapHitTest( const QgsLayerTreeFilterSettings &settings );
+%Docstring
+Constructor based off layer tree filter ``settings``.
+
+.. versionadded:: 3.32
+%End
+
     void run();
 %Docstring
 Runs the map hit test
@@ -92,21 +99,9 @@ Executes a QgsMapHitTest in a background thread.
 %End
   public:
 
-    QgsMapHitTestTask( const QgsMapSettings &settings, const QgsGeometry &polygon = QgsGeometry(), const QgsMapHitTest::LayerFilterExpression &layerFilterExpression = QgsMapHitTest::LayerFilterExpression() );
+    QgsMapHitTestTask( const QgsLayerTreeFilterSettings &settings );
 %Docstring
-Constructor for QgsMapHitTestTask, filtering by a visible geometry.
-
-:param settings: Map settings used to evaluate symbols
-:param polygon: Polygon geometry to refine the hit test
-:param layerFilterExpression: Expression string for each layer id to evaluate in order to refine the symbol selection
-%End
-
-    QgsMapHitTestTask( const QgsMapSettings &settings, const QgsMapHitTest::LayerFilterExpression &layerFilterExpression );
-%Docstring
-Constructor for QgsMapHitTestTask, filtering by expressions.
-
-:param settings: Map settings used to evaluate symbols
-:param layerFilterExpression: Expression string for each layer id to evaluate in order to refine the symbol selection
+Constructor for QgsMapHitTestTask, using the specified filter ``settings``.
 %End
 
 

@@ -20,6 +20,9 @@
 #include "qgis_sip.h"
 #include "qgsvectortiledataprovider.h"
 #include "qgsprovidermetadata.h"
+#include "qgsvectortilematrixset.h"
+
+#include <QImage>
 
 #define SIP_NO_FILE
 
@@ -35,13 +38,26 @@ class CORE_EXPORT QgsVtpkVectorTileDataProvider : public QgsVectorTileDataProvid
     QgsVtpkVectorTileDataProvider( const QString &uri,
                                    const QgsDataProvider::ProviderOptions &providerOptions,
                                    QgsDataProvider::ReadFlags flags );
+    QgsVtpkVectorTileDataProvider( const QgsVtpkVectorTileDataProvider &other );
 
+    /**
+     * QgsVtpkVectorTileDataProvider cannot be assigned.
+     */
+    QgsVtpkVectorTileDataProvider &operator=( const QgsVtpkVectorTileDataProvider &other ) = delete;
+
+    QgsVectorTileDataProvider::ProviderCapabilities providerCapabilities() const override;
     QString name() const override;
     QString description() const override;
     QgsVectorTileDataProvider *clone() const override;
     QString sourcePath() const override;
     bool isValid() const override;
     QgsCoordinateReferenceSystem crs() const override;
+    QgsRectangle extent() const override;
+    QgsLayerMetadata layerMetadata() const override;
+    const QgsVectorTileMatrixSet &tileMatrixSet() const override;
+    QVariantMap styleDefinition() const override;
+    QVariantMap spriteDefinition() const override;
+    QImage spriteImage() const override;
     QByteArray readTile( const QgsTileMatrix &tileMatrix, const QgsTileXYZ &id, QgsFeedback *feedback = nullptr ) const override;
     QList<QgsVectorTileRawData> readTiles( const QgsTileMatrix &, const QVector<QgsTileXYZ> &tiles, QgsFeedback *feedback = nullptr ) const override;
 
@@ -52,6 +68,14 @@ class CORE_EXPORT QgsVtpkVectorTileDataProvider : public QgsVectorTileDataProvid
 
     //! Returns raw tile data for a single tile loaded from VTPK file
     static QByteArray loadFromVtpk( QgsVtpkTiles &vtpkTileReader, const QgsTileXYZ &id, QgsFeedback *feedback = nullptr );
+    bool mIsValid = false;
+    QgsCoordinateReferenceSystem mCrs;
+    QgsRectangle mExtent;
+    QgsVectorTileMatrixSet mMatrixSet;
+    QgsLayerMetadata mLayerMetadata;
+    QVariantMap mStyleDefinition;
+    QVariantMap mSpriteDefinition;
+    QImage mSpriteImage;
 
 };
 
@@ -61,9 +85,14 @@ class QgsVtpkVectorTileDataProviderMetadata : public QgsProviderMetadata
     Q_OBJECT
   public:
     QgsVtpkVectorTileDataProviderMetadata();
+    QgsProviderMetadata::ProviderMetadataCapabilities capabilities() const override;
     QgsVtpkVectorTileDataProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() ) override;
     QIcon icon() const override;
     ProviderCapabilities providerCapabilities() const override;
+    QString filters( Qgis::FileFilterType type ) override;
+    QList< QgsProviderSublayerDetails > querySublayers( const QString &uri, Qgis::SublayerQueryFlags flags = Qgis::SublayerQueryFlags(), QgsFeedback *feedback = nullptr ) const override;
+    int priorityForUri( const QString &uri ) const override;
+    QList< Qgis::LayerType > validLayerTypesForUri( const QString &uri ) const override;
     QVariantMap decodeUri( const QString &uri ) const override;
     QString encodeUri( const QVariantMap &parts ) const override;
     QString absoluteToRelativeUri( const QString &uri, const QgsReadWriteContext &context ) const override;

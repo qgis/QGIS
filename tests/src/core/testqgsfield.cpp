@@ -103,6 +103,7 @@ void TestQgsField::copy()
   original.setConstraints( constraints );
   original.setReadOnly( true );
   original.setSplitPolicy( Qgis::FieldDomainSplitPolicy::GeometryRatio );
+  original.setMetadata( {{ 1, QStringLiteral( "abc" )}, {2, 5 }} );
   QgsField copy( original );
   QVERIFY( copy == original );
 
@@ -121,6 +122,7 @@ void TestQgsField::assignment()
   original.setConstraints( constraints );
   original.setReadOnly( true );
   original.setSplitPolicy( Qgis::FieldDomainSplitPolicy::GeometryRatio );
+  original.setMetadata( {{ 1, QStringLiteral( "abc" )}, {2, 5 }} );
   QgsField copy;
   copy = original;
   QVERIFY( copy == original );
@@ -193,6 +195,19 @@ void TestQgsField::gettersSetters()
 
   field.setSplitPolicy( Qgis::FieldDomainSplitPolicy::GeometryRatio );
   QCOMPARE( field.splitPolicy(), Qgis::FieldDomainSplitPolicy::GeometryRatio );
+
+  field.setMetadata( {{ static_cast< int >( Qgis::FieldMetadataProperty::GeometryCrs ), QStringLiteral( "abc" )}, {2, 5 }} );
+  QMap< int, QVariant> expected {{ static_cast< int >( Qgis::FieldMetadataProperty::GeometryCrs ), QStringLiteral( "abc" )}, {2, 5 }};
+  QCOMPARE( field.metadata(), expected );
+  QVERIFY( !field.metadata( Qgis::FieldMetadataProperty::GeometryWkbType ).isValid() );
+  QCOMPARE( field.metadata( Qgis::FieldMetadataProperty::GeometryCrs ).toString(), QStringLiteral( "abc" ) );
+  field.setMetadata( Qgis::FieldMetadataProperty::GeometryWkbType, QStringLiteral( "def" ) );
+  QCOMPARE( field.metadata( Qgis::FieldMetadataProperty::GeometryWkbType ).toString(), QStringLiteral( "def" ) );
+
+  expected = QMap< int, QVariant> {{ static_cast< int >( Qgis::FieldMetadataProperty::GeometryCrs ), QStringLiteral( "abc" )}, {2, 5 }
+    , {static_cast<int>( Qgis::FieldMetadataProperty::GeometryWkbType ), QStringLiteral( "def" ) }
+  };
+  QCOMPARE( field.metadata(), expected );
 }
 
 void TestQgsField::isNumeric()
@@ -335,6 +350,13 @@ void TestQgsField::equality()
   QVERIFY( field1 != field2 );
   field2.setSplitPolicy( Qgis::FieldDomainSplitPolicy::GeometryRatio );
   QVERIFY( field1 == field2 );
+
+  field1.setMetadata( {{ static_cast< int >( Qgis::FieldMetadataProperty::GeometryCrs ), QStringLiteral( "abc" )}, {2, 5 }} );
+  QVERIFY( !( field1 == field2 ) );
+  QVERIFY( field1 != field2 );
+  field2.setMetadata( {{ static_cast< int >( Qgis::FieldMetadataProperty::GeometryCrs ), QStringLiteral( "abc" )}, {2, 5 }} );
+  QVERIFY( field1 == field2 );
+  QVERIFY( !( field1 != field2 ) );
 
   QgsFieldConstraints constraints1;
   QgsFieldConstraints constraints2;
@@ -856,6 +878,7 @@ void TestQgsField::dataStream()
   constraints.setConstraintExpression( QStringLiteral( "constraint expression" ), QStringLiteral( "description" ) );
   constraints.setConstraintStrength( QgsFieldConstraints::ConstraintExpression, QgsFieldConstraints::ConstraintStrengthSoft );
   original.setConstraints( constraints );
+  original.setMetadata( {{ static_cast< int >( Qgis::FieldMetadataProperty::GeometryCrs ), QStringLiteral( "abc" )}, {2, 5 }} );
 
   QByteArray ba;
   QDataStream ds( &ba, QIODevice::ReadWrite );

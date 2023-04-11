@@ -82,7 +82,7 @@ QVariantMap QgsRemoveDuplicatesByAttributeAlgorithm::processAlgorithm( const QVa
   if ( !source )
     throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT" ) ) );
 
-  const QStringList fieldNames = parameterAsFields( parameters, QStringLiteral( "FIELDS" ), context );
+  const QStringList fieldNames = parameterAsStrings( parameters, QStringLiteral( "FIELDS" ), context );
 
   QgsAttributeList attributes;
   for ( const QString &field : fieldNames )

@@ -1,4 +1,4 @@
-name: 🪟 MSYS2 MinGW-w64 Windows 64bit Build
+name: MSYS2 MinGW-w64 Windows 64bit Build
 
 on:
   push:
@@ -95,3 +95,4 @@ jobs:
       - name: Build QGIS
         run: |
           cmake --build build
+          ccache -s

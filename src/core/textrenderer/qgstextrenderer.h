@@ -72,7 +72,7 @@ class CORE_EXPORT QgsTextRenderer
 
     /**
      * Draws text within a rectangle using the specified settings.
-     * \param rect destination rectangle for text
+     * \param rect destination rectangle for text, in painter units
      * \param rotation text rotation
      * \param alignment horizontal alignment
      * \param textLines list of lines of text to draw
@@ -103,7 +103,7 @@ class CORE_EXPORT QgsTextRenderer
      * \warning Unlike drawText(), this method does not automatically update data defined properties in the text \a format. This
      * is the caller's responsibility to do, and must be done prior to generating the text \a document and \a metrics.
      *
-     * \param rect destination rectangle for text
+     * \param rect destination rectangle for text, in painter units
      * \param format base text format
      * \param document text document to draw
      * \param metrics precalculated text metrics
@@ -129,7 +129,7 @@ class CORE_EXPORT QgsTextRenderer
 
     /**
      * Draws text at a point origin using the specified settings.
-     * \param point origin of text
+     * \param point origin of text, in painter units
      * \param rotation text rotation
      * \param alignment horizontal alignment
      * \param textLines list of lines of text to draw
@@ -145,8 +145,43 @@ class CORE_EXPORT QgsTextRenderer
                           bool drawAsOutlines = true );
 
     /**
+     * Draws text along a line using the specified settings.
+     *
+     * \param line line to render text along, in painter units
+     * \param text text to draw
+     * \param context render context
+     * \param format text format
+     * \param offsetAlongLine offset along the line (in painter units) to start text at
+     * \param offsetFromLine offset from the line (in painter units). Negative values will shift the text to the left of the line, positive values will shift the text to the right.
+     *
+     * \since QGIS 3.32
+     */
+    static void drawTextOnLine( const QPolygonF &line, const QString &text,
+                                QgsRenderContext &context, const QgsTextFormat &format,
+                                double offsetAlongLine = 0, double offsetFromLine = 0 );
+
+    /**
+     * Draws a text document along a line using the specified settings.
+     *
+     * \param line line to render text along, in painter units
+     * \param format text format
+     * \param document text document to draw
+     * \param context render context
+     * \param offsetAlongLine offset along the line (in painter units) to start text at
+     * \param offsetFromLine offset from the line (in painter units). Negative values will shift the text to the left of the line, positive values will shift the text to the right.
+     *
+     * \since QGIS 3.32
+     */
+    static void drawDocumentOnLine( const QPolygonF &line,
+                                    const QgsTextFormat &format,
+                                    const QgsTextDocument &document,
+                                    QgsRenderContext &context,
+                                    double offsetAlongLine = 0,
+                                    double offsetFromLine = 0 );
+
+    /**
      * Draws a single component of rendered text using the specified settings.
-     * \param rect destination rectangle for text
+     * \param rect destination rectangle for text, in painter units
      * \param rotation text rotation
      * \param alignment horizontal alignment
      * \param textLines list of lines of text to draw
@@ -168,7 +203,7 @@ class CORE_EXPORT QgsTextRenderer
 
     /**
      * Draws a single component of rendered text using the specified settings.
-     * \param origin origin for start of text. Y coordinate will be used as baseline.
+     * \param origin origin for start of text, in painter units. Y coordinate will be used as baseline.
      * \param rotation text rotation
      * \param alignment horizontal alignment
      * \param textLines list of lines of text to draw
@@ -263,6 +298,15 @@ class CORE_EXPORT QgsTextRenderer
      * \since QGIS 3.16
      */
     static constexpr double FONT_WORKAROUND_SCALE = 10;
+
+    // to match QTextEngine handling of superscript/subscript font sizes
+
+    /**
+     * Scale factor to use for super or subscript text which doesn't have an explicit font size set.
+     *
+     * \since QGIS 3.32
+     */
+    static constexpr double SUPERSCRIPT_SUBSCRIPT_FONT_SIZE_SCALING_FACTOR = 2.0 / 3.0;
 
   private:
 

@@ -128,6 +128,8 @@
 
 #include "canvas/qgscanvasrefreshblocker.h"
 
+#include "qgsdockablewidgethelper.h"
+
 #ifdef HAVE_3D
 #include "qgs3d.h"
 #include "qgs3danimationsettings.h"
@@ -264,6 +266,7 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgsdiagramproperties.h"
 #include "qgslayerdefinition.h"
 #include "qgslayertree.h"
+#include "qgslayertreefiltersettings.h"
 #include "qgslayertreegrouppropertieswidget.h"
 #include "qgslayertreemapcanvasbridge.h"
 #include "qgslayertreemodel.h"
@@ -442,7 +445,9 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "pointcloud/qgspointcloudlayerstylewidget.h"
 #include "pointcloud/qgspointcloudlayersaveasdialog.h"
 #include "pointcloud/qgspointcloudlayerexporter.h"
+
 #include "project/qgsprojectelevationsettingswidget.h"
+#include "sensor/qgsprojectsensorsettingswidget.h"
 
 #include "qgsmaptoolsdigitizingtechniquemanager.h"
 #include "qgsmaptoolshaperegistry.h"
@@ -476,6 +481,9 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 
 #ifdef HAVE_PDAL_QGIS
 #include <pdal/pdal.hpp>
+#if PDAL_VERSION_MAJOR_INT > 2 || (PDAL_VERSION_MAJOR_INT == 2 && PDAL_VERSION_MINOR_INT >= 5)
+#include "qgspdalalgorithms.h"
+#endif
 #endif
 
 //
@@ -969,6 +977,16 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipBadLayers
 
   setDockOptions( dockOptions() | QMainWindow::GroupedDragging );
 
+  QgsDockableWidgetHelper::sAddTabifiedDockWidgetFunction = []( Qt::DockWidgetArea dockArea, QDockWidget * dock, const QStringList & tabSiblings, bool raiseTab )
+  {
+    QgisApp::instance()->addTabifiedDockWidget( dockArea, dock, tabSiblings, raiseTab );
+  };
+  QgsDockableWidgetHelper::sAppStylesheetFunction = []()->QString
+  {
+    return QgisApp::instance()->styleSheet();
+  };
+  QgsDockableWidgetHelper::sOwnerWindow = QgisApp::instance();
+
   //////////
 
   startProfile( tr( "Checking user database" ) );
@@ -1311,6 +1329,8 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipBadLayers
   showDevToolsDock->setObjectName( QStringLiteral( "ShowDevToolsPanel" ) );
   showDevToolsDock->setWhatsThis( tr( "Show Debugging/Development Tools" ) );
 
+  // store last dev tools tab before populating, as the value will be altered as tabs are created
+  const QString lastDevToolsTab = QgsDevToolsPanelWidget::settingLastActiveTab->value();
   mDevToolsWidget = new QgsDevToolsPanelWidget( mDevToolFactories );
   mDevToolsDock->setWidget( mDevToolsWidget );
 //  connect( mDevToolsDock, &QDockWidget::visibilityChanged, mActionStyleDock, &QAction::setChecked );
@@ -1504,6 +1524,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipBadLayers
 
   registerMapLayerPropertiesFactory( new QgsElevationShadingRendererSettingsWidgetFactory( this ) );
   registerProjectPropertiesWidgetFactory( new QgsProjectElevationSettingsWidgetFactory( this ) );
+  registerProjectPropertiesWidgetFactory( new QgsProjectSensorSettingsWidgetFactory( this ) );
 
   activateDeactivateLayerRelatedActions( nullptr ); // after members were created
 
@@ -1950,6 +1971,8 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipBadLayers
     messageBar()->pushWidget( messageWidget, Qgis::MessageLevel::Warning, 0 );
   } );
   QgsApplication::fontManager()->enableFontDownloadsForSession();
+
+  mDevToolsWidget->setActiveTab( lastDevToolsTab );
 }
 
 QgisApp::QgisApp()
@@ -3242,11 +3265,6 @@ void QgisApp::setAppStyleSheet( const QString &stylesheet )
   for ( QgsLayoutDesignerDialog *d : constMLayoutDesignerDialogs )
   {
     d->setStyleSheet( stylesheet );
-  }
-
-  if ( mpMaptip )
-  {
-    mpMaptip->applyFontSettings();
   }
 }
 
@@ -4592,8 +4610,6 @@ QgsMapCanvas *QgisApp::createNewMapCanvas( const QString &name )
   if ( !dock )
     return nullptr;
 
-  setupDockWidget( dock );  // use default dock position settings
-
   dock->mapCanvas()->setLayers( mMapCanvas->layers() );
   dock->mapCanvas()->setExtent( mMapCanvas->extent() );
   QgsDebugMsgLevel( QStringLiteral( "QgisApp::createNewMapCanvas -2- : QgsProject::instance()->crs().description[%1]ellipsoid[%2]" ).arg( QgsProject::instance()->crs().description(), QgsProject::instance()->crs().ellipsoidAcronym() ), 3 );
@@ -4602,7 +4618,7 @@ QgsMapCanvas *QgisApp::createNewMapCanvas( const QString &name )
   return dock->mapCanvas();
 }
 
-QgsMapCanvasDockWidget *QgisApp::createNewMapCanvasDock( const QString &name )
+QgsMapCanvasDockWidget *QgisApp::createNewMapCanvasDock( const QString &name, bool isDocked )
 {
   const auto canvases = mapCanvases();
   for ( QgsMapCanvas *canvas : canvases )
@@ -4614,8 +4630,7 @@ QgsMapCanvasDockWidget *QgisApp::createNewMapCanvasDock( const QString &name )
     }
   }
 
-  QgsMapCanvasDockWidget *mapCanvasWidget = new QgsMapCanvasDockWidget( name, this );
-  mapCanvasWidget->setAllowedAreas( Qt::AllDockWidgetAreas );
+  QgsMapCanvasDockWidget *mapCanvasWidget = new QgsMapCanvasDockWidget( name, this, isDocked );
   mapCanvasWidget->setMainCanvas( mMapCanvas );
 
   QgsMapCanvas *mapCanvas = mapCanvasWidget->mapCanvas();
@@ -4636,15 +4651,21 @@ QgsMapCanvasDockWidget *QgisApp::createNewMapCanvasDock( const QString &name )
     Q_UNUSED( canvasItem ) //item is already added automatically to canvas scene
   }
 
+  markDirty();
   mapCanvas->setCustomDropHandlers( mCustomDropHandlers );
 
-  markDirty();
-  connect( mapCanvasWidget, &QgsMapCanvasDockWidget::closed, this, &QgisApp::markDirty );
+  connect( mapCanvasWidget->dockableWidgetHelper(), &QgsDockableWidgetHelper::closed, this, [ this, mapCanvasWidget]
+  {
+    mOpen2DMapViews.remove( mapCanvasWidget );
+    delete mapCanvasWidget;
+    markDirty();
+  } );
   connect( mapCanvasWidget, &QgsMapCanvasDockWidget::renameTriggered, this, &QgisApp::renameView );
+
+  mOpen2DMapViews.insert( mapCanvasWidget );
 
   return mapCanvasWidget;
 }
-
 
 void QgisApp::setupDockWidget( QDockWidget *dockWidget, bool isFloating, QRect dockGeometry, Qt::DockWidgetArea area )
 {
@@ -4676,6 +4697,17 @@ void QgisApp::setupDockWidget( QDockWidget *dockWidget, bool isFloating, QRect d
 
 void QgisApp::closeMapCanvas( const QString &name )
 {
+  for ( QgsMapCanvasDockWidget *w : mOpen2DMapViews )
+  {
+    if ( w->mapCanvas()->objectName() == name )
+    {
+      w->close();
+      delete w;
+      mOpen2DMapViews.remove( w );
+      return;
+    }
+  }
+
   const auto dockWidgets = findChildren< QgsMapCanvasDockWidget * >();
   for ( QgsMapCanvasDockWidget *w : dockWidgets )
   {
@@ -4683,7 +4715,7 @@ void QgisApp::closeMapCanvas( const QString &name )
     {
       w->close();
       delete w;
-      break;
+      return;
     }
   }
 }
@@ -4691,6 +4723,14 @@ void QgisApp::closeMapCanvas( const QString &name )
 void QgisApp::closeAdditionalMapCanvases()
 {
   QgsCanvasRefreshBlocker refreshBlocker; // closing docks may cause canvases to resize, and we don't want a map refresh occurring
+
+  for ( QgsMapCanvasDockWidget *w : mOpen2DMapViews )
+  {
+    w->close();
+    delete w;
+  }
+  mOpen2DMapViews.clear();
+
   const auto dockWidgets = findChildren< QgsMapCanvasDockWidget * >();
   for ( QgsMapCanvasDockWidget *w : dockWidgets )
   {
@@ -5384,7 +5424,7 @@ void QgisApp::about()
     const QString projVersionRunning { info.version };
     if ( projVersionCompiled != projVersionRunning )
     {
-      versionString += QStringLiteral( "<td>%1</td><td>%2.%3.%4</td>" ).arg( tr( "Compiled against PROJ" ), projVersionCompiled );
+      versionString += QStringLiteral( "<td>%1</td><td>%2</td>" ).arg( tr( "Compiled against PROJ" ), projVersionCompiled );
       versionString += QStringLiteral( "<td>%1</td><td>%2</td>" ).arg( tr( "Running against PROJ" ), projVersionRunning );
     }
     else
@@ -6939,14 +6979,21 @@ void QgisApp::updateFilterLegend()
   bool hasExpressions = mLegendExpressionFilterButton->isChecked() && QgsLayerTreeUtils::hasLegendFilterExpression( *mLayerTreeView->layerTreeModel()->rootGroup() );
   if ( mFilterLegendByMapContentAction->isChecked() || hasExpressions )
   {
-    layerTreeView()->layerTreeModel()->setLegendFilter( &mMapCanvas->mapSettings(),
-        /* useExtent */ mFilterLegendByMapContentAction->isChecked(),
-        /* polygon */ QgsGeometry(),
-        hasExpressions );
+    QgsLayerTreeFilterSettings filterSettings( mMapCanvas->mapSettings() );
+    if ( !mFilterLegendByMapContentAction->isChecked() )
+    {
+      filterSettings.setFlags( Qgis::LayerTreeFilterFlag::SkipVisibilityCheck );
+    }
+    if ( hasExpressions )
+    {
+      filterSettings.setLayerFilterExpressionsFromLayerTree( mLayerTreeView->layerTreeModel()->rootGroup() );
+    }
+
+    layerTreeView()->layerTreeModel()->setFilterSettings( &filterSettings );
   }
   else
   {
-    layerTreeView()->layerTreeModel()->setLegendFilterByMap( nullptr );
+    layerTreeView()->layerTreeModel()->setFilterSettings( nullptr );
   }
 }
 
@@ -7518,8 +7565,21 @@ void QgisApp::changeDataSource( QgsMapLayer *layer )
     const QString path = sourceParts.value( QStringLiteral( "path" ) ).toString();
     const QString closestPath = QFile::exists( path ) ? path : QgsFileUtils::findClosestExistingPath( path );
     dlg.expandPath( closestPath );
-    source.replace( path, QStringLiteral( "<a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( closestPath ).toString(),
-                    path ) );
+    if ( source.contains( path ) )
+    {
+      source.replace( path, QStringLiteral( "<a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( closestPath ).toString(),
+                      path ) );
+    }
+    else
+    {
+      // source might contain the original path using a "QUrl::FullyEncoded" encoding
+      const QString uriEncodedPath = QUrl( path ).toString( QUrl::FullyEncoded );
+      if ( source.contains( uriEncodedPath ) )
+      {
+        source.replace( uriEncodedPath, QStringLiteral( "<a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( closestPath ).toString(),
+                        uriEncodedPath ) );
+      }
+    }
   }
   dlg.setDescription( tr( "Original source URI: %1" ).arg( source ) );
 
@@ -9413,13 +9473,39 @@ QList<QgsMapCanvas *> QgisApp::mapCanvases()
 {
   // filter out browser canvases -- they are children of app, but a different
   // kind of beast, and here we only want the main canvas or dock canvases
-  auto canvases = findChildren< QgsMapCanvas * >();
+  QList<QgsMapCanvas *> canvases = findChildren< QgsMapCanvas * >();
+
+  for ( QgsMapCanvasDockWidget *dock : std::as_const( mOpen2DMapViews ) )
+  {
+    if ( !canvases.contains( dock->mapCanvas() ) )
+    {
+      canvases.append( dock->mapCanvas() );
+    }
+  }
+
   canvases.erase( std::remove_if( canvases.begin(), canvases.end(),
                                   []( QgsMapCanvas * canvas )
   {
     return !canvas || canvas->property( "browser_canvas" ).toBool();
   } ), canvases.end() );
   return canvases;
+}
+
+QgsMapCanvasDockWidget *QgisApp::getMapCanvas( const QString &name )
+{
+  for ( QgsMapCanvasDockWidget *w : std::as_const( mOpen2DMapViews ) )
+  {
+    if ( w->canvasName() == name )
+      return w;
+  }
+
+  const auto dockWidgets = findChildren< QgsMapCanvasDockWidget * >();
+  for ( QgsMapCanvasDockWidget *w : dockWidgets )
+  {
+    if ( w->canvasName() == name )
+      return w;
+  }
+  return nullptr;
 }
 
 QMap< QString, Qgs3DMapScene * > QgisApp::map3DScenes()
@@ -12999,7 +13085,6 @@ void QgisApp::newMapCanvas()
   QgsMapCanvasDockWidget *dock = createNewMapCanvasDock( name );
   if ( dock )
   {
-    setupDockWidget( dock, true );
     dock->mapCanvas()->setLayers( mMapCanvas->layers() );
     dock->mapCanvas()->setExtent( mMapCanvas->extent() );
     QgsDebugMsgLevel( QStringLiteral( "QgisApp::newMapCanvas() -4- : QgsProject::instance()->crs().description[%1] ellipsoid[%2]" ).arg( QgsProject::instance()->crs().description(), QgsProject::instance()->crs().ellipsoidAcronym() ), 3 );
@@ -13024,6 +13109,12 @@ void QgisApp::initNativeProcessing()
   QgsApplication::processingRegistry()->addProvider( new QgsNativeAlgorithms( QgsApplication::processingRegistry() ) );
 #ifdef HAVE_3D
   QgsApplication::processingRegistry()->addProvider( new Qgs3DAlgorithms( QgsApplication::processingRegistry() ) );
+#endif
+
+#ifdef HAVE_PDAL_QGIS
+#if PDAL_VERSION_MAJOR_INT > 1 && PDAL_VERSION_MINOR_INT >= 5
+  QgsApplication::processingRegistry()->addProvider( new QgsPdalAlgorithms( QgsApplication::processingRegistry() ) );
+#endif
 #endif
 }
 
@@ -16002,8 +16093,7 @@ void QgisApp::writeProject( QDomDocument &doc )
 
   // Save the position of the map view docks
   QDomElement mapViewNode = doc.createElement( QStringLiteral( "mapViewDocks" ) );
-  const auto dockWidgets = findChildren< QgsMapCanvasDockWidget * >();
-  for ( QgsMapCanvasDockWidget *w : dockWidgets )
+  for ( QgsMapCanvasDockWidget *w : std::as_const( mOpen2DMapViews ) )
   {
     QDomElement node = doc.createElement( QStringLiteral( "view" ) );
     node.setAttribute( QStringLiteral( "name" ), w->mapCanvas()->objectName() );
@@ -16014,7 +16104,7 @@ void QgisApp::writeProject( QDomDocument &doc )
     node.setAttribute( QStringLiteral( "scaleFactor" ), w->scaleFactor() );
     node.setAttribute( QStringLiteral( "showLabels" ), w->labelsVisible() );
     node.setAttribute( QStringLiteral( "zoomSelected" ), w->isAutoZoomToSelected() );
-    writeDockWidgetSettings( w, node );
+    w->dockableWidgetHelper()->writeXml( node );
     mapViewNode.appendChild( node );
   }
   qgisNode.appendChild( mapViewNode );
@@ -16031,16 +16121,6 @@ void QgisApp::writeProject( QDomDocument &doc )
   }
 #endif
   projectChanged( doc );
-}
-
-void QgisApp::writeDockWidgetSettings( QDockWidget *dockWidget, QDomElement &elem )
-{
-  elem.setAttribute( QStringLiteral( "x" ), dockWidget->x() );
-  elem.setAttribute( QStringLiteral( "y" ), dockWidget->y() );
-  elem.setAttribute( QStringLiteral( "width" ), dockWidget->width() );
-  elem.setAttribute( QStringLiteral( "height" ), dockWidget->height() );
-  elem.setAttribute( QStringLiteral( "floating" ), dockWidget->isFloating() );
-  elem.setAttribute( QStringLiteral( "area" ), dockWidgetArea( dockWidget ) );
 }
 
 bool QgisApp::askUserForDatumTransform( const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs, const QgsMapLayer *layer )
@@ -16077,19 +16157,6 @@ bool QgisApp::askUserForDatumTransform( const QgsCoordinateReferenceSystem &sour
   return QgsDatumTransformDialog::run( sourceCrs, destinationCrs, this, mMapCanvas, title );
 }
 
-void QgisApp::readDockWidgetSettings( QDockWidget *dockWidget, const QDomElement &elem )
-{
-  int x = elem.attribute( QStringLiteral( "x" ), QStringLiteral( "0" ) ).toInt();
-  int y = elem.attribute( QStringLiteral( "y" ), QStringLiteral( "0" ) ).toInt();
-  int w = elem.attribute( QStringLiteral( "width" ), QStringLiteral( "400" ) ).toInt();
-  int h = elem.attribute( QStringLiteral( "height" ), QStringLiteral( "400" ) ).toInt();
-  bool floating = elem.attribute( QStringLiteral( "floating" ), QStringLiteral( "0" ) ).toInt();
-  Qt::DockWidgetArea area = static_cast< Qt::DockWidgetArea >( elem.attribute( QStringLiteral( "area" ), QString::number( Qt::RightDockWidgetArea ) ).toInt() );
-
-  setupDockWidget( dockWidget, floating, QRect( x, y, w, h ), area );
-}
-
-
 void QgisApp::readProject( const QDomDocument &doc )
 {
   projectChanged( doc );
@@ -16120,9 +16187,11 @@ void QgisApp::readProject( const QDomDocument &doc )
       double scaleFactor = elementNode.attribute( QStringLiteral( "scaleFactor" ), QStringLiteral( "1" ) ).toDouble();
       bool showLabels = elementNode.attribute( QStringLiteral( "showLabels" ), QStringLiteral( "1" ) ).toInt();
       bool zoomSelected = elementNode.attribute( QStringLiteral( "zoomSelected" ), QStringLiteral( "0" ) ).toInt();
+      bool isDocked = elementNode.attribute( QStringLiteral( "isDocked" ), QStringLiteral( "1" ) ).toInt() == 1;
 
-      QgsMapCanvasDockWidget *mapCanvasDock = createNewMapCanvasDock( mapName );
-      readDockWidgetSettings( mapCanvasDock, elementNode );
+      QgsMapCanvasDockWidget *mapCanvasDock = createNewMapCanvasDock( mapName, isDocked );
+      mapCanvasDock->dockableWidgetHelper()->readXml( elementNode );
+
       QgsMapCanvas *mapCanvas = mapCanvasDock->mapCanvas();
       mapCanvasDock->setViewCenterSynchronized( synced );
       mapCanvasDock->setCursorMarkerVisible( showCursor );

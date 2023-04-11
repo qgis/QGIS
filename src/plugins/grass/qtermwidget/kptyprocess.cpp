@@ -32,8 +32,10 @@
 #include "kprocess.h"
 #include "kptydevice.h"
 
-#include <stdlib.h>
+#include <cstdlib>
 #include <unistd.h>
+#include <csignal>
+#include <QDebug>
 
 KPtyProcess::KPtyProcess(QObject *parent) :
     KProcess(new KPtyProcessPrivate, parent)
@@ -61,12 +63,25 @@ KPtyProcess::~KPtyProcess()
 {
     Q_D(KPtyProcess);
 
-    if (state() != QProcess::NotRunning && d->addUtmp) {
-        d->pty->logout();
-        disconnect(SIGNAL(stateChanged(QProcess::ProcessState)),
-                   this, SLOT(_k_onStateChanged(QProcess::ProcessState)));
+    if (state() != QProcess::NotRunning)
+    {
+        if (d->addUtmp)
+        {
+            d->pty->logout();
+            disconnect(SIGNAL(stateChanged(QProcess::ProcessState)),
+                    this, SLOT(_k_onStateChanged(QProcess::ProcessState)));
+        }
     }
     delete d->pty;
+    waitForFinished(300); // give it some time to finish
+    if (state() != QProcess::NotRunning)
+    {
+        qWarning() << Q_FUNC_INFO << "the terminal process is still running, trying to stop it by SIGHUP";
+        ::kill(static_cast<pid_t>(processId()), SIGHUP);
+        waitForFinished(300);
+        if (state() != QProcess::NotRunning)
+            qCritical() << Q_FUNC_INFO << "process didn't stop upon SIGHUP and will be SIGKILL-ed";
+    }
 }
 
 void KPtyProcess::setPtyChannels(PtyChannels channels)

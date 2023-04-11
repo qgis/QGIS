@@ -394,7 +394,7 @@ class QgsGdalProviderMetadata final: public QgsProviderMetadata
       double *geoTransform,
       const QgsCoordinateReferenceSystem &crs,
       const QStringList &createOptions ) override;
-    QString filters( FilterType type ) override;
+    QString filters( Qgis::FileFilterType type ) override;
     QList<QPair<QString, QString> > pyramidResamplingMethods() override;
     QgsProviderMetadata::ProviderMetadataCapabilities capabilities() const override;
     ProviderCapabilities providerCapabilities() const override;

@@ -81,6 +81,11 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
     void apply();
 
     /**
+     * Slot called when cancel button is pressed or dialog is not accepted
+     */
+    void cancel();
+
+    /**
      * Let the user add a scale to the list of project scales
      * used in scale combobox instead of global ones.
     */

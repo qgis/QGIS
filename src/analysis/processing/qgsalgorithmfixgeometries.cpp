@@ -18,6 +18,8 @@
 #include "qgsalgorithmfixgeometries.h"
 #include "qgsvectorlayer.h"
 
+#include <geos_c.h>
+
 ///@cond PRIVATE
 
 QString QgsFixGeometriesAlgorithm::name() const

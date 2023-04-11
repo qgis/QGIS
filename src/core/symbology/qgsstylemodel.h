@@ -344,7 +344,7 @@ class CORE_EXPORT QgsStyleProxyModel: public QSortFilterProxyModel
     void setSymbolTypeFilterEnabled( bool enabled );
 
     /**
-     * Returns the layer type filter, or QgsWkbTypes::UnknownGeometry if no
+     * Returns the layer type filter, or Qgis::GeometryType::Unknown if no
      * layer type filter is present.
      *
      * This setting has an effect on label settings entities and 3d symbols only.
@@ -354,7 +354,7 @@ class CORE_EXPORT QgsStyleProxyModel: public QSortFilterProxyModel
     Qgis::GeometryType layerType() const;
 
     /**
-     * Sets the layer \a type filter. Set \a type to QgsWkbTypes::UnknownGeometry if no
+     * Sets the layer \a type filter. Set \a type to Qgis::GeometryType::Unknown if no
      * layer type filter is desired.
      *
      * \see layerType()

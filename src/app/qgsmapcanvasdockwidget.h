@@ -17,7 +17,6 @@
 
 #include "ui_qgsmapcanvasdockwidgetbase.h"
 
-#include "qgsdockwidget.h"
 #include "qgspointxy.h"
 #include "qgis_app.h"
 #include <QWidgetAction>
@@ -33,17 +32,21 @@ class QgsVertexMarker;
 class QgsRubberBand;
 class QCheckBox;
 class QRadioButton;
+class QgsDockableWidgetHelper;
 
 /**
  * \class QgsMapCanvasDockWidget
  * A dock widget with an embedded map canvas, for additional map views.
  * \since QGIS 3.0
  */
-class APP_EXPORT QgsMapCanvasDockWidget : public QgsDockWidget, private Ui::QgsMapCanvasDockWidgetBase
+class APP_EXPORT QgsMapCanvasDockWidget : public QWidget, private Ui::QgsMapCanvasWidgetBase
 {
     Q_OBJECT
   public:
-    explicit QgsMapCanvasDockWidget( const QString &name, QWidget *parent = nullptr );
+    explicit QgsMapCanvasDockWidget( const QString &name, QWidget *parent = nullptr, bool isDocked = true );
+    ~QgsMapCanvasDockWidget() override;
+
+    QgsDockableWidgetHelper *dockableWidgetHelper();
 
     /**
      * Sets the main app map canvas.
@@ -54,6 +57,9 @@ class APP_EXPORT QgsMapCanvasDockWidget : public QgsDockWidget, private Ui::QgsM
      * Returns the map canvas contained in the dock widget.
      */
     QgsMapCanvas *mapCanvas();
+
+    void setCanvasName( const QString &name );
+    QString canvasName() const { return mCanvasName; }
 
     /**
      * Sets whether the view center should be synchronized with the main canvas center.
@@ -168,13 +174,13 @@ class APP_EXPORT QgsMapCanvasDockWidget : public QgsDockWidget, private Ui::QgsM
 
 
   private:
-
+    QString mCanvasName;
     QgsMapCanvas *mMapCanvas = nullptr;
     QgsMapCanvas *mMainCanvas = nullptr;
     QMenu *mMenu = nullptr;
     QList<QAction *> mMenuPresetActions;
-    QRadioButton *mSyncExtentRadio = nullptr;
-    QRadioButton *mSyncSelectionRadio = nullptr;
+    QCheckBox *mSyncExtentCheck = nullptr;
+    QCheckBox *mSyncSelectionCheck = nullptr;
     QgsScaleComboBox *mScaleCombo = nullptr;
     QgsDoubleSpinBox *mRotationEdit = nullptr;
     QgsDoubleSpinBox *mMagnificationEdit = nullptr;
@@ -188,8 +194,13 @@ class APP_EXPORT QgsMapCanvasDockWidget : public QgsDockWidget, private Ui::QgsM
     QTimer mResizeTimer;
     QgsVertexMarker *mXyMarker = nullptr;
     QgsRubberBand *mExtentRubberBand = nullptr;
+
+    QgsDockableWidgetHelper *mDockableWidgetHelper = nullptr;
+
     void syncViewCenter( QgsMapCanvas *sourceCanvas );
     void syncSelection();
+
+    friend class TestQgsMapCanvasDockWidget;
 };
 
 /**
@@ -206,8 +217,8 @@ class QgsMapSettingsAction: public QWidgetAction
 
     QgsMapSettingsAction( QWidget *parent = nullptr );
 
-    QRadioButton *syncExtentRadio() { return mSyncExtentRadio; }
-    QRadioButton *syncSelectionRadio() { return mSyncSelectionRadio; }
+    QCheckBox *syncExtentCheck() { return mSyncExtentCheck; }
+    QCheckBox *syncSelectionCheck() { return mSyncSelectionCheck; }
     QgsScaleComboBox *scaleCombo() { return mScaleCombo; }
     QgsDoubleSpinBox *rotationSpinBox() { return mRotationWidget; }
     QgsDoubleSpinBox *magnifierSpinBox() { return mMagnifierWidget; }
@@ -215,8 +226,8 @@ class QgsMapSettingsAction: public QWidgetAction
     QCheckBox *syncScaleCheckBox() { return mSyncScaleCheckBox; }
 
   private:
-    QRadioButton *mSyncSelectionRadio = nullptr;
-    QRadioButton *mSyncExtentRadio = nullptr;
+    QCheckBox *mSyncSelectionCheck = nullptr;
+    QCheckBox *mSyncExtentCheck = nullptr;
     QgsScaleComboBox *mScaleCombo = nullptr;
     QgsDoubleSpinBox *mRotationWidget = nullptr;
     QgsDoubleSpinBox *mMagnifierWidget = nullptr;

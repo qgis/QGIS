@@ -429,7 +429,7 @@ QString QgsCustomProjectionOptionsWidget::helpKey() const
 // QgsCustomProjectionOptionsFactory
 //
 QgsCustomProjectionOptionsFactory::QgsCustomProjectionOptionsFactory()
-  : QgsOptionsWidgetFactory( tr( "User Defined CRS" ), QIcon() )
+  : QgsOptionsWidgetFactory( tr( "User Defined CRS" ), QIcon(), QStringLiteral( "user_defined_crs" ) )
 {
 
 }

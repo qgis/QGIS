@@ -39,9 +39,24 @@ class GUI_EXPORT QgsCodeEditorHTML : public QgsCodeEditor
     QgsCodeEditorHTML( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     Qgis::ScriptLanguage language() const override;
+    Qgis::ScriptLanguageCapabilities languageCapabilities() const override;
+
+  public slots:
+
+    /**
+     * Toggle comment for the selected text.
+     *
+     * \since QGIS 3.32
+     */
+    void toggleComment() override;
+
 
   protected:
     void initializeLexer() override;
+    QString reformatCodeString( const QString &string ) override;
+
+  private:
+    Qgis::ScriptLanguageCapabilities mCapabilities;
 };
 
 #endif

@@ -252,6 +252,11 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
   groupExtent->setCurrentExtent( mMap->extent(), mMap->crs() );
   groupExtent->setOutputExtentFromCurrent();
   groupExtent->setMapCanvas( mMainCanvas );
+
+  // checkbox to display the extent in the 2D Map View
+  mShowExtentIn2DViewCheckbox = new QCheckBox( tr( "Show in 2D map view" ) );
+  mShowExtentIn2DViewCheckbox->setChecked( map->showExtentIn2DView() );
+  groupExtent->layout()->addWidget( mShowExtentIn2DViewCheckbox );
 }
 
 Qgs3DMapConfigWidget::~Qgs3DMapConfigWidget()
@@ -264,6 +269,7 @@ Qgs3DMapConfigWidget::~Qgs3DMapConfigWidget()
 void Qgs3DMapConfigWidget::apply()
 {
   mMap->setExtent( groupExtent->outputExtent() );
+  mMap->setShowExtentIn2DView( mShowExtentIn2DViewCheckbox->isChecked() );
 
   const QgsTerrainGenerator::Type terrainType = static_cast<QgsTerrainGenerator::Type>( cboTerrainType->currentData().toInt() );
 

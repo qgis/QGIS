@@ -1,0 +1,5 @@
+{
+  "name": "Sensors",
+  "type": "group",
+  "description": "This group contains functions to interact with sensors."
+}

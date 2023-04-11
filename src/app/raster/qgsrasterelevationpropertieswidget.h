@@ -30,7 +30,7 @@ class QgsRasterElevationPropertiesWidget : public QgsMapLayerConfigWidget, priva
 
     QgsRasterElevationPropertiesWidget( QgsRasterLayer *layer, QgsMapCanvas *canvas, QWidget *parent );
 
-    void syncToLayer( QgsMapLayer *layer ) override;
+    void syncToLayer( QgsMapLayer *layer ) final;
 
   public slots:
     void apply() override;

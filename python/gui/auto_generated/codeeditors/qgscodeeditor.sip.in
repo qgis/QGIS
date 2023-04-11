@@ -99,6 +99,7 @@ A text editor based on QScintilla2.
     enum class Flag
     {
       CodeFolding,
+      ImmediatelyUpdateHistory,
     };
 
     typedef QFlags<QgsCodeEditor::Flag> Flags;
@@ -329,11 +330,14 @@ is in the QgsCodeEditor.Mode.CommandInput mode.
 
   public slots:
 
-    void runCommand( const QString &command );
+    void runCommand( const QString &command, bool skipHistory = false );
 %Docstring
 Runs a command in the editor.
 
 An :py:func:`~QgsCodeEditor.interpreter` must be set.
+
+Since QGIS 3.32, if ``skipHistory`` is ``True`` then the command will not be automatically
+added to the widget's history.
 
 .. versionadded:: 3.30
 %End
@@ -427,7 +431,7 @@ Stores the commands executed in the editor to the persistent history file.
 %Docstring
 Applies code reformatting to the editor.
 
-This is only supported for editors which return the Qgis.ScriptLanguageCapability.Reformat capability from :py:func:`~QgsCodeEditor.languageCapabilities`.
+This is only supported for editors which return the :py:class:`Qgis`.ScriptLanguageCapability.Reformat capability from :py:func:`~QgsCodeEditor.languageCapabilities`.
 
 .. versionadded:: 3.32
 %End
@@ -436,7 +440,7 @@ This is only supported for editors which return the Qgis.ScriptLanguageCapabilit
 %Docstring
 Applies syntax checking to the editor.
 
-This is only supported for editors which return the Qgis.ScriptLanguageCapability.CheckSyntax capability from :py:func:`~QgsCodeEditor.languageCapabilities`.
+This is only supported for editors which return the :py:class:`Qgis`.ScriptLanguageCapability.CheckSyntax capability from :py:func:`~QgsCodeEditor.languageCapabilities`.
 
 .. versionadded:: 3.32
 %End
@@ -445,7 +449,7 @@ This is only supported for editors which return the Qgis.ScriptLanguageCapabilit
 %Docstring
 Toggle comment for the selected text.
 
-This is only supported for editors which return the Qgis.ScriptLanguageCapability.ToggleComment capability from :py:func:`~QgsCodeEditor.languageCapabilities`.
+This is only supported for editors which return the :py:class:`Qgis`.ScriptLanguageCapability.ToggleComment capability from :py:func:`~QgsCodeEditor.languageCapabilities`.
 
 .. versionadded:: 3.32
 %End
@@ -478,6 +482,8 @@ Returns ``True`` if a ``font`` is a fixed pitch font.
     virtual void keyPressEvent( QKeyEvent *event );
 
     virtual void contextMenuEvent( QContextMenuEvent *event );
+
+    virtual bool eventFilter( QObject *watched, QEvent *event );
 
 
     virtual void initializeLexer();
@@ -543,7 +549,7 @@ actions to the context menu.
 %Docstring
 Applies code reformatting to a ``string`` and returns the result.
 
-This is only supported for editors which return the Qgis.ScriptLanguageCapability.Reformat capability from :py:func:`~QgsCodeEditor.languageCapabilities`.
+This is only supported for editors which return the :py:class:`Qgis`.ScriptLanguageCapability.Reformat capability from :py:func:`~QgsCodeEditor.languageCapabilities`.
 
 .. versionadded:: 3.32
 %End

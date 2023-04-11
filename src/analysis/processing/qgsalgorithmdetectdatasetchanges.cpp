@@ -137,7 +137,7 @@ bool QgsDetectVectorChangesAlgorithm::prepareAlgorithm( const QVariantMap &param
     feedback->reportError( QObject::tr( "CRS for revised layer (%1) does not match the original layer (%2) - reprojection accuracy may affect geometry matching" ).arg( mOriginal->sourceCrs().userFriendlyIdentifier(),
                            mRevised->sourceCrs().userFriendlyIdentifier() ), false );
 
-  mFieldsToCompare = parameterAsFields( parameters, QStringLiteral( "COMPARE_ATTRIBUTES" ), context );
+  mFieldsToCompare = parameterAsStrings( parameters, QStringLiteral( "COMPARE_ATTRIBUTES" ), context );
   mOriginalFieldsToCompareIndices.reserve( mFieldsToCompare.size() );
   mRevisedFieldsToCompareIndices.reserve( mFieldsToCompare.size() );
   QStringList missingOriginalFields;

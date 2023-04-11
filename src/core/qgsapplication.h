@@ -75,6 +75,7 @@ class QgsCoordinateReferenceSystemRegistry;
 class QgsRecentStyleHandler;
 class QgsDatabaseQueryLog;
 class QgsFontManager;
+class QgsSensorRegistry;
 
 /**
  * \ingroup core
@@ -862,6 +863,12 @@ class CORE_EXPORT QgsApplication : public QApplication
     static QgsFontManager *fontManager() SIP_KEEPREFERENCE;
 
     /**
+     * Returns the application's sensor registry, used for sensor types.
+     * \since QGIS 3.32
+     */
+    static QgsSensorRegistry *sensorRegistry() SIP_KEEPREFERENCE;
+
+    /**
      * Returns the application's message log.
      * \since QGIS 3.0
      */
@@ -1171,6 +1178,7 @@ class CORE_EXPORT QgsApplication : public QApplication
       QgsTaskManager *mTaskManager = nullptr;
       QgsLayoutItemRegistry *mLayoutItemRegistry = nullptr;
       QgsAnnotationItemRegistry *mAnnotationItemRegistry = nullptr;
+      QgsSensorRegistry *mSensorRegistry = nullptr;
       QgsUserProfileManager *mUserConfigManager = nullptr;
       QgsBookmarkManager *mBookmarkManager = nullptr;
       QgsTileDownloadManager *mTileDownloadManager = nullptr;

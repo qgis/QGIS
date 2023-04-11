@@ -129,6 +129,7 @@ QgsRasterLayerSaveAsDialog::QgsRasterLayerSaveAsDialog( QgsRasterLayer *rasterLa
   else
   {
     mPyramidsGroupBox->setEnabled( false );
+    mPyramidsGroupBox->setCollapsed( true );
   }
 
   // restore checked state for most groupboxes (default is to restore collapsed state)
@@ -661,6 +662,7 @@ QgsRasterLayerSaveAsDialog::Mode QgsRasterLayerSaveAsDialog::mode() const
 void QgsRasterLayerSaveAsDialog::mRawModeRadioButton_toggled( bool checked )
 {
   mNoDataGroupBox->setEnabled( checked && mDataProvider->bandCount() == 1 );
+  mNoDataGroupBox->setCollapsed( !mNoDataGroupBox->isEnabled() );
 }
 
 void QgsRasterLayerSaveAsDialog::mAddNoDataManuallyToolButton_clicked()

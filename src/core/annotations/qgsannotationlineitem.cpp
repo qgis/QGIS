@@ -21,6 +21,8 @@
 #include "qgslinesymbol.h"
 #include "qgsannotationitemnode.h"
 #include "qgsannotationitemeditoperation.h"
+#include "qgscurve.h"
+#include "qgslinestring.h"
 
 QgsAnnotationLineItem::QgsAnnotationLineItem( QgsCurve *curve )
   : QgsAnnotationItem()
@@ -200,6 +202,8 @@ QgsAnnotationLineItem *QgsAnnotationLineItem::clone()
   item->copyCommonProperties( this );
   return item.release();
 }
+
+void QgsAnnotationLineItem::setGeometry( QgsCurve *geometry ) { mCurve.reset( geometry ); }
 
 const QgsLineSymbol *QgsAnnotationLineItem::symbol() const
 {

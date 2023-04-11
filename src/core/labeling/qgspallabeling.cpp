@@ -757,7 +757,7 @@ void QgsPalLayerSettings::readFromLayerCustomProperties( QgsVectorLayer *layer )
 
   // placement
   placement = static_cast< Qgis::LabelPlacement >( layer->customProperty( QStringLiteral( "labeling/placement" ) ).toInt() );
-  mLineSettings.setPlacementFlags( static_cast< QgsLabeling::LinePlacementFlags >( layer->customProperty( QStringLiteral( "labeling/placementFlags" ) ).toUInt() ) );
+  mLineSettings.setPlacementFlags( static_cast< Qgis::LabelLinePlacementFlags >( layer->customProperty( QStringLiteral( "labeling/placementFlags" ) ).toUInt() ) );
   centroidWhole = layer->customProperty( QStringLiteral( "labeling/centroidWhole" ), QVariant( false ) ).toBool();
   centroidInside = layer->customProperty( QStringLiteral( "labeling/centroidInside" ), QVariant( false ) ).toBool();
   predefinedPositionOrder = QgsLabelingUtils::decodePredefinedPositionOrder( layer->customProperty( QStringLiteral( "labeling/predefinedPositionOrder" ) ).toString() );
@@ -980,8 +980,8 @@ void QgsPalLayerSettings::readXml( const QDomElement &elem, const QgsReadWriteCo
   // placement
   QDomElement placementElem = elem.firstChildElement( QStringLiteral( "placement" ) );
   placement = static_cast< Qgis::LabelPlacement >( placementElem.attribute( QStringLiteral( "placement" ) ).toInt() );
-  mLineSettings.setPlacementFlags( static_cast< QgsLabeling::LinePlacementFlags >( placementElem.attribute( QStringLiteral( "placementFlags" ) ).toUInt() ) );
-  mPolygonPlacementFlags = static_cast< QgsLabeling::PolygonPlacementFlags >( placementElem.attribute( QStringLiteral( "polygonPlacementFlags" ), QString::number( static_cast< int >( QgsLabeling::PolygonPlacementFlag::AllowPlacementInsideOfPolygon ) ) ).toInt() );
+  mLineSettings.setPlacementFlags( static_cast< Qgis::LabelLinePlacementFlags >( placementElem.attribute( QStringLiteral( "placementFlags" ) ).toUInt() ) );
+  mPolygonPlacementFlags = static_cast< Qgis::LabelPolygonPlacementFlags >( placementElem.attribute( QStringLiteral( "polygonPlacementFlags" ), QString::number( static_cast< int >( Qgis::LabelPolygonPlacementFlag::AllowPlacementInsideOfPolygon ) ) ).toInt() );
 
   centroidWhole = placementElem.attribute( QStringLiteral( "centroidWhole" ), QStringLiteral( "0" ) ).toInt();
   centroidInside = placementElem.attribute( QStringLiteral( "centroidInside" ), QStringLiteral( "0" ) ).toInt();
@@ -2179,7 +2179,7 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
   }
 
 
-  QgsLabeling::PolygonPlacementFlags polygonPlacement = mPolygonPlacementFlags;
+  Qgis::LabelPolygonPlacementFlags polygonPlacement = mPolygonPlacementFlags;
   if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::PolygonLabelOutside ) )
   {
     const QVariant dataDefinedOutside = mDataDefinedProperties.value( QgsPalLayerSettings::PolygonLabelOutside, context.expressionContext() );
@@ -2191,18 +2191,18 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
         if ( value.compare( QLatin1String( "force" ), Qt::CaseInsensitive ) == 0 )
         {
           // forced outside placement -- remove inside flag, add outside flag
-          polygonPlacement &= ~static_cast< int >( QgsLabeling::PolygonPlacementFlag::AllowPlacementInsideOfPolygon );
-          polygonPlacement |= QgsLabeling::PolygonPlacementFlag::AllowPlacementOutsideOfPolygon;
+          polygonPlacement &= ~static_cast< int >( Qgis::LabelPolygonPlacementFlag::AllowPlacementInsideOfPolygon );
+          polygonPlacement |= Qgis::LabelPolygonPlacementFlag::AllowPlacementOutsideOfPolygon;
         }
         else if ( value.compare( QLatin1String( "yes" ), Qt::CaseInsensitive ) == 0 )
         {
           // permit outside placement
-          polygonPlacement |= QgsLabeling::PolygonPlacementFlag::AllowPlacementOutsideOfPolygon;
+          polygonPlacement |= Qgis::LabelPolygonPlacementFlag::AllowPlacementOutsideOfPolygon;
         }
         else if ( value.compare( QLatin1String( "no" ), Qt::CaseInsensitive ) == 0 )
         {
           // block outside placement
-          polygonPlacement &= ~static_cast< int >( QgsLabeling::PolygonPlacementFlag::AllowPlacementOutsideOfPolygon );
+          polygonPlacement &= ~static_cast< int >( Qgis::LabelPolygonPlacementFlag::AllowPlacementOutsideOfPolygon );
         }
       }
       else
@@ -2210,12 +2210,12 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
         if ( dataDefinedOutside.toBool() )
         {
           // permit outside placement
-          polygonPlacement |= QgsLabeling::PolygonPlacementFlag::AllowPlacementOutsideOfPolygon;
+          polygonPlacement |= Qgis::LabelPolygonPlacementFlag::AllowPlacementOutsideOfPolygon;
         }
         else
         {
           // block outside placement
-          polygonPlacement &= ~static_cast< int >( QgsLabeling::PolygonPlacementFlag::AllowPlacementOutsideOfPolygon );
+          polygonPlacement &= ~static_cast< int >( Qgis::LabelPolygonPlacementFlag::AllowPlacementOutsideOfPolygon );
         }
       }
     }
@@ -2241,7 +2241,7 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
   // as a result of using perimeter based labeling and the geometry is converted to a boundary)
   // note that we also force this if we are permitting labels to be placed outside of polygons too!
   QgsGeometry permissibleZone;
-  if ( geom.type() == Qgis::GeometryType::Polygon && ( fitInPolygonOnly || polygonPlacement & QgsLabeling::PolygonPlacementFlag::AllowPlacementOutsideOfPolygon ) )
+  if ( geom.type() == Qgis::GeometryType::Polygon && ( fitInPolygonOnly || polygonPlacement & Qgis::LabelPolygonPlacementFlag::AllowPlacementOutsideOfPolygon ) )
   {
     permissibleZone = geom;
     if ( QgsPalLabeling::geometryRequiresPreparation( permissibleZone, context, ct, doClip ? extentGeom : QgsGeometry(), lineSettings.mergeLines() ) )
@@ -2818,7 +2818,7 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
     case Qgis::LabelPlacement::OverPoint:
     case Qgis::LabelPlacement::Horizontal:
     case Qgis::LabelPlacement::Free:
-      if ( polygonPlacement & QgsLabeling::PolygonPlacementFlag::AllowPlacementOutsideOfPolygon )
+      if ( polygonPlacement & Qgis::LabelPolygonPlacementFlag::AllowPlacementOutsideOfPolygon )
       {
         distance = std::max( distance, 2.0 );
       }

@@ -19,15 +19,20 @@
 #include "qgshelp.h"
 #include "qgsmaplayerstylemanager.h"
 #include "qgsmaplayerstyleguiutils.h"
+#include "qgsprovidersourcewidgetproviderregistry.h"
 #include "qgsvectortilebasicrendererwidget.h"
 #include "qgsvectortilebasiclabelingwidget.h"
 #include "qgsvectortilelayer.h"
+#include "qgsvectortileutils.h"
 #include "qgsgui.h"
 #include "qgsnative.h"
 #include "qgsapplication.h"
+#include "qgsjsonutils.h"
 #include "qgsmetadatawidget.h"
 #include "qgsmaplayerloadstyledialog.h"
 #include "qgsmapboxglstyleconverter.h"
+#include "qgsprovidersourcewidget.h"
+#include "qgsdatumtransformdialog.h"
 #include <QFileDialog>
 #include <QMenu>
 #include <QMessageBox>
@@ -54,10 +59,17 @@ QgsVectorTileLayerProperties::QgsVectorTileLayerProperties( QgsVectorTileLayer *
   connect( buttonBox->button( QDialogButtonBox::Apply ), &QAbstractButton::clicked, this, &QgsVectorTileLayerProperties::apply );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsVectorTileLayerProperties::showHelp );
 
+  connect( mCrsSelector, &QgsProjectionSelectionWidget::crsChanged, this, &QgsVectorTileLayerProperties::crsChanged );
+
+  // scale based layer visibility related widgets
+  mScaleRangeWidget->setMapCanvas( mMapCanvas );
+
   // QgsOptionsDialogBase handles saving/restoring of geometry, splitter and current tab states,
   // switching vertical tabs between icon/text to icon-only modes (splitter collapsed to left),
   // and connecting QDialogButtonBox's accepted/rejected signals to dialog's accept/reject slots
   initOptionsBase( false );
+
+  mSourceGroupBox->hide();
 
 #ifdef WITH_QTWEBKIT
   // Setup information tab
@@ -127,9 +139,25 @@ QgsVectorTileLayerProperties::QgsVectorTileLayerProperties( QgsVectorTileLayer *
 
 void QgsVectorTileLayerProperties::apply()
 {
+  if ( mSourceWidget )
+  {
+    const QString newSource = mSourceWidget->sourceUri();
+    if ( newSource != mLayer->source() )
+    {
+      mLayer->setDataSource( newSource, mLayer->name(), mLayer->providerType(), QgsDataProvider::ProviderOptions() );
+    }
+  }
+
+  mLayer->setName( mLayerOrigNameLineEd->text() );
+  mLayer->setCrs( mCrsSelector->crs() );
+
   mRendererWidget->apply();
   mLabelingWidget->apply();
   mMetadataWidget->acceptMetadata();
+
+  mLayer->setScaleBasedVisibility( chkUseScaleDependentRendering->isChecked() );
+  mLayer->setMinimumScale( mScaleRangeWidget->minimumScale() );
+  mLayer->setMaximumScale( mScaleRangeWidget->maximumScale() );
 }
 
 void QgsVectorTileLayerProperties::onCancel()
@@ -157,14 +185,51 @@ void QgsVectorTileLayerProperties::syncToLayer()
   mMetadataViewer->setHtml( html );
 
   /*
+   * Source
+   */
+
+  mLayerOrigNameLineEd->setText( mLayer->name() );
+  mCrsSelector->setCrs( mLayer->crs() );
+
+  if ( !mSourceWidget )
+  {
+    mSourceWidget = QgsGui::sourceWidgetProviderRegistry()->createWidget( mLayer );
+    if ( mSourceWidget )
+    {
+      QHBoxLayout *layout = new QHBoxLayout();
+      layout->addWidget( mSourceWidget );
+      mSourceGroupBox->setLayout( layout );
+      mSourceGroupBox->show();
+
+      connect( mSourceWidget, &QgsProviderSourceWidget::validChanged, this, [ = ]( bool isValid )
+      {
+        buttonBox->button( QDialogButtonBox::Apply )->setEnabled( isValid );
+        buttonBox->button( QDialogButtonBox::Ok )->setEnabled( isValid );
+      } );
+    }
+  }
+
+  if ( mSourceWidget )
+  {
+    mSourceWidget->setMapCanvas( mMapCanvas );
+    mSourceWidget->setSourceUri( mLayer->source() );
+  }
+
+  /*
    * Symbology Tab
    */
-  mRendererWidget->setLayer( mLayer );
+  mRendererWidget->syncToLayer( mLayer );
 
   /*
    * Labels Tab
    */
   mLabelingWidget->setLayer( mLayer );
+
+  /*
+   * Rendering
+   */
+  chkUseScaleDependentRendering->setChecked( mLayer->hasScaleBasedVisibility() );
+  mScaleRangeWidget->setScaleRange( mLayer->minimumScale(), mLayer->maximumScale() );
 }
 
 
@@ -260,6 +325,10 @@ void QgsVectorTileLayerProperties::loadStyle()
         context.setTargetUnit( Qgis::RenderUnit::Millimeters );
         //assume source uses 96 dpi
         context.setPixelSizeConversionFactor( 25.4 / 96.0 );
+
+        //load sprites
+        QVariantMap styleDefinition = QgsJsonUtils::parseJson( content ).toMap();
+        QgsVectorTileUtils::loadSprites( styleDefinition, context );
 
         QgsMapBoxGlStyleConverter converter;
 
@@ -409,6 +478,13 @@ void QgsVectorTileLayerProperties::urlClicked( const QUrl &url )
     QgsGui::nativePlatformInterface()->openFileExplorerAndSelectFile( url.toLocalFile() );
   else
     QDesktopServices::openUrl( url );
+}
+
+void QgsVectorTileLayerProperties::crsChanged( const QgsCoordinateReferenceSystem &crs )
+{
+  QgsDatumTransformDialog::run( crs, QgsProject::instance()->crs(), this, mMapCanvas, tr( "Select Transformation" ) );
+  mLayer->setCrs( crs );
+  mMetadataWidget->crsChanged();
 }
 
 void QgsVectorTileLayerProperties::optionsStackedWidget_CurrentChanged( int index )

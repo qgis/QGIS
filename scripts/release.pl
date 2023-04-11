@@ -136,7 +136,13 @@ if( $domajor ) {
 
 my $splashwidth;
 unless( defined $dopoint ) {
-	pod2usage("Splash images/splash/splash-$newmajor.$newminor.png not found") unless -r "images/splash/splash-$newmajor.$newminor.png";
+	pod2usage("Splash images/splash/splash-${newmajor}.${newminor}rc.png not found") unless -r "images/splash/splash-${newmajor}.${newminor}rc.png";
+} elsif($newpatch == 1) {
+	pod2usage("Splash images/splash/splash-${newmajor}.${newminor}.png not found") unless -r "images/splash/splash-${newmajor}.${newminor}.png";
+} elsif($newpatch == 4) {	# TODO handle EPRs
+	if( system("git tag -l | grep -q '^ltr-${newmajor}_${newminor}$'") == 0) {
+		pod2usage("Splash images/splash/splash-${newmajor}.${newminor}ltr.png not found") unless -r "images/splash/splash-${newmajor}.${newminor}ltr.png";
+	}
 }
 
 print "Last pull rebase...\n";
@@ -225,7 +231,7 @@ unless( defined $dopoint ) {
 		$newminor=99;
 	}
 
-	run( "perl -i -pe \"s#Earlier versions of the documentation are also available on the QGIS website:#\$&\\n<a href=\\\"https://qgis.org/api/$apiv\\\">$apiv" . ($doltr ? " (LTR)" : "") . "</a>#\" doc/index.dox", "index.dox update failed");
+	run( "perl -i -pe \"s#Earlier versions of the documentation are also available on the QGIS website:#\$&\\n<a href=\\\"https://qgis.org/api/$apiv\\\">$apiv" . ($doltr ? " (LTR)" : "") . "</a>,#\" doc/index.dox", "index.dox update failed");
 
 	updateCMakeLists($newmajor,$newminor,0,"Master");
 	run( "cp /tmp/changelog debian", "restore changelog failed" );

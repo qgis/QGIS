@@ -211,8 +211,8 @@ class ANALYSIS_EXPORT QgsHelmertGeorefTransform : public QgsGcpTransformerInterf
     struct HelmertParameters
     {
       QgsPointXY origin;
-      double scale;
-      double angle;
+      double scale = 0;
+      double angle = 0;
       bool invertYAxis = false;
     };
     HelmertParameters mHelmertParameters;

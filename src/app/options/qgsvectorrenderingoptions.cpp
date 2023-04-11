@@ -102,7 +102,7 @@ void QgsVectorRenderingOptionsWidget::apply()
 // QgsVectorRenderingOptionsFactory
 //
 QgsVectorRenderingOptionsFactory::QgsVectorRenderingOptionsFactory()
-  : QgsOptionsWidgetFactory( tr( "Vector" ), QIcon() )
+  : QgsOptionsWidgetFactory( tr( "Vector" ), QIcon(), QStringLiteral( "vector" ) )
 {
 
 }

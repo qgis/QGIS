@@ -129,7 +129,7 @@ void QgsRubberBand3D::setColor( QColor color )
 {
   mLineMaterial->setLineColor( color );
   mMarkerSymbol->setColor( color.lighter( 130 ) );
-  if ( mMarkerSymbol->symbolLayerCount() > 0 && mMarkerSymbol->symbolLayer( 0 )->layerType() == QStringLiteral( "SimpleMarker" ) )
+  if ( mMarkerSymbol->symbolLayerCount() > 0 && mMarkerSymbol->symbolLayer( 0 )->layerType() == QLatin1String( "SimpleMarker" ) )
   {
     static_cast<QgsMarkerSymbolLayer *>( mMarkerSymbol->symbolLayer( 0 ) )->setStrokeColor( color );
   }

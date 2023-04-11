@@ -17,6 +17,7 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
+#include "qgslayertreefiltersettings.h"
 #include "qgsmapsettings.h"
 #include "qgsgeometry.h"
 #include "qgstaskmanager.h"
@@ -30,6 +31,7 @@ class QgsVectorLayer;
 class QgsExpression;
 class QgsAbstractFeatureSource;
 class QgsFeatureRenderer;
+class QgsLayerTreeFilterSettings;
 
 /**
  * \ingroup core
@@ -53,6 +55,13 @@ class CORE_EXPORT QgsMapHitTest
 
     //! Constructor version used with only expressions to filter symbols (no extent or polygon intersection)
     QgsMapHitTest( const QgsMapSettings &settings, const QgsMapHitTest::LayerFilterExpression &layerFilterExpression );
+
+    /**
+     * Constructor based off layer tree filter \a settings.
+     *
+     * \since QGIS 3.32
+     */
+    QgsMapHitTest( const QgsLayerTreeFilterSettings &settings );
 
     //! Runs the map hit test
     void run();
@@ -107,27 +116,24 @@ class CORE_EXPORT QgsMapHitTest
      * Runs test for visible symbols from a feature \a source
      * \param source feature source
      * \param layerId associated layer id
-     * \param crs layer crs
      * \param fields layer fields
      * \param renderer layer renderer
      * \param usedSymbols set for storage of visible symbols
      * \param usedSymbolsRuleKey set of storage of visible legend rule keys
      * \param context render context
      * \param feedback optional feedback argument for cancel support
+     * \param visibleExtent total visible area of layer
      * \note not available in Python bindings
      */
     void runHitTestFeatureSource( QgsAbstractFeatureSource *source,
                                   const QString &layerId,
-                                  const QgsCoordinateReferenceSystem &crs,
                                   const QgsFields &fields,
                                   const QgsFeatureRenderer *renderer,
                                   SymbolSet &usedSymbols,
                                   SymbolSet &usedSymbolsRuleKey,
                                   QgsRenderContext &context,
-                                  QgsFeedback *feedback );
-
-    //! The initial map settings
-    QgsMapSettings mSettings;
+                                  QgsFeedback *feedback,
+                                  const QgsGeometry &visibleExtent );
 
     //! The hit test
     HitTest mHitTest;
@@ -135,14 +141,7 @@ class CORE_EXPORT QgsMapHitTest
     //! The hit test, using legend rule keys
     HitTest mHitTestRuleKey;
 
-    //! List of expression filter for each layer
-    QgsMapHitTest::LayerFilterExpression mLayerFilterExpression;
-
-    //! Polygon used for filtering items. May be empty
-    QgsGeometry mPolygon;
-
-    //! Whether to use only expressions during the filtering
-    bool mOnlyExpressions;
+    QgsLayerTreeFilterSettings mSettings;
 
     friend class QgsMapHitTestTask;
 };
@@ -161,21 +160,9 @@ class CORE_EXPORT QgsMapHitTestTask : public QgsTask
   public:
 
     /**
-     * Constructor for QgsMapHitTestTask, filtering by a visible geometry.
-     *
-     * \param settings Map settings used to evaluate symbols
-     * \param polygon Polygon geometry to refine the hit test
-     * \param layerFilterExpression Expression string for each layer id to evaluate in order to refine the symbol selection
+     * Constructor for QgsMapHitTestTask, using the specified filter \a settings.
      */
-    QgsMapHitTestTask( const QgsMapSettings &settings, const QgsGeometry &polygon = QgsGeometry(), const QgsMapHitTest::LayerFilterExpression &layerFilterExpression = QgsMapHitTest::LayerFilterExpression() );
-
-    /**
-     * Constructor for QgsMapHitTestTask, filtering by expressions.
-     *
-     * \param settings Map settings used to evaluate symbols
-     * \param layerFilterExpression Expression string for each layer id to evaluate in order to refine the symbol selection
-     */
-    QgsMapHitTestTask( const QgsMapSettings &settings, const QgsMapHitTest::LayerFilterExpression &layerFilterExpression );
+    QgsMapHitTestTask( const QgsLayerTreeFilterSettings &settings );
 
     /**
      * Returns the hit test results, which are a map of layer ID to
@@ -207,20 +194,17 @@ class CORE_EXPORT QgsMapHitTestTask : public QgsTask
     {
       std::unique_ptr< QgsAbstractFeatureSource > source;
       QString layerId;
-      QgsCoordinateReferenceSystem crs;
       QgsFields fields;
       std::unique_ptr< QgsFeatureRenderer > renderer;
-      QgsRectangle extent;
+      QgsGeometry extent;
       QgsCoordinateTransform transform;
       std::unique_ptr< QgsExpressionContextScope > layerScope;
     };
 
     std::vector< PreparedLayerData > mPreparedData;
 
-    QgsMapSettings mSettings;
-    QgsMapHitTest::LayerFilterExpression mLayerFilterExpression;
-    QgsGeometry mPolygon;
-    bool mOnlyExpressions = false;
+    QgsLayerTreeFilterSettings mSettings;
+
     QMap<QString, QSet<QString>> mResults;
 
     std::unique_ptr< QgsFeedback > mFeedback;

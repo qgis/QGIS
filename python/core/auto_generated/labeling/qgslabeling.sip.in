@@ -22,29 +22,8 @@ Contains constants and enums relating to labeling.
 %End
   public:
 
-    enum LinePlacementFlag
-    {
-      OnLine,
-      AboveLine,
-      BelowLine,
-      MapOrientation,
-    };
-    typedef QFlags<QgsLabeling::LinePlacementFlag> LinePlacementFlags;
-
-
-    enum PolygonPlacementFlag
-    {
-      AllowPlacementOutsideOfPolygon,
-      AllowPlacementInsideOfPolygon,
-    };
-    typedef QFlags<QgsLabeling::PolygonPlacementFlag> PolygonPlacementFlags;
-
 
 };
-
-QFlags<QgsLabeling::LinePlacementFlag> operator|(QgsLabeling::LinePlacementFlag f1, QFlags<QgsLabeling::LinePlacementFlag> f2);
-
-QFlags<QgsLabeling::PolygonPlacementFlag> operator|(QgsLabeling::PolygonPlacementFlag f1, QFlags<QgsLabeling::PolygonPlacementFlag> f2);
 
 
 /************************************************************************

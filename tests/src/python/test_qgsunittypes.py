@@ -11,7 +11,10 @@ __copyright__ = 'Copyright 2016, The QGIS Project'
 
 import qgis  # NOQA
 from qgis.PyQt.QtCore import QLocale
-from qgis.core import QgsUnitTypes
+from qgis.core import (
+    Qgis,
+    QgsUnitTypes
+)
 from qgis.testing import unittest
 
 
@@ -57,7 +60,8 @@ class TestQgsUnitTypes(unittest.TestCase):
                     QgsUnitTypes.DistanceCentimeters: QgsUnitTypes.Standard,
                     QgsUnitTypes.DistanceMillimeters: QgsUnitTypes.Standard,
                     QgsUnitTypes.DistanceUnknownUnit: QgsUnitTypes.UnknownType,
-                    QgsUnitTypes.DistanceNauticalMiles: QgsUnitTypes.Standard
+                    QgsUnitTypes.DistanceNauticalMiles: QgsUnitTypes.Standard,
+                    Qgis.DistanceUnit.Inches: QgsUnitTypes.Standard
                     }
 
         for t in list(expected.keys()):
@@ -74,7 +78,8 @@ class TestQgsUnitTypes(unittest.TestCase):
                  QgsUnitTypes.DistanceCentimeters,
                  QgsUnitTypes.DistanceMillimeters,
                  QgsUnitTypes.DistanceUnknownUnit,
-                 QgsUnitTypes.DistanceNauticalMiles]
+                 QgsUnitTypes.DistanceNauticalMiles,
+                 Qgis.DistanceUnit.Inches]
 
         for u in units:
             res, ok = QgsUnitTypes.decodeDistanceUnit(QgsUnitTypes.encodeUnit(u))
@@ -102,7 +107,8 @@ class TestQgsUnitTypes(unittest.TestCase):
                  QgsUnitTypes.DistanceCentimeters,
                  QgsUnitTypes.DistanceMillimeters,
                  QgsUnitTypes.DistanceUnknownUnit,
-                 QgsUnitTypes.DistanceNauticalMiles]
+                 QgsUnitTypes.DistanceNauticalMiles,
+                 Qgis.DistanceUnit.Inches]
 
         for u in units:
             res, ok = QgsUnitTypes.stringToDistanceUnit(QgsUnitTypes.toString(u))
@@ -133,6 +139,7 @@ class TestQgsUnitTypes(unittest.TestCase):
                     QgsUnitTypes.AreaSquareDegrees: QgsUnitTypes.Geographic,
                     QgsUnitTypes.AreaSquareCentimeters: QgsUnitTypes.Standard,
                     QgsUnitTypes.AreaSquareMillimeters: QgsUnitTypes.Standard,
+                    Qgis.AreaUnit.SquareInches: QgsUnitTypes.Standard,
                     QgsUnitTypes.AreaUnknownUnit: QgsUnitTypes.UnknownType,
                     }
 
@@ -152,6 +159,7 @@ class TestQgsUnitTypes(unittest.TestCase):
                  QgsUnitTypes.AreaSquareDegrees,
                  QgsUnitTypes.AreaSquareCentimeters,
                  QgsUnitTypes.AreaSquareMillimeters,
+                 Qgis.AreaUnit.SquareInches,
                  QgsUnitTypes.AreaUnknownUnit]
 
         for u in units:
@@ -182,6 +190,7 @@ class TestQgsUnitTypes(unittest.TestCase):
                  QgsUnitTypes.AreaSquareDegrees,
                  QgsUnitTypes.AreaSquareCentimeters,
                  QgsUnitTypes.AreaSquareMillimeters,
+                 Qgis.AreaUnit.SquareInches,
                  QgsUnitTypes.AreaUnknownUnit]
 
         for u in units:
@@ -399,7 +408,8 @@ class TestQgsUnitTypes(unittest.TestCase):
                 QgsUnitTypes.DistanceDegrees: 0.00000898315,
                 QgsUnitTypes.DistanceNauticalMiles: 0.000539957,
                 QgsUnitTypes.DistanceMillimeters: 1000.0,
-                QgsUnitTypes.DistanceCentimeters: 100.0
+                QgsUnitTypes.DistanceCentimeters: 100.0,
+                Qgis.DistanceUnit.Inches: 39.37007874015748
             },
             QgsUnitTypes.DistanceKilometers: {
                 QgsUnitTypes.DistanceMeters: 1000.0,
@@ -410,7 +420,8 @@ class TestQgsUnitTypes(unittest.TestCase):
                 QgsUnitTypes.DistanceDegrees: 0.0089832,
                 QgsUnitTypes.DistanceNauticalMiles: 0.53995682073432482717,
                 QgsUnitTypes.DistanceMillimeters: 1000000.0,
-                QgsUnitTypes.DistanceCentimeters: 100000.0
+                QgsUnitTypes.DistanceCentimeters: 100000.0,
+                Qgis.DistanceUnit.Inches: 39370.078740157485
             },
             QgsUnitTypes.DistanceFeet: {
                 QgsUnitTypes.DistanceMeters: 0.3048,
@@ -421,7 +432,8 @@ class TestQgsUnitTypes(unittest.TestCase):
                 QgsUnitTypes.DistanceDegrees: 2.73806498599629E-06,
                 QgsUnitTypes.DistanceNauticalMiles: 0.000164579,
                 QgsUnitTypes.DistanceMillimeters: 304.8,
-                QgsUnitTypes.DistanceCentimeters: 30.48
+                QgsUnitTypes.DistanceCentimeters: 30.48,
+                Qgis.DistanceUnit.Inches: 12
             },
             QgsUnitTypes.DistanceYards: {
                 QgsUnitTypes.DistanceMeters: 0.9144,
@@ -432,7 +444,8 @@ class TestQgsUnitTypes(unittest.TestCase):
                 QgsUnitTypes.DistanceDegrees: 0.0000082,
                 QgsUnitTypes.DistanceNauticalMiles: 0.0004937366590756,
                 QgsUnitTypes.DistanceMillimeters: 914.4,
-                QgsUnitTypes.DistanceCentimeters: 91.44
+                QgsUnitTypes.DistanceCentimeters: 91.44,
+                Qgis.DistanceUnit.Inches: 36
             },
             QgsUnitTypes.DistanceDegrees: {
                 QgsUnitTypes.DistanceMeters: 111319.49079327358,
@@ -443,7 +456,8 @@ class TestQgsUnitTypes(unittest.TestCase):
                 QgsUnitTypes.DistanceDegrees: 1.0,
                 QgsUnitTypes.DistanceNauticalMiles: 60.1077164,
                 QgsUnitTypes.DistanceMillimeters: 111319490.79327358,
-                QgsUnitTypes.DistanceCentimeters: 11131949.079327358
+                QgsUnitTypes.DistanceCentimeters: 11131949.079327358,
+                Qgis.DistanceUnit.Inches: 4382657.117845417
             },
             QgsUnitTypes.DistanceMiles: {
                 QgsUnitTypes.DistanceMeters: 1609.3440000,
@@ -454,7 +468,8 @@ class TestQgsUnitTypes(unittest.TestCase):
                 QgsUnitTypes.DistanceDegrees: 0.0144570,
                 QgsUnitTypes.DistanceNauticalMiles: 0.8689762,
                 QgsUnitTypes.DistanceMillimeters: 1609344.0,
-                QgsUnitTypes.DistanceCentimeters: 160934.4
+                QgsUnitTypes.DistanceCentimeters: 160934.4,
+                Qgis.DistanceUnit.Inches: 63360
             },
             QgsUnitTypes.DistanceNauticalMiles: {
                 QgsUnitTypes.DistanceMeters: 1852.0,
@@ -465,7 +480,8 @@ class TestQgsUnitTypes(unittest.TestCase):
                 QgsUnitTypes.DistanceDegrees: 0.0166367990650,
                 QgsUnitTypes.DistanceNauticalMiles: 1.0,
                 QgsUnitTypes.DistanceMillimeters: 1852000.0,
-                QgsUnitTypes.DistanceCentimeters: 185200.0
+                QgsUnitTypes.DistanceCentimeters: 185200.0,
+                Qgis.DistanceUnit.Inches: 72913.38582677166
             },
             QgsUnitTypes.DistanceMillimeters: {
                 QgsUnitTypes.DistanceMeters: 0.001,
@@ -476,7 +492,8 @@ class TestQgsUnitTypes(unittest.TestCase):
                 QgsUnitTypes.DistanceDegrees: 0.00000000898315,
                 QgsUnitTypes.DistanceNauticalMiles: 0.000000539957,
                 QgsUnitTypes.DistanceMillimeters: 1.0,
-                QgsUnitTypes.DistanceCentimeters: 0.1
+                QgsUnitTypes.DistanceCentimeters: 0.1,
+                Qgis.DistanceUnit.Inches: 0.039370086377953
             },
             QgsUnitTypes.DistanceCentimeters: {
                 QgsUnitTypes.DistanceMeters: 0.01,
@@ -487,7 +504,20 @@ class TestQgsUnitTypes(unittest.TestCase):
                 QgsUnitTypes.DistanceDegrees: 0.0000000898315,
                 QgsUnitTypes.DistanceNauticalMiles: 0.00000539957,
                 QgsUnitTypes.DistanceMillimeters: 10.0,
-                QgsUnitTypes.DistanceCentimeters: 1.0
+                QgsUnitTypes.DistanceCentimeters: 1.0,
+                Qgis.DistanceUnit.Inches: 0.3937007874015748
+            },
+            Qgis.DistanceUnit.Inches: {
+                QgsUnitTypes.DistanceMeters: 0.0254,
+                QgsUnitTypes.DistanceKilometers: 2.54e-5,
+                QgsUnitTypes.DistanceFeet: 0.0833333,
+                QgsUnitTypes.DistanceYards: 0.0277777666667,
+                QgsUnitTypes.DistanceMiles: 1.578282196971590999e-5,
+                QgsUnitTypes.DistanceDegrees: 2.2817208216635843e-07,
+                QgsUnitTypes.DistanceNauticalMiles: 1.371489732183071538e-5,
+                QgsUnitTypes.DistanceMillimeters: 25.4,
+                QgsUnitTypes.DistanceCentimeters: 2.54,
+                Qgis.DistanceUnit.Inches: 1.0
             },
             QgsUnitTypes.DistanceUnknownUnit: {
                 QgsUnitTypes.DistanceMeters: 1.0,
@@ -498,7 +528,8 @@ class TestQgsUnitTypes(unittest.TestCase):
                 QgsUnitTypes.DistanceDegrees: 1.0,
                 QgsUnitTypes.DistanceNauticalMiles: 1.0,
                 QgsUnitTypes.DistanceMillimeters: 1.0,
-                QgsUnitTypes.DistanceCentimeters: 1.0
+                QgsUnitTypes.DistanceCentimeters: 1.0,
+                Qgis.DistanceUnit.Inches: 1.0
             },
         }
 
@@ -533,6 +564,7 @@ class TestQgsUnitTypes(unittest.TestCase):
                 QgsUnitTypes.AreaSquareDegrees: 0.000000000080697,
                 QgsUnitTypes.AreaSquareMillimeters: 1e6,
                 QgsUnitTypes.AreaSquareCentimeters: 1e4,
+                Qgis.AreaUnit.SquareInches: 1550.0031000062002,
                 QgsUnitTypes.AreaUnknownUnit: 1.0
             },
             QgsUnitTypes.AreaSquareKilometers: {
@@ -547,7 +579,8 @@ class TestQgsUnitTypes(unittest.TestCase):
                 QgsUnitTypes.AreaSquareDegrees: 0.000080697034968,
                 QgsUnitTypes.AreaSquareMillimeters: 1e12,
                 QgsUnitTypes.AreaSquareCentimeters: 1e10,
-                QgsUnitTypes.AreaUnknownUnit: 1.0
+                QgsUnitTypes.AreaUnknownUnit: 1.0,
+                Qgis.AreaUnit.SquareInches: 1550003100.0062,
             },
             QgsUnitTypes.AreaSquareFeet: {
                 QgsUnitTypes.AreaSquareMeters: 0.092903,
@@ -561,7 +594,8 @@ class TestQgsUnitTypes(unittest.TestCase):
                 QgsUnitTypes.AreaSquareDegrees: 0.000000000007497,
                 QgsUnitTypes.AreaSquareMillimeters: 92903.04,
                 QgsUnitTypes.AreaSquareCentimeters: 929.0304,
-                QgsUnitTypes.AreaUnknownUnit: 1.0
+                QgsUnitTypes.AreaUnknownUnit: 1.0,
+                Qgis.AreaUnit.SquareInches: 144.0,
             },
             QgsUnitTypes.AreaSquareYards: {
                 QgsUnitTypes.AreaSquareMeters: 0.836127360,
@@ -575,7 +609,8 @@ class TestQgsUnitTypes(unittest.TestCase):
                 QgsUnitTypes.AreaSquareDegrees: 0.000000000067473,
                 QgsUnitTypes.AreaSquareMillimeters: 836127.360,
                 QgsUnitTypes.AreaSquareCentimeters: 8361.27360,
-                QgsUnitTypes.AreaUnknownUnit: 1.0
+                QgsUnitTypes.AreaUnknownUnit: 1.0,
+                Qgis.AreaUnit.SquareInches: 1296.0,
             },
             QgsUnitTypes.AreaSquareMiles: {
                 QgsUnitTypes.AreaSquareMeters: 2589988.110336,
@@ -589,7 +624,8 @@ class TestQgsUnitTypes(unittest.TestCase):
                 QgsUnitTypes.AreaSquareDegrees: 0.000209004361107,
                 QgsUnitTypes.AreaSquareMillimeters: 2589988110336.0,
                 QgsUnitTypes.AreaSquareCentimeters: 25899881103.36,
-                QgsUnitTypes.AreaUnknownUnit: 1.0
+                QgsUnitTypes.AreaUnknownUnit: 1.0,
+                Qgis.AreaUnit.SquareInches: 4014489600.0000005,
             },
             QgsUnitTypes.AreaHectares: {
                 QgsUnitTypes.AreaSquareMeters: 10000,
@@ -603,7 +639,8 @@ class TestQgsUnitTypes(unittest.TestCase):
                 QgsUnitTypes.AreaSquareDegrees: 0.000000806970350,
                 QgsUnitTypes.AreaSquareMillimeters: 10000000000.0,
                 QgsUnitTypes.AreaSquareCentimeters: 100000000.0,
-                QgsUnitTypes.AreaUnknownUnit: 1.0
+                QgsUnitTypes.AreaUnknownUnit: 1.0,
+                Qgis.AreaUnit.SquareInches: 15500031.000062,
             },
             QgsUnitTypes.AreaAcres: {
                 QgsUnitTypes.AreaSquareMeters: 4046.8564224,
@@ -617,7 +654,8 @@ class TestQgsUnitTypes(unittest.TestCase):
                 QgsUnitTypes.AreaSquareDegrees: 0.000000326569314,
                 QgsUnitTypes.AreaSquareMillimeters: 4046856422.4000005,
                 QgsUnitTypes.AreaSquareCentimeters: 40468564.224,
-                QgsUnitTypes.AreaUnknownUnit: 1.0
+                QgsUnitTypes.AreaUnknownUnit: 1.0,
+                Qgis.AreaUnit.SquareInches: 6272640.0,
             },
             QgsUnitTypes.AreaSquareNauticalMiles: {
                 QgsUnitTypes.AreaSquareMeters: 3429904,
@@ -631,7 +669,8 @@ class TestQgsUnitTypes(unittest.TestCase):
                 QgsUnitTypes.AreaSquareDegrees: 0.000276783083025,
                 QgsUnitTypes.AreaSquareMillimeters: 3429904000000.0,
                 QgsUnitTypes.AreaSquareCentimeters: 34299040000.0,
-                QgsUnitTypes.AreaUnknownUnit: 1.0
+                QgsUnitTypes.AreaUnknownUnit: 1.0,
+                Qgis.AreaUnit.SquareInches: 5316361832.723665,
             },
             QgsUnitTypes.AreaSquareDegrees: {
                 QgsUnitTypes.AreaSquareMeters: 12392029030.5,
@@ -645,7 +684,8 @@ class TestQgsUnitTypes(unittest.TestCase):
                 QgsUnitTypes.AreaSquareDegrees: 1.0,
                 QgsUnitTypes.AreaSquareMillimeters: 12392029030500000.0,
                 QgsUnitTypes.AreaSquareCentimeters: 123920290305000.0,
-                QgsUnitTypes.AreaUnknownUnit: 1.0
+                QgsUnitTypes.AreaUnknownUnit: 1.0,
+                Qgis.AreaUnit.SquareInches: 19207683412641.824
             },
             QgsUnitTypes.AreaSquareMillimeters: {
                 QgsUnitTypes.AreaSquareMeters: 1e-6,
@@ -659,7 +699,8 @@ class TestQgsUnitTypes(unittest.TestCase):
                 QgsUnitTypes.AreaSquareDegrees: 8.069703496810251e-17,
                 QgsUnitTypes.AreaSquareMillimeters: 1.0,
                 QgsUnitTypes.AreaSquareCentimeters: 0.01,
-                QgsUnitTypes.AreaUnknownUnit: 1.0
+                QgsUnitTypes.AreaUnknownUnit: 1.0,
+                Qgis.AreaUnit.SquareInches: 0.0015500031000062
             },
             QgsUnitTypes.AreaSquareCentimeters: {
                 QgsUnitTypes.AreaSquareMeters: 1e-4,
@@ -673,7 +714,23 @@ class TestQgsUnitTypes(unittest.TestCase):
                 QgsUnitTypes.AreaSquareDegrees: 8.069703496810251e-15,
                 QgsUnitTypes.AreaSquareMillimeters: 100,
                 QgsUnitTypes.AreaSquareCentimeters: 1.0,
-                QgsUnitTypes.AreaUnknownUnit: 1.0
+                QgsUnitTypes.AreaUnknownUnit: 1.0,
+                Qgis.AreaUnit.SquareInches: 0.15500031000062
+            },
+            Qgis.AreaUnit.SquareInches: {
+                QgsUnitTypes.AreaSquareMeters: 0.00064516,
+                QgsUnitTypes.AreaSquareKilometers: 6.4516e-10,
+                QgsUnitTypes.AreaSquareFeet: 0.00694444,
+                QgsUnitTypes.AreaSquareYards: 0.0007716044444444,
+                QgsUnitTypes.AreaSquareMiles: 2.490975091827221046e-10,
+                QgsUnitTypes.AreaHectares: 6.451595870975627624e-8,
+                QgsUnitTypes.AreaAcres: 1.594224058769421271e-7,
+                QgsUnitTypes.AreaSquareNauticalMiles: 2.490975091827221046e-10,
+                QgsUnitTypes.AreaSquareDegrees: 8.069703496810251e-15,
+                QgsUnitTypes.AreaSquareMillimeters: 645.16,
+                QgsUnitTypes.AreaSquareCentimeters: 6.451599999999999,
+                QgsUnitTypes.AreaUnknownUnit: 1.0,
+                Qgis.AreaUnit.SquareInches: 1
             }
         }
 
@@ -703,7 +760,8 @@ class TestQgsUnitTypes(unittest.TestCase):
                     QgsUnitTypes.DistanceCentimeters: QgsUnitTypes.AreaSquareCentimeters,
                     QgsUnitTypes.DistanceMillimeters: QgsUnitTypes.AreaSquareMillimeters,
                     QgsUnitTypes.DistanceUnknownUnit: QgsUnitTypes.AreaUnknownUnit,
-                    QgsUnitTypes.DistanceNauticalMiles: QgsUnitTypes.AreaSquareNauticalMiles
+                    QgsUnitTypes.DistanceNauticalMiles: QgsUnitTypes.AreaSquareNauticalMiles,
+                    Qgis.DistanceUnit.Inches: Qgis.AreaUnit.SquareInches
                     }
 
         for t in list(expected.keys()):
@@ -722,7 +780,8 @@ class TestQgsUnitTypes(unittest.TestCase):
                     QgsUnitTypes.AreaSquareCentimeters: QgsUnitTypes.DistanceCentimeters,
                     QgsUnitTypes.AreaSquareMillimeters: QgsUnitTypes.DistanceMillimeters,
                     QgsUnitTypes.AreaUnknownUnit: QgsUnitTypes.DistanceUnknownUnit,
-                    QgsUnitTypes.AreaSquareNauticalMiles: QgsUnitTypes.DistanceNauticalMiles
+                    QgsUnitTypes.AreaSquareNauticalMiles: QgsUnitTypes.DistanceNauticalMiles,
+                    Qgis.AreaUnit.SquareInches: Qgis.DistanceUnit.Inches
                     }
 
         for t in list(expected.keys()):
@@ -1055,7 +1114,8 @@ class TestQgsUnitTypes(unittest.TestCase):
                     QgsUnitTypes.DistanceCentimeters: QgsUnitTypes.VolumeCubicCentimeter,
                     QgsUnitTypes.DistanceMillimeters: QgsUnitTypes.VolumeCubicCentimeter,
                     QgsUnitTypes.DistanceUnknownUnit: QgsUnitTypes.VolumeUnknownUnit,
-                    QgsUnitTypes.DistanceNauticalMiles: QgsUnitTypes.VolumeCubicFeet
+                    QgsUnitTypes.DistanceNauticalMiles: QgsUnitTypes.VolumeCubicFeet,
+                    Qgis.DistanceUnit.Inches: QgsUnitTypes.VolumeCubicInch
                     }
 
         for t in list(expected.keys()):
@@ -1070,7 +1130,7 @@ class TestQgsUnitTypes(unittest.TestCase):
                     QgsUnitTypes.VolumeCubicDecimeter: QgsUnitTypes.DistanceCentimeters,
                     QgsUnitTypes.VolumeLiters: QgsUnitTypes.DistanceMeters,
                     QgsUnitTypes.VolumeGallonUS: QgsUnitTypes.DistanceFeet,
-                    QgsUnitTypes.VolumeCubicInch: QgsUnitTypes.DistanceFeet,
+                    QgsUnitTypes.VolumeCubicInch: Qgis.DistanceUnit.Inches,
                     QgsUnitTypes.VolumeCubicCentimeter: QgsUnitTypes.DistanceCentimeters,
                     QgsUnitTypes.VolumeCubicDegrees: QgsUnitTypes.DistanceDegrees
                     }
@@ -1195,6 +1255,9 @@ class TestQgsUnitTypes(unittest.TestCase):
         self.assertEqual(QgsUnitTypes.formatDistance(1, 2, QgsUnitTypes.DistanceDegrees, True), '1.00 deg')
         self.assertEqual(QgsUnitTypes.formatDistance(1, 2, QgsUnitTypes.DistanceCentimeters, True), '1.00 cm')
         self.assertEqual(QgsUnitTypes.formatDistance(1, 2, QgsUnitTypes.DistanceMillimeters, True), '1.00 mm')
+        self.assertEqual(
+            QgsUnitTypes.formatDistance(1, 2, Qgis.DistanceUnit.Inches,
+                                        True), '1.00 in')
         self.assertEqual(QgsUnitTypes.formatDistance(1, 2, QgsUnitTypes.DistanceUnknownUnit, True), '1.00')
 
         # don't keep base unit
@@ -1214,6 +1277,9 @@ class TestQgsUnitTypes(unittest.TestCase):
         self.assertEqual(QgsUnitTypes.formatDistance(0.001, 4, QgsUnitTypes.DistanceDegrees, False), '0.0010 deg')
         self.assertEqual(QgsUnitTypes.formatDistance(100, 2, QgsUnitTypes.DistanceCentimeters, False), '100.00 cm')
         self.assertEqual(QgsUnitTypes.formatDistance(1000, 2, QgsUnitTypes.DistanceMillimeters, False), '1000.00 mm')
+        self.assertEqual(QgsUnitTypes.formatDistance(1000, 2,
+                                                     Qgis.DistanceUnit.Inches,
+                                                     False), '1000.00 in')
         self.assertEqual(QgsUnitTypes.formatDistance(1, 2, QgsUnitTypes.DistanceUnknownUnit, False), '1.00')
 
         # small values should not be displayed as zeroes, instead fallback to scientific notation
@@ -1240,6 +1306,9 @@ class TestQgsUnitTypes(unittest.TestCase):
         self.assertEqual(QgsUnitTypes.formatArea(1, 2, QgsUnitTypes.AreaSquareDegrees, True), '1.00 deg²')
         self.assertEqual(QgsUnitTypes.formatArea(1, 2, QgsUnitTypes.AreaSquareCentimeters, True), '1.00 cm²')
         self.assertEqual(QgsUnitTypes.formatArea(1, 2, QgsUnitTypes.AreaSquareMillimeters, True), '1.00 mm²')
+        self.assertEqual(
+            QgsUnitTypes.formatArea(1, 2, Qgis.AreaUnit.SquareInches,
+                                    True), '1.00 in²')
         self.assertEqual(QgsUnitTypes.formatArea(1, 2, QgsUnitTypes.AreaUnknownUnit, True), '1.00')
 
         # don't keep base unit
@@ -1265,6 +1334,9 @@ class TestQgsUnitTypes(unittest.TestCase):
         self.assertEqual(QgsUnitTypes.formatArea(1000, 4, QgsUnitTypes.AreaSquareMillimeters, False), '0.0010 m²')
         self.assertEqual(QgsUnitTypes.formatArea(100, 3, QgsUnitTypes.AreaSquareCentimeters, False), '0.010 m²')
         self.assertEqual(QgsUnitTypes.formatArea(10, 2, QgsUnitTypes.AreaUnknownUnit, False), '10.00')
+        self.assertEqual(
+            QgsUnitTypes.formatArea(1000, 2, Qgis.AreaUnit.SquareInches,
+                                    False), '1000.00 in²')
 
         # small values should not be displayed as zeroes, instead fallback to scientific notation
         self.assertEqual(QgsUnitTypes.formatArea(0.00168478, 4, QgsUnitTypes.AreaSquareMeters, False), '0.0017 m²')

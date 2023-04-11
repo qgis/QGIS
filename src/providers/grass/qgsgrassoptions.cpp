@@ -115,7 +115,7 @@ void QgsGrassOptions::gisbaseChanged()
   {
     gisbase = mGisbaseLineEdit->text().trimmed();
   }
-  QgsDebugMsg( "gisbase = " + gisbase );
+  QgsDebugMsgLevel( "gisbase = " + gisbase, 2 );
   if ( !QgsGrass::isValidGrassBaseDir( gisbase ) )
   {
     mGisbaseErrorLabel->setText( tr( "Currently selected GRASS installation is not valid" ) );

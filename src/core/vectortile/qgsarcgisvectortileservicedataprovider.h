@@ -25,27 +25,54 @@
 
 ///@cond PRIVATE
 
-class CORE_EXPORT QgsArcGisVectorTileServiceDataProvider : public QgsXyzVectorTileDataProvider
+class CORE_EXPORT QgsArcGisVectorTileServiceDataProvider : public QgsXyzVectorTileDataProviderBase
 {
     Q_OBJECT
 
   public:
     QgsArcGisVectorTileServiceDataProvider( const QString &uri,
-                                            const QString &sourcePath,
                                             const QgsDataProvider::ProviderOptions &providerOptions,
                                             QgsDataProvider::ReadFlags flags );
+
+    QgsArcGisVectorTileServiceDataProvider( const QgsArcGisVectorTileServiceDataProvider &other );
+
+    /**
+     * QgsArcGisVectorTileServiceDataProvider cannot be assigned.
+     */
+    QgsArcGisVectorTileServiceDataProvider &operator=( const QgsArcGisVectorTileServiceDataProvider &other ) = delete;
+
+    QgsVectorTileDataProvider::ProviderCapabilities providerCapabilities() const override;
     QString name() const override;
     QString description() const override;
     QgsVectorTileDataProvider *clone() const override;
     QString sourcePath() const override;
     bool isValid() const override;
+    QgsRectangle extent() const override;
+    const QgsVectorTileMatrixSet &tileMatrixSet() const override;
+    QgsCoordinateReferenceSystem crs() const override;
+    QgsLayerMetadata layerMetadata() const override;
+    QVariantMap styleDefinition() const override;
+    QString styleUrl() const override;
 
     static QString ARCGIS_VT_SERVICE_DATA_PROVIDER_KEY;
     static QString ARCGIS_VT_SERVICE_DATA_PROVIDER_DESCRIPTION;
 
   private:
 
+    bool setupArcgisVectorTileServiceConnection();
+
+    bool mIsValid = false;
+    QgsRectangle mExtent;
+    QgsVectorTileMatrixSet mMatrixSet;
+
     QString mSourcePath;
+
+    QVariantMap mArcgisLayerConfiguration;
+    QVariantMap mArcgisStyleConfiguration;
+
+    QgsCoordinateReferenceSystem mCrs;
+
+    QgsLayerMetadata mLayerMetadata;
 };
 
 
@@ -56,6 +83,7 @@ class QgsArcGisVectorTileServiceDataProviderMetadata : public QgsProviderMetadat
     QgsArcGisVectorTileServiceDataProviderMetadata();
     QIcon icon() const override;
     ProviderCapabilities providerCapabilities() const override;
+    QgsArcGisVectorTileServiceDataProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() ) override;
     QVariantMap decodeUri( const QString &uri ) const override;
     QString encodeUri( const QVariantMap &parts ) const override;
     QString absoluteToRelativeUri( const QString &uri, const QgsReadWriteContext &context ) const override;

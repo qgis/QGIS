@@ -46,6 +46,9 @@ Adds a properties page factory to the raster layer properties dialog.
     virtual QgsExpressionContext createExpressionContext() const;
 
 
+    virtual bool eventFilter( QObject *obj, QEvent *ev );
+
+
   protected slots:
 
 };

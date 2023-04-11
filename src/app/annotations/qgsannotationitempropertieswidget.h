@@ -33,9 +33,9 @@ class QgsAnnotationItemPropertiesWidget : public QgsMapLayerConfigWidget, public
     QgsAnnotationItemPropertiesWidget( QgsAnnotationLayer *layer, QgsMapCanvas *canvas, QWidget *parent );
     ~QgsAnnotationItemPropertiesWidget() override;
 
-    void syncToLayer( QgsMapLayer *layer ) override;
+    void syncToLayer( QgsMapLayer *layer ) final;
     void setMapLayerConfigWidgetContext( const QgsMapLayerConfigWidgetContext &context ) override;
-    void setDockMode( bool dockMode ) override;
+    void setDockMode( bool dockMode ) final;
 
   public slots:
     void apply() override;

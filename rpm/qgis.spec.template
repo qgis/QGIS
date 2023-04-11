@@ -99,12 +99,8 @@ BuildRequires:  python3-PyYAML
 BuildRequires:  python3-qscintilla-qt5
 BuildRequires:  python3-qscintilla-qt5-devel
 BuildRequires:  python3-qt5-devel
-%if 0%{?fedora} >= 35
 BuildRequires:  sip6
 BuildRequires:  PyQt-builder
-%else
-BuildRequires:  python3-sip-devel
-%endif
 
 # Qca stuff
 BuildRequires:  qca-qt5-devel
@@ -123,8 +119,6 @@ BuildRequires:  qt5-qt3d-devel
 BuildRequires:  qt5-qtbase-private-devel
 
 # Qwt stuff
-BuildRequires:  qwt-devel
-BuildRequires:  qwt-qt5-devel
 BuildRequires:  qwt-qt5-devel
 
 # GDAL must be explicit. It is required by some raster tools

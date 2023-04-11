@@ -36,6 +36,7 @@ class QgsMapSettings;
 class QgsExpression;
 class QgsRenderContext;
 class QgsLayerTree;
+class QgsLayerTreeFilterSettings;
 
 /**
  * \ingroup core
@@ -233,9 +234,9 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
      * Force only display of legend nodes which are valid for given map settings.
      * Setting NULLPTR or invalid map settings will disable the functionality.
      * Ownership of map settings pointer does not change, a copy is made.
-     * \since QGIS 2.6
+     * \deprecated QGIS 3.32. Use setFilterSettings() instead.
      */
-    void setLegendFilterByMap( const QgsMapSettings *settings );
+    Q_DECL_DEPRECATED void setLegendFilterByMap( const QgsMapSettings *settings ) SIP_DEPRECATED;
 
     /**
      * Filter display of legend nodes for given map settings
@@ -243,15 +244,35 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
      * \param useExtent Whether to use the extent of the map settings as a first spatial filter on legend nodes
      * \param polygon If not empty, this polygon will be used instead of the map extent to filter legend nodes
      * \param useExpressions Whether to use legend node filter expressions
-     * \since QGIS 2.14
+     * \deprecated QGIS 3.32. Use setFilterSettings() instead.
      */
-    void setLegendFilter( const QgsMapSettings *settings, bool useExtent = true, const QgsGeometry &polygon = QgsGeometry(), bool useExpressions = true );
+    Q_DECL_DEPRECATED void setLegendFilter( const QgsMapSettings *settings, bool useExtent = true, const QgsGeometry &polygon = QgsGeometry(), bool useExpressions = true ) SIP_DEPRECATED;
 
     /**
      * Returns the current map settings used for the current legend filter (or NULLPTR if none is enabled)
      * \since QGIS 2.14
      */
-    const QgsMapSettings *legendFilterMapSettings() const { return mLegendFilterMapSettings.get(); }
+    const QgsMapSettings *legendFilterMapSettings() const;
+
+    /**
+     * Sets the filter \a settings to use to filter legend nodes.
+     *
+     * Set to NULLPTR to disable legend filter.
+     *
+     * \see filterSettings()
+     *
+     * \since QGIS 3.32
+     */
+    void setFilterSettings( const QgsLayerTreeFilterSettings *settings = nullptr );
+
+    /**
+     * Returns the filter settings to use to filter legend nodes. May be NULLPTR.
+     *
+     * \see setFilterSettings()
+     *
+     * \since QGIS 3.32
+     */
+    const QgsLayerTreeFilterSettings *filterSettings() const;
 
     /**
      * Give the layer tree model hints about the currently associated map view
@@ -425,7 +446,7 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
     //! Current index - will be underlined
     QPersistentModelIndex mCurrentIndex;
     //! Minimal number of nodes when legend should be automatically collapsed. -1 = disabled
-    int mAutoCollapseLegendNodesCount;
+    int mAutoCollapseLegendNodesCount = -1;
 
     /**
      * Structure that stores tree representation of map layer's legend.
@@ -501,20 +522,17 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
     QFont mFontGroup;
 
     //! scale denominator for filtering of legend nodes (<= 0 means no filtering)
-    double mLegendFilterByScale;
+    double mLegendFilterByScale = 0;
 
     QPointer< QgsMapHitTestTask > mHitTestTask;
 
-    bool mUseHitTest = false;
     QMap<QString, QSet<QString>> mHitTestResults;
-    std::unique_ptr<QgsMapSettings> mLegendFilterMapSettings;
 
-    //! whether to use map filtering
-    bool mLegendFilterUsesExtent;
+    std::unique_ptr< QgsLayerTreeFilterSettings > mFilterSettings;
 
-    double mLegendMapViewMupp;
-    int mLegendMapViewDpi;
-    double mLegendMapViewScale;
+    double mLegendMapViewMupp = 0;
+    int mLegendMapViewDpi = 0;
+    double mLegendMapViewScale = 0;
     QTimer mDeferLegendInvalidationTimer;
 
   private slots:

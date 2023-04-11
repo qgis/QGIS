@@ -193,6 +193,10 @@ set (PY_MODULES core)
 
 if(WITH_ANALYSIS)
   set(PY_MODULES ${PY_MODULES} analysis)
+
+  if (NOT WITH_PDAL OR (WITH_PDAL AND NOT PDAL_2_5_OR_HIGHER))
+    set(SIP_DISABLE_FEATURES ${SIP_DISABLE_FEATURES} HAVE_PDAL_PROVIDER)
+  endif()
 endif()
 
 # gui module
@@ -288,6 +292,10 @@ if(WITH_ANALYSIS)
     ${CMAKE_BINARY_DIR}/src/analysis/raster
     ${CMAKE_BINARY_DIR}/src/analysis/network
     ${CMAKE_BINARY_DIR}/src/analysis/interpolation
+
+    if (WITH_PDAL AND NOT PDAL_2_5_OR_HIGHER)
+       ${CMAKE_SOURCE_DIR}/src/analysis/processing/pdal
+    endif()
   )
 
   # analysis module

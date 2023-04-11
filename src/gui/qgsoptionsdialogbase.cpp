@@ -325,7 +325,7 @@ void QgsOptionsDialogBase::setCurrentPage( const QString &page )
   }
 }
 
-void QgsOptionsDialogBase::addPage( const QString &title, const QString &tooltip, const QIcon &icon, QWidget *widget, const QStringList &path )
+void QgsOptionsDialogBase::addPage( const QString &title, const QString &tooltip, const QIcon &icon, QWidget *widget, const QStringList &path, const QString &key )
 {
   int newPage = -1;
 
@@ -341,6 +341,10 @@ void QgsOptionsDialogBase::addPage( const QString &title, const QString &tooltip
   {
     QStandardItem *item = new QStandardItem( icon, title );
     item->setToolTip( tooltip );
+    if ( !key.isEmpty() )
+    {
+      item->setData( key );
+    }
 
     QModelIndex parent;
     QStandardItem *parentItem = nullptr;
@@ -399,7 +403,7 @@ void QgsOptionsDialogBase::addPage( const QString &title, const QString &tooltip
     mOptStackedWidget->insertWidget( newPage, widget );
 }
 
-void QgsOptionsDialogBase::insertPage( const QString &title, const QString &tooltip, const QIcon &icon, QWidget *widget, const QString &before, const QStringList &path )
+void QgsOptionsDialogBase::insertPage( const QString &title, const QString &tooltip, const QIcon &icon, QWidget *widget, const QString &before, const QStringList &path, const QString &key )
 {
   //find the page with a matching widget name
   for ( int page = 0; page < mOptStackedWidget->count(); ++page )
@@ -470,6 +474,10 @@ void QgsOptionsDialogBase::insertPage( const QString &title, const QString &tool
 
         QStandardItem *item = new QStandardItem( icon, title );
         item->setToolTip( tooltip );
+        if ( !key.isEmpty() )
+        {
+          item->setData( key );
+        }
         if ( parentItem )
         {
           if ( sourceBeforeIndices.empty() )

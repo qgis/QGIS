@@ -1,0 +1,74 @@
+Content-Type: application/geo+json
+
+{
+  "features": [
+    {
+      "geometry": {
+        "coordinates": [
+          8.203496,
+          44.901483
+        ],
+        "type": "Point"
+      },
+      "id": "0",
+      "properties": {
+        "id": 1,
+        "name": "one",
+        "utf8nameè": "one èé"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          8.203547,
+          44.901436
+        ],
+        "type": "Point"
+      },
+      "id": "1",
+      "properties": {
+        "id": 2,
+        "name": "two",
+        "utf8nameè": "two àò"
+      },
+      "type": "Feature"
+    }
+  ],
+  "links": [
+    {
+      "href": "http://server.qgis.org/wfs3/collections/testlayer%20%C3%A8%C3%A9/items.geojson?limit=2",
+      "rel": "self",
+      "title": "Retrieve the features of the collection as GEOJSON",
+      "type": "application/geo+json"
+    },
+    {
+      "href": "http://server.qgis.org/wfs3/collections/testlayer%20%C3%A8%C3%A9/items.html?limit=2",
+      "rel": "alternate",
+      "title": "Retrieve the features of the collection as HTML",
+      "type": "text/html"
+    },
+    {
+      "href": "http://server.qgis.org/wfs3/collections/testlayer èé/items?offset=2&limit=2",
+      "rel": "next",
+      "title": "Next page",
+      "type": "application/geo+json"
+    },
+    {
+      "href": "http://server.qgis.org/wfs3/collections/testlayer èé/items?offset=0&limit=2",
+      "rel": "first",
+      "title": "First page",
+      "type": "application/geo+json"
+    },
+    {
+      "href": "http://server.qgis.org/wfs3/collections/testlayer èé/items?offset=2&limit=2",
+      "rel": "last",
+      "title": "Last page",
+      "type": "application/geo+json"
+    }
+  ],
+  "numberMatched": 3,
+  "numberReturned": 2,
+  "timeStamp": "2019-07-05T12:27:07Z",
+  "type": "FeatureCollection"
+}

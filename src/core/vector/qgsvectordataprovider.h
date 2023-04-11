@@ -460,8 +460,10 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
 
     /**
      * Returns list of indexes to names for QgsPalLabeling fix
+     *
+     * \deprecated since QGIS 3.32 this method is unused and will always return an empty hash
      */
-    virtual QgsAttrPalIndexNameHash palAttributeIndexNames() const;
+    Q_DECL_DEPRECATED QgsAttrPalIndexNameHash palAttributeIndexNames() const SIP_DEPRECATED;
 
     /**
      * check if provider supports type of field

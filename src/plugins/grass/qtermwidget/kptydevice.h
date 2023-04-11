@@ -35,13 +35,13 @@
 
 #define KMAXINT ((int)(~0U >> 1))
 
-class KPtyDevicePrivate;
+struct KPtyDevicePrivate;
 class QSocketNotifier;
 
 #define Q_DECLARE_PRIVATE_MI(Class, SuperClass) \
     inline Class##Private* d_func() { return reinterpret_cast<Class##Private *>(SuperClass::d_ptr); } \
     inline const Class##Private* d_func() const { return reinterpret_cast<const Class##Private *>(SuperClass::d_ptr); } \
-    friend class Class##Private;
+    friend struct Class##Private;
 
 /**
  * Encapsulates KPty into a QIODevice, so it can be used with Q*Stream, etc.
@@ -68,7 +68,7 @@ public:
     /**
      * Create a pty master/slave pair.
      *
-     * \returns true if a pty pair was successfully opened
+     * @return true if a pty pair was successfully opened
      */
     bool open(OpenMode mode = ReadWrite | Unbuffered) override;
 
@@ -81,9 +81,9 @@ public:
      * Note that you will need to use setSuspended() on both devices to
      * control which one gets the incoming data from the pty.
      *
-     * \param fd an open pty master file descriptor.
-     * \param mode the device mode to open the pty with.
-     * \returns true if a pty pair was successfully opened
+     * @param fd an open pty master file descriptor.
+     * @param mode the device mode to open the pty with.
+     * @return true if a pty pair was successfully opened
      */
     bool open(int fd, OpenMode mode = ReadWrite | Unbuffered);
 
@@ -117,7 +117,7 @@ public:
     bool isSuspended() const;
 
     /**
-     * \returns always true
+     * @return always true
      */
     bool isSequential() const override;
 
@@ -168,7 +168,7 @@ private:
 /////////////////////////////////////////////////////
 
 #include <QByteArray>
-#include <QLinkedList>
+#include <list>
 
 #define CHUNKSIZE 4096
 
@@ -185,14 +185,14 @@ public:
         buffers.clear();
         QByteArray tmp;
         tmp.resize(CHUNKSIZE);
-        buffers << tmp;
+        buffers.push_back(tmp);
         head = tail = 0;
         totalSize = 0;
     }
 
     inline bool isEmpty() const
     {
-        return buffers.count() == 1 && !tail;
+        return buffers.size() == 1 && !tail;
     }
 
     inline int size() const
@@ -202,13 +202,13 @@ public:
 
     inline int readSize() const
     {
-        return (buffers.count() == 1 ? tail : buffers.first().size()) - head;
+        return (buffers.size() == 1 ? tail : buffers.front().size()) - head;
     }
 
     inline const char *readPointer() const
     {
         Q_ASSERT(totalSize > 0);
-        return buffers.first().constData() + head;
+        return buffers.front().constData() + head;
     }
 
     void free(int bytes)
@@ -221,21 +221,21 @@ public:
 
             if (bytes < nbs) {
                 head += bytes;
-                if (head == tail && buffers.count() == 1) {
-                    buffers.first().resize(CHUNKSIZE);
+                if (head == tail && buffers.size() == 1) {
+                    buffers.front().resize(CHUNKSIZE);
                     head = tail = 0;
                 }
                 break;
             }
 
             bytes -= nbs;
-            if (buffers.count() == 1) {
-                buffers.first().resize(CHUNKSIZE);
+            if (buffers.size() == 1) {
+                buffers.front().resize(CHUNKSIZE);
                 head = tail = 0;
                 break;
             }
 
-            buffers.removeFirst();
+            buffers.pop_front();
             head = 0;
         }
     }
@@ -245,15 +245,15 @@ public:
         totalSize += bytes;
 
         char *ptr;
-        if (tail + bytes <= buffers.last().size()) {
-            ptr = buffers.last().data() + tail;
+        if (tail + bytes <= buffers.back().size()) {
+            ptr = buffers.back().data() + tail;
             tail += bytes;
         } else {
-            buffers.last().resize(tail);
+            buffers.back().resize(tail);
             QByteArray tmp;
-            tmp.resize(std::max(CHUNKSIZE, bytes));
+            tmp.resize(qMax(CHUNKSIZE, bytes));
             ptr = tmp.data();
-            buffers << tmp;
+            buffers.push_back(tmp);
             tail = bytes;
         }
         return ptr;
@@ -278,7 +278,7 @@ public:
     {
         int index = 0;
         int start = head;
-        QLinkedList<QByteArray>::ConstIterator it = buffers.begin();
+        std::list<QByteArray>::const_iterator it = buffers.cbegin();
         forever {
             if (!maxLength)
                 return index;
@@ -286,7 +286,7 @@ public:
                 return -1;
             const QByteArray &buf = *it;
             ++it;
-            int len = std::min((it == buffers.end() ? tail : buf.size()) - start,
+            int len = qMin((it == buffers.cend() ? tail : buf.size()) - start,
                            maxLength);
             const char *ptr = buf.data() + start;
             if (const char *rptr = (const char *)memchr(ptr, c, len))
@@ -309,11 +309,11 @@ public:
 
     int read(char *data, int maxLength)
     {
-        int bytesToRead = std::min(size(), maxLength);
+        int bytesToRead = qMin(size(), maxLength);
         int readSoFar = 0;
         while (readSoFar < bytesToRead) {
             const char *ptr = readPointer();
-            int bs = std::min(bytesToRead - readSoFar, readSize());
+            int bs = qMin(bytesToRead - readSoFar, readSize());
             memcpy(data + readSoFar, ptr, bs);
             readSoFar += bs;
             free(bs);
@@ -323,23 +323,23 @@ public:
 
     int readLine(char *data, int maxLength)
     {
-        return read(data, lineSize(std::min(maxLength, size())));
+        return read(data, lineSize(qMin(maxLength, size())));
     }
 
 private:
-    QLinkedList<QByteArray> buffers;
+    std::list<QByteArray> buffers;
     int head, tail;
     int totalSize;
 };
 
-class KPtyDevicePrivate : public KPtyPrivate {
-  public:
+struct KPtyDevicePrivate : public KPtyPrivate {
+
     Q_DECLARE_PUBLIC(KPtyDevice)
 
     KPtyDevicePrivate(KPty* parent) :
         KPtyPrivate(parent),
         emittedReadyRead(false), emittedBytesWritten(false),
-        readNotifier(0), writeNotifier(0)
+        readNotifier(nullptr), writeNotifier(nullptr)
     {
     }
 

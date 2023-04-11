@@ -474,9 +474,12 @@ Returns list of indexes to fetch all attributes in :py:func:`~QgsVectorDataProvi
 Returns list of indexes of fields that make up the primary key
 %End
 
-    virtual QgsAttrPalIndexNameHash palAttributeIndexNames() const;
+ QgsAttrPalIndexNameHash palAttributeIndexNames() const /Deprecated/;
 %Docstring
 Returns list of indexes to names for :py:class:`QgsPalLabeling` fix
+
+.. deprecated:: QGIS 3.32
+   this method is unused and will always return an empty hash
 %End
 
     bool supportedType( const QgsField &field ) const;
