@@ -122,11 +122,11 @@ QVariantMap QgsJoinWithLinesAlgorithm::processAlgorithm( const QVariantMap &para
 
   const QString fieldHubName = parameterAsString( parameters, QStringLiteral( "HUB_FIELD" ), context );
   const int fieldHubIndex = hubSource->fields().lookupField( fieldHubName );
-  const QStringList hubFieldsToCopy = parameterAsFields( parameters, QStringLiteral( "HUB_FIELDS" ), context );
+  const QStringList hubFieldsToCopy = parameterAsStrings( parameters, QStringLiteral( "HUB_FIELDS" ), context );
 
   const QString fieldSpokeName = parameterAsString( parameters, QStringLiteral( "SPOKE_FIELD" ), context );
   const int fieldSpokeIndex = spokeSource->fields().lookupField( fieldSpokeName );
-  const QStringList spokeFieldsToCopy = parameterAsFields( parameters, QStringLiteral( "SPOKE_FIELDS" ), context );
+  const QStringList spokeFieldsToCopy = parameterAsStrings( parameters, QStringLiteral( "SPOKE_FIELDS" ), context );
 
   if ( fieldHubIndex < 0 || fieldSpokeIndex < 0 )
     throw QgsProcessingException( QObject::tr( "Invalid ID field" ) );

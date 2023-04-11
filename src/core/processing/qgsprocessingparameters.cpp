@@ -1972,10 +1972,23 @@ QStringList QgsProcessingParameters::parameterAsFields( const QgsProcessingParam
   if ( !definition )
     return QStringList();
 
-  return parameterAsFields( definition, parameters.value( definition->name() ), context );
+  return parameterAsStrings( definition, parameters.value( definition->name() ), context );
 }
 
 QStringList QgsProcessingParameters::parameterAsFields( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context )
+{
+  return parameterAsStrings( definition, value, context );
+}
+
+QStringList QgsProcessingParameters::parameterAsStrings( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context )
+{
+  if ( !definition )
+    return QStringList();
+
+  return parameterAsStrings( definition, parameters.value( definition->name() ), context );
+}
+
+QStringList QgsProcessingParameters::parameterAsStrings( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context )
 {
   if ( !definition )
     return QStringList();
@@ -2259,6 +2272,8 @@ QgsProcessingParameterDefinition *QgsProcessingParameters::parameterFromVariantM
     def.reset( new QgsProcessingParameterPointCloudLayer( name ) );
   else if ( type == QgsProcessingParameterAnnotationLayer::typeName() )
     def.reset( new QgsProcessingParameterAnnotationLayer( name ) );
+  else if ( type == QgsProcessingParameterPointCloudAttribute::typeName() )
+    def.reset( new QgsProcessingParameterPointCloudAttribute( name ) );
   else
   {
     QgsProcessingParameterType *paramType = QgsApplication::processingRegistry()->parameterType( type );
@@ -2375,6 +2390,8 @@ QgsProcessingParameterDefinition *QgsProcessingParameters::parameterFromScriptCo
     return QgsProcessingParameterPointCloudLayer::fromScriptCode( name, description, isOptional, definition );
   else if ( type == QLatin1String( "annotation" ) )
     return QgsProcessingParameterAnnotationLayer::fromScriptCode( name, description, isOptional, definition );
+  else if ( type == QLatin1String( "attribute" ) )
+    return QgsProcessingParameterPointCloudAttribute::fromScriptCode( name, description, isOptional, definition );
 
   return nullptr;
 }
@@ -8786,7 +8803,7 @@ QString QgsProcessingParameterPointCloudLayer::valueAsPythonString( const QVaria
 
   QVariantMap p;
   p.insert( name(), val );
-  QgsPointCloudLayer *layer = QgsProcessingParameters::parameterAsPointCloudLayer( this, p, context );
+  QgsPointCloudLayer *layer = QgsProcessingParameters::parameterAsPointCloudLayer( this, p, context, QgsProcessing::LayerOptionsFlag::SkipIndexGeneration );
   return layer ? QgsProcessingUtils::stringToPythonLiteral( QgsProcessingUtils::normalizeLayerSource( layer->source() ) )
          : QgsProcessingUtils::stringToPythonLiteral( val.toString() );
 }
@@ -9015,4 +9032,225 @@ QStringList QgsProcessingParameterPointCloudDestination::supportedOutputPointClo
 QgsProcessingParameterPointCloudDestination *QgsProcessingParameterPointCloudDestination::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
 {
   return new QgsProcessingParameterPointCloudDestination( name, description, definition.isEmpty() ? QVariant() : definition, isOptional );
+}
+
+//
+// QgsProcessingParameterPointCloudAttribute
+//
+
+QgsProcessingParameterPointCloudAttribute::QgsProcessingParameterPointCloudAttribute( const QString &name, const QString &description, const QVariant &defaultValue, const QString &parentLayerParameterName, bool allowMultiple, bool optional, bool defaultToAllAttributes )
+  : QgsProcessingParameterDefinition( name, description, defaultValue, optional )
+  , mParentLayerParameterName( parentLayerParameterName )
+  , mAllowMultiple( allowMultiple )
+  , mDefaultToAllAttributes( defaultToAllAttributes )
+{
+}
+
+QgsProcessingParameterDefinition *QgsProcessingParameterPointCloudAttribute::clone() const
+{
+  return new QgsProcessingParameterPointCloudAttribute( *this );
+}
+
+bool QgsProcessingParameterPointCloudAttribute::checkValueIsAcceptable( const QVariant &input, QgsProcessingContext * ) const
+{
+  if ( !input.isValid() )
+    return mFlags & FlagOptional;
+
+  if ( input.userType() == QMetaType::type( "QgsProperty" ) )
+  {
+    return true;
+  }
+
+  if ( input.type() == QVariant::List || input.type() == QVariant::StringList )
+  {
+    if ( !mAllowMultiple )
+      return false;
+
+    if ( input.toList().isEmpty() && !( mFlags & FlagOptional ) )
+      return false;
+  }
+  else if ( input.type() == QVariant::String )
+  {
+    if ( input.toString().isEmpty() )
+      return mFlags & FlagOptional;
+
+    const QStringList parts = input.toString().split( ';' );
+    if ( parts.count() > 1 && !mAllowMultiple )
+      return false;
+  }
+  else
+  {
+    if ( input.toString().isEmpty() )
+      return mFlags & FlagOptional;
+  }
+  return true;
+}
+
+QString QgsProcessingParameterPointCloudAttribute::valueAsPythonString( const QVariant &value, QgsProcessingContext & ) const
+{
+  if ( !value.isValid() )
+    return QStringLiteral( "None" );
+
+  if ( value.userType() == QMetaType::type( "QgsProperty" ) )
+    return QStringLiteral( "QgsProperty.fromExpression('%1')" ).arg( value.value< QgsProperty >().asExpression() );
+
+  if ( value.type() == QVariant::List )
+  {
+    QStringList parts;
+    const auto constToList = value.toList();
+    for ( const QVariant &val : constToList )
+    {
+      parts << QgsProcessingUtils::stringToPythonLiteral( val.toString() );
+    }
+    return parts.join( ',' ).prepend( '[' ).append( ']' );
+  }
+  else if ( value.type() == QVariant::StringList )
+  {
+    QStringList parts;
+    const auto constToStringList = value.toStringList();
+    for ( const QString &s : constToStringList )
+    {
+      parts << QgsProcessingUtils::stringToPythonLiteral( s );
+    }
+    return parts.join( ',' ).prepend( '[' ).append( ']' );
+  }
+
+  return QgsProcessingUtils::stringToPythonLiteral( value.toString() );
+}
+
+QString QgsProcessingParameterPointCloudAttribute::asScriptCode() const
+{
+  QString code = QStringLiteral( "##%1=" ).arg( mName );
+  if ( mFlags & FlagOptional )
+    code += QLatin1String( "optional " );
+  code += QLatin1String( "attribute " );
+
+  if ( mAllowMultiple )
+    code += QLatin1String( "multiple " );
+
+  if ( mDefaultToAllAttributes )
+    code += QLatin1String( "default_to_all_attributes " );
+
+  code += mParentLayerParameterName + ' ';
+
+  code += mDefault.toString();
+  return code.trimmed();
+}
+
+QString QgsProcessingParameterPointCloudAttribute::asPythonString( const QgsProcessing::PythonOutputType outputType ) const
+{
+  switch ( outputType )
+  {
+    case QgsProcessing::PythonQgsProcessingAlgorithmSubclass:
+    {
+      QString code = QStringLiteral( "QgsProcessingParameterPointCloudAttribute('%1', %2" )
+                     .arg( name(), QgsProcessingUtils::stringToPythonLiteral( description() ) );
+      if ( mFlags & FlagOptional )
+        code += QLatin1String( ", optional=True" );
+
+      code += QStringLiteral( ", parentLayerParameterName='%1'" ).arg( mParentLayerParameterName );
+      code += QStringLiteral( ", allowMultiple=%1" ).arg( mAllowMultiple ? QStringLiteral( "True" ) : QStringLiteral( "False" ) );
+      QgsProcessingContext c;
+      code += QStringLiteral( ", defaultValue=%1" ).arg( valueAsPythonString( mDefault, c ) );
+
+      if ( mDefaultToAllAttributes )
+        code += QLatin1String( ", defaultToAllAttributes=True" );
+
+      code += ')';
+
+      return code;
+    }
+  }
+  return QString();
+}
+
+QStringList QgsProcessingParameterPointCloudAttribute::dependsOnOtherParameters() const
+{
+  QStringList depends;
+  if ( !mParentLayerParameterName.isEmpty() )
+    depends << mParentLayerParameterName;
+  return depends;
+}
+
+QString QgsProcessingParameterPointCloudAttribute::parentLayerParameterName() const
+{
+  return mParentLayerParameterName;
+}
+
+void QgsProcessingParameterPointCloudAttribute::setParentLayerParameterName( const QString &parentLayerParameterName )
+{
+  mParentLayerParameterName = parentLayerParameterName;
+}
+
+bool QgsProcessingParameterPointCloudAttribute::allowMultiple() const
+{
+  return mAllowMultiple;
+}
+
+void QgsProcessingParameterPointCloudAttribute::setAllowMultiple( bool allowMultiple )
+{
+  mAllowMultiple = allowMultiple;
+}
+
+bool QgsProcessingParameterPointCloudAttribute::defaultToAllAttributes() const
+{
+  return mDefaultToAllAttributes;
+}
+
+void QgsProcessingParameterPointCloudAttribute::setDefaultToAllAttributes( bool enabled )
+{
+  mDefaultToAllAttributes = enabled;
+}
+
+QVariantMap QgsProcessingParameterPointCloudAttribute::toVariantMap() const
+{
+  QVariantMap map = QgsProcessingParameterDefinition::toVariantMap();
+  map.insert( QStringLiteral( "parent_layer" ), mParentLayerParameterName );
+  map.insert( QStringLiteral( "allow_multiple" ), mAllowMultiple );
+  map.insert( QStringLiteral( "default_to_all_attributes" ), mDefaultToAllAttributes );
+  return map;
+}
+
+bool QgsProcessingParameterPointCloudAttribute::fromVariantMap( const QVariantMap &map )
+{
+  QgsProcessingParameterDefinition::fromVariantMap( map );
+  mParentLayerParameterName = map.value( QStringLiteral( "parent_layer" ) ).toString();
+  mAllowMultiple = map.value( QStringLiteral( "allow_multiple" ) ).toBool();
+  mDefaultToAllAttributes = map.value( QStringLiteral( "default_to_all_attributes" ) ).toBool();
+  return true;
+}
+
+QgsProcessingParameterPointCloudAttribute *QgsProcessingParameterPointCloudAttribute::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
+{
+  QString parent;
+  bool allowMultiple = false;
+  bool defaultToAllAttributes = false;
+  QString def = definition;
+
+  if ( def.startsWith( QLatin1String( "multiple" ), Qt::CaseInsensitive ) )
+  {
+    allowMultiple = true;
+    def = def.mid( 8 ).trimmed();
+  }
+
+  if ( def.startsWith( QLatin1String( "default_to_all_attributes" ), Qt::CaseInsensitive ) )
+  {
+    defaultToAllAttributes = true;
+    def = def.mid( 25 ).trimmed();
+  }
+
+  const QRegularExpression re( QStringLiteral( "(.*?)\\s+(.*)$" ) );
+  const QRegularExpressionMatch m = re.match( def );
+  if ( m.hasMatch() )
+  {
+    parent = m.captured( 1 ).trimmed();
+    def = m.captured( 2 );
+  }
+  else
+  {
+    parent = def;
+    def.clear();
+  }
+
+  return new QgsProcessingParameterPointCloudAttribute( name, description, def.isEmpty() ? QVariant() : def, parent, allowMultiple, isOptional, defaultToAllAttributes );
 }

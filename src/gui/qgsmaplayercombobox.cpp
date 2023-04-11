@@ -19,6 +19,7 @@
 #include <QDragEnterEvent>
 #include <QPainter>
 
+
 QgsMapLayerComboBox::QgsMapLayerComboBox( QWidget *parent )
   : QComboBox( parent )
 {

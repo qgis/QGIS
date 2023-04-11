@@ -335,6 +335,8 @@ their acceptable ranges, defaults, etc.
       sipType = sipType_QgsProcessingParameterPointCloudLayer;
     else if ( sipCpp->type() == QgsProcessingParameterAnnotationLayer::typeName() )
       sipType = sipType_QgsProcessingParameterAnnotationLayer;
+    else if ( sipCpp->type() == QgsProcessingParameterPointCloudAttribute::typeName() )
+      sipType = sipType_QgsProcessingParameterPointCloudAttribute;
     else
       sipType = nullptr;
 %End
@@ -1474,16 +1476,36 @@ Evaluates the parameter with matching ``definition`` and ``value`` to a range of
 .. versionadded:: 3.4
 %End
 
-    static QStringList parameterAsFields( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );
+ static QStringList parameterAsFields( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context ) /Deprecated/;
 %Docstring
 Evaluates the parameter with matching ``definition`` to a list of fields.
+
+.. deprecated::
+   use :py:func:`~QgsProcessingParameters.parameterAsStrings` instead.
 %End
 
-    static QStringList parameterAsFields( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context );
+ static QStringList parameterAsFields( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context ) /Deprecated/;
 %Docstring
 Evaluates the parameter with matching ``definition`` and ``value`` to a list of fields.
 
 .. versionadded:: 3.4
+
+.. deprecated::
+   use :py:func:`~QgsProcessingParameters.parameterAsStrings` instead.
+%End
+
+    static QStringList parameterAsStrings( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );
+%Docstring
+Evaluates the parameter with matching ``definition`` to a list of strings (e.g. field names or point cloud attributes).
+
+.. versionadded:: 3.32.
+%End
+
+    static QStringList parameterAsStrings( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context );
+%Docstring
+Evaluates the parameter with matching ``definition`` and ``value`` to a list of strings (e.g. field names or point cloud attributes).
+
+.. versionadded:: 3.32
 %End
 
     static QgsPrintLayout *parameterAsLayout( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );
@@ -4760,6 +4782,106 @@ Returns a list of the point cloud format file extensions supported for this para
 %Docstring
 Creates a new parameter using the definition from a script code.
 %End
+};
+
+class QgsProcessingParameterPointCloudAttribute : QgsProcessingParameterDefinition
+{
+%Docstring(signature="appended")
+A point cloud layer attribute parameter for Processing algorithms.
+
+.. versionadded:: 3.32
+%End
+
+%TypeHeaderCode
+#include "qgsprocessingparameters.h"
+%End
+  public:
+
+    QgsProcessingParameterPointCloudAttribute( const QString &name, const QString &description = QString(), const QVariant &defaultValue = QVariant(),
+        const QString &parentLayerParameterName = QString(),
+        bool allowMultiple = false,
+        bool optional = false,
+        bool defaultToAllAttributes = false );
+%Docstring
+Constructor for :py:class:`QgsProcessingParameterField`.
+%End
+
+    static QString typeName();
+%Docstring
+Returns the type name for the parameter class.
+%End
+    virtual QgsProcessingParameterDefinition *clone() const /Factory/;
+
+    virtual QString type() const;
+    virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = 0 ) const;
+
+    virtual QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const;
+
+    virtual QString asScriptCode() const;
+
+    virtual QString asPythonString( QgsProcessing::PythonOutputType outputType = QgsProcessing::PythonQgsProcessingAlgorithmSubclass ) const;
+
+    virtual QStringList dependsOnOtherParameters() const;
+
+
+    QString parentLayerParameterName() const;
+%Docstring
+Returns the name of the parent layer parameter, or an empty string if this is not set.
+
+.. seealso:: :py:func:`setParentLayerParameterName`
+%End
+
+    void setParentLayerParameterName( const QString &parentLayerParameterName );
+%Docstring
+Sets the name of the parent layer parameter. Use an empty string if this is not required.
+
+.. seealso:: :py:func:`parentLayerParameterName`
+%End
+
+    bool allowMultiple() const;
+%Docstring
+Returns whether multiple field selections are permitted.
+
+.. seealso:: :py:func:`setAllowMultiple`
+%End
+
+    void setAllowMultiple( bool allowMultiple );
+%Docstring
+Sets whether multiple field selections are permitted.
+
+.. seealso:: :py:func:`allowMultiple`
+%End
+
+    bool defaultToAllAttributes() const;
+%Docstring
+Returns whether a parameter which allows multiple selections (see :py:func:`~QgsProcessingParameterPointCloudAttribute.allowMultiple`) should automatically
+select all attributes as the default value.
+
+If ``True``, this will override any existing :py:func:`~QgsProcessingParameterPointCloudAttribute.defaultValue` set on the parameter.
+
+.. seealso:: :py:func:`setDefaultToAllAttributes`
+%End
+
+    void setDefaultToAllAttributes( bool enabled );
+%Docstring
+Sets whether a parameter which allows multiple selections (see :py:func:`~QgsProcessingParameterPointCloudAttribute.allowMultiple`) should automatically
+select all attributes as the default value.
+
+If ``True``, this will override any existing :py:func:`~QgsProcessingParameterPointCloudAttribute.defaultValue` set on the parameter.
+
+.. seealso:: :py:func:`defaultToAllAttributes`
+%End
+
+    virtual QVariantMap toVariantMap() const;
+
+    virtual bool fromVariantMap( const QVariantMap &map );
+
+
+    static QgsProcessingParameterPointCloudAttribute *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) /Factory/;
+%Docstring
+Creates a new parameter using the definition from a script code.
+%End
+
 };
 
 

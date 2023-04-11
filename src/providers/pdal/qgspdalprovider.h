@@ -60,6 +60,8 @@ class QgsPdalProvider: public QgsPointCloudDataProvider
     qint64 mPointCount = 0;
 
     QVariantMap mOriginalMetadata;
+    // will be used when layer was not indexed, e.g. when loaded by Processing algorithm
+    QgsPointCloudAttributeCollection mDummyAttributes;
     std::unique_ptr<QgsPointCloudIndex> mIndex;
     QgsPdalIndexingTask *mRunningIndexingTask = nullptr;
     bool mGenerateCopc = true;

@@ -118,7 +118,7 @@ QVariantMap QgsJoinByAttributeAlgorithm::processAlgorithm( const QVariantMap &pa
 
   const QString field1Name = parameterAsString( parameters, QStringLiteral( "FIELD" ), context );
   const QString field2Name = parameterAsString( parameters, QStringLiteral( "FIELD_2" ), context );
-  const QStringList fieldsToCopy = parameterAsFields( parameters, QStringLiteral( "FIELDS_TO_COPY" ), context );
+  const QStringList fieldsToCopy = parameterAsStrings( parameters, QStringLiteral( "FIELDS_TO_COPY" ), context );
 
   const int joinField1Index = input->fields().lookupField( field1Name );
   const int joinField2Index = input2->fields().lookupField( field2Name );
