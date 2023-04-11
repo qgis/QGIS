@@ -2222,8 +2222,6 @@ class CORE_EXPORT QgsPointPatternFillSymbolLayer: public QgsImageFillSymbolLayer
     QgsMapUnitScale mRandomDeviationYMapUnitScale;
     unsigned long mSeed = 0;
 
-    double mAngle = 0;
-
     void applyDataDefinedSettings( QgsSymbolRenderContext &context ) override;
 
   private:
