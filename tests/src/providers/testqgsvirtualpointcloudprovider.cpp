@@ -100,8 +100,8 @@ void TestQgsVirtualPointCloudProvider::filters()
   QgsProviderMetadata *metadata = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "vpc" ) );
   QVERIFY( metadata );
 
-  QCOMPARE( metadata->filters( QgsProviderMetadata::FilterType::FilterPointCloud ), QStringLiteral( "Virtual Point Clouds (*.vpc *.VPC)" ) );
-  QCOMPARE( metadata->filters( QgsProviderMetadata::FilterType::FilterVector ), QString() );
+  QCOMPARE( metadata->filters( Qgis::FileFilterType::PointCloud ), QStringLiteral( "Virtual Point Clouds (*.vpc *.VPC)" ) );
+  QCOMPARE( metadata->filters( Qgis::FileFilterType::Vector ), QString() );
 
   const QString registryPointCloudFilters = QgsProviderRegistry::instance()->filePointCloudFilters();
   QVERIFY( registryPointCloudFilters.contains( "(*.vpc *.VPC)" ) );

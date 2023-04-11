@@ -512,17 +512,18 @@ QVariantMap QgsVirtualPointCloudProviderMetadata::decodeUri( const QString &uri 
   return uriComponents;
 }
 
-QString QgsVirtualPointCloudProviderMetadata::filters( QgsProviderMetadata::FilterType type )
+QString QgsVirtualPointCloudProviderMetadata::filters( Qgis::FileFilterType type )
 {
   switch ( type )
   {
-    case QgsProviderMetadata::FilterType::FilterVector:
-    case QgsProviderMetadata::FilterType::FilterRaster:
-    case QgsProviderMetadata::FilterType::FilterMesh:
-    case QgsProviderMetadata::FilterType::FilterMeshDataset:
+    case Qgis::FileFilterType::Vector:
+    case Qgis::FileFilterType::Raster:
+    case Qgis::FileFilterType::Mesh:
+    case Qgis::FileFilterType::MeshDataset:
+    case Qgis::FileFilterType::VectorTile:
       return QString();
 
-    case QgsProviderMetadata::FilterType::FilterPointCloud:
+    case Qgis::FileFilterType::PointCloud:
       return QObject::tr( "Virtual Point Clouds" ) + QStringLiteral( " (*.vpc *.VPC)" );
   }
   return QString();
