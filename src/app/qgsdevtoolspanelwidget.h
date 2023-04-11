@@ -17,6 +17,7 @@
 
 #include "ui_qgsdevtoolswidgetbase.h"
 #include "qgis_app.h"
+#include "qgssettingstree.h"
 
 class QgsDevToolWidgetFactory;
 
@@ -25,12 +26,17 @@ class APP_EXPORT QgsDevToolsPanelWidget : public QWidget, private Ui::QgsDevTool
     Q_OBJECT
   public:
 
+    static inline QgsSettingsTreeNode *sTreeDevTools = QgsSettingsTree::sTreeApp->createChildNode( QStringLiteral( "devtools" ) );
+    static const QgsSettingsEntryString *settingLastActiveTab;
+
     QgsDevToolsPanelWidget( const QList<QgsDevToolWidgetFactory *> &factories, QWidget *parent = nullptr );
     ~QgsDevToolsPanelWidget() override;
 
     void addToolFactory( QgsDevToolWidgetFactory *factory );
 
     void removeToolFactory( QgsDevToolWidgetFactory *factory );
+
+    void setActiveTab( const QString &title );
 
   private slots:
 
