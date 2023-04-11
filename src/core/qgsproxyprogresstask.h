@@ -45,6 +45,11 @@ class CORE_EXPORT QgsProxyProgressTask : public QgsTask
      */
     QgsProxyProgressTask( const QString &description, bool canCancel = false );
 
+    //! QgsProxyProgressTask cannot be copied
+    QgsProxyProgressTask( const QgsProxyProgressTask &other ) = delete;
+    //! QgsProxyProgressTask cannot be copied
+    QgsProxyProgressTask &operator=( const QgsProxyProgressTask &other ) = delete;
+
     /**
      * Finalizes the task, with the specified \a result.
      *

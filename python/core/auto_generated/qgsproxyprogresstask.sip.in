@@ -33,6 +33,7 @@ task manager.
 Constructor for QgsProxyProgressTask, with the specified ``description``.
 %End
 
+
     void finalize( bool result );
 %Docstring
 Finalizes the task, with the specified ``result``.
