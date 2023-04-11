@@ -37,10 +37,12 @@ Q_GLOBAL_STATIC( QgsStringMap, sGroups )
 
 HelpTextHash QgsExpression::sFunctionHelpTexts;
 
+///@cond PRIVATE
 HelpTextHash &QgsExpression::functionHelpTexts()
 {
   return sFunctionHelpTexts;
 }
+///@endcond
 
 bool QgsExpression::checkExpression( const QString &text, const QgsExpressionContext *context, QString &errorMessage )
 {
