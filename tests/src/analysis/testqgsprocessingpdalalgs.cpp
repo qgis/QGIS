@@ -154,7 +154,7 @@ void TestQgsProcessingPdalAlgs::reproject()
   QCOMPARE( args, QStringList() << QStringLiteral( "translate" )
             << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath )
             << QStringLiteral( "--output=%1" ).arg( outputPointCloud )
-            << QStringLiteral( "--transform-crs=%1" ).arg( QLatin1String( "EPSG:4326") )
+            << QStringLiteral( "--transform-crs=%1" ).arg( QLatin1String( "EPSG:4326" ) )
           );
 
   // set max threads to 2, a --threads argument should be added
@@ -163,7 +163,7 @@ void TestQgsProcessingPdalAlgs::reproject()
   QCOMPARE( args, QStringList() << QStringLiteral( "translate" )
             << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath )
             << QStringLiteral( "--output=%1" ).arg( outputPointCloud )
-            << QStringLiteral( "--transform-crs=%1" ).arg( QLatin1String( "EPSG:4326") )
+            << QStringLiteral( "--transform-crs=%1" ).arg( QLatin1String( "EPSG:4326" ) )
             << QStringLiteral( "--threads=2" )
           );
 }
@@ -188,7 +188,7 @@ void TestQgsProcessingPdalAlgs::fixProjection()
   QCOMPARE( args, QStringList() << QStringLiteral( "translate" )
             << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath )
             << QStringLiteral( "--output=%1" ).arg( outputPointCloud )
-            << QStringLiteral( "--assign-crs=%1" ).arg( QLatin1String( "EPSG:4326") )
+            << QStringLiteral( "--assign-crs=%1" ).arg( QLatin1String( "EPSG:4326" ) )
           );
 
   // set max threads to 2, a --threads argument should be added
@@ -197,7 +197,7 @@ void TestQgsProcessingPdalAlgs::fixProjection()
   QCOMPARE( args, QStringList() << QStringLiteral( "translate" )
             << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath )
             << QStringLiteral( "--output=%1" ).arg( outputPointCloud )
-            << QStringLiteral( "--assign-crs=%1" ).arg( QLatin1String( "EPSG:4326") )
+            << QStringLiteral( "--assign-crs=%1" ).arg( QLatin1String( "EPSG:4326" ) )
             << QStringLiteral( "--threads=2" )
           );
 }
@@ -749,11 +749,47 @@ void TestQgsProcessingPdalAlgs::buildVpc()
             << pointCloud2
           );
 
+  // calculate exact boundaries
+  parameters.insert( QStringLiteral( "BOUNDARY" ), true );
+  args = alg->createArgumentLists( parameters, *context, &feedback );
+  QCOMPARE( args, QStringList() << QStringLiteral( "build_vpc" )
+            << QStringLiteral( "--output=%1" ).arg( outputFile )
+            << QStringLiteral( "--boundary" )
+            << pointCloud1
+            << pointCloud2
+          );
+
+  // calculate statistics
+  parameters.insert( QStringLiteral( "STATISTICS" ), true );
+  args = alg->createArgumentLists( parameters, *context, &feedback );
+  QCOMPARE( args, QStringList() << QStringLiteral( "build_vpc" )
+            << QStringLiteral( "--output=%1" ).arg( outputFile )
+            << QStringLiteral( "--boundary" )
+            << QStringLiteral( "--stats" )
+            << pointCloud1
+            << pointCloud2
+          );
+
+  // build overview
+  parameters.insert( QStringLiteral( "OVERVIEW" ), true );
+  args = alg->createArgumentLists( parameters, *context, &feedback );
+  QCOMPARE( args, QStringList() << QStringLiteral( "build_vpc" )
+            << QStringLiteral( "--output=%1" ).arg( outputFile )
+            << QStringLiteral( "--boundary" )
+            << QStringLiteral( "--stats" )
+            << QStringLiteral( "--overview" )
+            << pointCloud1
+            << pointCloud2
+          );
+
   // set max threads to 2, a --threads argument should be added
   QgsSettings().setValue( QStringLiteral( "/Processing/Configuration/MAX_THREADS" ), 2 );
   args = alg->createArgumentLists( parameters, *context, &feedback );
   QCOMPARE( args, QStringList() << QStringLiteral( "build_vpc" )
             << QStringLiteral( "--output=%1" ).arg( outputFile )
+            << QStringLiteral( "--boundary" )
+            << QStringLiteral( "--stats" )
+            << QStringLiteral( "--overview" )
             << QStringLiteral( "--threads=2" )
             << pointCloud1
             << pointCloud2
