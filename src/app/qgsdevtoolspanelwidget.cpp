@@ -17,6 +17,9 @@
 #include "qgsdevtoolwidgetfactory.h"
 #include "qgsdevtoolwidget.h"
 #include "qgspanelwidgetstack.h"
+#include "qgssettingsentryimpl.h"
+
+const QgsSettingsEntryString *QgsDevToolsPanelWidget::settingLastActiveTab = new QgsSettingsEntryString( QStringLiteral( "last-active-tab" ), QgsDevToolsPanelWidget::sTreeDevTools, QString(), QStringLiteral( "Last visible tab in developer tools panel" ) );
 
 
 QgsDevToolsPanelWidget::QgsDevToolsPanelWidget( const QList<QgsDevToolWidgetFactory *> &factories, QWidget *parent )
@@ -30,7 +33,12 @@ QgsDevToolsPanelWidget::QgsDevToolsPanelWidget( const QList<QgsDevToolWidgetFact
   for ( QgsDevToolWidgetFactory *factory : factories )
     addToolFactory( factory );
 
-  connect( mOptionsListWidget, &QListWidget::currentRowChanged, this, &QgsDevToolsPanelWidget::setCurrentTool );
+  connect( mOptionsListWidget, &QListWidget::currentRowChanged, this, [ = ]( int row )
+  {
+    setCurrentTool( row );
+    settingLastActiveTab->setValue( mOptionsListWidget->currentItem()->data( Qt::UserRole ).toString() );
+  } );
+
 }
 
 QgsDevToolsPanelWidget::~QgsDevToolsPanelWidget() = default;
@@ -45,6 +53,8 @@ void QgsDevToolsPanelWidget::addToolFactory( QgsDevToolWidgetFactory *factory )
 
     QListWidgetItem *item = new QListWidgetItem( factory->icon(), QString() );
     item->setToolTip( factory->title() );
+    item->setData( Qt::UserRole, factory->title() );
+
     mOptionsListWidget->addItem( item );
     const int row = mOptionsListWidget->row( item );
     mFactoryPages[factory] = row;
@@ -70,6 +80,21 @@ void QgsDevToolsPanelWidget::removeToolFactory( QgsDevToolWidgetFactory *factory
     mFactoryPages.remove( factory );
     if ( currentRow == row )
       setCurrentTool( 0 );
+  }
+}
+
+void QgsDevToolsPanelWidget::setActiveTab( const QString &title )
+{
+  if ( !title.isEmpty() )
+  {
+    for ( int row = 0; row < mOptionsListWidget->count(); ++row )
+    {
+      if ( mOptionsListWidget->item( row )->data( Qt::UserRole ).toString() == title )
+      {
+        setCurrentTool( row );
+        break;
+      }
+    }
   }
 }
 

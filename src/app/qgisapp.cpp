@@ -1329,6 +1329,8 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipBadLayers
   showDevToolsDock->setObjectName( QStringLiteral( "ShowDevToolsPanel" ) );
   showDevToolsDock->setWhatsThis( tr( "Show Debugging/Development Tools" ) );
 
+  // store last dev tools tab before populating, as the value will be altered as tabs are created
+  const QString lastDevToolsTab = QgsDevToolsPanelWidget::settingLastActiveTab->value();
   mDevToolsWidget = new QgsDevToolsPanelWidget( mDevToolFactories );
   mDevToolsDock->setWidget( mDevToolsWidget );
 //  connect( mDevToolsDock, &QDockWidget::visibilityChanged, mActionStyleDock, &QAction::setChecked );
@@ -1969,6 +1971,8 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipBadLayers
     messageBar()->pushWidget( messageWidget, Qgis::MessageLevel::Warning, 0 );
   } );
   QgsApplication::fontManager()->enableFontDownloadsForSession();
+
+  mDevToolsWidget->setActiveTab( lastDevToolsTab );
 }
 
 QgisApp::QgisApp()
