@@ -125,7 +125,7 @@ void QgsGrassShell::initTerminal( QTermWidget *terminal )
 
   QString path = getenv( "PATH" );
   path += QgsGrass::pathSeparator() + QgsGrass::grassModulesPaths().join( QgsGrass::pathSeparator() );
-  QgsDebugMsg( "path = " + path );
+  QgsDebugMsgLevel( "path = " + path, 2 );
 
   env << "PATH=" + path;
   env << "PYTHONPATH=" + QgsGrass::getPythonPath();

@@ -306,7 +306,7 @@ void QgsGrassPlugin::onGisbaseChanged()
 
 void QgsGrassPlugin::onLayerWasAdded( QgsMapLayer *mapLayer )
 {
-  QgsDebugMsg( "name = " + mapLayer->name() );
+  QgsDebugMsgLevel( "name = " + mapLayer->name(), 2 );
   QgsVectorLayer *vectorLayer = qobject_cast<QgsVectorLayer *>( mapLayer );
   if ( !vectorLayer )
     return;
@@ -314,7 +314,7 @@ void QgsGrassPlugin::onLayerWasAdded( QgsMapLayer *mapLayer )
   if ( !grassProvider )
     return;
 
-  QgsDebugMsg( "connect editing" );
+  QgsDebugMsgLevel( "connect editing", 3 );
   connect( vectorLayer, &QgsVectorLayer::editingStarted, this, &QgsGrassPlugin::onEditingStarted );
 }
 
@@ -360,7 +360,7 @@ void QgsGrassPlugin::onEditingStarted()
   QgsVectorLayer *vectorLayer = qobject_cast<QgsVectorLayer *>( sender() );
   if ( !vectorLayer )
     return;
-  QgsDebugMsg( "started editing of layer " + vectorLayer->name() );
+  QgsDebugMsgLevel( "started editing of layer " + vectorLayer->name(), 2 );
 
   // Set editing renderer
   QgsGrassProvider *grassProvider = dynamic_cast<QgsGrassProvider *>( vectorLayer->dataProvider() );
@@ -377,12 +377,12 @@ void QgsGrassPlugin::onEditingStarted()
 
   if ( vectorLayer->styleManager()->styles().contains( editStyleName ) )
   {
-    QgsDebugMsg( editStyleName + " style exists -> set as current" );
+    QgsDebugMsgLevel( editStyleName + " style exists -> set as current", 2 );
     vectorLayer->styleManager()->setCurrentStyle( editStyleName );
   }
   else
   {
-    QgsDebugMsg( "create and set style " + editStyleName );
+    QgsDebugMsgLevel( "create and set style " + editStyleName, 2 );
     vectorLayer->styleManager()->addStyleFromLayer( editStyleName );
 
     //vectorLayer->styleManager()->addStyle( editStyleName, QgsMapLayerStyle() );
@@ -410,7 +410,7 @@ void QgsGrassPlugin::onEditingStopped()
     QString style = mOldStyles.value( vectorLayer );
     if ( vectorLayer->styleManager()->currentStyle() == QLatin1String( "GRASS Edit" ) ) // not changed by user
     {
-      QgsDebugMsg( "reset style to " + style );
+      QgsDebugMsgLevel( "reset style to " + style, 2 );
       vectorLayer->styleManager()->setCurrentStyle( style );
     }
   }
@@ -426,7 +426,7 @@ void QgsGrassPlugin::onFieldsChanged()
   }
   QString uri = grassProvider->dataSourceUri();
   uri.remove( QRegExp( "[^_]*$" ) );
-  QgsDebugMsg( "uri = " + uri );
+  QgsDebugMsgLevel( "uri = " + uri, 3 );
   for ( QgsMapLayer *layer : QgsProject::instance()->mapLayers().values() )
   {
     if ( !layer || layer->type() != Qgis::LayerType::Vector )
@@ -540,7 +540,7 @@ void QgsGrassPlugin::mapsetChanged()
       QgsDebugMsg( "Cannot read GRASS CRS : " + QString( e.what() ) );
       mCrs = QgsCoordinateReferenceSystem();
     }
-    QgsDebugMsg( "mCrs: " + mCrs.toWkt() );
+    QgsDebugMsgLevel( "mCrs: " + mCrs.toWkt(), 2 );
     setTransform();
     redrawRegion();
   }
@@ -613,7 +613,7 @@ void QgsGrassPlugin::newVector()
 
 void QgsGrassPlugin::onNewLayer( QString uri, QString name )
 {
-  QgsDebugMsg( "uri = " + uri + " name = " + name );
+  QgsDebugMsgLevel( "uri = " + uri + " name = " + name, 2 );
   QgsVectorLayer *vectorLayer = qGisInterface->addVectorLayer( uri, name, QStringLiteral( "grass" ) );
   if ( vectorLayer )
   {
@@ -739,7 +739,7 @@ void QgsGrassPlugin::projectRead()
     return;
   }
 
-  QgsDebugMsg( "Working mapset specified" );
+  QgsDebugMsgLevel( "Working mapset specified", 2 );
 
   QString currentPath = QgsGrass::getDefaultGisdbase() + "/"
                         + QgsGrass::getDefaultLocation() + "/"
@@ -886,8 +886,8 @@ void QgsGrassPlugin::setTransform()
 {
   if ( mCrs.isValid() && mCanvas->mapSettings().destinationCrs().isValid() )
   {
-    QgsDebugMsg( "srcCrs: " + mCrs.toWkt() );
-    QgsDebugMsg( "destCrs " + mCanvas->mapSettings().destinationCrs().toWkt() );
+    QgsDebugMsgLevel( "srcCrs: " + mCrs.toWkt(), 2 );
+    QgsDebugMsgLevel( "destCrs " + mCanvas->mapSettings().destinationCrs().toWkt(), 2 );
     mCoordinateTransform.setSourceCrs( mCrs );
     mCoordinateTransform.setDestinationCrs( mCanvas->mapSettings().destinationCrs() );
   }

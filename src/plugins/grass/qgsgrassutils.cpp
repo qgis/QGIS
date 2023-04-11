@@ -52,9 +52,9 @@ void QgsGrassUtils::addVectorLayers( QgisInterface *iface,
     QString uri = gisbase + "/" + location + "/"
                   + mapset + "/" + map + "/" + layers[i];
 
-    QgsDebugMsg( QString( "layer = %1" ).arg( layers[i].toLocal8Bit().constData() ) );
-    QgsDebugMsg( QString( "uri = %1" ).arg( uri.toLocal8Bit().constData() ) );
-    QgsDebugMsg( QString( "name = %1" ).arg( name.toLocal8Bit().constData() ) );
+    QgsDebugMsgLevel( QString( "layer = %1" ).arg( layers[i].toLocal8Bit().constData() ), 3 );
+    QgsDebugMsgLevel( QString( "uri = %1" ).arg( uri.toLocal8Bit().constData() ), 3 );
+    QgsDebugMsgLevel( QString( "name = %1" ).arg( name.toLocal8Bit().constData() ), 3 );
 
     iface->addVectorLayer( uri, name, QStringLiteral( "grass" ) );
   }
