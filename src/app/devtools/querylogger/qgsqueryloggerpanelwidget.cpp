@@ -29,6 +29,7 @@
 #include <QToolButton>
 #include <QCheckBox>
 #include <QTextStream>
+#include <QHeaderView>
 
 #include <nlohmann/json.hpp>
 
@@ -212,4 +213,13 @@ QgsDatabaseQueryLoggerPanelWidget::QgsDatabaseQueryLoggerPanelWidget( QgsAppQuer
 
     fout << json;
   } );
+
+  QgsSettings settings;
+  mTreeView->header()->restoreState( settings.value( QStringLiteral( "UI/queryLogger/treeState" ), QByteArray(), QgsSettings::Gui ).toByteArray() );
+}
+
+QgsDatabaseQueryLoggerPanelWidget::~QgsDatabaseQueryLoggerPanelWidget()
+{
+  QgsSettings settings;
+  settings.setValue( QStringLiteral( "UI/queryLogger/treeState" ), mTreeView->header()->saveState(), QgsSettings::Gui );
 }
