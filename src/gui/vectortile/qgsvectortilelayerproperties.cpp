@@ -328,7 +328,9 @@ void QgsVectorTileLayerProperties::loadStyle()
 
         //load sprites
         QVariantMap styleDefinition = QgsJsonUtils::parseJson( content ).toMap();
-        QgsVectorTileUtils::loadSprites( styleDefinition, context );
+
+        QFileInfo fi( dlg.filePath() );
+        QgsVectorTileUtils::loadSprites( styleDefinition, context, QStringLiteral( "file://" ) + fi.absolutePath() );
 
         QgsMapBoxGlStyleConverter converter;
 
