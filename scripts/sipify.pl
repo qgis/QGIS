@@ -29,12 +29,12 @@ use constant PREPEND_CODE_MAKE_PRIVATE => 42;
 # read arguments
 my $debug = 0;
 my $sip_output = '';
-my $python_output = '';
 my $is_qt6 = 0;
+my $python_output = '';
 #my $SUPPORT_TEMPLATE_DOCSTRING = 0;
 #die("usage: $0 [-debug] [-template-doc] headerfile\n") unless GetOptions ("debug" => \$debug, "template-doc" => \$SUPPORT_TEMPLATE_DOCSTRING) && @ARGV == 1;
 die("usage: $0 [-debug] [-qt6] [-sip_output FILE] [-python_output FILE] headerfile\n")
-  unless GetOptions ("debug" => \$debug, "sip_output=s" => \$sip_output, "python_output=s" => \$python_output, "qt6" => \$is_qt6) && @ARGV == 1;
+    unless GetOptions ("debug" => \$debug, "sip_output=s" => \$sip_output, "python_output=s" => \$python_output, "qt6" => \$is_qt6) && @ARGV == 1;
 my $headerfile = $ARGV[0];
 
 # read file
@@ -57,7 +57,6 @@ my @DECLARED_CLASSES = ();
 my @EXPORTED = (0);
 my $MULTILINE_DEFINITION = MULTILINE_NO;
 my $ACTUAL_CLASS = '';
-my $ACTUAL_STRUCT = '';
 my $PYTHON_SIGNATURE = '';
 
 my $INDENT = '';
@@ -512,7 +511,6 @@ sub fix_annotations {
     $line =~ s/\bSIP_TRANSFERBACK\b/\/TransferBack\//;
     $line =~ s/\bSIP_TRANSFERTHIS\b/\/TransferThis\//;
     $line =~ s/\bSIP_GETWRAPPER\b/\/GetWrapper\//;
-    $line =~ s/\bSIP_LEN\b/\/__len__\//;
 
     $line =~ s/SIP_PYNAME\(\s*(\w+)\s*\)/\/PyName=$1\//;
     $line =~ s/SIP_TYPEHINT\(\s*([\w\.\s,\[\]]+?)\s*\)/\/TypeHint="$1"\//g;
@@ -664,6 +662,11 @@ while ($LINE_IDX < $LINE_COUNT){
         $IF_FEATURE_CONDITION = $1;
     }
 
+    if ( $is_qt6 ){
+        $LINE =~ s/int\s*__len__\s*\(\s*\)/Py_ssize_t __len__\(\)/;
+        $LINE =~ s/long\s*__hash__\s*\(\s*\)/Py_hash_t __hash__\(\)/;
+    }
+
     # do not process SIP code %XXXCode
     if ( $SIP_RUN == 1 && $LINE =~ m/^ *% *(VirtualErrorHandler|MappedType|Type(?:Header)?Code|Module(?:Header)?Code|Convert(?:From|To)(?:Type|SubClass)Code|MethodCode|Docstring)(.*)?$/ ){
         $LINE = "%$1$2";
@@ -672,6 +675,8 @@ while ($LINE_IDX < $LINE_COUNT){
         while ( $LINE !~ m/^ *% *End/ ){
             write_output("COD", $LINE."\n");
             $LINE = read_line();
+            $LINE =~ s/SIP_SSIZE_T/Py_ssize_t/g;
+            $LINE =~ s/SIPLong_AsLong/PyLong_AsLong/g;
             $LINE =~ s/^ *% *(VirtualErrorHandler|MappedType|Type(?:Header)?Code|Module(?:Header)?Code|Convert(?:From|To)(?:Type|SubClass)Code|MethodCode|Docstring)(.*)?$/%$1$2/;
             $LINE =~ s/^\s*SIP_END(.*)$/%End$1/;
         }
@@ -836,8 +841,11 @@ while ($LINE_IDX < $LINE_COUNT){
             dbg_info("Q_ENUM/Q_FLAG $enum_helper");
             if ($python_output ne ''){
                 if ($enum_helper ne ''){
-                    if ($is_flag != 1){
-                      push @OUTPUT_PYTHON, "$enum_helper\n";
+                    push @OUTPUT_PYTHON, "$enum_helper\n";
+                    if ($is_flag == 1){
+                        # SIP seems to introduce the flags in the module rather than in the class itself
+                        # as a dirty hack, inject directly in module, hopefully we don't have flags with the same name....
+                        push @OUTPUT_PYTHON, "$2 = $ACTUAL_CLASS  # dirty hack since SIP seems to introduce the flags in module\n";
                     }
                 }
             }
@@ -1109,8 +1117,7 @@ while ($LINE_IDX < $LINE_COUNT){
         }
     }
 
-    if ( $LINE =~ m/^\s*Q_DECLARE_FLAGS\s*\(\s*(?<flags_name>\w+)\s*,\s*(?<flag_name>\w+)\s*\)/ ){
-
+    if ( $is_qt6 eq 1 and $LINE =~ m/^\s*Q_DECLARE_FLAGS\s*\(\s*(?<flags_name>\w+)\s*,\s*(?<flag_name>\w+)\s*\)/ ){
         # In PyQt6 Flags are mapped to Python enum flag and the plural doesn't exist anymore
         # https://www.riverbankcomputing.com/static/Docs/PyQt6/pyqt5_differences.html
         # So we mock it to avoid API break
@@ -1127,7 +1134,7 @@ while ($LINE_IDX < $LINE_COUNT){
     if ( $LINE =~ m/^(\s*enum(\s+Q_DECL_DEPRECATED)?\s+(?<isclass>class\s+)?(?<enum_qualname>\w+))(:?\s+SIP_[^:]*)?(\s*:\s*(?<enum_type>\w+))?(?<oneliner>.*)$/ ){
         my $enum_decl = $1;
         $enum_decl =~ s/\s*\bQ_DECL_DEPRECATED\b//;
-        if ( defined $+{enum_type} and $+{enum_type} eq "int" ) {
+        if ( $is_qt6 eq 1 and defined $+{enum_type} and $+{enum_type} eq "int" ) {
           $enum_decl .= " /BaseType=IntFlag/"
         }
         write_output("ENU1", "$enum_decl");
@@ -1212,7 +1219,8 @@ while ($LINE_IDX < $LINE_COUNT){
                             }
                         }
                     }
-                    elsif ( $is_qt6 eq 1 and $enum_member ne "" )
+
+                    if ( $is_qt6 eq 1 and $enum_member ne "" )
                     {
                       my $basename = join( ".", @CLASS_AND_STRUCT );
                       if ( $basename ne "" ){
