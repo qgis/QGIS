@@ -36,7 +36,6 @@
 #include "qgsmapmouseevent.h"
 #include "qgsmeshlayer.h"
 #include "qgsunittypes.h"
-#include "qgslocaldefaultsettings.h"
 
 #include <QActionGroup>
 
@@ -144,6 +143,21 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *
   {
     commonAngles << QPair<double, QString>( *it, formatCommonAngleSnapping( *it ) );
   }
+
+  {
+    QAction *action = new QAction( tr( "Snapping to features has priority over common angles" ), mCommonAngleActionsMenu );
+    action->setCheckable( true );
+    mCommonAngleActionsMenu->addAction( action );
+    connect( action, &QAction::changed, this, [ = ]
+    {
+      mSnappingToFeaturesOverridesCommonAngle = action->isChecked();
+      QgsSettings().setValue( QStringLiteral( "/Cad/SnappingToFeaturesOverridesCommonAngle" ), action->isChecked() );
+    } );
+    action->setChecked( QgsSettings().value( QStringLiteral( "/Cad/SnappingToFeaturesOverridesCommonAngle" ), false ).toBool() );
+  }
+
+  mCommonAngleActionsMenu->addSeparator();
+
   for ( QList< QPair<double, QString > >::const_iterator it = commonAngles.constBegin(); it != commonAngles.constEnd(); ++it )
   {
     QAction *action = new QAction( it->second, mCommonAngleActionsMenu );
@@ -1181,6 +1195,7 @@ bool QgsAdvancedDigitizingDockWidget::applyConstraints( QgsMapMouseEvent *e )
   context.mConstraint = _constraint( mMConstraint.get() );
   context.distanceConstraint = _constraint( mDistanceConstraint.get() );
   context.angleConstraint = _constraint( mAngleConstraint.get() );
+  context.snappingToFeaturesOverridesCommonAngle = mSnappingToFeaturesOverridesCommonAngle;
 
   context.lineExtensionConstraint = _constraint( mLineExtensionConstraint.get() );
   context.xyVertexConstraint = _constraint( mXyVertexConstraint.get() );

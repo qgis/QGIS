@@ -162,7 +162,10 @@ QgsCadUtils::AlignMapPointOutput QgsCadUtils::alignMapPoint( const QgsPointXY &o
 
   // *****************************
   // ---- Common Angle constraint
-  if ( numberOfHardLock < 2 && !ctx.angleConstraint.locked && ctx.cadPoints().count() >= 2 && ctx.commonAngleConstraint.locked && ctx.commonAngleConstraint.value != 0 )
+  if ( numberOfHardLock < 2 && !ctx.angleConstraint.locked && ctx.cadPoints().count() >= 2 && ctx.commonAngleConstraint.locked && ctx.commonAngleConstraint.value != 0
+       // Skip common angle constraint if the snapping to features has priority
+       && ( ! snapMatch.isValid() || ! ctx.snappingToFeaturesOverridesCommonAngle )
+     )
   {
     const double commonAngle = ctx.commonAngleConstraint.value * M_PI / 180;
     // see if soft common angle constraint should be performed
