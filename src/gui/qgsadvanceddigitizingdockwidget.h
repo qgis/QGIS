@@ -1051,6 +1051,9 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     Qgis::BetweenLineConstraint mBetweenLineConstraint;
     double mCommonAngleConstraint; // if 0: do not snap to common angles
 
+    //! Flag that controls whether snapping to features has priority over common angle
+    bool mSnappingToFeaturesOverridesCommonAngle = false;
+
     // point list and current snap point / segment
     QList<QgsPoint> mCadPointList;
     QList<QgsPointXY> mSnappedSegment;
