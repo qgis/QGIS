@@ -398,7 +398,18 @@ The connection is not automatically stored in the settings.
 
     Capabilities capabilities() const;
 %Docstring
-Returns connection capabilities
+Returns connection capabilities.
+
+.. seealso:: :py:func:`capabilities2`
+%End
+
+    Qgis::DatabaseProviderConnectionCapabilities2 capabilities2() const;
+%Docstring
+Returns extended connection capabilities.
+
+.. seealso:: :py:func:`capabilities`
+
+.. versionadded:: 3.32
 %End
 
     virtual GeometryColumnCapabilities geometryColumnCapabilities();
@@ -795,6 +806,34 @@ Adds a new field ``domain`` to the database.
 .. versionadded:: 3.26
 %End
 
+    virtual void setFieldAlias( const QString &fieldName, const QString &schema, const QString &tableName, const QString &alias ) const throw( QgsProviderConnectionException );
+%Docstring
+Sets the ``alias`` for the existing field with the specified name.
+
+:param fieldName: name of the field to be modified
+:param schema: name of the schema (schema is ignored if not supported by the backend).
+:param tableName: name of the table
+:param alias: alias to set for the field. Set to an empty string to remove a previously set alias.
+
+:raises QgsProviderConnectionException: if any errors are encountered.
+
+.. versionadded:: 3.32
+%End
+
+    virtual void setFieldComment( const QString &fieldName, const QString &schema, const QString &tableName, const QString &comment ) const throw( QgsProviderConnectionException );
+%Docstring
+Sets the ``comment`` for the existing field with the specified name.
+
+:param fieldName: name of the field to be modified
+:param schema: name of the schema (schema is ignored if not supported by the backend).
+:param tableName: name of the table
+:param comment: comment to set for the field. Set to an empty string to remove a previously set comment.
+
+:raises QgsProviderConnectionException: if any errors are encountered.
+
+.. versionadded:: 3.32
+%End
+
     SIP_PYOBJECT supportedRelationshipCardinalities() const /TypeHint="List[Qgis.RelationshipCardinality]"/;
 %Docstring
 Returns a list of relationship cardinalities which are supported by the provider.
@@ -980,6 +1019,14 @@ Checks if ``capability`` is supported.
 
 :raises QgsProviderConnectionException: if the capability is not supported
 %End
+
+    void checkCapability( Qgis::DatabaseProviderConnectionCapability2 capability ) const;
+%Docstring
+Checks if ``capability`` is supported.
+
+:raises QgsProviderConnectionException: if the capability is not supported
+%End
+
 
 
 };
