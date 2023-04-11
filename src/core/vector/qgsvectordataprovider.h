@@ -69,7 +69,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
     /**
      * enumeration with capabilities that providers might implement
      */
-    enum Capability
+    enum Capability : int
     {
       NoCapabilities = 0,       //!< Provider has no capabilities
       AddFeatures = 1,       //!< Allows adding features

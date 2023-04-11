@@ -55,6 +55,86 @@ from qgis.core import (
     QgsLayoutChecker,
 )
 
+# TODO QGIS 4.0: Fix code if PyQt6
+from qgis.PyQt.QtCore import QT_VERSION
+if (QT_VERSION >= 0x060000):
+    from qgis.PyQt.QtCore import (
+        QLocale,
+        QMetaType,
+        QProcess,
+        Qt,
+        QUrl,
+        QVariant
+    )
+
+    from qgis.PyQt.QtGui import (
+        QColor,
+        QFont,
+        QImage,
+        QPainter
+    )
+
+    from qgis.PyQt.QtNetwork import (
+        QNetworkReply,
+        QNetworkRequest,
+        QSslError
+    )
+
+    QVariant.String = QMetaType.Type.QString
+    QVariant.Int = QMetaType.Type.Int
+    QVariant.LongLong = QMetaType.Type.LongLong
+    QVariant.Double = QMetaType.Type.Double
+    QVariant.String = QMetaType.Type.QString
+    QVariant.Invalid = QMetaType.Type.UnknownType
+    QVariant.Bool = QMetaType.Type.Bool
+    QVariant.Date = QMetaType.Type.QDate
+    QVariant.Time = QMetaType.Type.QTime
+    QVariant.DateTime = QMetaType.Type.QDateTime
+    QVariant.ByteArray = QMetaType.Type.QByteArray
+    QVariant.StringList = QMetaType.Type.QStringList
+    QVariant.List = QMetaType.Type.QVariantList
+
+    Qt.AlignRight = Qt.AlignmentFlag.AlignRight
+    Qt.AlignLeft = Qt.AlignmentFlag.AlignLeft
+    Qt.AlignJustify = Qt.AlignmentFlag.AlignJustify
+    Qt.AlignHCenter = Qt.AlignmentFlag.AlignHCenter
+
+    Qt.NoPen = Qt.PenStyle.NoPen
+
+    QFont.Monospace = QFont.StyleHint.Monospace
+
+    QColor.Hsv = QColor.Spec.Hsv
+    QColor.Rgb = QColor.Spec.Rgb
+
+    Qt.Unchecked = Qt.CheckState.Unchecked
+
+    QImage.Format_RGB32 = QImage.Format.Format_RGB32
+
+    Qt.DisplayRole = Qt.ItemDataRole.DisplayRole
+    Qt.TextColorRole = Qt.ItemDataRole.ForegroundRole
+    Qt.DecorationRole = Qt.ItemDataRole.DecorationRole
+
+    QSslError.SelfSignedCertificate = QSslError.SslError.SelfSignedCertificate
+    QSslError.CertificateExpired = QSslError.SslError.CertificateExpired
+
+    QPainter.CompositionMode_Difference = QPainter.CompositionMode.CompositionMode_Difference
+    QPainter.CompositionMode_Plus = QPainter.CompositionMode.CompositionMode_Plus
+
+    QProcess.CrashExit = QProcess.ExitStatus.CrashExit
+    QProcess.NormalExit = QProcess.ExitStatus.NormalExit
+
+    QNetworkReply.ContentNotFoundError = QNetworkReply.NetworkError.ContentNotFoundError
+    QNetworkReply.NoError = QNetworkReply.NetworkError.NoError
+
+    QNetworkRequest.ContentTypeHeader = QNetworkRequest.KnownHeaders.ContentTypeHeader
+
+    QLocale.English = QLocale.Language.English
+
+    Qt.Horizontal = Qt.Orientation.Horizontal
+    Qt.Vertical = Qt.Orientation.Vertical
+
+    QUrl.FullyDecoded = QUrl.ComponentFormattingOption.FullyDecoded
+
 import unittest
 
 # Get a backup, we will patch this one later

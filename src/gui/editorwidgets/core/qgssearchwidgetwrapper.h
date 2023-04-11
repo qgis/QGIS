@@ -91,7 +91,7 @@ class GUI_EXPORT QgsSearchWidgetWrapper : public QgsWidgetWrapper
      * Flags which indicate what types of filtering and searching is possible using the widget
      * \since QGIS 2.16
      */
-    enum FilterFlag
+    enum FilterFlag : int
     {
       EqualTo = 1 << 1, //!< Supports equal to
       NotEqualTo = 1 << 2, //!< Supports not equal to

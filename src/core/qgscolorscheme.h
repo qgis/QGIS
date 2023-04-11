@@ -68,7 +68,7 @@ class CORE_EXPORT QgsColorScheme
     /**
      * Flags for controlling behavior of color scheme
      */
-    enum SchemeFlag
+    enum SchemeFlag : int
     {
       ShowInColorDialog = 0x01, //!< Show scheme in color picker dialog
       ShowInColorButtonMenu = 0x02, //!< Show scheme in color button drop-down menu

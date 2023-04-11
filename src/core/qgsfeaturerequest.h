@@ -83,7 +83,7 @@
 class CORE_EXPORT QgsFeatureRequest
 {
   public:
-    enum Flag
+    enum Flag : int
     {
       NoFlags            = 0,
       NoGeometry         = 1,  //!< Geometry is not required. It may still be returned if e.g. required for a filter condition.
