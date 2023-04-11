@@ -387,17 +387,19 @@ class CORE_EXPORT QgsLayoutTable: public QgsLayoutMultiFrame
 
     /**
      * Sets the \a width in mm for grid row lines in the table.
-     * \see gridStrokeWidth()
+     * \see gridRowStrokeWidth()
      * \see setShowGrid()
-     * \see setGridColor()
+     * \see setGridRowColor()
+     * \since QGIS 3.32
      */
     void setGridRowStrokeWidth( double width );
 
     /**
      * Sets the \a width in mm for grid column lines in the table.
-     * \see gridStrokeWidth()
+     * \see gridColumnStrokeWidth()
      * \see setShowGrid()
-     * \see setGridColor()
+     * \see setGridColumnColor()
+     * \since QGIS 3.32
      */
     void setGridColumnStrokeWidth( double width );
 
@@ -412,17 +414,19 @@ class CORE_EXPORT QgsLayoutTable: public QgsLayoutMultiFrame
 
     /**
      * Returns the width of grid row lines in the table in mm.
-     * \see setGridStrokeWidth()
+     * \see setGridRowStrokeWidth()
      * \see showGrid()
-     * \see gridColor()
+     * \see gridRowColor()
+     * \since QGIS 3.32
      */
     double gridRowStrokeWidth() const { return mGridRowStrokeWidth; }
 
     /**
      * Returns the width of grid column lines in the table in mm.
-     * \see setGridStrokeWidth()
+     * \see setGridColumnStrokeWidth()
      * \see showGrid()
-     * \see gridColor()
+     * \see gridColumnColor()
+     * \since QGIS 3.32
      */
     double gridColumnStrokeWidth() const { return mGridColumnStrokeWidth; }
 
@@ -431,24 +435,27 @@ class CORE_EXPORT QgsLayoutTable: public QgsLayoutMultiFrame
      * \see gridColor()
      * \see setShowGrid()
      * \see setGridStrokeWidth()
+     * \since QGIS 3.32
      */
     void setGridColor( const QColor &color );
 
 
     /**
      * Sets the \a color used for grid row lines in the table.
-     * \see gridColor()
+     * \see gridRowColor()
      * \see setShowGrid()
      * \see setGridStrokeWidth()
+     * \since QGIS 3.32
      */
     void setGridRowColor( const QColor &color );
 
 
     /**
      * Sets the \a color used for grid column lines in the table.
-     * \see gridColor()
+     * \see gridColumnColor()
      * \see setShowGrid()
-     * \see setGridStrokeWidth()
+     * \see setGridColumnStrokeWidth()
+     * \since QGIS 3.32
      */
     void setGridColumnColor( const QColor &color );
 
@@ -464,7 +471,8 @@ class CORE_EXPORT QgsLayoutTable: public QgsLayoutMultiFrame
      * Returns the color used for grid row lines in the table.
      * \see setGridColor()
      * \see showGrid()
-     * \see gridStrokeWidth()
+     * \see gridRowStrokeWidth()
+     * \since QGIS 3.32
      */
     QColor gridRowColor() const { return mGridRowColor; }
 
@@ -472,7 +480,8 @@ class CORE_EXPORT QgsLayoutTable: public QgsLayoutMultiFrame
      * Returns the color used for grid column lines in the table.
      * \see setGridColor()
      * \see showGrid()
-     * \see gridStrokeWidth()
+     * \see gridColumnStrokeWidth()
+     * \since QGIS 3.32
      */
     QColor gridColumnColor() const { return mGridColumnColor; }
 
