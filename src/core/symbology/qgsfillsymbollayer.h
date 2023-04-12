@@ -2177,22 +2177,6 @@ class CORE_EXPORT QgsPointPatternFillSymbolLayer: public QgsImageFillSymbolLayer
      */
     void setSeed( unsigned long seed ) { mSeed = seed; }
 
-    /**
-     * Returns the rotation angle of the pattern, in degrees clockwise.
-     *
-     * \see setAngle()
-     * \since QGIS 3.24
-     */
-    double angle() const { return mAngle; }
-
-    /**
-     * Sets the rotation \a angle of the pattern, in degrees clockwise.
-     *
-     * \see angle()
-     * \since QGIS 3.24
-     */
-    void setAngle( double angle ) { mAngle = angle; }
-
   protected:
     std::unique_ptr< QgsMarkerSymbol > mMarkerSymbol;
     double mDistanceX = 15;
