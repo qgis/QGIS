@@ -972,13 +972,13 @@ void QgsPointCloudLayer::loadIndexesForRenderContext( QgsRenderContext &renderer
     for ( int i = 0; i < subIndex.size(); ++i )
     {
       // no need to load as it's there
-      if ( subIndex.at( i ).index )
+      if ( subIndex.at( i ).index() )
         continue;
 
-      if ( subIndex.at( i ).extent.intersects( renderExtent ) &&
-           renderExtent.width() < subIndex.at( i ).extent.width() )
+      if ( subIndex.at( i ).extent().intersects( renderExtent ) &&
+           renderExtent.width() < subIndex.at( i ).extent().width() )
       {
-        mDataProvider->loadIndex( i );
+        mDataProvider->loadSubIndex( i );
       }
     }
   }

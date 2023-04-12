@@ -80,7 +80,7 @@ class CORE_EXPORT QgsPointCloudLayerRenderer: public QgsMapLayerRenderer
     QgsPointCloudLayer *mLayer = nullptr;
 
     std::unique_ptr< QgsPointCloudRenderer > mRenderer;
-    std::unique_ptr< QgsPointCloudExtentRenderer > mSubExtentsRenderer;
+    std::unique_ptr< QgsPointCloudExtentRenderer > mSubIndexExtentRenderer;
 
     QgsVector3D mScale;
     QgsVector3D mOffset;

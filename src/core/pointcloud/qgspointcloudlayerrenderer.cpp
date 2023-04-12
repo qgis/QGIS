@@ -47,7 +47,8 @@ QgsPointCloudLayerRenderer::QgsPointCloudLayerRenderer( QgsPointCloudLayer *laye
     return;
 
   mRenderer.reset( mLayer->renderer()->clone() );
-  mSubExtentsRenderer.reset( new QgsPointCloudExtentRenderer() );
+  if ( !mSubIndexes.isEmpty() )
+    mSubIndexExtentRenderer.reset( new QgsPointCloudExtentRenderer() );
 
   if ( mLayer->dataProvider()->index() )
   {
@@ -160,29 +161,29 @@ bool QgsPointCloudLayerRenderer::render()
   }
   else
   {
+    mSubIndexExtentRenderer->startRender( context );
     for ( const auto &si : mSubIndexes )
     {
       if ( canceled )
         break;
 
-      QgsPointCloudIndex *pc = si.index.get();
+      QgsPointCloudIndex *pc = si.index();
 
-      if ( !renderExtent.intersects( si.extent ) )
+      if ( !renderExtent.intersects( si.extent() ) )
         continue;
 
-      if ( !pc || !pc->isValid() || renderExtent.width() > si.extent.width() )
+      if ( !pc || !pc->isValid() || renderExtent.width() > si.extent().width() )
       {
         // when dealing with virtual point clouds, we want to render the individual extents when zoomed out
         // and only use the selected renderer when zoomed in
-        mSubExtentsRenderer->startRender( context );
-        mSubExtentsRenderer->renderExtent( si.geometry, context );
-        mSubExtentsRenderer->stopRender( context );
+        mSubIndexExtentRenderer->renderExtent( si.polygonBounds(), context );
       }
       else
       {
         canceled = !renderIndex( pc );
       }
     }
+    mSubIndexExtentRenderer->stopRender( context );
   }
 
   mRenderer->stopRender( context );

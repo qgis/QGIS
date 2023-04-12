@@ -55,7 +55,7 @@ class QgsVirtualPointCloudProvider: public QgsPointCloudDataProvider
     PointCloudIndexGenerationState indexingState( ) override { return PointCloudIndexGenerationState::Indexed; }
     QgsGeometry polygonBounds() const override;
     QVector<QgsPointCloudSubIndex> subIndexes() override { return mSubLayers; }
-    void loadIndex( int i ) override;
+    void loadSubIndex( int i ) override;
     bool setSubsetString( const QString &subset, bool updateFeatureCount = false ) override;
     QgsPointCloudRenderer *createRenderer( const QVariantMap &configuration = QVariantMap() ) const override SIP_FACTORY;
     bool renderInPreview( const QgsDataProvider::PreviewContext & ) override { return false; }
