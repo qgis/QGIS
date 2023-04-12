@@ -19,6 +19,7 @@
 
 #include "qgslogger.h"
 #include "qgsblockingnetworkrequest.h"
+#include "qgsnetworkaccessmanager.h"
 
 #include "lazperf/readers.hpp"
 
@@ -302,6 +303,7 @@ QgsLazInfo QgsLazInfo::fromUrl( QUrl &url )
   // Fetch header data
   {
     QNetworkRequest nr( url );
+    QgsSetRequestInitiatorClass( nr, QStringLiteral( "QgsLazInfo" ) );
     nr.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::AlwaysNetwork );
     nr.setAttribute( QNetworkRequest::CacheSaveControlAttribute, false );
     nr.setRawHeader( "Range", "bytes=0-374" );
