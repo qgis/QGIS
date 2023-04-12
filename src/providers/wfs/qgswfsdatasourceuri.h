@@ -140,8 +140,14 @@ class QgsWFSDataSourceURI
     //! Sets Get DCP endpoints
     void setGetEndpoints( const QgsStringMap &map );
 
+    //! Return Get DCP endpoints
+    QgsStringMap getGetEndpoints() const;
+
     //! Sets Post DCP endpoints
     void setPostEndpoints( const QgsStringMap &map );
+
+    //! Return Post DCP endpoints
+    QgsStringMap getPostEndpoints() const;
 
     //! Return set of unknown parameter keys in the URI.
     QSet<QString> unknownParamKeys() const;
