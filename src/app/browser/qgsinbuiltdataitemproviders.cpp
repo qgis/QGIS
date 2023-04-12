@@ -2655,7 +2655,7 @@ QgsFieldsDetailsWidget::QgsFieldsDetailsWidget( QWidget *parent, const QString &
           QString rowClass;
           if ( i % 2 )
             rowClass = QStringLiteral( "class=\"odd-row\"" );
-          metadata += QLatin1String( "<tr " ) + rowClass + QLatin1String( "><td>" ) + myField.name() + QLatin1String( "</td><td>" ) + myField.typeName() + QLatin1String( "</td><td>" ) + QString::number( myField.length() ) + QLatin1String( "</td><td>" ) + QString::number( myField.precision() ) + QLatin1String( "</td><td>" ) + myField.comment() + QLatin1String( "</td></tr>\n" );
+          metadata += QLatin1String( "<tr " ) + rowClass + QLatin1String( "><td>" ) + myField.displayNameWithAlias() + QLatin1String( "</td><td>" ) + myField.typeName() + QLatin1String( "</td><td>" ) + QString::number( myField.length() ) + QLatin1String( "</td><td>" ) + QString::number( myField.precision() ) + QLatin1String( "</td><td>" ) + myField.comment() + QLatin1String( "</td></tr>\n" );
         }
         metadata += QLatin1String( "</table>\n<br><br>\n" );
 
