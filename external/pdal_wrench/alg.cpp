@@ -18,6 +18,7 @@
 #include <thread>
 
 #include <pdal/QuickInfo.hpp>
+#include <pdal/util/Bounds.hpp>
 
 using namespace pdal;
 
@@ -79,7 +80,7 @@ bool runAlg(std::vector<std::string> args, Alg &alg)
 
 
 bool Alg::parseArgs(std::vector<std::string> args)
-{ 
+{
     pdal::Arg* argInput = nullptr;
     if (hasSingleInput)
     {
@@ -87,6 +88,7 @@ bool Alg::parseArgs(std::vector<std::string> args)
     }
 
     (void)programArgs.add("filter,f", "Filter expression for input data", filterExpression);
+    (void)programArgs.add("bounds", "Filter by rectangle", filterBounds);
 
     addArgs();  // impl in derived
 
@@ -110,6 +112,19 @@ bool Alg::parseArgs(std::vector<std::string> args)
     {
         std::cerr << "missing input" << std::endl;
         return false;
+    }
+
+    if (!filterBounds.empty())
+    {
+        try
+        {
+            parseBounds(filterBounds);
+        }
+        catch (pdal::Bounds::error err)
+        {
+            std::cerr << "invalid bounds: " << err.what() << std::endl;
+            return false;
+        }
     }
 
     if (!checkArgs())  // impl in derived class

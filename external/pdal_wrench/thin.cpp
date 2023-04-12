@@ -99,33 +99,48 @@ static std::unique_ptr<PipelineManager> pipeline(ParallelJobInfo *tile, std::str
 
     Stage& r = manager->makeReader( tile->inputFilenames[0], "");
 
-    Stage *filterPtr = nullptr;
+    Stage *last = &r;
+
+    // filtering
+    if (!tile->filterBounds.empty())
+    {
+        Options filter_opts;
+        filter_opts.add(pdal::Option("bounds", tile->filterBounds));
+
+        if (readerSupportsBounds(r))
+        {
+            // Reader of the format can do the filtering - use that whenever possible!
+            r.addOptions(filter_opts);
+        }
+        else
+        {
+            // Reader can't do the filtering - do it with a filter
+            last = &manager->makeFilter( "filters.crop", *last, filter_opts);
+        }
+    }
+    if (!tile->filterExpression.empty())
+    {
+        Options filter_opts;
+        filter_opts.add(pdal::Option("expression", tile->filterExpression));
+        last = &manager->makeFilter( "filters.expression", *last, filter_opts);
+    }
 
     if (mode == "every-nth")
     {
         pdal::Options decim_opts;
         decim_opts.add(pdal::Option("step", stepEveryN));
-        filterPtr = &manager->makeFilter( "filters.decimation", r, decim_opts );
+        last = &manager->makeFilter( "filters.decimation", *last, decim_opts );
     }
     else if (mode == "sample")
     {
         pdal::Options sample_opts;
         sample_opts.add(pdal::Option("cell", stepSample));
-        filterPtr = &manager->makeFilter( "filters.sample", r, sample_opts );
+        last = &manager->makeFilter( "filters.sample", *last, sample_opts );
     }
 
     pdal::Options writer_opts;
     writer_opts.add(pdal::Option("forward", "all"));  // TODO: maybe we could use lower scale than the original
-
-    Stage& w = manager->makeWriter( tile->outputFilename, "", *filterPtr, writer_opts);
-
-    if (!tile->filterExpression.empty())
-    {
-        Options filter_opts;
-        filter_opts.add(pdal::Option("where", tile->filterExpression));
-        filterPtr->addOptions(filter_opts);
-        w.addOptions(filter_opts);
-    }
+    manager->makeWriter( tile->outputFilename, "", *last, writer_opts);
 
     return manager;
 }
@@ -153,7 +168,7 @@ void Thin::preparePipelines(std::vector<std::unique_ptr<PipelineManager>>& pipel
 
         for (const VirtualPointCloud::File& f : vpc.files)
         {
-            ParallelJobInfo tile(ParallelJobInfo::FileBased, BOX2D(), filterExpression);
+            ParallelJobInfo tile(ParallelJobInfo::FileBased, BOX2D(), filterExpression, filterBounds);
             tile.inputFilenames.push_back(f.filename);
 
             // for input file /x/y/z.las that goes to /tmp/hello.vpc,
@@ -168,7 +183,7 @@ void Thin::preparePipelines(std::vector<std::unique_ptr<PipelineManager>>& pipel
     }
     else
     {
-        ParallelJobInfo tile(ParallelJobInfo::Single, BOX2D(), filterExpression);
+        ParallelJobInfo tile(ParallelJobInfo::Single, BOX2D(), filterExpression, filterBounds);
         tile.inputFilenames.push_back(inputFile);
         tile.outputFilename = outputFile;
         pipelines.push_back(pipeline(&tile, mode, stepEveryN, stepSample));

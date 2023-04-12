@@ -42,6 +42,8 @@ struct Alg
 
     std::string filterExpression;  // optional argument to limit input points
 
+    std::string filterBounds;  // optional clipping rectangle for input (pdal::Bounds)
+
     bool needsSingleCrs = true;  // most algs assume that all input files in VPC are in the same CRS,
                                  // and only few exceptions (e.g. info) tolerate mixture of multiple CRS
 

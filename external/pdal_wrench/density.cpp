@@ -73,20 +73,53 @@ std::unique_ptr<PipelineManager> Density::pipeline(ParallelJobInfo *tile) const
         readers.push_back(&manager->makeReader(f, ""));
     }
 
-    if (tile->mode == ParallelJobInfo::Spatial)
+    std::vector<Stage*> last = readers;
+
+    // find out what will be the bounding box for this job
+    // (there could be also no bbox if there's no "bounds" filter and no tiling)
+    BOX2D filterBox = !tile->filterBounds.empty() ? parseBounds(tile->filterBounds).to2d() : BOX2D();
+    BOX2D box = intersectTileBoxWithFilterBox(tile->box, filterBox);
+
+    if (box.valid())
     {
+        // We are going to do filtering of points based on 2D box. Ideally we want to do
+        // the filtering in the reader (if the reader can do it efficiently like copc/ept),
+        // otherwise we have to add filters.crop stage to filter points after they were read
+
         for (Stage* reader : readers)
         {
-            // with COPC files, we can also specify bounds at the reader
-            // that will only read the required parts of the file
-            if (reader->getName() == "readers.copc")
+            if (readerSupportsBounds(*reader))
             {
+                // add "bounds" option to reader
                 pdal::Options copc_opts;
                 copc_opts.add(pdal::Option("threads", 1));
-                copc_opts.add(pdal::Option("bounds", box_to_pdal_bounds(tile->box)));
+                copc_opts.add(pdal::Option("bounds", box_to_pdal_bounds(box)));
                 reader->addOptions(copc_opts);
             }
         }
+
+        if (!allReadersSupportBounds(readers) && !tile->filterBounds.empty())
+        {
+            // At least some readers can't do the filtering - do it with a filter
+            Options filter_opts;
+            filter_opts.add(pdal::Option("bounds", tile->filterBounds));
+            Stage *filterCrop = &manager->makeFilter( "filters.crop", filter_opts);
+            for (Stage *s : last)
+                filterCrop->setInput(*s);
+            last.clear();
+            last.push_back(filterCrop);
+        }
+    }
+
+    if (!tile->filterExpression.empty())
+    {
+        Options filter_opts;
+        filter_opts.add(pdal::Option("expression", tile->filterExpression));
+        Stage *filterExpr = &manager->makeFilter( "filters.expression", filter_opts);
+        for (Stage *s : last)
+            filterExpr->setInput(*s);
+        last.clear();
+        last.push_back(filterExpr);
     }
 
     pdal::Options writer_opts;
@@ -98,9 +131,9 @@ std::unique_ptr<PipelineManager> Density::pipeline(ParallelJobInfo *tile) const
     writer_opts.add(pdal::Option("gdalopts", "TILED=YES"));
     writer_opts.add(pdal::Option("gdalopts", "COMPRESS=DEFLATE"));
 
-    if (tile->box.valid())
+    if (box.valid())
     {
-        BOX2D box2 = tile->box;
+        BOX2D box2 = box;
         // fix tile size - PDAL's writers.gdal adds one pixel (see GDALWriter::createGrid()),
         // because it probably expects that that the bounds and resolution do not perfectly match
         box2.maxx -= resolution;
@@ -109,20 +142,13 @@ std::unique_ptr<PipelineManager> Density::pipeline(ParallelJobInfo *tile) const
         writer_opts.add(pdal::Option("bounds", box_to_pdal_bounds(box2)));
     }
 
-    if (!tile->filterExpression.empty())
-    {
-        writer_opts.add(pdal::Option("where", tile->filterExpression));
-    }
-
     // TODO: "writers.gdal: Requested driver 'COG' does not support file creation.""
     //   writer_opts.add(pdal::Option("gdaldriver", "COG"));
 
     pdal::StageCreationOptions opts{ tile->outputFilename, "", nullptr, writer_opts, "" };
     Stage& w = manager->makeWriter( opts );
-    for (Stage *stage : readers)
-    {
-        w.setInput(*stage);  // connect all readers to the writer
-    }
+    for (Stage *stage : last)
+        w.setInput(*stage);
 
     return manager;
 }
@@ -172,7 +198,14 @@ void Density::preparePipelines(std::vector<std::unique_ptr<PipelineManager>>& pi
                 // to avoid empty areas in resulting rasters
                 tileBox.clip(gridBounds);
 
-                ParallelJobInfo tile(ParallelJobInfo::Spatial, tileBox, filterExpression);
+                if (!filterBounds.empty() && !intersectionBox2D(tileBox, parseBounds(filterBounds).to2d()).valid())
+                {
+                    if (verbose)
+                        std::cout << "skipping tile " << iy << " " << ix << " -- " << tileBox.toBox() << std::endl;
+                    continue;
+                }
+
+                ParallelJobInfo tile(ParallelJobInfo::Spatial, tileBox, filterExpression, filterBounds);
                 for (const VirtualPointCloud::File & f: vpc.overlappingBox2D(tileBox))
                 {
                     tile.inputFilenames.push_back(f.filename);
@@ -226,7 +259,14 @@ void Density::preparePipelines(std::vector<std::unique_ptr<PipelineManager>>& pi
             {
                 BOX2D tileBox = t.boxAt(ix, iy);
 
-                ParallelJobInfo tile(ParallelJobInfo::Spatial, tileBox, filterExpression);
+                if (!filterBounds.empty() && !intersectionBox2D(tileBox, parseBounds(filterBounds).to2d()).valid())
+                {
+                    if (verbose)
+                        std::cout << "skipping tile " << iy << " " << ix << " -- " << tileBox.toBox() << std::endl;
+                    continue;
+                }
+
+                ParallelJobInfo tile(ParallelJobInfo::Spatial, tileBox, filterExpression, filterBounds);
                 tile.inputFilenames.push_back(inputFile);
 
                 // create temp output file names
@@ -245,7 +285,7 @@ void Density::preparePipelines(std::vector<std::unique_ptr<PipelineManager>>& pi
     {
         // single input LAS/LAZ - no parallelism
 
-        ParallelJobInfo tile(ParallelJobInfo::Single, BOX2D(), filterExpression);
+        ParallelJobInfo tile(ParallelJobInfo::Single, BOX2D(), filterExpression, filterBounds);
         tile.inputFilenames.push_back(inputFile);
         tile.outputFilename = outputFile;
         pipelines.push_back(pipeline(&tile));
@@ -256,8 +296,13 @@ void Density::preparePipelines(std::vector<std::unique_ptr<PipelineManager>>& pi
 
 void Density::finalize(std::vector<std::unique_ptr<PipelineManager>>& pipelines)
 {
-    if (pipelines.size() > 1)
+    if (!tileOutputFiles.empty())
     {
         rasterTilesToCog(tileOutputFiles, outputFile);
+
+        // clean up the temporary directory
+        fs::path outputParentDir = fs::path(outputFile).parent_path();
+        fs::path outputSubdir = outputParentDir / fs::path(outputFile).stem();
+        fs::remove_all(outputSubdir);
     }
 }
