@@ -814,6 +814,16 @@ void QgsOgrProvider::loadFields()
       newField.setAlias( alias );
     }
 
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,7,0)
+    {
+      const QString comment = textEncoding()->toUnicode( OGR_Fld_GetComment( fldDef ) );
+      if ( !comment.isEmpty() )
+      {
+        newField.setComment( comment );
+      }
+    }
+#endif
+
     // check if field is nullable
     bool nullable = OGR_Fld_IsNullable( fldDef );
     if ( !nullable )

@@ -3229,6 +3229,49 @@ class PyQgsOGRProvider(unittest.TestCase):
             self.assertEqual(fields['my_field'].alias(), 'my alias')
             self.assertEqual(fields['my_field2'].alias(), 'my alias2')
 
+    @unittest.skipIf(int(gdal.VersionInfo('VERSION_NUM')) < GDAL_COMPUTE_VERSION(3, 7, 0), "GDAL 3.7.0 required")
+    def testFieldComment(self):
+        """Test reading field comments"""
+        with tempfile.TemporaryDirectory() as dest_dir:
+            database_path = os.path.join(dest_dir, 'new_gpkg.gpkg')
+            ds = ogr.GetDriverByName('GPKG').CreateDataSource(database_path)
+            lyr = ds.CreateLayer('test', geom_type=ogr.wkbPoint)
+            lyr.CreateField(ogr.FieldDefn('field1', ogr.OFTString))
+            lyr.CreateField(ogr.FieldDefn('field2', ogr.OFTString))
+
+            ds.ExecuteSQL(
+                """CREATE TABLE gpkg_data_columns (
+          table_name TEXT NOT NULL,
+          column_name TEXT NOT NULL,
+          name TEXT,
+          title TEXT,
+          description TEXT,
+          mime_type TEXT,
+          constraint_name TEXT,
+          CONSTRAINT pk_gdc PRIMARY KEY (table_name, column_name),
+          CONSTRAINT gdc_tn UNIQUE (table_name, name)
+        )"""
+            )
+
+            ds.ExecuteSQL(
+                "INSERT INTO gpkg_data_columns('table_name', 'column_name', 'description') VALUES ('test', 'field1', 'my description')"
+            )
+
+            ds = None
+
+            vl = QgsVectorLayer(f'{database_path}|layername=test', 'test')
+            self.assertTrue(vl.isValid())
+
+            fields = vl.fields()
+
+            self.assertEqual(fields[0].name(), 'fid')
+
+            self.assertEqual(fields[1].name(), 'field1')
+            self.assertEqual(fields[1].comment(), 'my description')
+
+            self.assertEqual(fields[2].name(), 'field2')
+            self.assertEqual(fields[2].comment(), '')
+
 
 if __name__ == '__main__':
     unittest.main()
