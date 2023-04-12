@@ -58,7 +58,7 @@ class CORE_EXPORT QgsPointCloudDataProvider: public QgsDataProvider
       ReadLayerMetadata = 1 << 0, //!< Provider can read layer metadata from data store.
       WriteLayerMetadata = 1 << 1, //!< Provider can write layer metadata to the data store. See QgsDataProvider::writeLayerMetadata()
       CreateRenderer = 1 << 2, //!< Provider can create 2D renderers using backend-specific formatting information. See QgsPointCloudDataProvider::createRenderer().
-      ContainSubIndexes = 1 << 3, //!< Provider can contain multiple indexes. Virtual point cloud files for example
+      ContainSubIndexes = 1 << 3, //!< Provider can contain multiple indexes. Virtual point cloud files for example (since QGIS 3.32)
     };
 
     Q_DECLARE_FLAGS( Capabilities, Capability )
@@ -178,12 +178,12 @@ class CORE_EXPORT QgsPointCloudDataProvider: public QgsDataProvider
     /**
      * Triggers loading of the point cloud index for the \a n th sub index
      *
-     * If the provider does not support multiple indexes then loadIndex() is called
+     * Only applies to providers that support multiple indexes
      *
      * \note Not available in Python bindings
      * \since QGIS 3.32
      */
-    virtual void loadIndex( int n ) SIP_SKIP { Q_UNUSED( n ) return loadIndex(); }
+    virtual void loadSubIndex( int n ) SIP_SKIP { Q_UNUSED( n ) return; }
 
     /**
      * Returns whether provider has index which is valid

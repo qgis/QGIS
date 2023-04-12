@@ -280,7 +280,7 @@ void TestQgsVirtualPointCloudProvider::testLazyLoading()
   QCOMPARE( subIndexes.size(), 18 );
   int loadedIndexes = 0;
   for ( const auto &si : subIndexes )
-    if ( si.index )
+    if ( si.index() )
       ++loadedIndexes;
 
   QCOMPARE( loadedIndexes, 0 );
@@ -291,7 +291,7 @@ void TestQgsVirtualPointCloudProvider::testLazyLoading()
   layer->loadIndexesForRenderContext( ctx );
   subIndexes = layer->dataProvider()->subIndexes();
   for ( const auto &si : subIndexes )
-    if ( si.index )
+    if ( si.index() )
       ++loadedIndexes;
 
   QCOMPARE( loadedIndexes, 4 );
