@@ -74,6 +74,7 @@
 #include "qgsskyboxentity.h"
 #include "qgsskyboxsettings.h"
 
+#include "qgsvirtualpointcloudentity_p.h"
 #include "qgswindow3dengine.h"
 #include "qgspointcloudlayer.h"
 
@@ -722,6 +723,24 @@ void Qgs3DMapScene::addLayerEntity( QgsMapLayer *layer )
         } );
 
         connect( chunkedNewEntity, &QgsChunkedEntity::pendingJobsCountChanged, this, &Qgs3DMapScene::totalPendingJobsCountChanged );
+      }
+
+      if ( QgsVirtualPointCloudEntity *vpcNewEntity = qobject_cast<QgsVirtualPointCloudEntity *>( newEntity ) )
+      {
+        const auto chunkedEntities = vpcNewEntity->loadAllSubIndexes();
+        for ( const auto &ce : chunkedEntities )
+        {
+          ce->setParent( vpcNewEntity );
+          mChunkEntities.append( ce );
+          needsSceneUpdate = true;
+
+          connect( ce, &QgsChunkedEntity::newEntityCreated, this, [this]( Qt3DCore::QEntity * entity )
+          {
+            finalizeNewEntity( entity );
+          } );
+
+          connect( ce, &QgsChunkedEntity::pendingJobsCountChanged, this, &Qgs3DMapScene::totalPendingJobsCountChanged );
+        }
       }
     }
   }
