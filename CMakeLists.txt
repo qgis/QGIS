@@ -282,7 +282,7 @@ if(WITH_CORE)
     endif()
   endif(WITH_HANA)
 
-  set (WITH_PDAL FALSE CACHE BOOL "Determines whether PDAL support should be built")
+  set (WITH_PDAL TRUE CACHE BOOL "Determines whether PDAL support should be built")
 
   set (WITH_EPT TRUE CACHE BOOL "Determines whether Entwine Point Cloud (EPT) support should be built")
 
