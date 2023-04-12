@@ -384,6 +384,7 @@ set(QGIS_GUI_SRCS
   processing/qgsprocessingoutputdestinationwidget.cpp
   processing/qgsprocessingparameterdefinitionwidget.cpp
   processing/qgsprocessingparameterswidget.cpp
+  processing/qgsprocessingpointcloudexpressionlineedit.cpp
   processing/qgsprocessingrecentalgorithmlog.cpp
   processing/qgsprocessingtininputlayerswidget.cpp
   processing/qgsprocessingtoolboxmodel.cpp
@@ -1301,6 +1302,7 @@ set(QGIS_GUI_HDRS
   processing/qgsprocessingoutputdestinationwidget.h
   processing/qgsprocessingparameterdefinitionwidget.h
   processing/qgsprocessingparameterswidget.h
+  processing/qgsprocessingpointcloudexpressionlineedit.h
   processing/qgsprocessingrecentalgorithmlog.h
   processing/qgsprocessingtininputlayerswidget.h
   processing/qgsprocessingtoolboxmodel.h
