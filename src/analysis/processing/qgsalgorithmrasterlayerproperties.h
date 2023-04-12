@@ -55,12 +55,12 @@ class QgsRasterLayerPropertiesAlgorithm : public QgsProcessingAlgorithm
     int mBandCount = 0;
     bool mHasNoDataValue = false;
     QVariant mNoDataValue;
-    int mLayerWidth;
-    int mLayerHeight;
+    int mLayerWidth = 0;
+    int mLayerHeight = 0;
     QgsRectangle mExtent;
     QgsCoordinateReferenceSystem mCrs;
-    double mRasterUnitsPerPixelX;
-    double mRasterUnitsPerPixelY;
+    double mRasterUnitsPerPixelX = 0;
+    double mRasterUnitsPerPixelY = 0;
 
 };
 

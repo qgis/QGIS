@@ -71,7 +71,7 @@ class _3D_EXPORT QgsSkyboxSettings
     void setCubeMapFace( const QString &face, const QString &path ) { mCubeMapFacesPaths[face] = path; }
 
   private:
-    QgsSkyboxEntity::SkyboxType mSkyboxType;
+    QgsSkyboxEntity::SkyboxType mSkyboxType = QgsSkyboxEntity::PanoramicSkybox;
     //
     QString mPanoramicTexturePath;
     //

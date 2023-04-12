@@ -1799,6 +1799,9 @@ void QgsWmsProvider::setupXyzCapabilities( const QString &uri, const QgsRectangl
   tl.tileMode = XYZ;
   tl.identifier = QStringLiteral( "xyz" );  // as set in parseUri
   tl.boundingBoxes << bbox;
+  // suppress cppcheck warnings
+  tl.dpi = -1;
+  tl.timeFormat = QgsWmtsTileLayer::WmtsTimeFormat::yyyyMMdd;
 
   double tilePixelRatio = sourceTilePixelRatio;  // by default 0 = unknown
   if ( parsedUri.hasParam( QStringLiteral( "tilePixelRatio" ) ) )

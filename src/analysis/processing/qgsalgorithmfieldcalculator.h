@@ -57,11 +57,11 @@ class QgsFieldCalculatorAlgorithm : public QgsProcessingFeatureBasedAlgorithm
 
   private:
     QgsFields mFields;
-    int mFieldIdx;
+    int mFieldIdx = -1;
     QgsExpression mExpression;
     QgsExpressionContext mExpressionContext;
     QgsDistanceArea mDa;
-    int mRowNumber;
+    int mRowNumber = 0;
 };
 
 ///@endcond PRIVATE
