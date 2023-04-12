@@ -536,7 +536,7 @@ void QgsVectorLayerProfileResults::renderResultsAsIndividualFeatures( QgsProfile
 
     renderer->stopRender( context.renderContext() );
   }
-  else
+  else if ( mLayer )
   {
     QSet<QString> attributes;
     attributes.unite( mMarkerSymbol->usedAttributes( context.renderContext() ) );
