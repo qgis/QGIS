@@ -77,7 +77,8 @@ struct ParallelJobInfo
     } mode;
 
     ParallelJobInfo(ParallelMode m = Single): mode(m) {}
-    ParallelJobInfo(ParallelMode m, const BOX2D &b, const std::string fe): mode(m), box(b), filterExpression(fe) {}
+    ParallelJobInfo(ParallelMode m, const BOX2D &b, const std::string fe, const std::string fb)
+      : mode(m), box(b), filterExpression(fe), filterBounds(fb) {}
 
     // what input point cloud files to read for a job
     std::vector<std::string> inputFilenames;
@@ -88,12 +89,12 @@ struct ParallelJobInfo
     // bounding box for this job (for input/output)
     BOX2D box;
 
-    // bounding box for the job with extra collar that some algs may use
-    // in case they need access to neighboring points at the edges of tiles
-    BOX2D boxWithCollar;
-
     // PDAL filter expression to apply on all pipelines
     std::string filterExpression;
+
+    // PDAL filter on 2D or 3D bounds to apply on all pipelines
+    // Format is "([xmin, xmax], [ymin, ymax])" or "([xmin, xmax], [ymin, ymax], [zmin, zmax])"
+    std::string filterBounds;
 
     // modes of operation:
     // A. multi input without box  (LAS/LAZ)    -- per file strategy
@@ -101,7 +102,7 @@ struct ParallelJobInfo
     // B. multi input with box     (anything)   -- tile strategy
     //    - all input files are processed, but with filtering applied
     //    - COPC: filtering inside readers.copc with "bounds" argument
-    //    - LAS/LAZ: filter either using CropFilter after reader -or- "where" 
+    //    - LAS/LAZ: filter either using CropFilter after reader -or- "where"
 
     // streaming algs:
     // - multi-las: if not overlapping:  mode A
@@ -224,6 +225,16 @@ MetadataNode getReaderMetadata(std::string inputFile, MetadataNode *pointLayoutM
 void runPipelineParallel(point_count_t totalPoints, bool isStreaming, std::vector<std::unique_ptr<PipelineManager>>& pipelines, int max_threads, bool verbose);
 
 std::string box_to_pdal_bounds(const BOX2D &box);
+
+pdal::Bounds parseBounds(const std::string &boundsStr);
+
+bool readerSupportsBounds(Stage &reader);
+
+bool allReadersSupportBounds(const std::vector<Stage *> &readers);
+
+BOX2D intersectionBox2D(const BOX2D &b1, const BOX2D &b2);
+
+BOX2D intersectTileBoxWithFilterBox(const BOX2D &tileBox, const BOX2D &filterBox);
 
 
 inline bool ends_with(std::string const & value, std::string const & ending)

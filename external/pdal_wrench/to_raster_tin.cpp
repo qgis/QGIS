@@ -70,7 +70,7 @@ bool ToRasterTin::checkArgs()
 }
 
 
-std::unique_ptr<PipelineManager> pipeline(ParallelJobInfo *tile, double resolution)
+std::unique_ptr<PipelineManager> pipeline(ParallelJobInfo *tile, double resolution, double collarSize)
 {
     std::unique_ptr<PipelineManager> manager( new PipelineManager );
 
@@ -80,44 +80,90 @@ std::unique_ptr<PipelineManager> pipeline(ParallelJobInfo *tile, double resoluti
         readers.push_back(&manager->makeReader(f, ""));
     }
 
-    if (tile->mode == ParallelJobInfo::Spatial)
+    std::vector<Stage*> last = readers;
+
+    // find out what will be the bounding box for this job
+    // (there could be also no bbox if there's no "bounds" filter and no tiling)
+    BOX2D filterBox = !tile->filterBounds.empty() ? parseBounds(tile->filterBounds).to2d() : BOX2D();
+    BOX2D box = intersectTileBoxWithFilterBox(tile->box, filterBox);
+    BOX2D boxWithCollar;
+
+    // box with collar is used for filtering of data on the input
+    // bow without collar is used for output bounds
+
+    if (box.valid())
     {
+        BOX2D filterBoxWithCollar = filterBox;
+        if (filterBoxWithCollar.valid())
+            filterBoxWithCollar.grow(collarSize);
+        boxWithCollar = tile->box;
+        boxWithCollar.grow(collarSize);
+        boxWithCollar = intersectTileBoxWithFilterBox(boxWithCollar, filterBoxWithCollar);
+
+        // We are going to do filtering of points based on 2D box. Ideally we want to do
+        // the filtering in the reader (if the reader can do it efficiently like copc/ept),
+        // otherwise we have to add filters.crop stage to filter points after they were read
+
         for (Stage* reader : readers)
         {
-            // with COPC files, we can also specify bounds at the reader
-            // that will only read the required parts of the file
-            if (reader->getName() == "readers.copc")
+            if (readerSupportsBounds(*reader))
             {
+                // add "bounds" option to reader
                 pdal::Options copc_opts;
                 copc_opts.add(pdal::Option("threads", 1));
-                copc_opts.add(pdal::Option("bounds", box_to_pdal_bounds(tile->boxWithCollar)));
+                copc_opts.add(pdal::Option("bounds", box_to_pdal_bounds(boxWithCollar)));
                 reader->addOptions(copc_opts);
             }
         }
-    }
 
-    Stage &delaunay = manager->makeFilter("filters.delaunay");
-    for (Stage *stage : readers)
-    {
-        delaunay.setInput(*stage);  // connect all readers to the writer
+        if (!allReadersSupportBounds(readers) && !tile->filterBounds.empty())
+        {
+            // At least some readers can't do the filtering - do it with a filter
+            Options filter_opts;
+            filter_opts.add(pdal::Option("bounds", box_to_pdal_bounds(filterBoxWithCollar)));
+            Stage *filterCrop = &manager->makeFilter( "filters.crop", filter_opts);
+            for (Stage *s : last)
+                filterCrop->setInput(*s);
+            last.clear();
+            last.push_back(filterCrop);
+        }
     }
 
     if (!tile->filterExpression.empty())
     {
         Options filter_opts;
-        filter_opts.add(pdal::Option("where", tile->filterExpression));
-        delaunay.addOptions(filter_opts);
+        filter_opts.add(pdal::Option("expression", tile->filterExpression));
+        Stage *filterExpr = &manager->makeFilter( "filters.expression", filter_opts);
+        for (Stage *s : last)
+            filterExpr->setInput(*s);
+        last.clear();
+        last.push_back(filterExpr);
     }
+
+    if (readers.size() > 1)
+    {
+        // explicitly merge if there are multiple inputs, otherwise things don't work
+        // (no pixels are written - not sure which downstream stage is to blame)
+        Stage *merge = &manager->makeFilter("filters.merge");
+        for (Stage *stage : last)
+            merge->setInput(*stage);
+        last.clear();
+        last.push_back(merge);
+    }
+
+    Stage &delaunay = manager->makeFilter("filters.delaunay");
+    for (Stage *stage : last)
+        delaunay.setInput(*stage);
 
     pdal::Options faceRaster_opts;
     faceRaster_opts.add(pdal::Option("resolution", resolution));
 
-    if (tile->box.valid())  // if box is not provided, filters.faceraster will calculate it from data
+    if (box.valid())  // if box is not provided, filters.faceraster will calculate it from data
     {
-        faceRaster_opts.add(pdal::Option("origin_x", tile->box.minx));
-        faceRaster_opts.add(pdal::Option("origin_y", tile->box.miny));
-        faceRaster_opts.add(pdal::Option("width", (tile->box.maxx-tile->box.minx)/resolution));
-        faceRaster_opts.add(pdal::Option("height", (tile->box.maxy-tile->box.miny)/resolution));
+        faceRaster_opts.add(pdal::Option("origin_x", box.minx));
+        faceRaster_opts.add(pdal::Option("origin_y", box.miny));
+        faceRaster_opts.add(pdal::Option("width", ceil((box.maxx-box.minx)/resolution)));
+        faceRaster_opts.add(pdal::Option("height", ceil((box.maxy-box.miny)/resolution)));
     }
 
     Stage &faceRaster = manager->makeFilter("filters.faceraster", delaunay, faceRaster_opts);
@@ -177,13 +223,20 @@ void ToRasterTin::preparePipelines(std::vector<std::unique_ptr<PipelineManager>>
                 // to avoid empty areas in resulting rasters
                 tileBox.clip(gridBounds);
 
-                ParallelJobInfo tile(ParallelJobInfo::Spatial, tileBox, filterExpression);
+                if (!filterBounds.empty() && !intersectionBox2D(tileBox, parseBounds(filterBounds).to2d()).valid())
+                {
+                    if (verbose)
+                        std::cout << "skipping tile " << iy << " " << ix << " -- " << tileBox.toBox() << std::endl;
+                    continue;
+                }
+
+                ParallelJobInfo tile(ParallelJobInfo::Spatial, tileBox, filterExpression, filterBounds);
 
                 // add collar to avoid edge effects
-                tile.boxWithCollar = tileBox;
-                tile.boxWithCollar.grow(collarSize);
+                BOX2D boxWithCollar = tileBox;
+                boxWithCollar.grow(collarSize);
 
-                for (const VirtualPointCloud::File & f: vpc.overlappingBox2D(tile.boxWithCollar))
+                for (const VirtualPointCloud::File & f: vpc.overlappingBox2D(boxWithCollar))
                 {
                     tile.inputFilenames.push_back(f.filename);
                     totalPoints += f.count;
@@ -199,7 +252,7 @@ void ToRasterTin::preparePipelines(std::vector<std::unique_ptr<PipelineManager>>
 
                 tileOutputFiles.push_back(tile.outputFilename);
 
-                pipelines.push_back(pipeline(&tile, resolution));
+                pipelines.push_back(pipeline(&tile, resolution, collarSize));
             }
         }
     }
@@ -225,12 +278,19 @@ void ToRasterTin::preparePipelines(std::vector<std::unique_ptr<PipelineManager>>
             {
                 BOX2D tileBox = t.boxAt(ix, iy);
 
-                ParallelJobInfo tile(ParallelJobInfo::Spatial, tileBox, filterExpression);
+                if (!filterBounds.empty() && !intersectionBox2D(tileBox, parseBounds(filterBounds).to2d()).valid())
+                {
+                    if (verbose)
+                        std::cout << "skipping tile " << iy << " " << ix << " -- " << tileBox.toBox() << std::endl;
+                    continue;
+                }
+
+                ParallelJobInfo tile(ParallelJobInfo::Spatial, tileBox, filterExpression, filterBounds);
                 tile.inputFilenames.push_back(inputFile);
 
                 // add collar to avoid edge effects
-                tile.boxWithCollar = tileBox;
-                tile.boxWithCollar.grow(collarSize);
+                BOX2D boxWithCollar = tileBox;
+                boxWithCollar.grow(collarSize);
 
                 // create temp output file names
                 // for tile (x=2,y=3) that goes to /tmp/hello.tif,
@@ -240,23 +300,28 @@ void ToRasterTin::preparePipelines(std::vector<std::unique_ptr<PipelineManager>>
 
                 tileOutputFiles.push_back(tile.outputFilename);
 
-                pipelines.push_back(pipeline(&tile, resolution));
+                pipelines.push_back(pipeline(&tile, resolution, collarSize));
             }
         }
     }
     else
     {
-        ParallelJobInfo tile(ParallelJobInfo::Single, BOX2D(), filterExpression);
+        ParallelJobInfo tile(ParallelJobInfo::Single, BOX2D(), filterExpression, filterBounds);
         tile.inputFilenames.push_back(inputFile);
         tile.outputFilename = outputFile;
-        pipelines.push_back(pipeline(&tile, resolution));
+        pipelines.push_back(pipeline(&tile, resolution, 0));
     }
 }
 
 void ToRasterTin::finalize(std::vector<std::unique_ptr<PipelineManager>>& pipelines)
 {
-    if (pipelines.size() > 1)
+    if (!tileOutputFiles.empty())
     {
         rasterTilesToCog(tileOutputFiles, outputFile);
+
+        // clean up the temporary directory
+        fs::path outputParentDir = fs::path(outputFile).parent_path();
+        fs::path outputSubdir = outputParentDir / fs::path(outputFile).stem();
+        fs::remove_all(outputSubdir);
     }
 }

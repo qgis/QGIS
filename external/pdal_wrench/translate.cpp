@@ -82,6 +82,32 @@ static std::unique_ptr<PipelineManager> pipeline(ParallelJobInfo *tile, std::str
 
     Stage& r = manager->makeReader( tile->inputFilenames[0], "", reader_opts);
 
+    Stage *last = &r;
+
+    // filtering
+    if (!tile->filterBounds.empty())
+    {
+        Options filter_opts;
+        filter_opts.add(pdal::Option("bounds", tile->filterBounds));
+
+        if (readerSupportsBounds(r))
+        {
+            // Reader of the format can do the filtering - use that whenever possible!
+            r.addOptions(filter_opts);
+        }
+        else
+        {
+            // Reader can't do the filtering - do it with a filter
+            last = &manager->makeFilter( "filters.crop", *last, filter_opts);
+        }
+    }
+    if (!tile->filterExpression.empty())
+    {
+        Options filter_opts;
+        filter_opts.add(pdal::Option("expression", tile->filterExpression));
+        last = &manager->makeFilter( "filters.expression", *last, filter_opts);
+    }
+
     // optional reprojection
     Stage* reproject = nullptr;
     if (!transformCrs.empty())
@@ -91,12 +117,13 @@ static std::unique_ptr<PipelineManager> pipeline(ParallelJobInfo *tile, std::str
         if (!transformCoordOp.empty())
         {
             transform_opts.add(pdal::Option("coord_op", transformCoordOp));
-            reproject = &manager->makeFilter( "filters.projpipeline", r, transform_opts);
+            reproject = &manager->makeFilter( "filters.projpipeline", *last, transform_opts);
         }
         else
         {
-            reproject = &manager->makeFilter( "filters.reprojection", r, transform_opts);
+            reproject = &manager->makeFilter( "filters.reprojection", *last, transform_opts);
         }
+        last = reproject;
     }
 
     pdal::Options writer_opts;
@@ -115,17 +142,7 @@ static std::unique_ptr<PipelineManager> pipeline(ParallelJobInfo *tile, std::str
         writer_opts.add(pdal::Option("offset_z", "auto"));
     }
 
-    Stage& writerInput = reproject ? *reproject : r;
-    Stage& w = manager->makeWriter( tile->outputFilename, "", writerInput, writer_opts);
-
-    if (!tile->filterExpression.empty())
-    {
-        Options filter_opts;
-        filter_opts.add(pdal::Option("where", tile->filterExpression));
-        w.addOptions(filter_opts);
-        if (reproject)
-            reproject->addOptions(filter_opts);
-    }
+    Stage& w = manager->makeWriter( tile->outputFilename, "", *last, writer_opts);
 
     return manager;
 }
@@ -153,7 +170,7 @@ void Translate::preparePipelines(std::vector<std::unique_ptr<PipelineManager>>& 
 
         for (const VirtualPointCloud::File& f : vpc.files)
         {
-            ParallelJobInfo tile(ParallelJobInfo::FileBased, BOX2D(), filterExpression);
+            ParallelJobInfo tile(ParallelJobInfo::FileBased, BOX2D(), filterExpression, filterBounds);
             tile.inputFilenames.push_back(f.filename);
 
             // for input file /x/y/z.las that goes to /tmp/hello.vpc,
@@ -168,7 +185,7 @@ void Translate::preparePipelines(std::vector<std::unique_ptr<PipelineManager>>& 
     }
     else
     {
-        ParallelJobInfo tile(ParallelJobInfo::Single, BOX2D(), filterExpression);
+        ParallelJobInfo tile(ParallelJobInfo::Single, BOX2D(), filterExpression, filterBounds);
         tile.inputFilenames.push_back(inputFile);
         tile.outputFilename = outputFile;
         pipelines.push_back(pipeline(&tile, assignCrs, transformCrs, transformCoordOp));
