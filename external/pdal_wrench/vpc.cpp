@@ -199,7 +199,7 @@ bool VirtualPointCloud::write(std::string filename)
     std::string filenameAbsolute = filename;
     if (!fs::path(filename).is_absolute())
     {
-        filenameAbsolute = fs::absolute(filename);
+        filenameAbsolute = fs::absolute(filename).string();
     }
 
     std::ofstream outputJson(filenameAbsolute);
@@ -452,7 +452,7 @@ void buildVpc(std::vector<std::string> args)
         if (!pdal::Utils::isRemote(inputFile) && !fs::path(inputFile).is_absolute())
         {
             // convert to absolute path using the current path
-            inputFileAbsolute = fs::absolute(inputFile);
+            inputFileAbsolute = fs::absolute(inputFile).string();
         }
 
         MetadataNode layout;
@@ -500,8 +500,8 @@ void buildVpc(std::vector<std::string> args)
         // for /tmp/hello.vpc we will use /tmp/hello-overview.laz as overview file
         fs::path outputParentDir = fs::path(outputFile).parent_path();
         fs::path outputStem = outputParentDir / fs::path(outputFile).stem();
-        overviewFilenameBase = std::string(outputStem);
-        overviewFilenameCopc = std::string(outputStem) + "-overview.copc.laz";
+        overviewFilenameBase = outputStem.string();
+        overviewFilenameCopc = outputStem.string() + "-overview.copc.laz";
     }
 
     if (boundaries || stats || overview)
