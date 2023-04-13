@@ -268,6 +268,9 @@ class CORE_EXPORT QgsFeature
     QVariantMap attributeMap() const;
 #else
 
+    // TODO Make it work with Qt6
+    % If (- Qt_6_0_0)
+
     /**
      * Returns the feature's attributes as a map of field name to value.
      *
@@ -298,6 +301,8 @@ class CORE_EXPORT QgsFeature
       QVariantMap *v = new QVariantMap( sipCpp->attributeMap() );
       sipRes = sipConvertFromNewType( v, sipType_QVariantMap, Py_None );
     }
+    % End
+
     % End
 #endif
 

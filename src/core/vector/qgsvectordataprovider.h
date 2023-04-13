@@ -697,7 +697,15 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
      *
      * \since QGIS 3.0
      */
+
+// TODO Make it work with Qt6
+#ifdef SIP_RUN
+    %If (- Qt_6_0_0)
+#endif
     QTextCodec *textEncoding() const;
+#ifdef SIP_RUN
+    %End
+#endif
 
   private:
     mutable bool mCacheMinMaxDirty = true;
