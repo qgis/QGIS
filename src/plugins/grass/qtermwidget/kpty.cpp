@@ -30,6 +30,7 @@
 #if defined(__FreeBSD__) || defined(__DragonFly__)
 #define HAVE_LOGIN
 #define HAVE_LIBUTIL_H
+#define HAVE_UTEMPTER
 #endif
 
 #if defined(__OpenBSD__)
@@ -92,6 +93,7 @@
 
 #ifdef HAVE_UTEMPTER
 extern "C" {
+# include <ulog.h>
 # include <utempter.h>
 }
 #else
