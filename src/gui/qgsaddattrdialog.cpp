@@ -69,6 +69,11 @@ QgsAddAttrDialog::QgsAddAttrDialog( QgsVectorLayer *vlayer, QWidget *parent, Qt:
 
   mNameEdit->setFocus();
 
+  if ( !( attributeEditCapabilities & Qgis::VectorDataProviderAttributeEditCapability::EditAlias ) )
+  {
+    mLabelAlias->hide();
+    mAliasEdit->hide();
+  }
   if ( !( attributeEditCapabilities & Qgis::VectorDataProviderAttributeEditCapability::EditComment ) )
   {
     mLabelComment->hide();
@@ -164,13 +169,18 @@ QgsField QgsAddAttrDialog::field() const
                     .arg( mPrec->value() )
                     .arg( mCommentEdit->text() ), 2 );
 
-  return QgsField(
-           mNameEdit->text(),
-           ( QVariant::Type ) mTypeBox->currentData( Qt::UserRole ).toInt(),
-           mTypeBox->currentData( Qt::UserRole + 1 ).toString(),
-           mLength->value(),
-           mPrec->isEnabled() ? mPrec->value() : 0,
-           mCommentEdit->text(),
-           static_cast<QVariant::Type>( mTypeBox->currentData( Qt::UserRole ).toInt() ) == QVariant::Map ? QVariant::String : QVariant::Invalid
-         );
+  QgsField res = QgsField(
+                   mNameEdit->text(),
+                   ( QVariant::Type ) mTypeBox->currentData( Qt::UserRole ).toInt(),
+                   mTypeBox->currentData( Qt::UserRole + 1 ).toString(),
+                   mLength->value(),
+                   mPrec->isEnabled() ? mPrec->value() : 0,
+                   mCommentEdit->text(),
+                   static_cast<QVariant::Type>( mTypeBox->currentData( Qt::UserRole ).toInt() ) == QVariant::Map ? QVariant::String : QVariant::Invalid
+                 );
+
+  if ( !mAliasEdit->text().isEmpty() )
+    res.setAlias( mAliasEdit->text() );
+
+  return res;
 }
