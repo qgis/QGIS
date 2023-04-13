@@ -127,7 +127,7 @@ class GetLayoutMapLayerCredits : public QgsScopedExpressionFunction
   public:
     GetLayoutMapLayerCredits( const QgsLayout *c )
       : QgsScopedExpressionFunction( QStringLiteral( "map_credits" ),
-                                     QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "id" ) )
+                                     QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "id" ), true )
                                      << QgsExpressionFunction::Parameter( QStringLiteral( "include_layer_names" ), true, false )
                                      << QgsExpressionFunction::Parameter( QStringLiteral( "layer_name_separator" ), true, QStringLiteral( ": " ) ), QStringLiteral( "Layout" ) )
       , mLayout( c )
@@ -139,38 +139,57 @@ class GetLayoutMapLayerCredits : public QgsScopedExpressionFunction
         return QVariant();
 
       const QString id = values.value( 0 ).toString();
+      const bool includeLayerNames = values.value( 1 ).toBool();
+      const QString layerNameSeparator = values.value( 2 ).toString();
 
-      if ( QgsLayoutItemMap *map = qobject_cast< QgsLayoutItemMap * >( mLayout->itemById( id ) ) )
+      QList< QgsLayoutItemMap * > maps;
+      mLayout->layoutItems( maps );
+
+      // collect all the layers in matching maps first
+      QList< const QgsMapLayer * > layers;
+      bool foundMap = false;
+      for ( QgsLayoutItemMap *map : std::as_const( maps ) )
       {
+        if ( !id.isEmpty() && map->id() != id )
+          continue;
+
+        foundMap = true;
+
         const QgsExpressionContext c = map->createExpressionContext();
         const QVariantList mapLayers = c.variable( QStringLiteral( "map_layers" ) ).toList();
 
-        const bool includeLayerNames = values.value( 1 ).toBool();
-        const QString layerNameSeparator = values.value( 2 ).toString();
 
-        QVariantList res;
         for ( const QVariant &value : mapLayers )
         {
           if ( const QgsMapLayer *layer = qobject_cast< const QgsMapLayer * >( value.value< QObject * >() ) )
           {
-            const QStringList credits = !layer->metadata().rights().isEmpty() ? layer->metadata().rights() : QStringList() << layer->attribution();
-            for ( const QString &credit : credits )
-            {
-              if ( credit.trimmed().isEmpty() )
-                continue;
-
-              const QString creditString = includeLayerNames ? layer->name() + layerNameSeparator + credit
-                                           : credit;
-
-              if ( !res.contains( creditString ) )
-                res << creditString;
-            }
+            if ( !layers.contains( layer ) )
+              layers << layer;
           }
         }
-
-        return res;
       }
-      return QVariant();
+      if ( !foundMap )
+        return QVariant();
+
+      QVariantList res;
+      res.reserve( layers.size() );
+      for ( const QgsMapLayer *layer : std::as_const( layers ) )
+      {
+        const QStringList credits = !layer->metadata().rights().isEmpty() ? layer->metadata().rights() : QStringList() << layer->attribution();
+        for ( const QString &credit : credits )
+        {
+          if ( credit.trimmed().isEmpty() )
+            continue;
+
+          const QString creditString = includeLayerNames ? layer->name() + layerNameSeparator + credit
+                                       : credit;
+
+          if ( !res.contains( creditString ) )
+            res << creditString;
+        }
+      }
+
+      return res;
     }
 
     QgsScopedExpressionFunction *clone() const override

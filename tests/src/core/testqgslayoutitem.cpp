@@ -1454,12 +1454,18 @@ void TestQgsLayoutItem::mapCreditsFunction()
   QVariant r = e.evaluate( &c );
   QVERIFY( !r.isValid() );
 
+  e = QgsExpression( QStringLiteral( "array_to_string( map_credits() )" ) );
+  r = e.evaluate( &c );
+  QVERIFY( !r.isValid() );
+
   QgsLayoutItemMap *map = new QgsLayoutItemMap( &l );
   map->setCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ) );
   map->attemptSetSceneRect( QRectF( 30, 60, 200, 100 ) );
   map->setExtent( extent );
   l.addLayoutItem( map );
   map->setId( QStringLiteral( "Map_id" ) );
+
+  e = QgsExpression( QStringLiteral( "array_to_string( map_credits( 'Map_id' ) )" ) );
 
   c = l.createExpressionContext();
   e.prepare( &c );
@@ -1506,6 +1512,11 @@ void TestQgsLayoutItem::mapCreditsFunction()
   QgsExpression e4( QStringLiteral( "array_to_string( map_credits( 'Map_2', include_layer_names:=true ) )" ) );
   e4.prepare( &c );
   QCOMPARE( e4.evaluate( &c ).toString(), QStringLiteral( "A: CC BY SA" ) );
+
+  // credits from all maps
+  QgsExpression e5( QStringLiteral( "array_to_string( map_credits(include_layer_names:=true ) )" ) );
+  e5.prepare( &c );
+  QCOMPARE( e5.evaluate( &c ).toString(), QStringLiteral( "A: CC BY SA,B: CC NC,C: CC BY SA" ) );
 }
 
 void TestQgsLayoutItem::rotation()
