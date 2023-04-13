@@ -26,6 +26,7 @@
 #include "qgsprocessingcontext.h"
 #include "qgsprocessingmodelchildparametersource.h"
 #include "qgspointcloudattribute.h"
+#include "qgspointcloudlayer.h"
 
 #include <QAbstractButton>
 
