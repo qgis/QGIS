@@ -43,14 +43,38 @@ class GUI_EXPORT QgsVectorTileLayerProperties : public QgsOptionsDialogBase, pri
     //! Constructor
     QgsVectorTileLayerProperties( QgsVectorTileLayer *lyr, QgsMapCanvas *canvas, QgsMessageBar *messageBar, QWidget *parent = nullptr, Qt::WindowFlags = QgsGuiUtils::ModalDialogFlags );
 
+    /**
+     * Loads the default style when appropriate button is pressed
+     *
+     * \since QGIS 3.30
+     */
+    void loadDefaultStyle();
+
+    /**
+     * Saves the default style when appropriate button is pressed
+     *
+     * \since QGIS 3.30
+     */
+    void saveDefaultStyle();
+
+    /**
+     * Loads a saved style when appropriate button is pressed
+     *
+     * \since QGIS 3.30
+     */
+    void loadStyle();
+
+    /**
+     * Saves a style when appriate button is pressed
+     *
+     * \since QGIS 3.30
+     */
+    void saveStyleAs();
+
   private slots:
     void apply();
     void onCancel();
 
-    void loadDefaultStyle();
-    void saveDefaultStyle();
-    void loadStyle();
-    void saveStyleAs();
     void aboutToShowStyleMenu();
     void loadMetadata();
     void saveMetadataAs();

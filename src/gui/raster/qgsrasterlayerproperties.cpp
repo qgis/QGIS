@@ -132,11 +132,11 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
 
   mBtnStyle = new QPushButton( tr( "Style" ) );
   QMenu *menuStyle = new QMenu( this );
-  menuStyle->addAction( tr( "Load Style…" ), this, &QgsRasterLayerProperties::loadStyle_clicked );
-  menuStyle->addAction( tr( "Save Style…" ), this, &QgsRasterLayerProperties::saveStyleAs_clicked );
+  menuStyle->addAction( tr( "Load Style…" ), this, &QgsRasterLayerProperties::loadStyle );
+  menuStyle->addAction( tr( "Save Style…" ), this, &QgsRasterLayerProperties::saveStyleAs );
   menuStyle->addSeparator();
-  menuStyle->addAction( tr( "Save as Default" ), this, &QgsRasterLayerProperties::saveDefaultStyle_clicked );
-  menuStyle->addAction( tr( "Restore Default" ), this, &QgsRasterLayerProperties::loadDefaultStyle_clicked );
+  menuStyle->addAction( tr( "Save as Default" ), this, &QgsRasterLayerProperties::saveDefaultStyle );
+  menuStyle->addAction( tr( "Restore Default" ), this, &QgsRasterLayerProperties::loadDefaultStyle );
   mBtnStyle->setMenu( menuStyle );
   connect( menuStyle, &QMenu::aboutToShow, this, &QgsRasterLayerProperties::aboutToShowStyleMenu );
   buttonBox->addButton( mBtnStyle, QDialogButtonBox::ResetRole );
@@ -1604,7 +1604,7 @@ void QgsRasterLayerProperties::removeSelectedMetadataUrl()
 // Next four methods for saving and restoring qml style state
 //
 //
-void QgsRasterLayerProperties::loadDefaultStyle_clicked()
+void QgsRasterLayerProperties::loadDefaultStyle()
 {
   bool defaultLoadedFlag = false;
   QString myMessage = mRasterLayer->loadDefaultStyle( defaultLoadedFlag );
@@ -1623,7 +1623,7 @@ void QgsRasterLayerProperties::loadDefaultStyle_clicked()
   }
 }
 
-void QgsRasterLayerProperties::saveDefaultStyle_clicked()
+void QgsRasterLayerProperties::saveDefaultStyle()
 {
 
   apply(); // make sure the style to save is up-to-date
@@ -1648,7 +1648,7 @@ void QgsRasterLayerProperties::saveDefaultStyle_clicked()
 }
 
 
-void QgsRasterLayerProperties::loadStyle_clicked()
+void QgsRasterLayerProperties::loadStyle()
 {
   QgsSettings settings;
   QString lastUsedDir = settings.value( QStringLiteral( "style/lastStyleDir" ), QDir::homePath() ).toString();
@@ -1681,7 +1681,7 @@ void QgsRasterLayerProperties::loadStyle_clicked()
 }
 
 
-void QgsRasterLayerProperties::saveStyleAs_clicked()
+void QgsRasterLayerProperties::saveStyleAs()
 {
   QgsSettings settings;
   QString lastUsedDir = settings.value( QStringLiteral( "style/lastStyleDir" ), QDir::homePath() ).toString();

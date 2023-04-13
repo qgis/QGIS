@@ -901,9 +901,9 @@ bool QgsLayerStyleManagerWidgetFactory::supportsLayer( QgsMapLayer *layer ) cons
     case Qgis::LayerType::Vector:
     case Qgis::LayerType::Raster:
     case Qgis::LayerType::Mesh:
+    case Qgis::LayerType::VectorTile:
       return true;
 
-    case Qgis::LayerType::VectorTile:
     case Qgis::LayerType::PointCloud:
     case Qgis::LayerType::Plugin:
     case Qgis::LayerType::Annotation:
