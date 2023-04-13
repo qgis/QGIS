@@ -128,7 +128,7 @@ class CORE_EXPORT QgsPointCloudAttribute
 
     QString mName;
     int mSize = 0;
-    DataType mType;
+    DataType mType = DataType::Char;
 };
 
 /**

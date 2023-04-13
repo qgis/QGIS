@@ -43,16 +43,16 @@ class QgsRasterFrequencyByComparisonOperatorBase : public QgsProcessingAlgorithm
 
   private:
     std::unique_ptr< QgsRasterInterface > mInputValueRasterInterface;
-    int mInputValueRasterBand;
+    int mInputValueRasterBand = 1;
     std::vector< QgsRasterAnalysisUtils::RasterLogicInput > mInputs;
-    bool mIgnoreNoData;
+    bool mIgnoreNoData = false;
     double mNoDataValue = -9999;
-    int mLayerWidth;
-    int mLayerHeight;
+    int mLayerWidth = 0;
+    int mLayerHeight = 0;
     QgsRectangle mExtent;
     QgsCoordinateReferenceSystem mCrs;
-    double mRasterUnitsPerPixelX;
-    double mRasterUnitsPerPixelY;
+    double mRasterUnitsPerPixelX = 0;
+    double mRasterUnitsPerPixelY = 0;
 };
 
 class QgsRasterFrequencyByEqualOperatorAlgorithm : public QgsRasterFrequencyByComparisonOperatorBase

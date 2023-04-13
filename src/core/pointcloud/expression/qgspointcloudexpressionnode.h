@@ -235,7 +235,7 @@ class CORE_EXPORT QgsPointCloudExpressionNode
     /**
      * Contains the static, precalculated value for the node if mHasCachedValue is TRUE.
      */
-    mutable double mCachedStaticValue;
+    mutable double mCachedStaticValue = 0;
 
   private:
 
