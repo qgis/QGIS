@@ -72,6 +72,17 @@ if [[ ${WITH_GRASS7} == "ON" || ${WITH_GRASS8} == "ON" ]]; then
   )
 fi
 
+# Workaround https://github.com/actions/checkout/issues/760
+git config --global --add safe.directory ${CTEST_SOURCE_DIR}
+git config --global --add safe.directory ${CTEST_BUILD_DIR}
+
+#######
+# Sipify all (for Qt6 binding we need to re-generate binding as they differ from the configured Qt5 ones
+#######
+echo "${bold}Generale sip files...${endbold}"
+echo "::group::generate_sip_files"
+../scripts/sipify_all.sh
+echo "::endgroup::"
 cmake \
  -GNinja \
  -DCMAKE_BUILD_TYPE=${BUILD_TYPE} \
@@ -120,16 +131,13 @@ cmake \
  "${CMAKE_EXTRA_ARGS[@]}" ..
 echo "::endgroup::"
 
-# Workaround https://github.com/actions/checkout/issues/760
-git config --global --add safe.directory ${CTEST_SOURCE_DIR}
-git config --global --add safe.directory ${CTEST_BUILD_DIR}
-
 #######
 # Build
 #######
 echo "${bold}Building QGIS...${endbold}"
 echo "::group::build"
-ctest -VV -S ${CTEST_SOURCE_DIR}/.ci/config_build.ctest
+#ctest -VV -S ${CTEST_SOURCE_DIR}/.ci/config_build.ctest
+ninja pycore pyqtcompat pytesting
 echo "::endgroup::"
 
 ########################
