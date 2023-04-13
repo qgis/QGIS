@@ -4399,8 +4399,9 @@ template<_TYPE_>
 %End
 };
 
-
 //// End Qt6 SPecific code
+
+%If (- Qt_6_0_0)
 
 %PostInitialisationCode  //#spellok
 
@@ -4409,4 +4410,7 @@ typedef bool ( *FromQVariantConverterFn )( const QVariant *, PyObject ** );
 void (*register_from_qvariant_converter)(FromQVariantConverterFn);
 register_from_qvariant_converter = (void (*)(FromQVariantConverterFn))sipImportSymbol("pyqt5_register_from_qvariant_convertor");  //#spellok
 register_from_qvariant_converter(null_from_qvariant_converter);
+
+%End
+
 %End
