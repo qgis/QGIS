@@ -446,6 +446,15 @@ void QgsOgrProviderConnection::setDefaultCapabilities()
     {
       mCapabilities |= RenameField;
     }
+
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,7,0)
+    // only supported on gdal 3.7 and above
+    if ( CSLFindString( papszTokens, "AlternativeName" ) >= 0 )
+    {
+      mCapabilities2 |= Qgis::DatabaseProviderConnectionCapability2::SetFieldAlias;
+    }
+#endif
+
     CSLDestroy( papszTokens );
   }
 #else
@@ -1010,6 +1019,46 @@ void QgsOgrProviderConnection::renameField( const QString &schema, const QString
   {
     throw QgsProviderConnectionException( QObject::tr( "Could not rename field: %1" ).arg( CPLGetLastErrorMsg() ) );
   }
+}
+
+void QgsOgrProviderConnection::setFieldAlias( const QString &fieldName, const QString &schema, const QString &tableName, const QString &alias ) const
+{
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,7,0)
+  if ( ! schema.isEmpty() )
+  {
+    QgsMessageLog::logMessage( QStringLiteral( "Schema is not supported by OGR, ignoring" ), QStringLiteral( "OGR" ), Qgis::MessageLevel::Info );
+  }
+
+  QString errCause;
+  QgsOgrLayerUniquePtr layer = QgsOgrProviderUtils::getLayer( uri(),
+                               true,
+                               QStringList(),
+                               tableName, errCause, true );
+  if ( !layer )
+  {
+    throw QgsProviderConnectionException( QObject::tr( "There was an error opening the dataset: %1" ).arg( errCause ) );
+  }
+
+  //type does not matter, it will not be used
+  gdal::ogr_field_def_unique_ptr fld( OGR_Fld_Create( fieldName.toUtf8().constData(), OFTReal ) );
+  OGR_Fld_SetAlternativeName( fld.get(), alias.toUtf8().constData() );
+
+  const int fieldIndex = layer->GetLayerDefn().GetFieldIndex( fieldName.toUtf8().constData() );
+  if ( fieldIndex < 0 )
+  {
+    throw QgsProviderConnectionException( QObject::tr( "Could not set alias for %1 - field does not exist" ).arg( fieldName ) );
+  }
+  if ( layer->AlterFieldDefn( fieldIndex, fld.get(), ALTER_ALTERNATIVE_NAME_FLAG ) != OGRERR_NONE )
+  {
+    throw QgsProviderConnectionException( QObject::tr( "Could not set alias: %1" ).arg( CPLGetLastErrorMsg() ) );
+  }
+#else
+  ( void )fieldName;
+  ( void )schema;
+  ( void )tableName;
+  ( void )alias;
+  throw QgsProviderConnectionException( QObject::tr( "Setting field aliases for datasets requires GDAL 3.7 or later" ) );
+#endif
 }
 
 QgsAbstractDatabaseProviderConnection::SqlVectorLayerOptions QgsOgrProviderConnection::sqlOptions( const QString &layerSource )

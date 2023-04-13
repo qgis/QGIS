@@ -3186,6 +3186,46 @@ class PyQgsOGRProvider(unittest.TestCase):
         })
 
     @unittest.skipIf(int(gdal.VersionInfo('VERSION_NUM')) < GDAL_COMPUTE_VERSION(3, 7, 0), "GDAL 3.7 required")
+    def test_provider_connection_set_field_alias(self):
+        """
+        Test setting field alias via the connections api
+        """
+        metadata = QgsProviderRegistry.instance().providerMetadata('ogr')
+        with tempfile.TemporaryDirectory() as temp_dir:
+            tmpfile = os.path.join(temp_dir, 'test_gdb.gdb')
+
+            ok, err = metadata.createDatabase(tmpfile)
+            self.assertTrue(ok)
+            self.assertFalse(err)
+
+            conn = metadata.createConnection(tmpfile, {})
+            self.assertTrue(conn)
+
+            fields = QgsFields()
+            field = QgsField('my_field', QVariant.String)
+            fields.append(field)
+            conn.createVectorTable('', 'test', fields, QgsWkbTypes.Point, QgsCoordinateReferenceSystem('EPSG:4326'), False, {})
+            layer = QgsVectorLayer(tmpfile + '|layername=test')
+            self.assertTrue(layer.isValid())
+
+            del layer
+
+            self.assertTrue(
+                conn.capabilities2() & Qgis.DatabaseProviderConnectionCapability2.SetFieldAlias)
+
+            # field does not exist
+            with self.assertRaises(QgsProviderConnectionException):
+                conn.setFieldAlias('not field', '', 'test', 'my alias')
+
+            conn.setFieldAlias('my_field', '', 'test', 'my alias')
+
+            layer = QgsVectorLayer(tmpfile + '|layername=test')
+            self.assertTrue(layer.isValid())
+
+            fields = layer.fields()
+            self.assertEqual(fields['my_field'].alias(), 'my alias')
+
+    @unittest.skipIf(int(gdal.VersionInfo('VERSION_NUM')) < GDAL_COMPUTE_VERSION(3, 7, 0), "GDAL 3.7 required")
     def test_provider_set_field_alias(self):
         """
         Test setting field alias via the vector data provider api
