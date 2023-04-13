@@ -285,7 +285,7 @@ class QgsOgrDataset
     friend class QgsOgrProviderUtils;
     friend class QgsOgrTransaction;
     QgsOgrProviderUtils::DatasetIdentification mIdent;
-    QgsOgrProviderUtils::DatasetWithLayers *mDs;
+    QgsOgrProviderUtils::DatasetWithLayers *mDs = nullptr;
 
     QgsOgrDataset() = default;
     ~QgsOgrDataset() = default;

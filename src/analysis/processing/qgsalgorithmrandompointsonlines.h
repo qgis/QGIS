@@ -54,7 +54,7 @@ class QgsRandomPointsOnLinesAlgorithm : public QgsProcessingAlgorithm
 
 
   private:
-    int mNumPoints;
+    int mNumPoints = 0;
     bool mDynamicNumPoints = false;
     QgsProperty mNumPointsProperty;
 

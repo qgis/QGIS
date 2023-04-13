@@ -143,7 +143,7 @@ class CORE_EXPORT QgsBookmark
     QString mName;
     QString mGroup;
     QgsReferencedRectangle mExtent;
-    double mRotation;
+    double mRotation = 0;
 
 };
 
