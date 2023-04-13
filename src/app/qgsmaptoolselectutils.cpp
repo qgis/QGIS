@@ -645,7 +645,7 @@ QgsFeatureIds QgsMapToolSelectUtils::QgsMapToolSelectMenuActions::search( std::s
 
 void QgsMapToolSelectUtils::QgsMapToolSelectMenuActions::onSearchFinished()
 {
-  if ( mFutureWatcher && !mFutureWatcher->isFinished() )
+  if ( !mFutureWatcher || !mFutureWatcher->isFinished() )
     return;
 
   mAllFeatureIds = mFutureWatcher->result();
