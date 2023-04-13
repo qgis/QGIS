@@ -738,7 +738,7 @@ namespace QgsWmts
     //defining TileMatrix idx
     const int tm_idx = params.tileMatrixAsInt();
     //read TileMatrix
-    if ( tm_idx < 0 || tms.tileMatrixList.count() < tm_idx )
+    if ( tm_idx < 0 || tm_idx >= tms.tileMatrixList.size() )
     {
       throw QgsRequestNotWellFormedException( QStringLiteral( "TileMatrix is unknown" ) );
     }

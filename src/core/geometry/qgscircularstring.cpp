@@ -449,14 +449,20 @@ bool QgsCircularString::fromWkb( QgsConstWkbPtr &wkbPtr )
   mWkbType = type;
 
   //type
-  bool hasZ = is3D();
-  bool hasM = isMeasure();
+  const bool hasZ = is3D();
+  const bool hasM = isMeasure();
   int nVertices = 0;
   wkbPtr >> nVertices;
   mX.resize( nVertices );
   mY.resize( nVertices );
-  hasZ ? mZ.resize( nVertices ) : mZ.clear();
-  hasM ? mM.resize( nVertices ) : mM.clear();
+  if ( hasZ )
+    mZ.resize( nVertices );
+  else
+    mZ.clear();
+  if ( hasM )
+    mM.resize( nVertices );
+  else
+    mM.clear();
   for ( int i = 0; i < nVertices; ++i )
   {
     wkbPtr >> mX[i];

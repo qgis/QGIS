@@ -1171,12 +1171,14 @@ bool QgsCurvePolygon::moveVertex( QgsVertexId vId, const QgsPoint &newPos )
 
 bool QgsCurvePolygon::deleteVertex( QgsVertexId vId )
 {
-  if ( !mExteriorRing || vId.ring < 0 || vId.ring >= 1 + mInteriorRings.size() )
+  const int interiorRingId = vId.ring - 1;
+  if ( !mExteriorRing || vId.ring < 0 || interiorRingId >= mInteriorRings.size() )
   {
     return false;
   }
 
-  QgsCurve *ring = vId.ring == 0 ? mExteriorRing.get() : mInteriorRings.at( vId.ring - 1 );
+  // cppcheck-suppress containerOutOfBounds
+  QgsCurve *ring = vId.ring == 0 ? mExteriorRing.get() : mInteriorRings.at( interiorRingId );
   int n = ring->numPoints();
   if ( n <= 4 )
   {
