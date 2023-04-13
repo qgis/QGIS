@@ -80,12 +80,15 @@ class QgsVirtualPointCloudEntity : public Qt3DCore::QEntity
                                 double zValueScale, double zValueOffset, int pointBudget );
     ~QgsVirtualPointCloudEntity() override;
 
-    QList<QgsChunkedEntity *> loadAllSubIndexes();
+    void loadAllSubIndexes();
+    QList<QgsChunkedEntity *> chunkedEntities() const;
+
   signals:
     //! Emitted when a new 3D entity has been created for a sub index
     void newEntityCreated( Qt3DCore::QEntity *entity );
 
   private:
+    QList<QgsChunkedEntity *> mChunkedEntities;
     const QVector<QgsPointCloudSubIndex> mSubIndexes;
     const Qgs3DMapSettings &mMap;
     QgsCoordinateTransform mCoordinateTransform;

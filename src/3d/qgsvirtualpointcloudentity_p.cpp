@@ -68,26 +68,31 @@ QgsVirtualPointCloudEntity::~QgsVirtualPointCloudEntity()
 
 }
 
-QList<QgsChunkedEntity *> QgsVirtualPointCloudEntity::loadAllSubIndexes()
+QList<QgsChunkedEntity *> QgsVirtualPointCloudEntity::chunkedEntities() const
 {
-  QList<QgsChunkedEntity *> chunkedEntities;
+  return mChunkedEntities;
+}
+
+void QgsVirtualPointCloudEntity::loadAllSubIndexes()
+{
+  if ( !mChunkedEntities.isEmpty() )
+    return;
 
   for ( const auto &si : mSubIndexes )
   {
-    if ( si.index )
+    if ( si.index() )
     {
-      chunkedEntities.append( new QgsPointCloudLayerChunkedEntity( si.index.get(),
-                              mMap,
-                              mCoordinateTransform,
-                              static_cast< QgsPointCloud3DSymbol * >( mSymbol->clone() ),
-                              mMaximumScreenSpaceError,
-                              mShowBoundingBoxes,
-                              mZValueScale,
-                              mZValueOffset,
-                              mPointBudget ) );
+      mChunkedEntities.append( new QgsPointCloudLayerChunkedEntity( si.index(),
+                               mMap,
+                               mCoordinateTransform,
+                               static_cast< QgsPointCloud3DSymbol * >( mSymbol->clone() ),
+                               mMaximumScreenSpaceError,
+                               mShowBoundingBoxes,
+                               mZValueScale,
+                               mZValueOffset,
+                               mPointBudget ) );
     }
   }
-  return chunkedEntities;
 }
 
 /// @endcond

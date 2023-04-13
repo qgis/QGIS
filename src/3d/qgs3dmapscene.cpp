@@ -727,7 +727,8 @@ void Qgs3DMapScene::addLayerEntity( QgsMapLayer *layer )
 
       if ( QgsVirtualPointCloudEntity *vpcNewEntity = qobject_cast<QgsVirtualPointCloudEntity *>( newEntity ) )
       {
-        const auto chunkedEntities = vpcNewEntity->loadAllSubIndexes();
+        vpcNewEntity->loadAllSubIndexes();
+        const auto chunkedEntities = vpcNewEntity->chunkedEntities();
         for ( const auto &ce : chunkedEntities )
         {
           ce->setParent( vpcNewEntity );
@@ -777,6 +778,16 @@ void Qgs3DMapScene::removeLayerEntity( QgsMapLayer *layer )
   if ( QgsChunkedEntity *chunkedEntity = qobject_cast<QgsChunkedEntity *>( entity ) )
   {
     mChunkEntities.removeOne( chunkedEntity );
+  }
+
+  if ( QgsVirtualPointCloudEntity *vpcNewEntity = qobject_cast<QgsVirtualPointCloudEntity *>( entity ) )
+  {
+    const QList<QgsChunkedEntity *> chunkedEntities = vpcNewEntity->chunkedEntities();
+    for ( QgsChunkedEntity *chunkedEntity : chunkedEntities )
+    {
+      mChunkEntities.removeOne( chunkedEntity );
+      chunkedEntity->deleteLater();
+    }
   }
 
   if ( entity )
