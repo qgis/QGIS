@@ -400,11 +400,12 @@ foreach(module ${PY_MODULES})
 
   # concat auto_additions/*.py in _module_/__init__.py
   file(GLOB PY_FILES_AUTO_ADDITIONS RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} ${module}/auto_additions/*.py)
-  configure_file(${CMAKE_CURRENT_SOURCE_DIR}/${module}/__init__.py.in ${QGIS_PYTHON_OUTPUT_DIRECTORY}/${module}/__init__.py COPYONLY)
+  set(MONKEYPATCH_INJECTIONS "")
   foreach(pyfile ${PY_FILES_AUTO_ADDITIONS})
     file(READ ${pyfile} CONTENTS)
-    file(APPEND ${QGIS_PYTHON_OUTPUT_DIRECTORY}/${module}/__init__.py "${CONTENTS}")
+    string(APPEND MONKEYPATCH_INJECTIONS "${CONTENTS}")
   endforeach(pyfile)
+  configure_file(${CMAKE_CURRENT_SOURCE_DIR}/${module}/__init__.py.in ${QGIS_PYTHON_OUTPUT_DIRECTORY}/${module}/__init__.py @ONLY)
   install(FILES ${QGIS_PYTHON_OUTPUT_DIRECTORY}/${module}/__init__.py DESTINATION "${QGIS_PYTHON_DIR}/${module}")
 
   file(GLOB PY_FILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} ${module}/*.py)

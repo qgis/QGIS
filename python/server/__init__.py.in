@@ -24,3 +24,5 @@ __copyright__ = '(C) 2014, Alessandro Pasotti'
 from qgis.PyQt import QtCore     # NOQA
 
 from qgis._server import *  # NOQA
+
+@MONKEYPATCH_INJECTIONS@

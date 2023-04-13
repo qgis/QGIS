@@ -27,3 +27,5 @@ from qgis._analysis import *
 
 # preserve API compatibility following QgsExifTools moved to core
 from qgis.core import QgsExifTools
+
+@MONKEYPATCH_INJECTIONS@

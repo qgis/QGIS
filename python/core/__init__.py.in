@@ -24,6 +24,8 @@ __copyright__ = '(C) 2014, Nathan Woodrow'
 from qgis.PyQt.QtCore import NULL
 from qgis._core import *
 
+@MONKEYPATCH_INJECTIONS@
+
 from .additions.edit import edit, QgsEditError
 from .additions.fromfunction import fromFunction
 from .additions.metaenum import metaEnumFromType, metaEnumFromValue

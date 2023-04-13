@@ -25,6 +25,9 @@ from qgis.PyQt import QtCore
 from qgis._3d import *
 
 from qgis.core import Qgis
+
+@MONKEYPATCH_INJECTIONS@
+
 # manual monkey patching for old enum values
 Qgs3DTypes.AltitudeClamping = Qgis.AltitudeClamping
 Qgs3DTypes.AltClampAbsolute = Qgis.AltitudeClamping.Absolute
@@ -39,4 +42,3 @@ Qgs3DTypes.AltBindVertex = Qgis.AltitudeBinding.Vertex
 Qgs3DTypes.AltBindVertex.is_monkey_patched = True
 Qgs3DTypes.AltBindCentroid = Qgis.AltitudeBinding.Centroid
 Qgs3DTypes.AltBindCentroid.is_monkey_patched = True
-

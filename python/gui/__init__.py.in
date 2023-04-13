@@ -25,6 +25,8 @@ from qgis.PyQt import QtCore
 from qgis._gui import *
 from qgis.core import Qgis
 
+@MONKEYPATCH_INJECTIONS@
+
 # monkey patching scoped based enum
 QgsMapToolCapture.CaptureTechnique = Qgis.CaptureTechnique
 QgsMapToolCapture.StraightSegments = Qgis.CaptureTechnique.StraightSegments
