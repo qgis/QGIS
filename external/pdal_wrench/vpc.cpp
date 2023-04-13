@@ -569,6 +569,7 @@ void buildVpc(std::vector<std::string> args)
             pdal::Options writer_opts;
             //writer_opts.add(pdal::Option("forward", "all"));
             Stage& writer = manager->makeWriter(overviewFilenameCopc, "writers.copc", merge, writer_opts);
+            (void)writer;
 
             for (const std::string &overviewTempFile : overviewTempFiles)
             {
