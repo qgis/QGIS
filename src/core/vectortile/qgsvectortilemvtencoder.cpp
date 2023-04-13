@@ -106,6 +106,8 @@ static void encodeLineString( const QgsLineString *lineString, bool isRing, bool
     last = pt;
   }
   count = tilePoints.count();
+  if ( count == 0 )
+    return;
 
   geomWriter.addMoveTo( 1 );
   geomWriter.addPoint( tilePoints[0] );
