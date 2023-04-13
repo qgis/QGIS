@@ -509,6 +509,7 @@ sub fix_annotations {
     $line =~ s/\bSIP_TRANSFERBACK\b/\/TransferBack\//;
     $line =~ s/\bSIP_TRANSFERTHIS\b/\/TransferThis\//;
     $line =~ s/\bSIP_GETWRAPPER\b/\/GetWrapper\//;
+    $line =~ s/\bSIP_LEN\b/\/__len__\//;
 
     $line =~ s/SIP_PYNAME\(\s*(\w+)\s*\)/\/PyName=$1\//;
     $line =~ s/SIP_TYPEHINT\(\s*([\w\.\s,\[\]]+?)\s*\)/\/TypeHint="$1"\//g;
@@ -1358,6 +1359,12 @@ while ($LINE_IDX < $LINE_COUNT){
       $COMMENT = '';
       next;
     }
+
+
+    # replace QVector with QList
+    $LINE =~ s/QVector<\s*QVector<\s*/TemporaryStuff/g;
+    $LINE =~ s/QVector<\s*(.*?)>/QList<$1>/g;
+    $LINE =~ s/TemporaryStuff/QVector<QVector</g;
 
     # remove export macro from struct definition
     $LINE =~ s/^(\s*struct )\w+_EXPORT (.+)$/$1$2/;

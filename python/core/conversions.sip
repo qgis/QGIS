@@ -5,6 +5,7 @@ which are not wrapped by PyQt:
 - QVector< QVector< QVector<TYPE> > >
 - QList< QList<TYPE> >
 - QList<qint64>
+- QList<QVariantMap>
 - QSet<int>
 - QSet<qint64>
 - QSet<TYPE>
@@ -1410,6 +1411,69 @@ template <TYPE>
 %End
 };
 
+%MappedType QList<QVariantMap>
+{
+%TypeHeaderCode
+#include <QList>
+#include <QVariant>
+%End
+
+%ConvertFromTypeCode
+  // // Create the list.
+  // PyObject *l;
+
+  // if ((l = PyList_New(sipCpp->size())) == NULL)
+  //   return NULL;
+
+  // const sipTypeDef *qmap = sipFindType("QVariantMap");
+
+  // // Set the list elements.
+  // QList<qint64>::iterator it = sipCpp->begin();
+  // for (int i = 0; it != sipCpp->end(); ++it, ++i)
+  // {
+  //      QVariantMap * map = new QVariantMap( *it );
+  //      PyObject *tobj = sipConvertFromNewType(map, qmap, sipTransferObj);
+
+  //      if (tobj == NULL)
+  //      {
+  //        Py_DECREF(l);
+  //        return NULL;
+  //      }
+  //      PyList_SET_ITEM(l, i, tobj);
+  //   }
+
+  // return l;
+%End
+
+%ConvertToTypeCode
+  // // Check the type if that is all that is required.
+  // if (sipIsErr == NULL)
+  //   return PyList_Check(sipPy);
+
+  // QList<QVariantMap> *qlist = new QList<QVariantMap>;
+
+  // const sipTypeDef *qmap = sipFindType("QVariantMap");
+  // for (int i = 0; i < PyList_GET_SIZE(sipPy); ++i)
+  // {
+  //    int state1;
+  //    PyObject *tobj = PyList_GET_ITEM(sipPy, i);
+  //    QVariantMap *map = reinterpret_cast<QVariantMap *>(sipConvertToType(tobj, qmap, sipTransferObj, SIP_NOT_NONE, &state1, sipIsErr));
+
+  //     if (*sipIsErr)
+  //     {
+  //        sipReleaseType(tobj, qmap, state1);
+
+  //        delete qlist;
+  //        return 0;
+  //     }
+
+  //   *qlist << tobj;
+  // }
+
+  // *sipCppPtr = qlist;
+  return sipGetState(sipTransferObj);
+%End
+};
 
 
 %MappedType QSet<qint64>
@@ -1638,7 +1702,7 @@ template<TYPE>
 
 %ConvertToTypeCode
     PyObject *kobj, *tobj;
-    SIP_SSIZE_T i = 0;
+    Py_ssize_t i = 0;
 
     // Check the type if that is all that is required.
     if (sipIsErr == NULL)
@@ -1756,7 +1820,7 @@ template<TYPE>
 
 %ConvertToTypeCode
     PyObject *kobj, *tobj;
-    SIP_SSIZE_T i = 0;
+    Py_ssize_t i = 0;
 
     // Check the type if that is all that is required.
     if (sipIsErr == NULL)
@@ -3084,7 +3148,7 @@ template <TYPE>
 
     QList<QgsField> *ql = new QList<QgsField>;
 
-    for (SIP_SSIZE_T i = 0; ; ++i)
+    for (Py_ssize_t i = 0; ; ++i)
     {
         PyErr_Clear();
         PyObject *itm = PyIter_Next(iter);
@@ -3174,11 +3238,58 @@ bool null_from_qvariant_converter( const QVariant *varp, PyObject **objp )
 }
 %End
 
+%MappedType QVariant::Type
+{
+%TypeHeaderCode
+#include <QVariant>
+#include <QMetaType>
+%End
+
+%ConvertFromTypeCode
+
+  // QVariant::Type var_type = *sipCpp;
+  // int type = QVariant(var_type).metaType().id();
+  // PyObject *obj = sipConvertFromEnum(type, sipType_QMetaType_Type);
+
+  // if (!obj)
+  // {
+  //    Py_DECREF(l);
+
+  //    return 0;
+  // }
+
+  // return obj;
+
+  return 0;
+%End
+
+%ConvertToTypeCode
+  // Check the type if that is all that is required.
+  // if (sipIsErr == NULL)
+  //  return PyList_Check(sipPy);
+
+  // int id = sipConvertToEnum(sipPy, sipType_QMetaType_Type);
+  // **sipCppPtr = QVariant( QMetaType( id ) ).typeid();
+
+
+
+  // QList<long> *qlist = new QList<long>;
+
+  // for (int i = 0; i < PyList_GET_SIZE(sipPy); ++i)
+  // {
+  //   *qlist << PyLong_AsLong(PyList_GET_ITEM(sipPy, i));
+  // }
+
+  // *sipCppPtr = qlist;
+  return sipGetState(sipTransferObj);
+%End
+};
+
 %PostInitialisationCode  //#spellok
 
 // Import the Chimera helper registration functions.
-typedef bool ( *FromQVariantConverterFn )( const QVariant *, PyObject ** );
-void (*register_from_qvariant_converter)(FromQVariantConverterFn);
-register_from_qvariant_converter = (void (*)(FromQVariantConverterFn))sipImportSymbol("pyqt5_register_from_qvariant_convertor");  //#spellok
-register_from_qvariant_converter(null_from_qvariant_converter);
+// typedef bool ( *FromQVariantConverterFn )( const QVariant *, PyObject ** );
+// void (*register_from_qvariant_converter)(FromQVariantConverterFn);
+// register_from_qvariant_converter = (void (*)(FromQVariantConverterFn))sipImportSymbol("pyqt5_register_from_qvariant_convertor");  //#spellok
+// register_from_qvariant_converter(null_from_qvariant_converter);
 %End

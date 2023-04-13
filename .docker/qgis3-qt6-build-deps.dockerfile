@@ -35,7 +35,10 @@ RUN dnf -y --refresh install \
     protobuf-devel \
     protobuf-lite-devel \
     python3-devel \
+    python3-pyqt6 \
+    python3-pyqt6-devel \
     python3-termcolor \
+    PyQt-builder \
     qca-qt6-devel \
     qt6-qt3d-devel \
     qt6-qtbase-devel \
@@ -51,6 +54,7 @@ RUN dnf -y --refresh install \
     qtkeychain-qt6-devel \
     qwt-qt6-devel \
     qscintilla-qt6-devel \
+    sip6 \
     spatialindex-devel \
     sqlite-devel \
     unzip \
