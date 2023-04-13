@@ -3696,6 +3696,11 @@ QgsVectorDataProvider::Capabilities QgsPostgresProvider::capabilities() const
   return mEnabledCapabilities;
 }
 
+Qgis::VectorDataProviderAttributeEditCapabilities QgsPostgresProvider::attributeEditCapabilities() const
+{
+  return Qgis::VectorDataProviderAttributeEditCapability::EditComment;
+}
+
 QgsFeatureSource::SpatialIndexPresence QgsPostgresProvider::hasSpatialIndex() const
 {
   QgsPostgresProviderConnection conn( mUri.uri(), QVariantMap() );

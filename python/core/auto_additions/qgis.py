@@ -341,6 +341,14 @@ QgsVectorDataProvider.UnknownCount.__doc__ = "Provider returned an unknown featu
 Qgis.FeatureCountState.__doc__ = 'Enumeration of feature count states\n\n.. versionadded:: 3.20\n\n' + '* ``Uncounted``: ' + Qgis.FeatureCountState.Uncounted.__doc__ + '\n' + '* ``UnknownCount``: ' + Qgis.FeatureCountState.UnknownCount.__doc__
 # --
 Qgis.FeatureCountState.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.VectorDataProviderAttributeEditCapability.EditAlias.__doc__ = "Allows editing aliases"
+Qgis.VectorDataProviderAttributeEditCapability.EditComment.__doc__ = "Allows editing comments"
+Qgis.VectorDataProviderAttributeEditCapability.__doc__ = 'Attribute editing capabilities which may be supported by vector data providers.\n\n.. versionadded:: 3.32\n\n' + '* ``EditAlias``: ' + Qgis.VectorDataProviderAttributeEditCapability.EditAlias.__doc__ + '\n' + '* ``EditComment``: ' + Qgis.VectorDataProviderAttributeEditCapability.EditComment.__doc__
+# --
+Qgis.VectorDataProviderAttributeEditCapability.baseClass = Qgis
+Qgis.VectorDataProviderAttributeEditCapabilities.baseClass = Qgis
+VectorDataProviderAttributeEditCapabilities = Qgis  # dirty hack since SIP seems to introduce the flags in module
 QgsSymbol.SymbolType = Qgis.SymbolType
 # monkey patching scoped based enum
 QgsSymbol.Marker = Qgis.SymbolType.Marker
