@@ -65,7 +65,8 @@ void QgsMapToolShapeCircularStringAbstract::undo()
     const int lastPositionCompleteCircularString = mPoints.size() - 1 - ( mPoints.size() + 1 ) % 2 ;
 
     geomTempRubberBand->setPoints( mPoints.mid( lastPositionCompleteCircularString ) );
-    mTempRubberBand->setGeometry( geomTempRubberBand.release() );
+    if ( mTempRubberBand )
+      mTempRubberBand->setGeometry( geomTempRubberBand.release() );
 
     if ( mRubberBand )
     {
