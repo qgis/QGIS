@@ -211,7 +211,8 @@ void QgsLayoutLabelWidget::buildInsertDynamicTextMenu( QgsLayout *layout, QMenu 
         {
           std::make_pair( tr( "Layout Name" ), QStringLiteral( "@layout_name" ) ),
           std::make_pair( tr( "Layout Page Number" ), QStringLiteral( "@layout_page" ) ),
-          std::make_pair( tr( "Layout Page Count" ), QStringLiteral( "@layout_numpages" ) )
+          std::make_pair( tr( "Layout Page Count" ), QStringLiteral( "@layout_numpages" ) ),
+          std::make_pair( tr( "Layer Credits" ), QStringLiteral( "array_to_string(map_credits())" ) )
         } )
   {
     addExpression( menu, expression.first, expression.second );
