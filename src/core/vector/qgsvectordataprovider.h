@@ -409,6 +409,8 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
      * \note, some capabilities may change depending on whether
      * a spatial filter is active on this provider, so it may
      * be prudent to check this value per intended operation.
+     *
+     * \see attributeEditCapabilities()
      */
     Q_INVOKABLE virtual QgsVectorDataProvider::Capabilities capabilities() const;
 
@@ -416,6 +418,14 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
      *  Returns the above in friendly format.
      */
     QString capabilitiesString() const;
+
+    /**
+     * Returns the provider's supported attribute editing capabilities.
+     *
+     * \see capabilities()
+     * \since QGIS 3.32
+     */
+    virtual Qgis::VectorDataProviderAttributeEditCapabilities attributeEditCapabilities() const;
 
     /**
      * Set encoding used for accessing data from layer.

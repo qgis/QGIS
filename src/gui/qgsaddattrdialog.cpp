@@ -31,8 +31,10 @@ QgsAddAttrDialog::QgsAddAttrDialog( QgsVectorLayer *vlayer, QWidget *parent, Qt:
   connect( mTypeBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsAddAttrDialog::mTypeBox_currentIndexChanged );
   connect( mLength, &QSpinBox::editingFinished, this, &QgsAddAttrDialog::mLength_editingFinished );
 
-  if ( !vlayer )
+  if ( !vlayer || !vlayer->dataProvider() )
     return;
+
+  const Qgis::VectorDataProviderAttributeEditCapabilities attributeEditCapabilities = vlayer->dataProvider()->attributeEditCapabilities();
 
   //fill data types into the combo box
   const QList< QgsVectorDataProvider::NativeType > &typelist = vlayer->dataProvider()->nativeTypes();
@@ -66,6 +68,12 @@ QgsAddAttrDialog::QgsAddAttrDialog( QgsVectorLayer *vlayer, QWidget *parent, Qt:
     mNameEdit->setMaxLength( 10 );
 
   mNameEdit->setFocus();
+
+  if ( !( attributeEditCapabilities & Qgis::VectorDataProviderAttributeEditCapability::EditComment ) )
+  {
+    mLabelComment->hide();
+    mCommentEdit->hide();
+  }
 }
 
 void QgsAddAttrDialog::setIllegalFieldNames( const QSet<QString> &names )

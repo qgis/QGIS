@@ -395,6 +395,11 @@ QString QgsVectorDataProvider::capabilitiesString() const
   return abilitiesList.join( QLatin1String( ", " ) );
 }
 
+Qgis::VectorDataProviderAttributeEditCapabilities QgsVectorDataProvider::attributeEditCapabilities() const
+{
+  return Qgis::VectorDataProviderAttributeEditCapabilities();
+}
+
 int QgsVectorDataProvider::fieldNameIndex( const QString &fieldName ) const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
