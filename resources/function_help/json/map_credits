@@ -2,10 +2,11 @@
   "name": "map_credits",
   "type": "function",
   "groups": ["Layout"],
-  "description": "Returns a list of credit (usage rights) strings for the layers shown in a layout map item.",
+  "description": "Returns a list of credit (usage rights) strings for the layers shown in a layout, or specific layout map item.",
   "arguments": [{
     "arg": "id",
-    "description": "map item ID"
+    "optional": true,
+    "description": "Map item ID. If not specified, the layers from all maps in the layout will be used."
   }, {
     "arg": "include_layer_names",
     "description": "Set to true to include layer names before their credit strings",
@@ -18,6 +19,9 @@
     "default": "': '"
   }],
   "examples": [{
+    "expression": "array_to_string( map_credits() )",
+    "returns": "comma separated list of layer credits for all layers shown in all map items in the layout, e.g 'CC-BY-NC, CC-BY-SA'"
+  }, {
     "expression": "array_to_string( map_credits( 'Main Map' ) )",
     "returns": "comma separated list of layer credits for layers shown in the 'Main Map' layout item, e.g 'CC-BY-NC, CC-BY-SA'"
   }, {
