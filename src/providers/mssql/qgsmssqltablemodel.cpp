@@ -270,6 +270,10 @@ void QgsMssqlTableModel::setGeometryTypesForTable( QgsMssqlLayerProperty layerPr
   schemaItem = schemaItems.at( 0 );
 
   int n = schemaItem->rowCount();
+  const int columns = columnCount();
+  if ( columns == 0 )
+    return;
+
   for ( int i = 0; i < n; i++ )
   {
     QModelIndex currentChildIndex = indexFromItem( schemaItem->child( i, DbtmSchema ) );
@@ -279,12 +283,15 @@ void QgsMssqlTableModel::setGeometryTypesForTable( QgsMssqlLayerProperty layerPr
     }
 
     QList<QStandardItem *> row;
-    row.reserve( columnCount() );
+    row.reserve( columns );
 
-    for ( int j = 0; j < columnCount(); j++ )
+    for ( int j = 0; j < columns; j++ )
     {
       row << itemFromIndex( currentChildIndex.sibling( i, j ) );
     }
+
+    if ( row.empty() )
+      continue;
 
     if ( row[ DbtmTable ]->text() == layerProperty.tableName && row[ DbtmGeomCol ]->text() == layerProperty.geometryColName )
     {
