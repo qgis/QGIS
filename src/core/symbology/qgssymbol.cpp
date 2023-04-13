@@ -737,9 +737,12 @@ QgsSymbol *QgsSymbol::defaultSymbol( Qgis::GeometryType geomType )
         break;
       default:
         QgsDebugMsg( QStringLiteral( "unknown layer's geometry type" ) );
-        return nullptr;
+        break;
     }
   }
+
+  if ( !s )
+    return nullptr;
 
   // set opacity
   s->setOpacity( QgsProject::instance()->styleSettings()->defaultSymbolOpacity() );

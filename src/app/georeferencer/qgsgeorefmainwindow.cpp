@@ -380,7 +380,7 @@ void QgsGeoreferencerMainWindow::openLayer( Qgis::LayerType layerType, const QSt
   mCanvas->refresh();
   QgisApp::instance()->mapCanvas()->refresh();
 
-  const bool hasExistingReference = mLayer->crs().isValid();
+  const bool hasExistingReference = mLayer ? mLayer->crs().isValid() : false;
   mActionLinkGeorefToQgis->setEnabled( hasExistingReference );
   mActionLinkQGisToGeoref->setEnabled( hasExistingReference );
   if ( !hasExistingReference )
