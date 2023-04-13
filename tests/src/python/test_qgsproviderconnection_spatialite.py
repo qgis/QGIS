@@ -56,6 +56,7 @@ class TestPyQgsProviderConnectionSpatialite(unittest.TestCase, TestPyQgsProvider
     # Provider test cases can define a schema and table name for SQL query layers test
     sqlVectorLayerSchema = ''
     sqlVectorLayerTable = 'cdb_lines'
+    sqlVectorLayerCrs = 'EPSG:25832'
 
     @classmethod
     def setUpClass(cls):
