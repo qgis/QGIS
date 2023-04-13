@@ -317,7 +317,7 @@ void ToRaster::preparePipelines(std::vector<std::unique_ptr<PipelineManager>>& p
 }
 
 
-void ToRaster::finalize(std::vector<std::unique_ptr<PipelineManager>>& pipelines)
+void ToRaster::finalize(std::vector<std::unique_ptr<PipelineManager>>&)
 {
     if (!tileOutputFiles.empty())
     {

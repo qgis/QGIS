@@ -120,7 +120,7 @@ bool Alg::parseArgs(std::vector<std::string> args)
         {
             parseBounds(filterBounds);
         }
-        catch (pdal::Bounds::error err)
+        catch (pdal::Bounds::error& err)
         {
             std::cerr << "invalid bounds: " << err.what() << std::endl;
             return false;

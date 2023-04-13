@@ -142,7 +142,7 @@ static std::unique_ptr<PipelineManager> pipeline(ParallelJobInfo *tile, std::str
         writer_opts.add(pdal::Option("offset_z", "auto"));
     }
 
-    Stage& w = manager->makeWriter( tile->outputFilename, "", *last, writer_opts);
+    (void)manager->makeWriter( tile->outputFilename, "", *last, writer_opts);
 
     return manager;
 }
