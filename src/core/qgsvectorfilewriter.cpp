@@ -824,6 +824,10 @@ void QgsVectorFileWriter::init( QString vectorFileName,
         if ( ogrSubType != OFSTNone )
           OGR_Fld_SetSubType( fld.get(), ogrSubType );
 
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,6,0)
+        OGR_Fld_SetAlternativeName( fld.get(), mCodec->fromUnicode( attrField.alias() ).constData() );
+#endif
+
         // create the field
         QgsDebugMsgLevel( "creating field " + attrField.name() +
                           " type " + QString( QVariant::typeToName( attrField.type() ) ) +
