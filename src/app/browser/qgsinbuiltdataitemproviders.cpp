@@ -1372,6 +1372,7 @@ void QgsFieldItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *men
       const QString tableName = fieldsItem->tableName();
       const QString fieldName = fieldItem->field().name();
       const QString domainName = fieldItem->field().constraints().domainName();
+      const QString alias = fieldItem->field().alias();
 
       // Check if it is supported
       QgsProviderMetadata *md { QgsProviderRegistry::instance()->providerMetadata( providerKey ) };
@@ -1476,6 +1477,34 @@ void QgsFieldItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *men
           } );
 
           menu->addAction( renameFieldAction );
+        }
+
+        if ( conn && conn->capabilities2().testFlag( Qgis::DatabaseProviderConnectionCapability2::SetFieldAlias ) )
+        {
+          QAction *setAliasAction = new QAction( tr( "Set Alias…" ), menu );
+          const QString itemName { item->name() };
+
+          connect( setAliasAction, &QAction::triggered, fieldsItem, [ md, fieldsItem, itemName, alias, context ]
+          {
+            bool ok = false;
+
+            const QString newAlias = QInputDialog::getText( QgisApp::instance(), tr( "Set Alias For %1" ).arg( itemName ), tr( "Alias" ), QLineEdit::Normal, alias, &ok );
+            if ( ok && alias != newAlias )
+            {
+              std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn2 { static_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( fieldsItem->connectionUri(), {} ) ) };
+              try
+              {
+                conn2->setFieldAlias( itemName, fieldsItem->schema(), fieldsItem->tableName(), newAlias );
+                fieldsItem->refresh();
+              }
+              catch ( const QgsProviderConnectionException &ex )
+              {
+                notify( tr( "Set Field Alias" ), tr( "Failed to set alias for field '%1': %2" ).arg( itemName, ex.what() ), context, Qgis::MessageLevel::Critical );
+              }
+            }
+          } );
+
+          menu->addAction( setAliasAction );
         }
 
         if ( conn && conn->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::DeleteField ) )
