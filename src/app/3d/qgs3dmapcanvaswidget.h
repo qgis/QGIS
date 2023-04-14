@@ -19,6 +19,7 @@
 #include "qmenu.h"
 #include "qgsdockwidget.h"
 #include "qgis_app.h"
+#include "qobjectuniqueptr.h"
 #include "qtoolbutton.h"
 #include "qgsrectangle.h"
 
@@ -61,9 +62,6 @@ class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
     void setCanvasName( const QString &name );
     QString canvasName() const { return mCanvasName; }
 
-  signals:
-    void toggleDockModeRequested( bool docked );
-
   protected:
     void resizeEvent( QResizeEvent *event ) override;
 
@@ -91,6 +89,7 @@ class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
     void onMainMapCanvasExtentChanged();
     void onViewed2DExtentFrom3DChanged( QVector<QgsPointXY> extent );
     void onViewFrustumVisualizationEnabledChanged();
+    void onExtentChanged();
 
   private:
     QString mCanvasName;
@@ -116,7 +115,8 @@ class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
     QAction *mShowFrustumPolyogon = nullptr;
     QToolButton *mBtnOptions = nullptr;
     QgsDockableWidgetHelper *mDockableWidgetHelper = nullptr;
-    QgsRubberBand *mViewFrustumHighlight = nullptr;
+    QObjectUniquePtr< QgsRubberBand > mViewFrustumHighlight;
+    QObjectUniquePtr< QgsRubberBand > mViewExtentHighlight;
     QPointer<QDialog> mConfigureDialog;
 };
 

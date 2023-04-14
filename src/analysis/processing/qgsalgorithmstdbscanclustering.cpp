@@ -63,7 +63,7 @@ void QgsStDbscanClusteringAlgorithm::initAlgorithm( const QVariantMap & )
                 QObject::tr( "Maximum distance between clustered points" ), 1, QStringLiteral( "INPUT" ), false, 0 ) );
   auto durationParameter = std::make_unique<QgsProcessingParameterDuration>( QStringLiteral( "EPS2" ),
                            QObject::tr( "Maximum time duration between clustered points" ), 0, false, 0 );
-  durationParameter->setDefaultUnit( QgsUnitTypes::TemporalHours );
+  durationParameter->setDefaultUnit( Qgis::TemporalUnit::Hours );
   addParameter( durationParameter.release() );
 
   auto dbscanStarParam = std::make_unique<QgsProcessingParameterBoolean>( QStringLiteral( "DBSCAN*" ),

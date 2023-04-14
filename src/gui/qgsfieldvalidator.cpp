@@ -159,6 +159,10 @@ QValidator::State QgsFieldValidator::validate( QString &s, int &i ) const
   {
     return Acceptable;
   }
+  else if ( mField.type() == QVariant::UserType && mField.typeName().compare( QLatin1String( "geometry" ), Qt::CaseInsensitive ) == 0 )
+  {
+    return Acceptable;
+  }
   else
   {
     QgsDebugMsg(

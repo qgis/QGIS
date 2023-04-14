@@ -21,8 +21,6 @@
 #include "qgis.h"
 #include "qgscolorrampshader.h"
 #include "qgsreadwritecontext.h"
-#include "qgsrenderer.h"
-#include "qgsunittypes.h"
 #include "qgssymbollayer.h"
 
 class QgsLayerTreeLayer;
@@ -211,13 +209,13 @@ class CORE_EXPORT QgsInterpolatedLineRenderer
     QgsInterpolatedLineWidth interpolatedLineWidth() const;
 
     //! Sets the unit of the stroke width
-    void setWidthUnit( QgsUnitTypes::RenderUnit strokeWidthUnit );
+    void setWidthUnit( Qgis::RenderUnit strokeWidthUnit );
 
     /**
     *   Returns the unit of the stroke width
     *  \since QGIS 3.20
     */
-    QgsUnitTypes::RenderUnit widthUnit() const;
+    Qgis::RenderUnit widthUnit() const;
 
     //! Sets the stroke color used to render
     void setInterpolatedColor( const QgsInterpolatedLineColor &strokeColoring );
@@ -267,7 +265,7 @@ class CORE_EXPORT QgsInterpolatedLineRenderer
 
     QgsInterpolatedLineWidth mStrokeWidth;
     QgsInterpolatedLineColor mStrokeColoring;
-    QgsUnitTypes::RenderUnit mStrokeWidthUnit = QgsUnitTypes::RenderMillimeters;
+    Qgis::RenderUnit mStrokeWidthUnit = Qgis::RenderUnit::Millimeters;
     void adjustLine( double value, double value1, double value2, double &width, double &adjusting ) const;
     bool mSelected = false;
 
@@ -304,7 +302,6 @@ class CORE_EXPORT QgsInterpolatedLineSymbolLayer : public QgsLineSymbolLayer
     void startFeatureRender( const QgsFeature &feature, QgsRenderContext &context ) override;
     void stopFeatureRender( const QgsFeature &feature, QgsRenderContext &context ) override;
     void renderPolyline( const QPolygonF &points, QgsSymbolRenderContext &context ) override;
-    bool isCompatibleWithSymbol( QgsSymbol *symbol ) const override;
     bool canCauseArtifactsBetweenAdjacentTiles() const override;
 
     /**
@@ -333,14 +330,14 @@ class CORE_EXPORT QgsInterpolatedLineSymbolLayer : public QgsLineSymbolLayer
      *
      * \see widthUnit()
      */
-    void setWidthUnit( QgsUnitTypes::RenderUnit strokeWidthUnit );
+    void setWidthUnit( Qgis::RenderUnit strokeWidthUnit );
 
     /**
      * Returns the width unit.
      *
      * \see setWidthUnit()
      */
-    QgsUnitTypes::RenderUnit widthUnit() const;
+    Qgis::RenderUnit widthUnit() const;
 
     /**
      * Sets the interpolated width used to render the width of lines, \a see QgsInterpolatedLineWidth.

@@ -9,7 +9,6 @@
 
 
 
-
 class QgsLayoutMeasurement
 {
 %Docstring(signature="appended")
@@ -26,7 +25,7 @@ using a variety of different measurement units.
 %End
   public:
 
-    explicit QgsLayoutMeasurement( double length, QgsUnitTypes::LayoutUnit units = QgsUnitTypes::LayoutMillimeters );
+    explicit QgsLayoutMeasurement( double length, Qgis::LayoutUnit units = Qgis::LayoutUnit::Millimeters );
 %Docstring
 Constructor for QgsLayoutMeasurement.
 
@@ -48,14 +47,14 @@ Sets the ``length`` of the measurement.
 .. seealso:: :py:func:`length`
 %End
 
-    QgsUnitTypes::LayoutUnit units() const;
+    Qgis::LayoutUnit units() const;
 %Docstring
 Returns the units for the measurement.
 
 .. seealso:: :py:func:`setUnits`
 %End
 
-    void setUnits( const QgsUnitTypes::LayoutUnit units );
+    void setUnits( const Qgis::LayoutUnit units );
 %Docstring
 Sets the ``units`` for the measurement. Does not alter the stored length,
 ie. no length conversion is done.

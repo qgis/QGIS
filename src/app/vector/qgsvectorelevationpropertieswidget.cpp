@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgsvectorelevationpropertieswidget.h"
-#include "qgsstyle.h"
 #include "qgsapplication.h"
 #include "qgsmaplayer.h"
 #include "qgsvectorlayer.h"
@@ -243,7 +242,7 @@ void QgsVectorElevationPropertiesWidget::onChanged()
 void QgsVectorElevationPropertiesWidget::clampingChanged()
 {
   bool enableScale = true;
-  bool enableBinding = !mLayer || mLayer->geometryType() != QgsWkbTypes::PointGeometry;
+  bool enableBinding = !mLayer || mLayer->geometryType() != Qgis::GeometryType::Point;
   switch ( static_cast< Qgis::AltitudeClamping >( mComboClamping->currentData().toInt() ) )
   {
     case Qgis::AltitudeClamping::Absolute:
@@ -317,26 +316,26 @@ void QgsVectorElevationPropertiesWidget::toggleSymbolWidgets()
   // enabled here
   switch ( mLayer->geometryType() )
   {
-    case QgsWkbTypes::PointGeometry:
+    case Qgis::GeometryType::Point:
       mLineStyleButton->setEnabled( mExtrusionGroupBox->isChecked() );
       mMarkerStyleButton->setEnabled( true );
       mFillStyleButton->setEnabled( false );
       break;
 
-    case QgsWkbTypes::LineGeometry:
+    case Qgis::GeometryType::Line:
       mLineStyleButton->setEnabled( mExtrusionGroupBox->isChecked() );
       mMarkerStyleButton->setEnabled( true );
       mFillStyleButton->setEnabled( false );
       break;
 
-    case QgsWkbTypes::PolygonGeometry:
+    case Qgis::GeometryType::Polygon:
       mLineStyleButton->setEnabled( true );
       mMarkerStyleButton->setEnabled( true );
       mFillStyleButton->setEnabled( mExtrusionGroupBox->isChecked() );
       break;
 
-    case QgsWkbTypes::UnknownGeometry:
-    case QgsWkbTypes::NullGeometry:
+    case Qgis::GeometryType::Unknown:
+    case Qgis::GeometryType::Null:
       mLineStyleButton->setEnabled( false );
       mMarkerStyleButton->setEnabled( false );
       mFillStyleButton->setEnabled( false );
@@ -411,7 +410,7 @@ bool QgsVectorElevationPropertiesWidgetFactory::supportsStyleDock() const
 
 bool QgsVectorElevationPropertiesWidgetFactory::supportsLayer( QgsMapLayer *layer ) const
 {
-  return layer->type() == QgsMapLayerType::VectorLayer;
+  return layer->type() == Qgis::LayerType::Vector;
 }
 
 QString QgsVectorElevationPropertiesWidgetFactory::layerPropertiesPagePositionHint() const

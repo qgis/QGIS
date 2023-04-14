@@ -33,7 +33,7 @@ void QgsMapInfoSymbolConversionContext::pushWarning( const QString &warning )
 }
 
 
-QgsLineSymbol *QgsMapInfoSymbolConverter::convertLineSymbol( int identifier, QgsMapInfoSymbolConversionContext &context, const QColor &foreColor, double size, QgsUnitTypes::RenderUnit sizeUnit, bool interleaved )
+QgsLineSymbol *QgsMapInfoSymbolConverter::convertLineSymbol( int identifier, QgsMapInfoSymbolConversionContext &context, const QColor &foreColor, double size, Qgis::RenderUnit sizeUnit, bool interleaved )
 {
   std::unique_ptr< QgsSimpleLineSymbolLayer > simpleLine = std::make_unique< QgsSimpleLineSymbolLayer >( foreColor, size );
   simpleLine->setWidthUnit( sizeUnit );
@@ -1372,11 +1372,11 @@ QgsFillSymbol *QgsMapInfoSymbolConverter::convertFillSymbol( int identifier, Qgs
     std::unique_ptr< QgsLinePatternFillSymbolLayer > lineFill = std::make_unique< QgsLinePatternFillSymbolLayer >();
 
     std::unique_ptr< QgsSimpleLineSymbolLayer > simpleLine = std::make_unique< QgsSimpleLineSymbolLayer >( foreColor, lineWidth );
-    simpleLine->setWidthUnit( QgsUnitTypes::RenderPoints );
+    simpleLine->setWidthUnit( Qgis::RenderUnit::Points );
     lineFill->setSubSymbol( new QgsLineSymbol( QgsSymbolLayerList() << simpleLine.release() ) );
 
     lineFill->setDistance( lineSpacing );
-    lineFill->setDistanceUnit( QgsUnitTypes::RenderPoints );
+    lineFill->setDistanceUnit( Qgis::RenderUnit::Points );
     lineFill->setLineAngle( lineAngle );
 
     if ( crossFill )
@@ -1391,7 +1391,7 @@ QgsFillSymbol *QgsMapInfoSymbolConverter::convertFillSymbol( int identifier, Qgs
   return new QgsFillSymbol( layers );
 }
 
-QgsMarkerSymbol *QgsMapInfoSymbolConverter::convertMarkerSymbol( int identifier, QgsMapInfoSymbolConversionContext &context, const QColor &color, double size, QgsUnitTypes::RenderUnit sizeUnit )
+QgsMarkerSymbol *QgsMapInfoSymbolConverter::convertMarkerSymbol( int identifier, QgsMapInfoSymbolConversionContext &context, const QColor &color, double size, Qgis::RenderUnit sizeUnit )
 {
   Qgis::MarkerShape shape;
   bool isFilled = true;

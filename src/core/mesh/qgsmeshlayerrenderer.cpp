@@ -25,24 +25,17 @@
 
 #include "qgsmeshlayerrenderer.h"
 
-#include "qgsfield.h"
 #include "qgslogger.h"
 #include "qgsmeshlayer.h"
 #include "qgspointxy.h"
-#include "qgsrenderer.h"
 #include "qgssinglebandpseudocolorrenderer.h"
 #include "qgsrastershader.h"
 #include "qgsmeshlayerinterpolator.h"
 #include "qgsmeshlayerutils.h"
 #include "qgsmeshvectorrenderer.h"
-#include "qgsmeshtracerenderer.h"
-#include "qgsfillsymbollayer.h"
-#include "qgssettings.h"
-#include "qgsstyle.h"
-#include "qgsmeshdataprovidertemporalcapabilities.h"
 #include "qgsmapclippingutils.h"
 #include "qgscolorrampshader.h"
-#include "qgsmeshlayerelevationproperties.h"
+#include "qgsmaplayerelevationproperties.h"
 
 QgsMeshLayerRenderer::QgsMeshLayerRenderer(
   QgsMeshLayer *layer,
@@ -308,7 +301,7 @@ bool QgsMeshLayerRenderer::render()
   if ( !mClippingRegions.empty() )
   {
     bool needsPainterClipPath = false;
-    const QPainterPath path = QgsMapClippingUtils::calculatePainterClipRegion( mClippingRegions, *renderContext(), QgsMapLayerType::MeshLayer, needsPainterClipPath );
+    const QPainterPath path = QgsMapClippingUtils::calculatePainterClipRegion( mClippingRegions, *renderContext(), Qgis::LayerType::Mesh, needsPainterClipPath );
     if ( needsPainterClipPath )
       renderContext()->painter()->setClipPath( path, Qt::IntersectClip );
   }

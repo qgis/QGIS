@@ -161,13 +161,14 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
         if self.context is None:
             self.feedback = self.createFeedback()
             self.context = dataobjects.createContext(self.feedback)
-            self.context.setLogLevel(self.logLevel())
+
+        self.applyContextOverrides(self.context)
         return self.context
 
     def runAlgorithm(self):
         self.feedback = self.createFeedback()
         self.context = dataobjects.createContext(self.feedback)
-        self.context.setLogLevel(self.logLevel())
+        self.applyContextOverrides(self.context)
 
         checkCRS = ProcessingConfig.getSetting(ProcessingConfig.WARN_UNMATCHING_CRS)
         try:
@@ -205,7 +206,7 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
 
             self.clearProgress()
             self.feedback.pushVersionInfo(self.algorithm().provider())
-            if self.algorithm().provider().warningMessage():
+            if self.algorithm().provider() and self.algorithm().provider().warningMessage():
                 self.feedback.reportError(self.algorithm().provider().warningMessage())
 
             self.feedback.pushInfo(

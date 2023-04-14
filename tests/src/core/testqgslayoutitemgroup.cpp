@@ -332,11 +332,11 @@ void TestQgsLayoutItemGroup::moveGroup()
 
   QgsLayoutItemShape *item = new QgsLayoutItemShape( &l );
   l.addLayoutItem( item );
-  item->attemptMove( QgsLayoutPoint( 0.05, 0.09, QgsUnitTypes::LayoutMeters ) );
+  item->attemptMove( QgsLayoutPoint( 0.05, 0.09, Qgis::LayoutUnit::Meters ) );
 
   QgsLayoutItemShape *item2 = new QgsLayoutItemShape( &l );
   l.addLayoutItem( item2 );
-  item2->attemptMove( QgsLayoutPoint( 2, 3, QgsUnitTypes::LayoutInches ) );
+  item2->attemptMove( QgsLayoutPoint( 2, 3, Qgis::LayoutUnit::Inches ) );
 
   //group items
   QList<QgsLayoutItem *> groupItems;
@@ -345,18 +345,18 @@ void TestQgsLayoutItemGroup::moveGroup()
 
   QCOMPARE( group->positionWithUnits().x(), 50.8 );
   QCOMPARE( group->positionWithUnits().y(), 76.2 );
-  QCOMPARE( group->positionWithUnits().units(), QgsUnitTypes::LayoutMillimeters );
+  QCOMPARE( group->positionWithUnits().units(), Qgis::LayoutUnit::Millimeters );
 
-  group->attemptMove( QgsLayoutPoint( 20.8, 36.2, QgsUnitTypes::LayoutMillimeters ) );
+  group->attemptMove( QgsLayoutPoint( 20.8, 36.2, Qgis::LayoutUnit::Millimeters ) );
   QCOMPARE( group->positionWithUnits().x(), 20.8 );
   QCOMPARE( group->positionWithUnits().y(), 36.2 );
-  QCOMPARE( group->positionWithUnits().units(), QgsUnitTypes::LayoutMillimeters );
+  QCOMPARE( group->positionWithUnits().units(), Qgis::LayoutUnit::Millimeters );
   QCOMPARE( item->positionWithUnits().x(), 0.02 );
   QCOMPARE( item->positionWithUnits().y(), 0.05 );
-  QCOMPARE( item->positionWithUnits().units(), QgsUnitTypes::LayoutMeters );
+  QCOMPARE( item->positionWithUnits().units(), Qgis::LayoutUnit::Meters );
   QGSCOMPARENEAR( item2->positionWithUnits().x(), 0.818898, 0.0001 );
   QGSCOMPARENEAR( item2->positionWithUnits().y(), 1.425197, 0.0001 );
-  QCOMPARE( item2->positionWithUnits().units(), QgsUnitTypes::LayoutInches );
+  QCOMPARE( item2->positionWithUnits().units(), Qgis::LayoutUnit::Inches );
 }
 
 void TestQgsLayoutItemGroup::moveGroupReferencePos()
@@ -393,7 +393,7 @@ void TestQgsLayoutItemGroup::moveGroupReferencePos()
 
   QCOMPARE( group->positionWithUnits().x(), 5.0 );
   QCOMPARE( group->positionWithUnits().y(), 9.0 );
-  QCOMPARE( group->positionWithUnits().units(), QgsUnitTypes::LayoutMillimeters );
+  QCOMPARE( group->positionWithUnits().units(), Qgis::LayoutUnit::Millimeters );
   QCOMPARE( group->sizeWithUnits().width(), 16.0 );
   QCOMPARE( group->sizeWithUnits().height(), 13.0 );
   QCOMPARE( group->scenePos().x(), 5.0 );
@@ -429,13 +429,13 @@ void TestQgsLayoutItemGroup::resizeGroup()
 
   QgsLayoutItemShape *item = new QgsLayoutItemShape( &l );
   l.addLayoutItem( item );
-  item->attemptMove( QgsLayoutPoint( 0.05, 0.09, QgsUnitTypes::LayoutMeters ) );
-  item->attemptResize( QgsLayoutSize( 0.1, 0.15, QgsUnitTypes::LayoutMeters ) );
+  item->attemptMove( QgsLayoutPoint( 0.05, 0.09, Qgis::LayoutUnit::Meters ) );
+  item->attemptResize( QgsLayoutSize( 0.1, 0.15, Qgis::LayoutUnit::Meters ) );
 
   QgsLayoutItemShape *item2 = new QgsLayoutItemShape( &l );
   l.addLayoutItem( item2 );
-  item2->attemptMove( QgsLayoutPoint( 2, 3, QgsUnitTypes::LayoutInches ) );
-  item2->attemptResize( QgsLayoutSize( 4, 6, QgsUnitTypes::LayoutInches ) );
+  item2->attemptMove( QgsLayoutPoint( 2, 3, Qgis::LayoutUnit::Inches ) );
+  item2->attemptResize( QgsLayoutSize( 4, 6, Qgis::LayoutUnit::Inches ) );
 
   //group items
   QList<QgsLayoutItem *> groupItems;
@@ -444,30 +444,30 @@ void TestQgsLayoutItemGroup::resizeGroup()
 
   QCOMPARE( group->positionWithUnits().x(), 50.0 );
   QCOMPARE( group->positionWithUnits().y(), 76.2 );
-  QCOMPARE( group->positionWithUnits().units(), QgsUnitTypes::LayoutMillimeters );
+  QCOMPARE( group->positionWithUnits().units(), Qgis::LayoutUnit::Millimeters );
   QCOMPARE( group->sizeWithUnits().width(), 102.4 );
   QCOMPARE( group->sizeWithUnits().height(),  163.8 );
-  QCOMPARE( group->sizeWithUnits().units(), QgsUnitTypes::LayoutMillimeters );
+  QCOMPARE( group->sizeWithUnits().units(), Qgis::LayoutUnit::Millimeters );
 
-  group->attemptResize( QgsLayoutSize( 50.8, 76.2, QgsUnitTypes::LayoutMillimeters ) );
+  group->attemptResize( QgsLayoutSize( 50.8, 76.2, Qgis::LayoutUnit::Millimeters ) );
   QCOMPARE( group->positionWithUnits().x(), 50.0 );
   QCOMPARE( group->positionWithUnits().y(), 76.2 );
-  QCOMPARE( group->positionWithUnits().units(), QgsUnitTypes::LayoutMillimeters );
+  QCOMPARE( group->positionWithUnits().units(), Qgis::LayoutUnit::Millimeters );
   QCOMPARE( group->sizeWithUnits().width(), 50.8 );
   QCOMPARE( group->sizeWithUnits().height(),  76.2 );
-  QCOMPARE( group->sizeWithUnits().units(), QgsUnitTypes::LayoutMillimeters );
+  QCOMPARE( group->sizeWithUnits().units(), Qgis::LayoutUnit::Millimeters );
   QCOMPARE( item->positionWithUnits().x(), 0.05 );
   QGSCOMPARENEAR( item->positionWithUnits().y(), 0.0826198, 0.00001 );
-  QCOMPARE( item->positionWithUnits().units(), QgsUnitTypes::LayoutMeters );
+  QCOMPARE( item->positionWithUnits().units(), Qgis::LayoutUnit::Meters );
   QGSCOMPARENEAR( item->sizeWithUnits().width(), 0.0496094, 0.0001 );
   QGSCOMPARENEAR( item->sizeWithUnits().height(), 0.069780, 0.0001 );
-  QCOMPARE( item->sizeWithUnits().units(), QgsUnitTypes::LayoutMeters );
+  QCOMPARE( item->sizeWithUnits().units(), Qgis::LayoutUnit::Meters );
   QGSCOMPARENEAR( item2->positionWithUnits().x(), 1.984129, 0.0001 );
   QGSCOMPARENEAR( item2->positionWithUnits().y(), 3.000000, 0.0001 );
-  QCOMPARE( item2->positionWithUnits().units(), QgsUnitTypes::LayoutInches );
+  QCOMPARE( item2->positionWithUnits().units(), Qgis::LayoutUnit::Inches );
   QGSCOMPARENEAR( item2->sizeWithUnits().width(), 1.98438, 0.0001 );
   QGSCOMPARENEAR( item2->sizeWithUnits().height(),  2.791209, 0.0001 );
-  QCOMPARE( item2->sizeWithUnits().units(), QgsUnitTypes::LayoutInches );
+  QCOMPARE( item2->sizeWithUnits().units(), Qgis::LayoutUnit::Inches );
 }
 
 void TestQgsLayoutItemGroup::resizeGroupReferencePos()
@@ -504,7 +504,7 @@ void TestQgsLayoutItemGroup::resizeGroupReferencePos()
 
   QCOMPARE( group->positionWithUnits().x(), 5.0 );
   QCOMPARE( group->positionWithUnits().y(), 9.0 );
-  QCOMPARE( group->positionWithUnits().units(), QgsUnitTypes::LayoutMillimeters );
+  QCOMPARE( group->positionWithUnits().units(), Qgis::LayoutUnit::Millimeters );
   QCOMPARE( group->sizeWithUnits().width(), 16.0 );
   QCOMPARE( group->sizeWithUnits().height(), 13.0 );
   QCOMPARE( group->scenePos().x(), 5.0 );
@@ -582,18 +582,18 @@ void TestQgsLayoutItemGroup::undoRedo()
 
   //create some items
   item1 = new QgsLayoutItemShape( &l );
-  item1->attemptMove( QgsLayoutPoint( 0.05, 0.09, QgsUnitTypes::LayoutMeters ) );
+  item1->attemptMove( QgsLayoutPoint( 0.05, 0.09, Qgis::LayoutUnit::Meters ) );
   QPointer< QgsLayoutItem > pItem1( item1 );
   const QString item1Uuid = item1->uuid();
-  item1->attemptResize( QgsLayoutSize( 0.1, 0.15, QgsUnitTypes::LayoutMeters ) );
+  item1->attemptResize( QgsLayoutSize( 0.1, 0.15, Qgis::LayoutUnit::Meters ) );
 
   l.addLayoutItem( item1 );
 //  QCOMPARE( spyPolygonAdded.count(), ++shapesAdded );
   item2 = new QgsLayoutItemShape( &l );
   QPointer< QgsLayoutItem > pItem2( item2 );
   const QString item2Uuid = item2->uuid();
-  item2->attemptMove( QgsLayoutPoint( 2, 3, QgsUnitTypes::LayoutMillimeters ) );
-  item2->attemptResize( QgsLayoutSize( 4, 6, QgsUnitTypes::LayoutMillimeters ) );
+  item2->attemptMove( QgsLayoutPoint( 2, 3, Qgis::LayoutUnit::Millimeters ) );
+  item2->attemptResize( QgsLayoutSize( 4, 6, Qgis::LayoutUnit::Millimeters ) );
   l.addLayoutItem( item2 );
 //  QCOMPARE( spyPolygonAdded.count(), ++shapesAdded );
   l.layoutItems( items );

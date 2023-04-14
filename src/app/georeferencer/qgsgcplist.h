@@ -62,7 +62,7 @@ class APP_EXPORT QgsGCPList : public QList<QgsGeorefDataPoint * >
      */
     void updateResiduals( QgsGeorefTransform *georefTransform,
                           const QgsCoordinateReferenceSystem &targetCrs, const QgsCoordinateTransformContext &context,
-                          QgsUnitTypes::RenderUnit residualUnit );
+                          Qgis::RenderUnit residualUnit );
 
     /**
      * Returns the container as a list of GCP points.

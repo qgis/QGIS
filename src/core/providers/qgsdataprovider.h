@@ -687,6 +687,8 @@ class CORE_EXPORT QgsDataProvider : public QObject
      * \since QGIS 3.12
     */
     virtual void reloadProviderData() {}
+
+    friend class TestQgsProject;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsDataProvider::ReadFlags )

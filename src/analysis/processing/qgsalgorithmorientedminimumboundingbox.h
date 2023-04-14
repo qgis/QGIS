@@ -45,7 +45,7 @@ class QgsOrientedMinimumBoundingBoxAlgorithm : public QgsProcessingFeatureBasedA
 
   protected:
     QString outputName() const override;
-    QgsWkbTypes::Type outputWkbType( QgsWkbTypes::Type ) const override;
+    Qgis::WkbType outputWkbType( Qgis::WkbType ) const override;
     QgsFields outputFields( const QgsFields &inputFields ) const override;
     QgsFeatureList processFeature( const QgsFeature &feature, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 

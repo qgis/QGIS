@@ -87,5 +87,5 @@ void QgsDecorationLayoutExtentDialog::buttonBox_rejected()
 
 void QgsDecorationLayoutExtentDialog::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "introduction/general_tools.html#layout-extents" ) );
+  QgsHelp::openHelp( QStringLiteral( "map_views/map_view.html#layoutextents-decoration" ) );
 }

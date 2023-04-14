@@ -14,12 +14,9 @@
  ***************************************************************************/
 
 #include "qgslayoutviewtooladditem.h"
-#include "qgsapplication.h"
 #include "qgslayoutview.h"
 #include "qgslayout.h"
-#include "qgslayoutitemregistry.h"
 #include "qgslayoutviewmouseevent.h"
-#include "qgslogger.h"
 #include "qgslayoutviewrubberband.h"
 #include "qgsgui.h"
 #include "qgslayoutitemguiregistry.h"
@@ -128,8 +125,8 @@ void QgsLayoutViewToolAddItem::layoutReleaseEvent( QgsLayoutViewMouseEvent *even
   }
   else if ( mRubberBand )
   {
-    item->attemptResize( QgsLayoutSize( rect.width(), rect.height(), QgsUnitTypes::LayoutMillimeters ) );
-    item->attemptMove( QgsLayoutPoint( rect.left(), rect.top(), QgsUnitTypes::LayoutMillimeters ) );
+    item->attemptResize( QgsLayoutSize( rect.width(), rect.height(), Qgis::LayoutUnit::Millimeters ) );
+    item->attemptMove( QgsLayoutPoint( rect.left(), rect.top(), Qgis::LayoutUnit::Millimeters ) );
   }
   else
   {

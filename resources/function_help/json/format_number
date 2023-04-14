@@ -15,6 +15,16 @@
     "arg": "language",
     "optional": true,
     "description": "language (lowercase, two- or three-letter, <a href='https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes'>ISO 639 language code</a>) used to format the number into a string. By default the current QGIS user locale is used."
+  }, {
+    "arg": "omit_group_separators",
+    "optional": true,
+    "default": "false",
+    "description": "if set to true then group separators will not be included in the string"
+  }, {
+    "arg": "trim_trailing_zeroes",
+    "optional": true,
+    "default": "false",
+    "description": "if set to true then trailing zeros following the decimal point will be trimmed from the string"
   }],
   "examples": [{
     "expression": "format_number(10000000.332,2)",

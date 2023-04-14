@@ -22,7 +22,7 @@
 #include <cmath>
 
 
-static const int ELEVATION_OFFSET = 8000;
+static const int ELEVATION_OFFSET = 7900;
 static const int ELEVATION_SCALE = 1000;
 
 

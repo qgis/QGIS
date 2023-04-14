@@ -60,7 +60,16 @@
        <property name="spacing">
         <number>0</number>
        </property>
-       <property name="margin" stdset="0">
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
         <number>0</number>
        </property>
        <item>
@@ -236,7 +245,16 @@
        <property name="spacing">
         <number>6</number>
        </property>
-       <property name="margin" stdset="0">
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
         <number>0</number>
        </property>
        <item>
@@ -355,7 +373,16 @@
                   <enum>QFrame::Sunken</enum>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_12">
-                  <property name="margin" stdset="0">
+                  <property name="leftMargin">
+                   <number>0</number>
+                  </property>
+                  <property name="topMargin">
+                   <number>0</number>
+                  </property>
+                  <property name="rightMargin">
+                   <number>0</number>
+                  </property>
+                  <property name="bottomMargin">
                    <number>0</number>
                   </property>
                   <item>
@@ -414,6 +441,9 @@
                    <property name="text">
                     <string>Vote!</string>
                    </property>
+                   <property name="autoDefault">
+                    <bool>false</bool>
+                   </property>
                   </widget>
                  </item>
                  <item row="1" column="0">
@@ -454,6 +484,9 @@
                    <property name="text">
                     <string>Upgrade All</string>
                    </property>
+                   <property name="autoDefault">
+                    <bool>false</bool>
+                   </property>
                   </widget>
                  </item>
                  <item>
@@ -483,6 +516,9 @@
                    <property name="text">
                     <string>Uninstall Plugin</string>
                    </property>
+                   <property name="autoDefault">
+                    <bool>false</bool>
+                   </property>
                   </widget>
                  </item>
                  <item>
@@ -501,6 +537,9 @@
                    </property>
                    <property name="text">
                     <string>Reinstall Plugin</string>
+                   </property>
+                   <property name="autoDefault">
+                    <bool>false</bool>
                    </property>
                   </widget>
                  </item>
@@ -527,6 +566,9 @@
                    <property name="icon">
                     <iconset resource="../../images/images.qrc">
                      <normaloff>:/images/themes/default/pluginExperimental.png</normaloff>:/images/themes/default/pluginExperimental.png</iconset>
+                   </property>
+                   <property name="autoDefault">
+                    <bool>false</bool>
                    </property>
                   </widget>
                  </item>
@@ -811,7 +853,16 @@
               <property name="spacing">
                <number>6</number>
               </property>
-              <property name="margin" stdset="0">
+              <property name="leftMargin">
+               <number>0</number>
+              </property>
+              <property name="topMargin">
+               <number>0</number>
+              </property>
+              <property name="rightMargin">
+               <number>0</number>
+              </property>
+              <property name="bottomMargin">
                <number>0</number>
               </property>
               <item>
@@ -834,11 +885,20 @@
                    <x>0</x>
                    <y>0</y>
                    <width>720</width>
-                   <height>609</height>
+                   <height>612</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_10">
-                  <property name="margin" stdset="0">
+                  <property name="leftMargin">
+                   <number>0</number>
+                  </property>
+                  <property name="topMargin">
+                   <number>0</number>
+                  </property>
+                  <property name="rightMargin">
+                   <number>0</number>
+                  </property>
+                  <property name="bottomMargin">
                    <number>0</number>
                   </property>
                   <item>

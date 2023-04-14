@@ -17,14 +17,13 @@
 
 #include "qgsmaptoolextent.h"
 #include "qgsmapcanvas.h"
-#include "qgswkbtypes.h"
 #include "qgsmapmouseevent.h"
 
 
 QgsMapToolExtent::QgsMapToolExtent( QgsMapCanvas *canvas )
   : QgsMapTool( canvas )
 {
-  mRubberBand.reset( new QgsRubberBand( canvas, QgsWkbTypes::PolygonGeometry ) );
+  mRubberBand.reset( new QgsRubberBand( canvas, Qgis::GeometryType::Polygon ) );
 }
 
 void QgsMapToolExtent::activate()
@@ -96,7 +95,7 @@ QgsRectangle QgsMapToolExtent::extent() const
 
 void QgsMapToolExtent::clearRubberBand()
 {
-  mRubberBand->reset( QgsWkbTypes::PolygonGeometry );
+  mRubberBand->reset( Qgis::GeometryType::Polygon );
 }
 
 void QgsMapToolExtent::calculateEndPoint( QgsPointXY &point )
@@ -118,7 +117,7 @@ void QgsMapToolExtent::drawExtent()
 
   const QgsRectangle rect( mStartPoint, mEndPoint );
 
-  mRubberBand->reset( QgsWkbTypes::PolygonGeometry );
+  mRubberBand->reset( Qgis::GeometryType::Polygon );
   mRubberBand->addPoint( QgsPointXY( rect.xMinimum(), rect.yMinimum() ), false );
   mRubberBand->addPoint( QgsPointXY( rect.xMaximum(), rect.yMinimum() ), false );
   mRubberBand->addPoint( QgsPointXY( rect.xMaximum(), rect.yMaximum() ), false );

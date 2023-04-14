@@ -22,10 +22,8 @@
 #include "qgsrubberband.h"
 #include "qgsvectorlayer.h"
 #include "qgsmapmouseevent.h"
-
 #include "qgisapp.h"
 #include "qgsmessagebar.h"
-#include "qgsapplication.h"
 
 QgsMapToolRotateLabel::QgsMapToolRotateLabel( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDock )
   : QgsMapToolLabel( canvas, cadDock )
@@ -163,7 +161,7 @@ void QgsMapToolRotateLabel::canvasPressEvent( QgsMapMouseEvent *e )
         // Convert to degree
         mCurrentRotation = mCurrentRotation
                            * QgsUnitTypes::fromUnitToUnitFactor( mCurrentLabel.settings.rotationUnit(),
-                               QgsUnitTypes::AngleDegrees );
+                               Qgis::AngleUnit::Degrees );
 
         mStartRotation = mCurrentRotation;
         createRubberBands();
@@ -219,7 +217,7 @@ void QgsMapToolRotateLabel::canvasPressEvent( QgsMapMouseEvent *e )
         }
 
         // Convert back to settings unit
-        const double rotation = rotationDegree * QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::AngleDegrees,
+        const double rotation = rotationDegree * QgsUnitTypes::fromUnitToUnitFactor( Qgis::AngleUnit::Degrees,
                                 mCurrentLabel.settings.rotationUnit() );
 
         vlayer->beginEditCommand( tr( "Rotated label" ) + QStringLiteral( " '%1'" ).arg( currentLabelText( 24 ) ) );
@@ -335,7 +333,7 @@ void QgsMapToolRotateLabel::createRotationPreviewBox()
   if ( boxPoints.empty() )
     return;
 
-  mRotationPreviewBox.reset( new QgsRubberBand( mCanvas, QgsWkbTypes::LineGeometry ) );
+  mRotationPreviewBox.reset( new QgsRubberBand( mCanvas, Qgis::GeometryType::Line ) );
   mRotationPreviewBox->setColor( QColor( 0, 0, 255, 65 ) );
   mRotationPreviewBox->setWidth( 3 );
   setRotationPreviewBox( mCurrentRotation - mStartRotation );

@@ -104,14 +104,6 @@ determines if the widget offers the possibility to select the related feature on
 %End
     void setAllowMapIdentification( bool allowMapIdentification );
 
-    bool orderByValue();
-%Docstring
-If the widget will order the combobox entries by value
-%End
-    void setOrderByValue( bool orderByValue );
-%Docstring
-Sets if the widget will order the combobox entries by value
-%End
     void setFilterFields( const QStringList &filterFields );
 %Docstring
 Sets the fields for which filter comboboxes will be created
@@ -244,6 +236,21 @@ Set the name of the referenced layer to ``referencedLayerName``
 
 .. versionadded:: 3.12
 %End
+
+    int fetchLimit() const;
+%Docstring
+Returns the limit of fetched features (0 means all features)
+
+.. versionadded:: 3.32
+%End
+
+    void setFetchLimit( int fetchLimit );
+%Docstring
+Set the limit of fetched features (0 means all features)
+
+.. versionadded:: 3.32
+%End
+
 
   public slots:
     void openForm();

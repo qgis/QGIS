@@ -81,7 +81,7 @@ bool QgsCellStatisticsAlgorithmBase::prepareAlgorithm( const QVariantMap &parame
     if ( feedback->isCanceled() )
       break; //in case some slow data sources are loaded
 
-    if ( l->type() == QgsMapLayerType::RasterLayer )
+    if ( l->type() == Qgis::LayerType::Raster )
     {
       QgsRasterLayer *layer = qobject_cast< QgsRasterLayer * >( l );
       QgsRasterAnalysisUtils::RasterLogicInput input;

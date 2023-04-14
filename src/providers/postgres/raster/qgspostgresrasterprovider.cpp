@@ -20,7 +20,6 @@
 #include "qgsmessagelog.h"
 #include "qgsrectangle.h"
 #include "qgspolygon.h"
-#include "qgspostgresprovider.h"
 #include "qgsgdalutils.h"
 #include "qgsstringutils.h"
 #include "qgsapplication.h"
@@ -718,14 +717,14 @@ QString QgsPostgresRasterProviderMetadata::encodeUri( const QVariantMap &parts )
   return dsUri.uri( false );
 }
 
-QList<QgsMapLayerType> QgsPostgresRasterProviderMetadata::supportedLayerTypes() const
+QList<Qgis::LayerType> QgsPostgresRasterProviderMetadata::supportedLayerTypes() const
 {
-  return { QgsMapLayerType::RasterLayer };
+  return { Qgis::LayerType::Raster };
 }
 
 bool QgsPostgresRasterProviderMetadata::saveLayerMetadata( const QString &uri, const QgsLayerMetadata &metadata, QString &errorMessage )
 {
-  return QgsPostgresProviderMetadataUtils::saveLayerMetadata( QgsMapLayerType::RasterLayer, uri, metadata, errorMessage );
+  return QgsPostgresProviderMetadataUtils::saveLayerMetadata( Qgis::LayerType::Raster, uri, metadata, errorMessage );
 }
 
 QgsProviderMetadata::ProviderCapabilities QgsPostgresRasterProviderMetadata::providerCapabilities() const
@@ -1865,8 +1864,8 @@ bool QgsPostgresRasterProvider::loadFields()
       else
       {
         // be tolerant in case of views: this might be a field used as a key
-        const QgsPostgresProvider::Relkind type = relkind();
-        if ( ( type == QgsPostgresProvider::Relkind::View || type == QgsPostgresProvider::Relkind::MaterializedView )
+        const Qgis::PostgresRelKind type = relkind();
+        if ( ( type == Qgis::PostgresRelKind::View || type == Qgis::PostgresRelKind::MaterializedView )
              && parseUriKey( mUri.keyColumn( ) ).contains( fieldName ) )
         {
           // Assume it is convertible to text
@@ -2008,55 +2007,16 @@ QStringList QgsPostgresRasterProvider::parseUriKey( const QString &key )
   return cols;
 }
 
-QgsPostgresProvider::Relkind QgsPostgresRasterProvider::relkind() const
+Qgis::PostgresRelKind QgsPostgresRasterProvider::relkind() const
 {
   if ( mIsQuery || !connectionRO() )
-    return QgsPostgresProvider::Relkind::Unknown;
+    return Qgis::PostgresRelKind::Unknown;
 
   QString sql = QStringLiteral( "SELECT relkind FROM pg_class WHERE oid=regclass(%1)::oid" ).arg( quotedValue( mQuery ) );
   QgsPostgresResult res( connectionRO()->PQexec( sql ) );
   QString type = res.PQgetvalue( 0, 0 );
 
-  QgsPostgresProvider::Relkind kind = QgsPostgresProvider::Relkind::Unknown;
-
-  if ( type == 'r' )
-  {
-    kind = QgsPostgresProvider::Relkind::OrdinaryTable;
-  }
-  else if ( type == 'i' )
-  {
-    kind = QgsPostgresProvider::Relkind::Index;
-  }
-  else if ( type == 's' )
-  {
-    kind = QgsPostgresProvider::Relkind::Sequence;
-  }
-  else if ( type == 'v' )
-  {
-    kind = QgsPostgresProvider::Relkind::View;
-  }
-  else if ( type == 'm' )
-  {
-    kind = QgsPostgresProvider::Relkind::MaterializedView;
-  }
-  else if ( type == 'c' )
-  {
-    kind = QgsPostgresProvider::Relkind::CompositeType;
-  }
-  else if ( type == 't' )
-  {
-    kind = QgsPostgresProvider::Relkind::ToastTable;
-  }
-  else if ( type == 'f' )
-  {
-    kind = QgsPostgresProvider::Relkind::ForeignTable;
-  }
-  else if ( type == 'p' )
-  {
-    kind = QgsPostgresProvider::Relkind::PartitionedTable;
-  }
-
-  return kind;
+  return QgsPostgresConn::relKindFromValue( type );
 }
 
 bool QgsPostgresRasterProvider::determinePrimaryKey()
@@ -2098,9 +2058,9 @@ bool QgsPostgresRasterProvider::determinePrimaryKey()
       // If the relation is a view try to find a suitable column to use as
       // the primary key.
 
-      const QgsPostgresProvider::Relkind type = relkind();
+      const Qgis::PostgresRelKind type = relkind();
 
-      if ( type == QgsPostgresProvider::Relkind::OrdinaryTable || type == QgsPostgresProvider::Relkind::PartitionedTable )
+      if ( type == Qgis::PostgresRelKind::OrdinaryTable || type == Qgis::PostgresRelKind::PartitionedTable )
       {
         QgsDebugMsgLevel( QStringLiteral( "Relation is a table. Checking to see if it has an oid column." ), 4 );
 
@@ -2158,8 +2118,8 @@ bool QgsPostgresRasterProvider::determinePrimaryKey()
           QgsMessageLog::logMessage( tr( "The table has no column suitable for use as a key. QGIS requires a primary key, a PostgreSQL oid column or a ctid for tables." ), tr( "PostGIS" ) );
         }
       }
-      else if ( type == QgsPostgresProvider::Relkind::View || type == QgsPostgresProvider::Relkind::MaterializedView
-                || type == QgsPostgresProvider::Relkind::ForeignTable )
+      else if ( type == Qgis::PostgresRelKind::View || type == Qgis::PostgresRelKind::MaterializedView
+                || type == Qgis::PostgresRelKind::ForeignTable )
       {
         determinePrimaryKeyFromUriKeyColumn();
       }

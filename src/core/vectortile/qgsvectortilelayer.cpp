@@ -17,15 +17,11 @@
 
 #include "qgslogger.h"
 #include "qgsvectortilelayerrenderer.h"
-#include "qgsmbtiles.h"
-#include "qgsvtpktiles.h"
 #include "qgsvectortilebasiclabeling.h"
 #include "qgsvectortilebasicrenderer.h"
 #include "qgsvectortilelabeling.h"
-#include "qgsvectortileloader.h"
 #include "qgsvectortileutils.h"
 #include "qgsnetworkaccessmanager.h"
-
 #include "qgsdatasourceuri.h"
 #include "qgslayermetadataformatter.h"
 #include "qgsblockingnetworkrequest.h"
@@ -33,21 +29,20 @@
 #include "qgsjsonutils.h"
 #include "qgspainting.h"
 #include "qgsmaplayerfactory.h"
-#include "qgsarcgisrestutils.h"
 #include "qgsselectioncontext.h"
 #include "qgsgeometryengine.h"
 #include "qgsvectortilemvtdecoder.h"
 #include "qgsthreadingutils.h"
+#include "qgsproviderregistry.h"
+#include "qgsvectortiledataprovider.h"
 
 #include <QUrl>
 #include <QUrlQuery>
 
 QgsVectorTileLayer::QgsVectorTileLayer( const QString &uri, const QString &baseName, const LayerOptions &options )
-  : QgsMapLayer( QgsMapLayerType::VectorTileLayer, baseName )
+  : QgsMapLayer( Qgis::LayerType::VectorTile, baseName )
   , mTransformContext( options.transformContext )
 {
-  mMatrixSet = QgsVectorTileMatrixSet::fromWebMercator();
-
   mDataSource = uri;
 
   setValid( loadDataSource() );
@@ -80,86 +75,26 @@ bool QgsVectorTileLayer::loadDataSource()
 
   setCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) ) );
 
+  const QgsDataProvider::ProviderOptions providerOptions { mTransformContext };
+  const QgsDataProvider::ReadFlags flags;
+
   mSourceType = dsUri.param( QStringLiteral( "type" ) );
-  mSourcePath = dsUri.param( QStringLiteral( "url" ) );
+  QString providerKey;
   if ( mSourceType == QLatin1String( "xyz" ) && dsUri.param( QStringLiteral( "serviceType" ) ) == QLatin1String( "arcgis" ) )
   {
-    if ( !setupArcgisVectorTileServiceConnection( mSourcePath, dsUri ) )
-      return false;
+    providerKey = QStringLiteral( "arcgisvectortileservice" );
   }
   else if ( mSourceType == QLatin1String( "xyz" ) )
   {
-    if ( !QgsVectorTileUtils::checkXYZUrlTemplate( mSourcePath ) )
-    {
-      QgsDebugMsg( QStringLiteral( "Invalid format of URL for XYZ source: " ) + mSourcePath );
-      return false;
-    }
-
-    // online tiles
-    int zMin = 0;
-    if ( dsUri.hasParam( QStringLiteral( "zmin" ) ) )
-      zMin = dsUri.param( QStringLiteral( "zmin" ) ).toInt();
-
-    int zMax = 14;
-    if ( dsUri.hasParam( QStringLiteral( "zmax" ) ) )
-      zMax = dsUri.param( QStringLiteral( "zmax" ) ).toInt();
-
-    mMatrixSet = QgsVectorTileMatrixSet::fromWebMercator( zMin, zMax );
-    setExtent( QgsRectangle( -20037508.3427892, -20037508.3427892, 20037508.3427892, 20037508.3427892 ) );
+    providerKey = QStringLiteral( "xyzvectortiles" );
   }
   else if ( mSourceType == QLatin1String( "mbtiles" ) )
   {
-    QgsMbTiles reader( mSourcePath );
-    if ( !reader.open() )
-    {
-      QgsDebugMsg( QStringLiteral( "failed to open MBTiles file: " ) + mSourcePath );
-      return false;
-    }
-
-    const QString format = reader.metadataValue( QStringLiteral( "format" ) );
-    if ( format != QLatin1String( "pbf" ) )
-    {
-      QgsDebugMsg( QStringLiteral( "Cannot open MBTiles for vector tiles. Format = " ) + format );
-      return false;
-    }
-
-    QgsDebugMsgLevel( QStringLiteral( "name: " ) + reader.metadataValue( QStringLiteral( "name" ) ), 2 );
-    bool minZoomOk, maxZoomOk;
-    const int minZoom = reader.metadataValue( QStringLiteral( "minzoom" ) ).toInt( &minZoomOk );
-    const int maxZoom = reader.metadataValue( QStringLiteral( "maxzoom" ) ).toInt( &maxZoomOk );
-    if ( minZoomOk )
-      mMatrixSet.dropMatricesOutsideZoomRange( minZoom, 99 );
-    if ( maxZoomOk )
-      mMatrixSet.dropMatricesOutsideZoomRange( 0, maxZoom );
-    QgsDebugMsgLevel( QStringLiteral( "zoom range: %1 - %2" ).arg( mMatrixSet.minimumZoom() ).arg( mMatrixSet.maximumZoom() ), 2 );
-
-    QgsRectangle r = reader.extent();
-    QgsCoordinateTransform ct( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ),
-                               QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) ), transformContext() );
-    ct.setBallparkTransformsAreAppropriate( true );
-    r = ct.transformBoundingBox( r );
-    setExtent( r );
+    providerKey = QStringLiteral( "mbtilesvectortiles" );
   }
   else if ( mSourceType == QLatin1String( "vtpk" ) )
   {
-    QgsVtpkTiles reader( mSourcePath );
-    if ( !reader.open() )
-    {
-      QgsDebugMsg( QStringLiteral( "failed to open VTPK file: " ) + mSourcePath );
-      return false;
-    }
-
-    const QVariantMap metadata = reader.metadata();
-    const QString format = metadata.value( QStringLiteral( "tileInfo" ) ).toMap().value( QStringLiteral( "format" ) ).toString();
-    if ( format != QLatin1String( "pbf" ) )
-    {
-      QgsDebugMsg( QStringLiteral( "Cannot open VTPK for vector tiles. Format = " ) + format );
-      return false;
-    }
-
-    mMatrixSet = reader.matrixSet();
-    setCrs( mMatrixSet.crs() );
-    setExtent( reader.extent( transformContext() ) );
+    providerKey = QStringLiteral( "vtpkvectortiles" );
   }
   else
   {
@@ -167,171 +102,20 @@ bool QgsVectorTileLayer::loadDataSource()
     return false;
   }
 
-  const QgsDataProvider::ProviderOptions providerOptions { mTransformContext };
-  const QgsDataProvider::ReadFlags flags;
-  mDataProvider.reset( new QgsVectorTileDataProvider( providerOptions, flags ) );
+  mDataProvider.reset( qobject_cast<QgsVectorTileDataProvider *>( QgsProviderRegistry::instance()->createProvider( providerKey, mDataSource, providerOptions, flags ) ) );
   mProviderKey = mDataProvider->name();
 
-  return true;
-}
-
-bool QgsVectorTileLayer::setupArcgisVectorTileServiceConnection( const QString &uri, const QgsDataSourceUri &dataSourceUri )
-{
-  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
-
-  QString tileServiceUri = uri;
-  QUrl url( tileServiceUri );
-  // some services don't default to json format, while others do... so let's explicitly request it!
-  // (refs https://github.com/qgis/QGIS/issues/4231)
-  QUrlQuery query;
-  query.addQueryItem( QStringLiteral( "f" ), QStringLiteral( "pjson" ) );
-  url.setQuery( query );
-
-  QNetworkRequest request = QNetworkRequest( url );
-
-  QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsVectorTileLayer" ) )
-
-  QgsBlockingNetworkRequest networkRequest;
-  switch ( networkRequest.get( request ) )
+  if ( mDataProvider )
   {
-    case QgsBlockingNetworkRequest::NoError:
-      break;
-
-    case QgsBlockingNetworkRequest::NetworkError:
-    case QgsBlockingNetworkRequest::TimeoutError:
-    case QgsBlockingNetworkRequest::ServerExceptionError:
-      return false;
+    mMatrixSet = qgis::down_cast< QgsVectorTileDataProvider * >( mDataProvider.get() )->tileMatrixSet();
+    setCrs( mDataProvider->crs() );
+    setExtent( mDataProvider->extent() );
   }
 
-  const QgsNetworkReplyContent content = networkRequest.reply();
-  const QByteArray raw = content.content();
-
-  // Parse data
-  QJsonParseError err;
-  const QJsonDocument doc = QJsonDocument::fromJson( raw, &err );
-  if ( doc.isNull() )
-  {
-    return false;
-  }
-
-  mArcgisLayerConfiguration = doc.object().toVariantMap();
-  if ( mArcgisLayerConfiguration.contains( QStringLiteral( "error" ) ) )
-  {
-    return false;
-  }
-
-  if ( !mArcgisLayerConfiguration.value( QStringLiteral( "tiles" ) ).isValid() )
-  {
-    // maybe url is pointing to a resources/styles/root.json type url, that's ok too!
-    const QString sourceUri = mArcgisLayerConfiguration.value( QStringLiteral( "sources" ) ).toMap().value( QStringLiteral( "esri" ) ).toMap().value( QStringLiteral( "url" ) ).toString();
-    if ( !sourceUri.isEmpty() )
-    {
-      QUrl url( sourceUri );
-      // some services don't default to json format, while others do... so let's explicitly request it!
-      // (refs https://github.com/qgis/QGIS/issues/4231)
-      QUrlQuery query;
-      query.addQueryItem( QStringLiteral( "f" ), QStringLiteral( "pjson" ) );
-      url.setQuery( query );
-
-      QNetworkRequest request = QNetworkRequest( url );
-
-      QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsVectorTileLayer" ) )
-
-      QgsBlockingNetworkRequest networkRequest;
-      switch ( networkRequest.get( request ) )
-      {
-        case QgsBlockingNetworkRequest::NoError:
-          break;
-
-        case QgsBlockingNetworkRequest::NetworkError:
-        case QgsBlockingNetworkRequest::TimeoutError:
-        case QgsBlockingNetworkRequest::ServerExceptionError:
-          return false;
-      }
-
-      const QgsNetworkReplyContent content = networkRequest.reply();
-      const QByteArray raw = content.content();
-
-      // Parse data
-      QJsonParseError err;
-      const QJsonDocument doc = QJsonDocument::fromJson( raw, &err );
-      if ( doc.isNull() )
-      {
-        return false;
-      }
-
-      tileServiceUri = sourceUri;
-
-      // the resources/styles/root.json configuration is actually our style definition
-      mArcgisStyleConfiguration = mArcgisLayerConfiguration;
-      mArcgisLayerConfiguration = doc.object().toVariantMap();
-      if ( mArcgisLayerConfiguration.contains( QStringLiteral( "error" ) ) )
-      {
-        return false;
-      }
-    }
-  }
-
-  mSourcePath = tileServiceUri + '/' + mArcgisLayerConfiguration.value( QStringLiteral( "tiles" ) ).toList().value( 0 ).toString();
-  if ( !QgsVectorTileUtils::checkXYZUrlTemplate( mSourcePath ) )
-  {
-    QgsDebugMsg( QStringLiteral( "Invalid format of URL for XYZ source: " ) + mSourcePath );
-    return false;
-  }
-
-  mArcgisLayerConfiguration.insert( QStringLiteral( "serviceUri" ), tileServiceUri );
-
-
-  mMatrixSet.fromEsriJson( mArcgisLayerConfiguration );
-  setCrs( mMatrixSet.crs() );
-
-  // if hardcoded zoom limits aren't specified, take them from the server
-  if ( dataSourceUri.hasParam( QStringLiteral( "zmin" ) ) )
-    mMatrixSet.dropMatricesOutsideZoomRange( dataSourceUri.param( QStringLiteral( "zmin" ) ).toInt(), 99 );
-
-  if ( dataSourceUri.hasParam( QStringLiteral( "zmax" ) ) )
-    mMatrixSet.dropMatricesOutsideZoomRange( 0, dataSourceUri.param( QStringLiteral( "zmax" ) ).toInt() );
-
-  const QVariantMap fullExtent = mArcgisLayerConfiguration.value( QStringLiteral( "fullExtent" ) ).toMap();
-  if ( !fullExtent.isEmpty() )
-  {
-    const QgsRectangle fullExtentRect(
-      fullExtent.value( QStringLiteral( "xmin" ) ).toDouble(),
-      fullExtent.value( QStringLiteral( "ymin" ) ).toDouble(),
-      fullExtent.value( QStringLiteral( "xmax" ) ).toDouble(),
-      fullExtent.value( QStringLiteral( "ymax" ) ).toDouble()
-    );
-
-    const QgsCoordinateReferenceSystem fullExtentCrs = QgsArcGisRestUtils::convertSpatialReference( fullExtent.value( QStringLiteral( "spatialReference" ) ).toMap() );
-    const QgsCoordinateTransform extentTransform( fullExtentCrs, crs(), transformContext() );
-    try
-    {
-      setExtent( extentTransform.transformBoundingBox( fullExtentRect ) );
-    }
-    catch ( QgsCsException & )
-    {
-      QgsDebugMsg( QStringLiteral( "Could not transform layer fullExtent to layer CRS" ) );
-    }
-  }
-  else
-  {
-    // if no fullExtent specified in JSON, default to web mercator specs full extent
-    const QgsCoordinateTransform extentTransform( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) ), crs(), transformContext() );
-    try
-    {
-      setExtent( extentTransform.transformBoundingBox( QgsRectangle( -20037508.3427892, -20037508.3427892, 20037508.3427892, 20037508.3427892 ) ) );
-    }
-    catch ( QgsCsException & )
-    {
-      QgsDebugMsg( QStringLiteral( "Could not transform layer extent to layer CRS" ) );
-    }
-  }
-
-  return true;
+  return mDataProvider && mDataProvider->isValid();
 }
 
 QgsVectorTileLayer::~QgsVectorTileLayer() = default;
-
 
 QgsVectorTileLayer *QgsVectorTileLayer::clone() const
 {
@@ -390,7 +174,7 @@ bool QgsVectorTileLayer::writeXml( QDomNode &layerNode, QDomDocument &doc, const
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
   QDomElement mapLayerNode = layerNode.toElement();
-  mapLayerNode.setAttribute( QStringLiteral( "type" ), QgsMapLayerFactory::typeToString( QgsMapLayerType::VectorTileLayer ) );
+  mapLayerNode.setAttribute( QStringLiteral( "type" ), QgsMapLayerFactory::typeToString( Qgis::LayerType::VectorTile ) );
 
   mapLayerNode.appendChild( mMatrixSet.writeXml( doc, context ) );
 
@@ -593,6 +377,9 @@ bool QgsVectorTileLayer::loadDefaultStyleAndSubLayers( QString &error, QStringLi
 bool QgsVectorTileLayer::loadDefaultStyleAndSubLayersPrivate( QString &error, QStringList &warnings, QList<QgsMapLayer *> *subLayers )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+  QgsVectorTileDataProvider *vtProvider = qgis::down_cast< QgsVectorTileDataProvider *> ( mDataProvider.get() );
+  if ( !vtProvider )
+    return false;
 
   QgsDataSourceUri dsUri;
   dsUri.setEncodedUri( mDataSource );
@@ -604,38 +391,22 @@ bool QgsVectorTileLayer::loadDefaultStyleAndSubLayersPrivate( QString &error, QS
   {
     styleUrl = dsUri.param( QStringLiteral( "styleUrl" ) );
   }
-  else if ( mSourceType == QLatin1String( "xyz" ) && dsUri.param( QStringLiteral( "serviceType" ) ) == QLatin1String( "arcgis" ) )
+  else
   {
-    // for ArcMap VectorTileServices we default to the defaultStyles URL from the layer configuration
-    styleUrl = mArcgisLayerConfiguration.value( QStringLiteral( "serviceUri" ) ).toString()
-               + '/' + mArcgisLayerConfiguration.value( QStringLiteral( "defaultStyles" ) ).toString();
+    styleUrl = vtProvider->styleUrl();
   }
 
-  if ( mSourceType == QLatin1String( "vtpk" ) )
+  styleDefinition = vtProvider->styleDefinition();
+  const QVariantMap spriteDefinition = vtProvider->spriteDefinition();
+  if ( !spriteDefinition.isEmpty() )
   {
-    QgsVtpkTiles reader( mSourcePath );
-    if ( !reader.open() )
-    {
-      QgsDebugMsg( QStringLiteral( "failed to open VTPK file: " ) + mSourcePath );
-      return false;
-    }
-
-    styleDefinition = reader.styleDefinition();
-
-    const QVariantMap spriteDefinition = reader.spriteDefinition();
-    if ( !spriteDefinition.isEmpty() )
-    {
-      const QImage spriteImage = reader.spriteImage();
-      context.setSprites( spriteImage, spriteDefinition );
-    }
+    const QImage spriteImage = vtProvider->spriteImage();
+    context.setSprites( spriteImage, spriteDefinition );
   }
-  else if ( !mArcgisStyleConfiguration.isEmpty() || !styleUrl.isEmpty() )
+
+  if ( !styleDefinition.isEmpty() || !styleUrl.isEmpty() )
   {
-    if ( !mArcgisStyleConfiguration.isEmpty() )
-    {
-      styleDefinition = mArcgisStyleConfiguration;
-    }
-    else
+    if ( styleDefinition.isEmpty() )
     {
       QNetworkRequest request = QNetworkRequest( QUrl( styleUrl ) );
 
@@ -658,75 +429,14 @@ bool QgsVectorTileLayer::loadDefaultStyleAndSubLayersPrivate( QString &error, QS
       styleDefinition = QgsJsonUtils::parseJson( content.content() ).toMap();
     }
 
-    if ( styleDefinition.contains( QStringLiteral( "sprite" ) ) )
-    {
-      // retrieve sprite definition
-      QString spriteUriBase;
-      if ( styleDefinition.value( QStringLiteral( "sprite" ) ).toString().startsWith( QLatin1String( "http" ) ) )
-      {
-        spriteUriBase = styleDefinition.value( QStringLiteral( "sprite" ) ).toString();
-      }
-      else
-      {
-        spriteUriBase = styleUrl + '/' + styleDefinition.value( QStringLiteral( "sprite" ) ).toString();
-      }
-
-      for ( int resolution = 2; resolution > 0; resolution-- )
-      {
-        QUrl spriteUrl = QUrl( spriteUriBase );
-        spriteUrl.setPath( spriteUrl.path() + QStringLiteral( "%1.json" ).arg( resolution > 1 ? QStringLiteral( "@%1x" ).arg( resolution ) : QString() ) );
-        QNetworkRequest request = QNetworkRequest( spriteUrl );
-        QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsVectorTileLayer" ) )
-        QgsBlockingNetworkRequest networkRequest;
-        switch ( networkRequest.get( request ) )
-        {
-          case QgsBlockingNetworkRequest::NoError:
-          {
-            const QgsNetworkReplyContent content = networkRequest.reply();
-            const QVariantMap spriteDefinition = QgsJsonUtils::parseJson( content.content() ).toMap();
-
-            // retrieve sprite images
-            QUrl spriteUrl = QUrl( spriteUriBase );
-            spriteUrl.setPath( spriteUrl.path() + QStringLiteral( "%1.png" ).arg( resolution > 1 ? QStringLiteral( "@%1x" ).arg( resolution ) : QString() ) );
-            QNetworkRequest request = QNetworkRequest( spriteUrl );
-            QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsVectorTileLayer" ) )
-            QgsBlockingNetworkRequest networkRequest;
-            switch ( networkRequest.get( request ) )
-            {
-              case QgsBlockingNetworkRequest::NoError:
-              {
-                const QgsNetworkReplyContent imageContent = networkRequest.reply();
-                const QImage spriteImage( QImage::fromData( imageContent.content() ) );
-                context.setSprites( spriteImage, spriteDefinition );
-                break;
-              }
-
-              case QgsBlockingNetworkRequest::NetworkError:
-              case QgsBlockingNetworkRequest::TimeoutError:
-              case QgsBlockingNetworkRequest::ServerExceptionError:
-                break;
-            }
-
-            break;
-          }
-
-          case QgsBlockingNetworkRequest::NetworkError:
-          case QgsBlockingNetworkRequest::TimeoutError:
-          case QgsBlockingNetworkRequest::ServerExceptionError:
-            break;
-        }
-
-        if ( !context.spriteDefinitions().isEmpty() )
-          break;
-      }
-    }
+    QgsVectorTileUtils::loadSprites( styleDefinition, context, styleUrl );
   }
 
   if ( !styleDefinition.isEmpty() )
   {
     // convert automatically from pixel sizes to millimeters, because pixel sizes
     // are a VERY edge case in QGIS and don't play nice with hidpi map renders or print layouts
-    context.setTargetUnit( QgsUnitTypes::RenderMillimeters );
+    context.setTargetUnit( Qgis::RenderUnit::Millimeters );
     //assume source uses 96 dpi
     context.setPixelSizeConversionFactor( 25.4 / 96.0 );
 
@@ -761,116 +471,34 @@ QString QgsVectorTileLayer::loadDefaultMetadata( bool &resultFlag )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  QgsDataSourceUri dsUri;
-  dsUri.setEncodedUri( mDataSource );
-  if ( mSourceType == QLatin1String( "xyz" ) && dsUri.param( QStringLiteral( "serviceType" ) ) == QLatin1String( "arcgis" ) )
-  {
-    // populate default metadata
-    QgsLayerMetadata metadata;
-    metadata.setIdentifier( mArcgisLayerConfiguration.value( QStringLiteral( "serviceUri" ) ).toString() );
-    const QString parentIdentifier = mArcgisLayerConfiguration.value( QStringLiteral( "serviceItemId" ) ).toString();
-    if ( !parentIdentifier.isEmpty() )
-    {
-      metadata.setParentIdentifier( parentIdentifier );
-    }
-    metadata.setType( QStringLiteral( "dataset" ) );
-    metadata.setTitle( mArcgisLayerConfiguration.value( QStringLiteral( "name" ) ).toString() );
-    const QString copyright = mArcgisLayerConfiguration.value( QStringLiteral( "copyrightText" ) ).toString();
-    if ( !copyright.isEmpty() )
-      metadata.setRights( QStringList() << copyright );
-    metadata.addLink( QgsAbstractMetadataBase::Link( tr( "Source" ), QStringLiteral( "WWW:LINK" ), mArcgisLayerConfiguration.value( QStringLiteral( "serviceUri" ) ).toString() ) );
-
-    setMetadata( metadata );
-
-    resultFlag = true;
+  resultFlag = false;
+  if ( !mDataProvider || !mDataProvider->isValid() )
     return QString();
-  }
-  else if ( mSourceType == QLatin1String( "vtpk" ) )
+
+  if ( qgis::down_cast< QgsVectorTileDataProvider * >( mDataProvider.get() )->providerCapabilities() & QgsVectorTileDataProvider::ProviderCapability::ReadLayerMetadata )
   {
-    QgsVtpkTiles reader( mSourcePath );
-    if ( !reader.open() )
-    {
-      QgsDebugMsg( QStringLiteral( "failed to open VTPK file: " ) + mSourcePath );
-      resultFlag = false;
-    }
-    else
-    {
-      setMetadata( reader.layerMetadata() );
-      resultFlag = true;
-    }
-    return QString();
+    setMetadata( mDataProvider->layerMetadata() );
   }
   else
   {
     QgsMapLayer::loadDefaultMetadata( resultFlag );
-    resultFlag = true;
-    return QString();
   }
+  resultFlag = true;
+  return QString();
 }
 
 QString QgsVectorTileLayer::encodedSource( const QString &source, const QgsReadWriteContext &context ) const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  QgsDataSourceUri dsUri;
-  dsUri.setEncodedUri( source );
-
-  const QString sourceType = dsUri.param( QStringLiteral( "type" ) );
-  QString sourcePath = dsUri.param( QStringLiteral( "url" ) );
-  if ( sourceType == QLatin1String( "xyz" ) )
-  {
-    const QUrl sourceUrl( sourcePath );
-    if ( sourceUrl.isLocalFile() )
-    {
-      // relative path will become "file:./x.txt"
-      const QString relSrcUrl = context.pathResolver().writePath( sourceUrl.toLocalFile() );
-      dsUri.removeParam( QStringLiteral( "url" ) );  // needed because setParam() would insert second "url" key
-      dsUri.setParam( QStringLiteral( "url" ), QUrl::fromLocalFile( relSrcUrl ).toString() );
-      return dsUri.encodedUri();
-    }
-  }
-  else if ( sourceType == QLatin1String( "mbtiles" ) )
-  {
-    sourcePath = context.pathResolver().writePath( sourcePath );
-    dsUri.removeParam( QStringLiteral( "url" ) );  // needed because setParam() would insert second "url" key
-    dsUri.setParam( QStringLiteral( "url" ), sourcePath );
-    return dsUri.encodedUri();
-  }
-
-  return source;
+  return QgsProviderRegistry::instance()->absoluteToRelativeUri( mProviderKey, source, context );
 }
 
 QString QgsVectorTileLayer::decodedSource( const QString &source, const QString &provider, const QgsReadWriteContext &context ) const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  Q_UNUSED( provider )
-
-  QgsDataSourceUri dsUri;
-  dsUri.setEncodedUri( source );
-
-  const QString sourceType = dsUri.param( QStringLiteral( "type" ) );
-  QString sourcePath = dsUri.param( QStringLiteral( "url" ) );
-  if ( sourceType == QLatin1String( "xyz" ) )
-  {
-    const QUrl sourceUrl( sourcePath );
-    if ( sourceUrl.isLocalFile() )  // file-based URL? convert to relative path
-    {
-      const QString absSrcUrl = context.pathResolver().readPath( sourceUrl.toLocalFile() );
-      dsUri.removeParam( QStringLiteral( "url" ) );  // needed because setParam() would insert second "url" key
-      dsUri.setParam( QStringLiteral( "url" ), QUrl::fromLocalFile( absSrcUrl ).toString() );
-      return dsUri.encodedUri();
-    }
-  }
-  else if ( sourceType == QLatin1String( "mbtiles" ) )
-  {
-    sourcePath = context.pathResolver().readPath( sourcePath );
-    dsUri.removeParam( QStringLiteral( "url" ) );  // needed because setParam() would insert second "url" key
-    dsUri.setParam( QStringLiteral( "url" ), sourcePath );
-    return dsUri.encodedUri();
-  }
-
-  return source;
+  return QgsProviderRegistry::instance()->relativeToAbsoluteUri( provider, source, context );
 }
 
 QString QgsVectorTileLayer::htmlMetadata() const
@@ -931,21 +559,24 @@ QString QgsVectorTileLayer::htmlMetadata() const
   return info;
 }
 
+QString QgsVectorTileLayer::sourcePath() const
+{
+  if ( QgsVectorTileDataProvider *vtProvider = qobject_cast< QgsVectorTileDataProvider * >( mDataProvider.get() ) )
+    return vtProvider->sourcePath();
+
+  return QString();
+}
+
 QByteArray QgsVectorTileLayer::getRawTile( QgsTileXYZ tileID )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  const QgsTileMatrix tileMatrix = mMatrixSet.tileMatrix( tileID.zoomLevel() );
-  const QgsTileRange tileRange( tileID.column(), tileID.column(), tileID.row(), tileID.row() );
-
-  QgsDataSourceUri dsUri;
-  dsUri.setEncodedUri( mDataSource );
-  const QString authcfg = dsUri.authConfigId();
-
-  QList<QgsVectorTileRawData> rawTiles = QgsVectorTileLoader::blockingFetchTileRawData( mSourceType, mSourcePath, tileMatrix, QPointF(), tileRange, authcfg, dsUri.httpHeaders() );
-  if ( rawTiles.isEmpty() )
+  QgsVectorTileDataProvider *vtProvider = qobject_cast< QgsVectorTileDataProvider * >( mDataProvider.get() );
+  if ( !vtProvider )
     return QByteArray();
-  return rawTiles.first().data;
+
+  const QgsTileMatrix tileMatrix = mMatrixSet.tileMatrix( tileID.zoomLevel() );
+  return vtProvider->readTile( tileMatrix, tileID );
 }
 
 void QgsVectorTileLayer::setRenderer( QgsVectorTileRenderer *r )
@@ -1030,7 +661,7 @@ void QgsVectorTileLayer::selectByGeometry( const QgsGeometry &geometry, const Qg
   QgsGeometry selectionGeom = geometry;
   bool isPointOrRectangle;
   QgsPointXY point;
-  bool isSinglePoint = selectionGeom.type() == QgsWkbTypes::PointGeometry;
+  bool isSinglePoint = selectionGeom.type() == Qgis::GeometryType::Point;
   if ( isSinglePoint )
   {
     isPointOrRectangle = true;
@@ -1218,31 +849,31 @@ void QgsVectorTileLayer::selectByGeometry( const QgsGeometry &geometry, const Qg
 
         switch ( candidate.geometry().type() )
         {
-          case QgsWkbTypes::PointGeometry:
+          case Qgis::GeometryType::Point:
             bestCandidate = candidate;
             break;
-          case QgsWkbTypes::LineGeometry:
+          case Qgis::GeometryType::Line:
           {
             const double length = candidate.geometry().length();
-            if ( length < smallestLength && bestCandidate.geometry().type() != QgsWkbTypes::PointGeometry )
+            if ( length < smallestLength && bestCandidate.geometry().type() != Qgis::GeometryType::Point )
             {
               bestCandidate = candidate;
               smallestLength = length;
             }
             break;
           }
-          case QgsWkbTypes::PolygonGeometry:
+          case Qgis::GeometryType::Polygon:
           {
             const double area = candidate.geometry().area();
-            if ( area < smallestArea && bestCandidate.geometry().type() != QgsWkbTypes::PointGeometry && bestCandidate.geometry().type() != QgsWkbTypes::LineGeometry )
+            if ( area < smallestArea && bestCandidate.geometry().type() != Qgis::GeometryType::Point && bestCandidate.geometry().type() != Qgis::GeometryType::Line )
             {
               bestCandidate = candidate;
               smallestArea = area;
             }
             break;
           }
-          case QgsWkbTypes::UnknownGeometry:
-          case QgsWkbTypes::NullGeometry:
+          case Qgis::GeometryType::Unknown:
+          case Qgis::GeometryType::Null:
             break;
         }
       }
@@ -1257,31 +888,31 @@ void QgsVectorTileLayer::selectByGeometry( const QgsGeometry &geometry, const Qg
       {
         switch ( candidate.geometry().type() )
         {
-          case QgsWkbTypes::PointGeometry:
+          case Qgis::GeometryType::Point:
             bestCandidate = candidate;
             break;
-          case QgsWkbTypes::LineGeometry:
+          case Qgis::GeometryType::Line:
           {
             const double length = candidate.geometry().length();
-            if ( length < smallestLength && bestCandidate.geometry().type() != QgsWkbTypes::PointGeometry )
+            if ( length < smallestLength && bestCandidate.geometry().type() != Qgis::GeometryType::Point )
             {
               bestCandidate = candidate;
               smallestLength = length;
             }
             break;
           }
-          case QgsWkbTypes::PolygonGeometry:
+          case Qgis::GeometryType::Polygon:
           {
             const double area = candidate.geometry().area();
-            if ( area < smallestArea && bestCandidate.geometry().type() != QgsWkbTypes::PointGeometry && bestCandidate.geometry().type() != QgsWkbTypes::LineGeometry )
+            if ( area < smallestArea && bestCandidate.geometry().type() != Qgis::GeometryType::Point && bestCandidate.geometry().type() != Qgis::GeometryType::Line )
             {
               bestCandidate = candidate;
               smallestArea = area;
             }
             break;
           }
-          case QgsWkbTypes::UnknownGeometry:
-          case QgsWkbTypes::NullGeometry:
+          case Qgis::GeometryType::Unknown:
+          case Qgis::GeometryType::Null:
             break;
         }
       }
@@ -1348,59 +979,3 @@ void QgsVectorTileLayer::removeSelection()
 }
 
 
-//
-// QgsVectorTileDataProvider
-//
-///@cond PRIVATE
-QgsVectorTileDataProvider::QgsVectorTileDataProvider(
-  const ProviderOptions &options,
-  QgsDataProvider::ReadFlags flags )
-  : QgsDataProvider( QString(), options, flags )
-{}
-
-QgsCoordinateReferenceSystem QgsVectorTileDataProvider::crs() const
-{
-  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
-
-  return QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) );
-}
-
-QString QgsVectorTileDataProvider::name() const
-{
-  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
-
-  return QStringLiteral( "vectortile" );
-}
-
-QString QgsVectorTileDataProvider::description() const
-{
-  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
-
-  return QString();
-}
-
-QgsRectangle QgsVectorTileDataProvider::extent() const
-{
-  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
-
-  return QgsRectangle();
-}
-
-bool QgsVectorTileDataProvider::isValid() const
-{
-  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
-
-  return true;
-}
-
-bool QgsVectorTileDataProvider::renderInPreview( const PreviewContext &context )
-{
-  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
-
-  // Vector tiles by design are very CPU light to render, so we are much more permissive here compared
-  // with other layer types. (Generally if a vector tile layer has taken more than a few milliseconds to render it's
-  // a result of network requests, and the tile manager class handles these gracefully for us)
-  return context.lastRenderingTimeMs <= 1000;
-}
-
-///@endcond

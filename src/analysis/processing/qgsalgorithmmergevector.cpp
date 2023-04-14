@@ -80,7 +80,7 @@ QVariantMap QgsMergeVectorAlgorithm::processAlgorithm( const QVariantMap &parame
 
   QgsFields outputFields;
   long totalFeatureCount = 0;
-  QgsWkbTypes::Type outputType = QgsWkbTypes::Unknown;
+  Qgis::WkbType outputType = Qgis::WkbType::Unknown;
   QgsCoordinateReferenceSystem outputCrs = parameterAsCrs( parameters, QStringLiteral( "CRS" ), context );
 
   if ( outputCrs.isValid() )
@@ -104,7 +104,7 @@ QVariantMap QgsMergeVectorAlgorithm::processAlgorithm( const QVariantMap &parame
       continue;
     }
 
-    if ( layer->type() != QgsMapLayerType::VectorLayer )
+    if ( layer->type() != Qgis::LayerType::Vector )
       throw QgsProcessingException( QObject::tr( "All layers must be vector layers!" ) );
 
     QgsVectorLayer *vl = qobject_cast< QgsVectorLayer * >( layer );
@@ -116,7 +116,7 @@ QVariantMap QgsMergeVectorAlgorithm::processAlgorithm( const QVariantMap &parame
     }
 
     // check wkb type
-    if ( outputType != QgsWkbTypes::Unknown && outputType != QgsWkbTypes::NoGeometry )
+    if ( outputType != Qgis::WkbType::Unknown && outputType != Qgis::WkbType::NoGeometry )
     {
       if ( QgsWkbTypes::geometryType( outputType ) != QgsWkbTypes::geometryType( vl->wkbType() ) )
         throw QgsProcessingException( QObject::tr( "All layers must have same geometry type! Encountered a %1 layer when expecting a %2 layer." )

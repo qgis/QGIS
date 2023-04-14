@@ -168,7 +168,7 @@ void TestQgsVectorFileWriter::createPoint()
 
   QgsVectorFileWriter::SaveVectorOptions saveOptions;
   saveOptions.fileEncoding = mEncoding;
-  std::unique_ptr< QgsVectorFileWriter > writer( QgsVectorFileWriter::create( myFileName, mFields, QgsWkbTypes::Point, mCRS, QgsCoordinateTransformContext(), saveOptions ) );
+  std::unique_ptr< QgsVectorFileWriter > writer( QgsVectorFileWriter::create( myFileName, mFields, Qgis::WkbType::Point, mCRS, QgsCoordinateTransformContext(), saveOptions ) );
   //
   // Create a feature
   //
@@ -210,7 +210,7 @@ void TestQgsVectorFileWriter::createLine()
 
   QgsVectorFileWriter::SaveVectorOptions saveOptions;
   saveOptions.fileEncoding = mEncoding;
-  std::unique_ptr< QgsVectorFileWriter > writer( QgsVectorFileWriter::create( myFileName, mFields, QgsWkbTypes::LineString, mCRS, QgsCoordinateTransformContext(), saveOptions ) );
+  std::unique_ptr< QgsVectorFileWriter > writer( QgsVectorFileWriter::create( myFileName, mFields, Qgis::WkbType::LineString, mCRS, QgsCoordinateTransformContext(), saveOptions ) );
   //
   // Create a feature
   //
@@ -254,7 +254,7 @@ void TestQgsVectorFileWriter::createPolygon()
 
   QgsVectorFileWriter::SaveVectorOptions saveOptions;
   saveOptions.fileEncoding = mEncoding;
-  std::unique_ptr< QgsVectorFileWriter > writer( QgsVectorFileWriter::create( myFileName, mFields, QgsWkbTypes::Polygon, mCRS, QgsCoordinateTransformContext(), saveOptions ) );
+  std::unique_ptr< QgsVectorFileWriter > writer( QgsVectorFileWriter::create( myFileName, mFields, Qgis::WkbType::Polygon, mCRS, QgsCoordinateTransformContext(), saveOptions ) );
   //
   // Create a polygon feature
   //
@@ -301,7 +301,7 @@ void TestQgsVectorFileWriter::polygonGridTest()
 
   QgsVectorFileWriter::SaveVectorOptions saveOptions;
   saveOptions.fileEncoding = mEncoding;
-  std::unique_ptr< QgsVectorFileWriter > writer( QgsVectorFileWriter::create( myFileName, mFields, QgsWkbTypes::Polygon, mCRS, QgsCoordinateTransformContext(), saveOptions ) );
+  std::unique_ptr< QgsVectorFileWriter > writer( QgsVectorFileWriter::create( myFileName, mFields, Qgis::WkbType::Polygon, mCRS, QgsCoordinateTransformContext(), saveOptions ) );
   const double myInterval = 5.0;
   for ( double i = -180.0; i <= 180.0; i += myInterval )
   {
@@ -364,7 +364,7 @@ void TestQgsVectorFileWriter::projectedPlygonGridTest()
 
   QgsVectorFileWriter::SaveVectorOptions saveOptions;
   saveOptions.fileEncoding = mEncoding;
-  std::unique_ptr< QgsVectorFileWriter > writer( QgsVectorFileWriter::create( myFileName, mFields, QgsWkbTypes::Polygon, mCRS, QgsCoordinateTransformContext(), saveOptions ) );
+  std::unique_ptr< QgsVectorFileWriter > writer( QgsVectorFileWriter::create( myFileName, mFields, Qgis::WkbType::Polygon, mCRS, QgsCoordinateTransformContext(), saveOptions ) );
   const double myInterval = 1000.0; //1km2
   for ( double i = 0.0; i <= 10000.0; i += myInterval ) //10km
   {
@@ -441,7 +441,7 @@ void TestQgsVectorFileWriter::regression1141()
   {
     QgsVectorFileWriter::SaveVectorOptions saveOptions;
     saveOptions.fileEncoding = encoding;
-    std::unique_ptr< QgsVectorFileWriter > writer( QgsVectorFileWriter::create( fileName, fields, QgsWkbTypes::Point, crs, QgsCoordinateTransformContext(), saveOptions ) );
+    std::unique_ptr< QgsVectorFileWriter > writer( QgsVectorFileWriter::create( fileName, fields, Qgis::WkbType::Point, crs, QgsCoordinateTransformContext(), saveOptions ) );
 
     const QgsPointXY myPoint = QgsPointXY( 10.0, 10.0 );
     const QgsGeometry mypPointGeometry = QgsGeometry::fromPointXY( myPoint );
@@ -716,7 +716,7 @@ void TestQgsVectorFileWriter::testExportToShapeNanValuesForZ()
 
   QgsVectorFileWriter::SaveVectorOptions saveOptions;
   saveOptions.fileEncoding = mEncoding;
-  std::unique_ptr< QgsVectorFileWriter > writer( QgsVectorFileWriter::create( myFileName, mFields, QgsWkbTypes::LineStringZ, mCRS, QgsCoordinateTransformContext(), saveOptions ) );
+  std::unique_ptr< QgsVectorFileWriter > writer( QgsVectorFileWriter::create( myFileName, mFields, Qgis::WkbType::LineStringZ, mCRS, QgsCoordinateTransformContext(), saveOptions ) );
   //
   // Create a feature
   //

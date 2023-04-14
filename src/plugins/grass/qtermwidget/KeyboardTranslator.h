@@ -111,8 +111,12 @@ public:
         ScrollLineDownCommand = 16,
         /** Toggles scroll lock mode */
         ScrollLockCommand = 32,
+        /** Scroll the terminal display up to the start of history */
+        ScrollUpToTopCommand = 64,
+        /** Scroll the terminal display down to the end of history */
+        ScrollDownToBottomCommand = 128,
         /** Echos the operating system specific erase character. */
-        EraseCommand = 64
+        EraseCommand = 256
     };
     Q_DECLARE_FLAGS(Commands,Command)
 
@@ -147,10 +151,10 @@ public:
          * TODO: The numbers used to replace '*' characters are taken from the Konsole/KDE 3 code.
          * Document them.
          *
-         * \param expandWildCards Specifies whether wild cards (occurrences of the '*' character) in
+         * @param expandWildCards Specifies whether wild cards (occurrences of the '*' character) in
          * the entry should be replaced with a number to indicate the modifier keys being pressed.
          *
-         * \param modifiers The keyboard modifiers being pressed.
+         * @param modifiers The keyboard modifiers being pressed.
          */
         QByteArray text(bool expandWildCards = false,
                         Qt::KeyboardModifiers modifiers = Qt::NoModifier) const;
@@ -162,10 +166,10 @@ public:
          * Returns the character sequence associated with this entry,
          * with any non-printable characters replaced with escape sequences.
          *
-         * e.g., \\E for Escape, \\t for tab, \\n for new line.
+         * eg. \\E for Escape, \\t for tab, \\n for new line.
          *
-         * \param expandWildCards See text()
-         * \param modifiers See text()
+         * @param expandWildCards See text()
+         * @param modifiers See text()
          */
         QByteArray escapedText(bool expandWildCards = false,
                                Qt::KeyboardModifiers modifiers = Qt::NoModifier) const;
@@ -227,8 +231,8 @@ public:
          * Returns this entry's result ( ie. its command or character sequence )
          * as a string.
          *
-         * \param expandWildCards See text()
-         * \param modifiers See text()
+         * @param expandWildCards See text()
+         * @param modifiers See text()
          */
         QString resultToString(bool expandWildCards = false,
                                Qt::KeyboardModifiers modifiers = Qt::NoModifier) const;
@@ -282,9 +286,9 @@ public:
      * Returns the matching entry if found or a null Entry otherwise ( ie.
      * entry.isNull() will return true )
      *
-     * \param keyCode A key code from the Qt::Key enum
-     * \param modifiers A combination of modifiers
-     * \param state Optional flags which specify the current state of the terminal
+     * @param keyCode A key code from the Qt::Key enum
+     * @param modifiers A combination of modifiers
+     * @param state Optional flags which specify the current state of the terminal
      */
     Entry findEntry(int keyCode ,
                     Qt::KeyboardModifiers modifiers ,
@@ -309,6 +313,9 @@ public:
 
     /** Returns a list of all entries in the translator. */
     QList<Entry> entries() const;
+
+    /** The modifier code for the actual Ctrl key on this OS. */
+    static const Qt::KeyboardModifier CTRL_MOD;
 
 private:
 
@@ -431,7 +438,7 @@ public:
 
     /**
      * Writes the header for the keyboard translator.
-     * \param description Description of the keyboard translator.
+     * @param description Description of the keyboard translator.
      */
     void writeHeader( const QString& description );
     /** Writes a translator entry. */
@@ -461,6 +468,9 @@ public:
      */
     KeyboardTranslatorManager();
     ~KeyboardTranslatorManager();
+
+    KeyboardTranslatorManager(const KeyboardTranslatorManager&) = delete;
+    KeyboardTranslatorManager& operator=(const KeyboardTranslatorManager&) = delete;
 
     /**
      * Adds a new translator.  If a translator with the same name
@@ -513,8 +523,6 @@ private:
     QHash<QString,KeyboardTranslator*> _translators; // maps translator-name -> KeyboardTranslator
                                                      // instance
     bool _haveLoadedAll;
-
-    static KeyboardTranslatorManager * sKeyboardTranslatorManager;
 };
 
 inline int KeyboardTranslator::Entry::keyCode() const { return _keyCode; }
@@ -559,8 +567,8 @@ inline QByteArray KeyboardTranslator::Entry::text(bool expandWildCards,Qt::Keybo
     {
         int modifierValue = 1;
         modifierValue += oneOrZero(modifiers & Qt::ShiftModifier);
-        modifierValue += oneOrZero(modifiers & Qt::AltModifier)     << 1;
-        modifierValue += oneOrZero(modifiers & Qt::ControlModifier) << 2;
+        modifierValue += oneOrZero(modifiers & Qt::AltModifier) << 1;
+        modifierValue += oneOrZero(modifiers & KeyboardTranslator::CTRL_MOD) << 2;
 
         for (int i=0;i<_text.length();i++)
         {

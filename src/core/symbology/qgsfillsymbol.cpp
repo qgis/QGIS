@@ -41,8 +41,8 @@ void QgsFillSymbol::renderPolygon( const QPolygonF &points, const QVector<QPolyg
   const double opacity = dataDefinedProperties().hasActiveProperties() ? dataDefinedProperties().valueAsDouble( QgsSymbol::PropertyOpacity, context.expressionContext(), mOpacity * 100 ) * 0.01
                          : mOpacity;
 
-  QgsSymbolRenderContext symbolContext( context, QgsUnitTypes::RenderUnknownUnit, opacity, selected, mRenderHints, f );
-  symbolContext.setOriginalGeometryType( QgsWkbTypes::PolygonGeometry );
+  QgsSymbolRenderContext symbolContext( context, Qgis::RenderUnit::Unknown, opacity, selected, mRenderHints, f );
+  symbolContext.setOriginalGeometryType( Qgis::GeometryType::Polygon );
   symbolContext.setGeometryPartCount( symbolRenderContext()->geometryPartCount() );
   symbolContext.setGeometryPartNum( symbolRenderContext()->geometryPartNum() );
 
@@ -54,7 +54,7 @@ void QgsFillSymbol::renderPolygon( const QPolygonF &points, const QVector<QPolyg
       if ( symbolLayer->type() == Qgis::SymbolType::Fill || symbolLayer->type() == Qgis::SymbolType::Line )
         renderPolygonUsingLayer( symbolLayer, points, rings, symbolContext );
       else
-        renderUsingLayer( symbolLayer, symbolContext, QgsWkbTypes::PolygonGeometry, &points, rings );
+        renderUsingLayer( symbolLayer, symbolContext, Qgis::GeometryType::Polygon, &points, rings );
     }
     return;
   }
@@ -71,7 +71,7 @@ void QgsFillSymbol::renderPolygon( const QPolygonF &points, const QVector<QPolyg
     if ( symbolLayer->type() == Qgis::SymbolType::Fill || symbolLayer->type() == Qgis::SymbolType::Line )
       renderPolygonUsingLayer( symbolLayer, points, rings, symbolContext );
     else
-      renderUsingLayer( symbolLayer, symbolContext, QgsWkbTypes::PolygonGeometry, &points, rings );
+      renderUsingLayer( symbolLayer, symbolContext, Qgis::GeometryType::Polygon, &points, rings );
   }
 }
 

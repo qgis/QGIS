@@ -44,7 +44,7 @@ bool QgsPointCloudRendererWidgetFactory::supportsStyleDock() const
 
 bool QgsPointCloudRendererWidgetFactory::supportsLayer( QgsMapLayer *layer ) const
 {
-  return layer->type() == QgsMapLayerType::PointCloudLayer;
+  return layer->type() == Qgis::LayerType::PointCloud;
 }
 
 QString QgsPointCloudRendererWidgetFactory::layerPropertiesPagePositionHint() const

@@ -54,9 +54,9 @@ QgsProcessing::SourceType QgsTaperedBufferAlgorithm::outputLayerType() const
   return QgsProcessing::TypeVectorPolygon;
 }
 
-QgsWkbTypes::Type QgsTaperedBufferAlgorithm::outputWkbType( QgsWkbTypes::Type ) const
+Qgis::WkbType QgsTaperedBufferAlgorithm::outputWkbType( Qgis::WkbType ) const
 {
-  return QgsWkbTypes::MultiPolygon;
+  return Qgis::WkbType::MultiPolygon;
 }
 
 bool QgsTaperedBufferAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
@@ -188,9 +188,9 @@ QgsProcessing::SourceType QgsVariableWidthBufferByMAlgorithm::outputLayerType() 
   return QgsProcessing::TypeVectorPolygon;
 }
 
-QgsWkbTypes::Type QgsVariableWidthBufferByMAlgorithm::outputWkbType( QgsWkbTypes::Type ) const
+Qgis::WkbType QgsVariableWidthBufferByMAlgorithm::outputWkbType( Qgis::WkbType ) const
 {
-  return QgsWkbTypes::MultiPolygon;
+  return Qgis::WkbType::MultiPolygon;
 }
 
 bool QgsVariableWidthBufferByMAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )

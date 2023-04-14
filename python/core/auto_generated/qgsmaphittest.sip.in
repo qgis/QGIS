@@ -37,9 +37,26 @@ will be visible on the map - this is useful for content based legend.
 Constructor version used with only expressions to filter symbols (no extent or polygon intersection)
 %End
 
+    QgsMapHitTest( const QgsLayerTreeFilterSettings &settings );
+%Docstring
+Constructor based off layer tree filter ``settings``.
+
+.. versionadded:: 3.32
+%End
+
     void run();
 %Docstring
 Runs the map hit test
+%End
+
+
+
+    QMap<QString, QList<QString>> resultsPy() const /PyName=results/;
+%Docstring
+Returns the hit test results, which are a map of layer ID to
+visible symbol legend keys.
+
+.. versionadded:: 3.32
 %End
 
     bool symbolVisible( QgsSymbol *symbol, QgsVectorLayer *layer ) const;
@@ -65,6 +82,43 @@ Tests whether a given legend key is visible for a specified layer.
 
 .. versionadded:: 2.14
 %End
+
+};
+
+
+class QgsMapHitTestTask : QgsTask
+{
+%Docstring(signature="appended")
+Executes a QgsMapHitTest in a background thread.
+
+.. versionadded:: 3.32
+%End
+
+%TypeHeaderCode
+#include "qgsmaphittest.h"
+%End
+  public:
+
+    QgsMapHitTestTask( const QgsLayerTreeFilterSettings &settings );
+%Docstring
+Constructor for QgsMapHitTestTask, using the specified filter ``settings``.
+%End
+
+
+
+    QMap<QString, QList<QString>> resultsPy() const /PyName=results/;
+%Docstring
+Returns the hit test results, which are a map of layer ID to
+visible symbol legend keys.
+%End
+
+    virtual void cancel();
+
+
+  protected:
+
+    virtual bool run();
+
 
 };
 

@@ -23,7 +23,6 @@
 #include "qgslayertreeviewdefaultactions.h"
 #include "qgsmaplayer.h"
 #include "qgsmessagebar.h"
-#include "qgslayertreefilterproxymodel.h"
 
 #include "qgsgui.h"
 
@@ -179,9 +178,14 @@ void QgsLayerTreeView::contextMenuEvent( QContextMenuEvent *event )
     setCurrentIndex( QModelIndex() );
 
   QMenu *menu = mMenuProvider->createContextMenu();
-  if ( menu && menu->actions().count() != 0 )
-    menu->exec( mapToGlobal( event->pos() ) );
-  delete menu;
+  if ( menu )
+  {
+    emit contextMenuAboutToShow( menu );
+
+    if ( menu->actions().count() != 0 )
+      menu->exec( mapToGlobal( event->pos() ) );
+    delete menu;
+  }
 }
 
 
@@ -426,7 +430,8 @@ QList<QgsLayerTreeNode *> QgsLayerTreeView::selectedNodes( bool skipInternal ) c
 QList<QgsLayerTreeLayer *> QgsLayerTreeView::selectedLayerNodes() const
 {
   QList<QgsLayerTreeLayer *> layerNodes;
-  const auto constSelectedNodes = selectedNodes();
+  const QList<QgsLayerTreeNode *> constSelectedNodes = selectedNodes();
+  layerNodes.reserve( constSelectedNodes.size() );
   for ( QgsLayerTreeNode *node : constSelectedNodes )
   {
     if ( QgsLayerTree::isLayer( node ) )
@@ -438,13 +443,31 @@ QList<QgsLayerTreeLayer *> QgsLayerTreeView::selectedLayerNodes() const
 QList<QgsMapLayer *> QgsLayerTreeView::selectedLayers() const
 {
   QList<QgsMapLayer *> list;
-  const auto constSelectedLayerNodes = selectedLayerNodes();
+  const QList<QgsLayerTreeLayer *> constSelectedLayerNodes = selectedLayerNodes();
+  list.reserve( constSelectedLayerNodes.size() );
   for ( QgsLayerTreeLayer *node : constSelectedLayerNodes )
   {
     if ( node->layer() )
       list << node->layer();
   }
   return list;
+}
+
+QList<QgsLayerTreeModelLegendNode *> QgsLayerTreeView::selectedLegendNodes() const
+{
+  QList<QgsLayerTreeModelLegendNode *> res;
+  const QModelIndexList selected = selectionModel()->selectedIndexes();
+  res.reserve( selected.size() );
+  for ( const QModelIndex &index : selected )
+  {
+    const QModelIndex &modelIndex = mProxyModel->mapToSource( index );
+    if ( QgsLayerTreeModelLegendNode *node = layerTreeModel()->index2legendNode( modelIndex ) )
+    {
+      res.push_back( node );
+    }
+  }
+
+  return res;
 }
 
 QList<QgsMapLayer *> QgsLayerTreeView::selectedLayersRecursive() const
@@ -595,9 +618,9 @@ void QgsLayerTreeView::keyPressEvent( QKeyEvent *event )
 {
   if ( event->key() == Qt::Key_Space )
   {
-    const auto constSelectedNodes = selectedNodes();
+    const QList<QgsLayerTreeNode *> constSelectedNodes = selectedNodes();
 
-    if ( ! constSelectedNodes.isEmpty() )
+    if ( !constSelectedNodes.isEmpty() )
     {
       const bool isFirstNodeChecked = constSelectedNodes[0]->itemVisibilityChecked();
       for ( QgsLayerTreeNode *node : constSelectedNodes )

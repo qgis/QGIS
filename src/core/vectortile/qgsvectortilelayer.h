@@ -18,15 +18,12 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
-
 #include "qgsmaplayer.h"
 #include "qgsvectortilematrixset.h"
 #include "qgsfeatureid.h"
 
-class QgsVectorTileLabeling;
 class QgsVectorTileRenderer;
-
-class QgsTileXYZ;
+class QgsVectorTileLabeling;
 class QgsFeature;
 class QgsGeometry;
 class QgsSelectionContext;
@@ -186,7 +183,7 @@ class CORE_EXPORT QgsVectorTileLayer : public QgsMapLayer
     //! Returns type of the data source
     QString sourceType() const { return mSourceType; }
     //! Returns URL/path of the data source (syntax different to each data source type)
-    QString sourcePath() const { return mSourcePath; }
+    QString sourcePath() const;
 
     //! Returns minimum zoom level at which source has any valid tiles (negative = unconstrained)
     int sourceMinZoom() const { return mMatrixSet.minimumZoom(); }
@@ -288,8 +285,6 @@ class CORE_EXPORT QgsVectorTileLayer : public QgsMapLayer
   private:
     //! Type of the data source
     QString mSourceType;
-    //! URL/Path of the data source
-    QString mSourcePath;
 
     QgsVectorTileMatrixSet mMatrixSet;
 
@@ -300,50 +295,17 @@ class CORE_EXPORT QgsVectorTileLayer : public QgsMapLayer
     //! Whether we draw borders of tiles
     bool mTileBorderRendering = false;
 
-    QVariantMap mArcgisLayerConfiguration;
-    QVariantMap mArcgisStyleConfiguration;
-
     QgsCoordinateTransformContext mTransformContext;
 
     std::unique_ptr< QgsDataProvider > mDataProvider;
 
     QHash< QgsFeatureId, QgsFeature > mSelectedFeatures;
 
-    bool setupArcgisVectorTileServiceConnection( const QString &uri, const QgsDataSourceUri &dataSourceUri );
-
     void setDataSourcePrivate( const QString &dataSource, const QString &baseName, const QString &provider,
                                const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags ) override;
 
     bool loadDefaultStyleAndSubLayersPrivate( QString &error, QStringList &warnings, QList< QgsMapLayer * > *subLayers );
 
-
 };
-
-#ifndef SIP_RUN
-///@cond PRIVATE
-
-/**
- * A minimal data provider for vector tile layers.
- *
- * \since QGIS 3.22
- */
-class QgsVectorTileDataProvider : public QgsDataProvider
-{
-    Q_OBJECT
-
-  public:
-    QgsVectorTileDataProvider( const QgsDataProvider::ProviderOptions &providerOptions,
-                               QgsDataProvider::ReadFlags flags );
-    QgsCoordinateReferenceSystem crs() const override;
-    QString name() const override;
-    QString description() const override;
-    QgsRectangle extent() const override;
-    bool isValid() const override;
-    bool renderInPreview( const QgsDataProvider::PreviewContext &context ) override;
-
-};
-///@endcond
-#endif
-
 
 #endif // QGSVECTORTILELAYER_H

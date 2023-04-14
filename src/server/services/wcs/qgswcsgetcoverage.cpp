@@ -88,7 +88,7 @@ namespace QgsWcs
       {
         continue;
       }
-      if ( layer->type() != QgsMapLayerType::RasterLayer )
+      if ( layer->type() != Qgis::LayerType::Raster )
       {
         continue;
       }

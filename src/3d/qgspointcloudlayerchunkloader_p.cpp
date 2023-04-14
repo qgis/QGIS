@@ -20,12 +20,14 @@
 #include "qgschunknode_p.h"
 #include "qgslogger.h"
 #include "qgspointcloudindex.h"
+#include "qgspointcloudrequest.h"
 #include "qgseventtracing.h"
 
 
 #include "qgspointcloud3dsymbol.h"
 #include "qgspointcloudattribute.h"
 #include "qgspointcloud3dsymbol_p.h"
+#include "qgsraycastingutils_p.h"
 
 #include <QtConcurrent>
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
@@ -255,4 +257,114 @@ QgsPointCloudLayerChunkedEntity::~QgsPointCloudLayerChunkedEntity()
   cancelActiveJobs();
 }
 
+QVector<QgsRayCastingUtils::RayHit> QgsPointCloudLayerChunkedEntity::rayIntersection( const QgsRayCastingUtils::Ray3D &ray, const QgsRayCastingUtils::RayCastContext &context ) const
+{
+  QVector<QgsRayCastingUtils::RayHit> result;
+  QgsPointCloudLayerChunkLoaderFactory *factory = static_cast<QgsPointCloudLayerChunkLoaderFactory *>( mChunkLoaderFactory );
+
+  // transform ray
+  const QgsVector3D rayOriginMapCoords = factory->mMap.worldToMapCoordinates( ray.origin() );
+  const QgsVector3D pointMapCoords = factory->mMap.worldToMapCoordinates( ray.origin() + ray.origin().length() * ray.direction().normalized() );
+  QgsVector3D rayDirectionMapCoords = pointMapCoords - rayOriginMapCoords;
+  rayDirectionMapCoords.normalize();
+
+  const int screenSizePx = std::max( context.screenSize.height(), context.screenSize.width() );
+
+  const QgsPointCloud3DSymbol *symbol = factory->mSymbol.get();
+  // Symbol can be null in case of no rendering enabled
+  if ( !symbol )
+    return result;
+  const double pointSize = symbol->pointSize();
+
+  // We're using the angle as a tolerance, effectively meaning we're fetching points intersecting a cone.
+  // This may be revisited to use a cylinder instead, if the balance between near/far points does not scale
+  // well with different point sizes, screen sizes and fov values.
+  const double limitAngle = 2. * pointSize / screenSizePx * factory->mMap.fieldOfView();
+
+  // adjust ray to elevation properties
+  const QgsVector3D adjustedRayOrigin = QgsVector3D( rayOriginMapCoords.x(), rayOriginMapCoords.y(), ( rayOriginMapCoords.z() -  factory->mZValueOffset ) / factory->mZValueScale );
+  QgsVector3D adjustedRayDirection = QgsVector3D( rayDirectionMapCoords.x(), rayDirectionMapCoords.y(), rayDirectionMapCoords.z() / factory->mZValueScale );
+  adjustedRayDirection.normalize();
+
+  QgsPointCloudIndex *index = factory->mPointCloudIndex;
+
+  const QgsPointCloudAttributeCollection attributeCollection = index->attributes();
+  QgsPointCloudRequest request;
+  request.setAttributes( attributeCollection );
+
+  double minDist = -1.;
+  const QList<QgsChunkNode *> activeNodes = this->activeNodes();
+  for ( QgsChunkNode *node : activeNodes )
+  {
+    const QgsChunkNodeId id = node->tileId();
+    const IndexedPointCloudNode n( id.d, id.x, id.y, id.z );
+
+    if ( !index->hasNode( n ) )
+      continue;
+
+    if ( !QgsRayCastingUtils::rayBoxIntersection( ray, node->bbox() ) )
+      continue;
+
+    std::unique_ptr<QgsPointCloudBlock> block( index->nodeData( n, request ) );
+    if ( !block )
+      continue;
+
+    const QgsVector3D blockScale = block->scale();
+    const QgsVector3D blockOffset = block->offset();
+
+    const char *ptr = block->data();
+    const QgsPointCloudAttributeCollection blockAttributes = block->attributes();
+    const std::size_t recordSize = blockAttributes.pointRecordSize();
+    int xOffset = 0, yOffset = 0, zOffset = 0;
+    const QgsPointCloudAttribute::DataType xType = blockAttributes.find( QStringLiteral( "X" ), xOffset )->type();
+    const QgsPointCloudAttribute::DataType yType = blockAttributes.find( QStringLiteral( "Y" ), yOffset )->type();
+    const QgsPointCloudAttribute::DataType zType = blockAttributes.find( QStringLiteral( "Z" ), zOffset )->type();
+    for ( int i = 0; i < block->pointCount(); ++i )
+    {
+      double x, y, z;
+      QgsPointCloudAttribute::getPointXYZ( ptr, i, recordSize, xOffset, xType, yOffset, yType, zOffset, zType, blockScale, blockOffset, x, y, z );
+      const QgsVector3D point( x, y, z );
+
+      // check whether point is in front of the ray
+      // similar to QgsRay3D::isInFront(), but using doubles
+      QgsVector3D vectorToPoint = point - adjustedRayOrigin;
+      vectorToPoint.normalize();
+      if ( QgsVector3D::dotProduct( vectorToPoint, adjustedRayDirection ) < 0.0 )
+        continue;
+
+      // calculate the angle between the point and the projected point
+      // similar to QgsRay3D::angleToPoint(), but using doubles
+      const QgsVector3D projPoint = adjustedRayOrigin + adjustedRayDirection * QgsVector3D::dotProduct( point - adjustedRayOrigin, adjustedRayDirection );
+      const QgsVector3D v1 = projPoint - adjustedRayOrigin ;
+      const QgsVector3D v2 = point - projPoint;
+      double angle = std::atan2( v2.length(), v1.length() ) * 180 / M_PI;
+      if ( angle > limitAngle )
+        continue;
+
+      const double dist = rayOriginMapCoords.distance( point );
+
+      if ( minDist < 0 || dist < minDist )
+      {
+        minDist = dist;
+      }
+      else if ( context.singleResult )
+      {
+        continue;
+      }
+
+      // Note : applying elevation properties is done in fromPointCloudIdentificationToIdentifyResults
+      QVariantMap pointAttr = QgsPointCloudAttribute::getAttributeMap( ptr, i * recordSize, blockAttributes );
+      pointAttr[ QStringLiteral( "X" ) ] = x;
+      pointAttr[ QStringLiteral( "Y" ) ] = y;
+      pointAttr[ QStringLiteral( "Z" ) ] = z;
+
+      const QgsVector3D worldPoint = factory->mMap.mapToWorldCoordinates( point );
+      QgsRayCastingUtils::RayHit hit( dist, worldPoint.toVector3D(), FID_NULL, pointAttr );
+      if ( context.singleResult )
+        result.clear();
+      result.append( hit );
+    }
+  }
+  return result;
+}
 /// @endcond

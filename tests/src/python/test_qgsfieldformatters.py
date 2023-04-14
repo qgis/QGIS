@@ -719,9 +719,9 @@ class TestQgsDateTimeFieldFormatter(unittest.TestCase):
             QgsApplication.setLocale(locale)
             field_formatter = QgsDateTimeFieldFormatter()
 
-            self.assertEqual(field_formatter.defaultFormat(QVariant.Date), assertions["date_format"], locale.name())
-            self.assertEqual(field_formatter.defaultFormat(QVariant.Time), assertions["time_format"], locale.name())
-            self.assertEqual(field_formatter.defaultFormat(QVariant.DateTime), assertions["datetime_format"], locale.name())
+            self.assertEqual(field_formatter.defaultDisplayFormat(QVariant.Date), assertions["date_format"], locale.name())
+            self.assertEqual(field_formatter.defaultDisplayFormat(QVariant.Time), assertions["time_format"], locale.name())
+            self.assertEqual(field_formatter.defaultDisplayFormat(QVariant.DateTime), assertions["datetime_format"], locale.name())
 
             # default configuration should show timezone information
             config = {}

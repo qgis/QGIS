@@ -16,8 +16,6 @@
  ***************************************************************************/
 
 #include "qgis.h"
-#include "qgslogger.h"
-#include "qgsproviderregistry.h"
 #include "qgscopcprovider.h"
 #include "qgscopcpointcloudindex.h"
 #include "qgsremotecopcpointcloudindex.h"
@@ -167,7 +165,7 @@ QList<QgsProviderSublayerDetails> QgsCopcProviderMetadata::querySublayers( const
     QgsProviderSublayerDetails details;
     details.setUri( uri );
     details.setProviderKey( QStringLiteral( "copc" ) );
-    details.setType( QgsMapLayerType::PointCloudLayer );
+    details.setType( Qgis::LayerType::PointCloud );
     details.setName( QgsProviderUtils::suggestLayerNameFromFilePath( uri ) );
     return {details};
   }
@@ -186,13 +184,13 @@ int QgsCopcProviderMetadata::priorityForUri( const QString &uri ) const
   return 0;
 }
 
-QList<QgsMapLayerType> QgsCopcProviderMetadata::validLayerTypesForUri( const QString &uri ) const
+QList<Qgis::LayerType> QgsCopcProviderMetadata::validLayerTypesForUri( const QString &uri ) const
 {
   const QVariantMap parts = decodeUri( uri );
   if ( parts.value( QStringLiteral( "file-name" ) ).toString().endsWith( ".copc.laz", Qt::CaseSensitivity::CaseInsensitive ) )
-    return QList< QgsMapLayerType>() << QgsMapLayerType::PointCloudLayer;
+    return QList< Qgis::LayerType>() << Qgis::LayerType::PointCloud;
 
-  return QList< QgsMapLayerType>();
+  return QList< Qgis::LayerType>();
 }
 
 QVariantMap QgsCopcProviderMetadata::decodeUri( const QString &uri ) const
@@ -204,17 +202,18 @@ QVariantMap QgsCopcProviderMetadata::decodeUri( const QString &uri ) const
   return uriComponents;
 }
 
-QString QgsCopcProviderMetadata::filters( QgsProviderMetadata::FilterType type )
+QString QgsCopcProviderMetadata::filters( Qgis::FileFilterType type )
 {
   switch ( type )
   {
-    case QgsProviderMetadata::FilterType::FilterVector:
-    case QgsProviderMetadata::FilterType::FilterRaster:
-    case QgsProviderMetadata::FilterType::FilterMesh:
-    case QgsProviderMetadata::FilterType::FilterMeshDataset:
+    case Qgis::FileFilterType::Vector:
+    case Qgis::FileFilterType::Raster:
+    case Qgis::FileFilterType::Mesh:
+    case Qgis::FileFilterType::MeshDataset:
+    case Qgis::FileFilterType::VectorTile:
       return QString();
 
-    case QgsProviderMetadata::FilterType::FilterPointCloud:
+    case Qgis::FileFilterType::PointCloud:
       return QObject::tr( "COPC Point Clouds" ) + QStringLiteral( " (*.copc.laz *.COPC.LAZ)" );
   }
   return QString();
@@ -225,9 +224,9 @@ QgsProviderMetadata::ProviderCapabilities QgsCopcProviderMetadata::providerCapab
   return FileBasedUris;
 }
 
-QList<QgsMapLayerType> QgsCopcProviderMetadata::supportedLayerTypes() const
+QList<Qgis::LayerType> QgsCopcProviderMetadata::supportedLayerTypes() const
 {
-  return { QgsMapLayerType::PointCloudLayer };
+  return { Qgis::LayerType::PointCloud };
 }
 
 QString QgsCopcProviderMetadata::encodeUri( const QVariantMap &parts ) const

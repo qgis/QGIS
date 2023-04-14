@@ -16,7 +16,6 @@
 #include "qgsgeometrycheckcontext.h"
 #include "qgsgeometryengine.h"
 #include "qgsgeometrygapcheck.h"
-#include "qgsgeometrycollection.h"
 #include "qgsfeaturepool.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerutils.h"
@@ -26,7 +25,6 @@
 #include "qgsexpressioncontextutils.h"
 #include "qgspolygon.h"
 #include "qgscurve.h"
-#include "qgssnappingutils.h"
 
 QgsGeometryGapCheck::QgsGeometryGapCheck( const QgsGeometryCheckContext *context, const QVariantMap &configuration )
   : QgsGeometryCheck( context, configuration )
@@ -482,9 +480,9 @@ QgsGeometryCheck::Flags QgsGeometryGapCheck::factoryFlags()
   return QgsGeometryCheck::AvailableInValidation;
 }
 
-QList<QgsWkbTypes::GeometryType> QgsGeometryGapCheck::factoryCompatibleGeometryTypes()
+QList<Qgis::GeometryType> QgsGeometryGapCheck::factoryCompatibleGeometryTypes()
 {
-  return {QgsWkbTypes::PolygonGeometry};
+  return {Qgis::GeometryType::Polygon};
 }
 
 bool QgsGeometryGapCheck::factoryIsCompatible( QgsVectorLayer *layer ) SIP_SKIP

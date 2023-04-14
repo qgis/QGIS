@@ -540,6 +540,48 @@ class QgsServerAPITest(QgsServerAPITestBase):
         self.compareApi(request, project,
                         'test_wfs3_collections_items_testlayer_èé.html')
 
+    def test_wfs3_collection_items_html_limit_0(self):
+        """Test WFS3 API items limit=0"""
+        project = QgsProject()
+        project.read(os.path.join(self.temporary_path, 'qgis_server', 'test_project_api.qgs'))
+        request = QgsBufferServerRequest(
+            'http://server.qgis.org/wfs3/collections/testlayer%20èé/items.html?limit=0')
+        self.compareApi(request, project,
+                        'test_wfs3_collections_items_testlayer_èé_1.html')
+
+    def test_wfs3_collection_items_html_pagination(self):
+        """Test WFS3 API items pagination"""
+        project = QgsProject()
+        project.read(os.path.join(self.temporary_path, 'qgis_server', 'test_project_wms_grouped_nested_layers.qgs'))
+        request = QgsBufferServerRequest(
+            'http://server.qgis.org/wfs3/collections/as-areas-short-name/items.html?offset=0&limit=6')
+        self.compareApi(request, project,
+                        'test_wfs3_collections_items_as_areas_short_name_1.html')
+        request = QgsBufferServerRequest(
+            'http://server.qgis.org/wfs3/collections/as-areas-short-name/items.html?offset=6&limit=6')
+        self.compareApi(request, project,
+                        'test_wfs3_collections_items_as_areas_short_name_2.html')
+        request = QgsBufferServerRequest(
+            'http://server.qgis.org/wfs3/collections/as-areas-short-name/items.html?offset=12&limit=6')
+        self.compareApi(request, project,
+                        'test_wfs3_collections_items_as_areas_short_name_3.html')
+        request = QgsBufferServerRequest(
+            'http://server.qgis.org/wfs3/collections/as-areas-short-name/items.html?offset=18&limit=6')
+        self.compareApi(request, project,
+                        'test_wfs3_collections_items_as_areas_short_name_4.html')
+        request = QgsBufferServerRequest(
+            'http://server.qgis.org/wfs3/collections/as-areas-short-name/items.html?offset=24&limit=6')
+        self.compareApi(request, project,
+                        'test_wfs3_collections_items_as_areas_short_name_5.html')
+        request = QgsBufferServerRequest(
+            'http://server.qgis.org/wfs3/collections/as-areas-short-name/items.html?offset=30&limit=6')
+        self.compareApi(request, project,
+                        'test_wfs3_collections_items_as_areas_short_name_6.html')
+        request = QgsBufferServerRequest(
+            'http://server.qgis.org/wfs3/collections/as-areas-short-name/items.html?offset=36&limit=6')
+        self.compareApi(request, project,
+                        'test_wfs3_collections_items_as_areas_short_name_7.html')
+
     def test_wfs3_collection_items_crs(self):
         """Test WFS3 API items with CRS"""
         project = QgsProject()
@@ -626,6 +668,24 @@ class QgsServerAPITest(QgsServerAPITestBase):
         self.assertEqual(response.statusCode(), 400)  # Bad request
         self.assertEqual(response.body(),
                          b'[{"code":"Bad request error","description":"Argument \'limit\' is not valid. Number of features to retrieve [0-10000]"}]')  # Bad request
+
+    def test_wfs3_collection_items_limit_offset_2(self):
+        """Test WFS3 API offset 2"""
+        project = QgsProject()
+        project.read(os.path.join(self.temporary_path, 'qgis_server', 'test_project_api.qgs'))
+        request = QgsBufferServerRequest(
+            'http://server.qgis.org/wfs3/collections/testlayer%20èé/items?limit=1&offset=2')
+        self.compareApi(
+            request, project, 'test_wfs3_collections_items_testlayer_èé_limit_1_offset_2.json')
+
+    def test_wfs3_collection_items_limit_2(self):
+        """Test WFS3 API limit 2"""
+        project = QgsProject()
+        project.read(os.path.join(self.temporary_path, 'qgis_server', 'test_project_api.qgs'))
+        request = QgsBufferServerRequest(
+            'http://server.qgis.org/wfs3/collections/testlayer%20èé/items?limit=2')
+        self.compareApi(
+            request, project, 'test_wfs3_collections_items_testlayer_èé_limit_2.json')
 
     def test_wfs3_collection_items_bbox(self):
         """Test WFS3 API bbox"""

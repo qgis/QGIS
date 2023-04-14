@@ -15,6 +15,7 @@
 
 #include "qgsmultirenderchecker.h"
 #include "qgslayout.h"
+#include "qgslayoutexporter.h"
 #include <QDebug>
 
 QgsMultiRenderChecker::QgsMultiRenderChecker()

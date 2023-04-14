@@ -110,6 +110,9 @@ class QgsShadowRenderingFrameGraph : public Qt3DCore::QEntity
     //! Returns the root entity of the entities related to the frame graph (like the post processing entity and preview entity)
     Qt3DCore::QEntity *rootEntity() { return mRootEntity; }
 
+    //! Returns entity for all rubber bands (to show them always on top)
+    Qt3DCore::QEntity *rubberBandsRootEntity() { return mRubberBandsRootEntity; }
+
     //! Returns the render capture object used to take an image of the scene
     Qt3DRender::QRenderCapture *renderCapture() { return mRenderCapture; }
 
@@ -289,6 +292,12 @@ class QgsShadowRenderingFrameGraph : public Qt3DCore::QEntity
     // Ambient occlusion factor blur pass texture related objects:
     Qt3DRender::QTexture2D *mAmbientOcclusionBlurTexture = nullptr;
 
+    // Rubber bands pass
+    Qt3DRender::QCameraSelector *mRubberBandsCameraSelector = nullptr;
+    Qt3DRender::QLayerFilter *mRubberBandsLayerFilter = nullptr;
+    Qt3DRender::QRenderStateSet *mRubberBandsStateSet = nullptr;
+    Qt3DRender::QRenderTargetSelector *mRubberBandsRenderTargetSelector = nullptr;
+
     // Texture preview:
     Qt3DRender::QLayerFilter *mPreviewLayerFilter = nullptr;
     Qt3DRender::QRenderStateSet *mPreviewRenderStateSet = nullptr;
@@ -325,10 +334,13 @@ class QgsShadowRenderingFrameGraph : public Qt3DCore::QEntity
     Qt3DRender::QLayer *mCastShadowsLayer = nullptr;
     Qt3DRender::QLayer *mDepthRenderPassLayer = nullptr;
     Qt3DRender::QLayer *mTransparentObjectsPassLayer = nullptr;
+    Qt3DRender::QLayer *mRubberBandsLayer = nullptr;
 
     QgsPostprocessingEntity *mPostprocessingEntity = nullptr;
     QgsAmbientOcclusionRenderEntity *mAmbientOcclusionRenderEntity = nullptr;
     QgsAmbientOcclusionBlurEntity *mAmbientOcclusionBlurEntity = nullptr;
+
+    Qt3DCore::QEntity *mRubberBandsRootEntity = nullptr;
 
     QVector<QgsPreviewQuad *> mPreviewQuads;
 
@@ -339,6 +351,7 @@ class QgsShadowRenderingFrameGraph : public Qt3DCore::QEntity
     Qt3DRender::QFrameGraphNode *constructDepthRenderPass();
     Qt3DRender::QFrameGraphNode *constructAmbientOcclusionRenderPass();
     Qt3DRender::QFrameGraphNode *constructAmbientOcclusionBlurPass();
+    Qt3DRender::QFrameGraphNode *constructRubberBandsPass();
 
     Qt3DCore::QEntity *constructDepthRenderQuad();
 

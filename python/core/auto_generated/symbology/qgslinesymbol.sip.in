@@ -41,7 +41,7 @@ will be scaled to maintain their current relative size to the whole symbol size.
 .. seealso:: :py:func:`width`
 %End
 
-    void setWidthUnit( QgsUnitTypes::RenderUnit unit ) const;
+    void setWidthUnit( Qgis::RenderUnit unit ) const;
 %Docstring
 Sets the width units for the whole symbol (including all symbol layers).
 
@@ -49,7 +49,6 @@ Sets the width units for the whole symbol (including all symbol layers).
 
 .. versionadded:: 3.16
 %End
-
 
     double width() const;
 %Docstring

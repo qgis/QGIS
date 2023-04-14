@@ -543,13 +543,13 @@ class CORE_EXPORT QgsLayoutItemScaleBar: public QgsLayoutItem
      * Returns the distance units used by the scalebar.
      * \see setUnits()
      */
-    QgsUnitTypes::DistanceUnit units() const { return mSettings.units(); }
+    Qgis::DistanceUnit units() const { return mSettings.units(); }
 
     /**
      * Sets the distance \a units used by the scalebar.
      * \see units()
      */
-    void setUnits( QgsUnitTypes::DistanceUnit units );
+    void setUnits( Qgis::DistanceUnit units );
 
     /**
      * Returns the join style used for drawing lines in the scalebar.
@@ -601,13 +601,13 @@ class CORE_EXPORT QgsLayoutItemScaleBar: public QgsLayoutItem
      * This method also considers the linked map's CRS, in order to determine if
      * metric or imperial units are more appropriate.
      */
-    QgsUnitTypes::DistanceUnit guessUnits() const;
+    Qgis::DistanceUnit guessUnits() const;
 
     /**
      * Applies the default size to the scale bar (scale bar 1/5 of map item width)
      * \see applyDefaultSettings()
      */
-    void applyDefaultSize( QgsUnitTypes::DistanceUnit units = QgsUnitTypes::DistanceMeters );
+    void applyDefaultSize( Qgis::DistanceUnit units = Qgis::DistanceUnit::Meters );
 
     /**
      * Resizes the scale bar to its minimum width, without changing the height.

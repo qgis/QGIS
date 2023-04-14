@@ -77,7 +77,7 @@ bool QgsPromoteToMultipartAlgorithm::supportInPlaceEdit( const QgsMapLayer *l ) 
   return QgsWkbTypes::isMultiType( layer->wkbType() );
 }
 
-QgsWkbTypes::Type QgsPromoteToMultipartAlgorithm::outputWkbType( QgsWkbTypes::Type inputWkbType ) const
+Qgis::WkbType QgsPromoteToMultipartAlgorithm::outputWkbType( Qgis::WkbType inputWkbType ) const
 {
   return QgsWkbTypes::multiType( inputWkbType );
 }

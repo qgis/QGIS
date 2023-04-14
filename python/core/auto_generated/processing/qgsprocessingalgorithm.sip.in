@@ -310,7 +310,7 @@ Returns ``True`` if this algorithm generates HTML outputs.
     {
       QgsFields fields;
 
-      QgsWkbTypes::Type wkbType;
+      Qgis::WkbType wkbType;
 
       QgsCoordinateReferenceSystem crs;
 
@@ -706,7 +706,7 @@ Evaluates the parameter with matching ``name`` to a static boolean value.
 %End
 
     QgsFeatureSink *parameterAsSink( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context, QString &destinationIdentifier /Out/,
-                                     const QgsFields &fields, QgsWkbTypes::Type geometryType = QgsWkbTypes::NoGeometry, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem(), QgsFeatureSink::SinkFlags sinkFlags = QgsFeatureSink::SinkFlags(), const QVariantMap &createOptions = QVariantMap(), const QStringList &datasourceOptions = QStringList(), const QStringList &layerOptions = QStringList() ) const throw( QgsProcessingException ) /Factory/;
+                                     const QgsFields &fields, Qgis::WkbType geometryType = Qgis::WkbType::NoGeometry, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem(), QgsFeatureSink::SinkFlags sinkFlags = QgsFeatureSink::SinkFlags(), const QVariantMap &createOptions = QVariantMap(), const QStringList &datasourceOptions = QStringList(), const QStringList &layerOptions = QStringList() ) const throw( QgsProcessingException ) /Factory/;
 %Docstring
 Evaluates the parameter with matching ``name`` to a feature sink.
 
@@ -921,9 +921,10 @@ Evaluates the parameter with matching ``name`` to a matrix/table of values.
 Tables are collapsed to a 1 dimensional list.
 %End
 
-    QList< QgsMapLayer *> parameterAsLayerList( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const;
+    QList< QgsMapLayer *> parameterAsLayerList( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context, QgsProcessing::LayerOptionsFlags flags = QgsProcessing::LayerOptionsFlags() ) const;
 %Docstring
 Evaluates the parameter with matching ``name`` to a list of map layers.
+The ``flags`` are used to set options for loading layers (e.g. skip index generation).
 %End
 
     QStringList parameterAsFileList( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const;
@@ -938,9 +939,19 @@ Evaluates the parameter with matching ``name`` to a list of files (for :py:class
 Evaluates the parameter with matching ``name`` to a range of values.
 %End
 
-    QStringList parameterAsFields( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const;
+ QStringList parameterAsFields( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const /Deprecated/;
 %Docstring
 Evaluates the parameter with matching ``name`` to a list of fields.
+
+.. deprecated::
+   use :py:func:`~QgsProcessingAlgorithm.parameterAsStrings` instead.
+%End
+
+    QStringList parameterAsStrings( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const;
+%Docstring
+Evaluates the parameter with matching ``name`` to a list of strings (e.g. field names or point cloud attributes).
+
+.. versionadded:: 3.32
 %End
 
     QgsPrintLayout *parameterAsLayout( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context );
@@ -1002,9 +1013,10 @@ Evaluates the parameter with matching ``name`` to a DateTime, or returns an inva
 .. versionadded:: 3.14
 %End
 
-    QgsPointCloudLayer *parameterAsPointCloudLayer( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const;
+    QgsPointCloudLayer *parameterAsPointCloudLayer( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context, QgsProcessing::LayerOptionsFlags flags = QgsProcessing::LayerOptionsFlags() ) const;
 %Docstring
 Evaluates the parameter with matching ``name`` to a point cloud layer.
+The ``flags`` are used to set options for loading layer (e.g. skip index generation).
 
 Layers will either be taken from ``context``'s active project, or loaded from external
 sources and stored temporarily in the ``context``. In either case, callers do not
@@ -1042,6 +1054,8 @@ should correspond to the invalid source parameter name.
 
 .. seealso:: :py:func:`invalidSinkError`
 
+.. seealso:: :py:func:`invalidPointCloudError`
+
 .. versionadded:: 3.2
 %End
 
@@ -1051,11 +1065,13 @@ Returns a user-friendly string to use as an error when a raster layer input coul
 not be loaded.
 
 The ``parameters`` argument should give the algorithms parameter map, and the ``name``
-should correspond to the invalid source parameter name.
+should correspond to the invalid raster parameter name.
 
 .. seealso:: :py:func:`invalidSourceError`
 
 .. seealso:: :py:func:`invalidSinkError`
+
+.. seealso:: :py:func:`invalidPointCloudError`
 
 .. versionadded:: 3.2
 %End
@@ -1066,13 +1082,32 @@ Returns a user-friendly string to use as an error when a sink parameter could
 not be created.
 
 The ``parameters`` argument should give the algorithms parameter map, and the ``name``
-should correspond to the invalid source parameter name.
+should correspond to the invalid sink parameter name.
 
 .. seealso:: :py:func:`invalidSourceError`
 
 .. seealso:: :py:func:`invalidRasterError`
 
+.. seealso:: :py:func:`invalidPointCloudError`
+
 .. versionadded:: 3.2
+%End
+
+    static QString invalidPointCloudError( const QVariantMap &parameters, const QString &name );
+%Docstring
+Returns a user-friendly string to use as an error when a point cloud layer input could
+not be loaded.
+
+The ``parameters`` argument should give the algorithms parameter map, and the ``name``
+should correspond to the invalid point cloud parameter name.
+
+.. seealso:: :py:func:`invalidSourceError`
+
+.. seealso:: :py:func:`invalidSinkError`
+
+.. seealso:: :py:func:`invalidRasterError`
+
+.. versionadded:: 3.32
 %End
 
     static QString writeFeatureError( QgsFeatureSink *sink, const QVariantMap &parameters, const QString &name );
@@ -1223,7 +1258,7 @@ Returns the feature sink flags to be used for the output.
 .. versionadded:: 3.4.1
 %End
 
-    virtual QgsWkbTypes::Type outputWkbType( QgsWkbTypes::Type inputWkbType ) const;
+    virtual Qgis::WkbType outputWkbType( Qgis::WkbType inputWkbType ) const;
 %Docstring
 Maps the input WKB geometry type (``inputWkbType``) to the corresponding
 output WKB type generated by the algorithm. The default behavior is that the algorithm maintains

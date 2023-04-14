@@ -21,7 +21,7 @@
 #include "qgis_sip.h"
 #include <QTransform>
 #include <vector>
-#include "qgsunittypes.h"
+#include "qgis.h"
 #include "qgspointxy.h"
 
 #include <cassert>
@@ -72,7 +72,7 @@ class CORE_EXPORT QgsMapToPixel
      * \returns matching QgsMapToPixel
      * \since QGIS 3.0
      */
-    static QgsMapToPixel fromScale( double scale, QgsUnitTypes::DistanceUnit mapUnits, double dpi = 96 );
+    static QgsMapToPixel fromScale( double scale, Qgis::DistanceUnit mapUnits, double dpi = 96 );
 
     /**
      * Returns TRUE if the object is valid (i.e. it has parameters set), or FALSE if the object is default constructed

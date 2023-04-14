@@ -352,9 +352,9 @@ QgsSymbolLegendNode::~QgsSymbolLegendNode() = default;
 Qt::ItemFlags QgsSymbolLegendNode::flags() const
 {
   if ( mItem.isCheckable() )
-    return Qt::ItemIsEnabled | Qt::ItemIsUserCheckable;
+    return Qt::ItemIsEnabled | Qt::ItemIsUserCheckable | Qt::ItemIsSelectable;
   else
-    return Qt::ItemIsEnabled;
+    return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
 }
 
 
@@ -1043,9 +1043,9 @@ QgsRasterSymbolLegendNode::QgsRasterSymbolLegendNode( QgsLayerTreeLayer *nodeLay
 Qt::ItemFlags QgsRasterSymbolLegendNode::flags() const
 {
   if ( mCheckable )
-    return Qt::ItemIsEnabled | Qt::ItemIsUserCheckable;
+    return Qt::ItemIsEnabled | Qt::ItemIsUserCheckable | Qt::ItemIsSelectable;
   else
-    return Qt::ItemIsEnabled;
+    return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
 }
 
 QVariant QgsRasterSymbolLegendNode::data( int role ) const
@@ -1260,7 +1260,7 @@ QImage QgsWmsLegendNode::getLegendGraphic() const
     }
     else
     {
-      QgsDebugMsg( tr( "Failed to download legend graphics: layer is not valid." ) );
+      QgsDebugMsg( QStringLiteral( "Failed to download legend graphics: layer is not valid." ) );
     }
   }
 

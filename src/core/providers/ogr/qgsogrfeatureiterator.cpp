@@ -287,7 +287,7 @@ QgsOgrFeatureIterator::QgsOgrFeatureIterator( QgsOgrFeatureSource *source, bool 
   //       when the logger was disabled.
   //       There is currently no API to connect the change of state of the
   //       logger to the data provider.
-  if ( QgsApplication::databaseQueryLog()->enabled() )
+  if ( QgsApplication::databaseQueryLog()->enabled() && mConn )
   {
     GDALDatasetSetQueryLoggerFunc( mConn->ds, [ ]( const char *pszSQL, const char *pszError, int64_t lNumRecords, int64_t lExecutionTimeMilliseconds, void *pQueryLoggerArg )
     {
@@ -517,6 +517,13 @@ bool QgsOgrFeatureIterator::rewind()
 
 bool QgsOgrFeatureIterator::close()
 {
+  // Finally reset the data source filter, in case it was changed by a previous request
+  // this fixes https://github.com/qgis/QGIS/issues/51934
+  if ( mOgrLayer && ! mSource->mSubsetString.isEmpty() )
+  {
+    OGR_L_SetAttributeFilter( mOgrLayer,  mSource->mEncoding->fromUnicode( mSource->mSubsetString ).constData() );
+  }
+
   if ( mSharedDS )
   {
     iteratorClosed();

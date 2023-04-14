@@ -18,7 +18,7 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgsunittypes.h"
+#include "qgis.h"
 #include <QStringList>
 #include <QColor>
 
@@ -72,7 +72,7 @@ class CORE_EXPORT QgsMapInfoSymbolConverter
      *
      * The caller takes ownership of the returned symbol.
      */
-    static QgsLineSymbol *convertLineSymbol( int identifier, QgsMapInfoSymbolConversionContext &context, const QColor &foreColor, double size, QgsUnitTypes::RenderUnit sizeUnit, bool interleaved = false ) SIP_FACTORY;
+    static QgsLineSymbol *convertLineSymbol( int identifier, QgsMapInfoSymbolConversionContext &context, const QColor &foreColor, double size, Qgis::RenderUnit sizeUnit, bool interleaved = false ) SIP_FACTORY;
 
     /**
      * Converts the MapInfo fill symbol with the specified \a identifier to a QgsFillSymbol.
@@ -88,7 +88,7 @@ class CORE_EXPORT QgsMapInfoSymbolConverter
      *
      * The caller takes ownership of the returned symbol.
      */
-    static QgsMarkerSymbol *convertMarkerSymbol( int identifier, QgsMapInfoSymbolConversionContext &context, const QColor &color, double size, QgsUnitTypes::RenderUnit sizeUnit ) SIP_FACTORY;
+    static QgsMarkerSymbol *convertMarkerSymbol( int identifier, QgsMapInfoSymbolConversionContext &context, const QColor &color, double size, Qgis::RenderUnit sizeUnit ) SIP_FACTORY;
 
 };
 

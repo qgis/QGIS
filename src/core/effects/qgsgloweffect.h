@@ -21,7 +21,6 @@
 #include "qgis.h"
 #include "qgspainteffect.h"
 #include "qgscolorramp.h"
-#include "qgsunittypes.h"
 #include "qgsmapunitscale.h"
 
 #include <QPainter>
@@ -80,7 +79,7 @@ class CORE_EXPORT QgsGlowEffect : public QgsPaintEffect
      * \see setSpread
      * \see setSpreadMapUnitScale
      */
-    void setSpreadUnit( const QgsUnitTypes::RenderUnit unit ) { mSpreadUnit = unit; }
+    void setSpreadUnit( const Qgis::RenderUnit unit ) { mSpreadUnit = unit; }
 
     /**
      * Returns the units used for the glow spread distance.
@@ -89,7 +88,7 @@ class CORE_EXPORT QgsGlowEffect : public QgsPaintEffect
      * \see spread
      * \see spreadMapUnitScale
      */
-    QgsUnitTypes::RenderUnit spreadUnit() const { return mSpreadUnit; }
+    Qgis::RenderUnit spreadUnit() const { return mSpreadUnit; }
 
     /**
      * Sets the map unit scale used for the spread distance.
@@ -136,7 +135,7 @@ class CORE_EXPORT QgsGlowEffect : public QgsPaintEffect
      * \see setBlurMapUnitScale
      * \since QGIS 3.4.9
      */
-    void setBlurUnit( const QgsUnitTypes::RenderUnit unit ) { mBlurUnit = unit; }
+    void setBlurUnit( const Qgis::RenderUnit unit ) { mBlurUnit = unit; }
 
     /**
      * Returns the units used for the glow blur level (radius).
@@ -146,7 +145,7 @@ class CORE_EXPORT QgsGlowEffect : public QgsPaintEffect
      * \see blurMapUnitScale
      * \since QGIS 3.4.9
      */
-    QgsUnitTypes::RenderUnit blurUnit() const { return mBlurUnit; }
+    Qgis::RenderUnit blurUnit() const { return mBlurUnit; }
 
     /**
      * Sets the map unit scale used for the glow blur strength (radius).
@@ -275,11 +274,11 @@ class CORE_EXPORT QgsGlowEffect : public QgsPaintEffect
     virtual bool shadeExterior() const = 0;
 
     double mSpread = 2.0;
-    QgsUnitTypes::RenderUnit mSpreadUnit = QgsUnitTypes::RenderMillimeters;
+    Qgis::RenderUnit mSpreadUnit = Qgis::RenderUnit::Millimeters;
     QgsMapUnitScale mSpreadMapUnitScale;
     QgsColorRamp *mRamp = nullptr;
     double mBlurLevel = 2.645;
-    QgsUnitTypes::RenderUnit mBlurUnit = QgsUnitTypes::RenderMillimeters;
+    Qgis::RenderUnit mBlurUnit = Qgis::RenderUnit::Millimeters;
     QgsMapUnitScale mBlurMapUnitScale;
     double mOpacity = 0.5;
     QColor mColor;

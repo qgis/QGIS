@@ -38,6 +38,7 @@
 #include "qgsannotationlayer.h"
 #include "qgsannotationmarkeritem.h"
 #include "qgslabelingresults.h"
+#include "qgslayoutexporter.h"
 
 #include <QObject>
 #include "qgstest.h"
@@ -810,7 +811,7 @@ void TestQgsLayoutMap::labelBlockingRegions()
   QCOMPARE( regions.count(), 2 );
   QCOMPARE( regions.at( 0 ).geometry.asWkt( 0 ), QStringLiteral( "Polygon ((1950 2975, 2200 2975, 2200 2475, 1950 2475, 1950 2975, 1950 2975))" ) );
   QCOMPARE( regions.at( 1 ).geometry.asWkt( 0 ), QStringLiteral( "Polygon ((2450 2875, 2700 2875, 2700 2375, 2450 2375, 2450 2875, 2450 2875))" ) );
-  map->setLabelMargin( QgsLayoutMeasurement( 2, QgsUnitTypes::LayoutCentimeters ) );
+  map->setLabelMargin( QgsLayoutMeasurement( 2, Qgis::LayoutUnit::Centimeters ) );
   regions = map->createLabelBlockingRegions( map->mapSettings( map->extent(), map->rect().size(), 300, false ) );
   QCOMPARE( regions.count(), 2 );
   QCOMPARE( regions.at( 0 ).geometry.asWkt( 0 ), QStringLiteral( "Polygon ((1950 2975, 2200 2975, 2200 2475, 1950 2475, 1950 2975, 1950 2975))" ) );

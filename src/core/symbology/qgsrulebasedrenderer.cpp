@@ -22,16 +22,14 @@
 #include "qgslogger.h"
 #include "qgsogcutils.h"
 #include "qgssinglesymbolrenderer.h"
-#include "qgspointdisplacementrenderer.h"
 #include "qgsinvertedpolygonrenderer.h"
-#include "qgspainteffect.h"
-#include "qgspainteffectregistry.h"
 #include "qgsproperty.h"
 #include "qgsstyleentityvisitor.h"
 #include "qgsembeddedsymbolrenderer.h"
 #include "qgslinesymbol.h"
 #include "qgsfillsymbol.h"
 #include "qgsmarkersymbol.h"
+#include "qgspointdistancerenderer.h"
 
 #include <QSet>
 
@@ -521,6 +519,11 @@ bool QgsRuleBasedRenderer::Rule::startRender( QgsRenderContext &context, const Q
   return true;
 }
 
+bool QgsRuleBasedRenderer::Rule::hasActiveChildren() const
+{
+  return !mActiveChildren.empty();
+}
+
 QSet<int> QgsRuleBasedRenderer::Rule::collectZLevels()
 {
   QSet<int> symbolZLevelsSet;
@@ -674,36 +677,52 @@ QgsSymbolList QgsRuleBasedRenderer::Rule::symbolsForFeature( const QgsFeature &f
 
 QSet<QString> QgsRuleBasedRenderer::Rule::legendKeysForFeature( const QgsFeature &feature, QgsRenderContext *context )
 {
-  QSet< QString> lst;
+  QSet< QString> res;
   if ( !isFilterOK( feature, context ) )
-    return lst;
-  lst.insert( mRuleKey );
+    return res;
 
-  const auto constMActiveChildren = mActiveChildren;
-  for ( Rule *rule : constMActiveChildren )
+  res.insert( mRuleKey );
+
+  // first determine if any non else rules match at this level
+  bool matchedNonElseRule = false;
+  for ( Rule *rule : std::as_const( mActiveChildren ) )
   {
-    bool validKey = false;
     if ( rule->isElse() )
     {
-      RuleList lst = rulesForFeature( feature, context, false );
-      lst.removeOne( rule );
-
-      if ( lst.empty() )
-      {
-        validKey = true;
-      }
+      continue;
     }
-    else if ( !rule->isElse( ) && rule->willRenderFeature( feature, context ) )
+    if ( rule->willRenderFeature( feature, context ) )
     {
-      validKey = true;
-    }
-
-    if ( validKey )
-    {
-      lst.unite( rule->legendKeysForFeature( feature, context ) );
+      res.unite( rule->legendKeysForFeature( feature, context ) );
+      matchedNonElseRule = true;
     }
   }
-  return lst;
+
+  // second chance -- allow else rules to take effect if valid
+  if ( !matchedNonElseRule )
+  {
+    for ( Rule *rule : std::as_const( mActiveChildren ) )
+    {
+      if ( rule->isElse() )
+      {
+        if ( rule->children().isEmpty() )
+        {
+          RuleList lst = rulesForFeature( feature, context, false );
+          lst.removeOne( rule );
+
+          if ( lst.empty() )
+          {
+            res.unite( rule->legendKeysForFeature( feature, context ) );
+          }
+        }
+        else
+        {
+          res.unite( rule->legendKeysForFeature( feature, context ) );
+        }
+      }
+    }
+  }
+  return res;
 }
 
 QgsRuleBasedRenderer::RuleList QgsRuleBasedRenderer::Rule::rulesForFeature( const QgsFeature &feature, QgsRenderContext *context, bool onlyActive )
@@ -804,7 +823,7 @@ QgsRuleBasedRenderer::RuleList QgsRuleBasedRenderer::Rule::descendants() const
   return l;
 }
 
-QgsRuleBasedRenderer::Rule *QgsRuleBasedRenderer::Rule::createFromSld( QDomElement &ruleElem, QgsWkbTypes::GeometryType geomType )
+QgsRuleBasedRenderer::Rule *QgsRuleBasedRenderer::Rule::createFromSld( QDomElement &ruleElem, Qgis::GeometryType geomType )
 {
   if ( ruleElem.localName() != QLatin1String( "Rule" ) )
   {
@@ -902,20 +921,20 @@ QgsRuleBasedRenderer::Rule *QgsRuleBasedRenderer::Rule::createFromSld( QDomEleme
   {
     switch ( geomType )
     {
-      case QgsWkbTypes::LineGeometry:
+      case Qgis::GeometryType::Line:
         symbol = new QgsLineSymbol( layers );
         break;
 
-      case QgsWkbTypes::PolygonGeometry:
+      case Qgis::GeometryType::Polygon:
         symbol = new QgsFillSymbol( layers );
         break;
 
-      case QgsWkbTypes::PointGeometry:
+      case Qgis::GeometryType::Point:
         symbol = new QgsMarkerSymbol( layers );
         break;
 
       default:
-        QgsDebugMsg( QStringLiteral( "invalid geometry type: found %1" ).arg( geomType ) );
+        QgsDebugMsg( QStringLiteral( "invalid geometry type: found %1" ).arg( qgsEnumValueToKey( geomType ) ) );
         return nullptr;
     }
   }
@@ -992,6 +1011,11 @@ void QgsRuleBasedRenderer::startRender( QgsRenderContext &context, const QgsFiel
   }
 
   mRootRule->setNormZLevels( zLevelsToNormLevels );
+}
+
+bool QgsRuleBasedRenderer::canSkipRender()
+{
+  return !mRootRule->hasActiveChildren();
 }
 
 void QgsRuleBasedRenderer::stopRender( QgsRenderContext &context )
@@ -1142,7 +1166,7 @@ QString QgsRuleBasedRenderer::legendKeyToExpression( const QString &key, QgsVect
       const QList<QgsRuleBasedRenderer::Rule *> siblings = rule->parent()->children();
       for ( Rule *sibling : siblings )
       {
-        if ( sibling == rule )
+        if ( sibling == rule || sibling->isElse() )
           continue;
 
         const QString siblingExpression = ruleToExpression( sibling );
@@ -1243,7 +1267,7 @@ QgsFeatureRenderer *QgsRuleBasedRenderer::create( QDomElement &element, const Qg
   return r;
 }
 
-QgsFeatureRenderer *QgsRuleBasedRenderer::createFromSld( QDomElement &element, QgsWkbTypes::GeometryType geomType )
+QgsFeatureRenderer *QgsRuleBasedRenderer::createFromSld( QDomElement &element, Qgis::GeometryType geomType )
 {
   // retrieve child rules
   Rule *root = nullptr;

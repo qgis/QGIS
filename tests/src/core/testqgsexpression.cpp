@@ -17,6 +17,7 @@
 #include <QString>
 #include <QtConcurrentMap>
 #include <QSignalSpy>
+#include <QTextDocument>
 
 #include <qgsapplication.h>
 //header for class being tested
@@ -1626,6 +1627,12 @@ class TestQgsExpression: public QObject
       QTest::newRow( "format_number large" ) << "format_number(9000000.0,0)" << false << QVariant( "9,000,000" );
       QTest::newRow( "format_number many decimals" ) << "format_number(123.45600,4)" << false << QVariant( "123.4560" );
       QTest::newRow( "format_number no decimals" ) << "format_number(1999.567,0)" << false << QVariant( "2,000" );
+      QTest::newRow( "format_number omit group separator" ) << "format_number(1002999.567,0,omit_group_separators:=true)" << false << QVariant( "1003000" );
+      QTest::newRow( "format_number omit group separator small" ) << "format_number(999,0,omit_group_separators:=true)" << false << QVariant( "999" );
+      QTest::newRow( "format_number trim trailing zeros" ) << "format_number(123.45600,4,trim_trailing_zeroes:=true)" << false << QVariant( "123.456" );
+      QTest::newRow( "format_number trim trailing zeros none" ) << "format_number(123.45600,2,trim_trailing_zeroes:=true)" << false << QVariant( "123.46" );
+      QTest::newRow( "format_number trim trailing zeros many" ) << "format_number(123.45600,10,trim_trailing_zeroes:=true)" << false << QVariant( "123.456" );
+      QTest::newRow( "format_number trim trailing zeros no decimal" ) << "format_number(123,0,trim_trailing_zeroes:=true)" << false << QVariant( "123" );
       QTest::newRow( "format_number language parameter" ) << "format_number(123457.00,2,'fr')" << false << QVariant( "123\u202F457,00" );
       QTest::newRow( "lower" ) << "lower('HeLLo')" << false << QVariant( "hello" );
       QTest::newRow( "upper" ) << "upper('HeLLo')" << false << QVariant( "HELLO" );
@@ -1673,6 +1680,20 @@ class TestQgsExpression: public QObject
       QTest::newRow( "title" ) << "title(' HeLlO   WORLD ')" << false << QVariant( " Hello   World " );
       QTest::newRow( "trim" ) << "trim('   Test String ')" << false << QVariant( "Test String" );
       QTest::newRow( "trim empty string" ) << "trim('')" << false << QVariant( "" );
+      QTest::newRow( "ltrim none" ) << "ltrim('trim   ')" << false << QVariant( "trim   " );
+      QTest::newRow( "ltrim space" ) << "ltrim('    trim  ')" << false << QVariant( "trim  " );
+      QTest::newRow( "ltrim empty string" ) << "ltrim('')" << false << QVariant( "" );
+      QTest::newRow( "ltrim('zzzytrim', 'xyz')" ) << "ltrim('zzzytrim', 'xyz')" << false << QVariant( "trim" );
+      QTest::newRow( "ltrim('zzzytrim', 'a')" ) << "ltrim('zzzytrim', 'a')" << false << QVariant( "zzzytrim" );
+      QTest::newRow( "ltrim('zzzytrim', '[(*')" ) << "ltrim('zzzytrim', '[(*')" << false << QVariant( "zzzytrim" );
+      QTest::newRow( "ltrim('))(* *[[trim', '[())* ')" ) << "ltrim('))(* *[[trim', '[())* ')" << false << QVariant( "trim" );
+      QTest::newRow( "rtrim none" ) << "rtrim('  trim')" << false << QVariant( "  trim" );
+      QTest::newRow( "rtrim space" ) << "rtrim('    trim  ')" << false << QVariant( "    trim" );
+      QTest::newRow( "rtrim empty string" ) << "rtrim('')" << false << QVariant( "" );
+      QTest::newRow( "rtrim('trimzzzy', 'xyz')" ) << "rtrim('trimzzzy', 'xyz')" << false << QVariant( "trim" );
+      QTest::newRow( "rtrim('trimzzzy', 'a')" ) << "rtrim('trimzzzy', 'a')" << false << QVariant( "trimzzzy" );
+      QTest::newRow( "rtrim('trimzzzy', '[(*')" ) << "rtrim('trimzzzy', '[(*')" << false << QVariant( "trimzzzy" );
+      QTest::newRow( "rtrim('trim)(* *[[', '[()* ')" ) << "rtrim('trim)(* *[[', '[()* ')" << false << QVariant( "trim" );
       QTest::newRow( "char" ) << "char(81)" << false << QVariant( "Q" );
       QTest::newRow( "ascii single letter" ) << "ascii('Q')" << false << QVariant( 81 );
       QTest::newRow( "ascii word" ) << "ascii('QGIS')" << false << QVariant( 81 );
@@ -3348,24 +3369,24 @@ class TestQgsExpression: public QObject
       fPolylineZ.setGeometry( polylineZGeom );
 
       QgsPolyline polylineM;
-      polylineM << QgsPoint( QgsWkbTypes::PointM, 0, 0, 0, 0 ) << QgsPoint( QgsWkbTypes::PointM, 3, 0, 0, 8 );
+      polylineM << QgsPoint( Qgis::WkbType::PointM, 0, 0, 0, 0 ) << QgsPoint( Qgis::WkbType::PointM, 3, 0, 0, 8 );
       QgsGeometry polylineMGeom = QgsGeometry::fromPolyline( polylineM );
       QgsFeature fPolylineM;
       fPolylineM.setGeometry( polylineMGeom );
 
       QgsPolyline polylineZM;
-      polylineZM << QgsPoint( QgsWkbTypes::PointZM, 0, 0, 0, 0 ) << QgsPoint( QgsWkbTypes::PointZM, 3, 0, 4, 8 );
+      polylineZM << QgsPoint( Qgis::WkbType::PointZM, 0, 0, 0, 0 ) << QgsPoint( Qgis::WkbType::PointZM, 3, 0, 4, 8 );
       QgsGeometry polylineZMGeom = QgsGeometry::fromPolyline( polylineZM );
       QgsFeature fPolylineZM;
       fPolylineZM.setGeometry( polylineZMGeom );
 
       QgsMultiLineString mls;
       QgsLineString part;
-      part.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZM, 10, 10, 10, 10 )
-                      << QgsPoint( QgsWkbTypes::PointZM, 20, 20, 20, 20 ) );
+      part.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 10, 10, 10, 10 )
+                      << QgsPoint( Qgis::WkbType::PointZM, 20, 20, 20, 20 ) );
       mls.addGeometry( part.clone() );
-      part.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZM, 30, 30, 30, 30 )
-                      << QgsPoint( QgsWkbTypes::PointZM, 40, 40, 40, 40 ) );
+      part.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 30, 30, 30, 30 )
+                      << QgsPoint( Qgis::WkbType::PointZM, 40, 40, 40, 40 ) );
       mls.addGeometry( part.clone() );
       QgsGeometry multiStringZMGeom;
       multiStringZMGeom.set( mls.clone() );
@@ -3642,10 +3663,10 @@ class TestQgsExpression: public QObject
       double expected = 1005640568.0;
       QGSCOMPARENEAR( vArea.toDouble(), expected, 1.0 );
       // units should not be converted if no geometry calculator set
-      expArea.setAreaUnits( QgsUnitTypes::AreaSquareFeet );
+      expArea.setAreaUnits( Qgis::AreaUnit::SquareFeet );
       vArea = expArea.evaluate( &context );
       QGSCOMPARENEAR( vArea.toDouble(), expected, 1.0 );
-      expArea.setAreaUnits( QgsUnitTypes::AreaSquareNauticalMiles );
+      expArea.setAreaUnits( Qgis::AreaUnit::SquareNauticalMiles );
       vArea = expArea.evaluate( &context );
       QGSCOMPARENEAR( vArea.toDouble(), expected, 1.0 );
 
@@ -3656,13 +3677,13 @@ class TestQgsExpression: public QObject
       expected = 1005755617.819134;
       QGSCOMPARENEAR( vArea.toDouble(), expected, 1.0 );
       // test unit conversion
-      expArea2.setAreaUnits( QgsUnitTypes::AreaSquareMeters ); //default units should be square meters
+      expArea2.setAreaUnits( Qgis::AreaUnit::SquareMeters ); //default units should be square meters
       vArea = expArea2.evaluate( &context );
       QGSCOMPARENEAR( vArea.toDouble(), expected, 1.0 );
-      expArea2.setAreaUnits( QgsUnitTypes::AreaUnknownUnit ); //unknown units should not be converted
+      expArea2.setAreaUnits( Qgis::AreaUnit::Unknown ); //unknown units should not be converted
       vArea = expArea2.evaluate( &context );
       QGSCOMPARENEAR( vArea.toDouble(), expected, 1.0 );
-      expArea2.setAreaUnits( QgsUnitTypes::AreaSquareMiles );
+      expArea2.setAreaUnits( Qgis::AreaUnit::SquareMiles );
       expected = 388.324415;
       vArea = expArea2.evaluate( &context );
       QGSCOMPARENEAR( vArea.toDouble(), expected, 0.001 );
@@ -3673,10 +3694,10 @@ class TestQgsExpression: public QObject
       expected = 128282.086;
       QGSCOMPARENEAR( vPerimeter.toDouble(), expected, 0.001 );
       // units should not be converted if no geometry calculator set
-      expPerimeter.setDistanceUnits( QgsUnitTypes::DistanceFeet );
+      expPerimeter.setDistanceUnits( Qgis::DistanceUnit::Feet );
       vPerimeter = expPerimeter.evaluate( &context );
       QGSCOMPARENEAR( vPerimeter.toDouble(), expected, 0.001 );
-      expPerimeter.setDistanceUnits( QgsUnitTypes::DistanceNauticalMiles );
+      expPerimeter.setDistanceUnits( Qgis::DistanceUnit::NauticalMiles );
       vPerimeter = expPerimeter.evaluate( &context );
       QGSCOMPARENEAR( vPerimeter.toDouble(), expected, 0.001 );
 
@@ -3687,13 +3708,13 @@ class TestQgsExpression: public QObject
       expected = 128289.074;
       QGSCOMPARENEAR( vPerimeter.toDouble(), expected, 0.001 );
       // test unit conversion
-      expPerimeter2.setDistanceUnits( QgsUnitTypes::DistanceMeters ); //default units should be meters
+      expPerimeter2.setDistanceUnits( Qgis::DistanceUnit::Meters ); //default units should be meters
       vPerimeter = expPerimeter2.evaluate( &context );
       QGSCOMPARENEAR( vPerimeter.toDouble(), expected, 0.001 );
-      expPerimeter2.setDistanceUnits( QgsUnitTypes::DistanceUnknownUnit ); //unknown units should not be converted
+      expPerimeter2.setDistanceUnits( Qgis::DistanceUnit::Unknown ); //unknown units should not be converted
       vPerimeter = expPerimeter2.evaluate( &context );
       QGSCOMPARENEAR( vPerimeter.toDouble(), expected, 0.001 );
-      expPerimeter2.setDistanceUnits( QgsUnitTypes::DistanceFeet );
+      expPerimeter2.setDistanceUnits( Qgis::DistanceUnit::Feet );
       expected = 420895.9120735;
       vPerimeter = expPerimeter2.evaluate( &context );
       QGSCOMPARENEAR( vPerimeter.toDouble(), expected, 0.001 );
@@ -3710,10 +3731,10 @@ class TestQgsExpression: public QObject
       expected = 26930.637;
       QGSCOMPARENEAR( vLength.toDouble(), expected, 0.001 );
       // units should not be converted if no geometry calculator set
-      expLength.setDistanceUnits( QgsUnitTypes::DistanceFeet );
+      expLength.setDistanceUnits( Qgis::DistanceUnit::Feet );
       vLength = expLength.evaluate( &context );
       QGSCOMPARENEAR( vLength.toDouble(), expected, 0.001 );
-      expLength.setDistanceUnits( QgsUnitTypes::DistanceNauticalMiles );
+      expLength.setDistanceUnits( Qgis::DistanceUnit::NauticalMiles );
       vLength = expLength.evaluate( &context );
       QGSCOMPARENEAR( vLength.toDouble(), expected, 0.001 );
 
@@ -3724,13 +3745,13 @@ class TestQgsExpression: public QObject
       expected = 26932.156;
       QGSCOMPARENEAR( vLength.toDouble(), expected, 0.001 );
       // test unit conversion
-      expLength2.setDistanceUnits( QgsUnitTypes::DistanceMeters ); //default units should be meters
+      expLength2.setDistanceUnits( Qgis::DistanceUnit::Meters ); //default units should be meters
       vLength = expLength2.evaluate( &context );
       QGSCOMPARENEAR( vLength.toDouble(), expected, 0.001 );
-      expLength2.setDistanceUnits( QgsUnitTypes::DistanceUnknownUnit ); //unknown units should not be converted
+      expLength2.setDistanceUnits( Qgis::DistanceUnit::Unknown ); //unknown units should not be converted
       vLength = expLength2.evaluate( &context );
       QGSCOMPARENEAR( vLength.toDouble(), expected, 0.001 );
-      expLength2.setDistanceUnits( QgsUnitTypes::DistanceFeet );
+      expLength2.setDistanceUnits( Qgis::DistanceUnit::Feet );
       expected = 88360.0918635;
       vLength = expLength2.evaluate( &context );
       QGSCOMPARENEAR( vLength.toDouble(), expected, 0.001 );
@@ -4268,6 +4289,10 @@ class TestQgsExpression: public QObject
       removeAllExpected << 1 << 2 << 4;
       QCOMPARE( QgsExpression( "array_remove_all(array(1, 2, 3, 4, 3), 3)" ).evaluate( &context ), QVariant( removeAllExpected ) );
       QCOMPARE( QgsExpression( "array_remove_all(array(1, 2, 3, 4, 3), '3')" ).evaluate( &context ), QVariant( removeAllExpected ) );
+
+      QCOMPARE( QgsExpression( "array_remove_all(NULL, 3)" ).evaluate( &context ), QVariant() );
+      QCOMPARE( QgsExpression( "array_remove_all(array(1, NULL, 3, NULL, 3), 3)" ).evaluate( &context ), QVariantList( {1, QVariant(), QVariant()} ) );
+      QCOMPARE( QgsExpression( "array_remove_all(array(1, NULL, 3, NULL, 3), NULL)" ).evaluate( &context ), QVariantList( {1, 3, 3 } ) );
 
       QVariantList concatExpected = array;
       concatExpected << 56 << 57;
@@ -5755,6 +5780,36 @@ class TestQgsExpression: public QObject
       QVERIFY( !exp.hasEvalError() );
       QCOMPARE( exp.evaluate( &context ).toString(), QStringLiteral( "RasterRaster" ) );
 
+    }
+
+    void testHelpExamples()
+    {
+      // trigger initialization of function help
+      QgsExpression::helpText( QString() );
+      const HelpTextHash &functionHelp = QgsExpression::functionHelpTexts();
+      for ( auto helpIt = functionHelp.constBegin(); helpIt != functionHelp.constEnd(); ++ helpIt )
+      {
+#if GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR<11
+        if ( helpIt->mName == QLatin1String( "concave_hull" ) )
+          continue;
+#endif
+
+        for ( auto variantIt = helpIt->mVariants.constBegin(); variantIt != helpIt->mVariants.constEnd(); ++variantIt )
+        {
+          for ( const HelpExample &example : std::as_const( variantIt->mExamples ) )
+          {
+            const QString htmlExpression = example.mExpression;
+            QTextDocument sourceDoc;
+            sourceDoc.setHtml( htmlExpression );
+            const QString plainTextExpression = sourceDoc.toPlainText();
+
+            QgsExpression exampleExpression( plainTextExpression );
+            QVERIFY2( !exampleExpression.hasParserError(),
+                      QStringLiteral( "Expression: %1 for %2 has parser error" ).arg( plainTextExpression,
+                          helpIt->mName ).toLocal8Bit() );
+          }
+        }
+      }
     }
 
 };

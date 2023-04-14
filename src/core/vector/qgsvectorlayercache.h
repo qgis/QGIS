@@ -268,7 +268,7 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
     /**
      * Returns the geometry type for features in the cache.
      */
-    QgsWkbTypes::Type wkbType() const;
+    Qgis::WkbType wkbType() const;
 
 #ifdef SIP_RUN
 

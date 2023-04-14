@@ -29,12 +29,10 @@
 #include "qgspoint.h"
 #include "qgsgeos.h"
 #include "qgsplot.h"
-#include "qgsguiutils.h"
 #include "qgsnumericformat.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsprofilesnapping.h"
 #include "qgsmaplayerelevationproperties.h"
-#include "qgsapplication.h"
 #include "qgsscreenhelper.h"
 
 #include <QWheelEvent>
@@ -466,7 +464,7 @@ void QgsElevationProfileCanvas::setupLayerConnections( QgsMapLayer *layer, bool 
 
   switch ( layer->type() )
   {
-    case QgsMapLayerType::VectorLayer:
+    case Qgis::LayerType::Vector:
     {
       QgsVectorLayer *vl = qobject_cast< QgsVectorLayer * >( layer );
       if ( isDisconnect )
@@ -485,13 +483,13 @@ void QgsElevationProfileCanvas::setupLayerConnections( QgsMapLayer *layer, bool 
       }
       break;
     }
-    case QgsMapLayerType::RasterLayer:
-    case QgsMapLayerType::PluginLayer:
-    case QgsMapLayerType::MeshLayer:
-    case QgsMapLayerType::VectorTileLayer:
-    case QgsMapLayerType::AnnotationLayer:
-    case QgsMapLayerType::PointCloudLayer:
-    case QgsMapLayerType::GroupLayer:
+    case Qgis::LayerType::Raster:
+    case Qgis::LayerType::Plugin:
+    case Qgis::LayerType::Mesh:
+    case Qgis::LayerType::VectorTile:
+    case Qgis::LayerType::Annotation:
+    case Qgis::LayerType::PointCloud:
+    case Qgis::LayerType::Group:
       break;
   }
 }
@@ -555,6 +553,8 @@ void QgsElevationProfileCanvas::wheelZoom( QWheelEvent *event )
   //get mouse wheel zoom behavior settings
   QgsSettings settings;
   double zoomFactor = settings.value( QStringLiteral( "qgis/zoom_factor" ), 2 ).toDouble();
+  bool reverseZoom = settings.value( QStringLiteral( "qgis/reverse_wheel_zoom" ), false ).toBool();
+  bool zoomIn = reverseZoom ? event->angleDelta().y() < 0 : event->angleDelta().y() > 0;
 
   // "Normal" mouse have an angle delta of 120, precision mouses provide data faster, in smaller steps
   zoomFactor = 1.0 + ( zoomFactor - 1.0 ) / 120.0 * std::fabs( event->angleDelta().y() );
@@ -566,7 +566,6 @@ void QgsElevationProfileCanvas::wheelZoom( QWheelEvent *event )
   }
 
   //calculate zoom scale factor
-  bool zoomIn = event->angleDelta().y() > 0;
   double scaleFactor = ( zoomIn ? 1 / zoomFactor : zoomFactor );
 
   QRectF viewportRect = mPlotItem->plotArea();

@@ -60,7 +60,7 @@ void TestQgsMultiLineString::constructor()
   QCOMPARE( mls.partCount(), 0 );
   QVERIFY( !mls.is3D() );
   QVERIFY( !mls.isMeasure() );
-  QCOMPARE( mls.wkbType(), QgsWkbTypes::MultiLineString );
+  QCOMPARE( mls.wkbType(), Qgis::WkbType::MultiLineString );
   QCOMPARE( mls.wktTypeStr(), QString( "MultiLineString" ) );
   QCOMPARE( mls.geometryType(), QString( "MultiLineString" ) );
   QCOMPARE( mls.dimension(), 0 );
@@ -86,7 +86,7 @@ void TestQgsMultiLineString::addGeometry()
   QCOMPARE( mls.ringCount(), 0 );
   QCOMPARE( mls.partCount(), 0 );
   QCOMPARE( mls.numGeometries(), 0 );
-  QCOMPARE( mls.wkbType(), QgsWkbTypes::MultiLineString );
+  QCOMPARE( mls.wkbType(), Qgis::WkbType::MultiLineString );
   QVERIFY( !mls.geometryN( 0 ) );
   QVERIFY( !mls.geometryN( -1 ) );
 
@@ -97,7 +97,7 @@ void TestQgsMultiLineString::addGeometry()
   QCOMPARE( mls.ringCount(), 0 );
   QCOMPARE( mls.partCount(), 0 );
   QCOMPARE( mls.numGeometries(), 0 );
-  QCOMPARE( mls.wkbType(), QgsWkbTypes::MultiLineString );
+  QCOMPARE( mls.wkbType(), Qgis::WkbType::MultiLineString );
   QVERIFY( !mls.geometryN( 0 ) );
   QVERIFY( !mls.geometryN( -1 ) );
 
@@ -113,7 +113,7 @@ void TestQgsMultiLineString::addGeometry()
   QCOMPARE( mls.partCount(), 1 );
   QVERIFY( !mls.is3D() );
   QVERIFY( !mls.isMeasure() );
-  QCOMPARE( mls.wkbType(), QgsWkbTypes::MultiLineString );
+  QCOMPARE( mls.wkbType(), Qgis::WkbType::MultiLineString );
   QCOMPARE( mls.wktTypeStr(), QString( "MultiLineString" ) );
   QCOMPARE( mls.geometryType(), QString( "MultiLineString" ) );
   QCOMPARE( mls.dimension(), 1 );
@@ -134,36 +134,36 @@ void TestQgsMultiLineString::addGeometryInitialDimension()
 
   //initial adding of geometry should set z/m type
   QgsLineString part;
-  part.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZ, 10, 11, 1 )
-                  << QgsPoint( QgsWkbTypes::PointZ, 20, 21, 2 ) );
+  part.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZ, 10, 11, 1 )
+                  << QgsPoint( Qgis::WkbType::PointZ, 20, 21, 2 ) );
   mls.addGeometry( part.clone() );
 
   QVERIFY( mls.is3D() );
   QVERIFY( !mls.isMeasure() );
-  QCOMPARE( mls.wkbType(), QgsWkbTypes::MultiLineStringZ );
+  QCOMPARE( mls.wkbType(), Qgis::WkbType::MultiLineStringZ );
   QCOMPARE( mls.wktTypeStr(), QString( "MultiLineStringZ" ) );
   QCOMPARE( mls.geometryType(), QString( "MultiLineString" ) );
   QCOMPARE( *( static_cast< const QgsLineString * >( mls.geometryN( 0 ) ) ), part );
 
   mls.clear();
-  part.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointM, 10, 11, 0, 1 )
-                  << QgsPoint( QgsWkbTypes::PointM, 20, 21, 0, 2 ) );
+  part.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointM, 10, 11, 0, 1 )
+                  << QgsPoint( Qgis::WkbType::PointM, 20, 21, 0, 2 ) );
   mls.addGeometry( part.clone() );
 
   QVERIFY( !mls.is3D() );
   QVERIFY( mls.isMeasure() );
-  QCOMPARE( mls.wkbType(), QgsWkbTypes::MultiLineStringM );
+  QCOMPARE( mls.wkbType(), Qgis::WkbType::MultiLineStringM );
   QCOMPARE( mls.wktTypeStr(), QString( "MultiLineStringM" ) );
   QCOMPARE( *( static_cast< const QgsLineString * >( mls.geometryN( 0 ) ) ), part );
 
   mls.clear();
-  part.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZM, 10, 11, 2, 1 )
-                  << QgsPoint( QgsWkbTypes::PointZM, 20, 21, 3, 2 ) );
+  part.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 10, 11, 2, 1 )
+                  << QgsPoint( Qgis::WkbType::PointZM, 20, 21, 3, 2 ) );
   mls.addGeometry( part.clone() );
 
   QVERIFY( mls.is3D() );
   QVERIFY( mls.isMeasure() );
-  QCOMPARE( mls.wkbType(), QgsWkbTypes::MultiLineStringZM );
+  QCOMPARE( mls.wkbType(), Qgis::WkbType::MultiLineStringZM );
   QCOMPARE( mls.wktTypeStr(), QString( "MultiLineStringZM" ) );
   QCOMPARE( *( static_cast< const QgsLineString * >( mls.geometryN( 0 ) ) ), part );
 
@@ -186,12 +186,12 @@ void TestQgsMultiLineString::addGeometryInitialDimension()
   mls.clear();
   mls.addGeometry( part.clone() );
 
-  QCOMPARE( mls.wkbType(), QgsWkbTypes::MultiLineString );
+  QCOMPARE( mls.wkbType(), Qgis::WkbType::MultiLineString );
 
   part.setPoints( QgsPointSequence() << QgsPoint( 1, 10, 2 ) << QgsPoint( 2, 11, 3 ) ) ;
   mls.addGeometry( part.clone() );
 
-  QCOMPARE( mls.wkbType(), QgsWkbTypes::MultiLineString );
+  QCOMPARE( mls.wkbType(), Qgis::WkbType::MultiLineString );
   QCOMPARE( mls.vertexCount( 0, 0 ), 2 );
   QCOMPARE( mls.vertexCount( 1, 0 ), 2 );
   QCOMPARE( mls.vertexCount( 2, 0 ), 0 );
@@ -216,11 +216,11 @@ void TestQgsMultiLineString::addGeometryInitialDimension()
   QCOMPARE( static_cast< const QgsLineString * >( mls.lineStringN( 1 ) ),
             static_cast< const QgsLineString * >( mls.geometryN( 1 ) ) );
 
-  part.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointM, 21, 30, 0, 2 )
-                  << QgsPoint( QgsWkbTypes::PointM, 32, 41, 0, 3 ) ) ;
+  part.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointM, 21, 30, 0, 2 )
+                  << QgsPoint( Qgis::WkbType::PointM, 32, 41, 0, 3 ) ) ;
   mls.addGeometry( part.clone() );
 
-  QCOMPARE( mls.wkbType(), QgsWkbTypes::MultiLineString );
+  QCOMPARE( mls.wkbType(), Qgis::WkbType::MultiLineString );
   QCOMPARE( mls.vertexCount( 0, 0 ), 2 );
   QCOMPARE( mls.vertexCount( 1, 0 ), 2 );
   QCOMPARE( mls.vertexCount( 2, 0 ), 2 );
@@ -243,12 +243,12 @@ void TestQgsMultiLineString::addGeometryZ()
   part.setPoints( QgsPointSequence() << QgsPoint( 1, 10, 2 ) << QgsPoint( 2, 11, 3 ) ) ;
   mls.addGeometry( part.clone() );
 
-  QCOMPARE( mls.wkbType(), QgsWkbTypes::MultiLineStringZ );
+  QCOMPARE( mls.wkbType(), Qgis::WkbType::MultiLineStringZ );
 
   part.setPoints( QgsPointSequence() << QgsPoint( 2, 20 ) << QgsPoint( 3, 31 ) ) ;
   mls.addGeometry( part.clone() );
 
-  QCOMPARE( mls.wkbType(), QgsWkbTypes::MultiLineStringZ );
+  QCOMPARE( mls.wkbType(), Qgis::WkbType::MultiLineStringZ );
   QVERIFY( mls.is3D() );
 
   const QgsLineString *ls = static_cast< const QgsLineString * >( mls.geometryN( 0 ) );
@@ -259,11 +259,11 @@ void TestQgsMultiLineString::addGeometryZ()
   QCOMPARE( ls->pointN( 0 ), QgsPoint( 2, 20, 0 ) );
   QCOMPARE( ls->pointN( 1 ), QgsPoint( 3, 31, 0 ) );
 
-  part.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointM, 5, 50, 0, 4 )
-                  << QgsPoint( QgsWkbTypes::PointM, 6, 61, 0, 5 ) ) ;
+  part.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointM, 5, 50, 0, 4 )
+                  << QgsPoint( Qgis::WkbType::PointM, 6, 61, 0, 5 ) ) ;
   mls.addGeometry( part.clone() );
 
-  QCOMPARE( mls.wkbType(), QgsWkbTypes::MultiLineStringZ );
+  QCOMPARE( mls.wkbType(), Qgis::WkbType::MultiLineStringZ );
   QVERIFY( mls.is3D() );
   QVERIFY( !mls.isMeasure() );
 
@@ -276,39 +276,39 @@ void TestQgsMultiLineString::addGeometryM()
 {
   QgsMultiLineString mls;
 
-  QCOMPARE( mls.wkbType(), QgsWkbTypes::MultiLineString );
+  QCOMPARE( mls.wkbType(), Qgis::WkbType::MultiLineString );
 
   QgsLineString part;
-  part.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointM, 5, 50, 0, 4 )
-                  << QgsPoint( QgsWkbTypes::PointM, 6, 61, 0, 5 ) ) ;
+  part.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointM, 5, 50, 0, 4 )
+                  << QgsPoint( Qgis::WkbType::PointM, 6, 61, 0, 5 ) ) ;
   mls.addGeometry( part.clone() );
 
-  QCOMPARE( mls.wkbType(), QgsWkbTypes::MultiLineStringM );
+  QCOMPARE( mls.wkbType(), Qgis::WkbType::MultiLineStringM );
 
   part.setPoints( QgsPointSequence() << QgsPoint( 2, 20 ) << QgsPoint( 3, 31 ) ) ;
   mls.addGeometry( part.clone() );
 
-  QCOMPARE( mls.wkbType(), QgsWkbTypes::MultiLineStringM );
+  QCOMPARE( mls.wkbType(), Qgis::WkbType::MultiLineStringM );
   QVERIFY( mls.isMeasure() );
 
   const QgsLineString *ls = static_cast< const QgsLineString * >( mls.geometryN( 0 ) );
-  QCOMPARE( ls->pointN( 0 ), QgsPoint( QgsWkbTypes::PointM, 5, 50, 0, 4 ) );
-  QCOMPARE( ls->pointN( 1 ), QgsPoint( QgsWkbTypes::PointM, 6, 61, 0, 5 ) );
+  QCOMPARE( ls->pointN( 0 ), QgsPoint( Qgis::WkbType::PointM, 5, 50, 0, 4 ) );
+  QCOMPARE( ls->pointN( 1 ), QgsPoint( Qgis::WkbType::PointM, 6, 61, 0, 5 ) );
 
   ls = static_cast< const QgsLineString * >( mls.geometryN( 1 ) );
-  QCOMPARE( ls->pointN( 0 ), QgsPoint( QgsWkbTypes::PointM, 2, 20, 0, 0 ) );
-  QCOMPARE( ls->pointN( 1 ), QgsPoint( QgsWkbTypes::PointM, 3, 31, 0, 0 ) );
+  QCOMPARE( ls->pointN( 0 ), QgsPoint( Qgis::WkbType::PointM, 2, 20, 0, 0 ) );
+  QCOMPARE( ls->pointN( 1 ), QgsPoint( Qgis::WkbType::PointM, 3, 31, 0, 0 ) );
 
   part.setPoints( QgsPointSequence() << QgsPoint( 11, 12, 13 ) << QgsPoint( 14, 15, 16 ) ) ;
   mls.addGeometry( part.clone() );
 
-  QCOMPARE( mls.wkbType(), QgsWkbTypes::MultiLineStringM );
+  QCOMPARE( mls.wkbType(), Qgis::WkbType::MultiLineStringM );
   QVERIFY( !mls.is3D() );
   QVERIFY( mls.isMeasure() );
 
   ls = static_cast< const QgsLineString * >( mls.geometryN( 2 ) );
-  QCOMPARE( ls->pointN( 0 ), QgsPoint( QgsWkbTypes::PointM, 11, 12, 0, 0 ) );
-  QCOMPARE( ls->pointN( 1 ), QgsPoint( QgsWkbTypes::PointM, 14, 15, 0, 0 ) );
+  QCOMPARE( ls->pointN( 0 ), QgsPoint( Qgis::WkbType::PointM, 11, 12, 0, 0 ) );
+  QCOMPARE( ls->pointN( 1 ), QgsPoint( Qgis::WkbType::PointM, 14, 15, 0, 0 ) );
 }
 
 void TestQgsMultiLineString::addGeometryZM()
@@ -316,51 +316,51 @@ void TestQgsMultiLineString::addGeometryZM()
   QgsMultiLineString mls;
 
   QgsLineString part;
-  part.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZM, 5, 50, 1, 4 )
-                  << QgsPoint( QgsWkbTypes::PointZM, 6, 61, 3, 5 ) ) ;
+  part.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 5, 50, 1, 4 )
+                  << QgsPoint( Qgis::WkbType::PointZM, 6, 61, 3, 5 ) ) ;
   mls.addGeometry( part.clone() );
 
-  QCOMPARE( mls.wkbType(), QgsWkbTypes::MultiLineStringZM );
+  QCOMPARE( mls.wkbType(), Qgis::WkbType::MultiLineStringZM );
 
-  part.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::Point, 7, 17 )
-                  << QgsPoint( QgsWkbTypes::Point, 3, 13 ) ) ;
+  part.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::Point, 7, 17 )
+                  << QgsPoint( Qgis::WkbType::Point, 3, 13 ) ) ;
   mls.addGeometry( part.clone() );
 
-  QCOMPARE( mls.wkbType(), QgsWkbTypes::MultiLineStringZM );
+  QCOMPARE( mls.wkbType(), Qgis::WkbType::MultiLineStringZM );
   QVERIFY( mls.isMeasure() );
   QVERIFY( mls.is3D() );
 
   const QgsLineString *ls = static_cast< const QgsLineString * >( mls.geometryN( 0 ) );
-  QCOMPARE( ls->pointN( 0 ), QgsPoint( QgsWkbTypes::PointZM, 5, 50, 1, 4 ) );
-  QCOMPARE( ls->pointN( 1 ), QgsPoint( QgsWkbTypes::PointZM, 6, 61, 3, 5 ) );
+  QCOMPARE( ls->pointN( 0 ), QgsPoint( Qgis::WkbType::PointZM, 5, 50, 1, 4 ) );
+  QCOMPARE( ls->pointN( 1 ), QgsPoint( Qgis::WkbType::PointZM, 6, 61, 3, 5 ) );
 
   ls = static_cast< const QgsLineString * >( mls.geometryN( 1 ) );
-  QCOMPARE( ls->pointN( 0 ), QgsPoint( QgsWkbTypes::PointZM, 7, 17, 0, 0 ) );
-  QCOMPARE( ls->pointN( 1 ), QgsPoint( QgsWkbTypes::PointZM, 3, 13, 0, 0 ) );
+  QCOMPARE( ls->pointN( 0 ), QgsPoint( Qgis::WkbType::PointZM, 7, 17, 0, 0 ) );
+  QCOMPARE( ls->pointN( 1 ), QgsPoint( Qgis::WkbType::PointZM, 3, 13, 0, 0 ) );
 
-  part.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZ, 77, 87, 7 )
-                  << QgsPoint( QgsWkbTypes::PointZ, 83, 83, 8 ) ) ;
+  part.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZ, 77, 87, 7 )
+                  << QgsPoint( Qgis::WkbType::PointZ, 83, 83, 8 ) ) ;
   mls.addGeometry( part.clone() );
 
-  QCOMPARE( mls.wkbType(), QgsWkbTypes::MultiLineStringZM );
+  QCOMPARE( mls.wkbType(), Qgis::WkbType::MultiLineStringZM );
   QVERIFY( mls.is3D() );
   QVERIFY( mls.isMeasure() );
 
   ls = static_cast< const QgsLineString * >( mls.geometryN( 2 ) );
-  QCOMPARE( ls->pointN( 0 ), QgsPoint( QgsWkbTypes::PointZM, 77, 87, 7, 0 ) );
-  QCOMPARE( ls->pointN( 1 ), QgsPoint( QgsWkbTypes::PointZM, 83, 83, 8, 0 ) );
+  QCOMPARE( ls->pointN( 0 ), QgsPoint( Qgis::WkbType::PointZM, 77, 87, 7, 0 ) );
+  QCOMPARE( ls->pointN( 1 ), QgsPoint( Qgis::WkbType::PointZM, 83, 83, 8, 0 ) );
 
-  part.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointM, 177, 187, 0, 9 )
-                  << QgsPoint( QgsWkbTypes::PointM, 183, 183, 0, 11 ) ) ;
+  part.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointM, 177, 187, 0, 9 )
+                  << QgsPoint( Qgis::WkbType::PointM, 183, 183, 0, 11 ) ) ;
   mls.addGeometry( part.clone() );
 
-  QCOMPARE( mls.wkbType(), QgsWkbTypes::MultiLineStringZM );
+  QCOMPARE( mls.wkbType(), Qgis::WkbType::MultiLineStringZM );
   QVERIFY( mls.is3D() );
   QVERIFY( mls.isMeasure() );
 
   ls = static_cast< const QgsLineString * >( mls.geometryN( 3 ) );
-  QCOMPARE( ls->pointN( 0 ), QgsPoint( QgsWkbTypes::PointZM, 177, 187, 0, 9 ) );
-  QCOMPARE( ls->pointN( 1 ), QgsPoint( QgsWkbTypes::PointZM, 183, 183, 0, 11 ) );
+  QCOMPARE( ls->pointN( 0 ), QgsPoint( Qgis::WkbType::PointZM, 177, 187, 0, 9 ) );
+  QCOMPARE( ls->pointN( 1 ), QgsPoint( Qgis::WkbType::PointZM, 183, 183, 0, 11 ) );
 }
 
 void TestQgsMultiLineString::insertGeometry()
@@ -385,8 +385,8 @@ void TestQgsMultiLineString::insertGeometry()
   QCOMPARE( mls.numGeometries(), 0 );
 
   QgsLineString part;
-  part.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::Point, 7, 17 )
-                  << QgsPoint( QgsWkbTypes::Point, 3, 13 ) ) ;
+  part.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::Point, 7, 17 )
+                  << QgsPoint( Qgis::WkbType::Point, 3, 13 ) ) ;
   mls.insertGeometry( part.clone(), 0 );
 
   QVERIFY( !mls.isEmpty() );
@@ -403,8 +403,8 @@ void TestQgsMultiLineString::assignment()
 
   QgsMultiLineString mls3;
   QgsLineString part;
-  part.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZM, 5, 50, 1, 4 )
-                  << QgsPoint( QgsWkbTypes::PointZM, 6, 61, 3, 5 ) ) ;
+  part.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 5, 50, 1, 4 )
+                  << QgsPoint( Qgis::WkbType::PointZM, 6, 61, 3, 5 ) ) ;
   mls3.addGeometry( part.clone() );
   mls3.addGeometry( part.clone() );
 
@@ -423,8 +423,8 @@ void TestQgsMultiLineString::clone()
   QVERIFY( cloned->isEmpty() );
 
   QgsLineString part;
-  part.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZM, 5, 50, 1, 4 )
-                  << QgsPoint( QgsWkbTypes::PointZM, 6, 61, 3, 5 ) ) ;
+  part.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 5, 50, 1, 4 )
+                  << QgsPoint( Qgis::WkbType::PointZM, 6, 61, 3, 5 ) ) ;
   mls.addGeometry( part.clone() );
   mls.addGeometry( part.clone() );
 
@@ -443,15 +443,15 @@ void TestQgsMultiLineString::copy()
   QVERIFY( mls2.isEmpty() );
 
   QgsLineString part;
-  part.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZM, 5, 50, 1, 4 )
-                  << QgsPoint( QgsWkbTypes::PointZM, 6, 61, 3, 5 ) ) ;
+  part.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 5, 50, 1, 4 )
+                  << QgsPoint( Qgis::WkbType::PointZM, 6, 61, 3, 5 ) ) ;
   mls1.addGeometry( part.clone() );
   mls1.addGeometry( part.clone() );
 
   QgsMultiLineString mls3( mls1 );
 
   QCOMPARE( mls3.numGeometries(), 2 );
-  QCOMPARE( mls3.wkbType(), QgsWkbTypes::MultiLineStringZM );
+  QCOMPARE( mls3.wkbType(), Qgis::WkbType::MultiLineStringZM );
   QCOMPARE( *static_cast< const QgsLineString * >( mls3.geometryN( 0 ) ), part );
   QCOMPARE( *static_cast< const QgsLineString * >( mls3.geometryN( 1 ) ), part );
 }
@@ -461,8 +461,8 @@ void TestQgsMultiLineString::clear()
   QgsMultiLineString mls;
 
   QgsLineString part;
-  part.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZM, 5, 50, 1, 4 )
-                  << QgsPoint( QgsWkbTypes::PointZM, 6, 61, 3, 5 ) ) ;
+  part.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 5, 50, 1, 4 )
+                  << QgsPoint( Qgis::WkbType::PointZM, 6, 61, 3, 5 ) ) ;
   mls.addGeometry( part.clone() );
   mls.addGeometry( part.clone() );
 
@@ -477,7 +477,7 @@ void TestQgsMultiLineString::clear()
   QCOMPARE( mls.partCount(), 0 );
   QVERIFY( !mls.is3D() );
   QVERIFY( !mls.isMeasure() );
-  QCOMPARE( mls.wkbType(), QgsWkbTypes::MultiLineString );
+  QCOMPARE( mls.wkbType(), Qgis::WkbType::MultiLineString );
 }
 
 void TestQgsMultiLineString::cast()
@@ -627,13 +627,13 @@ void TestQgsMultiLineString::boundaryZ()
   QgsMultiLineString mls;
   QgsLineString part;
 
-  part.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZ, 0, 0, 10 )
-                  << QgsPoint( QgsWkbTypes::PointZ, 1, 0, 15 )
-                  << QgsPoint( QgsWkbTypes::PointZ, 1, 1, 20 ) );
+  part.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZ, 0, 0, 10 )
+                  << QgsPoint( Qgis::WkbType::PointZ, 1, 0, 15 )
+                  << QgsPoint( Qgis::WkbType::PointZ, 1, 1, 20 ) );
   mls.addGeometry( part.clone() );
-  part.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZ, 10, 10, 100 )
-                  << QgsPoint( QgsWkbTypes::PointZ, 10, 20, 150 )
-                  << QgsPoint( QgsWkbTypes::PointZ, 20, 20, 200 ) );
+  part.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZ, 10, 10, 100 )
+                  << QgsPoint( Qgis::WkbType::PointZ, 10, 20, 150 )
+                  << QgsPoint( Qgis::WkbType::PointZ, 20, 20, 200 ) );
   mls.addGeometry( part.clone() );
 
   QgsAbstractGeometry *boundary = mls.boundary();
@@ -643,25 +643,25 @@ void TestQgsMultiLineString::boundaryZ()
   QCOMPARE( mpBoundary->numGeometries(), 4 );
 
   auto pt = static_cast< QgsPoint *>( mpBoundary->geometryN( 0 ) );
-  QCOMPARE( mpBoundary->geometryN( 0 )->wkbType(), QgsWkbTypes::PointZ );
+  QCOMPARE( mpBoundary->geometryN( 0 )->wkbType(), Qgis::WkbType::PointZ );
   QCOMPARE( pt->x(), 0.0 );
   QCOMPARE( pt->y(), 0.0 );
   QCOMPARE( pt->z(), 10.0 );
 
   pt = static_cast< QgsPoint *>( mpBoundary->geometryN( 1 ) );
-  QCOMPARE( mpBoundary->geometryN( 1 )->wkbType(), QgsWkbTypes::PointZ );
+  QCOMPARE( mpBoundary->geometryN( 1 )->wkbType(), Qgis::WkbType::PointZ );
   QCOMPARE( pt->x(), 1.0 );
   QCOMPARE( pt->y(), 1.0 );
   QCOMPARE( pt->z(), 20.0 );
 
   pt = static_cast< QgsPoint *>( mpBoundary->geometryN( 2 ) );
-  QCOMPARE( mpBoundary->geometryN( 2 )->wkbType(), QgsWkbTypes::PointZ );
+  QCOMPARE( mpBoundary->geometryN( 2 )->wkbType(), Qgis::WkbType::PointZ );
   QCOMPARE( pt->x(), 10.0 );
   QCOMPARE( pt->y(), 10.0 );
   QCOMPARE( pt->z(), 100.0 );
 
   pt = static_cast< QgsPoint *>( mpBoundary->geometryN( 3 ) );
-  QCOMPARE( mpBoundary->geometryN( 3 )->wkbType(), QgsWkbTypes::PointZ );
+  QCOMPARE( mpBoundary->geometryN( 3 )->wkbType(), Qgis::WkbType::PointZ );
   QCOMPARE( pt->x(), 20.0 );
   QCOMPARE( pt->y(), 20.0 );
   QCOMPARE( pt->z(), 200.0 );
@@ -730,14 +730,14 @@ void TestQgsMultiLineString::toCurveType()
 {
   QgsMultiLineString mls;
   QgsLineString part;
-  part.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZM, 5, 50, 1, 4 )
-                  << QgsPoint( QgsWkbTypes::PointZM, 6, 61, 3, 5 ) );
+  part.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 5, 50, 1, 4 )
+                  << QgsPoint( Qgis::WkbType::PointZM, 6, 61, 3, 5 ) );
   mls.addGeometry( part.clone() );
   mls.addGeometry( part.clone() );
 
   std::unique_ptr< QgsMultiCurve > curveType( mls.toCurveType() );
 
-  QCOMPARE( curveType->wkbType(), QgsWkbTypes::MultiCurveZM );
+  QCOMPARE( curveType->wkbType(), Qgis::WkbType::MultiCurveZM );
   QCOMPARE( curveType->numGeometries(), 2 );
 
   const QgsCompoundCurve *curve = static_cast< const QgsCompoundCurve * >( curveType->geometryN( 0 ) );
@@ -752,11 +752,11 @@ void TestQgsMultiLineString::toFromWKT()
   QgsMultiLineString mls1;
   QgsLineString part;
 
-  part.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZM, 7, 17, 4, 1 )
-                  << QgsPoint( QgsWkbTypes::PointZM, 3, 13, 1, 4 ) ) ;
+  part.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 7, 17, 4, 1 )
+                  << QgsPoint( Qgis::WkbType::PointZM, 3, 13, 1, 4 ) ) ;
   mls1.addGeometry( part.clone() );
-  part.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZM, 27, 37, 6, 2 )
-                  << QgsPoint( QgsWkbTypes::PointZM, 43, 43, 11, 5 ) ) ;
+  part.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 27, 37, 6, 2 )
+                  << QgsPoint( Qgis::WkbType::PointZM, 43, 43, 11, 5 ) ) ;
   mls1.addGeometry( part.clone() );
 
   QString wkt = mls1.asWkt();
@@ -777,7 +777,7 @@ void TestQgsMultiLineString::toFromWKT()
   QVERIFY( !mls1.fromWkt( "Point()" ) );
   QVERIFY( mls1.isEmpty() );
   QCOMPARE( mls1.numGeometries(), 0 );
-  QCOMPARE( mls1.wkbType(), QgsWkbTypes::MultiLineString );
+  QCOMPARE( mls1.wkbType(), Qgis::WkbType::MultiLineString );
 }
 
 void TestQgsMultiLineString::toFromWKB()
@@ -785,11 +785,11 @@ void TestQgsMultiLineString::toFromWKB()
   QgsMultiLineString mls1;
 
   QgsLineString part;
-  part.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::Point, 7, 17 )
-                  << QgsPoint( QgsWkbTypes::Point, 3, 13 ) ) ;
+  part.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::Point, 7, 17 )
+                  << QgsPoint( Qgis::WkbType::Point, 3, 13 ) ) ;
   mls1.addGeometry( part.clone() );
-  part.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::Point, 27, 37 )
-                  << QgsPoint( QgsWkbTypes::Point, 43, 43 ) ) ;
+  part.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::Point, 27, 37 )
+                  << QgsPoint( Qgis::WkbType::Point, 43, 43 ) ) ;
   mls1.addGeometry( part.clone() );
 
   QByteArray wkb = mls1.asWkb();
@@ -807,11 +807,11 @@ void TestQgsMultiLineString::toFromWKB()
   mls1.clear();
   mls2.clear();
 
-  part.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZ, 7, 17, 1 )
-                  << QgsPoint( QgsWkbTypes::PointZ, 3, 13, 4 ) ) ;
+  part.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZ, 7, 17, 1 )
+                  << QgsPoint( Qgis::WkbType::PointZ, 3, 13, 4 ) ) ;
   mls1.addGeometry( part.clone() );
-  part.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZ, 27, 37, 2 )
-                  << QgsPoint( QgsWkbTypes::PointZ, 43, 43, 5 ) ) ;
+  part.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZ, 27, 37, 2 )
+                  << QgsPoint( Qgis::WkbType::PointZ, 43, 43, 5 ) ) ;
   mls1.addGeometry( part.clone() );
 
   wkb = mls1.asWkb();
@@ -819,7 +819,7 @@ void TestQgsMultiLineString::toFromWKB()
   mls2.fromWkb( wkbPtr2 );
 
   QCOMPARE( mls2.numGeometries(), 2 );
-  QCOMPARE( mls2.wkbType(), QgsWkbTypes::MultiLineStringZ );
+  QCOMPARE( mls2.wkbType(), Qgis::WkbType::MultiLineStringZ );
   QCOMPARE( *static_cast< const QgsLineString * >( mls2.geometryN( 0 ) ),
             *static_cast< const QgsLineString * >( mls1.geometryN( 0 ) ) );
   QCOMPARE( *static_cast< const QgsLineString * >( mls2.geometryN( 1 ) ),
@@ -829,11 +829,11 @@ void TestQgsMultiLineString::toFromWKB()
   mls1.clear();
   mls2.clear();
 
-  part.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointM, 7, 17, 0, 1 )
-                  << QgsPoint( QgsWkbTypes::PointM, 3, 13, 0, 4 ) ) ;
+  part.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointM, 7, 17, 0, 1 )
+                  << QgsPoint( Qgis::WkbType::PointM, 3, 13, 0, 4 ) ) ;
   mls1.addGeometry( part.clone() );
-  part.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointM, 27, 37, 0, 2 )
-                  << QgsPoint( QgsWkbTypes::PointM, 43, 43, 0, 5 ) ) ;
+  part.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointM, 27, 37, 0, 2 )
+                  << QgsPoint( Qgis::WkbType::PointM, 43, 43, 0, 5 ) ) ;
   mls1.addGeometry( part.clone() );
 
   wkb = mls1.asWkb();
@@ -841,7 +841,7 @@ void TestQgsMultiLineString::toFromWKB()
   mls2.fromWkb( wkbPtr3 );
 
   QCOMPARE( mls2.numGeometries(), 2 );
-  QCOMPARE( mls2.wkbType(), QgsWkbTypes::MultiLineStringM );
+  QCOMPARE( mls2.wkbType(), Qgis::WkbType::MultiLineStringM );
   QCOMPARE( *static_cast< const QgsLineString * >( mls2.geometryN( 0 ) ),
             *static_cast< const QgsLineString * >( mls1.geometryN( 0 ) ) );
   QCOMPARE( *static_cast< const QgsLineString * >( mls2.geometryN( 1 ) ),
@@ -851,11 +851,11 @@ void TestQgsMultiLineString::toFromWKB()
   mls1.clear();
   mls2.clear();
 
-  part.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZM, 7, 17, 4, 1 )
-                  << QgsPoint( QgsWkbTypes::PointZM, 3, 13, 1, 4 ) ) ;
+  part.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 7, 17, 4, 1 )
+                  << QgsPoint( Qgis::WkbType::PointZM, 3, 13, 1, 4 ) ) ;
   mls1.addGeometry( part.clone() );
-  part.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZM, 27, 37, 6, 2 )
-                  << QgsPoint( QgsWkbTypes::PointZM, 43, 43, 11, 5 ) ) ;
+  part.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 27, 37, 6, 2 )
+                  << QgsPoint( Qgis::WkbType::PointZM, 43, 43, 11, 5 ) ) ;
   mls1.addGeometry( part.clone() );
 
   wkb = mls1.asWkb();
@@ -863,7 +863,7 @@ void TestQgsMultiLineString::toFromWKB()
   mls2.fromWkb( wkbPtr4 );
 
   QCOMPARE( mls2.numGeometries(), 2 );
-  QCOMPARE( mls2.wkbType(), QgsWkbTypes::MultiLineStringZM );
+  QCOMPARE( mls2.wkbType(), Qgis::WkbType::MultiLineStringZM );
   QCOMPARE( *static_cast< const QgsLineString * >( mls2.geometryN( 0 ) ),
             *static_cast< const QgsLineString * >( mls1.geometryN( 0 ) ) );
   QCOMPARE( *static_cast< const QgsLineString * >( mls2.geometryN( 1 ) ),
@@ -875,14 +875,14 @@ void TestQgsMultiLineString::toFromWKB()
   QgsConstWkbPtr nullPtr( nullptr, 0 );
 
   QVERIFY( !mls2.fromWkb( nullPtr ) );
-  QCOMPARE( mls2.wkbType(), QgsWkbTypes::MultiLineString );
+  QCOMPARE( mls2.wkbType(), Qgis::WkbType::MultiLineString );
 
   QgsPoint point( 1, 2 );
   QByteArray wkbPoint = point.asWkb();
   QgsConstWkbPtr wkbPointPtr( wkbPoint );
 
   QVERIFY( !mls2.fromWkb( wkbPointPtr ) );
-  QCOMPARE( mls2.wkbType(), QgsWkbTypes::MultiLineString );
+  QCOMPARE( mls2.wkbType(), Qgis::WkbType::MultiLineString );
 }
 
 void TestQgsMultiLineString::exportImport()
@@ -891,11 +891,11 @@ void TestQgsMultiLineString::exportImport()
   QgsMultiLineString exportC;
 
   QgsLineString part;
-  part.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::Point, 7, 17 )
-                  << QgsPoint( QgsWkbTypes::Point, 3, 13 ) ) ;
+  part.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::Point, 7, 17 )
+                  << QgsPoint( Qgis::WkbType::Point, 3, 13 ) ) ;
   exportC.addGeometry( part.clone() );
-  part.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::Point, 27, 37 )
-                  << QgsPoint( QgsWkbTypes::Point, 43, 43 ) ) ;
+  part.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::Point, 27, 37 )
+                  << QgsPoint( Qgis::WkbType::Point, 43, 43 ) ) ;
   exportC.addGeometry( part.clone() );
 
   // GML document for compare
@@ -923,11 +923,11 @@ void TestQgsMultiLineString::exportImport()
   QCOMPARE( res, expectedSimpleJson );
 
   QgsMultiLineString exportFloat;
-  part.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::Point, 7 / 3.0, 17 / 3.0 )
-                  << QgsPoint( QgsWkbTypes::Point, 3 / 5.0, 13 / 3.0 ) ) ;
+  part.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::Point, 7 / 3.0, 17 / 3.0 )
+                  << QgsPoint( Qgis::WkbType::Point, 3 / 5.0, 13 / 3.0 ) ) ;
   exportFloat.addGeometry( part.clone() );
-  part.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::Point, 27 / 3.0, 37 / 9.0 )
-                  << QgsPoint( QgsWkbTypes::Point, 43 / 41.0, 43 / 42.0 ) ) ;
+  part.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::Point, 27 / 3.0, 37 / 9.0 )
+                  << QgsPoint( Qgis::WkbType::Point, 43 / 41.0, 43 / 42.0 ) ) ;
   exportFloat.addGeometry( part.clone() );
 
   QString expectedJsonPrec3( "{\"coordinates\":[[[2.333,5.667],[0.6,4.333]],[[9.0,4.111],[1.049,1.024]]],\"type\":\"MultiLineString\"}" );

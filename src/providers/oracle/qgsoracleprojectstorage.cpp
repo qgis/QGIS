@@ -15,10 +15,10 @@
 #include "qgsoracleprojectstorage.h"
 
 #include "qgsoracleconn.h"
-#include "qgsoracleconnpool.h"
+#include "qgsdbquerylog.h"
 #include "qgsoracleprovider.h"
-
 #include "qgsreadwritecontext.h"
+#include "qgslogger.h"
 
 #include <QIODevice>
 #include <QJsonDocument>

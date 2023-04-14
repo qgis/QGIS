@@ -34,8 +34,11 @@
 
 
 #include <QList>
+#include <QLinkedList>
 #include <vector>
 #include <memory>
+
+typedef struct GEOSGeom_t GEOSGeometry;
 
 namespace pal
 {

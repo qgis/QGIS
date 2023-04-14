@@ -469,7 +469,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
        * \see fallbackCrs
        * \since QGIS 3.8
        */
-      QgsWkbTypes::Type fallbackWkbType = QgsWkbTypes::Unknown;
+      Qgis::WkbType fallbackWkbType = Qgis::WkbType::Unknown;
 
       /**
        * Fallback layer coordinate reference system.
@@ -992,10 +992,10 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     QList< const QgsFeatureRendererGenerator * > featureRendererGenerators() const;
 
     //! Returns point, line or polygon
-    Q_INVOKABLE QgsWkbTypes::GeometryType geometryType() const;
+    Q_INVOKABLE Qgis::GeometryType geometryType() const;
 
     //! Returns the WKBType or WKBUnknown in case of error
-    Q_INVOKABLE QgsWkbTypes::Type wkbType() const FINAL;
+    Q_INVOKABLE Qgis::WkbType wkbType() const FINAL;
 
     QgsCoordinateReferenceSystem sourceCrs() const FINAL;
     QString sourceName() const FINAL;
@@ -1920,6 +1920,37 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
     //! Returns a map of field name to attribute alias
     QgsStringMap attributeAliases() const;
+
+#ifndef SIP_RUN
+
+    /**
+     * Sets a split \a policy for the field with the specified index.
+     *
+     * \since QGIS 3.30
+     */
+    void setFieldSplitPolicy( int index, Qgis::FieldDomainSplitPolicy policy );
+#else
+
+    /**
+     * Sets a split \a policy for the field with the specified index.
+     *
+     * \throws KeyError if no field with the specified index exists
+     * \since QGIS 3.30
+     */
+    void setFieldSplitPolicy( int index, Qgis::FieldDomainSplitPolicy policy );
+
+    % MethodCode
+    if ( a0 < 0 || a0 >= sipCpp->fields().count() )
+    {
+      PyErr_SetString( PyExc_KeyError, QByteArray::number( a0 ) );
+      sipIsErr = 1;
+    }
+    else
+    {
+      sipCpp->setFieldSplitPolicy( a0, a1 );
+    }
+    % End
+#endif
 
     /**
      * A set of attributes that are not advertised in WMS requests with QGIS server.
@@ -2949,6 +2980,9 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     //! Map which stores default value expressions for fields
     QMap<QString, QgsDefaultValue> mDefaultExpressionMap;
 
+    //! Map that stores the split policy for attributes
+    QMap< QString, Qgis::FieldDomainSplitPolicy > mAttributeSplitPolicy;
+
     //! An internal structure to keep track of fields that have a defaultValueOnUpdate
     QSet<int> mDefaultValueOnUpdateFields;
 
@@ -2968,7 +3002,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     QgsEditFormConfig mEditFormConfig;
 
     //! Geometry type as defined in enum WkbType (qgis.h)
-    QgsWkbTypes::Type mWkbType = QgsWkbTypes::Unknown;
+    Qgis::WkbType mWkbType = Qgis::WkbType::Unknown;
 
     //! Renderer object which holds the information about how to display the features
     QgsFeatureRenderer *mRenderer = nullptr;

@@ -41,6 +41,8 @@ class QgsOffsetLinesAlgorithm : public QgsProcessingFeatureBasedAlgorithm
     QString groupId() const override;
     QString shortHelpString() const override;
     QString shortDescription() const override;
+    QIcon icon() const override;
+    QString svgIconPath() const override;
     QgsOffsetLinesAlgorithm *createInstance() const override SIP_FACTORY;
     void initParameters( const QVariantMap &configuration = QVariantMap() ) override;
     QList<int> inputLayerTypes() const override;

@@ -41,7 +41,7 @@ class GUI_EXPORT QgsMapLayerStyleCategoriesModel : public QAbstractListModel
     /**
      * Constructor for QgsMapLayerStyleCategoriesModel, for the specified layer \a type.
      */
-    explicit QgsMapLayerStyleCategoriesModel( QgsMapLayerType type, QObject *parent = nullptr );
+    explicit QgsMapLayerStyleCategoriesModel( Qgis::LayerType type, QObject *parent = nullptr );
 
     //! Reset the model data
     void setCategories( QgsMapLayer::StyleCategories categories );

@@ -91,6 +91,25 @@ Sets the bookmark's spatial ``extent``.
 .. seealso:: :py:func:`extent`
 %End
 
+
+    double rotation() const;
+%Docstring
+Returns the bookmark's map rotation.
+
+.. seealso:: :py:func:`setRotation`
+
+.. versionadded:: 3.32
+%End
+
+    void setRotation( double rotation );
+%Docstring
+Sets the bookmark's spatial map ``rotation``.
+
+.. seealso:: :py:func:`rotation`
+
+.. versionadded:: 3.32
+%End
+
     static QgsBookmark fromXml( const QDomElement &element, const QDomDocument &doc );
 %Docstring
 Creates a bookmark using the properties from a DOM ``element``.

@@ -74,7 +74,7 @@ QgsFields QgsExtractVerticesAlgorithm::outputFields( const QgsFields &inputField
   QgsFields outputFields = inputFields;
   outputFields.append( QgsField( QStringLiteral( "vertex_index" ), QVariant::Int, QString(), 10, 0 ) );
   outputFields.append( QgsField( QStringLiteral( "vertex_part" ), QVariant::Int, QString(), 10, 0 ) );
-  if ( mGeometryType == QgsWkbTypes::PolygonGeometry )
+  if ( mGeometryType == Qgis::GeometryType::Polygon )
   {
     outputFields.append( QgsField( QStringLiteral( "vertex_part_ring" ), QVariant::Int, QString(), 10, 0 ) );
   }
@@ -85,9 +85,9 @@ QgsFields QgsExtractVerticesAlgorithm::outputFields( const QgsFields &inputField
   return outputFields;
 }
 
-QgsWkbTypes::Type QgsExtractVerticesAlgorithm::outputWkbType( QgsWkbTypes::Type inputWkbType ) const
+Qgis::WkbType QgsExtractVerticesAlgorithm::outputWkbType( Qgis::WkbType inputWkbType ) const
 {
-  QgsWkbTypes::Type outputWkbType = QgsWkbTypes::Point;
+  Qgis::WkbType outputWkbType = Qgis::WkbType::Point;
   if ( QgsWkbTypes::hasM( inputWkbType ) )
   {
     outputWkbType = QgsWkbTypes::addM( outputWkbType );
@@ -128,7 +128,7 @@ QgsFeatureList QgsExtractVerticesAlgorithm::processFeature( const QgsFeature &fe
     QgsAttributes attrs = f.attributes();
     attrs << QVariant()
           << QVariant();
-    if ( mGeometryType == QgsWkbTypes::PolygonGeometry )
+    if ( mGeometryType == Qgis::GeometryType::Polygon )
     {
       attrs << QVariant();
     }
@@ -151,7 +151,7 @@ QgsFeatureList QgsExtractVerticesAlgorithm::processFeature( const QgsFeature &fe
       QgsAttributes attrs = f.attributes();
       attrs << vertexPos
             << vertexId.part;
-      if ( mGeometryType == QgsWkbTypes::PolygonGeometry )
+      if ( mGeometryType == Qgis::GeometryType::Polygon )
       {
         attrs << vertexId.ring;
       }

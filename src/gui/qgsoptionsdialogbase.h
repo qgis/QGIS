@@ -152,10 +152,13 @@ class GUI_EXPORT QgsOptionsDialogBase : public QDialog
      * Since QGIS 3.22, the optional \a path argument can be used to set the path of the item's entry in the tree view
      * (for dialogs which show a tree view of options pages only).
      *
+     * Since QGIS 3.32, the optional \a key argument can be used to set an untranslated key that \a path can refer to
+     * in following calls. Default to \a title.
+     *
      * \see insertPage()
      * \since QGIS 3.14
      */
-    void addPage( const QString &title, const QString &tooltip, const QIcon &icon, QWidget *widget SIP_TRANSFER, const QStringList &path = QStringList() );
+    void addPage( const QString &title, const QString &tooltip, const QIcon &icon, QWidget *widget SIP_TRANSFER, const QStringList &path = QStringList(), const QString &key = QString() );
 
     /**
      * Inserts a new page into the dialog pages.
@@ -170,10 +173,13 @@ class GUI_EXPORT QgsOptionsDialogBase : public QDialog
      * Since QGIS 3.22, the optional \a path argument can be used to set the path of the item's entry in the tree view
      * (for dialogs which show a tree view of options pages only).
      *
+     * Since QGIS 3.32, the optional \a key argument can be used to set an untranslated key that \a path can refer to
+     * in following calls. Default to \a title.
+     *
      * \see addPage()
      * \since QGIS 3.14
      */
-    void insertPage( const QString &title, const QString &tooltip, const QIcon &icon, QWidget *widget SIP_TRANSFER, const QString &before, const QStringList &path = QStringList() );
+    void insertPage( const QString &title, const QString &tooltip, const QIcon &icon, QWidget *widget SIP_TRANSFER, const QString &before, const QStringList &path = QStringList(), const QString &key = QString() );
 
   public slots:
 

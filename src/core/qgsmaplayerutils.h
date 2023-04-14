@@ -78,7 +78,7 @@ class CORE_EXPORT QgsMapLayerUtils
      *
      * \since QGIS 3.26
      */
-    static QList< QgsMapLayer * > sortLayersByType( const QList< QgsMapLayer * > &layers, const QList< QgsMapLayerType > &order );
+    static QList< QgsMapLayer * > sortLayersByType( const QList< QgsMapLayer * > &layers, const QList< Qgis::LayerType > &order );
 
     /**
      * Launders a layer's name, converting it into a format which is general suitable for

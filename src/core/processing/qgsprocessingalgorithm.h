@@ -339,7 +339,7 @@ class CORE_EXPORT QgsProcessingAlgorithm
       QgsFields fields;
 
       //! Geometry (WKB) type
-      QgsWkbTypes::Type wkbType = QgsWkbTypes::Unknown;
+      Qgis::WkbType wkbType = Qgis::WkbType::Unknown;
 
       //! Coordinate Reference System
       QgsCoordinateReferenceSystem crs;
@@ -730,7 +730,7 @@ class CORE_EXPORT QgsProcessingAlgorithm
      * \throws QgsProcessingException
      */
     QgsFeatureSink *parameterAsSink( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context, QString &destinationIdentifier SIP_OUT,
-                                     const QgsFields &fields, QgsWkbTypes::Type geometryType = QgsWkbTypes::NoGeometry, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem(), QgsFeatureSink::SinkFlags sinkFlags = QgsFeatureSink::SinkFlags(), const QVariantMap &createOptions = QVariantMap(), const QStringList &datasourceOptions = QStringList(), const QStringList &layerOptions = QStringList() ) const SIP_THROW( QgsProcessingException ) SIP_FACTORY;
+                                     const QgsFields &fields, Qgis::WkbType geometryType = Qgis::WkbType::NoGeometry, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem(), QgsFeatureSink::SinkFlags sinkFlags = QgsFeatureSink::SinkFlags(), const QVariantMap &createOptions = QVariantMap(), const QStringList &datasourceOptions = QStringList(), const QStringList &layerOptions = QStringList() ) const SIP_THROW( QgsProcessingException ) SIP_FACTORY;
 
     /**
      * Evaluates the parameter with matching \a name to a feature source.
@@ -925,8 +925,9 @@ class CORE_EXPORT QgsProcessingAlgorithm
 
     /**
      * Evaluates the parameter with matching \a name to a list of map layers.
+     * The \a flags are used to set options for loading layers (e.g. skip index generation).
      */
-    QList< QgsMapLayer *> parameterAsLayerList( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const;
+    QList< QgsMapLayer *> parameterAsLayerList( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context, QgsProcessing::LayerOptionsFlags flags = QgsProcessing::LayerOptionsFlags() ) const;
 
     /**
      * Evaluates the parameter with matching \a name to a list of files (for QgsProcessingParameterMultipleLayers in QgsProcessing:TypeFile mode).
@@ -942,8 +943,17 @@ class CORE_EXPORT QgsProcessingAlgorithm
 
     /**
      * Evaluates the parameter with matching \a name to a list of fields.
+     *
+     * \deprecated use parameterAsStrings() instead.
      */
-    QStringList parameterAsFields( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const;
+    Q_DECL_DEPRECATED QStringList parameterAsFields( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const SIP_DEPRECATED;
+
+    /**
+     * Evaluates the parameter with matching \a name to a list of strings (e.g. field names or point cloud attributes).
+     *
+     * \since QGIS 3.32
+     */
+    QStringList parameterAsStrings( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const;
 
     /**
      * Evaluates the parameter with matching \a name to a print layout.
@@ -1002,6 +1012,7 @@ class CORE_EXPORT QgsProcessingAlgorithm
 
     /**
      * Evaluates the parameter with matching \a name to a point cloud layer.
+     * The \a flags are used to set options for loading layer (e.g. skip index generation).
      *
      * Layers will either be taken from \a context's active project, or loaded from external
      * sources and stored temporarily in the \a context. In either case, callers do not
@@ -1009,7 +1020,7 @@ class CORE_EXPORT QgsProcessingAlgorithm
      *
      * \since QGIS 3.22
      */
-    QgsPointCloudLayer *parameterAsPointCloudLayer( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const;
+    QgsPointCloudLayer *parameterAsPointCloudLayer( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context, QgsProcessing::LayerOptionsFlags flags = QgsProcessing::LayerOptionsFlags() ) const;
 
     /**
      * Evaluates the parameter with matching \a name to an annotation layer.
@@ -1036,6 +1047,7 @@ class CORE_EXPORT QgsProcessingAlgorithm
      *
      * \see invalidRasterError()
      * \see invalidSinkError()
+     * \see invalidPointCloudError()
      * \since QGIS 3.2
      */
     static QString invalidSourceError( const QVariantMap &parameters, const QString &name );
@@ -1045,11 +1057,12 @@ class CORE_EXPORT QgsProcessingAlgorithm
      * not be loaded.
      *
      * The \a parameters argument should give the algorithms parameter map, and the \a name
-     * should correspond to the invalid source parameter name.
+     * should correspond to the invalid raster parameter name.
      *
      *
      * \see invalidSourceError()
      * \see invalidSinkError()
+     * \see invalidPointCloudError()
      * \since QGIS 3.2
      */
     static QString invalidRasterError( const QVariantMap &parameters, const QString &name );
@@ -1059,14 +1072,30 @@ class CORE_EXPORT QgsProcessingAlgorithm
      * not be created.
      *
      * The \a parameters argument should give the algorithms parameter map, and the \a name
-     * should correspond to the invalid source parameter name.
+     * should correspond to the invalid sink parameter name.
      *
      *
      * \see invalidSourceError()
      * \see invalidRasterError()
+     * \see invalidPointCloudError()
      * \since QGIS 3.2
      */
     static QString invalidSinkError( const QVariantMap &parameters, const QString &name );
+
+    /**
+     * Returns a user-friendly string to use as an error when a point cloud layer input could
+     * not be loaded.
+     *
+     * The \a parameters argument should give the algorithms parameter map, and the \a name
+     * should correspond to the invalid point cloud parameter name.
+     *
+     *
+     * \see invalidSourceError()
+     * \see invalidSinkError()
+     * \see invalidRasterError()
+     * \since QGIS 3.32
+     */
+    static QString invalidPointCloudError( const QVariantMap &parameters, const QString &name );
 
     /**
      * Returns a user-friendly string to use as an error when a feature cannot be
@@ -1237,7 +1266,7 @@ class CORE_EXPORT QgsProcessingFeatureBasedAlgorithm : public QgsProcessingAlgor
      * This is called once by the base class when creating the output sink for the algorithm (i.e. it is
      * not called once per feature processed).
      */
-    virtual QgsWkbTypes::Type outputWkbType( QgsWkbTypes::Type inputWkbType ) const;
+    virtual Qgis::WkbType outputWkbType( Qgis::WkbType inputWkbType ) const;
 
     /**
      * Maps the input source fields (\a inputFields) to corresponding

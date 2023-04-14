@@ -33,7 +33,7 @@ Constructor for QgsDashSpaceWidget
 Returns the dash pattern as a list of numbers
 %End
 
-    void setUnit( QgsUnitTypes::RenderUnit unit );
+    void setUnit( Qgis::RenderUnit unit );
 %Docstring
 Sets the unit type used for the dash space pattern (used to update interface labels)
 
@@ -63,7 +63,7 @@ Constructor for QgsDashSpaceDialog
 Returns the dash pattern as a list of numbers
 %End
 
-    void setUnit( QgsUnitTypes::RenderUnit unit );
+    void setUnit( Qgis::RenderUnit unit );
 %Docstring
 Sets the unit type used for the dash space pattern (used to update interface labels)
 

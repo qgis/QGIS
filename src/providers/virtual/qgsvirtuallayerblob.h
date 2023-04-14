@@ -70,6 +70,6 @@ QgsGeometry spatialiteBlobToQgsGeometry( const char *blob, size_t size );
 /**
  * Gets geometry type and srid from a SpatiaLite geometry blob
  */
-QPair<QgsWkbTypes::Type, long> spatialiteBlobGeometryType( const char *blob, size_t size );
+QPair<Qgis::WkbType, long> spatialiteBlobGeometryType( const char *blob, size_t size );
 
 #endif

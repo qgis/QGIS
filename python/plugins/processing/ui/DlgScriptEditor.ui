@@ -16,7 +16,7 @@
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout">
     <item row="0" column="0">
-     <widget class="ScriptEdit" name="editor"/>
+     <widget class="QWidget" name="editor_container"/>
     </item>
     <item row="1" column="0">
      <widget class="QWidget" name="searchWidget" native="true">
@@ -255,13 +255,6 @@
    </property>
   </action>
  </widget>
- <customwidgets>
-  <customwidget>
-   <class>ScriptEdit</class>
-   <extends>QTextEdit</extends>
-   <header location="global">processing.script.ScriptEdit</header>
-  </customwidget>
- </customwidgets>
  <resources/>
  <connections/>
 </ui>

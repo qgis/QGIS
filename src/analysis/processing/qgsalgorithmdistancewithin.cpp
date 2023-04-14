@@ -68,8 +68,8 @@ void QgsDistanceWithinAlgorithm::process( const QgsProcessingContext &context, Q
 
     // if reference is POINTs and target is not, we prefer iterating
     // over target, to benefit from preparation
-    if ( referenceSource->wkbType() == QgsWkbTypes::Point &&
-         targetSource->wkbType() != QgsWkbTypes::Point )
+    if ( referenceSource->wkbType() == Qgis::WkbType::Point &&
+         targetSource->wkbType() != Qgis::WkbType::Point )
     {
       iterateOverTarget = true;
       break;

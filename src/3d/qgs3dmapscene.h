@@ -20,17 +20,14 @@
 
 #include <Qt3DCore/QEntity>
 
-#include "qgsfeatureid.h"
-#include "qgsshadowrenderingframegraph.h"
-#include "qgsray3d.h"
+#include "qgsrectangle.h"
 #include "qgscameracontroller.h"
 
+#ifndef SIP_RUN
 namespace Qt3DRender
 {
   class QRenderSettings;
   class QCamera;
-  class QPickEvent;
-  class QObjectPicker;
 }
 
 namespace Qt3DLogic
@@ -43,12 +40,13 @@ namespace Qt3DExtras
   class QForwardRenderer;
   class QSkyboxEntity;
 }
+#endif
+
 
 class Qgs3DAxis;
 class QgsAbstract3DEngine;
 class QgsAbstract3DRenderer;
 class QgsMapLayer;
-class Qgs3DMapScenePickHandler;
 class Qgs3DMapSettings;
 class QgsTerrainEntity;
 class QgsChunkedEntity;
@@ -60,7 +58,6 @@ class QgsPostprocessingEntity;
 class QgsChunkNode;
 class QgsDoubleRange;
 
-#define SIP_NO_FILE
 
 /**
  * \ingroup 3d
@@ -68,17 +65,27 @@ class QgsDoubleRange;
  * \note Not available in Python bindings
  * \since QGIS 3.0
  */
+#ifndef SIP_RUN
 class _3D_EXPORT Qgs3DMapScene : public Qt3DCore::QEntity
 {
+#else
+class _3D_EXPORT Qgs3DMapScene : public QObject
+{
+#endif
+
     Q_OBJECT
   public:
     //! Constructs a 3D scene based on map settings and Qt 3D renderer configuration
-    Qgs3DMapScene( Qgs3DMapSettings &map, QgsAbstract3DEngine *engine );
+    Qgs3DMapScene( Qgs3DMapSettings &map, QgsAbstract3DEngine *engine ) SIP_SKIP;
 
     //! Returns camera controller
     QgsCameraController *cameraController() { return mCameraController; }
-    //! Returns terrain entity (may be temporarily NULLPTR)
-    QgsTerrainEntity *terrainEntity() { return mTerrain; }
+
+    /**
+     * Returns terrain entity (may be temporarily NULLPTR)
+     * \note Not available in Python bindings
+     */
+    QgsTerrainEntity *terrainEntity() SIP_SKIP { return mTerrain; }
 
     //! Resets camera view to show the whole scene (top view)
     void viewZoomFull();
@@ -116,11 +123,6 @@ class _3D_EXPORT Qgs3DMapScene : public Qt3DCore::QEntity
     //! Returns the current state of the scene
     SceneState sceneState() const { return mSceneState; }
 
-    //! Registers an object that will get results of pick events on 3D entities. Does not take ownership of the pick handler. Adds object picker components to 3D entities.
-    void registerPickHandler( Qgs3DMapScenePickHandler *pickHandler );
-    //! Unregisters previously registered pick handler. Pick handler is not deleted. Also removes object picker components from 3D entities.
-    void unregisterPickHandler( Qgs3DMapScenePickHandler *pickHandler );
-
     /**
      * Given screen error (in pixels) and distance from camera (in 3D world coordinates), this function
      * estimates the error in world space. Takes into account camera's field of view and the screen (3D view) size.
@@ -136,6 +138,20 @@ class _3D_EXPORT Qgs3DMapScene : public Qt3DCore::QEntity
      * \since QGIS 3.18
      */
     QVector<const QgsChunkNode *> getLayerActiveChunkNodes( QgsMapLayer *layer ) SIP_SKIP;
+
+    /**
+     * Returns the layers that contain chunked entities
+     *
+     * \since QGIS 3.32
+     */
+    QList<QgsMapLayer *> layers() SIP_SKIP { return mLayerEntities.keys(); }
+
+    /**
+     * Returns the entity belonging to \a layer
+     *
+     * \since QGIS 3.32
+     */
+    Qt3DCore::QEntity *layerEntity( QgsMapLayer *layer ) const SIP_SKIP { return mLayerEntities.value( layer ); }
 
     /**
      * Returns the scene extent in the map's CRS
@@ -157,14 +173,35 @@ class _3D_EXPORT Qgs3DMapScene : public Qt3DCore::QEntity
      *
      * \since QGIS 3.26
      */
-    Qgs3DAxis *get3DAxis() { return m3DAxis; }
+    Qgs3DAxis *get3DAxis() SIP_SKIP { return m3DAxis; }
 
     /**
      * Returns the abstract 3D engine
      *
      * \since QGIS 3.26
      */
-    QgsAbstract3DEngine *engine() { return mEngine; }
+    QgsAbstract3DEngine *engine() SIP_SKIP { return mEngine; }
+
+    /**
+     * Returns the 3D map settings.
+     *
+     * \since QGIS 3.30
+     */
+    Qgs3DMapSettings *mapSettings() const { return &mMap; }
+
+    /**
+     * Returns a map of 3D map scenes (by name) open in the QGIS application.
+     *
+     * \note Only available from the QGIS desktop application.
+     *
+     * \since QGIS 3.30
+     */
+    static QMap< QString, Qgs3DMapScene * > openScenes();
+
+#ifndef SIP_RUN
+    //! Static function for returning open 3D map scenes
+    static std::function< QMap< QString, Qgs3DMapScene * >() > sOpenScenesFunction;
+#endif
 
   signals:
     //! Emitted when the current terrain entity is replaced by a new one
@@ -204,10 +241,8 @@ class _3D_EXPORT Qgs3DMapScene : public Qt3DCore::QEntity
     void onLayersChanged();
     void createTerrainDeferred();
     void onBackgroundColorChanged();
-    void onLayerEntityPickedObject( Qt3DRender::QPickEvent *pickEvent, QgsFeatureId fid );
     void updateLights();
     void updateCameraLens();
-    void onRenderersChanged();
     void onSkyboxSettingsChanged();
     void onShadowSettingsChanged();
     void onAmbientOcclusionSettingsChanged();
@@ -223,6 +258,11 @@ class _3D_EXPORT Qgs3DMapScene : public Qt3DCore::QEntity
     bool updateCameraNearFarPlanes();
 
   private:
+#ifdef SIP_RUN
+    Qgs3DMapScene();
+    Qgs3DMapScene( const Qgs3DMapScene &other );
+#endif
+
     void addLayerEntity( QgsMapLayer *layer );
     void removeLayerEntity( QgsMapLayer *layer );
     void addCameraViewCenterEntity( Qt3DRender::QCamera *camera );
@@ -245,11 +285,8 @@ class _3D_EXPORT Qgs3DMapScene : public Qt3DCore::QEntity
     Qt3DCore::QEntity *mEntityCameraViewCenter = nullptr;
     //! Keeps track of entities that belong to a particular layer
     QMap<QgsMapLayer *, Qt3DCore::QEntity *> mLayerEntities;
-    QMap<const QgsAbstract3DRenderer *, Qt3DCore::QEntity *> mRenderersEntities;
     bool mTerrainUpdateScheduled = false;
     SceneState mSceneState = Ready;
-    //! List of currently registered pick handlers (used by identify tool)
-    QList<Qgs3DMapScenePickHandler *> mPickHandlers;
     //! List of lights in the scene
     QList<Qt3DCore::QEntity *> mLightEntities;
     QList<QgsMapLayer *> mModelVectorLayers;
@@ -261,5 +298,4 @@ class _3D_EXPORT Qgs3DMapScene : public Qt3DCore::QEntity
     Qgs3DAxis *m3DAxis = nullptr;
 
 };
-
 #endif // QGS3DMAPSCENE_H

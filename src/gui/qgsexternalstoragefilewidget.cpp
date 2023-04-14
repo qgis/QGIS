@@ -197,7 +197,7 @@ void QgsExternalStorageFileWidget::setSelectedFileNames( QStringList fileNames )
                                    tr( "Storage URL expression is invalid : %1" ).arg( mStorageUrlExpression->evalErrorString() ) );
       }
 
-      QgsDebugMsg( tr( "Storage URL expression is invalid : %1" ).arg( mStorageUrlExpression->evalErrorString() ) );
+      QgsDebugMsg( QStringLiteral( "Storage URL expression is invalid : %1" ).arg( mStorageUrlExpression->evalErrorString() ) );
       return;
     }
 

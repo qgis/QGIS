@@ -23,10 +23,10 @@
 #include "Emulation.h"
 
 // System
-#include <assert.h>
-#include <stdio.h>
-#include <stdlib.h>
+#include <cstdio>
+#include <cstdlib>
 #include <unistd.h>
+#include <string>
 
 // Qt
 #include <QApplication>
@@ -51,23 +51,31 @@
 using namespace Konsole;
 
 Emulation::Emulation() :
-  _currentScreen(0),
-  _codec(0),
-  _decoder(0),
-  _keyTranslator(0),
-  _usesMouse(false)
+  _currentScreen(nullptr),
+  _codec(nullptr),
+  _decoder(nullptr),
+  _keyTranslator(nullptr),
+  _usesMouse(false),
+  _bracketedPasteMode(false)
 {
   // create screens with a default size
   _screen[0] = new Screen(40,80);
   _screen[1] = new Screen(40,80);
   _currentScreen = _screen[0];
 
-  QObject::connect(&_bulkTimer1, &QTimer::timeout, this, &Emulation::showBulk );
-  QObject::connect(&_bulkTimer2, &QTimer::timeout, this, &Emulation::showBulk );
+  QObject::connect(&_bulkTimer1, SIGNAL(timeout()), this, SLOT(showBulk()) );
+  QObject::connect(&_bulkTimer2, SIGNAL(timeout()), this, SLOT(showBulk()) );
 
   // listen for mouse status changes
-  connect( this , &Emulation::programUsesMouseChanged ,
-           this, &Emulation::usesMouseChanged );
+  connect(this , SIGNAL(programUsesMouseChanged(bool)) ,
+           SLOT(usesMouseChanged(bool)));
+  connect(this , SIGNAL(programBracketedPasteModeChanged(bool)) ,
+           SLOT(bracketedPasteModeChanged(bool)));
+
+  connect(this, &Emulation::cursorChanged, this, [this] (KeyboardCursorShape cursorShape, bool blinkingCursorEnabled) {
+    emit titleChanged( 50, QString(QLatin1String("CursorShape=%1;BlinkingCursorEnabled=%2"))
+                               .arg(static_cast<int>(cursorShape)).arg(blinkingCursorEnabled) );
+  });
 }
 
 bool Emulation::programUsesMouse() const
@@ -80,17 +88,33 @@ void Emulation::usesMouseChanged(bool usesMouse)
     _usesMouse = usesMouse;
 }
 
+bool Emulation::programBracketedPasteMode() const
+{
+    return _bracketedPasteMode;
+}
+
+void Emulation::bracketedPasteModeChanged(bool bracketedPasteMode)
+{
+    _bracketedPasteMode = bracketedPasteMode;
+}
+
 ScreenWindow* Emulation::createWindow()
 {
     ScreenWindow* window = new ScreenWindow();
     window->setScreen(_currentScreen);
     _windows << window;
 
-    connect(window , &ScreenWindow::selectionChanged,
-            this , &Emulation::bufferedUpdate);
+    connect(window , SIGNAL(selectionChanged()),
+            this , SLOT(bufferedUpdate()));
 
-    connect(this , &Emulation::outputChanged,
-            window , &ScreenWindow::notifyOutputChanged );
+    connect(this , SIGNAL(outputChanged()),
+            window , SLOT(notifyOutputChanged()) );
+
+    connect(this, &Emulation::handleCommandFromKeyboard,
+            window, &ScreenWindow::handleCommandFromKeyboard);
+    connect(this, &Emulation::outputFromKeypressEvent,
+            window, &ScreenWindow::scrollToEnd);
+
     return window;
 }
 
@@ -115,7 +139,7 @@ void Emulation::setScreen(int n)
   if (_currentScreen != old)
   {
      // tell all windows onto this emulation to switch to the newly active screen
-     foreach(ScreenWindow* window,_windows)
+     for(ScreenWindow* window : qAsConst(_windows))
          window->setScreen(_currentScreen);
   }
 }
@@ -171,7 +195,7 @@ QString Emulation::keyBindings() const
   return _keyTranslator->name();
 }
 
-void Emulation::receiveChar(int c)
+void Emulation::receiveChar(wchar_t c)
 // process application unicode input to terminal
 // this is a trivial scanner
 {
@@ -188,7 +212,7 @@ void Emulation::receiveChar(int c)
   };
 }
 
-void Emulation::sendKeyEvent( QKeyEvent* ev )
+void Emulation::sendKeyEvent(QKeyEvent* ev, bool)
 {
   emit stateSet(NOTIFYNORMAL);
 
@@ -196,7 +220,7 @@ void Emulation::sendKeyEvent( QKeyEvent* ev )
   { // A block of text
     // Note that the text is proper unicode.
     // We should do a conversion here
-    emit sendData(ev->text().toUtf8(),ev->text().length());
+    emit sendData(ev->text().toUtf8().constData(),ev->text().length());
   }
 }
 
@@ -221,11 +245,17 @@ void Emulation::receiveData(const char* text, int length)
 
     bufferedUpdate();
 
-    QString unicodeText = _decoder->toUnicode(text,length);
+    /* XXX: the following code involves encoding & decoding of "UTF-16
+     * surrogate pairs", which does not work with characters higher than
+     * U+10FFFF
+     * https://unicodebook.readthedocs.io/unicode_encodings.html#surrogates
+     */
+    QString utf16Text = _decoder->toUnicode(text,length);
+    std::wstring unicodeText = utf16Text.toStdWString();
 
     //send characters to terminal emulator
-    for (int i=0;i<unicodeText.length();i++)
-        receiveChar(unicodeText[i].unicode());
+    for (size_t i=0;i<unicodeText.length();i++)
+        receiveChar(unicodeText[i]);
 
     //look for z-modem indicator
     //-- someone who understands more about z-modems that I do may be able to move
@@ -356,7 +386,7 @@ void Emulation::setImageSize(int lines, int columns)
 
 QSize Emulation::imageSize() const
 {
-  return QSize(_currentScreen->getColumns(), _currentScreen->getLines());
+  return {_currentScreen->getColumns(), _currentScreen->getLines()};
 }
 
 ushort ExtendedCharTable::extendedCharHash(ushort* unicodePoints , ushort length) const
@@ -374,7 +404,7 @@ bool ExtendedCharTable::extendedCharMatch(ushort hash , ushort* unicodePoints , 
 
     // compare given length with stored sequence length ( given as the first ushort in the
     // stored buffer )
-    if ( entry == 0 || entry[0] != length )
+    if ( entry == nullptr || entry[0] != length )
        return false;
     // if the lengths match, each character must be checked.  the stored buffer starts at
     // entry[1]
@@ -434,7 +464,7 @@ ushort* ExtendedCharTable::lookupExtendedChar(ushort hash , ushort& length) cons
     else
     {
         length = 0;
-        return 0;
+        return nullptr;
     }
 }
 

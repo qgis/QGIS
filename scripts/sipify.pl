@@ -164,12 +164,12 @@ sub python_header {
 sub create_class_links {
     my $line = $_[0];
 
-    if ( $line =~ m/\b(Qgs[A-Z]\w+)\b(\.?$|[^\w]{2})/) {
+    if ( $line =~ m/\b((?:Qgs[A-Z]\w+)|(?:Qgis))\b(\.?$|[^\w]{2})/) {
         if ( defined $ACTUAL_CLASS && $1 !~ $ACTUAL_CLASS ) {
             $line =~ s/\b(Qgs[A-Z]\w+)\b(\.?$|[^\w]{2})/:py:class:`$1`$2/g;
         }
     }
-    $line =~ s/\b(Qgs[A-Z]\w+\.[a-z]\w+\(\))(?!\w)/:py:func:`$1`/g;
+    $line =~ s/\b(((?:Qgs[A-Z]\w+)|(?:Qgis))\.[a-z]\w+\(\))(?!\w)/:py:func:`$1`/g;
     if ( defined $ACTUAL_CLASS && $ACTUAL_CLASS) {
         $line =~ s/(?<!\.)\b(?:([a-z]\w+)\(\))(?!\w)/:py:func:`~$ACTUAL_CLASS.$1`/g;
     }
@@ -177,9 +177,9 @@ sub create_class_links {
         $line =~ s/(?<!\.)\b(?:([a-z]\w+)\(\))(?!\w)/:py:func:`~$1`/g;
     }
 
-    if ( $line =~ m/\b(?<![`~])(Qgs[A-Z]\w+)\b(?!\()/) {
+    if ( $line =~ m/\b(?<![`~])((?:Qgs[A-Z]\w+)|(?:Qgis))\b(?!\()/) {
         if ( (!$ACTUAL_CLASS) || $1 ne $ACTUAL_CLASS ) {
-            $line =~ s/\b(?<![`~])(Qgs[A-Z]\w+)\b(?!\()/:py:class:`$1`/g;
+            $line =~ s/\b(?<![`~])((?:Qgs[A-Z]\w+)|(?:Qgis))\b(?!\()/:py:class:`$1`/g;
         }
     }
 
@@ -1087,7 +1087,9 @@ while ($LINE_IDX < $LINE_COUNT){
         $monkeypatch = "1" if defined $is_scope_based eq "1" and $LINE =~ m/SIP_MONKEYPATCH_SCOPEENUM(_UNNEST)?(:?\(\s*(?<emkb>\w+)\s*,\s*(?<emkf>\w+)\s*\))?/;
         my $enum_mk_base = "";
         $enum_mk_base = $+{emkb} if defined $+{emkb};
+        my $enum_old_name = "";
         if (defined $+{emkf} and $monkeypatch eq "1"){
+          $enum_old_name = $+{emkf};
           if ( $ACTUAL_CLASS ne "" ) {
             if ($enum_mk_base.$+{emkf} ne $ACTUAL_CLASS.$enum_qualname) {
               push @OUTPUT_PYTHON, "$enum_mk_base.$+{emkf} = $ACTUAL_CLASS.$enum_qualname\n";
@@ -1129,6 +1131,10 @@ while ($LINE_IDX < $LINE_COUNT){
                         if ( $monkeypatch eq 1 and $enum_mk_base ne ""){
                           if ( $ACTUAL_CLASS ne "" ) {
                             push @OUTPUT_PYTHON, "$enum_mk_base.$compat_name = $ACTUAL_CLASS.$enum_qualname.$enum_member\n";
+                            if ( $enum_old_name && $compat_name ne $enum_member )
+                            {
+                              push @OUTPUT_PYTHON, "$enum_mk_base.$enum_old_name.$compat_name = $ACTUAL_CLASS.$enum_qualname.$enum_member\n";
+                            }
                             push @OUTPUT_PYTHON, "$enum_mk_base.$compat_name.is_monkey_patched = True\n";
                             push @OUTPUT_PYTHON, "$enum_mk_base.$compat_name.__doc__ = \"$comment\"\n";
                             push @enum_members_doc, "'* ``$compat_name``: ' + $ACTUAL_CLASS.$enum_qualname.$enum_member.__doc__";

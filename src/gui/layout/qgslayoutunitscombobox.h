@@ -33,7 +33,7 @@ class QgsLayoutMeasurementConverter;
 class GUI_EXPORT QgsLayoutUnitsComboBox : public QComboBox
 {
     Q_OBJECT
-    Q_PROPERTY( QgsUnitTypes::LayoutUnit unit READ unit WRITE setUnit NOTIFY changed )
+    Q_PROPERTY( Qgis::LayoutUnit unit READ unit WRITE setUnit NOTIFY changed )
 
   public:
 
@@ -46,13 +46,13 @@ class GUI_EXPORT QgsLayoutUnitsComboBox : public QComboBox
      * Returns the unit currently selected in the combo box.
      * \see setUnit()
      */
-    QgsUnitTypes::LayoutUnit unit() const;
+    Qgis::LayoutUnit unit() const;
 
     /**
      * Sets the \a unit currently selected in the combo box.
      * \see unit()
      */
-    void setUnit( QgsUnitTypes::LayoutUnit unit );
+    void setUnit( Qgis::LayoutUnit unit );
 
     /**
      * Registers a spin box \a widget as linked with the combo box.
@@ -82,10 +82,18 @@ class GUI_EXPORT QgsLayoutUnitsComboBox : public QComboBox
 
   signals:
 
+#ifndef SIP_RUN
+
     /**
      * Emitted when the \a unit is changed.
      */
-    void changed( QgsUnitTypes::LayoutUnit unit );
+    void unitChanged( Qgis::LayoutUnit unit );
+#endif
+
+    /**
+     * Emitted when the \a unit is changed.
+     */
+    void changed( int );
 
   private slots:
 
@@ -95,7 +103,7 @@ class GUI_EXPORT QgsLayoutUnitsComboBox : public QComboBox
 
     QgsLayoutMeasurementConverter *mConverter = nullptr;
 
-    QgsUnitTypes::LayoutUnit mOldUnit = QgsUnitTypes::LayoutMillimeters;
+    Qgis::LayoutUnit mOldUnit = Qgis::LayoutUnit::Millimeters;
 
     QList< QPointer< QDoubleSpinBox > > mLinkedSpinBoxes;
 };

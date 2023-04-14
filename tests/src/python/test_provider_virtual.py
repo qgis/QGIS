@@ -15,11 +15,15 @@ import tempfile
 import qgis  # NOQA
 from qgis.PyQt.QtCore import QTemporaryDir, QUrl, QVariant
 from qgis.core import (
+    Qgis,
     QgsFeature,
     QgsFeatureRequest,
     QgsField,
     QgsGeometry,
+    QgsPathResolver,
     QgsProject,
+    QgsProviderRegistry,
+    QgsReadWriteContext,
     QgsRectangle,
     QgsVectorFileWriter,
     QgsVectorLayer,
@@ -83,10 +87,6 @@ class TestQgsVirtualLayerProvider(unittest.TestCase, ProviderTestCase):
     def setUp(self):
         """Run before each test."""
         self.testDataDir = unitTestDataPath()
-        print("****************************************************")
-        print(("In method", self._testMethodName))
-        print("****************************************************")
-        pass
 
     def testGetFeaturesThreadSafety(self):
         # provider does not work with this test - sqlite mutex prevents
@@ -349,16 +349,17 @@ class TestQgsVirtualLayerProvider(unittest.TestCase, ProviderTestCase):
 
     def test_geometryTypes(self):
 
-        geo = [(1, "POINT", "(0 0)"),
-               (2, "LINESTRING", "(0 0,1 0)"),
-               (3, "POLYGON", "((0 0,1 0,1 1,0 0))"),
-               (4, "MULTIPOINT", "((1 1))"),
-               (5, "MULTILINESTRING", "((0 0,1 0),(0 1,1 1))"),
-               (6, "MULTIPOLYGON", "(((0 0,1 0,1 1,0 0)),((2 2,3 0,3 3,2 2)))"),
-               (9, "COMPOUNDCURVE", "(CIRCULARSTRING(0 0, 1 0, 1 1))"),
-               (10, "CURVEPOLYGON", "(COMPOUNDCURVE(CIRCULARSTRING(0 0, 1 0, 1 1)))"),
-               (11, "MULTICURVE", "(COMPOUNDCURVE(CIRCULARSTRING(0 0, 1 0, 1 1)),COMPOUNDCURVE(CIRCULARSTRING(2 2, 3 2, 3 3)))"),
-               (12, "MULTISURFACE", "(CURVEPOLYGON(COMPOUNDCURVE(CIRCULARSTRING(0 0, 1 0, 1 1))),CURVEPOLYGON(COMPOUNDCURVE(CIRCULARSTRING(2 2, 3 2, 3 3))))")]
+        geo = [(Qgis.WkbType.Point, "POINT", "(0 0)"),
+               (Qgis.WkbType.LineString, "LINESTRING", "(0 0,1 0)"),
+               (Qgis.WkbType.Polygon, "POLYGON", "((0 0,1 0,1 1,0 0))"),
+               (Qgis.WkbType.MultiPoint, "MULTIPOINT", "((1 1))"),
+               (Qgis.WkbType.MultiLineString, "MULTILINESTRING", "((0 0,1 0),(0 1,1 1))"),
+               (Qgis.WkbType.MultiPolygon, "MULTIPOLYGON", "(((0 0,1 0,1 1,0 0)),((2 2,3 0,3 3,2 2)))"),
+               (Qgis.WkbType.CompoundCurve, "COMPOUNDCURVE", "(CIRCULARSTRING(0 0, 1 0, 1 1))"),
+               (Qgis.WkbType.CurvePolygon, "CURVEPOLYGON", "(COMPOUNDCURVE(CIRCULARSTRING(0 0, 1 0, 1 1)))"),
+               (Qgis.WkbType.MultiCurve, "MULTICURVE", "(COMPOUNDCURVE(CIRCULARSTRING(0 0, 1 0, 1 1)),COMPOUNDCURVE(CIRCULARSTRING(2 2, 3 2, 3 3)))"),
+               (Qgis.WkbType.MultiSurface, "MULTISURFACE", "(CURVEPOLYGON(COMPOUNDCURVE(CIRCULARSTRING(0 0, 1 0, 1 1))),CURVEPOLYGON(COMPOUNDCURVE(CIRCULARSTRING(2 2, 3 2, 3 3))))")]
+
         for wkb_type, wkt_type, wkt in geo:
             l = QgsVectorLayer(f"{wkt_type}?crs=epsg:4326", "m1", "memory", QgsVectorLayer.LayerOptions(False))
             self.assertEqual(l.isValid(), True)
@@ -874,6 +875,25 @@ class TestQgsVirtualLayerProvider(unittest.TestCase, ProviderTestCase):
         QgsProject.instance().setFileName(temp)
         QgsProject.instance().read()
         self.assertEqual(len(QgsProject.instance().mapLayers()), 2)
+
+    def test_absolute_relative_uri(self):
+        context = QgsReadWriteContext()
+        context.setPathResolver(QgsPathResolver(os.path.join(self.testDataDir, "project.qgs")))
+
+        df_abs = QgsVirtualLayerDefinition()
+        df_abs.addSource("vtab", os.path.join(self.testDataDir, "france_parts.shp"), "ogr")
+
+        df_rel = QgsVirtualLayerDefinition()
+        df_rel.addSource("vtab", "./france_parts.shp", "ogr")
+
+        absolute_uri = df_abs.toString()
+        relative_uri = df_rel.toString()
+
+        meta = QgsProviderRegistry.instance().providerMetadata("virtual")
+        assert meta is not None
+
+        self.assertEqual(meta.absoluteToRelativeUri(absolute_uri, context), relative_uri)
+        self.assertEqual(meta.relativeToAbsoluteUri(relative_uri, context), absolute_uri)
 
     def test_qgisExpressionFunctions(self):
         QgsProject.instance().setTitle('project')

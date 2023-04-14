@@ -20,7 +20,7 @@
 #include "qgis_sip.h"
 #include "qgis_core.h"
 #include "qgsmapunitscale.h"
-#include "qgsunittypes.h"
+#include "qgis.h"
 
 #include <QSharedData>
 #include <QPainter>
@@ -95,7 +95,7 @@ class CORE_EXPORT QgsTextBufferSettings
      * \see size()
      * \see setSizeUnit()
      */
-    QgsUnitTypes::RenderUnit sizeUnit() const;
+    Qgis::RenderUnit sizeUnit() const;
 
     /**
      * Sets the units used for the buffer size.
@@ -103,7 +103,7 @@ class CORE_EXPORT QgsTextBufferSettings
      * \see setSize()
      * \see sizeUnit()
      */
-    void setSizeUnit( QgsUnitTypes::RenderUnit unit );
+    void setSizeUnit( Qgis::RenderUnit unit );
 
     /**
      * Returns the map unit scale object for the buffer size. This is only used if the

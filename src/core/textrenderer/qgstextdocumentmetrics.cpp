@@ -20,11 +20,9 @@
 #include "qgstextformat.h"
 #include "qgstextdocument.h"
 #include "qgsrendercontext.h"
+#include "qgstextrenderer.h"
 
 #include <QFontMetricsF>
-
-// to match QTextEngine handling of superscript/subscript font sizes
-constexpr double SUPERSCRIPT_SUBSCRIPT_FONT_SIZE_SCALING_FACTOR = 2.0 / 3.0;
 
 // to match Qt behavior in QTextLine::draw
 constexpr double SUPERSCRIPT_VERTICAL_BASELINE_ADJUSTMENT_FACTOR = 0.5;
@@ -133,7 +131,7 @@ QgsTextDocumentMetrics QgsTextDocumentMetrics::calculateMetrics( const QgsTextDo
               // the superscript in a smaller font size. BUT if the fragment format HAS a non -1 font size then it indicates
               // that the document has an explicit font size for the super/subscript element, eg "my text<sup style="font-size: 6pt">2</sup>"
               // which we should respect
-              updatedFont.setPixelSize( static_cast< int >( std::round( updatedFont.pixelSize() * SUPERSCRIPT_SUBSCRIPT_FONT_SIZE_SCALING_FACTOR ) ) );
+              updatedFont.setPixelSize( static_cast< int >( std::round( updatedFont.pixelSize() * QgsTextRenderer::SUPERSCRIPT_SUBSCRIPT_FONT_SIZE_SCALING_FACTOR ) ) );
               fm = QFontMetricsF( updatedFont );
             }
 
@@ -153,7 +151,7 @@ QgsTextDocumentMetrics QgsTextDocumentMetrics::calculateMetrics( const QgsTextDo
             if ( fragmentFormat.fontPointSize() < 0 )
             {
               // see above!!
-              updatedFont.setPixelSize( static_cast< int>( std::round( updatedFont.pixelSize() * SUPERSCRIPT_SUBSCRIPT_FONT_SIZE_SCALING_FACTOR ) ) );
+              updatedFont.setPixelSize( static_cast< int>( std::round( updatedFont.pixelSize() * QgsTextRenderer::SUPERSCRIPT_SUBSCRIPT_FONT_SIZE_SCALING_FACTOR ) ) );
               fm = QFontMetricsF( updatedFont );
             }
 
@@ -240,8 +238,8 @@ QgsTextDocumentMetrics QgsTextDocumentMetrics::calculateMetrics( const QgsTextDo
     }
     else
     {
-      const double thisLineHeightUsingAscentDescent = format.lineHeightUnit() == QgsUnitTypes::RenderPercentage ? ( format.lineHeight() * ( maxBlockAscent + maxBlockDescent ) ) : lineHeightPainterUnits;
-      const double thisLineHeightUsingLineSpacing = format.lineHeightUnit() == QgsUnitTypes::RenderPercentage ? ( format.lineHeight() * maxLineSpacing ) : lineHeightPainterUnits;
+      const double thisLineHeightUsingAscentDescent = format.lineHeightUnit() == Qgis::RenderUnit::Percentage ? ( format.lineHeight() * ( maxBlockAscent + maxBlockDescent ) ) : lineHeightPainterUnits;
+      const double thisLineHeightUsingLineSpacing = format.lineHeightUnit() == Qgis::RenderUnit::Percentage ? ( format.lineHeight() * maxLineSpacing ) : lineHeightPainterUnits;
 
       currentLabelBaseline += thisLineHeightUsingAscentDescent;
       currentRectBaseline += thisLineHeightUsingLineSpacing;
@@ -265,7 +263,7 @@ QgsTextDocumentMetrics QgsTextDocumentMetrics::calculateMetrics( const QgsTextDo
         outerYMaxLabel = blockYMaxAdjustLabel - maxBlockDescent;
     }
 
-    blockVerticalLineSpacing << ( format.lineHeightUnit() == QgsUnitTypes::RenderPercentage ? ( maxBlockMaxWidth * format.lineHeight() ) : lineHeightPainterUnits );
+    blockVerticalLineSpacing << ( format.lineHeightUnit() == Qgis::RenderUnit::Percentage ? ( maxBlockMaxWidth * format.lineHeight() ) : lineHeightPainterUnits );
 
     res.mBlockHeights << blockHeightUsingLineSpacing;
 

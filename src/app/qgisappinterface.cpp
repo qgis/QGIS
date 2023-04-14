@@ -29,7 +29,6 @@
 #include "qgisappstylesheet.h"
 #include "qgisapp.h"
 #include "qgsapplayertreeviewmenuprovider.h"
-#include "qgsdatumtransformdialog.h"
 #include "qgsgui.h"
 #include "qgsmaplayer.h"
 #include "qgsmaptooladvanceddigitizing.h"
@@ -39,16 +38,13 @@
 #include "qgslayoutdesignerdialog.h"
 #include "qgsshortcutsmanager.h"
 #include "qgsattributedialog.h"
-#include "qgsfields.h"
 #include "qgsvectordataprovider.h"
 #include "qgsfeatureaction.h"
-#include "qgsactionmanager.h"
 #include "qgsattributetabledialog.h"
 #include "qgslocatorwidget.h"
 #include "qgslocator.h"
 #include "qgsmessagebar.h"
 #include "qgsappmaptools.h"
-#include "qgsmaptoolmodifyannotation.h"
 
 QgisAppInterface::QgisAppInterface( QgisApp *_qgis )
   : qgis( _qgis )
@@ -85,7 +81,7 @@ QgsLayerTreeView *QgisAppInterface::layerTreeView()
 }
 
 void QgisAppInterface::addCustomActionForLayerType( QAction *action,
-    QString menu, QgsMapLayerType type, bool allLayers )
+    QString menu, Qgis::LayerType type, bool allLayers )
 {
   QgsAppLayerTreeViewMenuProvider *menuProvider = dynamic_cast<QgsAppLayerTreeViewMenuProvider *>( qgis->layerTreeView()->menuProvider() );
   if ( !menuProvider )
@@ -639,6 +635,54 @@ void QgisAppInterface::unregisterCustomProjectOpenHandler( QgsCustomProjectOpenH
 }
 
 QMenu *QgisAppInterface::projectMenu() { return qgis->projectMenu(); }
+QMenu *QgisAppInterface::projectImportExportMenu() { return qgis->projectImportExportMenu(); }
+
+void QgisAppInterface::addProjectImportAction( QAction *action )
+{
+  if ( QMenu *menu = projectImportExportMenu() )
+  {
+    // import actions come at the end of the menu, so we can add this action
+    // directly
+    menu->addAction( action );
+  }
+}
+
+void QgisAppInterface::removeProjectImportAction( QAction *action )
+{
+  if ( QMenu *menu = projectImportExportMenu() )
+  {
+    menu->removeAction( action );
+  }
+}
+
+void QgisAppInterface::addProjectExportAction( QAction *action )
+{
+  if ( QMenu *menu = projectImportExportMenu() )
+  {
+    // export actions come before import actions in the menu, so find separator in menu
+    const QList< QAction * > actions = menu->actions();
+    for ( QAction *menuAction : actions )
+    {
+      if ( menuAction->isSeparator() )
+      {
+        menu->insertAction( menuAction, action );
+        return;
+      }
+    }
+    // play it safe -- if we change the menu in future and remove the separator, ensure
+    // the action is still added somewhere
+    menu->addAction( action );
+  }
+}
+
+void QgisAppInterface::removeProjectExportAction( QAction *action )
+{
+  if ( QMenu *menu = projectImportExportMenu() )
+  {
+    menu->removeAction( action );
+  }
+}
+
 QMenu *QgisAppInterface::editMenu() { return qgis->editMenu(); }
 QMenu *QgisAppInterface::viewMenu() { return qgis->viewMenu(); }
 QMenu *QgisAppInterface::layerMenu() { return qgis->layerMenu(); }
@@ -658,6 +702,12 @@ QMenu *QgisAppInterface::helpMenu() { return qgis->helpMenu(); }
 QToolBar *QgisAppInterface::fileToolBar() { return qgis->fileToolBar(); }
 QToolBar *QgisAppInterface::layerToolBar() { return qgis->layerToolBar(); }
 QToolBar *QgisAppInterface::dataSourceManagerToolBar() { return qgis->dataSourceManagerToolBar(); }
+
+void QgisAppInterface::openDataSourceManagerPage( const QString &pageName )
+{
+  qgis->dataSourceManager( pageName );
+}
+
 QToolBar *QgisAppInterface::mapNavToolToolBar() { return qgis->mapNavToolToolBar(); }
 QToolBar *QgisAppInterface::digitizeToolBar() { return qgis->digitizeToolBar(); }
 QToolBar *QgisAppInterface::advancedDigitizeToolBar() { return qgis->advancedDigitizeToolBar(); }

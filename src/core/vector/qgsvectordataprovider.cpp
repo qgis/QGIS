@@ -32,7 +32,6 @@
 #include "qgsgeometryfactory.h"
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
-#include "qgssettings.h"
 #include "qgsogrproxytextcodec.h"
 #include "qgsthreadingutils.h"
 #include <mutex>
@@ -394,6 +393,11 @@ QString QgsVectorDataProvider::capabilitiesString() const
   }
 
   return abilitiesList.join( QLatin1String( ", " ) );
+}
+
+Qgis::VectorDataProviderAttributeEditCapabilities QgsVectorDataProvider::attributeEditCapabilities() const
+{
+  return Qgis::VectorDataProviderAttributeEditCapabilities();
 }
 
 int QgsVectorDataProvider::fieldNameIndex( const QString &fieldName ) const
@@ -890,7 +894,7 @@ QgsGeometry QgsVectorDataProvider::convertToProviderType( const QgsGeometry &geo
     return QgsGeometry();
   }
 
-  const QgsWkbTypes::Type providerGeomType = wkbType();
+  const Qgis::WkbType providerGeomType = wkbType();
 
   //geom is already in the provider geometry type
   if ( geometry->wkbType() == providerGeomType )
@@ -901,7 +905,7 @@ QgsGeometry QgsVectorDataProvider::convertToProviderType( const QgsGeometry &geo
   std::unique_ptr< QgsAbstractGeometry > outputGeom;
 
   //convert compoundcurve to circularstring (possible if compoundcurve consists of one circular string)
-  if ( QgsWkbTypes::flatType( providerGeomType ) == QgsWkbTypes::CircularString )
+  if ( QgsWkbTypes::flatType( providerGeomType ) == Qgis::WkbType::CircularString )
   {
     QgsCompoundCurve *compoundCurve = qgsgeometry_cast<QgsCompoundCurve *>( geometry );
     if ( compoundCurve )

@@ -223,8 +223,8 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayer : public QgsSimpleMarkerSymbolLayer
     void writeSldMarker( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const override;
     QString ogrFeatureStyle( double mmScaleFactor, double mapUnitScaleFactor ) const override;
     bool writeDxf( QgsDxfExport &e, double mmMapUnitScaleFactor, const QString &layerName, QgsSymbolRenderContext &context, QPointF shift = QPointF( 0.0, 0.0 ) ) const override;
-    void setOutputUnit( QgsUnitTypes::RenderUnit unit ) override;
-    QgsUnitTypes::RenderUnit outputUnit() const override;
+    void setOutputUnit( Qgis::RenderUnit unit ) override;
+    Qgis::RenderUnit outputUnit() const override;
     void setMapUnitScale( const QgsMapUnitScale &scale ) override;
     QgsMapUnitScale mapUnitScale() const override;
     bool usesMapUnits() const override;
@@ -337,7 +337,7 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayer : public QgsSimpleMarkerSymbolLayer
      * \see setStrokeWidth()
      * \see setStrokeWidthMapUnitScale()
      */
-    void setStrokeWidthUnit( QgsUnitTypes::RenderUnit u ) { mStrokeWidthUnit = u; }
+    void setStrokeWidthUnit( Qgis::RenderUnit u ) { mStrokeWidthUnit = u; }
 
     /**
      * Returns the unit for the width of the marker's stroke.
@@ -345,7 +345,7 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayer : public QgsSimpleMarkerSymbolLayer
      * \see strokeWidth()
      * \see strokeWidthMapUnitScale()
      */
-    QgsUnitTypes::RenderUnit strokeWidthUnit() const { return mStrokeWidthUnit; }
+    Qgis::RenderUnit strokeWidthUnit() const { return mStrokeWidthUnit; }
 
     /**
      * Sets the map scale for the width of the marker's stroke.
@@ -387,7 +387,7 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayer : public QgsSimpleMarkerSymbolLayer
     //! Stroke width
     double mStrokeWidth = 0;
     //! Stroke width units
-    QgsUnitTypes::RenderUnit mStrokeWidthUnit = QgsUnitTypes::RenderMillimeters;
+    Qgis::RenderUnit mStrokeWidthUnit = Qgis::RenderUnit::Millimeters;
     //! Stroke width map unit scale
     QgsMapUnitScale mStrokeWidthMapUnitScale;
     //! Stroke pen join style
@@ -470,7 +470,7 @@ class CORE_EXPORT QgsFilledMarkerSymbolLayer : public QgsSimpleMarkerSymbolLayer
     void setColor( const QColor &c ) override;
     QColor color() const override;
     bool usesMapUnits() const override;
-    void setOutputUnit( QgsUnitTypes::RenderUnit unit ) override;
+    void setOutputUnit( Qgis::RenderUnit unit ) override;
 
   private:
 #ifdef SIP_RUN
@@ -615,19 +615,19 @@ class CORE_EXPORT QgsSvgMarkerSymbolLayer : public QgsMarkerSymbolLayer
      * \param unit width units
      * \see strokeWidthUnit()
     */
-    void setStrokeWidthUnit( QgsUnitTypes::RenderUnit unit ) { mStrokeWidthUnit = unit; }
+    void setStrokeWidthUnit( Qgis::RenderUnit unit ) { mStrokeWidthUnit = unit; }
 
     /**
      * Returns the units for the stroke width.
      * \see strokeWidthUnit()
     */
-    QgsUnitTypes::RenderUnit strokeWidthUnit() const { return mStrokeWidthUnit; }
+    Qgis::RenderUnit strokeWidthUnit() const { return mStrokeWidthUnit; }
 
     void setStrokeWidthMapUnitScale( const QgsMapUnitScale &scale ) { mStrokeWidthMapUnitScale = scale; }
     const QgsMapUnitScale &strokeWidthMapUnitScale() const { return mStrokeWidthMapUnitScale; }
 
-    void setOutputUnit( QgsUnitTypes::RenderUnit unit ) override;
-    QgsUnitTypes::RenderUnit outputUnit() const override;
+    void setOutputUnit( Qgis::RenderUnit unit ) override;
+    Qgis::RenderUnit outputUnit() const override;
 
     void setMapUnitScale( const QgsMapUnitScale &scale ) override;
     QgsMapUnitScale mapUnitScale() const override;
@@ -663,7 +663,7 @@ class CORE_EXPORT QgsSvgMarkerSymbolLayer : public QgsMarkerSymbolLayer
     double mStrokeWidth;
     QMap<QString, QgsProperty> mParameters;
 
-    QgsUnitTypes::RenderUnit mStrokeWidthUnit;
+    Qgis::RenderUnit mStrokeWidthUnit;
     QgsMapUnitScale mStrokeWidthMapUnitScale;
 
   private:
@@ -906,7 +906,7 @@ class CORE_EXPORT QgsFontMarkerSymbolLayer : public QgsMarkerSymbolLayer
 
     void writeSldMarker( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const override;
     bool usesMapUnits() const override;
-    void setOutputUnit( QgsUnitTypes::RenderUnit unit ) override;
+    void setOutputUnit( Qgis::RenderUnit unit ) override;
 
     // new methods
 
@@ -988,7 +988,7 @@ class CORE_EXPORT QgsFontMarkerSymbolLayer : public QgsMarkerSymbolLayer
      *
      * \since QGIS 2.16
     */
-    QgsUnitTypes::RenderUnit strokeWidthUnit() const { return mStrokeWidthUnit; }
+    Qgis::RenderUnit strokeWidthUnit() const { return mStrokeWidthUnit; }
 
     /**
      * Sets the stroke width \a unit.
@@ -998,7 +998,7 @@ class CORE_EXPORT QgsFontMarkerSymbolLayer : public QgsMarkerSymbolLayer
      * \see setStrokeWidthMapUnitScale()
      * \since QGIS 2.16
     */
-    void setStrokeWidthUnit( QgsUnitTypes::RenderUnit unit ) { mStrokeWidthUnit = unit; }
+    void setStrokeWidthUnit( Qgis::RenderUnit unit ) { mStrokeWidthUnit = unit; }
 
     /**
      * Returns the stroke width map unit scale.
@@ -1059,7 +1059,7 @@ class CORE_EXPORT QgsFontMarkerSymbolLayer : public QgsMarkerSymbolLayer
 
     QColor mStrokeColor;
     double mStrokeWidth;
-    QgsUnitTypes::RenderUnit mStrokeWidthUnit;
+    Qgis::RenderUnit mStrokeWidthUnit;
     QgsMapUnitScale mStrokeWidthMapUnitScale;
     Qt::PenJoinStyle mPenJoinStyle;
 

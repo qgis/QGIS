@@ -445,7 +445,7 @@ QSize QgsFileWidget::minimumSizeHint() const
 QString QgsFileWidget::toUrl( const QString &path ) const
 {
   QString rep;
-  if ( path.isEmpty() )
+  if ( path.isEmpty() || path == QgsApplication::nullRepresentation() )
   {
     return QgsApplication::nullRepresentation();
   }

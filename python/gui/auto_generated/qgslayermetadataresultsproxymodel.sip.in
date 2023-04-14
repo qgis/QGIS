@@ -48,7 +48,7 @@ Sets the map layer type filter status to ``enabled``.
 Sets the extent filter to ``extent``.
 %End
 
-    void setFilterGeometryType( const QgsWkbTypes::GeometryType geometryType );
+    void setFilterGeometryType( Qgis::GeometryType geometryType );
 %Docstring
 Sets the geometry type filter to ``geometryType``.
 %End
@@ -58,7 +58,7 @@ Sets the geometry type filter to ``geometryType``.
 Sets the text filter to ``filterString``.
 %End
 
-    void setFilterMapLayerType( const QgsMapLayerType mapLayerType );
+    void setFilterMapLayerType( const Qgis::LayerType mapLayerType );
 %Docstring
 Sets the map layer type filter to ``mapLayerType``.
 %End

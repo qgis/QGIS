@@ -19,7 +19,6 @@
 #include "qgis.h"
 
 #include <type_traits>
-#include "qgslayeritem.h"
 #include "qgis_sip.h"
 #include "qgsabstractdbtablemodel.h"
 
@@ -74,10 +73,10 @@ class QgsOgrDbTableModel : public QgsAbstractDbTableModel
     QString mPath;
     QStringList mColumns;
 
-    QIcon iconForType( QgsWkbTypes::Type type ) const;
-    QString displayStringForType( QgsWkbTypes::Type type ) const;
+    QIcon iconForType( Qgis::WkbType type ) const;
+    QString displayStringForType( Qgis::WkbType type ) const;
     //! Returns qgis wkbtype from database typename
-    QgsWkbTypes::Type qgisTypeFromDbType( const QString &dbType ) const;
+    Qgis::WkbType qgisTypeFromDbType( const QString &dbType ) const;
 };
 
 ///@endcond

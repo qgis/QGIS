@@ -137,6 +137,21 @@ Determines if a NULL value should be available in the list.
 Determines if a NULL value should be available in the list.
 %End
 
+    int fetchLimit() const;
+%Docstring
+Returns the feature request fetch limit
+
+.. versionadded:: 3.32
+%End
+
+    void setFetchLimit( int fetchLimit );
+%Docstring
+Defines the feature request fetch limit
+If set to 0, no limit is applied when fetching
+
+.. versionadded:: 3.32
+%End
+
  QString identifierField() const /Deprecated/;
 %Docstring
 Field name that will be used to uniquely identify the current feature.

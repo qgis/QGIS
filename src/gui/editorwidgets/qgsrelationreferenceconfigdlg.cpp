@@ -27,6 +27,9 @@ QgsRelationReferenceConfigDlg::QgsRelationReferenceConfigDlg( QgsVectorLayer *vl
 
 {
   setupUi( this );
+
+  mFetchLimit->setMaximum( std::numeric_limits<int>::max() );
+
   connect( mAddFilterButton, &QToolButton::clicked, this, &QgsRelationReferenceConfigDlg::mAddFilterButton_clicked );
   connect( mRemoveFilterButton, &QToolButton::clicked, this, &QgsRelationReferenceConfigDlg::mRemoveFilterButton_clicked );
 
@@ -55,7 +58,6 @@ QgsRelationReferenceConfigDlg::QgsRelationReferenceConfigDlg( QgsVectorLayer *vl
   }
 
   connect( mCbxAllowNull, &QAbstractButton::toggled, this, &QgsEditorConfigWidget::changed );
-  connect( mCbxOrderByValue, &QAbstractButton::toggled, this, &QgsEditorConfigWidget::changed );
   connect( mCbxShowForm, &QAbstractButton::toggled, this, &QgsEditorConfigWidget::changed );
   connect( mCbxShowOpenFormButton, &QAbstractButton::toggled, this, &QgsEditorConfigWidget::changed );
   connect( mCbxMapIdentification, &QAbstractButton::toggled, this, &QgsEditorConfigWidget::changed );
@@ -99,7 +101,6 @@ void QgsRelationReferenceConfigDlg::mEditExpression_clicked()
 void QgsRelationReferenceConfigDlg::setConfig( const QVariantMap &config )
 {
   mCbxAllowNull->setChecked( config.value( QStringLiteral( "AllowNULL" ), false ).toBool() );
-  mCbxOrderByValue->setChecked( config.value( QStringLiteral( "OrderByValue" ), false ).toBool() );
   mCbxShowForm->setChecked( config.value( QStringLiteral( "ShowForm" ), false ).toBool() );
   mCbxShowOpenFormButton->setChecked( config.value( QStringLiteral( "ShowOpenFormButton" ), true ).toBool() );
 
@@ -112,6 +113,8 @@ void QgsRelationReferenceConfigDlg::setConfig( const QVariantMap &config )
   mCbxMapIdentification->setChecked( config.value( QStringLiteral( "MapIdentification" ), false ).toBool() );
   mCbxAllowAddFeatures->setChecked( config.value( QStringLiteral( "AllowAddFeatures" ), false ).toBool() );
   mCbxReadOnly->setChecked( config.value( QStringLiteral( "ReadOnly" ), false ).toBool() );
+  mFetchLimitGroupBox->setChecked( config.value( QStringLiteral( "FetchLimitActive" ), QgsSettings().value( QStringLiteral( "maxEntriesRelationWidget" ), 100, QgsSettings::Gui ).toInt() > 0 ).toBool() );
+  mFetchLimit->setValue( config.value( QStringLiteral( "FetchLimitNumber" ), QgsSettings().value( QStringLiteral( "maxEntriesRelationWidget" ), 100, QgsSettings::Gui ) ).toInt() );
   mFilterExpression->setPlainText( config.value( QStringLiteral( "FilterExpression" ) ).toString() );
 
   if ( config.contains( QStringLiteral( "FilterFields" ) ) )
@@ -166,13 +169,14 @@ QVariantMap QgsRelationReferenceConfigDlg::config()
 {
   QVariantMap myConfig;
   myConfig.insert( QStringLiteral( "AllowNULL" ), mCbxAllowNull->isChecked() );
-  myConfig.insert( QStringLiteral( "OrderByValue" ), mCbxOrderByValue->isChecked() );
   myConfig.insert( QStringLiteral( "ShowForm" ), mCbxShowForm->isChecked() );
   myConfig.insert( QStringLiteral( "ShowOpenFormButton" ), mCbxShowOpenFormButton->isChecked() );
   myConfig.insert( QStringLiteral( "MapIdentification" ), mCbxMapIdentification->isEnabled() && mCbxMapIdentification->isChecked() );
   myConfig.insert( QStringLiteral( "ReadOnly" ), mCbxReadOnly->isChecked() );
   myConfig.insert( QStringLiteral( "Relation" ), mComboRelation->currentData() );
   myConfig.insert( QStringLiteral( "AllowAddFeatures" ), mCbxAllowAddFeatures->isChecked() );
+  myConfig.insert( QStringLiteral( "FetchLimitActive" ), mFetchLimitGroupBox->isChecked() );
+  myConfig.insert( QStringLiteral( "FetchLimitNumber" ), mFetchLimit->value() );
 
   if ( mFilterGroupBox->isChecked() )
   {

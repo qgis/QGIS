@@ -560,7 +560,7 @@ QString QgsDataSourceUri::uri( bool expandAuthConfig ) const
     uri += QStringLiteral( " srid=%1" ).arg( mSrid );
   }
 
-  if ( mWkbType != QgsWkbTypes::Unknown && mWkbType != QgsWkbTypes::NoGeometry )
+  if ( mWkbType != Qgis::WkbType::Unknown && mWkbType != Qgis::WkbType::NoGeometry )
   {
     uri += QLatin1String( " type=" );
     uri += QgsWkbTypes::displayString( mWkbType );
@@ -738,12 +738,12 @@ void QgsDataSourceUri::setDatabase( const QString &database )
   mDatabase = database;
 }
 
-QgsWkbTypes::Type QgsDataSourceUri::wkbType() const
+Qgis::WkbType QgsDataSourceUri::wkbType() const
 {
   return mWkbType;
 }
 
-void QgsDataSourceUri::setWkbType( QgsWkbTypes::Type wkbType )
+void QgsDataSourceUri::setWkbType( Qgis::WkbType wkbType )
 {
   mWkbType = wkbType;
 }
@@ -911,7 +911,7 @@ QSet<QString> QgsDataSourceUri::parameterKeys() const
     paramKeys.insert( QLatin1String( "estimatedmetadata" ) );
   if ( mSelectAtIdDisabledSet )
     paramKeys.insert( QLatin1String( "selectatid" ) );
-  if ( mWkbType != QgsWkbTypes::Unknown )
+  if ( mWkbType != Qgis::WkbType::Unknown )
     paramKeys.insert( QLatin1String( "type" ) );
   if ( !mSrid.isEmpty() )
     paramKeys.insert( QLatin1String( "srid" ) );

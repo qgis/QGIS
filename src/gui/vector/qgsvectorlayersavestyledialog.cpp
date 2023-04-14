@@ -42,7 +42,7 @@ QgsVectorLayerSaveStyleDialog::QgsVectorLayerSaveStyleDialog( QgsVectorLayer *la
     mFileLabel->setVisible( type != QgsVectorLayerProperties::DB && type != QgsVectorLayerProperties::Local );
     mFileWidget->setVisible( type != QgsVectorLayerProperties::DB && type != QgsVectorLayerProperties::Local );
     mSaveToDbWidget->setVisible( type == QgsVectorLayerProperties::DB );
-    mSaveToSldWidget->setVisible( type == QgsVectorLayerProperties::SLD && layer->geometryType() == QgsWkbTypes::GeometryType::PolygonGeometry );
+    mSaveToSldWidget->setVisible( type == QgsVectorLayerProperties::SLD && layer->geometryType() == Qgis::GeometryType::Polygon );
     mStyleCategoriesListView->setEnabled( type != QgsVectorLayerProperties::SLD );
     mFileWidget->setFilter( type == QgsVectorLayerProperties::QML ? tr( "QGIS Layer Style File (*.qml)" ) : tr( "SLD File (*.sld)" ) );
     updateSaveButtonState();

@@ -21,9 +21,8 @@
 #include "qgsgeometryutils.h"
 #include "qgslinestring.h"
 #include "qgsmapcanvas.h"
-#include "qgspoint.h"
-#include "qgisapp.h"
 #include "qgsmaptoolcapture.h"
+#include "qgspoint.h"
 
 QgsMapToolShapeCircularStringAbstract::QgsMapToolShapeCircularStringAbstract( const QString &id, QgsMapToolCapture *parentTool )
   : QgsMapToolShapeAbstract( id, parentTool )
@@ -66,7 +65,8 @@ void QgsMapToolShapeCircularStringAbstract::undo()
     const int lastPositionCompleteCircularString = mPoints.size() - 1 - ( mPoints.size() + 1 ) % 2 ;
 
     geomTempRubberBand->setPoints( mPoints.mid( lastPositionCompleteCircularString ) );
-    mTempRubberBand->setGeometry( geomTempRubberBand.release() );
+    if ( mTempRubberBand )
+      mTempRubberBand->setGeometry( geomTempRubberBand.release() );
 
     if ( mRubberBand )
     {
@@ -104,7 +104,7 @@ void QgsMapToolShapeCircularStringAbstract::activate( QgsMapToolCapture::Capture
     mPoints.append( lastCapturedMapPoint );
     if ( !mTempRubberBand )
     {
-      QgsWkbTypes::GeometryType type = mode == QgsMapToolCapture::CapturePolygon ? QgsWkbTypes::PolygonGeometry : QgsWkbTypes::LineGeometry;
+      Qgis::GeometryType type = mode == QgsMapToolCapture::CapturePolygon ? Qgis::GeometryType::Polygon : Qgis::GeometryType::Line;
       mTempRubberBand = mParentTool->createGeometryRubberBand( type, true );
       mTempRubberBand->show();
     }
@@ -123,7 +123,7 @@ void QgsMapToolShapeCircularStringAbstract::createCenterPointRubberBand()
     return;
   }
 
-  mCenterPointRubberBand = mParentTool->createGeometryRubberBand( QgsWkbTypes::PolygonGeometry );
+  mCenterPointRubberBand = mParentTool->createGeometryRubberBand( Qgis::GeometryType::Polygon );
   mCenterPointRubberBand->show();
 
   if ( mTempRubberBand )
@@ -191,7 +191,27 @@ void QgsMapToolShapeCircularStringAbstract::addCurveToParentTool()
 {
   QgsCircularString *c = new QgsCircularString();
   c->setPoints( mPoints );
-  mParentTool->addCurve( c );
+
+  // Check whether to draw the circle as a polygon or a circular string
+  bool drawAsPolygon = false;
+
+  if ( QgsMapLayer *layer = mParentTool->layer() )
+  {
+    const QgsCoordinateReferenceSystem layerCrs = layer->crs();
+    const QgsCoordinateReferenceSystem mapCrs = mParentTool->canvas()->mapSettings().destinationCrs();
+    drawAsPolygon = layerCrs != mapCrs;
+  }
+
+  if ( drawAsPolygon )
+  {
+    std::unique_ptr<QgsLineString> ls( c->curveToLine( ) );
+    mParentTool->addCurve( ls.release() );
+    delete c;
+  }
+  else
+  {
+    mParentTool->addCurve( c );
+  }
 }
 
 void QgsMapToolShapeCircularStringAbstract::clean()

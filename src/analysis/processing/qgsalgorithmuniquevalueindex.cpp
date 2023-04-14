@@ -99,7 +99,7 @@ QVariantMap QgsAddUniqueValueIndexAlgorithm::processAlgorithm( const QVariantMap
   QgsFields summaryFields;
   summaryFields.append( newField );
   summaryFields.append( source->fields().at( fieldIndex ) );
-  std::unique_ptr< QgsFeatureSink > summarySink( parameterAsSink( parameters, QStringLiteral( "SUMMARY_OUTPUT" ), context, summaryDest, summaryFields, QgsWkbTypes::NoGeometry ) );
+  std::unique_ptr< QgsFeatureSink > summarySink( parameterAsSink( parameters, QStringLiteral( "SUMMARY_OUTPUT" ), context, summaryDest, summaryFields, Qgis::WkbType::NoGeometry ) );
 
   QHash< QVariant, int > classes;
 

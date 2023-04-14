@@ -92,7 +92,7 @@ void QgsPostgresDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMe
   if ( QgsPGLayerItem *layerItem = qobject_cast< QgsPGLayerItem * >( item ) )
   {
     const QgsPostgresLayerProperty &layerInfo = layerItem->layerInfo();
-    const QString typeName = layerInfo.isView ? tr( "View" ) : tr( "Table" );
+    const QString typeName = typeNameFromLayer( layerInfo );
 
     QMenu *maintainMenu = new QMenu( tr( "%1 Operations" ).arg( typeName ), menu );
 
@@ -100,14 +100,14 @@ void QgsPostgresDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMe
     connect( actionRenameLayer, &QAction::triggered, this, [layerItem, context] { renameLayer( layerItem, context ); } );
     maintainMenu->addAction( actionRenameLayer );
 
-    if ( !layerInfo.isView )
+    if ( layerInfo.relKind != Qgis::PostgresRelKind::View && layerInfo.relKind != Qgis::PostgresRelKind::MaterializedView )
     {
       QAction *actionTruncateLayer = new QAction( tr( "Truncate %1…" ).arg( typeName ), menu );
       connect( actionTruncateLayer, &QAction::triggered, this, [layerItem, context] { truncateTable( layerItem, context ); } );
       maintainMenu->addAction( actionTruncateLayer );
     }
 
-    if ( layerInfo.isMaterializedView )
+    if ( layerInfo.relKind == Qgis::PostgresRelKind::MaterializedView )
     {
       QAction *actionRefreshMaterializedView = new QAction( tr( "Refresh Materialized View…" ), menu );
       connect( actionRefreshMaterializedView, &QAction::triggered, this, [layerItem, context] { refreshMaterializedView( layerItem, context ); } );
@@ -123,7 +123,7 @@ bool QgsPostgresDataItemGuiProvider::deleteLayer( QgsLayerItem *item, QgsDataIte
   if ( QgsPGLayerItem *layerItem = qobject_cast< QgsPGLayerItem * >( item ) )
   {
     const QgsPostgresLayerProperty &layerInfo = layerItem->layerInfo();
-    const QString typeName = layerInfo.isView ? tr( "View" ) : tr( "Table" );
+    const QString typeName = typeNameFromLayer( layerInfo );
 
     if ( QMessageBox::question( nullptr, tr( "Delete %1" ).arg( typeName ),
                                 QObject::tr( "Are you sure you want to delete %1 '%2.%3'?" ).arg( typeName.toLower(), layerInfo.schemaName, layerInfo.tableName ),
@@ -190,6 +190,30 @@ QWidget *QgsPostgresDataItemGuiProvider::createParamWidget( QgsDataItem *root, Q
   }
 }
 
+QString QgsPostgresDataItemGuiProvider::typeNameFromLayer( const QgsPostgresLayerProperty &layer )
+{
+  switch ( layer.relKind )
+  {
+    case Qgis::PostgresRelKind::View:
+      return tr( "View" );
+
+    case Qgis::PostgresRelKind::MaterializedView:
+      return tr( "Materialized View" );
+
+    case Qgis::PostgresRelKind::NotSet:
+    case Qgis::PostgresRelKind::Unknown:
+    case Qgis::PostgresRelKind::OrdinaryTable:
+    case Qgis::PostgresRelKind::Index:
+    case Qgis::PostgresRelKind::Sequence:
+    case Qgis::PostgresRelKind::CompositeType:
+    case Qgis::PostgresRelKind::ToastTable:
+    case Qgis::PostgresRelKind::ForeignTable:
+    case Qgis::PostgresRelKind::PartitionedTable:
+      return tr( "Table" );
+  }
+
+  BUILTIN_UNREACHABLE
+}
 
 void QgsPostgresDataItemGuiProvider::newConnection( QgsDataItem *item )
 {
@@ -380,8 +404,9 @@ void QgsPostgresDataItemGuiProvider::renameSchema( QgsPGSchemaItem *schemaItem, 
 void QgsPostgresDataItemGuiProvider::renameLayer( QgsPGLayerItem *layerItem, QgsDataItemGuiContext context )
 {
   const QgsPostgresLayerProperty &layerInfo = layerItem->layerInfo();
-  const QString typeName = layerInfo.isView ? tr( "View" ) : tr( "Table" );
-  const QString lowerTypeName = layerInfo.isView ? tr( "view" ) : tr( "table" );
+  const QString typeName = typeNameFromLayer( layerInfo );
+  const QString lowerTypeName = ( layerInfo.relKind == Qgis::PostgresRelKind::View || layerInfo.relKind == Qgis::PostgresRelKind::MaterializedView )
+                                ? tr( "view" ) : tr( "table" );
 
   QgsNewNameDialog dlg( tr( "%1 %2.%3" ).arg( lowerTypeName, layerInfo.schemaName, layerInfo.tableName ), layerInfo.tableName );
   dlg.setWindowTitle( tr( "Rename %1" ).arg( typeName ) );
@@ -408,9 +433,9 @@ void QgsPostgresDataItemGuiProvider::renameLayer( QgsPGLayerItem *layerItem, Qgs
 
   //rename the layer
   QString sql;
-  if ( layerInfo.isView )
+  if ( layerInfo.relKind == Qgis::PostgresRelKind::View || layerInfo.relKind == Qgis::PostgresRelKind::MaterializedView )
   {
-    sql = QStringLiteral( "ALTER %1 VIEW %2 RENAME TO %3" ).arg( layerInfo.relKind == QLatin1String( "m" ) ? QStringLiteral( "MATERIALIZED" ) : QString(),
+    sql = QStringLiteral( "ALTER %1 VIEW %2 RENAME TO %3" ).arg( layerInfo.relKind == Qgis::PostgresRelKind::MaterializedView ? QStringLiteral( "MATERIALIZED" ) : QString(),
           oldName, newName );
   }
   else

@@ -17,9 +17,11 @@
 #include "qgscodeeditorpython.h"
 #include "qgslogger.h"
 #include "qgssymbollayerutils.h"
-#include "qgssettings.h"
 #include "qgis.h"
-
+#include "qgspythonrunner.h"
+#include "qgsprocessingutils.h"
+#include "qgssettingsentryimpl.h"
+#include "qgssettings.h"
 #include <QWidget>
 #include <QString>
 #include <QFont>
@@ -30,6 +32,8 @@
 #include <Qsci/qscilexerpython.h>
 #include <QDesktopServices>
 #include <QKeyEvent>
+#include <QAction>
+#include <QMenu>
 
 const QMap<QString, QString> QgsCodeEditorPython::sCompletionPairs
 {
@@ -40,13 +44,22 @@ const QMap<QString, QString> QgsCodeEditorPython::sCompletionPairs
   {"\"", "\""}
 };
 const QStringList QgsCodeEditorPython::sCompletionSingleCharacters{"`", "*"};
+///@cond PRIVATE
+const QgsSettingsEntryString *QgsCodeEditorPython::settingCodeFormatter = new QgsSettingsEntryString( QStringLiteral( "formatter" ), sTreePythonCodeEditor, QStringLiteral( "autopep8" ), QStringLiteral( "Python code autoformatter" ) );
+const QgsSettingsEntryInteger *QgsCodeEditorPython::settingMaxLineLength = new QgsSettingsEntryInteger( QStringLiteral( "max-line-length" ), sTreePythonCodeEditor, 80, QStringLiteral( "Maximum line length" ) );
+const QgsSettingsEntryBool *QgsCodeEditorPython::settingSortImports = new QgsSettingsEntryBool( QStringLiteral( "sort-imports" ), sTreePythonCodeEditor, true, QStringLiteral( "Whether imports should be sorted when auto-formatting code" ) );
+const QgsSettingsEntryInteger *QgsCodeEditorPython::settingAutopep8Level = new QgsSettingsEntryInteger( QStringLiteral( "autopep8-level" ), sTreePythonCodeEditor, 1, QStringLiteral( "Autopep8 aggressive level" ) );
+const QgsSettingsEntryBool *QgsCodeEditorPython::settingBlackNormalizeQuotes = new QgsSettingsEntryBool( QStringLiteral( "black-normalize-quotes" ), sTreePythonCodeEditor, true, QStringLiteral( "Whether quotes should be normalized when auto-formatting code using black" ) );
+///@endcond PRIVATE
 
-QgsCodeEditorPython::QgsCodeEditorPython( QWidget *parent, const QList<QString> &filenames, Mode mode )
+
+QgsCodeEditorPython::QgsCodeEditorPython( QWidget *parent, const QList<QString> &filenames, Mode mode, Flags flags )
   : QgsCodeEditor( parent,
                    QString(),
                    false,
                    false,
-                   QgsCodeEditor::Flag::CodeFolding, mode )
+                   flags,
+                   mode )
   , mAPISFilesList( filenames )
 {
   if ( !parent )
@@ -57,6 +70,8 @@ QgsCodeEditorPython::QgsCodeEditorPython( QWidget *parent, const QList<QString> 
   setCaretWidth( 2 );
 
   QgsCodeEditorPython::initializeLexer();
+
+  updateCapabilities();
 }
 
 Qgis::ScriptLanguage QgsCodeEditorPython::language() const
@@ -64,11 +79,16 @@ Qgis::ScriptLanguage QgsCodeEditorPython::language() const
   return Qgis::ScriptLanguage::Python;
 }
 
+Qgis::ScriptLanguageCapabilities QgsCodeEditorPython::languageCapabilities() const
+{
+  return mCapabilities;
+}
+
 void QgsCodeEditorPython::initializeLexer()
 {
   // current line
   setEdgeMode( QsciScintilla::EdgeLine );
-  setEdgeColumn( 80 );
+  setEdgeColumn( settingMaxLineLength->value() );
   setEdgeColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::Edge ) );
 
   setWhitespaceVisibility( QsciScintilla::WsVisibleAfterIndent );
@@ -113,8 +133,7 @@ void QgsCodeEditorPython::initializeLexer()
 
   std::unique_ptr< QsciAPIs > apis = std::make_unique< QsciAPIs >( pyLexer );
 
-  const QgsSettings settings;
-
+  QgsSettings settings;
   if ( mAPISFilesList.isEmpty() )
   {
     if ( settings.value( QStringLiteral( "pythonConsole/preloadAPI" ), true ).toBool() )
@@ -203,15 +222,6 @@ void QgsCodeEditorPython::keyPressEvent( QKeyEvent *event )
   if ( isReadOnly() )
   {
     return QgsCodeEditor::keyPressEvent( event );
-  }
-  const bool ctrlModifier = event->modifiers() & Qt::ControlModifier;
-
-  // Toggle comment when user presses  Ctrl+:
-  if ( ctrlModifier && event->key() == Qt::Key_Colon )
-  {
-    event->accept();
-    toggleComment();
-    return;
   }
 
   const QgsSettings settings;
@@ -329,8 +339,12 @@ void QgsCodeEditorPython::keyPressEvent( QKeyEvent *event )
       }
 
       // Else, if not inside a string or comment and an opening character
-      // is entered, also insert the closing character
-      else if ( !isCursorInsideStringLiteralOrComment() && sCompletionPairs.contains( eText ) )
+      // is entered, also insert the closing character, provided the next
+      // character is a space, a colon, or a closing character
+      else if ( !isCursorInsideStringLiteralOrComment()
+                && sCompletionPairs.contains( eText )
+                && ( nextChar.isEmpty() || nextChar.at( 0 ).isSpace() || nextChar == ":" || sCompletionPairs.key( nextChar ) != "" )
+              )
       {
         // Check if user is not entering triple quotes
         if ( !( ( eText == "\"" || eText == "'" ) && prevChar == eText ) )
@@ -346,6 +360,177 @@ void QgsCodeEditorPython::keyPressEvent( QKeyEvent *event )
 
   // Let QgsCodeEditor handle the keyboard event
   return QgsCodeEditor::keyPressEvent( event );
+}
+
+QString QgsCodeEditorPython::reformatCodeString( const QString &string )
+{
+  if ( !QgsPythonRunner::isValid() )
+  {
+    return string;
+  }
+
+  const QString formatter = settingCodeFormatter->value();
+  const int maxLineLength = settingMaxLineLength->value();
+
+  QString newText = string;
+
+  QStringList missingModules;
+
+  if ( settingSortImports->value() )
+  {
+    const QString defineSortImports = QStringLiteral(
+                                        "def __qgis_sort_imports(script):\n"
+                                        "  try:\n"
+                                        "    import isort\n"
+                                        "  except ImportError:\n"
+                                        "    return '_ImportError'\n"
+                                        "  options={'line_length': %1, 'profile': '%2', 'known_first_party': ['qgis', 'console', 'processing', 'plugins']}\n"
+                                        "  return isort.code(script, **options)\n" )
+                                      .arg( maxLineLength )
+                                      .arg( formatter == QLatin1String( "black" ) ? QStringLiteral( "black" ) : QString() );
+
+    if ( !QgsPythonRunner::run( defineSortImports ) )
+    {
+      QgsDebugMsg( QStringLiteral( "Error running script: %1" ).arg( defineSortImports ) );
+      return string;
+    }
+
+    const QString script = QStringLiteral( "__qgis_sort_imports(%1)" ).arg( QgsProcessingUtils::stringToPythonLiteral( newText ) );
+    QString result;
+    if ( QgsPythonRunner::eval( script, result ) )
+    {
+      if ( result == QLatin1String( "_ImportError" ) )
+      {
+        missingModules << QStringLiteral( "isort" );
+      }
+      else
+      {
+        newText = result;
+      }
+    }
+    else
+    {
+      QgsDebugMsg( QStringLiteral( "Error running script: %1" ).arg( script ) );
+      return newText;
+    }
+  }
+
+  if ( formatter == QLatin1String( "autopep8" ) )
+  {
+    const int level = settingAutopep8Level->value();
+
+    const QString defineReformat = QStringLiteral(
+                                     "def __qgis_reformat(script):\n"
+                                     "  try:\n"
+                                     "    import autopep8\n"
+                                     "  except ImportError:\n"
+                                     "    return '_ImportError'\n"
+                                     "  options={'aggressive': %1, 'max_line_length': %2}\n"
+                                     "  return autopep8.fix_code(script, options=options)\n" )
+                                   .arg( level )
+                                   .arg( maxLineLength );
+
+    if ( !QgsPythonRunner::run( defineReformat ) )
+    {
+      QgsDebugMsg( QStringLiteral( "Error running script: %1" ).arg( defineReformat ) );
+      return newText;
+    }
+
+    const QString script = QStringLiteral( "__qgis_reformat(%1)" ).arg( QgsProcessingUtils::stringToPythonLiteral( newText ) );
+    QString result;
+    if ( QgsPythonRunner::eval( script, result ) )
+    {
+      if ( result == QLatin1String( "_ImportError" ) )
+      {
+        missingModules << QStringLiteral( "autopep8" );
+      }
+      else
+      {
+        newText = result;
+      }
+    }
+    else
+    {
+      QgsDebugMsg( QStringLiteral( "Error running script: %1" ).arg( script ) );
+      return newText;
+    }
+  }
+  else if ( formatter == QLatin1String( "black" ) )
+  {
+    const bool normalize = settingBlackNormalizeQuotes->value();
+
+    if ( !checkSyntax() )
+    {
+      showMessage( tr( "Reformat Code" ), tr( "Code formatting failed -- the code contains syntax errors" ), Qgis::MessageLevel::Warning );
+      return newText;
+    }
+
+    const QString defineReformat = QStringLiteral(
+                                     "def __qgis_reformat(script):\n"
+                                     "  try:\n"
+                                     "    import black\n"
+                                     "  except ImportError:\n"
+                                     "    return '_ImportError'\n"
+                                     "  options={'string_normalization': %1, 'line_length': %2}\n"
+                                     "  return black.format_str(script, mode=black.Mode(**options))\n" )
+                                   .arg( QgsProcessingUtils::variantToPythonLiteral( normalize ) )
+                                   .arg( maxLineLength );
+
+    if ( !QgsPythonRunner::run( defineReformat ) )
+    {
+      QgsDebugMsg( QStringLiteral( "Error running script: %1" ).arg( defineReformat ) );
+      return string;
+    }
+
+    const QString script = QStringLiteral( "__qgis_reformat(%1)" ).arg( QgsProcessingUtils::stringToPythonLiteral( newText ) );
+    QString result;
+    if ( QgsPythonRunner::eval( script, result ) )
+    {
+      if ( result == QLatin1String( "_ImportError" ) )
+      {
+        missingModules << QStringLiteral( "black" );
+      }
+      else
+      {
+        newText = result;
+      }
+    }
+    else
+    {
+      QgsDebugMsg( QStringLiteral( "Error running script: %1" ).arg( script ) );
+      return newText;
+    }
+  }
+
+  if ( !missingModules.empty() )
+  {
+    if ( missingModules.size() == 1 )
+    {
+      showMessage( tr( "Reformat Code" ), tr( "The Python module %1 is missing" ).arg( missingModules.at( 0 ) ), Qgis::MessageLevel::Warning );
+    }
+    else
+    {
+      const QString modules = missingModules.join( QLatin1String( ", " ) );
+      showMessage( tr( "Reformat Code" ), tr( "The Python modules %1 are missing" ).arg( modules ), Qgis::MessageLevel::Warning );
+    }
+  }
+
+  return newText;
+}
+
+void QgsCodeEditorPython::populateContextMenu( QMenu *menu )
+{
+  QgsCodeEditor::populateContextMenu( menu );
+
+  QAction *pyQgisHelpAction = new QAction(
+    QgsApplication::getThemeIcon( QStringLiteral( "console/iconHelpConsole.svg" ) ),
+    tr( "Search Selection in PyQGIS Documentation" ),
+    menu );
+  pyQgisHelpAction->setEnabled( hasSelectedText() );
+  connect( pyQgisHelpAction, &QAction::triggered, this, &QgsCodeEditorPython::searchSelectedTextInPyQGISDocs );
+
+  menu->addSeparator();
+  menu->addAction( pyQgisHelpAction );
 }
 
 void QgsCodeEditorPython::autoComplete()
@@ -453,6 +638,79 @@ QString QgsCodeEditorPython::characterAfterCursor() const
     return QString();
   }
   return text( position, position + 1 );
+}
+
+void QgsCodeEditorPython::updateCapabilities()
+{
+  mCapabilities = Qgis::ScriptLanguageCapability::ToggleComment;
+
+  if ( !QgsPythonRunner::isValid() )
+    return;
+
+  mCapabilities |= Qgis::ScriptLanguageCapability::CheckSyntax;
+
+  // we could potentially check for autopep8/black import here and reflect the capability accordingly.
+  // (current approach is to to always indicate this capability and raise a user-friendly warning
+  // when attempting to reformat if the libraries can't be imported)
+  mCapabilities |= Qgis::ScriptLanguageCapability::Reformat;
+}
+
+bool QgsCodeEditorPython::checkSyntax()
+{
+  clearWarnings();
+
+  if ( !QgsPythonRunner::isValid() )
+  {
+    return true;
+  }
+
+  const QString originalText = text();
+
+  const QString defineCheckSyntax = QStringLiteral(
+                                      "def __check_syntax(script):\n"
+                                      "  try:\n"
+                                      "    compile(script.encode('utf-8'), '', 'exec')\n"
+                                      "  except SyntaxError as detail:\n"
+                                      "    eline = detail.lineno or 1\n"
+                                      "    eline -= 1\n"
+                                      "    ecolumn = detail.offset or 1\n"
+                                      "    edescr = detail.msg\n"
+                                      "    return '!!!!'.join([str(eline), str(ecolumn), edescr])\n"
+                                      "  return ''" );
+
+  if ( !QgsPythonRunner::run( defineCheckSyntax ) )
+  {
+    QgsDebugMsg( QStringLiteral( "Error running script: %1" ).arg( defineCheckSyntax ) );
+    return true;
+  }
+
+  const QString script = QStringLiteral( "__check_syntax(%1)" ).arg( QgsProcessingUtils::stringToPythonLiteral( originalText ) );
+  QString result;
+  if ( QgsPythonRunner::eval( script, result ) )
+  {
+    if ( result.size() == 0 )
+    {
+      return true;
+    }
+    else
+    {
+      const QStringList parts = result.split( QStringLiteral( "!!!!" ) );
+      if ( parts.size() == 3 )
+      {
+        const int line = parts.at( 0 ).toInt();
+        const int column = parts.at( 1 ).toInt();
+        addWarning( line, parts.at( 2 ) );
+        setCursorPosition( line, column - 1 );
+        ensureLineVisible( line );
+      }
+      return false;
+    }
+  }
+  else
+  {
+    QgsDebugMsg( QStringLiteral( "Error running script: %1" ).arg( script ) );
+    return true;
+  }
 }
 
 void QgsCodeEditorPython::searchSelectedTextInPyQGISDocs()

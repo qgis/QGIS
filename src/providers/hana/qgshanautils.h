@@ -18,11 +18,8 @@
 #define QGSHANAUTILS_H
 
 #include "qgsdatasourceuri.h"
-#include "qgsfeature.h"
 #include "qgsfields.h"
-#include <qgsunittypes.h>
-#include <qgswkbtypes.h>
-#include <qstring.h>
+#include "qgswkbtypes.h"
 
 #include <QVariant>
 #include <QVersionNumber>
@@ -42,7 +39,7 @@ class QgsHanaUtils
 
     static QString toConstant( const QVariant &value, QVariant::Type type );
 
-    static QString toString( QgsUnitTypes::DistanceUnit unit );
+    static QString toString( Qgis::DistanceUnit unit );
 
     static QString toQString( const NS_ODBC::NString &str );
     static QString toQString( const NS_ODBC::String &str );
@@ -65,8 +62,8 @@ class QgsHanaUtils
     static QVariant toVariant( const NS_ODBC::Binary &value );
 
     static const char16_t *toUtf16( const QString &sql );
-    static bool isGeometryTypeSupported( QgsWkbTypes::Type wkbType );
-    static QgsWkbTypes::Type toWkbType( const NS_ODBC::String &type, const NS_ODBC::Int &hasZ, const NS_ODBC::Int &hasM );
+    static bool isGeometryTypeSupported( Qgis::WkbType wkbType );
+    static Qgis::WkbType toWkbType( const NS_ODBC::String &type, const NS_ODBC::Int &hasZ, const NS_ODBC::Int &hasM );
     static QVersionNumber toHANAVersion( const QString &dbVersion );
     static int toPlanarSRID( int srid );
     static bool convertField( QgsField &field );

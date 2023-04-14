@@ -17,17 +17,11 @@
 #define QGS3DMAPTOOLMEASURELINE_H
 
 #include "qgs3dmaptool.h"
-#include "qgsvector3d.h"
 #include "qgspoint.h"
 
 #include <memory>
 
-namespace Qt3DRender
-{
-  class QPickEvent;
-}
 
-class Qgs3DMapToolMeasureLinePickHandler;
 class Qgs3DMeasureDialog;
 class QgsRubberBand3D;
 
@@ -64,16 +58,13 @@ class Qgs3DMapToolMeasureLine : public Qgs3DMapTool
     QCursor cursor() const override;
 
   private slots:
-    void onTerrainPicked( Qt3DRender::QPickEvent *event );
-    void onTerrainEntityChanged();
-    void handleClick( Qt3DRender::QPickEvent *event, const QgsVector3D &worldIntersection );
-    void onMapSettingsChanged() override;
+    void handleClick( const QPoint &screenPos );
+    void mousePressEvent( QMouseEvent *event ) override;
+    void mouseReleaseEvent( QMouseEvent *event ) override;
+    void mouseMoveEvent( QMouseEvent *event ) override;
+    void keyPressEvent( QKeyEvent *event ) override;
 
   private:
-    std::unique_ptr<Qgs3DMapToolMeasureLinePickHandler> mPickHandler;
-
-    friend class Qgs3DMapToolMeasureLinePickHandler;
-
     bool mIsAlreadyActivated = false;
 
     //! Store points
@@ -87,6 +78,9 @@ class Qgs3DMapToolMeasureLine : public Qgs3DMapTool
 
     std::unique_ptr<QgsRubberBand3D> mRubberBand;
 
+    //! Check if mouse was moved between mousePress and mouseRelease
+    bool mMouseHasMoved = false;
+    QPoint mMouseClickPos;
 };
 
 #endif // QGS3DMAPTOOLMEASURELINE_H

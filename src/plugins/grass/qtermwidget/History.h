@@ -184,7 +184,7 @@ public:
 
 
 private:
-  int bufferIndex(int lineNumber);
+  int bufferIndex(int lineNumber) const;
 
   HistoryLine* _historyBuffer;
   QBitArray _wrappedLine;
@@ -293,7 +293,7 @@ public:
 
   CompactHistoryBlock(){
     blockLength = 4096*64; // 256kb
-    head = (quint8*) mmap(0, blockLength, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANON, -1, 0);
+    head = (quint8*) mmap(nullptr, blockLength, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANON, -1, 0);
     //head = (quint8*) malloc(blockLength);
     Q_ASSERT(head != MAP_FAILED);
     tail = blockStart = head;

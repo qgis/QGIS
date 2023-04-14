@@ -177,7 +177,7 @@ void QgsBrowserLayerProperties::setItem( QgsDataItem *item )
 
   mNoticeLabel->clear();
 
-  const QgsMapLayerType type = layerItem->mapLayerType();
+  const Qgis::LayerType type = layerItem->mapLayerType();
   QString layerMetadata = tr( "Error" );
 
   mLayer.reset();
@@ -188,7 +188,7 @@ void QgsBrowserLayerProperties::setItem( QgsDataItem *item )
   QgsDebugMsgLevel( QStringLiteral( "creating temporary layer using path %1" ).arg( layerItem->path() ), 2 );
   switch ( type )
   {
-    case QgsMapLayerType::RasterLayer:
+    case Qgis::LayerType::Raster:
     {
       QgsDebugMsgLevel( QStringLiteral( "creating raster layer" ), 2 );
       // should copy code from addLayer() to split uri ?
@@ -198,7 +198,7 @@ void QgsBrowserLayerProperties::setItem( QgsDataItem *item )
       break;
     }
 
-    case QgsMapLayerType::MeshLayer:
+    case Qgis::LayerType::Mesh:
     {
       QgsDebugMsgLevel( QStringLiteral( "creating mesh layer" ), 2 );
       QgsMeshLayer::LayerOptions options { QgsProject::instance()->transformContext() };
@@ -207,7 +207,7 @@ void QgsBrowserLayerProperties::setItem( QgsDataItem *item )
       break;
     }
 
-    case QgsMapLayerType::VectorLayer:
+    case Qgis::LayerType::Vector:
     {
       QgsDebugMsgLevel( QStringLiteral( "creating vector layer" ), 2 );
       QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
@@ -216,14 +216,14 @@ void QgsBrowserLayerProperties::setItem( QgsDataItem *item )
       break;
     }
 
-    case QgsMapLayerType::VectorTileLayer:
+    case Qgis::LayerType::VectorTile:
     {
       QgsDebugMsgLevel( QStringLiteral( "creating vector tile layer" ), 2 );
       mLayer = std::make_unique< QgsVectorTileLayer >( layerItem->uri(), layerItem->name() );
       break;
     }
 
-    case QgsMapLayerType::PointCloudLayer:
+    case Qgis::LayerType::PointCloud:
     {
       QgsDebugMsgLevel( QStringLiteral( "creating point cloud layer" ), 2 );
       QgsPointCloudLayer::LayerOptions options { QgsProject::instance()->transformContext() };
@@ -232,9 +232,9 @@ void QgsBrowserLayerProperties::setItem( QgsDataItem *item )
       break;
     }
 
-    case QgsMapLayerType::PluginLayer:
-    case QgsMapLayerType::AnnotationLayer:
-    case QgsMapLayerType::GroupLayer:
+    case Qgis::LayerType::Plugin:
+    case Qgis::LayerType::Annotation:
+    case Qgis::LayerType::Group:
     {
       // TODO: support display of properties for plugin layers
       return;
@@ -258,7 +258,7 @@ void QgsBrowserLayerProperties::setItem( QgsDataItem *item )
     mMapCanvas->setLayers( QList< QgsMapLayer * >() << mLayer.get() );
     mMapCanvas->zoomToFullExtent();
 
-    if ( mAttributesTab && mLayer->type() != QgsMapLayerType::VectorLayer )
+    if ( mAttributesTab && mLayer->type() != Qgis::LayerType::Vector )
     {
       mTabWidget->removeTab( mTabWidget->indexOf( mAttributesTab ) );
       mAttributesTab = nullptr;
@@ -291,7 +291,7 @@ void QgsBrowserLayerProperties::urlClicked( const QUrl &url )
 
 void QgsBrowserLayerProperties::loadAttributeTable()
 {
-  if ( !mLayer || !mLayer->isValid() || mLayer->type() != QgsMapLayerType::VectorLayer )
+  if ( !mLayer || !mLayer->isValid() || mLayer->type() != Qgis::LayerType::Vector )
     return;
 
   // Initialize the cache

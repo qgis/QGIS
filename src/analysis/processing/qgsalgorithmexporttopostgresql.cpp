@@ -117,7 +117,7 @@ bool QgsExportToPostgresqlAlgorithm::prepareAlgorithm( const QVariantMap &parame
   mGeomColumn = parameterAsString( parameters, QStringLiteral( "GEOMETRY_COLUMN" ), context );
   if ( mGeomColumn.isEmpty() )
     mGeomColumn = QStringLiteral( "geom" );
-  if ( mSource->wkbType() == QgsWkbTypes::NoGeometry )
+  if ( mSource->wkbType() == Qgis::WkbType::NoGeometry )
     mGeomColumn.clear();
 
   mCreateIndex = parameterAsBoolean( parameters, QStringLiteral( "CREATEINDEX" ), context );

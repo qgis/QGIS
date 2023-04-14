@@ -33,6 +33,7 @@
 #include "qgseditorwidgetsetup.h"
 #include "qgsdefaultvalue.h"
 #include "qgsfield.h"
+#include "qgis.h"
 
 #include <QString>
 #include <QVariant>
@@ -54,7 +55,8 @@ class QgsFieldPrivate : public QSharedData
                      const QString &typeName = QString(),
                      int len = 0,
                      int prec = 0,
-                     const QString &comment = QString() )
+                     const QString &comment = QString(),
+                     const QMap< int, QVariant > &metadata = QMap< int, QVariant >() )
       : name( name )
       , type( type )
       , subType( subType )
@@ -62,6 +64,7 @@ class QgsFieldPrivate : public QSharedData
       , length( len )
       , precision( prec )
       , comment( comment )
+      , metadata( metadata )
     {
     }
 
@@ -74,10 +77,12 @@ class QgsFieldPrivate : public QSharedData
       , length( other.length )
       , precision( other.precision )
       , comment( other.comment )
+      , metadata( other.metadata )
       , alias( other.alias )
       , flags( other.flags )
       , defaultValueDefinition( other.defaultValueDefinition )
       , constraints( other.constraints )
+      , splitPolicy( other.splitPolicy )
       , isReadOnly( other.isReadOnly )
     {
     }
@@ -89,8 +94,10 @@ class QgsFieldPrivate : public QSharedData
     {
       return ( ( name == other.name ) && ( type == other.type ) && ( subType == other.subType )
                && ( length == other.length ) && ( precision == other.precision )
+               && ( metadata == other.metadata )
                && ( alias == other.alias ) && ( defaultValueDefinition == other.defaultValueDefinition )
                && ( constraints == other.constraints )  && ( flags == other.flags )
+               && ( splitPolicy == other.splitPolicy )
                && ( isReadOnly == other.isReadOnly ) );
     }
 
@@ -115,6 +122,9 @@ class QgsFieldPrivate : public QSharedData
     //! Comment
     QString comment;
 
+    //! Field metadata. Keys should match Qgis::FieldMetadataProperty values, or custom values extended from Qgis::FieldMetadataProperty::CustomProperty
+    QMap< int, QVariant > metadata;
+
     //! Alias for field name (friendly name shown to users)
     QString alias;
 
@@ -128,6 +138,9 @@ class QgsFieldPrivate : public QSharedData
     QgsFieldConstraints constraints;
 
     QgsEditorWidgetSetup editorWidgetSetup;
+
+    //! Split policy
+    Qgis::FieldDomainSplitPolicy splitPolicy = Qgis::FieldDomainSplitPolicy::Duplicate;
 
     //! Read-only
     bool isReadOnly = false;

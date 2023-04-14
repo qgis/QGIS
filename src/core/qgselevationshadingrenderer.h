@@ -16,10 +16,9 @@
 #ifndef QGSELEVATIONSHADINGRENDERER_H
 #define QGSELEVATIONSHADINGRENDERER_H
 
-#include "qdom.h"
-#include "qgsunittypes.h"
 #include "qgis_sip.h"
 #include "qgselevationmap.h"
+#include "qgis.h"
 
 class QImage;
 class QgsElevationMap;
@@ -27,6 +26,7 @@ class QgsRenderContext;
 class QgsMapSettings;
 class QDomDocument;
 class QgsReadWriteContext;
+class QDomElement;
 
 /**
  * \ingroup core
@@ -102,14 +102,14 @@ class CORE_EXPORT QgsElevationShadingRenderer
      *
      * \see setEyeDomeLightingDistanceUnit()
      */
-    QgsUnitTypes::RenderUnit eyeDomeLightingDistanceUnit() const;
+    Qgis::RenderUnit eyeDomeLightingDistanceUnit() const;
 
     /**
      * Sets the \a unit of the distance of the eye dome lighting method set by setEyeDomeLightingDistance().
      *
      * \see eyeDomeLightingDistanceUnit()
      */
-    void setEyeDomeLightingDistanceUnit( QgsUnitTypes::RenderUnit unit );
+    void setEyeDomeLightingDistanceUnit( Qgis::RenderUnit unit );
 
     //! Sets active the hillshading
     void setActiveHillshading( bool active );
@@ -201,7 +201,7 @@ class CORE_EXPORT QgsElevationShadingRenderer
     bool mRenderEdl = true;
     double mEyeDomeLightingStrength = 1000.0;
     double mEyeDomeLightingDistance = 0.5;
-    QgsUnitTypes::RenderUnit mEyeDomeLightingDistanceUnit = QgsUnitTypes::RenderMillimeters;
+    Qgis::RenderUnit mEyeDomeLightingDistanceUnit = Qgis::RenderUnit::Millimeters;
 
     bool mRenderHillshading = false;
     double mLightAltitude = 45.0;

@@ -64,9 +64,9 @@ QgsFields QgsGoogleMapsGeocoder::appendedFields() const
   return fields;
 }
 
-QgsWkbTypes::Type QgsGoogleMapsGeocoder::wkbType() const
+Qgis::WkbType QgsGoogleMapsGeocoder::wkbType() const
 {
-  return QgsWkbTypes::Point;
+  return Qgis::WkbType::Point;
 }
 
 QList<QgsGeocoderResult> QgsGoogleMapsGeocoder::geocodeString( const QString &string, const QgsGeocoderContext &context, QgsFeedback *feedback ) const

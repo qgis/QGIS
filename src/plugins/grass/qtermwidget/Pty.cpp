@@ -33,9 +33,9 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
-#include <errno.h>
+#include <cerrno>
 #include <termios.h>
-#include <signal.h>
+#include <csignal>
 
 // Qt
 #include <QStringList>
@@ -56,7 +56,7 @@ void Pty::setWindowSize(int lines, int cols)
 }
 QSize Pty::windowSize() const
 {
-    return QSize(_windowColumns,_windowLines);
+    return {_windowColumns,_windowLines};
 }
 
 void Pty::setFlowControlEnabled(bool enable)
@@ -141,7 +141,7 @@ void Pty::addEnvironmentVariables(const QStringList& environment)
         QString pair = iter.next();
 
         // split on the first '=' character
-        int pos = pair.indexOf('=');
+        int pos = pair.indexOf(QLatin1Char('='));
 
         if ( pos >= 0 )
         {
@@ -168,11 +168,12 @@ int Pty::start(const QString& program,
   // name of the program to execute, so create a list consisting of all
   // but the first argument to pass to setProgram()
   Q_ASSERT(programArguments.count() >= 1);
-  setProgram(program.toLatin1(),programArguments.mid(1));
+  setProgram(program, programArguments.mid(1));
 
   addEnvironmentVariables(environment);
 
-  setEnv(QStringLiteral("WINDOWID"), QString::number(winid));
+  setEnv(QLatin1String("WINDOWID"), QString::number(winid));
+  setEnv(QLatin1String("COLORTERM"), QLatin1String("truecolor"));
 
   // unless the LANGUAGE environment variable has been set explicitly
   // set it to a null string
@@ -185,7 +186,7 @@ int Pty::start(const QString& program,
   // does not have a translation for
   //
   // BR:149300
-  setEnv(QStringLiteral("LANGUAGE"),QString(),false /* do not overwrite existing value if any */);
+  setEnv(QLatin1String("LANGUAGE"),QString(),false /* do not overwrite existing value if any */);
 
   setUseUtmp(addToUtmp);
 
@@ -268,7 +269,7 @@ void Pty::init()
   _xonXoff = true;
   _utf8 =true;
 
-  connect(pty(), &QIODevice::readyRead , this , &Pty::dataReceived);
+  connect(pty(), SIGNAL(readyRead()) , this , SLOT(dataReceived()));
   setPtyChannels(KPtyProcess::AllChannels);
 }
 
@@ -328,11 +329,12 @@ void Pty::setupChildProcess()
     struct sigaction action;
     sigset_t sigset;
     sigemptyset(&action.sa_mask);
+    sigemptyset(&sigset);
     action.sa_handler = SIG_DFL;
     action.sa_flags = 0;
     for (int signal=1;signal < NSIG; signal++) {
-        sigaction(signal,&action,0L);
+        sigaction(signal,&action,nullptr);
         sigaddset(&sigset, signal);
     }
-    sigprocmask(SIG_UNBLOCK, &sigset, NULL);
+    sigprocmask(SIG_UNBLOCK, &sigset, nullptr);
 }

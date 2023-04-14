@@ -100,8 +100,8 @@ void TestQgsCategorizedRendererWidget::testAddMissingCategories()
   // test with a value list category
   widget.reset();
   renderer = new QgsCategorizedSymbolRenderer( QStringLiteral( "name" ) );
-  renderer->addCategory( QgsRendererCategory( QStringLiteral( "b" ), QgsSymbol::defaultSymbol( QgsWkbTypes::PointGeometry ), QString() ) );
-  renderer->addCategory( QgsRendererCategory( QVariantList() << QStringLiteral( "a" ) << QStringLiteral( "c" ), QgsSymbol::defaultSymbol( QgsWkbTypes::PointGeometry ), QString() ) );
+  renderer->addCategory( QgsRendererCategory( QStringLiteral( "b" ), QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ), QString() ) );
+  renderer->addCategory( QgsRendererCategory( QVariantList() << QStringLiteral( "a" ) << QStringLiteral( "c" ), QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ), QString() ) );
 
   vl->setRenderer( renderer );
 
@@ -284,9 +284,9 @@ void TestQgsCategorizedRendererWidget::model()
 
   QgsCategorizedSymbolRenderer *renderer = new QgsCategorizedSymbolRenderer( QStringLiteral( "name" ) );
   renderer = new QgsCategorizedSymbolRenderer( QStringLiteral( "name" ) );
-  renderer->addCategory( QgsRendererCategory( QStringLiteral( "b" ), QgsSymbol::defaultSymbol( QgsWkbTypes::PointGeometry ), QStringLiteral( "aa" ) ) );
-  renderer->addCategory( QgsRendererCategory( QVariantList() << QStringLiteral( "a" ) << QStringLiteral( "c" ), QgsSymbol::defaultSymbol( QgsWkbTypes::PointGeometry ), QStringLiteral( "list" ) ) );
-  renderer->addCategory( QgsRendererCategory( QStringLiteral( "d" ), QgsSymbol::defaultSymbol( QgsWkbTypes::PointGeometry ), QStringLiteral( "dd" ), false ) );
+  renderer->addCategory( QgsRendererCategory( QStringLiteral( "b" ), QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ), QStringLiteral( "aa" ) ) );
+  renderer->addCategory( QgsRendererCategory( QVariantList() << QStringLiteral( "a" ) << QStringLiteral( "c" ), QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ), QStringLiteral( "list" ) ) );
+  renderer->addCategory( QgsRendererCategory( QStringLiteral( "d" ), QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ), QStringLiteral( "dd" ), false ) );
 
   vl->setRenderer( renderer );
 

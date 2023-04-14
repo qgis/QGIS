@@ -185,7 +185,7 @@ QgsFeatureRenderer *QgsSingleSymbolRenderer::create( QDomElement &element, const
   return r;
 }
 
-QgsFeatureRenderer *QgsSingleSymbolRenderer::createFromSld( QDomElement &element, QgsWkbTypes::GeometryType geomType )
+QgsFeatureRenderer *QgsSingleSymbolRenderer::createFromSld( QDomElement &element, Qgis::GeometryType geomType )
 {
   // XXX this renderer can handle only one Rule!
 
@@ -252,20 +252,20 @@ QgsFeatureRenderer *QgsSingleSymbolRenderer::createFromSld( QDomElement &element
   std::unique_ptr< QgsSymbol > symbol;
   switch ( geomType )
   {
-    case QgsWkbTypes::LineGeometry:
+    case Qgis::GeometryType::Line:
       symbol = std::make_unique< QgsLineSymbol >( layers );
       break;
 
-    case QgsWkbTypes::PolygonGeometry:
+    case Qgis::GeometryType::Polygon:
       symbol = std::make_unique< QgsFillSymbol >( layers );
       break;
 
-    case QgsWkbTypes::PointGeometry:
+    case Qgis::GeometryType::Point:
       symbol = std::make_unique< QgsMarkerSymbol >( layers );
       break;
 
     default:
-      QgsDebugMsg( QStringLiteral( "invalid geometry type: found %1" ).arg( geomType ) );
+      QgsDebugMsg( QStringLiteral( "invalid geometry type: found %1" ).arg( qgsEnumValueToKey( geomType ) ) );
       return nullptr;
   }
 

@@ -442,7 +442,7 @@ bool QgsMapBoxGlStyleConverter::parseFillLayer( const QVariantMap &jsonLayer, Qg
     fillSymbol->setBrushStyle( Qt::NoBrush );
   }
 
-  style.setGeometryType( QgsWkbTypes::PolygonGeometry );
+  style.setGeometryType( Qgis::GeometryType::Polygon );
   style.setSymbol( symbol.release() );
   return true;
 }
@@ -777,7 +777,7 @@ bool QgsMapBoxGlStyleConverter::parseLineLayer( const QVariantMap &jsonLayer, Qg
     }
   }
 
-  style.setGeometryType( QgsWkbTypes::LineGeometry );
+  style.setGeometryType( Qgis::GeometryType::Line );
   style.setSymbol( symbol.release() );
   return true;
 }
@@ -1027,7 +1027,7 @@ bool QgsMapBoxGlStyleConverter::parseCircleLayer( const QVariantMap &jsonLayer, 
     markerSymbolLayer->setStrokeWidthUnit( context.targetUnit() );
   }
 
-  style.setGeometryType( QgsWkbTypes::PointGeometry );
+  style.setGeometryType( Qgis::GeometryType::Point );
   style.setSymbol( symbol.release() );
   return true;
 }
@@ -1375,7 +1375,7 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer( const QVariantMap &jsonLayer, 
   }
 
   // buffer color
-  QColor bufferColor;
+  QColor bufferColor( 0, 0, 0, 0 );
   if ( jsonPaint.contains( QStringLiteral( "text-halo-color" ) ) )
   {
     const QVariant jsonBufferColor = jsonPaint.value( QStringLiteral( "text-halo-color" ) );
@@ -1474,10 +1474,15 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer( const QVariantMap &jsonLayer, 
 
   if ( bufferSize > 0 )
   {
+    // Color and opacity are separate components in QGIS
+    const double opacity = bufferColor.alphaF();
+    bufferColor.setAlphaF( 1.0 );
+
     format.buffer().setEnabled( true );
     format.buffer().setSize( bufferSize );
     format.buffer().setSizeUnit( context.targetUnit() );
     format.buffer().setColor( bufferColor );
+    format.buffer().setOpacity( opacity );
 
     if ( haloBlurSize > 0 )
     {
@@ -1588,15 +1593,15 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer( const QVariantMap &jsonLayer, 
   }
 
   labelSettings.placement = Qgis::LabelPlacement::OverPoint;
-  QgsWkbTypes::GeometryType geometryType = QgsWkbTypes::PointGeometry;
+  Qgis::GeometryType geometryType = Qgis::GeometryType::Point;
   if ( jsonLayout.contains( QStringLiteral( "symbol-placement" ) ) )
   {
     const QString symbolPlacement = jsonLayout.value( QStringLiteral( "symbol-placement" ) ).toString();
     if ( symbolPlacement == QLatin1String( "line" ) )
     {
       labelSettings.placement = Qgis::LabelPlacement::Curved;
-      labelSettings.lineSettings().setPlacementFlags( QgsLabeling::OnLine );
-      geometryType = QgsWkbTypes::LineGeometry;
+      labelSettings.lineSettings().setPlacementFlags( Qgis::LabelLinePlacementFlag::OnLine );
+      geometryType = Qgis::GeometryType::Line;
 
       if ( jsonLayout.contains( QStringLiteral( "text-rotation-alignment" ) ) )
       {
@@ -1646,7 +1651,7 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer( const QVariantMap &jsonLayer, 
           {
             labelSettings.distUnits = context.targetUnit();
             labelSettings.dist = std::abs( textOffset.y() ) - textSize;
-            labelSettings.lineSettings().setPlacementFlags( textOffset.y() > 0.0 ? QgsLabeling::BelowLine : QgsLabeling::AboveLine );
+            labelSettings.lineSettings().setPlacementFlags( textOffset.y() > 0.0 ? Qgis::LabelLinePlacementFlag::BelowLine : Qgis::LabelLinePlacementFlag::AboveLine );
             if ( textSizeProperty && !textOffsetProperty )
             {
               ddLabelProperties.setProperty( QgsPalLayerSettings::LabelDistance, QStringLiteral( "with_variable('text_size',%2,%1*@text_size-@text_size)" ).arg( std::abs( textOffset.y() / textSize ) ).arg( textSizeProperty.asExpression() ) );
@@ -1656,7 +1661,7 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer( const QVariantMap &jsonLayer, 
 
         if ( textOffset.isNull() )
         {
-          labelSettings.lineSettings().setPlacementFlags( QgsLabeling::OnLine );
+          labelSettings.lineSettings().setPlacementFlags( Qgis::LabelLinePlacementFlag::OnLine );
         }
       }
     }
@@ -2024,7 +2029,7 @@ bool QgsMapBoxGlStyleConverter::parseSymbolLayerAsRenderer( const QVariantMap &j
     symbol->setOutputUnit( context.targetUnit() );
     lineSymbol->setOutputUnit( context.targetUnit() );
 
-    rendererStyle.setGeometryType( QgsWkbTypes::LineGeometry );
+    rendererStyle.setGeometryType( Qgis::GeometryType::Line );
     rendererStyle.setSymbol( symbol.release() );
     return true;
   }
@@ -2156,7 +2161,7 @@ bool QgsMapBoxGlStyleConverter::parseSymbolLayerAsRenderer( const QVariantMap &j
 
       QgsMarkerSymbol *markerSymbol = new QgsMarkerSymbol( QgsSymbolLayerList() << rasterMarker );
       rendererStyle.setSymbol( markerSymbol );
-      rendererStyle.setGeometryType( QgsWkbTypes::PointGeometry );
+      rendererStyle.setGeometryType( Qgis::GeometryType::Point );
       return true;
     }
   }
@@ -3545,12 +3550,12 @@ void QgsMapBoxGlStyleConversionContext::pushWarning( const QString &warning )
   mWarnings << warning;
 }
 
-QgsUnitTypes::RenderUnit QgsMapBoxGlStyleConversionContext::targetUnit() const
+Qgis::RenderUnit QgsMapBoxGlStyleConversionContext::targetUnit() const
 {
   return mTargetUnit;
 }
 
-void QgsMapBoxGlStyleConversionContext::setTargetUnit( QgsUnitTypes::RenderUnit targetUnit )
+void QgsMapBoxGlStyleConversionContext::setTargetUnit( Qgis::RenderUnit targetUnit )
 {
   mTargetUnit = targetUnit;
 }

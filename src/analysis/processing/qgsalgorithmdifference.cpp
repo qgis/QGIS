@@ -101,7 +101,7 @@ QVariantMap QgsDifferenceAlgorithm::processAlgorithm( const QVariantMap &paramet
   if ( !sourceB )
     throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "OVERLAY" ) ) );
 
-  const QgsWkbTypes::Type geomType = QgsWkbTypes::promoteNonPointTypesToMulti( sourceA->wkbType() );
+  const Qgis::WkbType geomType = QgsWkbTypes::promoteNonPointTypesToMulti( sourceA->wkbType() );
 
   QString dest;
   std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, sourceA->fields(), geomType, sourceA->sourceCrs() ) );

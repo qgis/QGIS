@@ -41,7 +41,7 @@ Constructor
     virtual QgsLayerTreeView *layerTreeView() = 0;
 
     virtual void addCustomActionForLayerType( QAction *action, QString menu,
-        QgsMapLayerType type, bool allLayers ) = 0;
+        Qgis::LayerType type, bool allLayers ) = 0;
 %Docstring
 Add action to context menu for layers in the layer tree.
 If allLayers is ``True``, then the action will be available for all layers of given type,
@@ -177,6 +177,61 @@ Advanced digitizing dock widget
 Returns a reference to the main window "Project" menu.
 %End
 
+    virtual QMenu *projectImportExportMenu() = 0;
+%Docstring
+Returns a reference to the main window "Import/Export" project menu.
+
+.. seealso:: :py:func:`addProjectImportAction`
+
+.. seealso:: :py:func:`addProjectExportAction`
+
+.. versionadded:: 3.30
+%End
+
+    virtual void addProjectImportAction( QAction *action ) = 0;
+%Docstring
+Adds an ``action`` to the QGIS "Import project" menu.
+
+.. seealso:: :py:func:`removeProjectImportAction`
+
+.. seealso:: :py:func:`addProjectExportAction`
+
+.. versionadded:: 3.30
+%End
+
+    virtual void removeProjectImportAction( QAction *action ) = 0;
+%Docstring
+Adds an ``action`` to the QGIS "Import project" menu.
+
+.. seealso:: :py:func:`addProjectImportAction`
+
+.. seealso:: :py:func:`removeProjectExportAction`
+
+.. versionadded:: 3.30
+%End
+
+    virtual void addProjectExportAction( QAction *action ) = 0;
+%Docstring
+Adds an ``action`` to the QGIS "Export project" menu.
+
+.. seealso:: :py:func:`removeProjectExportAction`
+
+.. seealso:: :py:func:`addProjectImportAction`
+
+.. versionadded:: 3.30
+%End
+
+    virtual void removeProjectExportAction( QAction *action ) = 0;
+%Docstring
+Adds an ``action`` to the QGIS "Export project" menu.
+
+.. seealso:: :py:func:`addProjectExportAction`
+
+.. seealso:: :py:func:`removeProjectImportAction`
+
+.. versionadded:: 3.30
+%End
+
     virtual QMenu *editMenu() = 0;
 %Docstring
 Returns a reference to the main window "Edit" menu.
@@ -279,6 +334,15 @@ Returns a reference to the main window "Layer" toolbar.
 Returns a reference to the main window "Data Source Manager" toolbar.
 
 .. versionadded:: 3.4
+%End
+
+    virtual void openDataSourceManagerPage( const QString &pageName ) = 0;
+%Docstring
+Opens a page in the main window "Data Source Manager" dialog.
+
+This method creates and opens the dialog if it is not already visible.
+
+.. versionadded:: 3.30
 %End
 
     virtual QToolBar *mapNavToolToolBar() = 0;

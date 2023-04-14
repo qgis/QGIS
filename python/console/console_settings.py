@@ -23,7 +23,7 @@ from qgis.PyQt.QtCore import QCoreApplication, QUrl
 from qgis.PyQt.QtWidgets import QWidget, QFileDialog, QMessageBox, QTableWidgetItem, QHBoxLayout
 from qgis.PyQt.QtGui import QIcon, QDesktopServices
 
-from qgis.core import QgsSettings, QgsApplication
+from qgis.core import QgsSettings, QgsApplication, QgsSettingsTree
 from qgis.gui import QgsOptionsPageWidget, QgsOptionsWidgetFactory
 
 from .console_compile_apis import PrepareAPIDialog
@@ -73,6 +73,12 @@ class ConsoleOptionsWidget(QWidget, Ui_SettingsDialogPythonConsole):
         self.parent = parent
         self.setupUi(self)
 
+        self.autopep8Level.setClearValue(1)
+        self.maxLineLength.setClearValue(80)
+
+        # Set up the formatter combo box
+        self.formatter.addItems(["autopep8", "black"])
+
         self.listPath = []
         self.lineEdit.setReadOnly(True)
 
@@ -90,6 +96,8 @@ class ConsoleOptionsWidget(QWidget, Ui_SettingsDialogPythonConsole):
         self.compileAPIs.clicked.connect(self._prepareAPI)
 
         self.generateToken.clicked.connect(self.generateGHToken)
+        self.formatter.currentTextChanged.connect(self.onFormatterChanged)
+        self.onFormatterChanged()
 
     def generateGHToken(self):
         description = self.tr("PyQGIS Console")
@@ -206,6 +214,15 @@ class ConsoleOptionsWidget(QWidget, Ui_SettingsDialogPythonConsole):
         settings.setValue("pythonConsole/autoSurround", self.autoSurround.isChecked())
         settings.setValue("pythonConsole/autoInsertImport", self.autoInsertImport.isChecked())
 
+        settings.setValue("pythonConsole/formatOnSave", self.formatOnSave.isChecked())
+
+        pythonSettingsTreeNode = QgsSettingsTree.node("gui").childNode("code-editor").childNode("python")
+        pythonSettingsTreeNode.childSetting("sort-imports").setValue(self.sortImports.isChecked())
+        pythonSettingsTreeNode.childSetting("formatter").setValue(self.formatter.currentText())
+        pythonSettingsTreeNode.childSetting("autopep8-level").setValue(self.autopep8Level.value())
+        pythonSettingsTreeNode.childSetting("black-normalize-quotes").setValue(self.blackNormalizeQuotes.isChecked())
+        pythonSettingsTreeNode.childSetting("max-line-length").setValue(self.maxLineLength.value())
+
     def restoreSettings(self):
         settings = QgsSettings()
         self.preloadAPI.setChecked(settings.value("pythonConsole/preloadAPI", True, type=bool))
@@ -231,9 +248,29 @@ class ConsoleOptionsWidget(QWidget, Ui_SettingsDialogPythonConsole):
         self.autoSurround.setChecked(settings.value("pythonConsole/autoSurround", True, type=bool))
         self.autoInsertImport.setChecked(settings.value("pythonConsole/autoInsertImport", False, type=bool))
 
+        pythonSettingsTreeNode = QgsSettingsTree.node("gui").childNode("code-editor").childNode("python")
+
+        self.formatOnSave.setChecked(settings.value("pythonConsole/formatOnSave", False, type=bool))
+        self.sortImports.setChecked(pythonSettingsTreeNode.childSetting("sort-imports").value())
+        self.formatter.setCurrentText(pythonSettingsTreeNode.childSetting("formatter").value())
+        self.autopep8Level.setValue(pythonSettingsTreeNode.childSetting("autopep8-level").value())
+        self.blackNormalizeQuotes.setChecked(pythonSettingsTreeNode.childSetting("black-normalize-quotes").value())
+        self.maxLineLength.setValue(pythonSettingsTreeNode.childSetting("max-line-length").value())
+
         if settings.value("pythonConsole/autoCompleteSource") == 'fromDoc':
             self.autoCompFromDoc.setChecked(True)
         elif settings.value("pythonConsole/autoCompleteSource") == 'fromAPI':
             self.autoCompFromAPI.setChecked(True)
         elif settings.value("pythonConsole/autoCompleteSource") == 'fromDocAPI':
             self.autoCompFromDocAPI.setChecked(True)
+
+    def onFormatterChanged(self):
+        """ Toggle formatter-specific options visibility when the formatter is changed """
+        if self.formatter.currentText() == 'autopep8':
+            self.autopep8Level.setVisible(True)
+            self.autopep8LevelLabel.setVisible(True)
+            self.blackNormalizeQuotes.setVisible(False)
+        else:  # black
+            self.autopep8Level.setVisible(False)
+            self.autopep8LevelLabel.setVisible(False)
+            self.blackNormalizeQuotes.setVisible(True)

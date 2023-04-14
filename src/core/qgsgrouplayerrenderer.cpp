@@ -50,7 +50,7 @@ QgsGroupLayerRenderer::QgsGroupLayerRenderer( QgsGroupLayer *layer, QgsRenderCon
 
     mChildRenderers.emplace_back( childLayer->createMapRenderer( context ) );
     mRendererCompositionModes.emplace_back( childLayer->blendMode() );
-    mRendererOpacity.emplace_back( childLayer->type() != QgsMapLayerType::RasterLayer ? childLayer->opacity() : 1.0 );
+    mRendererOpacity.emplace_back( childLayer->type() != Qgis::LayerType::Raster ? childLayer->opacity() : 1.0 );
     mTransforms.emplace_back( layerToDestTransform );
   }
 

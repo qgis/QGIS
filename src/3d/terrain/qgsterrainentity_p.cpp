@@ -25,12 +25,12 @@
 #include "qgsterraintexturegenerator_p.h"
 #include "qgsterraintextureimage_p.h"
 #include "qgsterraintileentity_p.h"
+#include "qgs3dutils.h"
 
 #include "qgscoordinatetransform.h"
 
 #include <Qt3DCore/QTransform>
 #include <Qt3DRender/QGeometryRenderer>
-#include <Qt3DRender/QObjectPicker>
 
 
 ///@cond PRIVATE
@@ -74,16 +74,9 @@ QgsTerrainEntity::QgsTerrainEntity( const Qgs3DMapSettings &map, Qt3DCore::QNode
 
   connectToLayersRepaintRequest();
 
-  mTerrainToMapTransform = new QgsCoordinateTransform( map.terrainGenerator()->crs(), map.crs(), map.transformContext() );
-
   mTextureGenerator = new QgsTerrainTextureGenerator( map );
 
   mUpdateJobFactory.reset( new TerrainMapUpdateJobFactory( mTextureGenerator ) );
-
-  mTerrainPicker = new Qt3DRender::QObjectPicker;
-  // add camera control's terrain picker as a component to be able to capture height where mouse was
-  // pressed in order to correctly pan camera when dragging mouse
-  addComponent( mTerrainPicker );
 
   mTerrainTransform = new Qt3DCore::QTransform;
   mTerrainTransform->setScale( 1.0f );
@@ -97,42 +90,70 @@ QgsTerrainEntity::~QgsTerrainEntity()
   cancelActiveJobs();
 
   delete mTextureGenerator;
-  delete mTerrainToMapTransform;
 }
 
-bool QgsTerrainEntity::rayIntersection( const QgsRayCastingUtils::Ray3D &ray, QVector3D &intersectionPoint )
+QVector<QgsRayCastingUtils::RayHit> QgsTerrainEntity::rayIntersection( const QgsRayCastingUtils::Ray3D &ray, const QgsRayCastingUtils::RayCastContext &context ) const
 {
-  if ( !rootNode() )
-    return false;
-
-  if ( mMap.terrainGenerator()->type() != QgsTerrainGenerator::Dem )
-    return false;  // currently only working with DEM terrain
+  Q_UNUSED( context )
+  QVector<QgsRayCastingUtils::RayHit> result;
 
   float minDist = -1;
-
-  QList<QgsChunkNode *> lst = activeNodes();
-  for ( QgsChunkNode *n : lst )
+  QVector3D intersectionPoint;
+  switch ( mMap.terrainGenerator()->type() )
   {
-    if ( n->entity() && ( minDist < 0 || n->bbox().distanceFromPoint( ray.origin() ) < minDist ) && QgsRayCastingUtils::rayBoxIntersection( ray, n->bbox() ) )
+    case QgsTerrainGenerator::Flat:
     {
-      Qt3DRender::QGeometryRenderer *rend = n->entity()->findChild<Qt3DRender::QGeometryRenderer *>();
-      auto *geom = rend->geometry();
-      DemTerrainTileGeometry *demGeom = static_cast<DemTerrainTileGeometry *>( geom );
-      Qt3DCore::QTransform *tr = n->entity()->findChild<Qt3DCore::QTransform *>();
-      QVector3D nodeIntPoint;
-      if ( demGeom->rayIntersection( ray, tr->matrix(), nodeIntPoint ) )
+      if ( ray.direction().y() == 0 )
+        break;  // the ray is parallel to the flat terrain
+
+      const float dist = static_cast<float>( mMap.terrainElevationOffset() - ray.origin().y() ) / ray.direction().y();
+      const QVector3D terrainPlanePoint = ray.origin() + ray.direction() * dist;
+      const QgsVector3D mapCoords = Qgs3DUtils::worldToMapCoordinates( terrainPlanePoint, mMap.origin() );
+      if ( mMap.extent().contains( mapCoords.x(), mapCoords.y() ) )
       {
-        float dist = ( ray.origin() - intersectionPoint ).length();
-        if ( minDist < 0 || dist < minDist )
+        minDist = dist;
+        intersectionPoint = terrainPlanePoint;
+      }
+      break;
+    }
+    case QgsTerrainGenerator::Dem:
+    {
+      const QList<QgsChunkNode *> activeNodes = this->activeNodes();
+      for ( QgsChunkNode *node : activeNodes )
+      {
+        if ( node->entity() &&
+             ( minDist < 0 || node->bbox().distanceFromPoint( ray.origin() ) < minDist ) &&
+             QgsRayCastingUtils::rayBoxIntersection( ray, node->bbox() ) )
         {
-          minDist = dist;
-          intersectionPoint = nodeIntPoint;
+          Qt3DRender::QGeometryRenderer *rend = node->entity()->findChild<Qt3DRender::QGeometryRenderer *>();
+          auto *geom = rend->geometry();
+          Qt3DCore::QTransform *tr = node->entity()->findChild<Qt3DCore::QTransform *>();
+          QVector3D nodeIntPoint;
+          DemTerrainTileGeometry *demGeom = static_cast<DemTerrainTileGeometry *>( geom );
+          if ( demGeom->rayIntersection( ray, tr->matrix(), nodeIntPoint ) )
+          {
+            const float dist = ( ray.origin() - intersectionPoint ).length();
+            if ( minDist < 0 || dist < minDist )
+            {
+              minDist = dist;
+              intersectionPoint = nodeIntPoint;
+            }
+          }
         }
       }
+      break;
     }
+    case QgsTerrainGenerator::Mesh:
+    case QgsTerrainGenerator::Online:
+      // not supported
+      break;
   }
-
-  return minDist >= 0;
+  if ( !intersectionPoint.isNull() )
+  {
+    QgsRayCastingUtils::RayHit hit( minDist, intersectionPoint );
+    result.append( hit );
+  }
+  return result;
 }
 
 void QgsTerrainEntity::onShowBoundingBoxesChanged()

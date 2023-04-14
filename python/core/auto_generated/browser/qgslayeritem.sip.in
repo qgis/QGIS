@@ -40,9 +40,9 @@ Constructor for QgsLayerItem.
 
 
 
-    QgsMapLayerType mapLayerType() const;
+    Qgis::LayerType mapLayerType() const;
 %Docstring
-Returns :py:class:`QgsMapLayerType`
+Returns the associated map layer type.
 %End
 
     static Qgis::BrowserLayerType typeFromMapLayer( QgsMapLayer *layer );
@@ -110,7 +110,7 @@ Use :py:class:`QgsDataItemGuiProvider`.deleteLayer instead
 
   public:
 
-    static QIcon iconForWkbType( QgsWkbTypes::Type type );
+    static QIcon iconForWkbType( Qgis::WkbType type );
 %Docstring
 Returns the icon for a vector layer whose geometry type is provided.
 

@@ -19,7 +19,6 @@ using namespace nlohmann;
 #include "qgslogger.h"
 #include "qgsoapifitemsrequest.h"
 #include "qgsoapifutils.h"
-#include "qgswfsconstants.h"
 #include "qgsproviderregistry.h"
 
 #include "cpl_vsi.h"

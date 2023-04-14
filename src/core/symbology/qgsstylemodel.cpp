@@ -408,7 +408,7 @@ QVariant QgsStyleModel::data( const QModelIndex &index, int role ) const
       switch ( entityType )
       {
         case QgsStyle::LabelSettingsEntity:
-          return mStyle->labelSettingsLayerType( name );
+          return static_cast< int >( mStyle->labelSettingsLayerType( name ) );
 
         case QgsStyle::Symbol3DEntity:
         case QgsStyle::SymbolEntity:
@@ -429,9 +429,9 @@ QVariant QgsStyleModel::data( const QModelIndex &index, int role ) const
         case QgsStyle::Symbol3DEntity:
         {
           QVariantList res;
-          const QList< QgsWkbTypes::GeometryType > types = mStyle->symbol3DCompatibleGeometryTypes( name );
+          const QList< Qgis::GeometryType > types = mStyle->symbol3DCompatibleGeometryTypes( name );
           res.reserve( types.size() );
-          for ( QgsWkbTypes::GeometryType type : types )
+          for ( Qgis::GeometryType type : types )
           {
             res << static_cast< int >( type );
           }
@@ -840,7 +840,7 @@ bool QgsStyleProxyModel::filterAcceptsRow( int source_row, const QModelIndex &so
   if ( mSymbolTypeFilterEnabled && symbolType != mSymbolType )
     return false;
 
-  if ( mLayerType != QgsWkbTypes::UnknownGeometry )
+  if ( mLayerType != Qgis::GeometryType::Unknown )
   {
     switch ( styleEntityType )
     {
@@ -854,7 +854,7 @@ bool QgsStyleProxyModel::filterAcceptsRow( int source_row, const QModelIndex &so
 
       case QgsStyle::LabelSettingsEntity:
       {
-        if ( mLayerType != static_cast< QgsWkbTypes::GeometryType >( sourceModel()->data( index, QgsStyleModel::LayerTypeRole ).toInt() ) )
+        if ( mLayerType != static_cast< Qgis::GeometryType >( sourceModel()->data( index, QgsStyleModel::LayerTypeRole ).toInt() ) )
           return false;
         break;
       }
@@ -862,7 +862,7 @@ bool QgsStyleProxyModel::filterAcceptsRow( int source_row, const QModelIndex &so
       case QgsStyle::Symbol3DEntity:
       {
         const QVariantList types = sourceModel()->data( index, QgsStyleModel::CompatibleGeometryTypesRole ).toList();
-        if ( !types.empty() && !types.contains( mLayerType ) )
+        if ( !types.empty() && !types.contains( QVariant::fromValue( mLayerType ) ) )
           return false;
         break;
       }
@@ -961,12 +961,12 @@ void QgsStyleProxyModel::setSymbolTypeFilterEnabled( bool enabled )
   invalidateFilter();
 }
 
-QgsWkbTypes::GeometryType QgsStyleProxyModel::layerType() const
+Qgis::GeometryType QgsStyleProxyModel::layerType() const
 {
   return mLayerType;
 }
 
-void QgsStyleProxyModel::setLayerType( QgsWkbTypes::GeometryType type )
+void QgsStyleProxyModel::setLayerType( Qgis::GeometryType type )
 {
   mLayerType = type;
   invalidateFilter();

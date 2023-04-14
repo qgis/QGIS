@@ -106,7 +106,6 @@ represents.
 .. versionadded:: 3.12
 %End
 
-
     QString displayType( bool showConstraints = false ) const;
 %Docstring
 Returns the type to use when displaying this field, including the length and precision of the datatype if applicable.
@@ -114,6 +113,22 @@ Returns the type to use when displaying this field, including the length and pre
 This will be used when the full datatype with details has to displayed to the user.
 
 .. seealso:: :py:func:`type`
+
+.. seealso:: :py:func:`friendlyTypeString`
+
+.. versionadded:: 3.14
+%End
+
+    QString friendlyTypeString() const;
+%Docstring
+Returns a user friendly, translated representation of the field type.
+
+Unlike :py:func:`~QgsField.displayType`, this method only returns strings representing the field type and does not include
+length, precision or constraint information.
+
+.. seealso:: :py:func:`type`
+
+.. seealso:: :py:func:`displayType`
 
 .. versionadded:: 3.14
 %End
@@ -158,6 +173,48 @@ Gets the precision of the field. Not all field types have a related precision.
     QString comment() const;
 %Docstring
 Returns the field comment
+%End
+
+    QMap< int, QVariant > metadata() const;
+%Docstring
+Returns the map of field metadata.
+
+Map keys should match values from the :py:class:`Qgis`.FieldMetadataProperty enum.
+
+.. seealso:: :py:func:`setMetadata`
+
+.. versionadded:: 3.32
+%End
+
+
+    QVariant metadata( int property ) const;
+%Docstring
+Returns a specific metadata ``property``.
+
+.. seealso:: :py:func:`setMetadata`
+
+.. versionadded:: 3.32
+%End
+
+    void setMetadata( const QMap< int, QVariant > metadata );
+%Docstring
+Sets the map of field ``metadata``.
+
+Map keys should match values from the :py:class:`Qgis`.FieldMetadataProperty enum.
+
+.. seealso:: :py:func:`metadata`
+
+.. versionadded:: 3.32
+%End
+
+
+    void setMetadata( int property, const QVariant &value );
+%Docstring
+Sets a metadata ``property`` to ``value``.
+
+.. seealso:: :py:func:`metadata`
+
+.. versionadded:: 3.32
 %End
 
     bool isNumeric() const;
@@ -390,11 +447,32 @@ providers which support generated fields for instance.
 .. versionadded:: 3.18
 %End
 
+    Qgis::FieldDomainSplitPolicy splitPolicy() const;
+%Docstring
+Returns the field's split policy, which indicates how field values should
+be handled during a split operation.
+
+.. seealso:: :py:func:`setSplitPolicy`
+
+.. versionadded:: 3.30
+%End
+
+    void setSplitPolicy( Qgis::FieldDomainSplitPolicy policy );
+%Docstring
+Sets the field's split ``policy``, which indicates how field values should
+be handled during a split operation.
+
+.. seealso:: :py:func:`splitPolicy`
+
+.. versionadded:: 3.30
+%End
+
     SIP_PYOBJECT __repr__();
 %MethodCode
     QString str = QStringLiteral( "<QgsField: %1 (%2)>" ).arg( sipCpp->name() ).arg( sipCpp->typeName() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
+
 
 }; // class QgsField
 

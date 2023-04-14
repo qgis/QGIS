@@ -33,6 +33,7 @@ task manager.
 Constructor for QgsProxyProgressTask, with the specified ``description``.
 %End
 
+
     void finalize( bool result );
 %Docstring
 Finalizes the task, with the specified ``result``.
@@ -86,6 +87,7 @@ when it goes out of scope.
 Constructor for QgsScopedProxyProgressTask, with the specified ``description``.
 %End
 
+
     ~QgsScopedProxyProgressTask();
 
     void setProgress( double progress );
@@ -93,6 +95,9 @@ Constructor for QgsScopedProxyProgressTask, with the specified ``description``.
 Sets the ``progress`` (from 0 to 100) for the proxied operation.
 %End
 
+  private:
+    //! QgsScopedProxyProgressTask cannot be copied
+    QgsScopedProxyProgressTask( const QgsScopedProxyProgressTask &other );
 };
 
 /************************************************************************

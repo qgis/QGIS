@@ -63,8 +63,8 @@ class CORE_EXPORT QgsTriangle : public QgsPolygon
      */
     explicit QgsTriangle( QPointF p1, QPointF p2, QPointF p3 ) SIP_HOLDGIL;
 
-    bool operator==( const QgsTriangle &other ) const SIP_HOLDGIL;
-    bool operator!=( const QgsTriangle &other ) const SIP_HOLDGIL;
+    bool operator==( const QgsAbstractGeometry &other ) const override SIP_HOLDGIL;
+    bool operator!=( const QgsAbstractGeometry &other ) const override SIP_HOLDGIL;
 
     QString geometryType() const override SIP_HOLDGIL;
     QgsTriangle *clone() const override SIP_FACTORY;
@@ -456,7 +456,7 @@ class CORE_EXPORT QgsTriangle : public QgsPolygon
      */
     inline static const QgsTriangle *cast( const QgsAbstractGeometry *geom )
     {
-      if ( geom && QgsWkbTypes::flatType( geom->wkbType() ) == QgsWkbTypes::Triangle )
+      if ( geom && QgsWkbTypes::flatType( geom->wkbType() ) == Qgis::WkbType::Triangle )
         return static_cast<const QgsTriangle *>( geom );
       return nullptr;
     }

@@ -64,7 +64,7 @@ for tracking the mouse while drawing polylines or polygons.
       ICON_SVG
     };
 
-    QgsRubberBand( QgsMapCanvas *mapCanvas /TransferThis/, QgsWkbTypes::GeometryType geometryType = QgsWkbTypes::LineGeometry );
+    QgsRubberBand( QgsMapCanvas *mapCanvas /TransferThis/, Qgis::GeometryType geometryType = Qgis::GeometryType::Line );
 %Docstring
 Creates a new RubberBand.
 
@@ -72,7 +72,7 @@ Creates a new RubberBand.
                   Its CRS will be used to map points onto screen coordinates.
                   The ownership is transferred to this canvas.
 :param geometryType: Defines how the data should be drawn onto the screen.
-                     :py:class:`QgsWkbTypes`.LineGeometry, :py:class:`QgsWkbTypes`.PolygonGeometry or :py:class:`QgsWkbTypes`.PointGeometry
+                     :py:class:`Qgis`.GeometryType.Line, :py:class:`Qgis`.GeometryType.Polygon or :py:class:`Qgis`.GeometryType.Point
 %End
     ~QgsRubberBand();
 
@@ -183,12 +183,12 @@ Sets the style of the line
 Sets the style of the brush
 %End
 
-    void reset( QgsWkbTypes::GeometryType geometryType = QgsWkbTypes::LineGeometry );
+    void reset( Qgis::GeometryType geometryType = Qgis::GeometryType::Line );
 %Docstring
 Clears all the geometries in this rubberband.
 Sets the representation type according to geometryType.
 
-:param geometryType: Defines how the data should be drawn onto the screen. (Use Qgis.Line, Qgis.Polygon or Qgis.Point)
+:param geometryType: Defines how the data should be drawn onto the screen. (Use :py:class:`Qgis`.Line, :py:class:`Qgis`.Polygon or :py:class:`Qgis`.Point)
 %End
 
     void addPoint( const QgsPointXY &p, bool doUpdate = true, int geometryIndex = 0, int ringIndex = 0 );

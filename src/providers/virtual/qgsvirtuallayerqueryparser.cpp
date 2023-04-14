@@ -80,7 +80,7 @@ namespace QgsVirtualLayerQueryParser
 
     // look for special comments in SQL
     // a column name followed by /*:type*/
-    const thread_local QRegularExpression rx( "([a-zA-Z_\x80-\xFF][a-zA-Z0-9_\x80-\xFF]*)\\s*/\\*:(int|real|text|((?:multi)?(?:point|linestring|polygon)):(\\d+))\\s*\\*/", QRegularExpression::CaseInsensitiveOption );
+    const thread_local QRegularExpression rx( "([a-zA-Z_\\x80-\\xFF][a-zA-Z0-9_\\x80-\\xFF]*)\\s*/\\*:(int|real|text|((?:multi)?(?:point|linestring|polygon)):(\\d+))\\s*\\*/", QRegularExpression::CaseInsensitiveOption );
     int pos = 0;
 
     QRegularExpressionMatch match = rx.match( query, pos );
@@ -100,7 +100,7 @@ namespace QgsVirtualLayerQueryParser
       {
         // there should be 2 more captures
         def.setGeometry( QgsWkbTypes::parseType( match.captured( 3 ) ) );
-        def.setSrid( static_cast<QgsWkbTypes::Type>( match.captured( 4 ).toLong() ) );
+        def.setSrid( match.captured( 4 ).toLong() );
       }
       defs[column] = def;
 
@@ -133,7 +133,7 @@ namespace QgsVirtualLayerQueryParser
       const QRegularExpressionMatch match = geometryTypeRx.match( columnType );
       if ( match.hasMatch() )
       {
-        const QgsWkbTypes::Type type = static_cast<QgsWkbTypes::Type>( match.captured( 1 ).toLong() );
+        const Qgis::WkbType type = static_cast<Qgis::WkbType>( match.captured( 1 ).toLong() );
         const long srid = match.captured( 2 ).toLong();
         d.setGeometry( type );
         d.setSrid( srid );
@@ -246,8 +246,8 @@ namespace QgsVirtualLayerQueryParser
             {
               // might be a geometry, parse the type
               const QByteArray ba( q.columnBlob( i ) );
-              const QPair<QgsWkbTypes::Type, long> p( spatialiteBlobGeometryType( ba.constData(), ba.size() ) );
-              if ( p.first != QgsWkbTypes::NoGeometry )
+              const QPair<Qgis::WkbType, long> p( spatialiteBlobGeometryType( ba.constData(), ba.size() ) );
+              if ( p.first != Qgis::WkbType::NoGeometry )
               {
                 tableDef[colIdx].setGeometry( p.first );
                 tableDef[colIdx].setSrid( p.second );

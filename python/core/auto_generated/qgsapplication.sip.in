@@ -695,7 +695,7 @@ Set maximum concurrent thread count
 
 .. note::
 
-   must be between 1 and \#cores, -1 means use all available cores
+   must be between 2 and \#cores, -1 means use all available cores
 
 .. versionadded:: 2.4
 %End
@@ -895,6 +895,13 @@ Using this shared model instead of creating a new :py:class:`QgsStyleModel` impr
 Returns the application font manager, which manages available fonts and font installation for the QGIS instance.
 
 .. versionadded:: 3.28
+%End
+
+    static QgsSensorRegistry *sensorRegistry() /KeepReference/;
+%Docstring
+Returns the application's sensor registry, used for sensor types.
+
+.. versionadded:: 3.32
 %End
 
     static QgsMessageLog *messageLog();

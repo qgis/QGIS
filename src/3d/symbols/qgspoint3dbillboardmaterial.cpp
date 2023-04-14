@@ -23,12 +23,9 @@
 #include <Qt3DRender/QNoDepthMask>
 #include <QUrl>
 
-#include "qgslogger.h"
 #include "qgspoint3dbillboardmaterial.h"
 #include "qgsterraintextureimage_p.h"
-#include "qgsmarkersymbollayer.h"
 #include "qgssymbollayerutils.h"
-#include "qgssettings.h"
 #include "qgs3dmapsettings.h"
 #include "qgsmarkersymbol.h"
 
@@ -84,6 +81,8 @@ QgsPoint3DBillboardMaterial::QgsPoint3DBillboardMaterial()
   setEffect( effect );
 }
 
+QgsPoint3DBillboardMaterial::~QgsPoint3DBillboardMaterial() = default;
+
 void QgsPoint3DBillboardMaterial::setSize( const QSizeF size )
 {
   mSize->setValue( size );
@@ -117,7 +116,7 @@ void QgsPoint3DBillboardMaterial::setTexture2DFromImage( QImage image, double si
 void QgsPoint3DBillboardMaterial::useDefaultSymbol( const Qgs3DMapSettings &map, bool selected )
 {
   // Default texture
-  const std::unique_ptr< QgsMarkerSymbol> defaultSymbol( static_cast<QgsMarkerSymbol *>( QgsSymbol::defaultSymbol( QgsWkbTypes::PointGeometry ) ) );
+  const std::unique_ptr< QgsMarkerSymbol> defaultSymbol( static_cast<QgsMarkerSymbol *>( QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ) ) );
   setTexture2DFromSymbol( defaultSymbol.get(), map, selected );
 }
 
@@ -126,6 +125,8 @@ void QgsPoint3DBillboardMaterial::setTexture2DFromSymbol( QgsMarkerSymbol *marke
   QgsRenderContext context;
   context.setSelectionColor( map.selectionColor() );
   context.setScaleFactor( map.outputDpi() / 25.4 );
+  context.setFlag( Qgis::RenderContextFlag::Antialiasing );
+  context.setFlag( Qgis::RenderContextFlag::HighQualityImageTransforms );
   const double pixelSize = context.convertToPainterUnits( markerSymbol->size( context ),  markerSymbol->sizeUnit() );
 
   // This number is an max estimation ratio between stroke width and symbol size.

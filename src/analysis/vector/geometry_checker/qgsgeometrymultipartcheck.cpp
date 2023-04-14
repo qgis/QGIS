@@ -13,7 +13,6 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsgeometrycheckcontext.h"
 #include "qgsgeometrymultipartcheck.h"
 #include "qgsfeaturepool.h"
 
@@ -22,7 +21,7 @@ QList<QgsSingleGeometryCheckError *> QgsGeometryMultipartCheck::processGeometry(
   QList<QgsSingleGeometryCheckError *> errors;
 
   const QgsAbstractGeometry *geom = geometry.constGet();
-  const QgsWkbTypes::Type type = geom->wkbType();
+  const Qgis::WkbType type = geom->wkbType();
   if ( geom->partCount() == 1 && QgsWkbTypes::isMultiType( type ) )
   {
     errors.append( new QgsSingleGeometryCheckError( this, geometry, geometry ) );

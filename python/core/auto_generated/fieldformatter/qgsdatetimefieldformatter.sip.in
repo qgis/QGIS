@@ -22,11 +22,13 @@ the field configuration.
 #include "qgsdatetimefieldformatter.h"
 %End
   public:
-    static QString DATE_FORMAT;
+    static const QString DATE_FORMAT;
     static const QString TIME_FORMAT;
-    static QString DATETIME_FORMAT;
+    static const QString DATETIME_FORMAT;
     static const QString QT_ISO_FORMAT;
     static const QString DISPLAY_FOR_ISO_FORMAT;
+    static QString DATE_DISPLAY_FORMAT; //! Date display format is localized by applyLocaleChange \see applyLocaleChange \since QGIS 3.30
+    static QString DATETIME_DISPLAY_FORMAT; //! Date time display format is localized by applyLocaleChange \see applyLocaleChange \since QGIS 3.30
 
     QgsDateTimeFieldFormatter();
 %Docstring
@@ -47,6 +49,18 @@ The type is expected to be one of
 - QVariant.DateTime
 - QVariant.Date
 - QVariant.Time
+%End
+
+    static QString defaultDisplayFormat( QVariant::Type type );
+%Docstring
+Gets the default display format in function of the type.
+The type is expected to be one of
+
+- QVariant.DateTime
+- QVariant.Date
+- QVariant.Time
+
+.. versionadded:: 3.30
 %End
 
 };

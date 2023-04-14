@@ -47,14 +47,14 @@ Sets the associated data provider key.
 .. seealso:: :py:func:`providerKey`
 %End
 
-    QgsMapLayerType type() const;
+    Qgis::LayerType type() const;
 %Docstring
 Returns the layer type.
 
 .. seealso:: :py:func:`setType`
 %End
 
-    void setType( QgsMapLayerType type );
+    void setType( Qgis::LayerType type );
 %Docstring
 Sets the layer ``type``.
 
@@ -179,7 +179,7 @@ the hierarchy of a dataset which organises layers in schemas or in an internal f
 %Docstring
 Returns the layer's feature count.
 
-Will return Qgis.FeatureCountState.UnknownCount or Qgis.FeatureCountState.Uncounted if no feature count is applicable or available.
+Will return :py:class:`Qgis`.FeatureCountState.UnknownCount or :py:class:`Qgis`.FeatureCountState.Uncounted if no feature count is applicable or available.
 
 .. seealso:: :py:func:`setFeatureCount`
 %End
@@ -188,19 +188,19 @@ Will return Qgis.FeatureCountState.UnknownCount or Qgis.FeatureCountState.Uncoun
 %Docstring
 Sets the layer's feature ``count``.
 
-Set to Qgis.FeatureCountState.UnknownCount or Qgis.FeatureCountState.Uncounted if no feature count is applicable or available.
+Set to :py:class:`Qgis`.FeatureCountState.UnknownCount or :py:class:`Qgis`.FeatureCountState.Uncounted if no feature count is applicable or available.
 
 .. seealso:: :py:func:`featureCount`
 %End
 
-    QgsWkbTypes::Type wkbType() const;
+    Qgis::WkbType wkbType() const;
 %Docstring
 Returns the layer's WKB type, or :py:class:`QgsWkbTypes`.Unknown if the WKB type is not application or unknown.
 
 .. seealso:: :py:func:`setWkbType`
 %End
 
-    void setWkbType( QgsWkbTypes::Type type );
+    void setWkbType( Qgis::WkbType type );
 %Docstring
 Set the layer's WKB ``type``.
 

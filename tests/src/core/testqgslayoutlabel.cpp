@@ -24,6 +24,8 @@
 #include "qgsprintlayout.h"
 #include "qgslayoutatlas.h"
 #include "qgslayoutpagecollection.h"
+#include "qgslayoutreportcontext.h"
+#include "qgslayoutrendercontext.h"
 
 #include <QObject>
 #include "qgstest.h"
@@ -273,7 +275,7 @@ void TestQgsLayoutLabel::render()
   QgsTextFormat format;
   format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ) );
   format.setSize( 48 );
-  format.setSizeUnit( QgsUnitTypes::RenderPoints );
+  format.setSizeUnit( Qgis::RenderUnit::Points );
   label->setTextFormat( format );
   label->attemptMove( QgsLayoutPoint( 70, 70 ) );
   label->adjustSizeToText();
@@ -298,7 +300,7 @@ void TestQgsLayoutLabel::renderAsHtml()
   QgsTextFormat format;
   format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ) );
   format.setSize( 48 );
-  format.setSizeUnit( QgsUnitTypes::RenderPoints );
+  format.setSizeUnit( Qgis::RenderUnit::Points );
   format.setColor( QColor( 200, 40, 60 ) );
   label->setTextFormat( format );
 
@@ -327,7 +329,7 @@ void TestQgsLayoutLabel::renderAsHtmlRelative()
   QgsTextFormat format;
   format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ) );
   format.setSize( 48 );
-  format.setSizeUnit( QgsUnitTypes::RenderPoints );
+  format.setSizeUnit( Qgis::RenderUnit::Points );
   format.setColor( QColor( 200, 40, 60 ) );
   label->setTextFormat( format );
 
@@ -354,7 +356,7 @@ void TestQgsLayoutLabel::labelRotation()
   QgsTextFormat format;
   format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ) );
   format.setSize( 30 );
-  format.setSizeUnit( QgsUnitTypes::RenderPoints );
+  format.setSizeUnit( Qgis::RenderUnit::Points );
   label->setTextFormat( format );
 
   label->attemptMove( QgsLayoutPoint( 70, 70 ) );

@@ -50,74 +50,74 @@ topolTest::topolTest( QgisInterface *qgsIface )
   mTopologyRuleMap.insert( tr( "must not have invalid geometries" ),
                            TopologyRule( &topolTest::checkValid,
                                          false, false,
-                                         QList<QgsWkbTypes::GeometryType>() << QgsWkbTypes::PointGeometry << QgsWkbTypes::PolygonGeometry << QgsWkbTypes::LineGeometry ) );
+                                         QList<Qgis::GeometryType>() << Qgis::GeometryType::Point << Qgis::GeometryType::Polygon << Qgis::GeometryType::Line ) );
 
   mTopologyRuleMap.insert( tr( "must not have dangles" ),
                            TopologyRule( &topolTest::checkDanglingLines,
                                          false, false,
-                                         QList<QgsWkbTypes::GeometryType>() << QgsWkbTypes::LineGeometry ) );
+                                         QList<Qgis::GeometryType>() << Qgis::GeometryType::Line ) );
 
   mTopologyRuleMap.insert( tr( "must not have duplicates" ),
                            TopologyRule( &topolTest::checkDuplicates,
                                          false, true,
-                                         QList<QgsWkbTypes::GeometryType>() << QgsWkbTypes::PointGeometry << QgsWkbTypes::PolygonGeometry << QgsWkbTypes::LineGeometry ) );
+                                         QList<Qgis::GeometryType>() << Qgis::GeometryType::Point << Qgis::GeometryType::Polygon << Qgis::GeometryType::Line ) );
 
   mTopologyRuleMap.insert( tr( "must not have pseudos" ),
                            TopologyRule( &topolTest::checkPseudos,
                                          false, false,
-                                         QList<QgsWkbTypes::GeometryType>() << QgsWkbTypes::LineGeometry ) );
+                                         QList<Qgis::GeometryType>() << Qgis::GeometryType::Line ) );
 
   mTopologyRuleMap.insert( tr( "must not overlap" ),
                            TopologyRule( &topolTest::checkOverlaps,
                                          false, true,
-                                         QList<QgsWkbTypes::GeometryType>() << QgsWkbTypes::PolygonGeometry ) );
+                                         QList<Qgis::GeometryType>() << Qgis::GeometryType::Polygon ) );
 
   mTopologyRuleMap.insert( tr( "must not have gaps" ),
                            TopologyRule( &topolTest::checkGaps,
                                          false, false,
-                                         QList<QgsWkbTypes::GeometryType>() << QgsWkbTypes::PolygonGeometry ) );
+                                         QList<Qgis::GeometryType>() << Qgis::GeometryType::Polygon ) );
 
   mTopologyRuleMap.insert( tr( "must not have multi-part geometries" ),
                            TopologyRule( &topolTest::checkMultipart,
                                          false, false,
-                                         QList<QgsWkbTypes::GeometryType>() << QgsWkbTypes::PointGeometry << QgsWkbTypes::PolygonGeometry << QgsWkbTypes::LineGeometry ) );
+                                         QList<Qgis::GeometryType>() << Qgis::GeometryType::Point << Qgis::GeometryType::Polygon << Qgis::GeometryType::Line ) );
 
   // two layer tests
   mTopologyRuleMap.insert( tr( "must not overlap with" ),
                            TopologyRule( &topolTest::checkOverlapWithLayer,
                                          true, true,
-                                         QList<QgsWkbTypes::GeometryType>() << QgsWkbTypes::PolygonGeometry,
-                                         QList<QgsWkbTypes::GeometryType>() << QgsWkbTypes::PolygonGeometry ) );
+                                         QList<Qgis::GeometryType>() << Qgis::GeometryType::Polygon,
+                                         QList<Qgis::GeometryType>() << Qgis::GeometryType::Polygon ) );
 
   mTopologyRuleMap.insert( tr( "must be covered by" ),
                            TopologyRule( &topolTest::checkPointCoveredBySegment,
                                          true, true,
-                                         QList<QgsWkbTypes::GeometryType>() << QgsWkbTypes::PointGeometry,
-                                         QList<QgsWkbTypes::GeometryType>() << QgsWkbTypes::LineGeometry << QgsWkbTypes::PolygonGeometry ) );
+                                         QList<Qgis::GeometryType>() << Qgis::GeometryType::Point,
+                                         QList<Qgis::GeometryType>() << Qgis::GeometryType::Line << Qgis::GeometryType::Polygon ) );
 
   mTopologyRuleMap.insert( tr( "must be covered by endpoints of" ),
                            TopologyRule( &topolTest::checkPointCoveredByLineEnds,
                                          true, true,
-                                         QList<QgsWkbTypes::GeometryType>() << QgsWkbTypes::PointGeometry,
-                                         QList<QgsWkbTypes::GeometryType>() << QgsWkbTypes::LineGeometry ) );
+                                         QList<Qgis::GeometryType>() << Qgis::GeometryType::Point,
+                                         QList<Qgis::GeometryType>() << Qgis::GeometryType::Line ) );
 
   mTopologyRuleMap.insert( tr( "end points must be covered by" ),
                            TopologyRule( &topolTest::checkyLineEndsCoveredByPoints,
                                          true, true,
-                                         QList<QgsWkbTypes::GeometryType>() << QgsWkbTypes::LineGeometry,
-                                         QList<QgsWkbTypes::GeometryType>() << QgsWkbTypes::PointGeometry ) );
+                                         QList<Qgis::GeometryType>() << Qgis::GeometryType::Line,
+                                         QList<Qgis::GeometryType>() << Qgis::GeometryType::Point ) );
 
   mTopologyRuleMap.insert( tr( "must be inside" ),
                            TopologyRule( &topolTest::checkPointInPolygon,
                                          true, true,
-                                         QList<QgsWkbTypes::GeometryType>() << QgsWkbTypes::PointGeometry,
-                                         QList<QgsWkbTypes::GeometryType>() << QgsWkbTypes::PolygonGeometry ) );
+                                         QList<Qgis::GeometryType>() << Qgis::GeometryType::Point,
+                                         QList<Qgis::GeometryType>() << Qgis::GeometryType::Polygon ) );
 
   mTopologyRuleMap.insert( tr( "must contain" ),
                            TopologyRule( &topolTest::checkPolygonContainsPoint,
                                          true, true,
-                                         QList<QgsWkbTypes::GeometryType>() << QgsWkbTypes::PolygonGeometry,
-                                         QList<QgsWkbTypes::GeometryType>() << QgsWkbTypes::PointGeometry ) );
+                                         QList<Qgis::GeometryType>() << Qgis::GeometryType::Polygon,
+                                         QList<Qgis::GeometryType>() << Qgis::GeometryType::Point ) );
 }
 
 topolTest::~topolTest()
@@ -145,7 +145,7 @@ ErrorList topolTest::checkDanglingLines( QgsVectorLayer *layer1, QgsVectorLayer 
   ErrorList errorList;
   const QgsFeature f;
 
-  if ( layer1->geometryType() != QgsWkbTypes::LineGeometry )
+  if ( layer1->geometryType() != Qgis::GeometryType::Line )
   {
     return errorList;
   }
@@ -349,7 +349,7 @@ ErrorList topolTest::checkOverlaps( QgsVectorLayer *layer1, QgsVectorLayer *laye
   // could be enabled for lines and points too
   // so duplicate rule may be removed?
 
-  if ( layer1->geometryType() != QgsWkbTypes::PolygonGeometry )
+  if ( layer1->geometryType() != Qgis::GeometryType::Polygon )
   {
     return errorList;
   }
@@ -476,7 +476,7 @@ ErrorList topolTest::checkGaps( QgsVectorLayer *layer1, QgsVectorLayer *layer2, 
   // could be enabled for lines and points too
   // so duplicate rule may be removed?
 
-  if ( layer1->geometryType() != QgsWkbTypes::PolygonGeometry )
+  if ( layer1->geometryType() != Qgis::GeometryType::Polygon )
   {
     return errorList;
   }
@@ -619,7 +619,7 @@ ErrorList topolTest::checkPseudos( QgsVectorLayer *layer1, QgsVectorLayer *layer
   ErrorList errorList;
   const QgsFeature f;
 
-  if ( layer1->geometryType() != QgsWkbTypes::LineGeometry )
+  if ( layer1->geometryType() != Qgis::GeometryType::Line )
   {
     return errorList;
   }
@@ -769,11 +769,11 @@ ErrorList topolTest::checkPointCoveredBySegment( QgsVectorLayer *layer1, QgsVect
 
   ErrorList errorList;
 
-  if ( layer1->geometryType() != QgsWkbTypes::PointGeometry )
+  if ( layer1->geometryType() != Qgis::GeometryType::Point )
   {
     return errorList;
   }
-  if ( layer2->geometryType() == QgsWkbTypes::PointGeometry )
+  if ( layer2->geometryType() == Qgis::GeometryType::Point )
   {
     return errorList;
   }
@@ -935,12 +935,12 @@ ErrorList topolTest::checkPointCoveredByLineEnds( QgsVectorLayer *layer1, QgsVec
   ErrorList errorList;
 
 
-  if ( layer1->geometryType() != QgsWkbTypes::PointGeometry )
+  if ( layer1->geometryType() != Qgis::GeometryType::Point )
   {
     return errorList;
   }
 
-  if ( layer2->geometryType() != QgsWkbTypes::LineGeometry )
+  if ( layer2->geometryType() != Qgis::GeometryType::Line )
   {
     return errorList;
   }
@@ -1009,12 +1009,12 @@ ErrorList topolTest::checkyLineEndsCoveredByPoints( QgsVectorLayer *layer1, QgsV
   ErrorList errorList;
 
 
-  if ( layer1->geometryType() != QgsWkbTypes::LineGeometry )
+  if ( layer1->geometryType() != Qgis::GeometryType::Line )
   {
     return errorList;
   }
 
-  if ( layer2->geometryType() != QgsWkbTypes::PointGeometry )
+  if ( layer2->geometryType() != Qgis::GeometryType::Point )
   {
     return errorList;
   }
@@ -1111,12 +1111,12 @@ ErrorList topolTest::checkPointInPolygon( QgsVectorLayer *layer1, QgsVectorLayer
   int i = 0;
   ErrorList errorList;
 
-  if ( layer1->geometryType() != QgsWkbTypes::PointGeometry )
+  if ( layer1->geometryType() != Qgis::GeometryType::Point )
   {
     return errorList;
   }
 
-  if ( layer2->geometryType() != QgsWkbTypes::PolygonGeometry )
+  if ( layer2->geometryType() != Qgis::GeometryType::Polygon )
   {
     return errorList;
   }
@@ -1186,12 +1186,12 @@ ErrorList topolTest::checkPolygonContainsPoint( QgsVectorLayer *layer1, QgsVecto
   int i = 0;
   ErrorList errorList;
 
-  if ( layer1->geometryType() != QgsWkbTypes::PolygonGeometry )
+  if ( layer1->geometryType() != Qgis::GeometryType::Polygon )
   {
     return errorList;
   }
 
-  if ( layer2->geometryType() != QgsWkbTypes::PointGeometry )
+  if ( layer2->geometryType() != Qgis::GeometryType::Point )
   {
     return errorList;
   }

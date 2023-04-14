@@ -42,7 +42,7 @@ QgsGeometry QgsMapClippingUtils::calculateFeatureRequestGeometry( const QList< Q
   shouldFilter = false;
   for ( const QgsMapClippingRegion &region : regions )
   {
-    if ( region.geometry().type() != QgsWkbTypes::PolygonGeometry )
+    if ( region.geometry().type() != Qgis::GeometryType::Polygon )
       continue;
 
     shouldFilter = true;
@@ -61,7 +61,7 @@ QgsGeometry QgsMapClippingUtils::calculateFeatureRequestGeometry( const QList< Q
     return QgsGeometry();
 
   // filter out polygon parts from result only
-  result.convertGeometryCollectionToSubclass( QgsWkbTypes::PolygonGeometry );
+  result.convertGeometryCollectionToSubclass( Qgis::GeometryType::Polygon );
 
   // lastly transform back to layer CRS
   try
@@ -85,7 +85,7 @@ QgsGeometry QgsMapClippingUtils::calculateFeatureIntersectionGeometry( const QLi
   shouldClip = false;
   for ( const QgsMapClippingRegion &region : regions )
   {
-    if ( region.geometry().type() != QgsWkbTypes::PolygonGeometry )
+    if ( region.geometry().type() != Qgis::GeometryType::Polygon )
       continue;
 
     if ( region.featureClip() != QgsMapClippingRegion::FeatureClippingType::ClipToIntersection )
@@ -107,7 +107,7 @@ QgsGeometry QgsMapClippingUtils::calculateFeatureIntersectionGeometry( const QLi
     return QgsGeometry();
 
   // filter out polygon parts from result only
-  result.convertGeometryCollectionToSubclass( QgsWkbTypes::PolygonGeometry );
+  result.convertGeometryCollectionToSubclass( Qgis::GeometryType::Polygon );
 
   // lastly transform back to layer CRS
   try
@@ -124,35 +124,35 @@ QgsGeometry QgsMapClippingUtils::calculateFeatureIntersectionGeometry( const QLi
   return result;
 }
 
-QPainterPath QgsMapClippingUtils::calculatePainterClipRegion( const QList<QgsMapClippingRegion> &regions, const QgsRenderContext &context, QgsMapLayerType layerType, bool &shouldClip )
+QPainterPath QgsMapClippingUtils::calculatePainterClipRegion( const QList<QgsMapClippingRegion> &regions, const QgsRenderContext &context, Qgis::LayerType layerType, bool &shouldClip )
 {
   QgsGeometry result;
   bool first = true;
   shouldClip = false;
   for ( const QgsMapClippingRegion &region : regions )
   {
-    if ( region.geometry().type() != QgsWkbTypes::PolygonGeometry )
+    if ( region.geometry().type() != Qgis::GeometryType::Polygon )
       continue;
 
     switch ( layerType )
     {
-      case QgsMapLayerType::VectorLayer:
+      case Qgis::LayerType::Vector:
         if ( region.featureClip() != QgsMapClippingRegion::FeatureClippingType::ClipPainterOnly )
           continue;
         break;
 
-      case QgsMapLayerType::VectorTileLayer:
+      case Qgis::LayerType::VectorTile:
         // for now, we ignore the region's featureClip behavior when rendering vector tiles
         // TODO: ideally we should apply this during rendering, just like we do for normal
         // vector layers
         break;
 
-      case QgsMapLayerType::MeshLayer:
-      case QgsMapLayerType::RasterLayer:
-      case QgsMapLayerType::PluginLayer:
-      case QgsMapLayerType::PointCloudLayer:
-      case QgsMapLayerType::AnnotationLayer:
-      case QgsMapLayerType::GroupLayer:
+      case Qgis::LayerType::Mesh:
+      case Qgis::LayerType::Raster:
+      case Qgis::LayerType::Plugin:
+      case Qgis::LayerType::PointCloud:
+      case Qgis::LayerType::Annotation:
+      case Qgis::LayerType::Group:
         // for these layer types, we ignore the region's featureClip behavior.
         break;
 
@@ -186,7 +186,7 @@ QgsGeometry QgsMapClippingUtils::calculateLabelIntersectionGeometry( const QList
   shouldClip = false;
   for ( const QgsMapClippingRegion &region : regions )
   {
-    if ( region.geometry().type() != QgsWkbTypes::PolygonGeometry )
+    if ( region.geometry().type() != Qgis::GeometryType::Polygon )
       continue;
 
     // for labeling, we clip using either painter clip regions or intersects type regions.
@@ -212,7 +212,7 @@ QgsGeometry QgsMapClippingUtils::calculateLabelIntersectionGeometry( const QList
     return QgsGeometry();
 
   // filter out polygon parts from result only
-  result.convertGeometryCollectionToSubclass( QgsWkbTypes::PolygonGeometry );
+  result.convertGeometryCollectionToSubclass( Qgis::GeometryType::Polygon );
 
   // lastly transform back to layer CRS
   try

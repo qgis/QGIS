@@ -278,7 +278,7 @@ int QgsMeshVertexCirculator::degree() const
 
 int QgsMeshVertexCirculator::positionInCurrentFace() const
 {
-  if ( mCurrentFace < 0 || mCurrentFace > mFaces.count() )
+  if ( mCurrentFace < 0 || mCurrentFace >= mFaces.count() )
     return -1;
 
   return vertexPositionInFace( mVertexIndex, mFaces.at( mCurrentFace ) );

@@ -113,6 +113,8 @@ bool QgsProcessingAlgorithm::checkParameterValues( const QVariantMap &parameters
           *message = invalidSinkError( parameters, def->name() );
         else if ( def->type() == QgsProcessingParameterRasterLayer::typeName() )
           *message = invalidRasterError( parameters, def->name() );
+        else if ( def->type() == QgsProcessingParameterPointCloudLayer::typeName() )
+          *message = invalidPointCloudError( parameters, def->name() );
         else
           *message = QObject::tr( "Incorrect parameter value for %1" ).arg( def->name() );
       }
@@ -715,7 +717,7 @@ bool QgsProcessingAlgorithm::parameterAsBoolean( const QVariantMap &parameters, 
   return QgsProcessingParameters::parameterAsBool( parameterDefinition( name ), parameters, context );
 }
 
-QgsFeatureSink *QgsProcessingAlgorithm::parameterAsSink( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context, QString &destinationIdentifier, const QgsFields &fields, QgsWkbTypes::Type geometryType, const QgsCoordinateReferenceSystem &crs, QgsFeatureSink::SinkFlags sinkFlags, const QVariantMap &createOptions, const QStringList &datasourceOptions, const QStringList &layerOptions ) const
+QgsFeatureSink *QgsProcessingAlgorithm::parameterAsSink( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context, QString &destinationIdentifier, const QgsFields &fields, Qgis::WkbType geometryType, const QgsCoordinateReferenceSystem &crs, QgsFeatureSink::SinkFlags sinkFlags, const QVariantMap &createOptions, const QStringList &datasourceOptions, const QStringList &layerOptions ) const
 {
   if ( !parameterDefinition( name ) )
     throw QgsProcessingException( QObject::tr( "No parameter definition for the sink '%1'" ).arg( name ) );
@@ -818,9 +820,9 @@ QVariantList QgsProcessingAlgorithm::parameterAsMatrix( const QVariantMap &param
   return QgsProcessingParameters::parameterAsMatrix( parameterDefinition( name ), parameters, context );
 }
 
-QList<QgsMapLayer *> QgsProcessingAlgorithm::parameterAsLayerList( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const
+QList<QgsMapLayer *> QgsProcessingAlgorithm::parameterAsLayerList( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context, QgsProcessing::LayerOptionsFlags flags ) const
 {
-  return QgsProcessingParameters::parameterAsLayerList( parameterDefinition( name ), parameters, context );
+  return QgsProcessingParameters::parameterAsLayerList( parameterDefinition( name ), parameters, context, flags );
 }
 
 QStringList QgsProcessingAlgorithm::parameterAsFileList( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const
@@ -835,7 +837,12 @@ QList<double> QgsProcessingAlgorithm::parameterAsRange( const QVariantMap &param
 
 QStringList QgsProcessingAlgorithm::parameterAsFields( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const
 {
-  return QgsProcessingParameters::parameterAsFields( parameterDefinition( name ), parameters, context );
+  return QgsProcessingParameters::parameterAsStrings( parameterDefinition( name ), parameters, context );
+}
+
+QStringList QgsProcessingAlgorithm::parameterAsStrings( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const
+{
+  return QgsProcessingParameters::parameterAsStrings( parameterDefinition( name ), parameters, context );
 }
 
 QgsPrintLayout *QgsProcessingAlgorithm::parameterAsLayout( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context )
@@ -873,9 +880,9 @@ QString QgsProcessingAlgorithm::parameterAsDatabaseTableName( const QVariantMap 
   return QgsProcessingParameters::parameterAsDatabaseTableName( parameterDefinition( name ), parameters, context );
 }
 
-QgsPointCloudLayer *QgsProcessingAlgorithm::parameterAsPointCloudLayer( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const
+QgsPointCloudLayer *QgsProcessingAlgorithm::parameterAsPointCloudLayer( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context, QgsProcessing::LayerOptionsFlags flags ) const
 {
-  return QgsProcessingParameters::parameterAsPointCloudLayer( parameterDefinition( name ), parameters, context );
+  return QgsProcessingParameters::parameterAsPointCloudLayer( parameterDefinition( name ), parameters, context, flags );
 }
 
 QgsAnnotationLayer *QgsProcessingAlgorithm::parameterAsAnnotationLayer( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const
@@ -961,6 +968,28 @@ QString QgsProcessingAlgorithm::invalidSinkError( const QVariantMap &parameters,
       return QObject::tr( "Could not create destination layer for %1: %2" ).arg( name, var.toString() );
     else
       return QObject::tr( "Could not create destination layer for %1: invalid value" ).arg( name );
+  }
+}
+
+QString QgsProcessingAlgorithm::invalidPointCloudError( const QVariantMap &parameters, const QString &name )
+{
+  if ( !parameters.contains( name ) )
+    return QObject::tr( "Could not load source layer for %1: no value specified for parameter" ).arg( name );
+  else
+  {
+    QVariant var = parameters.value( name );
+    if ( var.userType() == QMetaType::type( "QgsProperty" ) )
+    {
+      QgsProperty p = var.value< QgsProperty >();
+      if ( p.propertyType() == QgsProperty::StaticProperty )
+      {
+        var = p.staticValue();
+      }
+    }
+    if ( !var.toString().isEmpty() )
+      return QObject::tr( "Could not load source layer for %1: %2 not found" ).arg( name, var.toString() );
+    else
+      return QObject::tr( "Could not load source layer for %1: invalid value" ).arg( name );
   }
 }
 
@@ -1052,7 +1081,7 @@ QgsFeatureSink::SinkFlags QgsProcessingFeatureBasedAlgorithm::sinkFlags() const
   return QgsFeatureSink::SinkFlags();
 }
 
-QgsWkbTypes::Type QgsProcessingFeatureBasedAlgorithm::outputWkbType( QgsWkbTypes::Type inputWkbType ) const
+Qgis::WkbType QgsProcessingFeatureBasedAlgorithm::outputWkbType( Qgis::WkbType inputWkbType ) const
 {
   return inputWkbType;
 }
@@ -1142,22 +1171,22 @@ bool QgsProcessingFeatureBasedAlgorithm::supportInPlaceEdit( const QgsMapLayer *
   if ( !layer )
     return false;
 
-  QgsWkbTypes::GeometryType inPlaceGeometryType = layer->geometryType();
+  Qgis::GeometryType inPlaceGeometryType = layer->geometryType();
   if ( !inputLayerTypes().empty() &&
        !inputLayerTypes().contains( QgsProcessing::TypeVector ) &&
        !inputLayerTypes().contains( QgsProcessing::TypeVectorAnyGeometry ) &&
-       ( ( inPlaceGeometryType == QgsWkbTypes::PolygonGeometry && !inputLayerTypes().contains( QgsProcessing::TypeVectorPolygon ) ) ||
-         ( inPlaceGeometryType == QgsWkbTypes::LineGeometry && !inputLayerTypes().contains( QgsProcessing::TypeVectorLine ) ) ||
-         ( inPlaceGeometryType == QgsWkbTypes::PointGeometry && !inputLayerTypes().contains( QgsProcessing::TypeVectorPoint ) ) ) )
+       ( ( inPlaceGeometryType == Qgis::GeometryType::Polygon && !inputLayerTypes().contains( QgsProcessing::TypeVectorPolygon ) ) ||
+         ( inPlaceGeometryType == Qgis::GeometryType::Line && !inputLayerTypes().contains( QgsProcessing::TypeVectorLine ) ) ||
+         ( inPlaceGeometryType == Qgis::GeometryType::Point && !inputLayerTypes().contains( QgsProcessing::TypeVectorPoint ) ) ) )
     return false;
 
-  QgsWkbTypes::Type type = QgsWkbTypes::Unknown;
-  if ( inPlaceGeometryType == QgsWkbTypes::PointGeometry )
-    type = QgsWkbTypes::Point;
-  else if ( inPlaceGeometryType == QgsWkbTypes::LineGeometry )
-    type = QgsWkbTypes::LineString;
-  else if ( inPlaceGeometryType == QgsWkbTypes::PolygonGeometry )
-    type = QgsWkbTypes::Polygon;
+  Qgis::WkbType type = Qgis::WkbType::Unknown;
+  if ( inPlaceGeometryType == Qgis::GeometryType::Point )
+    type = Qgis::WkbType::Point;
+  else if ( inPlaceGeometryType == Qgis::GeometryType::Line )
+    type = Qgis::WkbType::LineString;
+  else if ( inPlaceGeometryType == Qgis::GeometryType::Polygon )
+    type = Qgis::WkbType::Polygon;
 
   if ( QgsWkbTypes::geometryType( outputWkbType( type ) ) != inPlaceGeometryType )
     return false;

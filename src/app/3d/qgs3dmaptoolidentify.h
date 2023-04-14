@@ -20,14 +20,7 @@
 
 #include <memory>
 #include <QDebug>
-
-namespace Qt3DRender
-{
-  class QPickEvent;
-}
-
-class Qgs3DMapToolIdentifyPickHandler;
-
+#include <QPoint>
 
 class Qgs3DMapToolIdentify : public Qgs3DMapTool
 {
@@ -39,7 +32,7 @@ class Qgs3DMapToolIdentify : public Qgs3DMapTool
 
     void mousePressEvent( QMouseEvent *event ) override;
     void mouseReleaseEvent( QMouseEvent *event ) override;
-    void mouseMoveEvent( QMouseEvent *event ) override {Q_UNUSED( event )}
+    void mouseMoveEvent( QMouseEvent *event ) override;
 
     void activate() override;
     void deactivate() override;
@@ -49,16 +42,13 @@ class Qgs3DMapToolIdentify : public Qgs3DMapTool
     void mouseReleased( QMouseEvent *event );
 
   private slots:
-    void onTerrainPicked( Qt3DRender::QPickEvent *event );
-    void onTerrainEntityChanged();
-    void onMapSettingsChanged() override;
 
   private:
-    std::unique_ptr<Qgs3DMapToolIdentifyPickHandler> mPickHandler;
-
     bool mIsActive = false;
 
-    friend class Qgs3DMapToolIdentifyPickHandler;
+    //! Check if mouse was moved between mousePress and mouseRelease
+    bool mMouseHasMoved = false;
+    QPoint mMouseClickPos;
 };
 
 #endif // QGS3DMAPTOOLIDENTIFY_H

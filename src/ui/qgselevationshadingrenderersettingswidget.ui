@@ -72,6 +72,9 @@
            <property name="toolTip">
             <string>Vertical exageration for hillshading</string>
            </property>
+           <property name="decimals">
+            <number>6</number>
+           </property>
            <property name="maximum">
             <double>9999999999999999455752309870428160.000000000000000</double>
            </property>
@@ -83,7 +86,7 @@
          <item row="1" column="1">
           <widget class="QCheckBox" name="mHillshadingMultidirCheckBox">
            <property name="toolTip">
-            <string>Used multidirectionnal lights instead of the specified azimuth for hillshading.</string>
+            <string>Use multidirectional lights instead of the specified azimuth for hillshading.</string>
            </property>
            <property name="text">
             <string/>

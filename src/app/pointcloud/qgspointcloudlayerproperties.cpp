@@ -24,14 +24,11 @@
 #include "qgsnative.h"
 #include "qgsapplication.h"
 #include "qgsmetadatawidget.h"
-#include "qgsmaplayerloadstyledialog.h"
 #include "qgsmaplayerconfigwidgetfactory.h"
 #include "qgsmaplayerconfigwidget.h"
 #include "qgspointcloudattributemodel.h"
 #include "qgsdatumtransformdialog.h"
-#include "qgspointcloudlayerelevationproperties.h"
 #include "qgspointcloudquerybuilder.h"
-#include "qgspointcloudrenderer.h"
 
 #include <QFileDialog>
 #include <QMenu>
@@ -177,7 +174,7 @@ void QgsPointCloudLayerProperties::apply()
 
   mBackupCrs = mLayer->crs();
 
-  for ( QgsMapLayerConfigWidget *w : mConfigWidgets )
+  for ( QgsMapLayerConfigWidget *w : std::as_const( mConfigWidgets ) )
     w->apply();
 
   mLayer->triggerRepaint();
@@ -223,11 +220,10 @@ void QgsPointCloudLayerProperties::syncToLayer()
   txtSubsetSQL->setReadOnly( true );
   txtSubsetSQL->setCaretWidth( 0 );
   txtSubsetSQL->setCaretLineVisible( false );
-  pbnQueryBuilder->setEnabled( mLayer &&
-                               mLayer->dataProvider() &&
+  pbnQueryBuilder->setEnabled( mLayer->dataProvider() &&
                                mLayer->dataProvider()->supportsSubsetString() );
 
-  for ( QgsMapLayerConfigWidget *w : mConfigWidgets )
+  for ( QgsMapLayerConfigWidget *w : std::as_const( mConfigWidgets ) )
     w->syncToLayer( mLayer );
 
   mStatisticsCalculationWarningLabel->setHidden( mLayer->statisticsCalculationState() != QgsPointCloudLayer::PointCloudStatisticsCalculationState::Calculated );

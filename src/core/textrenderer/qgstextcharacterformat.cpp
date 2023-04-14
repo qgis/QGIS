@@ -15,7 +15,6 @@
 
 #include "qgstextcharacterformat.h"
 #include "qgsrendercontext.h"
-#include "qgsfontutils.h"
 
 #include <QTextCharFormat>
 
@@ -123,7 +122,7 @@ void QgsTextCharacterFormat::updateFontForFormat( QFont &font, const QgsRenderCo
     font.setFamily( mFontFamily );
 
   if ( mFontPointSize != -1 )
-    font.setPixelSize( scaleFactor * context.convertToPainterUnits( mFontPointSize, QgsUnitTypes::RenderPoints ) );
+    font.setPixelSize( scaleFactor * context.convertToPainterUnits( mFontPointSize, Qgis::RenderUnit::Points ) );
 
   if ( mItalic != QgsTextCharacterFormat::BooleanValue::NotSet )
     font.setItalic( mItalic == QgsTextCharacterFormat::BooleanValue::SetTrue );

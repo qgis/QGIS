@@ -39,15 +39,15 @@ class TopologyRule
     testFunction f;
     bool useSecondLayer;
     bool useSpatialIndex;
-    QList<QgsWkbTypes::GeometryType> layer1SupportedTypes;
-    QList<QgsWkbTypes::GeometryType> layer2SupportedTypes;
+    QList<Qgis::GeometryType> layer1SupportedTypes;
+    QList<Qgis::GeometryType> layer2SupportedTypes;
 
-    bool layer1AcceptsType( QgsWkbTypes::GeometryType type )
+    bool layer1AcceptsType( Qgis::GeometryType type )
     {
       return layer1SupportedTypes.contains( type );
     }
 
-    bool layer2AcceptsType( QgsWkbTypes::GeometryType type )
+    bool layer2AcceptsType( Qgis::GeometryType type )
     {
       return layer2SupportedTypes.contains( type );
     }
@@ -60,8 +60,8 @@ class TopologyRule
     explicit TopologyRule( testFunction f0 = nullptr,
                            bool useSecondLayer0 = true,
                            bool useSpatialIndex0 = false,
-                           const QList<QgsWkbTypes::GeometryType> &layer1SupportedTypes0 = QList<QgsWkbTypes::GeometryType>(),
-                           const QList<QgsWkbTypes::GeometryType> &layer2SupportedTypes0 = QList<QgsWkbTypes::GeometryType>()
+                           const QList<Qgis::GeometryType> &layer1SupportedTypes0 = QList<Qgis::GeometryType>(),
+                           const QList<Qgis::GeometryType> &layer2SupportedTypes0 = QList<Qgis::GeometryType>()
                          )
       : f( f0 )
       , useSecondLayer( useSecondLayer0 )

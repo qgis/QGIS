@@ -19,15 +19,15 @@
 #define SIP_NO_FILE
 
 #include "qgsmaplayerrenderer.h"
+#include "qgsvectortilerenderer.h"
+#include "qgsmapclippingregion.h"
+#include "qgsvectortilematrixset.h"
 
 class QgsVectorTileLayer;
 class QgsVectorTileRawData;
 class QgsVectorTileLabelProvider;
+class QgsVectorTileDataProvider;
 
-#include "qgsvectortilerenderer.h"
-#include "qgsmapclippingregion.h"
-#include "qgshttpheaders.h"
-#include "qgsvectortilematrixset.h"
 
 /**
  * \ingroup core
@@ -45,6 +45,7 @@ class QgsVectorTileLayerRenderer : public QgsMapLayerRenderer
   public:
     //! Creates the renderer. Always called from main thread, should copy whatever necessary from the layer
     QgsVectorTileLayerRenderer( QgsVectorTileLayer *layer, QgsRenderContext &context );
+    ~QgsVectorTileLayerRenderer() override;
 
     virtual bool render() override;
     virtual QgsFeedback *feedback() const override { return mFeedback.get(); }
@@ -55,13 +56,7 @@ class QgsVectorTileLayerRenderer : public QgsMapLayerRenderer
 
     // data coming from the vector tile layer
 
-    //! Type of the source from which we will be loading tiles (e.g. "xyz" or "mbtiles")
-    QString mSourceType;
-    //! Path/URL of the source. Format depends on source type
-    QString mSourcePath;
-
-    QString mAuthCfg;
-    QgsHttpHeaders mHeaders;
+    std::unique_ptr< QgsVectorTileDataProvider > mDataProvider;
 
     //! Tile renderer object to do rendering of individual tiles
     std::unique_ptr<QgsVectorTileRenderer> mRenderer;

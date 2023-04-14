@@ -45,7 +45,7 @@ Constructor for QgsInterval.
 %End
 
 
-    QgsInterval( double duration, QgsUnitTypes::TemporalUnit unit );
+    QgsInterval( double duration, Qgis::TemporalUnit unit );
 %Docstring
 Constructor for QgsInterval, using the specified ``duration`` and ``units``.
 %End
@@ -272,7 +272,7 @@ Returns 0.0 if the original duration was not set.
 .. versionadded:: 3.18
 %End
 
-    QgsUnitTypes::TemporalUnit originalUnit() const;
+    Qgis::TemporalUnit originalUnit() const;
 %Docstring
 Returns the original interval temporal unit.
 

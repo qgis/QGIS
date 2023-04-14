@@ -1,0 +1,98 @@
+name: MSYS2 MinGW-w64 Windows 64bit Build
+
+on:
+  push:
+    branches:
+      - master
+      - release-**
+      - queued_ltr_backports
+    paths:
+    - 'src/**'
+    - 'external/**'
+    - 'python/**'
+    - 'tests/**'
+    - 'ms-windows/**'
+    - 'CMakeLists.txt'
+    - '.github/workflows/mingw-w64-msys2.yml'
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  mingw-w64-msys2-build:
+    name: MSYS2 MinGW-w64 Windows Build
+    runs-on: windows-latest
+    #strategy:
+    #  fail-fast: false
+    #  matrix:
+    #    QT_VERSION: [qt5, qt6]
+    #    MSYSTEM: [UCRT64, CLANG64]
+    env:
+      CCACHE_DIR: build/ccache
+    defaults:
+      run:
+        shell: msys2 {0}
+    steps:
+
+      - uses: actions/checkout@v3
+
+      - name: Install core & build dependencies
+        uses: msys2/setup-msys2@v2
+        with:
+          msystem: UCRT64
+          install: base-devel
+          pacboy: >-
+            protobuf:p gdal:p libzip:p qca-qt5:p gsl:p exiv2:p hdf5:p libxml2:p netcdf:p opencl-icd:p
+            pdal:p proj:p qt5-3d:p qt5-base:p qt5-declarative:p qt5-gamepad:p qt5-location:p
+            qt5-serialport:p qt5-svg:p qtkeychain-qt5:p qtwebkit:p qscintilla-qt5:p qwt-qt5:p
+            spatialindex:p cc:p cmake:p ninja:p opencl-clhpp:p qt5-tools:p python:p ccache:p
+          update: true
+          release: false
+
+      - name: Prepare build cache for pull request
+        uses: pat-s/always-upload-cache@v3.0.11
+        if: github.event_name == 'pull_request'
+        with:
+          path: build
+          key: mingw-w64-msys2-ccache-${{ github.actor }}-${{ github.head_ref }}-${{ github.sha }}
+          # The head_ref or source branch of the pull request in a workflow run.
+          # The base_ref or target branch of the pull request in a workflow run.
+          restore-keys: |
+            mingw-w64-msys2-ccache-${{ github.actor }}-${{ github.head_ref }}-
+            mingw-w64-msys2-ccache-${{ github.base_ref }}-
+            mingw-w64-msys2-ccache-refs/heads/master-
+
+      - name: Prepare build cache for branch/tag
+        # use a fork of actions/cache@v2 to upload cache even when the build or test failed
+        uses: pat-s/always-upload-cache@v3.0.11
+        if: github.event_name != 'pull_request'
+        with:
+          path: build
+          # The branch or tag ref that triggered the workflow run. For branches this in the format refs/heads/<branch_name>, and for tags it is refs/tags/<tag_name>
+          key: mingw-w64-msys2-ccache-${{ github.ref }}-${{ github.sha }}
+          restore-keys: |
+            mingw-w64-msys2-ccache-${{ github.ref }}-
+            mingw-w64-msys2-ccache-refs/heads/master-
+
+      - name: Configure QGIS
+        run: |
+          CXXFLAGS="-DQWT_POLAR_VERSION=0x060200" \
+          cmake \
+            -G"Ninja" \
+            -DCMAKE_CXX_COMPILER_LAUNCHER=ccache \
+            -DPython_EXECUTABLE=${MINGW_PREFIX}/bin/python \
+            -DWITH_3D=ON \
+            -DWITH_CUSTOM_WIDGETS=ON \
+            -DWITH_QWTPOLAR=ON \
+            -DQWTPOLAR_LIBRARY=${MINGW_PREFIX}/lib/libqwt-qt5.dll.a \
+            -DQWTPOLAR_INCLUDE_DIR=${MINGW_PREFIX}/include/qwt-qt5 \
+            -DWITH_INTERNAL_QWTPOLAR=OFF \
+            -DWITH_BINDINGS=OFF \
+            -DWITH_GRASS=OFF \
+            -DUSE_CCACHE=ON \
+            -S . \
+            -B build
+
+      - name: Build QGIS
+        run: |
+          cmake --build build
+          ccache -s

@@ -165,6 +165,7 @@
         <file>themes/default/console/iconNewTabEditorConsole.svg</file>
         <file>themes/default/console/iconRestoreTabsConsole.svg</file>
         <file>themes/default/console/iconFileTabsMenuConsole.svg</file>
+        <file>themes/default/console/iconFormatCode.svg</file>
         <file>themes/default/console/iconShowEditorConsole.svg</file>
         <file>themes/default/console/iconCommentEditorConsole.svg</file>
         <file>themes/default/console/iconUncommentEditorConsole.svg</file>
@@ -638,6 +639,7 @@
         <file>themes/default/propertyicons/colors.svg</file>
         <file>themes/default/propertyicons/system.svg</file>
         <file>themes/default/propertyicons/transparency.svg</file>
+        <file>themes/default/propertyicons/sensor.svg</file>
         <file>themes/default/propertyicons/spacer.svg</file>
         <file>themes/default/propertyicons/relations.svg</file>
         <file>themes/default/rendererCategorizedSymbol.svg</file>
@@ -795,6 +797,7 @@
         <file>themes/default/mActionRegularPolygonCenterPoint.svg</file>
         <file>themes/default/3d.svg</file>
         <file>themes/default/mActionResizeSquare.svg</file>
+        <file>themes/default/mSensor.svg</file>
         <file>themes/default/mSourceFields.svg</file>
         <file>themes/default/cursors/mCapturePoint.svg</file>
         <file>themes/default/cursors/mCrossHair.svg</file>
@@ -976,6 +979,11 @@
         <file>themes/default/mLayoutItemElevationProfile.svg</file>
         <file>themes/default/mActionElevationProfile.svg</file>
         <file>themes/default/mActionCopyProfileSettings.svg</file>
+        <file>themes/default/mIconFieldGeometry.svg</file>
+        <file>themes/default/algorithms/mAlgorithmRectanglesOvalsDiamonds.svg</file>
+        <file>themes/default/algorithms/mAlgorithmOffsetLines.svg</file>
+        <file>composer/refreshing_item.svg</file>
+        <file>themes/default/mActionTextAlongLine.svg</file>
     </qresource>
     <qresource prefix="/images/tips">
         <file alias="symbol_levels.png">qgis_tips/symbol_levels.png</file>

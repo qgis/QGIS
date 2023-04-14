@@ -50,7 +50,7 @@ std::string moduleExeBaseName( void )
   return basename;
 }
 
-int CALLBACK WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow )
+int CALLBACK WinMain( HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /*lpCmdLine*/, int /*nCmdShow*/ )
 {
   std::string exename( moduleExeBaseName() );
   std::string basename( exename.substr( 0, exename.size() - 4 ) );
@@ -77,7 +77,7 @@ int CALLBACK WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdL
 
         varfile.close();
       }
-      catch ( std::ifstream::failure e )
+      catch ( std::ifstream::failure &e )
       {
         std::string message = "Could not read environment variable list " + basename + ".vars" + " [" + e.what() + "]";
         showError( message, "Error loading QGIS" );
@@ -95,7 +95,7 @@ int CALLBACK WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdL
             file << *it << "=" << getenv( it->c_str() ) << std::endl;
         }
       }
-      catch ( std::ifstream::failure e )
+      catch ( std::ifstream::failure &e )
       {
         std::string message = "Could not write environment file " + basename + ".env" + " [" + e.what() + "]";
         showError( message, "Error loading QGIS" );
@@ -122,16 +122,22 @@ int CALLBACK WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdL
       }
     }
   }
-  catch ( std::ifstream::failure e )
+  catch ( std::ifstream::failure &e )
   {
     std::string message = "Could not read environment file " + basename + ".env" + " [" + e.what() + "]";
     showError( message, "Error loading QGIS" );
     return EXIT_FAILURE;
   }
 
+#ifndef _MSC_VER // MinGW
+#pragma GCC diagnostic ignored "-Wcast-function-type"
+#endif
   HINSTANCE hKernelDLL = LoadLibrary( "kernel32.dll" );
   BOOL ( *SetDefaultDllDirectories )( DWORD ) = hKernelDLL ? reinterpret_cast<BOOL( * )( DWORD )>( GetProcAddress( hKernelDLL, "SetDefaultDllDirectories" ) ) : 0;
   DLL_DIRECTORY_COOKIE( *AddDllDirectory )( PCWSTR ) = hKernelDLL ? reinterpret_cast<DLL_DIRECTORY_COOKIE( * )( PCWSTR )>( GetProcAddress( hKernelDLL, "AddDllDirectory" ) ) : 0;
+#ifndef _MSC_VER // MinGW
+#pragma GCC diagnostic pop
+#endif
 
   if ( SetDefaultDllDirectories && AddDllDirectory )
   {
@@ -144,7 +150,11 @@ int CALLBACK WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdL
 
     wchar_t *path = wcsdup( _wgetenv( L"PATH" ) );
 
+#ifdef _UCRT
+    for ( wchar_t *p = wcstok( path, L";", nullptr ); p; p = wcstok( NULL, L";", nullptr ) )
+#else
     for ( wchar_t *p = wcstok( path, L";" ); p; p = wcstok( NULL, L";" ) )
+#endif
     {
       if ( wcsicmp( p, windir ) == 0 )
         continue;
@@ -187,7 +197,14 @@ int CALLBACK WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdL
     return EXIT_FAILURE;
   }
 
+#ifndef _MSC_VER // MinGW
+#pragma GCC diagnostic ignored "-Wcast-function-type"
+#endif
   int ( *realmain )( int, char *[] ) = ( int ( * )( int, char *[] ) ) GetProcAddress( hGetProcIDDLL, "main" );
+#ifndef _MSC_VER // MinGW
+#pragma GCC diagnostic pop
+#endif
+
   if ( !realmain )
   {
     showError( "Could not locate main function in qgis_app.dll", "Error loading QGIS" );

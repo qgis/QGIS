@@ -24,10 +24,6 @@ email                : hugo dot mercier at oslandia dot com
 #include "qgsproject.h"
 #include "qgsprovidermetadata.h"
 #include "qgsprojectionselectiondialog.h"
-#include "layertree/qgslayertreemodel.h"
-#include "layertree/qgslayertreegroup.h"
-#include "layertree/qgslayertreelayer.h"
-#include "layertree/qgslayertree.h"
 #include "qgsproviderregistry.h"
 #include "qgsiconutils.h"
 #include "qgsembeddedlayerselectdialog.h"
@@ -81,12 +77,12 @@ QgsVirtualLayerSourceSelect::QgsVirtualLayerSourceSelect( QWidget *parent, Qt::W
   buttonBox->addButton( pbn, QDialogButtonBox::ActionRole );
   connect( pbn, &QAbstractButton::clicked, this, &QgsVirtualLayerSourceSelect::testQuery );
 
-  mGeometryType->addItem( QgsIconUtils::iconForWkbType( QgsWkbTypes::Point ), tr( "Point" ), static_cast< long long >( QgsWkbTypes::Point ) );
-  mGeometryType->addItem( QgsIconUtils::iconForWkbType( QgsWkbTypes::LineString ), tr( "LineString" ), static_cast< long long >( QgsWkbTypes::LineString ) );
-  mGeometryType->addItem( QgsIconUtils::iconForWkbType( QgsWkbTypes::Polygon ), tr( "Polygon" ), static_cast< long long >( QgsWkbTypes::Polygon ) );
-  mGeometryType->addItem( QgsIconUtils::iconForWkbType( QgsWkbTypes::MultiPoint ), tr( "MultiPoint" ), static_cast< long long >( QgsWkbTypes::MultiPoint ) );
-  mGeometryType->addItem( QgsIconUtils::iconForWkbType( QgsWkbTypes::MultiLineString ), tr( "MultiLineString" ), static_cast< long long >( QgsWkbTypes::MultiLineString ) );
-  mGeometryType->addItem( QgsIconUtils::iconForWkbType( QgsWkbTypes::MultiPolygon ), tr( "MultiPolygon" ), static_cast< long long >( QgsWkbTypes::MultiPolygon ) );
+  mGeometryType->addItem( QgsIconUtils::iconForWkbType( Qgis::WkbType::Point ), tr( "Point" ), static_cast< long long >( Qgis::WkbType::Point ) );
+  mGeometryType->addItem( QgsIconUtils::iconForWkbType( Qgis::WkbType::LineString ), tr( "LineString" ), static_cast< long long >( Qgis::WkbType::LineString ) );
+  mGeometryType->addItem( QgsIconUtils::iconForWkbType( Qgis::WkbType::Polygon ), tr( "Polygon" ), static_cast< long long >( Qgis::WkbType::Polygon ) );
+  mGeometryType->addItem( QgsIconUtils::iconForWkbType( Qgis::WkbType::MultiPoint ), tr( "MultiPoint" ), static_cast< long long >( Qgis::WkbType::MultiPoint ) );
+  mGeometryType->addItem( QgsIconUtils::iconForWkbType( Qgis::WkbType::MultiLineString ), tr( "MultiLineString" ), static_cast< long long >( Qgis::WkbType::MultiLineString ) );
+  mGeometryType->addItem( QgsIconUtils::iconForWkbType( Qgis::WkbType::MultiPolygon ), tr( "MultiPolygon" ), static_cast< long long >( Qgis::WkbType::MultiPolygon ) );
 
   mQueryEdit->setLineNumbersVisible( true );
 
@@ -97,7 +93,7 @@ QgsVirtualLayerSourceSelect::QgsVirtualLayerSourceSelect( QWidget *parent, Qt::W
   connect( mLayersTable->selectionModel(), &QItemSelectionModel::currentRowChanged, this, &QgsVirtualLayerSourceSelect::tableRowChanged );
 
   // prepare provider list
-  const QSet< QString > vectorLayerProviders = QgsProviderRegistry::instance()->providersForLayerType( QgsMapLayerType::VectorLayer );
+  const QSet< QString > vectorLayerProviders = QgsProviderRegistry::instance()->providersForLayerType( Qgis::LayerType::Vector );
   mProviderList = qgis::setToList( vectorLayerProviders );
   std::sort( mProviderList.begin(), mProviderList.end() );
 
@@ -167,7 +163,7 @@ void QgsVirtualLayerSourceSelect::layerComboChanged( int idx )
     mUIDField->setText( def.uid() );
   }
 
-  if ( def.geometryWkbType() == QgsWkbTypes::NoGeometry )
+  if ( def.geometryWkbType() == Qgis::WkbType::NoGeometry )
   {
     mNoGeometryRadio->setChecked( true );
   }
@@ -228,11 +224,11 @@ QgsVirtualLayerDefinition QgsVirtualLayerSourceSelect::getVirtualLayerDef()
   }
   if ( mNoGeometryRadio->isChecked() )
   {
-    def.setGeometryWkbType( QgsWkbTypes::NoGeometry );
+    def.setGeometryWkbType( Qgis::WkbType::NoGeometry );
   }
   else if ( mGeometryRadio->isChecked() )
   {
-    const QgsWkbTypes::Type t = mGeometryType->currentIndex() > -1 ? static_cast<QgsWkbTypes::Type>( mGeometryType->currentData().toLongLong() ) : QgsWkbTypes::NoGeometry;
+    const Qgis::WkbType t = mGeometryType->currentIndex() > -1 ? static_cast<Qgis::WkbType>( mGeometryType->currentData().toLongLong() ) : Qgis::WkbType::NoGeometry;
     def.setGeometryWkbType( t );
     def.setGeometryField( mGeometryField->text() );
     def.setGeometrySrid( mSrid );
@@ -377,7 +373,7 @@ void QgsVirtualLayerSourceSelect::updateLayersList()
   if ( mTreeView )
   {
     QList<QgsMapLayer *> selected = mTreeView->selectedLayers();
-    if ( selected.size() == 1 && selected[0]->type() == QgsMapLayerType::VectorLayer && static_cast<QgsVectorLayer *>( selected[0] )->providerType() == QLatin1String( "virtual" ) )
+    if ( selected.size() == 1 && selected[0]->type() == Qgis::LayerType::Vector && static_cast<QgsVectorLayer *>( selected[0] )->providerType() == QLatin1String( "virtual" ) )
     {
       mLayerNameCombo->setCurrentIndex( mLayerNameCombo->findData( selected[0]->id() ) );
     }
@@ -402,7 +398,7 @@ void QgsVirtualLayerSourceSelect::updateLayersList()
   const auto constMapLayers = QgsProject::instance()->mapLayers();
   for ( QgsMapLayer *l : constMapLayers )
   {
-    if ( l->type() == QgsMapLayerType::VectorLayer )
+    if ( l->type() == Qgis::LayerType::Vector )
     {
       apis->add( l->name() );
       QgsVectorLayer *vl = static_cast<QgsVectorLayer *>( l );
@@ -585,7 +581,7 @@ QString QgsVirtualLayerSourceWidget::provider() const
 
 void QgsVirtualLayerSourceWidget::browseForLayer()
 {
-  QgsDataSourceSelectDialog dlg( qobject_cast< QgsBrowserGuiModel * >( mBrowserModel ), true, QgsMapLayerType::VectorLayer, this );
+  QgsDataSourceSelectDialog dlg( qobject_cast< QgsBrowserGuiModel * >( mBrowserModel ), true, Qgis::LayerType::Vector, this );
   dlg.setWindowTitle( tr( "Select Layer Source" ) );
 
   QString source = mLineEdit->text();

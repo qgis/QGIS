@@ -54,7 +54,7 @@ QgsMemoryProvider::QgsMemoryProvider( const QString &uri, const ProviderOptions 
 
   if ( geometry.compare( QLatin1String( "none" ), Qt::CaseInsensitive ) == 0 )
   {
-    mWkbType = QgsWkbTypes::NoGeometry;
+    mWkbType = Qgis::WkbType::NoGeometry;
   }
   else
   {
@@ -119,6 +119,7 @@ QgsMemoryProvider::QgsMemoryProvider( const QString &uri, const ProviderOptions 
 
                   // complex types
                   << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::Map ), QStringLiteral( "map" ), QVariant::Map, -1, -1, -1, -1 )
+                  << QgsVectorDataProvider::NativeType( tr( "Geometry" ), QStringLiteral( "geometry" ), QVariant::UserType )
                 );
 
   if ( query.hasQueryItem( QStringLiteral( "field" ) ) )
@@ -366,7 +367,7 @@ QgsRectangle QgsMemoryProvider::extent() const
   return mExtent;
 }
 
-QgsWkbTypes::Type QgsMemoryProvider::wkbType() const
+Qgis::WkbType QgsMemoryProvider::wkbType() const
 {
   return mWkbType;
 }
@@ -394,7 +395,7 @@ QgsFields QgsMemoryProvider::fields() const
 
 bool QgsMemoryProvider::isValid() const
 {
-  return ( mWkbType != QgsWkbTypes::Unknown );
+  return ( mWkbType != Qgis::WkbType::Unknown );
 }
 
 QgsCoordinateReferenceSystem QgsMemoryProvider::crs() const
@@ -452,7 +453,7 @@ bool QgsMemoryProvider::addFeatures( QgsFeatureList &flist, Flags flags )
       it->setAttributes( attributes );
     }
 
-    if ( it->hasGeometry() && mWkbType == QgsWkbTypes::NoGeometry )
+    if ( it->hasGeometry() && mWkbType == Qgis::WkbType::NoGeometry )
     {
       it->clearGeometry();
     }
@@ -825,9 +826,9 @@ QgsDataProvider *QgsMemoryProviderMetadata::createProvider( const QString &uri, 
   return new QgsMemoryProvider( uri, options, flags );
 }
 
-QList<QgsMapLayerType> QgsMemoryProviderMetadata::supportedLayerTypes() const
+QList<Qgis::LayerType> QgsMemoryProviderMetadata::supportedLayerTypes() const
 {
-  return { QgsMapLayerType::VectorLayer };
+  return { Qgis::LayerType::Vector };
 }
 
 ///@endcond

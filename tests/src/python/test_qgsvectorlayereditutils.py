@@ -34,6 +34,9 @@ from qgis.core import (
     QgsVectorLayer,
     QgsVectorLayerEditUtils,
     QgsWkbTypes,
+    QgsDefaultValue,
+    QgsVectorLayerUtils,
+    QgsUnsetAttributeValue
 )
 from qgis.testing import start_app, unittest
 
@@ -570,6 +573,114 @@ class TestQgsVectorLayerEditUtils(unittest.TestCase):
             "Polygon ((5 0, 0 0, 0 5, 3 5, 3 8, 8 8, 8 3, 5 3, 5 0))"
         )
         self.assertEqual(mergedFeature.attribute('name'), 'tre')
+
+    def test_split_policy_lines(self):
+        temp_layer = QgsVectorLayer("LineString?crs=epsg:3111&field=pk:int&field=field_default:real&field=field_dupe:real&field=field_unset:real&field=field_ratio:real&field=apply_default:real",
+                                    "vl", "memory")
+        self.assertTrue(temp_layer.isValid())
+
+        temp_layer.setDefaultValueDefinition(1,
+                                             QgsDefaultValue('301'))
+        temp_layer.setDefaultValueDefinition(2,
+                                             QgsDefaultValue('302'))
+        temp_layer.setDefaultValueDefinition(3,
+                                             QgsDefaultValue('303'))
+        temp_layer.setDefaultValueDefinition(4,
+                                             QgsDefaultValue('304'))
+        temp_layer.setDefaultValueDefinition(5,
+                                             QgsDefaultValue('305', True))
+
+        temp_layer.setFieldSplitPolicy(1,
+                                       Qgis.FieldDomainSplitPolicy.DefaultValue)
+        temp_layer.setFieldSplitPolicy(2,
+                                       Qgis.FieldDomainSplitPolicy.Duplicate)
+        temp_layer.setFieldSplitPolicy(3,
+                                       Qgis.FieldDomainSplitPolicy.UnsetField)
+        temp_layer.setFieldSplitPolicy(4,
+                                       Qgis.FieldDomainSplitPolicy.GeometryRatio)
+        # this will be ignored -- the apply on update default will override it
+        temp_layer.setFieldSplitPolicy(5,
+                                       Qgis.FieldDomainSplitPolicy.GeometryRatio)
+
+        temp_layer.startEditing()
+
+        feature = QgsVectorLayerUtils.createFeature(temp_layer,
+                                                    QgsGeometry.fromWkt('LineString( 0 0, 10 0)'))
+        feature[1] = 3301
+        feature[5] = 3305
+        self.assertTrue(temp_layer.addFeature(feature))
+
+        temp_layer.commitChanges()
+
+        original_feature = next(temp_layer.getFeatures())
+        self.assertEqual(original_feature.attributes(),
+                         [None, 3301.0, 302.0, 303.0, 304.0, 3305.0])
+
+        temp_layer.startEditing()
+
+        split_curve = QgsGeometry.fromWkt('LineString (0.3 0.2, 0.27 -0.2, 0.86 -0.24, 0.88 0.22)')
+        temp_layer.splitFeatures(split_curve.constGet(), preserveCircular=False)
+
+        features = list(temp_layer.getFeatures())
+        attributes = [f.attributes() for f in features]
+        self.assertCountEqual(attributes,
+                              [[None, 3301.0, 302.0, 303.0, 8.664000000000001, 305.0],
+                               [None, 301, 302.0, QgsUnsetAttributeValue(), 17.797217391304347, 305.0],
+                               [None, 301, 302.0, QgsUnsetAttributeValue(), 277.53878260869567, 305.0]
+                               ])
+
+        temp_layer.rollBack()
+
+    def test_split_policy_polygon(self):
+        temp_layer = QgsVectorLayer("Polygon?crs=epsg:3111&field=pk:int&field=field_default:real&field=field_dupe:real&field=field_unset:real&field=field_ratio:real",
+                                    "vl", "memory")
+        self.assertTrue(temp_layer.isValid())
+
+        temp_layer.setDefaultValueDefinition(1,
+                                             QgsDefaultValue('301'))
+        temp_layer.setDefaultValueDefinition(2,
+                                             QgsDefaultValue('302'))
+        temp_layer.setDefaultValueDefinition(3,
+                                             QgsDefaultValue('303'))
+        temp_layer.setDefaultValueDefinition(4,
+                                             QgsDefaultValue('304'))
+
+        temp_layer.setFieldSplitPolicy(1,
+                                       Qgis.FieldDomainSplitPolicy.DefaultValue)
+        temp_layer.setFieldSplitPolicy(2,
+                                       Qgis.FieldDomainSplitPolicy.Duplicate)
+        temp_layer.setFieldSplitPolicy(3,
+                                       Qgis.FieldDomainSplitPolicy.UnsetField)
+        temp_layer.setFieldSplitPolicy(4,
+                                       Qgis.FieldDomainSplitPolicy.GeometryRatio)
+
+        temp_layer.startEditing()
+
+        feature = QgsVectorLayerUtils.createFeature(temp_layer,
+                                                    QgsGeometry.fromWkt('Polygon(( 0 0, 10 0, 10 10, 0 10, 0 0))'))
+        feature[1] = 3301
+        self.assertTrue(temp_layer.addFeature(feature))
+
+        temp_layer.commitChanges()
+
+        original_feature = next(temp_layer.getFeatures())
+        self.assertEqual(original_feature.attributes(),
+                         [None, 3301.0, 302.0, 303.0, 304.0])
+
+        temp_layer.startEditing()
+
+        split_curve = QgsGeometry.fromWkt('LineString (-2.7 4.3, 5.5 11.8, 5.28 -5.57)')
+        temp_layer.splitFeatures(split_curve.constGet(), preserveCircular=False)
+
+        features = list(temp_layer.getFeatures())
+        attributes = [f.attributes() for f in features]
+        self.assertCountEqual(attributes,
+                              [[None, 3301.0, 302.0, 303.0, 147.23845863746018],
+                               [None, 301, 302.0, QgsUnsetAttributeValue(), 17.343326048780483],
+                               [None, 301, 302.0, QgsUnsetAttributeValue(), 139.41821531375936]
+                               ])
+
+        temp_layer.rollBack()
 
 
 if __name__ == '__main__':

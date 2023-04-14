@@ -107,7 +107,7 @@ Query the provider for features specified in request.
 :return: iterator for matching features from provider
 %End
 
-    virtual QgsWkbTypes::Type wkbType() const = 0;
+    virtual Qgis::WkbType wkbType() const = 0;
 
 %Docstring
 Returns the geometry type which is returned by this layer
@@ -424,11 +424,22 @@ Returns flags containing the supported capabilities
 \note, some capabilities may change depending on whether
 a spatial filter is active on this provider, so it may
 be prudent to check this value per intended operation.
+
+.. seealso:: :py:func:`attributeEditCapabilities`
 %End
 
     QString capabilitiesString() const;
 %Docstring
 Returns the above in friendly format.
+%End
+
+    virtual Qgis::VectorDataProviderAttributeEditCapabilities attributeEditCapabilities() const;
+%Docstring
+Returns the provider's supported attribute editing capabilities.
+
+.. seealso:: :py:func:`capabilities`
+
+.. versionadded:: 3.32
 %End
 
     virtual void setEncoding( const QString &e );
@@ -474,9 +485,12 @@ Returns list of indexes to fetch all attributes in :py:func:`~QgsVectorDataProvi
 Returns list of indexes of fields that make up the primary key
 %End
 
-    virtual QgsAttrPalIndexNameHash palAttributeIndexNames() const;
+ QgsAttrPalIndexNameHash palAttributeIndexNames() const /Deprecated/;
 %Docstring
 Returns list of indexes to names for :py:class:`QgsPalLabeling` fix
+
+.. deprecated:: QGIS 3.32
+   this method is unused and will always return an empty hash
 %End
 
     bool supportedType( const QgsField &field ) const;

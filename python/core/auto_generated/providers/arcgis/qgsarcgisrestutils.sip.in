@@ -79,7 +79,7 @@ Utility functions for working with ArcGIS REST services.
 Converts an ESRI REST field ``type`` to a QVariant type.
 %End
 
-    static QgsWkbTypes::Type convertGeometryType( const QString &type );
+    static Qgis::WkbType convertGeometryType( const QString &type );
 %Docstring
 Converts an ESRI REST geometry ``type`` to a WKB type.
 %End

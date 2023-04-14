@@ -141,6 +141,7 @@ set(QGIS_GUI_SRCS
   codeeditors/qgscodeeditorcolorscheme.cpp
   codeeditors/qgscodeeditorcolorschemeregistry.cpp
   codeeditors/qgscodeeditorcss.cpp
+  codeeditors/qgscodeeditordockwidget.cpp
   codeeditors/qgscodeeditorhistorydialog.cpp
   codeeditors/qgscodeeditorhtml.cpp
   codeeditors/qgscodeeditorjs.cpp
@@ -185,6 +186,8 @@ set(QGIS_GUI_SRCS
   editorwidgets/qgsexternalresourceconfigdlg.cpp
   editorwidgets/qgsexternalresourcewidgetwrapper.cpp
   editorwidgets/qgsexternalresourcewidgetfactory.cpp
+  editorwidgets/qgsgeometrywidgetfactory.cpp
+  editorwidgets/qgsgeometrywidgetwrapper.cpp
   editorwidgets/qgshiddenwidgetwrapper.cpp
   editorwidgets/qgshiddenwidgetfactory.cpp
   editorwidgets/qgshtmlwidgetwrapper.cpp
@@ -412,6 +415,9 @@ set(QGIS_GUI_SRCS
   providers/gdal/qgsgdalsourceselect.cpp
   providers/gdal/qgsgdalguiprovider.cpp
 
+  providers/mbtilesvectortiles/qgsmbtilesvectortileguiprovider.cpp
+  providers/mbtilesvectortiles/qgsmbtilesvectortilesourcewidget.cpp
+
   providers/ogr/qgsogrguiprovider.cpp
   providers/ogr/qgsogrdbsourceselect.cpp
   providers/ogr/qgsogrdbtablemodel.cpp
@@ -420,6 +426,12 @@ set(QGIS_GUI_SRCS
   providers/ogr/qgsgeopackageitemguiprovider.cpp
   providers/ogr/qgsogritemguiprovider.cpp
   providers/ogr/qgsgeopackageprojectstorageguiprovider.cpp
+
+  providers/vtpkvectortiles/qgsvtpkvectortileguiprovider.cpp
+  providers/vtpkvectortiles/qgsvtpkvectortilesourcewidget.cpp
+
+  sensor/qgssensorguiregistry.cpp
+  sensor/qgssensorwidget.cpp
 
   settings/qgssettingsregistrygui.cpp
 
@@ -495,6 +507,7 @@ set(QGIS_GUI_SRCS
   qgsdial.cpp
   qgsdialog.cpp
   qgsdirectionallightwidget.cpp
+  qgsdockablewidgethelper.cpp
   qgsdoublevalidator.cpp
   qgsdockwidget.cpp
   qgsencodingfiledialog.cpp
@@ -533,6 +546,7 @@ set(QGIS_GUI_SRCS
   qgsformannotation.cpp
   qgsgeocoderlocatorfilter.cpp
   qgsgeometryrubberband.cpp
+  qgsgeometrywidget.cpp
   qgsgradientcolorrampdialog.cpp
   qgsgradientstopeditor.cpp
   qgsgraphicsviewmousehandles.cpp
@@ -763,6 +777,7 @@ set(QGIS_GUI_HDRS
   qgsdial.h
   qgsdialog.h
   qgsdirectionallightwidget.h
+  qgsdockablewidgethelper.h
   qgsdockwidget.h
   qgsdoublevalidator.h
   qgsencodingfiledialog.h
@@ -802,6 +817,7 @@ set(QGIS_GUI_HDRS
   qgsformlabelformatwidget.h
   qgsgeocoderlocatorfilter.h
   qgsgeometryrubberband.h
+  qgsgeometrywidget.h
   qgsgradientcolorrampdialog.h
   qgsgradientstopeditor.h
   qgsgraphicsviewmousehandles.h
@@ -1027,6 +1043,7 @@ set(QGIS_GUI_HDRS
   codeeditors/qgscodeeditorcolorscheme.h
   codeeditors/qgscodeeditorcolorschemeregistry.h
   codeeditors/qgscodeeditorcss.h
+  codeeditors/qgscodeeditordockwidget.h
   codeeditors/qgscodeeditorexpression.h
   codeeditors/qgscodeeditorhistorydialog.h
   codeeditors/qgscodeeditorhtml.h
@@ -1070,6 +1087,8 @@ set(QGIS_GUI_HDRS
   editorwidgets/qgsexternalresourceconfigdlg.h
   editorwidgets/qgsexternalresourcewidgetfactory.h
   editorwidgets/qgsexternalresourcewidgetwrapper.h
+  editorwidgets/qgsgeometrywidgetfactory.h
+  editorwidgets/qgsgeometrywidgetwrapper.h
   editorwidgets/qgshiddenwidgetfactory.h
   editorwidgets/qgshiddenwidgetwrapper.h
   editorwidgets/qgshtmlwidgetwrapper.h
@@ -1304,6 +1323,9 @@ set(QGIS_GUI_HDRS
   providers/gdal/qgsgdalguiprovider.h
   providers/gdal/qgsgdalsourceselect.h
 
+  providers/mbtilesvectortiles/qgsmbtilesvectortileguiprovider.h
+  providers/mbtilesvectortiles/qgsmbtilesvectortilesourcewidget.h
+
   providers/ogr/qgsgeopackageitemguiprovider.h
   providers/ogr/qgsgeopackageprojectstoragedialog.h
   providers/ogr/qgsgeopackageprojectstorageguiprovider.h
@@ -1312,6 +1334,9 @@ set(QGIS_GUI_HDRS
   providers/ogr/qgsogrguiprovider.h
   providers/ogr/qgsogritemguiprovider.h
   providers/ogr/qgsogrsourceselect.h
+
+  providers/vtpkvectortiles/qgsvtpkvectortileguiprovider.h
+  providers/vtpkvectortiles/qgsvtpkvectortilesourcewidget.h
 
   raster/qgsrasterattributetablewidget.h
   raster/qgscreaterasterattributetabledialog.h
@@ -1390,6 +1415,9 @@ set(QGIS_GUI_HDRS
   symbology/qgssymbolwidgetcontext.h
   symbology/qgsvectorfieldsymbollayerwidget.h
 
+  sensor/qgssensorguiregistry.h
+  sensor/qgssensorwidget.h
+
   settings/qgssettingsregistrygui.h
 
   tableeditor/qgstableeditordialog.h
@@ -1434,321 +1462,6 @@ if(${QT_VERSION_BASE}Qml_FOUND)
 endif()
 
 set_property(GLOBAL PROPERTY QGIS_GUI_HDRS ${QGIS_GUI_HDRS})
-
-
-set(QGIS_GUI_UI_HDRS
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgs25drendererwidgetbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsaddtaborgroupbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsadvanceddigitizingdockwidgetbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsadvanceddigitizingfloaterbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsannotationcommonpropertieswidgetbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsarrowsymbollayerwidgetbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsattributeactiondialogbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsattributeactionpropertiesdialogbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsattributeformcontaineredit.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsattributeloadfrommap.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsattributesforminitcode.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsattributesformproperties.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsattributetypeedit.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsattributewidgeteditgroupbox.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsattributewidgetrelationeditwidget.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsauthauthoritieseditor.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsauthcertificateinfo.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsauthcertificatemanager.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsauthconfigedit.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsauthconfigeditor.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsauthconfigidedit.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsauthconfigselect.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsauthsettingswidget.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsauthconfiguriedit.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsautheditorwidgets.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsauthidentitieseditor.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsauthimportcertdialog.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsauthimportidentitydialog.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsauthmasterpassresetdialog.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsauthmethodplugins.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsauthserverseditor.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsauthsslconfigwidget.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsauthsslerrorsdialog.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsauthsslimportdialog.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsauthsslimporterrors.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsauthtrustedcasdialog.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsbasicnumericformatwidgetbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsbearingnumericformatwidgetbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsbrowserdirectorypropertiesbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsbrowserlayerpropertiesbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsbrowserpropertiesdialogbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsbrowserwidgetbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgscategorizedsymbolrendererwidget.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgscharacterselectdialogbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgscheckboxconfigdlgbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgscodeditorhistorydialogbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgscodedvaluedomainwidgetbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgscolorbrewercolorrampwidgetbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgscolordialog.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgscolorramplegendnodewidgetbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgscolorrampshaderwidgetbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgscompoundcolorwidget.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsconfigureshortcutsdialog.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgscptcitycolorrampdialogbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgscredentialdialog.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgscrsdefinitionwidgetbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgscurrencynumericformatwidgetbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsdashspacewidgetbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsdatadefinedsizelegendwidget.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsdatasourcemanagerdialog.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsdatasourceselectdialog.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsdatetimeeditconfig.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsdbsourceselectbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsdetaileditemwidgetbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsdiagrampropertiesbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsdualviewbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsdummyconfigdlgbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgseditconditionalformatrulewidget.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgseffectpropertieswidget.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsembeddedsymbolrendererwidgetbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgserrordialogbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsexpressionbuilderdialogbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsexpressionstoredialogbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsexpressionbuilder.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsexpressionselectiondialogbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsextentgroupboxwidget.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsexternalresourceconfigdlg.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsfeaturefilterwidget.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsfeatureselectiondlg.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsfieldcalculatorbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsfieldconditionalformatwidget.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsfielddomainwidgetbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsfindfilesbypatternwidget.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsformlabelformatwidget.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsfractionnumericformatwidgetbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsgenericprojectionselectorbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsgeographiccoordinatenumericformatwidgetbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsgeometrygeneratorwidgetbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsglobdomainwidgetbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsgradientcolorrampdialogbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsgraduatedsymbolrendererwidget.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsgroupwmsdatadialogbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsheatmaprendererwidgetbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgshillshaderendererwidget.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgshistogramwidgetbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgshttpheaderwidget.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsinstallgridshiftdialog.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsinterpolatedlinesymbollayerwidgetbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsinvertedpolygonrendererwidgetbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsjoindialogbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsjsoneditconfigdlg.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsjsoneditwidget.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgslabelengineconfigdialog.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgslabelingrulepropswidget.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgslabelingwidget.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgslabellineanchorwidgetbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgslabelobstaclesettingswidgetbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgslayermetadatasearchwidget.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgslayoutatlaswidgetbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgslayoutattributeselectiondialogbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgslayoutattributetablewidgetbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgslayouthtmlwidgetbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgslayoutlabelwidgetbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgslayoutlegendlayersdialogbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgslayoutlegendnodewidgetbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgslayoutlegendwidgetbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgslayoutmanualtablewidgetbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgslayoutmapclippingwidgetbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgslayoutmapgridwidgetbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgslayoutmaplabelingwidgetbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgslayoutmapwidgetbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgslayoutmarkerwidgetbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgslayoutnewitemproperties.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgslayoutpicturewidgetbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgslayoutpolygonwidgetbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgslayoutpolylinewidgetbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgslayoutscalebarwidgetbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgslayoutshapewidgetbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgslayouttablebackgroundstyles.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgslegendpatchshapewidgetbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgslimitedrandomcolorrampwidgetbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgslistconfigdlg.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsludialogbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsmanageconnectionsdialogbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsmapunitscalewidgetbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsmaskingwidgetbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsmasksymbollayerwidgetbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsmergedfeaturerendererwidgetbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsmeshrendereractivedatasetwidgetbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsmeshrendererscalarsettingswidgetbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsmessagelogviewer.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsmessageviewer.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsmetadatawidget.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsmodeldesignerdialogbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsmodelinputreorderwidgetbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsmultibandcolorrendererwidgetbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsnewauxiliaryfielddialogbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsnewauxiliarylayerdialogbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsnewdatabasetablenamewidget.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsnewgeopackagelayerdialogbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsnewhttpconnectionbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsnewmemorylayerdialogbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsnewogrconnectionbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsnewvectorlayerdialogbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsnewvectortabledialogbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsnumericformatselectorbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsorderbydialogbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsorganizetablecolumnsdialog.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsowssourceselectbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsowssourcewidgetbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsarcgisservicesourceselectbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgspalettedrendererwidgetbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgspercentagenumericformatwidgetbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgspointcloudattributebyramprendererwidgetbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgspointcloudclassifiedrendererwidgetbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgspointcloudextentrendererwidgetbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgspointcloudlayersaveasdialogbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgspointcloudrendererpropsdialogbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgspointcloudrgbrendererwidgetbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgspointclusterrendererwidgetbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgspointdisplacementrendererwidgetbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgspresetcolorrampwidgetbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsprocessingaggregatemappingpanelbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsprocessingalgorithmdialogbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsprocessingalgorithmprogressdialogbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsprocessingdestinationwidgetbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsprocessingdxflayerdetailswidgetbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsprocessingenummodelerwidgetbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsprocessingfeaturesourceoptionsbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsprocessingfieldsmappingpanelbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsprocessinghelpeditorwidgetbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsprocessingmatrixmodelerwidgetbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsprocessingmatrixparameterdialogbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsprocessingmeshdatasettimewidget.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsprocessingmultipleselectiondialogbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsprocessingparameterswidgetbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsprojectionselectorbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsrasterlayerpropertiesbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgspropertyassistantwidgetbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgspropertycolorassistantwidget.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgspropertygenericnumericassistantwidget.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgspropertysizeassistantwidget.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsquerybuilderbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgspointcloudquerybuilderbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsqueryresultwidgetbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsrangeconfigdlgbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsrangedomainwidgetbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsrasterattributetablewidgetbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsrasterattributetabledialogbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsrasterattributetableaddrowdialogbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgscreaterasterattributetabledialogbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsloadrasterattributetabledialogbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsrasterattributetableaddcolumndialogbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsrastercontourrendererwidget.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsrasterformatsaveoptionswidgetbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsrasterhistogramwidgetbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsrasterlayersaveasdialogbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsrasterlayertemporalpropertieswidgetbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsrasterminmaxwidgetbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsrasterpyramidsoptionswidgetbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsrastertransparencywidget.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsrelationeditorconfigwidgetbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsrelationreferenceconfigdlgbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsrenderermeshpropswidgetbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsrendererrasterpropswidgetbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsrendererrulepropsdialogbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsrichtexteditorbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsrulebasedlabelingwidget.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsrulebasedrendererwidget.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsscientificnumericformatwidgetbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgssinglebandgrayrendererwidgetbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgssinglebandpseudocolorrendererwidgetbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgssmartgroupconditionwidget.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgssmartgroupeditordialogbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgssourcefieldsproperties.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgssqlcomposerdialogbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsstyleexportimportdialogbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsstylegroupselectiondialogbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsstyleitemslistwidgetbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsstylemanagerdialogbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsstylesavedialog.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgssublayersdialogbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgssubstitutionlistwidgetbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgssymbolanimationsettingswidgetbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgssymbollevelsdialogbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgssymbolselectordialogbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgstableeditorbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgstableeditorformattingwidgetbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgstablewidgetuibase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsrendererpropsdialogbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgseffectstackpropertieswidgetbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgslayoutnewpagedialog.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgslayoutguidewidgetbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgslayoutimageexportoptions.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgslayoutitemwidgetbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgslayoutpagepropertieswidget.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgspdfexportoptions.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgslayoutwidgetbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsrenderercontainerbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgstemporalmapsettingswidgetbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgstexteditconfigdlg.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgstextformatwidgetbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsuniquevaluesconfigdlgbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsunitselectionwidget.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsvaliditycheckresultsbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsvaluemapconfigdlgbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsvaluerelationconfigdlgbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsvectorlayerloadstyledialog.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsvectorlayerpropertiesbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsvectorlayersaveasdialogbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsvectorlayersavestyledialog.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsvectorlayertemporalpropertieswidgetbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsvectortilebasiclabelingwidget.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsvectortilebasicrendererwidget.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsvectortilelayerpropertiesbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgslayertreeembeddedconfigwidgetbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsmeshlayerpropertiesbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsmeshdatasetgrouptreewidgetbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsmeshstaticdatasetwidgetbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgstemporalcontrollerwidgetbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsprocessingtinmeshdatawidgetbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsexpressionpreviewbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsprovidersublayersdialogbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsdatumtransformdialogbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgscoordinateoperationwidgetbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgswmsdimensiondialogbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_widget_animatedmarker.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_widget_ballooncallout.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_widget_blur.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_widget_centroidfill.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_widget_coloreffects.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_widget_curvedlinecallout.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_widget_drawsource.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_widget_ellipse.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_widget_filledmarker.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_widget_fontmarker.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_widget_glow.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_widget_gradientfill.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_widget_gradientline.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_widget_hashline.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_widget_layerproperties.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_widget_linepatternfill.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_widget_markerline.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_widget_pointpatternfill.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_widget_randommarkerfill.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_widget_rasterfill.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_widget_rasterline.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_widget_rastermarker.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_widget_set_dd_value.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_widget_shadoweffect.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_widget_shapeburstfill.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_widget_simplefill.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_widget_simpleline.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_widget_simplelinecallout.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_widget_simplemarker.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_widget_svgfill.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_widget_svgmarker.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_widget_svgselector.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_widget_symbolslist.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_widget_transform.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_widget_vectorfield.h
-)
 
 if(ENABLE_MODELTEST)
   include_directories(../../tests/qt_modeltest)
@@ -1849,9 +1562,12 @@ target_include_directories(qgis_gui PUBLIC
   ${CMAKE_SOURCE_DIR}/src/gui/processing/models
   ${CMAKE_SOURCE_DIR}/src/gui/providers
   ${CMAKE_SOURCE_DIR}/src/gui/providers/gdal
+  ${CMAKE_SOURCE_DIR}/src/gui/providers/mbtilesvectortiles
   ${CMAKE_SOURCE_DIR}/src/gui/providers/ogr
+  ${CMAKE_SOURCE_DIR}/src/gui/providers/vtpkvectortiles
   ${CMAKE_SOURCE_DIR}/src/gui/pointcloud
   ${CMAKE_SOURCE_DIR}/src/gui/raster
+  ${CMAKE_SOURCE_DIR}/src/gui/sensor
   ${CMAKE_SOURCE_DIR}/src/gui/settings
   ${CMAKE_SOURCE_DIR}/src/gui/tableeditor
   ${CMAKE_SOURCE_DIR}/src/gui/vector

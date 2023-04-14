@@ -55,7 +55,7 @@ a "perimeter" style mode).
       FollowPlacement,
     };
 
-    QgsLabeling::LinePlacementFlags placementFlags() const;
+    Qgis::LabelLinePlacementFlags placementFlags() const;
 %Docstring
 Returns the line placement flags, which dictate how line labels can be placed
 above or below the lines.
@@ -63,7 +63,7 @@ above or below the lines.
 .. seealso:: :py:func:`setPlacementFlags`
 %End
 
-    void setPlacementFlags( QgsLabeling::LinePlacementFlags flags );
+    void setPlacementFlags( Qgis::LabelLinePlacementFlags flags );
 %Docstring
 Returns the line placement ``flags``, which dictate how line labels can be placed
 above or below the lines.
@@ -229,7 +229,7 @@ Sets the ``distance`` which labels are allowed to overrun past the start or end 
 .. seealso:: :py:func:`overrunDistanceMapUnitScale`
 %End
 
-    QgsUnitTypes::RenderUnit overrunDistanceUnit() const;
+    Qgis::RenderUnit overrunDistanceUnit() const;
 %Docstring
 Returns the units for label overrun distance.
 
@@ -240,7 +240,7 @@ Returns the units for label overrun distance.
 .. seealso:: :py:func:`overrunDistanceMapUnitScale`
 %End
 
-    void setOverrunDistanceUnit( const QgsUnitTypes::RenderUnit &unit );
+    void setOverrunDistanceUnit( const Qgis::RenderUnit &unit );
 %Docstring
 Sets the ``unit`` for label overrun distance.
 

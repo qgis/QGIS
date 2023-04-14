@@ -38,6 +38,7 @@
 #include "qgslayoututils.h"
 #include "qgspallabeling.h"
 #include "qgstextrenderer.h"
+#include "qgslayoutreportcontext.h"
 
 #include <QObject>
 #include "qgstest.h"
@@ -1778,7 +1779,7 @@ void TestQgsLayoutTable::wrappedText()
   const QFont f;
   const QString sourceText( "Lorem ipsum dolor sit amet, consectetur adipisici elit, sed eiusmod tempor incidunt ut labore et dolore magna aliqua" );
   QgsRenderContext context = QgsLayoutUtils::createRenderContextForLayout( &l, nullptr );
-  const QString wrapText = QgsTextRenderer::wrappedText( context, sourceText, context.convertToPainterUnits( 101, QgsUnitTypes::RenderMillimeters ) /*columnWidth*/, QgsTextFormat::fromQFont( f ) ).join( '\n' );
+  const QString wrapText = QgsTextRenderer::wrappedText( context, sourceText, context.convertToPainterUnits( 101, Qgis::RenderUnit::Millimeters ) /*columnWidth*/, QgsTextFormat::fromQFont( f ) ).join( '\n' );
   //there should be no line break before the last word (bug #20546)
   QVERIFY( !wrapText.endsWith( "\naliqua" ) );
 }

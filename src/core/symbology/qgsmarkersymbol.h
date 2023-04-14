@@ -133,7 +133,7 @@ class CORE_EXPORT QgsMarkerSymbol : public QgsSymbol
      * \see setSize()
      * \since QGIS 2.16
      */
-    void setSizeUnit( QgsUnitTypes::RenderUnit unit ) const;
+    void setSizeUnit( Qgis::RenderUnit unit ) const;
 
     /**
      * Returns the size units for the whole symbol (including all symbol layers).
@@ -143,7 +143,7 @@ class CORE_EXPORT QgsMarkerSymbol : public QgsSymbol
      * \see size()
      * \since QGIS 2.16
      */
-    QgsUnitTypes::RenderUnit sizeUnit() const;
+    Qgis::RenderUnit sizeUnit() const;
 
     /**
      * Sets the size map unit scale for the whole symbol (including all symbol layers).

@@ -20,8 +20,6 @@
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgscoordinatereferencesystem.h"
-#include "qgslinestring.h"
-#include "qgspolygon.h"
 
 class QgsFeedback;
 class QgsMarkerSymbol;
@@ -59,6 +57,10 @@ class CORE_EXPORT QgsAnnotationItem
     else if ( sipCpp->type() == QLatin1String( "pointtext" ) )
     {
       sipType = sipType_QgsAnnotationPointTextItem;
+    }
+    else if ( sipCpp->type() == QLatin1String( "linetext" ) )
+    {
+      sipType = sipType_QgsAnnotationLineTextItem;
     }
     else
     {

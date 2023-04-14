@@ -48,6 +48,9 @@ class APP_EXPORT QgsMapToolMoveFeature: public QgsMapToolAdvancedDigitizing
     void keyReleaseEvent( QKeyEvent *e ) override;
 
   private:
+
+    void deleteRubberband();
+
     //! Start point of the move in map coordinates
     QgsPointXY mStartPointMapCoords;
 
@@ -57,12 +60,15 @@ class APP_EXPORT QgsMapToolMoveFeature: public QgsMapToolAdvancedDigitizing
     //! Snapping indicators
     std::unique_ptr<QgsSnapIndicator> mSnapIndicator;
 
-    //! Id of moved feature
+    //! Id of moved features
     QgsFeatureIds mMovedFeatures;
 
     QPoint mPressPos;
 
     MoveMode mMode;
+
+    // MultiGeometry of the moved features
+    QgsGeometry mGeom;
 
 };
 

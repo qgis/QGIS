@@ -1256,11 +1256,25 @@ class PyQgsOGRProvider(unittest.TestCase):
         self.assertEqual(fields.field('with_range_domain_int').constraints().domainName(), 'range_domain_int')
         self.assertEqual(fields.field('with_glob_domain').constraints().domainName(), 'glob_domain')
 
+        self.assertEqual(fields.field('with_range_domain_int').splitPolicy(), Qgis.FieldDomainSplitPolicy.DefaultValue)
+        self.assertEqual(fields.field('with_glob_domain').splitPolicy(), Qgis.FieldDomainSplitPolicy.DefaultValue)
+
         datasource = os.path.join(unitTestDataPath(), 'gps_timestamp.gpkg')
         vl = QgsVectorLayer(datasource, 'test', 'ogr')
         self.assertTrue(vl.isValid())
         fields = vl.fields()
         self.assertFalse(fields.field('stringf').constraints().domainName())
+
+        datasource = os.path.join(unitTestDataPath(), 'domains.gdb|layername=test')
+        vl = QgsVectorLayer(datasource, 'test', 'ogr')
+        self.assertTrue(vl.isValid())
+        fields = vl.fields()
+        self.assertEqual(fields.field('default_value').splitPolicy(),
+                         Qgis.FieldDomainSplitPolicy.DefaultValue)
+        self.assertEqual(fields.field('duplicate').splitPolicy(),
+                         Qgis.FieldDomainSplitPolicy.Duplicate)
+        self.assertEqual(fields.field('ratio').splitPolicy(),
+                         Qgis.FieldDomainSplitPolicy.GeometryRatio)
 
     def testGdbLayerMetadata(self):
         """
@@ -3170,6 +3184,50 @@ class PyQgsOGRProvider(unittest.TestCase):
             2: ['2', 'feat 2', 'fid 2'],
             3: ['3', 'feat 3', 'fid 3']
         })
+
+    @unittest.skipIf(int(gdal.VersionInfo('VERSION_NUM')) < GDAL_COMPUTE_VERSION(3, 7, 0), "GDAL 3.7 required")
+    def test_provider_set_field_alias(self):
+        """
+        Test setting field alias via the vector data provider api
+        """
+        metadata = QgsProviderRegistry.instance().providerMetadata('ogr')
+        with tempfile.TemporaryDirectory() as temp_dir:
+            tmpfile = os.path.join(temp_dir, 'test_gdb.gdb')
+
+            ok, err = metadata.createDatabase(tmpfile)
+            self.assertTrue(ok)
+            self.assertFalse(err)
+
+            conn = metadata.createConnection(tmpfile, {})
+            self.assertTrue(conn)
+
+            fields = QgsFields()
+            field = QgsField('my_field', QVariant.String)
+            field.setAlias('my alias')
+            fields.append(field)
+            conn.createVectorTable('', 'test', fields, QgsWkbTypes.Point, QgsCoordinateReferenceSystem('EPSG:4326'), False, {})
+            layer = QgsVectorLayer(tmpfile + '|layername=test')
+            self.assertTrue(layer.isValid())
+
+            fields = layer.fields()
+            self.assertEqual(fields['my_field'].alias(), 'my alias')
+
+            self.assertTrue(
+                layer.dataProvider().attributeEditCapabilities() & Qgis.VectorDataProviderAttributeEditCapability.EditAlias)
+
+            field2 = QgsField('my_field2', QVariant.String)
+            field2.setAlias('my alias2')
+
+            self.assertTrue(layer.dataProvider().addAttributes([field2]))
+
+            del layer
+
+            layer = QgsVectorLayer(tmpfile + '|layername=test')
+            self.assertTrue(layer.isValid())
+
+            fields = layer.fields()
+            self.assertEqual(fields['my_field'].alias(), 'my alias')
+            self.assertEqual(fields['my_field2'].alias(), 'my alias2')
 
 
 if __name__ == '__main__':

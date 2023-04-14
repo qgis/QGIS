@@ -94,9 +94,9 @@ class APP_EXPORT QgsMeasureDialog : public QDialog, private Ui::QgsMeasureBase
      */
     void repopulateComboBoxUnits( bool isArea );
 
-    double convertLength( double length, QgsUnitTypes::DistanceUnit toUnit ) const;
+    double convertLength( double length, Qgis::DistanceUnit toUnit ) const;
 
-    double convertArea( double area, QgsUnitTypes::AreaUnit toUnit ) const;
+    double convertArea( double area, Qgis::AreaUnit toUnit ) const;
 
     double mTotal = 0.0;
 
@@ -113,16 +113,16 @@ class APP_EXPORT QgsMeasureDialog : public QDialog, private Ui::QgsMeasureBase
     int mDecimalPlaces = 3;
 
     //! Current unit for input values
-    QgsUnitTypes::DistanceUnit mCanvasUnits = QgsUnitTypes::DistanceUnknownUnit;
+    Qgis::DistanceUnit mCanvasUnits = Qgis::DistanceUnit::Unknown;
 
     //! Current unit for distance values
-    QgsUnitTypes::DistanceUnit mDistanceUnits  = QgsUnitTypes::DistanceUnknownUnit;
+    Qgis::DistanceUnit mDistanceUnits  = Qgis::DistanceUnit::Unknown;
 
     //! Current map unit for distance values
-    QgsUnitTypes::DistanceUnit mMapDistanceUnits  = QgsUnitTypes::DistanceUnknownUnit;
+    Qgis::DistanceUnit mMapDistanceUnits  = Qgis::DistanceUnit::Unknown;
 
     //! Current unit for area values
-    QgsUnitTypes::AreaUnit mAreaUnits  = QgsUnitTypes::AreaUnknownUnit;
+    Qgis::AreaUnit mAreaUnits  = Qgis::AreaUnit::Unknown;
 
     //! Our measurement object
     QgsDistanceArea mDa;

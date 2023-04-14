@@ -8,6 +8,7 @@ RUN dnf -y --refresh install \
     ccache \
     clang \
     clazy \
+    curl \
     exiv2-devel \
     expat-devel \
     fcgi-devel \
@@ -37,6 +38,7 @@ RUN dnf -y --refresh install \
     python3-termcolor \
     qt6-qt3d-devel \
     qt6-qtbase-devel \
+    qt6-qtbase-private-devel \
     qt6-qtdeclarative-devel \
     qt6-qttools-static \
     qt6-qtserialport-devel \
@@ -73,10 +75,10 @@ RUN cd /usr/src \
   && ninja install
 
 RUN cd /usr/src \
-  && wget https://github.com/frankosterfeld/qtkeychain/archive/refs/heads/master.zip \
+  && wget https://github.com/frankosterfeld/qtkeychain/archive/841f31c7ca177e45647fd705200d7fcbeee056e5/master.zip \
   && unzip master.zip \
   && rm master.zip \
-  && cd qtkeychain-master \
+  && cd qtkeychain-841f31c7ca177e45647fd705200d7fcbeee056e5 \
   && cmake -DBUILD_WITH_QT6=ON -DBUILD_TRANSLATIONS=OFF -DCMAKE_INSTALL_PREFIX=/usr/local -GNinja \
   && ninja install
 
@@ -99,3 +101,15 @@ RUN cd /usr/src \
   && qmake6 src/qscintilla.pro \
   && make -j4 \
   && make install
+
+# Oracle : client side
+RUN curl https://download.oracle.com/otn_software/linux/instantclient/199000/instantclient-basic-linux.x64-19.9.0.0.0dbru.zip > instantclient-basic-linux.x64-19.9.0.0.0dbru.zip
+RUN curl https://download.oracle.com/otn_software/linux/instantclient/199000/instantclient-sdk-linux.x64-19.9.0.0.0dbru.zip > instantclient-sdk-linux.x64-19.9.0.0.0dbru.zip
+RUN curl https://download.oracle.com/otn_software/linux/instantclient/199000/instantclient-sqlplus-linux.x64-19.9.0.0.0dbru.zip > instantclient-sqlplus-linux.x64-19.9.0.0.0dbru.zip
+
+RUN unzip instantclient-basic-linux.x64-19.9.0.0.0dbru.zip
+RUN unzip instantclient-sdk-linux.x64-19.9.0.0.0dbru.zip
+RUN unzip instantclient-sqlplus-linux.x64-19.9.0.0.0dbru.zip
+
+ENV PATH="/instantclient_19_9:${PATH}"
+ENV LD_LIBRARY_PATH="/instantclient_19_9:${LD_LIBRARY_PATH}"

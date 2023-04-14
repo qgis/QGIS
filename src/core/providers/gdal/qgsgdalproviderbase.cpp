@@ -56,6 +56,12 @@ QList<QgsColorRampShader::ColorRampItem> QgsGdalProviderBase::colorTable( GDALDa
   }
 
   GDALRasterBandH myGdalBand = GDALGetRasterBand( gdalDataset, bandNumber );
+  if ( ! myGdalBand )
+  {
+    QgsDebugMsg( QStringLiteral( "Could not get raster band %1" ).arg( bandNumber ) );
+    return ct;
+  }
+
   GDALColorTableH myGdalColorTable = GDALGetRasterColorTable( myGdalBand );
 
   if ( myGdalColorTable )

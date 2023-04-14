@@ -21,11 +21,9 @@
 #include "qgis_core.h"
 
 #include "qgsrasterlayer.h"
-#include "qgsmessagelog.h"
-#include "qgsspatialindex.h"
-#include "qgsprocessing.h"
 #include "qgsfeaturesink.h"
 #include "qgsfeaturesource.h"
+#include "qgsprocessing.h"
 #include "qgsproxyfeaturesink.h"
 #include "qgsremappingproxyfeaturesink.h"
 
@@ -221,7 +219,7 @@ class CORE_EXPORT QgsProcessingUtils
      *
      * The \a typeHint can be used to dictate the type of map layer expected.
      */
-    static QgsMapLayer *mapLayerFromString( const QString &string, QgsProcessingContext &context, bool allowLoadingNewLayers = true, QgsProcessingUtils::LayerHint typeHint = QgsProcessingUtils::LayerHint::UnknownType );
+    static QgsMapLayer *mapLayerFromString( const QString &string, QgsProcessingContext &context, bool allowLoadingNewLayers = true, QgsProcessingUtils::LayerHint typeHint = QgsProcessingUtils::LayerHint::UnknownType, QgsProcessing::LayerOptionsFlags flags = QgsProcessing::LayerOptionsFlags() );
 
     /**
      * Converts a variant \a value to a new feature source.
@@ -288,7 +286,7 @@ class CORE_EXPORT QgsProcessingUtils
     static QgsFeatureSink *createFeatureSink( QString &destination,
         QgsProcessingContext &context,
         const QgsFields &fields,
-        QgsWkbTypes::Type geometryType,
+        Qgis::WkbType geometryType,
         const QgsCoordinateReferenceSystem &crs,
         const QVariantMap &createOptions = QVariantMap(),
         const QStringList &datasourceOptions = QStringList(),
@@ -316,7 +314,7 @@ class CORE_EXPORT QgsProcessingUtils
      * SIP bindings. c++ code should call the other createFeatureSink() version.
      * \note available in Python bindings as createFeatureSink()
      */
-    static void createFeatureSinkPython( QgsFeatureSink **sink SIP_OUT SIP_TRANSFERBACK, QString &destination SIP_INOUT, QgsProcessingContext &context, const QgsFields &fields, QgsWkbTypes::Type geometryType, const QgsCoordinateReferenceSystem &crs, const QVariantMap &createOptions = QVariantMap() ) SIP_THROW( QgsProcessingException ) SIP_PYNAME( createFeatureSink );
+    static void createFeatureSinkPython( QgsFeatureSink **sink SIP_OUT SIP_TRANSFERBACK, QString &destination SIP_INOUT, QgsProcessingContext &context, const QgsFields &fields, Qgis::WkbType geometryType, const QgsCoordinateReferenceSystem &crs, const QVariantMap &createOptions = QVariantMap() ) SIP_THROW( QgsProcessingException ) SIP_PYNAME( createFeatureSink );
 
 
     /**
@@ -346,7 +344,7 @@ class CORE_EXPORT QgsProcessingUtils
      * Returns a session specific processing temporary folder for use in processing algorithms.
      * \see generateTempFilename()
      */
-    static QString tempFolder();
+    static QString tempFolder( const QgsProcessingContext *context = nullptr );
 
     /**
      * Returns a temporary filename for a given file, putting it into
@@ -354,7 +352,7 @@ class CORE_EXPORT QgsProcessingUtils
      * but not changing the \a basename.
      * \see tempFolder()
      */
-    static QString generateTempFilename( const QString &basename );
+    static QString generateTempFilename( const QString &basename, const QgsProcessingContext *context = nullptr );
 
     /**
      * Returns a HTML formatted version of the help text encoded in a variant \a map for
@@ -376,6 +374,9 @@ class CORE_EXPORT QgsProcessingUtils
      *
      * The \a featureLimit argument can be used to specify a limit on the number of features read from the layer.
      *
+     * Since QGIS 3.32, the optional \a filterExpression argument can be used to specify a expression to use
+     * to filter the features read from the layer.
+     *
      * When an algorithm is capable of handling multi-layer input files (such as Geopackage), it is preferable
      * to use convertToCompatibleFormatAndLayerName() which may avoid conversion in more situations.
      *
@@ -387,7 +388,9 @@ class CORE_EXPORT QgsProcessingUtils
         const QStringList &compatibleFormats,
         const QString &preferredFormat,
         QgsProcessingContext &context,
-        QgsProcessingFeedback *feedback, long long featureLimit = -1 );
+        QgsProcessingFeedback *feedback,
+        long long featureLimit = -1,
+        const QString &filterExpression = QString() );
 
     /**
      * Converts a source vector \a layer to a file path and layer name of a vector layer of compatible format.
@@ -416,6 +419,7 @@ class CORE_EXPORT QgsProcessingUtils
      * \param feedback feedback object
      * \param layerName will be set to the target layer name for multi-layer sources (e.g. Geopackage)
      * \param featureLimit can be used to place a limit on the maximum number of features read from the layer
+     * \param filterExpression optional expression for filtering features read from the layer (since QGIS 3.32)
      *
      * \returns path to source layer, or nearly converted compatible layer
      *
@@ -429,7 +433,9 @@ class CORE_EXPORT QgsProcessingUtils
         const QString &preferredFormat,
         QgsProcessingContext &context,
         QgsProcessingFeedback *feedback,
-        QString &layerName SIP_OUT, long long featureLimit = -1 );
+        QString &layerName SIP_OUT,
+        long long featureLimit = -1,
+        const QString &filterExpression = QString() );
 
     /**
      * Combines two field lists, avoiding duplicate field names (in a case-insensitive manner).
@@ -557,7 +563,7 @@ class CORE_EXPORT QgsProcessingUtils
      *
      * \since QGIS 3.8
      */
-    static QgsMapLayer *loadMapLayerFromString( const QString &string, const QgsCoordinateTransformContext &transformContext, LayerHint typeHint = LayerHint::UnknownType );
+    static QgsMapLayer *loadMapLayerFromString( const QString &string, const QgsCoordinateTransformContext &transformContext, LayerHint typeHint = LayerHint::UnknownType, QgsProcessing::LayerOptionsFlags flags = QgsProcessing::LayerOptionsFlags() );
 
     /**
      * Interprets a string as a map layer. The method will attempt to
@@ -603,9 +609,11 @@ class CORE_EXPORT QgsProcessingFeatureSource : public QgsFeatureSource
      *
      * If \a featureLimit is set to a value > 0, then a limit is placed on the maximum number of features which will be
      * read from the source.
+     *
+     * Since QGIS 3.32, the optional \a filterExpression can be used to specify an expression based filter for the source.
      */
     QgsProcessingFeatureSource( QgsFeatureSource *originalSource, const QgsProcessingContext &context, bool ownsOriginalSource = false,
-                                long long featureLimit = -1 );
+                                long long featureLimit = -1, const QString &filterExpression = QString() );
 
     ~QgsProcessingFeatureSource() override;
 
@@ -621,7 +629,7 @@ class CORE_EXPORT QgsProcessingFeatureSource : public QgsFeatureSource
     QgsFeatureIterator getFeatures( const QgsFeatureRequest &request = QgsFeatureRequest() ) const override;
     QgsCoordinateReferenceSystem sourceCrs() const override;
     QgsFields fields() const override;
-    QgsWkbTypes::Type wkbType() const override;
+    Qgis::WkbType wkbType() const override;
     long long featureCount() const override;
     QString sourceName() const override;
     QSet<QVariant> uniqueValues( int fieldIndex, int limit = -1 ) const override;
@@ -655,6 +663,7 @@ class CORE_EXPORT QgsProcessingFeatureSource : public QgsFeatureSource
     std::function< void( const QgsFeature & ) > mInvalidGeometryCallbackAbort;
 
     long long mFeatureLimit = -1;
+    QString mFilterExpression;
 
 };
 

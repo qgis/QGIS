@@ -17,13 +17,10 @@
 
 #include "qgsfeatureiterator.h"
 #include "qgsmapcanvas.h"
-#include "qgsvertexmarker.h"
 #include "qgsvectorlayer.h"
 #include "qgsgeometry.h"
 #include "qgsrubberband.h"
 #include "qgssnappingutils.h"
-#include "qgstolerance.h"
-#include "qgisapp.h"
 #include "qgsmapmouseevent.h"
 
 QgsMapToolDeletePart::QgsMapToolDeletePart( QgsMapCanvas *canvas )
@@ -120,8 +117,8 @@ QgsGeometry QgsMapToolDeletePart::partUnderPoint( QPoint point, QgsFeatureId &fi
 
   switch ( vlayer->geometryType() )
   {
-    case QgsWkbTypes::PointGeometry:
-    case QgsWkbTypes::LineGeometry:
+    case Qgis::GeometryType::Point:
+    case Qgis::GeometryType::Line:
     {
       const QgsPointLocator::Match match = mCanvas->snappingUtils()->snapToCurrentLayer( point, QgsPointLocator::Types( QgsPointLocator::Vertex | QgsPointLocator::Edge ) );
       if ( !match.isValid() )
@@ -135,13 +132,13 @@ QgsGeometry QgsMapToolDeletePart::partUnderPoint( QPoint point, QgsFeatureId &fi
         fid = match.featureId();
         return QgsGeometry::fromPointXY( match.point() );
       }
-      else if ( QgsWkbTypes::geometryType( g.wkbType() ) == QgsWkbTypes::PointGeometry )
+      else if ( QgsWkbTypes::geometryType( g.wkbType() ) == Qgis::GeometryType::Point )
       {
         fid = match.featureId();
         partNum = snapVertex;
         return QgsGeometry::fromPointXY( match.point() );
       }
-      else if ( QgsWkbTypes::geometryType( g.wkbType() ) == QgsWkbTypes::LineGeometry )
+      else if ( QgsWkbTypes::geometryType( g.wkbType() ) == Qgis::GeometryType::Line )
       {
         QgsMultiPolylineXY mline = g.asMultiPolyline();
         for ( int part = 0; part < mline.count(); part++ )
@@ -157,7 +154,7 @@ QgsGeometry QgsMapToolDeletePart::partUnderPoint( QPoint point, QgsFeatureId &fi
       }
       break;
     }
-    case QgsWkbTypes::PolygonGeometry:
+    case Qgis::GeometryType::Polygon:
     {
       const QgsPointLocator::Match match = mCanvas->snappingUtils()->snapToCurrentLayer( point, QgsPointLocator::Area );
       if ( !match.isValid() )

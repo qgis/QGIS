@@ -28,7 +28,7 @@
 #include "qgsthreadingutils.h"
 
 QgsGroupLayer::QgsGroupLayer( const QString &name, const LayerOptions &options )
-  : QgsMapLayer( QgsMapLayerType::GroupLayer, name )
+  : QgsMapLayer( Qgis::LayerType::Group, name )
   , mTransformContext( options.transformContext )
 {
   mShouldValidateCrs = false;
@@ -132,7 +132,7 @@ bool QgsGroupLayer::writeXml( QDomNode &layer_node, QDomDocument &doc, const Qgs
     return false;
   }
 
-  mapLayerNode.setAttribute( QStringLiteral( "type" ), QgsMapLayerFactory::typeToString( QgsMapLayerType::GroupLayer ) );
+  mapLayerNode.setAttribute( QStringLiteral( "type" ), QgsMapLayerFactory::typeToString( Qgis::LayerType::Group ) );
 
   QDomElement childLayersElement = doc.createElement( QStringLiteral( "childLayers" ) );
   for ( auto it = mChildren.constBegin(); it != mChildren.constEnd(); ++it )

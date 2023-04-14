@@ -238,7 +238,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * \returns encoded string
      * \see decodeSldUom()
      */
-    static QString encodeSldUom( QgsUnitTypes::RenderUnit unit, double *scaleFactor );
+    static QString encodeSldUom( Qgis::RenderUnit unit, double *scaleFactor );
 
     /**
      * Decodes a SLD unit of measure string to a render unit.
@@ -247,7 +247,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * \returns matching render unit
      * \see encodeSldUom()
      */
-    static QgsUnitTypes::RenderUnit decodeSldUom( const QString &str, double *scaleFactor = nullptr );
+    static Qgis::RenderUnit decodeSldUom( const QString &str, double *scaleFactor = nullptr );
 
     /**
      * Returns the size scaled in pixels according to the uom attribute.
@@ -314,7 +314,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * \see symbolLayerPreviewIcon()
      * \since QGIS 2.9
      */
-    static QPicture symbolLayerPreviewPicture( const QgsSymbolLayer *layer, QgsUnitTypes::RenderUnit units, QSize size, const QgsMapUnitScale &scale = QgsMapUnitScale(), Qgis::SymbolType parentSymbolType = Qgis::SymbolType::Hybrid );
+    static QPicture symbolLayerPreviewPicture( const QgsSymbolLayer *layer, Qgis::RenderUnit units, QSize size, const QgsMapUnitScale &scale = QgsMapUnitScale(), Qgis::SymbolType parentSymbolType = Qgis::SymbolType::Hybrid );
 
     /**
      * Draws a symbol layer preview to an icon.
@@ -327,7 +327,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * \returns icon containing symbol layer preview
      * \see symbolLayerPreviewPicture()
      */
-    static QIcon symbolLayerPreviewIcon( const QgsSymbolLayer *layer, QgsUnitTypes::RenderUnit u, QSize size, const QgsMapUnitScale &scale = QgsMapUnitScale(), Qgis::SymbolType parentSymbolType = Qgis::SymbolType::Hybrid, QgsMapLayer *mapLayer = nullptr );
+    static QIcon symbolLayerPreviewIcon( const QgsSymbolLayer *layer, Qgis::RenderUnit u, QSize size, const QgsMapUnitScale &scale = QgsMapUnitScale(), Qgis::SymbolType parentSymbolType = Qgis::SymbolType::Hybrid, QgsMapLayer *mapLayer = nullptr );
 
     /**
      * Returns an icon preview for a color ramp.
@@ -412,7 +412,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
     /**
      * Creates a symbol layer list from a DOM \a element.
      */
-    static bool createSymbolLayerListFromSld( QDomElement &element, QgsWkbTypes::GeometryType geomType, QList<QgsSymbolLayer *> &layers );
+    static bool createSymbolLayerListFromSld( QDomElement &element, Qgis::GeometryType geomType, QList<QgsSymbolLayer *> &layers );
 
     static QgsSymbolLayer *createFillLayerFromSld( QDomElement &element ) SIP_FACTORY;
     static QgsSymbolLayer *createLineLayerFromSld( QDomElement &element ) SIP_FACTORY;
@@ -836,21 +836,21 @@ class CORE_EXPORT QgsSymbolLayerUtils
      *  returns the value un-modified
      * \since QGIS 3.0
      */
-    static double rescaleUom( double size, QgsUnitTypes::RenderUnit unit, const QVariantMap &props );
+    static double rescaleUom( double size, Qgis::RenderUnit unit, const QVariantMap &props );
 
     /**
      * Rescales the given point based on the uomScale found in the props, if any is found, otherwise
      *  returns a copy of the original point
      * \since QGIS 3.0
      */
-    static QPointF rescaleUom( QPointF point, QgsUnitTypes::RenderUnit unit, const QVariantMap &props ) SIP_PYNAME( rescalePointUom );
+    static QPointF rescaleUom( QPointF point, Qgis::RenderUnit unit, const QVariantMap &props ) SIP_PYNAME( rescalePointUom );
 
     /**
      * Rescales the given array based on the uomScale found in the props, if any is found, otherwise
      *  returns a copy of the original point
      * \since QGIS 3.0
      */
-    static QVector<qreal> rescaleUom( const QVector<qreal> &array, QgsUnitTypes::RenderUnit unit, const QVariantMap &props ) SIP_PYNAME( rescaleArrayUom );
+    static QVector<qreal> rescaleUom( const QVector<qreal> &array, Qgis::RenderUnit unit, const QVariantMap &props ) SIP_PYNAME( rescaleArrayUom );
 
     /**
      * Checks if the properties contain scaleMinDenom and scaleMaxDenom, if available, they are added into the SE Rule element
@@ -883,8 +883,9 @@ class CORE_EXPORT QgsSymbolLayerUtils
     /**
      * Converts a set of symbol layer id to a set of pointers to actual symbol layers carried by the feature renderer.
      * \since QGIS 3.12
+     * \deprecated since QGIS 3.30 because it was related to old QgsSymbolLayerReference system
      */
-    static QSet<const QgsSymbolLayer *> toSymbolLayerPointers( QgsFeatureRenderer *renderer, const QSet<QgsSymbolLayerId> &symbolLayerIds );
+    Q_DECL_DEPRECATED static QSet<const QgsSymbolLayer *> toSymbolLayerPointers( const QgsFeatureRenderer *renderer, const QSet<QgsSymbolLayerId> &symbolLayerIds );
 
     /**
      * Calculates the frame rate (in frames per second) at which the given \a renderer must be redrawn.
@@ -928,6 +929,30 @@ class CORE_EXPORT QgsSymbolLayerUtils
      */
     static QSize tileSize( int width, int height, double &angleRad SIP_INOUT );
 
+    /**
+     * Remove recursively unique id from all \a symbol symbol layers and set an empty string instead
+     * \since QGIS 3.30
+     */
+    static void clearSymbolLayerIds( QgsSymbol *symbol );
+
+    /**
+     * Remove recursively unique id from \a symbolLayer and its children and set an empty string instead
+     * \since QGIS 3.30
+     */
+    static void clearSymbolLayerIds( QgsSymbolLayer *symbolLayer );
+
+    /**
+     * Regenerate recursively unique id from all \a symbol symbol layers
+     * \since QGIS 3.30
+     */
+    static void resetSymbolLayerIds( QgsSymbol *symbol );
+
+    /**
+     * Regenerate recursively unique id from \a symbolLayer and its children
+     * \since QGIS 3.30
+     */
+    static void resetSymbolLayerIds( QgsSymbolLayer *symbolLayer );
+
     ///@cond PRIVATE
 #ifndef SIP_RUN
     static QgsProperty rotateWholeSymbol( double additionalRotation, const QgsProperty &property )
@@ -958,6 +983,6 @@ class CORE_EXPORT QgsSymbolLayerUtils
 class QPolygonF;
 
 //! calculate geometry shifted by a specified distance
-QList<QPolygonF> offsetLine( QPolygonF polyline, double dist, QgsWkbTypes::GeometryType geometryType ) SIP_SKIP;
+QList<QPolygonF> offsetLine( QPolygonF polyline, double dist, Qgis::GeometryType geometryType ) SIP_SKIP;
 
 #endif

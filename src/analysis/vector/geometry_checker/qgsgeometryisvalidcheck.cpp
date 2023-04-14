@@ -23,7 +23,7 @@ QgsGeometryIsValidCheck::QgsGeometryIsValidCheck( const QgsGeometryCheckContext 
   : QgsSingleGeometryCheck( context, configuration )
 {}
 
-QList<QgsWkbTypes::GeometryType> QgsGeometryIsValidCheck::compatibleGeometryTypes() const
+QList<Qgis::GeometryType> QgsGeometryIsValidCheck::compatibleGeometryTypes() const
 {
   return factoryCompatibleGeometryTypes();
 }
@@ -63,9 +63,9 @@ QStringList QgsGeometryIsValidCheck::resolutionMethods() const
   return QStringList();
 }
 ///@cond private
-QList<QgsWkbTypes::GeometryType> QgsGeometryIsValidCheck::factoryCompatibleGeometryTypes()
+QList<Qgis::GeometryType> QgsGeometryIsValidCheck::factoryCompatibleGeometryTypes()
 {
-  return {QgsWkbTypes::LineGeometry, QgsWkbTypes::PolygonGeometry};
+  return {Qgis::GeometryType::Line, Qgis::GeometryType::Polygon};
 }
 
 bool QgsGeometryIsValidCheck::factoryIsCompatible( QgsVectorLayer *layer ) SIP_SKIP

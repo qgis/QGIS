@@ -145,11 +145,11 @@ QgsGpsToolBar::QgsGpsToolBar( QgsAppGpsConnection *connection, QgsMapCanvas *can
   mCreateFeatureAction->setEnabled( false );
   mAddTrackVertexAction->setEnabled( false );
   mResetFeatureAction->setEnabled( false );
-  connect( mConnection, &QgsAppGpsConnection::statusChanged, this, [ = ]( Qgis::GpsConnectionStatus status )
+  connect( mConnection, &QgsAppGpsConnection::statusChanged, this, [ = ]( Qgis::DeviceConnectionStatus status )
   {
     switch ( status )
     {
-      case Qgis::GpsConnectionStatus::Disconnected:
+      case Qgis::DeviceConnectionStatus::Disconnected:
         whileBlocking( mConnectAction )->setChecked( false );
         mConnectAction->setText( tr( "Connect GPS" ) );
         mConnectAction->setToolTip( tr( "Connect to GPS" ) );
@@ -161,7 +161,7 @@ QgsGpsToolBar::QgsGpsToolBar( QgsAppGpsConnection *connection, QgsMapCanvas *can
         delete mInformationButton;
         mInformationButton = nullptr;
         break;
-      case Qgis::GpsConnectionStatus::Connecting:
+      case Qgis::DeviceConnectionStatus::Connecting:
         whileBlocking( mConnectAction )->setChecked( true );
         mConnectAction->setToolTip( tr( "Connecting to GPS" ) );
         mConnectAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/gpsicons/mIconGpsConnect.svg" ) ) );
@@ -172,7 +172,7 @@ QgsGpsToolBar::QgsGpsToolBar( QgsAppGpsConnection *connection, QgsMapCanvas *can
         delete mInformationButton;
         mInformationButton = nullptr;
         break;
-      case Qgis::GpsConnectionStatus::Connected:
+      case Qgis::DeviceConnectionStatus::Connected:
         whileBlocking( mConnectAction )->setChecked( true );
         mConnectAction->setText( tr( "Disconnect GPS" ) );
         mConnectAction->setToolTip( tr( "Disconnect from GPS" ) );
@@ -360,31 +360,31 @@ void QgsGpsToolBar::destinationLayerChanged( QgsVectorLayer *vlayer )
   QString icon = QStringLiteral( "mActionCaptureLine.svg" );;
   if ( vlayer )
   {
-    const QgsWkbTypes::GeometryType layerGeometryType = vlayer->geometryType();
+    const Qgis::GeometryType layerGeometryType = vlayer->geometryType();
     bool enable = true;
 
     switch ( layerGeometryType )
     {
-      case QgsWkbTypes::PointGeometry:
+      case Qgis::GeometryType::Point:
         buttonLabel = tr( "Create Point Feature at Location" );
         buttonToolTip = tr( "Create a new point feature at the current GPS location" );
         icon = QStringLiteral( "mActionCapturePoint.svg" );
         break;
 
-      case QgsWkbTypes::LineGeometry:
+      case Qgis::GeometryType::Line:
         buttonLabel = tr( "Create Line Feature from Track" );
         buttonToolTip = tr( "Create a new line feature using the current GPS track" );
         icon = QStringLiteral( "mActionCaptureLine.svg" );
         break;
 
-      case QgsWkbTypes::PolygonGeometry:
+      case Qgis::GeometryType::Polygon:
         buttonLabel = tr( "Create Polygon Feature from Track" );
         buttonToolTip = tr( "Create a new polygon feature using the current GPS track" );
         icon = QStringLiteral( "mActionCapturePolygon.svg" );
         break;
 
-      case QgsWkbTypes::UnknownGeometry:
-      case QgsWkbTypes::NullGeometry:
+      case Qgis::GeometryType::Unknown:
+      case Qgis::GeometryType::Null:
         enable = false;
         break;
     }

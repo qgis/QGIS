@@ -126,7 +126,7 @@ json QgsJsonExporter::exportFeatureToJsonObject( const QgsFeature &feature, cons
     }
     QgsRectangle box = geom.boundingBox();
 
-    if ( QgsWkbTypes::flatType( geom.wkbType() ) != QgsWkbTypes::Point )
+    if ( QgsWkbTypes::flatType( geom.wkbType() ) != Qgis::WkbType::Point )
     {
       featureJson[ "bbox" ] =
       {
@@ -144,7 +144,6 @@ json QgsJsonExporter::exportFeatureToJsonObject( const QgsFeature &feature, cons
   }
 
   // build up properties element
-  int attributeCounter { 0 };
   json properties;
   if ( mIncludeAttributes || !extraProperties.isEmpty() )
   {
@@ -180,7 +179,6 @@ json QgsJsonExporter::exportFeatureToJsonObject( const QgsFeature &feature, cons
           name = mLayer->attributeDisplayName( i );
         }
         properties[ name.toStdString() ] = QgsJsonUtils::jsonFromVariant( val );
-        attributeCounter++;
       }
     }
 
@@ -190,7 +188,6 @@ json QgsJsonExporter::exportFeatureToJsonObject( const QgsFeature &feature, cons
       for ( ; it != extraProperties.constEnd(); ++it )
       {
         properties[ it.key().toStdString() ] = QgsJsonUtils::jsonFromVariant( it.value() );
-        attributeCounter++;
       }
     }
 
@@ -224,7 +221,6 @@ json QgsJsonExporter::exportFeatureToJsonObject( const QgsFeature &feature, cons
           }
         }
         properties[ relation.name().toStdString() ] = relatedFeatureAttributes;
-        attributeCounter++;
       }
     }
   }

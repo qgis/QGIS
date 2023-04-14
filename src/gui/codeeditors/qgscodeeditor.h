@@ -20,6 +20,7 @@
 #include <QString>
 #include "qgscodeeditorcolorscheme.h"
 #include "qgis.h"
+#include "qgssettingstree.h"
 
 // qscintilla includes
 #include <Qsci/qsciapis.h>
@@ -95,6 +96,13 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
 
   public:
 
+
+#ifndef SIP_RUN
+
+    static inline QgsSettingsTreeNode *sTreeCodeEditor = QgsSettingsTree::sTreeGui->createChildNode( QStringLiteral( "code-editor" ) );
+
+#endif
+
     /**
      * Code editor modes.
      *
@@ -131,6 +139,7 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
     enum class Flag : int
     {
       CodeFolding = 1 << 0, //!< Indicates that code folding should be enabled for the editor
+      ImmediatelyUpdateHistory = 1 << 1, //!< Indicates that the history file should be immediately updated whenever a command is executed, instead of the default behavior of only writing the history on widget close. Since QGIS 3.32.
     };
     Q_ENUM( Flag )
 
@@ -167,6 +176,13 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
      * \since QGIS 3.30
      */
     virtual Qgis::ScriptLanguage language() const;
+
+    /**
+     * Returns the associated scripting language capabilities.
+     *
+     * \since QGIS 3.32
+     */
+    virtual Qgis::ScriptLanguageCapabilities languageCapabilities() const;
 
     /**
      * Returns a user-friendly, translated name of the specified script \a language.
@@ -351,9 +367,12 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
      *
      * An interpreter() must be set.
      *
+     * Since QGIS 3.32, if \a skipHistory is TRUE then the command will not be automatically
+     * added to the widget's history.
+     *
      * \since QGIS 3.30
      */
-    void runCommand( const QString &command );
+    void runCommand( const QString &command, bool skipHistory = false );
 
     /**
      * Moves the cursor to the start of the document and scrolls to ensure
@@ -430,6 +449,33 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
      */
     bool writeHistoryFile();
 
+    /**
+     * Applies code reformatting to the editor.
+     *
+     * This is only supported for editors which return the Qgis::ScriptLanguageCapability::Reformat capability from languageCapabilities().
+     *
+     * \since QGIS 3.32
+     */
+    void reformatCode();
+
+    /**
+     * Applies syntax checking to the editor.
+     *
+     * This is only supported for editors which return the Qgis::ScriptLanguageCapability::CheckSyntax capability from languageCapabilities().
+     *
+     * \since QGIS 3.32
+     */
+    virtual bool checkSyntax();
+
+    /**
+     * Toggle comment for the selected text.
+     *
+     * This is only supported for editors which return the Qgis::ScriptLanguageCapability::ToggleComment capability from languageCapabilities().
+     *
+     * \since QGIS 3.32
+     */
+    virtual void toggleComment();
+
   signals:
 
     /**
@@ -456,6 +502,7 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
     void focusOutEvent( QFocusEvent *event ) override;
     void keyPressEvent( QKeyEvent *event ) override;
     void contextMenuEvent( QContextMenuEvent *event ) override;
+    bool eventFilter( QObject *watched, QEvent *event ) override;
 
     /**
      * Called when the dialect specific code lexer needs to be initialized (or reinitialized).
@@ -513,6 +560,24 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
      * \since QGIS 3.30
      */
     virtual void populateContextMenu( QMenu *menu );
+
+    /**
+     * Applies code reformatting to a \a string and returns the result.
+     *
+     * This is only supported for editors which return the Qgis::ScriptLanguageCapability::Reformat capability from languageCapabilities().
+     *
+     * \since QGIS 3.32
+     */
+    virtual QString reformatCodeString( const QString &string );
+
+    /**
+     * Shows a user facing message (eg a warning message).
+     *
+     * The default implementation uses QMessageBox.
+     *
+     * \since QGIS 3.32
+     */
+    virtual void showMessage( const QString &title, const QString &message, Qgis::MessageLevel level );
 
   private:
 

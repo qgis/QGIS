@@ -149,7 +149,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
     /**
      * Returns the geometry type which is returned by this layer
      */
-    QgsWkbTypes::Type wkbType() const override = 0;
+    Qgis::WkbType wkbType() const override = 0;
 
     /**
      * Number of features in the layer
@@ -409,6 +409,8 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
      * \note, some capabilities may change depending on whether
      * a spatial filter is active on this provider, so it may
      * be prudent to check this value per intended operation.
+     *
+     * \see attributeEditCapabilities()
      */
     Q_INVOKABLE virtual QgsVectorDataProvider::Capabilities capabilities() const;
 
@@ -416,6 +418,14 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
      *  Returns the above in friendly format.
      */
     QString capabilitiesString() const;
+
+    /**
+     * Returns the provider's supported attribute editing capabilities.
+     *
+     * \see capabilities()
+     * \since QGIS 3.32
+     */
+    virtual Qgis::VectorDataProviderAttributeEditCapabilities attributeEditCapabilities() const;
 
     /**
      * Set encoding used for accessing data from layer.
@@ -460,8 +470,10 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
 
     /**
      * Returns list of indexes to names for QgsPalLabeling fix
+     *
+     * \deprecated since QGIS 3.32 this method is unused and will always return an empty hash
      */
-    virtual QgsAttrPalIndexNameHash palAttributeIndexNames() const;
+    Q_DECL_DEPRECATED QgsAttrPalIndexNameHash palAttributeIndexNames() const SIP_DEPRECATED;
 
     /**
      * check if provider supports type of field

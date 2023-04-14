@@ -18,6 +18,7 @@
 #include "qgslayoutreportsectionlabel.h"
 #include "qgslayout.h"
 #include "qgslayoutview.h"
+#include "qgslayoutrendercontext.h"
 #include <QGraphicsView>
 #include <QPainter>
 #include <QWidget>

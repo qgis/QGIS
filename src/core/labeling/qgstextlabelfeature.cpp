@@ -20,9 +20,7 @@
 #include "qgstextcharacterformat.h"
 #include "qgstextfragment.h"
 #include "qgstextblock.h"
-
-// to match QTextEngine handling of superscript/subscript font sizes
-constexpr double SUPERSCRIPT_SUBSCRIPT_FONT_SIZE_SCALING_FACTOR = 2.0 / 3.0;
+#include "qgstextrenderer.h"
 
 
 QgsTextLabelFeature::QgsTextLabelFeature( QgsFeatureId id, geos::unique_ptr geometry, QSizeF size )
@@ -121,7 +119,7 @@ QgsPrecalculatedTextMetrics QgsTextLabelFeature::calculateTextMetrics( const Qgs
               // the superscript in a smaller font size. BUT if the fragment format HAS a non -1 font size then it indicates
               // that the document has an explicit font size for the super/subscript element, eg "my text<sup style="font-size: 6pt">2</sup>"
               // which we should respect
-              graphemeFont.setPixelSize( static_cast< int >( std::round( graphemeFont.pixelSize() * SUPERSCRIPT_SUBSCRIPT_FONT_SIZE_SCALING_FACTOR ) ) );
+              graphemeFont.setPixelSize( static_cast< int >( std::round( graphemeFont.pixelSize() * QgsTextRenderer::SUPERSCRIPT_SUBSCRIPT_FONT_SIZE_SCALING_FACTOR ) ) );
             }
             break;
           }

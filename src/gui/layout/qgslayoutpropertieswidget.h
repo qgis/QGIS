@@ -52,10 +52,10 @@ class GUI_EXPORT QgsLayoutPropertiesWidget: public QgsPanelWidget, private Ui::Q
   private slots:
 
     void gridResolutionChanged( double d );
-    void gridResolutionUnitsChanged( QgsUnitTypes::LayoutUnit unit );
+    void gridResolutionUnitsChanged( Qgis::LayoutUnit unit );
     void gridOffsetXChanged( double d );
     void gridOffsetYChanged( double d );
-    void gridOffsetUnitsChanged( QgsUnitTypes::LayoutUnit unit );
+    void gridOffsetUnitsChanged( Qgis::LayoutUnit unit );
     void snapToleranceChanged( int tolerance );
     void resizeMarginsChanged();
     void resizeToContents();

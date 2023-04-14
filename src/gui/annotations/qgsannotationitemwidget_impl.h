@@ -23,6 +23,7 @@
 
 #include "ui_qgsannotationpointtextwidgetbase.h"
 #include "ui_qgsannotationsymbolwidgetbase.h"
+#include "ui_qgsannotationlinetextwidgetbase.h"
 
 class QgsSymbolSelectorWidget;
 class QgsFillSymbol;
@@ -32,6 +33,7 @@ class QgsAnnotationPolygonItem;
 class QgsAnnotationLineItem;
 class QgsAnnotationMarkerItem;
 class QgsAnnotationPointTextItem;
+class QgsAnnotationLineTextItem;
 class QgsTextFormatWidget;
 
 #define SIP_NO_FILE
@@ -134,6 +136,35 @@ class QgsAnnotationPointTextItemWidget : public QgsAnnotationItemBaseWidget, pri
     bool mBlockChangedSignal = false;
     std::unique_ptr< QgsAnnotationPointTextItem> mItem;
 };
+
+
+class QgsAnnotationLineTextItemWidget : public QgsAnnotationItemBaseWidget, private Ui_QgsAnnotationLineTextWidgetBase
+{
+    Q_OBJECT
+
+  public:
+    QgsAnnotationLineTextItemWidget( QWidget *parent );
+    ~QgsAnnotationLineTextItemWidget() override;
+    QgsAnnotationItem *createItem() override;
+    void updateItem( QgsAnnotationItem *item ) override;
+    void setDockMode( bool dockMode ) override;
+    void setContext( const QgsSymbolWidgetContext &context ) override;
+
+  public slots:
+
+    void focusDefaultWidget() override;
+
+  protected:
+    bool setNewItem( QgsAnnotationItem *item ) override;
+
+  private:
+    void mInsertExpressionButton_clicked();
+
+    QgsTextFormatWidget *mTextFormatWidget = nullptr;
+    bool mBlockChangedSignal = false;
+    std::unique_ptr< QgsAnnotationLineTextItem> mItem;
+};
+
 
 ///@endcond
 

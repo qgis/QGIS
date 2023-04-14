@@ -53,7 +53,7 @@ class QgsPluginManager : public QgsOptionsDialogBase, private Ui::QgsPluginManag
     Q_OBJECT
   public:
 
-    static inline QgsSettingsTreeNode *sTreePluginManager = QgsSettingsTree::sTreePlugins->createChildNode( QStringLiteral( "_plugin_manager" ) );
+    static inline QgsSettingsTreeNode *sTreePluginManager = QgsSettingsTree::treeRoot()->createChildNode( QStringLiteral( "plugin-manager" ) );
 
     static const QgsSettingsEntryBool *settingsAutomaticallyCheckForPluginUpdates;
     static const QgsSettingsEntryBool *settingsAllowExperimental;

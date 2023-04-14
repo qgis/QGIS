@@ -23,6 +23,9 @@
 #include "qgsrenderer.h"
 #include "qgsvectorlayerlabeling.h"
 #include "qgslabelsink.h"
+#include "qgsmaplayerstyle.h"
+#include "qgsrendercontext.h"
+#include "qgsdxfexport.h"
 
 /**
  * Holds information about each layer in a DXF job.

@@ -168,7 +168,7 @@ bool QgsOracleTableCache::saveToCache( const QString &connName, CacheFlags flags
     sqlite3_bind_text( stmtInsert, 6, item.pkCols.join( "," ).toUtf8().constData(), -1, SQLITE_TRANSIENT );
 
     QStringList geomTypes;
-    for ( QgsWkbTypes::Type geomType : std::as_const( item.types ) )
+    for ( Qgis::WkbType geomType : std::as_const( item.types ) )
       geomTypes.append( QString::number( static_cast<ulong>( geomType ) ) );
     sqlite3_bind_text( stmtInsert, 7, geomTypes.join( "," ).toUtf8().constData(), -1, SQLITE_TRANSIENT );
 
@@ -231,7 +231,7 @@ bool QgsOracleTableCache::loadFromCache( const QString &connName, CacheFlags fla
 #else
     for ( QString geomType : geomTypes.split( ",", Qt::SkipEmptyParts ) )
 #endif
-      layer.types.append( static_cast<QgsWkbTypes::Type>( geomType.toInt() ) );
+      layer.types.append( static_cast<Qgis::WkbType>( geomType.toInt() ) );
 
     QString geomSrids = QString::fromUtf8( ( const char * ) sqlite3_column_text( stmt, 7 ) );
 #if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)

@@ -27,7 +27,7 @@ and background shapes.
 
     static Qgis::TextHorizontalAlignment convertQtHAlignment( Qt::Alignment alignment );
 %Docstring
-Converts a Qt horizontal ``alignment`` flag to a Qgis.TextHorizontalAlignment value.
+Converts a Qt horizontal ``alignment`` flag to a :py:class:`Qgis`.TextHorizontalAlignment value.
 
 .. seealso:: :py:func:`convertQtVAlignment`
 
@@ -36,14 +36,14 @@ Converts a Qt horizontal ``alignment`` flag to a Qgis.TextHorizontalAlignment va
 
     static Qgis::TextVerticalAlignment convertQtVAlignment( Qt::Alignment alignment );
 %Docstring
-Converts a Qt vertical ``alignment`` flag to a Qgis.TextVerticalAlignment value.
+Converts a Qt vertical ``alignment`` flag to a :py:class:`Qgis`.TextVerticalAlignment value.
 
 .. seealso:: :py:func:`convertQtHAlignment`
 
 .. versionadded:: 3.16
 %End
 
-    static int sizeToPixel( double size, const QgsRenderContext &c, QgsUnitTypes::RenderUnit unit, const QgsMapUnitScale &mapUnitScale = QgsMapUnitScale() );
+    static int sizeToPixel( double size, const QgsRenderContext &c, Qgis::RenderUnit unit, const QgsMapUnitScale &mapUnitScale = QgsMapUnitScale() );
 %Docstring
 Calculates pixel size (considering output size should be in pixel or map units, scale factors and optionally oversampling)
 
@@ -64,7 +64,7 @@ Calculates pixel size (considering output size should be in pixel or map units, 
 %Docstring
 Draws text within a rectangle using the specified settings.
 
-:param rect: destination rectangle for text
+:param rect: destination rectangle for text, in painter units
 :param rotation: text rotation
 :param alignment: horizontal alignment
 :param textLines: list of lines of text to draw
@@ -76,7 +76,7 @@ Draws text within a rectangle using the specified settings.
                        as of QGIS 3.4.3 and the text format should be set using :py:func:`QgsRenderContext.setTextRenderFormat()` instead.
 :param vAlignment: vertical alignment (since QGIS 3.16)
 :param flags: text rendering flags (since QGIS 3.24)
-:param mode: text layout mode. Only Qgis.TextLayoutMode.Rectangle, Qgis.TextLayoutMode.RectangleCapHeightBased and Qgis.TextLayoutMode.RectangleAscentBased are accepted (since QGIS 3.30)
+:param mode: text layout mode. Only :py:class:`Qgis`.TextLayoutMode.Rectangle, :py:class:`Qgis`.TextLayoutMode.RectangleCapHeightBased and :py:class:`Qgis`.TextLayoutMode.RectangleAscentBased are accepted (since QGIS 3.30)
 
 .. seealso:: :py:func:`drawDocument`
 %End
@@ -102,7 +102,7 @@ been calculated.
    Unlike :py:func:`~QgsTextRenderer.drawText`, this method does not automatically update data defined properties in the text ``format``. This
    is the caller's responsibility to do, and must be done prior to generating the text ``document`` and ``metrics``.
 
-:param rect: destination rectangle for text
+:param rect: destination rectangle for text, in painter units
 :param format: base text format
 :param document: text document to draw
 :param metrics: precalculated text metrics
@@ -110,7 +110,7 @@ been calculated.
 :param horizontalAlignment: horizontal alignment
 :param verticalAlignment: vertical alignment
 :param rotation: text rotation
-:param mode: text layout mode. Only Qgis.TextLayoutMode.Rectangle, Qgis.TextLayoutMode.RectangleCapHeightBased and Qgis.TextLayoutMode.RectangleAscentBased are accepted.
+:param mode: text layout mode. Only :py:class:`Qgis`.TextLayoutMode.Rectangle, :py:class:`Qgis`.TextLayoutMode.RectangleCapHeightBased and :py:class:`Qgis`.TextLayoutMode.RectangleAscentBased are accepted.
 :param flags: text rendering flags
 
 
@@ -123,7 +123,7 @@ been calculated.
 %Docstring
 Draws text at a point origin using the specified settings.
 
-:param point: origin of text
+:param point: origin of text, in painter units
 :param rotation: text rotation
 :param alignment: horizontal alignment
 :param textLines: list of lines of text to draw
@@ -135,13 +135,48 @@ Draws text at a point origin using the specified settings.
                        as of QGIS 3.4.3 and the text format should be set using :py:func:`QgsRenderContext.setTextRenderFormat()` instead.
 %End
 
+    static void drawTextOnLine( const QPolygonF &line, const QString &text,
+                                QgsRenderContext &context, const QgsTextFormat &format,
+                                double offsetAlongLine = 0, double offsetFromLine = 0 );
+%Docstring
+Draws text along a line using the specified settings.
+
+:param line: line to render text along, in painter units
+:param text: text to draw
+:param context: render context
+:param format: text format
+:param offsetAlongLine: offset along the line (in painter units) to start text at
+:param offsetFromLine: offset from the line (in painter units). Negative values will shift the text to the left of the line, positive values will shift the text to the right.
+
+.. versionadded:: 3.32
+%End
+
+    static void drawDocumentOnLine( const QPolygonF &line,
+                                    const QgsTextFormat &format,
+                                    const QgsTextDocument &document,
+                                    QgsRenderContext &context,
+                                    double offsetAlongLine = 0,
+                                    double offsetFromLine = 0 );
+%Docstring
+Draws a text document along a line using the specified settings.
+
+:param line: line to render text along, in painter units
+:param format: text format
+:param document: text document to draw
+:param context: render context
+:param offsetAlongLine: offset along the line (in painter units) to start text at
+:param offsetFromLine: offset from the line (in painter units). Negative values will shift the text to the left of the line, positive values will shift the text to the right.
+
+.. versionadded:: 3.32
+%End
+
  static void drawPart( const QRectF &rect, double rotation, Qgis::TextHorizontalAlignment alignment, const QStringList &textLines,
                                             QgsRenderContext &context, const QgsTextFormat &format,
                                             Qgis::TextComponent part, bool drawAsOutlines = true ) /Deprecated/;
 %Docstring
 Draws a single component of rendered text using the specified settings.
 
-:param rect: destination rectangle for text
+:param rect: destination rectangle for text, in painter units
 :param rotation: text rotation
 :param alignment: horizontal alignment
 :param textLines: list of lines of text to draw
@@ -165,7 +200,7 @@ Draws a single component of rendered text using the specified settings.
 %Docstring
 Draws a single component of rendered text using the specified settings.
 
-:param origin: origin for start of text. Y coordinate will be used as baseline.
+:param origin: origin for start of text, in painter units. Y coordinate will be used as baseline.
 :param rotation: text rotation
 :param alignment: horizontal alignment
 :param textLines: list of lines of text to draw
@@ -219,7 +254,7 @@ Returns the height of a text based on a given format.
 :param mode: draw mode
 :param fontMetrics: font metrics
 :param flags: text renderer flags (since QGIS 3.24)
-:param maxLineWidth: maximum line width, in painter units. Used when the Qgis.TextRendererFlag.WrapLines flag is used (since QGIS 3.24)
+:param maxLineWidth: maximum line width, in painter units. Used when the :py:class:`Qgis`.TextRendererFlag.WrapLines flag is used (since QGIS 3.24)
 %End
 
     static double textHeight( const QgsRenderContext &context, const QgsTextFormat &format, QChar character, bool includeEffects = false );
@@ -254,6 +289,9 @@ Wraps a ``text`` string to multiple lines, such that each individual line will f
 %End
 
     static const double FONT_WORKAROUND_SCALE;
+
+
+    static const double SUPERSCRIPT_SUBSCRIPT_FONT_SIZE_SCALING_FACTOR;
 
 };
 

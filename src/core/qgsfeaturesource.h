@@ -81,7 +81,7 @@ class CORE_EXPORT QgsFeatureSource
     /**
      * Returns the geometry type for features returned by this source.
      */
-    virtual QgsWkbTypes::Type wkbType() const = 0;
+    virtual Qgis::WkbType wkbType() const = 0;
 
 #ifdef SIP_RUN
 

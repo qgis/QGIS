@@ -26,7 +26,7 @@
 #include <QInputDialog>
 #include <QMessageBox>
 #include <QTextEdit>
-#include <QMouseEvent>
+#include <QContextMenuEvent>
 #include <QMenu>
 #include <QFileInfo>
 
@@ -43,7 +43,9 @@ QgsRasterFormatSaveOptionsWidget::QgsRasterFormatSaveOptionsWidget( QWidget *par
   , mProvider( provider )
 {
   setupUi( this );
-  setMinimumSize( this->fontMetrics().height() * 5, 240 );
+
+  // Set the table minimum size to fit at least 4 rows
+  mOptionsTable->setMinimumSize( 200, mOptionsTable->verticalHeader()->defaultSectionSize() * 4 + mOptionsTable->horizontalHeader()->height() + 2 );
 
   connect( mProfileNewButton, &QPushButton::clicked, this, &QgsRasterFormatSaveOptionsWidget::mProfileNewButton_clicked );
   connect( mProfileDeleteButton, &QPushButton::clicked, this, &QgsRasterFormatSaveOptionsWidget::mProfileDeleteButton_clicked );
@@ -98,10 +100,24 @@ QgsRasterFormatSaveOptionsWidget::QgsRasterFormatSaveOptionsWidget( QWidget *par
   connect( mOptionsHelpButton, &QAbstractButton::clicked, this, &QgsRasterFormatSaveOptionsWidget::helpOptions );
   connect( mOptionsValidateButton, &QAbstractButton::clicked, this, [ = ] { validateOptions(); } );
 
-  // create eventFilter to map right click to swapOptionsUI()
-  // mOptionsLabel->installEventFilter( this );
+  // Install an eventFilter to customize the default QLineEdit contextMenu with an added swapOptionsUI action
   mOptionsLineEdit->installEventFilter( this );
-  mOptionsStackedWidget->installEventFilter( this );
+
+  // Use a Custom Context menu for the widget to swap between modes (table / lineedit)
+  setContextMenuPolicy( Qt::CustomContextMenu );
+  connect( this, &QWidget::customContextMenuRequested, this, [this]( QPoint pos )
+  {
+    QMenu menu( this );
+    QString text;
+    if ( mTableWidget->isVisible() )
+      text = tr( "Use Simple Interface" );
+    else
+      text = tr( "Use Table Interface" );
+    QAction *swapAction = menu.addAction( text );
+    connect( swapAction, &QAction::triggered, this, [this]() {swapOptionsUI( -1 ); } );
+    menu.exec( this->mapToGlobal( pos ) );
+  } );
+
 
   updateControls();
   updateProfiles();
@@ -132,15 +148,12 @@ void QgsRasterFormatSaveOptionsWidget::setType( QgsRasterFormatSaveOptionsWidget
     const auto constWidgets = widgets;
     for ( QWidget *widget : constWidgets )
       widget->setVisible( false );
-    mOptionsStackedWidget->setVisible( true );
-    const auto children { mOptionsStackedWidget->findChildren<QWidget *>() };
-    for ( QWidget *widget : children )
-      widget->setVisible( true );
+    mOptionsWidget->setVisible( true );
 
     // show relevant page
     if ( type == Table )
       swapOptionsUI( 0 );
-    else if ( type == LineEdit )
+    else
       swapOptionsUI( 1 );
   }
   else
@@ -155,6 +168,8 @@ void QgsRasterFormatSaveOptionsWidget::setType( QgsRasterFormatSaveOptionsWidget
     // show elevant page
     if ( type == ProfileLineEdit )
       swapOptionsUI( 1 );
+    else
+      swapOptionsUI( 0 );
   }
 }
 
@@ -235,7 +250,7 @@ void QgsRasterFormatSaveOptionsWidget::updateOptions()
     myOptions = PYRAMID_JPEG_COMPRESSION;
   }
 
-  if ( mOptionsStackedWidget->currentIndex() == 0 )
+  if ( mTableWidget->isVisible() )
   {
     mOptionsTable->setRowCount( 0 );
     for ( int i = 0; i < myOptionsList.count(); i++ )
@@ -534,26 +549,12 @@ QStringList QgsRasterFormatSaveOptionsWidget::profiles() const
 
 void QgsRasterFormatSaveOptionsWidget::swapOptionsUI( int newIndex )
 {
-  // set new page
-  int oldIndex;
-  if ( newIndex == -1 )
-  {
-    oldIndex = mOptionsStackedWidget->currentIndex();
-    newIndex = ( oldIndex + 1 ) % 2;
-  }
-  else
-  {
-    oldIndex = ( newIndex + 1 ) % 2;
-  }
-
-  // resize pages to minimum - this works well with gdaltools merge ui, but not raster save as...
-  mOptionsStackedWidget->setCurrentIndex( newIndex );
-  mOptionsStackedWidget->widget( newIndex )->setSizePolicy(
-    QSizePolicy( QSizePolicy::Preferred, QSizePolicy::Preferred ) );
-  mOptionsStackedWidget->widget( oldIndex )->setSizePolicy(
-    QSizePolicy( QSizePolicy::Ignored, QSizePolicy::Ignored ) );
-  layout()->activate();
-
+  // If newIndex == -1, toggle option mode
+  // If newIndex == 0, set option mode to Table
+  // If newIndex == 1, set option to lineEdit
+  bool lineEditMode = mOptionsLineEdit->isVisible();
+  mOptionsLineEdit->setVisible( ( newIndex == -1 && !lineEditMode ) || newIndex == 1 );
+  mTableWidget->setVisible( ( newIndex == -1 && lineEditMode ) || newIndex == 0 );
   updateOptions();
 }
 
@@ -567,31 +568,19 @@ void QgsRasterFormatSaveOptionsWidget::updateControls()
 // map options label left mouse click to optionsToggle()
 bool QgsRasterFormatSaveOptionsWidget::eventFilter( QObject *obj, QEvent *event )
 {
-  if ( event->type() == QEvent::MouseButtonPress )
+  if ( event->type() == QEvent::ContextMenu )
   {
-    QMouseEvent *mouseEvent = static_cast<QMouseEvent *>( event );
-    if ( mouseEvent && ( mouseEvent->button() == Qt::RightButton ) )
-    {
-      QMenu *menu = nullptr;
-      QString text;
-      if ( mOptionsStackedWidget->currentIndex() == 0 )
-        text = tr( "Use simple interface" );
-      else
-        text = tr( "Use table interface" );
-      if ( obj->objectName() == QLatin1String( "mOptionsLineEdit" ) )
-      {
-        menu = mOptionsLineEdit->createStandardContextMenu();
-        menu->addSeparator();
-      }
-      else
-        menu = new QMenu( this );
-      QAction *action = new QAction( text, menu );
-      menu->addAction( action );
-      connect( action, &QAction::triggered, this, &QgsRasterFormatSaveOptionsWidget::swapOptionsUI );
-      menu->exec( mouseEvent->globalPos() );
-      delete menu;
-      return true;
-    }
+    QContextMenuEvent *contextEvent = static_cast<QContextMenuEvent *>( event );
+    QMenu *menu = nullptr;
+    menu = mOptionsLineEdit->createStandardContextMenu();
+    menu->addSeparator();
+    QAction *action = new QAction( tr( "Use Table Interface" ), menu );
+    menu->addAction( action );
+    connect( action, &QAction::triggered, this, [this] { swapOptionsUI( 0 ); } );
+    menu->exec( contextEvent->globalPos() );
+    delete menu;
+    return true;
+
   }
   // standard event processing
   return QObject::eventFilter( obj, event );

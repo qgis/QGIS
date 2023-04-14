@@ -103,6 +103,24 @@
     <string>Zoom to bookmark</string>
    </property>
   </action>
+  <action name="actionExport">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionSharingExport.svg</normaloff>:/images/themes/default/mActionSharingExport.svg</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Export</string>
+   </property>
+  </action>
+  <action name="actionImport">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionSharingImport.svg</normaloff>:/images/themes/default/mActionSharingImport.svg</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Import</string>
+   </property>
+  </action>
  </widget>
  <customwidgets>
   <customwidget>

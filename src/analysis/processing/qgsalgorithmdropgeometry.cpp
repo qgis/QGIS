@@ -70,9 +70,9 @@ bool QgsDropGeometryAlgorithm::supportInPlaceEdit( const QgsMapLayer *l ) const
   return qobject_cast< const QgsVectorLayer * >( l );
 }
 
-QgsWkbTypes::Type QgsDropGeometryAlgorithm::outputWkbType( QgsWkbTypes::Type ) const
+Qgis::WkbType QgsDropGeometryAlgorithm::outputWkbType( Qgis::WkbType ) const
 {
-  return QgsWkbTypes::NoGeometry;
+  return Qgis::WkbType::NoGeometry;
 }
 
 QgsProcessingFeatureSource::Flag QgsDropGeometryAlgorithm::sourceFlags() const

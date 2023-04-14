@@ -5,6 +5,7 @@
 #include <string> // to_string
 
 #include <nlohmann/detail/input/position_t.hpp>
+#include <nlohmann/detail/macro_scope.hpp>
 
 namespace nlohmann
 {
@@ -46,6 +47,7 @@ class exception : public std::exception
 {
   public:
     /// returns the explanatory string
+    JSON_HEDLEY_RETURNS_NON_NULL
     const char* what() const noexcept override
     {
         return m.what();
@@ -55,6 +57,7 @@ class exception : public std::exception
     const int id;
 
   protected:
+    JSON_HEDLEY_NON_NULL(3)
     exception(int id_, const char* what_arg) : id(id_), m(what_arg) {}
 
     static std::string name(const std::string& ename, int id_)
@@ -94,6 +97,7 @@ json.exception.parse_error.110 | parse error at 1: cannot read 2 bytes from vect
 json.exception.parse_error.112 | parse error at 1: error reading CBOR; last byte: 0xF8 | Not all types of CBOR or MessagePack are supported. This exception occurs if an unsupported byte was read.
 json.exception.parse_error.113 | parse error at 2: expected a CBOR string; last byte: 0x98 | While parsing a map key, a value that is not a string has been read.
 json.exception.parse_error.114 | parse error: Unsupported BSON record type 0x0F | The parsing of the corresponding BSON record type is not implemented (yet).
+json.exception.parse_error.115 | parse error at byte 5: syntax error while parsing UBJSON high-precision number: invalid number text: 1A | A UBJSON high-precision number could not be parsed.
 
 @note For an input with n bytes, 1 is the index of the first character and n+1
       is the index of the terminating null byte or the end of file. This also
@@ -207,6 +211,7 @@ class invalid_iterator : public exception
     }
 
   private:
+    JSON_HEDLEY_NON_NULL(3)
     invalid_iterator(int id_, const char* what_arg)
         : exception(id_, what_arg) {}
 };
@@ -260,6 +265,7 @@ class type_error : public exception
     }
 
   private:
+    JSON_HEDLEY_NON_NULL(3)
     type_error(int id_, const char* what_arg) : exception(id_, what_arg) {}
 };
 
@@ -280,7 +286,7 @@ json.exception.out_of_range.403 | key 'foo' not found | The provided key was not
 json.exception.out_of_range.404 | unresolved reference token 'foo' | A reference token in a JSON Pointer could not be resolved.
 json.exception.out_of_range.405 | JSON pointer has no parent | The JSON Patch operations 'remove' and 'add' can not be applied to the root element of the JSON value.
 json.exception.out_of_range.406 | number overflow parsing '10E1000' | A parsed number could not be stored as without changing it to NaN or INF.
-json.exception.out_of_range.407 | number overflow serializing '9223372036854775808' | UBJSON and BSON only support integer numbers up to 9223372036854775807. |
+json.exception.out_of_range.407 | number overflow serializing '9223372036854775808' | UBJSON and BSON only support integer numbers up to 9223372036854775807. (until version 3.8.0) |
 json.exception.out_of_range.408 | excessive array size: 8658170730974374167 | The size (following `#`) of an UBJSON array or object exceeds the maximal capacity. |
 json.exception.out_of_range.409 | BSON key cannot contain code point U+0000 (at byte 2) | Key identifiers to be serialized to BSON cannot contain code point U+0000, since the key is stored as zero-terminated c-string |
 
@@ -306,6 +312,7 @@ class out_of_range : public exception
     }
 
   private:
+    JSON_HEDLEY_NON_NULL(3)
     out_of_range(int id_, const char* what_arg) : exception(id_, what_arg) {}
 };
 
@@ -343,6 +350,7 @@ class other_error : public exception
     }
 
   private:
+    JSON_HEDLEY_NON_NULL(3)
     other_error(int id_, const char* what_arg) : exception(id_, what_arg) {}
 };
 }  // namespace detail

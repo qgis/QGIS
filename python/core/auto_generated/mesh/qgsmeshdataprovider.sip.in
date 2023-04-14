@@ -442,7 +442,7 @@ Ctor
     virtual QgsMeshDataProviderTemporalCapabilities *temporalCapabilities();
 
 
-    void setTemporalUnit( QgsUnitTypes::TemporalUnit unit );
+    void setTemporalUnit( Qgis::TemporalUnit unit );
 %Docstring
 Sets the temporal unit of the provider and reload data if it changes.
 

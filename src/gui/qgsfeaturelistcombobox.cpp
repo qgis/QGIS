@@ -241,6 +241,16 @@ void QgsFeatureListComboBox::setAllowNull( bool allowNull )
   mLineEdit->setClearMode( allowNull ? QgsFilterLineEdit::ClearToNull : QgsFilterLineEdit::ClearToDefault );
 }
 
+int QgsFeatureListComboBox::fetchLimit() const
+{
+  return mModel->fetchLimit();
+}
+
+void QgsFeatureListComboBox::setFetchLimit( int fetchLimit )
+{
+  mModel->setFetchLimit( fetchLimit );
+}
+
 QVariant QgsFeatureListComboBox::identifierValue() const
 {
   Q_NOWARN_DEPRECATED_PUSH

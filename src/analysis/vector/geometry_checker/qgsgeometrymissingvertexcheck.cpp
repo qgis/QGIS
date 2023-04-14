@@ -20,7 +20,6 @@
 #include "qgsmultipolygon.h"
 #include "qgscurvepolygon.h"
 #include "qgscurve.h"
-#include "qgslinestring.h"
 #include "qgsgeometryengine.h"
 #include "qgsgeometryutils.h"
 #include "qgsapplication.h"
@@ -219,7 +218,7 @@ QString QgsGeometryMissingVertexCheck::id() const
   return factoryId();
 }
 
-QList<QgsWkbTypes::GeometryType> QgsGeometryMissingVertexCheck::compatibleGeometryTypes() const
+QList<Qgis::GeometryType> QgsGeometryMissingVertexCheck::compatibleGeometryTypes() const
 {
   return factoryCompatibleGeometryTypes();
 }
@@ -235,9 +234,9 @@ QgsGeometryCheck::CheckType QgsGeometryMissingVertexCheck::checkType() const
 }
 
 ///@cond private
-QList<QgsWkbTypes::GeometryType> QgsGeometryMissingVertexCheck::factoryCompatibleGeometryTypes()
+QList<Qgis::GeometryType> QgsGeometryMissingVertexCheck::factoryCompatibleGeometryTypes()
 {
-  return {QgsWkbTypes::PolygonGeometry};
+  return {Qgis::GeometryType::Polygon};
 }
 
 bool QgsGeometryMissingVertexCheck::factoryIsCompatible( QgsVectorLayer *layer ) SIP_SKIP

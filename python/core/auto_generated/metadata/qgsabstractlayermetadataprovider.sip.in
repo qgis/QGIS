@@ -61,12 +61,12 @@ Returns the layer extent in EPSG:4326
 Sets the layer extent in EPSG:4326 to ``geographicExtent``
 %End
 
-    const QgsWkbTypes::GeometryType &geometryType() const;
+    Qgis::GeometryType geometryType() const;
 %Docstring
 Returns the layer geometry type.
 %End
 
-    void setGeometryType( const QgsWkbTypes::GeometryType &geometryType );
+    void setGeometryType( Qgis::GeometryType geometryType );
 %Docstring
 Sets the layer geometry type to ``geometryType``.
 %End
@@ -101,12 +101,12 @@ Returns the data provider name.
 Sets the data provider name to ``dataProviderName``.
 %End
 
-    QgsMapLayerType layerType() const;
+    Qgis::LayerType layerType() const;
 %Docstring
 Returns the layer type.
 %End
 
-    void setLayerType( QgsMapLayerType layerType );
+    void setLayerType( Qgis::LayerType layerType );
 %Docstring
 Sets the layer type to ``layerType``.
 %End

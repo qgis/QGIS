@@ -17,10 +17,8 @@
 #define QGSVECTORTILELAYERPROPERTIES_H
 
 #include "qgsoptionsdialogbase.h"
-
 #include "ui_qgsvectortilelayerpropertiesbase.h"
-
-#include "qgsmaplayerstylemanager.h"
+#include "qgsmaplayerstyle.h"
 
 class QgsMapLayer;
 class QgsMapCanvas;
@@ -29,6 +27,7 @@ class QgsVectorTileBasicLabelingWidget;
 class QgsVectorTileBasicRendererWidget;
 class QgsVectorTileLayer;
 class QgsMetadataWidget;
+class QgsProviderSourceWidget;
 
 
 /**
@@ -44,19 +43,44 @@ class GUI_EXPORT QgsVectorTileLayerProperties : public QgsOptionsDialogBase, pri
     //! Constructor
     QgsVectorTileLayerProperties( QgsVectorTileLayer *lyr, QgsMapCanvas *canvas, QgsMessageBar *messageBar, QWidget *parent = nullptr, Qt::WindowFlags = QgsGuiUtils::ModalDialogFlags );
 
+    /**
+     * Loads the default style when appropriate button is pressed
+     *
+     * \since QGIS 3.30
+     */
+    void loadDefaultStyle();
+
+    /**
+     * Saves the default style when appropriate button is pressed
+     *
+     * \since QGIS 3.30
+     */
+    void saveDefaultStyle();
+
+    /**
+     * Loads a saved style when appropriate button is pressed
+     *
+     * \since QGIS 3.30
+     */
+    void loadStyle();
+
+    /**
+     * Saves a style when appriate button is pressed
+     *
+     * \since QGIS 3.30
+     */
+    void saveStyleAs();
+
   private slots:
     void apply();
     void onCancel();
 
-    void loadDefaultStyle();
-    void saveDefaultStyle();
-    void loadStyle();
-    void saveStyleAs();
     void aboutToShowStyleMenu();
     void loadMetadata();
     void saveMetadataAs();
     void showHelp();
     void urlClicked( const QUrl &url );
+    void crsChanged( const QgsCoordinateReferenceSystem &crs );
 
   protected slots:
     void optionsStackedWidget_CurrentChanged( int index ) override SIP_SKIP ;
@@ -77,6 +101,8 @@ class GUI_EXPORT QgsVectorTileLayerProperties : public QgsOptionsDialogBase, pri
 
     QgsMapCanvas *mMapCanvas = nullptr;
     QgsMetadataWidget *mMetadataWidget = nullptr;
+
+    QgsProviderSourceWidget *mSourceWidget = nullptr;
 
     /**
      * Previous layer style. Used to reset style to previous state if new style

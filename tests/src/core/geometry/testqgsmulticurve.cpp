@@ -17,8 +17,6 @@
 #include <QString>
 
 #include "qgscircularstring.h"
-#include "qgsgeometryutils.h"
-#include "qgslinestring.h"
 #include "qgsmulticurve.h"
 #include "qgsmultilinestring.h"
 #include "qgsmultipoint.h"
@@ -64,7 +62,7 @@ void TestQgsMultiCurve::constructor()
   QCOMPARE( mc.partCount(), 0 );
   QVERIFY( !mc.is3D() );
   QVERIFY( !mc.isMeasure() );
-  QCOMPARE( mc.wkbType(), QgsWkbTypes::MultiCurve );
+  QCOMPARE( mc.wkbType(), Qgis::WkbType::MultiCurve );
   QCOMPARE( mc.wktTypeStr(), QString( "MultiCurve" ) );
   QCOMPARE( mc.geometryType(), QString( "MultiCurve" ) );
   QCOMPARE( mc.dimension(), 0 );
@@ -91,7 +89,7 @@ void TestQgsMultiCurve::addGeometry()
   QCOMPARE( mc.ringCount(), 0 );
   QCOMPARE( mc.partCount(), 0 );
   QCOMPARE( mc.numGeometries(), 0 );
-  QCOMPARE( mc.wkbType(), QgsWkbTypes::MultiCurve );
+  QCOMPARE( mc.wkbType(), Qgis::WkbType::MultiCurve );
   QVERIFY( !mc.geometryN( 0 ) );
   QVERIFY( !mc.geometryN( -1 ) );
 
@@ -103,7 +101,7 @@ void TestQgsMultiCurve::addGeometry()
   QCOMPARE( mc.ringCount(), 0 );
   QCOMPARE( mc.partCount(), 0 );
   QCOMPARE( mc.numGeometries(), 0 );
-  QCOMPARE( mc.wkbType(), QgsWkbTypes::MultiCurve );
+  QCOMPARE( mc.wkbType(), Qgis::WkbType::MultiCurve );
   QVERIFY( !mc.geometryN( 0 ) );
   QVERIFY( !mc.geometryN( -1 ) );
 
@@ -120,7 +118,7 @@ void TestQgsMultiCurve::addGeometry()
   QCOMPARE( mc.partCount(), 1 );
   QVERIFY( !mc.is3D() );
   QVERIFY( !mc.isMeasure() );
-  QCOMPARE( mc.wkbType(), QgsWkbTypes::MultiCurve );
+  QCOMPARE( mc.wkbType(), Qgis::WkbType::MultiCurve );
   QCOMPARE( mc.wktTypeStr(), QString( "MultiCurve" ) );
   QCOMPARE( mc.geometryType(), QString( "MultiCurve" ) );
   QCOMPARE( mc.dimension(), 1 );
@@ -140,39 +138,39 @@ void TestQgsMultiCurve::addGeometryZM()
   //initial adding of geometry should set z/m type
   QgsMultiCurve mc;
   QgsCircularString part;
-  part.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZ, 10, 11, 1 )
-                  << QgsPoint( QgsWkbTypes::PointZ, 20, 21, 2 )
-                  << QgsPoint( QgsWkbTypes::PointZ, 10, 31, 3 ) );
+  part.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZ, 10, 11, 1 )
+                  << QgsPoint( Qgis::WkbType::PointZ, 20, 21, 2 )
+                  << QgsPoint( Qgis::WkbType::PointZ, 10, 31, 3 ) );
   mc.addGeometry( part.clone() );
 
   QVERIFY( mc.is3D() );
   QVERIFY( !mc.isMeasure() );
-  QCOMPARE( mc.wkbType(), QgsWkbTypes::MultiCurveZ );
+  QCOMPARE( mc.wkbType(), Qgis::WkbType::MultiCurveZ );
   QCOMPARE( mc.wktTypeStr(), QString( "MultiCurveZ" ) );
   QCOMPARE( mc.geometryType(), QString( "MultiCurve" ) );
   QCOMPARE( *( static_cast< const QgsCircularString * >( mc.geometryN( 0 ) ) ), part );
 
   mc.clear();
-  part.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointM, 10, 11, 0, 1 )
-                  << QgsPoint( QgsWkbTypes::PointM, 20, 21, 0, 2 )
-                  << QgsPoint( QgsWkbTypes::PointM, 10, 31, 0, 3 ) );
+  part.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointM, 10, 11, 0, 1 )
+                  << QgsPoint( Qgis::WkbType::PointM, 20, 21, 0, 2 )
+                  << QgsPoint( Qgis::WkbType::PointM, 10, 31, 0, 3 ) );
   mc.addGeometry( part.clone() );
 
   QVERIFY( !mc.is3D() );
   QVERIFY( mc.isMeasure() );
-  QCOMPARE( mc.wkbType(), QgsWkbTypes::MultiCurveM );
+  QCOMPARE( mc.wkbType(), Qgis::WkbType::MultiCurveM );
   QCOMPARE( mc.wktTypeStr(), QString( "MultiCurveM" ) );
   QCOMPARE( *( static_cast< const QgsCircularString * >( mc.geometryN( 0 ) ) ), part );
 
   mc.clear();
-  part.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZM, 10, 11, 2, 1 )
-                  << QgsPoint( QgsWkbTypes::PointZM, 20, 21, 3, 2 )
-                  << QgsPoint( QgsWkbTypes::PointZM, 10, 31, 4, 5 ) );
+  part.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 10, 11, 2, 1 )
+                  << QgsPoint( Qgis::WkbType::PointZM, 20, 21, 3, 2 )
+                  << QgsPoint( Qgis::WkbType::PointZM, 10, 31, 4, 5 ) );
   mc.addGeometry( part.clone() );
 
   QVERIFY( mc.is3D() );
   QVERIFY( mc.isMeasure() );
-  QCOMPARE( mc.wkbType(), QgsWkbTypes::MultiCurveZM );
+  QCOMPARE( mc.wkbType(), Qgis::WkbType::MultiCurveZM );
   QCOMPARE( mc.wktTypeStr(), QString( "MultiCurveZM" ) );
   QCOMPARE( *( static_cast< const QgsCircularString * >( mc.geometryN( 0 ) ) ), part );
 
@@ -203,13 +201,13 @@ void TestQgsMultiCurve::addGeometryDimensionPreservation()
                   << QgsPoint( 3, 13 ) << QgsPoint( 9, 20 ) );
   mc.addGeometry( part.clone() );
 
-  QCOMPARE( mc.wkbType(), QgsWkbTypes::MultiCurve );
+  QCOMPARE( mc.wkbType(), Qgis::WkbType::MultiCurve );
 
   part.setPoints( QgsPointSequence() << QgsPoint( 1, 10, 2 )
                   << QgsPoint( 2, 11, 3 ) << QgsPoint( 1, 20, 4 ) );
   mc.addGeometry( part.clone() );
 
-  QCOMPARE( mc.wkbType(), QgsWkbTypes::MultiCurve );
+  QCOMPARE( mc.wkbType(), Qgis::WkbType::MultiCurve );
   QCOMPARE( mc.vertexCount( 0, 0 ), 3 );
   QCOMPARE( mc.vertexCount( 1, 0 ), 3 );
   QCOMPARE( mc.vertexCount( 2, 0 ), 0 );
@@ -231,12 +229,12 @@ void TestQgsMultiCurve::addGeometryDimensionPreservation()
   QCOMPARE( ls->pointN( 1 ), QgsPoint( 2, 11 ) );
   QCOMPARE( ls->pointN( 2 ), QgsPoint( 1, 20 ) );
 
-  part.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointM, 21, 30, 0, 2 )
-                  << QgsPoint( QgsWkbTypes::PointM, 32, 41, 0, 3 )
-                  << QgsPoint( QgsWkbTypes::PointM, 21, 51, 0, 4 ) );
+  part.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointM, 21, 30, 0, 2 )
+                  << QgsPoint( Qgis::WkbType::PointM, 32, 41, 0, 3 )
+                  << QgsPoint( Qgis::WkbType::PointM, 21, 51, 0, 4 ) );
   mc.addGeometry( part.clone() );
 
-  QCOMPARE( mc.wkbType(), QgsWkbTypes::MultiCurve );
+  QCOMPARE( mc.wkbType(), Qgis::WkbType::MultiCurve );
   QCOMPARE( mc.vertexCount( 0, 0 ), 3 );
   QCOMPARE( mc.vertexCount( 1, 0 ), 3 );
   QCOMPARE( mc.vertexCount( 2, 0 ), 3 );
@@ -261,13 +259,13 @@ void TestQgsMultiCurve::addGeometryDimensionPreservationZ()
                   << QgsPoint( 2, 11, 3 ) << QgsPoint( 1, 21, 4 ) );
   mc.addGeometry( part.clone() );
 
-  QCOMPARE( mc.wkbType(), QgsWkbTypes::MultiCurveZ );
+  QCOMPARE( mc.wkbType(), Qgis::WkbType::MultiCurveZ );
 
   part.setPoints( QgsPointSequence() << QgsPoint( 2, 20 )
                   << QgsPoint( 3, 31 ) << QgsPoint( 2, 41 ) );
   mc.addGeometry( part.clone() );
 
-  QCOMPARE( mc.wkbType(), QgsWkbTypes::MultiCurveZ );
+  QCOMPARE( mc.wkbType(), Qgis::WkbType::MultiCurveZ );
   QVERIFY( mc.is3D() );
 
   const QgsCircularString *ls = static_cast< const QgsCircularString * >( mc.geometryN( 0 ) );
@@ -282,12 +280,12 @@ void TestQgsMultiCurve::addGeometryDimensionPreservationZ()
   QCOMPARE( ls->pointN( 1 ), QgsPoint( 3, 31, 0 ) );
   QCOMPARE( ls->pointN( 2 ), QgsPoint( 2, 41, 0 ) );
 
-  part.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointM, 5, 50, 0, 4 )
-                  << QgsPoint( QgsWkbTypes::PointM, 6, 61, 0, 5 )
-                  << QgsPoint( QgsWkbTypes::PointM, 5, 71, 0, 6 ) );
+  part.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointM, 5, 50, 0, 4 )
+                  << QgsPoint( Qgis::WkbType::PointM, 6, 61, 0, 5 )
+                  << QgsPoint( Qgis::WkbType::PointM, 5, 71, 0, 6 ) );
   mc.addGeometry( part.clone() );
 
-  QCOMPARE( mc.wkbType(), QgsWkbTypes::MultiCurveZ );
+  QCOMPARE( mc.wkbType(), Qgis::WkbType::MultiCurveZ );
   QVERIFY( mc.is3D() );
   QVERIFY( !mc.isMeasure() );
 
@@ -303,110 +301,110 @@ void TestQgsMultiCurve::addGeometryDimensionPreservationM()
   QgsMultiCurve mc;
 
   QgsCircularString part;
-  QCOMPARE( mc.wkbType(), QgsWkbTypes::MultiCurve );
+  QCOMPARE( mc.wkbType(), Qgis::WkbType::MultiCurve );
 
-  part.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointM, 5, 50, 0, 4 )
-                  << QgsPoint( QgsWkbTypes::PointM, 6, 61, 0, 5 )
-                  << QgsPoint( QgsWkbTypes::PointM, 5, 71, 0, 5 ) );
+  part.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointM, 5, 50, 0, 4 )
+                  << QgsPoint( Qgis::WkbType::PointM, 6, 61, 0, 5 )
+                  << QgsPoint( Qgis::WkbType::PointM, 5, 71, 0, 5 ) );
   mc.addGeometry( part.clone() );
 
-  QCOMPARE( mc.wkbType(), QgsWkbTypes::MultiCurveM );
+  QCOMPARE( mc.wkbType(), Qgis::WkbType::MultiCurveM );
 
   part.setPoints( QgsPointSequence() << QgsPoint( 2, 20 )
                   << QgsPoint( 3, 31 ) << QgsPoint( 2, 41 ) );
   mc.addGeometry( part.clone() );
 
-  QCOMPARE( mc.wkbType(), QgsWkbTypes::MultiCurveM );
+  QCOMPARE( mc.wkbType(), Qgis::WkbType::MultiCurveM );
   QVERIFY( mc.isMeasure() );
 
   const QgsCircularString *ls = static_cast< const QgsCircularString * >( mc.geometryN( 0 ) );
 
-  QCOMPARE( ls->pointN( 0 ), QgsPoint( QgsWkbTypes::PointM, 5, 50, 0, 4 ) );
-  QCOMPARE( ls->pointN( 1 ), QgsPoint( QgsWkbTypes::PointM, 6, 61, 0, 5 ) );
-  QCOMPARE( ls->pointN( 2 ), QgsPoint( QgsWkbTypes::PointM, 5, 71, 0, 5 ) );
+  QCOMPARE( ls->pointN( 0 ), QgsPoint( Qgis::WkbType::PointM, 5, 50, 0, 4 ) );
+  QCOMPARE( ls->pointN( 1 ), QgsPoint( Qgis::WkbType::PointM, 6, 61, 0, 5 ) );
+  QCOMPARE( ls->pointN( 2 ), QgsPoint( Qgis::WkbType::PointM, 5, 71, 0, 5 ) );
 
   ls = static_cast< const QgsCircularString * >( mc.geometryN( 1 ) );
 
-  QCOMPARE( ls->pointN( 0 ), QgsPoint( QgsWkbTypes::PointM, 2, 20, 0, 0 ) );
-  QCOMPARE( ls->pointN( 1 ), QgsPoint( QgsWkbTypes::PointM, 3, 31, 0, 0 ) );
-  QCOMPARE( ls->pointN( 2 ), QgsPoint( QgsWkbTypes::PointM, 2, 41, 0, 0 ) );
+  QCOMPARE( ls->pointN( 0 ), QgsPoint( Qgis::WkbType::PointM, 2, 20, 0, 0 ) );
+  QCOMPARE( ls->pointN( 1 ), QgsPoint( Qgis::WkbType::PointM, 3, 31, 0, 0 ) );
+  QCOMPARE( ls->pointN( 2 ), QgsPoint( Qgis::WkbType::PointM, 2, 41, 0, 0 ) );
 
   part.setPoints( QgsPointSequence() << QgsPoint( 11, 12, 13 )
                   << QgsPoint( 14, 15, 16 ) << QgsPoint( 11, 25, 17 ) );
   mc.addGeometry( part.clone() );
 
-  QCOMPARE( mc.wkbType(), QgsWkbTypes::MultiCurveM );
+  QCOMPARE( mc.wkbType(), Qgis::WkbType::MultiCurveM );
   QVERIFY( !mc.is3D() );
   QVERIFY( mc.isMeasure() );
 
   ls = static_cast< const QgsCircularString * >( mc.geometryN( 2 ) );
 
-  QCOMPARE( ls->pointN( 0 ), QgsPoint( QgsWkbTypes::PointM, 11, 12, 0, 0 ) );
-  QCOMPARE( ls->pointN( 1 ), QgsPoint( QgsWkbTypes::PointM, 14, 15, 0, 0 ) );
-  QCOMPARE( ls->pointN( 2 ), QgsPoint( QgsWkbTypes::PointM, 11, 25, 0, 0 ) );
+  QCOMPARE( ls->pointN( 0 ), QgsPoint( Qgis::WkbType::PointM, 11, 12, 0, 0 ) );
+  QCOMPARE( ls->pointN( 1 ), QgsPoint( Qgis::WkbType::PointM, 14, 15, 0, 0 ) );
+  QCOMPARE( ls->pointN( 2 ), QgsPoint( Qgis::WkbType::PointM, 11, 25, 0, 0 ) );
 }
 
 void TestQgsMultiCurve::addGeometryDimensionPreservationZM()
 {
   QgsMultiCurve mc;
   QgsCircularString part;
-  part.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZM, 5, 50, 1, 4 )
-                  << QgsPoint( QgsWkbTypes::PointZM, 6, 61, 3, 5 )
-                  << QgsPoint( QgsWkbTypes::PointZM, 5, 71, 4, 6 ) );
+  part.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 5, 50, 1, 4 )
+                  << QgsPoint( Qgis::WkbType::PointZM, 6, 61, 3, 5 )
+                  << QgsPoint( Qgis::WkbType::PointZM, 5, 71, 4, 6 ) );
   mc.addGeometry( part.clone() );
 
-  QCOMPARE( mc.wkbType(), QgsWkbTypes::MultiCurveZM );
+  QCOMPARE( mc.wkbType(), Qgis::WkbType::MultiCurveZM );
 
-  part.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::Point, 7, 17 )
-                  << QgsPoint( QgsWkbTypes::Point, 3, 13 )
-                  << QgsPoint( QgsWkbTypes::Point, 7, 11 ) );
+  part.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::Point, 7, 17 )
+                  << QgsPoint( Qgis::WkbType::Point, 3, 13 )
+                  << QgsPoint( Qgis::WkbType::Point, 7, 11 ) );
   mc.addGeometry( part.clone() );
 
-  QCOMPARE( mc.wkbType(), QgsWkbTypes::MultiCurveZM );
+  QCOMPARE( mc.wkbType(), Qgis::WkbType::MultiCurveZM );
   QVERIFY( mc.isMeasure() );
   QVERIFY( mc.is3D() );
 
   const QgsCircularString *ls = static_cast< const QgsCircularString * >( mc.geometryN( 0 ) );
 
-  QCOMPARE( ls->pointN( 0 ), QgsPoint( QgsWkbTypes::PointZM, 5, 50, 1, 4 ) );
-  QCOMPARE( ls->pointN( 1 ), QgsPoint( QgsWkbTypes::PointZM, 6, 61, 3, 5 ) );
-  QCOMPARE( ls->pointN( 2 ), QgsPoint( QgsWkbTypes::PointZM, 5, 71, 4, 6 ) );
+  QCOMPARE( ls->pointN( 0 ), QgsPoint( Qgis::WkbType::PointZM, 5, 50, 1, 4 ) );
+  QCOMPARE( ls->pointN( 1 ), QgsPoint( Qgis::WkbType::PointZM, 6, 61, 3, 5 ) );
+  QCOMPARE( ls->pointN( 2 ), QgsPoint( Qgis::WkbType::PointZM, 5, 71, 4, 6 ) );
 
   ls = static_cast< const QgsCircularString * >( mc.geometryN( 1 ) );
 
-  QCOMPARE( ls->pointN( 0 ), QgsPoint( QgsWkbTypes::PointZM, 7, 17, 0, 0 ) );
-  QCOMPARE( ls->pointN( 1 ), QgsPoint( QgsWkbTypes::PointZM, 3, 13, 0, 0 ) );
-  QCOMPARE( ls->pointN( 2 ), QgsPoint( QgsWkbTypes::PointZM, 7, 11, 0, 0 ) );
+  QCOMPARE( ls->pointN( 0 ), QgsPoint( Qgis::WkbType::PointZM, 7, 17, 0, 0 ) );
+  QCOMPARE( ls->pointN( 1 ), QgsPoint( Qgis::WkbType::PointZM, 3, 13, 0, 0 ) );
+  QCOMPARE( ls->pointN( 2 ), QgsPoint( Qgis::WkbType::PointZM, 7, 11, 0, 0 ) );
 
-  part.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZ, 77, 87, 7 )
-                  << QgsPoint( QgsWkbTypes::PointZ, 83, 83, 8 )
-                  << QgsPoint( QgsWkbTypes::PointZ, 77, 81, 9 ) );
+  part.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZ, 77, 87, 7 )
+                  << QgsPoint( Qgis::WkbType::PointZ, 83, 83, 8 )
+                  << QgsPoint( Qgis::WkbType::PointZ, 77, 81, 9 ) );
   mc.addGeometry( part.clone() );
 
-  QCOMPARE( mc.wkbType(), QgsWkbTypes::MultiCurveZM );
+  QCOMPARE( mc.wkbType(), Qgis::WkbType::MultiCurveZM );
   QVERIFY( mc.is3D() );
   QVERIFY( mc.isMeasure() );
 
   ls = static_cast< const QgsCircularString * >( mc.geometryN( 2 ) );
 
-  QCOMPARE( ls->pointN( 0 ), QgsPoint( QgsWkbTypes::PointZM, 77, 87, 7, 0 ) );
-  QCOMPARE( ls->pointN( 1 ), QgsPoint( QgsWkbTypes::PointZM, 83, 83, 8, 0 ) );
-  QCOMPARE( ls->pointN( 2 ), QgsPoint( QgsWkbTypes::PointZM, 77, 81, 9, 0 ) );
+  QCOMPARE( ls->pointN( 0 ), QgsPoint( Qgis::WkbType::PointZM, 77, 87, 7, 0 ) );
+  QCOMPARE( ls->pointN( 1 ), QgsPoint( Qgis::WkbType::PointZM, 83, 83, 8, 0 ) );
+  QCOMPARE( ls->pointN( 2 ), QgsPoint( Qgis::WkbType::PointZM, 77, 81, 9, 0 ) );
 
-  part.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointM, 177, 187, 0, 9 )
-                  << QgsPoint( QgsWkbTypes::PointM, 183, 183, 0, 11 )
-                  << QgsPoint( QgsWkbTypes::PointM, 177, 181, 0, 13 ) );
+  part.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointM, 177, 187, 0, 9 )
+                  << QgsPoint( Qgis::WkbType::PointM, 183, 183, 0, 11 )
+                  << QgsPoint( Qgis::WkbType::PointM, 177, 181, 0, 13 ) );
   mc.addGeometry( part.clone() );
 
-  QCOMPARE( mc.wkbType(), QgsWkbTypes::MultiCurveZM );
+  QCOMPARE( mc.wkbType(), Qgis::WkbType::MultiCurveZM );
   QVERIFY( mc.is3D() );
   QVERIFY( mc.isMeasure() );
 
   ls = static_cast< const QgsCircularString * >( mc.geometryN( 3 ) );
 
-  QCOMPARE( ls->pointN( 0 ), QgsPoint( QgsWkbTypes::PointZM, 177, 187, 0, 9 ) );
-  QCOMPARE( ls->pointN( 1 ), QgsPoint( QgsWkbTypes::PointZM, 183, 183, 0, 11 ) );
-  QCOMPARE( ls->pointN( 2 ), QgsPoint( QgsWkbTypes::PointZM, 177, 181, 0, 13 ) );
+  QCOMPARE( ls->pointN( 0 ), QgsPoint( Qgis::WkbType::PointZM, 177, 187, 0, 9 ) );
+  QCOMPARE( ls->pointN( 1 ), QgsPoint( Qgis::WkbType::PointZM, 183, 183, 0, 11 ) );
+  QCOMPARE( ls->pointN( 2 ), QgsPoint( Qgis::WkbType::PointZM, 177, 181, 0, 13 ) );
 }
 
 void TestQgsMultiCurve::insertGeometry()
@@ -430,9 +428,9 @@ void TestQgsMultiCurve::insertGeometry()
   QCOMPARE( mc.numGeometries(), 0 );
 
   QgsCircularString part;
-  part.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZM, 27, 37, 6, 2 )
-                  << QgsPoint( QgsWkbTypes::PointZM, 43, 43, 11, 5 )
-                  << QgsPoint( QgsWkbTypes::PointZM, 27, 53, 21, 52 ) );
+  part.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 27, 37, 6, 2 )
+                  << QgsPoint( Qgis::WkbType::PointZM, 43, 43, 11, 5 )
+                  << QgsPoint( Qgis::WkbType::PointZM, 27, 53, 21, 52 ) );
   mc.insertGeometry( part.clone(), 0 );
 
   QVERIFY( !mc.isEmpty() );
@@ -473,7 +471,7 @@ void TestQgsMultiCurve::clear()
   QgsMultiCurve mc;
 
   QgsCircularString part;
-  part.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZM, 5, 50, 1, 4 ) );
+  part.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 5, 50, 1, 4 ) );
   mc.addGeometry( part.clone() );
   mc.addGeometry( part.clone() );
 
@@ -488,7 +486,7 @@ void TestQgsMultiCurve::clear()
   QCOMPARE( mc.partCount(), 0 );
   QVERIFY( !mc.is3D() );
   QVERIFY( !mc.isMeasure() );
-  QCOMPARE( mc.wkbType(), QgsWkbTypes::MultiCurve );
+  QCOMPARE( mc.wkbType(), Qgis::WkbType::MultiCurve );
 }
 
 void TestQgsMultiCurve::clone()
@@ -499,7 +497,7 @@ void TestQgsMultiCurve::clone()
   QVERIFY( cloned->isEmpty() );
 
   QgsCircularString part;
-  part.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZM, 5, 50, 1, 4 ) );
+  part.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 5, 50, 1, 4 ) );
   mc.addGeometry( part.clone() );
   mc.addGeometry( part.clone() );
 
@@ -523,14 +521,14 @@ void TestQgsMultiCurve::copy()
   QVERIFY( mc2.isEmpty() );
 
   QgsCircularString part;
-  part.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZM, 5, 50, 1, 4 ) );
+  part.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 5, 50, 1, 4 ) );
   mc1.addGeometry( part.clone() );
   mc1.addGeometry( part.clone() );
 
   mc2 = QgsMultiCurve( mc1 );
 
   QCOMPARE( mc2.numGeometries(), 2 );
-  QCOMPARE( mc2.wkbType(), QgsWkbTypes::MultiCurveZM );
+  QCOMPARE( mc2.wkbType(), Qgis::WkbType::MultiCurveZM );
 
   const QgsCircularString *ls = static_cast< const QgsCircularString * >( mc2.geometryN( 0 ) );
 
@@ -551,7 +549,7 @@ void TestQgsMultiCurve::assignment()
 
   mc2.clear();
   QgsCircularString part;
-  part.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZM, 5, 50, 1, 4 ) );
+  part.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 5, 50, 1, 4 ) );
   mc2.addGeometry( part.clone() );
   mc2.addGeometry( part.clone() );
 
@@ -654,14 +652,14 @@ void TestQgsMultiCurve::boundary()
 
   //boundary with z
   mc.clear();
-  cs.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZ, 0, 0, 10 )
-                << QgsPoint( QgsWkbTypes::PointZ, 1, 0, 15 )
-                << QgsPoint( QgsWkbTypes::PointZ, 1, 1, 20 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZ, 0, 0, 10 )
+                << QgsPoint( Qgis::WkbType::PointZ, 1, 0, 15 )
+                << QgsPoint( Qgis::WkbType::PointZ, 1, 1, 20 ) );
   mc.addGeometry( cs.clone() );
 
-  cs.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZ, 10, 10, 100 )
-                << QgsPoint( QgsWkbTypes::PointZ, 10, 20, 150 )
-                << QgsPoint( QgsWkbTypes::PointZ, 20, 20, 200 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZ, 10, 10, 100 )
+                << QgsPoint( Qgis::WkbType::PointZ, 10, 20, 150 )
+                << QgsPoint( Qgis::WkbType::PointZ, 20, 20, 200 ) );
   mc.addGeometry( cs.clone() );
 
   boundary = mc.boundary();
@@ -669,22 +667,22 @@ void TestQgsMultiCurve::boundary()
 
   QVERIFY( mpBoundary );
   QCOMPARE( mpBoundary->numGeometries(), 4 );
-  QCOMPARE( mpBoundary->geometryN( 0 )->wkbType(), QgsWkbTypes::PointZ );
+  QCOMPARE( mpBoundary->geometryN( 0 )->wkbType(), Qgis::WkbType::PointZ );
   QCOMPARE( static_cast< QgsPoint *>( mpBoundary->geometryN( 0 ) )->x(), 0.0 );
   QCOMPARE( static_cast< QgsPoint *>( mpBoundary->geometryN( 0 ) )->y(), 0.0 );
   QCOMPARE( static_cast< QgsPoint *>( mpBoundary->geometryN( 0 ) )->z(), 10.0 );
 
-  QCOMPARE( mpBoundary->geometryN( 1 )->wkbType(), QgsWkbTypes::PointZ );
+  QCOMPARE( mpBoundary->geometryN( 1 )->wkbType(), Qgis::WkbType::PointZ );
   QCOMPARE( static_cast< QgsPoint *>( mpBoundary->geometryN( 1 ) )->x(), 1.0 );
   QCOMPARE( static_cast< QgsPoint *>( mpBoundary->geometryN( 1 ) )->y(), 1.0 );
   QCOMPARE( static_cast< QgsPoint *>( mpBoundary->geometryN( 1 ) )->z(), 20.0 );
 
-  QCOMPARE( mpBoundary->geometryN( 2 )->wkbType(), QgsWkbTypes::PointZ );
+  QCOMPARE( mpBoundary->geometryN( 2 )->wkbType(), Qgis::WkbType::PointZ );
   QCOMPARE( static_cast< QgsPoint *>( mpBoundary->geometryN( 2 ) )->x(), 10.0 );
   QCOMPARE( static_cast< QgsPoint *>( mpBoundary->geometryN( 2 ) )->y(), 10.0 );
   QCOMPARE( static_cast< QgsPoint *>( mpBoundary->geometryN( 2 ) )->z(), 100.0 );
 
-  QCOMPARE( mpBoundary->geometryN( 3 )->wkbType(), QgsWkbTypes::PointZ );
+  QCOMPARE( mpBoundary->geometryN( 3 )->wkbType(), Qgis::WkbType::PointZ );
   QCOMPARE( static_cast< QgsPoint *>( mpBoundary->geometryN( 3 ) )->x(), 20.0 );
   QCOMPARE( static_cast< QgsPoint *>( mpBoundary->geometryN( 3 ) )->y(), 20.0 );
   QCOMPARE( static_cast< QgsPoint *>( mpBoundary->geometryN( 3 ) )->z(), 200.0 );
@@ -700,14 +698,14 @@ void TestQgsMultiCurve::reversed()
   QVERIFY( reversed->isEmpty() );
 
   QgsCircularString part;
-  part.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZM, 7, 17, 4, 1 )
-                  << QgsPoint( QgsWkbTypes::PointZM, 3, 13, 1, 4 )
-                  << QgsPoint( QgsWkbTypes::PointZM, 7, 11, 2, 8 ) );
+  part.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 7, 17, 4, 1 )
+                  << QgsPoint( Qgis::WkbType::PointZM, 3, 13, 1, 4 )
+                  << QgsPoint( Qgis::WkbType::PointZM, 7, 11, 2, 8 ) );
   mc.addGeometry( part.clone() );
 
-  part.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZM, 27, 37, 6, 2 )
-                  << QgsPoint( QgsWkbTypes::PointZM, 43, 43, 11, 5 )
-                  << QgsPoint( QgsWkbTypes::PointZM, 27, 53, 21, 52 ) );
+  part.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 27, 37, 6, 2 )
+                  << QgsPoint( Qgis::WkbType::PointZM, 43, 43, 11, 5 )
+                  << QgsPoint( Qgis::WkbType::PointZM, 27, 53, 21, 52 ) );
   mc.addGeometry( part.clone() );
 
   reversed.reset( mc.reversed() );
@@ -715,15 +713,15 @@ void TestQgsMultiCurve::reversed()
 
   const QgsCircularString *ls = static_cast< const QgsCircularString * >( reversed->geometryN( 0 ) );
 
-  QCOMPARE( ls->pointN( 0 ), QgsPoint( QgsWkbTypes::PointZM, 7, 11, 2, 8 ) );
-  QCOMPARE( ls->pointN( 1 ), QgsPoint( QgsWkbTypes::PointZM, 3, 13, 1, 4 ) );
-  QCOMPARE( ls->pointN( 2 ), QgsPoint( QgsWkbTypes::PointZM, 7, 17, 4, 1 ) );
+  QCOMPARE( ls->pointN( 0 ), QgsPoint( Qgis::WkbType::PointZM, 7, 11, 2, 8 ) );
+  QCOMPARE( ls->pointN( 1 ), QgsPoint( Qgis::WkbType::PointZM, 3, 13, 1, 4 ) );
+  QCOMPARE( ls->pointN( 2 ), QgsPoint( Qgis::WkbType::PointZM, 7, 17, 4, 1 ) );
 
   ls = static_cast< const QgsCircularString * >( reversed->geometryN( 1 ) );
 
-  QCOMPARE( ls->pointN( 0 ), QgsPoint( QgsWkbTypes::PointZM, 27, 53, 21, 52 ) );
-  QCOMPARE( ls->pointN( 1 ), QgsPoint( QgsWkbTypes::PointZM, 43, 43, 11, 5 ) );
-  QCOMPARE( ls->pointN( 2 ), QgsPoint( QgsWkbTypes::PointZM, 27, 37, 6, 2 ) );
+  QCOMPARE( ls->pointN( 0 ), QgsPoint( Qgis::WkbType::PointZM, 27, 53, 21, 52 ) );
+  QCOMPARE( ls->pointN( 1 ), QgsPoint( Qgis::WkbType::PointZM, 43, 43, 11, 5 ) );
+  QCOMPARE( ls->pointN( 2 ), QgsPoint( Qgis::WkbType::PointZM, 27, 37, 6, 2 ) );
 }
 
 void TestQgsMultiCurve::segmentize()
@@ -744,20 +742,20 @@ void TestQgsMultiCurve::segmentize()
   QCOMPARE( segmentized2->partCount(), 1 );
   QVERIFY( !segmentized2->is3D() );
   QVERIFY( !segmentized2->isMeasure() );
-  QCOMPARE( segmentized2->wkbType(),  QgsWkbTypes::Type::MultiLineString );
+  QCOMPARE( segmentized2->wkbType(),  Qgis::WkbType::MultiLineString );
 }
 
 void TestQgsMultiCurve::toCurveType()
 {
   QgsMultiCurve mc;
   QgsCircularString part;
-  part.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZM, 5, 50, 1, 4 ) );
+  part.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 5, 50, 1, 4 ) );
   mc.addGeometry( part.clone() );
   mc.addGeometry( part.clone() );
 
   std::unique_ptr< QgsMultiCurve > curveType( mc.toCurveType() );
 
-  QCOMPARE( curveType->wkbType(), QgsWkbTypes::MultiCurveZM );
+  QCOMPARE( curveType->wkbType(), Qgis::WkbType::MultiCurveZM );
   QCOMPARE( curveType->numGeometries(), 2 );
 
   const QgsCircularString *curve = static_cast< const QgsCircularString * >( curveType->geometryN( 0 ) );
@@ -772,14 +770,14 @@ void TestQgsMultiCurve::toFromWKB()
   QgsMultiCurve mc1;
 
   QgsCircularString part;
-  part.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::Point, 7, 17 )
-                  << QgsPoint( QgsWkbTypes::Point, 3, 13 )
-                  << QgsPoint( QgsWkbTypes::Point, 7, 11 ) );
+  part.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::Point, 7, 17 )
+                  << QgsPoint( Qgis::WkbType::Point, 3, 13 )
+                  << QgsPoint( Qgis::WkbType::Point, 7, 11 ) );
   mc1.addGeometry( part.clone() );
 
-  part.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::Point, 27, 37 )
-                  << QgsPoint( QgsWkbTypes::Point, 43, 43 )
-                  << QgsPoint( QgsWkbTypes::Point, 27, 54 ) );
+  part.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::Point, 27, 37 )
+                  << QgsPoint( Qgis::WkbType::Point, 43, 43 )
+                  << QgsPoint( Qgis::WkbType::Point, 27, 54 ) );
   mc1.addGeometry( part.clone() );
 
   QByteArray wkb = mc1.asWkb();
@@ -798,14 +796,14 @@ void TestQgsMultiCurve::toFromWKB()
   QgsConstWkbPtr nullPtr( nullptr, 0 );
 
   QVERIFY( !mc1.fromWkb( nullPtr ) );
-  QCOMPARE( mc1.wkbType(), QgsWkbTypes::MultiCurve );
+  QCOMPARE( mc1.wkbType(), Qgis::WkbType::MultiCurve );
 
   QgsPoint point( 1, 2 );
   QByteArray wkbPoint = point.asWkb();
   QgsConstWkbPtr wkbPointPtr( wkbPoint );
 
   QVERIFY( !mc1.fromWkb( wkbPointPtr ) );
-  QCOMPARE( mc1.wkbType(), QgsWkbTypes::MultiCurve );
+  QCOMPARE( mc1.wkbType(), Qgis::WkbType::MultiCurve );
 }
 
 void TestQgsMultiCurve::toFromWKBWithZM()
@@ -814,14 +812,14 @@ void TestQgsMultiCurve::toFromWKBWithZM()
   QgsMultiCurve mc1;
 
   QgsCircularString part;
-  part.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZ, 7, 17, 1 )
-                  << QgsPoint( QgsWkbTypes::PointZ, 3, 13, 4 )
-                  << QgsPoint( QgsWkbTypes::PointZ, 7, 11, 3 ) );
+  part.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZ, 7, 17, 1 )
+                  << QgsPoint( Qgis::WkbType::PointZ, 3, 13, 4 )
+                  << QgsPoint( Qgis::WkbType::PointZ, 7, 11, 3 ) );
   mc1.addGeometry( part.clone() );
 
-  part.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZ, 27, 37, 2 )
-                  << QgsPoint( QgsWkbTypes::PointZ, 43, 43, 5 )
-                  << QgsPoint( QgsWkbTypes::PointZ, 27, 53, 6 ) );
+  part.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZ, 27, 37, 2 )
+                  << QgsPoint( Qgis::WkbType::PointZ, 43, 43, 5 )
+                  << QgsPoint( Qgis::WkbType::PointZ, 27, 53, 6 ) );
   mc1.addGeometry( part.clone() );
 
   QByteArray wkb = mc1.asWkb();
@@ -830,7 +828,7 @@ void TestQgsMultiCurve::toFromWKBWithZM()
   mc2.fromWkb( wkbPtr );
 
   QCOMPARE( mc2.numGeometries(), 2 );
-  QCOMPARE( mc2.wkbType(), QgsWkbTypes::MultiCurveZ );
+  QCOMPARE( mc2.wkbType(), Qgis::WkbType::MultiCurveZ );
   QCOMPARE( *static_cast< const QgsCircularString * >( mc2.geometryN( 0 ) ),
             *static_cast< const QgsCircularString * >( mc1.geometryN( 0 ) ) );
   QCOMPARE( *static_cast< const QgsCircularString * >( mc2.geometryN( 1 ) ),
@@ -840,14 +838,14 @@ void TestQgsMultiCurve::toFromWKBWithZM()
   mc1.clear();
   mc2.clear();
 
-  part.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointM, 7, 17, 0, 1 )
-                  << QgsPoint( QgsWkbTypes::PointM, 3, 13, 0, 4 )
-                  << QgsPoint( QgsWkbTypes::PointM, 7, 11, 0, 5 ) );
+  part.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointM, 7, 17, 0, 1 )
+                  << QgsPoint( Qgis::WkbType::PointM, 3, 13, 0, 4 )
+                  << QgsPoint( Qgis::WkbType::PointM, 7, 11, 0, 5 ) );
   mc1.addGeometry( part.clone() );
 
-  part.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointM, 27, 37, 0, 2 )
-                  << QgsPoint( QgsWkbTypes::PointM, 43, 43, 0, 5 )
-                  << QgsPoint( QgsWkbTypes::PointM, 27, 53, 0, 7 ) );
+  part.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointM, 27, 37, 0, 2 )
+                  << QgsPoint( Qgis::WkbType::PointM, 43, 43, 0, 5 )
+                  << QgsPoint( Qgis::WkbType::PointM, 27, 53, 0, 7 ) );
   mc1.addGeometry( part.clone() );
 
   wkb = mc1.asWkb();
@@ -855,7 +853,7 @@ void TestQgsMultiCurve::toFromWKBWithZM()
   mc2.fromWkb( wkbPtr );
 
   QCOMPARE( mc2.numGeometries(), 2 );
-  QCOMPARE( mc2.wkbType(), QgsWkbTypes::MultiCurveM );
+  QCOMPARE( mc2.wkbType(), Qgis::WkbType::MultiCurveM );
   QCOMPARE( *static_cast< const QgsCircularString * >( mc2.geometryN( 0 ) ),
             *static_cast< const QgsCircularString * >( mc1.geometryN( 0 ) ) );
   QCOMPARE( *static_cast< const QgsCircularString * >( mc2.geometryN( 1 ) ),
@@ -865,14 +863,14 @@ void TestQgsMultiCurve::toFromWKBWithZM()
   mc1.clear();
   mc2.clear();
 
-  part.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZM, 7, 17, 4, 1 )
-                  << QgsPoint( QgsWkbTypes::PointZM, 3, 13, 1, 4 )
-                  << QgsPoint( QgsWkbTypes::PointZM, 7, 11, 2, 5 ) );
+  part.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 7, 17, 4, 1 )
+                  << QgsPoint( Qgis::WkbType::PointZM, 3, 13, 1, 4 )
+                  << QgsPoint( Qgis::WkbType::PointZM, 7, 11, 2, 5 ) );
   mc1.addGeometry( part.clone() );
 
-  part.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZM, 27, 37, 6, 2 )
-                  << QgsPoint( QgsWkbTypes::PointZM, 43, 43, 11, 5 )
-                  << QgsPoint( QgsWkbTypes::PointZM, 27, 47, 12, 15 ) );
+  part.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 27, 37, 6, 2 )
+                  << QgsPoint( Qgis::WkbType::PointZM, 43, 43, 11, 5 )
+                  << QgsPoint( Qgis::WkbType::PointZM, 27, 47, 12, 15 ) );
   mc1.addGeometry( part.clone() );
 
   wkb = mc1.asWkb();
@@ -880,7 +878,7 @@ void TestQgsMultiCurve::toFromWKBWithZM()
   mc2.fromWkb( wkbPtr );
 
   QCOMPARE( mc2.numGeometries(), 2 );
-  QCOMPARE( mc2.wkbType(), QgsWkbTypes::MultiCurveZM );
+  QCOMPARE( mc2.wkbType(), Qgis::WkbType::MultiCurveZM );
   QCOMPARE( *static_cast< const QgsCircularString * >( mc2.geometryN( 0 ) ),
             *static_cast< const QgsCircularString * >( mc1.geometryN( 0 ) ) );
   QCOMPARE( *static_cast< const QgsCircularString * >( mc2.geometryN( 1 ) ),
@@ -892,14 +890,14 @@ void TestQgsMultiCurve::toFromWKT()
   QgsMultiCurve mc1;
 
   QgsCircularString part;
-  part.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZM, 7, 17, 4, 1 )
-                  << QgsPoint( QgsWkbTypes::PointZM, 3, 13, 1, 4 )
-                  << QgsPoint( QgsWkbTypes::PointZM, 7, 11, 2, 8 ) );
+  part.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 7, 17, 4, 1 )
+                  << QgsPoint( Qgis::WkbType::PointZM, 3, 13, 1, 4 )
+                  << QgsPoint( Qgis::WkbType::PointZM, 7, 11, 2, 8 ) );
   mc1.addGeometry( part.clone() );
 
-  part.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZM, 27, 37, 6, 2 )
-                  << QgsPoint( QgsWkbTypes::PointZM, 43, 43, 11, 5 )
-                  << QgsPoint( QgsWkbTypes::PointZM, 27, 53, 21, 52 ) );
+  part.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 27, 37, 6, 2 )
+                  << QgsPoint( Qgis::WkbType::PointZM, 43, 43, 11, 5 )
+                  << QgsPoint( Qgis::WkbType::PointZM, 27, 53, 21, 52 ) );
   mc1.addGeometry( part.clone() );
 
   QString wkt = mc1.asWkt();
@@ -918,7 +916,7 @@ void TestQgsMultiCurve::toFromWKT()
   QVERIFY( !mc1.fromWkt( "Point()" ) );
   QVERIFY( mc1.isEmpty() );
   QCOMPARE( mc1.numGeometries(), 0 );
-  QCOMPARE( mc1.wkbType(), QgsWkbTypes::MultiCurve );
+  QCOMPARE( mc1.wkbType(), Qgis::WkbType::MultiCurve );
 }
 
 void TestQgsMultiCurve::exportImport()
@@ -927,14 +925,14 @@ void TestQgsMultiCurve::exportImport()
 
   //as JSON
   QgsMultiCurve exportC;
-  part.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::Point, 7, 17 )
-                  << QgsPoint( QgsWkbTypes::Point, 3, 13 )
-                  << QgsPoint( QgsWkbTypes::Point, 7, 11 ) );
+  part.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::Point, 7, 17 )
+                  << QgsPoint( Qgis::WkbType::Point, 3, 13 )
+                  << QgsPoint( Qgis::WkbType::Point, 7, 11 ) );
 
   exportC.addGeometry( part.clone() );
-  part.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::Point, 27, 37 )
-                  << QgsPoint( QgsWkbTypes::Point, 43, 43 )
-                  << QgsPoint( QgsWkbTypes::Point, 27, 47 ) );
+  part.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::Point, 27, 37 )
+                  << QgsPoint( Qgis::WkbType::Point, 43, 43 )
+                  << QgsPoint( Qgis::WkbType::Point, 27, 47 ) );
   exportC.addGeometry( part.clone() );
 
   // GML document for compare
@@ -962,13 +960,13 @@ void TestQgsMultiCurve::exportImport()
   QCOMPARE( res, expectedSimpleJson );
 
   QgsMultiCurve exportFloat;
-  part.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::Point, 7 / 3.0, 17 / 3.0 )
-                  << QgsPoint( QgsWkbTypes::Point, 3 / 5.0, 13 / 3.0 )
-                  << QgsPoint( QgsWkbTypes::Point, 7 / 3.0, 11 / 3.0 ) );
+  part.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::Point, 7 / 3.0, 17 / 3.0 )
+                  << QgsPoint( Qgis::WkbType::Point, 3 / 5.0, 13 / 3.0 )
+                  << QgsPoint( Qgis::WkbType::Point, 7 / 3.0, 11 / 3.0 ) );
   exportFloat.addGeometry( part.clone() );
-  part.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::Point, 27 / 3.0, 37 / 9.0 )
-                  << QgsPoint( QgsWkbTypes::Point, 43 / 41.0, 43 / 42.0 )
-                  << QgsPoint( QgsWkbTypes::Point, 27 / 3.0, 1 / 3.0 ) );
+  part.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::Point, 27 / 3.0, 37 / 9.0 )
+                  << QgsPoint( Qgis::WkbType::Point, 43 / 41.0, 43 / 42.0 )
+                  << QgsPoint( Qgis::WkbType::Point, 27 / 3.0, 1 / 3.0 ) );
   exportFloat.addGeometry( part.clone() );
 
   QString expectedJsonPrec3( QStringLiteral( "{\"coordinates\":[[[2.333,5.667],[2.316,5.677],[2.298,5.687],[2.28,5.697],[2.262,5.707],[2.244,5.716],[2.226,5.725],[2.207,5.734],[2.188,5.742],[2.17,5.75],[2.151,5.757],[2.131,5.765],[2.112,5.772],[2.093,5.778],[2.074,5.785],[2.054,5.79],[2.034,5.796],[2.015,5.801],[1.995,5.806],[1.975,5.811],[1.955,5.815],[1.935,5.819],[1.915,5.822],[1.894,5.826],[1.874,5.828],[1.854,5.831],[1.834,5.833],[1.813,5.835],[1.793,5.836],[1.773,5.837],[1.752,5.838],[1.732,5.838],[1.711,5.838],[1.691,5.838],[1.67,5.837],[1.65,5.836],[1.63,5.834],[1.609,5.833],[1.589,5.83],[1.569,5.828],[1.548,5.825],[1.528,5.822],[1.508,5.818],[1.488,5.814],[1.468,5.81],[1.448,5.805],[1.428,5.801],[1.409,5.795],[1.389,5.79],[1.37,5.784],[1.35,5.777],[1.331,5.771],[1.312,5.764],[1.293,5.756],[1.274,5.749],[1.255,5.741],[1.236,5.732],[1.218,5.724],[1.199,5.715],[1.181,5.705],[1.163,5.696],[1.145,5.686],[1.128,5.676],[1.11,5.665],[1.093,5.654],[1.076,5.643],[1.059,5.632],[1.042,5.62],[1.025,5.608],[1.009,5.596],[0.993,5.583],[0.977,5.57],[0.962,5.557],[0.946,5.543],[0.931,5.53],[0.916,5.516],[0.901,5.502],[0.887,5.487],[0.873,5.473],[0.859,5.458],[0.845,5.442],[0.832,5.427],[0.819,5.411],[0.806,5.395],[0.793,5.379],[0.781,5.363],[0.769,5.346],[0.757,5.33],[0.746,5.313],[0.735,5.296],[0.724,5.278],[0.713,5.261],[0.703,5.243],[0.693,5.225],[0.684,5.207],[0.674,5.189],[0.666,5.171],[0.657,5.152],[0.649,5.133],[0.641,5.115],[0.633,5.096],[0.626,5.077],[0.619,5.057],[0.612,5.038],[0.606,5.019],[0.6,4.999],[0.594,4.979],[0.589,4.96],[0.584,4.94],[0.579,4.92],[0.575,4.9],[0.571,4.88],[0.568,4.86],[0.564,4.84],[0.562,4.819],[0.559,4.799],[0.557,4.779],[0.555,4.759],[0.554,4.738],[0.553,4.718],[0.552,4.697],[0.552,4.677],[0.552,4.656],[0.552,4.636],[0.553,4.616],[0.554,4.595],[0.555,4.575],[0.557,4.554],[0.559,4.534],[0.562,4.514],[0.564,4.494],[0.568,4.473],[0.571,4.453],[0.575,4.433],[0.579,4.413],[0.584,4.393],[0.589,4.374],[0.594,4.354],[0.6,4.334],[0.606,4.315],[0.612,4.295],[0.619,4.276],[0.626,4.257],[0.633,4.238],[0.641,4.219],[0.649,4.2],[0.657,4.181],[0.666,4.163],[0.674,4.144],[0.684,4.126],[0.693,4.108],[0.703,4.09],[0.713,4.073],[0.724,4.055],[0.735,4.038],[0.746,4.021],[0.757,4.004],[0.769,3.987],[0.781,3.97],[0.793,3.954],[0.806,3.938],[0.819,3.922],[0.832,3.906],[0.845,3.891],[0.859,3.876],[0.873,3.861],[0.887,3.846],[0.901,3.832],[0.916,3.817],[0.931,3.804],[0.946,3.79],[0.962,3.776],[0.977,3.763],[0.993,3.75],[1.009,3.738],[1.025,3.726],[1.042,3.713],[1.059,3.702],[1.076,3.69],[1.093,3.679],[1.11,3.668],[1.128,3.658],[1.145,3.648],[1.163,3.638],[1.181,3.628],[1.199,3.619],[1.218,3.61],[1.236,3.601],[1.255,3.593],[1.274,3.585],[1.293,3.577],[1.312,3.57],[1.331,3.563],[1.35,3.556],[1.37,3.55],[1.389,3.544],[1.409,3.538],[1.428,3.533],[1.448,3.528],[1.468,3.523],[1.488,3.519],[1.508,3.515],[1.528,3.511],[1.548,3.508],[1.569,3.505],[1.589,3.503],[1.609,3.501],[1.63,3.499],[1.65,3.497],[1.67,3.496],[1.691,3.496],[1.711,3.495],[1.732,3.495],[1.752,3.496],[1.773,3.496],[1.793,3.497],[1.813,3.499],[1.834,3.5],[1.854,3.503],[1.874,3.505],[1.894,3.508],[1.915,3.511],[1.935,3.514],[1.955,3.518],[1.975,3.523],[1.995,3.527],[2.015,3.532],[2.034,3.537],[2.054,3.543],[2.074,3.549],[2.093,3.555],[2.112,3.562],[2.131,3.569],[2.151,3.576],[2.17,3.584],[2.188,3.592],[2.207,3.6],[2.226,3.608],[2.244,3.617],[2.262,3.627],[2.28,3.636],[2.298,3.646],[2.316,3.656],[2.333,3.667]],[[9.0,4.111],[8.966,4.178],[8.932,4.244],[8.896,4.309],[8.859,4.374],[8.821,4.438],[8.782,4.502],[8.742,4.565],[8.7,4.627],[8.658,4.688],[8.614,4.749],[8.57,4.809],[8.524,4.868],[8.477,4.926],[8.43,4.983],[8.381,5.04],[8.331,5.096],[8.281,5.151],[8.229,5.205],[8.177,5.258],[8.124,5.31],[8.069,5.361],[8.014,5.411],[7.958,5.461],[7.901,5.509],[7.844,5.556],[7.785,5.603],[7.726,5.648],[7.666,5.692],[7.605,5.735],[7.543,5.777],[7.481,5.818],[7.418,5.858],[7.354,5.897],[7.29,5.935],[7.225,5.971],[7.159,6.007],[7.093,6.041],[7.026,6.074],[6.958,6.106],[6.89,6.137],[6.822,6.167],[6.753,6.195],[6.683,6.222],[6.613,6.248],[6.543,6.273],[6.472,6.296],[6.401,6.319],[6.329,6.34],[6.257,6.36],[6.185,6.378],[6.112,6.395],[6.04,6.411],[5.966,6.426],[5.893,6.44],[5.819,6.452],[5.746,6.463],[5.672,6.472],[5.597,6.48],[5.523,6.487],[5.449,6.493],[5.374,6.498],[5.3,6.501],[5.225,6.503],[5.15,6.503],[5.076,6.502],[5.001,6.5],[4.927,6.497],[4.852,6.492],[4.778,6.486],[4.704,6.479],[4.629,6.47],[4.555,6.46],[4.482,6.449],[4.408,6.437],[4.335,6.423],[4.262,6.408],[4.189,6.392],[4.116,6.374],[4.044,6.355],[3.972,6.335],[3.901,6.314],[3.83,6.292],[3.759,6.268],[3.688,6.243],[3.619,6.217],[3.549,6.189],[3.48,6.16],[3.412,6.131],[3.344,6.1],[3.277,6.067],[3.21,6.034],[3.144,5.999],[3.078,5.964],[3.013,5.927],[2.949,5.889],[2.886,5.85],[2.823,5.81],[2.761,5.768],[2.699,5.726],[2.638,5.683],[2.578,5.638],[2.519,5.593],[2.461,5.546],[2.403,5.499],[2.347,5.45],[2.291,5.401],[2.236,5.35],[2.182,5.299],[2.129,5.246],[2.076,5.193],[2.025,5.139],[1.975,5.084],[1.925,5.028],[1.877,4.971],[1.829,4.914],[1.783,4.855],[1.738,4.796],[1.693,4.736],[1.65,4.675],[1.608,4.614],[1.567,4.551],[1.527,4.488],[1.488,4.425],[1.45,4.36],[1.413,4.295],[1.378,4.23],[1.343,4.164],[1.31,4.097],[1.278,4.029],[1.247,3.961],[1.217,3.893],[1.189,3.824],[1.161,3.755],[1.135,3.685],[1.11,3.614],[1.087,3.544],[1.064,3.472],[1.043,3.401],[1.023,3.329],[1.004,3.257],[0.987,3.184],[0.971,3.111],[0.956,3.038],[0.942,2.965],[0.93,2.891],[0.919,2.817],[0.909,2.743],[0.901,2.669],[0.894,2.595],[0.888,2.52],[0.883,2.446],[0.88,2.371],[0.878,2.297],[0.878,2.222],[0.878,2.148],[0.88,2.073],[0.883,1.998],[0.888,1.924],[0.894,1.85],[0.901,1.775],[0.909,1.701],[0.919,1.627],[0.93,1.553],[0.942,1.48],[0.956,1.406],[0.971,1.333],[0.987,1.26],[1.004,1.188],[1.023,1.116],[1.043,1.044],[1.064,0.972],[1.087,0.901],[1.11,0.83],[1.135,0.76],[1.161,0.69],[1.189,0.62],[1.217,0.551],[1.247,0.483],[1.278,0.415],[1.31,0.348],[1.343,0.281],[1.378,0.215],[1.413,0.149],[1.45,0.084],[1.488,0.02],[1.527,-0.044],[1.567,-0.107],[1.608,-0.169],[1.65,-0.231],[1.693,-0.291],[1.738,-0.351],[1.783,-0.411],[1.829,-0.469],[1.877,-0.527],[1.925,-0.584],[1.975,-0.639],[2.025,-0.694],[2.076,-0.749],[2.129,-0.802],[2.182,-0.854],[2.236,-0.906],[2.291,-0.956],[2.347,-1.006],[2.403,-1.054],[2.461,-1.102],[2.519,-1.148],[2.578,-1.194],[2.638,-1.238],[2.699,-1.282],[2.761,-1.324],[2.823,-1.365],[2.886,-1.405],[2.949,-1.444],[3.013,-1.482],[3.078,-1.519],[3.144,-1.555],[3.21,-1.589],[3.277,-1.623],[3.344,-1.655],[3.412,-1.686],[3.48,-1.716],[3.549,-1.745],[3.619,-1.772],[3.688,-1.798],[3.759,-1.823],[3.83,-1.847],[3.901,-1.87],[3.972,-1.891],[4.044,-1.911],[4.116,-1.93],[4.189,-1.947],[4.262,-1.964],[4.335,-1.979],[4.408,-1.992],[4.482,-2.005],[4.555,-2.016],[4.629,-2.026],[4.704,-2.034],[4.778,-2.042],[4.852,-2.048],[4.927,-2.052],[5.001,-2.056],[5.076,-2.058],[5.15,-2.059],[5.225,-2.058],[5.3,-2.056],[5.374,-2.053],[5.449,-2.049],[5.523,-2.043],[5.597,-2.036],[5.672,-2.028],[5.746,-2.018],[5.819,-2.007],[5.893,-1.995],[5.966,-1.982],[6.04,-1.967],[6.112,-1.951],[6.185,-1.934],[6.257,-1.915],[6.329,-1.895],[6.401,-1.874],[6.472,-1.852],[6.543,-1.829],[6.613,-1.804],[6.683,-1.778],[6.753,-1.751],[6.822,-1.722],[6.89,-1.693],[6.958,-1.662],[7.026,-1.63],[7.093,-1.597],[7.159,-1.562],[7.225,-1.527],[7.29,-1.49],[7.354,-1.453],[7.418,-1.414],[7.481,-1.374],[7.543,-1.333],[7.605,-1.291],[7.666,-1.248],[7.726,-1.203],[7.785,-1.158],[7.844,-1.112],[7.901,-1.065],[7.958,-1.016],[8.014,-0.967],[8.069,-0.917],[8.124,-0.865],[8.177,-0.813],[8.229,-0.76],[8.281,-0.706],[8.331,-0.651],[8.381,-0.596],[8.43,-0.539],[8.477,-0.482],[8.524,-0.423],[8.57,-0.364],[8.614,-0.304],[8.658,-0.244],[8.7,-0.182],[8.742,-0.12],[8.782,-0.057],[8.821,0.006],[8.859,0.07],[8.896,0.135],[8.932,0.201],[8.966,0.267],[9.0,0.333]]],\"type\":\"MultiLineString\"}" ) );

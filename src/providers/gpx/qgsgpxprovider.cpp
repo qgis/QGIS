@@ -136,15 +136,15 @@ QgsRectangle QgsGPXProvider::extent() const
   return QgsRectangle();
 }
 
-QgsWkbTypes::Type QgsGPXProvider::wkbType() const
+Qgis::WkbType QgsGPXProvider::wkbType() const
 {
   if ( mFeatureType == WaypointType )
-    return QgsWkbTypes::Point;
+    return Qgis::WkbType::Point;
 
   if ( mFeatureType == RouteType || mFeatureType == TrackType )
-    return QgsWkbTypes::LineString;
+    return Qgis::WkbType::LineString;
 
-  return QgsWkbTypes::Unknown;
+  return Qgis::WkbType::Unknown;
 }
 
 long long QgsGPXProvider::featureCount() const
@@ -205,13 +205,13 @@ bool QgsGPXProvider::addFeature( QgsFeature &f, Flags )
 
   const QByteArray wkb( f.geometry().asWkb() );
   const char *geo = wkb.constData();
-  const QgsWkbTypes::Type wkbType = f.geometry().wkbType();
+  const Qgis::WkbType wkbType = f.geometry().wkbType();
   bool success = false;
   QgsGpsObject *obj = nullptr;
   const QgsAttributes attrs = f.attributes();
 
   // is it a waypoint?
-  if ( mFeatureType == WaypointType && geo && wkbType == QgsWkbTypes::Point )
+  if ( mFeatureType == WaypointType && geo && wkbType == Qgis::WkbType::Point )
   {
 
     // add geometry
@@ -241,7 +241,7 @@ bool QgsGPXProvider::addFeature( QgsFeature &f, Flags )
   }
 
   // is it a route?
-  if ( mFeatureType == RouteType && geo && wkbType == QgsWkbTypes::LineString )
+  if ( mFeatureType == RouteType && geo && wkbType == Qgis::WkbType::LineString )
   {
 
     QgsRoute rte;
@@ -288,7 +288,7 @@ bool QgsGPXProvider::addFeature( QgsFeature &f, Flags )
   }
 
   // is it a track?
-  if ( mFeatureType == TrackType && geo && wkbType == QgsWkbTypes::LineString )
+  if ( mFeatureType == TrackType && geo && wkbType == Qgis::WkbType::LineString )
   {
 
     QgsTrack trk;
@@ -589,7 +589,25 @@ QVariantMap QgsGpxProviderMetadata::decodeUri( const QString &uri ) const
   return QgsGPXProvider::decodeUri( uri );
 }
 
-QList<QgsMapLayerType> QgsGpxProviderMetadata::supportedLayerTypes() const
+QString QgsGpxProviderMetadata::absoluteToRelativeUri( const QString &uri, const QgsReadWriteContext &context ) const
 {
-  return { QgsMapLayerType::VectorLayer };
+  QString src = uri;
+  QStringList theURIParts = src.split( '?' );
+  theURIParts[0] = context.pathResolver().writePath( theURIParts[0] );
+  src = theURIParts.join( QLatin1Char( '?' ) );
+  return src;
+}
+
+QString QgsGpxProviderMetadata::relativeToAbsoluteUri( const QString &uri, const QgsReadWriteContext &context ) const
+{
+  QString src = uri;
+  QStringList theURIParts = src.split( '?' );
+  theURIParts[0] = context.pathResolver().readPath( theURIParts[0] );
+  src = theURIParts.join( QLatin1Char( '?' ) );
+  return src;
+}
+
+QList<Qgis::LayerType> QgsGpxProviderMetadata::supportedLayerTypes() const
+{
+  return { Qgis::LayerType::Vector };
 }

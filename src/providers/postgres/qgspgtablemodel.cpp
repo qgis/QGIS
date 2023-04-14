@@ -86,23 +86,23 @@ void QgsPgTableModel::addTableEntry( const QgsPostgresLayerProperty &layerProper
 
   for ( int i = 0; i < layerProperty.size(); i++ )
   {
-    QgsWkbTypes::Type wkbType = layerProperty.types[ i ];
+    Qgis::WkbType wkbType = layerProperty.types[ i ];
     const int srid = layerProperty.srids[ i ];
 
-    if ( wkbType == QgsWkbTypes::Unknown && layerProperty.geometryColName.isEmpty() )
+    if ( wkbType == Qgis::WkbType::Unknown && layerProperty.geometryColName.isEmpty() )
     {
-      wkbType = QgsWkbTypes::NoGeometry;
+      wkbType = Qgis::WkbType::NoGeometry;
     }
 
     QString tip;
     bool withTipButSelectable = false;
     if ( ! layerProperty.isRaster )
     {
-      if ( wkbType == QgsWkbTypes::Unknown )
+      if ( wkbType == Qgis::WkbType::Unknown )
       {
         tip = tr( "Specify a geometry type in the '%1' column" ).arg( tr( "Data Type" ) );
       }
-      else if ( wkbType != QgsWkbTypes::NoGeometry && srid == std::numeric_limits<int>::min() )
+      else if ( wkbType != Qgis::WkbType::NoGeometry && srid == std::numeric_limits<int>::min() )
       {
         tip = tr( "Enter a SRID into the '%1' column" ).arg( tr( "SRID" ) );
       }
@@ -121,12 +121,12 @@ void QgsPgTableModel::addTableEntry( const QgsPostgresLayerProperty &layerProper
     }
     else
     {
-      typeItem = new QStandardItem( QgsIconUtils::iconForWkbType( wkbType ), wkbType == QgsWkbTypes::Unknown ? tr( "Select…" ) : QgsPostgresConn::displayStringForWkbType( wkbType ) );
+      typeItem = new QStandardItem( QgsIconUtils::iconForWkbType( wkbType ), wkbType == Qgis::WkbType::Unknown ? tr( "Select…" ) : QgsPostgresConn::displayStringForWkbType( wkbType ) );
     }
-    typeItem->setData( wkbType == QgsWkbTypes::Unknown, Qt::UserRole + 1 );
-    typeItem->setData( wkbType, Qt::UserRole + 2 );
+    typeItem->setData( wkbType == Qgis::WkbType::Unknown, Qt::UserRole + 1 );
+    typeItem->setData( static_cast< quint32>( wkbType ), Qt::UserRole + 2 );
     typeItem->setData( layerProperty.isRaster, Qt::UserRole + 3 );
-    if ( wkbType == QgsWkbTypes::Unknown )
+    if ( wkbType == Qgis::WkbType::Unknown )
       typeItem->setFlags( typeItem->flags() | Qt::ItemIsEditable );
 
     QStandardItem *geomTypeItem = new QStandardItem( QgsPostgresConn::displayStringForGeomType( layerProperty.geometryColType ) );
@@ -143,8 +143,8 @@ void QgsPgTableModel::addTableEntry( const QgsPostgresLayerProperty &layerProper
       commentItem->setTextAlignment( Qt::AlignTop );
     }
     QStandardItem *geomItem  = new QStandardItem( layerProperty.geometryColName );
-    QStandardItem *sridItem  = new QStandardItem( wkbType != QgsWkbTypes::NoGeometry ? QString::number( srid ) : QString() );
-    sridItem->setEditable( wkbType != QgsWkbTypes::NoGeometry && srid == std::numeric_limits<int>::min() );
+    QStandardItem *sridItem  = new QStandardItem( wkbType != Qgis::WkbType::NoGeometry ? QString::number( srid ) : QString() );
+    sridItem->setEditable( wkbType != Qgis::WkbType::NoGeometry && srid == std::numeric_limits<int>::min() );
     if ( sridItem->isEditable() )
     {
       sridItem->setText( tr( "Enter…" ) );
@@ -187,16 +187,27 @@ void QgsPgTableModel::addTableEntry( const QgsPostgresLayerProperty &layerProper
     // Legacy: default value is determined by project option to trust layer's metadata
     // TODO: remove this default from QGIS 4 and leave default value to false?
     // checkPkUnicity has only effect on views and materialized views, so we can safely disable it
-    if ( layerProperty.isView || layerProperty.isMaterializedView )
+    switch ( layerProperty.relKind )
     {
-      checkPkUnicityItem->setCheckState( ( QgsProject::instance( )->flags() & Qgis::ProjectFlag::TrustStoredLayerStatistics ) ? Qt::CheckState::Unchecked : Qt::CheckState::Checked );
-      checkPkUnicityItem->setToolTip( headerData( Columns::DbtmCheckPkUnicity, Qt::Orientation::Horizontal, Qt::ToolTipRole ).toString() );
-    }
-    else
-    {
-      checkPkUnicityItem->setCheckState( Qt::CheckState::Unchecked );
-      checkPkUnicityItem->setFlags( checkPkUnicityItem->flags() & ~ Qt::ItemIsEnabled );
-      checkPkUnicityItem->setToolTip( tr( "This option is only available for views and materialized views." ) );
+      case Qgis::PostgresRelKind::View:
+      case Qgis::PostgresRelKind::MaterializedView:
+        checkPkUnicityItem->setCheckState( ( QgsProject::instance( )->flags() & Qgis::ProjectFlag::TrustStoredLayerStatistics ) ? Qt::CheckState::Unchecked : Qt::CheckState::Checked );
+        checkPkUnicityItem->setToolTip( headerData( Columns::DbtmCheckPkUnicity, Qt::Orientation::Horizontal, Qt::ToolTipRole ).toString() );
+        break;
+
+      case Qgis::PostgresRelKind::NotSet:
+      case Qgis::PostgresRelKind::Unknown:
+      case Qgis::PostgresRelKind::OrdinaryTable:
+      case Qgis::PostgresRelKind::Index:
+      case Qgis::PostgresRelKind::Sequence:
+      case Qgis::PostgresRelKind::CompositeType:
+      case Qgis::PostgresRelKind::ToastTable:
+      case Qgis::PostgresRelKind::ForeignTable:
+      case Qgis::PostgresRelKind::PartitionedTable:
+        checkPkUnicityItem->setCheckState( Qt::CheckState::Unchecked );
+        checkPkUnicityItem->setFlags( checkPkUnicityItem->flags() & ~ Qt::ItemIsEnabled );
+        checkPkUnicityItem->setToolTip( tr( "This option is only available for views and materialized views." ) );
+        break;
     }
 
     QStandardItem *sqlItem = new QStandardItem( layerProperty.sql );
@@ -351,14 +362,14 @@ bool QgsPgTableModel::setData( const QModelIndex &idx, const QVariant &value, in
 
   if ( idx.column() == DbtmType || idx.column() == DbtmSrid || idx.column() == DbtmPkCol )
   {
-    const QgsWkbTypes::Type wkbType = static_cast< QgsWkbTypes::Type >( idx.sibling( idx.row(), DbtmType ).data( Qt::UserRole + 2 ).toInt() );
+    const Qgis::WkbType wkbType = static_cast< Qgis::WkbType >( idx.sibling( idx.row(), DbtmType ).data( Qt::UserRole + 2 ).toInt() );
 
     QString tip;
-    if ( wkbType == QgsWkbTypes::Unknown )
+    if ( wkbType == Qgis::WkbType::Unknown )
     {
       tip = tr( "Specify a geometry type in the '%1' column" ).arg( tr( "Data Type" ) );
     }
-    else if ( wkbType != QgsWkbTypes::NoGeometry )
+    else if ( wkbType != Qgis::WkbType::NoGeometry )
     {
       bool ok;
       const int srid = idx.sibling( idx.row(), DbtmSrid ).data().toInt( &ok );
@@ -417,8 +428,8 @@ QString QgsPgTableModel::layerURI( const QModelIndex &index, const QString &conn
   }
 
   const bool isRaster = itemFromIndex( index.sibling( index.row(), DbtmType ) )->data( Qt::UserRole + 3 ).toBool();
-  const QgsWkbTypes::Type wkbType = static_cast<QgsWkbTypes::Type>( itemFromIndex( index.sibling( index.row(), DbtmType ) )->data( Qt::UserRole + 2 ).toInt() );
-  if ( wkbType == QgsWkbTypes::Unknown )
+  const Qgis::WkbType wkbType = static_cast<Qgis::WkbType>( itemFromIndex( index.sibling( index.row(), DbtmType ) )->data( Qt::UserRole + 2 ).toInt() );
+  if ( wkbType == Qgis::WkbType::Unknown )
   {
     if ( isRaster )
     {
@@ -470,7 +481,7 @@ QString QgsPgTableModel::layerURI( const QModelIndex &index, const QString &conn
 
   QString geomColumnName;
   QString srid;
-  if ( wkbType != QgsWkbTypes::NoGeometry )
+  if ( wkbType != Qgis::WkbType::NoGeometry )
   {
     geomColumnName = index.sibling( index.row(), DbtmGeomCol ).data( Qt::DisplayRole ).toString();
 

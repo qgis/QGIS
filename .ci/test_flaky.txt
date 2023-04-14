@@ -2,6 +2,8 @@
 test_gui_filedownloader
 test_provider_wcsprovider
 PyQgsWFSProviderGUI
+# See https://github.com/qgis/QGIS/issues/48927
+test_core_tiledownloadmanage
 
 # Flaky, the ms odbc driver crashes a lot on the ubuntu docker image. Retest when
 # the docker base image is upgraded

@@ -74,7 +74,7 @@ class PointXYKDBush : public kdbush::KDBush< std::pair<double, double>, QgsSpati
         if ( !f.hasGeometry() )
           continue;
 
-        if ( QgsWkbTypes::flatType( f.geometry().wkbType() ) == QgsWkbTypes::Point )
+        if ( QgsWkbTypes::flatType( f.geometry().wkbType() ) == Qgis::WkbType::Point )
         {
           const QgsPoint *point = qgsgeometry_cast< const QgsPoint * >( f.geometry().constGet() );
           points.emplace_back( QgsSpatialIndexKDBushData( f.id(), point->x(), point->y() ) );

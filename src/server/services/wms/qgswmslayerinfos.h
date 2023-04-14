@@ -91,7 +91,7 @@ class QgsWmsLayerInfos
     QList<QgsMapLayerServerProperties::MetadataUrl> metadataUrls;
 
     //! QGIS layer type
-    QgsMapLayerType type;
+    Qgis::LayerType type;
 
   public:
 

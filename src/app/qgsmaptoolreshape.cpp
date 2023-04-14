@@ -93,7 +93,7 @@ bool QgsMapToolReshape::supportsTechnique( Qgis::CaptureTechnique technique ) co
 
 bool QgsMapToolReshape::isBindingLine( QgsVectorLayer *vlayer, const QgsRectangle &bbox ) const
 {
-  if ( vlayer->geometryType() != QgsWkbTypes::LineGeometry )
+  if ( vlayer->geometryType() != Qgis::GeometryType::Line )
     return false;
 
   bool begin = false;
@@ -176,7 +176,7 @@ void QgsMapToolReshape::reshape( QgsVectorLayer *vlayer )
       if ( reshapeReturn == Qgis::GeometryOperationResult::Success )
       {
         //avoid intersections on polygon layers
-        if ( vlayer->geometryType() == QgsWkbTypes::PolygonGeometry )
+        if ( vlayer->geometryType() == Qgis::GeometryType::Polygon )
         {
           //ignore all current layer features as they should be reshaped too
           QHash<QgsVectorLayer *, QSet<QgsFeatureId> > ignoreFeatures;

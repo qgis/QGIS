@@ -51,7 +51,7 @@ Constructor
 :param mapUnitsPerPixel: Map units per pixel
 %End
 
-    static QgsMapToPixel fromScale( double scale, QgsUnitTypes::DistanceUnit mapUnits, double dpi = 96 );
+    static QgsMapToPixel fromScale( double scale, Qgis::DistanceUnit mapUnits, double dpi = 96 );
 %Docstring
 Returns a new QgsMapToPixel created using a specified ``scale`` and distance unit.
 

@@ -52,7 +52,7 @@ class QgsRandomPointsInPolygonsAlgorithm : public QgsProcessingAlgorithm
                                   QgsProcessingFeedback *feedback ) override;
 
   private:
-    int mNumPoints;
+    int mNumPoints = 0;
     bool mDynamicNumPoints = false;
     QgsProperty mNumPointsProperty;
 

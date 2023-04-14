@@ -259,7 +259,7 @@ otherwise :py:func:`QgsPoint.project()` will be called after :py:func:`QgsUnitTy
 .. versionadded:: 3.0
 %End
 
-    QgsUnitTypes::DistanceUnit lengthUnits() const;
+    Qgis::DistanceUnit lengthUnits() const;
 %Docstring
 Returns the units of distance for length calculations made by this object.
 
@@ -268,7 +268,7 @@ Returns the units of distance for length calculations made by this object.
 .. versionadded:: 2.14
 %End
 
-    QgsUnitTypes::AreaUnit areaUnits() const;
+    Qgis::AreaUnit areaUnits() const;
 %Docstring
 Returns the units of area for areal calculations made by this object.
 
@@ -289,7 +289,7 @@ Computes the bearing (in radians) between two points.
 :raises QgsCsException: on invalid input coordinates
 %End
 
-    static QString formatDistance( double distance, int decimals, QgsUnitTypes::DistanceUnit unit, bool keepBaseUnit = false );
+    static QString formatDistance( double distance, int decimals, Qgis::DistanceUnit unit, bool keepBaseUnit = false );
 %Docstring
 Returns an distance formatted as a friendly string.
 
@@ -306,7 +306,7 @@ Returns an distance formatted as a friendly string.
 .. versionadded:: 2.16
 %End
 
-    static QString formatArea( double area, int decimals, QgsUnitTypes::AreaUnit unit, bool keepBaseUnit = false );
+    static QString formatArea( double area, int decimals, Qgis::AreaUnit unit, bool keepBaseUnit = false );
 %Docstring
 Returns an area formatted as a friendly string.
 
@@ -323,7 +323,7 @@ Returns an area formatted as a friendly string.
 .. versionadded:: 2.14
 %End
 
-    double convertLengthMeasurement( double length, QgsUnitTypes::DistanceUnit toUnits ) const;
+    double convertLengthMeasurement( double length, Qgis::DistanceUnit toUnits ) const;
 %Docstring
 Takes a length measurement calculated by this QgsDistanceArea object and converts it to a
 different distance unit.
@@ -339,7 +339,7 @@ different distance unit.
 .. versionadded:: 2.14
 %End
 
-    double convertAreaMeasurement( double area, QgsUnitTypes::AreaUnit toUnits ) const;
+    double convertAreaMeasurement( double area, Qgis::AreaUnit toUnits ) const;
 %Docstring
 Takes an area measurement calculated by this QgsDistanceArea object and converts it to a
 different areal unit.

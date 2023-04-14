@@ -38,7 +38,7 @@ add_qgis_test(testqgswmsprovider.cpp MODULE provider LINKEDLIBRARIES provider_wm
 
 if (POSTGRES_FOUND)
   add_qgis_test(testqgspostgresexpressioncompiler.cpp MODULE provider LINKEDLIBRARIES provider_postgres_a qgis_core)
-  add_qgis_test(testqgspostgresprovider.cpp MODULE provider LINKEDLIBRARIES provider_postgres_a qgis_core)
+  add_qgis_test(testqgspostgresprovider.cpp MODULE provider LINKEDLIBRARIES provider_postgres_a qgis_core LABELS "POSTGRES")
   add_qgis_test(testqgspostgresconn.cpp MODULE provider LINKEDLIBRARIES provider_postgres_a qgis_core LABELS "POSTGRES")
 endif()
 
@@ -62,6 +62,7 @@ endif()
 
 if (WITH_COPC)
   add_qgis_test(testqgscopcprovider.cpp MODULE provider LINKEDLIBRARIES qgis_core)
+  add_qgis_test(testqgsvirtualpointcloudprovider.cpp MODULE provider LINKEDLIBRARIES qgis_core)
 endif()
 
 if (WITH_PDAL)

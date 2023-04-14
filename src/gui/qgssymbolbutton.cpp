@@ -149,13 +149,13 @@ void QgsSymbolButton::showSettingsDialog()
     switch ( mType )
     {
       case Qgis::SymbolType::Marker:
-        newSymbol = QgsSymbol::defaultSymbol( QgsWkbTypes::PointGeometry );
+        newSymbol = QgsSymbol::defaultSymbol( Qgis::GeometryType::Point );
         break;
       case Qgis::SymbolType::Line:
-        newSymbol = QgsSymbol::defaultSymbol( QgsWkbTypes::LineGeometry );
+        newSymbol = QgsSymbol::defaultSymbol( Qgis::GeometryType::Line );
         break;
       case Qgis::SymbolType::Fill:
-        newSymbol = QgsSymbol::defaultSymbol( QgsWkbTypes::PolygonGeometry );
+        newSymbol = QgsSymbol::defaultSymbol( Qgis::GeometryType::Polygon );
         break;
       case Qgis::SymbolType::Hybrid:
         break;

@@ -63,7 +63,7 @@ class GUI_EXPORT QgsLabelSettingsWidgetBase : public QgsPanelWidget, protected Q
     /**
      * Sets the geometry \a type of the features to customize the widget accordingly.
      */
-    virtual void setGeometryType( QgsWkbTypes::GeometryType type );
+    virtual void setGeometryType( Qgis::GeometryType type );
 
     /**
      * Returns the current data defined properties state as specified in the widget.

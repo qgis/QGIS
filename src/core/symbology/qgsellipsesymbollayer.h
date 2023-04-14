@@ -191,14 +191,14 @@ class CORE_EXPORT QgsEllipseSymbolLayer: public QgsMarkerSymbolLayer
      * \see symbolWidthUnit()
      * \see setSymbolHeightUnit()
     */
-    void setSymbolWidthUnit( QgsUnitTypes::RenderUnit unit ) { mSymbolWidthUnit = unit; }
+    void setSymbolWidthUnit( Qgis::RenderUnit unit ) { mSymbolWidthUnit = unit; }
 
     /**
      * Returns the units for the symbol's width.
      * \see setSymbolWidthUnit()
      * \see symbolHeightUnit()
     */
-    QgsUnitTypes::RenderUnit symbolWidthUnit() const { return mSymbolWidthUnit; }
+    Qgis::RenderUnit symbolWidthUnit() const { return mSymbolWidthUnit; }
 
     void setSymbolWidthMapUnitScale( const QgsMapUnitScale &scale ) { mSymbolWidthMapUnitScale = scale; }
     const QgsMapUnitScale &symbolWidthMapUnitScale() const { return mSymbolWidthMapUnitScale; }
@@ -209,14 +209,14 @@ class CORE_EXPORT QgsEllipseSymbolLayer: public QgsMarkerSymbolLayer
      * \see symbolHeightUnit()
      * \see setSymbolWidthUnit()
     */
-    void setSymbolHeightUnit( QgsUnitTypes::RenderUnit unit ) { mSymbolHeightUnit = unit; }
+    void setSymbolHeightUnit( Qgis::RenderUnit unit ) { mSymbolHeightUnit = unit; }
 
     /**
      * Returns the units for the symbol's height.
      * \see setSymbolHeightUnit()
      * \see symbolWidthUnit()
     */
-    QgsUnitTypes::RenderUnit symbolHeightUnit() const { return mSymbolHeightUnit; }
+    Qgis::RenderUnit symbolHeightUnit() const { return mSymbolHeightUnit; }
 
     void setSymbolHeightMapUnitScale( const QgsMapUnitScale &scale ) { mSymbolHeightMapUnitScale = scale; }
     const QgsMapUnitScale &symbolHeightMapUnitScale() const { return mSymbolHeightMapUnitScale; }
@@ -226,19 +226,19 @@ class CORE_EXPORT QgsEllipseSymbolLayer: public QgsMarkerSymbolLayer
      * \param unit symbol units
      * \see strokeWidthUnit()
     */
-    void setStrokeWidthUnit( QgsUnitTypes::RenderUnit unit ) { mStrokeWidthUnit = unit; }
+    void setStrokeWidthUnit( Qgis::RenderUnit unit ) { mStrokeWidthUnit = unit; }
 
     /**
      * Returns the units for the symbol's stroke width.
      * \see setStrokeWidthUnit()
     */
-    QgsUnitTypes::RenderUnit strokeWidthUnit() const { return mStrokeWidthUnit; }
+    Qgis::RenderUnit strokeWidthUnit() const { return mStrokeWidthUnit; }
 
     void setStrokeWidthMapUnitScale( const QgsMapUnitScale &scale ) { mStrokeWidthMapUnitScale = scale; }
     const QgsMapUnitScale &strokeWidthMapUnitScale() const { return mStrokeWidthMapUnitScale; }
 
-    void setOutputUnit( QgsUnitTypes::RenderUnit unit ) override;
-    QgsUnitTypes::RenderUnit outputUnit() const override;
+    void setOutputUnit( Qgis::RenderUnit unit ) override;
+    Qgis::RenderUnit outputUnit() const override;
     bool usesMapUnits() const override;
 
     void setMapUnitScale( const QgsMapUnitScale &scale ) override;
@@ -249,17 +249,17 @@ class CORE_EXPORT QgsEllipseSymbolLayer: public QgsMarkerSymbolLayer
   private:
     Shape mShape = Circle;
     double mSymbolWidth = 4;
-    QgsUnitTypes::RenderUnit mSymbolWidthUnit = QgsUnitTypes::RenderMillimeters;
+    Qgis::RenderUnit mSymbolWidthUnit = Qgis::RenderUnit::Millimeters;
     QgsMapUnitScale mSymbolWidthMapUnitScale;
     double mSymbolHeight = 3;
-    QgsUnitTypes::RenderUnit mSymbolHeightUnit = QgsUnitTypes::RenderMillimeters;
+    Qgis::RenderUnit mSymbolHeightUnit = Qgis::RenderUnit::Millimeters;
     QgsMapUnitScale mSymbolHeightMapUnitScale;
     QColor mStrokeColor;
     Qt::PenStyle mStrokeStyle = Qt::SolidLine;
     Qt::PenJoinStyle mPenJoinStyle = DEFAULT_ELLIPSE_JOINSTYLE;
     Qt::PenCapStyle mPenCapStyle = Qt::SquareCap;
     double mStrokeWidth = 0;
-    QgsUnitTypes::RenderUnit mStrokeWidthUnit = QgsUnitTypes::RenderMillimeters;
+    Qgis::RenderUnit mStrokeWidthUnit = Qgis::RenderUnit::Millimeters;
     QgsMapUnitScale mStrokeWidthMapUnitScale;
 
     QPainterPath mPainterPath;

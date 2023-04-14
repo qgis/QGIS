@@ -291,7 +291,13 @@ bool QgsStyle::renameEntity( QgsStyle::StyleEntity type, const QString &oldName,
 QgsSymbol *QgsStyle::symbol( const QString &name )
 {
   const QgsSymbol *symbol = symbolRef( name );
-  return symbol ? symbol->clone() : nullptr;
+  if ( !symbol )
+    return nullptr;
+
+  QgsSymbol *newSymbol = symbol->clone();
+  QgsSymbolLayerUtils::resetSymbolLayerIds( newSymbol );
+
+  return newSymbol;
 }
 
 const QgsSymbol *QgsStyle::symbolRef( const QString &name ) const
@@ -2170,18 +2176,18 @@ int QgsStyle::symbol3DCount() const
   return m3dSymbols.count();
 }
 
-QList<QgsWkbTypes::GeometryType> QgsStyle::symbol3DCompatibleGeometryTypes( const QString &name ) const
+QList<Qgis::GeometryType> QgsStyle::symbol3DCompatibleGeometryTypes( const QString &name ) const
 {
   if ( !m3dSymbols.contains( name ) )
-    return QList<QgsWkbTypes::GeometryType>();
+    return QList<Qgis::GeometryType>();
 
   return m3dSymbols.value( name )->compatibleGeometryTypes();
 }
 
-QgsWkbTypes::GeometryType QgsStyle::labelSettingsLayerType( const QString &name ) const
+Qgis::GeometryType QgsStyle::labelSettingsLayerType( const QString &name ) const
 {
   if ( !mLabelSettings.contains( name ) )
-    return QgsWkbTypes::UnknownGeometry;
+    return Qgis::GeometryType::Unknown;
 
   return mLabelSettings.value( name ).layerType;
 }

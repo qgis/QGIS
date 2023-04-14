@@ -96,7 +96,7 @@ Sets the dialog ``page`` (by object name) to show.
 .. versionadded:: 3.14
 %End
 
-    void addPage( const QString &title, const QString &tooltip, const QIcon &icon, QWidget *widget /Transfer/, const QStringList &path = QStringList() );
+    void addPage( const QString &title, const QString &tooltip, const QIcon &icon, QWidget *widget /Transfer/, const QStringList &path = QStringList(), const QString &key = QString() );
 %Docstring
 Adds a new page to the dialog pages.
 
@@ -107,12 +107,15 @@ The page content is specified via the ``widget`` argument. Ownership of ``widget
 Since QGIS 3.22, the optional ``path`` argument can be used to set the path of the item's entry in the tree view
 (for dialogs which show a tree view of options pages only).
 
+Since QGIS 3.32, the optional ``key`` argument can be used to set an untranslated key that ``path`` can refer to
+in following calls. Default to ``title``.
+
 .. seealso:: :py:func:`insertPage`
 
 .. versionadded:: 3.14
 %End
 
-    void insertPage( const QString &title, const QString &tooltip, const QIcon &icon, QWidget *widget /Transfer/, const QString &before, const QStringList &path = QStringList() );
+    void insertPage( const QString &title, const QString &tooltip, const QIcon &icon, QWidget *widget /Transfer/, const QString &before, const QStringList &path = QStringList(), const QString &key = QString() );
 %Docstring
 Inserts a new page into the dialog pages.
 
@@ -125,6 +128,9 @@ before the matching page.
 
 Since QGIS 3.22, the optional ``path`` argument can be used to set the path of the item's entry in the tree view
 (for dialogs which show a tree view of options pages only).
+
+Since QGIS 3.32, the optional ``key`` argument can be used to set an untranslated key that ``path`` can refer to
+in following calls. Default to ``title``.
 
 .. seealso:: :py:func:`addPage`
 

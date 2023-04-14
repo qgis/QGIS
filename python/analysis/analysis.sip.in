@@ -9,4 +9,6 @@ ${DEFAULTDOCSTRINGSIGNATURE}
 
 %Import core/core.sip
 
+%Feature HAVE_PDAL_PROVIDER
+
 %Include analysis_auto.sip

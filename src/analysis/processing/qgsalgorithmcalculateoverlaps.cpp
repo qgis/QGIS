@@ -19,6 +19,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsgeometryengine.h"
 #include "qgsdistancearea.h"
+#include "qgsspatialindex.h"
 
 ///@cond PRIVATE
 

@@ -48,7 +48,7 @@ class QgsVirtualLayerProvider final: public QgsVectorDataProvider
     QString storageType() const override;
     QgsCoordinateReferenceSystem crs() const override;
     QgsFeatureIterator getFeatures( const QgsFeatureRequest &request ) const override;
-    QgsWkbTypes::Type wkbType() const override;
+    Qgis::WkbType wkbType() const override;
     long long featureCount() const override;
     QgsRectangle extent() const override;
     QString subsetString() const override;
@@ -140,7 +140,9 @@ class QgsVirtualLayerProviderMetadata final: public QgsProviderMetadata
     QgsVirtualLayerProviderMetadata();
     QIcon icon() const override;
     QgsVirtualLayerProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() ) override;
-    QList< QgsMapLayerType > supportedLayerTypes() const override;
+    QString absoluteToRelativeUri( const QString &uri, const QgsReadWriteContext &context ) const override;
+    QString relativeToAbsoluteUri( const QString &uri, const QgsReadWriteContext &context ) const override;
+    QList< Qgis::LayerType > supportedLayerTypes() const override;
 };
 
 // clazy:excludeall=qstring-allocations

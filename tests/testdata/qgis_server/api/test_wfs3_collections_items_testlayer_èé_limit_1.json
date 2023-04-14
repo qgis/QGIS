@@ -33,10 +33,21 @@ Content-Type: application/geo+json
       "type": "text/html"
     },
     {
-      "href": "http://server.qgis.org/wfs3/collections/testlayer èé/items?&offset=1&limit=1",
-      "name": "Next page",
+      "href": "http://server.qgis.org/wfs3/collections/testlayer èé/items?offset=1&limit=1",
       "rel": "next",
-      "title": "Retrieve the features of the collection as GEOJSON",
+      "title": "Next page",
+      "type": "application/geo+json"
+    },
+    {
+      "href": "http://server.qgis.org/wfs3/collections/testlayer èé/items?offset=0&limit=1",
+      "rel": "first",
+      "title": "First page",
+      "type": "application/geo+json"
+    },
+    {
+      "href": "http://server.qgis.org/wfs3/collections/testlayer èé/items?offset=2&limit=1",
+      "rel": "last",
+      "title": "Last page",
       "type": "application/geo+json"
     }
   ],

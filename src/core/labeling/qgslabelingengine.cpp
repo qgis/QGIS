@@ -266,8 +266,8 @@ void QgsLabelingEngine::registerLabels( QgsRenderContext &context )
 
   mPal = std::make_unique< pal::Pal >();
 
-  mPal->setMaximumLineCandidatesPerMapUnit( settings.maximumLineCandidatesPerCm() / context.convertToMapUnits( 10, QgsUnitTypes::RenderMillimeters ) );
-  mPal->setMaximumPolygonCandidatesPerMapUnitSquared( settings.maximumPolygonCandidatesPerCmSquared() / std::pow( context.convertToMapUnits( 10, QgsUnitTypes::RenderMillimeters ), 2 ) );
+  mPal->setMaximumLineCandidatesPerMapUnit( settings.maximumLineCandidatesPerCm() / context.convertToMapUnits( 10, Qgis::RenderUnit::Millimeters ) );
+  mPal->setMaximumPolygonCandidatesPerMapUnitSquared( settings.maximumPolygonCandidatesPerCmSquared() / std::pow( context.convertToMapUnits( 10, Qgis::RenderUnit::Millimeters ), 2 ) );
 
   mPal->setShowPartialLabels( settings.testFlag( Qgis::LabelingFlag::UsePartialCandidates ) );
   mPal->setPlacementVersion( settings.placementVersion() );
@@ -768,38 +768,38 @@ QVector<Qgis::LabelPredefinedPointPosition> QgsLabelingUtils::decodePredefinedPo
   return result;
 }
 
-QString QgsLabelingUtils::encodeLinePlacementFlags( QgsLabeling::LinePlacementFlags flags )
+QString QgsLabelingUtils::encodeLinePlacementFlags( Qgis::LabelLinePlacementFlags flags )
 {
   QStringList parts;
-  if ( flags & QgsLabeling::LinePlacementFlag::OnLine )
+  if ( flags & Qgis::LabelLinePlacementFlag::OnLine )
     parts << QStringLiteral( "OL" );
-  if ( flags & QgsLabeling::LinePlacementFlag::AboveLine )
+  if ( flags & Qgis::LabelLinePlacementFlag::AboveLine )
     parts << QStringLiteral( "AL" );
-  if ( flags & QgsLabeling::LinePlacementFlag::BelowLine )
+  if ( flags & Qgis::LabelLinePlacementFlag::BelowLine )
     parts << QStringLiteral( "BL" );
-  if ( !( flags & QgsLabeling::LinePlacementFlag::MapOrientation ) )
+  if ( !( flags & Qgis::LabelLinePlacementFlag::MapOrientation ) )
     parts << QStringLiteral( "LO" );
   return parts.join( ',' );
 }
 
-QgsLabeling::LinePlacementFlags QgsLabelingUtils::decodeLinePlacementFlags( const QString &string )
+Qgis::LabelLinePlacementFlags QgsLabelingUtils::decodeLinePlacementFlags( const QString &string )
 {
-  QgsLabeling::LinePlacementFlags flags = QgsLabeling::LinePlacementFlags();
+  Qgis::LabelLinePlacementFlags flags = Qgis::LabelLinePlacementFlags();
   const QStringList flagList = string.split( ',' );
   bool foundLineOrientationFlag = false;
   for ( const QString &flag : flagList )
   {
     QString cleaned = flag.trimmed().toUpper();
     if ( cleaned == QLatin1String( "OL" ) )
-      flags |= QgsLabeling::LinePlacementFlag::OnLine;
+      flags |= Qgis::LabelLinePlacementFlag::OnLine;
     else if ( cleaned == QLatin1String( "AL" ) )
-      flags |= QgsLabeling::LinePlacementFlag::AboveLine;
+      flags |= Qgis::LabelLinePlacementFlag::AboveLine;
     else if ( cleaned == QLatin1String( "BL" ) )
-      flags |= QgsLabeling::LinePlacementFlag::BelowLine;
+      flags |= Qgis::LabelLinePlacementFlag::BelowLine;
     else if ( cleaned == QLatin1String( "LO" ) )
       foundLineOrientationFlag = true;
   }
   if ( !foundLineOrientationFlag )
-    flags |= QgsLabeling::LinePlacementFlag::MapOrientation;
+    flags |= Qgis::LabelLinePlacementFlag::MapOrientation;
   return flags;
 }

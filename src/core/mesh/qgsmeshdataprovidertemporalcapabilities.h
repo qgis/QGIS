@@ -21,6 +21,7 @@
 #include "qgsdataprovidertemporalcapabilities.h"
 #include "qgsrange.h"
 #include "qgsmeshdataset.h"
+#include "qgis.h"
 
 #define  INVALID_MESHLAYER_TIME -99999
 
@@ -117,12 +118,12 @@ class CORE_EXPORT QgsMeshDataProviderTemporalCapabilities: public QgsDataProvide
      *
      * Temporal units supported are milliseconds, seconds, minutes, hors, days and weeks
      */
-    void setTemporalUnit( QgsUnitTypes::TemporalUnit temporalUnit );
+    void setTemporalUnit( Qgis::TemporalUnit temporalUnit );
 
     /**
      * Returns the temporal unit used to read data by the data provider
      */
-    QgsUnitTypes::TemporalUnit temporalUnit() const;
+    Qgis::TemporalUnit temporalUnit() const;
 
     /**
     * Returns the relative time in milliseconds of the dataset
@@ -157,7 +158,7 @@ class CORE_EXPORT QgsMeshDataProviderTemporalCapabilities: public QgsDataProvide
      */
     QHash<int, QList<qint64>> mDatasetTimeSinceGroupReference;
 
-    QgsUnitTypes::TemporalUnit mTemporalUnit = QgsUnitTypes::TemporalHours;
+    Qgis::TemporalUnit mTemporalUnit = Qgis::TemporalUnit::Hours;
 };
 
 #endif // QGSMESHDATAPROVIDERTEMPORALCAPABILITIES_H

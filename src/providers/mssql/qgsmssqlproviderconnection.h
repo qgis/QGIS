@@ -59,7 +59,7 @@ class QgsMssqlProviderConnection : public QgsAbstractDatabaseProviderConnection
     void createVectorTable( const QString &schema,
                             const QString &name,
                             const QgsFields &fields,
-                            QgsWkbTypes::Type wkbType,
+                            Qgis::WkbType wkbType,
                             const QgsCoordinateReferenceSystem &srs, bool overwrite,
                             const QMap<QString, QVariant> *options ) const override;
 

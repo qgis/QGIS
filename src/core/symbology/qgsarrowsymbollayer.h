@@ -52,16 +52,16 @@ class CORE_EXPORT QgsArrowSymbolLayer : public QgsLineSymbolLayer
     QSet<QString> usedAttributes( const QgsRenderContext &context ) const override;
     bool hasDataDefinedProperties() const override;
     bool usesMapUnits() const override;
-    void setOutputUnit( QgsUnitTypes::RenderUnit unit ) override;
+    void setOutputUnit( Qgis::RenderUnit unit ) override;
 
     //! Gets current arrow width
     double arrowWidth() const { return mArrowWidth; }
     //! Sets the arrow width
     void setArrowWidth( double width ) { mArrowWidth = width; }
     //! Gets the unit for the arrow width
-    QgsUnitTypes::RenderUnit arrowWidthUnit() const { return mArrowWidthUnit; }
+    Qgis::RenderUnit arrowWidthUnit() const { return mArrowWidthUnit; }
     //! Sets the unit for the arrow width
-    void setArrowWidthUnit( QgsUnitTypes::RenderUnit unit ) { mArrowWidthUnit = unit; }
+    void setArrowWidthUnit( Qgis::RenderUnit unit ) { mArrowWidthUnit = unit; }
     //! Gets the scale for the arrow width
     QgsMapUnitScale arrowWidthUnitScale() const { return mArrowWidthUnitScale; }
     //! Sets the scale for the arrow width
@@ -72,9 +72,9 @@ class CORE_EXPORT QgsArrowSymbolLayer : public QgsLineSymbolLayer
     //! Sets the arrow start width
     void setArrowStartWidth( double width ) { mArrowStartWidth = width; }
     //! Gets the unit for the arrow start width
-    QgsUnitTypes::RenderUnit arrowStartWidthUnit() const { return mArrowStartWidthUnit; }
+    Qgis::RenderUnit arrowStartWidthUnit() const { return mArrowStartWidthUnit; }
     //! Sets the unit for the arrow start width
-    void setArrowStartWidthUnit( QgsUnitTypes::RenderUnit unit ) { mArrowStartWidthUnit = unit; }
+    void setArrowStartWidthUnit( Qgis::RenderUnit unit ) { mArrowStartWidthUnit = unit; }
     //! Gets the scale for the arrow start width
     QgsMapUnitScale arrowStartWidthUnitScale() const { return mArrowStartWidthUnitScale; }
     //! Sets the scale for the arrow start width
@@ -85,9 +85,9 @@ class CORE_EXPORT QgsArrowSymbolLayer : public QgsLineSymbolLayer
     //! Sets the arrow head length
     void setHeadLength( double length ) { mHeadLength = length; }
     //! Gets the unit for the head length
-    QgsUnitTypes::RenderUnit headLengthUnit() const { return mHeadLengthUnit; }
+    Qgis::RenderUnit headLengthUnit() const { return mHeadLengthUnit; }
     //! Sets the unit for the head length
-    void setHeadLengthUnit( QgsUnitTypes::RenderUnit unit ) { mHeadLengthUnit = unit; }
+    void setHeadLengthUnit( Qgis::RenderUnit unit ) { mHeadLengthUnit = unit; }
     //! Gets the scale for the head length
     QgsMapUnitScale headLengthUnitScale() const { return mHeadLengthUnitScale; }
     //! Sets the scale for the head length
@@ -98,9 +98,9 @@ class CORE_EXPORT QgsArrowSymbolLayer : public QgsLineSymbolLayer
     //! Sets the arrow head height
     void setHeadThickness( double thickness ) { mHeadThickness = thickness; }
     //! Gets the unit for the head height
-    QgsUnitTypes::RenderUnit headThicknessUnit() const { return mHeadThicknessUnit; }
+    Qgis::RenderUnit headThicknessUnit() const { return mHeadThicknessUnit; }
     //! Sets the unit for the head height
-    void setHeadThicknessUnit( QgsUnitTypes::RenderUnit unit ) { mHeadThicknessUnit = unit; }
+    void setHeadThicknessUnit( Qgis::RenderUnit unit ) { mHeadThicknessUnit = unit; }
     //! Gets the scale for the head height
     QgsMapUnitScale headThicknessUnitScale() const { return mHeadThicknessUnitScale; }
     //! Sets the scale for the head height
@@ -160,18 +160,18 @@ class CORE_EXPORT QgsArrowSymbolLayer : public QgsLineSymbolLayer
     std::unique_ptr<QgsFillSymbol> mSymbol;
 
     double mArrowWidth = 1.0;
-    QgsUnitTypes::RenderUnit mArrowWidthUnit = QgsUnitTypes::RenderMillimeters;
+    Qgis::RenderUnit mArrowWidthUnit = Qgis::RenderUnit::Millimeters;
     QgsMapUnitScale mArrowWidthUnitScale;
 
     double mArrowStartWidth = 1.0;
-    QgsUnitTypes::RenderUnit mArrowStartWidthUnit = QgsUnitTypes::RenderMillimeters;
+    Qgis::RenderUnit mArrowStartWidthUnit = Qgis::RenderUnit::Millimeters;
     QgsMapUnitScale mArrowStartWidthUnitScale;
 
     double mHeadLength = 1.5;
-    QgsUnitTypes::RenderUnit mHeadLengthUnit = QgsUnitTypes::RenderMillimeters;
+    Qgis::RenderUnit mHeadLengthUnit = Qgis::RenderUnit::Millimeters;
     QgsMapUnitScale mHeadLengthUnitScale;
     double mHeadThickness = 1.5;
-    QgsUnitTypes::RenderUnit mHeadThicknessUnit = QgsUnitTypes::RenderMillimeters;
+    Qgis::RenderUnit mHeadThicknessUnit = Qgis::RenderUnit::Millimeters;
     QgsMapUnitScale mHeadThicknessUnitScale;
 
     HeadType mHeadType = HeadSingle;

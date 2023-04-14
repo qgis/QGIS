@@ -46,6 +46,7 @@
 #include "qgsinterval.h"
 #include "qgsrenderchecker.h"
 #include "qgsmultirenderchecker.h"
+#include "qgsunittypes.h"
 #include "qgis_test.h"
 
 #define QGSTEST_MAIN(TestObject) \
@@ -103,6 +104,11 @@
 #define QGSCOMPAREGML(result,expected) { \
     QCOMPARE( result.replace( QStringLiteral("ts=\" \" cs=\",\""), QStringLiteral("cs=\",\" ts=\" \"") ), expected ); \
   }(void)(0)
+
+// Start your PostgreSQL-backend connection requiring test with this macro
+#define QGSTEST_NEED_PGTEST_DB() \
+  if ( getenv( "QGIS_PGTEST_DB_SKIP" ) ) \
+    QSKIP( "Test disabled due to QGIS_PGTEST_DB_SKIP env variable being set" );
 
 /**
  * Base class for tests.

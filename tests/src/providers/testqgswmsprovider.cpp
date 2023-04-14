@@ -29,6 +29,8 @@
 #include "qgssinglebandgrayrenderer.h"
 #include "qgsrasterlayer.h"
 #include "qgshillshaderenderer.h"
+#include "qgsproviderutils.h"
+#include "qgsprovidersublayerdetails.h"
 
 /**
  * \ingroup UnitTests
@@ -100,7 +102,7 @@ class TestQgsWmsProvider: public QgsTest
       QgsWmsProvider provider( failingAddress, QgsDataProvider::ProviderOptions(), mCapabilities );
       QUrl url( provider.createRequestUrlWMS( QgsRectangle( 0, 0, 90, 90 ), 100, 100 ) );
       QCOMPARE( url.toString(), QString( "http://localhost:8380/mapserv?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap"
-                                         "&BBOX=0,0,90,90&CRS=CRS:84&WIDTH=100&HEIGHT=100&LAYERS=&"
+                                         "&BBOX=0%2C0%2C90%2C90&CRS=CRS%3A84&WIDTH=100&HEIGHT=100&LAYERS=&"
                                          "STYLES=&FORMAT=&TRANSPARENT=TRUE" ) );
     }
 
@@ -116,8 +118,8 @@ class TestQgsWmsProvider: public QgsTest
       QVERIFY( cap.parseResponse( content, config ) );
       QgsWmsProvider provider( failingAddress, QgsDataProvider::ProviderOptions(), &cap );
       QUrl url( provider.createRequestUrlWMS( QgsRectangle( 0, 0, 90, 90 ), 100, 100 ) );
-      QCOMPARE( url.toString(), QString( "http://localhost:8380/mapserv?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&BBOX=0,0,90,90&"
-                                         "CRS=EPSG:2056&WIDTH=100&HEIGHT=100&"
+      QCOMPARE( url.toString(), QString( "http://localhost:8380/mapserv?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&BBOX=0%2C0%2C90%2C90&"
+                                         "CRS=EPSG%3A2056&WIDTH=100&HEIGHT=100&"
                                          "LAYERS=plus%2Bsign&STYLES=&FORMAT=&TRANSPARENT=TRUE" ) );
     }
 
@@ -184,6 +186,111 @@ class TestQgsWmsProvider: public QgsTest
       QCOMPARE( value, 1167617.375 );
     }
 
+    void testMbtilesProviderMetadata()
+    {
+      QgsProviderMetadata *wmsMetadata = QgsProviderRegistry::instance()->providerMetadata( "wms" );
+      QVERIFY( wmsMetadata );
+
+      // not mbtile uris
+      QCOMPARE( wmsMetadata->priorityForUri( QString() ), 0 );
+      QCOMPARE( wmsMetadata->validLayerTypesForUri( QString() ), {} );
+      QVERIFY( wmsMetadata->querySublayers( QString() ).isEmpty() );
+      QVERIFY( wmsMetadata->querySublayers( QStringLiteral( "xxx" ) ).isEmpty() );
+
+      QCOMPARE( wmsMetadata->priorityForUri( QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/points.shp" ) ), 0 );
+      QVERIFY( wmsMetadata->validLayerTypesForUri( QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/points.shp" ) ).isEmpty() );
+      QVERIFY( wmsMetadata->querySublayers( QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/points.shp" ) ).isEmpty() );
+      QVERIFY( wmsMetadata->querySublayers( QStringLiteral( TEST_DATA_DIR ) ).isEmpty() );
+
+      QCOMPARE( wmsMetadata->priorityForUri( QStringLiteral( "type=mbtiles&url=%1/points.shp" ).arg( TEST_DATA_DIR ) ), 0 );
+      QVERIFY( wmsMetadata->validLayerTypesForUri( QStringLiteral( "type=mbtiles&url=%1/points.shp" ).arg( TEST_DATA_DIR ) ).isEmpty() );
+      QVERIFY( wmsMetadata->querySublayers( QStringLiteral( "type=mbtiles&url=%1/points.shp" ).arg( TEST_DATA_DIR ) ).isEmpty() );
+
+      // mbtile uris
+      QCOMPARE( wmsMetadata->priorityForUri( QStringLiteral( "%1/isle_of_man.mbtiles" ).arg( TEST_DATA_DIR ) ), 100 );
+      QCOMPARE( wmsMetadata->validLayerTypesForUri( QStringLiteral( "%1/isle_of_man.mbtiles" ).arg( TEST_DATA_DIR ) ), {Qgis::LayerType::Raster} );
+
+      QCOMPARE( wmsMetadata->priorityForUri( QStringLiteral( "type=mbtiles&url=%1/isle_of_man.mbtiles" ).arg( TEST_DATA_DIR ) ), 100 );
+      QCOMPARE( wmsMetadata->validLayerTypesForUri( QStringLiteral( "type=mbtiles&url=%1/isle_of_man.mbtiles" ).arg( TEST_DATA_DIR ) ), {Qgis::LayerType::Raster} );
+
+      // query sublayers
+      QList< QgsProviderSublayerDetails > sublayers = wmsMetadata->querySublayers( QStringLiteral( "%1/isle_of_man.mbtiles" ).arg( TEST_DATA_DIR ) );
+      QCOMPARE( sublayers.size(), 1 );
+      QCOMPARE( sublayers.at( 0 ).providerKey(), QStringLiteral( "wms" ) );
+      QCOMPARE( sublayers.at( 0 ).name(), QStringLiteral( "isle_of_man" ) );
+      QCOMPARE( sublayers.at( 0 ).uri(), QStringLiteral( "url=file://%1/isle_of_man.mbtiles&type=mbtiles" ).arg( TEST_DATA_DIR ) );
+      QCOMPARE( sublayers.at( 0 ).type(), Qgis::LayerType::Raster );
+      QVERIFY( !sublayers.at( 0 ).skippedContainerScan() );
+      QVERIFY( !QgsProviderUtils::sublayerDetailsAreIncomplete( sublayers ) );
+
+      sublayers = wmsMetadata->querySublayers( QStringLiteral( "type=mbtiles&url=file://%1/isle_of_man.mbtiles" ).arg( TEST_DATA_DIR ) );
+      QCOMPARE( sublayers.size(), 1 );
+      QCOMPARE( sublayers.at( 0 ).providerKey(), QStringLiteral( "wms" ) );
+      QCOMPARE( sublayers.at( 0 ).name(), QStringLiteral( "isle_of_man" ) );
+      QCOMPARE( sublayers.at( 0 ).uri(), QStringLiteral( "url=file://%1/isle_of_man.mbtiles&type=mbtiles" ).arg( TEST_DATA_DIR ) );
+      QCOMPARE( sublayers.at( 0 ).type(), Qgis::LayerType::Raster );
+      QVERIFY( !sublayers.at( 0 ).skippedContainerScan() );
+
+      // WMS source
+      sublayers = wmsMetadata->querySublayers( QStringLiteral( "url=http://localhost:8380/mapserv?xxx&layers=agri_zones&styles=fb_style&format=image/jpg" ) );
+      QCOMPARE( sublayers.size(), 1 );
+      QCOMPARE( sublayers.at( 0 ).providerKey(), QStringLiteral( "wms" ) );
+      QCOMPARE( sublayers.at( 0 ).uri(), QStringLiteral( "url=http://localhost:8380/mapserv?xxx&layers=agri_zones&styles=fb_style&format=image/jpg" ) );
+      QCOMPARE( sublayers.at( 0 ).type(), Qgis::LayerType::Raster );
+      QVERIFY( !sublayers.at( 0 ).skippedContainerScan() );
+
+      // fast scan flag
+      sublayers = wmsMetadata->querySublayers( QStringLiteral( "%1/isle_of_man.mbtiles" ).arg( TEST_DATA_DIR ), Qgis::SublayerQueryFlag::FastScan );
+      QCOMPARE( sublayers.size(), 1 );
+      QCOMPARE( sublayers.at( 0 ).providerKey(), QStringLiteral( "wms" ) );
+      QCOMPARE( sublayers.at( 0 ).name(), QStringLiteral( "isle_of_man" ) );
+      QCOMPARE( sublayers.at( 0 ).uri(), QStringLiteral( "url=file://%1/isle_of_man.mbtiles&type=mbtiles" ).arg( TEST_DATA_DIR ) );
+      QCOMPARE( sublayers.at( 0 ).type(), Qgis::LayerType::Raster );
+      QVERIFY( sublayers.at( 0 ).skippedContainerScan() );
+      QVERIFY( QgsProviderUtils::sublayerDetailsAreIncomplete( sublayers ) );
+
+      sublayers = wmsMetadata->querySublayers( QStringLiteral( "type=mbtiles&url=%1/isle_of_man.mbtiles" ).arg( TEST_DATA_DIR ), Qgis::SublayerQueryFlag::FastScan );
+      QCOMPARE( sublayers.size(), 1 );
+      QCOMPARE( sublayers.at( 0 ).providerKey(), QStringLiteral( "wms" ) );
+      QCOMPARE( sublayers.at( 0 ).name(), QStringLiteral( "isle_of_man" ) );
+      QCOMPARE( sublayers.at( 0 ).uri(), QStringLiteral( "url=file://%1/isle_of_man.mbtiles&type=mbtiles" ).arg( TEST_DATA_DIR ) );
+      QCOMPARE( sublayers.at( 0 ).type(), Qgis::LayerType::Raster );
+      QVERIFY( sublayers.at( 0 ).skippedContainerScan() );
+
+      // WMS source
+      sublayers = wmsMetadata->querySublayers( QStringLiteral( "url=http://localhost:8380/mapserv?xxx&layers=agri_zones&styles=fb_style&format=image/jpg" ), Qgis::SublayerQueryFlag::FastScan );
+      QCOMPARE( sublayers.size(), 1 );
+      QCOMPARE( sublayers.at( 0 ).providerKey(), QStringLiteral( "wms" ) );
+      QCOMPARE( sublayers.at( 0 ).uri(), QStringLiteral( "url=http://localhost:8380/mapserv?xxx&layers=agri_zones&styles=fb_style&format=image/jpg" ) );
+      QCOMPARE( sublayers.at( 0 ).type(), Qgis::LayerType::Raster );
+      QVERIFY( !sublayers.at( 0 ).skippedContainerScan() );
+
+      // fast scan mode means that any mbtile file will be reported, including those with only vector tiles
+      // (we are skipping a potentially expensive db open and format check)
+      sublayers = wmsMetadata->querySublayers( QStringLiteral( "%1/vector_tile/mbtiles_vt.mbtiles" ).arg( TEST_DATA_DIR ), Qgis::SublayerQueryFlag::FastScan );
+      QCOMPARE( sublayers.size(), 1 );
+      QCOMPARE( sublayers.at( 0 ).providerKey(), QStringLiteral( "wms" ) );
+      QCOMPARE( sublayers.at( 0 ).name(), QStringLiteral( "mbtiles_vt" ) );
+      QCOMPARE( sublayers.at( 0 ).uri(), QStringLiteral( "url=file://%1/vector_tile/mbtiles_vt.mbtiles&type=mbtiles" ).arg( TEST_DATA_DIR ) );
+      QCOMPARE( sublayers.at( 0 ).type(), Qgis::LayerType::Raster );
+      QVERIFY( sublayers.at( 0 ).skippedContainerScan() );
+
+      // test that wms provider is the preferred provider for raster mbtiles files
+      QList<QgsProviderRegistry::ProviderCandidateDetails> candidates = QgsProviderRegistry::instance()->preferredProvidersForUri( QStringLiteral( "type=mbtiles&url=%1/isle_of_man.mbtiles" ).arg( TEST_DATA_DIR ) );
+      QCOMPARE( candidates.size(), 2 );
+
+      int candidateIndex = candidates.at( 0 ).metadata()->key() == QLatin1String( "wms" ) ? 0 : 1;
+      QCOMPARE( candidates.at( candidateIndex ).metadata()->key(), QStringLiteral( "wms" ) );
+      QCOMPARE( candidates.at( candidateIndex ).layerTypes(), QList< Qgis::LayerType >() << Qgis::LayerType::Raster );
+
+      candidates = QgsProviderRegistry::instance()->preferredProvidersForUri( QStringLiteral( "%1/isle_of_man.mbtiles" ).arg( TEST_DATA_DIR ) );
+      // mbtiles vector tile provider also reports handling this url
+      QCOMPARE( candidates.size(), 2 );
+      candidateIndex = candidates.at( 0 ).metadata()->key() == QLatin1String( "wms" ) ? 0 : 1;
+      QCOMPARE( candidates.at( candidateIndex ).metadata()->key(), QStringLiteral( "wms" ) );
+      QCOMPARE( candidates.at( candidateIndex ).layerTypes(), QList< Qgis::LayerType >() << Qgis::LayerType::Raster );
+    }
+
     void testDpiDependentData()
     {
       QString dataDir( TEST_DATA_DIR );
@@ -245,6 +352,20 @@ class TestQgsWmsProvider: public QgsTest
 
       QString encodedUri = QgsProviderRegistry::instance()->encodeUri( QStringLiteral( "wms" ), parts );
       QCOMPARE( encodedUri, uriString );
+    }
+
+    void absoluteRelativeUri()
+    {
+      QgsReadWriteContext context;
+      context.setPathResolver( QgsPathResolver( QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/project.qgs" ) ) );
+
+      QgsProviderMetadata *wmsMetadata = QgsProviderRegistry::instance()->providerMetadata( "wms" );
+      QVERIFY( wmsMetadata );
+
+      QString absoluteUri = "type=mbtiles&url=file://" + QStringLiteral( TEST_DATA_DIR ) + "/isle_of_man.mbtiles";
+      QString relativeUri = "type=mbtiles&url=file:./isle_of_man.mbtiles";
+      QCOMPARE( wmsMetadata->absoluteToRelativeUri( absoluteUri, context ), relativeUri );
+      QCOMPARE( wmsMetadata->relativeToAbsoluteUri( relativeUri, context ), absoluteUri );
     }
 
     void testXyzIsBasemap()

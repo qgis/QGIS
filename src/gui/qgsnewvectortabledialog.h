@@ -69,7 +69,7 @@ class GUI_EXPORT QgsNewVectorTableDialog : public QDialog, private Ui_QgsNewVect
     /**
      * Sets the geometry \a type
      */
-    void setGeometryType( QgsWkbTypes::Type type );
+    void setGeometryType( Qgis::WkbType type );
 
     /**
      * Sets the CRS to \a crs
@@ -104,7 +104,7 @@ class GUI_EXPORT QgsNewVectorTableDialog : public QDialog, private Ui_QgsNewVect
     /**
      * Returns the geometry type
      */
-    QgsWkbTypes::Type geometryType() const;
+    Qgis::WkbType geometryType() const;
 
     /**
      * Sets the fields to \a fields

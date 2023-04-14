@@ -193,6 +193,8 @@ class GUI_EXPORT QgsQueryResultWidget: public QWidget, private Ui::QgsQueryResul
      */
     void updateButtons();
 
+    void showCellContextMenu( QPoint point );
+
   private:
 
     std::unique_ptr<QgsAbstractDatabaseProviderConnection> mConnection;

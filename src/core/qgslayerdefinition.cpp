@@ -18,7 +18,6 @@
 #include <QTextStream>
 
 #include "qgslayerdefinition.h"
-#include "qgslayertree.h"
 #include "qgslogger.h"
 #include "qgsmaplayer.h"
 #include "qgspathresolver.h"
@@ -33,9 +32,10 @@
 #include "qgsmaplayerfactory.h"
 #include "qgsmeshlayer.h"
 #include "qgspointcloudlayer.h"
-#include "qgsannotationlayer.h"
 #include "qgsfileutils.h"
 #include "qgsgrouplayer.h"
+#include "qgslayertreegroup.h"
+#include "qgslayertreelayer.h"
 
 bool QgsLayerDefinition::loadLayerDefinition( const QString &path, QgsProject *project, QgsLayerTreeGroup *rootGroup, QString &errorMessage )
 {
@@ -307,43 +307,43 @@ QList<QgsMapLayer *> QgsLayerDefinition::loadLayerDefinitionLayersInternal( QDom
     QgsMapLayer *layer = nullptr;
 
     bool ok = false;
-    const QgsMapLayerType layerType = QgsMapLayerFactory::typeFromString( type, ok );
+    const Qgis::LayerType layerType = QgsMapLayerFactory::typeFromString( type, ok );
     if ( ok )
     {
       switch ( layerType )
       {
-        case QgsMapLayerType::VectorLayer:
+        case Qgis::LayerType::Vector:
           layer = new QgsVectorLayer();
           break;
 
-        case QgsMapLayerType::RasterLayer:
+        case Qgis::LayerType::Raster:
           layer = new QgsRasterLayer();
           break;
 
-        case QgsMapLayerType::PluginLayer:
+        case Qgis::LayerType::Plugin:
         {
           const QString typeName = layerElem.attribute( QStringLiteral( "name" ) );
           layer = QgsApplication::pluginLayerRegistry()->createLayer( typeName );
           break;
         }
 
-        case QgsMapLayerType::MeshLayer:
+        case Qgis::LayerType::Mesh:
           layer = new QgsMeshLayer();
           break;
 
-        case QgsMapLayerType::VectorTileLayer:
+        case Qgis::LayerType::VectorTile:
           layer = new QgsVectorTileLayer;
           break;
 
-        case QgsMapLayerType::PointCloudLayer:
+        case Qgis::LayerType::PointCloud:
           layer = new QgsPointCloudLayer();
           break;
 
-        case QgsMapLayerType::GroupLayer:
+        case Qgis::LayerType::Group:
           layer = new QgsGroupLayer( QString(), QgsGroupLayer::LayerOptions( QgsCoordinateTransformContext() ) );
           break;
 
-        case QgsMapLayerType::AnnotationLayer:
+        case Qgis::LayerType::Annotation:
           break;
       }
     }

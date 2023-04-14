@@ -123,7 +123,7 @@ Check if the given path is hidden from the browser model
 Returns the monitoring setting for a directory ``path``.
 
 This method returns the monitoring setting for ``path`` only. If no explicit monitoring setting
-is in place for the path then Qgis.BrowserDirectoryMonitoring.Default is returned.
+is in place for the path then :py:class:`Qgis`.BrowserDirectoryMonitoring.Default is returned.
 
 This method does not consider the monitoring setting of parent directories.
 

@@ -284,12 +284,11 @@ QWidget *QgsFieldMappingExpressionDelegate::createEditor( QWidget *parent, const
 
   editor->setField( index.model()->data( index, Qt::DisplayRole ).toString() );
   connect( editor,
-           qOverload<const  QString &, bool >( &QgsFieldExpressionWidget::fieldChanged ),
+           qOverload<const  QString & >( &QgsFieldExpressionWidget::fieldChanged ),
            this,
-           [ = ]( const QString & fieldName, bool isValid )
+           [ = ]( const QString & fieldName )
   {
     Q_UNUSED( fieldName )
-    Q_UNUSED( isValid )
     const_cast< QgsFieldMappingExpressionDelegate *>( this )->emit commitData( editor );
   } );
   return editor;
@@ -313,7 +312,7 @@ QWidget *QgsFieldMappingTypeDelegate::createEditor( QWidget *parent, const QStyl
   const QList<QgsVectorDataProvider::NativeType> typeList = QgsFieldMappingModel::supportedDataTypes();
   for ( int i = 0; i < typeList.size(); i++ )
   {
-    editor->addItem( QgsFields::iconForFieldType( typeList[i].mType, typeList[i].mSubType ), typeList[i].mTypeDesc );
+    editor->addItem( QgsFields::iconForFieldType( typeList[i].mType, typeList[i].mSubType, typeList[i].mTypeName ), typeList[i].mTypeDesc );
     editor->setItemData( i, typeList[i].mTypeName, Qt::UserRole );
   }
 

@@ -16,7 +16,6 @@
 
 #include "qgsticksscalebarrenderer.h"
 #include "qgsscalebarsettings.h"
-#include "qgslayoututils.h"
 #include "qgssymbol.h"
 #include "qgslinesymbol.h"
 #include "qgstextrenderer.h"
@@ -99,12 +98,12 @@ void QgsTicksScaleBarRenderer::draw( QgsRenderContext &context, const QgsScaleBa
 
   QPainter *painter = context.painter();
 
-  const double scaledLabelBarSpace = context.convertToPainterUnits( settings.labelBarSpace(), QgsUnitTypes::RenderMillimeters );
-  const double scaledBoxContentSpace = context.convertToPainterUnits( settings.boxContentSpace(), QgsUnitTypes::RenderMillimeters );
+  const double scaledLabelBarSpace = context.convertToPainterUnits( settings.labelBarSpace(), Qgis::RenderUnit::Millimeters );
+  const double scaledBoxContentSpace = context.convertToPainterUnits( settings.boxContentSpace(), Qgis::RenderUnit::Millimeters );
   const QFontMetricsF fontMetrics = QgsTextRenderer::fontMetrics( context, settings.textFormat() );
   const double barTopPosition = scaledBoxContentSpace + ( settings.labelVerticalPlacement() == QgsScaleBarSettings::LabelAboveSegment ? fontMetrics.ascent() + scaledLabelBarSpace : 0 );
-  const double scaledHeight = context.convertToPainterUnits( settings.height(), QgsUnitTypes::RenderMillimeters );
-  const double scaledSubdivisionsHeight = context.convertToPainterUnits( settings.subdivisionsHeight(), QgsUnitTypes::RenderMillimeters );
+  const double scaledHeight = context.convertToPainterUnits( settings.height(), Qgis::RenderUnit::Millimeters );
+  const double scaledSubdivisionsHeight = context.convertToPainterUnits( settings.subdivisionsHeight(), Qgis::RenderUnit::Millimeters );
   const double scaledMaxHeight = ( ( settings.numberOfSubdivisions() > 1 ) && ( scaledSubdivisionsHeight > scaledHeight ) ) ? scaledSubdivisionsHeight : scaledHeight;
   const double middlePosition = barTopPosition + scaledMaxHeight / 2.0;
   const double bottomPosition = barTopPosition + scaledMaxHeight;
@@ -170,7 +169,7 @@ void QgsTicksScaleBarRenderer::draw( QgsRenderContext &context, const QgsScaleBa
       // first draw the vertical lines for segments
       for ( int i = 0; i < positions.size(); ++i )
       {
-        const double thisX = context.convertToPainterUnits( positions.at( i ), QgsUnitTypes::RenderMillimeters ) + xOffset;
+        const double thisX = context.convertToPainterUnits( positions.at( i ), Qgis::RenderUnit::Millimeters ) + xOffset;
         divisionSymbol->renderPolyline( QPolygonF() << QPointF( thisX, tickPositionsY.at( 0 ) )
                                         << QPointF( thisX, tickPositionsY.at( 1 ) ), nullptr, context, layer );
       }
@@ -183,7 +182,7 @@ void QgsTicksScaleBarRenderer::draw( QgsRenderContext &context, const QgsScaleBa
       {
         for ( int j = 1; j < settings.numberOfSubdivisions(); ++j )
         {
-          const double thisSubX = context.convertToPainterUnits( positions.at( i ) + j * scaleContext.segmentWidth / settings.numberOfSubdivisions(), QgsUnitTypes::RenderMillimeters ) + xOffset;
+          const double thisSubX = context.convertToPainterUnits( positions.at( i ) + j * scaleContext.segmentWidth / settings.numberOfSubdivisions(), Qgis::RenderUnit::Millimeters ) + xOffset;
           subdivisionSymbol->renderPolyline( QPolygonF() << QPointF( thisSubX, subTickPositionsY.at( 0 ) )
                                              << QPointF( thisSubX, subTickPositionsY.at( 1 ) ), nullptr, context, layer );
         }
@@ -193,7 +192,7 @@ void QgsTicksScaleBarRenderer::draw( QgsRenderContext &context, const QgsScaleBa
     //draw last tick and horizontal line
     if ( !positions.isEmpty() )
     {
-      const double lastTickPositionX = context.convertToPainterUnits( positions.at( positions.size() - 1 ) + scaleContext.segmentWidth, QgsUnitTypes::RenderMillimeters ) + xOffset;
+      const double lastTickPositionX = context.convertToPainterUnits( positions.at( positions.size() - 1 ) + scaleContext.segmentWidth, Qgis::RenderUnit::Millimeters ) + xOffset;
 
       //last vertical line
       if ( drawDivisionsForThisSymbolLayer )
@@ -206,7 +205,7 @@ void QgsTicksScaleBarRenderer::draw( QgsRenderContext &context, const QgsScaleBa
       //horizontal line
       if ( drawLineForThisSymbolLayer )
       {
-        symbol->renderPolyline( QPolygonF() << QPointF( xOffset + context.convertToPainterUnits( positions.at( 0 ), QgsUnitTypes::RenderMillimeters ), verticalPos )
+        symbol->renderPolyline( QPolygonF() << QPointF( xOffset + context.convertToPainterUnits( positions.at( 0 ), Qgis::RenderUnit::Millimeters ), verticalPos )
                                 << QPointF( lastTickPositionX, verticalPos ), nullptr, context, layer );
       }
     }

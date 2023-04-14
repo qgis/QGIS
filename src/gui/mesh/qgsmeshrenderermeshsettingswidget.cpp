@@ -17,12 +17,7 @@
 #include <QtGlobal>
 
 #include "qgis.h"
-#include "qgsmapcanvas.h"
 #include "qgsmeshlayer.h"
-#include "qgsrasterlayer.h"
-#include "raster/qgsrasterminmaxwidget.h"
-#include "qgsrasterminmaxorigin.h"
-#include "qgsmessagelog.h"
 #include "qgscolorbutton.h"
 #include "qgsdoublespinbox.h"
 
@@ -32,11 +27,13 @@ QgsMeshRendererMeshSettingsWidget::QgsMeshRendererMeshSettingsWidget( QWidget *p
 {
   setupUi( this );
 
-  mLineUnitsComboBox->setUnits( QgsUnitTypes::RenderUnitList()
-                                << QgsUnitTypes::RenderMillimeters
-                                << QgsUnitTypes::RenderMetersInMapUnits
-                                << QgsUnitTypes::RenderPixels
-                                << QgsUnitTypes::RenderPoints );
+  mLineUnitsComboBox->setUnits(
+  {
+    Qgis::RenderUnit::Millimeters,
+    Qgis::RenderUnit::MetersInMapUnits,
+    Qgis::RenderUnit::Pixels,
+    Qgis::RenderUnit::Points
+  } );
 
 
   connect( mColorWidget, &QgsColorButton::colorChanged, this, &QgsMeshRendererMeshSettingsWidget::widgetChanged );

@@ -96,7 +96,10 @@ If not ``None``, it may be used to initialize GUI of the widget from the previou
 The old renderer does not have to be of the same type as returned by :py:func:`~QgsRendererAbstractMetadata.createRenderer`.
 %End
 
-    virtual QgsFeatureRenderer *createRendererFromSld( QDomElement &elem, QgsWkbTypes::GeometryType geomType ) /Factory/;
+    virtual QgsFeatureRenderer *createRendererFromSld( QDomElement &elem, Qgis::GeometryType geomType ) /Factory/;
+%Docstring
+Returns a new instance of the renderer, converted from an SLD XML element.
+%End
 
   protected:
 };
@@ -122,7 +125,7 @@ Convenience metadata class that uses static functions to create renderer and its
 
     virtual QgsFeatureRenderer *createRenderer( QDomElement &elem, const QgsReadWriteContext &context ) /Factory/;
     virtual QgsRendererWidget *createRendererWidget( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer ) /Factory/;
-    virtual QgsFeatureRenderer *createRendererFromSld( QDomElement &elem, QgsWkbTypes::GeometryType geomType ) /Factory/;
+    virtual QgsFeatureRenderer *createRendererFromSld( QDomElement &elem, Qgis::GeometryType geomType ) /Factory/;
 
 
 

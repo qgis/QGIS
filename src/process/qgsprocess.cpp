@@ -23,12 +23,18 @@
 #ifdef HAVE_3D
 #include "qgs3dalgorithms.h"
 #endif
+#ifdef HAVE_PDAL_QGIS
+#if PDAL_VERSION_MAJOR_INT > 2 || (PDAL_VERSION_MAJOR_INT == 2 && PDAL_VERSION_MINOR_INT >= 5)
+#include "qgspdalalgorithms.h"
+#endif
+#endif
 #include "qgssettings.h"
 #include "qgsapplication.h"
 #include "qgsprocessingparametertype.h"
 #include "processing/models/qgsprocessingmodelalgorithm.h"
 #include "qgsproject.h"
 #include "qgsgeos.h"
+#include "qgsunittypes.h"
 #include "qgsjsonutils.h"
 
 #if defined(Q_OS_UNIX) && !defined(Q_OS_ANDROID)
@@ -274,6 +280,12 @@ int QgsProcessingExec::run( const QStringList &constArgs )
   QgsApplication::processingRegistry()->addProvider( new Qgs3DAlgorithms( QgsApplication::processingRegistry() ) );
 #endif
 
+#ifdef HAVE_PDAL_QGIS
+#if PDAL_VERSION_MAJOR_INT > 1 && PDAL_VERSION_MINOR_INT >= 5
+  QgsApplication::processingRegistry()->addProvider( new QgsPdalAlgorithms( QgsApplication::processingRegistry() ) );
+#endif
+#endif
+
 #ifdef WITH_BINDINGS
   if ( !mSkipPython )
   {
@@ -349,8 +361,8 @@ int QgsProcessingExec::run( const QStringList &constArgs )
 
     // build parameter map
     QString ellipsoid;
-    QgsUnitTypes::DistanceUnit distanceUnit = QgsUnitTypes::DistanceUnknownUnit;
-    QgsUnitTypes::AreaUnit areaUnit = QgsUnitTypes::AreaUnknownUnit;
+    Qgis::DistanceUnit distanceUnit = Qgis::DistanceUnit::Unknown;
+    Qgis::AreaUnit areaUnit = Qgis::AreaUnit::Unknown;
     QString projectPath;
     QVariantMap params;
 
@@ -855,7 +867,8 @@ int QgsProcessingExec::showAlgorithmHelp( const QString &inputId, bool useJson )
     addAlgorithmInformation( algorithmDetails, alg );
     json.insert( QStringLiteral( "algorithm_details" ), algorithmDetails );
     QVariantMap providerJson;
-    addProviderInformation( providerJson, alg->provider() );
+    if ( alg->provider() )
+      addProviderInformation( providerJson, alg->provider() );
     json.insert( QStringLiteral( "provider_details" ), providerJson );
   }
 
@@ -998,7 +1011,7 @@ int QgsProcessingExec::showAlgorithmHelp( const QString &inputId, bool useJson )
   return 0;
 }
 
-int QgsProcessingExec::execute( const QString &inputId, const QVariantMap &inputs, const QString &ellipsoid, QgsUnitTypes::DistanceUnit distanceUnit, QgsUnitTypes::AreaUnit areaUnit, QgsProcessingContext::LogLevel logLevel, bool useJson, const QString &projectPath )
+int QgsProcessingExec::execute( const QString &inputId, const QVariantMap &inputs, const QString &ellipsoid, Qgis::DistanceUnit distanceUnit, Qgis::AreaUnit areaUnit, QgsProcessingContext::LogLevel logLevel, bool useJson, const QString &projectPath )
 {
   QVariantMap json;
   if ( useJson )
@@ -1133,14 +1146,14 @@ int QgsProcessingExec::execute( const QString &inputId, const QVariantMap &input
     else
       json.insert( QStringLiteral( "ellipsoid" ), ellipsoid );
   }
-  if ( distanceUnit != QgsUnitTypes::DistanceUnknownUnit )
+  if ( distanceUnit != Qgis::DistanceUnit::Unknown )
   {
     if ( !useJson )
       std::cout << "Using distance unit:\t" << QgsUnitTypes::toString( distanceUnit ).toLocal8Bit().constData() << '\n';
     else
       json.insert( QStringLiteral( "distance_unit" ), QgsUnitTypes::toString( distanceUnit ) );
   }
-  if ( areaUnit != QgsUnitTypes::AreaUnknownUnit )
+  if ( areaUnit != Qgis::AreaUnit::Unknown )
   {
     if ( !useJson )
       std::cout << "Using area unit:\t" << QgsUnitTypes::toString( areaUnit ).toLocal8Bit().constData() << '\n';

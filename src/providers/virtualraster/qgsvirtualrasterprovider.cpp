@@ -272,9 +272,32 @@ QgsVirtualRasterProvider *QgsVirtualRasterProviderMetadata::createProvider( cons
   return new QgsVirtualRasterProvider( uri, options );
 }
 
-QList<QgsMapLayerType> QgsVirtualRasterProviderMetadata::supportedLayerTypes() const
+QString QgsVirtualRasterProviderMetadata::absoluteToRelativeUri( const QString &uri, const QgsReadWriteContext &context ) const
 {
-  return { QgsMapLayerType::RasterLayer };
+  QgsRasterDataProvider::VirtualRasterParameters decodedVirtualParams = QgsRasterDataProvider::decodeVirtualRasterProviderUri( uri );
+
+  for ( auto &it : decodedVirtualParams.rInputLayers )
+  {
+    it.uri = context.pathResolver().writePath( it.uri );
+  }
+  return QgsRasterDataProvider::encodeVirtualRasterProviderUri( decodedVirtualParams ) ;
+}
+
+QString QgsVirtualRasterProviderMetadata::relativeToAbsoluteUri( const QString &uri, const QgsReadWriteContext &context ) const
+{
+  QgsRasterDataProvider::VirtualRasterParameters decodedVirtualParams = QgsRasterDataProvider::decodeVirtualRasterProviderUri( uri );
+
+  for ( auto &it : decodedVirtualParams.rInputLayers )
+  {
+    it.uri = context.pathResolver().readPath( it.uri );
+  }
+  return QgsRasterDataProvider::encodeVirtualRasterProviderUri( decodedVirtualParams ) ;
+}
+
+
+QList<Qgis::LayerType> QgsVirtualRasterProviderMetadata::supportedLayerTypes() const
+{
+  return { Qgis::LayerType::Raster };
 }
 
 QgsVirtualRasterProvider *QgsVirtualRasterProvider::clone() const

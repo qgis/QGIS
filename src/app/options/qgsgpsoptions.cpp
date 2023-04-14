@@ -438,7 +438,7 @@ void QgsGpsOptionsWidget::updateTimeZones()
 // QgsGpsOptionsFactory
 //
 QgsGpsOptionsFactory::QgsGpsOptionsFactory()
-  : QgsOptionsWidgetFactory( tr( "GPS" ), QIcon() )
+  : QgsOptionsWidgetFactory( tr( "GPS" ), QIcon(), QStringLiteral( "gps" ) )
 {
 
 }

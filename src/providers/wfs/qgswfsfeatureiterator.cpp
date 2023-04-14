@@ -24,13 +24,10 @@
 #include "qgsmultipolygon.h"
 #include "qgsogcutils.h"
 #include "qgswfsfeatureiterator.h"
-#include "qgswfsprovider.h"
 #include "qgswfsshareddata.h"
 #include "qgswfsutils.h"
 #include "qgslogger.h"
 #include "qgssettings.h"
-#include "qgsexception.h"
-#include "qgsfeedback.h"
 
 #include <algorithm>
 #include <QDir>
@@ -649,12 +646,12 @@ void QgsWFSFeatureDownloaderImpl::run( bool serializeFeatures, long long maxFeat
           // If receiving a geometry collection, but expecting a multipoint/...,
           // then try to convert it
           if ( f.hasGeometry() &&
-               f.geometry().wkbType() == QgsWkbTypes::GeometryCollection &&
-               ( mShared->mWKBType == QgsWkbTypes::MultiPoint ||
-                 mShared->mWKBType == QgsWkbTypes::MultiLineString ||
-                 mShared->mWKBType == QgsWkbTypes::MultiPolygon ) )
+               f.geometry().wkbType() == Qgis::WkbType::GeometryCollection &&
+               ( mShared->mWKBType == Qgis::WkbType::MultiPoint ||
+                 mShared->mWKBType == Qgis::WkbType::MultiLineString ||
+                 mShared->mWKBType == Qgis::WkbType::MultiPolygon ) )
           {
-            QgsWkbTypes::Type singleType = QgsWkbTypes::singleType( mShared->mWKBType );
+            Qgis::WkbType singleType = QgsWkbTypes::singleType( mShared->mWKBType );
             auto g = f.geometry().constGet();
             auto gc = qgsgeometry_cast<QgsGeometryCollection *>( g );
             bool allExpectedType = true;
@@ -669,11 +666,11 @@ void QgsWFSFeatureDownloaderImpl::run( bool serializeFeatures, long long maxFeat
             if ( allExpectedType )
             {
               QgsGeometryCollection *newGC;
-              if ( mShared->mWKBType == QgsWkbTypes::MultiPoint )
+              if ( mShared->mWKBType == Qgis::WkbType::MultiPoint )
               {
                 newGC =  new QgsMultiPoint();
               }
-              else if ( mShared->mWKBType == QgsWkbTypes::MultiLineString )
+              else if ( mShared->mWKBType == Qgis::WkbType::MultiLineString )
               {
                 newGC = new QgsMultiLineString();
               }

@@ -82,6 +82,7 @@ QgsProcessingGuiRegistry::QgsProcessingGuiRegistry()
   addParameterWidgetFactory( new QgsProcessingPointCloudLayerWidgetWrapper() );
   addParameterWidgetFactory( new QgsProcessingAnnotationLayerWidgetWrapper() );
   addParameterWidgetFactory( new QgsProcessingPointCloudDestinationWidgetWrapper() );
+  addParameterWidgetFactory( new QgsProcessingPointCloudAttributeWidgetWrapper() );
 }
 
 QgsProcessingGuiRegistry::~QgsProcessingGuiRegistry()

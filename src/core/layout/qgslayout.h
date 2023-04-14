@@ -22,9 +22,7 @@
 #include "qgsexpressioncontextgenerator.h"
 #include "qgslayoutgridsettings.h"
 #include "qgslayoutguidecollection.h"
-#include "qgslayoutexporter.h"
 #include "qgsmasterlayoutinterface.h"
-#include "qgssettingsentry.h"
 
 class QgsLayoutItemMap;
 class QgsLayoutModel;
@@ -320,14 +318,14 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
      * \see units()
      * \see convertToLayoutUnits()
     */
-    void setUnits( QgsUnitTypes::LayoutUnit units ) { mUnits = units; }
+    void setUnits( Qgis::LayoutUnit units ) { mUnits = units; }
 
     /**
      * Returns the native units for the layout.
      * \see setUnits()
      * \see convertToLayoutUnits()
     */
-    QgsUnitTypes::LayoutUnit units() const { return mUnits; }
+    Qgis::LayoutUnit units() const { return mUnits; }
 
     /**
      * Converts a measurement into the layout's native units.
@@ -359,7 +357,7 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
      * \see convertToLayoutUnits()
      * \see units()
     */
-    QgsLayoutMeasurement convertFromLayoutUnits( double length, QgsUnitTypes::LayoutUnit unit ) const;
+    QgsLayoutMeasurement convertFromLayoutUnits( double length, Qgis::LayoutUnit unit ) const;
 
     /**
      * Converts a \a size from the layout's native units to a specified target \a unit.
@@ -367,7 +365,7 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
      * \see convertToLayoutUnits()
      * \see units()
     */
-    QgsLayoutSize convertFromLayoutUnits( QSizeF size, QgsUnitTypes::LayoutUnit unit ) const;
+    QgsLayoutSize convertFromLayoutUnits( QSizeF size, Qgis::LayoutUnit unit ) const;
 
     /**
      * Converts a \a point from the layout's native units to a specified target \a unit.
@@ -375,7 +373,7 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
      * \see convertToLayoutUnits()
      * \see units()
     */
-    QgsLayoutPoint convertFromLayoutUnits( QPointF point, QgsUnitTypes::LayoutUnit unit ) const;
+    QgsLayoutPoint convertFromLayoutUnits( QPointF point, Qgis::LayoutUnit unit ) const;
 
     /**
      * Returns a reference to the layout's render context, which stores information relating to the
@@ -731,7 +729,7 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
 
     QgsObjectCustomProperties mCustomProperties;
 
-    QgsUnitTypes::LayoutUnit mUnits = QgsUnitTypes::LayoutMillimeters;
+    Qgis::LayoutUnit mUnits = Qgis::LayoutUnit::Millimeters;
     QgsLayoutRenderContext *mRenderContext = nullptr;
     QgsLayoutReportContext *mReportContext = nullptr;
     QgsLayoutSnapper mSnapper;

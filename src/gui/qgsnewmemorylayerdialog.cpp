@@ -16,15 +16,11 @@
  ***************************************************************************/
 
 #include "qgsnewmemorylayerdialog.h"
-#include "qgsapplication.h"
 #include "qgis.h"
 #include "qgscoordinatereferencesystem.h"
-#include "qgsproviderregistry.h"
-#include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 #include "qgsfield.h"
 #include "qgsfields.h"
-#include "qgssettings.h"
 #include "qgsmemoryproviderutils.h"
 #include "qgsgui.h"
 #include "qgsiconutils.h"
@@ -45,7 +41,7 @@ QgsVectorLayer *QgsNewMemoryLayerDialog::runAndCreateLayer( QWidget *parent, con
     return nullptr;
   }
 
-  const QgsWkbTypes::Type geometrytype = dialog.selectedType();
+  const Qgis::WkbType geometrytype = dialog.selectedType();
   const QgsFields fields = dialog.fields();
   const QString name = dialog.layerName().isEmpty() ? tr( "New scratch layer" ) : dialog.layerName();
   QgsVectorLayer *newLayer = QgsMemoryProviderUtils::createMemoryLayer( name, fields, geometrytype, dialog.crs() );
@@ -60,23 +56,23 @@ QgsNewMemoryLayerDialog::QgsNewMemoryLayerDialog( QWidget *parent, Qt::WindowFla
 
   mNameLineEdit->setText( tr( "New scratch layer" ) );
 
-  const QgsWkbTypes::Type geomTypes[] =
+  const Qgis::WkbType geomTypes[] =
   {
-    QgsWkbTypes::NoGeometry,
-    QgsWkbTypes::Point,
-    QgsWkbTypes::LineString,
-    QgsWkbTypes::CompoundCurve,
-    QgsWkbTypes::Polygon,
-    QgsWkbTypes::CurvePolygon,
-    QgsWkbTypes::MultiPoint,
-    QgsWkbTypes::MultiLineString,
-    QgsWkbTypes::MultiCurve,
-    QgsWkbTypes::MultiPolygon,
-    QgsWkbTypes::MultiSurface,
+    Qgis::WkbType::NoGeometry,
+    Qgis::WkbType::Point,
+    Qgis::WkbType::LineString,
+    Qgis::WkbType::CompoundCurve,
+    Qgis::WkbType::Polygon,
+    Qgis::WkbType::CurvePolygon,
+    Qgis::WkbType::MultiPoint,
+    Qgis::WkbType::MultiLineString,
+    Qgis::WkbType::MultiCurve,
+    Qgis::WkbType::MultiPolygon,
+    Qgis::WkbType::MultiSurface,
   };
 
   for ( const auto type : geomTypes )
-    mGeometryTypeBox->addItem( QgsIconUtils::iconForWkbType( type ), QgsWkbTypes::translatedDisplayString( type ), type );
+    mGeometryTypeBox->addItem( QgsIconUtils::iconForWkbType( type ), QgsWkbTypes::translatedDisplayString( type ), static_cast< quint32>( type ) );
   mGeometryTypeBox->setCurrentIndex( -1 );
 
   mGeometryWithZCheckBox->setEnabled( false );
@@ -97,7 +93,8 @@ QgsNewMemoryLayerDialog::QgsNewMemoryLayerDialog( QWidget *parent, Qt::WindowFla
   mTypeBox->addItem( QgsFields::iconForFieldType( QVariant::List, QVariant::Double ), QgsVariantUtils::typeToDisplayString( QVariant::List, QVariant::Double ), "doublelist" );
   mTypeBox->addItem( QgsFields::iconForFieldType( QVariant::List, QVariant::LongLong ), QgsVariantUtils::typeToDisplayString( QVariant::List, QVariant::LongLong ), "integer64list" );
   mTypeBox->addItem( QgsFields::iconForFieldType( QVariant::Map ), QgsVariantUtils::typeToDisplayString( QVariant::Map ), "map" );
-  mTypeBox_currentIndexChanged( 1 );
+  mTypeBox->addItem( QgsFields::iconForFieldType( QVariant::UserType, QVariant::Invalid, QStringLiteral( "geometry" ) ), tr( "Geometry" ), "geometry" );
+  mTypeBox_currentIndexChanged( 0 );
 
   mWidth->setValidator( new QIntValidator( 1, 255, this ) );
   mPrecision->setValidator( new QIntValidator( 0, 30, this ) );
@@ -123,13 +120,13 @@ QgsNewMemoryLayerDialog::QgsNewMemoryLayerDialog( QWidget *parent, Qt::WindowFla
   mNameLineEdit->setFocus();
 }
 
-QgsWkbTypes::Type QgsNewMemoryLayerDialog::selectedType() const
+Qgis::WkbType QgsNewMemoryLayerDialog::selectedType() const
 {
-  QgsWkbTypes::Type geomType = QgsWkbTypes::Unknown;
-  geomType = static_cast<QgsWkbTypes::Type>
+  Qgis::WkbType geomType = Qgis::WkbType::Unknown;
+  geomType = static_cast<Qgis::WkbType>
              ( mGeometryTypeBox->currentData( Qt::UserRole ).toInt() );
 
-  if ( geomType != QgsWkbTypes::Unknown && geomType != QgsWkbTypes::NoGeometry )
+  if ( geomType != Qgis::WkbType::Unknown && geomType != Qgis::WkbType::NoGeometry )
   {
     if ( mGeometryWithZCheckBox->isChecked() )
       geomType = QgsWkbTypes::addZ( geomType );
@@ -142,10 +139,10 @@ QgsWkbTypes::Type QgsNewMemoryLayerDialog::selectedType() const
 
 void QgsNewMemoryLayerDialog::geometryTypeChanged( int )
 {
-  const QgsWkbTypes::Type geomType = static_cast<QgsWkbTypes::Type>
-                                     ( mGeometryTypeBox->currentData( Qt::UserRole ).toInt() );
+  const Qgis::WkbType geomType = static_cast<Qgis::WkbType>
+                                 ( mGeometryTypeBox->currentData( Qt::UserRole ).toInt() );
 
-  const bool isSpatial = geomType != QgsWkbTypes::NoGeometry;
+  const bool isSpatial = geomType != Qgis::WkbType::NoGeometry;
   mGeometryWithZCheckBox->setEnabled( isSpatial );
   mGeometryWithMCheckBox->setEnabled( isSpatial );
   mCrsSelector->setEnabled( isSpatial );
@@ -154,71 +151,81 @@ void QgsNewMemoryLayerDialog::geometryTypeChanged( int )
   mOkButton->setEnabled( ok );
 }
 
-void QgsNewMemoryLayerDialog::mTypeBox_currentIndexChanged( int index )
+void QgsNewMemoryLayerDialog::mTypeBox_currentIndexChanged( int )
 {
-  switch ( index )
+  const QString fieldType = mTypeBox->currentData().toString();
+  if ( fieldType == QLatin1String( "string" ) )
   {
-    case 0: // Text data
-      if ( mWidth->text().toInt() < 1 || mWidth->text().toInt() > 255 )
-        mWidth->setText( QStringLiteral( "255" ) );
-      mPrecision->clear();
-      mPrecision->setEnabled( false );
-      mWidth->setValidator( new QIntValidator( 1, 255, this ) );
-      break;
-    case 1: // Whole number
-      if ( mWidth->text().toInt() < 1 || mWidth->text().toInt() > 10 )
-        mWidth->setText( QStringLiteral( "10" ) );
-      mPrecision->clear();
-      mPrecision->setEnabled( false );
-      mWidth->setValidator( new QIntValidator( 1, 10, this ) );
-      break;
-    case 2: // Decimal number
-      if ( mWidth->text().toInt() < 1 || mWidth->text().toInt() > 30 )
-        mWidth->setText( QStringLiteral( "30" ) );
-      if ( mPrecision->text().toInt() < 1 || mPrecision->text().toInt() > 30 )
-        mPrecision->setText( QStringLiteral( "6" ) );
-      mPrecision->setEnabled( true );
-      mWidth->setValidator( new QIntValidator( 1, 20, this ) );
-      break;
-    case 3: // Boolean
-      mWidth->clear();
-      mWidth->setEnabled( false );
-      mPrecision->clear();
-      mPrecision->setEnabled( false );
-      break;
-    case 4: // Date
-      mWidth->clear();
-      mWidth->setEnabled( false );
-      mPrecision->clear();
-      mPrecision->setEnabled( false );
-      break;
-    case 5: // Time
-      mWidth->clear();
-      mWidth->setEnabled( false );
-      mPrecision->clear();
-      mPrecision->setEnabled( false );
-      break;
-    case 6: // Datetime
-      mWidth->clear();
-      mWidth->setEnabled( false );
-      mPrecision->clear();
-      mPrecision->setEnabled( false );
-      break;
-    case 7: // Binary
-    case 8: // Stringlist
-    case 9: // Integerlist
-    case 10: // Doublelist
-    case 11: // Integer64list
-    case 12: // Map
-      mWidth->clear();
-      mWidth->setEnabled( false );
-      mPrecision->clear();
-      mPrecision->setEnabled( false );
-      break;
-
-    default:
-      QgsDebugMsg( QStringLiteral( "unexpected index" ) );
-      break;
+    if ( mWidth->text().toInt() < 1 || mWidth->text().toInt() > 255 )
+      mWidth->setText( QStringLiteral( "255" ) );
+    mPrecision->clear();
+    mPrecision->setEnabled( false );
+    mWidth->setValidator( new QIntValidator( 1, 255, this ) );
+    mWidth->setEnabled( true );
+  }
+  else if ( fieldType == QLatin1String( "integer" ) )
+  {
+    if ( mWidth->text().toInt() < 1 || mWidth->text().toInt() > 10 )
+      mWidth->setText( QStringLiteral( "10" ) );
+    mPrecision->clear();
+    mPrecision->setEnabled( false );
+    mWidth->setValidator( new QIntValidator( 1, 10, this ) );
+    mWidth->setEnabled( true );
+  }
+  else if ( fieldType == QLatin1String( "double" ) )
+  {
+    if ( mWidth->text().toInt() < 1 || mWidth->text().toInt() > 30 )
+      mWidth->setText( QStringLiteral( "30" ) );
+    if ( mPrecision->text().toInt() < 1 || mPrecision->text().toInt() > 30 )
+      mPrecision->setText( QStringLiteral( "6" ) );
+    mPrecision->setEnabled( true );
+    mWidth->setValidator( new QIntValidator( 1, 20, this ) );
+    mWidth->setEnabled( true );
+  }
+  else if ( fieldType == QLatin1String( "bool" ) )
+  {
+    mWidth->clear();
+    mWidth->setEnabled( false );
+    mPrecision->clear();
+    mPrecision->setEnabled( false );
+  }
+  else if ( fieldType == QLatin1String( "date" ) )
+  {
+    mWidth->clear();
+    mWidth->setEnabled( false );
+    mPrecision->clear();
+    mPrecision->setEnabled( false );
+  }
+  else if ( fieldType == QLatin1String( "time" ) )
+  {
+    mWidth->clear();
+    mWidth->setEnabled( false );
+    mPrecision->clear();
+    mPrecision->setEnabled( false );
+  }
+  else if ( fieldType == QLatin1String( "datetime" ) )
+  {
+    mWidth->clear();
+    mWidth->setEnabled( false );
+    mPrecision->clear();
+    mPrecision->setEnabled( false );
+  }
+  else if ( fieldType == QStringLiteral( "binary" )
+            || fieldType == QStringLiteral( "stringlist" )
+            || fieldType == QStringLiteral( "integerlist" )
+            || fieldType == QStringLiteral( "doublelist" )
+            || fieldType == QStringLiteral( "integer64list" )
+            || fieldType == QStringLiteral( "map" )
+            || fieldType == QLatin1String( "geometry" ) )
+  {
+    mWidth->clear();
+    mWidth->setEnabled( false );
+    mPrecision->clear();
+    mPrecision->setEnabled( false );
+  }
+  else
+  {
+    QgsDebugMsg( QStringLiteral( "unexpected index" ) );
   }
 }
 
@@ -298,6 +305,8 @@ QgsFields QgsNewMemoryLayerDialog::fields() const
     }
     else if ( typeName == QLatin1String( "map" ) )
       fieldType = QVariant::Map;
+    else if ( typeName == QLatin1String( "geometry" ) )
+      fieldType = QVariant::UserType;
 
     const QgsField field = QgsField( name, fieldType, typeName, width, precision, QString(), fieldSubType );
     fields.append( field );

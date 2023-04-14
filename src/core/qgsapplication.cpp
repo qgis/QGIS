@@ -84,6 +84,7 @@
 #include "qgscolorrampimpl.h"
 #include "qgsinterval.h"
 #include "qgsgpsconnection.h"
+#include "qgssensorregistry.h"
 
 #include "gps/qgsgpsconnectionregistry.h"
 #include "processing/qgsprocessingregistry.h"
@@ -250,6 +251,8 @@ QgsApplication::QgsApplication( int &argc, char **argv, bool GUIenabled, const Q
   *sProfilePath() = profileFolder;
 
   connect( instance(), &QgsApplication::localeChanged, &QgsDateTimeFieldFormatter::applyLocaleChange );
+
+  mApplicationMembers->mSettingsRegistryCore->migrateOldSettings();
 }
 
 void QgsApplication::init( QString profileFolder )
@@ -282,7 +285,7 @@ void QgsApplication::init( QString profileFolder )
     qRegisterMetaType<QgsDatabaseQueryLogEntry>( "QgsDatabaseQueryLogEntry" );
     qRegisterMetaType<QgsProcessingFeatureSourceDefinition>( "QgsProcessingFeatureSourceDefinition" );
     qRegisterMetaType<QgsProcessingOutputLayerDefinition>( "QgsProcessingOutputLayerDefinition" );
-    qRegisterMetaType<QgsUnitTypes::LayoutUnit>( "QgsUnitTypes::LayoutUnit" );
+    qRegisterMetaType<Qgis::LayoutUnit>( "Qgis::LayoutUnit" );
     qRegisterMetaType<QgsUnsetAttributeValue>( "QgsUnsetAttributeValue" );
     qRegisterMetaType<QgsFeatureId>( "QgsFeatureId" );
     qRegisterMetaType<QgsFields>( "QgsFields" );
@@ -485,6 +488,8 @@ void QgsApplication::init( QString profileFolder )
 
 QgsApplication::~QgsApplication()
 {
+  mApplicationMembers->mSettingsRegistryCore->backwardCompatibility();
+
   delete mDataItemProviderRegistry;
   delete mApplicationMembers;
   delete mQgisTranslator;
@@ -2347,9 +2352,12 @@ void QgsApplication::setMaxThreads( int maxThreads )
   QgsDebugMsgLevel( QStringLiteral( "maxThreads: %1" ).arg( maxThreads ), 2 );
 
   // make sure value is between 1 and #cores, if not set to -1 (use #cores)
-  // 0 could be used to disable any parallel processing
   if ( maxThreads < 1 || maxThreads > QThread::idealThreadCount() )
     maxThreads = -1;
+
+  // force at least 2 threads -- anything less risks deadlocks within Qt itself (e.g in QImage internal mutexes)
+  if ( maxThreads > 0 && maxThreads < 2 )
+    maxThreads = 2;
 
   // save value
   ABISYM( sMaxThreads ) = maxThreads;
@@ -2466,6 +2474,11 @@ QgsLayoutItemRegistry *QgsApplication::layoutItemRegistry()
 QgsAnnotationItemRegistry *QgsApplication::annotationItemRegistry()
 {
   return members()->mAnnotationItemRegistry;
+}
+
+QgsSensorRegistry *QgsApplication::sensorRegistry()
+{
+  return members()->mSensorRegistry;
 }
 
 QgsGpsConnectionRegistry *QgsApplication::gpsConnectionRegistry()
@@ -2741,6 +2754,12 @@ QgsApplication::ApplicationMembers::ApplicationMembers()
     profiler->end();
   }
   {
+    profiler->start( tr( "Setup sensor registry" ) );
+    mSensorRegistry = new QgsSensorRegistry();
+    mSensorRegistry->populate();
+    profiler->end();
+  }
+  {
     profiler->start( tr( "Setup 3D symbol registry" ) );
     m3DSymbolRegistry = new Qgs3DSymbolRegistry();
     profiler->end();
@@ -2817,6 +2836,7 @@ QgsApplication::ApplicationMembers::~ApplicationMembers()
   delete mProcessingRegistry;
   delete mPageSizeRegistry;
   delete mAnnotationItemRegistry;
+  delete mSensorRegistry;
   delete mLayoutItemRegistry;
   delete mPointCloudRendererRegistry;
   delete mRasterRendererRegistry;

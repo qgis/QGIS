@@ -97,8 +97,8 @@ class TestQgsRuleBasedRenderer: public QgsTest
       f3.setAttribute( idx, QVariant( 100 ) );
 
       // prepare renderer
-      QgsSymbol *s1 = QgsSymbol::defaultSymbol( QgsWkbTypes::PointGeometry );
-      QgsSymbol *s2 = QgsSymbol::defaultSymbol( QgsWkbTypes::PointGeometry );
+      QgsSymbol *s1 = QgsSymbol::defaultSymbol( Qgis::GeometryType::Point );
+      QgsSymbol *s2 = QgsSymbol::defaultSymbol( Qgis::GeometryType::Point );
       RRule *rootRule = new RRule( nullptr );
       rootRule->appendChild( new RRule( s1, 0, 0, QStringLiteral( "fld >= 5 and fld <= 20" ) ) );
       rootRule->appendChild( new RRule( s2, 0, 0, QStringLiteral( "fld <= 10" ) ) );
@@ -268,6 +268,64 @@ class TestQgsRuleBasedRenderer: public QgsTest
       renderchecker.setMapSettings( mapsettings );
       renderchecker.setControlName( QStringLiteral( "expected_rulebased_disabled_else" ) );
       const bool res = renderchecker.runTest( QStringLiteral( "rulebased_disabled_else" ) );
+      if ( !res )
+        mReport += renderchecker.report();
+      QVERIFY( res );
+    }
+
+    void testNoMatchingZoomRanges()
+    {
+      const QString shpFile = TEST_DATA_DIR + QStringLiteral( "/rectangles.shp" );
+      std::unique_ptr< QgsVectorLayer > layer = std::make_unique< QgsVectorLayer >( shpFile, QStringLiteral( "rectangles" ), QStringLiteral( "ogr" ) );
+      QVERIFY( layer->isValid() );
+      QgsField vfield = QgsField( QStringLiteral( "fa_cy-fie+ld" ), QVariant::Int );
+      layer->addExpressionField( QStringLiteral( "\"id\"" ), vfield );
+
+      // Create rulebased style
+      QgsSymbol *sym1 = QgsFillSymbol::createSimple( QVariantMap( {{"color", "#fdbf6f"}, {"outline_color", "black"}} ) );
+      QgsSymbol *sym2 = QgsFillSymbol::createSimple( QVariantMap( {{"color", "#71bd6c"}, {"outline_color", "black"}} ) );
+
+      QgsRuleBasedRenderer::Rule *r1 = new QgsRuleBasedRenderer::Rule( sym1, 0, 0, "\"id\" = 1" );
+      r1->setMaximumScale( 1000 );
+      r1->setMinimumScale( 10000 );
+      QgsRuleBasedRenderer::Rule *r2 = new QgsRuleBasedRenderer::Rule( sym2, 0, 0, "\"id\" = 2" );
+      r2->setMaximumScale( 10000 );
+      r2->setMinimumScale( 100000 );
+
+      QgsRuleBasedRenderer::Rule *rootrule = new QgsRuleBasedRenderer::Rule( nullptr );
+      rootrule->appendChild( r1 );
+      rootrule->appendChild( r2 );
+
+      QgsRuleBasedRenderer *renderer = new QgsRuleBasedRenderer( rootrule );
+      layer->setRenderer( renderer );
+
+      QgsMapSettings mapsettings;
+      mapsettings.setOutputSize( QSize( 400, 400 ) );
+      mapsettings.setOutputDpi( 96 );
+      mapsettings.setExtent( QgsRectangle( -163, 22, -162.9, 22.1 ) );
+      mapsettings.setLayers( {layer.get()} );
+
+      QgsRenderContext rc = QgsRenderContext::fromMapSettings( mapsettings );
+      QGSCOMPARENEAR( rc.rendererScale(), 78999, 1000 );
+      // r2 rule should be visible at this scale
+      renderer->startRender( rc, layer->fields() );
+      QVERIFY( !renderer->canSkipRender() );
+      QVERIFY( renderer->rootRule()->hasActiveChildren() );
+      renderer->stopRender( rc );
+
+      mapsettings.setExtent( QgsRectangle( -163, 22, -70, 52 ) );
+      rc = QgsRenderContext::fromMapSettings( mapsettings );
+      QGSCOMPARENEAR( rc.rendererScale(), 57430698, 1000 );
+      // no rules should be visible at this scale!
+      renderer->startRender( rc, layer->fields() );
+      QVERIFY( !renderer->rootRule()->hasActiveChildren() );
+      QVERIFY( renderer->canSkipRender() );
+      renderer->stopRender( rc );
+
+      QgsMultiRenderChecker renderchecker;
+      renderchecker.setMapSettings( mapsettings );
+      renderchecker.setControlName( QStringLiteral( "expected_rulebased_no_visible" ) );
+      const bool res = renderchecker.runTest( QStringLiteral( "rulebased_no_visible" ) );
       if ( !res )
         mReport += renderchecker.report();
       QVERIFY( res );
@@ -1094,6 +1152,97 @@ class TestQgsRuleBasedRenderer: public QgsTest
       QCOMPARE( counter->featureCount( "2" ), 1LL );
     }
 
+    void testLegendKeys()
+    {
+      QgsRuleBasedRenderer::Rule *rootRule = new QgsRuleBasedRenderer::Rule( nullptr );
+      std::unique_ptr< QgsRuleBasedRenderer > renderer = std::make_unique< QgsRuleBasedRenderer >( rootRule );
+
+      QVERIFY( renderer->legendKeys().empty() );
+
+      QgsRuleBasedRenderer::Rule *rule2 = new QgsRuleBasedRenderer::Rule( nullptr, 0, 0, "\"field_name\" = 5" );
+      QgsRuleBasedRenderer::Rule *rule3 = new QgsRuleBasedRenderer::Rule( nullptr, 2000, 0, "\"field_name\" = 6" );
+      QgsRuleBasedRenderer::Rule *rule4 = new QgsRuleBasedRenderer::Rule( nullptr, 0, 1000, "\"field_name\" = 7" );
+      QgsRuleBasedRenderer::Rule *rule5 = new QgsRuleBasedRenderer::Rule( nullptr, 1000, 3000 );
+
+      rootRule->appendChild( rule2 );
+      rootRule->appendChild( rule3 );
+      rootRule->appendChild( rule4 );
+      rootRule->appendChild( rule5 );
+
+      QSet< QString > expected = QSet< QString >
+      {
+        rule2->ruleKey(),
+        rule3->ruleKey(),
+        rule4->ruleKey(),
+        rule5->ruleKey()
+      };
+      QCOMPARE( renderer->legendKeys(), expected );
+    }
+
+    void testLegendKeysForFeature()
+    {
+      QgsRuleBasedRenderer::Rule *rootRule = new QgsRuleBasedRenderer::Rule( nullptr );
+      std::unique_ptr< QgsRuleBasedRenderer > renderer = std::make_unique< QgsRuleBasedRenderer >( rootRule );
+      std::unique_ptr< QgsMarkerSymbol > symbol( QgsMarkerSymbol::createSimple( {} ) );
+
+      QgsRuleBasedRenderer::Rule *lessThanTwoRule = new QgsRuleBasedRenderer::Rule( symbol->clone(), 0, 0, "\"Importance\" <= 2" );
+      rootRule->appendChild( lessThanTwoRule );
+
+      QgsRuleBasedRenderer::Rule *elseRule = new QgsRuleBasedRenderer::Rule( nullptr, 0, 0, QString(), QString(), QString(), true );
+      rootRule->appendChild( elseRule );
+
+      QgsRuleBasedRenderer::Rule *oneRule = new QgsRuleBasedRenderer::Rule( symbol->clone(), 0, 0, "\"Pilots\" = 1" );
+      elseRule->appendChild( oneRule );
+
+      QgsRuleBasedRenderer::Rule *twoRule = new QgsRuleBasedRenderer::Rule( symbol->clone(), 0, 0, "\"Pilots\" = 2" );
+      elseRule->appendChild( twoRule );
+
+      QgsRuleBasedRenderer::Rule *threeRule = new QgsRuleBasedRenderer::Rule( symbol->clone(), 0, 0, "\"Pilots\" = 3" );
+      elseRule->appendChild( threeRule );
+
+      QgsFields fields;
+      fields.append( QgsField( QStringLiteral( "Importance" ), QVariant::Int ) );
+      fields.append( QgsField( QStringLiteral( "Pilots" ), QVariant::Int ) );
+
+      QgsFeature feature( fields );
+      QgsExpressionContext expContext;
+      expContext.setFields( fields );
+      QgsRenderContext rc;
+      rc.setExpressionContext( expContext );
+
+      renderer->startRender( rc, fields );
+
+      QSet< QString > expected{rootRule->ruleKey(), elseRule->ruleKey() };
+      QCOMPARE( renderer->legendKeysForFeature( feature, rc ), expected );
+
+      feature.setAttributes( QgsAttributes() << 1 << 2 );
+      expected = {rootRule->ruleKey(), lessThanTwoRule->ruleKey() };
+      QCOMPARE( renderer->legendKeysForFeature( feature, rc ), expected );
+
+      feature.setAttributes( QgsAttributes() << 2 << 2 );
+      expected = {rootRule->ruleKey(), lessThanTwoRule->ruleKey() };
+      QCOMPARE( renderer->legendKeysForFeature( feature, rc ), expected );
+
+      feature.setAttributes( QgsAttributes() << 3 << 1 );
+      expected = {rootRule->ruleKey(), elseRule->ruleKey(), oneRule->ruleKey() };
+      QCOMPARE( renderer->legendKeysForFeature( feature, rc ), expected );
+
+      feature.setAttributes( QgsAttributes() << 3 << 2 );
+      expected = {rootRule->ruleKey(), elseRule->ruleKey(), twoRule->ruleKey() };
+      QCOMPARE( renderer->legendKeysForFeature( feature, rc ), expected );
+
+      feature.setAttributes( QgsAttributes() << 3 << 3 );
+      expected = {rootRule->ruleKey(), elseRule->ruleKey(), threeRule->ruleKey() };
+      QCOMPARE( renderer->legendKeysForFeature( feature, rc ), expected );
+
+      feature.setAttributes( QgsAttributes() << 3 << 4 );
+      expected = {rootRule->ruleKey(), elseRule->ruleKey() };
+      QCOMPARE( renderer->legendKeysForFeature( feature, rc ), expected );
+
+      renderer->stopRender( rc );
+    }
+
+
     void testLegendKeyToExpression()
     {
       QgsRuleBasedRenderer::Rule *rootRule = new QgsRuleBasedRenderer::Rule( nullptr );
@@ -1218,15 +1367,17 @@ class TestQgsRuleBasedRenderer: public QgsTest
       QgsRuleBasedRenderer::Rule *rootRule = new QgsRuleBasedRenderer::Rule( nullptr );
       std::unique_ptr< QgsRuleBasedRenderer > renderer = std::make_unique< QgsRuleBasedRenderer >( rootRule );
 
-      QgsRuleBasedRenderer::Rule *rule1 = new QgsRuleBasedRenderer::Rule( QgsSymbol::defaultSymbol( QgsWkbTypes::GeometryType::PointGeometry ), 0, 0, "\"field_name\" = 1" );
-      QgsRuleBasedRenderer::Rule *rule2 = new QgsRuleBasedRenderer::Rule( QgsSymbol::defaultSymbol( QgsWkbTypes::GeometryType::PointGeometry ), 0, 0, "\"field_name\" = 6" );
-      QgsRuleBasedRenderer::Rule *ruleElse = new QgsRuleBasedRenderer::Rule( QgsSymbol::defaultSymbol( QgsWkbTypes::GeometryType::PointGeometry ), 0, 0, "ELSE" );
+      QgsRuleBasedRenderer::Rule *rule1 = new QgsRuleBasedRenderer::Rule( QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ), 0, 0, "\"field_name\" = 1" );
+      QgsRuleBasedRenderer::Rule *rule2 = new QgsRuleBasedRenderer::Rule( QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ), 0, 0, "\"field_name\" = 6" );
+      QgsRuleBasedRenderer::Rule *ruleElse = new QgsRuleBasedRenderer::Rule( QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ), 0, 0, "ELSE" );
+      QgsRuleBasedRenderer::Rule *ruleElse2 = new QgsRuleBasedRenderer::Rule( QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ), 0, 0, "ELSE" );
 
       Q_ASSERT( ruleElse->isElse() );
 
       rootRule->appendChild( rule1 );
       rootRule->appendChild( rule2 );
       rootRule->appendChild( ruleElse );
+      rootRule->appendChild( ruleElse2 );
 
       bool ok;
 

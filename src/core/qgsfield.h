@@ -22,6 +22,7 @@
 #include <QSharedDataPointer>
 #include "qgis_core.h"
 #include "qgis_sip.h"
+#include "qgis.h"
 
 typedef QList<int> QgsAttributeList SIP_SKIP;
 
@@ -34,6 +35,7 @@ typedef QList<int> QgsAttributeList SIP_SKIP;
 #include "qgseditorwidgetsetup.h"
 #include "qgsfieldconstraints.h"
 #include "qgsdefaultvalue.h"
+#include "qgis.h"
 
 class QgsFieldPrivate;
 
@@ -155,16 +157,29 @@ class CORE_EXPORT QgsField
      */
     QString displayNameWithAlias() const;
 
-
     /**
      * Returns the type to use when displaying this field, including the length and precision of the datatype if applicable.
      *
      * This will be used when the full datatype with details has to displayed to the user.
      *
      * \see type()
+     * \see friendlyTypeString()
+     *
      * \since QGIS 3.14
      */
     QString displayType( bool showConstraints = false ) const;
+
+    /**
+     * Returns a user friendly, translated representation of the field type.
+     *
+     * Unlike displayType(), this method only returns strings representing the field type and does not include
+     * length, precision or constraint information.
+     *
+     * \see type()
+     * \see displayType()
+     * \since QGIS 3.14
+     */
+    QString friendlyTypeString() const;
 
     //! Gets variant type of the field as it will be retrieved from data source
     QVariant::Type type() const;
@@ -201,6 +216,58 @@ class CORE_EXPORT QgsField
      * Returns the field comment
      */
     QString comment() const;
+
+    /**
+     * Returns the map of field metadata.
+     *
+     * Map keys should match values from the Qgis::FieldMetadataProperty enum.
+     *
+     * \see setMetadata()
+     * \since QGIS 3.32
+     */
+    QMap< int, QVariant > metadata() const;
+
+    /**
+     * Returns a specific metadata \a property.
+     *
+     * \see setMetadata()
+     * \since QGIS 3.32
+     */
+    QVariant metadata( Qgis::FieldMetadataProperty property ) const SIP_SKIP;
+
+    /**
+     * Returns a specific metadata \a property.
+     *
+     * \see setMetadata()
+     * \since QGIS 3.32
+     */
+    QVariant metadata( int property ) const;
+
+    /**
+     * Sets the map of field \a metadata.
+     *
+     * Map keys should match values from the Qgis::FieldMetadataProperty enum.
+     *
+     * \see metadata()
+     * \since QGIS 3.32
+     */
+    void setMetadata( const QMap< int, QVariant > metadata );
+
+    /**
+     * Sets a metadata \a property to \a value.
+     *
+     * \see metadata()
+     * \since QGIS 3.32
+     */
+    void setMetadata( Qgis::FieldMetadataProperty property, const QVariant &value ) SIP_SKIP;
+
+    /**
+     * Sets a metadata \a property to \a value.
+     *
+     * \see metadata()
+     * \since QGIS 3.32
+     */
+    void setMetadata( int property, const QVariant &value );
 
     /**
      * Returns if this field is numeric. Any integer or floating point type
@@ -440,12 +507,36 @@ class CORE_EXPORT QgsField
      */
     bool isReadOnly() const;
 
+    /**
+     * Returns the field's split policy, which indicates how field values should
+     * be handled during a split operation.
+     *
+     * \see setSplitPolicy()
+     *
+     * \since QGIS 3.30
+     */
+    Qgis::FieldDomainSplitPolicy splitPolicy() const;
+
+    /**
+     * Sets the field's split \a policy, which indicates how field values should
+     * be handled during a split operation.
+     *
+     * \see splitPolicy()
+     *
+     * \since QGIS 3.30
+     */
+    void setSplitPolicy( Qgis::FieldDomainSplitPolicy policy );
+
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
     QString str = QStringLiteral( "<QgsField: %1 (%2)>" ).arg( sipCpp->name() ).arg( sipCpp->typeName() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
+#endif
+
+#ifndef SIP_RUN
+    static constexpr int MAX_WKT_LENGTH = 999;
 #endif
 
   private:

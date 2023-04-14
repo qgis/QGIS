@@ -344,22 +344,22 @@ class CORE_EXPORT QgsStyleProxyModel: public QSortFilterProxyModel
     void setSymbolTypeFilterEnabled( bool enabled );
 
     /**
-     * Returns the layer type filter, or QgsWkbTypes::UnknownGeometry if no
+     * Returns the layer type filter, or Qgis::GeometryType::Unknown if no
      * layer type filter is present.
      *
      * This setting has an effect on label settings entities and 3d symbols only.
      *
      * \see setLayerType()
      */
-    QgsWkbTypes::GeometryType layerType() const;
+    Qgis::GeometryType layerType() const;
 
     /**
-     * Sets the layer \a type filter. Set \a type to QgsWkbTypes::UnknownGeometry if no
+     * Sets the layer \a type filter. Set \a type to Qgis::GeometryType::Unknown if no
      * layer type filter is desired.
      *
      * \see layerType()
      */
-    void setLayerType( QgsWkbTypes::GeometryType type );
+    void setLayerType( Qgis::GeometryType type );
 
     /**
      * Sets a tag \a id to filter style entities by. Only entities with the given
@@ -489,7 +489,7 @@ class CORE_EXPORT QgsStyleProxyModel: public QSortFilterProxyModel
     bool mSymbolTypeFilterEnabled = false;
     Qgis::SymbolType mSymbolType = Qgis::SymbolType::Marker;
 
-    QgsWkbTypes::GeometryType mLayerType = QgsWkbTypes::UnknownGeometry;
+    Qgis::GeometryType mLayerType = Qgis::GeometryType::Unknown;
 
 };
 

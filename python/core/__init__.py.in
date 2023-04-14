@@ -105,6 +105,35 @@ Qgis.QGIS_VERSION = Qgis.version()
 Qgis.QGIS_VERSION_INT = Qgis.versionInt()
 Qgis.QGIS_RELEASE_NAME = Qgis.releaseName()
 
+# Monkey patch QgsMapLayerType
+
+QgsMapLayerType = Qgis.LayerType
+QgsMapLayerType.VectorLayer = Qgis.LayerType.Vector
+QgsMapLayerType.VectorLayer.is_monkey_patched = True
+QgsMapLayerType.VectorLayer.__doc__ = "Vector layer"
+QgsMapLayerType.RasterLayer = Qgis.LayerType.Raster
+QgsMapLayerType.RasterLayer.is_monkey_patched = True
+QgsMapLayerType.RasterLayer.__doc__ = "Raster layer"
+QgsMapLayerType.PluginLayer = Qgis.LayerType.Plugin
+QgsMapLayerType.PluginLayer.is_monkey_patched = True
+QgsMapLayerType.PluginLayer.__doc__ = "Plugin based layer"
+QgsMapLayerType.MeshLayer = Qgis.LayerType.Mesh
+QgsMapLayerType.MeshLayer.is_monkey_patched = True
+QgsMapLayerType.MeshLayer.__doc__ = "Mesh layer. Added in QGIS 3.2"
+QgsMapLayerType.VectorTileLayer = Qgis.LayerType.VectorTile
+QgsMapLayerType.VectorTileLayer.is_monkey_patched = True
+QgsMapLayerType.VectorTileLayer.__doc__ = "Vector tile layer. Added in QGIS 3.14"
+QgsMapLayerType.AnnotationLayer = Qgis.LayerType.Annotation
+QgsMapLayerType.AnnotationLayer.is_monkey_patched = True
+QgsMapLayerType.AnnotationLayer.__doc__ = "Contains freeform, georeferenced annotations. Added in QGIS 3.16"
+QgsMapLayerType.PointCloudLayer = Qgis.LayerType.PointCloud
+QgsMapLayerType.PointCloudLayer.is_monkey_patched = True
+QgsMapLayerType.PointCloudLayer.__doc__ = "Point cloud layer. Added in QGIS 3.18"
+QgsMapLayerType.GroupLayer = Qgis.LayerType.Group
+QgsMapLayerType.GroupLayer.is_monkey_patched = True
+QgsMapLayerType.GroupLayer.__doc__ = "Composite group layer. Added in QGIS 3.24"
+QgsMapLayerType.baseClass = Qgis
+
 GEOWKT = geoWkt()
 PROJECT_SCALES = Qgis.defaultProjectScales()
 GEOPROJ4 = geoProj4()

@@ -91,13 +91,13 @@ QVariantMap QgsMultiDifferenceAlgorithm::processAlgorithm( const QVariantMap &pa
     if ( !layer )
       throw QgsProcessingException( QObject::tr( "Error retrieving map layer." ) );
 
-    if ( layer->type() != QgsMapLayerType::VectorLayer )
+    if ( layer->type() != Qgis::LayerType::Vector )
       throw QgsProcessingException( QObject::tr( "All layers must be vector layers!" ) );
 
     totalLayerCount++;
   }
 
-  const QgsWkbTypes::Type geometryType = QgsWkbTypes::multiType( sourceA->wkbType() );
+  const Qgis::WkbType geometryType = QgsWkbTypes::multiType( sourceA->wkbType() );
   const QgsCoordinateReferenceSystem crs = sourceA->sourceCrs();
   std::unique_ptr< QgsFeatureSink > sink;
   long count = 0;

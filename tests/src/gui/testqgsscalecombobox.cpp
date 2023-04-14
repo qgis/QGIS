@@ -18,6 +18,7 @@
 #include "qgsapplication.h"
 #include "qgslogger.h"
 #include "qgsscalecombobox.h"
+#include "qgssettingsregistrycore.h"
 #include <QObject>
 #include <QLineEdit>
 #include <QComboBox>
@@ -70,6 +71,14 @@ void TestQgsScaleComboBox::init()
 
 void TestQgsScaleComboBox::basic()
 {
+  const QStringList scales = QgsSettingsRegistryCore::settingsMapScales->value();
+  QCOMPARE( scales.count(), s->count() );
+  for ( int i = 0; i < s->count(); i++ )
+  {
+    int denominator = QLocale().toInt( scales[i].split( ':' )[1] );
+    QCOMPARE( s->itemText( i ), QString( "1:%1" ).arg( QLocale().toString( denominator ) ) );
+  }
+
   // Testing conversion from "1:nnn".
   enterScale( QStringLiteral( "1:2345" ) );
   QCOMPARE( s->scaleString(), QString( "1:%1" ).arg( QLocale().toString( 2345 ) ) );

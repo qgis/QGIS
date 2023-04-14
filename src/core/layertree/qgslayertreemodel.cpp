@@ -20,23 +20,19 @@
 
 #include "qgsapplication.h"
 #include "qgslayertree.h"
-#include "qgslayertreeutils.h"
 #include "qgslayertreemodellegendnode.h"
 #include "qgsproject.h"
 #include "qgsmaphittest.h"
 #include "qgsmaplayer.h"
 #include "qgsmaplayerlegend.h"
-#include "qgsmaplayerstylemanager.h"
-#include "qgsmeshlayer.h"
-#include "qgspluginlayer.h"
-#include "qgsrasterlayer.h"
-#include "qgsrenderer.h"
-#include "qgssymbollayerutils.h"
 #include "qgsvectorlayer.h"
 #include "qgslayerdefinition.h"
 #include "qgsiconutils.h"
 #include "qgsmimedatautils.h"
 #include "qgssettingsregistrycore.h"
+#include "qgsmaplayerstyle.h"
+#include "qgsrendercontext.h"
+#include "qgslayertreefiltersettings.h"
 
 #include <QPalette>
 
@@ -44,12 +40,6 @@ QgsLayerTreeModel::QgsLayerTreeModel( QgsLayerTree *rootNode, QObject *parent )
   : QAbstractItemModel( parent )
   , mRootNode( rootNode )
   , mFlags( ShowLegend | AllowLegendChangeState | DeferredLegendInvalidation )
-  , mAutoCollapseLegendNodesCount( -1 )
-  , mLegendFilterByScale( 0 )
-  , mLegendFilterUsesExtent( false )
-  , mLegendMapViewMupp( 0 )
-  , mLegendMapViewDpi( 0 )
-  , mLegendMapViewScale( 0 )
 {
   connectToRootNode();
 
@@ -607,51 +597,99 @@ void QgsLayerTreeModel::setLegendFilterByScale( double scale )
 
 void QgsLayerTreeModel::setLegendFilterByMap( const QgsMapSettings *settings )
 {
+  Q_NOWARN_DEPRECATED_PUSH
   setLegendFilter( settings, /* useExtent = */ true );
+  Q_NOWARN_DEPRECATED_POP
 }
 
 void QgsLayerTreeModel::setLegendFilter( const QgsMapSettings *settings, bool useExtent, const QgsGeometry &polygon, bool useExpressions )
 {
   if ( settings && settings->hasValidSettings() )
   {
-    mLegendFilterMapSettings.reset( new QgsMapSettings( *settings ) );
-    mLegendFilterMapSettings->setLayerStyleOverrides( mLayerStyleOverrides );
-    QgsMapHitTest::LayerFilterExpression exprs;
-    mLegendFilterUsesExtent = useExtent;
-    // collect expression filters
+    std::unique_ptr< QgsLayerTreeFilterSettings > filterSettings = std::make_unique< QgsLayerTreeFilterSettings >( *settings );
+
+    if ( !useExtent ) // only expressions
+    {
+      filterSettings->setFlags( Qgis::LayerTreeFilterFlag::SkipVisibilityCheck );
+    }
+    else if ( polygon.type() == Qgis::GeometryType::Polygon )
+    {
+      filterSettings->setFilterPolygon( polygon );
+    }
+
     if ( useExpressions )
     {
-      const auto layers = mRootNode->findLayers();
-      for ( QgsLayerTreeLayer *nodeLayer : layers )
-      {
-        bool enabled;
-        QString expr = QgsLayerTreeUtils::legendFilterByExpression( *nodeLayer, &enabled );
-        if ( enabled && !expr.isEmpty() )
-        {
-          exprs[ nodeLayer->layerId()] = expr;
-        }
-      }
+      filterSettings->setLayerFilterExpressionsFromLayerTree( mRootNode );
     }
-    bool polygonValid = !polygon.isNull() && polygon.type() == QgsWkbTypes::PolygonGeometry;
-    if ( useExpressions && !useExtent && !polygonValid ) // only expressions
-    {
-      mLegendFilterHitTest.reset( new QgsMapHitTest( *mLegendFilterMapSettings, exprs ) );
-    }
-    else
-    {
-      mLegendFilterHitTest.reset( new QgsMapHitTest( *mLegendFilterMapSettings, polygon, exprs ) );
-    }
-    mLegendFilterHitTest->run();
+
+    setFilterSettings( filterSettings.get() );
   }
   else
   {
-    if ( !mLegendFilterMapSettings )
-      return; // no change
-
-    mLegendFilterMapSettings.reset();
-    mLegendFilterHitTest.reset();
+    setFilterSettings( nullptr );
   }
+}
 
+const QgsMapSettings *QgsLayerTreeModel::legendFilterMapSettings() const
+{
+  return mFilterSettings ? &mFilterSettings->mapSettings() : nullptr;
+}
+
+void QgsLayerTreeModel::setFilterSettings( const QgsLayerTreeFilterSettings *settings )
+{
+  if ( settings )
+  {
+    mFilterSettings = std::make_unique< QgsLayerTreeFilterSettings >( *settings );
+    mFilterSettings->mapSettings().setLayerStyleOverrides( mLayerStyleOverrides );
+
+    bool hitTestWasRunning = false;
+    if ( mHitTestTask )
+    {
+      // cancel outdated task -- this is owned by the task manager and will get automatically deleted accordingly
+      disconnect( mHitTestTask, &QgsTask::taskCompleted, this, &QgsLayerTreeModel::hitTestTaskCompleted );
+      mHitTestTask->cancel();
+      mHitTestTask = nullptr;
+      hitTestWasRunning = true;
+    }
+
+    std::unique_ptr< QgsMapHitTest > blockingHitTest;
+    if ( mFlags & QgsLayerTreeModel::Flag::UseThreadedHitTest )
+      mHitTestTask = new QgsMapHitTestTask( *mFilterSettings );
+    else
+      blockingHitTest = std::make_unique< QgsMapHitTest >( *mFilterSettings );
+
+    if ( mHitTestTask )
+    {
+      connect( mHitTestTask, &QgsTask::taskCompleted, this, &QgsLayerTreeModel::hitTestTaskCompleted );
+      QgsApplication::taskManager()->addTask( mHitTestTask );
+
+      if ( !hitTestWasRunning )
+        emit hitTestStarted();
+    }
+    else
+    {
+      blockingHitTest->run();
+      mHitTestResults = blockingHitTest->results();
+      handleHitTestResults();
+    }
+  }
+  else
+  {
+    if ( !mFilterSettings )
+      return;
+
+    mFilterSettings.reset();
+    handleHitTestResults();
+  }
+}
+
+const QgsLayerTreeFilterSettings *QgsLayerTreeModel::filterSettings() const
+{
+  return mFilterSettings.get();
+}
+
+void QgsLayerTreeModel::handleHitTestResults()
+{
   // temporarily disable autocollapse so that legend nodes stay visible
   int bkAutoCollapse = autoCollapseLegendNodes();
   setAutoCollapseLegendNodes( -1 );
@@ -702,6 +740,17 @@ void QgsLayerTreeModel::setLayerStyleOverrides( const QMap<QString, QString> &ov
 int QgsLayerTreeModel::scaleIconSize( int standardSize )
 {
   return QgsApplication::scaleIconSize( standardSize, true );
+}
+
+void QgsLayerTreeModel::waitForHitTestBlocking()
+{
+  if ( mHitTestTask )
+    mHitTestTask->waitForFinished();
+}
+
+bool QgsLayerTreeModel::hitTestInProgress() const
+{
+  return static_cast< bool >( mHitTestTask );
 }
 
 void QgsLayerTreeModel::nodeWillAddChildren( QgsLayerTreeNode *node, int indexFrom, int indexTo )
@@ -875,6 +924,15 @@ void QgsLayerTreeModel::legendNodeSizeChanged()
     emit dataChanged( index, index, QVector<int> { Qt::SizeHintRole } );
 }
 
+void QgsLayerTreeModel::hitTestTaskCompleted()
+{
+  if ( mHitTestTask )
+  {
+    mHitTestResults = mHitTestTask->results();
+    handleHitTestResults();
+    emit hitTestCompleted();
+  }
+}
 
 void QgsLayerTreeModel::connectToLayer( QgsLayerTreeLayer *nodeLayer )
 {
@@ -900,7 +958,7 @@ void QgsLayerTreeModel::connectToLayer( QgsLayerTreeLayer *nodeLayer )
       if ( mAutoCollapseLegendNodesCount != -1 && rowCount( node2index( nodeLayer ) )  >= mAutoCollapseLegendNodesCount )
         nodeLayer->setExpanded( false );
 
-      if ( nodeLayer->layer()->type() == QgsMapLayerType::VectorLayer && QgsSettingsRegistryCore::settingsLayerTreeShowFeatureCountForNewLayers->value() )
+      if ( nodeLayer->layer()->type() == Qgis::LayerType::Vector && QgsSettingsRegistryCore::settingsLayerTreeShowFeatureCountForNewLayers->value() )
       {
         nodeLayer->setCustomProperty( QStringLiteral( "showFeatureCount" ), true );
       }
@@ -1213,9 +1271,9 @@ QList<QgsLayerTreeModelLegendNode *> QgsLayerTreeModel::filterLegendNodes( const
         filtered << node;
     }
   }
-  else if ( mLegendFilterMapSettings )
+  else if ( mFilterSettings )
   {
-    if ( !nodes.isEmpty() && mLegendFilterMapSettings->layers().contains( nodes.at( 0 )->layerNode()->layer() ) )
+    if ( !nodes.isEmpty() && mFilterSettings->layers().contains( nodes.at( 0 )->layerNode()->layer() ) )
     {
       for ( QgsLayerTreeModelLegendNode *node : std::as_const( nodes ) )
       {
@@ -1234,13 +1292,18 @@ QList<QgsLayerTreeModelLegendNode *> QgsLayerTreeModel::filterLegendNodes( const
           case QgsLayerTreeModelLegendNode::ColorRampLegend:
           {
             const QString ruleKey = node->data( QgsSymbolLegendNode::RuleKeyRole ).toString();
-            bool checked = mLegendFilterUsesExtent || node->data( Qt::CheckStateRole ).toInt() == Qt::Checked;
+            const bool checked = ( mFilterSettings && !( mFilterSettings->flags() & Qgis::LayerTreeFilterFlag::SkipVisibilityCheck ) )
+                                 || node->data( Qt::CheckStateRole ).toInt() == Qt::Checked;
+
             if ( checked )
             {
               if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( node->layerNode()->layer() ) )
               {
-                if ( mLegendFilterHitTest->legendKeyVisible( ruleKey, vl ) )
+                auto it = mHitTestResults.constFind( vl->id() );
+                if ( it != mHitTestResults.constEnd() && it->contains( ruleKey ) )
+                {
                   filtered << node;
+                }
               }
               else
               {
@@ -1277,6 +1340,14 @@ void QgsLayerTreeModel::legendCleanup()
     delete data.tree;
   }
   mLegend.clear();
+
+  if ( mHitTestTask )
+  {
+    // cancel outdated task -- this is owned by the task manager and will get automatically deleted accordingly
+    disconnect( mHitTestTask, &QgsTask::taskCompleted, this, &QgsLayerTreeModel::hitTestTaskCompleted );
+    mHitTestTask->cancel();
+    mHitTestTask = nullptr;
+  }
 }
 
 

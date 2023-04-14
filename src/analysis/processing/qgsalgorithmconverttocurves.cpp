@@ -117,25 +117,25 @@ QgsFeatureList QgsConvertToCurvesAlgorithm::processFeature( const QgsFeature &fe
   return QgsFeatureList() << f;
 }
 
-QgsWkbTypes::Type QgsConvertToCurvesAlgorithm::outputWkbType( QgsWkbTypes::Type inputWkbType ) const
+Qgis::WkbType QgsConvertToCurvesAlgorithm::outputWkbType( Qgis::WkbType inputWkbType ) const
 {
   if ( QgsWkbTypes::isCurvedType( inputWkbType ) )
     return inputWkbType;
 
-  QgsWkbTypes::Type outType = QgsWkbTypes::Unknown;
+  Qgis::WkbType outType = Qgis::WkbType::Unknown;
   switch ( QgsWkbTypes::geometryType( inputWkbType ) )
   {
-    case QgsWkbTypes::PointGeometry:
-    case QgsWkbTypes::NullGeometry:
-    case QgsWkbTypes::UnknownGeometry:
+    case Qgis::GeometryType::Point:
+    case Qgis::GeometryType::Null:
+    case Qgis::GeometryType::Unknown:
       return inputWkbType;
 
-    case QgsWkbTypes::LineGeometry:
-      outType = QgsWkbTypes::CompoundCurve;
+    case Qgis::GeometryType::Line:
+      outType = Qgis::WkbType::CompoundCurve;
       break;
 
-    case QgsWkbTypes::PolygonGeometry:
-      outType = QgsWkbTypes::CurvePolygon;
+    case Qgis::GeometryType::Polygon:
+      outType = Qgis::WkbType::CurvePolygon;
       break;
   }
 

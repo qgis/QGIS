@@ -25,7 +25,6 @@
 #include "qgslayout.h"
 #include "qgslocator.h"
 #include "qgsnetworkaccessmanager.h"
-#include "qgslayoututils.h"
 #include "qgsowsconnection.h"
 #include "qgsprocessing.h"
 #include "qgsvectortileconnection.h"
@@ -114,12 +113,10 @@ const QgsSettingsEntryStringList *QgsSettingsRegistryCore::settingsMapScales = n
 QgsSettingsRegistryCore::QgsSettingsRegistryCore()
   : QgsSettingsRegistry()
 {
-  migrateOldSettings();
 }
 
 QgsSettingsRegistryCore::~QgsSettingsRegistryCore()
 {
-  backwardCompatibility();
 }
 
 void QgsSettingsRegistryCore::migrateOldSettings()
@@ -192,7 +189,7 @@ void QgsSettingsRegistryCore::migrateOldSettings()
     const QStringList childKeys = settings.childKeys();
     for ( const QString &childKey : childKeys )
     {
-      if ( childKey.startsWith( QStringLiteral( "enabled" ) ) )
+      if ( childKey.startsWith( QLatin1String( "enabled" ) ) )
       {
         QString filter = childKey;
         filter.remove( QStringLiteral( "enabled_" ) );

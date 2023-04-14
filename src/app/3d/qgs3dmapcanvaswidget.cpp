@@ -55,7 +55,6 @@
 Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
   : QWidget( nullptr )
   , mCanvasName( name )
-  , mViewFrustumHighlight( nullptr )
 {
   const QgsSettings setting;
 
@@ -272,8 +271,6 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
 Qgs3DMapCanvasWidget::~Qgs3DMapCanvasWidget()
 {
   delete mDockableWidgetHelper;
-  if ( mViewFrustumHighlight )
-    delete mViewFrustumHighlight;
 }
 
 void Qgs3DMapCanvasWidget::resizeEvent( QResizeEvent *event )
@@ -374,6 +371,9 @@ void Qgs3DMapCanvasWidget::setMapSettings( Qgs3DMapSettings *map )
   mLabelFpsCounter->setVisible( map->isFpsCounterEnabled() );
 
   connect( map, &Qgs3DMapSettings::viewFrustumVisualizationEnabledChanged, this, &Qgs3DMapCanvasWidget::onViewFrustumVisualizationEnabledChanged );
+  connect( map, &Qgs3DMapSettings::extentChanged, this, &Qgs3DMapCanvasWidget::onExtentChanged );
+  connect( map, &Qgs3DMapSettings::showExtentIn2DViewChanged, this, &Qgs3DMapCanvasWidget::onExtentChanged );
+  onExtentChanged();
 }
 
 void Qgs3DMapCanvasWidget::setMainCanvas( QgsMapCanvas *canvas )
@@ -384,10 +384,17 @@ void Qgs3DMapCanvasWidget::setMainCanvas( QgsMapCanvas *canvas )
   connect( mMainCanvas, &QgsMapCanvas::canvasColorChanged, this, &Qgs3DMapCanvasWidget::onMainCanvasColorChanged );
   connect( mMainCanvas, &QgsMapCanvas::extentsChanged, this, &Qgs3DMapCanvasWidget::onMainMapCanvasExtentChanged );
 
-  if ( mViewFrustumHighlight )
-    delete mViewFrustumHighlight;
-  mViewFrustumHighlight = new QgsRubberBand( canvas, QgsWkbTypes::PolygonGeometry );
-  mViewFrustumHighlight->setColor( QColor::fromRgba( qRgba( 0, 0, 255, 50 ) ) );
+  if ( !mViewFrustumHighlight )
+  {
+    mViewFrustumHighlight.reset( new QgsRubberBand( canvas, Qgis::GeometryType::Polygon ) );
+    mViewFrustumHighlight->setColor( QColor::fromRgba( qRgba( 0, 0, 255, 50 ) ) );
+  }
+
+  if ( !mViewExtentHighlight )
+  {
+    mViewExtentHighlight.reset( new QgsRubberBand( canvas, Qgis::GeometryType::Polygon ) );
+    mViewExtentHighlight->setColor( QColor::fromRgba( qRgba( 255, 0, 0, 50 ) ) );
+  }
 }
 
 void Qgs3DMapCanvasWidget::resetView()
@@ -451,7 +458,7 @@ void Qgs3DMapCanvasWidget::configure()
     if ( button == buttons->button( QDialogButtonBox::Ok ) )
       mConfigureDialog->accept();
   } );
-  connect( buttons, &QDialogButtonBox::helpRequested, w, []() { QgsHelp::openHelp( QStringLiteral( "introduction/qgis_gui.html#scene-configuration" ) ); } );
+  connect( buttons, &QDialogButtonBox::helpRequested, w, []() { QgsHelp::openHelp( QStringLiteral( "map_views/3d_map_view.html#scene-configuration" ) ); } );
 
   connect( w, &Qgs3DMapConfigWidget::isValidChanged, this, [ = ]( bool valid )
   {
@@ -488,7 +495,7 @@ void Qgs3DMapCanvasWidget::exportScene()
 
   connect( buttons, &QDialogButtonBox::accepted, &dlg, &QDialog::accept );
   connect( buttons, &QDialogButtonBox::rejected, &dlg, &QDialog::reject );
-  connect( buttons, &QDialogButtonBox::helpRequested, &dlg, [ = ] { QgsHelp::openHelp( QStringLiteral( "introduction/qgis_gui.html#d-map-view" ) ); } );
+  connect( buttons, &QDialogButtonBox::helpRequested, &dlg, [ = ] { QgsHelp::openHelp( QStringLiteral( "map_views/3d_map_view.html" ) ); } );
 
   QVBoxLayout *layout = new QVBoxLayout( &dlg );
   layout->addWidget( &w, 1 );
@@ -610,7 +617,7 @@ void Qgs3DMapCanvasWidget::onViewed2DExtentFrom3DChanged( QVector<QgsPointXY> ex
 
 void Qgs3DMapCanvasWidget::onViewFrustumVisualizationEnabledChanged()
 {
-  mViewFrustumHighlight->reset( QgsWkbTypes::PolygonGeometry );
+  mViewFrustumHighlight->reset( Qgis::GeometryType::Polygon );
   if ( mCanvas->map()->viewFrustumVisualizationEnabled() )
   {
     for ( QgsPointXY &pt : mCanvas->viewFrustum2DExtent() )
@@ -618,5 +625,20 @@ void Qgs3DMapCanvasWidget::onViewFrustumVisualizationEnabledChanged()
       mViewFrustumHighlight->addPoint( pt, false );
     }
     mViewFrustumHighlight->closePoints();
+  }
+}
+
+void Qgs3DMapCanvasWidget::onExtentChanged()
+{
+  Qgs3DMapSettings *mapSettings = mCanvas->map();
+  mViewExtentHighlight->reset( Qgis::GeometryType::Polygon );
+  if ( mapSettings->showExtentIn2DView() )
+  {
+    QgsRectangle extent = mapSettings->extent();
+    mViewExtentHighlight->addPoint( QgsPointXY( extent.xMinimum(), extent.yMinimum() ), false );
+    mViewExtentHighlight->addPoint( QgsPointXY( extent.xMinimum(), extent.yMaximum() ), false );
+    mViewExtentHighlight->addPoint( QgsPointXY( extent.xMaximum(), extent.yMaximum() ), false );
+    mViewExtentHighlight->addPoint( QgsPointXY( extent.xMaximum(), extent.yMinimum() ), false );
+    mViewExtentHighlight->closePoints();
   }
 }

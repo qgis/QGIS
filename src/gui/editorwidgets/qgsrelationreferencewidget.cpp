@@ -22,27 +22,20 @@
 #include <QCompleter>
 
 #include "qgsattributeform.h"
-#include "qgsattributetablefiltermodel.h"
 #include "qgsattributedialog.h"
 #include "qgsapplication.h"
 #include "qgscollapsiblegroupbox.h"
-#include "qgseditorwidgetfactory.h"
 #include "qgsexpression.h"
-#include "qgsfeaturelistmodel.h"
 #include "qgsfields.h"
 #include "qgsgeometry.h"
 #include "qgshighlight.h"
 #include "qgsmapcanvas.h"
 #include "qgsmessagebar.h"
-#include "qgsrelationreferenceconfigdlg.h"
 #include "qgsvectorlayer.h"
-#include "qgsattributetablemodel.h"
 #include "qgsmaptoolidentifyfeature.h"
 #include "qgsmaptooldigitizefeature.h"
 #include "qgsfeatureiterator.h"
 #include "qgsfeaturelistcombobox.h"
-#include "qgsexpressioncontextutils.h"
-#include "qgsfeaturefiltermodel.h"
 #include "qgsvectorlayerutils.h"
 
 
@@ -194,6 +187,7 @@ void QgsRelationReferenceWidget::setRelation( const QgsRelation &relation, bool 
       mComboBox->setSourceLayer( mReferencedLayer );
       mComboBox->setIdentifierFields( mReferencedFields );
       mComboBox->setFilterExpression( mFilterExpression );
+      mComboBox->setFetchLimit( mFetchLimit );
     }
     mAttributeEditorFrame->setObjectName( QStringLiteral( "referencing/" ) + relation.name() );
 
@@ -372,11 +366,6 @@ void QgsRelationReferenceWidget::setAllowMapIdentification( bool allowMapIdentif
   mAllowMapIdentification = allowMapIdentification;
 }
 
-void QgsRelationReferenceWidget::setOrderByValue( bool orderByValue )
-{
-  mOrderByValue = orderByValue;
-}
-
 void QgsRelationReferenceWidget::setFilterFields( const QStringList &filterFields )
 {
   mFilterFields = filterFields;
@@ -486,6 +475,7 @@ void QgsRelationReferenceWidget::init()
     mComboBox->setDisplayExpression( mReferencedLayer->displayExpression() );
     mComboBox->setAllowNull( mAllowNull );
     mComboBox->setIdentifierFields( mReferencedFields );
+    mComboBox->setFetchLimit( mFetchLimit );
 
     if ( ! mFilterExpression.isEmpty() )
       mComboBox->setFilterExpression( mFilterExpression );
@@ -865,7 +855,7 @@ void QgsRelationReferenceWidget::addEntry()
     return;
 
   // no geometry, skip the digitizing
-  if ( mReferencedLayer->geometryType() == QgsWkbTypes::UnknownGeometry || mReferencedLayer->geometryType() == QgsWkbTypes::NullGeometry )
+  if ( mReferencedLayer->geometryType() == Qgis::GeometryType::Unknown || mReferencedLayer->geometryType() == Qgis::GeometryType::Null )
   {
     QgsFeature f( mReferencedLayer->fields() );
     entryAdded( f );

@@ -17,17 +17,12 @@
 
 #include "qgsfeatureiterator.h"
 #include "qgsmapcanvas.h"
-#include "qgsvertexmarker.h"
 #include "qgsvectorlayer.h"
 #include "qgsgeometry.h"
 #include "qgsrubberband.h"
 #include "qgssnappingutils.h"
-#include "qgstolerance.h"
-#include "qgisapp.h"
-#include "qgslinestring.h"
-#include "qgsmultilinestring.h"
 #include "qgsmapmouseevent.h"
-
+#include "qgsmulticurve.h"
 
 QgsMapToolReverseLine::QgsMapToolReverseLine( QgsMapCanvas *canvas )
   : QgsMapToolEdit( canvas )
@@ -138,7 +133,7 @@ QgsGeometry QgsMapToolReverseLine::partUnderPoint( QPoint point, QgsFeatureId &f
 
   switch ( vlayer->geometryType() )
   {
-    case QgsWkbTypes::LineGeometry:
+    case Qgis::GeometryType::Line:
     {
       const QgsPointLocator::Match match = mCanvas->snappingUtils()->snapToCurrentLayer( point, QgsPointLocator::Types( QgsPointLocator::Vertex | QgsPointLocator::Edge ) );
       if ( !match.isValid() )
@@ -152,7 +147,7 @@ QgsGeometry QgsMapToolReverseLine::partUnderPoint( QPoint point, QgsFeatureId &f
         fid = match.featureId();
         return g;
       }
-      else if ( QgsWkbTypes::geometryType( g.wkbType() ) == QgsWkbTypes::LineGeometry )
+      else if ( QgsWkbTypes::geometryType( g.wkbType() ) == Qgis::GeometryType::Line )
       {
         QgsMultiPolylineXY mline = g.asMultiPolyline();
         for ( int part = 0; part < mline.count(); part++ )

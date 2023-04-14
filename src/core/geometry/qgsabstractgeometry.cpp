@@ -13,14 +13,11 @@ email                : marco.hugentobler at sourcepole dot com
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsapplication.h"
 #include "qgsabstractgeometry.h"
-#include "qgswkbptr.h"
-#include "qgsgeos.h"
-#include "qgsmaptopixel.h"
 #include "qgspoint.h"
 #include "qgsgeometrycollection.h"
 #include "qgsvertexid.h"
+#include "qgscurve.h"
 
 #include <nlohmann/json.hpp>
 #include <limits>
@@ -74,7 +71,7 @@ int QgsAbstractGeometry::compareTo( const QgsAbstractGeometry *other ) const
   return compareToSameClass( other );
 }
 
-void QgsAbstractGeometry::setZMTypeFromSubGeometry( const QgsAbstractGeometry *subgeom, QgsWkbTypes::Type baseGeomType )
+void QgsAbstractGeometry::setZMTypeFromSubGeometry( const QgsAbstractGeometry *subgeom, Qgis::WkbType baseGeomType )
 {
   if ( !subgeom )
   {
@@ -82,16 +79,16 @@ void QgsAbstractGeometry::setZMTypeFromSubGeometry( const QgsAbstractGeometry *s
   }
 
   //special handling for 25d types:
-  if ( baseGeomType == QgsWkbTypes::LineString &&
-       ( subgeom->wkbType() == QgsWkbTypes::Point25D || subgeom->wkbType() == QgsWkbTypes::LineString25D ) )
+  if ( baseGeomType == Qgis::WkbType::LineString &&
+       ( subgeom->wkbType() == Qgis::WkbType::Point25D || subgeom->wkbType() == Qgis::WkbType::LineString25D ) )
   {
-    mWkbType = QgsWkbTypes::LineString25D;
+    mWkbType = Qgis::WkbType::LineString25D;
     return;
   }
-  else if ( baseGeomType == QgsWkbTypes::Polygon &&
-            ( subgeom->wkbType() == QgsWkbTypes::Point25D || subgeom->wkbType() == QgsWkbTypes::LineString25D ) )
+  else if ( baseGeomType == Qgis::WkbType::Polygon &&
+            ( subgeom->wkbType() == Qgis::WkbType::Point25D || subgeom->wkbType() == Qgis::WkbType::LineString25D ) )
   {
-    mWkbType = QgsWkbTypes::Polygon25D;
+    mWkbType = Qgis::WkbType::Polygon25D;
     return;
   }
 
@@ -253,7 +250,7 @@ QgsPoint QgsAbstractGeometry::centroid() const
   }
 }
 
-bool QgsAbstractGeometry::convertTo( QgsWkbTypes::Type type )
+bool QgsAbstractGeometry::convertTo( Qgis::WkbType type )
 {
   if ( type == mWkbType )
     return true;
@@ -330,34 +327,34 @@ int QgsAbstractGeometry::sortIndex() const
 {
   switch ( QgsWkbTypes::flatType( mWkbType ) )
   {
-    case QgsWkbTypes::Point:
+    case Qgis::WkbType::Point:
       return 0;
-    case QgsWkbTypes::MultiPoint:
+    case Qgis::WkbType::MultiPoint:
       return 1;
-    case QgsWkbTypes::LineString:
+    case Qgis::WkbType::LineString:
       return 2;
-    case QgsWkbTypes::CircularString:
+    case Qgis::WkbType::CircularString:
       return 3;
-    case QgsWkbTypes::CompoundCurve:
+    case Qgis::WkbType::CompoundCurve:
       return 4;
-    case QgsWkbTypes::MultiLineString:
+    case Qgis::WkbType::MultiLineString:
       return 5;
-    case QgsWkbTypes::MultiCurve:
+    case Qgis::WkbType::MultiCurve:
       return 6;
-    case QgsWkbTypes::Polygon:
-    case QgsWkbTypes::Triangle:
+    case Qgis::WkbType::Polygon:
+    case Qgis::WkbType::Triangle:
       return 7;
-    case QgsWkbTypes::CurvePolygon:
+    case Qgis::WkbType::CurvePolygon:
       return 8;
-    case QgsWkbTypes::MultiPolygon:
+    case Qgis::WkbType::MultiPolygon:
       return 9;
-    case QgsWkbTypes::MultiSurface:
+    case Qgis::WkbType::MultiSurface:
       return 10;
-    case QgsWkbTypes::GeometryCollection:
+    case Qgis::WkbType::GeometryCollection:
       return 11;
-    case QgsWkbTypes::Unknown:
+    case Qgis::WkbType::Unknown:
       return 12;
-    case QgsWkbTypes::NoGeometry:
+    case Qgis::WkbType::NoGeometry:
     default:
       break;
   }

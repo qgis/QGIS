@@ -50,7 +50,7 @@ QgsMeshLayer::QgsMeshLayer( const QString &meshLayerPath,
                             const QString &baseName,
                             const QString &providerKey,
                             const QgsMeshLayer::LayerOptions &options )
-  : QgsMapLayer( QgsMapLayerType::MeshLayer, baseName, meshLayerPath )
+  : QgsMapLayer( Qgis::LayerType::Mesh, baseName, meshLayerPath )
   , mDatasetGroupStore( new QgsMeshDatasetGroupStore( this ) )
   , mTemporalProperties( new QgsMeshLayerTemporalProperties( this ) )
   , mElevationProperties( new QgsMeshLayerElevationProperties( this ) )
@@ -1025,7 +1025,7 @@ QgsInterval QgsMeshLayer::firstValidTimeStep() const
   {
     const qint64 timeStep = mDataProvider->temporalCapabilities()->firstTimeStepDuration( i );
     if ( timeStep > 0 )
-      return QgsInterval( timeStep, QgsUnitTypes::TemporalMilliseconds );
+      return QgsInterval( timeStep, Qgis::TemporalUnit::Milliseconds );
   }
 
   return QgsInterval();
@@ -1040,7 +1040,7 @@ QgsInterval QgsMeshLayer::datasetRelativeTime( const QgsMeshDatasetIndex &index 
   if ( time == INVALID_MESHLAYER_TIME )
     return QgsInterval();
   else
-    return QgsInterval( time, QgsUnitTypes::TemporalMilliseconds );
+    return QgsInterval( time, Qgis::TemporalUnit::Milliseconds );
 }
 
 qint64 QgsMeshLayer::datasetRelativeTimeInMilliseconds( const QgsMeshDatasetIndex &index )
@@ -1718,34 +1718,14 @@ QString QgsMeshLayer::decodedSource( const QString &source, const QString &provi
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  QString src( source );
-
-  QVariantMap uriParts = QgsProviderRegistry::instance()->decodeUri( provider, source );
-  if ( uriParts.contains( QStringLiteral( "path" ) ) )
-  {
-    QString filePath = uriParts.value( QStringLiteral( "path" ) ).toString();
-    filePath = context.pathResolver().readPath( filePath );
-    uriParts.insert( QStringLiteral( "path" ), filePath );
-    src = QgsProviderRegistry::instance()->encodeUri( provider, uriParts );
-  }
-
-  return src;
+  return QgsProviderRegistry::instance()->relativeToAbsoluteUri( provider, source, context );
 }
 
 QString QgsMeshLayer::encodedSource( const QString &source, const QgsReadWriteContext &context ) const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  QString src( source );
-  QVariantMap uriParts = QgsProviderRegistry::instance()->decodeUri( mProviderKey, source );
-  if ( uriParts.contains( QStringLiteral( "path" ) ) )
-  {
-    QString filePath = uriParts.value( QStringLiteral( "path" ) ).toString();
-    filePath = context.pathResolver().writePath( filePath );
-    uriParts.insert( QStringLiteral( "path" ), filePath );
-    src = QgsProviderRegistry::instance()->encodeUri( mProviderKey, uriParts );
-  }
-  return src;
+  return QgsProviderRegistry::instance()->absoluteToRelativeUri( mProviderKey, source, context );
 }
 
 bool QgsMeshLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &context )
@@ -1796,7 +1776,7 @@ bool QgsMeshLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &con
   }
 
   if ( pkeyNode.toElement().hasAttribute( QStringLiteral( "time-unit" ) ) )
-    mTemporalUnit = static_cast<QgsUnitTypes::TemporalUnit>( pkeyNode.toElement().attribute( QStringLiteral( "time-unit" ) ).toInt() );
+    mTemporalUnit = static_cast<Qgis::TemporalUnit>( pkeyNode.toElement().attribute( QStringLiteral( "time-unit" ) ).toInt() );
 
   // read dataset group store
   const QDomElement elemDatasetGroupsStore = layer_node.firstChildElement( QStringLiteral( "mesh-dataset-groups-store" ) );
@@ -1840,7 +1820,7 @@ bool QgsMeshLayer::writeXml( QDomNode &layer_node, QDomDocument &document, const
     return false;
   }
 
-  mapLayerNode.setAttribute( QStringLiteral( "type" ), QgsMapLayerFactory::typeToString( QgsMapLayerType::MeshLayer ) );
+  mapLayerNode.setAttribute( QStringLiteral( "type" ), QgsMapLayerFactory::typeToString( Qgis::LayerType::Mesh ) );
 
   // add provider node
   if ( mDataProvider )
@@ -1849,7 +1829,7 @@ bool QgsMeshLayer::writeXml( QDomNode &layer_node, QDomDocument &document, const
     const QDomText providerText = document.createTextNode( providerType() );
     provider.appendChild( providerText );
     layer_node.appendChild( provider );
-    provider.setAttribute( QStringLiteral( "time-unit" ), mDataProvider->temporalCapabilities()->temporalUnit() );
+    provider.setAttribute( QStringLiteral( "time-unit" ), static_cast< int >( mDataProvider->temporalCapabilities()->temporalUnit() ) );
 
     const QStringList extraDatasetUris = mDataProvider->extraDatasets();
     QDomElement elemExtraDatasets = document.createElement( QStringLiteral( "extra-datasets" ) );

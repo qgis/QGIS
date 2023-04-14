@@ -194,7 +194,7 @@ static QString _getLayerSvgMarkerPath( const QgsProject &prj, const QString &lay
 {
   QList<QgsMapLayer *> layers = prj.mapLayersByName( layerName );
   Q_ASSERT( layers.count() == 1 );
-  Q_ASSERT( layers[0]->type() == QgsMapLayerType::VectorLayer );
+  Q_ASSERT( layers[0]->type() == Qgis::LayerType::Vector );
   QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( layers[0] );
   Q_ASSERT( layer->renderer() );
   Q_ASSERT( layer->renderer()->type() == "singleSymbol" );
@@ -332,37 +332,37 @@ void TestQgsProject::testProjectUnits()
 
   //first set a default QGIS distance unit
   QgsSettings s;
-  s.setValue( QStringLiteral( "/qgis/measure/displayunits" ), QgsUnitTypes::encodeUnit( QgsUnitTypes::DistanceFeet ) );
+  s.setValue( QStringLiteral( "/qgis/measure/displayunits" ), QgsUnitTypes::encodeUnit( Qgis::DistanceUnit::Feet ) );
 
   QgsProject *prj = new QgsProject;
   // new project should inherit QGIS default distance unit
   prj->clear();
-  QCOMPARE( prj->distanceUnits(), QgsUnitTypes::DistanceFeet );
+  QCOMPARE( prj->distanceUnits(), Qgis::DistanceUnit::Feet );
 
   //changing default QGIS unit should not affect existing project
-  s.setValue( QStringLiteral( "/qgis/measure/displayunits" ), QgsUnitTypes::encodeUnit( QgsUnitTypes::DistanceNauticalMiles ) );
-  QCOMPARE( prj->distanceUnits(), QgsUnitTypes::DistanceFeet );
+  s.setValue( QStringLiteral( "/qgis/measure/displayunits" ), QgsUnitTypes::encodeUnit( Qgis::DistanceUnit::NauticalMiles ) );
+  QCOMPARE( prj->distanceUnits(), Qgis::DistanceUnit::Feet );
 
   //test setting new units for project
-  prj->setDistanceUnits( QgsUnitTypes::DistanceNauticalMiles );
-  QCOMPARE( prj->distanceUnits(), QgsUnitTypes::DistanceNauticalMiles );
+  prj->setDistanceUnits( Qgis::DistanceUnit::NauticalMiles );
+  QCOMPARE( prj->distanceUnits(), Qgis::DistanceUnit::NauticalMiles );
 
   // AREA
 
   //first set a default QGIS area unit
-  s.setValue( QStringLiteral( "/qgis/measure/areaunits" ), QgsUnitTypes::encodeUnit( QgsUnitTypes::AreaSquareYards ) );
+  s.setValue( QStringLiteral( "/qgis/measure/areaunits" ), QgsUnitTypes::encodeUnit( Qgis::AreaUnit::SquareYards ) );
 
   // new project should inherit QGIS default area unit
   prj->clear();
-  QCOMPARE( prj->areaUnits(), QgsUnitTypes::AreaSquareYards );
+  QCOMPARE( prj->areaUnits(), Qgis::AreaUnit::SquareYards );
 
   //changing default QGIS unit should not affect existing project
-  s.setValue( QStringLiteral( "/qgis/measure/areaunits" ), QgsUnitTypes::encodeUnit( QgsUnitTypes::AreaAcres ) );
-  QCOMPARE( prj->areaUnits(), QgsUnitTypes::AreaSquareYards );
+  s.setValue( QStringLiteral( "/qgis/measure/areaunits" ), QgsUnitTypes::encodeUnit( Qgis::AreaUnit::Acres ) );
+  QCOMPARE( prj->areaUnits(), Qgis::AreaUnit::SquareYards );
 
   //test setting new units for project
-  prj->setAreaUnits( QgsUnitTypes::AreaAcres );
-  QCOMPARE( prj->areaUnits(), QgsUnitTypes::AreaAcres );
+  prj->setAreaUnits( Qgis::AreaUnit::Acres );
+  QCOMPARE( prj->areaUnits(), Qgis::AreaUnit::Acres );
 
   delete prj;
 }
@@ -403,9 +403,37 @@ void TestQgsProject::testLayerFlags()
   QgsProject prj2;
   prj2.setFileName( f.fileName() );
   QVERIFY( prj2.read() );
-  QgsMapLayer *layer = prj.mapLayer( layer2id );
+  QgsMapLayer *layer = prj2.mapLayer( layer2id );
   QVERIFY( layer );
   QVERIFY( !layer->flags().testFlag( QgsMapLayer::Removable ) );
+
+  // test setFlags modifies correctly existing layer settings
+  QVERIFY( !prj2.isDirty() );
+  prj2.setFlag( Qgis::ProjectFlag::TrustStoredLayerStatistics, true );
+  prj2.setFlag( Qgis::ProjectFlag::EvaluateDefaultValuesOnProviderSide, true );
+  QVERIFY( prj2.isDirty() );
+  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( prj2.mapLayer( layer2id ) );
+  QVERIFY( vlayer->readExtentFromXml() );
+  // vlayer doesn't have trust because it will be done for new layer or when reloading the project
+  // no need to set trust on a layer which has already loaded everything
+  QVERIFY( !vlayer->dataProvider()->mReadFlags.testFlag( QgsDataProvider::FlagTrustDataSource ) );
+  QVERIFY( vlayer->dataProvider()->providerProperty( QgsVectorDataProvider::EvaluateDefaultValues ).toBool() );
+
+  prj2.write();
+
+  // check reload of project sets the correct flags and layer properties
+  QgsProject prj3;
+  prj3.setFileName( f.fileName() );
+  QVERIFY( prj3.read() );
+  QVERIFY( prj3.flags().testFlag( Qgis::ProjectFlag::TrustStoredLayerStatistics ) );
+  QVERIFY( prj3.flags().testFlag( Qgis::ProjectFlag::EvaluateDefaultValuesOnProviderSide ) );
+  vlayer = qobject_cast<QgsVectorLayer *>( prj3.mapLayer( layer2id ) );
+  QVERIFY( vlayer );
+  QVERIFY( !vlayer->flags().testFlag( QgsMapLayer::Removable ) );
+  QVERIFY( !prj3.isDirty() );
+  QVERIFY( vlayer->readExtentFromXml() );
+  QVERIFY( vlayer->dataProvider()->mReadFlags.testFlag( QgsDataProvider::FlagTrustDataSource ) );
+  QVERIFY( vlayer->dataProvider()->providerProperty( QgsVectorDataProvider::EvaluateDefaultValues ).toBool() );
 }
 
 void TestQgsProject::testLocalFiles()

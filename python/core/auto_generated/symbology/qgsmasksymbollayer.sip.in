@@ -64,7 +64,7 @@ Create a new QgsMaskMarkerSymbolLayer
 
     virtual bool usesMapUnits() const;
 
-    virtual void setOutputUnit( QgsUnitTypes::RenderUnit unit );
+    virtual void setOutputUnit( Qgis::RenderUnit unit );
 
     virtual QColor color() const;
 

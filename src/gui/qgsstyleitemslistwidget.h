@@ -117,12 +117,12 @@ class GUI_EXPORT QgsStyleItemsListWidget : public QWidget, private Ui::QgsStyleI
     void setSymbolType( Qgis::SymbolType type );
 
     /**
-     * Sets the layer \a type to show in the widget. Set \a type to QgsWkbTypes::UnknownGeometry if no
+     * Sets the layer \a type to show in the widget. Set \a type to Qgis::GeometryType::Unknown if no
      * layer type filter is desired.
      *
      * This setting only applies to label settings and 3d style entities.
      */
-    void setLayerType( QgsWkbTypes::GeometryType type );
+    void setLayerType( Qgis::GeometryType type );
 
     /**
      * Returns the current tag filter set for the widget, if any is set.

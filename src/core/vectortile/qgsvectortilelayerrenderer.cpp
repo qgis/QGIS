@@ -14,27 +14,25 @@
  ***************************************************************************/
 
 #include "qgsvectortilelayerrenderer.h"
-
-#include <QElapsedTimer>
-
 #include "qgsexpressioncontextutils.h"
 #include "qgsfeedback.h"
 #include "qgslogger.h"
-
 #include "qgsvectortilemvtdecoder.h"
 #include "qgsvectortilelayer.h"
 #include "qgsvectortileloader.h"
 #include "qgsvectortileutils.h"
-
 #include "qgslabelingengine.h"
 #include "qgsvectortilelabeling.h"
 #include "qgsmapclippingutils.h"
 #include "qgsrendercontext.h"
+#include "qgsvectortiledataprovider.h"
+
+#include <QElapsedTimer>
+#include <QThread>
 
 QgsVectorTileLayerRenderer::QgsVectorTileLayerRenderer( QgsVectorTileLayer *layer, QgsRenderContext &context )
   : QgsMapLayerRenderer( layer->id(), &context )
-  , mSourceType( layer->sourceType() )
-  , mSourcePath( layer->sourcePath() )
+  , mDataProvider( qgis::down_cast< const QgsVectorTileDataProvider* >( layer->dataProvider() )->clone() )
   , mRenderer( layer->renderer()->clone() )
   , mDrawTileBoundaries( layer->isTileBorderRenderingEnabled() )
   , mFeedback( new QgsFeedback )
@@ -42,12 +40,6 @@ QgsVectorTileLayerRenderer::QgsVectorTileLayerRenderer( QgsVectorTileLayer *laye
   , mLayerOpacity( layer->opacity() )
   , mTileMatrixSet( layer->tileMatrixSet() )
 {
-
-  QgsDataSourceUri dsUri;
-  dsUri.setEncodedUri( layer->source() );
-  mAuthCfg = dsUri.authConfigId();
-  mHeaders = dsUri.httpHeaders();
-
   if ( QgsLabelingEngine *engine = context.labelingEngine() )
   {
     if ( layer->labeling() )
@@ -61,7 +53,11 @@ QgsVectorTileLayerRenderer::QgsVectorTileLayerRenderer( QgsVectorTileLayer *laye
   }
 
   mClippingRegions = QgsMapClippingUtils::collectClippingRegionsForLayer( *renderContext(), layer );
+
+  mDataProvider->moveToThread( nullptr );
 }
+
+QgsVectorTileLayerRenderer::~QgsVectorTileLayerRenderer() = default;
 
 bool QgsVectorTileLayerRenderer::render()
 {
@@ -70,12 +66,14 @@ bool QgsVectorTileLayerRenderer::render()
   if ( ctx.renderingStopped() )
     return false;
 
+  mDataProvider->moveToThread( QThread::currentThread() );
+
   const QgsScopedQPainterState painterState( ctx.painter() );
 
   if ( !mClippingRegions.empty() )
   {
     bool needsPainterClipPath = false;
-    const QPainterPath path = QgsMapClippingUtils::calculatePainterClipRegion( mClippingRegions, *renderContext(), QgsMapLayerType::VectorTileLayer, needsPainterClipPath );
+    const QPainterPath path = QgsMapClippingUtils::calculatePainterClipRegion( mClippingRegions, *renderContext(), Qgis::LayerType::VectorTile, needsPainterClipPath );
     if ( needsPainterClipPath )
       renderContext()->painter()->setClipPath( path, Qt::IntersectClip );
   }
@@ -106,37 +104,19 @@ bool QgsVectorTileLayerRenderer::render()
     return true;   // nothing to do
   }
 
-  const bool isAsync = ( mSourceType == QLatin1String( "xyz" ) );
-
-  if ( mSourceType == QLatin1String( "xyz" ) && mSourcePath.contains( QLatin1String( "{usage}" ) ) )
-  {
-    switch ( renderContext()->rendererUsage() )
-    {
-      case Qgis::RendererUsage::View:
-        mSourcePath.replace( QLatin1String( "{usage}" ), QLatin1String( "view" ) );
-        break;
-      case Qgis::RendererUsage::Export:
-        mSourcePath.replace( QLatin1String( "{usage}" ), QLatin1String( "export" ) );
-        break;
-      case Qgis::RendererUsage::Unknown:
-        mSourcePath.replace( QLatin1String( "{usage}" ), QString() );
-        break;
-    }
-  }
-
   std::unique_ptr<QgsVectorTileLoader> asyncLoader;
   QList<QgsVectorTileRawData> rawTiles;
-  if ( !isAsync )
+  if ( !mDataProvider->supportsAsync() )
   {
     QElapsedTimer tFetch;
     tFetch.start();
-    rawTiles = QgsVectorTileLoader::blockingFetchTileRawData( mSourceType, mSourcePath, mTileMatrix, viewCenter, mTileRange, mAuthCfg, mHeaders, mFeedback.get() );
+    rawTiles = QgsVectorTileLoader::blockingFetchTileRawData( mDataProvider.get(), mTileMatrix, viewCenter, mTileRange, mFeedback.get() );
     QgsDebugMsgLevel( QStringLiteral( "Tile fetching time: %1" ).arg( tFetch.elapsed() / 1000. ), 2 );
     QgsDebugMsgLevel( QStringLiteral( "Fetched tiles: %1" ).arg( rawTiles.count() ), 2 );
   }
   else
   {
-    asyncLoader.reset( new QgsVectorTileLoader( mSourcePath, mTileMatrix, mTileRange, viewCenter, mAuthCfg, mHeaders, mFeedback.get() ) );
+    asyncLoader.reset( new QgsVectorTileLoader( mDataProvider.get(), mTileMatrix, mTileRange, viewCenter, mFeedback.get(), renderContext()->rendererUsage() ) );
     QObject::connect( asyncLoader.get(), &QgsVectorTileLoader::tileRequestFinished, asyncLoader.get(), [this]( const QgsVectorTileRawData & rawTile )
     {
       QgsDebugMsgLevel( QStringLiteral( "Got tile asynchronously: " ) + rawTile.id.toString(), 2 );
@@ -155,6 +135,9 @@ bool QgsVectorTileLayerRenderer::render()
   const QgsExpressionContextScopePopper popper( ctx.expressionContext(), scope );
 
   mRenderer->startRender( *renderContext(), mTileZoom, mTileRange );
+
+  // Draw background style if present
+  mRenderer->renderBackground( ctx );
 
   QMap<QString, QSet<QString> > requiredFields = mRenderer->usedAttributes( ctx );
 
@@ -187,7 +170,7 @@ bool QgsVectorTileLayerRenderer::render()
     }
   }
 
-  if ( !isAsync )
+  if ( !mDataProvider->supportsAsync() )
   {
     for ( const QgsVectorTileRawData &rawTile : std::as_const( rawTiles ) )
     {

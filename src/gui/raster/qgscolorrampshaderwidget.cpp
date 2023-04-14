@@ -18,21 +18,15 @@
 #include "qgsrasterdataprovider.h"
 
 #include "qgscolorrampshaderwidget.h"
-#include "qgssinglebandpseudocolorrenderer.h"
-#include "qgsrasterlayer.h"
 #include "qgsrasterdataprovider.h"
-#include "qgsrastershader.h"
-#include "qgsrasterminmaxwidget.h"
 #include "qgstreewidgetitem.h"
 #include "qgssettings.h"
-#include "qgsstyle.h"
 #include "qgscolorramp.h"
 #include "qgscolorrampbutton.h"
 #include "qgscolordialog.h"
 #include "qgsrasterrendererutils.h"
 #include "qgsfileutils.h"
 #include "qgsguiutils.h"
-#include "qgsdoublevalidator.h"
 #include "qgslocaleawarenumericlineeditdelegate.h"
 #include "qgscolorramplegendnodewidget.h"
 
@@ -108,6 +102,9 @@ QgsColorRampShaderWidget::QgsColorRampShaderWidget( QWidget *parent )
   connect( mLabelPrecisionSpinBox, qOverload<int>( &QSpinBox::valueChanged ), this, [ = ]( int )
   {
     autoLabel();
+
+    if ( !mBlockChanges )
+      emit widgetChanged();
   } );
 }
 
@@ -180,7 +177,6 @@ QgsColorRampShader QgsColorRampShaderWidget::shader() const
 
 void QgsColorRampShaderWidget::autoLabel()
 {
-
   mColormapTreeWidget->sortItems( ValueColumn, Qt::AscendingOrder );
 
 #ifdef QGISDEBUG
@@ -552,6 +548,14 @@ void QgsColorRampShaderWidget::mExportToFileButton_clicked()
   settings.setValue( QStringLiteral( "lastColorMapDir" ), fileInfo.absoluteDir().absolutePath() );
 }
 
+void QgsColorRampShaderWidget::mUnitLineEdit_textEdited( const QString & )
+{
+  autoLabel();
+
+  if ( !mBlockChanges )
+    emit widgetChanged();
+}
+
 void QgsColorRampShaderWidget::mColormapTreeWidget_itemDoubleClicked( QTreeWidgetItem *item, int column )
 {
   if ( !item )
@@ -601,6 +605,8 @@ void QgsColorRampShaderWidget::mColormapTreeWidget_itemEdited( QTreeWidgetItem *
 
 void QgsColorRampShaderWidget::setFromShader( const QgsColorRampShader &colorRampShader )
 {
+  mBlockChanges++;
+
   // Those objects are connected to classify() the color ramp shader if they change, or call widget change
   // need to block them to avoid to classify and to alter the color ramp, or to call duplicate widget change
   whileBlocking( mClipCheckBox )->setChecked( colorRampShader.clip() );
@@ -628,6 +634,7 @@ void QgsColorRampShaderWidget::setFromShader( const QgsColorRampShader &colorRam
   if ( colorRampShader.legendSettings() )
     mLegendSettings = *colorRampShader.legendSettings();
 
+  mBlockChanges--;
   emit widgetChanged();
 }
 

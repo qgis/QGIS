@@ -68,7 +68,7 @@ This must only be called from the main thread.
 The layer id of the layer.
 %End
 
-    QgsWkbTypes::GeometryType geometryType() const;
+    Qgis::GeometryType geometryType() const;
 %Docstring
 The geometry type of this layer.
 %End

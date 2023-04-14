@@ -18,6 +18,7 @@
 #include "qgslayoutobject.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgslayout.h"
+#include "qgslayoutreportcontext.h"
 
 #include <QPainter>
 

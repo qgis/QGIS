@@ -44,7 +44,7 @@ class QgsOgrProvider final: public QgsVectorDataProvider
     static Qgis::VectorExportResult createEmptyLayer(
       const QString &uri,
       const QgsFields &fields,
-      QgsWkbTypes::Type wkbType,
+      Qgis::WkbType wkbType,
       const QgsCoordinateReferenceSystem &srs,
       bool overwrite,
       QMap<int, int> *oldToNewAttrIdxMap,
@@ -91,7 +91,7 @@ class QgsOgrProvider final: public QgsVectorDataProvider
     QString subsetString() const override;
     bool supportsSubsetString() const override { return true; }
     bool setSubsetString( const QString &theSQL, bool updateFeatureCount = true ) override;
-    QgsWkbTypes::Type wkbType() const override;
+    Qgis::WkbType wkbType() const override;
     virtual size_t layerCount() const;
     long long featureCount() const override;
     QgsFields fields() const override;
@@ -110,6 +110,7 @@ class QgsOgrProvider final: public QgsVectorDataProvider
     bool createSpatialIndex() override;
     bool createAttributeIndex( int field ) override;
     QgsVectorDataProvider::Capabilities capabilities() const override;
+    Qgis::VectorDataProviderAttributeEditCapabilities attributeEditCapabilities() const override;
     QgsAttributeList pkAttributeIndexes() const override { return mPrimaryKeyAttrs; }
     void setEncoding( const QString &e ) override;
     bool enterUpdateMode() override { return _enterUpdateMode(); }
@@ -326,6 +327,7 @@ class QgsOgrProvider final: public QgsVectorDataProvider
     void computeCapabilities();
 
     QgsVectorDataProvider::Capabilities mCapabilities = QgsVectorDataProvider::Capabilities();
+    Qgis::VectorDataProviderAttributeEditCapabilities mAttributeEditCapabilities = Qgis::VectorDataProviderAttributeEditCapabilities();
 
     bool doInitialActionsForEdition();
 

@@ -379,7 +379,7 @@ bool QgsCurve::snapToGridPrivate( double hSpacing, double vSpacing, double dSpac
   };
 
   // temporary values
-  const QgsWkbTypes::Type pointType = QgsWkbTypes::zmType( QgsWkbTypes::Point, hasZ, hasM );
+  const Qgis::WkbType pointType = QgsWkbTypes::zmType( Qgis::WkbType::Point, hasZ, hasM );
   QgsPoint last( pointType );
   QgsPoint current( pointType );
 

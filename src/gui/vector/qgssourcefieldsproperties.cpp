@@ -208,7 +208,7 @@ void QgsSourceFieldsProperties::setRow( int row, int idx, const QgsField &field 
 
   mFieldsList->setItem( row, AttrNameCol, new QTableWidgetItem( field.name() ) );
   mFieldsList->setItem( row, AttrAliasCol, new QTableWidgetItem( field.alias() ) );
-  mFieldsList->setItem( row, AttrTypeCol, new QTableWidgetItem( QVariant::typeToName( field.type() ) ) );
+  mFieldsList->setItem( row, AttrTypeCol, new QTableWidgetItem( field.friendlyTypeString() ) );
   mFieldsList->setItem( row, AttrTypeNameCol, new QTableWidgetItem( field.typeName() ) );
   mFieldsList->setItem( row, AttrLengthCol, new QTableWidgetItem( QString::number( field.length() ) ) );
   mFieldsList->setItem( row, AttrPrecCol, new QTableWidgetItem( QString::number( field.precision() ) ) );

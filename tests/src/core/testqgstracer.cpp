@@ -21,7 +21,6 @@
 #include <qgsvectorlayer.h>
 #include "qgsproject.h"
 #include "qgscategorizedsymbolrenderer.h"
-#include "qgssettings.h"
 #include "qgslayertree.h"
 #include "qgslayertreemodel.h"
 #include "qgsmapsettings.h"
@@ -202,8 +201,8 @@ void TestQgsTracer::testInvisible()
 
   QgsCategorizedSymbolRenderer *renderer = new QgsCategorizedSymbolRenderer();
   renderer->setClassAttribute( QStringLiteral( "fld" ) );
-  renderer->setSourceSymbol( QgsSymbol::defaultSymbol( QgsWkbTypes::LineGeometry ) );
-  renderer->addCategory( QgsRendererCategory( "2", QgsSymbol::defaultSymbol( QgsWkbTypes::LineGeometry ), QStringLiteral( "2" ) ) );
+  renderer->setSourceSymbol( QgsSymbol::defaultSymbol( Qgis::GeometryType::Line ) );
+  renderer->addCategory( QgsRendererCategory( "2", QgsSymbol::defaultSymbol( Qgis::GeometryType::Line ), QStringLiteral( "2" ) ) );
   mVL->setRenderer( renderer );
 
   //create legend with symbology nodes for categorized renderer

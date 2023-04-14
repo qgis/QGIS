@@ -10,6 +10,7 @@
 
 
 
+
 class QgsGui : QObject
 {
 %Docstring(signature="appended")
@@ -130,6 +131,13 @@ Returns the global GUI-related project storage registry
 Returns the registry of GUI-related components of data providers
 
 .. versionadded:: 3.10
+%End
+
+    static QgsSensorGuiRegistry *sensorGuiRegistry() /KeepReference/;
+%Docstring
+Returns the registry of GUI-related components for sensors
+
+.. versionadded:: 3.32
 %End
 
     static QgsSubsetStringEditorProviderRegistry *subsetStringEditorProviderRegistry() /KeepReference/;

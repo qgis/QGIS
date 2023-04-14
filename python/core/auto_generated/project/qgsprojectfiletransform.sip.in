@@ -59,8 +59,18 @@ The current project version
 .. versionadded:: 3.12
 %End
 
-};
+ static void fixOldSymbolLayerReferences( const QMap<QString, QgsMapLayer *> &mapLayers );
+%Docstring
+:py:class:`QgsSymbolLayerReference` uses :py:class:`QgsSymbolLayer` unique uuid identifier since QGIS 3.30, instead of the symbol
+key (rule for :py:class:`QgsRuleBasedRenderer` for instance) and index path, so this method migrates ``mapLayers`` old references
+to new ones.
 
+.. versionadded:: 3.30
+
+.. deprecated:: QGIS 3.30
+%End
+
+};
 
 
 /************************************************************************

@@ -20,7 +20,6 @@
 #include "qgsgeometry.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
-#include "qgsvectorlayerutils.h"
 #include "qgsreadwritelocker.h"
 
 #include <QMutexLocker>
@@ -174,7 +173,7 @@ QgsCoordinateReferenceSystem QgsFeaturePool::crs() const
   return mFeatureSource->crs();
 }
 
-QgsWkbTypes::GeometryType QgsFeaturePool::geometryType() const
+Qgis::GeometryType QgsFeaturePool::geometryType() const
 {
   return mGeometryType;
 }

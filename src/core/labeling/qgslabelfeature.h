@@ -23,7 +23,6 @@
 #include "qgsmargins.h"
 #include "qgslabelobstaclesettings.h"
 #include "qgslabellinesettings.h"
-#include "qgslabeling.h"
 #include "qgsfeature.h"
 #include "qgscoordinatereferencesystem.h"
 
@@ -338,14 +337,14 @@ class CORE_EXPORT QgsLabelFeature
      * Returns the feature's arrangement flags.
      * \see setArrangementFlags
      */
-    QgsLabeling::LinePlacementFlags arrangementFlags() const { return mArrangementFlags; }
+    Qgis::LabelLinePlacementFlags arrangementFlags() const { return mArrangementFlags; }
 
     /**
      * Sets the feature's arrangement flags.
      * \param flags arrangement flags
      * \see arrangementFlags
      */
-    void setArrangementFlags( QgsLabeling::LinePlacementFlags flags ) { mArrangementFlags = flags; }
+    void setArrangementFlags( Qgis::LabelLinePlacementFlags flags ) { mArrangementFlags = flags; }
 
     /**
      * Returns the polygon placement flags, which dictate how polygon labels can be placed.
@@ -353,7 +352,7 @@ class CORE_EXPORT QgsLabelFeature
      * \see setPolygonPlacementFlags()
      * \since QGIS 3.14
      */
-    QgsLabeling::PolygonPlacementFlags polygonPlacementFlags() const { return mPolygonPlacementFlags; }
+    Qgis::LabelPolygonPlacementFlags polygonPlacementFlags() const { return mPolygonPlacementFlags; }
 
     /**
      * Sets the polygon placement \a flags, which dictate how polygon labels can be placed.
@@ -361,7 +360,7 @@ class CORE_EXPORT QgsLabelFeature
      * \see polygonPlacementFlags()
      * \since QGIS 3.14
      */
-    void setPolygonPlacementFlags( QgsLabeling::PolygonPlacementFlags flags ) { mPolygonPlacementFlags = flags; }
+    void setPolygonPlacementFlags( Qgis::LabelPolygonPlacementFlags flags ) { mPolygonPlacementFlags = flags; }
 
     /**
      * Text of the label
@@ -687,8 +686,8 @@ class CORE_EXPORT QgsLabelFeature
     //! Distance to smooth angle of line start and end when calculating overruns
     double mOverrunSmoothDistance = 0;
 
-    QgsLabeling::LinePlacementFlags mArrangementFlags = QgsLabeling::LinePlacementFlags();
-    QgsLabeling::PolygonPlacementFlags mPolygonPlacementFlags = QgsLabeling::PolygonPlacementFlag::AllowPlacementInsideOfPolygon;
+    Qgis::LabelLinePlacementFlags mArrangementFlags = Qgis::LabelLinePlacementFlags();
+    Qgis::LabelPolygonPlacementFlags mPolygonPlacementFlags = Qgis::LabelPolygonPlacementFlag::AllowPlacementInsideOfPolygon;
 
   private:
 

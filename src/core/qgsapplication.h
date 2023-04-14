@@ -75,6 +75,7 @@ class QgsCoordinateReferenceSystemRegistry;
 class QgsRecentStyleHandler;
 class QgsDatabaseQueryLog;
 class QgsFontManager;
+class QgsSensorRegistry;
 
 /**
  * \ingroup core
@@ -670,7 +671,7 @@ class CORE_EXPORT QgsApplication : public QApplication
 
     /**
      * Set maximum concurrent thread count
-     * \note must be between 1 and \#cores, -1 means use all available cores
+     * \note must be between 2 and \#cores, -1 means use all available cores
      * \since QGIS 2.4
     */
     static void setMaxThreads( int maxThreads );
@@ -860,6 +861,12 @@ class CORE_EXPORT QgsApplication : public QApplication
      * \since QGIS 3.28
      */
     static QgsFontManager *fontManager() SIP_KEEPREFERENCE;
+
+    /**
+     * Returns the application's sensor registry, used for sensor types.
+     * \since QGIS 3.32
+     */
+    static QgsSensorRegistry *sensorRegistry() SIP_KEEPREFERENCE;
 
     /**
      * Returns the application's message log.
@@ -1171,6 +1178,7 @@ class CORE_EXPORT QgsApplication : public QApplication
       QgsTaskManager *mTaskManager = nullptr;
       QgsLayoutItemRegistry *mLayoutItemRegistry = nullptr;
       QgsAnnotationItemRegistry *mAnnotationItemRegistry = nullptr;
+      QgsSensorRegistry *mSensorRegistry = nullptr;
       QgsUserProfileManager *mUserConfigManager = nullptr;
       QgsBookmarkManager *mBookmarkManager = nullptr;
       QgsTileDownloadManager *mTileDownloadManager = nullptr;

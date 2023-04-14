@@ -128,7 +128,7 @@ QVariantMap QgsJoinByLocationAlgorithm::processAlgorithm( const QVariantMap &par
 
   mJoinMethod = static_cast< JoinMethod >( parameterAsEnum( parameters, QStringLiteral( "METHOD" ), context ) );
 
-  const QStringList joinedFieldNames = parameterAsFields( parameters, QStringLiteral( "JOIN_FIELDS" ), context );
+  const QStringList joinedFieldNames = parameterAsStrings( parameters, QStringLiteral( "JOIN_FIELDS" ), context );
 
   mPredicates = parameterAsEnums( parameters, QStringLiteral( "PREDICATE" ), context );
   sortPredicates( mPredicates );
@@ -561,17 +561,17 @@ bool QgsJoinByLocationAlgorithm::processFeatureFromInputSource( QgsFeature &base
           double overlap = 0;
           switch ( QgsWkbTypes::geometryType( intersection->wkbType() ) )
           {
-            case QgsWkbTypes::LineGeometry:
+            case Qgis::GeometryType::Line:
               overlap = intersection->length();
               break;
 
-            case QgsWkbTypes::PolygonGeometry:
+            case Qgis::GeometryType::Polygon:
               overlap = intersection->area();
               break;
 
-            case QgsWkbTypes::UnknownGeometry:
-            case QgsWkbTypes::PointGeometry:
-            case QgsWkbTypes::NullGeometry:
+            case Qgis::GeometryType::Unknown:
+            case Qgis::GeometryType::Point:
+            case Qgis::GeometryType::Null:
               break;
           }
 

@@ -22,7 +22,6 @@ QgsSettingsTreeNode *QgsSettingsTree::treeRoot()
   return sTreeRoot;
 }
 
-
 QgsSettingsTreeNode *QgsSettingsTree::createPluginTreeNode( const QString &pluginName )
 {
   QgsSettingsTreeNode *te = sTreePlugins->childNode( pluginName );

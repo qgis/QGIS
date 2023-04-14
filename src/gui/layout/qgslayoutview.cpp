@@ -200,7 +200,7 @@ void QgsLayoutView::setZoomLevel( double level )
   if ( !currentLayout() )
     return;
 
-  if ( currentLayout()->units() == QgsUnitTypes::LayoutPixels )
+  if ( currentLayout()->units() == Qgis::LayoutUnit::Pixels )
   {
     setTransform( QTransform::fromScale( level, level ) );
   }
@@ -213,7 +213,7 @@ void QgsLayoutView::setZoomLevel( double level )
 
     //desired pixel width for 1mm on screen
     level = std::clamp( level, MIN_VIEW_SCALE, MAX_VIEW_SCALE );
-    double mmLevel = currentLayout()->convertFromLayoutUnits( level, QgsUnitTypes::LayoutMillimeters ).length() * dpi / 25.4;
+    double mmLevel = currentLayout()->convertFromLayoutUnits( level, Qgis::LayoutUnit::Millimeters ).length() * dpi / 25.4;
     setTransform( QTransform::fromScale( mmLevel, mmLevel ) );
   }
   emit zoomLevelChanged();
@@ -1205,6 +1205,8 @@ void QgsLayoutView::wheelZoom( QWheelEvent *event )
   //get mouse wheel zoom behavior settings
   QgsSettings settings;
   double zoomFactor = settings.value( QStringLiteral( "qgis/zoom_factor" ), 2 ).toDouble();
+  bool reverseZoom = settings.value( QStringLiteral( "qgis/reverse_wheel_zoom" ), false ).toBool();
+  bool zoomIn = reverseZoom ? event->angleDelta().y() < 0 : event->angleDelta().y() > 0;
 
   // "Normal" mouse have an angle delta of 120, precision mouses provide data faster, in smaller steps
   zoomFactor = 1.0 + ( zoomFactor - 1.0 ) / 120.0 * std::fabs( event->angleDelta().y() );
@@ -1216,7 +1218,6 @@ void QgsLayoutView::wheelZoom( QWheelEvent *event )
   }
 
   //calculate zoom scale factor
-  bool zoomIn = event->angleDelta().y() > 0;
   double scaleFactor = ( zoomIn ? 1 / zoomFactor : zoomFactor );
 
   //get current visible part of scene

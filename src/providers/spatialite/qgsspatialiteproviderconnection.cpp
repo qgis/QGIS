@@ -84,7 +84,7 @@ QString QgsSpatiaLiteProviderConnection::tableUri( const QString &schema, const 
 void QgsSpatiaLiteProviderConnection::createVectorTable( const QString &schema,
     const QString &name,
     const QgsFields &fields,
-    QgsWkbTypes::Type wkbType,
+    Qgis::WkbType wkbType,
     const QgsCoordinateReferenceSystem &srs,
     bool overwrite,
     const QMap<QString, QVariant> *options ) const
@@ -375,7 +375,7 @@ QList<QgsSpatiaLiteProviderConnection::TableProperty> QgsSpatiaLiteProviderConne
           else
           {
             property.setGeometryColumnCount( 0 );
-            property.setGeometryColumnTypes( {{ QgsWkbTypes::NoGeometry, QgsCoordinateReferenceSystem() }} );
+            property.setGeometryColumnTypes( {{ Qgis::WkbType::NoGeometry, QgsCoordinateReferenceSystem() }} );
             property.setFlag( QgsSpatiaLiteProviderConnection::TableFlag::Aspatial );
           }
 
@@ -478,7 +478,7 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsSpatiaLiteProviderConnecti
   }
 
   QString errCause;
-  gdal::ogr_datasource_unique_ptr hDS( GDALOpenEx( pathFromUri().toUtf8().constData(), GDAL_OF_VECTOR | GDAL_OF_UPDATE, nullptr, nullptr, nullptr ) );
+  gdal::dataset_unique_ptr hDS( GDALOpenEx( pathFromUri().toUtf8().constData(), GDAL_OF_VECTOR | GDAL_OF_UPDATE, nullptr, nullptr, nullptr ) );
   if ( hDS )
   {
 
@@ -584,7 +584,7 @@ void QgsSpatialiteProviderResultIterator::setFields( const QgsFields &fields )
 }
 
 
-QgsSpatialiteProviderResultIterator::QgsSpatialiteProviderResultIterator( gdal::ogr_datasource_unique_ptr hDS, OGRLayerH ogrLayer )
+QgsSpatialiteProviderResultIterator::QgsSpatialiteProviderResultIterator( gdal::dataset_unique_ptr hDS, OGRLayerH ogrLayer )
   : mHDS( std::move( hDS ) )
   , mOgrLayer( ogrLayer )
 {

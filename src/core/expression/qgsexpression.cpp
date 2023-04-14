@@ -17,7 +17,6 @@
 #include "qgsexpressionfunction.h"
 #include "qgsexpressionnodeimpl.h"
 #include "qgsfeaturerequest.h"
-#include "qgscolorrampimpl.h"
 #include "qgslogger.h"
 #include "qgsexpressioncontext.h"
 #include "qgsgeometry.h"
@@ -26,20 +25,24 @@
 #include "qgsexpressionutils.h"
 #include "qgsexpression_p.h"
 #include "qgsvariantutils.h"
+#include "qgsunittypes.h"
 
 #include <QRegularExpression>
 
 // from parser
 extern QgsExpressionNode *parseExpression( const QString &str, QString &parserErrorMsg, QList<QgsExpression::ParserError> &parserErrors );
 
-Q_GLOBAL_STATIC( HelpTextHash, sFunctionHelpTexts )
 Q_GLOBAL_STATIC( QgsStringMap, sVariableHelpTexts )
 Q_GLOBAL_STATIC( QgsStringMap, sGroups )
 
-HelpTextHash &functionHelpTexts()
+HelpTextHash QgsExpression::sFunctionHelpTexts;
+
+///@cond PRIVATE
+HelpTextHash &QgsExpression::functionHelpTexts()
 {
-  return *sFunctionHelpTexts();
+  return sFunctionHelpTexts;
 }
+///@endcond
 
 bool QgsExpression::checkExpression( const QString &text, const QgsExpressionContext *context, QString &errorMessage )
 {
@@ -289,7 +292,7 @@ void QgsExpression::initGeomCalculator( const QgsExpressionContext *context )
   }
 
   // Set the distance units from the context if it has not been set by setDistanceUnits()
-  if ( context && distanceUnits() == QgsUnitTypes::DistanceUnknownUnit )
+  if ( context && distanceUnits() == Qgis::DistanceUnit::Unknown )
   {
     QString distanceUnitsStr = context->variable( QStringLiteral( "project_distance_units" ) ).toString();
     if ( ! distanceUnitsStr.isEmpty() )
@@ -297,7 +300,7 @@ void QgsExpression::initGeomCalculator( const QgsExpressionContext *context )
   }
 
   // Set the area units from the context if it has not been set by setAreaUnits()
-  if ( context && areaUnits() == QgsUnitTypes::AreaUnknownUnit )
+  if ( context && areaUnits() == Qgis::AreaUnit::Unknown )
   {
     QString areaUnitsStr = context->variable( QStringLiteral( "project_area_units" ) ).toString();
     if ( ! areaUnitsStr.isEmpty() )
@@ -413,22 +416,22 @@ QgsDistanceArea *QgsExpression::geomCalculator()
   return d->mCalc.get();
 }
 
-QgsUnitTypes::DistanceUnit QgsExpression::distanceUnits() const
+Qgis::DistanceUnit QgsExpression::distanceUnits() const
 {
   return d->mDistanceUnit;
 }
 
-void QgsExpression::setDistanceUnits( QgsUnitTypes::DistanceUnit unit )
+void QgsExpression::setDistanceUnits( Qgis::DistanceUnit unit )
 {
   d->mDistanceUnit = unit;
 }
 
-QgsUnitTypes::AreaUnit QgsExpression::areaUnits() const
+Qgis::AreaUnit QgsExpression::areaUnits() const
 {
   return d->mAreaUnit;
 }
 
-void QgsExpression::setAreaUnits( QgsUnitTypes::AreaUnit unit )
+void QgsExpression::setAreaUnits( Qgis::AreaUnit unit )
 {
   d->mAreaUnit = unit;
 }
@@ -549,10 +552,10 @@ QString QgsExpression::helpText( QString name )
 {
   QgsExpression::initFunctionHelp();
 
-  if ( !sFunctionHelpTexts()->contains( name ) )
+  if ( !sFunctionHelpTexts.contains( name ) )
     return tr( "function help for %1 missing" ).arg( name );
 
-  const Help &f = ( *sFunctionHelpTexts() )[ name ];
+  const Help &f = sFunctionHelpTexts[ name ];
 
   name = f.mName;
   if ( f.mType == tr( "group" ) )
@@ -686,9 +689,9 @@ QStringList QgsExpression::tags( const QString &name )
 
   QgsExpression::initFunctionHelp();
 
-  if ( sFunctionHelpTexts()->contains( name ) )
+  if ( sFunctionHelpTexts.contains( name ) )
   {
-    const Help &f = ( *sFunctionHelpTexts() )[ name ];
+    const Help &f = sFunctionHelpTexts[ name ];
 
     for ( const HelpVariant &v : std::as_const( f.mVariants ) )
     {

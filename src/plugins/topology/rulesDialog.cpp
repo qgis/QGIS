@@ -20,11 +20,8 @@
 #include <QDebug>
 #include <QTableWidgetItem>
 
-#include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 #include "qgsmaplayer.h"
-#include "qgsproviderregistry.h"
-#include "qgslogger.h"
 #include "qgisinterface.h"
 #include "qgsproject.h"
 #include "qgsapplication.h"
@@ -180,7 +177,7 @@ void rulesDialog::showControls( const QString &testName )
       }
 
 
-      if ( v1->type() == QgsMapLayerType::VectorLayer )
+      if ( v1->type() == Qgis::LayerType::Vector )
       {
         if ( topologyRule.layer2AcceptsType( v1->geometryType() ) )
         {
@@ -330,7 +327,7 @@ void rulesDialog::initGui()
     QgsVectorLayer *v1 = ( QgsVectorLayer * )QgsProject::instance()->mapLayer( layerList[i] );
 
     // add layer name to the layer combo boxes
-    if ( v1->type() == QgsMapLayerType::VectorLayer )
+    if ( v1->type() == Qgis::LayerType::Vector )
     {
       mLayer1Box->addItem( v1->name(), v1->id() );
     }

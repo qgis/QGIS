@@ -65,7 +65,7 @@ Returns the context in which the symbol widget is shown, e.g., the associated ma
 Returns the vector layer associated with the widget.
 %End
 
-    virtual void setGeometryType( QgsWkbTypes::GeometryType type ) = 0;
+    virtual void setGeometryType( Qgis::GeometryType type ) = 0;
 %Docstring
 Sets the geometry ``type`` of the features to customize the widget accordingly.
 %End

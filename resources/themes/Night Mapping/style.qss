@@ -39,8 +39,6 @@ QWebView, QTextBrowser
 QToolTip
 {
     border: 1px solid #222;
-    background-color: @itemdarkbackground;
-    color: @text;
 }
 
 QMenuBar {

@@ -17,6 +17,7 @@
 
 #include "qgsalgorithmlineintersection.h"
 #include "qgsgeometryengine.h"
+#include "qgsspatialindex.h"
 
 ///@cond PRIVATE
 
@@ -90,8 +91,8 @@ QVariantMap QgsLineIntersectionAlgorithm::processAlgorithm( const QVariantMap &p
   if ( !sourceB )
     throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INTERSECT" ) ) );
 
-  const QStringList fieldsA = parameterAsFields( parameters, QStringLiteral( "INPUT_FIELDS" ), context );
-  const QStringList fieldsB = parameterAsFields( parameters, QStringLiteral( "INTERSECT_FIELDS" ), context );
+  const QStringList fieldsA = parameterAsStrings( parameters, QStringLiteral( "INPUT_FIELDS" ), context );
+  const QStringList fieldsB = parameterAsStrings( parameters, QStringLiteral( "INTERSECT_FIELDS" ), context );
 
   QgsAttributeList fieldIndicesA = QgsProcessingUtils::fieldNamesToIndices( fieldsA, sourceA->fields() );
   QgsAttributeList fieldIndicesB = QgsProcessingUtils::fieldNamesToIndices( fieldsB, sourceB->fields() );
@@ -103,7 +104,7 @@ QVariantMap QgsLineIntersectionAlgorithm::processAlgorithm( const QVariantMap &p
                           intersectFieldsPrefix );
 
   QString dest;
-  std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, outFields, QgsWkbTypes::Point,  sourceA->sourceCrs(), QgsFeatureSink::RegeneratePrimaryKey ) );
+  std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, outFields, Qgis::WkbType::Point,  sourceA->sourceCrs(), QgsFeatureSink::RegeneratePrimaryKey ) );
   if ( !sink )
     throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
 
@@ -159,12 +160,12 @@ QVariantMap QgsLineIntersectionAlgorithm::processAlgorithm( const QVariantMap &p
           {
             outAttributes.append( inFeatureB.attribute( b ) );
           }
-          if ( QgsWkbTypes::flatType( intersectGeom.wkbType() ) == QgsWkbTypes::GeometryCollection )
+          if ( QgsWkbTypes::flatType( intersectGeom.wkbType() ) == Qgis::WkbType::GeometryCollection )
           {
             const QVector<QgsGeometry> geomCollection = intersectGeom.asGeometryCollection();
             for ( const QgsGeometry &part : geomCollection )
             {
-              if ( part.type() == QgsWkbTypes::PointGeometry )
+              if ( part.type() == Qgis::GeometryType::Point )
               {
                 if ( part.isMultipart() )
                 {
@@ -177,7 +178,7 @@ QVariantMap QgsLineIntersectionAlgorithm::processAlgorithm( const QVariantMap &p
               }
             }
           }
-          else if ( intersectGeom.type() == QgsWkbTypes::PointGeometry )
+          else if ( intersectGeom.type() == Qgis::GeometryType::Point )
           {
             if ( intersectGeom.isMultipart() )
             {

@@ -80,15 +80,14 @@ class QgsWFSSourceSelect: public QgsAbstractDataSourceWidget, private Ui::QgsWFS
     QString mVersion;
 
     /**
-     * Returns the best suited CRS from a set of authority ids
+     * Returns the best suited CRS from a list of authority ids
      *
-     * 1. project CRS if contained in the set
-     * 2. WGS84 if contained in the set
-     * 3. the first entry in the set else
+     * 1. project CRS if contained in the list and the project is not empty
+     * 2. the first entry in the list else
      *
      * \returns the authority id of the crs or an empty string in case of error
     */
-    QString getPreferredCrs( const QSet<QString> &crsSet ) const;
+    QString getPreferredCrs( const QList<QString> &crsList ) const;
 
     void showHelp();
 

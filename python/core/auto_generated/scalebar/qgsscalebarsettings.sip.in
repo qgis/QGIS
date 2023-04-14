@@ -231,14 +231,14 @@ to SegmentSizeFitWidth.
 .. seealso:: :py:func:`setSegmentSizeMode`
 %End
 
-    QgsUnitTypes::DistanceUnit units() const;
+    Qgis::DistanceUnit units() const;
 %Docstring
 Returns the distance units used by the scalebar.
 
 .. seealso:: :py:func:`setUnits`
 %End
 
-    void setUnits( QgsUnitTypes::DistanceUnit units );
+    void setUnits( Qgis::DistanceUnit units );
 %Docstring
 Sets the distance ``units`` used by the scalebar.
 

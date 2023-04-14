@@ -38,28 +38,28 @@
  * See details in QEP #17
  ****************************************************************************/
 
-QgsPoint::QgsPoint( double x, double y, double z, double m, QgsWkbTypes::Type wkbType )
+QgsPoint::QgsPoint( double x, double y, double z, double m, Qgis::WkbType wkbType )
   : mX( x )
   , mY( y )
   , mZ( z )
   , mM( m )
 {
-  if ( wkbType != QgsWkbTypes::Unknown )
+  if ( wkbType != Qgis::WkbType::Unknown )
   {
-    Q_ASSERT( QgsWkbTypes::flatType( wkbType ) == QgsWkbTypes::Point );
+    Q_ASSERT( QgsWkbTypes::flatType( wkbType ) == Qgis::WkbType::Point );
     mWkbType = wkbType;
   }
   else if ( std::isnan( z ) )
   {
     if ( std::isnan( m ) )
-      mWkbType = QgsWkbTypes::Point;
+      mWkbType = Qgis::WkbType::Point;
     else
-      mWkbType = QgsWkbTypes::PointM;
+      mWkbType = Qgis::WkbType::PointM;
   }
   else if ( std::isnan( m ) )
-    mWkbType = QgsWkbTypes::PointZ;
+    mWkbType = Qgis::WkbType::PointZ;
   else
-    mWkbType = QgsWkbTypes::PointZM;
+    mWkbType = Qgis::WkbType::PointZM;
 }
 
 QgsPoint::QgsPoint( const QgsPointXY &p )
@@ -68,7 +68,7 @@ QgsPoint::QgsPoint( const QgsPointXY &p )
   , mZ( std::numeric_limits<double>::quiet_NaN() )
   , mM( std::numeric_limits<double>::quiet_NaN() )
 {
-  mWkbType = QgsWkbTypes::Point;
+  mWkbType = Qgis::WkbType::Point;
   if ( p.isEmpty() )
   {
     mX = std::numeric_limits<double>::quiet_NaN();
@@ -82,16 +82,16 @@ QgsPoint::QgsPoint( QPointF p )
   , mZ( std::numeric_limits<double>::quiet_NaN() )
   , mM( std::numeric_limits<double>::quiet_NaN() )
 {
-  mWkbType = QgsWkbTypes::Point;
+  mWkbType = Qgis::WkbType::Point;
 }
 
-QgsPoint::QgsPoint( QgsWkbTypes::Type wkbType, double x, double y, double z, double m )
+QgsPoint::QgsPoint( Qgis::WkbType wkbType, double x, double y, double z, double m )
   : mX( x )
   , mY( y )
   , mZ( QgsWkbTypes::hasZ( wkbType ) ? z : std::numeric_limits<double>::quiet_NaN() )
   , mM( QgsWkbTypes::hasM( wkbType ) ? m : std::numeric_limits<double>::quiet_NaN() )
 {
-  Q_ASSERT( QgsWkbTypes::flatType( wkbType ) == QgsWkbTypes::Point );
+  Q_ASSERT( QgsWkbTypes::flatType( wkbType ) == Qgis::WkbType::Point );
   mWkbType = wkbType;
 }
 
@@ -134,8 +134,8 @@ bool QgsPoint::removeDuplicateNodes( double, bool )
 
 bool QgsPoint::fromWkb( QgsConstWkbPtr &wkbPtr )
 {
-  const QgsWkbTypes::Type type = wkbPtr.readHeader();
-  if ( QgsWkbTypes::flatType( type ) != QgsWkbTypes::Point )
+  const Qgis::WkbType type = wkbPtr.readHeader();
+  if ( QgsWkbTypes::flatType( type ) != Qgis::WkbType::Point )
   {
     clear();
     return false;
@@ -164,9 +164,9 @@ bool QgsPoint::fromWkt( const QString &wkt )
 {
   clear();
 
-  QPair<QgsWkbTypes::Type, QString> parts = QgsGeometryUtils::wktReadBlock( wkt );
+  QPair<Qgis::WkbType, QString> parts = QgsGeometryUtils::wktReadBlock( wkt );
 
-  if ( QgsWkbTypes::flatType( parts.first ) != QgsWkbTypes::Point )
+  if ( QgsWkbTypes::flatType( parts.first ) != Qgis::WkbType::Point )
     return false;
   mWkbType = parts.first;
 
@@ -617,7 +617,7 @@ void QgsPoint::swapXy()
   clearCache();
 }
 
-bool QgsPoint::convertTo( QgsWkbTypes::Type type )
+bool QgsPoint::convertTo( Qgis::WkbType type )
 {
   if ( type == mWkbType )
     return true;
@@ -626,21 +626,21 @@ bool QgsPoint::convertTo( QgsWkbTypes::Type type )
 
   switch ( type )
   {
-    case QgsWkbTypes::Point:
+    case Qgis::WkbType::Point:
       mZ = std::numeric_limits<double>::quiet_NaN();
       mM = std::numeric_limits<double>::quiet_NaN();
       mWkbType = type;
       return true;
-    case QgsWkbTypes::PointZ:
-    case QgsWkbTypes::Point25D:
+    case Qgis::WkbType::PointZ:
+    case Qgis::WkbType::Point25D:
       mM = std::numeric_limits<double>::quiet_NaN();
       mWkbType = type;
       return true;
-    case QgsWkbTypes::PointM:
+    case Qgis::WkbType::PointM:
       mZ = std::numeric_limits<double>::quiet_NaN();
       mWkbType = type;
       return true;
-    case QgsWkbTypes::PointZM:
+    case Qgis::WkbType::PointZM:
       mWkbType = type;
       return true;
     default:
@@ -734,7 +734,7 @@ double QgsPoint::inclination( const QgsPoint &other ) const
 
 QgsPoint QgsPoint::project( double distance, double azimuth, double inclination ) const
 {
-  QgsWkbTypes::Type pType = mWkbType;
+  Qgis::WkbType pType = mWkbType;
   const double radsXy = azimuth * M_PI / 180.0;
   double dx = 0.0, dy = 0.0, dz = 0.0;
 

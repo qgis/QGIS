@@ -16,7 +16,7 @@
  ***************************************************************************/
 
 #include "qgsalgorithmangletonearest.h"
-#include "qgsprocessingoutputs.h"
+#include "qgsspatialindex.h"
 #include "qgslinestring.h"
 #include "qgsvectorlayer.h"
 #include "qgsrenderer.h"
@@ -157,7 +157,7 @@ bool QgsAngleToNearestAlgorithm::supportInPlaceEdit( const QgsMapLayer *layer ) 
 {
   if ( const QgsVectorLayer *vl = qobject_cast< const QgsVectorLayer * >( layer ) )
   {
-    return vl->geometryType() == QgsWkbTypes::PointGeometry;
+    return vl->geometryType() == Qgis::GeometryType::Point;
   }
   return false;
 }

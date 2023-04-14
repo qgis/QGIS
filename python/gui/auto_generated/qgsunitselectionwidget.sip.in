@@ -177,7 +177,7 @@ Sets the units which the user can choose from in the combobox. Clears any existi
 Gets the selected unit index
 %End
 
-    QgsUnitTypes::RenderUnit unit() const;
+    Qgis::RenderUnit unit() const;
 %Docstring
 Returns the current predefined selected unit (if applicable).
 
@@ -197,7 +197,7 @@ Sets the selected unit index
    available in Python bindings as setUnitIndex
 %End
 
-    void setUnit( QgsUnitTypes::RenderUnit unit );
+    void setUnit( Qgis::RenderUnit unit );
 %Docstring
 Sets the selected unit
 

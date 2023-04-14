@@ -18,7 +18,6 @@
 
 #include "qgis_core.h"
 #include "qgis.h"
-#include "qgsunittypes.h"
 #include "qgsmapunitscale.h"
 #include "qgsfields.h"
 #include "qgswkbtypes.h"
@@ -49,7 +48,7 @@ class CORE_EXPORT QgsSymbolRenderContext
      * \param fields
      * \param mapUnitScale
      */
-    QgsSymbolRenderContext( QgsRenderContext &c, QgsUnitTypes::RenderUnit u, qreal opacity = 1.0, bool selected = false, Qgis::SymbolRenderHints renderHints = Qgis::SymbolRenderHints(), const QgsFeature *f = nullptr, const QgsFields &fields = QgsFields(), const QgsMapUnitScale &mapUnitScale = QgsMapUnitScale() );
+    QgsSymbolRenderContext( QgsRenderContext &c, Qgis::RenderUnit u, qreal opacity = 1.0, bool selected = false, Qgis::SymbolRenderHints renderHints = Qgis::SymbolRenderHints(), const QgsFeature *f = nullptr, const QgsFields &fields = QgsFields(), const QgsMapUnitScale &mapUnitScale = QgsMapUnitScale() );
 
     ~QgsSymbolRenderContext();
 
@@ -79,13 +78,13 @@ class CORE_EXPORT QgsSymbolRenderContext
      * Returns the output unit for the context.
      * \deprecated No longer used and will be removed in QGIS 4.0
      */
-    Q_DECL_DEPRECATED QgsUnitTypes::RenderUnit outputUnit() const SIP_DEPRECATED { return mOutputUnit; }
+    Q_DECL_DEPRECATED Qgis::RenderUnit outputUnit() const SIP_DEPRECATED { return mOutputUnit; }
 
     /**
      * Sets the output unit for the context.
      * \deprecated No longer used and will be removed in QGIS 4.0
      */
-    Q_DECL_DEPRECATED void setOutputUnit( QgsUnitTypes::RenderUnit u ) SIP_DEPRECATED { mOutputUnit = u; }
+    Q_DECL_DEPRECATED void setOutputUnit( Qgis::RenderUnit u ) SIP_DEPRECATED { mOutputUnit = u; }
 
     /**
      * \deprecated Will be removed in QGIS 4.0
@@ -147,7 +146,7 @@ class CORE_EXPORT QgsSymbolRenderContext
      * \see originalGeometryType()
      * \since QGIS 3.0
      */
-    void setOriginalGeometryType( QgsWkbTypes::GeometryType type ) { mOriginalGeometryType = type; }
+    void setOriginalGeometryType( Qgis::GeometryType type ) { mOriginalGeometryType = type; }
 
     /**
      * Returns the geometry type for the original feature geometry being rendered. This can be
@@ -157,7 +156,7 @@ class CORE_EXPORT QgsSymbolRenderContext
      * \see originalGeometryType()
      * \since QGIS 3.0
      */
-    QgsWkbTypes::GeometryType originalGeometryType() const { return mOriginalGeometryType; }
+    Qgis::GeometryType originalGeometryType() const { return mOriginalGeometryType; }
 
     /**
      * Fields of the layer. Currently only available in startRender() calls
@@ -244,7 +243,7 @@ class CORE_EXPORT QgsSymbolRenderContext
 
     QgsRenderContext &mRenderContext;
     std::unique_ptr< QgsExpressionContextScope > mExpressionContextScope;
-    QgsUnitTypes::RenderUnit mOutputUnit;
+    Qgis::RenderUnit mOutputUnit;
     QgsMapUnitScale mMapUnitScale;
     qreal mOpacity = 1.0;
     bool mSelected;
@@ -253,7 +252,7 @@ class CORE_EXPORT QgsSymbolRenderContext
     QgsFields mFields;
     int mGeometryPartCount;
     int mGeometryPartNum;
-    QgsWkbTypes::GeometryType mOriginalGeometryType = QgsWkbTypes::UnknownGeometry;
+    Qgis::GeometryType mOriginalGeometryType = Qgis::GeometryType::Unknown;
     std::unique_ptr< QgsLegendPatchShape > mPatchShape;
 };
 

@@ -44,7 +44,6 @@ QgsRasterPyramidsOptionsWidget::QgsRasterPyramidsOptionsWidget( QWidget *parent,
 
   mSaveOptionsWidget->setProvider( provider );
   mSaveOptionsWidget->setPyramidsFormat( Qgis::RasterPyramidFormat::GeoTiff );
-  mSaveOptionsWidget->setType( QgsRasterFormatSaveOptionsWidget::ProfileLineEdit );
 
   updateUi();
 }

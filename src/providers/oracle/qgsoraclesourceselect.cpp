@@ -20,7 +20,6 @@ email                : jef at norbit dot de
 
 #include "qgslogger.h"
 #include "qgsapplication.h"
-#include "qgsoracleprovider.h"
 #include "qgsoraclenewconnection.h"
 #include "qgsoracletablecache.h"
 #include "qgsmanageconnectionsdialog.h"
@@ -29,12 +28,10 @@ email                : jef at norbit dot de
 #include "qgsvectorlayer.h"
 #include "qgsoraclecolumntypetask.h"
 #include "qgssettings.h"
-#include "qgsproxyprogresstask.h"
 #include "qgsgui.h"
 #include "qgsiconutils.h"
 #include "qgsoracletablemodel.h"
-#include "qgsdbfilterproxymodel.h"
-
+#include "qgsprovidermetadata.h"
 
 #include <QFileDialog>
 #include <QInputDialog>
@@ -60,18 +57,18 @@ QWidget *QgsOracleSourceSelectDelegate::createEditor( QWidget *parent, const QSt
   if ( index.column() == QgsOracleTableModel::DbtmType && index.data( Qt::UserRole + 1 ).toBool() )
   {
     QComboBox *cb = new QComboBox( parent );
-    for ( QgsWkbTypes::Type type :
+    for ( Qgis::WkbType type :
           {
-            QgsWkbTypes::Point,
-            QgsWkbTypes::LineString,
-            QgsWkbTypes::Polygon,
-            QgsWkbTypes::MultiPoint,
-            QgsWkbTypes::MultiLineString,
-            QgsWkbTypes::MultiPolygon,
-            QgsWkbTypes::NoGeometry
+            Qgis::WkbType::Point,
+            Qgis::WkbType::LineString,
+            Qgis::WkbType::Polygon,
+            Qgis::WkbType::MultiPoint,
+            Qgis::WkbType::MultiLineString,
+            Qgis::WkbType::MultiPolygon,
+            Qgis::WkbType::NoGeometry
           } )
     {
-      cb->addItem( QgsIconUtils::iconForWkbType( type ), QgsWkbTypes::translatedDisplayString( type ), type );
+      cb->addItem( QgsIconUtils::iconForWkbType( type ), QgsWkbTypes::translatedDisplayString( type ), static_cast< quint32>( type ) );
     }
     return cb;
   }
@@ -144,11 +141,11 @@ void QgsOracleSourceSelectDelegate::setModelData( QWidget *editor, QAbstractItem
   {
     if ( index.column() == QgsOracleTableModel::DbtmType )
     {
-      QgsWkbTypes::Type type = static_cast< QgsWkbTypes::Type >( cb->currentData().toInt() );
+      Qgis::WkbType type = static_cast< Qgis::WkbType >( cb->currentData().toInt() );
 
       model->setData( index, QgsIconUtils::iconForWkbType( type ), Qt::DecorationRole );
-      model->setData( index, type != QgsWkbTypes::Unknown ? QgsWkbTypes::translatedDisplayString( type ) : tr( "Select…" ) );
-      model->setData( index, type, Qt::UserRole + 2 );
+      model->setData( index, type != Qgis::WkbType::Unknown ? QgsWkbTypes::translatedDisplayString( type ) : tr( "Select…" ) );
+      model->setData( index, static_cast< quint32>( type ), Qt::UserRole + 2 );
     }
     else if ( index.column() == QgsOracleTableModel::DbtmPkCol )
     {

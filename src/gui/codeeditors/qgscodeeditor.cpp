@@ -21,6 +21,7 @@
 #include "qgsgui.h"
 #include "qgscodeeditorcolorschemeregistry.h"
 #include "qgscodeeditorhistorydialog.h"
+#include "qgsstringutils.h"
 
 #include <QLabel>
 #include <QWidget>
@@ -31,6 +32,8 @@
 #include <Qsci/qscistyle.h>
 #include <QMenu>
 #include <QClipboard>
+#include <QScrollBar>
+#include <QMessageBox>
 
 QMap< QgsCodeEditorColorScheme::ColorRole, QString > QgsCodeEditor::sColorRoleToSettingsKey
 {
@@ -135,6 +138,10 @@ QgsCodeEditor::QgsCodeEditor( QWidget *parent, const QString &title, bool foldin
       break;
     }
   }
+
+#if QSCINTILLA_VERSION < 0x020d03
+  installEventFilter( this );
+#endif
 }
 
 // Workaround a bug in QScintilla 2.8.X
@@ -179,7 +186,7 @@ void QgsCodeEditor::keyPressEvent( QKeyEvent *event )
   if ( event->key() == Qt::Key_Escape )
   {
     // Shortcut QScintilla and redirect the event to the QWidget handler
-    QWidget::keyPressEvent( event ); // clazy:exclude=skipped-base-method
+    QWidget::keyPressEvent( event ); // NOLINT(bugprone-parent-virtual-call) clazy:exclude=skipped-base-method
     return;
   }
 
@@ -208,36 +215,122 @@ void QgsCodeEditor::keyPressEvent( QKeyEvent *event )
     }
   }
 
+  const bool ctrlModifier = event->modifiers() & Qt::ControlModifier;
+  const bool altModifier = event->modifiers() & Qt::AltModifier;
+
+  // Ctrl+Alt+F: reformat code
+  const bool canReformat = languageCapabilities() & Qgis::ScriptLanguageCapability::Reformat;
+  if ( !isReadOnly() && canReformat && ctrlModifier && altModifier && event->key() == Qt::Key_F )
+  {
+    event->accept();
+    reformatCode();
+    return;
+  }
+
+  // Toggle comment when user presses  Ctrl+:
+  const bool canToggle = languageCapabilities() & Qgis::ScriptLanguageCapability::ToggleComment;
+  if ( !isReadOnly() && canToggle && ctrlModifier && event->key() == Qt::Key_Colon )
+  {
+    event->accept();
+    toggleComment();
+    return;
+  }
+
   QsciScintilla::keyPressEvent( event );
 
 }
 
 void QgsCodeEditor::contextMenuEvent( QContextMenuEvent *event )
 {
-  if ( mMode != QgsCodeEditor::Mode::CommandInput )
+  switch ( mMode )
   {
-    QsciScintilla::contextMenuEvent( event );
-    return;
+    case Mode::ScriptEditor:
+    {
+      QMenu *menu = createStandardContextMenu();
+      menu->setAttribute( Qt::WA_DeleteOnClose );
+
+      if ( ( languageCapabilities() & Qgis::ScriptLanguageCapability::Reformat ) ||
+           ( languageCapabilities() & Qgis::ScriptLanguageCapability::CheckSyntax ) )
+      {
+        menu->addSeparator();
+      }
+
+      if ( languageCapabilities() & Qgis::ScriptLanguageCapability::Reformat )
+      {
+        QAction *reformatAction = new QAction( tr( "Reformat Code" ), menu );
+        reformatAction->setShortcut( QStringLiteral( "Ctrl+Alt+F" ) );
+        reformatAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "console/iconFormatCode.svg" ) ) );
+        reformatAction->setEnabled( !isReadOnly() );
+        connect( reformatAction, &QAction::triggered, this, &QgsCodeEditor::reformatCode );
+        menu->addAction( reformatAction );
+      }
+
+      if ( languageCapabilities() & Qgis::ScriptLanguageCapability::CheckSyntax )
+      {
+        QAction *syntaxCheckAction = new QAction( tr( "Check Syntax" ), menu );
+        syntaxCheckAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "console/iconSyntaxErrorConsole.svg" ) ) );
+        connect( syntaxCheckAction, &QAction::triggered, this, &QgsCodeEditor::checkSyntax );
+        menu->addAction( syntaxCheckAction );
+      }
+
+      if ( languageCapabilities() & Qgis::ScriptLanguageCapability::ToggleComment )
+      {
+        QAction *toggleCommentAction = new QAction( tr( "Toggle Comment" ), menu );
+        toggleCommentAction->setShortcut( QStringLiteral( "Ctrl+:" ) );
+        toggleCommentAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "console/iconCommentEditorConsole.svg" ) ) );
+        toggleCommentAction->setEnabled( !isReadOnly() );
+        connect( toggleCommentAction, &QAction::triggered, this, &QgsCodeEditor::toggleComment );
+        menu->addAction( toggleCommentAction );
+      }
+
+      populateContextMenu( menu );
+
+      menu->exec( mapToGlobal( event->pos() ) );
+      break;
+    }
+
+    case Mode::CommandInput:
+    {
+      QMenu *menu = new QMenu( this );
+      QMenu *historySubMenu = new QMenu( tr( "Command History" ), menu );
+
+      historySubMenu->addAction( tr( "Show" ), this, &QgsCodeEditor::showHistory, QStringLiteral( "Ctrl+Shift+SPACE" ) );
+      historySubMenu->addAction( tr( "Clear File" ), this, &QgsCodeEditor::clearPersistentHistory );
+      historySubMenu->addAction( tr( "Clear Session" ), this, &QgsCodeEditor::clearSessionHistory );
+
+      menu->addMenu( historySubMenu );
+      menu->addSeparator();
+
+      QAction *copyAction = menu->addAction( QgsApplication::getThemeIcon( "mActionEditCopy.svg" ), tr( "Copy" ), this, &QgsCodeEditor::copy, QKeySequence::Copy );
+      QAction *pasteAction = menu->addAction( QgsApplication::getThemeIcon( "mActionEditPaste.svg" ), tr( "Paste" ), this, &QgsCodeEditor::paste, QKeySequence::Paste );
+      copyAction->setEnabled( hasSelectedText() );
+      pasteAction->setEnabled( !QApplication::clipboard()->text().isEmpty() );
+
+      populateContextMenu( menu );
+
+      menu->exec( mapToGlobal( event->pos() ) );
+      break;
+    }
+
+    case Mode::OutputDisplay:
+      QsciScintilla::contextMenuEvent( event );
+      break;
   }
+}
 
-  QMenu *menu = new QMenu( this );
-  QMenu *historySubMenu = new QMenu( tr( "Command History" ), menu );
+bool QgsCodeEditor::eventFilter( QObject *watched, QEvent *event )
+{
+#if QSCINTILLA_VERSION < 0x020d03
+  if ( watched == this && event->type() == QEvent::InputMethod )
+  {
+    // swallow input method events, which cause loss of selected text.
+    // See https://sourceforge.net/p/scintilla/bugs/1913/ , which was ported to QScintilla
+    // in version 2.13.3
+    return true;
+  }
+#endif
 
-  historySubMenu->addAction( tr( "Show" ), this, &QgsCodeEditor::showHistory, QStringLiteral( "Ctrl+Shift+SPACE" ) );
-  historySubMenu->addAction( tr( "Clear File" ), this, &QgsCodeEditor::clearPersistentHistory );
-  historySubMenu->addAction( tr( "Clear Session" ), this, &QgsCodeEditor::clearSessionHistory );
-
-  menu->addMenu( historySubMenu );
-  menu->addSeparator();
-
-  QAction *copyAction = menu->addAction( QgsApplication::getThemeIcon( "mActionEditCopy.svg" ), tr( "Copy" ), this, &QgsCodeEditor::copy, QKeySequence::Copy );
-  QAction *pasteAction = menu->addAction( QgsApplication::getThemeIcon( "mActionEditPaste.svg" ), tr( "Paste" ), this, &QgsCodeEditor::paste, QKeySequence::Paste );
-  copyAction->setEnabled( hasSelectedText() );
-  pasteAction->setEnabled( !QApplication::clipboard()->text().isEmpty() );
-
-  populateContextMenu( menu );
-
-  menu->exec( mapToGlobal( event->pos() ) );
+  return QsciScintilla::eventFilter( watched, event );
 }
 
 void QgsCodeEditor::initializeLexer()
@@ -375,6 +468,11 @@ void QgsCodeEditor::setTitle( const QString &title )
 Qgis::ScriptLanguage QgsCodeEditor::language() const
 {
   return Qgis::ScriptLanguage::Unknown;
+}
+
+Qgis::ScriptLanguageCapabilities QgsCodeEditor::languageCapabilities() const
+{
+  return Qgis::ScriptLanguageCapabilities();
 }
 
 QString QgsCodeEditor::languageToString( Qgis::ScriptLanguage language )
@@ -542,6 +640,31 @@ void QgsCodeEditor::populateContextMenu( QMenu * )
 
 }
 
+QString QgsCodeEditor::reformatCodeString( const QString &string )
+{
+  return string;
+}
+
+void QgsCodeEditor::showMessage( const QString &title, const QString &message, Qgis::MessageLevel level )
+{
+  switch ( level )
+  {
+    case Qgis::Info:
+    case Qgis::Success:
+    case Qgis::NoLevel:
+      QMessageBox::information( this, title, message );
+      break;
+
+    case Qgis::Warning:
+      QMessageBox::warning( this, title, message );
+      break;
+
+    case Qgis::Critical:
+      QMessageBox::critical( this, title, message );
+      break;
+  }
+}
+
 void QgsCodeEditor::updatePrompt()
 {
   if ( mInterpreter )
@@ -562,14 +685,117 @@ void QgsCodeEditor::setInterpreter( QgsCodeInterpreter *newInterpreter )
   updatePrompt();
 }
 
+// Find the source substring index that most closely matches the target string
+int findMinimalDistanceIndex( const QString &source, const QString &target )
+{
+  const int index = std::min( source.length(), target.length() );
+
+  const int d0 = QgsStringUtils::levenshteinDistance( source.left( index ), target );
+  if ( d0 == 0 )
+    return index;
+
+  int refDistanceMore = d0;
+  int refIndexMore = index;
+  if ( index < source.length() - 1 )
+  {
+    while ( true )
+    {
+      const int newDistance = QgsStringUtils::levenshteinDistance( source.left( refIndexMore + 1 ), target );
+      if ( newDistance <= refDistanceMore )
+      {
+        refDistanceMore = newDistance;
+        refIndexMore++;
+        if ( refIndexMore == source.length() - 1 )
+          break;
+      }
+      else
+      {
+        break;
+      }
+    }
+  }
+
+  int refDistanceLess = d0;
+  int refIndexLess = index;
+  if ( index > 0 )
+  {
+    while ( true )
+    {
+      const int newDistance = QgsStringUtils::levenshteinDistance( source.left( refIndexLess - 1 ), target );
+      if ( newDistance <= refDistanceLess )
+      {
+        refDistanceLess = newDistance;
+        refIndexLess--;
+        if ( refIndexLess == 0 )
+          break;
+      }
+      else
+      {
+        break;
+      }
+    }
+  }
+
+  if ( refDistanceMore < refDistanceLess )
+    return refIndexMore;
+  else
+    return refIndexLess;
+}
+
+void QgsCodeEditor::reformatCode()
+{
+  if ( !( languageCapabilities() & Qgis::ScriptLanguageCapability::Reformat ) )
+    return;
+
+  int line = 0;
+  int index = 0;
+  getCursorPosition( &line, &index );
+  const QString textBeforeCursor = text( 0, positionFromLineIndex( line, index ) );
+
+  const QString originalText = text();
+
+  const QString newText = reformatCodeString( originalText );
+
+  if ( originalText == newText )
+    return;
+
+  // try to preserve the cursor position and scroll position
+  const int oldScrollValue = verticalScrollBar()->value();
+  const int linearPosition = findMinimalDistanceIndex( newText, textBeforeCursor );
+
+  beginUndoAction();
+  selectAll();
+  removeSelectedText();
+  insert( newText );
+  lineIndexFromPosition( linearPosition, &line, &index );
+  setCursorPosition( line, index );
+  verticalScrollBar()->setValue( oldScrollValue );
+  endUndoAction();
+}
+
+bool QgsCodeEditor::checkSyntax()
+{
+  return true;
+}
+
+void QgsCodeEditor::toggleComment()
+{
+
+}
+
 QStringList QgsCodeEditor::history() const
 {
   return mHistory;
 }
 
-void QgsCodeEditor::runCommand( const QString &command )
+void QgsCodeEditor::runCommand( const QString &command, bool skipHistory )
 {
-  updateHistory( { command } );
+  if ( !skipHistory )
+  {
+    updateHistory( { command } );
+    if ( mFlags & QgsCodeEditor::Flag::ImmediatelyUpdateHistory )
+      writeHistoryFile();
+  }
 
   if ( mInterpreter )
     mInterpreter->exec( command );

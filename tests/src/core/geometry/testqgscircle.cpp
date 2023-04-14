@@ -17,8 +17,6 @@
 #include <QString>
 
 #include "qgscircle.h"
-#include "qgsgeometryutils.h"
-#include "qgslinestring.h"
 #include "qgspoint.h"
 
 #include "testgeometryutils.h"
@@ -357,11 +355,11 @@ void TestQgsCircle::intersections()
 
   QCOMPARE( circ.intersections( QgsCircle( QgsPoint( 7, -1 ), 4 ), int1, int2 ), 2 );
 
-  QCOMPARE( int1.wkbType(), QgsWkbTypes::Point );
+  QCOMPARE( int1.wkbType(), Qgis::WkbType::Point );
   QGSCOMPARENEAR( int1.x(), 3.8, 0.001 );
   QGSCOMPARENEAR( int1.y(), 1.4, 0.001 );
 
-  QCOMPARE( int2.wkbType(), QgsWkbTypes::Point );
+  QCOMPARE( int2.wkbType(), Qgis::WkbType::Point );
   QGSCOMPARENEAR( int2.x(), 7.0, 0.001 );
   QGSCOMPARENEAR( int2.y(), 3.0, 0.001 );
 
@@ -371,12 +369,12 @@ void TestQgsCircle::intersections()
   QCOMPARE( circ.intersections( QgsCircle( QgsPoint( 7, -1, 5 ), 4 ), int1, int2, true ), 0 );
   QCOMPARE( circ.intersections( QgsCircle( QgsPoint( 7, -1, 11 ), 4 ), int1, int2, true ), 2 );
 
-  QCOMPARE( int1.wkbType(), QgsWkbTypes::PointZ );
+  QCOMPARE( int1.wkbType(), Qgis::WkbType::PointZ );
   QGSCOMPARENEAR( int1.x(), 3.8, 0.001 );
   QGSCOMPARENEAR( int1.y(), 1.4, 0.001 );
   QGSCOMPARENEAR( int1.z(), 11.0, 0.001 );
 
-  QCOMPARE( int2.wkbType(), QgsWkbTypes::PointZ );
+  QCOMPARE( int2.wkbType(), Qgis::WkbType::PointZ );
   QGSCOMPARENEAR( int2.x(), 7.0, 0.001 );
   QGSCOMPARENEAR( int2.y(), 3.0, 0.001 );
   QGSCOMPARENEAR( int2.z(), 11.0, 0.001 );

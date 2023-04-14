@@ -114,7 +114,7 @@ bool QgsAddIncrementalFieldAlgorithm::prepareAlgorithm( const QVariantMap &param
   mValue = mStartValue;
   mModulusValue = parameterAsInt( parameters, QStringLiteral( "MODULUS" ), context );
   mFieldName = parameterAsString( parameters, QStringLiteral( "FIELD_NAME" ), context );
-  mGroupedFieldNames = parameterAsFields( parameters, QStringLiteral( "GROUP_FIELDS" ), context );
+  mGroupedFieldNames = parameterAsStrings( parameters, QStringLiteral( "GROUP_FIELDS" ), context );
 
   mSortExpressionString = parameterAsExpression( parameters, QStringLiteral( "SORT_EXPRESSION" ), context );
   mSortAscending = parameterAsBoolean( parameters, QStringLiteral( "SORT_ASCENDING" ), context );

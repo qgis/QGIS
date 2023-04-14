@@ -98,7 +98,7 @@ QVariantMap QgsPointsLayerFromTableAlgorithm::processAlgorithm( const QVariantMa
   if ( !fieldName.isEmpty() )
     mFieldIndex = fields.lookupField( fieldName );
 
-  QgsWkbTypes::Type outputWkbType = QgsWkbTypes::Point;
+  Qgis::WkbType outputWkbType = Qgis::WkbType::Point;
   if ( zFieldIndex >= 0 )
     outputWkbType = QgsWkbTypes::addZ( outputWkbType );
   if ( mFieldIndex >= 0 )

@@ -185,13 +185,13 @@ Gets the name of the geometry field. Empty if no geometry field
 Sets the name of the geometry field
 %End
 
-    QgsWkbTypes::Type geometryWkbType() const;
+    Qgis::WkbType geometryWkbType() const;
 %Docstring
 Gets the type of the geometry
 :py:class:`QgsWkbTypes`.NoGeometry to hide any geometry
 :py:class:`QgsWkbTypes`.Unknown for unknown types
 %End
-    void setGeometryWkbType( QgsWkbTypes::Type t );
+    void setGeometryWkbType( Qgis::WkbType t );
 %Docstring
 Sets the type of the geometry
 %End

@@ -34,7 +34,6 @@
 #include <QStringList>
 #include <QTranslator>
 
-#include "qgsunittypes.h"
 #include "qgssnappingconfig.h"
 #include "qgsprojectversion.h"
 #include "qgsexpressioncontextgenerator.h"
@@ -54,6 +53,7 @@
 #include "qgspropertycollection.h"
 #include "qgsvectorlayereditbuffergroup.h"
 #include "qgselevationshadingrenderer.h"
+#include "qgsabstractsensor.h"
 
 #include "qgsrelationmanager.h"
 #include "qgsmapthemecollection.h"
@@ -88,6 +88,7 @@ class QgsPropertyCollection;
 class QgsMapViewsManager;
 class QgsProjectElevationProperties;
 class QgsProjectGpsSettings;
+class QgsSensorManager;
 
 /**
  * \ingroup core
@@ -120,8 +121,8 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     Q_PROPERTY( QColor backgroundColor READ backgroundColor WRITE setBackgroundColor NOTIFY backgroundColorChanged )
     Q_PROPERTY( QColor selectionColor READ selectionColor WRITE setSelectionColor NOTIFY selectionColorChanged )
     Q_PROPERTY( bool topologicalEditing READ topologicalEditing WRITE setTopologicalEditing NOTIFY topologicalEditingChanged )
-    Q_PROPERTY( QgsUnitTypes::DistanceUnit distanceUnits READ distanceUnits WRITE setDistanceUnits NOTIFY distanceUnitsChanged )
-    Q_PROPERTY( QgsUnitTypes::AreaUnit areaUnits READ areaUnits WRITE setAreaUnits NOTIFY areaUnitsChanged )
+    Q_PROPERTY( Qgis::DistanceUnit distanceUnits READ distanceUnits WRITE setDistanceUnits NOTIFY distanceUnitsChanged )
+    Q_PROPERTY( Qgis::AreaUnit areaUnits READ areaUnits WRITE setAreaUnits NOTIFY areaUnitsChanged )
     Q_PROPERTY( QgsProjectDisplaySettings *displaySettings READ displaySettings CONSTANT )
 
   public:
@@ -697,7 +698,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * \see areaUnits()
      * \since QGIS 2.14
      */
-    QgsUnitTypes::DistanceUnit distanceUnits() const { return mDistanceUnits; }
+    Qgis::DistanceUnit distanceUnits() const { return mDistanceUnits; }
 
     /**
      * Sets the default distance measurement units for the project.
@@ -705,14 +706,14 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * \see setAreaUnits()
      * \since QGIS 3.0
      */
-    void setDistanceUnits( QgsUnitTypes::DistanceUnit unit );
+    void setDistanceUnits( Qgis::DistanceUnit unit );
 
     /**
      * Convenience function to query default area measurement units for project.
      * \see distanceUnits()
      * \since QGIS 2.14
      */
-    QgsUnitTypes::AreaUnit areaUnits() const { return mAreaUnits; }
+    Qgis::AreaUnit areaUnits() const { return mAreaUnits; }
 
     /**
      * Sets the default area measurement units for the project.
@@ -720,7 +721,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * \see setDistanceUnits()
      * \since QGIS 3.0
      */
-    void setAreaUnits( QgsUnitTypes::AreaUnit unit );
+    void setAreaUnits( Qgis::AreaUnit unit );
 
     /**
      * Returns the project's home path. This will either be a manually set home path
@@ -796,6 +797,21 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * \since QGIS 3.10
      */
     QgsBookmarkManager *bookmarkManager();
+
+    /**
+     * Returns the project's sensor manager, which manages sensors within
+     * the project.
+     * \note not available in Python bindings
+     * \since QGIS 3.32
+     */
+    const QgsSensorManager *sensorManager() const SIP_SKIP;
+
+    /**
+     * Returns the project's sensor manager, which manages sensors within
+     * the project.
+     * \since QGIS 3.32
+     */
+    QgsSensorManager *sensorManager();
 
     /**
      * Returns the project's view settings, which contains settings and properties
@@ -2276,6 +2292,8 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     QgsBookmarkManager *mBookmarkManager = nullptr;
 
+    QgsSensorManager *mSensorManager = nullptr;
+
     QgsProjectViewSettings *mViewSettings = nullptr;
 
     QgsProjectStyleSettings *mStyleSettings = nullptr;
@@ -2328,8 +2346,8 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     QColor mBackgroundColor;
     QColor mSelectionColor;
 
-    QgsUnitTypes::DistanceUnit mDistanceUnits = QgsUnitTypes::DistanceMeters;
-    QgsUnitTypes::AreaUnit mAreaUnits = QgsUnitTypes::AreaSquareMeters;
+    Qgis::DistanceUnit mDistanceUnits = Qgis::DistanceUnit::Meters;
+    Qgis::AreaUnit mAreaUnits = Qgis::AreaUnit::SquareMeters;
 
     mutable QgsProjectPropertyKey mProperties;  // property hierarchy, TODO: this shouldn't be mutable
     Qgis::TransactionMode mTransactionMode = Qgis::TransactionMode::Disabled; // transaction grouped editing
@@ -2458,6 +2476,17 @@ class GetNamedProjectColor : public QgsScopedExpressionFunction
 
 };
 
+class GetSensorData : public QgsScopedExpressionFunction
+{
+  public:
+    GetSensorData( const QMap<QString, QgsAbstractSensor::SensorData> &sensorData = QMap<QString, QgsAbstractSensor::SensorData>() );
+    QVariant func( const QVariantList &values, const QgsExpressionContext *, QgsExpression *, const QgsExpressionNodeFunction * ) override;
+    QgsScopedExpressionFunction *clone() const override;
+
+  private:
+
+    QMap<QString, QgsAbstractSensor::SensorData> mSensorData;
+};
 #endif
 ///@endcond
 

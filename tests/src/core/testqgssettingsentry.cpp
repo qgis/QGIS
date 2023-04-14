@@ -18,7 +18,6 @@
 #include "qgssettings.h"
 #include "qgssettingsentryimpl.h"
 #include "qgssettingsentryenumflag.h"
-#include "qgsunittypes.h"
 #include "qgsmaplayerproxymodel.h"
 #include "qgstest.h"
 
@@ -80,54 +79,54 @@ void TestQgsSettingsEntry::enumValue()
   // Make sure the setting is not existing
   QgsSettings().remove( settingsKey );
 
-  const QgsSettingsEntryEnumFlag settingsEntryEnum( settingsKey, mSettingsSection, QgsUnitTypes::LayoutMeters, QStringLiteral( "Layout unit" ) );
+  const QgsSettingsEntryEnumFlag settingsEntryEnum( settingsKey, mSettingsSection, Qgis::LayoutUnit::Meters, QStringLiteral( "Layout unit" ) );
 
   // Check default value
-  QCOMPARE( settingsEntryEnum.defaultValue(), QgsUnitTypes::LayoutMeters );
+  QCOMPARE( settingsEntryEnum.defaultValue(), Qgis::LayoutUnit::Meters );
 
   // Check set value
   {
-    const bool success = settingsEntryEnum.setValue( QgsUnitTypes::LayoutFeet );
+    const bool success = settingsEntryEnum.setValue( Qgis::LayoutUnit::Feet );
     QCOMPARE( success, true );
-    const QgsUnitTypes::LayoutUnit qgsSettingsValue = QgsSettings().enumValue( QStringLiteral( "%1/%2" ).arg( mSettingsSection, settingsKey ), QgsUnitTypes::LayoutMeters );
-    QCOMPARE( qgsSettingsValue, QgsUnitTypes::LayoutFeet );
+    const Qgis::LayoutUnit qgsSettingsValue = QgsSettings().enumValue( QStringLiteral( "%1/%2" ).arg( mSettingsSection, settingsKey ), Qgis::LayoutUnit::Meters );
+    QCOMPARE( qgsSettingsValue, Qgis::LayoutUnit::Feet );
   }
 
   // Check get value
-  QgsSettings().setEnumValue( QStringLiteral( "%1/%2" ).arg( mSettingsSection, settingsKey ), QgsUnitTypes::LayoutPicas );
-  QCOMPARE( settingsEntryEnum.value(), QgsUnitTypes::LayoutPicas );
+  QgsSettings().setEnumValue( QStringLiteral( "%1/%2" ).arg( mSettingsSection, settingsKey ), Qgis::LayoutUnit::Picas );
+  QCOMPARE( settingsEntryEnum.value(), Qgis::LayoutUnit::Picas );
 
   // Check settings type
   QCOMPARE( settingsEntryEnum.settingsType(), Qgis::SettingsType::EnumFlag );
 
   // assign to inexisting value
   {
-    const bool success = settingsEntryEnum.setValue( static_cast<QgsUnitTypes::LayoutUnit>( -1 ) );
+    const bool success = settingsEntryEnum.setValue( static_cast<Qgis::LayoutUnit>( -1 ) );
     QCOMPARE( success, false );
 
     // Current value should not have changed
-    const QgsUnitTypes::LayoutUnit qgsSettingsValue = QgsSettings().enumValue( QStringLiteral( "%1/%2" ).arg( mSettingsSection, settingsKey ), QgsUnitTypes::LayoutMeters );
-    QCOMPARE( qgsSettingsValue, QgsUnitTypes::LayoutPicas );
+    const Qgis::LayoutUnit qgsSettingsValue = QgsSettings().enumValue( QStringLiteral( "%1/%2" ).arg( mSettingsSection, settingsKey ), Qgis::LayoutUnit::Meters );
+    QCOMPARE( qgsSettingsValue, Qgis::LayoutUnit::Picas );
   }
 
   // check that value is stored as string
-  QCOMPARE( settingsEntryEnum.valueAsVariant().toString(), QMetaEnum::fromType<QgsUnitTypes::LayoutUnit>().key( QgsUnitTypes::LayoutPicas ) );
+  QCOMPARE( settingsEntryEnum.valueAsVariant().toString(), QMetaEnum::fromType<Qgis::LayoutUnit>().key( static_cast< int >( Qgis::LayoutUnit::Picas ) ) );
 
   // auto conversion of old settings (int to str)
-  QSettings().setValue( QStringLiteral( "%1/%2" ).arg( mSettingsSection, settingsKey ), static_cast<int>( QgsUnitTypes::LayoutCentimeters ) );
-  QCOMPARE( settingsEntryEnum.valueAsVariant().toInt(), QgsUnitTypes::LayoutCentimeters );
-  QCOMPARE( settingsEntryEnum.value(), QgsUnitTypes::LayoutCentimeters );
+  QSettings().setValue( QStringLiteral( "%1/%2" ).arg( mSettingsSection, settingsKey ), static_cast<int>( Qgis::LayoutUnit::Centimeters ) );
+  QCOMPARE( settingsEntryEnum.valueAsVariant().toInt(), static_cast< int >( Qgis::LayoutUnit::Centimeters ) );
+  QCOMPARE( settingsEntryEnum.value(), Qgis::LayoutUnit::Centimeters );
 
   // save as int instead of string
-  const QgsSettingsEntryEnumFlag settingsEntryEnumAsInteger( settingsKey, mSettingsSection, QgsUnitTypes::LayoutMeters, QStringLiteral( "Layout unit" ), Qgis::SettingsOption::SaveEnumFlagAsInt );
+  const QgsSettingsEntryEnumFlag settingsEntryEnumAsInteger( settingsKey, mSettingsSection, Qgis::LayoutUnit::Meters, QStringLiteral( "Layout unit" ), Qgis::SettingsOption::SaveEnumFlagAsInt );
   settingsEntryEnumAsInteger.remove();
   {
     int qgsSettingsValue = static_cast<int>( settingsEntryEnumAsInteger.value() );
-    QCOMPARE( qgsSettingsValue, static_cast<int>( QgsUnitTypes::LayoutMeters ) );
-    const bool success = settingsEntryEnumAsInteger.setValue( QgsUnitTypes::LayoutFeet );
+    QCOMPARE( qgsSettingsValue, static_cast<int>( Qgis::LayoutUnit::Meters ) );
+    const bool success = settingsEntryEnumAsInteger.setValue( Qgis::LayoutUnit::Feet );
     QCOMPARE( success, true );
-    qgsSettingsValue = QgsSettings().value( QStringLiteral( "%1/%2" ).arg( mSettingsSection, settingsKey ), static_cast<int>( QgsUnitTypes::LayoutMeters ) ).toInt();
-    QCOMPARE( qgsSettingsValue, static_cast<int>( QgsUnitTypes::LayoutFeet ) );
+    qgsSettingsValue = QgsSettings().value( QStringLiteral( "%1/%2" ).arg( mSettingsSection, settingsKey ), static_cast<int>( Qgis::LayoutUnit::Meters ) ).toInt();
+    QCOMPARE( qgsSettingsValue, static_cast<int>( Qgis::LayoutUnit::Feet ) );
   }
 }
 

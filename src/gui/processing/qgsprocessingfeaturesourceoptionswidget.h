@@ -43,6 +43,11 @@ class GUI_EXPORT QgsProcessingFeatureSourceOptionsWidget : public QgsPanelWidget
     QgsProcessingFeatureSourceOptionsWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     /**
+     * Sets a layer associated with the widget.
+     */
+    void setLayer( QgsVectorLayer *layer );
+
+    /**
      * Sets the geometry check method to use, and whether the default method is overridden.
      *
      * \see isOverridingInvalidGeometryCheck()
@@ -56,6 +61,13 @@ class GUI_EXPORT QgsProcessingFeatureSourceOptionsWidget : public QgsPanelWidget
      * \see featureLimit()
      */
     void setFeatureLimit( int limit );
+
+    /**
+     * Sets the filter \a expression for the source.
+     *
+     * \see filterExpression()
+     */
+    void setFilterExpression( const QString &expression );
 
     /**
      * Returns the selected geometry check method. Also check isOverridingInvalidGeometryCheck() to verify
@@ -79,6 +91,13 @@ class GUI_EXPORT QgsProcessingFeatureSourceOptionsWidget : public QgsPanelWidget
      * \see setFeatureLimit()
      */
     int featureLimit() const;
+
+    /**
+     * Returns the expression filter set in the widget, or an empty string if no filter is set.
+     *
+     * \see setFilterExpression()
+     */
+    QString filterExpression() const;
 
 };
 

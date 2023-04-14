@@ -48,9 +48,9 @@ class CORE_EXPORT QgsVectorTileBasicLabelingStyle
     QString layerName() const { return mLayerName; }
 
     //! Sets type of the geometry that will be used (point / line / polygon)
-    void setGeometryType( QgsWkbTypes::GeometryType geomType ) { mGeometryType = geomType; }
+    void setGeometryType( Qgis::GeometryType geomType ) { mGeometryType = geomType; }
     //! Returns type of the geometry that will be used (point / line / polygon)
-    QgsWkbTypes::GeometryType geometryType() const { return mGeometryType; }
+    Qgis::GeometryType geometryType() const { return mGeometryType; }
 
     //! Sets filter expression (empty filter means that all features match)
     void setFilterExpression( const QString &expr ) { mExpression = expr; }
@@ -86,7 +86,7 @@ class CORE_EXPORT QgsVectorTileBasicLabelingStyle
   private:
     QString mStyleName;
     QString mLayerName;
-    QgsWkbTypes::GeometryType mGeometryType;
+    Qgis::GeometryType mGeometryType;
     bool mEnabled = true;
     QString mExpression;
     int mMinZoomLevel = -1;

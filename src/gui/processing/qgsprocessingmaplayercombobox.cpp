@@ -240,12 +240,14 @@ void QgsProcessingMapLayerComboBox::setValue( const QVariant &value, QgsProcessi
     selectedOnly = fromVar.selectedFeaturesOnly;
     iterate = fromVar.flags & QgsProcessingFeatureSourceDefinition::Flag::FlagCreateIndividualOutputPerInputFeature;
     mFeatureLimit = fromVar.featureLimit;
+    mFilterExpression = fromVar.filterExpression;
     mIsOverridingDefaultGeometryCheck = fromVar.flags & QgsProcessingFeatureSourceDefinition::Flag::FlagOverrideDefaultGeometryCheck;
     mGeometryCheck = fromVar.geometryCheck;
   }
   else
   {
     mFeatureLimit = -1;
+    mFilterExpression.clear();
     mIsOverridingDefaultGeometryCheck = false;
     mGeometryCheck = QgsFeatureRequest::GeometryAbortOnInvalid;
   }
@@ -346,11 +348,11 @@ QVariant QgsProcessingMapLayerComboBox::value() const
   const bool selectedOnly = mUseSelectionCheckBox && mUseSelectionCheckBox->isChecked();
   if ( QgsMapLayer *layer = mCombo->currentLayer() )
   {
-    if ( selectedOnly || iterate || mFeatureLimit != -1 || mIsOverridingDefaultGeometryCheck )
+    if ( selectedOnly || iterate || mFeatureLimit != -1 || mIsOverridingDefaultGeometryCheck || !mFilterExpression.isEmpty() )
       return QgsProcessingFeatureSourceDefinition( layer->id(), selectedOnly, mFeatureLimit,
              ( iterate ? QgsProcessingFeatureSourceDefinition::Flag::FlagCreateIndividualOutputPerInputFeature : QgsProcessingFeatureSourceDefinition::Flags() )
              | ( mIsOverridingDefaultGeometryCheck ? QgsProcessingFeatureSourceDefinition::Flag::FlagOverrideDefaultGeometryCheck : QgsProcessingFeatureSourceDefinition::Flags() ),
-             mGeometryCheck );
+             mGeometryCheck, mFilterExpression );
     else
       return layer->id();
   }
@@ -358,11 +360,11 @@ QVariant QgsProcessingMapLayerComboBox::value() const
   {
     if ( !mCombo->currentText().isEmpty() )
     {
-      if ( selectedOnly || iterate || mFeatureLimit != -1 || mIsOverridingDefaultGeometryCheck )
+      if ( selectedOnly || iterate || mFeatureLimit != -1 || mIsOverridingDefaultGeometryCheck || !mFilterExpression.isEmpty() )
         return QgsProcessingFeatureSourceDefinition( mCombo->currentText(), selectedOnly, mFeatureLimit,
                ( iterate ? QgsProcessingFeatureSourceDefinition::Flag::FlagCreateIndividualOutputPerInputFeature : QgsProcessingFeatureSourceDefinition::Flags() )
                | ( mIsOverridingDefaultGeometryCheck ? QgsProcessingFeatureSourceDefinition::Flag::FlagOverrideDefaultGeometryCheck : QgsProcessingFeatureSourceDefinition::Flags() ),
-               mGeometryCheck );
+               mGeometryCheck, mFilterExpression );
       else
         return mCombo->currentText();
     }
@@ -423,26 +425,26 @@ QString QgsProcessingMapLayerComboBox::compatibleUriFromMimeData( const QMimeDat
       bool acceptable = false;
       switch ( QgsWkbTypes::geometryType( u.wkbType ) )
       {
-        case QgsWkbTypes::UnknownGeometry:
+        case Qgis::GeometryType::Unknown:
           acceptable = true;
           break;
 
-        case QgsWkbTypes::PointGeometry:
+        case Qgis::GeometryType::Point:
           if ( dataTypes.isEmpty() || dataTypes.contains( QgsProcessing::TypeVector ) || dataTypes.contains( QgsProcessing::TypeVectorAnyGeometry ) || dataTypes.contains( QgsProcessing::TypeVectorPoint ) )
             acceptable = true;
           break;
 
-        case QgsWkbTypes::LineGeometry:
+        case Qgis::GeometryType::Line:
           if ( dataTypes.isEmpty() || dataTypes.contains( QgsProcessing::TypeVector ) || dataTypes.contains( QgsProcessing::TypeVectorAnyGeometry ) || dataTypes.contains( QgsProcessing::TypeVectorLine ) )
             acceptable = true;
           break;
 
-        case QgsWkbTypes::PolygonGeometry:
+        case Qgis::GeometryType::Polygon:
           if ( dataTypes.isEmpty() || dataTypes.contains( QgsProcessing::TypeVector ) || dataTypes.contains( QgsProcessing::TypeVectorAnyGeometry ) || dataTypes.contains( QgsProcessing::TypeVectorPolygon ) )
             acceptable = true;
           break;
 
-        case QgsWkbTypes::NullGeometry:
+        case Qgis::GeometryType::Null:
           if ( dataTypes.contains( QgsProcessing::TypeVector ) )
             acceptable = true;
           break;
@@ -468,25 +470,25 @@ QString QgsProcessingMapLayerComboBox::compatibleUriFromMimeData( const QMimeDat
       {
         switch ( QgsWkbTypes::geometryType( u.wkbType ) )
         {
-          case QgsWkbTypes::UnknownGeometry:
+          case Qgis::GeometryType::Unknown:
             return u.uri;
 
-          case QgsWkbTypes::PointGeometry:
+          case Qgis::GeometryType::Point:
             if ( dataTypes.contains( QgsProcessing::TypeVectorAnyGeometry ) || dataTypes.contains( QgsProcessing::TypeVectorPoint ) )
               return u.uri;
             break;
 
-          case QgsWkbTypes::LineGeometry:
+          case Qgis::GeometryType::Line:
             if ( dataTypes.contains( QgsProcessing::TypeVectorAnyGeometry ) || dataTypes.contains( QgsProcessing::TypeVectorLine ) )
               return u.uri;
             break;
 
-          case QgsWkbTypes::PolygonGeometry:
+          case Qgis::GeometryType::Polygon:
             if ( dataTypes.contains( QgsProcessing::TypeVectorAnyGeometry ) || dataTypes.contains( QgsProcessing::TypeVectorPolygon ) )
               return u.uri;
             break;
 
-          case QgsWkbTypes::NullGeometry:
+          case Qgis::GeometryType::Null:
             return u.uri;
         }
       }
@@ -618,9 +620,11 @@ void QgsProcessingMapLayerComboBox::showSourceOptions()
   {
     QgsProcessingFeatureSourceOptionsWidget *widget = new QgsProcessingFeatureSourceOptionsWidget();
     widget->setPanelTitle( tr( "%1 Options" ).arg( mParameter->description() ) );
+    widget->setLayer( qobject_cast< QgsVectorLayer * >( mCombo->currentLayer() ) );
 
     widget->setGeometryCheckMethod( mIsOverridingDefaultGeometryCheck, mGeometryCheck );
     widget->setFeatureLimit( mFeatureLimit );
+    widget->setFilterExpression( mFilterExpression );
 
     panel->openPanel( widget );
 
@@ -628,10 +632,12 @@ void QgsProcessingMapLayerComboBox::showSourceOptions()
     {
       bool changed = false;
       changed = changed | ( widget->featureLimit() != mFeatureLimit );
+      changed = changed | ( widget->filterExpression() != mFilterExpression );
       changed = changed | ( widget->isOverridingInvalidGeometryCheck() != mIsOverridingDefaultGeometryCheck );
       changed = changed | ( widget->geometryCheckMethod() != mGeometryCheck );
 
       mFeatureLimit = widget->featureLimit();
+      mFilterExpression = widget->filterExpression();
       mIsOverridingDefaultGeometryCheck = widget->isOverridingInvalidGeometryCheck();
       mGeometryCheck = widget->geometryCheckMethod();
 
@@ -673,7 +679,7 @@ void QgsProcessingMapLayerComboBox::browseForLayer()
 {
   if ( QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( this ) )
   {
-    QgsDataSourceSelectWidget *widget = new QgsDataSourceSelectWidget( mBrowserModel, true, QgsMapLayerType::VectorLayer );
+    QgsDataSourceSelectWidget *widget = new QgsDataSourceSelectWidget( mBrowserModel, true, Qgis::LayerType::Vector );
     widget->setPanelTitle( tr( "Browse for \"%1\"" ).arg( mParameter->description() ) );
 
     panel->openPanel( widget );

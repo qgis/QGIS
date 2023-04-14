@@ -270,7 +270,7 @@ class GUI_EXPORT QgsLayoutItemPropertiesWidget: public QWidget, private Ui::QgsL
 //    void on_mTransparencySlider_valueChanged( int value );
 //    void on_mTransparencySpinBox_valueChanged( int value );
     void mStrokeWidthSpinBox_valueChanged( double d );
-    void strokeUnitChanged( QgsUnitTypes::LayoutUnit unit );
+    void strokeUnitChanged( Qgis::LayoutUnit unit );
     void mFrameGroupBox_toggled( bool state );
     void mFrameJoinStyleCombo_currentIndexChanged( int index );
     void mBackgroundGroupBox_toggled( bool state );
@@ -280,10 +280,10 @@ class GUI_EXPORT QgsLayoutItemPropertiesWidget: public QWidget, private Ui::QgsL
     void mPageSpinBox_valueChanged( int );
     void mXPosSpin_valueChanged( double );
     void mYPosSpin_valueChanged( double );
-    void positionUnitsChanged( QgsUnitTypes::LayoutUnit unit );
+    void positionUnitsChanged( Qgis::LayoutUnit unit );
     void mWidthSpin_valueChanged( double );
     void mHeightSpin_valueChanged( double );
-    void sizeUnitsChanged( QgsUnitTypes::LayoutUnit unit );
+    void sizeUnitsChanged( Qgis::LayoutUnit unit );
 
     void mUpperLeftCheckBox_stateChanged( bool state );
     void mUpperMiddleCheckBox_stateChanged( bool state );

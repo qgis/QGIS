@@ -48,7 +48,7 @@ QgsIdentifyMenu::~QgsIdentifyMenu()
   deleteRubberBands();
 }
 
-QList<QgsMapToolIdentify::IdentifyResult> QgsIdentifyMenu::findFeaturesOnCanvas( QgsMapMouseEvent *event, QgsMapCanvas *canvas, const QList<QgsWkbTypes::GeometryType> &geometryTypes )
+QList<QgsMapToolIdentify::IdentifyResult> QgsIdentifyMenu::findFeaturesOnCanvas( QgsMapMouseEvent *event, QgsMapCanvas *canvas, const QList<Qgis::GeometryType> &geometryTypes )
 {
   QList<QgsMapToolIdentify::IdentifyResult> results;
   const QMap< QString, QString > derivedAttributes;
@@ -61,12 +61,12 @@ QList<QgsMapToolIdentify::IdentifyResult> QgsIdentifyMenu::findFeaturesOnCanvas(
   const QList<QgsMapLayer *> layers = canvas->layers( true );
   for ( QgsMapLayer *layer : layers )
   {
-    if ( layer->type() == QgsMapLayerType::VectorLayer )
+    if ( layer->type() == Qgis::LayerType::Vector )
     {
       QgsVectorLayer *vectorLayer = qobject_cast<QgsVectorLayer *>( layer );
 
       bool typeIsSelectable = false;
-      for ( QgsWkbTypes::GeometryType type : geometryTypes )
+      for ( Qgis::GeometryType type : geometryTypes )
       {
         if ( vectorLayer->geometryType() == type )
         {
@@ -169,12 +169,12 @@ QList<QgsMapToolIdentify::IdentifyResult> QgsIdentifyMenu::exec( const QList<Qgs
     QgsMapLayer *layer = it.key();
     switch ( layer->type() )
     {
-      case QgsMapLayerType::RasterLayer:
+      case Qgis::LayerType::Raster:
       {
         addRasterLayer( layer );
         break;
       }
-      case QgsMapLayerType::VectorLayer:
+      case Qgis::LayerType::Vector:
       {
         QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer );
         if ( !vl )
@@ -183,15 +183,15 @@ QList<QgsMapToolIdentify::IdentifyResult> QgsIdentifyMenu::exec( const QList<Qgs
         break;
       }
 
-      case QgsMapLayerType::VectorTileLayer:
+      case Qgis::LayerType::VectorTile:
         // TODO: add support
         break;
 
-      case QgsMapLayerType::PluginLayer:
-      case QgsMapLayerType::AnnotationLayer:
-      case QgsMapLayerType::MeshLayer:
-      case QgsMapLayerType::PointCloudLayer:
-      case QgsMapLayerType::GroupLayer:
+      case Qgis::LayerType::Plugin:
+      case Qgis::LayerType::Annotation:
+      case Qgis::LayerType::Mesh:
+      case Qgis::LayerType::PointCloud:
+      case Qgis::LayerType::Group:
         break;
     }
   }

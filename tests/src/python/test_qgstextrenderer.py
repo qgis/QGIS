@@ -22,7 +22,15 @@ from qgis.PyQt.QtCore import (
     QSizeF,
     Qt,
 )
-from qgis.PyQt.QtGui import QBrush, QColor, QFont, QImage, QPainter, QPen
+from qgis.PyQt.QtGui import (
+    QBrush,
+    QColor,
+    QFont,
+    QImage,
+    QPainter,
+    QPen,
+    QPolygonF
+)
 from qgis.PyQt.QtXml import QDomDocument
 from qgis.core import (
     Qgis,
@@ -313,8 +321,8 @@ class PyQgsTextRenderer(unittest.TestCase):
         s.setSizeMapUnitScale(QgsMapUnitScale(1, 2))
         s.setOpacity(0.5)
         s.setJoinStyle(Qt.RoundJoin)
-        s.setMaskedSymbolLayers([QgsSymbolLayerReference("layerid1", QgsSymbolLayerId("symbol", 1)),
-                                 QgsSymbolLayerReference("layerid2", QgsSymbolLayerId("symbol2", 2))])
+        s.setMaskedSymbolLayers([QgsSymbolLayerReference("layerid1", "symbol1"),
+                                 QgsSymbolLayerReference("layerid2", "symbol2")])
         return s
 
     def testMaskEquality(self):
@@ -346,8 +354,8 @@ class PyQgsTextRenderer(unittest.TestCase):
         self.assertNotEqual(s, s2)
         s = self.createMaskSettings()
 
-        s.setMaskedSymbolLayers([QgsSymbolLayerReference("layerid11", QgsSymbolLayerId("symbol", 1)),
-                                 QgsSymbolLayerReference("layerid21", QgsSymbolLayerId("symbol2", 2))])
+        s.setMaskedSymbolLayers([QgsSymbolLayerReference("layerid11", "symbol1"),
+                                 QgsSymbolLayerReference("layerid21", "symbol2")])
         self.assertNotEqual(s, s2)
 
     def checkMaskSettings(self, s):
@@ -359,8 +367,8 @@ class PyQgsTextRenderer(unittest.TestCase):
         self.assertEqual(s.sizeMapUnitScale(), QgsMapUnitScale(1, 2))
         self.assertEqual(s.opacity(), 0.5)
         self.assertEqual(s.joinStyle(), Qt.RoundJoin)
-        self.assertEqual(s.maskedSymbolLayers(), [QgsSymbolLayerReference("layerid1", QgsSymbolLayerId("symbol", 1)),
-                                                  QgsSymbolLayerReference("layerid2", QgsSymbolLayerId("symbol2", 2))])
+        self.assertEqual(s.maskedSymbolLayers(), [QgsSymbolLayerReference("layerid1", "symbol1"),
+                                                  QgsSymbolLayerReference("layerid2", "symbol2")])
 
     def testMaskGettersSetters(self):
         s = self.createMaskSettings()
@@ -3734,6 +3742,268 @@ class PyQgsTextRenderer(unittest.TestCase):
         format.setOrientation(QgsTextFormat.VerticalOrientation)
         assert self.checkRenderPoint(format, 'text_vertical_point_mode', QgsTextRenderer.Text, text=['1234', '5678'],
                                      point=QPointF(40, 380))
+
+    def testDrawTextOnLineAtStart(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setSize(16)
+        format.setSizeUnit(QgsUnitTypes.RenderPoints)
+
+        image = QImage(400, 400, QImage.Format_RGB32)
+
+        painter = QPainter()
+        ms = QgsMapSettings()
+        ms.setExtent(QgsRectangle(0, 0, 50, 50))
+        ms.setOutputSize(image.size())
+        context = QgsRenderContext.fromMapSettings(ms)
+        context.setPainter(painter)
+        context.setScaleFactor(96 / 25.4)  # 96 DPI
+        context.setFlag(QgsRenderContext.ApplyScalingWorkaroundForTextRendering, True)
+
+        painter.begin(image)
+        painter.setRenderHint(QPainter.Antialiasing)
+        image.fill(QColor(152, 219, 249))
+
+        painter.setBrush(Qt.NoBrush)
+        painter.setPen(QPen(QColor(0, 0, 0)))
+
+        line = QPolygonF([QPointF(50, 200), QPointF(350, 200)])
+        painter.drawPolygon(line)
+
+        painter.setBrush(QBrush(QColor(182, 239, 255)))
+        painter.setPen(Qt.NoPen)
+
+        QgsTextRenderer.drawTextOnLine(line, 'my curved text', context, format, 0)
+
+        painter.end()
+        self.assertTrue(self.imageCheck('text_on_line_at_start', 'text_on_line_at_start', image))
+
+    def testDrawTextOnLineAtOffset(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setSize(16)
+        format.setSizeUnit(QgsUnitTypes.RenderPoints)
+
+        image = QImage(400, 400, QImage.Format_RGB32)
+
+        painter = QPainter()
+        ms = QgsMapSettings()
+        ms.setExtent(QgsRectangle(0, 0, 50, 50))
+        ms.setOutputSize(image.size())
+        context = QgsRenderContext.fromMapSettings(ms)
+        context.setPainter(painter)
+        context.setScaleFactor(96 / 25.4)  # 96 DPI
+        context.setFlag(QgsRenderContext.ApplyScalingWorkaroundForTextRendering, True)
+
+        painter.begin(image)
+        painter.setRenderHint(QPainter.Antialiasing)
+        image.fill(QColor(152, 219, 249))
+
+        painter.setBrush(Qt.NoBrush)
+        painter.setPen(QPen(QColor(0, 0, 0)))
+
+        line = QPolygonF([QPointF(50, 200), QPointF(350, 200)])
+        painter.drawPolygon(line)
+
+        painter.setBrush(QBrush(QColor(182, 239, 255)))
+        painter.setPen(Qt.NoPen)
+
+        QgsTextRenderer.drawTextOnLine(line, 'my curved text', context, format, 100)
+
+        painter.end()
+        self.assertTrue(self.imageCheck('text_on_line_at_offset', 'text_on_line_at_offset', image))
+
+    def testDrawTextOnCurvedLine(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setSize(16)
+        format.setSizeUnit(QgsUnitTypes.RenderPoints)
+        format.buffer().setEnabled(True)
+        format.buffer().setSize(2)
+        format.buffer().setSizeUnit(QgsUnitTypes.RenderMillimeters)
+
+        image = QImage(400, 400, QImage.Format_RGB32)
+
+        painter = QPainter()
+        ms = QgsMapSettings()
+        ms.setExtent(QgsRectangle(0, 0, 50, 50))
+        ms.setOutputSize(image.size())
+        context = QgsRenderContext.fromMapSettings(ms)
+        context.setPainter(painter)
+        context.setScaleFactor(96 / 25.4)  # 96 DPI
+        context.setFlag(QgsRenderContext.ApplyScalingWorkaroundForTextRendering, True)
+
+        painter.begin(image)
+        painter.setRenderHint(QPainter.Antialiasing)
+        image.fill(QColor(152, 219, 249))
+
+        painter.setBrush(Qt.NoBrush)
+        painter.setPen(QPen(QColor(0, 0, 0)))
+
+        line = QPolygonF([QPointF(50, 200), QPointF(100, 230), QPointF(150, 235), QPointF(350, 200)])
+        painter.drawPolyline(line)
+
+        painter.setBrush(QBrush(QColor(182, 239, 255)))
+        painter.setPen(Qt.NoPen)
+
+        format.setAllowHtmlFormatting(True)
+        QgsTextRenderer.drawTextOnLine(line, 'm<sup>y</sup> <span style="font-size: 29pt; color: red;">curv<sup style="font-size: 10pt">ed</sup></span> te<sub>xt</sub>', context, format, 20, 0)
+
+        painter.end()
+        self.assertTrue(self.imageCheck('text_on_curved_line', 'text_on_curved_line', image))
+
+    def testDrawTextOnCurvedLineUpsideDown(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setSize(16)
+        format.setSizeUnit(QgsUnitTypes.RenderPoints)
+        format.buffer().setEnabled(True)
+        format.buffer().setSize(2)
+        format.buffer().setSizeUnit(QgsUnitTypes.RenderMillimeters)
+
+        image = QImage(400, 400, QImage.Format_RGB32)
+
+        painter = QPainter()
+        ms = QgsMapSettings()
+        ms.setExtent(QgsRectangle(0, 0, 50, 50))
+        ms.setOutputSize(image.size())
+        context = QgsRenderContext.fromMapSettings(ms)
+        context.setPainter(painter)
+        context.setScaleFactor(96 / 25.4)  # 96 DPI
+        context.setFlag(QgsRenderContext.ApplyScalingWorkaroundForTextRendering, True)
+
+        painter.begin(image)
+        painter.setRenderHint(QPainter.Antialiasing)
+        image.fill(QColor(152, 219, 249))
+
+        painter.setBrush(Qt.NoBrush)
+        painter.setPen(QPen(QColor(0, 0, 0)))
+
+        line = QPolygonF(reversed([QPointF(50, 200), QPointF(100, 230), QPointF(150, 235), QPointF(350, 200)]))
+        painter.drawPolyline(line)
+
+        painter.setBrush(QBrush(QColor(182, 239, 255)))
+        painter.setPen(Qt.NoPen)
+
+        format.setAllowHtmlFormatting(True)
+        QgsTextRenderer.drawTextOnLine(line, 'm<sup>y</sup> <span style="font-size: 29pt; color: red;">curv<sup style="font-size: 10pt">ed</sup></span> te<sub>xt</sub>', context, format, 20, 0)
+
+        painter.end()
+        self.assertTrue(self.imageCheck('text_on_curved_line_upside_down', 'text_on_curved_line_upside_down', image))
+
+    def testDrawTextOnCurvedLineBackground(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setSize(16)
+        format.setSizeUnit(QgsUnitTypes.RenderPoints)
+
+        format.background().setEnabled(True)
+        format.background().setType(QgsTextBackgroundSettings.ShapeRectangle)
+        format.background().setSize(QSizeF(2, 2))
+        format.background().setSizeType(QgsTextBackgroundSettings.SizeBuffer)
+        format.background().setSizeUnit(QgsUnitTypes.RenderMillimeters)
+        format.background().setFillColor(QColor(255, 255, 255))
+
+        image = QImage(400, 400, QImage.Format_RGB32)
+
+        painter = QPainter()
+        ms = QgsMapSettings()
+        ms.setExtent(QgsRectangle(0, 0, 50, 50))
+        ms.setOutputSize(image.size())
+        context = QgsRenderContext.fromMapSettings(ms)
+        context.setPainter(painter)
+        context.setScaleFactor(96 / 25.4)  # 96 DPI
+        context.setFlag(QgsRenderContext.ApplyScalingWorkaroundForTextRendering, True)
+
+        painter.begin(image)
+        painter.setRenderHint(QPainter.Antialiasing)
+        image.fill(QColor(152, 219, 249))
+
+        painter.setBrush(Qt.NoBrush)
+        painter.setPen(QPen(QColor(0, 0, 0)))
+
+        line = QPolygonF([QPointF(50, 200), QPointF(100, 230), QPointF(150, 235), QPointF(350, 200)])
+        painter.drawPolyline(line)
+
+        painter.setBrush(QBrush(QColor(182, 239, 255)))
+        painter.setPen(Qt.NoPen)
+
+        QgsTextRenderer.drawTextOnLine(line, 'my curved text', context, format, 20, 0)
+
+        painter.end()
+        self.assertTrue(self.imageCheck('text_on_curved_line_background', 'text_on_curved_line_background', image))
+
+    def testDrawTextOnCurvedLineOffsetFromLine(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setSize(16)
+        format.setSizeUnit(QgsUnitTypes.RenderPoints)
+
+        image = QImage(400, 400, QImage.Format_RGB32)
+
+        painter = QPainter()
+        ms = QgsMapSettings()
+        ms.setExtent(QgsRectangle(0, 0, 50, 50))
+        ms.setOutputSize(image.size())
+        context = QgsRenderContext.fromMapSettings(ms)
+        context.setPainter(painter)
+        context.setScaleFactor(96 / 25.4)  # 96 DPI
+        context.setFlag(QgsRenderContext.ApplyScalingWorkaroundForTextRendering, True)
+
+        painter.begin(image)
+        painter.setRenderHint(QPainter.Antialiasing)
+        image.fill(QColor(152, 219, 249))
+
+        painter.setBrush(Qt.NoBrush)
+        painter.setPen(QPen(QColor(0, 0, 0)))
+
+        line = QPolygonF([QPointF(50, 200), QPointF(100, 230), QPointF(150, 235), QPointF(350, 200)])
+        painter.drawPolyline(line)
+
+        painter.setBrush(QBrush(QColor(182, 239, 255)))
+        painter.setPen(Qt.NoPen)
+
+        format.setAllowHtmlFormatting(True)
+        QgsTextRenderer.drawTextOnLine(line, 'my curved text', context, format, 20, -20)
+
+        painter.end()
+        self.assertTrue(self.imageCheck('text_on_curved_line_offset_line', 'text_on_curved_line_offset_line', image))
+
+    def testDrawTextOnCurvedLineOffsetFromLinePositive(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setSize(16)
+        format.setSizeUnit(QgsUnitTypes.RenderPoints)
+
+        image = QImage(400, 400, QImage.Format_RGB32)
+
+        painter = QPainter()
+        ms = QgsMapSettings()
+        ms.setExtent(QgsRectangle(0, 0, 50, 50))
+        ms.setOutputSize(image.size())
+        context = QgsRenderContext.fromMapSettings(ms)
+        context.setPainter(painter)
+        context.setScaleFactor(96 / 25.4)  # 96 DPI
+        context.setFlag(QgsRenderContext.ApplyScalingWorkaroundForTextRendering, True)
+
+        painter.begin(image)
+        painter.setRenderHint(QPainter.Antialiasing)
+        image.fill(QColor(152, 219, 249))
+
+        painter.setBrush(Qt.NoBrush)
+        painter.setPen(QPen(QColor(0, 0, 0)))
+
+        line = QPolygonF([QPointF(50, 200), QPointF(100, 230), QPointF(150, 235), QPointF(350, 200)])
+        painter.drawPolyline(line)
+
+        painter.setBrush(QBrush(QColor(182, 239, 255)))
+        painter.setPen(Qt.NoPen)
+
+        format.setAllowHtmlFormatting(True)
+        QgsTextRenderer.drawTextOnLine(line, 'my curved text', context, format, 20, 20)
+
+        painter.end()
+        self.assertTrue(self.imageCheck('text_on_curved_line_offset_line_positive', 'text_on_curved_line_offset_line_positive', image))
 
 
 if __name__ == '__main__':

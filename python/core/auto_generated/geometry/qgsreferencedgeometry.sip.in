@@ -153,6 +153,9 @@ Constructor for QgsReferencedGeometry.
 
     operator QVariant() const;
 
+    bool operator==( const QgsReferencedGeometry &other ) const;
+    bool operator!=( const QgsReferencedGeometry &other ) const;
+
     static QgsReferencedGeometry fromReferencedPointXY( const QgsReferencedPointXY &point );
 %Docstring
 Construct a new QgsReferencedGeometry from referenced ``point``

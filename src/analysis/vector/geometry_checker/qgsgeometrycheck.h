@@ -189,12 +189,12 @@ class ANALYSIS_EXPORT QgsGeometryCheck
       /**
        * What level this change affects.
        */
-      QgsGeometryCheck::ChangeWhat what;
+      QgsGeometryCheck::ChangeWhat what = QgsGeometryCheck::ChangeWhat::ChangeFeature;
 
       /**
        * What action this change performs.
        */
-      QgsGeometryCheck::ChangeType type;
+      QgsGeometryCheck::ChangeType type = QgsGeometryCheck::ChangeType::ChangeAdded;
 
       /**
        * The index of the part / ring / vertex, depending on \see what.
@@ -258,7 +258,7 @@ class ANALYSIS_EXPORT QgsGeometryCheck
      *
      * \since QGIS 3.4
      */
-    virtual QList<QgsWkbTypes::GeometryType> compatibleGeometryTypes() const = 0;
+    virtual QList<Qgis::GeometryType> compatibleGeometryTypes() const = 0;
 
     /**
      * Flags for this geometry check.

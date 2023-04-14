@@ -22,22 +22,17 @@
 #include "qgsadvanceddigitizingdockwidget.h"
 #include "qgsadvanceddigitizingfloater.h"
 #include "qgsadvanceddigitizingcanvasitem.h"
-#include "qgsapplication.h"
 #include "qgscadutils.h"
 #include "qgsexpression.h"
-#include "qgslogger.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaptooledit.h"
-#include "qgsmaptoolcapture.h"
 #include "qgsmaptooladvanceddigitizing.h"
 #include "qgsmessagebaritem.h"
-#include "qgslinestring.h"
 #include "qgsfocuswatcher.h"
 #include "qgssettings.h"
 #include "qgssnappingutils.h"
 #include "qgsproject.h"
 #include "qgsmapmouseevent.h"
-#include "qgsmessagelog.h"
 #include "qgsmeshlayer.h"
 
 #include <QActionGroup>
@@ -367,28 +362,28 @@ void QgsAdvancedDigitizingDockWidget::switchZM( )
   {
     switch ( layer->type() )
     {
-      case QgsMapLayerType::VectorLayer:
+      case Qgis::LayerType::Vector:
       {
         QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
-        const QgsWkbTypes::Type type = vlayer->wkbType();
+        const Qgis::WkbType type = vlayer->wkbType();
         enableZ = QgsWkbTypes::hasZ( type );
         enableM = QgsWkbTypes::hasM( type );
         break;
       }
 
-      case QgsMapLayerType::MeshLayer:
+      case Qgis::LayerType::Mesh:
       {
         QgsMeshLayer *mlayer = qobject_cast<QgsMeshLayer *>( layer );
         enableZ = mlayer->isEditable();
         break;
       }
 
-      case QgsMapLayerType::RasterLayer:
-      case QgsMapLayerType::PluginLayer:
-      case QgsMapLayerType::VectorTileLayer:
-      case QgsMapLayerType::AnnotationLayer:
-      case QgsMapLayerType::PointCloudLayer:
-      case QgsMapLayerType::GroupLayer:
+      case Qgis::LayerType::Raster:
+      case Qgis::LayerType::Plugin:
+      case Qgis::LayerType::VectorTile:
+      case Qgis::LayerType::Annotation:
+      case Qgis::LayerType::PointCloud:
+      case Qgis::LayerType::Group:
         break;
     }
   }

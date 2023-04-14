@@ -260,17 +260,17 @@ void QgsRelationEditorWidget::initDualView( QgsVectorLayer *layer, const QgsFeat
 
   QIcon icon;
   QString text;
-  if ( layer->geometryType() == QgsWkbTypes::PointGeometry )
+  if ( layer->geometryType() == Qgis::GeometryType::Point )
   {
     icon = QgsApplication::getThemeIcon( QStringLiteral( "/mActionCapturePoint.svg" ) );
     text = tr( "Add Point Child Feature" );
   }
-  else if ( layer->geometryType() == QgsWkbTypes::LineGeometry )
+  else if ( layer->geometryType() == Qgis::GeometryType::Line )
   {
     icon = QgsApplication::getThemeIcon( QStringLiteral( "/mActionCaptureLine.svg" ) );
     text = tr( "Add Line Child Feature" );
   }
-  else if ( layer->geometryType() == QgsWkbTypes::PolygonGeometry )
+  else if ( layer->geometryType() == Qgis::GeometryType::Polygon )
   {
     icon = QgsApplication::getThemeIcon( QStringLiteral( "/mActionCapturePolygon.svg" ) );
     text = tr( "Add Polygon Child Feature" );
@@ -653,8 +653,14 @@ void QgsRelationEditorWidget::updateUiSingleEdit()
   }
   else
   {
+    mFeatureSelectionMgr = new QgsFilteredSelectionManager( layer, request, mDualView );
+    mDualView->setFeatureSelectionManager( mFeatureSelectionMgr );
+    connect( mFeatureSelectionMgr, &QgsIFeatureSelectionManager::selectionChanged, this, &QgsRelationEditorWidget::updateButtons );
+
     mDualView->setRequest( request );
     mDualView->masterModel()->loadLayer();
+
+    updateButtons();
   }
 }
 

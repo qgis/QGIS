@@ -54,7 +54,7 @@ class QgsOapifItemsRequest : public QgsBaseNetworkRequest
     const QgsFields &fields() const { return mFields; }
 
     //! Return geometry type.
-    QgsWkbTypes::Type wkbType() const { return mWKBType; }
+    Qgis::WkbType wkbType() const { return mWKBType; }
 
     //! Return features.
     const std::vector<QgsFeatureUniqueIdPair> &features() const { return mFeatures; }
@@ -85,7 +85,7 @@ class QgsOapifItemsRequest : public QgsBaseNetworkRequest
 
     QgsFields mFields;
 
-    QgsWkbTypes::Type mWKBType = QgsWkbTypes::Unknown;
+    Qgis::WkbType mWKBType = Qgis::WkbType::Unknown;
 
     std::vector<QgsFeatureUniqueIdPair> mFeatures;
 

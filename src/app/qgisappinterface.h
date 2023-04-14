@@ -56,7 +56,7 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     QgsLayerTreeView *layerTreeView() override;
 
     void addCustomActionForLayerType( QAction *action, QString menu,
-                                      QgsMapLayerType type, bool allLayers ) override;
+                                      Qgis::LayerType type, bool allLayers ) override;
     void addCustomActionForLayer( QAction *action, QgsMapLayer *layer ) override;
     bool removeCustomActionForLayerType( QAction *action ) override;
 
@@ -164,6 +164,11 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     void registerCustomLayoutDropHandler( QgsLayoutCustomDropHandler *handler ) override;
     void unregisterCustomLayoutDropHandler( QgsLayoutCustomDropHandler *handler ) override;
     QMenu *projectMenu() override;
+    QMenu *projectImportExportMenu() override;
+    void addProjectImportAction( QAction *action ) override;
+    void removeProjectImportAction( QAction *action )override;
+    void addProjectExportAction( QAction *action ) override;
+    void removeProjectExportAction( QAction *action ) override;
     QMenu *editMenu() override;
     QMenu *viewMenu() override;
     QMenu *layerMenu() override;
@@ -182,6 +187,7 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     QToolBar *fileToolBar() override;
     QToolBar *layerToolBar() override;
     QToolBar *dataSourceManagerToolBar() override;
+    void openDataSourceManagerPage( const QString &pageName ) override;
     QToolBar *mapNavToolToolBar() override;
     QToolBar *digitizeToolBar() override;
     QToolBar *advancedDigitizeToolBar() override;

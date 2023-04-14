@@ -14,6 +14,7 @@
  *                                                                         *
  ***************************************************************************/
 //#include <signal.h>
+#include "qgis.h"
 #include <stdio.h>
 #include <stdarg.h>
 #include <qmath.h>
@@ -1049,7 +1050,7 @@ int GRASS_LIB_EXPORT G_get_cellhd( const char *name, const char *mapset, struct 
 
 double QgsGrassGisLib::G_database_units_to_meters_factor( void )
 {
-  return QgsUnitTypes::fromUnitToUnitFactor( mCrs.mapUnits(), QgsUnitTypes::DistanceMeters );
+  return QgsUnitTypes::fromUnitToUnitFactor( mCrs.mapUnits(), Qgis::DistanceUnit::Meters );
 }
 
 double QgsGrassGisLib::G_area_of_cell_at_row( int row )

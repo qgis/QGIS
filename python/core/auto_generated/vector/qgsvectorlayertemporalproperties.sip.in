@@ -264,14 +264,14 @@ Units are specified by :py:func:`~QgsVectorLayerTemporalProperties.setDurationUn
 .. seealso:: :py:func:`setDurationUnits`
 %End
 
-    QgsUnitTypes::TemporalUnit durationUnits() const;
+    Qgis::TemporalUnit durationUnits() const;
 %Docstring
 Returns the units of the event's duration.
 
 .. seealso:: :py:func:`setDurationUnits`
 %End
 
-    void setDurationUnits( QgsUnitTypes::TemporalUnit units );
+    void setDurationUnits( Qgis::TemporalUnit units );
 %Docstring
 Sets the ``units`` of the event's duration.
 

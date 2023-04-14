@@ -24,7 +24,6 @@
 #include "qgis_sip.h"
 #include "qgsvector3d.h"
 #include "qgspointcloudattribute.h"
-#include "qgselevationmap.h"
 
 class QgsPointCloudBlock;
 class QgsLayerTreeLayer;
@@ -466,7 +465,7 @@ class CORE_EXPORT QgsPointCloudRenderer
      * \see pointSizeUnit()
      * \see setPointSizeMapUnitScale()
      */
-    void setPointSizeUnit( const QgsUnitTypes::RenderUnit units ) { mPointSizeUnit = units; }
+    void setPointSizeUnit( const Qgis::RenderUnit units ) { mPointSizeUnit = units; }
 
     /**
      * Returns the units used for the point size.
@@ -474,7 +473,7 @@ class CORE_EXPORT QgsPointCloudRenderer
      * \see pointSize()
      * \see pointSizeMapUnitScale()
      */
-    QgsUnitTypes::RenderUnit pointSizeUnit() const { return mPointSizeUnit; }
+    Qgis::RenderUnit pointSizeUnit() const { return mPointSizeUnit; }
 
     /**
      * Sets the map unit \a scale used for the point size.
@@ -552,7 +551,7 @@ class CORE_EXPORT QgsPointCloudRenderer
      * \see maximumScreenError()
      * \see setMaximumScreenErrorUnit()
      */
-    QgsUnitTypes::RenderUnit maximumScreenErrorUnit() const;
+    Qgis::RenderUnit maximumScreenErrorUnit() const;
 
     /**
      * Sets the \a unit for the maximum screen error allowed when rendering the point cloud.
@@ -560,7 +559,7 @@ class CORE_EXPORT QgsPointCloudRenderer
      * \see setMaximumScreenError()
      * \see maximumScreenErrorUnit()
      */
-    void setMaximumScreenErrorUnit( QgsUnitTypes::RenderUnit unit );
+    void setMaximumScreenErrorUnit( Qgis::RenderUnit unit );
 
     /**
      * Creates a set of legend nodes representing the renderer.
@@ -665,10 +664,10 @@ class CORE_EXPORT QgsPointCloudRenderer
 #endif
 
     double mMaximumScreenError = 0.3;
-    QgsUnitTypes::RenderUnit mMaximumScreenErrorUnit = QgsUnitTypes::RenderMillimeters;
+    Qgis::RenderUnit mMaximumScreenErrorUnit = Qgis::RenderUnit::Millimeters;
 
     double mPointSize = 1;
-    QgsUnitTypes::RenderUnit mPointSizeUnit = QgsUnitTypes::RenderMillimeters;
+    Qgis::RenderUnit mPointSizeUnit = Qgis::RenderUnit::Millimeters;
     QgsMapUnitScale mPointSizeMapUnitScale;
 
     Qgis::PointCloudSymbol mPointSymbol = Qgis::PointCloudSymbol::Square;

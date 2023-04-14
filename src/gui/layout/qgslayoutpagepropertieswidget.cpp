@@ -22,6 +22,8 @@
 #include "qgslayoutundostack.h"
 #include "qgsvectorlayer.h"
 #include "qgsfillsymbol.h"
+#include "qgslayoutrendercontext.h"
+#include "qgslayoutreportcontext.h"
 
 QgsLayoutPagePropertiesWidget::QgsLayoutPagePropertiesWidget( QWidget *parent, QgsLayoutItem *layoutItem )
   : QgsLayoutItemBaseWidget( parent, layoutItem )

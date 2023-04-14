@@ -20,6 +20,7 @@
 #include "qgsoapiflandingpagerequest.h"
 #include "qgsoapifapirequest.h"
 #include "qgsoapifcollection.h"
+#include "qgsoapifconformancerequest.h"
 #include "qgsoapifitemsrequest.h"
 #include "qgswfsconstants.h"
 #include "qgswfsutils.h" // for isCompatibleType()
@@ -135,26 +136,65 @@ bool QgsOapifProvider::init()
 
   mShared->mCollectionUrl =
     landingPageRequest.collectionsUrl() + QStringLiteral( "/" ) + mShared->mURI.typeName();
-  QgsOapifCollectionRequest collectionRequest( mShared->mURI.uri(), mShared->appendExtraQueryParameters( mShared->mCollectionUrl ) );
-  if ( !collectionRequest.request( synchronous, forceRefresh ) )
-    return false;
-  if ( collectionRequest.errorCode() != QgsBaseNetworkRequest::NoError )
-    return false;
+  std::unique_ptr<QgsOapifCollectionRequest> collectionRequest = std::make_unique<QgsOapifCollectionRequest>( mShared->mURI.uri(), mShared->appendExtraQueryParameters( mShared->mCollectionUrl ) );
+  if ( !collectionRequest->request( synchronous, forceRefresh ) ||
+       collectionRequest->errorCode() != QgsBaseNetworkRequest::NoError )
+  {
 
-  mShared->mCapabilityExtent = collectionRequest.collection().mBbox;
+    // Retry with a trailing slash. Works around a bug with
+    // https://geoserveis.ide.cat/servei/catalunya/inspire/ogc/features/collections/inspire:AD.Address not working
+    // but https://geoserveis.ide.cat/servei/catalunya/inspire/ogc/features/collections/inspire:AD.Address/ working
+    mShared->mCollectionUrl +=  QStringLiteral( "/" );
+    collectionRequest = std::make_unique<QgsOapifCollectionRequest>( mShared->mURI.uri(), mShared->appendExtraQueryParameters( mShared->mCollectionUrl ) );
+    if ( !collectionRequest->request( synchronous, forceRefresh ) ||
+         collectionRequest->errorCode() != QgsBaseNetworkRequest::NoError )
+    {
+      return false;
+    }
+  }
 
-  mLayerMetadata = collectionRequest.collection().mLayerMetadata;
+  bool implementsPart2 = false;
+  const QString &conformanceUrl = landingPageRequest.conformanceUrl();
+  if ( !conformanceUrl.isEmpty() )
+  {
+    QgsOapifConformanceRequest conformanceRequest( mShared->mURI.uri() );
+    const QStringList conformanceClasses = conformanceRequest.conformanceClasses( conformanceUrl );
+    implementsPart2 = conformanceClasses.contains( QLatin1String( "http://www.opengis.net/spec/ogcapi-features-2/1.0/conf/crs" ) );
+  }
 
-  if ( mLayerMetadata.crs().isValid() )
+  mLayerMetadata = collectionRequest->collection().mLayerMetadata;
+
+  QString srsName = mShared->mURI.SRSName();
+  if ( implementsPart2 && !srsName.isEmpty() )
+  {
+    // Use URI SRSName parameter if defined
+    mShared->mSourceCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( srsName );
+    if ( mLayerMetadata.crs().isValid() && mShared->mSourceCrs.authid() == mLayerMetadata.crs().authid() )
+      mShared->mSourceCrs.setCoordinateEpoch( mLayerMetadata.crs().coordinateEpoch() );
+  }
+  else if ( implementsPart2 && mLayerMetadata.crs().isValid() )
   {
     // WORKAROUND: Recreate a CRS object with fromOgcWmsCrs because when copying the
     // CRS his mPj pointer gets deleted and it is impossible to create a transform
     mShared->mSourceCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( mLayerMetadata.crs().authid() );
+    mShared->mSourceCrs.setCoordinateEpoch( mLayerMetadata.crs().coordinateEpoch() );
   }
   else
   {
     mShared->mSourceCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs(
                             QgsOapifProvider::OAPIF_PROVIDER_DEFAULT_CRS );
+  }
+  mShared->mCapabilityExtent = collectionRequest->collection().mBbox;
+
+  // Reproject extent of /collection request to the layer CRS
+  if ( !mShared->mCapabilityExtent.isNull() &&
+       collectionRequest->collection().mBboxCrs != mShared->mSourceCrs )
+  {
+    QgsCoordinateTransform ct( collectionRequest->collection().mBboxCrs, mShared->mSourceCrs, transformContext() );
+    ct.setBallparkTransformsAreAppropriate( true );
+    QgsDebugMsgLevel( "before ext:" + mShared->mCapabilityExtent.toString(), 4 );
+    mShared->mCapabilityExtent = ct.transformBoundingBox( mShared->mCapabilityExtent );
+    QgsDebugMsgLevel( "after ext:" + mShared->mCapabilityExtent.toString(), 4 );
   }
 
   // Merge contact info from /api
@@ -207,7 +247,7 @@ QgsFeatureIterator QgsOapifProvider::getFeatures( const QgsFeatureRequest &reque
   return QgsFeatureIterator( new QgsBackgroundCachedFeatureIterator( new QgsBackgroundCachedFeatureSource( mShared ), true, mShared, request ) );
 }
 
-QgsWkbTypes::Type QgsOapifProvider::wkbType() const
+Qgis::WkbType QgsOapifProvider::wkbType() const
 {
   return mShared->mWKBType;
 }
@@ -218,12 +258,12 @@ long long QgsOapifProvider::featureCount() const
   if ( mSubsetString.isEmpty() )
   {
     QString url = mShared->mItemsUrl;
-    url += QStringLiteral( "?limit=1" );
+    url += QLatin1String( "?limit=1" );
     url = mShared->appendExtraQueryParameters( url );
 
     if ( !mShared->mServerFilter.isEmpty() )
     {
-      url += QStringLiteral( "&" );
+      url += QLatin1Char( '&' );
       url += mShared->mServerFilter;
     }
 
@@ -779,6 +819,10 @@ void QgsOapifFeatureDownloaderImpl::run( bool serializeFeatures, long long maxFe
     }
   }
 
+  if ( mShared->mSourceCrs
+       != QgsCoordinateReferenceSystem::fromOgcWmsCrs( QgsOapifProvider::OAPIF_PROVIDER_DEFAULT_CRS ) )
+    url += QStringLiteral( "&crs=%1" ).arg( mShared->mSourceCrs.toOgcUri() );
+
   while ( !url.isEmpty() )
   {
     url = mShared->appendExtraQueryParameters( url );
@@ -834,7 +878,13 @@ void QgsOapifFeatureDownloaderImpl::run( bool serializeFeatures, long long maxFe
       // as the layer, convert them
       const QgsFeature &f = pair.first;
       QgsFeature dstFeat( dstFields, f.id() );
-      dstFeat.setGeometry( f.geometry() );
+      if ( f.hasGeometry() )
+      {
+        QgsGeometry g = f.geometry();
+        if ( mShared->mSourceCrs.hasAxisInverted() )
+          g.transform( QTransform( 0, 1, 1, 0, 0, 0 ) );
+        dstFeat.setGeometry( g );
+      }
       const auto srcAttrs = f.attributes();
       for ( int j = 0; j < dstFields.size(); j++ )
       {
@@ -896,9 +946,9 @@ QgsOapifProvider *QgsOapifProviderMetadata::createProvider( const QString &uri, 
   return new QgsOapifProvider( uri, options, flags );
 }
 
-QList<QgsMapLayerType> QgsOapifProviderMetadata::supportedLayerTypes() const
+QList<Qgis::LayerType> QgsOapifProviderMetadata::supportedLayerTypes() const
 {
-  return { QgsMapLayerType::VectorLayer };
+  return { Qgis::LayerType::Vector };
 }
 
 QgsOapifProviderMetadata::QgsOapifProviderMetadata():

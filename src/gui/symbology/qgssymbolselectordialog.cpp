@@ -155,7 +155,7 @@ class SymbolLayerItem : public QStandardItem
       }
       QIcon icon;
       if ( mIsLayer )
-        icon = QgsSymbolLayerUtils::symbolLayerPreviewIcon( mLayer, QgsUnitTypes::RenderMillimeters, mSize, QgsMapUnitScale(), mSymbol ? mSymbol->type() : mSymbolType, mVectorLayer ); //todo: make unit a parameter
+        icon = QgsSymbolLayerUtils::symbolLayerPreviewIcon( mLayer, Qgis::RenderUnit::Millimeters, mSize, QgsMapUnitScale(), mSymbol ? mSymbol->type() : mSymbolType, mVectorLayer ); //todo: make unit a parameter
       else
       {
         QgsExpressionContext expContext;
@@ -721,6 +721,7 @@ void QgsSymbolSelectorWidget::duplicateLayer()
   QgsSymbol *parentSymbol = item->symbol();
 
   QgsSymbolLayer *newLayer = source->clone();
+  QgsSymbolLayerUtils::resetSymbolLayerIds( newLayer );
   if ( insertIdx == -1 )
     parentSymbol->appendSymbolLayer( newLayer );
   else

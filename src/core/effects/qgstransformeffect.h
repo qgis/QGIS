@@ -21,7 +21,7 @@
 #include "qgspainteffect.h"
 #include "qgis_sip.h"
 #include "qgsmapunitscale.h"
-#include "qgsunittypes.h"
+#include "qgis.h"
 #include <QPainter>
 
 /**
@@ -103,7 +103,7 @@ class CORE_EXPORT QgsTransformEffect : public QgsPaintEffect SIP_NODEFAULTCTORS
      * \see setTranslateY
      * \see setTranslateMapUnitScale
      */
-    void setTranslateUnit( const QgsUnitTypes::RenderUnit unit ) { mTranslateUnit = unit; }
+    void setTranslateUnit( const Qgis::RenderUnit unit ) { mTranslateUnit = unit; }
 
     /**
      * Returns the units used for the transform translation.
@@ -113,7 +113,7 @@ class CORE_EXPORT QgsTransformEffect : public QgsPaintEffect SIP_NODEFAULTCTORS
      * \see translateY
      * \see translateMapUnitScale
      */
-    QgsUnitTypes::RenderUnit translateUnit() const { return mTranslateUnit; }
+    Qgis::RenderUnit translateUnit() const { return mTranslateUnit; }
 
     /**
      * Sets the map unit scale used for the transform translation.
@@ -251,7 +251,7 @@ class CORE_EXPORT QgsTransformEffect : public QgsPaintEffect SIP_NODEFAULTCTORS
 
     double mTranslateX = 0.0;
     double mTranslateY = 0.0;
-    QgsUnitTypes::RenderUnit mTranslateUnit = QgsUnitTypes::RenderMillimeters;
+    Qgis::RenderUnit mTranslateUnit = Qgis::RenderUnit::Millimeters;
     QgsMapUnitScale mTranslateMapUnitScale;
     double mScaleX = 1.0;
     double mScaleY = 1.0;

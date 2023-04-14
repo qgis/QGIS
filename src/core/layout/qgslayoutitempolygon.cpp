@@ -18,11 +18,10 @@
 #include "qgslayoutitemregistry.h"
 #include "qgslayoututils.h"
 #include "qgslayout.h"
-#include "qgspathresolver.h"
+#include "qgslayoutrendercontext.h"
 #include "qgsreadwritecontext.h"
 #include "qgssymbollayerutils.h"
 #include "qgssymbol.h"
-#include "qgsmapsettings.h"
 #include "qgsstyleentityvisitor.h"
 #include "qgsfillsymbol.h"
 
@@ -138,7 +137,7 @@ QgsFillSymbol *QgsLayoutItemPolygon::symbol()
 void QgsLayoutItemPolygon::_draw( QgsLayoutItemRenderContext &context, const QStyleOptionGraphicsItem * )
 {
   //setup painter scaling to dots so that raster symbology is drawn to scale
-  const double scale = context.renderContext().convertToPainterUnits( 1, QgsUnitTypes::RenderMillimeters );
+  const double scale = context.renderContext().convertToPainterUnits( 1, Qgis::RenderUnit::Millimeters );
   const QTransform t = QTransform::fromScale( scale, scale );
 
   const QVector<QPolygonF> rings; //empty

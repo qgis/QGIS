@@ -197,7 +197,7 @@ void QgsPointCloudLayerExporter::prepareExport()
     if ( QApplication::instance()->thread() != QThread::currentThread() )
       QgsDebugMsgLevel( QStringLiteral( "prepareExport() should better be called from the main thread!" ), 2 );
 
-    mMemoryLayer = QgsMemoryProviderUtils::createMemoryLayer( mName, outputFields(), QgsWkbTypes::PointZ, mTargetCrs );
+    mMemoryLayer = QgsMemoryProviderUtils::createMemoryLayer( mName, outputFields(), Qgis::WkbType::PointZ, mTargetCrs );
   }
 }
 
@@ -267,7 +267,7 @@ void QgsPointCloudLayerExporter::doExport()
       saveOptions.symbologyExport = QgsVectorFileWriter::NoSymbology;
       saveOptions.actionOnExistingFile = mActionOnExistingFile;
       saveOptions.feedback = mFeedback;
-      mVectorSink = QgsVectorFileWriter::create( mFilename, outputFields(), QgsWkbTypes::PointZ, mTargetCrs, QgsCoordinateTransformContext(), saveOptions );
+      mVectorSink = QgsVectorFileWriter::create( mFilename, outputFields(), Qgis::WkbType::PointZ, mTargetCrs, QgsCoordinateTransformContext(), saveOptions );
       ExporterVector exp( this );
       exp.run();
       return;
@@ -350,9 +350,6 @@ void QgsPointCloudLayerExporter::ExporterBase::run()
     }
   }
 
-
-
-  int pointsSkipped = 0;
   const qint64 pointsToExport = mParent->mPointsLimit > 0 ? std::min( mParent->mPointsLimit, pointCount ) : pointCount;
   QgsPointCloudRequest request;
   request.setAttributes( mParent->requestedAttributeCollection() );
@@ -399,7 +396,6 @@ void QgsPointCloudLayerExporter::ExporterBase::run()
            ! mParent->mExtent.contains( x, y ) ||
            ( mParent->mFilterGeometryEngine && ! mParent->mFilterGeometryEngine->contains( x, y ) ) )
       {
-        ++pointsSkipped;
         continue;
       }
 
@@ -413,7 +409,6 @@ void QgsPointCloudLayerExporter::ExporterBase::run()
       catch ( const QgsCsException &cse )
       {
         QgsDebugMsg( QStringLiteral( "Error transforming point: %1" ).arg( cse.what() ) );
-        ++pointsSkipped;
       }
     }
     handleNode();

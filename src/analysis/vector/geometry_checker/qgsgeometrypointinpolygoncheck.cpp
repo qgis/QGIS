@@ -15,7 +15,6 @@
 
 #include "qgsgeometrycheckcontext.h"
 #include "qgsgeometrypointinpolygoncheck.h"
-#include "qgspolygon.h"
 #include "qgsgeometryengine.h"
 #include "qgsgeometrycheckerror.h"
 
@@ -40,7 +39,7 @@ void QgsGeometryPointInPolygonCheck::collectErrors( const QMap<QString, QgsFeatu
       // Check whether point is contained by a fully contained by a polygon
       const QgsRectangle rect( point->x() - mContext->tolerance, point->y() - mContext->tolerance,
                                point->x() + mContext->tolerance, point->y() + mContext->tolerance );
-      const QgsGeometryCheckerUtils::LayerFeatures checkFeatures( featurePools, featureIds.keys(), rect, {QgsWkbTypes::PolygonGeometry}, mContext );
+      const QgsGeometryCheckerUtils::LayerFeatures checkFeatures( featurePools, featureIds.keys(), rect, {Qgis::GeometryType::Polygon}, mContext );
       for ( const QgsGeometryCheckerUtils::LayerFeature &checkFeature : checkFeatures )
       {
         ++nTested;

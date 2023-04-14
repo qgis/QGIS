@@ -847,13 +847,9 @@ Appends a child ``item``.
 
     void removeChild( QgsMeshDatasetGroupTreeItem *item /Transfer/ );
 %Docstring
-Removes a item child if exists
+Removes and destroy a item child if exists
 
 :param item: the item to append
-
-.. note::
-
-   takes ownership of item
 
 .. versionadded:: 3.16
 %End

@@ -69,6 +69,7 @@
 #include "qgscombinedstylemodel.h"
 #include "qgsprojectgpssettings.h"
 #include "qgsthreadingutils.h"
+#include "qgssensormanager.h"
 
 #include <algorithm>
 #include <QApplication>
@@ -375,6 +376,7 @@ QgsProject::QgsProject( QObject *parent, Qgis::ProjectCapabilities capabilities 
   , mLayoutManager( new QgsLayoutManager( this ) )
   , m3DViewsManager( new QgsMapViewsManager( this ) )
   , mBookmarkManager( QgsBookmarkManager::createProjectBasedManager( this ) )
+  , mSensorManager( new QgsSensorManager( this ) )
   , mViewSettings( new QgsProjectViewSettings( this ) )
   , mStyleSettings( new QgsProjectStyleSettings( this ) )
   , mTimeSettings( new QgsProjectTimeSettings( this ) )
@@ -539,7 +541,11 @@ void QgsProject::setFlags( Qgis::ProjectFlags flags )
     }
   }
 
-  mFlags = flags;
+  if ( mFlags != flags )
+  {
+    mFlags = flags;
+    setDirty( true );
+  }
 }
 
 void QgsProject::setFlag( Qgis::ProjectFlag flag, bool enabled )
@@ -654,7 +660,7 @@ void QgsProject::registerTranslatableObjects( QgsTranslationContext *translation
     translationContext->registerTranslation( QStringLiteral( "project:layers:%1" ).arg( layer->layerId() ), layer->name() );
 
     QgsMapLayer *mapLayer = layer->layer();
-    if ( mapLayer && mapLayer->type() == QgsMapLayerType::VectorLayer )
+    if ( mapLayer && mapLayer->type() == Qgis::LayerType::Vector )
     {
       QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mapLayer );
 
@@ -1041,11 +1047,11 @@ void QgsProject::clear()
 
   //fallback to QGIS default measurement unit
   bool ok = false;
-  const QgsUnitTypes::DistanceUnit distanceUnit = QgsUnitTypes::decodeDistanceUnit( mSettings.value( QStringLiteral( "/qgis/measure/displayunits" ) ).toString(), &ok );
-  setDistanceUnits( ok ? distanceUnit : QgsUnitTypes::DistanceMeters );
+  const Qgis::DistanceUnit distanceUnit = QgsUnitTypes::decodeDistanceUnit( mSettings.value( QStringLiteral( "/qgis/measure/displayunits" ) ).toString(), &ok );
+  setDistanceUnits( ok ? distanceUnit : Qgis::DistanceUnit::Meters );
   ok = false;
-  const QgsUnitTypes::AreaUnit areaUnits = QgsUnitTypes::decodeAreaUnit( mSettings.value( QStringLiteral( "/qgis/measure/areaunits" ) ).toString(), &ok );
-  setAreaUnits( ok ? areaUnits : QgsUnitTypes::AreaSquareMeters );
+  const Qgis::AreaUnit areaUnits = QgsUnitTypes::decodeAreaUnit( mSettings.value( QStringLiteral( "/qgis/measure/areaunits" ) ).toString(), &ok );
+  setAreaUnits( ok ? areaUnits : Qgis::AreaUnit::SquareMeters );
 
   mEmbeddedLayers.clear();
   mRelationManager->clear();
@@ -1053,6 +1059,7 @@ void QgsProject::clear()
   mLayoutManager->clear();
   m3DViewsManager->clear();
   mBookmarkManager->clear();
+  mSensorManager->clear();
   mViewSettings->reset();
   mTimeSettings->reset();
   mElevationProperties->reset();
@@ -1393,7 +1400,7 @@ bool QgsProject::addLayer( const QDomElement &layerElem, QList<QDomNode> &broken
   QgsScopedRuntimeProfile profile( tr( "Create layer" ), QStringLiteral( "projectload" ) );
 
   bool ok = false;
-  const QgsMapLayerType layerType( QgsMapLayerFactory::typeFromString( type, ok ) );
+  const Qgis::LayerType layerType( QgsMapLayerFactory::typeFromString( type, ok ) );
   if ( !ok )
   {
     QgsDebugMsg( QStringLiteral( "Unknown layer type \"%1\"" ).arg( type ) );
@@ -1402,48 +1409,41 @@ bool QgsProject::addLayer( const QDomElement &layerElem, QList<QDomNode> &broken
 
   switch ( layerType )
   {
-    case QgsMapLayerType::VectorLayer:
-    {
+    case Qgis::LayerType::Vector:
       mapLayer = std::make_unique<QgsVectorLayer>();
-      // apply specific settings to vector layer
-      if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( mapLayer.get() ) )
-      {
-        vl->setReadExtentFromXml( ( mFlags & Qgis::ProjectFlag::TrustStoredLayerStatistics ) || ( flags & Qgis::ProjectReadFlag::TrustLayerMetadata ) );
-      }
       break;
-    }
 
-    case QgsMapLayerType::RasterLayer:
+    case Qgis::LayerType::Raster:
       mapLayer = std::make_unique<QgsRasterLayer>();
       break;
 
-    case QgsMapLayerType::MeshLayer:
+    case Qgis::LayerType::Mesh:
       mapLayer = std::make_unique<QgsMeshLayer>();
       break;
 
-    case QgsMapLayerType::VectorTileLayer:
+    case Qgis::LayerType::VectorTile:
       mapLayer = std::make_unique<QgsVectorTileLayer>();
       break;
 
-    case QgsMapLayerType::PointCloudLayer:
+    case Qgis::LayerType::PointCloud:
       mapLayer = std::make_unique<QgsPointCloudLayer>();
       break;
 
-    case QgsMapLayerType::PluginLayer:
+    case Qgis::LayerType::Plugin:
     {
       const QString typeName = layerElem.attribute( QStringLiteral( "name" ) );
       mapLayer.reset( QgsApplication::pluginLayerRegistry()->createLayer( typeName ) );
       break;
     }
 
-    case QgsMapLayerType::AnnotationLayer:
+    case Qgis::LayerType::Annotation:
     {
       const QgsAnnotationLayer::LayerOptions options( mTransformContext );
       mapLayer = std::make_unique<QgsAnnotationLayer>( QString(), options );
       break;
     }
 
-    case QgsMapLayerType::GroupLayer:
+    case Qgis::LayerType::Group:
     {
       const QgsGroupLayer::LayerOptions options( mTransformContext );
       mapLayer = std::make_unique<QgsGroupLayer>( QString(), options );
@@ -1478,6 +1478,17 @@ bool QgsProject::addLayer( const QDomElement &layerElem, QList<QDomNode> &broken
 
   profile.switchTask( tr( "Load layer source" ) );
   const bool layerIsValid = mapLayer->readLayerXml( layerElem, context, layerFlags ) && mapLayer->isValid();
+
+  // apply specific settings to vector layer
+  if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( mapLayer.get() ) )
+  {
+    vl->setReadExtentFromXml( ( mFlags & Qgis::ProjectFlag::TrustStoredLayerStatistics ) || ( flags & Qgis::ProjectReadFlag::TrustLayerMetadata ) );
+    if ( vl->dataProvider() )
+    {
+      const bool evaluateDefaultValues = mFlags & Qgis::ProjectFlag::EvaluateDefaultValuesOnProviderSide;
+      vl->dataProvider()->setProviderProperty( QgsVectorDataProvider::EvaluateDefaultValues, evaluateDefaultValues );
+    }
+  }
 
   profile.switchTask( tr( "Add layer to project" ) );
   QList<QgsMapLayer *> newLayers;
@@ -1896,6 +1907,8 @@ bool QgsProject::readProjectFile( const QString &filename, Qgis::ProjectReadFlag
   // get the map layers
   profile.switchTask( tr( "Reading map layers" ) );
 
+  loadProjectFlags( doc.get() );
+
   QList<QDomNode> brokenNodes;
   const bool clean = _getMapLayers( *doc, brokenNodes, flags );
 
@@ -1936,7 +1949,13 @@ bool QgsProject::readProjectFile( const QString &filename, Qgis::ProjectReadFlag
   profile.switchTask( tr( "Resolving references" ) );
   mRootGroup->resolveReferences( this );
 
-  loadProjectFlags( doc.get() );
+  // we need to migrate old fashion designed QgsSymbolLayerReference to new ones
+  if ( QgsProjectVersion( 3, 28, 0 ) > mSaveVersion )
+  {
+    Q_NOWARN_DEPRECATED_PUSH
+    QgsProjectFileTransform::fixOldSymbolLayerReferences( mapLayers() );
+    Q_NOWARN_DEPRECATED_POP
+  }
 
   if ( !layerTreeElem.isNull() )
   {
@@ -2061,6 +2080,9 @@ bool QgsProject::readProjectFile( const QString &filename, Qgis::ProjectReadFlag
 
   profile.switchTask( tr( "Loading bookmarks" ) );
   mBookmarkManager->readXml( doc->documentElement(), *doc );
+
+  profile.switchTask( tr( "Loading sensors" ) );
+  mSensorManager->readXml( doc->documentElement(), *doc );
 
   // reassign change dependencies now that all layers are loaded
   QMap<QString, QgsMapLayer *> existingMaps = mapLayers();
@@ -2358,9 +2380,14 @@ QgsExpressionContextScope *QgsProject::createExpressionContextScope() const
   if ( mProjectScope )
   {
     std::unique_ptr< QgsExpressionContextScope > projectScope = std::make_unique< QgsExpressionContextScope >( *mProjectScope );
-    // we can't cache these
+
+    // we can't cache these variables
     projectScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "project_distance_units" ), QgsUnitTypes::toString( distanceUnits() ), true, true ) );
     projectScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "project_area_units" ), QgsUnitTypes::toString( areaUnits() ), true, true ) );
+
+    // neither this function
+    projectScope->addFunction( QStringLiteral( "sensor_data" ), new GetSensorData( sensorManager()->sensorsData() ) );
+
     return projectScope.release();
   }
 
@@ -2923,6 +2950,11 @@ bool QgsProject::writeProjectFile( const QString &filename )
   {
     const QDomElement bookmarkElem = mBookmarkManager->writeXml( *doc );
     qgisNode.appendChild( bookmarkElem );
+  }
+
+  {
+    const QDomElement sensorElem = mSensorManager->writeXml( *doc );
+    qgisNode.appendChild( sensorElem );
   }
 
   {
@@ -3606,7 +3638,7 @@ bool QgsProject::topologicalEditing() const
   return readNumEntry( QStringLiteral( "Digitizing" ), QStringLiteral( "/TopologicalEditing" ), 0 );
 }
 
-void QgsProject::setDistanceUnits( QgsUnitTypes::DistanceUnit unit )
+void QgsProject::setDistanceUnits( Qgis::DistanceUnit unit )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
@@ -3618,7 +3650,7 @@ void QgsProject::setDistanceUnits( QgsUnitTypes::DistanceUnit unit )
   emit distanceUnitsChanged();
 }
 
-void QgsProject::setAreaUnits( QgsUnitTypes::AreaUnit unit )
+void QgsProject::setAreaUnits( Qgis::AreaUnit unit )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
@@ -3729,6 +3761,20 @@ QgsBookmarkManager *QgsProject::bookmarkManager()
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
   return mBookmarkManager;
+}
+
+const QgsSensorManager *QgsProject::sensorManager() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS_NON_FATAL
+
+  return mSensorManager;
+}
+
+QgsSensorManager *QgsProject::sensorManager()
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return mSensorManager;
 }
 
 const QgsProjectViewSettings *QgsProject::viewSettings() const
@@ -4187,7 +4233,7 @@ QList<QgsMapLayer *> QgsProject::addMapLayers(
   {
     for ( QgsMapLayer *mlayer : myResultList )
     {
-      if ( mlayer->type() != QgsMapLayerType::VectorLayer )
+      if ( mlayer->type() != Qgis::LayerType::Vector )
         continue;
 
       QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( mlayer );
@@ -4219,7 +4265,7 @@ void QgsProject::removeAuxiliaryLayer( const QgsMapLayer *ml )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  if ( ! ml || ml->type() != QgsMapLayerType::VectorLayer )
+  if ( ! ml || ml->type() != Qgis::LayerType::Vector )
     return;
 
   const QgsVectorLayer *vl = qobject_cast<const QgsVectorLayer *>( ml );
@@ -4382,7 +4428,7 @@ bool QgsProject::saveAuxiliaryStorage( const QString &filename )
   bool empty = true;
   for ( auto it = layers.constBegin(); it != layers.constEnd(); ++it )
   {
-    if ( it.value()->type() != QgsMapLayerType::VectorLayer )
+    if ( it.value()->type() != Qgis::LayerType::Vector )
       continue;
 
     QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( it.value() );
@@ -4783,5 +4829,36 @@ QVariant GetNamedProjectColor::func( const QVariantList &values, const QgsExpres
 QgsScopedExpressionFunction *GetNamedProjectColor::clone() const
 {
   return new GetNamedProjectColor( mColors );
+}
+
+// ----------------
+
+GetSensorData::GetSensorData( const QMap<QString, QgsAbstractSensor::SensorData> &sensorData )
+  : QgsScopedExpressionFunction( QStringLiteral( "sensor_data" ),
+                                 QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "name" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "expiration" ), true, 0 ),
+                                 QStringLiteral( "Sensors" ) )
+  , mSensorData( sensorData )
+{
+}
+
+QVariant GetSensorData::func( const QVariantList &values, const QgsExpressionContext *, QgsExpression *, const QgsExpressionNodeFunction * )
+{
+  const QString sensorName = values.at( 0 ).toString();
+  const int expiration = values.at( 1 ).toInt();
+  const qint64 timestamp = QDateTime::currentMSecsSinceEpoch();
+  if ( mSensorData.contains( sensorName ) )
+  {
+    if ( expiration <= 0 || ( timestamp - mSensorData[sensorName].lastTimestamp.toMSecsSinceEpoch() ) < expiration )
+    {
+      return mSensorData[sensorName].lastValue;
+    }
+  }
+
+  return QVariant();
+}
+
+QgsScopedExpressionFunction *GetSensorData::clone() const
+{
+  return new GetSensorData( mSensorData );
 }
 ///@endcond

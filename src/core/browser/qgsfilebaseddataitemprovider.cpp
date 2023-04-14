@@ -26,8 +26,6 @@
 #include "qgsfielddomainsitem.h"
 #include "qgsrelationshipsitem.h"
 #include "qgsproviderutils.h"
-#include "qgsmbtiles.h"
-#include "qgsvectortiledataitems.h"
 #include "qgsprovidermetadata.h"
 #include <QUrlQuery>
 
@@ -43,14 +41,14 @@ QgsProviderSublayerItem::QgsProviderSublayerItem( QgsDataItem *parent, const QSt
   mToolTip = details.uri();
 
   // no children, except for vector layers, which will show the fields item
-  setState( details.type() == QgsMapLayerType::VectorLayer ? Qgis::BrowserItemState::NotPopulated : Qgis::BrowserItemState::Populated );
+  setState( details.type() == Qgis::LayerType::Vector ? Qgis::BrowserItemState::NotPopulated : Qgis::BrowserItemState::Populated );
 }
 
 QVector<QgsDataItem *> QgsProviderSublayerItem::createChildren()
 {
   QVector<QgsDataItem *> children;
 
-  if ( mDetails.type() == QgsMapLayerType::VectorLayer )
+  if ( mDetails.type() == Qgis::LayerType::Vector )
   {
     // sqlite gets special handling because it delegates to the dedicated spatialite provider
     if ( mDetails.driverName() == QLatin1String( "SQLite" ) )
@@ -126,45 +124,45 @@ Qgis::BrowserLayerType QgsProviderSublayerItem::layerTypeFromSublayer( const Qgs
 {
   switch ( sublayer.type() )
   {
-    case QgsMapLayerType::VectorLayer:
+    case Qgis::LayerType::Vector:
     {
       switch ( QgsWkbTypes::geometryType( sublayer.wkbType() ) )
       {
-        case QgsWkbTypes::PointGeometry:
+        case Qgis::GeometryType::Point:
           return Qgis::BrowserLayerType::Point;
 
-        case QgsWkbTypes::LineGeometry:
+        case Qgis::GeometryType::Line:
           return Qgis::BrowserLayerType::Line;
 
-        case QgsWkbTypes::PolygonGeometry:
+        case Qgis::GeometryType::Polygon:
           return Qgis::BrowserLayerType::Polygon;
 
-        case QgsWkbTypes::NullGeometry:
+        case Qgis::GeometryType::Null:
           return Qgis::BrowserLayerType::TableLayer;
 
-        case QgsWkbTypes::UnknownGeometry:
+        case Qgis::GeometryType::Unknown:
           return Qgis::BrowserLayerType::Vector;
       }
 
       break;
     }
-    case QgsMapLayerType::RasterLayer:
+    case Qgis::LayerType::Raster:
       return Qgis::BrowserLayerType::Raster;
 
-    case QgsMapLayerType::PluginLayer:
+    case Qgis::LayerType::Plugin:
       return Qgis::BrowserLayerType::Plugin;
 
-    case QgsMapLayerType::MeshLayer:
+    case Qgis::LayerType::Mesh:
       return Qgis::BrowserLayerType::Mesh;
 
-    case QgsMapLayerType::VectorTileLayer:
+    case Qgis::LayerType::VectorTile:
       return Qgis::BrowserLayerType::VectorTile;
 
-    case QgsMapLayerType::PointCloudLayer:
+    case Qgis::LayerType::PointCloud:
       return Qgis::BrowserLayerType::PointCloud;
 
-    case QgsMapLayerType::AnnotationLayer:
-    case QgsMapLayerType::GroupLayer:
+    case Qgis::LayerType::Annotation:
+    case Qgis::LayerType::Group:
       break;
   }
   return Qgis::BrowserLayerType::NoType;
@@ -463,37 +461,6 @@ QgsDataItem *QgsFileBasedDataItemProvider::createDataItem( const QString &path, 
             GDALIdentifyDriverEx( path.toUtf8().constData(), GDAL_OF_VECTOR, nullptr, nullptr ) )
   {
     suffix = QStringLiteral( "shp.zip" );
-  }
-  // special handling for mbtiles files
-  else if ( suffix == QLatin1String( "mbtiles" ) )
-  {
-    QgsMbTiles reader( path );
-    if ( reader.open() )
-    {
-      if ( reader.metadataValue( QStringLiteral( "format" ) ) == QLatin1String( "pbf" ) )
-      {
-        // these are vector tiles
-        QUrlQuery uq;
-        uq.addQueryItem( QStringLiteral( "type" ), QStringLiteral( "mbtiles" ) );
-        uq.addQueryItem( QStringLiteral( "url" ), path );
-        const QString encodedUri = uq.toString();
-        QgsVectorTileLayerItem *item = new QgsVectorTileLayerItem( parentItem, name, path, encodedUri );
-        item->setCapabilities( item->capabilities2() | Qgis::BrowserItemCapability::ItemRepresentsFile );
-        return item;
-      }
-      else
-      {
-        // handled by WMS provider
-        QUrlQuery uq;
-        uq.addQueryItem( QStringLiteral( "type" ), QStringLiteral( "mbtiles" ) );
-        uq.addQueryItem( QStringLiteral( "url" ), QUrl::fromLocalFile( path ).toString() );
-        const QString encodedUri = uq.toString();
-        QgsLayerItem *item = new QgsLayerItem( parentItem, name, path, encodedUri, Qgis::BrowserLayerType::Raster, QStringLiteral( "wms" ) );
-        item->setState( Qgis::BrowserItemState::Populated );
-        item->setCapabilities( item->capabilities2() | Qgis::BrowserItemCapability::ItemRepresentsFile );
-        return item;
-      }
-    }
   }
 
   // hide blocklisted URIs, such as .aux.xml files

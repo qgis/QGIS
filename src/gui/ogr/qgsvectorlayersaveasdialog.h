@@ -193,7 +193,7 @@ class GUI_EXPORT QgsVectorLayerSaveAsDialog : public QDialog, private Ui::QgsVec
      * \see forceMulti()
      * \see includeZ()
      */
-    QgsWkbTypes::Type geometryType() const;
+    Qgis::WkbType geometryType() const;
 
     /**
      * Returns TRUE if geometry type is set to automatic.

@@ -17,8 +17,11 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
+#include "qgslayertreefiltersettings.h"
 #include "qgsmapsettings.h"
 #include "qgsgeometry.h"
+#include "qgstaskmanager.h"
+#include "qgscoordinatetransform.h"
 
 #include <QSet>
 
@@ -26,6 +29,9 @@ class QgsRenderContext;
 class QgsSymbol;
 class QgsVectorLayer;
 class QgsExpression;
+class QgsAbstractFeatureSource;
+class QgsFeatureRenderer;
+class QgsLayerTreeFilterSettings;
 
 /**
  * \ingroup core
@@ -50,8 +56,35 @@ class CORE_EXPORT QgsMapHitTest
     //! Constructor version used with only expressions to filter symbols (no extent or polygon intersection)
     QgsMapHitTest( const QgsMapSettings &settings, const QgsMapHitTest::LayerFilterExpression &layerFilterExpression );
 
+    /**
+     * Constructor based off layer tree filter \a settings.
+     *
+     * \since QGIS 3.32
+     */
+    QgsMapHitTest( const QgsLayerTreeFilterSettings &settings );
+
     //! Runs the map hit test
     void run();
+
+    /**
+     * Returns the hit test results, which are a map of layer ID to
+     * visible symbol legend keys.
+     *
+     * \note Not available in Python bindings
+     * \since QGIS 3.32
+     */
+    QMap<QString, QSet<QString>> results() const SIP_SKIP;
+
+    ///@cond PRIVATE
+
+    /**
+     * Returns the hit test results, which are a map of layer ID to
+     * visible symbol legend keys.
+     *
+     * \since QGIS 3.32
+     */
+    QMap<QString, QList<QString>> resultsPy() const SIP_PYNAME( results );
+    ///@endcond PRIVATE
 
     /**
      * Tests whether a symbol is visible for a specified layer.
@@ -76,22 +109,31 @@ class CORE_EXPORT QgsMapHitTest
     //! \note not available in Python bindings
     typedef QSet<QString> SymbolSet;
 
-    //! \note not available in Python bindings
-    typedef QMap<QgsVectorLayer *, SymbolSet> HitTest;
+    //! Layer ID to symbol set
+    typedef QMap<QString, SymbolSet> HitTest;
 
     /**
-     * Runs test for visible symbols within a layer
-     * \param vl vector layer
+     * Runs test for visible symbols from a feature \a source
+     * \param source feature source
+     * \param layerId associated layer id
+     * \param fields layer fields
+     * \param renderer layer renderer
      * \param usedSymbols set for storage of visible symbols
      * \param usedSymbolsRuleKey set of storage of visible legend rule keys
      * \param context render context
+     * \param feedback optional feedback argument for cancel support
+     * \param visibleExtent total visible area of layer
      * \note not available in Python bindings
-     * \since QGIS 2.12
      */
-    void runHitTestLayer( QgsVectorLayer *vl, SymbolSet &usedSymbols, SymbolSet &usedSymbolsRuleKey, QgsRenderContext &context );
-
-    //! The initial map settings
-    QgsMapSettings mSettings;
+    void runHitTestFeatureSource( QgsAbstractFeatureSource *source,
+                                  const QString &layerId,
+                                  const QgsFields &fields,
+                                  const QgsFeatureRenderer *renderer,
+                                  SymbolSet &usedSymbols,
+                                  SymbolSet &usedSymbolsRuleKey,
+                                  QgsRenderContext &context,
+                                  QgsFeedback *feedback,
+                                  const QgsGeometry &visibleExtent );
 
     //! The hit test
     HitTest mHitTest;
@@ -99,14 +141,73 @@ class CORE_EXPORT QgsMapHitTest
     //! The hit test, using legend rule keys
     HitTest mHitTestRuleKey;
 
-    //! List of expression filter for each layer
-    QgsMapHitTest::LayerFilterExpression mLayerFilterExpression;
+    QgsLayerTreeFilterSettings mSettings;
 
-    //! Polygon used for filtering items. May be empty
-    QgsGeometry mPolygon;
+    friend class QgsMapHitTestTask;
+};
 
-    //! Whether to use only expressions during the filtering
-    bool mOnlyExpressions;
+
+/**
+ * \ingroup core
+ * \brief Executes a QgsMapHitTest in a background thread.
+ *
+ * \since QGIS 3.32
+ */
+class CORE_EXPORT QgsMapHitTestTask : public QgsTask
+{
+    Q_OBJECT
+
+  public:
+
+    /**
+     * Constructor for QgsMapHitTestTask, using the specified filter \a settings.
+     */
+    QgsMapHitTestTask( const QgsLayerTreeFilterSettings &settings );
+
+    /**
+     * Returns the hit test results, which are a map of layer ID to
+     * visible symbol legend keys.
+     * \note Not available in Python bindings
+     */
+    QMap<QString, QSet<QString>> results() const SIP_SKIP;
+
+    ///@cond PRIVATE
+
+    /**
+     * Returns the hit test results, which are a map of layer ID to
+     * visible symbol legend keys.
+     */
+    QMap<QString, QList<QString>> resultsPy() const SIP_PYNAME( results );
+    ///@endcond PRIVATE
+
+    void cancel() override;
+
+  protected:
+
+    bool run() override;
+
+  private:
+
+    void prepare();
+
+    struct PreparedLayerData
+    {
+      std::unique_ptr< QgsAbstractFeatureSource > source;
+      QString layerId;
+      QgsFields fields;
+      std::unique_ptr< QgsFeatureRenderer > renderer;
+      QgsGeometry extent;
+      QgsCoordinateTransform transform;
+      std::unique_ptr< QgsExpressionContextScope > layerScope;
+    };
+
+    std::vector< PreparedLayerData > mPreparedData;
+
+    QgsLayerTreeFilterSettings mSettings;
+
+    QMap<QString, QSet<QString>> mResults;
+
+    std::unique_ptr< QgsFeedback > mFeedback;
 };
 
 #endif // QGSMAPHITTEST_H

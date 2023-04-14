@@ -137,7 +137,7 @@ class CORE_EXPORT QgsFeatureRenderer
     // renderer takes ownership of its symbols!
 
     //! Returns a new renderer - used by default in vector layers
-    static QgsFeatureRenderer *defaultRenderer( QgsWkbTypes::GeometryType geomType ) SIP_FACTORY;
+    static QgsFeatureRenderer *defaultRenderer( Qgis::GeometryType geomType ) SIP_FACTORY;
 
     QString type() const { return mType; }
 
@@ -191,6 +191,16 @@ class CORE_EXPORT QgsFeatureRenderer
      * \see startRender()
      */
     virtual void stopRender( QgsRenderContext &context );
+
+    /**
+     * Returns TRUE if the renderer can be entirely skipped, i.e. if it is known in advance
+     * that no features will be rendered.
+     *
+     * \warning Must be called between startRender() and stopRender() calls.
+     *
+     * \since QGIS 3.30
+     */
+    virtual bool canSkipRender();
 
     /**
      * If a renderer does not require all the features this method may be overridden
@@ -320,7 +330,7 @@ class CORE_EXPORT QgsFeatureRenderer
      * went wrong
      * \returns the renderer
      */
-    static QgsFeatureRenderer *loadSld( const QDomNode &node, QgsWkbTypes::GeometryType geomType, QString &errorMessage ) SIP_FACTORY;
+    static QgsFeatureRenderer *loadSld( const QDomNode &node, Qgis::GeometryType geomType, QString &errorMessage ) SIP_FACTORY;
 
     //! used from subclasses to create SLD Rule elements following SLD v1.1 specs
     virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props = QVariantMap() ) const
@@ -330,19 +340,37 @@ class CORE_EXPORT QgsFeatureRenderer
     }
 
     /**
-     * items of symbology items in legend should be checkable
+     * Returns the set of all legend keys used by the renderer.
+     *
+     * \see legendSymbolItems()
+     *
+     * \since QGIS 3.32
+     */
+    QSet< QString > legendKeys() const;
+
+    /**
+     * Returns TRUE if symbology items in legend are checkable.
+     *
      * \since QGIS 2.5
      */
     virtual bool legendSymbolItemsCheckable() const;
 
     /**
-     * items of symbology items in legend is checked
+     * Returns TRUE if the legend symbology item with the specified \a key is checked.
+     *
+     * \see checkLegendSymbolItem()
+     * \see legendKeys()
+     *
      * \since QGIS 2.5
      */
     virtual bool legendSymbolItemChecked( const QString &key );
 
     /**
-     * item in symbology was checked
+     * Sets whether the legend symbology item with the specified \a ley should be checked.
+     *
+     * \see legendSymbolItemChecked()
+     * \see legendKeys()
+     *
      * \since QGIS 2.5
      */
     virtual void checkLegendSymbolItem( const QString &key, bool state = true );
@@ -351,6 +379,9 @@ class CORE_EXPORT QgsFeatureRenderer
      * Sets the symbol to be used for a legend symbol item.
      * \param key rule key for legend symbol
      * \param symbol new symbol for legend item. Ownership is transferred to renderer.
+     *
+     * \see legendKeys()
+     *
      * \since QGIS 2.14
      */
     virtual void setLegendSymbolItem( const QString &key, QgsSymbol *symbol SIP_TRANSFER );
@@ -365,12 +396,17 @@ class CORE_EXPORT QgsFeatureRenderer
      *
      * \returns QGIS expression string for matching features with the specified key
      *
+     * \see legendKeys()
+     *
      * \since QGIS 3.26
      */
     virtual QString legendKeyToExpression( const QString &key, QgsVectorLayer *layer, bool &ok SIP_OUT ) const;
 
     /**
      * Returns a list of symbology items for the legend
+     *
+     * \see legendKeys()
+     *
      * \since QGIS 2.6
      */
     virtual QgsLegendSymbolList legendSymbolItems() const;

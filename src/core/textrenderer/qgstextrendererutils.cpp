@@ -128,18 +128,18 @@ Qgis::TextOrientation QgsTextRendererUtils::decodeTextOrientation( const QString
   return Qgis::TextOrientation::Horizontal;
 }
 
-QgsUnitTypes::RenderUnit QgsTextRendererUtils::convertFromOldLabelUnit( int val )
+Qgis::RenderUnit QgsTextRendererUtils::convertFromOldLabelUnit( int val )
 {
   if ( val == 0 )
-    return QgsUnitTypes::RenderPoints;
+    return Qgis::RenderUnit::Points;
   else if ( val == 1 )
-    return QgsUnitTypes::RenderMillimeters;
+    return Qgis::RenderUnit::Millimeters;
   else if ( val == 2 )
-    return QgsUnitTypes::RenderMapUnits;
+    return Qgis::RenderUnit::MapUnits;
   else if ( val == 3 )
-    return QgsUnitTypes::RenderPercentage;
+    return Qgis::RenderUnit::Percentage;
   else
-    return QgsUnitTypes::RenderMillimeters;
+    return Qgis::RenderUnit::Millimeters;
 }
 
 QColor QgsTextRendererUtils::readColor( QgsVectorLayer *layer, const QString &property, const QColor &defaultColor, bool withAlpha )
@@ -151,40 +151,46 @@ QColor QgsTextRendererUtils::readColor( QgsVectorLayer *layer, const QString &pr
   return QColor( r, g, b, a );
 }
 
-#if 0
-QgsTextRendererUtils::CurvePlacementProperties *QgsTextRendererUtils::generateCurvedTextPlacement( const QgsPrecalculatedTextMetrics &metrics, const QgsLineString *line, double offsetAlongLine, LabelLineDirection direction, double maxConcaveAngle, double maxConvexAngle, bool uprightOnly )
+std::unique_ptr< QgsTextRendererUtils::CurvePlacementProperties > QgsTextRendererUtils::generateCurvedTextPlacement( const QgsPrecalculatedTextMetrics &metrics, const QPolygonF &line, double offsetAlongLine, LabelLineDirection direction, double maxConcaveAngle, double maxConvexAngle, CurvedTextFlags flags )
 {
-  const int numPoints = line->numPoints();
+  const int numPoints = line.size();
   std::vector<double> pathDistances( numPoints );
 
-  const double *x = line->xData();
-  const double *y = line->yData();
+  const QPointF *p = line.data();
   double dx, dy;
 
   pathDistances[0] = 0;
-  double prevX = *x++;
-  double prevY = *y++;
+  double prevX = p->x();
+  double prevY = p->y();
+  p++;
+
+  std::vector< double > x( numPoints );
+  std::vector< double > y( numPoints );
+  x[0] = prevX;
+  y[0] = prevY;
 
   for ( int i = 1; i < numPoints; ++i )
   {
-    dx = *x - prevX;
-    dy = *y - prevY;
+    dx = p->x() - prevX;
+    dy = p->y() - prevY;
     pathDistances[i] = std::sqrt( dx * dx + dy * dy );
 
-    prevX = *x++;
-    prevY = *y++;
+    prevX = p->x();
+    prevY = p->y();
+    p++;
+    x[i] = prevX;
+    y[i] = prevY;
   }
 
-  return generateCurvedTextPlacementPrivate( metrics, line->xData(), line->yData(), numPoints, pathDistances, offsetAlongLine, direction, maxConcaveAngle, maxConvexAngle, uprightOnly );
+  return generateCurvedTextPlacementPrivate( metrics, x.data(), y.data(), numPoints, pathDistances, offsetAlongLine, direction, flags, maxConcaveAngle, maxConvexAngle, false );
 }
-#endif
 
-QgsTextRendererUtils::CurvePlacementProperties *QgsTextRendererUtils::generateCurvedTextPlacement( const QgsPrecalculatedTextMetrics &metrics, const double *x, const double *y, int numPoints, const std::vector<double> &pathDistances, double offsetAlongLine, LabelLineDirection direction, double maxConcaveAngle, double maxConvexAngle, bool uprightOnly )
+std::unique_ptr< QgsTextRendererUtils::CurvePlacementProperties > QgsTextRendererUtils::generateCurvedTextPlacement( const QgsPrecalculatedTextMetrics &metrics, const double *x, const double *y, int numPoints, const std::vector<double> &pathDistances, double offsetAlongLine, LabelLineDirection direction, double maxConcaveAngle, double maxConvexAngle, CurvedTextFlags flags )
 {
-  return generateCurvedTextPlacementPrivate( metrics, x, y, numPoints, pathDistances, offsetAlongLine, direction, maxConcaveAngle, maxConvexAngle, uprightOnly );
+  return generateCurvedTextPlacementPrivate( metrics, x, y, numPoints, pathDistances, offsetAlongLine, direction, flags, maxConcaveAngle, maxConvexAngle );
 }
 
-QgsTextRendererUtils::CurvePlacementProperties *QgsTextRendererUtils::generateCurvedTextPlacementPrivate( const QgsPrecalculatedTextMetrics &metrics, const double *x, const double *y, int numPoints, const std::vector<double> &pathDistances, double offsetAlongLine, LabelLineDirection direction, double maxConcaveAngle, double maxConvexAngle, bool uprightOnly, bool isSecondAttempt )
+std::unique_ptr< QgsTextRendererUtils::CurvePlacementProperties > QgsTextRendererUtils::generateCurvedTextPlacementPrivate( const QgsPrecalculatedTextMetrics &metrics, const double *x, const double *y, int numPoints, const std::vector<double> &pathDistances, double offsetAlongLine, LabelLineDirection direction, CurvedTextFlags flags, double maxConcaveAngle, double maxConvexAngle, bool isSecondAttempt )
 {
   std::unique_ptr< CurvePlacementProperties > output = std::make_unique< CurvePlacementProperties >();
   output->graphemePlacement.reserve( metrics.count() );
@@ -199,17 +205,17 @@ QgsTextRendererUtils::CurvePlacementProperties *QgsTextRendererUtils::generateCu
   }
   if ( index >= numPoints )
   {
-    return output.release();
+    return output;
   }
 
   const double segmentLength = pathDistances[index];
   if ( qgsDoubleNear( segmentLength, 0.0 ) )
   {
     // Not allowed to place across on 0 length segments or discontinuities
-    return output.release();
+    return output;
   }
 
-  const int characterCount = metrics.count();
+  int characterCount = metrics.count();
 
   if ( direction == RespectPainterOrientation && !isSecondAttempt )
   {
@@ -228,7 +234,15 @@ QgsTextRendererUtils::CurvePlacementProperties *QgsTextRendererUtils::generateCu
       double characterStartX, characterStartY;
       if ( !nextCharPosition( characterWidth, pathDistances[endindex], x, y, numPoints, endindex, distance, characterStartX, characterStartY, endLabelX, endLabelY ) )
       {
-        return output.release();
+        if ( flags & QgsTextRendererUtils::CurvedTextFlag::TruncateStringWhenLineIsTooShort )
+        {
+          characterCount = i + 1;
+          break;
+        }
+        else
+        {
+          return output;
+        }
       }
       if ( i == 0 )
       {
@@ -283,8 +297,16 @@ QgsTextRendererUtils::CurvePlacementProperties *QgsTextRendererUtils::generateCu
     double characterEndY = 0;
     if ( !nextCharPosition( characterWidth, pathDistances[index], x, y, numPoints, index, offsetAlongSegment, characterStartX, characterStartY, characterEndX, characterEndY ) )
     {
-      output->graphemePlacement.clear();
-      return output.release();
+      if ( flags & QgsTextRendererUtils::CurvedTextFlag::TruncateStringWhenLineIsTooShort )
+      {
+        characterCount = i + 1;
+        break;
+      }
+      else
+      {
+        output->graphemePlacement.clear();
+        return output;
+      }
     }
 
     // Calculate angle from the start of the character to the end based on start/end of character
@@ -304,19 +326,22 @@ QgsTextRendererUtils::CurvePlacementProperties *QgsTextRendererUtils::generateCu
       if ( ( maxConcaveAngle >= 0 && angleDelta > 0 && angleDelta > maxConcaveAngle ) || ( maxConvexAngle >= 0 && angleDelta < 0 && angleDelta < -maxConvexAngle ) )
       {
         output->graphemePlacement.clear();
-        return output.release();
+        return output;
       }
     }
 
-    // Shift the character downwards since the draw position is specified at the baseline
-    // and we're calculating the mean line here
-    double dist = 0.9 * maxCharacterHeight / 2 - ( maxCharacterDescent - characterDescent );
-    if ( output->flippedCharacterPlacementToGetUprightLabels )
+    if ( !( flags & CurvedTextFlag::UseBaselinePlacement ) )
     {
-      dist = -dist;
+      // Shift the character downwards since the draw position is specified at the baseline
+      // and we're calculating the mean line here
+      double dist = 0.9 * maxCharacterHeight / 2 - ( maxCharacterDescent - characterDescent );
+      if ( output->flippedCharacterPlacementToGetUprightLabels )
+      {
+        dist = -dist;
+      }
+      characterStartX += dist * std::cos( angle + M_PI_2 );
+      characterStartY -= dist * std::sin( angle + M_PI_2 );
     }
-    characterStartX += dist * std::cos( angle + M_PI_2 );
-    characterStartY -= dist * std::sin( angle + M_PI_2 );
 
     double renderAngle = angle;
     CurvedGraphemePlacement placement;
@@ -345,14 +370,14 @@ QgsTextRendererUtils::CurvePlacementProperties *QgsTextRendererUtils::generateCu
       output->upsideDownCharCount++;
   }
 
-  if ( !isSecondAttempt && uprightOnly && output->upsideDownCharCount >= characterCount / 2.0 )
+  if ( !isSecondAttempt && ( flags & QgsTextRendererUtils::CurvedTextFlag::UprightCharactersOnly ) && output->upsideDownCharCount >= characterCount / 2.0 )
   {
     // more of text is upside down then right side up...
     // if text should be shown upright then retry with the opposite orientation
-    return generateCurvedTextPlacementPrivate( metrics, x, y, numPoints, pathDistances, offsetAlongLine, direction, maxConcaveAngle, maxConvexAngle, uprightOnly, true );
+    return generateCurvedTextPlacementPrivate( metrics, x, y, numPoints, pathDistances, offsetAlongLine, direction, flags, maxConcaveAngle, maxConvexAngle, true );
   }
 
-  return output.release();
+  return output;
 }
 
 bool QgsTextRendererUtils::nextCharPosition( double charWidth, double segmentLength, const double *x, const double *y, int numPoints, int &index, double &currentDistanceAlongSegment, double &characterStartX, double &characterStartY, double &characterEndX, double &characterEndY )

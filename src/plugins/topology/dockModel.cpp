@@ -118,7 +118,7 @@ Qt::ItemFlags DockModel::flags( const QModelIndex &index ) const
   if ( !index.isValid() )
     return Qt::ItemIsEnabled;
 
-  Qt::ItemFlags flags = QAbstractItemModel::flags( index );
+  Qt::ItemFlags flags = QAbstractTableModel::flags( index );
   return flags;
 }
 

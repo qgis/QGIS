@@ -21,6 +21,7 @@
 
 class QgsVectorLayer;
 class QgsRasterLayer;
+class QWidget;
 
 ///@cond NOT_STABLE
 

@@ -58,6 +58,7 @@ class QgsTransformAlgorithm : public QgsProcessingFeatureBasedAlgorithm
     QgsCoordinateReferenceSystem mDestCrs;
     QgsCoordinateTransform mTransform;
     QgsCoordinateTransformContext mTransformContext;
+    bool mConvertCurveToSegments = false;
     QString mCoordOp;
     bool mWarnedAboutFallbackTransform = false;
 

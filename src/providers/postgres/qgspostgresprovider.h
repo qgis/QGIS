@@ -49,26 +49,12 @@ class QgsPostgresProvider final: public QgsVectorDataProvider
 {
     Q_OBJECT
 
+    friend class TestQgsPostgresProvider;
+
   public:
 
     static const QString POSTGRES_KEY;
     static const QString POSTGRES_DESCRIPTION;
-
-    enum Relkind
-    {
-      NotSet,
-      Unknown,
-      OrdinaryTable, // r
-      Index, // i
-      Sequence, // s
-      View, // v
-      MaterializedView, // m
-      CompositeType, // c
-      ToastTable, // t
-      ForeignTable, // f
-      PartitionedTable // p - PostgreSQL 10
-    };
-    Q_ENUM( Relkind )
 
     /**
      * Import a vector layer into the database
@@ -80,7 +66,7 @@ class QgsPostgresProvider final: public QgsVectorDataProvider
     static Qgis::VectorExportResult createEmptyLayer(
       const QString &uri,
       const QgsFields &fields,
-      QgsWkbTypes::Type wkbType,
+      Qgis::WkbType wkbType,
       const QgsCoordinateReferenceSystem &srs,
       bool overwrite,
       QMap<int, int> *oldToNewAttrIdxMap,
@@ -106,7 +92,7 @@ class QgsPostgresProvider final: public QgsVectorDataProvider
     QString storageType() const override;
     QgsCoordinateReferenceSystem crs() const override;
     QgsFeatureIterator getFeatures( const QgsFeatureRequest &request ) const override;
-    QgsWkbTypes::Type wkbType() const override;
+    Qgis::WkbType wkbType() const override;
     QgsLayerMetadata layerMetadata() const override;
 
     /**
@@ -195,6 +181,7 @@ class QgsPostgresProvider final: public QgsVectorDataProvider
     bool setSubsetString( const QString &theSQL, bool updateFeatureCount = true ) override;
     bool supportsSubsetString() const override { return true; }
     QgsVectorDataProvider::Capabilities capabilities() const override;
+    Qgis::VectorDataProviderAttributeEditCapabilities attributeEditCapabilities() const override;
     SpatialIndexPresence hasSpatialIndex() const override;
 
     /**
@@ -223,7 +210,6 @@ class QgsPostgresProvider final: public QgsVectorDataProvider
     static QVariant convertValue( QVariant::Type type, QVariant::Type subType, const QString &value, const QString &typeName, QgsPostgresConn *conn );
 
     QList<QgsRelation> discoverRelations( const QgsVectorLayer *target, const QList<QgsVectorLayer *> &layers ) const override;
-    QgsAttrPalIndexNameHash palAttributeIndexNames() const override;
 
     /**
      * Returns true if the data source has metadata, false otherwise. For
@@ -254,7 +240,7 @@ class QgsPostgresProvider final: public QgsVectorDataProvider
     /**
      * \returns relation kind
      */
-    Relkind relkind() const;
+    Qgis::PostgresRelKind relkind() const;
 
     /**
      * Change internal query with \a query
@@ -352,9 +338,6 @@ class QgsPostgresProvider final: public QgsVectorDataProvider
     */
     void reloadProviderData() override;
 
-    //! Old-style mapping of index to name for QgsPalLabeling fix
-    QgsAttrPalIndexNameHash mAttrPalIndexName;
-
     QgsFields mAttributeFields;
     QHash<int, char> mIdentityFields;
     QString mDataComment;
@@ -395,7 +378,7 @@ class QgsPostgresProvider final: public QgsVectorDataProvider
     /**
      * Kind of relation
      */
-    mutable Relkind mKind = Relkind::NotSet;
+    mutable Qgis::PostgresRelKind mKind = Qgis::PostgresRelKind::NotSet;
 
     /**
      * Data type for the primary key
@@ -417,8 +400,8 @@ class QgsPostgresProvider final: public QgsVectorDataProvider
     QString mBoundingBoxColumn;       //!< Name of the bounding box column
     mutable QgsRectangle mLayerExtent;        //!< Rectangle that contains the extent (bounding box) of the layer
 
-    QgsWkbTypes::Type mDetectedGeomType = QgsWkbTypes::Unknown ;  //!< Geometry type detected in the database
-    QgsWkbTypes::Type mRequestedGeomType = QgsWkbTypes::Unknown ; //!< Geometry type requested in the uri
+    Qgis::WkbType mDetectedGeomType = Qgis::WkbType::Unknown ;  //!< Geometry type detected in the database
+    Qgis::WkbType mRequestedGeomType = Qgis::WkbType::Unknown ; //!< Geometry type requested in the uri
     QString mDetectedSrid;            //!< Spatial reference detected in the database
     QString mRequestedSrid;           //!< Spatial reference requested in the uri
 
@@ -456,21 +439,6 @@ class QgsPostgresProvider final: public QgsVectorDataProvider
     bool mSelectAtIdDisabled = false; //!< Disable support for SelectAtId
 
     struct PGFieldNotFound {}; //! Exception to throw
-
-    struct PGException
-    {
-        explicit PGException( QgsPostgresResult &r )
-          : mWhat( r.PQresultErrorMessage() )
-        {}
-
-        QString errorMessage() const
-        {
-          return mWhat;
-        }
-
-      private:
-        QString mWhat;
-    };
 
     // A function that determines if the given columns contain unique entries
     bool uniqueData( const QString &quotedColNames );
@@ -613,7 +581,7 @@ class QgsPostgresProviderMetadata final: public QgsProviderMetadata
     QIcon icon() const override;
     QgsDataProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() ) override;
     QList< QgsDataItemProvider * > dataItemProviders() const override;
-    Qgis::VectorExportResult createEmptyLayer( const QString &uri, const QgsFields &fields, QgsWkbTypes::Type wkbType,
+    Qgis::VectorExportResult createEmptyLayer( const QString &uri, const QgsFields &fields, Qgis::WkbType wkbType,
         const QgsCoordinateReferenceSystem &srs,
         bool overwrite,
         QMap<int, int> &oldToNewAttrIdxMap, QString &errorMessage,
@@ -638,7 +606,7 @@ class QgsPostgresProviderMetadata final: public QgsProviderMetadata
     void cleanupProvider() override;
     QVariantMap decodeUri( const QString &uri ) const override;
     QString encodeUri( const QVariantMap &parts ) const override;
-    QList< QgsMapLayerType > supportedLayerTypes() const override;
+    QList< Qgis::LayerType > supportedLayerTypes() const override;
     bool saveLayerMetadata( const QString &uri, const QgsLayerMetadata &metadata, QString &errorMessage ) override;
     QgsProviderMetadata::ProviderCapabilities providerCapabilities() const override;
 };

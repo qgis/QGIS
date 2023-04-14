@@ -221,7 +221,7 @@ class GUI_EXPORT QgsFeatureListView : public QListView
 
 
   private slots:
-    void editSelectionChanged( const QItemSelection &deselected, const QItemSelection &selected );
+    void editSelectionChanged( const QItemSelection &selected, const QItemSelection &deselected );
 
     /**
      * Make sure, there is an edit selection. If there is none, choose the first item.
@@ -233,6 +233,8 @@ class GUI_EXPORT QgsFeatureListView : public QListView
 
   private:
     void selectRow( const QModelIndex &index, bool anchor );
+
+    void updateEditSelection( bool inSelection = false );
 
     enum PositionInList
     {
@@ -264,7 +266,10 @@ class GUI_EXPORT QgsFeatureListView : public QListView
     int mRowAnchor = 0;
     QItemSelectionModel::SelectionFlags mCtrlDragSelectionFlag;
 
-    QTimer mUpdateEditSelectionTimer;
+    QTimer mUpdateEditSelectionTimerWithSelection;
+    QTimer mUpdateEditSelectionTimerWithoutSelection;
+
+    QgsFeatureId mLastEditSelectionFid;
 
     friend class QgsDualView;
 };

@@ -34,7 +34,7 @@ for use in QGIS layouts. Measurement units are stored alongside the size.
 %End
   public:
 
-    QgsLayoutSize( double width, double height, QgsUnitTypes::LayoutUnit units = QgsUnitTypes::LayoutMillimeters );
+    QgsLayoutSize( double width, double height, Qgis::LayoutUnit units = Qgis::LayoutUnit::Millimeters );
 %Docstring
 Constructor for QgsLayoutSize.
 
@@ -43,12 +43,12 @@ Constructor for QgsLayoutSize.
 :param units: units for width and height
 %End
 
-    explicit QgsLayoutSize( QSizeF size, QgsUnitTypes::LayoutUnit units = QgsUnitTypes::LayoutMillimeters );
+    explicit QgsLayoutSize( QSizeF size, Qgis::LayoutUnit units = Qgis::LayoutUnit::Millimeters );
 %Docstring
 Constructor for QgsLayoutSize.
 %End
 
-    explicit QgsLayoutSize( QgsUnitTypes::LayoutUnit units = QgsUnitTypes::LayoutMillimeters );
+    explicit QgsLayoutSize( Qgis::LayoutUnit units = Qgis::LayoutUnit::Millimeters );
 %Docstring
 Constructor for an empty layout size
 
@@ -102,14 +102,14 @@ Sets the ``height`` for the size.
 .. seealso:: :py:func:`setWidth`
 %End
 
-    QgsUnitTypes::LayoutUnit units() const;
+    Qgis::LayoutUnit units() const;
 %Docstring
 Returns the units for the size.
 
 .. seealso:: :py:func:`setUnits`
 %End
 
-    void setUnits( const QgsUnitTypes::LayoutUnit units );
+    void setUnits( const Qgis::LayoutUnit units );
 %Docstring
 Sets the ``units`` for the size. Does not alter the stored width or height,
 ie. no conversion is done.

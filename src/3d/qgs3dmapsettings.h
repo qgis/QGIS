@@ -25,25 +25,19 @@
 
 #include "qgscoordinatereferencesystem.h"
 #include "qgsmaplayerref.h"
-#include "qgsmesh3dsymbol.h"
 #include "qgsphongmaterialsettings.h"
-#include "qgspointlightsettings.h"
-#include "qgsdirectionallightsettings.h"
 #include "qgsterraingenerator.h"
 #include "qgsvector3d.h"
 #include "qgs3daxissettings.h"
 #include "qgsskyboxsettings.h"
 #include "qgsshadowsettings.h"
-#include "qgscameracontroller.h"
 #include "qgstemporalrangeobject.h"
 #include "qgsambientocclusionsettings.h"
 
 class QgsMapLayer;
 class QgsRasterLayer;
-
+class QgsLightSource;
 class QgsAbstract3DRenderer;
-
-
 class QgsReadWriteContext;
 class QgsProject;
 
@@ -345,11 +339,6 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     // misc configuration
     //
 
-    //! Sets list of extra 3D renderers to use in the scene. Takes ownership of the objects.
-    void setRenderers( const QList<QgsAbstract3DRenderer *> &renderers SIP_TRANSFER );
-    //! Returns list of extra 3D renderers
-    QList<QgsAbstract3DRenderer *> renderers() const { return mRenderers; }
-
     //! Sets whether to display bounding boxes of terrain tiles (for debugging)
     void setShowTerrainBoundingBoxes( bool enabled );
     //! Returns whether to display bounding boxes of terrain tiles (for debugging)
@@ -500,13 +489,13 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
      * Returns the navigation mode used by the camera
      * \since QGIS 3.18
      */
-    QgsCameraController::NavigationMode cameraNavigationMode() const { return mCameraNavigationMode; }
+    Qgis::NavigationMode cameraNavigationMode() const { return mCameraNavigationMode; }
 
     /**
      * Sets the navigation mode for the camera
      * \since QGIS 3.18
      */
-    void setCameraNavigationMode( QgsCameraController::NavigationMode navigationMode );
+    void setCameraNavigationMode( Qgis::NavigationMode navigationMode );
 #endif
 
     /**
@@ -686,6 +675,19 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
      * \since QGIS 3.26
      */
     void setIsDebugOverlayEnabled( bool debugOverlayEnabled );
+
+    /**
+     * Returns whether the extent is displayed on the main 2D map canvas
+     * \see setShowExtentIn2DView()
+     * \since QGIS 3.32
+     */
+    bool showExtentIn2DView() const { return mShowExtentIn2DView; }
+
+    /**
+     * Sets whether the extent is displayed on the main 2D map canvas
+     * \since QGIS 3.32
+     */
+    void setShowExtentIn2DView( bool show );
 
   signals:
 
@@ -893,6 +895,13 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
      */
     void extentChanged();
 
+    /**
+     * Emitted when the parameter to display 3d view's extent in the 2D canvas has changed
+     * \see setShowExtentIn2DView()
+     * \since QGIS 3.32
+     */
+    void showExtentIn2DViewChanged();
+
   private:
 #ifdef SIP_RUN
     Qgs3DMapSettings &operator=( const Qgs3DMapSettings & );
@@ -926,10 +935,9 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     QList< QgsLightSource * > mLightSources; //!< List of light sources in the scene (owned by the settings)
     float mFieldOfView = 45.0f; //<! Camera lens field of view value
     Qt3DRender::QCameraLens::ProjectionType mProjectionType = Qt3DRender::QCameraLens::PerspectiveProjection;  //<! Camera lens projection type
-    QgsCameraController::NavigationMode mCameraNavigationMode = QgsCameraController::NavigationMode::TerrainBasedNavigation;
+    Qgis::NavigationMode mCameraNavigationMode = Qgis::NavigationMode::TerrainBased;
     double mCameraMovementSpeed = 5.0;
     QList<QgsMapLayerRef> mLayers;   //!< Layers to be rendered
-    QList<QgsAbstract3DRenderer *> mRenderers;  //!< Extra stuff to render as 3D object
     //! Coordinate transform context
     QgsCoordinateTransformContext mTransformContext;
     QgsPathResolver mPathResolver;
@@ -966,6 +974,8 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     bool mIsDebugOverlayEnabled = false;
 
     QgsRectangle mExtent; //!< 2d extent used to limit the 3d view
+
+    bool mShowExtentIn2DView = false;
 
 };
 

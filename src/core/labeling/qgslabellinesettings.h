@@ -18,8 +18,6 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgslabeling.h"
-#include "qgsunittypes.h"
 #include "qgsmapunitscale.h"
 #include <QString>
 
@@ -95,7 +93,7 @@ class CORE_EXPORT QgsLabelLineSettings
      *
      * \see setPlacementFlags()
      */
-    QgsLabeling::LinePlacementFlags placementFlags() const { return mPlacementFlags; }
+    Qgis::LabelLinePlacementFlags placementFlags() const { return mPlacementFlags; }
 
     /**
      * Returns the line placement \a flags, which dictate how line labels can be placed
@@ -103,7 +101,7 @@ class CORE_EXPORT QgsLabelLineSettings
      *
      * \see placementFlags()
      */
-    void setPlacementFlags( QgsLabeling::LinePlacementFlags flags ) { mPlacementFlags = flags; }
+    void setPlacementFlags( Qgis::LabelLinePlacementFlags flags ) { mPlacementFlags = flags; }
 
     /**
      * Returns TRUE if connected line features with identical label text should be merged
@@ -245,7 +243,7 @@ class CORE_EXPORT QgsLabelLineSettings
      * \see overrunDistance()
      * \see overrunDistanceMapUnitScale()
      */
-    QgsUnitTypes::RenderUnit overrunDistanceUnit() const {return mOverrunDistanceUnit; }
+    Qgis::RenderUnit overrunDistanceUnit() const {return mOverrunDistanceUnit; }
 
     /**
      * Sets the \a unit for label overrun distance.
@@ -253,7 +251,7 @@ class CORE_EXPORT QgsLabelLineSettings
      * \see overrunDistance()
      * \see overrunDistanceMapUnitScale()
      */
-    void setOverrunDistanceUnit( const QgsUnitTypes::RenderUnit &unit ) { mOverrunDistanceUnit = unit;}
+    void setOverrunDistanceUnit( const Qgis::RenderUnit &unit ) { mOverrunDistanceUnit = unit;}
 
     /**
      * Returns the map unit scale for label overrun distance.
@@ -366,7 +364,7 @@ class CORE_EXPORT QgsLabelLineSettings
     void setAnchorTextPoint( AnchorTextPoint point ) { mAnchorTextPoint = point; }
 
   private:
-    QgsLabeling::LinePlacementFlags mPlacementFlags = QgsLabeling::LinePlacementFlag::AboveLine | QgsLabeling::LinePlacementFlag::MapOrientation;
+    Qgis::LabelLinePlacementFlags mPlacementFlags = Qgis::LabelLinePlacementFlag::AboveLine | Qgis::LabelLinePlacementFlag::MapOrientation;
     bool mMergeLines = false;
     bool mAddDirectionSymbol = false;
     QString mLeftDirectionSymbol = QString( '<' );
@@ -374,7 +372,7 @@ class CORE_EXPORT QgsLabelLineSettings
     bool mReverseDirectionSymbol = false;
     DirectionSymbolPlacement mPlaceDirectionSymbol = DirectionSymbolPlacement::SymbolLeftRight;
     double mOverrunDistance = 0;
-    QgsUnitTypes::RenderUnit mOverrunDistanceUnit = QgsUnitTypes::RenderMillimeters;
+    Qgis::RenderUnit mOverrunDistanceUnit = Qgis::RenderUnit::Millimeters;
     QgsMapUnitScale mOverrunDistanceMapUnitScale;
 
     double mLineAnchorPercent = 0.5;

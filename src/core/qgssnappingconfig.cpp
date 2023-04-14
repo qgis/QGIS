@@ -543,7 +543,7 @@ void QgsSnappingConfig::readProject( const QDomDocument &doc )
       const double maxScale = settingElement.attribute( QStringLiteral( "maxScale" ) ).toDouble();
 
       QgsMapLayer *ml = mProject->mapLayer( layerId );
-      if ( !ml || ml->type() != QgsMapLayerType::VectorLayer )
+      if ( !ml || ml->type() != Qgis::LayerType::Vector )
         continue;
 
       QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( ml );

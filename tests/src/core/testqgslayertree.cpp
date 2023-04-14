@@ -338,9 +338,9 @@ void TestQgsLayerTree::testRestrictedSymbolSize()
   QgsProject project;
   project.addMapLayer( vl );
 
-  QgsMarkerSymbol *symbol = static_cast< QgsMarkerSymbol * >( QgsSymbol::defaultSymbol( QgsWkbTypes::PointGeometry ) );
+  QgsMarkerSymbol *symbol = static_cast< QgsMarkerSymbol * >( QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ) );
   symbol->setSize( 500.0 );
-  symbol->setSizeUnit( QgsUnitTypes::RenderMapUnits );
+  symbol->setSizeUnit( Qgis::RenderUnit::MapUnits );
 
   //create a categorized renderer for layer
   QgsCategorizedSymbolRenderer *renderer = new QgsCategorizedSymbolRenderer();
@@ -442,10 +442,10 @@ void TestQgsLayerTree::testShowHideAllSymbolNodes()
   //create a categorized renderer for layer
   QgsCategorizedSymbolRenderer *renderer = new QgsCategorizedSymbolRenderer();
   renderer->setClassAttribute( QStringLiteral( "col1" ) );
-  renderer->setSourceSymbol( QgsSymbol::defaultSymbol( QgsWkbTypes::PointGeometry ) );
-  renderer->addCategory( QgsRendererCategory( "a", QgsSymbol::defaultSymbol( QgsWkbTypes::PointGeometry ), QStringLiteral( "a" ) ) );
-  renderer->addCategory( QgsRendererCategory( "b", QgsSymbol::defaultSymbol( QgsWkbTypes::PointGeometry ), QStringLiteral( "b" ) ) );
-  renderer->addCategory( QgsRendererCategory( "c", QgsSymbol::defaultSymbol( QgsWkbTypes::PointGeometry ), QStringLiteral( "c" ) ) );
+  renderer->setSourceSymbol( QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ) );
+  renderer->addCategory( QgsRendererCategory( "a", QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ), QStringLiteral( "a" ) ) );
+  renderer->addCategory( QgsRendererCategory( "b", QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ), QStringLiteral( "b" ) ) );
+  renderer->addCategory( QgsRendererCategory( "c", QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ), QStringLiteral( "c" ) ) );
   vl->setRenderer( renderer );
 
   //create legend with symbology nodes for categorized renderer
@@ -492,10 +492,10 @@ void TestQgsLayerTree::testFindLegendNode()
   //create a categorized renderer for layer
   QgsCategorizedSymbolRenderer *renderer = new QgsCategorizedSymbolRenderer();
   renderer->setClassAttribute( QStringLiteral( "col1" ) );
-  renderer->setSourceSymbol( QgsSymbol::defaultSymbol( QgsWkbTypes::PointGeometry ) );
-  renderer->addCategory( QgsRendererCategory( "a", QgsSymbol::defaultSymbol( QgsWkbTypes::PointGeometry ), QStringLiteral( "a" ) ) );
-  renderer->addCategory( QgsRendererCategory( "b", QgsSymbol::defaultSymbol( QgsWkbTypes::PointGeometry ), QStringLiteral( "b" ) ) );
-  renderer->addCategory( QgsRendererCategory( "c", QgsSymbol::defaultSymbol( QgsWkbTypes::PointGeometry ), QStringLiteral( "c" ) ) );
+  renderer->setSourceSymbol( QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ) );
+  renderer->addCategory( QgsRendererCategory( "a", QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ), QStringLiteral( "a" ) ) );
+  renderer->addCategory( QgsRendererCategory( "b", QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ), QStringLiteral( "b" ) ) );
+  renderer->addCategory( QgsRendererCategory( "c", QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ), QStringLiteral( "c" ) ) );
   vl->setRenderer( renderer );
 
   //create legend with symbology nodes for categorized renderer
@@ -527,7 +527,7 @@ void TestQgsLayerTree::testLegendSymbolCategorized()
   //test retrieving/setting a categorized renderer's symbol through the legend node
   QgsCategorizedSymbolRenderer *renderer = new QgsCategorizedSymbolRenderer();
   renderer->setClassAttribute( QStringLiteral( "col1" ) );
-  renderer->setSourceSymbol( QgsSymbol::defaultSymbol( QgsWkbTypes::PointGeometry ) );
+  renderer->setSourceSymbol( QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ) );
   QVariantMap props;
   props.insert( QStringLiteral( "color" ), QStringLiteral( "#ff0000" ) );
   props.insert( QStringLiteral( "outline_color" ), QStringLiteral( "#000000" ) );
@@ -544,7 +544,7 @@ void TestQgsLayerTree::testLegendSymbolGraduated()
   //test retrieving/setting a graduated renderer's symbol through the legend node
   QgsGraduatedSymbolRenderer *renderer = new QgsGraduatedSymbolRenderer();
   renderer->setClassAttribute( QStringLiteral( "col1" ) );
-  renderer->setSourceSymbol( QgsSymbol::defaultSymbol( QgsWkbTypes::PointGeometry ) );
+  renderer->setSourceSymbol( QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ) );
   QVariantMap props;
   props.insert( QStringLiteral( "color" ), QStringLiteral( "#ff0000" ) );
   props.insert( QStringLiteral( "outline_color" ), QStringLiteral( "#000000" ) );
@@ -884,10 +884,10 @@ void TestQgsLayerTree::testSymbolText()
   //create a categorized renderer for layer
   QgsCategorizedSymbolRenderer *renderer = new QgsCategorizedSymbolRenderer();
   renderer->setClassAttribute( QStringLiteral( "col1" ) );
-  renderer->setSourceSymbol( QgsSymbol::defaultSymbol( QgsWkbTypes::PointGeometry ) );
-  renderer->addCategory( QgsRendererCategory( "a", QgsSymbol::defaultSymbol( QgsWkbTypes::PointGeometry ), QStringLiteral( "a [% 1 + 2 %]" ) ) );
-  renderer->addCategory( QgsRendererCategory( "b", QgsSymbol::defaultSymbol( QgsWkbTypes::PointGeometry ), QStringLiteral( "b,c" ) ) );
-  renderer->addCategory( QgsRendererCategory( "c", QgsSymbol::defaultSymbol( QgsWkbTypes::PointGeometry ), QStringLiteral( "c" ) ) );
+  renderer->setSourceSymbol( QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ) );
+  renderer->addCategory( QgsRendererCategory( "a", QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ), QStringLiteral( "a [% 1 + 2 %]" ) ) );
+  renderer->addCategory( QgsRendererCategory( "b", QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ), QStringLiteral( "b,c" ) ) );
+  renderer->addCategory( QgsRendererCategory( "c", QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ), QStringLiteral( "c" ) ) );
   vl->setRenderer( renderer );
 
   //create legend with symbology nodes for categorized renderer
@@ -976,7 +976,7 @@ void TestQgsLayerTree::testRasterSymbolNode()
   QgsRasterSymbolLegendNode rasterNode( n.get(), QColor( 255, 0, 0 ), QStringLiteral( "my node" ), nullptr, false, QStringLiteral( "key" ) );
   QVERIFY( !rasterNode.isCheckable() );
   QCOMPARE( rasterNode.ruleKey(), QStringLiteral( "key" ) );
-  QCOMPARE( static_cast< int >( rasterNode.flags() ), static_cast< int >( Qt::ItemIsEnabled ) );
+  QCOMPARE( static_cast< int >( rasterNode.flags() ), static_cast< int >( Qt::ItemIsEnabled | Qt::ItemIsSelectable ) );
   QCOMPARE( rasterNode.data( Qt::DisplayRole ).toString(), QStringLiteral( "my node" ) );
   QCOMPARE( rasterNode.data( QgsLayerTreeModelLegendNode::NodeTypeRole ).toInt(), static_cast< int >( QgsLayerTreeModelLegendNode::RasterSymbolLegend ) );
   QCOMPARE( rasterNode.data( QgsLayerTreeModelLegendNode::RuleKeyRole ).toString(), QStringLiteral( "key" ) );
@@ -986,7 +986,7 @@ void TestQgsLayerTree::testRasterSymbolNode()
   // checkable
   const QgsRasterSymbolLegendNode rasterNode2( n.get(), QColor( 255, 0, 0 ), QStringLiteral( "my node" ), nullptr, true, QStringLiteral( "key" ) );
   QVERIFY( rasterNode2.isCheckable() );
-  QCOMPARE( static_cast< int >( rasterNode2.flags() ), static_cast< int >( Qt::ItemIsEnabled | Qt::ItemIsUserCheckable ) );
+  QCOMPARE( static_cast< int >( rasterNode2.flags() ), static_cast< int >( Qt::ItemIsEnabled | Qt::ItemIsUserCheckable | Qt::ItemIsSelectable ) );
 }
 
 void TestQgsLayerTree::testLayersEditable()

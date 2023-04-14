@@ -27,7 +27,7 @@ email                : marco.hugentobler at sourcepole dot com
 
 QgsMultiLineString::QgsMultiLineString()
 {
-  mWkbType = QgsWkbTypes::MultiLineString;
+  mWkbType = Qgis::WkbType::MultiLineString;
 }
 
 QgsLineString *QgsMultiLineString::lineStringN( int index )
@@ -60,7 +60,7 @@ QgsMultiLineString *QgsMultiLineString::clone() const
 void QgsMultiLineString::clear()
 {
   QgsMultiCurve::clear();
-  mWkbType = QgsWkbTypes::MultiLineString;
+  mWkbType = Qgis::WkbType::MultiLineString;
 }
 
 bool QgsMultiLineString::fromWkt( const QString &wkt )
@@ -138,7 +138,7 @@ bool QgsMultiLineString::addGeometry( QgsAbstractGeometry *g )
 
   if ( mGeometries.empty() )
   {
-    setZMTypeFromSubGeometry( g, QgsWkbTypes::MultiLineString );
+    setZMTypeFromSubGeometry( g, Qgis::WkbType::MultiLineString );
   }
   if ( is3D() && !g->is3D() )
     g->addZValue();
@@ -148,18 +148,18 @@ bool QgsMultiLineString::addGeometry( QgsAbstractGeometry *g )
     g->addMValue();
   else if ( !isMeasure() && g->isMeasure() )
     g->dropMValue();
-  return QgsGeometryCollection::addGeometry( g ); // clazy:exclude=skipped-base-method
+  return QgsGeometryCollection::addGeometry( g ); // NOLINT(bugprone-parent-virtual-call) clazy:exclude=skipped-base-method
 }
 
 bool QgsMultiLineString::insertGeometry( QgsAbstractGeometry *g, int index )
 {
-  if ( !g || QgsWkbTypes::flatType( g->wkbType() ) != QgsWkbTypes::LineString )
+  if ( !g || QgsWkbTypes::flatType( g->wkbType() ) != Qgis::WkbType::LineString )
   {
     delete g;
     return false;
   }
 
-  return QgsMultiCurve::insertGeometry( g, index ); // clazy:exclude=skipped-base-method
+  return QgsMultiCurve::insertGeometry( g, index );
 }
 
 QgsMultiCurve *QgsMultiLineString::toCurveType() const

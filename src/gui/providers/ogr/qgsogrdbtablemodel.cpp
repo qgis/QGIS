@@ -17,6 +17,7 @@
 ///@cond PRIVATE
 
 #include "qgsapplication.h"
+#include "qgslayeritem.h"
 
 #include <QIcon>
 
