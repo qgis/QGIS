@@ -5618,18 +5618,18 @@ class TestQgsExpression: public QObject
       QgsExpressionContext context;
 
       QLocale::setDefault( QLocale::Italian );
-      QgsExpression exp1( QStringLiteral( "toint('3.2')" ) );
+      QgsExpression exp1( QStringLiteral( "to_int('3.2')" ) );
       QVERIFY( exp1.prepare( &context ) );
       QCOMPARE( exp1.evaluate( &context ), QVariant( 3 ) );
-      QgsExpression exp2( QStringLiteral( "toint('3,2')" ) );
-      QVERIFY( exp2.hasParserError() );
+      QgsExpression exp2( QStringLiteral( "to_int('3,2')" ) );
+      QVERIFY( exp2.hasEvalError() );
 
       QLocale::setDefault( QLocale::English );
-      QgsExpression exp3( QStringLiteral( "toint('3.2')" ) );
+      QgsExpression exp3( QStringLiteral( "to_int('3.2')" ) );
       QVERIFY( exp3.prepare( &context ) );
       QCOMPARE( exp3.evaluate( &context ), QVariant( 3 ) );
-      QgsExpression exp4( QStringLiteral( "toint('3,2')" ) );
-      QVERIFY( exp4.hasParserError() );
+      QgsExpression exp4( QStringLiteral( "to_int('3,2')" ) );
+      QVERIFY( exp4.hasEvalError() );
     }
 
     void testNodeSetCachedStaticValue()
