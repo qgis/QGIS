@@ -52,15 +52,15 @@ QgsDevToolsModelGroup::QgsDevToolsModelGroup( const QString &title )
 {
 }
 
-void QgsDevToolsModelGroup::addChild( std::unique_ptr<QgsDevToolsModelNode> child )
+QgsDevToolsModelNode *QgsDevToolsModelGroup::addChild( std::unique_ptr<QgsDevToolsModelNode> child )
 {
   if ( !child )
-    return;
+    return nullptr;
 
   Q_ASSERT( !child->mParent );
   child->mParent = this;
 
-  mChildren.emplace_back( std::move( child ) );
+  return mChildren.emplace_back( std::move( child ) ).get();
 }
 
 int QgsDevToolsModelGroup::indexOf( QgsDevToolsModelNode *child ) const
