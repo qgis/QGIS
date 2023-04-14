@@ -771,6 +771,7 @@ bool QgsVectorLayerEditBuffer::commitChangesChangeAttributes( bool &attributesCh
 
   if ( L->dataProvider()->capabilities() & QgsVectorDataProvider::ChangeFeatures && !mChangedGeometries.isEmpty() && !mChangedAttributeValues.isEmpty() )
   {
+    // cppcheck-suppress assertWithSideEffect
     Q_ASSERT( ( L->dataProvider()->capabilities() & ( QgsVectorDataProvider::ChangeAttributeValues | QgsVectorDataProvider::ChangeGeometries ) ) == ( QgsVectorDataProvider::ChangeAttributeValues | QgsVectorDataProvider::ChangeGeometries ) );
 
     if ( L->dataProvider()->changeFeatures( mChangedAttributeValues, mChangedGeometries ) )
