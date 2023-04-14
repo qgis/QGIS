@@ -143,6 +143,14 @@ bool QgsPointCloudExpressionNodeUnaryOperator::convert( const QgsExpressionNodeU
   return true;
 }
 
+QString QgsPointCloudExpressionNodeUnaryOperator::toPdal() const
+{
+  if ( dynamic_cast<QgsPointCloudExpressionNodeBinaryOperator *>( mOperand ) )
+    return UNARY_OPERATOR_TEXT[mOp] == QStringLiteral( "NOT" ) ? QStringLiteral( "!(%1)" ).arg( mOperand->toPdal() ) : QStringLiteral( "-(%1)" ).arg( mOperand->dump() );
+  else
+    return UNARY_OPERATOR_TEXT[mOp] == QStringLiteral( "NOT" ) ? QStringLiteral( "!%1" ).arg( mOperand->toPdal() ) : QStringLiteral( "-%1" ).arg( mOperand->dump() );
+}
+
 //
 
 double QgsPointCloudExpressionNodeBinaryOperator::evalNode( QgsPointCloudExpression *parent, int pointIndex )
@@ -513,6 +521,47 @@ bool QgsPointCloudExpressionNodeBinaryOperator::convert( const QgsExpressionNode
   return true;
 }
 
+QString QgsPointCloudExpressionNodeBinaryOperator::toPdal() const
+{
+  QgsPointCloudExpressionNodeBinaryOperator *lOp = dynamic_cast<QgsPointCloudExpressionNodeBinaryOperator *>( mOpLeft );
+  QgsPointCloudExpressionNodeBinaryOperator *rOp = dynamic_cast<QgsPointCloudExpressionNodeBinaryOperator *>( mOpRight );
+
+  QString rdump( mOpRight->toPdal() );
+
+  QString fmt;
+  if ( leftAssociative() )
+  {
+    fmt += lOp && ( lOp->precedence() < precedence() ) ? QStringLiteral( "(%1)" ) : QStringLiteral( "%1" );
+    fmt += QLatin1String( " %2 " );
+    fmt += rOp && ( rOp->precedence() <= precedence() ) ? QStringLiteral( "(%3)" ) : QStringLiteral( "%3" );
+  }
+  else
+  {
+    fmt += lOp && ( lOp->precedence() <= precedence() ) ? QStringLiteral( "(%1)" ) : QStringLiteral( "%1" );
+    fmt += QLatin1String( " %2 " );
+    fmt += rOp && ( rOp->precedence() < precedence() ) ? QStringLiteral( "(%3)" ) : QStringLiteral( "%3" );
+  }
+
+  QString opText = BINARY_OPERATOR_TEXT[mOp];
+  if ( opText == QStringLiteral( "AND" ) )
+  {
+    opText = QStringLiteral( "&&" );
+  }
+  else if ( opText == QStringLiteral( "OR" ) )
+  {
+    opText = QStringLiteral( "||" );
+  }
+  else if ( opText == QStringLiteral( "<>" ) )
+  {
+    opText = QStringLiteral( "!=" );
+  }
+  else if ( opText == QStringLiteral( "=" ) )
+  {
+    opText = QStringLiteral( "==" );
+  }
+  return fmt.arg( mOpLeft->toPdal(), opText, rdump );
+}
+
 //
 
 double QgsPointCloudExpressionNodeInOperator::evalNode( QgsPointCloudExpression *parent, int pointIndex )
@@ -608,6 +657,16 @@ bool QgsPointCloudExpressionNodeInOperator::isStatic( QgsPointCloudExpression *p
   return true;
 }
 
+QString QgsPointCloudExpressionNodeInOperator::toPdal() const
+{
+  QStringList values;
+  for ( QgsPointCloudExpressionNode *n : mList->list() )
+  {
+    values << QStringLiteral( "(%1 %2 %3)" ).arg( mNode->toPdal(), mNotIn ? "!=" : "==", n->toPdal() );
+  }
+  return QStringLiteral( "(%1)" ).arg( values.join( mNotIn ? QStringLiteral( " && " ) : QStringLiteral( " || " ) ) );
+}
+
 //
 
 double QgsPointCloudExpressionNodeLiteral::evalNode( QgsPointCloudExpression *parent, int pointIndex )
@@ -628,7 +687,6 @@ bool QgsPointCloudExpressionNodeLiteral::prepareNode( QgsPointCloudExpression *p
   Q_UNUSED( block )
   return true;
 }
-
 
 QString QgsPointCloudExpressionNodeLiteral::valueAsString() const
 {
@@ -664,6 +722,11 @@ bool QgsPointCloudExpressionNodeLiteral::isStatic( QgsPointCloudExpression *pare
   Q_UNUSED( parent )
   Q_UNUSED( block )
   return true;
+}
+
+QString QgsPointCloudExpressionNodeLiteral::toPdal() const
+{
+  return valueAsString();
 }
 
 //
@@ -741,4 +804,9 @@ bool QgsPointCloudExpressionNodeAttributeRef::isStatic( QgsPointCloudExpression 
   Q_UNUSED( parent )
   Q_UNUSED( block )
   return false;
+}
+
+QString QgsPointCloudExpressionNodeAttributeRef::toPdal() const
+{
+  return mName;
 }
