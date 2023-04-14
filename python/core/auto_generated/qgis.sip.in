@@ -23,7 +23,7 @@ int QgisEvent = QEvent::User + 1;
 class Qgis
 {
 %Docstring(signature="appended")
-The Qgis class provides global constants for use throughout the application.
+The :py:class:`Qgis` class provides global constants for use throughout the application.
 %End
 
 %TypeHeaderCode
@@ -471,7 +471,6 @@ The development version
       OutsidePolygons,
     };
 
-
     enum class LabelPredefinedPointPosition
       {
       TopLeft,
@@ -507,6 +506,26 @@ The development version
       BelowRight,
     };
 
+    enum class LabelLinePlacementFlag
+      {
+      OnLine,
+      AboveLine,
+      BelowLine,
+      MapOrientation,
+    };
+
+    typedef QFlags<Qgis::LabelLinePlacementFlag> LabelLinePlacementFlags;
+
+
+    enum class LabelPolygonPlacementFlag
+      {
+      AllowPlacementOutsideOfPolygon,
+      AllowPlacementInsideOfPolygon,
+    };
+
+    typedef QFlags<Qgis::LabelPolygonPlacementFlag> LabelPolygonPlacementFlags;
+
+
     enum class UpsideDownLabelHandling
       {
       FlipUpsideDownLabels,
@@ -521,6 +540,16 @@ The development version
       Right,
       FollowPlacement,
       Justify,
+    };
+
+    enum class FileFilterType
+      {
+      Vector,
+      Raster,
+      Mesh,
+      MeshDataset,
+      PointCloud,
+      VectorTile,
     };
 
     enum class SublayerQueryFlag
@@ -623,6 +652,13 @@ The development version
       NeverAskLoadAll,
     };
 
+    enum class FieldMetadataProperty
+    {
+      GeometryCrs,
+      GeometryWkbType,
+      CustomProperty,
+    };
+
     enum class SelectBehavior
       {
       SetSelection,
@@ -680,8 +716,8 @@ The development version
       Gpsd,
     };
 
-    enum class GpsConnectionStatus
-    {
+    enum class DeviceConnectionStatus
+      {
       Disconnected,
       Connecting,
       Connected,
@@ -1589,12 +1625,30 @@ The development version
       Unknown,
     };
 
+    enum class ScriptLanguageCapability
+    {
+      Reformat,
+      CheckSyntax,
+      ToggleComment,
+    };
+
+    typedef QFlags<Qgis::ScriptLanguageCapability> ScriptLanguageCapabilities;
+
+
     enum class LayerTreeInsertionMethod
     {
       AboveInsertionPoint,
       TopOfTree,
       OptimalInInsertionGroup,
     };
+
+    enum class LayerTreeFilterFlag
+    {
+      SkipVisibilityCheck,
+    };
+
+    typedef QFlags<Qgis::LayerTreeFilterFlag> LayerTreeFilterFlags;
+
 
     enum class ActionType
     {
@@ -1772,6 +1826,7 @@ The development version
       Degrees,
       Centimeters,
       Millimeters,
+      Inches,
       Unknown,
     };
 
@@ -1795,6 +1850,7 @@ The development version
       SquareDegrees,
       SquareCentimeters,
       SquareMillimeters,
+      SquareInches,
       Unknown,
     };
 
@@ -1870,6 +1926,21 @@ The development version
       {
       PaperUnits,
       ScreenUnits
+    };
+
+    enum class PostgresRelKind
+    {
+      NotSet,
+      Unknown,
+      OrdinaryTable,
+      Index,
+      Sequence,
+      View,
+      MaterializedView,
+      CompositeType,
+      ToastTable,
+      ForeignTable,
+      PartitionedTable,
     };
 
     static const double DEFAULT_SEARCH_RADIUS_MM;
@@ -2012,6 +2083,13 @@ QFlags<Qgis::RelationshipCapability> operator|(Qgis::RelationshipCapability f1, 
 
 QFlags<Qgis::SettingsTreeNodeOption> operator|(Qgis::SettingsTreeNodeOption f1, QFlags<Qgis::SettingsTreeNodeOption> f2);
 
+QFlags<Qgis::ScriptLanguageCapability> operator|(Qgis::ScriptLanguageCapability f1, QFlags<Qgis::ScriptLanguageCapability> f2);
+
+QFlags<Qgis::LayerTreeFilterFlag> operator|(Qgis::LayerTreeFilterFlag f1, QFlags<Qgis::LayerTreeFilterFlag> f2);
+
+QFlags<Qgis::LabelLinePlacementFlag> operator|(Qgis::LabelLinePlacementFlag f1, QFlags<Qgis::LabelLinePlacementFlag> f2);
+
+QFlags<Qgis::LabelPolygonPlacementFlag> operator|(Qgis::LabelPolygonPlacementFlag f1, QFlags<Qgis::LabelPolygonPlacementFlag> f2);
 
 
 

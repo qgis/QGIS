@@ -405,121 +405,130 @@ void QgsPluginManager::getCppPluginsMetadata()
 #endif //#ifdef TESTLIB
 
       QgsDebugMsgLevel( "Examining: " + lib, 2 );
-      QLibrary *myLib = new QLibrary( lib );
-      const bool loaded = myLib->load();
-      if ( !loaded )
+      try
       {
-        QgsDebugMsgLevel( QStringLiteral( "Failed to load: %1 (%2)" ).arg( myLib->fileName(), myLib->errorString() ), 2 );
-        delete myLib;
+        std::unique_ptr< QLibrary > myLib = std::make_unique< QLibrary >( lib );
+        const bool loaded = myLib->load();
+        if ( !loaded )
+        {
+          QgsDebugMsgLevel( QStringLiteral( "Failed to load: %1 (%2)" ).arg( myLib->fileName(), myLib->errorString() ), 2 );
+          continue;
+        }
+
+        QgsDebugMsgLevel( "Loaded library: " + myLib->fileName(), 2 );
+        //Type is only used in non-provider plugins, so data providers are not picked
+        if ( !myLib->resolve( "type" ) )
+        {
+          continue;
+        }
+
+        // resolve the metadata from plugin
+        name_t *pName = ( name_t * ) cast_to_fptr( myLib->resolve( "name" ) );
+        description_t *pDesc = ( description_t * ) cast_to_fptr( myLib->resolve( "description" ) );
+        category_t *pCat = ( category_t * ) cast_to_fptr( myLib->resolve( "category" ) );
+        version_t *pVersion = ( version_t * ) cast_to_fptr( myLib->resolve( "version" ) );
+        icon_t *pIcon = ( icon_t * ) cast_to_fptr( myLib->resolve( "icon" ) );
+        experimental_t *pExperimental = ( experimental_t * ) cast_to_fptr( myLib->resolve( "experimental" ) );
+        create_date_t *pCreateDate = ( create_date_t * ) cast_to_fptr( myLib->resolve( "create_date" ) );
+        update_date_t *pUpdateDate = ( update_date_t * ) cast_to_fptr( myLib->resolve( "update_date" ) );
+
+        // show the values (or lack of) for each function
+        if ( pName )
+        {
+          QgsDebugMsgLevel( "Plugin name: " + *pName(), 2 );
+        }
+        else
+        {
+          QgsDebugMsgLevel( QStringLiteral( "Plugin name not returned when queried" ), 2 );
+        }
+        if ( pDesc )
+        {
+          QgsDebugMsgLevel( "Plugin description: " + *pDesc(), 2 );
+        }
+        else
+        {
+          QgsDebugMsgLevel( QStringLiteral( "Plugin description not returned when queried" ), 2 );
+        }
+        if ( pCat )
+        {
+          QgsDebugMsgLevel( "Plugin category: " + *pCat(), 2 );
+        }
+        else
+        {
+          QgsDebugMsgLevel( QStringLiteral( "Plugin category not returned when queried" ), 2 );
+        }
+        if ( pVersion )
+        {
+          QgsDebugMsgLevel( "Plugin version: " + *pVersion(), 2 );
+        }
+        else
+        {
+          QgsDebugMsgLevel( QStringLiteral( "Plugin version not returned when queried" ), 2 );
+        }
+        if ( pIcon )
+        {
+          QgsDebugMsgLevel( "Plugin icon: " + *pIcon(), 2 );
+        }
+        else
+        {
+          QgsDebugMsgLevel( QStringLiteral( "Plugin icon not returned when queried" ), 2 );
+        }
+        if ( pCreateDate )
+        {
+          QgsDebugMsgLevel( "Plugin create date: " + *pCreateDate(), 2 );
+        }
+        else
+        {
+          QgsDebugMsgLevel( QStringLiteral( "Plugin create date not returned when queried" ), 2 );
+        }
+        if ( pUpdateDate )
+        {
+          QgsDebugMsgLevel( "Plugin update date: " + *pUpdateDate(), 2 );
+        }
+        else
+        {
+          QgsDebugMsgLevel( QStringLiteral( "Plugin update date not returned when queried" ), 2 );
+        }
+
+        if ( !pName || !pDesc || !pVersion )
+        {
+          QgsDebugMsgLevel( "Failed to get name, description, or type for " + myLib->fileName(), 2 );
+          continue;
+        }
+
+        // Add "cpp:" prefix in case of two: Python and C++ plugins with the same name
+        const QString baseName = "cpp:" + QFileInfo( lib ).baseName();
+
+        QMap<QString, QString> metadata;
+        metadata[QStringLiteral( "id" )] = baseName;
+        metadata[QStringLiteral( "name" )] = *pName();
+        metadata[QStringLiteral( "description" )] = *pDesc();
+        metadata[QStringLiteral( "category" )] = ( pCat ? *pCat() : tr( "Plugins" ) );
+        metadata[QStringLiteral( "version_installed" )] = *pVersion();
+        metadata[QStringLiteral( "icon" )] = ( pIcon ? *pIcon() : QString() );
+        metadata[QStringLiteral( "library" )] = myLib->fileName();
+        metadata[QStringLiteral( "pythonic" )] = QStringLiteral( "false" );
+        metadata[QStringLiteral( "installed" )] = QStringLiteral( "true" );
+        metadata[QStringLiteral( "readonly" )] = QStringLiteral( "true" );
+        metadata[QStringLiteral( "status" )] = QStringLiteral( "orphan" );
+        metadata[QStringLiteral( "experimental" )] = ( pExperimental ? *pExperimental() : QString() );
+        metadata[QStringLiteral( "create_date" )] = ( pCreateDate ? *pCreateDate() : QString() );
+        metadata[QStringLiteral( "update_date" )] = ( pUpdateDate ? *pUpdateDate() : QString() );
+        mPlugins.insert( baseName, metadata );
+      }
+      catch ( QgsSettingsException &ex )
+      {
+        QgsDebugMsg( QStringLiteral( "Unhandled settings exception loading %1: %2" ).arg( lib, ex.what() ) );
         continue;
       }
-
-      QgsDebugMsgLevel( "Loaded library: " + myLib->fileName(), 2 );
-      //Type is only used in non-provider plugins, so data providers are not picked
-      if ( !myLib->resolve( "type" ) )
+      catch ( ... )
       {
-        delete myLib;
+        QgsDebugMsg( QStringLiteral( "Unhandled exception loading %1" ).arg( lib ) );
         continue;
       }
-
-      // resolve the metadata from plugin
-      name_t *pName = ( name_t * ) cast_to_fptr( myLib->resolve( "name" ) );
-      description_t *pDesc = ( description_t * ) cast_to_fptr( myLib->resolve( "description" ) );
-      category_t *pCat = ( category_t * ) cast_to_fptr( myLib->resolve( "category" ) );
-      version_t *pVersion = ( version_t * ) cast_to_fptr( myLib->resolve( "version" ) );
-      icon_t *pIcon = ( icon_t * ) cast_to_fptr( myLib->resolve( "icon" ) );
-      experimental_t *pExperimental = ( experimental_t * ) cast_to_fptr( myLib->resolve( "experimental" ) );
-      create_date_t *pCreateDate = ( create_date_t * ) cast_to_fptr( myLib->resolve( "create_date" ) );
-      update_date_t *pUpdateDate = ( update_date_t * ) cast_to_fptr( myLib->resolve( "update_date" ) );
-
-      // show the values (or lack of) for each function
-      if ( pName )
-      {
-        QgsDebugMsgLevel( "Plugin name: " + *pName(), 2 );
-      }
-      else
-      {
-        QgsDebugMsgLevel( QStringLiteral( "Plugin name not returned when queried" ), 2 );
-      }
-      if ( pDesc )
-      {
-        QgsDebugMsgLevel( "Plugin description: " + *pDesc(), 2 );
-      }
-      else
-      {
-        QgsDebugMsgLevel( QStringLiteral( "Plugin description not returned when queried" ), 2 );
-      }
-      if ( pCat )
-      {
-        QgsDebugMsgLevel( "Plugin category: " + *pCat(), 2 );
-      }
-      else
-      {
-        QgsDebugMsgLevel( QStringLiteral( "Plugin category not returned when queried" ), 2 );
-      }
-      if ( pVersion )
-      {
-        QgsDebugMsgLevel( "Plugin version: " + *pVersion(), 2 );
-      }
-      else
-      {
-        QgsDebugMsgLevel( QStringLiteral( "Plugin version not returned when queried" ), 2 );
-      }
-      if ( pIcon )
-      {
-        QgsDebugMsgLevel( "Plugin icon: " + *pIcon(), 2 );
-      }
-      else
-      {
-        QgsDebugMsgLevel( QStringLiteral( "Plugin icon not returned when queried" ), 2 );
-      }
-      if ( pCreateDate )
-      {
-        QgsDebugMsgLevel( "Plugin create date: " + *pCreateDate(), 2 );
-      }
-      else
-      {
-        QgsDebugMsgLevel( QStringLiteral( "Plugin create date not returned when queried" ), 2 );
-      }
-      if ( pUpdateDate )
-      {
-        QgsDebugMsgLevel( "Plugin update date: " + *pUpdateDate(), 2 );
-      }
-      else
-      {
-        QgsDebugMsgLevel( QStringLiteral( "Plugin update date not returned when queried" ), 2 );
-      }
-
-      if ( !pName || !pDesc || !pVersion )
-      {
-        QgsDebugMsgLevel( "Failed to get name, description, or type for " + myLib->fileName(), 2 );
-        delete myLib;
-        continue;
-      }
-
-      // Add "cpp:" prefix in case of two: Python and C++ plugins with the same name
-      const QString baseName = "cpp:" + QFileInfo( lib ).baseName();
-
-      QMap<QString, QString> metadata;
-      metadata[QStringLiteral( "id" )] = baseName;
-      metadata[QStringLiteral( "name" )] = *pName();
-      metadata[QStringLiteral( "description" )] = *pDesc();
-      metadata[QStringLiteral( "category" )] = ( pCat ? *pCat() : tr( "Plugins" ) );
-      metadata[QStringLiteral( "version_installed" )] = *pVersion();
-      metadata[QStringLiteral( "icon" )] = ( pIcon ? *pIcon() : QString() );
-      metadata[QStringLiteral( "library" )] = myLib->fileName();
-      metadata[QStringLiteral( "pythonic" )] = QStringLiteral( "false" );
-      metadata[QStringLiteral( "installed" )] = QStringLiteral( "true" );
-      metadata[QStringLiteral( "readonly" )] = QStringLiteral( "true" );
-      metadata[QStringLiteral( "status" )] = QStringLiteral( "orphan" );
-      metadata[QStringLiteral( "experimental" )] = ( pExperimental ? *pExperimental() : QString() );
-      metadata[QStringLiteral( "create_date" )] = ( pCreateDate ? *pCreateDate() : QString() );
-      metadata[QStringLiteral( "update_date" )] = ( pUpdateDate ? *pUpdateDate() : QString() );
-      mPlugins.insert( baseName, metadata );
-
-      delete myLib;
     }
   }
+  QgsDebugMsgLevel( QStringLiteral( "Loaded cpp plugins" ), 2 );
 }
 
 

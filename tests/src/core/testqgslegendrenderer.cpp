@@ -28,6 +28,7 @@
 #include "qgslayertreeutils.h"
 #include "qgslayertreemodel.h"
 #include "qgslayertreemodellegendnode.h"
+#include "qgslayertreefiltersettings.h"
 #include "qgslinesymbollayer.h"
 #include "qgsmaplayerlegend.h"
 #include "qgspainteffect.h"
@@ -956,7 +957,8 @@ void TestQgsLegendRenderer::testFilterByMap()
   mapSettings.setOutputDpi( 96 );
   mapSettings.setLayers( QgsProject::instance()->mapLayers().values() );
 
-  legendModel.setLegendFilterByMap( &mapSettings );
+  QgsLayerTreeFilterSettings filterSettings( mapSettings );
+  legendModel.setFilterSettings( &filterSettings );
 
   QgsLegendSettings settings;
   _setStandardTestFont( settings, QStringLiteral( "Bold" ) );
@@ -1022,7 +1024,8 @@ void TestQgsLegendRenderer::testFilterByMapSameSymbol()
   mapSettings.setOutputDpi( 96 );
   mapSettings.setLayers( QList<QgsMapLayer *>() << vl4 );
 
-  legendModel.setLegendFilterByMap( &mapSettings );
+  QgsLayerTreeFilterSettings filterSettings( mapSettings );
+  legendModel.setFilterSettings( &filterSettings );
 
   QgsLegendSettings settings;
   _setStandardTestFont( settings, QStringLiteral( "Bold" ) );
@@ -1267,17 +1270,19 @@ void TestQgsLegendRenderer::testFilterByPolygon()
   mapSettings.setOutputDpi( 96 );
   mapSettings.setLayers( QgsProject::instance()->mapLayers().values() );
 
-  // select only within a polygon
-  const QgsGeometry geom( QgsGeometry::fromWkt( QStringLiteral( "POLYGON((0 0,2 0,2 2,0 2,0 0))" ) ) );
-  legendModel.setLegendFilter( &mapSettings, /*useExtent*/ false, geom );
+  // select only within a map settings extent
+  QgsLayerTreeFilterSettings filterSettings( mapSettings );
+  legendModel.setFilterSettings( &filterSettings );
 
   QgsLegendSettings settings;
   _setStandardTestFont( settings, QStringLiteral( "Bold" ) );
   QImage res = _renderLegend( &legendModel, settings );
   QVERIFY( _verifyImage( res, testName ) );
 
-  // again with useExtent to true
-  legendModel.setLegendFilter( &mapSettings, /*useExtent*/ true, geom );
+  // now with filter polygon
+  const QgsGeometry geom( QgsGeometry::fromWkt( QStringLiteral( "POLYGON((0 0,2 0,2 2,0 2,0 0))" ) ) );
+  filterSettings.setFilterPolygon( geom );
+  legendModel.setFilterSettings( &filterSettings );
 
   const QString testName2 = testName + "2";
   _setStandardTestFont( settings, QStringLiteral( "Bold" ) );
@@ -1303,17 +1308,18 @@ void TestQgsLegendRenderer::testFilterByExpression()
   QVERIFY( layer );
   QgsLayerTreeUtils::setLegendFilterByExpression( *layer, QStringLiteral( "test_attr=1" ) );
 
-  legendModel.setLegendFilterByMap( &mapSettings );
+  QgsLayerTreeFilterSettings filterSettings( mapSettings );
+  filterSettings.setLayerFilterExpressionsFromLayerTree( mRoot );
+  legendModel.setFilterSettings( &filterSettings );
 
   QgsLegendSettings settings;
   _setStandardTestFont( settings, QStringLiteral( "Bold" ) );
   QImage res = _renderLegend( &legendModel, settings );
   QVERIFY( _verifyImage( res, testName ) );
 
-
   // test again with setLegendFilter and only expressions
-  legendModel.setLegendFilterByMap( nullptr );
-  legendModel.setLegendFilter( &mapSettings, /*useExtent*/ false );
+  filterSettings.setFlags( Qgis::LayerTreeFilterFlag::SkipVisibilityCheck );
+  legendModel.setFilterSettings( &filterSettings );
 
   const QString testName2 = testName + "2";
   _setStandardTestFont( settings, QStringLiteral( "Bold" ) );

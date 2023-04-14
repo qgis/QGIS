@@ -69,6 +69,7 @@
 #include "qgscombinedstylemodel.h"
 #include "qgsprojectgpssettings.h"
 #include "qgsthreadingutils.h"
+#include "qgssensormanager.h"
 
 #include <algorithm>
 #include <QApplication>
@@ -375,6 +376,7 @@ QgsProject::QgsProject( QObject *parent, Qgis::ProjectCapabilities capabilities 
   , mLayoutManager( new QgsLayoutManager( this ) )
   , m3DViewsManager( new QgsMapViewsManager( this ) )
   , mBookmarkManager( QgsBookmarkManager::createProjectBasedManager( this ) )
+  , mSensorManager( new QgsSensorManager( this ) )
   , mViewSettings( new QgsProjectViewSettings( this ) )
   , mStyleSettings( new QgsProjectStyleSettings( this ) )
   , mTimeSettings( new QgsProjectTimeSettings( this ) )
@@ -1057,6 +1059,7 @@ void QgsProject::clear()
   mLayoutManager->clear();
   m3DViewsManager->clear();
   mBookmarkManager->clear();
+  mSensorManager->clear();
   mViewSettings->reset();
   mTimeSettings->reset();
   mElevationProperties->reset();
@@ -2078,6 +2081,9 @@ bool QgsProject::readProjectFile( const QString &filename, Qgis::ProjectReadFlag
   profile.switchTask( tr( "Loading bookmarks" ) );
   mBookmarkManager->readXml( doc->documentElement(), *doc );
 
+  profile.switchTask( tr( "Loading sensors" ) );
+  mSensorManager->readXml( doc->documentElement(), *doc );
+
   // reassign change dependencies now that all layers are loaded
   QMap<QString, QgsMapLayer *> existingMaps = mapLayers();
   for ( QMap<QString, QgsMapLayer *>::iterator it = existingMaps.begin(); it != existingMaps.end(); ++it )
@@ -2374,9 +2380,14 @@ QgsExpressionContextScope *QgsProject::createExpressionContextScope() const
   if ( mProjectScope )
   {
     std::unique_ptr< QgsExpressionContextScope > projectScope = std::make_unique< QgsExpressionContextScope >( *mProjectScope );
-    // we can't cache these
+
+    // we can't cache these variables
     projectScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "project_distance_units" ), QgsUnitTypes::toString( distanceUnits() ), true, true ) );
     projectScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "project_area_units" ), QgsUnitTypes::toString( areaUnits() ), true, true ) );
+
+    // neither this function
+    projectScope->addFunction( QStringLiteral( "sensor_data" ), new GetSensorData( sensorManager()->sensorsData() ) );
+
     return projectScope.release();
   }
 
@@ -2939,6 +2950,11 @@ bool QgsProject::writeProjectFile( const QString &filename )
   {
     const QDomElement bookmarkElem = mBookmarkManager->writeXml( *doc );
     qgisNode.appendChild( bookmarkElem );
+  }
+
+  {
+    const QDomElement sensorElem = mSensorManager->writeXml( *doc );
+    qgisNode.appendChild( sensorElem );
   }
 
   {
@@ -3745,6 +3761,20 @@ QgsBookmarkManager *QgsProject::bookmarkManager()
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
   return mBookmarkManager;
+}
+
+const QgsSensorManager *QgsProject::sensorManager() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS_NON_FATAL
+
+  return mSensorManager;
+}
+
+QgsSensorManager *QgsProject::sensorManager()
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return mSensorManager;
 }
 
 const QgsProjectViewSettings *QgsProject::viewSettings() const
@@ -4799,5 +4829,36 @@ QVariant GetNamedProjectColor::func( const QVariantList &values, const QgsExpres
 QgsScopedExpressionFunction *GetNamedProjectColor::clone() const
 {
   return new GetNamedProjectColor( mColors );
+}
+
+// ----------------
+
+GetSensorData::GetSensorData( const QMap<QString, QgsAbstractSensor::SensorData> &sensorData )
+  : QgsScopedExpressionFunction( QStringLiteral( "sensor_data" ),
+                                 QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "name" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "expiration" ), true, 0 ),
+                                 QStringLiteral( "Sensors" ) )
+  , mSensorData( sensorData )
+{
+}
+
+QVariant GetSensorData::func( const QVariantList &values, const QgsExpressionContext *, QgsExpression *, const QgsExpressionNodeFunction * )
+{
+  const QString sensorName = values.at( 0 ).toString();
+  const int expiration = values.at( 1 ).toInt();
+  const qint64 timestamp = QDateTime::currentMSecsSinceEpoch();
+  if ( mSensorData.contains( sensorName ) )
+  {
+    if ( expiration <= 0 || ( timestamp - mSensorData[sensorName].lastTimestamp.toMSecsSinceEpoch() ) < expiration )
+    {
+      return mSensorData[sensorName].lastValue;
+    }
+  }
+
+  return QVariant();
+}
+
+QgsScopedExpressionFunction *GetSensorData::clone() const
+{
+  return new GetSensorData( mSensorData );
 }
 ///@endcond

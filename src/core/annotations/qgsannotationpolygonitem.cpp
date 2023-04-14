@@ -18,7 +18,9 @@
 #include "qgsannotationpolygonitem.h"
 #include "qgssymbol.h"
 #include "qgssymbollayerutils.h"
-#include "qgssurface.h"
+#include "qgscurvepolygon.h"
+#include "qgscurve.h"
+#include "qgspolygon.h"
 #include "qgsfillsymbol.h"
 #include "qgsannotationitemnode.h"
 #include "qgsannotationitemeditoperation.h"
@@ -228,6 +230,11 @@ QgsAnnotationPolygonItem *QgsAnnotationPolygonItem::clone()
 QgsRectangle QgsAnnotationPolygonItem::boundingBox() const
 {
   return mPolygon->boundingBox();
+}
+
+void QgsAnnotationPolygonItem::setGeometry( QgsCurvePolygon *geometry )
+{
+  mPolygon.reset( geometry );
 }
 
 const QgsFillSymbol *QgsAnnotationPolygonItem::symbol() const

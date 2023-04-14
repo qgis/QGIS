@@ -19,6 +19,7 @@
 #include "qgsprocessingutils.h"
 #include "qgsunittypes.h"
 #include "qgsproviderregistry.h"
+#include "qgsprocessing.h"
 
 QgsProcessingContext::QgsProcessingContext()
   : mPreferredVectorFormat( QgsProcessingUtils::defaultVectorExtension() )
@@ -144,6 +145,16 @@ QgsProcessingContext::LogLevel QgsProcessingContext::logLevel() const
 void QgsProcessingContext::setLogLevel( LogLevel level )
 {
   mLogLevel = level;
+}
+
+QString QgsProcessingContext::temporaryFolder() const
+{
+  return mTemporaryFolderOverride;
+}
+
+void QgsProcessingContext::setTemporaryFolder( const QString &folder )
+{
+  mTemporaryFolderOverride = folder;
 }
 
 QVariantMap QgsProcessingContext::exportToMap() const

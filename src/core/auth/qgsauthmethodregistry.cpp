@@ -217,6 +217,8 @@ void QgsAuthMethodRegistry::clean()
     delete it->second;
     ++it;
   }
+
+  mAuthMethods.clear();
 }
 
 

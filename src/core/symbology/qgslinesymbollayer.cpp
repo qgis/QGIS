@@ -2353,7 +2353,6 @@ void QgsTemplatedLineSymbolLayerBase::renderPolylineCentral( const QPolygonF &po
       last = *it;
       qreal last_at = 0, next_at = 0;
       QPointF next;
-      int segment = 0;
       for ( ++it; it != points.constEnd(); ++it )
       {
         next = *it;
@@ -2363,7 +2362,6 @@ void QgsTemplatedLineSymbolLayerBase::renderPolylineCentral( const QPolygonF &po
           break; // we have reached the center
         last = *it;
         last_at = next_at;
-        segment++;
       }
 
       // find out the central point on segment

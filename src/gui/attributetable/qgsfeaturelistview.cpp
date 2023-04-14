@@ -174,13 +174,25 @@ void QgsFeatureListView::mousePressEvent( QMouseEvent *event )
   }
 }
 
-void QgsFeatureListView::editSelectionChanged( const QItemSelection &deselected, const QItemSelection &selected )
+void QgsFeatureListView::editSelectionChanged( const QItemSelection &selected, const QItemSelection &deselected )
 {
   if ( isVisible() && updatesEnabled() )
   {
     const QItemSelection localDeselected = mModel->mapSelectionFromMaster( deselected );
     const QItemSelection localSelected = mModel->mapSelectionFromMaster( selected );
     viewport()->update( visualRegionForSelection( localDeselected ) | visualRegionForSelection( localSelected ) );
+  }
+
+  mLastEditSelectionFid = QgsFeatureId();
+  if ( !selected.isEmpty() )
+  {
+    const QModelIndexList indexList = selected.indexes();
+    if ( !indexList.isEmpty() )
+    {
+      QgsFeature selectedFeature;
+      mModel->featureByIndex( mModel->mapFromMaster( indexList.first() ), selectedFeature );
+      mLastEditSelectionFid = selectedFeature.id();
+    }
   }
 
   const QItemSelection currentSelection = mCurrentEditSelectionModel->selection();
@@ -501,25 +513,35 @@ void QgsFeatureListView::updateEditSelection( bool inSelection )
 
     int rowToSelect = -1;
 
+    QgsFeatureIds selectedFids;
+
     if ( inSelection )
     {
-      const QgsFeatureIds selectedFids = layerCache()->layer()->selectedFeatureIds();
-      const int rowCount = mModel->rowCount();
+      selectedFids = layerCache()->layer()->selectedFeatureIds();
+    }
 
-      for ( int i = 0; i < rowCount; i++ )
+    //if the selectedFids are empty because of no selection or selection reset, the index should persist
+    if ( selectedFids.isEmpty() )
+    {
+      //if no index can be evaluated from the last position the index should go to 0
+      selectedFids = QgsFeatureIds() << mLastEditSelectionFid;
+    }
+
+    const int rowCount = mModel->rowCount();
+    for ( int i = 0; i < rowCount; i++ )
+    {
+      if ( selectedFids.contains( mModel->idxToFid( mModel->index( i, 0 ) ) ) )
       {
-        if ( selectedFids.contains( mModel->idxToFid( mModel->index( i, 0 ) ) ) )
-        {
-          rowToSelect = i;
-          break;
-        }
-
-        if ( rowToSelect == -1 && !validEditSelectionAvailable )
-          rowToSelect = 0;
+        rowToSelect = i;
+        break;
       }
     }
-    else
+
+    if ( rowToSelect == -1 && !validEditSelectionAvailable )
+    {
+      // if no index could have been evaluated but no validEditSelectionAvailable, then jump to zero
       rowToSelect = 0;
+    }
 
     if ( rowToSelect != -1 )
     {

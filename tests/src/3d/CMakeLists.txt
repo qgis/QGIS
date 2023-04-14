@@ -21,15 +21,16 @@ include_directories(SYSTEM
 add_subdirectory(sandbox)
 
 set(TESTS
-  testqgs3dutils.cpp
+  testqgs3dmaterial.cpp
   testqgs3drendering.cpp
+  testqgs3dsymbolregistry.cpp
+  testqgs3dutils.cpp
+  testqgsaabb.cpp
   testqgslayout3dmap.cpp
   testqgsmaterialregistry.cpp
-  testqgs3dmaterial.cpp
-  testqgstessellator.cpp
-  testqgs3dsymbolregistry.cpp
   testqgspointcloud3drendering.cpp
-  testqgsaabb.cpp
+  testqgstessellator.cpp
+  testqgstilingscheme.cpp
 )
 
 

@@ -15,14 +15,35 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <layout class="QGridLayout" name="gridLayout" rowstretch="0,0,0,0,0,0,0,0,0,0,0">
-     <item row="2" column="0" colspan="2">
-      <widget class="QgsExtentGroupBox" name="mExtentGroupBox">
+    <layout class="QGridLayout" name="gridLayout" rowstretch="0,0,0,0,0,0">
+     <item row="3" column="0">
+      <widget class="QLabel" name="lblRotation">
+       <property name="text">
+        <string>Rotation</string>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="0">
+      <widget class="QLabel" name="lblCRS">
+       <property name="text">
+        <string>CRS</string>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="1">
+      <widget class="QComboBox" name="mSaveLocation"/>
+     </item>
+     <item row="4" column="1">
+      <widget class="QgsProjectionSelectionWidget" name="mCrsSelector" native="true">
        <property name="focusPolicy">
         <enum>Qt::StrongFocus</enum>
        </property>
-       <property name="title">
-        <string>Extent</string>
+      </widget>
+     </item>
+     <item row="5" column="0">
+      <widget class="QLabel" name="lblSaveLocation">
+       <property name="text">
+        <string>Saved in</string>
        </property>
       </widget>
      </item>
@@ -33,15 +54,15 @@
        </property>
       </widget>
      </item>
-     <item row="0" column="1">
-      <widget class="QLineEdit" name="mName"/>
-     </item>
      <item row="1" column="0">
       <widget class="QLabel" name="lblGroup">
        <property name="text">
         <string>Group</string>
        </property>
       </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QLineEdit" name="mName"/>
      </item>
      <item row="1" column="1">
       <widget class="QComboBox" name="mGroup">
@@ -50,29 +71,34 @@
        </property>
       </widget>
      </item>
-     <item row="3" column="0">
-      <widget class="QLabel" name="lblCRS">
-       <property name="text">
-        <string>CRS</string>
+     <item row="2" column="0" colspan="2">
+      <widget class="QgsExtentGroupBox" name="mExtentGroupBox" native="true">
+       <property name="focusPolicy">
+        <enum>Qt::StrongFocus</enum>
+       </property>
+       <property name="title" stdset="0">
+        <string>Extent</string>
        </property>
       </widget>
      </item>
      <item row="3" column="1">
-      <widget class="QgsProjectionSelectionWidget" name="mCrsSelector" native="true">
-       <property name="focusPolicy">
-        <enum>Qt::StrongFocus</enum>
+      <widget class="QgsDoubleSpinBox" name="mRotation">
+       <property name="suffix">
+        <string> °</string>
+       </property>
+       <property name="decimals">
+        <number>1</number>
+       </property>
+       <property name="minimum">
+        <double>-360.000000000000000</double>
+       </property>
+       <property name="maximum">
+        <double>360.000000000000000</double>
+       </property>
+       <property name="clearValue" stdset="0">
+        <double>0.000000000000000</double>
        </property>
       </widget>
-     </item>
-     <item row="4" column="0">
-      <widget class="QLabel" name="lblSaveLocation">
-       <property name="text">
-        <string>Saved in</string>
-       </property>
-      </widget>
-     </item>
-     <item row="4" column="1">
-      <widget class="QComboBox" name="mSaveLocation"/>
      </item>
     </layout>
    </item>
@@ -103,16 +129,21 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsExtentGroupBox</class>
-   <extends>QgsCollapsibleGroupBox</extends>
-   <header>qgsextentgroupbox.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>QgsProjectionSelectionWidget</class>
    <extends>QWidget</extends>
    <header>qgsprojectionselectionwidget.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsExtentGroupBox</class>
+   <extends>QWidget</extends>
+   <header>qgsextentgroupbox.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsDoubleSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
+   <header>qgsdoublespinbox.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>

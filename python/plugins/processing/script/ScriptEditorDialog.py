@@ -30,8 +30,11 @@ import warnings
 from qgis.PyQt import uic, sip
 from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtGui import QCursor
-from qgis.PyQt.QtWidgets import (QMessageBox,
-                                 QFileDialog)
+from qgis.PyQt.QtWidgets import (
+    QMessageBox,
+    QFileDialog,
+    QVBoxLayout
+)
 
 from qgis.gui import QgsGui, QgsErrorDialog
 from qgis.core import (QgsApplication,
@@ -44,6 +47,8 @@ from qgis.processing import alg as algfactory
 
 from processing.gui.AlgorithmDialog import AlgorithmDialog
 from processing.script import ScriptUtils
+
+from .ScriptEdit import ScriptEdit
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
 
@@ -59,8 +64,16 @@ class ScriptEditorDialog(BASE, WIDGET):
     def __init__(self, filePath=None, parent=None):
         super(ScriptEditorDialog, self).__init__(parent)
         self.setupUi(self)
+        self.setAttribute(Qt.WA_DeleteOnClose)
 
         QgsGui.instance().enableAutoGeometryRestore(self)
+
+        vl = QVBoxLayout()
+        vl.setContentsMargins(0, 0, 0, 0)
+        self.editor_container.setLayout(vl)
+
+        self.editor = ScriptEdit()
+        vl.addWidget(self.editor)
 
         self.searchWidget.setVisible(False)
 
@@ -109,7 +122,7 @@ class ScriptEditorDialog(BASE, WIDGET):
         self.actionIncreaseFontSize.triggered.connect(self.editor.zoomIn)
         self.actionDecreaseFontSize.triggered.connect(self.editor.zoomOut)
         self.actionToggleComment.triggered.connect(self.editor.toggleComment)
-        self.editor.textChanged.connect(lambda: self.setHasChanged(True))
+        self.editor.textChanged.connect(self._on_text_modified)
 
         self.leFindText.returnPressed.connect(self.find)
         self.btnFind.clicked.connect(self.find)
@@ -215,6 +228,9 @@ class ScriptEditorDialog(BASE, WIDGET):
             self.setHasChanged(False)
 
         QgsApplication.processingRegistry().providerById("script").refreshAlgorithms()
+
+    def _on_text_modified(self):
+        self.setHasChanged(True)
 
     def setHasChanged(self, hasChanged):
         self.hasChanged = hasChanged

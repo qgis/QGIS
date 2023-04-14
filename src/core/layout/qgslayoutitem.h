@@ -1012,6 +1012,13 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
      */
     virtual QgsGeometry clipPath() const;
 
+    /**
+     * Returns TRUE if the item is currently refreshing content in the background.
+     *
+     * \since QGIS 3.32
+     */
+    virtual bool isRefreshing() const;
+
   public slots:
 
     /**
@@ -1135,6 +1142,13 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
      * \see framePath()
      */
     virtual void drawBackground( QgsRenderContext &context );
+
+    /**
+     * Draws a "refreshing" overlay icon on the item.
+     *
+     * \since QGIS 3.32
+     */
+    void drawRefreshingOverlay( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle );
 
     /**
      * Sets a fixed \a size for the layout item, which prevents it from being freely

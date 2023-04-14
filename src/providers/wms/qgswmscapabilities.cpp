@@ -2394,7 +2394,7 @@ bool QgsWmsCapabilities::detectTileLayerBoundingBox( QgsWmtsTileLayer &tileLayer
     return false;
 
   // take first supported tile matrix set
-  const QgsWmtsTileMatrixSetLink &setLink = tileLayer.setLinks.constBegin().value();
+  const QgsWmtsTileMatrixSetLink &setLink = *tileLayer.setLinks.constBegin();
 
   QHash<QString, QgsWmtsTileMatrixSet>::const_iterator tmsIt = mTileMatrixSets.constFind( setLink.tileMatrixSet );
   if ( tmsIt == mTileMatrixSets.constEnd() )

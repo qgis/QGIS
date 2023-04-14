@@ -93,7 +93,7 @@ Returns the number of fetched rows.
 
         long long rowCount( ) const;
 %Docstring
-Returns the number of rows returned by a SELECT query or Qgis.FeatureCountState.UnknownCount if unknown.
+Returns the number of rows returned by a SELECT query or :py:class:`Qgis`.FeatureCountState.UnknownCount if unknown.
 
 .. seealso:: :py:func:`fetchedRowCount`
 %End

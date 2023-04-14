@@ -29,7 +29,7 @@ from grassprovider.Grass7Utils import Grass7Utils
 
 def processCommand(alg, parameters, context, feedback):
     # Temporary remove outputs and add a virtual output parameter
-    outputName = 'output_{}'.format(os.path.basename(getTempFilename()))
+    outputName = 'output_{}'.format(os.path.basename(getTempFilename(context=context)))
     param = QgsProcessingParameterString('output', 'virtual output',
                                          outputName, False, False)
     alg.addParameter(param)

@@ -51,7 +51,7 @@ QgsGrassTools::QgsGrassTools( QgisInterface *iface, QWidget *parent, const char 
   : QgsDockWidget( parent, f )
 {
   Q_UNUSED( name )
-  QgsDebugMsg( "QgsGrassTools()" );
+  QgsDebugMsgLevel( "QgsGrassTools()", 3 );
   setupUi( this );
   connect( mFilterInput, &QLineEdit::textChanged, this, &QgsGrassTools::mFilterInput_textChanged );
   connect( mDebugButton, &QPushButton::clicked, this, &QgsGrassTools::mDebugButton_clicked );
@@ -134,14 +134,14 @@ void QgsGrassTools::showTabs()
   resetTitle();
 
   // Build modules tree if empty
-  QgsDebugMsg( QString( "mTreeModel->rowCount() = %1" ).arg( mTreeModel->rowCount() ) );
+  QgsDebugMsgLevel( QString( "mTreeModel->rowCount() = %1" ).arg( mTreeModel->rowCount() ), 3 );
   if ( mTreeModel->rowCount() == 0 )
   {
     // Load the modules lists
     QApplication::setOverrideCursor( Qt::WaitCursor );
     loadConfig();
     QApplication::restoreOverrideCursor();
-    QgsDebugMsg( QString( "mTreeModel->rowCount() = %1" ).arg( mTreeModel->rowCount() ) );
+    QgsDebugMsgLevel( QString( "mTreeModel->rowCount() = %1" ).arg( mTreeModel->rowCount() ), 3 );
   }
 
   // we always show tabs but disabled if not active
@@ -178,8 +178,8 @@ void QgsGrassTools::runModule( QString name, bool direct )
     QByteArray origPythonPath = qgetenv( "PYTHONPATH" );
     QString path = QString( origPath ) + QgsGrass::pathSeparator() + QgsGrass::grassModulesPaths().join( QgsGrass::pathSeparator() );
     QString pythonPath = QString( origPythonPath ) + QgsGrass::pathSeparator() + QgsGrass::getPythonPath();
-    QgsDebugMsg( "path = " + path );
-    QgsDebugMsg( "pythonPath = " + pythonPath );
+    QgsDebugMsgLevel( "path = " + path, 3 );
+    QgsDebugMsgLevel( "pythonPath = " + pythonPath, 3 );
     qputenv( "PATH", path.toLocal8Bit() );
     qputenv( "PYTHONPATH", pythonPath.toLocal8Bit() );
     // QProcess does not support environment for startDetached() -> set/reset to orig
@@ -263,7 +263,7 @@ bool QgsGrassTools::loadConfig()
 
 bool QgsGrassTools::loadConfig( QString filePath, QStandardItemModel *treeModel, QStandardItemModel *modulesListModel, bool direct )
 {
-  QgsDebugMsg( filePath );
+  QgsDebugMsgLevel( filePath, 3 );
   treeModel->clear();
   modulesListModel->clear();
 
@@ -349,7 +349,7 @@ void QgsGrassTools::addModules( QStandardItem *parent, QDomElement &element, QSt
     QDomElement e = n.toElement();
     if ( !e.isNull() )
     {
-// QgsDebugMsg(QString("tag = %1").arg(e.tagName()));
+// QgsDebugMsgLevel(QString("tag = %1").arg(e.tagName()), 3);
 
       if ( e.tagName() != QLatin1String( "section" ) && e.tagName() != QLatin1String( "grass" ) )
       {
@@ -379,7 +379,7 @@ void QgsGrassTools::addModules( QStandardItem *parent, QDomElement &element, QSt
       if ( e.tagName() == QLatin1String( "section" ) )
       {
         QString label = QApplication::translate( "grasslabel", e.attribute( QStringLiteral( "label" ) ).toUtf8() );
-        QgsDebugMsg( QString( "label = %1" ).arg( label ) );
+        QgsDebugMsgLevel( QString( "label = %1" ).arg( label ), 3 );
         QStandardItem *item = new QStandardItem( label );
         item->setData( label, Qt::UserRole + Label ); // original label, for debug
         item->setData( label, Qt::UserRole + Search ); // for filtering later
@@ -391,7 +391,7 @@ void QgsGrassTools::addModules( QStandardItem *parent, QDomElement &element, QSt
       {
         // GRASS module
         QString name = e.attribute( QStringLiteral( "name" ) );
-        QgsDebugMsgLevel( QString( "name = %1" ).arg( name ), 1 );
+        QgsDebugMsgLevel( QString( "name = %1" ).arg( name ), 3 );
 
         //QString path = QgsApplication::pkgDataPath() + "/grass/modules/" + name;
         QString path = QgsGrass::modulesConfigDirPath() + "/" + name;
@@ -552,7 +552,7 @@ void QgsGrassTools::mFilterInput_textChanged( QString text )
 
 void QgsGrassTools::itemClicked( const QModelIndex &index )
 {
-  QgsDebugMsg( "Entered" );
+  QgsDebugMsgLevel( "Entered", 3 );
   if ( index.column() == 0 )
   {
     //
@@ -688,7 +688,7 @@ void QgsGrassToolsTreeFilterProxyModel::setSourceModel( QAbstractItemModel *sour
 
 void QgsGrassToolsTreeFilterProxyModel::setFilter( const QString &filter )
 {
-  QgsDebugMsg( QString( "filter = %1" ).arg( filter ) );
+  QgsDebugMsgLevel( QString( "filter = %1" ).arg( filter ), 2 );
   if ( mFilter == filter )
   {
     return;

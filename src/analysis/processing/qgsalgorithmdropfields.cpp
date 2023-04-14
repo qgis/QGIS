@@ -108,7 +108,7 @@ QgsFields QgsDropTableFieldsAlgorithm::outputFields( const QgsFields &inputField
 
 bool QgsDropTableFieldsAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  mFieldsToDelete = parameterAsFields( parameters, QStringLiteral( "COLUMN" ), context );
+  mFieldsToDelete = parameterAsStrings( parameters, QStringLiteral( "COLUMN" ), context );
 
   if ( feedback )
   {
@@ -241,7 +241,7 @@ QgsFields QgsRetainTableFieldsAlgorithm::outputFields( const QgsFields &inputFie
 
 bool QgsRetainTableFieldsAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  mFieldsToRetain = parameterAsFields( parameters, QStringLiteral( "FIELDS" ), context );
+  mFieldsToRetain = parameterAsStrings( parameters, QStringLiteral( "FIELDS" ), context );
 
   if ( feedback )
   {

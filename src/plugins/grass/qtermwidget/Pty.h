@@ -70,13 +70,13 @@ Q_OBJECT
      * To start the terminal process, call the run() method with the
      * name of the program to start and appropriate arguments.
      */
-    explicit Pty(QObject* parent = 0);
+    explicit Pty(QObject* parent = nullptr);
 
     /**
      * Construct a process using an open pty master.
      * See KPtyProcess::KPtyProcess()
      */
-    explicit Pty(int ptyMasterFd, QObject* parent = 0);
+    explicit Pty(int ptyMasterFd, QObject* parent = nullptr);
 
     ~Pty() override;
 
@@ -86,18 +86,18 @@ Q_OBJECT
      * Returns 0 if the process was started successfully or non-zero
      * otherwise.
      *
-     * \param program Path to the program to start
-     * \param arguments Arguments to pass to the program being started
-     * \param environment A list of key=value pairs which will be added
+     * @param program Path to the program to start
+     * @param arguments Arguments to pass to the program being started
+     * @param environment A list of key=value pairs which will be added
      * to the environment for the new process.  At the very least this
      * should include an assignment for the TERM environment variable.
-     * \param winid Specifies the value of the WINDOWID environment variable
+     * @param winid Specifies the value of the WINDOWID environment variable
      * in the process's environment.
-     * \param addToUtmp Specifies whether a utmp entry should be created for
+     * @param addToUtmp Specifies whether a utmp entry should be created for
      * the pty used.  See K3Process::setUsePty()
-     * \param dbusService Specifies the value of the KONSOLE_DBUS_SERVICE
+     * @param dbusService Specifies the value of the KONSOLE_DBUS_SERVICE
      * environment variable in the process's environment.
-     * \param dbusSession Specifies the value of the KONSOLE_DBUS_SESSION
+     * @param dbusSession Specifies the value of the KONSOLE_DBUS_SESSION
      * environment variable in the process's environment.
      */
     int start( const QString& program,
@@ -163,7 +163,7 @@ Q_OBJECT
      *
      * See K3Process::suspend() and K3Process::resume()
      *
-     * \param lock If true, processing of output is suspended,
+     * @param lock If true, processing of output is suspended,
      * otherwise processing is resumed.
      */
     void lockPty(bool lock);
@@ -172,8 +172,8 @@ Q_OBJECT
      * Sends data to the process currently controlling the
      * teletype ( whose id is returned by foregroundProcessGroup() )
      *
-     * \param buffer Pointer to the data to send.
-     * \param length Length of @p buffer.
+     * @param buffer Pointer to the data to send.
+     * @param length Length of @p buffer.
      */
     void sendData(const char* buffer, int length);
 
@@ -183,8 +183,8 @@ Q_OBJECT
      * Emitted when a new block of data is received from
      * the teletype.
      *
-     * \param buffer Pointer to the data received.
-     * \param length Length of @p buffer
+     * @param buffer Pointer to the data received.
+     * @param length Length of @p buffer
      */
     void receivedData(const char* buffer, int length);
 

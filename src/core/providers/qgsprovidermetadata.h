@@ -32,9 +32,7 @@
 #include "qgis_core.h"
 #include <functional>
 #include "qgsabstractproviderconnection.h"
-#include "qgsabstractlayermetadataprovider.h"
 #include "qgsfields.h"
-#include "qgsexception.h"
 
 class QgsDataItem;
 class QgsDataItemProvider;
@@ -343,26 +341,13 @@ class CORE_EXPORT QgsProviderMetadata : public QObject
     virtual void cleanupProvider();
 
     /**
-     * Type of file filters
-     * \since QGIS 3.10
-     */
-    enum class FilterType
-    {
-      FilterVector = 1, //!< Vector layers
-      FilterRaster, //!< Raster layers
-      FilterMesh, //!< Mesh layers
-      FilterMeshDataset, //!< Mesh datasets
-      FilterPointCloud, //!< Point clouds (since QGIS 3.18)
-    };
-
-    /**
      * Builds the list of file filter strings (supported formats)
      *
      * Suitable for use in a QFileDialog::getOpenFileNames() call.
      *
      * \since QGIS 3.10
      */
-    virtual QString filters( FilterType type );
+    virtual QString filters( Qgis::FileFilterType type );
 
     /**
      * Builds the list of available mesh drivers metadata

@@ -24,6 +24,7 @@
 #include "qgsprocessingalgorithm.h"
 #include "qgsapplication.h"
 #include "qgsdistancearea.h"
+#include "qgsspatialindex.h"
 
 ///@cond PRIVATE
 
@@ -60,8 +61,8 @@ class QgsLineDensityAlgorithm : public QgsProcessingAlgorithm
   private:
     std::unique_ptr< QgsFeatureSource > mSource;
     QString mWeightField;
-    double mSearchRadius;
-    double mPixelSize;
+    double mSearchRadius = 0;
+    double mPixelSize = 0;
     QgsGeometry mSearchGeometry;
     QgsRectangle mExtent;
     QgsCoordinateReferenceSystem mCrs;

@@ -1958,7 +1958,7 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
                                         'SOURCE_CRS': 'EPSG:3111',
                                         'OUTPUT': outdir + '/check.jpg'}, context, feedback),
                 ['gdalwarp',
-                 '-s_srs EPSG:3111 -r near -of JPEG ' +
+                 '-overwrite -s_srs EPSG:3111 -r near -of JPEG ' +
                  source + ' ' +
                  outdir + '/check.jpg'])
             # with None NODATA value
@@ -1968,7 +1968,7 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
                                         'SOURCE_CRS': 'EPSG:3111',
                                         'OUTPUT': outdir + '/check.jpg'}, context, feedback),
                 ['gdalwarp',
-                 '-s_srs EPSG:3111 -r near -of JPEG ' +
+                 '-overwrite -s_srs EPSG:3111 -r near -of JPEG ' +
                  source + ' ' +
                  outdir + '/check.jpg'])
             # with NODATA value
@@ -1978,7 +1978,7 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
                                         'SOURCE_CRS': 'EPSG:3111',
                                         'OUTPUT': outdir + '/check.jpg'}, context, feedback),
                 ['gdalwarp',
-                 '-s_srs EPSG:3111 -dstnodata 9999.0 -r near -of JPEG ' +
+                 '-overwrite -s_srs EPSG:3111 -dstnodata 9999.0 -r near -of JPEG ' +
                  source + ' ' +
                  outdir + '/check.jpg'])
             # with "0" NODATA value
@@ -1988,7 +1988,7 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
                                         'SOURCE_CRS': 'EPSG:3111',
                                         'OUTPUT': outdir + '/check.jpg'}, context, feedback),
                 ['gdalwarp',
-                 '-s_srs EPSG:3111 -dstnodata 0.0 -r near -of JPEG ' +
+                 '-overwrite -s_srs EPSG:3111 -dstnodata 0.0 -r near -of JPEG ' +
                  source + ' ' +
                  outdir + '/check.jpg'])
             # with "0" NODATA value and custom data type
@@ -1999,7 +1999,7 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
                                         'SOURCE_CRS': 'EPSG:3111',
                                         'OUTPUT': outdir + '/check.jpg'}, context, feedback),
                 ['gdalwarp',
-                 '-s_srs EPSG:3111 -dstnodata 0.0 -r near -ot Float32 -of JPEG ' +
+                 '-overwrite -s_srs EPSG:3111 -dstnodata 0.0 -r near -ot Float32 -of JPEG ' +
                  source + ' ' +
                  outdir + '/check.jpg'])
 
@@ -2010,7 +2010,7 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
                                         'TARGET_CRS': 'EPSG:4326',
                                         'OUTPUT': outdir + '/check.jpg'}, context, feedback),
                 ['gdalwarp',
-                 '-s_srs EPSG:3111 -t_srs EPSG:4326 -r near -of JPEG ' +
+                 '-overwrite -s_srs EPSG:3111 -t_srs EPSG:4326 -r near -of JPEG ' +
                  source + ' ' +
                  outdir + '/check.jpg'])
 
@@ -2022,7 +2022,7 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
                                         'TARGET_CRS': custom_crs,
                                         'OUTPUT': outdir + '/check.jpg'}, context, feedback),
                 ['gdalwarp',
-                 '-s_srs EPSG:20936 -t_srs EPSG:20936 -r near -of JPEG ' +
+                 '-overwrite -s_srs EPSG:20936 -t_srs EPSG:20936 -r near -of JPEG ' +
                  source + ' ' +
                  outdir + '/check.jpg'])
 
@@ -2034,7 +2034,7 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
                                         'TARGET_CRS': custom_crs,
                                         'OUTPUT': outdir + '/check.jpg'}, context, feedback),
                 ['gdalwarp',
-                 f'-s_srs "{expected_crs_string}" -t_srs "{expected_crs_string}" -r near -of JPEG ' +
+                 f'-overwrite -s_srs "{expected_crs_string}" -t_srs "{expected_crs_string}" -r near -of JPEG ' +
                  source + ' ' +
                  outdir + '/check.jpg'])
 
@@ -2048,7 +2048,7 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
                                         'TARGET_EXTENT_CRS': custom_crs2,
                                         'OUTPUT': outdir + '/check.tif'}, context, feedback),
                 ['gdalwarp',
-                 f'-s_srs "{expected_crs_string2}" -t_srs "{expected_crs_string2}" -r near -te 18.67 45.78 18.7 45.81 -te_srs "{expected_crs_string2}" -of GTiff ' +
+                 f'-overwrite -s_srs "{expected_crs_string2}" -t_srs "{expected_crs_string2}" -r near -te 18.67 45.78 18.7 45.81 -te_srs "{expected_crs_string2}" -of GTiff ' +
                  source + ' ' +
                  outdir + '/check.tif'])
 
@@ -2059,7 +2059,7 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
                                         'TARGET_CRS': 'POSTGIS:3111',
                                         'OUTPUT': outdir + '/check.jpg'}, context, feedback),
                 ['gdalwarp',
-                 '-s_srs EPSG:3111 -t_srs EPSG:3111 -r near -of JPEG ' +
+                 '-overwrite -s_srs EPSG:3111 -t_srs EPSG:3111 -r near -of JPEG ' +
                  source + ' ' +
                  outdir + '/check.jpg'])
 
@@ -2070,7 +2070,7 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
                                         'TARGET_RESOLUTION': None,
                                         'OUTPUT': outdir + '/check.jpg'}, context, feedback),
                 ['gdalwarp',
-                 '-s_srs EPSG:3111 -r near -of JPEG ' +
+                 '-overwrite -s_srs EPSG:3111 -r near -of JPEG ' +
                  source + ' ' +
                  outdir + '/check.jpg'])
 
@@ -2081,7 +2081,7 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
                                         'TARGET_RESOLUTION': 10.0,
                                         'OUTPUT': outdir + '/check.jpg'}, context, feedback),
                 ['gdalwarp',
-                 '-s_srs EPSG:3111 -tr 10.0 10.0 -r near -of JPEG ' +
+                 '-overwrite -s_srs EPSG:3111 -tr 10.0 10.0 -r near -of JPEG ' +
                  source + ' ' +
                  outdir + '/check.jpg'])
 
@@ -2092,7 +2092,7 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
                                         'TARGET_RESOLUTION': 0.0,
                                         'OUTPUT': outdir + '/check.jpg'}, context, feedback),
                 ['gdalwarp',
-                 '-s_srs EPSG:3111 -r near -of JPEG ' +
+                 '-overwrite -s_srs EPSG:3111 -r near -of JPEG ' +
                  source + ' ' +
                  outdir + '/check.jpg'])
 
@@ -2102,7 +2102,7 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
                                         'EXTRA': '-dstalpha',
                                         'OUTPUT': outdir + '/check.jpg'}, context, feedback),
                 ['gdalwarp',
-                 '-r near -of JPEG -dstalpha ' +
+                 '-overwrite -r near -of JPEG -dstalpha ' +
                  source + ' ' +
                  outdir + '/check.jpg'])
 
@@ -2111,7 +2111,7 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
                                         'EXTRA': '-dstalpha -srcnodata -9999',
                                         'OUTPUT': outdir + '/check.jpg'}, context, feedback),
                 ['gdalwarp',
-                 '-r near -of JPEG -dstalpha -srcnodata -9999 ' +
+                 '-overwrite -r near -of JPEG -dstalpha -srcnodata -9999 ' +
                  source + ' ' +
                  outdir + '/check.jpg'])
 
@@ -2120,7 +2120,7 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
                                         'EXTRA': '-dstalpha -srcnodata "-9999 -8888"',
                                         'OUTPUT': outdir + '/check.jpg'}, context, feedback),
                 ['gdalwarp',
-                 '-r near -of JPEG -dstalpha -srcnodata "-9999 -8888" ' +
+                 '-overwrite -r near -of JPEG -dstalpha -srcnodata "-9999 -8888" ' +
                  source + ' ' +
                  outdir + '/check.jpg'])
 
@@ -2129,7 +2129,7 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
                                         'EXTRA': '',
                                         'OUTPUT': outdir + '/check.jpg'}, context, feedback),
                 ['gdalwarp',
-                 '-r near -of JPEG ' +
+                 '-overwrite -r near -of JPEG ' +
                  source + ' ' +
                  outdir + '/check.jpg'])
 
@@ -2533,7 +2533,47 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
                 ['gdal2xyz.py',
                  '-band 1 -csv ' +
                  source + ' ' +
-                 outsource])
+                    outsource])
+
+            if GdalUtils.version() >= 3030000:
+                # skip nodata output
+                self.assertEqual(
+                    alg.getConsoleCommands({'INPUT': source,
+                                            'BAND': 1,
+                                            'CSV': False,
+                                            'SKIP_NODATA': True,
+                                            'OUTPUT': outsource}, context, feedback),
+                    ['gdal2xyz.py',
+                     '-band 1 -skipnodata ' +
+                     source + ' ' +
+                     outsource])
+
+            if GdalUtils.version() > 3060300:
+                # srcnodata output
+                self.assertEqual(
+                    alg.getConsoleCommands({'INPUT': source,
+                                            'BAND': 1,
+                                            'CSV': False,
+                                            'NODATA_INPUT': -999,
+                                            'SKIP_NODATA': False,
+                                            'OUTPUT': outsource}, context, feedback),
+                    ['gdal2xyz.py',
+                     '-band 1 -srcnodata -999 ' +
+                     source + ' ' +
+                     outsource])
+
+                # dstnodata output
+                self.assertEqual(
+                    alg.getConsoleCommands({'INPUT': source,
+                                            'BAND': 1,
+                                            'CSV': False,
+                                            'NODATA_OUTPUT': -999,
+                                            'SKIP_NODATA': False,
+                                            'OUTPUT': outsource}, context, feedback),
+                    ['gdal2xyz.py',
+                     '-band 1 -dstnodata -999 ' +
+                     source + ' ' +
+                     outsource])
 
     def testGdalPolygonize(self):
         context = QgsProcessingContext()

@@ -718,12 +718,12 @@ Sets the ``placement`` of the symbols.
 %Docstring
 Returns ``True`` if the placement applies for every part of multi-part feature geometries.
 
-The default is ``True``, which means that Qgis.MarkerLinePlacement.FirstVertex or
-Qgis.MarkerLinePlacement.LastVertex placements will result in a symbol on
+The default is ``True``, which means that :py:class:`Qgis`.MarkerLinePlacement.FirstVertex or
+:py:class:`Qgis`.MarkerLinePlacement.LastVertex placements will result in a symbol on
 the first/last vertex of EVERY part of a multipart feature.
 
-If ``False``, then Qgis.MarkerLinePlacement.FirstVertex or
-Qgis.MarkerLinePlacement.LastVertex placements will result in a symbol on
+If ``False``, then :py:class:`Qgis`.MarkerLinePlacement.FirstVertex or
+:py:class:`Qgis`.MarkerLinePlacement.LastVertex placements will result in a symbol on
 the first/last vertex of the overall multipart geometry only.
 
 .. seealso:: :py:func:`setPlaceOnEveryPart`
@@ -735,12 +735,12 @@ the first/last vertex of the overall multipart geometry only.
 %Docstring
 Sets whether the placement applies for every part of multi-part feature geometries.
 
-The default is ``True``, which means that Qgis.MarkerLinePlacement.FirstVertex or
-Qgis.MarkerLinePlacement.LastVertex placements will result in a symbol on
+The default is ``True``, which means that :py:class:`Qgis`.MarkerLinePlacement.FirstVertex or
+:py:class:`Qgis`.MarkerLinePlacement.LastVertex placements will result in a symbol on
 the first/last vertex of EVERY part of a multipart feature.
 
-If ``False``, then Qgis.MarkerLinePlacement.FirstVertex or
-Qgis.MarkerLinePlacement.LastVertex placements will result in a symbol on
+If ``False``, then :py:class:`Qgis`.MarkerLinePlacement.FirstVertex or
+:py:class:`Qgis`.MarkerLinePlacement.LastVertex placements will result in a symbol on
 the first/last vertex of the overall multipart geometry only.
 
 .. seealso:: :py:func:`placeOnEveryPart`

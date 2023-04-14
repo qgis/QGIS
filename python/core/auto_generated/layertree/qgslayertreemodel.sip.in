@@ -90,6 +90,7 @@ The root node is not transferred by the model.
       AllowNodeChangeVisibility,
       AllowLegendChangeState,
       ActionHierarchical,
+      UseThreadedHitTest,
     };
     typedef QFlags<QgsLayerTreeModel::Flag> Flags;
 
@@ -253,16 +254,17 @@ A scale <= 0 indicates that no scale filtering is being performed.
 .. versionadded:: 2.6
 %End
 
-    void setLegendFilterByMap( const QgsMapSettings *settings );
+ void setLegendFilterByMap( const QgsMapSettings *settings ) /Deprecated/;
 %Docstring
 Force only display of legend nodes which are valid for given map settings.
 Setting ``None`` or invalid map settings will disable the functionality.
 Ownership of map settings pointer does not change, a copy is made.
 
-.. versionadded:: 2.6
+.. deprecated::
+   QGIS 3.32. Use :py:func:`~QgsLayerTreeModel.setFilterSettings` instead.
 %End
 
-    void setLegendFilter( const QgsMapSettings *settings, bool useExtent = true, const QgsGeometry &polygon = QgsGeometry(), bool useExpressions = true );
+ void setLegendFilter( const QgsMapSettings *settings, bool useExtent = true, const QgsGeometry &polygon = QgsGeometry(), bool useExpressions = true ) /Deprecated/;
 %Docstring
 Filter display of legend nodes for given map settings
 
@@ -271,7 +273,8 @@ Filter display of legend nodes for given map settings
 :param polygon: If not empty, this polygon will be used instead of the map extent to filter legend nodes
 :param useExpressions: Whether to use legend node filter expressions
 
-.. versionadded:: 2.14
+.. deprecated::
+   QGIS 3.32. Use :py:func:`~QgsLayerTreeModel.setFilterSettings` instead.
 %End
 
     const QgsMapSettings *legendFilterMapSettings() const;
@@ -279,6 +282,26 @@ Filter display of legend nodes for given map settings
 Returns the current map settings used for the current legend filter (or ``None`` if none is enabled)
 
 .. versionadded:: 2.14
+%End
+
+    void setFilterSettings( const QgsLayerTreeFilterSettings *settings = 0 );
+%Docstring
+Sets the filter ``settings`` to use to filter legend nodes.
+
+Set to ``None`` to disable legend filter.
+
+.. seealso:: :py:func:`filterSettings`
+
+.. versionadded:: 3.32
+%End
+
+    const QgsLayerTreeFilterSettings *filterSettings() const;
+%Docstring
+Returns the filter settings to use to filter legend nodes. May be ``None``.
+
+.. seealso:: :py:func:`setFilterSettings`
+
+.. versionadded:: 3.32
 %End
 
     void setLegendMapViewData( double mapUnitsPerPixel, int dpi, double scale );
@@ -322,6 +345,25 @@ displays.
 .. versionadded:: 3.6
 %End
 
+    void waitForHitTestBlocking();
+%Docstring
+When a current hit test for visible legend items is in progress, calling this
+method will block until that hit test is complete.
+
+.. versionadded:: 3.32
+%End
+
+    bool hitTestInProgress() const;
+%Docstring
+Returns ``True`` if a hit test for visible legend items is currently in progress.
+
+.. seealso:: :py:func:`hitTestStarted`
+
+.. seealso:: :py:func:`hitTestCompleted`
+
+.. versionadded:: 3.32
+%End
+
   signals:
 
     void messageEmitted( const QString &message, Qgis::MessageLevel level = Qgis::MessageLevel::Info, int duration = 5 );
@@ -329,6 +371,28 @@ displays.
 Emits a message than can be displayed to the user in a GUI class
 
 .. versionadded:: 3.14
+%End
+
+    void hitTestStarted();
+%Docstring
+Emitted when a hit test for visible legend items starts.
+
+.. seealso:: :py:func:`hitTestInProgress`
+
+.. seealso:: :py:func:`hitTestCompleted`
+
+.. versionadded:: 3.32
+%End
+
+    void hitTestCompleted();
+%Docstring
+Emitted when a hit test for visible legend items completes.
+
+.. seealso:: :py:func:`hitTestInProgress`
+
+.. seealso:: :py:func:`hitTestStarted`
+
+.. versionadded:: 3.32
 %End
 
   protected slots:
@@ -412,6 +476,7 @@ Filter nodes from :py:class:`QgsMapLayerLegend` according to the current filteri
     void legendInvalidateMapBasedData();
 
   protected:
+
 
 
 

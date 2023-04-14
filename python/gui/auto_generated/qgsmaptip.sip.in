@@ -64,9 +64,20 @@ Clear the current maptip if it exists
 :param msDelay: optional time in ms to defer clearing the maptip (since QGIS 3.26)
 %End
 
-    void applyFontSettings();
+    static QString vectorMapTipPreviewText( QgsMapLayer *layer, QgsMapCanvas *mapCanvas, const QString &mapTemplate, const QString &displayExpression );
 %Docstring
-Apply font family and size to match user settings
+Returns the html that would be displayed in a maptip for a given layer. If the layer has features, the first feature is used
+to evaluate the expressions.
+
+.. versionadded:: 3.32
+%End
+
+    static QString rasterMapTipPreviewText( QgsMapLayer *layer, QgsMapCanvas *mapCanvas, const QString &mapTemplate );
+%Docstring
+Returns the html that would be displayed in a maptip for a given layer. The center pixel of the raster is used to
+evaluate the expressions.
+
+.. versionadded:: 3.32
 %End
 
 };

@@ -29,6 +29,7 @@
 #include "qgs3dmapsettings.h"
 #include "qgs3dmapcanvas.h"
 #include "qgsprojectviewsettings.h"
+#include "qgspointlightsettings.h"
 
 #include <QScreen>
 

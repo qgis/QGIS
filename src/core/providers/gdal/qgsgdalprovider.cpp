@@ -42,6 +42,7 @@
 #include "qgsprovidersublayerdetails.h"
 #include "qgsproviderutils.h"
 #include "qgscplerrorhandler_p.h"
+#include "qgsmetadatautils.h"
 
 #include <QImage>
 #include <QColor>
@@ -483,6 +484,31 @@ void QgsGdalProvider::reloadProviderData()
 
   mHasInit = false;
   ( void )initIfNeeded();
+}
+
+void QgsGdalProvider::loadMetadata()
+{
+  // Set default, may be overridden by stored metadata
+  mLayerMetadata.setCrs( crs() );
+
+  if ( mDriverName == QLatin1String( "OpenFileGDB" ) )
+  {
+    // read ESRI FileGeodatabase/Personal Geodatabase layer metadata
+    // (This branch is only possible on GDAL 3.7+, in earlier releases there was
+    // no raster OpenFileGDB driver)
+    if ( char **GDALmetadata = GDALGetMetadata( mGdalDataset, "xml:documentation" ) )
+    {
+      const QString metadata( GDALmetadata[0] );
+      if ( !metadata.isEmpty() )
+      {
+        QDomDocument metadataDoc;
+        metadataDoc.setContent( metadata );
+        mLayerMetadata = QgsMetadataUtils::convertFromEsri( metadataDoc );
+      }
+    }
+  }
+
+  mLayerMetadata.setType( QStringLiteral( "dataset" ) );
 }
 
 QString QgsGdalProvider::htmlMetadata()
@@ -1288,6 +1314,11 @@ QString QgsGdalProvider::generateBandName( int bandNumber ) const
   return generatedBandName;
 }
 
+QgsLayerMetadata QgsGdalProvider::layerMetadata() const
+{
+  return mLayerMetadata;
+}
+
 QgsRasterIdentifyResult QgsGdalProvider::identify( const QgsPointXY &point, Qgis::RasterIdentifyFormat format, const QgsRectangle &boundingBox, int width, int height, int /*dpi*/ )
 {
   QMutexLocker locker( mpMutex );
@@ -1725,7 +1756,8 @@ QgsRasterDataProvider::ProviderCapabilities QgsGdalProvider::providerCapabilitie
   return ProviderCapability::ProviderHintBenefitsFromResampling |
          ProviderCapability::ProviderHintCanPerformProviderResampling |
          ProviderCapability::ReloadData |
-         ProviderCapability::NativeRasterAttributeTable;
+         ProviderCapability::NativeRasterAttributeTable |
+         ProviderCapability::ReadLayerMetadata;
 }
 
 QList<QgsProviderSublayerDetails> QgsGdalProvider::sublayerDetails( GDALDatasetH dataset, const QString &baseUri )
@@ -3241,7 +3273,7 @@ bool QgsGdalProvider::readNativeAttributeTable( QString *errorMessage )
         for ( int columnNumber = 0; columnNumber < GDALRATGetColumnCount( hRat ); ++columnNumber )
         {
           const Qgis::RasterAttributeTableFieldUsage usage { static_cast<Qgis::RasterAttributeTableFieldUsage>( GDALRATGetUsageOfCol( hRat, columnNumber ) ) };
-          QVariant::Type type;
+          QVariant::Type type = QVariant::Int;
           switch ( GDALRATGetTypeOfCol( hRat, columnNumber ) )
           {
             case GFT_Integer:
@@ -3258,6 +3290,12 @@ bool QgsGdalProvider::readNativeAttributeTable( QString *errorMessage )
             {
               type = QVariant::String;
               break;
+            }
+
+            default:
+            {
+              QgsDebugMsg( QStringLiteral( "Unhandled RAT type %1" ).arg( GDALRATGetTypeOfCol( hRat, columnNumber ) ) );
+              continue;
             }
           }
           const QString name { GDALRATGetNameOfCol( hRat, columnNumber ) };
@@ -3786,6 +3824,8 @@ void QgsGdalProvider::initBaseDataset()
     mUseSrcNoDataValue.append( false );
     mGdalDataType.append( GDT_Byte );
   }
+
+  loadMetadata();
 }
 
 QgsGdalProvider *QgsGdalProviderMetadata::createRasterDataProvider(
@@ -3926,11 +3966,11 @@ bool QgsGdalProvider::remove()
  * that contains this list that is suitable for use in a
  * QFileDialog::getOpenFileNames() call.
 */
-QString QgsGdalProviderMetadata::filters( FilterType type )
+QString QgsGdalProviderMetadata::filters( Qgis::FileFilterType type )
 {
   switch ( type )
   {
-    case QgsProviderMetadata::FilterType::FilterRaster:
+    case Qgis::FileFilterType::Raster:
     {
       QString fileFiltersString;
       QStringList exts;
@@ -3939,10 +3979,11 @@ QString QgsGdalProviderMetadata::filters( FilterType type )
       return fileFiltersString;
     }
 
-    case QgsProviderMetadata::FilterType::FilterVector:
-    case QgsProviderMetadata::FilterType::FilterMesh:
-    case QgsProviderMetadata::FilterType::FilterMeshDataset:
-    case QgsProviderMetadata::FilterType::FilterPointCloud:
+    case Qgis::FileFilterType::Vector:
+    case Qgis::FileFilterType::Mesh:
+    case Qgis::FileFilterType::MeshDataset:
+    case Qgis::FileFilterType::PointCloud:
+    case Qgis::FileFilterType::VectorTile:
       return QString();
   }
   return QString();

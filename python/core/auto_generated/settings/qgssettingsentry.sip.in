@@ -164,7 +164,7 @@ Returns the origin of the setting if it exists
 
 .. note::
 
-   it will return Qgis.SettingsOrigin.Any if the key doesn't exist
+   it will return :py:class:`Qgis`.SettingsOrigin.Any if the key doesn't exist
 
 .. versionadded:: 3.30
 %End

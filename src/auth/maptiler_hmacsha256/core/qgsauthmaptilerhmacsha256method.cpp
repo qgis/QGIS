@@ -41,7 +41,8 @@ QgsAuthMapTilerHmacSha256Method::QgsAuthMapTilerHmacSha256Method()
   setExpansions( QgsAuthMethod::NetworkRequest );
   setDataProviders( QStringList()
                     << QStringLiteral( "wms" )
-                    << QStringLiteral( "vectortile" ) );
+                    << QStringLiteral( "vectortile" )
+                    << QStringLiteral( "xyzvectortiles" ) );
 
 }
 

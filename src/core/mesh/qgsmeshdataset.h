@@ -891,10 +891,8 @@ class CORE_EXPORT QgsMeshDatasetGroupTreeItem
     void appendChild( QgsMeshDatasetGroupTreeItem *item SIP_TRANSFER );
 
     /**
-     * Removes a item child if exists
+     * Removes and destroy a item child if exists
      * \param item the item to append
-     *
-     * \note takes ownership of item
      *
      * \since QGIS 3.16
      */

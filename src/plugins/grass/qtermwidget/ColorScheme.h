@@ -82,19 +82,19 @@ public:
      * Copies the color entries which form the palette for this color scheme
      * into @p table.  @p table should be an array with TABLE_COLORS entries.
      *
-     * \param table Array into which the color entries for this color scheme
+     * @param table Array into which the color entries for this color scheme
      * are copied.
-     * \param randomSeed Color schemes may allow certain colors in their
+     * @param randomSeed Color schemes may allow certain colors in their
      * palette to be randomized.  The seed is used to pick the random color.
      */
-    void getColorTable(ColorEntry* table, uint randomSeed = 0) const;
+    void getColorTable(ColorEntry* table) const;
 
     /**
      * Retrieves a single color entry from the table.
      *
      * See getColorTable()
      */
-    ColorEntry colorEntry(int index , uint randomSeed = 0) const;
+    ColorEntry colorEntry(int index) const;
 
     /**
      * Convenience method.  Returns the
@@ -220,41 +220,6 @@ public:
 };
 
 /**
- * Reads a color scheme stored in the .schema format used in the KDE 3 incarnation
- * of Konsole
- *
- * Only the basic essentials ( title and color palette entries ) are currently
- * supported.  Additional options such as background image and background
- * blend colors are ignored.
- */
-class KDE3ColorSchemeReader
-{
-public:
-    /**
-     * Constructs a new reader which reads from the specified device.
-     * The device should be open in read-only mode.
-     */
-    KDE3ColorSchemeReader( QIODevice* device );
-
-    /**
-     * Reads and parses the contents of the .schema file from the input
-     * device and returns the ColorScheme defined within it.
-     *
-     * Returns a null pointer if an error occurs whilst parsing
-     * the contents of the file.
-     */
-    ColorScheme* read();
-
-private:
-    // reads a line from the file specifying a colour palette entry
-    // format is: color [index] [red] [green] [blue] [transparent] [bold]
-    bool readColorLine(const QString& line , ColorScheme* scheme);
-    bool readTitleLine(const QString& line , ColorScheme* scheme);
-
-    QIODevice* _device;
-};
-
-/**
  * Manages the color schemes available for use by terminal displays.
  * See ColorScheme
  */
@@ -316,7 +281,7 @@ public:
     /** Returns the global color scheme manager instance. */
     static ColorSchemeManager* instance();
 
-    /** \brief Loads a custom color scheme under given \em path.
+    /** @brief Loads a custom color scheme under given \em path.
      *
      * The \em path may refer to either KDE 4 .colorscheme or KDE 3
      * .schema file
@@ -325,20 +290,23 @@ public:
      * the base name of the \em path via the allColorSchemes() and
      * findColorScheme() methods after this call if loaded successfully.
      *
-     * \param[in] path The path to KDE 4 .colorscheme or KDE 3 .schema.
-     * \returns Whether the color scheme is loaded successfully.
+     * @param[in] path The path to KDE 4 .colorscheme or KDE 3 .schema.
+     * @return Whether the color scheme is loaded successfully.
      */
     bool loadCustomColorScheme(const QString& path);
+
+    /**
+     * @brief Allows to add a custom location of color schemes.
+     *
+     * @param[in] custom_dir Custom location of color schemes (must end with /).
+     */
+    void addCustomColorSchemeDir(const QString& custom_dir);
+
 private:
     // loads a color scheme from a KDE 4+ .colorscheme file
     bool loadColorScheme(const QString& path);
-    // loads a color scheme from a KDE 3 .schema file
-    bool loadKDE3ColorScheme(const QString& path);
     // returns a list of paths of color schemes in the KDE 4+ .colorscheme file format
     QList<QString> listColorSchemes();
-    // returns a list of paths of color schemes in the .schema file format
-    // used in KDE 3
-    QList<QString> listKDE3ColorSchemes();
     // loads all of the color schemes
     void loadAllColorSchemes();
     // finds the path of a color scheme
@@ -350,8 +318,6 @@ private:
     bool _haveLoadedAll;
 
     static const ColorScheme _defaultColorScheme;
-
-    static ColorSchemeManager * sColorSchemeManager;
 };
 
 }

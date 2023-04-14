@@ -39,7 +39,7 @@
 #include <QToolButton>
 #include <QUrl>
 
-const int QgsDoubleSpinBoxBookmarksDelegate::DECIMAL_PLACES = 6;
+const int QgsDoubleSpinBoxBookmarksDelegate::DEFAULT_DECIMAL_PLACES = 6;
 
 QgsBookmarks::QgsBookmarks( QWidget *parent )
   : QgsDockWidget( parent )
@@ -49,6 +49,8 @@ QgsBookmarks::QgsBookmarks( QWidget *parent )
   QgsGui::enableAutoGeometryRestore( this );
 
   connect( lstBookmarks, &QTreeView::doubleClicked, this, &QgsBookmarks::lstBookmarks_doubleClicked );
+  lstBookmarks->setContextMenuPolicy( Qt::CustomContextMenu );
+  connect( lstBookmarks, &QTreeView::customContextMenuRequested, this, &QgsBookmarks::lstBookmarks_customContextMenuRequested );
 
   bookmarksDockContents->layout()->setContentsMargins( 0, 0, 0, 0 );
   static_cast< QGridLayout * >( bookmarksDockContents->layout() )->setVerticalSpacing( 0 );
@@ -60,17 +62,15 @@ QgsBookmarks::QgsBookmarks( QWidget *parent )
   btnImpExp->setPopupMode( QToolButton::InstantPopup );
 
   QMenu *share = new QMenu( this );
-  QAction *btnExport = share->addAction( tr( "&Export" ) );
-  QAction *btnImport = share->addAction( tr( "&Import" ) );
-  btnExport->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionSharingExport.svg" ) ) );
-  btnImport->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionSharingImport.svg" ) ) );
-  connect( btnExport, &QAction::triggered, this, &QgsBookmarks::exportToXml );
-  connect( btnImport, &QAction::triggered, this, &QgsBookmarks::importFromXml );
+  share->addAction( actionExport );
+  share->addAction( actionImport );
   btnImpExp->setMenu( share );
 
   connect( actionAdd, &QAction::triggered, this, &QgsBookmarks::addClicked );
   connect( actionDelete, &QAction::triggered, this, &QgsBookmarks::deleteClicked );
   connect( actionZoomTo, &QAction::triggered, this, &QgsBookmarks::zoomToBookmark );
+  connect( actionExport, &QAction::triggered, this, &QgsBookmarks::exportToXml );
+  connect( actionImport, &QAction::triggered, this, &QgsBookmarks::importFromXml );
 
   mBookmarkToolbar->addWidget( btnImpExp );
 
@@ -78,6 +78,7 @@ QgsBookmarks::QgsBookmarks( QWidget *parent )
 
   lstBookmarks->setModel( mBookmarkModel );
   lstBookmarks->setItemDelegate( new QgsDoubleSpinBoxBookmarksDelegate( this ) );
+  lstBookmarks->setItemDelegateForColumn( QgsBookmarkManagerModel::ColumnRotation, new QgsDoubleSpinBoxBookmarksDelegate( this, 1 ) );
   lstBookmarks->setSortingEnabled( true );
   lstBookmarks->sortByColumn( 0, Qt::AscendingOrder );
 
@@ -104,6 +105,7 @@ void QgsBookmarks::addClicked()
   QgsBookmark bookmark;
   bookmark.setName( tr( "New bookmark" ) );
   bookmark.setExtent( QgsReferencedRectangle( canvas->extent(), canvas->mapSettings().destinationCrs() ) );
+  bookmark.setRotation( canvas->rotation() );
   QgsBookmarkEditorDialog *dlg = new QgsBookmarkEditorDialog( bookmark, false, this, canvas );
   dlg->setAttribute( Qt::WA_DeleteOnClose );
   dlg->show();
@@ -143,6 +145,51 @@ void QgsBookmarks::lstBookmarks_doubleClicked( const QModelIndex &index )
   zoomToBookmark();
 }
 
+void QgsBookmarks::lstBookmarks_customContextMenuRequested( QPoint pos )
+{
+  // Get index of item under mouse
+  QModelIndex index = lstBookmarks->indexAt( pos );
+  if ( !index.isValid() )
+  {
+    // No bookmark under mouse, display generic menu
+    QMenu menu;
+    menu.addAction( actionAdd );
+    menu.addSeparator();
+    menu.addAction( actionExport );
+    menu.addAction( actionImport );
+    menu.exec( lstBookmarks->mapToGlobal( pos ) );
+    return;
+  }
+
+  // Create the context menu
+  QMenu menu;
+
+  // Add zoom and delete actions
+  menu.addAction( actionZoomTo );
+  menu.addAction( actionDelete );
+
+  // Get the bookmark
+  const QString id = lstBookmarks->model()->data( index, QgsBookmarkManagerModel::RoleId ).toString();
+  QgsBookmark bookmark = QgsApplication::bookmarkManager()->bookmarkById( id );
+  bool inProject = false;
+  if ( bookmark.id().isEmpty() )
+  {
+    inProject = true;
+    bookmark = QgsProject::instance()->bookmarkManager()->bookmarkById( id );
+  }
+
+  // Add an edit action (similar to the one in QgsBookmarksItemGuiProvider)
+  QAction *actionEdit = new QAction( tr( "Edit Spatial Bookmark…" ), &menu );
+  connect( actionEdit, &QAction::triggered, this, [bookmark, inProject]
+  {
+    QgsBookmarkEditorDialog *dlg = new QgsBookmarkEditorDialog( bookmark, inProject, QgisApp::instance(), QgisApp::instance()->mapCanvas() );
+    dlg->setAttribute( Qt::WA_DeleteOnClose );
+    dlg->show();
+  } );
+  menu.addAction( actionEdit );
+  menu.exec( lstBookmarks->viewport()->mapToGlobal( pos ) );
+}
+
 void QgsBookmarks::zoomToBookmark()
 {
   const QModelIndex index = lstBookmarks->currentIndex();
@@ -158,6 +205,7 @@ void QgsBookmarks::zoomToBookmarkIndex( const QModelIndex &index )
   {
     if ( QgisApp::instance()->mapCanvas()->setReferencedExtent( rect ) )
     {
+      QgisApp::instance()->mapCanvas()->setRotation( index.data( QgsBookmarkManagerModel::RoleRotation ).toDouble() );
       QgisApp::instance()->mapCanvas()->refresh();
     }
     else
@@ -253,8 +301,8 @@ void QgsBookmarks::exportToXml()
 // QgsDoubleSpinBoxBookmarksDelegate
 //
 
-QgsDoubleSpinBoxBookmarksDelegate::QgsDoubleSpinBoxBookmarksDelegate( QObject *parent )
-  : QStyledItemDelegate( parent )
+QgsDoubleSpinBoxBookmarksDelegate::QgsDoubleSpinBoxBookmarksDelegate( QObject *parent, int decimals )
+  : QStyledItemDelegate( parent ), mDecimals( decimals == -1 ? QgsDoubleSpinBoxBookmarksDelegate::DEFAULT_DECIMAL_PLACES : decimals )
 {
 
 }
@@ -263,12 +311,9 @@ QString QgsDoubleSpinBoxBookmarksDelegate::displayText( const QVariant &value, c
 {
   if ( value.userType() == QVariant::Double )
   {
-    return locale.toString( value.toDouble(), 'f', QgsDoubleSpinBoxBookmarksDelegate::DECIMAL_PLACES );
+    return locale.toString( value.toDouble(), 'f', mDecimals );
   }
-  else
-  {
-    return QStyledItemDelegate::displayText( value, locale );
-  }
+  return QStyledItemDelegate::displayText( value, locale );
 }
 
 QWidget *QgsDoubleSpinBoxBookmarksDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const
@@ -276,6 +321,12 @@ QWidget *QgsDoubleSpinBoxBookmarksDelegate::createEditor( QWidget *parent, const
   QWidget *widget = QStyledItemDelegate::createEditor( parent, option, index );
   QDoubleSpinBox *spinbox = qobject_cast<QDoubleSpinBox *>( widget );
   if ( spinbox )
-    spinbox->setDecimals( QgsDoubleSpinBoxBookmarksDelegate::DECIMAL_PLACES );
+  {
+    if ( index.column() == QgsBookmarkManagerModel::ColumnRotation )
+    {
+      spinbox->setRange( -360, 360 );
+    }
+    spinbox->setDecimals( mDecimals );
+  }
   return widget;
 }

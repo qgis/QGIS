@@ -73,7 +73,6 @@ Qgs3DMapSettings::Qgs3DMapSettings( const Qgs3DMapSettings &other )
   , mCameraNavigationMode( other.mCameraNavigationMode )
   , mCameraMovementSpeed( other.mCameraMovementSpeed )
   , mLayers( other.mLayers )
-  , mRenderers() // initialized in body
   , mTransformContext( other.mTransformContext )
   , mPathResolver( other.mPathResolver )
   , mMapThemes( other.mMapThemes )
@@ -99,12 +98,8 @@ Qgs3DMapSettings::Qgs3DMapSettings( const Qgs3DMapSettings &other )
   , m3dAxisSettings( other.m3dAxisSettings )
   , mIsDebugOverlayEnabled( other.mIsDebugOverlayEnabled )
   , mExtent( other.mExtent )
+  , mShowExtentIn2DView( other.mShowExtentIn2DView )
 {
-  for ( QgsAbstract3DRenderer *renderer : std::as_const( other.mRenderers ) )
-  {
-    mRenderers << renderer->clone();
-  }
-
   for ( QgsLightSource *source : std::as_const( other.mLightSources ) )
   {
     if ( source )
@@ -120,7 +115,6 @@ Qgs3DMapSettings::Qgs3DMapSettings( const Qgs3DMapSettings &other )
 
 Qgs3DMapSettings::~Qgs3DMapSettings()
 {
-  qDeleteAll( mRenderers );
   qDeleteAll( mLightSources );
 }
 
@@ -141,6 +135,8 @@ void Qgs3DMapSettings::readXml( const QDomElement &elem, const QgsReadWriteConte
                 elemExtent.attribute( QStringLiteral( "yMin" ) ).toDouble(),
                 elemExtent.attribute( QStringLiteral( "xMax" ) ).toDouble(),
                 elemExtent.attribute( QStringLiteral( "yMax" ) ).toDouble() );
+
+    mShowExtentIn2DView = elemExtent.attribute( QStringLiteral( "showIn2dView" ), QStringLiteral( "0" ) ).toInt();
   }
   else
   {
@@ -273,36 +269,6 @@ void Qgs3DMapSettings::readXml( const QDomElement &elem, const QgsReadWriteConte
   }
   mTerrainGenerator->readXml( elemTerrainGenerator );
 
-  qDeleteAll( mRenderers );
-  mRenderers.clear();
-
-  QDomElement elemRenderers = elem.firstChildElement( QStringLiteral( "renderers" ) );
-  QDomElement elemRenderer = elemRenderers.firstChildElement( QStringLiteral( "renderer" ) );
-  while ( !elemRenderer.isNull() )
-  {
-    QgsAbstract3DRenderer *renderer = nullptr;
-    QString type = elemRenderer.attribute( QStringLiteral( "type" ) );
-    if ( type == QLatin1String( "vector" ) )
-    {
-      renderer = new QgsVectorLayer3DRenderer;
-    }
-    else if ( type == QLatin1String( "mesh" ) )
-    {
-      renderer = new QgsMeshLayer3DRenderer;
-    }
-    else if ( type == QLatin1String( "pointcloud" ) )
-    {
-      renderer = new QgsPointCloudLayer3DRenderer;
-    }
-
-    if ( renderer )
-    {
-      renderer->readXml( elemRenderer, context );
-      mRenderers.append( renderer );
-    }
-    elemRenderer = elemRenderer.nextSiblingElement( QStringLiteral( "renderer" ) );
-  }
-
   QDomElement elemSkybox = elem.firstChildElement( QStringLiteral( "skybox" ) );
   mIsSkyboxEnabled = elemSkybox.attribute( QStringLiteral( "skybox-enabled" ) ).toInt();
   mSkyboxSettings.readXml( elemSkybox, context );
@@ -364,6 +330,7 @@ QDomElement Qgs3DMapSettings::writeXml( QDomDocument &doc, const QgsReadWriteCon
   elemExtent.setAttribute( QStringLiteral( "yMin" ), mExtent.yMinimum() );
   elemExtent.setAttribute( QStringLiteral( "xMax" ), mExtent.xMaximum() );
   elemExtent.setAttribute( QStringLiteral( "yMax" ), mExtent.yMaximum() );
+  elemExtent.setAttribute( QStringLiteral( "showIn2dView" ), mShowExtentIn2DView );
   elem.appendChild( elemExtent );
 
   QDomElement elemCamera = doc.createElement( QStringLiteral( "camera" ) );
@@ -430,16 +397,6 @@ QDomElement Qgs3DMapSettings::writeXml( QDomDocument &doc, const QgsReadWriteCon
   elemTerrain.appendChild( elemTerrainGenerator );
   elem.appendChild( elemTerrain );
 
-  QDomElement elemRenderers = doc.createElement( QStringLiteral( "renderers" ) );
-  for ( const QgsAbstract3DRenderer *renderer : mRenderers )
-  {
-    QDomElement elemRenderer = doc.createElement( QStringLiteral( "renderer" ) );
-    elemRenderer.setAttribute( QStringLiteral( "type" ), renderer->type() );
-    renderer->writeXml( elemRenderer, context );
-    elemRenderers.appendChild( elemRenderer );
-  }
-  elem.appendChild( elemRenderers );
-
   QDomElement elemSkybox = doc.createElement( QStringLiteral( "skybox" ) );
   elemSkybox.setAttribute( QStringLiteral( "skybox-enabled" ), mIsSkyboxEnabled );
   mSkyboxSettings.writeXml( elemSkybox, context );
@@ -502,12 +459,6 @@ void Qgs3DMapSettings::resolveReferences( const QgsProject &project )
   }
 
   mTerrainGenerator->resolveReferences( project );
-
-  for ( int i = 0; i < mRenderers.count(); ++i )
-  {
-    QgsAbstract3DRenderer *renderer = mRenderers[i];
-    renderer->resolveReferences( project );
-  }
 }
 
 void Qgs3DMapSettings::setExtent( const QgsRectangle &extent )
@@ -520,20 +471,7 @@ void Qgs3DMapSettings::setExtent( const QgsRectangle &extent )
   setOrigin( QgsVector3D( center.x(), center.y(), 0 ) );
   if ( mTerrainGenerator )
   {
-    QgsRectangle terrainExtent = mExtent;
-    if ( mCrs != mTerrainGenerator->crs() )
-    {
-      QgsCoordinateTransform ct = QgsCoordinateTransform( mCrs, mTerrainGenerator->crs(), mTransformContext );
-      ct.setBallparkTransformsAreAppropriate( true );
-      try
-      {
-        terrainExtent = ct.transformBoundingBox( mExtent );
-      }
-      catch ( const QgsCsException & )
-      {
-        QgsDebugMsg( QStringLiteral( "Transformation of map extent to terrain crs failed." ) );
-      }
-    }
+    QgsRectangle terrainExtent = Qgs3DUtils::tryReprojectExtent2D( mExtent, mCrs, mTerrainGenerator->crs(), mTransformContext );
     mTerrainGenerator->setExtent( terrainExtent );
   }
   emit extentChanged();
@@ -737,20 +675,7 @@ void Qgs3DMapSettings::setTerrainGenerator( QgsTerrainGenerator *gen )
     disconnect( mTerrainGenerator.get(), &QgsTerrainGenerator::terrainChanged, this, &Qgs3DMapSettings::terrainGeneratorChanged );
   }
 
-  QgsRectangle terrainExtent = mExtent;
-  if ( mCrs != gen->crs() )
-  {
-    QgsCoordinateTransform ct = QgsCoordinateTransform( mCrs, gen->crs(), mTransformContext );
-    ct.setBallparkTransformsAreAppropriate( true );
-    try
-    {
-      terrainExtent = ct.transformBoundingBox( mExtent );
-    }
-    catch ( const QgsCsException & )
-    {
-      QgsDebugMsg( QStringLiteral( "Transformation of map extent to terrain crs failed." ) );
-    }
-  }
+  QgsRectangle terrainExtent = Qgs3DUtils::tryReprojectExtent2D( mExtent, mCrs, gen->crs(), mTransformContext );
   gen->setExtent( terrainExtent );
   mTerrainGenerator.reset( gen );
   connect( mTerrainGenerator.get(), &QgsTerrainGenerator::terrainChanged, this, &Qgs3DMapSettings::terrainGeneratorChanged );
@@ -783,15 +708,6 @@ void Qgs3DMapSettings::setTerrainMapTheme( const QString &theme )
 
   mTerrainMapTheme = theme;
   emit terrainMapThemeChanged();
-}
-
-void Qgs3DMapSettings::setRenderers( const QList<QgsAbstract3DRenderer *> &renderers )
-{
-  qDeleteAll( mRenderers );
-
-  mRenderers = renderers;
-
-  emit renderersChanged();
 }
 
 void Qgs3DMapSettings::setShowTerrainBoundingBoxes( bool enabled )
@@ -1042,6 +958,7 @@ void Qgs3DMapSettings::connectChangedSignalsToSettingsChanged()
   connect( this, &Qgs3DMapSettings::axisSettingsChanged, this, &Qgs3DMapSettings::settingsChanged );
   connect( this, &Qgs3DMapSettings::ambientOcclusionSettingsChanged, this, &Qgs3DMapSettings::settingsChanged );
   connect( this, &Qgs3DMapSettings::extentChanged, this, &Qgs3DMapSettings::settingsChanged );
+  connect( this, &Qgs3DMapSettings::showExtentIn2DViewChanged, this, &Qgs3DMapSettings::settingsChanged );
 }
 
 
@@ -1062,4 +979,13 @@ void Qgs3DMapSettings::set3DAxisSettings( const Qgs3DAxisSettings &axisSettings,
     m3dAxisSettings = axisSettings;
     emit axisSettingsChanged();
   }
+}
+
+void Qgs3DMapSettings::setShowExtentIn2DView( bool show )
+{
+  if ( show == mShowExtentIn2DView )
+    return;
+
+  mShowExtentIn2DView = show;
+  emit showExtentIn2DViewChanged();
 }

@@ -131,10 +131,6 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
     bool allowMapIdentification() { return mAllowMapIdentification; }
     void setAllowMapIdentification( bool allowMapIdentification );
 
-    //! If the widget will order the combobox entries by value
-    bool orderByValue() { return mOrderByValue; }
-    //! Sets if the widget will order the combobox entries by value
-    void setOrderByValue( bool orderByValue );
     //! Sets the fields for which filter comboboxes will be created
     void setFilterFields( const QStringList &filterFields );
 
@@ -255,6 +251,19 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
      */
     void setReferencedLayerName( const QString &referencedLayerName );
 
+    /**
+     * Returns the limit of fetched features (0 means all features)
+     * \since QGIS 3.32
+     */
+    int fetchLimit() const {return mFetchLimit; }
+
+    /**
+     * Set the limit of fetched features (0 means all features)
+     * \since QGIS 3.32
+     */
+    void setFetchLimit( int fetchLimit ) {mFetchLimit = fetchLimit; }
+
+
   public slots:
     //! open the form of the related feature in a new dialog
     void openForm();
@@ -332,12 +341,12 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
     QStringList mFilterFields;
     QMap<QString, QMap<QString, QSet<QString> > > mFilterCache;
     bool mInitialized = false;
+    int mFetchLimit = 0;
 
     // Q_PROPERTY
     bool mEmbedForm = false;
     bool mReadOnlySelector = false;
     bool mAllowMapIdentification = false;
-    bool mOrderByValue = false;
     bool mOpenFormButtonVisible = true;
     bool mChainFilters = false;
     bool mAllowAddFeatures = false;

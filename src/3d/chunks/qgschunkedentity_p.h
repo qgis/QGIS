@@ -40,18 +40,20 @@ class QgsChunkLoaderFactory;
 class QgsChunkBoundsEntity;
 class QgsChunkQueueJobFactory;
 
+namespace QgsRayCastingUtils
+{
+  class Ray3D;
+  struct RayCastContext;
+  struct RayHit;
+}
+
 #include <QVector3D>
 #include <QMatrix4x4>
 
 #include <QTime>
 
-#include "qgsfeatureid.h"
 #include "qgschunknode_p.h"
 
-namespace Qt3DRender
-{
-  class QPickEvent;
-}
 
 /**
  * \ingroup 3d
@@ -98,11 +100,6 @@ class QgsChunkedEntity : public Qt3DCore::QEntity
     //! Returns number of jobs pending for this entity until it is fully loaded/updated in the current view
     int pendingJobsCount() const;
 
-    //! Enables or disables object picking on this entity. When enabled, pickedObject() signals will be emitted on mouse clicks
-    void setPickingEnabled( bool enabled );
-    //! Returns whether object picking is currently enabled
-    bool hasPickingEnabled() const { return mPickingEnabled; }
-
     //! Sets whether additive strategy is enabled - see usingAditiveStrategy()
     void setUsingAdditiveStrategy( bool additive ) { mAdditiveStrategy = additive; }
 
@@ -127,6 +124,17 @@ class QgsChunkedEntity : public Qt3DCore::QEntity
 
     static double calculateEntityGpuMemorySize( Qt3DCore::QEntity *entity );
 
+    /**
+     * Checks if \a ray intersects the entity by using the specified parameters in \a context and returns information about the hits.
+     * This method is typically used by map tools that need to identify the exact location on a 3d entity that the mouse cursor points at,
+     * as well as properties of the intersected entity (fid for vector layers, point cloud attributes for point cloud layers etc). The camera position
+     * is used as the ray's origin in that case.
+     * The number of successful hits returned depends on the entity's implementation (eg. point cloud entities use a tolerance and return multiple 'near' hits
+     * \note The ray uses World coordinates.
+     * \since QGIS 3.32
+     */
+    virtual QVector<QgsRayCastingUtils::RayHit> rayIntersection( const QgsRayCastingUtils::Ray3D &ray, const QgsRayCastingUtils::RayCastContext &context ) const;
+
   protected:
     //! Cancels the background job that is currently in progress
     void cancelActiveJob( QgsChunkQueueJob *job );
@@ -149,17 +157,12 @@ class QgsChunkedEntity : public Qt3DCore::QEntity
   private slots:
     void onActiveJobFinished();
 
-    void onPickEvent( Qt3DRender::QPickEvent *event );
-
   signals:
     //! Emitted when the number of pending jobs changes (some jobs have finished or some jobs have been just created)
     void pendingJobsCountChanged();
 
     //! Emitted when a new 3D entity has been created. Other components can use that to do extra work
     void newEntityCreated( Qt3DCore::QEntity *entity );
-
-    //! Emitted on mouse clicks when picking is enabled and there is a feature under the cursor
-    void pickedObject( Qt3DRender::QPickEvent *pickEvent, QgsFeatureId fid );
 
   protected:
     //! root node of the quadtree hierarchy
@@ -197,9 +200,6 @@ class QgsChunkedEntity : public Qt3DCore::QEntity
 
     //! jobs that are currently being processed (asynchronously in worker threads)
     QList<QgsChunkQueueJob *> mActiveJobs;
-
-    //! If picking is enabled, QObjectPicker objects will be assigned to chunks and pickedObject() signals fired on mouse click
-    bool mPickingEnabled = false;
 
     /**
      * With additive strategy enabled, also all parent nodes are added to active nodes.

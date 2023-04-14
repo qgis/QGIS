@@ -13,6 +13,7 @@
 
 
 
+
 class Qgs3DMapScene : QObject
 {
 %Docstring(signature="appended")
@@ -78,7 +79,6 @@ Returns number of pending jobs for all chunked entities
 Returns the current state of the scene
 %End
 
-
     float worldSpaceError( float epsilon, float distance );
 %Docstring
 Given screen error (in pixels) and distance from camera (in 3D world coordinates), this function
@@ -89,6 +89,8 @@ estimates the error in world space. Takes into account camera's field of view an
 %Docstring
 Exports the scene according to the scene export settings
 %End
+
+
 
 
     QgsRectangle sceneExtent();
@@ -177,7 +179,6 @@ Updates the temporale entities
     Qgs3DMapScene();
     Qgs3DMapScene( const Qgs3DMapScene &other );
 };
-
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *

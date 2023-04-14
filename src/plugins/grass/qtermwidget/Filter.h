@@ -29,6 +29,7 @@
 #include <QRegExp>
 
 // Local
+#include "qtermwidget_export.h"
 
 namespace Konsole
 {
@@ -54,7 +55,7 @@ class Character;
  * When processing the text they should create instances of Filter::HotSpot subclasses for sections of interest
  * and add them to the filter's list of hotspots using addHotSpot()
  */
-class Filter : public QObject
+class QTERMWIDGET_EXPORT Filter : public QObject
 {
 public:
     /**
@@ -98,14 +99,14 @@ public:
        /** Returns the column on endLine() where the hotspot area ends */
        int endColumn() const;
        /**
-        * Returns the type of the hotspot. This is usually used as a hint for views on how to represent
-        * the hotspot graphically. For example, Link hotspots are typically underlined when the user mouses over them
+        * Returns the type of the hotspot.  This is usually used as a hint for views on how to represent
+        * the hotspot graphically.  eg.  Link hotspots are typically underlined when the user mouses over them
         */
        Type type() const;
        /**
         * Causes the an action associated with a hotspot to be triggered.
         *
-        * \param action The action to trigger.  This is
+        * @param action The action to trigger.  This is
         * typically empty ( in which case the default action should be performed ) or
         * one of the object names from the actions() list.  In which case the associated
         * action should be performed.
@@ -116,14 +117,6 @@ public:
         * menu or toolbar
         */
        virtual QList<QAction*> actions();
-
-       /**
-        * Returns the text of a tooltip to be shown when the mouse moves over the hotspot, or
-        * an empty string if there is no tooltip associated with this hotspot.
-        *
-        * The default implementation returns an empty string.
-        */
-       virtual QString tooltip() const;
 
     protected:
        /** Sets the type of a hotspot.  This should only be set once */
@@ -191,7 +184,7 @@ private:
  * Subclasses can reimplement newHotSpot() to return custom hotspot types when matches for the regular expression
  * are found.
  */
-class RegExpFilter : public Filter
+class QTERMWIDGET_EXPORT RegExpFilter : public Filter
 {
 public:
     /**
@@ -248,7 +241,7 @@ private:
 class FilterObject;
 
 /** A filter which matches URLs in blocks of text */
-class UrlFilter : public RegExpFilter
+class QTERMWIDGET_EXPORT UrlFilter : public RegExpFilter
 {
     Q_OBJECT
 public:
@@ -272,7 +265,6 @@ public:
          */
         void activate(const QString& action = QString()) override;
 
-        QString tooltip() const override;
     private:
         enum UrlType
         {
@@ -301,22 +293,22 @@ private:
     // combined OR of FullUrlRegExp and EmailAddressRegExp
     static const QRegExp CompleteUrlRegExp;
 signals:
-    void activated(const QUrl& url);
+    void activated(const QUrl& url, bool fromContextMenu);
 };
 
-class FilterObject : public QObject
+class QTERMWIDGET_NO_EXPORT FilterObject : public QObject
 {
     Q_OBJECT
 public:
     FilterObject(Filter::HotSpot* filter) : _filter(filter) {}
 
-    void emitActivated(const QUrl& url);
+    void emitActivated(const QUrl& url, bool fromContextMenu);
 public slots:
-    void activated();
+    void activate();
 private:
     Filter::HotSpot* _filter;
 signals:
-    void activated(const QUrl& url);
+    void activated(const QUrl& url, bool fromContextMenu);
 };
 
 /**
@@ -336,7 +328,7 @@ signals:
  * The hotSpots() and hotSpotsAtLine() method return all of the hotspots in the text and on
  * a given line respectively.
  */
-class FilterChain : protected QList<Filter*>
+class QTERMWIDGET_EXPORT FilterChain : protected QList<Filter*>
 {
 public:
     virtual ~FilterChain();
@@ -370,7 +362,7 @@ public:
 };
 
 /** A filter chain which processes character images from terminal displays */
-class TerminalImageFilterChain : public FilterChain
+class QTERMWIDGET_NO_EXPORT TerminalImageFilterChain : public FilterChain
 {
 public:
     TerminalImageFilterChain();
@@ -379,10 +371,10 @@ public:
     /**
      * Set the current terminal image to @p image.
      *
-     * \param image The terminal image
-     * \param lines The number of lines in the terminal image
-     * \param columns The number of columns in the terminal image
-     * \param lineProperties The line properties to set for image
+     * @param image The terminal image
+     * @param lines The number of lines in the terminal image
+     * @param columns The number of columns in the terminal image
+     * @param lineProperties The line properties to set for image
      */
     void setImage(const Character* const image , int lines , int columns,
                   const QVector<LineProperty>& lineProperties);

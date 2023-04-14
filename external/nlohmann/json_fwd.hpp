@@ -33,7 +33,8 @@ template<template<typename U, typename V, typename... Args> class ObjectType =
          class NumberFloatType = double,
          template<typename U> class AllocatorType = std::allocator,
          template<typename T, typename SFINAE = void> class JSONSerializer =
-         adl_serializer>
+         adl_serializer,
+         class BinaryType = std::vector<std::uint8_t>>
 class basic_json;
 
 /*!
@@ -59,6 +60,19 @@ uses the standard template types.
 @since version 1.0.0
 */
 using json = basic_json<>;
+
+template<class Key, class T, class IgnoredLess, class Allocator>
+struct ordered_map;
+
+/*!
+@brief ordered JSON class
+
+This type preserves the insertion order of object keys.
+
+@since version 3.9.0
+*/
+using ordered_json = basic_json<nlohmann::ordered_map>;
+
 }  // namespace nlohmann
 
 #endif  // INCLUDE_NLOHMANN_JSON_FWD_HPP_

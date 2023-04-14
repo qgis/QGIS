@@ -232,6 +232,14 @@ class CORE_EXPORT QgsSettingsTreeNamedListNode : public QgsSettingsTreeNode
      */
     void deleteItem( const QString &item, const QStringList &parentsNamedItems = QStringList() ) SIP_THROW( QgsSettingsException );
 
+    /**
+     * Deletes all items from the named list node
+     * \param parentsNamedItems the list of named items in the parent named list (if any)
+     * \throws QgsSettingsException if the number of given parent named items doesn't match the complete key definition
+     * \since QGIS 3.30.1
+     */
+    void deleteAllItems( const QStringList &parentsNamedItems = QStringList() ) SIP_THROW( QgsSettingsException );
+
     //! Returns the setting used to store the selected item
     const QgsSettingsEntryString *selectedItemSetting() const {return mSelectedItemSetting;}
 

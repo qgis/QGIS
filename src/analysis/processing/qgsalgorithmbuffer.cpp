@@ -16,7 +16,6 @@
  ***************************************************************************/
 
 #include "qgsalgorithmbuffer.h"
-#include "qgswkbtypes.h"
 #include "qgsvectorlayer.h"
 
 ///@cond PRIVATE
@@ -63,6 +62,12 @@ void QgsBufferAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterNumber( QStringLiteral( "MITER_LIMIT" ), QObject::tr( "Miter limit" ), QgsProcessingParameterNumber::Double, 2, false, 1 ) );
 
   addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "DISSOLVE" ), QObject::tr( "Dissolve result" ), false ) );
+
+  auto keepDisjointParam = std::make_unique < QgsProcessingParameterBoolean >( QStringLiteral( "SEPARATE_DISJOINT" ), QObject::tr( "Keep disjoint results separate" ), false );
+  keepDisjointParam->setFlags( keepDisjointParam->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
+  keepDisjointParam->setHelp( QObject::tr( "If checked, then any disjoint parts in the buffer results will be output as separate single-part features." ) );
+  addParameter( keepDisjointParam.release() );
+
   addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Buffered" ), QgsProcessing::TypeVectorPolygon, QVariant(), false, true, true ) );
 }
 
@@ -93,6 +98,7 @@ QVariantMap QgsBufferAlgorithm::processAlgorithm( const QVariantMap &parameters,
 
   // fixed parameters
   const bool dissolve = parameterAsBoolean( parameters, QStringLiteral( "DISSOLVE" ), context );
+  const bool keepDisjointSeparate = parameterAsBoolean( parameters, QStringLiteral( "SEPARATE_DISJOINT" ), context );
   const int segments = parameterAsInt( parameters, QStringLiteral( "SEGMENTS" ), context );
   const Qgis::EndCapStyle endCapStyle = static_cast< Qgis::EndCapStyle >( 1 + parameterAsInt( parameters, QStringLiteral( "END_CAP_STYLE" ), context ) );
   const Qgis::JoinStyle joinStyle = static_cast< Qgis::JoinStyle>( 1 + parameterAsInt( parameters, QStringLiteral( "JOIN_STYLE" ), context ) );
@@ -143,15 +149,35 @@ QVariantMap QgsBufferAlgorithm::processAlgorithm( const QVariantMap &parameters,
         QgsMessageLog::logMessage( QObject::tr( "Error calculating buffer for feature %1" ).arg( f.id() ), QObject::tr( "Processing" ), Qgis::MessageLevel::Warning );
       }
       if ( dissolve )
+      {
         bufferedGeometriesForDissolve << outputGeometry;
+      }
       else
       {
         outputGeometry.convertToMultiType();
-        out.setGeometry( outputGeometry );
+
+        if ( !keepDisjointSeparate )
+        {
+          out.setGeometry( outputGeometry );
+
+          if ( !sink->addFeature( out, QgsFeatureSink::FastInsert ) )
+            throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
+        }
+        else
+        {
+          for ( auto partIt = outputGeometry.const_parts_begin(); partIt != outputGeometry.const_parts_end(); ++partIt )
+          {
+            if ( const QgsAbstractGeometry *part = *partIt )
+            {
+              out.setGeometry( QgsGeometry( part->clone() ) );
+              if ( !sink->addFeature( out, QgsFeatureSink::FastInsert ) )
+                throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
+            }
+          }
+        }
       }
     }
-
-    if ( !dissolve )
+    else if ( !dissolve )
     {
       if ( !sink->addFeature( out, QgsFeatureSink::FastInsert ) )
         throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
@@ -166,10 +192,26 @@ QVariantMap QgsBufferAlgorithm::processAlgorithm( const QVariantMap &parameters,
     QgsGeometry finalGeometry = QgsGeometry::unaryUnion( bufferedGeometriesForDissolve );
     finalGeometry.convertToMultiType();
     QgsFeature f;
-    f.setGeometry( finalGeometry );
     f.setAttributes( dissolveAttrs );
-    if ( !sink->addFeature( f, QgsFeatureSink::FastInsert ) )
-      throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
+
+    if ( !keepDisjointSeparate )
+    {
+      f.setGeometry( finalGeometry );
+      if ( !sink->addFeature( f, QgsFeatureSink::FastInsert ) )
+        throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
+    }
+    else
+    {
+      for ( auto partIt = finalGeometry.const_parts_begin(); partIt != finalGeometry.const_parts_end(); ++partIt )
+      {
+        if ( const QgsAbstractGeometry *part = *partIt )
+        {
+          f.setGeometry( QgsGeometry( part->clone() ) );
+          if ( !sink->addFeature( f, QgsFeatureSink::FastInsert ) )
+            throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
+        }
+      }
+    }
   }
 
   QVariantMap outputs;
@@ -186,6 +228,8 @@ QgsProcessingAlgorithm::Flags QgsBufferAlgorithm::flags() const
 
 QgsProcessingAlgorithm::VectorProperties QgsBufferAlgorithm::sinkProperties( const QString &sink, const QVariantMap &parameters, QgsProcessingContext &context, const QMap<QString, QgsProcessingAlgorithm::VectorProperties> &sourceProperties ) const
 {
+  const bool keepDisjointSeparate = parameterAsBoolean( parameters, QStringLiteral( "SEPARATE_DISJOINT" ), context );
+
   QgsProcessingAlgorithm::VectorProperties result;
   if ( sink == QLatin1String( "OUTPUT" ) )
   {
@@ -194,7 +238,7 @@ QgsProcessingAlgorithm::VectorProperties QgsBufferAlgorithm::sinkProperties( con
       const VectorProperties inputProps = sourceProperties.value( QStringLiteral( "INPUT" ) );
       result.fields = inputProps.fields;
       result.crs = inputProps.crs;
-      result.wkbType = Qgis::WkbType::MultiPolygon;
+      result.wkbType = keepDisjointSeparate ? Qgis::WkbType::Polygon : Qgis::WkbType::MultiPolygon;
       result.availability = Available;
       return result;
     }
@@ -205,7 +249,7 @@ QgsProcessingAlgorithm::VectorProperties QgsBufferAlgorithm::sinkProperties( con
       {
         result.fields = source->fields();
         result.crs = source->sourceCrs();
-        result.wkbType = Qgis::WkbType::MultiPolygon;
+        result.wkbType = keepDisjointSeparate ? Qgis::WkbType::Polygon : Qgis::WkbType::MultiPolygon;
         result.availability = Available;
         return result;
       }

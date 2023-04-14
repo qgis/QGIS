@@ -1316,7 +1316,7 @@ Adds a ring to polygon/multipolygon features
 :param ring: ring to add
 :param featureId: if specified, feature ID for feature ring was added to will be stored in this parameter
 
-:return: Qgis.GeometryOperationResult
+:return: :py:class:`Qgis`.GeometryOperationResult
 
          - Success
          - LayerNotEditable
@@ -1345,7 +1345,7 @@ Adds a ring to polygon/multipolygon features
 :param ring: ring to add
 :param featureId: if specified, feature ID for feature ring was added to will be stored in this parameter
 
-:return: Qgis.GeometryOperationResult
+:return: :py:class:`Qgis`.GeometryOperationResult
 
          - Success
          - LayerNotEditable
@@ -1370,7 +1370,7 @@ Adds a ring to polygon/multipolygon features (takes ownership)
 :param ring: ring to add
 :param featureId: if specified, feature ID for feature ring was added to will be stored in this parameter
 
-:return: Qgis.GeometryOperationResult
+:return: :py:class:`Qgis`.GeometryOperationResult
 
          - Success
          - LayerNotEditable
@@ -1396,7 +1396,7 @@ Adds a ring to polygon/multipolygon features (takes ownership)
 %Docstring
 Adds a new part polygon to a multipart feature
 
-:return: Qgis.GeometryOperationResult
+:return: :py:class:`Qgis`.GeometryOperationResult
 
          - Success
          - LayerNotEditable
@@ -1423,7 +1423,7 @@ Adds a new part polygon to a multipart feature
 %Docstring
 Adds a new part polygon to a multipart feature
 
-:return: Qgis.GeometryOperationResult
+:return: :py:class:`Qgis`.GeometryOperationResult
 
          - Success
          - LayerNotEditable
@@ -1453,7 +1453,7 @@ Adds a new part polygon to a multipart feature
 %Docstring
 Adds a new part polygon to a multipart feature
 
-:return: Qgis.GeometryOperationResult
+:return: :py:class:`Qgis`.GeometryOperationResult
 
          - Success
          - LayerNotEditable
@@ -1516,7 +1516,7 @@ Splits parts cut by the given line
 :param splitLine: line that splits the layer features
 :param topologicalEditing: ``True`` if topological editing is enabled
 
-:return: Qgis.GeometryOperationResult
+:return: :py:class:`Qgis`.GeometryOperationResult
 
          - Success
          - NothingHappened
@@ -1544,7 +1544,7 @@ Splits parts cut by the given line
 :param splitLine: line that splits the layer features
 :param topologicalEditing: ``True`` if topological editing is enabled
 
-:return: Qgis.GeometryOperationResult
+:return: :py:class:`Qgis`.GeometryOperationResult
 
          - Success
          - NothingHappened
@@ -1569,7 +1569,7 @@ Splits features cut by the given line
 :param splitLine: line that splits the layer features
 :param topologicalEditing: ``True`` if topological editing is enabled
 
-:return: Qgis.GeometryOperationResult
+:return: :py:class:`Qgis`.GeometryOperationResult
 
          - Success
          - NothingHappened
@@ -1597,7 +1597,7 @@ Splits features cut by the given line
 :param splitLine: line that splits the layer features
 :param topologicalEditing: ``True`` if topological editing is enabled
 
-:return: Qgis.GeometryOperationResult
+:return: :py:class:`Qgis`.GeometryOperationResult
 
          - Success
          - NothingHappened
@@ -1624,7 +1624,7 @@ Splits features cut by the given curve
 :param preserveCircular: whether circular strings are preserved after splitting
 :param topologicalEditing: ``True`` if topological editing is enabled
 
-:return: Qgis.GeometryOperationResult
+:return: :py:class:`Qgis`.GeometryOperationResult
 
          - Success
          - NothingHappened

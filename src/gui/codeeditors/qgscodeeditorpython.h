@@ -21,6 +21,9 @@
 #include "qgis_gui.h"
 #include <Qsci/qscilexerpython.h>
 
+class QgsSettingsEntryInteger;
+class QgsSettingsEntryBool;
+
 SIP_IF_MODULE( HAVE_QSCI_SIP )
 
 #ifndef SIP_RUN
@@ -51,18 +54,31 @@ class GUI_EXPORT QgsCodeEditorPython : public QgsCodeEditor
 
   public:
 
+#ifndef SIP_RUN
+///@cond PRIVATE
+    static inline QgsSettingsTreeNode *sTreePythonCodeEditor = QgsCodeEditor::sTreeCodeEditor->createChildNode( QStringLiteral( "python" ) );
+    static const QgsSettingsEntryString *settingCodeFormatter;
+    static const QgsSettingsEntryInteger *settingMaxLineLength;
+    static const QgsSettingsEntryBool *settingSortImports;
+    static const QgsSettingsEntryInteger *settingAutopep8Level;
+    static const QgsSettingsEntryBool *settingBlackNormalizeQuotes;
+///@endcond PRIVATE
+#endif
+
     /**
      * Construct a new Python editor.
      *
      * \param parent The parent QWidget
      * \param filenames The list of apis files to load for the Python lexer
      * \param mode code editor mode (since QGIS 3.30)
+     * \param flags code editor flags (since QGIS 3.32)
      * \since QGIS 2.6
      */
     QgsCodeEditorPython( QWidget *parent SIP_TRANSFERTHIS = nullptr, const QList<QString> &filenames = QList<QString>(),
-                         QgsCodeEditor::Mode mode = QgsCodeEditor::Mode::ScriptEditor );
+                         QgsCodeEditor::Mode mode = QgsCodeEditor::Mode::ScriptEditor, QgsCodeEditor::Flags flags = QgsCodeEditor::Flag::CodeFolding );
 
     Qgis::ScriptLanguage language() const override;
+    Qgis::ScriptLanguageCapabilities languageCapabilities() const override;
 
     /**
      * Load APIs from one or more files
@@ -96,6 +112,15 @@ class GUI_EXPORT QgsCodeEditorPython : public QgsCodeEditor
      */
     QString characterAfterCursor() const;
 
+    /**
+     * Updates the editor capabilities.
+     *
+     * \since QGIS 3.32
+     */
+    void updateCapabilities();
+
+    bool checkSyntax() override;
+
   public slots:
 
     /**
@@ -110,13 +135,14 @@ class GUI_EXPORT QgsCodeEditorPython : public QgsCodeEditor
      *
      * \since QGIS 3.30
      */
-    void toggleComment();
+    void toggleComment() override;
 
   protected:
 
     void initializeLexer() override;
-
     virtual void keyPressEvent( QKeyEvent *event ) override;
+    QString reformatCodeString( const QString &string ) override;
+    void populateContextMenu( QMenu *menu ) override;
 
   protected slots:
 
@@ -131,6 +157,8 @@ class GUI_EXPORT QgsCodeEditorPython : public QgsCodeEditor
 
     QList<QString> mAPISFilesList;
     QString mPapFile;
+
+    Qgis::ScriptLanguageCapabilities mCapabilities;
 
     static const QMap<QString, QString> sCompletionPairs;
 

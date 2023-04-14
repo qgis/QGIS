@@ -18,7 +18,7 @@
 #include "qgsalgorithmjoinbynearest.h"
 #include "qgsprocessingoutputs.h"
 #include "qgslinestring.h"
-
+#include "qgsspatialindex.h"
 #include <algorithm>
 
 ///@cond PRIVATE
@@ -131,7 +131,7 @@ QVariantMap QgsJoinByNearestAlgorithm::processAlgorithm( const QVariantMap &para
   const bool sameSourceAndTarget = parameters.value( QStringLiteral( "INPUT" ) ) == parameters.value( QStringLiteral( "INPUT_2" ) );
 
   const QString prefix = parameterAsString( parameters, QStringLiteral( "PREFIX" ), context );
-  const QStringList fieldsToCopy = parameterAsFields( parameters, QStringLiteral( "FIELDS_TO_COPY" ), context );
+  const QStringList fieldsToCopy = parameterAsStrings( parameters, QStringLiteral( "FIELDS_TO_COPY" ), context );
 
   QgsFields outFields2;
   QgsAttributeList fields2Indices;

@@ -22,7 +22,7 @@
       "expression": "is_selected(@atlas_feature)",
       "returns": "TRUE if the current atlas feature is selected."
     }, {
-      "expression": "is_selected(get_feature('streets', 'name', 'Main St.')))",
+      "expression": "is_selected(get_feature('streets', 'name', 'Main St.'))",
       "returns": "TRUE if the unique named \"Main St.\" feature on the active \"streets\" layer is selected."
     }, {
       "expression": "is_selected(get_feature_by_id('streets', 1))",

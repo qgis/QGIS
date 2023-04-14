@@ -21,6 +21,8 @@
 #include "qgslayoutrendercontext.h"
 #include "qgslayoutreportcontext.h"
 #include "qgslayoutitem.h"
+
+#include <QPdfWriter>
 #include <QPointer>
 #include <QSize>
 #include <QRectF>
@@ -721,32 +723,29 @@ class CORE_EXPORT QgsLayoutExporter
     //! Write a world file
     void writeWorldFile( const QString &fileName, double a, double b, double c, double d, double e, double f ) const;
 
-#ifndef QT_NO_PRINTER
-
     /**
-     * Prepare a \a printer for printing a layout as a PDF, to the destination \a filePath.
+     * Prepare a \a device for printing a layout as a PDF, to the destination \a filePath.
      */
-    static void preparePrintAsPdf( QgsLayout *layout, QPrinter &printer, const QString &filePath );
+    static void preparePrintAsPdf( QgsLayout *layout, QPagedPaintDevice *device, const QString &filePath );
 
-    static void preparePrint( QgsLayout *layout, QPrinter &printer, bool setFirstPageSize = false );
+    static void preparePrint( QgsLayout *layout, QPagedPaintDevice *device, bool setFirstPageSize = false );
 
     /**
-     * Convenience function that prepares the printer and prints.
+     * Convenience function that prepares the \a device and prints.
      */
-    ExportResult print( QPrinter &printer );
+    ExportResult print( QPagedPaintDevice *device );
 
     /**
-     * Print on a preconfigured printer
-     * \param printer QPrinter destination
+     * Print on a preconfigured device
+     * \param device QPagedPaintDevice destination
      * \param painter QPainter source
      * \param startNewPage set to TRUE to begin the print on a new page
      * \param dpi set to a value > 0 to manually override the layout's default dpi
      * \param rasterize set to TRUE to force print as a raster image
      */
-    ExportResult printPrivate( QPrinter &printer, QPainter &painter, bool startNewPage = false, double dpi = -1, bool rasterize = false );
+    ExportResult printPrivate( QPagedPaintDevice *device, QPainter &painter, bool startNewPage = false, double dpi = -1, bool rasterize = false );
 
-    static void updatePrinterPageSize( QgsLayout *layout, QPrinter &printer, int page );
-#endif
+    static void updatePrinterPageSize( QgsLayout *layout, QPagedPaintDevice *device, int page );
 
     ExportResult renderToLayeredSvg( const SvgExportSettings &settings, double width, double height, int page, const QRectF &bounds,
                                      const QString &filename, unsigned int svgLayerId, const QString &layerName,

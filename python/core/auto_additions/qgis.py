@@ -904,6 +904,39 @@ QgsPalLayerSettings.QuadrantBelowRight.__doc__ = "BelowRight"
 Qgis.LabelQuadrantPosition.__doc__ = 'Label quadrant positions\n\n.. note::\n\n   Prior to QGIS 3.26 this was available as :py:class:`QgsPalLayerSettings`.QuadrantPosition\n\n.. versionadded:: 3.26\n\n' + '* ``QuadrantAboveLeft``: ' + Qgis.LabelQuadrantPosition.AboveLeft.__doc__ + '\n' + '* ``QuadrantAbove``: ' + Qgis.LabelQuadrantPosition.Above.__doc__ + '\n' + '* ``QuadrantAboveRight``: ' + Qgis.LabelQuadrantPosition.AboveRight.__doc__ + '\n' + '* ``QuadrantLeft``: ' + Qgis.LabelQuadrantPosition.Left.__doc__ + '\n' + '* ``QuadrantOver``: ' + Qgis.LabelQuadrantPosition.Over.__doc__ + '\n' + '* ``QuadrantRight``: ' + Qgis.LabelQuadrantPosition.Right.__doc__ + '\n' + '* ``QuadrantBelowLeft``: ' + Qgis.LabelQuadrantPosition.BelowLeft.__doc__ + '\n' + '* ``QuadrantBelow``: ' + Qgis.LabelQuadrantPosition.Below.__doc__ + '\n' + '* ``QuadrantBelowRight``: ' + Qgis.LabelQuadrantPosition.BelowRight.__doc__
 # --
 Qgis.LabelQuadrantPosition.baseClass = Qgis
+QgsLabeling.LinePlacementFlag = Qgis.LabelLinePlacementFlag
+# monkey patching scoped based enum
+QgsLabeling.OnLine = Qgis.LabelLinePlacementFlag.OnLine
+QgsLabeling.OnLine.is_monkey_patched = True
+QgsLabeling.OnLine.__doc__ = "Labels can be placed directly over a line feature."
+QgsLabeling.AboveLine = Qgis.LabelLinePlacementFlag.AboveLine
+QgsLabeling.AboveLine.is_monkey_patched = True
+QgsLabeling.AboveLine.__doc__ = "Labels can be placed above a line feature. Unless MapOrientation is also specified this mode respects the direction of the line feature, so a line from right to left labels will have labels placed placed below the line feature."
+QgsLabeling.BelowLine = Qgis.LabelLinePlacementFlag.BelowLine
+QgsLabeling.BelowLine.is_monkey_patched = True
+QgsLabeling.BelowLine.__doc__ = "Labels can be placed below a line feature. Unless MapOrientation is also specified this mode respects the direction of the line feature, so a line from right to left labels will have labels placed placed above the line feature."
+QgsLabeling.MapOrientation = Qgis.LabelLinePlacementFlag.MapOrientation
+QgsLabeling.MapOrientation.is_monkey_patched = True
+QgsLabeling.MapOrientation.__doc__ = "Signifies that the AboveLine and BelowLine flags should respect the map's orientation rather than the feature's orientation. For example, AboveLine will always result in label's being placed above a line, regardless of the line's direction."
+Qgis.LabelLinePlacementFlag.__doc__ = 'Line placement flags, which control how candidates are generated for a linear feature.\n\n.. note::\n\n   Prior to QGIS 3.32 this was available as :py:class:`QgsLabeling`.LinePlacementFlag\n\n.. versionadded:: 3.32\n\n' + '* ``OnLine``: ' + Qgis.LabelLinePlacementFlag.OnLine.__doc__ + '\n' + '* ``AboveLine``: ' + Qgis.LabelLinePlacementFlag.AboveLine.__doc__ + '\n' + '* ``BelowLine``: ' + Qgis.LabelLinePlacementFlag.BelowLine.__doc__ + '\n' + '* ``MapOrientation``: ' + Qgis.LabelLinePlacementFlag.MapOrientation.__doc__
+# --
+Qgis.LabelLinePlacementFlag.baseClass = Qgis
+QgsLabeling.LinePlacementFlags = Qgis.LabelLinePlacementFlags
+Qgis.LabelLinePlacementFlags.baseClass = Qgis
+LabelLinePlacementFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
+QgsLabeling.PolygonPlacementFlag = Qgis.LabelPolygonPlacementFlag
+# monkey patching scoped based enum
+QgsLabeling.AllowPlacementOutsideOfPolygon = Qgis.LabelPolygonPlacementFlag.AllowPlacementOutsideOfPolygon
+QgsLabeling.AllowPlacementOutsideOfPolygon.is_monkey_patched = True
+QgsLabeling.AllowPlacementOutsideOfPolygon.__doc__ = "Labels can be placed outside of a polygon feature"
+QgsLabeling.AllowPlacementInsideOfPolygon = Qgis.LabelPolygonPlacementFlag.AllowPlacementInsideOfPolygon
+QgsLabeling.AllowPlacementInsideOfPolygon.is_monkey_patched = True
+QgsLabeling.AllowPlacementInsideOfPolygon.__doc__ = "Labels can be placed inside a polygon feature"
+Qgis.LabelPolygonPlacementFlag.__doc__ = 'Polygon placement flags, which control how candidates are generated for a polygon feature.\n\n.. note::\n\n   Prior to QGIS 3.32 this was available as :py:class:`QgsLabeling`.PolygonPlacementFlag\n\n.. versionadded:: 3.32\n\n' + '* ``AllowPlacementOutsideOfPolygon``: ' + Qgis.LabelPolygonPlacementFlag.AllowPlacementOutsideOfPolygon.__doc__ + '\n' + '* ``AllowPlacementInsideOfPolygon``: ' + Qgis.LabelPolygonPlacementFlag.AllowPlacementInsideOfPolygon.__doc__
+# --
+Qgis.LabelPolygonPlacementFlag.baseClass = Qgis
+Qgis.LabelPolygonPlacementFlags.baseClass = Qgis
+LabelPolygonPlacementFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
 QgsPalLayerSettings.UpsideDownLabels = Qgis.UpsideDownLabelHandling
 # monkey patching scoped based enum
 QgsPalLayerSettings.Upright = Qgis.UpsideDownLabelHandling.FlipUpsideDownLabels
@@ -946,6 +979,34 @@ QgsPalLayerSettings.MultiJustify.__doc__ = "Justified"
 Qgis.LabelMultiLineAlignment.__doc__ = 'Text alignment for multi-line labels.\n\n.. note::\n\n   Prior to QGIS 3.26 this was available as :py:class:`QgsPalLayerSettings`.MultiLineAlign\n\n.. versionadded:: 3.26\n\n' + '* ``MultiLeft``: ' + Qgis.LabelMultiLineAlignment.Left.__doc__ + '\n' + '* ``MultiCenter``: ' + Qgis.LabelMultiLineAlignment.Center.__doc__ + '\n' + '* ``MultiRight``: ' + Qgis.LabelMultiLineAlignment.Right.__doc__ + '\n' + '* ``MultiFollowPlacement``: ' + Qgis.LabelMultiLineAlignment.FollowPlacement.__doc__ + '\n' + '* ``MultiJustify``: ' + Qgis.LabelMultiLineAlignment.Justify.__doc__
 # --
 Qgis.LabelMultiLineAlignment.baseClass = Qgis
+QgsProviderMetadata.FilterType = Qgis.FileFilterType
+# monkey patching scoped based enum
+QgsProviderMetadata.FilterVector = Qgis.FileFilterType.Vector
+QgsProviderMetadata.FilterType.FilterVector = Qgis.FileFilterType.Vector
+QgsProviderMetadata.FilterVector.is_monkey_patched = True
+QgsProviderMetadata.FilterVector.__doc__ = "Vector layers"
+QgsProviderMetadata.FilterRaster = Qgis.FileFilterType.Raster
+QgsProviderMetadata.FilterType.FilterRaster = Qgis.FileFilterType.Raster
+QgsProviderMetadata.FilterRaster.is_monkey_patched = True
+QgsProviderMetadata.FilterRaster.__doc__ = "Raster layers"
+QgsProviderMetadata.FilterMesh = Qgis.FileFilterType.Mesh
+QgsProviderMetadata.FilterType.FilterMesh = Qgis.FileFilterType.Mesh
+QgsProviderMetadata.FilterMesh.is_monkey_patched = True
+QgsProviderMetadata.FilterMesh.__doc__ = "Mesh layers"
+QgsProviderMetadata.FilterMeshDataset = Qgis.FileFilterType.MeshDataset
+QgsProviderMetadata.FilterType.FilterMeshDataset = Qgis.FileFilterType.MeshDataset
+QgsProviderMetadata.FilterMeshDataset.is_monkey_patched = True
+QgsProviderMetadata.FilterMeshDataset.__doc__ = "Mesh datasets"
+QgsProviderMetadata.FilterPointCloud = Qgis.FileFilterType.PointCloud
+QgsProviderMetadata.FilterType.FilterPointCloud = Qgis.FileFilterType.PointCloud
+QgsProviderMetadata.FilterPointCloud.is_monkey_patched = True
+QgsProviderMetadata.FilterPointCloud.__doc__ = "Point clouds (since QGIS 3.18)"
+QgsProviderMetadata.VectorTile = Qgis.FileFilterType.VectorTile
+QgsProviderMetadata.VectorTile.is_monkey_patched = True
+QgsProviderMetadata.VectorTile.__doc__ = "Vector tile layers (since QGIS 3.32)"
+Qgis.FileFilterType.__doc__ = 'Type of file filters\n\nPrior to QGIS 3.32 this was available as :py:class:`QgsProviderMetadata`.FilterType\n\n.. versionadded:: 3.32\n\n' + '* ``FilterVector``: ' + Qgis.FileFilterType.Vector.__doc__ + '\n' + '* ``FilterRaster``: ' + Qgis.FileFilterType.Raster.__doc__ + '\n' + '* ``FilterMesh``: ' + Qgis.FileFilterType.Mesh.__doc__ + '\n' + '* ``FilterMeshDataset``: ' + Qgis.FileFilterType.MeshDataset.__doc__ + '\n' + '* ``FilterPointCloud``: ' + Qgis.FileFilterType.PointCloud.__doc__ + '\n' + '* ``VectorTile``: ' + Qgis.FileFilterType.VectorTile.__doc__
+# --
+Qgis.FileFilterType.baseClass = Qgis
 # monkey patching scoped based enum
 Qgis.SublayerQueryFlag.FastScan.__doc__ = "Indicates that the provider must scan for sublayers using the fastest possible approach -- e.g. by first checking that a uri has an extension which is known to be readable by the provider"
 Qgis.SublayerQueryFlag.ResolveGeometryType.__doc__ = "Attempt to resolve the geometry type for vector sublayers"
@@ -1072,6 +1133,13 @@ Qgis.SublayerPromptMode.NeverAskLoadAll.__doc__ = "Never ask users to select sub
 Qgis.SublayerPromptMode.__doc__ = 'Specifies how to handle layer sources with multiple sublayers.\n\n.. versionadded:: 3.22\n\n' + '* ``AlwaysAsk``: ' + Qgis.SublayerPromptMode.AlwaysAsk.__doc__ + '\n' + '* ``AskExcludingRasterBands``: ' + Qgis.SublayerPromptMode.AskExcludingRasterBands.__doc__ + '\n' + '* ``NeverAskSkip``: ' + Qgis.SublayerPromptMode.NeverAskSkip.__doc__ + '\n' + '* ``NeverAskLoadAll``: ' + Qgis.SublayerPromptMode.NeverAskLoadAll.__doc__
 # --
 Qgis.SublayerPromptMode.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.FieldMetadataProperty.GeometryCrs.__doc__ = "Available for geometry field types with a specific associated coordinate reference system (as a QgsCoordinateReferenceSystem value)"
+Qgis.FieldMetadataProperty.GeometryWkbType.__doc__ = "Available for geometry field types which accept geometries of a specific WKB type only (as a QgsWkbTypes.Type value)"
+Qgis.FieldMetadataProperty.CustomProperty.__doc__ = "Starting point for custom user set properties"
+Qgis.FieldMetadataProperty.__doc__ = 'Standard field metadata values.\n\n.. versionadded:: 3.30\n\n' + '* ``GeometryCrs``: ' + Qgis.FieldMetadataProperty.GeometryCrs.__doc__ + '\n' + '* ``GeometryWkbType``: ' + Qgis.FieldMetadataProperty.GeometryWkbType.__doc__ + '\n' + '* ``CustomProperty``: ' + Qgis.FieldMetadataProperty.CustomProperty.__doc__
+# --
+Qgis.FieldMetadataProperty.baseClass = Qgis
 QgsVectorLayer.SelectBehavior = Qgis.SelectBehavior
 # monkey patching scoped based enum
 QgsVectorLayer.SetSelection = Qgis.SelectBehavior.SetSelection
@@ -1154,13 +1222,20 @@ Qgis.GpsConnectionType.Gpsd.__doc__ = "GPSD device"
 Qgis.GpsConnectionType.__doc__ = 'GPS connection types.\n\n.. versionadded:: 3.30\n\n' + '* ``Automatic``: ' + Qgis.GpsConnectionType.Automatic.__doc__ + '\n' + '* ``Internal``: ' + Qgis.GpsConnectionType.Internal.__doc__ + '\n' + '* ``Serial``: ' + Qgis.GpsConnectionType.Serial.__doc__ + '\n' + '* ``Gpsd``: ' + Qgis.GpsConnectionType.Gpsd.__doc__
 # --
 Qgis.GpsConnectionType.baseClass = Qgis
+Qgis.GpsConnectionStatus = Qgis.DeviceConnectionStatus
 # monkey patching scoped based enum
-Qgis.GpsConnectionStatus.Disconnected.__doc__ = "Device is disconnected"
-Qgis.GpsConnectionStatus.Connecting.__doc__ = "Device is connecting"
-Qgis.GpsConnectionStatus.Connected.__doc__ = "Device is successfully connected"
-Qgis.GpsConnectionStatus.__doc__ = 'GPS connection status.\n\n.. versionadded:: 3.30\n\n' + '* ``Disconnected``: ' + Qgis.GpsConnectionStatus.Disconnected.__doc__ + '\n' + '* ``Connecting``: ' + Qgis.GpsConnectionStatus.Connecting.__doc__ + '\n' + '* ``Connected``: ' + Qgis.GpsConnectionStatus.Connected.__doc__
+Qgis.Disconnected = Qgis.DeviceConnectionStatus.Disconnected
+Qgis.Disconnected.is_monkey_patched = True
+Qgis.Disconnected.__doc__ = "Device is disconnected"
+Qgis.Connecting = Qgis.DeviceConnectionStatus.Connecting
+Qgis.Connecting.is_monkey_patched = True
+Qgis.Connecting.__doc__ = "Device is connecting"
+Qgis.Connected = Qgis.DeviceConnectionStatus.Connected
+Qgis.Connected.is_monkey_patched = True
+Qgis.Connected.__doc__ = "Device is successfully connected"
+Qgis.DeviceConnectionStatus.__doc__ = 'GPS connection status.\n\n.. versionadded:: 3.30\n\n' + '* ``Disconnected``: ' + Qgis.DeviceConnectionStatus.Disconnected.__doc__ + '\n' + '* ``Connecting``: ' + Qgis.DeviceConnectionStatus.Connecting.__doc__ + '\n' + '* ``Connected``: ' + Qgis.DeviceConnectionStatus.Connected.__doc__
 # --
-Qgis.GpsConnectionStatus.baseClass = Qgis
+Qgis.DeviceConnectionStatus.baseClass = Qgis
 QgsGpsInformation.FixStatus = Qgis.GpsFixStatus
 # monkey patching scoped based enum
 QgsGpsInformation.NoData = Qgis.GpsFixStatus.NoData
@@ -2589,12 +2664,28 @@ Qgis.ScriptLanguage.__doc__ = 'Scripting languages.\n\n.. versionadded:: 3.30\n\
 # --
 Qgis.ScriptLanguage.baseClass = Qgis
 # monkey patching scoped based enum
+Qgis.ScriptLanguageCapability.Reformat.__doc__ = "Language supports automatic code reformatting"
+Qgis.ScriptLanguageCapability.CheckSyntax.__doc__ = "Language supports syntax checking"
+Qgis.ScriptLanguageCapability.ToggleComment.__doc__ = "Language supports comment toggling"
+Qgis.ScriptLanguageCapability.__doc__ = 'Script language capabilities.\n\nThe flags reflect the support capabilities of a scripting language.\n\n.. versionadded:: 3.32\n\n' + '* ``Reformat``: ' + Qgis.ScriptLanguageCapability.Reformat.__doc__ + '\n' + '* ``CheckSyntax``: ' + Qgis.ScriptLanguageCapability.CheckSyntax.__doc__ + '\n' + '* ``ToggleComment``: ' + Qgis.ScriptLanguageCapability.ToggleComment.__doc__
+# --
+Qgis.ScriptLanguageCapability.baseClass = Qgis
+Qgis.ScriptLanguageCapabilities.baseClass = Qgis
+ScriptLanguageCapabilities = Qgis  # dirty hack since SIP seems to introduce the flags in module
+# monkey patching scoped based enum
 Qgis.LayerTreeInsertionMethod.AboveInsertionPoint.__doc__ = "Layers are added in the tree above the insertion point"
 Qgis.LayerTreeInsertionMethod.TopOfTree.__doc__ = "Layers are added at the top of the layer tree"
 Qgis.LayerTreeInsertionMethod.OptimalInInsertionGroup.__doc__ = "Layers are added at optimal locations across the insertion point's group"
 Qgis.LayerTreeInsertionMethod.__doc__ = 'Layer tree insertion methods\n\n.. versionadded:: 3.30\n\n' + '* ``AboveInsertionPoint``: ' + Qgis.LayerTreeInsertionMethod.AboveInsertionPoint.__doc__ + '\n' + '* ``TopOfTree``: ' + Qgis.LayerTreeInsertionMethod.TopOfTree.__doc__ + '\n' + '* ``OptimalInInsertionGroup``: ' + Qgis.LayerTreeInsertionMethod.OptimalInInsertionGroup.__doc__
 # --
 Qgis.LayerTreeInsertionMethod.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.LayerTreeFilterFlag.SkipVisibilityCheck.__doc__ = "If set, the standard visibility check should be skipped"
+Qgis.LayerTreeFilterFlag.__doc__ = 'Layer tree filter flags.\n\n.. versionadded:: 3.32\n\n' + '* ``SkipVisibilityCheck``: ' + Qgis.LayerTreeFilterFlag.SkipVisibilityCheck.__doc__
+# --
+Qgis.LayerTreeFilterFlag.baseClass = Qgis
+Qgis.LayerTreeFilterFlags.baseClass = Qgis
+LayerTreeFilterFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
 # monkey patching scoped based enum
 Qgis.ActionType.Invalid.__doc__ = "Invalid"
 Qgis.ActionType.MapLayerAction.__doc__ = "Standard actions (defined by core or plugins), corresponds to QgsMapLayerAction class."
@@ -3025,11 +3116,14 @@ QgsUnitTypes.DistanceMillimeters = Qgis.DistanceUnit.Millimeters
 QgsUnitTypes.DistanceUnit.DistanceMillimeters = Qgis.DistanceUnit.Millimeters
 QgsUnitTypes.DistanceMillimeters.is_monkey_patched = True
 QgsUnitTypes.DistanceMillimeters.__doc__ = "Millimeters"
+QgsUnitTypes.Inches = Qgis.DistanceUnit.Inches
+QgsUnitTypes.Inches.is_monkey_patched = True
+QgsUnitTypes.Inches.__doc__ = "Inches (since QGIS 3.32)"
 QgsUnitTypes.DistanceUnknownUnit = Qgis.DistanceUnit.Unknown
 QgsUnitTypes.DistanceUnit.DistanceUnknownUnit = Qgis.DistanceUnit.Unknown
 QgsUnitTypes.DistanceUnknownUnit.is_monkey_patched = True
 QgsUnitTypes.DistanceUnknownUnit.__doc__ = "Unknown distance unit"
-Qgis.DistanceUnit.__doc__ = 'Units of distance\n\n.. note::\n\n   Prior to QGIS 3.30 this was available as :py:class:`QgsUnitTypes`.DistanceUnit.\n\n.. versionadded:: 3.30\n\n' + '* ``DistanceMeters``: ' + Qgis.DistanceUnit.Meters.__doc__ + '\n' + '* ``DistanceKilometers``: ' + Qgis.DistanceUnit.Kilometers.__doc__ + '\n' + '* ``DistanceFeet``: ' + Qgis.DistanceUnit.Feet.__doc__ + '\n' + '* ``DistanceNauticalMiles``: ' + Qgis.DistanceUnit.NauticalMiles.__doc__ + '\n' + '* ``DistanceYards``: ' + Qgis.DistanceUnit.Yards.__doc__ + '\n' + '* ``DistanceMiles``: ' + Qgis.DistanceUnit.Miles.__doc__ + '\n' + '* ``DistanceDegrees``: ' + Qgis.DistanceUnit.Degrees.__doc__ + '\n' + '* ``DistanceCentimeters``: ' + Qgis.DistanceUnit.Centimeters.__doc__ + '\n' + '* ``DistanceMillimeters``: ' + Qgis.DistanceUnit.Millimeters.__doc__ + '\n' + '* ``DistanceUnknownUnit``: ' + Qgis.DistanceUnit.Unknown.__doc__
+Qgis.DistanceUnit.__doc__ = 'Units of distance\n\n.. note::\n\n   Prior to QGIS 3.30 this was available as :py:class:`QgsUnitTypes`.DistanceUnit.\n\n.. versionadded:: 3.30\n\n' + '* ``DistanceMeters``: ' + Qgis.DistanceUnit.Meters.__doc__ + '\n' + '* ``DistanceKilometers``: ' + Qgis.DistanceUnit.Kilometers.__doc__ + '\n' + '* ``DistanceFeet``: ' + Qgis.DistanceUnit.Feet.__doc__ + '\n' + '* ``DistanceNauticalMiles``: ' + Qgis.DistanceUnit.NauticalMiles.__doc__ + '\n' + '* ``DistanceYards``: ' + Qgis.DistanceUnit.Yards.__doc__ + '\n' + '* ``DistanceMiles``: ' + Qgis.DistanceUnit.Miles.__doc__ + '\n' + '* ``DistanceDegrees``: ' + Qgis.DistanceUnit.Degrees.__doc__ + '\n' + '* ``DistanceCentimeters``: ' + Qgis.DistanceUnit.Centimeters.__doc__ + '\n' + '* ``DistanceMillimeters``: ' + Qgis.DistanceUnit.Millimeters.__doc__ + '\n' + '* ``Inches``: ' + Qgis.DistanceUnit.Inches.__doc__ + '\n' + '* ``DistanceUnknownUnit``: ' + Qgis.DistanceUnit.Unknown.__doc__
 # --
 Qgis.DistanceUnit.baseClass = Qgis
 QgsUnitTypes.DistanceUnitType = Qgis.DistanceUnitType
@@ -3093,11 +3187,14 @@ QgsUnitTypes.AreaSquareMillimeters = Qgis.AreaUnit.SquareMillimeters
 QgsUnitTypes.AreaUnit.AreaSquareMillimeters = Qgis.AreaUnit.SquareMillimeters
 QgsUnitTypes.AreaSquareMillimeters.is_monkey_patched = True
 QgsUnitTypes.AreaSquareMillimeters.__doc__ = "Square millimeters"
+QgsUnitTypes.SquareInches = Qgis.AreaUnit.SquareInches
+QgsUnitTypes.SquareInches.is_monkey_patched = True
+QgsUnitTypes.SquareInches.__doc__ = "Square inches (since QGIS 3.32)"
 QgsUnitTypes.AreaUnknownUnit = Qgis.AreaUnit.Unknown
 QgsUnitTypes.AreaUnit.AreaUnknownUnit = Qgis.AreaUnit.Unknown
 QgsUnitTypes.AreaUnknownUnit.is_monkey_patched = True
 QgsUnitTypes.AreaUnknownUnit.__doc__ = "Unknown areal unit"
-Qgis.AreaUnit.__doc__ = 'Units of area\n\n.. note::\n\n   Prior to QGIS 3.30 this was available as :py:class:`QgsUnitTypes`.AreaUnit.\n\n.. versionadded:: 3.30\n\n' + '* ``AreaSquareMeters``: ' + Qgis.AreaUnit.SquareMeters.__doc__ + '\n' + '* ``AreaSquareKilometers``: ' + Qgis.AreaUnit.SquareKilometers.__doc__ + '\n' + '* ``AreaSquareFeet``: ' + Qgis.AreaUnit.SquareFeet.__doc__ + '\n' + '* ``AreaSquareYards``: ' + Qgis.AreaUnit.SquareYards.__doc__ + '\n' + '* ``AreaSquareMiles``: ' + Qgis.AreaUnit.SquareMiles.__doc__ + '\n' + '* ``AreaHectares``: ' + Qgis.AreaUnit.Hectares.__doc__ + '\n' + '* ``AreaAcres``: ' + Qgis.AreaUnit.Acres.__doc__ + '\n' + '* ``AreaSquareNauticalMiles``: ' + Qgis.AreaUnit.SquareNauticalMiles.__doc__ + '\n' + '* ``AreaSquareDegrees``: ' + Qgis.AreaUnit.SquareDegrees.__doc__ + '\n' + '* ``AreaSquareCentimeters``: ' + Qgis.AreaUnit.SquareCentimeters.__doc__ + '\n' + '* ``AreaSquareMillimeters``: ' + Qgis.AreaUnit.SquareMillimeters.__doc__ + '\n' + '* ``AreaUnknownUnit``: ' + Qgis.AreaUnit.Unknown.__doc__
+Qgis.AreaUnit.__doc__ = 'Units of area\n\n.. note::\n\n   Prior to QGIS 3.30 this was available as :py:class:`QgsUnitTypes`.AreaUnit.\n\n.. versionadded:: 3.30\n\n' + '* ``AreaSquareMeters``: ' + Qgis.AreaUnit.SquareMeters.__doc__ + '\n' + '* ``AreaSquareKilometers``: ' + Qgis.AreaUnit.SquareKilometers.__doc__ + '\n' + '* ``AreaSquareFeet``: ' + Qgis.AreaUnit.SquareFeet.__doc__ + '\n' + '* ``AreaSquareYards``: ' + Qgis.AreaUnit.SquareYards.__doc__ + '\n' + '* ``AreaSquareMiles``: ' + Qgis.AreaUnit.SquareMiles.__doc__ + '\n' + '* ``AreaHectares``: ' + Qgis.AreaUnit.Hectares.__doc__ + '\n' + '* ``AreaAcres``: ' + Qgis.AreaUnit.Acres.__doc__ + '\n' + '* ``AreaSquareNauticalMiles``: ' + Qgis.AreaUnit.SquareNauticalMiles.__doc__ + '\n' + '* ``AreaSquareDegrees``: ' + Qgis.AreaUnit.SquareDegrees.__doc__ + '\n' + '* ``AreaSquareCentimeters``: ' + Qgis.AreaUnit.SquareCentimeters.__doc__ + '\n' + '* ``AreaSquareMillimeters``: ' + Qgis.AreaUnit.SquareMillimeters.__doc__ + '\n' + '* ``SquareInches``: ' + Qgis.AreaUnit.SquareInches.__doc__ + '\n' + '* ``AreaUnknownUnit``: ' + Qgis.AreaUnit.Unknown.__doc__
 # --
 Qgis.AreaUnit.baseClass = Qgis
 QgsUnitTypes.VolumeUnit = Qgis.VolumeUnit
@@ -3330,3 +3427,18 @@ QgsUnitTypes.LayoutScreenUnits.__doc__ = "Unit is a screen based measurement uni
 Qgis.LayoutUnitType.__doc__ = 'Types of layout units\n\n.. note::\n\n   Prior to QGIS 3.30 this was available as :py:class:`QgsUnitTypes`.LayoutUnitType.\n\n.. versionadded:: 3.30\n\n' + '* ``LayoutPaperUnits``: ' + Qgis.LayoutUnitType.PaperUnits.__doc__ + '\n' + '* ``LayoutScreenUnits``: ' + Qgis.LayoutUnitType.ScreenUnits.__doc__
 # --
 Qgis.LayoutUnitType.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.PostgresRelKind.NotSet.__doc__ = "Not set"
+Qgis.PostgresRelKind.Unknown.__doc__ = "Unknown"
+Qgis.PostgresRelKind.OrdinaryTable.__doc__ = "Ordinary table"
+Qgis.PostgresRelKind.Index.__doc__ = "Index"
+Qgis.PostgresRelKind.Sequence.__doc__ = "Sequence"
+Qgis.PostgresRelKind.View.__doc__ = "View"
+Qgis.PostgresRelKind.MaterializedView.__doc__ = "Materialized view"
+Qgis.PostgresRelKind.CompositeType.__doc__ = "Composition type"
+Qgis.PostgresRelKind.ToastTable.__doc__ = "TOAST table"
+Qgis.PostgresRelKind.ForeignTable.__doc__ = "Foreign table"
+Qgis.PostgresRelKind.PartitionedTable.__doc__ = "Partitioned table"
+Qgis.PostgresRelKind.__doc__ = 'Postgres database relkind options.\n\n.. versionadded:: 3.32\n\n' + '* ``NotSet``: ' + Qgis.PostgresRelKind.NotSet.__doc__ + '\n' + '* ``Unknown``: ' + Qgis.PostgresRelKind.Unknown.__doc__ + '\n' + '* ``OrdinaryTable``: ' + Qgis.PostgresRelKind.OrdinaryTable.__doc__ + '\n' + '* ``Index``: ' + Qgis.PostgresRelKind.Index.__doc__ + '\n' + '* ``Sequence``: ' + Qgis.PostgresRelKind.Sequence.__doc__ + '\n' + '* ``View``: ' + Qgis.PostgresRelKind.View.__doc__ + '\n' + '* ``MaterializedView``: ' + Qgis.PostgresRelKind.MaterializedView.__doc__ + '\n' + '* ``CompositeType``: ' + Qgis.PostgresRelKind.CompositeType.__doc__ + '\n' + '* ``ToastTable``: ' + Qgis.PostgresRelKind.ToastTable.__doc__ + '\n' + '* ``ForeignTable``: ' + Qgis.PostgresRelKind.ForeignTable.__doc__ + '\n' + '* ``PartitionedTable``: ' + Qgis.PostgresRelKind.PartitionedTable.__doc__
+# --
+Qgis.PostgresRelKind.baseClass = Qgis

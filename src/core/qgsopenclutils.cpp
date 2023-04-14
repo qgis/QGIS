@@ -117,7 +117,7 @@ void QgsOpenClUtils::init()
           LPTSTR lpVI = ( LPSTR ) malloc( dwLen );
           if ( lpVI )
           {
-            if ( GetFileVersionInfo( pszFileName, NULL, dwLen, lpVI ) )
+            if ( GetFileVersionInfo( pszFileName, 0, dwLen, lpVI ) )
             {
               VS_FIXEDFILEINFO *lpFFI;
               if ( VerQueryValue( lpVI, "\\", ( LPVOID * ) &lpFFI, ( UINT * ) &dwUseless ) )

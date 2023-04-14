@@ -65,9 +65,9 @@ public:
   /**
    * Constructs a new color palette entry.
    *
-   * \param c The color value for this entry.
-   * \param tr Specifies that the color should be transparent when used as a background color.
-   * \param weight Specifies the font weight to use when drawing text with this color.
+   * @param c The color value for this entry.
+   * @param tr Specifies that the color should be transparent when used as a background color.
+   * @param weight Specifies the font weight to use when drawing text with this color.
    */
   ColorEntry(QColor c, bool tr, FontWeight weight = UseCurrentFormat)
           : color(c), transparent(tr), fontWeight(weight) {}
@@ -140,7 +140,7 @@ class CharacterColor
     friend class Character;
 
 public:
-  /** Constructs a new CharacterColor whoose color and color space are undefined. */
+  /** Constructs a new CharacterColor whose color and color space are undefined. */
   CharacterColor()
       : _colorSpace(COLOR_SPACE_UNDEFINED),
         _u(0),
@@ -195,13 +195,13 @@ public:
   }
 
   /**
-   * Toggles the value of this color between a normal system color and the corresponding intensive
-   * system color.
+   * Set the value of this color from a normal system color to the corresponding intensive
+   * system color if it's not already an intensive system color.
    *
    * This is only applicable if the color is using the COLOR_SPACE_DEFAULT or COLOR_SPACE_SYSTEM
    * color spaces.
    */
-  void toggleIntensive();
+  void setIntensive();
 
   /**
    * Returns the color within the specified color @p palette
@@ -246,23 +246,19 @@ inline bool operator != (const CharacterColor& a, const CharacterColor& b)
 inline const QColor color256(quint8 u, const ColorEntry* base)
 {
   //   0.. 16: system colors
-  if (u < 8)
-      return base[u+2].color;
+  if (u <   8) return base[u+2            ].color;
   u -= 8;
-  if (u < 8)
-      return base[u+2+BASE_COLORS].color;
+  if (u <   8) return base[u+2+BASE_COLORS].color;
   u -= 8;
 
   //  16..231: 6x6x6 rgb color cube
-  if (u < 216)
-      return QColor(((u/36)%6) ? (40*((u/36)%6)+55) : 0,
+  if (u < 216) return QColor(((u/36)%6) ? (40*((u/36)%6)+55) : 0,
                              ((u/ 6)%6) ? (40*((u/ 6)%6)+55) : 0,
                              ((u/ 1)%6) ? (40*((u/ 1)%6)+55) : 0);
   u -= 216;
 
   // 232..255: gray, leaving out black and white
-  int gray = u*10+8;
-  return QColor(gray,gray,gray);
+  int gray = u*10+8; return QColor(gray,gray,gray);
 }
 
 inline QColor CharacterColor::color(const ColorEntry* base) const
@@ -272,7 +268,7 @@ inline QColor CharacterColor::color(const ColorEntry* base) const
     case COLOR_SPACE_DEFAULT: return base[_u+0+(_v?BASE_COLORS:0)].color;
     case COLOR_SPACE_SYSTEM: return base[_u+2+(_v?BASE_COLORS:0)].color;
     case COLOR_SPACE_256: return color256(_u,base);
-    case COLOR_SPACE_RGB: return QColor(_u,_v,_w);
+    case COLOR_SPACE_RGB: return {_u,_v,_w};
     case COLOR_SPACE_UNDEFINED: return QColor();
   }
 
@@ -281,11 +277,11 @@ inline QColor CharacterColor::color(const ColorEntry* base) const
   return QColor();
 }
 
-inline void CharacterColor::toggleIntensive()
+inline void CharacterColor::setIntensive()
 {
   if (_colorSpace == COLOR_SPACE_SYSTEM || _colorSpace == COLOR_SPACE_DEFAULT)
   {
-    _v = !_v;
+    _v = 1;
   }
 }
 

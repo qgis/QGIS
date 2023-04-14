@@ -14,8 +14,10 @@
  ***************************************************************************/
 
 #include "qgsrulebasedchunkloader_p.h"
+#include "qgsvectorlayerchunkloader_p.h"
 
 #include "qgs3dutils.h"
+#include "qgsraycastingutils_p.h"
 #include "qgschunknode_p.h"
 #include "qgspolygon3dsymbol_p.h"
 #include "qgseventtracing.h"
@@ -24,6 +26,7 @@
 #include "qgsvectorlayerfeatureiterator.h"
 
 #include "qgsrulebased3drenderer.h"
+#include "qgstessellatedpolygongeometry.h"
 
 #include <QtConcurrent>
 #include <Qt3DCore/QTransform>
@@ -203,4 +206,8 @@ void QgsRuleBasedChunkedEntity::onTerrainElevationOffsetChanged( float newOffset
   mTransform->setTranslation( QVector3D( 0.0f, newOffset, 0.0f ) );
 }
 
+QVector<QgsRayCastingUtils::RayHit> QgsRuleBasedChunkedEntity::rayIntersection( const QgsRayCastingUtils::Ray3D &ray, const QgsRayCastingUtils::RayCastContext &context ) const
+{
+  return QgsVectorLayerChunkedEntity::rayIntersection( activeNodes(), mTransform->matrix(), ray, context );
+}
 /// @endcond

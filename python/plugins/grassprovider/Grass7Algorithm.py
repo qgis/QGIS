@@ -31,6 +31,7 @@ import importlib
 from qgis.PyQt.QtCore import QCoreApplication, QUrl
 
 from qgis.core import (Qgis,
+                       QgsMapLayer,
                        QgsRasterLayer,
                        QgsApplication,
                        QgsMapLayerType,
@@ -39,6 +40,7 @@ from qgis.core import (Qgis,
                        QgsProcessing,
                        QgsMessageLog,
                        QgsVectorFileWriter,
+                       QgsProcessingContext,
                        QgsProcessingAlgorithm,
                        QgsProcessingParameterDefinition,
                        QgsProcessingException,
@@ -494,19 +496,19 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
                     layerName = '{}_{}'.format(paramName, idx)
                     # Add a raster layer
                     if layer.type() == QgsMapLayerType.RasterLayer:
-                        self.loadRasterLayer(layerName, layer)
+                        self.loadRasterLayer(layerName, layer, context)
                     # Add a vector layer
                     elif layer.type() == QgsMapLayerType.VectorLayer:
-                        self.loadVectorLayer(layerName, layer, external=None, feedback=feedback)
+                        self.loadVectorLayer(layerName, layer, context, external=None, feedback=feedback)
 
         self.postInputs(context)
 
-    def postInputs(self, context):
+    def postInputs(self, context: QgsProcessingContext):
         """
         After layer imports, we need to update some internal parameters
         """
         # If projection has not already be set, use the project
-        self.setSessionProjectionFromProject()
+        self.setSessionProjectionFromProject(context)
 
         # Build GRASS region
         if self.region.isEmpty():
@@ -715,7 +717,9 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
             elif isinstance(out, QgsProcessingParameterFolderDestination):
                 self.exportRasterLayersIntoDirectory(outName, parameters, context)
 
-    def loadRasterLayerFromParameter(self, name, parameters, context, external=None, band=1):
+    def loadRasterLayerFromParameter(self, name, parameters,
+                                     context: QgsProcessingContext,
+                                     external=None, band=1):
         """
         Creates a dedicated command to load a raster into
         the temporary GRASS DB.
@@ -726,14 +730,16 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
         :param band: imports only specified band. None for all bands.
         """
         layer = self.parameterAsRasterLayer(parameters, name, context)
-        self.loadRasterLayer(name, layer, external, band)
+        self.loadRasterLayer(name, layer, context, external, band)
 
-    def loadRasterLayer(self, name, layer, external=None, band=1, destName=None):
+    def loadRasterLayer(self, name, layer, context: QgsProcessingContext,
+                        external=None, band=1, destName=None):
         """
         Creates a dedicated command to load a raster into
         the temporary GRASS DB.
         :param name: name of the parameter.
         :param layer: QgsMapLayer for the raster layer.
+        :param context: Processing context
         :param external: use r.external if True, r.in.gdal if False.
         :param band: imports only specified band. None for all bands.
         :param destName: force the destination name of the raster.
@@ -741,9 +747,9 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
         if external is None:
             external = ProcessingConfig.getSetting(Grass7Utils.GRASS_USE_REXTERNAL)
         self.inputLayers.append(layer)
-        self.setSessionProjectionFromLayer(layer)
+        self.setSessionProjectionFromLayer(layer, context)
         if not destName:
-            destName = 'rast_{}'.format(os.path.basename(getTempFilename()))
+            destName = 'rast_{}'.format(os.path.basename(getTempFilename(context=context)))
         self.exportedLayers[name] = destName
         command = '{0} input="{1}" {2}output="{3}" --overwrite -o'.format(
             'r.external' if external else 'r.in.gdal',
@@ -867,17 +873,20 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
                                                              QgsVectorFileWriter.supportedFormatExtensions(),
                                                              feedback=feedback)
             ogr_layer = QgsVectorLayer(path, '', 'ogr')
-            self.loadVectorLayer(name, ogr_layer, external=external, feedback=feedback)
+            self.loadVectorLayer(name, ogr_layer, context, external=external, feedback=feedback)
         else:
             # already an ogr disk based layer source
-            self.loadVectorLayer(name, layer, external=external, feedback=feedback)
+            self.loadVectorLayer(name, layer, context, external=external, feedback=feedback)
 
-    def loadVectorLayer(self, name, layer, external=False, feedback=None):
+    def loadVectorLayer(self, name, layer,
+                        context: QgsProcessingContext,
+                        external=False, feedback=None):
         """
         Creates a dedicated command to load a vector into
         temporary GRASS DB.
         :param name: name of the parameter
         :param layer: QgsMapLayer for the vector layer.
+        :param context: Processing context
         :param external: use v.external (v.in.ogr if False).
         :param feedback: feedback object
         """
@@ -907,8 +916,8 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
                 external = False
 
         self.inputLayers.append(layer)
-        self.setSessionProjectionFromLayer(layer)
-        destFilename = 'vector_{}'.format(os.path.basename(getTempFilename()))
+        self.setSessionProjectionFromLayer(layer, context)
+        destFilename = 'vector_{}'.format(os.path.basename(getTempFilename(context=context)))
         self.exportedLayers[name] = destFilename
         command = '{0}{1}{2} input="{3}"{4} output="{5}" --overwrite -o'.format(
             'v.external' if external else 'v.in.ogr',
@@ -989,19 +998,21 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
         :param context: Processing context
         """
         table = self.parameterAsVectorLayer(parameters, name, context)
-        self.loadAttributeTable(name, table)
+        self.loadAttributeTable(name, table, context)
 
-    def loadAttributeTable(self, name, layer, destName=None):
+    def loadAttributeTable(self, name, layer, context: QgsProcessingContext,
+                           destName=None):
         """
         Creates a dedicated command to load an attribute table
         into the temporary GRASS DB.
         :param name: name of the input parameter.
         :param layer: a layer object to import from.
+        :param context: processing context
         :param destName: force the name for the table into GRASS DB.
         """
         self.inputLayers.append(layer)
         if not destName:
-            destName = 'table_{}'.format(os.path.basename(getTempFilename()))
+            destName = 'table_{}'.format(os.path.basename(getTempFilename(context=context)))
         self.exportedLayers[name] = destName
         command = 'db.in.ogr --overwrite input="{0}" output="{1}"'.format(
             os.path.normpath(layer.source()), destName)
@@ -1023,28 +1034,31 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
                 )
             )
 
-    def setSessionProjectionFromProject(self):
+    def setSessionProjectionFromProject(self, context: QgsProcessingContext):
         """
         Set the projection from the project.
         We create a WKT definition which is transmitted to Grass
         """
         if not Grass7Utils.projectionSet and iface:
-            self.setSessionProjection(iface.mapCanvas().mapSettings().destinationCrs())
+            self.setSessionProjection(
+                iface.mapCanvas().mapSettings().destinationCrs(),
+                context
+            )
 
-    def setSessionProjectionFromLayer(self, layer):
+    def setSessionProjectionFromLayer(self, layer: QgsMapLayer, context: QgsProcessingContext):
         """
         Set the projection from a QgsVectorLayer.
         We create a WKT definition which is transmitted to Grass
         """
         if not Grass7Utils.projectionSet:
-            self.setSessionProjection(layer.crs())
+            self.setSessionProjection(layer.crs(), context)
 
-    def setSessionProjection(self, crs):
+    def setSessionProjection(self, crs, context: QgsProcessingContext):
         """
         Set the session projection to the specified CRS
         """
         self.destination_crs = crs
-        file_name = Grass7Utils.exportCrsWktToFile(crs)
+        file_name = Grass7Utils.exportCrsWktToFile(crs, context)
         command = 'g.proj -c wkt="{}"'.format(file_name)
         self.commands.append(command)
         Grass7Utils.projectionSet = True

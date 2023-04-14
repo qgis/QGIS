@@ -806,20 +806,29 @@ int QgsMapToolCapture::addCurve( QgsCurve *c )
     mTempRubberBand->addPoint( endPt ); //add last point of c
   }
 
-  //transform back to layer CRS in case map CRS and layer CRS are different
-  const QgsCoordinateTransform ct = mCanvas->mapSettings().layerTransform( layer() );
-  if ( ct.isValid() )
-  {
-    c->transform( ct, Qgis::TransformDirection::Reverse );
-  }
   const int countBefore = mCaptureCurve.vertexCount();
   //if there is only one point, this the first digitized point that are in the this first curve added --> remove the point
   if ( mCaptureCurve.numPoints() == 1 )
     mCaptureCurve.removeCurve( 0 );
 
-  // we set the extendPrevious option to true to avoid creating compound curves with many 2 vertex linestrings -- instead we prefer
-  // to extend linestring curves so that they continue the previous linestring wherever possible...
-  mCaptureCurve.addCurve( c, !mStartNewCurve );
+  // Transform back to layer CRS in case map CRS and layer CRS are different
+  const QgsCoordinateTransform ct = mCanvas->mapSettings().layerTransform( layer() );
+  if ( ct.isValid() && !ct.isShortCircuited() )
+  {
+    QgsLineString *segmented = c->curveToLine();
+    segmented->transform( ct, Qgis::TransformDirection::Reverse );
+    // Curve geometries will be converted to segments, so we explicitly set extentPrevious to false
+    // to be able to remove the whole curve in undo
+    mCaptureCurve.addCurve( segmented, false );
+    delete c;
+  }
+  else
+  {
+    // we set the extendPrevious option to true to avoid creating compound curves with many 2 vertex linestrings -- instead we prefer
+    // to extend linestring curves so that they continue the previous linestring wherever possible...
+    mCaptureCurve.addCurve( c, !mStartNewCurve );
+  }
+
   mStartNewCurve = false;
 
   const int countAfter = mCaptureCurve.vertexCount();
@@ -872,6 +881,13 @@ void QgsMapToolCapture::undo( bool isAutoRepeat )
     vertexToRemove.part = 0;
     vertexToRemove.ring = 0;
     vertexToRemove.vertex = size() - 1;
+
+    // If the geometry was reprojected, remove the entire last curve.
+    const QgsCoordinateTransform ct = mCanvas->mapSettings().layerTransform( layer() );
+    if ( ct.isValid() && !ct.isShortCircuited() )
+    {
+      mCaptureCurve.removeCurve( mCaptureCurve.nCurves() - 1 );
+    }
     if ( mCaptureCurve.numPoints() == 2 && mCaptureCurve.nCurves() == 1 )
     {
       // store the first vertex to restore if after deleting the curve

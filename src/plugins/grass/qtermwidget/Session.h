@@ -29,6 +29,7 @@
 #include <QStringList>
 #include <QWidget>
 
+#include "Emulation.h"
 #include "History.h"
 
 class KProcess;
@@ -71,7 +72,7 @@ public:
      * falls back to using the program specified in the SHELL environment
      * variable.
      */
-    Session(QObject* parent = 0);
+    Session(QObject* parent = nullptr);
     ~Session() override;
 
     /**
@@ -83,7 +84,7 @@ public:
     /**
      * Sets the profile associated with this session.
      *
-     * \param profileKey A key which can be used to obtain the current
+     * @param profileKey A key which can be used to obtain the current
      * profile settings from the SessionManager
      */
     void setProfileKey(const QString & profileKey);
@@ -141,7 +142,7 @@ public:
     int sessionId() const;
 
     /**
-     * Returns the session title set by the user (ie. the program running
+     * Return the session title set by the user (ie. the program running
      * in the terminal), or an empty string if the user has not set a custom title
      */
     QString userTitle() const;
@@ -162,10 +163,10 @@ public:
     /**
      * Sets the format used by this session for tab titles.
      *
-     * \param context The context whoose format should be set.
-     * \param format The tab title format. This may be a mixture
+     * @param context The context whose format should be set.
+     * @param format The tab title format.  This may be a mixture
      * of plain text and dynamic elements denoted by a '%' character
-     * followed by a letter (e.g., %d for directory). The dynamic
+     * followed by a letter.  (eg. %d for directory).  The dynamic
      * elements available depend on the @p context
      */
     void setTabTitleFormat(TabTitleContext context , const QString & format);
@@ -246,7 +247,7 @@ public:
      * specify how input key sequences are translated into
      * the character stream which is sent to the terminal.
      *
-     * \param id The name of the key bindings to use.  The
+     * @param id The name of the key bindings to use.  The
      * names of available key bindings can be determined using the
      * KeyboardTranslatorManager class.
      */
@@ -283,6 +284,9 @@ public:
     /** Returns the text of the icon associated with this session. */
     QString iconText() const;
 
+    /** Flag if the title/icon was changed by user/shell. */
+    bool isTitleChanged() const;
+
     /** Specifies whether a utmp entry should be created for the pty used by this session. */
     void setAddToUtmp(bool);
 
@@ -311,6 +315,8 @@ public:
      */
     void sendText(const QString & text) const;
 
+    void sendKeyEvent(QKeyEvent* e) const;
+
     /**
      * Returns the process id of the terminal process.
      * This is the id used by the system API to refer to the process.
@@ -330,12 +336,12 @@ public:
      * Emits a request to resize the session to accommodate
      * the specified window size.
      *
-     * \param size The size in lines and columns to request.
+     * @param size The size in lines and columns to request.
      */
     void setSize(const QSize & size);
 
     /** Sets the text codec used by this session's terminal emulation. */
-    void setCodec(QTextCodec * codec);
+    void setCodec(QTextCodec * codec) const;
 
     /**
      * Sets whether the session has a dark background or not.  The session
@@ -424,7 +430,7 @@ signals:
     /**
      * Emitted when the activity state of this session changes.
      *
-     * \param state The new state of the session.  This may be one
+     * @param state The new state of the session.  This may be one
      * of NOTIFYNORMAL, NOTIFYSILENCE or NOTIFYACTIVITY
      */
     void stateChanged(int state);
@@ -456,14 +462,14 @@ signals:
      * Emitted when the terminal process requests a change
      * in the size of the terminal window.
      *
-     * \param size The requested window size in terms of lines and columns.
+     * @param size The requested window size in terms of lines and columns.
      */
     void resizeRequest(const QSize & size);
 
     /**
      * Emitted when a profile change command is received from the terminal.
      *
-     * \param text The text of the command.  This is a string of the form
+     * @param text The text of the command.  This is a string of the form
      * "PropertyName=Value;PropertyName=Value ..."
      */
     void profileChangeCommandReceived(const QString & text);
@@ -471,9 +477,14 @@ signals:
     /**
      * Emitted when the flow control state changes.
      *
-     * \param enabled True if flow control is enabled or false otherwise.
+     * @param enabled True if flow control is enabled or false otherwise.
      */
     void flowControlEnabledChanged(bool enabled);
+
+    /**
+     * Broker for Emulation::cursorChanged() signal
+     */
+    void cursorChanged(Emulation::KeyboardCursorShape cursorShape, bool blinkingCursorEnabled);
 
     void silence();
     void activity();
@@ -487,7 +498,7 @@ private slots:
     void monitorTimerDone();
 
     void onViewSizeChange(int height, int width);
-    void onEmulationSizeChange(int lines , int columns);
+    void onEmulationSizeChange(QSize);
 
     void activityStateSet(int);
 
@@ -530,6 +541,7 @@ private:
 
     QString        _iconName;
     QString        _iconText; // as set by: echo -en '\033]1;IconText\007
+    bool           _isTitleChanged; ///< flag if the title/icon was changed by user
     bool           _addToUtmp;
     bool           _flowControl;
     bool           _fullScripting;
@@ -589,8 +601,8 @@ public:
      * Changes or activity in the group's master sessions may be propagated
      * to all the sessions in the group, depending on the current masterMode()
      *
-     * \param session The session whoose master status should be changed.
-     * \param master True to make this session a master or false otherwise
+     * @param session The session whose master status should be changed.
+     * @param master True to make this session a master or false otherwise
      */
     void setMasterStatus( Session * session , bool master );
     /** Returns the master status of a session.  See setMasterStatus() */
@@ -612,7 +624,7 @@ public:
      * Specifies which activity in the group's master sessions is propagated
      * to all sessions in the group.
      *
-     * \param mode A bitwise OR of MasterMode flags.
+     * @param mode A bitwise OR of MasterMode flags.
      */
     void setMasterMode( int mode );
     /**
@@ -622,8 +634,8 @@ public:
     int masterMode() const;
 
 private:
-    void connectPair(Session * master , Session * other);
-    void disconnectPair(Session * master , Session * other);
+    void connectPair(Session * master , Session * other) const;
+    void disconnectPair(Session * master , Session * other) const;
     void connectAll(bool connect);
     QList<Session *> masters() const;
 

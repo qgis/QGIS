@@ -114,6 +114,7 @@ bool MDAL::DriverGdal::initVertices( Vertices &vertices )
 void MDAL::DriverGdal::initFaces( const Vertices &Vertexs, Faces &Faces, bool is_longitude_shifted )
 {
   int reconnected = 0;
+  ( void ) reconnected;
   unsigned int mXSize = meshGDALDataset()->mXSize;
   unsigned int mYSize = meshGDALDataset()->mYSize;
 

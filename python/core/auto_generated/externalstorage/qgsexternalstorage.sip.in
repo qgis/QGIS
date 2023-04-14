@@ -45,7 +45,7 @@ Returns a :py:class:`QgsExternalStorageStoredContent` to follow the status of th
 
 ``storingMode`` defines if the download will start immediately or shall be manually triggered
 calling :py:func:`QgsExternalStorageStoredContent.store()`. User should use
-Qgis.ActionStart.Deferred if he needs to connect the :py:func:`~QgsExternalStorage.stored` signal.
+:py:class:`Qgis`.ActionStart.Deferred if he needs to connect the :py:func:`~QgsExternalStorage.stored` signal.
 
 After using this method, user wait for :py:func:`QgsExternalStorageStoredContent.stored()`,
 :py:func:`QgsExternalStorageStoredContent.errorOccurred()` or :py:func:`QgsExternalStorageStoredContent.canceled()` signals.
@@ -63,7 +63,7 @@ Returns a :py:class:`QgsExternalStorageFetchedContent` to follow the status of t
 
 ``fetchingMode`` defines if the download will start immediately or shall be manually triggered
 calling :py:func:`QgsExternalStorageFetchedContent.fetch()`. User should use
-Qgis.ActionStart.Deferred if he needs to connect the :py:func:`~QgsExternalStorage.fetched` signal.
+:py:class:`Qgis`.ActionStart.Deferred if he needs to connect the :py:func:`~QgsExternalStorage.fetched` signal.
 
 After using this method, user should wait for :py:func:`QgsExternalStorageStoredContent.fetched()`,
 :py:func:`QgsExternalStorageStoredContent.errorOccurred()` or :py:func:`QgsExternalStorageStoredContent.canceled()` signals.

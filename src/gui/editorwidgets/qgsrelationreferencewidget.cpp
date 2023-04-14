@@ -187,6 +187,7 @@ void QgsRelationReferenceWidget::setRelation( const QgsRelation &relation, bool 
       mComboBox->setSourceLayer( mReferencedLayer );
       mComboBox->setIdentifierFields( mReferencedFields );
       mComboBox->setFilterExpression( mFilterExpression );
+      mComboBox->setFetchLimit( mFetchLimit );
     }
     mAttributeEditorFrame->setObjectName( QStringLiteral( "referencing/" ) + relation.name() );
 
@@ -365,11 +366,6 @@ void QgsRelationReferenceWidget::setAllowMapIdentification( bool allowMapIdentif
   mAllowMapIdentification = allowMapIdentification;
 }
 
-void QgsRelationReferenceWidget::setOrderByValue( bool orderByValue )
-{
-  mOrderByValue = orderByValue;
-}
-
 void QgsRelationReferenceWidget::setFilterFields( const QStringList &filterFields )
 {
   mFilterFields = filterFields;
@@ -479,6 +475,7 @@ void QgsRelationReferenceWidget::init()
     mComboBox->setDisplayExpression( mReferencedLayer->displayExpression() );
     mComboBox->setAllowNull( mAllowNull );
     mComboBox->setIdentifierFields( mReferencedFields );
+    mComboBox->setFetchLimit( mFetchLimit );
 
     if ( ! mFilterExpression.isEmpty() )
       mComboBox->setFilterExpression( mFilterExpression );

@@ -21,7 +21,6 @@
 #include "qgis_core.h"
 #include "qgsmapsettings.h"
 
-#include "qgslabeling.h"
 #include "qgsfeedback.h"
 #include "qgslabelobstaclesettings.h"
 
@@ -550,13 +549,13 @@ class CORE_EXPORT QgsLabelingUtils
      * Encodes line placement \a flags to a string.
      * \see decodeLinePlacementFlags()
      */
-    static QString encodeLinePlacementFlags( QgsLabeling::LinePlacementFlags flags );
+    static QString encodeLinePlacementFlags( Qgis::LabelLinePlacementFlags flags );
 
     /**
      * Decodes a \a string to set of line placement flags.
      * \see encodeLinePlacementFlags()
      */
-    static QgsLabeling::LinePlacementFlags decodeLinePlacementFlags( const QString &string );
+    static Qgis::LabelLinePlacementFlags decodeLinePlacementFlags( const QString &string );
 
 };
 

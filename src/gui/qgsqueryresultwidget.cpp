@@ -20,6 +20,9 @@
 #include "qgsmessagelog.h"
 #include "qgsquerybuilder.h"
 #include "qgsvectorlayer.h"
+#include "qgsapplication.h"
+
+#include <QClipboard>
 
 QgsQueryResultWidget::QgsQueryResultWidget( QWidget *parent, QgsAbstractDatabaseProviderConnection *connection )
   : QWidget( parent )
@@ -31,6 +34,9 @@ QgsQueryResultWidget::QgsQueryResultWidget( QWidget *parent, QgsAbstractDatabase
 
   mQueryResultsTableView->hide();
   mQueryResultsTableView->setItemDelegate( new QgsQueryResultItemDelegate( mQueryResultsTableView ) );
+  mQueryResultsTableView->setContextMenuPolicy( Qt::CustomContextMenu );
+  connect( mQueryResultsTableView, &QTableView::customContextMenuRequested, this, &QgsQueryResultWidget::showCellContextMenu );
+
   mProgressBar->hide();
 
   connect( mExecuteButton, &QPushButton::pressed, this, &QgsQueryResultWidget::executeQuery );
@@ -210,6 +216,24 @@ void QgsQueryResultWidget::updateButtons()
     mSqlErrorMessage.isEmpty() &&
     mFirstRowFetched
   );
+}
+
+void QgsQueryResultWidget::showCellContextMenu( QPoint point )
+{
+  const QModelIndex modelIndex = mQueryResultsTableView->indexAt( point );
+  if ( modelIndex.isValid() )
+  {
+    QMenu *menu = new QMenu();
+    menu->setAttribute( Qt::WA_DeleteOnClose );
+
+    menu->addAction( QgsApplication::getThemeIcon( "mActionEditCopy.svg" ), tr( "Copy" ), this, [ = ]
+    {
+      const QString text = mModel->data( modelIndex, Qt::DisplayRole ).toString();
+      QApplication::clipboard()->setText( text );
+    }, QKeySequence::Copy );
+
+    menu->exec( mQueryResultsTableView->viewport()->mapToGlobal( point ) );
+  }
 }
 
 void QgsQueryResultWidget::updateSqlLayerColumns( )

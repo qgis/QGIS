@@ -51,14 +51,19 @@ void QgsRelationReferenceWidgetWrapper::initWidget( QWidget *editor )
   const bool showForm = config( QStringLiteral( "ShowForm" ), false ).toBool();
   const bool mapIdent = config( QStringLiteral( "MapIdentification" ), false ).toBool();
   const bool readOnlyWidget = config( QStringLiteral( "ReadOnly" ), false ).toBool();
-  const bool orderByValue = config( QStringLiteral( "OrderByValue" ), false ).toBool();
   const bool showOpenFormButton = config( QStringLiteral( "ShowOpenFormButton" ), true ).toBool();
 
   mWidget->setEmbedForm( showForm );
   mWidget->setReadOnlySelector( readOnlyWidget );
   mWidget->setAllowMapIdentification( mapIdent );
-  mWidget->setOrderByValue( orderByValue );
   mWidget->setOpenFormButtonVisible( showOpenFormButton );
+
+  const bool fetchLimitActive = config( QStringLiteral( "FetchLimitActive" ), QgsSettings().value( QStringLiteral( "maxEntriesRelationWidget" ), 100, QgsSettings::Gui ).toInt() > 0 ).toBool();
+  if ( fetchLimitActive )
+  {
+    mWidget->setFetchLimit( config( QStringLiteral( "FetchLimitNumber" ), QgsSettings().value( QStringLiteral( "maxEntriesRelationWidget" ), 100, QgsSettings::Gui ) ).toInt() );
+  }
+
   if ( config( QStringLiteral( "FilterFields" ), QVariant() ).isValid() )
   {
     mWidget->setFilterFields( config( QStringLiteral( "FilterFields" ) ).toStringList() );

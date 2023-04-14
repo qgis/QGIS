@@ -35,8 +35,8 @@
 #include <QSocketNotifier>
 
 #include <unistd.h>
-#include <errno.h>
-#include <signal.h>
+#include <cerrno>
+#include <csignal>
 #include <termios.h>
 #include <fcntl.h>
 #include <sys/ioctl.h>
@@ -74,7 +74,7 @@ static void qt_ignore_sigpipe()
         struct sigaction noaction;
         memset(&noaction, 0, sizeof(noaction));
         noaction.sa_handler = SIG_IGN;
-        sigaction(SIGPIPE, &noaction, 0);
+        sigaction(SIGPIPE, &noaction, nullptr);
     }
 }
 
@@ -90,7 +90,7 @@ bool KPtyDevicePrivate::_k_canRead()
 #else
     int available;
 #endif
-    if (!::ioctl(q->masterFd(), PTY_BYTES_AVAILABLE, (char *) &available)) {
+    if (::ioctl(q->masterFd(), PTY_BYTES_AVAILABLE, (char *) &available) != -1) {
 #ifdef Q_OS_SOLARIS
         // A Pty is a STREAMS module, and those can be activated
         // with 0 bytes available. This happens either when ^C is
@@ -130,7 +130,7 @@ bool KPtyDevicePrivate::_k_canRead()
         }
         if (readBytes < 0) {
             readBuffer.unreserve(available);
-            q->setErrorString(QStringLiteral("Error reading from PTY"));
+            q->setErrorString(QLatin1String("Error reading from PTY"));
             return false;
         }
         readBuffer.unreserve(available - readBytes); // *should* be a no-op
@@ -164,7 +164,7 @@ bool KPtyDevicePrivate::_k_canWrite()
             write(q->masterFd(),
                   writeBuffer.readPointer(), writeBuffer.readSize()));
     if (wroteBytes < 0) {
-        q->setErrorString(QStringLiteral("Error writing to PTY"));
+        q->setErrorString(QLatin1String("Error writing to PTY"));
         return false;
     }
     writeBuffer.free(wroteBytes);
@@ -211,7 +211,7 @@ bool KPtyDevicePrivate::doWait(int msecs, bool reading)
     struct timeval tv, *tvp;
 
     if (msecs < 0)
-        tvp = 0;
+        tvp = nullptr;
     else {
         tv.tv_sec = msecs / 1000;
         tv.tv_usec = (msecs % 1000) * 1000;
@@ -243,13 +243,13 @@ bool KPtyDevicePrivate::doWait(int msecs, bool reading)
         }
 #endif
 
-        switch (select(q->masterFd() + 1, &rfds, &wfds, 0, tvp)) {
+        switch (select(q->masterFd() + 1, &rfds, &wfds, nullptr, tvp)) {
         case -1:
             if (errno == EINTR)
                 break;
             return false;
         case 0:
-            q->setErrorString(QStringLiteral("PTY operation timed out"));
+            q->setErrorString(QLatin1String("PTY operation timed out"));
             return false;
         default:
             if (FD_ISSET(q->masterFd(), &rfds)) {
@@ -305,7 +305,7 @@ bool KPtyDevice::open(OpenMode mode)
         return true;
 
     if (!KPty::open()) {
-        setErrorString(QStringLiteral("Error opening PTY"));
+        setErrorString(QLatin1String("Error opening PTY"));
         return false;
     }
 
@@ -319,7 +319,7 @@ bool KPtyDevice::open(int fd, OpenMode mode)
     Q_D(KPtyDevice);
 
     if (!KPty::open(fd)) {
-        setErrorString(QStringLiteral("Error opening PTY"));
+        setErrorString(QLatin1String("Error opening PTY"));
         return false;
     }
 
@@ -400,14 +400,14 @@ bool KPtyDevice::isSuspended() const
 qint64 KPtyDevice::readData(char *data, qint64 maxlen)
 {
     Q_D(KPtyDevice);
-    return d->readBuffer.read(data, static_cast<int>(std::min<qint64>(maxlen, KMAXINT)));
+    return d->readBuffer.read(data, static_cast<int>(qMin<qint64>(maxlen, KMAXINT)));
 }
 
 // protected
 qint64 KPtyDevice::readLineData(char *data, qint64 maxlen)
 {
     Q_D(KPtyDevice);
-    return d->readBuffer.readLine(data, static_cast<int>(std::min<qint64>(maxlen, KMAXINT)));
+    return d->readBuffer.readLine(data, static_cast<int>(qMin<qint64>(maxlen, KMAXINT)));
 }
 
 // protected

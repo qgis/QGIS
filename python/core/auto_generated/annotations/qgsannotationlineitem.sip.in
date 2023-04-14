@@ -25,7 +25,7 @@ An annotation item which renders a line symbol along a line geometry.
 
     QgsAnnotationLineItem( QgsCurve *curve /Transfer/ );
 %Docstring
-Constructor for QgsAnnotationLineItem, with the specified ``linestring``.
+Constructor for QgsAnnotationLineItem, with the specified ``curve``.
 %End
     ~QgsAnnotationLineItem();
 

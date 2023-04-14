@@ -53,6 +53,7 @@
 #include "qgspropertycollection.h"
 #include "qgsvectorlayereditbuffergroup.h"
 #include "qgselevationshadingrenderer.h"
+#include "qgsabstractsensor.h"
 
 #include "qgsrelationmanager.h"
 #include "qgsmapthemecollection.h"
@@ -87,6 +88,7 @@ class QgsPropertyCollection;
 class QgsMapViewsManager;
 class QgsProjectElevationProperties;
 class QgsProjectGpsSettings;
+class QgsSensorManager;
 
 /**
  * \ingroup core
@@ -795,6 +797,21 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * \since QGIS 3.10
      */
     QgsBookmarkManager *bookmarkManager();
+
+    /**
+     * Returns the project's sensor manager, which manages sensors within
+     * the project.
+     * \note not available in Python bindings
+     * \since QGIS 3.32
+     */
+    const QgsSensorManager *sensorManager() const SIP_SKIP;
+
+    /**
+     * Returns the project's sensor manager, which manages sensors within
+     * the project.
+     * \since QGIS 3.32
+     */
+    QgsSensorManager *sensorManager();
 
     /**
      * Returns the project's view settings, which contains settings and properties
@@ -2275,6 +2292,8 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     QgsBookmarkManager *mBookmarkManager = nullptr;
 
+    QgsSensorManager *mSensorManager = nullptr;
+
     QgsProjectViewSettings *mViewSettings = nullptr;
 
     QgsProjectStyleSettings *mStyleSettings = nullptr;
@@ -2457,6 +2476,17 @@ class GetNamedProjectColor : public QgsScopedExpressionFunction
 
 };
 
+class GetSensorData : public QgsScopedExpressionFunction
+{
+  public:
+    GetSensorData( const QMap<QString, QgsAbstractSensor::SensorData> &sensorData = QMap<QString, QgsAbstractSensor::SensorData>() );
+    QVariant func( const QVariantList &values, const QgsExpressionContext *, QgsExpression *, const QgsExpressionNodeFunction * ) override;
+    QgsScopedExpressionFunction *clone() const override;
+
+  private:
+
+    QMap<QString, QgsAbstractSensor::SensorData> mSensorData;
+};
 #endif
 ///@endcond
 

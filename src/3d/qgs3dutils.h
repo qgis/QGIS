@@ -36,12 +36,15 @@ namespace Qt3DExtras
 #include "qgs3dtypes.h"
 #include "qgsaabb.h"
 #include "qgsray3d.h"
+#include "qgsraycastingutils_p.h"
 
+#include <QSize>
 #include <Qt3DRender/QCamera>
 
 #include <memory>
 
 #define SIP_NO_FILE
+
 
 /**
  * \ingroup 3d
@@ -236,6 +239,28 @@ class _3D_EXPORT Qgs3DUtils
      * \since QGIS 3.26
      */
     static std::unique_ptr< QgsPointCloudLayer3DRenderer > convert2DPointCloudRendererTo3D( QgsPointCloudRenderer *renderer );
+
+    /**
+     * Casts a \a ray through the \a scene and returns information about the intersecting entities (ray uses World coordinates).
+     * The resulting hits are grouped by layer in a QHash.
+     * \note Hits on the terrain have nullptr as their key in the returning QHash.
+     *
+     * \since QGIS 3.32
+     */
+    static QHash<QgsMapLayer *, QVector<QgsRayCastingUtils::RayHit>> castRay( Qgs3DMapScene *scene, const QgsRay3D &ray, const QgsRayCastingUtils::RayCastContext &context );
+
+    /**
+     * Reprojects \a extent from \a crs1 to \a crs2 coordinate reference system with context \a context.
+     * If \a crs1 and \a crs2 are identical, \a extent is returned.
+     * \param extent extent to reproject
+     * \param crs1 source coordinate reference system
+     * \param crs2 destination coordinate reference system
+     * \param context the context under which the transform is applied
+     * \returns reprojected extent. In case of failure, \a extent is returned
+     *
+     * \since QGIS 3.32
+     */
+    static QgsRectangle tryReprojectExtent2D( const QgsRectangle &extent, const QgsCoordinateReferenceSystem &crs1, const QgsCoordinateReferenceSystem &crs2, const QgsCoordinateTransformContext &context );
 };
 
 #endif // QGS3DUTILS_H

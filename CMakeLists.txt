@@ -17,10 +17,10 @@ set(CMAKE_LINK_DEPENDS_NO_SHARED ON)
 #############################################################
 # Project and version
 set(CPACK_PACKAGE_VERSION_MAJOR "3")
-set(CPACK_PACKAGE_VERSION_MINOR "30")
+set(CPACK_PACKAGE_VERSION_MINOR "31")
 set(CPACK_PACKAGE_VERSION_PATCH "0")
 set(COMPLETE_VERSION ${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}.${CPACK_PACKAGE_VERSION_PATCH})
-set(RELEASE_NAME "'s-Hertogenbosch")
+set(RELEASE_NAME "Master")
 project(qgis VERSION ${COMPLETE_VERSION})
 
 if (APPLE)
@@ -433,6 +433,9 @@ if(WITH_CORE)
     endif()
     find_package(PDAL REQUIRED) # PDAL provider
     set(HAVE_PDAL_QGIS TRUE)  # used in qgisconfig.h. note -- we can't use HAVE_PDAL here as the grass public headers redefine this!
+    if (PDAL_VERSION_MAJOR GREATER 3 OR (PDAL_VERSION_MAJOR EQUAL 2 AND PDAL_VERSION_MINOR GREATER_EQUAL 5))
+      set(PDAL_2_5_OR_HIGHER TRUE)
+    endif()
   endif()
 
   #############################################################

@@ -38,6 +38,10 @@ Abstract base class for annotation items which are drawn with :py:class:`QgsAnno
     {
       sipType = sipType_QgsAnnotationPointTextItem;
     }
+    else if ( sipCpp->type() == QLatin1String( "linetext" ) )
+    {
+      sipType = sipType_QgsAnnotationLineTextItem;
+    }
     else
     {
       sipType = 0;

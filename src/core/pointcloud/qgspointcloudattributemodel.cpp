@@ -35,7 +35,10 @@ void QgsPointCloudAttributeModel::setLayer( QgsPointCloudLayer *layer )
     setAttributes( layer->attributes() );
   }
   else
+  {
+    mLayer = nullptr;
     setAttributes( QgsPointCloudAttributeCollection() );
+  }
 }
 
 QgsPointCloudLayer *QgsPointCloudAttributeModel::layer()

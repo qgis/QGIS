@@ -38,6 +38,7 @@ typedef Qt3DCore::QBuffer Qt3DQBuffer;
 #include <Qt3DRender/QLayer>
 #include <Qt3DRender/QLayerFilter>
 #include <Qt3DRender/QPointLight>
+#include <Qt3DRender/QSortPolicy>
 #include <QWidget>
 #include <QScreen>
 #include <QShortcut>
@@ -307,7 +308,14 @@ Qt3DRender::QViewport *Qgs3DAxis::constructAxisViewport( Qt3DCore::QEntity *pare
   axisCameraSelector->setParent( axisLayerFilter );
   axisCameraSelector->setCamera( mAxisCamera );
 
-  Qt3DRender::QClearBuffers *clearBuffers = new Qt3DRender::QClearBuffers( axisCameraSelector );
+  // This ensures to have the labels (Text2DEntity) rendered after the other objects and therefore
+  // avoid any transparency issue on the labels.
+  Qt3DRender::QSortPolicy *sortPolicy = new Qt3DRender::QSortPolicy( axisCameraSelector );
+  QVector<Qt3DRender::QSortPolicy::SortType> sortTypes = QVector<Qt3DRender::QSortPolicy::SortType>();
+  sortTypes << Qt3DRender::QSortPolicy::BackToFront;
+  sortPolicy->setSortTypes( sortTypes );
+
+  Qt3DRender::QClearBuffers *clearBuffers = new Qt3DRender::QClearBuffers( sortPolicy );
   clearBuffers->setBuffers( Qt3DRender::QClearBuffers::DepthBuffer );
 
   // cppcheck-suppress memleak
@@ -348,7 +356,14 @@ Qt3DRender::QViewport *Qgs3DAxis::constructLabelViewport( Qt3DCore::QEntity *par
   twoDCameraSelector->setParent( twoDLayerFilter );
   twoDCameraSelector->setCamera( mTwoDLabelCamera );
 
-  Qt3DRender::QClearBuffers *clearBuffers = new Qt3DRender::QClearBuffers( twoDCameraSelector );
+  // this ensures to have the labels (Text2DEntity) rendered after the other objects and therefore
+  // avoid any transparency issue on the labels.
+  Qt3DRender::QSortPolicy *sortPolicy = new Qt3DRender::QSortPolicy( twoDCameraSelector );
+  QVector<Qt3DRender::QSortPolicy::SortType> sortTypes = QVector<Qt3DRender::QSortPolicy::SortType>();
+  sortTypes << Qt3DRender::QSortPolicy::BackToFront;
+  sortPolicy->setSortTypes( sortTypes );
+
+  Qt3DRender::QClearBuffers *clearBuffers = new Qt3DRender::QClearBuffers( sortPolicy );
   clearBuffers->setBuffers( Qt3DRender::QClearBuffers::DepthBuffer );
 
   // cppcheck-suppress memleak
@@ -733,19 +748,20 @@ void Qgs3DAxis::onCameraViewChange( float pitch, float yaw )
   if ( mMapSettings->terrainRenderingEnabled() )
   {
     QgsDebugMsgLevel( "Checking elevation from terrain...", 2 );
-    QVector3D intersectionPoint;
     QVector3D camPos = mCameraController->camera()->position();
-    QgsRayCastingUtils::Ray3D r( camPos, pos.toVector3D() - camPos );
-    if ( mMapScene->terrainEntity()->rayIntersection( r, intersectionPoint ) )
+    QgsRayCastingUtils::Ray3D ray( camPos, pos.toVector3D() - camPos, mCameraController->camera()->farPlane() );
+    const QVector<QgsRayCastingUtils::RayHit> hits = mMapScene->terrainEntity()->rayIntersection( ray, QgsRayCastingUtils::RayCastContext() );
+    if ( !hits.isEmpty() )
     {
-      elevation = intersectionPoint.y();
+      elevation = hits.at( 0 ).pos.y();
       QgsDebugMsgLevel( QString( "Computed elevation from terrain: %1" ).arg( elevation ), 2 );
     }
     else
+    {
       QgsDebugMsgLevel( "Unable to obtain elevation from terrain", 2 );
-
+    }
   }
-  pos.set( pos.x(), elevation, pos.z() );
+  pos.set( pos.x(), elevation + mMapSettings->terrainElevationOffset(), pos.z() );
 
   mCameraController->setLookingAtPoint( pos, ( mCameraController->camera()->position() - pos.toVector3D() ).length(),
                                         pitch, yaw );

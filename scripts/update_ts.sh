@@ -112,7 +112,7 @@ trap cleanup EXIT
 
 branch=$(git name-rev --name-only HEAD)
 if [[ "$branch" =~ ^release-[0-9]+_[0-9]+$ ]]; then
-	TX_FLAGS="--branch '${branch//_/-}'"
+	TX_FLAGS="--branch '${branch}'"
 fi
 
 echo Saving translations

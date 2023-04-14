@@ -91,7 +91,7 @@ class TestQgsProviderRegistry(unittest.TestCase):
         """
         providers = QgsProviderRegistry.instance().providerList()
         for p in providers:
-            if p == 'vectortile':
+            if p in ('vectortile', 'arcgisvectortileservice'):
                 continue
 
             self.assertTrue(QgsProviderRegistry.instance().createProvider(p, ''))

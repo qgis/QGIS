@@ -26,7 +26,8 @@ from qgis.core import (QgsProcessingAlgorithm,
                        QgsProcessingParameterRasterLayer,
                        QgsProcessingParameterBand,
                        QgsProcessingParameterBoolean,
-                       QgsProcessingParameterFileDestination
+                       QgsProcessingParameterFileDestination,
+                       QgsProcessingParameterNumber
                        )
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.algs.gdal.GdalUtils import GdalUtils
@@ -36,6 +37,9 @@ from processing.tools.system import isWindows
 class gdal2xyz(GdalAlgorithm):
     INPUT = 'INPUT'
     BAND = 'BAND'
+    SRCNODATA = 'NODATA_INPUT'
+    DSTNODATA = 'NODATA_OUTPUT'
+    SKIPNODATA = 'SKIP_NODATA'
     CSV = 'CSV'
     OUTPUT = 'OUTPUT'
 
@@ -49,6 +53,16 @@ class gdal2xyz(GdalAlgorithm):
                                                      self.tr('Band number'),
                                                      1,
                                                      parentLayerParameterName=self.INPUT))
+
+        self.addParameter(QgsProcessingParameterNumber(self.SRCNODATA,
+                                                       self.tr('Input pixel value to treat as "nodata"'),
+                                                       optional=True))  # GDAL > 3.6.3
+        self.addParameter(QgsProcessingParameterNumber(self.DSTNODATA,
+                                                       self.tr('Assign specified "nodata" value to output'),
+                                                       optional=True))  # GDAL > 3.6.3
+        self.addParameter(QgsProcessingParameterBoolean(self.SKIPNODATA,
+                                                        self.tr('Do not output nodata values'),
+                                                        defaultValue=False))  # GDAL > 3.3
         self.addParameter(QgsProcessingParameterBoolean(self.CSV,
                                                         self.tr('Output comma-separated values'),
                                                         defaultValue=False))
@@ -79,6 +93,30 @@ class gdal2xyz(GdalAlgorithm):
             '-band',
             str(self.parameterAsInt(parameters, self.BAND, context))
         ]
+
+        if self.SRCNODATA in parameters and parameters[self.SRCNODATA] is not None:
+            if GdalUtils.version() > 3060300:  # src/dstnodata broken <= 3.6.3 https://github.com/OSGeo/gdal/issues/7410
+                srcnodata = self.parameterAsDouble(parameters, self.SRCNODATA, context)
+                arguments.append('-srcnodata')
+                arguments.append(srcnodata)
+            else:
+                raise QgsProcessingException(self.tr('The source nodata option (-srcnodata) is only available on GDAL 3.6.4 or later'))
+
+        if self.DSTNODATA in parameters and parameters[self.DSTNODATA] is not None:
+            if GdalUtils.version() > 3060300:  # src/dstnodata broken <= 3.6.3 https://github.com/OSGeo/gdal/issues/7410
+                dstnodata = self.parameterAsDouble(parameters, self.DSTNODATA, context)
+                arguments.append('-dstnodata')
+                arguments.append(dstnodata)
+            else:
+                raise QgsProcessingException(self.tr('The destination nodata option (-dstnodata) is only available on GDAL 3.6.4 or later'))
+
+        if self.SKIPNODATA in parameters:
+            if GdalUtils.version() >= 3030000:  # skipnodata added at GDAL 3.3
+                if self.parameterAsBoolean(parameters, self.SKIPNODATA, context):
+                    arguments.append('-skipnodata')
+            else:
+                raise QgsProcessingException(self.tr('The skip nodata option (-skipnodata) is only available on GDAL 3.3 or later'))
+
         if self.parameterAsBoolean(parameters, self.CSV, context):
             arguments.append('-csv')
 

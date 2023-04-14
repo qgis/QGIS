@@ -16,7 +16,7 @@
  ***************************************************************************/
 
 #include "qgsalgorithmangletonearest.h"
-#include "qgsprocessingoutputs.h"
+#include "qgsspatialindex.h"
 #include "qgslinestring.h"
 #include "qgsvectorlayer.h"
 #include "qgsrenderer.h"

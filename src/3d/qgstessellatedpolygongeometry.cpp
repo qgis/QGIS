@@ -14,6 +14,8 @@
  ***************************************************************************/
 
 #include "qgstessellatedpolygongeometry.h"
+#include "qgsraycastingutils_p.h"
+#include <QMatrix4x4>
 
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 #include <Qt3DRender/QAttribute>
@@ -78,6 +80,64 @@ QgsTessellatedPolygonGeometry::QgsTessellatedPolygonGeometry( bool _withNormals,
   }
 }
 
+static bool intersectionTriangles( const QByteArray &vertexBuf, const int &stride, const QgsRayCastingUtils::Ray3D &r, const QMatrix4x4 &worldTransform, QVector3D &intPt, int &triangleIndex )
+{
+  const float *vertices = reinterpret_cast<const float *>( vertexBuf.constData() );
+
+  const int vertexCount = vertexBuf.size() / stride;
+  const int triangleCount = vertexCount / 3;
+
+  QVector3D intersectionPt, minIntersectionPt;
+  float minDistance = -1;
+
+  const int vertexSize = stride / sizeof( float );
+  const int triangleSize = 3 * vertexSize;
+  for ( int i = 0; i < triangleCount; ++i )
+  {
+    const int v0 = i * triangleSize, v1 = i * triangleSize + vertexSize, v2 = i * triangleSize + vertexSize + vertexSize;
+
+    const QVector3D a( vertices[v0], vertices[v0 + 1], vertices[v0 + 2] );
+    const QVector3D b( vertices[v1], vertices[v1 + 1], vertices[v1 + 2] );
+    const QVector3D c( vertices[v2], vertices[v2 + 1], vertices[v2 + 2] );
+
+    // Currently the worldTransform only has vertical offset, so this could be optimized by applying the transform
+    // to the ray and the resulting intersecting point instead of all triangles
+    // Need to check for potential performance gains.
+    const QVector3D tA = worldTransform * a;
+    const QVector3D tB = worldTransform * b;
+    const QVector3D tC = worldTransform * c;
+
+    QVector3D uvw;
+    float t = 0;
+
+    // We're testing both triangle orientations here and ignoring the culling mode.
+    // We should probably respect the culling mode used for the entity and perform a
+    // single test using the properly oriented triangle.
+    if ( QgsRayCastingUtils::rayTriangleIntersection( r, tA, tB, tC, uvw, t ) ||
+         QgsRayCastingUtils::rayTriangleIntersection( r, tA, tC, tB, uvw, t ) )
+    {
+      intersectionPt = r.point( t * r.distance() );
+      const float distance = r.projectedDistance( intersectionPt );
+
+      // we only want the first intersection of the ray with the mesh (closest to the ray origin)
+      if ( minDistance == -1 || distance < minDistance )
+      {
+        triangleIndex = static_cast<int>( i );
+        minDistance = distance;
+        minIntersectionPt = intersectionPt;
+      }
+    }
+  }
+
+  if ( minDistance != -1 )
+  {
+    intPt = minIntersectionPt;
+    return true;
+  }
+  else
+    return false;
+}
+
 void QgsTessellatedPolygonGeometry::setPolygons( const QList<QgsPolygon *> &polygons, const QList<QgsFeatureId> &featureIds, const QgsPointXY &origin, float extrusionHeight, const QList<float> &extrusionHeightPerPolygon )
 {
   Q_ASSERT( polygons.count() == featureIds.count() );
@@ -123,15 +183,28 @@ void QgsTessellatedPolygonGeometry::setData( const QByteArray &vertexBufferData,
     mTextureCoordsAttribute->setCount( vertexCount );
 }
 
+bool QgsTessellatedPolygonGeometry::rayIntersection( const QgsRayCastingUtils::Ray3D &ray, const QMatrix4x4 &worldTransform, QVector3D &intersectionPoint, QgsFeatureId &fid )
+{
+  int triangleIndex = -1;
+  const int stride = static_cast<int>( mPositionAttribute->byteStride() );
+  bool success = intersectionTriangles( mVertexBuffer->data(), stride, ray, worldTransform, intersectionPoint, triangleIndex );
 
-// run binary search on a sorted array, return index i where data[i] <= x < data[i+1]
+  fid = success ? triangleIndexToFeatureId( triangleIndex ) : FID_NULL;
+
+  return success;
+}
+
+// run binary search on a sorted array, return index i where data[i] <= v < data[i+1]
 static int binary_search( uint v, const uint *data, int count )
 {
   int idx0 = 0;
   int idx1 = count - 1;
 
-  if ( v < data[0] || v >= data[count - 1] )
+  if ( v < data[0] )
     return -1;  // not in the array
+
+  if ( v >= data[count - 1] )
+    return count - 1;  // for larger values the last bin is returned
 
   while ( idx0 != idx1 )
   {

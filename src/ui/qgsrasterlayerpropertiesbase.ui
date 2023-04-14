@@ -1261,7 +1261,7 @@
                    </widget>
                   </item>
                   <item row="0" column="0" colspan="5">
-                   <layout class="QGridLayout" name="gridLayout_8">
+                   <layout class="QGridLayout" name="gridLayout_8_1">
                     <item row="0" column="1">
                      <widget class="QLabel" name="textLabel5">
                       <property name="text">
@@ -1487,8 +1487,46 @@ p, li { white-space: pre-wrap; }
                 <property name="title">
                  <string>HTML Map Tip</string>
                 </property>
-                <layout class="QGridLayout" name="gridLayout_81">
-                 <item row="1" column="2">
+                <layout class="QGridLayout" name="gridLayout_8">
+                 <item row="0" column="0" colspan="2">
+                  <widget class="QSplitter" name="mMapTipSplitter">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="orientation">
+                    <enum>Qt::Horizontal</enum>
+                   </property>
+                   <widget class="QgsCodeEditorHTML" name="mMapTipWidget" native="true">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                    <property name="minimumSize">
+                     <size>
+                      <width>100</width>
+                      <height>100</height>
+                     </size>
+                    </property>
+                   </widget>
+                   <widget class="QGroupBox" name="mMapTipPreviewContainer">
+                    <property name="minimumSize">
+                     <size>
+                      <width>100</width>
+                      <height>100</height>
+                     </size>
+                    </property>
+                    <property name="title">
+                     <string>Preview</string>
+                    </property>
+                   </widget>
+                  </widget>
+                 </item>
+                 <item row="1" column="1">
                   <widget class="QPushButton" name="mInsertExpressionButton">
                    <property name="sizePolicy">
                     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -1504,39 +1542,23 @@ p, li { white-space: pre-wrap; }
                    </property>
                   </widget>
                  </item>
-                 <item row="0" column="0" colspan="3">
-                  <widget class="QgsCodeEditorHTML" name="mMapTipWidget" native="true">
-                   <property name="sizePolicy">
-                    <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
-                     <horstretch>0</horstretch>
-                     <verstretch>0</verstretch>
-                    </sizepolicy>
+                 <item row="2" column="0" colspan="2">
+                  <widget class="QLabel" name="labelMapTipInfo">
+                   <property name="text">
+                    <string>The HTML map tips are shown when moving mouse over features of the currently selected layer when the 'Show Map Tips' action is toggled on. If no HTML code is set, the feature display name is used.</string>
                    </property>
-                   <property name="minimumSize">
-                    <size>
-                     <width>0</width>
-                     <height>100</height>
-                    </size>
+                   <property name="wordWrap">
+                    <bool>true</bool>
                    </property>
                   </widget>
                  </item>
-                 <item row="1" column="0" colspan="2">
+                 <item row="1" column="0">
                   <widget class="QgsExpressionLineEdit" name="mMapTipExpressionWidget" native="true">
                    <property name="focusPolicy">
                     <enum>Qt::StrongFocus</enum>
                    </property>
                    <property name="toolTip">
                     <string>The valid attribute names for this layer</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="3" column="0" colspan="3">
-                  <widget class="QLabel" name="labelMapTipInfo">
-                   <property name="text">
-                    <string>The HTML map tips are shown when moving mouse over features of the currently selected layer when the 'Show Map Tips' action is toggled on.</string>
-                   </property>
-                   <property name="wordWrap">
-                    <bool>true</bool>
                    </property>
                   </widget>
                  </item>

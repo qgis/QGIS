@@ -46,3 +46,6 @@
 %Include auto_generated/vector/qgsgeometrysnapper.sip
 %Include auto_generated/vector/qgsgeometrysnappersinglesource.sip
 %Include auto_generated/vector/qgszonalstatistics.sip
+%If ( HAVE_PDAL_PROVIDER )
+%Include auto_generated/processing/pdal/qgspdalalgorithms.sip
+%End

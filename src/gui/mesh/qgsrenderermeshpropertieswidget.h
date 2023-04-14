@@ -55,7 +55,7 @@ class GUI_EXPORT QgsRendererMeshPropertiesWidget : public QgsMapLayerConfigWidge
      *
      * \since QGIS 3.22, replace syncToLayer() without argument
      */
-    void syncToLayer( QgsMapLayer *mapLayer ) override;
+    void syncToLayer( QgsMapLayer *mapLayer ) final;
 
   public slots:
     //! Applies the settings made in the dialog

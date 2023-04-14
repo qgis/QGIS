@@ -51,6 +51,7 @@ class CORE_EXPORT QgsBookmarkManagerModel: public QAbstractTableModel
       RoleName, //!< Bookmark name
       RoleId, //!< Bookmark ID
       RoleGroup, //!< Bookmark group
+      RoleRotation, //!< Bookmark map rotation
     };
 
     //! Model columns
@@ -61,7 +62,8 @@ class CORE_EXPORT QgsBookmarkManagerModel: public QAbstractTableModel
       ColumnXMin, //!< Extent x-minimum
       ColumnYMin, //!< Extent y-minimum
       ColumnXMax, //!< Extent x-maximum
-      ColumnYMax, //!< Extent y-maxnimum
+      ColumnYMax, //!< Extent y-maximum
+      ColumnRotation, //!< Rotation of the map
       ColumnCrs, //!< CRS of extent
       ColumnStore, //!< Manager storing the bookmark (TRUE if stored in project bookmark manager)
     };

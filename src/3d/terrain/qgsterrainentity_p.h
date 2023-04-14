@@ -34,19 +34,10 @@
 
 #include <memory>
 
-namespace Qt3DRender
-{
-  class QObjectPicker;
-}
 
 namespace Qt3DCore
 {
   class QTransform;
-}
-
-namespace QgsRayCastingUtils
-{
-  class Ray3D;
 }
 
 class Qgs3DMapSettings;
@@ -75,18 +66,13 @@ class QgsTerrainEntity : public QgsChunkedEntity
     const Qgs3DMapSettings &map3D() const { return mMap; }
     //! Returns pointer to the generator of textures for terrain tiles
     QgsTerrainTextureGenerator *textureGenerator() { return mTextureGenerator; }
-    //! Returns transform from terrain's CRS to map CRS
-    const QgsCoordinateTransform &terrainToMapTransform() const { return *mTerrainToMapTransform; }
 
-    //! Returns object picker attached to the terrain entity - used by camera controller
-    Qt3DRender::QObjectPicker *terrainPicker() const { return mTerrainPicker; }
     //! Returns the transform attached to the terrain entity
     Qt3DCore::QTransform *transform() const { return mTerrainTransform; }
     //! Returns the terrain elevation offset (adjusts the terrain position up and down)
     float terrainElevationOffset() const;
 
-    //! Tests whether the ray intersects the terrain - if it does, it sets the intersection point (in world coordinates)
-    bool rayIntersection( const QgsRayCastingUtils::Ray3D &ray, QVector3D &intersectionPoint );
+    QVector<QgsRayCastingUtils::RayHit> rayIntersection( const QgsRayCastingUtils::Ray3D &ray, const QgsRayCastingUtils::RayCastContext &context ) const override;
 
   private slots:
     void onShowBoundingBoxesChanged();
@@ -99,10 +85,7 @@ class QgsTerrainEntity : public QgsChunkedEntity
     void connectToLayersRepaintRequest();
 
     const Qgs3DMapSettings &mMap;
-    //! picker of terrain to know height of terrain when dragging
-    Qt3DRender::QObjectPicker *mTerrainPicker = nullptr;
     QgsTerrainTextureGenerator *mTextureGenerator = nullptr;
-    QgsCoordinateTransform *mTerrainToMapTransform = nullptr;
     Qt3DCore::QTransform *mTerrainTransform = nullptr;
 
     std::unique_ptr<TerrainMapUpdateJobFactory> mUpdateJobFactory;

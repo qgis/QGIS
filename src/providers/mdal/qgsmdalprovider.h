@@ -145,7 +145,7 @@ class QgsMdalProviderMetadata: public QgsProviderMetadata
   public:
     QgsMdalProviderMetadata();
     QIcon icon() const override;
-    QString filters( FilterType type ) override;
+    QString filters( Qgis::FileFilterType type ) override;
     QList<QgsMeshDriverMetadata> meshDriversMetadata() override;
     QgsMdalProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() ) override;
     bool createMeshData( const QgsMesh &mesh,

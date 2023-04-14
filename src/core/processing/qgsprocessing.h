@@ -66,6 +66,17 @@ class CORE_EXPORT QgsProcessing
     };
 
     /**
+     * Layer options flags
+     *
+     * \since QGIS 3.32
+     */
+    enum class LayerOptionsFlag : int
+    {
+      SkipIndexGeneration = 1 << 0, //!< Do not generate index when creating a layer. Makes sense only for point cloud layers
+    };
+    Q_DECLARE_FLAGS( LayerOptionsFlags, LayerOptionsFlag )
+
+    /**
      * Converts a source \a type to a string representation.
      *
      * \since QGIS 3.6

@@ -9,7 +9,7 @@
 #
 ################################################################
 #
-# The escape sequences emmited by the 
+# The escape sequences emitted by the 
 # keys Shift+F1 to Shift+F12 might not fit your needs
 #
 ################# IMPORTANT NOTICE #############################
@@ -62,7 +62,7 @@ keyboard "DEC VT420 Terminal"
 #
 # If the key is not found here, the text of the
 # key event as provided by QT is emitted, possibly
-# preceeded by ESC if the Alt key is pressed.
+# preceded by ESC if the Alt key is pressed.
 #
 # --------------------------------------------------------------
 
@@ -138,9 +138,9 @@ key F12+Shift    : "\E[24;2~"
 key Home   : "\E[H"  
 key End    : "\E[F"  
 
-key Prior -Shift : "\E[5~"  
-key Next  -Shift : "\E[6~"  
-key Insert-Shift : "\E[2~"  
+key PgUp   -Shift : "\E[5~"  
+key PgDown -Shift : "\E[6~"  
+key Insert -Shift : "\E[2~"  
 
 # Keypad-Enter. See comment on Return above.
 
@@ -151,10 +151,10 @@ key Space +Control : "\x00"
 
 # some of keys are used by konsole.
 
-key Up    +Shift   : scrollLineUp
-key Prior +Shift   : scrollPageUp
-key Down  +Shift   : scrollLineDown
-key Next  +Shift   : scrollPageDown
+key Up      +Shift : scrollLineUp
+key PgUp    +Shift : scrollPageUp
+key Down    +Shift : scrollLineDown
+key PgDown  +Shift : scrollPageDown
 
 key ScrollLock     : scrollLock
 

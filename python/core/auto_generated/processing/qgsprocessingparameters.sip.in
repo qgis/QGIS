@@ -34,7 +34,7 @@ Encapsulates settings relating to a feature source input to a processing algorit
 
 
     QgsProcessingFeatureSourceDefinition( const QString &source = QString(), bool selectedFeaturesOnly = false, long long featureLimit = -1,
-                                          QgsProcessingFeatureSourceDefinition::Flags flags = QgsProcessingFeatureSourceDefinition::Flags(), QgsFeatureRequest::InvalidGeometryCheck geometryCheck = QgsFeatureRequest::GeometryAbortOnInvalid );
+                                          QgsProcessingFeatureSourceDefinition::Flags flags = QgsProcessingFeatureSourceDefinition::Flags(), QgsFeatureRequest::InvalidGeometryCheck geometryCheck = QgsFeatureRequest::GeometryAbortOnInvalid, const QString &filterExpression = QString() );
 %Docstring
 Constructor for QgsProcessingFeatureSourceDefinition, accepting a static string ``source``.
 
@@ -43,6 +43,9 @@ If ``selectedFeaturesOnly`` is ``True``, then only selected features from the so
 The optional ``featureLimit`` can be set to a value > 0 to place a hard limit on the maximum number
 of features which will be read from the source.
 
+Since QGIS 3.32, the optional ``filterExpression`` argument can be used to specify a expression to use
+to filter the features read from the source.
+
 The ``flags`` argument can be used to specify flags which dictate the source behavior.
 
 If the QgsProcessingFeatureSourceDefinition.Flag.FlagOverrideDefaultGeometryCheck is set in ``flags``, then the value of ``geometryCheck`` will override
@@ -50,7 +53,7 @@ the default geometry check method (as dictated by :py:class:`QgsProcessingContex
 %End
 
     QgsProcessingFeatureSourceDefinition( const QgsProperty &source, bool selectedFeaturesOnly = false, long long featureLimit = -1,
-                                          QgsProcessingFeatureSourceDefinition::Flags flags = QgsProcessingFeatureSourceDefinition::Flags(), QgsFeatureRequest::InvalidGeometryCheck geometryCheck = QgsFeatureRequest::GeometryAbortOnInvalid );
+                                          QgsProcessingFeatureSourceDefinition::Flags flags = QgsProcessingFeatureSourceDefinition::Flags(), QgsFeatureRequest::InvalidGeometryCheck geometryCheck = QgsFeatureRequest::GeometryAbortOnInvalid, const QString &filterExpression = QString() );
 %Docstring
 Constructor for QgsProcessingFeatureSourceDefinition, accepting a QgsProperty source.
 
@@ -58,6 +61,9 @@ If ``selectedFeaturesOnly`` is ``True``, then only selected features from the so
 
 The optional ``featureLimit`` can be set to a value > 0 to place a hard limit on the maximum number
 of features which will be read from the source.
+
+Since QGIS 3.32, the optional ``filterExpression`` argument can be used to specify a expression to use
+to filter the features read from the source.
 
 The ``flags`` argument can be used to specify flags which dictate the source behavior.
 
@@ -70,6 +76,8 @@ the default geometry check method (as dictated by :py:class:`QgsProcessingContex
     bool selectedFeaturesOnly;
 
     long long featureLimit;
+
+    QString filterExpression;
 
     Flags flags;
 
@@ -327,6 +335,8 @@ their acceptable ranges, defaults, etc.
       sipType = sipType_QgsProcessingParameterPointCloudLayer;
     else if ( sipCpp->type() == QgsProcessingParameterAnnotationLayer::typeName() )
       sipType = sipType_QgsProcessingParameterAnnotationLayer;
+    else if ( sipCpp->type() == QgsProcessingParameterPointCloudAttribute::typeName() )
+      sipType = sipType_QgsProcessingParameterPointCloudAttribute;
     else
       sipType = nullptr;
 %End
@@ -1154,7 +1164,7 @@ a conversion in this case and will return the target layer name in the ``layerNa
 .. versionadded:: 3.10
 %End
 
-    static QgsMapLayer *parameterAsLayer( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingUtils::LayerHint layerHint = QgsProcessingUtils::LayerHint::UnknownType );
+    static QgsMapLayer *parameterAsLayer( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingUtils::LayerHint layerHint = QgsProcessingUtils::LayerHint::UnknownType, QgsProcessing::LayerOptionsFlags flags = QgsProcessing::LayerOptionsFlags() );
 %Docstring
 Evaluates the parameter with matching ``definition`` to a map layer.
 
@@ -1163,7 +1173,7 @@ sources and stored temporarily in the ``context``. In either case, callers do no
 need to handle deletion of the returned layer.
 %End
 
-    static QgsMapLayer *parameterAsLayer( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context, QgsProcessingUtils::LayerHint layerHint = QgsProcessingUtils::LayerHint::UnknownType );
+    static QgsMapLayer *parameterAsLayer( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context, QgsProcessingUtils::LayerHint layerHint = QgsProcessingUtils::LayerHint::UnknownType, QgsProcessing::LayerOptionsFlags flags = QgsProcessing::LayerOptionsFlags() );
 %Docstring
 Evaluates the parameter with matching ``definition`` and ``value`` to a map layer.
 
@@ -1426,14 +1436,16 @@ Tables are collapsed to a 1 dimensional list.
 .. versionadded:: 3.4
 %End
 
-    static QList< QgsMapLayer *> parameterAsLayerList( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );
+    static QList< QgsMapLayer *> parameterAsLayerList( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessing::LayerOptionsFlags flags = QgsProcessing::LayerOptionsFlags() );
 %Docstring
 Evaluates the parameter with matching ``definition`` to a list of map layers.
+The ``flags`` are used to set options for loading layers (e.g. skip index generation).
 %End
 
-    static QList< QgsMapLayer *> parameterAsLayerList( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context );
+    static QList< QgsMapLayer *> parameterAsLayerList( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context, QgsProcessing::LayerOptionsFlags flags = QgsProcessing::LayerOptionsFlags() );
 %Docstring
 Evaluates the parameter with matching ``definition`` and ``value`` to a list of map layers.
+The ``flags`` are used to set options for loading layers (e.g. skip index generation).
 
 .. versionadded:: 3.4
 %End
@@ -1464,16 +1476,36 @@ Evaluates the parameter with matching ``definition`` and ``value`` to a range of
 .. versionadded:: 3.4
 %End
 
-    static QStringList parameterAsFields( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );
+ static QStringList parameterAsFields( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context ) /Deprecated/;
 %Docstring
 Evaluates the parameter with matching ``definition`` to a list of fields.
+
+.. deprecated::
+   use :py:func:`~QgsProcessingParameters.parameterAsStrings` instead.
 %End
 
-    static QStringList parameterAsFields( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context );
+ static QStringList parameterAsFields( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context ) /Deprecated/;
 %Docstring
 Evaluates the parameter with matching ``definition`` and ``value`` to a list of fields.
 
 .. versionadded:: 3.4
+
+.. deprecated::
+   use :py:func:`~QgsProcessingParameters.parameterAsStrings` instead.
+%End
+
+    static QStringList parameterAsStrings( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );
+%Docstring
+Evaluates the parameter with matching ``definition`` to a list of strings (e.g. field names or point cloud attributes).
+
+.. versionadded:: 3.32.
+%End
+
+    static QStringList parameterAsStrings( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context );
+%Docstring
+Evaluates the parameter with matching ``definition`` and ``value`` to a list of strings (e.g. field names or point cloud attributes).
+
+.. versionadded:: 3.32
 %End
 
     static QgsPrintLayout *parameterAsLayout( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );
@@ -1580,9 +1612,10 @@ Evaluates the parameter with matching ``definition`` and ``value`` to a database
 .. versionadded:: 3.14
 %End
 
-    static QgsPointCloudLayer *parameterAsPointCloudLayer( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );
+    static QgsPointCloudLayer *parameterAsPointCloudLayer( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessing::LayerOptionsFlags flags = QgsProcessing::LayerOptionsFlags() );
 %Docstring
 Evaluates the parameter with matching ``definition`` to a point cloud layer.
+The ``flags`` are used to set options for loading layer (e.g. skip index generation).
 
 Layers will either be taken from ``context``'s active project, or loaded from external
 sources and stored temporarily in the ``context``. In either case, callers do not
@@ -1591,9 +1624,10 @@ need to handle deletion of the returned layer.
 .. versionadded:: 3.22
 %End
 
-    static QgsPointCloudLayer *parameterAsPointCloudLayer( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context );
+    static QgsPointCloudLayer *parameterAsPointCloudLayer( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context, QgsProcessing::LayerOptionsFlags flags = QgsProcessing::LayerOptionsFlags() );
 %Docstring
 Evaluates the parameter with matching ``definition`` and ``value`` to a point cloud layer.
+The ``flags`` are used to set options for loading layer (e.g. skip index generation).
 
 Layers will either be taken from ``context``'s active project, or loaded from external
 sources and stored temporarily in the ``context``. In either case, callers do not
@@ -1836,7 +1870,7 @@ A geometry parameter for processing algorithms.
 %Docstring
 Constructor for QgsProcessingParameterGeometry.
 
-The ``geometryTypes`` argument allows for specifying a list of geometry types (see :py:class:`QgsWkbTypes`.GeometryType) acceptable for this
+The ``geometryTypes`` argument allows for specifying a list of geometry types (see :py:class:`Qgis`.GeometryType) acceptable for this
 parameter. Passing a empty list will allow for any type of geometry.
 The ``allowMultiPart`` argument allows specifying a multi part geometry
 %End
@@ -1863,14 +1897,14 @@ Returns the type name for the parameter class.
 
     QList<int>  geometryTypes() const;
 %Docstring
-Returns the parameter allowed geometries, as a list of :py:class:`QgsWkbTypes`.GeometryType values.
+Returns the parameter allowed geometries, as a list of :py:class:`Qgis`.GeometryType values.
 
 .. seealso:: :py:func:`setGeometryTypes`
 %End
 
     void setGeometryTypes( const QList<int> &geometryTypes );
 %Docstring
-Sets the allowed  ``geometryTypes``, as a list of :py:class:`QgsWkbTypes`.GeometryType values.
+Sets the allowed  ``geometryTypes``, as a list of :py:class:`Qgis`.GeometryType values.
 
 .. seealso:: :py:func:`geometryTypes`
 %End
@@ -3334,7 +3368,7 @@ Returns the default file extension for destination file paths
 associated with this parameter.
 %End
 
-    virtual QString generateTemporaryDestination() const;
+    virtual QString generateTemporaryDestination( const QgsProcessingContext *context = 0 ) const;
 %Docstring
 Generates a temporary destination value for this parameter. The returned
 value will be a file path or QGIS data provider URI suitable for
@@ -3493,7 +3527,7 @@ Sets whether the sink supports appending features to an existing table.
 
     virtual bool fromVariantMap( const QVariantMap &map );
 
-    virtual QString generateTemporaryDestination() const;
+    virtual QString generateTemporaryDestination( const QgsProcessingContext *context = 0 ) const;
 
 
     static QgsProcessingParameterFeatureSink *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) /Factory/;
@@ -4748,6 +4782,106 @@ Returns a list of the point cloud format file extensions supported for this para
 %Docstring
 Creates a new parameter using the definition from a script code.
 %End
+};
+
+class QgsProcessingParameterPointCloudAttribute : QgsProcessingParameterDefinition
+{
+%Docstring(signature="appended")
+A point cloud layer attribute parameter for Processing algorithms.
+
+.. versionadded:: 3.32
+%End
+
+%TypeHeaderCode
+#include "qgsprocessingparameters.h"
+%End
+  public:
+
+    QgsProcessingParameterPointCloudAttribute( const QString &name, const QString &description = QString(), const QVariant &defaultValue = QVariant(),
+        const QString &parentLayerParameterName = QString(),
+        bool allowMultiple = false,
+        bool optional = false,
+        bool defaultToAllAttributes = false );
+%Docstring
+Constructor for :py:class:`QgsProcessingParameterField`.
+%End
+
+    static QString typeName();
+%Docstring
+Returns the type name for the parameter class.
+%End
+    virtual QgsProcessingParameterDefinition *clone() const /Factory/;
+
+    virtual QString type() const;
+    virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = 0 ) const;
+
+    virtual QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const;
+
+    virtual QString asScriptCode() const;
+
+    virtual QString asPythonString( QgsProcessing::PythonOutputType outputType = QgsProcessing::PythonQgsProcessingAlgorithmSubclass ) const;
+
+    virtual QStringList dependsOnOtherParameters() const;
+
+
+    QString parentLayerParameterName() const;
+%Docstring
+Returns the name of the parent layer parameter, or an empty string if this is not set.
+
+.. seealso:: :py:func:`setParentLayerParameterName`
+%End
+
+    void setParentLayerParameterName( const QString &parentLayerParameterName );
+%Docstring
+Sets the name of the parent layer parameter. Use an empty string if this is not required.
+
+.. seealso:: :py:func:`parentLayerParameterName`
+%End
+
+    bool allowMultiple() const;
+%Docstring
+Returns whether multiple field selections are permitted.
+
+.. seealso:: :py:func:`setAllowMultiple`
+%End
+
+    void setAllowMultiple( bool allowMultiple );
+%Docstring
+Sets whether multiple field selections are permitted.
+
+.. seealso:: :py:func:`allowMultiple`
+%End
+
+    bool defaultToAllAttributes() const;
+%Docstring
+Returns whether a parameter which allows multiple selections (see :py:func:`~QgsProcessingParameterPointCloudAttribute.allowMultiple`) should automatically
+select all attributes as the default value.
+
+If ``True``, this will override any existing :py:func:`~QgsProcessingParameterPointCloudAttribute.defaultValue` set on the parameter.
+
+.. seealso:: :py:func:`setDefaultToAllAttributes`
+%End
+
+    void setDefaultToAllAttributes( bool enabled );
+%Docstring
+Sets whether a parameter which allows multiple selections (see :py:func:`~QgsProcessingParameterPointCloudAttribute.allowMultiple`) should automatically
+select all attributes as the default value.
+
+If ``True``, this will override any existing :py:func:`~QgsProcessingParameterPointCloudAttribute.defaultValue` set on the parameter.
+
+.. seealso:: :py:func:`defaultToAllAttributes`
+%End
+
+    virtual QVariantMap toVariantMap() const;
+
+    virtual bool fromVariantMap( const QVariantMap &map );
+
+
+    static QgsProcessingParameterPointCloudAttribute *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) /Factory/;
+%Docstring
+Creates a new parameter using the definition from a script code.
+%End
+
 };
 
 

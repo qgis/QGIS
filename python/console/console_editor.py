@@ -30,7 +30,7 @@ from functools import partial
 from operator import itemgetter
 from pathlib import Path
 
-from qgis.core import Qgis, QgsApplication, QgsBlockingNetworkRequest, QgsFileUtils, QgsSettings
+from qgis.core import Qgis, QgsApplication, QgsBlockingNetworkRequest, QgsSettings
 from qgis.gui import QgsCodeEditorPython, QgsMessageBar
 from qgis.PyQt.Qsci import QsciScintilla
 from qgis.PyQt.QtCore import QByteArray, QCoreApplication, QDir, QEvent, QFileInfo, QJsonDocument, QSize, Qt, QUrl
@@ -68,11 +68,11 @@ class Editor(QgsCodeEditorPython):
         self.setMinimumHeight(120)
         self.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
 
-        # Disable command key
+        # Disable default scintilla shortcuts
         ctrl, shift = self.SCMOD_CTRL << 16, self.SCMOD_SHIFT << 16
-        self.SendScintilla(QsciScintilla.SCI_CLEARCMDKEY, ord('L') + ctrl)
-        self.SendScintilla(QsciScintilla.SCI_CLEARCMDKEY, ord('T') + ctrl)
-        self.SendScintilla(QsciScintilla.SCI_CLEARCMDKEY, ord('D') + ctrl)
+        self.SendScintilla(QsciScintilla.SCI_CLEARCMDKEY, ord('T') + ctrl)  # Switch current line with the next one
+        self.SendScintilla(QsciScintilla.SCI_CLEARCMDKEY, ord('D') + ctrl)  # Duplicate current line / selection
+        self.SendScintilla(QsciScintilla.SCI_CLEARCMDKEY, ord('L') + ctrl)  # Delete current line
         self.SendScintilla(QsciScintilla.SCI_CLEARCMDKEY, ord('L') + ctrl + shift)
 
         # New QShortcut = ctrl+space/ctrl+alt+space for Autocomplete
@@ -112,7 +112,7 @@ class Editor(QgsCodeEditorPython):
                                      QCoreApplication.translate("PythonConsole", "Run Selected"),
                                      self.runSelectedCode, 'Ctrl+E')  # spellok
         pyQGISHelpAction = menu.addAction(QgsApplication.getThemeIcon("console/iconHelpConsole.svg"),
-                                          QCoreApplication.translate("PythonConsole", "Search Selected in PyQGIS docs"),
+                                          QCoreApplication.translate("PythonConsole", "Search Selection in PyQGIS Documentation"),
                                           self.searchSelectedTextInPyQGISDocs)
         menu.addAction(QgsApplication.getThemeIcon("mActionStart.svg"),
                        QCoreApplication.translate("PythonConsole", "Run Script"),
@@ -326,8 +326,8 @@ class Editor(QgsCodeEditorPython):
                 filename = self.createTempFile()
                 deleteTempFile = True
 
-            self.pythonconsole.shell.runCommand("exec(Path('{0}').read_text())"
-                                                .format(filename.replace("\\", "/")))
+            self.pythonconsole.shell.runFile(filename)
+
             if deleteTempFile:
                 Path(filename).unlink()
 
@@ -407,6 +407,10 @@ class Editor(QgsCodeEditorPython):
     def save(self, filename=None):
         if self.isReadOnly():
             return
+
+        if self.pythonconsole.settings.value("pythonConsole/formatOnSave", False, type=bool):
+            self.reformatCode()
+
         tabwidget = self.tabwidget
         index = tabwidget.indexOf(self.parent)
         if filename:

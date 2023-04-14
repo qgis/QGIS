@@ -44,7 +44,7 @@ This is a container for configuration of the snapping of the project
     static QString snappingTypeToString( Qgis::SnappingType type );
 %Docstring
 Convenient method to returns the translated name of the enum type
-Qgis.SnappingTypes.
+:py:class:`Qgis`.SnappingTypes.
 
 .. versionadded:: 3.26
 %End
@@ -52,19 +52,19 @@ Qgis.SnappingTypes.
  static QString snappingTypeFlagToString( Qgis::SnappingType type ) /Deprecated/;
 %Docstring
 Convenient method to return the translated name of the enum type
-Qgis.SnappingTypes.
+:py:class:`Qgis`.SnappingTypes.
 
 .. versionadded:: 3.12
 
 .. deprecated:: QGIS 3.26
-   use Qgis.snappingTypeToString instead
+   use :py:class:`Qgis`.snappingTypeToString instead
 %End
 
 
     static QIcon snappingTypeToIcon( Qgis::SnappingType type );
 %Docstring
 Convenient method to return an icon corresponding to the enum type
-Qgis.SnappingTypes.
+:py:class:`Qgis`.SnappingTypes.
 
 .. versionadded:: 3.20
 %End
@@ -72,10 +72,10 @@ Qgis.SnappingTypes.
  static QIcon snappingTypeFlagToIcon( Qgis::SnappingType type ) /Deprecated/;
 %Docstring
 Convenient method to return an icon corresponding to the enum type
-Qgis.SnappingTypes.
+:py:class:`Qgis`.SnappingTypes.
 
 .. deprecated:: QGIS 3.26
-   use Qgis.snappingTypeToString instead
+   use :py:class:`Qgis`.snappingTypeToString instead
 
 .. versionadded:: 3.20
 %End
@@ -103,7 +103,7 @@ IndividualLayerSettings
 :param units:
 
 .. deprecated:: QGIS 3.12
-   use the method with Qgis.SnappingTypes instead.
+   use the method with :py:class:`Qgis`.SnappingTypes instead.
 %End
 
         IndividualLayerSettings( bool enabled, Qgis::SnappingTypes type, double tolerance, QgsTolerance::UnitType units, double minScale = 0.0, double maxScale = 0.0 );

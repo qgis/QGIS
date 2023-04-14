@@ -749,7 +749,7 @@ This method returns a reference only, and does not involve any geometry cloning.
 Checks validity of the geometry, and returns ``True`` if the geometry is valid.
 
 :param flags: indicates optional flags which control the type of validity checking performed
-              (corresponding to Qgis.GeometryValidityFlags).
+              (corresponding to :py:class:`Qgis`.GeometryValidityFlags).
 
 :return: - ``True`` if geometry is valid
          - error: will be set to the validity error message

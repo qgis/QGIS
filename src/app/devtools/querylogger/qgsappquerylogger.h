@@ -20,6 +20,7 @@
 #include <QElapsedTimer>
 #include "qgsdbquerylog.h"
 #include <memory>
+#include <QStyledItemDelegate>
 
 class QgsDevToolsModelNode;
 class QgsDevToolsModelGroup;
@@ -99,6 +100,7 @@ class QgsAppQueryLogger : public QAbstractItemModel
     QModelIndex indexOfParentLayerTreeNode( QgsDevToolsModelNode *parentNode ) const;
 
     std::unique_ptr< QgsDatabaseQueryLoggerRootNode > mRootNode;
+    long long mMaxCost = 0;
 
     QHash< int, QgsDatabaseQueryLoggerQueryGroup * > mQueryGroups;
 
@@ -133,6 +135,20 @@ class QgsDatabaseQueryLoggerProxyModel : public QSortFilterProxyModel
     QgsAppQueryLogger *mLogger = nullptr;
 
     QString mFilterString;
+};
+
+class QueryCostDelegate : public QStyledItemDelegate
+{
+    Q_OBJECT
+  public:
+    explicit QueryCostDelegate( int sortRole, int totalCostRole, QObject *parent = nullptr );
+    ~QueryCostDelegate();
+
+    void paint( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
+
+  private:
+    int mSortRole = 0;
+    int mTotalCostRole = 0;
 };
 
 #endif // QGSAPPQUERYLOGGER_H

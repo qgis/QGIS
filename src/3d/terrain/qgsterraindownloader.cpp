@@ -15,6 +15,7 @@
 
 #include "qgsterraindownloader.h"
 
+#include "qgs3dutils.h"
 #include "qgslogger.h"
 #include "qgsrasterlayer.h"
 #include "qgscoordinatetransform.h"
@@ -125,15 +126,7 @@ QByteArray QgsTerrainDownloader::getHeightMap( const QgsRectangle &extentOrig, i
     return QByteArray();
   }
 
-  QgsRectangle extentTr = extentOrig;
-  if ( destCrs != mOnlineDtm->crs() )
-  {
-    // if in different CRS - need to reproject extent and resolution
-    QgsCoordinateTransform ct( destCrs, mOnlineDtm->crs(), context );
-    ct.setBallparkTransformsAreAppropriate( true );
-    extentTr = ct.transformBoundingBox( extentOrig );
-  }
-
+  QgsRectangle extentTr = Qgs3DUtils::tryReprojectExtent2D( extentOrig, destCrs, mOnlineDtm->crs(), context );
   const double requestedMupp = extentTr.width() / res;
   const double finalMupp = findBestTileResolution( requestedMupp );
 

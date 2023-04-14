@@ -57,6 +57,9 @@ QVariant QgsBookmarkManagerModel::data( const QModelIndex &index, int role ) con
     case RoleExtent:
       return b.extent();
 
+    case RoleRotation:
+      return b.rotation();
+
     case RoleName:
       return b.name();
 
@@ -86,6 +89,8 @@ QVariant QgsBookmarkManagerModel::data( const QModelIndex &index, int role ) con
           return b.extent().xMaximum();
         case ColumnYMax:
           return b.extent().yMaximum();
+        case ColumnRotation:
+          return b.rotation();
         case ColumnCrs:
           return b.extent().crs().authid();
         case ColumnStore:
@@ -176,6 +181,9 @@ bool QgsBookmarkManagerModel::setData( const QModelIndex &index, const QVariant 
             return false;
           break;
         }
+        case ColumnRotation:
+          b.setRotation( value.toDouble() );
+          break;
         case ColumnCrs:
         {
           QgsCoordinateReferenceSystem crs;
@@ -267,6 +275,8 @@ QVariant QgsBookmarkManagerModel::headerData( int section, Qt::Orientation orien
         return tr( "xMax" );
       case ColumnYMax:
         return tr( "yMax" );
+      case ColumnRotation:
+        return tr( "Rotation" );
       case ColumnCrs:
         return tr( "CRS" );
       case ColumnStore:

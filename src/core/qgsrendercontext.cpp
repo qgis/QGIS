@@ -608,6 +608,7 @@ double QgsRenderContext::convertMetersToMapUnits( double meters ) const
     case Qgis::DistanceUnit::Miles:
     case Qgis::DistanceUnit::Centimeters:
     case Qgis::DistanceUnit::Millimeters:
+    case Qgis::DistanceUnit::Inches:
     case Qgis::DistanceUnit::Unknown:
       return ( meters * QgsUnitTypes::fromUnitToUnitFactor( Qgis::DistanceUnit::Meters, mDistanceArea.sourceCrs().mapUnits() ) );
   }

@@ -24,12 +24,11 @@
 #include "Screen.h"
 
 // Standard
-#include <stdio.h>
-#include <stdlib.h>
+#include <cstdio>
+#include <cstdlib>
 #include <unistd.h>
-#include <assert.h>
-#include <string.h>
-#include <ctype.h>
+#include <cstring>
+#include <cctype>
 
 // Qt
 #include <QTextStream>
@@ -107,8 +106,8 @@ void Screen::cursorUp(int n)
 {
     if (n == 0) n = 1; // Default
     int stop = cuY < _topMargin ? 0 : _topMargin;
-    cuX = std::min(columns-1,cuX); // nowrap!
-    cuY = std::max(stop,cuY-n);
+    cuX = qMin(columns-1,cuX); // nowrap!
+    cuY = qMax(stop,cuY-n);
 }
 
 void Screen::cursorDown(int n)
@@ -116,23 +115,54 @@ void Screen::cursorDown(int n)
 {
     if (n == 0) n = 1; // Default
     int stop = cuY > _bottomMargin ? lines-1 : _bottomMargin;
-    cuX = std::min(columns-1,cuX); // nowrap!
-    cuY = std::min(stop,cuY+n);
+    cuX = qMin(columns-1,cuX); // nowrap!
+    cuY = qMin(stop,cuY+n);
 }
 
 void Screen::cursorLeft(int n)
     //=CUB
 {
     if (n == 0) n = 1; // Default
-    cuX = std::min(columns-1,cuX); // nowrap!
-    cuX = std::max(0,cuX-n);
+    cuX = qMin(columns-1,cuX); // nowrap!
+    cuX = qMax(0,cuX-n);
+}
+
+void Screen::cursorNextLine(int n)
+    //=CNL
+{
+    if (n == 0) {
+        n = 1; // Default
+    }
+    cuX = 0;
+    while (n > 0) {
+        if (cuY < lines - 1) {
+            cuY += 1;
+        }
+        n--;
+    }
+
+}
+
+void Screen::cursorPreviousLine(int n)
+    //=CPL
+{
+    if (n == 0) {
+        n = 1; // Default
+    }
+    cuX = 0;
+    while (n > 0) {
+        if (cuY  > 0) {
+            cuY -= 1;
+        }
+        n--;
+    }
 }
 
 void Screen::cursorRight(int n)
     //=CUF
 {
     if (n == 0) n = 1; // Default
-    cuX = std::min(columns-1,cuX+n);
+    cuX = qMin(columns-1,cuX+n);
 }
 
 void Screen::setMargins(int top, int bot)
@@ -189,7 +219,7 @@ void Screen::nextLine()
 void Screen::eraseChars(int n)
 {
     if (n == 0) n = 1; // Default
-    int p = std::max(0,std::min(cuX+n-1,columns-1));
+    int p = qMax(0,qMin(cuX+n-1,columns-1));
     clearImage(loc(cuX,cuY),loc(p,cuY),' ');
 }
 
@@ -225,6 +255,28 @@ void Screen::insertChars(int n)
 
     if ( screenLines[cuY].count() > columns )
         screenLines[cuY].resize(columns);
+}
+
+void Screen::repeatChars(int count)
+    //=REP
+{
+    if (count == 0)
+    {
+        count = 1;
+    }
+    /**
+     * From ECMA-48 version 5, section 8.3.103
+     * If the character preceding REP is a control function or part of a
+     * control function, the effect of REP is not defined by this Standard.
+     *
+     * So, a "normal" program should always use REP immediately after a visible
+     * character (those other than escape sequences). So, lastDrawnChar can be
+     * safely used.
+     */
+    for (int i = 0; i < count; i++)
+    {
+        displayCharacter(lastDrawnChar);
+    }
 }
 
 void Screen::deleteLines(int n)
@@ -283,8 +335,8 @@ void Screen::saveCursor()
 
 void Screen::restoreCursor()
 {
-    cuX     = std::min(savedState.cursorColumn,columns-1);
-    cuY     = std::min(savedState.cursorLine,lines-1);
+    cuX     = qMin(savedState.cursorColumn,columns-1);
+    cuY     = qMin(savedState.cursorLine,lines-1);
     currentRendition   = savedState.rendition;
     currentForeground   = savedState.foreground;
     currentBackground   = savedState.background;
@@ -307,7 +359,7 @@ void Screen::resizeImage(int new_lines, int new_columns)
     // create new screen lines and copy from old to new
 
     ImageLine* newScreenLines = new ImageLine[new_lines+1];
-    for (int i=0; i < std::min(lines,new_lines+1) ;i++)
+    for (int i=0; i < qMin(lines,new_lines+1) ;i++)
         newScreenLines[i]=screenLines[i];
     for (int i=lines;(i > 0) && (i<new_lines+1);i++)
         newScreenLines[i].resize( new_columns );
@@ -323,8 +375,8 @@ void Screen::resizeImage(int new_lines, int new_columns)
 
     lines = new_lines;
     columns = new_columns;
-    cuX = std::min(cuX,columns-1);
-    cuY = std::min(cuY,lines-1);
+    cuX = qMin(cuX,columns-1);
+    cuY = qMin(cuY,lines-1);
 
     // FIXME: try to keep values, evtl.
     _topMargin=0;
@@ -370,7 +422,7 @@ void Screen::setDefaultMargins()
    is to poor to distinguish between bold
    (which is a font attribute) and intensive
    (which is a color attribute), we translate
-   this and RE_BOLD in falls eventually appart
+   this and RE_BOLD in falls eventually apart
    into RE_BOLD and RE_INTENSIVE.
    */
 
@@ -398,7 +450,7 @@ void Screen::updateEffectiveRendition()
     }
 
     if (currentRendition & RE_BOLD)
-        effectiveForeground.toggleIntensive();
+        effectiveForeground.setIntensive();
 }
 
 void Screen::copyFromHistory(Character* dest, int startLine, int count) const
@@ -408,7 +460,7 @@ void Screen::copyFromHistory(Character* dest, int startLine, int count) const
 
     for (int line = startLine; line < startLine + count; line++)
     {
-        const int length = std::min(columns,history->getLineLen(line));
+        const int length = qMin(columns,history->getLineLen(line));
         const int destLineOffset  = (line-startLine)*columns;
 
         history->getCells(line,0,length,dest + destLineOffset);
@@ -553,8 +605,8 @@ void Screen::clear()
 
 void Screen::backspace()
 {
-    cuX = std::min(columns-1,cuX); // nowrap!
-    cuX = std::max(0,cuX-1);
+    cuX = qMin(columns-1,cuX); // nowrap!
+    cuX = qMax(0,cuX-1);
 
     if (screenLines[cuY].size() < cuX+1)
         screenLines[cuY].resize(cuX+1);
@@ -626,7 +678,7 @@ void Screen::checkSelection(int from, int to)
         clearSelection();
 }
 
-void Screen::displayCharacter(unsigned short c)
+void Screen::displayCharacter(wchar_t c)
 {
     // Note that VT100 does wrapping BEFORE putting the character.
     // This has impact on the assumption of valid cursor positions.
@@ -666,6 +718,8 @@ void Screen::displayCharacter(unsigned short c)
     currentChar.foregroundColor = effectiveForeground;
     currentChar.backgroundColor = effectiveBackground;
     currentChar.rendition = effectiveRendition;
+
+    lastDrawnChar = c;
 
     int i = 0;
     int newCursorX = cuX + w--;
@@ -731,13 +785,18 @@ QRect Screen::lastScrolledRegion() const
 
 void Screen::scrollUp(int from, int n)
 {
-    if (n <= 0 || from + n > _bottomMargin) return;
+    if (n <= 0)
+        return;
+    if (from > _bottomMargin)
+        return;
+    if (from + n > _bottomMargin)
+        n = _bottomMargin + 1 - from;
 
     _scrolledLines -= n;
     _lastScrolledRegion = QRect(0,_topMargin,columns-1,(_bottomMargin-_topMargin));
 
     //FIXME: make sure `topMargin', `bottomMargin', `from', `n' is in bounds.
-    moveImage(loc(0,from),loc(0,from+n),loc(columns-1,_bottomMargin));
+    moveImage(loc(0,from),loc(0,from+n),loc(columns,_bottomMargin));
     clearImage(loc(0,_bottomMargin-n+1),loc(columns-1,_bottomMargin),' ');
 }
 
@@ -771,14 +830,14 @@ void Screen::setCursorX(int x)
 {
     if (x == 0) x = 1; // Default
     x -= 1; // Adjust
-    cuX = std::max(0,std::min(columns-1, x));
+    cuX = qMax(0,qMin(columns-1, x));
 }
 
 void Screen::setCursorY(int y)
 {
     if (y == 0) y = 1; // Default
     y -= 1; // Adjust
-    cuY = std::max(0,std::min(lines  -1, y + (getMode(MODE_Origin) ? _topMargin : 0) ));
+    cuY = qMax(0,qMin(lines  -1, y + (getMode(MODE_Origin) ? _topMargin : 0) ));
 }
 
 void Screen::home()
@@ -1080,8 +1139,8 @@ void Screen::setSelectionEnd( const int x, const int y)
         int bottomRow = selBottomRight / columns;
         int bottomColumn = selBottomRight % columns;
 
-        selTopLeft = loc(std::min(topColumn,bottomColumn),topRow);
-        selBottomRight = loc(std::max(topColumn,bottomColumn),bottomRow);
+        selTopLeft = loc(qMin(topColumn,bottomColumn),topRow);
+        selBottomRight = loc(qMax(topColumn,bottomColumn),bottomRow);
     }
 }
 
@@ -1180,7 +1239,7 @@ int Screen::copyLineToStream(int line ,
     static const int MAX_CHARS = 1024;
     static Character characterBuffer[MAX_CHARS];
 
-    assert( count < MAX_CHARS );
+    Q_ASSERT( count < MAX_CHARS );
 
     LineProperty currentLineProperties = 0;
 
@@ -1190,7 +1249,7 @@ int Screen::copyLineToStream(int line ,
         const int lineLength = history->getLineLen(line);
 
         // ensure that start position is before end of line
-        start = std::min(start,std::max(0,lineLength-1));
+        start = qMin(start,qMax(0,lineLength-1));
 
         // retrieve line from history buffer.  It is assumed
         // that the history buffer does not store trailing white space
@@ -1201,14 +1260,14 @@ int Screen::copyLineToStream(int line ,
         }
         else
         {
-            count = std::min(start+count,lineLength)-start;
+            count = qMin(start+count,lineLength)-start;
         }
 
         // safety checks
-        assert( start >= 0 );
-        assert( count >= 0 );
+        Q_ASSERT( start >= 0 );
+        Q_ASSERT( count >= 0 );
         // cppcheck-suppress assertWithSideEffect
-        assert( (start+count) <= history->getLineLen(line) );
+        Q_ASSERT( (start+count) <= history->getLineLen(line) );
 
         history->getCells(line,start,count,characterBuffer);
 
@@ -1220,7 +1279,7 @@ int Screen::copyLineToStream(int line ,
         if ( count == -1 )
             count = columns - start;
 
-        assert( count >= 0 );
+        Q_ASSERT( count >= 0 );
 
         const int screenLine = line-history->getLines();
 
@@ -1228,7 +1287,7 @@ int Screen::copyLineToStream(int line ,
         int length = screenLines[screenLine].count();
 
         //retrieve line from screen image
-        for (int i=start;i < std::min(start+count,length);i++)
+        for (int i=start;i < qMin(start+count,length);i++)
         {
             characterBuffer[i-start] = data[i];
         }
@@ -1335,7 +1394,7 @@ void Screen::setScroll(const HistoryType& t , bool copyPreviousScroll)
     else
     {
         HistoryScroll* oldScroll = history;
-        history = t.scroll(0);
+        history = t.scroll(nullptr);
         delete oldScroll;
     }
 }

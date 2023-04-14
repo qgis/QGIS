@@ -14,6 +14,7 @@ from qgis.core import (
     QgsSettings,
     QgsSettingsEntryEnumFlag,
     QgsSettingsEntryString,
+    QgsSettingsEntryInteger,
     QgsSettingsException,
     QgsSettingsTree,
     QgsSettingsTreeNode,
@@ -116,6 +117,18 @@ class TestQgsSettingsEntry(unittest.TestCase):
             nl2.deleteItem("item2")
         nl2.deleteItem("item2", ["item1"])
         self.assertEqual(QgsSettings().value(setting.key(['item1', 'item2'])), None)
+
+    def test_delete_all_items(self):
+        proot = QgsSettingsTree.createPluginTreeNode(self.pluginName)
+        nl = proot.createNamedListNode("my_list")
+        setting = QgsSettingsEntryInteger("mysetting-inlist", nl)
+        self.assertEqual(nl.items(), [])
+        setting.setValue(1, "item1")
+        setting.setValue(1, "item2")
+        setting.setValue(1, "item3")
+        self.assertEqual(nl.items(), ["item1", "item2", "item3"])
+        nl.deleteAllItems()
+        self.assertEqual(nl.items(), [])
 
     def test_registration(self):
         proot = QgsSettingsTree.createPluginTreeNode(self.pluginName)

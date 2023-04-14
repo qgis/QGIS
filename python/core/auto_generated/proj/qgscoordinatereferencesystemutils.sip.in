@@ -29,7 +29,7 @@ Returns the default coordinate order to use for the specified ``crs``.
 .. warning::
 
    This is quite a "coarse" method, in that many possible CRS axis don't map well to a simply X/Y or Y/X order.
-   Accordingly this method will default to returning Qgis.CoordinateOrder.XY unless we are reasonably certain of a Y/X order.
+   Accordingly this method will default to returning :py:class:`Qgis`.CoordinateOrder.XY unless we are reasonably certain of a Y/X order.
 %End
 
     static QString axisDirectionToAbbreviatedString( Qgis::CrsAxisDirection axis );

@@ -164,12 +164,12 @@ sub python_header {
 sub create_class_links {
     my $line = $_[0];
 
-    if ( $line =~ m/\b(Qgs[A-Z]\w+)\b(\.?$|[^\w]{2})/) {
+    if ( $line =~ m/\b((?:Qgs[A-Z]\w+)|(?:Qgis))\b(\.?$|[^\w]{2})/) {
         if ( defined $ACTUAL_CLASS && $1 !~ $ACTUAL_CLASS ) {
             $line =~ s/\b(Qgs[A-Z]\w+)\b(\.?$|[^\w]{2})/:py:class:`$1`$2/g;
         }
     }
-    $line =~ s/\b(Qgs[A-Z]\w+\.[a-z]\w+\(\))(?!\w)/:py:func:`$1`/g;
+    $line =~ s/\b(((?:Qgs[A-Z]\w+)|(?:Qgis))\.[a-z]\w+\(\))(?!\w)/:py:func:`$1`/g;
     if ( defined $ACTUAL_CLASS && $ACTUAL_CLASS) {
         $line =~ s/(?<!\.)\b(?:([a-z]\w+)\(\))(?!\w)/:py:func:`~$ACTUAL_CLASS.$1`/g;
     }
@@ -177,9 +177,9 @@ sub create_class_links {
         $line =~ s/(?<!\.)\b(?:([a-z]\w+)\(\))(?!\w)/:py:func:`~$1`/g;
     }
 
-    if ( $line =~ m/\b(?<![`~])(Qgs[A-Z]\w+)\b(?!\()/) {
+    if ( $line =~ m/\b(?<![`~])((?:Qgs[A-Z]\w+)|(?:Qgis))\b(?!\()/) {
         if ( (!$ACTUAL_CLASS) || $1 ne $ACTUAL_CLASS ) {
-            $line =~ s/\b(?<![`~])(Qgs[A-Z]\w+)\b(?!\()/:py:class:`$1`/g;
+            $line =~ s/\b(?<![`~])((?:Qgs[A-Z]\w+)|(?:Qgis))\b(?!\()/:py:class:`$1`/g;
         }
     }
 

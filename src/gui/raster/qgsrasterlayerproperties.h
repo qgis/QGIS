@@ -48,6 +48,7 @@ class QgsMapLayerConfigWidget;
 class QgsPropertyOverrideButton;
 class QgsRasterTransparencyWidget;
 class QgsRasterAttributeTableWidget;
+class QgsWebView;
 
 
 /**
@@ -91,6 +92,8 @@ class GUI_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
     void addPropertiesPageFactory( const QgsMapLayerConfigWidgetFactory *factory );
 
     QgsExpressionContext createExpressionContext() const override;
+
+    bool eventFilter( QObject *obj, QEvent *ev ) override;
 
   protected slots:
     //! \brief auto slot executed when the active page in the main widget stack is changed
@@ -199,6 +202,11 @@ class GUI_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
 
     void urlClicked( const QUrl &url );
 
+    // Update the preview of the map tip
+    void updateMapTipPreview();
+    // Resize the map tip preview
+    void resizeMapTip();
+
   private:
     QPushButton *mBtnStyle = nullptr;
     QPushButton *mBtnMetadata = nullptr;
@@ -305,5 +313,9 @@ class GUI_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
     QgsCoordinateReferenceSystem mBackupCrs;
 
     QgsRasterAttributeTableWidget *mRasterAttributeTableWidget = nullptr;
+
+    void initMapTipPreview();
+
+    QgsWebView *mMapTipPreview = nullptr;
 };
 #endif

@@ -425,7 +425,6 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes, bool forceFullScan, 
   // Also build subset and spatial indexes.
 
   QStringList parts;
-  long nEmptyRecords = 0;
   long nBadFormatRecords = 0;
   long nIncompatibleGeometry = 0;
   long nInvalidGeometry = 0;
@@ -464,7 +463,6 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes, bool forceFullScan, 
     // Skip over empty records
     if ( recordIsEmpty( parts ) )
     {
-      nEmptyRecords++;
       continue;
     }
 

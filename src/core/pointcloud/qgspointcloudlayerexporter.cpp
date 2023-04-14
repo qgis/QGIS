@@ -350,7 +350,6 @@ void QgsPointCloudLayerExporter::ExporterBase::run()
     }
   }
 
-  int pointsSkipped = 0;
   const qint64 pointsToExport = mParent->mPointsLimit > 0 ? std::min( mParent->mPointsLimit, pointCount ) : pointCount;
   QgsPointCloudRequest request;
   request.setAttributes( mParent->requestedAttributeCollection() );
@@ -397,7 +396,6 @@ void QgsPointCloudLayerExporter::ExporterBase::run()
            ! mParent->mExtent.contains( x, y ) ||
            ( mParent->mFilterGeometryEngine && ! mParent->mFilterGeometryEngine->contains( x, y ) ) )
       {
-        ++pointsSkipped;
         continue;
       }
 
@@ -411,7 +409,6 @@ void QgsPointCloudLayerExporter::ExporterBase::run()
       catch ( const QgsCsException &cse )
       {
         QgsDebugMsg( QStringLiteral( "Error transforming point: %1" ).arg( cse.what() ) );
-        ++pointsSkipped;
       }
     }
     handleNode();

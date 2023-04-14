@@ -65,15 +65,40 @@ Qt3DRender::QFrameGraphNode *QgsShadowRenderingFrameGraph::constructTexturesPrev
 
 Qt3DRender::QFrameGraphNode *QgsShadowRenderingFrameGraph::constructForwardRenderPass()
 {
-  // The branch structure:
-  // mMainCameraSelector
-  // mForwardRenderLayerFilter
-  // mForwardRenderTargetSelector
-  // opaqueObjectsFilter       | transparentObjectsLayerFilter
-  // forwaredRenderStateSet    | sortPolicy
-  // mFrustumCulling           | transparentObjectsRenderStateSet
-  // mForwardClearBuffers      |
-  // mDebugOverlay             |
+  // This is where rendering of the 3D scene actually happens.
+  // We define two forward passes: one for solid objects, followed by one for transparent objects.
+  //
+  //                                  |
+  //                         +-----------------+
+  //                         | QCameraSelector |  (using the main camera)
+  //                         +-----------------+
+  //                                  |
+  //                         +-----------------+
+  //                         |  QLayerFilter   |  (using mForwardRenderLayer)
+  //                         +-----------------+
+  //                                  |
+  //                      +-----------------------+
+  //                      | QRenderTargetSelector | (write mForwardColorTexture + mForwardDepthTexture)
+  //                      +-----------------------+
+  //                                  |
+  //         +------------------------+---------------------+
+  //         |                                              |
+  //  +-----------------+    discard               +-----------------+    accept
+  //  |  QLayerFilter   |  transparent             |  QLayerFilter   |  transparent
+  //  +-----------------+    objects               +-----------------+    objects
+  //         |                                              |
+  //  +-----------------+  use depth test          +-----------------+   sort entities
+  //  | QRenderStateSet |  cull back faces         |  QSortPolicy    |  back to front
+  //  +-----------------+                          +-----------------+
+  //         |                                              |
+  //  +-----------------+                          +-----------------+  use depth test
+  //  | QFrustumCulling |                          | QRenderStateSet |  don't write depths
+  //  +-----------------+                          +-----------------+  no culling
+  //         |                                                          use alpha blending
+  //  +-----------------+
+  //  |  QClearBuffers  |  color and depth
+  //  +-----------------+
+
   mMainCameraSelector = new Qt3DRender::QCameraSelector;
   mMainCameraSelector->setCamera( mMainCamera );
 
@@ -375,6 +400,29 @@ Qt3DRender::QFrameGraphNode *QgsShadowRenderingFrameGraph::constructAmbientOcclu
 }
 
 
+Qt3DRender::QFrameGraphNode *QgsShadowRenderingFrameGraph::constructRubberBandsPass()
+{
+  mRubberBandsCameraSelector = new Qt3DRender::QCameraSelector;
+  mRubberBandsCameraSelector->setCamera( mMainCamera );
+
+  mRubberBandsLayerFilter = new Qt3DRender::QLayerFilter( mRubberBandsCameraSelector );
+  mRubberBandsLayerFilter->addLayer( mRubberBandsLayer );
+
+  mRubberBandsStateSet = new Qt3DRender::QRenderStateSet( mRubberBandsLayerFilter );
+  Qt3DRender::QDepthTest *depthTest = new Qt3DRender::QDepthTest;
+  depthTest->setDepthFunction( Qt3DRender::QDepthTest::Always );
+  mRubberBandsStateSet->addRenderState( depthTest );
+
+  // Here we attach our drawings to the render target also used by forward pass.
+  // This is kind of okay, but as a result, post-processing effects get applied
+  // to rubber bands too. Ideally we would want them on top of everything.
+  mRubberBandsRenderTargetSelector = new Qt3DRender::QRenderTargetSelector( mRubberBandsStateSet );
+  mRubberBandsRenderTargetSelector->setTarget( mForwardRenderTargetSelector->target() );
+
+  return mRubberBandsCameraSelector;
+}
+
+
 
 Qt3DRender::QFrameGraphNode *QgsShadowRenderingFrameGraph::constructDepthRenderPass()
 {
@@ -512,6 +560,35 @@ QgsShadowRenderingFrameGraph::QgsShadowRenderingFrameGraph( QSurface *surface, Q
   : Qt3DCore::QEntity( root )
   , mSize( s )
 {
+
+  // general overview of how the frame graph looks:
+  //
+  //  +------------------------+    using window or
+  //  | QRenderSurfaceSelector |   offscreen surface
+  //  +------------------------+
+  //             |
+  //  +-----------+
+  //  | QViewport | (0,0,1,1)
+  //  +-----------+
+  //             |
+  //     +--------------------------+-------------------+-----------------+
+  //     |                          |                   |                 |
+  // +--------------------+ +--------------+ +-----------------+ +-----------------+
+  // | two forward passes | | shadows pass | |  depth buffer   | | post-processing |
+  // |  (solid objects    | |              | | processing pass | |    passes       |
+  // |  and transparent)  | +--------------+ +-----------------+ +-----------------+
+  // +--------------------+
+  //
+  // Notes:
+  // - depth buffer processing pass is used whenever we need depth map information
+  //   (for camera navigation) and it converts depth texture to a color texture
+  //   so that we can capture it with QRenderCapture - currently it is unable
+  //   to capture depth buffer, only colors (see QTBUG-65155)
+  // - there are multiple post-processing passes that take rendered output
+  //   of the scene, optionally apply effects (add shadows, ambient occlusion,
+  //   eye dome lighting) and finally output to the given surface
+  // - there may be also two more passes when 3D axis is shown - see Qgs3DAxis
+
   mRootEntity = root;
   mMainCamera = mainCamera;
   mLightCamera = new Qt3DRender::QCamera;
@@ -521,12 +598,14 @@ QgsShadowRenderingFrameGraph::QgsShadowRenderingFrameGraph( QSurface *surface, Q
   mForwardRenderLayer = new Qt3DRender::QLayer;
   mDepthRenderPassLayer = new Qt3DRender::QLayer;
   mTransparentObjectsPassLayer = new Qt3DRender::QLayer;
+  mRubberBandsLayer = new Qt3DRender::QLayer;
 
   mPreviewLayer->setRecursive( true );
   mCastShadowsLayer->setRecursive( true );
   mForwardRenderLayer->setRecursive( true );
   mDepthRenderPassLayer->setRecursive( true );
   mTransparentObjectsPassLayer->setRecursive( true );
+  mRubberBandsLayer->setRecursive( true );
 
   mRenderSurfaceSelector = new Qt3DRender::QRenderSurfaceSelector;
 
@@ -543,8 +622,11 @@ QgsShadowRenderingFrameGraph::QgsShadowRenderingFrameGraph( QSurface *surface, Q
   Qt3DRender::QFrameGraphNode *forwardRenderPass = constructForwardRenderPass();
   forwardRenderPass->setParent( mMainViewPort );
 
-  // shadow rendering pass
+  // rubber bands (they should be always on top)
+  Qt3DRender::QFrameGraphNode *rubberBandsPass = constructRubberBandsPass();
+  rubberBandsPass->setParent( mMainViewPort );
 
+  // shadow rendering pass
   Qt3DRender::QFrameGraphNode *shadowRenderPass = constructShadowRenderPass();
   shadowRenderPass->setParent( mMainViewPort );
 
@@ -562,6 +644,9 @@ QgsShadowRenderingFrameGraph::QgsShadowRenderingFrameGraph( QSurface *surface, Q
   // post process
   Qt3DRender::QFrameGraphNode *postprocessingPass = constructPostprocessingPass();
   postprocessingPass->setParent( mMainViewPort );
+
+  mRubberBandsRootEntity = new Qt3DCore::QEntity( mRootEntity );
+  mRubberBandsRootEntity->addComponent( mRubberBandsLayer );
 
   // textures preview pass
   Qt3DRender::QFrameGraphNode *previewPass = constructTexturesPreviewPass();

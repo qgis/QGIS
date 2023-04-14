@@ -18,6 +18,7 @@
 #include "qgsalgorithmnearestneighbouranalysis.h"
 #include "qgsapplication.h"
 #include "qgsdistancearea.h"
+#include "qgsspatialindex.h"
 #include <QTextStream>
 
 ///@cond PRIVATE

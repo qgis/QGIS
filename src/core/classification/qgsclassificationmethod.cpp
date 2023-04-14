@@ -23,6 +23,7 @@
 #include "qgsapplication.h"
 #include "qgsclassificationmethodregistry.h"
 #include "qgsxmlutils.h"
+#include "qgsmessagelog.h"
 
 const int QgsClassificationMethod::MAX_PRECISION = 15;
 const int QgsClassificationMethod::MIN_PRECISION = -6;

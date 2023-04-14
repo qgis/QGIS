@@ -17,7 +17,9 @@
 
 
 #include "qgsalgorithmrandompointsonlines.h"
-#include "random"
+#include "qgsspatialindex.h"
+
+#include <random>
 
 // The algorithm parameter names:
 static const QString INPUT = QStringLiteral( "INPUT" );
@@ -215,7 +217,6 @@ QVariantMap QgsRandomPointsOnLinesAlgorithm::processAlgorithm( const QVariantMap
   int missedLines = 0;
   int emptyOrNullGeom = 0;
 
-  long featureCount = 0;
   const long numberOfFeatures = lineSource->featureCount();
   long long desiredNumberOfPoints = 0;
   const double featureProgressStep = 100.0 / ( numberOfFeatures > 0 ? numberOfFeatures : 1 );
@@ -234,7 +235,6 @@ QVariantMap QgsRandomPointsOnLinesAlgorithm::processAlgorithm( const QVariantMap
     {
       // Increment invalid features count
       emptyOrNullGeom++;
-      featureCount++;
       baseFeatureProgress += featureProgressStep;
       feedback->setProgress( baseFeatureProgress );
       continue;
@@ -244,7 +244,6 @@ QVariantMap QgsRandomPointsOnLinesAlgorithm::processAlgorithm( const QVariantMap
     {
       // Increment invalid features count
       emptyOrNullGeom++;
-      featureCount++;
       baseFeatureProgress += featureProgressStep;
       feedback->setProgress( baseFeatureProgress );
       continue;
@@ -362,7 +361,6 @@ QVariantMap QgsRandomPointsOnLinesAlgorithm::processAlgorithm( const QVariantMap
     {
       missedLines++;
     }
-    featureCount++;
     feedback->setProgress( baseFeatureProgress );
   } // while features
   missedPoints = desiredNumberOfPoints - totNPoints;

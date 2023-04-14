@@ -17,6 +17,7 @@
 #include <QString>
 #include <QtConcurrentMap>
 #include <QSignalSpy>
+#include <QTextDocument>
 
 #include <qgsapplication.h>
 //header for class being tested
@@ -1678,6 +1679,20 @@ class TestQgsExpression: public QObject
       QTest::newRow( "title" ) << "title(' HeLlO   WORLD ')" << false << QVariant( " Hello   World " );
       QTest::newRow( "trim" ) << "trim('   Test String ')" << false << QVariant( "Test String" );
       QTest::newRow( "trim empty string" ) << "trim('')" << false << QVariant( "" );
+      QTest::newRow( "ltrim none" ) << "ltrim('trim   ')" << false << QVariant( "trim   " );
+      QTest::newRow( "ltrim space" ) << "ltrim('    trim  ')" << false << QVariant( "trim  " );
+      QTest::newRow( "ltrim empty string" ) << "ltrim('')" << false << QVariant( "" );
+      QTest::newRow( "ltrim('zzzytrim', 'xyz')" ) << "ltrim('zzzytrim', 'xyz')" << false << QVariant( "trim" );
+      QTest::newRow( "ltrim('zzzytrim', 'a')" ) << "ltrim('zzzytrim', 'a')" << false << QVariant( "zzzytrim" );
+      QTest::newRow( "ltrim('zzzytrim', '[(*')" ) << "ltrim('zzzytrim', '[(*')" << false << QVariant( "zzzytrim" );
+      QTest::newRow( "ltrim('))(* *[[trim', '[())* ')" ) << "ltrim('))(* *[[trim', '[())* ')" << false << QVariant( "trim" );
+      QTest::newRow( "rtrim none" ) << "rtrim('  trim')" << false << QVariant( "  trim" );
+      QTest::newRow( "rtrim space" ) << "rtrim('    trim  ')" << false << QVariant( "    trim" );
+      QTest::newRow( "rtrim empty string" ) << "rtrim('')" << false << QVariant( "" );
+      QTest::newRow( "rtrim('trimzzzy', 'xyz')" ) << "rtrim('trimzzzy', 'xyz')" << false << QVariant( "trim" );
+      QTest::newRow( "rtrim('trimzzzy', 'a')" ) << "rtrim('trimzzzy', 'a')" << false << QVariant( "trimzzzy" );
+      QTest::newRow( "rtrim('trimzzzy', '[(*')" ) << "rtrim('trimzzzy', '[(*')" << false << QVariant( "trimzzzy" );
+      QTest::newRow( "rtrim('trim)(* *[[', '[()* ')" ) << "rtrim('trim)(* *[[', '[()* ')" << false << QVariant( "trim" );
       QTest::newRow( "char" ) << "char(81)" << false << QVariant( "Q" );
       QTest::newRow( "ascii single letter" ) << "ascii('Q')" << false << QVariant( 81 );
       QTest::newRow( "ascii word" ) << "ascii('QGIS')" << false << QVariant( 81 );
@@ -5745,6 +5760,36 @@ class TestQgsExpression: public QObject
       QVERIFY( !exp.hasEvalError() );
       QCOMPARE( exp.evaluate( &context ).toString(), QStringLiteral( "RasterRaster" ) );
 
+    }
+
+    void testHelpExamples()
+    {
+      // trigger initialization of function help
+      QgsExpression::helpText( QString() );
+      const HelpTextHash &functionHelp = QgsExpression::functionHelpTexts();
+      for ( auto helpIt = functionHelp.constBegin(); helpIt != functionHelp.constEnd(); ++ helpIt )
+      {
+#if GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR<11
+        if ( helpIt->mName == QLatin1String( "concave_hull" ) )
+          continue;
+#endif
+
+        for ( auto variantIt = helpIt->mVariants.constBegin(); variantIt != helpIt->mVariants.constEnd(); ++variantIt )
+        {
+          for ( const HelpExample &example : std::as_const( variantIt->mExamples ) )
+          {
+            const QString htmlExpression = example.mExpression;
+            QTextDocument sourceDoc;
+            sourceDoc.setHtml( htmlExpression );
+            const QString plainTextExpression = sourceDoc.toPlainText();
+
+            QgsExpression exampleExpression( plainTextExpression );
+            QVERIFY2( !exampleExpression.hasParserError(),
+                      QStringLiteral( "Expression: %1 for %2 has parser error" ).arg( plainTextExpression,
+                          helpIt->mName ).toLocal8Bit() );
+          }
+        }
+      }
     }
 
 };

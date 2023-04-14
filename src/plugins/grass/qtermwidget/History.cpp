@@ -22,14 +22,14 @@
 #include "History.h"
 
 // System
+#include <algorithm>
 #include <iostream>
-#include <stdlib.h>
-#include <assert.h>
-#include <stdio.h>
+#include <cstdlib>
+#include <cstdio>
 #include <sys/types.h>
 #include <sys/mman.h>
 #include <unistd.h>
-#include <errno.h>
+#include <cerrno>
 
 #include <QtDebug>
 
@@ -59,7 +59,7 @@ using namespace Konsole;
 
 KDE4: Can we use QTemporaryFile here, instead of KTempFile?
 
-FIXME: some complain about the history buffer comsuming the
+FIXME: some complain about the history buffer consuming the
        memory of their machines. This problem is critical
        since the history does not behave gracefully in cases
        where the memory is used up completely.
@@ -76,7 +76,7 @@ FIXME: There is noticeable decrease in speed, also. Perhaps,
        scheme with wrap around would be it's complexity.
 */
 
-//FIXME: tempory replacement for tmpfile
+//FIXME: temporary replacement for tmpfile
 //       this is here one for debugging purpose.
 
 //#define tmpfile xTmpFile
@@ -90,7 +90,8 @@ FIXME: There is noticeable decrease in speed, also. Perhaps,
 HistoryFile::HistoryFile()
   : ion(-1),
     length(0),
-    fileMap(0)
+    fileMap(nullptr),
+    readWriteBalance(0)
 {
   if (tmpFile.open())
   {
@@ -110,30 +111,30 @@ HistoryFile::~HistoryFile()
 //to avoid this.
 void HistoryFile::map()
 {
-    assert( fileMap == 0 );
+    Q_ASSERT( fileMap == nullptr );
 
-    fileMap = (char*)mmap( 0 , length , PROT_READ , MAP_PRIVATE , ion , 0 );
+    fileMap = (char*)mmap( nullptr , length , PROT_READ , MAP_PRIVATE , ion , 0 );
 
     //if mmap'ing fails, fall back to the read-lseek combination
     if ( fileMap == MAP_FAILED )
     {
             readWriteBalance = 0;
-            fileMap = 0;
-            qDebug() << __FILE__ << __LINE__ << ": mmap'ing history failed.  errno = " << errno;
+            fileMap = nullptr;
+            //qDebug() << __FILE__ << __LINE__ << ": mmap'ing history failed.  errno = " << errno;
     }
 }
 
 void HistoryFile::unmap()
 {
     int result = munmap( fileMap , length );
-    assert( result == 0 ); Q_UNUSED( result )
+    Q_ASSERT( result == 0 ); Q_UNUSED( result )
 
-    fileMap = 0;
+    fileMap = nullptr;
 }
 
 bool HistoryFile::isMapped() const
 {
-    return (fileMap != 0);
+    return (fileMap != nullptr);
 }
 
 void HistoryFile::add(const unsigned char* bytes, int len)
@@ -364,7 +365,7 @@ void HistoryScrollBuffer::getCells(int lineNumber, int startColumn, int count, C
 
   if (lineNumber >= _usedLines)
   {
-    memset(buffer, 0, count * sizeof(Character));
+    memset(static_cast<void*>(buffer), 0, count * sizeof(Character));
     return;
   }
 
@@ -384,12 +385,12 @@ void HistoryScrollBuffer::setMaxNbLines(unsigned int lineCount)
     HistoryLine* oldBuffer = _historyBuffer;
     HistoryLine* newBuffer = new HistoryLine[lineCount];
 
-    for ( int i = 0 ; i < std::min(_usedLines,static_cast<int>(lineCount)) ; i++ )
+    for ( int i = 0 ; i < qMin(_usedLines,static_cast<int>(lineCount)) ; i++ )
     {
         newBuffer[i] = oldBuffer[bufferIndex(i)];
     }
 
-    _usedLines = std::min(_usedLines,static_cast<int>(lineCount));
+    _usedLines = qMin(_usedLines,static_cast<int>(lineCount));
     _maxLineCount = lineCount;
     _head = ( _usedLines == _maxLineCount ) ? 0 : _usedLines-1;
 
@@ -400,7 +401,7 @@ void HistoryScrollBuffer::setMaxNbLines(unsigned int lineCount)
     dynamic_cast<HistoryTypeBuffer*>(m_histType)->m_nbLines = lineCount;
 }
 
-int HistoryScrollBuffer::bufferIndex(int lineNumber)
+int HistoryScrollBuffer::bufferIndex(int lineNumber) const
 {
     Q_ASSERT( lineNumber >= 0 );
     Q_ASSERT( lineNumber < _maxLineCount );
@@ -498,11 +499,11 @@ void HistoryScrollBlockArray::getCells(int lineno, int colno,
   const Block *b = m_blockArray.at(lineno);
 
   if (!b) {
-    memset(res, 0, count * sizeof(Character)); // still better than random data
+    memset(static_cast<void*>(res), 0, count * sizeof(Character)); // still better than random data
     return;
   }
 
-  assert(((colno + count) * sizeof(Character)) < ENTRIES);
+  Q_ASSERT(((colno + count) * sizeof(Character)) < ENTRIES);
   memcpy(res, b->data + (colno * sizeof(Character)), count * sizeof(Character));
 }
 
@@ -513,15 +514,15 @@ void HistoryScrollBlockArray::addCells(const Character a[], int count)
   if (!b) return;
 
   // put cells in block's data
-  assert((count * sizeof(Character)) < ENTRIES);
+  Q_ASSERT((count * sizeof(Character)) < ENTRIES);
 
-  memset(b->data, 0, ENTRIES);
+  memset(b->data, 0, sizeof(b->data));
 
   memcpy(b->data, a, count * sizeof(Character));
   b->size = count * sizeof(Character);
 
   size_t res = m_blockArray.newBlock();
-  assert (res > 0);
+  Q_ASSERT(res > 0);
   Q_UNUSED( res )
 
   m_lineLengths.insert(m_blockArray.getCurrent(), count);
@@ -538,7 +539,7 @@ void* CompactHistoryBlock::allocate ( size_t length )
 {
  Q_ASSERT ( length > 0 );
   if ( tail-blockStart+length > blockLength )
-    return NULL;
+    return nullptr;
 
   void* block = tail;
   tail += length;
@@ -547,7 +548,7 @@ void* CompactHistoryBlock::allocate ( size_t length )
   return block;
 }
 
-void CompactHistoryBlock::deallocate ()
+void CompactHistoryBlock::deallocate ( )
 {
   allocCount--;
   Q_ASSERT ( allocCount >= 0 );
@@ -611,7 +612,7 @@ CompactHistoryLine::CompactHistoryLine ( const TextLine& line, CompactHistoryBlo
 {
   length=line.size();
 
-  if (line.size() > 0) {
+  if (!line.empty()) {
     formatLength=1;
     int k=1;
 
@@ -629,9 +630,9 @@ CompactHistoryLine::CompactHistoryLine ( const TextLine& line, CompactHistoryBlo
 
     //kDebug() << "number of different formats in string: " << formatLength;
     formatArray = (CharacterFormat*) blockList.allocate(sizeof(CharacterFormat)*formatLength);
-    Q_ASSERT (formatArray!=NULL);
+    Q_ASSERT (formatArray!=nullptr);
     text = (quint16*) blockList.allocate(sizeof(quint16)*line.size());
-    Q_ASSERT (text!=NULL);
+    Q_ASSERT (text!=nullptr);
 
     length=line.size();
     wrapped=false;
@@ -769,7 +770,7 @@ void CompactHistoryScroll::setMaxNbLines ( unsigned int lineCount )
 {
   _maxLineCount = lineCount;
 
-  while (lines.size() > (int) lineCount) {
+  while (lines.size() > static_cast<int>(lineCount)) {
     delete lines.takeAt(0);
   }
   //kDebug() << "set max lines to: " << _maxLineCount;
@@ -871,7 +872,7 @@ HistoryScroll* HistoryTypeBuffer::scroll(HistoryScroll *old) const
     HistoryScroll *newScroll = new HistoryScrollBuffer(m_nbLines);
     int lines = old->getLines();
     int startLine = 0;
-    if (lines > (int) m_nbLines)
+    if (lines > static_cast<int>(m_nbLines))
        startLine = lines - m_nbLines;
 
     Character line[LINE_SIZE];
@@ -924,7 +925,7 @@ HistoryScroll* HistoryTypeFile::scroll(HistoryScroll *old) const
   HistoryScroll *newScroll = new HistoryScrollFile(m_fileName);
 
   Character line[LINE_SIZE];
-  int lines = (old != 0) ? old->getLines() : 0;
+  int lines = (old != nullptr) ? old->getLines() : 0;
   for(int i = 0; i < lines; i++)
   {
      int size = old->getLineLen(i);

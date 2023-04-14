@@ -342,6 +342,15 @@ Returns ``True`` if the dialog is all finalized and can be safely deleted.
 .. versionadded:: 3.26
 %End
 
+    void applyContextOverrides( QgsProcessingContext *context );
+%Docstring
+Applies any defined overrides for Processing context settings to the specified ``context``.
+
+This allows the dialog to override default Processing settings for an individual algorithm execution.
+
+.. versionadded:: 3.32
+%End
+
   signals:
 
     void algorithmFinished( bool successful, const QVariantMap &result );

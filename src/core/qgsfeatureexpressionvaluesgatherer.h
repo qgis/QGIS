@@ -21,6 +21,7 @@
 #include "qgslogger.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerfeatureiterator.h"
+#include "qgsexpressioncontextutils.h"
 
 #define SIP_NO_FILE
 
@@ -52,6 +53,7 @@ class QgsFeatureExpressionValuesGatherer: public QThread
                                         const QStringList &identifierFields = QStringList() )
       : mSource( new QgsVectorLayerFeatureSource( layer ) )
       , mDisplayExpression( displayExpression.isEmpty() ? layer->displayExpression() : displayExpression )
+      , mExpressionContext( QgsExpressionContextUtils::globalProjectLayerScopes( layer ) )
       , mRequest( request )
       , mIdentifierFields( identifierFields )
     {

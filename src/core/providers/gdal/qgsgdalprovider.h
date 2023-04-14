@@ -148,6 +148,7 @@ class QgsGdalProvider final: public QgsRasterDataProvider, QgsGdalProviderBase
     int xSize() const override;
     int ySize() const override;
     QString generateBandName( int bandNumber ) const override;
+    QgsLayerMetadata layerMetadata() const override;
 
     // Reimplemented from QgsRasterDataProvider to bypass second resampling (more efficient for local file based sources)
     QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback = nullptr ) override;
@@ -313,6 +314,8 @@ class QgsGdalProvider final: public QgsRasterDataProvider, QgsGdalProviderBase
     // Which is a very dangerous situation (see #29212)
     QString mDriverName;
 
+    QgsLayerMetadata mLayerMetadata;
+
     //! Wrapper for GDALGetRasterBand() that takes into account mMaskBandExposedAsAlpha.
     GDALRasterBandH getBand( int bandNo ) const;
 
@@ -353,6 +356,9 @@ class QgsGdalProvider final: public QgsRasterDataProvider, QgsGdalProviderBase
     */
     void reloadProviderData() override;
 
+    //! Loads metadata for the layer
+    void loadMetadata();
+
     //! Instance of GDAL transformer function used in transformCoordinates() for conversion between image and layer coordinates
     void *mGdalTransformerArg = nullptr;
 
@@ -388,7 +394,7 @@ class QgsGdalProviderMetadata final: public QgsProviderMetadata
       double *geoTransform,
       const QgsCoordinateReferenceSystem &crs,
       const QStringList &createOptions ) override;
-    QString filters( FilterType type ) override;
+    QString filters( Qgis::FileFilterType type ) override;
     QList<QPair<QString, QString> > pyramidResamplingMethods() override;
     QgsProviderMetadata::ProviderMetadataCapabilities capabilities() const override;
     ProviderCapabilities providerCapabilities() const override;

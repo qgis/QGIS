@@ -28,6 +28,7 @@ from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QVariant
 
 from qgis.core import (NULL,
+                       Qgis,
                        QgsApplication,
                        QgsCoordinateTransform,
                        QgsField,
@@ -40,7 +41,8 @@ from qgis.core import (NULL,
                        QgsProcessingException,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterEnum,
-                       QgsProcessingParameterFeatureSink)
+                       QgsProcessingParameterFeatureSink,
+                       QgsUnitTypes)
 
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
@@ -72,6 +74,8 @@ class ExportGeometryInfo(QgisAlgorithm):
         self.export_z = False
         self.export_m = False
         self.distance_area = None
+        self.distance_conversion_factor = 1
+        self.area_conversion_factor = 1
         self.calc_methods = [self.tr('Layer CRS'),
                              self.tr('Project CRS'),
                              self.tr('Ellipsoidal')]
@@ -138,6 +142,13 @@ class ExportGeometryInfo(QgisAlgorithm):
         if method == 2:
             self.distance_area.setSourceCrs(source.sourceCrs(), context.transformContext())
             self.distance_area.setEllipsoid(context.ellipsoid())
+
+            self.distance_conversion_factor = QgsUnitTypes.fromUnitToUnitFactor(self.distance_area.lengthUnits(),
+                                                                                context.distanceUnit())
+
+            self.area_conversion_factor = QgsUnitTypes.fromUnitToUnitFactor(self.distance_area.areaUnits(),
+                                                                            context.areaUnit())
+
         elif method == 1:
             if not context.project():
                 raise QgsProcessingException(self.tr('No project is available in this context'))
@@ -198,13 +209,13 @@ class ExportGeometryInfo(QgisAlgorithm):
             curve = geometry.constGet()
             p1 = curve.startPoint()
             p2 = curve.endPoint()
-            straight_distance = self.distance_area.measureLine(QgsPointXY(p1), QgsPointXY(p2))
+            straight_distance = self.distance_conversion_factor * self.distance_area.measureLine(QgsPointXY(p1), QgsPointXY(p2))
             sinuosity = curve.sinuosity()
             if math.isnan(sinuosity):
                 sinuosity = NULL
-            return [self.distance_area.measureLength(geometry), straight_distance, sinuosity]
+            return [self.distance_conversion_factor * self.distance_area.measureLength(geometry), straight_distance, sinuosity]
 
     def polygon_attributes(self, geometry):
-        area = self.distance_area.measureArea(geometry)
-        perimeter = self.distance_area.measurePerimeter(geometry)
+        area = self.area_conversion_factor * self.distance_area.measureArea(geometry)
+        perimeter = self.distance_conversion_factor * self.distance_area.measurePerimeter(geometry)
         return [area, perimeter]

@@ -1071,6 +1071,9 @@ bool QgsOgrProviderMetadata::saveLayerMetadata( const QString &uri, const QgsLay
       if ( qmdFile.open( QFile::WriteOnly | QFile::Truncate ) )
       {
         QTextStream fileStream( &qmdFile );
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+        fileStream.setCodec( "UTF-8" );
+#endif
         fileStream << metadataXml;
         qmdFile.close();
         return true;
@@ -1138,17 +1141,18 @@ QIcon QgsOgrProviderMetadata::icon() const
   return QgsApplication::getThemeIcon( QStringLiteral( "mIconVector.svg" ) );
 }
 
-QString QgsOgrProviderMetadata::filters( FilterType type )
+QString QgsOgrProviderMetadata::filters( Qgis::FileFilterType type )
 {
   switch ( type )
   {
-    case QgsProviderMetadata::FilterType::FilterVector:
+    case Qgis::FileFilterType::Vector:
       return QgsOgrProviderUtils::fileVectorFilters();
 
-    case QgsProviderMetadata::FilterType::FilterRaster:
-    case QgsProviderMetadata::FilterType::FilterMesh:
-    case QgsProviderMetadata::FilterType::FilterMeshDataset:
-    case QgsProviderMetadata::FilterType::FilterPointCloud:
+    case Qgis::FileFilterType::Raster:
+    case Qgis::FileFilterType::Mesh:
+    case Qgis::FileFilterType::MeshDataset:
+    case Qgis::FileFilterType::PointCloud:
+    case Qgis::FileFilterType::VectorTile:
       return QString();
   }
   return QString();
