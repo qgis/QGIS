@@ -19,6 +19,7 @@
 
 #include "qgsapplication.h"
 #include "qgsrunprocess.h"
+#include "qgspointcloudexpression.h"
 
 ///@cond PRIVATE
 
@@ -47,7 +48,7 @@ QString QgsPdalAlgorithmBase::wrenchExecutableBinary() const
 
 void QgsPdalAlgorithmBase::createCommonParameters()
 {
-  std::unique_ptr< QgsProcessingParameterString > filterParam = std::make_unique< QgsProcessingParameterString >( QStringLiteral( "FILTER_EXPRESSION" ), QObject::tr( "Filter expression" ), QVariant(), false, true );
+  std::unique_ptr< QgsProcessingParameterExpression > filterParam = std::make_unique< QgsProcessingParameterExpression >( QStringLiteral( "FILTER_EXPRESSION" ), QObject::tr( "Filter expression" ), QVariant(), QStringLiteral( "INPUT" ), true, QgsProcessingParameterExpression::PointCloud );
   filterParam->setFlags( filterParam->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
   addParameter( filterParam.release() );
 
@@ -61,7 +62,8 @@ void QgsPdalAlgorithmBase::applyCommonParameters( QStringList &arguments, QgsCoo
   const QString filterExpression = parameterAsString( parameters, QStringLiteral( "FILTER_EXPRESSION" ), context ).trimmed();
   if ( !filterExpression.isEmpty() )
   {
-    arguments << QStringLiteral( "--filter=%1" ).arg( filterExpression );
+    QgsPointCloudExpression exp( filterExpression );
+    arguments << QStringLiteral( "--filter=%1" ).arg( exp.asPdalExpression() );
   }
 
   if ( parameters.value( QStringLiteral( "FILTER_EXTENT" ) ).isValid() )

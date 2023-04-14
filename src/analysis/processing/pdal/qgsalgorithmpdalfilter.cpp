@@ -19,6 +19,7 @@
 
 #include "qgsrunprocess.h"
 #include "qgspointcloudlayer.h"
+#include "qgspointcloudexpression.h"
 
 ///@cond PRIVATE
 
@@ -60,7 +61,7 @@ QgsPdalFilterAlgorithm *QgsPdalFilterAlgorithm::createInstance() const
 void QgsPdalFilterAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterPointCloudLayer( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ) ) );
-  addParameter( new QgsProcessingParameterString( QStringLiteral( "FILTER_EXPRESSION" ), QObject::tr( "Filter expression" ), QVariant(), false, true ) );
+  addParameter( new QgsProcessingParameterExpression( QStringLiteral( "FILTER_EXPRESSION" ), QObject::tr( "Filter expression" ), QVariant(), QStringLiteral( "INPUT" ), false, QgsProcessingParameterExpression::PointCloud ) );
   addParameter( new QgsProcessingParameterExtent( QStringLiteral( "FILTER_EXTENT" ), QObject::tr( "Cropping extent" ), QVariant(), true ) );
   addParameter( new QgsProcessingParameterPointCloudDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Output" ) ) );
 }
@@ -86,7 +87,8 @@ QStringList QgsPdalFilterAlgorithm::createArgumentLists( const QVariantMap &para
   const QString filterExpression = parameterAsString( parameters, QStringLiteral( "FILTER_EXPRESSION" ), context ).trimmed();
   if ( !filterExpression.isEmpty() )
   {
-    args << QStringLiteral( "--filter=%1" ).arg( filterExpression );
+    QgsPointCloudExpression exp( filterExpression );
+    args << QStringLiteral( "--filter=%1" ).arg( exp.asPdalExpression() );
   }
 
   if ( parameters.value( QStringLiteral( "FILTER_EXTENT" ) ).isValid() )
