@@ -1540,9 +1540,7 @@ void QgsAppLayerHandling::resolveVectorLayerDependencies( QgsVectorLayer *vl, Qg
               std::unique_ptr< QgsVectorLayer > newVl = std::make_unique< QgsVectorLayer >( layerUri, !dependency.name.isEmpty() ? dependency.name : tableName, providerName );
               if ( newVl->isValid() )
               {
-                QgsVectorLayer *res = newVl.get();
-                QgsProject::instance()->addMapLayer( newVl.release() );
-                return res;
+                return qobject_cast< QgsVectorLayer *>( QgsProject::instance()->addMapLayer( newVl.release() ) );
               }
             }
             catch ( QgsProviderConnectionException & )
