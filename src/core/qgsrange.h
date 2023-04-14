@@ -620,6 +620,7 @@ class QgsTemporalRange
         return {};
 
       QList< QgsTemporalRange<T > > sortedRanges = ranges;
+      // cppcheck-suppress mismatchingContainerExpression
       std::sort( sortedRanges.begin(), sortedRanges.end(), []( const QgsTemporalRange< T > &a, const QgsTemporalRange< T > &b ) -> bool { return a.begin() < b.begin(); } );
       QList< QgsTemporalRange<T>> res;
       res.reserve( sortedRanges.size() );
