@@ -31,8 +31,10 @@ QgsAddAttrDialog::QgsAddAttrDialog( QgsVectorLayer *vlayer, QWidget *parent, Qt:
   connect( mTypeBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsAddAttrDialog::mTypeBox_currentIndexChanged );
   connect( mLength, &QSpinBox::editingFinished, this, &QgsAddAttrDialog::mLength_editingFinished );
 
-  if ( !vlayer )
+  if ( !vlayer || !vlayer->dataProvider() )
     return;
+
+  const Qgis::VectorDataProviderAttributeEditCapabilities attributeEditCapabilities = vlayer->dataProvider()->attributeEditCapabilities();
 
   //fill data types into the combo box
   const QList< QgsVectorDataProvider::NativeType > &typelist = vlayer->dataProvider()->nativeTypes();
@@ -66,6 +68,17 @@ QgsAddAttrDialog::QgsAddAttrDialog( QgsVectorLayer *vlayer, QWidget *parent, Qt:
     mNameEdit->setMaxLength( 10 );
 
   mNameEdit->setFocus();
+
+  if ( !( attributeEditCapabilities & Qgis::VectorDataProviderAttributeEditCapability::EditAlias ) )
+  {
+    mLabelAlias->hide();
+    mAliasEdit->hide();
+  }
+  if ( !( attributeEditCapabilities & Qgis::VectorDataProviderAttributeEditCapability::EditComment ) )
+  {
+    mLabelComment->hide();
+    mCommentEdit->hide();
+  }
 }
 
 void QgsAddAttrDialog::setIllegalFieldNames( const QSet<QString> &names )
@@ -156,13 +169,18 @@ QgsField QgsAddAttrDialog::field() const
                     .arg( mPrec->value() )
                     .arg( mCommentEdit->text() ), 2 );
 
-  return QgsField(
-           mNameEdit->text(),
-           ( QVariant::Type ) mTypeBox->currentData( Qt::UserRole ).toInt(),
-           mTypeBox->currentData( Qt::UserRole + 1 ).toString(),
-           mLength->value(),
-           mPrec->isEnabled() ? mPrec->value() : 0,
-           mCommentEdit->text(),
-           static_cast<QVariant::Type>( mTypeBox->currentData( Qt::UserRole ).toInt() ) == QVariant::Map ? QVariant::String : QVariant::Invalid
-         );
+  QgsField res = QgsField(
+                   mNameEdit->text(),
+                   ( QVariant::Type ) mTypeBox->currentData( Qt::UserRole ).toInt(),
+                   mTypeBox->currentData( Qt::UserRole + 1 ).toString(),
+                   mLength->value(),
+                   mPrec->isEnabled() ? mPrec->value() : 0,
+                   mCommentEdit->text(),
+                   static_cast<QVariant::Type>( mTypeBox->currentData( Qt::UserRole ).toInt() ) == QVariant::Map ? QVariant::String : QVariant::Invalid
+                 );
+
+  if ( !mAliasEdit->text().isEmpty() )
+    res.setAlias( mAliasEdit->text() );
+
+  return res;
 }

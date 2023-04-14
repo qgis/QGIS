@@ -56,22 +56,6 @@ class QgsPostgresProvider final: public QgsVectorDataProvider
     static const QString POSTGRES_KEY;
     static const QString POSTGRES_DESCRIPTION;
 
-    enum Relkind
-    {
-      NotSet,
-      Unknown,
-      OrdinaryTable, // r
-      Index, // i
-      Sequence, // s
-      View, // v
-      MaterializedView, // m
-      CompositeType, // c
-      ToastTable, // t
-      ForeignTable, // f
-      PartitionedTable // p - PostgreSQL 10
-    };
-    Q_ENUM( Relkind )
-
     /**
      * Import a vector layer into the database
      * \param options options for provider, specified via a map of option name
@@ -197,6 +181,7 @@ class QgsPostgresProvider final: public QgsVectorDataProvider
     bool setSubsetString( const QString &theSQL, bool updateFeatureCount = true ) override;
     bool supportsSubsetString() const override { return true; }
     QgsVectorDataProvider::Capabilities capabilities() const override;
+    Qgis::VectorDataProviderAttributeEditCapabilities attributeEditCapabilities() const override;
     SpatialIndexPresence hasSpatialIndex() const override;
 
     /**
@@ -225,7 +210,6 @@ class QgsPostgresProvider final: public QgsVectorDataProvider
     static QVariant convertValue( QVariant::Type type, QVariant::Type subType, const QString &value, const QString &typeName, QgsPostgresConn *conn );
 
     QList<QgsRelation> discoverRelations( const QgsVectorLayer *target, const QList<QgsVectorLayer *> &layers ) const override;
-    QgsAttrPalIndexNameHash palAttributeIndexNames() const override;
 
     /**
      * Returns true if the data source has metadata, false otherwise. For
@@ -256,7 +240,7 @@ class QgsPostgresProvider final: public QgsVectorDataProvider
     /**
      * \returns relation kind
      */
-    Relkind relkind() const;
+    Qgis::PostgresRelKind relkind() const;
 
     /**
      * Change internal query with \a query
@@ -354,9 +338,6 @@ class QgsPostgresProvider final: public QgsVectorDataProvider
     */
     void reloadProviderData() override;
 
-    //! Old-style mapping of index to name for QgsPalLabeling fix
-    QgsAttrPalIndexNameHash mAttrPalIndexName;
-
     QgsFields mAttributeFields;
     QHash<int, char> mIdentityFields;
     QString mDataComment;
@@ -397,7 +378,7 @@ class QgsPostgresProvider final: public QgsVectorDataProvider
     /**
      * Kind of relation
      */
-    mutable Relkind mKind = Relkind::NotSet;
+    mutable Qgis::PostgresRelKind mKind = Qgis::PostgresRelKind::NotSet;
 
     /**
      * Data type for the primary key
@@ -458,21 +439,6 @@ class QgsPostgresProvider final: public QgsVectorDataProvider
     bool mSelectAtIdDisabled = false; //!< Disable support for SelectAtId
 
     struct PGFieldNotFound {}; //! Exception to throw
-
-    struct PGException
-    {
-        explicit PGException( QgsPostgresResult &r )
-          : mWhat( r.PQresultErrorMessage() )
-        {}
-
-        QString errorMessage() const
-        {
-          return mWhat;
-        }
-
-      private:
-        QString mWhat;
-    };
 
     // A function that determines if the given columns contain unique entries
     bool uniqueData( const QString &quotedColNames );

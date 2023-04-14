@@ -149,7 +149,7 @@ Retrieves JSON definitions for all items which belong the the specified ``groupI
 :param contentUrl: should be set to the Portal's content URL, e.g. https://mysite.com/portal/sharing/rest/content
 :param groupId: ID of group to query
 :param authcfg: authentication configuration ID
-:param itemTypes: list of desired item types (using Qgis.ArcGisRestServiceType values)
+:param itemTypes: list of desired item types (using :py:class:`Qgis`.ArcGisRestServiceType values)
 :param requestHeaders: optional additional request headers
 :param feedback: optional feedback argument for cancellation support
 :param pageSize: number of results to retrieve for each request. Maximum value is 100.
@@ -170,7 +170,7 @@ Retrieves JSON definitions for all items which belong the the specified ``groupI
 :param contentUrl: should be set to the Portal's content URL, e.g. https://mysite.com/portal/sharing/rest/content
 :param groupId: ID of group to query
 :param authcfg: authentication configuration ID
-:param itemTypes: list of desired item types (using Qgis.ArcGisRestServiceType values)
+:param itemTypes: list of desired item types (using :py:class:`Qgis`.ArcGisRestServiceType values)
 :param requestHeaders: optional additional request headers
 :param feedback: optional feedback argument for cancellation support
 :param pageSize: number of results to retrieve for each request. Maximum value is 100.

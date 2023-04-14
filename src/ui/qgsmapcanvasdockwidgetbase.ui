@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>QgsMapCanvasDockWidgetBase</class>
- <widget class="QgsDockWidget" name="QgsMapCanvasDockWidgetBase">
+ <class>QgsMapCanvasWidgetBase</class>
+ <widget class="QWidget" name="QgsMapCanvasWidgetBase">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -13,7 +13,6 @@
   <property name="windowTitle">
    <string>Map Canvas</string>
   </property>
-  <widget class="QWidget" name="mContents">
    <layout class="QVBoxLayout" name="verticalLayout">
     <property name="spacing">
      <number>0</number>
@@ -50,7 +49,6 @@
      <widget class="QWidget" name="mMainWidget" native="true"/>
     </item>
    </layout>
-  </widget>
   <action name="mActionSetCrs">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
@@ -143,14 +141,6 @@
    </property>
   </action>
  </widget>
- <customwidgets>
-  <customwidget>
-   <class>QgsDockWidget</class>
-   <extends>QDockWidget</extends>
-   <header>qgsdockwidget.h</header>
-   <container>1</container>
-  </customwidget>
- </customwidgets>
  <resources>
   <include location="../../images/images.qrc"/>
  </resources>

@@ -1669,12 +1669,11 @@ void QgsIdentifyResultsDialog::clear()
 void QgsIdentifyResultsDialog::updateViewModes()
 {
   // get # of identified vector and raster layers - there must be a better way involving caching
-  int vectorCount = 0, rasterCount = 0;
+  int rasterCount = 0;
   for ( int i = 0; i < lstResults->topLevelItemCount(); i++ )
   {
     QTreeWidgetItem *item = lstResults->topLevelItem( i );
-    if ( vectorLayer( item ) ) vectorCount++;
-    else if ( rasterLayer( item ) ) rasterCount++;
+    if ( rasterLayer( item ) ) rasterCount++;
   }
 
   lblViewMode->setEnabled( rasterCount > 0 );

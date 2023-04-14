@@ -66,6 +66,12 @@
 #include "qgsproviderregistry.h"
 #include "qgsmaplayerstylemanager.h"
 #include "qgslayertreemodel.h"
+#include "qgsmaptip.h"
+#include "qgswebview.h"
+#include "qgswebframe.h"
+#if WITH_QTWEBKIT
+#include <QWebElement>
+#endif
 
 #include <QDesktopServices>
 #include <QMessageBox>
@@ -162,6 +168,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   mMapTipExpressionFieldWidget->registerExpressionContextGenerator( this );
   mDisplayExpressionWidget->setLayer( lyr );
   mDisplayExpressionWidget->registerExpressionContextGenerator( this );
+  initMapTipPreview();
 
   connect( mInsertExpressionButton, &QAbstractButton::clicked, this, &QgsVectorLayerProperties::insertFieldOrExpression );
 
@@ -968,7 +975,7 @@ void QgsVectorLayerProperties::mCrsSelector_crsChanged( const QgsCoordinateRefer
   mMetadataWidget->crsChanged();
 }
 
-void QgsVectorLayerProperties::loadDefaultStyle_clicked()
+void QgsVectorLayerProperties::loadDefaultStyle()
 {
   QString msg;
   bool defaultLoadedFlag = false;
@@ -1004,6 +1011,7 @@ void QgsVectorLayerProperties::loadDefaultStyle_clicked()
         else
         {
           syncToLayer();
+          apply();
         }
 
         return;
@@ -1019,6 +1027,7 @@ void QgsVectorLayerProperties::loadDefaultStyle_clicked()
   {
     // all worked OK so no need to inform user
     syncToLayer();
+    apply();
   }
   else
   {
@@ -1027,7 +1036,7 @@ void QgsVectorLayerProperties::loadDefaultStyle_clicked()
   }
 }
 
-void QgsVectorLayerProperties::saveDefaultStyle_clicked()
+void QgsVectorLayerProperties::saveDefaultStyle()
 {
   apply();
   QString errorMsg;
@@ -1443,8 +1452,8 @@ void QgsVectorLayerProperties::aboutToShowStyleMenu()
   }
 
   m->addSeparator();
-  m->addAction( tr( "Save as Default" ), this, &QgsVectorLayerProperties::saveDefaultStyle_clicked );
-  m->addAction( tr( "Restore Default" ), this, &QgsVectorLayerProperties::loadDefaultStyle_clicked );
+  m->addAction( tr( "Save as Default" ), this, &QgsVectorLayerProperties::saveDefaultStyle );
+  m->addAction( tr( "Restore Default" ), this, &QgsVectorLayerProperties::loadDefaultStyle );
 
   // re-add style manager actions!
   m->addSeparator();
@@ -1487,6 +1496,7 @@ void QgsVectorLayerProperties::loadStyle()
         if ( defaultLoadedFlag )
         {
           syncToLayer();
+          apply();
         }
         else
         {
@@ -1512,6 +1522,7 @@ void QgsVectorLayerProperties::loadStyle()
         if ( mLayer->importNamedStyle( myDocument, errorMsg, categories ) )
         {
           syncToLayer();
+          apply();
         }
         else
         {
@@ -1528,6 +1539,7 @@ void QgsVectorLayerProperties::loadStyle()
         if ( defaultLoadedFlag )
         {
           syncToLayer();
+          apply();
         }
         else
         {
@@ -2247,4 +2259,72 @@ void QgsVectorLayerProperties::deleteAuxiliaryField( int index )
     const QString msg = QObject::tr( "Unable to remove auxiliary field (%1)" ).arg( errors );
     mMessageBar->pushMessage( title, msg, Qgis::MessageLevel::Warning );
   }
+}
+
+bool QgsVectorLayerProperties::eventFilter( QObject *obj, QEvent *ev )
+{
+  // If the map tip preview container is resized, resize the map tip
+  if ( obj == mMapTipPreviewContainer && ev->type() == QEvent::Resize )
+  {
+    resizeMapTip();
+  }
+  return QgsOptionsDialogBase::eventFilter( obj, ev );
+}
+
+void QgsVectorLayerProperties::initMapTipPreview()
+{
+  // HTML editor and preview are in a splitter. By default, the editor takes 2/3 of the space
+  mMapTipSplitter->setSizes( { 400, 200 } );
+  // Event filter is used to resize the map tip when the container is resized
+  mMapTipPreviewContainer->installEventFilter( this );
+
+  // Note: there's quite a bit of overlap between this and the code in QgsMapTip::showMapTip
+  // Create the WebView
+  mMapTipPreview = new QgsWebView( mMapTipPreviewContainer );
+
+#if WITH_QTWEBKIT
+  mMapTipPreview->page()->setLinkDelegationPolicy( QWebPage::DelegateAllLinks );//Handle link clicks by yourself
+  mMapTipPreview->setContextMenuPolicy( Qt::NoContextMenu ); //No context menu is allowed if you don't need it
+  connect( mMapTipPreview, &QWebView::loadFinished, this, &QgsVectorLayerProperties::resizeMapTip );
+#endif
+
+  mMapTipPreview->page()->settings()->setAttribute( QWebSettings::DeveloperExtrasEnabled, true );
+  mMapTipPreview->page()->settings()->setAttribute( QWebSettings::JavascriptEnabled, true );
+  mMapTipPreview->page()->settings()->setAttribute( QWebSettings::LocalStorageEnabled, true );
+
+  // Disable scrollbars, avoid random resizing issues
+  mMapTipPreview->page()->mainFrame()->setScrollBarPolicy( Qt::Horizontal, Qt::ScrollBarAlwaysOff );
+  mMapTipPreview->page()->mainFrame()->setScrollBarPolicy( Qt::Vertical, Qt::ScrollBarAlwaysOff );
+
+  // Update the map tip preview when the expression or the map tip template changes
+  connect( mMapTipWidget, &QgsCodeEditorHTML::textChanged, this, &QgsVectorLayerProperties::updateMapTipPreview );
+  connect( mDisplayExpressionWidget, qOverload< const QString & >( &QgsFieldExpressionWidget::fieldChanged ), this, &QgsVectorLayerProperties::updateMapTipPreview );
+}
+
+void QgsVectorLayerProperties::updateMapTipPreview()
+{
+  mMapTipPreview->setMaximumSize( mMapTipPreviewContainer->width(), mMapTipPreviewContainer->height() );
+  const QString htmlContent = QgsMapTip::vectorMapTipPreviewText( mLayer, mCanvas, mMapTipWidget->text(), mDisplayExpressionWidget->asExpression() );
+  mMapTipPreview->setHtml( htmlContent );
+}
+
+void QgsVectorLayerProperties::resizeMapTip()
+{
+  // Ensure the map tip is not bigger than the container
+  mMapTipPreview->setMaximumSize( mMapTipPreviewContainer->width(), mMapTipPreviewContainer->height() );
+#if WITH_QTWEBKIT
+  // Get the content size
+  const QWebElement container = mMapTipPreview->page()->mainFrame()->findFirstElement(
+                                  QStringLiteral( "#QgsWebViewContainer" ) );
+  const int width = container.geometry().width();
+  const int height = container.geometry().height();
+  mMapTipPreview->resize( width, height );
+
+  // Move the map tip to the center of the container
+  mMapTipPreview->move( ( mMapTipPreviewContainer->width() - mMapTipPreview->width() ) / 2,
+                        ( mMapTipPreviewContainer->height() - mMapTipPreview->height() ) / 2 );
+
+#else
+  mMapTipPreview->adjustSize();
+#endif
 }

@@ -73,9 +73,9 @@ void TestQgsServerWmsDxf::use_title_as_layername_true()
   QgsMapLayer *layer = project.layerStore()->mapLayersByName( "testlayer èé" )[0];
   QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer );
 
-  QgsCapabilitiesCache cache;
   QgsServiceRegistry registry;
   QgsServerSettings settings;
+  QgsCapabilitiesCache cache( settings.capabilitiesCacheSize() );
   QgsServerInterfaceImpl interface( &cache, &registry, &settings );
 
   QgsWms::QgsWmsRenderContext context( &project, &interface );
@@ -121,9 +121,9 @@ void TestQgsServerWmsDxf::use_title_as_layername_false()
   QgsMapLayer *layer = project.layerStore()->mapLayersByName( "testlayer èé" )[0];
   QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer );
 
-  QgsCapabilitiesCache cache;
   QgsServiceRegistry registry;
   QgsServerSettings settings;
+  QgsCapabilitiesCache cache( settings.capabilitiesCacheSize() );
   QgsServerInterfaceImpl interface( &cache, &registry, &settings );
 
   QgsWms::QgsWmsRenderContext context( &project, &interface );

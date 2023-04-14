@@ -66,7 +66,7 @@ jobs:
           NUMBER_OF_PRS=$(echo "${PRS_TO_PROCESS}" | jq -s '. | length')
           echo "NUMBER_OF_PRS: ${NUMBER_OF_PRS}"
           # early exit
-          [[ ${NUMBER_OF_PRS} == 0 ]] && echo "::set-output name=has_milestone_to_set::0" && exit 0
+          [[ ${NUMBER_OF_PRS} == 0 ]] && echo "has_milestone_to_set=0" >> $GITHUB_OUTPUT && exit 0
 
           # Take the first
           PR_NUMBER=$(echo "${PRS_TO_PROCESS}" | jq -s '. | first')
@@ -100,11 +100,11 @@ jobs:
           HAS_MILESTONE_TO_CREATE=$([[ -z ${MILESTONE_NUMBER} ]] && echo "1" || echo "0" )
           echo "HAS_MILESTONE_TO_CREATE: ${HAS_MILESTONE_TO_CREATE}"
 
-          echo "::set-output name=has_milestone_to_set::1"
-          echo "::set-output name=pr_number::${PR_NUMBER}"
-          echo "::set-output name=milestone_title::${MILESTONE_TITLE}"
-          echo "::set-output name=milestone_number::${MILESTONE_NUMBER}"
-          echo "::set-output name=has_milestone_to_create::${HAS_MILESTONE_TO_CREATE}"
+          echo "has_milestone_to_set=1" >> $GITHUB_OUTPUT
+          echo "pr_number=${PR_NUMBER}" >> $GITHUB_OUTPUT
+          echo "milestone_title=${MILESTONE_TITLE}" >> $GITHUB_OUTPUT
+          echo "milestone_number=${MILESTONE_NUMBER}" >> $GITHUB_OUTPUT
+          echo "has_milestone_to_create=${HAS_MILESTONE_TO_CREATE}" >> $GITHUB_OUTPUT
 
       # create the milestone if needed
       - name: Create milestone if needed
@@ -127,7 +127,7 @@ jobs:
         run: |
           FINAL_MILESTONE_NUMBER=$([[ -n ${MILESTONE_NUMBER_EXISTING} ]] && echo "${MILESTONE_NUMBER_EXISTING}" || echo $(echo "${MILESTONE_NUMBER_CREATED_JSON}" | jq .number ))
           echo "FINAL_MILESTONE_NUMBER: ${FINAL_MILESTONE_NUMBER}"
-          echo "::set-output name=milestone_number::${FINAL_MILESTONE_NUMBER}"
+          echo "milestone_number=${FINAL_MILESTONE_NUMBER}" >> $GITHUB_OUTPUT
 
       # update PR with milestone
       - name: update PR milestone

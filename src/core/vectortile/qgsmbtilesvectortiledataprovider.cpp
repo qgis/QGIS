@@ -21,7 +21,12 @@
 #include "qgsziputils.h"
 #include "qgslogger.h"
 #include "qgsapplication.h"
+#include "qgscoordinatetransform.h"
+#include "qgsproviderutils.h"
+#include "qgsprovidersublayerdetails.h"
+
 #include <QIcon>
+#include <QFileInfo>
 
 ///@cond PRIVATE
 
@@ -31,7 +36,61 @@ QString QgsMbTilesVectorTileDataProvider::MB_TILES_VECTOR_TILE_DATA_PROVIDER_DES
 QgsMbTilesVectorTileDataProvider::QgsMbTilesVectorTileDataProvider( const QString &uri, const ProviderOptions &providerOptions, ReadFlags flags )
   : QgsVectorTileDataProvider( uri, providerOptions, flags )
 {
+  QgsDataSourceUri dsUri;
+  dsUri.setEncodedUri( uri );
+  const QString sourcePath = dsUri.param( QStringLiteral( "url" ) );
 
+  QgsMbTiles reader( sourcePath );
+  if ( !reader.open() )
+  {
+    QgsDebugMsg( QStringLiteral( "failed to open MBTiles file: " ) + sourcePath );
+    mIsValid = false;
+    return;
+  }
+
+  const QString format = reader.metadataValue( QStringLiteral( "format" ) );
+  if ( format != QLatin1String( "pbf" ) )
+  {
+    QgsDebugMsg( QStringLiteral( "Cannot open MBTiles for vector tiles. Format = " ) + format );
+    mIsValid = false;
+    return;
+  }
+
+  QgsDebugMsgLevel( QStringLiteral( "name: " ) + reader.metadataValue( QStringLiteral( "name" ) ), 2 );
+
+  mMatrixSet = QgsVectorTileMatrixSet::fromWebMercator();
+
+  bool minZoomOk, maxZoomOk;
+  const int minZoom = reader.metadataValue( QStringLiteral( "minzoom" ) ).toInt( &minZoomOk );
+  const int maxZoom = reader.metadataValue( QStringLiteral( "maxzoom" ) ).toInt( &maxZoomOk );
+  if ( minZoomOk )
+    mMatrixSet.dropMatricesOutsideZoomRange( minZoom, 99 );
+  if ( maxZoomOk )
+    mMatrixSet.dropMatricesOutsideZoomRange( 0, maxZoom );
+  QgsDebugMsgLevel( QStringLiteral( "zoom range: %1 - %2" ).arg( mMatrixSet.minimumZoom() ).arg( mMatrixSet.maximumZoom() ), 2 );
+
+  QgsRectangle r = reader.extent();
+  QgsCoordinateTransform ct( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ),
+                             QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) ), transformContext() );
+  ct.setBallparkTransformsAreAppropriate( true );
+  try
+  {
+    mExtent = ct.transformBoundingBox( r );
+  }
+  catch ( QgsCsException & )
+  {
+    QgsDebugMsg( QStringLiteral( "Could not transform layer extent to layer CRS" ) );
+  }
+
+  mIsValid = true;
+}
+
+QgsMbTilesVectorTileDataProvider::QgsMbTilesVectorTileDataProvider( const QgsMbTilesVectorTileDataProvider &other )
+  : QgsVectorTileDataProvider( other )
+{
+  mIsValid = other.mIsValid;
+  mExtent = other.mExtent;
+  mMatrixSet = other.mMatrixSet;
 }
 
 QString QgsMbTilesVectorTileDataProvider::name() const
@@ -51,10 +110,7 @@ QString QgsMbTilesVectorTileDataProvider::description() const
 QgsVectorTileDataProvider *QgsMbTilesVectorTileDataProvider::clone() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
-
-  ProviderOptions options;
-  options.transformContext = transformContext();
-  return new QgsMbTilesVectorTileDataProvider( dataSourceUri(), options, mReadFlags );
+  return new QgsMbTilesVectorTileDataProvider( *this );
 }
 
 QString QgsMbTilesVectorTileDataProvider::sourcePath() const
@@ -70,7 +126,14 @@ bool QgsMbTilesVectorTileDataProvider::isValid() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  return true;
+  return mIsValid;
+}
+
+QgsRectangle QgsMbTilesVectorTileDataProvider::extent() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return mExtent;
 }
 
 QgsCoordinateReferenceSystem QgsMbTilesVectorTileDataProvider::crs() const
@@ -78,6 +141,13 @@ QgsCoordinateReferenceSystem QgsMbTilesVectorTileDataProvider::crs() const
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
   return QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) );
+}
+
+const QgsVectorTileMatrixSet &QgsMbTilesVectorTileDataProvider::tileMatrixSet() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return mMatrixSet;
 }
 
 QByteArray QgsMbTilesVectorTileDataProvider::readTile( const QgsTileMatrix &, const QgsTileXYZ &id, QgsFeedback *feedback ) const
@@ -153,6 +223,13 @@ QgsMbTilesVectorTileDataProviderMetadata::QgsMbTilesVectorTileDataProviderMetada
 {
 }
 
+QgsProviderMetadata::ProviderMetadataCapabilities QgsMbTilesVectorTileDataProviderMetadata::capabilities() const
+{
+  return ProviderMetadataCapability::LayerTypesForUri
+         | ProviderMetadataCapability::PriorityForUri
+         | ProviderMetadataCapability::QuerySublayers;
+}
+
 QgsMbTilesVectorTileDataProvider *QgsMbTilesVectorTileDataProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags )
 {
   return new QgsMbTilesVectorTileDataProvider( uri, options, flags );
@@ -168,96 +245,138 @@ QgsProviderMetadata::ProviderCapabilities QgsMbTilesVectorTileDataProviderMetada
   return FileBasedUris;
 }
 
+QString QgsMbTilesVectorTileDataProviderMetadata::filters( Qgis::FileFilterType type )
+{
+  switch ( type )
+  {
+    case Qgis::FileFilterType::Vector:
+    case Qgis::FileFilterType::Raster:
+    case Qgis::FileFilterType::Mesh:
+    case Qgis::FileFilterType::MeshDataset:
+    case Qgis::FileFilterType::PointCloud:
+      return QString();
+
+    case Qgis::FileFilterType::VectorTile:
+      return QObject::tr( "Mbtiles Vector Tiles" ) + QStringLiteral( " (*.mbtiles *.MBTILES)" );
+  }
+  return QString();
+}
+
+QList<QgsProviderSublayerDetails> QgsMbTilesVectorTileDataProviderMetadata::querySublayers( const QString &uri, Qgis::SublayerQueryFlags flags, QgsFeedback * ) const
+{
+  QString fileName;
+  const QFileInfo fi( uri );
+  if ( fi.isFile() )
+  {
+    fileName = uri;
+  }
+  else
+  {
+    const QVariantMap parts = decodeUri( uri );
+    fileName = parts.value( QStringLiteral( "path" ) ).toString();
+  }
+
+  if ( fileName.isEmpty() )
+    return {};
+
+  if ( QFileInfo( fileName ).suffix().compare( QLatin1String( "mbtiles" ), Qt::CaseInsensitive ) == 0 )
+  {
+    QVariantMap parts;
+    parts.insert( QStringLiteral( "path" ), fileName );
+
+    if ( flags & Qgis::SublayerQueryFlag::FastScan )
+    {
+      // fast scan -- assume vector tile are available
+      QgsProviderSublayerDetails details;
+      details.setUri( encodeUri( parts ) );
+      details.setProviderKey( key() );
+      details.setType( Qgis::LayerType::VectorTile );
+      details.setSkippedContainerScan( true );
+      details.setName( QgsProviderUtils::suggestLayerNameFromFilePath( fileName ) );
+      return {details};
+    }
+    else
+    {
+      // slower scan, check actual mbtiles format
+      QgsMbTiles reader( fileName );
+      if ( reader.open() )
+      {
+        if ( reader.metadataValue( "format" ) == QLatin1String( "pbf" ) )
+        {
+          QgsProviderSublayerDetails details;
+          details.setUri( encodeUri( parts ) );
+          details.setProviderKey( key() );
+          details.setType( Qgis::LayerType::VectorTile );
+          details.setName( QgsProviderUtils::suggestLayerNameFromFilePath( fileName ) );
+          return {details};
+        }
+      }
+    }
+  }
+  return {};
+}
+
+int QgsMbTilesVectorTileDataProviderMetadata::priorityForUri( const QString &uri ) const
+{
+  if ( validLayerTypesForUri( uri ).contains( Qgis::LayerType::VectorTile ) )
+    return 100;
+
+  return 0;
+}
+
+QList<Qgis::LayerType> QgsMbTilesVectorTileDataProviderMetadata::validLayerTypesForUri( const QString &uri ) const
+{
+  const QFileInfo fi( uri );
+  if ( fi.isFile() && fi.suffix().compare( QLatin1String( "mbtiles" ), Qt::CaseInsensitive ) == 0 )
+  {
+    return { Qgis::LayerType::VectorTile };
+  }
+
+  const QVariantMap parts = decodeUri( uri );
+  if ( parts.value( QStringLiteral( "path" ) ).toString().endsWith( ".mbtiles", Qt::CaseSensitivity::CaseInsensitive ) )
+    return { Qgis::LayerType::VectorTile };
+
+  return {};
+}
+
 QVariantMap QgsMbTilesVectorTileDataProviderMetadata::decodeUri( const QString &uri ) const
 {
-  // TODO -- carefully thin out options which don't apply to mbtiles
-
   QgsDataSourceUri dsUri;
   dsUri.setEncodedUri( uri );
 
   QVariantMap uriComponents;
-  uriComponents.insert( QStringLiteral( "type" ), dsUri.param( QStringLiteral( "type" ) ) );
-  if ( dsUri.hasParam( QStringLiteral( "serviceType" ) ) )
-    uriComponents.insert( QStringLiteral( "serviceType" ), dsUri.param( QStringLiteral( "serviceType" ) ) );
-
-  if ( uriComponents[ QStringLiteral( "type" ) ] == QLatin1String( "mbtiles" ) ||
-       ( uriComponents[ QStringLiteral( "type" ) ] == QLatin1String( "xyz" ) &&
-         !dsUri.param( QStringLiteral( "url" ) ).startsWith( QLatin1String( "http" ) ) ) )
-  {
-    uriComponents.insert( QStringLiteral( "path" ), dsUri.param( QStringLiteral( "url" ) ) );
-  }
-  else
-  {
-    uriComponents.insert( QStringLiteral( "url" ), dsUri.param( QStringLiteral( "url" ) ) );
-  }
-
-  if ( dsUri.hasParam( QStringLiteral( "zmin" ) ) )
-    uriComponents.insert( QStringLiteral( "zmin" ), dsUri.param( QStringLiteral( "zmin" ) ) );
-  if ( dsUri.hasParam( QStringLiteral( "zmax" ) ) )
-    uriComponents.insert( QStringLiteral( "zmax" ), dsUri.param( QStringLiteral( "zmax" ) ) );
-
-  dsUri.httpHeaders().updateMap( uriComponents );
-
-  if ( dsUri.hasParam( QStringLiteral( "styleUrl" ) ) )
-    uriComponents.insert( QStringLiteral( "styleUrl" ), dsUri.param( QStringLiteral( "styleUrl" ) ) );
-
-  const QString authcfg = dsUri.authConfigId();
-  if ( !authcfg.isEmpty() )
-    uriComponents.insert( QStringLiteral( "authcfg" ), authcfg );
+  uriComponents.insert( QStringLiteral( "type" ), QStringLiteral( "mbtiles" ) );
+  uriComponents.insert( QStringLiteral( "path" ), dsUri.param( QStringLiteral( "url" ) ) );
 
   return uriComponents;
 }
 
 QString QgsMbTilesVectorTileDataProviderMetadata::encodeUri( const QVariantMap &parts ) const
 {
-  // TODO -- carefully thin out options which don't apply to mbtiles
-
   QgsDataSourceUri dsUri;
-  dsUri.setParam( QStringLiteral( "type" ), parts.value( QStringLiteral( "type" ) ).toString() );
-  if ( parts.contains( QStringLiteral( "serviceType" ) ) )
-    dsUri.setParam( QStringLiteral( "serviceType" ), parts[ QStringLiteral( "serviceType" ) ].toString() );
+  dsUri.setParam( QStringLiteral( "type" ), QStringLiteral( "mbtiles" ) );
   dsUri.setParam( QStringLiteral( "url" ), parts.value( parts.contains( QStringLiteral( "path" ) ) ? QStringLiteral( "path" ) : QStringLiteral( "url" ) ).toString() );
-
-  if ( parts.contains( QStringLiteral( "zmin" ) ) )
-    dsUri.setParam( QStringLiteral( "zmin" ), parts[ QStringLiteral( "zmin" ) ].toString() );
-  if ( parts.contains( QStringLiteral( "zmax" ) ) )
-    dsUri.setParam( QStringLiteral( "zmax" ), parts[ QStringLiteral( "zmax" ) ].toString() );
-
-  dsUri.httpHeaders().setFromMap( parts );
-
-  if ( parts.contains( QStringLiteral( "styleUrl" ) ) )
-    dsUri.setParam( QStringLiteral( "styleUrl" ), parts[ QStringLiteral( "styleUrl" ) ].toString() );
-
-  if ( parts.contains( QStringLiteral( "authcfg" ) ) )
-    dsUri.setAuthConfigId( parts[ QStringLiteral( "authcfg" ) ].toString() );
-
   return dsUri.encodedUri();
 }
 
 QString QgsMbTilesVectorTileDataProviderMetadata::absoluteToRelativeUri( const QString &uri, const QgsReadWriteContext &context ) const
 {
-  QgsDataSourceUri dsUri;
-  dsUri.setEncodedUri( uri );
+  QVariantMap parts = decodeUri( uri );
 
-  QString sourcePath = dsUri.param( QStringLiteral( "url" ) );
+  const QString originalPath = parts.value( QStringLiteral( "path" ) ).toString();
+  parts.insert( QStringLiteral( "path" ), context.pathResolver().writePath( originalPath ) );
 
-  sourcePath = context.pathResolver().writePath( sourcePath );
-  dsUri.removeParam( QStringLiteral( "url" ) );  // needed because setParam() would insert second "url" key
-  dsUri.setParam( QStringLiteral( "url" ), sourcePath );
-  return dsUri.encodedUri();
+  return encodeUri( parts );
 }
 
 QString QgsMbTilesVectorTileDataProviderMetadata::relativeToAbsoluteUri( const QString &uri, const QgsReadWriteContext &context ) const
 {
-  QgsDataSourceUri dsUri;
-  dsUri.setEncodedUri( uri );
+  QVariantMap parts = decodeUri( uri );
 
-  QString sourcePath = dsUri.param( QStringLiteral( "url" ) );
+  const QString originalPath = parts.value( QStringLiteral( "path" ) ).toString();
+  parts.insert( QStringLiteral( "path" ), context.pathResolver().readPath( originalPath ) );
 
-  sourcePath = context.pathResolver().readPath( sourcePath );
-  dsUri.removeParam( QStringLiteral( "url" ) );  // needed because setParam() would insert second "url" key
-  dsUri.setParam( QStringLiteral( "url" ), sourcePath );
-  return dsUri.encodedUri();
+  return encodeUri( parts );
 }
 
 QList<Qgis::LayerType> QgsMbTilesVectorTileDataProviderMetadata::supportedLayerTypes() const

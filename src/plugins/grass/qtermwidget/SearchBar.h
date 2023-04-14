@@ -27,7 +27,7 @@
 class SearchBar : public QWidget {
     Q_OBJECT
 public:
-    SearchBar(QWidget* parent = 0);
+    SearchBar(QWidget* parent = nullptr);
     ~SearchBar() override;
     virtual void show();
     QString searchText();
@@ -37,6 +37,7 @@ public:
 
 public slots:
     void noMatchFound();
+    void hide();
 
 signals:
     void searchCriteriaChanged();

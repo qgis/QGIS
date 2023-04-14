@@ -67,6 +67,7 @@ struct QgsPostgresSchemaProperty
   QString owner;
 };
 
+
 //! Layer Property structure
 // TODO: Fill to Postgres/PostGIS specifications
 struct QgsPostgresLayerProperty
@@ -81,10 +82,7 @@ struct QgsPostgresLayerProperty
   QList<int>                    srids;
   unsigned int                  nSpCols;
   QString                       sql;
-  QString                       relKind;
-  bool                          isView = false;
-  bool                          isMaterializedView = false;
-  bool                          isForeignTable = false;
+  Qgis::PostgresRelKind         relKind = Qgis::PostgresRelKind::Unknown;
   bool                          isRaster = false;
   QString                       tableComment;
 
@@ -114,9 +112,7 @@ struct QgsPostgresLayerProperty
     property.nSpCols            = nSpCols;
     property.sql                = sql;
     property.relKind            = relKind;
-    property.isView             = isView;
     property.isRaster           = isRaster;
-    property.isMaterializedView = isMaterializedView;
     property.tableComment       = tableComment;
 
     return property;
@@ -186,6 +182,21 @@ class QgsPostgresResult
   private:
     PGresult *mRes = nullptr;
 
+};
+
+struct PGException
+{
+    explicit PGException( QgsPostgresResult &r )
+      : mWhat( r.PQresultErrorMessage() )
+    {}
+
+    QString errorMessage() const
+    {
+      return mWhat;
+    }
+
+  private:
+    QString mWhat;
 };
 
 //! Wraps acquireConnection() and releaseConnection() from a QgsPostgresConnPool.
@@ -356,6 +367,12 @@ class QgsPostgresConn : public QObject
      * \note a null value will be represented as a NULL and not as a json null.
      */
     static QString quotedJsonValue( const QVariant &value );
+
+    /**
+     * Returns the RelKind associated with a value from the relkind column
+     * in pg_class.
+     */
+    static Qgis::PostgresRelKind relKindFromValue( const QString &value );
 
     /**
      * Gets the list of supported layers

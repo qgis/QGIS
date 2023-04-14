@@ -65,6 +65,34 @@ class GUI_EXPORT QgsMeshLayerProperties : public QgsOptionsDialogBase, private U
      */
     void addPropertiesPageFactory( const QgsMapLayerConfigWidgetFactory *factory );
 
+    /**
+     * Loads the default style when appropriate button is pressed
+     *
+     * \since QGIS 3.30
+     */
+    void loadDefaultStyle();
+
+    /**
+     * Saves the default style when appropriate button is pressed
+     *
+     * \since QGIS 3.30
+     */
+    void saveDefaultStyle();
+
+    /**
+     * Loads a saved style when appropriate button is pressed
+     *
+     * \since QGIS 3.30
+     */
+    void loadStyle();
+
+    /**
+     * Saves a style when appriate button is pressed
+     *
+     * \since QGIS 3.30
+     */
+    void saveStyleAs();
+
   protected slots:
     void optionsStackedWidget_CurrentChanged( int index ) override SIP_SKIP ;
 
@@ -78,14 +106,6 @@ class GUI_EXPORT QgsMeshLayerProperties : public QgsOptionsDialogBase, private U
     void syncAndRepaint();
     //! Changes layer coordinate reference system
     void changeCrs( const QgsCoordinateReferenceSystem &crs );
-    //! Loads the default style when appropriate button is pressed
-    void loadDefaultStyle();
-    //! Saves the default style when appropriate button is pressed
-    void saveDefaultStyle();
-    //! Loads a saved style when appropriate button is pressed
-    void loadStyle();
-    //! Saves a style when appriate button is pressed
-    void saveStyleAs();
     //! Prepares style menu
     void aboutToShowStyleMenu();
     //! Reloads temporal properties from the provider

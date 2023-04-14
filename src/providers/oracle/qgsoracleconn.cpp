@@ -728,10 +728,8 @@ void QgsOracleConn::retrieveLayerTypes( QgsOracleLayerProperty &layerProperty, b
   layerProperty.srids.clear();
 
   QSet<int> srids;
-  long long fetchedRows { 0 };
   while ( qry.next() )
   {
-    fetchedRows++;
     if ( detectedType == Qgis::WkbType::Unknown )
     {
       Qgis::WkbType type = wkbTypeFromDatabase( qry.value( 0 ).toInt() );

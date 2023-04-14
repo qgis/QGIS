@@ -103,6 +103,15 @@ Adds a new option to the widget.
 Returns pointer to the list view
 %End
 
+
+    virtual void dragEnterEvent( QDragEnterEvent *event );
+
+%Docstring
+Value formatter
+%End
+    virtual void dropEvent( QDropEvent *event );
+
+
 };
 
 
@@ -204,6 +213,12 @@ Constructor for QgsProcessingMultipleInputPanelWidget.
 %Docstring
 Sets the project associated with the widget.
 %End
+
+  protected:
+    virtual void dragEnterEvent( QDragEnterEvent *event );
+
+    virtual void dropEvent( QDropEvent *event );
+
 
 };
 

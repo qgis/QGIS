@@ -18,11 +18,8 @@
 #include "qgis.h"
 #include "qgsmapcanvas.h"
 #include "qgsmeshlayer.h"
-#include "qgsmessagelog.h"
 #include "qgsmeshrendererscalarsettingswidget.h"
-#include "qgsmeshdatasetgrouptreeview.h"
 #include "qgsmeshrendereractivedatasetwidget.h"
-#include "qgsmeshlayerutils.h"
 #include "qgsproject.h"
 #include "qgsprojectutils.h"
 

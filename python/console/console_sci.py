@@ -137,7 +137,11 @@ class PythonInterpreter(QgsCodeInterpreter, code.InteractiveInterpreter):
 class ShellScintilla(QgsCodeEditorPython):
 
     def __init__(self, parent=None):
-        super().__init__(parent, [], QgsCodeEditor.Mode.CommandInput)
+        # We set the ImmediatelyUpdateHistory flag here, as users can easily
+        # crash QGIS by entering a Python command, and we don't want the
+        # history leading to the crash lost..
+        super().__init__(parent, [], QgsCodeEditor.Mode.CommandInput,
+                         flags=QgsCodeEditor.Flags(QgsCodeEditor.Flag.CodeFolding | QgsCodeEditor.Flag.ImmediatelyUpdateHistory))
 
         self.parent = parent
         self._interpreter = PythonInterpreter()
@@ -208,14 +212,6 @@ class ShellScintilla(QgsCodeEditorPython):
 
         QgsCodeEditorPython.keyPressEvent(self, e)
         self.updatePrompt()
-
-    def populateContextMenu(self, menu):
-        pyQGISHelpAction = menu.addAction(
-            QgsApplication.getThemeIcon("console/iconHelpConsole.svg"),
-            QCoreApplication.translate("PythonConsole", "Search Selected in PyQGIS docs"),
-            self.searchSelectedTextInPyQGISDocs
-        )
-        pyQGISHelpAction.setEnabled(self.hasSelectedText())
 
     def mousePressEvent(self, e):
         """
@@ -303,7 +299,7 @@ class ShellScintilla(QgsCodeEditorPython):
 
         try:
             # Run the file
-            self.runCommand("exec(Path('{0}').read_text())".format(filename))
+            self.runCommand("exec(Path('{0}').read_text())".format(filename), skipHistory=True)
         finally:
             # Remove the directory from the path and delete the __file__ variable
             self._interpreter.execCommandImpl("del __file__", False)

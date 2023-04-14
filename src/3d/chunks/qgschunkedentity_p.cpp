@@ -155,7 +155,9 @@ void QgsChunkedEntity::update( const SceneState &state )
 
   update( mRootNode, state );
 
+#ifdef QGISDEBUG
   int enabled = 0, disabled = 0, unloaded = 0;
+#endif
 
   for ( QgsChunkNode *node : std::as_const( mActiveNodes ) )
   {
@@ -171,7 +173,9 @@ void QgsChunkedEntity::update( const SceneState &state )
         continue;
       }
       node->entity()->setEnabled( true );
+#ifdef QGISDEBUG
       ++enabled;
+#endif
     }
   }
 
@@ -184,7 +188,9 @@ void QgsChunkedEntity::update( const SceneState &state )
       continue;
     }
     node->entity()->setEnabled( false );
+#ifdef QGISDEBUG
     ++disabled;
+#endif
   }
 
   double usedGpuMemory = QgsChunkedEntity::calculateEntityGpuMemorySize( this );
@@ -197,7 +203,9 @@ void QgsChunkedEntity::update( const SceneState &state )
     usedGpuMemory -= QgsChunkedEntity::calculateEntityGpuMemorySize( entry->chunk->entity() );
     entry->chunk->unloadChunk();  // also deletes the entry
     mActiveNodes.removeOne( entry->chunk );
+#ifdef QGISDEBUG
     ++unloaded;
+#endif
   }
 
   if ( mBboxesEntity )

@@ -6066,7 +6066,7 @@ static QVariant fncColorPart( const QVariantList &values, const QgsExpressionCon
 static QVariant fcnCreateRamp( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   const QVariantMap map = QgsExpressionUtils::getMapValue( values.at( 0 ), parent );
-  if ( map.count() < 1 )
+  if ( map.empty() )
   {
     parent->setEvalErrorString( QObject::tr( "A minimum of two colors is required to create a ramp" ) );
     return QVariant();
@@ -6100,6 +6100,9 @@ static QVariant fcnCreateRamp( const QVariantList &values, const QgsExpressionCo
     }
   }
   bool discrete = values.at( 1 ).toBool();
+
+  if ( colors.empty() )
+    return QVariant();
 
   return QVariant::fromValue( QgsGradientColorRamp( colors.first(), colors.last(), discrete, stops ) );
 }

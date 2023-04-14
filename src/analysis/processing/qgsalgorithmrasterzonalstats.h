@@ -69,12 +69,12 @@ class QgsRasterLayerZonalStatsAlgorithm : public QgsProcessingAlgorithm
     bool mZonesHasNoDataValue = false;
     int mBand = 1;
     int mZonesBand = 1;
-    int mLayerWidth;
-    int mLayerHeight;
+    int mLayerWidth = 0;
+    int mLayerHeight = 0;
     QgsRectangle mExtent;
     QgsCoordinateReferenceSystem mCrs;
-    double mRasterUnitsPerPixelX;
-    double mRasterUnitsPerPixelY;
+    double mRasterUnitsPerPixelX = 0;
+    double mRasterUnitsPerPixelY = 0;
     RefLayer mRefLayer = Source;
 
 };

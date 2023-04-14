@@ -27,11 +27,21 @@
 #include <QtDebug>
 
 
-#if defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__) || defined(__DragonFly__)
-#define HAVE_UTEMPTER
-#define HAVE_UTMPX
+#if defined(__FreeBSD__) || defined(__DragonFly__)
 #define HAVE_LOGIN
 #define HAVE_LIBUTIL_H
+#define HAVE_UTEMPTER
+#endif
+
+#if defined(__OpenBSD__)
+#define HAVE_LOGIN
+#define HAVE_UTIL_H
+#endif
+
+#if defined(__NetBSD__)
+#define HAVE_LOGIN
+#define HAVE_UTIL_H
+#define HAVE_OPENPTY
 #endif
 
 #ifdef __sgi
@@ -62,12 +72,12 @@
 #include <sys/stat.h>
 #include <sys/param.h>
 
-#include <errno.h>
+#include <cerrno>
 #include <fcntl.h>
-#include <time.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
+#include <ctime>
+#include <cstdlib>
+#include <cstdio>
+#include <cstring>
 #include <unistd.h>
 #include <grp.h>
 
@@ -83,6 +93,7 @@
 
 #ifdef HAVE_UTEMPTER
 extern "C" {
+# include <ulog.h>
 # include <utempter.h>
 }
 #else
@@ -218,7 +229,7 @@ bool KPty::open()
     if (::openpty( &d->masterFd, &d->slaveFd, ptsn, 0, 0)) {
         d->masterFd = -1;
         d->slaveFd = -1;
-        qWarning(175) << "Can't open a pseudo teletype";
+        qWarning() << "Can't open a pseudo teletype";
         return false;
     }
     d->ttyName = ptsn;
@@ -251,7 +262,7 @@ bool KPty::open()
             d->ttyName = ptsn;
 #else
     int ptyno;
-    if (!ioctl(d->masterFd, TIOCGPTN, &ptyno)) {
+    if (ioctl(d->masterFd, TIOCGPTN, &ptyno) != -1) {
         d->ttyName = QByteArray("/dev/pts/") + QByteArray::number(ptyno);
 #endif
 #ifdef HAVE_GRANTPT
@@ -271,8 +282,8 @@ bool KPty::open()
     // Linux device names, FIXME: Trouble on other systems?
     for (const char * s3 = "pqrstuvwxyzabcde"; *s3; s3++) {
         for (const char * s4 = "0123456789abcdef"; *s4; s4++) {
-            ptyName = QStringLiteral("/dev/pty%1%2").arg(*s3).arg(*s4).toUtf8();
-            d->ttyName = QStringLiteral("/dev/tty%1%2").arg(*s3).arg(*s4).toUtf8();
+            ptyName = QByteArrayLiteral("/dev/pty") + *s3 + *s4;
+            d->ttyName = QByteArrayLiteral("/dev/tty") + *s3 + *s4;
 
             d->masterFd = ::open(ptyName.data(), O_RDWR);
             if (d->masterFd >= 0) {
@@ -282,7 +293,7 @@ bool KPty::open()
                  * and we need to get another one.
                  */
                 int pgrp_rtn;
-                if (ioctl(d->masterFd, TIOCGPGRP, &pgrp_rtn) == 0 || errno != EIO) {
+                if (ioctl(d->masterFd, TIOCGPGRP, &pgrp_rtn) != -1 || errno != EIO) {
                     ::close(d->masterFd);
                     d->masterFd = -1;
                     continue;
@@ -323,7 +334,8 @@ gotpty:
             !d->chownpty(true)) {
         qWarning()
         << "chownpty failed for device " << ptyName << "::" << d->ttyName
-        << "\nThis means the communication can be eavesdropped." << endl;
+        << "\nThis means the communication can be eavesdropped."
+        << Qt::endl;
     }
 
 #if defined (HAVE__GETPTY) || defined (HAVE_GRANTPT)
@@ -384,9 +396,13 @@ bool KPty::open(int fd)
         d->ttyName = ptsn;
 # else
     int ptyno;
-    if (!ioctl(fd, TIOCGPTN, &ptyno)) {
-        char buf[32];
-        sprintf(buf, "/dev/pts/%d", ptyno);
+    if (ioctl(fd, TIOCGPTN, &ptyno) != -1) {
+        const size_t sz = 32;
+        char buf[sz];
+        const size_t r = snprintf(buf, sz, "/dev/pts/%d", ptyno);
+        if (sz <= r) {
+            qWarning("KPty::open: Buffer too small\n");
+        }
         d->ttyName = buf;
 # endif
     } else {
@@ -449,8 +465,8 @@ void KPty::close()
         if (!geteuid()) {
             struct stat st;
             if (!stat(d->ttyName.data(), &st)) {
-                (void) chown(d->ttyName.data(), 0, st.st_gid == getgid() ? 0 : -1);
-                (void) chmod(d->ttyName.data(), S_IRUSR|S_IWUSR|S_IRGRP|S_IWGRP|S_IROTH|S_IWOTH);
+                chown(d->ttyName.data(), 0, st.st_gid == getgid() ? 0 : -1);
+                chmod(d->ttyName.data(), S_IRUSR|S_IWUSR|S_IRGRP|S_IWGRP|S_IROTH|S_IWOTH);
             }
         } else {
             fcntl(d->masterFd, F_SETFD, 0);
@@ -493,7 +509,7 @@ void KPty::login(const char * user, const char * remotehost)
 #ifdef HAVE_UTEMPTER
     Q_D(KPty);
 
-    addToUtmp(d->ttyName, remotehost, d->masterFd);
+    addToUtmp(d->ttyName.constData(), remotehost, d->masterFd);
     Q_UNUSED(user)
 #else
 # ifdef HAVE_UTMPX
@@ -505,13 +521,17 @@ void KPty::login(const char * user, const char * remotehost)
     // note: strncpy without terminators _is_ correct here. man 4 utmp
 
     if (user) {
+# ifdef HAVE_UTMPX
+        strncpy(l_struct.ut_user, user, sizeof(l_struct.ut_user));
+# else
         strncpy(l_struct.ut_name, user, sizeof(l_struct.ut_name));
+# endif
     }
 
     if (remotehost) {
         strncpy(l_struct.ut_host, remotehost, sizeof(l_struct.ut_host));
 # ifdef HAVE_STRUCT_UTMP_UT_SYSLEN
-        l_struct.ut_syslen = std::min(strlen(remotehost), sizeof(l_struct.ut_host));
+        l_struct.ut_syslen = qMin(strlen(remotehost), sizeof(l_struct.ut_host));
 # endif
     }
 
@@ -532,7 +552,7 @@ void KPty::login(const char * user, const char * remotehost)
 # ifdef HAVE_UTMPX
     gettimeofday(&l_struct.ut_tv, 0);
 # else
-    l_struct.ut_time = time(0);
+    l_struct.ut_time = time(nullptr);
 # endif
 
 # ifdef HAVE_LOGIN
@@ -575,7 +595,7 @@ void KPty::logout()
 #ifdef HAVE_UTEMPTER
     Q_D(KPty);
 
-    removeLineFromUtmp(d->ttyName, d->masterFd);
+    removeLineFromUtmp(d->ttyName.constData(), d->masterFd);
 #else
     Q_D(KPty);
 
@@ -616,7 +636,11 @@ void KPty::logout()
     setutent();
     if ((ut = getutline(&l_struct))) {
 #  endif
+#  ifdef HAVE_UTMPX
+        memset(ut->ut_user, 0, sizeof(*ut->ut_user));
+#  else
         memset(ut->ut_name, 0, sizeof(*ut->ut_name));
+#  endif
         memset(ut->ut_host, 0, sizeof(*ut->ut_host));
 #  ifdef HAVE_STRUCT_UTMP_UT_SYSLEN
         ut->ut_syslen = 0;
@@ -630,7 +654,7 @@ void KPty::logout()
     }
     endutxent();
 #  else
-    ut->ut_time = time(0);
+    ut->ut_time = time(nullptr);
     pututline(ut);
 }
 endutent();
@@ -664,7 +688,7 @@ bool KPty::setWinSize(int lines, int columns)
     memset(&winSize, 0, sizeof(winSize));
     winSize.ws_row = (unsigned short)lines;
     winSize.ws_col = (unsigned short)columns;
-    return ioctl(d->masterFd, TIOCSWINSZ, (char *)&winSize) == 0;
+    return ioctl(d->masterFd, TIOCSWINSZ, (char *)&winSize) != -1;
 }
 
 bool KPty::setEcho(bool echo)

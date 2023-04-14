@@ -107,9 +107,9 @@ class _3D_EXPORT QgsQuadtreeChunkLoaderFactory : public QgsChunkLoaderFactory
   protected:
     QgsAABB mRootBbox;
     QgsAABB mClippingBbox;
-    float mRootError;
+    float mRootError = 0;
     //! maximum allowed depth of quad tree
-    int mMaxLevel;
+    int mMaxLevel = 0;
 
 };
 

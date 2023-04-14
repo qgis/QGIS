@@ -1061,8 +1061,9 @@ int QgsGeometryCollection::childCount() const
 
 QgsAbstractGeometry *QgsGeometryCollection::childGeometry( int index ) const
 {
-  if ( index < 0 || index > mGeometries.count() )
+  if ( index < 0 || index >= mGeometries.count() )
     return nullptr;
+
   return mGeometries.at( index );
 }
 

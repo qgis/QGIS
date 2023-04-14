@@ -313,6 +313,7 @@ void QgsDecorationScaleBar::render( const QgsMapSettings &mapSettings, QgsRender
       else
         scaleBarUnitLabel = tr( "m" );
       break;
+
     case Qgis::DistanceUnit::Feet:
       if ( unitsPerSegment > 5280.0 ) //5280 feet to the mile
       {
@@ -343,18 +344,21 @@ void QgsDecorationScaleBar::render( const QgsMapSettings &mapSettings, QgsRender
         scaleBarUnitLabel = tr( "feet" );
       }
       break;
+
     case Qgis::DistanceUnit::Degrees:
       if ( unitsPerSegment == 1.0 )
         scaleBarUnitLabel = tr( "degree" );
       else
         scaleBarUnitLabel = tr( "degrees" );
       break;
+
     case Qgis::DistanceUnit::Kilometers:
     case Qgis::DistanceUnit::NauticalMiles:
     case Qgis::DistanceUnit::Yards:
     case Qgis::DistanceUnit::Miles:
     case Qgis::DistanceUnit::Centimeters:
     case Qgis::DistanceUnit::Millimeters:
+    case Qgis::DistanceUnit::Inches:
     case Qgis::DistanceUnit::Unknown:
       scaleBarUnitLabel = QgsUnitTypes::toAbbreviatedString( scaleBarUnits );
       break;

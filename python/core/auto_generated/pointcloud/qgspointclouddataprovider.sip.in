@@ -35,6 +35,7 @@ Responsible for reading native point cloud data and returning the indexed data.
       ReadLayerMetadata,
       WriteLayerMetadata,
       CreateRenderer,
+      ContainSubIndexes,
     };
 
     typedef QFlags<QgsPointCloudDataProvider::Capability> Capabilities;
@@ -119,6 +120,8 @@ emits :py:func:`~QgsPointCloudDataProvider.indexGenerationStateChanged`
 %Docstring
 Gets the current index generation state
 %End
+
+
 
 
     bool hasValidIndex() const;
@@ -290,6 +293,8 @@ Returns the map of LAS data format ID to translated string value.
 %Docstring
 Emitted when point cloud generation state is changed
 %End
+
+  protected:
 
 };
 

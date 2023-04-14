@@ -21,6 +21,7 @@
 #define SIP_NO_FILE
 
 #include <QSet>
+#include <QVariantMap>
 
 class QPointF;
 class QPolygon;
@@ -35,6 +36,7 @@ class QgsTileMatrix;
 class QgsTileRange;
 class QgsTileXYZ;
 class QgsVectorTileLayer;
+class QgsMapBoxGlStyleConversionContext;
 
 /**
  * \ingroup core
@@ -84,6 +86,14 @@ class CORE_EXPORT QgsVectorTileUtils
     static QString formatXYZUrlTemplate( const QString &url, QgsTileXYZ tile, const QgsTileMatrix &tileMatrix );
     //! Checks whether the URL template string is correct (contains {x}, {y} / {-y}, {z} placeholders)
     static bool checkXYZUrlTemplate( const QString &url );
+
+    /**
+     * Downloads the sprite image and sets it to the conversion context
+     * \param styleDefinition the style definition map
+     * \param context the style conversion context
+     * \param styleUrl optional the style url
+     */
+    static void loadSprites( const QVariantMap &styleDefinition, QgsMapBoxGlStyleConversionContext &context, const QString &styleUrl = QString() );
 };
 
 #endif // QGSVECTORTILEUTILS_H

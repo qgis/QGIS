@@ -34,7 +34,7 @@ QgsGrassSelect::QgsGrassSelect( QWidget *parent, int type )
   , QgsGrassSelectBase()
   , selectedType( 0 )
 {
-  QgsDebugMsg( QString( "QgsGrassSelect() type = %1" ).arg( type ) );
+  QgsDebugMsgLevel( QString( "QgsGrassSelect() type = %1" ).arg( type ), 3 );
 
   setupUi( this );
   connect( GisdbaseBrowse, &QPushButton::clicked, this, &QgsGrassSelect::GisdbaseBrowse_clicked );
@@ -190,7 +190,7 @@ void QgsGrassSelect::setLocations()
 
 void QgsGrassSelect::setMapsets()
 {
-  QgsDebugMsg( "setMapsets()" );
+  QgsDebugMsgLevel( "setMapsets()", 3 );
 
   emapset->clear();
   emap->clear();
@@ -233,7 +233,7 @@ void QgsGrassSelect::setMapsets()
 
 void QgsGrassSelect::setMaps()
 {
-  QgsDebugMsg( "setMaps()" );
+  QgsDebugMsgLevel( "setMaps()", 3 );
 
   // Replaced by text box to enable wild cards
   emap->clear();
@@ -331,7 +331,7 @@ void QgsGrassSelect::setMaps()
 
 void QgsGrassSelect::setLayers()
 {
-  QgsDebugMsg( "setLayers()" );
+  QgsDebugMsgLevel( "setLayers()", 3 );
 
   elayer->clear();
 

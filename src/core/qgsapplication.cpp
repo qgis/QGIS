@@ -84,6 +84,7 @@
 #include "qgscolorrampimpl.h"
 #include "qgsinterval.h"
 #include "qgsgpsconnection.h"
+#include "qgssensorregistry.h"
 
 #include "gps/qgsgpsconnectionregistry.h"
 #include "processing/qgsprocessingregistry.h"
@@ -2475,6 +2476,11 @@ QgsAnnotationItemRegistry *QgsApplication::annotationItemRegistry()
   return members()->mAnnotationItemRegistry;
 }
 
+QgsSensorRegistry *QgsApplication::sensorRegistry()
+{
+  return members()->mSensorRegistry;
+}
+
 QgsGpsConnectionRegistry *QgsApplication::gpsConnectionRegistry()
 {
   return members()->mGpsConnectionRegistry;
@@ -2748,6 +2754,12 @@ QgsApplication::ApplicationMembers::ApplicationMembers()
     profiler->end();
   }
   {
+    profiler->start( tr( "Setup sensor registry" ) );
+    mSensorRegistry = new QgsSensorRegistry();
+    mSensorRegistry->populate();
+    profiler->end();
+  }
+  {
     profiler->start( tr( "Setup 3D symbol registry" ) );
     m3DSymbolRegistry = new Qgs3DSymbolRegistry();
     profiler->end();
@@ -2824,6 +2836,7 @@ QgsApplication::ApplicationMembers::~ApplicationMembers()
   delete mProcessingRegistry;
   delete mPageSizeRegistry;
   delete mAnnotationItemRegistry;
+  delete mSensorRegistry;
   delete mLayoutItemRegistry;
   delete mPointCloudRendererRegistry;
   delete mRasterRendererRegistry;

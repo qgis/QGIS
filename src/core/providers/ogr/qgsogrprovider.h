@@ -110,6 +110,7 @@ class QgsOgrProvider final: public QgsVectorDataProvider
     bool createSpatialIndex() override;
     bool createAttributeIndex( int field ) override;
     QgsVectorDataProvider::Capabilities capabilities() const override;
+    Qgis::VectorDataProviderAttributeEditCapabilities attributeEditCapabilities() const override;
     QgsAttributeList pkAttributeIndexes() const override { return mPrimaryKeyAttrs; }
     void setEncoding( const QString &e ) override;
     bool enterUpdateMode() override { return _enterUpdateMode(); }
@@ -326,6 +327,7 @@ class QgsOgrProvider final: public QgsVectorDataProvider
     void computeCapabilities();
 
     QgsVectorDataProvider::Capabilities mCapabilities = QgsVectorDataProvider::Capabilities();
+    Qgis::VectorDataProviderAttributeEditCapabilities mAttributeEditCapabilities = Qgis::VectorDataProviderAttributeEditCapabilities();
 
     bool doInitialActionsForEdition();
 

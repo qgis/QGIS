@@ -239,6 +239,7 @@ void QgsExtentWidget::setOutputExtent( const QgsRectangle &r, const QgsCoordinat
     case Qgis::DistanceUnit::Miles:
     case Qgis::DistanceUnit::Centimeters:
     case Qgis::DistanceUnit::Millimeters:
+    case Qgis::DistanceUnit::Inches:
       decimals = 4;
       break;
   }

@@ -71,9 +71,9 @@ void TestQgsServerWmsVectorTile::opacity()
   const QgsWms::QgsWmsParameters parameters( query );
 
   // init wms renderer
-  QgsCapabilitiesCache cache;
   QgsServiceRegistry registry;
   QgsServerSettings settings;
+  QgsCapabilitiesCache cache( settings.capabilitiesCacheSize() );
   QgsServerInterfaceImpl interface( &cache, &registry, &settings );
 
   QgsWms::QgsWmsRenderContext context( &project, &interface );

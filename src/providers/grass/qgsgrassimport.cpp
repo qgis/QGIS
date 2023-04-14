@@ -73,7 +73,7 @@ void QgsGrassImportProgress::onReadyReadStandardError()
     QString output = QString::fromLocal8Bit( mProcess->readAllStandardError() );
     for ( const QString &line : output.split( "\n" ) )
     {
-      QgsDebugMsg( "line = '" + line + "'" );
+      QgsDebugMsgLevel( "line = '" + line + "'", 3 );
       QString text, html;
       int value;
       QgsGrass::ModuleOutput type = QgsGrass::parseModuleOutput( line, text, html, value );
@@ -99,7 +99,7 @@ void QgsGrassImportProgress::onReadyReadStandardError()
 
 void QgsGrassImportProgress::append( const QString &html )
 {
-  QgsDebugMsg( "html = " + html );
+  QgsDebugMsgLevel( "html = " + html, 3 );
   if ( !mProgressHtml.isEmpty() )
   {
     mProgressHtml += QLatin1String( "<br>" );
@@ -137,7 +137,7 @@ QgsGrassImport::~QgsGrassImport()
 {
   if ( mFutureWatcher && !mFutureWatcher->isFinished() )
   {
-    QgsDebugMsg( "mFutureWatcher not finished -> waitForFinished()" );
+    QgsDebugMsgLevel( "mFutureWatcher not finished -> waitForFinished()", 3 );
     mFutureWatcher->waitForFinished();
   }
   QgsGrassImportIcon::instance()->disconnectFrameChanged( this, &QgsGrassImport::frameChanged );
@@ -204,7 +204,7 @@ QgsGrassRasterImport::~QgsGrassRasterImport()
 {
   if ( mFutureWatcher && !mFutureWatcher->isFinished() )
   {
-    QgsDebugMsg( "mFutureWatcher not finished -> waitForFinished()" );
+    QgsDebugMsgLevel( "mFutureWatcher not finished -> waitForFinished()", 3 );
     mFutureWatcher->waitForFinished();
   }
   delete mPipe;
@@ -244,7 +244,7 @@ bool QgsGrassRasterImport::import()
   int blueBand = 0;
   for ( int band = 1; band <= provider->bandCount(); band++ )
   {
-    QgsDebugMsg( QString( "band = %1" ).arg( band ) );
+    QgsDebugMsgLevel( QString( "band = %1" ).arg( band ), 3 );
     Qgis::RasterColorInterpretation colorInterpretation = provider->colorInterpretation( band );
     if ( colorInterpretation == Qgis::RasterColorInterpretation::RedBand )
     {
@@ -292,7 +292,7 @@ bool QgsGrassRasterImport::import()
         return false;
     }
 
-    QgsDebugMsg( QString( "data_type = %1" ).arg( data_type ) );
+    QgsDebugMsgLevel( QString( "data_type = %1" ).arg( data_type ), 3 );
 
     QString module = QgsGrass::qgisGrassModulePath() + "/qgis.r.in";
     QStringList arguments;
@@ -440,7 +440,7 @@ bool QgsGrassRasterImport::import()
                             .arg( mProcess->exitStatus() ).arg( mProcess->exitCode() )
                             .arg( mProcess->error() ).arg( mProcess->errorString(),
                                 stdoutString.replace( QLatin1String( "\n" ), QLatin1String( ", " ) ), stderrString.replace( QLatin1String( "\n" ), QLatin1String( ", " ) ) );
-    QgsDebugMsg( "processResult: " + processResult );
+    QgsDebugMsgLevel( "processResult: " + processResult, 3 );
 #endif
 
     if ( mProcess->exitStatus() != QProcess::NormalExit )
@@ -461,7 +461,7 @@ bool QgsGrassRasterImport::import()
     delete mProcess;
     mProcess = nullptr;
   }
-  QgsDebugMsg( QString( "redBand = %1 greenBand = %2 blueBand = %3" ).arg( redBand ).arg( greenBand ).arg( blueBand ) );
+  QgsDebugMsgLevel( QString( "redBand = %1 greenBand = %2 blueBand = %3" ).arg( redBand ).arg( greenBand ).arg( blueBand ), 3 );
   if ( redBand > 0 && greenBand > 0 && blueBand > 0 )
   {
     // TODO: check if the group exists
@@ -541,7 +541,7 @@ QgsGrassVectorImport::~QgsGrassVectorImport()
 {
   if ( mFutureWatcher && !mFutureWatcher->isFinished() )
   {
-    QgsDebugMsg( "mFutureWatcher not finished -> waitForFinished()" );
+    QgsDebugMsgLevel( "mFutureWatcher not finished -> waitForFinished()", 3 );
     mFutureWatcher->waitForFinished();
   }
   delete mProvider;
@@ -564,8 +564,8 @@ bool QgsGrassVectorImport::import()
 
   QgsCoordinateReferenceSystem providerCrs = mProvider->crs();
   QgsCoordinateReferenceSystem mapsetCrs = QgsGrass::crsDirect( mGrassObject.gisdbase(), mGrassObject.location() );
-  QgsDebugMsg( "providerCrs = " + providerCrs.toWkt() );
-  QgsDebugMsg( "mapsetCrs = " + mapsetCrs.toWkt() );
+  QgsDebugMsgLevel( "providerCrs = " + providerCrs.toWkt(), 3 );
+  QgsDebugMsgLevel( "mapsetCrs = " + mapsetCrs.toWkt(), 3 );
   QgsCoordinateTransform coordinateTransform;
   bool doTransform = false;
   if ( providerCrs.isValid() && mapsetCrs.isValid() && providerCrs != mapsetCrs )
@@ -625,7 +625,7 @@ bool QgsGrassVectorImport::import()
       iterator.rewind();
     }
 #endif
-    QgsDebugMsg( "send features" );
+    QgsDebugMsgLevel( "send features", 3 );
     // Better to get real progress from module (without buffer)
 #if 0
     mProgress->setRange( 1, featureCount );
@@ -679,7 +679,7 @@ bool QgsGrassVectorImport::import()
       // get some feedback for large datasets
       if ( count % 10000 == 0 )
       {
-        QgsDebugMsg( QString( "%1 features written" ).arg( count ) );
+        QgsDebugMsgLevel( QString( "%1 features written" ).arg( count ), 3 );
       }
     }
 
@@ -688,13 +688,13 @@ bool QgsGrassVectorImport::import()
     outStream << feature;
 
     mProcess->waitForBytesWritten( -1 );
-    QgsDebugMsg( "features sent" );
+    QgsDebugMsgLevel( "features sent", 3 );
 #ifndef Q_OS_WIN
 #if 0
     mProcess->waitForReadyRead();
     bool result;
     outStream >> result;
-    QgsDebugMsg( "got feedback" );
+    QgsDebugMsgLevel( "got feedback", 3 );
 #endif
 #endif
     iterator.close();
@@ -703,13 +703,13 @@ bool QgsGrassVectorImport::import()
   // Close write channel before waiting for response to avoid stdin buffer problem on Windows
   mProcess->closeWriteChannel();
 
-  QgsDebugMsg( "waitForReadyRead" );
+  QgsDebugMsgLevel( "waitForReadyRead", 3 );
   bool result;
   mProcess->waitForReadyRead();
   outStream >> result;
-  QgsDebugMsg( QString( "result = %1" ).arg( result ) );
+  QgsDebugMsgLevel( QString( "result = %1" ).arg( result ), 3 );
 
-  QgsDebugMsg( "waitForFinished" );
+  QgsDebugMsgLevel( "waitForFinished", 3 );
   mProcess->waitForFinished( 30000 );
 
 #ifdef QGISDEBUG
@@ -722,7 +722,7 @@ bool QgsGrassVectorImport::import()
                           .arg( mProcess->exitStatus() ).arg( mProcess->exitCode() )
                           .arg( mProcess->error() ).arg( mProcess->errorString(),
                               stdoutString.replace( QLatin1String( "\n" ), QLatin1String( ", " ) ), stderrString.replace( QLatin1String( "\n" ), QLatin1String( ", " ) ) );
-  QgsDebugMsg( "processResult: " + processResult );
+  QgsDebugMsgLevel( "processResult: " + processResult, 3 );
 #endif
 
   if ( mProcess->exitStatus() != QProcess::NormalExit )

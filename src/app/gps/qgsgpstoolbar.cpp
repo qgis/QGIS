@@ -145,11 +145,11 @@ QgsGpsToolBar::QgsGpsToolBar( QgsAppGpsConnection *connection, QgsMapCanvas *can
   mCreateFeatureAction->setEnabled( false );
   mAddTrackVertexAction->setEnabled( false );
   mResetFeatureAction->setEnabled( false );
-  connect( mConnection, &QgsAppGpsConnection::statusChanged, this, [ = ]( Qgis::GpsConnectionStatus status )
+  connect( mConnection, &QgsAppGpsConnection::statusChanged, this, [ = ]( Qgis::DeviceConnectionStatus status )
   {
     switch ( status )
     {
-      case Qgis::GpsConnectionStatus::Disconnected:
+      case Qgis::DeviceConnectionStatus::Disconnected:
         whileBlocking( mConnectAction )->setChecked( false );
         mConnectAction->setText( tr( "Connect GPS" ) );
         mConnectAction->setToolTip( tr( "Connect to GPS" ) );
@@ -161,7 +161,7 @@ QgsGpsToolBar::QgsGpsToolBar( QgsAppGpsConnection *connection, QgsMapCanvas *can
         delete mInformationButton;
         mInformationButton = nullptr;
         break;
-      case Qgis::GpsConnectionStatus::Connecting:
+      case Qgis::DeviceConnectionStatus::Connecting:
         whileBlocking( mConnectAction )->setChecked( true );
         mConnectAction->setToolTip( tr( "Connecting to GPS" ) );
         mConnectAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/gpsicons/mIconGpsConnect.svg" ) ) );
@@ -172,7 +172,7 @@ QgsGpsToolBar::QgsGpsToolBar( QgsAppGpsConnection *connection, QgsMapCanvas *can
         delete mInformationButton;
         mInformationButton = nullptr;
         break;
-      case Qgis::GpsConnectionStatus::Connected:
+      case Qgis::DeviceConnectionStatus::Connected:
         whileBlocking( mConnectAction )->setChecked( true );
         mConnectAction->setText( tr( "Disconnect GPS" ) );
         mConnectAction->setToolTip( tr( "Disconnect from GPS" ) );

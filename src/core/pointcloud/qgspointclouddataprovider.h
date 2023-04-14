@@ -23,6 +23,7 @@
 #include "qgspointcloudattribute.h"
 #include "qgsstatisticalsummary.h"
 #include "qgspointcloudindex.h"
+#include "qgspointcloudsubindex.h"
 #include "qgspoint.h"
 #include "qgsray3d.h"
 #include <memory>
@@ -57,6 +58,7 @@ class CORE_EXPORT QgsPointCloudDataProvider: public QgsDataProvider
       ReadLayerMetadata = 1 << 0, //!< Provider can read layer metadata from data store.
       WriteLayerMetadata = 1 << 1, //!< Provider can write layer metadata to the data store. See QgsDataProvider::writeLayerMetadata()
       CreateRenderer = 1 << 2, //!< Provider can create 2D renderers using backend-specific formatting information. See QgsPointCloudDataProvider::createRenderer().
+      ContainSubIndexes = 1 << 3, //!< Provider can contain multiple indexes. Virtual point cloud files for example (since QGIS 3.32)
     };
 
     Q_DECLARE_FLAGS( Capabilities, Capability )
@@ -162,6 +164,26 @@ class CORE_EXPORT QgsPointCloudDataProvider: public QgsDataProvider
      * \note Not available in Python bindings
      */
     virtual QgsPointCloudIndex *index() const SIP_SKIP {return nullptr;}
+
+    /**
+     * Returns a list of sub indexes available if the provider supports multiple indexes, empty list otherwise.
+     *
+     * The sub indexes contain a pointer to the individual indexes which may be nullptr if not yet loaded.
+     *
+     * \note Not available in Python bindings
+     * \since QGIS 3.32
+     */
+    virtual QVector<QgsPointCloudSubIndex> subIndexes() SIP_SKIP { return QVector<QgsPointCloudSubIndex>(); }
+
+    /**
+     * Triggers loading of the point cloud index for the \a n th sub index
+     *
+     * Only applies to providers that support multiple indexes
+     *
+     * \note Not available in Python bindings
+     * \since QGIS 3.32
+     */
+    virtual void loadSubIndex( int n ) SIP_SKIP { Q_UNUSED( n ) return; }
 
     /**
      * Returns whether provider has index which is valid
@@ -361,11 +383,13 @@ class CORE_EXPORT QgsPointCloudDataProvider: public QgsDataProvider
      */
     void indexGenerationStateChanged( QgsPointCloudDataProvider::PointCloudIndexGenerationState state );
 
+  protected:
+    //! String used to define a subset of the layer
+    QString mSubsetString;
+
   private:
     QVector<IndexedPointCloudNode> traverseTree( const QgsPointCloudIndex *pc, IndexedPointCloudNode n, double maxError, double nodeError, const QgsGeometry &extentGeometry, const QgsDoubleRange &extentZRange );
 
-    //! String used to define a subset of the layer
-    QString mSubsetString;
 };
 
 #endif // QGSMESHDATAPROVIDER_H

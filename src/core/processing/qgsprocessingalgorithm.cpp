@@ -113,6 +113,8 @@ bool QgsProcessingAlgorithm::checkParameterValues( const QVariantMap &parameters
           *message = invalidSinkError( parameters, def->name() );
         else if ( def->type() == QgsProcessingParameterRasterLayer::typeName() )
           *message = invalidRasterError( parameters, def->name() );
+        else if ( def->type() == QgsProcessingParameterPointCloudLayer::typeName() )
+          *message = invalidPointCloudError( parameters, def->name() );
         else
           *message = QObject::tr( "Incorrect parameter value for %1" ).arg( def->name() );
       }
@@ -818,9 +820,9 @@ QVariantList QgsProcessingAlgorithm::parameterAsMatrix( const QVariantMap &param
   return QgsProcessingParameters::parameterAsMatrix( parameterDefinition( name ), parameters, context );
 }
 
-QList<QgsMapLayer *> QgsProcessingAlgorithm::parameterAsLayerList( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const
+QList<QgsMapLayer *> QgsProcessingAlgorithm::parameterAsLayerList( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context, QgsProcessing::LayerOptionsFlags flags ) const
 {
-  return QgsProcessingParameters::parameterAsLayerList( parameterDefinition( name ), parameters, context );
+  return QgsProcessingParameters::parameterAsLayerList( parameterDefinition( name ), parameters, context, flags );
 }
 
 QStringList QgsProcessingAlgorithm::parameterAsFileList( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const
@@ -835,7 +837,12 @@ QList<double> QgsProcessingAlgorithm::parameterAsRange( const QVariantMap &param
 
 QStringList QgsProcessingAlgorithm::parameterAsFields( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const
 {
-  return QgsProcessingParameters::parameterAsFields( parameterDefinition( name ), parameters, context );
+  return QgsProcessingParameters::parameterAsStrings( parameterDefinition( name ), parameters, context );
+}
+
+QStringList QgsProcessingAlgorithm::parameterAsStrings( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const
+{
+  return QgsProcessingParameters::parameterAsStrings( parameterDefinition( name ), parameters, context );
 }
 
 QgsPrintLayout *QgsProcessingAlgorithm::parameterAsLayout( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context )
@@ -873,9 +880,9 @@ QString QgsProcessingAlgorithm::parameterAsDatabaseTableName( const QVariantMap 
   return QgsProcessingParameters::parameterAsDatabaseTableName( parameterDefinition( name ), parameters, context );
 }
 
-QgsPointCloudLayer *QgsProcessingAlgorithm::parameterAsPointCloudLayer( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const
+QgsPointCloudLayer *QgsProcessingAlgorithm::parameterAsPointCloudLayer( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context, QgsProcessing::LayerOptionsFlags flags ) const
 {
-  return QgsProcessingParameters::parameterAsPointCloudLayer( parameterDefinition( name ), parameters, context );
+  return QgsProcessingParameters::parameterAsPointCloudLayer( parameterDefinition( name ), parameters, context, flags );
 }
 
 QgsAnnotationLayer *QgsProcessingAlgorithm::parameterAsAnnotationLayer( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const
@@ -961,6 +968,28 @@ QString QgsProcessingAlgorithm::invalidSinkError( const QVariantMap &parameters,
       return QObject::tr( "Could not create destination layer for %1: %2" ).arg( name, var.toString() );
     else
       return QObject::tr( "Could not create destination layer for %1: invalid value" ).arg( name );
+  }
+}
+
+QString QgsProcessingAlgorithm::invalidPointCloudError( const QVariantMap &parameters, const QString &name )
+{
+  if ( !parameters.contains( name ) )
+    return QObject::tr( "Could not load source layer for %1: no value specified for parameter" ).arg( name );
+  else
+  {
+    QVariant var = parameters.value( name );
+    if ( var.userType() == QMetaType::type( "QgsProperty" ) )
+    {
+      QgsProperty p = var.value< QgsProperty >();
+      if ( p.propertyType() == QgsProperty::StaticProperty )
+      {
+        var = p.staticValue();
+      }
+    }
+    if ( !var.toString().isEmpty() )
+      return QObject::tr( "Could not load source layer for %1: %2 not found" ).arg( name, var.toString() );
+    else
+      return QObject::tr( "Could not load source layer for %1: invalid value" ).arg( name );
   }
 }
 

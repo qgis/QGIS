@@ -20,11 +20,50 @@
 #include "qgis_sip.h"
 #include "qgsvectortiledataprovider.h"
 #include "qgsprovidermetadata.h"
+#include "qgsvectortilematrixset.h"
 
 #define SIP_NO_FILE
 
 ///@cond PRIVATE
-class CORE_EXPORT QgsXyzVectorTileDataProvider : public QgsVectorTileDataProvider
+
+class CORE_EXPORT QgsXyzVectorTileDataProviderBase : public QgsVectorTileDataProvider
+{
+    Q_OBJECT
+
+  public:
+    QgsXyzVectorTileDataProviderBase( const QString &uri,
+                                      const QgsDataProvider::ProviderOptions &providerOptions,
+                                      QgsDataProvider::ReadFlags flags );
+    QgsXyzVectorTileDataProviderBase( const QgsXyzVectorTileDataProviderBase &other );
+
+    /**
+     * QgsXyzVectorTileDataProviderBase cannot be assigned.
+     */
+    QgsXyzVectorTileDataProviderBase &operator=( const QgsXyzVectorTileDataProviderBase &other ) = delete;
+
+    bool supportsAsync() const override;
+    QByteArray readTile( const QgsTileMatrix &tileMatrix, const QgsTileXYZ &id, QgsFeedback *feedback = nullptr ) const override;
+    QList<QgsVectorTileRawData> readTiles( const QgsTileMatrix &, const QVector<QgsTileXYZ> &tiles, QgsFeedback *feedback = nullptr ) const override;
+    QNetworkRequest tileRequest( const QgsTileMatrix &tileMatrix, const QgsTileXYZ &id, Qgis::RendererUsage usage ) const override;
+
+  protected:
+
+    QString mAuthCfg;
+    QgsHttpHeaders mHeaders;
+
+  private:
+
+    //! Returns raw tile data for a single tile, doing a HTTP request. Block the caller until tile data are downloaded.
+    static QByteArray loadFromNetwork( const QgsTileXYZ &id,
+                                       const QgsTileMatrix &tileMatrix,
+                                       const QString &requestUrl,
+                                       const QString &authid,
+                                       const QgsHttpHeaders &headers,
+                                       QgsFeedback *feedback = nullptr );
+
+};
+
+class CORE_EXPORT QgsXyzVectorTileDataProvider : public QgsXyzVectorTileDataProviderBase
 {
     Q_OBJECT
 
@@ -32,25 +71,30 @@ class CORE_EXPORT QgsXyzVectorTileDataProvider : public QgsVectorTileDataProvide
     QgsXyzVectorTileDataProvider( const QString &uri,
                                   const QgsDataProvider::ProviderOptions &providerOptions,
                                   QgsDataProvider::ReadFlags flags );
+    QgsXyzVectorTileDataProvider( const QgsXyzVectorTileDataProvider &other );
+
+    /**
+     * QgsXyzVectorTileDataProvider cannot be assigned.
+     */
+    QgsXyzVectorTileDataProvider &operator=( const QgsXyzVectorTileDataProvider &other ) = delete;
 
     QString name() const override;
     QString description() const override;
     QgsVectorTileDataProvider *clone() const override;
     QString sourcePath() const override;
     bool isValid() const override;
+    QgsRectangle extent() const override;
     QgsCoordinateReferenceSystem crs() const override;
-    bool supportsAsync() const override;
-    QByteArray readTile( const QgsTileMatrix &tileMatrix, const QgsTileXYZ &id, QgsFeedback *feedback = nullptr ) const override;
-    QList<QgsVectorTileRawData> readTiles( const QgsTileMatrix &, const QVector<QgsTileXYZ> &tiles, QgsFeedback *feedback = nullptr ) const override;
-    QNetworkRequest tileRequest( const QgsTileMatrix &tileMatrix, const QgsTileXYZ &id, Qgis::RendererUsage usage ) const override;
+    const QgsVectorTileMatrixSet &tileMatrixSet() const override;
 
     static QString XYZ_DATA_PROVIDER_KEY;
     static QString XYZ_DATA_PROVIDER_DESCRIPTION;
 
   protected:
 
-    QString mAuthCfg;
-    QgsHttpHeaders mHeaders;
+    bool mIsValid = false;
+    QgsRectangle mExtent;
+    QgsVectorTileMatrixSet mMatrixSet;
 
   private:
 

@@ -97,6 +97,19 @@ class QgsCreatePolygonItemMapTool: public QgsMapToolCaptureAnnotationItem
     void polygonCaptured( const QgsCurvePolygon *polygon ) override;
 };
 
+
+class QgsCreateLineTextItemMapTool: public QgsMapToolCaptureAnnotationItem
+{
+    Q_OBJECT
+
+  public:
+
+    QgsCreateLineTextItemMapTool( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget );
+
+  private slots:
+    void lineCaptured( const QgsCurve *line ) override;
+};
+
 ///@endcond PRIVATE
 
 #endif // QGSCREATEANNOTATIONITEMMAPTOOLIMPL_H

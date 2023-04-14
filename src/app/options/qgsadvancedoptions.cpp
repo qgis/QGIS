@@ -54,7 +54,7 @@ QgsSettingsTreeWidget *QgsAdvancedSettingsWidget::settingsTree()
 // QgsAdvancedSettingsOptionsFactory
 //
 QgsAdvancedSettingsOptionsFactory::QgsAdvancedSettingsOptionsFactory()
-  : QgsOptionsWidgetFactory( QCoreApplication::translate( "QgsOptionsBase", "Advanced" ), QIcon() )
+  : QgsOptionsWidgetFactory( QCoreApplication::translate( "QgsOptionsBase", "Advanced" ), QIcon(), QStringLiteral( "advanced" ) )
 {
 
 }

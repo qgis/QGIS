@@ -176,35 +176,33 @@ void QgsWFSSourceSelect::populateConnectionList()
   changeConnection();
 }
 
-QString QgsWFSSourceSelect::getPreferredCrs( const QSet<QString> &crsSet ) const
+QString QgsWFSSourceSelect::getPreferredCrs( const QList<QString> &crsList ) const
 {
-  if ( crsSet.size() < 1 )
+  if ( crsList.size() < 1 )
   {
     return QString();
   }
 
-  //first: project CRS
-  QgsCoordinateReferenceSystem projectRefSys = QgsProject::instance()->crs();
-  //convert to EPSG
-  QString ProjectCRS;
-  if ( projectRefSys.isValid() )
+  //first: project CRS (if the project is not empty)
+  QgsProject *project = QgsProject::instance();
+  if ( !project->mapLayers().isEmpty() )
   {
-    ProjectCRS = projectRefSys.authid();
+    QgsCoordinateReferenceSystem projectRefSys = QgsProject::instance()->crs();
+    //convert to EPSG
+    QString projectCRS;
+    if ( projectRefSys.isValid() )
+    {
+      projectCRS = projectRefSys.authid();
+    }
+
+    if ( !projectCRS.isEmpty() && crsList.contains( projectCRS ) )
+    {
+      return projectCRS;
+    }
   }
 
-  if ( !ProjectCRS.isEmpty() && crsSet.contains( ProjectCRS ) )
-  {
-    return ProjectCRS;
-  }
-
-  //second: WGS84
-  if ( crsSet.contains( geoEpsgCrsAuthId() ) )
-  {
-    return geoEpsgCrsAuthId();
-  }
-
-  //third: first entry in set
-  return *( crsSet.constBegin() );
+  //otherwise: first entry in set
+  return crsList[0];
 }
 
 void QgsWFSSourceSelect::refresh()
@@ -380,6 +378,7 @@ void QgsWFSSourceSelect::oapifCollectionsReplyFinished()
     return;
   }
 
+  mAvailableCRS.clear();
   for ( const auto &collection : mOAPIFCollections->collections() )
   {
     // insert the typenames, titles and abstracts into the tree view
@@ -393,8 +392,8 @@ void QgsWFSSourceSelect::oapifCollectionsReplyFinished()
     typedef QList< QStandardItem * > StandardItemList;
     mModel->appendRow( StandardItemList() << titleItem << nameItem << abstractItem << filterItem );
 
-    gbCRS->setEnabled( false );
-    labelCoordRefSys->setText( collection.mLayerMetadata.crs().authid() );
+    // insert the available CRS into mAvailableCRS
+    mAvailableCRS.insert( collection.mId, collection.mCrsList );
   }
 
   if ( !mOAPIFCollections->nextUrl().isEmpty() )
@@ -704,7 +703,7 @@ void QgsWFSSourceSelect::changeCRSFilter()
       mProjectionSelector = new QgsProjectionSelectionDialog( this );
 
       mProjectionSelector->setOgcWmsCrsFilter( crsNames );
-      QString preferredCRS = getPreferredCrs( crsNames ); //get preferred EPSG system
+      QString preferredCRS = getPreferredCrs( *crsIterator ); //get preferred EPSG system
       if ( !preferredCRS.isEmpty() )
       {
         QgsCoordinateReferenceSystem refSys = QgsCoordinateReferenceSystem::fromOgcWmsCrs( preferredCRS );

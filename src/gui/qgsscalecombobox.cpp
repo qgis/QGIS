@@ -44,7 +44,7 @@ void QgsScaleComboBox::updateScales( const QStringList &scales )
 
   if ( scales.isEmpty() )
   {
-    const QStringList scales = QgsSettingsRegistryCore::settingsMapScales->value();
+    myScalesList = QgsSettingsRegistryCore::settingsMapScales->value();
   }
   else
   {
@@ -55,22 +55,33 @@ void QgsScaleComboBox::updateScales( const QStringList &scales )
     }
   }
 
-  QStringList parts;
-  double denominator;
-  bool ok;
+  QStringList  myCleanedScalesList;
+
   for ( int i = 0; i < myScalesList.size(); ++i )
   {
-    parts = myScalesList[ i ] .split( ':' );
-    denominator = QLocale().toDouble( parts[1], &ok );
+    const QStringList parts = myScalesList[ i ] .split( ':' );
+    if ( parts.size() < 2 )
+      continue;
+
+    bool ok = false;
+    const double denominator = QLocale().toDouble( parts[1], &ok );
     if ( ok )
     {
-      myScalesList[ i ] = toString( denominator );
+      myCleanedScalesList.push_back( toString( denominator ) );
+    }
+    else
+    {
+      const double denominator = parts[1].toDouble( &ok );
+      if ( ok )
+      {
+        myCleanedScalesList.push_back( toString( denominator ) );
+      }
     }
   }
 
   blockSignals( true );
   clear();
-  addItems( myScalesList );
+  addItems( myCleanedScalesList );
   setScaleString( oldScale );
   blockSignals( false );
 }

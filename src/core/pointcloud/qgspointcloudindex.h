@@ -148,7 +148,12 @@ class CORE_EXPORT QgsPointCloudDataBounds
     QgsDoubleRange zRange( const QgsVector3D &offset, const QgsVector3D &scale ) const;
 
   private:
-    qint32 mXMin, mYMin, mZMin, mXMax, mYMax, mZMax;
+    qint32 mXMin = 0;
+    qint32 mYMin = 0;
+    qint32 mZMin = 0;
+    qint32 mXMax = 0;
+    qint32 mYMax = 0;
+    qint32 mZMax = 0;
 };
 
 /**
@@ -341,7 +346,7 @@ class CORE_EXPORT QgsPointCloudIndex: public QObject
     QgsVector3D mOffset; //!< Offset of our int32 coordinates compared to CRS coords
     QgsPointCloudDataBounds mRootBounds;  //!< Bounds of the root node's cube (in int32 coordinates)
     QgsPointCloudAttributeCollection mAttributes; //! All native attributes stored in the file
-    int mSpan;  //!< Number of points in one direction in a single node
+    int mSpan = 0;  //!< Number of points in one direction in a single node
     QgsPointCloudExpression mFilterExpression;  //!< The filter expression to be evaluated when fetching node data
 
     QString mError;

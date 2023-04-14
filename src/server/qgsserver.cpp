@@ -352,7 +352,7 @@ bool QgsServer::init()
   sConfigFilePath = new QString( defaultConfigFilePath );
 
   //create cache for capabilities XML
-  sCapabilitiesCache = new QgsCapabilitiesCache();
+  sCapabilitiesCache = new QgsCapabilitiesCache( sSettings()->capabilitiesCacheSize() );
 
   QgsFontUtils::loadStandardTestFonts( QStringList() << QStringLiteral( "Roman" ) << QStringLiteral( "Bold" ) );
 

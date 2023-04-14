@@ -59,7 +59,7 @@ sub script elements)
 
 .. warning::
 
-   Currently this is only supported for the Qgis.TextLayoutMode.Labeling mode.
+   Currently this is only supported for the :py:class:`Qgis`.TextLayoutMode.Labeling mode.
 
 .. versionadded:: 3.30
 %End

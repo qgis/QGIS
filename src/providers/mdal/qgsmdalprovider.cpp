@@ -1246,18 +1246,18 @@ QList<Qgis::LayerType> QgsMdalProviderMetadata::supportedLayerTypes() const
   return { Qgis::LayerType::Mesh };
 }
 
-QString QgsMdalProviderMetadata::filters( FilterType type )
+QString QgsMdalProviderMetadata::filters( Qgis::FileFilterType type )
 {
   switch ( type )
   {
-    case QgsProviderMetadata::FilterType::FilterMesh:
+    case Qgis::FileFilterType::Mesh:
     {
       QString fileMeshFiltersString;
       QString fileMeshDatasetFiltersString;
       QgsMdalProvider::fileMeshFilters( fileMeshFiltersString, fileMeshDatasetFiltersString );
       return fileMeshFiltersString;
     }
-    case QgsProviderMetadata::FilterType::FilterMeshDataset:
+    case Qgis::FileFilterType::MeshDataset:
     {
       QString fileMeshFiltersString;
       QString fileMeshDatasetFiltersString;
@@ -1265,9 +1265,10 @@ QString QgsMdalProviderMetadata::filters( FilterType type )
       return fileMeshDatasetFiltersString;
     }
 
-    case QgsProviderMetadata::FilterType::FilterRaster:
-    case QgsProviderMetadata::FilterType::FilterVector:
-    case QgsProviderMetadata::FilterType::FilterPointCloud:
+    case Qgis::FileFilterType::Raster:
+    case Qgis::FileFilterType::Vector:
+    case Qgis::FileFilterType::PointCloud:
+    case Qgis::FileFilterType::VectorTile:
       return QString();
   }
   return QString();

@@ -924,6 +924,7 @@ bool QgsBookmarkDropHandler::handleCustomUriCanvasDrop( const QgsMimeDataUtils::
     }
     else
     {
+      canvas->setRotation( b.rotation() );
       canvas->refresh();
     }
   }
@@ -1052,6 +1053,7 @@ void QgsBookmarksItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu 
         }
         else
         {
+          QgisApp::instance()->mapCanvas()->setRotation( bookmarkItem->bookmark().rotation() );
           QgisApp::instance()->mapCanvas()->refresh();
         }
       }
@@ -1184,7 +1186,6 @@ void QgsBookmarksItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu 
                                     QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
           return;
 
-        int i = 0;
         for ( const QString &g : groups )
         {
           const QList<QgsBookmark> matching = manager->bookmarksByGroup( g );
@@ -1192,7 +1193,6 @@ void QgsBookmarksItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu 
           {
             manager->removeBookmark( bookmark.id() );
           }
-          i++;
         }
       }
     } );
@@ -1212,6 +1212,7 @@ bool QgsBookmarksItemGuiProvider::handleDoubleClick( QgsDataItem *item, QgsDataI
       }
       else
       {
+        QgisApp::instance()->mapCanvas()->setRotation( bookmarkItem->bookmark().rotation() );
         QgisApp::instance()->mapCanvas()->refresh();
       }
     }

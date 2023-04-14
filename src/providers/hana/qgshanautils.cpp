@@ -187,6 +187,8 @@ QString QgsHanaUtils::toString( Qgis::DistanceUnit unit )
       return QStringLiteral( "millimeter" );
     case Qgis::DistanceUnit::NauticalMiles:
       return QStringLiteral( "nautical mile" );
+    case Qgis::DistanceUnit::Inches:
+      return QStringLiteral( "inch" );
     case Qgis::DistanceUnit::Unknown:
       return QStringLiteral( "<unknown>" );
   }

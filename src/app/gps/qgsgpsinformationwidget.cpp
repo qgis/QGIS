@@ -187,21 +187,21 @@ QgsGpsInformationWidget::QgsGpsInformationWidget( QgsAppGpsConnection *connectio
   connect( mConnection, &QgsAppGpsConnection::stateChanged, this, &QgsGpsInformationWidget::displayGPSInformation );
   connect( mConnection, &QgsAppGpsConnection::fixStatusChanged, this, &QgsGpsInformationWidget::setStatusIndicator );
 
-  connect( mConnection, &QgsAppGpsConnection::statusChanged, this, [ = ]( Qgis::GpsConnectionStatus status )
+  connect( mConnection, &QgsAppGpsConnection::statusChanged, this, [ = ]( Qgis::DeviceConnectionStatus status )
   {
     switch ( status )
     {
-      case Qgis::GpsConnectionStatus::Disconnected:
+      case Qgis::DeviceConnectionStatus::Disconnected:
         whileBlocking( mConnectButton )->setChecked( false );
         mConnectButton->setText( tr( "Connect" ) );
         mConnectButton->setEnabled( true );
         break;
-      case Qgis::GpsConnectionStatus::Connecting:
+      case Qgis::DeviceConnectionStatus::Connecting:
         whileBlocking( mConnectButton )->setChecked( true );
         mConnectButton->setText( tr( "Connecting" ) );
         mConnectButton->setEnabled( false );
         break;
-      case Qgis::GpsConnectionStatus::Connected:
+      case Qgis::DeviceConnectionStatus::Connected:
         whileBlocking( mConnectButton )->setChecked( true );
         mConnectButton->setText( tr( "Disconnect" ) );
         mConnectButton->setEnabled( true );

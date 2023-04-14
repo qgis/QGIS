@@ -33,7 +33,7 @@
 #include "kprocess.h"
 #include "kptydevice.h"
 
-#include <signal.h>
+#include <csignal>
 
 class KPtyDevice;
 
@@ -79,7 +79,7 @@ public:
     /**
      * Construct a process using an open pty master.
      *
-     * \param ptyMasterFd an open pty master file descriptor.
+     * @param ptyMasterFd an open pty master file descriptor.
      *   The process does not take ownership of the descriptor;
      *   it will not be automatically closed at any point.
      */
@@ -95,21 +95,21 @@ public:
      *
      * This function must be called before starting the process.
      *
-     * \param channels the output channel handling mode
+     * @param channels the output channel handling mode
      */
     void setPtyChannels(PtyChannels channels);
 
     bool isRunning() const
     {
         bool rval;
-        (pid() > 0) ? rval= true : rval= false;
+        (processId() > 0) ? rval= true : rval= false;
         return rval;
 
     }
     /**
      * Query to which channels the PTY is assigned.
      *
-     * \returns the output channel handling mode
+     * @return the output channel handling mode
      */
     PtyChannels ptyChannels() const;
 
@@ -122,21 +122,21 @@ public:
      *
      * This function must be called before starting the process.
      *
-     * \param value whether to register in utmp.
+     * @param value whether to register in utmp.
      */
     void setUseUtmp(bool value);
 
     /**
-     * Gets whether to register the process as a TTY login in utmp.
+     * Get whether to register the process as a TTY login in utmp.
      *
-     * \returns whether to register in utmp
+     * @return whether to register in utmp
      */
     bool isUseUtmp() const;
 
     /**
-     * Gets the PTY device of this process.
+     * Get the PTY device of this process.
      *
-     * \returns the PTY device
+     * @return the PTY device
      */
     KPtyDevice *pty() const;
 
@@ -156,7 +156,7 @@ private:
 //////////////////
 
 class KPtyProcessPrivate : public KProcessPrivate {
-  public:
+public:
     KPtyProcessPrivate() :
         ptyChannels(KPtyProcess::NoChannels),
         addUtmp(false)

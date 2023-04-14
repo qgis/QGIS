@@ -17,6 +17,7 @@
 #include <QString>
 #include <QtConcurrentMap>
 #include <QSignalSpy>
+#include <QTextDocument>
 
 #include <qgsapplication.h>
 //header for class being tested
@@ -5791,6 +5792,36 @@ class TestQgsExpression: public QObject
       QVERIFY( !exp.hasEvalError() );
       QCOMPARE( exp.evaluate( &context ).toString(), QStringLiteral( "RasterRaster" ) );
 
+    }
+
+    void testHelpExamples()
+    {
+      // trigger initialization of function help
+      QgsExpression::helpText( QString() );
+      const HelpTextHash &functionHelp = QgsExpression::functionHelpTexts();
+      for ( auto helpIt = functionHelp.constBegin(); helpIt != functionHelp.constEnd(); ++ helpIt )
+      {
+#if GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR<11
+        if ( helpIt->mName == QLatin1String( "concave_hull" ) )
+          continue;
+#endif
+
+        for ( auto variantIt = helpIt->mVariants.constBegin(); variantIt != helpIt->mVariants.constEnd(); ++variantIt )
+        {
+          for ( const HelpExample &example : std::as_const( variantIt->mExamples ) )
+          {
+            const QString htmlExpression = example.mExpression;
+            QTextDocument sourceDoc;
+            sourceDoc.setHtml( htmlExpression );
+            const QString plainTextExpression = sourceDoc.toPlainText();
+
+            QgsExpression exampleExpression( plainTextExpression );
+            QVERIFY2( !exampleExpression.hasParserError(),
+                      QStringLiteral( "Expression: %1 for %2 has parser error" ).arg( plainTextExpression,
+                          helpIt->mName ).toLocal8Bit() );
+          }
+        }
+      }
     }
 
 };

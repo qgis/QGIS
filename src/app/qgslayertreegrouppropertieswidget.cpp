@@ -14,10 +14,8 @@
  ***************************************************************************/
 
 #include "qgslayertreegrouppropertieswidget.h"
-#include "qgsstyle.h"
 #include "qgsapplication.h"
 #include "qgsmaplayer.h"
-#include "qgsgui.h"
 #include "qgspainteffect.h"
 #include "qgsmapcanvas.h"
 #include "qgspainteffectregistry.h"

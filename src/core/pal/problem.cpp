@@ -585,7 +585,6 @@ void Problem::chainSearch( QgsRenderContext & )
   bool *ok = new bool[mFeatureCount];
   int fid;
   int lid;
-  int popit = 0;
 
   Chain *retainedChain = nullptr;
 
@@ -655,7 +654,6 @@ void Problem::chainSearch( QgsRenderContext & )
     }
 
     delete_chain( retainedChain );
-    popit++;
   }
 
   delete[] ok;

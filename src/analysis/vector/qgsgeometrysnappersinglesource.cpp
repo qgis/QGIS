@@ -90,14 +90,12 @@ static void buildSnapIndex( QgsFeatureIterator &fi, QgsSpatialIndex &index, QVec
 static void assignAnchors( QgsSpatialIndex &index, QVector<AnchorPoint> &pnts, double thresh )
 {
   const double thresh2 = thresh * thresh;
-  int nanchors = 0, ntosnap = 0;
   for ( int point = 0; point < pnts.count(); ++point )
   {
     if ( pnts[point].anchor >= 0 )
       continue;
 
     pnts[point].anchor = -2; // make it anchor
-    nanchors++;
 
     // Find points in threshold
     double x = pnts[point].x, y = pnts[point].y;
@@ -119,7 +117,6 @@ static void assignAnchors( QgsSpatialIndex &index, QVector<AnchorPoint> &pnts, d
       {
         // doesn't have an anchor yet
         pnts[pointb].anchor = point;
-        ntosnap++;
       }
       else if ( pnts[pointb].anchor >= 0 )
       {

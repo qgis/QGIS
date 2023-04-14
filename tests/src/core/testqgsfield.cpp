@@ -103,6 +103,7 @@ void TestQgsField::copy()
   original.setConstraints( constraints );
   original.setReadOnly( true );
   original.setSplitPolicy( Qgis::FieldDomainSplitPolicy::GeometryRatio );
+  original.setMetadata( {{ 1, QStringLiteral( "abc" )}, {2, 5 }} );
   QgsField copy( original );
   QVERIFY( copy == original );
 
@@ -121,6 +122,7 @@ void TestQgsField::assignment()
   original.setConstraints( constraints );
   original.setReadOnly( true );
   original.setSplitPolicy( Qgis::FieldDomainSplitPolicy::GeometryRatio );
+  original.setMetadata( {{ 1, QStringLiteral( "abc" )}, {2, 5 }} );
   QgsField copy;
   copy = original;
   QVERIFY( copy == original );
@@ -193,6 +195,19 @@ void TestQgsField::gettersSetters()
 
   field.setSplitPolicy( Qgis::FieldDomainSplitPolicy::GeometryRatio );
   QCOMPARE( field.splitPolicy(), Qgis::FieldDomainSplitPolicy::GeometryRatio );
+
+  field.setMetadata( {{ static_cast< int >( Qgis::FieldMetadataProperty::GeometryCrs ), QStringLiteral( "abc" )}, {2, 5 }} );
+  QMap< int, QVariant> expected {{ static_cast< int >( Qgis::FieldMetadataProperty::GeometryCrs ), QStringLiteral( "abc" )}, {2, 5 }};
+  QCOMPARE( field.metadata(), expected );
+  QVERIFY( !field.metadata( Qgis::FieldMetadataProperty::GeometryWkbType ).isValid() );
+  QCOMPARE( field.metadata( Qgis::FieldMetadataProperty::GeometryCrs ).toString(), QStringLiteral( "abc" ) );
+  field.setMetadata( Qgis::FieldMetadataProperty::GeometryWkbType, QStringLiteral( "def" ) );
+  QCOMPARE( field.metadata( Qgis::FieldMetadataProperty::GeometryWkbType ).toString(), QStringLiteral( "def" ) );
+
+  expected = QMap< int, QVariant> {{ static_cast< int >( Qgis::FieldMetadataProperty::GeometryCrs ), QStringLiteral( "abc" )}, {2, 5 }
+    , {static_cast<int>( Qgis::FieldMetadataProperty::GeometryWkbType ), QStringLiteral( "def" ) }
+  };
+  QCOMPARE( field.metadata(), expected );
 }
 
 void TestQgsField::isNumeric()
@@ -335,6 +350,13 @@ void TestQgsField::equality()
   QVERIFY( field1 != field2 );
   field2.setSplitPolicy( Qgis::FieldDomainSplitPolicy::GeometryRatio );
   QVERIFY( field1 == field2 );
+
+  field1.setMetadata( {{ static_cast< int >( Qgis::FieldMetadataProperty::GeometryCrs ), QStringLiteral( "abc" )}, {2, 5 }} );
+  QVERIFY( !( field1 == field2 ) );
+  QVERIFY( field1 != field2 );
+  field2.setMetadata( {{ static_cast< int >( Qgis::FieldMetadataProperty::GeometryCrs ), QStringLiteral( "abc" )}, {2, 5 }} );
+  QVERIFY( field1 == field2 );
+  QVERIFY( !( field1 != field2 ) );
 
   QgsFieldConstraints constraints1;
   QgsFieldConstraints constraints2;
@@ -806,19 +828,37 @@ void TestQgsField::convertCompatible()
   QVariant vZero = 0;
   QVERIFY( intField.convertCompatible( vZero ) );
 
-  // Test json field conversion
-  const QgsField jsonField( QStringLiteral( "json" ), QVariant::String, QStringLiteral( "json" ) );
-  QVariant jsonValue = QVariant::fromValue( QVariantList() << 1 << 5 << 8 );
-  QVERIFY( jsonField.convertCompatible( jsonValue ) );
-  QCOMPARE( jsonValue.type(), QVariant::String );
-  QCOMPARE( jsonValue, QString( "[1,5,8]" ) );
-  QVariantMap variantMap;
-  variantMap.insert( QStringLiteral( "a" ), 1 );
-  variantMap.insert( QStringLiteral( "c" ), 3 );
-  jsonValue = QVariant::fromValue( variantMap );
-  QVERIFY( jsonField.convertCompatible( jsonValue ) );
-  QCOMPARE( jsonValue.type(), QVariant::String );
-  QCOMPARE( jsonValue, QString( "{\"a\":1,\"c\":3}" ) );
+  // Test string-based json field conversion
+  {
+    const QgsField jsonField( QStringLiteral( "json" ), QVariant::String, QStringLiteral( "json" ) );
+    QVariant jsonValue = QVariant::fromValue( QVariantList() << 1 << 5 << 8 );
+    QVERIFY( jsonField.convertCompatible( jsonValue ) );
+    QCOMPARE( jsonValue.type(), QVariant::String );
+    QCOMPARE( jsonValue, QString( "[1,5,8]" ) );
+    QVariantMap variantMap;
+    variantMap.insert( QStringLiteral( "a" ), 1 );
+    variantMap.insert( QStringLiteral( "c" ), 3 );
+    jsonValue = QVariant::fromValue( variantMap );
+    QVERIFY( jsonField.convertCompatible( jsonValue ) );
+    QCOMPARE( jsonValue.type(), QVariant::String );
+    QCOMPARE( jsonValue, QString( "{\"a\":1,\"c\":3}" ) );
+  }
+
+  // Test map-based json field (i.e. OGR geopackage JSON fields) conversion
+  {
+    const QgsField jsonField( QStringLiteral( "json" ), QVariant::Map, QStringLiteral( "json" ) );
+    QVariant jsonValue = QVariant::fromValue( QVariantList() << 1 << 5 << 8 );
+    QVERIFY( jsonField.convertCompatible( jsonValue ) );
+    QCOMPARE( jsonValue.type(), QVariant::List );
+    QCOMPARE( jsonValue, QVariantList() << 1 << 5 << 8 );
+    QVariantMap variantMap;
+    variantMap.insert( QStringLiteral( "a" ), 1 );
+    variantMap.insert( QStringLiteral( "c" ), 3 );
+    jsonValue = QVariant::fromValue( variantMap );
+    QVERIFY( jsonField.convertCompatible( jsonValue ) );
+    QCOMPARE( jsonValue.type(), QVariant::Map );
+    QCOMPARE( jsonValue, variantMap );
+  }
 
   // geometry field conversion
   const QgsField geometryField( QStringLiteral( "geometry" ), QVariant::UserType, QStringLiteral( "geometry" ) );
@@ -856,6 +896,7 @@ void TestQgsField::dataStream()
   constraints.setConstraintExpression( QStringLiteral( "constraint expression" ), QStringLiteral( "description" ) );
   constraints.setConstraintStrength( QgsFieldConstraints::ConstraintExpression, QgsFieldConstraints::ConstraintStrengthSoft );
   original.setConstraints( constraints );
+  original.setMetadata( {{ static_cast< int >( Qgis::FieldMetadataProperty::GeometryCrs ), QStringLiteral( "abc" )}, {2, 5 }} );
 
   QByteArray ba;
   QDataStream ds( &ba, QIODevice::ReadWrite );

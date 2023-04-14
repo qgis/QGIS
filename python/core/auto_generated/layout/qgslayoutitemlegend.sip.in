@@ -637,6 +637,8 @@ Returns the legend's renderer settings object.
 
     virtual void refresh();
 
+    virtual void invalidateCache();
+
     virtual void refreshDataDefinedProperty( QgsLayoutObject::DataDefinedProperty property = QgsLayoutObject::AllProperties );
 
 

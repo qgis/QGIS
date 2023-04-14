@@ -84,7 +84,6 @@ QVariantMap QgsRandomExtractAlgorithm::processAlgorithm( const QVariantMap &para
 
   const int method = parameterAsEnum( parameters, QStringLiteral( "METHOD" ), context );
   int number = parameterAsInt( parameters, QStringLiteral( "NUMBER" ), context );
-
   const long count = source->featureCount();
 
   if ( method == 0 )
@@ -102,42 +101,75 @@ QVariantMap QgsRandomExtractAlgorithm::processAlgorithm( const QVariantMap &para
     number = static_cast< int >( std::ceil( number * count / 100 ) );
   }
 
-  // initialize random engine
-  std::random_device randomDevice;
-  const std::mt19937 mersenneTwister( randomDevice() );
-  const std::uniform_int_distribution<int> fidsDistribution( 0, count );
-
-  QVector< QgsFeatureId > fids( number );
-  std::generate( fids.begin(), fids.end(), bind( fidsDistribution, mersenneTwister ) );
-
-  QHash< QgsFeatureId, int > idsCount;
-  for ( const QgsFeatureId id : fids )
-  {
-    if ( feedback->isCanceled() )
-    {
-      break;
-    }
-
-    idsCount[ id ] += 1;
-  }
-
-  const QgsFeatureIds ids = qgis::listToSet( idsCount.keys() );
-  QgsFeatureIterator fit = source->getFeatures( QgsFeatureRequest().setFilterFids( ids ), QgsProcessingFeatureSource::FlagSkipGeometryValidityChecks );
-
+  // Build a list of all feature ids
+  QgsFeatureIterator fit = source->getFeatures( QgsFeatureRequest()
+                           .setFlags( QgsFeatureRequest::NoGeometry )
+                           .setNoAttributes() );
+  std::vector< QgsFeatureId > allFeats;
+  allFeats.reserve( count );
   QgsFeature f;
+  feedback->pushInfo( QObject::tr( "Building list of all features..." ) );
   while ( fit.nextFeature( f ) )
   {
     if ( feedback->isCanceled() )
-    {
-      break;
-    }
+      return QVariantMap();
+    allFeats.push_back( f.id() );
+  }
+  feedback->pushInfo( QObject::tr( "Done." ) );
 
-    const int count = idsCount.value( f.id() );
-    for ( int i = 0; i < count; ++i )
-    {
-      if ( !sink->addFeature( f, QgsFeatureSink::FastInsert ) )
-        throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
-    }
+  // initialize random engine
+  std::random_device randomDevice;
+  std::mt19937 mersenneTwister( randomDevice() );
+  std::uniform_int_distribution<size_t> fidsDistribution;
+
+  // If the number of features to select is greater than half the total number of features
+  // we will instead randomly select features to *exclude* from the output layer
+  size_t actualFeatureCount = allFeats.size();
+  size_t shuffledFeatureCount = number;
+  bool invertSelection = static_cast< size_t>( number ) > actualFeatureCount / 2;
+  if ( invertSelection )
+    shuffledFeatureCount = actualFeatureCount - number;
+
+  size_t nb = actualFeatureCount;
+
+  // Shuffle <number> features at the start of the iterator
+  feedback->pushInfo( QObject::tr( "Randomly select %1 features" ).arg( number ) );
+  auto cursor = allFeats.begin();
+  using difference_type = std::vector<QgsFeatureId>::difference_type;
+  while ( shuffledFeatureCount-- )
+  {
+    if ( feedback->isCanceled() )
+      return QVariantMap();
+
+    // Update the distribution to match the number of unshuffled features
+    fidsDistribution.param( std::uniform_int_distribution<size_t>::param_type( 0, nb - 1 ) );
+    // Swap the current feature with a random one
+    std::swap( *cursor, *( cursor + static_cast<difference_type>( fidsDistribution( mersenneTwister ) ) ) );
+    // Move the cursor to the next feature
+    ++cursor;
+
+    // Decrement the number of unshuffled features
+    --nb;
+  }
+
+  // Insert the selected features into a QgsFeatureIds set
+  QgsFeatureIds selected;
+  if ( invertSelection )
+    for ( auto it = cursor; it != allFeats.end(); ++it )
+      selected.insert( *it );
+  else
+    for ( auto it = allFeats.begin(); it != cursor; ++it )
+      selected.insert( *it );
+
+  feedback->pushInfo( QObject::tr( "Adding selected features" ) );
+  fit = source->getFeatures( QgsFeatureRequest().setFilterFids( selected ), QgsProcessingFeatureSource::FlagSkipGeometryValidityChecks );
+  while ( fit.nextFeature( f ) )
+  {
+    if ( feedback->isCanceled() )
+      return QVariantMap();
+
+    if ( !sink->addFeature( f, QgsFeatureSink::FastInsert ) )
+      throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
   }
 
   QVariantMap outputs;

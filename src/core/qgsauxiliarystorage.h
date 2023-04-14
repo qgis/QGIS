@@ -89,9 +89,8 @@ class CORE_EXPORT QgsAuxiliaryLayer : public QgsVectorLayer
     % End
 #endif
 
-#ifdef __clang__
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Woverloaded-virtual"
+#ifndef SIP_RUN
+    using QgsVectorLayer::clone;
 #endif
 
     /**
@@ -102,9 +101,6 @@ class CORE_EXPORT QgsAuxiliaryLayer : public QgsVectorLayer
      * \param layer The layer for which the clone is made
      */
     QgsAuxiliaryLayer *clone( QgsVectorLayer *layer ) const SIP_FACTORY;
-#ifdef __clang__
-#pragma clang diagnostic pop
-#endif
 
     /**
      * An auxiliary layer is not spatial. This method returns a spatial

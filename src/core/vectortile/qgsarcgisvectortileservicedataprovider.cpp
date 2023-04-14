@@ -16,7 +16,19 @@
 #include "qgsarcgisvectortileservicedataprovider.h"
 #include "qgsthreadingutils.h"
 #include "qgsapplication.h"
+#include "qgsblockingnetworkrequest.h"
+#include "qgsnetworkaccessmanager.h"
+#include "qgsvectortileutils.h"
+#include "qgsarcgisrestutils.h"
+#include "qgslogger.h"
+#include "qgscoordinatetransform.h"
+
 #include <QIcon>
+#include <QUrl>
+#include <QUrlQuery>
+#include <QJsonParseError>
+#include <QJsonDocument>
+#include <QJsonObject>
 
 ///@cond PRIVATE
 
@@ -24,11 +36,45 @@ QString QgsArcGisVectorTileServiceDataProvider::ARCGIS_VT_SERVICE_DATA_PROVIDER_
 QString QgsArcGisVectorTileServiceDataProvider::ARCGIS_VT_SERVICE_DATA_PROVIDER_DESCRIPTION = QObject::tr( "ArcGIS Vector Tile Service data provider" );
 
 
-QgsArcGisVectorTileServiceDataProvider::QgsArcGisVectorTileServiceDataProvider( const QString &uri, const QString &sourcePath, const ProviderOptions &providerOptions, ReadFlags flags )
-  : QgsXyzVectorTileDataProvider( uri, providerOptions, flags )
-  , mSourcePath( sourcePath )
+QgsArcGisVectorTileServiceDataProvider::QgsArcGisVectorTileServiceDataProvider( const QString &uri, const ProviderOptions &providerOptions, ReadFlags flags )
+  : QgsXyzVectorTileDataProviderBase( uri, providerOptions, flags )
 {
+  mIsValid = setupArcgisVectorTileServiceConnection();
 
+  if ( !mIsValid )
+    return;
+
+  // populate default metadata
+  mLayerMetadata.setIdentifier( mArcgisLayerConfiguration.value( QStringLiteral( "serviceUri" ) ).toString() );
+  const QString parentIdentifier = mArcgisLayerConfiguration.value( QStringLiteral( "serviceItemId" ) ).toString();
+  if ( !parentIdentifier.isEmpty() )
+  {
+    mLayerMetadata.setParentIdentifier( parentIdentifier );
+  }
+  mLayerMetadata.setType( QStringLiteral( "dataset" ) );
+  mLayerMetadata.setTitle( mArcgisLayerConfiguration.value( QStringLiteral( "name" ) ).toString() );
+  const QString copyright = mArcgisLayerConfiguration.value( QStringLiteral( "copyrightText" ) ).toString();
+  if ( !copyright.isEmpty() )
+    mLayerMetadata.setRights( QStringList() << copyright );
+  mLayerMetadata.addLink( QgsAbstractMetadataBase::Link( tr( "Source" ), QStringLiteral( "WWW:LINK" ), mArcgisLayerConfiguration.value( QStringLiteral( "serviceUri" ) ).toString() ) );
+}
+
+QgsArcGisVectorTileServiceDataProvider::QgsArcGisVectorTileServiceDataProvider( const QgsArcGisVectorTileServiceDataProvider &other )
+  : QgsXyzVectorTileDataProviderBase( other )
+{
+  mIsValid = other.mIsValid;
+  mExtent = other.mExtent;
+  mMatrixSet = other.mMatrixSet;
+  mSourcePath = other.mSourcePath;
+  mArcgisLayerConfiguration = other.mArcgisLayerConfiguration;
+  mArcgisStyleConfiguration = other.mArcgisStyleConfiguration;
+  mCrs = other.mCrs;
+  mLayerMetadata = other.mLayerMetadata;
+}
+
+QgsVectorTileDataProvider::ProviderCapabilities QgsArcGisVectorTileServiceDataProvider::providerCapabilities() const
+{
+  return QgsVectorTileDataProvider::ProviderCapability::ReadLayerMetadata;
 }
 
 QString QgsArcGisVectorTileServiceDataProvider::name() const
@@ -49,9 +95,7 @@ QgsVectorTileDataProvider *QgsArcGisVectorTileServiceDataProvider::clone() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  ProviderOptions options;
-  options.transformContext = transformContext();
-  return new QgsArcGisVectorTileServiceDataProvider( dataSourceUri(), mSourcePath, options, mReadFlags );
+  return new QgsArcGisVectorTileServiceDataProvider( *this );
 }
 
 QString QgsArcGisVectorTileServiceDataProvider::sourcePath() const
@@ -64,6 +108,207 @@ QString QgsArcGisVectorTileServiceDataProvider::sourcePath() const
 bool QgsArcGisVectorTileServiceDataProvider::isValid() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return mIsValid;
+}
+
+QgsRectangle QgsArcGisVectorTileServiceDataProvider::extent() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return mExtent;
+}
+
+const QgsVectorTileMatrixSet &QgsArcGisVectorTileServiceDataProvider::tileMatrixSet() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return mMatrixSet;
+}
+
+QgsCoordinateReferenceSystem QgsArcGisVectorTileServiceDataProvider::crs() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return mCrs;
+}
+
+QgsLayerMetadata QgsArcGisVectorTileServiceDataProvider::layerMetadata() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return mLayerMetadata;
+}
+
+QVariantMap QgsArcGisVectorTileServiceDataProvider::styleDefinition() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return mArcgisStyleConfiguration;
+}
+
+QString QgsArcGisVectorTileServiceDataProvider::styleUrl() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  // for ArcMap VectorTileServices we default to the defaultStyles URL from the layer configuration
+  return mArcgisLayerConfiguration.value( QStringLiteral( "serviceUri" ) ).toString()
+         + '/' + mArcgisLayerConfiguration.value( QStringLiteral( "defaultStyles" ) ).toString();
+}
+
+bool QgsArcGisVectorTileServiceDataProvider::setupArcgisVectorTileServiceConnection()
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  QgsDataSourceUri dsUri;
+  dsUri.setEncodedUri( dataSourceUri() );
+  QString tileServiceUri = dsUri.param( QStringLiteral( "url" ) );
+
+  QUrl url( tileServiceUri );
+  // some services don't default to json format, while others do... so let's explicitly request it!
+  // (refs https://github.com/qgis/QGIS/issues/4231)
+  QUrlQuery query;
+  query.addQueryItem( QStringLiteral( "f" ), QStringLiteral( "pjson" ) );
+  url.setQuery( query );
+
+  QNetworkRequest request = QNetworkRequest( url );
+
+  QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsVectorTileLayer" ) )
+
+  QgsBlockingNetworkRequest networkRequest;
+  switch ( networkRequest.get( request ) )
+  {
+    case QgsBlockingNetworkRequest::NoError:
+      break;
+
+    case QgsBlockingNetworkRequest::NetworkError:
+    case QgsBlockingNetworkRequest::TimeoutError:
+    case QgsBlockingNetworkRequest::ServerExceptionError:
+      return false;
+  }
+
+  const QgsNetworkReplyContent content = networkRequest.reply();
+  const QByteArray raw = content.content();
+
+  // Parse data
+  QJsonParseError err;
+  const QJsonDocument doc = QJsonDocument::fromJson( raw, &err );
+  if ( doc.isNull() )
+  {
+    return false;
+  }
+
+  mArcgisLayerConfiguration = doc.object().toVariantMap();
+  if ( mArcgisLayerConfiguration.contains( QStringLiteral( "error" ) ) )
+  {
+    return false;
+  }
+
+  if ( !mArcgisLayerConfiguration.value( QStringLiteral( "tiles" ) ).isValid() )
+  {
+    // maybe url is pointing to a resources/styles/root.json type url, that's ok too!
+    const QString sourceUri = mArcgisLayerConfiguration.value( QStringLiteral( "sources" ) ).toMap().value( QStringLiteral( "esri" ) ).toMap().value( QStringLiteral( "url" ) ).toString();
+    if ( !sourceUri.isEmpty() )
+    {
+      QUrl url( sourceUri );
+      // some services don't default to json format, while others do... so let's explicitly request it!
+      // (refs https://github.com/qgis/QGIS/issues/4231)
+      QUrlQuery query;
+      query.addQueryItem( QStringLiteral( "f" ), QStringLiteral( "pjson" ) );
+      url.setQuery( query );
+
+      QNetworkRequest request = QNetworkRequest( url );
+
+      QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsVectorTileLayer" ) )
+
+      QgsBlockingNetworkRequest networkRequest;
+      switch ( networkRequest.get( request ) )
+      {
+        case QgsBlockingNetworkRequest::NoError:
+          break;
+
+        case QgsBlockingNetworkRequest::NetworkError:
+        case QgsBlockingNetworkRequest::TimeoutError:
+        case QgsBlockingNetworkRequest::ServerExceptionError:
+          return false;
+      }
+
+      const QgsNetworkReplyContent content = networkRequest.reply();
+      const QByteArray raw = content.content();
+
+      // Parse data
+      QJsonParseError err;
+      const QJsonDocument doc = QJsonDocument::fromJson( raw, &err );
+      if ( doc.isNull() )
+      {
+        return false;
+      }
+
+      tileServiceUri = sourceUri;
+
+      // the resources/styles/root.json configuration is actually our style definition
+      mArcgisStyleConfiguration = mArcgisLayerConfiguration;
+      mArcgisLayerConfiguration = doc.object().toVariantMap();
+      if ( mArcgisLayerConfiguration.contains( QStringLiteral( "error" ) ) )
+      {
+        return false;
+      }
+    }
+  }
+
+  mSourcePath = tileServiceUri + '/' + mArcgisLayerConfiguration.value( QStringLiteral( "tiles" ) ).toList().value( 0 ).toString();
+  if ( !QgsVectorTileUtils::checkXYZUrlTemplate( mSourcePath ) )
+  {
+    QgsDebugMsg( QStringLiteral( "Invalid format of URL for XYZ source: " ) + tileServiceUri );
+    return false;
+  }
+
+  mArcgisLayerConfiguration.insert( QStringLiteral( "serviceUri" ), tileServiceUri );
+
+  mMatrixSet.fromEsriJson( mArcgisLayerConfiguration );
+  mCrs = mMatrixSet.crs();
+
+  // if hardcoded zoom limits aren't specified, take them from the server
+  if ( dsUri.hasParam( QStringLiteral( "zmin" ) ) )
+    mMatrixSet.dropMatricesOutsideZoomRange( dsUri.param( QStringLiteral( "zmin" ) ).toInt(), 99 );
+
+  if ( dsUri.hasParam( QStringLiteral( "zmax" ) ) )
+    mMatrixSet.dropMatricesOutsideZoomRange( 0, dsUri.param( QStringLiteral( "zmax" ) ).toInt() );
+
+  const QVariantMap fullExtent = mArcgisLayerConfiguration.value( QStringLiteral( "fullExtent" ) ).toMap();
+  if ( !fullExtent.isEmpty() )
+  {
+    const QgsRectangle fullExtentRect(
+      fullExtent.value( QStringLiteral( "xmin" ) ).toDouble(),
+      fullExtent.value( QStringLiteral( "ymin" ) ).toDouble(),
+      fullExtent.value( QStringLiteral( "xmax" ) ).toDouble(),
+      fullExtent.value( QStringLiteral( "ymax" ) ).toDouble()
+    );
+
+    const QgsCoordinateReferenceSystem fullExtentCrs = QgsArcGisRestUtils::convertSpatialReference( fullExtent.value( QStringLiteral( "spatialReference" ) ).toMap() );
+    const QgsCoordinateTransform extentTransform( fullExtentCrs, mCrs, transformContext() );
+    try
+    {
+      mExtent = extentTransform.transformBoundingBox( fullExtentRect );
+    }
+    catch ( QgsCsException & )
+    {
+      QgsDebugMsg( QStringLiteral( "Could not transform layer fullExtent to layer CRS" ) );
+    }
+  }
+  else
+  {
+    // if no fullExtent specified in JSON, default to web mercator specs full extent
+    const QgsCoordinateTransform extentTransform( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) ), mCrs, transformContext() );
+    try
+    {
+      mExtent = extentTransform.transformBoundingBox( QgsRectangle( -20037508.3427892, -20037508.3427892, 20037508.3427892, 20037508.3427892 ) );
+    }
+    catch ( QgsCsException & )
+    {
+      QgsDebugMsg( QStringLiteral( "Could not transform layer extent to layer CRS" ) );
+    }
+  }
 
   return true;
 }
@@ -89,28 +334,20 @@ QgsProviderMetadata::ProviderCapabilities QgsArcGisVectorTileServiceDataProvider
   return QgsProviderMetadata::ProviderCapabilities();
 }
 
+QgsArcGisVectorTileServiceDataProvider *QgsArcGisVectorTileServiceDataProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags )
+{
+  return new QgsArcGisVectorTileServiceDataProvider( uri, options, flags );
+}
+
 QVariantMap QgsArcGisVectorTileServiceDataProviderMetadata::decodeUri( const QString &uri ) const
 {
-  // TODO -- carefully thin out options which don't apply to arcgis vector tile services
-
   QgsDataSourceUri dsUri;
   dsUri.setEncodedUri( uri );
 
   QVariantMap uriComponents;
-  uriComponents.insert( QStringLiteral( "type" ), dsUri.param( QStringLiteral( "type" ) ) );
-  if ( dsUri.hasParam( QStringLiteral( "serviceType" ) ) )
-    uriComponents.insert( QStringLiteral( "serviceType" ), dsUri.param( QStringLiteral( "serviceType" ) ) );
-
-  if ( uriComponents[ QStringLiteral( "type" ) ] == QLatin1String( "mbtiles" ) ||
-       ( uriComponents[ QStringLiteral( "type" ) ] == QLatin1String( "xyz" ) &&
-         !dsUri.param( QStringLiteral( "url" ) ).startsWith( QLatin1String( "http" ) ) ) )
-  {
-    uriComponents.insert( QStringLiteral( "path" ), dsUri.param( QStringLiteral( "url" ) ) );
-  }
-  else
-  {
-    uriComponents.insert( QStringLiteral( "url" ), dsUri.param( QStringLiteral( "url" ) ) );
-  }
+  uriComponents.insert( QStringLiteral( "type" ), QStringLiteral( "xyz" ) );
+  uriComponents.insert( QStringLiteral( "serviceType" ), QStringLiteral( "arcgis" ) );
+  uriComponents.insert( QStringLiteral( "url" ), dsUri.param( QStringLiteral( "url" ) ) );
 
   if ( dsUri.hasParam( QStringLiteral( "zmin" ) ) )
     uriComponents.insert( QStringLiteral( "zmin" ), dsUri.param( QStringLiteral( "zmin" ) ) );
@@ -131,13 +368,10 @@ QVariantMap QgsArcGisVectorTileServiceDataProviderMetadata::decodeUri( const QSt
 
 QString QgsArcGisVectorTileServiceDataProviderMetadata::encodeUri( const QVariantMap &parts ) const
 {
-  // TODO -- carefully thin out options which don't apply to arcgis vector tile services
-
   QgsDataSourceUri dsUri;
-  dsUri.setParam( QStringLiteral( "type" ), parts.value( QStringLiteral( "type" ) ).toString() );
-  if ( parts.contains( QStringLiteral( "serviceType" ) ) )
-    dsUri.setParam( QStringLiteral( "serviceType" ), parts[ QStringLiteral( "serviceType" ) ].toString() );
-  dsUri.setParam( QStringLiteral( "url" ), parts.value( parts.contains( QStringLiteral( "path" ) ) ? QStringLiteral( "path" ) : QStringLiteral( "url" ) ).toString() );
+  dsUri.setParam( QStringLiteral( "type" ), QStringLiteral( "xyz" ) );
+  dsUri.setParam( QStringLiteral( "serviceType" ), QStringLiteral( "arcgis" ) );
+  dsUri.setParam( QStringLiteral( "url" ), parts.value( QStringLiteral( "url" ) ).toString() );
 
   if ( parts.contains( QStringLiteral( "zmin" ) ) )
     dsUri.setParam( QStringLiteral( "zmin" ), parts[ QStringLiteral( "zmin" ) ].toString() );

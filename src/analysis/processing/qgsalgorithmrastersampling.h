@@ -53,7 +53,7 @@ class QgsRasterSamplingAlgorithm : public QgsProcessingAlgorithm
   private:
 
     std::unique_ptr< QgsRasterDataProvider > mDataProvider;
-    int mBandCount;
+    int mBandCount = 1;
     QgsCoordinateReferenceSystem mCrs;
 
 };

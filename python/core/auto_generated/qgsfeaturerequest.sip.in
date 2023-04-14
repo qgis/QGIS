@@ -24,8 +24,8 @@ The request may apply an attribute/ID filter to fetch only a particular subset o
 Additionally a spatial filter can be set in combination with the attribute/ID filter. Supported
 spatial filters are:
 
-- Qgis.SpatialFilterType.BoundingBox: Only features that intersect a given rectangle will be fetched. For the sake of speed, the intersection is often done only using feature's bounding box. There is a flag ExactIntersect that makes sure that only intersecting features will be returned.
-- Qgis.SpatialFilterType.DistanceWithin: Only features within a specified distance of a reference geometry will be fetched.
+- :py:class:`Qgis`.SpatialFilterType.BoundingBox: Only features that intersect a given rectangle will be fetched. For the sake of speed, the intersection is often done only using feature's bounding box. There is a flag ExactIntersect that makes sure that only intersecting features will be returned.
+- :py:class:`Qgis`.SpatialFilterType.DistanceWithin: Only features within a specified distance of a reference geometry will be fetched.
 
 For efficiency, it is also possible to tell provider that some data is not required:
 
@@ -351,8 +351,8 @@ When a destination CRS is set using :py:func:`~QgsFeatureRequest.setDestinationC
 is expected to be in the same CRS as the :py:func:`~QgsFeatureRequest.destinationCrs`. Otherwise, ``rectangle``
 should use the same CRS as the source layer/provider.
 
-Calling this method will automatically set :py:func:`~QgsFeatureRequest.spatialFilterType` to Qgis.SpatialFilterType.BoundingBox.
-If ``rectangle`` is a null rectangle then :py:func:`~QgsFeatureRequest.spatialFilterType` will be reset to Qgis.SpatialFilterType.NoFilter.
+Calling this method will automatically set :py:func:`~QgsFeatureRequest.spatialFilterType` to :py:class:`Qgis`.SpatialFilterType.BoundingBox.
+If ``rectangle`` is a null rectangle then :py:func:`~QgsFeatureRequest.spatialFilterType` will be reset to :py:class:`Qgis`.SpatialFilterType.NoFilter.
 
 .. seealso:: :py:func:`filterRect`
 %End
@@ -362,9 +362,9 @@ If ``rectangle`` is a null rectangle then :py:func:`~QgsFeatureRequest.spatialFi
 Returns the rectangle from which features will be taken. If the returned
 rectangle is null, then no filter rectangle is set.
 
-If :py:func:`~QgsFeatureRequest.spatialFilterType` is Qgis.SpatialFilterType.BoundingBox then only
+If :py:func:`~QgsFeatureRequest.spatialFilterType` is :py:class:`Qgis`.SpatialFilterType.BoundingBox then only
 features from within this bounding box will be fetched. If :py:func:`~QgsFeatureRequest.spatialFilterType`
-is Qgis.SpatialFilterType.DistanceWithin then the returned rectangle
+is :py:class:`Qgis`.SpatialFilterType.DistanceWithin then the returned rectangle
 represents the bounding box of the :py:func:`~QgsFeatureRequest.referenceGeometry` extended by :py:func:`~QgsFeatureRequest.distanceWithin`.
 
 When a destination CRS is set using :py:func:`~QgsFeatureRequest.setDestinationCrs`, the rectangle
@@ -385,7 +385,7 @@ the spatial units of the :py:func:`~QgsFeatureRequest.destinationCrs`. Otherwise
 should use the same CRS as the source layer/provider and ``distance``
 should use the spatial units as this same CRS.
 
-Calling this method will automatically set :py:func:`~QgsFeatureRequest.spatialFilterType` to Qgis.SpatialFilterType.DistanceWithin.
+Calling this method will automatically set :py:func:`~QgsFeatureRequest.spatialFilterType` to :py:class:`Qgis`.SpatialFilterType.DistanceWithin.
 
 .. seealso:: :py:func:`filterRect`
 
@@ -396,7 +396,7 @@ Calling this method will automatically set :py:func:`~QgsFeatureRequest.spatialF
 %Docstring
 Returns the reference geometry used for spatial filtering of features.
 
-When :py:func:`~QgsFeatureRequest.spatialFilterType` is Qgis.SpatialFilterType.DistanceWithin then only
+When :py:func:`~QgsFeatureRequest.spatialFilterType` is :py:class:`Qgis`.SpatialFilterType.DistanceWithin then only
 features within :py:func:`~QgsFeatureRequest.distanceWithin` units of the reference geometry will be
 fetched.
 
@@ -413,7 +413,7 @@ will use the same CRS as the source layer/provider.
     double distanceWithin() const;
 %Docstring
 Returns the maximum distance from the :py:func:`~QgsFeatureRequest.referenceGeometry` of fetched
-features, if :py:func:`~QgsFeatureRequest.spatialFilterType` is Qgis.SpatialFilterType.DistanceWithin.
+features, if :py:func:`~QgsFeatureRequest.spatialFilterType` is :py:class:`Qgis`.SpatialFilterType.DistanceWithin.
 
 When a destination CRS is set using :py:func:`~QgsFeatureRequest.setDestinationCrs`, the distance
 will be in the spatial units of :py:func:`~QgsFeatureRequest.destinationCrs`. Otherwise, the distance

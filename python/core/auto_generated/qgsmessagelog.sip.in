@@ -57,7 +57,7 @@ value for the message.
 
     void messageReceived( bool received );
 %Docstring
-Emitted whenever the log receives a message which is not a Qgis.MessageLevel.Info level message
+Emitted whenever the log receives a message which is not a :py:class:`Qgis`.MessageLevel.Info level message
 and which has the ``notifyUser`` flag as ``True``.
 
 If :py:class:`QgsMessageLogNotifyBlocker` objects have been created then this signal may be

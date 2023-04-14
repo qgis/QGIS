@@ -32,6 +32,8 @@
 #include <Qsci/qscilexerpython.h>
 #include <QDesktopServices>
 #include <QKeyEvent>
+#include <QAction>
+#include <QMenu>
 
 const QMap<QString, QString> QgsCodeEditorPython::sCompletionPairs
 {
@@ -51,12 +53,13 @@ const QgsSettingsEntryBool *QgsCodeEditorPython::settingBlackNormalizeQuotes = n
 ///@endcond PRIVATE
 
 
-QgsCodeEditorPython::QgsCodeEditorPython( QWidget *parent, const QList<QString> &filenames, Mode mode )
+QgsCodeEditorPython::QgsCodeEditorPython( QWidget *parent, const QList<QString> &filenames, Mode mode, Flags flags )
   : QgsCodeEditor( parent,
                    QString(),
                    false,
                    false,
-                   QgsCodeEditor::Flag::CodeFolding, mode )
+                   flags,
+                   mode )
   , mAPISFilesList( filenames )
 {
   if ( !parent )
@@ -220,15 +223,6 @@ void QgsCodeEditorPython::keyPressEvent( QKeyEvent *event )
   {
     return QgsCodeEditor::keyPressEvent( event );
   }
-  const bool ctrlModifier = event->modifiers() & Qt::ControlModifier;
-
-  // Toggle comment when user presses  Ctrl+:
-  if ( ctrlModifier && event->key() == Qt::Key_Colon )
-  {
-    event->accept();
-    toggleComment();
-    return;
-  }
 
   const QgsSettings settings;
 
@@ -345,8 +339,12 @@ void QgsCodeEditorPython::keyPressEvent( QKeyEvent *event )
       }
 
       // Else, if not inside a string or comment and an opening character
-      // is entered, also insert the closing character
-      else if ( !isCursorInsideStringLiteralOrComment() && sCompletionPairs.contains( eText ) )
+      // is entered, also insert the closing character, provided the next
+      // character is a space, a colon, or a closing character
+      else if ( !isCursorInsideStringLiteralOrComment()
+                && sCompletionPairs.contains( eText )
+                && ( nextChar.isEmpty() || nextChar.at( 0 ).isSpace() || nextChar == ":" || sCompletionPairs.key( nextChar ) != "" )
+              )
       {
         // Check if user is not entering triple quotes
         if ( !( ( eText == "\"" || eText == "'" ) && prevChar == eText ) )
@@ -512,12 +510,27 @@ QString QgsCodeEditorPython::reformatCodeString( const QString &string )
     }
     else
     {
-      const QString modules = missingModules.join( QStringLiteral( ", " ) );
+      const QString modules = missingModules.join( QLatin1String( ", " ) );
       showMessage( tr( "Reformat Code" ), tr( "The Python modules %1 are missing" ).arg( modules ), Qgis::MessageLevel::Warning );
     }
   }
 
   return newText;
+}
+
+void QgsCodeEditorPython::populateContextMenu( QMenu *menu )
+{
+  QgsCodeEditor::populateContextMenu( menu );
+
+  QAction *pyQgisHelpAction = new QAction(
+    QgsApplication::getThemeIcon( QStringLiteral( "console/iconHelpConsole.svg" ) ),
+    tr( "Search Selection in PyQGIS Documentation" ),
+    menu );
+  pyQgisHelpAction->setEnabled( hasSelectedText() );
+  connect( pyQgisHelpAction, &QAction::triggered, this, &QgsCodeEditorPython::searchSelectedTextInPyQGISDocs );
+
+  menu->addSeparator();
+  menu->addAction( pyQgisHelpAction );
 }
 
 void QgsCodeEditorPython::autoComplete()

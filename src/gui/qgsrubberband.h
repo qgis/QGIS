@@ -137,7 +137,7 @@ class GUI_EXPORT QgsRubberBand : public QgsMapCanvasItem
      *         Its CRS will be used to map points onto screen coordinates.
      * The ownership is transferred to this canvas.
      *  \param geometryType Defines how the data should be drawn onto the screen.
-     *         QgsWkbTypes::LineGeometry, QgsWkbTypes::PolygonGeometry or QgsWkbTypes::PointGeometry
+     *         Qgis::GeometryType::Line, Qgis::GeometryType::Polygon or Qgis::GeometryType::Point
      */
     QgsRubberBand( QgsMapCanvas *mapCanvas SIP_TRANSFERTHIS, Qgis::GeometryType geometryType = Qgis::GeometryType::Line );
     ~QgsRubberBand() override;

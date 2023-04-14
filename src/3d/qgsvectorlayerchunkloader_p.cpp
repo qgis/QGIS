@@ -14,24 +14,18 @@
  ***************************************************************************/
 
 #include "qgsvectorlayerchunkloader_p.h"
-
 #include "qgs3dutils.h"
 #include "qgsraycastingutils_p.h"
 #include "qgsabstractvectorlayer3drenderer.h"
 #include "qgstessellatedpolygongeometry.h"
 #include "qgschunknode_p.h"
-#include "qgspolygon3dsymbol_p.h"
 #include "qgseventtracing.h"
 #include "qgslogger.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerfeatureiterator.h"
-
-#include "qgsline3dsymbol.h"
-#include "qgspoint3dsymbol.h"
-#include "qgspolygon3dsymbol.h"
-
 #include "qgsapplication.h"
 #include "qgs3dsymbolregistry.h"
+#include "qgsabstract3dsymbol.h"
 
 #include <QtConcurrent>
 #include <Qt3DCore/QTransform>
@@ -214,25 +208,30 @@ QVector<QgsRayCastingUtils::RayHit> QgsVectorLayerChunkedEntity::rayIntersection
 {
   Q_UNUSED( context )
   QgsDebugMsgLevel( QStringLiteral( "Ray cast on vector layer" ), 2 );
+#ifdef QGISDEBUG
   int nodeUsed = 0;
   int nodesAll = 0;
   int hits = 0;
   int ignoredGeometries = 0;
+#endif
   QVector<QgsRayCastingUtils::RayHit> result;
 
   float minDist = -1;
   QVector3D intersectionPoint;
-  QgsFeatureId fid;
-  QgsFeatureId nearestFid;
+  QgsFeatureId nearestFid = FID_NULL;
 
   for ( QgsChunkNode *node : activeNodes )
   {
+#ifdef QGISDEBUG
     nodesAll++;
+#endif
     if ( node->entity() &&
          ( minDist < 0 || node->bbox().distanceFromPoint( ray.origin() ) < minDist ) &&
          QgsRayCastingUtils::rayBoxIntersection( ray, node->bbox() ) )
     {
+#ifdef QGISDEBUG
       nodeUsed++;
+#endif
       const QList<Qt3DRender::QGeometryRenderer *> rendLst = node->entity()->findChildren<Qt3DRender::QGeometryRenderer *>();
       for ( const auto &rend : rendLst )
       {
@@ -240,14 +239,19 @@ QVector<QgsRayCastingUtils::RayHit> QgsVectorLayerChunkedEntity::rayIntersection
         QgsTessellatedPolygonGeometry *polygonGeom = qobject_cast<QgsTessellatedPolygonGeometry *>( geom );
         if ( !polygonGeom )
         {
+#ifdef QGISDEBUG
           ignoredGeometries++;
+#endif
           continue; // other QGeometry types are not supported for now
         }
 
         QVector3D nodeIntPoint;
+        QgsFeatureId fid = FID_NULL;
         if ( polygonGeom->rayIntersection( ray, transformMatrix, nodeIntPoint, fid ) )
         {
+#ifdef QGISDEBUG
           hits++;
+#endif
           float dist = ( ray.origin() - nodeIntPoint ).length();
           if ( minDist < 0 || dist < minDist )
           {
@@ -259,7 +263,7 @@ QVector<QgsRayCastingUtils::RayHit> QgsVectorLayerChunkedEntity::rayIntersection
       }
     }
   }
-  if ( !intersectionPoint.isNull() )
+  if ( !FID_IS_NULL( nearestFid ) )
   {
     QgsRayCastingUtils::RayHit hit( minDist, intersectionPoint, nearestFid );
     result.append( hit );

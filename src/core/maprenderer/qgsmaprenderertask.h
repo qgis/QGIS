@@ -29,9 +29,7 @@
 #include "qgsabstractgeopdfexporter.h"
 
 #include <QPainter>
-#ifndef QT_NO_PRINTER
-#include <QPrinter>
-#endif
+#include <QPdfWriter>
 
 class QgsMapRendererCustomPainterJob;
 class QgsAbstractGeoPdfExporter;
@@ -151,9 +149,7 @@ class CORE_EXPORT QgsMapRendererTask : public QgsTask
     QPainter *mPainter = nullptr;
     QPainter *mDestPainter = nullptr;
     QImage mImage;
-#ifndef QT_NO_PRINTER
-    std::unique_ptr< QPrinter > mPrinter;
-#endif // ! QT_NO_PRINTER
+    std::unique_ptr< QPdfWriter > mPdfWriter;
 
     std::unique_ptr< QPainter > mTempPainter;
 

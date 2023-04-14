@@ -191,7 +191,7 @@ void QgsLayoutItemLabel::contentChanged()
       //set this to true after html is loaded.
       mHtmlLoaded = false;
 
-      const QUrl baseUrl = QUrl::fromLocalFile( mLayout->project()->absoluteFilePath() );
+      const QUrl baseUrl = mLayout ? QUrl::fromLocalFile( mLayout->project()->absoluteFilePath() ) : QUrl();
       mWebPage->mainFrame()->setHtml( textToDraw, baseUrl );
 
       //For very basic html labels with no external assets, the html load will already be

@@ -17,10 +17,10 @@
 #ifndef QGGDALFILESOURCEWIDGET_H
 #define QGGDALFILESOURCEWIDGET_H
 
-#include "ui_qgsgdalsourceselectbase.h"
 #include "qgsprovidersourcewidget.h"
-#include "qgis_gui.h"
-#include "qgis_sip.h"
+#include <QVariantMap>
+
+class QgsFileWidget;
 
 ///@cond PRIVATE
 #define SIP_NO_FILE

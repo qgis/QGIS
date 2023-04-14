@@ -91,6 +91,9 @@ QVariant QgsDatabaseQueryLoggerQueryGroup::data( int role ) const
       return QStringLiteral( "%1 %2" ).arg( QString::number( mQueryId ),
                                             mSql );
 
+    case QgsDevToolsModelNode::RoleSort:
+      return mQueryId;
+
     case Qt::ToolTipRole:
     {
       // Show no more than 255 characters
@@ -123,6 +126,9 @@ QVariant QgsDatabaseQueryLoggerQueryGroup::data( int role ) const
 
     case RoleId:
       return mQueryId;
+
+    case RoleElapsedTime:
+      return mElapsed;
 
     case Qt::ForegroundRole:
     {
@@ -202,7 +208,8 @@ void QgsDatabaseQueryLoggerQueryGroup::setFinished( const QgsDatabaseQueryLogEnt
   if ( query.error.isEmpty() )
   {
     mStatus = query.canceled ? Status::Canceled : Status::Complete;
-    addKeyValueNode( QObject::tr( "Total time (ms)" ), QLocale().toString( query.finishedTime - query.startedTime ) );
+    mElapsed = static_cast<qint64>( query.finishedTime - query.startedTime );
+    addKeyValueNode( QObject::tr( "Total time (ms)" ), QLocale().toString( mElapsed ) );
     if ( query.fetchedRows != -1 )
     {
       addKeyValueNode( QObject::tr( "Row count" ), QLocale().toString( query.fetchedRows ) );

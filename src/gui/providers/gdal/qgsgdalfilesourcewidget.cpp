@@ -20,7 +20,9 @@
 
 #include "qgsproviderregistry.h"
 #include "ogr/qgsogrhelperfunctions.h"
+#include "qgsfilewidget.h"
 
+#include <QHBoxLayout>
 #include <gdal.h>
 
 QgsGdalFileSourceWidget::QgsGdalFileSourceWidget( QWidget *parent )

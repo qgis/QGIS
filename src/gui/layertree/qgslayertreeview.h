@@ -238,15 +238,43 @@ class GUI_EXPORT QgsLayerTreeView : public QTreeView
     QgsLayerTreeModelLegendNode *currentLegendNode() const;
 
     /**
-     * Returns list of selected nodes
+     * Returns the list of selected layer tree nodes.
+     *
      * \param skipInternal If TRUE, will ignore nodes which have an ancestor in the selection
+     *
+     * \see selectedLayerNodes()
+     * \see selectedLegendNodes()
+     * \see selectedLayers()
      */
     QList<QgsLayerTreeNode *> selectedNodes( bool skipInternal = false ) const;
-    //! Returns list of selected nodes filtered to just layer nodes
+
+    /**
+     * Returns the list of selected nodes filtered to just layer nodes (QgsLayerTreeLayer).
+     *
+     * \see selectedNodes()
+     * \see selectedLayers()
+     * \see selectedLegendNodes()
+     */
     QList<QgsLayerTreeLayer *> selectedLayerNodes() const;
 
-    //! Gets list of selected layers
+    /**
+     * Returns the list of selected layers.
+     *
+     * \see selectedNodes()
+     * \see selectedLayerNodes()
+     * \see selectedLegendNodes()
+     */
     QList<QgsMapLayer *> selectedLayers() const;
+
+    /**
+     * Returns the list of selected legend nodes.
+     *
+     * \see selectedNodes()
+     * \see selectedLayerNodes()
+     *
+     * \since QGIS 3.32
+     */
+    QList<QgsLayerTreeModelLegendNode *> selectedLegendNodes() const;
 
     /**
      * Gets list of selected layers, including those that are not directly selected, but their

@@ -138,6 +138,10 @@ QgsCodeEditor::QgsCodeEditor( QWidget *parent, const QString &title, bool foldin
       break;
     }
   }
+
+#if QSCINTILLA_VERSION < 0x020d03
+  installEventFilter( this );
+#endif
 }
 
 // Workaround a bug in QScintilla 2.8.X
@@ -211,6 +215,27 @@ void QgsCodeEditor::keyPressEvent( QKeyEvent *event )
     }
   }
 
+  const bool ctrlModifier = event->modifiers() & Qt::ControlModifier;
+  const bool altModifier = event->modifiers() & Qt::AltModifier;
+
+  // Ctrl+Alt+F: reformat code
+  const bool canReformat = languageCapabilities() & Qgis::ScriptLanguageCapability::Reformat;
+  if ( !isReadOnly() && canReformat && ctrlModifier && altModifier && event->key() == Qt::Key_F )
+  {
+    event->accept();
+    reformatCode();
+    return;
+  }
+
+  // Toggle comment when user presses  Ctrl+:
+  const bool canToggle = languageCapabilities() & Qgis::ScriptLanguageCapability::ToggleComment;
+  if ( !isReadOnly() && canToggle && ctrlModifier && event->key() == Qt::Key_Colon )
+  {
+    event->accept();
+    toggleComment();
+    return;
+  }
+
   QsciScintilla::keyPressEvent( event );
 
 }
@@ -233,6 +258,7 @@ void QgsCodeEditor::contextMenuEvent( QContextMenuEvent *event )
       if ( languageCapabilities() & Qgis::ScriptLanguageCapability::Reformat )
       {
         QAction *reformatAction = new QAction( tr( "Reformat Code" ), menu );
+        reformatAction->setShortcut( QStringLiteral( "Ctrl+Alt+F" ) );
         reformatAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "console/iconFormatCode.svg" ) ) );
         reformatAction->setEnabled( !isReadOnly() );
         connect( reformatAction, &QAction::triggered, this, &QgsCodeEditor::reformatCode );
@@ -250,6 +276,7 @@ void QgsCodeEditor::contextMenuEvent( QContextMenuEvent *event )
       if ( languageCapabilities() & Qgis::ScriptLanguageCapability::ToggleComment )
       {
         QAction *toggleCommentAction = new QAction( tr( "Toggle Comment" ), menu );
+        toggleCommentAction->setShortcut( QStringLiteral( "Ctrl+:" ) );
         toggleCommentAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "console/iconCommentEditorConsole.svg" ) ) );
         toggleCommentAction->setEnabled( !isReadOnly() );
         connect( toggleCommentAction, &QAction::triggered, this, &QgsCodeEditor::toggleComment );
@@ -289,6 +316,21 @@ void QgsCodeEditor::contextMenuEvent( QContextMenuEvent *event )
       QsciScintilla::contextMenuEvent( event );
       break;
   }
+}
+
+bool QgsCodeEditor::eventFilter( QObject *watched, QEvent *event )
+{
+#if QSCINTILLA_VERSION < 0x020d03
+  if ( watched == this && event->type() == QEvent::InputMethod )
+  {
+    // swallow input method events, which cause loss of selected text.
+    // See https://sourceforge.net/p/scintilla/bugs/1913/ , which was ported to QScintilla
+    // in version 2.13.3
+    return true;
+  }
+#endif
+
+  return QsciScintilla::eventFilter( watched, event );
 }
 
 void QgsCodeEditor::initializeLexer()
@@ -746,9 +788,14 @@ QStringList QgsCodeEditor::history() const
   return mHistory;
 }
 
-void QgsCodeEditor::runCommand( const QString &command )
+void QgsCodeEditor::runCommand( const QString &command, bool skipHistory )
 {
-  updateHistory( { command } );
+  if ( !skipHistory )
+  {
+    updateHistory( { command } );
+    if ( mFlags & QgsCodeEditor::Flag::ImmediatelyUpdateHistory )
+      writeHistoryFile();
+  }
 
   if ( mInterpreter )
     mInterpreter->exec( command );

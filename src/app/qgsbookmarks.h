@@ -38,7 +38,7 @@ class QgsDoubleSpinBoxBookmarksDelegate : public QStyledItemDelegate
 
   public:
 
-    explicit QgsDoubleSpinBoxBookmarksDelegate( QObject *parent = nullptr );
+    explicit QgsDoubleSpinBoxBookmarksDelegate( QObject *parent = nullptr, int decimals = -1 );
 
     QString displayText( const QVariant &value, const QLocale &locale ) const override;
 
@@ -47,7 +47,8 @@ class QgsDoubleSpinBoxBookmarksDelegate : public QStyledItemDelegate
                            const QModelIndex &index ) const override;
   private:
 
-    static const int  DECIMAL_PLACES;
+    static const int  DEFAULT_DECIMAL_PLACES;
+    int mDecimals;
 
 };
 
@@ -72,6 +73,7 @@ class APP_EXPORT QgsBookmarks : public QgsDockWidget, private Ui::QgsBookmarksBa
     void importFromXml();
 
     void lstBookmarks_doubleClicked( const QModelIndex & );
+    void lstBookmarks_customContextMenuRequested( QPoint pos );
 
   private:
     QgsBookmarkManagerProxyModel *mBookmarkModel = nullptr;

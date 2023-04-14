@@ -23,7 +23,7 @@ int QgisEvent = QEvent::User + 1;
 class Qgis
 {
 %Docstring(signature="appended")
-The Qgis class provides global constants for use throughout the application.
+The :py:class:`Qgis` class provides global constants for use throughout the application.
 %End
 
 %TypeHeaderCode
@@ -207,6 +207,16 @@ The development version
       Uncounted,
       UnknownCount,
     };
+
+    enum class VectorDataProviderAttributeEditCapability
+    {
+      EditAlias,
+      EditComment,
+    };
+
+
+    typedef QFlags<Qgis::VectorDataProviderAttributeEditCapability> VectorDataProviderAttributeEditCapabilities;
+
 
     enum class SymbolType
       {
@@ -471,7 +481,6 @@ The development version
       OutsidePolygons,
     };
 
-
     enum class LabelPredefinedPointPosition
       {
       TopLeft,
@@ -507,6 +516,26 @@ The development version
       BelowRight,
     };
 
+    enum class LabelLinePlacementFlag
+      {
+      OnLine,
+      AboveLine,
+      BelowLine,
+      MapOrientation,
+    };
+
+    typedef QFlags<Qgis::LabelLinePlacementFlag> LabelLinePlacementFlags;
+
+
+    enum class LabelPolygonPlacementFlag
+      {
+      AllowPlacementOutsideOfPolygon,
+      AllowPlacementInsideOfPolygon,
+    };
+
+    typedef QFlags<Qgis::LabelPolygonPlacementFlag> LabelPolygonPlacementFlags;
+
+
     enum class UpsideDownLabelHandling
       {
       FlipUpsideDownLabels,
@@ -521,6 +550,16 @@ The development version
       Right,
       FollowPlacement,
       Justify,
+    };
+
+    enum class FileFilterType
+      {
+      Vector,
+      Raster,
+      Mesh,
+      MeshDataset,
+      PointCloud,
+      VectorTile,
     };
 
     enum class SublayerQueryFlag
@@ -623,6 +662,13 @@ The development version
       NeverAskLoadAll,
     };
 
+    enum class FieldMetadataProperty
+    {
+      GeometryCrs,
+      GeometryWkbType,
+      CustomProperty,
+    };
+
     enum class SelectBehavior
       {
       SetSelection,
@@ -680,8 +726,8 @@ The development version
       Gpsd,
     };
 
-    enum class GpsConnectionStatus
-    {
+    enum class DeviceConnectionStatus
+      {
       Disconnected,
       Connecting,
       Connected,
@@ -1606,6 +1652,14 @@ The development version
       OptimalInInsertionGroup,
     };
 
+    enum class LayerTreeFilterFlag
+    {
+      SkipVisibilityCheck,
+    };
+
+    typedef QFlags<Qgis::LayerTreeFilterFlag> LayerTreeFilterFlags;
+
+
     enum class ActionType
     {
       Invalid,
@@ -1782,6 +1836,7 @@ The development version
       Degrees,
       Centimeters,
       Millimeters,
+      Inches,
       Unknown,
     };
 
@@ -1805,6 +1860,7 @@ The development version
       SquareDegrees,
       SquareCentimeters,
       SquareMillimeters,
+      SquareInches,
       Unknown,
     };
 
@@ -1880,6 +1936,21 @@ The development version
       {
       PaperUnits,
       ScreenUnits
+    };
+
+    enum class PostgresRelKind
+    {
+      NotSet,
+      Unknown,
+      OrdinaryTable,
+      Index,
+      Sequence,
+      View,
+      MaterializedView,
+      CompositeType,
+      ToastTable,
+      ForeignTable,
+      PartitionedTable,
     };
 
     static const double DEFAULT_SEARCH_RADIUS_MM;
@@ -1992,6 +2063,8 @@ QFlags<Qgis::MapLayerProperty> operator|(Qgis::MapLayerProperty f1, QFlags<Qgis:
 
 QFlags<Qgis::DataProviderFlag> operator|(Qgis::DataProviderFlag f1, QFlags<Qgis::DataProviderFlag> f2);
 
+QFlags<Qgis::VectorDataProviderAttributeEditCapability> operator|(Qgis::VectorDataProviderAttributeEditCapability f1, QFlags<Qgis::VectorDataProviderAttributeEditCapability> f2);
+
 QFlags<Qgis::SnappingType> operator|(Qgis::SnappingType f1, QFlags<Qgis::SnappingType> f2);
 
 QFlags<Qgis::PlotToolFlag> operator|(Qgis::PlotToolFlag f1, QFlags<Qgis::PlotToolFlag> f2);
@@ -2024,6 +2097,11 @@ QFlags<Qgis::SettingsTreeNodeOption> operator|(Qgis::SettingsTreeNodeOption f1, 
 
 QFlags<Qgis::ScriptLanguageCapability> operator|(Qgis::ScriptLanguageCapability f1, QFlags<Qgis::ScriptLanguageCapability> f2);
 
+QFlags<Qgis::LayerTreeFilterFlag> operator|(Qgis::LayerTreeFilterFlag f1, QFlags<Qgis::LayerTreeFilterFlag> f2);
+
+QFlags<Qgis::LabelLinePlacementFlag> operator|(Qgis::LabelLinePlacementFlag f1, QFlags<Qgis::LabelLinePlacementFlag> f2);
+
+QFlags<Qgis::LabelPolygonPlacementFlag> operator|(Qgis::LabelPolygonPlacementFlag f1, QFlags<Qgis::LabelPolygonPlacementFlag> f2);
 
 
 

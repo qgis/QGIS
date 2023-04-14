@@ -11,7 +11,7 @@
     "description": "maximum distance between the returned point and the true pole location"
   }],
   "examples": [{
-    "expression": "geom_to_wkt(pole_of_inaccessibility( geom_from_wkt('POLYGON((0 1, 0 9, 3 10, 3 3, 10 3, 10 1, 0 1))'), 0.1))'",
+    "expression": "geom_to_wkt(pole_of_inaccessibility( geom_from_wkt('POLYGON((0 1, 0 9, 3 10, 3 3, 10 3, 10 1, 0 1))'), 0.1))",
     "returns": "'Point(1.546875 2.546875)'"
   }],
   "tags": ["inaccessibility", "precise", "tolerances", "calculates", "guaranteed", "boundary", "require", "point", "true", "iterations", "internal", "uses", "approximate", "approach", "polylabel", "find", "distant", "calculate", "pole", "take", "surface", "specified", "tolerance", "iterative"]
