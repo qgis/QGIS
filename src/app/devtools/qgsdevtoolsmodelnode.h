@@ -99,7 +99,7 @@ class QgsDevToolsModelGroup : public QgsDevToolsModelNode
      *
      * Returns a pointer to the newly added node.
      */
-    QgsDevToolsModelNode* addChild( std::unique_ptr< QgsDevToolsModelNode > child );
+    QgsDevToolsModelNode *addChild( std::unique_ptr< QgsDevToolsModelNode > child );
 
     /**
      * Returns the index of the specified \a child node.
