@@ -151,7 +151,7 @@ void QgsSettingsRegistryCore::migrateOldSettings()
   pal::Pal::settingsRenderingLabelCandidatesLimitPolygons->copyValueFromKey( QStringLiteral( "core/rendering/label_candidates_limit_polygons" ), true );
 
   // migrate only one way for map scales
-  if ( !settingsMapScales->exists() )
+  if ( !settingsMapScales->exists() && QgsSettings().contains( QStringLiteral( "Map/scales" ) ) )
     settingsMapScales->setValue( QgsSettings().value( QStringLiteral( "Map/scales" ) ).toString().split( ',' ) );
 
 
