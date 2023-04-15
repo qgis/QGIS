@@ -107,7 +107,7 @@ const QgsSettingsEntryBool *QgsSettingsRegistryCore::settingsLayerTreeShowFeatur
 
 const QgsSettingsEntryBool *QgsSettingsRegistryCore::settingsEnableWMSTilePrefetching = new QgsSettingsEntryBool( QStringLiteral( "enable_wms_tile_prefetch" ), QgsSettingsTree::sTreeWms, false, QStringLiteral( "Whether to include WMS layers when rendering tiles adjacent to the visible map area" ) );
 
-const QgsSettingsEntryStringList *QgsSettingsRegistryCore::settingsMapScales = new QgsSettingsEntryStringList( QStringLiteral( "scales" ), QgsSettingsTree::sTreeMap, Qgis::defaultProjectScales().split( ',' ) );
+const QgsSettingsEntryStringList *QgsSettingsRegistryCore::settingsMapScales = new QgsSettingsEntryStringList( QStringLiteral( "default_scales" ), QgsSettingsTree::sTreeMap, Qgis::defaultProjectScales().split( ',' ) );
 
 
 QgsSettingsRegistryCore::QgsSettingsRegistryCore()
@@ -150,10 +150,37 @@ void QgsSettingsRegistryCore::migrateOldSettings()
   pal::Pal::settingsRenderingLabelCandidatesLimitLines->copyValueFromKey( QStringLiteral( "core/rendering/label_candidates_limit_lines" ), true );
   pal::Pal::settingsRenderingLabelCandidatesLimitPolygons->copyValueFromKey( QStringLiteral( "core/rendering/label_candidates_limit_polygons" ), true );
 
-  // migrate only one way for map scales
-  if ( !settingsMapScales->exists() && QgsSettings().contains( QStringLiteral( "Map/scales" ) ) )
-    settingsMapScales->setValue( QgsSettings().value( QStringLiteral( "Map/scales" ) ).toString().split( ',' ) );
+  // handle bad migration - Fix profiles for old QGIS versions (restore the Map/scales key on windows)
+  if ( QgsSettings().contains( QStringLiteral( "Map/scales" ) ) )
+  {
+    const QStringList oldScales = QgsSettings().value( QStringLiteral( "Map/scales" ) ).toStringList();
+    if ( ! oldScales.isEmpty() && !oldScales.at( 0 ).isEmpty() )
+      QgsSettings().setValue( QStringLiteral( "Map/scales" ), oldScales.join( ',' ) );
+    else
+      QgsSettings().setValue( QStringLiteral( "Map/scales" ), Qgis::defaultProjectScales() );
+  }
 
+  // migrate only one way for map scales
+  if ( !settingsMapScales->exists() )
+  {
+    // Handle bad migration. Prefer map/scales over Map/scales
+    const QStringList oldScales = QgsSettings().value( QStringLiteral( "map/scales" ) ).toStringList();
+    if ( ! oldScales.isEmpty() && !oldScales.at( 0 ).isEmpty() )
+    {
+      // If migration has failed before (QGIS < 3.30.2), all scales might be
+      // concatenated in the first element of the list
+      QStringList actualScales;
+      for ( const QString &element : oldScales )
+      {
+        actualScales << element.split( "," );
+      }
+      settingsMapScales->setValue( actualScales );
+    }
+    else if ( QgsSettings().contains( QStringLiteral( "Map/scales" ) ) )
+    {
+      settingsMapScales->setValue( QgsSettings().value( QStringLiteral( "Map/scales" ) ).toString().split( ',' ) );
+    }
+  }
 
   // digitizing settings - added in 3.30
   {
