@@ -60,7 +60,8 @@ class gdalcalc(GdalAlgorithm):
     OPTIONS = 'OPTIONS'
     EXTRA = 'EXTRA'
     RTYPE = 'RTYPE'
-    TYPE = ['Byte', 'Int16', 'UInt16', 'UInt32', 'Int32', 'Float32', 'Float64']
+
+    TYPE = ['Byte', 'Int16', 'UInt16', 'UInt32', 'Int32', 'Float32', 'Float64', 'CInt16', 'CInt32', 'CFloat32', 'CFloat64', 'Int8']
 
     def __init__(self):
         super().__init__()
@@ -220,9 +221,15 @@ class gdalcalc(GdalAlgorithm):
             f'--calc "{formula}"',
             '--format',
             GdalUtils.getFormatShortNameFromFilename(out),
-            '--type',
-            self.TYPE[self.parameterAsEnum(parameters, self.RTYPE, context)]
         ]
+
+        rtype = self.parameterAsEnum(parameters, self.RTYPE, context)
+        if self.TYPE[rtype] in ['CInt16', 'CInt32', 'CFloat32', 'CFloat64'] and GdalUtils.version() < 3050300:
+            raise QgsProcessingException(self.tr(f'{self.TYPE[rtype]} data type requires GDAL version 3.5.3 or later'))
+        if self.TYPE[rtype] == 'Int8' and GdalUtils.version() < 3070000:
+            raise QgsProcessingException(self.tr('Int8 data type requires GDAL version 3.7 or later'))
+
+        arguments.append('--type ' + self.TYPE[rtype])
 
         if noData is not None:
             arguments.append('--NoDataValue')
