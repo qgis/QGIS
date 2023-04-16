@@ -12,6 +12,7 @@
 
 #include "utils.hpp"
 
+#include <filesystem>
 #include <iostream>
 #include <chrono>
 
@@ -196,7 +197,68 @@ bool rasterTilesToCog(const std::vector<std::string> &inputFiles, const std::str
     rasterVrtToCog(ds, outputFile);
     GDALClose(ds);
 
-    // TODO: remove VRT + partial tifs after gdal_translate?
+    std::filesystem::remove(outputVrt);
 
     return true;
+}
+
+bool readerSupportsBounds(Stage &reader)
+{
+    // these readers support "bounds" option with a 2D/3D bounding box, and based
+    // on it, they will do very efficient reading of data and only return what's
+    // in the given bounding box
+    return reader.getName() == "readers.copc" || reader.getName() == "readers.ept";
+}
+
+bool allReadersSupportBounds(const std::vector<Stage *> &readers)
+{
+    for (Stage *r : readers)
+    {
+        if (!readerSupportsBounds(*r))
+            return false;
+    }
+    return true;
+}
+
+pdal::Bounds parseBounds(const std::string &boundsStr)
+{
+    // if the input string is not a correct 2D/3D PDAL bounds then parse()
+    // will throw an exception
+    pdal::Bounds b;
+    std::string::size_type pos(0);
+    b.parse(boundsStr, pos);
+    return b;
+}
+
+BOX2D intersectionBox2D(const BOX2D &b1, const BOX2D &b2)
+{
+    BOX2D b;
+    b.minx = b1.minx > b2.minx ? b1.minx : b2.minx;
+    b.miny = b1.miny > b2.miny ? b1.miny : b2.miny;
+    b.maxx = b1.maxx < b2.maxx ? b1.maxx : b2.maxx;
+    b.maxy = b1.maxy < b2.maxy ? b1.maxy : b2.maxy;
+    if (b.minx > b.maxx || b.miny > b.maxy)
+        return BOX2D();
+    return b;
+}
+
+
+BOX2D intersectTileBoxWithFilterBox(const BOX2D &tileBox, const BOX2D &filterBox)
+{
+    if (tileBox.valid() && filterBox.valid())
+    {
+        return intersectionBox2D(tileBox, filterBox);
+    }
+    else if (tileBox.valid())
+    {
+        return tileBox;
+    }
+    else if (filterBox.valid())
+    {
+        return filterBox;
+    }
+    else
+    {
+        return BOX2D();  // invalid box
+    }
 }

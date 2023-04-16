@@ -132,11 +132,11 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
 
   mBtnStyle = new QPushButton( tr( "Style" ) );
   QMenu *menuStyle = new QMenu( this );
-  menuStyle->addAction( tr( "Load Style…" ), this, &QgsRasterLayerProperties::loadStyle_clicked );
-  menuStyle->addAction( tr( "Save Style…" ), this, &QgsRasterLayerProperties::saveStyleAs_clicked );
+  menuStyle->addAction( tr( "Load Style…" ), this, &QgsRasterLayerProperties::loadStyle );
+  menuStyle->addAction( tr( "Save Style…" ), this, &QgsRasterLayerProperties::saveStyleAs );
   menuStyle->addSeparator();
-  menuStyle->addAction( tr( "Save as Default" ), this, &QgsRasterLayerProperties::saveDefaultStyle_clicked );
-  menuStyle->addAction( tr( "Restore Default" ), this, &QgsRasterLayerProperties::loadDefaultStyle_clicked );
+  menuStyle->addAction( tr( "Save as Default" ), this, &QgsRasterLayerProperties::saveDefaultStyle );
+  menuStyle->addAction( tr( "Restore Default" ), this, &QgsRasterLayerProperties::loadDefaultStyle );
   mBtnStyle->setMenu( menuStyle );
   connect( menuStyle, &QMenu::aboutToShow, this, &QgsRasterLayerProperties::aboutToShowStyleMenu );
   buttonBox->addButton( mBtnStyle, QDialogButtonBox::ResetRole );
@@ -1604,7 +1604,7 @@ void QgsRasterLayerProperties::removeSelectedMetadataUrl()
 // Next four methods for saving and restoring qml style state
 //
 //
-void QgsRasterLayerProperties::loadDefaultStyle_clicked()
+void QgsRasterLayerProperties::loadDefaultStyle()
 {
   bool defaultLoadedFlag = false;
   QString myMessage = mRasterLayer->loadDefaultStyle( defaultLoadedFlag );
@@ -1623,7 +1623,7 @@ void QgsRasterLayerProperties::loadDefaultStyle_clicked()
   }
 }
 
-void QgsRasterLayerProperties::saveDefaultStyle_clicked()
+void QgsRasterLayerProperties::saveDefaultStyle()
 {
 
   apply(); // make sure the style to save is up-to-date
@@ -1648,7 +1648,7 @@ void QgsRasterLayerProperties::saveDefaultStyle_clicked()
 }
 
 
-void QgsRasterLayerProperties::loadStyle_clicked()
+void QgsRasterLayerProperties::loadStyle()
 {
   QgsSettings settings;
   QString lastUsedDir = settings.value( QStringLiteral( "style/lastStyleDir" ), QDir::homePath() ).toString();
@@ -1681,7 +1681,7 @@ void QgsRasterLayerProperties::loadStyle_clicked()
 }
 
 
-void QgsRasterLayerProperties::saveStyleAs_clicked()
+void QgsRasterLayerProperties::saveStyleAs()
 {
   QgsSettings settings;
   QString lastUsedDir = settings.value( QStringLiteral( "style/lastStyleDir" ), QDir::homePath() ).toString();
@@ -1946,19 +1946,8 @@ void QgsRasterLayerProperties::initMapTipPreview()
   mMapTipPreviewContainer->installEventFilter( this );
 
   // Note: there's quite a bit of overlap between this and the code in QgsMapTip::showMapTip
-  // Create and style the map tip frame
-  mMapTipPreviewWidget = new QWidget( mMapTipPreviewContainer );
-  mMapTipPreviewWidget->setContentsMargins( MARGIN_VALUE, MARGIN_VALUE, MARGIN_VALUE, MARGIN_VALUE );
-  const QString backgroundColor = mMapTipPreviewWidget->palette().base().color().name();
-  const QString strokeColor = mMapTipPreviewWidget->palette().shadow().color().name();
-  mMapTipPreviewWidget->setStyleSheet( QString(
-                                         ".QWidget{"
-                                         "border: 1px solid %1;"
-                                         "background-color: %2;}" ).arg(
-                                         strokeColor, backgroundColor ) );
-
   // Create the WebView
-  mMapTipPreview = new QgsWebView( mMapTipPreviewWidget );
+  mMapTipPreview = new QgsWebView( mMapTipPreviewContainer );
 
 #if WITH_QTWEBKIT
   mMapTipPreview->page()->setLinkDelegationPolicy( QWebPage::DelegateAllLinks );//Handle link clicks by yourself
@@ -1974,12 +1963,6 @@ void QgsRasterLayerProperties::initMapTipPreview()
   mMapTipPreview->page()->mainFrame()->setScrollBarPolicy( Qt::Horizontal, Qt::ScrollBarAlwaysOff );
   mMapTipPreview->page()->mainFrame()->setScrollBarPolicy( Qt::Vertical, Qt::ScrollBarAlwaysOff );
 
-  QHBoxLayout *hlayout = new QHBoxLayout;
-  hlayout->setContentsMargins( 0, 0, 0, 0 );
-  hlayout->addWidget( mMapTipPreview );
-
-  mMapTipPreviewWidget->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
-  mMapTipPreviewWidget->setLayout( hlayout );
 
   // Update the map tip preview when the expression or the map tip template changes
   connect( mMapTipWidget, &QgsCodeEditorHTML::textChanged, this, &QgsRasterLayerProperties::updateMapTipPreview );
@@ -1987,7 +1970,7 @@ void QgsRasterLayerProperties::initMapTipPreview()
 
 void QgsRasterLayerProperties::updateMapTipPreview()
 {
-  mMapTipPreviewWidget->setMaximumSize( mMapTipPreviewContainer->width(), mMapTipPreviewContainer->height() );
+  mMapTipPreview->setMaximumSize( mMapTipPreviewContainer->width(), mMapTipPreviewContainer->height() );
   const QString htmlContent = QgsMapTip::rasterMapTipPreviewText( mRasterLayer, mMapCanvas, mMapTipWidget->text() );
   mMapTipPreview->setHtml( htmlContent );
 }
@@ -1995,18 +1978,18 @@ void QgsRasterLayerProperties::updateMapTipPreview()
 void QgsRasterLayerProperties::resizeMapTip()
 {
   // Ensure the map tip is not bigger than the container
-  mMapTipPreviewWidget->setMaximumSize( mMapTipPreviewContainer->width(), mMapTipPreviewContainer->height() );
+  mMapTipPreview->setMaximumSize( mMapTipPreviewContainer->width(), mMapTipPreviewContainer->height() );
 #if WITH_QTWEBKIT
   // Get the content size
   const QWebElement container = mMapTipPreview->page()->mainFrame()->findFirstElement(
                                   QStringLiteral( "#QgsWebViewContainer" ) );
-  const int width = container.geometry().width() + MARGIN_VALUE * 2;
-  const int height = container.geometry().height() + MARGIN_VALUE * 2;
-  mMapTipPreviewWidget->resize( width, height );
+  const int width = container.geometry().width();
+  const int height = container.geometry().height();
+  mMapTipPreview->resize( width, height );
 
   // Move the map tip to the center of the container
-  mMapTipPreviewWidget->move( ( mMapTipPreviewContainer->width() - mMapTipPreviewWidget->width() ) / 2,
-                              ( mMapTipPreviewContainer->height() - mMapTipPreviewWidget->height() ) / 2 );
+  mMapTipPreview->move( ( mMapTipPreviewContainer->width() - mMapTipPreview->width() ) / 2,
+                        ( mMapTipPreviewContainer->height() - mMapTipPreview->height() ) / 2 );
 
 #else
   mMapTipPreview->adjustSize();

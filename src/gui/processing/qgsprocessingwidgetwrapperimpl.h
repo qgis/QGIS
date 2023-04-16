@@ -25,6 +25,8 @@
 #include "qgsmaptool.h"
 #include "qgsprocessingcontext.h"
 #include "qgsprocessingmodelchildparametersource.h"
+#include "qgspointcloudattribute.h"
+#include "qgspointcloudlayer.h"
 
 #include <QAbstractButton>
 
@@ -64,6 +66,7 @@ class QgsProcessingEnumModelerWidget;
 class QgsProcessingMatrixModelerWidget;
 class QgsProcessingMapLayerComboBox;
 class QgsRasterBandComboBox;
+class QgsPointCloudAttributeComboBox;
 class QgsProcessingLayerOutputDestinationWidget;
 class QgsCheckableComboBox;
 class QgsMapLayerComboBox;
@@ -2344,6 +2347,109 @@ class GUI_EXPORT QgsProcessingAnnotationLayerWidgetWrapper : public QgsAbstractP
     friend class TestProcessingGui;
 };
 
+
+class GUI_EXPORT QgsProcessingPointCloudAttributePanelWidget : public QWidget
+{
+    Q_OBJECT
+
+  public:
+
+    QgsProcessingPointCloudAttributePanelWidget( QWidget *parent = nullptr, const QgsProcessingParameterPointCloudAttribute *param = nullptr );
+
+    void setAttributes( const QgsPointCloudAttributeCollection &attributes );
+
+    QgsPointCloudAttributeCollection attributes() const { return mAttributes; }
+
+    QVariant value() const { return mValue; }
+    void setValue( const QVariant &value );
+
+  signals:
+
+    void changed();
+
+  private slots:
+
+    void showDialog();
+
+  private:
+
+    void updateSummaryText();
+
+    QgsPointCloudAttributeCollection mAttributes;
+
+    const QgsProcessingParameterPointCloudAttribute *mParam = nullptr;
+    QLineEdit *mLineEdit = nullptr;
+    QToolButton *mToolButton = nullptr;
+
+    QVariantList mValue;
+
+    friend class TestProcessingGui;
+};
+
+class GUI_EXPORT QgsProcessingPointCloudAttributeParameterDefinitionWidget : public QgsProcessingAbstractParameterDefinitionWidget
+{
+    Q_OBJECT
+  public:
+
+    QgsProcessingPointCloudAttributeParameterDefinitionWidget( QgsProcessingContext &context,
+        const QgsProcessingParameterWidgetContext &widgetContext,
+        const QgsProcessingParameterDefinition *definition = nullptr,
+        const QgsProcessingAlgorithm *algorithm = nullptr, QWidget *parent SIP_TRANSFERTHIS = nullptr );
+    QgsProcessingParameterDefinition *createParameter( const QString &name, const QString &description, QgsProcessingParameterDefinition::Flags flags ) const override;
+
+  private:
+
+    QComboBox *mParentLayerComboBox = nullptr;
+    QLineEdit *mDefaultLineEdit = nullptr;
+    QCheckBox *mAllowMultipleCheckBox = nullptr;
+    QCheckBox *mDefaultToAllCheckBox = nullptr;
+};
+
+class GUI_EXPORT QgsProcessingPointCloudAttributeWidgetWrapper : public QgsAbstractProcessingParameterWidgetWrapper, public QgsProcessingParameterWidgetFactoryInterface
+{
+    Q_OBJECT
+
+  public:
+
+    QgsProcessingPointCloudAttributeWidgetWrapper( const QgsProcessingParameterDefinition *parameter = nullptr,
+        QgsProcessingGui::WidgetType type = QgsProcessingGui::Standard, QWidget *parent = nullptr );
+
+    // QgsProcessingParameterWidgetFactoryInterface
+    QString parameterType() const override;
+    QgsAbstractProcessingParameterWidgetWrapper *createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type ) override;
+    QgsProcessingAbstractParameterDefinitionWidget *createParameterDefinitionWidget(
+      QgsProcessingContext &context,
+      const QgsProcessingParameterWidgetContext &widgetContext,
+      const QgsProcessingParameterDefinition *definition = nullptr,
+      const QgsProcessingAlgorithm *algorithm = nullptr ) override;
+
+    // QgsProcessingParameterWidgetWrapper interface
+    QWidget *createWidget() override SIP_FACTORY;
+    void postInitialize( const QList< QgsAbstractProcessingParameterWidgetWrapper * > &wrappers ) override;
+
+  public slots:
+    void setParentLayerWrapperValue( const QgsAbstractProcessingParameterWidgetWrapper *parentWrapper );
+
+  protected:
+
+    void setWidgetValue( const QVariant &value, QgsProcessingContext &context ) override;
+    QVariant widgetValue() const override;
+
+    QStringList compatibleParameterTypes() const override;
+
+    QStringList compatibleOutputTypes() const override;
+    QString modelerExpressionFormatString() const override;
+
+  private:
+
+    QgsPointCloudAttributeComboBox *mComboBox = nullptr;
+    QgsProcessingPointCloudAttributePanelWidget *mPanel = nullptr;
+    QLineEdit *mLineEdit = nullptr;
+
+    std::unique_ptr< QgsPointCloudLayer > mParentLayer;
+
+    friend class TestProcessingGui;
+};
 
 ///@endcond PRIVATE
 

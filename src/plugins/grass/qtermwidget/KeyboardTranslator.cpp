@@ -23,8 +23,8 @@
 #include "KeyboardTranslator.h"
 
 // System
-#include <ctype.h>
-#include <stdio.h>
+#include <cctype>
+#include <cstdio>
 
 // Qt
 #include <QBuffer>
@@ -50,6 +50,13 @@ const QByteArray KeyboardTranslatorManager::defaultTranslatorText(
 "key Tab : \"\\t\""
 );
 
+#ifdef Q_OS_MAC
+// On Mac, Qt::ControlModifier means Cmd, and MetaModifier means Ctrl
+const Qt::KeyboardModifier KeyboardTranslator::CTRL_MOD = Qt::MetaModifier;
+#else
+const Qt::KeyboardModifier KeyboardTranslator::CTRL_MOD = Qt::ControlModifier;
+#endif
+
 KeyboardTranslatorManager::KeyboardTranslatorManager()
     : _haveLoadedAll(false)
 {
@@ -60,7 +67,7 @@ KeyboardTranslatorManager::~KeyboardTranslatorManager()
 }
 QString KeyboardTranslatorManager::findTranslatorPath(const QString& name)
 {
-    return QString(get_kb_layout_dir() + name + ".keytab");
+    return QString(get_kb_layout_dir() + name + QLatin1String(".keytab"));
     //return KGlobal::dirs()->findResource("data","konsole/"+name+".keytab");
 }
 
@@ -68,10 +75,9 @@ void KeyboardTranslatorManager::findTranslators()
 {
     QDir dir(get_kb_layout_dir());
     QStringList filters;
-    filters << QStringLiteral("*.keytab");
+    filters << QLatin1String("*.keytab");
     dir.setNameFilters(filters);
     QStringList list = dir.entryList(filters);
-    list = dir.entryList(filters);
 //    QStringList list = KGlobal::dirs()->findAllResources("data",
 //                                                         "konsole/*.keytab",
 //                                                        KStandardDirs::NoDuplicates);
@@ -103,7 +109,7 @@ const KeyboardTranslator* KeyboardTranslatorManager::findTranslator(const QStrin
 
     KeyboardTranslator* translator = loadTranslator(name);
 
-    if ( translator != 0 )
+    if ( translator != nullptr )
         _translators[name] = translator;
     else if ( !name.isEmpty() )
         qDebug() << "Unable to load translator" << name;
@@ -149,7 +155,7 @@ KeyboardTranslator* KeyboardTranslatorManager::loadTranslator(const QString& nam
 
     QFile source(path);
     if (name.isEmpty() || !source.open(QIODevice::ReadOnly | QIODevice::Text))
-        return 0;
+        return nullptr;
 
     return loadTranslator(&source,name);
 }
@@ -158,13 +164,13 @@ const KeyboardTranslator* KeyboardTranslatorManager::defaultTranslator()
 {
     // Try to find the default.keytab file if it exists, otherwise
     // fall back to the hard-coded one
-    const KeyboardTranslator* translator = findTranslator(QStringLiteral("default"));
+    const KeyboardTranslator* translator = findTranslator(QLatin1String("default"));
     if (!translator)
     {
         QBuffer textBuffer;
         textBuffer.setData(defaultTranslatorText);
         textBuffer.open(QIODevice::ReadOnly);
-        translator = loadTranslator(&textBuffer,QStringLiteral("fallback"));
+        translator = loadTranslator(&textBuffer,QLatin1String("fallback"));
     }
     return translator;
 }
@@ -186,7 +192,7 @@ KeyboardTranslator* KeyboardTranslatorManager::loadTranslator(QIODevice* source,
     else
     {
         delete translator;
-        return 0;
+        return nullptr;
     }
 }
 
@@ -211,9 +217,9 @@ void KeyboardTranslatorWriter::writeEntry( const KeyboardTranslator::Entry& entr
     if ( entry.command() != KeyboardTranslator::NoCommand )
         result = entry.resultToString();
     else
-        result = '\"' + entry.resultToString() + '\"';
+        result = QLatin1Char('\"') + entry.resultToString() + QLatin1Char('\"');
 
-    *_writer << "key " << entry.conditionToString() << " : " << result << '\n';
+    *_writer << QLatin1String("key ") << entry.conditionToString() << QLatin1String(" : ") << result << QLatin1Char('\n');
 }
 
 
@@ -229,7 +235,7 @@ void KeyboardTranslatorWriter::writeEntry( const KeyboardTranslator::Entry& entr
 // and flags are optional, if a particular modifier or state is not specified it is
 // assumed not to be a part of the sequence.  The key sequence may contain whitespace
 //
-// e.g.:  "key Up+Shift : scrollLineUp"
+// eg:  "key Up+Shift : scrollLineUp"
 //      "key Next-Shift : "\E[6~"
 //
 // (lines containing only whitespace are ignored, parseLine assumes that comments have
@@ -243,9 +249,9 @@ KeyboardTranslatorReader::KeyboardTranslatorReader( QIODevice* source )
    // read input until we find the description
    while ( _description.isEmpty() && !source->atEnd() )
    {
-        QList<Token> tokens = tokenize( QString(source->readLine()) );
+        QList<Token> tokens = tokenize( QString::fromUtf8(source->readLine()) );
         if ( !tokens.isEmpty() && tokens.first().type == Token::TitleKeyword )
-            _description = tokens[1].text.toUtf8();
+            _description = tokens[1].text;
    }
    // read first entry (if any)
    readNext();
@@ -255,7 +261,7 @@ void KeyboardTranslatorReader::readNext()
     // find next entry
     while ( !_source->atEnd() )
     {
-        const QList<Token>& tokens = tokenize( QString(_source->readLine()) );
+        const QList<Token>& tokens = tokenize( QString::fromUtf8(_source->readLine()) );
         if ( !tokens.isEmpty() && tokens.first().type == Token::KeyKeyword )
         {
             KeyboardTranslator::States flags = KeyboardTranslator::NoState;
@@ -321,6 +327,10 @@ bool KeyboardTranslatorReader::parseAsCommand(const QString& text,KeyboardTransl
         command = KeyboardTranslator::ScrollLineDownCommand;
     else if ( text.compare(QLatin1String("scrolllock"),Qt::CaseInsensitive) == 0 )
         command = KeyboardTranslator::ScrollLockCommand;
+    else if ( text.compare(QLatin1String("scrolluptotop"),Qt::CaseInsensitive) == 0)
+        command = KeyboardTranslator::ScrollUpToTopCommand;
+    else if ( text.compare(QLatin1String("scrolldowntobottom"),Qt::CaseInsensitive) == 0)
+        command = KeyboardTranslator::ScrollDownToBottomCommand;
     else
         return false;
 
@@ -388,9 +398,9 @@ bool KeyboardTranslatorReader::decodeSequence(const QString& text,
 
         // check if this is a wanted / not-wanted flag and update the
         // state ready for the next item
-        if ( ch == '+' )
+        if ( ch == QLatin1Char('+') )
            isWanted = true;
-        else if ( ch == '-' )
+        else if ( ch == QLatin1Char('-') )
            isWanted = false;
     }
 
@@ -472,9 +482,9 @@ bool KeyboardTranslatorReader::hasNextEntry() const
 KeyboardTranslator::Entry KeyboardTranslatorReader::createEntry( const QString& condition ,
                                                                  const QString& result )
 {
-    QString entryString(QStringLiteral("keyboard \"temporary\"\nkey "));
+    QString entryString = QString::fromLatin1("keyboard \"temporary\"\nkey ");
     entryString.append(condition);
-    entryString.append(" : ");
+    entryString.append(QLatin1String(" : "));
 
     // if 'result' is the name of a command then the entry result will be that command,
     // otherwise the result will be treated as a string to echo when the key sequence
@@ -483,7 +493,7 @@ KeyboardTranslator::Entry KeyboardTranslatorReader::createEntry( const QString& 
     if (parseAsCommand(result,command))
         entryString.append(result);
     else
-        entryString.append('\"' + result + '\"');
+        entryString.append(QLatin1Char('\"') + result + QLatin1Char('\"'));
 
     QByteArray array = entryString.toUtf8();
     QBuffer buffer(&array);
@@ -518,9 +528,9 @@ QList<KeyboardTranslatorReader::Token> KeyboardTranslatorReader::tokenize(const 
     for (int i=text.length()-1;i>=0;i--)
     {
         QChar ch = text[i];
-        if (ch == '\"')
+        if (ch == QLatin1Char('\"'))
             inQuotes = !inQuotes;
-        else if (ch == '#' && !inQuotes)
+        else if (ch == QLatin1Char('#') && !inQuotes)
             commentPos = i;
     }
     if (commentPos != -1)
@@ -529,10 +539,10 @@ QList<KeyboardTranslatorReader::Token> KeyboardTranslatorReader::tokenize(const 
     text = text.simplified();
 
     // title line: keyboard "title"
-    static QRegExp title("keyboard\\s+\"(.*)\"");
+    static QRegExp title(QLatin1String("keyboard\\s+\"(.*)\""));
     // key line: key KeySequence : "output"
     // key line: key KeySequence : command
-    static QRegExp key("key\\s+([\\w\\+\\s\\-\\*\\.]+)\\s*:\\s*(\"(.*)\"|\\w+)");
+    static QRegExp key(QLatin1String("key\\s+([\\w\\+\\s\\-\\*\\.]+)\\s*:\\s*(\"(.*)\"|\\w+)"));
 
     QList<Token> list;
     if ( text.isEmpty() )
@@ -543,27 +553,27 @@ QList<KeyboardTranslatorReader::Token> KeyboardTranslatorReader::tokenize(const 
     if ( title.exactMatch(text) )
     {
         Token titleToken = { Token::TitleKeyword , QString() };
-        Token textToken = { Token::TitleText , title.capturedTexts()[1] };
+        Token textToken = { Token::TitleText , title.capturedTexts().at(1) };
 
         list << titleToken << textToken;
     }
     else if  ( key.exactMatch(text) )
     {
         Token keyToken = { Token::KeyKeyword , QString() };
-        Token sequenceToken = { Token::KeySequence , key.capturedTexts()[1].remove(' ') };
+        Token sequenceToken = { Token::KeySequence , key.capturedTexts().value(1).remove(QLatin1Char(' ')) };
 
         list << keyToken << sequenceToken;
 
-        if ( key.capturedTexts()[3].isEmpty() )
+        if ( key.capturedTexts().at(3).isEmpty() )
         {
             // capturedTexts()[2] is a command
-            Token commandToken = { Token::Command , key.capturedTexts()[2] };
+            Token commandToken = { Token::Command , key.capturedTexts().at(2) };
             list << commandToken;
         }
         else
         {
             // capturedTexts()[3] is the output string
-           Token outputToken = { Token::OutputText , key.capturedTexts()[3] };
+           Token outputToken = { Token::OutputText , key.capturedTexts().at(3) };
            list << outputToken;
         }
     }
@@ -610,6 +620,11 @@ bool KeyboardTranslator::Entry::matches(int keyCode ,
                                         Qt::KeyboardModifiers modifiers,
                                         States testState) const
 {
+#ifdef Q_OS_MAC
+    // On Mac, arrow keys are considered part of keypad. Ignore that.
+    modifiers &= ~Qt::KeypadModifier;
+#endif
+
     if ( _keyCode != keyCode )
         return false;
 
@@ -617,7 +632,7 @@ bool KeyboardTranslator::Entry::matches(int keyCode ,
         return false;
 
     // if modifiers is non-zero, the 'any modifier' state is implicit
-    if ( modifiers != 0 )
+    if ( (modifiers & ~Qt::KeypadModifier) != 0 )
         testState |= AnyModifierState;
 
     if ( (testState & _stateMask) != (_state & _stateMask) )
@@ -655,7 +670,7 @@ QByteArray KeyboardTranslator::Entry::escapedText(bool expandWildCards,Qt::Keybo
             default:
                 // any character which is not printable is replaced by an equivalent
                 // \xhh escape sequence (where 'hh' are the corresponding hex digits)
-                if ( !QChar(ch).isPrint() )
+                if ( !QChar(QLatin1Char(ch)).isPrint() )
                     replacement = 'x';
         }
 
@@ -731,9 +746,9 @@ void KeyboardTranslator::Entry::insertModifier( QString& item , int modifier ) c
         return;
 
     if ( modifier & _modifiers )
-        item += '+';
+        item += QLatin1Char('+');
     else
-        item += '-';
+        item += QLatin1Char('-');
 
     if ( modifier == Qt::ShiftModifier )
         item += QLatin1String("Shift");
@@ -752,9 +767,9 @@ void KeyboardTranslator::Entry::insertState( QString& item , int state ) const
         return;
 
     if ( state & _state )
-        item += '+' ;
+        item += QLatin1Char('+') ;
     else
-        item += '-' ;
+        item += QLatin1Char('-') ;
 
     if ( state == KeyboardTranslator::AlternateScreenState )
         item += QLatin1String("AppScreen");
@@ -772,19 +787,23 @@ void KeyboardTranslator::Entry::insertState( QString& item , int state ) const
 QString KeyboardTranslator::Entry::resultToString(bool expandWildCards,Qt::KeyboardModifiers modifiers) const
 {
     if ( !_text.isEmpty() )
-        return escapedText(expandWildCards,modifiers);
+        return QString::fromLatin1(escapedText(expandWildCards,modifiers));
     else if ( _command == EraseCommand )
-        return QStringLiteral("Erase");
+        return QLatin1String("Erase");
     else if ( _command == ScrollPageUpCommand )
-        return QStringLiteral("ScrollPageUp");
+        return QLatin1String("ScrollPageUp");
     else if ( _command == ScrollPageDownCommand )
-        return QStringLiteral("ScrollPageDown");
+        return QLatin1String("ScrollPageDown");
     else if ( _command == ScrollLineUpCommand )
-        return QStringLiteral("ScrollLineUp");
+        return QLatin1String("ScrollLineUp");
     else if ( _command == ScrollLineDownCommand )
-        return QStringLiteral("ScrollLineDown");
+        return QLatin1String("ScrollLineDown");
     else if ( _command == ScrollLockCommand )
-        return QStringLiteral("ScrollLock");
+        return QLatin1String("ScrollLock");
+    else if (_command == ScrollUpToTopCommand)
+        return QLatin1String("ScrollUpToTop");
+    else if (_command == ScrollDownToBottomCommand)
+        return QLatin1String("ScrollDownToBottom");
 
     return QString();
 }
@@ -852,10 +871,11 @@ void KeyboardTranslator::removeEntry(const Entry& entry)
 }
 KeyboardTranslator::Entry KeyboardTranslator::findEntry(int keyCode, Qt::KeyboardModifiers modifiers, States state) const
 {
-    foreach(const Entry& entry, _entries.values(keyCode))
+    for (auto it = _entries.cbegin(), end = _entries.cend(); it != end; ++it)
     {
-        if ( entry.matches(keyCode,modifiers,state) )
-            return entry;
+        if (it.key() == keyCode)
+            if ( it.value().matches(keyCode,modifiers,state) )
+                return *it;
     }
     return Entry(); // entry not found
 }
@@ -884,11 +904,8 @@ bool KeyboardTranslatorManager::deleteTranslator(const QString& name)
         return false;
     }
 }
-//K_GLOBAL_STATIC( KeyboardTranslatorManager , keyboardTranslatorManager )
-KeyboardTranslatorManager* KeyboardTranslatorManager::sKeyboardTranslatorManager = 0;
+Q_GLOBAL_STATIC( KeyboardTranslatorManager , theKeyboardTranslatorManager )
 KeyboardTranslatorManager* KeyboardTranslatorManager::instance()
 {
-    if (! sKeyboardTranslatorManager )
-        sKeyboardTranslatorManager = new KeyboardTranslatorManager();
-    return sKeyboardTranslatorManager;
+    return theKeyboardTranslatorManager;
 }

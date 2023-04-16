@@ -43,6 +43,92 @@ class QgsExpressionContext;
 class QgsExpressionPrivate;
 class QgsExpressionFunction;
 
+#ifndef SIP_RUN
+///@cond PRIVATE
+struct HelpArg
+{
+  HelpArg( const QString &arg, const QString &desc, bool descOnly = false, bool syntaxOnly = false,
+           bool optional = false, const QString &defaultVal = QString() )
+    : mArg( arg )
+    , mDescription( desc )
+    , mDescOnly( descOnly )
+    , mSyntaxOnly( syntaxOnly )
+    , mOptional( optional )
+    , mDefaultVal( defaultVal )
+  {}
+
+  QString mArg;
+  QString mDescription;
+  bool mDescOnly;
+  bool mSyntaxOnly;
+  bool mOptional;
+  QString mDefaultVal;
+};
+
+struct HelpExample
+{
+  HelpExample( const QString &expression, const QString &returns, const QString &note = QString() )
+    : mExpression( expression )
+    , mReturns( returns )
+    , mNote( note )
+  {}
+
+  QString mExpression;
+  QString mReturns;
+  QString mNote;
+};
+
+
+struct HelpVariant
+{
+  HelpVariant( const QString &name, const QString &description,
+               const QList<HelpArg> &arguments = QList<HelpArg>(),
+               bool variableLenArguments = false,
+               const QList<HelpExample> &examples = QList<HelpExample>(),
+               const QString &notes = QString(),
+               const QStringList &tags = QStringList() )
+    : mName( name )
+    , mDescription( description )
+    , mArguments( arguments )
+    , mVariableLenArguments( variableLenArguments )
+    , mExamples( examples )
+    , mNotes( notes )
+    , mTags( tags )
+  {}
+
+  QString mName;
+  QString mDescription;
+  QList<HelpArg> mArguments;
+  bool mVariableLenArguments;
+  QList<HelpExample> mExamples;
+  QString mNotes;
+  QStringList mTags;
+};
+
+
+struct Help
+{
+  //! Constructor for expression help
+  Help() = default;
+
+  Help( const QString &name, const QString &type, const QString &description, const QList<HelpVariant> &variants )
+    : mName( name )
+    , mType( type )
+    , mDescription( description )
+    , mVariants( variants )
+  {}
+
+  QString mName;
+  QString mType;
+  QString mDescription;
+  QList<HelpVariant> mVariants;
+};
+
+typedef QHash<QString, Help> HelpTextHash;
+
+///@endcond PRIVATE
+#endif
+
 /**
  * \ingroup core
  * \brief Class for parsing and evaluation of expressions (formerly called "search strings").
@@ -601,6 +687,12 @@ class CORE_EXPORT QgsExpression
 
     //////
 
+#ifndef SIP_RUN
+    ///@cond PRIVATE
+    static HelpTextHash &functionHelpTexts();
+    ///@endcond PRIVATE
+#endif
+
     /**
      * Returns the help text for a specified function.
      * \param name function name
@@ -726,6 +818,8 @@ class CORE_EXPORT QgsExpression
     void detach() SIP_SKIP;
 
     QgsExpressionPrivate *d = nullptr;
+
+    static HelpTextHash sFunctionHelpTexts;
 
     //! \note not available in Python bindings
     static void initFunctionHelp() SIP_SKIP;

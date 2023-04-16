@@ -65,7 +65,6 @@ class QgsAfsProvider : public QgsVectorDataProvider
     QgsVectorDataProvider::Capabilities capabilities() const override;
     QgsAttributeList pkAttributeIndexes() const override;
     QString defaultValueClause( int fieldId ) const override;
-    QgsAttrPalIndexNameHash palAttributeIndexNames() const override { return QgsAttrPalIndexNameHash(); }
     bool skipConstraintCheck( int fieldIndex, QgsFieldConstraints::Constraint constraint, const QVariant &value = QVariant() ) const override;
 
     QString subsetString() const override;

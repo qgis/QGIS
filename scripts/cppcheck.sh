@@ -31,6 +31,7 @@ cppcheck --library=qt.cfg --inline-suppr \
          -DSIP_INOUT= \
          -DSIP_OUT= \
          -DSIP_FACTORY= \
+         -DSIP_PYNAME= \
          -DSIP_THROW= \
          -DCMAKE_SOURCE_DIR="/foo/bar" \
          -DQ_NOWARN_DEPRECATED_PUSH= \
@@ -39,6 +40,8 @@ cppcheck --library=qt.cfg --inline-suppr \
          -DQGIS_PROTECT_QOBJECT_THREAD_ACCESS = \
          -DQ_DECLARE_SQLDRIVER_PRIVATE = \
          -DSIP_MONKEYPATCH_SCOPEENUM_UNNEST = \
+         -DQgsSetCPLHTTPFetchOverriderInitiatorClass = \
+         -DBUILTIN_UNREACHABLE="__builtin_unreachable();" \
          -i src/analysis/georeferencing/qgsgcptransformer.cpp \
          -j $(nproc) \
          ${SCRIPT_DIR}/../src \

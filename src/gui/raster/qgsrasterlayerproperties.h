@@ -95,6 +95,34 @@ class GUI_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
 
     bool eventFilter( QObject *obj, QEvent *ev ) override;
 
+    /**
+     * Loads the default style when appropriate button is pressed
+     *
+     * \since QGIS 3.30
+     */
+    void loadDefaultStyle();
+
+    /**
+     * Saves the default style when appropriate button is pressed
+     *
+     * \since QGIS 3.30
+     */
+    void saveDefaultStyle();
+
+    /**
+     * Loads a saved style when appropriate button is pressed
+     *
+     * \since QGIS 3.30
+     */
+    void loadStyle();
+
+    /**
+     * Saves a style when appriate button is pressed
+     *
+     * \since QGIS 3.30
+     */
+    void saveStyleAs();
+
   protected slots:
     //! \brief auto slot executed when the active page in the main widget stack is changed
     void optionsStackedWidget_CurrentChanged( int index ) override SIP_SKIP ;
@@ -156,17 +184,8 @@ class GUI_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
     void updateGammaSlider( double value );
 
     void mRenderTypeComboBox_currentIndexChanged( int index );
-    //! Load the default style when appropriate button is pressed.
-    void loadDefaultStyle_clicked();
-    //! Save the default style when appropriate button is pressed.
-    void saveDefaultStyle_clicked();
-    //! Load a saved style when appropriate button is pressed.
-    void loadStyle_clicked();
-    //! Save a style when appriate button is pressed.
-    void saveStyleAs_clicked();
     //! Restore dialog modality and focus, usually after a pixel clicked to pick transparency color
     void restoreWindowModality();
-
 
     //! Load a saved metadata file.
     void loadMetadata();
@@ -316,8 +335,6 @@ class GUI_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
 
     void initMapTipPreview();
 
-    QWidget *mMapTipPreviewWidget = nullptr;
     QgsWebView *mMapTipPreview = nullptr;
-    static const int MARGIN_VALUE = 5;
 };
 #endif

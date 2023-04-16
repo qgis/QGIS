@@ -55,23 +55,43 @@ static std::unique_ptr<PipelineManager> pipeline(ParallelJobInfo *tile, const st
 
     Stage& r = manager->makeReader( tile->inputFilenames[0], "");
 
+    Stage *last = &r;
+
+    // filtering
+    if (!tile->filterBounds.empty())
+    {
+        Options filter_opts;
+        filter_opts.add(pdal::Option("bounds", tile->filterBounds));
+
+        if (readerSupportsBounds(r))
+        {
+            // Reader of the format can do the filtering - use that whenever possible!
+            r.addOptions(filter_opts);
+        }
+        else
+        {
+            // Reader can't do the filtering - do it with a filter
+            last = &manager->makeFilter( "filters.crop", *last, filter_opts);
+        }
+    }
+    if (!tile->filterExpression.empty())
+    {
+        Options filter_opts;
+        filter_opts.add(pdal::Option("expression", tile->filterExpression));
+        last = &manager->makeFilter( "filters.expression", *last, filter_opts);
+    }
+
     pdal::Options writer_opts;
     writer_opts.add(pdal::Option("ogrdriver", "GPKG"));
     if (!attributes.empty())
         writer_opts.add(pdal::Option("attr_dims", join_strings(attributes, ',')));
-
-    if (!tile->filterExpression.empty())
-    {
-        writer_opts.add(pdal::Option("where", tile->filterExpression));
-    }
-
-    Stage& w = manager->makeWriter( tile->outputFilename, "writers.ogr", r, writer_opts);
+    (void)manager->makeWriter( tile->outputFilename, "writers.ogr", *last, writer_opts);
 
     return manager;
 }
 
 
-void ToVector::preparePipelines(std::vector<std::unique_ptr<PipelineManager>>& pipelines, const BOX3D &bounds, point_count_t &totalPoints)
+void ToVector::preparePipelines(std::vector<std::unique_ptr<PipelineManager>>& pipelines, const BOX3D &, point_count_t &)
 {
     if (ends_with(inputFile, ".vpc"))
     {
@@ -87,7 +107,7 @@ void ToVector::preparePipelines(std::vector<std::unique_ptr<PipelineManager>>& p
 
         for (const VirtualPointCloud::File& f : vpc.files)
         {
-            ParallelJobInfo tile(ParallelJobInfo::FileBased, BOX2D(), filterExpression);
+            ParallelJobInfo tile(ParallelJobInfo::FileBased, BOX2D(), filterExpression, filterBounds);
             tile.inputFilenames.push_back(f.filename);
 
             // for input file /x/y/z.las that goes to /tmp/hello.vpc,
@@ -102,14 +122,14 @@ void ToVector::preparePipelines(std::vector<std::unique_ptr<PipelineManager>>& p
     }
     else
     {
-        ParallelJobInfo tile(ParallelJobInfo::Single, BOX2D(), filterExpression);
+        ParallelJobInfo tile(ParallelJobInfo::Single, BOX2D(), filterExpression, filterBounds);
         tile.inputFilenames.push_back(inputFile);
         tile.outputFilename = outputFile;
         pipelines.push_back(pipeline(&tile, attributes));
     }
 }
 
-void ToVector::finalize(std::vector<std::unique_ptr<PipelineManager>>& pipelines)
+void ToVector::finalize(std::vector<std::unique_ptr<PipelineManager>>&)
 {
     if (tileOutputFiles.empty())
         return;

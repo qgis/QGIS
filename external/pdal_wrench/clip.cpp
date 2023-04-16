@@ -118,26 +118,43 @@ static std::unique_ptr<PipelineManager> pipeline(ParallelJobInfo *tile, const pd
 
     Stage& r = manager->makeReader( tile->inputFilenames[0], "");
 
-    Stage& f = manager->makeFilter( "filters.crop", r, crop_opts );
+    Stage *last = &r;
 
-    pdal::Options writer_opts;
-    writer_opts.add(pdal::Option("forward", "all"));
+    // filtering
+    if (!tile->filterBounds.empty())
+    {
+        Options filter_opts;
+        filter_opts.add(pdal::Option("bounds", tile->filterBounds));
 
-    Stage& w = manager->makeWriter( tile->outputFilename, "", f, writer_opts);
-
+        if (readerSupportsBounds(r))
+        {
+            // Reader of the format can do the filtering - use that whenever possible!
+            r.addOptions(filter_opts);
+        }
+        else
+        {
+            // Reader can't do the filtering - do it with a filter
+            last = &manager->makeFilter( "filters.crop", *last, filter_opts);
+        }
+    }
     if (!tile->filterExpression.empty())
     {
         Options filter_opts;
-        filter_opts.add(pdal::Option("where", tile->filterExpression));
-        f.addOptions(filter_opts);
-        w.addOptions(filter_opts);
+        filter_opts.add(pdal::Option("expression", tile->filterExpression));
+        last = &manager->makeFilter( "filters.expression", *last, filter_opts);
     }
+
+    last = &manager->makeFilter( "filters.crop", *last, crop_opts );
+
+    pdal::Options writer_opts;
+    writer_opts.add(pdal::Option("forward", "all"));
+    manager->makeWriter( tile->outputFilename, "", *last, writer_opts);
 
     return manager;
 }
 
 
-void Clip::preparePipelines(std::vector<std::unique_ptr<PipelineManager>>& pipelines, const BOX3D &bounds, point_count_t &totalPoints)
+void Clip::preparePipelines(std::vector<std::unique_ptr<PipelineManager>>& pipelines, const BOX3D &, point_count_t &totalPoints)
 {
     pdal::Options crop_opts;
     BOX2D bbox;
@@ -175,7 +192,7 @@ void Clip::preparePipelines(std::vector<std::unique_ptr<PipelineManager>>& pipel
               std::cout << "using " << f.filename << std::endl;
             }
 
-            ParallelJobInfo tile(ParallelJobInfo::FileBased, BOX2D(), filterExpression);
+            ParallelJobInfo tile(ParallelJobInfo::FileBased, BOX2D(), filterExpression, filterBounds);
             tile.inputFilenames.push_back(f.filename);
 
             // for input file /x/y/z.las that goes to /tmp/hello.vpc,
@@ -190,14 +207,14 @@ void Clip::preparePipelines(std::vector<std::unique_ptr<PipelineManager>>& pipel
     }
     else
     {
-        ParallelJobInfo tile(ParallelJobInfo::Single, BOX2D(), filterExpression);
+        ParallelJobInfo tile(ParallelJobInfo::Single, BOX2D(), filterExpression, filterBounds);
         tile.inputFilenames.push_back(inputFile);
         tile.outputFilename = outputFile;
         pipelines.push_back(pipeline(&tile, crop_opts));
     }
 }
 
-void Clip::finalize(std::vector<std::unique_ptr<PipelineManager>>& pipelines)
+void Clip::finalize(std::vector<std::unique_ptr<PipelineManager>>&)
 {
     if (tileOutputFiles.empty())
         return;

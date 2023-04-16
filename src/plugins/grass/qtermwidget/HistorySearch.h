@@ -38,7 +38,7 @@ class HistorySearch : public QObject
     Q_OBJECT
 
 public:
-    explicit HistorySearch(EmulationPtr emulation, QRegExp regExp, bool forwards,
+    explicit HistorySearch(EmulationPtr emulation, const QRegExp& regExp, bool forwards,
                            int startColumn, int startLine, QObject* parent);
 
     ~HistorySearch() override;

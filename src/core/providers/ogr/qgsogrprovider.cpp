@@ -814,6 +814,16 @@ void QgsOgrProvider::loadFields()
       newField.setAlias( alias );
     }
 
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,7,0)
+    {
+      const QString comment = textEncoding()->toUnicode( OGR_Fld_GetComment( fldDef ) );
+      if ( !comment.isEmpty() )
+      {
+        newField.setComment( comment );
+      }
+    }
+#endif
+
     // check if field is nullable
     bool nullable = OGR_Fld_IsNullable( fldDef );
     if ( !nullable )
@@ -1845,6 +1855,10 @@ bool QgsOgrProvider::addAttributeOGRLevel( const QgsField &field, bool &ignoreEr
       break;
   }
 
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,6,0)
+  OGR_Fld_SetAlternativeName( fielddefn.get(), textEncoding()->fromUnicode( field.alias() ).constData() );
+#endif
+
   if ( mOgrLayer->CreateField( fielddefn.get(), true ) != OGRERR_NONE )
   {
     pushError( tr( "OGR error creating field %1: %2" ).arg( field.name(), CPLGetLastErrorMsg() ) );
@@ -2754,6 +2768,11 @@ QgsVectorDataProvider::Capabilities QgsOgrProvider::capabilities() const
   return mCapabilities;
 }
 
+Qgis::VectorDataProviderAttributeEditCapabilities QgsOgrProvider::attributeEditCapabilities() const
+{
+  return mAttributeEditCapabilities;
+}
+
 void QgsOgrProvider::computeCapabilities()
 {
   QgsVectorDataProvider::Capabilities ability = QgsVectorDataProvider::Capabilities();
@@ -2905,6 +2924,18 @@ void QgsOgrProvider::computeCapabilities()
       ability |= FeatureSymbology;
       ability |= CreateRenderer;
     }
+
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,7,0)
+    if ( const char *pszAlterFieldDefnFlags = GDALGetMetadataItem( mOgrLayer->driver(), GDAL_DMD_ALTER_FIELD_DEFN_FLAGS, nullptr ) )
+    {
+      char **papszTokens = CSLTokenizeString2( pszAlterFieldDefnFlags, " ", 0 );
+      if ( CSLFindString( papszTokens, "AlternativeName" ) >= 0 )
+      {
+        mAttributeEditCapabilities |= Qgis::VectorDataProviderAttributeEditCapability::EditAlias;
+      }
+      CSLDestroy( papszTokens );
+    }
+#endif
   }
 
   ability |= ReadLayerMetadata;

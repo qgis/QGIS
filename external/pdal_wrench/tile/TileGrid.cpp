@@ -37,6 +37,7 @@ void TileGrid::expand(const BOX3D& bounds, size_t points)
 
 TileKey TileGrid::key(double x, double y, double z) const
 {
+    (void)z;
     int xi = (int)std::floor((x - m_bounds.minx) / m_tileLength);
     int yi = (int)std::floor((y - m_bounds.miny) / m_tileLength);
     xi = (std::min)((std::max)(0, xi), m_gridSizeX - 1);

@@ -121,7 +121,6 @@ class DummyAlgorithm : public QgsProcessingAlgorithm
       QVERIFY( addParameter( p4 ) );
       QCOMPARE( countVisibleParameters(), 2 );
 
-
       //destination styleparameters
       QVERIFY( destinationParameterDefinitions().isEmpty() );
       QgsProcessingParameterFeatureSink *p5 = new QgsProcessingParameterFeatureSink( "p5" );
@@ -619,8 +618,6 @@ class DummyProvider4 : public QgsProcessingProvider // clazy:exclude=missing-qob
 
 class DummyParameterType : public QgsProcessingParameterType
 {
-
-
     // QgsProcessingParameterType interface
   public:
     QgsProcessingParameterDefinition *create( const QString &name ) const override
@@ -779,6 +776,7 @@ class TestQgsProcessing: public QObject
 #ifdef HAVE_EPT
     void parameterPointCloudLayer();
 #endif
+    void parameterPointCloudAttribute();
     void parameterAnnotationLayer();
     void checkParamValues();
     void combineLayerExtent();
@@ -6544,7 +6542,7 @@ void TestQgsProcessing::parameterField()
   // string
   QVariantMap params;
   params.insert( "non_optional", QString( "a" ) );
-  QStringList fields = QgsProcessingParameters::parameterAsFields( def.get(), params, context );
+  QStringList fields = QgsProcessingParameters::parameterAsStrings( def.get(), params, context );
   QCOMPARE( fields, QStringList() << "a" );
 
   QCOMPARE( def->valueAsPythonString( QVariant(), context ), QStringLiteral( "None" ) );
@@ -6658,10 +6656,10 @@ void TestQgsProcessing::parameterField()
   QVERIFY( !def->checkValueIsAcceptable( QVariantList() ) );
 
   params.insert( "non_optional", QString( "a;b" ) );
-  fields = QgsProcessingParameters::parameterAsFields( def.get(), params, context );
+  fields = QgsProcessingParameters::parameterAsStrings( def.get(), params, context );
   QCOMPARE( fields, QStringList() << "a" << "b" );
   params.insert( "non_optional", QVariantList() << "a" << "b" );
-  fields = QgsProcessingParameters::parameterAsFields( def.get(), params, context );
+  fields = QgsProcessingParameters::parameterAsStrings( def.get(), params, context );
   QCOMPARE( fields, QStringList() << "a" << "b" );
 
   QCOMPARE( def->valueAsPythonString( QVariant(), context ), QStringLiteral( "None" ) );
@@ -6745,25 +6743,25 @@ void TestQgsProcessing::parameterField()
   QVERIFY( def->checkValueIsAcceptable( QVariant() ) );
 
   params.insert( "optional",  QVariant() );
-  fields = QgsProcessingParameters::parameterAsFields( def.get(), params, context );
+  fields = QgsProcessingParameters::parameterAsStrings( def.get(), params, context );
   QCOMPARE( fields, QStringList() << "def" );
 
   // optional with string list default
   def.reset( new QgsProcessingParameterField( "optional", QString(), QStringList() << QStringLiteral( "def" ) << QStringLiteral( "abc" ), QString(), QgsProcessingParameterField::Any, true, true ) );
   QVERIFY( def->checkValueIsAcceptable( QStringList() << "a" << "b" ) );
-  fields = QgsProcessingParameters::parameterAsFields( def.get(), params, context );
+  fields = QgsProcessingParameters::parameterAsStrings( def.get(), params, context );
   QCOMPARE( fields, QStringList() << "def" << "abc" );
   params.insert( "optional",  QVariantList() << "f" << "h" );
-  fields = QgsProcessingParameters::parameterAsFields( def.get(), params, context );
+  fields = QgsProcessingParameters::parameterAsStrings( def.get(), params, context );
   QCOMPARE( fields, QStringList() << "f" << "h" );
   params.insert( "optional",  QStringList() << "g" << "h" );
-  fields = QgsProcessingParameters::parameterAsFields( def.get(), params, context );
+  fields = QgsProcessingParameters::parameterAsStrings( def.get(), params, context );
   QCOMPARE( fields, QStringList() << "g" << "h" );
 
   // optional, no default
   def.reset( new QgsProcessingParameterField( "optional", QString(), QVariant(), QString(), QgsProcessingParameterField::Any, false, true ) );
   params.insert( "optional",  QVariant() );
-  fields = QgsProcessingParameters::parameterAsFields( def.get(), params, context );
+  fields = QgsProcessingParameters::parameterAsStrings( def.get(), params, context );
   QVERIFY( fields.isEmpty() );
 
   pythonCode = def->asPythonString();
@@ -6791,11 +6789,11 @@ void TestQgsProcessing::parameterField()
   QVERIFY( def->checkValueIsAcceptable( QVariant() ) );
 
   params.insert( "optional",  QVariant() );
-  fields = QgsProcessingParameters::parameterAsFields( def.get(), params, context );
+  fields = QgsProcessingParameters::parameterAsStrings( def.get(), params, context );
   QCOMPARE( fields, QStringList() << "abc" << "def" );
   def.reset( new QgsProcessingParameterField( "optional", QString(), QVariantList() << "abc" << "def", QString(), QgsProcessingParameterField::Any, true, true ) );
   params.insert( "optional",  QVariant() );
-  fields = QgsProcessingParameters::parameterAsFields( def.get(), params, context );
+  fields = QgsProcessingParameters::parameterAsStrings( def.get(), params, context );
   QCOMPARE( fields, QStringList() << "abc" << "def" );
 }
 
@@ -10737,6 +10735,224 @@ void TestQgsProcessing::parameterPointCloudLayer()
 }
 #endif
 
+void TestQgsProcessing::parameterPointCloudAttribute()
+{
+  QgsProcessingContext context;
+
+  // not optional!
+  std::unique_ptr< QgsProcessingParameterPointCloudAttribute > def( new QgsProcessingParameterPointCloudAttribute( "non_optional", QString(), QVariant(), QString(), false, false ) );
+  QVERIFY( def->checkValueIsAcceptable( 1 ) );
+  QVERIFY( def->checkValueIsAcceptable( "test" ) );
+  QVERIFY( !def->checkValueIsAcceptable( QStringList() << "a" << "b" ) );
+  QVERIFY( !def->checkValueIsAcceptable( QVariantList() << "a" << "b" ) );
+  QVERIFY( !def->checkValueIsAcceptable( "" ) );
+  QVERIFY( !def->checkValueIsAcceptable( QVariant() ) );
+
+  QVariantMap params;
+  params.insert( "non_optional", QString( "a" ) );
+  QStringList attributes = QgsProcessingParameters::parameterAsStrings( def.get(), params, context );
+  QCOMPARE( attributes, QStringList() << "a" );
+
+  QCOMPARE( def->valueAsPythonString( QVariant(), context ), QStringLiteral( "None" ) );
+  QCOMPARE( def->valueAsPythonString( QStringLiteral( "abc" ), context ), QStringLiteral( "'abc'" ) );
+  QCOMPARE( def->valueAsPythonString( QVariant::fromValue( QgsProperty::fromExpression( "\"a\"=1" ) ), context ), QStringLiteral( "QgsProperty.fromExpression('\"a\"=1')" ) );
+  QCOMPARE( def->valueAsPythonString( "probably\'invalid\"attribute", context ), QStringLiteral( "'probably\\'invalid\"attribute'" ) );
+
+  QCOMPARE( def->valueAsJsonObject( QVariant(), context ), QVariant() );
+  QCOMPARE( def->valueAsJsonObject( QStringLiteral( "abc" ), context ), QVariant( QStringLiteral( "abc" ) ) );
+  QCOMPARE( def->valueAsJsonObject( "probably\'invalid\"attribute", context ), QVariant( QStringLiteral( "probably\'invalid\"attribute" ) ) );
+
+  bool ok = false;
+  QCOMPARE( def->valueAsString( QVariant(), context, ok ), QString() );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( 5, context, ok ), QStringLiteral( "5" ) );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( QStringLiteral( "abc" ), context, ok ), QStringLiteral( "abc" ) );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( QStringLiteral( "probably\'invalid\"attribute" ), context, ok ), QStringLiteral( "probably\'invalid\"attribute" ) );
+  QVERIFY( ok );
+
+  QString pythonCode = def->asPythonString();
+  QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterPointCloudAttribute('non_optional', '', parentLayerParameterName='', allowMultiple=False, defaultValue=None)" ) );
+
+  QString code = def->asScriptCode();
+  QCOMPARE( code, QStringLiteral( "##non_optional=attribute" ) );
+  std::unique_ptr< QgsProcessingParameterPointCloudAttribute > fromCode( dynamic_cast< QgsProcessingParameterPointCloudAttribute * >( QgsProcessingParameters::parameterFromScriptCode( code ) ) );
+  QVERIFY( fromCode.get() );
+  QCOMPARE( fromCode->name(), def->name() );
+  QCOMPARE( fromCode->description(), QStringLiteral( "non optional" ) );
+  QCOMPARE( fromCode->flags(), def->flags() );
+  QCOMPARE( fromCode->defaultValue(), def->defaultValue() );
+  QCOMPARE( fromCode->parentLayerParameterName(), def->parentLayerParameterName() );
+  QCOMPARE( fromCode->allowMultiple(), def->allowMultiple() );
+  QCOMPARE( fromCode->defaultToAllAttributes(), def->defaultToAllAttributes() );
+
+  QVERIFY( def->dependsOnOtherParameters().isEmpty() );
+  def->setParentLayerParameterName( "my_parent" );
+  QCOMPARE( def->dependsOnOtherParameters(), QStringList() << QStringLiteral( "my_parent" ) );
+
+  pythonCode = def->asPythonString();
+  QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterPointCloudAttribute('non_optional', '', parentLayerParameterName='my_parent', allowMultiple=False, defaultValue=None)" ) );
+
+  code = def->asScriptCode();
+  fromCode.reset( dynamic_cast< QgsProcessingParameterPointCloudAttribute * >( QgsProcessingParameters::parameterFromScriptCode( code ) ) );
+  QVERIFY( fromCode.get() );
+  QCOMPARE( fromCode->name(), def->name() );
+  QCOMPARE( fromCode->description(), QStringLiteral( "non optional" ) );
+  QCOMPARE( fromCode->flags(), def->flags() );
+  QCOMPARE( fromCode->defaultValue(), def->defaultValue() );
+  QCOMPARE( fromCode->parentLayerParameterName(), def->parentLayerParameterName() );
+  QCOMPARE( fromCode->allowMultiple(), def->allowMultiple() );
+  QCOMPARE( fromCode->defaultToAllAttributes(), def->defaultToAllAttributes() );
+
+  // multiple
+  def.reset( new QgsProcessingParameterPointCloudAttribute( "non_optional", QString(), QVariant(), QString(), true, false ) );
+  QVERIFY( def->checkValueIsAcceptable( 1 ) );
+  QVERIFY( def->checkValueIsAcceptable( "test" ) );
+  QVERIFY( def->checkValueIsAcceptable( QStringList() << "a" << "b" ) );
+  QVERIFY( def->checkValueIsAcceptable( QVariantList() << "a" << "b" ) );
+  QVERIFY( !def->checkValueIsAcceptable( "" ) );
+  QVERIFY( !def->checkValueIsAcceptable( QVariant() ) );
+  QVERIFY( !def->checkValueIsAcceptable( QStringList() ) );
+  QVERIFY( !def->checkValueIsAcceptable( QVariantList() ) );
+
+  params.insert( "non_optional", QString( "a;b" ) );
+  attributes = QgsProcessingParameters::parameterAsStrings( def.get(), params, context );
+  QCOMPARE( attributes, QStringList() << "a" << "b" );
+  params.insert( "non_optional", QVariantList() << "a" << "b" );
+  attributes = QgsProcessingParameters::parameterAsStrings( def.get(), params, context );
+  QCOMPARE( attributes, QStringList() << "a" << "b" );
+
+  QCOMPARE( def->valueAsPythonString( QVariant(), context ), QStringLiteral( "None" ) );
+  QCOMPARE( def->valueAsPythonString( QStringList() << "a" << "b", context ), QStringLiteral( "['a','b']" ) );
+
+  QCOMPARE( def->valueAsJsonObject( QVariant(), context ), QVariant() );
+  QCOMPARE( def->valueAsJsonObject( QStringList() << "a" << "b", context ), QVariant( QVariantList( {QStringLiteral( "a" ), QStringLiteral( "b" ) } ) ) );
+
+  QCOMPARE( def->valueAsString( QVariant(), context, ok ), QString() );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( QStringList() << "a" << "b", context, ok ), QString() );
+  QVERIFY( !ok );
+
+  QCOMPARE( def->valueAsStringList( QStringList() << "a" << "b", context, ok ), QStringList( {"a", "b"} ) );
+  QVERIFY( ok );
+
+  QVariantMap map = def->toVariantMap();
+  QgsProcessingParameterPointCloudAttribute fromMap( "x" );
+  QVERIFY( fromMap.fromVariantMap( map ) );
+  QCOMPARE( fromMap.name(), def->name() );
+  QCOMPARE( fromMap.description(), def->description() );
+  QCOMPARE( fromMap.flags(), def->flags() );
+  QCOMPARE( fromMap.defaultValue(), def->defaultValue() );
+  QCOMPARE( fromMap.parentLayerParameterName(), def->parentLayerParameterName() );
+  QCOMPARE( fromMap.allowMultiple(), def->allowMultiple() );
+  QCOMPARE( fromMap.defaultToAllAttributes(), def->defaultToAllAttributes() );
+  def.reset( dynamic_cast< QgsProcessingParameterPointCloudAttribute *>( QgsProcessingParameters::parameterFromVariantMap( map ) ) );
+  QVERIFY( dynamic_cast< QgsProcessingParameterPointCloudAttribute *>( def.get() ) );
+
+  pythonCode = def->asPythonString();
+  QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterPointCloudAttribute('non_optional', '', parentLayerParameterName='', allowMultiple=True, defaultValue=None)" ) );
+  code = def->asScriptCode();
+  fromCode.reset( dynamic_cast< QgsProcessingParameterPointCloudAttribute * >( QgsProcessingParameters::parameterFromScriptCode( code ) ) );
+  QVERIFY( fromCode.get() );
+  QCOMPARE( fromCode->name(), def->name() );
+  QCOMPARE( fromCode->description(), QStringLiteral( "non optional" ) );
+  QCOMPARE( fromCode->flags(), def->flags() );
+  QCOMPARE( fromCode->defaultValue(), def->defaultValue() );
+  QCOMPARE( fromCode->parentLayerParameterName(), def->parentLayerParameterName() );
+  QCOMPARE( fromCode->allowMultiple(), def->allowMultiple() );
+  QCOMPARE( fromCode->defaultToAllAttributes(), def->defaultToAllAttributes() );
+
+  // default to all attributes
+  def.reset( new QgsProcessingParameterPointCloudAttribute( "non_optional", QString(), QVariant(), QString(), true, false, true ) );
+  map = def->toVariantMap();
+  QVERIFY( fromMap.fromVariantMap( map ) );
+  QCOMPARE( fromMap.name(), def->name() );
+  QCOMPARE( fromMap.description(), def->description() );
+  QCOMPARE( fromMap.flags(), def->flags() );
+  QCOMPARE( fromMap.defaultValue(), def->defaultValue() );
+  QCOMPARE( fromMap.parentLayerParameterName(), def->parentLayerParameterName() );
+  QCOMPARE( fromMap.allowMultiple(), def->allowMultiple() );
+  QCOMPARE( fromMap.defaultToAllAttributes(), def->defaultToAllAttributes() );
+  def.reset( dynamic_cast< QgsProcessingParameterPointCloudAttribute *>( QgsProcessingParameters::parameterFromVariantMap( map ) ) );
+  QVERIFY( dynamic_cast< QgsProcessingParameterPointCloudAttribute *>( def.get() ) );
+
+  pythonCode = def->asPythonString();
+  QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterPointCloudAttribute('non_optional', '', parentLayerParameterName='', allowMultiple=True, defaultValue=None, defaultToAllAttributes=True)" ) );
+  code = def->asScriptCode();
+  fromCode.reset( dynamic_cast< QgsProcessingParameterPointCloudAttribute * >( QgsProcessingParameters::parameterFromScriptCode( code ) ) );
+  QVERIFY( fromCode.get() );
+  QCOMPARE( fromCode->name(), def->name() );
+  QCOMPARE( fromCode->description(), QStringLiteral( "non optional" ) );
+  QCOMPARE( fromCode->flags(), def->flags() );
+  QCOMPARE( fromCode->defaultValue(), def->defaultValue() );
+  QCOMPARE( fromCode->parentLayerParameterName(), def->parentLayerParameterName() );
+  QCOMPARE( fromCode->allowMultiple(), def->allowMultiple() );
+  QCOMPARE( fromCode->defaultToAllAttributes(), def->defaultToAllAttributes() );
+
+  // optional
+  def.reset( new QgsProcessingParameterPointCloudAttribute( "optional", QString(), QString( "def" ), QString(), false, true ) );
+  QVERIFY( def->checkValueIsAcceptable( 1 ) );
+  QVERIFY( def->checkValueIsAcceptable( "test" ) );
+  QVERIFY( !def->checkValueIsAcceptable( QStringList() << "a" << "b" ) );
+  QVERIFY( !def->checkValueIsAcceptable( QVariantList() << "a" << "b" ) );
+  QVERIFY( def->checkValueIsAcceptable( "" ) );
+  QVERIFY( def->checkValueIsAcceptable( QVariant() ) );
+
+  params.insert( "optional",  QVariant() );
+  attributes = QgsProcessingParameters::parameterAsStrings( def.get(), params, context );
+  QCOMPARE( attributes, QStringList() << "def" );
+
+  // optional with string list default
+  def.reset( new QgsProcessingParameterPointCloudAttribute( "optional", QString(), QStringList() << QStringLiteral( "def" ) << QStringLiteral( "abc" ), QString(), true, true ) );
+  QVERIFY( def->checkValueIsAcceptable( QStringList() << "a" << "b" ) );
+  attributes = QgsProcessingParameters::parameterAsStrings( def.get(), params, context );
+  QCOMPARE( attributes, QStringList() << "def" << "abc" );
+  params.insert( "optional",  QVariantList() << "f" << "h" );
+  attributes = QgsProcessingParameters::parameterAsStrings( def.get(), params, context );
+  QCOMPARE( attributes, QStringList() << "f" << "h" );
+  params.insert( "optional",  QStringList() << "g" << "h" );
+  attributes = QgsProcessingParameters::parameterAsStrings( def.get(), params, context );
+  QCOMPARE( attributes, QStringList() << "g" << "h" );
+
+  // optional, no default
+  def.reset( new QgsProcessingParameterPointCloudAttribute( "optional", QString(), QVariant(), QString(), false, true ) );
+  params.insert( "optional",  QVariant() );
+  attributes = QgsProcessingParameters::parameterAsStrings( def.get(), params, context );
+  QVERIFY( attributes.isEmpty() );
+
+  pythonCode = def->asPythonString();
+  QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterPointCloudAttribute('optional', '', optional=True, parentLayerParameterName='', allowMultiple=False, defaultValue=None)" ) );
+  code = def->asScriptCode();
+  QCOMPARE( code, QStringLiteral( "##optional=optional attribute" ) );
+  fromCode.reset( dynamic_cast< QgsProcessingParameterPointCloudAttribute * >( QgsProcessingParameters::parameterFromScriptCode( code ) ) );
+  QVERIFY( fromCode.get() );
+  QCOMPARE( fromCode->name(), def->name() );
+  QCOMPARE( fromCode->description(), QStringLiteral( "optional" ) );
+  QCOMPARE( fromCode->flags(), def->flags() );
+  QCOMPARE( fromCode->defaultValue(), def->defaultValue() );
+  QCOMPARE( fromCode->parentLayerParameterName(), def->parentLayerParameterName() );
+  QCOMPARE( fromCode->allowMultiple(), def->allowMultiple() );
+  QCOMPARE( fromCode->defaultToAllAttributes(), def->defaultToAllAttributes() );
+
+  //optional with multiples
+  def.reset( new QgsProcessingParameterPointCloudAttribute( "optional", QString(), QString( "abc;def" ), QString(), true, true ) );
+  QVERIFY( def->checkValueIsAcceptable( 1 ) );
+  QVERIFY( def->checkValueIsAcceptable( "test" ) );
+  QVERIFY( def->checkValueIsAcceptable( QStringList() << "a" << "b" ) );
+  QVERIFY( def->checkValueIsAcceptable( QVariantList() << "a" << "b" ) );
+  QVERIFY( def->checkValueIsAcceptable( "" ) );
+  QVERIFY( def->checkValueIsAcceptable( QVariant() ) );
+
+  params.insert( "optional",  QVariant() );
+  attributes = QgsProcessingParameters::parameterAsStrings( def.get(), params, context );
+  QCOMPARE( attributes, QStringList() << "abc" << "def" );
+  def.reset( new QgsProcessingParameterPointCloudAttribute( "optional", QString(), QVariantList() << "abc" << "def", QString(), true, true ) );
+  params.insert( "optional",  QVariant() );
+  attributes = QgsProcessingParameters::parameterAsStrings( def.get(), params, context );
+  QCOMPARE( attributes, QStringList() << "abc" << "def" );
+}
+
 void TestQgsProcessing::checkParamValues()
 {
   DummyAlgorithm a( "asd" );
@@ -11064,7 +11280,6 @@ void TestQgsProcessing::asJsonMap()
   DummyAlgorithm alg( "test" );
   alg.runAsAsJsonMapChecks();
 }
-
 
 void TestQgsProcessing::tempUtils()
 {
@@ -11585,13 +11800,10 @@ void TestQgsProcessing::stringToPythonLiteral()
   QCOMPARE( QgsProcessingUtils::stringToPythonLiteral( QString() ), QStringLiteral( "''" ) );
   QCOMPARE( QgsProcessingUtils::stringToPythonLiteral( QStringLiteral( "a \n str\tin\\g" ) ), QStringLiteral( "'a \\n str\\tin\\\\g'" ) );
 
-
   QCOMPARE( QgsProcessingUtils::stringToPythonLiteral( QStringLiteral( "a 'string'" ) ), QStringLiteral( "\"a 'string'\"" ) );
   QCOMPARE( QgsProcessingUtils::stringToPythonLiteral( QStringLiteral( "a \"string\" and a ' quote" ) ), QStringLiteral( "'a \"string\" and a \\' quote'" ) );
   QCOMPARE( QgsProcessingUtils::stringToPythonLiteral( QStringLiteral( "a \"string\"" ) ), QStringLiteral( "'a \"string\"'" ) );
 }
-
-
 
 void TestQgsProcessing::defaultExtensionsForProvider()
 {

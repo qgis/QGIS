@@ -76,6 +76,7 @@ QgsProcessingRegistry::QgsProcessingRegistry( QObject *parent SIP_TRANSFERTHIS )
   addParameterType( new QgsProcessingParameterTypePointCloudLayer() );
   addParameterType( new QgsProcessingParameterTypeAnnotationLayer() );
   addParameterType( new QgsProcessingParameterTypePointCloudDestination() );
+  addParameterType( new QgsProcessingParameterTypePointCloudAttribute() );
 }
 
 QgsProcessingRegistry::~QgsProcessingRegistry()

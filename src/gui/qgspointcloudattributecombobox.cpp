@@ -45,6 +45,13 @@ bool QgsPointCloudAttributeComboBox::allowEmptyAttributeName() const
 
 void QgsPointCloudAttributeComboBox::setLayer( QgsMapLayer *layer )
 {
+  if ( !layer )
+  {
+    setCurrentIndex( -1 );
+    mAttributeModel->setLayer( nullptr );
+    return;
+  }
+
   QgsPointCloudLayer *pcl = qobject_cast<QgsPointCloudLayer *>( layer );
   mAttributeModel->setLayer( pcl );
 }

@@ -35,7 +35,7 @@
 # include <windows.h>
 #else
 # include <unistd.h>
-# include <errno.h>
+# include <cerrno>
 #endif
 
 #ifndef Q_OS_WIN
@@ -165,7 +165,7 @@ void KProcess::setNextOpenMode(QIODevice::OpenMode mode)
 
 void KProcess::clearEnvironment()
 {
-    setEnvironment(QStringList() << QStringLiteral(DUMMYENV));
+    setEnvironment(QStringList() << QString::fromLatin1(DUMMYENV));
 }
 
 void KProcess::setEnv(const QString &name, const QString &value, bool overwrite)
@@ -173,7 +173,7 @@ void KProcess::setEnv(const QString &name, const QString &value, bool overwrite)
     QStringList env = environment();
     if (env.isEmpty()) {
         env = systemEnvironment();
-        env.removeAll(QStringLiteral(DUMMYENV));
+        env.removeAll(QString::fromLatin1(DUMMYENV));
     }
     QString fname(name);
     fname.append(QLatin1Char('='));
@@ -194,7 +194,7 @@ void KProcess::unsetEnv(const QString &name)
     QStringList env = environment();
     if (env.isEmpty()) {
         env = systemEnvironment();
-        env.removeAll(QStringLiteral(DUMMYENV));
+        env.removeAll(QString::fromLatin1(DUMMYENV));
     }
     QString fname(name);
     fname.append(QLatin1Char('='));
@@ -202,7 +202,7 @@ void KProcess::unsetEnv(const QString &name)
         if ((*it).startsWith(fname)) {
             env.erase(it);
             if (env.isEmpty())
-                env.append(QStringLiteral(DUMMYENV));
+                env.append(QString::fromLatin1(DUMMYENV));
             setEnvironment(env);
             return;
         }
@@ -400,13 +400,3 @@ int KProcess::startDetached(const QStringList &argv)
     QString prog = args.takeFirst();
     return startDetached(prog, args);
 }
-
-int KProcess::pid() const
-{
-#ifdef Q_OS_UNIX
-    return (int) QProcess::pid();
-#else
-    return QProcess::pid() ? QProcess::pid()->dwProcessId : 0;
-#endif
-}
-

@@ -208,6 +208,16 @@ The development version
       UnknownCount,
     };
 
+    enum class VectorDataProviderAttributeEditCapability
+    {
+      EditAlias,
+      EditComment,
+    };
+
+
+    typedef QFlags<Qgis::VectorDataProviderAttributeEditCapability> VectorDataProviderAttributeEditCapabilities;
+
+
     enum class SymbolType
       {
       Marker,
@@ -1928,6 +1938,21 @@ The development version
       ScreenUnits
     };
 
+    enum class PostgresRelKind
+    {
+      NotSet,
+      Unknown,
+      OrdinaryTable,
+      Index,
+      Sequence,
+      View,
+      MaterializedView,
+      CompositeType,
+      ToastTable,
+      ForeignTable,
+      PartitionedTable,
+    };
+
     static const double DEFAULT_SEARCH_RADIUS_MM;
 
     static const float DEFAULT_MAPTOPIXEL_THRESHOLD;
@@ -2037,6 +2062,8 @@ QFlags<Qgis::HistoryProviderBackend> operator|(Qgis::HistoryProviderBackend f1, 
 QFlags<Qgis::MapLayerProperty> operator|(Qgis::MapLayerProperty f1, QFlags<Qgis::MapLayerProperty> f2);
 
 QFlags<Qgis::DataProviderFlag> operator|(Qgis::DataProviderFlag f1, QFlags<Qgis::DataProviderFlag> f2);
+
+QFlags<Qgis::VectorDataProviderAttributeEditCapability> operator|(Qgis::VectorDataProviderAttributeEditCapability f1, QFlags<Qgis::VectorDataProviderAttributeEditCapability> f2);
 
 QFlags<Qgis::SnappingType> operator|(Qgis::SnappingType f1, QFlags<Qgis::SnappingType> f2);
 

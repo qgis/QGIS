@@ -23,9 +23,11 @@
 #include "qgsvectortilebasicrendererwidget.h"
 #include "qgsvectortilebasiclabelingwidget.h"
 #include "qgsvectortilelayer.h"
+#include "qgsvectortileutils.h"
 #include "qgsgui.h"
 #include "qgsnative.h"
 #include "qgsapplication.h"
+#include "qgsjsonutils.h"
 #include "qgsmetadatawidget.h"
 #include "qgsmaplayerloadstyledialog.h"
 #include "qgsmapboxglstyleconverter.h"
@@ -323,6 +325,12 @@ void QgsVectorTileLayerProperties::loadStyle()
         context.setTargetUnit( Qgis::RenderUnit::Millimeters );
         //assume source uses 96 dpi
         context.setPixelSizeConversionFactor( 25.4 / 96.0 );
+
+        //load sprites
+        QVariantMap styleDefinition = QgsJsonUtils::parseJson( content ).toMap();
+
+        QFileInfo fi( dlg.filePath() );
+        QgsVectorTileUtils::loadSprites( styleDefinition, context, QStringLiteral( "file://" ) + fi.absolutePath() );
 
         QgsMapBoxGlStyleConverter converter;
 

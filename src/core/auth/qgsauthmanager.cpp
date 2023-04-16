@@ -3575,10 +3575,15 @@ bool QgsAuthManager::verifyPasswordCanDecryptConfigs() const
     return false;
   }
 
+#ifdef QGISDEBUG
   int checked = 0;
+#endif
+
   while ( query.next() )
   {
+#ifdef QGISDEBUG
     ++checked;
+#endif
     QString configstring( QgsAuthCrypto::decrypt( mMasterPass, masterPasswordCiv(), query.value( 1 ).toString() ) );
     if ( configstring.isEmpty() )
     {
@@ -3948,4 +3953,3 @@ void QgsAuthManager::insertCaCertInCache( QgsAuthCertUtils::CaCertSource source,
                           QPair<QgsAuthCertUtils::CaCertSource, QSslCertificate>( source, cert ) );
   }
 }
-

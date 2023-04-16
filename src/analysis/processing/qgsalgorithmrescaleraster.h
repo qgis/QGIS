@@ -57,9 +57,9 @@ class QgsRescaleRasterAlgorithm : public QgsProcessingAlgorithm
     int mLayerHeight = 0;
     int mXSize = 0;
     int mYSize = 0;
-    double mNoData;
-    double mMinimum;
-    double mMaximum;
+    double mNoData = 0;
+    double mMinimum = 0;
+    double mMaximum = 0;
 
     QgsRectangle mExtent;
     QgsCoordinateReferenceSystem mCrs;

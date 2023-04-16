@@ -622,6 +622,9 @@ static void tilingPass1(BaseInfo &m_b, TileGrid &m_grid, FileInfo &m_srsFileInfo
 
 static void tilingPass2(BaseInfo &m_b, TileGrid &m_grid, FileInfo &m_srsFileInfo)
 {
+  (void)m_grid;
+  (void)m_srsFileInfo;
+
   //---------
   // pass 2: write the final LAS/LAZ tiles
 
@@ -661,7 +664,7 @@ static void tilingPass2(BaseInfo &m_b, TileGrid &m_grid, FileInfo &m_srsFileInfo
 
           PointViewPtr view(new pdal::PointView(table));
 
-          int ptCnt = 0;
+          std::size_t ptCnt = 0;
           std::ifstream fileReader(binFile,std::ios::binary|std::ios::ate);
           if (!fileReader)
           {
@@ -681,7 +684,7 @@ static void tilingPass2(BaseInfo &m_b, TileGrid &m_grid, FileInfo &m_srsFileInfo
           {
               size_t nPointsToRead = std::min(readChunkSize, ptCnt-i);
               fileReader.read(contentPtr, nPointsToRead*m_b.pointSize);
-              for (int a = 0; a < nPointsToRead; ++a)
+              for (std::size_t a = 0; a < nPointsToRead; ++a)
               {
                   char *base = contentPtr + a * m_b.pointSize;
                   for (const untwine::FileDimInfo& fdi : dims)

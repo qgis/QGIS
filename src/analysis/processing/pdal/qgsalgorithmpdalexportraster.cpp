@@ -59,23 +59,8 @@ QgsPdalExportRasterAlgorithm *QgsPdalExportRasterAlgorithm::createInstance() con
 
 void QgsPdalExportRasterAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  // for now we use hardcoded list of attributes, as currently there is
-  // no way to retrieve them from the point cloud layer without indexing
-  // it first. Later we will add a corresponding parameter type for it.
-  QStringList attributes =
-  {
-    QStringLiteral( "X" ),
-    QStringLiteral( "Y" ),
-    QStringLiteral( "Z" ),
-    QStringLiteral( "Intensity" ),
-    QStringLiteral( "ReturnNumber" ),
-    QStringLiteral( "NumberOfReturns" ),
-    QStringLiteral( "Classification" ),
-    QStringLiteral( "GpsTime" )
-  };
-
   addParameter( new QgsProcessingParameterPointCloudLayer( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ) ) );
-  addParameter( new QgsProcessingParameterEnum( QStringLiteral( "ATTRIBUTE" ), QObject::tr( "Attribute" ), attributes, false, QStringLiteral( "Z" ), false, true ) );
+  addParameter( new QgsProcessingParameterPointCloudAttribute( QStringLiteral( "ATTRIBUTE" ), QObject::tr( "Attribute" ), QStringLiteral( "Z" ), QStringLiteral( "INPUT" ) ) );
   addParameter( new QgsProcessingParameterNumber( QStringLiteral( "RESOLUTION" ), QObject::tr( "Resolution of the density raster" ), QgsProcessingParameterNumber::Integer, 1, false, 1 ) );
   addParameter( new QgsProcessingParameterNumber( QStringLiteral( "TILE_SIZE" ), QObject::tr( "Tile size for parallel runs" ), QgsProcessingParameterNumber::Integer, 1000, false, 1 ) );
 
@@ -85,6 +70,8 @@ void QgsPdalExportRasterAlgorithm::initAlgorithm( const QVariantMap & )
   std::unique_ptr< QgsProcessingParameterNumber > paramOriginY = std::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "ORIGIN_Y" ), QObject::tr( "Y origin of a tile for parallel runs" ), QgsProcessingParameterNumber::Integer, QVariant(), true, 0 );
   paramOriginY->setFlags( paramOriginY->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
   addParameter( paramOriginY.release() );
+
+  createCommonParameters();
 
   addParameter( new QgsProcessingParameterRasterDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Output raster" ) ) );
 }
@@ -108,7 +95,7 @@ QStringList QgsPdalExportRasterAlgorithm::createArgumentLists( const QVariantMap
   const QString outputFile = parameterAsOutputLayer( parameters, QStringLiteral( "OUTPUT" ), context );
   setOutputValue( QStringLiteral( "OUTPUT" ), outputFile );
 
-  const QString attribute = parameterAsEnumString( parameters, QStringLiteral( "ATTRIBUTE" ), context );
+  const QString attribute = parameterAsString( parameters, QStringLiteral( "ATTRIBUTE" ), context );
   const int resolution = parameterAsInt( parameters, QStringLiteral( "RESOLUTION" ), context );
   const int tileSize = parameterAsInt( parameters, QStringLiteral( "TILE_SIZE" ), context );
 
@@ -126,7 +113,8 @@ QStringList QgsPdalExportRasterAlgorithm::createArgumentLists( const QVariantMap
     args << QStringLiteral( "--tile-origin-y=%1" ).arg( parameterAsInt( parameters, QStringLiteral( "ORIGIN_Y" ), context ) );
   }
 
-  addThreadsParameter( args );
+  applyCommonParameters( args, layer->crs(), parameters, context );
+  applyThreadsParameter( args );
   return args;
 }
 

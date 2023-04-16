@@ -68,6 +68,32 @@ static std::unique_ptr<PipelineManager> pipeline(ParallelJobInfo *tile, double r
 
     Stage& r = manager->makeReader(tile->inputFilenames[0], "");
 
+    Stage *last = &r;
+
+    // filtering
+    if (!tile->filterBounds.empty())
+    {
+        Options filter_opts;
+        filter_opts.add(pdal::Option("bounds", tile->filterBounds));
+
+        if (readerSupportsBounds(r))
+        {
+            // Reader of the format can do the filtering - use that whenever possible!
+            r.addOptions(filter_opts);
+        }
+        else
+        {
+            // Reader can't do the filtering - do it with a filter
+            last = &manager->makeFilter( "filters.crop", *last, filter_opts);
+        }
+    }
+    if (!tile->filterExpression.empty())
+    {
+        Options filter_opts;
+        filter_opts.add(pdal::Option("expression", tile->filterExpression));
+        last = &manager->makeFilter( "filters.expression", *last, filter_opts);
+    }
+
     // TODO: what edge size? (by default samples 5000 points if not specified
     // TODO: set threshold ? (default at least 16 points to keep the cell)
     // btw. if threshold=0, there are still missing points because of simplification (smooth=True)
@@ -78,17 +104,12 @@ static std::unique_ptr<PipelineManager> pipeline(ParallelJobInfo *tile, double r
        hexbin_opts.add(pdal::Option("edge_size", resolution));
     }
     hexbin_opts.add(pdal::Option("threshold", pointsThreshold));
+    (void)manager->makeFilter( "filters.hexbin", *last, hexbin_opts );
 
-    if (!tile->filterExpression.empty())
-    {
-        hexbin_opts.add(pdal::Option("where", tile->filterExpression));
-    }
-
-    Stage& w = manager->makeFilter( "filters.hexbin", r, hexbin_opts );
     return manager;
 }
 
-void Boundary::preparePipelines(std::vector<std::unique_ptr<PipelineManager>>& pipelines, const BOX3D &bounds, point_count_t &totalPoints)
+void Boundary::preparePipelines(std::vector<std::unique_ptr<PipelineManager>>& pipelines, const BOX3D &, point_count_t &)
 {
     if (ends_with(inputFile, ".vpc"))
     {
@@ -99,14 +120,14 @@ void Boundary::preparePipelines(std::vector<std::unique_ptr<PipelineManager>>& p
 
         for (const VirtualPointCloud::File& f : vpc.files)
         {
-            ParallelJobInfo tile(ParallelJobInfo::FileBased, BOX2D(), filterExpression);
+            ParallelJobInfo tile(ParallelJobInfo::FileBased, BOX2D(), filterExpression, filterBounds);
             tile.inputFilenames.push_back(f.filename);
             pipelines.push_back(pipeline(&tile, resolution, pointsThreshold));
         }
     }
     else
     {
-        ParallelJobInfo tile(ParallelJobInfo::Single, BOX2D(), filterExpression);
+        ParallelJobInfo tile(ParallelJobInfo::Single, BOX2D(), filterExpression, filterBounds);
         tile.inputFilenames.push_back(inputFile);
         pipelines.push_back(pipeline(&tile, resolution, pointsThreshold));
     }

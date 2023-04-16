@@ -1272,7 +1272,22 @@ class CORE_EXPORT QgsFillSymbolLayer : public QgsSymbolLayer
 
     void drawPreviewIcon( QgsSymbolRenderContext &context, QSize size ) override;
 
+    /**
+     * Sets the rotation \a angle of the pattern, in degrees clockwise.
+     *
+     * \note Not all fill symbol layers support rotation.
+     *
+     * \see angle()
+     */
     void setAngle( double angle ) { mAngle = angle; }
+
+    /**
+     * Returns the rotation angle of the fill symbol, in degrees clockwise.
+     *
+     * \note Not all fill symbol layers support rotation.
+     *
+     * \see setAngle()
+     */
     double angle() const { return mAngle; }
 
     /**

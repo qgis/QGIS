@@ -884,8 +884,10 @@ bool QgsLineSegmentDistanceComparer::operator()( QgsLineSegment2D ab, QgsLineSeg
 
   // flip the segments so that if there are common endpoints,
   // they will be the segment's start points
+  // cppcheck-suppress mismatchingContainerExpression
   if ( ab.end() == cd.start() || ab.end() == cd.end() )
     ab.reverse();
+  // cppcheck-suppress mismatchingContainerExpression
   if ( ab.start() == cd.end() )
     cd.reverse();
 
@@ -894,6 +896,7 @@ bool QgsLineSegmentDistanceComparer::operator()( QgsLineSegment2D ab, QgsLineSeg
   {
     const int oad = QgsGeometryUtils::leftOfLine( cd.endX(), cd.endY(), mOrigin.x(), mOrigin.y(), ab.startX(), ab.startY() );
     const int oab = ab.pointLeftOfLine( mOrigin );
+    // cppcheck-suppress mismatchingContainerExpression
     if ( ab.end() == cd.end() || oad != oab )
       return false;
     else

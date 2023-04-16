@@ -91,7 +91,6 @@
 #include "qgsfixattributedialog.h"
 #include "qgsprojecttimesettings.h"
 #include "qgsgeometrycollection.h"
-#include "qgsvectorlayersavestyledialog.h"
 #include "maptools/qgsappmaptools.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsauxiliarystorage.h"
@@ -1329,6 +1328,8 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipBadLayers
   showDevToolsDock->setObjectName( QStringLiteral( "ShowDevToolsPanel" ) );
   showDevToolsDock->setWhatsThis( tr( "Show Debugging/Development Tools" ) );
 
+  // store last dev tools tab before populating, as the value will be altered as tabs are created
+  const QString lastDevToolsTab = QgsDevToolsPanelWidget::settingLastActiveTab->value();
   mDevToolsWidget = new QgsDevToolsPanelWidget( mDevToolFactories );
   mDevToolsDock->setWidget( mDevToolsWidget );
 //  connect( mDevToolsDock, &QDockWidget::visibilityChanged, mActionStyleDock, &QAction::setChecked );
@@ -1969,6 +1970,8 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipBadLayers
     messageBar()->pushWidget( messageWidget, Qgis::MessageLevel::Warning, 0 );
   } );
   QgsApplication::fontManager()->enableFontDownloadsForSession();
+
+  mDevToolsWidget->setActiveTab( lastDevToolsTab );
 }
 
 QgisApp::QgisApp()
@@ -3261,11 +3264,6 @@ void QgisApp::setAppStyleSheet( const QString &stylesheet )
   for ( QgsLayoutDesignerDialog *d : constMLayoutDesignerDialogs )
   {
     d->setStyleSheet( stylesheet );
-  }
-
-  if ( mpMaptip )
-  {
-    mpMaptip->applyFontSettings();
   }
 }
 
@@ -8232,122 +8230,37 @@ void QgisApp::saveStyleFile( QgsMapLayer *layer )
   {
 
     case Qgis::LayerType::Vector:
-    {
-      QgsVectorLayer *vlayer = qobject_cast< QgsVectorLayer * >( layer );
-      QgsVectorLayerSaveStyleDialog dlg( vlayer, this );
-
-      if ( dlg.exec() )
-      {
-        bool resultFlag = false;
-        QString errorMessage;
-
-        QgsVectorLayerProperties::StyleType type = dlg.currentStyleType();
-        switch ( type )
-        {
-          case QgsVectorLayerProperties::QML:
-          case QgsVectorLayerProperties::SLD:
-          {
-            QString filePath = dlg.outputFilePath();
-            if ( type == QgsVectorLayerProperties::QML )
-              errorMessage = vlayer->saveNamedStyle( filePath, resultFlag, dlg.styleCategories() );
-            else
-              errorMessage = vlayer->saveSldStyle( filePath, resultFlag );
-
-            if ( resultFlag )
-            {
-              mInfoBar->pushMessage( tr( "Style saved" ), tr( "Successfully exported style to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( filePath ).toString(), QDir::toNativeSeparators( filePath ) ), Qgis::MessageLevel::Success, 0 );
-            }
-            else
-            {
-              mInfoBar->pushMessage( tr( "Save Style" ), errorMessage, Qgis::MessageLevel::Warning );
-            }
-
-            break;
-          }
-          case QgsVectorLayerProperties::DB:
-          {
-            QString infoWindowTitle = tr( "Save style to DB (%1)" ).arg( vlayer->providerType() );
-            QString msgError;
-
-            QgsVectorLayerSaveStyleDialog::SaveToDbSettings dbSettings = dlg.saveToDbSettings();
-
-            if ( QgsProviderRegistry::instance()->styleExists( vlayer->providerType(), vlayer->source(), dbSettings.name, errorMessage ) )
-            {
-              if ( QMessageBox::question( nullptr, tr( "Save style in database" ),
-                                          tr( "A matching style already exists in the database for this layer. Do you want to overwrite it?" ),
-                                          QMessageBox::Yes | QMessageBox::No ) == QMessageBox::No )
-              {
-                return;
-              }
-            }
-            else if ( !errorMessage.isEmpty() )
-            {
-              mInfoBar->pushMessage( infoWindowTitle, errorMessage, Qgis::MessageLevel::Warning );
-              return;
-            }
-
-            vlayer->saveStyleToDatabase( dbSettings.name, dbSettings.description, dbSettings.isDefault, dbSettings.uiFileContent, msgError, dlg.styleCategories() );
-
-            if ( !msgError.isNull() )
-            {
-              mInfoBar->pushMessage( infoWindowTitle, msgError, Qgis::MessageLevel::Warning );
-            }
-            else
-            {
-              mInfoBar->pushMessage( infoWindowTitle, tr( "Style saved" ), Qgis::MessageLevel::Success );
-            }
-            break;
-          }
-          case QgsVectorLayerProperties::Local:
-          {
-            const QString infoWindowTitle = tr( "Save default style to local database" );
-            errorMessage = vlayer->saveDefaultStyle( resultFlag, dlg.styleCategories() );
-            if ( !resultFlag )
-            {
-              mInfoBar->pushMessage( infoWindowTitle, errorMessage, Qgis::MessageLevel::Warning );
-            }
-            else
-            {
-              mInfoBar->pushMessage( infoWindowTitle, tr( "Style saved" ), Qgis::MessageLevel::Success );
-            }
-            break;
-          }
-        }
-      }
+      QgsVectorLayerProperties( mMapCanvas,
+                                visibleMessageBar(),
+                                qobject_cast<QgsVectorLayer *>( layer ) ).saveStyleAs();
       break;
-    }
 
     case Qgis::LayerType::Raster:
-    case Qgis::LayerType::Mesh:
-    case Qgis::LayerType::PointCloud:
-    case Qgis::LayerType::VectorTile:
-    {
-      QgsSettings settings;
-      QString lastUsedDir = settings.value( QStringLiteral( "style/lastStyleDir" ), QDir::homePath() ).toString();
-      QString filename = QFileDialog::getSaveFileName( this,
-                         tr( "Save as QGIS Layer Style File" ),
-                         lastUsedDir,
-                         tr( "QGIS Layer Style File" ) + " (*.qml)" );
-      if ( filename.isEmpty() )
-        return;
-
-      if ( ! filename.endsWith( QLatin1String( ".qml" ) ) )
-      {
-        filename += QLatin1String( ".qml" );
-      }
-
-      bool defaultLoadedFlag;
-      layer->saveNamedStyle( filename, defaultLoadedFlag );
-
-      settings.setValue( QStringLiteral( "style/lastStyleDir" ), filename );
+      QgsRasterLayerProperties( layer, mMapCanvas ).saveStyleAs();
       break;
-    }
 
+    case Qgis::LayerType::Mesh:
+      QgsMeshLayerProperties( layer, mMapCanvas ).saveStyleAs();
+      break;
+
+    case Qgis::LayerType::VectorTile:
+      QgsVectorTileLayerProperties( qobject_cast<QgsVectorTileLayer *>( layer ),
+                                    mMapCanvas,
+                                    visibleMessageBar() ).saveStyleAs();
+      break;
+
+    case Qgis::LayerType::PointCloud:
+      QgsPointCloudLayerProperties( qobject_cast<QgsPointCloudLayer *>( layer ),
+                                    mMapCanvas,
+                                    visibleMessageBar() ).saveStyleAs();
+      break;
+
+    // Not available for these
     case Qgis::LayerType::Annotation:
     case Qgis::LayerType::Plugin:
     case Qgis::LayerType::Group:
+    default:
       break;
-
   }
 }
 

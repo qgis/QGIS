@@ -943,8 +943,17 @@ class CORE_EXPORT QgsProcessingAlgorithm
 
     /**
      * Evaluates the parameter with matching \a name to a list of fields.
+     *
+     * \deprecated use parameterAsStrings() instead.
      */
-    QStringList parameterAsFields( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const;
+    Q_DECL_DEPRECATED QStringList parameterAsFields( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const SIP_DEPRECATED;
+
+    /**
+     * Evaluates the parameter with matching \a name to a list of strings (e.g. field names or point cloud attributes).
+     *
+     * \since QGIS 3.32
+     */
+    QStringList parameterAsStrings( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const;
 
     /**
      * Evaluates the parameter with matching \a name to a print layout.

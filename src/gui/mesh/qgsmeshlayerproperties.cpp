@@ -216,8 +216,7 @@ void QgsMeshLayerProperties::syncToLayer()
   mLayerOrigNameLineEd->setText( mMeshLayer->name() );
   whileBlocking( mCrsSelector )->setCrs( mMeshLayer->crs() );
 
-  if ( mMeshLayer )
-    mDatasetGroupTreeWidget->syncToLayer( mMeshLayer );
+  mDatasetGroupTreeWidget->syncToLayer( mMeshLayer );
 
   QgsDebugMsgLevel( QStringLiteral( "populate config tab" ), 4 );
   for ( QgsMapLayerConfigWidget *w : std::as_const( mConfigWidgets ) )
@@ -259,6 +258,7 @@ void QgsMeshLayerProperties::loadDefaultStyle()
   if ( defaultLoadedFlag )
   {
     syncToLayer();
+    apply();
   }
   else
   {
@@ -318,6 +318,7 @@ void QgsMeshLayerProperties::loadStyle()
   {
     settings.setValue( QStringLiteral( "style/lastStyleDir" ), QFileInfo( fileName ).absolutePath() );
     syncToLayer();
+    apply();
   }
   else
   {

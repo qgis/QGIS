@@ -212,7 +212,6 @@ QVariantMap QgsRandomPointsInPolygonsAlgorithm::processAlgorithm( const QVariant
   int missedPolygons = 0;
   int emptyOrNullGeom = 0;
 
-  long featureCount = 0;
   long long attempts = 0; // used for unique feature IDs in the indexes
   const long numberOfFeatures = polygonSource->featureCount();
   long long desiredNumberOfPoints = 0;
@@ -232,7 +231,6 @@ QVariantMap QgsRandomPointsInPolygonsAlgorithm::processAlgorithm( const QVariant
     {
       // Increment invalid features count
       emptyOrNullGeom++;
-      featureCount++;
       baseFeatureProgress += featureProgressStep;
       feedback->setProgress( baseFeatureProgress );
       continue;
@@ -242,7 +240,6 @@ QVariantMap QgsRandomPointsInPolygonsAlgorithm::processAlgorithm( const QVariant
     {
       // Increment invalid features count
       emptyOrNullGeom++;
-      featureCount++;
       baseFeatureProgress += featureProgressStep;
       feedback->setProgress( baseFeatureProgress );
       continue;
@@ -376,7 +373,6 @@ QVariantMap QgsRandomPointsInPolygonsAlgorithm::processAlgorithm( const QVariant
     {
       missedPolygons++;
     }
-    featureCount++;
     feedback->setProgress( baseFeatureProgress );
   } // while features
   missedPoints = desiredNumberOfPoints - totNPoints;

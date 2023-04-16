@@ -82,11 +82,6 @@ class GUI_EXPORT QgsMapTip : public QWidget
     void clear( QgsMapCanvas *mpMapCanvas = nullptr, int msDelay = 0 );
 
     /**
-     * Apply font family and size to match user settings
-     */
-    void applyFontSettings();
-
-    /**
      * Returns the html that would be displayed in a maptip for a given layer. If the layer has features, the first feature is used
      * to evaluate the expressions.
      * \since QGIS 3.32
@@ -102,7 +97,7 @@ class GUI_EXPORT QgsMapTip : public QWidget
 
   private slots:
     void onLinkClicked( const QUrl &url );
-    void resizeContent();
+    void resizeAndMoveToolTip();
 
   private:
     // Fetch the feature to use for the maptip text.
@@ -117,19 +112,21 @@ class GUI_EXPORT QgsMapTip : public QWidget
                          QgsMapCanvas *mapCanvas );
 
     // Insert the raw map tip text into an HTML template and return the result
-    static QString htmlText( const QString &text );
+    static QString htmlText( const QString &text, int maxWidth = -1 );
 
     // Flag to indicate if a maptip is currently being displayed
     bool mMapTipVisible;
 
-    QWidget *mWidget = nullptr;
     QgsWebView *mWebView = nullptr;
 
-    QString mFontFamily;
-    int mFontSize = 8;
-
-    const int MARGIN_VALUE = 5;
+    static const int MARGIN_VALUE = 5;
 
     QTimer mDelayedClearTimer;
+
+    // Template for the actual HTML content that will be displayed in QgsWebView
+    static const QString sMapTipTemplate;
+
+    QPoint mPosition;
+    const QgsMapCanvas *mMapCanvas = nullptr;
 };
 #endif // QGSMAPTIP_H

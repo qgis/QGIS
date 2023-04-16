@@ -82,7 +82,7 @@ struct CORE_EXPORT QgsStoredExpression
   //! expression text
   QString expression;
   //! category of the expression use case
-  Category tag;
+  Category tag = Category::FilterExpression;
 };
 
 /**

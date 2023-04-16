@@ -18,6 +18,7 @@
 #include "qgspointcloudlayer.h"
 #include "qgspointcloudlayerrenderer.h"
 #include "qgspointcloudindex.h"
+#include "qgspointcloudsubindex.h"
 #include "qgsrectangle.h"
 #include "qgspointclouddataprovider.h"
 #include "qgsproviderregistry.h"
@@ -107,6 +108,9 @@ QgsRectangle QgsPointCloudLayer::extent() const
 QgsMapLayerRenderer *QgsPointCloudLayer::createMapRenderer( QgsRenderContext &rendererContext )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  if ( mRenderer->type() != QLatin1String( "extent" ) )
+    loadIndexesForRenderContext( rendererContext );
 
   return new QgsPointCloudLayerRenderer( this, rendererContext );
 }
@@ -948,4 +952,34 @@ void QgsPointCloudLayer::resetRenderer()
   triggerRepaint();
 
   emit rendererChanged();
+}
+
+void QgsPointCloudLayer::loadIndexesForRenderContext( QgsRenderContext &rendererContext ) const
+{
+  if ( mDataProvider->capabilities() & QgsPointCloudDataProvider::ContainSubIndexes )
+  {
+    QgsRectangle renderExtent;
+    try
+    {
+      renderExtent = rendererContext.coordinateTransform().transformBoundingBox( rendererContext.mapExtent(), Qgis::TransformDirection::Reverse );
+    }
+    catch ( QgsCsException & )
+    {
+      QgsDebugMsg( QStringLiteral( "Transformation of extent failed!" ) );
+    }
+
+    const QVector<QgsPointCloudSubIndex> subIndex = mDataProvider->subIndexes();
+    for ( int i = 0; i < subIndex.size(); ++i )
+    {
+      // no need to load as it's there
+      if ( subIndex.at( i ).index() )
+        continue;
+
+      if ( subIndex.at( i ).extent().intersects( renderExtent ) &&
+           renderExtent.width() < subIndex.at( i ).extent().width() )
+      {
+        mDataProvider->loadSubIndex( i );
+      }
+    }
+  }
 }

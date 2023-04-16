@@ -1106,12 +1106,13 @@ QgsRasterAttributeTable *QgsRasterAttributeTable::createFromRaster( QgsRasterLay
             rat->appendField( QStringLiteral( "BlueMax" ), Qgis::RasterAttributeTableFieldUsage::BlueMax, QVariant::Type::Int );
             rat->appendField( QStringLiteral( "AlphaMax" ), Qgis::RasterAttributeTableFieldUsage::AlphaMax, QVariant::Type::Int );
             const QList<QgsColorRampShader::ColorRampItem> rampItems { shaderFunction->colorRampItemList() };
-            if ( rampItems.count( ) > 1 )
+            if ( rampItems.size() > 1 )
             {
               QColor color1 { rampItems.at( 0 ).color };
               QString label1 { rampItems.at( 0 ).label };
               QVariant value1( rampItems.at( 0 ).value );
-              for ( int i = 1; i < rampItems.count( ); ++i )
+              const int rampItemSize = rampItems.size();
+              for ( int i = 1; i < rampItemSize; ++i )
               {
                 const QgsColorRampShader::ColorRampItem &rampItem { rampItems.at( i )};
                 rat->appendRow( QVariantList() << value1 << rampItem.value << QStringLiteral( "%1 - %2" ).arg( label1, rampItem.label ) << 0 << 0 << 0 << 255 << 0 << 0 << 0 << 255 );
@@ -1134,12 +1135,13 @@ QgsRasterAttributeTable *QgsRasterAttributeTable::createFromRaster( QgsRasterLay
             rat->appendField( QStringLiteral( "Blue" ), Qgis::RasterAttributeTableFieldUsage::Blue, QVariant::Type::Int );
             rat->appendField( QStringLiteral( "Alpha" ), Qgis::RasterAttributeTableFieldUsage::Alpha, QVariant::Type::Int );
             const QList<QgsColorRampShader::ColorRampItem> rampItems { shaderFunction->colorRampItemList() };
-            if ( rampItems.count( ) > 1 )
+            if ( rampItems.size( ) > 1 )
             {
               QColor color1 { rampItems.at( 0 ).color };
               QString label1 { rampItems.at( 0 ).label };
               QVariant value1( rampItems.at( 0 ).value );
-              for ( int i = 1; i < rampItems.count( ); ++i )
+              const int rampItemSize = rampItems.size();
+              for ( int i = 1; i < rampItemSize; ++i )
               {
                 const QgsColorRampShader::ColorRampItem &rampItem { rampItems.at( i )};
                 rat->appendRow( QVariantList() << value1 << rampItem.value << QStringLiteral( "%1 - %2" ).arg( label1, rampItem.label ) << 0 << 0 << 0 << 255 << 0 << 0 << 0 << 255 );

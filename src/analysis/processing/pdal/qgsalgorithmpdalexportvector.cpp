@@ -59,23 +59,9 @@ QgsPdalExportVectorAlgorithm *QgsPdalExportVectorAlgorithm::createInstance() con
 
 void QgsPdalExportVectorAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  // for now we use hardcoded list of attributes, as currently there is
-  // no way to retrieve them from the point cloud layer without indexing
-  // it first. Later we will add a corresponding parameter type for it.
-  QStringList attributes =
-  {
-    QStringLiteral( "X" ),
-    QStringLiteral( "Y" ),
-    QStringLiteral( "Z" ),
-    QStringLiteral( "Intensity" ),
-    QStringLiteral( "ReturnNumber" ),
-    QStringLiteral( "NumberOfReturns" ),
-    QStringLiteral( "Classification" ),
-    QStringLiteral( "GpsTime" )
-  };
-
   addParameter( new QgsProcessingParameterPointCloudLayer( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ) ) );
-  addParameter( new QgsProcessingParameterEnum( QStringLiteral( "ATTRIBUTE" ), QObject::tr( "Attribute" ), attributes, false, QVariant(), true, true ) );
+  addParameter( new QgsProcessingParameterPointCloudAttribute( QStringLiteral( "ATTRIBUTE" ), QObject::tr( "Attribute" ), QVariant(), QStringLiteral( "INPUT" ), true, true ) );
+  createCommonParameters();
   addParameter( new QgsProcessingParameterVectorDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Output vector" ), QgsProcessing::TypeVectorPoint ) );
 }
 
@@ -97,11 +83,15 @@ QStringList QgsPdalExportVectorAlgorithm::createArgumentLists( const QVariantMap
 
   if ( parameters.value( QStringLiteral( "ATTRIBUTE" ) ).isValid() )
   {
-    const QString attribute = parameterAsEnumString( parameters, QStringLiteral( "ATTRIBUTE" ), context );
-    args << QStringLiteral( "--attribute=%1" ).arg( attribute );
+    const QStringList attributes = parameterAsStrings( parameters, QStringLiteral( "ATTRIBUTE" ), context );
+    for ( const QString &attr : attributes )
+    {
+      args << QStringLiteral( "--attribute=%1" ).arg( attr );
+    }
   }
 
-  addThreadsParameter( args );
+  applyCommonParameters( args, layer->crs(), parameters, context );
+  applyThreadsParameter( args );
   return args;
 }
 

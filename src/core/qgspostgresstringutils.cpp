@@ -74,18 +74,22 @@ QVariantList QgsPostgresStringUtils::parseArray( const QString &string )
   if ( newVal.trimmed().startsWith( '{' ) )
   {
     //it's a multidimensional array
-    QString subarray = newVal;
+    QString subarray = newVal.trimmed();
     while ( !subarray.isEmpty() )
     {
       bool escaped = false;
       int openedBrackets = 1;
       int i = 0;
-      while ( i < subarray.length()  && openedBrackets > 0 )
+      while ( openedBrackets > 0 )
       {
         ++i;
+        if ( i >= subarray.length() )
+          break;
 
-        if ( subarray.at( i ) == '}' && !escaped ) openedBrackets--;
-        else if ( subarray.at( i ) == '{' && !escaped ) openedBrackets++;
+        if ( subarray.at( i ) == '}' && !escaped )
+          openedBrackets--;
+        else if ( subarray.at( i ) == '{' && !escaped )
+          openedBrackets++;
 
         escaped = !escaped ? subarray.at( i ) == '\\' : false;
       }

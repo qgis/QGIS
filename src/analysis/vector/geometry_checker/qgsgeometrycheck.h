@@ -189,12 +189,12 @@ class ANALYSIS_EXPORT QgsGeometryCheck
       /**
        * What level this change affects.
        */
-      QgsGeometryCheck::ChangeWhat what;
+      QgsGeometryCheck::ChangeWhat what = QgsGeometryCheck::ChangeWhat::ChangeFeature;
 
       /**
        * What action this change performs.
        */
-      QgsGeometryCheck::ChangeType type;
+      QgsGeometryCheck::ChangeType type = QgsGeometryCheck::ChangeType::ChangeAdded;
 
       /**
        * The index of the part / ring / vertex, depending on \see what.

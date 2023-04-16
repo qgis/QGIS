@@ -70,6 +70,8 @@ void QgsPdalDensityAlgorithm::initAlgorithm( const QVariantMap & )
   paramOriginY->setFlags( paramOriginY->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
   addParameter( paramOriginY.release() );
 
+  createCommonParameters();
+
   addParameter( new QgsProcessingParameterRasterDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Density raster" ) ) );
 }
 
@@ -108,7 +110,8 @@ QStringList QgsPdalDensityAlgorithm::createArgumentLists( const QVariantMap &par
     args << QStringLiteral( "--tile-origin-y=%1" ).arg( parameterAsInt( parameters, QStringLiteral( "ORIGIN_Y" ), context ) );
   }
 
-  addThreadsParameter( args );
+  applyCommonParameters( args, layer->crs(), parameters, context );
+  applyThreadsParameter( args );
   return args;
 }
 

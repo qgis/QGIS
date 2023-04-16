@@ -170,9 +170,10 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider( const QString &uri, const Pr
     if ( queryItem.first.compare( QStringLiteral( "field" ), Qt::CaseSensitivity::CaseInsensitive ) == 0 )
     {
       const QStringList parts { queryItem.second.split( ':' ) };
-      if ( parts.count() == 2 )
+      if ( parts.size() == 2 )
       {
-        mUserDefinedFieldTypes.insert( parts[0], parts [1] );
+        // cppcheck-suppress containerOutOfBounds
+        mUserDefinedFieldTypes.insert( parts[0], parts[1] );
       }
     }
   }
@@ -425,7 +426,6 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes, bool forceFullScan, 
   // Also build subset and spatial indexes.
 
   QStringList parts;
-  long nEmptyRecords = 0;
   long nBadFormatRecords = 0;
   long nIncompatibleGeometry = 0;
   long nInvalidGeometry = 0;
@@ -464,7 +464,6 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes, bool forceFullScan, 
     // Skip over empty records
     if ( recordIsEmpty( parts ) )
     {
-      nEmptyRecords++;
       continue;
     }
 

@@ -120,10 +120,11 @@ template<typename T, class T2> T QgsServerApiUtils::parseTemporalInterval( const
     }
   };
   const QStringList parts { interval.split( '/' ) };
-  if ( parts.length() != 2 )
+  if ( parts.size() != 2 )
   {
     throw QgsServerApiBadRequestException( QStringLiteral( "%1 is not a valid datetime interval." ).arg( interval ), QStringLiteral( "Server" ) );
   }
+  // cppcheck-suppress containerOutOfBounds
   T result { parseDate( parts[0] ), parseDate( parts[1] ) };
   // Check validity
   if ( result.isEmpty() )
@@ -273,6 +274,7 @@ QgsExpression QgsServerApiUtils::temporalFilterExpression( const QgsVectorLayer 
     testType = parts[0];
     if ( testType.isEmpty() || testType == QLatin1String( ".." ) )
     {
+      // cppcheck-suppress containerOutOfBounds
       testType = parts[1];
     }
   }

@@ -94,11 +94,12 @@ QVariantMap QgsFuzzifyRasterAlgorithmBase::processAlgorithm( const QVariantMap &
     throw QgsProcessingException( QObject::tr( "Could not create raster output %1: %2" ).arg( outputFile, provider->error().message( QgsErrorMessage::Text ) ) );
 
   provider->setNoDataValue( 1, mNoDataValue );
-  mDestinationRasterProvider = provider.get();
-  mDestinationRasterProvider->setEditable( true );
+  provider->setEditable( true );
   const qgssize layerSize = static_cast< qgssize >( mLayerWidth ) * static_cast< qgssize >( mLayerHeight );
 
-  fuzzify( feedback );
+  fuzzify( provider.get(), feedback );
+
+  provider->setEditable( false );
 
   QVariantMap outputs;
   outputs.insert( QStringLiteral( "EXTENT" ), mExtent.toString() );
@@ -165,7 +166,7 @@ bool QgsFuzzifyRasterLinearMembershipAlgorithm::prepareAlgorithmFuzzificationPar
   return true;
 }
 
-void QgsFuzzifyRasterLinearMembershipAlgorithm::fuzzify( QgsProcessingFeedback *feedback )
+void QgsFuzzifyRasterLinearMembershipAlgorithm::fuzzify( QgsRasterDataProvider *destinationProvider, QgsProcessingFeedback *feedback )
 {
   const int maxWidth = QgsRasterIterator::DEFAULT_MAXIMUM_TILE_WIDTH;
   const int maxHeight = QgsRasterIterator::DEFAULT_MAXIMUM_TILE_HEIGHT;
@@ -185,7 +186,7 @@ void QgsFuzzifyRasterLinearMembershipAlgorithm::fuzzify( QgsProcessingFeedback *
   {
     if ( feedback )
       feedback->setProgress( 100 * ( ( iterTop / maxHeight * nbBlocksWidth ) + iterLeft / maxWidth ) / nbBlocks );
-    std::unique_ptr< QgsRasterBlock > fuzzifiedBlock = std::make_unique< QgsRasterBlock >( mDestinationRasterProvider->dataType( 1 ), iterCols, iterRows );
+    std::unique_ptr< QgsRasterBlock > fuzzifiedBlock = std::make_unique< QgsRasterBlock >( destinationProvider->dataType( 1 ), iterCols, iterRows );
 
     for ( int row = 0; row < iterRows; row++ )
     {
@@ -229,9 +230,8 @@ void QgsFuzzifyRasterLinearMembershipAlgorithm::fuzzify( QgsProcessingFeedback *
         fuzzifiedBlock->setValue( row, column, fuzzifiedValue );
       }
     }
-    mDestinationRasterProvider->writeBlock( fuzzifiedBlock.get(), mBand, iterLeft, iterTop );
+    destinationProvider->writeBlock( fuzzifiedBlock.get(), mBand, iterLeft, iterTop );
   }
-  mDestinationRasterProvider->setEditable( false );
 }
 
 
@@ -292,7 +292,7 @@ bool QgsFuzzifyRasterPowerMembershipAlgorithm::prepareAlgorithmFuzzificationPara
   return true;
 }
 
-void QgsFuzzifyRasterPowerMembershipAlgorithm::fuzzify( QgsProcessingFeedback *feedback )
+void QgsFuzzifyRasterPowerMembershipAlgorithm::fuzzify( QgsRasterDataProvider *destinationProvider, QgsProcessingFeedback *feedback )
 {
   const int maxWidth = QgsRasterIterator::DEFAULT_MAXIMUM_TILE_WIDTH;
   const int maxHeight = QgsRasterIterator::DEFAULT_MAXIMUM_TILE_HEIGHT;
@@ -312,7 +312,7 @@ void QgsFuzzifyRasterPowerMembershipAlgorithm::fuzzify( QgsProcessingFeedback *f
   {
     if ( feedback )
       feedback->setProgress( 100 * ( ( iterTop / maxHeight * nbBlocksWidth ) + iterLeft / maxWidth ) / nbBlocks );
-    std::unique_ptr< QgsRasterBlock > fuzzifiedBlock = std::make_unique< QgsRasterBlock >( mDestinationRasterProvider->dataType( 1 ), iterCols, iterRows );
+    std::unique_ptr< QgsRasterBlock > fuzzifiedBlock = std::make_unique< QgsRasterBlock >( destinationProvider->dataType( 1 ), iterCols, iterRows );
 
     for ( int row = 0; row < iterRows; row++ )
     {
@@ -356,9 +356,8 @@ void QgsFuzzifyRasterPowerMembershipAlgorithm::fuzzify( QgsProcessingFeedback *f
         fuzzifiedBlock->setValue( row, column, fuzzifiedValue );
       }
     }
-    mDestinationRasterProvider->writeBlock( fuzzifiedBlock.get(), mBand, iterLeft, iterTop );
+    destinationProvider->writeBlock( fuzzifiedBlock.get(), mBand, iterLeft, iterTop );
   }
-  mDestinationRasterProvider->setEditable( false );
 }
 
 //
@@ -414,7 +413,7 @@ bool QgsFuzzifyRasterLargeMembershipAlgorithm::prepareAlgorithmFuzzificationPara
   return true;
 }
 
-void QgsFuzzifyRasterLargeMembershipAlgorithm::fuzzify( QgsProcessingFeedback *feedback )
+void QgsFuzzifyRasterLargeMembershipAlgorithm::fuzzify( QgsRasterDataProvider *destinationProvider, QgsProcessingFeedback *feedback )
 {
   const int maxWidth = QgsRasterIterator::DEFAULT_MAXIMUM_TILE_WIDTH;
   const int maxHeight = QgsRasterIterator::DEFAULT_MAXIMUM_TILE_HEIGHT;
@@ -434,7 +433,7 @@ void QgsFuzzifyRasterLargeMembershipAlgorithm::fuzzify( QgsProcessingFeedback *f
   {
     if ( feedback )
       feedback->setProgress( 100 * ( ( iterTop / maxHeight * nbBlocksWidth ) + iterLeft / maxWidth ) / nbBlocks );
-    std::unique_ptr< QgsRasterBlock > fuzzifiedBlock = std::make_unique< QgsRasterBlock >( mDestinationRasterProvider->dataType( 1 ), iterCols, iterRows );
+    std::unique_ptr< QgsRasterBlock > fuzzifiedBlock = std::make_unique< QgsRasterBlock >( destinationProvider->dataType( 1 ), iterCols, iterRows );
 
     for ( int row = 0; row < iterRows; row++ )
     {
@@ -460,9 +459,8 @@ void QgsFuzzifyRasterLargeMembershipAlgorithm::fuzzify( QgsProcessingFeedback *f
         fuzzifiedBlock->setValue( row, column, fuzzifiedValue );
       }
     }
-    mDestinationRasterProvider->writeBlock( fuzzifiedBlock.get(), mBand, iterLeft, iterTop );
+    destinationProvider->writeBlock( fuzzifiedBlock.get(), mBand, iterLeft, iterTop );
   }
-  mDestinationRasterProvider->setEditable( false );
 }
 
 
@@ -519,7 +517,7 @@ bool QgsFuzzifyRasterSmallMembershipAlgorithm::prepareAlgorithmFuzzificationPara
   return true;
 }
 
-void QgsFuzzifyRasterSmallMembershipAlgorithm::fuzzify( QgsProcessingFeedback *feedback )
+void QgsFuzzifyRasterSmallMembershipAlgorithm::fuzzify( QgsRasterDataProvider *destinationProvider, QgsProcessingFeedback *feedback )
 {
   const int maxWidth = QgsRasterIterator::DEFAULT_MAXIMUM_TILE_WIDTH;
   const int maxHeight = QgsRasterIterator::DEFAULT_MAXIMUM_TILE_HEIGHT;
@@ -539,7 +537,7 @@ void QgsFuzzifyRasterSmallMembershipAlgorithm::fuzzify( QgsProcessingFeedback *f
   {
     if ( feedback )
       feedback->setProgress( 100 * ( ( iterTop / maxHeight * nbBlocksWidth ) + iterLeft / maxWidth ) / nbBlocks );
-    std::unique_ptr< QgsRasterBlock > fuzzifiedBlock = std::make_unique< QgsRasterBlock >( mDestinationRasterProvider->dataType( 1 ), iterCols, iterRows );
+    std::unique_ptr< QgsRasterBlock > fuzzifiedBlock = std::make_unique< QgsRasterBlock >( destinationProvider->dataType( 1 ), iterCols, iterRows );
 
     for ( int row = 0; row < iterRows; row++ )
     {
@@ -565,9 +563,8 @@ void QgsFuzzifyRasterSmallMembershipAlgorithm::fuzzify( QgsProcessingFeedback *f
         fuzzifiedBlock->setValue( row, column, fuzzifiedValue );
       }
     }
-    mDestinationRasterProvider->writeBlock( fuzzifiedBlock.get(), mBand, iterLeft, iterTop );
+    destinationProvider->writeBlock( fuzzifiedBlock.get(), mBand, iterLeft, iterTop );
   }
-  mDestinationRasterProvider->setEditable( false );
 }
 
 
@@ -624,7 +621,7 @@ bool QgsFuzzifyRasterGaussianMembershipAlgorithm::prepareAlgorithmFuzzificationP
   return true;
 }
 
-void QgsFuzzifyRasterGaussianMembershipAlgorithm::fuzzify( QgsProcessingFeedback *feedback )
+void QgsFuzzifyRasterGaussianMembershipAlgorithm::fuzzify( QgsRasterDataProvider *destinationProvider, QgsProcessingFeedback *feedback )
 {
   const int maxWidth = QgsRasterIterator::DEFAULT_MAXIMUM_TILE_WIDTH;
   const int maxHeight = QgsRasterIterator::DEFAULT_MAXIMUM_TILE_HEIGHT;
@@ -644,7 +641,7 @@ void QgsFuzzifyRasterGaussianMembershipAlgorithm::fuzzify( QgsProcessingFeedback
   {
     if ( feedback )
       feedback->setProgress( 100 * ( ( iterTop / maxHeight * nbBlocksWidth ) + iterLeft / maxWidth ) / nbBlocks );
-    std::unique_ptr< QgsRasterBlock > fuzzifiedBlock = std::make_unique< QgsRasterBlock >( mDestinationRasterProvider->dataType( 1 ), iterCols, iterRows );
+    std::unique_ptr< QgsRasterBlock > fuzzifiedBlock = std::make_unique< QgsRasterBlock >( destinationProvider->dataType( 1 ), iterCols, iterRows );
 
     for ( int row = 0; row < iterRows; row++ )
     {
@@ -670,9 +667,8 @@ void QgsFuzzifyRasterGaussianMembershipAlgorithm::fuzzify( QgsProcessingFeedback
         fuzzifiedBlock->setValue( row, column, fuzzifiedValue );
       }
     }
-    mDestinationRasterProvider->writeBlock( fuzzifiedBlock.get(), mBand, iterLeft, iterTop );
+    destinationProvider->writeBlock( fuzzifiedBlock.get(), mBand, iterLeft, iterTop );
   }
-  mDestinationRasterProvider->setEditable( false );
 }
 
 
@@ -730,7 +726,7 @@ bool QgsFuzzifyRasterNearMembershipAlgorithm::prepareAlgorithmFuzzificationParam
   return true;
 }
 
-void QgsFuzzifyRasterNearMembershipAlgorithm::fuzzify( QgsProcessingFeedback *feedback )
+void QgsFuzzifyRasterNearMembershipAlgorithm::fuzzify( QgsRasterDataProvider *destinationProvider, QgsProcessingFeedback *feedback )
 {
   const int maxWidth = QgsRasterIterator::DEFAULT_MAXIMUM_TILE_WIDTH;
   const int maxHeight = QgsRasterIterator::DEFAULT_MAXIMUM_TILE_HEIGHT;
@@ -750,7 +746,7 @@ void QgsFuzzifyRasterNearMembershipAlgorithm::fuzzify( QgsProcessingFeedback *fe
   {
     if ( feedback )
       feedback->setProgress( 100 * ( ( iterTop / maxHeight * nbBlocksWidth ) + iterLeft / maxWidth ) / nbBlocks );
-    std::unique_ptr< QgsRasterBlock > fuzzifiedBlock = std::make_unique< QgsRasterBlock >( mDestinationRasterProvider->dataType( 1 ), iterCols, iterRows );
+    std::unique_ptr< QgsRasterBlock > fuzzifiedBlock = std::make_unique< QgsRasterBlock >( destinationProvider->dataType( 1 ), iterCols, iterRows );
 
     for ( int row = 0; row < iterRows; row++ )
     {
@@ -776,9 +772,8 @@ void QgsFuzzifyRasterNearMembershipAlgorithm::fuzzify( QgsProcessingFeedback *fe
         fuzzifiedBlock->setValue( row, column, fuzzifiedValue );
       }
     }
-    mDestinationRasterProvider->writeBlock( fuzzifiedBlock.get(), mBand, iterLeft, iterTop );
+    destinationProvider->writeBlock( fuzzifiedBlock.get(), mBand, iterLeft, iterTop );
   }
-  mDestinationRasterProvider->setEditable( false );
 }
 
 

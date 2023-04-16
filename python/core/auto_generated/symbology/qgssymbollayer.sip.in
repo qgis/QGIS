@@ -1354,7 +1354,26 @@ The ``rings`` argument optionally specifies a list of polygon rings to render as
 
 
     void setAngle( double angle );
+%Docstring
+Sets the rotation ``angle`` of the pattern, in degrees clockwise.
+
+.. note::
+
+   Not all fill symbol layers support rotation.
+
+.. seealso:: :py:func:`angle`
+%End
+
     double angle() const;
+%Docstring
+Returns the rotation angle of the fill symbol, in degrees clockwise.
+
+.. note::
+
+   Not all fill symbol layers support rotation.
+
+.. seealso:: :py:func:`setAngle`
+%End
 
     virtual QImage toTiledPatternImage( ) const;
 %Docstring

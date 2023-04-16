@@ -313,6 +313,27 @@ class CORE_EXPORT Qgis
     Q_ENUM( FeatureCountState )
 
     /**
+     * Attribute editing capabilities which may be supported by vector data providers.
+     *
+     * \since QGIS 3.32
+     */
+    enum class VectorDataProviderAttributeEditCapability
+    {
+      EditAlias = 1 << 0, //!< Allows editing aliases
+      EditComment = 1 << 1, //!< Allows editing comments
+    };
+
+    Q_ENUM( VectorDataProviderAttributeEditCapability )
+
+    /**
+     * Attribute editing capabilities which may be supported by vector data providers.
+     *
+     * \since QGIS 3.32
+     */
+    Q_DECLARE_FLAGS( VectorDataProviderAttributeEditCapabilities, VectorDataProviderAttributeEditCapability )
+    Q_FLAG( VectorDataProviderAttributeEditCapabilities )
+
+    /**
      * \brief Symbol types
      * \since QGIS 3.20
      */
@@ -3340,6 +3361,27 @@ class CORE_EXPORT Qgis
     Q_ENUM( LayoutUnitType )
 
     /**
+     * Postgres database relkind options.
+     *
+     * \since QGIS 3.32
+     */
+    enum class PostgresRelKind
+    {
+      NotSet, //!< Not set
+      Unknown, //!< Unknown
+      OrdinaryTable, //!< Ordinary table
+      Index, //!< Index
+      Sequence, //!< Sequence
+      View, //!< View
+      MaterializedView, //!< Materialized view
+      CompositeType, //!< Composition type
+      ToastTable, //!< TOAST table
+      ForeignTable, //!< Foreign table
+      PartitionedTable, //!< Partitioned table
+    };
+    Q_ENUM( PostgresRelKind )
+
+    /**
      * Identify search radius in mm
      * \since QGIS 2.3
      */
@@ -3477,6 +3519,7 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::TextRendererFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::HistoryProviderBackends )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::MapLayerProperties )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::DataProviderFlags )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::VectorDataProviderAttributeEditCapabilities )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SnappingTypes )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::PlotToolFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::ProfileGeneratorFlags )
