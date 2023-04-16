@@ -74,6 +74,10 @@ QgsCurvePolygon::QgsCurvePolygon( const QgsCurvePolygon &p )
   {
     mInteriorRings.push_back( ring->clone() );
   }
+
+  mBoundingBox = p.mBoundingBox;
+  mHasCachedValidity = p.mHasCachedValidity;
+  mValidityFailureReason = p.mValidityFailureReason;
 }
 
 QgsCurvePolygon &QgsCurvePolygon::operator=( const QgsCurvePolygon &p )
