@@ -48,10 +48,6 @@ class _3D_EXPORT Qgs3DAxisSettings
 
     //! default constructor
     Qgs3DAxisSettings() = default;
-    //! copy constructor
-    Qgs3DAxisSettings( const Qgs3DAxisSettings &other );
-    //! delete assignment operator
-    Qgs3DAxisSettings &operator=( Qgs3DAxisSettings const &rhs );
 
     //! Returns true if both objects are equal
     bool operator==( Qgs3DAxisSettings const &rhs ) const;
