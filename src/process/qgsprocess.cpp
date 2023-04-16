@@ -261,6 +261,22 @@ int QgsProcessingExec::run( const QStringList &constArgs )
     args.removeAt( verboseIndex );
   }
 
+  int langIndex = args.indexOf (QLatin1String( "--lang"));
+  if ( langIndex >= 0 )
+  {
+    // has already been handled in (qgis_process) main.cpp
+      args.removeAt ( langIndex );  //'--lang'
+      args.removeAt ( langIndex );  //e.g. 'de'
+  }
+
+  langIndex = args.indexOf (QLatin1String( "-l"));
+  if ( langIndex >= 0 )
+  {
+    // has already been handled in (qgis_process) main.cpp
+      args.removeAt ( langIndex ); //'-l'
+      args.removeAt ( langIndex ); //e.g. 'de'
+  }
+
   const int noPythonIndex = args.indexOf( QLatin1String( "--no-python" ) );
   if ( noPythonIndex >= 0 )
   {
@@ -545,6 +561,7 @@ void QgsProcessingExec::showUsage( const QString &appName )
       << "\t--version or -v\t\tOutput all versions related to QGIS Process\n"
       << "\t--json\t\tOutput results as JSON objects\n"
       << "\t--verbose\tOutput verbose logs\n"
+      << "\t[-l, --lang language]\tuse language for naming of new fields\n"
       << "\t--no-python\tDisable Python support (results in faster startup)"
       << "\nAvailable commands:\n"
       << "\tplugins\t\tlist available and active plugins\n"

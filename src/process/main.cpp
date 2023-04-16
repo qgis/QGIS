@@ -22,6 +22,8 @@
 #include <QString>
 #include <QStringList>
 #include <QTimer>
+#include <QLocale>
+#include <QTranslator>
 
 #include <cstdio>
 #include <cstdlib>
@@ -86,6 +88,50 @@ int main( int argc, char *argv[] )
     myPrefixPath = dir.absolutePath();
   }
   QgsApplication::setPrefixPath( myPrefixPath, true );
+
+  // Set translation context for qgis_process: necessary for naming of additional fields created by algorithms
+  // The command line parameter evaluation is done in qgisprocessing.cpp,
+  // which is too late for setting the language context.
+
+  QString translationCode;
+  int i = 1;
+  for(; i < argc; ++i)
+    if ( i < argc && ( argv[i] == QLatin1String( "--lang" ) || argv[i] == QLatin1String( "-l" ) ) )
+    {
+        translationCode = argv[++i];
+    }
+
+  QString myUserTranslation;
+  myUserTranslation = QLocale::system().name();                   // e.g. "de_DE"
+  myUserTranslation.truncate(myUserTranslation.lastIndexOf('_')); // e.g. "de"
+
+  //
+  // Priority of translation context is:
+  //  - command line:  from --lang xx or -l xx
+  //  - system locale: from QLocale::system().name()
+  //
+
+  if ( translationCode.isNull() || translationCode.isEmpty())
+  {
+    translationCode = myUserTranslation;
+  }
+  QgsApplication::setTranslation( translationCode );
+
+  if ( translationCode != QLatin1String( "C" ) )
+  {
+    QTranslator *mQgisTranslator = nullptr;
+    mQgisTranslator = new QTranslator();
+
+    if ( mQgisTranslator->load( QStringLiteral( "qgis_" ) + translationCode, QgsApplication::i18nPath() ) )
+    {
+        QgsApplication::installTranslator( mQgisTranslator );
+    }
+    else
+    {
+        QgsDebugMsgLevel( QStringLiteral( "loading of qgis translation failed %1/qgis_%2" ).arg( i18nPath(), *sTranslation() ), 2 );
+    }
+  }
+
 
   // Set up the QSettings environment must be done after qapp is created
   QgsApplication::setOrganizationName( QStringLiteral( "QGIS" ) );
