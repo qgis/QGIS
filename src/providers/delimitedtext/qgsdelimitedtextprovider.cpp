@@ -80,7 +80,7 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider( const QString &uri, const Pr
 
   QgsDebugMsgLevel( "Delimited text file uri is " + uri, 2 );
 
-  const QUrl url = QUrl::fromEncoded( uri.toLatin1() );
+  const QUrl url = QUrl::fromEncoded( uri.toUtf8() );
   mFile = std::make_unique< QgsDelimitedTextFile >();
   mFile->setFromUrl( url );
 
@@ -1290,14 +1290,14 @@ bool QgsDelimitedTextProvider::setSubsetString( const QString &subset, bool upda
 
 void QgsDelimitedTextProvider::setUriParameter( const QString &parameter, const QString &value )
 {
-  QUrl url = QUrl::fromEncoded( dataSourceUri().toLatin1() );
+  QUrl url = QUrl::fromEncoded( dataSourceUri().toUtf8() );
   QUrlQuery query( url );
   if ( query.hasQueryItem( parameter ) )
     query.removeAllQueryItems( parameter );
   if ( ! value.isEmpty() )
     query.addQueryItem( parameter, value );
   url.setQuery( query );
-  setDataSourceUri( QString::fromLatin1( url.toEncoded() ) );
+  setDataSourceUri( QString::fromUtf8( url.toEncoded() ) );
 }
 
 void QgsDelimitedTextProvider::onFileUpdated()
@@ -1369,7 +1369,7 @@ QString  QgsDelimitedTextProvider::description() const
 
 QVariantMap QgsDelimitedTextProviderMetadata::decodeUri( const QString &uri ) const
 {
-  const QUrl url = QUrl::fromEncoded( uri.toLatin1() );
+  const QUrl url = QUrl::fromEncoded( uri.toUtf8() );
   const QUrlQuery queryItems( url.query() );
 
   QString subset;
@@ -1416,20 +1416,20 @@ QString QgsDelimitedTextProviderMetadata::encodeUri( const QVariantMap &parts ) 
     queryItems.addQueryItem( QStringLiteral( "subset" ), parts.value( QStringLiteral( "subset" ) ).toString() );
   url.setQuery( queryItems );
 
-  return QString::fromLatin1( url.toEncoded() );
+  return QString::fromUtf8( url.toEncoded() );
 }
 
 QString QgsDelimitedTextProviderMetadata::absoluteToRelativeUri( const QString &uri, const QgsReadWriteContext &context ) const
 {
-  QUrl urlSource = QUrl::fromEncoded( uri.toLatin1() );
+  QUrl urlSource = QUrl::fromEncoded( uri.toUtf8() );
   QUrl urlDest = QUrl::fromLocalFile( context.pathResolver().writePath( urlSource.toLocalFile() ) );
   urlDest.setQuery( urlSource.query() );
-  return QString::fromLatin1( urlDest.toEncoded() );
+  return QString::fromUtf8( urlDest.toEncoded() );
 }
 
 QString QgsDelimitedTextProviderMetadata::relativeToAbsoluteUri( const QString &uri, const QgsReadWriteContext &context ) const
 {
-  QUrl urlSource = QUrl::fromEncoded( uri.toLatin1() );
+  QUrl urlSource = QUrl::fromEncoded( uri.toUtf8() );
 
   if ( !uri.startsWith( QLatin1String( "file:" ) ) )
   {
@@ -1440,7 +1440,7 @@ QString QgsDelimitedTextProviderMetadata::relativeToAbsoluteUri( const QString &
 
   QUrl urlDest = QUrl::fromLocalFile( context.pathResolver().readPath( urlSource.toLocalFile() ) );
   urlDest.setQuery( urlSource.query() );
-  return QString::fromLatin1( urlDest.toEncoded() );
+  return QString::fromUtf8( urlDest.toEncoded() );
 }
 
 QgsProviderMetadata::ProviderCapabilities QgsDelimitedTextProviderMetadata::providerCapabilities() const
