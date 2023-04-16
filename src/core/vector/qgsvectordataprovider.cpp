@@ -264,7 +264,15 @@ void QgsVectorDataProvider::setEncoding( const QString &e )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  mEncoding = QTextCodec::codecForName( e.toLocal8Bit().constData() );
+  // Use UTF-8 if no encoding is specified
+  if ( e.isEmpty() )
+  {
+    mEncoding = QTextCodec::codecForName( "UTF-8" );
+  }
+  else
+  {
+    mEncoding = QTextCodec::codecForName( e.toLocal8Bit().constData() );
+  }
   if ( !mEncoding && e != QLatin1String( "System" ) )
   {
     if ( !e.isEmpty() )
