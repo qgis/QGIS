@@ -36,8 +36,6 @@ QgsMeasureTool::QgsMeasureTool( QgsMapCanvas *canvas, bool measureArea )
   mRubberBand = new QgsRubberBand( canvas, mMeasureArea ? Qgis::GeometryType::Polygon : Qgis::GeometryType::Line );
   mRubberBandPoints = new QgsRubberBand( canvas, Qgis::GeometryType::Point );
 
-  // Append point we will move
-  mPoints.append( QgsPointXY( 0, 0 ) );
   mDestinationCrs = canvas->mapSettings().destinationCrs();
 
   mDialog = new QgsMeasureDialog( this );
