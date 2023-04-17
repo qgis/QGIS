@@ -252,8 +252,8 @@ public:
             buffers.back().resize(tail);
             QByteArray tmp;
             tmp.resize(qMax(CHUNKSIZE, bytes));
-            ptr = tmp.data();
             buffers.push_back(tmp);
+            ptr = buffers.back().data();
             tail = bytes;
         }
         return ptr;
