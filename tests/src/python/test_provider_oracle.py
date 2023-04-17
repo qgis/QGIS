@@ -734,6 +734,15 @@ class TestPyQgsOracleProvider(unittest.TestCase, ProviderTestCase):
         self.vl.addFeature(f)  # Should not deadlock during an active iteration
         f = next(it)
 
+    def testTransactionEditing(self):
+        tg = QgsTransactionGroup()
+        tg.addLayer(self.vl)
+        self.vl.startEditing()
+        feat = QgsFeature(self.vl.fields())
+        feat.setAttribute("pk", 6)
+        self.assertTrue(self.vl.addFeature(feat))
+        self.vl.rollBack()
+
     def testTimeout(self):
         """
         Asserts that we will not deadlock if more iterators are opened in parallel than
