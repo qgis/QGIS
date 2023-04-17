@@ -377,6 +377,8 @@ void QgsVirtualPointCloudProvider::loadSubIndex( int i )
   // if expression is broken or index is missing a required field, set to "false" so it returns no points
   if ( !sl.index()->setSubsetString( mSubsetString ) )
     sl.index()->setSubsetString( QStringLiteral( "false" ) );
+
+  emit subIndexLoaded( i );
 }
 
 void QgsVirtualPointCloudProvider::populateAttributeCollection( QSet<QString> names )

@@ -84,8 +84,11 @@ class QgsVirtualPointCloudEntity : public Qt3DCore::QEntity
     QList<QgsChunkedEntity *> chunkedEntities() const;
 
   signals:
-    //! Emitted when a new 3D entity has been created for a sub index
-    void newEntityCreated( Qt3DCore::QEntity *entity );
+    //! Emitted when a new point cloud chunked entity has been created for a sub index
+    void newEntityCreated( QgsChunkedEntity *entity );
+
+  public slots:
+    void onSubIndexLoaded( int i );
 
   private:
     QList<QgsChunkedEntity *> mChunkedEntities;

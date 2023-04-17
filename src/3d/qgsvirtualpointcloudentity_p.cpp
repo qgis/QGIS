@@ -95,4 +95,19 @@ void QgsVirtualPointCloudEntity::loadAllSubIndexes()
   }
 }
 
+void QgsVirtualPointCloudEntity::onSubIndexLoaded( int i )
+{
+  QgsPointCloudLayerChunkedEntity *newChunkedEntity = new QgsPointCloudLayerChunkedEntity( mSubIndexes.at( i ).index(),
+      mMap,
+      mCoordinateTransform,
+      static_cast< QgsPointCloud3DSymbol * >( mSymbol->clone() ),
+      mMaximumScreenSpaceError,
+      mShowBoundingBoxes,
+      mZValueScale,
+      mZValueOffset,
+      mPointBudget );
+  mChunkedEntities.append( newChunkedEntity );
+  emit newEntityCreated( newChunkedEntity );
+}
+
 /// @endcond

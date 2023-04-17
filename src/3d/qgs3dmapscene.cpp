@@ -75,6 +75,7 @@
 #include "qgsskyboxsettings.h"
 
 #include "qgsvirtualpointcloudentity_p.h"
+#include "qgsvirtualpointcloudprovider.h"
 #include "qgswindow3dengine.h"
 #include "qgspointcloudlayer.h"
 
@@ -206,7 +207,7 @@ void Qgs3DMapScene::viewZoomFull()
   const QgsRectangle extent = sceneExtent();
   const double side = std::max( extent.width(), extent.height() );
   double d = side / 2 / std::tan( cameraController()->camera()->fieldOfView() / 2 * M_PI / 180 );
-  d += yRange.upper();
+  d += yRange.isInfinite() ?  0. : yRange.upper();
   mCameraController->resetView( static_cast< float >( d ) );
   return;
 }
@@ -595,7 +596,18 @@ void Qgs3DMapScene::updateCameraLens()
 
 void Qgs3DMapScene::onLayerRenderer3DChanged()
 {
-  QgsMapLayer *layer = qobject_cast<QgsMapLayer *>( sender() );
+  QgsMapLayer *layer = nullptr;
+  if ( QgsVirtualPointCloudProvider *vp = qobject_cast<QgsVirtualPointCloudProvider *>( sender() ) )
+  {
+    for ( const auto p : mLayerEntities.keys() )
+    {
+      if ( QgsVirtualPointCloudProvider *pp = qobject_cast<QgsVirtualPointCloudProvider *>( p->dataProvider() ) )
+        if ( pp == vp )
+          layer = p;
+    }
+  }
+  if ( !layer )
+    layer = qobject_cast<QgsMapLayer *>( sender() );
   Q_ASSERT( layer );
 
   // remove old entity - if any
@@ -727,6 +739,16 @@ void Qgs3DMapScene::addLayerEntity( QgsMapLayer *layer )
 
       if ( QgsVirtualPointCloudEntity *vpcNewEntity = qobject_cast<QgsVirtualPointCloudEntity *>( newEntity ) )
       {
+        QgsVirtualPointCloudProvider *vp = qobject_cast<QgsVirtualPointCloudProvider *>( layer->dataProvider() );
+
+//        connect( vp, &QgsVirtualPointCloudProvider::subIndexLoaded, vpcNewEntity, &QgsVirtualPointCloudEntity::onSubIndexLoaded );
+//        connect( vpcNewEntity, &QgsVirtualPointCloudEntity::newEntityCreated, this, [=]( QgsChunkedEntity *newChunkedEntity )
+//        {
+//          newChunkedEntity->setParent( vpcNewEntity );
+//          mChunkEntities.append( newChunkedEntity );
+//          onCameraChanged();
+//        } );
+
         vpcNewEntity->loadAllSubIndexes();
         const auto chunkedEntities = vpcNewEntity->chunkedEntities();
         for ( const auto &ce : chunkedEntities )
@@ -768,6 +790,10 @@ void Qgs3DMapScene::addLayerEntity( QgsMapLayer *layer )
     QgsPointCloudLayer *pclayer = qobject_cast<QgsPointCloudLayer *>( layer );
     connect( pclayer, &QgsPointCloudLayer::renderer3DChanged, this, &Qgs3DMapScene::onLayerRenderer3DChanged );
     connect( pclayer, &QgsPointCloudLayer::subsetStringChanged, this, &Qgs3DMapScene::onLayerRenderer3DChanged );
+    if ( QgsVirtualPointCloudProvider *vp = qobject_cast<QgsVirtualPointCloudProvider *>( layer->dataProvider() ) )
+    {
+      connect( vp, &QgsVirtualPointCloudProvider::subIndexLoaded, this, &Qgs3DMapScene::onLayerRenderer3DChanged, Qt::UniqueConnection );
+    }
   }
 }
 
