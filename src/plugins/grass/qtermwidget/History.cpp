@@ -580,6 +580,9 @@ void CompactHistoryBlockList::deallocate(void* ptr)
   while ( i<list.size() && !block->contains(ptr) )
   {
     i++;
+    if ( i >= list.size() )
+      break;
+
     block=list.at(i);
   }
 
