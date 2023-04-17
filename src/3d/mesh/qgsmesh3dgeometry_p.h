@@ -233,7 +233,7 @@ class QgsMeshDataset3DGeometryBuilder: public QgsMesh3DGeometryBuilder
                                      float vertScale,
                                      const QgsMeshDataset3dGeometry::VertexData &vertexData,
                                      QObject *parent );
-    void start();
+    void start() override;
 
   private:
     QgsMesh mNativeMesh;

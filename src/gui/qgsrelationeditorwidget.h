@@ -294,14 +294,14 @@ class GUI_EXPORT QgsRelationEditorConfigWidget : public QgsAbstractRelationEdito
      *
      * \returns A widget configuration
      */
-    QVariantMap config();
+    QVariantMap config() override;
 
     /**
      * \brief Update the configuration widget to represent the given configuration.
      *
      * \param config The configuration which should be represented by this widget
      */
-    void setConfig( const QVariantMap &config );
+    void setConfig( const QVariantMap &config ) override;
 
 };
 
