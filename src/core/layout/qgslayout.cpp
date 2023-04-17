@@ -764,6 +764,7 @@ QgsLayoutItemGroup *QgsLayout::groupItems( const QList<QgsLayoutItem *> &items )
 
   mUndoStack->endMacro();
 
+  // cppcheck-suppress returnDanglingLifetime
   return returnGroup;
 }
 

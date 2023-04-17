@@ -1321,9 +1321,9 @@ int GRASS_LIB_EXPORT G__temp_element( char *element )
 char GRASS_LIB_EXPORT *G_tempfile( void )
 {
   QTemporaryFile file( "qgis-grass-temp.XXXXXX" );
-  QString name = file.fileName();
+  const QString name = file.fileName();
   file.open();
-  return name.toLatin1().data();
+  return name.toLatin1().constData();
 }
 
 char GRASS_LIB_EXPORT *G_mapset( void )

@@ -266,6 +266,7 @@ class CORE_EXPORT QgsOpenClUtils
 
         T &operator* ()
         {
+          // cppcheck-suppress returnTempReference
           return &mMem[0];
         }
 
