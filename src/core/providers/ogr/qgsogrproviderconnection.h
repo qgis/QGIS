@@ -90,6 +90,7 @@ class QgsOgrProviderConnection : public QgsAbstractDatabaseProviderConnection
     void addFieldDomain( const QgsFieldDomain &domain, const QString &schema ) const override;
     void renameField( const QString &schema, const QString &tableName, const QString &name, const QString &newName ) const override;
     void setFieldAlias( const QString &fieldName, const QString &schema, const QString &tableName, const QString &alias ) const override;
+    void setFieldComment( const QString &fieldName, const QString &schema, const QString &tableName, const QString &comment ) const override;
     SqlVectorLayerOptions sqlOptions( const QString &layerSource ) override;
     QList< Qgis::RelationshipCardinality > supportedRelationshipCardinalities() const override;
     QList< Qgis::RelationshipStrength > supportedRelationshipStrengths() const override;
