@@ -54,7 +54,7 @@ class GUI_EXPORT QgsProcessingBatchAlgorithmDialogBase : public QgsProcessingAlg
     /**
      * Will be called when the "Run as Single" button is clicked.
      */
-    virtual void runAsSingle() = 0;
+    virtual void runAsSingle() = 0; // cppcheck-suppress pureVirtualCall
 
   protected slots:
 
