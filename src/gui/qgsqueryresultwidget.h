@@ -170,6 +170,20 @@ class GUI_EXPORT QgsQueryResultWidget: public QWidget, private Ui::QgsQueryResul
      */
     void tokensReady( const QStringList &tokens );
 
+    /**
+     * Copies the query results to the clipboard, as a formatted table.
+     *
+     * \since QGIS 3.32
+     */
+    void copyResults();
+
+    /**
+     * Copies a range of the query results to the clipboard, as a formatted table.
+     *
+     * \since QGIS 3.32
+     */
+    void copyResults( int fromRow, int toRow, int fromColumn, int toColumn );
+
   signals:
 
     /**
