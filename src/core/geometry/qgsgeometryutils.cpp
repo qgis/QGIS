@@ -155,6 +155,11 @@ bool QgsGeometryUtils::verticesAtDistance( const QgsAbstractGeometry &geometry, 
   previousVertex = QgsVertexId();
   nextVertex = QgsVertexId();
 
+  if ( geometry.isEmpty() )
+  {
+    return false;
+  }
+
   QgsPoint point;
   QgsPoint previousPoint;
 
