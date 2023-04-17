@@ -224,6 +224,6 @@ bool QgsFieldItem::equal( const QgsDataItem *other )
   if ( !o )
     return false;
 
-  return ( mPath == o->mPath && mName == o->mName && mField == o->mField );
+  return ( mPath == o->mPath && mName == o->mName && mField == o->mField && mField.comment() == o->mField.comment() );
 }
 
