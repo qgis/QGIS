@@ -104,13 +104,13 @@ QPolygonF QgsSymbol::_getLineString3d( QgsRenderContext &context, const QgsCurve
     const QgsBox3d clipRect( e.xMinimum() - cw, e.yMinimum() - ch, -HUGE_VAL, e.xMaximum() + cw, e.yMaximum() + ch, HUGE_VAL ); // TODO also need to be clipped according to z axis
 
     const QgsLineString *lineString = nullptr;
+    std::unique_ptr< QgsLineString > segmentized;
     if ( const QgsLineString *ls = qgsgeometry_cast< const QgsLineString * >( &curve ) )
     {
       lineString = ls;
     }
     else
     {
-      std::unique_ptr< QgsLineString > segmentized;
       segmentized.reset( qgsgeometry_cast< QgsLineString * >( curve.segmentize( ) ) );
       lineString = segmentized.get();
     }
