@@ -482,8 +482,12 @@ void Layer::chopFeaturesAtRepeatDistance()
         part.push_back( p );
       }
 
+      // cppcheck-suppress invalidLifetime
       for ( FeaturePart *partPtr : repeatParts )
+      {
+        // cppcheck-suppress invalidLifetime
         partPtr->setTotalRepeats( repeatParts.count() );
+      }
     }
     else
     {
