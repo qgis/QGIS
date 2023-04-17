@@ -111,7 +111,7 @@ QStringList QgsPdalFilterAlgorithm::createArgumentLists( const QVariantMap &para
     }
   }
 
-  applyThreadsParameter( args );
+  applyThreadsParameter( args, context );
   return args;
 }
 

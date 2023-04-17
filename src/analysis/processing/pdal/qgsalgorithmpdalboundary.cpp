@@ -101,7 +101,7 @@ QStringList QgsPdalBoundaryAlgorithm::createArgumentLists( const QVariantMap &pa
   }
 
   applyCommonParameters( args, layer->crs(), parameters, context );
-  applyThreadsParameter( args );
+  applyThreadsParameter( args, context );
   return args;
 }
 

@@ -100,7 +100,7 @@ QStringList QgsPdalBuildVpcAlgorithm::createArgumentLists( const QVariantMap &pa
     args << "--overview";
   }
 
-  applyThreadsParameter( args );
+  applyThreadsParameter( args, context );
 
   for ( const QgsMapLayer *layer : std::as_const( layers ) )
   {

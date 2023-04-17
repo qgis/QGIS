@@ -88,7 +88,7 @@ QStringList QgsPdalThinAlgorithm::createArgumentLists( const QVariantMap &parame
                      };
 
   applyCommonParameters( args, layer->crs(), parameters, context );
-  applyThreadsParameter( args );
+  applyThreadsParameter( args, context );
   return args;
 }
 

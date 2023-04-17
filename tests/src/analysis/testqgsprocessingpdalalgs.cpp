@@ -80,8 +80,6 @@ void TestQgsProcessingPdalAlgs::cleanupTestCase()
 
 void TestQgsProcessingPdalAlgs::init()
 {
-  // set max threads to 0 by default
-  QgsSettings().setValue( "/Processing/Configuration/MAX_THREADS", 0 );
 }
 
 void TestQgsProcessingPdalAlgs::info()
@@ -109,6 +107,7 @@ void TestQgsProcessingPdalAlgs::convertFormat()
 
   std::unique_ptr< QgsProcessingContext > context = std::make_unique< QgsProcessingContext >();
   context->setProject( QgsProject::instance() );
+  context->setNumberOfThreads( 0 );
 
   QgsProcessingFeedback feedback;
 
@@ -125,7 +124,7 @@ void TestQgsProcessingPdalAlgs::convertFormat()
           );
 
   // set max threads to 2, a --threads argument should be added
-  QgsSettings().setValue( QStringLiteral( "/Processing/Configuration/MAX_THREADS" ), 2 );
+  context->setNumberOfThreads( 2 );
   args = alg->createArgumentLists( parameters, *context, &feedback );
   QCOMPARE( args, QStringList() << QStringLiteral( "translate" )
             << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath )
@@ -140,6 +139,7 @@ void TestQgsProcessingPdalAlgs::reproject()
 
   std::unique_ptr< QgsProcessingContext > context = std::make_unique< QgsProcessingContext >();
   context->setProject( QgsProject::instance() );
+  context->setNumberOfThreads( 0 );
 
   QgsProcessingFeedback feedback;
 
@@ -158,7 +158,7 @@ void TestQgsProcessingPdalAlgs::reproject()
           );
 
   // set max threads to 2, a --threads argument should be added
-  QgsSettings().setValue( QStringLiteral( "/Processing/Configuration/MAX_THREADS" ), 2 );
+  context->setNumberOfThreads( 2 );
   args = alg->createArgumentLists( parameters, *context, &feedback );
   QCOMPARE( args, QStringList() << QStringLiteral( "translate" )
             << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath )
@@ -174,6 +174,7 @@ void TestQgsProcessingPdalAlgs::fixProjection()
 
   std::unique_ptr< QgsProcessingContext > context = std::make_unique< QgsProcessingContext >();
   context->setProject( QgsProject::instance() );
+  context->setNumberOfThreads( 0 );
 
   QgsProcessingFeedback feedback;
 
@@ -192,7 +193,7 @@ void TestQgsProcessingPdalAlgs::fixProjection()
           );
 
   // set max threads to 2, a --threads argument should be added
-  QgsSettings().setValue( QStringLiteral( "/Processing/Configuration/MAX_THREADS" ), 2 );
+  context->setNumberOfThreads( 2 );
   args = alg->createArgumentLists( parameters, *context, &feedback );
   QCOMPARE( args, QStringList() << QStringLiteral( "translate" )
             << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath )
@@ -208,6 +209,7 @@ void TestQgsProcessingPdalAlgs::thin()
 
   std::unique_ptr< QgsProcessingContext > context = std::make_unique< QgsProcessingContext >();
   context->setProject( QgsProject::instance() );
+  context->setNumberOfThreads( 0 );
 
   QgsProcessingFeedback feedback;
 
@@ -270,7 +272,7 @@ void TestQgsProcessingPdalAlgs::thin()
           );
 
   // set max threads to 2, a --threads argument should be added
-  QgsSettings().setValue( QStringLiteral( "/Processing/Configuration/MAX_THREADS" ), 2 );
+  context->setNumberOfThreads( 2 );
   args = alg->createArgumentLists( parameters, *context, &feedback );
   QCOMPARE( args, QStringList() << QStringLiteral( "thin" )
             << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath )
@@ -289,6 +291,7 @@ void TestQgsProcessingPdalAlgs::boundary()
 
   std::unique_ptr< QgsProcessingContext > context = std::make_unique< QgsProcessingContext >();
   context->setProject( QgsProject::instance() );
+  context->setNumberOfThreads( 0 );
 
   QgsProcessingFeedback feedback;
 
@@ -342,7 +345,7 @@ void TestQgsProcessingPdalAlgs::boundary()
 
 
   // set max threads to 2, a --threads argument should be added
-  QgsSettings().setValue( QStringLiteral( "/Processing/Configuration/MAX_THREADS" ), 2 );
+  context->setNumberOfThreads( 2 );
   args = alg->createArgumentLists( parameters, *context, &feedback );
   QCOMPARE( args, QStringList() << QStringLiteral( "boundary" )
             << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath )
@@ -361,6 +364,7 @@ void TestQgsProcessingPdalAlgs::density()
 
   std::unique_ptr< QgsProcessingContext > context = std::make_unique< QgsProcessingContext >();
   context->setProject( QgsProject::instance() );
+  context->setNumberOfThreads( 0 );
 
   QgsProcessingFeedback feedback;
 
@@ -449,7 +453,7 @@ void TestQgsProcessingPdalAlgs::density()
           );
 
   // set max threads to 2, a --threads argument should be added
-  QgsSettings().setValue( QStringLiteral( "/Processing/Configuration/MAX_THREADS" ), 2 );
+  context->setNumberOfThreads( 2 );
   args = alg->createArgumentLists( parameters, *context, &feedback );
   QCOMPARE( args, QStringList() << QStringLiteral( "density" )
             << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath )
@@ -470,6 +474,7 @@ void TestQgsProcessingPdalAlgs::exportRasterTin()
 
   std::unique_ptr< QgsProcessingContext > context = std::make_unique< QgsProcessingContext >();
   context->setProject( QgsProject::instance() );
+  context->setNumberOfThreads( 0 );
 
   QgsProcessingFeedback feedback;
 
@@ -558,7 +563,7 @@ void TestQgsProcessingPdalAlgs::exportRasterTin()
           );
 
   // set max threads to 2, a --threads argument should be added
-  QgsSettings().setValue( QStringLiteral( "/Processing/Configuration/MAX_THREADS" ), 2 );
+  context->setNumberOfThreads( 2 );
   args = alg->createArgumentLists( parameters, *context, &feedback );
   QCOMPARE( args, QStringList() << QStringLiteral( "to_raster_tin" )
             << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath )
@@ -579,6 +584,7 @@ void TestQgsProcessingPdalAlgs::tile()
 
   std::unique_ptr< QgsProcessingContext > context = std::make_unique< QgsProcessingContext >();
   context->setProject( QgsProject::instance() );
+  context->setNumberOfThreads( 0 );
 
   QgsProcessingFeedback feedback;
 
@@ -631,7 +637,7 @@ void TestQgsProcessingPdalAlgs::tile()
           );
 
   // set max threads to 2, a --threads argument should be added
-  QgsSettings().setValue( QStringLiteral( "/Processing/Configuration/MAX_THREADS" ), 2 );
+  context->setNumberOfThreads( 2 );
   args = alg->createArgumentLists( parameters, *context, &feedback );
   QCOMPARE( args, QStringList() << QStringLiteral( "tile" )
             << QStringLiteral( "--length=150" )
@@ -649,6 +655,7 @@ void TestQgsProcessingPdalAlgs::exportRaster()
 
   std::unique_ptr< QgsProcessingContext > context = std::make_unique< QgsProcessingContext >();
   context->setProject( QgsProject::instance() );
+  context->setNumberOfThreads( 0 );
 
   QgsProcessingFeedback feedback;
 
@@ -754,7 +761,7 @@ void TestQgsProcessingPdalAlgs::exportRaster()
           );
 
   // set max threads to 2, a --threads argument should be added
-  QgsSettings().setValue( QStringLiteral( "/Processing/Configuration/MAX_THREADS" ), 2 );
+  context->setNumberOfThreads( 2 );
   args = alg->createArgumentLists( parameters, *context, &feedback );
   QCOMPARE( args, QStringList() << QStringLiteral( "to_raster" )
             << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath )
@@ -776,6 +783,7 @@ void TestQgsProcessingPdalAlgs::exportVector()
 
   std::unique_ptr< QgsProcessingContext > context = std::make_unique< QgsProcessingContext >();
   context->setProject( QgsProject::instance() );
+  context->setNumberOfThreads( 0 );
 
   QgsProcessingFeedback feedback;
 
@@ -823,7 +831,7 @@ void TestQgsProcessingPdalAlgs::exportVector()
           );
 
   // set max threads to 2, a --threads argument should be added
-  QgsSettings().setValue( QStringLiteral( "/Processing/Configuration/MAX_THREADS" ), 2 );
+  context->setNumberOfThreads( 2 );
   args = alg->createArgumentLists( parameters, *context, &feedback );
   QCOMPARE( args, QStringList() << QStringLiteral( "to_vector" )
             << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath )
@@ -841,6 +849,7 @@ void TestQgsProcessingPdalAlgs::merge()
 
   std::unique_ptr< QgsProcessingContext > context = std::make_unique< QgsProcessingContext >();
   context->setProject( QgsProject::instance() );
+  context->setNumberOfThreads( 0 );
 
   QgsProcessingFeedback feedback;
 
@@ -890,7 +899,7 @@ void TestQgsProcessingPdalAlgs::merge()
           );
 
   // set max threads to 2, a --threads argument should be added
-  QgsSettings().setValue( QStringLiteral( "/Processing/Configuration/MAX_THREADS" ), 2 );
+  context->setNumberOfThreads( 2 );
   args = alg->createArgumentLists( parameters, *context, &feedback );
   QCOMPARE( args, QStringList() << QStringLiteral( "merge" )
             << QStringLiteral( "--output=%1" ).arg( outputFile )
@@ -908,6 +917,7 @@ void TestQgsProcessingPdalAlgs::buildVpc()
 
   std::unique_ptr< QgsProcessingContext > context = std::make_unique< QgsProcessingContext >();
   context->setProject( QgsProject::instance() );
+  context->setNumberOfThreads( 0 );
 
   QgsProcessingFeedback feedback;
 
@@ -969,7 +979,7 @@ void TestQgsProcessingPdalAlgs::buildVpc()
           );
 
   // set max threads to 2, a --threads argument should be added
-  QgsSettings().setValue( QStringLiteral( "/Processing/Configuration/MAX_THREADS" ), 2 );
+  context->setNumberOfThreads( 2 );
   args = alg->createArgumentLists( parameters, *context, &feedback );
   QCOMPARE( args, QStringList() << QStringLiteral( "build_vpc" )
             << QStringLiteral( "--output=%1" ).arg( outputFile )
@@ -988,6 +998,7 @@ void TestQgsProcessingPdalAlgs::clip()
 
   std::unique_ptr< QgsProcessingContext > context = std::make_unique< QgsProcessingContext >();
   context->setProject( QgsProject::instance() );
+  context->setNumberOfThreads( 0 );
 
   QgsProcessingFeedback feedback;
 
@@ -1028,7 +1039,7 @@ void TestQgsProcessingPdalAlgs::clip()
           );
 
   // set max threads to 2, a --threads argument should be added
-  QgsSettings().setValue( QStringLiteral( "/Processing/Configuration/MAX_THREADS" ), 2 );
+  context->setNumberOfThreads( 2 );
   args = alg->createArgumentLists( parameters, *context, &feedback );
   QCOMPARE( args, QStringList() << QStringLiteral( "clip" )
             << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath )
@@ -1046,6 +1057,7 @@ void TestQgsProcessingPdalAlgs::filter()
 
   std::unique_ptr< QgsProcessingContext > context = std::make_unique< QgsProcessingContext >();
   context->setProject( QgsProject::instance() );
+  context->setNumberOfThreads( 0 );
 
   QgsProcessingFeedback feedback;
 
@@ -1079,7 +1091,7 @@ void TestQgsProcessingPdalAlgs::filter()
           );
 
   // set max threads to 2, a --threads argument should be added
-  QgsSettings().setValue( QStringLiteral( "/Processing/Configuration/MAX_THREADS" ), 2 );
+  context->setNumberOfThreads( 2 );
   args = alg->createArgumentLists( parameters, *context, &feedback );
   QCOMPARE( args, QStringList() << QStringLiteral( "translate" )
             << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath )
