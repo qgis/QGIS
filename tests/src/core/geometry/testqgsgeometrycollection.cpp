@@ -59,6 +59,8 @@ void TestQgsGeometryCollection::geometryCollection()
   QCOMPARE( c1.vertexCount( 0, 0 ), 0 );
   QCOMPARE( c1.vertexCount( 0, 1 ), 0 );
   QCOMPARE( c1.vertexCount( 1, 0 ), 0 );
+  // no crash!
+  QCOMPARE( c1.vertexAt( QgsVertexId( -1, -1, -1 ) ), QgsPoint() );
 
   //addGeometry
 
