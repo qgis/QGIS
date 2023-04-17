@@ -74,7 +74,7 @@ class APP_EXPORT QgsMeasureDialog : public QDialog, private Ui::QgsMeasureBase
      * Copy measurements to the clipboard
      * \param copyCoordinates \since QGIS 3.32 set to TRUE to also copy coordinates to clipboard
      */
-    void copyMeasurements( bool copyCoordinates = false );
+    void copyMeasurements( bool copyCoordinates = false, QString separator = QStringLiteral( "\t" ) );
 
     void showCoordinatesChanged();
 
@@ -87,10 +87,8 @@ class APP_EXPORT QgsMeasureDialog : public QDialog, private Ui::QgsMeasureBase
     //! \since QGIS 3.32 columns
     enum Columns
     {
-      StartX = 0,
-      StartY,
-      EndX,
-      EndY,
+      X = 0,
+      Y,
       Distance,
     };
 

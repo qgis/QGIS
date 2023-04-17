@@ -63,7 +63,6 @@ QgsMeasureDialog::QgsMeasureDialog( QgsMeasureTool *tool, Qt::WindowFlags f )
     // Toggle the coordinates columns visibility
     connect( mShowCoordinates, &QCheckBox::clicked, this, &QgsMeasureDialog::showCoordinatesChanged );
     showCoordinatesChanged();
-
   }
   else
   {
@@ -148,10 +147,16 @@ void QgsMeasureDialog::crsChanged()
 
 void QgsMeasureDialog::showCoordinatesChanged()
 {
-  mTable->setColumnHidden( Columns::StartX, !mShowCoordinates->isChecked() );
-  mTable->setColumnHidden( Columns::StartY, !mShowCoordinates->isChecked() );
-  mTable->setColumnHidden( Columns::EndX, !mShowCoordinates->isChecked() );
-  mTable->setColumnHidden( Columns::EndY, !mShowCoordinates->isChecked() );
+  // if Show Coordinates is unchecked, Hide the X and Y columns
+  mTable->setColumnHidden( Columns::X, !mShowCoordinates->isChecked() );
+  mTable->setColumnHidden( Columns::Y, !mShowCoordinates->isChecked() );
+
+  // The first row contains the first point, with no computed distance
+  // so we hide it if Show Coordinates is unchecked
+  if ( mTable->topLevelItemCount() > 0 )
+  {
+    mTable->topLevelItem( 0 )->setHidden( !mShowCoordinates->isChecked() );
+  }
 }
 
 void QgsMeasureDialog::updateSettings()
@@ -256,10 +261,8 @@ void QgsMeasureDialog::mouseMove( const QgsPointXY &point )
     QTreeWidgetItem *item = mTable->topLevelItem( mTable->topLevelItemCount() - 1 );
     if ( item )
     {
-      item->setText( Columns::StartX, QLocale().toString( p1.x(), 'f', mDecimalPlacesCoordinates ) );
-      item->setText( Columns::StartY, QLocale().toString( p1.y(), 'f', mDecimalPlacesCoordinates ) );
-      item->setText( Columns::EndX, QLocale().toString( p2.x(), 'f', mDecimalPlacesCoordinates ) );
-      item->setText( Columns::EndY, QLocale().toString( p2.y(), 'f', mDecimalPlacesCoordinates ) );
+      item->setText( Columns::X, QLocale().toString( p2.x(), 'f', mDecimalPlacesCoordinates ) );
+      item->setText( Columns::Y, QLocale().toString( p2.y(), 'f', mDecimalPlacesCoordinates ) );
       item->setText( Columns::Distance, QLocale().toString( d, 'f', mDecimalPlaces ) );
     }
   }
@@ -277,12 +280,25 @@ void QgsMeasureDialog::addPoint()
   {
     if ( !mTool->done() )
     {
+      if ( numPoints == 1 )
+      {
+        // First point, so we add a first item, with no computed distance and only the coordinates
+        QTreeWidgetItem *item = new QTreeWidgetItem();
+        QgsPointXY lastPoint = mTool->points().last();
+        item->setText( Columns::X, QLocale().toString( lastPoint.x(), 'f', mDecimalPlacesCoordinates ) );
+        item->setText( Columns::Y, QLocale().toString( lastPoint.y(), 'f', mDecimalPlacesCoordinates ) );
+        mTable->addTopLevelItem( item );
+
+        // Hide the first item if Show Coordinates is unchecked
+        if ( !mShowCoordinates->isChecked() )
+        {
+          item->setHidden( true );
+        }
+      }
       QTreeWidgetItem *item = new QTreeWidgetItem();
       QgsPointXY lastPoint = mTool->points().last();
-      item->setText( Columns::StartX, QLocale().toString( lastPoint.x(), 'f', mDecimalPlacesCoordinates ) );
-      item->setText( Columns::StartY, QLocale().toString( lastPoint.y(), 'f', mDecimalPlacesCoordinates ) );
-      item->setText( Columns::EndX, QLocale().toString( lastPoint.x(), 'f', mDecimalPlacesCoordinates ) );
-      item->setText( Columns::EndY, QLocale().toString( lastPoint.y(), 'f', mDecimalPlacesCoordinates ) );
+      item->setText( Columns::X, QLocale().toString( lastPoint.x(), 'f', mDecimalPlacesCoordinates ) );
+      item->setText( Columns::Y, QLocale().toString( lastPoint.y(), 'f', mDecimalPlacesCoordinates ) );
       item->setText( Columns::Distance, QLocale().toString( 0.0, 'f', mDecimalPlaces ) );
       item->setTextAlignment( Columns::Distance, Qt::AlignRight );
       mTable->addTopLevelItem( item );
@@ -331,10 +347,8 @@ void QgsMeasureDialog::removeLastPoint()
       d = convertLength( d, mDistanceUnits );
 
       QTreeWidgetItem *item = mTable->topLevelItem( mTable->topLevelItemCount() - 1 );
-      item->setText( Columns::StartX, QLocale().toString( p1.x(), 'f', mDecimalPlacesCoordinates ) );
-      item->setText( Columns::StartY, QLocale().toString( p1.y(), 'f', mDecimalPlacesCoordinates ) );
-      item->setText( Columns::EndX, QLocale().toString( mLastMousePoint.x(), 'f', mDecimalPlacesCoordinates ) );
-      item->setText( Columns::EndY, QLocale().toString( mLastMousePoint.y(), 'f', mDecimalPlacesCoordinates ) );
+      item->setText( Columns::X, QLocale().toString( mLastMousePoint.x(), 'f', mDecimalPlacesCoordinates ) );
+      item->setText( Columns::Y, QLocale().toString( mLastMousePoint.y(), 'f', mDecimalPlacesCoordinates ) );
       item->setText( Columns::Distance, QLocale().toString( d, 'f', mDecimalPlaces ) );
       editTotal->setText( formatDistance( mTotal + d ) );
     }
@@ -633,7 +647,7 @@ void QgsMeasureDialog::updateUi()
   else
   {
     QVector<QgsPointXY>::const_iterator it;
-    bool b = true; // first point
+    bool firstPoint = true;
 
     QgsPointXY p1, p2;
     mTotal = 0;
@@ -641,7 +655,21 @@ void QgsMeasureDialog::updateUi()
     for ( it = tmpPoints.constBegin(); it != tmpPoints.constEnd(); ++it )
     {
       p2 = *it;
-      if ( !b )
+      if ( firstPoint )
+      {
+        // Create an additional item for the first point (no distance)
+        QTreeWidgetItem *item = new QTreeWidgetItem();
+        item->setText( Columns::X, QLocale().toString( p2.x(), 'f', mDecimalPlacesCoordinates ) );
+        item->setText( Columns::Y, QLocale().toString( p2.y(), 'f', mDecimalPlacesCoordinates ) );
+        mTable->addTopLevelItem( item );
+
+        // Hide the first row if the coordinates are not shown
+        if ( !mShowCoordinates->isChecked() )
+        {
+          item->setHidden( true );
+        }
+      }
+      else
       {
         double d = -1;
         d = mDa.measureLine( p1, p2 );
@@ -654,17 +682,15 @@ void QgsMeasureDialog::updateUi()
         }
 
         QTreeWidgetItem *item = new QTreeWidgetItem();
-        item->setText( Columns::StartX, QLocale().toString( p1.x(), 'f', mDecimalPlacesCoordinates ) );
-        item->setText( Columns::StartY, QLocale().toString( p1.y(), 'f', mDecimalPlacesCoordinates ) );
-        item->setText( Columns::EndX, QLocale().toString( p2.x(), 'f', mDecimalPlacesCoordinates ) );
-        item->setText( Columns::EndY, QLocale().toString( p2.y(), 'f', mDecimalPlacesCoordinates ) );
+        item->setText( Columns::X, QLocale().toString( p2.x(), 'f', mDecimalPlacesCoordinates ) );
+        item->setText( Columns::Y, QLocale().toString( p2.y(), 'f', mDecimalPlacesCoordinates ) );
         item->setText( Columns::Distance, QLocale().toString( d, 'f', mDecimalPlaces ) );
         item->setTextAlignment( Columns::Distance, Qt::AlignRight );
         mTable->addTopLevelItem( item );
         mTable->scrollToItem( item );
       }
       p1 = p2;
-      b = false;
+      firstPoint = false;
     }
 
     mTotal = mDa.measureLine( mTool->points() );
@@ -719,19 +745,22 @@ double QgsMeasureDialog::convertArea( double area, Qgis::AreaUnit toUnit ) const
   return mDa.convertAreaMeasurement( area, toUnit );
 }
 
-void QgsMeasureDialog::copyMeasurements( bool copyCoordinates )
+void QgsMeasureDialog::copyMeasurements( bool copyCoordinates, QString separator )
 {
   QClipboard *clipboard = QApplication::clipboard();
   QString text;
   QTreeWidgetItemIterator it( mTable );
+  // Discard the first item if show coordinates is not checked
+  if ( !copyCoordinates )
+  {
+    it++;
+  }
   while ( *it )
   {
     if ( copyCoordinates )
     {
-      text += ( *it )->text( Columns::StartX ) + QStringLiteral( "\t" );
-      text += ( *it )->text( Columns::EndX ) + QStringLiteral( "\t" );
-      text += ( *it )->text( Columns::StartY ) + QStringLiteral( "\t" );
-      text += ( *it )->text( Columns::EndY ) + QStringLiteral( "\t" );
+      text += ( *it )->text( Columns::X ) + separator;
+      text += ( *it )->text( Columns::Y ) + separator;
     }
     text += ( *it )->text( Columns::Distance ) + QStringLiteral( "\n" );
     it++;

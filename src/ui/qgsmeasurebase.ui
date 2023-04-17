@@ -48,29 +48,19 @@
       <bool>false</bool>
      </property>
      <property name="columnCount">
-      <number>5</number>
+      <number>3</number>
      </property>
      <attribute name="headerDefaultSectionSize">
-      <number>85</number>
+      <number>100</number>
      </attribute>
      <column>
       <property name="text">
-       <string>x1</string>
+       <string>x</string>
       </property>
      </column>
      <column>
       <property name="text">
-       <string>y1</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>x2</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>y2</string>
+       <string>y</string>
       </property>
      </column>
      <column>
