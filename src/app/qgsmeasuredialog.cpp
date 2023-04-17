@@ -57,8 +57,8 @@ QgsMeasureDialog::QgsMeasureDialog( QgsMeasureTool *tool, Qt::WindowFlags f )
 
   if ( !mMeasureArea )
   {
-    QAction *copyAction = new QAction( tr( "Copy &All" ), this );
-    QPushButton *cpb = new QPushButton( tr( "Copy &All" ) );
+    QAction *copyAction = new QAction( tr( "Copy" ), this );
+    QPushButton *cpb = new QPushButton( tr( "Copy" ) );
     buttonBox->addButton( cpb, QDialogButtonBox::ActionRole );
     connect( cpb, &QAbstractButton::clicked, copyAction, &QAction::trigger );
     connect( copyAction, &QAction::triggered, this, &QgsMeasureDialog::copyMeasurements );
