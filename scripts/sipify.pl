@@ -625,6 +625,10 @@ while ($LINE_IDX < $LINE_COUNT){
         next;
     }
 
+    if ( $LINE =~ m/^(.*?)\s*\/\/\s*cppcheck-suppress.*$/ ){
+        $LINE = "$1";
+    }
+
     if ($LINE =~ m/^\s*SIP_FEATURE\( (\w+) \)(.*)$/){
         write_output("SF1", "%Feature $1$2\n");
         next;
