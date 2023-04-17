@@ -1859,6 +1859,10 @@ bool QgsOgrProvider::addAttributeOGRLevel( const QgsField &field, bool &ignoreEr
   OGR_Fld_SetAlternativeName( fielddefn.get(), textEncoding()->fromUnicode( field.alias() ).constData() );
 #endif
 
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,7,0)
+  OGR_Fld_SetComment( fielddefn.get(), textEncoding()->fromUnicode( field.comment() ).constData() );
+#endif
+
   if ( mOgrLayer->CreateField( fielddefn.get(), true ) != OGRERR_NONE )
   {
     pushError( tr( "OGR error creating field %1: %2" ).arg( field.name(), CPLGetLastErrorMsg() ) );
@@ -2926,12 +2930,16 @@ void QgsOgrProvider::computeCapabilities()
     }
 
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,7,0)
-    if ( const char *pszAlterFieldDefnFlags = GDALGetMetadataItem( mOgrLayer->driver(), GDAL_DMD_ALTER_FIELD_DEFN_FLAGS, nullptr ) )
+    if ( const char *pszAlterFieldDefnFlags = GDALGetMetadataItem( mOgrLayer->driver(), GDAL_DMD_CREATION_FIELD_DEFN_FLAGS, nullptr ) )
     {
       char **papszTokens = CSLTokenizeString2( pszAlterFieldDefnFlags, " ", 0 );
       if ( CSLFindString( papszTokens, "AlternativeName" ) >= 0 )
       {
         mAttributeEditCapabilities |= Qgis::VectorDataProviderAttributeEditCapability::EditAlias;
+      }
+      if ( CSLFindString( papszTokens, "Comment" ) >= 0 )
+      {
+        mAttributeEditCapabilities |= Qgis::VectorDataProviderAttributeEditCapability::EditComment;
       }
       CSLDestroy( papszTokens );
     }
