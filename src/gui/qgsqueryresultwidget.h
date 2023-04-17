@@ -209,6 +209,8 @@ class GUI_EXPORT QgsQueryResultWidget: public QWidget, private Ui::QgsQueryResul
 
     void showCellContextMenu( QPoint point );
 
+    void copySelection();
+
   private:
 
     std::unique_ptr<QgsAbstractDatabaseProviderConnection> mConnection;

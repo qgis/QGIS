@@ -23,6 +23,7 @@
 #include "qgsapplication.h"
 
 #include <QClipboard>
+#include <QShortcut>
 
 QgsQueryResultWidget::QgsQueryResultWidget( QWidget *parent, QgsAbstractDatabaseProviderConnection *connection )
   : QWidget( parent )
@@ -102,6 +103,9 @@ QgsQueryResultWidget::QgsQueryResultWidget( QWidget *parent, QgsAbstractDatabase
 
     }
   } );
+
+  QShortcut *copySelection = new QShortcut( QKeySequence::Copy, mQueryResultsTableView );
+  connect( copySelection, &QShortcut::activated, this, &QgsQueryResultWidget::copySelection );
 
   setConnection( connection );
 }
@@ -228,36 +232,44 @@ void QgsQueryResultWidget::showCellContextMenu( QPoint point )
 
     menu->addAction( QgsApplication::getThemeIcon( "mActionEditCopy.svg" ), tr( "Copy" ), this, [ = ]
     {
-      const QModelIndexList selection = mQueryResultsTableView->selectionModel()->selectedIndexes();
-      int minRow = -1;
-      int maxRow = -1;
-      int minCol = -1;
-      int maxCol = -1;
-      for ( const QModelIndex &index : selection )
-      {
-        if ( minRow == -1 || index.row() < minRow )
-          minRow = index.row();
-        if ( maxRow == -1 || index.row() > maxRow )
-          maxRow = index.row();
-        if ( minCol == -1 || index.column() < minCol )
-          minCol = index.column();
-        if ( maxCol == -1 || index.column() > maxCol )
-          maxCol = index.column();
-      }
-
-      if ( minRow == maxRow && minCol == maxCol )
-      {
-        // copy only one cell
-        const QString text = mModel->data( modelIndex, Qt::DisplayRole ).toString();
-        QApplication::clipboard()->setText( text );
-      }
-      else
-      {
-        copyResults( minRow, maxRow, minCol, maxCol );
-      }
+      copySelection();
     }, QKeySequence::Copy );
 
     menu->exec( mQueryResultsTableView->viewport()->mapToGlobal( point ) );
+  }
+}
+
+void QgsQueryResultWidget::copySelection()
+{
+  const QModelIndexList selection = mQueryResultsTableView->selectionModel()->selectedIndexes();
+  if ( selection.empty() )
+    return;
+
+  int minRow = -1;
+  int maxRow = -1;
+  int minCol = -1;
+  int maxCol = -1;
+  for ( const QModelIndex &index : selection )
+  {
+    if ( minRow == -1 || index.row() < minRow )
+      minRow = index.row();
+    if ( maxRow == -1 || index.row() > maxRow )
+      maxRow = index.row();
+    if ( minCol == -1 || index.column() < minCol )
+      minCol = index.column();
+    if ( maxCol == -1 || index.column() > maxCol )
+      maxCol = index.column();
+  }
+
+  if ( minRow == maxRow && minCol == maxCol )
+  {
+    // copy only one cell
+    const QString text = mModel->data( selection.at( 0 ), Qt::DisplayRole ).toString();
+    QApplication::clipboard()->setText( text );
+  }
+  else
+  {
+    copyResults( minRow, maxRow, minCol, maxCol );
   }
 }
 
