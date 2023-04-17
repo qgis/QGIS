@@ -80,8 +80,8 @@ class QgsMeshDataset3dEntity: public Qt3DCore::QEntity, public QgsMesh3dEntity
                             const QgsMesh3DSymbol *symbol );
 
   private:
-    virtual void buildGeometry();
-    virtual void applyMaterial();
+    void buildGeometry() override;
+    void applyMaterial() override;
 
     QgsMeshLayer *layer() const;
     QgsMapLayerRef mLayerRef;
@@ -101,8 +101,8 @@ class QgsMesh3dTerrainTileEntity: public QgsTerrainTileEntity, public QgsMesh3dE
                                 Qt3DCore::QNode *parent = nullptr );
 
   private:
-    virtual void buildGeometry();
-    virtual void applyMaterial();
+    void buildGeometry() override;
+    void applyMaterial() override;
 };
 
 ///@endcond
