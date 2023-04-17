@@ -67,10 +67,6 @@ QgsMeasureDialog::QgsMeasureDialog( QgsMeasureTool *tool, Qt::WindowFlags f )
     mTable->setContextMenuPolicy( Qt::ActionsContextMenu );
     mTable->addAction( copyAction );
   }
-  else
-  {
-    mCopySettingsGroupBox->hide();
-  }
 
   repopulateComboBoxUnits( mMeasureArea );
   if ( mMeasureArea )
@@ -724,22 +720,12 @@ double QgsMeasureDialog::convertArea( double area, Qgis::AreaUnit toUnit ) const
 
 void QgsMeasureDialog::copyMeasurements()
 {
-  bool includeHeader = mIncludeHeader->isChecked();
+  bool includeHeader = QgsSettings().value( QStringLiteral( "qgis/measure/clipboard_header" ), false ).toBool();
 
   // Get the separator
-  QString separator;
-  if ( mSeparatorTab->isChecked() )
+  QString separator = QgsSettings().value( QStringLiteral( "qgis/measure/clipboard_separator" ), QStringLiteral( "\t" ) ).toString();
+  if ( separator.isEmpty() )
     separator = QStringLiteral( "\t" );
-  else if ( mSeparatorComma->isChecked() )
-    separator = QStringLiteral( "," );
-  else if ( mSeparatorSemicolon->isChecked() )
-    separator = QStringLiteral( ";" );
-  else if ( mSeparatorSpace->isChecked() )
-    separator = QStringLiteral( " " );
-  else if ( mSeparatorColon->isChecked() )
-    separator = QStringLiteral( ":" );
-  else
-    separator = mSeparatorCustom->text();
 
   QClipboard *clipboard = QApplication::clipboard();
   QString text;
