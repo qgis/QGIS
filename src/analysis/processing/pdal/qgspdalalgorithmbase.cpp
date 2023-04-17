@@ -88,14 +88,13 @@ void QgsPdalAlgorithmBase::applyCommonParameters( QStringList &arguments, QgsCoo
   }
 }
 
-void QgsPdalAlgorithmBase::applyThreadsParameter( QStringList &arguments )
+void QgsPdalAlgorithmBase::applyThreadsParameter( QStringList &arguments, QgsProcessingContext &context )
 {
-  QgsSettings settings;
-  int threads = settings.value( QStringLiteral( "/Processing/Configuration/MAX_THREADS" ), 0 ).toInt();
+  const int numThreads = context.numberOfThreads();
 
-  if ( threads )
+  if ( numThreads )
   {
-    arguments << QStringLiteral( "--threads=%1" ).arg( threads );
+    arguments << QStringLiteral( "--threads=%1" ).arg( numThreads );
   }
 }
 

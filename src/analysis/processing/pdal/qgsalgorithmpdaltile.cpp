@@ -101,7 +101,7 @@ QStringList QgsPdalTileAlgorithm::createArgumentLists( const QVariantMap &parame
     args << QStringLiteral( "--a_srs=%1" ).arg( crs.authid() );
   }
 
-  applyThreadsParameter( args );
+  applyThreadsParameter( args, context );
 
   for ( const QgsMapLayer *layer : std::as_const( layers ) )
   {

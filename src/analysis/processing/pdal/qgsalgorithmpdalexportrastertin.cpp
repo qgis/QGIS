@@ -111,7 +111,7 @@ QStringList QgsPdalExportRasterTinAlgorithm::createArgumentLists( const QVariant
   }
 
   applyCommonParameters( args, layer->crs(), parameters, context );
-  applyThreadsParameter( args );
+  applyThreadsParameter( args, context );
   return args;
 }
 

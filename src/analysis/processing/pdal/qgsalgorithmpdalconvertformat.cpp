@@ -79,7 +79,7 @@ QStringList QgsPdalConvertFormatAlgorithm::createArgumentLists( const QVariantMa
                        QStringLiteral( "--output=%1" ).arg( outputFile )
                      };
 
-  applyThreadsParameter( args );
+  applyThreadsParameter( args, context );
   return args;
 }
 
