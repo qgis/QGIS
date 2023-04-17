@@ -1632,6 +1632,8 @@ void QgsWmsCapabilities::parseTileSetProfile( const QDomElement &element )
   QgsWmtsTileMatrixSet matrixSet;
   QgsWmtsTileMatrix tileMatrix;
   QgsWmtsTileLayer tileLayer;
+  tileLayer.dpi = -1;
+  tileLayer.timeFormat = QgsWmtsTileLayer::WmtsTimeFormat::yyyyMMdd;
 
   // don't allow duplicate format/style/ strings
   QSet< QString > uniqueFormats;
