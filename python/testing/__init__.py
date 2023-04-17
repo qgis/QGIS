@@ -135,6 +135,8 @@ if (QT_VERSION >= 0x060000):
 
     QUrl.FullyDecoded = QUrl.ComponentFormattingOption.FullyDecoded
 
+    QDialogButtonBox.ResetRole = QDialogButtonBox.ButtonRole.ResetRole
+
 import unittest
 
 # Get a backup, we will patch this one later
