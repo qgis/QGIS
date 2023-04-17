@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "qgisapp.h"
+#include "qgsmessagebar.h"
 #include "qgsmeasuredialog.h"
 #include "qgsmeasuretool.h"
 #include "qgsdistancearea.h"
@@ -56,9 +57,15 @@ QgsMeasureDialog::QgsMeasureDialog( QgsMeasureTool *tool, Qt::WindowFlags f )
 
   if ( !mMeasureArea )
   {
+    QAction *copyAction = new QAction( tr( "Copy &All" ), this );
     QPushButton *cpb = new QPushButton( tr( "Copy &All" ) );
     buttonBox->addButton( cpb, QDialogButtonBox::ActionRole );
-    connect( cpb, &QAbstractButton::clicked, this, &QgsMeasureDialog::copyMeasurements );
+    connect( cpb, &QAbstractButton::clicked, copyAction, &QAction::trigger );
+    connect( copyAction, &QAction::triggered, this, &QgsMeasureDialog::copyMeasurements );
+
+    // Add context menu in the table
+    mTable->setContextMenuPolicy( Qt::ActionsContextMenu );
+    mTable->addAction( copyAction );
   }
   else
   {
@@ -754,6 +761,9 @@ void QgsMeasureDialog::copyMeasurements()
   }
 
   clipboard->setText( text );
+
+  // Display a message to the user
+  QgisApp::instance()->messageBar()->pushInfo( tr( "Measure" ), tr( "Measurements copied to clipboard" ) );
 }
 
 void QgsMeasureDialog::reject()
