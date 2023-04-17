@@ -2574,7 +2574,7 @@ double QgsGeometry::lineLocatePoint( const QgsGeometry &point ) const
 
 double QgsGeometry::interpolateAngle( double distance ) const
 {
-  if ( !d->geometry )
+  if ( !d->geometry || d->geometry->isEmpty() )
     return 0.0;
 
   const QgsAbstractGeometry *geom = d->geometry->simplifiedTypeRef();
