@@ -354,7 +354,8 @@ QgsMeshSpatialIndex::QgsMeshSpatialIndex( const QgsMesh &mesh, QgsFeedback *feed
 }
 
 QgsMeshSpatialIndex::QgsMeshSpatialIndex( const QgsMeshSpatialIndex &other ) //NOLINT
-  : d( other.d )
+  : mElementType( other.mElementType )
+  , d( other.d )
 {
 }
 
@@ -363,7 +364,10 @@ QgsMeshSpatialIndex:: ~QgsMeshSpatialIndex() = default; //NOLINT
 QgsMeshSpatialIndex &QgsMeshSpatialIndex::operator=( const QgsMeshSpatialIndex &other )
 {
   if ( this != &other )
+  {
+    mElementType = other.mElementType;
     d = other.d;
+  }
   return *this;
 }
 
