@@ -73,8 +73,6 @@ class APP_EXPORT QgsMeasureDialog : public QDialog, private Ui::QgsMeasureBase
     //! Copy measurements to the clipboard
     void copyMeasurements();
 
-    void showCoordinatesChanged();
-
     void crsChanged();
 
     void projChanged();

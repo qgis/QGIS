@@ -59,14 +59,9 @@ QgsMeasureDialog::QgsMeasureDialog( QgsMeasureTool *tool, Qt::WindowFlags f )
     QPushButton *cpb = new QPushButton( tr( "Copy &All" ) );
     buttonBox->addButton( cpb, QDialogButtonBox::ActionRole );
     connect( cpb, &QAbstractButton::clicked, this, &QgsMeasureDialog::copyMeasurements );
-
-    // Toggle the coordinates columns visibility
-    connect( mShowCoordinates, &QCheckBox::clicked, this, &QgsMeasureDialog::showCoordinatesChanged );
-    showCoordinatesChanged();
   }
   else
   {
-    mShowCoordinates->hide();
     mCopySettingsGroupBox->hide();
   }
 
@@ -144,20 +139,6 @@ void QgsMeasureDialog::crsChanged()
   mTable->clear();
   mTotal = 0.;
   updateUi();
-}
-
-void QgsMeasureDialog::showCoordinatesChanged()
-{
-  // if Show Coordinates is unchecked, Hide the X and Y columns
-  mTable->setColumnHidden( Columns::X, !mShowCoordinates->isChecked() );
-  mTable->setColumnHidden( Columns::Y, !mShowCoordinates->isChecked() );
-
-  // The first row contains the first point, with no computed distance
-  // so we hide it if Show Coordinates is unchecked
-  if ( mTable->topLevelItemCount() > 0 )
-  {
-    mTable->topLevelItem( 0 )->setHidden( !mShowCoordinates->isChecked() );
-  }
 }
 
 void QgsMeasureDialog::updateSettings()
@@ -289,12 +270,6 @@ void QgsMeasureDialog::addPoint()
         item->setText( Columns::X, QLocale().toString( lastPoint.x(), 'f', mDecimalPlacesCoordinates ) );
         item->setText( Columns::Y, QLocale().toString( lastPoint.y(), 'f', mDecimalPlacesCoordinates ) );
         mTable->addTopLevelItem( item );
-
-        // Hide the first item if Show Coordinates is unchecked
-        if ( !mShowCoordinates->isChecked() )
-        {
-          item->setHidden( true );
-        }
       }
       QTreeWidgetItem *item = new QTreeWidgetItem();
       QgsPointXY lastPoint = mTool->points().last();
@@ -663,12 +638,6 @@ void QgsMeasureDialog::updateUi()
         item->setText( Columns::X, QLocale().toString( p2.x(), 'f', mDecimalPlacesCoordinates ) );
         item->setText( Columns::Y, QLocale().toString( p2.y(), 'f', mDecimalPlacesCoordinates ) );
         mTable->addTopLevelItem( item );
-
-        // Hide the first row if the coordinates are not shown
-        if ( !mShowCoordinates->isChecked() )
-        {
-          item->setHidden( true );
-        }
       }
       else
       {
@@ -748,7 +717,6 @@ double QgsMeasureDialog::convertArea( double area, Qgis::AreaUnit toUnit ) const
 
 void QgsMeasureDialog::copyMeasurements()
 {
-  bool copyCoordinates = mShowCoordinates->isChecked();
   bool includeHeader = mIncludeHeader->isChecked();
 
   // Get the separator
@@ -766,35 +734,25 @@ void QgsMeasureDialog::copyMeasurements()
   else
     separator = mSeparatorCustom->text();
 
-
   QClipboard *clipboard = QApplication::clipboard();
   QString text;
   QTreeWidgetItemIterator it( mTable );
 
   if ( includeHeader )
   {
-    if ( copyCoordinates )
-    {
-      text += mTable->headerItem()->text( Columns::X ) + separator;
-      text += mTable->headerItem()->text( Columns::Y ) + separator;
-    }
+    text += mTable->headerItem()->text( Columns::X ) + separator;
+    text += mTable->headerItem()->text( Columns::Y ) + separator;
     text += mTable->headerItem()->text( Columns::Distance ) + QStringLiteral( "\n" );
   }
-  // Discard the first item if show coordinates is not checked
-  if ( !copyCoordinates )
-  {
-    it++;
-  }
+
   while ( *it )
   {
-    if ( copyCoordinates )
-    {
-      text += ( *it )->text( Columns::X ) + separator;
-      text += ( *it )->text( Columns::Y ) + separator;
-    }
+    text += ( *it )->text( Columns::X ) + separator;
+    text += ( *it )->text( Columns::Y ) + separator;
     text += ( *it )->text( Columns::Distance ) + QStringLiteral( "\n" );
     it++;
   }
+
   clipboard->setText( text );
 }
 
