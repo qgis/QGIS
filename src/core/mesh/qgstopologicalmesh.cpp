@@ -2238,6 +2238,8 @@ QgsTopologicalMesh::Changes QgsTopologicalMesh::splitFace( int faceIndex )
   }
 
   Changes changes;
+  if ( splitVertexPos == -1 )
+    return changes;
 
   const QgsMeshFace newFace1 = {face.at( splitVertexPos ),
                                 face.at( ( splitVertexPos + 1 ) % faceSize ),
