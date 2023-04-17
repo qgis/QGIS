@@ -52,7 +52,7 @@ from qgis.PyQt.QtWidgets import (
     QTreeWidgetItem,
     QWidget,
 )
-from qgis.utils import OverrideCursor
+from qgis.utils import OverrideCursor, iface
 
 
 class Editor(QgsCodeEditorPython):
@@ -218,7 +218,7 @@ class Editor(QgsCodeEditorPython):
                 if showMessage:
                     msgText = QCoreApplication.translate('PythonConsole',
                                                          '<b>"{0}"</b> was not found.').format(text)
-                    self.pythonconsole.callWidgetMessageBarEditor(msgText, 0, True)
+                    self.parent.showMessage(msgText)
             else:
                 styleError = ''
             self.pythonconsole.lineEditFind.setStyleSheet(styleError)
@@ -243,7 +243,7 @@ class Editor(QgsCodeEditorPython):
         if not ACCESS_TOKEN:
             msg_text = QCoreApplication.translate(
                 'PythonConsole', 'GitHub personal access token must be generated (see Console Options)')
-            self.pythonconsole.callWidgetMessageBarEditor(msg_text, 1, True)
+            self.parent.showMessage(msg_text, Qgis.Warning, 5)
             return
 
         URL = "https://api.github.com/gists"
@@ -270,10 +270,10 @@ class Editor(QgsCodeEditorPython):
             link = _json.object()['html_url'].toString()
             QApplication.clipboard().setText(link)
             msg = QCoreApplication.translate('PythonConsole', 'URL copied to clipboard.')
-            self.pythonconsole.callWidgetMessageBarEditor(msg, 0, True)
+            self.parent.showMessage(msg)
         else:
             msg = QCoreApplication.translate('PythonConsole', 'Connection error: ')
-            self.pythonconsole.callWidgetMessageBarEditor(msg + request.erroMessage(), 0, True)
+            self.parent.showMessage(msg + request.erroMessage(), Qgis.Warning, 5)
 
     def hideEditor(self):
         self.pythonconsole.splitterObj.hide()
@@ -314,7 +314,7 @@ class Editor(QgsCodeEditorPython):
                                                     'Hey, type something to run!')
         if filename is None:
             if not self.isModified():
-                self.pythonconsole.callWidgetMessageBarEditor(msgEditorBlank, 0, True)
+                self.parent.showMessage(msgEditorBlank)
                 return
 
         deleteTempFile = False
@@ -376,7 +376,7 @@ class Editor(QgsCodeEditorPython):
             if not QFileInfo(self.path).exists():
                 msgText = QCoreApplication.translate('PythonConsole',
                                                      'The file <b>"{0}"</b> has been deleted or is not accessible').format(self.path)
-                self.pythonconsole.callWidgetMessageBarEditor(msgText, 2, False)
+                self.parent.showMessage(msgText, Qgis.Critical)
                 return
         if self.path and self.lastModified != QFileInfo(self.path).lastModified():
             self.beginUndoAction()
@@ -394,7 +394,7 @@ class Editor(QgsCodeEditorPython):
         tabWidget = self.tabwidget.currentWidget()
         msgText = QCoreApplication.translate('PythonConsole',
                                              'The file <b>"{0}"</b> is read only, please save to different file first.').format(tabWidget.path)
-        self.pythonconsole.callWidgetMessageBarEditor(msgText, 1, False)
+        self.parent.showMessage(msgText, Qgis.Warning)
 
     def loadFile(self, filename, readOnly=False):
         self.lastModified = QFileInfo(filename).lastModified()
@@ -430,7 +430,7 @@ class Editor(QgsCodeEditorPython):
 
             msgText = QCoreApplication.translate('PythonConsole',
                                                  'Script was correctly saved.')
-            self.pythonconsole.callWidgetMessageBarEditor(msgText, 0, True)
+            self.parent.showMessage(msgText)
 
         # Save the new contents
         # Need to use newline='' to avoid adding extra \r characters on Windows
@@ -491,6 +491,9 @@ class Editor(QgsCodeEditorPython):
 
         super().keyPressEvent(e)
 
+    def showMessage(self, title, text, level):
+        self.parent.showMessage(text, level, title=title)
+
 
 class EditorTab(QWidget):
 
@@ -539,6 +542,9 @@ class EditorTab(QWidget):
             return super().__setattr__(name, value)
         except AttributeError:
             return setattr(self._editor, name, value)
+
+    def showMessage(self, text, level=Qgis.Info, timeout=-1, title=""):
+        self.infoBar.pushMessage(title, text, level, timeout)
 
 
 class EditorTabWidget(QTabWidget):
@@ -922,11 +928,6 @@ class EditorTabWidget(QTabWidget):
         if tabWidget and tabWidget.path:
             self.settings.setValue("pythonConsole/lastDirPath", tabWidget.path)
 
-    def widgetMessageBar(self, iface, text, level, timed=True):
-        messageLevel = [Qgis.Info, Qgis.Warning, Qgis.Critical]
-        if timed:
-            timeout = iface.messageTimeout()
-        else:
-            timeout = 0
+    def showMessage(self, text, level=Qgis.Info, timeout=-1, title=""):
         currWidget = self.currentWidget()
-        currWidget.infoBar.pushMessage(text, messageLevel[level], timeout)
+        currWidget.showMessage(text, level, timeout, title)
