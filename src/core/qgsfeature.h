@@ -269,7 +269,7 @@ class CORE_EXPORT QgsFeature
 #else
 
     // TODO Make it work with Qt6
-    % If (- Qt_6_0_0)
+    % If( !PYQT6 )
 
     /**
      * Returns the feature's attributes as a map of field name to value.

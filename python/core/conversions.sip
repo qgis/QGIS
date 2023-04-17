@@ -1457,7 +1457,7 @@ template <TYPE>
 %End
 };
 
-%If (- Qt_6_0_0)
+%If (!PYQT6)
 
 template<TYPE>
 %MappedType QMap<qint64, QMap<int, TYPE> >
@@ -1576,7 +1576,7 @@ template<TYPE>
 
 %End
 
-%If (Qt_6_0_0 - )
+%If (PYQT6)
 
 template<TYPE>
 %MappedType QMap<qint64, QMap<int, TYPE> >
@@ -3252,7 +3252,8 @@ template <TYPE>
 %End
 };
 
-%If (- Qt_6_0_0)
+
+%If (!PYQT6)
 
 %ModuleCode
 bool null_from_qvariant_converter( const QVariant *varp, PyObject **objp )
@@ -3297,7 +3298,7 @@ bool null_from_qvariant_converter( const QVariant *varp, PyObject **objp )
 
 %End
 
-%If (Qt_6_0_0 -)
+%If (PYQT6)
 
 %ModuleCode
 bool null_from_qvariant_converter( const QVariant *varp, PyObject **objp )
@@ -3350,7 +3351,7 @@ bool null_from_qvariant_converter( const QVariant *varp, PyObject **objp )
 //// Specific to Qt6
 ////////////////////////////////////////////////////////////////////////////////////////////
 
-%If (Qt_6_0_0 -)
+%If (PYQT6)
 
 // In Qt6 QVector is just an alias to QList but doesn't appear in pyqt
 // Mapping code is directly copied from QList mapping code in qpycore_qlist.sip and
@@ -4350,8 +4351,6 @@ template<_TYPE_>
 %End
 };
 
-%End
-
 %MappedType QVector<QVariantMap>
 {
 %TypeHeaderCode
@@ -4399,9 +4398,12 @@ template<_TYPE_>
 %End
 };
 
+%End
+
+
 //// End Qt6 SPecific code
 
-%If (- Qt_6_0_0)
+%If (!PYQT6)
 
 %PostInitialisationCode  //#spellok
 

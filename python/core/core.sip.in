@@ -102,6 +102,7 @@ done:
 %Feature HAVE_GUI
 %Feature ANDROID
 %Feature VECTOR_MAPPED_TYPE
+%Feature PYQT6
 
 %Include conversions.sip
 %Include qgsexception.sip

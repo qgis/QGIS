@@ -313,7 +313,7 @@ class CORE_EXPORT QgsJsonUtils
 
     // TODO Make it work with Qt6
 #ifdef SIP_RUN
-    % If (- Qt_6_0_0)
+    % If( !PYQT6 )
 #endif
     static QgsFeatureList stringToFeatureList( const QString &string, const QgsFields &fields = QgsFields(), QTextCodec *encoding = nullptr );
 #ifdef SIP_RUN
@@ -330,7 +330,7 @@ class CORE_EXPORT QgsJsonUtils
 
 // TODO Make it work with Qt6
 #ifdef SIP_RUN
-    % If (- Qt_6_0_0)
+    % If( !PYQT6 )
 #endif
     static QgsFields stringToFields( const QString &string, QTextCodec *encoding = nullptr );
 #ifdef SIP_RUN

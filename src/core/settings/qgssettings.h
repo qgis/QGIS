@@ -226,7 +226,7 @@ class CORE_EXPORT QgsSettings : public QObject
     QVariant value( const QString &key, const QVariant &defaultValue = QVariant(),
                     Section section = NoSection ) const;
 #else
-    % If( Qt_6_0_0 - )
+    % If( PYQT6 )
     SIP_PYOBJECT value( const QString &key, const QVariant &defaultValue = QVariant(),
                         SIP_PYOBJECT type = 0,
                         QgsSettings::Section section = QgsSettings::NoSection ) const / ReleaseGIL /;
@@ -250,7 +250,7 @@ class CORE_EXPORT QgsSettings : public QObject
 
     % End
 
-    % If( - Qt_6_0_0 )
+    % If( !PYQT6 )
     SIP_PYOBJECT value( const QString &key, const QVariant &defaultValue = QVariant(),
                         SIP_PYOBJECT type = 0,
                         QgsSettings::Section section = QgsSettings::NoSection ) const / ReleaseGIL /;
