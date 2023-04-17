@@ -46,7 +46,7 @@ QRgb QgsElevationMap::encodeElevation( float z )
 {
   double zScaled = ( z + ELEVATION_OFFSET ) * ELEVATION_SCALE;
   unsigned int zInt = static_cast<unsigned int>( std::clamp( zScaled, 0., 16777215. ) );   // make sure to fit into 3 bytes
-  return QRgb( zInt | ( 0xff << 24 ) );
+  return QRgb( zInt | ( static_cast< unsigned int >( 0xff ) << 24 ) );
 }
 
 float QgsElevationMap::decodeElevation( QRgb colorRaw )
