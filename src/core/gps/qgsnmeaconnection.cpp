@@ -492,6 +492,7 @@ void QgsNmeaConnection::processGsaSentence( const char *data, int len )
         else if ( result.sat_prn[i] > 32 && result.sat_prn[i] <= 64 )
           constellation = Qgis::GnssConstellation::Sbas;
 
+        // cppcheck-suppress identicalInnerCondition
         if ( result.sat_prn[i] > 0 )
         {
           if ( mixedConstellation

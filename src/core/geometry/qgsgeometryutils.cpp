@@ -1634,13 +1634,11 @@ void QgsGeometryUtils::perpendicularCenterSegment( double pointx, double pointy,
 {
   QgsVector segmentVector =  QgsVector( segmentPoint2x - segmentPoint1x, segmentPoint2y - segmentPoint1y );
   QgsVector perpendicularVector = segmentVector.perpVector();
-  if ( desiredSegmentLength )
+  if ( desiredSegmentLength != 0 )
   {
-    if ( desiredSegmentLength != 0 )
-    {
-      perpendicularVector = perpendicularVector.normalized() * ( desiredSegmentLength ) / 2;
-    }
+    perpendicularVector = perpendicularVector.normalized() * ( desiredSegmentLength ) / 2;
   }
+
   perpendicularSegmentPoint1x = pointx - perpendicularVector.x();
   perpendicularSegmentPoint1y = pointy - perpendicularVector.y();
   perpendicularSegmentPoint2x = pointx + perpendicularVector.x();
