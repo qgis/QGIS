@@ -249,6 +249,7 @@ QgsMeshStreamField::QgsMeshStreamField( const QgsMeshStreamField &other )
   , mPen( other.mPen )
   , mTraceImage( other.mTraceImage )
   , mMapToFieldPixel( other.mMapToFieldPixel )
+  , mOutputExtent( other.mOutputExtent )
   , mVectorColoring( other.mVectorColoring )
   , mDirectionField( other.mDirectionField )
   , mRenderContext( other.mRenderContext )
@@ -261,6 +262,7 @@ QgsMeshStreamField::QgsMeshStreamField( const QgsMeshStreamField &other )
   , mMaximumMagnitude( other.mMaximumMagnitude )
   , mPixelFillingDensity( other.mPixelFillingDensity )
   , mMinMagFilter( other.mMinMagFilter )
+  , mMaxMagFilter( other.mMaxMagFilter )
   , mMinimizeFieldSize( other.mMinimizeFieldSize )
 {
   mPainter.reset( new QPainter( &mTraceImage ) );
@@ -1136,9 +1138,11 @@ QgsMeshParticleTracesField::QgsMeshParticleTracesField( const QgsMeshParticleTra
   , mParticlesLifeTime( other.mParticlesLifeTime )
   , mParticlesCount( other.mParticlesCount )
   , mTailFactor( other.mTailFactor )
+  , mMinTailLength( other.mMinTailLength )
   , mParticleColor( other.mParticleColor )
   , mParticleSize( other.mParticleSize )
   , mStumpFactor( other.mStumpFactor )
+  , mStumpParticleWithLifeTime( other.mStumpParticleWithLifeTime )
 {}
 
 void QgsMeshParticleTracesField::addParticle( const QPoint &startPoint, double lifeTime )
