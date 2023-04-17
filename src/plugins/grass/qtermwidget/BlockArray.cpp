@@ -276,6 +276,7 @@ void BlockArray::decreaseBuffer(size_t newsize)
 
     FILE * fion = fdopen(dup(ion), "w+b");
     if (!fion) {
+        // cppcheck-suppress uninitdata
         delete [] buffer1;
         perror("fdopen/dup");
         return;
@@ -334,7 +335,9 @@ void BlockArray::increaseBuffer()
     FILE * fion = fdopen(dup(ion), "w+b");
     if (!fion) {
         perror("fdopen/dup");
+        // cppcheck-suppress uninitdata
         delete [] buffer1;
+        // cppcheck-suppress uninitdata
         delete [] buffer2;
         return;
     }
