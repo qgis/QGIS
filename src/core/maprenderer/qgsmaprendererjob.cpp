@@ -91,6 +91,9 @@ LayerRenderJob &LayerRenderJob::operator=( LayerRenderJob &&other )
 
   maskRequiresLayerRasterization = other.maskRequiresLayerRasterization;
 
+  elevationMap = other.elevationMap;
+  maskPainter = std::move( other.maskPainter );
+
   return *this;
 }
 

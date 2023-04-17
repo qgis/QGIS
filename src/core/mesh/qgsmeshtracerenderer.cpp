@@ -1294,6 +1294,7 @@ QgsMeshParticleTracesField &QgsMeshParticleTracesField::operator=( const QgsMesh
 {
   QgsMeshStreamField::operator=( other );
   mTimeField = other.mTimeField;
+  mMagnitudeField = other.mMagnitudeField;
   mDirectionField = other.mDirectionField;
   mParticles = other.mParticles;
   mStumpImage = other.mStumpImage;

@@ -321,6 +321,7 @@ QgsExpressionContext::QgsExpressionContext( const QgsExpressionContext &other ) 
   mLoadLayerFunction = std::make_unique< LoadLayerFunction >();
 }
 
+// cppcheck-suppress operatorEqVarError
 QgsExpressionContext &QgsExpressionContext::operator=( QgsExpressionContext &&other ) noexcept
 {
   if ( this != &other )

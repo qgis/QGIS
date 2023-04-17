@@ -152,8 +152,9 @@ QgsSQLStatement &QgsSQLStatement::operator=( const QgsSQLStatement &other )
   {
     delete mRootNode;
     mParserErrorString.clear();
-    mRootNode = ::parse( other.mStatement, mParserErrorString, other.mAllowFragments );
     mStatement = other.mStatement;
+    mAllowFragments = other.mAllowFragments;
+    mRootNode = ::parse( mStatement, mParserErrorString, mAllowFragments );
   }
   return *this;
 }
