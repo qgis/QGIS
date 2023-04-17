@@ -702,7 +702,7 @@ class PythonConsoleWidget(QWidget):
             msgText = QCoreApplication.translate('PythonConsole',
                                                  'The file <b>{0}</b> could not be saved. Error: {1}').format(tabWidget.path,
                                                                                                               error.strerror)
-            self.callWidgetMessageBarEditor(msgText, 2, False)
+            self.callWidgetMessageBarEditor(msgText, Qgis.Critical)
 
     def saveAsScriptFile(self, index=None):
         tabWidget = self.tabEditorWidget.currentWidget()
@@ -729,7 +729,7 @@ class PythonConsoleWidget(QWidget):
                 msgText = QCoreApplication.translate('PythonConsole',
                                                      'The file <b>{0}</b> could not be saved. Error: {1}').format(tabWidget.path,
                                                                                                                   error.strerror)
-                self.callWidgetMessageBarEditor(msgText, 2, False)
+                self.callWidgetMessageBarEditor(msgText, Qgis.Critical)
                 if fileNone:
                     tabWidget.path = None
                 else:
@@ -763,8 +763,8 @@ class PythonConsoleWidget(QWidget):
     def callWidgetMessageBar(self, text):
         self.shellOut.widgetMessageBar(iface, text)
 
-    def callWidgetMessageBarEditor(self, text, level, timed):
-        self.tabEditorWidget.widgetMessageBar(iface, text, level, timed)
+    def callWidgetMessageBarEditor(self, text, level, timeout):
+        self.tabEditorWidget.showMessage(text, level, timeout)
 
     def updateTabListScript(self, script, action=None):
         if action == 'remove':
