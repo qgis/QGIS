@@ -70,6 +70,9 @@ FeaturePart::FeaturePart( QgsLabelFeature *feat, const GEOSGeometry *geom )
 FeaturePart::FeaturePart( const FeaturePart &other )
   : PointSet( other )
   , mLF( other.mLF )
+  , mTotalRepeats( other.mTotalRepeats )
+  , mCachedMaxLineCandidates( other.mCachedMaxLineCandidates )
+  , mCachedMaxPolygonCandidates( other.mCachedMaxPolygonCandidates )
 {
   for ( const FeaturePart *hole : std::as_const( other.mHoles ) )
   {
