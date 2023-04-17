@@ -73,7 +73,10 @@ bool QgsServerPlugins::initPlugins( QgsServerInterface *interface )
 
   QgsDebugMsg( QStringLiteral( "Python support library's instance() symbol resolved." ) );
   sPythonUtils = pythonlib_inst();
-  sPythonUtils->initServerPython( interface );
+  if ( sPythonUtils )
+  {
+    sPythonUtils->initServerPython( interface );
+  }
 
   if ( sPythonUtils && sPythonUtils->isEnabled() )
   {

@@ -83,9 +83,9 @@ void QgsMapRendererSequentialJob::cancel()
     return;
 
   QgsDebugMsgLevel( QStringLiteral( "sequential - cancel internal" ), 5 );
+  // cppcheck-suppress nullPointerRedundantCheck
   mInternalJob->cancel();
 
-  // cppcheck-suppress nullPointerRedundantCheck
   Q_ASSERT( !mInternalJob && !mPainter );
 }
 
