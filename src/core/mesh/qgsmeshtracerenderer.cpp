@@ -134,28 +134,28 @@ QgsVector QgsMeshVectorValueInterpolatorFromVertex::interpolatedValuePrivate( in
 }
 
 QgsMeshVectorValueInterpolator::QgsMeshVectorValueInterpolator( const QgsTriangularMesh &triangularMesh,
-    const QgsMeshDataBlock &datasetVectorValues ):
-  mTriangularMesh( triangularMesh ),
-  mDatasetValues( datasetVectorValues ),
-  mUseScalarActiveFaceFlagValues( false )
+    const QgsMeshDataBlock &datasetVectorValues )
+  : mTriangularMesh( triangularMesh )
+  , mDatasetValues( datasetVectorValues )
+  , mUseScalarActiveFaceFlagValues( false )
 {}
 
 QgsMeshVectorValueInterpolator::QgsMeshVectorValueInterpolator( const QgsTriangularMesh &triangularMesh,
     const QgsMeshDataBlock &datasetVectorValues,
-    const QgsMeshDataBlock &scalarActiveFaceFlagValues ):
-  mTriangularMesh( triangularMesh ),
-  mDatasetValues( datasetVectorValues ),
-  mActiveFaceFlagValues( scalarActiveFaceFlagValues ),
-  mUseScalarActiveFaceFlagValues( true )
+    const QgsMeshDataBlock &scalarActiveFaceFlagValues )
+  : mTriangularMesh( triangularMesh )
+  , mDatasetValues( datasetVectorValues )
+  , mActiveFaceFlagValues( scalarActiveFaceFlagValues )
+  , mUseScalarActiveFaceFlagValues( true )
 {}
 
-QgsMeshVectorValueInterpolator::QgsMeshVectorValueInterpolator( const QgsMeshVectorValueInterpolator &other ):
-  mTriangularMesh( other.mTriangularMesh ),
-  mDatasetValues( other.mDatasetValues ),
-  mActiveFaceFlagValues( other.mActiveFaceFlagValues ),
-  mFaceCache( other.mFaceCache ),
-  mCacheFaceIndex( other.mCacheFaceIndex ),
-  mUseScalarActiveFaceFlagValues( other.mUseScalarActiveFaceFlagValues )
+QgsMeshVectorValueInterpolator::QgsMeshVectorValueInterpolator( const QgsMeshVectorValueInterpolator &other )
+  : mTriangularMesh( other.mTriangularMesh )
+  , mDatasetValues( other.mDatasetValues )
+  , mActiveFaceFlagValues( other.mActiveFaceFlagValues )
+  , mFaceCache( other.mFaceCache )
+  , mCacheFaceIndex( other.mCacheFaceIndex )
+  , mUseScalarActiveFaceFlagValues( other.mUseScalarActiveFaceFlagValues )
 {}
 
 void QgsMeshVectorValueInterpolator::updateCacheFaceIndex( const QgsPointXY &point ) const
@@ -210,12 +210,12 @@ QgsMeshStreamField::QgsMeshStreamField(
   bool dataIsOnVertices,
   const QgsRenderContext &rendererContext,
   const QgsInterpolatedLineColor &vectorColoring,
-  int resolution ):
-  mFieldResolution( resolution ),
-  mVectorColoring( vectorColoring ),
-  mRenderContext( rendererContext ),
-  mLayerExtent( layerExtent ),
-  mMaximumMagnitude( magnitudeMaximum )
+  int resolution )
+  : mFieldResolution( resolution )
+  , mVectorColoring( vectorColoring )
+  , mRenderContext( rendererContext )
+  , mLayerExtent( layerExtent )
+  , mMaximumMagnitude( magnitudeMaximum )
 {
   if ( dataIsOnVertices )
   {
@@ -243,25 +243,25 @@ QgsMeshStreamField::QgsMeshStreamField(
   }
 }
 
-QgsMeshStreamField::QgsMeshStreamField( const QgsMeshStreamField &other ):
-  mFieldSize( other.mFieldSize ),
-  mFieldResolution( other.mFieldResolution ),
-  mPen( other.mPen ),
-  mTraceImage( other.mTraceImage ),
-  mMapToFieldPixel( other.mMapToFieldPixel ),
-  mVectorColoring( other.mVectorColoring ),
-  mDirectionField( other.mDirectionField ),
-  mRenderContext( other.mRenderContext ),
-  mPixelFillingCount( other.mPixelFillingCount ),
-  mMaxPixelFillingCount( other.mMaxPixelFillingCount ),
-  mLayerExtent( other.mLayerExtent ),
-  mMapExtent( other.mMapExtent ),
-  mFieldTopLeftInDeviceCoordinates( other.mFieldTopLeftInDeviceCoordinates ),
-  mValid( other.mValid ),
-  mMaximumMagnitude( other.mMaximumMagnitude ),
-  mPixelFillingDensity( other.mPixelFillingDensity ),
-  mMinMagFilter( other.mMinMagFilter ),
-  mMinimizeFieldSize( other.mMinimizeFieldSize )
+QgsMeshStreamField::QgsMeshStreamField( const QgsMeshStreamField &other )
+  : mFieldSize( other.mFieldSize )
+  , mFieldResolution( other.mFieldResolution )
+  , mPen( other.mPen )
+  , mTraceImage( other.mTraceImage )
+  , mMapToFieldPixel( other.mMapToFieldPixel )
+  , mVectorColoring( other.mVectorColoring )
+  , mDirectionField( other.mDirectionField )
+  , mRenderContext( other.mRenderContext )
+  , mPixelFillingCount( other.mPixelFillingCount )
+  , mMaxPixelFillingCount( other.mMaxPixelFillingCount )
+  , mLayerExtent( other.mLayerExtent )
+  , mMapExtent( other.mMapExtent )
+  , mFieldTopLeftInDeviceCoordinates( other.mFieldTopLeftInDeviceCoordinates )
+  , mValid( other.mValid )
+  , mMaximumMagnitude( other.mMaximumMagnitude )
+  , mPixelFillingDensity( other.mPixelFillingDensity )
+  , mMinMagFilter( other.mMinMagFilter )
+  , mMinimizeFieldSize( other.mMinimizeFieldSize )
 {
   mPainter.reset( new QPainter( &mTraceImage ) );
   mVectorValueInterpolator =
