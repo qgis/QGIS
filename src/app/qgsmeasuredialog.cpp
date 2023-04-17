@@ -58,7 +58,16 @@ QgsMeasureDialog::QgsMeasureDialog( QgsMeasureTool *tool, Qt::WindowFlags f )
   {
     QPushButton *cpb = new QPushButton( tr( "Copy &All" ) );
     buttonBox->addButton( cpb, QDialogButtonBox::ActionRole );
-    connect( cpb, &QAbstractButton::clicked, this, &QgsMeasureDialog::copyMeasurements );
+    connect( cpb, &QAbstractButton::clicked, this, [this] {copyMeasurements( mShowCoordinates->isChecked() );} );
+
+    // Toggle the coordinates columns visibility
+    connect( mShowCoordinates, &QCheckBox::clicked, this, &QgsMeasureDialog::showCoordinatesChanged );
+    showCoordinatesChanged();
+
+  }
+  else
+  {
+    mShowCoordinates->hide();
   }
 
   repopulateComboBoxUnits( mMeasureArea );
@@ -135,6 +144,14 @@ void QgsMeasureDialog::crsChanged()
   mTable->clear();
   mTotal = 0.;
   updateUi();
+}
+
+void QgsMeasureDialog::showCoordinatesChanged()
+{
+  mTable->setColumnHidden( Columns::StartX, !mShowCoordinates->isChecked() );
+  mTable->setColumnHidden( Columns::StartY, !mShowCoordinates->isChecked() );
+  mTable->setColumnHidden( Columns::EndX, !mShowCoordinates->isChecked() );
+  mTable->setColumnHidden( Columns::EndY, !mShowCoordinates->isChecked() );
 }
 
 void QgsMeasureDialog::updateSettings()
@@ -239,7 +256,11 @@ void QgsMeasureDialog::mouseMove( const QgsPointXY &point )
     QTreeWidgetItem *item = mTable->topLevelItem( mTable->topLevelItemCount() - 1 );
     if ( item )
     {
-      item->setText( 0, QLocale().toString( d, 'f', mDecimalPlaces ) );
+      item->setText( Columns::StartX, QLocale().toString( p1.x(), 'f', mDecimalPlacesCoordinates ) );
+      item->setText( Columns::StartY, QLocale().toString( p1.y(), 'f', mDecimalPlacesCoordinates ) );
+      item->setText( Columns::EndX, QLocale().toString( p2.x(), 'f', mDecimalPlacesCoordinates ) );
+      item->setText( Columns::EndY, QLocale().toString( p2.y(), 'f', mDecimalPlacesCoordinates ) );
+      item->setText( Columns::Distance, QLocale().toString( d, 'f', mDecimalPlaces ) );
     }
   }
 }
@@ -256,8 +277,14 @@ void QgsMeasureDialog::addPoint()
   {
     if ( !mTool->done() )
     {
-      QTreeWidgetItem *item = new QTreeWidgetItem( QStringList( QLocale().toString( 0.0, 'f', mDecimalPlaces ) ) );
-      item->setTextAlignment( 0, Qt::AlignRight );
+      QTreeWidgetItem *item = new QTreeWidgetItem();
+      QgsPointXY lastPoint = mTool->points().last();
+      item->setText( Columns::StartX, QLocale().toString( lastPoint.x(), 'f', mDecimalPlacesCoordinates ) );
+      item->setText( Columns::StartY, QLocale().toString( lastPoint.y(), 'f', mDecimalPlacesCoordinates ) );
+      item->setText( Columns::EndX, QLocale().toString( lastPoint.x(), 'f', mDecimalPlacesCoordinates ) );
+      item->setText( Columns::EndY, QLocale().toString( lastPoint.y(), 'f', mDecimalPlacesCoordinates ) );
+      item->setText( Columns::Distance, QLocale().toString( 0.0, 'f', mDecimalPlaces ) );
+      item->setTextAlignment( Columns::Distance, Qt::AlignRight );
       mTable->addTopLevelItem( item );
       mTable->scrollToItem( item );
     }
@@ -304,7 +331,11 @@ void QgsMeasureDialog::removeLastPoint()
       d = convertLength( d, mDistanceUnits );
 
       QTreeWidgetItem *item = mTable->topLevelItem( mTable->topLevelItemCount() - 1 );
-      item->setText( 0, QLocale().toString( d, 'f', mDecimalPlaces ) );
+      item->setText( Columns::StartX, QLocale().toString( p1.x(), 'f', mDecimalPlacesCoordinates ) );
+      item->setText( Columns::StartY, QLocale().toString( p1.y(), 'f', mDecimalPlacesCoordinates ) );
+      item->setText( Columns::EndX, QLocale().toString( mLastMousePoint.x(), 'f', mDecimalPlacesCoordinates ) );
+      item->setText( Columns::EndY, QLocale().toString( mLastMousePoint.y(), 'f', mDecimalPlacesCoordinates ) );
+      item->setText( Columns::Distance, QLocale().toString( d, 'f', mDecimalPlaces ) );
       editTotal->setText( formatDistance( mTotal + d ) );
     }
     else
@@ -551,6 +582,15 @@ void QgsMeasureDialog::updateUi()
     }
   }
 
+  if ( mCanvas->mapSettings().destinationCrs().mapUnits() == Qgis::DistanceUnit::Degrees )
+  {
+    mDecimalPlacesCoordinates = 5;
+  }
+  else
+  {
+    mDecimalPlacesCoordinates = 3;
+  }
+
   editTotal->setToolTip( toolTip );
   mTable->setToolTip( toolTip );
   mNotesLabel->setText( toolTip );
@@ -567,15 +607,15 @@ void QgsMeasureDialog::updateUi()
     if ( mUseMapUnits )
     {
       mUnitsCombo->setCurrentIndex( mUnitsCombo->findData( static_cast< int >( Qgis::DistanceUnit::Unknown ) ) );
-      mTable->setHeaderLabels( QStringList( tr( "Segments [%1]" ).arg( QgsUnitTypes::toString( mMapDistanceUnits ) ) ) );
+      mTable->headerItem()->setText( Columns::Distance, tr( "Segments [%1]" ).arg( QgsUnitTypes::toString( mMapDistanceUnits ) ) );
     }
     else
     {
       mUnitsCombo->setCurrentIndex( mUnitsCombo->findData( static_cast< int >( mDistanceUnits ) ) );
       if ( mDistanceUnits != Qgis::DistanceUnit::Unknown )
-        mTable->setHeaderLabels( QStringList( tr( "Segments [%1]" ).arg( QgsUnitTypes::toString( mDistanceUnits ) ) ) );
+        mTable->headerItem()->setText( Columns::Distance,  tr( "Segments [%1]" ).arg( QgsUnitTypes::toString( mDistanceUnits ) ) );
       else
-        mTable->setHeaderLabels( QStringList( tr( "Segments" ) ) );
+        mTable->headerItem()->setText( Columns::Distance,  tr( "Segments" ) );
     }
   }
 
@@ -613,8 +653,13 @@ void QgsMeasureDialog::updateUi()
             d = convertLength( d, mDistanceUnits );
         }
 
-        QTreeWidgetItem *item = new QTreeWidgetItem( QStringList( QLocale().toString( d, 'f', mDecimalPlaces ) ) );
-        item->setTextAlignment( 0, Qt::AlignRight );
+        QTreeWidgetItem *item = new QTreeWidgetItem();
+        item->setText( Columns::StartX, QLocale().toString( p1.x(), 'f', mDecimalPlacesCoordinates ) );
+        item->setText( Columns::StartY, QLocale().toString( p1.y(), 'f', mDecimalPlacesCoordinates ) );
+        item->setText( Columns::EndX, QLocale().toString( p2.x(), 'f', mDecimalPlacesCoordinates ) );
+        item->setText( Columns::EndY, QLocale().toString( p2.y(), 'f', mDecimalPlacesCoordinates ) );
+        item->setText( Columns::Distance, QLocale().toString( d, 'f', mDecimalPlaces ) );
+        item->setTextAlignment( Columns::Distance, Qt::AlignRight );
         mTable->addTopLevelItem( item );
         mTable->scrollToItem( item );
       }
@@ -674,14 +719,21 @@ double QgsMeasureDialog::convertArea( double area, Qgis::AreaUnit toUnit ) const
   return mDa.convertAreaMeasurement( area, toUnit );
 }
 
-void QgsMeasureDialog::copyMeasurements()
+void QgsMeasureDialog::copyMeasurements( bool copyCoordinates )
 {
   QClipboard *clipboard = QApplication::clipboard();
   QString text;
   QTreeWidgetItemIterator it( mTable );
   while ( *it )
   {
-    text += ( *it )->text( 0 ) + QStringLiteral( "\n" );
+    if ( copyCoordinates )
+    {
+      text += ( *it )->text( Columns::StartX ) + QStringLiteral( "\t" );
+      text += ( *it )->text( Columns::EndX ) + QStringLiteral( "\t" );
+      text += ( *it )->text( Columns::StartY ) + QStringLiteral( "\t" );
+      text += ( *it )->text( Columns::EndY ) + QStringLiteral( "\t" );
+    }
+    text += ( *it )->text( Columns::Distance ) + QStringLiteral( "\n" );
     it++;
   }
   clipboard->setText( text );

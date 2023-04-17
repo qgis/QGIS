@@ -70,14 +70,29 @@ class APP_EXPORT QgsMeasureDialog : public QDialog, private Ui::QgsMeasureBase
     //! Open configuration tab
     void openConfigTab();
 
-    //! Copy measurements to the clipboard
-    void copyMeasurements();
+    /**
+     * Copy measurements to the clipboard
+     * \param copyCoordinates \since QGIS 3.32 set to TRUE to also copy coordinates to clipboard
+     */
+    void copyMeasurements( bool copyCoordinates = false );
+
+    void showCoordinatesChanged();
 
     void crsChanged();
 
     void projChanged();
 
   private:
+
+    //! \since QGIS 3.32 columns
+    enum Columns
+    {
+      StartX = 0,
+      StartY,
+      EndX,
+      EndY,
+      Distance,
+    };
 
     //! formats distance to most appropriate units
     QString formatDistance( double distance, bool convertUnits = true ) const;
@@ -111,6 +126,9 @@ class APP_EXPORT QgsMeasureDialog : public QDialog, private Ui::QgsMeasureBase
 
     //! Number of decimal places we want.
     int mDecimalPlaces = 3;
+
+    //! Number of decimal places we want for the coordinates.
+    int mDecimalPlacesCoordinates = 3;
 
     //! Current unit for input values
     Qgis::DistanceUnit mCanvasUnits = Qgis::DistanceUnit::Unknown;

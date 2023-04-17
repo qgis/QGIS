@@ -48,8 +48,31 @@
       <bool>false</bool>
      </property>
      <property name="columnCount">
-      <number>1</number>
+      <number>5</number>
      </property>
+     <attribute name="headerDefaultSectionSize">
+      <number>85</number>
+     </attribute>
+     <column>
+      <property name="text">
+       <string>x1</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>y1</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>x2</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>y2</string>
+      </property>
+     </column>
      <column>
       <property name="text">
        <string>Segments</string>
@@ -186,6 +209,13 @@
       </size>
      </property>
     </spacer>
+   </item>
+   <item row="8" column="0" colspan="4">
+    <widget class="QCheckBox" name="mShowCoordinates">
+     <property name="text">
+      <string>Show coordinates</string>
+     </property>
+    </widget>
    </item>
   </layout>
  </widget>
