@@ -2222,6 +2222,12 @@ QDomElement QgsOgcUtilsExprToFilter::expressionInOperatorToOgcFilter( const QgsE
     QDomElement eqElem = mDoc.createElement( mFilterPrefix + ":PropertyIsEqualTo" );
     eqElem.appendChild( leftNode );
     eqElem.appendChild( firstListNode );
+    if ( node->isNotIn() )
+    {
+      QDomElement notElem = mDoc.createElement( mFilterPrefix + ":Not" );
+      notElem.appendChild( eqElem );
+      return notElem;
+    }
     return eqElem;
   }
 
