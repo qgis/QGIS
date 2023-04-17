@@ -70,11 +70,8 @@ class APP_EXPORT QgsMeasureDialog : public QDialog, private Ui::QgsMeasureBase
     //! Open configuration tab
     void openConfigTab();
 
-    /**
-     * Copy measurements to the clipboard
-     * \param copyCoordinates \since QGIS 3.32 set to TRUE to also copy coordinates to clipboard
-     */
-    void copyMeasurements( bool copyCoordinates = false, QString separator = QStringLiteral( "\t" ) );
+    //! Copy measurements to the clipboard
+    void copyMeasurements();
 
     void showCoordinatesChanged();
 

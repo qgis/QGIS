@@ -58,7 +58,7 @@ QgsMeasureDialog::QgsMeasureDialog( QgsMeasureTool *tool, Qt::WindowFlags f )
   {
     QPushButton *cpb = new QPushButton( tr( "Copy &All" ) );
     buttonBox->addButton( cpb, QDialogButtonBox::ActionRole );
-    connect( cpb, &QAbstractButton::clicked, this, [this] {copyMeasurements( mShowCoordinates->isChecked() );} );
+    connect( cpb, &QAbstractButton::clicked, this, &QgsMeasureDialog::copyMeasurements );
 
     // Toggle the coordinates columns visibility
     connect( mShowCoordinates, &QCheckBox::clicked, this, &QgsMeasureDialog::showCoordinatesChanged );
@@ -67,6 +67,7 @@ QgsMeasureDialog::QgsMeasureDialog( QgsMeasureTool *tool, Qt::WindowFlags f )
   else
   {
     mShowCoordinates->hide();
+    mCopySettingsGroupBox->hide();
   }
 
   repopulateComboBoxUnits( mMeasureArea );
@@ -745,11 +746,40 @@ double QgsMeasureDialog::convertArea( double area, Qgis::AreaUnit toUnit ) const
   return mDa.convertAreaMeasurement( area, toUnit );
 }
 
-void QgsMeasureDialog::copyMeasurements( bool copyCoordinates, QString separator )
+void QgsMeasureDialog::copyMeasurements()
 {
+  bool copyCoordinates = mShowCoordinates->isChecked();
+  bool includeHeader = mIncludeHeader->isChecked();
+
+  // Get the separator
+  QString separator;
+  if ( mSeparatorTab->isChecked() )
+    separator = QStringLiteral( "\t" );
+  else if ( mSeparatorComma->isChecked() )
+    separator = QStringLiteral( "," );
+  else if ( mSeparatorSemicolon->isChecked() )
+    separator = QStringLiteral( ";" );
+  else if ( mSeparatorSpace->isChecked() )
+    separator = QStringLiteral( " " );
+  else if ( mSeparatorColon->isChecked() )
+    separator = QStringLiteral( ":" );
+  else
+    separator = mSeparatorCustom->text();
+
+
   QClipboard *clipboard = QApplication::clipboard();
   QString text;
   QTreeWidgetItemIterator it( mTable );
+
+  if ( includeHeader )
+  {
+    if ( copyCoordinates )
+    {
+      text += mTable->headerItem()->text( Columns::X ) + separator;
+      text += mTable->headerItem()->text( Columns::Y ) + separator;
+    }
+    text += mTable->headerItem()->text( Columns::Distance ) + QStringLiteral( "\n" );
+  }
   // Discard the first item if show coordinates is not checked
   if ( !copyCoordinates )
   {
