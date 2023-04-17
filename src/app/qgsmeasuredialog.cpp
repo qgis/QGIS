@@ -114,8 +114,7 @@ void QgsMeasureDialog::projChanged()
     mDa.setEllipsoid( QgsProject::instance()->ellipsoid() );
   }
 
-  mTable->clear();
-  mTotal = 0.;
+  // Update the table and information displayed to the user
   updateUi();
 }
 
@@ -139,8 +138,6 @@ void QgsMeasureDialog::crsChanged()
     mUnitsCombo->setEnabled( true );
   }
 
-  mTable->clear();
-  mTotal = 0.;
   updateUi();
 }
 
@@ -155,8 +152,9 @@ void QgsMeasureDialog::updateSettings()
   mMapDistanceUnits = QgsProject::instance()->crs().mapUnits();
   mAreaUnits = QgsProject::instance()->areaUnits();
   mDa.setSourceCrs( mCanvas->mapSettings().destinationCrs(), QgsProject::instance()->transformContext() );
-  projChanged();
 
+  // Calling projChanged() will set the ellipsoid and clear then re-populate the table
+  projChanged();
 
   if ( mCartesian->isChecked() || !mCanvas->mapSettings().destinationCrs().isValid() ||
        ( mCanvas->mapSettings().destinationCrs().mapUnits() == Qgis::DistanceUnit::Degrees
@@ -199,24 +197,12 @@ void QgsMeasureDialog::unitsChanged( int index )
     }
   }
 
-  mTable->clear();
-  mTotal = 0.;
   updateUi();
-
-  if ( !mTool->done() )
-  {
-    // re-add temporary mouse cursor position
-    addPoint();
-    mouseMove( mLastMousePoint );
-  }
 }
 
 void QgsMeasureDialog::restart()
 {
   mTool->restart();
-
-  mTable->clear();
-  mTotal = 0.;
   updateUi();
 }
 
@@ -392,6 +378,10 @@ QString QgsMeasureDialog::formatArea( double area, bool convertUnits ) const
 
 void QgsMeasureDialog::updateUi()
 {
+  // Clear the table
+  mTable->clear();
+  mTotal = 0.;
+
   // Set tooltip to indicate how we calculate measurements
   QString toolTip = tr( "The calculations are based on:" );
 
@@ -625,27 +615,25 @@ void QgsMeasureDialog::updateUi()
   }
   else
   {
+    // Repopulate the table
     QVector<QgsPointXY>::const_iterator it;
     bool firstPoint = true;
 
-    QgsPointXY p1, p2;
+    QgsPointXY previousPoint, point;
     mTotal = 0;
     const QVector< QgsPointXY > tmpPoints = mTool->points();
     for ( it = tmpPoints.constBegin(); it != tmpPoints.constEnd(); ++it )
     {
-      p2 = *it;
-      if ( firstPoint )
-      {
-        // Create an additional item for the first point (no distance)
-        QTreeWidgetItem *item = new QTreeWidgetItem();
-        item->setText( Columns::X, QLocale().toString( p2.x(), 'f', mDecimalPlacesCoordinates ) );
-        item->setText( Columns::Y, QLocale().toString( p2.y(), 'f', mDecimalPlacesCoordinates ) );
-        mTable->addTopLevelItem( item );
-      }
-      else
+      point = *it;
+
+      QTreeWidgetItem *item = new QTreeWidgetItem();
+      item->setText( Columns::X, QLocale().toString( point.x(), 'f', mDecimalPlacesCoordinates ) );
+      item->setText( Columns::Y, QLocale().toString( point.y(), 'f', mDecimalPlacesCoordinates ) );
+
+      if ( !firstPoint )
       {
         double d = -1;
-        d = mDa.measureLine( p1, p2 );
+        d = mDa.measureLine( previousPoint, point );
         if ( mConvertToDisplayUnits )
         {
           if ( mDistanceUnits == Qgis::DistanceUnit::Unknown && mMapDistanceUnits != Qgis::DistanceUnit::Unknown )
@@ -653,16 +641,14 @@ void QgsMeasureDialog::updateUi()
           else
             d = convertLength( d, mDistanceUnits );
         }
-
-        QTreeWidgetItem *item = new QTreeWidgetItem();
-        item->setText( Columns::X, QLocale().toString( p2.x(), 'f', mDecimalPlacesCoordinates ) );
-        item->setText( Columns::Y, QLocale().toString( p2.y(), 'f', mDecimalPlacesCoordinates ) );
         item->setText( Columns::Distance, QLocale().toString( d, 'f', mDecimalPlaces ) );
         item->setTextAlignment( Columns::Distance, Qt::AlignRight );
-        mTable->addTopLevelItem( item );
-        mTable->scrollToItem( item );
       }
-      p1 = p2;
+
+      mTable->addTopLevelItem( item );
+      mTable->scrollToItem( item );
+
+      previousPoint = point;
       firstPoint = false;
     }
 
@@ -670,6 +656,13 @@ void QgsMeasureDialog::updateUi()
     mTable->show(); // Show the table with items
     mSpacer->changeSize( 40, 5, QSizePolicy::Fixed, QSizePolicy::Maximum );
     editTotal->setText( formatDistance( mTotal, mConvertToDisplayUnits ) );
+
+    if ( !mTool->done() )
+    {
+      // re-add temporary mouse cursor position
+      addPoint();
+      mouseMove( mLastMousePoint );
+    }
   }
 }
 

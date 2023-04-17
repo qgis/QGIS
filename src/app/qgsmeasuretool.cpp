@@ -95,17 +95,6 @@ void QgsMeasureTool::deactivate()
   mDialog->hide();
   mRubberBand->hide();
   mRubberBandPoints->hide();
-
-  // Deactivating the tool does not reset the measure.
-  // Remove the last temporary point as to not duplicate it when
-  // the tool is re activated
-  int nbTempVertices = mRubberBand->numberOfVertices();
-  int nbVertices = mRubberBandPoints->numberOfVertices();
-  if ( nbTempVertices > nbVertices )
-  {
-    mRubberBand->removeLastPoint();
-  }
-
   QgsMapTool::deactivate();
 }
 
@@ -161,18 +150,20 @@ void QgsMeasureTool::updateSettings()
     }
 
     mRubberBand->updatePosition();
-    mRubberBand->update();
     mRubberBandPoints->updatePosition();
-    mRubberBandPoints->update();
   }
   mDestinationCrs = mCanvas->mapSettings().destinationCrs();
 
+  // Update the dialog. This will clear then re-populate the table
   mDialog->updateSettings();
 
-  if ( !mDone && mRubberBand->size() > 0 )
+  int nbTempVertices = mRubberBand->numberOfVertices();
+  int nbVertices = mRubberBandPoints->numberOfVertices();
+
+  // Add a temporary point to the rubber band if the user is currently measuring
+  if ( !mDone && mRubberBand->size() > 0  && nbTempVertices <= nbVertices )
   {
     mRubberBand->addPoint( mPoints.last() );
-    mDialog->addPoint();
   }
   if ( mRubberBand->size() > 0 )
   {
