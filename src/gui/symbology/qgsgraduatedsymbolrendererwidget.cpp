@@ -917,7 +917,7 @@ void QgsGraduatedSymbolRendererWidget::clearParameterWidgets()
   while ( mParametersLayout->rowCount() )
   {
     QFormLayout::TakeRowResult row = mParametersLayout->takeRow( 0 );
-    for ( QLayoutItem *item : QList<QLayoutItem *>( {row.labelItem, row.fieldItem} ) )
+    for ( QLayoutItem *item : {row.labelItem, row.fieldItem} )
       if ( item )
       {
         if ( item->widget() )
