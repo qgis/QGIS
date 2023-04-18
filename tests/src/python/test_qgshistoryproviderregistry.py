@@ -12,11 +12,14 @@ __copyright__ = 'Copyright 2016, The QGIS Project'
 import qgis  # NOQA switch sip api
 from qgis.PyQt import sip
 from qgis.PyQt.QtCore import QDate, QDateTime
+from qgis.PyQt.QtTest import QSignalSpy
+
 from qgis.core import Qgis
 from qgis.gui import (
     QgsAbstractHistoryProvider,
     QgsHistoryEntry,
     QgsHistoryProviderRegistry,
+    QgsGui
 )
 from qgis.testing import start_app, unittest
 
@@ -36,6 +39,11 @@ class TestHistoryProvider2(QgsAbstractHistoryProvider):
 
 
 class TestQgsHistoryProviderRegistry(unittest.TestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        # trigger metatype registration
+        QgsGui.instance()
 
     def test_entry(self):
         """
@@ -92,12 +100,25 @@ class TestQgsHistoryProviderRegistry(unittest.TestCase):
         reg = QgsHistoryProviderRegistry(useMemoryDatabase=True)
         self.assertFalse(reg.queryEntries())
 
+        added_spy = QSignalSpy(reg.entryAdded)
+        updated_spy = QSignalSpy(reg.entryUpdated)
+
         id_1, ok = reg.addEntry('my provider', {'some var': 5, 'other_var': [1, 2, 3], 'final_var': {'a': 'b'}},
                                 QgsHistoryProviderRegistry.HistoryEntryOptions())
         self.assertTrue(ok)
+
+        self.assertEqual(len(added_spy), 1)
+        self.assertEqual(added_spy[-1][0], id_1)
+        self.assertEqual(added_spy[-1][1].providerId, 'my provider')
+        self.assertEqual(added_spy[-1][1].entry, {'some var': 5, 'other_var': [1, 2, 3], 'final_var': {'a': 'b'}})
+
         id_2, ok = reg.addEntry('my provider 2', {'some var': 6},
                                 QgsHistoryProviderRegistry.HistoryEntryOptions())
         self.assertTrue(ok)
+        self.assertEqual(len(added_spy), 2)
+        self.assertEqual(added_spy[-1][0], id_2)
+        self.assertEqual(added_spy[-1][1].providerId, 'my provider 2')
+        self.assertEqual(added_spy[-1][1].entry, {'some var': 6})
 
         self.assertEqual(len(reg.queryEntries()), 2)
         self.assertEqual(reg.queryEntries()[0].providerId, 'my provider')
@@ -124,6 +145,11 @@ class TestQgsHistoryProviderRegistry(unittest.TestCase):
         entry = QgsHistoryEntry('my provider 3', QDateTime(2021, 1, 2, 3, 4, 5), {'var': 7})
         id_3, ok = reg.addEntry(entry)
         self.assertTrue(ok)
+        self.assertEqual(len(added_spy), 3)
+        self.assertEqual(added_spy[-1][0], id_3)
+        self.assertEqual(added_spy[-1][1].providerId, 'my provider 3')
+        self.assertEqual(added_spy[-1][1].entry, {'var': 7})
+
         self.assertEqual(len(reg.queryEntries()), 3)
         self.assertEqual(reg.queryEntries()[0].providerId, 'my provider')
         self.assertEqual(reg.queryEntries()[0].timestamp.date(), QDateTime.currentDateTime().date())
@@ -163,12 +189,19 @@ class TestQgsHistoryProviderRegistry(unittest.TestCase):
 
         # update an entry
         self.assertTrue(reg.updateEntry(id_1, {'new_props': 54}))
+        self.assertEqual(len(updated_spy), 1)
+        self.assertEqual(updated_spy[-1][0], id_1)
+        self.assertEqual(updated_spy[-1][1], {'new_props': 54})
+
         entry, ok = reg.entry(id_1)
         self.assertEqual(entry.providerId, 'my provider')
         self.assertEqual(entry.timestamp.date(), QDateTime.currentDateTime().date())
         self.assertEqual(entry.entry, {'new_props': 54})
 
+        clear_spy = QSignalSpy(reg.historyCleared)
         self.assertTrue(reg.clearHistory(Qgis.HistoryProviderBackend.LocalProfile))
+        self.assertEqual(len(clear_spy), 1)
+
         self.assertFalse(reg.queryEntries())
 
         # bulk add entries
@@ -177,6 +210,13 @@ class TestQgsHistoryProviderRegistry(unittest.TestCase):
             QgsHistoryEntry('my provider 5', QDateTime(2021, 1, 2, 3, 4, 5), {'var': 8})
         ]))
         self.assertEqual(len(reg.queryEntries()), 2)
+
+        self.assertEqual(len(added_spy), 5)
+        self.assertEqual(added_spy[-2][1].providerId, 'my provider 4')
+        self.assertEqual(added_spy[-2][1].entry, {'var': 7})
+        self.assertEqual(added_spy[-1][1].providerId, 'my provider 5')
+        self.assertEqual(added_spy[-1][1].entry, {'var': 8})
+
         self.assertEqual(reg.queryEntries()[0].providerId, 'my provider 4')
         self.assertEqual(reg.queryEntries()[0].entry, {'var': 7})
 
