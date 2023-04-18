@@ -69,6 +69,7 @@ ACCEPT_API = 'Accept=application/vnd.oai.openapi+json;version=3.0, application/o
 ACCEPT_COLLECTION = 'Accept=application/json'
 ACCEPT_CONFORMANCE = 'Accept=application/json'
 ACCEPT_ITEMS = 'Accept=application/geo+json, application/json'
+ACCEPT_QUERYABLES = 'Accept=application/schema+json'
 
 
 def mergeDict(d1, d2):
@@ -86,7 +87,8 @@ def create_landing_page_api_collection(endpoint,
                                        storageCrs=None,
                                        crsList=None,
                                        bbox=[-71.123, 66.33, -65.32, 78.3],
-                                       additionalApiResponse={}):
+                                       additionalApiResponse={},
+                                       additionalConformance=[]):
 
     questionmark_extraparam = '?' + extraparam if extraparam else ''
 
@@ -122,7 +124,7 @@ def create_landing_page_api_collection(endpoint,
     # conformance
     with open(sanitize(endpoint, '/conformance?' + add_params(extraparam, ACCEPT_CONFORMANCE)), 'wb') as f:
         f.write(json.dumps({
-            "conformsTo": ["http://www.opengis.net/spec/ogcapi-features-2/1.0/conf/crs"]
+            "conformsTo": ["http://www.opengis.net/spec/ogcapi-features-2/1.0/conf/crs"] + additionalConformance
         }).encode('UTF-8'))
 
     # collection
@@ -838,6 +840,203 @@ class TestPyQgsOapifProvider(unittest.TestCase, ProviderTestCase):
         values = [f['id'] for f in vl.getFeatures()]
         os.unlink(filename)
         self.assertEqual(values, [])
+
+    def testCQL2TextFiltering(self):
+        """Test Part 3 CQL2-Text filtering"""
+
+        endpoint = self.__class__.basetestpath + '/fake_qgis_http_endpoint_encoded_query_testCQL2TextFiltering'
+        additionalConformance = [
+            "http://www.opengis.net/spec/cql2/1.0/conf/advanced-comparison-operators",
+            "http://www.opengis.net/spec/cql2/1.0/conf/basic-cql2",
+            "http://www.opengis.net/spec/cql2/1.0/conf/basic-spatial-operators",
+            "http://www.opengis.net/spec/cql2/1.0/conf/case-insensitive-comparison",
+            "http://www.opengis.net/spec/cql2/1.0/conf/cql2-text",
+            "http://www.opengis.net/spec/ogcapi-features-3/1.0/conf/features-filter",
+            "http://www.opengis.net/spec/ogcapi-features-3/1.0/conf/filter",
+        ]
+
+        create_landing_page_api_collection(endpoint, additionalConformance=additionalConformance)
+
+        filename = sanitize(endpoint, '/collections/mycollection/queryables?' + ACCEPT_QUERYABLES)
+        queryables = {
+            "properties": {
+                "strfield": {
+                    "type": "string"
+                },
+                "strfield2": {
+                    "type": "string"
+                },
+                "intfield": {
+                    "type": "integer"
+                },
+                "doublefield": {
+                    "type": "number"
+                },
+                "boolfield": {
+                    "type": "boolean"
+                },
+                "boolfield2": {
+                    "type": "boolean"
+                },
+                "datetimefield": {
+                    "type": "string",
+                    "format": "date-time",
+                },
+                "datefield": {
+                    "type": "string",
+                    "format": "date",
+                },
+                "geometry": {
+                    "$ref": "https://geojson.org/schema/Point.json"
+                },
+            }
+        }
+        with open(filename, 'wb') as f:
+            f.write(json.dumps(queryables).encode('UTF-8'))
+
+        items = {
+            "type": "FeatureCollection",
+            "features": [
+                {"type": "Feature", "id": "feat.1", "properties":
+                 {"strfield": "foo=bar",
+                  "strfield2": None,
+                  "intfield": 1,
+                  "doublefield": 1.5,
+                  "not_a_queryable": 3,
+                  "datetimefield": "2023-04-19T12:34:56Z",
+                  "datefield": "2023-04-19",
+                  "boolfield": True,
+                  "boolfield2": False},
+                 "geometry": {"type": "Point", "coordinates": [-70.5, 66.5]}}
+            ]
+        }
+
+        filename = sanitize(endpoint, '/collections/mycollection/items?limit=10&' + ACCEPT_ITEMS)
+        with open(filename, 'wb') as f:
+            f.write(json.dumps(items).encode('UTF-8'))
+
+        vl = QgsVectorLayer(
+            "url='http://" + endpoint + "' typename='mycollection'", 'test', 'OAPIF')
+        self.assertTrue(vl.isValid())
+        os.unlink(filename)
+
+        tests = [
+            (""""strfield" = 'foo=bar' and intfield = 1""",
+             """filter=((strfield%20%3D%20'foo%3Dbar')%20AND%20(intfield%20%3D%201))&filter-lang=cql2-text"""),
+            ("""doublefield = 1.5 or boolfield = true""",
+             """filter=((doublefield%20%3D%201.5)%20OR%20(boolfield%20%3D%20TRUE))&filter-lang=cql2-text"""),
+            ("boolfield2 = false", "filter=(boolfield2%20%3D%20FALSE)&filter-lang=cql2-text"""),
+            ("NOT(intfield = 0)", """filter=(NOT%20((intfield%20%3D%200)))&filter-lang=cql2-text"""),
+            ("intfield <> 0", """filter=(intfield%20%3C%3E%200)&filter-lang=cql2-text"""),
+            ("intfield > 0", """filter=(intfield%20%3E%200)&filter-lang=cql2-text"""),
+            ("intfield >= 1", """filter=(intfield%20%3E%3D%201)&filter-lang=cql2-text"""),
+            ("intfield < 2", """filter=(intfield%20%3C%202)&filter-lang=cql2-text"""),
+            ("intfield <= 1", """filter=(intfield%20%3C%3D%201)&filter-lang=cql2-text"""),
+            ("intfield IN (1, 2)", """filter=intfield%20IN%20(1,2)&filter-lang=cql2-text"""),
+            ("intfield NOT IN (3, 4)", """filter=intfield%20NOT%20IN%20(3,4)&filter-lang=cql2-text"""),
+            ("intfield BETWEEN 0 AND 2", "filter=intfield%20BETWEEN%200%20AND%202&filter-lang=cql2-text"),
+            ("intfield NOT BETWEEN 3 AND 4", "filter=intfield%20NOT%20BETWEEN%203%20AND%204&filter-lang=cql2-text"),
+            ("strfield2 IS NULL", """filter=(strfield2%20IS%20NULL)&filter-lang=cql2-text"""),
+            ("intfield IS NOT NULL", """filter=(intfield%20IS%20NOT%20NULL)&filter-lang=cql2-text"""),
+            ("datetimefield = make_datetime(2023, 4, 19, 12, 34, 56)",
+             "filter=(datetimefield%20%3D%20TIMESTAMP('2023-04-19T12:34:56.000Z'))&filter-lang=cql2-text"),
+            ("datetimefield = '2023-04-19T12:34:56.000Z'",
+             "filter=(datetimefield%20%3D%20TIMESTAMP('2023-04-19T12:34:56.000Z'))&filter-lang=cql2-text"),
+            ("datefield = make_date(2023, 4, 19)",
+             "filter=(datefield%20%3D%20DATE('2023-04-19'))&filter-lang=cql2-text"),
+            ("datefield = '2023-04-19'",
+             "filter=(datefield%20%3D%20DATE('2023-04-19'))&filter-lang=cql2-text"),
+            (""""strfield" LIKE 'foo%'""",
+             """filter=(strfield%20LIKE%20'foo%25')&filter-lang=cql2-text"""),
+            (""""strfield" NOT LIKE 'bar'""",
+             """filter=(strfield%20NOT%20LIKE%20'bar')&filter-lang=cql2-text"""),
+            (""""strfield" ILIKE 'fo%'""",
+             """filter=(CASEI(strfield)%20LIKE%20CASEI('fo%25'))&filter-lang=cql2-text"""),
+            (""""strfield" NOT ILIKE 'bar'""",
+             """filter=(CASEI(strfield)%20NOT%20LIKE%20CASEI('bar'))&filter-lang=cql2-text"""),
+            ("""intersects_bbox($geometry, geomFromWkt('POLYGON((-180 -90,-180 90,180 90,180 -90,-180 -90))'))""",
+             """filter=S_INTERSECTS(geometry,BBOX(-180,-90,180,90))&filter-lang=cql2-text"""),
+            ("""intersects($geometry, geomFromWkt('POINT(-70.5 66.5))'))""",
+             """filter=S_INTERSECTS(geometry,POINT(-70.5%2066.5))&filter-lang=cql2-text"""),
+            # Partially evaluated on server
+            ("intfield >= 1 AND not_a_queryable = 3", """filter=(intfield%20%3E%3D%201)&filter-lang=cql2-text"""),
+            ("not_a_queryable = 3 AND intfield >= 1", """filter=(intfield%20%3E%3D%201)&filter-lang=cql2-text"""),
+            # Only evaluated on client
+            ("intfield >= 1 OR not_a_queryable = 3", ""),
+            ("not_a_queryable = 3 AND not_a_queryable = 3", ""),
+        ]
+        for (expr, cql_filter) in tests:
+            assert vl.setSubsetString(expr)
+
+            filename = sanitize(endpoint,
+                                "/collections/mycollection/items?limit=1000&" + cql_filter + ("&" if cql_filter else "") + ACCEPT_ITEMS)
+            with open(filename, 'wb') as f:
+                f.write(json.dumps(items).encode('UTF-8'))
+            values = [f['id'] for f in vl.getFeatures()]
+            os.unlink(filename)
+            self.assertEqual(values, ['feat.1'], expr)
+
+    def testCQL2TextFilteringAndPart2(self):
+
+        endpoint = self.__class__.basetestpath + '/fake_qgis_http_endpoint_encoded_query_testCQL2TextFilteringAndPart2'
+        additionalConformance = [
+            "http://www.opengis.net/spec/cql2/1.0/conf/basic-cql2",
+            "http://www.opengis.net/spec/cql2/1.0/conf/basic-spatial-operators",
+            "http://www.opengis.net/spec/cql2/1.0/conf/cql2-text",
+            "http://www.opengis.net/spec/ogcapi-features-3/1.0/conf/features-filter",
+            "http://www.opengis.net/spec/ogcapi-features-3/1.0/conf/filter",
+        ]
+
+        create_landing_page_api_collection(endpoint,
+                                           storageCrs="http://www.opengis.net/def/crs/EPSG/0/4258",
+                                           crsList=["http://www.opengis.net/def/crs/OGC/0/CRS84",
+                                                    "http://www.opengis.net/def/crs/EPSG/0/4258"],
+                                           additionalConformance=additionalConformance)
+
+        filename = sanitize(endpoint, '/collections/mycollection/queryables?' + ACCEPT_QUERYABLES)
+        queryables = {
+            "properties": {
+                "geometry": {
+                    "$ref": "https://geojson.org/schema/Point.json"
+                },
+            }
+        }
+        with open(filename, 'wb') as f:
+            f.write(json.dumps(queryables).encode('UTF-8'))
+
+        items = {
+            "type": "FeatureCollection",
+            "features": [
+                {"type": "Feature", "id": "feat.1", "properties":
+                 {},
+                 # lat, long order
+                 "geometry": {"type": "Point", "coordinates": [49, 2]}}
+            ]
+        }
+
+        filename = sanitize(endpoint, '/collections/mycollection/items?limit=10&' + ACCEPT_ITEMS)
+        with open(filename, 'wb') as f:
+            f.write(json.dumps(items).encode('UTF-8'))
+
+        vl = QgsVectorLayer(
+            "url='http://" + endpoint + "' typename='mycollection'", 'test', 'OAPIF')
+        self.assertTrue(vl.isValid())
+        os.unlink(filename)
+
+        tests = [
+            ("""intersects($geometry, geomFromWkt('POINT(2 49))'))""",
+             """filter=S_INTERSECTS(geometry,POINT(49%202))&filter-lang=cql2-text&filter-crs=http://www.opengis.net/def/crs/EPSG/0/4258"""),
+        ]
+        for (expr, cql_filter) in tests:
+            assert vl.setSubsetString(expr)
+
+            filename = sanitize(endpoint,
+                                "/collections/mycollection/items?limit=1000&" + cql_filter + ("&" if cql_filter else "") + "crs=http://www.opengis.net/def/crs/EPSG/0/4258&" + ACCEPT_ITEMS)
+            with open(filename, 'wb') as f:
+                f.write(json.dumps(items).encode('UTF-8'))
+            values = [f['id'] for f in vl.getFeatures()]
+            os.unlink(filename)
+            self.assertEqual(values, ['feat.1'], expr)
 
     def testStringList(self):
 

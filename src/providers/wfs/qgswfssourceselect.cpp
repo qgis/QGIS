@@ -595,8 +595,16 @@ void QgsWFSSourceSelect::buildQuery( const QModelIndex &index )
       }
       else if ( provider->filterTranslatedState() == QgsOapifProvider::FilterTranslationState::PARTIAL )
       {
-        QMessageBox::information( nullptr, tr( "Filter" ),
-                                  tr( "The following part of the filter will be evaluated on client side : %1" ).arg( provider->clientSideFilterExpression() ) );
+        if ( provider->clientSideFilterExpression().isEmpty() )
+        {
+          QMessageBox::information( nullptr, tr( "Filter" ),
+                                    tr( "The filter will partially evaluated on client side." ) );
+        }
+        else
+        {
+          QMessageBox::information( nullptr, tr( "Filter" ),
+                                    tr( "The following part of the filter will be evaluated on client side : %1" ).arg( provider->clientSideFilterExpression() ) );
+        }
       }
       mModelProxy->setData( filterIndex, QVariant( gb.sql() ) );
     }
