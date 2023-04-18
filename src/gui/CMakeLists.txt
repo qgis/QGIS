@@ -236,6 +236,7 @@ set(QGIS_GUI_SRCS
   elevation/qgselevationprofilecanvas.cpp
   elevation/qgselevationprofilelayertreeview.cpp
 
+  history/qgshistoryentry.cpp
   history/qgshistoryprovider.cpp
   history/qgshistoryproviderregistry.cpp
 
@@ -1142,6 +1143,7 @@ set(QGIS_GUI_HDRS
   elevation/qgselevationprofilecanvas.h
   elevation/qgselevationprofilelayertreeview.h
 
+  history/qgshistoryentry.h
   history/qgshistoryprovider.h
   history/qgshistoryproviderregistry.h
 

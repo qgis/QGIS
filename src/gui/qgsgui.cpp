@@ -61,6 +61,7 @@
 #include "qgshistoryproviderregistry.h"
 #include "qgslayermetadatasourceselectprovider.h"
 #include "qgssensorguiregistry.h"
+#include "qgshistoryentry.h"
 
 #include <QPushButton>
 #include <QToolButton>
