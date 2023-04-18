@@ -30,66 +30,7 @@
 #include "qgssqliteutils.h"
 
 class QgsAbstractHistoryProvider;
-
-/**
- * Encapsulates a history entry.
- *
- * \ingroup gui
- * \since QGIS 3.24
- */
-class GUI_EXPORT QgsHistoryEntry
-{
-  public:
-
-    /**
-     * Constructor for an invalid entry.
-     */
-    QgsHistoryEntry() = default;
-
-    /**
-     * Constructor for QgsHistoryEntry \a entry, with the specified \a providerId and \a timestamp.
-     */
-    QgsHistoryEntry( const QString &providerId, const QDateTime &timestamp, const QVariantMap &entry );
-
-    /**
-     * Constructor for QgsHistoryEntry \a entry.
-     *
-     * The entry timestamp will be automatically set to the current date/time.
-     */
-    QgsHistoryEntry( const QVariantMap &entry );
-
-    /**
-     * Returns TRUE if the entry is valid.
-     *
-     * \since QGIS 3.32
-     */
-    bool isValid() const;
-
-    //! Entry timestamp
-    QDateTime timestamp;
-
-    //! Associated history provider ID
-    QString providerId;
-
-    /**
-     * Entry details.
-     *
-     * Entries details are stored as a free-form map. Interpretation of this map is the responsibility of the
-     * associated history provider.
-     */
-    QVariantMap entry;
-
-#ifdef SIP_RUN
-    SIP_PYOBJECT __repr__();
-    % MethodCode
-    const QString str = QStringLiteral( "<QgsHistoryEntry: %1 %2>" ).arg( sipCpp->providerId, sipCpp->timestamp.toString( Qt::ISODate ) );
-    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
-    % End
-#endif
-
-};
-
-Q_DECLARE_METATYPE( QgsHistoryEntry );
+class QgsHistoryEntry;
 
 /**
  * The QgsHistoryProviderRegistry is a registry for objects which track user history (i.e. operations performed through the GUI).

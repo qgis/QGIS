@@ -15,43 +15,16 @@
  ***************************************************************************/
 
 #include "qgshistoryproviderregistry.h"
-#include "history/qgshistoryprovider.h"
+#include "qgshistoryprovider.h"
 #include "qgsapplication.h"
 #include "qgsruntimeprofiler.h"
 #include "qgslogger.h"
 #include "qgsxmlutils.h"
 #include "qgsprocessinghistoryprovider.h"
+#include "qgshistoryentry.h"
 
 #include <QFile>
 #include <sqlite3.h>
-
-//
-// QgsHistoryEntry
-//
-
-QgsHistoryEntry::QgsHistoryEntry( const QString &providerId, const QDateTime &timestamp, const QVariantMap &entry )
-  : timestamp( timestamp )
-  , providerId( providerId )
-  , entry( entry )
-{
-
-}
-
-QgsHistoryEntry::QgsHistoryEntry( const QVariantMap &entry )
-  : timestamp( QDateTime::currentDateTime() )
-  , entry( entry )
-{
-
-}
-
-bool QgsHistoryEntry::isValid() const
-{
-  return !providerId.isEmpty();
-}
-
-//
-// QgsHistoryProviderRegistry
-//
 
 QgsHistoryProviderRegistry::QgsHistoryProviderRegistry( QObject *parent, bool useMemoryDatabase )
   : QObject( parent )

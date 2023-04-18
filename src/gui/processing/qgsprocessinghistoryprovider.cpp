@@ -18,7 +18,7 @@
 #include "qgsapplication.h"
 #include "qgsgui.h"
 #include "qgshistoryproviderregistry.h"
-#include "qgssettings.h"
+#include "qgshistoryentry.h"
 
 #include <QFile>
 #include <QTextStream>
