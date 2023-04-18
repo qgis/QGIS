@@ -42,6 +42,11 @@ class GUI_EXPORT QgsHistoryEntry
   public:
 
     /**
+     * Constructor for an invalid entry.
+     */
+    QgsHistoryEntry() = default;
+
+    /**
      * Constructor for QgsHistoryEntry \a entry, with the specified \a providerId and \a timestamp.
      */
     QgsHistoryEntry( const QString &providerId, const QDateTime &timestamp, const QVariantMap &entry );
@@ -52,6 +57,13 @@ class GUI_EXPORT QgsHistoryEntry
      * The entry timestamp will be automatically set to the current date/time.
      */
     QgsHistoryEntry( const QVariantMap &entry );
+
+    /**
+     * Returns TRUE if the entry is valid.
+     *
+     * \since QGIS 3.32
+     */
+    bool isValid() const;
 
     //! Entry timestamp
     QDateTime timestamp;
@@ -76,6 +88,8 @@ class GUI_EXPORT QgsHistoryEntry
 #endif
 
 };
+
+Q_DECLARE_METATYPE( QgsHistoryEntry );
 
 /**
  * The QgsHistoryProviderRegistry is a registry for objects which track user history (i.e. operations performed through the GUI).
