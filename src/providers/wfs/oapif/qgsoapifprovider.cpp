@@ -22,11 +22,13 @@
 #include "qgsoapifcollection.h"
 #include "qgsoapifconformancerequest.h"
 #include "qgsoapifcreatefeaturerequest.h"
+#include "qgsoapifcql2textexpressioncompiler.h"
 #include "qgsoapifdeletefeaturerequest.h"
 #include "qgsoapifpatchfeaturerequest.h"
 #include "qgsoapifputfeaturerequest.h"
 #include "qgsoapifitemsrequest.h"
 #include "qgsoapifoptionsrequest.h"
+#include "qgsoapifqueryablesrequest.h"
 #include "qgswfsconstants.h"
 #include "qgswfsutils.h" // for isCompatibleType()
 
@@ -173,6 +175,27 @@ bool QgsOapifProvider::init()
     QgsOapifConformanceRequest conformanceRequest( mShared->mURI.uri() );
     const QStringList conformanceClasses = conformanceRequest.conformanceClasses( conformanceUrl );
     implementsPart2 = conformanceClasses.contains( QLatin1String( "http://www.opengis.net/spec/ogcapi-features-2/1.0/conf/crs" ) );
+
+    const bool implementsCql2Text =
+      ( conformanceClasses.contains( QLatin1String( "http://www.opengis.net/spec/cql2/0.0/conf/cql2-text" ) ) ||
+        conformanceClasses.contains( QLatin1String( "http://www.opengis.net/spec/cql2/1.0/conf/cql2-text" ) ) );
+    mShared->mServerSupportsFilterCql2Text =
+      ( conformanceClasses.contains( QLatin1String( "http://www.opengis.net/spec/cql2/0.0/conf/basic-cql2" ) ) ||
+        conformanceClasses.contains( QLatin1String( "http://www.opengis.net/spec/cql2/1.0/conf/basic-cql2" ) ) ) &&
+      ( conformanceClasses.contains( QLatin1String( "http://www.opengis.net/spec/ogcapi-features-3/0.0/conf/filter" ) ) ||
+        conformanceClasses.contains( QLatin1String( "http://www.opengis.net/spec/ogcapi-features-3/1.0/conf/filter" ) ) ) &&
+      ( conformanceClasses.contains( QLatin1String( "http://www.opengis.net/spec/ogcapi-features-3/0.0/conf/features-filter" ) ) ||
+        conformanceClasses.contains( QLatin1String( "http://www.opengis.net/spec/ogcapi-features-3/1.0/conf/features-filter" ) ) ) &&
+      implementsCql2Text;
+    mShared->mServerSupportsLikeBetweenIn =
+      ( conformanceClasses.contains( QLatin1String( "http://www.opengis.net/spec/cql2/0.0/conf/advanced-comparison-operators" ) ) ||
+        conformanceClasses.contains( QLatin1String( "http://www.opengis.net/spec/cql2/1.0/conf/advanced-comparison-operators" ) ) );
+    mShared->mServerSupportsCaseI =
+      ( conformanceClasses.contains( QLatin1String( "http://www.opengis.net/spec/cql2/0.0/conf/case-insensitive-comparison" ) ) ||
+        conformanceClasses.contains( QLatin1String( "http://www.opengis.net/spec/cql2/1.0/conf/case-insensitive-comparison" ) ) );
+    mShared->mServerSupportsBasicSpatialOperators =
+      ( conformanceClasses.contains( QLatin1String( "http://www.opengis.net/spec/cql2/0.0/conf/basic-spatial-operators" ) ) ||
+        conformanceClasses.contains( QLatin1String( "http://www.opengis.net/spec/cql2/1.0/conf/basic-spatial-operators" ) ) );
   }
 
   mLayerMetadata = collectionRequest->collection().mLayerMetadata;
@@ -212,6 +235,13 @@ bool QgsOapifProvider::init()
 
   // Merge contact info from /api
   mLayerMetadata.setContacts( apiRequest.metadata().contacts() );
+
+  if ( mShared->mServerSupportsFilterCql2Text )
+  {
+    const QString queryablesUrl = mShared->mCollectionUrl +  QStringLiteral( "/queryables" );
+    QgsOapifQueryablesRequest queryablesRequest( mShared->mURI.uri() );
+    mShared->mQueryables = queryablesRequest.queryables( queryablesUrl );
+  }
 
   mShared->mItemsUrl = mShared->mCollectionUrl +  QStringLiteral( "/items" );
 
@@ -774,6 +804,11 @@ QgsOapifSharedData *QgsOapifSharedData::clone() const
   copy->mFoundIdTopLevel = mFoundIdTopLevel;
   copy->mFoundIdInProperties = mFoundIdInProperties;
   copy->mSimpleQueryables = mSimpleQueryables;
+  copy->mServerSupportsFilterCql2Text = mServerSupportsFilterCql2Text;
+  copy->mServerSupportsLikeBetweenIn = mServerSupportsLikeBetweenIn;
+  copy->mServerSupportsCaseI = mServerSupportsCaseI;
+  copy->mServerSupportsBasicSpatialOperators = mServerSupportsBasicSpatialOperators;
+  copy->mQueryables = mQueryables;
   QgsBackgroundCachedSharedData::copyStateToClone( copy );
 
   return copy;
@@ -798,7 +833,7 @@ static QString getDateTimeValueAsString( const QVariant &v )
   if ( v.type() == QVariant::String )
     return v.toString();
   else if ( v.type() == QVariant::DateTime )
-    return v.toDateTime().toString( Qt::ISODateWithMs );
+    return v.toDateTime().toOffsetFromUtc( 0 ).toString( Qt::ISODateWithMs );
   return QString();
 }
 
@@ -1012,9 +1047,46 @@ bool QgsOapifSharedData::computeServerFilter( QString &errorMsg )
   }
 
   const QgsExpression expr( mClientSideFilterExpression );
+  if ( mServerSupportsFilterCql2Text )
+  {
+    const bool invertAxisOrientation = mSourceCrs.hasAxisInverted();
+    QgsOapifCql2TextExpressionCompiler compiler(
+      mQueryables, mServerSupportsLikeBetweenIn, mServerSupportsCaseI,
+      mServerSupportsBasicSpatialOperators, invertAxisOrientation );
+    QgsOapifCql2TextExpressionCompiler::Result res = compiler.compile( &expr );
+    if ( res == QgsOapifCql2TextExpressionCompiler::Fail )
+    {
+      QgsDebugMsg( "Whole filter will be evaluated on client-side" );
+      mFilterTranslationState = QgsOapifProvider::FilterTranslationState::FULLY_CLIENT;
+      return true;
+    }
+    mServerFilter = getEncodedQueryParam( QStringLiteral( "filter" ), compiler.result() );
+    mServerFilter += QStringLiteral( "&filter-lang=cql2-text" );
+    if ( compiler.geometryLiteralUsed() )
+    {
+      if ( mSourceCrs
+           != QgsCoordinateReferenceSystem::fromOgcWmsCrs( QgsOapifProvider::OAPIF_PROVIDER_DEFAULT_CRS ) )
+      {
+        mServerFilter += QStringLiteral( "&filter-crs=%1" ).arg( mSourceCrs.toOgcUri() );
+      }
+    }
+
+    if ( res == QgsOapifCql2TextExpressionCompiler::Partial )
+    {
+      mFilterTranslationState = QgsOapifProvider::FilterTranslationState::PARTIAL;
+      QgsDebugMsg( "Part of the filter will be evaluated on client-side" );
+    }
+    else
+    {
+      mFilterTranslationState = QgsOapifProvider::FilterTranslationState::FULLY_SERVER;
+    }
+    return true;
+  }
+
   const auto rootNode = expr.rootNode();
   if ( !rootNode )
     return false;
+
   mServerFilter = translateNodeToServer( rootNode, mFilterTranslationState, mClientSideFilterExpression );
   if ( mFilterTranslationState == QgsOapifProvider::FilterTranslationState::PARTIAL )
   {

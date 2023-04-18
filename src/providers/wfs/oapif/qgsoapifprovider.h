@@ -25,6 +25,7 @@
 #include "qgswfsdatasourceuri.h"
 #include "qgsoapifapirequest.h"
 #include "qgsoapifitemsrequest.h"
+#include "qgsoapifqueryablesrequest.h"
 
 #include "qgsprovidermetadata.h"
 
@@ -218,6 +219,21 @@ class QgsOapifSharedData final: public QObject, public QgsBackgroundCachedShared
 
     // Map of simple queryables items (that is as query parameters). The key of the map is a queryable name.
     QMap<QString, QgsOapifApiRequest::SimpleQueryable> mSimpleQueryables;
+
+    //! Whether server supports OGC API Features Part3 with CQL2-Text
+    bool mServerSupportsFilterCql2Text = false;
+
+    //! Whether server supports CQL2 advanced-comparison-operators conformance class (LIKE, BETWEEN, IN)
+    bool mServerSupportsLikeBetweenIn = false;
+
+    //! Whether server supports CQL2 case-insensitive-comparison conformance class (CASEI function)
+    bool mServerSupportsCaseI = false;
+
+    //! Whether server supports CQL2 basic-spatial-operators conformance class (S_INTERSECTS(,BBOX() or POINT()))
+    bool mServerSupportsBasicSpatialOperators = false;
+
+    // Map of queryables items for CQL2 request. The key of the map is a queryable name.
+    QMap<QString, QgsOapifQueryablesRequest::Queryable> mQueryables;
 
     //! Append extra query parameters if needed
     QString appendExtraQueryParameters( const QString &url ) const;
