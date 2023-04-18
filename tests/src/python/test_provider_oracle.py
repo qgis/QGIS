@@ -733,6 +733,7 @@ class TestPyQgsOracleProvider(unittest.TestCase, ProviderTestCase):
         f['pk'] = NULL
         self.vl.addFeature(f)  # Should not deadlock during an active iteration
         f = next(it)
+        self.vl.rollBack()
 
     def testTransactionEditing(self):
         tg = QgsTransactionGroup()
