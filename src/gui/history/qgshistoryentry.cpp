@@ -33,5 +33,5 @@ QgsHistoryEntry::QgsHistoryEntry( const QVariantMap &entry )
 
 bool QgsHistoryEntry::isValid() const
 {
-  return !providerId.isEmpty();
+  return !providerId.isEmpty() || !entry.isEmpty() || timestamp.isValid();
 }
