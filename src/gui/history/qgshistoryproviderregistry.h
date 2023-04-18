@@ -135,11 +135,16 @@ class GUI_EXPORT QgsHistoryProviderRegistry : public QObject
      * \param options options
      *
      * \returns ID of newly added entry.
+     *
+     * \see entryAdded()
      */
     long long addEntry( const QgsHistoryEntry &entry, bool &ok SIP_OUT, QgsHistoryProviderRegistry::HistoryEntryOptions options = QgsHistoryProviderRegistry::HistoryEntryOptions() );
 
     /**
      * Adds a list of \a entries to the history logs.
+     *
+     * \see addEntry()
+     * \see entryAdded()
      */
     bool addEntries( const QList< QgsHistoryEntry > &entries, QgsHistoryProviderRegistry::HistoryEntryOptions options = QgsHistoryProviderRegistry::HistoryEntryOptions() );
 
@@ -177,8 +182,33 @@ class GUI_EXPORT QgsHistoryProviderRegistry : public QObject
 
     /**
      * Clears the history for the specified \a backend.
+     *
+     * \see historyCleared()
      */
     bool clearHistory( Qgis::HistoryProviderBackend backend );
+
+  signals:
+
+    /**
+     * Emitted when an \a entry is added.
+     *
+     * \since QGIS 3.32
+     */
+    void entryAdded( long long id, const QgsHistoryEntry &entry, Qgis::HistoryProviderBackend backend );
+
+    /**
+     * Emitted when an \a entry is updated.
+     *
+     * \since QGIS 3.32
+     */
+    void entryUpdated( long long id, const QVariantMap &entry, Qgis::HistoryProviderBackend backend );
+
+    /**
+     * Emitted when the history is cleared for a \a backend.
+     *
+     * \since QGIS 3.32
+     */
+    void historyCleared( Qgis::HistoryProviderBackend backend );
 
   private:
 

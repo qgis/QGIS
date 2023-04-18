@@ -114,6 +114,8 @@ long long QgsHistoryProviderRegistry::addEntry( const QgsHistoryEntry &entry, bo
       return -1;
     }
     id = static_cast< int >( sqlite3_last_insert_rowid( mLocalDB.get() ) );
+
+    emit entryAdded( id, entry, Qgis::HistoryProviderBackend::LocalProfile );
   }
 
   return id;
@@ -192,6 +194,8 @@ bool QgsHistoryProviderRegistry::updateEntry( long long id, const QVariantMap &e
         QgsDebugMsg( QStringLiteral( "Couldn't update history entry in database!" ) );
         return false;
       }
+
+      emit entryUpdated( id, entry, Qgis::HistoryProviderBackend::LocalProfile );
       return true;
     }
   }
@@ -263,6 +267,7 @@ bool QgsHistoryProviderRegistry::clearHistory( Qgis::HistoryProviderBackend back
       runEmptyQuery( QStringLiteral( "DELETE from history;" ) );
       break;
   }
+  emit historyCleared( backend );
   return true;
 }
 

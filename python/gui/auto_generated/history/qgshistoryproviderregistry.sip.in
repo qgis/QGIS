@@ -112,11 +112,18 @@ Adds an ``entry`` to the history logs.
 
 :return: - ID of newly added entry.
          - ok: will be set to ``True`` if entry was successfully added
+
+
+.. seealso:: :py:func:`entryAdded`
 %End
 
     bool addEntries( const QList< QgsHistoryEntry > &entries, QgsHistoryProviderRegistry::HistoryEntryOptions options = QgsHistoryProviderRegistry::HistoryEntryOptions() );
 %Docstring
 Adds a list of ``entries`` to the history logs.
+
+.. seealso:: :py:func:`addEntry`
+
+.. seealso:: :py:func:`entryAdded`
 %End
 
     QgsHistoryEntry entry( long long id, bool &ok, Qgis::HistoryProviderBackend backend = Qgis::HistoryProviderBackend::LocalProfile ) const;
@@ -154,6 +161,31 @@ Returns the path to user's local history database.
     bool clearHistory( Qgis::HistoryProviderBackend backend );
 %Docstring
 Clears the history for the specified ``backend``.
+
+.. seealso:: :py:func:`historyCleared`
+%End
+
+  signals:
+
+    void entryAdded( long long id, const QgsHistoryEntry &entry, Qgis::HistoryProviderBackend backend );
+%Docstring
+Emitted when an ``entry`` is added.
+
+.. versionadded:: 3.32
+%End
+
+    void entryUpdated( long long id, const QVariantMap &entry, Qgis::HistoryProviderBackend backend );
+%Docstring
+Emitted when an ``entry`` is updated.
+
+.. versionadded:: 3.32
+%End
+
+    void historyCleared( Qgis::HistoryProviderBackend backend );
+%Docstring
+Emitted when the history is cleared for a ``backend``.
+
+.. versionadded:: 3.32
 %End
 
 };
