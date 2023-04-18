@@ -230,14 +230,7 @@
            </widget>
           </item>
           <item>
-           <widget class="QgsPixmapLabel" name="mLabelLayerPreview" native="true">
-            <property name="text" stdset="0">
-             <string>Select a layer to display a preview</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignHCenter|Qt::AlignHCenter</set>
-            </property>
-           </widget>
+           <widget class="QgsMapCanvas" name="mMapCanvas"/>
           </item>
          </layout>
         </widget>
@@ -277,9 +270,10 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsPixmapLabel</class>
-   <extends>QWidget</extends>
-   <header>qgspixmaplabel.h</header>
+   <class>QgsMapCanvas</class>
+   <extends>QGraphicsView</extends>
+   <header>qgsmapcanvas.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <tabstops>

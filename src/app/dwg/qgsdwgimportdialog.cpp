@@ -47,7 +47,7 @@
 #include "qgsgui.h"
 #include "qgsfillsymbol.h"
 #include "qgslinesymbol.h"
-#include "qgsmaprenderercustompainterjob.h"
+#include "qgsmaptoolpan.h"
 
 QgsDwgImportDialog::QgsDwgImportDialog( QWidget *parent, Qt::WindowFlags f )
   : QDialog( parent, f )
@@ -88,6 +88,8 @@ QgsDwgImportDialog::QgsDwgImportDialog( QWidget *parent, Qt::WindowFlags f )
   mCrsSelector->setMessage( tr( "Select the coordinate reference system for the dxf file. "
                                 "The data points will be transformed from the layer coordinate reference system." ) );
 
+  mPanTool = new QgsMapToolPan( mMapCanvas );
+  mMapCanvas->setMapTool( mPanTool );
 
   if ( ! QgsVectorFileWriter::supportedFormatExtensions().contains( QStringLiteral( "gpkg" ) ) )
   {
@@ -99,6 +101,9 @@ QgsDwgImportDialog::QgsDwgImportDialog( QWidget *parent, Qt::WindowFlags f )
 
 QgsDwgImportDialog::~QgsDwgImportDialog()
 {
+  mMapCanvas->unsetMapTool( mPanTool );
+  delete mPanTool;
+
   QgsSettings s;
   s.setValue( QStringLiteral( "/DwgImport/lastExpandInserts" ), cbExpandInserts->isChecked() );
   s.setValue( QStringLiteral( "/DwgImport/lastMergeLayers" ), cbMergeLayers->isChecked() );
@@ -558,36 +563,6 @@ void QgsDwgImportDialog::layers_clicked( QTableWidgetItem *item )
   QgsLayerTreeGroup layerGroup;
   createGroup( &layerGroup, layerName, QStringList( layerName ), true );
 
-  QList<QgsMapLayer *> layers = layerGroup.layerOrderRespectingGroupLayers();
-
-  if ( layers.isEmpty() )
-  {
-    mLabelLayerPreview->setText( tr( "No features in this layer" ) );
-    return;
-  }
-
-  // Create image and painterr
-  QImage image( mLabelLayerPreview->size(), QImage::Format_ARGB32_Premultiplied );
-  QPainter painter;
-  painter.begin( &image );
-  painter.setRenderHint( QPainter::Antialiasing );
-
-  // Set layers to render
-  QgsMapSettings mapSettings;
-  mapSettings.setLayers( layers );
-
-  // Set extent
-  QgsRectangle rect( mapSettings.fullExtent() );
-  rect.scale( 1.1 );
-  mapSettings.setExtent( rect );
-  mapSettings.setOutputSize( image.size() );
-
-  // Setup qgis map renderer
-  QgsMapRendererCustomPainterJob render( mapSettings, &painter );
-  render.start();
-  render.waitForFinished();
-  painter.end();
-
-  // Show the image
-  mLabelLayerPreview->setPixmap( QPixmap::fromImage( image ) );
+  mMapCanvas->setLayers( layerGroup.layerOrderRespectingGroupLayers() );
+  mMapCanvas->setExtent( mMapCanvas->fullExtent() );
 }

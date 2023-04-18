@@ -23,6 +23,7 @@
 
 class QgsVectorLayer;
 class QgsLayerTreeGroup;
+class QgsMapToolPan;
 
 class QgsDwgImportDialog : public QDialog, private Ui::QgsDwgImportBase
 {
@@ -56,6 +57,8 @@ class QgsDwgImportDialog : public QDialog, private Ui::QgsDwgImportBase
     void updateUI();
     void expandInserts();
     void updateCheckState( Qt::CheckState state );
+
+    QgsMapToolPan *mPanTool;
 };
 
 #endif // QGSDWGIMPORTDIALOG_H
