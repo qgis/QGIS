@@ -38,7 +38,7 @@ QgsOapifItemsRequest::QgsOapifItemsRequest( const QgsDataSourceUri &baseUri, con
 
 bool QgsOapifItemsRequest::request( bool synchronous, bool forceRefresh )
 {
-  if ( !sendGET( QUrl( mUrl ), QString( "application/geo+json, application/json" ), synchronous, forceRefresh ) )
+  if ( !sendGET( QUrl::fromEncoded( mUrl.toLatin1() ), QString( "application/geo+json, application/json" ), synchronous, forceRefresh ) )
   {
     emit gotResponse();
     return false;
