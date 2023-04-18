@@ -71,11 +71,22 @@ ACCEPT_CONFORMANCE = 'Accept=application/json'
 ACCEPT_ITEMS = 'Accept=application/geo+json, application/json'
 
 
+def mergeDict(d1, d2):
+    res = copy.deepcopy(d1)
+    for k in d2:
+        if k not in res:
+            res[k] = d2[k]
+        else:
+            res[k] = mergeDict(res[k], d2[k])
+    return res
+
+
 def create_landing_page_api_collection(endpoint,
                                        extraparam='',
                                        storageCrs=None,
                                        crsList=None,
-                                       bbox=[-71.123, 66.33, -65.32, 78.3]):
+                                       bbox=[-71.123, 66.33, -65.32, 78.3],
+                                       additionalApiResponse={}):
 
     questionmark_extraparam = '?' + extraparam if extraparam else ''
 
@@ -95,18 +106,18 @@ def create_landing_page_api_collection(endpoint,
 
     # API
     with open(sanitize(endpoint, '/api?' + add_params(extraparam, ACCEPT_API)), 'wb') as f:
-        f.write(json.dumps({
-            "components": {
-                "parameters": {
-                    "limit": {
-                        "schema": {
-                            "maximum": 1000,
-                            "default": 100
-                        }
+        j = mergeDict(additionalApiResponse, {"components": {
+            "parameters": {
+                "limit": {
+                    "schema": {
+                        "maximum": 1000,
+                        "default": 100
                     }
                 }
             }
-        }).encode('UTF-8'))
+        }
+        })
+        f.write(json.dumps(j).encode('UTF-8'))
 
     # conformance
     with open(sanitize(endpoint, '/conformance?' + add_params(extraparam, ACCEPT_CONFORMANCE)), 'wb') as f:
@@ -721,6 +732,112 @@ class TestPyQgsOapifProvider(unittest.TestCase, ProviderTestCase):
         values = [f['id'] for f in vl.getFeatures()]
         os.unlink(filename)
         self.assertEqual(values, ['feat.1'])
+
+    def testSimpleQueryableFiltering(self):
+        """Test simple filtering capabilities, not requiring Part 3"""
+
+        endpoint = self.__class__.basetestpath + '/fake_qgis_http_endpoint_encoded_query_testSimpleQueryableFiltering'
+        additionalApiResponse = {
+            "paths": {
+                "/collections/mycollection/items": {
+                    "get": {
+                        "parameters": [
+                            {
+                                "$ref": "#/components/parameters/mycollection_strfield_param"
+                            },
+                            {
+                                "name": "intfield",
+                                "in": "query",
+                                "style": "form",
+                                "explode": False,
+                                "schema": {
+                                    "type": "integer"
+                                }
+                            },
+                            {
+                                "name": "doublefield",
+                                "in": "query",
+                                "style": "form",
+                                "explode": False,
+                                "schema": {
+                                    "type": "number"
+                                }
+                            },
+                            {
+                                "name": "boolfield",
+                                "in": "query",
+                                "style": "form",
+                                "explode": False,
+                                "schema": {
+                                    "type": "boolean"
+                                }
+                            }
+                        ]
+                    }
+                }
+            },
+            "components": {
+                "parameters": {
+                    "mycollection_strfield_param": {
+                        "name": "strfield",
+                        "in": "query",
+                        "style": "form",
+                        "explode": False,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        }
+        create_landing_page_api_collection(endpoint, additionalApiResponse=additionalApiResponse)
+
+        items = {
+            "type": "FeatureCollection",
+            "features": [
+                {"type": "Feature", "id": "feat.1", "properties":
+                 {"strfield": "foo=bar",
+                  "intfield": 1,
+                  "doublefield": 1.5,
+                  "boolfield": True},
+                 "geometry": {"type": "Point", "coordinates": [-70.332, 66.33]}}
+            ]
+        }
+
+        no_items = {
+            "type": "FeatureCollection",
+            "features": [
+            ]
+        }
+
+        filename = sanitize(endpoint, '/collections/mycollection/items?limit=10&' + ACCEPT_ITEMS)
+        with open(filename, 'wb') as f:
+            f.write(json.dumps(items).encode('UTF-8'))
+
+        vl = QgsVectorLayer(
+            "url='http://" + endpoint + "' typename='mycollection'", 'test', 'OAPIF')
+        self.assertTrue(vl.isValid())
+        os.unlink(filename)
+
+        assert vl.setSubsetString(""""strfield" = 'foo=bar' and intfield = 1 and doublefield = 1.5 and boolfield = true""")
+
+        filename = sanitize(endpoint,
+                            '/collections/mycollection/items?limit=1000&strfield=foo%3Dbar&intfield=1&doublefield=1.5&boolfield=true&' + ACCEPT_ITEMS)
+        with open(filename, 'wb') as f:
+            f.write(json.dumps(items).encode('UTF-8'))
+        values = [f['id'] for f in vl.getFeatures()]
+        os.unlink(filename)
+        self.assertEqual(values, ['feat.1'])
+
+        assert vl.setSubsetString(""""strfield" = 'bar'""")
+
+        filename = sanitize(endpoint,
+                            '/collections/mycollection/items?limit=1000&strfield=bar&' + ACCEPT_ITEMS)
+        with open(filename, 'wb') as f:
+            f.write(json.dumps(no_items).encode('UTF-8'))
+        values = [f['id'] for f in vl.getFeatures()]
+        os.unlink(filename)
+        self.assertEqual(values, [])
 
     def testStringList(self):
 

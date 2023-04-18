@@ -32,6 +32,7 @@
 
 #include <algorithm>
 #include <QIcon>
+#include <QUrlQuery>
 
 const QString QgsOapifProvider::OAPIF_PROVIDER_KEY = QStringLiteral( "OAPIF" );
 const QString QgsOapifProvider::OAPIF_PROVIDER_DESCRIPTION = QStringLiteral( "OGC API - Features data provider" );
@@ -96,6 +97,13 @@ bool QgsOapifProvider::init()
     return false;
   if ( apiRequest.errorCode() != QgsBaseNetworkRequest::NoError )
     return false;
+
+  const auto &collectionProperties = apiRequest.collectionProperties();
+  const auto thisCollPropertiesIter = collectionProperties.find( mShared->mURI.typeName() );
+  if ( thisCollPropertiesIter != collectionProperties.end() )
+  {
+    mShared->mSimpleQueryables = thisCollPropertiesIter->mSimpleQueryables;
+  }
 
   mShared->mServerMaxFeatures = apiRequest.maxLimit();
 
@@ -765,6 +773,7 @@ QgsOapifSharedData *QgsOapifSharedData::clone() const
   copy->mServerFilter = mServerFilter;
   copy->mFoundIdTopLevel = mFoundIdTopLevel;
   copy->mFoundIdInProperties = mFoundIdInProperties;
+  copy->mSimpleQueryables = mSimpleQueryables;
   QgsBackgroundCachedSharedData::copyStateToClone( copy );
 
   return copy;
@@ -804,6 +813,13 @@ static bool isDateTimeField( const QgsFields &fields, const QString &fieldName )
   return false;
 }
 
+static QString getEncodedQueryParam( const QString &key, const QString &value )
+{
+  QUrlQuery query;
+  query.addQueryItem( key, value );
+  return query.toString( QUrl::FullyEncoded );
+}
+
 static void collectTopLevelAndNodes( const QgsExpressionNode *node,
                                      std::vector<const QgsExpressionNode *> &topAndNodes )
 {
@@ -832,6 +848,7 @@ QString QgsOapifSharedData::translateNodeToServer(
   QDateTime maxDate;
   QString minDateStr;
   QString maxDateStr;
+  QStringList equalityComparisons;
   bool hasTranslatedParts = false;
   for ( size_t i = 0; i < topAndNodes.size(); /* do not increment here */ )
   {
@@ -872,6 +889,40 @@ QString QgsOapifSharedData::translateNodeToServer(
             }
           }
         }
+        else if ( op == QgsExpressionNodeBinaryOperator::boEQ &&
+                  mFields.indexOf( left->name() ) >= 0 )
+        {
+          // Filtering based on Part 1 /rec/core/fc-filters recommendation.
+          const auto iter = mSimpleQueryables.find( left->name() );
+          if ( iter != mSimpleQueryables.end() )
+          {
+            if ( iter->mType == QLatin1String( "string" ) &&
+                 right->value().type() == QVariant::String )
+            {
+              equalityComparisons << getEncodedQueryParam( left->name(), right->value().toString() );
+              removeMe = true;
+            }
+            else if ( ( iter->mType == QLatin1String( "integer" ) ||
+                        iter->mType == QLatin1String( "number" ) ) &&
+                      right->value().type() == QVariant::Int )
+            {
+              equalityComparisons << getEncodedQueryParam( left->name(), QString::number( right->value().toInt() ) );
+              removeMe = true;
+            }
+            else if ( iter->mType == QLatin1String( "number" ) &&
+                      right->value().type() == QVariant::Double )
+            {
+              equalityComparisons << getEncodedQueryParam( left->name(), QString::number( right->value().toDouble() ) );
+              removeMe = true;
+            }
+            else if ( iter->mType == QLatin1String( "boolean" ) &&
+                      right->value().type() == QVariant::Bool )
+            {
+              equalityComparisons << getEncodedQueryParam( left->name(), right->value().toBool() ? QLatin1String( "true" ) : QLatin1String( "false" ) );
+              removeMe = true;
+            }
+          }
+        }
       }
     }
     if ( removeMe )
@@ -904,6 +955,13 @@ QString QgsOapifSharedData::translateNodeToServer(
   {
     // TODO: use ellipsis '..' instead of dummy upper bound once more servers are compliant
     ret = QStringLiteral( "datetime=0000-01-01T00:00:00Z%2F" ) + maxDateStr;
+  }
+
+  for ( const QString &equalityComparison : equalityComparisons )
+  {
+    if ( !ret.isEmpty() )
+      ret += QLatin1Char( '&' );
+    ret += equalityComparison;
   }
 
   if ( !hasTranslatedParts )

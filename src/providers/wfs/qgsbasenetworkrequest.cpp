@@ -108,9 +108,18 @@ bool QgsBaseNetworkRequest::sendGET( const QUrl &url, const QString &acceptHeade
   if ( modifiedUrl.toString().contains( QLatin1String( "fake_qgis_http_endpoint" ) ) )
   {
     // Just for testing with local files instead of http:// resources
-    QString modifiedUrlString = modifiedUrl.toString();
-    // Qt5 does URL encoding from some reason (of the FILTER parameter for example)
-    modifiedUrlString = QUrl::fromPercentEncoding( modifiedUrlString.toUtf8() );
+    QString modifiedUrlString;
+
+    if ( modifiedUrl.toString().contains( QLatin1String( "fake_qgis_http_endpoint_encoded_query" ) ) )
+    {
+      // Get encoded representation (used by test_provider_oapif.py testSimpleQueryableFiltering())
+      modifiedUrlString = modifiedUrl.toEncoded();
+    }
+    else
+    {
+      // Get representation with percent decoding (easier for WFS filtering)
+      modifiedUrlString = QUrl::fromPercentEncoding( modifiedUrl.toString().toUtf8() );
+    }
 
     if ( !acceptHeader.isEmpty() )
     {

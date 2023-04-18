@@ -23,6 +23,7 @@
 #include "qgsvectordataprovider.h"
 #include "qgsbackgroundcachedshareddata.h"
 #include "qgswfsdatasourceuri.h"
+#include "qgsoapifapirequest.h"
 #include "qgsoapifitemsrequest.h"
 
 #include "qgsprovidermetadata.h"
@@ -214,6 +215,9 @@ class QgsOapifSharedData final: public QObject, public QgsBackgroundCachedShared
 
     //! Set if an "id" is present in the "properties" object of features
     bool mFoundIdInProperties = false;
+
+    // Map of simple queryables items (that is as query parameters). The key of the map is a queryable name.
+    QMap<QString, QgsOapifApiRequest::SimpleQueryable> mSimpleQueryables;
 
     //! Append extra query parameters if needed
     QString appendExtraQueryParameters( const QString &url ) const;
