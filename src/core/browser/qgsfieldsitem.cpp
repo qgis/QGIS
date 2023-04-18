@@ -22,6 +22,7 @@
 #include "qgslogger.h"
 #include "qgsapplication.h"
 #include "qgsvectorlayer.h"
+#include "qgsfieldmodel.h"
 
 QgsFieldsItem::QgsFieldsItem( QgsDataItem *parent,
                               const QString &path,
@@ -157,20 +158,8 @@ QgsFieldItem::QgsFieldItem( QgsDataItem *parent, const QgsField &field )
     mCapabilities |= Qgis::BrowserItemCapability::Rename;
 
   setState( Qgis::BrowserItemState::Populated );
-  const auto constraints { field.constraints().constraints() };
-  QStringList constraintsText;
-  if ( constraints.testFlag( QgsFieldConstraints::Constraint::ConstraintNotNull ) )
-  {
-    constraintsText.push_back( tr( "NOT NULL" ) );
-  }
-  if ( constraints.testFlag( QgsFieldConstraints::Constraint::ConstraintUnique ) )
-  {
-    constraintsText.push_back( tr( "UNIQUE" ) );
-  }
-  if ( ! constraintsText.isEmpty() )
-  {
-    setToolTip( QStringLiteral( "<ul><li>%1</li></ul>" ).arg( constraintsText.join( QLatin1String( "</li><li>" ) ) ) );
-  }
+
+  setToolTip( QgsFieldModel::fieldToolTip( field ) );
 }
 
 QgsFieldItem::~QgsFieldItem()
