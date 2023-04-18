@@ -58,6 +58,17 @@ class QgsPdalAlgorithmBase : public QgsProcessingAlgorithm
     void applyThreadsParameter( QStringList &arguments );
 
     /**
+     * "Fixes" output file name by changing suffix to .vpc if input file
+     * is a VPC and output is a temporary output.
+     *
+     * This is necessary as pdal_wrench at the moment can create only VPC
+     * output if input file is a VPC. We automatically adjust output file
+     * extension for temporary outputs to provide better UX. For normal outputs
+     * user will see a error if output files is not a VPC.
+     */
+    QString fixOutputFileName( const QString &inputFileName, const QString &outputFileName, QgsProcessingContext &context );
+
+    /**
      * Returns path to the pdal_wrench executable binary.
      */
     QString wrenchExecutableBinary() const;

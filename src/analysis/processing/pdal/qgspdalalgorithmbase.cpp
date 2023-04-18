@@ -99,6 +99,27 @@ void QgsPdalAlgorithmBase::applyThreadsParameter( QStringList &arguments )
   }
 }
 
+QString QgsPdalAlgorithmBase::fixOutputFileName( const QString &inputFileName, const QString &outputFileName, QgsProcessingContext &context )
+{
+  bool inputIsVpc = inputFileName.endsWith( QStringLiteral( ".vpc" ), Qt::CaseInsensitive );
+  bool isTempOutput = outputFileName.startsWith( QgsProcessingUtils::tempFolder(), Qt::CaseInsensitive );
+  if ( inputIsVpc && isTempOutput )
+  {
+    QFileInfo fi( outputFileName );
+    QString newFileName = fi.path() + '/' + fi.completeBaseName() + QStringLiteral( ".vpc" );
+
+    if ( context.willLoadLayerOnCompletion( outputFileName ) )
+    {
+      QMap< QString, QgsProcessingContext::LayerDetails > layersToLoad = context.layersToLoadOnCompletion();
+      QgsProcessingContext::LayerDetails details = layersToLoad.take( outputFileName );
+      layersToLoad[ newFileName ] = details;
+      context.setLayersToLoadOnCompletion( layersToLoad );
+    }
+    return newFileName;
+  }
+  return outputFileName;
+}
+
 QStringList QgsPdalAlgorithmBase::createArgumentLists( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   Q_UNUSED( parameters );
