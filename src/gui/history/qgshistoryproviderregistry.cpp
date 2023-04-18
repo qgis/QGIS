@@ -44,6 +44,11 @@ QgsHistoryEntry::QgsHistoryEntry( const QVariantMap &entry )
 
 }
 
+bool QgsHistoryEntry::isValid() const
+{
+  return !providerId.isEmpty();
+}
+
 //
 // QgsHistoryProviderRegistry
 //

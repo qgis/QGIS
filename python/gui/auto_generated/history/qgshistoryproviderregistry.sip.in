@@ -23,6 +23,11 @@ Encapsulates a history entry.
 %End
   public:
 
+    QgsHistoryEntry();
+%Docstring
+Constructor for an invalid entry.
+%End
+
     QgsHistoryEntry( const QString &providerId, const QDateTime &timestamp, const QVariantMap &entry );
 %Docstring
 Constructor for QgsHistoryEntry ``entry``, with the specified ``providerId`` and ``timestamp``.
@@ -33,6 +38,13 @@ Constructor for QgsHistoryEntry ``entry``, with the specified ``providerId`` and
 Constructor for QgsHistoryEntry ``entry``.
 
 The entry timestamp will be automatically set to the current date/time.
+%End
+
+    bool isValid() const;
+%Docstring
+Returns ``True`` if the entry is valid.
+
+.. versionadded:: 3.32
 %End
 
     QDateTime timestamp;
@@ -48,6 +60,7 @@ The entry timestamp will be automatically set to the current date/time.
 %End
 
 };
+
 
 class QgsHistoryProviderRegistry : QObject
 {
