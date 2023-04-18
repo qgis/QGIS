@@ -41,7 +41,12 @@ class TestQgsHistoryProviderRegistry(unittest.TestCase):
         """
         Test QgsHistoryEntry
         """
+        entry = QgsHistoryEntry()
+        self.assertFalse(entry.isValid())
+
         entry = QgsHistoryEntry('my provider', QDateTime(2021, 1, 2, 3, 4, 5), {'somevar': 5})
+        self.assertTrue(entry.isValid())
+
         self.assertEqual(entry.providerId, 'my provider')
         self.assertEqual(entry.timestamp, QDateTime(2021, 1, 2, 3, 4, 5))
         self.assertEqual(entry.entry, {'somevar': 5})
@@ -49,6 +54,8 @@ class TestQgsHistoryProviderRegistry(unittest.TestCase):
         self.assertEqual(str(entry), '<QgsHistoryEntry: my provider 2021-01-02T03:04:05>')
 
         entry = QgsHistoryEntry({'somevar': 7})
+        self.assertTrue(entry.isValid())
+
         self.assertFalse(entry.providerId)
         self.assertEqual(entry.timestamp.date(), QDateTime.currentDateTime().date())
         self.assertEqual(entry.entry, {'somevar': 7})
