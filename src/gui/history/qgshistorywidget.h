@@ -44,6 +44,7 @@ class GUI_EXPORT QgsHistoryEntryProxyModel : public QSortFilterProxyModel
     QString mFilter;
 
 };
+///@endcond PRIVATE
 #endif
 
 /**

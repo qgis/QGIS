@@ -90,7 +90,7 @@ int QgsHistoryEntryGroup::indexOf( QgsHistoryEntryNode *child ) const
     return p.get() == child;
   } );
   if ( it != mChildren.end() )
-    return std::distance( mChildren.begin(), it );
+    return static_cast< int >( std::distance( mChildren.begin(), it ) );
   return -1;
 }
 
@@ -118,5 +118,5 @@ void QgsHistoryEntryGroup::clear()
 
 int QgsHistoryEntryGroup::childCount() const
 {
-  return mChildren.size();
+  return static_cast< int >( mChildren.size() );
 }
