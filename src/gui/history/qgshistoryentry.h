@@ -59,6 +59,13 @@ class GUI_EXPORT QgsHistoryEntry
      */
     bool isValid() const;
 
+    /**
+     * Entry ID.
+     *
+     * \since QGIS 3.32
+     */
+    long long id = 0;
+
     //! Entry timestamp
     QDateTime timestamp;
 
