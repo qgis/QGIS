@@ -565,6 +565,11 @@ void QgsWFSSourceSelect::buildQuery( const QModelIndex &index )
   QgsWfsConnection connection( cmbConnections->currentText() );
   QgsWFSDataSourceURI uri( connection.uri().uri( false ) );
   uri.setTypeName( typeName );
+  if ( gbCRS->isEnabled() )
+  {
+    QString crsString = labelCoordRefSys->text();
+    uri.setSRSName( crsString );
+  }
 
   QModelIndex filterIndex = index.sibling( index.row(), MODEL_IDX_SQL );
   QString sql( filterIndex.data().toString() );
