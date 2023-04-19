@@ -75,7 +75,7 @@ void TestQgsDwgImportDialog::importDwgDocument()
 
   // Set source drawing and import
   QString uri = QString( mDataDir + "/entities.dwg" );
-  dwgImportDialog.leDrawing->setText( uri );
+  dwgImportDialog.mSourceDrawingFileWidget->setFilePath( uri );
   dwgImportDialog.pbImportDrawing_clicked();
 
   // Check that a default group name was assigned
@@ -115,7 +115,7 @@ void TestQgsDwgImportDialog::importDwgDocumentExpandBlockGeometries()
 
   // Set source drawing and import
   QString uri = QString( mDataDir + "/entities.dwg" );
-  dwgImportDialog.leDrawing->setText( uri );
+  dwgImportDialog.mSourceDrawingFileWidget->setFilePath( uri );
   dwgImportDialog.pbImportDrawing_clicked();
 
   // Check that a default group name was assigned
@@ -157,7 +157,7 @@ void TestQgsDwgImportDialog::importDwgDocumentBlockOnlyInsertPoints()
 
   // Set source drawing and import
   QString uri = QString( mDataDir + "/entities.dwg" );
-  dwgImportDialog.leDrawing->setText( uri );
+  dwgImportDialog.mSourceDrawingFileWidget->setFilePath( uri );
   dwgImportDialog.pbImportDrawing_clicked();
 
   // Check that a default group name was assigned
