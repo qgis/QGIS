@@ -19,7 +19,9 @@ from qgis.gui import (
     QgsAbstractHistoryProvider,
     QgsHistoryEntry,
     QgsHistoryProviderRegistry,
-    QgsGui
+    QgsGui,
+    QgsHistoryEntryNode,
+    QgsHistoryEntryGroup
 )
 from qgis.testing import start_app, unittest
 
@@ -36,6 +38,18 @@ class TestHistoryProvider2(QgsAbstractHistoryProvider):
 
     def id(self) -> str:
         return 'test_provider2'
+
+
+class TestNode(QgsHistoryEntryNode):
+
+    def data(self, role):
+        return 'test'
+
+
+class TestGroup(QgsHistoryEntryGroup):
+
+    def data(self, role):
+        return 'test'
 
 
 class TestQgsHistoryProviderRegistry(unittest.TestCase):
@@ -239,6 +253,37 @@ class TestQgsHistoryProviderRegistry(unittest.TestCase):
         self.assertEqual(reg.queryEntries()[1].providerId, 'my provider 5')
         self.assertEqual(reg.queryEntries()[1].id, 2)
         self.assertEqual(reg.queryEntries()[1].entry, {'var': 8})
+
+    def test_nodes(self):
+        node = TestNode()
+        self.assertEqual(node.childCount(), 0)
+        self.assertFalse(node.parent())
+
+        group = TestGroup()
+        self.assertEqual(group.childCount(), 0)
+        self.assertFalse(group.parent())
+        self.assertFalse(group.childAt(0))
+        self.assertEqual(group.indexOf(node), -1)
+
+        group.addChild(node)
+        self.assertEqual(group.childCount(), 1)
+        self.assertFalse(group.parent())
+        self.assertEqual(node.parent(), group)
+        self.assertEqual(group.childAt(0), node)
+        self.assertEqual(group.indexOf(node), 0)
+
+        node2 = TestNode()
+        group.addChild(node2)
+        self.assertEqual(group.childCount(), 2)
+        self.assertFalse(group.parent())
+        self.assertEqual(node2.parent(), group)
+        self.assertEqual(group.childAt(0), node)
+        self.assertEqual(group.childAt(1), node2)
+        self.assertEqual(group.indexOf(node), 0)
+        self.assertEqual(group.indexOf(node2), 1)
+
+        group.clear()
+        self.assertEqual(group.childCount(), 0)
 
 
 if __name__ == '__main__':
