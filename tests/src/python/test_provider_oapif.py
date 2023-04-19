@@ -1038,6 +1038,72 @@ class TestPyQgsOapifProvider(unittest.TestCase, ProviderTestCase):
             os.unlink(filename)
             self.assertEqual(values, ['feat.1'], expr)
 
+    def testCQL2TextFilteringGetFeaturesExpression(self):
+        """Test Part 3 CQL2-Text filtering"""
+
+        endpoint = self.__class__.basetestpath + '/fake_qgis_http_endpoint_encoded_query_testCQL2TextFilteringGetFeaturesExpression'
+        additionalConformance = [
+            "http://www.opengis.net/spec/cql2/1.0/conf/basic-cql2",
+            "http://www.opengis.net/spec/cql2/1.0/conf/cql2-text",
+            "http://www.opengis.net/spec/ogcapi-features-3/1.0/conf/features-filter",
+            "http://www.opengis.net/spec/ogcapi-features-3/1.0/conf/filter",
+        ]
+
+        create_landing_page_api_collection(endpoint, additionalConformance=additionalConformance)
+
+        filename = sanitize(endpoint, '/collections/mycollection/queryables?' + ACCEPT_QUERYABLES)
+        queryables = {
+            "properties": {
+                "strfield": {
+                    "type": "string"
+                },
+                "geometry": {
+                    "$ref": "https://geojson.org/schema/Point.json"
+                },
+            }
+        }
+        with open(filename, 'wb') as f:
+            f.write(json.dumps(queryables).encode('UTF-8'))
+
+        items = {
+            "type": "FeatureCollection",
+            "features": [
+                {"type": "Feature", "id": "feat.1", "properties":
+                 {
+                     "strfield": "foo=bar",
+                 },
+                 "geometry": {"type": "Point", "coordinates": [-70.5, 66.5]}}
+            ]
+        }
+
+        filename = sanitize(endpoint, '/collections/mycollection/items?limit=10&' + ACCEPT_ITEMS)
+        with open(filename, 'wb') as f:
+            f.write(json.dumps(items).encode('UTF-8'))
+
+        vl = QgsVectorLayer(
+            "url='http://" + endpoint + "' typename='mycollection'", 'test', 'OAPIF')
+        self.assertTrue(vl.isValid())
+        os.unlink(filename)
+
+        tests = [
+            ("", """"strfield" = 'foo=bar'""",
+             """filter=(strfield%20%3D%20'foo%3Dbar')&filter-lang=cql2-text"""),
+            ("strfield <> 'x'", """"strfield" = 'foo=bar'""",
+             """filter=((strfield%20%3C%3E%20'x'))%20AND%20((strfield%20%3D%20'foo%3Dbar'))&filter-lang=cql2-text"""),
+        ]
+        for (substring_expr, getfeatures_expr, cql_filter) in tests:
+            assert vl.setSubsetString(substring_expr)
+            filename = sanitize(endpoint,
+                                "/collections/mycollection/items?limit=1000&" + cql_filter + ("&" if cql_filter else "") + ACCEPT_ITEMS)
+            with open(filename, 'wb') as f:
+                f.write(json.dumps(items).encode('UTF-8'))
+            request = QgsFeatureRequest()
+            if getfeatures_expr:
+                request.setFilterExpression(getfeatures_expr)
+            values = [f['id'] for f in vl.getFeatures(request)]
+            os.unlink(filename)
+            self.assertEqual(values, ['feat.1'], (substring_expr, getfeatures_expr))
+
     def testStringList(self):
 
         endpoint = self.__class__.basetestpath + '/fake_qgis_http_endpoint_testStringList'

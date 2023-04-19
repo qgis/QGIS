@@ -872,10 +872,10 @@ static void collectTopLevelAndNodes( const QgsExpressionNode *node,
   topAndNodes.push_back( node );
 }
 
-QString QgsOapifSharedData::translateNodeToServer(
+QString QgsOapifSharedData::compileExpressionNodeUsingPart1(
   const QgsExpressionNode *rootNode,
   QgsOapifProvider::FilterTranslationState &translationState,
-  QString &untranslatedPart )
+  QString &untranslatedPart ) const
 {
   std::vector<const QgsExpressionNode *> topAndNodes;
   collectTopLevelAndNodes( rootNode, topAndNodes );
@@ -1035,6 +1035,55 @@ QString QgsOapifSharedData::translateNodeToServer(
   return ret;
 }
 
+bool QgsOapifSharedData::computeFilter( const QgsExpression &expr,
+                                        QgsOapifProvider::FilterTranslationState &translationState,
+                                        QString &serverSideParameters,
+                                        QString &clientSideFilterExpression ) const
+{
+  const auto rootNode = expr.rootNode();
+  if ( !rootNode )
+    return false;
+
+  if ( mServerSupportsFilterCql2Text )
+  {
+    const bool invertAxisOrientation = mSourceCrs.hasAxisInverted();
+    QgsOapifCql2TextExpressionCompiler compiler(
+      mQueryables, mServerSupportsLikeBetweenIn, mServerSupportsCaseI,
+      mServerSupportsBasicSpatialOperators, invertAxisOrientation );
+    QgsOapifCql2TextExpressionCompiler::Result res = compiler.compile( &expr );
+    if ( res == QgsOapifCql2TextExpressionCompiler::Fail )
+    {
+      clientSideFilterExpression = expr.rootNode()->dump();
+      translationState = QgsOapifProvider::FilterTranslationState::FULLY_CLIENT;
+      return true;
+    }
+    serverSideParameters = getEncodedQueryParam( QStringLiteral( "filter" ), compiler.result() );
+    serverSideParameters += QStringLiteral( "&filter-lang=cql2-text" );
+    if ( compiler.geometryLiteralUsed() )
+    {
+      if ( mSourceCrs
+           != QgsCoordinateReferenceSystem::fromOgcWmsCrs( QgsOapifProvider::OAPIF_PROVIDER_DEFAULT_CRS ) )
+      {
+        serverSideParameters += QStringLiteral( "&filter-crs=%1" ).arg( mSourceCrs.toOgcUri() );
+      }
+    }
+
+    clientSideFilterExpression.clear();
+    if ( res == QgsOapifCql2TextExpressionCompiler::Partial )
+    {
+      translationState = QgsOapifProvider::FilterTranslationState::PARTIAL;
+    }
+    else
+    {
+      translationState = QgsOapifProvider::FilterTranslationState::FULLY_SERVER;
+    }
+    return true;
+  }
+
+  serverSideParameters = compileExpressionNodeUsingPart1( rootNode, translationState, clientSideFilterExpression );
+  return true;
+}
+
 bool QgsOapifSharedData::computeServerFilter( QString &errorMsg )
 {
   errorMsg.clear();
@@ -1047,63 +1096,30 @@ bool QgsOapifSharedData::computeServerFilter( QString &errorMsg )
   }
 
   const QgsExpression expr( mClientSideFilterExpression );
-  if ( mServerSupportsFilterCql2Text )
+  bool ret = computeFilter( expr, mFilterTranslationState, mServerFilter, mClientSideFilterExpression );
+  if ( ret )
   {
-    const bool invertAxisOrientation = mSourceCrs.hasAxisInverted();
-    QgsOapifCql2TextExpressionCompiler compiler(
-      mQueryables, mServerSupportsLikeBetweenIn, mServerSupportsCaseI,
-      mServerSupportsBasicSpatialOperators, invertAxisOrientation );
-    QgsOapifCql2TextExpressionCompiler::Result res = compiler.compile( &expr );
-    if ( res == QgsOapifCql2TextExpressionCompiler::Fail )
+    if ( mFilterTranslationState == QgsOapifProvider::FilterTranslationState::PARTIAL )
+    {
+      QgsDebugMsg( QStringLiteral( "Part of the filter will be evaluated on client-side: %1" ).arg( mClientSideFilterExpression ) );
+    }
+    else if ( mFilterTranslationState == QgsOapifProvider::FilterTranslationState::FULLY_CLIENT )
     {
       QgsDebugMsg( "Whole filter will be evaluated on client-side" );
-      mFilterTranslationState = QgsOapifProvider::FilterTranslationState::FULLY_CLIENT;
-      return true;
     }
-    mServerFilter = getEncodedQueryParam( QStringLiteral( "filter" ), compiler.result() );
-    mServerFilter += QStringLiteral( "&filter-lang=cql2-text" );
-    if ( compiler.geometryLiteralUsed() )
-    {
-      if ( mSourceCrs
-           != QgsCoordinateReferenceSystem::fromOgcWmsCrs( QgsOapifProvider::OAPIF_PROVIDER_DEFAULT_CRS ) )
-      {
-        mServerFilter += QStringLiteral( "&filter-crs=%1" ).arg( mSourceCrs.toOgcUri() );
-      }
-    }
-
-    if ( res == QgsOapifCql2TextExpressionCompiler::Partial )
-    {
-      mFilterTranslationState = QgsOapifProvider::FilterTranslationState::PARTIAL;
-      QgsDebugMsg( "Part of the filter will be evaluated on client-side" );
-    }
-    else
-    {
-      mFilterTranslationState = QgsOapifProvider::FilterTranslationState::FULLY_SERVER;
-    }
-    return true;
   }
-
-  const auto rootNode = expr.rootNode();
-  if ( !rootNode )
-    return false;
-
-  mServerFilter = translateNodeToServer( rootNode, mFilterTranslationState, mClientSideFilterExpression );
-  if ( mFilterTranslationState == QgsOapifProvider::FilterTranslationState::PARTIAL )
-  {
-    QgsDebugMsg( QStringLiteral( "Part of the filter will be evaluated on client-side: %1" ).arg( mClientSideFilterExpression ) );
-  }
-  else if ( mFilterTranslationState == QgsOapifProvider::FilterTranslationState::FULLY_CLIENT )
-  {
-    QgsDebugMsg( "Whole filter will be evaluated on client-side" );
-  }
-
-  return true;
+  return ret;
 }
 
 QString QgsOapifSharedData::computedExpression( const QgsExpression &expression ) const
 {
-  Q_UNUSED( expression );
-  return QString();
+  if ( !expression.isValid() )
+    return QString();
+  QgsOapifProvider::FilterTranslationState translationState;
+  QString serverParameters;
+  QString clientSideFilterExpression;
+  computeFilter( expression, translationState, serverParameters, clientSideFilterExpression );
+  return serverParameters;
 }
 
 void QgsOapifSharedData::pushError( const QString &errorMsg ) const
@@ -1178,10 +1194,50 @@ void QgsOapifFeatureDownloaderImpl::run( bool serializeFeatures, long long maxFe
     hasQueryParam = true;
   }
 
+  // mServerFilter comes from the translation of the uri "filter" parameter
+  // mServerExpression comes from the translation of a getFeatures() expression
   if ( !mShared->mServerFilter.isEmpty() )
   {
     url += ( hasQueryParam ? QStringLiteral( "&" ) : QStringLiteral( "?" ) );
-    url += mShared->mServerFilter;
+    if ( !mShared->mServerExpression.isEmpty() )
+    {
+      // Combine mServerFilter and mServerExpression
+      QStringList components1 = mShared->mServerFilter.split( QLatin1Char( '&' ) );
+      QStringList components2 = mShared->mServerExpression.split( QLatin1Char( '&' ) );
+      Q_ASSERT( components1[0].startsWith( QStringLiteral( "filter=" ) ) );
+      Q_ASSERT( components2[0].startsWith( QStringLiteral( "filter=" ) ) );
+      url += QStringLiteral( "filter=" );
+      url += '(';
+      url += components1[0].mid( static_cast<int>( strlen( "filter=" ) ) );
+      url += QStringLiteral( ") AND (" );
+      url += components2[0].mid( static_cast<int>( strlen( "filter=" ) ) );
+      url += ')';
+      // Add components1 extra parameters: filter-lang and filter-crs
+      for ( int i = 1; i < components1.size(); ++i )
+      {
+        url += '&';
+        url += components1[i];
+      }
+      // Add components2 extra parameters, not already included in components1
+      for ( int i = 1; i < components2.size(); ++i )
+      {
+        if ( !components1.contains( components2[i] ) )
+        {
+          url += '&';
+          url += components1[i];
+        }
+      }
+    }
+    else
+    {
+      url += mShared->mServerFilter;
+    }
+    hasQueryParam = true;
+  }
+  else if ( !mShared->mServerExpression.isEmpty() )
+  {
+    url += ( hasQueryParam ? QStringLiteral( "&" ) : QStringLiteral( "?" ) );
+    url += mShared->mServerExpression;
     hasQueryParam = true;
   }
 
