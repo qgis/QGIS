@@ -233,7 +233,13 @@ void QgsMergeAttributesDialog::createTableWidgetContents()
   {
     int idx = mTableWidget->horizontalHeaderItem( j )->data( FieldIndex ).toInt();
     bool setToManual = false;
-    if ( !mVectorLayer->dataProvider()->defaultValueClause( idx ).isEmpty() )
+
+    // For the Id use the target feature
+    if ( j == 0 )
+    {
+      mTableWidget->item( mTableWidget->rowCount() - 1, j )->setData( Qt::DisplayRole, mTargetFeatureId );
+    }
+    else if ( !mVectorLayer->dataProvider()->defaultValueClause( idx ).isEmpty() )
     {
       mTableWidget->item( mTableWidget->rowCount() - 1, j )->setData( Qt::DisplayRole, mVectorLayer->dataProvider()->defaultValueClause( idx ) );
       setToManual = true;

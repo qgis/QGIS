@@ -86,10 +86,12 @@ class TestQgsMergeattributesDialog : public QObject
 
       // At beginnning the first feature of the list is the target
       QCOMPARE( dialog.targetFeatureId(), f1.id() );
+      QCOMPARE( dialog.mergedAttributes().first(), f1.id() );
 
       // Check after taking feature with largest geometry
       QVERIFY( QMetaObject::invokeMethod( &dialog, "mFromLargestPushButton_clicked" ) );
       QCOMPARE( dialog.targetFeatureId(), f2.id() );
+      QCOMPARE( dialog.mergedAttributes().first(), f2.id() );
     }
 };
 
