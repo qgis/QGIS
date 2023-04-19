@@ -90,7 +90,11 @@ QgsHistoryEntryModel::QgsHistoryEntryModel( const QString &providerId, Qgis::His
   const QList< QgsHistoryEntry > entries = mRegistry->queryEntries( QDateTime(), QDateTime(), mProviderId, mBackends );
   for ( const QgsHistoryEntry &entry : entries )
   {
-    if ( QgsHistoryEntryNode *node = mRegistry->providerById( entry.providerId )->createNodeForEntry( entry.entry ) )
+    QgsAbstractHistoryProvider *provider = mRegistry->providerById( entry.providerId );
+    if ( !provider )
+      continue;
+
+    if ( QgsHistoryEntryNode *node = provider->createNodeForEntry( entry.entry ) )
     {
       mIdToNodeHash.insert( entry.id, node );
       mRootNode->addEntryNode( entry, node, nullptr );
