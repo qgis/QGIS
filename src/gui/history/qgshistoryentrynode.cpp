@@ -26,7 +26,6 @@ int QgsHistoryEntryNode::childCount() const
   return 0;
 }
 
-#if 0
 QString QgsHistoryEntryNode::html() const
 {
   return QString();
@@ -37,6 +36,7 @@ QWidget *QgsHistoryEntryNode::createWidget()
   return nullptr;
 }
 
+#if 0
 QList<QAction *> QgsHistoryEntryNode::actions( QWidget * )
 {
   return {};

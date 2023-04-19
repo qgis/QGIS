@@ -16,6 +16,7 @@
 #include "qgshistorywidget.h"
 #include "qgsgui.h"
 #include "qgshistoryentrymodel.h"
+#include "qgshistoryentrynode.h"
 
 QgsHistoryWidget::QgsHistoryWidget( const QString &providerId, Qgis::HistoryProviderBackends backends, QgsHistoryProviderRegistry *registry, QWidget *parent )
   : QgsPanelWidget( parent )
@@ -25,4 +26,30 @@ QgsHistoryWidget::QgsHistoryWidget( const QString &providerId, Qgis::HistoryProv
   mModel = new QgsHistoryEntryModel( providerId, backends, registry, this );
   mTreeView->setModel( mModel );
 
+  connect( mTreeView->selectionModel(), &QItemSelectionModel::currentChanged, this, &QgsHistoryWidget::currentItemChanged );
+
+}
+
+void QgsHistoryWidget::currentItemChanged( const QModelIndex &selected, const QModelIndex & )
+{
+  QWidget *newWidget = nullptr;
+  if ( QgsHistoryEntryNode *node = mModel->index2node( selected ) )
+  {
+    newWidget = node->createWidget();
+    if ( newWidget )
+    {
+      mContainerStackedWidget->addWidget( newWidget );
+      mContainerStackedWidget->setCurrentWidget( newWidget );
+    }
+  }
+
+  if ( !newWidget )
+  {
+    //remove current widget, if any
+    if ( mContainerStackedWidget->count() > 1 )
+    {
+      mContainerStackedWidget->removeWidget( mContainerStackedWidget->widget( 1 ) );
+      mContainerStackedWidget->setCurrentIndex( 0 );
+    }
+  }
 }

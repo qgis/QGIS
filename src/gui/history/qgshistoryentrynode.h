@@ -66,8 +66,6 @@ class GUI_EXPORT QgsHistoryEntryNode
      */
     virtual int childCount() const;
 
-#if 0  // currently unused
-
     /**
      * Returns a HTML formatted text string which should be shown to a user when
      * selecting the node.
@@ -83,6 +81,8 @@ class GUI_EXPORT QgsHistoryEntryNode
      * create the node's content.
      */
     virtual QWidget *createWidget() SIP_FACTORY;
+
+#if 0  // currently unused
 
     /**
      * Returns a list of actions which users can trigger to interact with the history

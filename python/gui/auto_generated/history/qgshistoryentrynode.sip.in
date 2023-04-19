@@ -45,6 +45,22 @@ Returns the node's data for the specified model ``role``.
 Returns the number of child nodes owned by this node.
 %End
 
+    virtual QString html() const;
+%Docstring
+Returns a HTML formatted text string which should be shown to a user when
+selecting the node.
+
+Subclasses should implement this method or :py:func:`~QgsHistoryEntryNode.createWidget`, but not both.
+%End
+
+    virtual QWidget *createWidget() /Factory/;
+%Docstring
+Returns a new widget which should be shown to users when selecting the node.
+
+If a ``None`` is returned, the node's :py:func:`~QgsHistoryEntryNode.html` method will be called instead to
+create the node's content.
+%End
+
 
   private:
     QgsHistoryEntryNode( const QgsHistoryEntryNode &other );
