@@ -62,6 +62,15 @@ create the node's content.
 %End
 
 
+    virtual bool matchesString( const QString &searchString ) const;
+%Docstring
+Returns true if the node matches the specified ``searchString``, and
+should be shown in filtered results with that search string.
+
+The default implementation returns ``True`` if the string is contained
+within the node's DisplayRole.
+%End
+
   private:
     QgsHistoryEntryNode( const QgsHistoryEntryNode &other );
 };

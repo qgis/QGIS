@@ -93,12 +93,16 @@ class GUI_EXPORT QgsHistoryEntryNode
      */
     virtual QList< QAction * > actions( QWidget *parent );
 
+#endif
+
     /**
      * Returns true if the node matches the specified \a searchString, and
      * should be shown in filtered results with that search string.
+     *
+     * The default implementation returns TRUE if the string is contained
+     * within the node's DisplayRole.
      */
-    virtual bool matchesString( const QString &searchString );
-#endif
+    virtual bool matchesString( const QString &searchString ) const;
 
   private:
 #ifdef SIP_RUN
