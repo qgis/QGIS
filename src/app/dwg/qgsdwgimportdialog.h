@@ -42,7 +42,7 @@ class QgsDwgImportDialog : public QDialog, private Ui::QgsDwgImportBase
     void mDatabaseFileWidget_textChanged( const QString &filename );
     void leLayerGroup_textChanged( const QString &text );
     void showHelp();
-    void layers_clicked( QTableWidgetItem *item );
+    void layersClicked( QTableWidgetItem *item );
 
   private:
 
@@ -52,13 +52,13 @@ class QgsDwgImportDialog : public QDialog, private Ui::QgsDwgImportBase
       Visibility = 1
     };
 
-    QgsVectorLayer *layer( QgsLayerTreeGroup *layerGroup, const QString &layer, const QString &table );
-    void createGroup( QgsLayerTreeGroup *group, const QString &name, const QStringList &layers, bool visible );
+    QgsVectorLayer *layer( QgsLayerTreeGroup *layerGroup, const QString &layer, const QString &table, bool addToProject );
+    void createGroup( QgsLayerTreeGroup *group, const QString &name, const QStringList &layers, bool visible, bool addToProject );
     void updateUI();
     void expandInserts();
     void updateCheckState( Qt::CheckState state );
 
-    QgsMapToolPan *mPanTool;
+    QgsMapToolPan *mPanTool = nullptr;
 };
 
 #endif // QGSDWGIMPORTDIALOG_H

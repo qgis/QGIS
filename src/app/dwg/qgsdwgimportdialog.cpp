@@ -66,7 +66,7 @@ QgsDwgImportDialog::QgsDwgImportDialog( QWidget *parent, Qt::WindowFlags f )
   connect( pbDeselectAll, &QPushButton::clicked, this, &QgsDwgImportDialog::pbDeselectAll_clicked );
   connect( leLayerGroup, &QLineEdit::textChanged, this, &QgsDwgImportDialog::leLayerGroup_textChanged );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsDwgImportDialog::showHelp );
-  connect( mLayers, &QTableWidget::itemClicked, this, &QgsDwgImportDialog::layers_clicked );
+  connect( mLayers, &QTableWidget::itemClicked, this, &QgsDwgImportDialog::layersClicked );
 
   const QgsSettings s;
   cbExpandInserts->setChecked( s.value( QStringLiteral( "/DwgImport/lastExpandInserts" ), true ).toBool() );
@@ -276,7 +276,7 @@ void QgsDwgImportDialog::pbImportDrawing_clicked()
   pbLoadDatabase_clicked();
 }
 
-QgsVectorLayer *QgsDwgImportDialog::layer( QgsLayerTreeGroup *layerGroup, const QString &layerFilter, const QString &table )
+QgsVectorLayer *QgsDwgImportDialog::layer( QgsLayerTreeGroup *layerGroup, const QString &layerFilter, const QString &table, bool addToProject )
 {
   QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
   options.loadDefaultStyle = false;
@@ -289,12 +289,14 @@ QgsVectorLayer *QgsDwgImportDialog::layer( QgsLayerTreeGroup *layerGroup, const 
     return nullptr;
   }
 
-  QgsProject::instance()->addMapLayer( l, false );
+  if ( addToProject )
+    QgsProject::instance()->addMapLayer( l, false );
+
   layerGroup->addLayer( l );
   return l;
 }
 
-void QgsDwgImportDialog::createGroup( QgsLayerTreeGroup *group, const QString &name, const QStringList &layers, bool visible )
+void QgsDwgImportDialog::createGroup( QgsLayerTreeGroup *group, const QString &name, const QStringList &layers, bool visible, bool addToProject )
 {
   QgsLayerTreeGroup *layerGroup = group->addGroup( name );
   QgsDebugMsgLevel( QStringLiteral( " %1" ).arg( name ), 2 );
@@ -315,7 +317,7 @@ void QgsDwgImportDialog::createGroup( QgsLayerTreeGroup *group, const QString &n
   QgsVectorLayer *l = nullptr;
   QgsSymbol *sym = nullptr;
 
-  l = layer( layerGroup, layerFilter, QStringLiteral( "hatches" ) );
+  l = layer( layerGroup, layerFilter, QStringLiteral( "hatches" ), addToProject );
   if ( l )
   {
     QgsSimpleFillSymbolLayer *sfl = new QgsSimpleFillSymbolLayer();
@@ -326,7 +328,7 @@ void QgsDwgImportDialog::createGroup( QgsLayerTreeGroup *group, const QString &n
     l->setRenderer( new QgsSingleSymbolRenderer( sym ) );
   }
 
-  l = layer( layerGroup, layerFilter, QStringLiteral( "lines" ) );
+  l = layer( layerGroup, layerFilter, QStringLiteral( "lines" ), addToProject );
   if ( l )
   {
     QgsSimpleLineSymbolLayer *sll = new QgsSimpleLineSymbolLayer();
@@ -342,7 +344,7 @@ void QgsDwgImportDialog::createGroup( QgsLayerTreeGroup *group, const QString &n
     l->setRenderer( new QgsSingleSymbolRenderer( sym ) );
   }
 
-  l = layer( layerGroup, layerFilter, QStringLiteral( "polylines" ) );
+  l = layer( layerGroup, layerFilter, QStringLiteral( "polylines" ), addToProject );
   if ( l )
   {
     sym = new QgsLineSymbol();
@@ -369,7 +371,7 @@ void QgsDwgImportDialog::createGroup( QgsLayerTreeGroup *group, const QString &n
     l->setRenderer( new QgsSingleSymbolRenderer( sym ) );
   }
 
-  l = layer( layerGroup, layerFilter, QStringLiteral( "texts" ) );
+  l = layer( layerGroup, layerFilter, QStringLiteral( "texts" ), addToProject );
   if ( l )
   {
     l->setRenderer( new QgsNullSymbolRenderer() );
@@ -454,7 +456,7 @@ void QgsDwgImportDialog::createGroup( QgsLayerTreeGroup *group, const QString &n
     l->setLabelsEnabled( true );
   }
 
-  l = layer( layerGroup, layerFilter, QStringLiteral( "points" ) );
+  l = layer( layerGroup, layerFilter, QStringLiteral( "points" ), addToProject );
   if ( l )
   {
     // FIXME: use PDMODE?
@@ -463,7 +465,7 @@ void QgsDwgImportDialog::createGroup( QgsLayerTreeGroup *group, const QString &n
 
   if ( !cbExpandInserts->isChecked() )
   {
-    l = layer( layerGroup, layerFilter, QStringLiteral( "inserts" ) );
+    l = layer( layerGroup, layerFilter, QStringLiteral( "inserts" ), addToProject );
     if ( l && l->renderer() )
     {
       QgsSingleSymbolRenderer *ssr = dynamic_cast<QgsSingleSymbolRenderer *>( l->renderer() );
@@ -523,7 +525,7 @@ void QgsDwgImportDialog::buttonBox_accepted()
     if ( allLayers )
       layers.clear();
 
-    createGroup( QgisApp::instance()->layerTreeView()->layerTreeModel()->rootGroup(), leLayerGroup->text(), layers.keys(), true );
+    createGroup( QgisApp::instance()->layerTreeView()->layerTreeModel()->rootGroup(), leLayerGroup->text(), layers.keys(), true, true );
   }
   else
   {
@@ -533,7 +535,7 @@ void QgsDwgImportDialog::buttonBox_accepted()
     const auto constKeys = layers.keys();
     for ( const QString &layer : constKeys )
     {
-      createGroup( dwgGroup, layer, QStringList( layer ), layers[layer] );
+      createGroup( dwgGroup, layer, QStringList( layer ), layers[layer], true );
     }
 
     dwgGroup->setExpanded( false );
@@ -545,7 +547,7 @@ void QgsDwgImportDialog::showHelp()
   QgsHelp::openHelp( QStringLiteral( "managing_data_source/opening_data.html#importing-a-dxf-or-dwg-file" ) );
 }
 
-void QgsDwgImportDialog::layers_clicked( QTableWidgetItem *item )
+void QgsDwgImportDialog::layersClicked( QTableWidgetItem *item )
 {
   if ( ! item )
     return;
@@ -561,7 +563,7 @@ void QgsDwgImportDialog::layers_clicked( QTableWidgetItem *item )
   QString layerName = item->text();
 
   QgsLayerTreeGroup layerGroup;
-  createGroup( &layerGroup, layerName, QStringList( layerName ), true );
+  createGroup( &layerGroup, layerName, QStringList( layerName ), true, false );
 
   mMapCanvas->setLayers( layerGroup.layerOrderRespectingGroupLayers() );
   mMapCanvas->setExtent( mMapCanvas->fullExtent() );
