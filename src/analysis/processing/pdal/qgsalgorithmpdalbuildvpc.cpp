@@ -63,7 +63,7 @@ void QgsPdalBuildVpcAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "BOUNDARY" ), QObject::tr( "Calculate boundary polygons" ), false ) );
   addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "STATISTICS" ), QObject::tr( "Calculate statistics" ), false ) );
   addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "OVERVIEW" ), QObject::tr( "Build overview point cloud" ), false ) );
-  addParameter( new QgsProcessingParameterFileDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Virtual point cloud file" ), QObject::tr( "VPC files (*.vpc *.VPC)" ) ) );
+  addParameter( new QgsProcessingParameterPointCloudDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Virtual point cloud file" ) ) );
 }
 
 QStringList QgsPdalBuildVpcAlgorithm::createArgumentLists( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
@@ -76,14 +76,29 @@ QStringList QgsPdalBuildVpcAlgorithm::createArgumentLists( const QVariantMap &pa
     feedback->reportError( QObject::tr( "No layers selected" ), true );
   }
 
-  const QString outputFile = parameterAsFileOutput( parameters, QStringLiteral( "OUTPUT" ), context );
-  setOutputValue( QStringLiteral( "OUTPUT" ), outputFile );
+  const QString outputName = parameterAsOutputLayer( parameters, QStringLiteral( "OUTPUT" ), context );
+  QString outputFileName( outputName );
+
+  QFileInfo fi( outputFileName );
+  if ( fi.suffix() != QStringLiteral( "vpc" ) )
+  {
+    outputFileName = fi.path() + '/' + fi.completeBaseName() + QStringLiteral( ".vpc" );
+    if ( context.willLoadLayerOnCompletion( outputName ) )
+    {
+      QMap< QString, QgsProcessingContext::LayerDetails > layersToLoad = context.layersToLoadOnCompletion();
+      QgsProcessingContext::LayerDetails details = layersToLoad.take( outputName );
+      layersToLoad[ outputFileName ] = details;
+      context.setLayersToLoadOnCompletion( layersToLoad );
+    }
+  }
+
+  setOutputValue( QStringLiteral( "OUTPUT" ), outputFileName );
 
   QStringList args;
   args.reserve( layers.count() + 5 );
 
   args << QStringLiteral( "build_vpc" )
-       << QStringLiteral( "--output=%1" ).arg( outputFile );
+       << QStringLiteral( "--output=%1" ).arg( outputFileName );
 
   if ( parameterAsBool( parameters, QStringLiteral( "BOUNDARY" ), context ) )
   {

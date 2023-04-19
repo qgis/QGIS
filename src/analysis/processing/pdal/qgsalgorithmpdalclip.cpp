@@ -79,7 +79,8 @@ QStringList QgsPdalClipAlgorithm::createArgumentLists( const QVariantMap &parame
                         QgsVectorFileWriter::supportedFormatExtensions()[0],
                         feedback );
 
-  const QString outputFile = parameterAsOutputLayer( parameters, QStringLiteral( "OUTPUT" ), context );
+  const QString outputName = parameterAsOutputLayer( parameters, QStringLiteral( "OUTPUT" ), context );
+  QString outputFile = fixOutputFileName( layer->source(), outputName, context );
   setOutputValue( QStringLiteral( "OUTPUT" ), outputFile );
 
   QStringList args =  { QStringLiteral( "clip" ),
