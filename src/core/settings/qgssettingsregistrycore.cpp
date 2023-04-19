@@ -151,6 +151,8 @@ void QgsSettingsRegistryCore::migrateOldSettings()
   pal::Pal::settingsRenderingLabelCandidatesLimitPolygons->copyValueFromKey( QStringLiteral( "core/rendering/label_candidates_limit_polygons" ), true );
 
   // handle bad migration - Fix profiles for old QGIS versions (restore the Map/scales key on windows)
+  // TODO: Remove this from QGIS 3.36
+  // PR Link: https://github.com/qgis/QGIS/pull/52580
   if ( QgsSettings().contains( QStringLiteral( "Map/scales" ) ) )
   {
     const QStringList oldScales = QgsSettings().value( QStringLiteral( "Map/scales" ) ).toStringList();
@@ -164,6 +166,7 @@ void QgsSettingsRegistryCore::migrateOldSettings()
   if ( !settingsMapScales->exists() )
   {
     // Handle bad migration. Prefer map/scales over Map/scales
+    // TODO: Discard this part starting from QGIS 3.36
     const QStringList oldScales = QgsSettings().value( QStringLiteral( "map/scales" ) ).toStringList();
     if ( ! oldScales.isEmpty() && !oldScales.at( 0 ).isEmpty() )
     {
@@ -176,6 +179,7 @@ void QgsSettingsRegistryCore::migrateOldSettings()
       }
       settingsMapScales->setValue( actualScales );
     }
+    // TODO: keep only this part of the migration starting from QGIS 3.36
     else if ( QgsSettings().contains( QStringLiteral( "Map/scales" ) ) )
     {
       settingsMapScales->setValue( QgsSettings().value( QStringLiteral( "Map/scales" ) ).toString().split( ',' ) );
