@@ -398,11 +398,11 @@ class TestQgsHistoryProviderRegistry(unittest.TestCase):
         self.assertEqual(model.data(date_group_1_index), 'Today')
 
         self.assertEqual(model.rowCount(date_group_1_index), 3)
-        entry_1_index = model.index(0, 0, date_group_1_index)
+        entry_1_index = model.index(2, 0, date_group_1_index)
         self.assertEqual(model.data(entry_1_index), {'a': 1})
         entry_2_index = model.index(1, 0, date_group_1_index)
         self.assertEqual(model.data(entry_2_index), {'a': 2})
-        entry_3_index = model.index(2, 0, date_group_1_index)
+        entry_3_index = model.index(0, 0, date_group_1_index)
         self.assertEqual(model.data(entry_3_index), {'a': 3})
 
         # an entry from yesterday
@@ -426,8 +426,9 @@ class TestQgsHistoryProviderRegistry(unittest.TestCase):
 
         self.assertEqual(model.rowCount(yesterday_index), 2)
         self.assertEqual(model.data(entry_4_index), {'a': 4})
-        entry_5_index = model.index(1, 0, yesterday_index)
+        entry_5_index = model.index(0, 0, yesterday_index)
         self.assertEqual(model.data(entry_5_index), {'a': 5})
+        self.assertEqual(model.data(entry_4_index), {'a': 4})
 
         # an entry from an earlier month
         earlier_entry = QgsHistoryEntry(provider.id(), QDateTime(QDate(2020, 6, 3), QTime(12, 13, 14)), {'a': 6})

@@ -299,10 +299,9 @@ void QgsHistoryEntryRootNode::addEntryNode( const QgsHistoryEntry &entry, QgsHis
   if ( model )
   {
     const QModelIndex dateNodeIndex = model->node2index( targetDateNode );
-    const int previousCount = model->rowCount( dateNodeIndex );
-    model->beginInsertRows( dateNodeIndex, previousCount, previousCount );
+    model->beginInsertRows( dateNodeIndex, 0, 0 );
   }
-  targetDateNode->addChild( node );
+  targetDateNode->insertChild( 0, node );
   if ( model )
   {
     model->endInsertRows();
