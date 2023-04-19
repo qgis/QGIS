@@ -8,7 +8,6 @@
 
 
 
-
 class QgsHistoryEntryNode
 {
 %Docstring(signature="appended")
@@ -23,6 +22,9 @@ Base class for nodes representing a :py:class:`QgsHistoryEntry`.
   public:
 
     QgsHistoryEntryNode();
+%Docstring
+Constructor for QgsHistoryEntryNode.
+%End
     virtual ~QgsHistoryEntryNode();
 
 
@@ -30,7 +32,7 @@ Base class for nodes representing a :py:class:`QgsHistoryEntry`.
 %Docstring
 Returns the node's parent node.
 
-If parent is ``None``, the node is a root node
+If parent is ``None``, the node is a root node.
 %End
 
     virtual QVariant data( int role = Qt::DisplayRole ) const = 0;
@@ -63,11 +65,22 @@ Base class for history entry "group" nodes, which contain children of their own.
   public:
 
     QgsHistoryEntryGroup();
+%Docstring
+Constructor for QgsHistoryEntryGroup
+%End
     ~QgsHistoryEntryGroup();
+
 
     void addChild( QgsHistoryEntryNode *child /Transfer/ );
 %Docstring
 Adds a ``child`` node to this node.
+
+Ownership is transferred to the group.
+%End
+
+    void insertChild( int index, QgsHistoryEntryNode *child /Transfer/ );
+%Docstring
+Inserts a ``child`` node at the specified index.
 
 Ownership is transferred to the group.
 %End
@@ -98,6 +111,8 @@ Clears the group, removing all its children.
 
     virtual int childCount() const ${SIP_FINAL};
 
+
+  protected:
 
   private:
     QgsHistoryEntryGroup( const QgsHistoryEntryGroup &other );
