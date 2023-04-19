@@ -18,6 +18,8 @@
 #include "qgshistoryentrymodel.h"
 #include "qgshistoryentrynode.h"
 
+#include <QTextBrowser>
+
 QgsHistoryWidget::QgsHistoryWidget( const QString &providerId, Qgis::HistoryProviderBackends backends, QgsHistoryProviderRegistry *registry, QWidget *parent )
   : QgsPanelWidget( parent )
 {
@@ -27,7 +29,6 @@ QgsHistoryWidget::QgsHistoryWidget( const QString &providerId, Qgis::HistoryProv
   mTreeView->setModel( mModel );
 
   connect( mTreeView->selectionModel(), &QItemSelectionModel::currentChanged, this, &QgsHistoryWidget::currentItemChanged );
-
 }
 
 void QgsHistoryWidget::currentItemChanged( const QModelIndex &selected, const QModelIndex & )
@@ -36,6 +37,17 @@ void QgsHistoryWidget::currentItemChanged( const QModelIndex &selected, const QM
   if ( QgsHistoryEntryNode *node = mModel->index2node( selected ) )
   {
     newWidget = node->createWidget();
+    if ( !newWidget )
+    {
+      const QString html = node->html();
+      if ( !html.isEmpty() )
+      {
+        QTextBrowser *htmlBrowser = new QTextBrowser();
+        htmlBrowser->setOpenExternalLinks( true );
+        htmlBrowser->setHtml( html );
+        newWidget = htmlBrowser;
+      }
+    }
     if ( newWidget )
     {
       mContainerStackedWidget->addWidget( newWidget );
