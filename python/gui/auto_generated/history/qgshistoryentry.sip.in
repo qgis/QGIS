@@ -45,6 +45,8 @@ Returns ``True`` if the entry is valid.
 .. versionadded:: 3.32
 %End
 
+    long long id;
+
     QDateTime timestamp;
 
     QString providerId;
