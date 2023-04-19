@@ -703,6 +703,18 @@ void QgsVectorFileWriter::init( QString vectorFileName,
             break;
           }
 
+          case QVariant::Map:
+            // handle GPKG conversion to JSON
+            if ( mOgrDriverName == QLatin1String( "GPKG" ) )
+            {
+              ogrType = OFTString;
+              ogrSubType = OFSTJSON;
+              break;
+            }
+
+            //intentional fall-through
+            FALLTHROUGH
+
           case QVariant::List:
             // handle GPKG conversion to JSON
             if ( mOgrDriverName == QLatin1String( "GPKG" ) )
@@ -2922,6 +2934,25 @@ gdal::ogr_feature_unique_ptr QgsVectorFileWriter::createFeature( const QgsFeatur
         }
         //intentional fall-through
         FALLTHROUGH
+
+      case QVariant::Map:
+        // handle GPKG conversion to JSON
+        if ( mOgrDriverName == QLatin1String( "GPKG" ) )
+        {
+          const QJsonDocument doc = QJsonDocument::fromVariant( attrValue );
+          QString jsonString;
+          if ( !doc.isNull() )
+          {
+            const QByteArray json { doc.toJson( QJsonDocument::Compact ) };
+            jsonString = QString::fromUtf8( json.data() );
+          }
+          OGR_F_SetFieldString( poFeature.get(), ogrField, mCodec->fromUnicode( jsonString.constData() ) );
+          break;
+        }
+
+        //intentional fall-through
+        FALLTHROUGH
+
 
       default:
         mErrorMessage = QObject::tr( "Invalid variant type for field %1[%2]: received %3 with type %4" )
