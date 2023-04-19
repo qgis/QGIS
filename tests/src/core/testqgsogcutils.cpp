@@ -1079,6 +1079,26 @@ void TestQgsOgcUtils::testSQLStatementToOgcFilter_data()
                               "</ogc:Not>"
                               "</ogc:Filter>" );
 
+  QTest::newRow( "in" ) << QStringLiteral( "SELECT * FROM t WHERE A IN (10)" ) <<
+                        QgsOgcUtils::GML_2_1_2 << QgsOgcUtils::FILTER_OGC_1_0 << layerProperties << QString(
+                          "<ogc:Filter xmlns:ogc=\"http://www.opengis.net/ogc\">"
+                          "<ogc:PropertyIsEqualTo>"
+                          "<ogc:PropertyName>A</ogc:PropertyName>"
+                          "<ogc:Literal>10</ogc:Literal>"
+                          "</ogc:PropertyIsEqualTo>"
+                          "</ogc:Filter>" );
+
+  QTest::newRow( "not in" ) << QStringLiteral( "SELECT * FROM t WHERE A NOT IN (10)" ) <<
+                            QgsOgcUtils::GML_2_1_2 << QgsOgcUtils::FILTER_OGC_1_0 << layerProperties << QString(
+                              "<ogc:Filter xmlns:ogc=\"http://www.opengis.net/ogc\">"
+                              "<ogc:Not>"
+                              "<ogc:PropertyIsEqualTo>"
+                              "<ogc:PropertyName>A</ogc:PropertyName>"
+                              "<ogc:Literal>10</ogc:Literal>"
+                              "</ogc:PropertyIsEqualTo>"
+                              "</ogc:Not>"
+                              "</ogc:Filter>" );
+
   QTest::newRow( "between" ) << QStringLiteral( "SELECT * FROM t WHERE A BETWEEN 1 AND 2" ) <<
                              QgsOgcUtils::GML_2_1_2 << QgsOgcUtils::FILTER_OGC_1_0 << layerProperties << QString(
                                "<ogc:Filter xmlns:ogc=\"http://www.opengis.net/ogc\">"
