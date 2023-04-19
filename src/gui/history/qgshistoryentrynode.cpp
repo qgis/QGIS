@@ -65,6 +65,17 @@ void QgsHistoryEntryGroup::addChild( QgsHistoryEntryNode *child )
   mChildren.emplace_back( child );
 }
 
+void QgsHistoryEntryGroup::insertChild( int index, QgsHistoryEntryNode *child )
+{
+  if ( !child )
+    return;
+
+  Q_ASSERT( !child->mParent );
+  child->mParent = this;
+
+  mChildren.insert( mChildren.begin() + index, std::unique_ptr< QgsHistoryEntryNode >( child ) );
+}
+
 int QgsHistoryEntryGroup::indexOf( QgsHistoryEntryNode *child ) const
 {
   if ( child->mParent != this )

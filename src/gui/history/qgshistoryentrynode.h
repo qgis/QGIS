@@ -67,6 +67,7 @@ class GUI_EXPORT QgsHistoryEntryNode
     virtual int childCount() const;
 
 #if 0  // currently unused
+
     /**
      * Returns a HTML formatted text string which should be shown to a user when
      * selecting the node.
@@ -138,6 +139,13 @@ class GUI_EXPORT QgsHistoryEntryGroup : public QgsHistoryEntryNode
     void addChild( QgsHistoryEntryNode *child SIP_TRANSFER );
 
     /**
+     * Inserts a \a child node at the specified index.
+     *
+     * Ownership is transferred to the group.
+     */
+    void insertChild( int index, QgsHistoryEntryNode *child SIP_TRANSFER );
+
+    /**
      * Returns the index of the specified \a child node.
      *
      * \warning \a child must be a valid child of this node.
@@ -161,12 +169,14 @@ class GUI_EXPORT QgsHistoryEntryGroup : public QgsHistoryEntryNode
 
     int childCount() const FINAL;
 
+  protected:
+    std::deque< std::unique_ptr< QgsHistoryEntryNode > > mChildren SIP_SKIP;
+
   private:
 #ifdef SIP_RUN
     QgsHistoryEntryGroup( const QgsHistoryEntryGroup &other );
 #endif
 
-    std::deque< std::unique_ptr< QgsHistoryEntryNode > > mChildren SIP_SKIP;
 
 };
 
