@@ -23,6 +23,7 @@
 
 #include <QIcon>
 
+///@cond PRIVATE
 class QgsHistoryEntryRootNode : public QgsHistoryEntryGroup
 {
   public:
@@ -77,6 +78,7 @@ class QgsHistoryEntryDateGroupNode : public QgsHistoryEntryGroup
     QString mKey;
 
 };
+///@endcond
 
 QgsHistoryEntryModel::QgsHistoryEntryModel( const QString &providerId, Qgis::HistoryProviderBackends backends, QgsHistoryProviderRegistry *registry, QObject *parent )
   : QAbstractItemModel( parent )
@@ -286,7 +288,7 @@ QModelIndex QgsHistoryEntryModel::indexOfParentNode( QgsHistoryEntryNode *parent
 //
 // QgsHistoryEntryRootNode
 //
-
+///@cond PRIVATE
 QVariant QgsHistoryEntryRootNode::data( int ) const
 {
   return QVariant();
@@ -394,3 +396,4 @@ QgsHistoryEntryDateGroupNode *QgsHistoryEntryRootNode::dateNode( const QDateTime
 
   return node;
 }
+///@endcond PRIVATE
