@@ -602,7 +602,7 @@ On the command prompt clone the QGIS source from
 git to the source directory `QGIS`:
 
 ```cmd
-git clone git://github.com/qgis/QGIS.git
+git clone git@github.com:qgis/QGIS.git
 ```
 
 This requires Git. If you have Git for Windows on your PATH already,
