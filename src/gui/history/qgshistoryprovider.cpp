@@ -18,12 +18,12 @@
 
 QgsAbstractHistoryProvider::~QgsAbstractHistoryProvider() = default;
 
-QgsHistoryEntryNode *QgsAbstractHistoryProvider::createNodeForEntry( const QVariantMap & )
+QgsHistoryEntryNode *QgsAbstractHistoryProvider::createNodeForEntry( const QgsHistoryEntry & )
 {
   return nullptr;
 }
 
-void QgsAbstractHistoryProvider::updateNodeForEntry( QgsHistoryEntryNode *, const QVariantMap & )
+void QgsAbstractHistoryProvider::updateNodeForEntry( QgsHistoryEntryNode *, const QgsHistoryEntry & )
 {
 
 }

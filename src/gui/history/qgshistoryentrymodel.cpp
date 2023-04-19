@@ -219,14 +219,16 @@ void QgsHistoryEntryModel::entryUpdated( long long id, const QVariantMap &entry,
   if ( QgsHistoryEntryNode *node = mIdToNodeHash.value( id ) )
   {
     bool ok = false;
-    const QString providerId = mRegistry->entry( id, ok, backend ).providerId;
+    QgsHistoryEntry historyEntry = mRegistry->entry( id, ok, backend );
+    historyEntry.entry = entry;
+    const QString providerId = historyEntry.providerId;
     QgsAbstractHistoryProvider *provider = mRegistry->providerById( providerId );
     if ( !provider )
       return;
 
     const QModelIndex nodeIndex = node2index( node );
     const int existingChildRows = node->childCount();
-    provider->updateNodeForEntry( node, entry );
+    provider->updateNodeForEntry( node, historyEntry );
     const int newChildRows = node->childCount();
 
     if ( newChildRows < existingChildRows )
