@@ -240,10 +240,16 @@ class QgsOapifSharedData final: public QObject, public QgsBackgroundCachedShared
 
   private:
 
-    // Translate part of an expression to a server-side filter
-    QString translateNodeToServer( const QgsExpressionNode *node,
-                                   QgsOapifProvider::FilterTranslationState &translationState,
-                                   QString &untranslatedPart );
+    // Translate part of an expression to a server-side filter using Part1 features only
+    QString compileExpressionNodeUsingPart1( const QgsExpressionNode *node,
+        QgsOapifProvider::FilterTranslationState &translationState,
+        QString &untranslatedPart ) const;
+
+    // Translate part of an expression to a server-side filter using Part1 or Part3
+    bool computeFilter( const QgsExpression &expr,
+                        QgsOapifProvider::FilterTranslationState &translationState,
+                        QString &serverSideParameters,
+                        QString &clientSideFilterExpression ) const;
 
     //! Log error to QgsMessageLog and raise it to the provider
     void pushError( const QString &errorMsg ) const override;
