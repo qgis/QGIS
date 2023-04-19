@@ -36,12 +36,12 @@ start_app()
 
 class TestEntryNode(QgsHistoryEntryGroup):
 
-    def __init__(self, entry):
+    def __init__(self, val):
         super().__init__()
-        self.entry = entry
+        self.val = val
 
     def data(self, role):
-        return self.entry
+        return self.val
 
 
 class TestHistoryProvider(QgsAbstractHistoryProvider):
@@ -50,10 +50,10 @@ class TestHistoryProvider(QgsAbstractHistoryProvider):
         return 'test_provider'
 
     def createNodeForEntry(self, entry):
-        return TestEntryNode(entry)
+        return TestEntryNode(entry.entry)
 
     def updateNodeForEntry(self, node, entry):
-        node.entry = entry
+        node.val = entry.entry
 
         new_child_node = TestEntryNode('my child')
         node.addChild(new_child_node)
