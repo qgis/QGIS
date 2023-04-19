@@ -700,6 +700,24 @@ void TestQgsOgcUtils::testExpressionToOgcFilter_data()
                               "</ogc:Not>"
                               "</ogc:Filter>" );
 
+  QTest::newRow( "in" ) << QStringLiteral( "A IN (10)" ) << QString(
+                          "<ogc:Filter xmlns:ogc=\"http://www.opengis.net/ogc\">"
+                          "<ogc:PropertyIsEqualTo>"
+                          "<ogc:PropertyName>A</ogc:PropertyName>"
+                          "<ogc:Literal>10</ogc:Literal>"
+                          "</ogc:PropertyIsEqualTo>"
+                          "</ogc:Filter>" );
+
+  QTest::newRow( "not in" ) << QStringLiteral( "A NOT IN (10)" ) << QString(
+                              "<ogc:Filter xmlns:ogc=\"http://www.opengis.net/ogc\">"
+                              "<ogc:Not>"
+                              "<ogc:PropertyIsEqualTo>"
+                              "<ogc:PropertyName>A</ogc:PropertyName>"
+                              "<ogc:Literal>10</ogc:Literal>"
+                              "</ogc:PropertyIsEqualTo>"
+                              "</ogc:Not>"
+                              "</ogc:Filter>" );
+
   QTest::newRow( "intersects_bbox" ) << QStringLiteral( "intersects_bbox($geometry, geomFromWKT('POINT (5 6)'))" ) << QString(
                                        "<ogc:Filter xmlns:ogc=\"http://www.opengis.net/ogc\" xmlns:gml=\"http://www.opengis.net/gml\">"
                                        "<ogc:BBOX>"
