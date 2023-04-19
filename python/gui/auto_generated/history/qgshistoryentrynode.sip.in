@@ -1,0 +1,115 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/history/qgshistoryentrynode.h                                *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsHistoryEntryNode
+{
+%Docstring(signature="appended")
+Base class for nodes representing a :py:class:`QgsHistoryEntry`.
+
+.. versionadded:: 3.32
+%End
+
+%TypeHeaderCode
+#include "qgshistoryentrynode.h"
+%End
+  public:
+
+    QgsHistoryEntryNode();
+    virtual ~QgsHistoryEntryNode();
+
+
+    QgsHistoryEntryGroup *parent();
+%Docstring
+Returns the node's parent node.
+
+If parent is ``None``, the node is a root node
+%End
+
+    virtual QVariant data( int role = Qt::DisplayRole ) const = 0;
+%Docstring
+Returns the node's data for the specified model ``role``.
+%End
+
+    virtual int childCount() const;
+%Docstring
+Returns the number of child nodes owned by this node.
+%End
+
+
+  private:
+    QgsHistoryEntryNode( const QgsHistoryEntryNode &other );
+};
+
+
+class QgsHistoryEntryGroup : QgsHistoryEntryNode
+{
+%Docstring(signature="appended")
+Base class for history entry "group" nodes, which contain children of their own.
+
+.. versionadded:: 3.32
+%End
+
+%TypeHeaderCode
+#include "qgshistoryentrynode.h"
+%End
+  public:
+
+    QgsHistoryEntryGroup();
+    ~QgsHistoryEntryGroup();
+
+    void addChild( QgsHistoryEntryNode *child /Transfer/ );
+%Docstring
+Adds a ``child`` node to this node.
+
+Ownership is transferred to the group.
+%End
+
+    int indexOf( QgsHistoryEntryNode *child ) const;
+%Docstring
+Returns the index of the specified ``child`` node.
+
+.. warning::
+
+   ``child`` must be a valid child of this node.
+%End
+
+    QgsHistoryEntryNode *childAt( int index );
+%Docstring
+Returns the child at the specified ``index``.
+%End
+
+    void removeChildAt( int index );
+%Docstring
+Removes the child at the specified ``index``.
+%End
+
+    void clear();
+%Docstring
+Clears the group, removing all its children.
+%End
+
+    virtual int childCount() const ${SIP_FINAL};
+
+
+  private:
+    QgsHistoryEntryGroup( const QgsHistoryEntryGroup &other );
+};
+
+
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/history/qgshistoryentrynode.h                                *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
