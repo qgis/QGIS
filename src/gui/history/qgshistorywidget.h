@@ -28,6 +28,7 @@ class QgsHistoryEntryModel;
 
 #ifndef SIP_RUN
 
+///@cond PRIVATE
 class GUI_EXPORT QgsHistoryEntryProxyModel : public QSortFilterProxyModel
 {
     Q_OBJECT
