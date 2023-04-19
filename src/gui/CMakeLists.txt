@@ -241,6 +241,7 @@ set(QGIS_GUI_SRCS
   history/qgshistoryentrynode.cpp
   history/qgshistoryprovider.cpp
   history/qgshistoryproviderregistry.cpp
+  history/qgshistorywidget.cpp
 
   labeling/qgslabelengineconfigdialog.cpp
   labeling/qgslabelinggui.cpp
@@ -1150,6 +1151,7 @@ set(QGIS_GUI_HDRS
   history/qgshistoryentrynode.h
   history/qgshistoryprovider.h
   history/qgshistoryproviderregistry.h
+  history/qgshistorywidget.h
 
   labeling/qgslabelengineconfigdialog.h
   labeling/qgslabelinggui.h
