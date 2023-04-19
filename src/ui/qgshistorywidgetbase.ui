@@ -42,11 +42,21 @@
        <bool>false</bool>
       </attribute>
      </widget>
-     <widget class="QWidget" name="mEntryContainerWidget" native="true"/>
+     <widget class="QStackedWidget" name="mContainerStackedWidget">
+      <widget class="QWidget" name="mEntryContainerStackedWidgetPage1" native="true"/>
+     </widget>
     </widget>
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QgsPanelWidget</class>
+   <extends>QWidget</extends>
+   <header>qgspanelwidget.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

@@ -50,6 +50,9 @@ class GUI_EXPORT QgsHistoryWidget : public QgsPanelWidget, private Ui::QgsHistor
                       QgsHistoryProviderRegistry *registry = nullptr,
                       QWidget *parent = nullptr );
 
+  private slots:
+
+    void currentItemChanged( const QModelIndex &selected, const QModelIndex &previous );
 
   private:
 
