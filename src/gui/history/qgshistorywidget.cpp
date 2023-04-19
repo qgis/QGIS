@@ -75,6 +75,8 @@ void QgsHistoryWidget::currentItemChanged( const QModelIndex &selected, const QM
 //
 // QgsHistoryEntryProxyModel
 //
+
+///@cond PRIVATE
 QgsHistoryEntryProxyModel::QgsHistoryEntryProxyModel( QObject *parent )
   : QSortFilterProxyModel( parent )
 {
@@ -106,3 +108,4 @@ bool QgsHistoryEntryProxyModel::filterAcceptsRow( int source_row, const QModelIn
   }
   return true;
 }
+///@endcond PRIVATE
