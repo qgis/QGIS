@@ -41,12 +41,16 @@ QList<QAction *> QgsHistoryEntryNode::actions( QWidget * )
 {
   return {};
 }
-
-bool QgsHistoryEntryNode::matchesString( const QString & )
-{
-  return false;
-}
 #endif
+
+bool QgsHistoryEntryNode::matchesString( const QString &string ) const
+{
+  if ( string.isEmpty() )
+    return true;
+
+  return data( Qt::DisplayRole ).toString().contains( string, Qt::CaseInsensitive );
+}
+
 
 //
 // QgsHistoryEntryGroup

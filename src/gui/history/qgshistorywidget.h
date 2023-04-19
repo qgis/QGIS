@@ -21,8 +21,29 @@
 #include "ui_qgshistorywidgetbase.h"
 #include "qgspanelwidget.h"
 
+#include <QSortFilterProxyModel>
+
 class QgsHistoryProviderRegistry;
 class QgsHistoryEntryModel;
+
+#ifndef SIP_RUN
+
+class GUI_EXPORT QgsHistoryEntryProxyModel : public QSortFilterProxyModel
+{
+    Q_OBJECT
+  public:
+
+    QgsHistoryEntryProxyModel( QObject *parent = nullptr );
+
+    void setFilter( const QString &filter );
+    bool filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const override;
+
+  private:
+
+    QString mFilter;
+
+};
+#endif
 
 /**
  * A widget showing entries from a QgsHistoryProviderRegistry.
@@ -57,6 +78,7 @@ class GUI_EXPORT QgsHistoryWidget : public QgsPanelWidget, private Ui::QgsHistor
   private:
 
     QgsHistoryEntryModel *mModel = nullptr;
+    QgsHistoryEntryProxyModel *mProxyModel = nullptr;
 
 };
 

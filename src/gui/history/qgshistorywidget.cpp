@@ -26,15 +26,21 @@ QgsHistoryWidget::QgsHistoryWidget( const QString &providerId, Qgis::HistoryProv
   setupUi( this );
 
   mModel = new QgsHistoryEntryModel( providerId, backends, registry, this );
-  mTreeView->setModel( mModel );
+  mProxyModel = new QgsHistoryEntryProxyModel( this );
+  mProxyModel->setSourceModel( mModel );
 
+  mTreeView->setModel( mProxyModel );
+
+  mFilterEdit->setShowClearButton( true );
+  mFilterEdit->setShowSearchIcon( true );
+  connect( mFilterEdit, &QLineEdit::textChanged, mProxyModel, &QgsHistoryEntryProxyModel::setFilter );
   connect( mTreeView->selectionModel(), &QItemSelectionModel::currentChanged, this, &QgsHistoryWidget::currentItemChanged );
 }
 
 void QgsHistoryWidget::currentItemChanged( const QModelIndex &selected, const QModelIndex & )
 {
   QWidget *newWidget = nullptr;
-  if ( QgsHistoryEntryNode *node = mModel->index2node( selected ) )
+  if ( QgsHistoryEntryNode *node = mModel->index2node( mProxyModel->mapToSource( selected ) ) )
   {
     newWidget = node->createWidget();
     if ( !newWidget )
@@ -64,4 +70,39 @@ void QgsHistoryWidget::currentItemChanged( const QModelIndex &selected, const QM
       mContainerStackedWidget->setCurrentIndex( 0 );
     }
   }
+}
+
+//
+// QgsHistoryEntryProxyModel
+//
+QgsHistoryEntryProxyModel::QgsHistoryEntryProxyModel( QObject *parent )
+  : QSortFilterProxyModel( parent )
+{
+  setDynamicSortFilter( true );
+  setRecursiveFilteringEnabled( true );
+}
+
+void QgsHistoryEntryProxyModel::setFilter( const QString &filter )
+{
+  if ( filter == mFilter )
+    return;
+
+  mFilter = filter;
+  invalidateFilter();
+}
+
+bool QgsHistoryEntryProxyModel::filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const
+{
+  if ( mFilter.isEmpty() )
+    return true;
+
+  const QModelIndex sourceIndex = sourceModel()->index( source_row, 0, source_parent );
+  if ( QgsHistoryEntryNode *node = qobject_cast< QgsHistoryEntryModel * >( sourceModel() )->index2node( sourceIndex ) )
+  {
+    if ( !node->matchesString( mFilter ) )
+    {
+      return false;
+    }
+  }
+  return true;
 }
