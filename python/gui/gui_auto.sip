@@ -342,6 +342,7 @@
 %Include auto_generated/effects/qgspainteffectwidget.sip
 %Include auto_generated/elevation/qgselevationprofilecanvas.sip
 %Include auto_generated/history/qgshistoryentry.sip
+%Include auto_generated/history/qgshistoryentrymodel.sip
 %Include auto_generated/history/qgshistoryentrynode.sip
 %Include auto_generated/history/qgshistoryprovider.sip
 %Include auto_generated/history/qgshistoryproviderregistry.sip

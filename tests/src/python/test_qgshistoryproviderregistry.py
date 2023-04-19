@@ -11,7 +11,12 @@ __copyright__ = 'Copyright 2016, The QGIS Project'
 
 import qgis  # NOQA switch sip api
 from qgis.PyQt import sip
-from qgis.PyQt.QtCore import QDate, QDateTime
+from qgis.PyQt.QtCore import (
+    QDate,
+    QDateTime,
+    QTime,
+    QModelIndex
+)
 from qgis.PyQt.QtTest import QSignalSpy
 
 from qgis.core import Qgis
@@ -21,17 +26,39 @@ from qgis.gui import (
     QgsHistoryProviderRegistry,
     QgsGui,
     QgsHistoryEntryNode,
-    QgsHistoryEntryGroup
+    QgsHistoryEntryGroup,
+    QgsHistoryEntryModel
 )
 from qgis.testing import start_app, unittest
 
 start_app()
 
 
+class TestEntryNode(QgsHistoryEntryGroup):
+
+    def __init__(self, entry):
+        super().__init__()
+        self.entry = entry
+
+    def data(self, role):
+        return self.entry
+
+
 class TestHistoryProvider(QgsAbstractHistoryProvider):
 
     def id(self) -> str:
         return 'test_provider'
+
+    def createNodeForEntry(self, entry):
+        return TestEntryNode(entry)
+
+    def updateNodeForEntry(self, node, entry):
+        node.entry = entry
+
+        new_child_node = TestEntryNode('my child')
+        node.addChild(new_child_node)
+        new_child_node = TestEntryNode('my child 2')
+        node.addChild(new_child_node)
 
 
 class TestHistoryProvider2(QgsAbstractHistoryProvider):
@@ -66,20 +93,23 @@ class TestQgsHistoryProviderRegistry(unittest.TestCase):
         entry = QgsHistoryEntry()
         self.assertFalse(entry.isValid())
 
-        entry = QgsHistoryEntry('my provider', QDateTime(2021, 1, 2, 3, 4, 5), {'somevar': 5})
+        entry = QgsHistoryEntry('my provider', QDateTime(2021, 1, 2, 3, 4, 5),
+                                {'somevar': 5})
         self.assertTrue(entry.isValid())
 
         self.assertEqual(entry.providerId, 'my provider')
         self.assertEqual(entry.timestamp, QDateTime(2021, 1, 2, 3, 4, 5))
         self.assertEqual(entry.entry, {'somevar': 5})
 
-        self.assertEqual(str(entry), '<QgsHistoryEntry: my provider 2021-01-02T03:04:05>')
+        self.assertEqual(str(entry),
+                         '<QgsHistoryEntry: my provider 2021-01-02T03:04:05>')
 
         entry = QgsHistoryEntry({'somevar': 7})
         self.assertTrue(entry.isValid())
 
         self.assertFalse(entry.providerId)
-        self.assertEqual(entry.timestamp.date(), QDateTime.currentDateTime().date())
+        self.assertEqual(entry.timestamp.date(),
+                         QDateTime.currentDateTime().date())
         self.assertEqual(entry.entry, {'somevar': 7})
 
     def test_registry_providers(self):
@@ -98,7 +128,8 @@ class TestQgsHistoryProviderRegistry(unittest.TestCase):
         self.assertFalse(reg.addProvider(provider1))
 
         self.assertTrue(reg.addProvider(provider2))
-        self.assertCountEqual(reg.providerIds(), ['test_provider', 'test_provider2'])
+        self.assertCountEqual(reg.providerIds(),
+                              ['test_provider', 'test_provider2'])
 
         self.assertFalse(reg.removeProvider('x'))
         self.assertTrue(reg.removeProvider('test_provider'))
@@ -117,7 +148,9 @@ class TestQgsHistoryProviderRegistry(unittest.TestCase):
         added_spy = QSignalSpy(reg.entryAdded)
         updated_spy = QSignalSpy(reg.entryUpdated)
 
-        id_1, ok = reg.addEntry('my provider', {'some var': 5, 'other_var': [1, 2, 3], 'final_var': {'a': 'b'}},
+        id_1, ok = reg.addEntry('my provider',
+                                {'some var': 5, 'other_var': [1, 2, 3],
+                                 'final_var': {'a': 'b'}},
                                 QgsHistoryProviderRegistry.HistoryEntryOptions())
         self.assertTrue(ok)
 
@@ -125,7 +158,9 @@ class TestQgsHistoryProviderRegistry(unittest.TestCase):
         self.assertEqual(added_spy[-1][0], id_1)
         self.assertEqual(added_spy[-1][1].providerId, 'my provider')
         self.assertEqual(added_spy[-1][1].id, id_1)
-        self.assertEqual(added_spy[-1][1].entry, {'some var': 5, 'other_var': [1, 2, 3], 'final_var': {'a': 'b'}})
+        self.assertEqual(added_spy[-1][1].entry,
+                         {'some var': 5, 'other_var': [1, 2, 3],
+                          'final_var': {'a': 'b'}})
 
         id_2, ok = reg.addEntry('my provider 2', {'some var': 6},
                                 QgsHistoryProviderRegistry.HistoryEntryOptions())
@@ -139,12 +174,16 @@ class TestQgsHistoryProviderRegistry(unittest.TestCase):
         self.assertEqual(len(reg.queryEntries()), 2)
         self.assertEqual(reg.queryEntries()[0].providerId, 'my provider')
         self.assertEqual(reg.queryEntries()[0].id, id_1)
-        self.assertEqual(reg.queryEntries()[0].timestamp.date(), QDateTime.currentDateTime().date())
-        self.assertEqual(reg.queryEntries()[0].entry, {'some var': 5, 'other_var': [1, 2, 3], 'final_var': {'a': 'b'}})
+        self.assertEqual(reg.queryEntries()[0].timestamp.date(),
+                         QDateTime.currentDateTime().date())
+        self.assertEqual(reg.queryEntries()[0].entry,
+                         {'some var': 5, 'other_var': [1, 2, 3],
+                          'final_var': {'a': 'b'}})
 
         self.assertEqual(reg.queryEntries()[1].providerId, 'my provider 2')
         self.assertEqual(reg.queryEntries()[1].id, id_2)
-        self.assertEqual(reg.queryEntries()[1].timestamp.date(), QDateTime.currentDateTime().date())
+        self.assertEqual(reg.queryEntries()[1].timestamp.date(),
+                         QDateTime.currentDateTime().date())
         self.assertEqual(reg.queryEntries()[1].entry, {'some var': 6})
 
         entry, ok = reg.entry(1111)
@@ -153,16 +192,20 @@ class TestQgsHistoryProviderRegistry(unittest.TestCase):
         self.assertTrue(ok)
         self.assertEqual(entry.providerId, 'my provider')
         self.assertEqual(entry.id, id_1)
-        self.assertEqual(entry.timestamp.date(), QDateTime.currentDateTime().date())
-        self.assertEqual(entry.entry, {'some var': 5, 'other_var': [1, 2, 3], 'final_var': {'a': 'b'}})
+        self.assertEqual(entry.timestamp.date(),
+                         QDateTime.currentDateTime().date())
+        self.assertEqual(entry.entry, {'some var': 5, 'other_var': [1, 2, 3],
+                                       'final_var': {'a': 'b'}})
         entry, ok = reg.entry(id_2)
         self.assertTrue(ok)
         self.assertEqual(entry.providerId, 'my provider 2')
         self.assertEqual(entry.id, id_2)
-        self.assertEqual(entry.timestamp.date(), QDateTime.currentDateTime().date())
+        self.assertEqual(entry.timestamp.date(),
+                         QDateTime.currentDateTime().date())
         self.assertEqual(entry.entry, {'some var': 6})
 
-        entry = QgsHistoryEntry('my provider 3', QDateTime(2021, 1, 2, 3, 4, 5), {'var': 7})
+        entry = QgsHistoryEntry('my provider 3',
+                                QDateTime(2021, 1, 2, 3, 4, 5), {'var': 7})
         id_3, ok = reg.addEntry(entry)
         self.assertTrue(ok)
         self.assertEqual(len(added_spy), 3)
@@ -174,15 +217,20 @@ class TestQgsHistoryProviderRegistry(unittest.TestCase):
         self.assertEqual(len(reg.queryEntries()), 3)
         self.assertEqual(reg.queryEntries()[0].providerId, 'my provider')
         self.assertEqual(reg.queryEntries()[0].id, id_1)
-        self.assertEqual(reg.queryEntries()[0].timestamp.date(), QDateTime.currentDateTime().date())
-        self.assertEqual(reg.queryEntries()[0].entry, {'some var': 5, 'other_var': [1, 2, 3], 'final_var': {'a': 'b'}})
+        self.assertEqual(reg.queryEntries()[0].timestamp.date(),
+                         QDateTime.currentDateTime().date())
+        self.assertEqual(reg.queryEntries()[0].entry,
+                         {'some var': 5, 'other_var': [1, 2, 3],
+                          'final_var': {'a': 'b'}})
         self.assertEqual(reg.queryEntries()[1].providerId, 'my provider 2')
         self.assertEqual(reg.queryEntries()[1].id, id_2)
-        self.assertEqual(reg.queryEntries()[1].timestamp.date(), QDateTime.currentDateTime().date())
+        self.assertEqual(reg.queryEntries()[1].timestamp.date(),
+                         QDateTime.currentDateTime().date())
         self.assertEqual(reg.queryEntries()[1].entry, {'some var': 6})
         self.assertEqual(reg.queryEntries()[2].providerId, 'my provider 3')
         self.assertEqual(reg.queryEntries()[2].id, id_3)
-        self.assertEqual(reg.queryEntries()[2].timestamp.date(), QDate(2021, 1, 2))
+        self.assertEqual(reg.queryEntries()[2].timestamp.date(),
+                         QDate(2021, 1, 2))
         self.assertEqual(reg.queryEntries()[2].entry, {'var': 7})
 
         # query by provider
@@ -190,25 +238,31 @@ class TestQgsHistoryProviderRegistry(unittest.TestCase):
         self.assertEqual(len(entries), 1)
         self.assertEqual(entries[0].providerId, 'my provider')
         self.assertEqual(entries[0].id, id_1)
-        self.assertEqual(entries[0].timestamp.date(), QDateTime.currentDateTime().date())
-        self.assertEqual(entries[0].entry, {'some var': 5, 'other_var': [1, 2, 3], 'final_var': {'a': 'b'}})
+        self.assertEqual(entries[0].timestamp.date(),
+                         QDateTime.currentDateTime().date())
+        self.assertEqual(entries[0].entry,
+                         {'some var': 5, 'other_var': [1, 2, 3],
+                          'final_var': {'a': 'b'}})
 
         entries = reg.queryEntries(providerId='my provider 2')
         self.assertEqual(len(entries), 1)
         self.assertEqual(entries[0].providerId, 'my provider 2')
         self.assertEqual(entries[0].id, id_2)
-        self.assertEqual(entries[0].timestamp.date(), QDateTime.currentDateTime().date())
+        self.assertEqual(entries[0].timestamp.date(),
+                         QDateTime.currentDateTime().date())
         self.assertEqual(entries[0].entry, {'some var': 6})
 
         # query by date
-        entries = reg.queryEntries(start=QDateTime(3022, 1, 2, 3, 4, 5))  # this test will break in 3022, sorry
+        entries = reg.queryEntries(start=QDateTime(3022, 1, 2, 3, 4,
+                                                   5))  # this test will break in 3022, sorry
         self.assertEqual(len(entries), 0)
         entries = reg.queryEntries(end=QDateTime(2020, 1, 2, 3, 4, 5))
         self.assertEqual(len(entries), 0)
 
         entries = reg.queryEntries(start=QDateTime(2021, 3, 2, 3, 4, 5))
         self.assertEqual(len(entries), 2)
-        self.assertCountEqual([e.providerId for e in entries], ['my provider', 'my provider 2'])
+        self.assertCountEqual([e.providerId for e in entries],
+                              ['my provider', 'my provider 2'])
         entries = reg.queryEntries(end=QDateTime(2021, 3, 2, 3, 4, 5))
         self.assertEqual(len(entries), 1)
         self.assertEqual(entries[0].providerId, 'my provider 3')
@@ -222,19 +276,23 @@ class TestQgsHistoryProviderRegistry(unittest.TestCase):
         entry, ok = reg.entry(id_1)
         self.assertEqual(entry.providerId, 'my provider')
         self.assertEqual(entry.id, id_1)
-        self.assertEqual(entry.timestamp.date(), QDateTime.currentDateTime().date())
+        self.assertEqual(entry.timestamp.date(),
+                         QDateTime.currentDateTime().date())
         self.assertEqual(entry.entry, {'new_props': 54})
 
         clear_spy = QSignalSpy(reg.historyCleared)
-        self.assertTrue(reg.clearHistory(Qgis.HistoryProviderBackend.LocalProfile))
+        self.assertTrue(
+            reg.clearHistory(Qgis.HistoryProviderBackend.LocalProfile))
         self.assertEqual(len(clear_spy), 1)
 
         self.assertFalse(reg.queryEntries())
 
         # bulk add entries
         self.assertTrue(reg.addEntries([
-            QgsHistoryEntry('my provider 4', QDateTime(2021, 1, 2, 3, 4, 5), {'var': 7}),
-            QgsHistoryEntry('my provider 5', QDateTime(2021, 1, 2, 3, 4, 5), {'var': 8})
+            QgsHistoryEntry('my provider 4', QDateTime(2021, 1, 2, 3, 4, 5),
+                            {'var': 7}),
+            QgsHistoryEntry('my provider 5', QDateTime(2021, 1, 2, 3, 4, 5),
+                            {'var': 8})
         ]))
         self.assertEqual(len(reg.queryEntries()), 2)
 
@@ -324,6 +382,112 @@ class TestQgsHistoryProviderRegistry(unittest.TestCase):
 
         group.clear()
         self.assertEqual(group.childCount(), 0)
+
+    def test_model(self):
+        registry = QgsHistoryProviderRegistry()
+        provider = TestHistoryProvider()
+        registry.addProvider(provider)
+        registry.addEntry(provider.id(), {'a': 1})
+        registry.addEntry(provider.id(), {'a': 2})
+        registry.addEntry(provider.id(), {'a': 3})
+
+        model = QgsHistoryEntryModel(provider.id(), registry=registry)
+        # find Today group
+        self.assertEqual(model.rowCount(), 1)
+        date_group_1_index = model.index(0, 0, QModelIndex())
+        self.assertEqual(model.data(date_group_1_index), 'Today')
+
+        self.assertEqual(model.rowCount(date_group_1_index), 3)
+        entry_1_index = model.index(0, 0, date_group_1_index)
+        self.assertEqual(model.data(entry_1_index), {'a': 1})
+        entry_2_index = model.index(1, 0, date_group_1_index)
+        self.assertEqual(model.data(entry_2_index), {'a': 2})
+        entry_3_index = model.index(2, 0, date_group_1_index)
+        self.assertEqual(model.data(entry_3_index), {'a': 3})
+
+        # an entry from yesterday
+        yesterday = QDateTime.currentDateTime().addDays(-1)
+        yesterday_entry = QgsHistoryEntry(provider.id(), yesterday, {'a': 4})
+        registry.addEntry(yesterday_entry)
+
+        self.assertEqual(model.rowCount(), 2)
+        yesterday_index = model.index(1, 0, QModelIndex())
+        self.assertEqual(model.data(yesterday_index), 'Yesterday')
+
+        self.assertEqual(model.rowCount(yesterday_index), 1)
+        entry_4_index = model.index(0, 0, yesterday_index)
+        self.assertEqual(model.data(entry_4_index), {'a': 4})
+
+        # another entry from yesterday
+        yesterday_entry2 = QgsHistoryEntry(provider.id(), yesterday, {'a': 5})
+        registry.addEntry(yesterday_entry2)
+
+        self.assertEqual(model.data(yesterday_index), 'Yesterday')
+
+        self.assertEqual(model.rowCount(yesterday_index), 2)
+        self.assertEqual(model.data(entry_4_index), {'a': 4})
+        entry_5_index = model.index(1, 0, yesterday_index)
+        self.assertEqual(model.data(entry_5_index), {'a': 5})
+
+        # an entry from an earlier month
+        earlier_entry = QgsHistoryEntry(provider.id(), QDateTime(QDate(2020, 6, 3), QTime(12, 13, 14)), {'a': 6})
+        earlier_entry_id, _ = registry.addEntry(earlier_entry)
+
+        self.assertEqual(model.rowCount(), 3)
+        june2020_index = model.index(2, 0, QModelIndex())
+        self.assertEqual(model.data(date_group_1_index), 'Today')
+        self.assertEqual(model.data(yesterday_index), 'Yesterday')
+        self.assertEqual(model.data(june2020_index), 'June 2020')
+
+        self.assertEqual(model.rowCount(june2020_index), 1)
+        entry_6_index = model.index(0, 0, june2020_index)
+        self.assertEqual(model.data(entry_6_index), {'a': 6})
+
+        # an entry from an earlier month which is later than the previous one
+        earlier_entry2 = QgsHistoryEntry(provider.id(), QDateTime(QDate(2020, 10, 3), QTime(12, 13, 14)), {'a': 7})
+        registry.addEntry(earlier_entry2)
+
+        self.assertEqual(model.rowCount(), 4)
+        october2020_index = model.index(2, 0, QModelIndex())
+        self.assertEqual(model.data(date_group_1_index), 'Today')
+        self.assertEqual(model.data(yesterday_index), 'Yesterday')
+        self.assertEqual(model.data(june2020_index), 'June 2020')
+        self.assertEqual(model.data(october2020_index), 'October 2020')
+
+        self.assertEqual(model.rowCount(october2020_index), 1)
+        entry_7_index = model.index(0, 0, october2020_index)
+        self.assertEqual(model.data(entry_7_index), {'a': 7})
+
+        # an entry from last week
+        last_week = QDateTime.currentDateTime().addDays(-7)
+        last_week_entry = QgsHistoryEntry(provider.id(), last_week, {'a': 'last_week'})
+        registry.addEntry(last_week_entry)
+
+        self.assertEqual(model.rowCount(), 5)
+        last_week_index = model.index(2, 0, QModelIndex())
+        self.assertEqual(model.data(date_group_1_index), 'Today')
+        self.assertEqual(model.data(yesterday_index), 'Yesterday')
+        self.assertEqual(model.data(june2020_index), 'June 2020')
+        self.assertEqual(model.data(october2020_index), 'October 2020')
+        self.assertEqual(model.data(last_week_index), 'Last 7 days')
+
+        self.assertEqual(model.rowCount(last_week_index), 1)
+        entry_last_week_index = model.index(0, 0, last_week_index)
+        self.assertEqual(model.data(entry_last_week_index), {'a': 'last_week'})
+
+        # update an entry
+        registry.updateEntry(earlier_entry_id, {'a': 8})
+        entry_6_index = model.index(0, 0, june2020_index)
+        self.assertEqual(model.data(entry_6_index), {'a': 8})
+        self.assertEqual(model.rowCount(entry_6_index), 2)
+        entry_6a_index = model.index(0, 0, entry_6_index)
+        self.assertEqual(model.data(entry_6a_index), 'my child')
+        entry_6b_index = model.index(1, 0, entry_6_index)
+        self.assertEqual(model.data(entry_6b_index), 'my child 2')
+
+        # clear
+        registry.clearHistory(Qgis.HistoryProviderBackend.LocalProfile)
+        self.assertEqual(model.rowCount(), 0)
 
 
 if __name__ == '__main__':
