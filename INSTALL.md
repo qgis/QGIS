@@ -160,13 +160,7 @@ to you.
 
 ## 3.2. Prepare apt
 
-The packages QGIS depends on to build are available in the "universe" component
-of Ubuntu. This is not activated by default, so you need to activate it:
-
-1. Edit your `/etc/apt/sources.list` file.
-2. Uncomment all the lines starting with "deb"
-
-Also you will need a recent enough distribution in order for all dependencies
+You will need a recent enough distribution in order for all dependencies
 to be met. The supported distributions are listed in the following section.
 
 Now update your local sources database:
