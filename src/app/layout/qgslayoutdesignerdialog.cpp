@@ -2863,7 +2863,7 @@ void QgsLayoutDesignerDialog::exportAtlasToRaster()
     }
     QString error;
     printAtlas->setFilenameExpression( QStringLiteral( "'output_' || lpad(@atlas_featurenumber, length(to_string(@atlas_totalfeatures)), 0)" ),
-									   error );
+                                       error );
   }
   else
   {
@@ -3271,7 +3271,7 @@ void QgsLayoutDesignerDialog::exportAtlasToPdf()
       }
       QString error;
       printAtlas->setFilenameExpression( QStringLiteral( "'output_' || lpad(@atlas_featurenumber, length(to_string(@atlas_totalfeatures)), 0)" ),
-										 error );
+                                         error );
     }
 
 

@@ -349,7 +349,7 @@ QVariantMap QgsLayoutAtlasToMultiplePdfAlgorithm::exportAtlas( QgsLayoutAtlas *a
     if ( atlas->filenameExpression().isEmpty() && filename.isEmpty() )
     {
       atlas->setFilenameExpression( QStringLiteral( "'output_' || lpad(@atlas_featurenumber, length(to_string(@atlas_totalfeatures)), 0)" ),
-												    error );
+                                    error );
     }
     else if ( !filename.isEmpty() )
     {
