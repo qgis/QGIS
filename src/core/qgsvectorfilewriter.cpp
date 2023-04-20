@@ -246,6 +246,8 @@ void QgsVectorFileWriter::init( QString vectorFileName,
     return;
   }
 
+  mOgrDriverLongName = QString( GDALGetMetadataItem( poDriver, GDAL_DMD_LONGNAME, nullptr ) );
+
   MetaData metadata;
   bool metadataFound = driverMetadata( driverName, metadata );
 
@@ -558,6 +560,22 @@ void QgsVectorFileWriter::init( QString vectorFileName,
   QSet<int> existingIdxs;
 
   mFieldValueConverter = fieldValueConverter;
+
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,7,0)
+  if ( const char *pszCreateFieldDefnFlags = GDALGetMetadataItem( poDriver, GDAL_DMD_CREATION_FIELD_DEFN_FLAGS, nullptr ) )
+  {
+    char **papszTokens = CSLTokenizeString2( pszCreateFieldDefnFlags, " ", 0 );
+    if ( CSLFindString( papszTokens, "AlternativeName" ) >= 0 )
+    {
+      mCapabilities |= Qgis::VectorFileWriterCapability::FieldAliases;
+    }
+    if ( CSLFindString( papszTokens, "Comment" ) >= 0 )
+    {
+      mCapabilities |= Qgis::VectorFileWriterCapability::FieldComments;
+    }
+    CSLDestroy( papszTokens );
+  }
+#endif
 
   switch ( action )
   {
@@ -2547,6 +2565,21 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::hasError() const
 QString QgsVectorFileWriter::errorMessage() const
 {
   return mErrorMessage;
+}
+
+QString QgsVectorFileWriter::driver() const
+{
+  return mOgrDriverName;
+}
+
+QString QgsVectorFileWriter::driverLongName() const
+{
+  return mOgrDriverLongName;
+}
+
+Qgis::VectorFileWriterCapabilities QgsVectorFileWriter::capabilities() const
+{
+  return mCapabilities;
 }
 
 bool QgsVectorFileWriter::addFeature( QgsFeature &feature, QgsFeatureSink::Flags )

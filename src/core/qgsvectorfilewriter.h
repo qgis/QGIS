@@ -825,6 +825,29 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
     //! Retrieves error message
     QString errorMessage() const;
 
+    /**
+     * Returns the GDAL (short) driver name associated with the output file.
+     *
+     * \see driverLongName()
+     * \since QGIS 3.32
+     */
+    QString driver() const;
+
+    /**
+     * Returns the GDAL long driver name associated with the output file.
+     *
+     * \see driver()
+     * \since QGIS 3.32
+     */
+    QString driverLongName() const;
+
+    /**
+     * Returns the capabilities supported by the writer.
+     *
+     * \since QGIS 3.32
+     */
+    Qgis::VectorFileWriterCapabilities capabilities() const;
+
     bool addFeature( QgsFeature &feature, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() ) override;
     bool addFeatures( QgsFeatureList &features, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() ) override;
     QString lastError() const override;
@@ -945,6 +968,7 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
     double mSymbologyScale;
 
     QString mOgrDriverName;
+    QString mOgrDriverLongName;
 
     //! Field value converter
     FieldValueConverter *mFieldValueConverter = nullptr;
@@ -1040,6 +1064,8 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
 
     bool mUsingTransaction = false;
     QSet< QVariant::Type > mSupportedListSubTypes;
+
+    Qgis::VectorFileWriterCapabilities mCapabilities;
 
     void createSymbolLayerTable( QgsVectorLayer *vl, const QgsCoordinateTransform &ct, OGRDataSourceH ds );
     gdal::ogr_feature_unique_ptr createFeature( const QgsFeature &feature );

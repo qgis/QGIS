@@ -415,6 +415,15 @@ The development version
       UserCanceled,
     };
 
+    enum class VectorFileWriterCapability
+    {
+      FieldAliases,
+      FieldComments,
+    };
+
+    typedef QFlags<Qgis::VectorFileWriterCapability> VectorFileWriterCapabilities;
+
+
     enum class SqlLayerDefinitionCapability
     {
       SubsetStringFilter,
@@ -2112,6 +2121,8 @@ QFlags<Qgis::LabelLinePlacementFlag> operator|(Qgis::LabelLinePlacementFlag f1, 
 QFlags<Qgis::LabelPolygonPlacementFlag> operator|(Qgis::LabelPolygonPlacementFlag f1, QFlags<Qgis::LabelPolygonPlacementFlag> f2);
 
 QFlags<Qgis::DatabaseProviderConnectionCapability2> operator|(Qgis::DatabaseProviderConnectionCapability2 f1, QFlags<Qgis::DatabaseProviderConnectionCapability2> f2);
+
+QFlags<Qgis::VectorFileWriterCapability> operator|(Qgis::VectorFileWriterCapability f1, QFlags<Qgis::VectorFileWriterCapability> f2);
 
 
 
