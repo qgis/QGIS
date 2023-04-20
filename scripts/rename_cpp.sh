@@ -2,7 +2,7 @@
 
 # This scripts renames the name of a class as well as its header and cpp file
 # (assuming they are the lowercase version of the class name).
-# 
+#
 # Usage: ./scripts/rename_cpp.sh src/core QgsMyClassName QgsMyNewClassName
 
 set -e
@@ -23,12 +23,12 @@ NEW_CLASSUPPER="${NEW_CLASSNAME^^}"
 NEW_CLASSLOWER="${NEW_CLASSNAME,,}"
 
 
-FILES=$(ag -c $OLD_CLASSNAME | cut -d: -f1)
-
+FILES=$(git grep $OLD_CLASSLOWER -- src python | cut -d: -f1)
 for f in ${FILES}; do
-  ${GP}sed -i s/${OLD_CLASSNAME}/${NEW_CLASSNAME}/g $f
-  ${GP}sed -i s/${OLD_CLASSUPPER}/${NEW_CLASSUPPER}/g $f
-  ${GP}sed -i s/${OLD_CLASSLOWER}/${NEW_CLASSLOWER}/g $f
+echo "replacing in $f..."
+  ${GP}sed -i "s/\b${OLD_CLASSNAME}\b/${NEW_CLASSNAME}/g" $f
+  ${GP}sed -i "s/\b${OLD_CLASSUPPER}\b/${NEW_CLASSUPPER}/g" $f
+  ${GP}sed -i "s/\b${OLD_CLASSLOWER}\b/${NEW_CLASSLOWER}/g" $f
 done
 
 set +e
