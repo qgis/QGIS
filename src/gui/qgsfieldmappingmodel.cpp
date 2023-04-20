@@ -246,6 +246,7 @@ bool QgsFieldMappingModel::setData( const QModelIndex &index, const QVariant &va
         case ColumnDataIndex::DestinationConstraints:
         {
           // Not editable: do nothing
+          break;
         }
         case ColumnDataIndex::DestinationAlias:
         {
