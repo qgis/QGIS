@@ -34,6 +34,8 @@ the mapping expression is editable.
       DestinationLength,
       DestinationPrecision,
       DestinationConstraints,
+      DestinationAlias,
+      DestinationComment,
     };
 
 

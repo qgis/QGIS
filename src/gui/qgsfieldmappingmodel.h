@@ -55,6 +55,8 @@ class GUI_EXPORT QgsFieldMappingModel: public QAbstractTableModel
       DestinationLength,      //!< Destination field length
       DestinationPrecision,   //!< Destination field precision
       DestinationConstraints, //!< Destination field constraints
+      DestinationAlias,       //!< Destination alias
+      DestinationComment,     //!< Destination comment
     };
 
     Q_ENUM( ColumnDataIndex );
