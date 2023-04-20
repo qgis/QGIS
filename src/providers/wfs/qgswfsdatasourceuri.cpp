@@ -151,7 +151,7 @@ QgsWFSDataSourceURI::QgsWFSDataSourceURI( const QString &uri )
   }
 }
 
-QgsWFSDataSourceURI::QgsWFSDataSourceURI( const QgsWFSDataSourceURI& other )
+QgsWFSDataSourceURI::QgsWFSDataSourceURI( const QgsWFSDataSourceURI &other )
   : mURI( other.mURI )
   , mAuth( other.mAuth )
   , mGetEndpoints( other.mGetEndpoints )
@@ -160,7 +160,7 @@ QgsWFSDataSourceURI::QgsWFSDataSourceURI( const QgsWFSDataSourceURI& other )
 {
 }
 
-QgsWFSDataSourceURI& QgsWFSDataSourceURI::operator=( const QgsWFSDataSourceURI &other )
+QgsWFSDataSourceURI &QgsWFSDataSourceURI::operator=( const QgsWFSDataSourceURI &other )
 {
   mURI = other.mURI;
   mAuth = other.mAuth;
