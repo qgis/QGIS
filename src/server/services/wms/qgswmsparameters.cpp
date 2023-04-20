@@ -2241,6 +2241,119 @@ namespace QgsWms
     return options;
   }
 
+  bool QgsWmsParameters::writeGeoPdf() const
+  {
+    bool geoPdf = false;
+    const QMap<QgsWmsParameters::PdfFormatOption, QString> options = formatOptions<QgsWmsParameters::PdfFormatOption>();
+    if ( options.contains( PdfFormatOption::WRITE_GEO_PDF ) )
+    {
+      geoPdf = QVariant( options[PdfFormatOption::WRITE_GEO_PDF] ).toBool();
+    }
+    return geoPdf;
+  }
+
+  bool QgsWmsParameters::pdfForceVectorOutput() const
+  {
+    bool forceVector = false;
+    const QMap<QgsWmsParameters::PdfFormatOption, QString> options = formatOptions<QgsWmsParameters::PdfFormatOption>();
+    if ( options.contains( PdfFormatOption::FORCE_VECTOR_OUTPUT ) )
+    {
+      forceVector = QVariant( options[PdfFormatOption::FORCE_VECTOR_OUTPUT] ).toBool();
+    }
+    return forceVector;
+  }
+
+  bool QgsWmsParameters::pdfAppendGeoreference() const
+  {
+    bool appendGeoref = true;
+    const QMap<QgsWmsParameters::PdfFormatOption, QString> options = formatOptions<QgsWmsParameters::PdfFormatOption>();
+    if ( options.contains( PdfFormatOption::APPEND_GEOREFERENCE ) )
+    {
+      appendGeoref = QVariant( options[PdfFormatOption::APPEND_GEOREFERENCE] ).toBool();
+    }
+    return appendGeoref;
+  }
+
+  bool QgsWmsParameters::pdfSimplifyGeometries() const
+  {
+    bool simplify = true;
+    const QMap<QgsWmsParameters::PdfFormatOption, QString> options = formatOptions<QgsWmsParameters::PdfFormatOption>();
+    if ( options.contains( PdfFormatOption::SIMPLIFY_GEOMETRY ) )
+    {
+      simplify = QVariant( options[PdfFormatOption::SIMPLIFY_GEOMETRY] ).toBool();
+    }
+    return simplify;
+  }
+
+  bool QgsWmsParameters::pdfExportMetadata() const
+  {
+    bool exportMetadata = false;
+    const QMap<QgsWmsParameters::PdfFormatOption, QString> options = formatOptions<QgsWmsParameters::PdfFormatOption>();
+    if ( options.contains( PdfFormatOption::EXPORT_METADATA ) )
+    {
+      exportMetadata = QVariant( options[PdfFormatOption::EXPORT_METADATA] ).toBool();
+    }
+    return exportMetadata;
+  }
+
+  Qgis::TextRenderFormat QgsWmsParameters::pdfTextRenderFormat() const
+  {
+    Qgis::TextRenderFormat format = Qgis::TextRenderFormat::AlwaysOutlines;
+    const QMap<QgsWmsParameters::PdfFormatOption, QString> options = formatOptions<QgsWmsParameters::PdfFormatOption>();
+    if ( options.contains( PdfFormatOption::TEXT_RENDER_FORMAT ) )
+    {
+      if ( options[PdfFormatOption::TEXT_RENDER_FORMAT].compare( QStringLiteral( "AlwaysText" ), Qt::CaseInsensitive ) == 0 )
+      {
+        format = Qgis::TextRenderFormat::AlwaysText;
+      }
+    }
+    return format;
+  }
+
+  bool QgsWmsParameters::pdfLosslessImageCompression() const
+  {
+    bool losslessCompression = false;
+    const QMap<QgsWmsParameters::PdfFormatOption, QString> options = formatOptions<QgsWmsParameters::PdfFormatOption>();
+    if ( options.contains( PdfFormatOption::LOSSLESS_IMAGE_COMPRESSION ) )
+    {
+      losslessCompression = QVariant( options[PdfFormatOption::LOSSLESS_IMAGE_COMPRESSION] ).toBool();
+    }
+    return losslessCompression;
+  }
+
+  bool QgsWmsParameters::pdfDisableTiledRasterRendering() const
+  {
+    bool disableTiledRaster = false;
+    const QMap<QgsWmsParameters::PdfFormatOption, QString> options = formatOptions<QgsWmsParameters::PdfFormatOption>();
+    if ( options.contains( PdfFormatOption::DISABLE_TILED_RASTER_RENDERING ) )
+    {
+      disableTiledRaster = QVariant( options[PdfFormatOption::DISABLE_TILED_RASTER_RENDERING] ).toBool();
+    }
+    return disableTiledRaster;
+  }
+
+  bool QgsWmsParameters::pdfUseIso32000ExtensionFormatGeoreferencing() const
+  {
+    bool useIso32000 = true;
+    const QMap<QgsWmsParameters::PdfFormatOption, QString> options = formatOptions<QgsWmsParameters::PdfFormatOption>();
+    if ( options.contains( PdfFormatOption::USE_ISO_32000_EXTENSION_FORMAT_GEOREFERENCING ) )
+    {
+      useIso32000 = QVariant( options[PdfFormatOption::USE_ISO_32000_EXTENSION_FORMAT_GEOREFERENCING] ).toBool();
+    }
+    return useIso32000;
+  }
+
+  bool QgsWmsParameters::pdfUseOgcBestPracticeFormatGeoreferencing() const
+  {
+    bool useOgcGeoreferencing = false;
+    const QMap<QgsWmsParameters::PdfFormatOption, QString> options = formatOptions<QgsWmsParameters::PdfFormatOption>();
+    if ( options.contains( PdfFormatOption::USE_OGC_BEST_PRACTICE_FORMAT_GEOREFERENCING ) )
+    {
+      useOgcGeoreferencing = QVariant( options[PdfFormatOption::USE_OGC_BEST_PRACTICE_FORMAT_GEOREFERENCING] ).toBool();
+    }
+    return useOgcGeoreferencing;
+  }
+
   QMap<QString, QString> QgsWmsParameters::dimensionValues() const
   {
     QMap<QString, QString> dimValues;

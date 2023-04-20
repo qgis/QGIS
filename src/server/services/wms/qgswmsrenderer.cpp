@@ -633,6 +633,23 @@ namespace QgsWms
       // Set scales
       exportSettings.predefinedMapScales = QgsLayoutUtils::predefinedScales( layout.get( ) );
 
+      // Settings from format options request parameters
+      exportSettings.writeGeoPdf = mWmsParameters.writeGeoPdf();
+      exportSettings.textRenderFormat = mWmsParameters.pdfTextRenderFormat();
+      exportSettings.forceVectorOutput = mWmsParameters.pdfForceVectorOutput();
+      exportSettings.appendGeoreference = mWmsParameters.pdfAppendGeoreference();
+      exportSettings.simplifyGeometries = mWmsParameters.pdfSimplifyGeometries();
+      exportSettings.useIso32000ExtensionFormatGeoreferencing = mWmsParameters.pdfUseIso32000ExtensionFormatGeoreferencing();
+      exportSettings.useOgcBestPracticeFormatGeoreferencing = mWmsParameters.pdfUseOgcBestPracticeFormatGeoreferencing();
+      if ( mWmsParameters.pdfLosslessImageCompression() )
+      {
+        exportSettings.flags |= QgsLayoutRenderContext::FlagLosslessImageRendering;
+      }
+      if ( mWmsParameters.pdfDisableTiledRasterRendering() )
+      {
+        exportSettings.flags |= QgsLayoutRenderContext::FlagDisableTiledRasterLayerRenders;
+      }
+
       // Export all pages
       if ( atlas )
       {
