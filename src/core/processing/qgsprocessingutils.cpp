@@ -824,6 +824,18 @@ QgsFeatureSink *QgsProcessingUtils::createFeatureSink( QString &destination, Qgs
       throw QgsProcessingException( QObject::tr( "Could not create memory layer" ) );
     }
 
+    if ( QgsProcessingFeedback *feedback = context.feedback() )
+    {
+      for ( const QgsField &field : fields )
+      {
+        // TODO -- support these!
+        if ( !field.alias().isEmpty() )
+          feedback->pushWarning( QObject::tr( "%1: Aliases are not compatible with scratch layers" ).arg( field.name() ) );
+        if ( !field.alias().isEmpty() )
+          feedback->pushWarning( QObject::tr( "%1: Comments are not compatible with scratch layers" ).arg( field.name() ) );
+      }
+    }
+
     layer->setCustomProperty( QStringLiteral( "OnConvertFormatRegeneratePrimaryKey" ), static_cast< bool >( sinkFlags & QgsFeatureSink::RegeneratePrimaryKey ) );
 
     // update destination to layer ID
@@ -882,6 +894,18 @@ QgsFeatureSink *QgsProcessingUtils::createFeatureSink( QString &destination, Qgs
       {
         throw QgsProcessingException( QObject::tr( "Could not create layer %1: %2" ).arg( destination, writer->errorMessage() ) );
       }
+
+      if ( QgsProcessingFeedback *feedback = context.feedback() )
+      {
+        for ( const QgsField &field : fields )
+        {
+          if ( !field.alias().isEmpty() && !( writer->capabilities() & Qgis::VectorFileWriterCapability::FieldAliases ) )
+            feedback->pushWarning( QObject::tr( "%1: Aliases are not supported by %2" ).arg( field.name(), writer->driverLongName() ) );
+          if ( !field.alias().isEmpty()  && !( writer->capabilities() & Qgis::VectorFileWriterCapability::FieldComments ) )
+            feedback->pushWarning( QObject::tr( "%1: Comments are not supported by %2" ).arg( field.name(), writer->driverLongName() ) );
+        }
+      }
+
       destination = finalFileName;
       if ( !saveOptions.layerName.isEmpty() && !finalLayerName.isEmpty() )
         destination += QStringLiteral( "|layername=%1" ).arg( finalLayerName );
@@ -921,6 +945,18 @@ QgsFeatureSink *QgsProcessingUtils::createFeatureSink( QString &destination, Qgs
           remappingDefinition->setDestinationFields( layer->fields() );
         }
 
+        if ( QgsProcessingFeedback *feedback = context.feedback() )
+        {
+          const Qgis::VectorDataProviderAttributeEditCapabilities capabilities = layer->dataProvider() ? layer->dataProvider()->attributeEditCapabilities() : Qgis::VectorDataProviderAttributeEditCapabilities();
+          for ( const QgsField &field : fields )
+          {
+            if ( !field.alias().isEmpty() && !( capabilities & Qgis::VectorDataProviderAttributeEditCapability::EditAlias ) )
+              feedback->pushWarning( QObject::tr( "%1: Aliases are not supported by the %2 provider" ).arg( field.name(), providerKey ) );
+            if ( !field.alias().isEmpty()  && !( capabilities & Qgis::VectorDataProviderAttributeEditCapability::EditComment ) )
+              feedback->pushWarning( QObject::tr( "%1: Comments are not supported by the %2 provider" ).arg( field.name(), providerKey ) );
+          }
+        }
+
         std::unique_ptr< QgsRemappingProxyFeatureSink > remapSink = std::make_unique< QgsRemappingProxyFeatureSink >( *remappingDefinition, layer->dataProvider(), false );
         context.temporaryLayerStore()->addMapLayer( layer.release() );
         remapSink->setExpressionContext( context.expressionContext() );
@@ -943,6 +979,17 @@ QgsFeatureSink *QgsProcessingUtils::createFeatureSink( QString &destination, Qgs
           uri += QStringLiteral( "|layername=%1" ).arg( layerName );
           // update destination to generated URI
           destination = uri;
+        }
+
+        if ( QgsProcessingFeedback *feedback = context.feedback() )
+        {
+          for ( const QgsField &field : fields )
+          {
+            if ( !field.alias().isEmpty() && !( exporter->attributeEditCapabilities() & Qgis::VectorDataProviderAttributeEditCapability::EditAlias ) )
+              feedback->pushWarning( QObject::tr( "%1: Aliases are not supported by the %2 provider" ).arg( field.name(), providerKey ) );
+            if ( !field.alias().isEmpty()  && !( exporter->attributeEditCapabilities() & Qgis::VectorDataProviderAttributeEditCapability::EditComment ) )
+              feedback->pushWarning( QObject::tr( "%1: Comments are not supported by the %2 provider" ).arg( field.name(), providerKey ) );
+          }
         }
 
         return new QgsProcessingFeatureSink( exporter.release(), destination, context, true );
