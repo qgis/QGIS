@@ -26,6 +26,12 @@
 class QgsProcessingParameterType;
 class QgsProcessingAlgorithmConfigurationWidgetFactory;
 
+/**
+ * \class QgsProcessingAlgorithmInformation
+ * \ingroup core
+ * \brief Contains basic properties for a Processing algorithm.
+ * \since QGIS 3.32
+ */
 class CORE_EXPORT QgsProcessingAlgorithmInformation
 {
   public:
