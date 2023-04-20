@@ -9,4 +9,5 @@ id = '3'
 name = 'three'
 utf8nameè = 'three èé↓'
 maptip = 'Name: three'
+displayName = 'three'
 
