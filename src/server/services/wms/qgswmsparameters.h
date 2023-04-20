@@ -1440,6 +1440,18 @@ namespace QgsWms
        */
       bool pdfUseOgcBestPracticeFormatGeoreferencing() const;
 
+      /**
+       * Returns map themes for GeoPDF export
+       * \since QGIS 3.32
+       */
+      QStringList pdfExportMapThemes() const;
+
+      /**
+       * Returns list of map scales
+       * \since QGIS 3.32
+       */
+      QVector<qreal> pdfPredefinedMapScales() const;
+
       QString version() const override;
 
       QString request() const override;

@@ -2331,6 +2331,37 @@ namespace QgsWms
     return useOgcGeoreferencing;
   }
 
+  QStringList QgsWmsParameters::pdfExportMapThemes() const
+  {
+    QStringList themes;
+    const QMap<QgsWmsParameters::PdfFormatOption, QString> options = formatOptions<QgsWmsParameters::PdfFormatOption>();
+    if ( options.contains( PdfFormatOption::EXPORT_THEMES ) )
+    {
+      themes = options[PdfFormatOption::EXPORT_THEMES].split( "," );
+    }
+    return themes;
+  }
+
+  QVector<qreal> QgsWmsParameters::pdfPredefinedMapScales() const
+  {
+    QVector<qreal> scales;
+    const QMap<QgsWmsParameters::PdfFormatOption, QString> options = formatOptions<QgsWmsParameters::PdfFormatOption>();
+    if ( options.contains( PdfFormatOption::PREDEFINED_MAP_SCALES ) )
+    {
+      QStringList scaleList = options[PdfFormatOption::PREDEFINED_MAP_SCALES].split( "," );
+      for ( const auto &it : scaleList )
+      {
+        bool ok = false;
+        qreal scale = it.toDouble( &ok );
+        if ( ok )
+        {
+          scales.append( scale );
+        }
+      }
+    }
+    return scales;
+  }
+
   QMap<QString, QString> QgsWmsParameters::dimensionValues() const
   {
     QMap<QString, QString> dimValues;

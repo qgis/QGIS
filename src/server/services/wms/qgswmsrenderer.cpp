@@ -630,10 +630,22 @@ namespace QgsWms
       exportSettings.flags |= QgsLayoutRenderContext::FlagDrawSelection;
       // Print as raster
       exportSettings.rasterizeWholeImage = layout->customProperty( QStringLiteral( "rasterize" ), false ).toBool();
-      // Set scales
-      exportSettings.predefinedMapScales = QgsLayoutUtils::predefinedScales( layout.get( ) );
-
-      // Settings from format options request parameters
+      // Set scales. 1. Prio: request, 2. Prio: predefined mapscales in layout
+      QVector<qreal> requestMapScales = mWmsParameters.pdfPredefinedMapScales();
+      if ( requestMapScales.size() > 0 )
+      {
+        exportSettings.predefinedMapScales = requestMapScales;
+      }
+      else
+      {
+        exportSettings.predefinedMapScales = QgsLayoutUtils::predefinedScales( layout.get( ) );
+      }
+      // Export themes
+      QStringList exportThemes = mWmsParameters.pdfExportMapThemes();
+      if ( exportThemes.size() > 0 )
+      {
+        exportSettings.exportThemes = exportThemes;
+      }
       exportSettings.writeGeoPdf = mWmsParameters.writeGeoPdf();
       exportSettings.textRenderFormat = mWmsParameters.pdfTextRenderFormat();
       exportSettings.forceVectorOutput = mWmsParameters.pdfForceVectorOutput();
