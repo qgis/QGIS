@@ -52,13 +52,15 @@ class QgsDwgImportDialog : public QDialog, private Ui::QgsDwgImportBase
       Visibility = 1
     };
 
-    QgsVectorLayer *layer( QgsLayerTreeGroup *layerGroup, const QString &layer, const QString &table, bool addToProject );
-    void createGroup( QgsLayerTreeGroup *group, const QString &name, const QStringList &layers, bool visible, bool addToProject );
+    QgsVectorLayer *createLayer( const QString &layer, const QString &table );
+    QList<QgsVectorLayer *> createLayers( const QStringList &layerNames );
+    void createGroup( QgsLayerTreeGroup *group, const QString &name, const QStringList &layers, bool visible );
     void updateUI();
     void expandInserts();
     void updateCheckState( Qt::CheckState state );
 
     QgsMapToolPan *mPanTool = nullptr;
+    QList<QgsVectorLayer *> mPreviewLayers;
 };
 
 #endif // QGSDWGIMPORTDIALOG_H
