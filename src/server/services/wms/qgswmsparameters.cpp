@@ -1574,7 +1574,7 @@ namespace QgsWms
   bool QgsWmsParameters::isForce2D() const
   {
     bool force2D = false;
-    const QMap<DxfFormatOption, QString> options = dxfFormatOptions();
+    const QMap<DxfFormatOption, QString> options = formatOptions<QgsWmsParameters::DxfFormatOption>();
 
     if ( options.contains( DxfFormatOption::FORCE_2D ) )
     {
@@ -1587,7 +1587,7 @@ namespace QgsWms
   bool QgsWmsParameters::noMText() const
   {
     bool noMText = false;
-    const QMap<DxfFormatOption, QString> options = dxfFormatOptions();
+    const QMap<DxfFormatOption, QString> options = formatOptions<QgsWmsParameters::DxfFormatOption>();
 
     if ( options.contains( DxfFormatOption::NO_MTEXT ) )
     {
@@ -2146,7 +2146,7 @@ namespace QgsWms
   QStringList QgsWmsParameters::dxfLayerAttributes() const
   {
     QStringList attributes;
-    const QMap<DxfFormatOption, QString> options = dxfFormatOptions();
+    const QMap<DxfFormatOption, QString> options = formatOptions<QgsWmsParameters::DxfFormatOption>();
 
     if ( options.contains( DxfFormatOption::LAYERATTRIBUTES ) )
     {
@@ -2159,7 +2159,7 @@ namespace QgsWms
   bool QgsWmsParameters::dxfUseLayerTitleAsName() const
   {
     bool use = false;
-    const QMap<DxfFormatOption, QString> options = dxfFormatOptions();
+    const QMap<DxfFormatOption, QString> options = formatOptions<QgsWmsParameters::DxfFormatOption>();
 
     if ( options.contains( DxfFormatOption::USE_TITLE_AS_LAYERNAME ) )
     {
@@ -2171,7 +2171,7 @@ namespace QgsWms
 
   double QgsWmsParameters::dxfScale() const
   {
-    const QMap<DxfFormatOption, QString> options = dxfFormatOptions();
+    const QMap<DxfFormatOption, QString> options = formatOptions<QgsWmsParameters::DxfFormatOption>();
 
     double scale = -1;
     if ( options.contains( DxfFormatOption::SCALE ) )
@@ -2184,7 +2184,7 @@ namespace QgsWms
 
   QgsDxfExport::SymbologyExport QgsWmsParameters::dxfMode() const
   {
-    const QMap<DxfFormatOption, QString> options = dxfFormatOptions();
+    const QMap<DxfFormatOption, QString> options = formatOptions<QgsWmsParameters::DxfFormatOption>();
 
     QgsDxfExport::SymbologyExport symbol = QgsDxfExport::NoSymbology;
 
@@ -2210,35 +2210,12 @@ namespace QgsWms
   {
     QString codec = QStringLiteral( "ISO-8859-1" );
 
-    if ( dxfFormatOptions().contains( DxfFormatOption::CODEC ) )
+    if ( formatOptions<QgsWmsParameters::DxfFormatOption>().contains( DxfFormatOption::CODEC ) )
     {
-      codec = dxfFormatOptions()[ DxfFormatOption::CODEC ];
+      codec = formatOptions<QgsWmsParameters::DxfFormatOption>()[ DxfFormatOption::CODEC ];
     }
 
     return codec;
-  }
-
-  QMap<QgsWmsParameters::DxfFormatOption, QString> QgsWmsParameters::dxfFormatOptions() const
-  {
-    QMap<QgsWmsParameters::DxfFormatOption, QString> options;
-
-    const QMetaEnum metaEnum( QMetaEnum::fromType<QgsWmsParameters::DxfFormatOption>() );
-    const QStringList opts = mWmsParameters.value( QgsWmsParameter::FORMAT_OPTIONS ).toStringList( ';' );
-
-    for ( auto it = opts.constBegin(); it != opts.constEnd(); ++it )
-    {
-      const int equalIdx = it->indexOf( ':' );
-      if ( equalIdx > 0 && equalIdx < ( it->length() - 1 ) )
-      {
-        const QString name = it->left( equalIdx ).toUpper();
-        const QgsWmsParameters::DxfFormatOption option =
-          ( QgsWmsParameters::DxfFormatOption ) metaEnum.keyToValue( name.toStdString().c_str() );
-        const QString value = it->right( it->length() - equalIdx - 1 );
-        options.insert( option, value );
-      }
-    }
-
-    return options;
   }
 
   bool QgsWmsParameters::writeGeoPdf() const

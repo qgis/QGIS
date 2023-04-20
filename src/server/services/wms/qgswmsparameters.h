@@ -1329,12 +1329,6 @@ namespace QgsWms
       QStringList atlasPk() const;
 
       /**
-       * Returns a map of DXF options defined within FORMAT_OPTIONS parameter.
-       * \since QGIS 3.8
-       */
-      QMap<DxfFormatOption, QString> dxfFormatOptions() const;
-
-      /**
        * Returns the DXF LAYERATTRIBUTES parameter.
        * \since QGIS 3.8
        */
@@ -1450,8 +1444,6 @@ namespace QgsWms
 
       QString request() const override;
 
-    private:
-
       /**
        * Returns the format options for an output format. Possible template types are QgsWmsParameters::PdfFormatOption or QgsWmsParameters::DxfFormatOption
        * \returns a key-value map
@@ -1481,6 +1473,8 @@ namespace QgsWms
         }
         return options;
       }
+
+    private:
 
       static bool isExternalLayer( const QString &name );
 
