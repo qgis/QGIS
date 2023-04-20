@@ -561,8 +561,8 @@ Select "Custom" install and add the following packages:
 Download and install following packages:
 
 * [CMake](https://cmake.org/files/v3.12/cmake-3.12.3-win64-x64.msi)
-* GNU flex, GNU bison and GIT with cygwin [32bit](https://cygwin.com/setup-x86.exe) or [64bit](https://cygwin.com/setup-x86_64.exe)
-* OSGeo4W [32bit](https://download.osgeo.org/osgeo4w/osgeo4w-setup-x86.exe) or [64bit](https://download.osgeo.org/osgeo4w/osgeo4w-setup-x86_64.exe)
+* GNU flex, GNU bison and GIT with [cygwin 64bit](https://cygwin.com/setup-x86_64.exe)
+* [OSGeo4W 64bit](https://download.osgeo.org/osgeo4w/v2/osgeo4w-setup.exe)
 * [ninja](https://github.com/ninja-build/ninja/releases/download/v1.7.2/ninja-win.zip): Copy the `ninja.exe` to `C:\OSGeo4W64\bin\`
 
 For the QGIS build you need to install following packages from cygwin:
