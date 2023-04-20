@@ -10,7 +10,11 @@ __date__ = '29/07/2020'
 __copyright__ = 'Copyright 2020, The QGIS Project'
 
 import qgis  # NOQA
-from qgis.PyQt.QtCore import QCoreApplication, QSize
+from qgis.PyQt.QtCore import (
+    Qt,
+    QCoreApplication,
+    QSize
+)
 from qgis.PyQt.QtGui import QColor, QImage
 from qgis.core import (
     Qgis,
@@ -1078,6 +1082,51 @@ class TestQgsMapBoxGlStyleConverter(unittest.TestCase):
 
         # mapbox fill strokes are always 1 px wide
         self.assertEqual(renderer.symbol()[0].strokeWidth(), 0)
+
+        self.assertEqual(renderer.symbol()[0].strokeStyle(), Qt.SolidLine)
+        # if "fill-outline-color" is not specified, then MapBox specs state the
+        # stroke color matches the value of fill-color if unspecified.
+        self.assertEqual(renderer.symbol()[0].strokeColor().name(), '#47b312')
+        self.assertEqual(renderer.symbol()[0].strokeColor().alpha(), 255)
+
+        # explicit outline color
+        style = {
+            "id": "Land/Not ice",
+            "type": "fill",
+            "source": "esri",
+            "source-layer": "Land",
+            "layout": {},
+            "paint": {
+                "fill-color": "rgb(71,179,18)",
+                "fill-outline-color": "rgb(255,0,0)",
+            }
+        }
+        has_renderer, renderer = QgsMapBoxGlStyleConverter.parseFillLayer(style, context)
+        self.assertTrue(has_renderer)
+
+        self.assertEqual(renderer.symbol()[0].strokeStyle(), Qt.SolidLine)
+        self.assertEqual(renderer.symbol()[0].strokeColor().name(), '#ff0000')
+        self.assertEqual(renderer.symbol()[0].strokeColor().alpha(), 255)
+
+        # semi-transparent fill color
+        style = {
+            "id": "Land/Not ice",
+            "type": "fill",
+            "source": "esri",
+            "source-layer": "Land",
+            "layout": {},
+            "paint": {
+                "fill-color": "rgb(71,179,18,0.25)",
+            }
+        }
+        has_renderer, renderer = QgsMapBoxGlStyleConverter.parseFillLayer(style, context)
+        self.assertTrue(has_renderer)
+        # if the outline color is semi-transparent, then drawing the default 1px stroke
+        # will result in a double rendering of strokes for adjacent polygons,
+        # resulting in visible seams between tiles. Accordingly, we only
+        # set the stroke color if it's a completely different color to the
+        # fill if the stroke color is opaque and the double-rendering artifacts aren't an issue
+        self.assertEqual(renderer.symbol()[0].strokeStyle(), Qt.NoPen)
 
     def testFillOpacityWithStops(self):
         context = QgsMapBoxGlStyleConversionContext()
