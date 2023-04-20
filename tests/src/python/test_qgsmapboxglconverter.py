@@ -1127,6 +1127,24 @@ class TestQgsMapBoxGlStyleConverter(unittest.TestCase):
         self.assertTrue(labeling_style.labelSettings().isExpression)
         self.assertEqual(labeling_style.labelSettings().fieldName, 'CASE WHEN @vector_tile_zoom > 6 AND @vector_tile_zoom < 15 THEN concat(\'my \',"class",\' and \',"stuff") WHEN @vector_tile_zoom >= 15 THEN concat(\'my \',"class",\' and \',"stuff") ELSE \'\' END')
 
+    def testFillStroke(self):
+        context = QgsMapBoxGlStyleConversionContext()
+        style = {
+            "id": "Land/Not ice",
+            "type": "fill",
+            "source": "esri",
+            "source-layer": "Land",
+            "layout": {},
+            "paint": {
+                "fill-color": "rgb(71,179,18)",
+            }
+        }
+        has_renderer, renderer = QgsMapBoxGlStyleConverter.parseFillLayer(style, context)
+        self.assertTrue(has_renderer)
+
+        # mapbox fill strokes are always 1 px wide
+        self.assertEqual(renderer.symbol()[0].strokeWidth(), 0)
+
     def testFillOpacityWithStops(self):
         context = QgsMapBoxGlStyleConversionContext()
         style = {

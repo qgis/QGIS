@@ -436,6 +436,8 @@ bool QgsMapBoxGlStyleConverter::parseFillLayer( const QVariantMap &jsonLayer, Qg
 
   if ( fillOutlineColor.isValid() )
   {
+    // mapbox fill strokes are always 1 px wide
+    fillSymbol->setStrokeWidth( 0 );
     fillSymbol->setStrokeColor( fillOutlineColor );
   }
   else
