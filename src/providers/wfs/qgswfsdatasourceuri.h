@@ -42,6 +42,9 @@ class QgsWFSDataSourceURI
 
     explicit QgsWFSDataSourceURI( const QString &uri );
 
+    //! Copy constructor
+    QgsWFSDataSourceURI( const QgsWFSDataSourceURI& other );
+
     //! Returns whether the URI is a valid one
     bool isValid() const;
 
@@ -140,20 +143,17 @@ class QgsWFSDataSourceURI
     //! Sets Get DCP endpoints
     void setGetEndpoints( const QgsStringMap &map );
 
-    //! Return Get DCP endpoints
-    QgsStringMap getGetEndpoints() const;
-
     //! Sets Post DCP endpoints
     void setPostEndpoints( const QgsStringMap &map );
-
-    //! Return Post DCP endpoints
-    QgsStringMap getPostEndpoints() const;
 
     //! Return set of unknown parameter keys in the URI.
     QSet<QString> unknownParamKeys() const;
 
     //! Whether the initial GetFeature request, used to determine if gml:description/name/identifiers are used, should be skipped
     bool skipInitialGetFeature() const;
+
+    //! Assigment operator
+    QgsWFSDataSourceURI& operator=( const QgsWFSDataSourceURI &other );
 
   private:
     QgsDataSourceUri    mURI;
