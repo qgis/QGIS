@@ -151,6 +151,25 @@ QgsWFSDataSourceURI::QgsWFSDataSourceURI( const QString &uri )
   }
 }
 
+QgsWFSDataSourceURI::QgsWFSDataSourceURI( const QgsWFSDataSourceURI& other )
+  : mURI( other.mURI )
+  , mAuth( other.mAuth )
+  , mGetEndpoints( other.mGetEndpoints )
+  , mPostEndpoints( other.mPostEndpoints )
+  , mDeprecatedURI( other.mDeprecatedURI )
+{
+}
+
+QgsWFSDataSourceURI& QgsWFSDataSourceURI::operator=( const QgsWFSDataSourceURI &other )
+{
+  mURI = other.mURI;
+  mAuth = other.mAuth;
+  mGetEndpoints = other.mGetEndpoints;
+  mPostEndpoints = other.mPostEndpoints;
+  mDeprecatedURI = other.mDeprecatedURI;
+  return *this;
+}
+
 bool QgsWFSDataSourceURI::isValid() const
 {
   return mURI.hasParam( QgsWFSConstants::URI_PARAM_URL ) &&
@@ -469,17 +488,7 @@ void QgsWFSDataSourceURI::setGetEndpoints( const QgsStringMap &map )
   mGetEndpoints = map;
 }
 
-QgsStringMap QgsWFSDataSourceURI::getGetEndpoints() const
-{
-  return mGetEndpoints;
-}
-
 void QgsWFSDataSourceURI::setPostEndpoints( const QgsStringMap &map )
 {
   mPostEndpoints = map;
-}
-
-QgsStringMap QgsWFSDataSourceURI::getPostEndpoints() const
-{
-  return mPostEndpoints;
 }
