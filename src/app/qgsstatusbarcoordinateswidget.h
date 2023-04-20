@@ -78,7 +78,6 @@ class APP_EXPORT QgsStatusBarCoordinatesWidget : public QWidget
     //! Widget that will live on the statusbar to display "Coordinate / Extent"
     QLabel *mLabel = nullptr;
 
-    QValidator *mCoordsEditValidator = nullptr;
     QTimer *mDizzyTimer = nullptr;
     QgsMapCanvas *mMapCanvas = nullptr;
     int mTwoCharSize = 0;
