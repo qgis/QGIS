@@ -150,8 +150,6 @@ class HistoryDialog(BASE, WIDGET):
         if not entries:
             return
 
-        names = {}
-        icons = {}
         group_items = []
         current_group_item = -1
         current_date = ''
@@ -167,16 +165,11 @@ class HistoryDialog(BASE, WIDGET):
             name = ''
             algorithm_id = entry.entry.get('algorithm_id')
             if algorithm_id:
-                if algorithm_id not in names:
-                    algorithm = QgsApplication.processingRegistry().algorithmById(algorithm_id)
-                    if algorithm:
-                        names[algorithm_id] = algorithm.displayName()
-                        icons[algorithm_id] = QgsApplication.processingRegistry().algorithmById(algorithm_id).icon()
-                    else:
-                        names[algorithm_id] = ''
-                        icons[algorithm_id] = self.keyIcon
-                name = names[algorithm_id]
-                icon = icons[algorithm_id]
+                algorithm_info = QgsApplication.processingRegistry().algorithmInformation(algorithm_id)
+                name = algorithm_info.displayName
+                if not algorithm_info.icon.isNull():
+                    icon = algorithm_info.icon
+
             item = TreeLogEntryItem(entry, name)
             item.setIcon(0, icon)
             group_items[current_group_item].insertChild(0, item)
