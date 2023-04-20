@@ -149,6 +149,25 @@ QgsWFSDataSourceURI::QgsWFSDataSourceURI( const QString &uri )
   }
 }
 
+QgsWFSDataSourceURI::QgsWFSDataSourceURI( const QgsWFSDataSourceURI &other )
+  : mURI( other.mURI )
+  , mAuth( other.mAuth )
+  , mGetEndpoints( other.mGetEndpoints )
+  , mPostEndpoints( other.mPostEndpoints )
+  , mDeprecatedURI( other.mDeprecatedURI )
+{
+}
+
+QgsWFSDataSourceURI &QgsWFSDataSourceURI::operator=( const QgsWFSDataSourceURI &other )
+{
+  mURI = other.mURI;
+  mAuth = other.mAuth;
+  mGetEndpoints = other.mGetEndpoints;
+  mPostEndpoints = other.mPostEndpoints;
+  mDeprecatedURI = other.mDeprecatedURI;
+  return *this;
+}
+
 QSet<QString> QgsWFSDataSourceURI::unknownParamKeys() const
 {
   static const QSet<QString> knownKeys
