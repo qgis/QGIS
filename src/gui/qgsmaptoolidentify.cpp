@@ -1054,6 +1054,18 @@ bool QgsMapToolIdentify::identifyRasterLayer( QList<IdentifyResult> *results, Qg
   derivedAttributes.insert( derivedAttributesForPoint( QgsPoint( pointInCanvasCrs ) ) );
 #endif
 
+	// Get raster row and column of clicked point
+	// Thanks to the Value Tool plugin developers for the math
+	const QgsRectangle extent = dprovider->extent();
+	const double xres = extent.width() / dprovider->xSize();
+	const double yres = extent.height() / dprovider->ySize();
+
+	const int raster_row = std::floor((extent.yMaximum() - point.y()) / yres);
+	const int raster_col = std::floor((point.x() - extent.xMinimum()) / xres);
+
+	derivedAttributes.insert( "Clicked raster row", QLocale().toString( raster_row ));
+	derivedAttributes.insert( "Clicked raster column", QLocale().toString( raster_col ));
+
   if ( identifyResult.isValid() )
   {
     QMap<int, QVariant> values = identifyResult.results();
