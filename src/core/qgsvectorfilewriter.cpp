@@ -704,16 +704,19 @@ void QgsVectorFileWriter::init( QString vectorFileName,
           }
 
           case QVariant::Map:
+          {
             // handle GPKG conversion to JSON
-            if ( mOgrDriverName == QLatin1String( "GPKG" ) )
+            const char *pszDataSubTypes = GDALGetMetadataItem( poDriver, GDAL_DMD_CREATIONFIELDDATASUBTYPES, nullptr );
+            if ( pszDataSubTypes && strstr( pszDataSubTypes, "JSON" ) )
             {
               ogrType = OFTString;
               ogrSubType = OFSTJSON;
               break;
             }
+          }
 
             //intentional fall-through
-            FALLTHROUGH
+          FALLTHROUGH
 
           case QVariant::List:
             // handle GPKG conversion to JSON
@@ -2936,8 +2939,10 @@ gdal::ogr_feature_unique_ptr QgsVectorFileWriter::createFeature( const QgsFeatur
         FALLTHROUGH
 
       case QVariant::Map:
+      {
         // handle GPKG conversion to JSON
-        if ( mOgrDriverName == QLatin1String( "GPKG" ) )
+        const char *pszDataSubTypes = GDALGetMetadataItem( OGRGetDriverByName( mOgrDriverName.toLocal8Bit().constData() ), GDAL_DMD_CREATIONFIELDDATASUBTYPES, nullptr );
+        if ( pszDataSubTypes && strstr( pszDataSubTypes, "JSON" ) )
         {
           const QJsonDocument doc = QJsonDocument::fromVariant( attrValue );
           QString jsonString;
@@ -2949,9 +2954,10 @@ gdal::ogr_feature_unique_ptr QgsVectorFileWriter::createFeature( const QgsFeatur
           OGR_F_SetFieldString( poFeature.get(), ogrField, mCodec->fromUnicode( jsonString.constData() ) );
           break;
         }
+      }
 
         //intentional fall-through
-        FALLTHROUGH
+      FALLTHROUGH
 
 
       default:
