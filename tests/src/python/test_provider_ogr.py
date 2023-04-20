@@ -3396,6 +3396,40 @@ class PyQgsOGRProvider(unittest.TestCase):
             self.assertEqual(fields[2].name(), 'field2')
             self.assertEqual(fields[2].comment(), '')
 
+    @unittest.skipIf(int(gdal.VersionInfo('VERSION_NUM')) < GDAL_COMPUTE_VERSION(3, 7, 0), "GDAL 3.7 required")
+    def test_exporter_capabilities(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            dest_file_name = os.path.join(temp_dir,
+                                          'test_gpkg.gpkg')
+
+            layer = QgsVectorLayer("point?crs=epsg:4326&field=id:integer",
+                                   "Scratch point layer", "memory")
+
+            exporter = QgsVectorLayerExporter(dest_file_name,
+                                              'ogr',
+                                              layer.fields(),
+                                              layer.wkbType(),
+                                              layer.crs())
+
+            self.assertTrue(
+                exporter.attributeEditCapabilities() & Qgis.VectorDataProviderAttributeEditCapability.EditAlias)
+            self.assertTrue(
+                exporter.attributeEditCapabilities() & Qgis.VectorDataProviderAttributeEditCapability.EditComment)
+
+            dest_file_name = os.path.join(temp_dir,
+                                          'test_shp.shp')
+
+            exporter = QgsVectorLayerExporter(dest_file_name,
+                                              'ogr',
+                                              layer.fields(),
+                                              layer.wkbType(),
+                                              layer.crs())
+
+            self.assertFalse(
+                exporter.attributeEditCapabilities() & Qgis.VectorDataProviderAttributeEditCapability.EditAlias)
+            self.assertFalse(
+                exporter.attributeEditCapabilities() & Qgis.VectorDataProviderAttributeEditCapability.EditComment)
+
 
 if __name__ == '__main__':
     unittest.main()

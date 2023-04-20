@@ -655,6 +655,24 @@ class CORE_EXPORT Qgis
     Q_ENUM( VectorExportResult )
 
     /**
+     * Capabilities supported by a QgsVectorFileWriter object.
+     * \since QGIS 3.32
+     */
+    enum class VectorFileWriterCapability : int
+    {
+      FieldAliases = 1 << 0, //!< Writer can support field aliases
+      FieldComments = 1 << 2, //!< Writer can support field comments
+    };
+    Q_ENUM( VectorFileWriterCapability )
+
+    /**
+     * Capabilities supported by a QgsVectorFileWriter object.
+     * \since QGIS 3.32
+     */
+    Q_DECLARE_FLAGS( VectorFileWriterCapabilities, VectorFileWriterCapability )
+    Q_FLAG( VectorFileWriterCapabilities )
+
+    /**
      * SqlLayerDefinitionCapability enum lists the arguments supported by the provider when creating SQL query layers.
      * \since QGIS 3.22
      */
@@ -3554,6 +3572,7 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::LayerTreeFilterFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::LabelLinePlacementFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::LabelPolygonPlacementFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::DatabaseProviderConnectionCapabilities2 )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::VectorFileWriterCapabilities )
 
 // hack to workaround warnings when casting void pointers
 // retrieved from QLibrary::resolve to function pointers.
