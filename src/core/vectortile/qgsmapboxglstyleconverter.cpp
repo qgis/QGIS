@@ -136,7 +136,17 @@ void QgsMapBoxGlStyleConverter::parseLayers( const QVariantList &layers, QgsMapB
     const QString layerName = jsonLayer.value( QStringLiteral( "source-layer" ) ).toString();
 
     const int minZoom = jsonLayer.value( QStringLiteral( "minzoom" ), QStringLiteral( "-1" ) ).toInt();
-    const int maxZoom = jsonLayer.value( QStringLiteral( "maxzoom" ), QStringLiteral( "-1" ) ).toInt();
+
+    // WARNING -- the QGIS renderers for vector tiles treat maxzoom different to the MapBox Style Specifications.
+    // from the MapBox Specifications:
+    //
+    // "The maximum zoom level for the layer. At zoom levels equal to or greater than the maxzoom, the layer will be hidden."
+    //
+    // However the QGIS styles will be hidden if the zoom level is GREATER THAN (not equal to) maxzoom.
+    // Accordingly we need to subtract 1 from the maxzoom value in the JSON:
+    int maxZoom = jsonLayer.value( QStringLiteral( "maxzoom" ), QStringLiteral( "-1" ) ).toInt();
+    if ( maxZoom != -1 )
+      maxZoom--;
 
     const bool enabled = jsonLayer.value( QStringLiteral( "visibility" ) ).toString() != QLatin1String( "none" );
 
