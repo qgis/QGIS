@@ -28,6 +28,7 @@ from qgis.PyQt.QtCore import (
 )
 from qgis.core import (
     NULL,
+    Qgis,
     QgsCoordinateReferenceSystem,
     QgsCoordinateTransform,
     QgsCoordinateTransformContext,
@@ -1644,6 +1645,52 @@ class TestQgsVectorFileWriter(unittest.TestCase):
         self.assertEqual(field.type(), QVariant.Map)
         f = next(layer.getFeatures())
         self.assertEqual(f.attributes()[1], attr_val)
+
+    @unittest.skipIf(int(gdal.VersionInfo('VERSION_NUM')) < GDAL_COMPUTE_VERSION(3, 7, 0), "GDAL 3.7 required")
+    def test_field_capabilities(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            dest_file_name = os.path.join(temp_dir,
+                                          'test_gpkg.gpkg')
+            fields = QgsFields()
+            fields.append(QgsField("note", QVariant.Double))
+            lyrname = "test1"
+            opts = QgsVectorFileWriter.SaveVectorOptions()
+            opts.driverName = "GPKG"
+            opts.layerName = lyrname
+            opts.actionOnExistingFile = QgsVectorFileWriter.CreateOrOverwriteFile
+            writer = QgsVectorFileWriter.create(dest_file_name, fields,
+                                                QgsWkbTypes.Point,
+                                                QgsCoordinateReferenceSystem.fromEpsgId(
+                                                    4326),
+                                                QgsCoordinateTransformContext(),
+                                                opts, QgsFeatureSink.SinkFlags(),
+                                                None, lyrname)
+
+            self.assertEqual(writer.driver(), 'GPKG')
+            self.assertEqual(writer.driverLongName(), 'GeoPackage')
+            self.assertTrue(
+                writer.capabilities() & Qgis.VectorFileWriterCapability.FieldAliases)
+            self.assertTrue(
+                writer.capabilities() & Qgis.VectorFileWriterCapability.FieldComments)
+
+            dest_file_name = os.path.join(temp_dir,
+                                          'test_shp.shp')
+            opts.driverName = "ESRI Shapefile"
+            writer = QgsVectorFileWriter.create(dest_file_name, fields,
+                                                QgsWkbTypes.Point,
+                                                QgsCoordinateReferenceSystem.fromEpsgId(
+                                                    4326),
+                                                QgsCoordinateTransformContext(),
+                                                opts,
+                                                QgsFeatureSink.SinkFlags(),
+                                                None, lyrname)
+
+            self.assertEqual(writer.driver(), 'ESRI Shapefile')
+            self.assertEqual(writer.driverLongName(), 'ESRI Shapefile')
+            self.assertFalse(
+                writer.capabilities() & Qgis.VectorFileWriterCapability.FieldAliases)
+            self.assertFalse(
+                writer.capabilities() & Qgis.VectorFileWriterCapability.FieldComments)
 
 
 if __name__ == '__main__':

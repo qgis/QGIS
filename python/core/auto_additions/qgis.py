@@ -728,6 +728,14 @@ Qgis.VectorExportResult.__doc__ = 'Vector layer export result codes.\n\n.. versi
 # --
 Qgis.VectorExportResult.baseClass = Qgis
 # monkey patching scoped based enum
+Qgis.VectorFileWriterCapability.FieldAliases.__doc__ = "Writer can support field aliases"
+Qgis.VectorFileWriterCapability.FieldComments.__doc__ = "Writer can support field comments"
+Qgis.VectorFileWriterCapability.__doc__ = 'Capabilities supported by a :py:class:`QgsVectorFileWriter` object.\n\n.. versionadded:: 3.32\n\n' + '* ``FieldAliases``: ' + Qgis.VectorFileWriterCapability.FieldAliases.__doc__ + '\n' + '* ``FieldComments``: ' + Qgis.VectorFileWriterCapability.FieldComments.__doc__
+# --
+Qgis.VectorFileWriterCapability.baseClass = Qgis
+Qgis.VectorFileWriterCapabilities.baseClass = Qgis
+VectorFileWriterCapabilities = Qgis  # dirty hack since SIP seems to introduce the flags in module
+# monkey patching scoped based enum
 Qgis.SqlLayerDefinitionCapability.SubsetStringFilter.__doc__ = "SQL layer definition supports subset string filter"
 Qgis.SqlLayerDefinitionCapability.GeometryColumn.__doc__ = "SQL layer definition supports geometry column"
 Qgis.SqlLayerDefinitionCapability.PrimaryKeys.__doc__ = "SQL layer definition supports primary keys"
