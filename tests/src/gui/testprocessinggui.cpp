@@ -8198,6 +8198,8 @@ void TestProcessingGui::testFieldMapWidget()
   map2.insert( QStringLiteral( "name" ), QStringLiteral( "n2" ) );
   map2.insert( QStringLiteral( "type" ), static_cast< int >( QVariant::String ) );
   map2.insert( QStringLiteral( "expression" ), QStringLiteral( "'abc' || \"def\"" ) );
+  map2.insert( QStringLiteral( "alias" ), QStringLiteral( "my alias" ) );
+  map2.insert( QStringLiteral( "comment" ), QStringLiteral( "my comment" ) );
 
   QSignalSpy spy( &widget, &QgsProcessingFieldMapPanelWidget::changed );
   widget.setValue( QVariantList() << map << map2 );
@@ -8212,6 +8214,8 @@ void TestProcessingGui::testFieldMapWidget()
   QCOMPARE( widget.value().toList().at( 1 ).toMap().value( QStringLiteral( "name" ) ).toString(), QStringLiteral( "n2" ) );
   QCOMPARE( widget.value().toList().at( 1 ).toMap().value( QStringLiteral( "type" ) ).toInt(), static_cast< int >( QVariant::String ) );
   QCOMPARE( widget.value().toList().at( 1 ).toMap().value( QStringLiteral( "expression" ) ).toString(), QStringLiteral( "'abc' || \"def\"" ) );
+  QCOMPARE( widget.value().toList().at( 1 ).toMap().value( QStringLiteral( "alias" ) ).toString(), QStringLiteral( "my alias" ) );
+  QCOMPARE( widget.value().toList().at( 1 ).toMap().value( QStringLiteral( "comment" ) ).toString(), QStringLiteral( "my comment" ) );
 }
 
 void TestProcessingGui::testFieldMapWrapper()
@@ -8237,6 +8241,8 @@ void TestProcessingGui::testFieldMapWrapper()
     map2.insert( QStringLiteral( "name" ), QStringLiteral( "n2" ) );
     map2.insert( QStringLiteral( "type" ), static_cast< int >( QVariant::String ) );
     map2.insert( QStringLiteral( "expression" ), QStringLiteral( "'abc' || \"def\"" ) );
+    map2.insert( QStringLiteral( "alias" ), QStringLiteral( "my alias" ) );
+    map2.insert( QStringLiteral( "comment" ), QStringLiteral( "my comment" ) );
 
     QSignalSpy spy( &wrapper, &QgsProcessingFieldMapWidgetWrapper::widgetValueHasChanged );
     wrapper.setWidgetValue( QVariantList() << map << map2, context );
@@ -8249,6 +8255,8 @@ void TestProcessingGui::testFieldMapWrapper()
     QCOMPARE( wrapper.widgetValue().toList().at( 1 ).toMap().value( QStringLiteral( "name" ) ).toString(), QStringLiteral( "n2" ) );
     QCOMPARE( wrapper.widgetValue().toList().at( 1 ).toMap().value( QStringLiteral( "type" ) ).toInt(), static_cast< int >( QVariant::String ) );
     QCOMPARE( wrapper.widgetValue().toList().at( 1 ).toMap().value( QStringLiteral( "expression" ) ).toString(), QStringLiteral( "'abc' || \"def\"" ) );
+    QCOMPARE( wrapper.widgetValue().toList().at( 1 ).toMap().value( QStringLiteral( "alias" ) ).toString(), QStringLiteral( "my alias" ) );
+    QCOMPARE( wrapper.widgetValue().toList().at( 1 ).toMap().value( QStringLiteral( "comment" ) ).toString(), QStringLiteral( "my comment" ) );
 
     QCOMPARE( static_cast< QgsProcessingFieldMapPanelWidget * >( wrapper.wrappedWidget() )->value().toList().count(), 2 );
     QCOMPARE( static_cast< QgsProcessingFieldMapPanelWidget * >( wrapper.wrappedWidget() )->value().toList().at( 0 ).toMap().value( QStringLiteral( "name" ) ).toString(), QStringLiteral( "n" ) );
