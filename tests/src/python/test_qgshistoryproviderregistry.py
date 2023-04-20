@@ -49,10 +49,10 @@ class TestHistoryProvider(QgsAbstractHistoryProvider):
     def id(self) -> str:
         return 'test_provider'
 
-    def createNodeForEntry(self, entry):
+    def createNodeForEntry(self, entry, context):
         return TestEntryNode(entry.entry)
 
-    def updateNodeForEntry(self, node, entry):
+    def updateNodeForEntry(self, node, entry, context):
         node.val = entry.entry
 
         new_child_node = TestEntryNode('my child')

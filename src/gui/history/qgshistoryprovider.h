@@ -23,6 +23,7 @@
 
 class QgsHistoryEntryNode;
 class QgsHistoryEntry;
+class QgsHistoryWidgetContext;
 
 /**
  * Abstract base class for objects which track user history (i.e. operations performed through the GUI).
@@ -57,14 +58,14 @@ class GUI_EXPORT QgsAbstractHistoryProvider
      *
      * \since QGIS 3.32
      */
-    virtual QgsHistoryEntryNode *createNodeForEntry( const QgsHistoryEntry &entry ) SIP_FACTORY;
+    virtual QgsHistoryEntryNode *createNodeForEntry( const QgsHistoryEntry &entry, const QgsHistoryWidgetContext &context ) SIP_FACTORY;
 
     /**
      * Updates an existing history \a node for the given \a entry.
      *
      * \since QGIS 3.32
      */
-    virtual void updateNodeForEntry( QgsHistoryEntryNode *node, const QgsHistoryEntry &entry );
+    virtual void updateNodeForEntry( QgsHistoryEntryNode *node, const QgsHistoryEntry &entry, const QgsHistoryWidgetContext &context );
 
 };
 

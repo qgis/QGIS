@@ -19,6 +19,7 @@
 #include "qgis_gui.h"
 #include "qgis_sip.h"
 #include "qgis.h"
+#include "qgshistorywidgetcontext.h"
 #include <QAbstractItemModel>
 
 class QWidget;
@@ -57,6 +58,7 @@ class GUI_EXPORT QgsHistoryEntryModel : public QAbstractItemModel
     QgsHistoryEntryModel( const QString &providerId = QString(),
                           Qgis::HistoryProviderBackends backends = Qgis::HistoryProviderBackend::LocalProfile,
                           QgsHistoryProviderRegistry *registry = nullptr,
+                          const QgsHistoryWidgetContext &context = QgsHistoryWidgetContext(),
                           QObject *parent SIP_TRANSFERTHIS = nullptr );
 
     ~QgsHistoryEntryModel() override;
@@ -85,6 +87,8 @@ class GUI_EXPORT QgsHistoryEntryModel : public QAbstractItemModel
     //! Returns index for a given node
     QModelIndex node2index( QgsHistoryEntryNode *node ) const;
     QModelIndex indexOfParentNode( QgsHistoryEntryNode *parentNode ) const;
+
+    QgsHistoryWidgetContext mContext;
 
     std::unique_ptr< QgsHistoryEntryRootNode > mRootNode;
     QgsHistoryProviderRegistry *mRegistry = nullptr;
