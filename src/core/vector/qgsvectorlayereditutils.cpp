@@ -760,10 +760,18 @@ bool QgsVectorLayerEditUtils::mergeFeatures( const QgsFeatureId &targetFeatureId
       mLayer->deleteFeature( *feature_it );
   }
 
-  // Modify merge feature
+  // Modify target feature or create a new one if invalid
   QgsGeometry mergeGeometry = unionGeometry;
-  mLayer->changeGeometry( targetFeatureId, mergeGeometry );
-  mLayer->changeAttributeValues( targetFeatureId, newAttributes );
+  if ( targetFeatureId == FID_NULL )
+  {
+    QgsFeature mergeFeature = QgsVectorLayerUtils::createFeature( mLayer, mergeGeometry, newAttributes );
+    mLayer->addFeature( mergeFeature );
+  }
+  else
+  {
+    mLayer->changeGeometry( targetFeatureId, mergeGeometry );
+    mLayer->changeAttributeValues( targetFeatureId, newAttributes );
+  }
 
   mLayer->endEditCommand();
 

@@ -108,9 +108,6 @@ QgsMergeAttributesDialog::QgsMergeAttributesDialog( const QgsFeatureList &featur
       break;
   }
 
-  if ( ! mFeatureList.isEmpty() )
-    mTargetFeatureId = mFeatureList.first().id();
-
   connect( mSkipAllButton, &QAbstractButton::clicked, this, &QgsMergeAttributesDialog::setAllToSkip );
   connect( mTableWidget, &QTableWidget::cellChanged, this, &QgsMergeAttributesDialog::tableWidgetCellChanged );
 
@@ -237,12 +234,7 @@ void QgsMergeAttributesDialog::createTableWidgetContents()
     int idx = mTableWidget->horizontalHeaderItem( j )->data( FieldIndex ).toInt();
     bool setToManual = false;
 
-    // For the Id use the target feature
-    if ( j == 0 )
-    {
-      mTableWidget->item( mTableWidget->rowCount() - 1, j )->setData( Qt::DisplayRole, mTargetFeatureId );
-    }
-    else if ( !mVectorLayer->dataProvider()->defaultValueClause( idx ).isEmpty() )
+    if ( !mVectorLayer->dataProvider()->defaultValueClause( idx ).isEmpty() )
     {
       mTableWidget->item( mTableWidget->rowCount() - 1, j )->setData( Qt::DisplayRole, mVectorLayer->dataProvider()->defaultValueClause( idx ) );
       setToManual = true;
