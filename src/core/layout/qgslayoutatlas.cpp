@@ -32,7 +32,7 @@
 QgsLayoutAtlas::QgsLayoutAtlas( QgsLayout *layout )
   : QObject( layout )
   , mLayout( layout )
-  , mFilenameExpressionString( QStringLiteral( "'output_'||@atlas_featurenumber" ) )
+  , mFilenameExpressionString( QStringLiteral( "'output_' || lpad(@atlas_featurenumber, length(to_string(@atlas_totalfeatures)), 0)" ) )
 {
 
   //listen out for layer removal

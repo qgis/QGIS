@@ -75,7 +75,7 @@ void QgsLayoutAtlasToImageAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterExpression( QStringLiteral( "SORTBY_EXPRESSION" ), QObject::tr( "Sort expression" ), QString(), QStringLiteral( "COVERAGE_LAYER" ), true ) );
   addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "SORTBY_REVERSE" ), QObject::tr( "Reverse sort order (used when a sort expression is provided)" ), false, true ) );
 
-  addParameter( new QgsProcessingParameterExpression( QStringLiteral( "FILENAME_EXPRESSION" ), QObject::tr( "Output filename expression" ), QStringLiteral( "'output_'||@atlas_featurenumber" ), QStringLiteral( "COVERAGE_LAYER" ) ) );
+  addParameter( new QgsProcessingParameterExpression( QStringLiteral( "FILENAME_EXPRESSION" ), QObject::tr( "Output filename expression" ), QStringLiteral( "'output_' || lpad(@atlas_featurenumber, length(to_string(@atlas_totalfeatures)), 0)" ), QStringLiteral( "COVERAGE_LAYER" ) ) );
   addParameter( new QgsProcessingParameterFile( QStringLiteral( "FOLDER" ), QObject::tr( "Output folder" ), QgsProcessingParameterFile::Folder ) );
 
 
