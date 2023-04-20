@@ -20,12 +20,13 @@
 
 #include <QTextBrowser>
 
-QgsHistoryWidget::QgsHistoryWidget( const QString &providerId, Qgis::HistoryProviderBackends backends, QgsHistoryProviderRegistry *registry, QWidget *parent )
+QgsHistoryWidget::QgsHistoryWidget( const QString &providerId, Qgis::HistoryProviderBackends backends, QgsHistoryProviderRegistry *registry, const QgsHistoryWidgetContext &context, QWidget *parent )
   : QgsPanelWidget( parent )
+  , mContext( context )
 {
   setupUi( this );
 
-  mModel = new QgsHistoryEntryModel( providerId, backends, registry, this );
+  mModel = new QgsHistoryEntryModel( providerId, backends, registry, mContext, this );
   mProxyModel = new QgsHistoryEntryProxyModel( this );
   mProxyModel->setSourceModel( mModel );
 
@@ -42,10 +43,10 @@ void QgsHistoryWidget::currentItemChanged( const QModelIndex &selected, const QM
   QWidget *newWidget = nullptr;
   if ( QgsHistoryEntryNode *node = mModel->index2node( mProxyModel->mapToSource( selected ) ) )
   {
-    newWidget = node->createWidget();
+    newWidget = node->createWidget( mContext );
     if ( !newWidget )
     {
-      const QString html = node->html();
+      const QString html = node->html( mContext );
       if ( !html.isEmpty() )
       {
         QTextBrowser *htmlBrowser = new QTextBrowser();

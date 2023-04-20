@@ -27,6 +27,7 @@
 class QWidget;
 class QAction;
 class QgsHistoryEntryGroup;
+class QgsHistoryWidgetContext;
 
 /**
  * Base class for nodes representing a QgsHistoryEntry.
@@ -72,7 +73,7 @@ class GUI_EXPORT QgsHistoryEntryNode
      *
      * Subclasses should implement this method or createWidget(), but not both.
      */
-    virtual QString html() const;
+    virtual QString html( const QgsHistoryWidgetContext &context ) const;
 
     /**
      * Returns a new widget which should be shown to users when selecting the node.
@@ -80,7 +81,7 @@ class GUI_EXPORT QgsHistoryEntryNode
      * If a NULLPTR is returned, the node's html() method will be called instead to
      * create the node's content.
      */
-    virtual QWidget *createWidget() SIP_FACTORY;
+    virtual QWidget *createWidget( const QgsHistoryWidgetContext &context ) SIP_FACTORY;
 
 #if 0  // currently unused
 
@@ -91,7 +92,7 @@ class GUI_EXPORT QgsHistoryEntryNode
      *
      * Actions should be parented to the specified \a parent widget.
      */
-    virtual QList< QAction * > actions( QWidget *parent );
+    virtual QList< QAction * > actions( const QgsHistoryWidgetContext &context, QWidget *parent );
 
 #endif
 

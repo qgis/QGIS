@@ -26,12 +26,12 @@ int QgsHistoryEntryNode::childCount() const
   return 0;
 }
 
-QString QgsHistoryEntryNode::html() const
+QString QgsHistoryEntryNode::html( const QgsHistoryWidgetContext & ) const
 {
   return QString();
 }
 
-QWidget *QgsHistoryEntryNode::createWidget()
+QWidget *QgsHistoryEntryNode::createWidget( const QgsHistoryWidgetContext & )
 {
   return nullptr;
 }

@@ -80,8 +80,9 @@ class QgsHistoryEntryDateGroupNode : public QgsHistoryEntryGroup
 };
 ///@endcond
 
-QgsHistoryEntryModel::QgsHistoryEntryModel( const QString &providerId, Qgis::HistoryProviderBackends backends, QgsHistoryProviderRegistry *registry, QObject *parent )
+QgsHistoryEntryModel::QgsHistoryEntryModel( const QString &providerId, Qgis::HistoryProviderBackends backends, QgsHistoryProviderRegistry *registry, const QgsHistoryWidgetContext &context, QObject *parent )
   : QAbstractItemModel( parent )
+  , mContext( context )
   , mRegistry( registry ? registry : QgsGui::historyProviderRegistry() )
   , mProviderId( providerId )
   , mBackends( backends )
@@ -96,7 +97,7 @@ QgsHistoryEntryModel::QgsHistoryEntryModel( const QString &providerId, Qgis::His
     if ( !provider )
       continue;
 
-    if ( QgsHistoryEntryNode *node = provider->createNodeForEntry( entry.entry ) )
+    if ( QgsHistoryEntryNode *node = provider->createNodeForEntry( entry.entry, mContext ) )
     {
       mIdToNodeHash.insert( entry.id, node );
       mRootNode->addEntryNode( entry, node, nullptr );
@@ -202,7 +203,7 @@ void QgsHistoryEntryModel::entryAdded( long long id, const QgsHistoryEntry &entr
   if ( !provider )
     return;
 
-  if ( QgsHistoryEntryNode *node = provider->createNodeForEntry( entry.entry ) )
+  if ( QgsHistoryEntryNode *node = provider->createNodeForEntry( entry.entry, mContext ) )
   {
     mIdToNodeHash.insert( id, node );
     mRootNode->addEntryNode( entry, node, this );
@@ -228,7 +229,7 @@ void QgsHistoryEntryModel::entryUpdated( long long id, const QVariantMap &entry,
 
     const QModelIndex nodeIndex = node2index( node );
     const int existingChildRows = node->childCount();
-    provider->updateNodeForEntry( node, historyEntry );
+    provider->updateNodeForEntry( node, historyEntry, mContext );
     const int newChildRows = node->childCount();
 
     if ( newChildRows < existingChildRows )

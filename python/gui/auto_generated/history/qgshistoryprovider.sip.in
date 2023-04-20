@@ -37,14 +37,14 @@ Abstract base class for objects which track user history (i.e. operations perfor
 Returns the provider's unique id, which is used to associate existing history entries with the provider.
 %End
 
-    virtual QgsHistoryEntryNode *createNodeForEntry( const QgsHistoryEntry &entry ) /Factory/;
+    virtual QgsHistoryEntryNode *createNodeForEntry( const QgsHistoryEntry &entry, const QgsHistoryWidgetContext &context ) /Factory/;
 %Docstring
 Creates a new history node for the given ``entry``.
 
 .. versionadded:: 3.32
 %End
 
-    virtual void updateNodeForEntry( QgsHistoryEntryNode *node, const QgsHistoryEntry &entry );
+    virtual void updateNodeForEntry( QgsHistoryEntryNode *node, const QgsHistoryEntry &entry, const QgsHistoryWidgetContext &context );
 %Docstring
 Updates an existing history ``node`` for the given ``entry``.
 

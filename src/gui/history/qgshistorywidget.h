@@ -20,11 +20,13 @@
 #include "qgis_gui.h"
 #include "ui_qgshistorywidgetbase.h"
 #include "qgspanelwidget.h"
+#include "qgshistorywidgetcontext.h"
 
 #include <QSortFilterProxyModel>
 
 class QgsHistoryProviderRegistry;
 class QgsHistoryEntryModel;
+class QgsMessageBar;
 
 #ifndef SIP_RUN
 
@@ -71,6 +73,7 @@ class GUI_EXPORT QgsHistoryWidget : public QgsPanelWidget, private Ui::QgsHistor
     QgsHistoryWidget( const QString &providerId = QString(),
                       Qgis::HistoryProviderBackends backends = Qgis::HistoryProviderBackend::LocalProfile,
                       QgsHistoryProviderRegistry *registry = nullptr,
+                      const QgsHistoryWidgetContext &context = QgsHistoryWidgetContext(),
                       QWidget *parent = nullptr );
 
   private slots:
@@ -81,6 +84,7 @@ class GUI_EXPORT QgsHistoryWidget : public QgsPanelWidget, private Ui::QgsHistor
 
     QgsHistoryEntryModel *mModel = nullptr;
     QgsHistoryEntryProxyModel *mProxyModel = nullptr;
+    QgsHistoryWidgetContext mContext;
 
 };
 
