@@ -434,7 +434,15 @@ bool QgsMapBoxGlStyleConverter::parseFillLayer( const QVariantMap &jsonLayer, Qg
     symbol->setOpacity( fillOpacity );
   }
 
-  if ( fillOutlineColor.isValid() )
+  // some complex logic here!
+  // by default a MapBox fill style will share the same stroke color as the fill color.
+  // This is generally desirable and the 1px stroke can help to hide boundaries between features which
+  // would otherwise be visible due to antialiasing effects.
+  // BUT if the outline color is semi-transparent, then drawing the stroke will result in a double rendering
+  // of strokes for adjacent polygons, resulting in visible seams between tiles. Accordingly, we only
+  // set the stroke color if it's a completely different color to the fill (ie the style designer explicitly
+  // wants a visible stroke) OR the stroke color is opaque and the double-rendering artifacts aren't an issue
+  if ( fillOutlineColor.isValid() && ( fillOutlineColor.alpha() == 255 || fillOutlineColor != fillColor ) )
   {
     // mapbox fill strokes are always 1 px wide
     fillSymbol->setStrokeWidth( 0 );
