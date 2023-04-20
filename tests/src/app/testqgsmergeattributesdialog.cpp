@@ -85,8 +85,8 @@ class TestQgsMergeattributesDialog : public QObject
       QgsMergeAttributesDialog dialog( QgsFeatureList() << f1 << f2, &layer, mQgisApp->mapCanvas() );
 
       // At beginnning the first feature of the list is the target
-      QCOMPARE( dialog.targetFeatureId(), f1.id() );
-      QCOMPARE( dialog.mergedAttributes().first(), f1.id() );
+      QCOMPARE( dialog.targetFeatureId(), FID_NULL );
+      QCOMPARE( dialog.mergedAttributes().first(), "Autogenerate" );
 
       // Check after taking feature with largest geometry
       QVERIFY( QMetaObject::invokeMethod( &dialog, "mFromLargestPushButton_clicked" ) );
