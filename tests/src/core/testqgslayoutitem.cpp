@@ -499,12 +499,12 @@ void TestQgsLayoutItem::dataDefinedPosition()
   QgsLayoutItemPage *page0 = new QgsLayoutItemPage( &l );
   page0->setPageSize( "A4" );
   l.pageCollection()->addPage( page0 );
-  std::unique_ptr< QgsLayoutItemPage > page1( new QgsLayoutItemPage( &l ) );
+  QgsLayoutItemPage *page1 = new QgsLayoutItemPage( &l );
   page1->setPageSize( "A2", QgsLayoutItemPage::Landscape );
-  l.pageCollection()->addPage( page1.release() );
-  std::unique_ptr< QgsLayoutItemPage > page2( new QgsLayoutItemPage( &l ) );
+  l.pageCollection()->addPage( page1 );
+  QgsLayoutItemPage *page2 = new QgsLayoutItemPage( &l );
   page2->setPageSize( "A3", QgsLayoutItemPage::Landscape );
-  l.pageCollection()->addPage( page2.release() );
+  l.pageCollection()->addPage( page2 );
 
   //validate that the page is accounted for even with DD variable during movement
   item->dataDefinedProperties().setProperty( QgsLayoutObject::PositionX, QgsProperty() );
