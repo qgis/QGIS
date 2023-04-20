@@ -84,14 +84,56 @@ class CORE_EXPORT QgsVectorTileBasicRendererStyle
     //! Returns whether this style is enabled (used for rendering)
     bool isEnabled() const { return mEnabled; }
 
-    //! Sets minimum zoom level index (negative number means no limit)
+    /**
+     * Sets minimum zoom level index (negative number means no limit).
+     *
+     * The style will be rendered if the zoom level is greater than or equal
+     * to \a minZoom.
+     *
+     * \see minZoomLevel()
+     * \see setMaxZoomLevel()
+     */
     void setMinZoomLevel( int minZoom ) { mMinZoomLevel = minZoom; }
-    //! Returns minimum zoom level index (negative number means no limit)
+
+    /**
+     * Returns the minimum zoom level index (negative number means no limit).
+     *
+     * The style will be rendered if the zoom level is greater than or equal
+     * to the this level.
+     *
+     * \see setMinZoomLevel()
+     * \see maxZoomLevel()
+     */
     int minZoomLevel() const { return mMinZoomLevel; }
 
-    //! Sets maximum zoom level index (negative number means no limit)
+    /**
+     * Sets maximum zoom level index (negative number means no limit).
+     *
+     * The style will be rendered if the zoom level is less than or equal
+     * to \a maxZoom.
+     *
+     * \warning This differs from the handling of the max zoom as defined
+     * in the MapBox Style Specifications, where the style is rendered
+     * only if the zoom level is less than the maximum zoom.
+     *
+     * \see maxZoomLevel()
+     * \see setMinZoomLevel()
+     */
     void setMaxZoomLevel( int maxZoom ) { mMaxZoomLevel = maxZoom; }
-    //! Returns maxnimum zoom level index (negative number means no limit)
+
+    /**
+     * Returns the maximum zoom level index (negative number means no limit).
+     *
+     * The style will be rendered if the zoom level is less than or equal
+     * to the maximum zoom.
+     *
+     * \warning This differs from the handling of the max zoom as defined
+     * in the MapBox Style Specifications, where the style is rendered
+     * only if the zoom level is less than the maximum zoom.
+     *
+     * \see setMaxZoomLevel()
+     * \see minZoomLevel()
+     */
     int maxZoomLevel() const { return mMaxZoomLevel; }
 
     //! Returns whether the style is active at given zoom level (also checks "enabled" flag)
