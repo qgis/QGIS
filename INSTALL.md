@@ -199,6 +199,12 @@ To build [QGIS server landing page/catalog webapp](https://docs.qgis.org/latest/
 
 Additionally, the cmake flag `WITH_SERVER_LANDINGPAGE_WEBAPP` needs to be turned on.
 
+Make sure you have a compiler installed:
+
+```bash
+apt install build-essential
+```
+
 ## 3.4. Setup ccache (Optional, but recommended)
 
 You should also setup ccache to speed up compile times:
@@ -246,7 +252,7 @@ git clone git@github.com:qgis/QGIS.git
 ```
 
 ## 3.7. Starting the compile
-
+ 
 I compile my development version of QGIS into my ~/apps directory to avoid
 conflicts with Ubuntu packages that may be under /usr. This way for example
 you can use the binary packages of QGIS on your system along side with your
