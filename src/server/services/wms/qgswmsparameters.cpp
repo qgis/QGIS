@@ -2349,7 +2349,7 @@ namespace QgsWms
     if ( options.contains( PdfFormatOption::PREDEFINED_MAP_SCALES ) )
     {
       QStringList scaleList = options[PdfFormatOption::PREDEFINED_MAP_SCALES].split( ',' );
-      for ( const auto &it : scaleList )
+      for ( const QString &it : std::as_const( scaleList ) )
       {
         bool ok = false;
         qreal scale = it.toDouble( &ok );
