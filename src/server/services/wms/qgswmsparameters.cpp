@@ -2337,7 +2337,7 @@ namespace QgsWms
     const QMap<QgsWmsParameters::PdfFormatOption, QString> options = formatOptions<QgsWmsParameters::PdfFormatOption>();
     if ( options.contains( PdfFormatOption::EXPORT_THEMES ) )
     {
-      themes = options[PdfFormatOption::EXPORT_THEMES].split( "," );
+      themes = options[PdfFormatOption::EXPORT_THEMES].split( ',' );
     }
     return themes;
   }
