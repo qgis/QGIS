@@ -33,6 +33,7 @@ QgsGdalSourceSelect::QgsGdalSourceSelect( QWidget *parent, Qt::WindowFlags fl, Q
   setupButtons( buttonBox );
 
   connect( radioSrcFile, &QRadioButton::toggled, this, &QgsGdalSourceSelect::radioSrcFile_toggled );
+  connect( radioSrcOgcApi, &QRadioButton::toggled, this, &QgsGdalSourceSelect::radioSrcOgcApi_toggled );
   connect( radioSrcProtocol, &QRadioButton::toggled, this, &QgsGdalSourceSelect::radioSrcProtocol_toggled );
   connect( cmbProtocolTypes, &QComboBox::currentTextChanged, this, &QgsGdalSourceSelect::cmbProtocolTypes_currentIndexChanged );
 
@@ -80,7 +81,7 @@ QgsGdalSourceSelect::QgsGdalSourceSelect( QWidget *parent, Qt::WindowFlags fl, Q
   mFileWidget->setOptions( QFileDialog::HideNameFilterDetails );
   connect( mFileWidget, &QgsFileWidget::fileChanged, this, [ = ]( const QString & path )
   {
-    mRasterPath = path;
+    mRasterPath = mIsOgcApi ? QStringLiteral( "OGCAPI:%1" ).arg( path ) : path;
     emit enableButtons( ! mRasterPath.isEmpty() );
     fillOpenOptions();
   } );
@@ -133,6 +134,18 @@ void QgsGdalSourceSelect::radioSrcFile_toggled( bool checked )
 
     emit enableButtons( !mFileWidget->filePath().isEmpty() );
 
+  }
+}
+
+void QgsGdalSourceSelect::radioSrcOgcApi_toggled( bool checked )
+{
+  mIsOgcApi = checked;
+  radioSrcFile_toggled( checked );
+  if ( checked )
+  {
+    const QString vectorPath = mFileWidget->filePath();
+    emit enableButtons( ! vectorPath.isEmpty() );
+    fillOpenOptions();
   }
 }
 
@@ -238,7 +251,7 @@ void QgsGdalSourceSelect::computeDataSources()
     }
   }
 
-  if ( radioSrcFile->isChecked() )
+  if ( radioSrcFile->isChecked() || radioSrcOgcApi->isChecked() )
   {
     for ( const auto &filePath : QgsFileWidget::splitFilePaths( mRasterPath ) )
     {

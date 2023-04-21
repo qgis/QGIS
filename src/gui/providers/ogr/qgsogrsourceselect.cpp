@@ -43,6 +43,7 @@ QgsOgrSourceSelect::QgsOgrSourceSelect( QWidget *parent, Qt::WindowFlags fl, Qgs
   QgsGui::enableAutoGeometryRestore( this );
 
   connect( radioSrcFile, &QRadioButton::toggled, this, &QgsOgrSourceSelect::radioSrcFile_toggled );
+  connect( radioSrcOgcApi, &QRadioButton::toggled, this, &QgsOgrSourceSelect::radioSrcOgcApi_toggled );
   connect( radioSrcDirectory, &QRadioButton::toggled, this, &QgsOgrSourceSelect::radioSrcDirectory_toggled );
   connect( radioSrcDatabase, &QRadioButton::toggled, this, &QgsOgrSourceSelect::radioSrcDatabase_toggled );
   connect( radioSrcProtocol, &QRadioButton::toggled, this, &QgsOgrSourceSelect::radioSrcProtocol_toggled );
@@ -115,7 +116,7 @@ QgsOgrSourceSelect::QgsOgrSourceSelect( QWidget *parent, Qt::WindowFlags fl, Qgs
   connect( mFileWidget, &QgsFileWidget::fileChanged, this, [ = ]( const QString & path )
   {
     mVectorPath = path;
-    if ( radioSrcFile->isChecked() || radioSrcDirectory->isChecked() )
+    if ( radioSrcFile->isChecked() || radioSrcDirectory->isChecked() || radioSrcOgcApi->isChecked() )
       emit enableButtons( ! mVectorPath.isEmpty() );
     fillOpenOptions();
   } );
@@ -440,10 +441,16 @@ void QgsOgrSourceSelect::computeDataSources( bool interactive )
                                      mAuthSettingsProtocol->password() ) );
     mDataSources << QgsProviderRegistry::instance()->encodeUri( QStringLiteral( "ogr" ), parts );
   }
-  else if ( radioSrcFile->isChecked() )
+  else if ( radioSrcFile->isChecked() || radioSrcOgcApi->isChecked() )
   {
     if ( mVectorPath.isEmpty() )
     {
+      if ( mIsOgcApi )
+      {
+        mDataSources.push_back( QStringLiteral( "OGCAPI:" ) );
+        return;
+      }
+
       if ( interactive )
       {
         QMessageBox::information( this,
@@ -458,7 +465,7 @@ void QgsOgrSourceSelect::computeDataSources( bool interactive )
       QVariantMap parts;
       if ( !openOptions.isEmpty() )
         parts.insert( QStringLiteral( "openOptions" ), openOptions );
-      parts.insert( QStringLiteral( "path" ), filePath );
+      parts.insert( QStringLiteral( "path" ), mIsOgcApi ? QStringLiteral( "OGCAPI:%1" ).arg( filePath ) : filePath );
       mDataSources << QgsProviderRegistry::instance()->encodeUri( QStringLiteral( "ogr" ), parts );
     }
   }
@@ -523,6 +530,23 @@ void QgsOgrSourceSelect::radioSrcFile_toggled( bool checked )
     mDataSourceType = QStringLiteral( "file" );
 
     emit enableButtons( ! mFileWidget->filePath().isEmpty() );
+  }
+}
+
+void QgsOgrSourceSelect::radioSrcOgcApi_toggled( bool checked )
+{
+  mIsOgcApi = checked;
+  radioSrcFile_toggled( checked );
+  if ( checked )
+  {
+    labelSrcDataset->setText( tr( "OGC API Endpoint" ) );
+    mVectorPath = mFileWidget->filePath();
+    emit enableButtons( ! mVectorPath.isEmpty() );
+    fillOpenOptions();
+  }
+  else
+  {
+    labelSrcDataset->setText( tr( "Vector Dataset(s)" ) );
   }
 }
 
