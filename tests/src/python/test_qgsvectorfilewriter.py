@@ -12,6 +12,7 @@ __copyright__ = 'Copyright 2012, The QGIS Project'
 
 import os
 import tempfile
+import json
 
 import osgeo.gdal  # NOQA
 import qgis  # NOQA
@@ -1601,6 +1602,48 @@ class TestQgsVectorFileWriter(unittest.TestCase):
         self.assertEqual(f['int'], NULL)
         f = next(features)
         self.assertEqual(f['int'], 12345)
+
+    @unittest.skipIf(int(gdal.VersionInfo('VERSION_NUM')) < GDAL_COMPUTE_VERSION(3, 7, 0), "GDAL 3.7 required")
+    def testWriteJsonMapToGpkg(self):
+
+        tmp_dir = QTemporaryDir()
+        tmp_path = tmp_dir.path()
+        dest_file_name = os.path.join(tmp_path, 'test.gpkg')
+        ds = ogr.GetDriverByName('GPKG').CreateDataSource(dest_file_name)
+        lyr = ds.CreateLayer('testLayer', geom_type=ogr.wkbLineString, options=['SPATIAL_INDEX=NO'])
+        field_def = ogr.FieldDefn('text_field', ogr.OFTString)
+        field_def.SetSubType(ogr.OFSTJSON)
+        lyr.CreateField(field_def)
+        f = ogr.Feature(lyr.GetLayerDefn())
+        attr_val = {'my_int': 1, 'my_str': 'str', 'my_list': [1, 2, 3]}
+        f['text_field'] = json.dumps(attr_val)
+        f.SetGeometry(ogr.CreateGeometryFromWkt('LINESTRING(1 2,3 4)'))
+        lyr.CreateFeature(f)
+        f = None
+        ds = None
+
+        layer = QgsVectorLayer(dest_file_name)
+        fields = layer.fields()
+        field = fields.at(1)
+        self.assertEqual(field.type(), QVariant.Map)
+        f = next(layer.getFeatures())
+        self.assertEqual(f.attributes()[1], attr_val)
+
+        dest_file_name_exported = os.path.join(tmp_path, 'test_exported.gpkg')
+        write_result, error_message = QgsVectorFileWriter.writeAsVectorFormat(
+            layer,
+            dest_file_name_exported,
+            'utf-8',
+            layer.crs(),
+            'GPKG')
+        self.assertEqual(write_result, QgsVectorFileWriter.NoError, error_message)
+
+        layer = QgsVectorLayer(dest_file_name_exported)
+        fields = layer.fields()
+        field = fields.at(1)
+        self.assertEqual(field.type(), QVariant.Map)
+        f = next(layer.getFeatures())
+        self.assertEqual(f.attributes()[1], attr_val)
 
 
 if __name__ == '__main__':
