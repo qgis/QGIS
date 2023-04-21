@@ -145,6 +145,7 @@ void QgsGdalSourceSelect::radioSrcOgcApi_toggled( bool checked )
   radioSrcFile_toggled( checked );
   if ( checked )
   {
+    rasterDatasetLabel->setText( tr( "OGC API Endpoint" ) );
     const QString vectorPath = mFileWidget->filePath();
     emit enableButtons( ! vectorPath.isEmpty() );
     if ( mRasterPath.isEmpty() )
@@ -152,6 +153,10 @@ void QgsGdalSourceSelect::radioSrcOgcApi_toggled( bool checked )
       mRasterPath = QStringLiteral( "OGCAPI:" );
     }
     fillOpenOptions();
+  }
+  else
+  {
+    rasterDatasetLabel->setText( tr( "Raster dataset(s)" ) );
   }
 }
 
