@@ -208,7 +208,7 @@ class Processing(object):
                         if result:
                             layers_result = []
                             for l in result:
-                                if not isinstance(result, QgsMapLayer):
+                                if not isinstance(l, QgsMapLayer):
                                     layer = context.takeResultLayer(l)  # transfer layer ownership out of context
                                     if layer:
                                         layers_result.append(layer)
