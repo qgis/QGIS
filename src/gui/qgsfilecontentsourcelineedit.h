@@ -111,37 +111,37 @@ class GUI_EXPORT QgsAbstractFileContentSourceLineEdit : public QWidget SIP_ABSTR
     /**
      * Returns the widget's file filter string.
      */
-    virtual QString fileFilter() const = 0;
+    virtual QString fileFilter() const = 0;  // cppcheck-suppress pureVirtualCall
 
     /**
      * Returns the translated title to use for the select file dialog.
      */
-    virtual QString selectFileTitle() const = 0;
+    virtual QString selectFileTitle() const = 0;  // cppcheck-suppress pureVirtualCall
 
     /**
      * Returns the translated title to use for the file from URL dialog.
      */
-    virtual QString fileFromUrlTitle() const = 0;
+    virtual QString fileFromUrlTitle() const = 0;  // cppcheck-suppress pureVirtualCall
 
     /**
      * Returns the translated descriptive text to use for the file from URL dialog.
      */
-    virtual QString fileFromUrlText() const = 0;
+    virtual QString fileFromUrlText() const = 0;  // cppcheck-suppress pureVirtualCall
 
     /**
      * Returns the translated title to use for the embed file dialog.
      */
-    virtual QString embedFileTitle() const = 0;
+    virtual QString embedFileTitle() const = 0;  // cppcheck-suppress pureVirtualCall
 
     /**
      * Returns the translated title to use for the extract file dialog.
      */
-    virtual QString extractFileTitle() const = 0;
+    virtual QString extractFileTitle() const = 0;  // cppcheck-suppress pureVirtualCall
 
     /**
      * Returns the default settings key to use for the widget's settings.
      */
-    virtual QString defaultSettingsKey() const = 0;
+    virtual QString defaultSettingsKey() const = 0;  // cppcheck-suppress pureVirtualCall
 
 ///@endcond
 #endif

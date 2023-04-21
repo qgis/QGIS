@@ -2518,23 +2518,16 @@ void QgsGrass::adjustCellHead( struct Cell_head *cellhd, int row_flag, int col_f
 
 QMap<int, QString> QgsGrass::vectorTypeMap()
 {
-  static QMap<int, QString> sVectorTypes;
-  static QMutex sMutex;
-  if ( sVectorTypes.isEmpty() )
+  const thread_local QMap<int, QString> sVectorTypes
   {
-    sMutex.lock();
-    if ( sVectorTypes.isEmpty() )
-    {
-      sVectorTypes.insert( GV_POINT, QStringLiteral( "point" ) );
-      sVectorTypes.insert( GV_CENTROID, QStringLiteral( "centroid" ) );
-      sVectorTypes.insert( GV_LINE, QStringLiteral( "line" ) );
-      sVectorTypes.insert( GV_BOUNDARY, QStringLiteral( "boundary" ) );
-      sVectorTypes.insert( GV_AREA, QStringLiteral( "area" ) );
-      sVectorTypes.insert( GV_FACE, QStringLiteral( "face" ) );
-      sVectorTypes.insert( GV_KERNEL, QStringLiteral( "kernel" ) );
-    }
-    sMutex.unlock();
-  }
+    { GV_POINT, QStringLiteral( "point" ) },
+    { GV_CENTROID, QStringLiteral( "centroid" ) },
+    { GV_LINE, QStringLiteral( "line" ) },
+    { GV_BOUNDARY, QStringLiteral( "boundary" ) },
+    { GV_AREA, QStringLiteral( "area" ) },
+    { GV_FACE, QStringLiteral( "face" ) },
+    { GV_KERNEL, QStringLiteral( "kernel" ) },
+  };
   return sVectorTypes;
 }
 

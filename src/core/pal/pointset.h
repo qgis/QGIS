@@ -58,13 +58,13 @@ namespace pal
    */
   struct OrientedConvexHullBoundingBox
   {
-    double x[4];
-    double y[4];
+    double x[4] = {0, 0, 0, 0};
+    double y[4] = {0, 0, 0, 0};
 
-    double alpha;
+    double alpha = 0;
 
-    double width;
-    double length;
+    double width = 0;
+    double length = 0;
   };
 
   /**

@@ -538,6 +538,11 @@ namespace QgsWms
                                        QVariant( false ) );
     save( pWithMapTip );
 
+    const QgsWmsParameter pWithDisplayName( QgsWmsParameter::WITH_DISPLAY_NAME,
+                                            QVariant::Bool,
+                                            QVariant( false ) );
+    save( pWithDisplayName );
+
     const QgsWmsParameter pWmtver( QgsWmsParameter::WMTVER );
     save( pWmtver );
 
@@ -2095,6 +2100,11 @@ namespace QgsWms
   bool QgsWmsParameters::withMapTip() const
   {
     return mWmsParameters.value( QgsWmsParameter::WITH_MAPTIP ).toBool();
+  }
+
+  bool QgsWmsParameters::withDisplayName() const
+  {
+    return mWmsParameters.value( QgsWmsParameter::WITH_DISPLAY_NAME ).toBool();
   }
 
   QString QgsWmsParameters::wmtver() const

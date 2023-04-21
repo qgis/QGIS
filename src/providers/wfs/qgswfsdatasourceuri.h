@@ -42,6 +42,9 @@ class QgsWFSDataSourceURI
 
     explicit QgsWFSDataSourceURI( const QString &uri );
 
+    //! Copy constructor
+    QgsWFSDataSourceURI( const QgsWFSDataSourceURI &other );
+
     //! Returns whether the URI is a valid one
     bool isValid() const;
 
@@ -148,6 +151,9 @@ class QgsWFSDataSourceURI
 
     //! Whether the initial GetFeature request, used to determine if gml:description/name/identifiers are used, should be skipped
     bool skipInitialGetFeature() const;
+
+    //! Assignment operator
+    QgsWFSDataSourceURI &operator=( const QgsWFSDataSourceURI &other );
 
   private:
     QgsDataSourceUri    mURI;

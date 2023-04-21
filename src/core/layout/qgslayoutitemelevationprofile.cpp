@@ -46,6 +46,7 @@ class QgsLayoutItemElevationProfilePlot : public Qgs2DPlot
 
     void setRenderer( QgsProfilePlotRenderer *renderer )
     {
+      // cppcheck-suppress danglingLifetime
       mRenderer = renderer;
     }
 

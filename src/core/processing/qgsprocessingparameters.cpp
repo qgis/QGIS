@@ -595,6 +595,7 @@ QStringList QgsProcessingParameters::parameterAsEnumStrings( const QgsProcessing
   if ( enumValues.isEmpty() || !subtraction.isEmpty() )
   {
     enumValues.clear();
+    // cppcheck-suppress invalidContainer
     processVariant( definition->defaultValue() );
   }
 

@@ -133,6 +133,7 @@ void QgsOapifItemsRequest::processReply()
           if ( jFeature.is_object() && jFeature.contains( "id" ) )
           {
             const json id = jFeature["id"];
+            mFoundIdTopLevel = true;
             if ( id.is_string() )
             {
               mFeatures[i].second = QString::fromStdString( id.get<std::string>() );
@@ -140,6 +141,14 @@ void QgsOapifItemsRequest::processReply()
             else if ( id.is_number_integer() )
             {
               mFeatures[i].second = QString::number( id.get<qint64>() );
+            }
+          }
+          if ( jFeature.is_object() && jFeature.contains( "properties" ) )
+          {
+            const json properties = jFeature["properties"];
+            if ( properties.is_object() && properties.contains( "id" ) )
+            {
+              mFoundIdInProperties = true;
             }
           }
         }

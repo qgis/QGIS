@@ -479,6 +479,8 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
 
     /**
      * The Capability enum represents the operations supported by the connection.
+     *
+     * \see Qgis::DatabaseProviderConnectionCapability2
      */
     enum Capability
     {
@@ -557,9 +559,19 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
     // Public interface
 
     /**
-     * Returns connection capabilities
+     * Returns connection capabilities.
+     *
+     * \see capabilities2()
      */
     Capabilities capabilities() const;
+
+    /**
+     * Returns extended connection capabilities.
+     *
+     * \see capabilities()
+     * \since QGIS 3.32
+     */
+    Qgis::DatabaseProviderConnectionCapabilities2 capabilities2() const;
 
     /**
      * Returns connection geometry column capabilities (Z, M, SinglePart, Curves).
@@ -905,6 +917,32 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
     virtual void addFieldDomain( const QgsFieldDomain &domain, const QString &schema ) const SIP_THROW( QgsProviderConnectionException );
 
     /**
+     * Sets the \a alias for the existing field with the specified name.
+     *
+     * \param fieldName name of the field to be modified
+     * \param schema name of the schema (schema is ignored if not supported by the backend).
+     * \param tableName name of the table
+     * \param alias alias to set for the field. Set to an empty string to remove a previously set alias.
+     *
+     * \throws QgsProviderConnectionException if any errors are encountered.
+     * \since QGIS 3.32
+     */
+    virtual void setFieldAlias( const QString &fieldName, const QString &schema, const QString &tableName, const QString &alias ) const SIP_THROW( QgsProviderConnectionException );
+
+    /**
+     * Sets the \a comment for the existing field with the specified name.
+     *
+     * \param fieldName name of the field to be modified
+     * \param schema name of the schema (schema is ignored if not supported by the backend).
+     * \param tableName name of the table
+     * \param comment comment to set for the field. Set to an empty string to remove a previously set comment.
+     *
+     * \throws QgsProviderConnectionException if any errors are encountered.
+     * \since QGIS 3.32
+     */
+    virtual void setFieldComment( const QString &fieldName, const QString &schema, const QString &tableName, const QString &comment ) const SIP_THROW( QgsProviderConnectionException );
+
+    /**
      * Returns a list of relationship cardinalities which are supported by the provider.
      *
      * \since QGIS 3.30
@@ -1092,9 +1130,18 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
      * \throws QgsProviderConnectionException if the capability is not supported
      */
     void checkCapability( Capability capability ) const;
+
+    /**
+     * Checks if \a capability is supported.
+     *
+     * \throws QgsProviderConnectionException if the capability is not supported
+     */
+    void checkCapability( Qgis::DatabaseProviderConnectionCapability2 capability ) const;
 ///@endcond
 
     Capabilities mCapabilities = Capabilities() SIP_SKIP;
+    Qgis::DatabaseProviderConnectionCapabilities2 mCapabilities2 = Qgis::DatabaseProviderConnectionCapabilities2() SIP_SKIP;
+
     GeometryColumnCapabilities mGeometryColumnCapabilities = GeometryColumnCapabilities() SIP_SKIP;
     Qgis::SqlLayerDefinitionCapabilities mSqlLayerDefinitionCapabilities = Qgis::SqlLayerDefinitionCapabilities() SIP_SKIP;
     QString mProviderKey;

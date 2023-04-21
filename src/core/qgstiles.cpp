@@ -282,6 +282,7 @@ double QgsTileMatrixSet::scaleForRenderContext( const QgsRenderContext &context 
 double QgsTileMatrixSet::calculateTileScaleForMap( double actualMapScale, const QgsCoordinateReferenceSystem &mapCrs, const QgsRectangle &mapExtent, const QSize mapSize, const double mapDpi ) const
 {
   switch ( mScaleToTileZoomMethod )
+    // cppcheck-suppress missingReturn
   {
     case Qgis::ScaleToTileZoomLevelMethod::MapBox:
       return actualMapScale;

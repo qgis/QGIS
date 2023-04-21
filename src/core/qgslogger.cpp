@@ -51,6 +51,7 @@ void QgsLogger::init()
                 ;
 
   sPrefixLength = sizeof( CMAKE_SOURCE_DIR );
+  // cppcheck-suppress internalAstError
   if ( CMAKE_SOURCE_DIR[sPrefixLength - 1] == '/' )
     sPrefixLength++;
 }

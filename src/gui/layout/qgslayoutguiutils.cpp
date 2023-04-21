@@ -429,6 +429,7 @@ void QgsLayoutGuiUtils::registerGuiForKnownItemTypes( QgsMapCanvas *mapCanvas )
     std::unique_ptr< QgsLayoutFrame > frame = std::make_unique< QgsLayoutFrame >( layout, html );
     QgsLayoutFrame *f = frame.get();
     html->addFrame( frame.release() );
+    // cppcheck-suppress returnDanglingLifetime
     return f;
   } );
   registry->addLayoutItemGuiMetadata( htmlItemMetadata.release() );
@@ -475,6 +476,7 @@ void QgsLayoutGuiUtils::registerGuiForKnownItemTypes( QgsMapCanvas *mapCanvas )
     std::unique_ptr< QgsLayoutFrame > frame = std::make_unique< QgsLayoutFrame >( layout, table );
     QgsLayoutFrame *f = frame.get();
     table->addFrame( frame.release() );
+    // cppcheck-suppress returnDanglingLifetime
     return f;
   } );
   registry->addLayoutItemGuiMetadata( attributeTableItemMetadata.release() );
@@ -517,6 +519,7 @@ void QgsLayoutGuiUtils::registerGuiForKnownItemTypes( QgsMapCanvas *mapCanvas )
     std::unique_ptr< QgsLayoutFrame > frame = std::make_unique< QgsLayoutFrame >( layout, table );
     QgsLayoutFrame *f = frame.get();
     table->addFrame( frame.release() );
+    // cppcheck-suppress returnDanglingLifetime
     return f;
   } );
   registry->addLayoutItemGuiMetadata( manualTableItemMetadata.release() );

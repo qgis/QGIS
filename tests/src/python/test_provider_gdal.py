@@ -312,7 +312,7 @@ class PyQgsGdalProvider(unittest.TestCase):
     def testGdbMetadata(self):
         """Test reading GDB layer metadata"""
         path = os.path.join(unitTestDataPath(), 'raster_metadata.gdb')
-        rl = QgsRasterLayer('OpenFileGDB:{}:int'.format(path), 'gdb', 'gdal')
+        rl = QgsRasterLayer(f'OpenFileGDB:{path}:int', 'gdb', 'gdal')
         self.assertTrue(rl.isValid())
 
         self.assertEqual(rl.metadata().identifier(), 'int')

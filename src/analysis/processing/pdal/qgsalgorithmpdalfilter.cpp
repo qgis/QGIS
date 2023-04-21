@@ -73,7 +73,8 @@ QStringList QgsPdalFilterAlgorithm::createArgumentLists( const QVariantMap &para
   if ( !layer )
     throw QgsProcessingException( invalidPointCloudError( parameters, QStringLiteral( "INPUT" ) ) );
 
-  const QString outputFile = parameterAsOutputLayer( parameters, QStringLiteral( "OUTPUT" ), context );
+  const QString outputName = parameterAsOutputLayer( parameters, QStringLiteral( "OUTPUT" ), context );
+  QString outputFile = fixOutputFileName( layer->source(), outputName, context );
   setOutputValue( QStringLiteral( "OUTPUT" ), outputFile );
 
   QStringList args = { QStringLiteral( "translate" ),

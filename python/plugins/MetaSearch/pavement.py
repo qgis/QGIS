@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ###############################################################################
 #
 # Copyright (C) 2014 Tom Kralidis (tomkralidis@gmail.com)
@@ -151,8 +150,7 @@ def upload():
                                      options.upload.port,
                                      options.upload.endpoint)
 
-    info('Uploading to http://%s/%s' % (options.upload.host,
-                                        options.upload.endpoint))
+    info('Uploading to http://{}/{}'.format(options.upload.host, options.upload.endpoint))
 
     server = xmlrpc.client.ServerProxy(url, verbose=False)
 
@@ -225,6 +223,6 @@ def generate_csw_connections_file():
 def get_package_filename():
     """return filepath of plugin zipfile"""
 
-    filename = '%s-%s.zip' % (PLUGIN_NAME, options.base.version)
-    package_file = '%s/%s' % (options.base.tmp, filename)
+    filename = f'{PLUGIN_NAME}-{options.base.version}.zip'
+    package_file = f'{options.base.tmp}/{filename}'
     return package_file

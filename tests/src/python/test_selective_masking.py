@@ -145,7 +145,7 @@ class TestSelectiveMasking(unittest.TestCase):
 
         if (os.environ.get('QGIS_CONTINUOUS_INTEGRATION_RUN', None) != "true" and
                 cls.report != REPORT_TITLE):
-            QDesktopServices.openUrl(QUrl("file:///{}".format(report_file_path)))
+            QDesktopServices.openUrl(QUrl(f"file:///{report_file_path}"))
 
     def get_symbollayer(self, layer, ruleId, symbollayer_ids):
         """
@@ -202,7 +202,7 @@ class TestSelectiveMasking(unittest.TestCase):
                 res = self.checker.compareImages(control_name + suffix)
 
                 if not res:
-                    TestSelectiveMasking.report += "<h2>{}</h2>\n".format(control_name) + self.checker.report()
+                    TestSelectiveMasking.report += f"<h2>{control_name}</h2>\n" + self.checker.report()
 
                 self.assertTrue(res)
 
@@ -260,7 +260,7 @@ class TestSelectiveMasking(unittest.TestCase):
         res = self.checker.compareImages(control_name)
 
         if not res:
-            TestSelectiveMasking.report += "<h2>{}</h2>\n".format(control_name) + self.checker.report()
+            TestSelectiveMasking.report += f"<h2>{control_name}</h2>\n" + self.checker.report()
 
         self.assertTrue(res)
 

@@ -195,6 +195,10 @@ ifneq (,$(WITH_ORACLE))
 	CONTROL_EXPRESSIONS += oracle
 endif
 
+ifeq ($(shell pkg-config --exists pdal && dpkg --compare-versions $$(pkg-config --modversion pdal) ge 2.5 && echo 1 || echo 0),1)
+	CONTROL_EXPRESSIONS += pdal_wrench
+endif
+
 define gentemplate
 $(2): $(1)
 	sed -r \

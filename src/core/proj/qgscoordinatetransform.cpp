@@ -150,6 +150,13 @@ QgsCoordinateTransform::QgsCoordinateTransform( const QgsCoordinateTransform &o 
   , mHasContext( o.mHasContext )
 #endif
   , mLastError()
+    // none of these should be copied -- they must be set manually for every object instead, or
+    // we risk contaminating the cache and copies retrieved from cache with settings which should NOT
+    // be applied to all transforms
+  , mIgnoreImpossible( false )
+  , mBallparkTransformsAreAppropriate( false )
+  , mDisableFallbackHandler( false )
+  , mFallbackOperationOccurred( false )
 {
   d = o.d;
 }

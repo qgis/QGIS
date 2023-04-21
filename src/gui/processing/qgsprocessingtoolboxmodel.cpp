@@ -140,6 +140,7 @@ void QgsProcessingToolboxModel::rebuild()
   if ( mRecentLog )
   {
     std::unique_ptr< QgsProcessingToolboxModelRecentNode > recentNode = std::make_unique< QgsProcessingToolboxModelRecentNode >();
+    // cppcheck-suppress danglingLifetime
     mRecentNode = recentNode.get();
     mRootNode->addChildNode( recentNode.release() );
     repopulateRecentAlgorithms( true );
@@ -293,10 +294,12 @@ void QgsProcessingToolboxModel::addProvider( QgsProcessingProvider *provider )
     const QString groupId = algorithm->groupId();
     if ( !groupId.isEmpty() )
     {
+      // cppcheck-suppress invalidLifetime
       QgsProcessingToolboxModelGroupNode *groupNode = parentNode->getChildGroupNode( groupId );
       if ( !groupNode )
       {
         groupNode = new QgsProcessingToolboxModelGroupNode( algorithm->groupId(), algorithm->group() );
+        // cppcheck-suppress invalidLifetime
         parentNode->addChildNode( groupNode );
       }
       groupNode->addChildNode( algorithmNode.release() );
@@ -304,6 +307,7 @@ void QgsProcessingToolboxModel::addProvider( QgsProcessingProvider *provider )
     else
     {
       // "top level" algorithm - no group
+      // cppcheck-suppress invalidLifetime
       parentNode->addChildNode( algorithmNode.release() );
     }
   }

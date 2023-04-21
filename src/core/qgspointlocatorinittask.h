@@ -46,7 +46,7 @@ class QgsPointLocatorInitTask : public QgsTask
      */
     bool isBuildOK() const;
 
-    bool run();
+    bool run() override;
 
   private:
 
