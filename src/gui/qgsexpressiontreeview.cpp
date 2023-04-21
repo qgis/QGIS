@@ -484,13 +484,13 @@ void QgsExpressionTreeView::loadFieldNames()
     registerItem( QStringLiteral( "Fields and Values" ), QStringLiteral( "id" ), QStringLiteral( "@id" ), currentFeatureIdHelp, QgsExpressionItem::ExpressionNode, false, -1 );
     registerItem( QStringLiteral( "Fields and Values" ), QStringLiteral( "geometry" ), QStringLiteral( "@geometry" ), currentGeometryHelp, QgsExpressionItem::ExpressionNode, false, -1 );
 
-    registerItem( tr( "Variables" ), QStringLiteral( "feature" ), QStringLiteral( "@feature" ), currentFeatureHelp, QgsExpressionItem::ExpressionNode );
-    registerItem( tr( "Variables" ), QStringLiteral( "id" ), QStringLiteral( "@id" ), currentFeatureIdHelp, QgsExpressionItem::ExpressionNode );
-    registerItem( tr( "Variables" ), QStringLiteral( "geometry" ), QStringLiteral( "@geometry" ), currentGeometryHelp, QgsExpressionItem::ExpressionNode, false );
+    registerItem( QStringLiteral( "Variables" ), QStringLiteral( "feature" ), QStringLiteral( "@feature" ), currentFeatureHelp, QgsExpressionItem::ExpressionNode );
+    registerItem( QStringLiteral( "Variables" ), QStringLiteral( "id" ), QStringLiteral( "@id" ), currentFeatureIdHelp, QgsExpressionItem::ExpressionNode );
+    registerItem( QStringLiteral( "Variables" ), QStringLiteral( "geometry" ), QStringLiteral( "@geometry" ), currentGeometryHelp, QgsExpressionItem::ExpressionNode, false );
 
-    registerItem( tr( "Record and Attributes" ), QStringLiteral( "feature" ), QStringLiteral( "@feature" ), currentFeatureHelp, QgsExpressionItem::ExpressionNode, true, -1 );
-    registerItem( tr( "Record and Attributes" ), QStringLiteral( "id" ), QStringLiteral( "@id" ), currentFeatureIdHelp, QgsExpressionItem::ExpressionNode, true, -1 );
-    registerItem( tr( "Record and Attributes" ), QStringLiteral( "geometry" ), QStringLiteral( "@geometry" ), currentGeometryHelp, QgsExpressionItem::ExpressionNode, true, -1 );
+    registerItem( QStringLiteral( "Record and Attributes" ), QStringLiteral( "feature" ), QStringLiteral( "@feature" ), currentFeatureHelp, QgsExpressionItem::ExpressionNode, true, -1 );
+    registerItem( QStringLiteral( "Record and Attributes" ), QStringLiteral( "id" ), QStringLiteral( "@id" ), currentFeatureIdHelp, QgsExpressionItem::ExpressionNode, true, -1 );
+    registerItem( QStringLiteral( "Record and Attributes" ), QStringLiteral( "geometry" ), QStringLiteral( "@geometry" ), currentGeometryHelp, QgsExpressionItem::ExpressionNode, true, -1 );
   }
 
   // this can happen if fields are manually set
