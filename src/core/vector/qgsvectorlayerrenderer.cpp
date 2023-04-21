@@ -65,6 +65,7 @@ QgsVectorLayerRenderer::QgsVectorLayerRenderer( QgsVectorLayer *layer, QgsRender
 
   bool insertedMainRenderer = false;
   double prevLevel = std::numeric_limits< double >::lowest();
+  // cppcheck-suppress danglingLifetime
   mRenderer = mainRenderer.get();
   for ( const QgsFeatureRendererGenerator *generator : std::as_const( generators ) )
   {
@@ -132,6 +133,7 @@ QgsVectorLayerRenderer::QgsVectorLayerRenderer( QgsVectorLayer *layer, QgsRender
 
   mVertexMarkerSize = QgsSettingsRegistryCore::settingsDigitizingMarkerSizeMm->value();
 
+  // cppcheck-suppress danglingLifetime
   QgsDebugMsgLevel( "rendering v2:\n  " + mRenderer->dump(), 2 );
 
   if ( mDrawVertexMarkers )

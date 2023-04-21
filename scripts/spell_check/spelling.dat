@@ -6220,7 +6220,7 @@ retuns:returns
 retur:return
 retured:returned
 returing:returning
-returnd:returned
+returnd:returned:*
 returnes:returns
 returs:returns
 reuest:request

@@ -60,9 +60,7 @@ QgsStatusBarCoordinatesWidget::QgsStatusBarCoordinatesWidget( QWidget *parent )
   mLineEdit->setAlignment( Qt::AlignCenter );
   connect( mLineEdit, &QLineEdit::returnPressed, this, &QgsStatusBarCoordinatesWidget::validateCoordinates );
 
-  const QRegularExpression coordValidator( "[+-]?\\d+\\.?\\d*\\s*,\\s*[+-]?\\d+\\.?\\d*" );
-  mCoordsEditValidator = new QRegularExpressionValidator( coordValidator, this );
-  mLineEdit->setToolTip( tr( "Current map coordinate (longitude,latitude or east,north)" ) );
+  mLineEdit->setToolTip( tr( "Current map coordinate (longitude latitude or east north)" ) );
 
   //toggle to switch between mouse pos and extents display in status bar widget
   mToggleExtentsViewButton = new QToolButton( this );
@@ -173,6 +171,7 @@ void QgsStatusBarCoordinatesWidget::validateCoordinates()
   QString coordText = mLineEdit->text();
   const thread_local QRegularExpression sMultipleWhitespaceRx( QStringLiteral( " {2,}" ) );
   coordText.replace( sMultipleWhitespaceRx, QStringLiteral( " " ) );
+  coordText.remove( QStringLiteral( "°" ) );
 
   QStringList parts = coordText.split( ',' );
   if ( parts.size() == 2 )
@@ -191,6 +190,17 @@ void QgsStatusBarCoordinatesWidget::validateCoordinates()
     }
   }
 
+  // Use locale
+  if ( !xOk || !yOk )
+  {
+    parts = coordText.split( ' ' );
+    if ( parts.size() == 2 )
+    {
+      first = QLocale().toDouble( parts.at( 0 ), &xOk );
+      second = QLocale().toDouble( parts.at( 1 ),  &yOk );
+    }
+  }
+
   if ( !xOk || !yOk )
     return;
 
@@ -202,12 +212,31 @@ void QgsStatusBarCoordinatesWidget::validateCoordinates()
   {
     case Qgis::CoordinateOrder::Default:
     case Qgis::CoordinateOrder::XY:
-      mMapCanvas->setCenter( QgsPointXY( first, second ) );
       break;
     case Qgis::CoordinateOrder::YX:
-      mMapCanvas->setCenter( QgsPointXY( second, first ) );
+      std::swap( first, second );
       break;
   }
+
+  QgsPointXY centerPoint { first, second };
+
+  const QgsCoordinateReferenceSystem displayCrs = QgsProject::instance()->displaySettings()->coordinateCrs();
+  const QgsCoordinateReferenceSystem canvasCrs = mMapCanvas->mapSettings().destinationCrs();
+  if ( displayCrs.isValid() && canvasCrs.isValid() &&  displayCrs != canvasCrs )
+  {
+    const QgsCoordinateTransform ct { displayCrs, canvasCrs, QgsProject::instance()->transformContext() };
+    try
+    {
+
+      centerPoint = ct.transform( centerPoint );
+    }
+    catch ( const QgsCsException & )
+    {
+      return;
+    }
+  }
+
+  mMapCanvas->setCenter( centerPoint );
 
   mMapCanvas->refresh();
 }

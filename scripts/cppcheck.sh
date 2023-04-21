@@ -33,6 +33,7 @@ cppcheck --library=qt.cfg --inline-suppr \
          -DSIP_FACTORY= \
          -DSIP_PYNAME= \
          -DSIP_THROW= \
+         -DFINAL="final" \
          -DCMAKE_SOURCE_DIR="/foo/bar" \
          -DQ_NOWARN_DEPRECATED_PUSH= \
          -DQ_NOWARN_DEPRECATED_POP= \
@@ -63,7 +64,7 @@ ret_code=0
 cat ${LOG_FILE} | grep -v -e "syntaxError," -e "cppcheckError," > ${LOG_FILE}.tmp
 mv ${LOG_FILE}.tmp ${LOG_FILE}
 
-ERROR_CATEGORIES=("clarifyCalculation" "duplicateExpressionTernary" "redundantCondition" "postfixOperator" "functionConst" "unsignedLessThanZero" "duplicateBranch")
+ERROR_CATEGORIES=("clarifyCalculation" "duplicateExpressionTernary" "redundantCondition" "postfixOperator" "functionConst" "unsignedLessThanZero" "duplicateBranch" "missingOverride")
 
 # unusedPrivateFunction not reliable enough in cppcheck 1.72 of Ubuntu 16.04
 if test "$(cppcheck --version)" != "Cppcheck 1.72"; then

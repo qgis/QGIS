@@ -604,6 +604,7 @@ int QgsGrassGisLib::G_open_raster_new( const char *name, RASTER_MAP_TYPE wr_type
   raster.band = 1;
   raster.noDataValue = noDataValueForGrassType( wr_type );
   QgsDebugMsg( QString( "noDataValue = %1" ).arg( static_cast<int>( raster.noDataValue ) ) );
+  // cppcheck-suppress deallocuse
   raster.provider->setNoDataValue( raster.band, raster.noDataValue );
 
   raster.fd = mRasters.size();
@@ -1321,9 +1322,9 @@ int GRASS_LIB_EXPORT G__temp_element( char *element )
 char GRASS_LIB_EXPORT *G_tempfile( void )
 {
   QTemporaryFile file( "qgis-grass-temp.XXXXXX" );
-  QString name = file.fileName();
+  const QString name = file.fileName();
   file.open();
-  return name.toLatin1().data();
+  return name.toLatin1().constData();
 }
 
 char GRASS_LIB_EXPORT *G_mapset( void )

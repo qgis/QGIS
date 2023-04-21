@@ -74,7 +74,8 @@ QStringList QgsPdalThinAlgorithm::createArgumentLists( const QVariantMap &parame
   if ( !layer )
     throw QgsProcessingException( invalidPointCloudError( parameters, QStringLiteral( "INPUT" ) ) );
 
-  const QString outputFile = parameterAsOutputLayer( parameters, QStringLiteral( "OUTPUT" ), context );
+  const QString outputName = parameterAsOutputLayer( parameters, QStringLiteral( "OUTPUT" ), context );
+  QString outputFile = fixOutputFileName( layer->source(), outputName, context );
   setOutputValue( QStringLiteral( "OUTPUT" ), outputFile );
 
   int mode = parameterAsInt( parameters, QStringLiteral( "MODE" ), context );

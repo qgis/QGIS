@@ -23,6 +23,7 @@
 #include "qgsvectordataprovider.h"
 #include "qgsbackgroundcachedshareddata.h"
 #include "qgswfsdatasourceuri.h"
+#include "qgsoapifitemsrequest.h"
 
 #include "qgsprovidermetadata.h"
 
@@ -93,6 +94,13 @@ class QgsOapifProvider final: public QgsVectorDataProvider
 
     void handlePostCloneOperations( QgsVectorDataProvider *source ) override;
 
+    //Editing operations
+
+    bool addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() ) override;
+    bool deleteFeatures( const QgsFeatureIds &ids ) override;
+    bool changeGeometryValues( const QgsGeometryMap &geometry_map ) override;
+    bool changeAttributeValues( const QgsChangedAttributesMap &attr_map ) override;
+
   private slots:
 
     void pushErrorSlot( const QString &errorMsg );
@@ -102,6 +110,12 @@ class QgsOapifProvider final: public QgsVectorDataProvider
 
     //! Flag if provider is valid
     bool mValid = true;
+
+    //! Server capabilities for this layer (generated from capabilities document)
+    QgsVectorDataProvider::Capabilities mCapabilities = QgsVectorDataProvider::Capabilities();
+
+    //! Whether server supports PATCH operation
+    bool mSupportsPatch = false;
 
     //! String used to define a subset of the layer
     QString mSubsetString;
@@ -119,6 +133,9 @@ class QgsOapifProvider final: public QgsVectorDataProvider
      * Invalidates cache of shared object
     */
     void reloadProviderData() override;
+
+    //! Compute capabilities
+    void computeCapabilities( const QgsOapifItemsRequest &itemsRequest );
 };
 
 class QgsOapifProviderMetadata final: public QgsProviderMetadata
@@ -164,6 +181,9 @@ class QgsOapifSharedData final: public QObject, public QgsBackgroundCachedShared
   protected:
     friend class QgsOapifProvider;
     friend class QgsOapifFeatureDownloaderImpl;
+    friend class QgsOapifCreateFeatureRequest;
+    friend class QgsOapifPutFeatureRequest;
+    friend class QgsOapifPatchFeatureRequest;
 
     //! Datasource URI
     QgsWFSDataSourceURI mURI;
@@ -188,6 +208,12 @@ class QgsOapifSharedData final: public QObject, public QgsBackgroundCachedShared
 
     //! Translation state of filter to server-side filter.
     QgsOapifProvider::FilterTranslationState mFilterTranslationState = QgsOapifProvider::FilterTranslationState::FULLY_CLIENT;
+
+    //! Set if an "id" is present at top level of features
+    bool mFoundIdTopLevel = false;
+
+    //! Set if an "id" is present in the "properties" object of features
+    bool mFoundIdInProperties = false;
 
     //! Append extra query parameters if needed
     QString appendExtraQueryParameters( const QString &url ) const;

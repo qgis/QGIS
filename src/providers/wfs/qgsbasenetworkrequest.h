@@ -35,10 +35,22 @@ class QgsBaseNetworkRequest : public QObject
     ~QgsBaseNetworkRequest() override;
 
     //! \brief proceed to sending a GET request
-    bool sendGET( const QUrl &url, const QString &acceptHeader, bool synchronous, bool forceRefresh = false, bool cache = true );
+    bool sendGET( const QUrl &url, const QString &acceptHeader, bool synchronous, bool forceRefresh = false, bool cache = true, const QList<QNetworkReply::RawHeaderPair> &extraHeaders = QList<QNetworkReply::RawHeaderPair>() );
 
     //! \brief proceed to sending a synchronous POST request
-    bool sendPOST( const QUrl &url, const QString &contentTypeHeader, const QByteArray &data );
+    bool sendPOST( const QUrl &url, const QString &contentTypeHeader, const QByteArray &data, const QList<QNetworkReply::RawHeaderPair> &extraHeaders = QList<QNetworkReply::RawHeaderPair>() );
+
+    //! \brief proceed to sending a synchronous PUT request
+    bool sendPUT( const QUrl &url, const QString &contentTypeHeader, const QByteArray &data, const QList<QNetworkReply::RawHeaderPair> &extraHeaders = QList<QNetworkReply::RawHeaderPair>() );
+
+    //! \brief proceed to sending a synchronous PATCH request
+    bool sendPATCH( const QUrl &url, const QString &contentTypeHeader, const QByteArray &data, const QList<QNetworkReply::RawHeaderPair> &extraHeaders = QList<QNetworkReply::RawHeaderPair>() );
+
+    //! \brief proceed to sending a synchronous OPTIONS request and return the supported verbs
+    QStringList sendOPTIONS( const QUrl &url );
+
+    //! \brief proceed to sending a synchronous DELETE request
+    bool sendDELETE( const QUrl &url );
 
     //! Set whether to log error messages.
     void setLogErrors( bool enabled ) { mLogErrors = enabled; }
@@ -95,6 +107,9 @@ class QgsBaseNetworkRequest : public QObject
     //! Raw response
     QByteArray mResponse;
 
+    //! Response headers
+    QList<QNetworkReply::RawHeaderPair> mResponseHeaders;
+
     //! Whether the request is aborted.
     bool mIsAborted = false;
 
@@ -107,8 +122,17 @@ class QgsBaseNetworkRequest : public QObject
     //! Whether we already received bytes
     bool mGotNonEmptyResponse = false;
 
+    //! Whether an empty response is valid
+    bool mEmptyResponseIsValid = false;
+
     //! Whether to log error messages
     bool mLogErrors = true;
+
+    //! Whether in simulated HTTP mode, the response read in the file has HTTP headers
+    bool mFakeResponseHasHeaders = false;
+
+    //! Whether in simulated HTTP mode, the Content-Type request header should be included
+    bool mFakeURLIncludesContentType = false;
 
   protected:
 
@@ -125,6 +149,11 @@ class QgsBaseNetworkRequest : public QObject
     QString errorMessageFailedAuth();
 
     void logMessageIfEnabled();
+
+    //! \brief proceed to sending a synchronous POST, PUT or PATCH request
+    bool sendPOSTOrPUTOrPATCH( const QUrl &url, const QByteArray &verb, const QString &contentTypeHeader, const QByteArray &data, const QList<QNetworkReply::RawHeaderPair> &extraHeaders = QList<QNetworkReply::RawHeaderPair>() );
+
+    bool issueRequest( QNetworkRequest &request, const QByteArray &verb, const QByteArray *data, bool synchronous );
 };
 
 

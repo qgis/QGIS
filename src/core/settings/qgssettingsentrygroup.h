@@ -39,9 +39,7 @@ class CORE_DEPRECATED_EXPORT QgsSettingsEntryGroup SIP_DEPRECATED
 {
   public:
     //! Constructor
-    QgsSettingsEntryGroup( QList<const QgsSettingsEntryBase *> settings )
-      : QgsSettingsEntryGroup( settings, true )
-    {}
+    QgsSettingsEntryGroup( QList<const QgsSettingsEntryBase *> settings );
 #ifdef SIP_RUN
     % MethodCode
     sipCpp = new QgsSettingsEntryGroup( *a0, false );

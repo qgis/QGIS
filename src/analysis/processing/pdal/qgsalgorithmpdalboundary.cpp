@@ -60,7 +60,7 @@ QgsPdalBoundaryAlgorithm *QgsPdalBoundaryAlgorithm::createInstance() const
 void QgsPdalBoundaryAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterPointCloudLayer( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ) ) );
-  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "RESOLUTION" ), QObject::tr( "Resolution of cells used to calculate boundary" ), QgsProcessingParameterNumber::Integer, QVariant(), true, 1 ) );
+  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "RESOLUTION" ), QObject::tr( "Resolution of cells used to calculate boundary" ), QgsProcessingParameterNumber::Double, QVariant(), true, 1 ) );
   addParameter( new QgsProcessingParameterNumber( QStringLiteral( "THRESHOLD" ), QObject::tr( "Minimal number of points in a cell to consider cell occupied" ), QgsProcessingParameterNumber::Integer, QVariant(), true, 1 ) );
   createCommonParameters();
   addParameter( new QgsProcessingParameterVectorDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Boundary" ), QgsProcessing::TypeVectorPolygon ) );
@@ -92,7 +92,7 @@ QStringList QgsPdalBoundaryAlgorithm::createArgumentLists( const QVariantMap &pa
 
   if ( hasResolution )
   {
-    args << QStringLiteral( "--resolution=%1" ).arg( parameterAsInt( parameters, QStringLiteral( "RESOLUTION" ), context ) );
+    args << QStringLiteral( "--resolution=%1" ).arg( parameterAsDouble( parameters, QStringLiteral( "RESOLUTION" ), context ) );
   }
 
   if ( hasThreshold )

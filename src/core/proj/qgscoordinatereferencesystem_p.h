@@ -62,10 +62,12 @@ class QgsCoordinateReferenceSystemPrivate : public QSharedData
       , mIsValid( other.mIsValid )
       , mCoordinateEpoch( other.mCoordinateEpoch )
       , mPj()
+      , mPjParentContext( nullptr )
       , mProj4( other.mProj4 )
       , mWktPreferred( other.mWktPreferred )
       , mAxisInvertedDirty( other.mAxisInvertedDirty )
       , mAxisInverted( other.mAxisInverted )
+      , mProjLock{}
       , mProjObjects()
     {
     }

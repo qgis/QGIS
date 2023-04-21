@@ -1,5 +1,3 @@
-from builtins import object
-# -*- coding: utf-8 -*-
 ###############################################################################
 #
 # Copyright (C) 2010 NextGIS (http://nextgis.org),
@@ -37,7 +35,7 @@ from MetaSearch.util import get_help_url, open_url, StaticContext
 LOGGER = logging.getLogger('MetaSearch')
 
 
-class MetaSearchPlugin(object):
+class MetaSearchPlugin:
     """base plugin"""
 
     def __init__(self, iface):
@@ -54,8 +52,7 @@ class MetaSearchPlugin(object):
         """startup"""
 
         # run
-        run_icon = QIcon('%s/%s' % (self.context.ppath,
-                                    'images/MetaSearch.svg'))
+        run_icon = QIcon('{}/{}'.format(self.context.ppath, 'images/MetaSearch.svg'))
         self.action_run = QAction(run_icon, 'MetaSearch',
                                   self.iface.mainWindow())
         self.action_run.setWhatsThis(

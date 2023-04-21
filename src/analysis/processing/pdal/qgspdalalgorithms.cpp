@@ -83,7 +83,7 @@ QStringList QgsPdalAlgorithms::supportedOutputRasterLayerExtensions() const
 
 QStringList QgsPdalAlgorithms::supportedOutputPointCloudLayerExtensions() const
 {
-  return QStringList() << QStringLiteral( "las" ) << QStringLiteral( "laz" ) << QStringLiteral( "copc.laz" );
+  return QStringList() << QStringLiteral( "las" ) << QStringLiteral( "laz" ) << QStringLiteral( "copc.laz" ) << QStringLiteral( "vpc" );
 }
 
 void QgsPdalAlgorithms::loadAlgorithms()

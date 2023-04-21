@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ###############################################################################
 #
 # CSW Client
@@ -985,12 +984,12 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
             proxy_port = ''
 
             if all([user != '', password != '']):
-                proxy_up = '%s:%s@' % (user, password)
+                proxy_up = f'{user}:{password}@'
 
             if port != '':
                 proxy_port = ':%s' % port
 
-            conn = '%s://%s%s%s' % (ptype, proxy_up, host, proxy_port)
+            conn = f'{ptype}://{proxy_up}{host}{proxy_port}'
             install_opener(build_opener(ProxyHandler({ptype: conn})))
 
 

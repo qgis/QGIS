@@ -827,6 +827,9 @@ void QgsVectorFileWriter::init( QString vectorFileName,
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,6,0)
         OGR_Fld_SetAlternativeName( fld.get(), mCodec->fromUnicode( attrField.alias() ).constData() );
 #endif
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,7,0)
+        OGR_Fld_SetComment( fld.get(), mCodec->fromUnicode( attrField.comment() ).constData() );
+#endif
 
         // create the field
         QgsDebugMsgLevel( "creating field " + attrField.name() +

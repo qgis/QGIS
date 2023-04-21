@@ -175,14 +175,16 @@ Create a new configuration widget
 :param parent: A parent widget
 %End
 
-    QVariantMap config();
+    virtual QVariantMap config();
+
 %Docstring
 Create a configuration from the current GUI state
 
 :return: A widget configuration
 %End
 
-    void setConfig( const QVariantMap &config );
+    virtual void setConfig( const QVariantMap &config );
+
 %Docstring
 Update the configuration widget to represent the given configuration.
 

@@ -64,7 +64,7 @@ void QgsPdalExportRasterAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterNumber( QStringLiteral( "RESOLUTION" ), QObject::tr( "Resolution of the density raster" ), QgsProcessingParameterNumber::Integer, 1, false, 1 ) );
   addParameter( new QgsProcessingParameterNumber( QStringLiteral( "TILE_SIZE" ), QObject::tr( "Tile size for parallel runs" ), QgsProcessingParameterNumber::Integer, 1000, false, 1 ) );
 
-  std::unique_ptr< QgsProcessingParameterNumber > paramOriginX = std::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "ORIGIN_X" ), QObject::tr( "X origin of a tile for parallel runs" ), QgsProcessingParameterNumber::Integer, QVariant(), true, 0 );
+  std::unique_ptr< QgsProcessingParameterNumber > paramOriginX = std::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "ORIGIN_X" ), QObject::tr( "X origin of a tile for parallel runs" ), QgsProcessingParameterNumber::Double, QVariant(), true, 0 );
   paramOriginX->setFlags( paramOriginX->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
   addParameter( paramOriginX.release() );
   std::unique_ptr< QgsProcessingParameterNumber > paramOriginY = std::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "ORIGIN_Y" ), QObject::tr( "Y origin of a tile for parallel runs" ), QgsProcessingParameterNumber::Integer, QVariant(), true, 0 );
@@ -96,7 +96,7 @@ QStringList QgsPdalExportRasterAlgorithm::createArgumentLists( const QVariantMap
   setOutputValue( QStringLiteral( "OUTPUT" ), outputFile );
 
   const QString attribute = parameterAsString( parameters, QStringLiteral( "ATTRIBUTE" ), context );
-  const int resolution = parameterAsInt( parameters, QStringLiteral( "RESOLUTION" ), context );
+  const int resolution = parameterAsDouble( parameters, QStringLiteral( "RESOLUTION" ), context );
   const int tileSize = parameterAsInt( parameters, QStringLiteral( "TILE_SIZE" ), context );
 
   QStringList args = { QStringLiteral( "to_raster" ),

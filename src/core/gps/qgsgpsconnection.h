@@ -193,7 +193,7 @@ class CORE_EXPORT QgsGpsConnection : public QObject
 
   protected slots:
     //! Parse available data source content
-    virtual void parseData() = 0;
+    virtual void parseData() = 0;  // cppcheck-suppress pureVirtualCall
 
   private:
 

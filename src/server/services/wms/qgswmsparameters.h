@@ -181,6 +181,7 @@ namespace QgsWms
         GRID_INTERVAL_Y,
         WITH_GEOMETRY,
         WITH_MAPTIP,
+        WITH_DISPLAY_NAME,
         WMTVER,
         ATLAS_PK,
         FORMAT_OPTIONS,
@@ -1286,6 +1287,13 @@ namespace QgsWms
        * \returns TRUE if maptip information is requested for feature info response
        */
       bool withMapTip() const;
+
+      /**
+       * \brief withDisplayName
+       * \returns TRUE if the display name is requested for feature info response
+       * \since QGIS 3.32
+       */
+      bool withDisplayName() const;
 
       /**
        * Returns WMTVER parameter or an empty string if not defined.

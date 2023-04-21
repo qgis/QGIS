@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ###############################################################################
 #
 # Copyright (C) 2010 NextGIS (http://nextgis.org),
@@ -49,7 +48,7 @@ from qgis.core import Qgis, QgsSettings
 LOGGER = logging.getLogger('MetaSearch')
 
 
-class StaticContext(object):
+class StaticContext:
     """base configuration / scaffolding"""
 
     def __init__(self):
@@ -59,8 +58,7 @@ class StaticContext(object):
 
 def get_ui_class(ui_file):
     """return class object of a uifile"""
-    ui_file_full = '%s%sui%s%s' % (os.path.dirname(os.path.abspath(__file__)),
-                                   os.sep, os.sep, ui_file)
+    ui_file_full = '{}{}ui{}{}'.format(os.path.dirname(os.path.abspath(__file__)), os.sep, os.sep, ui_file)
     return loadUiType(ui_file_full)[0]
 
 
@@ -88,7 +86,7 @@ def get_connections_from_file(parent, filename):
     except etree.ParseError as err:
         error = 1
         msg = parent.tr('Cannot parse XML file: {0}').format(err)
-    except IOError as err:
+    except OSError as err:
         error = 1
         msg = parent.tr('Cannot open file: {0}').format(err)
 
@@ -142,7 +140,7 @@ def get_help_url():
     else:
         version = '.'.join([major, minor])
 
-    path = '%s/%s/docs/user_manual/plugins/core_plugins/plugins_metasearch.html' % (version, locale_name)  # noqa
+    path = f'{version}/{locale_name}/docs/user_manual/plugins/core_plugins/plugins_metasearch.html'  # noqa
 
     return '/'.join(['https://docs.qgis.org', path])
 
@@ -168,7 +166,7 @@ def serialize_string(input_string):
     all_other_tokens_as_string = input_string.replace(last_token, '')
 
     if last_token.isdigit():
-        value = '%s%s' % (all_other_tokens_as_string, int(last_token) + 1)
+        value = f'{all_other_tokens_as_string}{int(last_token) + 1}'
     else:
         value = '%s 1' % input_string
 
