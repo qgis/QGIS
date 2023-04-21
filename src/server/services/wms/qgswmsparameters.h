@@ -1417,7 +1417,7 @@ namespace QgsWms
       Qgis::TextRenderFormat pdfTextRenderFormat() const;
 
       /**
-       * Returns true if images embedded in pdf must be lossless
+       * Returns true if images embedded in pdf must be compressed using a lossless algorithm
        * \since QGIS 3.32
        */
       bool pdfLosslessImageCompression() const;
