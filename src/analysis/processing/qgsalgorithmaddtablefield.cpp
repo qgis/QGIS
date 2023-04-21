@@ -119,8 +119,8 @@ void QgsAddTableFieldAlgorithm::initParameters( const QVariantMap & )
   addParameter( new QgsProcessingParameterNumber( QStringLiteral( "FIELD_PRECISION" ), QObject::tr( "Field precision" ),
                 QgsProcessingParameterNumber::Integer, 0, false, 0, 10 ) );
 
-  addParameter( new QgsProcessingParameterString( QStringLiteral( "FIELD_ALIAS" ), QObject::tr( "Field alias" ) ) );
-  addParameter( new QgsProcessingParameterString( QStringLiteral( "FIELD_COMMENT" ), QObject::tr( "Field comment" ) ) );
+  addParameter( new QgsProcessingParameterString( QStringLiteral( "FIELD_ALIAS" ), QObject::tr( "Field alias" ), QVariant(), false, true ) );
+  addParameter( new QgsProcessingParameterString( QStringLiteral( "FIELD_COMMENT" ), QObject::tr( "Field comment" ), QVariant(), false, true ) );
 }
 
 QgsFields QgsAddTableFieldAlgorithm::outputFields( const QgsFields &inputFields ) const
