@@ -2216,7 +2216,20 @@ QDomElement QgsOgcUtilsExprToFilter::expressionColumnRefToOgcFilter( const QgsEx
 QDomElement QgsOgcUtilsExprToFilter::expressionInOperatorToOgcFilter( const QgsExpressionNodeInOperator *node, QgsExpression *expression, const QgsExpressionContext *context )
 {
   if ( node->list()->list().size() == 1 )
-    return expressionNodeToOgcFilter( node->list()->list()[0], expression, context );
+  {
+    const QDomElement leftNode = expressionNodeToOgcFilter( node->node(), expression, context );
+    const QDomElement firstListNode = expressionNodeToOgcFilter( node->list()->list().first(), expression, context );
+    QDomElement eqElem = mDoc.createElement( mFilterPrefix + ":PropertyIsEqualTo" );
+    eqElem.appendChild( leftNode );
+    eqElem.appendChild( firstListNode );
+    if ( node->isNotIn() )
+    {
+      QDomElement notElem = mDoc.createElement( mFilterPrefix + ":Not" );
+      notElem.appendChild( eqElem );
+      return notElem;
+    }
+    return eqElem;
+  }
 
   QDomElement orElem = mDoc.createElement( mFilterPrefix + ":Or" );
   const QDomElement leftNode = expressionNodeToOgcFilter( node->node(), expression, context );
@@ -2703,7 +2716,20 @@ QDomElement QgsOgcUtilsSQLStatementToFilter::toOgcFilter( const QgsSQLStatement:
 QDomElement QgsOgcUtilsSQLStatementToFilter::toOgcFilter( const QgsSQLStatement::NodeInOperator *node )
 {
   if ( node->list()->list().size() == 1 )
-    return toOgcFilter( node->list()->list()[0] );
+  {
+    const QDomElement leftNode = toOgcFilter( node->node() );
+    const QDomElement firstListNode = toOgcFilter( node->list()->list().first() );
+    QDomElement eqElem = mDoc.createElement( mFilterPrefix + ":PropertyIsEqualTo" );
+    eqElem.appendChild( leftNode );
+    eqElem.appendChild( firstListNode );
+    if ( node->isNotIn() )
+    {
+      QDomElement notElem = mDoc.createElement( mFilterPrefix + ":Not" );
+      notElem.appendChild( eqElem );
+      return notElem;
+    }
+    return eqElem;
+  }
 
   QDomElement orElem = mDoc.createElement( mFilterPrefix + ":Or" );
   const QDomElement leftNode = toOgcFilter( node->node() );
