@@ -42,6 +42,8 @@ QgsOgrSourceSelect::QgsOgrSourceSelect( QWidget *parent, Qt::WindowFlags fl, Qgs
   setupUi( this );
   QgsGui::enableAutoGeometryRestore( this );
 
+  mOpenOptionsGroupBox->setCollapsed( false );
+
   connect( radioSrcFile, &QRadioButton::toggled, this, &QgsOgrSourceSelect::radioSrcFile_toggled );
   connect( radioSrcOgcApi, &QRadioButton::toggled, this, &QgsOgrSourceSelect::radioSrcOgcApi_toggled );
   connect( radioSrcDirectory, &QRadioButton::toggled, this, &QgsOgrSourceSelect::radioSrcDirectory_toggled );

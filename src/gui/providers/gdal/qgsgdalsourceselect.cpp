@@ -32,6 +32,8 @@ QgsGdalSourceSelect::QgsGdalSourceSelect( QWidget *parent, Qt::WindowFlags fl, Q
   setupUi( this );
   setupButtons( buttonBox );
 
+  mOpenOptionsGroupBox->setCollapsed( false );
+
   connect( radioSrcFile, &QRadioButton::toggled, this, &QgsGdalSourceSelect::radioSrcFile_toggled );
   connect( radioSrcOgcApi, &QRadioButton::toggled, this, &QgsGdalSourceSelect::radioSrcOgcApi_toggled );
   connect( radioSrcProtocol, &QRadioButton::toggled, this, &QgsGdalSourceSelect::radioSrcProtocol_toggled );
@@ -145,6 +147,10 @@ void QgsGdalSourceSelect::radioSrcOgcApi_toggled( bool checked )
   {
     const QString vectorPath = mFileWidget->filePath();
     emit enableButtons( ! vectorPath.isEmpty() );
+    if ( mRasterPath.isEmpty() )
+    {
+      mRasterPath = QStringLiteral( "OGCAPI:" );
+    }
     fillOpenOptions();
   }
 }
@@ -436,6 +442,7 @@ void QgsGdalSourceSelect::fillOpenOptions()
   }
 
   mOpenOptionsGroupBox->setVisible( !mOpenOptionsWidgets.empty() );
+
 }
 
 ///@endcond
