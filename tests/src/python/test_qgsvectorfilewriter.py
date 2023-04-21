@@ -1603,6 +1603,7 @@ class TestQgsVectorFileWriter(unittest.TestCase):
         f = next(features)
         self.assertEqual(f['int'], 12345)
 
+    @unittest.skipIf(int(gdal.VersionInfo('VERSION_NUM')) < GDAL_COMPUTE_VERSION(3, 7, 0), "GDAL 3.7 required")
     def testWriteJsonMapToGpkg(self):
 
         tmp_dir = QTemporaryDir()
