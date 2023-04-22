@@ -1101,11 +1101,11 @@ bool QgsOapifSharedData::computeServerFilter( QString &errorMsg )
   {
     if ( mFilterTranslationState == QgsOapifProvider::FilterTranslationState::PARTIAL )
     {
-      QgsDebugMsg( QStringLiteral( "Part of the filter will be evaluated on client-side: %1" ).arg( mClientSideFilterExpression ) );
+      QgsDebugMsgLevel( QStringLiteral( "Part of the filter will be evaluated on client-side: %1" ).arg( mClientSideFilterExpression ), 2 );
     }
     else if ( mFilterTranslationState == QgsOapifProvider::FilterTranslationState::FULLY_CLIENT )
     {
-      QgsDebugMsg( "Whole filter will be evaluated on client-side" );
+      QgsDebugMsgLevel( QStringLiteral( "Whole filter will be evaluated on client-side" ), 2 );
     }
   }
   return ret;
