@@ -443,11 +443,16 @@ class TemplateInheritance5 : SomethingElse
 #include "sipifyheader.h"
 %End
 }
-class TemplateInheritance6 : SomethingElse, QList<Abc, Def, Ghi>
+
+typedef YourSuperTemplate<Abc,Def,Ghi> YourSuperTemplateAbcDefGhiBase;
+
+class TemplateInheritance6 : SomethingElse, YourSuperTemplateAbcDefGhiBase
 {
 
 %TypeHeaderCode
 #include "sipifyheader.h"
+#include "yoursupertemplate.h"
+typedef YourSuperTemplate<Abc,Def,Ghi> YourSuperTemplateAbcDef{cls3}Base;
 %End
 }
 
