@@ -938,7 +938,7 @@ while ($LINE_IDX < $LINE_COUNT){
                 push @template_inheritance_class1, $+{cls1};
                 push @template_inheritance_class2, $+{cls2} // "";
                 push @template_inheritance_class3, $+{cls3} // "";
-                dbg_info("template classes (max 3): $+{cls1} $+{cls2} $+{cls3}");
+                # dbg_info("template classes (max 3): $+{cls1} $+{cls2} $+{cls3}");
             }
             dbg_info("domain: $m");
             do {no warnings 'uninitialized';
