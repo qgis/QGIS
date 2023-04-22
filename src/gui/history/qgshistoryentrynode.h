@@ -1,7 +1,7 @@
 /***************************************************************************
                             qgshistoryentrynode.h
                             --------------------------
-    begin                : Aprial 2023
+    begin                : April 2023
     copyright            : (C) 2023 by Nyall Dawson
     email                : nyall dot dawson at gmail dot com
  ***************************************************************************/
@@ -72,6 +72,8 @@ class GUI_EXPORT QgsHistoryEntryNode
      * selecting the node.
      *
      * Subclasses should implement this method or createWidget(), but not both.
+     *
+     * \see createWidget()
      */
     virtual QString html( const QgsHistoryWidgetContext &context ) const;
 
@@ -80,6 +82,8 @@ class GUI_EXPORT QgsHistoryEntryNode
      *
      * If a NULLPTR is returned, the node's html() method will be called instead to
      * create the node's content.
+     *
+     * \see html()
      */
     virtual QWidget *createWidget( const QgsHistoryWidgetContext &context ) SIP_FACTORY;
 

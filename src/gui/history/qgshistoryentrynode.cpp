@@ -1,7 +1,7 @@
 /***************************************************************************
                             qgshistoryentrynode.cpp
                             --------------------------
-    begin                : Aprial 2023
+    begin                : April 2023
     copyright            : (C) 2023 by Nyall Dawson
     email                : nyall dot dawson at gmail dot com
  ***************************************************************************/
