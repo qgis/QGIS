@@ -24,7 +24,7 @@
  ***************************************************************************/
 """
 
-from qgis.PyQt.QtCore import QCoreApplication
+from qgis.PyQt.QtCore import Qt, QCoreApplication
 from qgis.PyQt.QtWidgets import QDialog, QTreeWidgetItem
 
 from .ui_qgsplugininstallerfetchingbase import Ui_QgsPluginInstallerFetchingDialogBase
@@ -54,6 +54,7 @@ class QgsPluginInstallerFetchingDialog(QDialog, Ui_QgsPluginInstallerFetchingDia
                 self.itemProgress[key] = 0
                 self.displayState(key, 2)
         self.treeWidget.resizeColumnToContents(0)
+        self.treeWidget.setCursor(Qt.WaitCursor)
         repositories.repositoryFetched.connect(self.repositoryFetched)
         repositories.anythingChanged.connect(self.displayState)
 
