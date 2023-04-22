@@ -224,7 +224,9 @@ void QgsVectorLayerCache::requestCompleted( const QgsFeatureRequest &featureRequ
       idx->requestCompleted( featureRequest, fids );
     }
     if ( featureRequest.filterType() == QgsFeatureRequest::FilterNone &&
-         ( featureRequest.spatialFilterType() == Qgis::SpatialFilterType::NoFilter || featureRequest.filterRect().contains( mLayer->extent() ) ) )
+         ( featureRequest.spatialFilterType() == Qgis::SpatialFilterType::NoFilter ||
+           ( featureRequest.filterRect().contains( mLayer->extent() ) && fids.count() == featureCount() ) ) )
+      // We have to ensure fids.count() == featureCount(), as spatial layer may contain geometryless features
     {
       mFullCache = true;
     }
