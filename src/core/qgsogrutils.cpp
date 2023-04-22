@@ -1641,6 +1641,8 @@ std::unique_ptr<QgsSymbol> QgsOgrUtils::symbolFromStyleString( const QString &st
 
       std::unique_ptr< QgsSimpleMarkerSymbolLayer > simpleMarker = std::make_unique< QgsSimpleMarkerSymbolLayer >( shape, symbolSize, -angle );
       simpleMarker->setSizeUnit( symbolSizeUnit );
+      simpleMarker->setStrokeWidth( 1.0 );
+      simpleMarker->setStrokeWidthUnit( Qgis::RenderUnit::Points );
 
       if ( isFilled && QgsSimpleMarkerSymbolLayer::shapeIsFilled( shape ) )
       {

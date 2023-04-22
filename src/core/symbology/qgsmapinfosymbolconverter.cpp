@@ -1517,6 +1517,8 @@ QgsMarkerSymbol *QgsMapInfoSymbolConverter::convertMarkerSymbol( int identifier,
   simpleMarker->setSizeUnit( sizeUnit );
   simpleMarker->setAngle( angle );
   simpleMarker->setVerticalAnchorPoint( vertAlign );
+  simpleMarker->setStrokeWidth( 1.0 );
+  simpleMarker->setStrokeWidthUnit( Qgis::RenderUnit::Points );
 
   if ( isNull )
   {
@@ -1527,7 +1529,6 @@ QgsMarkerSymbol *QgsMapInfoSymbolConverter::convertMarkerSymbol( int identifier,
   {
     simpleMarker->setColor( color );
     simpleMarker->setStrokeColor( QColor( 0, 0, 0 ) );
-    simpleMarker->setStrokeWidth( 0 );
   }
   else
   {
