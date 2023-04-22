@@ -109,7 +109,11 @@ void QgsTerrainTextureGenerator::waitForFinished()
     {
       // extra tile information for debugging
       QPainter p( &img );
-      p.setPen( Qt::white );
+      p.setPen( Qt::red );
+      p.setBackgroundMode( Qt::OpaqueMode );
+      QFont font = p.font();
+      font.setPixelSize( std::max( 30, mMap.mapTileResolution() / 6 ) );
+      p.setFont( font );
       p.drawRect( 0, 0, img.width() - 1, img.height() - 1 );
       p.drawText( img.rect(), jobData.debugText, QTextOption( Qt::AlignCenter ) );
       p.end();
@@ -139,7 +143,11 @@ void QgsTerrainTextureGenerator::onRenderingFinished()
   {
     // extra tile information for debugging
     QPainter p( &img );
-    p.setPen( Qt::white );
+    p.setPen( Qt::red );
+    p.setBackgroundMode( Qt::OpaqueMode );
+    QFont font = p.font();
+    font.setPixelSize( std::max( 30, mMap.mapTileResolution() / 6 ) );
+    p.setFont( font );
     p.drawRect( 0, 0, img.width() - 1, img.height() - 1 );
     p.drawText( img.rect(), jobData.debugText, QTextOption( Qt::AlignCenter ) );
     p.end();
