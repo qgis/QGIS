@@ -51,6 +51,8 @@ Returns a HTML formatted text string which should be shown to a user when
 selecting the node.
 
 Subclasses should implement this method or :py:func:`~QgsHistoryEntryNode.createWidget`, but not both.
+
+.. seealso:: :py:func:`createWidget`
 %End
 
     virtual QWidget *createWidget( const QgsHistoryWidgetContext &context ) /Factory/;
@@ -59,6 +61,8 @@ Returns a new widget which should be shown to users when selecting the node.
 
 If a ``None`` is returned, the node's :py:func:`~QgsHistoryEntryNode.html` method will be called instead to
 create the node's content.
+
+.. seealso:: :py:func:`html`
 %End
 
 
