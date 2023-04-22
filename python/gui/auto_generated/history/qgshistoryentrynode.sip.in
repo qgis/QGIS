@@ -65,6 +65,11 @@ create the node's content.
 .. seealso:: :py:func:`html`
 %End
 
+    virtual void doubleClicked( const QgsHistoryWidgetContext &context );
+%Docstring
+Called when the node is double-clicked. The default implementation does nothing.
+%End
+
 
     virtual bool matchesString( const QString &searchString ) const;
 %Docstring
