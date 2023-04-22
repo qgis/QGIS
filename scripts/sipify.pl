@@ -897,8 +897,8 @@ while ($LINE_IDX < $LINE_COUNT){
     }
 
     # class declaration started
-    # https://regex101.com/r/j4Q66v/1 (older versions: https://regex101.com/r/6FWntP/16)
-    if ( $LINE =~ m/^(\s*(class))\s+([A-Z0-9_]+_EXPORT\s+)?(Q_DECL_DEPRECATED\s+)?(?<classname>\w+)(?<domain>\s*\:\s*(public|protected|private)\s+\w+(< *(\w|::)+ *(, *(\w|::)+ *)*>)?(::\w+(<(\w|::)+(, *(\w|::)+)?>)?)*(,\s*(public|protected|private)\s+\w+(< *(\w|::)+ *(, *(\w|::)+)?>)?(::\w+(<\w+(, *(\w|::)+)?>)?)*)*)?(?<annot>\s*\/?\/?\s*SIP_\w+)?\s*?(\/\/.*|(?!;))$/ ){
+    # https://regex101.com/r/KMQdF5/1 (older versions: https://regex101.com/r/6FWntP/16)
+    if ( $LINE =~ m/^(\s*(class))\s+([A-Z0-9_]+_EXPORT\s+)?(Q_DECL_DEPRECATED\s+)?(?<classname>\w+)(?<domain>\s*\:\s*(public|protected|private)\s+\w+(< *(\w|::)+ *(, *(\w|::)+ *)*>)?(::\w+(<(\w|::)+(, *(\w|::)+)*>)?)*(,\s*(public|protected|private)\s+\w+(< *(\w|::)+ *(, *(\w|::)+)*>)?(::\w+(<\w+(, *(\w|::)+)?>)?)*)*)?(?<annot>\s*\/?\/?\s*SIP_\w+)?\s*?(\/\/.*|(?!;))$/ ){
         dbg_info("class definition started");
         push @ACCESS, PUBLIC;
         push @EXPORTED, 0;
@@ -931,18 +931,21 @@ while ($LINE_IDX < $LINE_COUNT){
             $m =~ s/[,:]?\s*private +\w+(::\w+)?//g;
 
             # detect template based inheritance
-            # https://regex101.com/r/wHoptq/1
+            # https://regex101.com/r/9LGhyy/1
             while ($m =~ /[,:]\s+(?<tpl>(?!QList)\w+)< *(?<cls1>(\w|::)+) *(, *(?<cls2>(\w|::)+)? *(, *(?<cls3>(\w|::)+)? *)?)? *>/g){
                 dbg_info("template class");
                 push @template_inheritance_template, $+{tpl};
                 push @template_inheritance_class1, $+{cls1};
                 push @template_inheritance_class2, $+{cls2} // "";
                 push @template_inheritance_class3, $+{cls3} // "";
+                dbg_info("template classes (max 3): $+{cls1} $+{cls2} $+{cls3}");
             }
+            dbg_info("domain: $m");
             do {no warnings 'uninitialized';
-              # https://regex101.com/r/wPKbLi/1
-              $m =~ s/(?<tpl>(?!QList)\w+)< *(?<cls1>(\w|::)+) *(, *(?<cls2>(\w|::)+)? *(, *(?<cls3>(\w|::)+)? *)?)? *>/$+{tpl}$+{cls1}$+{cls2}$+{cls3}Base/g; # use the typeded as template inheritance
+              # https://regex101.com/r/nOLg2r/1
+              $m =~ s/\b(?<tpl>(?!QList)\w+)< *(?<cls1>(\w|::)+) *(, *(?<cls2>(\w|::)+)? *(, *(?<cls3>(\w|::)+)? *)?)? *>/$+{tpl}$+{cls1}$+{cls2}$+{cls3}Base/g; # use the typeded as template inheritance
             };
+            $m =~ s/(\w+)< *(?:\w|::)+ *>//g; # remove remaining templates
             $m =~ s/([:,])\s*,/$1/g;
             $m =~ s/(\s*[:,])?\s*$//;
             $LINE .= $m;

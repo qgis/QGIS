@@ -443,6 +443,13 @@ class TemplateInheritance5 : SomethingElse
 #include "sipifyheader.h"
 %End
 }
+class TemplateInheritance6 : SomethingElse, QList<Abc,Def,Ghi>
+{
+
+%TypeHeaderCode
+#include "sipifyheader.h"
+%End
+}
 
 
 /************************************************************************
