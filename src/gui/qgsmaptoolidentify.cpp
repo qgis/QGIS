@@ -1058,7 +1058,7 @@ bool QgsMapToolIdentify::identifyRasterLayer( QList<IdentifyResult> *results, Qg
   // Thanks to the Value Tool plugin developers for the math
   const QgsRectangle extent = dprovider->extent();
   const int rasterRow = std::floor( ( extent.yMaximum() - point.y() ) / layer->rasterUnitsPerPixelY() );
-  const int rasterCol = std::floor( ( point.x() - extent.xMinimum() ) / layer->rasterUnitsPerPixelY() );
+  const int rasterCol = std::floor( ( point.x() - extent.xMinimum() ) / layer->rasterUnitsPerPixelX() );
 
 #if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
   derivedAttributes.unite( tr( "Clicked raster row" ), QLocale().toString( rasterRow ) );
