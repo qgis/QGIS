@@ -37,13 +37,6 @@ Class to select destination file, type and CRS for ogr layers
     typedef QFlags<QgsVectorLayerSaveAsDialog::Option> Options;
 
 
- QgsVectorLayerSaveAsDialog( long srsid, QWidget *parent = 0, Qt::WindowFlags fl = Qt::WindowFlags() );
-%Docstring
-Construct a new QgsVectorLayerSaveAsDialog
-
-.. deprecated:: QGIS 3.14
-   - will be removed in QGIS 4.0
-%End
 
     QgsVectorLayerSaveAsDialog( QgsVectorLayer *layer, Options options = AllOptions, QWidget *parent = 0, Qt::WindowFlags fl = Qt::WindowFlags() );
 %Docstring
@@ -84,15 +77,6 @@ Returns a list of additional layer options which are passed to OGR.
 Refer to the OGR documentation for the target format for available options.
 %End
 
- long crs() const;
-%Docstring
-Returns the internal CRS ID.
-
-.. seealso:: :py:func:`QgsCoordinateReferenceSystem.srsid`
-
-.. deprecated:: QGIS 3.14
-   - will be removed in QGIS 4.0. Use :py:func:`~QgsVectorLayerSaveAsDialog.crsObject` instead.
-%End
 
     QgsCoordinateReferenceSystem crsObject() const;
 %Docstring

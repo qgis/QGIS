@@ -56,7 +56,7 @@ class GUI_EXPORT QgsVectorLayerSaveAsDialog : public QDialog, private Ui::QgsVec
      *
      * \deprecated since QGIS 3.14 - will be removed in QGIS 4.0
      */
-    Q_DECL_DEPRECATED QgsVectorLayerSaveAsDialog( long srsid, QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::WindowFlags() );
+    Q_DECL_DEPRECATED QgsVectorLayerSaveAsDialog( long srsid, QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::WindowFlags() ) SIP_SKIP;
 
     /**
      * Construct a new QgsVectorLayerSaveAsDialog
@@ -101,7 +101,7 @@ class GUI_EXPORT QgsVectorLayerSaveAsDialog : public QDialog, private Ui::QgsVec
      * \see QgsCoordinateReferenceSystem::srsid()
      * \deprecated since QGIS 3.14 - will be removed in QGIS 4.0. Use crsObject() instead.
      */
-    Q_DECL_DEPRECATED long crs() const;
+    Q_DECL_DEPRECATED long crs() const SIP_SKIP;
 
     /**
      * Returns the CRS chosen for export
