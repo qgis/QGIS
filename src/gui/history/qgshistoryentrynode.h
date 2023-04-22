@@ -87,6 +87,11 @@ class GUI_EXPORT QgsHistoryEntryNode
      */
     virtual QWidget *createWidget( const QgsHistoryWidgetContext &context ) SIP_FACTORY;
 
+    /**
+     * Called when the node is double-clicked. The default implementation does nothing.
+     */
+    virtual void doubleClicked( const QgsHistoryWidgetContext &context );
+
 #if 0  // currently unused
 
     /**

@@ -36,6 +36,11 @@ QWidget *QgsHistoryEntryNode::createWidget( const QgsHistoryWidgetContext & )
   return nullptr;
 }
 
+void QgsHistoryEntryNode::doubleClicked( const QgsHistoryWidgetContext & )
+{
+
+}
+
 #if 0
 QList<QAction *> QgsHistoryEntryNode::actions( QWidget * )
 {

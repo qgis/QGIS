@@ -36,6 +36,8 @@ QgsHistoryWidget::QgsHistoryWidget( const QString &providerId, Qgis::HistoryProv
   mFilterEdit->setShowSearchIcon( true );
   connect( mFilterEdit, &QLineEdit::textChanged, mProxyModel, &QgsHistoryEntryProxyModel::setFilter );
   connect( mTreeView->selectionModel(), &QItemSelectionModel::currentChanged, this, &QgsHistoryWidget::currentItemChanged );
+  connect( mTreeView, &QTreeView::doubleClicked, this, &QgsHistoryWidget::nodeDoubleClicked );
+
 }
 
 void QgsHistoryWidget::currentItemChanged( const QModelIndex &selected, const QModelIndex & )
@@ -70,6 +72,14 @@ void QgsHistoryWidget::currentItemChanged( const QModelIndex &selected, const QM
       mContainerStackedWidget->removeWidget( mContainerStackedWidget->widget( 1 ) );
       mContainerStackedWidget->setCurrentIndex( 0 );
     }
+  }
+}
+
+void QgsHistoryWidget::nodeDoubleClicked( const QModelIndex &index )
+{
+  if ( QgsHistoryEntryNode *node = mModel->index2node( mProxyModel->mapToSource( index ) ) )
+  {
+    node->doubleClicked( mContext );
   }
 }
 
