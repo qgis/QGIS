@@ -27,12 +27,17 @@
 class QCloseEvent;
 class QgsMeasureTool;
 class QgsMapCanvas;
+class QgsSettingsEntryBool;
+class QgsSettingsEntryString;
 
 class APP_EXPORT QgsMeasureDialog : public QDialog, private Ui::QgsMeasureBase
 {
     Q_OBJECT
 
   public:
+
+    static const QgsSettingsEntryBool *settingClipboardHeader;
+    static const QgsSettingsEntryString *settingClipboardSeparator;
 
     //! Constructor
     QgsMeasureDialog( QgsMeasureTool *tool, Qt::WindowFlags f = Qt::WindowFlags() );

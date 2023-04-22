@@ -24,12 +24,19 @@
 #include "qgscoordinatereferencesystem.h"
 #include "qgsunittypes.h"
 #include "qgssettings.h"
+#include "qgssettingsentryimpl.h"
+#include "qgssettingstree.h"
 #include "qgsgui.h"
 
 #include <QClipboard>
 #include <QCloseEvent>
 #include <QLocale>
 #include <QPushButton>
+
+
+const QgsSettingsEntryBool *QgsMeasureDialog::settingClipboardHeader = new QgsSettingsEntryBool( QStringLiteral( "clipboard-header" ), QgsSettingsTree::sTreeMeasure, false, QObject::tr( "Whether the header should be copied to the cliboard along the coordinates, distances" ) );
+
+const QgsSettingsEntryString *QgsMeasureDialog::settingClipboardSeparator = new QgsSettingsEntryString( QStringLiteral( "clipboard-separator" ), QgsSettingsTree::sTreeMeasure, QStringLiteral( "\t" ), QObject::tr( "Separator between the measure columns copied to the clipboard" ) );
 
 
 QgsMeasureDialog::QgsMeasureDialog( QgsMeasureTool *tool, Qt::WindowFlags f )
@@ -713,10 +720,10 @@ double QgsMeasureDialog::convertArea( double area, Qgis::AreaUnit toUnit ) const
 
 void QgsMeasureDialog::copyMeasurements()
 {
-  bool includeHeader = QgsSettings().value( QStringLiteral( "qgis/measure/clipboard_header" ), false ).toBool();
+  bool includeHeader = settingClipboardHeader->value();
 
   // Get the separator
-  QString separator = QgsSettings().value( QStringLiteral( "qgis/measure/clipboard_separator" ), QStringLiteral( "\t" ) ).toString();
+  QString separator = settingClipboardSeparator->value();
   if ( separator.isEmpty() )
     separator = QStringLiteral( "\t" );
 

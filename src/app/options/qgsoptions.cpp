@@ -59,6 +59,7 @@
 #include "options/qgsadvancedoptions.h"
 #include "qgssettingsentryimpl.h"
 #include "qgssettingsentryenumflag.h"
+#include "qgsmeasuredialog.h"
 
 #ifdef HAVE_OPENCL
 #include "qgsopenclutils.h"
@@ -649,9 +650,9 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
 
   // set the measure tool copy settings
   connect( mSeparatorOther, &QRadioButton::toggled, mSeparatorCustom, &QLineEdit::setEnabled );
-  bool includeHeader = mSettings->value( QStringLiteral( "qgis/measure/clipboard_header" ), false ).toBool();
-  mIncludeHeader->setChecked( includeHeader );
-  const QString sep = mSettings->value( QStringLiteral( "qgis/measure/clipboard_separator" ), QStringLiteral( "\t" ) ).toString();
+  mIncludeHeader->setChecked( QgsMeasureDialog::settingClipboardHeader->value() );
+
+  const QString sep = QgsMeasureDialog::settingClipboardSeparator->value();
 
   if ( sep.isEmpty() || sep == QStringLiteral( "\t" ) )
     mSeparatorTab->setChecked( true );
@@ -1682,7 +1683,7 @@ void QgsOptions::saveOptions()
   bool baseUnit = mKeepBaseUnitCheckBox->isChecked();
   mSettings->setValue( QStringLiteral( "/qgis/measure/keepbaseunit" ), baseUnit );
 
-  mSettings->setValue( QStringLiteral( "/qgis/measure/clipboard_header" ), mIncludeHeader->isChecked() );
+  QgsMeasureDialog::settingClipboardHeader->setValue( mIncludeHeader->isChecked() );
   QString separator;
   if ( mSeparatorTab->isChecked() )
     separator = QStringLiteral( "\t" );
@@ -1696,7 +1697,8 @@ void QgsOptions::saveOptions()
     separator = QStringLiteral( ":" );
   else
     separator = mSeparatorCustom->text();
-  mSettings->setValue( QStringLiteral( "/qgis/measure/clipboard_separator" ), separator );
+
+  QgsMeasureDialog::settingClipboardSeparator->setValue( separator );
 
   //set the color for selections
   QColor myColor = pbnSelectionColor->color();
