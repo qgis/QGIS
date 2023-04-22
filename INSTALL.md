@@ -3,59 +3,54 @@ Building QGIS from source - step by step
 <!-- Table of contents generated with https://freelance-tech-writer.github.io/table-of-contents-generator/index.html -->
 
 # Table of Contents
-
-- [1. Introduction](#1-introduction)
-- [2. Overview](#2-overview)
-- [3. Building on GNU/Linux](#3-building-on-gnulinux)
-  - [3.1. Building QGIS with Qt 5.x](#31-building-qgis-with-qt-5x)
-  - [3.2. Prepare apt](#32-prepare-apt)
-  - [3.3. Install build dependencies](#33-install-build-dependencies)
-  - [3.4. Setup ccache (Optional, but recommended)](#34-setup-ccache-optional-but-recommended)
-  - [3.5. Prepare your development environment](#35-prepare-your-development-environment)
-  - [3.6. Check out the QGIS Source Code](#36-check-out-the-qgis-source-code)
-  - [3.7. Starting the compile](#37-starting-the-compile)
-    - [3.7.1 Available compilation flags](#371-available-compilation-flags)
-  - [3.8. Compiling with 3D](#38-compiling-with-3d)
-    - [3.8.1. Compiling with 3D on old Debian based distributions](#381-compiling-with-3d-on-old-debian-based-distributions)
-  - [3.9. Building different branches](#39-building-different-branches)
-  - [3.10. Building Debian packages](#310-building-debian-packages)
-  - [3.11. On Fedora Linux](#311-on-fedora-linux)
-    - [3.11.1. Install build dependencies](#3111-install-build-dependencies)
-    - [3.11.2. Suggested system tweaks](#3112-suggested-system-tweaks)
-- [4. Building on Windows](#4-building-on-windows)
-  - [4.1. Building with Microsoft Visual Studio](#41-building-with-microsoft-visual-studio)
-    - [4.1.1. Visual Studio 2015 Community Edition](#411-visual-studio-2015-community-edition)
-    - [4.1.2. Other tools and dependencies](#412-other-tools-and-dependencies)
-    - [4.1.3. Clone the QGIS Source Code](#413-clone-the-qgis-source-code)
-    - [4.1.4. Configure and build with CMake from command line](#414-configure-and-build-with-cmake-from-command-line)
-      - [4.1.4.1 Using configonly.bat to create the MSVC solution file](#4141-using-configonlybat-to-create-the-msvc-solution-file)
-      - [4.1.4.2 Compiling QGIS with MSVC](#4142-compiling-qgis-with-msvc)
-    - [4.1.5 Old alternative method that might still work using cmake-gui](#415-old-alternative-method-that-might-still-work-using-cmake-gui)
-    - [4.1.6. Packaging](#416-packaging)
-    - [4.1.7. Packaging your own build of QGIS](#417-packaging-your-own-build-of-qgis)
-    - [4.1.8. Osgeo4w packaging](#418-osgeo4w-packaging)
-  - [4.2. Building on Linux with mingw64](#42-building-on-linux-with-mingw64)
-    - [4.2.1. Building with Docker](#421-building-with-docker)
-      - [4.2.1.1. Initial setup](#4211-initial-setup)
-      - [4.2.1.2. Building the dependencies](#4212-building-the-dependencies)
-      - [4.2.1.3. Cross-Building QGIS](#4213-cross-building-qgis)
-    - [4.2.2. Testing QGIS](#422-testing-qgis)
-- [5. Building on MacOS X](#5-building-on-macos-x)
-  - [5.1. Install Developer Tools](#51-install-developer-tools)
-  - [5.2. Install CMake and other build tools](#52-install-cmake-and-other-build-tools)
-  - [5.3. Install Qt5 and QGIS-Deps](#53-install-qt5-and-qgis-deps)
-  - [5.4. QGIS source](#54-qgis-source)
-  - [5.5. Configure the build](#55-configure-the-build)
-  - [5.6. Building](#56-building)
-- [6. Setting up the WCS test server on GNU/Linux](#6-setting-up-the-wcs-test-server-on-gnulinux)
-  - [6.1. Preparation](#61-preparation)
-  - [6.2. Setup mapserver](#62-setup-mapserver)
-  - [6.3. Create a home page](#63-create-a-home-page)
-  - [6.4. Now deploy it](#64-now-deploy-it)
-  - [6.5. Debugging](#65-debugging)
-- [7. Setting up a Jenkins Build Server](#7-setting-up-a-jenkins-build-server)
-- [8. Debug output and running tests](#8-debug-output-and-running-tests)
-- [9. Authors and Acknowledgments](#9-authors-and-acknowledgments)
+* [Table of Contents](#table-of-contents)
+* [1. Introduction](#1-introduction)
+* [2. Overview](#2-overview)
+* [3. Building on GNU/Linux](#3-building-on-gnulinux)
+   * [3.1. Building QGIS with Qt 5.x](#31-building-qgis-with-qt-5x)
+   * [3.2. Prepare apt](#32-prepare-apt)
+   * [3.3. Install build dependencies](#33-install-build-dependencies)
+   * [3.4. Setup ccache (Optional, but recommended)](#34-setup-ccache-optional-but-recommended)
+   * [3.5. Prepare your development environment](#35-prepare-your-development-environment)
+   * [3.6. Check out the QGIS Source Code](#36-check-out-the-qgis-source-code)
+   * [3.7. Starting the compile](#37-starting-the-compile)
+       * [3.7.1 Available compilation flags](#371-available-compilation-flags)
+   * [3.8. Compiling with 3D](#38-compiling-with-3d)
+       * [3.8.1. Compiling with 3D on old Debian based distributions](#381-compiling-with-3d-on-old-debian-based-distributions)
+   * [3.9. Building different branches](#39-building-different-branches)
+   * [3.10. Building Debian packages](#310-building-debian-packages)
+   * [3.11. On Fedora Linux](#311-on-fedora-linux)
+       * [3.11.1. Install build dependencies](#3111-install-build-dependencies)
+       * [3.11.2. Suggested system tweaks](#3112-suggested-system-tweaks)
+       * [3.11.3. Additional tools for QGIS development](#3113-additional-tools-for-qgis-development)
+* [4. Building on Windows](#4-building-on-windows)
+   * [4.1. Building with Microsoft Visual Studio](#41-building-with-microsoft-visual-studio)
+       * [4.1.1. Visual Studio 2019 Community Edition](#411-visual-studio-2019-community-edition)
+       * [4.1.2. Other tools and dependencies](#412-other-tools-and-dependencies)
+       * [4.1.3. Clone the QGIS Source Code](#413-clone-the-qgis-source-code)
+       * [4.1.4. Configure and build from command line](#414-configure-and-build-from-command-line)
+   * [4.2. Building on Linux with mingw64](#42-building-on-linux-with-mingw64)
+       * [4.2.1. Building with Docker](#421-building-with-docker)
+           * [4.2.1.1. Initial setup](#4211-initial-setup)
+           * [4.2.1.2. Building the dependencies](#4212-building-the-dependencies)
+           * [4.2.1.3. Cross-Building QGIS](#4213-cross-building-qgis)
+       * [4.2.2. Testing QGIS](#422-testing-qgis)
+* [5. Building on MacOS X](#5-building-on-macos-x)
+   * [5.1. Install Developer Tools](#51-install-developer-tools)
+   * [5.2. Install CMake and other build tools](#52-install-cmake-and-other-build-tools)
+   * [5.3. Install Qt5 and QGIS-Deps](#53-install-qt5-and-qgis-deps)
+   * [5.4. QGIS source](#54-qgis-source)
+   * [5.5. Configure the build](#55-configure-the-build)
+   * [5.6. Building](#56-building)
+* [6. Setting up the WCS test server on GNU/Linux](#6-setting-up-the-wcs-test-server-on-gnulinux)
+   * [6.1. Preparation](#61-preparation)
+   * [6.2. Setup mapserver](#62-setup-mapserver)
+   * [6.3. Create a home page](#63-create-a-home-page)
+   * [6.4. Now deploy it](#64-now-deploy-it)
+   * [6.5. Debugging](#65-debugging)
+* [7. Setting up a Jenkins Build Server](#7-setting-up-a-jenkins-build-server)
+* [8. Debug output and running tests](#8-debug-output-and-running-tests)
+* [9. Authors and Acknowledgments](#9-authors-and-acknowledgments)
 
 # 1. Introduction
 
@@ -534,20 +529,17 @@ dnf install ccache ninja-build astyle python3-autopep8 python3-mock python3-nose
 
 ## 4.1. Building with Microsoft Visual Studio
 
-This section describes how to build QGIS using Visual Studio (MSVC) 2015 on Windows.
-This is currently also how the binary QGIS packages are made (earlier versions used MinGW).
+This section describes how to build QGIS using Visual Studio (MSVC) 2019 on Windows.
+This is currently also how the binary QGIS packages are made.
 
 This section describes the setup required to allow Visual Studio to be used to
 build QGIS.
 
-### 4.1.1. Visual Studio 2015 Community Edition
+### 4.1.1. Visual Studio 2019 Community Edition
 
-Download the [free (as in free beer) Community installer](https://download.microsoft.com/download/D/2/3/D23F4D0F-BA2D-4600-8725-6CCECEA05196/vs_community_ENU.exe)
+Download the [free (as in free beer) Community installer](https://download.visualstudio.microsoft.com/download/pr/68d6b204-9df0-4fcc-abcc-08ee0eff9cb2/b029547488a9383b0c8d8a9c813e246feb3ec19e0fe55020d4878fde5f0983fe/vs_Community.exe)
 
-Select "Custom" install and add the following packages:
-
-* "Common Tools for Visual C++ 2015" under "Visual C++"
-* "Tools (1.4.1) and Windows 10 SDK (10.0.14393)" under "Universal Windows App Development Tools".
+Select "Desktop Development with C++"
 
 ### 4.1.2. Other tools and dependencies
 
@@ -572,12 +564,10 @@ and from OSGeo4W (select *Advanced Install*):
 
   * Note: If you install other packages, this might cause issues. Particularly, make sure
     **not** to install the msinttypes package. It installs a stdint.h file in
-    OSGeo4W[64]\include, that conflicts with Visual Studio own stdint.h, which for
+    `OSGeo4W[64]\include`, that conflicts with Visual Studio own stdint.h, which for
     example breaks the build of the virtual layer provider.
 
-Earlier versions of this document also covered how to build all above
-dependencies.  If you're interested in that, check the history of this page in the Wiki
-or the SVN repository.
+If you intend to also build all the dependencies, you can refer to [the OSGeo4W repository](https://github.com/jef-n/OSGeo4W).
 
 ### 4.1.3. Clone the QGIS Source Code
 
@@ -610,141 +600,10 @@ cd QGIS
 git config core.filemode false
 ```
 
-### 4.1.4. Configure and build with CMake from command line
+### 4.1.4. Configure and build from command line
 
-**Note:** Consider this section as example.  It tends to outdate, when OSGeo4W and
-SDKs move on.  `ms-windows/osgeo4w/package-nightly.cmd` is used for the
-nightly builds and constantly updated and hence might contain necessary
-updates that are not yet reflected here.
-
-To start a command prompt with an environment that both has the VC++ and the OSGeo4W
-variables create the following batch file (assuming the above packages were
-installed in the default locations):
-
-```cmd
-@echo off
-call C:\OSGeo4W64\QGIS\ms-windows\osgeo4w\msvc-env.bat x86_64
-@cmd
-```
-
-Save the batch file as `C:\OSGeo4W64\OSGeo4W-dev.bat` and run it.
-
-#### 4.1.4.1 Using configonly.bat to create the MSVC solution file
-
-We will be using the file `ms-windows/osgeo4w/configonly.bat` to create an MSVC solution file.
-There are two supported CMake generators for creating a solution file: Ninja, and native MSVC.
-The advantage of using native MSVC solution is that you can find the root of build problems much more easily.
-configonly.bat is meant to create a configured build directory with a MSVC solution file:
-
-```cmd
-cd C:\OSGeo4W64\QGIS\ms-windows\osgeo4w
-configonly.bat
-```
-
-#### 4.1.4.2 Compiling QGIS with MSVC
-
-We will need to run MSVC with all the environment variables set, thus we will run it as follows:
-
-* Run the batch file OSGeo4W-dev.bat you created before.
-* On the command prompt run `call gdal-dev-env.bat` to add the release gdal and proj libraries to your PATH.
-* On the command prompt run `devenv` to open MSVC.
-* From MSVC, open the solution file `C:\OSGeo4W64\QGIS\ms-windows\osgeo4w\build-qgis-test-x86_64\qgis.sln`.
-* Try to build the solution (go grab a cup of tea, it may take a while).
-* If it fails, run it again and again until there are (hopefully) no errors.
-
-Running QGIS from within MSVC:
-
-* Edit the properties of the project ALL_BUILD to include the path to the executable:
-* Debugging -> Command -> `C:\OSGeo4W64\QGIS\ms-windows\osgeo4w\build-qgis-test-x86_64\output\bin\RelWithDebInfo\qgis.exe`.
-* To run, use the menu commands: Debug -> Start Debugging (F5) or Start Without Debugging (Ctrl+F5).
-* Ignore the "These projects are out of date" message, it appears even if no files were changed.
-
-### 4.1.5 Old alternative method that might still work using cmake-gui
-
-Create a 'build' directory somewhere. This will be where all the build output
-will be generated.
-
-Now run `cmake-gui` (still from `cmd`) and in the *Where is the source code:*
-box, browse to the top level QGIS directory.
-
-In the *Where to build the binaries:* box, browse to the `build` directory you
-created.
-
-If the path to bison and flex contains blanks, you need to use the short name
-for the directory (i.e. `C:\Program Files` should be rewritten to
-`C:\Progra~n`, where `n` is the number as shown in `dir /x C:\`).
-
-Verify that the `BINDINGS_GLOBAL_INSTALL` option is not checked, so that python
-bindings are placed into the output directory when you run the `INSTALL` target.
-
-Hit `Configure` to start the configuration and select `Visual Studio 9 2008`
-and keep `native compilers` and click `Finish`.
-
-The configuration should complete without any further questions and allow you to
-click `Generate`.
-
-Now close `cmake-gui` and continue on the command prompt by starting
-`vcexpress`.  Use File / Open / Project/Solutions and open the
-qgis-x.y.z.sln File in your project directory.
-
-Change `Solution Configuration` from `Debug` to `RelWithDebInfo` (Release
-with Debug Info)  or `Release` before you build QGIS using the `ALL_BUILD`
-target (otherwise you need debug libraries that are not included).
-
-After the build completed you should install QGIS using the `INSTALL` target.
-
-Install QGIS by building the `INSTALL` project. By default this will install to
-`C:\Program Files\qgis<version>` (this can be changed by changing the
-`CMAKE_INSTALL_PREFIX` variable in `cmake-gui`).
-
-You will also either need to add all the dependency DLLs to the QGIS install
-directory or add their respective directories to your `PATH`.
-
-### 4.1.6. Packaging
-
-To create a standalone installer there is a perl script named `creatensis.pl`
-in `qgis/ms-windows/osgeo4w`.  It downloads all required packages from OSGeo4W
-and repackages them into an installer using NSIS.
-
-The script can be run on both Windows and Linux.
-
-On Debian/Ubuntu you can just install the `nsis` package.
-
-NSIS for Windows can be downloaded at:
-
-https://nsis.sourceforge.io/Main_Page
-
-And Perl for Windows (including other requirements like `wget`, `unzip`, `tar`
-and `bzip2`) is available at:
-
-https://cygwin.com
-
-### 4.1.7. Packaging your own build of QGIS
-
-Assuming you have completed the above packaging step, if you want to include
-your own hand built QGIS executables, you need to copy them in from your
-windows installation into the ms-windows file tree created by the creatensis
-script.
-
-```cmd
-cd ms-windows/
-rm -rf osgeo4w/unpacked/apps/qgis/*
-cp -r /tmp/qgis1.7.0/* osgeo4w/unpacked/apps/qgis/
-```
-
-Now create a package.
-
-```cmd
-./quickpackage.sh
-```
-
-After this you should now have a nsis installer containing your own build
-of QGIS and all dependencies needed to run it on a windows machine.
-
-### 4.1.8. Osgeo4w packaging
-
-The actual packaging process is currently not documented, for now please take a
-look at `ms-windows/osgeo4w/package.cmd`.
+The best reference for building QGIS can be found in the [build scripts for OSGeo4W](
+ https://github.com/jef-n/OSGeo4W/blob/master/src/qgis-dev/osgeo4w/package.sh)
 
 
 ## 4.2. Building on Linux with mingw64
