@@ -58,7 +58,7 @@ Build-Depends:
  python3-pyqt5.qtpositioning,
  python3-pyqt5.qtsql,
  python3-pyqt5.qtsvg,
-#bullseye focal# python3-sip-dev, python3-sip,
+#bullseye# python3-sip-dev, python3-sip,
 #sid jammy kinetic lunar# python3-pyqtbuild, sip-tools,
  python3-termcolor,
  python3-yaml,
@@ -67,7 +67,7 @@ Build-Depends:
  qt3d-defaultgeometryloader-plugin,
  qt3d-gltfsceneio-plugin,
  qt3d-scene2d-plugin,
-#bullseye focal# qt5keychain-dev,
+#bullseye# qt5keychain-dev,
 #jammy kinetic lunar sid# qtkeychain-qt5-dev,
  qtbase5-dev,
  qtbase5-private-dev,
@@ -418,7 +418,7 @@ Depends:
 Breaks: python-qgis-common (<< ${source:Version})
 Replaces: python-qgis-common (<< ${source:Version})
 Suggests:
-#focal jammy kinetic lunar bullseye sid# otb-qgis,
+#jammy kinetic lunar bullseye sid# otb-qgis,
  saga
 Description: Python bindings to QGIS - architecture-independent files
  QGIS is a Geographic Information System (GIS) which manages, analyzes and

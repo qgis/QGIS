@@ -41,7 +41,7 @@ endif
 
 QT_PLUGINS_DIR = lib/$(DEB_BUILD_MULTIARCH)/qt5/plugins
 
-ifneq ($(DISTRIBUTION),$(findstring $(DISTRIBUTION),"bullseye focal jammy kinetic lunar"))
+ifneq ($(DISTRIBUTION),$(findstring $(DISTRIBUTION),"bullseye jammy kinetic lunar"))
 	DISTRIBUTION := sid
 endif
 
