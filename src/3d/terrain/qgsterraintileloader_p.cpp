@@ -24,14 +24,12 @@
 #include "qgsterraintexturegenerator_p.h"
 #include "qgsterraintileentity_p.h"
 #include "qgscoordinatetransform.h"
+#include "qgsmaskeddiffusespecularmaterial.h"
+#include "qgsmaskedtexturematerial.h"
 
 #include <Qt3DRender/QTexture>
 #include <Qt3DRender/QTechnique>
 #include <Qt3DRender/QCullFace>
-
-#include <Qt3DExtras/QTextureMaterial>
-#include <Qt3DExtras/QDiffuseSpecularMaterial>
-#include <Qt3DExtras/QPhongMaterial>
 
 /// @cond PRIVATE
 
@@ -61,28 +59,28 @@ void QgsTerrainTileLoader::createTextureComponent( QgsTerrainTileEntity *entity,
   {
     if ( isShadingEnabled )
     {
-      Qt3DExtras::QDiffuseSpecularMaterial *diffuseMapMaterial = new Qt3DExtras::QDiffuseSpecularMaterial;
+      QgsMaskedDiffuseSpecularMaterial *diffuseMapMaterial = new QgsMaskedDiffuseSpecularMaterial;
       diffuseMapMaterial->setDiffuse( QVariant::fromValue( texture ) );
       diffuseMapMaterial->setAmbient( shadingMaterial.ambient() );
       diffuseMapMaterial->setSpecular( shadingMaterial.specular() );
-      diffuseMapMaterial->setShininess( shadingMaterial.shininess() );
+      diffuseMapMaterial->setShininess( static_cast<float>( shadingMaterial.shininess() ) );
       material = diffuseMapMaterial;
     }
     else
     {
-      Qt3DExtras::QTextureMaterial *textureMaterial = new Qt3DExtras::QTextureMaterial;
+      QgsMaskedTextureMaterial *textureMaterial = new QgsMaskedTextureMaterial;
       textureMaterial->setTexture( texture );
       material = textureMaterial;
     }
   }
   else
   {
-    Qt3DExtras::QPhongMaterial *phongMaterial  = new Qt3DExtras::QPhongMaterial;
-    phongMaterial->setDiffuse( shadingMaterial.diffuse() );
-    phongMaterial->setAmbient( shadingMaterial.ambient() );
-    phongMaterial->setSpecular( shadingMaterial.specular() );
-    phongMaterial->setShininess( shadingMaterial.shininess() );
-    material = phongMaterial;
+    QgsMaskedDiffuseSpecularMaterial *diffuseMapMaterial = new QgsMaskedDiffuseSpecularMaterial;
+    diffuseMapMaterial->setDiffuse( QVariant( shadingMaterial.diffuse() ) );
+    diffuseMapMaterial->setAmbient( shadingMaterial.ambient() );
+    diffuseMapMaterial->setSpecular( shadingMaterial.specular() );
+    diffuseMapMaterial->setShininess( static_cast<float>( shadingMaterial.shininess() ) );
+    material = diffuseMapMaterial;
   }
 
   // no backface culling on terrain, to allow terrain to be viewed from underground
