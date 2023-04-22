@@ -59,6 +59,7 @@ class TestQgsMapToolIdentifyAction : public QObject
     void identifyRasterFloat32(); // test pixel identification and decimal precision
     void identifyRasterFloat64(); // test pixel identification and decimal precision
     void identifyRasterTemporal();
+    void identifyRasterDerivedAttributes(); // test derived pixel attributes
     void identifyMesh(); // test identification for mesh layer
     void identifyVectorTile();  // test identification for vector tile layer
     void identifyInvalidPolygons(); // test selecting invalid polygons
@@ -72,7 +73,7 @@ class TestQgsMapToolIdentifyAction : public QObject
     QgsMapToolIdentifyAction *mIdentifyAction = nullptr;
     QgisApp *mQgisApp = nullptr;
 
-    QString testIdentifyRaster( QgsRasterLayer *layer, double xGeoref, double yGeoref );
+    QList<QgsMapToolIdentify::IdentifyResult> testIdentifyRaster( QgsRasterLayer *layer, double xGeoref, double yGeoref );
     QList<QgsMapToolIdentify::IdentifyResult> testIdentifyVector( QgsVectorLayer *layer, double xGeoref, double yGeoref );
     QList<QgsMapToolIdentify::IdentifyResult> testIdentifyMesh( QgsMeshLayer *layer, double xGeoref, double yGeoref );
     QList<QgsMapToolIdentify::IdentifyResult> testIdentifyVectorTile( QgsVectorTileLayer *layer, double xGeoref, double yGeoref );
@@ -565,7 +566,7 @@ void TestQgsMapToolIdentifyAction::areaCalculation()
 }
 
 // private
-QString TestQgsMapToolIdentifyAction::testIdentifyRaster( QgsRasterLayer *layer, double xGeoref, double yGeoref )
+QList<QgsMapToolIdentify::IdentifyResult> TestQgsMapToolIdentifyAction::testIdentifyRaster( QgsRasterLayer *layer, double xGeoref, double yGeoref )
 {
   std::unique_ptr< QgsMapToolIdentifyAction > action( new QgsMapToolIdentifyAction( canvas ) );
   const QgsPointXY mapPoint = canvas->getCoordinateTransform()->transform( xGeoref, yGeoref );
@@ -575,9 +576,7 @@ QString TestQgsMapToolIdentifyAction::testIdentifyRaster( QgsRasterLayer *layer,
     identifyContext.setTemporalRange( canvas->temporalRange() );
 
   QList<QgsMapToolIdentify::IdentifyResult> result = action->identify( mapPoint.x(), mapPoint.y(), QList<QgsMapLayer *>() << layer, QgsMapToolIdentify::DefaultQgsSetting, identifyContext );
-  if ( result.length() != 1 )
-    return QString();
-  return result[0].mAttributes[QStringLiteral( "Band 1" )];
+  return result;
 }
 
 // private
@@ -638,12 +637,12 @@ void TestQgsMapToolIdentifyAction::identifyRasterTemporal()
   // invalid temporal range on canvas
   canvas->setTemporalRange( QgsDateTimeRange( QDateTime( QDate( 1950, 01, 01 ), QTime( 0, 0, 0 ), Qt::UTC ),
                             QDateTime( QDate( 1950, 01, 01 ), QTime( 1, 0, 0 ), Qt::UTC ) ) );
-  QCOMPARE( testIdentifyRaster( tempLayer.get(), 0.5, 0.5 ), QString( ) );
+  QCOMPARE( testIdentifyRaster( tempLayer.get(), 0.5, 0.5 ).length(), 0 );
 
   // valid temporal range on canvas
   canvas->setTemporalRange( QgsDateTimeRange( QDateTime( QDate( 1950, 01, 01 ), QTime( 0, 0, 0 ), Qt::UTC ),
                             QDateTime( QDate( 2050, 01, 01 ), QTime( 1, 0, 0 ), Qt::UTC ) ) );
-  QCOMPARE( testIdentifyRaster( tempLayer.get(), 0.5, 0.5 ), QString( "-999.9" ) );
+  QCOMPARE( testIdentifyRaster( tempLayer.get(), 0.5, 0.5 )[0].mAttributes[QStringLiteral( "Band 1" )], QString( "-999.9" ) );
 }
 
 void TestQgsMapToolIdentifyAction::identifyRasterFloat32()
@@ -660,25 +659,25 @@ void TestQgsMapToolIdentifyAction::identifyRasterFloat32()
 
   canvas->setExtent( QgsRectangle( 0, 0, 7, 1 ) );
 
-  QCOMPARE( testIdentifyRaster( tempLayer.get(), 0.5, 0.5 ), QString( "-999.9" ) );
+  QCOMPARE( testIdentifyRaster( tempLayer.get(), 0.5, 0.5 )[0].mAttributes[QStringLiteral( "Band 1" )], QString( "-999.9" ) );
 
-  QCOMPARE( testIdentifyRaster( tempLayer.get(), 1.5, 0.5 ), QString( "-999.987" ) );
-
-  // More than 6 significant digits for corresponding value in .asc:
-  // precision loss in Float32
-  QCOMPARE( testIdentifyRaster( tempLayer.get(), 2.5, 0.5 ), QString( "1.234568" ) ); // in .asc file : 1.2345678
-
-  QCOMPARE( testIdentifyRaster( tempLayer.get(), 3.5, 0.5 ), QString( "123456" ) );
-
-  // More than 6 significant digits: no precision loss here for that particular value
-  QCOMPARE( testIdentifyRaster( tempLayer.get(), 4.5, 0.5 ), QString( "1234567" ) );
-
-  // More than 6 significant digits: no precision loss here for that particular value
-  QCOMPARE( testIdentifyRaster( tempLayer.get(), 5.5, 0.5 ), QString( "-999.9876" ) );
+  QCOMPARE( testIdentifyRaster( tempLayer.get(), 1.5, 0.5 )[0].mAttributes[QStringLiteral( "Band 1" )], QString( "-999.987" ) );
 
   // More than 6 significant digits for corresponding value in .asc:
   // precision loss in Float32
-  QCOMPARE( testIdentifyRaster( tempLayer.get(), 6.5, 0.5 ), QString( "1.234568" ) ); // in .asc file : 1.2345678901234
+  QCOMPARE( testIdentifyRaster( tempLayer.get(), 2.5, 0.5 )[0].mAttributes[QStringLiteral( "Band 1" )], QString( "1.234568" ) ); // in .asc file : 1.2345678
+
+  QCOMPARE( testIdentifyRaster( tempLayer.get(), 3.5, 0.5 )[0].mAttributes[QStringLiteral( "Band 1" )], QString( "123456" ) );
+
+  // More than 6 significant digits: no precision loss here for that particular value
+  QCOMPARE( testIdentifyRaster( tempLayer.get(), 4.5, 0.5 )[0].mAttributes[QStringLiteral( "Band 1" )], QString( "1234567" ) );
+
+  // More than 6 significant digits: no precision loss here for that particular value
+  QCOMPARE( testIdentifyRaster( tempLayer.get(), 5.5, 0.5 )[0].mAttributes[QStringLiteral( "Band 1" )], QString( "-999.9876" ) );
+
+  // More than 6 significant digits for corresponding value in .asc:
+  // precision loss in Float32
+  QCOMPARE( testIdentifyRaster( tempLayer.get(), 6.5, 0.5 )[0].mAttributes[QStringLiteral( "Band 1" )], QString( "1.234568" ) ); // in .asc file : 1.2345678901234
 }
 
 void TestQgsMapToolIdentifyAction::identifyRasterFloat64()
@@ -690,19 +689,64 @@ void TestQgsMapToolIdentifyAction::identifyRasterFloat64()
 
   canvas->setExtent( QgsRectangle( 0, 0, 7, 1 ) );
 
-  QCOMPARE( testIdentifyRaster( tempLayer.get(), 0.5, 0.5 ), QString( "-999.9" ) );
+  QCOMPARE( testIdentifyRaster( tempLayer.get(), 0.5, 0.5 )[0].mAttributes[QStringLiteral( "Band 1" )], QString( "-999.9" ) );
 
-  QCOMPARE( testIdentifyRaster( tempLayer.get(), 1.5, 0.5 ), QString( "-999.987" ) );
+  QCOMPARE( testIdentifyRaster( tempLayer.get(), 1.5, 0.5 )[0].mAttributes[QStringLiteral( "Band 1" )], QString( "-999.987" ) );
 
-  QCOMPARE( testIdentifyRaster( tempLayer.get(), 2.5, 0.5 ), QString( "1.2345678" ) );
+  QCOMPARE( testIdentifyRaster( tempLayer.get(), 2.5, 0.5 )[0].mAttributes[QStringLiteral( "Band 1" )], QString( "1.2345678" ) );
 
-  QCOMPARE( testIdentifyRaster( tempLayer.get(), 3.5, 0.5 ), QString( "123456" ) );
+  QCOMPARE( testIdentifyRaster( tempLayer.get(), 3.5, 0.5 )[0].mAttributes[QStringLiteral( "Band 1" )], QString( "123456" ) );
 
-  QCOMPARE( testIdentifyRaster( tempLayer.get(), 4.5, 0.5 ), QString( "1234567" ) );
+  QCOMPARE( testIdentifyRaster( tempLayer.get(), 4.5, 0.5 )[0].mAttributes[QStringLiteral( "Band 1" )], QString( "1234567" ) );
 
-  QCOMPARE( testIdentifyRaster( tempLayer.get(), 5.5, 0.5 ), QString( "-999.9876" ) );
+  QCOMPARE( testIdentifyRaster( tempLayer.get(), 5.5, 0.5 )[0].mAttributes[QStringLiteral( "Band 1" )], QString( "-999.9876" ) );
 
-  QCOMPARE( testIdentifyRaster( tempLayer.get(), 6.5, 0.5 ), QString( "1.2345678901234" ) );
+  QCOMPARE( testIdentifyRaster( tempLayer.get(), 6.5, 0.5 )[0].mAttributes[QStringLiteral( "Band 1" )], QString( "1.2345678901234" ) );
+}
+
+void TestQgsMapToolIdentifyAction::identifyRasterDerivedAttributes()
+{
+  const QString raster = QStringLiteral( TEST_DATA_DIR ) + "/raster/dem.tif";
+  std::unique_ptr< QgsRasterLayer> tempLayer( new QgsRasterLayer( raster ) );
+  QVERIFY( tempLayer->isValid() );
+
+  const QgsRectangle layerExtent = tempLayer->extent();
+  const double layerXSize = tempLayer->rasterUnitsPerPixelX();
+  const double layerYSize = tempLayer->rasterUnitsPerPixelY();
+
+  canvas->resize( tempLayer->width(), tempLayer->height() );  // make canvas fit raster 1:1
+  canvas->setDestinationCrs( tempLayer->crs() );
+  canvas->setExtent( layerExtent );
+
+  // checking the four corners of the raster plus one somewhere in the center
+  QList<QgsMapToolIdentify::IdentifyResult> results;
+
+  results = testIdentifyRaster( tempLayer.get(), layerExtent.xMinimum() + layerXSize, layerExtent.yMaximum() - layerYSize/2 );
+  QCOMPARE( results.length(), 1 );  // just to ensure that we did get a result back
+  QCOMPARE( results[0].mDerivedAttributes[QStringLiteral( "Clicked raster column" )], QString( "0" ) );
+  QCOMPARE( results[0].mDerivedAttributes[QStringLiteral( "Clicked raster row" )], QString( "0" ) );
+
+  results = testIdentifyRaster( tempLayer.get(), layerExtent.xMaximum() - layerXSize/2, layerExtent.yMaximum() - layerYSize/2 );
+  QCOMPARE( results.length(), 1 );  // just to ensure that we did get a result back
+  QCOMPARE( results[0].mDerivedAttributes[QStringLiteral( "Clicked raster column" )], QString::number( tempLayer->width()-1 ) );
+  QCOMPARE( results[0].mDerivedAttributes[QStringLiteral( "Clicked raster row" )], QString( "0" ) );
+
+  results = testIdentifyRaster( tempLayer.get(), layerExtent.xMinimum() + layerXSize , layerExtent.yMinimum() + layerYSize/2 );
+  QCOMPARE( results.length(), 1 );  // just to ensure that we did get a result back
+  QCOMPARE( results[0].mDerivedAttributes[QStringLiteral( "Clicked raster column" )], QString( "0" ) );
+  QCOMPARE( results[0].mDerivedAttributes[QStringLiteral( "Clicked raster row" )], QString::number( tempLayer->height()-1 ) );
+
+  results = testIdentifyRaster( tempLayer.get(), layerExtent.xMaximum() - layerXSize/2, layerExtent.yMinimum() + layerYSize/2 );
+  QCOMPARE( results.length(), 1 );  // just to ensure that we did get a result back
+  QCOMPARE( results[0].mDerivedAttributes[QStringLiteral( "Clicked raster column" )], QString::number( tempLayer->width()-1 ) );
+  QCOMPARE( results[0].mDerivedAttributes[QStringLiteral( "Clicked raster row" )], QString::number( tempLayer->height()-1 ) );
+
+  const double xSomewhereCenter = layerExtent.xMinimum() + layerXSize*200 + layerXSize;
+  const double ySomewhereCenter = layerExtent.yMaximum() - layerYSize*140 - layerYSize;
+  results = testIdentifyRaster( tempLayer.get(), xSomewhereCenter, ySomewhereCenter );
+  QCOMPARE( results.length(), 1 );  // just to ensure that we did get a result back
+  QCOMPARE( results[0].mDerivedAttributes[QStringLiteral( "Clicked raster column" )], QString( "200" ) );
+  QCOMPARE( results[0].mDerivedAttributes[QStringLiteral( "Clicked raster row" )], QString( "140" ) );
 }
 
 void TestQgsMapToolIdentifyAction::identifyMesh()
