@@ -989,7 +989,7 @@ while ($LINE_IDX < $LINE_COUNT){
             } elsif ( $cls3 eq ""){
               $LINE .= "\ntypedef $tpl<$cls1,$cls2> ${tpl}${cls1}${cls2}Base;";
             } else {
-              $LINE .= "\ntypedef $tpl<$cls1,$cls2,$cls3> ${tpl}${cls1}${cls2}{cls3}Base;";
+              $LINE .= "\ntypedef $tpl<$cls1,$cls2,$cls3> ${tpl}${cls1}${cls2}${cls3}Base;";
             }
         }
         if ( PRIVATE ~~ @ACCESS && $#ACCESS != 0){

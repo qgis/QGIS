@@ -452,7 +452,7 @@ class TemplateInheritance6 : SomethingElse, YourSuperTemplateAbcDefGhiBase
 %TypeHeaderCode
 #include "sipifyheader.h"
 #include "yoursupertemplate.h"
-typedef YourSuperTemplate<Abc,Def,Ghi> YourSuperTemplateAbcDef{cls3}Base;
+typedef YourSuperTemplate<Abc,Def,Ghi> YourSuperTemplateAbcDefGhiBase;
 %End
 }
 
