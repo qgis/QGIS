@@ -13,7 +13,7 @@
 class QgsProcessingHistoryWidget : QgsPanelWidget
 {
 %Docstring(signature="appended")
-A widget for showing Processing algorithm exection history.
+A widget for showing Processing algorithm execution history.
 
 .. versionadded:: 3.32
 %End
@@ -50,7 +50,7 @@ Interactively allows users to save the history log.
 class QgsProcessingHistoryDialog : QDialog
 {
 %Docstring(signature="appended")
-A dialog for showing Processing algorithm exection history.
+A dialog for showing Processing algorithm execution history.
 
 .. warning::
 
