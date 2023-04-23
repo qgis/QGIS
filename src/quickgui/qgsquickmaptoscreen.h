@@ -25,7 +25,7 @@
 /**
  * \ingroup quick
  *
- * @brief The QgsQuickMapToScreen class transform map points to screen coordinates as
+ * \brief The QgsQuickMapToScreen class transform map points to screen coordinates as
  * well as distances from map to screen units. Screen points and/or distances will be
  * automatically updated on map extent changes.
  *
@@ -50,6 +50,7 @@ class QUICK_EXPORT QgsQuickMapToScreen : public QObject
 
   public:
 
+    //! Creates a map to screen object
     explicit QgsQuickMapToScreen( QObject *parent = nullptr );
 
     //! \copydoc mapSettings
