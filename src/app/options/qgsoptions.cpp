@@ -1164,11 +1164,6 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
       addPage( factory->title(), factory->title(), factory->icon(), page, factory->path(), factory->key() );
     else
       insertPage( factory->title(), factory->title(), factory->icon(), page, beforePage, factory->path(), factory->key() );
-
-    if ( QgsAdvancedSettingsWidget *advancedPage = qobject_cast< QgsAdvancedSettingsWidget * >( page ) )
-    {
-      advancedPage->settingsTree()->setSettingsObject( mSettings );
-    }
   }
 
   if ( mOptTreeView )

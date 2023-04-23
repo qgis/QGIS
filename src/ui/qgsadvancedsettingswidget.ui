@@ -10,7 +10,13 @@
     <height>610</height>
    </rect>
   </property>
-  <layout class="QHBoxLayout" name="horizontalLayout">
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout_2">
    <property name="leftMargin">
     <number>0</number>
    </property>
@@ -24,11 +30,17 @@
     <number>0</number>
    </property>
    <item>
-    <widget class="QGroupBox" name="groupBox_26">
+    <widget class="QGroupBox" name="mGroupBox">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
      <property name="title">
       <string>Advanced Settings Editor</string>
      </property>
-     <layout class="QVBoxLayout" name="verticalLayout_42">
+     <layout class="QVBoxLayout" name="verticalLayout">
       <item>
        <widget class="QWidget" name="mAdvancedSettingsWarning" native="true">
         <layout class="QVBoxLayout" name="verticalLayout_44">
@@ -43,6 +55,13 @@
           </widget>
          </item>
          <item>
+          <widget class="QCheckBox" name="mUseNewSettingsTree">
+           <property name="text">
+            <string>Use new settings tree widget (some settings will be missing)</string>
+           </property>
+          </widget>
+         </item>
+         <item>
           <widget class="QPushButton" name="mAdvancedSettingsEnableButton">
            <property name="text">
             <string>I will be careful, I promise!</string>
@@ -52,26 +71,11 @@
         </layout>
        </widget>
       </item>
-      <item>
-       <widget class="QgsSettingsTreeWidget" name="mAdvancedSettingsEditor" native="true">
-        <property name="visible">
-         <bool>false</bool>
-        </property>
-       </widget>
-      </item>
      </layout>
     </widget>
    </item>
   </layout>
  </widget>
- <customwidgets>
-  <customwidget>
-   <class>QgsSettingsTreeWidget</class>
-   <extends>QWidget</extends>
-   <header>qgssettingstreewidget.h</header>
-   <container>1</container>
-  </customwidget>
- </customwidgets>
  <resources/>
  <connections/>
 </ui>
