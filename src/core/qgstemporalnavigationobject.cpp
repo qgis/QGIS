@@ -35,7 +35,7 @@ void QgsTemporalNavigationObject::timerTimeout()
   {
     case AnimationState::Forward:
       next();
-      if ( mCurrentFrameNumber >= totalFrameCount() - 1 )
+      if ( mCurrentFrameNumber >= totalFrameCount() )
       {
         if ( mLoopAnimation )
           mCurrentFrameNumber = -1; // we don't jump immediately to frame 0, instead we delay that till the next timeout
@@ -197,7 +197,7 @@ void QgsTemporalNavigationObject::setCurrentFrameNumber( long long frameNumber )
 {
   if ( mCurrentFrameNumber != frameNumber )
   {
-    mCurrentFrameNumber = std::max( 0LL, std::min( frameNumber, totalFrameCount() - 1 ) );
+    mCurrentFrameNumber = std::max( 0LL, std::min( frameNumber, totalFrameCount() ) );
     const QgsDateTimeRange range = dateTimeRangeForFrameNumber( mCurrentFrameNumber );
 
     if ( !mBlockUpdateTemporalRangeSignal )
@@ -272,7 +272,7 @@ void QgsTemporalNavigationObject::pause()
 
 void QgsTemporalNavigationObject::playForward()
 {
-  if ( mPlayBackMode == Idle &&  mCurrentFrameNumber >= totalFrameCount() - 1 )
+  if ( mPlayBackMode == Idle &&  mCurrentFrameNumber >= totalFrameCount() )
   {
     // if we are paused at the end of the video, and the user hits play, we automatically rewind and play again
     rewindToStart();
@@ -311,7 +311,7 @@ void QgsTemporalNavigationObject::rewindToStart()
 
 void QgsTemporalNavigationObject::skipToEnd()
 {
-  const long long frame = totalFrameCount() - 1;
+  const long long frame = totalFrameCount();
   setCurrentFrameNumber( frame );
 }
 

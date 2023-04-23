@@ -293,7 +293,7 @@ void QgsTemporalControllerWidget::updateTemporalExtent()
   const QgsDateTimeRange temporalExtent = QgsDateTimeRange( start, end,
                                           true, !isTimeInstant && mNavigationObject->navigationMode() == QgsTemporalNavigationObject::FixedRange ? false : true );
   mNavigationObject->setTemporalExtents( temporalExtent );
-  mSlider->setRange( 0, mNavigationObject->totalFrameCount() - 1 );
+  mSlider->setRange( 0, mNavigationObject->totalFrameCount() );
   mSlider->setValue( mNavigationObject->currentFrameNumber() );
 }
 
@@ -314,7 +314,7 @@ void QgsTemporalControllerWidget::updateFrameDuration()
                    QgsProject::instance()->timeSettings()->timeStepUnit() ) );
     mSlider->setValue( mNavigationObject->currentFrameNumber() );
   }
-  mSlider->setRange( 0, mNavigationObject->totalFrameCount() - 1 );
+  mSlider->setRange( 0, mNavigationObject->totalFrameCount() );
   mSlider->setValue( mNavigationObject->currentFrameNumber() );
 
   if ( unit == Qgis::TemporalUnit::IrregularStep )
