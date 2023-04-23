@@ -250,6 +250,18 @@ bool QgsSettingsColorEditorWidgetWrapper::setWidgetValue( const QColor &value ) 
   return false;
 }
 
+void QgsSettingsColorEditorWidgetWrapper::configureEditorPrivateImplementation()
+{
+  if ( mEditor )
+  {
+    mEditor->setAllowOpacity( mSetting->allowAlpha() );
+  }
+  else
+  {
+    QgsDebugMsg( QStringLiteral( "Settings editor not set for %1" ).arg( mSetting->definitionKey() ) );
+  }
+}
+
 bool QgsSettingsColorEditorWidgetWrapper::setSettingFromWidget() const
 {
   if ( mEditor )

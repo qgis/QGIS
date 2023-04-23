@@ -59,6 +59,9 @@ Returns the setting
     virtual bool configureEditorPrivate( QWidget *editor, const QgsSettingsEntryBase *setting );
 
     virtual void configureEditorPrivateImplementation();
+%Docstring
+To be re-implemented to implemeent type specific configuration (e.g. opacity for colors)
+%End
 
 };
 
@@ -227,6 +230,9 @@ typedef QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryColor,QgsColorBut
 
 
     virtual bool setWidgetValue( const QColor &value ) const;
+
+
+    virtual void configureEditorPrivateImplementation();
 
 };
 

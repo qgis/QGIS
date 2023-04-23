@@ -103,6 +103,7 @@ class GUI_EXPORT QgsSettingsEditorWidgetWrapperTemplate : public QgsSettingsEdit
       return false;
     }
 
+    //! To be re-implemented to implemeent type specific configuration (e.g. opacity for colors)
     virtual void configureEditorPrivateImplementation() {}
 
     const T *mSetting = nullptr;
@@ -225,6 +226,8 @@ class GUI_EXPORT QgsSettingsColorEditorWidgetWrapper : public QgsSettingsEditorW
     QColor valueFromWidget() const override;
 
     bool setWidgetValue( const QColor &value ) const override;
+
+    void configureEditorPrivateImplementation() override;
 };
 
 ///**
