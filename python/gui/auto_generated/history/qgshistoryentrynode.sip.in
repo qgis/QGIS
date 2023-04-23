@@ -70,6 +70,12 @@ create the node's content.
 Called when the node is double-clicked. The default implementation does nothing.
 %End
 
+    virtual void populateContextMenu( QMenu *menu, const QgsHistoryWidgetContext &context );
+%Docstring
+Allows the node to populate a context ``menu`` before display to the user.
+
+Actions should be parented to the specified ``menu``.
+%End
 
     virtual bool matchesString( const QString &searchString ) const;
 %Docstring

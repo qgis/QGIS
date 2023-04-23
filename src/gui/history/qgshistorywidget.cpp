@@ -19,6 +19,8 @@
 #include "qgshistoryentrynode.h"
 
 #include <QTextBrowser>
+#include <QtGlobal>
+#include <QMenu>
 
 QgsHistoryWidget::QgsHistoryWidget( const QString &providerId, Qgis::HistoryProviderBackends backends, QgsHistoryProviderRegistry *registry, const QgsHistoryWidgetContext &context, QWidget *parent )
   : QgsPanelWidget( parent )
@@ -37,6 +39,9 @@ QgsHistoryWidget::QgsHistoryWidget( const QString &providerId, Qgis::HistoryProv
   connect( mFilterEdit, &QLineEdit::textChanged, mProxyModel, &QgsHistoryEntryProxyModel::setFilter );
   connect( mTreeView->selectionModel(), &QItemSelectionModel::currentChanged, this, &QgsHistoryWidget::currentItemChanged );
   connect( mTreeView, &QTreeView::doubleClicked, this, &QgsHistoryWidget::nodeDoubleClicked );
+
+  mTreeView->setContextMenuPolicy( Qt::CustomContextMenu );
+  connect( mTreeView, &QWidget::customContextMenuRequested, this, &QgsHistoryWidget::showNodeContextMenu );
 
   // expand first group (usually most recent date group)
   const QModelIndex firstGroup = mProxyModel->index( 0, 0, QModelIndex() );
@@ -83,6 +88,21 @@ void QgsHistoryWidget::nodeDoubleClicked( const QModelIndex &index )
   if ( QgsHistoryEntryNode *node = mModel->index2node( mProxyModel->mapToSource( index ) ) )
   {
     node->doubleClicked( mContext );
+  }
+}
+
+void QgsHistoryWidget::showNodeContextMenu( const QPoint &pos )
+{
+  if ( QgsHistoryEntryNode *node = mModel->index2node( mProxyModel->mapToSource( mTreeView->currentIndex() ) ) )
+  {
+    QMenu *menu = new QMenu();
+
+    node->populateContextMenu( menu, mContext );
+    if ( !menu->isEmpty() )
+    {
+      menu->exec( mTreeView->mapToGlobal( pos ) );
+    }
+    delete menu;
   }
 }
 

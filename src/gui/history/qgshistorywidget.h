@@ -80,6 +80,7 @@ class GUI_EXPORT QgsHistoryWidget : public QgsPanelWidget, private Ui::QgsHistor
 
     void currentItemChanged( const QModelIndex &selected, const QModelIndex &previous );
     void nodeDoubleClicked( const QModelIndex &index );
+    void showNodeContextMenu( const QPoint &pos );
 
   private:
 
