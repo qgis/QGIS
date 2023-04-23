@@ -30,6 +30,9 @@ Constructor
 
 
     void applyChanges() const;
+%Docstring
+Apply changes to settings value
+%End
 
 };
 

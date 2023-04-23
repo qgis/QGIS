@@ -28,7 +28,7 @@ class QgsSettingsEditorWidgetWrapper;
 
 /**
  * \ingroup gui
- * \brief This class manages editors for settings
+ * \brief This class manages editor widgets for settings
  *
  * \since QGIS 3.32
  */
@@ -40,15 +40,15 @@ class GUI_EXPORT QgsSettingsEditorWidgetRegistry
     ~QgsSettingsEditorWidgetRegistry();
 
     /**
-     * Adds a editor to the registry
-     * Returns FALSE if a editor with same id already exists.
+     * Adds an editor widget \a wrapper to the registry
+     * Returns FALSE if an editor widget with same id already exists.
      */
     bool addWrapper( QgsSettingsEditorWidgetWrapper *wrapper SIP_TRANSFER );
 
-    //! Returns a new instance of the editor for the given id
+    //! Returns a new instance of the editor widget for the given \a id
     QgsSettingsEditorWidgetWrapper *createWrapper( const QString &id, QObject *parent ) const;
 
-    //! Creates the editor for the given settings using the corresponding registered wrapper
+    //! Creates an editor widget for the given \a setting using the corresponding registered wrapper
     QWidget *createEditor( const QgsSettingsEntryBase *setting, const QStringList &dynamicKeyPartList, QWidget *parent = nullptr ) const SIP_FACTORY;
 
     //! Returns a map <name, id> of all registered editors.

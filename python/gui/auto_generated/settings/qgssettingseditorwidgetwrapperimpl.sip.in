@@ -27,6 +27,9 @@ This class is a base factory of editor for settings
 %End
   public:
     QgsSettingsEditorWidgetWrapperTemplate( QObject *parent = 0 );
+%Docstring
+Constructor
+%End
     virtual QString id() const = 0;
 
     virtual bool setWidgetFromSetting() const;
@@ -36,10 +39,16 @@ This class is a base factory of editor for settings
     virtual void setWidgetFromVariant( const QVariant &value ) const;
 
     virtual bool setWidgetValue( const U &value ) const = 0;
+%Docstring
+Sets the widget value
+%End
 
     virtual QVariant variantValueFromWidget() const;
 
     virtual U valueFromWidget() const = 0;
+%Docstring
+Returns the widget value
+%End
 
     V *editor() const;
 %Docstring
@@ -83,6 +92,9 @@ typedef QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryString,QLineEdit,
 %End
   public:
     QgsSettingsStringEditorWidgetWrapper( QObject *parent = 0 );
+%Docstring
+Constructor
+%End
 
     virtual QgsSettingsEditorWidgetWrapper *createWrapper( QObject *parent = 0 ) const;
 
@@ -116,6 +128,9 @@ typedef QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryBool,QCheckBox,bo
 %End
   public:
     QgsSettingsBoolEditorWidgetWrapper( QObject *parent = 0 );
+%Docstring
+Constructor
+%End
 
     virtual QgsSettingsEditorWidgetWrapper *createWrapper( QObject *parent = 0 ) const;
 
@@ -149,6 +164,9 @@ typedef QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryInteger,QSpinBox,
 %End
   public:
     QgsSettingsIntegerEditorWidgetWrapper( QObject *parent = 0 );
+%Docstring
+Constructor
+%End
 
     virtual QgsSettingsEditorWidgetWrapper *createWrapper( QObject *parent = 0 ) const;
 
@@ -183,6 +201,9 @@ typedef QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryDouble,QDoubleSpi
 %End
   public:
     QgsSettingsDoubleEditorWidgetWrapper( QObject *parent = 0 );
+%Docstring
+Constructor
+%End
 
     virtual QgsSettingsEditorWidgetWrapper *createWrapper( QObject *parent = 0 ) const;
 
@@ -217,6 +238,9 @@ typedef QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryColor,QgsColorBut
 %End
   public:
     QgsSettingsColorEditorWidgetWrapper( QObject *parent = 0 );
+%Docstring
+Constructor
+%End
 
     virtual QgsSettingsEditorWidgetWrapper *createWrapper( QObject *parent = 0 ) const;
 

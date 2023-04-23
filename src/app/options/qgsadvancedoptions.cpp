@@ -57,8 +57,8 @@ QgsAdvancedSettingsWidget::~QgsAdvancedSettingsWidget()
 
 void QgsAdvancedSettingsWidget::apply()
 {
-  //  mAdvancedSettingsEditor applies changes immediately
-  // new settings tree is performing changes on appy
+  // the old settings editor  applies changes immediately
+  // new settings tree is performing changes on apply
   if ( mTreeWidget )
     mTreeWidget->applyChanges();
 

@@ -33,7 +33,7 @@ class GUI_EXPORT QgsSettingsEditorWidgetWrapper : public QObject
 {
     Q_OBJECT
   public:
-    //! Creates a wrapper from the definition stored in a widget created by createEditor()
+    //! Creates a wrapper from the definition stored in a \a widget created by createEditor()
     static QgsSettingsEditorWidgetWrapper *fromWidget( const QWidget *widget ) SIP_FACTORY;
 
     //! Constructor
@@ -50,7 +50,7 @@ class GUI_EXPORT QgsSettingsEditorWidgetWrapper : public QObject
     //! Creates a new instance of the editor wrapper so it can be configured for a widget and a setting
     virtual QgsSettingsEditorWidgetWrapper *createWrapper( QObject *parent = nullptr ) const = 0;
 
-//! Creates the editor for the given widget
+    //! Creates the editor widget for the given \a setting
     QWidget *createEditor( const QgsSettingsEntryBase *setting, const QStringList &dynamicKeyPartList = QStringList(), QWidget *parent = nullptr );
 
     //! Configures the \a editor according the setting
@@ -63,7 +63,7 @@ class GUI_EXPORT QgsSettingsEditorWidgetWrapper : public QObject
     virtual bool setWidgetFromSetting() const = 0;
 
     /**
-     * SDets the setting value from the widget value
+     * Sets the setting value from the widget value
      * The wrapper must be configured before calling this medthod
      */
     virtual bool setSettingFromWidget() const = 0;
@@ -75,15 +75,17 @@ class GUI_EXPORT QgsSettingsEditorWidgetWrapper : public QObject
     virtual QVariant variantValueFromWidget() const = 0;
 
     /**
-     * Sets the value of the widget
+     * Sets the \a value of the widget
      * The wrapper must be configured before calling this medthod
      */
     virtual void setWidgetFromVariant( const QVariant &value ) const = 0;
 
 
   protected:
+    //! Creates the widgets
     virtual QWidget *createEditorPrivate( QWidget *parent = nullptr ) const = 0;
 
+    //! Configures an existing \a editor widget
     virtual bool configureEditorPrivate( QWidget *editor, const QgsSettingsEntryBase *setting ) = 0;
 
     QStringList mDynamicKeyPartList;

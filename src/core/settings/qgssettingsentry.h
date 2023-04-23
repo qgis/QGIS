@@ -353,13 +353,12 @@ class CORE_EXPORT QgsSettingsEntryBase
 
 /**
  * \ingroup core
- * \class QgsSettingsEntryByReference
+ * \class QgsSettingsEntryBaseTemplate
  *
- * \brief Base abstract class for settings entry which are passed by reference
+ * \brief Base abstract class for settings entries with typed get and set methods
  * \see QgsSettingsEntryBase
- * \see QgsSettingsEntryByValue
  *
- * \since QGIS 3.26
+ * \since QGIS 3.32
  */
 template<class T>
 class QgsSettingsEntryBaseTemplate : public QgsSettingsEntryBase

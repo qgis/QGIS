@@ -45,6 +45,7 @@ template<class T, class V, class U>
 class GUI_EXPORT QgsSettingsEditorWidgetWrapperTemplate : public QgsSettingsEditorWidgetWrapper
 {
   public:
+    //! Constructor
     QgsSettingsEditorWidgetWrapperTemplate( QObject *parent = nullptr )
       : QgsSettingsEditorWidgetWrapper( parent ) {}
 
@@ -66,6 +67,7 @@ class GUI_EXPORT QgsSettingsEditorWidgetWrapperTemplate : public QgsSettingsEdit
       setWidgetValue( mSetting->convertFromVariant( value ) );
     }
 
+    //! Sets the widget value
     virtual bool setWidgetValue( const U &value ) const = 0;
 
     QVariant variantValueFromWidget() const override
@@ -73,6 +75,7 @@ class GUI_EXPORT QgsSettingsEditorWidgetWrapperTemplate : public QgsSettingsEdit
       return valueFromWidget();
     };
 
+    //! Returns the widget value
     virtual U valueFromWidget() const = 0;
 
     //! Returns the editor
@@ -120,6 +123,7 @@ class GUI_EXPORT QgsSettingsEditorWidgetWrapperTemplate : public QgsSettingsEdit
 class GUI_EXPORT QgsSettingsStringEditorWidgetWrapper : public QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryString, QLineEdit, QString>
 {
   public:
+    //! Constructor
     QgsSettingsStringEditorWidgetWrapper( QObject *parent = nullptr )
       : QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryString, QLineEdit, QString>( parent ) {}
 
@@ -143,6 +147,7 @@ class GUI_EXPORT QgsSettingsStringEditorWidgetWrapper : public QgsSettingsEditor
 class GUI_EXPORT QgsSettingsBoolEditorWidgetWrapper : public QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryBool, QCheckBox, bool>
 {
   public:
+    //! Constructor
     QgsSettingsBoolEditorWidgetWrapper( QObject *parent = nullptr )
       : QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryBool, QCheckBox, bool>( parent ) {}
 
@@ -166,6 +171,7 @@ class GUI_EXPORT QgsSettingsBoolEditorWidgetWrapper : public QgsSettingsEditorWi
 class GUI_EXPORT QgsSettingsIntegerEditorWidgetWrapper : public QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryInteger, QSpinBox, int>
 {
   public:
+    //! Constructor
     QgsSettingsIntegerEditorWidgetWrapper( QObject *parent = nullptr )
       : QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryInteger, QSpinBox, int>( parent ) {}
 
@@ -190,6 +196,7 @@ class GUI_EXPORT QgsSettingsIntegerEditorWidgetWrapper : public QgsSettingsEdito
 class GUI_EXPORT QgsSettingsDoubleEditorWidgetWrapper : public QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryDouble, QDoubleSpinBox, double>
 {
   public:
+    //! Constructor
     QgsSettingsDoubleEditorWidgetWrapper( QObject *parent = nullptr )
       : QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryDouble, QDoubleSpinBox, double>( parent ) {}
 
@@ -214,6 +221,7 @@ class GUI_EXPORT QgsSettingsDoubleEditorWidgetWrapper : public QgsSettingsEditor
 class GUI_EXPORT QgsSettingsColorEditorWidgetWrapper : public QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryColor, QgsColorButton, QColor>
 {
   public:
+    //! Constructor
     QgsSettingsColorEditorWidgetWrapper( QObject *parent = nullptr )
       : QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryColor, QgsColorButton, QColor>( parent ) {}
 

@@ -39,7 +39,7 @@ class GUI_EXPORT QgsSettingsTreeWidget : public QWidget
     explicit QgsSettingsTreeWidget( QWidget *parent = nullptr );
 
 
-    // Apply changes to settings value
+    //! Apply changes to settings value
     void applyChanges() const;
 
   private:

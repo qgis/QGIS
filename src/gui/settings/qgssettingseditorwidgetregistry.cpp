@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgssettingsfactoryfactoryregistry.cpp
+    qgssettingseditorwidgetregistry.cpp
     ---------------------
     begin                : April 2023
     copyright            : (C) 2023 by Denis Rouzaud
@@ -66,7 +66,3 @@ QWidget *QgsSettingsEditorWidgetRegistry::createEditor( const QgsSettingsEntryBa
   else
     return nullptr;
 }
-
-
-
-

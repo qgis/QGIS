@@ -41,6 +41,9 @@ Constructor
     ~QgsSettingsTreeModel();
 
     void applyChanges();
+%Docstring
+Apply pending changes in the model to the corresponding settings
+%End
 
 
 

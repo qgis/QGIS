@@ -347,13 +347,11 @@ class QgsSettingsEntryBaseTemplate : QgsSettingsEntryBase
 {
 %Docstring(signature="appended")
 
-Base abstract class for settings entry which are passed by reference
+Base abstract class for settings entries with typed get and set methods
 
 .. seealso:: :py:class:`QgsSettingsEntryBase`
 
-.. seealso:: :py:class:`QgsSettingsEntryByValue`
-
-.. versionadded:: 3.26
+.. versionadded:: 3.32
 %End
 
 %TypeHeaderCode

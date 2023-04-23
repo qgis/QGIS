@@ -85,8 +85,14 @@ The wrapper must be configured before calling this medthod
 
   protected:
     virtual QWidget *createEditorPrivate( QWidget *parent = 0 ) const = 0;
+%Docstring
+Creates the widgets
+%End
 
     virtual bool configureEditorPrivate( QWidget *editor, const QgsSettingsEntryBase *setting ) = 0;
+%Docstring
+Configures an existing widget
+%End
 
 };
 
