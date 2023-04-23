@@ -56,8 +56,9 @@ bool QgsRandomRasterAlgorithmBase::prepareAlgorithm( const QVariantMap &paramete
   mExtent = parameterAsExtent( parameters, QStringLiteral( "EXTENT" ), context, mCrs );
   mPixelSize = parameterAsDouble( parameters, QStringLiteral( "PIXEL_SIZE" ), context );
 
-  if ( mPixelSize <= 0 ) {
-	  throw QgsProcessingException( QObject::tr( "Pixel size must be greater than 0." ) );
+  if ( mPixelSize <= 0 )
+  {
+    throw QgsProcessingException( QObject::tr( "Pixel size must be greater than 0." ) );
   }
 
   return true;
