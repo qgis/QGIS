@@ -81,6 +81,7 @@ void QgsProcessingHistoryProvider::portOldLog()
   }
 }
 
+///@cond PRIVATE
 
 class ProcessingHistoryNode : public QgsHistoryEntryGroup
 {
@@ -178,7 +179,7 @@ class ProcessingHistoryNode : public QgsHistoryEntryGroup
         execAlgorithmDialogCommand
       };
 
-      mProvider->execute( script.join( '\n' ) );
+      mProvider->emitExecute( script.join( '\n' ) );
     }
 
     void populateContextMenu( QMenu *menu, const QgsHistoryWidgetContext & ) override
@@ -253,6 +254,8 @@ class ProcessingHistoryNode : public QgsHistoryEntryGroup
 
 };
 
+///@endcond
+
 QgsHistoryEntryNode *QgsProcessingHistoryProvider::createNodeForEntry( const QgsHistoryEntry &entry, const QgsHistoryWidgetContext & )
 {
   return new ProcessingHistoryNode( entry, this );
@@ -264,7 +267,7 @@ QString QgsProcessingHistoryProvider::oldLogPath() const
   return userDir + QStringLiteral( "/processing.log" );
 }
 
-void QgsProcessingHistoryProvider::execute( const QString &commands )
+void QgsProcessingHistoryProvider::emitExecute( const QString &commands )
 {
   emit executePython( commands );
 }
