@@ -250,10 +250,13 @@ void QgsHistoryEntryModel::entryUpdated( long long id, const QVariantMap &entry,
   }
 }
 
-void QgsHistoryEntryModel::historyCleared( Qgis::HistoryProviderBackend backend )
+void QgsHistoryEntryModel::historyCleared( Qgis::HistoryProviderBackend backend, const QString &providerId )
 {
   // ignore entries we don't care about
   if ( !( mBackends & backend ) )
+    return;
+
+  if ( !mProviderId.isEmpty() && !providerId.isEmpty() && providerId != mProviderId )
     return;
 
   beginResetModel();
