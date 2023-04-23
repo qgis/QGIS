@@ -146,6 +146,11 @@ Moves up currently selected field
 Moves down the currently selected field
 %End
 
+    bool invertSelection( );
+%Docstring
+Invert the field selection state
+%End
+
 };
 
 

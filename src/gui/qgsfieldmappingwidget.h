@@ -144,6 +144,9 @@ class GUI_EXPORT QgsFieldMappingWidget : public QgsPanelWidget
     //! Moves down the currently selected field
     bool moveSelectedFieldsDown( );
 
+    //! Invert the field selection state
+    bool invertSelection( );
+
   private:
 
     QTableView *mTableView = nullptr;
