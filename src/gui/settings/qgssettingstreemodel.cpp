@@ -23,6 +23,8 @@
 #include "qgsgui.h"
 #include "qgslogger.h"
 
+///@cond PRIVATE
+
 
 QgsSettingsTreeModelNodeData *QgsSettingsTreeModelNodeData::createRootNodeData( const QgsSettingsTreeNode *rootNode, QObject *parent = nullptr )
 {
@@ -161,6 +163,8 @@ void QgsSettingsTreeModelNodeData::fillChildren()
     addChildForSetting( setting );
   }
 }
+
+///@endcond
 
 
 
@@ -385,6 +389,9 @@ bool QgsSettingsTreeModel::setData( const QModelIndex &index, const QVariant &va
 }
 
 
+///@cond PRIVATE
+
+
 QgsSettingsTreeItemDelegate::QgsSettingsTreeItemDelegate( QgsSettingsTreeModel *model, QObject *parent )
   : QItemDelegate( parent )
   , mModel( model )
@@ -421,6 +428,7 @@ void QgsSettingsTreeItemDelegate::setModelData( QWidget *editor, QAbstractItemMo
     model->setData( index, eww->variantValueFromWidget(), Qt::EditRole );
 }
 
+///@endcond
 
 
 
