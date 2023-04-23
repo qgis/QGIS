@@ -166,7 +166,7 @@ if(WITH_CORE)
       endif()
   endif()
 
-  set (WITH_3D FALSE CACHE BOOL "Determines whether QGIS 3D library should be built")
+  set (WITH_3D TRUE CACHE BOOL "Determines whether QGIS 3D library should be built")
 
   set (WITH_QUICK FALSE CACHE BOOL "Determines whether QGIS Quick library should be built")
 
