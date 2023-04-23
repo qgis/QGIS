@@ -61,6 +61,7 @@ class CORE_EXPORT QgsSettingsTree
     static inline QgsSettingsTreeNode *sTreeRendering = treeRoot()->createChildNode( QStringLiteral( "rendering" ) );
     static inline QgsSettingsTreeNode *sTreeSvg = treeRoot()->createChildNode( QStringLiteral( "svg" ) );
     static inline QgsSettingsTreeNode *sTreeWms = treeRoot()->createChildNode( QStringLiteral( "wms" ) );
+    static inline QgsSettingsTreeNode *sTreeMeasure = treeRoot()->createChildNode( QStringLiteral( "measure" ) );
 
 #endif
 

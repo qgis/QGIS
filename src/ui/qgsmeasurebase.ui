@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>462</width>
-    <height>376</height>
+    <width>430</width>
+    <height>300</height>
    </rect>
   </property>
   <property name="baseSize">
@@ -39,57 +39,45 @@
    <property name="spacing">
     <number>6</number>
    </property>
-   <item row="2" column="0" colspan="4">
-    <widget class="QTreeWidget" name="mTable">
-     <property name="editTriggers">
-      <set>QAbstractItemView::NoEditTriggers</set>
+   <item row="8" column="0" colspan="4">
+    <widget class="QgsCollapsibleGroupBox" name="groupBox">
+     <property name="title">
+      <string>Info</string>
      </property>
-     <property name="rootIsDecorated">
-      <bool>false</bool>
-     </property>
-     <property name="columnCount">
-      <number>1</number>
-     </property>
-     <column>
-      <property name="text">
-       <string>Segments</string>
-      </property>
-      <property name="textAlignment">
-       <set>AlignTrailing|AlignVCenter</set>
-      </property>
-     </column>
+     <layout class="QVBoxLayout" name="verticalLayout">
+      <item>
+       <widget class="QLabel" name="mNotesLabel">
+        <property name="text">
+         <string/>
+        </property>
+        <property name="wordWrap">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+     </layout>
     </widget>
    </item>
-   <item row="4" column="0">
-    <widget class="QLabel" name="totalDistanceLabel">
-     <property name="text">
-      <string>Total</string>
-     </property>
-     <property name="buddy">
-      <cstring>editTotal</cstring>
-     </property>
-    </widget>
-   </item>
-   <item row="4" column="1">
-    <spacer>
+   <item row="9" column="0" colspan="4">
+    <spacer name="mSpacer">
      <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="sizeType">
-      <enum>QSizePolicy::Fixed</enum>
+      <enum>Qt::Vertical</enum>
      </property>
      <property name="sizeHint" stdset="0">
       <size>
-       <width>41</width>
-       <height>25</height>
+       <width>40</width>
+       <height>20</height>
       </size>
      </property>
     </spacer>
    </item>
-   <item row="6" column="0">
-    <widget class="QLabel" name="totalHorizontalDistanceLabel">
+   <item row="7" column="0">
+    <widget class="QRadioButton" name="mCartesian">
      <property name="text">
-      <string>Total Horizontal Distance</string>
+      <string>Cartesian</string>
+     </property>
+     <property name="checked">
+      <bool>false</bool>
      </property>
     </widget>
    </item>
@@ -109,6 +97,9 @@
      </property>
     </widget>
    </item>
+   <item row="4" column="3">
+    <widget class="QComboBox" name="mUnitsCombo"/>
+   </item>
    <item row="7" column="2">
     <widget class="QRadioButton" name="mEllipsoidal">
      <property name="text">
@@ -116,45 +107,6 @@
      </property>
      <property name="checked">
       <bool>true</bool>
-     </property>
-    </widget>
-   </item>
-   <item row="7" column="0">
-    <widget class="QRadioButton" name="mCartesian">
-     <property name="text">
-      <string>Cartesian</string>
-     </property>
-     <property name="checked">
-      <bool>false</bool>
-     </property>
-    </widget>
-   </item>
-   <item row="9" column="0" colspan="4">
-    <widget class="QgsCollapsibleGroupBox" name="groupBox">
-     <property name="title">
-      <string>Info</string>
-     </property>
-     <layout class="QVBoxLayout" name="verticalLayout">
-      <item>
-       <widget class="QLabel" name="mNotesLabel">
-        <property name="text">
-         <string/>
-        </property>
-        <property name="wordWrap">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item row="4" column="3">
-    <widget class="QComboBox" name="mUnitsCombo"/>
-   </item>
-   <item row="11" column="0" colspan="4">
-    <widget class="QDialogButtonBox" name="buttonBox">
-     <property name="standardButtons">
-      <set>QDialogButtonBox::Close|QDialogButtonBox::Help</set>
      </property>
     </widget>
    </item>
@@ -174,18 +126,79 @@
      </property>
     </widget>
    </item>
-   <item row="10" column="0" colspan="4">
-    <spacer name="mSpacer">
+   <item row="6" column="0">
+    <widget class="QLabel" name="totalHorizontalDistanceLabel">
+     <property name="text">
+      <string>Total Horizontal Distance</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="0" colspan="4">
+    <widget class="QTreeWidget" name="mTable">
+     <property name="editTriggers">
+      <set>QAbstractItemView::NoEditTriggers</set>
+     </property>
+     <property name="rootIsDecorated">
+      <bool>false</bool>
+     </property>
+     <property name="columnCount">
+      <number>3</number>
+     </property>
+     <attribute name="headerDefaultSectionSize">
+      <number>100</number>
+     </attribute>
+     <column>
+      <property name="text">
+       <string>x</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>y</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Segments</string>
+      </property>
+      <property name="textAlignment">
+       <set>AlignTrailing|AlignVCenter</set>
+      </property>
+     </column>
+    </widget>
+   </item>
+   <item row="4" column="1">
+    <spacer>
      <property name="orientation">
-      <enum>Qt::Vertical</enum>
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="sizeType">
+      <enum>QSizePolicy::Fixed</enum>
      </property>
      <property name="sizeHint" stdset="0">
       <size>
-       <width>40</width>
-       <height>20</height>
+       <width>41</width>
+       <height>25</height>
       </size>
      </property>
     </spacer>
+   </item>
+   <item row="4" column="0">
+    <widget class="QLabel" name="totalDistanceLabel">
+     <property name="text">
+      <string>Total</string>
+     </property>
+     <property name="buddy">
+      <cstring>editTotal</cstring>
+     </property>
+    </widget>
+   </item>
+   <item row="10" column="0" colspan="4">
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Close|QDialogButtonBox::Help</set>
+     </property>
+    </widget>
    </item>
   </layout>
  </widget>
@@ -201,6 +214,10 @@
  <tabstops>
   <tabstop>mTable</tabstop>
   <tabstop>editTotal</tabstop>
+  <tabstop>mEllipsoidal</tabstop>
+  <tabstop>mUnitsCombo</tabstop>
+  <tabstop>editHorizontalTotal</tabstop>
+  <tabstop>mCartesian</tabstop>
  </tabstops>
  <resources/>
  <connections/>
