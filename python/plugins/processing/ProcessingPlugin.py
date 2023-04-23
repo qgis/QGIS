@@ -38,7 +38,8 @@ from qgis.core import (QgsApplication,
                        QgsSettings)
 from qgis.gui import (QgsGui,
                       QgsOptionsWidgetFactory,
-                      QgsCustomDropHandler)
+                      QgsCustomDropHandler,
+                      QgsProcessingHistoryDialog)
 from qgis.PyQt.QtCore import QObject, Qt, QItemSelectionModel, QCoreApplication, QDir, QFileInfo, pyqtSlot
 from qgis.PyQt.QtWidgets import QWidget, QMenu, QAction
 from qgis.PyQt.QtGui import QIcon, QKeySequence
@@ -46,7 +47,6 @@ from qgis.utils import iface
 
 from processing.core.Processing import Processing
 from processing.gui.ProcessingToolbox import ProcessingToolbox
-from processing.gui.HistoryDialog import HistoryDialog
 from processing.gui.ConfigDialog import ConfigOptionsPage
 from processing.gui.ResultsDock import ResultsDock
 from processing.gui.MessageDialog import MessageDialog
@@ -499,8 +499,9 @@ class ProcessingPlugin(QObject):
             self.resultsDock.show()
 
     def openHistory(self):
-        dlg = HistoryDialog()
-        dlg.exec_()
+        dlg = QgsProcessingHistoryDialog(self.iface.mainWindow())
+        dlg.setAttribute(Qt.WA_DeleteOnClose)
+        dlg.show()
 
     def tr(self, message, disambiguation=None, n=-1):
         return QCoreApplication.translate('ProcessingPlugin', message, disambiguation=disambiguation, n=n)

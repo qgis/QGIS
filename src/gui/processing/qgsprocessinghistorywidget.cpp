@@ -36,7 +36,7 @@ QgsProcessingHistoryWidget::QgsProcessingHistoryWidget( QWidget *parent )
   QVBoxLayout *vl = new QVBoxLayout();
   vl->setContentsMargins( 0, 0, 0, 0 );
   vl->addWidget( mHistoryWidget );
-
+  setLayout( vl );
 }
 
 void QgsProcessingHistoryWidget::clearHistory()
@@ -48,7 +48,7 @@ void QgsProcessingHistoryWidget::clearHistory()
                               QMessageBox::No
                             ) == QMessageBox::Yes )
   {
-    QgsGui::historyProviderRegistry()->clearHistory( Qgis::HistoryProviderBackend::LocalProfile, QStringLiteral( "providerId" ) );
+    QgsGui::historyProviderRegistry()->clearHistory( Qgis::HistoryProviderBackend::LocalProfile, QStringLiteral( "processing" ) );
   }
 }
 
@@ -78,8 +78,8 @@ void QgsProcessingHistoryWidget::saveLog()
     QTextStream logOut( &logFile );
     for ( const QgsHistoryEntry &entry : entries )
     {
-      logOut << QStringLiteral( "ALGORITHM{}{}{}{}\n" ).arg( logSeparator,
-             entry.timestamp.toString( "YYYY-mm-dd HH:MM:SS" ),
+      logOut << QStringLiteral( "ALGORITHM%1%2%3%4\n" ).arg( logSeparator,
+             entry.timestamp.toString( "YYYY-mm-dd HH:MM:ss" ),
              logSeparator,
              entry.entry.value( QStringLiteral( "python_command" ) ).toString() );
     }
@@ -94,6 +94,7 @@ void QgsProcessingHistoryWidget::saveLog()
 QgsProcessingHistoryDialog::QgsProcessingHistoryDialog( QWidget *parent )
   : QDialog( parent )
 {
+  setObjectName( QStringLiteral( "QgsProcessingHistoryDialog" ) );
   QgsGui::instance()->enableAutoGeometryRestore( this );
 
   QVBoxLayout *vl = new QVBoxLayout();
