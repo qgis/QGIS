@@ -27,7 +27,7 @@ class QDialogButtonBox;
 
 /**
  * \ingroup gui
- * \brief A widget for showing Processing algorithm exection history.
+ * \brief A widget for showing Processing algorithm execution history.
  * \since QGIS 3.32
  */
 class GUI_EXPORT QgsProcessingHistoryWidget : public QgsPanelWidget
@@ -65,7 +65,7 @@ class GUI_EXPORT QgsProcessingHistoryWidget : public QgsPanelWidget
 
 /**
  * \ingroup gui
- * \brief A dialog for showing Processing algorithm exection history.
+ * \brief A dialog for showing Processing algorithm execution history.
  *
  * \warning This is not part of stable API -- it is exposed to Python for internal use by Processing only!
  *
