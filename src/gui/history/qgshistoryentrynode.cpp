@@ -41,12 +41,10 @@ void QgsHistoryEntryNode::doubleClicked( const QgsHistoryWidgetContext & )
 
 }
 
-#if 0
-QList<QAction *> QgsHistoryEntryNode::actions( QWidget * )
+void QgsHistoryEntryNode::populateContextMenu( QMenu *, const QgsHistoryWidgetContext & )
 {
-  return {};
+
 }
-#endif
 
 bool QgsHistoryEntryNode::matchesString( const QString &string ) const
 {
