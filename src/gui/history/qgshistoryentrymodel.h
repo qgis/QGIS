@@ -80,7 +80,7 @@ class GUI_EXPORT QgsHistoryEntryModel : public QAbstractItemModel
 
     void entryAdded( long long id, const QgsHistoryEntry &entry, Qgis::HistoryProviderBackend backend );
     void entryUpdated( long long id, const QVariantMap &entry, Qgis::HistoryProviderBackend backend );
-    void historyCleared( Qgis::HistoryProviderBackend backend );
+    void historyCleared( Qgis::HistoryProviderBackend backend, const QString &providerId );
 
   private:
 

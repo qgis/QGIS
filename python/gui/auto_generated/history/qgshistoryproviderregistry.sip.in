@@ -158,7 +158,7 @@ The optional ``providerId`` and ``backends`` arguments can be used to filter ent
 Returns the path to user's local history database.
 %End
 
-    bool clearHistory( Qgis::HistoryProviderBackend backend );
+    bool clearHistory( Qgis::HistoryProviderBackend backend, const QString &providerId = QString() );
 %Docstring
 Clears the history for the specified ``backend``.
 
@@ -181,9 +181,12 @@ Emitted when an ``entry`` is updated.
 .. versionadded:: 3.32
 %End
 
-    void historyCleared( Qgis::HistoryProviderBackend backend );
+    void historyCleared( Qgis::HistoryProviderBackend backend, const QString &providerId );
 %Docstring
 Emitted when the history is cleared for a ``backend``.
+
+If ``providerId`` is non-empty then the history has only been cleared for the
+specified provider.
 
 .. versionadded:: 3.32
 %End
