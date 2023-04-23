@@ -2836,6 +2836,8 @@ class CORE_EXPORT Qgis
       Python, //!< Python
       R, //!< R Stats
       Sql, //!< SQL
+      Batch, //!< Windows batch files
+      Bash, //!< Bash scripts
       Unknown, //!< Unknown/other language
     };
     Q_ENUM( ScriptLanguage )

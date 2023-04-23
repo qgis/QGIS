@@ -148,6 +148,7 @@ set(QGIS_GUI_SRCS
   codeeditors/qgscodeeditorjson.cpp
   codeeditors/qgscodeeditorpython.cpp
   codeeditors/qgscodeeditorr.cpp
+  codeeditors/qgscodeeditorshell.cpp
   codeeditors/qgscodeeditorsql.cpp
   codeeditors/qgscodeeditorexpression.cpp
 
@@ -1056,6 +1057,7 @@ set(QGIS_GUI_HDRS
   codeeditors/qgscodeeditorjson.h
   codeeditors/qgscodeeditorpython.h
   codeeditors/qgscodeeditorr.h
+  codeeditors/qgscodeeditorshell.h
   codeeditors/qgscodeeditorsql.h
 
   devtools/qgsdevtoolwidget.h

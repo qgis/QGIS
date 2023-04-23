@@ -1641,6 +1641,8 @@ The development version
       Python,
       R,
       Sql,
+      Batch,
+      Bash,
       Unknown,
     };
 
