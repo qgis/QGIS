@@ -38,6 +38,9 @@ QgsHistoryWidget::QgsHistoryWidget( const QString &providerId, Qgis::HistoryProv
   connect( mTreeView->selectionModel(), &QItemSelectionModel::currentChanged, this, &QgsHistoryWidget::currentItemChanged );
   connect( mTreeView, &QTreeView::doubleClicked, this, &QgsHistoryWidget::nodeDoubleClicked );
 
+  // expand first group (usually most recent date group)
+  const QModelIndex firstGroup = mProxyModel->index( 0, 0, QModelIndex() );
+  mTreeView->expand( firstGroup );
 }
 
 void QgsHistoryWidget::currentItemChanged( const QModelIndex &selected, const QModelIndex & )
