@@ -20,6 +20,7 @@
 #include "qgsprocessingaggregatewidgets.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
+#include "QItemSelectionModel"
 
 #include <QTableView>
 #include <QVBoxLayout>
@@ -143,6 +144,21 @@ bool QgsFieldMappingWidget::removeSelectedFields()
     {
       return false;
     }
+  }
+  return true;
+}
+
+bool QgsFieldMappingWidget::invertSelection()
+{
+
+  for ( int i = 0; i < mTableView->model()->rowCount(); ++i )
+  {
+    for ( int j = 0; j < mTableView->model()->columnCount(); j++ )
+    {
+      QModelIndex index = mTableView->model()->index( i, j );
+      mTableView->selectionModel()->select( index, QItemSelectionModel::Toggle );
+    }
+
   }
   return true;
 }
