@@ -57,6 +57,7 @@ from processing.gui.Postprocessing import handleAlgorithmResults
 from processing.gui.AlgorithmExecutor import execute, execute_in_place
 from processing.gui.AlgorithmDialog import AlgorithmDialog
 from processing.gui.BatchAlgorithmDialog import BatchAlgorithmDialog
+from processing.gui import TestTools
 from processing.modeler.ModelerDialog import ModelerDialog
 from processing.tools.system import tempHelpFolder
 from processing.tools import dataobjects
@@ -207,6 +208,13 @@ class ProcessingPlugin(QObject):
         iface.currentLayerChanged.connect(lambda _: self.iface.invalidateLocatorResults())
         self.edit_features_locator_filter = InPlaceAlgorithmLocatorFilter()
         iface.registerLocatorFilter(self.edit_features_locator_filter)
+
+        QgsGui.historyProviderRegistry().providerById('processing').executePython.connect(
+            self._execute_history_commands
+        )
+        QgsGui.historyProviderRegistry().providerById('processing').createTest.connect(
+            self.create_test
+        )
 
         self.toolbox = ProcessingToolbox()
         self.iface.addDockWidget(Qt.RightDockWidgetArea, self.toolbox)
@@ -460,6 +468,13 @@ class ProcessingPlugin(QObject):
             self.iface.projectMenu().removeAction(self.projectMenuSeparator)
             self.projectMenuSeparator = None
 
+        QgsGui.historyProviderRegistry().providerById('processing').executePython.disconnect(
+            self._execute_history_commands
+        )
+        QgsGui.historyProviderRegistry().providerById('processing').createTest.disconnect(
+            self.create_test
+        )
+
         Processing.deinitialize()
 
     def openToolbox(self, show):
@@ -492,3 +507,15 @@ class ProcessingPlugin(QObject):
 
     def editSelected(self, enabled):
         self.toolbox.set_in_place_edit_mode(enabled)
+
+    def _execute_history_commands(self, commands: str):
+        """
+        Executes Python commands from the history provider
+        """
+        exec(commands)
+
+    def create_test(self, command: str):
+        """
+        Starts the test creation process given a processing algorithm run command
+        """
+        TestTools.createTest(command)

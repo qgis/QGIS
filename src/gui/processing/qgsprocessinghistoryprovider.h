@@ -44,10 +44,31 @@ class GUI_EXPORT QgsProcessingHistoryProvider : public QgsAbstractHistoryProvide
      */
     void portOldLog();
 
+    QgsHistoryEntryNode *createNodeForEntry( const QgsHistoryEntry &entry, const QgsHistoryWidgetContext &context ) override SIP_FACTORY;
+
+  signals:
+
+    /**
+     * Emitted when the provider needs to execute python \a commands in the Processing context.
+     */
+    void executePython( const QString &commands );
+
+    /**
+     * Emitted when the provider needs to create a Processing test with the given python \a command.
+     */
+    void createTest( const QString &command );
+
   private:
+
+    //! Executes some python commands
+    void execute( const QString &commands );
+
+    void emitCreateTest( const QString &command );
 
     //! Returns the path to the old log file
     QString oldLogPath() const;
+
+    friend class ProcessingHistoryNode;
 
 };
 
