@@ -50,18 +50,22 @@ class GUI_EXPORT QgsProcessingHistoryProvider : public QgsAbstractHistoryProvide
 
     /**
      * Emitted when the provider needs to execute python \a commands in the Processing context.
+     *
+     * \since QGIS 3.32
      */
     void executePython( const QString &commands );
 
     /**
      * Emitted when the provider needs to create a Processing test with the given python \a command.
+     *
+     * \since QGIS 3.32
      */
     void createTest( const QString &command );
 
   private:
 
     //! Executes some python commands
-    void execute( const QString &commands );
+    void emitExecute( const QString &commands );
 
     void emitCreateTest( const QString &command );
 

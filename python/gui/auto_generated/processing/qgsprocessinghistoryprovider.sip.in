@@ -41,11 +41,15 @@ This should only be called once -- calling multiple times will result in duplica
     void executePython( const QString &commands );
 %Docstring
 Emitted when the provider needs to execute python ``commands`` in the Processing context.
+
+.. versionadded:: 3.32
 %End
 
     void createTest( const QString &command );
 %Docstring
 Emitted when the provider needs to create a Processing test with the given python ``command``.
+
+.. versionadded:: 3.32
 %End
 
 };
