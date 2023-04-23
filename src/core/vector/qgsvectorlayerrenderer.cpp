@@ -593,7 +593,7 @@ void QgsVectorLayerRenderer::drawRendererLevels( QgsFeatureRenderer *renderer, Q
 
   // 1. fetch features
   QgsFeature fet;
-  std::vector<QVariant> prevValues; // previous values of ORDER BY attributes
+  QVector<QVariant> prevValues; // previous values of ORDER BY attributes
   while ( fit.nextFeature( fet ) )
   {
     if ( context.renderingStopped() )
@@ -619,7 +619,7 @@ void QgsVectorLayerRenderer::drawRendererLevels( QgsFeatureRenderer *renderer, Q
 
     if ( renderer->orderByEnabled() )
     {
-      std::vector<QVariant> currentValues;
+      QVector<QVariant> currentValues;
       for ( auto const idx : orderByAttributeIdx )
       {
         currentValues.push_back( fet.attribute( idx ) );
