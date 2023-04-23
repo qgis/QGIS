@@ -38,7 +38,7 @@ from qgis.PyQt.QtWidgets import (
     QAction
 )
 
-# adding to this list? also update the HistoryDialog.py executeAlgorithm imports!!
+# adding to this list? also update the QgsProcessingHistoryProvider executeAlgorithm imports!!
 
 from qgis.PyQt.QtCore import (
     QTime,  # NOQA - must be here for saved file evaluation
