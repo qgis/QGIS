@@ -95,8 +95,9 @@ QVariantMap QgsConstantRasterAlgorithm::processAlgorithm( const QVariantMap &par
   const double value = parameterAsDouble( parameters, QStringLiteral( "NUMBER" ), context );
   const int typeId = parameterAsInt( parameters, QStringLiteral( "OUTPUT_TYPE" ), context );
 
-  if ( pixelSize <= 0 ) {
-	  throw QgsProcessingException( QObject::tr( "Pixel size must be greater than 0." ) );
+  if ( pixelSize <= 0 )
+  {
+    throw QgsProcessingException( QObject::tr( "Pixel size must be greater than 0." ) );
   }
 
   //implement warning if input float has decimal places but is written to integer raster
