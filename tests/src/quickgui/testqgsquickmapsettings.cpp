@@ -15,12 +15,14 @@
 #include <QObject>
 #include <QApplication>
 
+#include "qgis.h"
 #include "qgsapplication.h"
 #include "qgstest.h"
-#include "qgis.h"
+#include "qgspoint.h"
 #include "qgsunittypes.h"
 
 #include "qgsquickmapsettings.h"
+#include "qgsquickmaptoscreen.h"
 
 class TestQgsQuickMapSettings: public QObject
 {
@@ -30,6 +32,7 @@ class TestQgsQuickMapSettings: public QObject
     void cleanup() {} // will be called after every testfunction.
 
     void test_project_existency();
+    void test_map_to_screen();
 };
 
 void TestQgsQuickMapSettings::test_project_existency()
@@ -37,6 +40,21 @@ void TestQgsQuickMapSettings::test_project_existency()
   QgsQuickMapSettings *settings = new QgsQuickMapSettings();
   QVERIFY( !settings->project() );
   delete settings;
+}
+
+void TestQgsQuickMapSettings::test_map_to_screen()
+{
+  QgsQuickMapSettings *settings = new QgsQuickMapSettings();
+  settings->setOutputSize( QSize( 10, 10 ) );
+  settings->setExtent( QgsRectangle( 0, 0, 10, 10 ) );
+
+  QgsPoint point( 5, 5 );
+
+  QgsQuickMapToScreen *mapToScreen = new QgsQuickMapToScreen();
+  mapToScreen->setMapSettings( settings );
+  mapToScreen->setMapPoint( point );
+
+  QCOMPARE( mapToScreen->screenPoint(), QPointF( 5, 5 ) );
 }
 
 QGSTEST_MAIN( TestQgsQuickMapSettings )
