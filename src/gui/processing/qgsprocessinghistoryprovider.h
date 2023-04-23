@@ -29,6 +29,8 @@
  */
 class GUI_EXPORT QgsProcessingHistoryProvider : public QgsAbstractHistoryProvider
 {
+    Q_OBJECT
+
   public:
 
     QgsProcessingHistoryProvider();

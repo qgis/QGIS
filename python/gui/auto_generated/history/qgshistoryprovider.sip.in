@@ -8,7 +8,7 @@
 
 
 
-class QgsAbstractHistoryProvider
+class QgsAbstractHistoryProvider : QObject
 {
 %Docstring(signature="appended")
 Abstract base class for objects which track user history (i.e. operations performed through the GUI).
@@ -24,7 +24,7 @@ Abstract base class for objects which track user history (i.e. operations perfor
   public:
 
 %ConvertToSubClassCode
-    if ( dynamic_cast<QgsProcessingHistoryProvider *>( sipCpp ) )
+    if ( qobject_cast<QgsProcessingHistoryProvider *>( sipCpp ) )
       sipType = sipType_QgsProcessingHistoryProvider;
     else
       sipType = nullptr;

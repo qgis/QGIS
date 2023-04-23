@@ -33,13 +33,15 @@ class QgsHistoryWidgetContext;
  * \ingroup gui
  * \since QGIS 3.24
  */
-class GUI_EXPORT QgsAbstractHistoryProvider
+class GUI_EXPORT QgsAbstractHistoryProvider : public QObject
 {
+    Q_OBJECT
+
   public:
 
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
-    if ( dynamic_cast<QgsProcessingHistoryProvider *>( sipCpp ) )
+    if ( qobject_cast<QgsProcessingHistoryProvider *>( sipCpp ) )
       sipType = sipType_QgsProcessingHistoryProvider;
     else
       sipType = nullptr;
