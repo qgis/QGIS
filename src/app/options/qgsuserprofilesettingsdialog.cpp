@@ -18,14 +18,16 @@
 
 #include "qgsuserprofilesettingsdialog.h"
 
-
 QgsUserProfileSettingsDialog::QgsUserProfileSettingsDialog( QWidget *parent )
   : QDialog( parent )
 
 {
   setupUi( this );
-  connect( mDefaultProfile, &QRadioButton::toggled, mDefaultProfileComboBox, &QComboBox::setEnabled );
   connect( mButtonBox, &QDialogButtonBox::accepted, this, &QgsUserProfileSettingsDialog::apply );
+
+  // Disable combobox if default profile is not selected
+  mDefaultProfileComboBox->setEnabled( false );
+  connect( mDefaultProfile, &QRadioButton::toggled, mDefaultProfileComboBox, &QComboBox::setEnabled );
 
   // Init radio buttons
   auto manager = QgisApp::instance()->userProfileManager();
@@ -46,7 +48,6 @@ QgsUserProfileSettingsDialog::QgsUserProfileSettingsDialog( QWidget *parent )
   mDefaultProfileComboBox->clear();
   mDefaultProfileComboBox->addItems( manager->allProfiles() );
   mDefaultProfileComboBox->setCurrentText( manager->defaultProfileName() );
-
 }
 
 void QgsUserProfileSettingsDialog::apply()
@@ -66,4 +67,3 @@ void QgsUserProfileSettingsDialog::apply()
     manager->setDefaultProfileName( mDefaultProfileComboBox->currentText() );
   }
 }
-

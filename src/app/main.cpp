@@ -105,6 +105,7 @@ typedef SInt32 SRefCon;
 #include "qgsuserprofilemanager.h"
 #include "qgsuserprofile.h"
 #include "layers/qgsapplayerhandling.h"
+#include "options/qgsuserprofileselectiondialog.h"
 
 #ifdef HAVE_OPENCL
 #include "qgsopenclutils.h"
@@ -1083,18 +1084,53 @@ int main( int argc, char *argv[] )
   // If profile name was not explicitly set, use the policy to determine which profile to use
   if ( profileName.isEmpty() )
   {
-    switch ( manager.userProfileSelectionPolicy() )
+
+    // If no profiles exist, use the default profile
+    if ( manager.allProfiles().isEmpty() )
     {
-      case QgsUserProfileManager::UserProfileSelectionPolicy::LastProfile:
-        profileName = manager.lastProfileName();
-        break;
-      // case QgsUserProfileManager::UserProfileSelectionPolicy::AskUser:
-      //   profileName = manager.askUserToChooseProfile();
-      //   break;
-      case QgsUserProfileManager::UserProfileSelectionPolicy::DefaultProfile:
-      default:
-        profileName = manager.defaultProfileName();
-        break;
+      profileName = manager.defaultProfileName();
+    }
+    else
+    {
+      switch ( manager.userProfileSelectionPolicy() )
+      {
+        // Use the last closed profile (default behavior prior to QGIS 3.32)
+        case QgsUserProfileManager::UserProfileSelectionPolicy::LastProfile:
+          profileName = manager.lastProfileName();
+          // If last used profile no longer exists, use the default profile
+          if ( !manager.profileExists( profileName ) )
+          {
+            profileName  = manager.defaultProfileName();
+          }
+          break;
+
+        // Ask the user to select a profile (if more than one exists)
+        case QgsUserProfileManager::UserProfileSelectionPolicy::AskUser:
+        {
+          if ( manager.allProfiles().size() == 1 )
+          {
+            profileName = manager.allProfiles()[0];
+            break;
+          }
+          QgsUserProfileSelectionDialog dlg( &manager );
+          if ( dlg.exec() == QDialog::Accepted )
+          {
+            profileName = dlg.selectedProfileName();
+          }
+          else
+          {
+            // Exit QGIS if the user cancels the profile selection dialog
+            return 0;
+          }
+          break;
+        }
+
+        // Use the default profile
+        case QgsUserProfileManager::UserProfileSelectionPolicy::DefaultProfile:
+        default:
+          profileName = manager.defaultProfileName();
+          break;
+      }
     }
   }
 
