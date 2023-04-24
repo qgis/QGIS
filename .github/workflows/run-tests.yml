@@ -52,7 +52,7 @@ jobs:
             # LD_PRELOAD: /lib/x86_64-linux-gnu/libSegFault.so
             experimental: false
 
-          - distro-version: '36'
+          - distro-version: '38'
             qt-version: 6
             run-tests: true
             docker-tag-suffix: ''
