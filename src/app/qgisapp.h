@@ -1425,6 +1425,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
   private slots:
     void newProfile();
 
+    void showUserProfileSettingsDialog();
+
     void onTaskCompleteShowNotify( long taskId, int status );
 
     void onTransactionGroupsChanged();
