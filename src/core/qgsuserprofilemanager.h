@@ -44,6 +44,13 @@ class CORE_EXPORT QgsUserProfileManager : public QObject
 
   public:
 
+    enum UserProfileSelectionPolicy
+    {
+      LastProfile = 0, //!< Open the last closed profile (only mode supported prior to QGIS 3.32)
+      DefaultProfile, //!< Open a specific profile
+      AskUser, //!< Let the user choose which profile to open
+    };
+
     /**
      * User profile manager used to manage user profiles for the instance of QGIS.
      */
@@ -141,6 +148,31 @@ class CORE_EXPORT QgsUserProfileManager : public QObject
      * Set the default profile name from the current active profile.
      */
     void setDefaultFromActive();
+
+    /**
+     * Returns the name of the lastly closed profile. Empty if its the first time QGIS has been run.
+     * \since QGIS 3.32
+     */
+    QString lastProfileName() const;
+
+    /**
+     * Updates the last closed profile name. Called when QGIS is closed.
+     * \since QGIS 3.32
+     */
+    void updateLastProfileName() SIP_SKIP;
+
+    /**
+    *    Returns the user profile selection policy.
+    *    \since QGIS 3.32
+    */
+    UserProfileSelectionPolicy userProfileSelectionPolicy() const;
+
+    /**
+      * Sets the user profile selection policy.
+      * \param policy The policy to use when selecting a user profile.
+      * \since QGIS 3.32
+    */
+    void setUserProfileSelectionPolicy( UserProfileSelectionPolicy policy );
 
     /**
      * Returns the profile found for a given name.

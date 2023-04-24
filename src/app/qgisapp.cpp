@@ -5660,7 +5660,7 @@ void QgisApp::fileExit()
   if ( checkUnsavedLayerEdits() && checkMemoryLayers() && saveDirty() && checkExitBlockers() && checkUnsavedRasterAttributeTableEdits() )
   {
     closeProject();
-    userProfileManager()->setDefaultFromActive();
+    userProfileManager()->updateLastProfileName();
 
     // shouldn't be needed, but from this stage on, we don't want/need ANY map canvas refreshes to take place
     mFreezeCount = 1000000;

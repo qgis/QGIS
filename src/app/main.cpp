@@ -1009,12 +1009,6 @@ int main( int argc, char *argv[] )
     }
   }
 
-  QString rootProfileFolder = QgsUserProfileManager::resolveProfilesFolder( configLocalStorageLocation );
-  QgsUserProfileManager manager( rootProfileFolder );
-  QgsUserProfile *profile = manager.getProfile( profileName, true );
-  QString profileFolder = profile->folder();
-  profileName = profile->name();
-  delete profile;
 
   {
     /* Translation file for QGIS.
@@ -1082,6 +1076,32 @@ int main( int argc, char *argv[] )
   }
 
   QgsApplication myApp( argc, argv, myUseGuiFlag, QString(), QStringLiteral( "desktop" ) );
+
+  QString rootProfileFolder = QgsUserProfileManager::resolveProfilesFolder( configLocalStorageLocation );
+  QgsUserProfileManager manager( rootProfileFolder );
+
+  // If profile name was not explicitly set, use the policy to determine which profile to use
+  if ( profileName.isEmpty() )
+  {
+    switch ( manager.userProfileSelectionPolicy() )
+    {
+      case QgsUserProfileManager::UserProfileSelectionPolicy::LastProfile:
+        profileName = manager.lastProfileName();
+        break;
+      // case QgsUserProfileManager::UserProfileSelectionPolicy::AskUser:
+      //   profileName = manager.askUserToChooseProfile();
+      //   break;
+      case QgsUserProfileManager::UserProfileSelectionPolicy::DefaultProfile:
+      default:
+        profileName = manager.defaultProfileName();
+        break;
+    }
+  }
+
+  QgsUserProfile *profile = manager.getProfile( profileName, true );
+  QString profileFolder = profile->folder();
+  profileName = profile->name();
+  delete profile;
 
   // Set locale to emit QgsApplication's localeChanged signal
   QgsApplication::setLocale( QLocale() );
