@@ -1205,6 +1205,12 @@ class CORE_EXPORT QgsApplication : public QApplication
 
     static void invalidateCaches();
 
+    /**
+     * Installs the translators (qgis, qt and qt_base) for the current locale.
+     * \since QGIS 3.22
+    */
+    void installTranslators() SIP_SKIP;
+
     friend class TestQgsApplication;
 };
 

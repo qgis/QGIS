@@ -1010,10 +1010,77 @@ int main( int argc, char *argv[] )
     }
   }
 
+  // Create the application. At this point, the profile is not yet selected
+  // But we need the Qt Application to be created to be able to display the
+  // profile selection dialog if needed
+  QgsApplication myApp( argc, argv, myUseGuiFlag, QString(), QStringLiteral( "desktop" ) );
+
+  QString rootProfileFolder = QgsUserProfileManager::resolveProfilesFolder( configLocalStorageLocation );
+  QgsUserProfileManager manager( rootProfileFolder );
+
+  // If profile name was not explicitly set, use the policy to determine which profile to use
+  if ( profileName.isEmpty() )
+  {
+
+    // If no profiles exist, use the default profile
+    if ( manager.allProfiles().isEmpty() )
+    {
+      profileName = manager.defaultProfileName();
+    }
+    else
+    {
+      switch ( manager.userProfileSelectionPolicy() )
+      {
+        // Use the last closed profile (default behavior prior to QGIS 3.32)
+        case QgsUserProfileManager::UserProfileSelectionPolicy::LastProfile:
+          profileName = manager.lastProfileName();
+          // If last used profile no longer exists, use the default profile
+          if ( !manager.profileExists( profileName ) )
+          {
+            profileName  = manager.defaultProfileName();
+          }
+          break;
+
+        // Ask the user to select a profile (if more than one exists)
+        case QgsUserProfileManager::UserProfileSelectionPolicy::AskUser:
+        {
+          if ( manager.allProfiles().size() == 1 )
+          {
+            profileName = manager.allProfiles()[0];
+            break;
+          }
+          QgsUserProfileSelectionDialog dlg( &manager );
+          if ( dlg.exec() == QDialog::Accepted )
+          {
+            profileName = dlg.selectedProfileName();
+          }
+          else
+          {
+            // Exit QGIS if the user cancels the profile selection dialog
+            return 0;
+          }
+          break;
+        }
+
+        // Use the default profile
+        case QgsUserProfileManager::UserProfileSelectionPolicy::DefaultProfile:
+        default:
+          profileName = manager.defaultProfileName();
+          break;
+      }
+    }
+  }
+
+  // Calling getProfile() will create the profile if it doesn't exist, and init the QgsSettings
+  QgsUserProfile *profile = manager.getProfile( profileName, true );
+  QString profileFolder = profile->folder();
+  profileName = profile->name();
+  delete profile;
+
+
 
   {
-    /* Translation file for QGIS.
-    */
+    // The profile is selected, we can now set up the translation file for QGIS.
     QString myUserTranslation = QgsApplication::settingsLocaleUserLocale->value();
     QString myGlobalLocale = QgsApplication::settingsLocaleGlobalLocale->value();
     bool myShowGroupSeparatorFlag = false; // Default to false
@@ -1075,69 +1142,6 @@ int main( int argc, char *argv[] )
 
     QgsApplication::setTranslation( translationCode );
   }
-
-  QgsApplication myApp( argc, argv, myUseGuiFlag, QString(), QStringLiteral( "desktop" ) );
-
-  QString rootProfileFolder = QgsUserProfileManager::resolveProfilesFolder( configLocalStorageLocation );
-  QgsUserProfileManager manager( rootProfileFolder );
-
-  // If profile name was not explicitly set, use the policy to determine which profile to use
-  if ( profileName.isEmpty() )
-  {
-
-    // If no profiles exist, use the default profile
-    if ( manager.allProfiles().isEmpty() )
-    {
-      profileName = manager.defaultProfileName();
-    }
-    else
-    {
-      switch ( manager.userProfileSelectionPolicy() )
-      {
-        // Use the last closed profile (default behavior prior to QGIS 3.32)
-        case QgsUserProfileManager::UserProfileSelectionPolicy::LastProfile:
-          profileName = manager.lastProfileName();
-          // If last used profile no longer exists, use the default profile
-          if ( !manager.profileExists( profileName ) )
-          {
-            profileName  = manager.defaultProfileName();
-          }
-          break;
-
-        // Ask the user to select a profile (if more than one exists)
-        case QgsUserProfileManager::UserProfileSelectionPolicy::AskUser:
-        {
-          if ( manager.allProfiles().size() == 1 )
-          {
-            profileName = manager.allProfiles()[0];
-            break;
-          }
-          QgsUserProfileSelectionDialog dlg( &manager );
-          if ( dlg.exec() == QDialog::Accepted )
-          {
-            profileName = dlg.selectedProfileName();
-          }
-          else
-          {
-            // Exit QGIS if the user cancels the profile selection dialog
-            return 0;
-          }
-          break;
-        }
-
-        // Use the default profile
-        case QgsUserProfileManager::UserProfileSelectionPolicy::DefaultProfile:
-        default:
-          profileName = manager.defaultProfileName();
-          break;
-      }
-    }
-  }
-
-  QgsUserProfile *profile = manager.getProfile( profileName, true );
-  QString profileFolder = profile->folder();
-  profileName = profile->name();
-  delete profile;
 
   // Set locale to emit QgsApplication's localeChanged signal
   QgsApplication::setLocale( QLocale() );
