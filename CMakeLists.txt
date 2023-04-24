@@ -443,7 +443,7 @@ if(WITH_CORE)
 
   set (BUILD_WITH_QT6 FALSE CACHE BOOL "Enable (experimental) Qt6 support")
   if (BUILD_WITH_QT6)
-    set(QT_MIN_VERSION 6.0.0)
+    set(QT_MIN_VERSION 6.4.0)
     set(QT_VERSION_BASE "Qt6")
     set(QT_VERSION_BASE_LOWER "qt6")
     set(CMAKE_CXX_STANDARD 17)
