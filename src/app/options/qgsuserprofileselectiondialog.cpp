@@ -30,7 +30,7 @@ QgsUserProfileSelectionDialog::QgsUserProfileSelectionDialog( QgsUserProfileMana
   setupUi( this );
   setWindowIcon( QIcon( QgsApplication::appIconPath() ) );
 
-  // Select user profile on double click
+  // Select user profile on double-click
   connect( mProfileListWidget, &QListWidget::itemDoubleClicked, this, &QgsUserProfileSelectionDialog::accept );
 
   // Add a new profile on button click
