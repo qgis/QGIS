@@ -88,7 +88,7 @@ QgsProjectionSelectionTreeWidget::QgsProjectionSelectionTreeWidget( QWidget *par
     QTreeWidgetItem *currentItem = lstRecent->itemAt( pos );
     if ( currentItem )
     {
-      QAction *clearSelected = menu.addAction( QgsApplication::getThemeIcon( "/mIconClearItem.svg" ),  tr( "Clear selected CRS from recently used CRS" ) );
+      QAction *clearSelected = menu.addAction( QgsApplication::getThemeIcon( "/mIconClearItem.svg" ),  tr( "Remove selected CRS from recently used CRS" ) );
       connect( clearSelected, &QAction::triggered, this, [this, currentItem ] { removeRecentCrsItem( currentItem ); } );
       menu.addSeparator();
     }
@@ -290,7 +290,7 @@ void QgsProjectionSelectionTreeWidget::insertRecent( const QgsCoordinateReferenc
   QToolButton *clearButton = new QToolButton();
   clearButton->setIcon( QgsApplication::getThemeIcon( "/mIconClearItem.svg" ) );
   clearButton->setAutoRaise( true );
-  clearButton->setToolTip( tr( "Clear from recently used CRS" ) );
+  clearButton->setToolTip( tr( "Remove from recently used CRS" ) );
   connect( clearButton, &QToolButton::clicked, this, [this, item] { removeRecentCrsItem( item ); } );
   lstRecent->setItemWidget( item, ClearColumn, clearButton );
 
