@@ -150,7 +150,6 @@ bool QgsFieldMappingWidget::removeSelectedFields()
 
 bool QgsFieldMappingWidget::invertSelection()
 {
-
   for ( int i = 0; i < mTableView->model()->rowCount(); ++i )
   {
     for ( int j = 0; j < mTableView->model()->columnCount(); j++ )
