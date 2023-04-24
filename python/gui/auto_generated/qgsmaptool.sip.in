@@ -184,7 +184,7 @@ called when map tool is being deactivated
 %Docstring
 Called when the map tool is being activated while it is already active.
 
-The default implementation does nothing.
+The default implementation emits the reactivated () signal.
 
 .. versionadded:: 3.32
 %End
