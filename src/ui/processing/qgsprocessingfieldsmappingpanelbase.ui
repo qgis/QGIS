@@ -119,7 +119,7 @@
        <item>
         <widget class="QToolButton" name="mInvertSelectionButton">
          <property name="text">
-          <string>invert selection</string>
+          <string>Invert selection</string>
          </property>
          <property name="icon">
           <iconset resource="../../../images/images.qrc">
