@@ -1015,6 +1015,18 @@ int main( int argc, char *argv[] )
   // profile selection dialog if needed
   QgsApplication myApp( argc, argv, myUseGuiFlag, QString(), QStringLiteral( "desktop" ) );
 
+  // Preload the translation. The GUI is not yet initilaized, so only
+  // the profile selection dialog will be translated with the system locale, or
+  // the one specified with --lang
+  if ( !translationCode.isNull() && !translationCode.isEmpty() )
+  {
+    QgsApplication::setTranslation( translationCode );
+  }
+  else
+  {
+    QgsApplication::setTranslation( QLocale().name() );
+  }
+
   QString rootProfileFolder = QgsUserProfileManager::resolveProfilesFolder( configLocalStorageLocation );
   QgsUserProfileManager manager( rootProfileFolder );
 
