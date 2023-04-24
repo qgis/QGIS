@@ -3393,9 +3393,16 @@ void QgisApp::refreshProfileMenu()
     }
     else
     {
-      connect( action, &QAction::triggered, this, [this, name]()
+      connect( action, &QAction::triggered, this, [this, name, activeName]()
       {
+        // Launch a new instance of QGIS with the selected profile
         userProfileManager()->loadUserProfile( name );
+
+        // We want the actions to be checkable so the current profile is shown
+        // as checked, but we don't want to check the clicked action, so we
+        // check again the action linked to the active profile
+        findChild<QAction *>( "mActionProfile_" + activeName )->setChecked( true );
+
       } );
     }
   }
