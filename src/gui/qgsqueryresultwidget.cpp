@@ -21,6 +21,9 @@
 #include "qgsquerybuilder.h"
 #include "qgsvectorlayer.h"
 #include "qgsapplication.h"
+#include "qgsgui.h"
+#include "qgshistoryproviderregistry.h"
+#include "qgshistoryentry.h"
 
 #include <QClipboard>
 #include <QShortcut>
@@ -165,10 +168,19 @@ void QgsQueryResultWidget::executeQuery()
   mFirstRowFetched = false;
 
   cancelRunningQuery();
-
   if ( mConnection )
   {
     const QString sql { mSqlEditor->text( ) };
+
+    bool ok = false;
+    mCurrentHistoryEntryId = QgsGui::historyProviderRegistry()->addEntry( QStringLiteral( "dbquery" ),
+                             QVariantMap
+    {
+      { QStringLiteral( "query" ), sql },
+      { QStringLiteral( "provider" ), mConnection->providerKey() },
+      { QStringLiteral( "connection" ), mConnection->uri() },
+    },
+    ok );
 
     mWasCanceled = false;
     mFeedback = std::make_unique<QgsFeedback>();
@@ -390,6 +402,14 @@ void QgsQueryResultWidget::startFetching()
 
       connect( mModel.get(), &QgsQueryResultModel::fetchingComplete, mStopButton, [ = ]
       {
+        bool ok = false;
+        const QgsHistoryEntry currentHistoryEntry = QgsGui::historyProviderRegistry()->entry( mCurrentHistoryEntryId, ok );
+        QVariantMap entryDetails = currentHistoryEntry.entry;
+        entryDetails.insert( QStringLiteral( "rows" ), mActualRowCount );
+        entryDetails.insert( QStringLiteral( "time" ), mQueryResultWatcher.result().queryExecutionTime() );
+
+        QgsGui::historyProviderRegistry()->updateEntry( mCurrentHistoryEntryId,
+            entryDetails );
         mProgressBar->hide();
         mStopButton->setEnabled( false );
       } );

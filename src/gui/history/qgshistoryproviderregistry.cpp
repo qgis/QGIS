@@ -22,6 +22,7 @@
 #include "qgsxmlutils.h"
 #include "qgsprocessinghistoryprovider.h"
 #include "qgshistoryentry.h"
+#include "qgsdbqueryhistoryprovider.h"
 
 #include <QFile>
 #include <sqlite3.h>
@@ -59,6 +60,7 @@ QgsHistoryProviderRegistry::~QgsHistoryProviderRegistry()
 void QgsHistoryProviderRegistry::addDefaultProviders()
 {
   addProvider( new QgsProcessingHistoryProvider() );
+  addProvider( new QgsDatabaseQueryHistoryProvider() );
 }
 
 bool QgsHistoryProviderRegistry::addProvider( QgsAbstractHistoryProvider *provider )
