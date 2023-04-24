@@ -28,6 +28,8 @@
 #include "qgsunittypes.h"
 
 //qt includes
+#include <QAction>
+#include <QMenu>
 #include <QFileInfo>
 #include <QHeaderView>
 #include <QResizeEvent>
@@ -73,6 +75,28 @@ QgsProjectionSelectionTreeWidget::QgsProjectionSelectionTreeWidget( QWidget *par
   lstRecent->header()->setMinimumSectionSize( 10 );
   lstRecent->header()->setStretchLastSection( false );
   lstRecent->header()->resizeSection( ClearColumn, 20 );
+
+  // Clear recent crs context menu
+  lstRecent->setContextMenuPolicy( Qt::CustomContextMenu );
+  connect( lstRecent, &QTreeWidget::customContextMenuRequested, this, [this]( const QPoint & pos )
+  {
+    // If list is empty, do nothing
+    if ( lstRecent->topLevelItemCount() == 0 )
+      return;
+    QMenu menu;
+    // Clear selected
+    QTreeWidgetItem *currentItem = lstRecent->itemAt( pos );
+    if ( currentItem )
+    {
+      QAction *clearSelected = menu.addAction( QgsApplication::getThemeIcon( "/mIconClearItem.svg" ),  tr( "Clear selected CRS from recently used CRS" ) );
+      connect( clearSelected, &QAction::triggered, this, [this, currentItem ] { removeRecentCrsItem( currentItem ); } );
+      menu.addSeparator();
+    }
+    // Clear all
+    QAction *clearAll = menu.addAction( QgsApplication::getThemeIcon( "/console/iconClearConsole.svg" ), tr( "Clear all recently used CRS" ) );
+    connect( clearAll, &QAction::triggered, this, &QgsProjectionSelectionTreeWidget::clearRecentCrs );
+    menu.exec( lstRecent->viewport()->mapToGlobal( pos ) );
+  } );
 
   mRecentProjections = QgsCoordinateReferenceSystem::recentCoordinateReferenceSystems();
 
@@ -266,7 +290,7 @@ void QgsProjectionSelectionTreeWidget::insertRecent( const QgsCoordinateReferenc
   QToolButton *clearButton = new QToolButton();
   clearButton->setIcon( QgsApplication::getThemeIcon( "/mIconClearItem.svg" ) );
   clearButton->setAutoRaise( true );
-  clearButton->setToolTip( tr( "Clear from recently used coordinate reference systems" ) );
+  clearButton->setToolTip( tr( "Clear from recently used CRS" ) );
   connect( clearButton, &QToolButton::clicked, this, [this, item] { removeRecentCrsItem( item ); } );
   lstRecent->setItemWidget( item, ClearColumn, clearButton );
 

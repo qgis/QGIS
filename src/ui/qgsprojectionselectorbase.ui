@@ -99,7 +99,7 @@
         <item>
          <widget class="QToolButton" name="mClearRecentCrs">
           <property name="toolTip">
-           <string>Clear all recently used coordinate reference systems</string>
+           <string>Clear all recently used CRS</string>
           </property>
           <property name="text">
            <string>Clear</string>
