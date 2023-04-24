@@ -45,6 +45,7 @@ class GUI_EXPORT QgsProcessingHistoryProvider : public QgsAbstractHistoryProvide
     void portOldLog();
 
     QgsHistoryEntryNode *createNodeForEntry( const QgsHistoryEntry &entry, const QgsHistoryWidgetContext &context ) override SIP_FACTORY;
+    void updateNodeForEntry( QgsHistoryEntryNode *node, const QgsHistoryEntry &entry, const QgsHistoryWidgetContext &context ) override;
 
   signals:
 
@@ -72,7 +73,7 @@ class GUI_EXPORT QgsProcessingHistoryProvider : public QgsAbstractHistoryProvide
     //! Returns the path to the old log file
     QString oldLogPath() const;
 
-    friend class ProcessingHistoryNode;
+    friend class ProcessingHistoryBaseNode;
 
 };
 

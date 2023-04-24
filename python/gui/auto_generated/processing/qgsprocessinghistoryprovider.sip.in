@@ -35,6 +35,8 @@ This should only be called once -- calling multiple times will result in duplica
 
     virtual QgsHistoryEntryNode *createNodeForEntry( const QgsHistoryEntry &entry, const QgsHistoryWidgetContext &context ) /Factory/;
 
+    virtual void updateNodeForEntry( QgsHistoryEntryNode *node, const QgsHistoryEntry &entry, const QgsHistoryWidgetContext &context );
+
 
   signals:
 
