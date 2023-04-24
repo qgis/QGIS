@@ -48,7 +48,7 @@ QString QgsPdalAlgorithmBase::wrenchExecutableBinary() const
 
 void QgsPdalAlgorithmBase::createCommonParameters()
 {
-  std::unique_ptr< QgsProcessingParameterExpression > filterParam = std::make_unique< QgsProcessingParameterExpression >( QStringLiteral( "FILTER_EXPRESSION" ), QObject::tr( "Filter expression" ), QVariant(), QStringLiteral( "INPUT" ), true, QgsProcessingParameterExpression::PointCloud );
+  std::unique_ptr< QgsProcessingParameterExpression > filterParam = std::make_unique< QgsProcessingParameterExpression >( QStringLiteral( "FILTER_EXPRESSION" ), QObject::tr( "Filter expression" ), QVariant(), QStringLiteral( "INPUT" ), true, Qgis::ExpressionType::PointCloud );
   filterParam->setFlags( filterParam->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
   addParameter( filterParam.release() );
 

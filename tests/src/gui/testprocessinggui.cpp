@@ -2956,7 +2956,7 @@ void TestProcessingGui::testExpressionWrapper()
     //
     // point cloud expression
     //
-    param.setExpressionType( QgsProcessingParameterExpression::PointCloud );
+    param.setExpressionType( Qgis::ExpressionType::PointCloud );
     param.setParentLayerParameterName( QStringLiteral( "pointcloud" ) );
     QgsProcessingExpressionWidgetWrapper wrapper3( &param, type );
     w = wrapper3.createWrappedWidget( context );
@@ -3052,7 +3052,7 @@ void TestProcessingGui::testExpressionWrapper()
   QCOMPARE( def->name(), QStringLiteral( "param_name" ) );
   QVERIFY( !( def->flags() & QgsProcessingParameterDefinition::FlagOptional ) ); // should default to mandatory
   QVERIFY( !( def->flags() & QgsProcessingParameterDefinition::FlagAdvanced ) );
-  QCOMPARE( static_cast< QgsProcessingParameterExpression * >( def.get() )->expressionType(), QgsProcessingParameterExpression::Qgis );
+  QCOMPARE( static_cast< QgsProcessingParameterExpression * >( def.get() )->expressionType(), Qgis::ExpressionType::Qgis );
 
   // using a parameter definition as initial values
   QgsProcessingParameterExpression exprParam( QStringLiteral( "n" ), QStringLiteral( "test desc" ), QVariant(), QStringLiteral( "parent" ) );
@@ -3063,9 +3063,9 @@ void TestProcessingGui::testExpressionWrapper()
   QVERIFY( !( def->flags() & QgsProcessingParameterDefinition::FlagOptional ) );
   QVERIFY( !( def->flags() & QgsProcessingParameterDefinition::FlagAdvanced ) );
   QCOMPARE( static_cast< QgsProcessingParameterExpression * >( def.get() )->parentLayerParameterName(), QStringLiteral( "parent" ) );
-  QCOMPARE( static_cast< QgsProcessingParameterExpression * >( def.get() )->expressionType(), QgsProcessingParameterExpression::Qgis );
+  QCOMPARE( static_cast< QgsProcessingParameterExpression * >( def.get() )->expressionType(), Qgis::ExpressionType::Qgis );
   exprParam.setFlags( QgsProcessingParameterDefinition::FlagAdvanced | QgsProcessingParameterDefinition::FlagOptional );
-  exprParam.setExpressionType( QgsProcessingParameterExpression::PointCloud );
+  exprParam.setExpressionType( Qgis::ExpressionType::PointCloud );
   exprParam.setParentLayerParameterName( QString() );
   widget = std::make_unique< QgsProcessingParameterDefinitionWidget >( QStringLiteral( "expression" ), context, widgetContext, &exprParam );
   def.reset( widget->createParameter( QStringLiteral( "param_name" ) ) );
@@ -3074,7 +3074,7 @@ void TestProcessingGui::testExpressionWrapper()
   QVERIFY( def->flags() & QgsProcessingParameterDefinition::FlagOptional );
   QVERIFY( def->flags() & QgsProcessingParameterDefinition::FlagAdvanced );
   QVERIFY( static_cast< QgsProcessingParameterExpression * >( def.get() )->parentLayerParameterName().isEmpty() );
-  QCOMPARE( static_cast< QgsProcessingParameterExpression * >( def.get() )->expressionType(), QgsProcessingParameterExpression::PointCloud );
+  QCOMPARE( static_cast< QgsProcessingParameterExpression * >( def.get() )->expressionType(), Qgis::ExpressionType::PointCloud );
 }
 
 void TestProcessingGui::testFieldSelectionPanel()
