@@ -1,9 +1,9 @@
 /***************************************************************************
-  qgsuserprofilesettingsdialog.cpp
-  --------------------------------------
-  Date                 : February 2023
-  Copyright            : (C) 2023 by Yoann Quenach de Quivillic
-  Email                : yoann dot quenach at gmail dot com
+    qgsuserprofileoptions.cpp
+    -----------------
+    begin                : February 2023
+    copyright            : (C) 2023 by Yoann Quenach de Quivillic
+    email                : yoann dot quenach at gmail dot com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -13,17 +13,21 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgssettings.h"
+#include "qgsapplication.h"
 #include "qgisapp.h"
 #include "qgsuserprofilemanager.h"
 
-#include "qgsuserprofilesettingsdialog.h"
+#include "qgsuserprofileoptions.h"
 
-QgsUserProfileSettingsDialog::QgsUserProfileSettingsDialog( QWidget *parent )
-  : QDialog( parent )
+//
+// QgsUserProfileOptionsWidget
+//
 
+QgsUserProfileOptionsWidget::QgsUserProfileOptionsWidget( QWidget *parent )
+  : QgsOptionsPageWidget( parent )
 {
   setupUi( this );
-  connect( mButtonBox, &QDialogButtonBox::accepted, this, &QgsUserProfileSettingsDialog::apply );
 
   // Disable combobox if default profile is not selected
   mDefaultProfileComboBox->setEnabled( false );
@@ -54,7 +58,7 @@ QgsUserProfileSettingsDialog::QgsUserProfileSettingsDialog( QWidget *parent )
   mDefaultProfileComboBox->setCurrentText( manager->defaultProfileName() );
 }
 
-void QgsUserProfileSettingsDialog::apply()
+void QgsUserProfileOptionsWidget::apply()
 {
   auto manager = QgisApp::instance()->userProfileManager();
   if ( mLastProfile->isChecked() )
@@ -70,4 +74,26 @@ void QgsUserProfileSettingsDialog::apply()
     manager->setUserProfileSelectionPolicy( QgsUserProfileManager::UserProfileSelectionPolicy::DefaultProfile );
     manager->setDefaultProfileName( mDefaultProfileComboBox->currentText() );
   }
+}
+
+
+
+
+//
+// QgsUserProfileOptionsFactory
+//
+QgsUserProfileOptionsFactory::QgsUserProfileOptionsFactory()
+  : QgsOptionsWidgetFactory( tr( "User Profiles" ), QgsApplication::getThemeIcon( QStringLiteral( "/user.svg" ) ) )
+{
+
+}
+
+QgsOptionsPageWidget *QgsUserProfileOptionsFactory::createWidget( QWidget *parent ) const
+{
+  return new QgsUserProfileOptionsWidget( parent );
+}
+
+QString QgsUserProfileOptionsFactory::pagePositionHint() const
+{
+  return QStringLiteral( "mOptionsPageCRS" );
 }

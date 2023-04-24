@@ -116,7 +116,7 @@
 #include "options/qgsrasterrenderingoptions.h"
 #include "options/qgsrenderingoptions.h"
 #include "options/qgsvectorrenderingoptions.h"
-#include "options/qgsuserprofilesettingsdialog.h"
+#include "options/qgsuserprofileoptions.h"
 
 #include "raster/qgsrasterelevationpropertieswidget.h"
 #include "qgsrasterattributetableapputils.h"
@@ -1921,6 +1921,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipBadLayers
   mOptionWidgetFactories.emplace_back( QgsScopedOptionsWidgetFactory( std::make_unique< QgsGpsDeviceOptionsFactory >() ) );
   mOptionWidgetFactories.emplace_back( QgsScopedOptionsWidgetFactory( std::make_unique< QgsCustomProjectionOptionsFactory >() ) );
   mOptionWidgetFactories.emplace_back( QgsScopedOptionsWidgetFactory( std::make_unique< QgsFontOptionsFactory >() ) );
+  mOptionWidgetFactories.emplace_back( QgsScopedOptionsWidgetFactory( std::make_unique< QgsUserProfileOptionsFactory >() ) );
 
 #ifdef HAVE_3D
   mOptionWidgetFactories.emplace_back( QgsScopedOptionsWidgetFactory( std::make_unique< Qgs3DOptionsFactory >() ) );
@@ -3419,12 +3420,6 @@ void QgisApp::refreshProfileMenu()
   QAction *newProfileAction = mConfigMenu->addAction( tr( "New Profile…" ) );
   newProfileAction->setObjectName( "mActionNewProfile" );
   connect( newProfileAction, &QAction::triggered, this, &QgisApp::newProfile );
-
-  QAction *profileSettingsAction = mConfigMenu->addAction( tr( "Profiles settings..." ) );
-  profileSettingsAction->setObjectName( "mActionProfileSettings" );
-  connect( profileSettingsAction, &QAction::triggered, this, &QgisApp::showUserProfileSettingsDialog );
-
-
 }
 
 void QgisApp::createProfileMenu()
@@ -15696,12 +15691,6 @@ void QgisApp::newProfile()
     QMessageBox::warning( this, tr( "New Profile" ), tr( "Cannot create folder '%1'" ).arg( profileName ) );
     return;
   }
-}
-
-void QgisApp::showUserProfileSettingsDialog()
-{
-  QgsUserProfileSettingsDialog dlg;
-  dlg.exec();
 }
 
 void QgisApp::onTaskCompleteShowNotify( long taskId, int status )

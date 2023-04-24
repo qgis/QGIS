@@ -260,7 +260,7 @@ set(QGIS_APP_SRCS
   options/qgsrasterrenderingoptions.cpp
   options/qgsrenderingoptions.cpp
   options/qgsvectorrenderingoptions.cpp
-  options/qgsuserprofilesettingsdialog.cpp
+  options/qgsuserprofileoptions.cpp
   options/qgsuserprofileselectiondialog.cpp
 
   gps/qgsappgpsconnection.cpp
