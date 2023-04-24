@@ -19,12 +19,16 @@
 #include "qgshistoryentry.h"
 #include "qgsprovidermetadata.h"
 #include "qgsproviderregistry.h"
+#include "qgsapplication.h"
 
 #include <QIcon>
-
-class QgsDatabaseQueryValueNode;
+#include <QAction>
+#include <QMenu>
+#include <QMimeData>
+#include <QClipboard>
 
 ///@cond PRIVATE
+
 class DatabaseQueryHistoryNode : public QgsHistoryEntryGroup
 {
   public:
@@ -39,9 +43,6 @@ class DatabaseQueryHistoryNode : public QgsHistoryEntryGroup
   protected:
 
     QgsHistoryEntry mEntry;
-    QgsDatabaseQueryValueNode *mConnectionNode = nullptr;
-    QgsDatabaseQueryValueNode *mRowsNode = nullptr;
-    QgsDatabaseQueryValueNode *mTimeNode = nullptr;
     QgsDatabaseQueryHistoryProvider *mProvider = nullptr;
 
 };
@@ -160,6 +161,30 @@ class DatabaseQueryRootNode : public DatabaseQueryHistoryNode
       mProvider->emitOpenSqlDialog( mEntry.entry.value( QStringLiteral( "connection" ) ).toString(),
                                     mEntry.entry.value( QStringLiteral( "provider" ) ).toString(),
                                     mEntry.entry.value( QStringLiteral( "query" ) ).toString() );
+    }
+
+    void populateContextMenu( QMenu *menu, const QgsHistoryWidgetContext & ) override
+    {
+      QAction *executeAction = new QAction(
+        QObject::tr( "Execute SQL Command…" ), menu );
+      QObject::connect( executeAction, &QAction::triggered, menu, [ = ]
+      {
+        mProvider->emitOpenSqlDialog( mEntry.entry.value( QStringLiteral( "connection" ) ).toString(),
+                                      mEntry.entry.value( QStringLiteral( "provider" ) ).toString(),
+                                      mEntry.entry.value( QStringLiteral( "query" ) ).toString() );
+      } );
+      menu->addAction( executeAction );
+
+      QAction *copyAction = new QAction(
+        QObject::tr( "Copy SQL Command" ), menu );
+      copyAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionEditCopy.svg" ) ) );
+      QObject::connect( copyAction, &QAction::triggered, menu, [ = ]
+      {
+        QMimeData *m = new QMimeData();
+        m->setText( mEntry.entry.value( QStringLiteral( "query" ) ).toString() );
+        QApplication::clipboard()->setMimeData( m );
+      } );
+      menu->addAction( copyAction );
     }
 
   private:
