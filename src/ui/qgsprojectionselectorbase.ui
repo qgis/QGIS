@@ -82,17 +82,51 @@
        </layout>
       </item>
       <item>
-       <widget class="QLabel" name="label_3">
-        <property name="font">
-         <font>
-          <weight>75</weight>
-          <bold>true</bold>
-         </font>
-        </property>
-        <property name="text">
-         <string>Recently Used Coordinate Reference Systems</string>
-        </property>
-       </widget>
+       <layout class="QHBoxLayout" name="horizontalLayout_2">
+        <item>
+         <widget class="QLabel" name="label_3">
+          <property name="font">
+           <font>
+            <weight>75</weight>
+            <bold>true</bold>
+           </font>
+          </property>
+          <property name="text">
+           <string>Recently Used Coordinate Reference Systems</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QToolButton" name="mClearRecentCrs">
+          <property name="toolTip">
+           <string>Clear all recently used coordinate reference systems</string>
+          </property>
+          <property name="text">
+           <string>Clear</string>
+          </property>
+          <property name="icon">
+           <iconset resource="../../images/images.qrc">
+            <normaloff>:/images/themes/default/console/iconClearConsole.svg</normaloff>:/images/themes/default/console/iconClearConsole.svg</iconset>
+          </property>
+          <property name="autoRaise">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="horizontalSpacer">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
       </item>
       <item>
        <widget class="QSplitter" name="mSplitter">
@@ -125,7 +159,7 @@
           <bool>true</bool>
          </property>
          <property name="columnCount">
-          <number>3</number>
+          <number>4</number>
          </property>
          <column>
           <property name="text">
@@ -142,8 +176,13 @@
            <string>ID</string>
           </property>
          </column>
+         <column>
+          <property name="text">
+           <string/>
+          </property>
+         </column>
         </widget>
-        <widget class="QWidget" name="">
+        <widget class="QWidget" name="layoutWidget">
          <layout class="QGridLayout" name="gridLayout">
           <property name="horizontalSpacing">
            <number>0</number>
@@ -223,7 +262,7 @@
           </item>
          </layout>
         </widget>
-        <widget class="QWidget" name="">
+        <widget class="QWidget" name="layoutWidget">
          <layout class="QHBoxLayout" name="horizontalLayout_4">
           <property name="topMargin">
            <number>0</number>
@@ -314,6 +353,8 @@
   <tabstop>cbxHideDeprecated</tabstop>
   <tabstop>lstCoordinateSystems</tabstop>
  </tabstops>
- <resources/>
+ <resources>
+  <include location="../../images/images.qrc"/>
+ </resources>
  <connections/>
 </ui>
