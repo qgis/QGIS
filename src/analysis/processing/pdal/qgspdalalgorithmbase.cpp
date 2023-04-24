@@ -90,7 +90,7 @@ void QgsPdalAlgorithmBase::applyCommonParameters( QStringList &arguments, QgsCoo
 
 void QgsPdalAlgorithmBase::applyThreadsParameter( QStringList &arguments, QgsProcessingContext &context )
 {
-  const int numThreads = context.numberOfThreads();
+  const int numThreads = context.maximumThreads();
 
   if ( numThreads )
   {
