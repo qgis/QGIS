@@ -44,6 +44,11 @@ class CORE_EXPORT QgsUserProfileManager : public QObject
 
   public:
 
+    /**
+     * User profile selection policy.
+     *
+     * \since QGIS 3.32
+     */
     enum UserProfileSelectionPolicy
     {
       LastProfile = 0, //!< Open the last closed profile (only mode supported prior to QGIS 3.32)

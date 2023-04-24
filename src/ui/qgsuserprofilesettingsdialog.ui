@@ -39,7 +39,7 @@
          </font>
         </property>
         <property name="text">
-         <string>These settings do not apply if a profile was explicitely selected with the --profile command line argument</string>
+         <string>These settings do not apply if a profile was explicitly selected with the --profile command line argument</string>
         </property>
         <property name="textFormat">
          <enum>Qt::PlainText</enum>
