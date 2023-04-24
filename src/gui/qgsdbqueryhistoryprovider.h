@@ -22,7 +22,7 @@
 #include "qgshistoryprovider.h"
 #include "qgshistoryentrynode.h"
 
-#define SIP_SKIP
+#define SIP_NO_FILE
 
 /**
  * History provider for operations database queries.
