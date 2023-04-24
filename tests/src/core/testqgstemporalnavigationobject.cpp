@@ -118,7 +118,7 @@ void TestQgsTemporalNavigationObject::animationState()
   QCOMPARE( navigationObject->currentFrameNumber(), 0 );
 
   navigationObject->skipToEnd();
-  QCOMPARE( navigationObject->currentFrameNumber(), 9 );
+  QCOMPARE( navigationObject->currentFrameNumber(), 10 );
 
   navigationObject->rewindToStart();
   QCOMPARE( navigationObject->currentFrameNumber(), 0 );
@@ -247,7 +247,7 @@ void TestQgsTemporalNavigationObject::frameSettings()
 
   // Test Overflow
   navigationObject->setCurrentFrameNumber( 100 );
-  QCOMPARE( navigationObject->currentFrameNumber(), navigationObject->totalFrameCount() - 1 );
+  QCOMPARE( navigationObject->currentFrameNumber(), navigationObject->totalFrameCount() );
   QCOMPARE( temporalRangeSignal.count(), 4 );
 
   // Test Underflow
