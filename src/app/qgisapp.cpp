@@ -15672,7 +15672,7 @@ void QgisApp::newProfile()
   dlg.setConflictingNameWarning( tr( "A profile with this name already exists" ) );
   dlg.setOverwriteEnabled( false );
   dlg.setHintString( tr( "New profile name" ) );
-  dlg.setWindowTitle( tr( "New profile name" ) );
+  dlg.setWindowTitle( tr( "New Profile Name" ) );
 
   // Prevent from entering slashes and backslashes
   dlg.setRegularExpression( "[^/\\\\]+" );

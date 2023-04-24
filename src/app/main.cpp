@@ -1032,7 +1032,7 @@ int main( int argc, char *argv[] )
       switch ( manager.userProfileSelectionPolicy() )
       {
         // Use the last closed profile (default behavior prior to QGIS 3.32)
-        case QgsUserProfileManager::UserProfileSelectionPolicy::LastProfile:
+        case Qgis::UserProfileSelectionPolicy::LastProfile:
           profileName = manager.lastProfileName();
           // If last used profile no longer exists, use the default profile
           if ( !manager.profileExists( profileName ) )
@@ -1042,7 +1042,7 @@ int main( int argc, char *argv[] )
           break;
 
         // Ask the user to select a profile (if more than one exists)
-        case QgsUserProfileManager::UserProfileSelectionPolicy::AskUser:
+        case Qgis::UserProfileSelectionPolicy::AskUser:
         {
           if ( manager.allProfiles().size() == 1 )
           {
@@ -1063,8 +1063,7 @@ int main( int argc, char *argv[] )
         }
 
         // Use the default profile
-        case QgsUserProfileManager::UserProfileSelectionPolicy::DefaultProfile:
-        default:
+        case Qgis::UserProfileSelectionPolicy::DefaultProfile:
           profileName = manager.defaultProfileName();
           break;
       }
@@ -1076,8 +1075,6 @@ int main( int argc, char *argv[] )
   QString profileFolder = profile->folder();
   profileName = profile->name();
   delete profile;
-
-
 
   {
     // The profile is selected, we can now set up the translation file for QGIS.

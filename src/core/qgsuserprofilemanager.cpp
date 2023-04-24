@@ -128,40 +128,16 @@ void QgsUserProfileManager::updateLastProfileName( )
   mSettings->sync();
 }
 
-QgsUserProfileManager::UserProfileSelectionPolicy QgsUserProfileManager::userProfileSelectionPolicy() const
+Qgis::UserProfileSelectionPolicy QgsUserProfileManager::userProfileSelectionPolicy() const
 {
-  return static_cast< UserProfileSelectionPolicy >( mSettings->value( QStringLiteral( "/core/selectionPolicy" ), 0 ).toInt() );
+  return static_cast< Qgis::UserProfileSelectionPolicy >( mSettings->value( QStringLiteral( "/core/selectionPolicy" ), 0 ).toInt() );
 }
 
-void QgsUserProfileManager::setUserProfileSelectionPolicy( QgsUserProfileManager::UserProfileSelectionPolicy policy )
+void QgsUserProfileManager::setUserProfileSelectionPolicy( Qgis::UserProfileSelectionPolicy policy )
 {
   mSettings->setValue( QStringLiteral( "/core/selectionPolicy" ), static_cast< int >( policy ) );
   mSettings->sync();
 }
-
-int QgsUserProfileManager::profileSelectorIconSize() const
-{
-  return mSettings->value( QStringLiteral( "/selector/iconSize" ), 24 ).toInt();
-}
-
-void QgsUserProfileManager::setProfileSelectorIconSize( int size )
-{
-  mSettings->setValue( QStringLiteral( "/selector/iconSize" ), size );
-  mSettings->sync();
-}
-
-bool QgsUserProfileManager::profileSelectorProfileCreationAllowed() const
-{
-  return mSettings->value( QStringLiteral( "/selector/allowCreation" ), true ).toBool();
-}
-
-void QgsUserProfileManager::setProfileSelectorProfileCreationAllowed( bool allow )
-{
-  mSettings->setValue( QStringLiteral( "/selector/allowCreation" ), allow );
-  mSettings->sync();
-}
-
-
 
 QStringList QgsUserProfileManager::allProfiles() const
 {
