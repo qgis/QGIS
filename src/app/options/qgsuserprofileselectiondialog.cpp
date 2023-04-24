@@ -15,8 +15,8 @@
 
 #include <QListWidgetItem>
 #include <QMessageBox>
+#include <QPushButton>
 
-#include "qgisapp.h"
 #include "qgsapplication.h"
 #include "qgsuserprofilemanager.h"
 #include "qgsnewnamedialog.h"
