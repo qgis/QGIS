@@ -1155,6 +1155,8 @@ int main( int argc, char *argv[] )
   // Set locale to emit QgsApplication's localeChanged signal
   QgsApplication::setLocale( QLocale() );
 
+  QgsApplication::init( profileFolder );
+
   //write the log messages written before creating QgsApplication
   for ( const QString &preApplicationLogMessage : std::as_const( preApplicationLogMessages ) )
     QgsMessageLog::logMessage( preApplicationLogMessage );
@@ -1201,8 +1203,6 @@ int main( int argc, char *argv[] )
   QgsDebugMsgLevel( QStringLiteral( "\t - %1" ).arg( profileName ), 2 );
   QgsDebugMsgLevel( QStringLiteral( "\t - %1" ).arg( profileFolder ), 2 );
   QgsDebugMsgLevel( QStringLiteral( "\t - %1" ).arg( rootProfileFolder ), 2 );
-
-  QgsApplication::init( profileFolder );
 
   // Redefine QgsApplication::libraryPaths as necessary.
   // IMPORTANT: Do *after* QgsApplication myApp(...), but *before* Qt uses any plugins,

@@ -202,17 +202,30 @@ QgsApplication::QgsApplication( int &argc, char **argv, bool GUIenabled, const Q
 {
   *sPlatformName() = platformName;
 
-  mApplicationMembers = new ApplicationMembers();
-
-  *sProfilePath() = profileFolder;
-
   connect( instance(), &QgsApplication::localeChanged, &QgsDateTimeFieldFormatter::applyLocaleChange );
 
-  mApplicationMembers->mSettingsRegistryCore->migrateOldSettings();
+  // Delay application members initialization in desktop app (In desktop app, profile folder is not known at this point)
+  if ( platformName != QStringLiteral( "desktop" ) )
+  {
+    mApplicationMembers = new ApplicationMembers();
+    mApplicationMembers->mSettingsRegistryCore->migrateOldSettings();
+  }
+  else
+  {
+    *sProfilePath() = profileFolder;
+  }
+
 }
 
 void QgsApplication::init( QString profileFolder )
 {
+  // Initialize application members in desktop app (at this point, profile folder is known)
+  if ( platform() == QStringLiteral( "desktop" ) )
+  {
+    instance()->mApplicationMembers = new ApplicationMembers();
+    instance()->mApplicationMembers->mSettingsRegistryCore->migrateOldSettings();
+  }
+
   if ( profileFolder.isEmpty() )
   {
     if ( getenv( "QGIS_CUSTOM_CONFIG_PATH" ) )
