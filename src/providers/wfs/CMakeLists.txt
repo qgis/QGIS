@@ -27,8 +27,15 @@ set(WFS_SRCS
   oapif/qgsoapifapirequest.cpp
   oapif/qgsoapifcollection.cpp
   oapif/qgsoapifconformancerequest.cpp
+  oapif/qgsoapifcreatefeaturerequest.cpp
+  oapif/qgsoapifcql2textexpressioncompiler.cpp
+  oapif/qgsoapifdeletefeaturerequest.cpp
+  oapif/qgsoapifpatchfeaturerequest.cpp
+  oapif/qgsoapifputfeaturerequest.cpp
   oapif/qgsoapifitemsrequest.cpp
+  oapif/qgsoapifoptionsrequest.cpp
   oapif/qgsoapifprovider.cpp
+  oapif/qgsoapifqueryablesrequest.cpp
   oapif/qgsoapifutils.cpp
 )
 

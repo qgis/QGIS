@@ -608,6 +608,31 @@ Checks whether there were any errors in constructor
 Retrieves error message
 %End
 
+    QString driver() const;
+%Docstring
+Returns the GDAL (short) driver name associated with the output file.
+
+.. seealso:: :py:func:`driverLongName`
+
+.. versionadded:: 3.32
+%End
+
+    QString driverLongName() const;
+%Docstring
+Returns the GDAL long driver name associated with the output file.
+
+.. seealso:: :py:func:`driver`
+
+.. versionadded:: 3.32
+%End
+
+    Qgis::VectorFileWriterCapabilities capabilities() const;
+%Docstring
+Returns the capabilities supported by the writer.
+
+.. versionadded:: 3.32
+%End
+
     virtual bool addFeature( QgsFeature &feature, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() );
 
     virtual bool addFeatures( QgsFeatureList &features, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() );

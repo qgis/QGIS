@@ -200,6 +200,11 @@ QString QgsVectorLayerExporter::errorMessage() const
   return mErrorMessage;
 }
 
+Qgis::VectorDataProviderAttributeEditCapabilities QgsVectorLayerExporter::attributeEditCapabilities() const
+{
+  return mProvider ? mProvider->attributeEditCapabilities() : Qgis::VectorDataProviderAttributeEditCapabilities();
+}
+
 bool QgsVectorLayerExporter::addFeatures( QgsFeatureList &features, Flags flags )
 {
   QgsFeatureList::iterator fIt = features.begin();

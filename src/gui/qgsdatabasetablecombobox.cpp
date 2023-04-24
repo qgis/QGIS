@@ -154,6 +154,7 @@ void QgsDatabaseTableComboBox::setSchema( const QString &schema )
     const QString oldTable = currentTable();
     QgsDatabaseTableModel *oldModel = mModel;
     mModel = new QgsDatabaseTableModel( mProvider, mConnection, mSchema, this );
+    mModel->setAllowEmptyTable( mAllowEmpty );
     mSortModel->setSourceModel( mModel );
     oldModel->deleteLater();
     setTable( oldTable );

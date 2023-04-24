@@ -277,6 +277,7 @@ QgsMasterLayoutInterface *QgsLayoutManager::duplicateLayout( const QgsMasterLayo
   }
   else
   {
+    // cppcheck-suppress returnDanglingLifetime
     return l;
   }
 }

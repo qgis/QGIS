@@ -19,6 +19,7 @@
 #include "qgis.h"
 #include "qgsgui.h"
 #include "qgscodeeditorcolorschemeregistry.h"
+#include "qgscodeeditorshell.h"
 
 //
 // QgsCodeEditorOptionsWidget
@@ -160,6 +161,18 @@ QgsCodeEditorOptionsWidget::QgsCodeEditorOptionsWidget( QWidget *parent )
     updatePreview();
   } );
 
+  mBashPreview = new QgsCodeEditorShell( nullptr, QgsCodeEditor::Mode::ScriptEditor, Qgis::ScriptLanguage::Bash );
+  QVBoxLayout *vl = new QVBoxLayout();
+  vl->setContentsMargins( 0, 0, 0, 0 );
+  vl->addWidget( mBashPreview );
+  pageBash->setLayout( vl );
+
+  mBatchPreview = new QgsCodeEditorShell( nullptr, QgsCodeEditor::Mode::ScriptEditor, Qgis::ScriptLanguage::Batch );
+  vl = new QVBoxLayout();
+  vl->setContentsMargins( 0, 0, 0, 0 );
+  vl->addWidget( mBatchPreview );
+  pageBatch->setLayout( vl );
+
   mListLanguage->addItem( tr( "Python" ) );
   mListLanguage->addItem( tr( "QGIS Expression" ) );
   mListLanguage->addItem( tr( "SQL" ) );
@@ -167,6 +180,8 @@ QgsCodeEditorOptionsWidget::QgsCodeEditorOptionsWidget( QWidget *parent )
   mListLanguage->addItem( tr( "CSS" ) );
   mListLanguage->addItem( tr( "JavaScript" ) );
   mListLanguage->addItem( tr( "R" ) );
+  mListLanguage->addItem( tr( "Bash" ) );
+  mListLanguage->addItem( tr( "Batch" ) );
 
   connect( mListLanguage, &QListWidget::currentRowChanged, this, [ = ]
   {
@@ -283,6 +298,52 @@ a_variable <- "My string"
 }
 )""");
 
+
+  mBashPreview->setText(R"""(#!/bin/bash
+
+# This script takes two arguments: a directory and a file extension.
+# It finds all the files in the directory that have the given extension
+# and prints out their names and sizes.
+
+[ $# -ne 2 ] && { echo "Usage: $0 <directory> <file_extension>"; exit 1; }
+
+[ ! -d "$1" ] && { echo "Error: $1 does not exist or is not a directory."; exit 1; }
+
+echo "Files with extension .$2 in $1:"
+
+for file in "$1"/*."$2"; do
+  size=$(stat -c %s "$file")
+  echo "$(basename "$file"): $((size / 1024)) KB"
+done
+)""" );
+
+  mBatchPreview->setText( R"""(@echo off
+
+REM This script takes two arguments: a directory and a file extension.
+REM It finds all the files in the directory that have the given extension
+REM and prints out their names and sizes.
+
+if "%~2" == "" (
+  echo Usage: %0 directory file_extension
+  exit /b 1
+)
+
+if not exist %1 (
+  echo Error: %1 does not exist or is not a directory.
+  exit /b 1
+)
+
+echo Files with extension %2 in %1:
+
+for %%f in (%1\*.%2) do (
+  for /f "tokens=3" %%s in ('dir /a:-d /b "%%f" ^| find "File(s)"') do (
+    echo %%~nxf: %%s bytes
+  )
+)
+
+echo Done.
+)""" );
+
   mListLanguage->setCurrentRow( 0 );
   mPreviewStackedWidget->setCurrentIndex( 0 );
 
@@ -358,13 +419,15 @@ void QgsCodeEditorOptionsWidget::updatePreview()
   mCssPreview->setCustomAppearance( theme, colors, fontFamily, fontSize );
   mJsPreview->setCustomAppearance( theme, colors, fontFamily, fontSize );
   mRPreview->setCustomAppearance( theme, colors, fontFamily, fontSize );
+  mBashPreview->setCustomAppearance( theme, colors, fontFamily, fontSize );
+  mBatchPreview->setCustomAppearance( theme, colors, fontFamily, fontSize );
 }
 
 //
 // QgsCodeEditorOptionsFactory
 //
 QgsCodeEditorOptionsFactory::QgsCodeEditorOptionsFactory()
-  : QgsOptionsWidgetFactory( tr( "Code Editor" ), QIcon(), QStringLiteral("code_editor") )
+  : QgsOptionsWidgetFactory( tr( "Code Editor" ), QIcon(), QStringLiteral( "code_editor" ) )
 {
 
 }

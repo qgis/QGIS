@@ -17,3 +17,13 @@
 #include "qgshistoryprovider.h"
 
 QgsAbstractHistoryProvider::~QgsAbstractHistoryProvider() = default;
+
+QgsHistoryEntryNode *QgsAbstractHistoryProvider::createNodeForEntry( const QgsHistoryEntry &, const QgsHistoryWidgetContext & )
+{
+  return nullptr;
+}
+
+void QgsAbstractHistoryProvider::updateNodeForEntry( QgsHistoryEntryNode *, const QgsHistoryEntry &, const QgsHistoryWidgetContext & )
+{
+
+}

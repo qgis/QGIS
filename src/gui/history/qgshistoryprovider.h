@@ -22,7 +22,8 @@
 #include <QVariantMap>
 
 class QgsHistoryEntryNode;
-
+class QgsHistoryEntry;
+class QgsHistoryWidgetContext;
 
 /**
  * Abstract base class for objects which track user history (i.e. operations performed through the GUI).
@@ -32,13 +33,15 @@ class QgsHistoryEntryNode;
  * \ingroup gui
  * \since QGIS 3.24
  */
-class GUI_EXPORT QgsAbstractHistoryProvider
+class GUI_EXPORT QgsAbstractHistoryProvider : public QObject
 {
+    Q_OBJECT
+
   public:
 
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
-    if ( dynamic_cast<QgsProcessingHistoryProvider *>( sipCpp ) )
+    if ( qobject_cast<QgsProcessingHistoryProvider *>( sipCpp ) )
       sipType = sipType_QgsProcessingHistoryProvider;
     else
       sipType = nullptr;
@@ -52,13 +55,20 @@ class GUI_EXPORT QgsAbstractHistoryProvider
      */
     virtual QString id() const = 0;
 
-#if 0
-
     /**
      * Creates a new history node for the given \a entry.
+     *
+     * \since QGIS 3.32
      */
-    virtual QgsHistoryEntryNode *createNodeForEntry( const QVariantMap &entry ) = 0 SIP_FACTORY;
-#endif
+    virtual QgsHistoryEntryNode *createNodeForEntry( const QgsHistoryEntry &entry, const QgsHistoryWidgetContext &context ) SIP_FACTORY;
+
+    /**
+     * Updates an existing history \a node for the given \a entry.
+     *
+     * \since QGIS 3.32
+     */
+    virtual void updateNodeForEntry( QgsHistoryEntryNode *node, const QgsHistoryEntry &entry, const QgsHistoryWidgetContext &context );
+
 };
 
 #endif //QGSHISTORYPROVIDER_H

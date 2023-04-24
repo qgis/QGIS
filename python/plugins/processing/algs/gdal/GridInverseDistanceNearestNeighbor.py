@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 ***************************************************************************
     GridInverseDistanceNearestNeighbor.py
@@ -163,12 +161,12 @@ class GridInverseDistanceNearestNeighbor(GdalAlgorithm):
             arguments.append(fieldName)
 
         params = 'invdistnn'
-        params += ':power={}'.format(self.parameterAsDouble(parameters, self.POWER, context))
-        params += ':smoothing={}'.format(self.parameterAsDouble(parameters, self.SMOOTHING, context))
-        params += ':radius={}'.format(self.parameterAsDouble(parameters, self.RADIUS, context))
-        params += ':max_points={}'.format(self.parameterAsInt(parameters, self.MAX_POINTS, context))
-        params += ':min_points={}'.format(self.parameterAsInt(parameters, self.MIN_POINTS, context))
-        params += ':nodata={}'.format(self.parameterAsDouble(parameters, self.NODATA, context))
+        params += f':power={self.parameterAsDouble(parameters, self.POWER, context)}'
+        params += f':smoothing={self.parameterAsDouble(parameters, self.SMOOTHING, context)}'
+        params += f':radius={self.parameterAsDouble(parameters, self.RADIUS, context)}'
+        params += f':max_points={self.parameterAsInt(parameters, self.MAX_POINTS, context)}'
+        params += f':min_points={self.parameterAsInt(parameters, self.MIN_POINTS, context)}'
+        params += f':nodata={self.parameterAsDouble(parameters, self.NODATA, context)}'
 
         arguments.append('-a')
         arguments.append(params)

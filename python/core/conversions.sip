@@ -1362,6 +1362,8 @@ template <TYPE>
 };
 
 %MappedType QList<qint64>
+        /TypeHintIn="Iterable[int]",
+        TypeHintOut="List[int]", TypeHintValue="[]"/
 {
 %TypeHeaderCode
 #include <QList>

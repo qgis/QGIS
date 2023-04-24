@@ -305,6 +305,9 @@
 %Include auto_generated/codeeditors/qgscodeeditorr.sip
 %End
 %If ( HAVE_QSCI_SIP )
+%Include auto_generated/codeeditors/qgscodeeditorshell.sip
+%End
+%If ( HAVE_QSCI_SIP )
 %Include auto_generated/codeeditors/qgscodeeditorsql.sip
 %End
 %Include auto_generated/devtools/qgsdevtoolwidget.sip
@@ -341,8 +344,13 @@
 %Include auto_generated/effects/qgspainteffectpropertieswidget.sip
 %Include auto_generated/effects/qgspainteffectwidget.sip
 %Include auto_generated/elevation/qgselevationprofilecanvas.sip
+%Include auto_generated/history/qgshistoryentry.sip
+%Include auto_generated/history/qgshistoryentrymodel.sip
+%Include auto_generated/history/qgshistoryentrynode.sip
 %Include auto_generated/history/qgshistoryprovider.sip
 %Include auto_generated/history/qgshistoryproviderregistry.sip
+%Include auto_generated/history/qgshistorywidget.sip
+%Include auto_generated/history/qgshistorywidgetcontext.sip
 %Include auto_generated/labeling/qgslabellineanchorwidget.sip
 %Include auto_generated/labeling/qgslabelobstaclesettingswidget.sip
 %Include auto_generated/labeling/qgslabelsettingswidgetbase.sip
@@ -400,6 +408,7 @@
 %Include auto_generated/processing/qgsprocessinggui.sip
 %Include auto_generated/processing/qgsprocessingguiregistry.sip
 %Include auto_generated/processing/qgsprocessinghistoryprovider.sip
+%Include auto_generated/processing/qgsprocessinghistorywidget.sip
 %Include auto_generated/processing/qgsprocessingmaplayercombobox.sip
 %Include auto_generated/processing/qgsprocessingmodelerparameterwidget.sip
 %Include auto_generated/processing/qgsprocessingmultipleselectiondialog.sip

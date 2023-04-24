@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 ***************************************************************************
     OneSideBuffer.py
@@ -141,12 +139,12 @@ class OneSideBuffer(GdalAlgorithm):
         ]
 
         if dissolve or fieldName:
-            sql = 'SELECT ST_Union(ST_SingleSidedBuffer({}, {}, {})) AS {}{} FROM "{}"'.format(geometry, distance, side, geometry, other_fields, layerName)
+            sql = f'SELECT ST_Union(ST_SingleSidedBuffer({geometry}, {distance}, {side})) AS {geometry}{other_fields} FROM "{layerName}"'
         else:
-            sql = 'SELECT ST_SingleSidedBuffer({}, {}, {}) AS {}{} FROM "{}"'.format(geometry, distance, side, geometry, other_fields, layerName)
+            sql = f'SELECT ST_SingleSidedBuffer({geometry}, {distance}, {side}) AS {geometry}{other_fields} FROM "{layerName}"'
 
         if fieldName:
-            sql = '{} GROUP BY "{}"'.format(sql, fieldName)
+            sql = f'{sql} GROUP BY "{fieldName}"'
 
         arguments.append(sql)
 
@@ -157,6 +155,6 @@ class OneSideBuffer(GdalAlgorithm):
             arguments.append(options)
 
         if outputFormat:
-            arguments.append('-f {}'.format(outputFormat))
+            arguments.append(f'-f {outputFormat}')
 
         return ['ogr2ogr', GdalUtils.escapeAndJoin(arguments)]

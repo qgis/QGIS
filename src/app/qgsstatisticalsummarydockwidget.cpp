@@ -249,6 +249,7 @@ void QgsStatisticalSummaryDockWidget::refreshStatistics()
     mCancelButton->show();
     mCalculatingProgressBar->show();
 
+    // cppcheck-suppress danglingLifetime
     mGatherer = gatherer.get();
     QgsApplication::taskManager()->addTask( gatherer.release() );
   }

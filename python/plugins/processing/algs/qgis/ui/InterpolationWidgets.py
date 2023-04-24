@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 ***************************************************************************
     InterpolationDataWidget.py
@@ -91,7 +89,7 @@ class InterpolationDataWidget(BASE, WIDGET):
     hasChanged = pyqtSignal()
 
     def __init__(self):
-        super(InterpolationDataWidget, self).__init__(None)
+        super().__init__(None)
         self.setupUi(self)
 
         self.btnAdd.setIcon(QgsApplication.getThemeIcon('/symbologyAdd.svg'))
@@ -169,7 +167,7 @@ class InterpolationDataWidget(BASE, WIDGET):
             self._addLayerData(v[0], field_name)
 
             comboBox = self.layersTree.itemWidget(self.layersTree.topLevelItem(i), 2)
-            comboBox.setCurrentIndex((int(v[3])))
+            comboBox.setCurrentIndex(int(v[3]))
 
         self.hasChanged.emit()
 
@@ -249,7 +247,7 @@ WIDGET, BASE = uic.loadUiType(os.path.join(pluginPath, 'RasterResolutionWidget.u
 class PixelSizeWidget(BASE, WIDGET):
 
     def __init__(self):
-        super(PixelSizeWidget, self).__init__(None)
+        super().__init__(None)
         self.setupUi(self)
         self.context = dataobjects.createContext()
 

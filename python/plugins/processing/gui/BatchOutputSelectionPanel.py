@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 ***************************************************************************
     BatchOutputSelectionPanel.py
@@ -44,7 +42,7 @@ from processing.gui.AutofillDialog import AutofillDialog
 class BatchOutputSelectionPanel(QWidget):
 
     def __init__(self, output, alg, row, col, panel):
-        super(BatchOutputSelectionPanel, self).__init__(None)
+        super().__init__(None)
         self.alg = alg
         self.row = row
         self.col = col

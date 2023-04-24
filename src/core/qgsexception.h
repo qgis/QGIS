@@ -42,6 +42,7 @@ class CORE_EXPORT QgsException
       : mWhat( message )
     {}
 
+    // cppcheck-suppress internalAstError
     virtual ~QgsException() throw() = default;
 
     //! \note not available in Python bindings

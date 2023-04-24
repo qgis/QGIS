@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 ***************************************************************************
     GdalAlgorithmTests.py
@@ -71,7 +69,7 @@ class TestGdalAlgorithms(unittest.TestCase):
             if a.id() in ('gdal:buildvirtualvector'):
                 # build virtual vector is an exception
                 continue
-            self.assertTrue(a.commandName(), 'Algorithm {} has no commandName!'.format(a.id()))
+            self.assertTrue(a.commandName(), f'Algorithm {a.id()} has no commandName!')
 
     def testCommandNameInTags(self):
         # Test that algorithms commandName is present in provided tags
@@ -79,7 +77,7 @@ class TestGdalAlgorithms(unittest.TestCase):
         for a in p.algorithms():
             if not a.commandName():
                 continue
-            self.assertTrue(a.commandName() in a.tags(), 'Algorithm {} commandName not found in tags!'.format(a.id()))
+            self.assertTrue(a.commandName() in a.tags(), f'Algorithm {a.id()} commandName not found in tags!')
 
     def testNoParameters(self):
         # Test that algorithms throw QgsProcessingException and not base Python

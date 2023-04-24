@@ -898,7 +898,18 @@ int QgsGeometryCollection::partCount() const
 
 QgsPoint QgsGeometryCollection::vertexAt( QgsVertexId id ) const
 {
-  return mGeometries[id.part]->vertexAt( id );
+  if ( id.part < 0 || id.part >= mGeometries.size() )
+  {
+    return QgsPoint();
+  }
+
+  const QgsAbstractGeometry *geom = mGeometries[id.part];
+  if ( !geom )
+  {
+    return QgsPoint();
+  }
+
+  return geom->vertexAt( id );
 }
 
 bool QgsGeometryCollection::isValid( QString &error, Qgis::GeometryValidityFlags flags ) const

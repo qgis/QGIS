@@ -118,6 +118,9 @@ void QgsAddTableFieldAlgorithm::initParameters( const QVariantMap & )
                 QgsProcessingParameterNumber::Integer, 10, false, 1, 255 ) );
   addParameter( new QgsProcessingParameterNumber( QStringLiteral( "FIELD_PRECISION" ), QObject::tr( "Field precision" ),
                 QgsProcessingParameterNumber::Integer, 0, false, 0, 10 ) );
+
+  addParameter( new QgsProcessingParameterString( QStringLiteral( "FIELD_ALIAS" ), QObject::tr( "Field alias" ), QVariant(), false, true ) );
+  addParameter( new QgsProcessingParameterString( QStringLiteral( "FIELD_COMMENT" ), QObject::tr( "Field comment" ), QVariant(), false, true ) );
 }
 
 QgsFields QgsAddTableFieldAlgorithm::outputFields( const QgsFields &inputFields ) const
@@ -133,10 +136,14 @@ bool QgsAddTableFieldAlgorithm::prepareAlgorithm( const QVariantMap &parameters,
   const int type = parameterAsInt( parameters, QStringLiteral( "FIELD_TYPE" ), context );
   const int length = parameterAsInt( parameters, QStringLiteral( "FIELD_LENGTH" ), context );
   const int precision = parameterAsInt( parameters, QStringLiteral( "FIELD_PRECISION" ), context );
+  const QString alias = parameterAsString( parameters, QStringLiteral( "FIELD_ALIAS" ), context );
+  const QString comment = parameterAsString( parameters, QStringLiteral( "FIELD_COMMENT" ), context );
 
   mField.setName( name );
   mField.setLength( length );
   mField.setPrecision( precision );
+  mField.setAlias( alias );
+  mField.setComment( comment );
 
   switch ( type )
   {

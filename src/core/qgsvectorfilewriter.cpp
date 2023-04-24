@@ -246,6 +246,8 @@ void QgsVectorFileWriter::init( QString vectorFileName,
     return;
   }
 
+  mOgrDriverLongName = QString( GDALGetMetadataItem( poDriver, GDAL_DMD_LONGNAME, nullptr ) );
+
   MetaData metadata;
   bool metadataFound = driverMetadata( driverName, metadata );
 
@@ -559,6 +561,22 @@ void QgsVectorFileWriter::init( QString vectorFileName,
 
   mFieldValueConverter = fieldValueConverter;
 
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,7,0)
+  if ( const char *pszCreateFieldDefnFlags = GDALGetMetadataItem( poDriver, GDAL_DMD_CREATION_FIELD_DEFN_FLAGS, nullptr ) )
+  {
+    char **papszTokens = CSLTokenizeString2( pszCreateFieldDefnFlags, " ", 0 );
+    if ( CSLFindString( papszTokens, "AlternativeName" ) >= 0 )
+    {
+      mCapabilities |= Qgis::VectorFileWriterCapability::FieldAliases;
+    }
+    if ( CSLFindString( papszTokens, "Comment" ) >= 0 )
+    {
+      mCapabilities |= Qgis::VectorFileWriterCapability::FieldComments;
+    }
+    CSLDestroy( papszTokens );
+  }
+#endif
+
   switch ( action )
   {
     case CreateOrOverwriteFile:
@@ -703,6 +721,21 @@ void QgsVectorFileWriter::init( QString vectorFileName,
             break;
           }
 
+          case QVariant::Map:
+          {
+            // handle GPKG conversion to JSON
+            const char *pszDataSubTypes = GDALGetMetadataItem( poDriver, GDAL_DMD_CREATIONFIELDDATASUBTYPES, nullptr );
+            if ( pszDataSubTypes && strstr( pszDataSubTypes, "JSON" ) )
+            {
+              ogrType = OFTString;
+              ogrSubType = OFSTJSON;
+              break;
+            }
+          }
+
+            //intentional fall-through
+          FALLTHROUGH
+
           case QVariant::List:
             // handle GPKG conversion to JSON
             if ( mOgrDriverName == QLatin1String( "GPKG" ) )
@@ -826,6 +859,9 @@ void QgsVectorFileWriter::init( QString vectorFileName,
 
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,6,0)
         OGR_Fld_SetAlternativeName( fld.get(), mCodec->fromUnicode( attrField.alias() ).constData() );
+#endif
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,7,0)
+        OGR_Fld_SetComment( fld.get(), mCodec->fromUnicode( attrField.comment() ).constData() );
 #endif
 
         // create the field
@@ -2531,6 +2567,21 @@ QString QgsVectorFileWriter::errorMessage() const
   return mErrorMessage;
 }
 
+QString QgsVectorFileWriter::driver() const
+{
+  return mOgrDriverName;
+}
+
+QString QgsVectorFileWriter::driverLongName() const
+{
+  return mOgrDriverLongName;
+}
+
+Qgis::VectorFileWriterCapabilities QgsVectorFileWriter::capabilities() const
+{
+  return mCapabilities;
+}
+
 bool QgsVectorFileWriter::addFeature( QgsFeature &feature, QgsFeatureSink::Flags )
 {
   return addFeatureWithStyle( feature, nullptr, Qgis::DistanceUnit::Meters );
@@ -2919,6 +2970,28 @@ gdal::ogr_feature_unique_ptr QgsVectorFileWriter::createFeature( const QgsFeatur
         }
         //intentional fall-through
         FALLTHROUGH
+
+      case QVariant::Map:
+      {
+        // handle GPKG conversion to JSON
+        const char *pszDataSubTypes = GDALGetMetadataItem( OGRGetDriverByName( mOgrDriverName.toLocal8Bit().constData() ), GDAL_DMD_CREATIONFIELDDATASUBTYPES, nullptr );
+        if ( pszDataSubTypes && strstr( pszDataSubTypes, "JSON" ) )
+        {
+          const QJsonDocument doc = QJsonDocument::fromVariant( attrValue );
+          QString jsonString;
+          if ( !doc.isNull() )
+          {
+            const QByteArray json { doc.toJson( QJsonDocument::Compact ) };
+            jsonString = QString::fromUtf8( json.data() );
+          }
+          OGR_F_SetFieldString( poFeature.get(), ogrField, mCodec->fromUnicode( jsonString.constData() ) );
+          break;
+        }
+      }
+
+        //intentional fall-through
+      FALLTHROUGH
+
 
       default:
         mErrorMessage = QObject::tr( "Invalid variant type for field %1[%2]: received %3 with type %4" )

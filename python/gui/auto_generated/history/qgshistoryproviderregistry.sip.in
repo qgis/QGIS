@@ -10,45 +10,6 @@
 
 
 
-class QgsHistoryEntry
-{
-%Docstring(signature="appended")
-Encapsulates a history entry.
-
-.. versionadded:: 3.24
-%End
-
-%TypeHeaderCode
-#include "qgshistoryproviderregistry.h"
-%End
-  public:
-
-    QgsHistoryEntry( const QString &providerId, const QDateTime &timestamp, const QVariantMap &entry );
-%Docstring
-Constructor for QgsHistoryEntry ``entry``, with the specified ``providerId`` and ``timestamp``.
-%End
-
-    QgsHistoryEntry( const QVariantMap &entry );
-%Docstring
-Constructor for QgsHistoryEntry ``entry``.
-
-The entry timestamp will be automatically set to the current date/time.
-%End
-
-    QDateTime timestamp;
-
-    QString providerId;
-
-    QVariantMap entry;
-
-    SIP_PYOBJECT __repr__();
-%MethodCode
-    const QString str = QStringLiteral( "<QgsHistoryEntry: %1 %2>" ).arg( sipCpp->providerId, sipCpp->timestamp.toString( Qt::ISODate ) );
-    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
-%End
-
-};
-
 class QgsHistoryProviderRegistry : QObject
 {
 %Docstring(signature="appended")
@@ -151,11 +112,18 @@ Adds an ``entry`` to the history logs.
 
 :return: - ID of newly added entry.
          - ok: will be set to ``True`` if entry was successfully added
+
+
+.. seealso:: :py:func:`entryAdded`
 %End
 
     bool addEntries( const QList< QgsHistoryEntry > &entries, QgsHistoryProviderRegistry::HistoryEntryOptions options = QgsHistoryProviderRegistry::HistoryEntryOptions() );
 %Docstring
 Adds a list of ``entries`` to the history logs.
+
+.. seealso:: :py:func:`addEntry`
+
+.. seealso:: :py:func:`entryAdded`
 %End
 
     QgsHistoryEntry entry( long long id, bool &ok, Qgis::HistoryProviderBackend backend = Qgis::HistoryProviderBackend::LocalProfile ) const;
@@ -190,9 +158,37 @@ The optional ``providerId`` and ``backends`` arguments can be used to filter ent
 Returns the path to user's local history database.
 %End
 
-    bool clearHistory( Qgis::HistoryProviderBackend backend );
+    bool clearHistory( Qgis::HistoryProviderBackend backend, const QString &providerId = QString() );
 %Docstring
 Clears the history for the specified ``backend``.
+
+.. seealso:: :py:func:`historyCleared`
+%End
+
+  signals:
+
+    void entryAdded( long long id, const QgsHistoryEntry &entry, Qgis::HistoryProviderBackend backend );
+%Docstring
+Emitted when an ``entry`` is added.
+
+.. versionadded:: 3.32
+%End
+
+    void entryUpdated( long long id, const QVariantMap &entry, Qgis::HistoryProviderBackend backend );
+%Docstring
+Emitted when an ``entry`` is updated.
+
+.. versionadded:: 3.32
+%End
+
+    void historyCleared( Qgis::HistoryProviderBackend backend, const QString &providerId );
+%Docstring
+Emitted when the history is cleared for a ``backend``.
+
+If ``providerId`` is non-empty then the history has only been cleared for the
+specified provider.
+
+.. versionadded:: 3.32
 %End
 
 };

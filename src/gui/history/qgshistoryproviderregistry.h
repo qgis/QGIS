@@ -30,52 +30,7 @@
 #include "qgssqliteutils.h"
 
 class QgsAbstractHistoryProvider;
-
-/**
- * Encapsulates a history entry.
- *
- * \ingroup gui
- * \since QGIS 3.24
- */
-class GUI_EXPORT QgsHistoryEntry
-{
-  public:
-
-    /**
-     * Constructor for QgsHistoryEntry \a entry, with the specified \a providerId and \a timestamp.
-     */
-    QgsHistoryEntry( const QString &providerId, const QDateTime &timestamp, const QVariantMap &entry );
-
-    /**
-     * Constructor for QgsHistoryEntry \a entry.
-     *
-     * The entry timestamp will be automatically set to the current date/time.
-     */
-    QgsHistoryEntry( const QVariantMap &entry );
-
-    //! Entry timestamp
-    QDateTime timestamp;
-
-    //! Associated history provider ID
-    QString providerId;
-
-    /**
-     * Entry details.
-     *
-     * Entries details are stored as a free-form map. Interpretation of this map is the responsibility of the
-     * associated history provider.
-     */
-    QVariantMap entry;
-
-#ifdef SIP_RUN
-    SIP_PYOBJECT __repr__();
-    % MethodCode
-    const QString str = QStringLiteral( "<QgsHistoryEntry: %1 %2>" ).arg( sipCpp->providerId, sipCpp->timestamp.toString( Qt::ISODate ) );
-    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
-    % End
-#endif
-
-};
+class QgsHistoryEntry;
 
 /**
  * The QgsHistoryProviderRegistry is a registry for objects which track user history (i.e. operations performed through the GUI).
@@ -180,11 +135,16 @@ class GUI_EXPORT QgsHistoryProviderRegistry : public QObject
      * \param options options
      *
      * \returns ID of newly added entry.
+     *
+     * \see entryAdded()
      */
     long long addEntry( const QgsHistoryEntry &entry, bool &ok SIP_OUT, QgsHistoryProviderRegistry::HistoryEntryOptions options = QgsHistoryProviderRegistry::HistoryEntryOptions() );
 
     /**
      * Adds a list of \a entries to the history logs.
+     *
+     * \see addEntry()
+     * \see entryAdded()
      */
     bool addEntries( const QList< QgsHistoryEntry > &entries, QgsHistoryProviderRegistry::HistoryEntryOptions options = QgsHistoryProviderRegistry::HistoryEntryOptions() );
 
@@ -222,8 +182,36 @@ class GUI_EXPORT QgsHistoryProviderRegistry : public QObject
 
     /**
      * Clears the history for the specified \a backend.
+     *
+     * \see historyCleared()
      */
-    bool clearHistory( Qgis::HistoryProviderBackend backend );
+    bool clearHistory( Qgis::HistoryProviderBackend backend, const QString &providerId = QString() );
+
+  signals:
+
+    /**
+     * Emitted when an \a entry is added.
+     *
+     * \since QGIS 3.32
+     */
+    void entryAdded( long long id, const QgsHistoryEntry &entry, Qgis::HistoryProviderBackend backend );
+
+    /**
+     * Emitted when an \a entry is updated.
+     *
+     * \since QGIS 3.32
+     */
+    void entryUpdated( long long id, const QVariantMap &entry, Qgis::HistoryProviderBackend backend );
+
+    /**
+     * Emitted when the history is cleared for a \a backend.
+     *
+     * If \a providerId is non-empty then the history has only been cleared for the
+     * specified provider.
+     *
+     * \since QGIS 3.32
+     */
+    void historyCleared( Qgis::HistoryProviderBackend backend, const QString &providerId );
 
   private:
 

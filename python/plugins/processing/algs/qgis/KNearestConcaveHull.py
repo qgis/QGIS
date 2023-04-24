@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 /***************************************************************************
     KNearestConcaveHull.py
@@ -274,7 +273,7 @@ def nearest_points(list_of_points, point, k):
     # get the k nearest neighbors of point
     nearest_list = []
     for index in range(min(k, len(list_of_points))):
-        nearest_list.append((list_of_points[list_of_distances[index][1]]))
+        nearest_list.append(list_of_points[list_of_distances[index][1]])
     return nearest_list
 
 

@@ -110,7 +110,7 @@ bool QgsAbstractGeoPdfExporter::finalize( const QList<ComponentLayerDetail> &com
 
   // return a non-null (fake) dataset in case of success, nullptr otherwise.
   gdal::dataset_unique_ptr outputDataset( GDALCreate( driver, destinationFile.toUtf8().constData(), 0, 0, 0, GDT_Unknown, papszOptions ) );
-  bool res = outputDataset.get();
+  const bool res = outputDataset.get() != nullptr;
   outputDataset.reset();
 
   CSLDestroy( papszOptions );

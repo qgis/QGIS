@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 ***************************************************************************
     Postprocessing.py
@@ -127,7 +125,7 @@ def handleAlgorithmResults(alg, context, feedback=None, showResults=True, parame
 
     if wrongLayers:
         msg = QCoreApplication.translate('Postprocessing', "The following layers were not correctly generated.")
-        msg += "\n" + "\n".join(["• {}".format(lay) for lay in wrongLayers]) + '\n'
+        msg += "\n" + "\n".join([f"• {lay}" for lay in wrongLayers]) + '\n'
         msg += QCoreApplication.translate('Postprocessing',
                                           "You can check the 'Log Messages Panel' in QGIS main window to find more information about the execution of the algorithm.")
         feedback.reportError(msg)

@@ -1563,6 +1563,22 @@ It may also contain embedded expressions.
 .. versionadded:: 3.30
 %End
 
+    void setMapTipsEnabled( bool enabled );
+%Docstring
+Enable or disable map tips for this layer
+
+:param enabled: Whether map tips are enabled for this layer
+
+.. versionadded:: 3.32
+%End
+
+    bool mapTipsEnabled() const;
+%Docstring
+Returns true if map tips are enabled for this layer
+
+.. versionadded:: 3.32
+%End
+
   public slots:
 
     void setMinimumScale( double scale );
@@ -1912,6 +1928,15 @@ Emitted when the map tip template changes
    this method was only available for vector layers since QGIS 3.0
 
 .. versionadded:: 3.30
+%End
+
+    void mapTipsEnabledChanged();
+%Docstring
+Emitted when map tips are enabled or disabled for the layer.
+
+.. seealso:: :py:func:`setMapTipsEnabled`
+
+.. versionadded:: 3.32
 %End
 
   protected:

@@ -21,7 +21,7 @@
 #include "qgseptdecoder.h"
 #include "qgslazdecoder.h"
 #include "qgsapplication.h"
-#include "qgsremoteeptpointcloudindex.h"
+#include "qgsnetworkaccessmanager.h"
 
 //
 // QgsEptPointCloudBlockRequest
@@ -36,6 +36,8 @@ QgsEptPointCloudBlockRequest::QgsEptPointCloudBlockRequest( const IndexedPointCl
     mDataType( dataType )
 {
   QNetworkRequest nr( mUri );
+  QgsSetRequestInitiatorClass( nr, QStringLiteral( "QgsEptPointCloudBlockRequest" ) );
+  QgsSetRequestInitiatorId( nr, node.toString() );
   nr.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferCache );
   nr.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
   mTileDownloadManagerReply.reset( QgsApplication::tileDownloadManager()->get( nr ) );

@@ -59,6 +59,7 @@
 #include "options/qgsadvancedoptions.h"
 #include "qgssettingsentryimpl.h"
 #include "qgssettingsentryenumflag.h"
+#include "qgsmeasuredialog.h"
 
 #ifdef HAVE_OPENCL
 #include "qgsopenclutils.h"
@@ -643,16 +644,33 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
 
   // set if base unit of measure tool should be changed
   bool baseUnit = mSettings->value( QStringLiteral( "qgis/measure/keepbaseunit" ), true ).toBool();
-  if ( baseUnit )
-  {
-    mKeepBaseUnitCheckBox->setChecked( true );
-  }
-  else
-  {
-    mKeepBaseUnitCheckBox->setChecked( false );
-  }
+  mKeepBaseUnitCheckBox->setChecked( baseUnit );
+
   mPlanimetricMeasurementsComboBox->setChecked( mSettings->value( QStringLiteral( "measure/planimetric" ), false, QgsSettings::Core ).toBool() );
 
+  // set the measure tool copy settings
+  connect( mSeparatorOther, &QRadioButton::toggled, mSeparatorCustom, &QLineEdit::setEnabled );
+  mIncludeHeader->setChecked( QgsMeasureDialog::settingClipboardHeader->value() );
+
+  const QString sep = QgsMeasureDialog::settingClipboardSeparator->value();
+
+  if ( sep.isEmpty() || sep == QStringLiteral( "\t" ) )
+    mSeparatorTab->setChecked( true );
+  else if ( sep == QStringLiteral( "," ) )
+    mSeparatorComma->setChecked( true );
+  else if ( sep == QStringLiteral( ";" ) )
+    mSeparatorSemicolon->setChecked( true );
+  else if ( sep == QStringLiteral( " " ) )
+    mSeparatorSpace->setChecked( true );
+  else if ( sep == QStringLiteral( ":" ) )
+    mSeparatorColon->setChecked( true );
+  else
+  {
+    mSeparatorOther->setChecked( true );
+    mSeparatorCustom->setText( sep );
+  }
+
+  // set the default icon size
   cmbIconSize->setCurrentIndex( cmbIconSize->findText( mSettings->value( QStringLiteral( "qgis/iconSize" ), QGIS_ICON_SIZE ).toString() ) );
 
   // set font size and family
@@ -1664,6 +1682,23 @@ void QgsOptions::saveOptions()
 
   bool baseUnit = mKeepBaseUnitCheckBox->isChecked();
   mSettings->setValue( QStringLiteral( "/qgis/measure/keepbaseunit" ), baseUnit );
+
+  QgsMeasureDialog::settingClipboardHeader->setValue( mIncludeHeader->isChecked() );
+  QString separator;
+  if ( mSeparatorTab->isChecked() )
+    separator = QStringLiteral( "\t" );
+  else if ( mSeparatorComma->isChecked() )
+    separator = QStringLiteral( "," );
+  else if ( mSeparatorSemicolon->isChecked() )
+    separator = QStringLiteral( ";" );
+  else if ( mSeparatorSpace->isChecked() )
+    separator = QStringLiteral( " " );
+  else if ( mSeparatorColon->isChecked() )
+    separator = QStringLiteral( ":" );
+  else
+    separator = mSeparatorCustom->text();
+
+  QgsMeasureDialog::settingClipboardSeparator->setValue( separator );
 
   //set the color for selections
   QColor myColor = pbnSelectionColor->color();

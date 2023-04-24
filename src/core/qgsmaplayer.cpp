@@ -912,6 +912,24 @@ void QgsMapLayer::setMapTipTemplate( const QString &mapTip )
   emit mapTipTemplateChanged();
 }
 
+void QgsMapLayer::setMapTipsEnabled( bool enabled )
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  if ( mMapTipsEnabled == enabled )
+    return;
+
+  mMapTipsEnabled = enabled;
+  emit mapTipsEnabledChanged();
+}
+
+bool QgsMapLayer::mapTipsEnabled() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return mMapTipsEnabled;
+}
+
 bool QgsMapLayer::isValid() const
 {
   // because QgsVirtualLayerProvider is not anywhere NEAR thread safe:
@@ -2479,7 +2497,7 @@ bool QgsMapLayer::hasMapTips() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  return !mMapTipTemplate.isEmpty();
+  return mapTipsEnabled() && !mMapTipTemplate.isEmpty();
 }
 
 void QgsMapLayer::setProviderType( const QString &providerType )

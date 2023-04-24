@@ -226,6 +226,8 @@
            </item>
           </layout>
          </widget>
+         <widget class="QWidget" name="pageBash"/>
+         <widget class="QWidget" name="pageBatch"/>
         </widget>
        </item>
       </layout>

@@ -23,6 +23,9 @@
 #include "qgsvectordataprovider.h"
 #include "qgsbackgroundcachedshareddata.h"
 #include "qgswfsdatasourceuri.h"
+#include "qgsoapifapirequest.h"
+#include "qgsoapifitemsrequest.h"
+#include "qgsoapifqueryablesrequest.h"
 
 #include "qgsprovidermetadata.h"
 
@@ -93,6 +96,13 @@ class QgsOapifProvider final: public QgsVectorDataProvider
 
     void handlePostCloneOperations( QgsVectorDataProvider *source ) override;
 
+    //Editing operations
+
+    bool addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() ) override;
+    bool deleteFeatures( const QgsFeatureIds &ids ) override;
+    bool changeGeometryValues( const QgsGeometryMap &geometry_map ) override;
+    bool changeAttributeValues( const QgsChangedAttributesMap &attr_map ) override;
+
   private slots:
 
     void pushErrorSlot( const QString &errorMsg );
@@ -102,6 +112,12 @@ class QgsOapifProvider final: public QgsVectorDataProvider
 
     //! Flag if provider is valid
     bool mValid = true;
+
+    //! Server capabilities for this layer (generated from capabilities document)
+    QgsVectorDataProvider::Capabilities mCapabilities = QgsVectorDataProvider::Capabilities();
+
+    //! Whether server supports PATCH operation
+    bool mSupportsPatch = false;
 
     //! String used to define a subset of the layer
     QString mSubsetString;
@@ -119,6 +135,9 @@ class QgsOapifProvider final: public QgsVectorDataProvider
      * Invalidates cache of shared object
     */
     void reloadProviderData() override;
+
+    //! Compute capabilities
+    void computeCapabilities( const QgsOapifItemsRequest &itemsRequest );
 };
 
 class QgsOapifProviderMetadata final: public QgsProviderMetadata
@@ -164,6 +183,9 @@ class QgsOapifSharedData final: public QObject, public QgsBackgroundCachedShared
   protected:
     friend class QgsOapifProvider;
     friend class QgsOapifFeatureDownloaderImpl;
+    friend class QgsOapifCreateFeatureRequest;
+    friend class QgsOapifPutFeatureRequest;
+    friend class QgsOapifPatchFeatureRequest;
 
     //! Datasource URI
     QgsWFSDataSourceURI mURI;
@@ -189,15 +211,45 @@ class QgsOapifSharedData final: public QObject, public QgsBackgroundCachedShared
     //! Translation state of filter to server-side filter.
     QgsOapifProvider::FilterTranslationState mFilterTranslationState = QgsOapifProvider::FilterTranslationState::FULLY_CLIENT;
 
+    //! Set if an "id" is present at top level of features
+    bool mFoundIdTopLevel = false;
+
+    //! Set if an "id" is present in the "properties" object of features
+    bool mFoundIdInProperties = false;
+
+    // Map of simple queryables items (that is as query parameters). The key of the map is a queryable name.
+    QMap<QString, QgsOapifApiRequest::SimpleQueryable> mSimpleQueryables;
+
+    //! Whether server supports OGC API Features Part3 with CQL2-Text
+    bool mServerSupportsFilterCql2Text = false;
+
+    //! Whether server supports CQL2 advanced-comparison-operators conformance class (LIKE, BETWEEN, IN)
+    bool mServerSupportsLikeBetweenIn = false;
+
+    //! Whether server supports CQL2 case-insensitive-comparison conformance class (CASEI function)
+    bool mServerSupportsCaseI = false;
+
+    //! Whether server supports CQL2 basic-spatial-operators conformance class (S_INTERSECTS(,BBOX() or POINT()))
+    bool mServerSupportsBasicSpatialOperators = false;
+
+    // Map of queryables items for CQL2 request. The key of the map is a queryable name.
+    QMap<QString, QgsOapifQueryablesRequest::Queryable> mQueryables;
+
     //! Append extra query parameters if needed
     QString appendExtraQueryParameters( const QString &url ) const;
 
   private:
 
-    // Translate part of an expression to a server-side filter
-    QString translateNodeToServer( const QgsExpressionNode *node,
-                                   QgsOapifProvider::FilterTranslationState &translationState,
-                                   QString &untranslatedPart );
+    // Translate part of an expression to a server-side filter using Part1 features only
+    QString compileExpressionNodeUsingPart1( const QgsExpressionNode *node,
+        QgsOapifProvider::FilterTranslationState &translationState,
+        QString &untranslatedPart ) const;
+
+    // Translate part of an expression to a server-side filter using Part1 or Part3
+    bool computeFilter( const QgsExpression &expr,
+                        QgsOapifProvider::FilterTranslationState &translationState,
+                        QString &serverSideParameters,
+                        QString &clientSideFilterExpression ) const;
 
     //! Log error to QgsMessageLog and raise it to the provider
     void pushError( const QString &errorMsg ) const override;

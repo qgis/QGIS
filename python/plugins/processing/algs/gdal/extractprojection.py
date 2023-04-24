@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 ***************************************************************************
     extractprojection.py
@@ -117,13 +115,13 @@ class ExtractProjection(GdalAlgorithm):
             crs = tmp.ExportToWkt()
             tmp = None
 
-            with open(outFileName + '.prj', 'wt', encoding='utf-8') as prj:
+            with open(outFileName + '.prj', 'w', encoding='utf-8') as prj:
                 prj.write(crs)
             results[self.PRJ_FILE] = outFileName + '.prj'
         else:
             results[self.PRJ_FILE] = None
 
-        with open(outFileName + outFileExt, 'wt') as wld:
+        with open(outFileName + outFileExt, 'w') as wld:
             wld.write('%0.8f\n' % geotransform[1])
             wld.write('%0.8f\n' % geotransform[4])
             wld.write('%0.8f\n' % geotransform[2])

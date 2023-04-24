@@ -49,6 +49,7 @@ bool QgsWFSSharedData::isRestrictedToRequestBBOX() const
 QgsWFSSharedData *QgsWFSSharedData::clone() const
 {
   QgsWFSSharedData *copy = new QgsWFSSharedData( mURI.uri( true ) );
+  copy->mURI = mURI;
   copy->mWFSVersion = mWFSVersion;
   copy->mGeometryAttribute = mGeometryAttribute;
   copy->mLayerPropertiesList = mLayerPropertiesList;

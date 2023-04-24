@@ -415,6 +415,15 @@ The development version
       UserCanceled,
     };
 
+    enum class VectorFileWriterCapability
+    {
+      FieldAliases,
+      FieldComments,
+    };
+
+    typedef QFlags<Qgis::VectorFileWriterCapability> VectorFileWriterCapabilities;
+
+
     enum class SqlLayerDefinitionCapability
     {
       SubsetStringFilter,
@@ -1632,6 +1641,8 @@ The development version
       Python,
       R,
       Sql,
+      Batch,
+      Bash,
       Unknown,
     };
 
@@ -1953,6 +1964,14 @@ The development version
       PartitionedTable,
     };
 
+    enum class DatabaseProviderConnectionCapability2
+    {
+      SetFieldComment,
+      SetFieldAlias,
+    };
+    typedef QFlags<Qgis::DatabaseProviderConnectionCapability2> DatabaseProviderConnectionCapabilities2;
+
+
     static const double DEFAULT_SEARCH_RADIUS_MM;
 
     static const float DEFAULT_MAPTOPIXEL_THRESHOLD;
@@ -2102,6 +2121,10 @@ QFlags<Qgis::LayerTreeFilterFlag> operator|(Qgis::LayerTreeFilterFlag f1, QFlags
 QFlags<Qgis::LabelLinePlacementFlag> operator|(Qgis::LabelLinePlacementFlag f1, QFlags<Qgis::LabelLinePlacementFlag> f2);
 
 QFlags<Qgis::LabelPolygonPlacementFlag> operator|(Qgis::LabelPolygonPlacementFlag f1, QFlags<Qgis::LabelPolygonPlacementFlag> f2);
+
+QFlags<Qgis::DatabaseProviderConnectionCapability2> operator|(Qgis::DatabaseProviderConnectionCapability2 f1, QFlags<Qgis::DatabaseProviderConnectionCapability2> f2);
+
+QFlags<Qgis::VectorFileWriterCapability> operator|(Qgis::VectorFileWriterCapability f1, QFlags<Qgis::VectorFileWriterCapability> f2);
 
 
 

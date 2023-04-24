@@ -34,9 +34,15 @@ QgsAbstractDatabaseProviderConnection::QgsAbstractDatabaseProviderConnection( co
 {
 
 }
+
 QgsAbstractDatabaseProviderConnection::Capabilities QgsAbstractDatabaseProviderConnection::capabilities() const
 {
   return mCapabilities;
+}
+
+Qgis::DatabaseProviderConnectionCapabilities2 QgsAbstractDatabaseProviderConnection::capabilities2() const
+{
+  return mCapabilities2;
 }
 
 QgsAbstractDatabaseProviderConnection::GeometryColumnCapabilities QgsAbstractDatabaseProviderConnection::geometryColumnCapabilities()
@@ -69,13 +75,20 @@ void QgsAbstractDatabaseProviderConnection::checkCapability( QgsAbstractDatabase
   }
 }
 
-QString QgsAbstractDatabaseProviderConnection::providerKey() const
+void QgsAbstractDatabaseProviderConnection::checkCapability( Qgis::DatabaseProviderConnectionCapability2 capability ) const
 {
-  return mProviderKey;
+  if ( ! mCapabilities2.testFlag( capability ) )
+  {
+    throw QgsProviderConnectionException( QObject::tr( "Operation '%1' is not supported for this connection" ).arg( qgsEnumValueToKey( capability ) ) );
+  }
 }
 
 ///@endcond
 
+QString QgsAbstractDatabaseProviderConnection::providerKey() const
+{
+  return mProviderKey;
+}
 
 QMultiMap<Qgis::SqlKeywordCategory, QStringList> QgsAbstractDatabaseProviderConnection::sqlDictionary()
 {
@@ -1357,6 +1370,16 @@ void QgsAbstractDatabaseProviderConnection::setFieldDomainName( const QString &,
 void QgsAbstractDatabaseProviderConnection::addFieldDomain( const QgsFieldDomain &, const QString & ) const
 {
   checkCapability( Capability::AddFieldDomain );
+}
+
+void QgsAbstractDatabaseProviderConnection::setFieldAlias( const QString &, const QString &, const QString &, const QString & ) const
+{
+  checkCapability( Qgis::DatabaseProviderConnectionCapability2::SetFieldAlias );
+}
+
+void QgsAbstractDatabaseProviderConnection::setFieldComment( const QString &, const QString &, const QString &, const QString & ) const
+{
+  checkCapability( Qgis::DatabaseProviderConnectionCapability2::SetFieldComment );
 }
 
 QList< QgsWeakRelation > QgsAbstractDatabaseProviderConnection::relationships( const QString &, const QString & ) const

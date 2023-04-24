@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 ***************************************************************************
     wrappers.py - Standard parameters widget wrappers
@@ -136,7 +134,7 @@ dialogTypes = {"AlgorithmDialog": DIALOG_STANDARD,
 def getExtendedLayerName(layer):
     authid = layer.crs().authid()
     if ProcessingConfig.getSetting(ProcessingConfig.SHOW_CRS_DEF) and authid is not None:
-        return '{} [{}]'.format(layer.name(), authid)
+        return f'{layer.name()} [{authid}]'
     else:
         return layer.name()
 
@@ -1775,7 +1773,7 @@ class BandWidgetWrapper(WidgetWrapper):
                 name = provider.generateBandName(band)
                 interpretation = provider.colorInterpretationName(band)
                 if interpretation != "Undefined":
-                    name = name + ' ({})'.format(interpretation)
+                    name = name + f' ({interpretation})'
                 bands.append(name)
         return bands
 
@@ -1800,7 +1798,7 @@ class BandWidgetWrapper(WidgetWrapper):
 
                 for v in value:
                     for i, opt in enumerate(options):
-                        match = re.search('(?:\\A|[^0-9]){}(?:\\Z|[^0-9]|)'.format(v), opt)
+                        match = re.search(f'(?:\\A|[^0-9]){v}(?:\\Z|[^0-9]|)', opt)
                         if match:
                             selected.append(i)
 

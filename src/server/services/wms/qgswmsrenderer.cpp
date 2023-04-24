@@ -1867,6 +1867,18 @@ namespace QgsWms
           featureElement.appendChild( maptipElem );
         }
 
+        QgsExpression displayExpression = layer->displayExpression();
+        if ( displayExpression.isValid() && mWmsParameters.withDisplayName() )
+        {
+          QDomElement displayElem = infoDocument.createElement( QStringLiteral( "Attribute" ) );
+          displayElem.setAttribute( QStringLiteral( "name" ), QStringLiteral( "displayName" ) );
+          QgsExpressionContext context { renderContext.expressionContext() };
+          context.appendScope( QgsExpressionContextUtils::layerScope( layer ) );
+          displayExpression.prepare( &context );
+          displayElem.setAttribute( QStringLiteral( "value" ),  displayExpression.evaluate( &context ).toString() );
+          featureElement.appendChild( displayElem );
+        }
+
         //append feature bounding box to feature info xml
         if ( QgsServerProjectUtils::wmsFeatureInfoAddWktGeometry( *mProject ) &&
              layer->wkbType() != Qgis::WkbType::NoGeometry && hasGeometry )

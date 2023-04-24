@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 ***************************************************************************
     FileSelectionPanel.py
@@ -41,7 +39,7 @@ with warnings.catch_warnings():
 class FileSelectionPanel(BASE, WIDGET):
 
     def __init__(self, isFolder, ext=None):
-        super(FileSelectionPanel, self).__init__(None)
+        super().__init__(None)
         self.setupUi(self)
 
         self.ext = ext or '*'

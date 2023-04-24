@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 ***************************************************************************
     TilesXYZ.py
@@ -127,7 +125,7 @@ def get_metatiles(extent, zoom, size=4):
     metatiles = {}
     for i, x in enumerate(range(left_tile, right_tile + 1)):
         for j, y in enumerate(range(top_tile, bottom_tile + 1)):
-            meta_key = '{}:{}'.format(int(i / size), int(j / size))
+            meta_key = f'{int(i / size)}:{int(j / size)}'
             if meta_key not in metatiles:
                 metatiles[meta_key] = MetaTile()
             metatile = metatiles[meta_key]
@@ -239,7 +237,14 @@ class TilesXYZAlgorithmBase(QgisAlgorithm):
         self.feedback = feedback
         feedback.setProgress(1)
 
-        extent = self.parameterAsExtent(parameters, self.EXTENT, context)
+        project = context.project()
+
+        # Transform extent to match project CRS
+        extent_original = self.parameterAsExtent(parameters, self.EXTENT, context)
+        extent_crs = self.parameterAsExtentCrs(parameters, self.EXTENT, context)
+        extent_crs_to_project_crs = QgsCoordinateTransform(extent_crs, project.crs(), context.transformContext())
+        extent = extent_crs_to_project_crs.transformBoundingBox(extent_original)
+
         self.min_zoom = self.parameterAsInt(parameters, self.ZOOM_MIN, context)
         self.max_zoom = self.parameterAsInt(parameters, self.ZOOM_MAX, context)
         dpi = self.parameterAsInt(parameters, self.DPI, context)
@@ -258,7 +263,6 @@ class TilesXYZAlgorithmBase(QgisAlgorithm):
         wgs_crs = QgsCoordinateReferenceSystem('EPSG:4326')
         dest_crs = QgsCoordinateReferenceSystem('EPSG:3857')
 
-        project = context.project()
         self.src_to_wgs = QgsCoordinateTransform(project.crs(), wgs_crs, context.transformContext())
         self.wgs_to_dest = QgsCoordinateTransform(wgs_crs, dest_crs, context.transformContext())
         # without re-writing, we need a different settings for each thread to stop async errors
@@ -397,7 +401,7 @@ class MBTilesWriter:
         ]
 
         bounds = ','.join(map(str, zoom_extent))
-        self._execute_sqlite("UPDATE metadata SET value='{}' WHERE name='bounds'".format(bounds))
+        self._execute_sqlite(f"UPDATE metadata SET value='{bounds}' WHERE name='bounds'")
 
         self._zoom_ds = gdal.OpenEx(self.filename, 1, open_options=['ZOOM_LEVEL=%s' % first_tile.z])
         self._first_tile = first_tile
@@ -425,7 +429,7 @@ class MBTilesWriter:
     def close(self):
         self._zoom_ds = None
         bounds = ','.join(map(str, self.extent))
-        self._execute_sqlite("UPDATE metadata SET value='{}' WHERE name='bounds'".format(bounds))
+        self._execute_sqlite(f"UPDATE metadata SET value='{bounds}' WHERE name='bounds'")
         # Set Journal Mode back to default
         self._execute_sqlite("PRAGMA journal_mode=DELETE")
 
@@ -434,7 +438,7 @@ class TilesXYZAlgorithmMBTiles(TilesXYZAlgorithmBase):
     OUTPUT_FILE = 'OUTPUT_FILE'
 
     def initAlgorithm(self, config=None):
-        super(TilesXYZAlgorithmMBTiles, self).initAlgorithm()
+        super().initAlgorithm()
         self.addParameter(QgsProcessingParameterFileDestination(self.OUTPUT_FILE,
                                                                 self.tr('Output file (for MBTiles)'),
                                                                 self.tr('MBTiles files (*.mbtiles)'),
@@ -537,7 +541,7 @@ class DirectoryWriter:
         ytile = tile.y
         if self.is_tms:
             ytile = tms(ytile, tile.z)
-        path = os.path.join(directory, '{}.{}'.format(ytile, self.format.lower()))
+        path = os.path.join(directory, f'{ytile}.{self.format.lower()}')
         image.save(path, self.format, self.quality)
         return path
 
@@ -556,7 +560,7 @@ class TilesXYZAlgorithmDirectory(TilesXYZAlgorithmBase):
     HTML_OSM = 'HTML_OSM'
 
     def initAlgorithm(self, config=None):
-        super(TilesXYZAlgorithmDirectory, self).initAlgorithm()
+        super().initAlgorithm()
         self.addParameter(QgsProcessingParameterNumber(self.TILE_WIDTH,
                                                        self.tr('Tile width'),
                                                        minValue=1,
@@ -628,7 +632,7 @@ class TilesXYZAlgorithmDirectory(TilesXYZAlgorithmBase):
                 centerx=self.wgs_extent[0] + (self.wgs_extent[2] - self.wgs_extent[0]) / 2,
                 centery=self.wgs_extent[1] + (self.wgs_extent[3] - self.wgs_extent[1]) / 2,
                 avgzoom=(self.max_zoom + self.min_zoom) / 2,
-                tilesource="'file:///{}/{{z}}/{{x}}/{{y}}.{}'".format(output_dir_safe, self.tile_format.lower()),
+                tilesource=f"'file:///{output_dir_safe}/{{z}}/{{x}}/{{y}}.{self.tile_format.lower()}'",
                 minzoom=self.min_zoom,
                 maxzoom=self.max_zoom,
                 tms='true' if is_tms else 'false',

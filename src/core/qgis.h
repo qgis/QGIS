@@ -655,6 +655,24 @@ class CORE_EXPORT Qgis
     Q_ENUM( VectorExportResult )
 
     /**
+     * Capabilities supported by a QgsVectorFileWriter object.
+     * \since QGIS 3.32
+     */
+    enum class VectorFileWriterCapability : int
+    {
+      FieldAliases = 1 << 0, //!< Writer can support field aliases
+      FieldComments = 1 << 2, //!< Writer can support field comments
+    };
+    Q_ENUM( VectorFileWriterCapability )
+
+    /**
+     * Capabilities supported by a QgsVectorFileWriter object.
+     * \since QGIS 3.32
+     */
+    Q_DECLARE_FLAGS( VectorFileWriterCapabilities, VectorFileWriterCapability )
+    Q_FLAG( VectorFileWriterCapabilities )
+
+    /**
      * SqlLayerDefinitionCapability enum lists the arguments supported by the provider when creating SQL query layers.
      * \since QGIS 3.22
      */
@@ -2818,6 +2836,8 @@ class CORE_EXPORT Qgis
       Python, //!< Python
       R, //!< R Stats
       Sql, //!< SQL
+      Batch, //!< Windows batch files
+      Bash, //!< Bash scripts
       Unknown, //!< Unknown/other language
     };
     Q_ENUM( ScriptLanguage )
@@ -3382,6 +3402,20 @@ class CORE_EXPORT Qgis
     Q_ENUM( PostgresRelKind )
 
     /**
+     * The Capability enum represents the extended operations supported by the connection.
+     *
+     * \since QGIS 3.32
+     */
+    enum class DatabaseProviderConnectionCapability2 : int
+    {
+      SetFieldComment = 1 << 0, //!< Can set comments for fields via setFieldComment()
+      SetFieldAlias = 1 << 1, //!< Can set aliases for fields via setFieldAlias()
+    };
+    Q_ENUM( DatabaseProviderConnectionCapability2 )
+    Q_DECLARE_FLAGS( DatabaseProviderConnectionCapabilities2, DatabaseProviderConnectionCapability2 )
+    Q_FLAG( DatabaseProviderConnectionCapabilities2 )
+
+    /**
      * Identify search radius in mm
      * \since QGIS 2.3
      */
@@ -3539,6 +3573,8 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::ScriptLanguageCapabilities )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::LayerTreeFilterFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::LabelLinePlacementFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::LabelPolygonPlacementFlags )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::DatabaseProviderConnectionCapabilities2 )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::VectorFileWriterCapabilities )
 
 // hack to workaround warnings when casting void pointers
 // retrieved from QLibrary::resolve to function pointers.

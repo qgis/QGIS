@@ -50,6 +50,7 @@ class QgsExpressionPrivate
       , mCalc( other.mCalc )
       , mDistanceUnit( other.mDistanceUnit )
       , mAreaUnit( other.mAreaUnit )
+      , mIsPrepared( false )
     {
       if ( other.mDaCrs )
         mDaCrs = std::make_unique<QgsCoordinateReferenceSystem>( *other.mDaCrs.get() );

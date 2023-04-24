@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 ***************************************************************************
     gdaltindex.py
@@ -138,17 +136,17 @@ class gdaltindex(GdalAlgorithm):
             arguments.append('-skip_different_projection')
 
         if crs_field:
-            arguments.append('-src_srs_name {}'.format(crs_field))
+            arguments.append(f'-src_srs_name {crs_field}')
 
         if crs_format:
-            arguments.append('-src_srs_format {}'.format(self.formats[crs_format][1]))
+            arguments.append(f'-src_srs_format {self.formats[crs_format][1]}')
 
         if target_crs.isValid():
             arguments.append('-t_srs')
             arguments.append(GdalUtils.gdal_crs_string(target_crs))
 
         if outFormat:
-            arguments.append('-f {}'.format(outFormat))
+            arguments.append(f'-f {outFormat}')
 
         arguments.append(output)
 

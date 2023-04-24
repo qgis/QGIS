@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 ***************************************************************************
     ClipRasterByExtent.py
@@ -142,10 +140,10 @@ class ClipRasterByExtent(GdalAlgorithm):
 
         crs = inLayer.crs()
         if override_crs and crs.isValid():
-            arguments.append('-a_srs {}'.format(GdalUtils.gdal_crs_string(crs)))
+            arguments.append(f'-a_srs {GdalUtils.gdal_crs_string(crs)}')
 
         if nodata is not None:
-            arguments.append('-a_nodata {}'.format(nodata))
+            arguments.append(f'-a_nodata {nodata}')
 
         data_type = self.parameterAsEnum(parameters, self.DATA_TYPE, context)
         if data_type:

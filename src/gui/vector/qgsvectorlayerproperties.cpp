@@ -175,6 +175,9 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   if ( !mLayer )
     return;
 
+  connect( mEnableMapTips, &QAbstractButton::toggled, mHtmlMapTipGroupBox, &QWidget::setEnabled );
+  mEnableMapTips->setChecked( mLayer->mapTipsEnabled() );
+
   QVBoxLayout *layout = nullptr;
 
   if ( mLayer->isSpatial() )
@@ -557,8 +560,9 @@ void QgsVectorLayerProperties::syncToLayer()
   txtSubsetSQL->setCaretLineVisible( false );
   setPbnQueryBuilderEnabled();
 
-  mMapTipWidget->setText( mLayer->mapTipTemplate() );
   mDisplayExpressionWidget->setField( mLayer->displayExpression() );
+  mEnableMapTips->setChecked( mLayer->mapTipsEnabled() );
+  mMapTipWidget->setText( mLayer->mapTipTemplate() );
 
   // set up the scale based layer visibility stuff....
   mScaleRangeWidget->setScaleRange( mLayer->minimumScale(), mLayer->maximumScale() );
@@ -718,6 +722,7 @@ void QgsVectorLayerProperties::apply()
   }
 
   mLayer->setDisplayExpression( mDisplayExpressionWidget->asExpression() );
+  mLayer->setMapTipsEnabled( mEnableMapTips->isChecked() );
   mLayer->setMapTipTemplate( mMapTipWidget->text() );
 
   mLayer->actions()->clearActions();

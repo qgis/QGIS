@@ -728,6 +728,14 @@ Qgis.VectorExportResult.__doc__ = 'Vector layer export result codes.\n\n.. versi
 # --
 Qgis.VectorExportResult.baseClass = Qgis
 # monkey patching scoped based enum
+Qgis.VectorFileWriterCapability.FieldAliases.__doc__ = "Writer can support field aliases"
+Qgis.VectorFileWriterCapability.FieldComments.__doc__ = "Writer can support field comments"
+Qgis.VectorFileWriterCapability.__doc__ = 'Capabilities supported by a :py:class:`QgsVectorFileWriter` object.\n\n.. versionadded:: 3.32\n\n' + '* ``FieldAliases``: ' + Qgis.VectorFileWriterCapability.FieldAliases.__doc__ + '\n' + '* ``FieldComments``: ' + Qgis.VectorFileWriterCapability.FieldComments.__doc__
+# --
+Qgis.VectorFileWriterCapability.baseClass = Qgis
+Qgis.VectorFileWriterCapabilities.baseClass = Qgis
+VectorFileWriterCapabilities = Qgis  # dirty hack since SIP seems to introduce the flags in module
+# monkey patching scoped based enum
 Qgis.SqlLayerDefinitionCapability.SubsetStringFilter.__doc__ = "SQL layer definition supports subset string filter"
 Qgis.SqlLayerDefinitionCapability.GeometryColumn.__doc__ = "SQL layer definition supports geometry column"
 Qgis.SqlLayerDefinitionCapability.PrimaryKeys.__doc__ = "SQL layer definition supports primary keys"
@@ -2667,8 +2675,10 @@ Qgis.ScriptLanguage.Json.__doc__ = "JSON"
 Qgis.ScriptLanguage.Python.__doc__ = "Python"
 Qgis.ScriptLanguage.R.__doc__ = "R Stats"
 Qgis.ScriptLanguage.Sql.__doc__ = "SQL"
+Qgis.ScriptLanguage.Batch.__doc__ = "Windows batch files"
+Qgis.ScriptLanguage.Bash.__doc__ = "Bash scripts"
 Qgis.ScriptLanguage.Unknown.__doc__ = "Unknown/other language"
-Qgis.ScriptLanguage.__doc__ = 'Scripting languages.\n\n.. versionadded:: 3.30\n\n' + '* ``Css``: ' + Qgis.ScriptLanguage.Css.__doc__ + '\n' + '* ``QgisExpression``: ' + Qgis.ScriptLanguage.QgisExpression.__doc__ + '\n' + '* ``Html``: ' + Qgis.ScriptLanguage.Html.__doc__ + '\n' + '* ``JavaScript``: ' + Qgis.ScriptLanguage.JavaScript.__doc__ + '\n' + '* ``Json``: ' + Qgis.ScriptLanguage.Json.__doc__ + '\n' + '* ``Python``: ' + Qgis.ScriptLanguage.Python.__doc__ + '\n' + '* ``R``: ' + Qgis.ScriptLanguage.R.__doc__ + '\n' + '* ``Sql``: ' + Qgis.ScriptLanguage.Sql.__doc__ + '\n' + '* ``Unknown``: ' + Qgis.ScriptLanguage.Unknown.__doc__
+Qgis.ScriptLanguage.__doc__ = 'Scripting languages.\n\n.. versionadded:: 3.30\n\n' + '* ``Css``: ' + Qgis.ScriptLanguage.Css.__doc__ + '\n' + '* ``QgisExpression``: ' + Qgis.ScriptLanguage.QgisExpression.__doc__ + '\n' + '* ``Html``: ' + Qgis.ScriptLanguage.Html.__doc__ + '\n' + '* ``JavaScript``: ' + Qgis.ScriptLanguage.JavaScript.__doc__ + '\n' + '* ``Json``: ' + Qgis.ScriptLanguage.Json.__doc__ + '\n' + '* ``Python``: ' + Qgis.ScriptLanguage.Python.__doc__ + '\n' + '* ``R``: ' + Qgis.ScriptLanguage.R.__doc__ + '\n' + '* ``Sql``: ' + Qgis.ScriptLanguage.Sql.__doc__ + '\n' + '* ``Batch``: ' + Qgis.ScriptLanguage.Batch.__doc__ + '\n' + '* ``Bash``: ' + Qgis.ScriptLanguage.Bash.__doc__ + '\n' + '* ``Unknown``: ' + Qgis.ScriptLanguage.Unknown.__doc__
 # --
 Qgis.ScriptLanguage.baseClass = Qgis
 # monkey patching scoped based enum
@@ -3450,3 +3460,11 @@ Qgis.PostgresRelKind.PartitionedTable.__doc__ = "Partitioned table"
 Qgis.PostgresRelKind.__doc__ = 'Postgres database relkind options.\n\n.. versionadded:: 3.32\n\n' + '* ``NotSet``: ' + Qgis.PostgresRelKind.NotSet.__doc__ + '\n' + '* ``Unknown``: ' + Qgis.PostgresRelKind.Unknown.__doc__ + '\n' + '* ``OrdinaryTable``: ' + Qgis.PostgresRelKind.OrdinaryTable.__doc__ + '\n' + '* ``Index``: ' + Qgis.PostgresRelKind.Index.__doc__ + '\n' + '* ``Sequence``: ' + Qgis.PostgresRelKind.Sequence.__doc__ + '\n' + '* ``View``: ' + Qgis.PostgresRelKind.View.__doc__ + '\n' + '* ``MaterializedView``: ' + Qgis.PostgresRelKind.MaterializedView.__doc__ + '\n' + '* ``CompositeType``: ' + Qgis.PostgresRelKind.CompositeType.__doc__ + '\n' + '* ``ToastTable``: ' + Qgis.PostgresRelKind.ToastTable.__doc__ + '\n' + '* ``ForeignTable``: ' + Qgis.PostgresRelKind.ForeignTable.__doc__ + '\n' + '* ``PartitionedTable``: ' + Qgis.PostgresRelKind.PartitionedTable.__doc__
 # --
 Qgis.PostgresRelKind.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.DatabaseProviderConnectionCapability2.SetFieldComment.__doc__ = "Can set comments for fields via setFieldComment()"
+Qgis.DatabaseProviderConnectionCapability2.SetFieldAlias.__doc__ = "Can set aliases for fields via setFieldAlias()"
+Qgis.DatabaseProviderConnectionCapability2.__doc__ = 'The Capability enum represents the extended operations supported by the connection.\n\n.. versionadded:: 3.32\n\n' + '* ``SetFieldComment``: ' + Qgis.DatabaseProviderConnectionCapability2.SetFieldComment.__doc__ + '\n' + '* ``SetFieldAlias``: ' + Qgis.DatabaseProviderConnectionCapability2.SetFieldAlias.__doc__
+# --
+Qgis.DatabaseProviderConnectionCapability2.baseClass = Qgis
+Qgis.DatabaseProviderConnectionCapabilities2.baseClass = Qgis
+DatabaseProviderConnectionCapabilities2 = Qgis  # dirty hack since SIP seems to introduce the flags in module

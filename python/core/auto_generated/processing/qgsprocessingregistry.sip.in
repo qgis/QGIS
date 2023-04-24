@@ -10,6 +10,25 @@
 
 
 
+class QgsProcessingAlgorithmInformation
+{
+%Docstring(signature="appended")
+Contains basic properties for a Processing algorithm.
+
+.. versionadded:: 3.32
+%End
+
+%TypeHeaderCode
+#include "qgsprocessingregistry.h"
+%End
+  public:
+
+    QString displayName;
+
+    QIcon icon;
+};
+
+
 class QgsProcessingRegistry : QObject
 {
 %Docstring(signature="appended")
@@ -78,6 +97,16 @@ Returns a matching provider by provider ID.
 Returns a list of all available algorithms from registered providers.
 
 .. seealso:: :py:func:`algorithmById`
+%End
+
+    QgsProcessingAlgorithmInformation algorithmInformation( const QString &id ) const;
+%Docstring
+Returns basic algorithm information for the algorithm with matching ID.
+
+This method uses an internal cache to ensure that information is quickly
+returned and is suitable for calling many times.
+
+.. versionadded:: 3.32
 %End
 
     const QgsProcessingAlgorithm *algorithmById( const QString &id ) const;

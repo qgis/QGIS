@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 ***************************************************************************
     contour.py
@@ -172,13 +170,13 @@ class contour(GdalAlgorithm):
             arguments.append('-inodata')
 
         if nodata is not None:
-            arguments.append('-snodata {}'.format(nodata))
+            arguments.append(f'-snodata {nodata}')
 
         if offset:
-            arguments.append('-off {}'.format(offset))
+            arguments.append(f'-off {offset}')
 
         if outFormat:
-            arguments.append('-f {}'.format(outFormat))
+            arguments.append(f'-f {outFormat}')
 
         if self.EXTRA in parameters and parameters[self.EXTRA] not in (None, ''):
             extra = self.parameterAsString(parameters, self.EXTRA, context)

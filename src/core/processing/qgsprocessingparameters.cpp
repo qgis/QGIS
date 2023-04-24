@@ -595,6 +595,7 @@ QStringList QgsProcessingParameters::parameterAsEnumStrings( const QgsProcessing
   if ( enumValues.isEmpty() || !subtraction.isEmpty() )
   {
     enumValues.clear();
+    // cppcheck-suppress invalidContainer
     processVariant( definition->defaultValue() );
   }
 
@@ -4932,7 +4933,7 @@ QString QgsProcessingParameterEnum::valueAsPythonString( const QVariant &value, 
 
   if ( mUsesStaticStrings )
   {
-    if ( value.type() == QVariant::StringList )
+    if ( value.type() == QVariant::List || value.type() == QVariant::StringList )
     {
       QStringList parts;
       const QStringList constList = value.toStringList();

@@ -528,7 +528,7 @@ bool QgsOracleConn::execLogged( const QString &query, bool logError, QString *er
 
   QSqlQuery qry( mDatabase );
 
-  const bool res { !exec( qry, query, QVariantList() ) };
+  const bool res { exec( qry, query, QVariantList() ) };
 
   logWrapper.setQuery( qry.lastQuery() );
 

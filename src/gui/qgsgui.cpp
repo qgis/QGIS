@@ -61,6 +61,7 @@
 #include "qgshistoryproviderregistry.h"
 #include "qgslayermetadatasourceselectprovider.h"
 #include "qgssensorguiregistry.h"
+#include "qgshistoryentry.h"
 
 #include <QPushButton>
 #include <QToolButton>
@@ -325,6 +326,8 @@ QgsGui::QgsGui()
   mWidgetStateHelper = new QgsWidgetStateHelper();
   mProcessingRecentAlgorithmLog = new QgsProcessingRecentAlgorithmLog();
   mProcessingGuiRegistry = new QgsProcessingGuiRegistry();
+
+  qRegisterMetaType< QgsHistoryEntry >( "QgsHistoryEntry" );
 }
 
 bool QgsGui::pythonMacroAllowed( void ( *lambda )(), QgsMessageBar *messageBar )
