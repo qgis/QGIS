@@ -244,8 +244,8 @@ class TilesXYZAlgorithmBase(QgisAlgorithm):
         # Transform extent to match project CRS
         extent_original = self.parameterAsExtent(parameters, self.EXTENT, context)
         extent_crs = self.parameterAsExtentCrs(parameters, self.EXTENT, context)
-        self.extentCrsToProjectCrs = QgsCoordinateTransform(extent_crs, project.crs(), context.transformContext())
-        extent = self.extentCrsToProjectCrs.transformBoundingBox(extent_original)
+        extent_crs_to_project_crs = QgsCoordinateTransform(extent_crs, project.crs(), context.transformContext())
+        extent = extent_crs_to_project_crs.transformBoundingBox(extent_original)
 
         self.min_zoom = self.parameterAsInt(parameters, self.ZOOM_MIN, context)
         self.max_zoom = self.parameterAsInt(parameters, self.ZOOM_MAX, context)
