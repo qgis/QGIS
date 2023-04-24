@@ -98,6 +98,13 @@ void QgsMeasureTool::deactivate()
   QgsMapTool::deactivate();
 }
 
+void QgsMeasureTool::reactivate()
+{
+  // User clicked on the measure action while it was already active
+  // Only ensure that the dialog is visible
+  mDialog->show();
+}
+
 void QgsMeasureTool::restart()
 {
   mPoints.clear();
