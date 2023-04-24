@@ -294,6 +294,7 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
                     if self.history_log_id is not None:
                         # can't deepcopy this!
                         self.history_details['results'] = {k: v for k, v in results.items() if k != 'CHILD_INPUTS'}
+                        self.history_details['log'] = self.feedback.htmlLog()
 
                         QgsGui.historyProviderRegistry().updateEntry(self.history_log_id, self.history_details)
 
