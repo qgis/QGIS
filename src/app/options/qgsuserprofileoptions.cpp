@@ -33,6 +33,10 @@ QgsUserProfileOptionsWidget::QgsUserProfileOptionsWidget( QWidget *parent )
   mDefaultProfileComboBox->setEnabled( false );
   connect( mDefaultProfile, &QRadioButton::toggled, mDefaultProfileComboBox, &QComboBox::setEnabled );
 
+  // Connect change icon button
+  connect( mChangeIconButton, &QToolButton::clicked, this, &QgsUserProfileOptionsWidget::onChangeIconClicked );
+  connect( mResetIconButton, &QToolButton::clicked, this, &QgsUserProfileOptionsWidget::onResetIconClicked );
+
   // Init radio buttons
   auto manager = QgisApp::instance()->userProfileManager();
   if ( manager->userProfileSelectionPolicy() == QgsUserProfileManager::UserProfileSelectionPolicy::LastProfile )
@@ -56,6 +60,10 @@ QgsUserProfileOptionsWidget::QgsUserProfileOptionsWidget( QWidget *parent )
     mDefaultProfileComboBox->addItem( icon, profile );
   }
   mDefaultProfileComboBox->setCurrentText( manager->defaultProfileName() );
+
+  // Init Active profile name and icon
+  mChangeIconButton->setIcon( manager->userProfile()->icon() );
+  mActiveProfileGroupBox->setTitle( tr( "Active Profile (%1)", "Active profile name" ).arg( manager->userProfile()->name() ) );
 }
 
 void QgsUserProfileOptionsWidget::apply()
@@ -76,7 +84,44 @@ void QgsUserProfileOptionsWidget::apply()
   }
 }
 
+void QgsUserProfileOptionsWidget::onChangeIconClicked()
+{
+  auto activeProfile = QgisApp::instance()->userProfileManager()->userProfile();
+  const QString profileName = activeProfile->name();
+  const QString iconPath = QFileDialog::getOpenFileName( this, tr( "Select icon" ), "", tr( "Images (*.png *.jpg *.jpeg *.gif *.bmp *.svg)" ) );
+  if ( !iconPath.isEmpty() )
+  {
+    // Remove existing icon files
+    QDir dir( activeProfile->folder(), "icon.*", QDir::Name, QDir::Files );
+    for ( const QString &file : dir.entryList() )
+    {
+      dir.remove( file );
+    }
+    // Copy the icon file to the profile folder
+    const QString extension = QFileInfo( iconPath ).suffix();
+    const QString dstPath = activeProfile->folder() + QDir::separator() + "icon." + extension;
+    QFile::copy( iconPath, dstPath );
 
+    // Update the button icon
+    mChangeIconButton->setIcon( QIcon( iconPath ) );
+    mDefaultProfileComboBox->setItemIcon( mDefaultProfileComboBox->findText( activeProfile->name() ), activeProfile->icon() );
+  }
+}
+
+
+void QgsUserProfileOptionsWidget::onResetIconClicked()
+{
+  auto activeProfile = QgisApp::instance()->userProfileManager()->userProfile();
+  // Remove existing icon files
+  QDir dir( activeProfile->folder(), "icon.*", QDir::Name, QDir::Files );
+  for ( const QString &file : dir.entryList() )
+  {
+    dir.remove( file );
+  }
+  // Update the button icon
+  mChangeIconButton->setIcon( activeProfile->icon() );
+  mDefaultProfileComboBox->setItemIcon( mDefaultProfileComboBox->findText( activeProfile->name() ), activeProfile->icon() );
+}
 
 
 //

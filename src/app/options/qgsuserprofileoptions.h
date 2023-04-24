@@ -32,12 +32,18 @@ class APP_EXPORT QgsUserProfileOptionsWidget : public QgsOptionsPageWidget, priv
 
   public:
 
-    /**
-     * Constructor for QgsUserProfileOptionsWidget with the specified \a parent widget.
-     */
+    //! Constructor for QgsUserProfileOptionsWidget with the specified \a parent widget.
     QgsUserProfileOptionsWidget( QWidget *parent );
 
     void apply() override;
+
+  private slots:
+
+    //! Change the default profile icon
+    void onChangeIconClicked();
+
+    //! Reset the profile icon to default
+    void onResetIconClicked();
 
 };
 
