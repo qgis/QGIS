@@ -101,7 +101,7 @@ class CORE_EXPORT QgsProcessingContext
       mAreaUnit = other.mAreaUnit;
       mLogLevel = other.mLogLevel;
       mTemporaryFolderOverride = other.mTemporaryFolderOverride;
-      mThreadsToUse = other.mThreadsToUse;
+      mMaximumThreads = other.mMaximumThreads;
     }
 
     /**
@@ -684,14 +684,15 @@ class CORE_EXPORT QgsProcessingContext
     /**
      * Returns the (optional) number of threads to use when running algorithms.
      *
-     * If set, this overrides the standard global Processing number of threads setting.
-     * Note that if algorithm implementation does not support multhreaded execution, this
-     * setting will be ignored.
+     * \warning Not all algorithms which support multithreaded execution will
+     * respect this setting, depending on the multi-threading framework in use.
+     * Multithreaded algorithms must check this value and adapt their thread
+     * handling accordingly -- the setting will not be automatically applied.
      *
-     * \see setNumberOfThreads()
+     * \see setMaximumThreads()
      * \since QGIS 3.32
      */
-    int numberOfThreads() const;
+    int maximumThreads() const;
 
     /**
      * Sets the (optional) number of \a threads to use when running algorithms.
@@ -700,10 +701,15 @@ class CORE_EXPORT QgsProcessingContext
      * Note that if algorithm implementation does not support multhreaded execution, this
      * setting will be ignored.
      *
-     * \see numberOfThreads()
+     * \warning Not all algorithms which support multithreaded execution will
+     * respect this setting, depending on the multi-threading framework in use.
+     * Multithreaded algorithms must check this value and adapt their thread
+     * handling accordingly -- the setting will not be automatically applied.
+     *
+     * \see maximumThreads()
      * \since QGIS 3.32
      */
-    void setNumberOfThreads( int threads );
+    void setMaximumThreads( int threads );
 
     /**
      * Exports the context's settings to a variant map.
@@ -762,7 +768,7 @@ class CORE_EXPORT QgsProcessingContext
     LogLevel mLogLevel = DefaultLevel;
 
     QString mTemporaryFolderOverride;
-    int mThreadsToUse = QThread::idealThreadCount();
+    int mMaximumThreads = QThread::idealThreadCount();
 
 #ifdef SIP_RUN
     QgsProcessingContext( const QgsProcessingContext &other );

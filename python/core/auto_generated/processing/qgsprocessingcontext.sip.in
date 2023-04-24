@@ -611,20 +611,23 @@ for all temporary files created during algorithm execution.
 .. versionadded:: 3.32
 %End
 
-    int numberOfThreads() const;
+    int maximumThreads() const;
 %Docstring
 Returns the (optional) number of threads to use when running algorithms.
 
-If set, this overrides the standard global Processing number of threads setting.
-Note that if algorithm implementation does not support multhreaded execution, this
-setting will be ignored.
+.. warning::
 
-.. seealso:: :py:func:`setNumberOfThreads`
+   Not all algorithms which support multithreaded execution will
+   respect this setting, depending on the multi-threading framework in use.
+   Multithreaded algorithms must check this value and adapt their thread
+   handling accordingly -- the setting will not be automatically applied.
+
+.. seealso:: :py:func:`setMaximumThreads`
 
 .. versionadded:: 3.32
 %End
 
-    void setNumberOfThreads( int threads );
+    void setMaximumThreads( int threads );
 %Docstring
 Sets the (optional) number of ``threads`` to use when running algorithms.
 
@@ -632,7 +635,14 @@ If set, this overrides the standard global Processing number of threads setting.
 Note that if algorithm implementation does not support multhreaded execution, this
 setting will be ignored.
 
-.. seealso:: :py:func:`numberOfThreads`
+.. warning::
+
+   Not all algorithms which support multithreaded execution will
+   respect this setting, depending on the multi-threading framework in use.
+   Multithreaded algorithms must check this value and adapt their thread
+   handling accordingly -- the setting will not be automatically applied.
+
+.. seealso:: :py:func:`maximumThreads`
 
 .. versionadded:: 3.32
 %End
