@@ -1117,6 +1117,19 @@ void QgsProjectionSelectionTreeWidget::showDBMissingWarning( const QString &file
 
 void QgsProjectionSelectionTreeWidget::clearRecentCrs()
 {
+  // If the list is empty, there is nothing to do
+  if ( lstRecent->topLevelItemCount() == 0 )
+  {
+    return;
+  }
+
+  // Ask for confirmation
+  if ( QMessageBox::question( this, tr( "Clear Recent CRS" ),
+                              tr( "Are you sure you want to clear the list of recently used coordinate reference system?" ),
+                              QMessageBox::Yes | QMessageBox::No ) != QMessageBox::Yes )
+  {
+    return;
+  }
   QgsCoordinateReferenceSystem::clearRecentCoordinateReferenceSystems();
   lstRecent->clear();
 }
