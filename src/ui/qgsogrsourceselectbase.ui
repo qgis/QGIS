@@ -51,9 +51,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>-282</y>
-        <width>508</width>
-        <height>745</height>
+        <y>0</y>
+        <width>537</width>
+        <height>757</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -98,6 +98,13 @@
                <widget class="QRadioButton" name="radioSrcProtocol">
                 <property name="text">
                  <string>Protoco&amp;l: HTTP(S), cloud, etc.</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QRadioButton" name="radioSrcOgcApi">
+                <property name="text">
+                 <string>OGC API</string>
                 </property>
                </widget>
               </item>
@@ -383,8 +390,8 @@
           </widget>
          </item>
          <item>
-          <widget class="QgsCollapsibleGroupBox" name="mOpenOptionsGroupBox">
-           <property name="title">
+          <widget class="QgsCollapsibleGroupBox" name="mOpenOptionsGroupBox" native="true">
+           <property name="title" stdset="0">
             <string>Options</string>
            </property>
            <layout class="QVBoxLayout" name="openOptionsVBoxLayout">
@@ -436,12 +443,6 @@
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
-   <class>QgsCollapsibleGroupBox</class>
-   <extends>QGroupBox</extends>
-   <header>qgscollapsiblegroupbox.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>QgsFileWidget</class>
    <extends>QWidget</extends>
    <header>qgsfilewidget.h</header>
@@ -451,6 +452,12 @@
    <class>QgsAuthSettingsWidget</class>
    <extends>QWidget</extends>
    <header>qgsauthsettingswidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsCollapsibleGroupBox</class>
+   <extends>QWidget</extends>
+   <header>qgscollapsiblegroupbox.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
