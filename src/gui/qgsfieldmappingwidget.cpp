@@ -157,7 +157,6 @@ bool QgsFieldMappingWidget::invertSelection()
       QModelIndex index = mTableView->model()->index( i, j );
       mTableView->selectionModel()->select( index, QItemSelectionModel::Toggle );
     }
-
   }
   return true;
 }
