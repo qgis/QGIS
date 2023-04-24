@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>412</width>
-    <height>226</height>
+    <width>462</width>
+    <height>378</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -15,22 +15,12 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_2">
    <item>
-    <widget class="QGroupBox" name="groupBox">
+    <widget class="QGroupBox" name="mProfilePolicyGroupBox">
      <property name="title">
       <string>Which profile should be used when QGIS starts ?</string>
      </property>
      <layout class="QGridLayout" name="gridLayout">
-      <item row="2" column="0">
-       <widget class="QRadioButton" name="mDefaultProfile">
-        <property name="text">
-         <string>Always use profile</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="1">
-       <widget class="QComboBox" name="mDefaultProfileComboBox"/>
-      </item>
-      <item row="4" column="0" colspan="2">
+      <item row="5" column="0" colspan="2">
        <widget class="QLabel" name="label">
         <property name="font">
          <font>
@@ -49,37 +39,124 @@
         </property>
        </widget>
       </item>
-      <item row="0" column="0">
-       <widget class="QRadioButton" name="mLastProfile">
-        <property name="text">
-         <string>Use last closed profile</string>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="0">
-       <spacer name="verticalSpacer">
-        <property name="orientation">
-         <enum>Qt::Vertical</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>20</width>
-          <height>40</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-      <item row="1" column="0" colspan="2">
+      <item row="2" column="0" colspan="2">
        <widget class="QRadioButton" name="mAskUser">
         <property name="text">
          <string>Let user choose profile at start up</string>
         </property>
        </widget>
       </item>
+      <item row="1" column="0">
+       <widget class="QRadioButton" name="mDefaultProfile">
+        <property name="text">
+         <string>Always use profile</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QComboBox" name="mDefaultProfileComboBox">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0" colspan="2">
+       <widget class="QRadioButton" name="mLastProfile">
+        <property name="text">
+         <string>Use last closed profile</string>
+        </property>
+       </widget>
+      </item>
      </layout>
     </widget>
    </item>
+   <item>
+    <widget class="QGroupBox" name="mActiveProfileGroupBox">
+     <property name="title">
+      <string>Active Profile</string>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <item>
+       <widget class="QLabel" name="mChangeIconLabel">
+        <property name="text">
+         <string>Change icon</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QToolButton" name="mChangeIconButton">
+        <property name="toolTip">
+         <string/>
+        </property>
+        <property name="text">
+         <string>Change profile icon</string>
+        </property>
+        <property name="icon">
+         <iconset resource="../../images/images.qrc">
+          <normaloff>:/images/themes/default/user.svg</normaloff>:/images/themes/default/user.svg</iconset>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>32</width>
+          <height>32</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QToolButton" name="mResetIconButton">
+        <property name="toolTip">
+         <string>Reset icon</string>
+        </property>
+        <property name="icon">
+         <iconset resource="../../images/images.qrc">
+          <normaloff>:/images/themes/default/mActionRefresh.svg</normaloff>:/images/themes/default/mActionRefresh.svg</iconset>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer name="horizontalSpacer">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
   </layout>
  </widget>
- <resources/>
+ <tabstops>
+  <tabstop>mLastProfile</tabstop>
+  <tabstop>mDefaultProfile</tabstop>
+  <tabstop>mDefaultProfileComboBox</tabstop>
+  <tabstop>mAskUser</tabstop>
+  <tabstop>mChangeIconButton</tabstop>
+ </tabstops>
+ <resources>
+  <include location="../../images/images.qrc"/>
+ </resources>
+ <connections/>
 </ui>
