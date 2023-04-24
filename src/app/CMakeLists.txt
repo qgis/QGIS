@@ -261,6 +261,7 @@ set(QGIS_APP_SRCS
   options/qgsrenderingoptions.cpp
   options/qgsvectorrenderingoptions.cpp
   options/qgsuserprofilesettingsdialog.cpp
+  options/qgsuserprofileselectiondialog.cpp
 
   gps/qgsappgpsconnection.cpp
   gps/qgsappgpsdigitizing.cpp
