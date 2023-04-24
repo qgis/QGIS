@@ -98,6 +98,9 @@ QgsProjectionSelectionTreeWidget::QgsProjectionSelectionTreeWidget( QWidget *par
     menu.exec( lstRecent->viewport()->mapToGlobal( pos ) );
   } );
 
+  // Install event fiter to catch delete key press on the recent crs list
+  lstRecent->installEventFilter( this );
+
   mRecentProjections = QgsCoordinateReferenceSystem::recentCoordinateReferenceSystems();
 
   mCheckBoxNoProjection->setHidden( true );
@@ -172,6 +175,25 @@ void QgsProjectionSelectionTreeWidget::showEvent( QShowEvent *event )
   // Pass up the inheritance hierarchy
   QWidget::showEvent( event );
   mInitialized = true;
+}
+
+
+bool QgsProjectionSelectionTreeWidget::eventFilter( QObject *obj, QEvent *ev )
+{
+  if ( obj != lstRecent )
+    return false;
+
+  if ( ev->type() != QEvent::KeyPress )
+    return false;
+
+  QKeyEvent *keyEvent = static_cast<QKeyEvent *>( ev );
+  if ( keyEvent->matches( QKeySequence::Delete ) )
+  {
+    removeRecentCrsItem( lstRecent->currentItem() );
+    return true;
+  }
+
+  return false;
 }
 
 QString QgsProjectionSelectionTreeWidget::ogcWmsCrsFilterAsSqlExpression( QSet<QString> *crsFilter )

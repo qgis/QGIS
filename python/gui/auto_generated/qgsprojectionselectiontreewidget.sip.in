@@ -198,6 +198,9 @@ Emitted when the selection in the tree is changed from a valid selection to an i
     virtual void resizeEvent( QResizeEvent *event );
 
 
+    virtual bool eventFilter( QObject *obj, QEvent *ev );
+
+
 };
 
 /************************************************************************
