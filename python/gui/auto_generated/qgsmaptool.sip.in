@@ -299,6 +299,12 @@ signal emitted once the map tool is activated
 signal emitted once the map tool is deactivated
 %End
 
+    void reactivated();
+%Docstring
+
+.. versionadded:: 3.32
+%End
+
   protected:
 
     QgsMapTool( QgsMapCanvas *canvas /TransferThis/ );

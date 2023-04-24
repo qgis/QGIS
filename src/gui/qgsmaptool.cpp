@@ -120,7 +120,7 @@ void QgsMapTool::deactivate()
 
 void QgsMapTool::reactivate()
 {
-
+  emit reactivated();
 }
 
 void QgsMapTool::clean()

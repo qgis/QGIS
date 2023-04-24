@@ -287,6 +287,9 @@ class GUI_EXPORT QgsMapTool : public QObject
     //! signal emitted once the map tool is deactivated
     void deactivated();
 
+    //! \since QGIS 3.32 signal emitted when the map tool is activated while it is already active
+    void reactivated();
+
   private slots:
     //! clear pointer when action is destroyed
     void actionDestroyed();
