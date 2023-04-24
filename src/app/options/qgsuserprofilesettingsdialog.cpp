@@ -46,7 +46,11 @@ QgsUserProfileSettingsDialog::QgsUserProfileSettingsDialog( QWidget *parent )
 
   // Fill combobox with profiles
   mDefaultProfileComboBox->clear();
-  mDefaultProfileComboBox->addItems( manager->allProfiles() );
+  for ( auto profile : manager->allProfiles() )
+  {
+    QIcon icon = manager->profileForName( profile )->icon();
+    mDefaultProfileComboBox->addItem( icon, profile );
+  }
   mDefaultProfileComboBox->setCurrentText( manager->defaultProfileName() );
 }
 
