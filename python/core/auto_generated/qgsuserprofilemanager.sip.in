@@ -174,6 +174,38 @@ Sets the user profile selection policy.
 .. versionadded:: 3.32
 %End
 
+    int profileSelectorIconSize() const;
+%Docstring
+Returns the icon size for the profile selector.
+
+.. versionadded:: 3.32
+%End
+
+    void setProfileSelectorIconSize( int size );
+%Docstring
+Sets the icon size for the profile selector.
+
+:param size: The size of the icon in pixels.
+
+.. versionadded:: 3.32
+%End
+
+    bool profileSelectorProfileCreationAllowed() const;
+%Docstring
+Returns whether the profile selector should allow the creation of new profiles.
+
+.. versionadded:: 3.32
+%End
+
+    void setProfileSelectorProfileCreationAllowed( bool allow );
+%Docstring
+Sets whether the profile selector should allow the creation of new profiles.
+
+:param allow: ``True`` if new profiles should be allowed.
+
+.. versionadded:: 3.32
+%End
+
     QgsUserProfile *profileForName( const QString &name ) const /Factory/;
 %Docstring
 Returns the profile found for a given name.

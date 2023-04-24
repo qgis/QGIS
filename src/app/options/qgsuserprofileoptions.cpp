@@ -29,16 +29,35 @@ QgsUserProfileOptionsWidget::QgsUserProfileOptionsWidget( QWidget *parent )
 {
   setupUi( this );
 
+  auto manager = QgisApp::instance()->userProfileManager();
+
   // Disable combobox if default profile is not selected
   mDefaultProfileComboBox->setEnabled( false );
   connect( mDefaultProfile, &QRadioButton::toggled, mDefaultProfileComboBox, &QComboBox::setEnabled );
+
+  // Disable Profile selector groupbox if Ask user is not selected
+  mProfileSelectorGroupBox->setEnabled( false );
+  connect( mAskUser, &QRadioButton::toggled, mProfileSelectorGroupBox, &QGroupBox::setEnabled );
+
+  // Connect icon size and allow profile creation
+  mIconSize->setCurrentText( QString::number( manager->profileSelectorIconSize() ) );
+  mAllowProfileCreation->setChecked( manager->profileSelectorProfileCreationAllowed() );
+  connect( mIconSize, &QComboBox::currentTextChanged, this, []( const QString & text )
+  {
+    auto manager = QgisApp::instance()->userProfileManager();
+    manager->setProfileSelectorIconSize( text.toInt() );
+  } );
+  connect( mAllowProfileCreation, &QCheckBox::toggled, this, []( bool checked )
+  {
+    auto manager = QgisApp::instance()->userProfileManager();
+    manager->setProfileSelectorProfileCreationAllowed( checked );
+  } );
 
   // Connect change icon button
   connect( mChangeIconButton, &QToolButton::clicked, this, &QgsUserProfileOptionsWidget::onChangeIconClicked );
   connect( mResetIconButton, &QToolButton::clicked, this, &QgsUserProfileOptionsWidget::onResetIconClicked );
 
   // Init radio buttons
-  auto manager = QgisApp::instance()->userProfileManager();
   if ( manager->userProfileSelectionPolicy() == QgsUserProfileManager::UserProfileSelectionPolicy::LastProfile )
   {
     mLastProfile->setChecked( true );
