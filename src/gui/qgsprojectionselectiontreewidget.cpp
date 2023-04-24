@@ -29,6 +29,7 @@
 
 //qt includes
 #include <QAction>
+#include <QToolButton>
 #include <QMenu>
 #include <QFileInfo>
 #include <QHeaderView>
@@ -53,7 +54,6 @@ QgsProjectionSelectionTreeWidget::QgsProjectionSelectionTreeWidget( QWidget *par
   connect( lstRecent, &QTreeWidget::currentItemChanged, this, &QgsProjectionSelectionTreeWidget::lstRecent_currentItemChanged );
   connect( cbxHideDeprecated, &QCheckBox::stateChanged, this, &QgsProjectionSelectionTreeWidget::updateFilter );
   connect( leSearch, &QgsFilterLineEdit::textChanged, this, &QgsProjectionSelectionTreeWidget::updateFilter );
-  connect( mClearRecentCrs, &QToolButton::clicked, this, &QgsProjectionSelectionTreeWidget::clearRecentCrs );
 
   mAreaCanvas->setVisible( mShowMap );
 

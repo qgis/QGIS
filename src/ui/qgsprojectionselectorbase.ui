@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>578</width>
-    <height>654</height>
+    <height>650</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -95,36 +95,6 @@
            <string>Recently Used Coordinate Reference Systems</string>
           </property>
          </widget>
-        </item>
-        <item>
-         <widget class="QToolButton" name="mClearRecentCrs">
-          <property name="toolTip">
-           <string>Clear all recently used CRS</string>
-          </property>
-          <property name="text">
-           <string>Clear</string>
-          </property>
-          <property name="icon">
-           <iconset resource="../../images/images.qrc">
-            <normaloff>:/images/themes/default/console/iconClearConsole.svg</normaloff>:/images/themes/default/console/iconClearConsole.svg</iconset>
-          </property>
-          <property name="autoRaise">
-           <bool>true</bool>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <spacer name="horizontalSpacer">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>40</width>
-            <height>20</height>
-           </size>
-          </property>
-         </spacer>
         </item>
        </layout>
       </item>
@@ -262,7 +232,7 @@
           </item>
          </layout>
         </widget>
-        <widget class="QWidget" name="layoutWidget">
+        <widget class="QWidget" name="layoutWidget_2">
          <layout class="QHBoxLayout" name="horizontalLayout_4">
           <property name="topMargin">
            <number>0</number>
