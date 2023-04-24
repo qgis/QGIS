@@ -5,6 +5,7 @@ Section: science
 Priority: optional
 Build-Depends:
  bison,
+ build-essential,
  ca-certificates,
  cmake (>= 2.8),
  debhelper (>= 9),
