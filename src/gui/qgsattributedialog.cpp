@@ -87,6 +87,14 @@ void QgsAttributeDialog::accept()
 void QgsAttributeDialog::show()
 {
   QDialog::show();
+
+  // We cannot call restoreGeometry() in the constructor or init because the dialog is not yet visible
+  // and the geometry restoration will not take the window decorations (frame) into account.
+  if ( mFirstShow )
+  {
+    mFirstShow = false;
+    restoreGeometry();
+  }
   raise();
   activateWindow();
 }
@@ -133,8 +141,6 @@ void QgsAttributeDialog::init( QgsVectorLayer *layer, QgsFeature *feature, const
     mMenuBar->addMenu( mMenu );
     layout()->setMenuBar( mMenuBar );
   }
-
-  restoreGeometry();
   focusNextChild();
 }
 
