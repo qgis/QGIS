@@ -282,7 +282,7 @@ class QgsDatabaseItemGuiProvider : public QObject, public QgsDataItemGuiProvider
 
   public:
 
-    QgsDatabaseItemGuiProvider() = default;
+    QgsDatabaseItemGuiProvider();
 
     QString name() override;
 
