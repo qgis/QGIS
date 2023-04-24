@@ -17,6 +17,7 @@
 #define QGSUSERPROFILESELECTIONDIALOG_H
 
 #include <QDialog>
+#include <qgis_app.h>
 
 #include "ui_qgsuserprofileselectiondialog.h"
 
@@ -30,7 +31,7 @@ class QEvent;
  * \brief A dialog shown at startup to select the user profile
  * \since QGIS 3.32
  */
-class GUI_EXPORT QgsUserProfileSelectionDialog : public QDialog, private Ui::QgsUserProfileSelectionDialog
+class APP_EXPORT QgsUserProfileSelectionDialog : public QDialog, private Ui::QgsUserProfileSelectionDialog
 {
     Q_OBJECT
 
