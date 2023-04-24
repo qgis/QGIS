@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 ***************************************************************************
     RasterCalculatorWidgets.py
@@ -57,7 +55,7 @@ WIDGET_ADD_NEW, BASE_ADD_NEW = uic.loadUiType(
 class AddNewExpressionDialog(BASE_ADD_NEW, WIDGET_ADD_NEW):
 
     def __init__(self, expression):
-        super(AddNewExpressionDialog, self).__init__()
+        super().__init__()
         self.setupUi(self)
 
         self.name = None
@@ -82,7 +80,7 @@ WIDGET_DLG, BASE_DLG = uic.loadUiType(
 class PredefinedExpressionDialog(BASE_DLG, WIDGET_DLG):
 
     def __init__(self, expression, options):
-        super(PredefinedExpressionDialog, self).__init__()
+        super().__init__()
         self.setupUi(self)
 
         self.filledExpression = None
@@ -124,20 +122,20 @@ class ExpressionWidget(BASE, WIDGET):
     _expressions = {"NDVI": "([NIR] - [Red]) / ([NIR] + [Red])"}
 
     def __init__(self, options):
-        super(ExpressionWidget, self).__init__(None)
+        super().__init__(None)
         self.setupUi(self)
 
         self.setList(options)
 
         def doubleClicked(item):
-            self.text.insertPlainText('"{}"'.format(self.options[item.text()]))
+            self.text.insertPlainText(f'"{self.options[item.text()]}"')
 
         def addButtonText(text):
             if any(c for c in text if c.islower()):
-                self.text.insertPlainText(" {}()".format(text))
+                self.text.insertPlainText(f" {text}()")
                 self.text.moveCursor(QTextCursor.PreviousCharacter, QTextCursor.MoveAnchor)
             else:
-                self.text.insertPlainText(" {} ".format(text))
+                self.text.insertPlainText(f" {text} ")
         buttons = [b for b in self.buttonsGroupBox.children()if isinstance(b, QPushButton)]
         for button in buttons:
             button.clicked.connect(partial(addButtonText, button.text()))
@@ -249,7 +247,7 @@ class ExpressionWidgetWrapper(WidgetWrapper):
             return QLineEdit()
         else:
             layers = self.dialog.getAvailableValuesOfType([QgsProcessingParameterRasterLayer], [QgsProcessingOutputRasterLayer])
-            options = {self.dialog.resolveValueDescription(lyr): "{}@1".format(self.dialog.resolveValueDescription(lyr)) for lyr in layers}
+            options = {self.dialog.resolveValueDescription(lyr): f"{self.dialog.resolveValueDescription(lyr)}@1" for lyr in layers}
             self.widget = self._panel(options)
             return self.widget
 

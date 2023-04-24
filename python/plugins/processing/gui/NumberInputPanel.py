@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 ***************************************************************************
     NumberInputPanel.py
@@ -102,7 +100,7 @@ class ModelerNumberInputPanel(BASE, WIDGET):
 
         for alg in list(self.modelParametersDialog.model.childAlgorithms().values()):
             for out in alg.algorithm().outputDefinitions():
-                if isinstance(out, QgsProcessingOutputNumber) and "@%s_%s" % (alg.childId(), out.name()) == value.strip():
+                if isinstance(out, QgsProcessingOutputNumber) and f"@{alg.childId()}_{out.name()}" == value.strip():
                     return QgsProcessingModelChildParameterSource.fromChildOutput(alg.childId(), out.outputName())
 
         try:
@@ -115,7 +113,7 @@ class ModelerNumberInputPanel(BASE, WIDGET):
             if value.source() == QgsProcessingModelChildParameterSource.ModelParameter:
                 self.leText.setText('@' + value.parameterName())
             elif value.source() == QgsProcessingModelChildParameterSource.ChildOutput:
-                name = "%s_%s" % (value.outputChildId(), value.outputName())
+                name = f"{value.outputChildId()}_{value.outputName()}"
                 self.leText.setText(name)
             elif value.source() == QgsProcessingModelChildParameterSource.Expression:
                 self.leText.setText(value.expression())
@@ -134,7 +132,7 @@ class NumberInputPanel(NUMBER_BASE, NUMBER_WIDGET):
     hasChanged = pyqtSignal()
 
     def __init__(self, param):
-        super(NumberInputPanel, self).__init__(None)
+        super().__init__(None)
         self.setupUi(self)
 
         self.layer = None

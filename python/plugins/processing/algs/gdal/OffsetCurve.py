@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 ***************************************************************************
     offsetcurve.py
@@ -110,13 +108,13 @@ class OffsetCurve(GdalAlgorithm):
             'sqlite',
             '-sql'
         ]
-        sql = 'SELECT ST_OffsetCurve({}, {}) AS {}{} FROM "{}"'.format(geometry, distance, geometry, other_fields, layerName)
+        sql = f'SELECT ST_OffsetCurve({geometry}, {distance}) AS {geometry}{other_fields} FROM "{layerName}"'
         arguments.append(sql)
 
         if options:
             arguments.append(options)
 
         if outputFormat:
-            arguments.append('-f {}'.format(outputFormat))
+            arguments.append(f'-f {outputFormat}')
 
         return ['ogr2ogr', GdalUtils.escapeAndJoin(arguments)]

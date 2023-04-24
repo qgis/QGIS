@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 ***************************************************************************
     GdalUtils.py
@@ -81,7 +79,7 @@ class GdalUtils:
         isDarwin = False
         try:
             isDarwin = platform.system() == 'Darwin'
-        except IOError:  # https://travis-ci.org/m-kuhn/QGIS#L1493-L1526
+        except OSError:  # https://travis-ci.org/m-kuhn/QGIS#L1493-L1526
             pass
         if isDarwin and os.path.isfile(os.path.join(QgsApplication.prefixPath(), "bin", "gdalinfo")):
             # Looks like there's a bundled gdal. Let's use it.
@@ -92,7 +90,7 @@ class GdalUtils:
             settings = QgsSettings()
             path = settings.value('/GdalTools/gdalPath', '')
             if not path.lower() in envval.lower().split(os.pathsep):
-                envval += '{}{}'.format(os.pathsep, path)
+                envval += f'{os.pathsep}{path}'
                 os.putenv('PATH', envval)
 
         fused_command = ' '.join([str(c) for c in commands])
@@ -352,15 +350,15 @@ class GdalUtils:
             # #(Shape) sql='
             dsUri = layer.dataProvider().uri()
             ogrstr = 'MSSQL:'
-            ogrstr += 'database={0};'.format(dsUri.database())
-            ogrstr += 'server={0};'.format(dsUri.host())
+            ogrstr += f'database={dsUri.database()};'
+            ogrstr += f'server={dsUri.host()};'
             if dsUri.username() != "":
-                ogrstr += 'uid={0};'.format(dsUri.username())
+                ogrstr += f'uid={dsUri.username()};'
             else:
                 ogrstr += 'trusted_connection=yes;'
             if dsUri.password() != '':
-                ogrstr += 'pwd={0};'.format(dsUri.password())
-            ogrstr += 'tables={0}'.format(dsUri.table())
+                ogrstr += f'pwd={dsUri.password()};'
+            ogrstr += f'tables={dsUri.table()}'
             format = 'MSSQL'
         elif provider == "oracle":
             # OCI:user/password@host:port/service:table
@@ -395,7 +393,7 @@ class GdalUtils:
         elif provider.lower() == "wfs":
             uri = QgsDataSourceUri(layer.source())
             baseUrl = uri.param('url').split('?')[0]
-            ogrstr = "WFS:{}".format(baseUrl)
+            ogrstr = f"WFS:{baseUrl}"
             format = 'WFS'
         else:
             ogrstr = str(layer.source()).split("|")[0]

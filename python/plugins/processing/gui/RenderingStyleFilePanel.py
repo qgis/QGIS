@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 ***************************************************************************
     RenderingStyleFilePanel.py
@@ -40,7 +38,7 @@ with warnings.catch_warnings():
 class RenderingStyleFilePanel(BASE, WIDGET):
 
     def __init__(self):
-        super(RenderingStyleFilePanel, self).__init__(None)
+        super().__init__(None)
         self.setupUi(self)
 
         self.btnSelect.clicked.connect(self.showSelectionDialog)

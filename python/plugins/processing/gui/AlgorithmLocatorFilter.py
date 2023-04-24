@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 ***************************************************************************
     AlgorithmLocatorFilter.py
@@ -42,7 +40,7 @@ from processing.core.ProcessingConfig import ProcessingConfig
 class AlgorithmLocatorFilter(QgsLocatorFilter):
 
     def __init__(self, parent=None):
-        super(AlgorithmLocatorFilter, self).__init__(parent)
+        super().__init__(parent)
 
     def clone(self):
         return AlgorithmLocatorFilter()

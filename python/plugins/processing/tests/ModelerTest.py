@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 ***************************************************************************
     ModelerTest
@@ -59,16 +57,16 @@ class ModelerTest(unittest.TestCase):
 
         dlg = ModelerParametersDialog(m, m)
         # test single types
-        self.assertEqual(set(p.parameterName() for p in dlg.getAvailableValuesOfType(QgsProcessingParameterNumber)),
-                         set(['number']))
-        self.assertEqual(set(p.parameterName() for p in dlg.getAvailableValuesOfType(QgsProcessingParameterField)),
-                         set(['field']))
-        self.assertEqual(set(p.parameterName() for p in dlg.getAvailableValuesOfType(QgsProcessingParameterFile)),
-                         set(['file']))
+        self.assertEqual({p.parameterName() for p in dlg.getAvailableValuesOfType(QgsProcessingParameterNumber)},
+                         {'number'})
+        self.assertEqual({p.parameterName() for p in dlg.getAvailableValuesOfType(QgsProcessingParameterField)},
+                         {'field'})
+        self.assertEqual({p.parameterName() for p in dlg.getAvailableValuesOfType(QgsProcessingParameterFile)},
+                         {'file'})
 
         # test multiple types
-        self.assertEqual(set(p.parameterName() for p in dlg.getAvailableValuesOfType([QgsProcessingParameterString, QgsProcessingParameterNumber, QgsProcessingParameterFile])),
-                         set(['string', 'string2', 'number', 'file']))
+        self.assertEqual({p.parameterName() for p in dlg.getAvailableValuesOfType([QgsProcessingParameterString, QgsProcessingParameterNumber, QgsProcessingParameterFile])},
+                         {'string', 'string2', 'number', 'file'})
 
 
 if __name__ == '__main__':

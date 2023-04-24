@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 ***************************************************************************
     ExtentSelectionPanel.py
@@ -85,7 +83,7 @@ class ExtentSelectionPanel(BASE, WIDGET):
     hasChanged = pyqtSignal()
 
     def __init__(self, dialog, param):
-        super(ExtentSelectionPanel, self).__init__(None)
+        super().__init__(None)
         self.setupUi(self)
 
         self.leText.textChanged.connect(lambda: self.hasChanged.emit())
