@@ -264,17 +264,53 @@ int QgsProcessingExec::run( const QStringList &constArgs )
   int langIndex = args.indexOf (QLatin1String( "--lang"));
   if ( langIndex >= 0 )
   {
-    // has already been handled in (qgis_process) main.cpp
-      args.removeAt ( langIndex );  //'--lang'
-      args.removeAt ( langIndex );  //e.g. 'de'
+    // has partially been handled in (qgis_process) main.cpp
+      args.removeAt ( langIndex ); //'--lang'
+
+    // if language parameter is missing, has wrong length or starts with '-', give up
+      if ( args.size() <= langIndex)
+      {
+        std::cerr << QStringLiteral( "Language after --lang not specified\n" ).toLocal8Bit().constData();
+        return 1;
+      }
+
+      else
+      {
+        if ((args.at( langIndex ).length() == 2) && (args.at( langIndex ).front() != QLatin1String( "-")))
+            {
+                args.removeAt ( langIndex );  //e.g. 'de'
+            }
+        else {
+            std::cerr << QStringLiteral( "Language after --lang not specified\n" ).toLocal8Bit().constData();
+            return 1;
+        }
+      }
   }
 
   langIndex = args.indexOf (QLatin1String( "-l"));
   if ( langIndex >= 0 )
   {
-    // has already been handled in (qgis_process) main.cpp
+    // has partially been handled in (qgis_process) main.cpp
       args.removeAt ( langIndex ); //'-l'
-      args.removeAt ( langIndex ); //e.g. 'de'
+
+    // if language parameter is missing, has wrong length or starts with '-', give up
+      if ( args.size() <= langIndex )
+      {
+        std::cerr << QStringLiteral( "Language after -l not specified\n" ).toLocal8Bit().constData();
+        return 1;
+      }
+
+      else
+      {
+        if ((args.at( langIndex ).length() == 2) && (args.at( langIndex ).front() != QLatin1String( "-")))
+        {
+            args.removeAt ( langIndex );  //e.g. 'de'
+        }
+        else {
+            std::cerr << QStringLiteral( "Language after -l not specified\n" ).toLocal8Bit().constData();
+            return 1;
+        }
+      }
   }
 
   const int noPythonIndex = args.indexOf( QLatin1String( "--no-python" ) );
@@ -555,13 +591,13 @@ void QgsProcessingExec::showUsage( const QString &appName )
 
   msg << "QGIS Processing Executor - " << VERSION << " '" << RELEASE_NAME << "' ("
       << Qgis::version() << ")\n"
-      << "Usage: " << appName <<  " [--help] [--version] [--json] [--verbose] [--no-python] [command] [algorithm id, path to model file, or path to Python script] [parameters]\n"
+      << "Usage: " << appName <<  " [--help] [--version] [--json] [--verbose] [--lang xx] [--no-python] [command] [algorithm id, path to model file, or path to Python script] [parameters]\n"
       << "\nOptions:\n"
       << "\t--help or -h\t\tOutput the help\n"
       << "\t--version or -v\t\tOutput all versions related to QGIS Process\n"
       << "\t--json\t\tOutput results as JSON objects\n"
       << "\t--verbose\tOutput verbose logs\n"
-      << "\t[-l, --lang language]\tuse language for naming of new fields\n"
+      << "\t[--lang, -l language]\tuse language for localised translated strings\n"
       << "\t--no-python\tDisable Python support (results in faster startup)"
       << "\nAvailable commands:\n"
       << "\tplugins\t\tlist available and active plugins\n"

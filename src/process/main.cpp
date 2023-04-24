@@ -94,16 +94,17 @@ int main( int argc, char *argv[] )
   // which is too late for setting the language context.
 
   QString translationCode;
-  int i = 1;
-  for(; i < argc; ++i)
-    if ( i < argc && ( argv[i] == QLatin1String( "--lang" ) || argv[i] == QLatin1String( "-l" ) ) )
+  for( int i = 1; i < argc - 1; ++i)
     {
-        translationCode = argv[++i];
+      if ( argv[i] == QLatin1String( "--lang" ) || argv[i] == QLatin1String( "-l" ) )
+        {
+           translationCode = argv[++i];
+           break;
+        }
     }
-
-  QString myUserTranslation;
-  myUserTranslation = QLocale::system().name();                   // e.g. "de_DE"
-  myUserTranslation.truncate(myUserTranslation.lastIndexOf('_')); // e.g. "de"
+  QString userTranslation;
+  userTranslation = QLocale::system().name();                 // e.g. "de_DE"
+  userTranslation.truncate(userTranslation.lastIndexOf('_')); // e.g. "de"
 
   //
   // Priority of translation context is:
@@ -113,18 +114,18 @@ int main( int argc, char *argv[] )
 
   if ( translationCode.isNull() || translationCode.isEmpty())
   {
-    translationCode = myUserTranslation;
+    translationCode = userTranslation;
   }
   QgsApplication::setTranslation( translationCode );
 
   if ( translationCode != QLatin1String( "C" ) )
   {
-    QTranslator *mQgisTranslator = nullptr;
-    mQgisTranslator = new QTranslator();
+    QTranslator *qgisTranslator = nullptr;
+    qgisTranslator = new QTranslator();
 
-    if ( mQgisTranslator->load( QStringLiteral( "qgis_" ) + translationCode, QgsApplication::i18nPath() ) )
+    if ( qgisTranslator->load( QStringLiteral( "qgis_" ) + translationCode, QgsApplication::i18nPath() ) )
     {
-        QgsApplication::installTranslator( mQgisTranslator );
+        QgsApplication::installTranslator( qgisTranslator );
     }
     else
     {
