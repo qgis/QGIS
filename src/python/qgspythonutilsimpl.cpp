@@ -145,11 +145,19 @@ bool QgsPythonUtilsImpl::checkSystemImports()
 
 void QgsPythonUtilsImpl::init()
 {
+
+
+#ifdef Q_OS_WIN
+  // Fix #45646 On Windows, sys.executable is not set correctly
+  // it points to the qgis executable instead of python3.exe
+  // See related discussion https://github.com/python/cpython/issues/78906
+  std::wstring pythonPath = QDir::toNativeSeparators( QString( "%1/python3.exe" ).arg( QCoreApplication::applicationDirPath() ) ).toStdWString();
+#endif
+
 #if defined(PY_MAJOR_VERSION) && defined(PY_MINOR_VERSION) && ((PY_MAJOR_VERSION == 3 && PY_MINOR_VERSION >= 8) || PY_MAJOR_VERSION > 3)
   PyStatus status;
   PyPreConfig preconfig;
   PyPreConfig_InitPythonConfig( &preconfig );
-
   preconfig.utf8_mode = 1;
 
   status = Py_PreInitialize( &preconfig );
@@ -157,10 +165,28 @@ void QgsPythonUtilsImpl::init()
   {
     Py_ExitStatusException( status );
   }
+
+  PyConfig config;
+  PyConfig_InitPythonConfig( &config );
+#ifdef Q_OS_WIN
+  config.executable = const_cast<wchar_t *>( pythonPath.c_str() );
 #endif
 
-  // initialize python
+  status = Py_InitializeFromConfig( &config );
+  if ( PyStatus_Exception( status ) )
+  {
+    Py_ExitStatusException( status );
+  }
+
+#else
   Py_Initialize();
+
+#ifdef Q_OS_WIN
+  _Py_SetProgramFullPath( const_cast<wchar_t *>( pythonPath.c_str() );
+#endif
+
+#endif
+
 
   mPythonEnabled = true;
 
