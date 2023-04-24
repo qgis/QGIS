@@ -16,6 +16,7 @@
 #include <QListWidgetItem>
 #include <QMessageBox>
 #include <QPushButton>
+#include <QSettings>
 
 #include "qgsapplication.h"
 #include "qgsuserprofilemanager.h"
@@ -34,16 +35,11 @@ QgsUserProfileSelectionDialog::QgsUserProfileSelectionDialog( QgsUserProfileMana
   connect( mProfileListWidget, &QListWidget::itemDoubleClicked, this, &QgsUserProfileSelectionDialog::accept );
 
   // Add a new profile on button click
-  if ( mManager->profileSelectorProfileCreationAllowed() )
-  {
-    connect( mAddProfileButton, &QPushButton::clicked, this, &QgsUserProfileSelectionDialog::onAddProfile );
-  }
-  else
-  {
-    mAddProfileButton->hide();
-  }
+  connect( mAddProfileButton, &QPushButton::clicked, this, &QgsUserProfileSelectionDialog::onAddProfile );
 
-  mProfileListWidget->setIconSize( QSize( mManager->profileSelectorIconSize(), mManager->profileSelectorIconSize() ) );
+  QSettings settings;
+  int iconSize = settings.value( QStringLiteral( "/selector/iconSize" ), 24 ).toInt();
+  mProfileListWidget->setIconSize( QSize( iconSize, iconSize ) );
 
   // Fill the list of profiles
   mProfileListWidget->clear();  // Clear bogus profiles in the Ui form
@@ -82,7 +78,7 @@ void QgsUserProfileSelectionDialog::onAddProfile()
   dlg.setConflictingNameWarning( tr( "A profile with this name already exists" ) );
   dlg.setOverwriteEnabled( false );
   dlg.setHintString( tr( "New profile name" ) );
-  dlg.setWindowTitle( tr( "New profile name" ) );
+  dlg.setWindowTitle( tr( "New Profile Name" ) );
 
   // Prevent from entering slashes and backslashes
   dlg.setRegularExpression( "[^/\\\\]+" );

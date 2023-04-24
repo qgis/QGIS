@@ -19,6 +19,7 @@
 #include <QFileSystemWatcher>
 
 
+#include "qgis.h"
 #include "qgis_sip.h"
 #include "qgis_core.h"
 #include "qgserror.h"
@@ -43,18 +44,6 @@ class CORE_EXPORT QgsUserProfileManager : public QObject
     Q_OBJECT
 
   public:
-
-    /**
-     * User profile selection policy.
-     *
-     * \since QGIS 3.32
-     */
-    enum UserProfileSelectionPolicy
-    {
-      LastProfile = 0, //!< Open the last closed profile (only mode supported prior to QGIS 3.32)
-      DefaultProfile, //!< Open a specific profile
-      AskUser, //!< Let the user choose which profile to open
-    };
 
     /**
      * User profile manager used to manage user profiles for the instance of QGIS.
@@ -155,7 +144,7 @@ class CORE_EXPORT QgsUserProfileManager : public QObject
     void setDefaultFromActive();
 
     /**
-     * Returns the name of the lastly closed profile. Empty if its the first time QGIS has been run.
+     * Returns the name of the most recently closed profile. Empty if its the first time QGIS has been run.
      * \since QGIS 3.32
      */
     QString lastProfileName() const;
@@ -167,43 +156,17 @@ class CORE_EXPORT QgsUserProfileManager : public QObject
     void updateLastProfileName() SIP_SKIP;
 
     /**
-    *    Returns the user profile selection policy.
-    *    \since QGIS 3.32
-    */
-    UserProfileSelectionPolicy userProfileSelectionPolicy() const;
-
-    /**
-      * Sets the user profile selection policy.
-      * \param policy The policy to use when selecting a user profile.
-      * \since QGIS 3.32
-    */
-    void setUserProfileSelectionPolicy( UserProfileSelectionPolicy policy );
-
-    /**
-     * Returns the icon size for the profile selector.
+     * Returns the user profile selection policy.
      * \since QGIS 3.32
      */
-    int profileSelectorIconSize() const;
+    Qgis::UserProfileSelectionPolicy userProfileSelectionPolicy() const;
 
     /**
-     * Sets the icon size for the profile selector.
-     * \param size The size of the icon in pixels.
+     * Sets the user profile selection policy.
+     * \param policy The policy to use when selecting a user profile.
      * \since QGIS 3.32
      */
-    void setProfileSelectorIconSize( int size );
-
-    /**
-     * Returns whether the profile selector should allow the creation of new profiles.
-     * \since QGIS 3.32
-     */
-    bool profileSelectorProfileCreationAllowed() const;
-
-    /**
-     * Sets whether the profile selector should allow the creation of new profiles.
-     * \param allow TRUE if new profiles should be allowed.
-     * \since QGIS 3.32
-     */
-    void setProfileSelectorProfileCreationAllowed( bool allow );
+    void setUserProfileSelectionPolicy( Qgis::UserProfileSelectionPolicy policy );
 
     /**
      * Returns the profile found for a given name.

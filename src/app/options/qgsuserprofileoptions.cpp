@@ -29,7 +29,7 @@ QgsUserProfileOptionsWidget::QgsUserProfileOptionsWidget( QWidget *parent )
 {
   setupUi( this );
 
-  auto manager = QgisApp::instance()->userProfileManager();
+  QgsUserProfileManager *manager = QgisApp::instance()->userProfileManager();
 
   // Disable combobox if default profile is not selected
   mDefaultProfileComboBox->setEnabled( false );
@@ -40,17 +40,12 @@ QgsUserProfileOptionsWidget::QgsUserProfileOptionsWidget( QWidget *parent )
   connect( mAskUser, &QRadioButton::toggled, mProfileSelectorGroupBox, &QGroupBox::setEnabled );
 
   // Connect icon size and allow profile creation
-  mIconSize->setCurrentText( QString::number( manager->profileSelectorIconSize() ) );
-  mAllowProfileCreation->setChecked( manager->profileSelectorProfileCreationAllowed() );
+  mIconSize->setCurrentText( QString::number( QSettings().value( QStringLiteral( "/selector/iconSize" ), 24 ).toInt() ) );
   connect( mIconSize, &QComboBox::currentTextChanged, this, []( const QString & text )
   {
-    auto manager = QgisApp::instance()->userProfileManager();
-    manager->setProfileSelectorIconSize( text.toInt() );
-  } );
-  connect( mAllowProfileCreation, &QCheckBox::toggled, this, []( bool checked )
-  {
-    auto manager = QgisApp::instance()->userProfileManager();
-    manager->setProfileSelectorProfileCreationAllowed( checked );
+    QSettings settings;
+    settings.setValue( QStringLiteral( "/selector/iconSize" ), text.toInt() );
+    settings.sync();
   } );
 
   // Connect change icon button
@@ -58,22 +53,22 @@ QgsUserProfileOptionsWidget::QgsUserProfileOptionsWidget( QWidget *parent )
   connect( mResetIconButton, &QToolButton::clicked, this, &QgsUserProfileOptionsWidget::onResetIconClicked );
 
   // Init radio buttons
-  if ( manager->userProfileSelectionPolicy() == QgsUserProfileManager::UserProfileSelectionPolicy::LastProfile )
+  if ( manager->userProfileSelectionPolicy() == Qgis::UserProfileSelectionPolicy::LastProfile )
   {
     mLastProfile->setChecked( true );
   }
-  else if ( manager->userProfileSelectionPolicy() == QgsUserProfileManager::UserProfileSelectionPolicy::AskUser )
+  else if ( manager->userProfileSelectionPolicy() == Qgis::UserProfileSelectionPolicy::AskUser )
   {
     mAskUser->setChecked( true );
   }
-  else if ( manager->userProfileSelectionPolicy() == QgsUserProfileManager::UserProfileSelectionPolicy::DefaultProfile )
+  else if ( manager->userProfileSelectionPolicy() == Qgis::UserProfileSelectionPolicy::DefaultProfile )
   {
     mDefaultProfile->setChecked( true );
   }
 
   // Fill combobox with profiles
   mDefaultProfileComboBox->clear();
-  for ( auto profile : manager->allProfiles() )
+  for ( const QString &profile : manager->allProfiles() )
   {
     QIcon icon = manager->profileForName( profile )->icon();
     mDefaultProfileComboBox->addItem( icon, profile );
@@ -87,26 +82,26 @@ QgsUserProfileOptionsWidget::QgsUserProfileOptionsWidget( QWidget *parent )
 
 void QgsUserProfileOptionsWidget::apply()
 {
-  auto manager = QgisApp::instance()->userProfileManager();
+  QgsUserProfileManager *manager = QgisApp::instance()->userProfileManager();
   if ( mLastProfile->isChecked() )
   {
-    manager->setUserProfileSelectionPolicy( QgsUserProfileManager::UserProfileSelectionPolicy::LastProfile );
+    manager->setUserProfileSelectionPolicy( Qgis::UserProfileSelectionPolicy::LastProfile );
   }
   else if ( mAskUser->isChecked() )
   {
-    manager->setUserProfileSelectionPolicy( QgsUserProfileManager::UserProfileSelectionPolicy::AskUser );
+    manager->setUserProfileSelectionPolicy( Qgis::UserProfileSelectionPolicy::AskUser );
   }
   else if ( mDefaultProfile->isChecked() )
   {
-    manager->setUserProfileSelectionPolicy( QgsUserProfileManager::UserProfileSelectionPolicy::DefaultProfile );
+    manager->setUserProfileSelectionPolicy( Qgis::UserProfileSelectionPolicy::DefaultProfile );
     manager->setDefaultProfileName( mDefaultProfileComboBox->currentText() );
   }
 }
 
 void QgsUserProfileOptionsWidget::onChangeIconClicked()
 {
-  auto activeProfile = QgisApp::instance()->userProfileManager()->userProfile();
-  const QString iconPath = QFileDialog::getOpenFileName( this, tr( "Select icon" ), "", tr( "Images (*.png *.jpg *.jpeg *.gif *.bmp *.svg)" ) );
+  const QgsUserProfile *activeProfile = QgisApp::instance()->userProfileManager()->userProfile();
+  const QString iconPath = QFileDialog::getOpenFileName( this, tr( "Select Icon" ), "", tr( "Images (*.png *.jpg *.jpeg *.gif *.bmp *.svg)" ) );
   if ( !iconPath.isEmpty() )
   {
     // Remove existing icon files
@@ -129,7 +124,7 @@ void QgsUserProfileOptionsWidget::onChangeIconClicked()
 
 void QgsUserProfileOptionsWidget::onResetIconClicked()
 {
-  auto activeProfile = QgisApp::instance()->userProfileManager()->userProfile();
+  const QgsUserProfile *activeProfile = QgisApp::instance()->userProfileManager()->userProfile();
   // Remove existing icon files
   QDir dir( activeProfile->folder(), "icon.*", QDir::Name, QDir::Files );
   for ( const QString &file : dir.entryList() )

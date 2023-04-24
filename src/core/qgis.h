@@ -3416,6 +3416,19 @@ class CORE_EXPORT Qgis
     Q_FLAG( DatabaseProviderConnectionCapabilities2 )
 
     /**
+     * User profile selection policy.
+     *
+     * \since QGIS 3.32
+     */
+    enum class UserProfileSelectionPolicy : int
+    {
+      LastProfile, //!< Open the last closed profile (only mode supported prior to QGIS 3.32)
+      DefaultProfile, //!< Open a specific profile
+      AskUser, //!< Let the user choose which profile to open
+    };
+    Q_ENUM( UserProfileSelectionPolicy )
+
+    /**
      * Identify search radius in mm
      * \since QGIS 2.3
      */
