@@ -195,7 +195,7 @@ class GUI_EXPORT QgsMapTool : public QObject
     /**
      * Called when the map tool is being activated while it is already active.
      *
-     * The default implementation does nothing.
+     * The default implementation emits the reactivated () signal.
      * \since QGIS 3.32
      */
     virtual void reactivate();
