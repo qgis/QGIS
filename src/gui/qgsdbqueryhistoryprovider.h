@@ -45,10 +45,16 @@ class GUI_EXPORT QgsDatabaseQueryHistoryProvider : public QgsAbstractHistoryProv
     QgsHistoryEntryNode *createNodeForEntry( const QgsHistoryEntry &entry, const QgsHistoryWidgetContext &context ) override SIP_FACTORY;
     void updateNodeForEntry( QgsHistoryEntryNode *node, const QgsHistoryEntry &entry, const QgsHistoryWidgetContext &context ) override;
 
+    /**
+     * Causes the provider to emit the openSqlDialog() signal.
+     */
     void emitOpenSqlDialog( const QString &connectionUri, const QString &provider, const QString &sql );
 
   signals:
 
+    /**
+     * Emitted when the provider wants to trigger a SQL execution dialog.
+     */
     void openSqlDialog( const QString &connectionUri, const QString &provider, const QString &sql );
 
 };
