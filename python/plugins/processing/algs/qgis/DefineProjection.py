@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 ***************************************************************************
     DefineProjection.py
@@ -85,7 +83,7 @@ class DefineProjection(QgisAlgorithm):
             dsPath = dsPath[:-4]
 
             wkt = crs.toWkt(QgsCoordinateReferenceSystem.WKT1_ESRI)
-            with open(dsPath + '.prj', 'wt', encoding='utf-8') as f:
+            with open(dsPath + '.prj', 'w', encoding='utf-8') as f:
                 f.write(wkt)
 
             qpjFile = dsPath + '.qpj'

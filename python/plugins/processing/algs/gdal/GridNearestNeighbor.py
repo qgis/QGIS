@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 ***************************************************************************
     GridNearestNeighbor.py
@@ -151,10 +149,10 @@ class GridNearestNeighbor(GdalAlgorithm):
             arguments.append(fieldName)
 
         params = 'nearest'
-        params += ':radius1={}'.format(self.parameterAsDouble(parameters, self.RADIUS_1, context))
-        params += ':radius2={}'.format(self.parameterAsDouble(parameters, self.RADIUS_2, context))
-        params += ':angle={}'.format(self.parameterAsDouble(parameters, self.ANGLE, context))
-        params += ':nodata={}'.format(self.parameterAsDouble(parameters, self.NODATA, context))
+        params += f':radius1={self.parameterAsDouble(parameters, self.RADIUS_1, context)}'
+        params += f':radius2={self.parameterAsDouble(parameters, self.RADIUS_2, context)}'
+        params += f':angle={self.parameterAsDouble(parameters, self.ANGLE, context)}'
+        params += f':nodata={self.parameterAsDouble(parameters, self.NODATA, context)}'
 
         arguments.append('-a')
         arguments.append(params)

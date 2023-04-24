@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 ***************************************************************************
     EditScriptAction.py
@@ -61,7 +59,7 @@ class AddModelFromFileAction(ToolboxAction):
                     self.tr('The selected file does not contain a valid model', 'AddModelFromFileAction'))
                 return
 
-            if QgsApplication.instance().processingRegistry().algorithmById('model:{}'.format(alg.id())):
+            if QgsApplication.instance().processingRegistry().algorithmById(f'model:{alg.id()}'):
                 QMessageBox.warning(
                     self.toolbox,
                     self.tr('Open Model', 'AddModelFromFileAction'),

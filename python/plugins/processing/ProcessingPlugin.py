@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 ***************************************************************************
     ProcessingPlugin.py
@@ -111,7 +109,7 @@ class ProcessingDropHandler(QgsCustomDropHandler):
 class ProcessingModelItem(QgsDataItem):
 
     def __init__(self, parent, name, path):
-        super(ProcessingModelItem, self).__init__(QgsDataItem.Custom, parent, name, path)
+        super().__init__(QgsDataItem.Custom, parent, name, path)
         self.setState(QgsDataItem.Populated)  # no children
         self.setIconName(":/images/themes/default/processingModel.svg")
         self.setToolTip(QDir.toNativeSeparators(path))
@@ -150,7 +148,7 @@ class ProcessingModelItem(QgsDataItem):
 class ProcessingDataItemProvider(QgsDataItemProvider):
 
     def __init__(self):
-        super(ProcessingDataItemProvider, self).__init__()
+        super().__init__()
 
     def name(self):
         return 'processing'

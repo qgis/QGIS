@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 ***************************************************************************
     ConfigDialog.py
@@ -66,7 +64,7 @@ with warnings.catch_warnings():
 class ConfigOptionsPage(QgsOptionsPageWidget):
 
     def __init__(self, parent):
-        super(ConfigOptionsPage, self).__init__(parent)
+        super().__init__(parent)
         self.config_widget = ConfigDialog(False)
         layout = QHBoxLayout()
         layout.setContentsMargins(0, 0, 0, 0)
@@ -87,7 +85,7 @@ class ConfigOptionsPage(QgsOptionsPageWidget):
 class ProcessingTreeHighlight(QgsOptionsDialogHighlightWidget):
 
     def __init__(self, config_dialog):
-        super(ProcessingTreeHighlight, self).__init__(config_dialog.tree)
+        super().__init__(config_dialog.tree)
         self.config_dialog = config_dialog
 
     def highlightText(self, text):
@@ -103,7 +101,7 @@ class ProcessingTreeHighlight(QgsOptionsDialogHighlightWidget):
 class ConfigDialog(BASE, WIDGET):
 
     def __init__(self, showSearch=True):
-        super(ConfigDialog, self).__init__(None)
+        super().__init__(None)
         self.setupUi(self)
 
         self.groupIcon = QgsApplication.getThemeIcon('mIconFolder.svg')

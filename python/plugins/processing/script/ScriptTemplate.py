@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 ***************************************************************************
 *                                                                         *
@@ -150,7 +148,7 @@ class ExampleProcessingAlgorithm(QgsProcessingAlgorithm):
         )
 
         # Send some information to the user
-        feedback.pushInfo('CRS is {}'.format(source.sourceCrs().authid()))
+        feedback.pushInfo(f'CRS is {source.sourceCrs().authid()}')
 
         # If sink was not created, throw an exception to indicate that the algorithm
         # encountered a fatal error. The exception text can be any string, but in this

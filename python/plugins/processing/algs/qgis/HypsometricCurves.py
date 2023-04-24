@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 ***************************************************************************
     HypsometricCurves.py
@@ -141,7 +139,7 @@ class HypsometricCurves(QgisAlgorithm):
                 continue
 
             fName = os.path.join(
-                outputPath, 'histogram_{}_{}.csv'.format(source.sourceName(), f.id()))
+                outputPath, f'histogram_{source.sourceName()}_{f.id()}.csv')
 
             ogrGeom = ogr.CreateGeometryFromWkt(intersectedGeom.asWkt())
             bbox = intersectedGeom.boundingBox()

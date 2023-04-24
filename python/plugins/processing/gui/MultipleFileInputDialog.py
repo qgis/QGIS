@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 ***************************************************************************
     MultipleExternalInputDialog.py
@@ -45,7 +43,7 @@ with warnings.catch_warnings():
 class MultipleFileInputDialog(BASE, WIDGET):
 
     def __init__(self, options):
-        super(MultipleFileInputDialog, self).__init__(None)
+        super().__init__(None)
         self.setupUi(self)
 
         self.lstLayers.setSelectionMode(QAbstractItemView.ExtendedSelection)

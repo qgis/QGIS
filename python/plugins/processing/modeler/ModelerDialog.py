@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 ***************************************************************************
     ModelerDialog.py
@@ -137,7 +135,7 @@ class ModelerDialog(QgsModelDesignerDialog):
             error_string = ''
             for e in errors:
                 e = re.sub(r'<[^>]*>', '', e)
-                error_string += '• {}\n'.format(e)
+                error_string += f'• {e}\n'
 
             message_box.setDetailedText(error_string)
             if message_box.exec_() == QMessageBox.Cancel:

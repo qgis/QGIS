@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 ***************************************************************************
     Processing.py
@@ -68,7 +66,7 @@ from processing.modeler.ModelerAlgorithmProvider import ModelerAlgorithmProvider
 from processing.modeler.ProjectProvider import ProjectProvider  # NOQA
 
 
-class Processing(object):
+class Processing:
     BASIC_PROVIDERS = []
 
     @staticmethod

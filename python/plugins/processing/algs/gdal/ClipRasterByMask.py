@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 ***************************************************************************
     ClipRasterByMask.py
@@ -221,12 +219,12 @@ class ClipRasterByMask(GdalAlgorithm):
             arguments.append('-tr')
             if self.X_RESOLUTION in parameters and parameters[self.X_RESOLUTION] is not None:
                 xres = self.parameterAsDouble(parameters, self.X_RESOLUTION, context)
-                arguments.append('{}'.format(xres))
+                arguments.append(f'{xres}')
             else:
                 arguments.append(str(inLayer.rasterUnitsPerPixelX()))
             if self.Y_RESOLUTION in parameters and parameters[self.Y_RESOLUTION] is not None:
                 yres = self.parameterAsDouble(parameters, self.Y_RESOLUTION, context)
-                arguments.append('{}'.format(yres))
+                arguments.append(f'{yres}')
             else:
                 arguments.append(str(-inLayer.rasterUnitsPerPixelY()))
             arguments.append('-tap')
@@ -243,7 +241,7 @@ class ClipRasterByMask(GdalAlgorithm):
             arguments.append('-dstalpha')
 
         if nodata is not None:
-            arguments.append('-dstnodata {}'.format(nodata))
+            arguments.append(f'-dstnodata {nodata}')
 
         if self.parameterAsBoolean(parameters, self.MULTITHREADING, context):
             arguments.append('-multi')

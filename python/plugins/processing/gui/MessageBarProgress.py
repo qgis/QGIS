@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 ***************************************************************************
     MessageBarProgress.py
@@ -35,7 +33,7 @@ class MessageBarProgress(QgsProcessingFeedback):
 
         self.msg = []
         self.progressMessageBar = \
-            iface.messageBar().createMessage(self.tr('Executing algorithm <i>{0}</i>'.format(algname if algname else '')))
+            iface.messageBar().createMessage(self.tr('Executing algorithm <i>{}</i>'.format(algname if algname else '')))
         self.progress = QProgressBar()
         self.progressChanged.connect(self.progress.setValue)
         self.progress.setMaximum(100)

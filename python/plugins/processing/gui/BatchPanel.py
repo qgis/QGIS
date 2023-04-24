@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 ***************************************************************************
     BatchPanel.py
@@ -432,7 +430,7 @@ class BatchPanel(QgsPanelWidget, WIDGET):
     OUTPUTS = "OUTPUTS"
 
     def __init__(self, parent, alg):
-        super(BatchPanel, self).__init__(None)
+        super().__init__(None)
         self.setupUi(self)
 
         self.wrappers = []

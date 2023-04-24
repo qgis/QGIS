@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 ***************************************************************************
     AlgorithmDialog.py
@@ -245,7 +243,7 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
                     elapsed = '{0} {1:0.2f} {2} ({3} {4} {5:0.0f} {2})'.format(
                         result, delta_t, str_seconds, minutes, str_minutes, seconds)
                 else:
-                    elapsed = '{0} {1:0.2f} {2}'.format(
+                    elapsed = '{} {:0.2f} {}'.format(
                         result, delta_t, str_seconds)
 
                 return elapsed

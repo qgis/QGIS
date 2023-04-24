@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 ***************************************************************************
     ExecuteSQLWidget.py
@@ -44,7 +42,7 @@ WIDGET, BASE = uic.loadUiType(os.path.join(pluginPath, 'ExecuteSQLWidgetBase.ui'
 class ExecuteSQLWidget(BASE, WIDGET):
 
     def __init__(self, dialog):
-        super(ExecuteSQLWidget, self).__init__(None)
+        super().__init__(None)
         self.setupUi(self)
         self.dialog = dialog
         self.dialogType = dialogTypes[dialog.__class__.__name__]
@@ -70,7 +68,7 @@ class ExecuteSQLWidget(BASE, WIDGET):
 
     def insert(self):
         if self.mExpressionWidget.currentText():
-            exp = '[%{}%]'.format(self.mExpressionWidget.currentText())
+            exp = f'[%{self.mExpressionWidget.currentText()}%]'
             self.mText.insertPlainText(exp)
 
     def setValue(self, value):
@@ -92,7 +90,7 @@ class ExecuteSQLWidget(BASE, WIDGET):
 
                         for k, v in model_params:
                             if v.parameterName() in names:
-                                text = text.replace('[% @{} %]'.format(v.parameterName()), '[% @{} %]'.format(k))
+                                text = text.replace(f'[% @{v.parameterName()} %]', f'[% @{k} %]')
 
         self.mText.setPlainText(text)
 
@@ -118,7 +116,7 @@ class ExecuteSQLWidget(BASE, WIDGET):
 
         for k, v in model_params:
             if k in descriptions:
-                text = text.replace('[% @{} %]'.format(k), '[% @{} %]'.format(v.parameterName()))
+                text = text.replace(f'[% @{k} %]', f'[% @{v.parameterName()} %]')
 
         src = QgsProcessingModelChildParameterSource.fromExpressionText(text)
 

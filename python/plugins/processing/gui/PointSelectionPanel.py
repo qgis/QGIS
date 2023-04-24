@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 ***************************************************************************
     PointSelectionPanel.py
@@ -44,7 +42,7 @@ with warnings.catch_warnings():
 class PointSelectionPanel(BASE, WIDGET):
 
     def __init__(self, dialog, default=None):
-        super(PointSelectionPanel, self).__init__(None)
+        super().__init__(None)
         self.setupUi(self)
 
         self.btnSelect.clicked.connect(self.selectOnCanvas)
@@ -79,7 +77,7 @@ class PointSelectionPanel(BASE, WIDGET):
         self.dialog.showMinimized()
 
     def updatePoint(self, point, button):
-        s = '{},{}'.format(point.x(), point.y())
+        s = f'{point.x()},{point.y()}'
         self.crs = QgsProject.instance().crs()
         if self.crs.isValid():
             s += ' [' + self.crs.authid() + ']'

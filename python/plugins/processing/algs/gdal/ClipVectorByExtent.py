@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 ***************************************************************************
     ClipVectorByExtent.py
@@ -103,6 +101,6 @@ class ClipVectorByExtent(GdalAlgorithm):
             arguments.append(options)
 
         if outputFormat:
-            arguments.append('-f {}'.format(outputFormat))
+            arguments.append(f'-f {outputFormat}')
 
         return [self.commandName(), GdalUtils.escapeAndJoin(arguments)]

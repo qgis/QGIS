@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 ***************************************************************************
     Dissolve.py
@@ -142,7 +140,7 @@ class Dissolve(GdalAlgorithm):
 
         tokens = []
         if self.parameterAsBoolean(parameters, self.COUNT_FEATURES, context):
-            tokens.append('COUNT({}) AS count'.format(geometry))
+            tokens.append(f'COUNT({geometry}) AS count')
 
         if self.parameterAsBoolean(parameters, self.COMPUTE_AREA, context):
             tokens.append('SUM(ST_Area({0})) AS area, ST_Perimeter(ST_Union({0})) AS perimeter'.format(geometry))
@@ -157,12 +155,12 @@ class Dissolve(GdalAlgorithm):
 
         group_by = ''
         if fieldName:
-            group_by = ' GROUP BY "{}"'.format(fieldName)
+            group_by = f' GROUP BY "{fieldName}"'
 
         if self.parameterAsBoolean(parameters, self.KEEP_ATTRIBUTES, context):
-            sql = 'SELECT ST_Union({}) AS {}{}{} FROM "{}"{}'.format(geometry, geometry, other_fields, params, layerName, group_by)
+            sql = f'SELECT ST_Union({geometry}) AS {geometry}{other_fields}{params} FROM "{layerName}"{group_by}'
         else:
-            sql = 'SELECT ST_Union({}) AS {}{}{} FROM "{}"{}'.format(geometry, geometry, ', "{}"'.format(fieldName) if fieldName else '',
+            sql = 'SELECT ST_Union({}) AS {}{}{} FROM "{}"{}'.format(geometry, geometry, f', "{fieldName}"' if fieldName else '',
                                                                      params, layerName, group_by)
 
         arguments.append(sql)
@@ -174,6 +172,6 @@ class Dissolve(GdalAlgorithm):
             arguments.append(options)
 
         if outputFormat:
-            arguments.append('-f {}'.format(outputFormat))
+            arguments.append(f'-f {outputFormat}')
 
         return [self.commandName(), GdalUtils.escapeAndJoin(arguments)]

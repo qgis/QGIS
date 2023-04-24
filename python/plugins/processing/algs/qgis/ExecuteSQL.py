@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 ***************************************************************************
     ExecuteSQL.py -- use virtual layers to execute SQL on any sources
@@ -138,9 +136,9 @@ class ExecuteSQL(QgisAlgorithm):
                 tmp_path = QgsProcessingUtils.generateTempFilename(basename, context)
                 QgsVectorFileWriter.writeAsVectorFormat(
                     layer, tmp_path, layer.dataProvider().encoding())
-                df.addSource('input{}'.format(layerIdx + 1), tmp_path, "ogr")
+                df.addSource(f'input{layerIdx + 1}', tmp_path, "ogr")
             else:
-                df.addSource('input{}'.format(layerIdx + 1), layer.id())
+                df.addSource(f'input{layerIdx + 1}', layer.id())
 
         if query == '':
             raise QgsProcessingException(

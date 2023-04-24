@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 ***************************************************************************
     MultipleInputPanel.py
@@ -44,7 +42,7 @@ class MultipleInputPanel(BASE, WIDGET):
     selectionChanged = pyqtSignal()
 
     def __init__(self, options=None, datatype=None):
-        super(MultipleInputPanel, self).__init__(None)
+        super().__init__(None)
         self.setupUi(self)
 
         self.leText.setEnabled(False)

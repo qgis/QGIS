@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 ***************************************************************************
     EditRenderingStylesDialog.py
@@ -45,7 +43,7 @@ with warnings.catch_warnings():
 class EditRenderingStylesDialog(BASE, WIDGET):
 
     def __init__(self, alg):
-        super(EditRenderingStylesDialog, self).__init__(None)
+        super().__init__(None)
         self.setupUi(self)
 
         self.alg = alg
