@@ -3468,3 +3468,10 @@ Qgis.DatabaseProviderConnectionCapability2.__doc__ = 'The Capability enum repres
 Qgis.DatabaseProviderConnectionCapability2.baseClass = Qgis
 Qgis.DatabaseProviderConnectionCapabilities2.baseClass = Qgis
 DatabaseProviderConnectionCapabilities2 = Qgis  # dirty hack since SIP seems to introduce the flags in module
+# monkey patching scoped based enum
+Qgis.UserProfileSelectionPolicy.LastProfile.__doc__ = "Open the last closed profile (only mode supported prior to QGIS 3.32)"
+Qgis.UserProfileSelectionPolicy.DefaultProfile.__doc__ = "Open a specific profile"
+Qgis.UserProfileSelectionPolicy.AskUser.__doc__ = "Let the user choose which profile to open"
+Qgis.UserProfileSelectionPolicy.__doc__ = 'User profile selection policy.\n\n.. versionadded:: 3.32\n\n' + '* ``LastProfile``: ' + Qgis.UserProfileSelectionPolicy.LastProfile.__doc__ + '\n' + '* ``DefaultProfile``: ' + Qgis.UserProfileSelectionPolicy.DefaultProfile.__doc__ + '\n' + '* ``AskUser``: ' + Qgis.UserProfileSelectionPolicy.AskUser.__doc__
+# --
+Qgis.UserProfileSelectionPolicy.baseClass = Qgis
