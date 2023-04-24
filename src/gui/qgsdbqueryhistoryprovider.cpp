@@ -122,14 +122,14 @@ class DatabaseQueryRootNode : public DatabaseQueryHistoryNode
     {
       if ( !mConnectionNode )
       {
-        mConnectionNode = new DatabaseQueryValueNode( mEntry, mProvider, QStringLiteral( "Connection: %1" ).arg( entry.entry.value( QStringLiteral( "connection" ) ).toString() ) );
+        mConnectionNode = new DatabaseQueryValueNode( mEntry, mProvider, QObject::tr( "Connection: %1" ).arg( entry.entry.value( QStringLiteral( "connection" ) ).toString() ) );
         addChild( mConnectionNode );
       }
       if ( entry.entry.contains( QStringLiteral( "rows" ) ) )
       {
         if ( !mRowsNode )
         {
-          mRowsNode = new DatabaseQueryValueNode( mEntry, mProvider, QStringLiteral( "Row count: %1" ).arg( entry.entry.value( QStringLiteral( "rows" ) ).toString() ) );
+          mRowsNode = new DatabaseQueryValueNode( mEntry, mProvider, QObject::tr( "Row count: %1" ).arg( entry.entry.value( QStringLiteral( "rows" ) ).toString() ) );
           addChild( mRowsNode );
         }
       }
@@ -137,7 +137,7 @@ class DatabaseQueryRootNode : public DatabaseQueryHistoryNode
       {
         if ( !mTimeNode )
         {
-          mTimeNode = new DatabaseQueryValueNode( mEntry, mProvider, QStringLiteral( "Execution time: %1 ms" ).arg( entry.entry.value( QStringLiteral( "time" ) ).toString() ) );
+          mTimeNode = new DatabaseQueryValueNode( mEntry, mProvider, QObject::tr( "Execution time: %1 ms" ).arg( entry.entry.value( QStringLiteral( "time" ) ).toString() ) );
           addChild( mTimeNode );
         }
       }
