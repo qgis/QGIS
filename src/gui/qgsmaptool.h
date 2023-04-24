@@ -192,6 +192,14 @@ class GUI_EXPORT QgsMapTool : public QObject
     //! called when map tool is being deactivated
     virtual void deactivate();
 
+    /**
+     * Called when the map tool is being activated while it is already active.
+     *
+     * The default implementation does nothing.
+     * \since QGIS 3.32
+     */
+    virtual void reactivate();
+
     //! convenient method to clean members
     virtual void clean();
 

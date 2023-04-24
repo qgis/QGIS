@@ -2713,6 +2713,12 @@ void QgsMapCanvas::setMapTool( QgsMapTool *tool, bool clean )
   if ( !tool )
     return;
 
+  if ( tool == mMapTool )
+  {
+    mMapTool->reactivate();
+    return;
+  }
+
   if ( mMapTool )
   {
     if ( clean )
