@@ -2125,8 +2125,8 @@ QgsProcessingExpressionParameterDefinitionWidget::QgsProcessingExpressionParamet
 
   vlayout->addWidget( new QLabel( tr( "Expression type" ) ) );
   mExpressionTypeComboBox = new QComboBox();
-  mExpressionTypeComboBox->addItem( tr( "Qgis" ), QgsProcessingParameterExpression::Qgis );
-  mExpressionTypeComboBox->addItem( tr( "Point cloud" ), QgsProcessingParameterExpression::PointCloud );
+  mExpressionTypeComboBox->addItem( tr( "QGIS" ), static_cast< int >( Qgis::ExpressionType::Qgis ) );
+  mExpressionTypeComboBox->addItem( tr( "Point Cloud" ), static_cast< int >( Qgis::ExpressionType::PointCloud ) );
 
   connect( mExpressionTypeComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [ = ]( int )
   {
@@ -2137,7 +2137,7 @@ QgsProcessingExpressionParameterDefinitionWidget::QgsProcessingExpressionParamet
     if ( const QgsProcessingParameterExpression *expParam = dynamic_cast<const QgsProcessingParameterExpression *>( definition ) )
       initialParent = expParam->parentLayerParameterName();
 
-    QgsProcessingParameterExpression::Type exprType = static_cast< QgsProcessingParameterExpression::Type >( mExpressionTypeComboBox->currentData().toInt() );
+    Qgis::ExpressionType exprType = static_cast< Qgis::ExpressionType >( mExpressionTypeComboBox->currentData().toInt() );
 
     if ( QgsProcessingModelAlgorithm *model = widgetContext.model() )
     {
@@ -2145,7 +2145,7 @@ QgsProcessingExpressionParameterDefinitionWidget::QgsProcessingExpressionParamet
       const QMap<QString, QgsProcessingModelParameter> components = model->parameterComponents();
       for ( auto it = components.constBegin(); it != components.constEnd(); ++it )
       {
-        if ( exprType == QgsProcessingParameterExpression::Qgis )
+        if ( exprType == Qgis::ExpressionType::Qgis )
         {
           if ( const QgsProcessingParameterFeatureSource *definition = dynamic_cast< const QgsProcessingParameterFeatureSource * >( model->parameterDefinition( it.value().parameterName() ) ) )
           {
@@ -2189,7 +2189,7 @@ QgsProcessingExpressionParameterDefinitionWidget::QgsProcessingExpressionParamet
 
   mExpressionTypeComboBox->setCurrentIndex( -1 );
   if ( const QgsProcessingParameterExpression *expParam = dynamic_cast<const QgsProcessingParameterExpression *>( definition ) )
-    mExpressionTypeComboBox->setCurrentIndex( mExpressionTypeComboBox->findData( expParam->expressionType() ) );
+    mExpressionTypeComboBox->setCurrentIndex( mExpressionTypeComboBox->findData( static_cast< int >( expParam->expressionType() ) ) );
   else
     mExpressionTypeComboBox->setCurrentIndex( 0 );
 
@@ -2200,7 +2200,7 @@ QgsProcessingExpressionParameterDefinitionWidget::QgsProcessingExpressionParamet
 
 QgsProcessingParameterDefinition *QgsProcessingExpressionParameterDefinitionWidget::createParameter( const QString &name, const QString &description, QgsProcessingParameterDefinition::Flags flags ) const
 {
-  QgsProcessingParameterExpression::Type expressionType = static_cast< QgsProcessingParameterExpression::Type >( mExpressionTypeComboBox->currentData().toInt() );
+  Qgis::ExpressionType expressionType = static_cast< Qgis::ExpressionType >( mExpressionTypeComboBox->currentData().toInt() );
   auto param = std::make_unique< QgsProcessingParameterExpression >( name, description, mDefaultLineEdit->text(), mParentLayerComboBox->currentData().toString(), false, expressionType );
   param->setFlags( flags );
   return param.release();
@@ -2235,7 +2235,7 @@ QWidget *QgsProcessingExpressionWidgetWrapper::createWidget()
       }
       else
       {
-        if ( expParam->expressionType() == QgsProcessingParameterExpression::PointCloud )
+        if ( expParam->expressionType() == Qgis::ExpressionType::PointCloud )
         {
           mPointCloudExpLineEdit = new QgsProcessingPointCloudExpressionLineEdit();
           mPointCloudExpLineEdit->setToolTip( parameterDefinition()->toolTip() );
@@ -2337,7 +2337,7 @@ void QgsProcessingExpressionWidgetWrapper::setParentLayerWrapperValue( const Qgs
   const QgsProcessingParameterExpression *expParam = dynamic_cast< const QgsProcessingParameterExpression *>( parameterDefinition() );
   switch ( expParam->expressionType() )
   {
-    case QgsProcessingParameterExpression::Qgis:
+    case Qgis::ExpressionType::Qgis:
     {
       if ( val.userType() == QMetaType::type( "QgsProcessingFeatureSourceDefinition" ) )
       {
@@ -2380,7 +2380,7 @@ void QgsProcessingExpressionWidgetWrapper::setParentLayerWrapperValue( const Qgs
 
       break;
     }
-    case QgsProcessingParameterExpression::PointCloud:
+    case Qgis::ExpressionType::PointCloud:
     {
       QgsPointCloudLayer *layer = QgsProcessingParameters::parameterAsPointCloudLayer( parentWrapper->parameterDefinition(), val, *context, QgsProcessing::LayerOptionsFlag::SkipIndexGeneration );
       if ( !layer )

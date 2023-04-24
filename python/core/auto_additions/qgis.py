@@ -3577,3 +3577,9 @@ QgsEditFormConfig.CodeSourceEnvironment.__doc__ = "Use the Python code available
 Qgis.AttributeFormPythonInitCodeSource.__doc__ = 'The Python init code source for attribute forms.\n\n.. note::\n\n   Prior to QGIS 3.32 this was available as :py:class:`QgsEditFormConfig`.PythonInitCodeSource.\n\n.. versionadded:: 3.32\n\n' + '* ``CodeSourceNone``: ' + Qgis.AttributeFormPythonInitCodeSource.NoSource.__doc__ + '\n' + '* ``CodeSourceFile``: ' + Qgis.AttributeFormPythonInitCodeSource.File.__doc__ + '\n' + '* ``CodeSourceDialog``: ' + Qgis.AttributeFormPythonInitCodeSource.Dialog.__doc__ + '\n' + '* ``CodeSourceEnvironment``: ' + Qgis.AttributeFormPythonInitCodeSource.Environment.__doc__
 # --
 Qgis.AttributeFormPythonInitCodeSource.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.ExpressionType.Qgis.__doc__ = "Native QGIS expression"
+Qgis.ExpressionType.PointCloud.__doc__ = "Point cloud expression"
+Qgis.ExpressionType.__doc__ = 'Expression types\n\n.. versionadded:: 3.32\n\n' + '* ``Qgis``: ' + Qgis.ExpressionType.Qgis.__doc__ + '\n' + '* ``PointCloud``: ' + Qgis.ExpressionType.PointCloud.__doc__
+# --
+Qgis.ExpressionType.baseClass = Qgis

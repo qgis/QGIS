@@ -6482,7 +6482,7 @@ void TestQgsProcessing::parameterExpression()
   QVERIFY( ok );
 
   QString pythonCode = def->asPythonString();
-  QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterExpression('non_optional', '', parentLayerParameterName='', defaultValue='1+1', type=QgsProcessingParameterExpression.Qgis)" ) );
+  QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterExpression('non_optional', '', parentLayerParameterName='', defaultValue='1+1')" ) );
 
   QString code = def->asScriptCode();
   QCOMPARE( code, QStringLiteral( "##non_optional=expression 1+1" ) );
@@ -6525,7 +6525,7 @@ void TestQgsProcessing::parameterExpression()
   QCOMPARE( QgsProcessingParameters::parameterAsExpression( def.get(), params, context ), QString( "default" ) );
 
   pythonCode = def->asPythonString();
-  QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterExpression('optional', '', optional=True, parentLayerParameterName='', defaultValue='default', type=QgsProcessingParameterExpression.Qgis)" ) );
+  QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterExpression('optional', '', optional=True, parentLayerParameterName='', defaultValue='default')" ) );
 
   code = def->asScriptCode();
   QCOMPARE( code, QStringLiteral( "##optional=optional expression default" ) );
@@ -6544,9 +6544,9 @@ void TestQgsProcessing::parameterExpression()
   QVERIFY( !def->checkValueIsAcceptable( QVariant() ) ); // should NOT be acceptable, because it will fallback to invalid default value
 
   // set point cloud expression type
-  def.reset( new QgsProcessingParameterExpression( "non_optional", QString(), QString( "default" ), QString(), false, QgsProcessingParameterExpression::PointCloud ) );
+  def.reset( new QgsProcessingParameterExpression( "non_optional", QString(), QString( "default" ), QString(), false, Qgis::ExpressionType::PointCloud ) );
   pythonCode = def->asPythonString();
-  QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterExpression('non_optional', '', parentLayerParameterName='', defaultValue='default', type=QgsProcessingParameterExpression.PointCloud)" ) );
+  QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterExpression('non_optional', '', parentLayerParameterName='', defaultValue='default', type=Qgis.ExpressionType.PointCloud)" ) );
 }
 
 void TestQgsProcessing::parameterField()
