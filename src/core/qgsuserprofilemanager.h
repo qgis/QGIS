@@ -180,6 +180,32 @@ class CORE_EXPORT QgsUserProfileManager : public QObject
     void setUserProfileSelectionPolicy( UserProfileSelectionPolicy policy );
 
     /**
+     * Returns the icon size for the profile selector.
+     * \since QGIS 3.32
+     */
+    int profileSelectorIconSize() const;
+
+    /**
+     * Sets the icon size for the profile selector.
+     * \param size The size of the icon in pixels.
+     * \since QGIS 3.32
+     */
+    void setProfileSelectorIconSize( int size );
+
+    /**
+     * Returns whether the profile selector should allow the creation of new profiles.
+     * \since QGIS 3.32
+     */
+    bool profileSelectorProfileCreationAllowed() const;
+
+    /**
+     * Sets whether the profile selector should allow the creation of new profiles.
+     * \param allow TRUE if new profiles should be allowed.
+     * \since QGIS 3.32
+     */
+    void setProfileSelectorProfileCreationAllowed( bool allow );
+
+    /**
      * Returns the profile found for a given name.
      * \param name The name of the profile to return.
      * \return A QgsUserprofile pointing to the location of the user profile.

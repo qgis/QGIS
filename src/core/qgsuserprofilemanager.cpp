@@ -139,6 +139,30 @@ void QgsUserProfileManager::setUserProfileSelectionPolicy( QgsUserProfileManager
   mSettings->sync();
 }
 
+int QgsUserProfileManager::profileSelectorIconSize() const
+{
+  return mSettings->value( QStringLiteral( "/selector/iconSize" ), 24 ).toInt();
+}
+
+void QgsUserProfileManager::setProfileSelectorIconSize( int size )
+{
+  mSettings->setValue( QStringLiteral( "/selector/iconSize" ), size );
+  mSettings->sync();
+}
+
+bool QgsUserProfileManager::profileSelectorProfileCreationAllowed() const
+{
+  return mSettings->value( QStringLiteral( "/selector/allowCreation" ), true ).toBool();
+}
+
+void QgsUserProfileManager::setProfileSelectorProfileCreationAllowed( bool allow )
+{
+  mSettings->setValue( QStringLiteral( "/selector/allowCreation" ), allow );
+  mSettings->sync();
+}
+
+
+
 QStringList QgsUserProfileManager::allProfiles() const
 {
   return QDir( mRootProfilePath ).entryList( QDir::Dirs | QDir::NoDotAndDotDot );

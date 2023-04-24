@@ -34,7 +34,16 @@ QgsUserProfileSelectionDialog::QgsUserProfileSelectionDialog( QgsUserProfileMana
   connect( mProfileListWidget, &QListWidget::itemDoubleClicked, this, &QgsUserProfileSelectionDialog::accept );
 
   // Add a new profile on button click
-  connect( mAddProfileButton, &QPushButton::clicked, this, &QgsUserProfileSelectionDialog::onAddProfile );
+  if ( mManager->profileSelectorProfileCreationAllowed() )
+  {
+    connect( mAddProfileButton, &QPushButton::clicked, this, &QgsUserProfileSelectionDialog::onAddProfile );
+  }
+  else
+  {
+    mAddProfileButton->hide();
+  }
+
+  mProfileListWidget->setIconSize( QSize( mManager->profileSelectorIconSize(), mManager->profileSelectorIconSize() ) );
 
   // Fill the list of profiles
   mProfileListWidget->clear();  // Clear bogus profiles in the Ui form

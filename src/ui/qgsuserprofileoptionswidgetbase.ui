@@ -74,6 +74,64 @@
     </widget>
    </item>
    <item>
+    <widget class="QGroupBox" name="mProfileSelectorGroupBox">
+     <property name="title">
+      <string>Profile Selector</string>
+     </property>
+     <layout class="QFormLayout" name="formLayout">
+      <item row="0" column="0" colspan="2">
+       <widget class="QCheckBox" name="mAllowProfileCreation">
+        <property name="text">
+         <string>Let user create a new profile when starting QGIS</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="mIconSizeLabel">
+        <property name="text">
+         <string>Icon size</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QComboBox" name="mIconSize">
+        <property name="maximumSize">
+         <size>
+          <width>50</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <item>
+         <property name="text">
+          <string>16</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>24</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>32</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>48</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>64</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
     <widget class="QGroupBox" name="mActiveProfileGroupBox">
      <property name="title">
       <string>Active Profile</string>
@@ -154,6 +212,7 @@
   <tabstop>mDefaultProfileComboBox</tabstop>
   <tabstop>mAskUser</tabstop>
   <tabstop>mChangeIconButton</tabstop>
+  <tabstop>mAllowProfileCreation</tabstop>
  </tabstops>
  <resources>
   <include location="../../images/images.qrc"/>
