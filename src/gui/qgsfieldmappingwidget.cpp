@@ -148,7 +148,7 @@ bool QgsFieldMappingWidget::removeSelectedFields()
   return true;
 }
 
-bool QgsFieldMappingWidget::invertSelection()
+void QgsFieldMappingWidget::invertSelection()
 {
   for ( int i = 0; i < mTableView->model()->rowCount(); ++i )
   {
@@ -158,7 +158,6 @@ bool QgsFieldMappingWidget::invertSelection()
       mTableView->selectionModel()->select( index, QItemSelectionModel::Toggle );
     }
   }
-  return true;
 }
 
 bool QgsFieldMappingWidget::moveSelectedFieldsUp()
