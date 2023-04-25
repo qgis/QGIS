@@ -200,6 +200,7 @@
      <addaction name="mActionAddMssqlLayer"/>
      <addaction name="mActionAddOracleLayer"/>
      <addaction name="mActionAddHanaLayer"/>
+     <addaction name="mActionAddRedshiftLayer"/>
      <addaction name="mActionAddVirtualLayer"/>
      <addaction name="mActionAddWmsLayer"/>
      <addaction name="mActionAddXyzLayer"/>
@@ -1650,6 +1651,15 @@ Shift+R to enable range selection.</string>
    </property>
    <property name="text">
     <string>Add SAP HANA Spatial Layer…</string>
+   </property>
+  </action>
+  <action name="mActionAddRedshiftLayer">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionAddRedshiftLayer.svg</normaloff>:/images/themes/default/mActionRedshiftLayer.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Add Amazon Redshift Layer…</string>
    </property>
   </action>
   <action name="mActionAddWmsLayer">

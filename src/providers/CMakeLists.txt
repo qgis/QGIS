@@ -34,6 +34,10 @@ if (NOT FORCE_STATIC_LIBS)
     add_subdirectory(hana)
   endif()
 
+  if (WITH_AMAZON_REDSHIFT)
+    add_subdirectory(amazon-redshift)
+  endif()
+
   if (WITH_PDAL)
     add_subdirectory(pdal)
   endif()

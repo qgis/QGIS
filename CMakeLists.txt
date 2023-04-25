@@ -282,6 +282,18 @@ if(WITH_CORE)
     endif()
   endif(WITH_HANA)
 
+  # add Amazon Redshift support
+  set (WITH_AMAZON_REDSHIFT FALSE CACHE BOOL "Determines whether Amazon Redshift support should be built")
+  if(WITH_AMAZON_REDSHIFT)
+    find_package(Postgres)
+    if(POSTGRES_FOUND)
+      set(HAVE_AMAZON_REDSHIFT TRUE)
+    else()
+      message(STATUS "Couldn't find libpq library for Amazon Redshift support")
+    endif()
+  endif(WITH_AMAZON_REDSHIFT)
+
+
   set (WITH_PDAL FALSE CACHE BOOL "Determines whether PDAL support should be built")
 
   set (WITH_EPT TRUE CACHE BOOL "Determines whether Entwine Point Cloud (EPT) support should be built")

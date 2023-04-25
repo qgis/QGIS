@@ -48,6 +48,7 @@ class GUI_EXPORT QgsManageConnectionsDialog : public QDialog, private Ui::QgsMan
       WCS,
       Oracle,
       HANA,
+      Redshift,
       XyzTiles,
       ArcgisMapServer, // TODO QGIS 4: remove
       ArcgisFeatureServer,
@@ -74,6 +75,7 @@ class GUI_EXPORT QgsManageConnectionsDialog : public QDialog, private Ui::QgsMan
     QDomDocument saveMssqlConnections( const QStringList &connections );
     QDomDocument saveOracleConnections( const QStringList &connections );
     QDomDocument saveHanaConnections( const QStringList &connections );
+    QDomDocument saveRedshiftConnections( const QStringList &connections );
     QDomDocument saveXyzTilesConnections( const QStringList &connections );
     QDomDocument saveArcgisConnections( const QStringList &connections );
     QDomDocument saveVectorTileConnections( const QStringList &connections );
@@ -84,6 +86,7 @@ class GUI_EXPORT QgsManageConnectionsDialog : public QDialog, private Ui::QgsMan
     void loadMssqlConnections( const QDomDocument &doc, const QStringList &items );
     void loadOracleConnections( const QDomDocument &doc, const QStringList &items );
     void loadHanaConnections( const QDomDocument &doc, const QStringList &items );
+    void loadRedshiftConnections( const QDomDocument &doc, const QStringList &items );
     void loadXyzTilesConnections( const QDomDocument &doc, const QStringList &items );
     void loadArcgisConnections( const QDomDocument &doc, const QStringList &items, const QString &service );
     void loadVectorTileConnections( const QDomDocument &doc, const QStringList &items );

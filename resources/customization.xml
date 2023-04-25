@@ -207,6 +207,33 @@
     </widget>
     <widget objectName="buttonBox" class="QDialogButtonBox" label=""/>
   </widget>
+  <widget objectName="QgsRedshiftNewConnectionBase" class="QDialog" label="">
+    <widget objectName="GroupBox1" class="QGroupBox" label="">
+      <widget objectName="TextLabel1_2" class="QLabel" label="Name"/>
+      <widget objectName="TextLabel1" class="QLabel" label="Host"/>
+      <widget objectName="TextLabel2_2" class="QLabel" label="Port"/>
+      <widget objectName="TextLabel2" class="QLabel" label="Database"/>
+      <widget objectName="TextLabel3_3" class="QLabel" label="SSL mode"/>
+      <widget objectName="TextLabel3" class="QLabel" label="Username"/>
+      <widget objectName="TextLabel3_2" class="QLabel" label="Password"/>
+      <widget objectName="txtName" class="QLineEdit" label=""/>
+      <widget objectName="txtHost" class="QLineEdit" label=""/>
+      <widget objectName="txtPort" class="QLineEdit" label="5432"/>
+      <widget objectName="txtDatabase" class="QLineEdit" label=""/>
+      <widget objectName="cbxSSLmode" class="QComboBox" label=""/>
+      <widget objectName="txtUsername" class="QLineEdit" label=""/>
+      <widget objectName="txtPassword" class="QLineEdit" label=""/>
+      <widget objectName="cb_geometryColumnsOnly" class="QCheckBox" label="Only look in the layer registries"/>
+      <widget objectName="cb_publicSchemaOnly" class="QCheckBox" label="Only look in the 'public' schema"/>
+      <widget objectName="chkStoreUsername" class="QCheckBox" label="Save Username"/>
+      <widget objectName="btnConnect" class="QPushButton" label="&amp;Test Connect"/>
+      <widget objectName="chkStorePassword" class="QCheckBox" label="Save Password"/>
+      <widget objectName="cb_useEstimatedMetadata" class="QCheckBox" label="Use estimated table metadata"/>
+      <widget objectName="cb_allowGeometrylessTables" class="QCheckBox" label="Also list tables with no geometry"/>
+      <widget objectName="cb_dontResolveType" class="QCheckBox" label="Don't resolve type of unrestricted columns (GEOMETRY)"/>
+    </widget>
+    <widget objectName="buttonBox" class="QDialogButtonBox" label=""/>
+  </widget>
   <widget objectName="QgsDisplayAngleBase" class="QDialog" label="">
     <widget objectName="mAngleLineEdit" class="QLineEdit" label=""/>
     <widget objectName="buttonBox" class="QDialogButtonBox" label=""/>

@@ -136,6 +136,9 @@ void QgsManageConnectionsDialog::doExportImport()
       case HANA:
         doc = saveHanaConnections( items );
         break;
+      case Redshift:
+        doc = saveRedshiftConnections( items );
+        break;
       case XyzTiles:
         doc = saveXyzTilesConnections( items );
         break;
@@ -211,6 +214,9 @@ void QgsManageConnectionsDialog::doExportImport()
       case HANA:
         loadHanaConnections( doc, items );
         break;
+      case Redshift:
+        loadRedshiftConnections( doc, items );
+        break;
       case XyzTiles:
         loadXyzTilesConnections( doc, items );
         break;
@@ -265,6 +271,9 @@ bool QgsManageConnectionsDialog::populateConnections()
       case HANA:
         settings.beginGroup( QStringLiteral( "/HANA/connections" ) );
         connections = settings.childGroups();
+        break;
+      case Redshift:
+        settings.beginGroup( QStringLiteral( "/Redshift/connections" ) );
         break;
       case XyzTiles:
         connections = QgsXyzConnectionSettings::sTreeXyzConnections->items();
@@ -372,6 +381,14 @@ bool QgsManageConnectionsDialog::populateConnections()
         {
           QMessageBox::warning( this, tr( "Loading Connections" ),
                                 tr( "The file is not a HANA connections exchange file." ) );
+          return false;
+        }
+        break;
+      case Redshift:
+        if ( root.tagName() != QLatin1String( "qgsRedshiftConnections" ) )
+        {
+          QMessageBox::warning( this, tr( "Loading Connections" ),
+                                tr( "The file is not a Redshift connections exchange file." ) );
           return false;
         }
         break;
@@ -656,6 +673,47 @@ QDomDocument QgsManageConnectionsDialog::saveHanaConnections( const QStringList 
     el.setAttribute( QStringLiteral( "sslTrustStore" ), settings.value( path + "/sslTrustStore", QString() ).toString() );
     el.setAttribute( QStringLiteral( "sslValidateCertificate" ), settings.value( path + "/sslValidateCertificate", QStringLiteral( "false" ) ).toString() );
     el.setAttribute( QStringLiteral( "sslHostNameInCertificate" ), settings.value( path + "/sslHostNameInCertificate", QString() ).toString() );
+
+    root.appendChild( el );
+  }
+
+  return doc;
+}
+
+QDomDocument QgsManageConnectionsDialog::saveRedshiftConnections( const QStringList &connections )
+{
+  QDomDocument doc( QStringLiteral( "connections" ) );
+  QDomElement root = doc.createElement( QStringLiteral( "qgsRedshiftConnections" ) );
+  root.setAttribute( QStringLiteral( "version" ), QStringLiteral( "1.0" ) );
+  doc.appendChild( root );
+
+  QgsSettings settings;
+  QString path;
+  for ( int i = 0; i < connections.count(); ++i )
+  {
+    path = "/Redshift/connections/" + connections[ i ];
+    QDomElement el = doc.createElement( QStringLiteral( "redshift" ) );
+    el.setAttribute( QStringLiteral( "name" ), connections[ i ] );
+    el.setAttribute( QStringLiteral( "host" ), settings.value( path + "/host" ).toString() );
+    el.setAttribute( QStringLiteral( "port" ), settings.value( path + "/port" ).toString() );
+    el.setAttribute( QStringLiteral( "database" ), settings.value( path + "/database" ).toString() );
+    el.setAttribute( QStringLiteral( "service" ), settings.value( path + "/service" ).toString() );
+    el.setAttribute( QStringLiteral( "sslmode" ), settings.value( path + "/sslmode", "1" ).toString() );
+    el.setAttribute( QStringLiteral( "estimatedMetadata" ), settings.value( path + "/estimatedMetadata", "0" ).toString() );
+
+    el.setAttribute( QStringLiteral( "saveUsername" ), settings.value( path + "/saveUsername", "false" ).toString() );
+
+    if ( settings.value( path + "/saveUsername", "false" ).toString() == QLatin1String( "true" ) )
+    {
+      el.setAttribute( QStringLiteral( "username" ), settings.value( path + "/username" ).toString() );
+    }
+
+    el.setAttribute( QStringLiteral( "savePassword" ), settings.value( path + "/savePassword", "false" ).toString() );
+
+    if ( settings.value( path + "/savePassword", "false" ).toString() == QLatin1String( "true" ) )
+    {
+      el.setAttribute( QStringLiteral( "password" ), settings.value( path + "/password" ).toString() );
+    }
 
     root.appendChild( el );
   }
@@ -1301,6 +1359,89 @@ void QgsManageConnectionsDialog::loadHanaConnections( const QDomDocument &doc, c
           } )
       settings.setValue( QStringLiteral( "/" ) + param, child.attribute( param ) );
 
+    settings.endGroup();
+
+    child = child.nextSiblingElement();
+  }
+}
+
+void QgsManageConnectionsDialog::loadRedshiftConnections( const QDomDocument &doc, const QStringList &items )
+{
+  QDomElement root = doc.documentElement();
+  if ( root.tagName() != QLatin1String( "qgsRedshiftConnections" ) )
+  {
+    QMessageBox::information( this,
+                              tr( "Loading Connections" ),
+                              tr( "The file is not a Redshift connections exchange file." ) );
+    return;
+  }
+
+  QString connectionName;
+  QgsSettings settings;
+  settings.beginGroup( QStringLiteral( "/Redshift/connections" ) );
+  QStringList keys = settings.childGroups();
+  settings.endGroup();
+  QDomElement child = root.firstChildElement();
+  bool prompt = true;
+  bool overwrite = true;
+
+  while ( !child.isNull() )
+  {
+    connectionName = child.attribute( QStringLiteral( "name" ) );
+    if ( !items.contains( connectionName ) )
+    {
+      child = child.nextSiblingElement();
+      continue;
+    }
+
+    // check for duplicates
+    if ( keys.contains( connectionName ) && prompt )
+    {
+      int res = QMessageBox::warning( this,
+                                      tr( "Loading Connections" ),
+                                      tr( "Connection with name '%1' already exists. Overwrite?" )
+                                      .arg( connectionName ),
+                                      QMessageBox::Yes | QMessageBox::YesToAll | QMessageBox::No | QMessageBox::NoToAll | QMessageBox::Cancel );
+      switch ( res )
+      {
+        case QMessageBox::Cancel:
+          return;
+        case QMessageBox::No:
+          child = child.nextSiblingElement();
+          continue;
+        case QMessageBox::Yes:
+          overwrite = true;
+          break;
+        case QMessageBox::YesToAll:
+          prompt = false;
+          overwrite = true;
+          break;
+        case QMessageBox::NoToAll:
+          prompt = false;
+          overwrite = false;
+          break;
+      }
+    }
+
+    if ( keys.contains( connectionName ) && !overwrite )
+    {
+      child = child.nextSiblingElement();
+      continue;
+    }
+
+    //no dups detected or overwrite is allowed
+    settings.beginGroup( "/Redshift/connections/" + connectionName );
+
+    settings.setValue( QStringLiteral( "/host" ), child.attribute( QStringLiteral( "host" ) ) );
+    settings.setValue( QStringLiteral( "/port" ), child.attribute( QStringLiteral( "port" ) ) );
+    settings.setValue( QStringLiteral( "/database" ), child.attribute( QStringLiteral( "database" ) ) );
+    
+    settings.setValue( QStringLiteral( "/sslmode" ), child.attribute( QStringLiteral( "sslmode" ) ) );
+    settings.setValue( QStringLiteral( "/estimatedMetadata" ), child.attribute( QStringLiteral( "estimatedMetadata" ) ) );
+    settings.setValue( QStringLiteral( "/saveUsername" ), child.attribute( QStringLiteral( "saveUsername" ) ) );
+    settings.setValue( QStringLiteral( "/username" ), child.attribute( QStringLiteral( "username" ) ) );
+    settings.setValue( QStringLiteral( "/savePassword" ), child.attribute( QStringLiteral( "savePassword" ) ) );
+    settings.setValue( QStringLiteral( "/password" ), child.attribute( QStringLiteral( "password" ) ) );
     settings.endGroup();
 
     child = child.nextSiblingElement();

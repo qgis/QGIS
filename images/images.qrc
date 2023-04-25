@@ -236,6 +236,7 @@
         <file>themes/default/mActionAddOracleLayer.svg</file>
         <file>themes/default/mActionAddPostgisLayer.svg</file>
         <file>themes/default/mActionAddHanaLayer.svg</file>
+        <file>themes/default/mActionAddRedshiftLayer.svg</file>
         <file>themes/default/mActionAddPart.svg</file>
         <file>themes/default/mActionAddRasterLayer.svg</file>
         <file>themes/default/mActionAddRing.svg</file>
@@ -535,6 +536,7 @@
         <file>themes/default/mIconPointLayer.svg</file>
         <file>themes/default/mIconPolygonLayer.svg</file>
         <file>themes/default/mIconPostgis.svg</file>
+        <file>themes/default/mIconRedshift.svg</file>
         <file>themes/default/mIconProjectionDisabled.svg</file>
         <file>themes/default/mIconProjectionEnabled.svg</file>
         <file>themes/default/mIconProperties.svg</file>

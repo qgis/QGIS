@@ -572,6 +572,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QAction *actionAddRasterLayer() { return mActionAddRasterLayer; }
     QAction *actionAddPgLayer() { return mActionAddPgLayer; }
 #ifdef HAVE_SPATIALITE
+    QAction *actionAddRedshiftLayer() { return mActionAddRedshiftLayer; }
     QAction *actionAddSpatiaLiteLayer() { return mActionAddSpatiaLiteLayer; }
 #else
     QAction *actionAddSpatiaLiteLayer() { return nullptr; }

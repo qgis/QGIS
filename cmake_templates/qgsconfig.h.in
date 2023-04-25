@@ -69,6 +69,8 @@
 
 #cmakedefine HAVE_HANA
 
+#cmakedefine HAVE_AMAZON_REDSHIFT
+
 #cmakedefine SERVER_SKIP_ECW
 
 #cmakedefine HAVE_SERVER_PYTHON_PLUGINS

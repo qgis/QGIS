@@ -776,6 +776,7 @@ QAction *QgisAppInterface::actionNewVectorLayer() { return qgis->actionNewVector
 QAction *QgisAppInterface::actionAddOgrLayer() { return qgis->actionAddOgrLayer(); }
 QAction *QgisAppInterface::actionAddRasterLayer() { return qgis->actionAddRasterLayer(); }
 QAction *QgisAppInterface::actionAddPgLayer() { return qgis->actionAddPgLayer(); }
+QAction *QgisAppInterface::actionAddRedshiftLayer() { return qgis->actionAddRedshiftLayer(); }
 QAction *QgisAppInterface::actionAddWmsLayer() { return qgis->actionAddWmsLayer(); }
 QAction *QgisAppInterface::actionAddXyzLayer() { return qgis->actionAddXyzLayer(); }
 QAction *QgisAppInterface::actionAddVectorTileLayer() { return qgis->actionAddVectorTileLayer(); }

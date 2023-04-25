@@ -2000,12 +2000,12 @@ bool QgsVectorLayer::setDataProvider( QString const &provider, const QgsDataProv
   mProviderKey = provider;
   delete mDataProvider;
 
-  // For Postgres provider primary key unicity is tested at construction time,
+  // For Postgres and Redshift provider primary key unicity is tested at construction time,
   // so it has to be set before initializing the provider,
   // this manipulation is necessary to preserve default behavior when
   // "trust layer metadata" project level option is set and checkPrimaryKeyUnicity
   // was not explicitly passed in the uri
-  if ( provider.compare( QLatin1String( "postgres" ) ) == 0 )
+  if ( provider.compare( QLatin1String( "postgres" ) ) == 0 || provider.compare( QLatin1String( "redshift" ) ) == 0 )
   {
     const QString checkUnicityKey { QStringLiteral( "checkPrimaryKeyUnicity" ) };
     QgsDataSourceUri uri( mDataSource );
@@ -2114,6 +2114,10 @@ bool QgsVectorLayer::setDataProvider( QString const &provider, const QgsDataProv
         setName( lName );
     }
     QgsDebugMsgLevel( QStringLiteral( "Beautified layer name %1" ).arg( name() ), 3 );
+  }
+  else if (mProviderKey == QLatin1String( "redshift" )){
+    // update datasource from data provider computed one
+    mDataSource = mDataProvider->dataSourceUri( false );
   }
   else if ( mProviderKey == QLatin1String( "osm" ) )
   {
