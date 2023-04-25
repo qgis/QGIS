@@ -133,7 +133,7 @@ class RandomSelectionWithinSubsets(QgisAlgorithm):
                 selValue = value if method != 1 else int(round(value * len(subset), 0))
                 if selValue > len(subset):
                     selValue = len(subset)
-                    feedback.reportError(self.tr(f'Subset "{k}" is smaller than requested number of features.'))
+                    feedback.reportError(self.tr('Subset "{}" is smaller than requested number of features.').format(k))
                 selran.extend(random.sample(subset, selValue))
 
             layer.selectByIds(selran)
