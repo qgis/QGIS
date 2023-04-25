@@ -5,6 +5,8 @@ set -e
 CTEST_SOURCE_DIR=${CTEST_SOURCE_DIR-/root/QGIS}
 CTEST_BUILD_DIR=${CTEST_BUILD_DIR-/root/QGIS/build}
 
+export LANG="C.UTF-8"
+
 ##############
 # Setup ccache
 ##############
