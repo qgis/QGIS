@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 /***************************************************************************
 Name                 : DB Manager
@@ -20,7 +18,6 @@ email                : hugo dot mercier at oslandia dot com
 
 Query builder dialog, based on the QSpatialite plugin (GPLv2+) by Romain Riviere
 """
-from builtins import str
 
 from qgis.PyQt.QtCore import Qt, QObject, QEvent
 from qgis.PyQt.QtWidgets import QDialog, QMessageBox, QTextEdit

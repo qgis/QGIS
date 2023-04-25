@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 /***************************************************************************
 Name                 : DB Manager
@@ -21,9 +19,6 @@ The content of this file is based on
  *                                                                         *
  ***************************************************************************/
 """
-from builtins import zip
-from builtins import next
-from builtins import str
 from hashlib import md5
 
 import os
@@ -318,7 +313,7 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
             self.tr("SQL File (*.sql *.SQL);;All Files (*)"))
 
         if filename:
-            with open(filename, 'r') as f:
+            with open(filename) as f:
                 self.editSql.clear()
                 for line in f:
                     self.editSql.insertText(line)

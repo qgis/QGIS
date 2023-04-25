@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 ***************************************************************************
     GrassUtils.py
@@ -92,7 +90,7 @@ class Grass7Utils:
         """
         wkt = crs.toWkt(QgsCoordinateReferenceSystem.WKT_PREFERRED)
         wkt_file = QgsProcessingUtils.generateTempFilename('crs.prj', context)
-        with open(wkt_file, 'wt', encoding='utf-8') as f:
+        with open(wkt_file, 'w', encoding='utf-8') as f:
             f.write(wkt)
         return wkt_file
 
@@ -163,7 +161,7 @@ class Grass7Utils:
 
         vn = os.path.join(path, "etc", "VERSIONNUMBER")
         if os.path.isfile(vn):
-            with open(vn, "r") as f:
+            with open(vn) as f:
                 major, minor, patch = f.readlines()[0].split(' ')[0].split('.')
                 if patch != 'svn':
                     patch = ''
@@ -536,8 +534,8 @@ class Grass7Utils:
                         'running GRASS algorithms.')
                 if Grass7Utils.command is None:
                     return Grass7Utils.tr(
-                        'GRASS GIS 7 binary {0} can\'t be found on this system from a shell. '
-                        'Please install it or configure your PATH {1} environment variable.'.format(
+                        'GRASS GIS 7 binary {} can\'t be found on this system from a shell. '
+                        'Please install it or configure your PATH {} environment variable.'.format(
                             '(grass.bat)' if isWindows() else '(grass.sh)',
                             'or OSGEO4W_ROOT' if isWindows() else ''))
             # GNU/Linux

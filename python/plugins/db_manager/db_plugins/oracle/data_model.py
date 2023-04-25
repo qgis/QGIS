@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 /***************************************************************************
 Name                 : DB Manager
@@ -22,7 +20,6 @@ The content of this file is based on
  *                                                                         *
  ***************************************************************************/
 """
-from builtins import str
 
 from qgis.PyQt.QtCore import QTime
 from qgis.core import QgsMessageLog
@@ -53,7 +50,7 @@ class ORTableDataModel(TableDataModel):
             (self.table.schemaName(), self.table.name))
 
         self.cursor = self.db._get_cursor()
-        sql = "SELECT {0} FROM {1}".format(fields_txt, table_txt)
+        sql = "SELECT {} FROM {}".format(fields_txt, table_txt)
 
         self.db._execute(self.cursor, sql)
 
@@ -80,7 +77,7 @@ class ORTableDataModel(TableDataModel):
                     self.db.quoteId(field.name),
                     str(nbChars))
 
-        return "CAST({0} As VARCHAR2({1}))".format(
+        return "CAST({} As VARCHAR2({}))".format(
             self.db.quoteId(field.name), field.charMaxLen)
 
     def _deleteCursor(self):

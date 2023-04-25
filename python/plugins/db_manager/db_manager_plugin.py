@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 /***************************************************************************
 Name                 : DB Manager
@@ -19,7 +17,6 @@ email                : brush.tyler@gmail.com
  *                                                                         *
  ***************************************************************************/
 """
-from builtins import object
 
 from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtWidgets import QAction, QApplication
@@ -35,7 +32,7 @@ from qgis.core import (
 from . import resources_rc  # NOQA
 
 
-class DBManagerPlugin(object):
+class DBManagerPlugin:
 
     def __init__(self, iface):
         self.iface = iface

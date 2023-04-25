@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 /***************************************************************************
 Name                 : DB Manager
@@ -21,8 +19,6 @@ The content of this file is based on
  *                                                                         *
  ***************************************************************************/
 """
-from builtins import str
-from builtins import range
 
 from qgis.PyQt.QtCore import Qt, QFileInfo
 from qgis.PyQt.QtWidgets import QDialog, QFileDialog, QMessageBox

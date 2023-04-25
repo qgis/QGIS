@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 /***************************************************************************
 Name                 : DB Manager
@@ -21,7 +19,6 @@ The content of this file is based on
  *                                                                         *
  ***************************************************************************/
 """
-from builtins import str
 
 from qgis.PyQt.QtCore import Qt, QFileInfo
 from qgis.PyQt.QtWidgets import QDialog, QFileDialog, QMessageBox, QApplication
@@ -46,8 +43,8 @@ class DlgExportVector(QDialog, Ui_Dialog):
         self.setupUi(self)
 
         vectorFilterName = "lastVectorFileFilter"  # "lastRasterFileFilter"
-        self.lastUsedVectorFilterSettingsKey = "/UI/{0}".format(vectorFilterName)
-        self.lastUsedVectorDirSettingsKey = "/UI/{0}Dir".format(vectorFilterName)
+        self.lastUsedVectorFilterSettingsKey = "/UI/{}".format(vectorFilterName)
+        self.lastUsedVectorDirSettingsKey = "/UI/{}Dir".format(vectorFilterName)
 
         # update UI
         self.setupWorkingMode()

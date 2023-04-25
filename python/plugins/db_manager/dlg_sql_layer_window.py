@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 /***************************************************************************
 Name                 : DB Manager
@@ -21,9 +19,6 @@ The content of this file is based on
  *                                                                         *
  ***************************************************************************/
 """
-from builtins import zip
-from builtins import next
-from builtins import str
 from hashlib import md5
 
 from qgis.PyQt.QtCore import Qt, pyqtSignal
@@ -180,9 +175,9 @@ class DlgSqlLayerWindow(QWidget, Ui_Dialog):
         if not uri.table().startswith('(') and not uri.table().endswith(')'):
             schema = uri.schema()
             if schema and schema.upper() != 'PUBLIC':
-                sql = 'SELECT * FROM {0}.{1}'.format(self.db.connector.quoteId(schema), self.db.connector.quoteId(sql))
+                sql = 'SELECT * FROM {}.{}'.format(self.db.connector.quoteId(schema), self.db.connector.quoteId(sql))
             else:
-                sql = 'SELECT * FROM {0}'.format(self.db.connector.quoteId(sql))
+                sql = 'SELECT * FROM {}'.format(self.db.connector.quoteId(sql))
         self.editSql.setText(sql)
         self.executeSql()
 

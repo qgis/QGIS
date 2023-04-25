@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 /***************************************************************************
 Name                 : DB Manager
@@ -21,8 +19,6 @@ The content of this file is based on
  *                                                                         *
  ***************************************************************************/
 """
-from builtins import str
-from builtins import range
 
 from functools import cmp_to_key
 
@@ -942,9 +938,9 @@ class PostGisDBConnector(DBConnector):
 
     def commentTable(self, schema, tablename, comment=None):
         if comment is None:
-            self._execute(None, 'COMMENT ON TABLE "{0}"."{1}" IS NULL;'.format(schema, tablename))
+            self._execute(None, 'COMMENT ON TABLE "{}"."{}" IS NULL;'.format(schema, tablename))
         else:
-            self._execute(None, 'COMMENT ON TABLE "{0}"."{1}" IS $escape${2}$escape$;'.format(schema, tablename, comment))
+            self._execute(None, 'COMMENT ON TABLE "{}"."{}" IS $escape${}$escape$;'.format(schema, tablename, comment))
 
     def getComment(self, tablename, field):
         """Returns the comment for a field"""
