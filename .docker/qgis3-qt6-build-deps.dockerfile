@@ -1,4 +1,4 @@
-ARG DISTRO_VERSION=36
+ARG DISTRO_VERSION=38
 
 FROM fedora:${DISTRO_VERSION} as single
 MAINTAINER Matthias Kuhn <matthias@opengis.ch>
