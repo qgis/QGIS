@@ -637,13 +637,11 @@ static void tilingPass2(BaseInfo &m_b, TileGrid &m_grid, FileInfo &m_srsFileInfo
   ProgressBar progressBar;
   progressBar.init(lstBinFiles.size());
 
-  int outFileIdx = 0;
   for ( const std::string &binFile : lstBinFiles )
   {
       std::string fileStem = fs::path(binFile).stem().string();
       std::string outFilename = m_b.opts.outputDir + "/" + fileStem + "." + m_b.opts.outputFormat;
       outFiles.push_back(outFilename);
-      outFileIdx++;
 
       m_pool2.add([binFile, outFilename, &m_b, &progressBar]()
       {
