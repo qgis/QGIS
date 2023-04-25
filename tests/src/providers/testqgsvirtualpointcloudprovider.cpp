@@ -275,7 +275,7 @@ void TestQgsVirtualPointCloudProvider::testLazyLoading()
   QgsPointCloudIndex *index = layer->dataProvider()->index();
   QCOMPARE( index, nullptr );
 
-  QVector< QgsPointCloudSubIndex > subIndexes = layer->dataProvider()->subIndexes();
+  QVector< QgsPointCloudSubIndex > &subIndexes = *layer->dataProvider()->subIndexes();
 
   QCOMPARE( subIndexes.size(), 18 );
   int loadedIndexes = 0;
@@ -289,7 +289,6 @@ void TestQgsVirtualPointCloudProvider::testLazyLoading()
   QgsRenderContext ctx;
   ctx.setMapExtent( QgsRectangle( -498160, -1205380, -498090, -1205330 ) );
   layer->loadIndexesForRenderContext( ctx );
-  subIndexes = layer->dataProvider()->subIndexes();
   for ( const auto &si : subIndexes )
     if ( si.index() )
       ++loadedIndexes;

@@ -726,44 +726,31 @@ void Qgs3DMapScene::addLayerEntity( QgsMapLayer *layer )
 
       if ( QgsChunkedEntity *chunkedNewEntity = qobject_cast<QgsChunkedEntity *>( newEntity ) )
       {
-        mChunkEntities.append( chunkedNewEntity );
         needsSceneUpdate = true;
-
-        connect( chunkedNewEntity, &QgsChunkedEntity::newEntityCreated, this, [this]( Qt3DCore::QEntity * entity )
-        {
-          finalizeNewEntity( entity );
-        } );
-
-        connect( chunkedNewEntity, &QgsChunkedEntity::pendingJobsCountChanged, this, &Qgs3DMapScene::totalPendingJobsCountChanged );
+        addNewChunkedEntity( chunkedNewEntity );
       }
 
-      if ( QgsVirtualPointCloudEntity *vpcNewEntity = qobject_cast<QgsVirtualPointCloudEntity *>( newEntity ) )
+      if ( QgsVirtualPointCloudEntity *virtualPointCloudEntity = qobject_cast<QgsVirtualPointCloudEntity *>( newEntity ) )
       {
-        QgsVirtualPointCloudProvider *vp = qobject_cast<QgsVirtualPointCloudProvider *>( layer->dataProvider() );
+        QgsVirtualPointCloudProvider *provider = qobject_cast<QgsVirtualPointCloudProvider *>( layer->dataProvider() );
 
-//        connect( vp, &QgsVirtualPointCloudProvider::subIndexLoaded, vpcNewEntity, &QgsVirtualPointCloudEntity::onSubIndexLoaded );
-//        connect( vpcNewEntity, &QgsVirtualPointCloudEntity::newEntityCreated, this, [=]( QgsChunkedEntity *newChunkedEntity )
-//        {
-//          newChunkedEntity->setParent( vpcNewEntity );
-//          mChunkEntities.append( newChunkedEntity );
-//          onCameraChanged();
-//        } );
-
-        vpcNewEntity->loadAllSubIndexes();
-        const auto chunkedEntities = vpcNewEntity->chunkedEntities();
+        virtualPointCloudEntity->createChunkedEntitiesForLoadedSubIndexes();
+        const auto chunkedEntities = virtualPointCloudEntity->chunkedEntities();
         for ( const auto &ce : chunkedEntities )
         {
-          ce->setParent( vpcNewEntity );
-          mChunkEntities.append( ce );
+          ce->setParent( virtualPointCloudEntity );
           needsSceneUpdate = true;
-
-          connect( ce, &QgsChunkedEntity::newEntityCreated, this, [this]( Qt3DCore::QEntity * entity )
-          {
-            finalizeNewEntity( entity );
-          } );
-
-          connect( ce, &QgsChunkedEntity::pendingJobsCountChanged, this, &Qgs3DMapScene::totalPendingJobsCountChanged );
+          addNewChunkedEntity( ce );
         }
+
+        connect( provider, &QgsVirtualPointCloudProvider::subIndexLoaded, virtualPointCloudEntity, &QgsVirtualPointCloudEntity::onSubIndexLoaded );
+
+        connect( virtualPointCloudEntity, &QgsVirtualPointCloudEntity::newEntityCreated, this, [ = ]( QgsChunkedEntity * newChildChunkedEntity )
+        {
+          newChildChunkedEntity->setParent( virtualPointCloudEntity );
+          addNewChunkedEntity( newChildChunkedEntity );
+          onCameraChanged();
+        } );
       }
     }
   }
@@ -790,10 +777,10 @@ void Qgs3DMapScene::addLayerEntity( QgsMapLayer *layer )
     QgsPointCloudLayer *pclayer = qobject_cast<QgsPointCloudLayer *>( layer );
     connect( pclayer, &QgsPointCloudLayer::renderer3DChanged, this, &Qgs3DMapScene::onLayerRenderer3DChanged );
     connect( pclayer, &QgsPointCloudLayer::subsetStringChanged, this, &Qgs3DMapScene::onLayerRenderer3DChanged );
-    if ( QgsVirtualPointCloudProvider *vp = qobject_cast<QgsVirtualPointCloudProvider *>( layer->dataProvider() ) )
-    {
-      connect( vp, &QgsVirtualPointCloudProvider::subIndexLoaded, this, &Qgs3DMapScene::onLayerRenderer3DChanged, Qt::UniqueConnection );
-    }
+//    if ( QgsVirtualPointCloudProvider *vp = qobject_cast<QgsVirtualPointCloudProvider *>( layer->dataProvider() ) )
+//    {
+//      connect( vp, &QgsVirtualPointCloudProvider::subIndexLoaded, this, &Qgs3DMapScene::onLayerRenderer3DChanged, Qt::UniqueConnection );
+//    }
   }
 }
 
@@ -904,6 +891,18 @@ void Qgs3DMapScene::finalizeNewEntity( Qt3DCore::QEntity *newEntity )
       }
     }
   }
+}
+
+void Qgs3DMapScene::addNewChunkedEntity( QgsChunkedEntity *newEntity )
+{
+  mChunkEntities.append( newEntity );
+
+  connect( newEntity, &QgsChunkedEntity::newEntityCreated, this, [this]( Qt3DCore::QEntity * entity )
+  {
+    finalizeNewEntity( entity );
+  } );
+
+  connect( newEntity, &QgsChunkedEntity::pendingJobsCountChanged, this, &Qgs3DMapScene::totalPendingJobsCountChanged );
 }
 
 int Qgs3DMapScene::maximumTextureSize() const

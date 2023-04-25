@@ -38,7 +38,7 @@ QgsPointCloudLayerRenderer::QgsPointCloudLayerRenderer( QgsPointCloudLayer *laye
   : QgsMapLayerRenderer( layer->id(), &context )
   , mLayer( layer )
   , mLayerAttributes( layer->attributes() )
-  , mSubIndexes( layer && layer->dataProvider() ? layer->dataProvider()->subIndexes() : QVector<QgsPointCloudSubIndex>() )
+  , mSubIndexes( layer && layer->dataProvider() ? layer->dataProvider()->subIndexes() : nullptr )
   , mFeedback( new QgsFeedback )
 {
   // TODO: we must not keep pointer to mLayer (it's dangerous) - we must copy anything we need for rendering
@@ -47,7 +47,7 @@ QgsPointCloudLayerRenderer::QgsPointCloudLayerRenderer( QgsPointCloudLayer *laye
     return;
 
   mRenderer.reset( mLayer->renderer()->clone() );
-  if ( !mSubIndexes.isEmpty() )
+  if ( mSubIndexes )
     mSubIndexExtentRenderer.reset( new QgsPointCloudExtentRenderer() );
 
   if ( mLayer->dataProvider()->index() )
@@ -99,7 +99,7 @@ bool QgsPointCloudLayerRenderer::render()
 
   // TODO cache!?
   QgsPointCloudIndex *pc = mLayer->dataProvider()->index();
-  if ( mSubIndexes.isEmpty() &&
+  if ( !mSubIndexes &&
        ( !pc || !pc->isValid() ) )
   {
     mReadyToCompose = true;
@@ -155,14 +155,14 @@ bool QgsPointCloudLayerRenderer::render()
   }
 
   bool canceled = false;
-  if ( mSubIndexes.isEmpty() )
+  if ( !mSubIndexes )
   {
     canceled = !renderIndex( pc );
   }
   else
   {
     mSubIndexExtentRenderer->startRender( context );
-    for ( const auto &si : mSubIndexes )
+    for ( const auto &si : *mSubIndexes )
     {
       if ( canceled )
         break;

@@ -173,7 +173,7 @@ class CORE_EXPORT QgsPointCloudDataProvider: public QgsDataProvider
      * \note Not available in Python bindings
      * \since QGIS 3.32
      */
-    virtual QVector<QgsPointCloudSubIndex> subIndexes() SIP_SKIP { return QVector<QgsPointCloudSubIndex>(); }
+    virtual QVector<QgsPointCloudSubIndex> *subIndexes() SIP_SKIP { return nullptr; }
 
     /**
      * Triggers loading of the point cloud index for the \a n th sub index

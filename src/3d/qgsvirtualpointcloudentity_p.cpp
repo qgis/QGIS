@@ -40,7 +40,7 @@ typedef Qt3DCore::QBuffer Qt3DQBuffer;
 ///@cond PRIVATE
 
 
-QgsVirtualPointCloudEntity::QgsVirtualPointCloudEntity( QVector<QgsPointCloudSubIndex> subIndexes,
+QgsVirtualPointCloudEntity::QgsVirtualPointCloudEntity( QVector<QgsPointCloudSubIndex> *subIndexes,
     const Qgs3DMapSettings &map,
     const QgsCoordinateTransform &coordinateTransform,
     QgsPointCloud3DSymbol *symbol,
@@ -73,12 +73,12 @@ QList<QgsChunkedEntity *> QgsVirtualPointCloudEntity::chunkedEntities() const
   return mChunkedEntities;
 }
 
-void QgsVirtualPointCloudEntity::loadAllSubIndexes()
+void QgsVirtualPointCloudEntity::createChunkedEntitiesForLoadedSubIndexes()
 {
   if ( !mChunkedEntities.isEmpty() )
     return;
 
-  for ( const auto &si : mSubIndexes )
+  for ( const auto &si : *mSubIndexes )
   {
     if ( si.index() )
     {
@@ -97,7 +97,7 @@ void QgsVirtualPointCloudEntity::loadAllSubIndexes()
 
 void QgsVirtualPointCloudEntity::onSubIndexLoaded( int i )
 {
-  QgsPointCloudLayerChunkedEntity *newChunkedEntity = new QgsPointCloudLayerChunkedEntity( mSubIndexes.at( i ).index(),
+  QgsPointCloudLayerChunkedEntity *newChunkedEntity = new QgsPointCloudLayerChunkedEntity( mSubIndexes->at( i ).index(),
       mMap,
       mCoordinateTransform,
       static_cast< QgsPointCloud3DSymbol * >( mSymbol->clone() ),

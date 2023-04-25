@@ -153,7 +153,7 @@ QgsPointCloudLayer3DRenderer *QgsPointCloudLayer3DRenderer::clone() const
 Qt3DCore::QEntity *QgsPointCloudLayer3DRenderer::createEntity( const Qgs3DMapSettings &map ) const
 {
   QgsPointCloudLayer *pcl = layer();
-  if ( !pcl || !pcl->dataProvider() || ( !pcl->dataProvider()->index() && pcl->dataProvider()->subIndexes().isEmpty() ) )
+  if ( !pcl || !pcl->dataProvider() || ( !pcl->dataProvider()->index() && !pcl->dataProvider()->subIndexes() ) ) // TODO:check if subindexes empty
     return nullptr;
   if ( !mSymbol )
     return nullptr;
