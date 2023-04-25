@@ -193,7 +193,7 @@ class RandomPointsPolygons(QgisAlgorithm):
                 pointCount = int(round(this_value * da.measureArea(fGeom)))
 
             if pointCount == 0:
-                feedback.pushInfo(f"Skip feature {f.id()} as number of points for it is 0.")
+                feedback.pushInfo(self.tr("Skip feature {} as number of points for it is 0.").format(f.id()))
                 continue
 
             index = None
