@@ -35,7 +35,8 @@ from qgis.PyQt.QtCore import (
     QDateTime,
     QDate,
     QDir,
-    QUrl
+    QUrl,
+    QSize
 )
 from qgis.PyQt.QtGui import (
     QImage,
@@ -49,8 +50,10 @@ from qgis.core import (
     QgsVectorLayer,
     QgsRenderChecker,
     QgsMultiRenderChecker,
-    QgsMapSettings
+    QgsMapSettings,
+    QgsLayout
 )
+from qgslayoutchecker import QgsLayoutChecker
 
 import unittest
 
@@ -113,7 +116,7 @@ class TestCase(_TestCase):
                     image: QImage,
                     control_name=None,
                     color_tolerance: int = 2,
-                    allowed_mismatch: int = 20):
+                    allowed_mismatch: int = 20) -> bool:
         temp_dir = QDir.tempPath() + '/'
         file_name = temp_dir + name + ".png"
         image.save(file_name, "PNG")
@@ -136,7 +139,7 @@ class TestCase(_TestCase):
                                   reference_image: str,
                                   map_settings: QgsMapSettings,
                                   color_tolerance: Optional[int] = None,
-                                  allowed_mismatch: Optional[int] = None):
+                                  allowed_mismatch: Optional[int] = None) -> bool:
         checker = QgsMultiRenderChecker()
         checker.setMapSettings(map_settings)
 
@@ -150,6 +153,23 @@ class TestCase(_TestCase):
             cls.report += "<h2>Render {}</h2>\n".format(name)
             cls.report += checker.report()
 
+        return result
+
+    @classmethod
+    def render_layout_check(cls,
+                            name: str,
+                            layout: QgsLayout,
+                            size: QSize,
+                            dpi: Optional[float] = 192) -> bool:
+        checker = QgsLayoutChecker(name, layout)
+        checker.dots_per_meter = dpi / 25.4 * 1000
+        checker.size = size
+        if cls.control_path_prefix():
+            checker.setControlPathPrefix(cls.control_path_prefix())
+        result, message = checker.testLayout()
+        if not result:
+            cls.report += "<h2>Render {}</h2>\n".format(name)
+            cls.report += checker.report()
         return result
 
     def assertLayersEqual(self, layer_expected, layer_result, **kwargs):
