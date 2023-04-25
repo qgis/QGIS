@@ -749,7 +749,40 @@ void Qgs3DMapScene::addLayerEntity( QgsMapLayer *layer )
         {
           newChildChunkedEntity->setParent( virtualPointCloudEntity );
           addNewChunkedEntity( newChildChunkedEntity );
+          virtualPointCloudEntity->updateBboxEntity();
           onCameraChanged();
+        } );
+
+        connect( mCameraController, &QgsCameraController::cameraChanged, this, [ = ]()
+        {
+          const QSize size = mEngine->size();
+          float screenSize = std::max( size.width(), size.height() ); // TODO: is this correct?
+          float fov = mCameraController->camera()->fieldOfView();
+          QVector3D cameraPosition = mCameraController->camera()->position();
+
+          const auto subIndexes = provider->subIndexes();
+          for ( int i = 0; i < subIndexes->size(); ++i )
+          {
+            const QgsRectangle extent = subIndexes->at( i ).extent();
+
+            // TODO: reverse transform camera pos once instead of all bboxes
+            const auto bbox = Qgs3DUtils::layerToWorldExtent( extent, 200, 220, layer->crs(), mMap.origin(), mMap.crs(), mMap.transformContext() );
+            // magic number 256 is the span value for a COPC root node
+            float epsilon = std::min( bbox.xExtent(), bbox.yExtent() ) / 256;
+            float distance = bbox.distanceFromPoint( cameraPosition );
+            // TODO: factor this into qgs3dutils?
+            const float sse = epsilon * screenSize / ( 2 * distance * tan( fov * M_PI / ( 2 * 180 ) ) );
+            if ( i == 0 )
+              qDebug() << sse ;
+
+            // todo: decide on magic value .2 (maybe relate to tiles sizes?)
+            const bool displayAsBbox = sse < .2;
+            if ( !displayAsBbox && !subIndexes->at( i ).index() )
+              provider->loadSubIndex( i );
+
+            virtualPointCloudEntity->renderSubIndexBbox( i, displayAsBbox );
+          }
+          virtualPointCloudEntity->updateBboxEntity();
         } );
       }
     }
@@ -777,10 +810,6 @@ void Qgs3DMapScene::addLayerEntity( QgsMapLayer *layer )
     QgsPointCloudLayer *pclayer = qobject_cast<QgsPointCloudLayer *>( layer );
     connect( pclayer, &QgsPointCloudLayer::renderer3DChanged, this, &Qgs3DMapScene::onLayerRenderer3DChanged );
     connect( pclayer, &QgsPointCloudLayer::subsetStringChanged, this, &Qgs3DMapScene::onLayerRenderer3DChanged );
-//    if ( QgsVirtualPointCloudProvider *vp = qobject_cast<QgsVirtualPointCloudProvider *>( layer->dataProvider() ) )
-//    {
-//      connect( vp, &QgsVirtualPointCloudProvider::subIndexLoaded, this, &Qgs3DMapScene::onLayerRenderer3DChanged, Qt::UniqueConnection );
-//    }
   }
 }
 

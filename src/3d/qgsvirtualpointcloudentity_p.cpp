@@ -60,6 +60,8 @@ QgsVirtualPointCloudEntity::QgsVirtualPointCloudEntity( QVector<QgsPointCloudSub
   , mShowBoundingBoxes( showBoundingBoxes )
 {
   mSymbol.reset( symbol );
+  mBboxesEntity = new QgsChunkBoundsEntity( this );
+  updateBboxEntity();
 }
 
 
@@ -78,20 +80,23 @@ void QgsVirtualPointCloudEntity::createChunkedEntitiesForLoadedSubIndexes()
   if ( !mChunkedEntities.isEmpty() )
     return;
 
-  for ( const auto &si : *mSubIndexes )
+  for ( int i = 0; i < mSubIndexes->size(); ++i )
   {
-    if ( si.index() )
-    {
-      mChunkedEntities.append( new QgsPointCloudLayerChunkedEntity( si.index(),
-                               mMap,
-                               mCoordinateTransform,
-                               static_cast< QgsPointCloud3DSymbol * >( mSymbol->clone() ),
-                               mMaximumScreenSpaceError,
-                               mShowBoundingBoxes,
-                               mZValueScale,
-                               mZValueOffset,
-                               mPointBudget ) );
-    }
+    const QgsPointCloudSubIndex si = mSubIndexes->at( i );
+    if ( !si.index() )
+      continue;
+
+    QgsPointCloudLayerChunkedEntity *entity = new QgsPointCloudLayerChunkedEntity( si.index(),
+        mMap,
+        mCoordinateTransform,
+        static_cast< QgsPointCloud3DSymbol * >( mSymbol->clone() ),
+        mMaximumScreenSpaceError,
+        mShowBoundingBoxes,
+        mZValueScale,
+        mZValueOffset,
+        mPointBudget );
+    mChunkedEntitiesMap.insert( i, entity );
+    mChunkedEntities.append( entity );
   }
 }
 
@@ -107,7 +112,29 @@ void QgsVirtualPointCloudEntity::onSubIndexLoaded( int i )
       mZValueOffset,
       mPointBudget );
   mChunkedEntities.append( newChunkedEntity );
+  mChunkedEntitiesMap.insert( i, newChunkedEntity );
   emit newEntityCreated( newChunkedEntity );
 }
 
+void QgsVirtualPointCloudEntity::updateBboxEntity()
+{
+  QList<QgsAABB> bboxes;
+  for ( int i = 0; i < mSubIndexes->size(); ++i )
+  {
+    if ( mChunkedEntitiesMap.contains( i ) && mChunkedEntitiesMap[i]->isEnabled() )
+      continue;
+
+    bboxes << Qgs3DUtils::mapToWorldExtent( mSubIndexes->at( i ).extent(), 200., 220., mMap.origin() ); // TODO: use real z range
+  }
+
+  mBboxesEntity->setBoxes( bboxes );
+}
+
+void QgsVirtualPointCloudEntity::renderSubIndexBbox( const int i, const bool asBbox )
+{
+  if ( !mChunkedEntitiesMap.contains( i ) )
+    return;
+
+  mChunkedEntitiesMap[i]->setEnabled( !asBbox );
+}
 /// @endcond

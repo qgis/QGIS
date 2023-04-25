@@ -81,7 +81,7 @@ class QgsVirtualPointCloudEntity : public Qt3DCore::QEntity
     ~QgsVirtualPointCloudEntity() override;
 
     void createChunkedEntitiesForLoadedSubIndexes();
-    void createBboxEntity();
+    void updateBboxEntity();
     QList<QgsChunkedEntity *> chunkedEntities() const;
 
   signals:
@@ -90,10 +90,13 @@ class QgsVirtualPointCloudEntity : public Qt3DCore::QEntity
 
   public slots:
     void onSubIndexLoaded( int i );
+    void renderSubIndexBbox( const int i, const bool asBbox );
 
   private:
     QList<QgsChunkedEntity *> mChunkedEntities;
+    QMap<int, QgsChunkedEntity *> mChunkedEntitiesMap;
     const QVector<QgsPointCloudSubIndex> *mSubIndexes;
+    QgsChunkBoundsEntity *mBboxesEntity = nullptr;
     const Qgs3DMapSettings &mMap;
     QgsCoordinateTransform mCoordinateTransform;
     QgsPointCloudIndex *mPointCloudIndex;
