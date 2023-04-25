@@ -2113,10 +2113,22 @@ QgsProcessingExpressionParameterDefinitionWidget::QgsProcessingExpressionParamet
   vlayout->setContentsMargins( 0, 0, 0, 0 );
   vlayout->addWidget( new QLabel( tr( "Default value" ) ) );
 
-  mDefaultLineEdit = new QLineEdit();
+  mDefaultQgisLineEdit = new QgsExpressionLineEdit();
+  mDefaultQgisLineEdit->registerExpressionContextGenerator( this );
+
+  mDefaultPointCloudLineEdit = new QgsProcessingPointCloudExpressionLineEdit();
+
+  QStackedWidget *stackedWidget = new QStackedWidget();
+  stackedWidget->addWidget( mDefaultQgisLineEdit );
+  stackedWidget->addWidget( mDefaultPointCloudLineEdit );
+  vlayout->addWidget( stackedWidget );
+
   if ( const QgsProcessingParameterExpression *expParam = dynamic_cast<const QgsProcessingParameterExpression *>( definition ) )
-    mDefaultLineEdit->setText( QgsProcessingParameters::parameterAsExpression( expParam, expParam->defaultValueForGui(), context ) );
-  vlayout->addWidget( mDefaultLineEdit );
+  {
+    const QString expr = QgsProcessingParameters::parameterAsExpression( expParam, expParam->defaultValueForGui(), context );
+    mDefaultQgisLineEdit->setExpression( expr );
+    mDefaultPointCloudLineEdit->setExpression( expr );
+  }
 
   vlayout->addWidget( new QLabel( tr( "Parent layer" ) ) );
 
@@ -2132,6 +2144,8 @@ QgsProcessingExpressionParameterDefinitionWidget::QgsProcessingExpressionParamet
   {
     mParentLayerComboBox->clear();
     mParentLayerComboBox->addItem( tr( "None" ), QVariant() );
+
+    stackedWidget->setCurrentIndex( mExpressionTypeComboBox->currentIndex() > 0 ? mExpressionTypeComboBox->currentIndex() : 0 );
 
     QString initialParent;
     if ( const QgsProcessingParameterExpression *expParam = dynamic_cast<const QgsProcessingParameterExpression *>( definition ) )
@@ -2201,7 +2215,8 @@ QgsProcessingExpressionParameterDefinitionWidget::QgsProcessingExpressionParamet
 QgsProcessingParameterDefinition *QgsProcessingExpressionParameterDefinitionWidget::createParameter( const QString &name, const QString &description, QgsProcessingParameterDefinition::Flags flags ) const
 {
   Qgis::ExpressionType expressionType = static_cast< Qgis::ExpressionType >( mExpressionTypeComboBox->currentData().toInt() );
-  auto param = std::make_unique< QgsProcessingParameterExpression >( name, description, mDefaultLineEdit->text(), mParentLayerComboBox->currentData().toString(), false, expressionType );
+  QString expression = expressionType == Qgis::ExpressionType::Qgis ? mDefaultQgisLineEdit->expression() : mDefaultPointCloudLineEdit->expression();
+  auto param = std::make_unique< QgsProcessingParameterExpression >( name, description, expression, mParentLayerComboBox->currentData().toString(), false, expressionType );
   param->setFlags( flags );
   return param.release();
 }
