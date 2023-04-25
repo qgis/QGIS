@@ -135,8 +135,8 @@ class TestQgsAnnotation(unittest.TestCase):
         a.markerSymbol().symbolLayer(0).setStrokeColor(QColor(0, 0, 0))
         a.setFrameSizeMm(QSizeF(400 / 3.7795275, 250 / 3.7795275))
         a.setFrameOffsetFromReferencePointMm(QPointF(70 / 3.7795275, 90 / 3.7795275))
-        htmlFile = open(TEST_DATA_DIR + "/test_html.html")
-        htmlText = htmlFile.read()
+        with open(TEST_DATA_DIR + "/test_html.html") as f:
+            htmlText = f.read()
         a.setHtmlSource(htmlText)
         im = self.renderAnnotation(a, QPointF(20, 30))
         self.assertTrue(self.imageCheck('html_annotation_html_source', 'html_annotation', im))
