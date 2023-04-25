@@ -60,15 +60,6 @@ fi
 
 CMAKE_EXTRA_ARGS=()
 
-if [[ ${BUILD_WITH_QT6} = "ON" ]]; then
-  CMAKE_EXTRA_ARGS+=(
-   "-DQSCINTILLA_INCLUDE_DIR=/usr/include/qt6"
-   "-DQSCINTILLA_LIBRARY=/usr/lib64/libqscintilla2_qt6.so"
-   "-DQWT_INCLUDE_DIR=/usr/local/qwt-6.2.0/include/"
-   "-DQWT_LIBRARY=/usr/local/qwt-6.2.0/lib/libqwt.so.6"
-  )
-fi
-
 if [[ "${WITH_COMPILE_COMMANDS}" == "ON" ]]; then
   CMAKE_EXTRA_ARGS+=(
     "-DCMAKE_EXPORT_COMPILE_COMMANDS=ON"
