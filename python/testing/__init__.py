@@ -91,7 +91,15 @@ class TestCase(_TestCase):
             QDir().mkpath(report_dir.path())
 
         report_file = report_dir.filePath('index.html')
-        with open(report_file, 'ta', encoding='utf-8') as f:
+
+        # only append to existing reports if running under CI
+        if cls.is_ci_run() or \
+                os.environ.get("QGIS_APPEND_TO_TEST_REPORT") == 'true':
+            file_mode = 'ta'
+        else:
+            file_mode = 'wt'
+
+        with open(report_file, file_mode, encoding='utf-8') as f:
             f.write(f"<h1>Python {cls.__name__} Tests</h1>\n")
             f.write(report)
 
