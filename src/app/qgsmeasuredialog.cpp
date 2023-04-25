@@ -34,7 +34,7 @@
 #include <QPushButton>
 
 
-const QgsSettingsEntryBool *QgsMeasureDialog::settingClipboardHeader = new QgsSettingsEntryBool( QStringLiteral( "clipboard-header" ), QgsSettingsTree::sTreeMeasure, false, QObject::tr( "Whether the header should be copied to the cliboard along the coordinates, distances" ) );
+const QgsSettingsEntryBool *QgsMeasureDialog::settingClipboardHeader = new QgsSettingsEntryBool( QStringLiteral( "clipboard-header" ), QgsSettingsTree::sTreeMeasure, false, QObject::tr( "Whether the header should be copied to the clipboard along the coordinates, distances" ) );
 
 const QgsSettingsEntryString *QgsMeasureDialog::settingClipboardSeparator = new QgsSettingsEntryString( QStringLiteral( "clipboard-separator" ), QgsSettingsTree::sTreeMeasure, QStringLiteral( "\t" ), QObject::tr( "Separator between the measure columns copied to the clipboard" ) );
 
