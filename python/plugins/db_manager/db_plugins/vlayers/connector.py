@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 /***************************************************************************
 Name                 : Virtual layers plugin for DB Manager
@@ -37,7 +35,7 @@ from qgis.core import (
 import sqlite3
 
 
-class sqlite3_connection(object):
+class sqlite3_connection:
 
     def __init__(self, sqlite_file):
         self.conn = sqlite3.connect(sqlite_file)
@@ -68,7 +66,7 @@ def classFactory():
 # Tables in DB Manager are identified by their display names
 # This global registry maps a display name with a layer id
 # It is filled when getVectorTables is called
-class VLayerRegistry(object):
+class VLayerRegistry:
     _instance = None
 
     @classmethod
@@ -118,7 +116,7 @@ class VLayerConnector(DBConnector):
 
     def _execute(self, cursor, sql):
         # This is only used to get list of fields
-        class DummyCursor(object):
+        class DummyCursor:
 
             def __init__(self, sql):
                 self.sql = sql

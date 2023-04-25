@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 /***************************************************************************
 Name                 : DB Manager
@@ -40,7 +38,7 @@ class PGDatabaseInfo(DatabaseInfo):
 class PGTableInfo(TableInfo):
 
     def __init__(self, table):
-        super(PGTableInfo, self).__init__(table)
+        super().__init__(table)
         self.table = table
 
     def generalInfo(self):

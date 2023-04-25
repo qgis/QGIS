@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 /***************************************************************************
 Name                 : TopoViewer plugin for DB Manager
@@ -21,7 +19,6 @@ Based on qgis_pgis_topoview by Sandro Santilli <strk@kbt.io>
  *                                                                         *
  ***************************************************************************/
 """
-from builtins import str
 
 from qgis.PyQt.QtWidgets import QAction
 from qgis.PyQt.QtCore import Qt
@@ -83,13 +80,13 @@ def run(item, action, mainwindow):
 
     if not isTopoSchema:
         mainwindow.infoBar.pushMessage("Invalid topology",
-                                       'Schema "{0}" is not registered in topology.topology.'.format(
+                                       'Schema "{}" is not registered in topology.topology.'.format(
                                            item.schema().name), Qgis.Warning,
                                        mainwindow.iface.messageTimeout())
         return False
 
     if (res[0][0] < 0):
-        mainwindow.infoBar.pushMessage("WARNING", 'Topology "{0}" is registered as having a srid of {1} in topology.topology, we will assume 0 (for unknown)'.format(item.schema().name, res[0]), Qgis.Warning, mainwindow.iface.messageTimeout())
+        mainwindow.infoBar.pushMessage("WARNING", 'Topology "{}" is registered as having a srid of {} in topology.topology, we will assume 0 (for unknown)'.format(item.schema().name, res[0]), Qgis.Warning, mainwindow.iface.messageTimeout())
         toposrid = '0'
     else:
         toposrid = str(res[0][0])

@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 /***************************************************************************
 Name                 : DB Manager
@@ -19,11 +17,9 @@ email                : brush.tyler@gmail.com
  *                                                                         *
  ***************************************************************************/
 """
-from builtins import str
-from builtins import object
 
 
-class HtmlContent(object):
+class HtmlContent:
 
     def __init__(self, data):
         self.data = data if not isinstance(data, HtmlContent) else data.data
@@ -56,7 +52,7 @@ class HtmlContent(object):
         return len(self.data) > 0
 
 
-class HtmlElem(object):
+class HtmlElem:
 
     def __init__(self, tag, data, attrs=None):
         self.tag = tag
