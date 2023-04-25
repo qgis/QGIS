@@ -34,6 +34,7 @@ QgsDataSourceUri::QgsDataSourceUri()
 
 QgsDataSourceUri::QgsDataSourceUri( const QString &u )
 {
+  QgsDebugMsgLevel( QStringLiteral( "Parsing URI: %1" ).arg( u ), 2 );
   QString uri = u;
   int i = 0;
   while ( i < uri.length() )
@@ -79,10 +80,29 @@ QgsDataSourceUri::QgsDataSourceUri( const QString &u )
       {
         if ( i < uri.length() && uri[i] == '.' )
         {
+          QgsDebugMsg( QStringLiteral( "parsing schema and table" ) );
           i++;
 
-          mSchema = pval;
-          mTable = getValue( uri, i );
+          mExternalDatabase = pval;
+          mSchema = getValue( uri, i );
+
+          if ( uri[i] == '.' )
+          {
+            QgsDebugMsg( QStringLiteral( "parsing datashare URI" ) );
+            // the case where the following format has been received:
+            // "<database>"."<schema>"."<table>"
+            i++;
+            mTable = getValue( uri, i );
+          }
+          else
+          {
+            // the default case: "<schema>"."<table>"
+            // move values right to their appropriate variables
+
+            mTable = mSchema;
+            mSchema = mExternalDatabase;
+            mExternalDatabase = QString();
+          }
         }
         else
         {
@@ -284,6 +304,11 @@ QString QgsDataSourceUri::host() const
 QString QgsDataSourceUri::database() const
 {
   return mDatabase;
+}
+
+QString QgsDataSourceUri::externalDatabase() const
+{
+  return mExternalDatabase;
 }
 
 QString QgsDataSourceUri::password() const
@@ -674,6 +699,12 @@ void QgsDataSourceUri::setEncodedUri( const QString &uri )
 
 QString QgsDataSourceUri::quotedTablename() const
 {
+  if ( !mExternalDatabase.isEmpty() )
+    return QStringLiteral( "\"%1\".\"%2\".\"%3\"" )
+           .arg( escape( mExternalDatabase, '"' ),
+                 escape( mSchema, '"' ),
+                 escape( mTable, '"' ) );
+
   if ( !mSchema.isEmpty() )
     return QStringLiteral( "\"%1\".\"%2\"" )
            .arg( escape( mSchema, '"' ),
@@ -719,8 +750,10 @@ void QgsDataSourceUri::setDataSource( const QString &schema,
                                       const QString &table,
                                       const QString &geometryColumn,
                                       const QString &sql,
-                                      const QString &keyColumn )
+                                      const QString &keyColumn,
+                                      const QString &externalDatabase )
 {
+  mExternalDatabase = externalDatabase;
   mSchema = schema;
   mTable = table;
   mGeometryColumn = geometryColumn;

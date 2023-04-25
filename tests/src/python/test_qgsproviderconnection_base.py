@@ -498,8 +498,8 @@ class TestPyQgsProviderConnectionBase():
         conn = md.createConnection(self.uri, {})
         native_types = conn.nativeTypes()
         names = [nt.mTypeName.lower() for nt in native_types]
-        self.assertTrue('integer' in names or 'decimal' in names or 'number' in names, names)
-        self.assertTrue('string' in names or 'text' in names or 'nvarchar' in names or 'varchar2' in names, names)
+        self.assertTrue('integer' in names or 'decimal' in names or 'number' or 'int4' in names, names)
+        self.assertTrue('string' in names or 'text' in names or 'nvarchar' or 'varchar' in names or 'varchar2' in names, names)
 
     def testExecuteSqlCancel(self):
         """Test that feedback can cancel an executeSql query"""

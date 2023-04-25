@@ -18,8 +18,8 @@ INTERACTIVE=no
 FORCE_REBUILD=no
 export QT_VERSION=5 # TODO: ask user for this one
 export DISTRO_VERSION=21.10 # TODO: ask user for this one
-# can be: ALL, ALL_BUT_PROVIDERS, POSTGRES, HANA, ORACLE, SQLSERVER
-TESTS_TO_RUN=ALL_BUT_PROVIDERS # TODO: ask user for this one
+# can be: ALL, ALL_BUT_PROVIDERS, POSTGRES, HANA, ORACLE, SQLSERVER, REDSHIFT
+TESTS_TO_RUN=${TESTS_TO_RUN:-ALL_BUT_PROVIDERS} # TODO: ask user for this one
 
 usage() {
   echo "Usage: $(basename $0) [--skip-update-images] [--force-rebuild] [--interactive]"

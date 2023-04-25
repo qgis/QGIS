@@ -1,6 +1,7 @@
 set (ENABLE_MSSQLTEST FALSE CACHE BOOL "Enable MSSQL provider tests")
 set (ENABLE_ORACLETEST FALSE CACHE BOOL "Enable Oracle provider tests")
 set (ENABLE_HANATEST FALSE CACHE BOOL "Enable HANA provider tests")
+set (ENABLE_REDSHIFTTEST FALSE CACHE BOOL "Enable Redshift provider tests")
 
 include(UsePythonTest)
 
@@ -522,6 +523,17 @@ if (ENABLE_HANATEST)
   ADD_PYTHON_TEST(PyQgsProviderConnectionHana test_qgsproviderconnection_hana.py TEST_TIMEOUT=120)
   SET_TESTS_PROPERTIES(PyQgsHanaProvider PyQgsProviderConnectionHana PROPERTIES LABELS "HANA")
 endif (ENABLE_HANATEST)
+
+if (ENABLE_REDSHIFTTEST)
+  ADD_PYTHON_TEST(PyQgsRedshiftProvider test_provider_redshift.py)
+  ADD_PYTHON_TEST(PyQgsProviderConnectionRedshift test_qgsproviderconnection_redshift.py)
+  ADD_PYTHON_TEST(PyQgsDatabaseSchemaModelRedshift test_qgsdatabaseschemamodel_redshift.py)
+  ADD_PYTHON_TEST(PyQgsDatabaseTableModelRedshift test_qgsdatabasetablemodel_redshift.py)
+  ADD_PYTHON_TEST(PyQgsProjectStorageRedshift test_project_storage_redshift.py)
+  SET_TESTS_PROPERTIES(PyQgsRedshiftProvider PyQgsProviderConnectionRedshift
+      PyQgsDatabaseSchemaModelRedshift PyQgsDatabaseTableModelRedshift
+      PyQgsProjectStorageRedshift PROPERTIES LABELS "REDSHIFT")
+endif (ENABLE_REDSHIFTTEST)
 
 if (WITH_SERVER)
   ADD_PYTHON_TEST(PyQgsServer test_qgsserver.py)

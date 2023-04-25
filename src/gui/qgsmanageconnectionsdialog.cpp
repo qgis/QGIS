@@ -1435,7 +1435,7 @@ void QgsManageConnectionsDialog::loadRedshiftConnections( const QDomDocument &do
     settings.setValue( QStringLiteral( "/host" ), child.attribute( QStringLiteral( "host" ) ) );
     settings.setValue( QStringLiteral( "/port" ), child.attribute( QStringLiteral( "port" ) ) );
     settings.setValue( QStringLiteral( "/database" ), child.attribute( QStringLiteral( "database" ) ) );
-    
+
     settings.setValue( QStringLiteral( "/sslmode" ), child.attribute( QStringLiteral( "sslmode" ) ) );
     settings.setValue( QStringLiteral( "/estimatedMetadata" ), child.attribute( QStringLiteral( "estimatedMetadata" ) ) );
     settings.setValue( QStringLiteral( "/saveUsername" ), child.attribute( QStringLiteral( "saveUsername" ) ) );

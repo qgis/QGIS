@@ -3700,7 +3700,7 @@ void QgisApp::createToolBars()
     bt->addAction( mActionAddOracleLayer );
   if ( mActionAddHanaLayer )
     bt->addAction( mActionAddHanaLayer );
-  if ( mActionAddRedshiftLayer)
+  if ( mActionAddRedshiftLayer )
     bt->addAction( mActionAddRedshiftLayer );
 
   QAction *defAddDbLayerAction = mActionAddPgLayer;

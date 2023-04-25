@@ -573,7 +573,7 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual QAction *actionAddOgrLayer() = 0;
     virtual QAction *actionAddRasterLayer() = 0;
     virtual QAction *actionAddPgLayer() = 0;
-    virtual QAction *actionAddRedshiftLayer() = 0; 
+    virtual QAction *actionAddRedshiftLayer() = 0;
     virtual QAction *actionAddWmsLayer() = 0;
 
     /**

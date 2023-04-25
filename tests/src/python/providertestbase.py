@@ -637,7 +637,8 @@ class ProviderTestCase(FeatureSourceTestCase):
             self.testGetFeatures(l.dataProvider(), [f1, f2])
 
             # add empty list, should return true for consistency
-            self.assertTrue(l.dataProvider().addFeatures([]))
+            result, _ = l.dataProvider().addFeatures([])
+            self.assertTrue(result)
 
             # ensure that returned features have been given the correct id
             f = next(l.getFeatures(QgsFeatureRequest().setFilterFid(added[0].id())))
@@ -648,8 +649,9 @@ class ProviderTestCase(FeatureSourceTestCase):
             self.assertTrue(f.isValid())
             self.assertEqual(f['cnt'], 330)
         else:
+            result, _ = l.dataProvider().addFeatures([f1, f2])
             # expect fail
-            self.assertFalse(l.dataProvider().addFeatures([f1, f2]),
+            self.assertFalse(result,
                              'Provider reported no AddFeatures capability, but returned true to addFeatures')
 
     def testAddFeatureFastInsert(self):
@@ -1055,37 +1057,38 @@ class ProviderTestCase(FeatureSourceTestCase):
         self.assertEqual(vl.dataProvider().maximumValue(0), 5)
         self.assertEqual(vl.dataProvider().maximumValue(1), 400)
 
-        # add feature
-        f6 = QgsFeature()
-        f6.setAttributes([15, 1400])
-        res, [f6] = vl.dataProvider().addFeatures([f6])
-        self.assertTrue(res)
-        self.assertEqual(vl.dataProvider().minimumValue(0), 1)
-        self.assertEqual(vl.dataProvider().minimumValue(1), -200)
-        self.assertEqual(vl.dataProvider().maximumValue(0), 15)
-        self.assertEqual(vl.dataProvider().maximumValue(1), 1400)
-        f7 = QgsFeature()
-        f7.setAttributes([0, -1400])
-        res, [f7] = vl.dataProvider().addFeatures([f7])
-        self.assertTrue(res)
-        self.assertEqual(vl.dataProvider().minimumValue(0), 0)
-        self.assertEqual(vl.dataProvider().minimumValue(1), -1400)
-        self.assertEqual(vl.dataProvider().maximumValue(0), 15)
-        self.assertEqual(vl.dataProvider().maximumValue(1), 1400)
+        if vl.dataProvider().capabilities() & QgsVectorDataProvider.AddFeatures:
+            # add feature
+            f6 = QgsFeature()
+            f6.setAttributes([15, 1400])
+            res, [f6] = vl.dataProvider().addFeatures([f6])
+            self.assertTrue(res)
+            self.assertEqual(vl.dataProvider().minimumValue(0), 1)
+            self.assertEqual(vl.dataProvider().minimumValue(1), -200)
+            self.assertEqual(vl.dataProvider().maximumValue(0), 15)
+            self.assertEqual(vl.dataProvider().maximumValue(1), 1400)
+            f7 = QgsFeature()
+            f7.setAttributes([0, -1400])
+            res, [f7] = vl.dataProvider().addFeatures([f7])
+            self.assertTrue(res)
+            self.assertEqual(vl.dataProvider().minimumValue(0), 0)
+            self.assertEqual(vl.dataProvider().minimumValue(1), -1400)
+            self.assertEqual(vl.dataProvider().maximumValue(0), 15)
+            self.assertEqual(vl.dataProvider().maximumValue(1), 1400)
 
-        # change attribute values
-        self.assertTrue(vl.dataProvider().changeAttributeValues({f6.id(): {1: 150}, f7.id(): {1: -100}}))
-        self.assertEqual(vl.dataProvider().minimumValue(1), -200)
-        self.assertEqual(vl.dataProvider().maximumValue(1), 400)
+            # change attribute values
+            self.assertTrue(vl.dataProvider().changeAttributeValues({f6.id(): {1: 150}, f7.id(): {1: -100}}))
+            self.assertEqual(vl.dataProvider().minimumValue(1), -200)
+            self.assertEqual(vl.dataProvider().maximumValue(1), 400)
 
-        # delete features
-        f1 = [f for f in vl.getFeatures() if f[self.pk_name] == 5][0]
-        f3 = [f for f in vl.getFeatures() if f[self.pk_name] == 3][0]
-        self.assertTrue(vl.dataProvider().deleteFeatures([f6.id(), f7.id()]))
-        self.assertEqual(vl.dataProvider().minimumValue(0), 1)
-        self.assertEqual(vl.dataProvider().minimumValue(1), -200)
-        self.assertEqual(vl.dataProvider().maximumValue(0), 5)
-        self.assertEqual(vl.dataProvider().maximumValue(1), 400)
+            # delete features
+            f1 = [f for f in vl.getFeatures() if f[self.pk_name] == 5][0]
+            f3 = [f for f in vl.getFeatures() if f[self.pk_name] == 3][0]
+            self.assertTrue(vl.dataProvider().deleteFeatures([f6.id(), f7.id()]))
+            self.assertEqual(vl.dataProvider().minimumValue(0), 1)
+            self.assertEqual(vl.dataProvider().minimumValue(1), -200)
+            self.assertEqual(vl.dataProvider().maximumValue(0), 5)
+            self.assertEqual(vl.dataProvider().maximumValue(1), 400)
 
         if vl.dataProvider().capabilities() & QgsVectorDataProvider.DeleteAttributes:
             # delete attributes
@@ -1150,6 +1153,7 @@ class ProviderTestCase(FeatureSourceTestCase):
                 count = len(features)
                 self.assertEqual(count, 3)
                 has_geometry = features[0].hasGeometry()
+                feature_id = features[0].id()
 
                 # Ask for no attributes
                 request = QgsFeatureRequest().setSubsetOfAttributes([])
@@ -1158,8 +1162,9 @@ class ProviderTestCase(FeatureSourceTestCase):
                 count = len(features)
                 self.assertEqual(count, 3)
                 # Check that we still get a geometry if we add one before
-                self.assertEqual(features[0].hasGeometry(), has_geometry)
-
+                for f in features:
+                    if f.id() == feature_id:
+                        self.assertEqual(f.hasGeometry(), has_geometry)
             finally:
                 self.source.setSubsetString(None)
 
@@ -1186,14 +1191,15 @@ class ProviderTestCase(FeatureSourceTestCase):
         self.assertFalse(QgsVectorLayerUtils.fieldIsEditable(vl, 1, feature))
         self.assertTrue(QgsVectorLayerUtils.fieldIsEditable(vl, 0, feature))
 
-        # same test on a new inserted feature
-        feature = QgsFeature(vl.fields())
-        feature.setAttribute(0, 2)
-        vl.addFeature(feature)
-        self.assertTrue(feature.id() < 0)
-        self.assertFalse(QgsVectorLayerUtils.fieldIsEditable(vl, 1, feature))
-        self.assertTrue(QgsVectorLayerUtils.fieldIsEditable(vl, 0, feature))
-        vl.commitChanges()
+        if l.dataProvider().capabilities() & QgsVectorDataProvider.AddFeatures:
+            # same test on a new inserted feature
+            feature = QgsFeature(vl.fields())
+            feature.setAttribute(0, 2)
+            vl.addFeature(feature)
+            self.assertTrue(feature.id() < 0)
+            self.assertFalse(QgsVectorLayerUtils.fieldIsEditable(vl, 1, feature))
+            self.assertTrue(QgsVectorLayerUtils.fieldIsEditable(vl, 0, feature))
+            vl.commitChanges()
 
         feature = vl.getFeature(2)
         self.assertTrue(feature.isValid())

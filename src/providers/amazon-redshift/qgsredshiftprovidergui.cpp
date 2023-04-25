@@ -1,18 +1,19 @@
 /***************************************************************************
-  qgspostgresprovidergui.cpp
-  --------------------------------------
-  Date                 : June 2019
-  Copyright            : (C) 2019 by Martin Dobias
-  Email                : wonder dot sk at gmail dot com
- ***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
+   qgsredshiftprovidergui.cpp
+   --------------------------------------
+   Date      : 16.02.2021
+   Copyright : (C) 2021 Amazon Inc. or its affiliates
+   Author    : Marcel Bezdrighin
  ***************************************************************************/
 
+/***************************************************************************
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ ***************************************************************************/
 #include "qgsredshiftprovidergui.h"
 
 #include "qgsapplication.h"
@@ -26,7 +27,7 @@
 #include "qgssourceselectprovider.h"
 
 //! Provider for redshift source select
-class QgsRedshiftSourceSelectProvider : public QgsSourceSelectProvider //#spellok
+class QgsRedshiftSourceSelectProvider : public QgsSourceSelectProvider
 {
   public:
     QString providerKey() const override
@@ -39,7 +40,7 @@ class QgsRedshiftSourceSelectProvider : public QgsSourceSelectProvider //#spello
     }
     int ordering() const override
     {
-      return QgsSourceSelectProvider::OrderDatabaseProvider + 20;
+      return QgsSourceSelectProvider::OrderDatabaseProvider + 80;
     }
     QIcon icon() const override
     {
@@ -92,7 +93,7 @@ QgsRedshiftProviderGuiMetadata::QgsRedshiftProviderGuiMetadata()
 QList<QgsSourceSelectProvider *> QgsRedshiftProviderGuiMetadata::sourceSelectProviders()
 {
   QList<QgsSourceSelectProvider *> providers;
-  providers << new QgsRedshiftSourceSelectProvider; //#spellok
+  providers << new QgsRedshiftSourceSelectProvider;
   return providers;
 }
 

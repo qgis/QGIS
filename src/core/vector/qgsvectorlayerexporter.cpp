@@ -140,7 +140,7 @@ QgsVectorLayerExporter::QgsVectorLayerExporter( const QString &uri,
     }
   }
 
-  // Oracle specific HACK: we cannot guess the geometry type when there is no rows, so we need
+  // Oracle/Redshift specific HACK: we cannot guess the geometry type when there is no rows, so we need
   // to force it in the uri
   if ( providerKey == QLatin1String( "oracle" ) )
   {
@@ -151,6 +151,14 @@ QgsVectorLayerExporter::QgsVectorLayerExporter( const QString &uri,
   QgsVectorDataProvider *vectorProvider = qobject_cast< QgsVectorDataProvider * >( pReg->createProvider( providerKey, uriUpdated, providerOptions ) );
   if ( !vectorProvider || !vectorProvider->isValid() || ( vectorProvider->capabilities() & QgsVectorDataProvider::AddFeatures ) == 0 )
   {
+    QgsDebugMsgLevel( QStringLiteral( "vectorProvider key: %1 valid: %2" )
+                      .arg( providerKey )
+                      .arg( ( vectorProvider ?
+                              ( vectorProvider->isValid() ?
+                                ( ( vectorProvider->capabilities() & QgsVectorDataProvider::AddFeatures ) == 1 ? "ON" : "OFF" )
+                                : "INVALID" )
+                              : "NULL" ) ), 2 );
+
     mError = Qgis::VectorExportResult::ErrorInvalidLayer;
     mErrorMessage = QObject::tr( "Loading of layer failed" );
 

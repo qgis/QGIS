@@ -15,6 +15,7 @@ usage() {
   echo "  HANA                Test the HANA provider"
   echo "  POSTGRES            Test the PostgreSQL provider"
   echo "  ORACLE              Test the Oracle provider"
+  echo "  REDSHIFT                Test the Redshift provider"
   echo "  SQLSERVER           Test the SQL Server provider"
   echo "  ALL_BUT_PROVIDERS   Skip all providers tests"
   echo "  ALL                 (default) Run all tests"
@@ -32,6 +33,10 @@ elif [ $# -eq 1 ] && [ $1 = "ORACLE" ]; then
   LABELS_TO_RUN="ORACLE"
   RUN_ORACLE=YES
 
+elif [ $# -eq 1 ] && [ $1 = "REDSHIFT" ]; then
+  LABELS_TO_RUN="REDSHIFT"
+  RUN_REDSHIFT=YES
+
 elif [ $# -eq 1 ] && [ $1 = "SQLSERVER" ]; then
   LABELS_TO_RUN="SQLSERVER"
   RUN_SQLSERVER=YES
@@ -48,6 +53,7 @@ else
   RUN_HANA=YES
   RUN_POSTGRES=YES
   RUN_ORACLE=YES
+  RUN_REDSHIFT=YES
   RUN_SQLSERVER=YES
 fi
 
@@ -165,6 +171,36 @@ if [ ${RUN_ORACLE:-"NO"} == "YES" ]; then
     ${SRCDIR}/tests/testdata/provider/testdata_oracle.sh $ORACLE_HOST
     popd > /dev/null # /root/QGIS
   fi
+
+  echo "::endgroup::"
+
+fi
+
+if [ ${RUN_REDSHIFT:-"NO"} == "YES" ]; then
+
+  echo "::group::Setup Redshift"
+
+  ############################
+  # Restore postgres test data
+  ############################
+  echo "${bold}Load Redshift database...${endbold}"
+
+  export REDSHIFT_DB_HOST=lexkar-qgis.cxd7hnmn8kff.us-east-1-qa.redshift-dev.amazonaws.com
+
+  # wait for the DB to be available
+  # echo "Wait a moment while loading Redshift database."
+  # while ! PGPASSWORD='docker' psql -h postgres -U docker -p 5432 -l &> /dev/null
+  # do
+  #   printf "🐘"
+  #   sleep 1
+  # done
+  # echo " done 🥩"
+
+  pushd ${SRCDIR} > /dev/null
+  echo "Restoring Redshift test data ..."
+  source ./tests/testdata/provider/testdata_redshift.sh
+  echo "Redshift test data restored ..."
+  popd > /dev/null # /root/QGIS
 
   echo "::endgroup::"
 

@@ -168,7 +168,8 @@ class CORE_EXPORT QgsDataSourceUri
                         const QString &aTable,
                         const QString &aGeometryColumn,
                         const QString &aSql = QString(),
-                        const QString &aKeyColumn = QString() );
+                        const QString &aKeyColumn = QString(),
+                        const QString &externalDatabase = QString() );
 
     /**
      * Sets the authentication configuration ID for the URI.
@@ -252,6 +253,8 @@ class CORE_EXPORT QgsDataSourceUri
     QString host() const;
     //! Returns the database name stored in the URI.
     QString database() const;
+    //! Returns the external database name stored in the URI.
+    QString externalDatabase() const;
     //! Returns the port stored in the URI.
     QString port() const;
 
@@ -406,6 +409,8 @@ class CORE_EXPORT QgsDataSourceUri
     QMultiMap<QString, QString> mParams;
     //! http header store
     QgsHttpHeaders mHttpHeaders;
+    //! External database of a datashare
+    QString mExternalDatabase;
 };
 
 #endif //QGSDATASOURCEURI_H
