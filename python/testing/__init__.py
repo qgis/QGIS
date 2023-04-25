@@ -28,6 +28,7 @@ import functools
 import filecmp
 import tempfile
 from pathlib import Path
+from typing import Optional
 
 from qgis.PyQt.QtCore import (
     QVariant,
@@ -37,6 +38,7 @@ from qgis.PyQt.QtCore import (
     QUrl
 )
 from qgis.PyQt.QtGui import (
+    QImage,
     QDesktopServices
 )
 from qgis.core import (
@@ -76,6 +78,13 @@ class TestCase(_TestCase):
             cls.write_local_html_report(cls.report)
 
     @classmethod
+    def control_path_prefix(cls) -> Optional[str]:
+        """
+        Returns the prefix for test control images used by the class
+        """
+        return None
+
+    @classmethod
     def write_local_html_report(cls, report: str):
         report_dir = QgsRenderChecker.testReportDir()
         if not report_dir.exists():
@@ -90,7 +99,13 @@ class TestCase(_TestCase):
             QDesktopServices.openUrl(QUrl.fromLocalFile(report_file))
 
     @classmethod
-    def image_check(cls, name, reference_image, image, control_name=None, color_tolerance=2, allowed_mismatch=20):
+    def image_check(cls,
+                    name: str,
+                    reference_image: str,
+                    image: QImage,
+                    control_name=None,
+                    color_tolerance: int = 2,
+                    allowed_mismatch: int = 20):
         temp_dir = QDir.tempPath() + '/'
         file_name = temp_dir + name + ".png"
         image.save(file_name, "PNG")
@@ -108,7 +123,12 @@ class TestCase(_TestCase):
         return result
 
     @classmethod
-    def render_map_settings_check(cls, name, reference_image, map_settings: QgsMapSettings, color_tolerance=None, allowed_mismatch=None):
+    def render_map_settings_check(cls,
+                                  name: str,
+                                  reference_image: str,
+                                  map_settings: QgsMapSettings,
+                                  color_tolerance: Optional[int] = None,
+                                  allowed_mismatch: Optional[int] = None):
         checker = QgsMultiRenderChecker()
         checker.setMapSettings(map_settings)
 
