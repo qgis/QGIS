@@ -29,14 +29,25 @@ import filecmp
 import tempfile
 from pathlib import Path
 
-from qgis.PyQt.QtCore import QVariant, QDateTime, QDate
+from qgis.PyQt.QtCore import (
+    QVariant,
+    QDateTime,
+    QDate,
+    QDir,
+    QUrl
+)
+from qgis.PyQt.QtGui import (
+    QDesktopServices
+)
 from qgis.core import (
     QgsApplication,
     QgsFeatureRequest,
     QgsCoordinateReferenceSystem,
     NULL,
     QgsVectorLayer,
-    QgsRenderChecker
+    QgsRenderChecker,
+    QgsMultiRenderChecker,
+    QgsMapSettings
 )
 
 import unittest
@@ -47,6 +58,71 @@ unittest.util._MAX_LENGTH = 2000
 
 
 class TestCase(_TestCase):
+
+    @staticmethod
+    def is_ci_run() -> bool:
+        """
+        Returns True if the test is being run on the CI environment
+        """
+        return os.environ.get("QGIS_CONTINUOUS_INTEGRATION_RUN") == 'true'
+
+    @classmethod
+    def setUpClass(cls):
+        cls.report = ''
+
+    @classmethod
+    def tearDownClass(cls):
+        if cls.report:
+            cls.write_local_html_report(cls.report)
+
+    @classmethod
+    def write_local_html_report(cls, report: str):
+        report_dir = QgsRenderChecker.testReportDir()
+        if not report_dir.exists():
+            QDir().mkpath(report_dir.path())
+
+        report_file = report_dir.filePath('index.html')
+        with open(report_file, 'ta', encoding='utf-8') as f:
+            f.write(f"<h1>Python {cls.__name__} Tests</h1>\n")
+            f.write(report)
+
+        if not TestCase.is_ci_run():
+            QDesktopServices.openUrl(QUrl.fromLocalFile(report_file))
+
+    @classmethod
+    def image_check(cls, name, reference_image, image, control_name=None, color_tolerance=2, allowed_mismatch=20):
+        temp_dir = QDir.tempPath() + '/'
+        file_name = temp_dir + name + ".png"
+        image.save(file_name, "PNG")
+        checker = QgsMultiRenderChecker()
+        if cls.control_path_prefix():
+            checker.setControlPathPrefix(cls.control_path_prefix())
+        checker.setControlName(control_name or "expected_" + reference_image)
+        checker.setRenderedImage(file_name)
+        checker.setColorTolerance(color_tolerance)
+        result = checker.runTest(name, allowed_mismatch)
+        if not result:
+            cls.report += "<h2>Render {}</h2>\n".format(name)
+            cls.report += checker.report()
+
+        return result
+
+    @classmethod
+    def render_map_settings_check(cls, name, reference_image, map_settings: QgsMapSettings, color_tolerance=None, allowed_mismatch=None):
+        checker = QgsMultiRenderChecker()
+        checker.setMapSettings(map_settings)
+
+        if cls.control_path_prefix():
+            checker.setControlPathPrefix(cls.control_path_prefix())
+        checker.setControlName("expected_" + reference_image)
+        if color_tolerance:
+            checker.setColorTolerance(color_tolerance)
+        result = checker.runTest(name, allowed_mismatch or 0)
+        if not result:
+            cls.report += "<h2>Render {}</h2>\n".format(name)
+            cls.report += checker.report()
+
+        return result
 
     def assertLayersEqual(self, layer_expected, layer_result, **kwargs):
         """
