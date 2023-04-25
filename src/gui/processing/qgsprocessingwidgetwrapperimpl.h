@@ -698,8 +698,8 @@ class GUI_EXPORT QgsProcessingExpressionParameterDefinitionWidget : public QgsPr
   private:
 
     QComboBox *mParentLayerComboBox = nullptr;
-    //QgsExpressionLineEdit *mDefaultLineEdit = nullptr;
-    QLineEdit *mDefaultLineEdit = nullptr;
+    QgsExpressionLineEdit *mDefaultQgisLineEdit = nullptr;
+    QgsProcessingPointCloudExpressionLineEdit *mDefaultPointCloudLineEdit = nullptr;
     QComboBox *mExpressionTypeComboBox = nullptr;
 
 };
