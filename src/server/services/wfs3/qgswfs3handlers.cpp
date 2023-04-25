@@ -1395,34 +1395,31 @@ void QgsWfs3CollectionsItemsHandler::handleRequest( const QgsServerApiContext &c
       {
         const std::string pageSizeOneLink { cleanedUrlAsString.toStdString() + QStringLiteral( "offset=0&limit=1" ).toStdString() };
         pagesize.push_back( {{ "title", "1" }, { "href", pageSizeOneLink }} ) ;
-      }
-      if ( matchedFeaturesCount > 10 && maxLimit > 10 )
-      {
-        const std::string pageSizeTenLink  { cleanedUrlAsString.toStdString() + QStringLiteral( "offset=0&limit=10" ).toStdString() };
-        pagesize.push_back( {{ "title", "10" }, { "href", pageSizeTenLink }} ) ;
-      }
-      if ( matchedFeaturesCount > 20 && maxLimit > 20 )
-      {
-        const std::string pageSizeTwentyLink { cleanedUrlAsString.toStdString() + QStringLiteral( "offset=0&limit=20" ).toStdString() };
-        pagesize.push_back( {{ "title", "20" }, { "href", pageSizeTwentyLink }} ) ;
-      }
-      if ( matchedFeaturesCount > 50 && maxLimit > 50 )
-      {
-        const std::string pageSizeFiftyLink { cleanedUrlAsString.toStdString() + QStringLiteral( "offset=0&limit=50" ).toStdString() };
-        pagesize.push_back( {{ "title", "50" }, { "href", pageSizeFiftyLink }} ) ;
-      }
-      if ( matchedFeaturesCount > 100 && maxLimit > 100 )
-      {
-        const std::string pageSizeHundredLink { cleanedUrlAsString.toStdString() + QStringLiteral( "offset=0&limit=100" ).toStdString() };
-        pagesize.push_back( {{ "title", "100" }, { "href", pageSizeHundredLink }} ) ;
-      }
-      if ( matchedFeaturesCount > 1000 && maxLimit > 1000 )
-      {
-        const std::string pageSizeThousandLink { cleanedUrlAsString.toStdString() + QStringLiteral( "offset=0&limit=1000" ).toStdString() };
-        pagesize.push_back( {{ "title", "1000" }, { "href", pageSizeThousandLink }} ) ;
-      }
-      if ( matchedFeaturesCount > 1 && maxLimit > 1 )
-      {
+        if ( matchedFeaturesCount > 10 && maxLimit > 10 )
+        {
+          const std::string pageSizeTenLink  { cleanedUrlAsString.toStdString() + QStringLiteral( "offset=0&limit=10" ).toStdString() };
+          pagesize.push_back( {{ "title", "10" }, { "href", pageSizeTenLink }} ) ;
+        }
+        if ( matchedFeaturesCount > 20 && maxLimit > 20 )
+        {
+          const std::string pageSizeTwentyLink { cleanedUrlAsString.toStdString() + QStringLiteral( "offset=0&limit=20" ).toStdString() };
+          pagesize.push_back( {{ "title", "20" }, { "href", pageSizeTwentyLink }} ) ;
+        }
+        if ( matchedFeaturesCount > 50 && maxLimit > 50 )
+        {
+          const std::string pageSizeFiftyLink { cleanedUrlAsString.toStdString() + QStringLiteral( "offset=0&limit=50" ).toStdString() };
+          pagesize.push_back( {{ "title", "50" }, { "href", pageSizeFiftyLink }} ) ;
+        }
+        if ( matchedFeaturesCount > 100 && maxLimit > 100 )
+        {
+          const std::string pageSizeHundredLink { cleanedUrlAsString.toStdString() + QStringLiteral( "offset=0&limit=100" ).toStdString() };
+          pagesize.push_back( {{ "title", "100" }, { "href", pageSizeHundredLink }} ) ;
+        }
+        if ( matchedFeaturesCount > 1000 && maxLimit > 1000 )
+        {
+          const std::string pageSizeThousandLink { cleanedUrlAsString.toStdString() + QStringLiteral( "offset=0&limit=1000" ).toStdString() };
+          pagesize.push_back( {{ "title", "1000" }, { "href", pageSizeThousandLink }} ) ;
+        }
         std::string maxTitle = "All";
         if ( maxLimit < matchedFeaturesCount )
         {
