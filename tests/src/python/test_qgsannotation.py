@@ -36,7 +36,6 @@ from qgis.core import (
 from qgis.gui import QgsFormAnnotation
 from qgis.testing import start_app, unittest
 
-from qgslayoutchecker import QgsLayoutChecker
 from utilities import unitTestDataPath
 
 start_app()
@@ -307,14 +306,12 @@ class TestQgsAnnotation(unittest.TestCase):
         annotation.setHasFixedMapPosition(True)
         pr.annotationManager().addAnnotation(annotation)
 
-        checker = QgsLayoutChecker(
-            test_name, l)
-        checker.dots_per_meter = 2 * 96 / 25.4 * 1000
-        checker.size = QSize(1122 * 2, 794 * 2)
-        checker.setControlPathPrefix("annotations")
-        result, message = checker.testLayout()
-        self.report += checker.report()
-        return result
+        return self.render_layout_check(
+            test_name,
+            layout=l,
+            size=QSize(1122 * 2, 794 * 2),
+            dpi=192
+        )
 
 
 if __name__ == '__main__':
