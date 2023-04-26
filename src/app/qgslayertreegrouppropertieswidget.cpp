@@ -107,6 +107,7 @@ void QgsLayerTreeGroupPropertiesWidget::apply()
     groupLayer->setPaintEffect( mPaintEffect->clone() );
 
     groupLayer->triggerRepaint();
+    QgsProject::instance()->setDirty( true );
   }
   else if ( mMapLayerConfigWidgetContext.mapCanvas() )
   {
