@@ -145,8 +145,8 @@ void QgsWCSSourceSelect::addButtonClicked()
   {
     QgsRectangle spatialExtent = mSpatialExtentBox->outputExtent();
     QgsCoordinateTransform extentCrsToSSelectedCrs( mSpatialExtentBox->outputCrs(),
-                      QgsCoordinateReferenceSystem( selectedCrs() ),
-                      QgsProject::instance()->transformContext() );
+        QgsCoordinateReferenceSystem( selectedCrs() ),
+        QgsProject::instance()->transformContext() );
     extentCrsToSSelectedCrs.setBallparkTransformsAreAppropriate( true );
     spatialExtent = extentCrsToSSelectedCrs.transformBoundingBox( spatialExtent );
     bool inverted = uri.hasParam( QStringLiteral( "InvertAxisOrientation" ) );
