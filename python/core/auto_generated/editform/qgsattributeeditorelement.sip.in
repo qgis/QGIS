@@ -8,6 +8,7 @@
 
 
 
+
 class QgsAttributeEditorElement /Abstract/
 {
 %Docstring(signature="appended")
@@ -26,16 +27,16 @@ layer.
 %ConvertToSubClassCode
     switch ( sipCpp->type() )
     {
-      case QgsAttributeEditorElement::AeTypeContainer:
+      case Qgis::AttributeEditorType::Container:
         sipType = sipType_QgsAttributeEditorContainer;
         break;
-      case QgsAttributeEditorElement::AeTypeField:
+      case Qgis::AttributeEditorType::Field:
         sipType = sipType_QgsAttributeEditorField;
         break;
-      case QgsAttributeEditorElement::AeTypeRelation:
+      case Qgis::AttributeEditorType::Relation:
         sipType = sipType_QgsAttributeEditorRelation;
         break;
-      case QgsAttributeEditorElement::AeTypeAction:
+      case Qgis::AttributeEditorType::Action:
         sipType = sipType_QgsAttributeEditorAction;
         break;
       default:
@@ -60,21 +61,7 @@ layer.
 
     };
 
-
-    enum AttributeEditorType
-    {
-      AeTypeContainer,
-      AeTypeField,
-      AeTypeRelation,
-      AeTypeInvalid,
-      AeTypeQmlElement,
-      AeTypeHtmlElement,
-      AeTypeAction,
-      AeTypeTextElement,
-      AeTypeSpacerElement,
-    };
-
-    QgsAttributeEditorElement( AttributeEditorType type, const QString &name, QgsAttributeEditorElement *parent = 0 );
+    QgsAttributeEditorElement( Qgis::AttributeEditorType type, const QString &name, QgsAttributeEditorElement *parent = 0 );
 %Docstring
 Constructor
 
@@ -99,7 +86,7 @@ Returns the name of this element
 :return: The name for this element
 %End
 
-    AttributeEditorType type() const;
+    Qgis::AttributeEditorType type() const;
 %Docstring
 The type of this element
 

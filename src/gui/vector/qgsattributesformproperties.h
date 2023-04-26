@@ -47,6 +47,7 @@
 #include "qgseditorwidgetregistry.h"
 #include "qgsrelationmanager.h"
 #include "qgsattributeeditorrelation.h"
+#include "qgsoptionalexpression.h"
 
 
 class QgsAttributesDnDTree;
@@ -352,7 +353,7 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpress
 
     QTreeWidgetItem *loadAttributeEditorTreeItem( QgsAttributeEditorElement *widgetDef, QTreeWidgetItem *parent, QgsAttributesDnDTree *tree );
 
-    QgsEditFormConfig::PythonInitCodeSource mInitCodeSource = QgsEditFormConfig::CodeSourceNone;
+    Qgis::AttributeFormPythonInitCodeSource mInitCodeSource = Qgis::AttributeFormPythonInitCodeSource::NoSource;
     QString mInitFunction;
     QString mInitFilePath;
     QString mInitCode;

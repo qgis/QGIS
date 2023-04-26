@@ -81,7 +81,7 @@ Gets a list of the children elements of this container
 :return: A list of elements
 %End
 
-    virtual QList<QgsAttributeEditorElement *> findElements( AttributeEditorType type ) const;
+    virtual QList<QgsAttributeEditorElement *> findElements( Qgis::AttributeEditorType type ) const;
 %Docstring
 Traverses the element tree to find any element of the specified type
 

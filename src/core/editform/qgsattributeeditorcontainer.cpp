@@ -68,7 +68,7 @@ void QgsAttributeEditorContainer::setBackgroundColor( const QColor &backgroundCo
   mBackgroundColor = backgroundColor;
 }
 
-QList<QgsAttributeEditorElement *> QgsAttributeEditorContainer::findElements( QgsAttributeEditorElement::AttributeEditorType type ) const
+QList<QgsAttributeEditorElement *> QgsAttributeEditorContainer::findElements( Qgis::AttributeEditorType type ) const
 {
   QList<QgsAttributeEditorElement *> results;
 
@@ -80,7 +80,7 @@ QList<QgsAttributeEditorElement *> QgsAttributeEditorContainer::findElements( Qg
       results.append( elem );
     }
 
-    if ( elem->type() == AeTypeContainer )
+    if ( elem->type() == Qgis::AttributeEditorType::Container )
     {
       QgsAttributeEditorContainer *cont = dynamic_cast<QgsAttributeEditorContainer *>( elem );
       if ( cont )

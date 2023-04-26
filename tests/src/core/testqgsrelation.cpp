@@ -83,7 +83,7 @@ void TestQgsRelation::testValidRelationAfterChangingStyle()
   auto tabs { static_cast<QgsAttributeEditorContainer *>( referencedLayer->editFormConfig().tabs()[0] )->children() };
   for ( const auto &tab : tabs )
   {
-    if ( tab->type() == QgsAttributeEditorElement::AeTypeRelation )
+    if ( tab->type() == Qgis::AttributeEditorType::Relation )
     {
       valid = static_cast<QgsAttributeEditorRelation *>( tab )->relation().isValid();
     }
@@ -98,7 +98,7 @@ void TestQgsRelation::testValidRelationAfterChangingStyle()
   tabs = static_cast<QgsAttributeEditorContainer *>( referencedLayer->editFormConfig().tabs()[0] )->children();
   for ( const auto &tab : std::as_const( tabs ) )
   {
-    if ( tab->type() == QgsAttributeEditorElement::AeTypeRelation )
+    if ( tab->type() == Qgis::AttributeEditorType::Relation )
     {
       valid = static_cast<QgsAttributeEditorRelation *>( tab )->relation().isValid();
     }

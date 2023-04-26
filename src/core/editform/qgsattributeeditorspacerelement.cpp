@@ -14,7 +14,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsattributeeditorspacerelement.h"
-
+#include <QDomElement>
 
 QgsAttributeEditorElement *QgsAttributeEditorSpacerElement::clone( QgsAttributeEditorElement *parent ) const
 {

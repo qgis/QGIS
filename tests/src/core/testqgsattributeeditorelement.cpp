@@ -116,7 +116,7 @@ void TestQgsAttributeEditorElement::testLabelFontAndColor()
 
   container->addChildElement( field2 );
   editFormConfig.addTab( container );
-  editFormConfig.setLayout( QgsEditFormConfig::TabLayout );
+  editFormConfig.setLayout( Qgis::AttributeFormLayout::DragAndDrop );
 
   QDomDocument doc;
   QDomNode node = doc.createElement( "config" );

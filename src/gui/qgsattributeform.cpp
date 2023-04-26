@@ -1659,7 +1659,7 @@ void QgsAttributeForm::init()
   setContentsMargins( 0, 0, 0, 0 );
 
   // Try to load Ui-File for layout
-  if ( mContext.allowCustomUi() && mLayer->editFormConfig().layout() == QgsEditFormConfig::UiFileLayout &&
+  if ( mContext.allowCustomUi() && mLayer->editFormConfig().layout() == Qgis::AttributeFormLayout::UiFile &&
        !mLayer->editFormConfig().uiForm().isEmpty() )
   {
     QgsDebugMsg( QStringLiteral( "loading form: %1" ).arg( mLayer->editFormConfig().uiForm() ) );
@@ -1689,7 +1689,7 @@ void QgsAttributeForm::init()
   QgsTabWidget *tabWidget = nullptr;
 
   // Tab layout
-  if ( !formWidget && mLayer->editFormConfig().layout() == QgsEditFormConfig::TabLayout )
+  if ( !formWidget && mLayer->editFormConfig().layout() == Qgis::AttributeFormLayout::DragAndDrop )
   {
     int row = 0;
     int column = 0;
@@ -1701,7 +1701,7 @@ void QgsAttributeForm::init()
 
     for ( QgsAttributeEditorElement *widgDef : tabs )
     {
-      if ( widgDef->type() == QgsAttributeEditorElement::AeTypeContainer )
+      if ( widgDef->type() == Qgis::AttributeEditorType::Container )
       {
         QgsAttributeEditorContainer *containerDef = dynamic_cast<QgsAttributeEditorContainer *>( widgDef );
         if ( !containerDef )
@@ -1754,7 +1754,7 @@ void QgsAttributeForm::init()
           tabPageLayout->addWidget( widgetInfo.widget );
         }
       }
-      else if ( widgDef->type() == QgsAttributeEditorElement::AeTypeRelation )
+      else if ( widgDef->type() == Qgis::AttributeEditorType::Relation )
       {
         hasRootFields = true;
         tabWidget = nullptr;
@@ -1847,7 +1847,7 @@ void QgsAttributeForm::init()
         }
 
         // Alias DD overrides
-        if ( widgDef->type() == QgsAttributeEditorElement::AttributeEditorType::AeTypeField )
+        if ( widgDef->type() == Qgis::AttributeEditorType::Field )
         {
           const QgsAttributeEditorField *fieldElement { static_cast<QgsAttributeEditorField *>( widgDef ) };
           const int fieldIdx = fieldElement->idx();
@@ -2179,7 +2179,7 @@ void QgsAttributeForm::initPython()
   // Init Python, if init function is not empty and the combo indicates
   // the source for the function code
   if ( !mLayer->editFormConfig().initFunction().isEmpty()
-       && mLayer->editFormConfig().initCodeSource() != QgsEditFormConfig::CodeSourceNone )
+       && mLayer->editFormConfig().initCodeSource() != Qgis::AttributeFormPythonInitCodeSource::NoSource )
   {
 
     QString initFunction = mLayer->editFormConfig().initFunction();
@@ -2188,7 +2188,7 @@ void QgsAttributeForm::initPython()
 
     switch ( mLayer->editFormConfig().initCodeSource() )
     {
-      case QgsEditFormConfig::CodeSourceFile:
+      case Qgis::AttributeFormPythonInitCodeSource::File:
         if ( !initFilePath.isEmpty() )
         {
           QFile *inputFile = QgsApplication::networkContentFetcherRegistry()->localFile( initFilePath );
@@ -2214,7 +2214,7 @@ void QgsAttributeForm::initPython()
         }
         break;
 
-      case QgsEditFormConfig::CodeSourceDialog:
+      case Qgis::AttributeFormPythonInitCodeSource::Dialog:
         initCode = mLayer->editFormConfig().initCode();
         if ( initCode.isEmpty() )
         {
@@ -2222,8 +2222,8 @@ void QgsAttributeForm::initPython()
         }
         break;
 
-      case QgsEditFormConfig::CodeSourceEnvironment:
-      case QgsEditFormConfig::CodeSourceNone:
+      case Qgis::AttributeFormPythonInitCodeSource::Environment:
+      case Qgis::AttributeFormPythonInitCodeSource::NoSource:
         // Nothing to do: the function code should be already in the environment
         break;
     }
@@ -2295,7 +2295,7 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
 
   switch ( widgetDef->type() )
   {
-    case QgsAttributeEditorElement::AeTypeAction:
+    case Qgis::AttributeEditorType::Action:
     {
       const QgsAttributeEditorAction *elementDef = dynamic_cast<const QgsAttributeEditorAction *>( widgetDef );
       if ( !elementDef )
@@ -2312,7 +2312,7 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
       break;
     }
 
-    case QgsAttributeEditorElement::AeTypeField:
+    case Qgis::AttributeEditorType::Field:
     {
       const QgsAttributeEditorField *fieldDef = dynamic_cast<const QgsAttributeEditorField *>( widgetDef );
       if ( !fieldDef )
@@ -2347,7 +2347,7 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
       break;
     }
 
-    case QgsAttributeEditorElement::AeTypeRelation:
+    case Qgis::AttributeEditorType::Relation:
     {
       const QgsAttributeEditorRelation *relDef = static_cast<const QgsAttributeEditorRelation *>( widgetDef );
 
@@ -2375,7 +2375,7 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
       break;
     }
 
-    case QgsAttributeEditorElement::AeTypeContainer:
+    case Qgis::AttributeEditorType::Container:
     {
       const QgsAttributeEditorContainer *container = dynamic_cast<const QgsAttributeEditorContainer *>( widgetDef );
       if ( !container )
@@ -2444,7 +2444,7 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
       {
         WidgetInfo widgetInfo = createWidgetFromDef( childDef, myContainer, vl, context );
 
-        if ( childDef->type() == QgsAttributeEditorElement::AeTypeContainer )
+        if ( childDef->type() == Qgis::AttributeEditorType::Container )
         {
           QgsAttributeEditorContainer *containerDef = static_cast<QgsAttributeEditorContainer *>( childDef );
           if ( containerDef->visibilityExpression().enabled() || containerDef->collapsedExpression().enabled() )
@@ -2476,7 +2476,7 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
           }
 
           // Alias DD overrides
-          if ( childDef->type() == QgsAttributeEditorElement::AeTypeField )
+          if ( childDef->type() == Qgis::AttributeEditorType::Field )
           {
             const QgsAttributeEditorField *fieldDef { static_cast<QgsAttributeEditorField *>( childDef ) };
             const QgsFields fields = vl->fields();
@@ -2558,7 +2558,7 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
       break;
     }
 
-    case QgsAttributeEditorElement::AeTypeQmlElement:
+    case Qgis::AttributeEditorType::QmlElement:
     {
       const QgsAttributeEditorQmlElement *elementDef = static_cast<const QgsAttributeEditorQmlElement *>( widgetDef );
 
@@ -2576,7 +2576,7 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
       break;
     }
 
-    case QgsAttributeEditorElement::AeTypeHtmlElement:
+    case Qgis::AttributeEditorType::HtmlElement:
     {
       const QgsAttributeEditorHtmlElement *elementDef = static_cast<const QgsAttributeEditorHtmlElement *>( widgetDef );
 
@@ -2594,7 +2594,7 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
       break;
     }
 
-    case QgsAttributeEditorElement::AeTypeTextElement:
+    case Qgis::AttributeEditorType::TextElement:
     {
       const QgsAttributeEditorTextElement *elementDef = static_cast<const QgsAttributeEditorTextElement *>( widgetDef );
 
@@ -2612,7 +2612,7 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
       break;
     }
 
-    case QgsAttributeEditorElement::AeTypeSpacerElement:
+    case Qgis::AttributeEditorType::SpacerElement:
     {
       const QgsAttributeEditorSpacerElement *elementDef = static_cast<const QgsAttributeEditorSpacerElement *>( widgetDef );
       QgsSpacerWidgetWrapper *spacerWrapper = new QgsSpacerWidgetWrapper( mLayer, nullptr, this );

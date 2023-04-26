@@ -636,7 +636,7 @@ void QgsProject::registerTranslatableContainers( QgsTranslationContext *translat
 
   for ( QgsAttributeEditorElement *element : elements )
   {
-    if ( element->type() == QgsAttributeEditorElement::AeTypeContainer )
+    if ( element->type() == Qgis::AttributeEditorType::Container )
     {
       QgsAttributeEditorContainer *container = dynamic_cast<QgsAttributeEditorContainer *>( element );
 
