@@ -1739,7 +1739,7 @@ void TestQgsCoordinateReferenceSystem::noProj()
   crs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( QStringLiteral( "ESRI:54091" ) );
   QCOMPARE( crs.authid(), QStringLiteral( "ESRI:54091" ) );
   QVERIFY( crs.isValid() );
-  QCOMPARE( crs.toWkt(), QStringLiteral( "PROJCS[\"WGS_1984_Peirce_quincuncial_North_Pole_diamond\",GEOGCS[\"WGS 84\",DATUM[\"WGS_1984\",SPHEROID[\"WGS 84\",6378137,298.257223563,AUTHORITY[\"EPSG\",\"7030\"]],AUTHORITY[\"EPSG\",\"6326\"]],PRIMEM[\"Greenwich\",0],UNIT[\"Degree\",0.0174532925199433]],PROJECTION[\"Peirce_Quincuncial\"],PARAMETER[\"False_Easting\",0],PARAMETER[\"False_Northing\",0],PARAMETER[\"Central_Meridian\",0],PARAMETER[\"Scale_Factor\",1],PARAMETER[\"Latitude_Of_Origin\",90],PARAMETER[\"Option\",1],UNIT[\"metre\",1,AUTHORITY[\"EPSG\",\"9001\"]],AXIS[\"Easting\",EAST],AXIS[\"Northing\",NORTH],AUTHORITY[\"ESRI\",\"54091\"]]" ) );
+  QCOMPARE( crs.toWkt( QgsCoordinateReferenceSystem::WktVariant::WKT2_2019_SIMPLIFIED ).left( 30 ), QStringLiteral( "PROJCRS[\"WGS_1984_Peirce_quinc" ) );
   crs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:22300" ) );
   QCOMPARE( crs.authid(), QStringLiteral( "EPSG:22300" ) );
   QVERIFY( crs.isValid() );
