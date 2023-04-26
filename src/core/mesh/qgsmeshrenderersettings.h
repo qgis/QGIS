@@ -625,13 +625,13 @@ class CORE_EXPORT QgsMeshRendererSettings
 
     /**
      * Returns whether \a groupIndex has existing scalar settings
-     * \since QGIS 3.30.1
+     * \since QGIS 3.30.2
      */
     bool hasScalarSettings( int groupIndex ) const {return mRendererScalarSettings.contains( groupIndex );}
 
     /**
      * Removes scalar settings with \a groupIndex
-     * \since QGIS 3.30.1
+     * \since QGIS 3.30.2
      */
     bool removeScalarSettings( int groupIndex )  {return mRendererScalarSettings.remove( groupIndex );}
 
@@ -642,13 +642,13 @@ class CORE_EXPORT QgsMeshRendererSettings
 
     /**
      * Returns whether \a groupIndex has existing vector settings
-     * \since QGIS 3.30.1
+     * \since QGIS 3.30.2
      */
     bool hasVectorSettings( int groupIndex ) const {return mRendererVectorSettings.contains( groupIndex );}
 
     /**
      * Removes vector settings for \a groupIndex
-     * \since QGIS 3.30.1
+     * \since QGIS 3.30.2
      */
     bool removeVectorSettings( int groupIndex )  {return mRendererVectorSettings.remove( groupIndex );}
 
