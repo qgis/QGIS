@@ -33,12 +33,14 @@ class TestQgsProcessExecutablePt2(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
+        super().setUpClass()
         cls.TMP_DIR = tempfile.mkdtemp()
         # print('TMP_DIR: ' + cls.TMP_DIR)
         # subprocess.call(['open', cls.TMP_DIR])
 
     @classmethod
     def tearDownClass(cls):
+        super().tearDownClass()
         shutil.rmtree(cls.TMP_DIR, ignore_errors=True)
 
     @staticmethod

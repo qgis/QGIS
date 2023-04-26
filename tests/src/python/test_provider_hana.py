@@ -56,7 +56,7 @@ class TestPyQgsHanaProvider(unittest.TestCase, ProviderTestCase):
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
-        super().setUpClass()
+        super(unittest.TestCase, cls).setUpClass()
         cls.uri = 'driver=\'/usr/sap/hdbclient/libodbcHDB.so\' host=localhost port=30015 user=SYSTEM ' \
                   'password=mypassword sslEnabled=true sslValidateCertificate=False'
         if 'QGIS_HANA_TEST_DB' in os.environ:
@@ -81,7 +81,7 @@ class TestPyQgsHanaProvider(unittest.TestCase, ProviderTestCase):
 
         QgsHanaProviderUtils.cleanUp(cls.conn, cls.schemaName)
         cls.conn.close()
-        super().tearDownClass()
+        super(unittest.TestCase, cls).tearDownClass()
 
     def createVectorLayer(self, conn_parameters, layer_name):
         layer = QgsHanaProviderUtils.createVectorLayer(self.uri + ' ' + conn_parameters, layer_name)

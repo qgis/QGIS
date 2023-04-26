@@ -35,7 +35,7 @@ class TestPyQgsProjectStorageOracle(TestPyQgsProjectStorageBase, unittest.TestCa
     def setUpClass(cls):
         """Run before all tests"""
 
-        super().setUpClass()
+        super(unittest.TestCase, cls).setUpClass()
 
         cls.dbconn = "host=localhost dbname=XEPDB1 port=1521 user='QGIS' password='qgis'"
         if 'QGIS_ORACLETEST_DB' in os.environ:

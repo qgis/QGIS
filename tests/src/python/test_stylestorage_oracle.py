@@ -26,7 +26,7 @@ class StyleStorageTest(StyleStorageTestCaseBase, StyleStorageTestBase):
 
     def setUp(self):
 
-        super().setUp()
+        super(StyleStorageTestCaseBase).setUp()
         dbconn = "host=localhost dbname=XEPDB1 port=1521 user='QGIS' password='qgis'"
         if 'QGIS_ORACLETEST_DB' in os.environ:
             dbconn = os.environ['QGIS_ORACLETEST_DB']

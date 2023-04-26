@@ -100,7 +100,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
-        super().setUpClass()
+        super(unittest.TestCase, cls).setUpClass()
 
         QCoreApplication.setOrganizationName("QGIS_Test")
         QCoreApplication.setOrganizationDomain("TestPyQgsWFSProvider.com")
@@ -460,7 +460,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
         QgsSettings().clear()
         shutil.rmtree(cls.basetestpath, True)
         cls.vl = None  # so as to properly close the provider and remove any temporary file
-        super().tearDownClass()
+        super(unittest.TestCase, cls).tearDownClass()
 
     def tearDown(self):
         """Run after each test"""

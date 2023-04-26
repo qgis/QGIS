@@ -34,7 +34,6 @@ class TestPyQgsExternalStorageBase:
     @classmethod
     def setUpClass(cls):
         """Run before all tests:"""
-        super().setUpClass()
         QCoreApplication.setOrganizationName("QGIS_Test")
         QCoreApplication.setOrganizationDomain(cls.__name__)
         QCoreApplication.setApplicationName(cls.__name__)
@@ -62,7 +61,6 @@ class TestPyQgsExternalStorageBase:
         """Run after all tests"""
         cls.registry.unregisterExternalStorage(cls.storage)
         assert cls.storageType not in cls.registry.externalStorages()
-        super().tearDownClass()
 
     def setUp(self):
         """Run before each test."""

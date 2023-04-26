@@ -57,6 +57,7 @@ class TestQgsRandomMarkerSymbolLayer(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
+        super().setUpClass()
         cls.report = "<h1>Python QgsRandomMarkerFillSymbolLayer Tests</h1>\n"
 
     @classmethod
@@ -64,6 +65,7 @@ class TestQgsRandomMarkerSymbolLayer(unittest.TestCase):
         report_file_path = f"{QDir.tempPath()}/qgistest.html"
         with open(report_file_path, 'a') as report_file:
             report_file.write(cls.report)
+        super().tearDownClass()
 
     def testSimple(self):
         s = QgsFillSymbol()

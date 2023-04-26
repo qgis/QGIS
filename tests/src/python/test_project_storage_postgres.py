@@ -38,7 +38,7 @@ class TestPyQgsProjectStoragePostgres(TestPyQgsProjectStorageBase, unittest.Test
     def setUpClass(cls):
         """Run before all tests"""
 
-        super().setUpClass()
+        super(unittest.TestCase, cls).setUpClass()
 
         cls.dbconn = 'service=qgis_test'
         if 'QGIS_PGTEST_DB' in os.environ:
