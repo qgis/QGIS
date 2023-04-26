@@ -360,14 +360,14 @@ class TestPALConfig(TestQgsPalLabeling):
 
     @classmethod
     def setUpClass(cls):
-        super().setUpClass()
+        TestQgsPalLabeling.setUpClass()
 
         cls.layer = TestQgsPalLabeling.loadFeatureLayer('point')
 
     @classmethod
     def tearDownClass(cls):
         cls.removeMapLayer(cls.layer)
-        super().tearDownClass()
+        TestQgsPalLabeling.tearDownClass()
 
     def setUp(self):
         """Run before each test."""
