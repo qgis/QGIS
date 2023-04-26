@@ -692,14 +692,14 @@ Sets new renderer settings
 %Docstring
 Returns whether ``groupIndex`` has existing scalar settings
 
-.. versionadded:: 3.30.1
+.. versionadded:: 3.30.2
 %End
 
     bool removeScalarSettings( int groupIndex );
 %Docstring
 Removes scalar settings with ``groupIndex``
 
-.. versionadded:: 3.30.1
+.. versionadded:: 3.30.2
 %End
 
     QgsMeshRendererVectorSettings vectorSettings( int groupIndex ) const;
@@ -715,14 +715,14 @@ Sets new renderer settings
 %Docstring
 Returns whether ``groupIndex`` has existing vector settings
 
-.. versionadded:: 3.30.1
+.. versionadded:: 3.30.2
 %End
 
     bool removeVectorSettings( int groupIndex );
 %Docstring
 Removes vector settings for ``groupIndex``
 
-.. versionadded:: 3.30.1
+.. versionadded:: 3.30.2
 %End
 
     QgsMesh3dAveragingMethod *averagingMethod() const;
