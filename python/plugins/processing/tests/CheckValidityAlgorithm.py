@@ -46,6 +46,8 @@ class TestQgsProcessingCheckValidity(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
+        super().setUpClass()
+
         QCoreApplication.setOrganizationName("QGIS_Test")
         QCoreApplication.setOrganizationDomain(
             "QGIS_TestPyQgsProcessingCheckValidity.com")
