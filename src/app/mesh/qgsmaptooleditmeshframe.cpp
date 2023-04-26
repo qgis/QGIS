@@ -946,8 +946,12 @@ void QgsMapToolEditMeshFrame::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
         if ( mCurrentVertexIndex != -1 )
         {
           addVertexToFaceCanditate( mCurrentVertexIndex );
-          const QgsPointXY currentPoint = mapVertexXY( mCurrentVertexIndex );
-          cadDockWidget()->setPoints( QList<QgsPointXY>() << currentPoint << currentPoint );
+          // Advanced digitizing base class adds a point at map point not at vertex position
+          // so we need to replace it by the position of the vertex
+          const QgsPointXY &currentPoint = mapVertexXY( mCurrentVertexIndex );
+          cadDockWidget()->updateCurrentPoint( currentPoint );
+          cadDockWidget()->removePreviousPoint();
+          cadDockWidget()->addPoint( currentPoint );
         }
         else
         {
@@ -962,8 +966,6 @@ void QgsMapToolEditMeshFrame::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
           if ( acceptPoint )
           {
             addVertexToFaceCanditate( mapPoint );
-            const QgsPointXY currentPoint( mapPoint );
-            cadDockWidget()->setPoints( QList<QgsPointXY>() << currentPoint << currentPoint );
           }
         }
       }
@@ -1223,6 +1225,8 @@ void QgsMapToolEditMeshFrame::keyPressEvent( QKeyEvent *e )
         }
         if ( mNewFaceCandidate.isEmpty() )
           mCurrentState = Digitizing;
+
+        mCadDockWidget->removePreviousPoint();
 
         consumned = true;
       }
@@ -1939,6 +1943,7 @@ void QgsMapToolEditMeshFrame::onUndoRedo()
       mNewFaceCandidate.clear();
       mNewVerticesForNewFaceCandidate.clear();
       mCurrentState = Digitizing;
+      mCadDockWidget->clearPoints();
       break;
     case MovingSelection:
       mCurrentState = Digitizing;
@@ -1946,6 +1951,7 @@ void QgsMapToolEditMeshFrame::onUndoRedo()
       mMovingFacesRubberband->reset( Qgis::GeometryType::Polygon );
       mMovingFreeVertexRubberband->reset( Qgis::GeometryType::Point );
       mCadDockWidget->setEnabledZ( mCadDockWidget->cadEnabled() );
+      mCadDockWidget->clearPoints();
       break;
     case ForceByLines:
     case Selecting:
