@@ -15,8 +15,8 @@
 
 #include "qgsattributewidgetedit.h"
 #include "qgsattributesformproperties.h"
+#include "qgsgui.h"
 #include "qgsrelationwidgetregistry.h"
-
 
 QgsAttributeWidgetEdit::QgsAttributeWidgetEdit( QTreeWidgetItem *item, QWidget *parent )
   : QgsCollapsibleGroupBox( parent )

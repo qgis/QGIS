@@ -34,7 +34,10 @@
 #include "qgsattributeeditorhtmlelement.h"
 #include "qgssettingsregistrycore.h"
 #include "qgstextwidgetwrapper.h"
-
+#include "qgsattributeeditorrelation.h"
+#include "qgsgui.h"
+#include "qgseditorwidgetregistry.h"
+#include "qgscodeeditorexpression.h"
 
 QgsAttributesFormProperties::QgsAttributesFormProperties( QgsVectorLayer *layer, QWidget *parent )
   : QWidget( parent )
@@ -493,7 +496,7 @@ QTreeWidgetItem *QgsAttributesFormProperties::loadAttributeEditorTreeItem( QgsAt
         break;
 
       itemData.setColumnCount( container->columnCount() );
-      itemData.setShowAsGroupBox( container->isGroupBox() );
+      itemData.setContainerType( container->type() );
       itemData.setBackgroundColor( container->backgroundColor() );
       itemData.setVisibilityExpression( container->visibilityExpression() );
       itemData.setCollapsedExpression( container->collapsedExpression() );
@@ -725,14 +728,20 @@ void QgsAttributesFormProperties::addTabOrGroupButton()
     return;
 
   const QString name = addTabOrGroup.name();
-  if ( addTabOrGroup.tabButtonIsChecked() )
+  switch ( addTabOrGroup.containerType() )
   {
-    mFormLayoutTree->addContainer( mFormLayoutTree->invisibleRootItem(), name, addTabOrGroup.columnCount() );
-  }
-  else
-  {
-    QTreeWidgetItem *tabItem = addTabOrGroup.tab();
-    mFormLayoutTree->addContainer( tabItem, name, addTabOrGroup.columnCount() );
+    case Qgis::AttributeEditorContainerType::Tab:
+    {
+      mFormLayoutTree->addContainer( mFormLayoutTree->invisibleRootItem(), name, addTabOrGroup.columnCount(), Qgis::AttributeEditorContainerType::Tab );
+      break;
+    }
+
+    case Qgis::AttributeEditorContainerType::GroupBox:
+    {
+      QTreeWidgetItem *tabItem = addTabOrGroup.tab();
+      mFormLayoutTree->addContainer( tabItem, name, addTabOrGroup.columnCount(), addTabOrGroup.containerType() );
+      break;
+    }
   }
 }
 
@@ -740,7 +749,6 @@ void QgsAttributesFormProperties::removeTabOrGroupButton()
 {
   qDeleteAll( mFormLayoutTree->selectedItems() );
 }
-
 
 QgsAttributeEditorElement *QgsAttributesFormProperties::createAttributeEditorWidget( QTreeWidgetItem *item, QgsAttributeEditorElement *parent, bool forceGroup )
 {
@@ -783,7 +791,7 @@ QgsAttributeEditorElement *QgsAttributesFormProperties::createAttributeEditorWid
     {
       QgsAttributeEditorContainer *container = new QgsAttributeEditorContainer( item->text( 0 ), parent, itemData.backgroundColor() );
       container->setColumnCount( itemData.columnCount() );
-      container->setIsGroupBox( forceGroup ? true : itemData.showAsGroupBox() );
+      container->setType( forceGroup ? Qgis::AttributeEditorContainerType::GroupBox : itemData.containerType() );
       container->setCollapsed( itemData.collapsed() );
       container->setCollapsedExpression( itemData.collapsedExpression() );
       container->setVisibilityExpression( itemData.visibilityExpression() );
@@ -1064,13 +1072,14 @@ QgsAttributesFormProperties::RelationEditorConfiguration::operator QVariant()
  * DnDTree implementation
  */
 
-QTreeWidgetItem *QgsAttributesDnDTree::addContainer( QTreeWidgetItem *parent, const QString &title, int columnCount )
+QTreeWidgetItem *QgsAttributesDnDTree::addContainer( QTreeWidgetItem *parent, const QString &title, int columnCount, Qgis::AttributeEditorContainerType type )
 {
   QTreeWidgetItem *newItem = new QTreeWidgetItem( QStringList() << title );
   newItem->setBackground( 0, QBrush( Qt::lightGray ) );
   newItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled );
   QgsAttributesFormProperties::DnDTreeItemData itemData( QgsAttributesFormProperties::DnDTreeItemData::Container, title, title );
   itemData.setColumnCount( columnCount );
+  itemData.setContainerType( !parent ? Qgis::AttributeEditorContainerType::Tab : type );
   newItem->setData( 0, QgsAttributesFormProperties::DnDTreeRole, itemData );
   parent->addChild( newItem );
   newItem->setExpanded( true );
@@ -1733,14 +1742,14 @@ QDataStream &operator>>( QDataStream &stream, QgsAttributesFormProperties::DnDTr
   return stream;
 }
 
-bool QgsAttributesFormProperties::DnDTreeItemData::showAsGroupBox() const
+Qgis::AttributeEditorContainerType QgsAttributesFormProperties::DnDTreeItemData::containerType() const
 {
-  return mShowAsGroupBox;
+  return mContainerType;
 }
 
-void QgsAttributesFormProperties::DnDTreeItemData::setShowAsGroupBox( bool showAsGroupBox )
+void QgsAttributesFormProperties::DnDTreeItemData::setContainerType( Qgis::AttributeEditorContainerType type )
 {
-  mShowAsGroupBox = showAsGroupBox;
+  mContainerType = type;
 }
 
 const QgsAttributeEditorElement::LabelStyle QgsAttributesFormProperties::DnDTreeItemData::labelStyle() const

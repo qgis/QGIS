@@ -3450,6 +3450,18 @@ class CORE_EXPORT Qgis
     Q_ENUM( AttributeEditorType )
 
     /**
+     * Attribute editor container types.
+     *
+     * \since QGIS 3.32
+     */
+    enum class AttributeEditorContainerType : int
+    {
+      GroupBox, //!< A group box
+      Tab, //!< A tab widget
+    };
+    Q_ENUM( AttributeEditorContainerType )
+
+    /**
      * Available form types for layout of the attribute form editor.
      *
      * \note Prior to QGIS 3.32 this was available as QgsEditFormConfig::EditorLayout.

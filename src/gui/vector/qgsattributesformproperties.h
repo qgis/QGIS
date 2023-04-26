@@ -36,19 +36,10 @@
 
 #include "ui_qgsattributesformproperties.h"
 #include "qgis_gui.h"
-#include "qgsaddattrdialog.h"
-#include "qgslogger.h"
-#include "qgsexpressionbuilderdialog.h"
-#include "qgsfieldcalculator.h"
-#include "qgsfieldexpressionwidget.h"
-#include "qgsattributesforminitcode.h"
-#include "qgsgui.h"
-#include "qgseditorwidgetfactory.h"
-#include "qgseditorwidgetregistry.h"
-#include "qgsrelationmanager.h"
-#include "qgsattributeeditorrelation.h"
 #include "qgsoptionalexpression.h"
-
+#include "qgsexpressioncontextgenerator.h"
+#include "qgsattributeeditorelement.h"
+#include "qgspropertycollection.h"
 
 class QgsAttributesDnDTree;
 class QgsAttributeFormContainerEdit;
@@ -147,8 +138,21 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpress
         int columnCount() const { return mColumnCount; }
         void setColumnCount( int count ) { mColumnCount = count; }
 
-        bool showAsGroupBox() const;
-        void setShowAsGroupBox( bool showAsGroupBox );
+        /**
+         * Returns the container type.
+         *
+         * \see setContainerType()
+         * \since QGIS 3.32
+         */
+        Qgis::AttributeEditorContainerType containerType() const;
+
+        /**
+         * Sets the container type.
+         *
+         * \see containerType()
+         * \since QGIS 3.32
+         */
+        void setContainerType( Qgis::AttributeEditorContainerType type );
 
         /**
          * For group box containers  returns if this group box is collapsed.
@@ -257,7 +261,7 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpress
         QString mName;
         QString mDisplayName;
         int mColumnCount = 1;
-        bool mShowAsGroupBox = false;
+        Qgis::AttributeEditorContainerType mContainerType = Qgis::AttributeEditorContainerType::Tab;
         bool mShowLabel = true;
         QgsOptionalExpression mVisibilityExpression;
         RelationEditorConfiguration mRelationEditorConfiguration;
@@ -394,7 +398,13 @@ class GUI_EXPORT QgsAttributesDnDTree : public QTreeWidget, private QgsExpressio
      * Otherwise it is inserted at the specified \a index.
      */
     QTreeWidgetItem *addItem( QTreeWidgetItem *parent, QgsAttributesFormProperties::DnDTreeItemData data, int index = -1, const QIcon &icon = QIcon() );
-    QTreeWidgetItem *addContainer( QTreeWidgetItem *parent, const QString &title, int columnCount );
+
+    /**
+     * Adds a new container to \a parent.
+     *
+     * If no \a parent is set then the container will be forced to a tab widget.
+     */
+    QTreeWidgetItem *addContainer( QTreeWidgetItem *parent, const QString &title, int columnCount, Qgis::AttributeEditorContainerType type );
 
     enum Type
     {
