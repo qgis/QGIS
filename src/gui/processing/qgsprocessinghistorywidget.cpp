@@ -17,7 +17,6 @@
 #include "qgshistorywidget.h"
 #include "qgsgui.h"
 #include "qgshistoryproviderregistry.h"
-#include "qgshistoryprovider.h"
 #include "qgshelp.h"
 #include "qgsfileutils.h"
 #include "qgshistoryentry.h"
@@ -96,6 +95,8 @@ QgsProcessingHistoryDialog::QgsProcessingHistoryDialog( QWidget *parent )
 {
   setObjectName( QStringLiteral( "QgsProcessingHistoryDialog" ) );
   QgsGui::instance()->enableAutoGeometryRestore( this );
+
+  setWindowTitle( tr( "Processing History" ) );
 
   QVBoxLayout *vl = new QVBoxLayout();
   mWidget = new QgsProcessingHistoryWidget();
