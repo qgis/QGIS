@@ -261,7 +261,7 @@ class QgsWcsProvider final: public QgsRasterDataProvider, QgsGdalProviderBase
     //! Time (temporalDomain), optional
     QString mTime;
 
-    //! Specified bounding box
+    //! Specified bounding box. Note: X/Y may be inverted if WCS uri contains InvertAxisOrientation.
     QgsRectangle mBBOX;
 
     //! Format of coverage to be used in request
