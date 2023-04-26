@@ -356,10 +356,16 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     void addPoint( const QgsPointXY &point );
 
     /**
-     * Remove previous point in the CAD point list
+     * Removes previous point in the CAD point list
      * \since QGIS 3.8
      */
     void removePreviousPoint();
+
+    /**
+     * Updates the current \a point in the CAD point list
+     * \since QGIS 3.30.2
+     */
+    void updateCurrentPoint( const QgsPointXY &point );
 
     /**
      * Configures list of current CAD points
