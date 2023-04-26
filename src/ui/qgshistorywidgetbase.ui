@@ -27,11 +27,11 @@
     <number>0</number>
    </property>
    <item>
-    <widget class="QSplitter" name="splitter">
+    <widget class="QSplitter" name="mSplitter">
      <property name="orientation">
       <enum>Qt::Vertical</enum>
      </property>
-     <widget class="QWidget" name="">
+     <widget class="QWidget" name="layoutWidget">
       <layout class="QVBoxLayout" name="verticalLayout">
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout">
