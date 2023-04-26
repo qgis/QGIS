@@ -145,6 +145,14 @@ class GUI_EXPORT QgsProjectionSelectionTreeWidget : public QWidget, private Ui::
      */
     Q_DECL_DEPRECATED void pushProjectionToFront() SIP_DEPRECATED;
 
+
+    /**
+     * Clear the list of recent projections.
+     *
+     * \since QGIS 3.32
+     */
+    void clearRecentCrs();
+
   signals:
 
     /**
@@ -177,6 +185,9 @@ class GUI_EXPORT QgsProjectionSelectionTreeWidget : public QWidget, private Ui::
 
     // Used to manage column sizes
     void resizeEvent( QResizeEvent *event ) override;
+
+    // Used to catch key presses on the recent projections list
+    bool eventFilter( QObject *obj, QEvent *ev ) override;
 
   private:
 
@@ -236,12 +247,11 @@ class GUI_EXPORT QgsProjectionSelectionTreeWidget : public QWidget, private Ui::
      */
     void applySelection( int column = QgsProjectionSelectionTreeWidget::None, QString value = QString() );
 
-    /**
-       * \brief gets an arbitrary sqlite3 expression from the selection
-       *
-       * \param e The sqlite3 expression (typically "srid" or "sridid")
-       */
-    QString getSelectedExpression( const QString &e ) const;
+    //! gets an arbitrary sqlite3 expression from the given item
+    QString expressionForItem( QTreeWidgetItem *item, const QString &expression ) const;
+
+    //! Returns the CRS of the given item
+    QgsCoordinateReferenceSystem crsForItem( QTreeWidgetItem *item ) const;
 
     QString selectedName();
 
@@ -290,7 +300,7 @@ class GUI_EXPORT QgsProjectionSelectionTreeWidget : public QWidget, private Ui::
     //! Has the Recent Projection List been populated?
     bool mRecentProjListDone = false;
 
-    enum Columns { NameColumn, AuthidColumn, QgisCrsIdColumn, None };
+    enum Columns { NameColumn, AuthidColumn, QgisCrsIdColumn, ClearColumn, None };
     int mSearchColumn = QgsProjectionSelectionTreeWidget::None;
     QString mSearchValue;
 
@@ -320,6 +330,8 @@ class GUI_EXPORT QgsProjectionSelectionTreeWidget : public QWidget, private Ui::
     void lstCoordinateSystems_currentItemChanged( QTreeWidgetItem *current, QTreeWidgetItem *prev );
     void lstRecent_currentItemChanged( QTreeWidgetItem *current, QTreeWidgetItem *prev );
     void updateFilter();
+
+    void removeRecentCrsItem( QTreeWidgetItem *item );
 };
 
 #endif
