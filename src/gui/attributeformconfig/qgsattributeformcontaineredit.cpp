@@ -16,7 +16,7 @@
 #include "qgsattributeformcontaineredit.h"
 #include "ui_qgsattributeformcontaineredit.h"
 #include "qgsattributesformproperties.h"
-
+#include "qgsvectorlayer.h"
 
 QgsAttributeFormContainerEdit::QgsAttributeFormContainerEdit( QTreeWidgetItem *item, QgsVectorLayer *layer, QWidget *parent )
   : QWidget( parent )
@@ -27,18 +27,25 @@ QgsAttributeFormContainerEdit::QgsAttributeFormContainerEdit( QTreeWidgetItem *i
   const QgsAttributesFormProperties::DnDTreeItemData itemData = mTreeItem->data( 0, QgsAttributesFormProperties::DnDTreeRole ).value<QgsAttributesFormProperties::DnDTreeItemData>();
   Q_ASSERT( itemData.type() == QgsAttributesFormProperties::DnDTreeItemData::Container );
 
-  if ( item->parent() )
+  if ( ! item->parent() )
   {
     // only top level items can be tabs
+    mTypeCombo->addItem( tr( "Tab" ), QVariant::fromValue( Qgis::AttributeEditorContainerType::Tab ) );
+    mTypeCombo->addItem( tr( "Group Box" ), QVariant::fromValue( Qgis::AttributeEditorContainerType::GroupBox ) );
+  }
+  if ( item->parent() )
+  {
     // i.e. it's always a group box if it's a nested container
-    mShowAsGroupBox->hide();
-    mShowAsGroupBox->setEnabled( false );
+    mTypeCombo->addItem( tr( "Group Box" ), QVariant::fromValue( Qgis::AttributeEditorContainerType::GroupBox ) );
+    mTypeCombo->setEnabled( false );
   }
 
   mTitleLineEdit->setText( itemData.name() );
   mShowLabelCheckBox->setChecked( itemData.showLabel() );
-  mShowLabelCheckBox->setEnabled( itemData.showAsGroupBox() ); // show label makes sense for group box, not for tabs
-  mShowAsGroupBox->setChecked( itemData.showAsGroupBox() );
+  mShowLabelCheckBox->setEnabled( itemData.containerType() == Qgis::AttributeEditorContainerType::GroupBox ); // show label makes sense for group box, not other container types
+  mTypeCombo->setCurrentIndex( mTypeCombo->findData( QVariant::fromValue( itemData.containerType() ) ) );
+  if ( mTypeCombo->currentIndex() < 0 )
+    mTypeCombo->setCurrentIndex( 0 );
 
   mControlVisibilityGroupBox->setChecked( itemData.visibilityExpression().enabled() );
   mVisibilityExpressionWidget->setLayer( layer );
@@ -47,17 +54,31 @@ QgsAttributeFormContainerEdit::QgsAttributeFormContainerEdit( QTreeWidgetItem *i
   mBackgroundColorButton->setShowNull( true );
   mBackgroundColorButton->setColor( itemData.backgroundColor() );
   mCollapsedCheckBox->setChecked( itemData.collapsed() );
-  mCollapsedCheckBox->setEnabled( itemData.showAsGroupBox() );
+  mCollapsedCheckBox->setEnabled( itemData.containerType() == Qgis::AttributeEditorContainerType::GroupBox );
   mControlCollapsedGroupBox->setChecked( itemData.collapsedExpression().enabled() );
-  mControlCollapsedGroupBox->setEnabled( itemData.showAsGroupBox() );
+  mControlCollapsedGroupBox->setEnabled( itemData.containerType() == Qgis::AttributeEditorContainerType::GroupBox );
   mCollapsedExpressionWidget->setExpression( itemData.collapsedExpression()->expression() );
 
   mFormLabelFormatWidget->setLabelStyle( itemData.labelStyle() );
 
   // show label makes sense for group box, not for tabs
-  connect( mShowAsGroupBox, &QCheckBox::stateChanged, mShowLabelCheckBox, &QCheckBox::setEnabled );
-  connect( mShowAsGroupBox, &QCheckBox::stateChanged, mCollapsedCheckBox, &QCheckBox::setEnabled );
-  connect( mShowAsGroupBox, &QCheckBox::stateChanged, mControlCollapsedGroupBox, &QCheckBox::setEnabled );
+  connect( mTypeCombo, qOverload<int>( &QComboBox::currentIndexChanged ), this, [this]
+  {
+    const Qgis::AttributeEditorContainerType type = mTypeCombo->currentData().value< Qgis::AttributeEditorContainerType >();
+    switch ( type )
+    {
+      case Qgis::AttributeEditorContainerType::GroupBox:
+        mShowLabelCheckBox->setEnabled( true );
+        mCollapsedCheckBox->setEnabled( true );
+        mControlCollapsedGroupBox->setEnabled( true );
+        break;
+      case Qgis::AttributeEditorContainerType::Tab:
+        mShowLabelCheckBox->setEnabled( false );
+        mCollapsedCheckBox->setEnabled( false );
+        mControlCollapsedGroupBox->setEnabled( false );
+        break;
+    }
+  } );
 }
 
 void QgsAttributeFormContainerEdit::registerExpressionContextGenerator( QgsExpressionContextGenerator *generator )
@@ -71,7 +92,7 @@ void QgsAttributeFormContainerEdit::updateItemData()
   QgsAttributesFormProperties::DnDTreeItemData itemData = mTreeItem->data( 0, QgsAttributesFormProperties::DnDTreeRole ).value<QgsAttributesFormProperties::DnDTreeItemData>();
 
   itemData.setColumnCount( mColumnCountSpinBox->value() );
-  itemData.setShowAsGroupBox( mShowAsGroupBox->isEnabled() ? mShowAsGroupBox->isChecked() : false );
+  itemData.setContainerType( mTypeCombo->currentData().value< Qgis::AttributeEditorContainerType >() );
   itemData.setName( mTitleLineEdit->text() );
   itemData.setShowLabel( mShowLabelCheckBox->isChecked() );
   itemData.setBackgroundColor( mBackgroundColorButton->color() );

@@ -25,7 +25,6 @@
 #include "ui_qgsaddtaborgroupbase.h"
 #include "qgsguiutils.h"
 #include "qgis_gui.h"
-#include "qgshelp.h"
 
 class QTreeWidgetItem;
 class QgsVectorLayer;
@@ -57,8 +56,12 @@ class GUI_EXPORT QgsAddTabOrGroup : public QDialog, private Ui::QgsAddTabOrGroup
     //! Returns the column count
     int columnCount() const;
 
-    //! Returns whether the tab button is checked
-    bool tabButtonIsChecked();
+    /**
+     * Returns the container type.
+     *
+     * \since QGIS 3.32
+     */
+    Qgis::AttributeEditorContainerType containerType() const;
 
     //! Accepts the dialog
     void accept() override;

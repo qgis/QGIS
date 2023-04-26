@@ -16,10 +16,10 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsapplication.h"
 #include "qgsvectorlayer.h"
 #include "qgsaddtaborgroup.h"
 #include "qgssettings.h"
+#include "qgshelp.h"
 
 #include <QTreeWidgetItem>
 #include <QComboBox>
@@ -79,9 +79,9 @@ int QgsAddTabOrGroup::columnCount() const
   return mColumnCountSpinBox->value();
 }
 
-bool QgsAddTabOrGroup::tabButtonIsChecked()
+Qgis::AttributeEditorContainerType QgsAddTabOrGroup::containerType() const
 {
-  return mTabButton->isChecked();
+  return mTabButton->isChecked() ? Qgis::AttributeEditorContainerType::Tab : Qgis::AttributeEditorContainerType::GroupBox;
 }
 
 void QgsAddTabOrGroup::accept()

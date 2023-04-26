@@ -1707,51 +1707,57 @@ void QgsAttributeForm::init()
         if ( !containerDef )
           continue;
 
-        if ( containerDef->isGroupBox() )
+        switch ( containerDef->type() )
         {
-          tabWidget = nullptr;
-          WidgetInfo widgetInfo = createWidgetFromDef( widgDef, formWidget, mLayer, mContext );
-          if ( widgetInfo.labelStyle.overrideColor )
+          case Qgis::AttributeEditorContainerType::GroupBox:
           {
-            if ( widgetInfo.labelStyle.color.isValid() )
+            tabWidget = nullptr;
+            WidgetInfo widgetInfo = createWidgetFromDef( widgDef, formWidget, mLayer, mContext );
+            if ( widgetInfo.labelStyle.overrideColor )
             {
-              widgetInfo.widget->setStyleSheet( QStringLiteral( "QGroupBox::title { color: %1; }" ).arg( widgetInfo.labelStyle.color.name( QColor::HexArgb ) ) );
+              if ( widgetInfo.labelStyle.color.isValid() )
+              {
+                widgetInfo.widget->setStyleSheet( QStringLiteral( "QGroupBox::title { color: %1; }" ).arg( widgetInfo.labelStyle.color.name( QColor::HexArgb ) ) );
+              }
             }
-          }
-          if ( widgetInfo.labelStyle.overrideFont )
-          {
-            widgetInfo.widget->setFont( widgetInfo.labelStyle.font );
-          }
-          layout->addWidget( widgetInfo.widget, row, column, 1, 2 );
-          if ( containerDef->visibilityExpression().enabled() || containerDef->collapsedExpression().enabled() )
-          {
-            registerContainerInformation( new ContainerInformation( widgetInfo.widget, containerDef->visibilityExpression().enabled() ? containerDef->visibilityExpression().data() : QgsExpression(), containerDef->collapsed(), containerDef->collapsedExpression().enabled() ? containerDef->collapsedExpression().data() : QgsExpression() ) );
-          }
-          column += 2;
-        }
-        else
-        {
-          if ( !tabWidget )
-          {
-            tabWidget = new QgsTabWidget();
-            layout->addWidget( tabWidget, row, column, 1, 2 );
+            if ( widgetInfo.labelStyle.overrideFont )
+            {
+              widgetInfo.widget->setFont( widgetInfo.labelStyle.font );
+            }
+            layout->addWidget( widgetInfo.widget, row, column, 1, 2 );
+            if ( containerDef->visibilityExpression().enabled() || containerDef->collapsedExpression().enabled() )
+            {
+              registerContainerInformation( new ContainerInformation( widgetInfo.widget, containerDef->visibilityExpression().enabled() ? containerDef->visibilityExpression().data() : QgsExpression(), containerDef->collapsed(), containerDef->collapsedExpression().enabled() ? containerDef->collapsedExpression().data() : QgsExpression() ) );
+            }
             column += 2;
+            break;
           }
 
-          QWidget *tabPage = new QWidget( tabWidget );
-
-          tabWidget->addTab( tabPage, widgDef->name() );
-          tabWidget->setTabStyle( tabWidget->tabBar()->count() - 1, widgDef->labelStyle() );
-
-          if ( containerDef->visibilityExpression().enabled() )
+          case Qgis::AttributeEditorContainerType::Tab:
           {
-            registerContainerInformation( new ContainerInformation( tabWidget, tabPage, containerDef->visibilityExpression().data() ) );
-          }
-          QGridLayout *tabPageLayout = new QGridLayout();
-          tabPage->setLayout( tabPageLayout );
+            if ( !tabWidget )
+            {
+              tabWidget = new QgsTabWidget();
+              layout->addWidget( tabWidget, row, column, 1, 2 );
+              column += 2;
+            }
 
-          WidgetInfo widgetInfo = createWidgetFromDef( widgDef, tabPage, mLayer, mContext );
-          tabPageLayout->addWidget( widgetInfo.widget );
+            QWidget *tabPage = new QWidget( tabWidget );
+
+            tabWidget->addTab( tabPage, widgDef->name() );
+            tabWidget->setTabStyle( tabWidget->tabBar()->count() - 1, widgDef->labelStyle() );
+
+            if ( containerDef->visibilityExpression().enabled() )
+            {
+              registerContainerInformation( new ContainerInformation( tabWidget, tabPage, containerDef->visibilityExpression().data() ) );
+            }
+            QGridLayout *tabPageLayout = new QGridLayout();
+            tabPage->setLayout( tabPageLayout );
+
+            WidgetInfo widgetInfo = createWidgetFromDef( widgDef, tabPage, mLayer, mContext );
+            tabPageLayout->addWidget( widgetInfo.widget );
+            break;
+          }
         }
       }
       else if ( widgDef->type() == Qgis::AttributeEditorType::Relation )
@@ -2388,41 +2394,46 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
 
       QString widgetName;
       QWidget *myContainer = nullptr;
-      if ( container->isGroupBox() )
+      switch ( container->type() )
       {
-        QgsCollapsibleGroupBoxBasic *groupBox = new QgsCollapsibleGroupBoxBasic();
-        widgetName = QStringLiteral( "QGroupBox" );
-        if ( container->showLabel() )
+        case Qgis::AttributeEditorContainerType::GroupBox:
         {
-          groupBox->setTitle( container->name() );
-          if ( newWidgetInfo.labelStyle.overrideColor )
+          QgsCollapsibleGroupBoxBasic *groupBox = new QgsCollapsibleGroupBoxBasic();
+          widgetName = QStringLiteral( "QGroupBox" );
+          if ( container->showLabel() )
           {
-            if ( newWidgetInfo.labelStyle.color.isValid() )
+            groupBox->setTitle( container->name() );
+            if ( newWidgetInfo.labelStyle.overrideColor )
             {
-              groupBox->setStyleSheet( QStringLiteral( "QGroupBox::title { color: %1; }" ).arg( newWidgetInfo.labelStyle.color.name( QColor::HexArgb ) ) );
+              if ( newWidgetInfo.labelStyle.color.isValid() )
+              {
+                groupBox->setStyleSheet( QStringLiteral( "QGroupBox::title { color: %1; }" ).arg( newWidgetInfo.labelStyle.color.name( QColor::HexArgb ) ) );
+              }
+            }
+            if ( newWidgetInfo.labelStyle.overrideFont )
+            {
+              groupBox->setFont( newWidgetInfo.labelStyle.font );
             }
           }
-          if ( newWidgetInfo.labelStyle.overrideFont )
-          {
-            groupBox->setFont( newWidgetInfo.labelStyle.font );
-          }
+          myContainer = groupBox;
+          newWidgetInfo.widget = myContainer;
+          groupBox->setCollapsed( container->collapsed() );
+          break;
         }
-        myContainer = groupBox;
-        newWidgetInfo.widget = myContainer;
-        groupBox->setCollapsed( container->collapsed() );
-      }
-      else
-      {
-        myContainer = new QWidget();
+        case Qgis::AttributeEditorContainerType::Tab:
+        {
+          myContainer = new QWidget();
 
-        QgsScrollArea *scrollArea = new QgsScrollArea( parent );
+          QgsScrollArea *scrollArea = new QgsScrollArea( parent );
 
-        scrollArea->setWidget( myContainer );
-        scrollArea->setWidgetResizable( true );
-        scrollArea->setFrameShape( QFrame::NoFrame );
-        widgetName = QStringLiteral( "QScrollArea QWidget" );
+          scrollArea->setWidget( myContainer );
+          scrollArea->setWidgetResizable( true );
+          scrollArea->setFrameShape( QFrame::NoFrame );
+          widgetName = QStringLiteral( "QScrollArea QWidget" );
 
-        newWidgetInfo.widget = scrollArea;
+          newWidgetInfo.widget = scrollArea;
+          break;
+        }
       }
 
       if ( container->backgroundColor().isValid() )
