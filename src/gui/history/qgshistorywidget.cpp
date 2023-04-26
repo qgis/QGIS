@@ -17,6 +17,7 @@
 #include "qgsgui.h"
 #include "qgshistoryentrymodel.h"
 #include "qgshistoryentrynode.h"
+#include "qgssettings.h"
 
 #include <QTextBrowser>
 #include <QtGlobal>
@@ -46,6 +47,15 @@ QgsHistoryWidget::QgsHistoryWidget( const QString &providerId, Qgis::HistoryProv
   // expand first group (usually most recent date group)
   const QModelIndex firstGroup = mProxyModel->index( 0, 0, QModelIndex() );
   mTreeView->expand( firstGroup );
+
+  QgsSettings settings;
+  mSplitter->restoreState( settings.value( QStringLiteral( "history/splitterState%1" ).arg( providerId ) ).toByteArray() );
+
+  connect( mSplitter, &QSplitter::splitterMoved, this, [providerId, this]
+  {
+    QgsSettings settings;
+    settings.setValue( QStringLiteral( "history/splitterState%1" ).arg( providerId ), mSplitter->saveState() );
+  } );
 }
 
 void QgsHistoryWidget::currentItemChanged( const QModelIndex &selected, const QModelIndex & )
