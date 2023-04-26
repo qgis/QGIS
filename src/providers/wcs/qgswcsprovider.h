@@ -262,7 +262,7 @@ class QgsWcsProvider final: public QgsRasterDataProvider, QgsGdalProviderBase
     QString mTime;
 
     //! Specified bounding box
-    QString mBBOX;
+    QgsRectangle mBBOX;
 
     //! Format of coverage to be used in request
     QString mFormat;

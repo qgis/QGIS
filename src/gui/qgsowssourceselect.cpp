@@ -424,6 +424,7 @@ void QgsOWSSourceSelect::mChangeCRSButton_clicked()
     return;
 
   mSelectedCRS = mySelector->crs().authid();
+  mSpatialExtentBox->setOutputCrs( mySelector->crs() );
   delete mySelector;
 
   mSelectedCRSLabel->setText( descriptionForAuthId( mSelectedCRS ) );
@@ -480,6 +481,7 @@ void QgsOWSSourceSelect::populateCrs()
         mSelectedCRS = defaultCRS;
       }
     }
+    mSpatialExtentBox->setOutputCrs( QgsCoordinateReferenceSystem( mSelectedCRS ) );
     mSelectedCRSLabel->setText( descriptionForAuthId( mSelectedCRS ) );
     mChangeCRSButton->setEnabled( true );
   }
