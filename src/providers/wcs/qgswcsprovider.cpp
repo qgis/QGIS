@@ -438,7 +438,7 @@ bool QgsWcsProvider::parseUri( const QString &uriString )
 
   mTime = uri.param( QStringLiteral( "time" ) );
 
-  QStringList bboxParts = uri.param( QStringLiteral( "bbox" ) ).split( "," );
+  const QStringList bboxParts = uri.param( QStringLiteral( "bbox" ) ).split( "," );
   if ( bboxParts.length() == 4 )
   {
     mBBOX = QgsRectangle( bboxParts[0].toDouble(), bboxParts[1].toDouble(), bboxParts[2].toDouble(), bboxParts[3].toDouble() );
