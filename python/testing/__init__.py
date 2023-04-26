@@ -128,7 +128,7 @@ class TestCase(_TestCase):
         checker.setColorTolerance(color_tolerance)
         result = checker.runTest(name, allowed_mismatch)
         if not result:
-            cls.report += "<h2>Render {}</h2>\n".format(name)
+            cls.report += f"<h2>Render {name}</h2>\n"
             cls.report += checker.report()
 
         return result
@@ -150,7 +150,7 @@ class TestCase(_TestCase):
             checker.setColorTolerance(color_tolerance)
         result = checker.runTest(name, allowed_mismatch or 0)
         if not result:
-            cls.report += "<h2>Render {}</h2>\n".format(name)
+            cls.report += f"<h2>Render {name}</h2>\n"
             cls.report += checker.report()
 
         return result
@@ -168,7 +168,7 @@ class TestCase(_TestCase):
             checker.setControlPathPrefix(cls.control_path_prefix())
         result, message = checker.testLayout()
         if not result:
-            cls.report += "<h2>Render {}</h2>\n".format(name)
+            cls.report += f"<h2>Render {name}</h2>\n"
             cls.report += checker.report()
         return result
 
