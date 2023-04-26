@@ -1248,7 +1248,7 @@ void QgsMapToolEditMeshFrame::keyPressEvent( QKeyEvent *e )
     }
     break;
     case MovingSelection:
-      if ( e->key() == Qt:: Key_Escape )
+      if ( e->key() == Qt::Key_Escape )
       {
         mCurrentState = Digitizing;
         mMovingEdgesRubberband->reset( Qgis::GeometryType::Line );
