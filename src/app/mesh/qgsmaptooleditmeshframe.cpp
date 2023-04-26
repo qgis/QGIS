@@ -948,7 +948,7 @@ void QgsMapToolEditMeshFrame::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
           addVertexToFaceCanditate( mCurrentVertexIndex );
           // Advanced digitizing base class adds a point at map point not at vertex position
           // so we need to replace it by the position of the vertex
-          const QgsPointXY &currentPoint = mapVertexXY( mCurrentVertexIndex );
+          const QgsPoint &currentPoint = mapVertex( mCurrentVertexIndex );
           cadDockWidget()->updateCurrentPoint( currentPoint );
           cadDockWidget()->removePreviousPoint();
           cadDockWidget()->addPoint( currentPoint );
@@ -1236,6 +1236,7 @@ void QgsMapToolEditMeshFrame::keyPressEvent( QKeyEvent *e )
         mNewFaceBand->reset( Qgis::GeometryType::Polygon );
         mNewFaceCandidate.clear();
         mNewVerticesForNewFaceCandidate.clear();
+        mCadDockWidget->clearPoints();
         mCurrentState = Digitizing;
         consumned = true;
       }

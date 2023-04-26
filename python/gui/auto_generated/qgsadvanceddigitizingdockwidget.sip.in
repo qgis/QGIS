@@ -361,7 +361,7 @@ Removes previous point in the CAD point list
 .. versionadded:: 3.8
 %End
 
-    void updateCurrentPoint( const QgsPointXY &point );
+    void updateCurrentPoint( const QgsPoint &point );
 %Docstring
 Updates the current ``point`` in the CAD point list
 
