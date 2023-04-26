@@ -63,7 +63,7 @@ class TestPyQgsShapefileProvider(unittest.TestCase, ProviderTestCase):
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
-        super(unittest.TestCase, cls).setUpClass()
+        super(TestPyQgsShapefileProvider, cls).setUpClass()
         # Create test layer
         cls.basetestpath = tempfile.mkdtemp()
         cls.repackfilepath = tempfile.mkdtemp()
@@ -93,7 +93,7 @@ class TestPyQgsShapefileProvider(unittest.TestCase, ProviderTestCase):
         del cls.vl_poly
         for dirname in cls.dirs_to_cleanup:
             shutil.rmtree(dirname, True)
-        super(unittest.TestCase, cls).tearDownClass()
+        super(TestPyQgsShapefileProvider, cls).tearDownClass()
 
     def treat_time_as_string(self):
         return True

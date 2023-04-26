@@ -40,7 +40,7 @@ class TestQgsLayoutMarker(unittest.TestCase, LayoutItemTestCase):
 
     @classmethod
     def setUpClass(cls):
-        super(unittest.TestCase, cls).setUpClass()
+        super(TestQgsLayoutMarker, cls).setUpClass()
         cls.item_class = QgsLayoutItemMarker
 
     def __init__(self, methodName):

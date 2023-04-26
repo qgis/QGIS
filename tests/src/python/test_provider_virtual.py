@@ -52,7 +52,7 @@ class TestQgsVirtualLayerProvider(unittest.TestCase, ProviderTestCase):
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
-        super(unittest.TestCase, cls).setUpClass()
+        super(TestQgsVirtualLayerProvider, cls).setUpClass()
         # Create the layer for the common provider tests
         shp = os.path.join(TEST_DATA_DIR, 'provider/shapefile.shp')
         d = QgsVirtualLayerDefinition()
@@ -75,7 +75,7 @@ class TestQgsVirtualLayerProvider(unittest.TestCase, ProviderTestCase):
         """Run after all tests"""
         del cls.vl
         del cls.poly_vl
-        super(unittest.TestCase, cls).tearDownClass()
+        super(TestQgsVirtualLayerProvider, cls).tearDownClass()
 
     def treat_datetime_as_string(self):
         return True

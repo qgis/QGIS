@@ -158,7 +158,7 @@ class TestPyQgsOapifProvider(unittest.TestCase, ProviderTestCase):
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
-        super(unittest.TestCase, cls).setUpClass()
+        super(TestPyQgsOapifProvider, cls).setUpClass()
 
         QCoreApplication.setOrganizationName("QGIS_Test")
         QCoreApplication.setOrganizationDomain("TestPyQgsOapifProvider.com")
@@ -218,7 +218,7 @@ class TestPyQgsOapifProvider(unittest.TestCase, ProviderTestCase):
         QgsSettings().clear()
         shutil.rmtree(cls.basetestpath, True)
         cls.vl = None  # so as to properly close the provider and remove any temporary file
-        super(unittest.TestCase, cls).tearDownClass()
+        super(TestPyQgsOapifProvider, cls).tearDownClass()
 
     def testCrs(self):
         self.assertEqual(self.source.sourceCrs().authid(), 'OGC:CRS84')

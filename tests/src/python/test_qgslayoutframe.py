@@ -22,7 +22,7 @@ class TestQgsLayoutFrame(unittest.TestCase, LayoutItemTestCase):
 
     @classmethod
     def setUpClass(cls):
-        super(unittest.TestCase, cls).setUpClass()
+        super(TestQgsLayoutFrame, cls).setUpClass()
         cls.mf = None
 
     @classmethod

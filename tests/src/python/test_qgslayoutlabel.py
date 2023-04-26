@@ -32,7 +32,7 @@ class TestQgsLayoutItemLabel(unittest.TestCase, LayoutItemTestCase):
 
     @classmethod
     def setUpClass(cls):
-        super(unittest.TestCase, cls).setUpClass()
+        super(TestQgsLayoutItemLabel, cls).setUpClass()
         cls.item_class = QgsLayoutItemLabel
 
     def testCase(self):
