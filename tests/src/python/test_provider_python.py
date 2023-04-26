@@ -84,7 +84,7 @@ class TestPyQgsPythonProvider(unittest.TestCase, ProviderTestCase):
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
-        super().setUpClass()
+        super(unittest.TestCase, cls).setUpClass()
         # Register the provider
         r = QgsProviderRegistry.instance()
         metadata = QgsProviderMetadata(PyProvider.providerKey(), PyProvider.description(), PyProvider.createProvider)

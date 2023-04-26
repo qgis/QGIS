@@ -35,7 +35,7 @@ class TestQgsVectorLayerCache(unittest.TestCase, FeatureSourceTestCase):
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
-        super().setUpClass()
+        super(unittest.TestCase, cls).setUpClass()
         # Create test layer for FeatureSourceTestCase
         cls.vl = QgsVectorLayer(
             'Point?crs=epsg:4326&field=pk:integer&field=cnt:integer&field=name:string(0)&field=name2:string(0)&field=num_char:string&field=dt:datetime&field=date:date&field=time:time&key=pk',

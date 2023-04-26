@@ -71,7 +71,7 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
-        super().setUpClass()
+        super(unittest.TestCase, cls).setUpClass()
         print(' ### Setup Spatialite Provider Test Class')
         # setup provider for base tests
         cls.vl = QgsVectorLayer(
@@ -308,7 +308,7 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
         #    os.remove(cls.dbname)
         for dirname in cls.dirs_to_cleanup:
             shutil.rmtree(dirname, True)
-        super().tearDownClass()
+        super(unittest.TestCase, cls).tearDownClass()
 
     def getSource(self):
         tmpdir = tempfile.mkdtemp()

@@ -58,6 +58,7 @@ class TestPyQgsDBManagerGpkg(unittest.TestCase):
     @classmethod
     def tearDownClass(cls):
         """Run after all tests"""
+        super().tearDownClass()
 
         QgsSettings().clear()
         shutil.rmtree(cls.basetestpath, True)
