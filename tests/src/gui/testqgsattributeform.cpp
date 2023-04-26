@@ -1127,7 +1127,7 @@ void TestQgsAttributeForm::testSameFieldSync()
   editFormConfig.clearTabs();
   editFormConfig.addTab( new QgsAttributeEditorField( "col0", 0, editFormConfig.invisibleRootContainer() ) );
   editFormConfig.addTab( new QgsAttributeEditorField( "col0", 0, editFormConfig.invisibleRootContainer() ) );
-  editFormConfig.setLayout( QgsEditFormConfig::TabLayout );
+  editFormConfig.setLayout( Qgis::AttributeFormLayout::DragAndDrop );
   layer->setEditFormConfig( editFormConfig );
 
   layer->startEditing();

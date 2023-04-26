@@ -25,13 +25,6 @@ Contains configuration settings for an editor form.
 
   public:
 
-    enum EditorLayout
-    {
-      GeneratedLayout,
-      TabLayout,
-      UiFileLayout
-    };
-
     struct GroupData
     {
       GroupData();
@@ -53,21 +46,6 @@ Constructor for TabData
       QString mName;
       QList<QString> mFields;
       QList<QgsEditFormConfig::GroupData> mGroups;
-    };
-
-    enum FeatureFormSuppress
-    {
-      SuppressDefault,
-      SuppressOn,
-      SuppressOff
-    };
-
-    enum PythonInitCodeSource
-    {
-      CodeSourceNone,
-      CodeSourceFile,
-      CodeSourceDialog,
-      CodeSourceEnvironment
     };
 
     enum DataDefinedProperty
@@ -112,12 +90,12 @@ Gets the invisible root container for the drag and drop designer form (EditorLay
 .. versionadded:: 3
 %End
 
-    EditorLayout layout() const;
+    Qgis::AttributeFormLayout layout() const;
 %Docstring
 Gets the active layout style for the attribute editor for this layer
 %End
 
-    void setLayout( EditorLayout editorLayout );
+    void setLayout( Qgis::AttributeFormLayout editorLayout );
 %Docstring
 Sets the active layout style for the attribute editor for this layer
 %End
@@ -265,23 +243,23 @@ Make sure that you also set the appropriate function name in
 :py:func:`~QgsEditFormConfig.setInitFunction`.
 %End
 
-    PythonInitCodeSource initCodeSource() const;
+    Qgis::AttributeFormPythonInitCodeSource initCodeSource() const;
 %Docstring
 Returns Python code source for edit form initialization
 (if it shall be loaded from a file, read from the
 provided dialog editor or inherited from the environment)
 %End
 
-    void setInitCodeSource( PythonInitCodeSource initCodeSource );
+    void setInitCodeSource( Qgis::AttributeFormPythonInitCodeSource initCodeSource );
 %Docstring
 Sets if Python code shall be used for edit form initialization and its origin
 %End
 
-    FeatureFormSuppress suppress() const;
+    Qgis::AttributeFormSuppression suppress() const;
 %Docstring
 Type of feature form pop-up suppression after feature creation (overrides app setting)
 %End
-    void setSuppress( FeatureFormSuppress s );
+    void setSuppress( Qgis::AttributeFormSuppression s );
 %Docstring
 Sets type of feature form pop-up suppression after feature creation (overrides app setting)
 %End
@@ -325,7 +303,6 @@ Returns data defined properties for ``fieldName``
 
 .. versionadded:: 3.14
 %End
-
 
     static const QgsPropertiesDefinition &propertyDefinitions();
 %Docstring

@@ -17,11 +17,16 @@
 #define QGSATTRIBUTEEDITORELEMENT_H
 
 #include "qgis_core.h"
-#include "qgsrelation.h"
-#include "qgsoptionalexpression.h"
-#include "qgspropertycollection.h"
+#include "qgis_sip.h"
+#include "qgis.h"
 #include <QColor>
 #include <QFont>
+
+class QDomNode;
+class QDomElement;
+class QDomDocument;
+class QgsFields;
+class QgsReadWriteContext;
 
 /**
  * \ingroup core
@@ -41,16 +46,16 @@ class CORE_EXPORT QgsAttributeEditorElement SIP_ABSTRACT
     SIP_CONVERT_TO_SUBCLASS_CODE
     switch ( sipCpp->type() )
     {
-      case QgsAttributeEditorElement::AeTypeContainer:
+      case Qgis::AttributeEditorType::Container:
         sipType = sipType_QgsAttributeEditorContainer;
         break;
-      case QgsAttributeEditorElement::AeTypeField:
+      case Qgis::AttributeEditorType::Field:
         sipType = sipType_QgsAttributeEditorField;
         break;
-      case QgsAttributeEditorElement::AeTypeRelation:
+      case Qgis::AttributeEditorType::Relation:
         sipType = sipType_QgsAttributeEditorRelation;
         break;
-      case QgsAttributeEditorElement::AeTypeAction:
+      case Qgis::AttributeEditorType::Action:
         sipType = sipType_QgsAttributeEditorAction;
         break;
       default:
@@ -99,20 +104,6 @@ class CORE_EXPORT QgsAttributeEditorElement SIP_ABSTRACT
       bool operator==( LabelStyle const  &other ) const SIP_SKIP;
     };
 
-
-    enum AttributeEditorType
-    {
-      AeTypeContainer, //!< A container
-      AeTypeField,     //!< A field
-      AeTypeRelation,  //!< A relation
-      AeTypeInvalid,   //!< Invalid
-      AeTypeQmlElement, //!< A QML element
-      AeTypeHtmlElement, //!< A HTML element
-      AeTypeAction, //!< A layer action element (since QGIS 3.22)
-      AeTypeTextElement, //!< A text element (since QGIS 3.30)
-      AeTypeSpacerElement, //!< A spacer element (since QGIS 3.30)
-    };
-
     /**
      * Constructor
      *
@@ -120,7 +111,7 @@ class CORE_EXPORT QgsAttributeEditorElement SIP_ABSTRACT
      * \param name
      * \param parent
      */
-    QgsAttributeEditorElement( AttributeEditorType type, const QString &name, QgsAttributeEditorElement *parent = nullptr )
+    QgsAttributeEditorElement( Qgis::AttributeEditorType type, const QString &name, QgsAttributeEditorElement *parent = nullptr )
       : mType( type )
       , mName( name )
       , mParent( parent )
@@ -148,7 +139,7 @@ class CORE_EXPORT QgsAttributeEditorElement SIP_ABSTRACT
      *
      * \returns The type
      */
-    AttributeEditorType type() const { return mType; }
+    Qgis::AttributeEditorType type() const { return mType; }
 
     /**
      * Gets the parent of this element.
@@ -203,7 +194,7 @@ class CORE_EXPORT QgsAttributeEditorElement SIP_ABSTRACT
 
   protected:
 #ifndef SIP_RUN
-    AttributeEditorType mType;
+    Qgis::AttributeEditorType mType;
     QString mName;
     QgsAttributeEditorElement *mParent = nullptr;
     bool mShowLabel;

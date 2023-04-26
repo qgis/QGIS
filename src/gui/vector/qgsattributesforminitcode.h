@@ -21,9 +21,6 @@
 
 #include "ui_qgsattributesforminitcode.h"
 
-#include "qgseditorconfigwidget.h"
-#include "qgsvectordataprovider.h"
-#include "qgshelp.h"
 #include "qgis_gui.h"
 #include <QWidget>
 
@@ -40,12 +37,12 @@ class GUI_EXPORT QgsAttributesFormInitCode: public QDialog, private Ui::QgsAttri
   public:
     explicit QgsAttributesFormInitCode();
 
-    void setCodeSource( QgsEditFormConfig::PythonInitCodeSource initCodeSourceComboBoxIndex );
+    void setCodeSource( Qgis::AttributeFormPythonInitCodeSource initCodeSourceComboBoxIndex );
     void setInitFunction( const QString &initFunction );
     void setInitFilePath( const QString &initFilePath );
     void setInitCode( const QString &initCode );
 
-    QgsEditFormConfig::PythonInitCodeSource codeSource() const;
+    Qgis::AttributeFormPythonInitCodeSource codeSource() const;
     QString initFunction() const;
     QString initFilePath() const;
     QString initCode() const;

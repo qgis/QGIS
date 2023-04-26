@@ -458,7 +458,7 @@ void QgsGrassPlugin::addFeature()
     QgsDebugMsg( "grassProvider is null" );
     return;
   }
-  QgsEditFormConfig::FeatureFormSuppress formSuppress = mFormSuppress.value( vectorLayer );
+  Qgis::AttributeFormSuppression formSuppress = mFormSuppress.value( vectorLayer );
   if ( sender() == mAddPointAction )
   {
     qGisInterface->mapCanvas()->setMapTool( mAddPoint );
@@ -473,7 +473,7 @@ void QgsGrassPlugin::addFeature()
   {
     qGisInterface->mapCanvas()->setMapTool( mAddBoundary );
     grassProvider->setNewFeatureType( GV_BOUNDARY );
-    formSuppress = QgsEditFormConfig::SuppressOn;
+    formSuppress = Qgis::AttributeFormSuppression::On;
   }
   else if ( sender() == mAddCentroidAction )
   {
@@ -484,7 +484,7 @@ void QgsGrassPlugin::addFeature()
   {
     qGisInterface->mapCanvas()->setMapTool( mAddArea );
     grassProvider->setNewFeatureType( GV_AREA );
-    formSuppress = QgsEditFormConfig::SuppressOn;
+    formSuppress = Qgis::AttributeFormSuppression::On;
   }
   QgsEditFormConfig formConfig = vectorLayer->editFormConfig();
   formConfig.setSuppress( formSuppress );

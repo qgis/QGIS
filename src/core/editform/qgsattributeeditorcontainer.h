@@ -18,6 +18,7 @@
 
 #include "qgis_core.h"
 #include "qgsattributeeditorelement.h"
+#include "qgsoptionalexpression.h"
 
 /**
  * \ingroup core
@@ -36,7 +37,7 @@ class CORE_EXPORT QgsAttributeEditorContainer : public QgsAttributeEditorElement
      * \param backgroundColor The optional background color of the container.
      */
     QgsAttributeEditorContainer( const QString &name, QgsAttributeEditorElement *parent, const QColor &backgroundColor = QColor() )
-      : QgsAttributeEditorElement( AeTypeContainer, name, parent )
+      : QgsAttributeEditorElement( Qgis::AttributeEditorType::Container, name, parent )
       , mIsGroupBox( true )
       , mColumnCount( 1 )
       , mBackgroundColor( backgroundColor )
@@ -99,7 +100,7 @@ class CORE_EXPORT QgsAttributeEditorContainer : public QgsAttributeEditorElement
      *
      * \returns A list of elements of the type which has been searched for
      */
-    virtual QList<QgsAttributeEditorElement *> findElements( AttributeEditorType type ) const;
+    virtual QList<QgsAttributeEditorElement *> findElements( Qgis::AttributeEditorType type ) const;
 
     /**
      * Clear all children from this container.

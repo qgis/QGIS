@@ -20,6 +20,7 @@
 #include "qgis_sip.h"
 #include "qgsattributeeditorcontext.h"
 #include "qgseditorwidgetwrapper.h"
+#include "qgsattributeeditorelement.h"
 
 #include <QWidget>
 #include <QLabel>
