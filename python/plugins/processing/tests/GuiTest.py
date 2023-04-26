@@ -104,6 +104,7 @@ class WrappersTest(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
+        super().setUpClass()
         ProcessingConfig.initialize()
 
     def checkConstructWrapper(self, param, expected_wrapper_class):

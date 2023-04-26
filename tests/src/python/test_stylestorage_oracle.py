@@ -38,7 +38,6 @@ class StyleStorageTest(StyleStorageTestCaseBase, StyleStorageTestBase):
         conn.executeSql('DELETE FROM mdsys.sdo_geom_metadata_table WHERE sdo_table_name = \'TEST_STYLES\'')
 
     def schemaName(self):
-
         return QgsDataSourceUri(self.uri).param('username')
 
     def tableName(self):
