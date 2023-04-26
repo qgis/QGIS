@@ -5371,6 +5371,10 @@ QString QgsProcessingParameterExpression::asPythonString( const QgsProcessing::P
       {
         code += QStringLiteral( ", type=Qgis.ExpressionType.PointCloud)" );
       }
+      else
+      {
+        code += QStringLiteral( ")" );
+      }
       return code;
     }
   }
