@@ -29,6 +29,7 @@ class QDialog;
 /**
  * \ingroup gui
  * \class QgsAttributesFormInitCode
+ * \brief A dialog for configuring the Python init code handling for attribute forms.
  */
 class GUI_EXPORT QgsAttributesFormInitCode: public QDialog, private Ui::QgsAttributesFormInitCode
 {
@@ -37,14 +38,60 @@ class GUI_EXPORT QgsAttributesFormInitCode: public QDialog, private Ui::QgsAttri
   public:
     explicit QgsAttributesFormInitCode();
 
-    void setCodeSource( Qgis::AttributeFormPythonInitCodeSource initCodeSourceComboBoxIndex );
+    /**
+     * Sets the Python init code \a source.
+     *
+     * \see codeSource()
+     */
+    void setCodeSource( Qgis::AttributeFormPythonInitCodeSource source );
+
+    /**
+     * Sets the name of the init function.
+     *
+     * \see initFunction()
+     */
     void setInitFunction( const QString &initFunction );
+
+    /**
+     * Sets the file path for the file containing the init code.
+     *
+     * \see initFilePath()
+     */
     void setInitFilePath( const QString &initFilePath );
+
+    /**
+     * Sets the init code contents.
+     *
+     * \see initCode()
+     */
     void setInitCode( const QString &initCode );
 
+    /**
+     * Returns the Python init code source.
+     *
+     * \see setCodeSource()
+     */
     Qgis::AttributeFormPythonInitCodeSource codeSource() const;
+
+    /**
+     * Returns the name of the init function.
+     *
+     * \see setInitFunction()
+     */
     QString initFunction() const;
+
+    /**
+     * Returns the file path for the file containing the init code.
+     *
+     * \see setInitFilePath()
+     */
     QString initFilePath() const;
+
+    /**
+     * Returns the init code contents.
+     *
+     * \see setInitCode()
+     */
     QString initCode() const;
 
   private:
