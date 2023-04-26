@@ -40,6 +40,7 @@ QgsHistoryWidget::QgsHistoryWidget( const QString &providerId, Qgis::HistoryProv
   connect( mFilterEdit, &QLineEdit::textChanged, mProxyModel, &QgsHistoryEntryProxyModel::setFilter );
   connect( mTreeView->selectionModel(), &QItemSelectionModel::currentChanged, this, &QgsHistoryWidget::currentItemChanged );
   connect( mTreeView, &QTreeView::doubleClicked, this, &QgsHistoryWidget::nodeDoubleClicked );
+  mTreeView->setExpandsOnDoubleClick( false );
 
   mTreeView->setContextMenuPolicy( Qt::CustomContextMenu );
   connect( mTreeView, &QWidget::customContextMenuRequested, this, &QgsHistoryWidget::showNodeContextMenu );
@@ -97,8 +98,15 @@ void QgsHistoryWidget::nodeDoubleClicked( const QModelIndex &index )
 {
   if ( QgsHistoryEntryNode *node = mModel->index2node( mProxyModel->mapToSource( index ) ) )
   {
-    node->doubleClicked( mContext );
+    if ( node->doubleClicked( mContext ) )
+      return; // double click handled
   }
+
+  // otherwise double-clicks expands/collapses the node
+  if ( mTreeView->isExpanded( index ) )
+    mTreeView->collapse( index );
+  else
+    mTreeView->expand( index );
 }
 
 void QgsHistoryWidget::showNodeContextMenu( const QPoint &pos )

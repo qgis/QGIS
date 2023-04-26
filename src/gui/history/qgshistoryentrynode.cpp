@@ -36,9 +36,9 @@ QWidget *QgsHistoryEntryNode::createWidget( const QgsHistoryWidgetContext & )
   return nullptr;
 }
 
-void QgsHistoryEntryNode::doubleClicked( const QgsHistoryWidgetContext & )
+bool QgsHistoryEntryNode::doubleClicked( const QgsHistoryWidgetContext & )
 {
-
+  return false;
 }
 
 void QgsHistoryEntryNode::populateContextMenu( QMenu *, const QgsHistoryWidgetContext & )

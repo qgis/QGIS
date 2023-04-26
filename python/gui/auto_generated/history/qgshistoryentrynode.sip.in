@@ -65,9 +65,12 @@ create the node's content.
 .. seealso:: :py:func:`html`
 %End
 
-    virtual void doubleClicked( const QgsHistoryWidgetContext &context );
+    virtual bool doubleClicked( const QgsHistoryWidgetContext &context );
 %Docstring
 Called when the node is double-clicked. The default implementation does nothing.
+
+Returns ``True`` if the node handled the double click event and it should not
+be further processed.
 %End
 
     virtual void populateContextMenu( QMenu *menu, const QgsHistoryWidgetContext &context );
