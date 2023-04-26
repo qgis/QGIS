@@ -161,10 +161,10 @@ class ProcessingHistoryNode : public QgsHistoryEntryGroup
       return codeEditor;
     }
 
-    void doubleClicked( const QgsHistoryWidgetContext & ) override
+    bool doubleClicked( const QgsHistoryWidgetContext & ) override
     {
       if ( mPythonCommand.isEmpty() )
-        return;
+        return true;
 
       QString execAlgorithmDialogCommand = mPythonCommand;
       execAlgorithmDialogCommand.replace( QStringLiteral( "processing.run(" ), QStringLiteral( "processing.execAlgorithmDialog(" ) );
@@ -180,6 +180,7 @@ class ProcessingHistoryNode : public QgsHistoryEntryGroup
       };
 
       mProvider->emitExecute( script.join( '\n' ) );
+      return true;
     }
 
     void populateContextMenu( QMenu *menu, const QgsHistoryWidgetContext & ) override
