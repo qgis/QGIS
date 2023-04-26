@@ -230,14 +230,14 @@ class QgsMeshDatasetGroupStore: public QObject
     /**
      * Returns the global dataset group index of the dataset with name \a groupName
      *
-     * \since QGIS 3.30.1
+     * \since QGIS 3.30.2
      */
     int indexFromGroupName( const QString &groupName ) const;
 
     /**
      * Returns the name of the dataset group with global index \a groupIndex
      *
-     * \since QGIS 3.30.1
+     * \since QGIS 3.30.2
      */
     QString groupName( int groupIndex ) const;
 
