@@ -31,7 +31,8 @@ class TestPyQgsExternalStorageAwsS3(TestPyQgsExternalStorageBase, unittest.TestC
     def setUpClass(cls):
         """Run before all tests:"""
 
-        super(unittest.TestCase, cls).setUpClass()
+        super().setUpClass()
+        unittest.TestCase.setUpClass()
 
         bucket_name = "test_bucket"
 

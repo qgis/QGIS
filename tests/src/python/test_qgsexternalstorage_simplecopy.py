@@ -24,8 +24,8 @@ class TestPyQgsExternalStorageSimpleCopy(TestPyQgsExternalStorageBase, unittest.
     @classmethod
     def setUpClass(cls):
         """Run before all tests:"""
-        super(unittest.TestCase, cls).setUpClass()
-        super(TestPyQgsExternalStorageBase).setUpClass()
+        super(TestPyQgsExternalStorageSimpleCopy, cls).setUpClass()
+        unittest.TestCase.setUpClass()
 
         cls.temp_dir = QTemporaryDir()
         cls.url = cls.temp_dir.path()
@@ -34,8 +34,8 @@ class TestPyQgsExternalStorageSimpleCopy(TestPyQgsExternalStorageBase, unittest.
     def tearDownClass(cls):
         """Run after all tests"""
         cls.temp_dir = None
-        super(unittest.TestCase, cls).tearDownClass()
-        super(TestPyQgsExternalStorageBase).tearDownClass()
+        super(TestPyQgsExternalStorageSimpleCopy, cls).tearDownClass()
+        unittest.TestCase.tearDownClass()
 
     def testStoreMissingAuth(self):
         """Override this one because there is authentication for SimpleCopy external storage"""

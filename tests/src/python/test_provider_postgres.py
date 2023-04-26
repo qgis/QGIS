@@ -82,7 +82,7 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
-        super(unittest.TestCase, cls).setUpClass()
+        super(TestPyQgsPostgresProvider, cls).setUpClass()
         cls.dbconn = 'service=qgis_test'
         if 'QGIS_PGTEST_DB' in os.environ:
             cls.dbconn = os.environ['QGIS_PGTEST_DB']
@@ -3236,7 +3236,7 @@ class TestPyQgsPostgresProviderCompoundKey(unittest.TestCase, ProviderTestCase):
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
-        super(unittest.TestCase, cls).setUpClass()
+        super(TestPyQgsPostgresProviderCompoundKey, cls).setUpClass()
         cls.dbconn = 'service=qgis_test'
         if 'QGIS_PGTEST_DB' in os.environ:
             cls.dbconn = os.environ['QGIS_PGTEST_DB']
@@ -3337,7 +3337,7 @@ class TestPyQgsPostgresProviderBigintSinglePk(unittest.TestCase, ProviderTestCas
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
-        super(unittest.TestCase, cls).setUpClass()
+        super(TestPyQgsPostgresProviderBigintSinglePk, cls).setUpClass()
         cls.dbconn = 'service=qgis_test'
         if 'QGIS_PGTEST_DB' in os.environ:
             cls.dbconn = os.environ['QGIS_PGTEST_DB']

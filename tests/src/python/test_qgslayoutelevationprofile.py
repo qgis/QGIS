@@ -47,7 +47,7 @@ class TestQgsLayoutItemElevationProfile(unittest.TestCase, LayoutItemTestCase):
 
     @classmethod
     def setUpClass(cls):
-        super(unittest.TestCase, cls).setUpClass()
+        super(TestQgsLayoutItemElevationProfile, cls).setUpClass()
         cls.item_class = QgsLayoutItemElevationProfile
         cls.report = "<h1>Python QgsLayoutItemElevationProfile Tests</h1>\n"
 
@@ -56,7 +56,7 @@ class TestQgsLayoutItemElevationProfile(unittest.TestCase, LayoutItemTestCase):
         report_file_path = f"{QDir.tempPath()}/qgistest.html"
         with open(report_file_path, 'a') as report_file:
             report_file.write(cls.report)
-        super(unittest.TestCase, cls).tearDownClass()
+        super(TestQgsLayoutItemElevationProfile, cls).tearDownClass()
 
     def test_layers(self):
         project = QgsProject()

@@ -34,7 +34,7 @@ class TestPyQgsProviderConnectionMssql(unittest.TestCase, TestPyQgsProviderConne
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
-        super(unittest.TestCase, cls).setUpClass()
+        super(TestPyQgsProviderConnectionMssql, cls).setUpClass()
 
         TestPyQgsProviderConnectionBase.setUpClass()
 

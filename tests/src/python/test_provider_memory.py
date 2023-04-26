@@ -82,7 +82,7 @@ class TestPyQgsMemoryProvider(unittest.TestCase, ProviderTestCase):
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
-        super(unittest.TestCase, cls).setUpClass()
+        super(TestPyQgsMemoryProvider, cls).setUpClass()
         # Create test layer
         cls.vl = cls.createLayer()
         assert (cls.vl.isValid())
@@ -1017,7 +1017,7 @@ class TestPyQgsMemoryProviderIndexed(unittest.TestCase, ProviderTestCase):
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
-        super(unittest.TestCase, cls).setUpClass()
+        super(TestPyQgsMemoryProviderIndexed, cls).setUpClass()
         # Create test layer
 
         cls.vl = QgsVectorLayer(

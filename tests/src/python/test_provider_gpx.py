@@ -41,7 +41,7 @@ class TestPyQgsGpxProvider(unittest.TestCase, ProviderTestCase):
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
-        super(unittest.TestCase, cls).setUpClass()
+        super(TestPyQgsGpxProvider, cls).setUpClass()
         # Create test layer
         cls.vl = cls.createLayer()
         assert (cls.vl.isValid())

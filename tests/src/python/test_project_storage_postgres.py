@@ -32,13 +32,13 @@ QGISAPP = start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
 
-class TestPyQgsProjectStoragePostgres(TestPyQgsProjectStorageBase, unittest.TestCase):
+class TestPyQgsProjectStoragePostgres(unittest.TestCase, TestPyQgsProjectStorageBase):
 
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
 
-        super(unittest.TestCase, cls).setUpClass()
+        super(TestPyQgsProjectStoragePostgres, cls).setUpClass()
 
         cls.dbconn = 'service=qgis_test'
         if 'QGIS_PGTEST_DB' in os.environ:

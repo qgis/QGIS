@@ -52,7 +52,7 @@ class TestWFST(unittest.TestCase, OfflineTestBase):
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
-        super(unittest.TestCase, cls).setUpClass()
+        super(TestWFST, cls).setUpClass()
         cls.port = QGIS_SERVER_OFFLINE_PORT
         # Create tmp folder
         cls.temp_path = tempfile.mkdtemp()
@@ -80,7 +80,7 @@ class TestWFST(unittest.TestCase, OfflineTestBase):
     def tearDownClass(cls):
         """Run after all tests"""
         rmtree(cls.temp_path)
-        super(unittest.TestCase, cls).tearDownClass()
+        super(TestWFST, cls).tearDownClass()
 
     def setUp(self):
         """Run before each test."""

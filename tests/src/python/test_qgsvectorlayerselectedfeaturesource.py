@@ -81,7 +81,7 @@ class TestPyQgsVectorLayerSelectedFeatureSource(unittest.TestCase, FeatureSource
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
-        super(unittest.TestCase, cls).setUpClass()
+        super(TestPyQgsVectorLayerSelectedFeatureSource, cls).setUpClass()
         # Create test layer
         cls.vl = cls.createLayer()
         assert (cls.vl.isValid())
