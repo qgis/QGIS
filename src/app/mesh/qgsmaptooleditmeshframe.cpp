@@ -986,6 +986,7 @@ void QgsMapToolEditMeshFrame::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       const QgsGeometry selectionGeom = mSelectionBand->asGeometry();
       selectByGeometry( selectionGeom, e->modifiers() );
       mSelectionBand->reset( Qgis::GeometryType::Polygon );
+      mCadDockWidget->clearPoints();
       mCurrentState = Digitizing;
     }
     break;
@@ -1236,14 +1237,13 @@ void QgsMapToolEditMeshFrame::keyPressEvent( QKeyEvent *e )
         mNewFaceBand->reset( Qgis::GeometryType::Polygon );
         mNewFaceCandidate.clear();
         mNewVerticesForNewFaceCandidate.clear();
-        mCadDockWidget->clearPoints();
         mCurrentState = Digitizing;
         consumned = true;
       }
     }
     break;
     case MovingSelection:
-      if ( e->key() == Qt::Key_Escape )
+      if ( e->key() == Qt:: Key_Escape )
       {
         mCurrentState = Digitizing;
         mMovingEdgesRubberband->reset( Qgis::GeometryType::Line );
@@ -1274,6 +1274,9 @@ void QgsMapToolEditMeshFrame::keyPressEvent( QKeyEvent *e )
       }
       break;
   }
+
+  if ( e->key() == Qt::Key_Escape )
+    mCadDockWidget->clearPoints();
 
   if ( !consumned && mZValueWidget )
     QgsApplication::sendEvent( mZValueWidget->keyboardEntryWidget(), e );
