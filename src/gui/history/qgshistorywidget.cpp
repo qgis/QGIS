@@ -99,7 +99,7 @@ void QgsHistoryWidget::nodeDoubleClicked( const QModelIndex &index )
   if ( QgsHistoryEntryNode *node = mModel->index2node( mProxyModel->mapToSource( index ) ) )
   {
     if ( node->doubleClicked( mContext ) )
-      return; // double click handled
+      return; // double-click handled
   }
 
   // otherwise double-clicks expands/collapses the node
