@@ -156,11 +156,12 @@ class DatabaseQueryRootNode : public DatabaseQueryHistoryNode
       return editor;
     }
 
-    void doubleClicked( const QgsHistoryWidgetContext & ) override
+    bool doubleClicked( const QgsHistoryWidgetContext & ) override
     {
       mProvider->emitOpenSqlDialog( mEntry.entry.value( QStringLiteral( "connection" ) ).toString(),
                                     mEntry.entry.value( QStringLiteral( "provider" ) ).toString(),
                                     mEntry.entry.value( QStringLiteral( "query" ) ).toString() );
+      return true;
     }
 
     void populateContextMenu( QMenu *menu, const QgsHistoryWidgetContext & ) override
