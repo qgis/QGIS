@@ -91,7 +91,7 @@ class GUI_EXPORT QgsHistoryEntryNode
     /**
      * Called when the node is double-clicked. The default implementation does nothing.
      *
-     * Returns TRUE if the node handled the double click event and it should not
+     * Returns TRUE if the node handled the double-click event and it should not
      * be further processed.
      */
     virtual bool doubleClicked( const QgsHistoryWidgetContext &context );
