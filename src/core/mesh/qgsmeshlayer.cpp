@@ -1390,7 +1390,7 @@ QgsMeshRendererSettings QgsMeshLayer::accordSymbologyWithGroupName( const QgsMes
   int activeScalar = consistentSettings.activeScalarDatasetGroup();
   int activeVector = consistentSettings.activeScalarDatasetGroup();
 
-  for ( auto it = nameToIndex.constBegin(); it != nameToIndex.cend(); ++it )
+  for ( auto it = nameToIndex.constBegin(); it != nameToIndex.constEnd(); ++it )
   {
     int index = it.value();
     const QString name = it.key() ;
@@ -1701,7 +1701,7 @@ bool QgsMeshLayer::readSymbology( const QDomNode &node, QString &errorMessage,
   QDomElement nameToIndexElem = elem.firstChildElement( "name-to-global-index" );
   while ( !nameToIndexElem.isNull() )
   {
-    QString name = nameToIndexElem.attribute( QStringLiteral( "name" ) );
+    const QString name = nameToIndexElem.attribute( QStringLiteral( "name" ) );
     int globalIndex = nameToIndexElem.attribute( QStringLiteral( "global-index" ) ).toInt();
     groupNameToGlobalIndex.insert( name, globalIndex );
     nameToIndexElem = nameToIndexElem.nextSiblingElement( QStringLiteral( "name-to-global-index" ) );
