@@ -1151,10 +1151,10 @@ while ($LINE_IDX < $LINE_COUNT){
                     my $enum_decl = $LINE =~ s/^(\s*(?<em>\w+))(\s+SIP_PYNAME(?:\(\s*(?<pyname>[^() ]+)\s*\)\s*)?)?(\s+SIP_MONKEY\w+(?:\(\s*(?<compat>[^() ]+)\s*\)\s*)?)?(?:\s*=\s*(?:[\w\s\d|+-]|::|<<)+)?(,?)(:?\s*\/\/!<\s*(?<co>.*)|.*)$/$1$3$7/r;
                     my $enum_member = $+{em};
                     my $comment = $+{co};
+                    my $compat_name = $+{compat} ? $+{compat} : $enum_member;
                     # replace :: with . (changes c++ style namespace/class directives to Python style)
                     $comment =~ s/::/./g;
                     $comment =~ s/\"/\\"/g;
-                    my $compat_name = $+{compat} ? $+{compat} : $enum_member;
                     dbg_info("is_scope_based:$is_scope_based enum_mk_base:$enum_mk_base monkeypatch:$monkeypatch");
                     if ($is_scope_based eq "1" and $enum_member ne "") {
                         if ( $monkeypatch eq 1 and $enum_mk_base ne ""){
