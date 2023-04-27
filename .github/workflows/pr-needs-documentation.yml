@@ -16,16 +16,16 @@ jobs:
     permissions:
       issues: write  # for peter-evans/create-or-update-comment to create or update comment
       pull-requests: write  # for peter-evans/create-or-update-comment to create or update comment
-    if: github.event.action != 'closed' && github.event.label.name == 'Needs Documentation'
+    if: github.event.action != 'closed'
     runs-on: ubuntu-latest
-    name: Write comment to ping author about the future creation of an issue in docs
+    name: Write comment to ping author about the pull request description
     steps:
 
-      # write comment to ping the PR author
-      - name: Create comment
+      - name: Create comment about documentation
+        if: github.event.label.name == 'Needs Documentation'
         uses: peter-evans/create-or-update-comment@v2
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.GH_TOKEN_BOT }}
           issue-number: ${{ github.event.pull_request.number }}
           body: |
             @${{ github.event.pull_request.user.login }}
@@ -38,6 +38,39 @@ jobs:
 
             Thank you!
           reactions: 'rocket'
+
+      - name: Create comment about changelog
+        if: github.event.label.name == 'Changelog'
+        uses: peter-evans/create-or-update-comment@v2
+        with:
+          token: ${{ secrets.GH_TOKEN_BOT }}
+          issue-number: ${{ github.event.pull_request.number }}
+          body: |
+            @${{ github.event.pull_request.user.login }}
+
+            This pull request has been tagged for the [changelog](https://www.qgis.org/en/site/forusers/visualchangelogs.html).
+
+            * The description will be harvested so please provide a "nearly-ready" text for the final changelog
+            * If possible, add a nice illustration of the feature. Only the **first** one in the description will be harvested (GIF accepted as well)
+            * If you can, it's better to give credits to your sponsor, see below for different formats.
+
+            You can edit the description.
+
+            <details>
+            <summary>Format available for credits</summary>
+            <br />
+
+            - `Funded by NAME`
+            - `Funded by URL`
+            - `Funded by NAME URL`
+            - `Sponsored by NAME`
+            - `Sponsored by URL`
+            - `Sponsored by NAME URL`
+
+            </details>
+
+            Thank you!
+          reactions: '+1'
 
 
   create-doc-issue:
