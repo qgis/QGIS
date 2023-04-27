@@ -225,7 +225,7 @@ class gdalcalc(GdalAlgorithm):
 
         rtype = self.parameterAsEnum(parameters, self.RTYPE, context)
         if self.TYPE[rtype] in ['CInt16', 'CInt32', 'CFloat32', 'CFloat64'] and GdalUtils.version() < 3050300:
-            raise QgsProcessingException(self.tr(f'{self.TYPE[rtype]} data type requires GDAL version 3.5.3 or later'))
+            raise QgsProcessingException(self.tr('{} data type requires GDAL version 3.5.3 or later').format(self.TYPE[rtype]))
         if self.TYPE[rtype] == 'Int8' and GdalUtils.version() < 3070000:
             raise QgsProcessingException(self.tr('Int8 data type requires GDAL version 3.7 or later'))
 
