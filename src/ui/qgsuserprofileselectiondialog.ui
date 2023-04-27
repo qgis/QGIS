@@ -193,7 +193,7 @@
         <enum>Qt::ToolButtonTextBesideIcon</enum>
        </property>
        <property name="autoRaise">
-        <bool>true</bool>
+        <bool>false</bool>
        </property>
       </widget>
      </item>
