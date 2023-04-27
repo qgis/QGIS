@@ -572,6 +572,9 @@ QTreeWidgetItem *QgsAttributesFormProperties::loadAttributeEditorTreeItem( QgsAt
     }
   }
 
+  if ( newWidget )
+    newWidget->setExpanded( true );
+
   return newWidget;
 }
 
