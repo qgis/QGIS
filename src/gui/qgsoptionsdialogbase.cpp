@@ -33,7 +33,6 @@
 #include <functional>
 
 #include "qgsfilterlineedit.h"
-#include "qgsmessagebaritem.h"
 #include "qgslogger.h"
 #include "qgsoptionsdialoghighlightwidget.h"
 #include "qgsoptionswidgetfactory.h"
@@ -652,31 +651,34 @@ void QgsOptionsDialogBase::registerTextSearchWidgets()
 
   for ( int i = 0; i < mOptStackedWidget->count(); i++ )
   {
-
     const QList< QWidget * > widgets = mOptStackedWidget->widget( i )->findChildren<QWidget *>();
-    for ( QWidget *w : widgets )
+    for ( QWidget *widget : widgets )
     {
-      // get custom highlight widget in user added pages
-      QHash<QWidget *, QgsOptionsDialogHighlightWidget *> customHighlightWidgets;
-      QgsOptionsPageWidget *opw = qobject_cast<QgsOptionsPageWidget *>( mOptStackedWidget->widget( i ) );
-      if ( opw )
+      // see if the widget also inherits QgsOptionsDialogHighlightWidget
+      QgsOptionsDialogHighlightWidget *shw = dynamic_cast<QgsOptionsDialogHighlightWidget *>( widget );
+      if ( !shw )
       {
-        customHighlightWidgets = opw->registeredHighlightWidgets();
-      }
-      QgsOptionsDialogHighlightWidget *shw = nullptr;
-      // take custom if exists
-      if ( customHighlightWidgets.contains( w ) )
-      {
-        shw = customHighlightWidgets.value( w );
+        // get custom highlight widget in user added pages
+        QHash<QWidget *, QgsOptionsDialogHighlightWidget *> customHighlightWidgets;
+        QgsOptionsPageWidget *opw = qobject_cast<QgsOptionsPageWidget *>( mOptStackedWidget->widget( i ) );
+        if ( opw )
+        {
+          customHighlightWidgets = opw->registeredHighlightWidgets();
+        }
+        // take custom if exists
+        if ( customHighlightWidgets.contains( widget ) )
+        {
+          shw = customHighlightWidgets.value( widget );
+        }
       }
       // try to construct one otherwise
       if ( !shw || !shw->isValid() )
       {
-        shw = QgsOptionsDialogHighlightWidget::createWidget( w );
+        shw = QgsOptionsDialogHighlightWidget::createWidget( widget );
       }
       if ( shw && shw->isValid() )
       {
-        QgsDebugMsgLevel( QStringLiteral( "Registering: %1" ).arg( w->objectName() ), 4 );
+        QgsDebugMsgLevel( QStringLiteral( "Registering: %1" ).arg( widget->objectName() ), 4 );
         mRegisteredSearchWidgets.append( qMakePair( shw, i ) );
       }
       else
