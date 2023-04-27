@@ -38,15 +38,21 @@ QgsAdvancedSettingsWidget::QgsAdvancedSettingsWidget( QWidget *parent )
   if ( !settingsShowWarning->value() )
   {
     mAdvancedSettingsWarning->hide();
-    mGroupBox->layout()->addWidget( createSettingsTreeWidget() );
+    bool newTree = settingsUseNewTreeWidget->value();
+    createSettingsTreeWidget( newTree, !newTree, false );
   }
   else
   {
+    createSettingsTreeWidget( true, true, true );
+
     connect( mAdvancedSettingsEnableButton, &QPushButton::clicked, this, [ = ]
     {
       settingsUseNewTreeWidget->setValue( mUseNewSettingsTree->isChecked() );
       mAdvancedSettingsWarning->hide();
-      mGroupBox->layout()->addWidget( createSettingsTreeWidget() );
+      if ( settingsUseNewTreeWidget->value() )
+        mTreeWidget->show();
+      else
+        mTreeWidgetOld->show();
     } );
   }
 }
@@ -64,18 +70,23 @@ void QgsAdvancedSettingsWidget::apply()
 
 }
 
-QWidget *QgsAdvancedSettingsWidget::createSettingsTreeWidget()
+void QgsAdvancedSettingsWidget::createSettingsTreeWidget( bool newWidget, bool oldWidget, bool hide )
 {
-  if ( settingsUseNewTreeWidget->value() )
+  if ( newWidget )
   {
     mTreeWidget = new QgsSettingsTreeWidget( this );
-    return mTreeWidget;
-  }
-  else
-  {
-    return new QgsSettingsTreeWidgetOld( this );
+    mGroupBox->layout()->addWidget( mTreeWidget );
+    if ( hide )
+      mTreeWidget->hide();
   }
 
+  if ( oldWidget )
+  {
+    mTreeWidgetOld = new QgsSettingsTreeWidgetOld( this );
+    mGroupBox->layout()->addWidget( mTreeWidgetOld );
+    if ( hide )
+      mTreeWidgetOld->hide();
+  }
 }
 
 //

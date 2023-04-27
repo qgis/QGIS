@@ -21,6 +21,7 @@
 #include "qgssettingsentryimpl.h"
 
 class QgsSettingsTreeWidget;
+class QgsSettingsTreeWidgetOld;
 
 /**
  * \ingroup app
@@ -48,10 +49,10 @@ class QgsAdvancedSettingsWidget : public QgsOptionsPageWidget, private Ui::QgsAd
     void apply() override;
 
   private:
-
-    QWidget *createSettingsTreeWidget();
+    void createSettingsTreeWidget( bool newWidget, bool oldWidget, bool hide );
 
     QgsSettingsTreeWidget *mTreeWidget = nullptr;
+    QgsSettingsTreeWidgetOld *mTreeWidgetOld = nullptr;
 
 };
 
