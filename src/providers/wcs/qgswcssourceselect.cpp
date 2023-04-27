@@ -143,7 +143,12 @@ void QgsWCSSourceSelect::addButtonClicked()
 
   if ( mSpatialExtentBox->isChecked() )
   {
-    const QgsRectangle spatialExtent = mSpatialExtentBox->outputExtent();
+    QgsRectangle spatialExtent = mSpatialExtentBox->outputExtent();
+    QgsCoordinateTransform extentCrsToSSelectedCrs( mSpatialExtentBox->outputCrs(),
+        QgsCoordinateReferenceSystem( selectedCrs() ),
+        QgsProject::instance()->transformContext() );
+    extentCrsToSSelectedCrs.setBallparkTransformsAreAppropriate( true );
+    spatialExtent = extentCrsToSSelectedCrs.transformBoundingBox( spatialExtent );
     bool inverted = uri.hasParam( QStringLiteral( "InvertAxisOrientation" ) );
     QString bbox = QString( inverted ? "%2,%1,%4,%3" : "%1,%2,%3,%4" )
                    .arg( qgsDoubleToString( spatialExtent.xMinimum() ),
