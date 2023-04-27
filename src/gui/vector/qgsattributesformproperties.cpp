@@ -73,7 +73,7 @@ QgsAttributesFormProperties::QgsAttributesFormProperties( QgsVectorLayer *layer,
 
   connect( mAvailableWidgetsTree, &QTreeWidget::itemSelectionChanged, this, &QgsAttributesFormProperties::onAttributeSelectionChanged );
   connect( mFormLayoutTree, &QTreeWidget::itemSelectionChanged, this, &QgsAttributesFormProperties::onFormLayoutSelectionChanged );
-  connect( mAddTabOrGroupButton, &QAbstractButton::clicked, this, &QgsAttributesFormProperties::addTabOrGroupButton );
+  connect( mAddTabOrGroupButton, &QAbstractButton::clicked, this, &QgsAttributesFormProperties::addContainer );
   connect( mRemoveTabOrGroupButton, &QAbstractButton::clicked, this, &QgsAttributesFormProperties::removeTabOrGroupButton );
   connect( mInvertSelectionButton, &QAbstractButton::clicked, this, &QgsAttributesFormProperties::onInvertSelectionButtonClicked );
   connect( mEditorLayoutComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsAttributesFormProperties::mEditorLayoutComboBox_currentIndexChanged );
@@ -709,37 +709,38 @@ void QgsAttributesFormProperties::onInvertSelectionButtonClicked( bool checked )
   }
 }
 
-void QgsAttributesFormProperties::addTabOrGroupButton()
+void QgsAttributesFormProperties::addContainer()
 {
-  QList<QgsAddTabOrGroup::TabPair> tabList;
+  QList<QgsAddAttributeFormContainerDialog::ContainerPair> existingContainerList;
 
   for ( QTreeWidgetItemIterator it( mFormLayoutTree ); *it; ++it )
   {
     const DnDTreeItemData itemData = ( *it )->data( 0, DnDTreeRole ).value<DnDTreeItemData>();
     if ( itemData.type() == DnDTreeItemData::Container )
     {
-      tabList.append( QgsAddTabOrGroup::TabPair( itemData.name(), *it ) );
+      existingContainerList.append( QgsAddAttributeFormContainerDialog::ContainerPair( itemData.name(), *it ) );
     }
   }
   QTreeWidgetItem *currentItem = mFormLayoutTree->selectedItems().value( 0 );
-  QgsAddTabOrGroup addTabOrGroup( mLayer, tabList, currentItem, this );
+  QgsAddAttributeFormContainerDialog dialog( mLayer, existingContainerList, currentItem, this );
 
-  if ( !addTabOrGroup.exec() )
+  if ( !dialog.exec() )
     return;
 
-  const QString name = addTabOrGroup.name();
-  switch ( addTabOrGroup.containerType() )
+  const QString name = dialog.name();
+  switch ( dialog.containerType() )
   {
     case Qgis::AttributeEditorContainerType::Tab:
     {
-      mFormLayoutTree->addContainer( mFormLayoutTree->invisibleRootItem(), name, addTabOrGroup.columnCount(), Qgis::AttributeEditorContainerType::Tab );
+      mFormLayoutTree->addContainer( mFormLayoutTree->invisibleRootItem(), name, dialog.columnCount(), Qgis::AttributeEditorContainerType::Tab );
       break;
     }
 
     case Qgis::AttributeEditorContainerType::GroupBox:
+    case Qgis::AttributeEditorContainerType::Row:
     {
-      QTreeWidgetItem *tabItem = addTabOrGroup.tab();
-      mFormLayoutTree->addContainer( tabItem, name, addTabOrGroup.columnCount(), addTabOrGroup.containerType() );
+      QTreeWidgetItem *parentContainerItem = dialog.parentContainerItem();
+      mFormLayoutTree->addContainer( parentContainerItem, name, dialog.columnCount(), dialog.containerType() );
       break;
     }
   }
@@ -750,7 +751,7 @@ void QgsAttributesFormProperties::removeTabOrGroupButton()
   qDeleteAll( mFormLayoutTree->selectedItems() );
 }
 
-QgsAttributeEditorElement *QgsAttributesFormProperties::createAttributeEditorWidget( QTreeWidgetItem *item, QgsAttributeEditorElement *parent, bool forceGroup )
+QgsAttributeEditorElement *QgsAttributesFormProperties::createAttributeEditorWidget( QTreeWidgetItem *item, QgsAttributeEditorElement *parent, bool isTopLevel )
 {
   QgsAttributeEditorElement *widgetDef = nullptr;
 
@@ -791,7 +792,7 @@ QgsAttributeEditorElement *QgsAttributesFormProperties::createAttributeEditorWid
     {
       QgsAttributeEditorContainer *container = new QgsAttributeEditorContainer( item->text( 0 ), parent, itemData.backgroundColor() );
       container->setColumnCount( itemData.columnCount() );
-      container->setType( forceGroup ? Qgis::AttributeEditorContainerType::GroupBox : itemData.containerType() );
+      container->setType( isTopLevel ? Qgis::AttributeEditorContainerType::Tab : itemData.containerType() );
       container->setCollapsed( itemData.collapsed() );
       container->setCollapsedExpression( itemData.collapsedExpression() );
       container->setVisibilityExpression( itemData.visibilityExpression() );
@@ -799,7 +800,7 @@ QgsAttributeEditorElement *QgsAttributesFormProperties::createAttributeEditorWid
 
       for ( int t = 0; t < item->childCount(); t++ )
       {
-        QgsAttributeEditorElement *element { createAttributeEditorWidget( item->child( t ), container ) };
+        QgsAttributeEditorElement *element { createAttributeEditorWidget( item->child( t ), container, false ) };
         if ( element )
           container->addChildElement( element );
       }
@@ -988,7 +989,7 @@ void QgsAttributesFormProperties::apply()
   for ( int t = 0; t < mFormLayoutTree->invisibleRootItem()->childCount(); t++ )
   {
     QTreeWidgetItem *tabItem = mFormLayoutTree->invisibleRootItem()->child( t );
-    QgsAttributeEditorElement *editorElement { createAttributeEditorWidget( tabItem, nullptr, false ) };
+    QgsAttributeEditorElement *editorElement { createAttributeEditorWidget( tabItem, nullptr, true ) };
     if ( editorElement )
       editFormConfig.addTab( editorElement );
   }

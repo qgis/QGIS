@@ -1733,6 +1733,19 @@ void QgsAttributeForm::init()
             break;
           }
 
+          case Qgis::AttributeEditorContainerType::Row:
+          {
+            tabWidget = nullptr;
+            WidgetInfo widgetInfo = createWidgetFromDef( widgDef, formWidget, mLayer, mContext );
+            layout->addWidget( widgetInfo.widget, row, column, 1, 2 );
+            if ( containerDef->visibilityExpression().enabled() || containerDef->collapsedExpression().enabled() )
+            {
+              registerContainerInformation( new ContainerInformation( widgetInfo.widget, containerDef->visibilityExpression().enabled() ? containerDef->visibilityExpression().data() : QgsExpression(), containerDef->collapsed(), containerDef->collapsedExpression().enabled() ? containerDef->collapsedExpression().data() : QgsExpression() ) );
+            }
+            column += 2;
+            break;
+          }
+
           case Qgis::AttributeEditorContainerType::Tab:
           {
             if ( !tabWidget )
@@ -2394,6 +2407,7 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
 
       QString widgetName;
       QWidget *myContainer = nullptr;
+      bool removeLayoutMargin = false;
       switch ( container->type() )
       {
         case Qgis::AttributeEditorContainerType::GroupBox:
@@ -2420,6 +2434,18 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
           groupBox->setCollapsed( container->collapsed() );
           break;
         }
+
+        case Qgis::AttributeEditorContainerType::Row:
+        {
+          QWidget *rowWidget = new QWidget();
+          widgetName = QStringLiteral( "Row" );
+          myContainer = rowWidget;
+          newWidgetInfo.widget = myContainer;
+          removeLayoutMargin = true;
+          columnCount = container->children().size();
+          break;
+        }
+
         case Qgis::AttributeEditorContainerType::Tab:
         {
           myContainer = new QWidget();
@@ -2443,6 +2469,8 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
       }
 
       QGridLayout *gbLayout = new QGridLayout();
+      if ( removeLayoutMargin )
+        gbLayout->setContentsMargins( 0, 0, 0, 0 );
       myContainer->setLayout( gbLayout );
 
       int row = 0;

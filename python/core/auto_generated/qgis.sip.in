@@ -1996,6 +1996,7 @@ The development version
     {
       GroupBox,
       Tab,
+      Row,
     };
 
     enum class AttributeFormLayout

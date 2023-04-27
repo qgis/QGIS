@@ -3458,6 +3458,7 @@ class CORE_EXPORT Qgis
     {
       GroupBox, //!< A group box
       Tab, //!< A tab widget
+      Row, //!< A row of editors (horizontal layout)
     };
     Q_ENUM( AttributeEditorContainerType )
 
