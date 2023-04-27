@@ -10,6 +10,6 @@
 </rdf:RDF>
 </metadata>
 <script/>
-<circle cx="8" cy="8" r="7.6" fill="#5A5B5D" stroke="#222222" style="font-variant-east_asian:normal" stroke-width=".8"/>
-<circle cx="8" cy="8" r="3" fill="#222222" stroke="#222222" />
+<circle cx="8" cy="8" r="7.6" fill="#323232" stroke="#0f6e00" stroke-width=".8"/>
+<circle cx="8" cy="8" r="3" fill="#5a5b5d" stroke="#5a5b5d" />
 </svg>

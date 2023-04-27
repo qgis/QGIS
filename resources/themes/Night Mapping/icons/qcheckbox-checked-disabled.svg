@@ -10,6 +10,6 @@
 </rdf:RDF>
 </metadata>
 <script/>
-<rect x=".5" y=".5" width="15" height="15" fill="#5A5B5D" stroke="#222222"/>
-<path d="m3.0847 8.9153 2.9153 3.0847 6.5961-9" fill="none" stroke="#222222" stroke-width="2"/>
+<rect x=".5" y=".5" width="15" height="15" fill="#323232" stroke="#0f6e00"/>
+<path d="m3.0847 8.9153 2.9153 3.0847 6.5961-9" fill="none" stroke="#5a5b5d" stroke-width="2"/>
 </svg>
