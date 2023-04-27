@@ -76,7 +76,7 @@ bool QgsSettingsTreeModelNodeData::setValue( const QVariant &value )
     mValue = value;
     mIsEdited = ( value != mOriginalValue );
   }
-  // TODO: check the value of setting is fullfilling the settings' contraints ?
+  // TODO: check the value of setting is fulfilling the settings' contsraints ?
   return true;
 }
 
@@ -175,7 +175,7 @@ QgsSettingsTreeModel::QgsSettingsTreeModel( QgsSettingsTreeNode *rootNode, QObje
   mRootNode = QgsSettingsTreeModelNodeData::createRootNodeData( rootNode, this );
 
   QPalette pal = qApp->palette();
-  mEditedColorBack = pal.color( QPalette::Active, QPalette::Mid );
+  mEditedColorBack = pal.color( QPalette::Active, QPalette::Dark );
   mEditedColorFore = pal.color( QPalette::Active, QPalette::BrightText );
   mNotSetColor = pal.color( QPalette::Disabled, QPalette::WindowText );
 }
