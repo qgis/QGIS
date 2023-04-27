@@ -155,7 +155,9 @@ class CORE_EXPORT QgsThreadingUtils
       }
     }
 #if defined(QGISDEBUG)
+    //! Contains a set of already emitted thread related warnings, to avoid spamming with multiple duplicate warnings
     static QSet< QString > sEmittedWarnings;
+    //! Mutex protecting sEmittedWarnings
     static QMutex sEmittedWarningMutex;
 #endif
 
