@@ -24,7 +24,7 @@ Base class for settings editor wrappers
   public:
     static QgsSettingsEditorWidgetWrapper *fromWidget( const QWidget *widget ) /Factory/;
 %Docstring
-Creates a wrapper from the definition stored in a widget created by :py:func:`~QgsSettingsEditorWidgetWrapper.createEditor`
+Creates a wrapper from the definition stored in a ``widget`` created by :py:func:`~QgsSettingsEditorWidgetWrapper.createEditor`
 %End
 
     QgsSettingsEditorWidgetWrapper( QObject *parent = 0 );
@@ -50,7 +50,7 @@ Creates a new instance of the editor wrapper so it can be configured for a widge
 
     QWidget *createEditor( const QgsSettingsEntryBase *setting, const QStringList &dynamicKeyPartList = QStringList(), QWidget *parent = 0 );
 %Docstring
-Creates the editor for the given widget
+Creates the editor widget for the given ``setting``
 %End
 
     bool configureEditor( QWidget *editor, const QgsSettingsEntryBase *setting, const QStringList &dynamicKeyPartList = QStringList() );
@@ -66,7 +66,7 @@ The wrapper must be configured before calling this medthod
 
     virtual bool setSettingFromWidget() const = 0;
 %Docstring
-SDets the setting value from the widget value
+Sets the setting value from the widget value
 The wrapper must be configured before calling this medthod
 %End
 
@@ -78,7 +78,7 @@ The wrapper must be configured before calling this medthod
 
     virtual void setWidgetFromVariant( const QVariant &value ) const = 0;
 %Docstring
-Sets the value of the widget
+Sets the ``value`` of the widget
 The wrapper must be configured before calling this medthod
 %End
 
@@ -91,7 +91,7 @@ Creates the widgets
 
     virtual bool configureEditorPrivate( QWidget *editor, const QgsSettingsEntryBase *setting ) = 0;
 %Docstring
-Configures an existing widget
+Configures an existing ``editor`` widget
 %End
 
 };
