@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <QGuiApplication>
 #include <QFont>
 
 #include "qgssettingstreemodel.h"
@@ -75,7 +76,7 @@ bool QgsSettingsTreeModelNodeData::setValue( const QVariant &value )
     mValue = value;
     mIsEdited = ( value != mOriginalValue );
   }
-  // TODO: check the value of setting is fullfilling the settings' contraints
+  // TODO: check the value of setting is fullfilling the settings' contraints ?
   return true;
 }
 
@@ -172,6 +173,11 @@ QgsSettingsTreeModel::QgsSettingsTreeModel( QgsSettingsTreeNode *rootNode, QObje
   : QAbstractItemModel( parent )
 {
   mRootNode = QgsSettingsTreeModelNodeData::createRootNodeData( rootNode, this );
+
+  QPalette pal = qApp->palette();
+  mEditedColorBack = pal.color( QPalette::Active, QPalette::Mid );
+  mEditedColorFore = pal.color( QPalette::Active, QPalette::BrightText );
+  mNotSetColor = pal.color( QPalette::Disabled, QPalette::WindowText );
 }
 
 QgsSettingsTreeModel::~QgsSettingsTreeModel()
@@ -274,6 +280,31 @@ QVariant QgsSettingsTreeModel::data( const QModelIndex &index, int role ) const
 
   QgsSettingsTreeModelNodeData *node = index2node( index );
 
+  if ( role == Qt::ForegroundRole && node->type() == QgsSettingsTreeModelNodeData::Type::Setting )
+  {
+    if ( !node->exists() )
+    {
+      // settings not yet set
+      return mNotSetColor;
+    }
+
+    if ( node->isEdited() &&
+         ( node->setting()->settingsType() != Qgis::SettingsType::Color || index.column() != static_cast<int>( Column::Value ) ) )
+    {
+      return mEditedColorFore;
+    }
+  }
+
+  if ( role == Qt::BackgroundRole && node->type() == QgsSettingsTreeModelNodeData::Type::Setting )
+  {
+    // background for edited settings (except colors)
+    if ( node->isEdited() &&
+         ( node->setting()->settingsType() != Qgis::SettingsType::Color || index.column() != static_cast<int>( Column::Value ) ) )
+    {
+      return mEditedColorBack;
+    }
+  }
+
   switch ( static_cast<Column>( index.column() ) )
   {
     case Column::Name:
@@ -287,23 +318,27 @@ QVariant QgsSettingsTreeModel::data( const QModelIndex &index, int role ) const
 
     case Column::Value:
     {
-      if ( role == Qt::DisplayRole || role == Qt::EditRole )
+      if ( role == Qt::CheckStateRole )
       {
-        return node->value();
-      }
-      else if ( role == Qt::FontRole )
-      {
-        if ( !node->exists() )
+        if ( node->type() == QgsSettingsTreeModelNodeData::Type::Setting &&
+             node->setting()->settingsType() == Qgis::SettingsType::Bool )
         {
-          QFont font;
-          font.setItalic( true );
-          return font;
+          // special handling of bool setting to show combobox
+          return node->value().toBool() ? Qt::Checked : Qt::Unchecked;
         }
       }
-      else if ( role == Qt::ForegroundRole )
+      if ( role == Qt::DisplayRole || role == Qt::EditRole )
       {
-        if ( node->isEdited() )
-          return  QColorConstants::Red;
+        if ( node->type() == QgsSettingsTreeModelNodeData::Type::Setting &&
+             node->setting()->settingsType() == Qgis::SettingsType::Bool )
+        {
+          // special handling of bool setting to show combobox
+          return QString();
+        }
+        else
+        {
+          return node->value();
+        }
       }
       else if ( role == Qt::BackgroundRole )
       {
@@ -345,7 +380,6 @@ QVariant QgsSettingsTreeModel::data( const QModelIndex &index, int role ) const
     default:
       break;
   }
-
   return QVariant();
 }
 
@@ -375,7 +409,14 @@ Qt::ItemFlags QgsSettingsTreeModel::flags( const QModelIndex &index ) const
     QgsSettingsTreeModelNodeData *nodeData = index2node( index );
     if ( nodeData->type() == QgsSettingsTreeModelNodeData::Type::Setting )
     {
-      return Qt::ItemIsEnabled | Qt::ItemIsEditable;
+      if ( nodeData->setting()->settingsType() == Qgis::SettingsType::Bool )
+      {
+        return Qt::ItemIsUserCheckable | Qt::ItemIsEnabled;
+      }
+      else
+      {
+        return Qt::ItemIsEnabled | Qt::ItemIsEditable;
+      }
     }
   }
   else
@@ -387,14 +428,25 @@ Qt::ItemFlags QgsSettingsTreeModel::flags( const QModelIndex &index ) const
 
 bool QgsSettingsTreeModel::setData( const QModelIndex &index, const QVariant &value, int role )
 {
-  if ( role == Qt::EditRole && index.column() == static_cast<int>( Column::Value ) )
+  if ( index.column() == static_cast<int>( Column::Value ) )
   {
-    QgsSettingsTreeModelNodeData *nodeData = index2node( index );
-    if ( nodeData->type() == QgsSettingsTreeModelNodeData::Type::Setting )
+    if ( role == Qt::EditRole || role == Qt::CheckStateRole )
     {
-      nodeData->setValue( value );
-      emit dataChanged( index, index );
-      return true;
+      QgsSettingsTreeModelNodeData *nodeData = index2node( index );
+      if ( nodeData->type() == QgsSettingsTreeModelNodeData::Type::Setting )
+      {
+        if ( role == Qt::CheckStateRole )
+        {
+          Q_ASSERT( nodeData->setting()->settingsType() == Qgis::SettingsType::Bool );
+          nodeData->setValue( value == Qt::Checked ? true : false );
+        }
+        else
+        {
+          nodeData->setValue( value );
+        }
+        emit dataChanged( index.siblingAtColumn( 0 ), index.siblingAtColumn( columnCount( index.parent() ) - 1 ) );
+        return true;
+      }
     }
   }
   return false;
@@ -415,7 +467,13 @@ QWidget *QgsSettingsTreeItemDelegate::createEditor( QWidget *parent, const QStyl
   Q_UNUSED( option )
   if ( static_cast<QgsSettingsTreeModel::Column>( index.column() ) == QgsSettingsTreeModel::Column::Value )
   {
-    QgsSettingsTreeModelNodeData *nodeData = mModel->index2node( index );
+    QModelIndex sourceIndex = index;
+    const QgsSettingsTreeProxyModel *proxyModel = qobject_cast<const QgsSettingsTreeProxyModel *>( index.model() );
+    if ( proxyModel )
+    {
+      sourceIndex = proxyModel->mapToSource( index );
+    }
+    QgsSettingsTreeModelNodeData *nodeData = mModel->index2node( sourceIndex );
     if ( nodeData->type() == QgsSettingsTreeModelNodeData::Type::Setting )
     {
       return QgsGui::settingsEditorWidgetRegistry()->createEditor( nodeData->setting(), nodeData->namedParentNodes(), parent );
@@ -426,15 +484,13 @@ QWidget *QgsSettingsTreeItemDelegate::createEditor( QWidget *parent, const QStyl
 
 void QgsSettingsTreeItemDelegate::setEditorData( QWidget *editor, const QModelIndex &index ) const
 {
-  Q_UNUSED( index )
   QgsSettingsEditorWidgetWrapper *eww = QgsSettingsEditorWidgetWrapper::fromWidget( editor );
   if ( eww )
-    eww->setWidgetFromVariant( mModel->data( index, Qt::DisplayRole ) );
+    eww->setWidgetFromVariant( index.model()->data( index, Qt::DisplayRole ) );
 }
 
 void QgsSettingsTreeItemDelegate::setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const
 {
-  Q_UNUSED( index )
   QgsSettingsEditorWidgetWrapper *eww = QgsSettingsEditorWidgetWrapper::fromWidget( editor );
   if ( eww )
     model->setData( index, eww->variantValueFromWidget(), Qt::EditRole );

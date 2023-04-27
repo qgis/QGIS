@@ -64,10 +64,10 @@ class GUI_EXPORT QgsSettingsTreeModelNodeData : public QObject
     void applyChanges();
 
     //! Returns if the node is the root node
-    bool isRoot() const { return mParent == nullptr; }
+    bool isRoot() const {return mParent == nullptr;}
 
     //! Returns the dynamic key parts of the named list parent tree nodes
-    QStringList namedParentNodes() const { return mNamedParentNodes; }
+    QStringList namedParentNodes() const {return mNamedParentNodes;}
 
     //! Returns the children nodes of the node (setting or tree node)
     QList<QgsSettingsTreeModelNodeData *> children() const {return mChildren;}
@@ -87,7 +87,7 @@ class GUI_EXPORT QgsSettingsTreeModelNodeData : public QObject
     //! Returns the value of the node (setting or tree node)
     QVariant originalValue() const {return mOriginalValue;}
 
-    //! Sets the \a value of the setting node
+    //! Sets the value of the setting node
     bool setValue( const QVariant &value );
 
     //! Returns if the setting exists (value is set)
@@ -97,8 +97,8 @@ class GUI_EXPORT QgsSettingsTreeModelNodeData : public QObject
     bool isEdited() const {return mIsEdited;}
 
     /**
-     * Returns a pointer to the setting of the node or NULLPTR if the
-     * setting does not exist.
+     * Returns the setting of the node
+     * It returns a nullptr if the setting does not exist
      */
     const QgsSettingsEntryBase *setting() const {return mSetting;}
 
@@ -185,7 +185,7 @@ class GUI_EXPORT QgsSettingsTreeModel : public QAbstractItemModel
     void applyChanges();
 
     /**
-     * Returns settings tree node for given \a index or the root node if the index is invalid.
+     * Returns settings tree node for given index. Returns root node for invalid index.
      */
     QgsSettingsTreeModelNodeData *index2node( const QModelIndex &index ) const SIP_SKIP;
 
@@ -206,6 +206,10 @@ class GUI_EXPORT QgsSettingsTreeModel : public QAbstractItemModel
     QModelIndex indexOfParentSettingsTreeNode( QgsSettingsTreeModelNodeData *parentNode ) const;
 
     QgsSettingsTreeModelNodeData *mRootNode = nullptr;
+
+    QColor mEditedColorBack;
+    QColor mEditedColorFore;
+    QColor mNotSetColor;
 
 };
 
