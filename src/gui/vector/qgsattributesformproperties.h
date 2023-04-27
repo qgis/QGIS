@@ -303,7 +303,7 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpress
   public:
     explicit QgsAttributesFormProperties( QgsVectorLayer *layer, QWidget *parent = nullptr );
 
-    QgsAttributeEditorElement *createAttributeEditorWidget( QTreeWidgetItem *item, QgsAttributeEditorElement *parent, bool forceGroup = true );
+    QgsAttributeEditorElement *createAttributeEditorWidget( QTreeWidgetItem *item, QgsAttributeEditorElement *parent, bool isTopLevel = false );
 
     void init();
     void apply();
@@ -363,7 +363,7 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpress
     QString mInitCode;
 
   private slots:
-    void addTabOrGroupButton();
+    void addContainer();
     void removeTabOrGroupButton();
     void mEditorLayoutComboBox_currentIndexChanged( int index );
     void pbnSelectEditForm_clicked();

@@ -3519,7 +3519,8 @@ Qgis.AttributeEditorType.baseClass = Qgis
 # monkey patching scoped based enum
 Qgis.AttributeEditorContainerType.GroupBox.__doc__ = "A group box"
 Qgis.AttributeEditorContainerType.Tab.__doc__ = "A tab widget"
-Qgis.AttributeEditorContainerType.__doc__ = 'Attribute editor container types.\n\n.. versionadded:: 3.32\n\n' + '* ``GroupBox``: ' + Qgis.AttributeEditorContainerType.GroupBox.__doc__ + '\n' + '* ``Tab``: ' + Qgis.AttributeEditorContainerType.Tab.__doc__
+Qgis.AttributeEditorContainerType.Row.__doc__ = "A row of editors (horizontal layout)"
+Qgis.AttributeEditorContainerType.__doc__ = 'Attribute editor container types.\n\n.. versionadded:: 3.32\n\n' + '* ``GroupBox``: ' + Qgis.AttributeEditorContainerType.GroupBox.__doc__ + '\n' + '* ``Tab``: ' + Qgis.AttributeEditorContainerType.Tab.__doc__ + '\n' + '* ``Row``: ' + Qgis.AttributeEditorContainerType.Row.__doc__
 # --
 Qgis.AttributeEditorContainerType.baseClass = Qgis
 QgsEditFormConfig.EditorLayout = Qgis.AttributeFormLayout
