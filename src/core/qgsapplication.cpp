@@ -505,7 +505,8 @@ void QgsApplication::installTranslators()
 
 QgsApplication::~QgsApplication()
 {
-  mApplicationMembers->mSettingsRegistryCore->backwardCompatibility();
+  if ( mApplicationMembers )
+    mApplicationMembers->mSettingsRegistryCore->backwardCompatibility();
 
   delete mDataItemProviderRegistry;
   delete mApplicationMembers;
