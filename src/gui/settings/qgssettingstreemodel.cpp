@@ -195,6 +195,18 @@ QgsSettingsTreeModelNodeData *QgsSettingsTreeModel::index2node( const QModelInde
   return qobject_cast<QgsSettingsTreeModelNodeData *>( obj );
 }
 
+QModelIndex QgsSettingsTreeModel::node2index( QgsSettingsTreeModelNodeData *node ) const
+{
+  if ( !node || !node->parent() )
+    return QModelIndex(); // this is the only root item -> invalid index
+
+  QModelIndex parentIndex = node2index( node->parent() );
+
+  int row = node->parent()->children().indexOf( node );
+  Q_ASSERT( row >= 0 );
+  return index( row, static_cast<int>( Column::Name ), parentIndex );
+}
+
 
 QModelIndex QgsSettingsTreeModel::index( int row, int column, const QModelIndex &parent ) const
 {
@@ -431,4 +443,67 @@ void QgsSettingsTreeItemDelegate::setModelData( QWidget *editor, QAbstractItemMo
 ///@endcond
 
 
+
+
+
+QgsSettingsTreeProxyModel::QgsSettingsTreeProxyModel( QgsSettingsTreeNode *rootNode, QObject *parent )
+  : QSortFilterProxyModel( parent )
+{
+  mSourceModel = new QgsSettingsTreeModel( rootNode, parent );
+  QSortFilterProxyModel::setSourceModel( mSourceModel );
+}
+
+void QgsSettingsTreeProxyModel::setFilterText( const QString &filterText )
+{
+  if ( filterText == mFilterText )
+    return;
+
+  mFilterText = filterText;
+  invalidateFilter();
+}
+
+bool QgsSettingsTreeProxyModel::filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const
+{
+  QgsSettingsTreeModelNodeData *node = mSourceModel->index2node( mSourceModel->index( source_row, static_cast<int>( QgsSettingsTreeModel::Column::Name ), source_parent ) );
+  return nodeShown( node );
+}
+
+bool QgsSettingsTreeProxyModel::nodeShown( QgsSettingsTreeModelNodeData *node ) const
+{
+  if ( !node )
+    return false;
+  if ( node->type() == QgsSettingsTreeModelNodeData::Type::Setting )
+  {
+    if ( node->name().contains( mFilterText, Qt::CaseInsensitive ) )
+      return true;
+
+    // also returns settings for which the parent nodes have a match
+    QModelIndex index = mSourceModel->node2index( node ).parent();
+    while ( ( index.isValid() ) )
+    {
+      QgsSettingsTreeModelNodeData *parentNode = mSourceModel->index2node( mSourceModel->index( index.row(), static_cast<int>( QgsSettingsTreeModel::Column::Name ), index.parent() ) );
+      if ( parentNode->name().contains( mFilterText, Qt::CaseInsensitive ) )
+        return true;
+
+      index = index.parent();
+    }
+    return false;
+  }
+  else
+  {
+    // show all children if name of node matches
+    if ( node->name().contains( mFilterText, Qt::CaseInsensitive ) )
+      return true;
+
+    const auto constChildren = node->children();
+    for ( QgsSettingsTreeModelNodeData *child : constChildren )
+    {
+      if ( nodeShown( child ) )
+      {
+        return true;
+      }
+    }
+    return false;
+  }
+}
 

@@ -21,6 +21,7 @@
 #include "qgis_gui.h"
 
 #include <QAbstractItemModel>
+#include <QSortFilterProxyModel>
 #include <QItemDelegate>
 
 class QgsSettingsEntryBase;
@@ -164,6 +165,7 @@ class GUI_EXPORT QgsSettingsTreeItemDelegate : public QItemDelegate
  */
 class GUI_EXPORT QgsSettingsTreeModel : public QAbstractItemModel
 {
+    Q_OBJECT
   public:
 
     //! Columns
@@ -187,6 +189,9 @@ class GUI_EXPORT QgsSettingsTreeModel : public QAbstractItemModel
      */
     QgsSettingsTreeModelNodeData *index2node( const QModelIndex &index ) const SIP_SKIP;
 
+    //! Returns the index from the settings tree node
+    QModelIndex node2index( QgsSettingsTreeModelNodeData *node ) const SIP_SKIP;
+
 
     QModelIndex index( int row, int column, const QModelIndex &parent ) const override;
     QModelIndex parent( const QModelIndex &child ) const override;
@@ -202,6 +207,38 @@ class GUI_EXPORT QgsSettingsTreeModel : public QAbstractItemModel
 
     QgsSettingsTreeModelNodeData *mRootNode = nullptr;
 
+};
+
+/**
+ * \ingroup gui
+ * \class QgsSettingsTreeProxyModel
+ * \brief QgsSettingsTreeProxyModel allows filtering the settings tree
+ *
+ * \since QGIS 3.32
+ */
+class GUI_EXPORT QgsSettingsTreeProxyModel : public QSortFilterProxyModel
+{
+    Q_OBJECT
+  public:
+    //! Constructor
+    QgsSettingsTreeProxyModel( QgsSettingsTreeNode *rootNode = nullptr, QObject *parent = nullptr );
+
+    //! Apply pending changes in the model to the corresponding settings
+    void applyChanges() {mSourceModel->applyChanges();}
+
+  public slots:
+    //! Sets the filter text
+    void setFilterText( const QString &filterText = QString() );
+
+
+  protected:
+    bool filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const override;
+
+  private:
+    QgsSettingsTreeModel *mSourceModel = nullptr;
+
+    bool nodeShown( QgsSettingsTreeModelNodeData *node ) const;
+    QString mFilterText;
 };
 
 #endif // QGSSETTINGSTREEMODEL_H

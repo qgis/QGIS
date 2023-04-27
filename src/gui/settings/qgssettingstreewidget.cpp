@@ -25,15 +25,18 @@
 
 QgsSettingsTreeWidget::QgsSettingsTreeWidget( QWidget *parent )
   : QWidget( parent )
+  , QgsOptionsDialogHighlightWidget( this )
 {
+  setObjectName( QStringLiteral( "mSettingsTreeWidget" ) );
+
   QVBoxLayout *mainLayout = new QVBoxLayout( this );
   mainLayout->setContentsMargins( 0, 0, 0, 0 );
 
-  mTreeModel = new QgsSettingsTreeModel( QgsSettingsTree::treeRoot() );
+  mTreeModel = new QgsSettingsTreeProxyModel( QgsSettingsTree::treeRoot() );
 
   mTreeView = new QTreeView( this );
   mTreeView->setModel( mTreeModel );
-  mTreeView->setItemDelegate( new QgsSettingsTreeItemDelegate( mTreeModel, this ) );
+  mTreeView->setItemDelegate( new QgsSettingsTreeItemDelegate( qobject_cast<QgsSettingsTreeModel *>( mTreeModel->sourceModel() ), parent ) );
   mTreeView->setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding );
   mTreeView->setMinimumWidth( 400 );
   mTreeView->resizeColumnToContents( 0 );
@@ -46,3 +49,20 @@ void QgsSettingsTreeWidget::applyChanges() const
   mTreeModel->applyChanges();
 }
 
+
+bool QgsSettingsTreeWidget::searchText( const QString &text )
+{
+  mTreeModel->setFilterText( text );
+  return mTreeModel->rowCount() > 0;
+}
+
+bool QgsSettingsTreeWidget::highlightText( const QString &text )
+{
+  Q_UNUSED( text );
+  return true;
+}
+
+void QgsSettingsTreeWidget::reset()
+{
+  mTreeModel->setFilterText( QString() );
+}

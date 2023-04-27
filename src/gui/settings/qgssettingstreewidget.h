@@ -18,11 +18,12 @@
 
 #include "qgis_gui.h"
 
-#include "qwidget.h"
+#include "qgsoptionsdialoghighlightwidget.h"
+
 
 class QTreeView;
 
-class QgsSettingsTreeModel;
+class QgsSettingsTreeProxyModel;
 
 /**
  * \ingroup gui
@@ -31,7 +32,7 @@ class QgsSettingsTreeModel;
  *
  * \since QGIS 3.32
  */
-class GUI_EXPORT QgsSettingsTreeWidget : public QWidget
+class GUI_EXPORT QgsSettingsTreeWidget : public QWidget, public QgsOptionsDialogHighlightWidget
 {
 
   public:
@@ -43,9 +44,15 @@ class GUI_EXPORT QgsSettingsTreeWidget : public QWidget
     void applyChanges() const;
 
   private:
-    QgsSettingsTreeModel *mTreeModel = nullptr;
+    QgsSettingsTreeProxyModel *mTreeModel = nullptr;
     QTreeView *mTreeView = nullptr;
 
+
+    // QgsOptionsDialogHighlightWidget interface
+  protected:
+    bool searchText( const QString &text ) override;
+    bool highlightText( const QString &text ) override;
+    void reset() override;
 };
 
 #endif // QGSSETTINGSTREEWIDGET_H

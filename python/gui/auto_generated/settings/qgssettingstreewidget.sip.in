@@ -11,7 +11,8 @@
 
 
 
-class QgsSettingsTreeWidget : QWidget
+
+class QgsSettingsTreeWidget : QWidget, QgsOptionsDialogHighlightWidget
 {
 %Docstring(signature="appended")
 :py:class:`QgsSettingsTreeWidget` is a widget with the settings tree to visualize, search and edit settings
@@ -33,6 +34,13 @@ Constructor
 %Docstring
 Apply changes to settings value
 %End
+
+  protected:
+    virtual bool searchText( const QString &text );
+
+    virtual bool highlightText( const QString &text );
+
+    virtual void reset();
 
 };
 
