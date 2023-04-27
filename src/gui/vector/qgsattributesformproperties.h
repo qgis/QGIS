@@ -303,6 +303,9 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpress
   public:
     explicit QgsAttributesFormProperties( QgsVectorLayer *layer, QWidget *parent = nullptr );
 
+    /**
+     * Creates a new attribute editor element based on the definition stored in \a item.
+     */
     QgsAttributeEditorElement *createAttributeEditorWidget( QTreeWidgetItem *item, QgsAttributeEditorElement *parent, bool isTopLevel = false );
 
     void init();
