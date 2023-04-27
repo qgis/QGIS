@@ -16,14 +16,12 @@
 #include "qgsattributeformeditorwidget.h"
 #include "qgsattributeform.h"
 #include "qgsmultiedittoolbutton.h"
-#include "qgssearchwidgettoolbutton.h"
 #include "qgseditorwidgetwrapper.h"
 #include "qgssearchwidgetwrapper.h"
 #include "qgsattributeeditorcontext.h"
 #include "qgseditorwidgetregistry.h"
 #include "qgsaggregatetoolbutton.h"
 #include "qgsgui.h"
-#include "qgsvectorlayerjoinbuffer.h"
 #include "qgsvectorlayerutils.h"
 
 #include <QLayout>
@@ -286,12 +284,13 @@ void QgsAttributeFormEditorWidget::updateWidgets()
     editPage()->layout()->addWidget( mMultiEditButton );
   }
 
+  setVisiblePageForMode( mode() );
+
   switch ( mode() )
   {
     case DefaultMode:
     case MultiEditMode:
     {
-      stack()->setCurrentWidget( editPage() );
       editPage()->layout()->addWidget( mConstraintResultLabel );
       break;
     }
@@ -299,14 +298,12 @@ void QgsAttributeFormEditorWidget::updateWidgets()
     case AggregateSearchMode:
     {
       mAggregateButton->setVisible( true );
-      stack()->setCurrentWidget( searchPage() );
       break;
     }
 
     case SearchMode:
     {
       mAggregateButton->setVisible( false );
-      stack()->setCurrentWidget( searchPage() );
       break;
     }
   }

@@ -45,10 +45,17 @@ QgsAttributeFormWidget::QgsAttributeFormWidget( QgsWidgetWrapper *widget, QgsAtt
            this, &QgsAttributeFormWidget::searchWidgetFlagsChanged );
   l->addWidget( mSearchWidgetToolButton, 0 );
 
-
-  mStack = new QStackedWidget;
-  mStack->addWidget( mEditPage );
-  mStack->addWidget( mSearchPage );
+  mStack = new QStackedWidget();
+  // IMPORTANT!
+  // We do NOT add pages to mStack here, as QStackedWidgets will always inherit the minimum size
+  // of their largest page. This can cause attribute form sizes to needlessly blow out in certain modes,
+  // eg when the form is in the "Add feature" mode we do NOT need the extra horizontal space requirements
+  // that the search widgets enfore. Doing so forces all editor widgets in all modes to have a very wide
+  // minimum width, preventing attribute forms from being shrunk to reasonable sizes without horizontal
+  // scroll bars appearing.
+  // Instead, the pages are added and removed from the stack whenever the visible page is changed (in updateWidgets()).
+  // This ensures that the stack, and this widget too, only inherit the size requirements of the actual visible
+  // page.
 
   l = new QHBoxLayout();
   l->setContentsMargins( 0, 0, 0, 0 );
@@ -63,7 +70,17 @@ QgsAttributeFormWidget::QgsAttributeFormWidget( QgsWidgetWrapper *widget, QgsAtt
   // Respect size policy of embedded widget
   setSizePolicy( mWidget->widget()->sizePolicy() );
 
-  updateWidgets();
+  setVisiblePageForMode( mMode );
+}
+
+QgsAttributeFormWidget::~QgsAttributeFormWidget()
+{
+  // depending on the current page in the stacked widget, these pages NOT
+  // be parented to the stacked widget or this widget. Clean them up manually to avoid leaks.
+  delete mEditPage;
+  mEditPage = nullptr;
+  delete mSearchPage;
+  mSearchPage = nullptr;
 }
 
 void QgsAttributeFormWidget::setMode( QgsAttributeFormWidget::Mode mode )
@@ -170,21 +187,40 @@ void QgsAttributeFormWidget::searchWidgetFlagsChanged( QgsSearchWidgetWrapper::F
 
 void QgsAttributeFormWidget::updateWidgets()
 {
-  switch ( mMode )
+  setVisiblePageForMode( mMode );
+}
+
+void QgsAttributeFormWidget::setVisiblePageForMode( Mode mode )
+{
+  QWidget *currentVisibleWidget = mStack->currentWidget();
+
+  QWidget *newVisibleWidget = nullptr;
+  switch ( mode )
   {
     case DefaultMode:
     case MultiEditMode:
-      mStack->setCurrentWidget( mEditPage );
+      newVisibleWidget = mEditPage;
       break;
 
     case SearchMode:
     case AggregateSearchMode:
     {
-      mStack->setCurrentWidget( mSearchPage );
+      newVisibleWidget = mSearchPage;
       break;
     }
   }
 
+  if ( newVisibleWidget != currentVisibleWidget )
+  {
+    if ( currentVisibleWidget )
+    {
+      // as per Qt docs, this does NOT delete the page, it just removes it from the stack
+      mStack->removeWidget( currentVisibleWidget );
+    }
+
+    mStack->addWidget( newVisibleWidget );
+    mStack->setCurrentWidget( newVisibleWidget );
+  }
 }
 
 bool QgsAttributeFormWidget::searchWidgetToolButtonVisible() const
