@@ -10,5 +10,5 @@
 </rdf:RDF>
 </metadata>
 <script/>
-<circle cx="8" cy="8" r="7.7" fill="#0f6e00"/>
+<circle cx="8" cy="8" r="7.7" fill="#0f6e00" stroke="#fff" stroke-width=".6"/>
 </svg>
