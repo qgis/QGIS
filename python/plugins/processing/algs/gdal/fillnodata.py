@@ -113,6 +113,13 @@ class fillnodata(GdalAlgorithm):
         return super().flags() | QgsProcessingAlgorithm.FlagDisplayNameIsLiteral
 
     def getConsoleCommands(self, parameters, context, feedback, executing=True):
+        raster = self.parameterAsRasterLayer(parameters, self.INPUT, context)
+        if raster is None:
+            raise QgsProcessingException(self.invalidRasterError(parameters, self.INPUT))
+
+        out = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
+        self.setOutputValue(self.OUTPUT, out)
+
         arguments = [
             raster.source(),
             out,
@@ -136,14 +143,8 @@ class fillnodata(GdalAlgorithm):
             arguments.append('-mask')
             arguments.append(mask.source())
 
-        out = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
-        self.setOutputValue(self.OUTPUT, out)
         arguments.append('-of')
         arguments.append(QgsRasterFileWriter.driverForExtension(os.path.splitext(out)[1]))
-
-        raster = self.parameterAsRasterLayer(parameters, self.INPUT, context)
-        if raster is None:
-            raise QgsProcessingException(self.invalidRasterError(parameters, self.INPUT))
 
         if self.EXTRA in parameters and parameters[self.EXTRA] not in (None, ''):
             extra = self.parameterAsString(parameters, self.EXTRA, context)
