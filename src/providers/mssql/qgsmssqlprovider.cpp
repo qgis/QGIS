@@ -3300,8 +3300,9 @@ bool QgsMssqlProvider::getPrimaryKeyFromGeometryColumns( QStringList &primaryKey
   query.setForwardOnly( true );
   primaryKeys.clear();
 
-  const QString sql = QStringLiteral( "SELECT qgis_pkey FROM geometry_columns WHERE f_table_name = '%1' AND NOT qgis_pkey IS NULL" );
-  const QString statement = sql.arg( mTableName );
+  const QString sql = QStringLiteral( "SELECT qgis_pkey FROM geometry_columns "
+                                      "WHERE f_table_name = %1 AND f_table_schema = %2 AND NOT qgis_pkey IS NULL" );
+  const QString statement = sql.arg( quotedValue( mTableName ), quotedValue( mSchemaName ) );
 
   if ( LoggedExec( query, statement ) && query.isActive() )
   {
