@@ -365,7 +365,7 @@ Removes previous point in the CAD point list
 %Docstring
 Updates the current ``point`` in the CAD point list
 
-.. versionadded:: 3.30.2
+.. versionadded:: 3.28.6
 %End
 
     void setPoints( const QList<QgsPointXY> &points );
