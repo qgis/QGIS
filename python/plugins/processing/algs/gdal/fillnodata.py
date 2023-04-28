@@ -116,6 +116,8 @@ class fillnodata(GdalAlgorithm):
 
     def getConsoleCommands(self, parameters, context, feedback, executing=True):
         arguments = [
+            raster.source(),
+            out,
             '-md',
             str(self.parameterAsInt(parameters, self.DISTANCE, context)),
         ]
@@ -145,15 +147,13 @@ class fillnodata(GdalAlgorithm):
         if raster is None:
             raise QgsProcessingException(self.invalidRasterError(parameters, self.INPUT))
 
-        options = self.parameterAsString(parameters, self.OPTIONS, context)
-        if options:
-            arguments.extend(GdalUtils.parseCreationOptions(options))
-
         if self.EXTRA in parameters and parameters[self.EXTRA] not in (None, ''):
             extra = self.parameterAsString(parameters, self.EXTRA, context)
             arguments.append(extra)
 
-        arguments.append(raster.source())
-        arguments.append(out)
+        # Until https://github.com/OSGeo/gdal/issues/7651 is fixed, creation options should be latest argument
+        options = self.parameterAsString(parameters, self.OPTIONS, context)
+        if options:
+            arguments.extend(GdalUtils.parseCreationOptions(options))
 
         return [self.commandName() + ('.bat' if isWindows() else '.py'), GdalUtils.escapeAndJoin(arguments)]
