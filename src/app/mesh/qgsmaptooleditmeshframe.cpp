@@ -925,6 +925,7 @@ void QgsMapToolEditMeshFrame::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
                   mCurrentEdge.first != -1 && mCurrentEdge.second != -1 )  // flip edge
         {
           clearSelection();
+          mCadDockWidget->clearPoints();
           const QVector<int> edgeVert = edgeVertices( mCurrentEdge );
           mCurrentEditor->flipEdge( edgeVert.at( 0 ), edgeVert.at( 1 ) );
           mCurrentEdge = {-1, -1};
@@ -935,13 +936,17 @@ void QgsMapToolEditMeshFrame::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
                   mCurrentEdge.first != -1 && mCurrentEdge.second != -1 ) // merge two faces
         {
           clearSelection();
+          mCadDockWidget->clearPoints();
           const QVector<int> edgeVert = edgeVertices( mCurrentEdge );
           mCurrentEditor->merge( edgeVert.at( 0 ), edgeVert.at( 1 ) );
           mCurrentEdge = {-1, -1};
           highLight( mapPoint );
         }
         else
+        {
           select( mapPoint, e->modifiers(), tolerance );
+          mCadDockWidget->clearPoints();
+        }
       }
       break;
     case AddingNewFace:
@@ -951,8 +956,12 @@ void QgsMapToolEditMeshFrame::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
         if ( mCurrentVertexIndex != -1 )
         {
           addVertexToFaceCanditate( mCurrentVertexIndex );
-          const QgsPointXY currentPoint = mapVertexXY( mCurrentVertexIndex );
-          cadDockWidget()->setPoints( QList<QgsPointXY>() << currentPoint << currentPoint );
+          // Advanced digitizing base class adds a point at map point not at vertex position
+          // so we need to replace it by the position of the vertex
+          const QgsPoint &currentPoint = mapVertex( mCurrentVertexIndex );
+          cadDockWidget()->updateCurrentPoint( currentPoint );
+          cadDockWidget()->removePreviousPoint();
+          cadDockWidget()->addPoint( currentPoint );
         }
         else
         {
@@ -967,8 +976,6 @@ void QgsMapToolEditMeshFrame::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
           if ( acceptPoint )
           {
             addVertexToFaceCanditate( mapPoint );
-            const QgsPointXY currentPoint( mapPoint );
-            cadDockWidget()->setPoints( QList<QgsPointXY>() << currentPoint << currentPoint );
           }
         }
       }
@@ -989,6 +996,7 @@ void QgsMapToolEditMeshFrame::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       const QgsGeometry selectionGeom = mSelectionBand->asGeometry();
       selectByGeometry( selectionGeom, e->modifiers() );
       mSelectionBand->reset( QgsWkbTypes::PolygonGeometry );
+      mCadDockWidget->clearPoints();
       mCurrentState = Digitizing;
     }
     break;
@@ -1229,6 +1237,8 @@ void QgsMapToolEditMeshFrame::keyPressEvent( QKeyEvent *e )
         if ( mNewFaceCandidate.isEmpty() )
           mCurrentState = Digitizing;
 
+        mCadDockWidget->removePreviousPoint();
+
         consumned = true;
       }
 
@@ -1274,6 +1284,9 @@ void QgsMapToolEditMeshFrame::keyPressEvent( QKeyEvent *e )
       }
       break;
   }
+
+  if ( e->key() == Qt::Key_Escape )
+    mCadDockWidget->clearPoints();
 
   if ( !consumned && mZValueWidget )
     QgsApplication::sendEvent( mZValueWidget->keyboardEntryWidget(), e );
@@ -1443,6 +1456,7 @@ void QgsMapToolEditMeshFrame::setCurrentLayer( QgsMapLayer *layer )
   {
     disconnect( mCurrentLayer, &QgsMeshLayer::editingStarted, this, &QgsMapToolEditMeshFrame::onEditingStarted );
     disconnect( mCurrentLayer, &QgsMeshLayer::editingStopped, this, &QgsMapToolEditMeshFrame::onEditingStopped );
+    disconnect( mCurrentLayer->undoStack(), &QUndoStack::indexChanged, this, &QgsMapToolEditMeshFrame::onUndoRedo );
   }
 
   mCurrentLayer = meshLayer;
@@ -1459,6 +1473,7 @@ void QgsMapToolEditMeshFrame::setCurrentLayer( QgsMapLayer *layer )
   {
     connect( mCurrentLayer, &QgsMeshLayer::editingStarted, this, &QgsMapToolEditMeshFrame::onEditingStarted );
     connect( mCurrentLayer, &QgsMeshLayer::editingStopped, this, &QgsMapToolEditMeshFrame::onEditingStopped );
+    connect( mCurrentLayer->undoStack(), &QUndoStack::indexChanged, this, &QgsMapToolEditMeshFrame::onUndoRedo );
 
     if ( mCurrentLayer->isEditable() )
     {
@@ -1629,7 +1644,7 @@ bool QgsMapToolEditMeshFrame::isFaceSelected( int faceIndex )
   return true;
 }
 
-void QgsMapToolEditMeshFrame::setSelectedVertices( const QList<int> newSelectedVertices, Qgis::SelectBehavior behavior )
+void QgsMapToolEditMeshFrame::setSelectedVertices( const QList<int> &newSelectedVertices, Qgis::SelectBehavior behavior )
 {
   if ( mSelectedVertices.isEmpty() )
   {
@@ -1665,7 +1680,7 @@ void QgsMapToolEditMeshFrame::setSelectedVertices( const QList<int> newSelectedV
   prepareSelection();
 }
 
-void QgsMapToolEditMeshFrame::setSelectedFaces( const QList<int> newSelectedFaces, Qgis::SelectBehavior behavior )
+void QgsMapToolEditMeshFrame::setSelectedFaces( const QList<int> &newSelectedFaces, Qgis::SelectBehavior behavior )
 {
   bool removeFaces = false;
 
@@ -1929,6 +1944,34 @@ void QgsMapToolEditMeshFrame::reindexMesh()
 
   QgsTemporaryCursorOverride waitCursor( Qt::WaitCursor );
   mCurrentLayer->reindex( transform, true );
+}
+
+void QgsMapToolEditMeshFrame::onUndoRedo()
+{
+  switch ( mCurrentState )
+  {
+    case Digitizing:
+      break;
+    case AddingNewFace:
+      mNewFaceBand->reset( Qgis::GeometryType::Polygon );
+      mNewFaceCandidate.clear();
+      mNewVerticesForNewFaceCandidate.clear();
+      mCurrentState = Digitizing;
+      mCadDockWidget->clearPoints();
+      break;
+    case MovingSelection:
+      mCurrentState = Digitizing;
+      mMovingEdgesRubberband->reset( Qgis::GeometryType::Line );
+      mMovingFacesRubberband->reset( Qgis::GeometryType::Polygon );
+      mMovingFreeVertexRubberband->reset( Qgis::GeometryType::Point );
+      mCadDockWidget->setEnabledZ( mCadDockWidget->cadEnabled() );
+      mCadDockWidget->clearPoints();
+      break;
+    case ForceByLines:
+    case Selecting:
+    case SelectingByPolygon:
+      break;
+  }
 }
 
 void QgsMapToolEditMeshFrame::selectByGeometry( const QgsGeometry &geometry, Qt::KeyboardModifiers modifiers )

@@ -1750,7 +1750,6 @@ void QgsAdvancedDigitizingDockWidget::updateCurrentPoint( const QgsPoint &point 
   updateCadPaintItem();
 }
 
-
 void QgsAdvancedDigitizingDockWidget::CadConstraint::setLockMode( LockMode mode )
 {
   mLockMode = mode;
