@@ -731,22 +731,11 @@ void QgsAttributesFormProperties::addContainer()
     return;
 
   const QString name = dialog.name();
-  switch ( dialog.containerType() )
-  {
-    case Qgis::AttributeEditorContainerType::Tab:
-    {
-      mFormLayoutTree->addContainer( mFormLayoutTree->invisibleRootItem(), name, dialog.columnCount(), Qgis::AttributeEditorContainerType::Tab );
-      break;
-    }
-
-    case Qgis::AttributeEditorContainerType::GroupBox:
-    case Qgis::AttributeEditorContainerType::Row:
-    {
-      QTreeWidgetItem *parentContainerItem = dialog.parentContainerItem();
-      mFormLayoutTree->addContainer( parentContainerItem, name, dialog.columnCount(), dialog.containerType() );
-      break;
-    }
-  }
+  QTreeWidgetItem *parentContainerItem = dialog.parentContainerItem();
+  mFormLayoutTree->addContainer( parentContainerItem ? parentContainerItem : mFormLayoutTree->invisibleRootItem(),
+                                 name,
+                                 dialog.columnCount(),
+                                 dialog.containerType() );
 }
 
 void QgsAttributesFormProperties::removeTabOrGroupButton()
@@ -795,7 +784,14 @@ QgsAttributeEditorElement *QgsAttributesFormProperties::createAttributeEditorWid
     {
       QgsAttributeEditorContainer *container = new QgsAttributeEditorContainer( item->text( 0 ), parent, itemData.backgroundColor() );
       container->setColumnCount( itemData.columnCount() );
-      container->setType( isTopLevel ? Qgis::AttributeEditorContainerType::Tab : itemData.containerType() );
+      // only top-level containers can be tabs
+      Qgis::AttributeEditorContainerType type = itemData.containerType();
+      if ( type == Qgis::AttributeEditorContainerType::Tab && !isTopLevel )
+      {
+        // a top container found which isn't at the top level -- reset it to a group box instead
+        type = Qgis::AttributeEditorContainerType::GroupBox;
+      }
+      container->setType( type );
       container->setCollapsed( itemData.collapsed() );
       container->setCollapsedExpression( itemData.collapsedExpression() );
       container->setVisibilityExpression( itemData.visibilityExpression() );

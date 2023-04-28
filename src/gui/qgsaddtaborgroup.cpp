@@ -38,7 +38,7 @@ QgsAddAttributeFormContainerDialog::QgsAddAttributeFormContainerDialog( QgsVecto
 
   mTypeCombo->setCurrentIndex( mTypeCombo->findData( QVariant::fromValue( Qgis::AttributeEditorContainerType::Tab ) ) );
 
-  mParentCombo->setEnabled( false );
+  mParentCombo->addItem( QString() );
   if ( !mExistingContainers.isEmpty() )
   {
     int i = 0;
@@ -52,12 +52,6 @@ QgsAddAttributeFormContainerDialog::QgsAddAttributeFormContainerDialog( QgsVecto
       }
       ++i;
     }
-  }
-  else
-  {
-    // top level items must be tabs
-    mTypeCombo->removeItem( mTypeCombo->findData( QVariant::fromValue( Qgis::AttributeEditorContainerType::GroupBox ) ) );
-    mTypeCombo->removeItem( mTypeCombo->findData( QVariant::fromValue( Qgis::AttributeEditorContainerType::Row ) ) );
   }
 
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsAddAttributeFormContainerDialog::showHelp );
@@ -78,6 +72,9 @@ QString QgsAddAttributeFormContainerDialog::name()
 QTreeWidgetItem *QgsAddAttributeFormContainerDialog::parentContainerItem()
 {
   if ( containerType() == Qgis::AttributeEditorContainerType::Tab )
+    return nullptr;
+
+  if ( !mParentCombo->currentData().isValid() )
     return nullptr;
 
   const ContainerPair tab = mExistingContainers.at( mParentCombo->currentData().toInt() );
