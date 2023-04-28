@@ -89,10 +89,10 @@ MetadataNode getReaderMetadata(std::string inputFile, MetadataNode *pointLayoutM
     return r.getMetadata();
 }
 
+#define CHUNK_SIZE 100000
 
 void runPipelineParallel(point_count_t totalPoints, bool isStreaming, std::vector<std::unique_ptr<PipelineManager>>& pipelines, int max_threads, bool verbose)
 {
-    const int CHUNK_SIZE = 100'000;
     int num_chunks = totalPoints / CHUNK_SIZE;
 
     if (verbose)
@@ -116,7 +116,7 @@ void runPipelineParallel(point_count_t totalPoints, bool isStreaming, std::vecto
         PipelineManager* pipeline = pipelines[i].get();
         if (isStreaming)
         {
-            p.add([pipeline, CHUNK_SIZE]() {
+            p.add([pipeline]() {
 
                 MyTable table(CHUNK_SIZE);
                 pipeline->executeStream(table);
