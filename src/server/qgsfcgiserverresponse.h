@@ -27,6 +27,8 @@
 
 #include <QBuffer>
 #include <QThread>
+#include <QLocalSocket>
+
 
 /**
  * \ingroup server
@@ -46,12 +48,15 @@ class SocketMonitoringThread: public QThread
        * \param  feedback
        */
     SocketMonitoringThread( bool *isResponseFinished, QgsFeedback *feedback );
+    ~SocketMonitoringThread();
     void run( );
 
   private:
     bool *mIsResponseFinished = nullptr;
     QgsFeedback *mFeedback = nullptr;
-    int mIpcFd = 0;
+    // use normal pointer to be able to delete the socket (ie. close the connection) in the destructor (ie. after the last messages is sent)
+    // with 'std::unique_ptr' the socket was closed before the FCGI lib flush the content
+    QLocalSocket *mSocketFd;
 };
 
 /**

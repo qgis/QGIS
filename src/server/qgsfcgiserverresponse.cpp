@@ -27,13 +27,6 @@
 #include "qgslogger.h"
 
 #ifdef Q_OS_LINUX
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <netinet/tcp.h>
-#endif
-
-#ifdef Q_OS_LINUX
 //
 // QgsFCGXStreamData copied from libfcgi FCGX_Stream_Data
 //
@@ -58,33 +51,29 @@ typedef struct QgsFCGXStreamData
 } QgsFCGXStreamData;
 #endif
 
+SocketMonitoringThread::~SocketMonitoringThread( )
+{
+  // we use 'deleteLater' to avoid to close the socket too early
+  mSocketFd->deleteLater();
+}
+
 SocketMonitoringThread::SocketMonitoringThread( bool *isResponseFinished, QgsFeedback *feedback )
   : mIsResponseFinished( isResponseFinished )
   , mFeedback( feedback )
-  , mIpcFd( -1 )
+  , mSocketFd( new QLocalSocket )
 {
   setObjectName( "FCGI socket monitor" );
   Q_ASSERT( mIsResponseFinished );
   Q_ASSERT( mFeedback );
 
-#ifdef Q_OS_LINUX
   if ( FCGI_stdout && FCGI_stdout->fcgx_stream && FCGI_stdout->fcgx_stream->data )
   {
+    qintptr fd = 0;
+#ifdef Q_OS_LINUX
     QgsFCGXStreamData *stream = static_cast<QgsFCGXStreamData *>( FCGI_stdin->fcgx_stream->data );
     if ( stream && stream->reqDataPtr )
     {
-      mIpcFd = stream->reqDataPtr->ipcFd;
-
-      // Add disconnection detection option to inbound socket
-      // See https://stackoverflow.com/questions/11436013/writing-to-a-closed-local-tcp-socket-not-failing
-      // or https://stackoverflow.com/questions/3757289/when-is-tcp-option-so-linger-0-required
-
-      // Ie. LINGER = 1, TIME_WAIT = 0
-      struct linger lo = { 1, 0 };
-      if ( !( setsockopt( mIpcFd, SOL_SOCKET, SO_LINGER, &lo, sizeof( lo ) ) != -1 ) )
-      {
-        QgsMessageLog::logMessage( QStringLiteral( "FCGI_stdin unable to set socket option 'SOL_SOCKET/SO_LINGER'!" ), QStringLiteral( "FCGIServer" ), Qgis::MessageLevel::Warning );
-      }
+      fd = stream->reqDataPtr->ipcFd;
     }
     else
     {
@@ -92,6 +81,9 @@ SocketMonitoringThread::SocketMonitoringThread( bool *isResponseFinished, QgsFee
                                  QStringLiteral( "FCGIServer" ),
                                  Qgis::MessageLevel::Warning );
     }
+#endif
+    if ( fd )
+      mSocketFd->setSocketDescriptor( fd );
   }
   else
   {
@@ -99,12 +91,14 @@ SocketMonitoringThread::SocketMonitoringThread( bool *isResponseFinished, QgsFee
                                QStringLiteral( "FCGIServer" ),
                                Qgis::MessageLevel::Warning );
   }
-#endif
 }
 
 void SocketMonitoringThread::run( )
 {
-  if ( ! mIpcFd )
+  // mandatory to avoid Qt error "QObject::connect: Cannot queue arguments of type 'QAbstractSocket::SocketError'"
+  qRegisterMetaType<QAbstractSocket::SocketError>( "QAbstractSocket::SocketError" );
+
+  if ( mSocketFd->state() == QLocalSocket::UnconnectedState )
   {
     QgsMessageLog::logMessage( QStringLiteral( "Socket monitoring disabled: no socket fd!" ),
                                QStringLiteral( "FCGIServer" ),
@@ -112,25 +106,22 @@ void SocketMonitoringThread::run( )
     return;
   }
 
-#ifdef Q_OS_LINUX
-  char c;
   while ( !*mIsResponseFinished )
   {
-    ssize_t x = recv( mIpcFd, &c, 1, MSG_PEEK | MSG_DONTWAIT ); // see https://stackoverflow.com/a/12402596
-    if ( x < 0 )
+    if ( ! mSocketFd->waitForDisconnected( 10 ) )
     {
       // Ie. we are still connected but we have an 'error' as there is nothing to read
-      QgsDebugMsgLevel( QStringLiteral( "FCGIServer: remote socket still connected. errno: %1" ).arg( errno ), 5 );
+      QgsDebugMsgLevel( QStringLiteral( "FCGIServer: remote socket still connected! error: %1" ).arg( mSocketFd->errorString() ), 5 );
     }
     else
     {
       // socket closed, nothing can be read
-      QgsDebugMsgLevel( QStringLiteral( "FCGIServer: remote socket has been closed! errno: %1" ).arg( errno ), 2 );
+      QgsDebugMsgLevel( QStringLiteral( "FCGIServer: remote socket has been closed! error: %1" ).arg( mSocketFd->errorString() ), 2 );
       mFeedback->cancel();
       break;
     }
 
-    QThread::msleep( 333L );
+    QThread::msleep( 323L );
   }
 
   if ( *mIsResponseFinished )
@@ -141,7 +132,6 @@ void SocketMonitoringThread::run( )
   {
     QgsDebugMsgLevel( QStringLiteral( "FCGIServer: socket monitoring quits: no more socket." ), 2 );
   }
-#endif
 }
 
 
