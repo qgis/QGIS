@@ -2254,11 +2254,7 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
                                         'NO_MASK': False,
                                         'OUTPUT': outsource}, context, feedback),
                 ['gdal_fillnodata.py',
-                 '-md 10 -b 1 -mask ' +
-                 mask +
-                 ' -of GTiff ' +
-                 source + ' ' +
-                 outsource])
+                 f'{source} {outsource} -md 10 -b 1 -mask {mask} -of GTiff'])
 
             # without mask value
             self.assertEqual(
@@ -2269,10 +2265,7 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
                                         'NO_MASK': False,
                                         'OUTPUT': outsource}, context, feedback),
                 ['gdal_fillnodata.py',
-                 '-md 10 -b 1 ' +
-                 '-of GTiff ' +
-                 source + ' ' +
-                 outsource])
+                 f'{source} {outsource} -md 10 -b 1 -of GTiff'])
 
             # nomask true
             self.assertEqual(
@@ -2283,10 +2276,7 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
                                         'NO_MASK': True,
                                         'OUTPUT': outsource}, context, feedback),
                 ['gdal_fillnodata.py',
-                 '-md 10 -b 1 -nomask ' +
-                 '-of GTiff ' +
-                 source + ' ' +
-                 outsource])
+                 f'{source} {outsource} -md 10 -b 1 -nomask -of GTiff'])
 
             # creation options
             self.assertEqual(
@@ -2295,9 +2285,7 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
                                         'OPTIONS': 'COMPRESS=JPEG|JPEG_QUALITY=75',
                                         'OUTPUT': outsource}, context, feedback),
                 ['gdal_fillnodata.py',
-                 '-md 10 -b 1 -of GTiff -co COMPRESS=JPEG -co JPEG_QUALITY=75 ' +
-                 source + ' ' +
-                 outsource])
+                 f'{source} {outsource} -md 10 -b 1 -of GTiff -co COMPRESS=JPEG -co JPEG_QUALITY=75'])
 
             # additional parameters
             self.assertEqual(
@@ -2306,9 +2294,7 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
                                         'EXTRA': '-q',
                                         'OUTPUT': outsource}, context, feedback),
                 ['gdal_fillnodata.py',
-                 '-md 10 -b 1 -of GTiff -q ' +
-                 source + ' ' +
-                 outsource])
+                 f'{source} {outsource} -md 10 -b 1 -of GTiff -q'])
 
     def testGdalAddo(self):
         context = QgsProcessingContext()
