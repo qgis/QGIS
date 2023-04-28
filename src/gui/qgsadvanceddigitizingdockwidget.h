@@ -363,7 +363,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
 
     /**
      * Updates the current \a point in the CAD point list
-     * \since QGIS 3.30.2
+     * \since QGIS 3.28.6
      */
     void updateCurrentPoint( const QgsPoint &point );
 
