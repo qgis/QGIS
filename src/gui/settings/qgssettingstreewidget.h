@@ -34,7 +34,7 @@ class QgsSettingsTreeProxyModel;
  */
 class GUI_EXPORT QgsSettingsTreeWidget : public QWidget, public QgsOptionsDialogHighlightWidget
 {
-
+    Q_OBJECT
   public:
     //! Constructor
     explicit QgsSettingsTreeWidget( QWidget *parent = nullptr );

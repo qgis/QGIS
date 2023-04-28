@@ -122,6 +122,7 @@ class GUI_EXPORT QgsSettingsEditorWidgetWrapperTemplate : public QgsSettingsEdit
  */
 class GUI_EXPORT QgsSettingsStringEditorWidgetWrapper : public QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryString, QLineEdit, QString>
 {
+    Q_OBJECT
   public:
     //! Constructor
     QgsSettingsStringEditorWidgetWrapper( QObject *parent = nullptr )
@@ -146,6 +147,7 @@ class GUI_EXPORT QgsSettingsStringEditorWidgetWrapper : public QgsSettingsEditor
  */
 class GUI_EXPORT QgsSettingsBoolEditorWidgetWrapper : public QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryBool, QCheckBox, bool>
 {
+    Q_OBJECT
   public:
     //! Constructor
     QgsSettingsBoolEditorWidgetWrapper( QObject *parent = nullptr )
@@ -170,6 +172,7 @@ class GUI_EXPORT QgsSettingsBoolEditorWidgetWrapper : public QgsSettingsEditorWi
  */
 class GUI_EXPORT QgsSettingsIntegerEditorWidgetWrapper : public QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryInteger, QSpinBox, int>
 {
+    Q_OBJECT
   public:
     //! Constructor
     QgsSettingsIntegerEditorWidgetWrapper( QObject *parent = nullptr )
@@ -195,6 +198,7 @@ class GUI_EXPORT QgsSettingsIntegerEditorWidgetWrapper : public QgsSettingsEdito
  */
 class GUI_EXPORT QgsSettingsDoubleEditorWidgetWrapper : public QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryDouble, QDoubleSpinBox, double>
 {
+    Q_OBJECT
   public:
     //! Constructor
     QgsSettingsDoubleEditorWidgetWrapper( QObject *parent = nullptr )
@@ -220,6 +224,7 @@ class GUI_EXPORT QgsSettingsDoubleEditorWidgetWrapper : public QgsSettingsEditor
  */
 class GUI_EXPORT QgsSettingsColorEditorWidgetWrapper : public QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryColor, QgsColorButton, QColor>
 {
+    Q_OBJECT
   public:
     //! Constructor
     QgsSettingsColorEditorWidgetWrapper( QObject *parent = nullptr )
