@@ -68,6 +68,8 @@ void TestQgsDoubleValidator::validate_data()
   QTest::newRow( "locale negative locale decimal" ) << QString( "ln4ld6" ) << int( QValidator::Acceptable ) << true;
   QTest::newRow( "locale negative locale decimal" ) << QString( "ln4444ld6" ) << int( QValidator::Acceptable ) << true;
 
+  QTest::newRow( "positive sign C decimal" ) << QString( "+4cd6" ) << int( QValidator::Acceptable ) << false;
+
   // QgsDoubleValidator doesn't expect group separator but it tolerates it,
   // so the result will be QValidator::Intermediate and not QValidator::Acceptable
   QTest::newRow( "locale group separator + locale decimal" ) << QString( "4lg444ld6" ) << int( QValidator::Intermediate ) << false;
@@ -94,6 +96,8 @@ void TestQgsDoubleValidator::toDouble_data()
   QTest::newRow( "C negative C decimal" ) << QString( "cn4cd6" ) << -4.6;
   QTest::newRow( "locale negative locale decimal" ) << QString( "ln4ld6" ) << -4.6;
   QTest::newRow( "locale negative locale decimal" ) << QString( "ln4444ld6" ) << -4444.6;
+
+  QTest::newRow( "positive sign C decimal" ) << QString( "+4cd6" ) << 4.6;
 
   // QgsDoubleValidator doesn't expect group separator but it tolerates it,
   // so the result will be QValidator::Intermediate and not QValidator::Acceptable
