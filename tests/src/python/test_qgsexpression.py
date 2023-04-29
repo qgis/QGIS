@@ -15,10 +15,12 @@ from qgis.core import (
     NULL,
     QgsExpression,
     QgsExpressionContext,
+    QgsExpressionContextUtils,
     QgsFeatureRequest,
     QgsFields,
     QgsFeature,
     QgsField,
+    QgsVectorLayer,
 )
 from qgis.testing import unittest
 from qgis.utils import qgsfunction
@@ -100,6 +102,10 @@ class TestQgsExpressionCustomFunctions(unittest.TestCase):
     @qgsfunction(group='testing', register=False)
     def func_feature(*args, feature):
         return (feature["a"] + sum(args)) * feature["b"]
+
+    @qgsfunction(group='testing', register=False)
+    def func_layer_name_operation(operation="upper", context=None):
+        return getattr(context.variable("layer_name"), operation)()
 
     def tearDown(self):
         QgsExpression.unregisterFunction('testfun')
@@ -423,6 +429,21 @@ class TestQgsExpressionCustomFunctions(unittest.TestCase):
         self.assertEqual(e.evaluate(context), "__")
         e.setExpression("func_feature(3)")
         self.assertEqual(e.evaluate(context), "_____")
+
+    def testContext(self):
+        QgsExpression.registerFunction(self.func_layer_name_operation)
+        context = QgsExpressionContext()
+
+        layer = QgsVectorLayer("Point?field=a:int&field=b:string", "test context", "memory")
+        context.appendScope(QgsExpressionContextUtils.layerScope(layer))
+
+        e = QgsExpression()
+        e.setExpression("func_layer_name_operation()")
+        self.assertEqual(e.evaluate(context), "TEST CONTEXT")
+        e.setExpression("func_layer_name_operation('title')")
+        self.assertEqual(e.evaluate(context), "Test Context")
+        e.setExpression("func_layer_name_operation('split')")
+        self.assertEqual(e.evaluate(context), ["test", "context"])
 
 
 if __name__ == "__main__":
