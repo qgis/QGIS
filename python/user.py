@@ -66,8 +66,8 @@ if not os.path.exists(initfile):
 template = """from qgis.core import *
 from qgis.gui import *
 
-@qgsfunction(args='auto', group='Custom', referenced_columns=[])
-def my_sum(value1, value2, feature, parent):
+@qgsfunction(group='Custom', referenced_columns=[])
+def my_sum(value1, value2):
     \"\"\"
     Calculates the sum of the two parameters value1 and value2.
     <h2>Example usage:</h2>
