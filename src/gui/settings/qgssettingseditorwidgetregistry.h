@@ -51,10 +51,6 @@ class GUI_EXPORT QgsSettingsEditorWidgetRegistry
     //! Creates an editor widget for the given \a setting using the corresponding registered wrapper
     QWidget *createEditor( const QgsSettingsEntryBase *setting, const QStringList &dynamicKeyPartList, QWidget *parent = nullptr ) const SIP_FACTORY;
 
-    //! Returns a map <name, id> of all registered editors.
-    QMap<QString, QString> editorNames() const;
-
-
   private:
     QMap<QString, QgsSettingsEditorWidgetWrapper *> mWrappers;
 };

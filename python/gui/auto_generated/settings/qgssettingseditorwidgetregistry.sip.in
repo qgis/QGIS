@@ -44,12 +44,6 @@ Returns a new instance of the editor widget for the given ``id``
 Creates an editor widget for the given ``setting`` using the corresponding registered wrapper
 %End
 
-    QMap<QString, QString> editorNames() const;
-%Docstring
-Returns a map <name, id> of all registered editors.
-%End
-
-
 };
 
 /************************************************************************
