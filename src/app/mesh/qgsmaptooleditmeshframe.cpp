@@ -1953,7 +1953,7 @@ void QgsMapToolEditMeshFrame::onUndoRedo()
     case Digitizing:
       break;
     case AddingNewFace:
-      mNewFaceBand->reset( Qgis::GeometryType::Polygon );
+      mNewFaceBand->reset( QgsWkbTypes::PolygonGeometry );
       mNewFaceCandidate.clear();
       mNewVerticesForNewFaceCandidate.clear();
       mCurrentState = Digitizing;
@@ -1961,9 +1961,9 @@ void QgsMapToolEditMeshFrame::onUndoRedo()
       break;
     case MovingSelection:
       mCurrentState = Digitizing;
-      mMovingEdgesRubberband->reset( Qgis::GeometryType::Line );
-      mMovingFacesRubberband->reset( Qgis::GeometryType::Polygon );
-      mMovingFreeVertexRubberband->reset( Qgis::GeometryType::Point );
+      mMovingEdgesRubberband->reset( QgsWkbTypes::LineGeometry );
+      mMovingFacesRubberband->reset( QgsWkbTypes::PolygonGeometry );
+      mMovingFreeVertexRubberband->reset( QgsWkbTypes::PointGeometry );
       mCadDockWidget->setEnabledZ( mCadDockWidget->cadEnabled() );
       mCadDockWidget->clearPoints();
       break;
