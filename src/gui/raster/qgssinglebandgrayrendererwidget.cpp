@@ -119,14 +119,22 @@ void QgsSingleBandGrayRendererWidget::setMapCanvas( QgsMapCanvas *canvas )
   mMinMaxWidget->setMapCanvas( canvas );
 }
 
-void QgsSingleBandGrayRendererWidget::mMinLineEdit_textChanged( const QString & )
+void QgsSingleBandGrayRendererWidget::mMinLineEdit_textChanged( const QString &value )
 {
-  minMaxModified();
+  double converted = QgsDoubleValidator::toDouble( value );
+  if ( value == QLocale().toString( converted ) )
+  {
+    minMaxModified();
+  }
 }
 
-void QgsSingleBandGrayRendererWidget::mMaxLineEdit_textChanged( const QString & )
+void QgsSingleBandGrayRendererWidget::mMaxLineEdit_textChanged( const QString &value )
 {
-  minMaxModified();
+  double converted = QgsDoubleValidator::toDouble( value );
+  if ( value == QLocale().toString( converted ) )
+  {
+    minMaxModified();
+  }
 }
 
 void QgsSingleBandGrayRendererWidget::minMaxModified()
