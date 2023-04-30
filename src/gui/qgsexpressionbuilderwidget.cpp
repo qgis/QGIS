@@ -209,16 +209,13 @@ QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
   mFunctionBuilderHelp->setReadOnly( true );
   mFunctionBuilderHelp->setText( tr( "\"\"\"Define a new function using the @qgsfunction decorator.\n\
 \n\
- The function accepts the following parameters\n\
+ Besides its normal arguments, the function may specify the following arguments in its signature\n\
+ Those will not need to be specified when calling the function, but will be automatically injected \n\
 \n\
- : param [any]: Define any parameters you want to pass to your function before\n\
- the following arguments.\n\
  : param feature: The current feature\n\
  : param parent: The QgsExpression object\n\
- : param context: If there is an argument called ``context`` found at the last\n\
-                   position, this variable will contain a ``QgsExpressionContext``\n\
-                   object, that gives access to various additional information like\n\
-                   expression variables. E.g. ``context.variable( 'layer_id' )``\n\
+ : param context: ``QgsExpressionContext`` object, that gives access to various additional information like\n\
+                  expression variables. E.g. ``context.variable( 'layer_id' )``\n\
  : returns: The result of the expression.\n\
 \n\
 \n\
@@ -226,9 +223,6 @@ QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
  The @qgsfunction decorator accepts the following arguments:\n\
 \n\
 \n\
- : param args: Defines the number of arguments. With ``args = 'auto'`` the number of\n\
-               arguments will automatically be extracted from the signature.\n\
-               With ``args = -1``, any number of arguments are accepted.\n\
  : param group: The name of the group under which this expression function will\n\
                 be listed.\n\
  : param handlesnull: Set this to True if your function has custom handling for NULL values.\n\
@@ -238,7 +232,9 @@ QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
                         feature.geometry(). Defaults to False.\n\
  : param referenced_columns: An array of attribute names that are required to run\n\
                              this function. Defaults to [QgsFeatureRequest.ALL_ATTRIBUTES].\n\
-     \"\"\"" ) );
+ : param params_as_list : Set this to True to pass the function parameters as a list. Can be used to mimic \n\
+                        behavior before 3.32, when args was not \"auto\". Defaults to False.\n\
+\"\"\"" ) );
 }
 
 
