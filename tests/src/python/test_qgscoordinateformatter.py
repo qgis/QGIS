@@ -75,8 +75,8 @@ class TestQgsCoordinateFormatter(unittest.TestCase):
 
         # check precision
         self.assertEqual(QgsCoordinateFormatter.formatX(80, QgsCoordinateFormatter.FormatDegreesMinutesSeconds, 4), "80°0′0.0000″E")
-        self.assertEqual(QgsCoordinateFormatter.formatX(80.12345678, QgsCoordinateFormatter.FormatDegreesMinutesSeconds, 4), "80°7′24.4444″E")
-        self.assertEqual(QgsCoordinateFormatter.formatX(80.12345678, QgsCoordinateFormatter.FormatDegreesMinutesSeconds, 0), "80°7′24″E")
+        for precision in range(1, 20):
+            self.assertEqual(QgsCoordinateFormatter.formatX(80.123456789123456789, QgsCoordinateFormatter.FormatDegreesMinutesSeconds, precision), "80°7′{{:.0{}f}}″E".format(precision).format(24.444440844426935655064880848))
 
         # check if longitudes > 180 or <-180 wrap around
         self.assertEqual(QgsCoordinateFormatter.formatX(370, QgsCoordinateFormatter.FormatDegreesMinutesSeconds, 2), "10°0′0.00″E")
@@ -134,8 +134,8 @@ class TestQgsCoordinateFormatter(unittest.TestCase):
 
         # check precision
         self.assertEqual(QgsCoordinateFormatter.formatY(20, QgsCoordinateFormatter.FormatDegreesMinutesSeconds, 4), "20°0′0.0000″N")
-        self.assertEqual(QgsCoordinateFormatter.formatY(20.12345678, QgsCoordinateFormatter.FormatDegreesMinutesSeconds, 4), "20°7′24.4444″N")
-        self.assertEqual(QgsCoordinateFormatter.formatY(20.12345678, QgsCoordinateFormatter.FormatDegreesMinutesSeconds, 0), "20°7′24″N")
+        for precision in range(1, 20):
+            self.assertEqual(QgsCoordinateFormatter.formatY(20.123456789123456789, QgsCoordinateFormatter.FormatDegreesMinutesSeconds, precision), "20°7′{{:.0{}f}}″N".format(precision).format(24.4444408444397254243086))
 
         # check if latitudes > 90 or <-90 wrap around
         self.assertEqual(QgsCoordinateFormatter.formatY(190, QgsCoordinateFormatter.FormatDegreesMinutesSeconds, 2), "10°0′0.00″N")
