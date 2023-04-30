@@ -356,7 +356,7 @@ QSizeF QgsColorRampLegendNode::drawSymbol( const QgsLegendSettings &settings, It
 
         case Qt::AlignRight:
           labelXMin = ctx->columnRight - rampWidth;
-          labelXMin = ctx->columnRight;
+          labelXMax = ctx->columnRight;
           break;
       }
 
