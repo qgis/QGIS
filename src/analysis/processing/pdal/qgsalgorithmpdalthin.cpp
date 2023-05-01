@@ -61,7 +61,8 @@ void QgsPdalThinAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterPointCloudLayer( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ) ) );
   addParameter( new QgsProcessingParameterEnum( QStringLiteral( "MODE" ), QObject::tr( "Mode" ), QStringList() << QObject::tr( "Every N-th" ) << QObject::tr( "Sample" ), false, 0 ) );
-  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "STEP" ), QObject::tr( "Step" ), QgsProcessingParameterNumber::Integer, 20, false, 1 ) );
+  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "POINTS_NUMBER" ), QObject::tr( "Number of points to skip" ), QgsProcessingParameterNumber::Integer, QVariant(), true, 1 ) );
+  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "SAMPLING_RADIUS" ), QObject::tr( "Sampling radius (in map units)" ), QgsProcessingParameterNumber::Double, QVariant(), true, 1e-9 ) );
   createCommonParameters();
   addParameter( new QgsProcessingParameterPointCloudDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Thinned" ) ) );
 }
@@ -79,7 +80,23 @@ QStringList QgsPdalThinAlgorithm::createArgumentLists( const QVariantMap &parame
   setOutputValue( QStringLiteral( "OUTPUT" ), outputFile );
 
   int mode = parameterAsInt( parameters, QStringLiteral( "MODE" ), context );
-  int step = parameterAsInt( parameters, QStringLiteral( "STEP" ), context );
+  double step;
+  if ( mode == 0 )
+  {
+    step = parameterAsInt( parameters, QStringLiteral( "POINTS_NUMBER" ), context );
+    if ( step == 0 )
+    {
+      throw QgsProcessingException( QObject::tr( "Point count should be greater or equal to 1 for 'Every N-th' mode." ) );
+    }
+  }
+  else if ( mode == 1 )
+  {
+    step = parameterAsDouble( parameters, QStringLiteral( "SAMPLING_RADIUS" ), context );
+    if ( step == 0 )
+    {
+      throw QgsProcessingException( QObject::tr( "Sampling radius should be greater that 0 for 'Sample' mode." ) );
+    }
+  }
 
   QStringList args = { QStringLiteral( "thin" ),
                        QStringLiteral( "--input=%1" ).arg( layer->source() ),

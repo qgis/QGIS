@@ -215,22 +215,16 @@ void TestQgsProcessingPdalAlgs::thin()
 
   const QString outputPointCloud = QDir::tempPath() + "/thinned.laz";
 
-  // default values
+  // default values should throw exception as we don't specify point number
+  // for Every N-th mode.
   QVariantMap parameters;
   parameters.insert( QStringLiteral( "INPUT" ), mPointCloudLayerPath );
   parameters.insert( QStringLiteral( "OUTPUT" ), outputPointCloud );
+  QVERIFY_EXCEPTION_THROWN( alg->createArgumentLists( parameters, *context, &feedback ), QgsProcessingException );
 
+  // set points number
+  parameters.insert( QStringLiteral( "POINTS_NUMBER" ), 200 );
   QStringList args = alg->createArgumentLists( parameters, *context, &feedback );
-  QCOMPARE( args, QStringList() << QStringLiteral( "thin" )
-            << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath )
-            << QStringLiteral( "--output=%1" ).arg( outputPointCloud )
-            << QStringLiteral( "--mode=every-nth" )
-            << QStringLiteral( "--step-every-nth=20" )
-          );
-
-  // change step
-  parameters.insert( QStringLiteral( "STEP" ), 200 );
-  args = alg->createArgumentLists( parameters, *context, &feedback );
   QCOMPARE( args, QStringList() << QStringLiteral( "thin" )
             << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath )
             << QStringLiteral( "--output=%1" ).arg( outputPointCloud )
@@ -238,14 +232,28 @@ void TestQgsProcessingPdalAlgs::thin()
             << QStringLiteral( "--step-every-nth=200" )
           );
 
-  // change mode
+  // change mode to 'Sample'. As radius is not set an exception should be thrown
   parameters.insert( QStringLiteral( "MODE" ), 1 );
+  QVERIFY_EXCEPTION_THROWN( alg->createArgumentLists( parameters, *context, &feedback ), QgsProcessingException );
+
+  // set radius
+  parameters.insert( QStringLiteral( "SAMPLING_RADIUS" ), 3.5 );
   args = alg->createArgumentLists( parameters, *context, &feedback );
   QCOMPARE( args, QStringList() << QStringLiteral( "thin" )
             << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath )
             << QStringLiteral( "--output=%1" ).arg( outputPointCloud )
             << QStringLiteral( "--mode=sample" )
-            << QStringLiteral( "--step-sample=200" )
+            << QStringLiteral( "--step-sample=3.5" )
+          );
+
+  // remove number of points
+  parameters.remove( QStringLiteral( "POINTS_NUMBER" ) );
+  args = alg->createArgumentLists( parameters, *context, &feedback );
+  QCOMPARE( args, QStringList() << QStringLiteral( "thin" )
+            << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath )
+            << QStringLiteral( "--output=%1" ).arg( outputPointCloud )
+            << QStringLiteral( "--mode=sample" )
+            << QStringLiteral( "--step-sample=3.5" )
           );
 
   // filter exression
@@ -255,7 +263,7 @@ void TestQgsProcessingPdalAlgs::thin()
             << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath )
             << QStringLiteral( "--output=%1" ).arg( outputPointCloud )
             << QStringLiteral( "--mode=sample" )
-            << QStringLiteral( "--step-sample=200" )
+            << QStringLiteral( "--step-sample=3.5" )
             << QStringLiteral( "--filter=Intensity > 50" )
           );
 
@@ -266,7 +274,7 @@ void TestQgsProcessingPdalAlgs::thin()
             << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath )
             << QStringLiteral( "--output=%1" ).arg( outputPointCloud )
             << QStringLiteral( "--mode=sample" )
-            << QStringLiteral( "--step-sample=200" )
+            << QStringLiteral( "--step-sample=3.5" )
             << QStringLiteral( "--filter=Intensity > 50" )
             << QStringLiteral( "--bounds=([1, 3], [2, 4])" )
           );
@@ -278,7 +286,7 @@ void TestQgsProcessingPdalAlgs::thin()
             << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath )
             << QStringLiteral( "--output=%1" ).arg( outputPointCloud )
             << QStringLiteral( "--mode=sample" )
-            << QStringLiteral( "--step-sample=200" )
+            << QStringLiteral( "--step-sample=3.5" )
             << QStringLiteral( "--filter=Intensity > 50" )
             << QStringLiteral( "--bounds=([1, 3], [2, 4])" )
             << QStringLiteral( "--threads=2" )
