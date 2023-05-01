@@ -52,6 +52,9 @@ class APP_EXPORT QgsAnnotationWidget: public QWidget, private Ui::QgsAnnotationW
     //! Emitted when the background color of the annotation is changed
     void backgroundColorChanged( const QColor &color );
 
+    //! \since QGIS 3.32 Emitted when any property of the annotation is changed
+    void changed();
+
   private:
 
     QgsMapCanvasAnnotationItem *mItem = nullptr;
