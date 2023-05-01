@@ -72,7 +72,7 @@ void QgsPdalExportRasterTinAlgorithm::initAlgorithm( const QVariantMap & )
   paramOriginY->setFlags( paramOriginY->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
   addParameter( paramOriginY.release() );
 
-  addParameter( new QgsProcessingParameterRasterDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Output raster" ) ) );
+  addParameter( new QgsProcessingParameterRasterDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Exported (using triangulation)" ) ) );
 }
 
 QStringList QgsPdalExportRasterTinAlgorithm::createArgumentLists( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )

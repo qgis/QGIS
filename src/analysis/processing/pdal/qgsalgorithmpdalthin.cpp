@@ -63,7 +63,7 @@ void QgsPdalThinAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterEnum( QStringLiteral( "MODE" ), QObject::tr( "Mode" ), QStringList() << QObject::tr( "Every N-th" ) << QObject::tr( "Sample" ), false, 0 ) );
   addParameter( new QgsProcessingParameterNumber( QStringLiteral( "STEP" ), QObject::tr( "Step" ), QgsProcessingParameterNumber::Integer, 20, false, 1 ) );
   createCommonParameters();
-  addParameter( new QgsProcessingParameterPointCloudDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Output layer" ) ) );
+  addParameter( new QgsProcessingParameterPointCloudDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Thinned" ) ) );
 }
 
 QStringList QgsPdalThinAlgorithm::createArgumentLists( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )

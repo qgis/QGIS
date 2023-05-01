@@ -67,7 +67,7 @@ void QgsPdalReprojectAlgorithm::initAlgorithm( const QVariantMap & )
   crsOpParam->setFlags( crsOpParam->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
   addParameter( crsOpParam.release() );
 
-  addParameter( new QgsProcessingParameterPointCloudDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Output layer" ) ) );
+  addParameter( new QgsProcessingParameterPointCloudDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Reprojected" ) ) );
 }
 
 QStringList QgsPdalReprojectAlgorithm::createArgumentLists( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
