@@ -44,7 +44,7 @@ QString QgsPdalReprojectAlgorithm::groupId() const
 
 QStringList QgsPdalReprojectAlgorithm::tags() const
 {
-  return QObject::tr( "assign,set,transform,reproject,crs,srs" ).split( ',' );
+  return QObject::tr( "pdal,lidar,assign,set,transform,reproject,crs,srs" ).split( ',' );
 }
 
 QString QgsPdalReprojectAlgorithm::shortHelpString() const

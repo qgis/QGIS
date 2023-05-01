@@ -44,7 +44,7 @@ QString QgsPdalMergeAlgorithm::groupId() const
 
 QStringList QgsPdalMergeAlgorithm::tags() const
 {
-  return QObject::tr( "collect,merge,combine,point cloud" ).split( ',' );
+  return QObject::tr( "pdal,lidar,collect,merge,combine" ).split( ',' );
 }
 
 QString QgsPdalMergeAlgorithm::shortHelpString() const

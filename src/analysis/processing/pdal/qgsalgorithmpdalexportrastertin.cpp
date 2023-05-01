@@ -44,7 +44,7 @@ QString QgsPdalExportRasterTinAlgorithm::groupId() const
 
 QStringList QgsPdalExportRasterTinAlgorithm::tags() const
 {
-  return QObject::tr( "export,raster,tin,create" ).split( ',' );
+  return QObject::tr( "pdal,lidar,dem,export,raster,tin,create" ).split( ',' );
 }
 
 QString QgsPdalExportRasterTinAlgorithm::shortHelpString() const

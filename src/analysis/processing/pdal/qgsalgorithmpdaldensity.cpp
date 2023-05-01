@@ -44,7 +44,7 @@ QString QgsPdalDensityAlgorithm::groupId() const
 
 QStringList QgsPdalDensityAlgorithm::tags() const
 {
-  return QObject::tr( "cell,count,density,raster" ).split( ',' );
+  return QObject::tr( "pdal,lidar,cell,count,density,raster" ).split( ',' );
 }
 
 QString QgsPdalDensityAlgorithm::shortHelpString() const

@@ -44,7 +44,7 @@ QString QgsPdalFilterAlgorithm::groupId() const
 
 QStringList QgsPdalFilterAlgorithm::tags() const
 {
-  return QObject::tr( "filter,subset,extract,dimension,attribute,extent,bounds,rectangle" ).split( ',' );
+  return QObject::tr( "pdal,lidar,filter,subset,extract,dimension,attribute,extent,bounds,rectangle" ).split( ',' );
 }
 
 QString QgsPdalFilterAlgorithm::shortHelpString() const

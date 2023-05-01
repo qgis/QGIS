@@ -44,7 +44,7 @@ QString QgsPdalConvertFormatAlgorithm::groupId() const
 
 QStringList QgsPdalConvertFormatAlgorithm::tags() const
 {
-  return QObject::tr( "point cloud,las,laz,format,convert,translate" ).split( ',' );
+  return QObject::tr( "pdal,lidar,las,laz,format,convert,translate" ).split( ',' );
 }
 
 QString QgsPdalConvertFormatAlgorithm::shortHelpString() const

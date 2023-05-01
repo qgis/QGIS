@@ -45,7 +45,7 @@ QString QgsPdalClipAlgorithm::groupId() const
 
 QStringList QgsPdalClipAlgorithm::tags() const
 {
-  return QObject::tr( "clip,intersect,intersection,mask" ).split( ',' );
+  return QObject::tr( "pdal,lidar,clip,intersect,intersection,mask" ).split( ',' );
 }
 
 QString QgsPdalClipAlgorithm::shortHelpString() const

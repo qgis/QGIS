@@ -44,7 +44,7 @@ QString QgsPdalThinAlgorithm::groupId() const
 
 QStringList QgsPdalThinAlgorithm::tags() const
 {
-  return QObject::tr( "thin,reduce,decrease,size" ).split( ',' );
+  return QObject::tr( "pdal,lidar,thin,reduce,decrease,size" ).split( ',' );
 }
 
 QString QgsPdalThinAlgorithm::shortHelpString() const

@@ -44,7 +44,7 @@ QString QgsPdalBuildVpcAlgorithm::groupId() const
 
 QStringList QgsPdalBuildVpcAlgorithm::tags() const
 {
-  return QObject::tr( "collect,merge,combine,point cloud,virtual,vpc" ).split( ',' );
+  return QObject::tr( "collect,merge,combine,pdal,lidar,virtual,vpc" ).split( ',' );
 }
 
 QString QgsPdalBuildVpcAlgorithm::shortHelpString() const

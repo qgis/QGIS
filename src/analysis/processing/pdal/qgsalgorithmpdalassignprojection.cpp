@@ -44,7 +44,7 @@ QString QgsPdalAssignProjectionAlgorithm::groupId() const
 
 QStringList QgsPdalAssignProjectionAlgorithm::tags() const
 {
-  return QObject::tr( "assign,set,fix,crs,srs" ).split( ',' );
+  return QObject::tr( "pdal,lidar,assign,set,fix,crs,srs" ).split( ',' );
 }
 
 QString QgsPdalAssignProjectionAlgorithm::shortHelpString() const
