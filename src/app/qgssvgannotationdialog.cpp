@@ -72,6 +72,10 @@ void QgsSvgAnnotationDialog::mBrowseToolButton_clicked()
     directory = fi.absolutePath();
   }
   const QString filename = QFileDialog::getOpenFileName( nullptr, tr( "Select SVG file" ), directory, tr( "SVG files" ) + " (*.svg)" );
+  if ( filename.isEmpty() )
+  {
+    return;
+  }
   mFileLineEdit->setText( filename );
 }
 
@@ -84,9 +88,12 @@ void QgsSvgAnnotationDialog::applySettingsToItem()
 
   if ( mItem && mItem->annotation() )
   {
-    QgsSvgAnnotation *annotation = static_cast< QgsSvgAnnotation * >( mItem->annotation() );
-    annotation->setFilePath( mFileLineEdit->text() );
-    mItem->update();
+    if ( !mFileLineEdit->text().isEmpty() )
+    {
+      QgsSvgAnnotation *annotation = static_cast< QgsSvgAnnotation * >( mItem->annotation() );
+      annotation->setFilePath( mFileLineEdit->text() );
+      mItem->update();
+    }
   }
 
 }
