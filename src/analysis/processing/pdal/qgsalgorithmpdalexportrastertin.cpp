@@ -29,7 +29,7 @@ QString QgsPdalExportRasterTinAlgorithm::name() const
 
 QString QgsPdalExportRasterTinAlgorithm::displayName() const
 {
-  return QObject::tr( "Export to raster (TIN)" );
+  return QObject::tr( "Export to raster (using triangulation)" );
 }
 
 QString QgsPdalExportRasterTinAlgorithm::group() const
