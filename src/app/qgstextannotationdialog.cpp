@@ -24,6 +24,7 @@
 #include "qgsgui.h"
 #include "qgshelp.h"
 #include "qgsfillsymbol.h"
+#include "qgssettingsentryimpl.h"
 
 #include <QColorDialog>
 #include <QGraphicsScene>
@@ -71,6 +72,7 @@ QgsTextAnnotationDialog::QgsTextAnnotationDialog( QgsMapCanvasAnnotationItem *it
 
 
   connect( mLiveCheckBox, &QCheckBox::toggled, this, &QgsTextAnnotationDialog::onLiveUpdateToggled );
+  mLiveCheckBox->setChecked( QgsAnnotationWidget::settingLiveUpdate->value() );
   connect( mLiveCheckBox, &QCheckBox::toggled, this, &QgsTextAnnotationDialog::onSettingsChanged );
   connect( mEmbeddedWidget, &QgsAnnotationWidget::changed, this, &QgsTextAnnotationDialog::onSettingsChanged );
   connect( mTextEdit, &QTextEdit::textChanged, this, &QgsTextAnnotationDialog::onSettingsChanged );
@@ -200,4 +202,5 @@ void QgsTextAnnotationDialog::onLiveUpdateToggled( bool checked )
   // Apply and Cancel buttons make no sense when live update is on
   mButtonBox->button( QDialogButtonBox::Apply )->setHidden( checked );
   mButtonBox->button( QDialogButtonBox::Cancel )->setHidden( checked );
+  QgsAnnotationWidget::settingLiveUpdate->setValue( checked );
 }
