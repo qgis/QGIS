@@ -103,7 +103,7 @@ Unregisters the child tree ``node``
 Returns the children nodes
 %End
 
-    QgsSettingsTreeNode *childNode( const QString &key );
+    QgsSettingsTreeNode *childNode( const QString &key ) const;
 %Docstring
 Returns the existing child node if it exists at the given ``key``
 %End
@@ -113,7 +113,7 @@ Returns the existing child node if it exists at the given ``key``
 Returns the children settings
 %End
 
-    const QgsSettingsEntryBase *childSetting( const QString &key );
+    const QgsSettingsEntryBase *childSetting( const QString &key ) const;
 %Docstring
 Returns the existing child settings if it exists at the given ``key``
 %End
