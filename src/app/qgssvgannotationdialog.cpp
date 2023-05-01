@@ -60,6 +60,11 @@ QgsSvgAnnotationDialog::QgsSvgAnnotationDialog( QgsMapCanvasAnnotationItem *item
   QObject::connect( deleteButton, &QPushButton::clicked, this, &QgsSvgAnnotationDialog::deleteItem );
   mButtonBox->addButton( deleteButton, QDialogButtonBox::RejectRole );
 
+  connect( mLiveCheckBox, &QCheckBox::toggled, this, &QgsSvgAnnotationDialog::onLiveUpdateToggled );
+  connect( mEmbeddedWidget, &QgsAnnotationWidget::changed, this, &QgsSvgAnnotationDialog::onSettingsChanged );
+  connect( mFileLineEdit, &QLineEdit::textChanged, this, &QgsSvgAnnotationDialog::onSettingsChanged );
+  connect( mLiveCheckBox, &QCheckBox::toggled, this, &QgsSvgAnnotationDialog::onSettingsChanged );
+
   QgsGui::enableAutoGeometryRestore( this );
 }
 
@@ -116,4 +121,19 @@ void QgsSvgAnnotationDialog::mButtonBox_clicked( QAbstractButton *button )
 void QgsSvgAnnotationDialog::showHelp()
 {
   QgsHelp::openHelp( QStringLiteral( "map_views/map_view.html#sec-annotations" ) );
+}
+
+void QgsSvgAnnotationDialog::onSettingsChanged()
+{
+  if ( mLiveCheckBox->isChecked() )
+  {
+    applySettingsToItem();
+  }
+}
+
+void QgsSvgAnnotationDialog::onLiveUpdateToggled( bool checked )
+{
+  // Apply and Cancel buttons make no sense when live update is on
+  mButtonBox->button( QDialogButtonBox::Apply )->setHidden( checked );
+  mButtonBox->button( QDialogButtonBox::Cancel )->setHidden( checked );
 }

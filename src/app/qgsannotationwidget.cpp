@@ -25,6 +25,7 @@
 #include "qgisapp.h"
 #include "qgsfillsymbol.h"
 #include "qgsmarkersymbol.h"
+#include "qgsdoublespinbox.h"
 
 #include <QColorDialog>
 
@@ -79,6 +80,17 @@ QgsAnnotationWidget::QgsAnnotationWidget( QgsMapCanvasAnnotationItem *item, QWid
   mFrameStyleButton->setMessageBar( QgisApp::instance()->messageBar() );
 
   connect( mFrameStyleButton, &QgsSymbolButton::changed, this, &QgsAnnotationWidget::frameStyleChanged );
+
+  // connect to the changed signal
+  connect( mFrameStyleButton, &QgsSymbolButton::changed, this, &QgsAnnotationWidget::changed );
+  connect( mMapMarkerButton, &QgsSymbolButton::changed, this, &QgsAnnotationWidget::changed );
+  connect( mLayerComboBox, &QgsMapLayerComboBox::layerChanged, this, &QgsAnnotationWidget::changed );
+  connect( mSpinTopMargin,  static_cast < void ( QgsDoubleSpinBox::* )( double ) > ( &QgsDoubleSpinBox::valueChanged ), this, &QgsAnnotationWidget::changed );
+  connect( mSpinLeftMargin,  static_cast < void ( QgsDoubleSpinBox::* )( double ) > ( &QgsDoubleSpinBox::valueChanged ), this, &QgsAnnotationWidget::changed );
+  connect( mSpinRightMargin,  static_cast < void ( QgsDoubleSpinBox::* )( double ) > ( &QgsDoubleSpinBox::valueChanged ), this, &QgsAnnotationWidget::changed );
+  connect( mSpinBottomMargin,  static_cast < void ( QgsDoubleSpinBox::* )( double ) > ( &QgsDoubleSpinBox::valueChanged ), this, &QgsAnnotationWidget::changed );
+  connect( mMapPositionFixedCheckBox, &QCheckBox::stateChanged, this, &QgsAnnotationWidget::changed );
+
 }
 
 QColor QgsAnnotationWidget::backgroundColor()
