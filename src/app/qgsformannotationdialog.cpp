@@ -21,6 +21,8 @@
 #include "qgsannotationmanager.h"
 #include "qgsgui.h"
 #include "qgshelp.h"
+#include "qgssettingsentryimpl.h"
+
 #include <QFileDialog>
 #include <QFileInfo>
 #include <QGraphicsScene>
@@ -58,6 +60,7 @@ QgsFormAnnotationDialog::QgsFormAnnotationDialog( QgsMapCanvasAnnotationItem *it
   mButtonBox->addButton( deleteButton, QDialogButtonBox::RejectRole );
 
   connect( mLiveCheckBox, &QCheckBox::toggled, this, &QgsFormAnnotationDialog::onLiveUpdateToggled );
+  mLiveCheckBox->setChecked( QgsAnnotationWidget::settingLiveUpdate->value() );
   connect( mEmbeddedWidget, &QgsAnnotationWidget::changed, this, &QgsFormAnnotationDialog::onSettingsChanged );
   connect( mFileLineEdit, &QLineEdit::textChanged, this, &QgsFormAnnotationDialog::onSettingsChanged );
   connect( mLiveCheckBox, &QCheckBox::toggled, this, &QgsFormAnnotationDialog::onSettingsChanged );
@@ -133,4 +136,5 @@ void QgsFormAnnotationDialog::onLiveUpdateToggled( bool checked )
   // Apply and Cancel buttons make no sense when live update is on
   mButtonBox->button( QDialogButtonBox::Apply )->setHidden( checked );
   mButtonBox->button( QDialogButtonBox::Cancel )->setHidden( checked );
+  QgsAnnotationWidget::settingLiveUpdate->setValue( checked );
 }

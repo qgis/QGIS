@@ -26,8 +26,13 @@
 #include "qgsfillsymbol.h"
 #include "qgsmarkersymbol.h"
 #include "qgsdoublespinbox.h"
+#include "qgssettingsentryimpl.h"
+#include "qgssettingstree.h"
 
 #include <QColorDialog>
+
+
+const QgsSettingsEntryBool *QgsAnnotationWidget::settingLiveUpdate = new QgsSettingsEntryBool( QStringLiteral( "live-update" ), QgsSettingsTree::sTreeAnnotations, false, QObject::tr( "Whether the annotations are dynamically updated while they are edited" ) );
 
 
 QgsAnnotationWidget::QgsAnnotationWidget( QgsMapCanvasAnnotationItem *item, QWidget *parent, Qt::WindowFlags f )
