@@ -83,12 +83,12 @@
   }(void)(0)
 
 #define QGSVERIFYLESSTHAN(value,expected) { \
-    bool _xxxresult = value < expected; \
+    bool _xxxresult = ( value ) < ( expected ); \
     if ( !_xxxresult  ) \
     { \
       qDebug( "Expecting < %.10f got %.10f", static_cast< double >( expected ), static_cast< double >( value ) ); \
     } \
-    QVERIFY( value < expected ); \
+    QVERIFY( ( value ) < ( expected ) ); \
   }(void)(0)
 
 #define QGSCOMPARENEARPOINT(point1,point2,epsilon) { \
