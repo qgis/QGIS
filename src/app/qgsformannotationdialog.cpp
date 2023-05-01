@@ -70,9 +70,12 @@ void QgsFormAnnotationDialog::applySettingsToItem()
 
   if ( mItem && mItem->annotation() )
   {
-    QgsFormAnnotation *annotation = static_cast< QgsFormAnnotation * >( mItem->annotation() );
-    annotation->setDesignerForm( mFileLineEdit->text() );
-    mItem->update();
+    if ( !mFileLineEdit->text().isEmpty() )
+    {
+      QgsFormAnnotation *annotation = static_cast< QgsFormAnnotation * >( mItem->annotation() );
+      annotation->setDesignerForm( mFileLineEdit->text() );
+      mItem->update();
+    }
   }
 }
 
@@ -85,6 +88,10 @@ void QgsFormAnnotationDialog::mBrowseToolButton_clicked()
     directory = fi.absolutePath();
   }
   const QString filename = QFileDialog::getOpenFileName( nullptr, tr( "Qt designer file" ), directory, QStringLiteral( "*.ui" ) );
+  if ( filename.isEmpty() )
+  {
+    return;
+  }
   mFileLineEdit->setText( filename );
 }
 
