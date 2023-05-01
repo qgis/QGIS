@@ -1134,7 +1134,7 @@ void TestQgsProcessingPdalAlgs::filter()
             << QStringLiteral( "--output=%1" ).arg( outputPointCloud )
           );
 
-  parameters.insert( QStringLiteral( "FILTER_EXPRESSION" ), QStringLiteral( "Classification == 7 || Classification == 8" ) );
+  parameters.insert( QStringLiteral( "FILTER_EXPRESSION" ), QStringLiteral( "Classification = 7 OR Classification = 8" ) );
   args = alg->createArgumentLists( parameters, *context, &feedback );
   QCOMPARE( args, QStringList() << QStringLiteral( "translate" )
             << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath )

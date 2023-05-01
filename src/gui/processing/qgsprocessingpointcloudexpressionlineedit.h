@@ -40,6 +40,7 @@ class QgsPointCloudLayer;
 /**
  * Processing point cloud expression line edit.
  * \ingroup gui
+ * \class QgsProcessingPointCloudExpressionLineEdit
  * \warning Not part of stable API and may change in future QGIS releases.
  * \since QGIS 3.32
  */
