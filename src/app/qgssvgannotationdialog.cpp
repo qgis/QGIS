@@ -41,6 +41,13 @@ QgsSvgAnnotationDialog::QgsSvgAnnotationDialog( QgsMapCanvasAnnotationItem *item
   mStackedWidget->addWidget( mEmbeddedWidget );
   mStackedWidget->setCurrentWidget( mEmbeddedWidget );
 
+  // SVG annotation can only be created from an svg file
+  // Mask the source radio button and the source text edit
+  mFileRadioButton->setChecked( true );
+  mFileRadioButton->hide();
+  mSourceRadioButton->hide();
+  mHtmlSourceTextEdit->hide();
+
   if ( mItem && mItem->annotation() )
   {
     QgsSvgAnnotation *annotation = static_cast< QgsSvgAnnotation * >( mItem->annotation() );

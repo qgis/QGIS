@@ -38,6 +38,13 @@ QgsFormAnnotationDialog::QgsFormAnnotationDialog( QgsMapCanvasAnnotationItem *it
   mStackedWidget->addWidget( mEmbeddedWidget );
   mStackedWidget->setCurrentWidget( mEmbeddedWidget );
 
+  // Form annotation can only be created from an ui file
+  // Mask the source radio button and the source text edit
+  mFileRadioButton->setChecked( true );
+  mFileRadioButton->hide();
+  mSourceRadioButton->hide();
+  mHtmlSourceTextEdit->hide();
+
   if ( item && item->annotation() )
   {
     QgsFormAnnotation *annotation = static_cast< QgsFormAnnotation * >( item->annotation() );
