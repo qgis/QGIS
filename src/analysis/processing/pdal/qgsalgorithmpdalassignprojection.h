@@ -1,5 +1,5 @@
 /***************************************************************************
-                         qgsalgorithmpdalfixprojection.h
+                         qgsalgorithmpdalassignprojection.h
                          ---------------------
     begin                : February 2023
     copyright            : (C) 2023 by Alexander Bruy
@@ -15,8 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSALGORITHMPDALFIXPROJECTION_H
-#define QGSALGORITHMPDALFIXPROJECTION_H
+#ifndef QGSALGORITHMPDALASSIGNPROJECTION_H
+#define QGSALGORITHMPDALASSIGNPROJECTION_H
 
 #define SIP_NO_FILE
 
@@ -26,14 +26,14 @@
 ///@cond PRIVATE
 
 /**
- * Native fix (assign) projection algorithm for point clouds.
+ * Native assign projection algorithm for point clouds.
  */
-class QgsPdalFixProjectionAlgorithm : public QgsPdalAlgorithmBase
+class QgsPdalAssignProjectionAlgorithm : public QgsPdalAlgorithmBase
 {
 
   public:
 
-    QgsPdalFixProjectionAlgorithm() = default;
+    QgsPdalAssignProjectionAlgorithm() = default;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     QString name() const override;
     QString displayName() const override;
@@ -41,7 +41,7 @@ class QgsPdalFixProjectionAlgorithm : public QgsPdalAlgorithmBase
     QString groupId() const override;
     QStringList tags() const override;
     QString shortHelpString() const override;
-    QgsPdalFixProjectionAlgorithm *createInstance() const override SIP_FACTORY;
+    QgsPdalAssignProjectionAlgorithm *createInstance() const override SIP_FACTORY;
 
     QStringList createArgumentLists( const QVariantMap &parameters,
                                      QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
@@ -51,4 +51,4 @@ class QgsPdalFixProjectionAlgorithm : public QgsPdalAlgorithmBase
 
 ///@endcond PRIVATE
 
-#endif // QGSALGORITHMPDALFIXPROJECTION_H
+#endif // QGSALGORITHMPDALASSIGNPROJECTION_H

@@ -423,6 +423,7 @@ if (WITH_PDAL AND PDAL_2_5_OR_HIGHER)
 
     processing/pdal/qgspdalalgorithmbase.cpp
 
+    processing/pdal/qgsalgorithmpdalassignprojection.cpp
     processing/pdal/qgsalgorithmpdalboundary.cpp
     processing/pdal/qgsalgorithmpdalbuildvpc.cpp
     processing/pdal/qgsalgorithmpdalclip.cpp
@@ -432,7 +433,6 @@ if (WITH_PDAL AND PDAL_2_5_OR_HIGHER)
     processing/pdal/qgsalgorithmpdalexportrastertin.cpp
     processing/pdal/qgsalgorithmpdalexportvector.cpp
     processing/pdal/qgsalgorithmpdalfilter.cpp
-    processing/pdal/qgsalgorithmpdalfixprojection.cpp
     processing/pdal/qgsalgorithmpdalinformation.cpp
     processing/pdal/qgsalgorithmpdalmerge.cpp
     processing/pdal/qgsalgorithmpdalreproject.cpp

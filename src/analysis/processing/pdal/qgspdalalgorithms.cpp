@@ -19,6 +19,7 @@
 #include "qgsruntimeprofiler.h"
 #include "qgsapplication.h"
 
+#include "qgsalgorithmpdalassignprojection.h"
 #include "qgsalgorithmpdalboundary.h"
 #include "qgsalgorithmpdalbuildvpc.h"
 #include "qgsalgorithmpdalclip.h"
@@ -28,7 +29,6 @@
 #include "qgsalgorithmpdalexportrastertin.h"
 #include "qgsalgorithmpdalexportvector.h"
 #include "qgsalgorithmpdalfilter.h"
-#include "qgsalgorithmpdalfixprojection.h"
 #include "qgsalgorithmpdalinformation.h"
 #include "qgsalgorithmpdalmerge.h"
 #include "qgsalgorithmpdalreproject.h"
@@ -90,6 +90,7 @@ void QgsPdalAlgorithms::loadAlgorithms()
 {
   const QgsScopedRuntimeProfile profile( QObject::tr( "QGIS PDAL provider" ) );
 
+  addAlgorithm( new QgsPdalAssignProjectionAlgorithm() );
   addAlgorithm( new QgsPdalBoundaryAlgorithm() );
   addAlgorithm( new QgsPdalBuildVpcAlgorithm() );
   addAlgorithm( new QgsPdalClipAlgorithm() );
@@ -99,7 +100,6 @@ void QgsPdalAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsPdalExportRasterTinAlgorithm() );
   addAlgorithm( new QgsPdalExportVectorAlgorithm() );
   addAlgorithm( new QgsPdalFilterAlgorithm() );
-  addAlgorithm( new QgsPdalFixProjectionAlgorithm() );
   addAlgorithm( new QgsPdalInformationAlgorithm() );
   addAlgorithm( new QgsPdalMergeAlgorithm() );
   addAlgorithm( new QgsPdalReprojectAlgorithm() );

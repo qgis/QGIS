@@ -34,6 +34,7 @@ class TestQgsProcessingPdalAlgs: public QObject
     void init(); // will be called before each testfunction is executed.
     void cleanup() {} // will be called after every testfunction.
 
+    void assignProjection();
     void boundary();
     void buildVpc();
     void clip();
@@ -43,7 +44,6 @@ class TestQgsProcessingPdalAlgs: public QObject
     void exportRasterTin();
     void exportVector();
     void filter();
-    void fixProjection();
     void info();
     void merge();
     void reproject();
@@ -168,9 +168,9 @@ void TestQgsProcessingPdalAlgs::reproject()
           );
 }
 
-void TestQgsProcessingPdalAlgs::fixProjection()
+void TestQgsProcessingPdalAlgs::assignProjection()
 {
-  QgsPdalAlgorithmBase *alg = const_cast<QgsPdalAlgorithmBase *>( static_cast< const QgsPdalAlgorithmBase * >( QgsApplication::processingRegistry()->algorithmById( QStringLiteral( "pdal:fixprojection" ) ) ) );
+  QgsPdalAlgorithmBase *alg = const_cast<QgsPdalAlgorithmBase *>( static_cast< const QgsPdalAlgorithmBase * >( QgsApplication::processingRegistry()->algorithmById( QStringLiteral( "pdal:assignprojection" ) ) ) );
 
   std::unique_ptr< QgsProcessingContext > context = std::make_unique< QgsProcessingContext >();
   context->setProject( QgsProject::instance() );
