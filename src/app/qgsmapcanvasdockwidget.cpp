@@ -227,6 +227,15 @@ QgsMapCanvasDockWidget::QgsMapCanvasDockWidget( const QString &name, QWidget *pa
   connect( &mResizeTimer, &QTimer::timeout, this, [ = ]
   {
     mBlockExtentSync = false;
+
+    if ( mSyncScaleCheckBox->isChecked() )
+    {
+      mBlockExtentSync = true;
+      const double scale = mMapCanvas->scale();
+      mMainCanvas->zoomScale( scale * mScaleFactorWidget->value() );
+      mBlockExtentSync = false;
+    }
+
     if ( mSyncExtentCheck->isChecked() )
       syncViewCenter( mMainCanvas );
   } );
@@ -393,8 +402,10 @@ void QgsMapCanvasDockWidget::mapExtentChanged()
 
   if ( sourceCanvas == mMapCanvas && mSyncScaleCheckBox->isChecked() )
   {
-    const double newScaleFactor = mMainCanvas->scale() / mMapCanvas->scale();
-    mScaleFactorWidget->setValue( newScaleFactor );
+    mBlockExtentSync = true;
+    const double scale = mMapCanvas->scale();
+    mMainCanvas->zoomScale( scale * mScaleFactorWidget->value() );
+    mBlockExtentSync = false;
   }
 
   if ( mSyncExtentCheck->isChecked() )

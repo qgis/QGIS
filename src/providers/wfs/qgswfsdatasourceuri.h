@@ -42,6 +42,9 @@ class QgsWFSDataSourceURI
 
     explicit QgsWFSDataSourceURI( const QString &uri );
 
+    //! Copy constructor
+    QgsWFSDataSourceURI( const QgsWFSDataSourceURI &other );
+
     //! Returns the URI, optionally with the authentication configuration expanded
     QString uri( bool expandAuthConfig = false ) const;
 
@@ -139,6 +142,9 @@ class QgsWFSDataSourceURI
 
     //! Whether the initial GetFeature request, used to determine if gml:description/name/identifiers are used, should be skipped
     bool skipInitialGetFeature() const;
+
+    //! Assignment operator
+    QgsWFSDataSourceURI &operator=( const QgsWFSDataSourceURI &other );
 
   private:
     QgsDataSourceUri    mURI;

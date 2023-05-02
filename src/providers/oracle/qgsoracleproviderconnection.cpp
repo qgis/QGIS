@@ -210,8 +210,7 @@ QgsVectorLayer *QgsOracleProviderConnection::createSqlVectorLayer( const QgsAbst
       const int type { row[ 0 ].toInt( &ok ) };
       if ( ok )
       {
-        const int srid { row[ 0 ].toInt( &ok ) };
-
+        const int srid { row[ 1 ].toInt( &ok ) };
         if ( ok )
         {
 

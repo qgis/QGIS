@@ -20,6 +20,7 @@
 #include "qgsoapiflandingpagerequest.h"
 #include "qgsoapifapirequest.h"
 #include "qgsoapifcollection.h"
+#include "qgsoapifconformancerequest.h"
 #include "qgsoapifitemsrequest.h"
 #include "qgswfsconstants.h"
 #include "qgswfsutils.h" // for isCompatibleType()
@@ -151,19 +152,49 @@ bool QgsOapifProvider::init()
       return false;
     }
   }
-  mShared->mCapabilityExtent = collectionRequest->collection().mBbox;
+
+  bool implementsPart2 = false;
+  const QString &conformanceUrl = landingPageRequest.conformanceUrl();
+  if ( !conformanceUrl.isEmpty() )
+  {
+    QgsOapifConformanceRequest conformanceRequest( mShared->mURI.uri() );
+    const QStringList conformanceClasses = conformanceRequest.conformanceClasses( conformanceUrl );
+    implementsPart2 = conformanceClasses.contains( QLatin1String( "http://www.opengis.net/spec/ogcapi-features-2/1.0/conf/crs" ) );
+  }
+
   mLayerMetadata = collectionRequest->collection().mLayerMetadata;
 
-  if ( mLayerMetadata.crs().isValid() )
+  QString srsName = mShared->mURI.SRSName();
+  if ( implementsPart2 && !srsName.isEmpty() )
+  {
+    // Use URI SRSName parameter if defined
+    mShared->mSourceCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( srsName );
+    if ( mLayerMetadata.crs().isValid() && mShared->mSourceCrs.authid() == mLayerMetadata.crs().authid() )
+      mShared->mSourceCrs.setCoordinateEpoch( mLayerMetadata.crs().coordinateEpoch() );
+  }
+  else if ( implementsPart2 && mLayerMetadata.crs().isValid() )
   {
     // WORKAROUND: Recreate a CRS object with fromOgcWmsCrs because when copying the
     // CRS his mPj pointer gets deleted and it is impossible to create a transform
     mShared->mSourceCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( mLayerMetadata.crs().authid() );
+    mShared->mSourceCrs.setCoordinateEpoch( mLayerMetadata.crs().coordinateEpoch() );
   }
   else
   {
     mShared->mSourceCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs(
                             QgsOapifProvider::OAPIF_PROVIDER_DEFAULT_CRS );
+  }
+  mShared->mCapabilityExtent = collectionRequest->collection().mBbox;
+
+  // Reproject extent of /collection request to the layer CRS
+  if ( !mShared->mCapabilityExtent.isNull() &&
+       collectionRequest->collection().mBboxCrs != mShared->mSourceCrs )
+  {
+    QgsCoordinateTransform ct( collectionRequest->collection().mBboxCrs, mShared->mSourceCrs, transformContext() );
+    ct.setBallparkTransformsAreAppropriate( true );
+    QgsDebugMsgLevel( "before ext:" + mShared->mCapabilityExtent.toString(), 4 );
+    mShared->mCapabilityExtent = ct.transformBoundingBox( mShared->mCapabilityExtent );
+    QgsDebugMsgLevel( "after ext:" + mShared->mCapabilityExtent.toString(), 4 );
   }
 
   // Merge contact info from /api
@@ -759,6 +790,10 @@ void QgsOapifFeatureDownloaderImpl::run( bool serializeFeatures, long long maxFe
     }
   }
 
+  if ( mShared->mSourceCrs
+       != QgsCoordinateReferenceSystem::fromOgcWmsCrs( QgsOapifProvider::OAPIF_PROVIDER_DEFAULT_CRS ) )
+    url += QStringLiteral( "&crs=%1" ).arg( mShared->mSourceCrs.toOgcUri() );
+
   while ( !url.isEmpty() )
   {
     url = mShared->appendExtraQueryParameters( url );
@@ -814,7 +849,13 @@ void QgsOapifFeatureDownloaderImpl::run( bool serializeFeatures, long long maxFe
       // as the layer, convert them
       const QgsFeature &f = pair.first;
       QgsFeature dstFeat( dstFields, f.id() );
-      dstFeat.setGeometry( f.geometry() );
+      if ( f.hasGeometry() )
+      {
+        QgsGeometry g = f.geometry();
+        if ( mShared->mSourceCrs.hasAxisInverted() )
+          g.transform( QTransform( 0, 1, 1, 0, 0, 0 ) );
+        dstFeat.setGeometry( g );
+      }
       const auto srcAttrs = f.attributes();
       for ( int j = 0; j < dstFields.size(); j++ )
       {

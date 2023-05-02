@@ -15,6 +15,9 @@
 
 #include "qgsmaptoolshapecircleabstract.h"
 #include "qgsmaptoolcapture.h"
+#include "qgsmapcanvas.h"
+#include "qgssettingsentryimpl.h"
+#include "qgssettingsregistrycore.h"
 
 void QgsMapToolShapeCircleAbstract::clean()
 {
@@ -29,7 +32,23 @@ void QgsMapToolShapeCircleAbstract::addCircleToParentTool()
 
   mParentTool->clearCurve();
 
-  std::unique_ptr<QgsCircularString> lineString( mCircle.toCircularString() );
-
-  mParentTool->addCurve( lineString.release() );
+  // Check whether to draw the circle as a polygon or a circular string
+  bool drawAsPolygon = false;
+  if ( QgsMapLayer *layer = mParentTool->layer() )
+  {
+    const QgsCoordinateReferenceSystem layerCrs = layer->crs();
+    const QgsCoordinateReferenceSystem mapCrs = mParentTool->canvas()->mapSettings().destinationCrs();
+    drawAsPolygon = layerCrs != mapCrs;
+  }
+  if ( drawAsPolygon )
+  {
+    const int segments = QgsSettingsRegistryCore::settingsDigitizingOffsetQuadSeg.value() * 12;
+    std::unique_ptr<QgsLineString> ls( mCircle.toLineString( segments ) );
+    mParentTool->addCurve( ls.release() );
+  }
+  else
+  {
+    std::unique_ptr<QgsCircularString> ls( mCircle.toCircularString() );
+    mParentTool->addCurve( ls.release() );
+  }
 }

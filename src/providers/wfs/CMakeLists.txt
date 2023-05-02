@@ -24,6 +24,7 @@ set(WFS_SRCS
   oapif/qgsoapiflandingpagerequest.cpp
   oapif/qgsoapifapirequest.cpp
   oapif/qgsoapifcollection.cpp
+  oapif/qgsoapifconformancerequest.cpp
   oapif/qgsoapifitemsrequest.cpp
   oapif/qgsoapifprovider.cpp
   oapif/qgsoapifutils.cpp

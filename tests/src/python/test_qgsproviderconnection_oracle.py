@@ -49,6 +49,7 @@ class TestPyQgsProviderConnectionOracle(unittest.TestCase, TestPyQgsProviderConn
     # Provider test cases can define a schema and table name for SQL query layers test
     sqlVectorLayerSchema = 'QGIS'
     sqlVectorLayerTable = 'SOME_DATA'
+    sqlVectorLayerCrs = 'EPSG:4326'
 
     def execSQLCommand(self, sql, ignore_errors=False):
         self.assertTrue(self.conn)

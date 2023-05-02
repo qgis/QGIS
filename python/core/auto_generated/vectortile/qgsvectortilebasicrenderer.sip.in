@@ -100,20 +100,62 @@ Returns whether this style is enabled (used for rendering)
 
     void setMinZoomLevel( int minZoom );
 %Docstring
-Sets minimum zoom level index (negative number means no limit)
+Sets minimum zoom level index (negative number means no limit).
+
+The style will be rendered if the zoom level is greater than or equal
+to ``minZoom``.
+
+.. seealso:: :py:func:`minZoomLevel`
+
+.. seealso:: :py:func:`setMaxZoomLevel`
 %End
+
     int minZoomLevel() const;
 %Docstring
-Returns minimum zoom level index (negative number means no limit)
+Returns the minimum zoom level index (negative number means no limit).
+
+The style will be rendered if the zoom level is greater than or equal
+to the this level.
+
+.. seealso:: :py:func:`setMinZoomLevel`
+
+.. seealso:: :py:func:`maxZoomLevel`
 %End
 
     void setMaxZoomLevel( int maxZoom );
 %Docstring
-Sets maximum zoom level index (negative number means no limit)
+Sets maximum zoom level index (negative number means no limit).
+
+The style will be rendered if the zoom level is less than or equal
+to ``maxZoom``.
+
+.. warning::
+
+   This differs from the handling of the max zoom as defined
+   in the MapBox Style Specifications, where the style is rendered
+   only if the zoom level is less than the maximum zoom.
+
+.. seealso:: :py:func:`maxZoomLevel`
+
+.. seealso:: :py:func:`setMinZoomLevel`
 %End
+
     int maxZoomLevel() const;
 %Docstring
-Returns maxnimum zoom level index (negative number means no limit)
+Returns the maximum zoom level index (negative number means no limit).
+
+The style will be rendered if the zoom level is less than or equal
+to the maximum zoom.
+
+.. warning::
+
+   This differs from the handling of the max zoom as defined
+   in the MapBox Style Specifications, where the style is rendered
+   only if the zoom level is less than the maximum zoom.
+
+.. seealso:: :py:func:`setMaxZoomLevel`
+
+.. seealso:: :py:func:`minZoomLevel`
 %End
 
     bool isActive( int zoomLevel ) const;

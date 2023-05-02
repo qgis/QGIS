@@ -486,9 +486,9 @@ long long QgsPostgresProviderResultIterator::rowCountPrivate() const
 void QgsPostgresProviderConnection::vacuum( const QString &schema, const QString &name ) const
 {
   checkCapability( Capability::Vacuum );
-  executeSql( QStringLiteral( "VACUUM FULL ANALYZE %1.%2" )
-              .arg( QgsPostgresConn::quotedIdentifier( schema ),
-                    QgsPostgresConn::quotedIdentifier( name ) ) );
+  executeSqlPrivate( QStringLiteral( "VACUUM FULL ANALYZE %1.%2" )
+                     .arg( QgsPostgresConn::quotedIdentifier( schema ),
+                           QgsPostgresConn::quotedIdentifier( name ) ), false );
 }
 
 void QgsPostgresProviderConnection::createSpatialIndex( const QString &schema, const QString &name, const QgsAbstractDatabaseProviderConnection::SpatialIndexOptions &options ) const
@@ -516,11 +516,11 @@ void QgsPostgresProviderConnection::createSpatialIndex( const QString &schema, c
   }
 
   const QString indexName = QStringLiteral( "sidx_%1_%2" ).arg( name, geometryColumnName );
-  executeSql( QStringLiteral( "CREATE INDEX %1 ON %2.%3 USING GIST (%4);" )
-              .arg( QgsPostgresConn::quotedIdentifier( indexName ),
-                    QgsPostgresConn::quotedIdentifier( schema ),
-                    QgsPostgresConn::quotedIdentifier( name ),
-                    QgsPostgresConn::quotedIdentifier( geometryColumnName ) ) );
+  executeSqlPrivate( QStringLiteral( "CREATE INDEX %1 ON %2.%3 USING GIST (%4);" )
+                     .arg( QgsPostgresConn::quotedIdentifier( indexName ),
+                           QgsPostgresConn::quotedIdentifier( schema ),
+                           QgsPostgresConn::quotedIdentifier( name ),
+                           QgsPostgresConn::quotedIdentifier( geometryColumnName ) ), false );
 }
 
 bool QgsPostgresProviderConnection::spatialIndexExists( const QString &schema, const QString &name, const QString &geometryColumn ) const
@@ -571,8 +571,8 @@ void QgsPostgresProviderConnection::deleteSpatialIndex( const QString &schema, c
 
   const QString indexName = res.at( 0 ).at( 0 ).toString();
 
-  executeSql( QStringLiteral( "DROP INDEX %1.%2" ).arg( QgsPostgresConn::quotedIdentifier( schema ),
-              QgsPostgresConn::quotedIdentifier( indexName ) ) );
+  executeSqlPrivate( QStringLiteral( "DROP INDEX %1.%2" ).arg( QgsPostgresConn::quotedIdentifier( schema ),
+                     QgsPostgresConn::quotedIdentifier( indexName ) ), false );
 }
 
 QList<QgsPostgresProviderConnection::TableProperty> QgsPostgresProviderConnection::tables( const QString &schema, const TableFlags &flags ) const
@@ -665,16 +665,16 @@ QList<QgsPostgresProviderConnection::TableProperty> QgsPostgresProviderConnectio
           {
             try
             {
-              const auto pks = executeSql( QStringLiteral( R"(
+              const QList<QVariantList> pks = executeSqlPrivate( QStringLiteral( R"(
               WITH pkrelid AS (
               SELECT indexrelid AS idxri FROM pg_index WHERE indrelid='%1.%2'::regclass AND (indisprimary OR indisunique)
                 ORDER BY CASE WHEN indisprimary THEN 1 ELSE 2 END LIMIT 1)
               SELECT attname FROM pg_index,pg_attribute, pkrelid
               WHERE indexrelid=pkrelid.idxri AND indrelid=attrelid AND pg_attribute.attnum=any(pg_index.indkey);
              )" ).arg( QgsPostgresConn::quotedIdentifier( pr.schemaName ),
-                                               QgsPostgresConn::quotedIdentifier( pr.tableName ) ) );
+                                                  QgsPostgresConn::quotedIdentifier( pr.tableName ) ), false );
               QStringList pkNames;
-              for ( const auto &pk : std::as_const( pks ) )
+              for ( const QVariantList &pk : std::as_const( pks ) )
               {
                 pkNames.push_back( pk.first().toString() );
               }

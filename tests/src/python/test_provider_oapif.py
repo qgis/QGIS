@@ -33,15 +33,29 @@ from qgis.testing import (start_app,
 from providertestbase import ProviderTestCase
 
 
-def sanitize(endpoint, x):
-    if len(endpoint + x) > 256:
-        ret = endpoint + hashlib.md5(x.replace('/', '_').encode()).hexdigest()
-        # print('Before: ' + endpoint + x)
+def sanitize(endpoint, query_params):
+    # Implement the logic of QgsBaseNetworkRequest::sendGET()
+    # Note query_params can actually contain subpaths, so create the full url
+    # by concatenating boths, and then figure out things...
+
+    url = endpoint + query_params
+    # For REST API using URL subpaths, normalize the subpaths
+    afterEndpointStartPos = url.find("fake_qgis_http_endpoint") + len("fake_qgis_http_endpoint")
+    afterEndpointStart = url[afterEndpointStartPos:]
+    afterEndpointStart = afterEndpointStart.replace('/', '_')
+    url = url[0:afterEndpointStartPos] + afterEndpointStart
+    posQuotationMark = url.find('?')
+    endpoint = url[0:posQuotationMark]
+    query_params = url[posQuotationMark:]
+
+    if len(endpoint + query_params) > 256:
+        ret = endpoint + hashlib.md5(query_params.encode()).hexdigest()
+        # print('Before: ' + endpoint + query_params)
         # print('After:  ' + ret)
         return ret
-    ret = endpoint + x.replace('?', '_').replace('&', '_').replace('<', '_').replace('>', '_').replace('"',
-                                                                                                       '_').replace("'",
-                                                                                                                    '_').replace(
+    ret = endpoint + query_params.replace('?', '_').replace('&', '_').replace('<', '_').replace('>', '_').replace('"',
+                                                                                                                  '_').replace("'",
+                                                                                                                               '_').replace(
         ' ', '_').replace(':', '_').replace('/', '_').replace('\n', '_')
     return ret
 
@@ -53,12 +67,14 @@ def GDAL_COMPUTE_VERSION(maj, min, rev):
 ACCEPT_LANDING = 'Accept=application/json'
 ACCEPT_API = 'Accept=application/vnd.oai.openapi+json;version=3.0, application/openapi+json;version=3.0, application/json'
 ACCEPT_COLLECTION = 'Accept=application/json'
+ACCEPT_CONFORMANCE = 'Accept=application/json'
 ACCEPT_ITEMS = 'Accept=application/geo+json, application/json'
 
 
 def create_landing_page_api_collection(endpoint,
                                        extraparam='',
-                                       crs_url="http://www.opengis.net/def/crs/EPSG/0/4326",
+                                       storageCrs=None,
+                                       crsList=None,
                                        bbox=[-71.123, 66.33, -65.32, 78.3]):
 
     questionmark_extraparam = '?' + extraparam if extraparam else ''
@@ -73,7 +89,8 @@ def create_landing_page_api_collection(endpoint,
         f.write(json.dumps({
             "links": [
                 {"href": "http://" + endpoint + "/api" + questionmark_extraparam, "rel": "service-desc"},
-                {"href": "http://" + endpoint + "/collections" + questionmark_extraparam, "rel": "data"}
+                {"href": "http://" + endpoint + "/collections" + questionmark_extraparam, "rel": "data"},
+                {"href": "http://" + endpoint + "/conformance" + questionmark_extraparam, "rel": "conformance"},
             ]}).encode('UTF-8'))
 
     # API
@@ -91,6 +108,12 @@ def create_landing_page_api_collection(endpoint,
             }
         }).encode('UTF-8'))
 
+    # conformance
+    with open(sanitize(endpoint, '/conformance?' + add_params(extraparam, ACCEPT_CONFORMANCE)), 'wb') as f:
+        f.write(json.dumps({
+            "conformsTo": ["http://www.opengis.net/spec/ogcapi-features-2/1.0/conf/crs"]
+        }).encode('UTF-8'))
+
     # collection
     collection = {
         "id": "mycollection",
@@ -104,9 +127,10 @@ def create_landing_page_api_collection(endpoint,
             }
         }
     }
-    if crs_url:
-        collection["crs"] = [crs_url]
-        collection["extent"]["spatial"]["crs"] = crs_url
+    if storageCrs:
+        collection["storageCrs"] = storageCrs
+    if crsList:
+        collection["crs"] = crsList
 
     with open(sanitize(endpoint, '/collections/mycollection?' + add_params(extraparam, ACCEPT_COLLECTION)), 'wb') as f:
         f.write(json.dumps(collection).encode('UTF-8'))
@@ -171,6 +195,9 @@ class TestPyQgsOapifProvider(unittest.TestCase, ProviderTestCase):
         QgsSettings().clear()
         shutil.rmtree(cls.basetestpath, True)
         cls.vl = None  # so as to properly close the provider and remove any temporary file
+
+    def testCrs(self):
+        self.assertEqual(self.source.sourceCrs().authid(), 'OGC:CRS84')
 
     def testExtentSubsetString(self):
         # can't run the base provider test suite here - WFS/OAPIF extent handling is different
@@ -250,14 +277,14 @@ class TestPyQgsOapifProvider(unittest.TestCase, ProviderTestCase):
     def testBbox(self):
 
         endpoint = self.__class__.basetestpath + '/fake_qgis_http_endpoint_testBbox'
-        create_landing_page_api_collection(endpoint)
+        create_landing_page_api_collection(endpoint, storageCrs="http://www.opengis.net/def/crs/EPSG/0/4326")
 
         # first items
         first_items = {
             "type": "FeatureCollection",
             "features": [
                 {"type": "Feature", "id": "feat.1", "properties": {"pk": 1, "cnt": 100},
-                 "geometry": {"type": "Point", "coordinates": [-70.332, 66.33]}}
+                 "geometry": {"type": "Point", "coordinates": [66.33, -70.332]}}
             ]
         }
         with open(sanitize(endpoint, '/collections/mycollection/items?limit=10&' + ACCEPT_ITEMS), 'wb') as f:
@@ -271,12 +298,12 @@ class TestPyQgsOapifProvider(unittest.TestCase, ProviderTestCase):
             "type": "FeatureCollection",
             "features": [
                 {"type": "Feature", "id": "feat.1", "properties": {"pk": 1, "cnt": 100},
-                 "geometry": {"type": "Point", "coordinates": [-70.332, 66.33]}},
+                 "geometry": {"type": "Point", "coordinates": [66.33, -70.332]}},
                 {"type": "Feature", "id": "feat.2", "properties": {"pk": 2, "cnt": 200},
-                 "geometry": {"type": "Point", "coordinates": [-68.2, 70.8]}}
+                 "geometry": {"type": "Point", "coordinates": [70.8, -68.2]}}
             ]
         }
-        with open(sanitize(endpoint, '/collections/mycollection/items?limit=1000&bbox=65.5,-71,78,-65&bbox-crs=http://www.opengis.net/def/crs/EPSG/0/4326&' + ACCEPT_ITEMS),
+        with open(sanitize(endpoint, '/collections/mycollection/items?limit=1000&bbox=65.5,-71,78,-65&bbox-crs=http://www.opengis.net/def/crs/EPSG/0/4326&crs=http://www.opengis.net/def/crs/EPSG/0/4326&' + ACCEPT_ITEMS),
                   'wb') as f:
             f.write(json.dumps(items).encode('UTF-8'))
 
@@ -294,7 +321,7 @@ class TestPyQgsOapifProvider(unittest.TestCase, ProviderTestCase):
 
         # Test clamping of bbox
         with open(
-                sanitize(endpoint, '/collections/mycollection/items?limit=1000&bbox=64.5,-180,78,-65&bbox-crs=http://www.opengis.net/def/crs/EPSG/0/4326&' + ACCEPT_ITEMS),
+                sanitize(endpoint, '/collections/mycollection/items?limit=1000&bbox=64.5,-180,78,-65&bbox-crs=http://www.opengis.net/def/crs/EPSG/0/4326&crs=http://www.opengis.net/def/crs/EPSG/0/4326&' + ACCEPT_ITEMS),
                 'wb') as f:
             f.write(json.dumps(items).encode('UTF-8'))
 
@@ -314,14 +341,14 @@ class TestPyQgsOapifProvider(unittest.TestCase, ProviderTestCase):
             "type": "FeatureCollection",
             "features": [
                 {"type": "Feature", "id": "feat.1", "properties": {"pk": 1, "cnt": 100},
-                 "geometry": {"type": "Point", "coordinates": [-70.332, 66.33]}},
+                 "geometry": {"type": "Point", "coordinates": [66.33, -70.332]}},
                 {"type": "Feature", "id": "feat.2", "properties": {"pk": 2, "cnt": 200},
-                 "geometry": {"type": "Point", "coordinates": [-68.2, 70.8]}},
+                 "geometry": {"type": "Point", "coordinates": [70.8, -68.2]}},
                 {"type": "Feature", "id": "feat.3", "properties": {"pk": 4, "cnt": 400},
-                 "geometry": {"type": "Point", "coordinates": [-65.32, 78.3]}}
+                 "geometry": {"type": "Point", "coordinates": [78.3, -65.32]}}
             ]
         }
-        with open(sanitize(endpoint, '/collections/mycollection/items?limit=1000&bbox=-90,-180,90,180&bbox-crs=http://www.opengis.net/def/crs/EPSG/0/4326&' + ACCEPT_ITEMS), 'wb') as f:
+        with open(sanitize(endpoint, '/collections/mycollection/items?limit=1000&bbox=-90,-180,90,180&bbox-crs=http://www.opengis.net/def/crs/EPSG/0/4326&crs=http://www.opengis.net/def/crs/EPSG/0/4326&' + ACCEPT_ITEMS), 'wb') as f:
             f.write(json.dumps(items).encode('UTF-8'))
 
         extent = QgsRectangle(-181, -91, 181, 91)
@@ -394,8 +421,7 @@ class TestPyQgsOapifProvider(unittest.TestCase, ProviderTestCase):
                             ["1980-01-01T12:34:56.789Z", None],
                             [None, "2020-01-01T00:00:00Z"]
                         ]
-                },
-                "crs": ["http://www.opengis.net/def/crs/EPSG/0/4326"]
+                }
             },
             "links": [
                 {"href": "href_self", "rel": "self", "type": "application/json", "title": "my self link"},
@@ -453,6 +479,7 @@ class TestPyQgsOapifProvider(unittest.TestCase, ProviderTestCase):
         assert md.keywords()['keywords'] == ["keyword_a", "keyword_b"]
 
         assert md.crs().isValid()
+        assert md.crs().authid() == "OGC:CRS84"
         assert md.crs().isGeographic()
         assert not md.crs().hasAxisInverted()
 
@@ -550,6 +577,40 @@ class TestPyQgsOapifProvider(unittest.TestCase, ProviderTestCase):
         md = vl.metadata()
         assert len(md.licenses()) == 1
         assert md.licenses()[0] == 'proprietary'
+
+        # Variant with storageCrs
+        collection = copy.deepcopy(base_collection)
+        collection['storageCrs'] = "http://www.opengis.net/def/crs/EPSG/0/4258"
+        collection['storageCrsCoordinateEpoch'] = 2020.0
+        with open(sanitize(endpoint, '/collections/mycollection?' + ACCEPT_COLLECTION), 'wb') as f:
+            f.write(json.dumps(collection).encode('UTF-8'))
+
+        vl = QgsVectorLayer("url='http://" + endpoint + "' typename='mycollection' restrictToRequestBBOX=1", 'test',
+                            'OAPIF')
+        self.assertTrue(vl.isValid())
+
+        md = vl.metadata()
+        assert vl.sourceCrs().isValid()
+        assert vl.sourceCrs().authid() == "EPSG:4258"
+        assert vl.sourceCrs().isGeographic()
+        assert vl.sourceCrs().coordinateEpoch() == 2020.0
+        assert vl.sourceCrs().hasAxisInverted()
+
+        # Variant with a list of crs
+        collection = copy.deepcopy(base_collection)
+        collection['crs'] = ["http://www.opengis.net/def/crs/EPSG/0/4258", "http://www.opengis.net/def/crs/EPSG/0/4326"]
+        with open(sanitize(endpoint, '/collections/mycollection?' + ACCEPT_COLLECTION), 'wb') as f:
+            f.write(json.dumps(collection).encode('UTF-8'))
+
+        vl = QgsVectorLayer("url='http://" + endpoint + "' typename='mycollection' restrictToRequestBBOX=1", 'test',
+                            'OAPIF')
+        self.assertTrue(vl.isValid())
+
+        md = vl.metadata()
+        assert vl.sourceCrs().isValid()
+        assert vl.sourceCrs().authid() == "EPSG:4258"
+        assert vl.sourceCrs().isGeographic()
+        assert vl.sourceCrs().hasAxisInverted()
 
     def testDateTimeFiltering(self):
 
@@ -719,7 +780,6 @@ class TestPyQgsOapifProvider(unittest.TestCase, ProviderTestCase):
         endpoint = basetestpath + '/fake_qgis_http_endpoint_ogc84'
 
         create_landing_page_api_collection(endpoint,
-                                           crs_url="",  # OGC norm says that if crs is not explicitly defined it is OGC:CRS84
                                            bbox=[66.33, -71.123, 78.3, -65.32])
 
         items = {
@@ -766,8 +826,8 @@ class TestPyQgsOapifProvider(unittest.TestCase, ProviderTestCase):
         endpoint = basetestpath + '/fake_qgis_http_endpoint_epsg_2056'
 
         create_landing_page_api_collection(endpoint,
-                                           crs_url="http://www.opengis.net/def/crs/EPSG/0/2056",
-                                           bbox=[2508500, 1152000, 2513450, 1156950])
+                                           storageCrs="http://www.opengis.net/def/crs/EPSG/0/2056",
+                                           crsList=["http://www.opengis.net/def/crs/OGC/0/CRS84", "http://www.opengis.net/def/crs/EPSG/0/2056"])
 
         items = {
             "type": "FeatureCollection",
@@ -804,6 +864,13 @@ class TestPyQgsOapifProvider(unittest.TestCase, ProviderTestCase):
         source = vl.dataProvider()
 
         self.assertEqual(source.sourceCrs().authid(), 'EPSG:2056')
+
+        # Test srsname parameter overrides default CRS
+        vl = QgsVectorLayer("url='http://" + endpoint + "' typename='mycollection' srsname='OGC:CRS84'", 'test', 'OAPIF')
+        assert vl.isValid()
+        source = vl.dataProvider()
+
+        self.assertEqual(source.sourceCrs().authid(), 'OGC:CRS84')
 
 
 if __name__ == '__main__':
