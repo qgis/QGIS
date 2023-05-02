@@ -24,6 +24,7 @@
 #include "qgsalgorithmpdalbuildvpc.h"
 #include "qgsalgorithmpdalclip.h"
 #include "qgsalgorithmpdalconvertformat.h"
+#include "qgsalgorithmpdalcreatecopc.h"
 #include "qgsalgorithmpdaldensity.h"
 #include "qgsalgorithmpdalexportraster.h"
 #include "qgsalgorithmpdalexportrastertin.h"
@@ -96,6 +97,7 @@ void QgsPdalAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsPdalBuildVpcAlgorithm() );
   addAlgorithm( new QgsPdalClipAlgorithm() );
   addAlgorithm( new QgsPdalConvertFormatAlgorithm() );
+  addAlgorithm( new QgsPdalCreateCopcAlgorithm() );
   addAlgorithm( new QgsPdalDensityAlgorithm() );
   addAlgorithm( new QgsPdalExportRasterAlgorithm() );
   addAlgorithm( new QgsPdalExportRasterTinAlgorithm() );
