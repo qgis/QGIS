@@ -21,6 +21,7 @@
 #include <memory>
 #include <QString>
 #include "qgsgeometry.h"
+#include "qgsrange.h"
 
 ///@cond PRIVATE
 #define SIP_NO_FILE
@@ -38,11 +39,12 @@ class QgsPointCloudSubIndex
 {
   public:
     //! Constructor
-    QgsPointCloudSubIndex( const QString &uri, const QgsGeometry &geometry, const QgsRectangle &extent, qint64 count )
+    QgsPointCloudSubIndex( const QString &uri, const QgsGeometry &geometry, const QgsRectangle &extent, const QgsDoubleRange &zRange, qint64 count )
       : mUri( uri )
       , mExtent( extent )
       , mGeometry( geometry )
       , mPointCount( count )
+      , mZRange( zRange )
     {
     }
 
@@ -58,6 +60,9 @@ class QgsPointCloudSubIndex
     //! Returns the extent for this sub index in the index's crs coordinates.
     QgsRectangle extent() const { return mExtent; }
 
+    //! Returns the elevation range for this sub index hoping it's in meters.
+    QgsDoubleRange zRange() const { return mZRange; }
+
     /**
      * Returns the bounds of the sub index in the index's crs coordinates as a multi polygon geometry.
      * This can be the same as the extent or a more detailed geometry like a convex hull if available.
@@ -68,11 +73,12 @@ class QgsPointCloudSubIndex
     qint64 pointCount() const { return mPointCount; }
 
   private:
-    std::shared_ptr<QgsPointCloudIndex> mIndex;
+    std::unique_ptr<QgsPointCloudIndex> mIndex;
     QString mUri;
     QgsRectangle mExtent;
     QgsGeometry mGeometry;
     qint64 mPointCount = 0;
+    QgsDoubleRange mZRange;
 };
 
 ///@endcond

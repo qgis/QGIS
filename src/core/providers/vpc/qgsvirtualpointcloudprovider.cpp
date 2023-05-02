@@ -58,7 +58,10 @@ QgsVirtualPointCloudProvider::QgsVirtualPointCloudProvider(
   parseFile();
 }
 
-QgsVirtualPointCloudProvider::~QgsVirtualPointCloudProvider() = default;
+QgsVirtualPointCloudProvider::~QgsVirtualPointCloudProvider()
+{
+  qDeleteAll( mSubIndexes );
+}
 
 QgsPointCloudDataProvider::Capabilities QgsVirtualPointCloudProvider::capabilities() const
 {
@@ -93,7 +96,7 @@ bool QgsVirtualPointCloudProvider::isValid() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  return !mSubLayers.isEmpty();
+  return !mSubIndexes.isEmpty();
 }
 
 QString QgsVirtualPointCloudProvider::name() const
@@ -196,6 +199,7 @@ void QgsVirtualPointCloudProvider::parseFile()
     qint64 count;
     QgsRectangle extent;
     QgsGeometry geometry;
+    QgsDoubleRange zRange;
 
 
     for ( const auto &asset : f["assets"] )
@@ -229,14 +233,45 @@ void QgsVirtualPointCloudProvider::parseFile()
     if ( f["properties"].contains( "proj:bbox" ) )
     {
       nlohmann::json nativeBbox = f["properties"]["proj:bbox"];
-      extent = QgsRectangle( nativeBbox[0].get<double>(), nativeBbox[1].get<double>(),
-                             nativeBbox[3].get<double>(), nativeBbox[4].get<double>() );
+      if ( nativeBbox.size() == 6 )
+      {
+        extent = QgsRectangle( nativeBbox[0].get<double>(), nativeBbox[1].get<double>(),
+                               nativeBbox[3].get<double>(), nativeBbox[4].get<double>() );
+        zRange = QgsDoubleRange( nativeBbox[2], nativeBbox[5] );
+      }
+      else if ( nativeBbox.size() == 4 )
+      {
+        extent = QgsRectangle( nativeBbox[0].get<double>(), nativeBbox[1].get<double>(),
+                               nativeBbox[2].get<double>(), nativeBbox[3].get<double>() );
+      }
+      else
+      {
+        QgsDebugMsg( QStringLiteral( "Malformed bounding box, skipping item." ) );
+        continue;
+      }
     }
     else if ( f.contains( "bbox" ) && mCrs.isValid() )
     {
       nlohmann::json bboxWgs = f["bbox"];
-      QgsRectangle bbox = QgsRectangle( bboxWgs[0].get<double>(), bboxWgs[1].get<double>(),
-                                        bboxWgs[2].get<double>(), bboxWgs[3].get<double>() );
+      QgsRectangle bbox;
+      bbox.setXMinimum( bboxWgs[0].get<double>() );
+      bbox.setYMinimum( bboxWgs[1].get<double>() );
+      if ( bboxWgs.size() == 6 )
+      {
+        bbox.setXMaximum( bboxWgs[3].get<double>() );
+        bbox.setYMaximum( bboxWgs[4].get<double>() );
+        zRange = QgsDoubleRange( bboxWgs[2], bboxWgs[5] );
+      }
+      else if ( bboxWgs.size() == 4 )
+      {
+        bbox.setXMaximum( bboxWgs[2].get<double>() );
+        bbox.setYMaximum( bboxWgs[3].get<double>() );
+      }
+      else
+      {
+        QgsDebugMsg( QStringLiteral( "Malformed bounding box, skipping item." ) );
+        continue;
+      }
 
       try
       {
@@ -244,13 +279,13 @@ void QgsVirtualPointCloudProvider::parseFile()
       }
       catch ( QgsCsException & )
       {
-        QgsDebugMsg( QStringLiteral( "Cannot transform bbox to layer crs." ) );
+        QgsDebugMsg( QStringLiteral( "Cannot transform bbox to layer crs, skipping item." ) );
         continue;
       }
     }
     else
     {
-      QgsDebugMsg( QStringLiteral( "Missing extent information." ) );
+      QgsDebugMsg( QStringLiteral( "Missing extent information, skipping item." ) );
       continue;
     }
 
@@ -291,14 +326,15 @@ void QgsVirtualPointCloudProvider::parseFile()
       }
       else
       {
-        QgsDebugMsg( QStringLiteral( "Unexpected geometry type: %1" ).arg( QString::fromStdString( geom.at( "type" ) ) ) );
+        QgsDebugMsg( QStringLiteral( "Unexpected geometry type: %1, skipping item." ).arg( QString::fromStdString( geom.at( "type" ) ) ) );
+        continue;
       }
       geometry = QgsGeometry::fromMultiPolygonXY( multiPolygon );
     }
     catch ( std::exception &e )
     {
-      QgsDebugMsg( QStringLiteral( "Malformed geometry item: %1" ).arg( QString::fromStdString( e.what() ) ) );
-      return;
+      QgsDebugMsg( QStringLiteral( "Malformed geometry item: %1, skipping item." ).arg( QString::fromStdString( e.what() ) ) );
+      continue;
     }
 
     if ( uri.startsWith( QLatin1String( "./" ) ) )
@@ -323,15 +359,15 @@ void QgsVirtualPointCloudProvider::parseFile()
       }
       catch ( QgsCsException & )
       {
-        QgsDebugMsg( QStringLiteral( "Cannot transform geometry to layer crs." ) );
+        QgsDebugMsg( QStringLiteral( "Cannot transform geometry to layer crs, skipping item." ) );
         continue;
       }
     }
 
     mPolygonBounds->addPart( geometry );
     mPointCount += count;
-    QgsPointCloudSubIndex si( uri, geometry, extent, count );
-    mSubLayers.push_back( si );
+    QgsPointCloudSubIndex *si = new QgsPointCloudSubIndex( uri, geometry, extent, zRange, count );
+    mSubIndexes.push_back( si );
   }
   mExtent = mPolygonBounds->boundingBox();
   populateAttributeCollection( attributeNames );
@@ -346,37 +382,39 @@ void QgsVirtualPointCloudProvider::loadSubIndex( int i )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  if ( i >= mSubLayers.size() || i < 0 )
+  if ( i >= mSubIndexes.size() || i < 0 )
     return;
 
-  QgsPointCloudSubIndex &sl = mSubLayers[ i ];
+  QgsPointCloudSubIndex *sl = mSubIndexes[ i ];
   // Index already loaded -> no need to load
-  if ( sl.index() )
+  if ( sl->index() )
     return;
 
-  if ( sl.uri().startsWith( QStringLiteral( "http" ), Qt::CaseSensitivity::CaseInsensitive ) )
+  if ( sl->uri().startsWith( QStringLiteral( "http" ), Qt::CaseSensitivity::CaseInsensitive ) )
   {
-    if ( sl.uri().endsWith( QStringLiteral( "copc.laz" ), Qt::CaseSensitivity::CaseInsensitive ) )
-      sl.setIndex( new QgsRemoteCopcPointCloudIndex() );
-    else if ( sl.uri().endsWith( QStringLiteral( "ept.json" ), Qt::CaseSensitivity::CaseInsensitive ) )
-      sl.setIndex( new QgsRemoteEptPointCloudIndex() );
+    if ( sl->uri().endsWith( QStringLiteral( "copc.laz" ), Qt::CaseSensitivity::CaseInsensitive ) )
+      sl->setIndex( new QgsRemoteCopcPointCloudIndex() );
+    else if ( sl->uri().endsWith( QStringLiteral( "ept.json" ), Qt::CaseSensitivity::CaseInsensitive ) )
+      sl->setIndex( new QgsRemoteEptPointCloudIndex() );
   }
   else
   {
-    if ( sl.uri().endsWith( QStringLiteral( "copc.laz" ), Qt::CaseSensitivity::CaseInsensitive ) )
-      sl.setIndex( new QgsCopcPointCloudIndex() );
-    else if ( sl.uri().endsWith( QStringLiteral( "ept.json" ), Qt::CaseSensitivity::CaseInsensitive ) )
-      sl.setIndex( new QgsEptPointCloudIndex() );
+    if ( sl->uri().endsWith( QStringLiteral( "copc.laz" ), Qt::CaseSensitivity::CaseInsensitive ) )
+      sl->setIndex( new QgsCopcPointCloudIndex() );
+    else if ( sl->uri().endsWith( QStringLiteral( "ept.json" ), Qt::CaseSensitivity::CaseInsensitive ) )
+      sl->setIndex( new QgsEptPointCloudIndex() );
   }
 
-  if ( !sl.index() )
+  if ( !sl->index() )
     return;
 
-  sl.index()->load( sl.uri() );
+  sl->index()->load( sl->uri() );
 
   // if expression is broken or index is missing a required field, set to "false" so it returns no points
-  if ( !sl.index()->setSubsetString( mSubsetString ) )
-    sl.index()->setSubsetString( QStringLiteral( "false" ) );
+  if ( !sl->index()->setSubsetString( mSubsetString ) )
+    sl->index()->setSubsetString( QStringLiteral( "false" ) );
+
+  emit subIndexLoaded( i );
 }
 
 void QgsVirtualPointCloudProvider::populateAttributeCollection( QSet<QString> names )
@@ -446,14 +484,14 @@ bool QgsVirtualPointCloudProvider::setSubsetString( const QString &subset, bool 
 
   Q_UNUSED( updateFeatureCount )
 
-  for ( const auto &i : std::as_const( mSubLayers ) )
+  for ( QgsPointCloudSubIndex *si : std::as_const( mSubIndexes ) )
   {
-    if ( !i.index() )
+    if ( !si->index() )
       continue;
 
     // if expression is broken or index is missing a required field, set to "false" so it returns no points
-    if ( !i.index()->setSubsetString( subset ) )
-      i.index()->setSubsetString( QStringLiteral( "false" ) );
+    if ( !si->index()->setSubsetString( subset ) )
+      si->index()->setSubsetString( QStringLiteral( "false" ) );
   }
 
   mSubsetString = subset;

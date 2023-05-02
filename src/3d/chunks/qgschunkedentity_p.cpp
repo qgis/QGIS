@@ -38,31 +38,6 @@ typedef Qt3DCore::QBuffer Qt3DQBuffer;
 
 ///@cond PRIVATE
 
-static float screenSpaceError( float epsilon, float distance, float screenSize, float fov )
-{
-  /* This routine approximately calculates how an error (epsilon) of an object in world coordinates
-   * at given distance (between camera and the object) will look like in screen coordinates.
-   *
-   * the math below simply uses triangle similarity:
-   *
-   *             epsilon                       phi
-   *   -----------------------------  = ----------------
-   *   [ frustum width at distance ]    [ screen width ]
-   *
-   * Then we solve for phi, substituting [frustum width at distance] = 2 * distance * tan(fov / 2)
-   *
-   *  ________xxx__      xxx = real world error (epsilon)
-   *  \     |     /        x = screen space error (phi)
-   *   \    |    /
-   *    \___|_x_/   near plane (screen space)
-   *     \  |  /
-   *      \ | /
-   *       \|/    angle = field of view
-   *       camera
-   */
-  float phi = epsilon * screenSize / ( 2 * distance * tan( fov * M_PI / ( 2 * 180 ) ) );
-  return phi;
-}
 
 static float screenSpaceError( QgsChunkNode *node, const QgsChunkedEntity::SceneState &state )
 {
@@ -73,7 +48,7 @@ static float screenSpaceError( QgsChunkNode *node, const QgsChunkedEntity::Scene
 
   // TODO: what to do when distance == 0 ?
 
-  float sse = screenSpaceError( node->error(), dist, state.screenSizePx, state.cameraFov );
+  float sse = Qgs3DUtils::screenSpaceError( node->error(), dist, state.screenSizePx, state.cameraFov );
   return sse;
 }
 
