@@ -32,7 +32,8 @@
 #include "qgsalgorithmpdalinformation.h"
 #include "qgsalgorithmpdalmerge.h"
 #include "qgsalgorithmpdalreproject.h"
-#include "qgsalgorithmpdalthin.h"
+#include "qgsalgorithmpdalthinbydecimate.h"
+#include "qgsalgorithmpdalthinbyradius.h"
 #include "qgsalgorithmpdaltile.h"
 
 ///@cond PRIVATE
@@ -103,7 +104,8 @@ void QgsPdalAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsPdalInformationAlgorithm() );
   addAlgorithm( new QgsPdalMergeAlgorithm() );
   addAlgorithm( new QgsPdalReprojectAlgorithm() );
-  addAlgorithm( new QgsPdalThinAlgorithm() );
+  addAlgorithm( new QgsPdalThinByDecimateAlgorithm() );
+  addAlgorithm( new QgsPdalThinByRadiusAlgorithm() );
   addAlgorithm( new QgsPdalTileAlgorithm() );
 }
 
