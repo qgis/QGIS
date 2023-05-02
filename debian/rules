@@ -108,6 +108,8 @@ endif
 
 ifeq (,$(findstring $(DISTRIBUTION),"sid kinetic lunar"))
 	CMAKE_OPTS += -DWITH_PDAL=TRUE
+else
+	CMAKE_OPTS += -DWITH_PDAL=FALSE
 endif
 
 ifneq (,$(findstring ;$(GRASSVER);, ";7;8;"))
