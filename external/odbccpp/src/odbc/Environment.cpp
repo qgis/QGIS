@@ -151,7 +151,7 @@ vector<DriverInformation> Environment::getDrivers()
                 start = end + 1;
             }
         }
-        ret.push_back(move(driverInfo));
+        ret.push_back(std::move(driverInfo));
 
         direction = SQL_FETCH_NEXT;
     }
