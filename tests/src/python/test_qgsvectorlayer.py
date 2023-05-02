@@ -3014,6 +3014,10 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
                          QgsFieldConstraints.ConstraintOriginLayer)
         self.assertEqual(layer.fields().at(0).constraints().constraintStrength(QgsFieldConstraints.ConstraintNotNull),
                          QgsFieldConstraints.ConstraintStrengthHard)
+        self.assertEqual(layer.fieldConstraintsAndStrength(0)[QgsFieldConstraints.ConstraintNotNull],
+                         QgsFieldConstraints.ConstraintStrengthHard)
+        self.assertEqual(len(layer.fieldConstraintsAndStrength(1)), 0)
+        self.assertEqual(len(layer.fieldConstraintsAndStrength(2)), 0)
 
         layer.setFieldConstraint(1, QgsFieldConstraints.ConstraintNotNull)
         layer.setFieldConstraint(1, QgsFieldConstraints.ConstraintUnique)
@@ -3066,6 +3070,8 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
         self.assertTrue(layer2.readXml(elem, QgsReadWriteContext()))
         self.assertFalse(layer2.fieldConstraints(0))
         self.assertFalse(layer2.fieldConstraints(1))
+        self.assertFalse(layer2.fieldConstraintsAndStrength(0))
+        self.assertFalse(layer2.fieldConstraintsAndStrength(1))
 
         # set some constraints
         layer.setFieldConstraint(0, QgsFieldConstraints.ConstraintNotNull)
@@ -3086,6 +3092,8 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
                          QgsFieldConstraints.ConstraintOriginLayer)
         self.assertEqual(layer3.fields().at(0).constraints().constraintStrength(QgsFieldConstraints.ConstraintNotNull),
                          QgsFieldConstraints.ConstraintStrengthHard)
+        self.assertEqual(layer3.fieldConstraintsAndStrength(0)[QgsFieldConstraints.ConstraintNotNull],
+                         QgsFieldConstraints.ConstraintStrengthHard)
         self.assertEqual(layer3.fields().at(1).constraints().constraints(),
                          QgsFieldConstraints.ConstraintNotNull | QgsFieldConstraints.ConstraintUnique)
         self.assertEqual(layer3.fields().at(1).constraints().constraintOrigin(QgsFieldConstraints.ConstraintNotNull),
@@ -3095,6 +3103,10 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
         self.assertEqual(layer3.fields().at(1).constraints().constraintStrength(QgsFieldConstraints.ConstraintNotNull),
                          QgsFieldConstraints.ConstraintStrengthSoft)
         self.assertEqual(layer3.fields().at(1).constraints().constraintStrength(QgsFieldConstraints.ConstraintUnique),
+                         QgsFieldConstraints.ConstraintStrengthHard)
+        self.assertEqual(layer3.fieldConstraintsAndStrength(1)[QgsFieldConstraints.ConstraintNotNull],
+                         QgsFieldConstraints.ConstraintStrengthSoft)
+        self.assertEqual(layer3.fieldConstraintsAndStrength(1)[QgsFieldConstraints.ConstraintUnique],
                          QgsFieldConstraints.ConstraintStrengthHard)
 
     def testGetSetConstraintExpressions(self):
