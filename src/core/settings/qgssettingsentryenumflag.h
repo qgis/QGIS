@@ -32,7 +32,7 @@
  * \since QGIS 3.20
  */
 template <typename T>
-class QgsSettingsEntryEnumFlag : public QgsSettingsEntryByValue<T>
+class QgsSettingsEntryEnumFlag : public QgsSettingsEntryBaseTemplate<T>
 {
   public:
 
@@ -50,11 +50,11 @@ class QgsSettingsEntryEnumFlag : public QgsSettingsEntryByValue<T>
      * \since QGIS 3.30
      */
     QgsSettingsEntryEnumFlag( const QString &name, QgsSettingsTreeNode *parent, T defaultValue, const QString &description = QString(), Qgis::SettingsOptions options = Qgis::SettingsOptions() )
-      : QgsSettingsEntryByValue<T>( name,
-                                    parent,
-                                    QMetaEnum::fromType<T>().isFlag() ? qgsFlagValueToKeys( defaultValue ) : qgsEnumValueToKey( defaultValue ),
-                                    description,
-                                    options )
+      : QgsSettingsEntryBaseTemplate<T>( name,
+                                         parent,
+                                         QMetaEnum::fromType<T>().isFlag() ? qgsFlagValueToKeys( defaultValue ) : qgsEnumValueToKey( defaultValue ),
+                                         description,
+                                         options )
     {
       mMetaEnum = QMetaEnum::fromType<T>();
       Q_ASSERT( mMetaEnum.isValid() );
@@ -75,11 +75,11 @@ class QgsSettingsEntryEnumFlag : public QgsSettingsEntryByValue<T>
      * \note for Python bindings, a custom implementation is achieved in Python directly
      */
     QgsSettingsEntryEnumFlag( const QString &key, const QString &section, T defaultValue, const QString &description = QString(), Qgis::SettingsOptions options = Qgis::SettingsOptions() )
-      : QgsSettingsEntryByValue<T>( key,
-                                    section,
-                                    QVariant::fromValue( defaultValue ),
-                                    description,
-                                    options )
+      : QgsSettingsEntryBaseTemplate<T>( key,
+                                         section,
+                                         QMetaEnum::fromType<T>().isFlag() ? qgsFlagValueToKeys( defaultValue ) : qgsEnumValueToKey( defaultValue ),
+                                         description,
+                                         options )
     {
       mMetaEnum = QMetaEnum::fromType<T>();
       Q_ASSERT( mMetaEnum.isValid() );
@@ -87,7 +87,7 @@ class QgsSettingsEntryEnumFlag : public QgsSettingsEntryByValue<T>
         QgsDebugMsg( QStringLiteral( "Invalid metaenum. Enum/Flag probably misses Q_ENUM/Q_FLAG declaration. Settings key: '%1'" ).arg( this->key() ) );
     }
 
-    QVariant convertToVariant( T value ) const override
+    QVariant convertToVariant( const T &value ) const override
     {
       if ( mMetaEnum.isFlag() )
         return qgsFlagValueToKeys( value );
@@ -129,7 +129,7 @@ class QgsSettingsEntryEnumFlag : public QgsSettingsEntryByValue<T>
      * The \a value to set.
      * The \a dynamicKeyParts argument specifies the list of dynamic parts of the settings key.
      */
-    bool setValuePrivate( T value, const QStringList &dynamicKeyPartList ) const override
+    bool setValuePrivate( const T &value, const QStringList &dynamicKeyPartList ) const override
     {
       if ( !mMetaEnum.isValid() )
       {
@@ -153,7 +153,7 @@ class QgsSettingsEntryEnumFlag : public QgsSettingsEntryByValue<T>
       }
 
       if ( ok )
-        return this->setVariantValuePrivate( variantValue, dynamicKeyPartList );
+        return this->setVariantValue( variantValue, dynamicKeyPartList );
       else
         return false;
     }

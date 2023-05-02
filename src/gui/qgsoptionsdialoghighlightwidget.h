@@ -23,6 +23,34 @@
 #include "qgis_gui.h"
 #include "qgis_sip.h"
 
+class QgsOptionsDialogHighlightWidget;
+
+#ifndef SIP_RUN
+
+///@cond PRIVATE
+
+/**
+ * \ingroup gui
+ * \class QgsOptionsDialogHighlightWidgetEventFilter
+ * \brief QgsOptionsDialogHighlightWidgetEventFilter is an event filter implementation for QgsOptionsDialogHighlightWidget
+ * \since QGIS 3.32
+ */
+class QgsOptionsDialogHighlightWidgetEventFilter : public QObject
+{
+    Q_OBJECT
+  public:
+    //! Constructor
+    QgsOptionsDialogHighlightWidgetEventFilter( QgsOptionsDialogHighlightWidget *highlightWidget );
+    bool eventFilter( QObject *obj, QEvent *event ) override;
+  private:
+    QgsOptionsDialogHighlightWidget *mHighlightWidget;
+
+};
+
+///@endcond
+
+#endif
+
 /**
  * \ingroup gui
  * \class QgsOptionsDialogHighlightWidget
@@ -32,10 +60,8 @@
  * This uses stylesheets.
  * \since QGIS 3.0
  */
-class GUI_EXPORT QgsOptionsDialogHighlightWidget : public QObject
+class GUI_EXPORT QgsOptionsDialogHighlightWidget
 {
-
-    Q_OBJECT
   public:
 
     /**
@@ -45,6 +71,8 @@ class GUI_EXPORT QgsOptionsDialogHighlightWidget : public QObject
      * for the given widget.
      */
     static QgsOptionsDialogHighlightWidget *createWidget( QWidget *widget ) SIP_FACTORY;
+
+    virtual ~QgsOptionsDialogHighlightWidget() = default;
 
     /**
      * Returns if it valid: if the widget type is handled and if the widget is not still available
@@ -61,10 +89,6 @@ class GUI_EXPORT QgsOptionsDialogHighlightWidget : public QObject
      * Returns the widget
      */
     QWidget *widget() {return mWidget;}
-
-
-    bool eventFilter( QObject *obj, QEvent *event ) override;
-
 
   protected:
 
@@ -94,9 +118,11 @@ class GUI_EXPORT QgsOptionsDialogHighlightWidget : public QObject
     QPointer< QWidget > mWidget;
 
   private:
+    friend class QgsOptionsDialogHighlightWidgetEventFilter;
+
     QString mSearchText = QString();
     bool mChangedStyle = false;
-    bool mInstalledFilter = false;
+    QgsOptionsDialogHighlightWidgetEventFilter *mEventFilter = nullptr;
 };
 
 #endif // QGSOPTIONSDIALOGHIGHLIGHTWIDGET_H

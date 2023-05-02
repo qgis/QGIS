@@ -1,0 +1,111 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/settings/qgssettingstreemodel.h                              *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+
+
+class QgsSettingsTreeModel : QAbstractItemModel
+{
+%Docstring(signature="appended")
+:py:class:`QgsSettingsTreeModel` is a tree model for the settings tree.
+
+.. versionadded:: 3.32
+%End
+
+%TypeHeaderCode
+#include "qgssettingstreemodel.h"
+%End
+  public:
+
+    enum class Column
+    {
+      Name,
+      Value,
+      Description,
+    };
+
+    QgsSettingsTreeModel( QgsSettingsTreeNode *rootNode = 0, QObject *parent = 0 );
+%Docstring
+Constructor
+%End
+
+    ~QgsSettingsTreeModel();
+
+    void applyChanges();
+%Docstring
+Apply pending changes in the model to the corresponding settings
+%End
+
+
+
+
+    virtual QModelIndex index( int row, int column, const QModelIndex &parent ) const;
+
+    virtual QModelIndex parent( const QModelIndex &child ) const;
+
+    virtual int rowCount( const QModelIndex &parent ) const;
+
+    virtual int columnCount( const QModelIndex &parent ) const;
+
+    virtual QVariant data( const QModelIndex &index, int role ) const;
+
+    virtual QVariant headerData( int section, Qt::Orientation orientation, int role ) const;
+
+    virtual Qt::ItemFlags flags( const QModelIndex &index ) const;
+
+    virtual bool setData( const QModelIndex &index, const QVariant &value, int role );
+
+
+};
+
+class QgsSettingsTreeProxyModel : QSortFilterProxyModel
+{
+%Docstring(signature="appended")
+:py:class:`QgsSettingsTreeProxyModel` allows filtering the settings tree
+
+.. versionadded:: 3.32
+%End
+
+%TypeHeaderCode
+#include "qgssettingstreemodel.h"
+%End
+  public:
+    QgsSettingsTreeProxyModel( QgsSettingsTreeNode *rootNode = 0, QObject *parent = 0 );
+%Docstring
+Constructor
+%End
+
+    void applyChanges();
+%Docstring
+Apply pending changes in the model to the corresponding settings
+%End
+
+  public slots:
+    void setFilterText( const QString &filterText = QString() );
+%Docstring
+Sets the filter text
+%End
+
+
+  protected:
+    virtual bool filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const;
+
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/settings/qgssettingstreemodel.h                              *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
