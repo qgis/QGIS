@@ -74,6 +74,8 @@
 #include "qgsskyboxentity.h"
 #include "qgsskyboxsettings.h"
 
+#include "qgsvirtualpointcloudentity_p.h"
+#include "qgsvirtualpointcloudprovider.h"
 #include "qgswindow3dengine.h"
 #include "qgspointcloudlayer.h"
 
@@ -205,7 +207,7 @@ void Qgs3DMapScene::viewZoomFull()
   const QgsRectangle extent = sceneExtent();
   const double side = std::max( extent.width(), extent.height() );
   double d = side / 2 / std::tan( cameraController()->camera()->fieldOfView() / 2 * M_PI / 180 );
-  d += yRange.upper();
+  d += yRange.isInfinite() ?  0. : yRange.upper();
   mCameraController->resetView( static_cast< float >( d ) );
   return;
 }
@@ -361,6 +363,34 @@ void addQLayerComponentsToHierarchy( Qt3DCore::QEntity *entity, const QVector<Qt
 void Qgs3DMapScene::updateScene()
 {
   QgsEventTracing::addEvent( QgsEventTracing::Instant, QStringLiteral( "3D" ), QStringLiteral( "Update Scene" ) );
+
+  const QSize size = mEngine->size();
+  const int screenSize = std::max( size.width(), size.height() );
+  const float fov = mCameraController->camera()->fieldOfView();
+  const QVector3D &cameraPosition = mCameraController->camera()->position();
+  for ( QgsVirtualPointCloudEntity *entity : std::as_const( mVirtualPointCloudEntities ) )
+  {
+    QgsVirtualPointCloudProvider *provider = entity->provider();
+
+    const QList<QgsPointCloudSubIndex *> subIndexes = provider->subIndexes();
+    for ( int i = 0; i < subIndexes.size(); ++i )
+    {
+      const QgsAABB &bbox = entity->boundingBox( i );
+      // magic number 256 is the common span value for a COPC root node
+      constexpr int SPAN = 256;
+      const float epsilon = std::min( bbox.xExtent(), bbox.yExtent() ) / SPAN;
+      const float distance = bbox.distanceFromPoint( cameraPosition );
+      const float sse = Qgs3DUtils::screenSpaceError( epsilon, distance, screenSize, fov );
+      constexpr float THRESHOLD = .2;
+      const bool displayAsBbox = sse < THRESHOLD;
+      if ( !displayAsBbox && !subIndexes.at( i )->index() )
+        provider->loadSubIndex( i );
+
+      entity->setRenderSubIndexAsBbox( i, displayAsBbox );
+    }
+    entity->updateBboxEntity();
+  }
+
   for ( QgsChunkedEntity *entity : std::as_const( mChunkEntities ) )
   {
     if ( entity->isEnabled() )
@@ -713,15 +743,33 @@ void Qgs3DMapScene::addLayerEntity( QgsMapLayer *layer )
 
       if ( QgsChunkedEntity *chunkedNewEntity = qobject_cast<QgsChunkedEntity *>( newEntity ) )
       {
-        mChunkEntities.append( chunkedNewEntity );
         needsSceneUpdate = true;
+        addNewChunkedEntity( chunkedNewEntity );
+      }
 
-        connect( chunkedNewEntity, &QgsChunkedEntity::newEntityCreated, this, [this]( Qt3DCore::QEntity * entity )
+      if ( QgsVirtualPointCloudEntity *virtualPointCloudEntity = qobject_cast<QgsVirtualPointCloudEntity *>( newEntity ) )
+      {
+        mVirtualPointCloudEntities.append( virtualPointCloudEntity );
+
+        QgsVirtualPointCloudProvider *provider = qobject_cast<QgsVirtualPointCloudProvider *>( layer->dataProvider() );
+        virtualPointCloudEntity->createChunkedEntitiesForLoadedSubIndexes();
+        const QList<QgsChunkedEntity *> chunkedEntities = virtualPointCloudEntity->chunkedEntities();
+        for ( QgsChunkedEntity *ce : chunkedEntities )
         {
-          finalizeNewEntity( entity );
-        } );
+          ce->setParent( virtualPointCloudEntity );
+          needsSceneUpdate = true;
+          addNewChunkedEntity( ce );
+        }
 
-        connect( chunkedNewEntity, &QgsChunkedEntity::pendingJobsCountChanged, this, &Qgs3DMapScene::totalPendingJobsCountChanged );
+        connect( provider, &QgsVirtualPointCloudProvider::subIndexLoaded, virtualPointCloudEntity, &QgsVirtualPointCloudEntity::createChunkedEntityForSubIndex );
+
+        connect( virtualPointCloudEntity, &QgsVirtualPointCloudEntity::newEntityCreated, this, [ = ]( QgsChunkedEntity * newChildChunkedEntity )
+        {
+          newChildChunkedEntity->setParent( virtualPointCloudEntity );
+          addNewChunkedEntity( newChildChunkedEntity );
+          virtualPointCloudEntity->updateBboxEntity();
+          onCameraChanged();
+        } );
       }
     }
   }
@@ -758,6 +806,17 @@ void Qgs3DMapScene::removeLayerEntity( QgsMapLayer *layer )
   if ( QgsChunkedEntity *chunkedEntity = qobject_cast<QgsChunkedEntity *>( entity ) )
   {
     mChunkEntities.removeOne( chunkedEntity );
+  }
+
+  if ( QgsVirtualPointCloudEntity *vpcNewEntity = qobject_cast<QgsVirtualPointCloudEntity *>( entity ) )
+  {
+    const QList<QgsChunkedEntity *> chunkedEntities = vpcNewEntity->chunkedEntities();
+    for ( QgsChunkedEntity *chunkedEntity : chunkedEntities )
+    {
+      mChunkEntities.removeOne( chunkedEntity );
+      chunkedEntity->deleteLater();
+    }
+    mVirtualPointCloudEntities.removeOne( vpcNewEntity );
   }
 
   if ( entity )
@@ -848,6 +907,18 @@ void Qgs3DMapScene::finalizeNewEntity( Qt3DCore::QEntity *newEntity )
       }
     }
   }
+}
+
+void Qgs3DMapScene::addNewChunkedEntity( QgsChunkedEntity *newEntity )
+{
+  mChunkEntities.append( newEntity );
+
+  connect( newEntity, &QgsChunkedEntity::newEntityCreated, this, [this]( Qt3DCore::QEntity * entity )
+  {
+    finalizeNewEntity( entity );
+  } );
+
+  connect( newEntity, &QgsChunkedEntity::pendingJobsCountChanged, this, &Qgs3DMapScene::totalPendingJobsCountChanged );
 }
 
 int Qgs3DMapScene::maximumTextureSize() const
