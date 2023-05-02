@@ -1244,7 +1244,7 @@ void QgsMapCanvas::notifyRendererErrors( const QgsMapRendererJob::Errors &errors
 
 void QgsMapCanvas::updateDevicePixelFromScreen()
 {
-  mSettings.setDevicePixelRatio( devicePixelRatio() );
+  mSettings.setDevicePixelRatio( devicePixelRatioF() );
   // TODO: QGIS 4 -> always respect screen dpi
   if ( QgsSettingsRegistryGui::settingsRespectScreenDPI->value() )
   {
