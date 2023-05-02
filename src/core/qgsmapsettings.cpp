@@ -193,7 +193,7 @@ void QgsMapSettings::updateDerived()
   mVisibleExtent.set( dxmin, dymin, dxmax, dymax );
 
   // update the scale
-  mScaleCalculator.setDpi( mDpi * mDevicePixelRatio );
+  mScaleCalculator.setDpi( mDpi );
   mScale = mScaleCalculator.calculate( mVisibleExtent, mSize.width() );
 
   bool ok = true;
