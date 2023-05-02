@@ -419,6 +419,8 @@ endif()
 
 if (WITH_PDAL AND PDAL_2_5_OR_HIGHER)
   set(QGIS_ANALYSIS_SRCS ${QGIS_ANALYSIS_SRCS}
+    ${CMAKE_SOURCE_DIR}/external/untwine/api/QgisUntwine.cpp
+
     processing/pdal/qgspdalalgorithms.cpp
 
     processing/pdal/qgspdalalgorithmbase.cpp
@@ -428,6 +430,7 @@ if (WITH_PDAL AND PDAL_2_5_OR_HIGHER)
     processing/pdal/qgsalgorithmpdalbuildvpc.cpp
     processing/pdal/qgsalgorithmpdalclip.cpp
     processing/pdal/qgsalgorithmpdalconvertformat.cpp
+    processing/pdal/qgsalgorithmpdalcreatecopc.cpp
     processing/pdal/qgsalgorithmpdaldensity.cpp
     processing/pdal/qgsalgorithmpdalexportraster.cpp
     processing/pdal/qgsalgorithmpdalexportrastertin.cpp
@@ -442,7 +445,13 @@ if (WITH_PDAL AND PDAL_2_5_OR_HIGHER)
   )
 
   set(QGIS_ANALYSIS_HDRS ${QGIS_ANALYSIS_HDRS}
+    ${CMAKE_SOURCE_DIR}/external/untwine/api/QgisUntwine.hpp
+
     processing/pdal/qgspdalalgorithms.h
+  )
+
+  include_directories(
+    ${CMAKE_SOURCE_DIR}/external/untwine/api
   )
 endif()
 
