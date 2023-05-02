@@ -2011,6 +2011,118 @@ template<TYPE1, TYPE2>
 };
 
 
+%MappedType QMap<QgsFieldConstraints::Constraint, QgsFieldConstraints::ConstraintStrength>
+/TypeHint="Dict[QgsFieldConstraints.Constraint, QgsFieldConstraints.ConstraintStrength]", TypeHintValue="{}"/
+{
+%TypeHeaderCode
+#include <QMap>
+#include "qgsfieldconstraints.h"
+%End
+
+%ConvertFromTypeCode
+    // Create the dictionary.
+    PyObject *d = PyDict_New();
+
+    if (!d)
+        return NULL;
+
+    // Set the dictionary elements.
+    QMap<QgsFieldConstraints::Constraint, QgsFieldConstraints::ConstraintStrength>::const_iterator i = sipCpp->constBegin();
+
+    while (i != sipCpp->constEnd())
+    {
+        PyObject *kobj = sipConvertFromEnum(static_cast<int>(i.key()),
+                                            sipType_QgsFieldConstraints_Constraint);
+        PyObject *vobj = sipConvertFromEnum(static_cast<int>(i.value()),
+                                            sipType_QgsFieldConstraints_ConstraintStrength);
+
+        if (kobj == NULL || vobj == NULL || PyDict_SetItem(d, kobj, vobj) < 0)
+        {
+            Py_DECREF(d);
+
+            if (kobj)
+                Py_DECREF(kobj);
+
+            if (vobj)
+                Py_DECREF(vobj);
+
+            return NULL;
+        }
+
+        Py_DECREF(kobj);
+        Py_DECREF(vobj);
+
+        ++i;
+    }
+
+    return d;
+%End
+
+%ConvertToTypeCode
+    // Get the Python object as an iterator
+    PyObject *iter = PyObject_GetIter(sipPy);
+
+    if (!sipIsErr)
+    {
+        PyErr_Clear();
+        Py_XDECREF(iter);
+
+        return (iter && !PyBytes_Check(sipPy) && !PyUnicode_Check(sipPy));
+    }
+
+    if (!iter)
+    {
+        *sipIsErr = 1;
+
+        return 0;
+    }
+
+    // Create a new QMap to hold the values
+    QMap<QgsFieldConstraints::Constraint, QgsFieldConstraints::ConstraintStrength> *map = new QMap<QgsFieldConstraints::Constraint, QgsFieldConstraints::ConstraintStrength>;
+
+    // Loop over the Python iterator
+    for (Py_ssize_t i = 0; ; ++i)
+    {
+        // Get the next Python item in the iterator
+        PyErr_Clear();
+        PyObject *item = PyIter_Next(iter);
+
+        if (!item)
+        {
+            if (PyErr_Occurred())
+            {
+                delete map;
+                Py_DECREF(iter);
+                *sipIsErr = 1;
+
+                return 0;
+            }
+
+            break;
+        }
+
+        // Get the key and value from the Python item
+        PyObject *key = PyTuple_GetItem(item, 0);
+        PyObject *value = PyTuple_GetItem(item, 1);
+
+        // Convert the key and value to C++ types
+        int keyVal = sipConvertToEnum(key, sipType_QgsFieldConstraints_Constraint);
+        int valueVal = sipConvertToEnum(value, sipType_QgsFieldConstraints_ConstraintStrength);
+
+        // Add the key and value to the map
+        map->insert(static_cast<QgsFieldConstraints::Constraint>(keyVal), static_cast<QgsFieldConstraints::ConstraintStrength>(valueVal));
+
+        Py_DECREF(item);
+    }
+
+    Py_DECREF(iter);
+
+    *sipCppPtr = map;
+
+    return sipGetState(sipTransferObj);
+%End
+};
+
 
 template<double, TYPE>
 %MappedType QMap<double, TYPE>
