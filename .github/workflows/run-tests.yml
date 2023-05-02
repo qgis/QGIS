@@ -62,7 +62,7 @@ jobs:
             with-quick: ON
             with-clazy: OFF
             with-grass7: OFF
-            with-grass8: OFF
+            with-grass8: ON
             with-compile-commands: OFF
             LD_PRELOAD: ''
             experimental: false
