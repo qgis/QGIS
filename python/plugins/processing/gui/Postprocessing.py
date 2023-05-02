@@ -91,6 +91,19 @@ def handleAlgorithmResults(alg, context, feedback=None, showResults=True, parame
                 if style:
                     layer.loadNamedStyle(style)
 
+                try:
+                    from qgis._3d import QgsPointCloudLayer3DRenderer
+                    if layer.type() == QgsMapLayerType.PointCloudLayer:
+                        if layer.renderer3D() is None:
+                            # If the layer has no 3D renderer and syncing 3D to 2D renderer is enabled,
+                            # we create a renderer and set it up with the 2D renderer
+                            if layer.sync3DRendererTo2DRenderer():
+                                renderer3D = QgsPointCloudLayer3DRenderer()
+                                renderer3D.convertFrom2DRenderer(layer.renderer())
+                                layer.setRenderer3D(renderer3D)
+                except ImportError as e:
+                    QgsMessageLog.logMessage(QCoreApplication.translate("Postprocessing", "3D library is not available, can't assign a 3d renderer to a layer."))
+
                 # Load layer to layer tree root or to a specific group
                 mapLayer = context.temporaryLayerStore().takeMapLayer(layer)
                 group_name = ProcessingConfig.getSetting(ProcessingConfig.RESULTS_GROUP_NAME)

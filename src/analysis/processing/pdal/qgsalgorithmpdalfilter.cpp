@@ -44,7 +44,7 @@ QString QgsPdalFilterAlgorithm::groupId() const
 
 QStringList QgsPdalFilterAlgorithm::tags() const
 {
-  return QObject::tr( "filter,subset,extract,dimension,attribute,extent,bounds,rectangle" ).split( ',' );
+  return QObject::tr( "pdal,lidar,filter,subset,extract,dimension,attribute,extent,bounds,rectangle" ).split( ',' );
 }
 
 QString QgsPdalFilterAlgorithm::shortHelpString() const
@@ -62,7 +62,7 @@ void QgsPdalFilterAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterPointCloudLayer( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ) ) );
   addParameter( new QgsProcessingParameterString( QStringLiteral( "FILTER_EXPRESSION" ), QObject::tr( "Filter expression" ), QVariant(), false, true ) );
   addParameter( new QgsProcessingParameterExtent( QStringLiteral( "FILTER_EXTENT" ), QObject::tr( "Cropping extent" ), QVariant(), true ) );
-  addParameter( new QgsProcessingParameterPointCloudDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Output" ) ) );
+  addParameter( new QgsProcessingParameterPointCloudDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Filtered" ) ) );
 }
 
 QStringList QgsPdalFilterAlgorithm::createArgumentLists( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
