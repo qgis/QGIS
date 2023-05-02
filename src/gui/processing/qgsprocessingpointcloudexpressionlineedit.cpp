@@ -28,6 +28,8 @@
 #include <QPushButton>
 #include <QMessageBox>
 
+/// @cond PRIVATE
+
 QgsProcessingPointCloudExpressionLineEdit::QgsProcessingPointCloudExpressionLineEdit( QWidget *parent )
   : QWidget( parent )
 {
@@ -326,3 +328,5 @@ void QgsProcessingPointCloudExpressionDialog::clear()
 {
   mTxtSql->clear();
 }
+
+///@endcond
