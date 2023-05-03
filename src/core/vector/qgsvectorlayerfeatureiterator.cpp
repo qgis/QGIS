@@ -137,6 +137,7 @@ QgsVectorLayerFeatureIterator::QgsVectorLayerFeatureIterator( QgsVectorLayerFeat
   if ( mRequest.destinationCrs().isValid() && mRequest.destinationCrs() != mSource->mCrs )
   {
     mTransform = QgsCoordinateTransform( mSource->mCrs, mRequest.destinationCrs(), mRequest.transformContext() );
+    mHasValidTransform = mTransform.isValid();
   }
 
   // prepare spatial filter geometries for optimal speed
@@ -938,7 +939,7 @@ void QgsVectorLayerFeatureIterator::createOrderedJoinList()
 bool QgsVectorLayerFeatureIterator::postProcessFeature( QgsFeature &feature )
 {
   bool result = checkGeometryValidity( feature );
-  if ( result )
+  if ( result && mHasValidTransform )
     geometryToDestinationCrs( feature, mTransform );
 
   if ( result && mDistanceWithinEngine && feature.hasGeometry() )
