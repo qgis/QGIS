@@ -81,9 +81,9 @@ def post_process_layer(output_name: str,
         style = RenderingStyles.getStyle(alg.id(), output_name)
 
     if style is None:
-        if layer.type() == Qgis.MapLayerType.Raster:
+        if layer.type() == Qgis.LayerType.Raster:
             style = ProcessingConfig.getSetting(ProcessingConfig.RASTER_STYLE)
-        elif layer.type() == Qgis.MapLayerType.Vector:
+        elif layer.type() == Qgis.LayerType.Vector:
             if layer.geometryType() == QgsWkbTypes.PointGeometry:
                 style = ProcessingConfig.getSetting(
                     ProcessingConfig.VECTOR_POINT_STYLE)
@@ -98,7 +98,7 @@ def post_process_layer(output_name: str,
 
     try:
         from qgis._3d import QgsPointCloudLayer3DRenderer
-        if layer.type() == Qgis.MapLayerType.PointCloud:
+        if layer.type() == Qgis.LayerType.PointCloud:
             if layer.renderer3D() is None:
                 # If the layer has no 3D renderer and syncing 3D to 2D
                 # renderer is enabled, we create a renderer and set it up
@@ -124,7 +124,7 @@ def post_process_layer_tree_layer(layer_tree_layer: QgsLayerTreeLayer):
     """
     layer = layer_tree_layer.layer()
     if ProcessingConfig.getSetting(ProcessingConfig.VECTOR_FEATURE_COUNT) and \
-            layer.type() == Qgis.MapLayerType.Vector:
+            layer.type() == Qgis.LayerType.Vector:
         layer_tree_layer.setCustomProperty("showFeatureCount", True)
 
 
@@ -150,6 +150,7 @@ def get_layer_tree_results_group(details: QgsProcessingContext.LayerDetails,
         if not results_group:
             results_group = destination_project.layerTreeRoot().insertGroup(
                 0, results_group_name)
+            results_group.setExpanded(True)
 
     # if this particular output layer has a specific output group assigned,
     # find or create it now
@@ -158,6 +159,7 @@ def get_layer_tree_results_group(details: QgsProcessingContext.LayerDetails,
         if not group:
             group = results_group.insertGroup(
                 0, details.groupName)
+            group.setExpanded(True)
     else:
         group = results_group
 
