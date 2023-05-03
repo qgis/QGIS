@@ -22,7 +22,9 @@ __copyright__ = '(C) 2012, Victor Olaya'
 import traceback
 from typing import (
     Dict,
-    Optional
+    List,
+    Optional,
+    Tuple
 )
 
 from qgis.PyQt.QtCore import QCoreApplication
@@ -41,6 +43,9 @@ from qgis.core import (
 
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.gui.RenderingStyles import RenderingStyles
+
+
+SORT_ORDER_CUSTOM_PROPERTY = '_processing_sort_order'
 
 
 def determine_output_name(dest_id: str,
@@ -117,15 +122,23 @@ def post_process_layer(output_name: str,
         )
 
 
-def post_process_layer_tree_layer(layer_tree_layer: QgsLayerTreeLayer):
+def create_layer_tree_layer(layer: QgsMapLayer,
+                            details: QgsProcessingContext.LayerDetails) \
+        -> QgsLayerTreeLayer:
     """
     Applies post-processing steps to a QgsLayerTreeLayer created for
     an algorithm's output
     """
-    layer = layer_tree_layer.layer()
+    layer_tree_layer = QgsLayerTreeLayer(layer)
+
     if ProcessingConfig.getSetting(ProcessingConfig.VECTOR_FEATURE_COUNT) and \
             layer.type() == Qgis.LayerType.Vector:
         layer_tree_layer.setCustomProperty("showFeatureCount", True)
+
+    if details.layerSortKey:
+        layer_tree_layer.setCustomProperty(SORT_ORDER_CUSTOM_PROPERTY,
+                                           details.layerSortKey)
+    return layer_tree_layer
 
 
 def get_layer_tree_results_group(details: QgsProcessingContext.LayerDetails,
@@ -184,6 +197,8 @@ def handleAlgorithmResults(alg: QgsProcessingAlgorithm,
     )
     i = 0
 
+    added_layers: List[Tuple[QgsLayerTreeGroup, QgsLayerTreeLayer]] = []
+
     for dest_id, details in context.layersToLoadOnCompletion().items():
         if feedback.isCanceled():
             return False
@@ -213,9 +228,11 @@ def handleAlgorithmResults(alg: QgsProcessingAlgorithm,
 
                 map_layer = context.temporaryLayerStore().takeMapLayer(layer)
                 details.project.addMapLayer(map_layer, False)
-                layer_tree_layer = results_group.insertLayer(0, map_layer)
-                if layer_tree_layer:
-                    post_process_layer_tree_layer(layer_tree_layer)
+
+                # we don't add the layer to the tree yet -- that's done
+                # later, after we've sorted all added layers
+                layer_tree_layer = create_layer_tree_layer(map_layer, details)
+                added_layers.append((results_group, layer_tree_layer))
 
                 if details.postProcessor():
                     details.postProcessor().postProcessLayer(
@@ -235,6 +252,15 @@ def handleAlgorithmResults(alg: QgsProcessingAlgorithm,
                 Qgis.Critical)
             wrong_layers.append(str(dest_id))
         i += 1
+
+    # sort added layer tree layers
+    sorted_layer_tree_layers = sorted(
+        added_layers,
+        key=lambda x: x[1].customProperty(SORT_ORDER_CUSTOM_PROPERTY, 0)
+    )
+    for group, layer_node in sorted_layer_tree_layers:
+        layer_node.removeCustomProperty(SORT_ORDER_CUSTOM_PROPERTY)
+        group.insertChildNode(0, layer_node)
 
     feedback.setProgress(100)
 
