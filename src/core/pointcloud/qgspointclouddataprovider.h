@@ -166,14 +166,14 @@ class CORE_EXPORT QgsPointCloudDataProvider: public QgsDataProvider
     virtual QgsPointCloudIndex *index() const SIP_SKIP {return nullptr;}
 
     /**
-     * Returns a list of pointers to sub indexes available if the provider supports multiple indexes, empty list otherwise.
+     * Returns a list of sub indexes available if the provider supports multiple indexes, empty list otherwise.
      *
-     * Each sub index contain a pointer to the individual point cloud index which may be nullptr if not loaded yet.
+     * The sub indexes contain a pointer to the individual indexes which may be nullptr if not yet loaded.
      *
      * \note Not available in Python bindings
      * \since QGIS 3.32
      */
-    virtual QList<QgsPointCloudSubIndex *> subIndexes() SIP_SKIP { return QList<QgsPointCloudSubIndex *>(); }
+    virtual QVector<QgsPointCloudSubIndex> subIndexes() SIP_SKIP { return QVector<QgsPointCloudSubIndex>(); }
 
     /**
      * Triggers loading of the point cloud index for the \a n th sub index

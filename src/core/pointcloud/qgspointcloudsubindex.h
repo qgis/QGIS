@@ -73,7 +73,7 @@ class QgsPointCloudSubIndex
     qint64 pointCount() const { return mPointCount; }
 
   private:
-    std::unique_ptr<QgsPointCloudIndex> mIndex;
+    std::shared_ptr<QgsPointCloudIndex> mIndex;
     QString mUri;
     QgsRectangle mExtent;
     QgsGeometry mGeometry;
