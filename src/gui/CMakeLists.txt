@@ -402,6 +402,7 @@ set(QGIS_GUI_SRCS
   processing/models/qgsmodelgraphicsview.cpp
   processing/models/qgsmodelgroupboxdefinitionwidget.cpp
   processing/models/qgsmodelinputreorderwidget.cpp
+  processing/models/qgsmodeloutputreorderwidget.cpp
   processing/models/qgsmodelsnapper.cpp
   processing/models/qgsmodelundocommand.cpp
   processing/models/qgsmodelviewmouseevent.cpp
@@ -1325,6 +1326,7 @@ set(QGIS_GUI_HDRS
   processing/models/qgsmodelgraphicsview.h
   processing/models/qgsmodelgroupboxdefinitionwidget.h
   processing/models/qgsmodelinputreorderwidget.h
+  processing/models/qgsmodeloutputreorderwidget.h
   processing/models/qgsmodelsnapper.h
   processing/models/qgsmodelundocommand.h
   processing/models/qgsmodelviewmouseevent.h
