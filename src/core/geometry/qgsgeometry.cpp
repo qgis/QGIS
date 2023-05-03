@@ -49,6 +49,7 @@ email                : morb at ozemail dot com dot au
 struct QgsGeometryPrivate
 {
   QgsGeometryPrivate(): ref( 1 ) {}
+  QgsGeometryPrivate( std::unique_ptr< QgsAbstractGeometry > geometry ): ref( 1 ), geometry( std::move( geometry ) ) {}
   QAtomicInt ref;
   std::unique_ptr< QgsAbstractGeometry > geometry;
 };
@@ -68,14 +69,11 @@ QgsGeometry::QgsGeometry( QgsAbstractGeometry *geom )
   : d( new QgsGeometryPrivate() )
 {
   d->geometry.reset( geom );
-  d->ref = QAtomicInt( 1 );
 }
 
 QgsGeometry::QgsGeometry( std::unique_ptr<QgsAbstractGeometry> geom )
-  : d( new QgsGeometryPrivate() )
+  : d( new QgsGeometryPrivate( std::move( geom ) ) )
 {
-  d->geometry = std::move( geom );
-  d->ref = QAtomicInt( 1 );
 }
 
 QgsGeometry::QgsGeometry( const QgsGeometry &other )
