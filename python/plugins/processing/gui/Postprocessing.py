@@ -19,12 +19,11 @@ __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
 
+import traceback
 from typing import (
     Dict,
     Optional
 )
-import traceback
-
 
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import (
@@ -105,9 +104,9 @@ def post_process_layer(output_name: str,
                 # renderer is enabled, we create a renderer and set it up
                 # with the 2D renderer
                 if layer.sync3DRendererTo2DRenderer():
-                    renderer3D = QgsPointCloudLayer3DRenderer()
-                    renderer3D.convertFrom2DRenderer(layer.renderer())
-                    layer.setRenderer3D(renderer3D)
+                    renderer_3d = QgsPointCloudLayer3DRenderer()
+                    renderer_3d.convertFrom2DRenderer(layer.renderer())
+                    layer.setRenderer3D(renderer_3d)
     except ImportError:
         QgsMessageLog.logMessage(
             QCoreApplication.translate(
@@ -171,11 +170,16 @@ def handleAlgorithmResults(alg: QgsProcessingAlgorithm,
                            parameters: Optional[Dict] = None):
     if not parameters:
         parameters = {}
-
-    wrongLayers = []
     if feedback is None:
         feedback = QgsProcessingFeedback()
-    feedback.setProgressText(QCoreApplication.translate('Postprocessing', 'Loading resulting layers'))
+    wrong_layers = []
+
+    feedback.setProgressText(
+        QCoreApplication.translate(
+            'Postprocessing',
+            'Loading resulting layers'
+        )
+    )
     i = 0
 
     for dest_id, details in context.layersToLoadOnCompletion().items():
@@ -184,7 +188,9 @@ def handleAlgorithmResults(alg: QgsProcessingAlgorithm,
 
         if len(context.layersToLoadOnCompletion()) > 2:
             # only show progress feedback if we're loading a bunch of layers
-            feedback.setProgress(100 * i / float(len(context.layersToLoadOnCompletion())))
+            feedback.setProgress(
+                100 * i / float(len(context.layersToLoadOnCompletion()))
+            )
 
         try:
             layer = QgsProcessingUtils.mapLayerFromString(
@@ -216,21 +222,30 @@ def handleAlgorithmResults(alg: QgsProcessingAlgorithm,
                         feedback)
 
             else:
-                wrongLayers.append(str(dest_id))
+                wrong_layers.append(str(dest_id))
         except Exception:
-            QgsMessageLog.logMessage(QCoreApplication.translate('Postprocessing',
-                                                                "Error loading result layer:") + "\n" + traceback.format_exc(),
-                                     'Processing', Qgis.Critical)
-            wrongLayers.append(str(dest_id))
+            QgsMessageLog.logMessage(
+                QCoreApplication.translate(
+                    'Postprocessing',
+                    "Error loading result layer:"
+                ) + "\n" + traceback.format_exc(),
+                'Processing',
+                Qgis.Critical)
+            wrong_layers.append(str(dest_id))
         i += 1
 
     feedback.setProgress(100)
 
-    if wrongLayers:
-        msg = QCoreApplication.translate('Postprocessing', "The following layers were not correctly generated.")
-        msg += "\n" + "\n".join([f"• {lay}" for lay in wrongLayers]) + '\n'
-        msg += QCoreApplication.translate('Postprocessing',
-                                          "You can check the 'Log Messages Panel' in QGIS main window to find more information about the execution of the algorithm.")
+    if wrong_layers:
+        msg = QCoreApplication.translate(
+            'Postprocessing',
+            "The following layers were not correctly generated."
+        )
+        msg += "\n" + "\n".join([f"• {lay}" for lay in wrong_layers]) + '\n'
+        msg += QCoreApplication.translate(
+            'Postprocessing',
+            "You can check the 'Log Messages Panel' in QGIS main window "
+            "to find more information about the execution of the algorithm.")
         feedback.reportError(msg)
 
-    return len(wrongLayers) == 0
+    return len(wrong_layers) == 0
