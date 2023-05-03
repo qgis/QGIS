@@ -66,6 +66,7 @@ QgsPdalCreateCopcAlgorithm *QgsPdalCreateCopcAlgorithm::createInstance() const
 void QgsPdalCreateCopcAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterMultipleLayers( QStringLiteral( "LAYERS" ), QObject::tr( "Input layers" ), QgsProcessing::TypePointCloud ) );
+  addParameter( new QgsProcessingParameterFolderDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Output directory" ), QVariant(), true, false ) );
   addOutput( new QgsProcessingOutputMultipleLayers( QStringLiteral( "OUTPUT_LAYERS" ), QObject::tr( "Output layers" ) ) );
 }
 
@@ -92,6 +93,10 @@ QVariantMap QgsPdalCreateCopcAlgorithm::processAlgorithm( const QVariantMap &par
     throw QgsProcessingException( QObject::tr( "Untwine executable not found %1" ).arg( untwineExecutable ) );
   }
 
+  const QString outputDir = parameterAsString( parameters, QStringLiteral( "OUTPUT" ), context );
+  if ( !QDir().mkpath( outputDir ) )
+    throw QgsProcessingException( QStringLiteral( "Failed to create output directory." ) );
+
   QgsProcessingMultiStepFeedback multiStepFeedback( layers.size(), feedback );
   QStringList outputLayers;
 
@@ -115,7 +120,7 @@ QVariantMap QgsPdalCreateCopcAlgorithm::processAlgorithm( const QVariantMap &par
 
     const QFileInfo fi( pcl->source() );
     const QDir directory = fi.absoluteDir();
-    const QString outputFile = QStringLiteral( "%1/%2.copc.laz" ).arg( directory.absolutePath() ).arg( fi.completeBaseName() );
+    const QString outputFile = QStringLiteral( "%1/%2.copc.laz" ).arg( outputDir.isEmpty() ? directory.absolutePath() : outputDir ).arg( fi.completeBaseName() );
 
     const QFileInfo outputFileInfo( outputFile );
     if ( outputFileInfo.exists() )
