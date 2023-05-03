@@ -47,7 +47,6 @@ import processing
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.gui.MessageBarProgress import MessageBarProgress
 from processing.gui.RenderingStyles import RenderingStyles
-from processing.gui.Postprocessing import handleAlgorithmResults
 from processing.gui.AlgorithmExecutor import execute
 from processing.script import ScriptUtils
 from processing.tools import dataobjects

@@ -84,7 +84,7 @@ class BatchAlgorithmDialog(QgsProcessingBatchAlgorithmDialogBase):
         self.execute(alg_parameters)
 
     def handleAlgorithmResults(self, algorithm, context, feedback, parameters):
-        handleAlgorithmResults(algorithm, context, feedback, False, parameters)
+        handleAlgorithmResults(algorithm, context, feedback, parameters)
 
     def loadHtmlResults(self, results, num):
         for out in self.algorithm().outputDefinitions():

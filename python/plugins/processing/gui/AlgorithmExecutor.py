@@ -379,7 +379,7 @@ def executeIterating(alg, parameters, paramToIter, context, feedback):
         if not ret:
             return False
 
-    handleAlgorithmResults(alg, context, feedback, False)
+    handleAlgorithmResults(alg, context, feedback)
     return True
 
 

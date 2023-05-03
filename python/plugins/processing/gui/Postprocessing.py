@@ -129,7 +129,6 @@ def post_process_layer_tree_layer(layer_tree_layer: QgsLayerTreeLayer):
 def handleAlgorithmResults(alg: QgsProcessingAlgorithm,
                            context: QgsProcessingContext,
                            feedback: Optional[QgsProcessingFeedback] = None,
-                           showResults: bool = True,
                            parameters: Optional[Dict] = None):
     if not parameters:
         parameters = {}
