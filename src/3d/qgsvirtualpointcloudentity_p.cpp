@@ -44,11 +44,30 @@ QgsVirtualPointCloudEntity::QgsVirtualPointCloudEntity( QgsPointCloudLayer *laye
   mSymbol.reset( symbol );
   mBboxesEntity = new QgsChunkBoundsEntity( this );
   const QVector<QgsPointCloudSubIndex> subIndexes = provider()->subIndexes();
-  for ( const auto &si : subIndexes )
+  for ( int i = 0; i < subIndexes.size(); ++i )
   {
+    const QgsPointCloudSubIndex &si = subIndexes.at( i );
     mBboxes << Qgs3DUtils::mapToWorldExtent( si.extent(), si.zRange().lower(), si.zRange().upper(), mMap.origin() );
+
+    if ( !si.index() )
+      continue;
+
+    QgsPointCloudLayerChunkedEntity *entity = new QgsPointCloudLayerChunkedEntity( si.index(),
+        mMap,
+        mCoordinateTransform,
+        static_cast< QgsPointCloud3DSymbol * >( mSymbol->clone() ),
+        mMaximumScreenSpaceError,
+        mShowBoundingBoxes,
+        mZValueScale,
+        mZValueOffset,
+        mPointBudget );
+    mChunkedEntitiesMap.insert( i, entity );
+    mChunkedEntities.append( entity );
+    entity->setParent( this );
   }
+
   updateBboxEntity();
+  connect( provider(), &QgsVirtualPointCloudProvider::subIndexLoaded, this, &QgsVirtualPointCloudEntity::createChunkedEntityForSubIndex );
 }
 
 QList<QgsChunkedEntity *> QgsVirtualPointCloudEntity::chunkedEntities() const
@@ -66,32 +85,6 @@ QgsAABB QgsVirtualPointCloudEntity::boundingBox( int i ) const
   return mBboxes.at( i );
 }
 
-void QgsVirtualPointCloudEntity::createChunkedEntitiesForLoadedSubIndexes()
-{
-  if ( !mChunkedEntities.isEmpty() )
-    return;
-
-  const QVector<QgsPointCloudSubIndex> subIndexes = provider()->subIndexes();
-  for ( int i = 0; i < subIndexes.size(); ++i )
-  {
-    const QgsPointCloudSubIndex &si = subIndexes.at( i );
-    if ( !si.index() )
-      continue;
-
-    QgsPointCloudLayerChunkedEntity *entity = new QgsPointCloudLayerChunkedEntity( si.index(),
-        mMap,
-        mCoordinateTransform,
-        static_cast< QgsPointCloud3DSymbol * >( mSymbol->clone() ),
-        mMaximumScreenSpaceError,
-        mShowBoundingBoxes,
-        mZValueScale,
-        mZValueOffset,
-        mPointBudget );
-    mChunkedEntitiesMap.insert( i, entity );
-    mChunkedEntities.append( entity );
-  }
-}
-
 void QgsVirtualPointCloudEntity::createChunkedEntityForSubIndex( int i )
 {
   const QVector<QgsPointCloudSubIndex> subIndexes = provider()->subIndexes();
@@ -106,7 +99,29 @@ void QgsVirtualPointCloudEntity::createChunkedEntityForSubIndex( int i )
       mPointBudget );
   mChunkedEntities.append( newChunkedEntity );
   mChunkedEntitiesMap.insert( i, newChunkedEntity );
+  newChunkedEntity->setParent( this );
   emit newEntityCreated( newChunkedEntity );
+}
+
+void QgsVirtualPointCloudEntity::handleSceneUpdate( const QgsChunkedEntity::SceneState &state )
+{
+  const QVector<QgsPointCloudSubIndex> subIndexes = provider()->subIndexes();
+  for ( int i = 0; i < subIndexes.size(); ++i )
+  {
+    const QgsAABB &bbox = mBboxes.at( i );
+    // magic number 256 is the common span value for a COPC root node
+    constexpr int SPAN = 256;
+    const float epsilon = std::min( bbox.xExtent(), bbox.yExtent() ) / SPAN;
+    const float distance = bbox.distanceFromPoint( state.cameraPos );
+    const float sse = Qgs3DUtils::screenSpaceError( epsilon, distance, state.screenSizePx, state.cameraFov );
+    constexpr float THRESHOLD = .2;
+    const bool displayAsBbox = sse < THRESHOLD;
+    if ( !displayAsBbox && !subIndexes.at( i ).index() )
+      provider()->loadSubIndex( i );
+
+    setRenderSubIndexAsBbox( i, displayAsBbox );
+  }
+  updateBboxEntity();
 }
 
 void QgsVirtualPointCloudEntity::updateBboxEntity()

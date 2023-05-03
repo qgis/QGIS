@@ -364,31 +364,9 @@ void Qgs3DMapScene::updateScene()
 {
   QgsEventTracing::addEvent( QgsEventTracing::Instant, QStringLiteral( "3D" ), QStringLiteral( "Update Scene" ) );
 
-  const QSize size = mEngine->size();
-  const int screenSize = std::max( size.width(), size.height() );
-  const float fov = mCameraController->camera()->fieldOfView();
-  const QVector3D &cameraPosition = mCameraController->camera()->position();
   for ( QgsVirtualPointCloudEntity *entity : std::as_const( mVirtualPointCloudEntities ) )
   {
-    QgsVirtualPointCloudProvider *provider = entity->provider();
-
-    const QVector<QgsPointCloudSubIndex> subIndexes = provider->subIndexes();
-    for ( int i = 0; i < subIndexes.size(); ++i )
-    {
-      const QgsAABB &bbox = entity->boundingBox( i );
-      // magic number 256 is the common span value for a COPC root node
-      constexpr int SPAN = 256;
-      const float epsilon = std::min( bbox.xExtent(), bbox.yExtent() ) / SPAN;
-      const float distance = bbox.distanceFromPoint( cameraPosition );
-      const float sse = Qgs3DUtils::screenSpaceError( epsilon, distance, screenSize, fov );
-      constexpr float THRESHOLD = .2;
-      const bool displayAsBbox = sse < THRESHOLD;
-      if ( !displayAsBbox && !subIndexes.at( i ).index() )
-        provider->loadSubIndex( i );
-
-      entity->setRenderSubIndexAsBbox( i, displayAsBbox );
-    }
-    entity->updateBboxEntity();
+    entity->handleSceneUpdate( sceneState_( mEngine ) );
   }
 
   for ( QgsChunkedEntity *entity : std::as_const( mChunkEntities ) )
@@ -751,23 +729,16 @@ void Qgs3DMapScene::addLayerEntity( QgsMapLayer *layer )
       {
         mVirtualPointCloudEntities.append( virtualPointCloudEntity );
 
-        QgsVirtualPointCloudProvider *provider = qobject_cast<QgsVirtualPointCloudProvider *>( layer->dataProvider() );
-        virtualPointCloudEntity->createChunkedEntitiesForLoadedSubIndexes();
         const QList<QgsChunkedEntity *> chunkedEntities = virtualPointCloudEntity->chunkedEntities();
         for ( QgsChunkedEntity *ce : chunkedEntities )
         {
-          ce->setParent( virtualPointCloudEntity );
           needsSceneUpdate = true;
           addNewChunkedEntity( ce );
         }
 
-        connect( provider, &QgsVirtualPointCloudProvider::subIndexLoaded, virtualPointCloudEntity, &QgsVirtualPointCloudEntity::createChunkedEntityForSubIndex );
-
         connect( virtualPointCloudEntity, &QgsVirtualPointCloudEntity::newEntityCreated, this, [ = ]( QgsChunkedEntity * newChildChunkedEntity )
         {
-          newChildChunkedEntity->setParent( virtualPointCloudEntity );
           addNewChunkedEntity( newChildChunkedEntity );
-          virtualPointCloudEntity->updateBboxEntity();
           onCameraChanged();
         } );
       }
