@@ -27,15 +27,76 @@ from qgis.core import (Qgis,
                        QgsProject,
                        QgsProcessingFeedback,
                        QgsProcessingUtils,
-                       QgsMapLayerType,
+                       QgsMapLayer,
                        QgsWkbTypes,
                        QgsMessageLog,
                        QgsProviderRegistry,
                        QgsExpressionContext,
-                       QgsExpressionContextScope)
+                       QgsProcessingContext,
+                       QgsProcessingAlgorithm,
+                       QgsExpressionContextScope,
+                       QgsLayerTreeLayer)
 
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.gui.RenderingStyles import RenderingStyles
+
+
+def post_process_layer(output_name: str,
+                       layer: QgsMapLayer,
+                       alg: QgsProcessingAlgorithm):
+    """
+    Applies post-processing steps to a layer
+    """
+    style = None
+    if output_name:
+        style = RenderingStyles.getStyle(alg.id(), output_name)
+
+    if style is None:
+        if layer.type() == Qgis.MapLayerType.Raster:
+            style = ProcessingConfig.getSetting(ProcessingConfig.RASTER_STYLE)
+        elif layer.type() == Qgis.MapLayerType.Vector:
+            if layer.geometryType() == QgsWkbTypes.PointGeometry:
+                style = ProcessingConfig.getSetting(
+                    ProcessingConfig.VECTOR_POINT_STYLE)
+            elif layer.geometryType() == QgsWkbTypes.LineGeometry:
+                style = ProcessingConfig.getSetting(
+                    ProcessingConfig.VECTOR_LINE_STYLE)
+            else:
+                style = ProcessingConfig.getSetting(
+                    ProcessingConfig.VECTOR_POLYGON_STYLE)
+    if style:
+        layer.loadNamedStyle(style)
+
+    try:
+        from qgis._3d import QgsPointCloudLayer3DRenderer
+        if layer.type() == Qgis.MapLayerType.PointCloud:
+            if layer.renderer3D() is None:
+                # If the layer has no 3D renderer and syncing 3D to 2D
+                # renderer is enabled, we create a renderer and set it up
+                # with the 2D renderer
+                if layer.sync3DRendererTo2DRenderer():
+                    renderer3D = QgsPointCloudLayer3DRenderer()
+                    renderer3D.convertFrom2DRenderer(layer.renderer())
+                    layer.setRenderer3D(renderer3D)
+    except ImportError:
+        QgsMessageLog.logMessage(
+            QCoreApplication.translate(
+                "Postprocessing",
+                "3D library is not available, "
+                "can't assign a 3d renderer to a layer."
+            )
+        )
+
+
+def post_process_layer_tree_layer(layer_tree_layer: QgsLayerTreeLayer):
+    """
+    Applies post processing steps to a QgsLayerTreeLayer created for
+    an algorithm's output
+    """
+    layer = layer_tree_layer.layer()
+    if ProcessingConfig.getSetting(ProcessingConfig.VECTOR_FEATURE_COUNT) and \
+        layer.type() == Qgis.MapLayerType.Vector:
+        layer_tree_layer.setCustomProperty("showFeatureCount", True)
 
 
 def handleAlgorithmResults(alg, context, feedback=None, showResults=True, parameters={}):
@@ -60,7 +121,7 @@ def handleAlgorithmResults(alg, context, feedback=None, showResults=True, parame
                 '''If running a model, the execution will arrive here when an algorithm that is part of
                 that model is executed. We check if its output is a final otuput of the model, and
                 adapt the output name accordingly'''
-                outputName = details.outputName
+                output_name = details.outputName
                 expcontext = QgsExpressionContext()
                 scope = QgsExpressionContextScope()
                 expcontext.appendScope(scope)
@@ -73,54 +134,27 @@ def handleAlgorithmResults(alg, context, feedback=None, showResults=True, parame
                     else:
                         outValue = str(outValue)
                     if outValue == l:
-                        outputName = out.name()
+                        output_name = out.name()
                         break
-                style = None
-                if outputName:
-                    style = RenderingStyles.getStyle(alg.id(), outputName)
-                if style is None:
-                    if layer.type() == QgsMapLayerType.RasterLayer:
-                        style = ProcessingConfig.getSetting(ProcessingConfig.RASTER_STYLE)
-                    elif layer.type() == QgsMapLayerType.VectorLayer:
-                        if layer.geometryType() == QgsWkbTypes.PointGeometry:
-                            style = ProcessingConfig.getSetting(ProcessingConfig.VECTOR_POINT_STYLE)
-                        elif layer.geometryType() == QgsWkbTypes.LineGeometry:
-                            style = ProcessingConfig.getSetting(ProcessingConfig.VECTOR_LINE_STYLE)
-                        else:
-                            style = ProcessingConfig.getSetting(ProcessingConfig.VECTOR_POLYGON_STYLE)
-                if style:
-                    layer.loadNamedStyle(style)
-
-                try:
-                    from qgis._3d import QgsPointCloudLayer3DRenderer
-                    if layer.type() == QgsMapLayerType.PointCloudLayer:
-                        if layer.renderer3D() is None:
-                            # If the layer has no 3D renderer and syncing 3D to 2D renderer is enabled,
-                            # we create a renderer and set it up with the 2D renderer
-                            if layer.sync3DRendererTo2DRenderer():
-                                renderer3D = QgsPointCloudLayer3DRenderer()
-                                renderer3D.convertFrom2DRenderer(layer.renderer())
-                                layer.setRenderer3D(renderer3D)
-                except ImportError as e:
-                    QgsMessageLog.logMessage(QCoreApplication.translate("Postprocessing", "3D library is not available, can't assign a 3d renderer to a layer."))
+                post_process_layer(output_name, layer, alg)
 
                 # Load layer to layer tree root or to a specific group
-                mapLayer = context.temporaryLayerStore().takeMapLayer(layer)
+                map_layer = context.temporaryLayerStore().takeMapLayer(layer)
                 group_name = ProcessingConfig.getSetting(ProcessingConfig.RESULTS_GROUP_NAME)
                 if group_name:
                     group = details.project.layerTreeRoot().findGroup(group_name)
                     if not group:
                         group = details.project.layerTreeRoot().insertGroup(0, group_name)
 
-                    details.project.addMapLayer(mapLayer, False)  # Add to registry
-                    group.insertLayer(0, mapLayer)
+                    details.project.addMapLayer(map_layer, False)  # Add to registry
+                    group.insertLayer(0, map_layer)
                 else:
-                    details.project.addMapLayer(mapLayer)
+                    details.project.addMapLayer(map_layer)
 
-                if (ProcessingConfig.getSetting(ProcessingConfig.VECTOR_FEATURE_COUNT) and
-                        layer.type() == QgsMapLayerType.VectorLayer):
-                    layer_tree_layer = details.project.layerTreeRoot().findLayer(layer.id())
-                    layer_tree_layer.setCustomProperty("showFeatureCount", True)
+                layer_tree_layer = details.project.layerTreeRoot().findLayer(
+                    layer.id())
+                if layer_tree_layer:
+                    post_process_layer_tree_layer(layer_tree_layer)
 
                 if details.postProcessor():
                     details.postProcessor().postProcessLayer(layer, context, feedback)
