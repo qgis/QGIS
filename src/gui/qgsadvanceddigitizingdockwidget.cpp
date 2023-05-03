@@ -1640,7 +1640,7 @@ bool QgsAdvancedDigitizingDockWidget::filterKeyPress( QKeyEvent *e )
       if ( type == QEvent::ShortcutOverride )
       {
         const QList<double> constActionValues { mCommonAngleActions.values() };
-        const int currentAngleActionIndex { constActionValues.indexOf( mCommonAngleConstraint ) };
+        const int currentAngleActionIndex { static_cast<int>( constActionValues.indexOf( mCommonAngleConstraint ) ) };
         const QList<QAction *> constActions { mCommonAngleActions.keys( ) };
         QAction *nextAngleAction;
         if ( e->modifiers() == Qt::ShiftModifier )
