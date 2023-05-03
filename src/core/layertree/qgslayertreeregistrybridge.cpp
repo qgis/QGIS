@@ -87,7 +87,6 @@ void QgsLayerTreeRegistryBridge::layersAdded( const QList<QgsMapLayer *> &layers
       mRoot->insertChildNodes( 0, nodes );
       break;
     case Qgis::LayerTreeInsertionMethod::OptimalInInsertionGroup:
-    default:
       break;
   }
 
