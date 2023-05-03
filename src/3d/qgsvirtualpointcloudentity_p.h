@@ -32,14 +32,15 @@
 
 #include "qgscoordinatetransform.h"
 #include "qgspointcloudsubindex.h"
+#include "qgschunkedentity_p.h"
 
 class QgsAABB;
-class QgsChunkedEntity;
 class QgsChunkBoundsEntity;
 class QgsPointCloudLayer;
 class QgsVirtualPointCloudProvider;
 class QgsPointCloud3DSymbol;
 class Qgs3DMapSettings;
+
 
 /**
  * \ingroup 3d
@@ -59,8 +60,8 @@ class QgsVirtualPointCloudEntity : public Qt3DCore::QEntity
     QgsVirtualPointCloudEntity( QgsPointCloudLayer *layer, const Qgs3DMapSettings &map, const QgsCoordinateTransform &coordinateTransform, QgsPointCloud3DSymbol *symbol, float maxScreenError, bool showBoundingBoxes,
                                 double zValueScale, double zValueOffset, int pointBudget );
 
-    //! creates a child QgsPointCloudLayerChunkedEntity for each of the already loaded sub indexes
-    void createChunkedEntitiesForLoadedSubIndexes();
+    //! This is called when the camera moves. It's responsible for loading new indexes and decides if subindex will be rendered as bbox or chunked entity.
+    void handleSceneUpdate( const QgsChunkedEntity::SceneState &state );
 
     //! Updates the Bbox child entity to display the sub indexes set with setRenderSubIndexAsBbox()
     void updateBboxEntity();
