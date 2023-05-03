@@ -921,9 +921,9 @@ int main( int argc, char *argv[] )
 // Set up for high DPI displays
 // The following values are set by default in Qt 6
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-  QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling, true);
-  QCoreApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
-  QGuiApplication::setHighDpiScaleFactorRoundingPolicy(Qt::HighDpiScaleFactorRoundingPolicy::PassThrough);
+  QCoreApplication::setAttribute( Qt::AA_EnableHighDpiScaling, true );
+  QCoreApplication::setAttribute( Qt::AA_UseHighDpiPixmaps );
+  QGuiApplication::setHighDpiScaleFactorRoundingPolicy( Qt::HighDpiScaleFactorRoundingPolicy::PassThrough );
 #endif
 
   // GUI customization is enabled according to settings (loaded when instance is created)
