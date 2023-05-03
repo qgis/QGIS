@@ -62,16 +62,17 @@ if (QT_VERSION >= 0x060000):
         QLocale,
         QMetaType,
         QProcess,
-        Qt,
-        QUrl,
-        QVariant
+        Qt
     )
 
     from qgis.PyQt.QtGui import (
         QColor,
         QFont,
-        QImage,
         QPainter
+    )
+
+    from qgis.PyQt.QtWidgets import (
+        QDialogButtonBox
     )
 
     from qgis.PyQt.QtNetwork import (
