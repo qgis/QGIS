@@ -118,6 +118,7 @@ void QgsMapToolModifyAnnotation::deactivate()
   mSnapIndicator->setMatch( QgsPointLocator::Match() );
 
   clearHoveredItem();
+  clearSelectedItem();
   QgsMapToolAdvancedDigitizing::deactivate();
 }
 
