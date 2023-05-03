@@ -952,9 +952,6 @@ bool QgsVectorLayerFeatureIterator::postProcessFeature( QgsFeature &feature )
 
 bool QgsVectorLayerFeatureIterator::checkGeometryValidity( const QgsFeature &feature )
 {
-  if ( !feature.hasGeometry() )
-    return true;
-
   switch ( mRequest.invalidGeometryCheck() )
   {
     case QgsFeatureRequest::GeometryNoCheck:
@@ -962,6 +959,9 @@ bool QgsVectorLayerFeatureIterator::checkGeometryValidity( const QgsFeature &fea
 
     case QgsFeatureRequest::GeometrySkipInvalid:
     {
+      if ( !feature.hasGeometry() )
+        return true;
+
       if ( !feature.geometry().isGeosValid() )
       {
         QgsMessageLog::logMessage( QObject::tr( "Geometry error: One or more input features have invalid geometry." ), QString(), Qgis::MessageLevel::Critical );
@@ -975,6 +975,9 @@ bool QgsVectorLayerFeatureIterator::checkGeometryValidity( const QgsFeature &fea
     }
 
     case QgsFeatureRequest::GeometryAbortOnInvalid:
+      if ( !feature.hasGeometry() )
+        return true;
+
       if ( !feature.geometry().isGeosValid() )
       {
         QgsMessageLog::logMessage( QObject::tr( "Geometry error: One or more input features have invalid geometry." ), QString(), Qgis::MessageLevel::Critical );
