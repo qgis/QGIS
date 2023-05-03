@@ -40,14 +40,13 @@ count=0
 IS_QT6=""
 
 modules=()
-POSITIONAL_ARGS=()
 while [[ $# -gt 0 ]]; do
   case $1 in
     --qt6)
       IS_QT6="--qt6"
       shift
       ;;
-    -*|--*)
+    -*)
       echo "Unknown option $1"
       exit 1
       ;;
