@@ -2059,63 +2059,40 @@ template<TYPE1, TYPE2>
 %End
 
 %ConvertToTypeCode
-    // Get the Python object as an iterator
-    PyObject *iter = PyObject_GetIter(sipPy);
+    PyObject *key, *value;
+    Py_ssize_t i = 0;
 
-    if (!sipIsErr)
+    // Check the type if that is all that is required.
+    if (sipIsErr == NULL)
     {
-        PyErr_Clear();
-        Py_XDECREF(iter);
+        if (!PyDict_Check(sipPy))
+            return 0;
 
-        return (iter && !PyBytes_Check(sipPy) && !PyUnicode_Check(sipPy));
-    }
+        while (PyDict_Next(sipPy, &i, &key, &value))
+        {
+            if (!sipCanConvertToEnum(key, sipType_QgsFieldConstraints_Constraint))
+                return 0;
 
-    if (!iter)
-    {
-        *sipIsErr = 1;
+            if (!sipCanConvertToEnum(value, sipType_QgsFieldConstraints_ConstraintStrength))
+                return 0;
+        }
 
-        return 0;
+        return 1;
     }
 
     // Create a new QMap to hold the values
     QMap<QgsFieldConstraints::Constraint, QgsFieldConstraints::ConstraintStrength> *map = new QMap<QgsFieldConstraints::Constraint, QgsFieldConstraints::ConstraintStrength>;
 
-    // Loop over the Python iterator
-    for (Py_ssize_t i = 0; ; ++i)
+    // Loop over the Python dictionary items
+    while (PyDict_Next(sipPy, &i, &key, &value))
     {
-        // Get the next Python item in the iterator
-        PyErr_Clear();
-        PyObject *item = PyIter_Next(iter);
-
-        if (!item)
-        {
-            if (PyErr_Occurred())
-            {
-                delete map;
-                Py_DECREF(iter);
-                *sipIsErr = 1;
-
-                return 0;
-            }
-
-            break;
-        }
-
-        // Get the key and value from the Python item
-        PyObject *key = PyTuple_GetItem(item, 0);
-        PyObject *value = PyTuple_GetItem(item, 1);
-
-        // Convert the key and value to C++ types
+        // Convert the key and value Python objects to C++ types
         int keyVal = sipConvertToEnum(key, sipType_QgsFieldConstraints_Constraint);
         int valueVal = sipConvertToEnum(value, sipType_QgsFieldConstraints_ConstraintStrength);
 
         // Add the key and value to the map
         map->insert(static_cast<QgsFieldConstraints::Constraint>(keyVal), static_cast<QgsFieldConstraints::ConstraintStrength>(valueVal));
-
-        Py_DECREF(item);
     }
-
-    Py_DECREF(iter);
 
     *sipCppPtr = map;
 
