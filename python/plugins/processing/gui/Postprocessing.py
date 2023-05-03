@@ -27,15 +27,18 @@ import traceback
 
 
 from qgis.PyQt.QtCore import QCoreApplication
-from qgis.core import (Qgis,
-                       QgsProcessingFeedback,
-                       QgsProcessingUtils,
-                       QgsMapLayer,
-                       QgsWkbTypes,
-                       QgsMessageLog,
-                       QgsProcessingContext,
-                       QgsProcessingAlgorithm,
-                       QgsLayerTreeLayer)
+from qgis.core import (
+    Qgis,
+    QgsProcessingFeedback,
+    QgsProcessingUtils,
+    QgsMapLayer,
+    QgsWkbTypes,
+    QgsMessageLog,
+    QgsProcessingContext,
+    QgsProcessingAlgorithm,
+    QgsLayerTreeLayer,
+    QgsLayerTreeGroup
+)
 
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.gui.RenderingStyles import RenderingStyles
@@ -126,6 +129,42 @@ def post_process_layer_tree_layer(layer_tree_layer: QgsLayerTreeLayer):
         layer_tree_layer.setCustomProperty("showFeatureCount", True)
 
 
+def get_layer_tree_results_group(details: QgsProcessingContext.LayerDetails,
+                                 context: QgsProcessingContext) \
+        -> QgsLayerTreeGroup:
+    """
+    Returns the destination layer tree group to store results in
+    """
+
+    destination_project = details.project or context.project()
+
+    # default to placing results in the top level of the layer tree
+    results_group = details.project.layerTreeRoot()
+
+    # if a specific results group is specified in Processing settings,
+    # respect it (and create if necessary)
+    results_group_name = ProcessingConfig.getSetting(
+        ProcessingConfig.RESULTS_GROUP_NAME)
+    if results_group_name:
+        results_group = destination_project.layerTreeRoot().findGroup(
+            results_group_name)
+        if not results_group:
+            results_group = destination_project.layerTreeRoot().insertGroup(
+                0, results_group_name)
+
+    # if this particular output layer has a specific output group assigned,
+    # find or create it now
+    if details.groupName:
+        group = results_group.findGroup(details.groupName)
+        if not group:
+            group = results_group.insertGroup(
+                0, details.groupName)
+    else:
+        group = results_group
+
+    return group
+
+
 def handleAlgorithmResults(alg: QgsProcessingAlgorithm,
                            context: QgsProcessingContext,
                            feedback: Optional[QgsProcessingFeedback] = None,
@@ -162,25 +201,19 @@ def handleAlgorithmResults(alg: QgsProcessingAlgorithm,
                 post_process_layer(output_name, layer, alg)
 
                 # Load layer to layer tree root or to a specific group
+                results_group = get_layer_tree_results_group(details, context)
+
                 map_layer = context.temporaryLayerStore().takeMapLayer(layer)
-                group_name = ProcessingConfig.getSetting(ProcessingConfig.RESULTS_GROUP_NAME)
-                if group_name:
-                    group = details.project.layerTreeRoot().findGroup(group_name)
-                    if not group:
-                        group = details.project.layerTreeRoot().insertGroup(0, group_name)
-
-                    details.project.addMapLayer(map_layer, False)  # Add to registry
-                    group.insertLayer(0, map_layer)
-                else:
-                    details.project.addMapLayer(map_layer)
-
-                layer_tree_layer = details.project.layerTreeRoot().findLayer(
-                    layer.id())
+                details.project.addMapLayer(map_layer, False)
+                layer_tree_layer = results_group.insertLayer(0, map_layer)
                 if layer_tree_layer:
                     post_process_layer_tree_layer(layer_tree_layer)
 
                 if details.postProcessor():
-                    details.postProcessor().postProcessLayer(layer, context, feedback)
+                    details.postProcessor().postProcessLayer(
+                        layer,
+                        context,
+                        feedback)
 
             else:
                 wrongLayers.append(str(dest_id))
