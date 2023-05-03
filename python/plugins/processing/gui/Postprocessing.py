@@ -19,7 +19,10 @@ __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
 
-from typing import Dict
+from typing import (
+    Dict,
+    Optional
+)
 import traceback
 
 
@@ -114,7 +117,7 @@ def post_process_layer(output_name: str,
 
 def post_process_layer_tree_layer(layer_tree_layer: QgsLayerTreeLayer):
     """
-    Applies post processing steps to a QgsLayerTreeLayer created for
+    Applies post-processing steps to a QgsLayerTreeLayer created for
     an algorithm's output
     """
     layer = layer_tree_layer.layer()
@@ -123,7 +126,14 @@ def post_process_layer_tree_layer(layer_tree_layer: QgsLayerTreeLayer):
         layer_tree_layer.setCustomProperty("showFeatureCount", True)
 
 
-def handleAlgorithmResults(alg, context, feedback=None, showResults=True, parameters={}):
+def handleAlgorithmResults(alg: QgsProcessingAlgorithm,
+                           context: QgsProcessingContext,
+                           feedback: Optional[QgsProcessingFeedback] = None,
+                           showResults: bool = True,
+                           parameters: Optional[Dict] = None):
+    if not parameters:
+        parameters = {}
+
     wrongLayers = []
     if feedback is None:
         feedback = QgsProcessingFeedback()
