@@ -27,26 +27,27 @@ SCRIPTS12="
 "
 
 echo "Dropping DB $DB"
-dropdb --if-exists "${DB}"
+psql -q --echo-errors 'service=qgis_test dbname=postgres' -c "DROP DATABASE IF EXISTS $DB"
+
 echo "Creating DB $DB"
-# TODO: use service=qgis_test to connect to "template1" and use SQL ?
-createdb "${DB}" -E UTF8 -T template0 || exit 1
+psql -q --echo-errors 'service=qgis_test dbname=postgres' -c "CREATE DATABASE $DB WITH TEMPLATE = template0 ENCODING = UTF8"  || exit 1
+
 for f in ${SCRIPTS}; do
   echo "Loading $f"
-  psql -q --echo-errors -c "SET client_min_messages TO WARNING;" -f "${f}" "${DB}" -v ON_ERROR_STOP=1 || exit 1
+  psql -q --echo-errors 'service=qgis_test' -c "SET client_min_messages TO WARNING;" -f "${f}" -v ON_ERROR_STOP=1 || exit 1
 done
 
-PGSERVERVERSION=$(psql -XtA -c 'SHOW server_version_num' "${DB}")
+PGSERVERVERSION=$(psql -XtA 'service=qgis_test' -c 'SHOW server_version_num')
 if test "${PGSERVERVERSION}" -gt 120000; then
   for f in ${SCRIPTS12}; do
     echo "Loading $f"
-    psql -q --echo-errors -c "SET client_min_messages TO WARNING;" -f "${f}" "${DB}" -v ON_ERROR_STOP=1 || exit 1
+    psql -q --echo-errors 'service=qgis_test' -c "SET client_min_messages TO WARNING;" -f "${f}" -v ON_ERROR_STOP=1 || exit 1
   done
 fi
 
 FINGERPRINT="${DB}-$(date +%s)"
 echo "Storing fingerprint ${FINGERPRINT} in $DB"
-psql -q --echo-errors "${DB}" -v ON_ERROR_STOP=1 <<EOF || exit 1
+psql -q --echo-errors 'service=qgis_test' -v ON_ERROR_STOP=1 <<EOF || exit 1
 CREATE TABLE qgis_test.schema_info AS SELECT
   'fingerprint' var, '${FINGERPRINT}' val;
 EOF
