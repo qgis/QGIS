@@ -60,6 +60,7 @@ class QgsOgrFeatureSource final: public QgsAbstractFeatureSource
     Qgis::WkbType mWkbType = Qgis::WkbType::Unknown;
     QgsOgrDatasetSharedPtr mSharedDS = nullptr;
     QgsTransaction *mTransaction = nullptr;
+    bool mCanDriverShareSameDatasetAmongLayers = true;
 
     friend class QgsOgrFeatureIterator;
     friend class QgsOgrExpressionCompiler;
