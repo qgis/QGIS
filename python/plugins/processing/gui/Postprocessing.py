@@ -19,26 +19,50 @@ __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
 
-import os
+from typing import Dict
 import traceback
-from qgis.PyQt.QtWidgets import QApplication
+
+
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import (Qgis,
-                       QgsProject,
                        QgsProcessingFeedback,
                        QgsProcessingUtils,
                        QgsMapLayer,
                        QgsWkbTypes,
                        QgsMessageLog,
-                       QgsProviderRegistry,
-                       QgsExpressionContext,
                        QgsProcessingContext,
                        QgsProcessingAlgorithm,
-                       QgsExpressionContextScope,
                        QgsLayerTreeLayer)
 
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.gui.RenderingStyles import RenderingStyles
+
+
+def determine_output_name(dest_id: str,
+                          details: QgsProcessingContext.LayerDetails,
+                          alg: QgsProcessingAlgorithm,
+                          context: QgsProcessingContext,
+                          parameters: Dict) -> str:
+    """
+    If running a model, the execution will arrive here when an
+    algorithm that is part of that model is executed. We check if
+    its output is a final output of the model, and adapt the output
+    name accordingly
+    """
+    for out in alg.outputDefinitions():
+        if out.name() not in parameters:
+            continue
+        output_value = parameters[out.name()]
+        if hasattr(output_value, "sink"):
+            output_value = output_value.sink.valueAsString(
+                context.expressionContext()
+            )[0]
+        else:
+            output_value = str(output_value)
+        if output_value == dest_id:
+            return out.name()
+
+    return details.outputName
 
 
 def post_process_layer(output_name: str,
@@ -95,7 +119,7 @@ def post_process_layer_tree_layer(layer_tree_layer: QgsLayerTreeLayer):
     """
     layer = layer_tree_layer.layer()
     if ProcessingConfig.getSetting(ProcessingConfig.VECTOR_FEATURE_COUNT) and \
-        layer.type() == Qgis.MapLayerType.Vector:
+            layer.type() == Qgis.MapLayerType.Vector:
         layer_tree_layer.setCustomProperty("showFeatureCount", True)
 
 
@@ -106,36 +130,26 @@ def handleAlgorithmResults(alg, context, feedback=None, showResults=True, parame
     feedback.setProgressText(QCoreApplication.translate('Postprocessing', 'Loading resulting layers'))
     i = 0
 
-    for l, details in context.layersToLoadOnCompletion().items():
+    for dest_id, details in context.layersToLoadOnCompletion().items():
         if feedback.isCanceled():
             return False
 
         if len(context.layersToLoadOnCompletion()) > 2:
             # only show progress feedback if we're loading a bunch of layers
             feedback.setProgress(100 * i / float(len(context.layersToLoadOnCompletion())))
+
         try:
-            layer = QgsProcessingUtils.mapLayerFromString(l, context, typeHint=details.layerTypeHint)
+            layer = QgsProcessingUtils.mapLayerFromString(
+                dest_id,
+                context,
+                typeHint=details.layerTypeHint
+            )
             if layer is not None:
                 details.setOutputLayerName(layer)
 
-                '''If running a model, the execution will arrive here when an algorithm that is part of
-                that model is executed. We check if its output is a final otuput of the model, and
-                adapt the output name accordingly'''
-                output_name = details.outputName
-                expcontext = QgsExpressionContext()
-                scope = QgsExpressionContextScope()
-                expcontext.appendScope(scope)
-                for out in alg.outputDefinitions():
-                    if out.name() not in parameters:
-                        continue
-                    outValue = parameters[out.name()]
-                    if hasattr(outValue, "sink"):
-                        outValue = outValue.sink.valueAsString(expcontext)[0]
-                    else:
-                        outValue = str(outValue)
-                    if outValue == l:
-                        output_name = out.name()
-                        break
+                output_name = determine_output_name(
+                    dest_id, details, alg, context, parameters
+                )
                 post_process_layer(output_name, layer, alg)
 
                 # Load layer to layer tree root or to a specific group
@@ -160,12 +174,12 @@ def handleAlgorithmResults(alg, context, feedback=None, showResults=True, parame
                     details.postProcessor().postProcessLayer(layer, context, feedback)
 
             else:
-                wrongLayers.append(str(l))
+                wrongLayers.append(str(dest_id))
         except Exception:
             QgsMessageLog.logMessage(QCoreApplication.translate('Postprocessing',
                                                                 "Error loading result layer:") + "\n" + traceback.format_exc(),
                                      'Processing', Qgis.Critical)
-            wrongLayers.append(str(l))
+            wrongLayers.append(str(dest_id))
         i += 1
 
     feedback.setProgress(100)
