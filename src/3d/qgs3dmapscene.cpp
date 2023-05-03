@@ -372,7 +372,7 @@ void Qgs3DMapScene::updateScene()
   {
     QgsVirtualPointCloudProvider *provider = entity->provider();
 
-    const QList<QgsPointCloudSubIndex *> subIndexes = provider->subIndexes();
+    const QVector<QgsPointCloudSubIndex> subIndexes = provider->subIndexes();
     for ( int i = 0; i < subIndexes.size(); ++i )
     {
       const QgsAABB &bbox = entity->boundingBox( i );
@@ -383,7 +383,7 @@ void Qgs3DMapScene::updateScene()
       const float sse = Qgs3DUtils::screenSpaceError( epsilon, distance, screenSize, fov );
       constexpr float THRESHOLD = .2;
       const bool displayAsBbox = sse < THRESHOLD;
-      if ( !displayAsBbox && !subIndexes.at( i )->index() )
+      if ( !displayAsBbox && !subIndexes.at( i ).index() )
         provider->loadSubIndex( i );
 
       entity->setRenderSubIndexAsBbox( i, displayAsBbox );

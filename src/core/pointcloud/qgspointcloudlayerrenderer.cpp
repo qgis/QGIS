@@ -38,7 +38,7 @@ QgsPointCloudLayerRenderer::QgsPointCloudLayerRenderer( QgsPointCloudLayer *laye
   : QgsMapLayerRenderer( layer->id(), &context )
   , mLayer( layer )
   , mLayerAttributes( layer->attributes() )
-  , mSubIndexes( layer && layer->dataProvider() ? layer->dataProvider()->subIndexes() : QList<QgsPointCloudSubIndex *>() )
+  , mSubIndexes( layer && layer->dataProvider() ? layer->dataProvider()->subIndexes() : QVector<QgsPointCloudSubIndex>() )
   , mFeedback( new QgsFeedback )
 {
   // TODO: we must not keep pointer to mLayer (it's dangerous) - we must copy anything we need for rendering
@@ -162,21 +162,21 @@ bool QgsPointCloudLayerRenderer::render()
   else
   {
     mSubIndexExtentRenderer->startRender( context );
-    for ( QgsPointCloudSubIndex *si : mSubIndexes )
+    for ( const auto &si : mSubIndexes )
     {
       if ( canceled )
         break;
 
-      QgsPointCloudIndex *pc = si->index();
+      QgsPointCloudIndex *pc = si.index();
 
-      if ( !renderExtent.intersects( si->extent() ) )
+      if ( !renderExtent.intersects( si.extent() ) )
         continue;
 
-      if ( !pc || !pc->isValid() || renderExtent.width() > si->extent().width() )
+      if ( !pc || !pc->isValid() || renderExtent.width() > si.extent().width() )
       {
         // when dealing with virtual point clouds, we want to render the individual extents when zoomed out
         // and only use the selected renderer when zoomed in
-        mSubIndexExtentRenderer->renderExtent( si->polygonBounds(), context );
+        mSubIndexExtentRenderer->renderExtent( si.polygonBounds(), context );
       }
       else
       {

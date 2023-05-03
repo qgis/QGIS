@@ -54,7 +54,7 @@ class CORE_EXPORT QgsVirtualPointCloudProvider: public QgsPointCloudDataProvider
     void generateIndex( ) override;
     PointCloudIndexGenerationState indexingState( ) override { return PointCloudIndexGenerationState::Indexed; }
     QgsGeometry polygonBounds() const override;
-    QList<QgsPointCloudSubIndex *> subIndexes() override { return mSubIndexes; }
+    QVector<QgsPointCloudSubIndex> subIndexes() override { return mSubLayers; }
     void loadSubIndex( int i ) override;
     bool setSubsetString( const QString &subset, bool updateFeatureCount = false ) override;
     QgsPointCloudRenderer *createRenderer( const QVariantMap &configuration = QVariantMap() ) const override SIP_FACTORY;
@@ -66,7 +66,7 @@ class CORE_EXPORT QgsVirtualPointCloudProvider: public QgsPointCloudDataProvider
   private:
     void parseFile();
     void populateAttributeCollection( QSet<QString> names );
-    QList<QgsPointCloudSubIndex *> mSubIndexes;
+    QVector<QgsPointCloudSubIndex> mSubLayers;
     std::unique_ptr<QgsGeometry> mPolygonBounds;
     std::unique_ptr<QgsPointCloudIndex> mIndex;
     QgsPointCloudAttributeCollection mAttributes;
