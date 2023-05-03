@@ -585,6 +585,13 @@ Returns the capacities
 
 .. versionadded:: 3.26
 %End
+    QString formatCommonAngleSnapping( double angle );
+%Docstring
+Returns the formatted label for common angle snapping option.
+
+.. versionadded:: 3.32
+%End
+
   signals:
 
     void pushWarning( const QString &message );
@@ -1035,6 +1042,19 @@ Could be used by widgets to capture the focus when a field is being edited.
 .. versionadded:: 3.8
 %End
 
+    void valueCommonAngleSnappingChanged( double angle );
+%Docstring
+Emitted whenever the snapping to common angle option changes, angle = 0 means that the functionality is disabled.
+
+.. versionadded:: 3.32
+%End
+
+    void commonAngleSnappingShowInFloaterChanged( bool enabled );
+%Docstring
+Emitted whenever the option to show common angle snapping in the floater changes.
+
+.. versionadded:: 3.32
+%End
 
   private:
     //! event filter for line edits in the dock UI (angle/distance/x/y line edits)

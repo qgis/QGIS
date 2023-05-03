@@ -545,6 +545,12 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
      */
     CadCapacities capacities() const { return mCapacities; };
 
+    /**
+     * Returns the formatted label for common angle snapping option.
+     * \since QGIS 3.32
+     */
+    QString formatCommonAngleSnapping( double angle );
+
   signals:
 
     /**
@@ -866,6 +872,17 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     */
     void focusOnDistanceRequested();
 
+    /**
+    * Emitted whenever the snapping to common angle option changes, angle = 0 means that the functionality is disabled.
+    * \since QGIS 3.32
+    */
+    void valueCommonAngleSnappingChanged( double angle );
+
+    /**
+     * Emitted whenever the option to show common angle snapping in the floater changes.
+     * \since QGIS 3.32
+     */
+    void commonAngleSnappingShowInFloaterChanged( bool enabled );
 
   private slots:
     //! Sets the between line constraint by clicking on the perpendicular/parallel buttons
@@ -1032,6 +1049,9 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
 #endif
     //! Convenient method to convert a 2D Point to a QgsPoint
     QgsPoint pointXYToPoint( const QgsPointXY &point ) const;
+
+    QMenu *mCommonAngleActionsMenu = nullptr;
+    bool mShowCommonAngleInFloater = false;
 
     friend class TestQgsAdvancedDigitizing;
     friend class TestQgsAdvancedDigitizingDockWidget;

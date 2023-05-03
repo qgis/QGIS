@@ -37,7 +37,6 @@
 
 #include <QActionGroup>
 
-
 QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *canvas, QWidget *parent )
   : QgsDockWidget( parent )
   , mMapCanvas( canvas )
@@ -117,37 +116,39 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *
   connect( mWatcher, &QgsFocusWatcher::focusOut, this, &QgsAdvancedDigitizingDockWidget::constraintFocusOut );
 
   // config menu
-  QMenu *menu = new QMenu( this );
+  mCommonAngleActionsMenu = new QMenu( this );
+
+  QAction *showCommonAngleSnappingInFloaterAction = new QAction( tr( "Show setting in the floater" ), mCommonAngleActionsMenu );
+  showCommonAngleSnappingInFloaterAction->setCheckable( true );
+
+  mCommonAngleActionsMenu->addAction( showCommonAngleSnappingInFloaterAction );
+
   // common angles
-  QActionGroup *angleButtonGroup = new QActionGroup( menu ); // actions are exclusive for common angles
+  QActionGroup *angleButtonGroup = new QActionGroup( mCommonAngleActionsMenu ); // actions are exclusive for common angles
   mCommonAngleActions = QMap<QAction *, double>();
   QList< QPair< double, QString > > commonAngles;
   QString menuText;
-  const QList<double> anglesDouble( { 0.0, 5.0, 10.0, 15.0, 18.0, 22.5, 30.0, 45.0, 90.0} );
+  const QList<double> anglesDouble( { 0.0, 0.1, 0.5, 1.0, 5.0, 10.0, 15.0, 18.0, 22.5, 30.0, 45.0, 90.0} );
   for ( QList<double>::const_iterator it = anglesDouble.constBegin(); it != anglesDouble.constEnd(); ++it )
   {
-    if ( *it == 0 )
-      menuText = tr( "Do Not Snap to Common Angles" );
-    else
-      menuText = QString( tr( "%1, %2, %3, %4°…" ) ).arg( *it, 0, 'f', 1 ).arg( *it * 2, 0, 'f', 1 ).arg( *it * 3, 0, 'f', 1 ).arg( *it * 4, 0, 'f', 1 );
-    commonAngles << QPair<double, QString>( *it, menuText );
+    commonAngles << QPair<double, QString>( *it, formatCommonAngleSnapping( *it ) );
   }
   for ( QList< QPair<double, QString > >::const_iterator it = commonAngles.constBegin(); it != commonAngles.constEnd(); ++it )
   {
-    QAction *action = new QAction( it->second, menu );
+    QAction *action = new QAction( it->second, mCommonAngleActionsMenu );
     action->setCheckable( true );
     action->setChecked( it->first == mCommonAngleConstraint );
-    menu->addAction( action );
+    mCommonAngleActionsMenu->addAction( action );
     angleButtonGroup->addAction( action );
     mCommonAngleActions.insert( action, it->first );
   }
 
   qobject_cast< QToolButton *>( mToolbar->widgetForAction( mSettingsAction ) )->setPopupMode( QToolButton::InstantPopup );
-  mSettingsAction->setMenu( menu );
+  mSettingsAction->setMenu( mCommonAngleActionsMenu );
   mSettingsAction->setCheckable( true );
-  mSettingsAction->setToolTip( tr( "Snap to common angles" ) );
+  mSettingsAction->setToolTip( "<b>" + tr( "Snap to common angles" ) + "</b><br>(" + tr( "press n to cycle through the options" ) + ")" );
   mSettingsAction->setChecked( mCommonAngleConstraint != 0 );
-  connect( menu, &QMenu::triggered, this, &QgsAdvancedDigitizingDockWidget::settingsButtonTriggered );
+  connect( mCommonAngleActionsMenu, &QMenu::triggered, this, &QgsAdvancedDigitizingDockWidget::settingsButtonTriggered );
 
   // Construction modes
   QMenu *constructionMenu = new QMenu( this );
@@ -167,7 +168,7 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *
   constructionToolBar->setMenu( constructionMenu );
   constructionToolBar->setObjectName( QStringLiteral( "ConstructionButton" ) );
 
-  mConstructionAction->setMenu( menu );
+  mConstructionAction->setMenu( mCommonAngleActionsMenu );
   mConstructionAction->setCheckable( true );
   mConstructionAction->setToolTip( tr( "Construction Tools" ) );
 //  connect( constructionMenu, &QMenu::triggered, this, &QgsAdvancedDigitizingDockWidget::settingsButtonTriggered );
@@ -216,10 +217,27 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *
   connect( mToggleFloaterAction, &QAction::triggered, mFloater, &QgsAdvancedDigitizingFloater::setActive );
   mToggleFloaterAction->setChecked( mFloater->active() );
 
+  mShowCommonAngleInFloater = QgsSettings().value( QStringLiteral( "/Cad/CommonAngleShowInFloater" ), false ).toBool();
+  connect( showCommonAngleSnappingInFloaterAction, &QAction::triggered, this, &QgsAdvancedDigitizingDockWidget::commonAngleSnappingShowInFloaterChanged );
+  showCommonAngleSnappingInFloaterAction->setChecked( mShowCommonAngleInFloater );
+  connect( showCommonAngleSnappingInFloaterAction, &QAction::triggered, this, [ = ]( bool checked )
+  {
+    mShowCommonAngleInFloater = checked;
+    QgsSettings().setValue( QStringLiteral( "/Cad/CommonAngleShowInFloater" ), checked );
+  } );
+
   updateCapacity( true );
   connect( QgsProject::instance(), &QgsProject::snappingConfigChanged, this, [ = ] { updateCapacity( true ); } );
 
   disable();
+}
+
+QString QgsAdvancedDigitizingDockWidget::formatCommonAngleSnapping( double angle )
+{
+  if ( angle == 0 )
+    return  tr( "Do Not Snap to Common Angles" );
+  else
+    return QString( tr( "%1, %2, %3, %4°…" ) ).arg( angle, 0, 'f', 1 ).arg( angle * 2, 0, 'f', 1 ).arg( angle * 3, 0, 'f', 1 ).arg( angle * 4, 0, 'f', 1 );
 }
 
 void QgsAdvancedDigitizingDockWidget::setX( const QString &value, WidgetSetMode mode )
@@ -348,6 +366,12 @@ void QgsAdvancedDigitizingDockWidget::setCadEnabled( bool enabled )
 
   switchZM();
   emit cadEnabledChanged( enabled );
+
+  if ( enabled )
+  {
+    emit commonAngleSnappingShowInFloaterChanged( mShowCommonAngleInFloater );
+    emit valueCommonAngleSnappingChanged( mCommonAngleConstraint );
+  }
 
   mLastSnapMatch = QgsPointLocator::Match();
 }
@@ -521,6 +545,7 @@ void QgsAdvancedDigitizingDockWidget::settingsButtonTriggered( QAction *action )
     mCommonAngleConstraint = ica.value();
     QgsSettings().setValue( QStringLiteral( "/Cad/CommonAngle" ), ica.value() );
     mSettingsAction->setChecked( mCommonAngleConstraint != 0 );
+    emit valueCommonAngleSnappingChanged( mCommonAngleConstraint );
     return;
   }
 }
@@ -1608,6 +1633,27 @@ bool QgsAdvancedDigitizingDockWidget::filterKeyPress( QKeyEvent *e )
 
         // run a fake map mouse event to update the paint item
         emit pointChangedV2( mCadPointList.value( 0 ) );
+      }
+      break;
+    }
+    case Qt::Key_N:
+    {
+      if ( type == QEvent::ShortcutOverride )
+      {
+        const QList<double> constActionValues { mCommonAngleActions.values() };
+        const int currentAngleActionIndex { constActionValues.indexOf( mCommonAngleConstraint ) };
+        const QList<QAction *> constActions { mCommonAngleActions.keys( ) };
+        QAction *nextAngleAction;
+        if ( e->modifiers() == Qt::ShiftModifier )
+        {
+          nextAngleAction = currentAngleActionIndex == 0 ? constActions.last() : constActions.at( currentAngleActionIndex - 1 );
+        }
+        else
+        {
+          nextAngleAction = currentAngleActionIndex == constActions.count() - 1 ? constActions.first() : constActions.at( currentAngleActionIndex + 1 );
+        }
+        nextAngleAction->trigger();
+        e->accept();
       }
       break;
     }
