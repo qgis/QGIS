@@ -20,9 +20,10 @@
 #include "cpl_http.h"
 #include "gdal.h"
 
-QgsCPLHTTPFetchOverrider::QgsCPLHTTPFetchOverrider( const QString &authCfg, QgsFeedback *feedback ):
-  mAuthCfg( authCfg ),
-  mFeedback( feedback )
+QgsCPLHTTPFetchOverrider::QgsCPLHTTPFetchOverrider( const QString &authCfg, QgsFeedback *feedback )
+  : mAuthCfg( authCfg )
+  , mFeedback( feedback )
+  , mThread( QThread::currentThread() )
 {
   CPLHTTPPushFetchCallback( QgsCPLHTTPFetchOverrider::callback, this );
 }
@@ -187,4 +188,14 @@ CPLHTTPResult *QgsCPLHTTPFetchOverrider::callback( const char *pszURL,
 void QgsCPLHTTPFetchOverrider::setAttribute( QNetworkRequest::Attribute code, const QVariant &value )
 {
   mAttributes[code] = value;
+}
+
+void QgsCPLHTTPFetchOverrider::setFeedback( QgsFeedback *feedback )
+{
+  mFeedback = feedback;
+}
+
+QThread *QgsCPLHTTPFetchOverrider::thread() const
+{
+  return mThread;
 }
