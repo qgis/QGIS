@@ -34,7 +34,7 @@
 #include <QThreadStorage>
 #endif
 
-#include <QStack>
+#include <deque>
 
 QgsVectorLayerFeatureSource::QgsVectorLayerFeatureSource( const QgsVectorLayer *layer )
 {
@@ -385,9 +385,9 @@ class QgsThreadStackOverflowGuard
   public:
 
 #if !defined(USE_THREAD_LOCAL) || defined(Q_OS_WIN)
-    QgsThreadStackOverflowGuard( QThreadStorage<QStack<QString>> &storage, const QString &stackFrameInformation, int maxDepth )
+    QgsThreadStackOverflowGuard( QThreadStorage<std::deque<QString>> &storage, const QString &stackFrameInformation, int maxDepth )
 #else
-    QgsThreadStackOverflowGuard( QStack<QString> &storage, const QString &stackFrameInformation, int maxDepth )
+    QgsThreadStackOverflowGuard( std::deque<QString> &storage, const QString &stackFrameInformation, int maxDepth )
 #endif
       : mStorage( storage )
       , mMaxDepth( maxDepth )
@@ -395,21 +395,21 @@ class QgsThreadStackOverflowGuard
 #if !defined(USE_THREAD_LOCAL) || defined(Q_OS_WIN)
       if ( !storage.hasLocalData() )
       {
-        storage.setLocalData( QStack<QString>() );
+        storage.setLocalData( std::deque<QString>() );
       }
 
-      storage.localData().push( stackFrameInformation );
+      storage.localData().emplace_back( stackFrameInformation );
 #else
-      storage.push( stackFrameInformation );
+      storage.emplace_back( stackFrameInformation );
 #endif
     }
 
     ~QgsThreadStackOverflowGuard()
     {
 #if !defined(USE_THREAD_LOCAL) || defined(Q_OS_WIN)
-      mStorage.localData().pop();
+      mStorage.localData().pop_back();
 #else
-      mStorage.pop();
+      mStorage.pop_back();
 #endif
     }
 
@@ -429,21 +429,22 @@ class QgsThreadStackOverflowGuard
     {
       QStringList dumpStack;
 #if !defined(USE_THREAD_LOCAL) || defined(Q_OS_WIN)
-      const QStack<QString> &stack = mStorage.localData();
+      const std::deque<QString> &stack = mStorage.localData();
 #else
-      const QStack<QString> &stack = mStorage;
+      const std::deque<QString> &stack = mStorage;
 #endif
 
       const int dumpSize = std::min( static_cast<int>( stack.size() ), 10 );
-      for ( int i = 0; i < dumpSize; ++i )
+      auto stackIt = stack.begin();
+      for ( int i = 0; i < dumpSize; ++i, stackIt++ )
       {
-        dumpStack += stack.at( i );
+        dumpStack += *stackIt;
       }
 
       return dumpStack.join( '\n' );
     }
 
-    int depth() const
+    std::size_t depth() const
     {
 #if !defined(USE_THREAD_LOCAL) || defined(Q_OS_WIN)
       return mStorage.localData().size();
@@ -454,11 +455,11 @@ class QgsThreadStackOverflowGuard
 
   private:
 #if !defined(USE_THREAD_LOCAL) || defined(Q_OS_WIN)
-    QThreadStorage<QStack<QString>> &mStorage;
+    QThreadStorage<std::deque<QString>> &mStorage;
 #else
-    QStack<QString> &mStorage;
+    std::deque<QString> &mStorage;
 #endif
-    int mMaxDepth;
+    std::size_t mMaxDepth;
 };
 
 /// @endcond private
@@ -471,9 +472,9 @@ bool QgsVectorLayerFeatureIterator::fetchFeature( QgsFeature &f )
     return false;
 
 #if !defined(USE_THREAD_LOCAL) || defined(Q_OS_WIN)
-  static QThreadStorage<QStack<QString>> sStack;
+  static QThreadStorage<std::deque<QString>> sStack;
 #else
-  static thread_local QStack<QString> sStack;
+  static thread_local std::deque<QString> sStack;
 #endif
 
   const QgsThreadStackOverflowGuard guard( sStack, mSource->id(), 4 );
@@ -832,9 +833,9 @@ void QgsVectorLayerFeatureIterator::prepareJoin( int fieldIdx )
 void QgsVectorLayerFeatureIterator::prepareExpression( int fieldIdx )
 {
 #if !defined(USE_THREAD_LOCAL) || defined(Q_OS_WIN)
-  static QThreadStorage<QStack<QString>> sStack;
+  static QThreadStorage<std::deque<QString>> sStack;
 #else
-  static thread_local QStack<QString> sStack;
+  static thread_local std::deque<QString> sStack;
 #endif
 
   const QgsThreadStackOverflowGuard guard( sStack, mSource->id(), 4 );
