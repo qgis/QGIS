@@ -24,7 +24,7 @@
 #include <QEventLoop>
 
 
-QgsVectorTileLoader::QgsVectorTileLoader( const QgsVectorTileDataProvider *provider, const QgsTileMatrix &tileMatrix, const QgsTileRange &range, const QPointF &viewCenter, QgsFeedback *feedback, Qgis::RendererUsage usage )
+QgsVectorTileLoader::QgsVectorTileLoader( const QgsVectorTileDataProvider *provider, const QgsTileMatrixSet &tileMatrixSet, const QgsTileRange &range, int zoomLevel, const QPointF &viewCenter, QgsFeedback *feedback, Qgis::RendererUsage usage )
   : mEventLoop( new QEventLoop )
   , mFeedback( feedback )
 {
@@ -39,11 +39,11 @@ QgsVectorTileLoader::QgsVectorTileLoader( const QgsVectorTileDataProvider *provi
   }
 
   QgsDebugMsgLevel( QStringLiteral( "Starting network loader" ), 2 );
-  QVector<QgsTileXYZ> tiles = QgsVectorTileUtils::tilesInRange( range, tileMatrix.zoomLevel() );
+  QVector<QgsTileXYZ> tiles = QgsVectorTileUtils::tilesInRange( range, zoomLevel );
   QgsVectorTileUtils::sortTilesByDistanceFromCenter( tiles, viewCenter );
   for ( QgsTileXYZ id : std::as_const( tiles ) )
   {
-    loadFromNetworkAsync( id, tileMatrix, provider, usage );
+    loadFromNetworkAsync( id, tileMatrixSet, provider, usage );
   }
 }
 
@@ -76,9 +76,9 @@ void QgsVectorTileLoader::downloadBlocking()
   Q_ASSERT( mReplies.isEmpty() );
 }
 
-void QgsVectorTileLoader::loadFromNetworkAsync( const QgsTileXYZ &id, const QgsTileMatrix &tileMatrix, const QgsVectorTileDataProvider *provider, Qgis::RendererUsage usage )
+void QgsVectorTileLoader::loadFromNetworkAsync( const QgsTileXYZ &id, const QgsTileMatrixSet &tileMatrixSet, const QgsVectorTileDataProvider *provider, Qgis::RendererUsage usage )
 {
-  QNetworkRequest request = provider->tileRequest( tileMatrix, id, usage );
+  QNetworkRequest request = provider->tileRequest( tileMatrixSet, id, usage );
 
   QgsTileDownloadManagerReply *reply = QgsApplication::tileDownloadManager()->get( request );
   connect( reply, &QgsTileDownloadManagerReply::finished, this, &QgsVectorTileLoader::tileReplyFinished );
@@ -147,16 +147,16 @@ QString QgsVectorTileLoader::error() const
 
 //////
 
-QList<QgsVectorTileRawData> QgsVectorTileLoader::blockingFetchTileRawData( const QgsVectorTileDataProvider *provider, const QgsTileMatrix &tileMatrix, const QPointF &viewCenter, const QgsTileRange &range, QgsFeedback *feedback )
+QList<QgsVectorTileRawData> QgsVectorTileLoader::blockingFetchTileRawData( const QgsVectorTileDataProvider *provider, const QgsTileMatrixSet &tileMatrixSet, const QPointF &viewCenter, const QgsTileRange &range, int zoomLevel, QgsFeedback *feedback )
 {
   if ( feedback && feedback->isCanceled() )
     return {};
 
-  QVector<QgsTileXYZ> tiles = QgsVectorTileUtils::tilesInRange( range, tileMatrix.zoomLevel() );
+  QVector<QgsTileXYZ> tiles = QgsVectorTileUtils::tilesInRange( range, zoomLevel );
 
   // if a tile matrix results in a HUGE number of tile requests, we skip the sort -- it can be expensive
   if ( tiles.size() < 10000 )
     QgsVectorTileUtils::sortTilesByDistanceFromCenter( tiles, viewCenter );
 
-  return provider->readTiles( tileMatrix, tiles, feedback );
+  return provider->readTiles( tileMatrixSet, tiles, feedback );
 }

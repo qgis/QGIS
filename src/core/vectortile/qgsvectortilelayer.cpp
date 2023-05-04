@@ -575,8 +575,7 @@ QByteArray QgsVectorTileLayer::getRawTile( QgsTileXYZ tileID )
   if ( !vtProvider )
     return QByteArray();
 
-  const QgsTileMatrix tileMatrix = mMatrixSet.tileMatrix( tileID.zoomLevel() );
-  return vtProvider->readTile( tileMatrix, tileID );
+  return vtProvider->readTile( mMatrixSet, tileID );
 }
 
 void QgsVectorTileLayer::setRenderer( QgsVectorTileRenderer *r )
