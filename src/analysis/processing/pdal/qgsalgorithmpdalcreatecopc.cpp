@@ -94,7 +94,7 @@ QVariantMap QgsPdalCreateCopcAlgorithm::processAlgorithm( const QVariantMap &par
   }
 
   const QString outputDir = parameterAsString( parameters, QStringLiteral( "OUTPUT" ), context );
-  if ( !QDir().mkpath( outputDir ) )
+  if ( !outputDir.isEmpty() && !QDir().mkpath( outputDir ) )
     throw QgsProcessingException( QStringLiteral( "Failed to create output directory." ) );
 
   QgsProcessingMultiStepFeedback multiStepFeedback( layers.size(), feedback );
