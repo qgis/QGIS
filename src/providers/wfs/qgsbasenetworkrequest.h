@@ -146,6 +146,10 @@ class QgsBaseNetworkRequest : public QObject
     virtual int defaultExpirationInSec() { return 0; }
 
   private:
+
+    //! Request headers
+    QList<QNetworkReply::RawHeaderPair> mRequestHeaders;
+
     QString errorMessageFailedAuth();
 
     void logMessageIfEnabled();
