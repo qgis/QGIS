@@ -28,11 +28,10 @@
 // version without notice, or even be removed.
 //
 
-#include <Qt3DCore/QEntity>
-
 #include "qgscoordinatetransform.h"
 #include "qgspointcloudsubindex.h"
 #include "qgschunkedentity_p.h"
+#include "qgs3dmapsceneentity_p.h"
 
 class QgsAABB;
 class QgsChunkBoundsEntity;
@@ -52,7 +51,7 @@ class Qgs3DMapSettings;
  *
  * \since QGIS 3.32
  */
-class QgsVirtualPointCloudEntity : public Qt3DCore::QEntity
+class QgsVirtualPointCloudEntity : public Qgs3DMapSceneEntity
 {
     Q_OBJECT
   public:
@@ -61,19 +60,13 @@ class QgsVirtualPointCloudEntity : public Qt3DCore::QEntity
                                 double zValueScale, double zValueOffset, int pointBudget );
 
     //! This is called when the camera moves. It's responsible for loading new indexes and decides if subindex will be rendered as bbox or chunked entity.
-    void handleSceneUpdate( const QgsChunkedEntity::SceneState &state );
+    void handleSceneUpdate( const SceneState &state ) override;
 
-    //! Updates the Bbox child entity to display the sub indexes set with setRenderSubIndexAsBbox()
-    void updateBboxEntity();
+    QgsRange<float> getNearFarPlaneRange( const QMatrix4x4 &viewMatrix ) const override;
 
-    //! Returns a list with pointers to all child QgsPointCloudLayerChunkedEntity
-    QList<QgsChunkedEntity *> chunkedEntities() const;
+    int pendingJobsCount() const override;
 
-    //! Returns a pointer to the associated layer's provider
-    QgsVirtualPointCloudProvider *provider() const;
-
-    //! Returns the bounding box for sub index \a i
-    QgsAABB boundingBox( int i ) const;
+    bool needsUpdate() const override;
 
   signals:
     //! Emitted when a new point cloud chunked entity has been created for a sub index
@@ -87,8 +80,19 @@ class QgsVirtualPointCloudEntity : public Qt3DCore::QEntity
     void setRenderSubIndexAsBbox( const int i, const bool asBbox );
 
   private:
+    //! Updates the Bbox child entity to display the sub indexes set with setRenderSubIndexAsBbox()
+    void updateBboxEntity();
+
+    //! Returns a list with pointers to all child QgsPointCloudLayerChunkedEntity
+    QList<QgsChunkedEntity *> chunkedEntities() const;
+
+    //! Returns a pointer to the associated layer's provider
+    QgsVirtualPointCloudProvider *provider() const;
+
+    //! Returns the bounding box for sub index i
+    QgsAABB boundingBox( int i ) const;
+
     QgsPointCloudLayer *mLayer = nullptr;
-    QList<QgsChunkedEntity *> mChunkedEntities;
     QMap<int, QgsChunkedEntity *> mChunkedEntitiesMap;
     QgsChunkBoundsEntity *mBboxesEntity = nullptr;
     QList<QgsAABB> mBboxes;

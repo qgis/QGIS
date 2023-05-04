@@ -53,7 +53,7 @@ static float screenSpaceError( QgsChunkNode *node, const QgsChunkedEntity::Scene
 }
 
 QgsChunkedEntity::QgsChunkedEntity( float tau, QgsChunkLoaderFactory *loaderFactory, bool ownsFactory, int primitiveBudget, Qt3DCore::QNode *parent )
-  : Qt3DCore::QEntity( parent )
+  : Qgs3DMapSceneEntity( parent )
   , mTau( tau )
   , mChunkLoaderFactory( loaderFactory )
   , mOwnsFactory( ownsFactory )
@@ -105,8 +105,7 @@ QgsChunkedEntity::~QgsChunkedEntity()
   }
 }
 
-
-void QgsChunkedEntity::update( const SceneState &state )
+void QgsChunkedEntity::handleSceneUpdate( const SceneState &state )
 {
   if ( !mIsValid )
     return;
@@ -206,6 +205,40 @@ void QgsChunkedEntity::update( const SceneState &state )
                     .arg( mReplacementQueue->count() )
                     .arg( unloaded )
                     .arg( t.elapsed() ), 2 );
+}
+
+QgsRange<float> QgsChunkedEntity::getNearFarPlaneRange( const QMatrix4x4 &viewMatrix ) const
+{
+  QList<QgsChunkNode *> activeEntityNodes = activeNodes();
+
+  // it could be that there are no active nodes - they could be all culled or because root node
+  // is not yet loaded - we still need at least something to understand bounds of our scene
+  // so lets use the root node
+  if ( activeEntityNodes.empty() )
+    activeEntityNodes << rootNode();
+
+  float fnear = 1e9;
+  float ffar = 0;
+
+  for ( QgsChunkNode *node : std::as_const( activeEntityNodes ) )
+  {
+    // project each corner of bbox to camera coordinates
+    // and determine closest and farthest point.
+    QgsAABB bbox = node->bbox();
+    for ( int i = 0; i < 8; ++i )
+    {
+      const QVector4D p( ( ( i >> 0 ) & 1 ) ? bbox.xMin : bbox.xMax,
+                         ( ( i >> 1 ) & 1 ) ? bbox.yMin : bbox.yMax,
+                         ( ( i >> 2 ) & 1 ) ? bbox.zMin : bbox.zMax, 1 );
+
+      const QVector4D pc = viewMatrix * p;
+
+      const float dst = -pc.z();  // in camera coordinates, x grows right, y grows down, z grows to the back
+      fnear = std::min( fnear, dst );
+      ffar = std::max( ffar, dst );
+    }
+  }
+  return QgsRange<float>( fnear, ffar );
 }
 
 void QgsChunkedEntity::setShowBoundingBoxes( bool enabled )

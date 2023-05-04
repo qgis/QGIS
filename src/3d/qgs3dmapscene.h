@@ -57,7 +57,7 @@ class QgsShadowRenderingFrameGraph;
 class QgsPostprocessingEntity;
 class QgsChunkNode;
 class QgsDoubleRange;
-class QgsVirtualPointCloudEntity;
+class Qgs3DMapSceneEntity;
 
 
 /**
@@ -272,7 +272,6 @@ class _3D_EXPORT Qgs3DMapScene : public QObject
     void updateSceneState();
     void updateScene();
     void finalizeNewEntity( Qt3DCore::QEntity *newEntity );
-    void addNewChunkedEntity( QgsChunkedEntity *newEntity );
     int maximumTextureSize() const;
 
   private:
@@ -282,8 +281,7 @@ class _3D_EXPORT Qgs3DMapScene : public QObject
     Qt3DLogic::QFrameAction *mFrameAction = nullptr;
     QgsCameraController *mCameraController = nullptr;
     QgsTerrainEntity *mTerrain = nullptr;
-    QList<QgsChunkedEntity *> mChunkEntities;
-    QList<QgsVirtualPointCloudEntity *> mVirtualPointCloudEntities;
+    QList<Qgs3DMapSceneEntity *> mSceneEntities;
     //! Entity that shows view center - useful for debugging camera issues
     Qt3DCore::QEntity *mEntityCameraViewCenter = nullptr;
     //! Keeps track of entities that belong to a particular layer
