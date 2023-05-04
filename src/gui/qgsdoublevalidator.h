@@ -118,6 +118,12 @@ class GUI_EXPORT QgsDoubleValidator : public QRegularExpressionValidator
     static double toDouble( const QString &input );
 
     /**
+     * Checks if \a input string can be safely converted to double
+     * and back to string without any changes.
+    */
+    static bool isDoubleConversionSafe( const QString &input );
+
+    /**
      * Set top range limit
      * \see setTop
      * \see setRange

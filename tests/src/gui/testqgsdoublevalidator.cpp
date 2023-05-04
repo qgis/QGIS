@@ -32,6 +32,8 @@ class TestQgsDoubleValidator : public QObject
     void validate_data();
     void toDouble_data();
     void toDouble();
+    void isDoubleConversionSafe_data();
+    void isDoubleConversionSafe();
 
   private:
 };
@@ -242,6 +244,47 @@ void TestQgsDoubleValidator::toDouble()
 
     QCOMPARE( QgsDoubleValidator::toDouble( value ), expectedValue );
   }
+}
+
+void TestQgsDoubleValidator::isDoubleConversionSafe_data()
+{
+  QTest::addColumn<QString>( "inputValue" );
+  QTest::addColumn<bool>( "expValue" );
+
+  QTest::newRow( "C decimal (default locale)" ) << QString( "4cd6" ) << true;
+  QTest::newRow( "locale decimal" ) << QString( "4ld6" ) << true;
+  QTest::newRow( "zero" ) << QString( "0" ) << true;
+  // trailing 0 is concatenated -> not safe for conversion
+  QTest::newRow( "zero with default locale decimal point" ) << QString( "0cd0" ) << false;
+  QTest::newRow( "zero with locale decimal point" ) << QString( "0ld0" ) << false;
+  // invalid strings gets converted to 0 -> not safe for conversion
+  QTest::newRow( "string" ) << QString( "abc" ) << false;
+  QTest::newRow( "ends to locale decimal point" ) << QString( "3ld" ) << false;
+  QTest::newRow( "ends to default locale decimal point" ) << QString( "3cd" ) << false;
+
+}
+
+void TestQgsDoubleValidator::isDoubleConversionSafe()
+{
+  QFETCH( QString, inputValue );
+  QFETCH( bool, expValue );
+  QString value;
+  bool expectedValue;
+
+  const QVector<QLocale>listLocale( {QLocale::English, QLocale::French, QLocale::German, QLocale::Italian} );
+  QLocale loc;
+  for ( int i = 0; i < listLocale.count(); ++i )
+  {
+    loc = listLocale.at( i );
+    QLocale::setDefault( loc );
+    value = inputValue;
+    value = value.replace( "ld", QLocale().decimalPoint() )
+            .replace( "cd", QLocale( QLocale::C ).decimalPoint() );
+    expectedValue = expValue;
+
+    QCOMPARE( QgsDoubleValidator::isDoubleConversionSafe( value ), expectedValue );
+  }
+
 }
 
 QGSTEST_MAIN( TestQgsDoubleValidator )

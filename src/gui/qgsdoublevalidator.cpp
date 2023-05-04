@@ -162,3 +162,17 @@ double QgsDoubleValidator::toDouble( const QString &input, bool *ok )
   }
   return value;
 }
+
+bool QgsDoubleValidator::isDoubleConversionSafe( const QString &input )
+{
+  double converted = QgsDoubleValidator::toDouble( input );
+  if ( input == QLocale().toString( converted ) )
+  {
+    return true;
+  }
+  if ( QString( input ).replace( QLocale( QLocale::C ).decimalPoint(), QLocale().decimalPoint() ) == QLocale().toString( converted ) )
+  {
+    return true;
+  }
+  return false;
+}

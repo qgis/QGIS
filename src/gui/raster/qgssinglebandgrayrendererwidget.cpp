@@ -121,8 +121,7 @@ void QgsSingleBandGrayRendererWidget::setMapCanvas( QgsMapCanvas *canvas )
 
 void QgsSingleBandGrayRendererWidget::mMinLineEdit_textChanged( const QString &value )
 {
-  double converted = QgsDoubleValidator::toDouble( value );
-  if ( value == QLocale().toString( converted ) )
+  if ( QgsDoubleValidator::isDoubleConversionSafe( value ) )
   {
     minMaxModified();
   }
@@ -130,8 +129,7 @@ void QgsSingleBandGrayRendererWidget::mMinLineEdit_textChanged( const QString &v
 
 void QgsSingleBandGrayRendererWidget::mMaxLineEdit_textChanged( const QString &value )
 {
-  double converted = QgsDoubleValidator::toDouble( value );
-  if ( value == QLocale().toString( converted ) )
+  if ( QgsDoubleValidator::isDoubleConversionSafe( value ) )
   {
     minMaxModified();
   }
