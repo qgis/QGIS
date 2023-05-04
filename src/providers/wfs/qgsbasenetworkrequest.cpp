@@ -179,10 +179,14 @@ bool QgsBaseNetworkRequest::sendGET( const QUrl &url, const QString &acceptHeade
   QgsDebugMsgLevel( QStringLiteral( "Calling: %1" ).arg( modifiedUrl.toDisplayString( QUrl::EncodeSpaces ) ), 4 );
 
   QNetworkRequest request( modifiedUrl );
+
   if ( !acceptHeader.isEmpty() )
   {
-    request.setRawHeader( "Accept", acceptHeader.toUtf8() );
+    mRequestHeaders << QNetworkReply::RawHeaderPair( "Accept", acceptHeader.toUtf8() );
   }
+
+  for ( const QNetworkReply::RawHeaderPair &headerPair : std::as_const( mRequestHeaders ) )
+    request.setRawHeader( headerPair.first, headerPair.second );
 
   QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsBaseNetworkRequest" ) );
   if ( !mAuth.setAuthorization( request ) )
@@ -448,6 +452,9 @@ void QgsBaseNetworkRequest::replyFinished()
           }
           request.setAttribute( QNetworkRequest::CacheLoadControlAttribute, mForceRefresh ? QNetworkRequest::AlwaysNetwork : QNetworkRequest::PreferCache );
           request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
+
+          for ( const QNetworkReply::RawHeaderPair &headerPair : std::as_const( mRequestHeaders ) )
+            request.setRawHeader( headerPair.first, headerPair.second );
 
           mReply->deleteLater();
           mReply = nullptr;
