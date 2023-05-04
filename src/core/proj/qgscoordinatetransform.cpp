@@ -611,9 +611,9 @@ QgsRectangle QgsCoordinateTransform::transformBoundingBox( const QgsRectangle &r
   // even with 1000 points it takes < 1ms.
   // TODO: how to effectively and precisely reproject bounding box?
   const int nPoints = 1000;
-  const double d = std::sqrt( ( rect.width() * ( yMax - yMin ) ) / std::pow( std::sqrt( static_cast< double >( nPoints ) ) - 1, 2.0 ) );
-  const int nXPoints = std::min( static_cast< int >( std::ceil( rect.width() / d ) ) + 1, 1000 );
-  const int nYPoints = std::min( static_cast< int >( std::ceil( ( yMax - yMin ) / d ) ) + 1, 1000 );
+  const double dst = std::sqrt( ( rect.width() * ( yMax - yMin ) ) / std::pow( std::sqrt( static_cast< double >( nPoints ) ) - 1, 2.0 ) );
+  const int nXPoints = std::min( static_cast< int >( std::ceil( rect.width() / dst ) ) + 1, 1000 );
+  const int nYPoints = std::min( static_cast< int >( std::ceil( ( yMax - yMin ) / dst ) ) + 1, 1000 );
 
   QgsRectangle bb_rect;
   bb_rect.setMinimal();
@@ -664,8 +664,19 @@ QgsRectangle QgsCoordinateTransform::transformBoundingBox( const QgsRectangle &r
     throw;
   }
 
-  // Calculate the bounding box and use that for the extent
+  // check if result bbox is geographic and is crossing 180/-180 line: ie. min X is before the 180° and max X is after the -180°
+  bool doHandle180Crossover = false;
+  double xMin = std::fmod( x[0], 180.0 );
+  double xMax = std::fmod( x[nXPoints - 1], 180.0 );
+  if ( handle180Crossover
+       && ( ( direction == Qgis::TransformDirection::Forward && d->mDestCRS.isGeographic() ) ||
+            ( direction == Qgis::TransformDirection::Reverse && d->mSourceCRS.isGeographic() ) )
+       && xMin > 0.0 && xMin <= 180.0 && xMax < 0.0 && xMax >= -180.0 )
+  {
+    doHandle180Crossover = true;
+  }
 
+  // Calculate the bounding box and use that for the extent
   for ( int i = 0; i < nXPoints * nYPoints; i++ )
   {
     if ( !std::isfinite( x[i] ) || !std::isfinite( y[i] ) )
@@ -673,7 +684,7 @@ QgsRectangle QgsCoordinateTransform::transformBoundingBox( const QgsRectangle &r
       continue;
     }
 
-    if ( handle180Crossover )
+    if ( doHandle180Crossover )
     {
       //if crossing the date line, temporarily add 360 degrees to -ve longitudes
       bb_rect.combineExtentWith( x[i] >= 0.0 ? x[i] : x[i] + 360.0, y[i] );
@@ -690,7 +701,7 @@ QgsRectangle QgsCoordinateTransform::transformBoundingBox( const QgsRectangle &r
     throw QgsCsException( QObject::tr( "Could not transform bounding box to target CRS" ) );
   }
 
-  if ( handle180Crossover )
+  if ( doHandle180Crossover )
   {
     //subtract temporary addition of 360 degrees from longitudes
     if ( bb_rect.xMinimum() > 180.0 )
