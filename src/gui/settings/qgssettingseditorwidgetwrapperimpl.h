@@ -264,5 +264,16 @@ class GUI_EXPORT QgsSettingsColorEditorWidgetWrapper : public QgsSettingsEditorW
 //    QStringList valueFromWidget() const override;
 //};
 
+#if defined(_MSC_VER)
+#ifndef SIP_RUN
+template class GUI_EXPORT QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryBool, QCheckBox, bool>;
+template class GUI_EXPORT QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryColor, QgsColorButton, QColor>;
+template class GUI_EXPORT QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryDouble, QDoubleSpinBox, double>;
+template class GUI_EXPORT QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryInteger, QSpinBox, int>;
+template class GUI_EXPORT QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryString, QLineEdit, QString>;
+#endif
+#endif
+
+
 
 #endif // QGSSETTINGSEDITORWIDGETWRAPPERIMPL_H
