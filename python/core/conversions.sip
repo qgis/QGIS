@@ -2065,19 +2065,7 @@ template<TYPE1, TYPE2>
     // Check the type if that is all that is required.
     if (sipIsErr == NULL)
     {
-        if (!PyDict_Check(sipPy))
-            return 0;
-
-        while (PyDict_Next(sipPy, &i, &key, &value))
-        {
-            if (!sipCanConvertToEnum(key, sipType_QgsFieldConstraints_Constraint))
-                return 0;
-
-            if (!sipCanConvertToEnum(value, sipType_QgsFieldConstraints_ConstraintStrength))
-                return 0;
-        }
-
-        return 1;
+        return PyDict_Check(sipPy);
     }
 
     // Create a new QMap to hold the values
@@ -2088,7 +2076,32 @@ template<TYPE1, TYPE2>
     {
         // Convert the key and value Python objects to C++ types
         int keyVal = sipConvertToEnum(key, sipType_QgsFieldConstraints_Constraint);
+
+        if (PyErr_Occurred())
+        {
+            PyErr_Format(PyExc_TypeError,
+                         "a key has type '%s' but 'QgsFieldConstraints.Constraint' is expected",
+                         sipPyTypeName(Py_TYPE(key)));
+
+            delete map;
+            *sipIsErr = 1;
+
+            return 0;
+        }
+
         int valueVal = sipConvertToEnum(value, sipType_QgsFieldConstraints_ConstraintStrength);
+
+        if (PyErr_Occurred())
+        {
+            PyErr_Format(PyExc_TypeError,
+                         "a value has type '%s' but 'QgsFieldConstraints.ConstraintStrength' is expected",
+                         sipPyTypeName(Py_TYPE(value)));
+
+            delete map;
+            *sipIsErr = 1;
+
+            return 0;
+        }
 
         // Add the key and value to the map
         map->insert(static_cast<QgsFieldConstraints::Constraint>(keyVal), static_cast<QgsFieldConstraints::ConstraintStrength>(valueVal));
