@@ -133,10 +133,13 @@ QgsAbstractFeatureIterator::RequestToSourceCrsResult QgsAbstractFeatureIterator:
 
     case Qgis::SpatialFilterType::BoundingBox:
     {
-      QgsRectangle newRect = transform.transformBoundingBox( request.filterRect(), Qgis::TransformDirection::Reverse );
+      QgsRectangle newRect = transform.transformBoundingBox( request.filterRect(), Qgis::TransformDirection::Reverse, true );
+      qDebug() << "============ updateRequestToSourceCrs BoundingBox transform from :" << transform.sourceCrs().userFriendlyIdentifier() << "to" << transform.destinationCrs().userFriendlyIdentifier()
+               << "==== Rectangle:" << request.filterRect().toString() << " ==> " << newRect.toString();
       request.setFilterRect( newRect );
       return RequestToSourceCrsResult::Success;
     }
+
     case Qgis::SpatialFilterType::DistanceWithin:
     {
       // we can't safely handle a distance within query, as we cannot transform the
@@ -144,7 +147,9 @@ QgsAbstractFeatureIterator::RequestToSourceCrsResult QgsAbstractFeatureIterator:
 
       // in this case we transform the request's distance within requirement to a "worst case" bounding box filter, so
       // that the request itself can still take advantage of spatial indices even when we have to do the distance within check locally
-      QgsRectangle newRect = transform.transformBoundingBox( request.filterRect(), Qgis::TransformDirection::Reverse );
+      QgsRectangle newRect = transform.transformBoundingBox( request.filterRect(), Qgis::TransformDirection::Reverse, true );
+      qDebug() << "============ updateRequestToSourceCrs DistanceWithin transform from :" << transform.sourceCrs().userFriendlyIdentifier() << "to" << transform.destinationCrs().userFriendlyIdentifier()
+               << "==== Rectangle:" << request.filterRect().toString() << " ==> " << newRect.toString();
       request.setFilterRect( newRect );
 
       return RequestToSourceCrsResult::DistanceWithinMustBeCheckedManually;
@@ -161,7 +166,10 @@ QgsRectangle QgsAbstractFeatureIterator::filterRectToSourceCrs( const QgsCoordin
 
   QgsCoordinateTransform extentTransform = transform;
   extentTransform.setBallparkTransformsAreAppropriate( true );
-  return extentTransform.transformBoundingBox( mRequest.filterRect(), Qgis::TransformDirection::Reverse );
+  QgsRectangle newRect = extentTransform.transformBoundingBox( mRequest.filterRect(), Qgis::TransformDirection::Reverse, true );
+  qDebug() << "============ updateRequestToSourceCrs filterRectToSourceCrs transform from :" << extentTransform.sourceCrs().userFriendlyIdentifier() << "to" << extentTransform.destinationCrs().userFriendlyIdentifier()
+           << "==== Rectangle:" << mRequest.filterRect().toString() << " ==> " << newRect.toString();
+  return newRect;
 }
 
 void QgsAbstractFeatureIterator::ref()
