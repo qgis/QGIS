@@ -229,37 +229,42 @@ QgsMapCanvasAnnotationItem::MouseMoveAction QgsMapCanvasAnnotationItem::moveActi
               itemPos.y() + cursorSensitivity >= offset.y() &&
               itemPos.y() - cursorSensitivity <= ( offset.y() + frameSize.height() ) );
 
-  if ( left && up )
+  // Resize actions are only available if the item is selected
+  // Otherwise, mouse handles are not visible
+  if ( isSelected() )
   {
-    return ResizeFrameLeftUp;
-  }
-  else if ( right && up )
-  {
-    return ResizeFrameRightUp;
-  }
-  else if ( left && down )
-  {
-    return ResizeFrameLeftDown;
-  }
-  else if ( right && down )
-  {
-    return ResizeFrameRightDown;
-  }
-  if ( left && inframe )
-  {
-    return ResizeFrameLeft;
-  }
-  if ( right && inframe )
-  {
-    return ResizeFrameRight;
-  }
-  if ( up && inframe )
-  {
-    return ResizeFrameUp;
-  }
-  if ( down && inframe )
-  {
-    return ResizeFrameDown;
+    if ( left && up )
+    {
+      return ResizeFrameLeftUp;
+    }
+    else if ( right && up )
+    {
+      return ResizeFrameRightUp;
+    }
+    else if ( left && down )
+    {
+      return ResizeFrameLeftDown;
+    }
+    else if ( right && down )
+    {
+      return ResizeFrameRightDown;
+    }
+    if ( left && inframe )
+    {
+      return ResizeFrameLeft;
+    }
+    if ( right && inframe )
+    {
+      return ResizeFrameRight;
+    }
+    if ( up && inframe )
+    {
+      return ResizeFrameUp;
+    }
+    if ( down && inframe )
+    {
+      return ResizeFrameDown;
+    }
   }
 
   //finally test if pos is in the frame area
