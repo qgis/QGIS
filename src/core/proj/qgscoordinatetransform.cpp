@@ -611,9 +611,9 @@ QgsRectangle QgsCoordinateTransform::transformBoundingBox( const QgsRectangle &r
   // even with 1000 points it takes < 1ms.
   // TODO: how to effectively and precisely reproject bounding box?
   const int nPoints = 1000;
-  const double d = std::sqrt( ( rect.width() * ( yMax - yMin ) ) / std::pow( std::sqrt( static_cast< double >( nPoints ) ) - 1, 2.0 ) );
-  const int nXPoints = std::min( static_cast< int >( std::ceil( rect.width() / d ) ) + 1, 1000 );
-  const int nYPoints = std::min( static_cast< int >( std::ceil( ( yMax - yMin ) / d ) ) + 1, 1000 );
+  const double dst = std::sqrt( ( rect.width() * ( yMax - yMin ) ) / std::pow( std::sqrt( static_cast< double >( nPoints ) ) - 1, 2.0 ) );
+  const int nXPoints = std::min( static_cast< int >( std::ceil( rect.width() / dst ) ) + 1, 1000 );
+  const int nYPoints = std::min( static_cast< int >( std::ceil( ( yMax - yMin ) / dst ) ) + 1, 1000 );
 
   QgsRectangle bb_rect;
   bb_rect.setMinimal();
@@ -673,7 +673,8 @@ QgsRectangle QgsCoordinateTransform::transformBoundingBox( const QgsRectangle &r
       continue;
     }
 
-    if ( handle180Crossover )
+    if ( handle180Crossover && ( ( direction == Qgis::TransformDirection::Forward && d->mDestCRS.isGeographic() ) ||
+                                 ( direction == Qgis::TransformDirection::Reverse && d->mSourceCRS.isGeographic() ) ) )
     {
       //if crossing the date line, temporarily add 360 degrees to -ve longitudes
       bb_rect.combineExtentWith( x[i] >= 0.0 ? x[i] : x[i] + 360.0, y[i] );
@@ -690,7 +691,8 @@ QgsRectangle QgsCoordinateTransform::transformBoundingBox( const QgsRectangle &r
     throw QgsCsException( QObject::tr( "Could not transform bounding box to target CRS" ) );
   }
 
-  if ( handle180Crossover )
+  if ( handle180Crossover && ( ( direction == Qgis::TransformDirection::Forward && d->mDestCRS.isGeographic() ) ||
+                               ( direction == Qgis::TransformDirection::Reverse && d->mSourceCRS.isGeographic() ) ) )
   {
     //subtract temporary addition of 360 degrees from longitudes
     if ( bb_rect.xMinimum() > 180.0 )

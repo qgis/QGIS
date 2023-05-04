@@ -474,6 +474,13 @@ bool QgsPostgresFeatureIterator::close()
 QString QgsPostgresFeatureIterator::whereClauseRect()
 {
   QgsRectangle rect = mFilterRect;
+
+  // in case coordinates are around 180.0°
+  if ( rect.xMinimum() > rect.xMaximum() && mSource->mCrs.isGeographic() )
+  {
+    rect.setXMaximum( rect.xMaximum() + 360.0 );
+  }
+
   if ( mSource->mSpatialColType == SctGeography )
   {
     rect = QgsRectangle( -180.0, -90.0, 180.0, 90.0 ).intersect( rect );

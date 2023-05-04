@@ -2835,18 +2835,18 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
                 self.assertTrue(vl.isValid())
                 self.assertEqual(vl.hasSpatialIndex(), spatial_index)
 
-    def testBBoxFilterOnGeographyType(self):
-        """Test bounding box filter on geography type"""
-
+    def _doTestBBoxFilter(self, connString):
         vl = QgsVectorLayer(
-            self.dbconn +
-            ' sslmode=disable key=\'pk\' srid=4326 type=POINT table="qgis_test"."testgeog" (geog) sql=',
+            self.dbconn + connString,
             'test', 'postgres')
 
         self.assertTrue(vl.isValid())
 
-        def _test(vl, extent, ids):
-            request = QgsFeatureRequest().setFilterRect(extent)
+        def _test(vl, extent, ids, proj=None):
+            request = QgsFeatureRequest()
+            if proj:
+                request.setDestinationCrs(QgsCoordinateReferenceSystem(proj), QgsProject.instance().transformContext())
+            request.setFilterRect(extent)
             values = {feat['pk']: 'x' for feat in vl.getFeatures(request)}
             expected = {x: 'x' for x in ids}
             self.assertEqual(values, expected)
@@ -2865,7 +2865,37 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         _test(vl, QgsRectangle(40 - 5, -60 - 5, 40 + 5, -60 + 5), [3])
         _test(vl, QgsRectangle(40 - 5, -60 - 9.99, 40 + 5, -60 + 0.01), [3])
 
-        _test(vl, QgsRectangle(-181, -90, 181, 90), [1, 2, 3])  # no use of spatial index currently
+        _test(vl, QgsRectangle(-181, -90, 181, 90), [1, 2, 3, 4])  # no use of spatial index currently
+
+        # ================ tests with bbox around 180.
+        # in 3857: -20037699.584651027, 5621430.516018896, -20037317.10092746, 5621612.352543215
+        # in 4326: 179.99828204512598973 44.99942215015313707, -179.99828204512638763 45.00057718454320366
+
+        # good order with xMin < xMax
+        _test(vl, QgsRectangle(180.0 - 0.0017, 45.0 - 0.0001,
+                               180.0 + 0.0017, 45.0 + 0.0001), [4])
+
+        # good order but with xMin > xMax and normalization ==> nothing found
+        _test(vl, QgsRectangle(180.0 - 0.0017, 45.0 - 0.0001,
+                               -(180.0 - 0.0017), 45.0 + 0.0001), [])
+
+        # good order but with xMin > xMax and without normalization
+        _test(vl, QgsRectangle(180.0 - 0.0017, 45.0 - 0.0001,
+                               -(180.0 - 0.0017), 45.0 + 0.0001, False), [4])
+
+        # now from 3857
+        _test(vl, QgsRectangle(-20037699.584651027, 5621430.516018896, -20037317.10092746, 5621612.352543215), [4], "EPSG:3857")
+
+    def testBBoxFilterOnGeographyType(self):
+        """Test bounding box filter on geography type"""
+
+        self._doTestBBoxFilter(' sslmode=disable key=\'pk\' srid=4326 type=POINT table="qgis_test"."testgeog" (geog) sql=')
+
+    def testBBoxFilterOnGeometryType(self):
+        """Test bounding box filter on somegeometry type"""
+
+        self._doTestBBoxFilter(
+            ' sslmode=disable key=\'pk\' srid=4326 type=POINT table="qgis_test"."someBorderlineData" (geom) sql=')
 
     def testReadCustomSRID(self):
         """Test that we can correctly read the SRS from a custom SRID"""
