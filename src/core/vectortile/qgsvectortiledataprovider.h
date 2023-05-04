@@ -20,7 +20,7 @@
 #include "qgis_sip.h"
 #include "qgsdataprovider.h"
 
-class QgsTileMatrix;
+class QgsTileMatrixSet;
 class QgsTileXYZ;
 class QgsVectorTileRawData;
 class QgsVectorTileMatrixSet;
@@ -105,19 +105,19 @@ class CORE_EXPORT QgsVectorTileDataProvider : public QgsDataProvider
     /**
      * Returns raw tile data for a single tile.
      */
-    virtual QByteArray readTile( const QgsTileMatrix &tileMatrix, const QgsTileXYZ &id, QgsFeedback *feedback = nullptr ) const = 0;
+    virtual QByteArray readTile( const QgsTileMatrixSet &tileMatrixSet, const QgsTileXYZ &id, QgsFeedback *feedback = nullptr ) const = 0;
 
     /**
      * Returns raw tile data for a range of tiles.
      */
-    virtual QList<QgsVectorTileRawData> readTiles( const QgsTileMatrix &tileMatrix, const QVector<QgsTileXYZ> &tiles, QgsFeedback *feedback = nullptr ) const = 0;
+    virtual QList<QgsVectorTileRawData> readTiles( const QgsTileMatrixSet &tileMatrixSet, const QVector<QgsTileXYZ> &tiles, QgsFeedback *feedback = nullptr ) const = 0;
 
     /**
      * Returns a network request for a tile.
      *
      * The default implementation returns an invalid request.
      */
-    virtual QNetworkRequest tileRequest( const QgsTileMatrix &tileMatrix, const QgsTileXYZ &id, Qgis::RendererUsage usage ) const;
+    virtual QNetworkRequest tileRequest( const QgsTileMatrixSet &tileMatrixSet, const QgsTileXYZ &id, Qgis::RendererUsage usage ) const;
 
     /**
      * Returns the style definition for the provider, if available.

@@ -62,9 +62,10 @@ class QgsVectorTileLoader : public QObject
     //! Returns raw tile data for the specified range of tiles. Blocks the caller until all tiles are fetched.
     static QList<QgsVectorTileRawData> blockingFetchTileRawData(
       const QgsVectorTileDataProvider *provider,
-      const QgsTileMatrix &tileMatrix,
+      const QgsTileMatrixSet &tileMatrixSet,
       const QPointF &viewCenter,
       const QgsTileRange &range,
+      int zoomLevel,
       QgsFeedback *feedback = nullptr );
 
     //
@@ -72,7 +73,7 @@ class QgsVectorTileLoader : public QObject
     //
 
     //! Constructs tile loader for doing asynchronous requests and starts network requests
-    QgsVectorTileLoader( const QgsVectorTileDataProvider *provider, const QgsTileMatrix &tileMatrix, const QgsTileRange &range, const QPointF &viewCenter,
+    QgsVectorTileLoader( const QgsVectorTileDataProvider *provider, const QgsTileMatrixSet &tileMatrixSet, const QgsTileRange &range, int zoomLevel, const QPointF &viewCenter,
                          QgsFeedback *feedback, Qgis::RendererUsage usage );
     ~QgsVectorTileLoader();
 
@@ -83,7 +84,7 @@ class QgsVectorTileLoader : public QObject
     QString error() const;
 
   private:
-    void loadFromNetworkAsync( const QgsTileXYZ &id, const QgsTileMatrix &tileMatrix, const QgsVectorTileDataProvider *provider, Qgis::RendererUsage usage );
+    void loadFromNetworkAsync( const QgsTileXYZ &id, const QgsTileMatrixSet &tileMatrixSet, const QgsVectorTileDataProvider *provider, Qgis::RendererUsage usage );
 
   private slots:
     void tileReplyFinished();
