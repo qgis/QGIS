@@ -218,11 +218,16 @@ QgsMapCanvasAnnotationItem::MouseMoveAction QgsMapCanvasAnnotationItem::moveActi
   const QPointF offset = mAnnotation && mAnnotation->hasFixedMapPosition() ? mAnnotation->frameOffsetFromReferencePointMm() * mmToPixelScale : QPointF( 0, 0 );
   const QSizeF frameSize = mAnnotation ? mAnnotation->frameSizeMm() * mmToPixelScale : QSizeF( 0, 0 );
 
-  bool left, right, up, down;
+  bool left, right, up, down, inframe;
   left = std::fabs( itemPos.x() - offset.x() ) < cursorSensitivity;
   right = std::fabs( itemPos.x() - ( offset.x() + frameSize.width() ) ) < cursorSensitivity;
   up = std::fabs( itemPos.y() - offset.y() ) < cursorSensitivity;
   down = std::fabs( itemPos.y() - ( offset.y() + frameSize.height() ) ) < cursorSensitivity;
+  inframe = (
+              itemPos.x() + cursorSensitivity >= offset.x() &&
+              itemPos.x() - cursorSensitivity <= ( offset.x() + frameSize.width() ) &&
+              itemPos.y() + cursorSensitivity >= offset.y() &&
+              itemPos.y() - cursorSensitivity <= ( offset.y() + frameSize.height() ) );
 
   if ( left && up )
   {
@@ -240,26 +245,25 @@ QgsMapCanvasAnnotationItem::MouseMoveAction QgsMapCanvasAnnotationItem::moveActi
   {
     return ResizeFrameRightDown;
   }
-  if ( left )
+  if ( left && inframe )
   {
     return ResizeFrameLeft;
   }
-  if ( right )
+  if ( right && inframe )
   {
     return ResizeFrameRight;
   }
-  if ( up )
+  if ( up && inframe )
   {
     return ResizeFrameUp;
   }
-  if ( down )
+  if ( down && inframe )
   {
     return ResizeFrameDown;
   }
 
   //finally test if pos is in the frame area
-  if ( itemPos.x() >= offset.x() && itemPos.x() <= ( offset.x() + frameSize.width() )
-       && itemPos.y() >= offset.y() && itemPos.y() <= ( offset.y() + frameSize.height() ) )
+  if ( inframe )
   {
     return MoveFramePosition;
   }
