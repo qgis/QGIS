@@ -176,6 +176,7 @@ set(QGIS_3D_PRIVATE_HDRS
   qgsvectorlayerchunkloader_p.h
   qgspointcloudlayerchunkloader_p.h
   qgsvirtualpointcloudentity_p.h
+  qgs3dmapsceneentity_p.h
   chunks/qgschunkboundsentity_p.h
   chunks/qgschunkedentity_p.h
   chunks/qgschunklist_p.h

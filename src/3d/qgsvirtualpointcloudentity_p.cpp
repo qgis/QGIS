@@ -31,7 +31,7 @@ QgsVirtualPointCloudEntity::QgsVirtualPointCloudEntity( QgsPointCloudLayer *laye
     double zValueScale,
     double zValueOffset,
     int pointBudget )
-  : Qt3DCore::QEntity( nullptr )
+  : Qgs3DMapSceneEntity( nullptr )
   , mLayer( layer )
   , mMap( map )
   , mCoordinateTransform( coordinateTransform )
@@ -61,9 +61,10 @@ QgsVirtualPointCloudEntity::QgsVirtualPointCloudEntity( QgsPointCloudLayer *laye
         mZValueScale,
         mZValueOffset,
         mPointBudget );
+
     mChunkedEntitiesMap.insert( i, entity );
-    mChunkedEntities.append( entity );
     entity->setParent( this );
+    connect( entity, &QgsChunkedEntity::pendingJobsCountChanged, this, &Qgs3DMapSceneEntity::pendingJobsCountChanged );
   }
 
   updateBboxEntity();
@@ -72,7 +73,7 @@ QgsVirtualPointCloudEntity::QgsVirtualPointCloudEntity( QgsPointCloudLayer *laye
 
 QList<QgsChunkedEntity *> QgsVirtualPointCloudEntity::chunkedEntities() const
 {
-  return mChunkedEntities;
+  return mChunkedEntitiesMap.values();
 }
 
 QgsVirtualPointCloudProvider *QgsVirtualPointCloudEntity::provider() const
@@ -97,9 +98,10 @@ void QgsVirtualPointCloudEntity::createChunkedEntityForSubIndex( int i )
       mZValueScale,
       mZValueOffset,
       mPointBudget );
-  mChunkedEntities.append( newChunkedEntity );
+
   mChunkedEntitiesMap.insert( i, newChunkedEntity );
   newChunkedEntity->setParent( this );
+  connect( newChunkedEntity, &QgsChunkedEntity::pendingJobsCountChanged, this, &Qgs3DMapSceneEntity::pendingJobsCountChanged );
   emit newEntityCreated( newChunkedEntity );
 }
 
@@ -120,8 +122,48 @@ void QgsVirtualPointCloudEntity::handleSceneUpdate( const QgsChunkedEntity::Scen
       provider()->loadSubIndex( i );
 
     setRenderSubIndexAsBbox( i, displayAsBbox );
+    if ( !displayAsBbox && mChunkedEntitiesMap.contains( i ) )
+      mChunkedEntitiesMap[i]->handleSceneUpdate( state );
   }
   updateBboxEntity();
+}
+
+QgsRange<float> QgsVirtualPointCloudEntity::getNearFarPlaneRange( const QMatrix4x4 &viewMatrix ) const
+{
+  float fnear = 1e9;
+  float ffar = 0;
+
+  for ( QgsChunkedEntity *entity : mChunkedEntitiesMap )
+  {
+    if ( entity->isEnabled() )
+    {
+      const QgsRange<float> range = entity->getNearFarPlaneRange( viewMatrix );
+      ffar = std::max( range.upper(), ffar );
+      fnear = std::min( range.lower(), fnear );
+    }
+  }
+  return QgsRange<float>( fnear, ffar );
+}
+
+int QgsVirtualPointCloudEntity::pendingJobsCount() const
+{
+  int jobs = 0;
+  for ( QgsChunkedEntity *entity : mChunkedEntitiesMap )
+  {
+    if ( entity->isEnabled() )
+      jobs += entity->pendingJobsCount();
+  }
+  return jobs;
+}
+
+bool QgsVirtualPointCloudEntity::needsUpdate() const
+{
+  for ( QgsChunkedEntity *entity : mChunkedEntitiesMap )
+  {
+    if ( entity->isEnabled() && entity->needsUpdate() )
+      return true;
+  }
+  return false;
 }
 
 void QgsVirtualPointCloudEntity::updateBboxEntity()
