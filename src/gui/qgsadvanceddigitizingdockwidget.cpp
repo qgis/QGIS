@@ -124,7 +124,11 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *
   mCommonAngleActionsMenu->addAction( showCommonAngleSnappingInFloaterAction );
 
   // common angles
-  QActionGroup *angleButtonGroup = new QActionGroup( mCommonAngleActionsMenu ); // actions are exclusive for common angles
+
+  // Suppress warning: Potential leak of memory pointed to by 'angleButtonGroup' [clang-analyzer-cplusplus.NewDeleteLeaks]
+#ifndef __clang_analyzer__
+  QActionGroup *angleButtonGroup = new QActionGroup( mCommonAngleActionsMenu ); // actions are exclusive for common angles NOLINT
+#endif
   mCommonAngleActions = QMap<QAction *, double>();
   QList< QPair< double, QString > > commonAngles;
   const QList<double> anglesDouble( { 0.0, 0.1, 0.5, 1.0, 5.0, 10.0, 15.0, 18.0, 22.5, 30.0, 45.0, 90.0} );
@@ -138,7 +142,10 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *
     action->setCheckable( true );
     action->setChecked( it->first == mCommonAngleConstraint );
     mCommonAngleActionsMenu->addAction( action );
+    // Suppress warning: Potential leak of memory pointed to by 'angleButtonGroup' [clang-analyzer-cplusplus.NewDeleteLeaks]
+#ifndef __clang_analyzer__
     angleButtonGroup->addAction( action );
+#endif
     mCommonAngleActions.insert( action, it->first );
   }
 

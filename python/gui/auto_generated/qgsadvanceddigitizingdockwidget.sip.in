@@ -1049,12 +1049,6 @@ Emitted whenever the snapping to common angle option changes, angle = 0 means th
 .. versionadded:: 3.32
 %End
 
-    void commonAngleSnappingShowInFloaterChanged( bool enabled );
-%Docstring
-Emitted whenever the option to show common angle snapping in the floater changes.
-
-.. versionadded:: 3.32
-%End
 
   private:
     //! event filter for line edits in the dock UI (angle/distance/x/y line edits)

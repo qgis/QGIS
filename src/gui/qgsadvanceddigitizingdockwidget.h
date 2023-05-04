@@ -881,8 +881,9 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     /**
      * Emitted whenever the option to show common angle snapping in the floater changes.
      * \since QGIS 3.32
+     * \note Not available in Python bindings
      */
-    void commonAngleSnappingShowInFloaterChanged( bool enabled );
+    void commonAngleSnappingShowInFloaterChanged( bool enabled ) SIP_SKIP;
 
   private slots:
     //! Sets the between line constraint by clicking on the perpendicular/parallel buttons
