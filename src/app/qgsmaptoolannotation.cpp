@@ -147,11 +147,6 @@ void QgsMapToolAnnotation::canvasPressEvent( QgsMapMouseEvent *e )
 
 void QgsMapToolAnnotation::keyPressEvent( QKeyEvent *e )
 {
-  if ( e->key() == Qt::Key_T && e->modifiers() == Qt::ControlModifier )
-  {
-    toggleTextItemVisibilities();
-  }
-
   QgsMapCanvasAnnotationItem *item = selectedItem();
   if ( item )
   {
@@ -378,19 +373,6 @@ QList<QgsMapCanvasAnnotationItem *> QgsMapToolAnnotation::annotationItems() cons
   }
 }
 
-void QgsMapToolAnnotation::toggleTextItemVisibilities()
-{
-  const QList<QgsMapCanvasAnnotationItem *> itemList = annotationItems();
-  const auto constItemList = itemList;
-  for ( QgsMapCanvasAnnotationItem *item : constItemList )
-  {
-    QgsTextAnnotation *textItem = qobject_cast<QgsTextAnnotation *>( item->annotation() );
-    if ( textItem )
-    {
-      textItem->setVisible( !textItem->isVisible() );
-    }
-  }
-}
 
 QgsPointXY QgsMapToolAnnotation::transformCanvasToAnnotation( QgsPointXY p, QgsAnnotation *annotation ) const
 {

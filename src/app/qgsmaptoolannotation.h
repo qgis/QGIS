@@ -56,8 +56,6 @@ class APP_EXPORT QgsMapToolAnnotation: public QgsMapTool
     QgsMapCanvasAnnotationItem *selectedItem() const;
     //! Returns a list of all annotationitems in the canvas
     QList<QgsMapCanvasAnnotationItem *> annotationItems() const;
-    //! Switches visibility states of text items
-    void toggleTextItemVisibilities();
 
     QgsPointXY transformCanvasToAnnotation( QgsPointXY p, QgsAnnotation *annotation ) const;
 
