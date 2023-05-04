@@ -1735,7 +1735,7 @@ class CORE_EXPORT Qgis
      * \since QGIS 3.28
      */
     Q_DECLARE_FLAGS( RasterTemporalCapabilityFlags, RasterTemporalCapabilityFlag )
-    Q_ENUM( RasterTemporalCapabilityFlags )
+    Q_FLAG( RasterTemporalCapabilityFlags )
 
     /**
      * Indicates the direction (forward or inverse) of a transform.
@@ -1767,7 +1767,7 @@ class CORE_EXPORT Qgis
      * \since QGIS 3.26
      */
     Q_DECLARE_FLAGS( CoordinateTransformationFlags, CoordinateTransformationFlag )
-    Q_ENUM( CoordinateTransformationFlags )
+    Q_FLAG( CoordinateTransformationFlags )
 
     /**
      * Flags which adjust the way maps are rendered.

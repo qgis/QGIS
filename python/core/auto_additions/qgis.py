@@ -1676,6 +1676,7 @@ Qgis.RasterTemporalCapabilityFlag.__doc__ = 'Flags for raster layer temporal cap
 # --
 Qgis.RasterTemporalCapabilityFlag.baseClass = Qgis
 Qgis.RasterTemporalCapabilityFlags.baseClass = Qgis
+RasterTemporalCapabilityFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
 QgsCoordinateTransform.TransformDirection = Qgis.TransformDirection
 # monkey patching scoped based enum
 QgsCoordinateTransform.ForwardTransform = Qgis.TransformDirection.Forward
@@ -1696,6 +1697,7 @@ Qgis.CoordinateTransformationFlag.__doc__ = 'Flags which adjust the coordinate t
 # --
 Qgis.CoordinateTransformationFlag.baseClass = Qgis
 Qgis.CoordinateTransformationFlags.baseClass = Qgis
+CoordinateTransformationFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
 QgsMapSettings.Flag = Qgis.MapSettingsFlag
 # monkey patching scoped based enum
 QgsMapSettings.Antialiasing = Qgis.MapSettingsFlag.Antialiasing
