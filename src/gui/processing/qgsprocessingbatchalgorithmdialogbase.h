@@ -34,7 +34,7 @@ class QgsProxyProgressTask;
  * \note This is not considered stable API and may change in future QGIS versions.
  * \since QGIS 3.26
  */
-class GUI_EXPORT QgsProcessingBatchAlgorithmDialogBase : public QgsProcessingAlgorithmDialogBase
+class GUI_EXPORT QgsProcessingBatchAlgorithmDialogBase : public QgsProcessingAlgorithmDialogBase SIP_ABSTRACT
 {
     Q_OBJECT
 

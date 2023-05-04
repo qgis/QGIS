@@ -12,7 +12,7 @@
 
 
 
-class QgsProcessingBatchAlgorithmDialogBase : QgsProcessingAlgorithmDialogBase
+class QgsProcessingBatchAlgorithmDialogBase : QgsProcessingAlgorithmDialogBase /Abstract/
 {
 %Docstring(signature="appended")
 Base class for processing batch algorithm dialogs.
