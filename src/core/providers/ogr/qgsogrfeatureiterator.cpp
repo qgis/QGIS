@@ -18,9 +18,8 @@
 #include "qgsogrexpressioncompiler.h"
 #include "qgssqliteexpressioncompiler.h"
 
-#include "qgscplhttpfetchoverrider.h"
 #include "qgsogrutils.h"
-#include "qgsapplication.h"
+#include "qgscplhttpfetchoverrider.h"
 #include "qgsgeometry.h"
 #include "qgsexception.h"
 #include "qgswkbtypes.h"
@@ -60,8 +59,8 @@ QgsOgrFeatureIterator::QgsOgrFeatureIterator( QgsOgrFeatureSource *source, bool 
                        ( mRequest.filterType() != QgsFeatureRequest::FilterType::FilterFid
                          && mRequest.filterType() != QgsFeatureRequest::FilterType::FilterFids );
 
-  QgsCPLHTTPFetchOverrider oCPLHTTPFetcher( mAuthCfg );
-  QgsSetCPLHTTPFetchOverriderInitiatorClass( oCPLHTTPFetcher, QStringLiteral( "QgsOgrFeatureIterator" ) )
+  mCplHttpFetchOverrider = std::make_unique< QgsCPLHTTPFetchOverrider >( mAuthCfg );
+  QgsSetCPLHTTPFetchOverriderInitiatorClass( *mCplHttpFetchOverrider, QStringLiteral( "QgsOgrFeatureIterator" ) )
 
   for ( const auto &id :  mRequest.filterFids() )
   {
@@ -401,14 +400,24 @@ bool QgsOgrFeatureIterator::checkFeature( gdal::ogr_feature_unique_ptr &fet, Qgs
 void QgsOgrFeatureIterator::setInterruptionChecker( QgsFeedback *interruptionChecker )
 {
   mInterruptionChecker = interruptionChecker;
+  if ( mCplHttpFetchOverrider && QThread::currentThread() == mCplHttpFetchOverrider->thread() )
+  {
+    mCplHttpFetchOverrider->setFeedback( interruptionChecker );
+  }
 }
 
 bool QgsOgrFeatureIterator::fetchFeature( QgsFeature &feature )
 {
   QMutexLocker locker( mSharedDS ? &mSharedDS->mutex() : nullptr );
 
-  QgsCPLHTTPFetchOverrider oCPLHTTPFetcher( mAuthCfg, mInterruptionChecker );
-  QgsSetCPLHTTPFetchOverriderInitiatorClass( oCPLHTTPFetcher, QStringLiteral( "QgsOgrFeatureIterator" ) )
+  // if we are on the same thread as the iterator was created in, we don't need to initializer another
+  // QgsCPLHTTPFetchOverrider (which is expensive)
+  std::unique_ptr< QgsCPLHTTPFetchOverrider > localHttpFetchOverride;
+  if ( QThread::currentThread() != mCplHttpFetchOverrider->thread() )
+  {
+    localHttpFetchOverride = std::make_unique< QgsCPLHTTPFetchOverrider >( mAuthCfg, mInterruptionChecker );
+    QgsSetCPLHTTPFetchOverriderInitiatorClass( *localHttpFetchOverride, QStringLiteral( "QgsOgrFeatureIterator" ) )
+  }
 
   feature.setValid( false );
 
