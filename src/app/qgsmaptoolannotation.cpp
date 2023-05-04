@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include <QDialog>
+#include <QMenu>
 
 #include "qgsmaptoolannotation.h"
 #include "qgsannotation.h"
@@ -39,6 +40,11 @@ QgsMapToolAnnotation::QgsMapToolAnnotation( QgsMapCanvas *canvas )
   : QgsMapTool( canvas )
 {
   mCursor = QCursor( Qt::ArrowCursor );
+}
+
+QgsMapTool::Flags QgsMapToolAnnotation::flags() const
+{
+  return QgsMapTool::ShowContextMenu;
 }
 
 QDialog *QgsMapToolAnnotation::createItemEditor( QgsMapCanvasAnnotationItem *item )
@@ -160,6 +166,31 @@ void QgsMapToolAnnotation::keyPressEvent( QKeyEvent *e )
       }
     }
   }
+}
+
+bool QgsMapToolAnnotation::populateContextMenuWithEvent( QMenu *menu, QgsMapMouseEvent *event )
+{
+  // Display context menu for right click (with edit and delete actions)
+  QgsMapCanvasAnnotationItem *existingItem = itemAtPos( event->pos() );
+  if ( existingItem == nullptr )
+  {
+    return true;
+  }
+  menu->addSeparator();
+  menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionToggleEditing.svg" ) ), tr( "Edit" ), this, [this, existingItem]()
+  {
+    QDialog *dialog = createItemEditor( existingItem );
+    if ( dialog )
+    {
+      dialog->exec();
+    }
+  } );
+  menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionDeleteSelected.svg" ) ), tr( "Delete" ), this, [this, existingItem]()
+  {
+    QgsProject::instance()->annotationManager()->removeAnnotation( existingItem->annotation() );
+  } );
+
+  return true;
 }
 
 void QgsMapToolAnnotation::canvasMoveEvent( QgsMapMouseEvent *e )
