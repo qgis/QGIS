@@ -51,7 +51,7 @@ std::vector<std::string> directoryList(const std::string& dir)
         fs::directory_iterator end;
         while (it != end)
         {
-            files.push_back(untwine::fromNative(it->path()));
+            files.push_back(untwine::fromNative(it->path().string()));
             it++;
         }
     }
