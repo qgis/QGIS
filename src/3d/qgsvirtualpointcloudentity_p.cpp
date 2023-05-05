@@ -43,13 +43,16 @@ QgsVirtualPointCloudEntity::QgsVirtualPointCloudEntity( QgsPointCloudLayer *laye
 {
   mSymbol.reset( symbol );
   mBboxesEntity = new QgsChunkBoundsEntity( this );
+  const QgsRectangle mapExtent = Qgs3DUtils::tryReprojectExtent2D( mMap.extent(), mMap.crs(), layer->crs(), mMap.transformContext() );
   const QVector<QgsPointCloudSubIndex> subIndexes = provider()->subIndexes();
   for ( int i = 0; i < subIndexes.size(); ++i )
   {
     const QgsPointCloudSubIndex &si = subIndexes.at( i );
-    mBboxes << Qgs3DUtils::mapToWorldExtent( si.extent(), si.zRange().lower(), si.zRange().upper(), mMap.origin() );
+    const QgsRectangle intersection = si.extent().intersect( mapExtent );
 
-    if ( !si.index() )
+    mBboxes << Qgs3DUtils::mapToWorldExtent( intersection, si.zRange().lower(), si.zRange().upper(), mMap.origin() );
+
+    if ( !si.index() || intersection.isEmpty() )
       continue;
 
     QgsPointCloudLayerChunkedEntity *entity = new QgsPointCloudLayerChunkedEntity( si.index(),
@@ -111,6 +114,10 @@ void QgsVirtualPointCloudEntity::handleSceneUpdate( const QgsChunkedEntity::Scen
   for ( int i = 0; i < subIndexes.size(); ++i )
   {
     const QgsAABB &bbox = mBboxes.at( i );
+
+    if ( bbox.isEmpty() )
+      continue;
+
     // magic number 256 is the common span value for a COPC root node
     constexpr int SPAN = 256;
     const float epsilon = std::min( bbox.xExtent(), bbox.yExtent() ) / SPAN;
@@ -173,6 +180,9 @@ void QgsVirtualPointCloudEntity::updateBboxEntity()
   for ( int i = 0; i < subIndexes.size(); ++i )
   {
     if ( mChunkedEntitiesMap.contains( i ) && mChunkedEntitiesMap[i]->isEnabled() )
+      continue;
+
+    if ( mBboxes.at( i ).isEmpty() )
       continue;
 
     bboxes << mBboxes.at( i );
