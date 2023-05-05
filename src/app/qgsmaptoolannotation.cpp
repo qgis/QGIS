@@ -115,8 +115,9 @@ void QgsMapToolAnnotation::canvasPressEvent( QgsMapMouseEvent *e )
     const QgsPointXY mapPos = transformCanvasToAnnotation( toMapCoordinates( e->pos() ), annotation );
     annotation->setMapPosition( mapPos );
     annotation->setMapPositionCrs( mCanvas->mapSettings().destinationCrs() );
-    annotation->setRelativePosition( QPointF( e->pos().x() / mCanvas->width(),
-                                     e->pos().y() / mCanvas->height() ) );
+    annotation->setRelativePosition( QPointF(
+                                       static_cast<double>( e->pos().x() ) / mCanvas->width(),
+                                       static_cast<double>( e->pos().y() ) / mCanvas->height() ) );
     annotation->setFrameSizeMm( QSizeF( 50, 25 ) );
 
     QgsProject::instance()->annotationManager()->addAnnotation( annotation );
@@ -173,7 +174,7 @@ bool QgsMapToolAnnotation::populateContextMenuWithEvent( QMenu *menu, QgsMapMous
       dialog->exec();
     }
   } );
-  menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionDeleteSelected.svg" ) ), tr( "Delete" ), this, [this, existingItem]()
+  menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionDeleteSelected.svg" ) ), tr( "Delete" ), this, [existingItem]()
   {
     QgsProject::instance()->annotationManager()->removeAnnotation( existingItem->annotation() );
   } );
