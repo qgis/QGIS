@@ -1054,26 +1054,32 @@ bool QgsMapToolIdentify::identifyRasterLayer( QList<IdentifyResult> *results, Qg
   derivedAttributes.insert( derivedAttributesForPoint( QgsPoint( pointInCanvasCrs ) ) );
 #endif
 
-  // Try to determine the clicked column/row (0-based) in the raster
-  const QgsRectangle extent = dprovider->extent();
-  const double xres = layer->rasterUnitsPerPixelY();
-  const double yres = layer->rasterUnitsPerPixelX();
-
-  // rasterUnitsPerPixel might be 0 (eg for XYZ or other rasters where the concept doesn't make sense)
-  if ( xres > 0 && yres > 0 )
+  // Don't derive clicked column/row for providers that serve dynamically rendered map images
+  if (
+    dprovider->name() != QStringLiteral( "wms" ) &&
+    dprovider->name() != QStringLiteral( "arcgismapserver" )
+  )
   {
-    const int rasterCol = static_cast< int >( std::floor( ( point.x() - extent.xMinimum() ) / xres ) );
-    const int rasterRow = static_cast< int >( std::floor( ( extent.yMaximum() - point.y() ) / yres ) );
+    // Try to determine the clicked column/row (0-based) in the raster
+    const QgsRectangle extent = dprovider->extent();
+    const double xres = layer->rasterUnitsPerPixelX();
+    const double yres = layer->rasterUnitsPerPixelY();
+
+    // rasterUnitsPerPixel might be 0 (eg for XYZ or other rasters where the concept doesn't make sense)
+    if ( xres > 0 && yres > 0 )
+    {
+      const int rasterCol = static_cast< int >( std::floor( ( point.x() - extent.xMinimum() ) / xres ) );
+      const int rasterRow = static_cast< int >( std::floor( ( extent.yMaximum() - point.y() ) / yres ) );
 
 #if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
-    derivedAttributes.unite( tr( "Clicked raster column" ), QLocale().toString( rasterCol ) );
-    derivedAttributes.unite( tr( "Clicked raster row" ), QLocale().toString( rasterRow ) );
+      derivedAttributes.unite( tr( "Clicked raster column" ), QLocale().toString( rasterCol ) );
+      derivedAttributes.unite( tr( "Clicked raster row" ), QLocale().toString( rasterRow ) );
 #else
-    derivedAttributes.insert( tr( "Clicked raster column" ), QLocale().toString( rasterCol ) );
-    derivedAttributes.insert( tr( "Clicked raster row" ), QLocale().toString( rasterRow ) );
+      derivedAttributes.insert( tr( "Clicked raster column" ), QLocale().toString( rasterCol ) );
+      derivedAttributes.insert( tr( "Clicked raster row" ), QLocale().toString( rasterRow ) );
 #endif
+    }
   }
-
 
   if ( identifyResult.isValid() )
   {
