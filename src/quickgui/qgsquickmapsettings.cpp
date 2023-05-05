@@ -264,6 +264,7 @@ void QgsQuickMapSettings::onReadProject( const QDomDocument &doc )
 
   mMapSettings.setTransformContext( mProject->transformContext() );
   mMapSettings.setPathResolver( mProject->pathResolver() );
+  mMapSettings.setElevationShadingRenderer( mProject->elevationShadingRenderer() );
 
   emit extentChanged();
   emit destinationCrsChanged();
