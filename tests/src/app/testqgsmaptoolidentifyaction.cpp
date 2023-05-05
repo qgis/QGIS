@@ -723,30 +723,30 @@ void TestQgsMapToolIdentifyAction::identifyRasterDerivedAttributes()
 
   results = testIdentifyRaster( tempLayer.get(), layerExtent.xMinimum() + layerXSize, layerExtent.yMaximum() - layerYSize/2 );
   QCOMPARE( results.length(), 1 );  // just to ensure that we did get a result back
-  QCOMPARE( results[0].mDerivedAttributes[QStringLiteral( "Clicked raster column" )], QString( "0" ) );
-  QCOMPARE( results[0].mDerivedAttributes[QStringLiteral( "Clicked raster row" )], QString( "0" ) );
+  QCOMPARE( results[0].mDerivedAttributes[QStringLiteral( "(clicked raster column)" )], QString( "0" ) );
+  QCOMPARE( results[0].mDerivedAttributes[QStringLiteral( "(clicked raster row)" )], QString( "0" ) );
 
   results = testIdentifyRaster( tempLayer.get(), layerExtent.xMaximum() - layerXSize/2, layerExtent.yMaximum() - layerYSize/2 );
   QCOMPARE( results.length(), 1 );  // just to ensure that we did get a result back
-  QCOMPARE( results[0].mDerivedAttributes[QStringLiteral( "Clicked raster column" )], QString::number( tempLayer->width()-1 ) );
-  QCOMPARE( results[0].mDerivedAttributes[QStringLiteral( "Clicked raster row" )], QString( "0" ) );
+  QCOMPARE( results[0].mDerivedAttributes[QStringLiteral( "(clicked raster column)" )], QString::number( tempLayer->width()-1 ) );
+  QCOMPARE( results[0].mDerivedAttributes[QStringLiteral( "(clicked raster row)" )], QString( "0" ) );
 
-  results = testIdentifyRaster( tempLayer.get(), layerExtent.xMinimum() + layerXSize , layerExtent.yMinimum() + layerYSize/2 );
+  results = testIdentifyRaster( tempLayer.get(), layerExtent.xMinimum() + layerXSize, layerExtent.yMinimum() + layerYSize/2 );
   QCOMPARE( results.length(), 1 );  // just to ensure that we did get a result back
-  QCOMPARE( results[0].mDerivedAttributes[QStringLiteral( "Clicked raster column" )], QString( "0" ) );
-  QCOMPARE( results[0].mDerivedAttributes[QStringLiteral( "Clicked raster row" )], QString::number( tempLayer->height()-1 ) );
+  QCOMPARE( results[0].mDerivedAttributes[QStringLiteral( "(clicked raster column)" )], QString( "0" ) );
+  QCOMPARE( results[0].mDerivedAttributes[QStringLiteral( "(clicked raster row)" )], QString::number( tempLayer->height()-1 ) );
 
   results = testIdentifyRaster( tempLayer.get(), layerExtent.xMaximum() - layerXSize/2, layerExtent.yMinimum() + layerYSize/2 );
   QCOMPARE( results.length(), 1 );  // just to ensure that we did get a result back
-  QCOMPARE( results[0].mDerivedAttributes[QStringLiteral( "Clicked raster column" )], QString::number( tempLayer->width()-1 ) );
-  QCOMPARE( results[0].mDerivedAttributes[QStringLiteral( "Clicked raster row" )], QString::number( tempLayer->height()-1 ) );
+  QCOMPARE( results[0].mDerivedAttributes[QStringLiteral( "(clicked raster column)" )], QString::number( tempLayer->width()-1 ) );
+  QCOMPARE( results[0].mDerivedAttributes[QStringLiteral( "(clicked raster row)" )], QString::number( tempLayer->height()-1 ) );
 
   const double xSomewhereCenter = layerExtent.xMinimum() + layerXSize*200 + layerXSize;
   const double ySomewhereCenter = layerExtent.yMaximum() - layerYSize*140 - layerYSize;
   results = testIdentifyRaster( tempLayer.get(), xSomewhereCenter, ySomewhereCenter );
   QCOMPARE( results.length(), 1 );  // just to ensure that we did get a result back
-  QCOMPARE( results[0].mDerivedAttributes[QStringLiteral( "Clicked raster column" )], QString( "200" ) );
-  QCOMPARE( results[0].mDerivedAttributes[QStringLiteral( "Clicked raster row" )], QString( "140" ) );
+  QCOMPARE( results[0].mDerivedAttributes[QStringLiteral( "(clicked raster column)" )], QString( "200" ) );
+  QCOMPARE( results[0].mDerivedAttributes[QStringLiteral( "(clicked raster row)" )], QString( "140" ) );
 }
 
 void TestQgsMapToolIdentifyAction::identifyMesh()
