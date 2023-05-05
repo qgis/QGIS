@@ -1072,11 +1072,11 @@ bool QgsMapToolIdentify::identifyRasterLayer( QList<IdentifyResult> *results, Qg
       const int rasterRow = static_cast< int >( std::floor( ( extent.yMaximum() - point.y() ) / yres ) );
 
 #if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
-      derivedAttributes.unite( tr( "Clicked raster column" ), QLocale().toString( rasterCol ) );
-      derivedAttributes.unite( tr( "Clicked raster row" ), QLocale().toString( rasterRow ) );
+      derivedAttributes.unite( tr( "(clicked raster column)" ), QLocale().toString( rasterCol ) );
+      derivedAttributes.unite( tr( "(clicked raster row)" ), QLocale().toString( rasterRow ) );
 #else
-      derivedAttributes.insert( tr( "Clicked raster column" ), QLocale().toString( rasterCol ) );
-      derivedAttributes.insert( tr( "Clicked raster row" ), QLocale().toString( rasterRow ) );
+      derivedAttributes.insert( tr( "(clicked raster column)" ), QLocale().toString( rasterCol ) );
+      derivedAttributes.insert( tr( "(clicked raster row)" ), QLocale().toString( rasterRow ) );
 #endif
     }
   }
