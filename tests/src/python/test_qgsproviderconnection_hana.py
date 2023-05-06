@@ -37,6 +37,7 @@ class TestPyQgsProviderConnectionHana(unittest.TestCase, TestPyQgsProviderConnec
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
+        super(TestPyQgsProviderConnectionHana, cls).setUpClass()
 
         TestPyQgsProviderConnectionBase.setUpClass()
 
@@ -58,6 +59,7 @@ class TestPyQgsProviderConnectionHana(unittest.TestCase, TestPyQgsProviderConnec
 
         QgsHanaProviderUtils.cleanUp(cls.conn, cls.schemaName)
         cls.conn.close()
+        super(TestPyQgsProviderConnectionHana, cls).tearDownClass()
 
     def getUniqueSchemaName(self, name):
         return 'qgis_test_' + QgsHanaProviderUtils.generateSchemaName(self.conn, name)

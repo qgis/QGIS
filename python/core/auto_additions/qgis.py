@@ -2675,8 +2675,10 @@ Qgis.ScriptLanguage.Json.__doc__ = "JSON"
 Qgis.ScriptLanguage.Python.__doc__ = "Python"
 Qgis.ScriptLanguage.R.__doc__ = "R Stats"
 Qgis.ScriptLanguage.Sql.__doc__ = "SQL"
+Qgis.ScriptLanguage.Batch.__doc__ = "Windows batch files"
+Qgis.ScriptLanguage.Bash.__doc__ = "Bash scripts"
 Qgis.ScriptLanguage.Unknown.__doc__ = "Unknown/other language"
-Qgis.ScriptLanguage.__doc__ = 'Scripting languages.\n\n.. versionadded:: 3.30\n\n' + '* ``Css``: ' + Qgis.ScriptLanguage.Css.__doc__ + '\n' + '* ``QgisExpression``: ' + Qgis.ScriptLanguage.QgisExpression.__doc__ + '\n' + '* ``Html``: ' + Qgis.ScriptLanguage.Html.__doc__ + '\n' + '* ``JavaScript``: ' + Qgis.ScriptLanguage.JavaScript.__doc__ + '\n' + '* ``Json``: ' + Qgis.ScriptLanguage.Json.__doc__ + '\n' + '* ``Python``: ' + Qgis.ScriptLanguage.Python.__doc__ + '\n' + '* ``R``: ' + Qgis.ScriptLanguage.R.__doc__ + '\n' + '* ``Sql``: ' + Qgis.ScriptLanguage.Sql.__doc__ + '\n' + '* ``Unknown``: ' + Qgis.ScriptLanguage.Unknown.__doc__
+Qgis.ScriptLanguage.__doc__ = 'Scripting languages.\n\n.. versionadded:: 3.30\n\n' + '* ``Css``: ' + Qgis.ScriptLanguage.Css.__doc__ + '\n' + '* ``QgisExpression``: ' + Qgis.ScriptLanguage.QgisExpression.__doc__ + '\n' + '* ``Html``: ' + Qgis.ScriptLanguage.Html.__doc__ + '\n' + '* ``JavaScript``: ' + Qgis.ScriptLanguage.JavaScript.__doc__ + '\n' + '* ``Json``: ' + Qgis.ScriptLanguage.Json.__doc__ + '\n' + '* ``Python``: ' + Qgis.ScriptLanguage.Python.__doc__ + '\n' + '* ``R``: ' + Qgis.ScriptLanguage.R.__doc__ + '\n' + '* ``Sql``: ' + Qgis.ScriptLanguage.Sql.__doc__ + '\n' + '* ``Batch``: ' + Qgis.ScriptLanguage.Batch.__doc__ + '\n' + '* ``Bash``: ' + Qgis.ScriptLanguage.Bash.__doc__ + '\n' + '* ``Unknown``: ' + Qgis.ScriptLanguage.Unknown.__doc__
 # --
 Qgis.ScriptLanguage.baseClass = Qgis
 # monkey patching scoped based enum
@@ -3466,3 +3468,119 @@ Qgis.DatabaseProviderConnectionCapability2.__doc__ = 'The Capability enum repres
 Qgis.DatabaseProviderConnectionCapability2.baseClass = Qgis
 Qgis.DatabaseProviderConnectionCapabilities2.baseClass = Qgis
 DatabaseProviderConnectionCapabilities2 = Qgis  # dirty hack since SIP seems to introduce the flags in module
+# monkey patching scoped based enum
+Qgis.UserProfileSelectionPolicy.LastProfile.__doc__ = "Open the last closed profile (only mode supported prior to QGIS 3.32)"
+Qgis.UserProfileSelectionPolicy.DefaultProfile.__doc__ = "Open a specific profile"
+Qgis.UserProfileSelectionPolicy.AskUser.__doc__ = "Let the user choose which profile to open"
+Qgis.UserProfileSelectionPolicy.__doc__ = 'User profile selection policy.\n\n.. versionadded:: 3.32\n\n' + '* ``LastProfile``: ' + Qgis.UserProfileSelectionPolicy.LastProfile.__doc__ + '\n' + '* ``DefaultProfile``: ' + Qgis.UserProfileSelectionPolicy.DefaultProfile.__doc__ + '\n' + '* ``AskUser``: ' + Qgis.UserProfileSelectionPolicy.AskUser.__doc__
+# --
+Qgis.UserProfileSelectionPolicy.baseClass = Qgis
+QgsAttributeEditorElement.AttributeEditorType = Qgis.AttributeEditorType
+# monkey patching scoped based enum
+QgsAttributeEditorElement.AeTypeContainer = Qgis.AttributeEditorType.Container
+QgsAttributeEditorElement.AttributeEditorType.AeTypeContainer = Qgis.AttributeEditorType.Container
+QgsAttributeEditorElement.AeTypeContainer.is_monkey_patched = True
+QgsAttributeEditorElement.AeTypeContainer.__doc__ = "A container"
+QgsAttributeEditorElement.AeTypeField = Qgis.AttributeEditorType.Field
+QgsAttributeEditorElement.AttributeEditorType.AeTypeField = Qgis.AttributeEditorType.Field
+QgsAttributeEditorElement.AeTypeField.is_monkey_patched = True
+QgsAttributeEditorElement.AeTypeField.__doc__ = "A field"
+QgsAttributeEditorElement.AeTypeRelation = Qgis.AttributeEditorType.Relation
+QgsAttributeEditorElement.AttributeEditorType.AeTypeRelation = Qgis.AttributeEditorType.Relation
+QgsAttributeEditorElement.AeTypeRelation.is_monkey_patched = True
+QgsAttributeEditorElement.AeTypeRelation.__doc__ = "A relation"
+QgsAttributeEditorElement.AeTypeQmlElement = Qgis.AttributeEditorType.QmlElement
+QgsAttributeEditorElement.AttributeEditorType.AeTypeQmlElement = Qgis.AttributeEditorType.QmlElement
+QgsAttributeEditorElement.AeTypeQmlElement.is_monkey_patched = True
+QgsAttributeEditorElement.AeTypeQmlElement.__doc__ = "A QML element"
+QgsAttributeEditorElement.AeTypeHtmlElement = Qgis.AttributeEditorType.HtmlElement
+QgsAttributeEditorElement.AttributeEditorType.AeTypeHtmlElement = Qgis.AttributeEditorType.HtmlElement
+QgsAttributeEditorElement.AeTypeHtmlElement.is_monkey_patched = True
+QgsAttributeEditorElement.AeTypeHtmlElement.__doc__ = "A HTML element"
+QgsAttributeEditorElement.AeTypeAction = Qgis.AttributeEditorType.Action
+QgsAttributeEditorElement.AttributeEditorType.AeTypeAction = Qgis.AttributeEditorType.Action
+QgsAttributeEditorElement.AeTypeAction.is_monkey_patched = True
+QgsAttributeEditorElement.AeTypeAction.__doc__ = "A layer action element (since QGIS 3.22)"
+QgsAttributeEditorElement.AeTypeTextElement = Qgis.AttributeEditorType.TextElement
+QgsAttributeEditorElement.AttributeEditorType.AeTypeTextElement = Qgis.AttributeEditorType.TextElement
+QgsAttributeEditorElement.AeTypeTextElement.is_monkey_patched = True
+QgsAttributeEditorElement.AeTypeTextElement.__doc__ = "A text element (since QGIS 3.30)"
+QgsAttributeEditorElement.AeTypeSpacerElement = Qgis.AttributeEditorType.SpacerElement
+QgsAttributeEditorElement.AttributeEditorType.AeTypeSpacerElement = Qgis.AttributeEditorType.SpacerElement
+QgsAttributeEditorElement.AeTypeSpacerElement.is_monkey_patched = True
+QgsAttributeEditorElement.AeTypeSpacerElement.__doc__ = "A spacer element (since QGIS 3.30)"
+QgsAttributeEditorElement.AeTypeInvalid = Qgis.AttributeEditorType.Invalid
+QgsAttributeEditorElement.AttributeEditorType.AeTypeInvalid = Qgis.AttributeEditorType.Invalid
+QgsAttributeEditorElement.AeTypeInvalid.is_monkey_patched = True
+QgsAttributeEditorElement.AeTypeInvalid.__doc__ = "Invalid"
+Qgis.AttributeEditorType.__doc__ = 'Attribute editor types.\n\n.. note::\n\n   Prior to QGIS 3.32 this was available as :py:class:`QgsAttributeEditorElement`.AttributeEditorType.\n\n.. versionadded:: 3.32\n\n' + '* ``AeTypeContainer``: ' + Qgis.AttributeEditorType.Container.__doc__ + '\n' + '* ``AeTypeField``: ' + Qgis.AttributeEditorType.Field.__doc__ + '\n' + '* ``AeTypeRelation``: ' + Qgis.AttributeEditorType.Relation.__doc__ + '\n' + '* ``AeTypeQmlElement``: ' + Qgis.AttributeEditorType.QmlElement.__doc__ + '\n' + '* ``AeTypeHtmlElement``: ' + Qgis.AttributeEditorType.HtmlElement.__doc__ + '\n' + '* ``AeTypeAction``: ' + Qgis.AttributeEditorType.Action.__doc__ + '\n' + '* ``AeTypeTextElement``: ' + Qgis.AttributeEditorType.TextElement.__doc__ + '\n' + '* ``AeTypeSpacerElement``: ' + Qgis.AttributeEditorType.SpacerElement.__doc__ + '\n' + '* ``AeTypeInvalid``: ' + Qgis.AttributeEditorType.Invalid.__doc__
+# --
+Qgis.AttributeEditorType.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.AttributeEditorContainerType.GroupBox.__doc__ = "A group box"
+Qgis.AttributeEditorContainerType.Tab.__doc__ = "A tab widget"
+Qgis.AttributeEditorContainerType.Row.__doc__ = "A row of editors (horizontal layout)"
+Qgis.AttributeEditorContainerType.__doc__ = 'Attribute editor container types.\n\n.. versionadded:: 3.32\n\n' + '* ``GroupBox``: ' + Qgis.AttributeEditorContainerType.GroupBox.__doc__ + '\n' + '* ``Tab``: ' + Qgis.AttributeEditorContainerType.Tab.__doc__ + '\n' + '* ``Row``: ' + Qgis.AttributeEditorContainerType.Row.__doc__
+# --
+Qgis.AttributeEditorContainerType.baseClass = Qgis
+QgsEditFormConfig.EditorLayout = Qgis.AttributeFormLayout
+# monkey patching scoped based enum
+QgsEditFormConfig.GeneratedLayout = Qgis.AttributeFormLayout.AutoGenerated
+QgsEditFormConfig.EditorLayout.GeneratedLayout = Qgis.AttributeFormLayout.AutoGenerated
+QgsEditFormConfig.GeneratedLayout.is_monkey_patched = True
+QgsEditFormConfig.GeneratedLayout.__doc__ = "Autogenerate a simple tabular layout for the form"
+QgsEditFormConfig.TabLayout = Qgis.AttributeFormLayout.DragAndDrop
+QgsEditFormConfig.EditorLayout.TabLayout = Qgis.AttributeFormLayout.DragAndDrop
+QgsEditFormConfig.TabLayout.is_monkey_patched = True
+QgsEditFormConfig.TabLayout.__doc__ = "\"Drag and drop\" layout. Needs to be configured."
+QgsEditFormConfig.UiFileLayout = Qgis.AttributeFormLayout.UiFile
+QgsEditFormConfig.EditorLayout.UiFileLayout = Qgis.AttributeFormLayout.UiFile
+QgsEditFormConfig.UiFileLayout.is_monkey_patched = True
+QgsEditFormConfig.UiFileLayout.__doc__ = "Load a .ui file for the layout. Needs to be configured."
+Qgis.AttributeFormLayout.__doc__ = 'Available form types for layout of the attribute form editor.\n\n.. note::\n\n   Prior to QGIS 3.32 this was available as :py:class:`QgsEditFormConfig`.EditorLayout.\n\n.. versionadded:: 3.32\n\n' + '* ``GeneratedLayout``: ' + Qgis.AttributeFormLayout.AutoGenerated.__doc__ + '\n' + '* ``TabLayout``: ' + Qgis.AttributeFormLayout.DragAndDrop.__doc__ + '\n' + '* ``UiFileLayout``: ' + Qgis.AttributeFormLayout.UiFile.__doc__
+# --
+Qgis.AttributeFormLayout.baseClass = Qgis
+QgsEditFormConfig.FeatureFormSuppress = Qgis.AttributeFormSuppression
+# monkey patching scoped based enum
+QgsEditFormConfig.SuppressDefault = Qgis.AttributeFormSuppression.Default
+QgsEditFormConfig.FeatureFormSuppress.SuppressDefault = Qgis.AttributeFormSuppression.Default
+QgsEditFormConfig.SuppressDefault.is_monkey_patched = True
+QgsEditFormConfig.SuppressDefault.__doc__ = "Use the application-wide setting."
+QgsEditFormConfig.SuppressOn = Qgis.AttributeFormSuppression.On
+QgsEditFormConfig.FeatureFormSuppress.SuppressOn = Qgis.AttributeFormSuppression.On
+QgsEditFormConfig.SuppressOn.is_monkey_patched = True
+QgsEditFormConfig.SuppressOn.__doc__ = "Always suppress feature form."
+QgsEditFormConfig.SuppressOff = Qgis.AttributeFormSuppression.Off
+QgsEditFormConfig.FeatureFormSuppress.SuppressOff = Qgis.AttributeFormSuppression.Off
+QgsEditFormConfig.SuppressOff.is_monkey_patched = True
+QgsEditFormConfig.SuppressOff.__doc__ = "Never suppress feature form."
+Qgis.AttributeFormSuppression.__doc__ = 'Available form types for layout of the attribute form editor.\n\n.. note::\n\n   Prior to QGIS 3.32 this was available as :py:class:`QgsEditFormConfig`.FeatureFormSuppress.\n\n.. versionadded:: 3.32\n\n' + '* ``SuppressDefault``: ' + Qgis.AttributeFormSuppression.Default.__doc__ + '\n' + '* ``SuppressOn``: ' + Qgis.AttributeFormSuppression.On.__doc__ + '\n' + '* ``SuppressOff``: ' + Qgis.AttributeFormSuppression.Off.__doc__
+# --
+Qgis.AttributeFormSuppression.baseClass = Qgis
+QgsEditFormConfig.PythonInitCodeSource = Qgis.AttributeFormPythonInitCodeSource
+# monkey patching scoped based enum
+QgsEditFormConfig.CodeSourceNone = Qgis.AttributeFormPythonInitCodeSource.NoSource
+QgsEditFormConfig.PythonInitCodeSource.CodeSourceNone = Qgis.AttributeFormPythonInitCodeSource.NoSource
+QgsEditFormConfig.CodeSourceNone.is_monkey_patched = True
+QgsEditFormConfig.CodeSourceNone.__doc__ = "Do not use Python code at all"
+QgsEditFormConfig.CodeSourceFile = Qgis.AttributeFormPythonInitCodeSource.File
+QgsEditFormConfig.PythonInitCodeSource.CodeSourceFile = Qgis.AttributeFormPythonInitCodeSource.File
+QgsEditFormConfig.CodeSourceFile.is_monkey_patched = True
+QgsEditFormConfig.CodeSourceFile.__doc__ = "Load the Python code from an external file"
+QgsEditFormConfig.CodeSourceDialog = Qgis.AttributeFormPythonInitCodeSource.Dialog
+QgsEditFormConfig.PythonInitCodeSource.CodeSourceDialog = Qgis.AttributeFormPythonInitCodeSource.Dialog
+QgsEditFormConfig.CodeSourceDialog.is_monkey_patched = True
+QgsEditFormConfig.CodeSourceDialog.__doc__ = "Use the Python code provided in the dialog"
+QgsEditFormConfig.CodeSourceEnvironment = Qgis.AttributeFormPythonInitCodeSource.Environment
+QgsEditFormConfig.PythonInitCodeSource.CodeSourceEnvironment = Qgis.AttributeFormPythonInitCodeSource.Environment
+QgsEditFormConfig.CodeSourceEnvironment.is_monkey_patched = True
+QgsEditFormConfig.CodeSourceEnvironment.__doc__ = "Use the Python code available in the Python environment"
+Qgis.AttributeFormPythonInitCodeSource.__doc__ = 'The Python init code source for attribute forms.\n\n.. note::\n\n   Prior to QGIS 3.32 this was available as :py:class:`QgsEditFormConfig`.PythonInitCodeSource.\n\n.. versionadded:: 3.32\n\n' + '* ``CodeSourceNone``: ' + Qgis.AttributeFormPythonInitCodeSource.NoSource.__doc__ + '\n' + '* ``CodeSourceFile``: ' + Qgis.AttributeFormPythonInitCodeSource.File.__doc__ + '\n' + '* ``CodeSourceDialog``: ' + Qgis.AttributeFormPythonInitCodeSource.Dialog.__doc__ + '\n' + '* ``CodeSourceEnvironment``: ' + Qgis.AttributeFormPythonInitCodeSource.Environment.__doc__
+# --
+Qgis.AttributeFormPythonInitCodeSource.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.ExpressionType.Qgis.__doc__ = "Native QGIS expression"
+Qgis.ExpressionType.PointCloud.__doc__ = "Point cloud expression"
+Qgis.ExpressionType.__doc__ = 'Expression types\n\n.. versionadded:: 3.32\n\n' + '* ``Qgis``: ' + Qgis.ExpressionType.Qgis.__doc__ + '\n' + '* ``PointCloud``: ' + Qgis.ExpressionType.PointCloud.__doc__
+# --
+Qgis.ExpressionType.baseClass = Qgis

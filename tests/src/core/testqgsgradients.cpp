@@ -71,9 +71,6 @@ class TestQgsGradients : public QgsTest
     bool imageCheck( const QString &type );
     QgsMapSettings mMapSettings;
     QgsVectorLayer *mpPolysLayer = nullptr;
-    QgsGradientFillSymbolLayer *mGradientFill = nullptr;
-    QgsFillSymbol *mFillSymbol = nullptr;
-    QgsSingleSymbolRenderer *mSymbolRenderer = nullptr;
     QString mTestDataDir;
 };
 
@@ -102,13 +99,6 @@ void TestQgsGradients::initTestCase()
   simplifyMethod.setSimplifyHints( QgsVectorSimplifyMethod::NoSimplification );
   mpPolysLayer->setSimplifyMethod( simplifyMethod );
 
-  //setup gradient fill
-  mGradientFill = new QgsGradientFillSymbolLayer();
-  mFillSymbol = new QgsFillSymbol();
-  mFillSymbol->changeSymbolLayer( 0, mGradientFill );
-  mSymbolRenderer = new QgsSingleSymbolRenderer( mFillSymbol );
-  mpPolysLayer->setRenderer( mSymbolRenderer );
-
   // We only need maprender instead of mapcanvas
   // since maprender does not require a qui
   // and is more light weight
@@ -125,111 +115,242 @@ void TestQgsGradients::cleanupTestCase()
 
 void TestQgsGradients::gradientSymbol()
 {
-  mGradientFill->setColor( QColor( "red" ) );
-  mGradientFill->setColor2( QColor( "blue" ) );
-  mGradientFill->setGradientType( Qgis::GradientType::Linear );
-  mGradientFill->setGradientColorType( Qgis::GradientColorSource::SimpleTwoColor );
-  mGradientFill->setCoordinateMode( Qgis::SymbolCoordinateReference::Feature );
-  mGradientFill->setGradientSpread( Qgis::GradientSpread::Pad );
-  mGradientFill->setReferencePoint1( QPointF( 0, 0 ) );
-  mGradientFill->setReferencePoint2( QPointF( 1, 1 ) );
+  QgsGradientFillSymbolLayer *gradientFill = new QgsGradientFillSymbolLayer();
+  QgsFillSymbol *fillSymbol = new QgsFillSymbol();
+  fillSymbol->changeSymbolLayer( 0, gradientFill );
+  mpPolysLayer->setRenderer( new QgsSingleSymbolRenderer( fillSymbol ) );
+
+  gradientFill->setColor( QColor( "red" ) );
+  gradientFill->setColor2( QColor( "blue" ) );
+  gradientFill->setGradientType( Qgis::GradientType::Linear );
+  gradientFill->setGradientColorType( Qgis::GradientColorSource::SimpleTwoColor );
+  gradientFill->setCoordinateMode( Qgis::SymbolCoordinateReference::Feature );
+  gradientFill->setGradientSpread( Qgis::GradientSpread::Pad );
+  gradientFill->setReferencePoint1( QPointF( 0, 0 ) );
+  gradientFill->setReferencePoint2( QPointF( 1, 1 ) );
   QVERIFY( imageCheck( "gradient" ) );
 }
 
 void TestQgsGradients::gradientSymbolColors()
 {
-  mGradientFill->setColor( QColor( "green" ) );
-  mGradientFill->setColor2( QColor( "white" ) );
+  QgsGradientFillSymbolLayer *gradientFill = new QgsGradientFillSymbolLayer();
+  QgsFillSymbol *fillSymbol = new QgsFillSymbol();
+  fillSymbol->changeSymbolLayer( 0, gradientFill );
+  mpPolysLayer->setRenderer( new QgsSingleSymbolRenderer( fillSymbol ) );
+
+  gradientFill->setGradientType( Qgis::GradientType::Linear );
+  gradientFill->setGradientColorType( Qgis::GradientColorSource::SimpleTwoColor );
+  gradientFill->setCoordinateMode( Qgis::SymbolCoordinateReference::Feature );
+  gradientFill->setGradientSpread( Qgis::GradientSpread::Pad );
+  gradientFill->setReferencePoint1( QPointF( 0, 0 ) );
+  gradientFill->setReferencePoint2( QPointF( 1, 1 ) );
+  gradientFill->setColor( QColor( "green" ) );
+  gradientFill->setColor2( QColor( "white" ) );
   QVERIFY( imageCheck( "gradient_colors" ) );
-  mGradientFill->setColor( QColor( "red" ) );
-  mGradientFill->setColor2( QColor( "blue" ) );
 }
 
 void TestQgsGradients::gradientSymbolRamp()
 {
+  QgsGradientFillSymbolLayer *gradientFill = new QgsGradientFillSymbolLayer();
+  QgsFillSymbol *fillSymbol = new QgsFillSymbol();
+  fillSymbol->changeSymbolLayer( 0, gradientFill );
+  mpPolysLayer->setRenderer( new QgsSingleSymbolRenderer( fillSymbol ) );
+
+  gradientFill->setCoordinateMode( Qgis::SymbolCoordinateReference::Feature );
+  gradientFill->setGradientSpread( Qgis::GradientSpread::Pad );
+  gradientFill->setReferencePoint1( QPointF( 0, 0 ) );
+  gradientFill->setReferencePoint2( QPointF( 1, 1 ) );
+
   QgsGradientColorRamp *gradientRamp = new QgsGradientColorRamp( QColor( Qt::red ), QColor( Qt::blue ) );
   QgsGradientStopsList stops;
   stops.append( QgsGradientStop( 0.5, QColor( Qt::white ) ) );
   gradientRamp->setStops( stops );
 
-  mGradientFill->setColorRamp( gradientRamp );
-  mGradientFill->setGradientColorType( Qgis::GradientColorSource::ColorRamp );
+  gradientFill->setColorRamp( gradientRamp );
+  gradientFill->setGradientColorType( Qgis::GradientColorSource::ColorRamp );
   QVERIFY( imageCheck( "gradient_ramp" ) );
-  mGradientFill->setGradientColorType( Qgis::GradientColorSource::SimpleTwoColor );
 }
 
 void TestQgsGradients::gradientSymbolRadial()
 {
-  mGradientFill->setGradientType( Qgis::GradientType::Radial );
+  QgsGradientFillSymbolLayer *gradientFill = new QgsGradientFillSymbolLayer();
+  QgsFillSymbol *fillSymbol = new QgsFillSymbol();
+  fillSymbol->changeSymbolLayer( 0, gradientFill );
+  mpPolysLayer->setRenderer( new QgsSingleSymbolRenderer( fillSymbol ) );
+
+  gradientFill->setColor( QColor( "red" ) );
+  gradientFill->setColor2( QColor( "blue" ) );
+  gradientFill->setGradientColorType( Qgis::GradientColorSource::SimpleTwoColor );
+  gradientFill->setCoordinateMode( Qgis::SymbolCoordinateReference::Feature );
+  gradientFill->setGradientSpread( Qgis::GradientSpread::Pad );
+  gradientFill->setReferencePoint1( QPointF( 0, 0 ) );
+  gradientFill->setReferencePoint2( QPointF( 1, 1 ) );
+  gradientFill->setGradientType( Qgis::GradientType::Radial );
+
   QVERIFY( imageCheck( "gradient_radial" ) );
-  mGradientFill->setGradientType( Qgis::GradientType::Linear );
 }
 
 void TestQgsGradients::gradientSymbolConical()
 {
-  mGradientFill->setGradientType( Qgis::GradientType::Conical );
-  mGradientFill->setReferencePoint1( QPointF( 0.5, 0.5 ) );
+  QgsGradientFillSymbolLayer *gradientFill = new QgsGradientFillSymbolLayer();
+  QgsFillSymbol *fillSymbol = new QgsFillSymbol();
+  fillSymbol->changeSymbolLayer( 0, gradientFill );
+  mpPolysLayer->setRenderer( new QgsSingleSymbolRenderer( fillSymbol ) );
+
+  gradientFill->setColor( QColor( "red" ) );
+  gradientFill->setColor2( QColor( "blue" ) );
+  gradientFill->setGradientColorType( Qgis::GradientColorSource::SimpleTwoColor );
+  gradientFill->setCoordinateMode( Qgis::SymbolCoordinateReference::Feature );
+  gradientFill->setGradientSpread( Qgis::GradientSpread::Pad );
+  gradientFill->setReferencePoint2( QPointF( 1, 1 ) );
+  gradientFill->setGradientType( Qgis::GradientType::Conical );
+  gradientFill->setReferencePoint1( QPointF( 0.5, 0.5 ) );
+
   QVERIFY( imageCheck( "gradient_conical" ) );
-  mGradientFill->setReferencePoint1( QPointF( 0, 0 ) );
-  mGradientFill->setGradientType( Qgis::GradientType::Linear );
 }
 
 void TestQgsGradients::gradientSymbolViewport()
 {
-  mGradientFill->setCoordinateMode( Qgis::SymbolCoordinateReference::Viewport );
+  QgsGradientFillSymbolLayer *gradientFill = new QgsGradientFillSymbolLayer();
+  QgsFillSymbol *fillSymbol = new QgsFillSymbol();
+  fillSymbol->changeSymbolLayer( 0, gradientFill );
+  mpPolysLayer->setRenderer( new QgsSingleSymbolRenderer( fillSymbol ) );
+
+  gradientFill->setColor( QColor( "red" ) );
+  gradientFill->setColor2( QColor( "blue" ) );
+  gradientFill->setGradientColorType( Qgis::GradientColorSource::SimpleTwoColor );
+  gradientFill->setGradientSpread( Qgis::GradientSpread::Pad );
+  gradientFill->setReferencePoint1( QPointF( 0, 0 ) );
+  gradientFill->setReferencePoint2( QPointF( 1, 1 ) );
+  gradientFill->setGradientType( Qgis::GradientType::Linear );
+  gradientFill->setCoordinateMode( Qgis::SymbolCoordinateReference::Viewport );
+
   QVERIFY( imageCheck( "gradient_viewport" ) );
-  mGradientFill->setCoordinateMode( Qgis::SymbolCoordinateReference::Feature );
 }
 
 void TestQgsGradients::gradientSymbolReferencePoints()
 {
-  mGradientFill->setReferencePoint1( QPointF( 0.5, 0.4 ) );
-  mGradientFill->setReferencePoint2( QPointF( 0, 0.2 ) );
+  QgsGradientFillSymbolLayer *gradientFill = new QgsGradientFillSymbolLayer();
+  QgsFillSymbol *fillSymbol = new QgsFillSymbol();
+  fillSymbol->changeSymbolLayer( 0, gradientFill );
+  mpPolysLayer->setRenderer( new QgsSingleSymbolRenderer( fillSymbol ) );
+
+  gradientFill->setColor( QColor( "red" ) );
+  gradientFill->setColor2( QColor( "blue" ) );
+  gradientFill->setGradientColorType( Qgis::GradientColorSource::SimpleTwoColor );
+  gradientFill->setGradientSpread( Qgis::GradientSpread::Pad );
+  gradientFill->setGradientType( Qgis::GradientType::Linear );
+  gradientFill->setCoordinateMode( Qgis::SymbolCoordinateReference::Feature );
+  gradientFill->setReferencePoint1( QPointF( 0.5, 0.4 ) );
+  gradientFill->setReferencePoint2( QPointF( 0, 0.2 ) );
+
   QVERIFY( imageCheck( "gradient_refpoints" ) );
-  mGradientFill->setReferencePoint1( QPointF( 0, 0 ) );
-  mGradientFill->setReferencePoint2( QPointF( 1, 1 ) );
 }
 
 void TestQgsGradients::gradientSymbolCentroid()
 {
-  mGradientFill->setReferencePoint1IsCentroid( true );
+  QgsGradientFillSymbolLayer *gradientFill = new QgsGradientFillSymbolLayer();
+  QgsFillSymbol *fillSymbol = new QgsFillSymbol();
+  fillSymbol->changeSymbolLayer( 0, gradientFill );
+  mpPolysLayer->setRenderer( new QgsSingleSymbolRenderer( fillSymbol ) );
+
+  gradientFill->setColor( QColor( "red" ) );
+  gradientFill->setColor2( QColor( "blue" ) );
+  gradientFill->setGradientColorType( Qgis::GradientColorSource::SimpleTwoColor );
+  gradientFill->setGradientSpread( Qgis::GradientSpread::Pad );
+  gradientFill->setGradientType( Qgis::GradientType::Linear );
+  gradientFill->setCoordinateMode( Qgis::SymbolCoordinateReference::Feature );
+
+  gradientFill->setReferencePoint1( QPointF( 0, 0 ) );
+  gradientFill->setReferencePoint2( QPointF( 1, 1 ) );
+
+  gradientFill->setReferencePoint1IsCentroid( true );
   QVERIFY( imageCheck( "gradient_ref1centroid" ) );
-  mGradientFill->setReferencePoint1IsCentroid( false );
-  mGradientFill->setReferencePoint2IsCentroid( true );
+  gradientFill->setReferencePoint1IsCentroid( false );
+  gradientFill->setReferencePoint2IsCentroid( true );
   QVERIFY( imageCheck( "gradient_ref2centroid" ) );
-  mGradientFill->setReferencePoint2IsCentroid( false );
+  gradientFill->setReferencePoint2IsCentroid( false );
 }
 
 void TestQgsGradients::gradientSymbolReflectSpread()
 {
-  mGradientFill->setReferencePoint2( QPointF( 0.5, 0.5 ) );
-  mGradientFill->setGradientSpread( Qgis::GradientSpread::Reflect );
+  QgsGradientFillSymbolLayer *gradientFill = new QgsGradientFillSymbolLayer();
+  QgsFillSymbol *fillSymbol = new QgsFillSymbol();
+  fillSymbol->changeSymbolLayer( 0, gradientFill );
+  mpPolysLayer->setRenderer( new QgsSingleSymbolRenderer( fillSymbol ) );
+
+  gradientFill->setColor( QColor( "red" ) );
+  gradientFill->setColor2( QColor( "blue" ) );
+  gradientFill->setGradientColorType( Qgis::GradientColorSource::SimpleTwoColor );
+  gradientFill->setGradientType( Qgis::GradientType::Linear );
+  gradientFill->setCoordinateMode( Qgis::SymbolCoordinateReference::Feature );
+
+  gradientFill->setReferencePoint1( QPointF( 0, 0 ) );
+  gradientFill->setReferencePoint2( QPointF( 0.5, 0.5 ) );
+  gradientFill->setGradientSpread( Qgis::GradientSpread::Reflect );
   QVERIFY( imageCheck( "gradient_reflect" ) );
-  mGradientFill->setGradientSpread( Qgis::GradientSpread::Pad );
-  mGradientFill->setReferencePoint2( QPointF( 1, 1 ) );
+  gradientFill->setGradientSpread( Qgis::GradientSpread::Pad );
+  gradientFill->setReferencePoint2( QPointF( 1, 1 ) );
 }
 
 void TestQgsGradients::gradientSymbolRepeatSpread()
 {
-  mGradientFill->setReferencePoint2( QPointF( 0.5, 0.5 ) );
-  mGradientFill->setGradientSpread( Qgis::GradientSpread::Repeat );
+  QgsGradientFillSymbolLayer *gradientFill = new QgsGradientFillSymbolLayer();
+  QgsFillSymbol *fillSymbol = new QgsFillSymbol();
+  fillSymbol->changeSymbolLayer( 0, gradientFill );
+  mpPolysLayer->setRenderer( new QgsSingleSymbolRenderer( fillSymbol ) );
+
+  gradientFill->setColor( QColor( "red" ) );
+  gradientFill->setColor2( QColor( "blue" ) );
+  gradientFill->setGradientColorType( Qgis::GradientColorSource::SimpleTwoColor );
+  gradientFill->setGradientType( Qgis::GradientType::Linear );
+  gradientFill->setCoordinateMode( Qgis::SymbolCoordinateReference::Feature );
+  gradientFill->setReferencePoint1( QPointF( 0, 0 ) );
+  gradientFill->setReferencePoint2( QPointF( 0.5, 0.5 ) );
+  gradientFill->setGradientSpread( Qgis::GradientSpread::Repeat );
+
   QVERIFY( imageCheck( "gradient_repeat" ) );
-  mGradientFill->setGradientSpread( Qgis::GradientSpread::Pad );
-  mGradientFill->setReferencePoint2( QPointF( 1, 1 ) );
 }
 
 void TestQgsGradients::gradientSymbolRotate()
 {
-  mGradientFill->setAngle( 90 );
+  QgsGradientFillSymbolLayer *gradientFill = new QgsGradientFillSymbolLayer();
+  QgsFillSymbol *fillSymbol = new QgsFillSymbol();
+  fillSymbol->changeSymbolLayer( 0, gradientFill );
+  mpPolysLayer->setRenderer( new QgsSingleSymbolRenderer( fillSymbol ) );
+
+  gradientFill->setColor( QColor( "red" ) );
+  gradientFill->setColor2( QColor( "blue" ) );
+  gradientFill->setGradientColorType( Qgis::GradientColorSource::SimpleTwoColor );
+  gradientFill->setGradientType( Qgis::GradientType::Linear );
+  gradientFill->setCoordinateMode( Qgis::SymbolCoordinateReference::Feature );
+  gradientFill->setReferencePoint1( QPointF( 0, 0 ) );
+  gradientFill->setGradientSpread( Qgis::GradientSpread::Pad );
+  gradientFill->setReferencePoint2( QPointF( 1, 1 ) );
+
+  gradientFill->setAngle( 90 );
   QVERIFY( imageCheck( "gradient_rotate" ) );
-  mGradientFill->setAngle( 0 );
 }
 
 void TestQgsGradients::opacityWithDataDefinedColor()
 {
-  mGradientFill->setDataDefinedProperty( QgsSymbolLayer::PropertyFillColor, QgsProperty::fromExpression( QStringLiteral( "if(importance > 2, 'red', 'green')" ) ) );
-  mGradientFill->setDataDefinedProperty( QgsSymbolLayer::PropertySecondaryColor, QgsProperty::fromExpression( QStringLiteral( "if(importance > 2, 'blue', 'magenta')" ) ) );
-  mFillSymbol->setOpacity( 0.5 );
+  QgsGradientFillSymbolLayer *gradientFill = new QgsGradientFillSymbolLayer();
+  QgsFillSymbol *fillSymbol = new QgsFillSymbol();
+  fillSymbol->changeSymbolLayer( 0, gradientFill );
+  mpPolysLayer->setRenderer( new QgsSingleSymbolRenderer( fillSymbol ) );
+
+  gradientFill->setColor( QColor( "red" ) );
+  gradientFill->setColor2( QColor( "blue" ) );
+  gradientFill->setGradientColorType( Qgis::GradientColorSource::SimpleTwoColor );
+  gradientFill->setGradientType( Qgis::GradientType::Linear );
+  gradientFill->setCoordinateMode( Qgis::SymbolCoordinateReference::Feature );
+  gradientFill->setReferencePoint1( QPointF( 0, 0 ) );
+  gradientFill->setGradientSpread( Qgis::GradientSpread::Pad );
+  gradientFill->setReferencePoint2( QPointF( 1, 1 ) );
+
+  gradientFill->setDataDefinedProperty( QgsSymbolLayer::PropertyFillColor, QgsProperty::fromExpression( QStringLiteral( "if(importance > 2, 'red', 'green')" ) ) );
+  gradientFill->setDataDefinedProperty( QgsSymbolLayer::PropertySecondaryColor, QgsProperty::fromExpression( QStringLiteral( "if(importance > 2, 'blue', 'magenta')" ) ) );
+  fillSymbol->setOpacity( 0.5 );
 
   const bool result = imageCheck( QStringLiteral( "gradient_opacityddcolor" ) );
   QVERIFY( result );
@@ -237,10 +358,23 @@ void TestQgsGradients::opacityWithDataDefinedColor()
 
 void TestQgsGradients::dataDefinedOpacity()
 {
-  mGradientFill->setDataDefinedProperty( QgsSymbolLayer::PropertyFillColor, QgsProperty::fromExpression( QStringLiteral( "if(importance > 2, 'red', 'green')" ) ) );
-  mGradientFill->setDataDefinedProperty( QgsSymbolLayer::PropertySecondaryColor, QgsProperty::fromExpression( QStringLiteral( "if(importance > 2, 'blue', 'magenta')" ) ) );
-  mFillSymbol->setOpacity( 1.0 );
-  mFillSymbol->setDataDefinedProperty( QgsSymbol::PropertyOpacity, QgsProperty::fromExpression( QStringLiteral( "if(\"Value\" >10, 25, 50)" ) ) );
+  QgsGradientFillSymbolLayer *gradientFill = new QgsGradientFillSymbolLayer();
+  QgsFillSymbol *fillSymbol = new QgsFillSymbol();
+  fillSymbol->changeSymbolLayer( 0, gradientFill );
+  mpPolysLayer->setRenderer( new QgsSingleSymbolRenderer( fillSymbol ) );
+
+  gradientFill->setColor( QColor( "red" ) );
+  gradientFill->setColor2( QColor( "blue" ) );
+  gradientFill->setGradientColorType( Qgis::GradientColorSource::SimpleTwoColor );
+  gradientFill->setGradientType( Qgis::GradientType::Linear );
+  gradientFill->setCoordinateMode( Qgis::SymbolCoordinateReference::Feature );
+  gradientFill->setReferencePoint1( QPointF( 0, 0 ) );
+  gradientFill->setGradientSpread( Qgis::GradientSpread::Pad );
+  gradientFill->setReferencePoint2( QPointF( 1, 1 ) );
+  gradientFill->setDataDefinedProperty( QgsSymbolLayer::PropertyFillColor, QgsProperty::fromExpression( QStringLiteral( "if(importance > 2, 'red', 'green')" ) ) );
+  gradientFill->setDataDefinedProperty( QgsSymbolLayer::PropertySecondaryColor, QgsProperty::fromExpression( QStringLiteral( "if(importance > 2, 'blue', 'magenta')" ) ) );
+  fillSymbol->setOpacity( 1.0 );
+  fillSymbol->setDataDefinedProperty( QgsSymbol::PropertyOpacity, QgsProperty::fromExpression( QStringLiteral( "if(\"Value\" >10, 25, 50)" ) ) );
 
   const bool result = imageCheck( QStringLiteral( "gradient_ddopacity" ) );
   QVERIFY( result );
@@ -248,6 +382,11 @@ void TestQgsGradients::dataDefinedOpacity()
 
 void TestQgsGradients::gradientSymbolFromQml()
 {
+  QgsGradientFillSymbolLayer *gradientFill = new QgsGradientFillSymbolLayer();
+  QgsFillSymbol *fillSymbol = new QgsFillSymbol();
+  fillSymbol->changeSymbolLayer( 0, gradientFill );
+  mpPolysLayer->setRenderer( new QgsSingleSymbolRenderer( fillSymbol ) );
+
   QVERIFY( setQml( "gradient" ) );
   QgsVectorSimplifyMethod simplifyMethod;
   simplifyMethod.setSimplifyHints( QgsVectorSimplifyMethod::NoSimplification );

@@ -1063,6 +1063,18 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      */
     static void pushRecentCoordinateReferenceSystem( const QgsCoordinateReferenceSystem &crs );
 
+    /**
+     * Removes a CRS from the list of recently used CRS.
+     * \since QGIS 3.32
+     */
+    static void removeRecentCoordinateReferenceSystem( const QgsCoordinateReferenceSystem &crs );
+
+    /**
+     * Cleans the list of recently used CRS.
+     * \since QGIS 3.32
+     */
+    static void clearRecentCoordinateReferenceSystems();
+
 #ifndef SIP_RUN
 
     /**

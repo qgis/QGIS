@@ -132,7 +132,7 @@ class PyQgsSettingsEntryEnumFlag(QgsSettingsEntryBase):
         elif dynamicKeyPart is None:
             dynamicKeyPart = []
 
-        return super().setVariantValuePrivate(enum_flag_key, dynamicKeyPart)
+        return super().setVariantValue(enum_flag_key, dynamicKeyPart)
 
     def settingsType(self):
         """

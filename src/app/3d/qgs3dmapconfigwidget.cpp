@@ -172,8 +172,6 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
 
   groupMeshTerrainShading->layout()->addWidget( mMeshSymbolWidget );
 
-  onTerrainTypeChanged();
-
   // ==================
   // Page: Skybox
   mSkyboxSettingsWidget = new QgsSkyboxRenderingSettingsWidget( this );
@@ -257,6 +255,8 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
   mShowExtentIn2DViewCheckbox = new QCheckBox( tr( "Show in 2D map view" ) );
   mShowExtentIn2DViewCheckbox->setChecked( map->showExtentIn2DView() );
   groupExtent->layout()->addWidget( mShowExtentIn2DViewCheckbox );
+
+  onTerrainTypeChanged();
 }
 
 Qgs3DMapConfigWidget::~Qgs3DMapConfigWidget()

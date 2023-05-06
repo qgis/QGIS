@@ -36,8 +36,6 @@ QgsMeasureTool::QgsMeasureTool( QgsMapCanvas *canvas, bool measureArea )
   mRubberBand = new QgsRubberBand( canvas, mMeasureArea ? Qgis::GeometryType::Polygon : Qgis::GeometryType::Line );
   mRubberBandPoints = new QgsRubberBand( canvas, Qgis::GeometryType::Point );
 
-  // Append point we will move
-  mPoints.append( QgsPointXY( 0, 0 ) );
   mDestinationCrs = canvas->mapSettings().destinationCrs();
 
   mDialog = new QgsMeasureDialog( this );
@@ -97,18 +95,15 @@ void QgsMeasureTool::deactivate()
   mDialog->hide();
   mRubberBand->hide();
   mRubberBandPoints->hide();
-
-  // Deactivating the tool does not reset the measure.
-  // Remove the last temporary point as to not duplicate it when
-  // the tool is re activated
-  int nbTempVertices = mRubberBand->numberOfVertices();
-  int nbVertices = mRubberBandPoints->numberOfVertices();
-  if ( nbTempVertices > nbVertices )
-  {
-    mRubberBand->removeLastPoint();
-  }
-
   QgsMapTool::deactivate();
+}
+
+void QgsMeasureTool::reactivate()
+{
+  // User clicked on the measure action while it was already active
+  // Only ensure that the dialog is visible
+  mDialog->show();
+  QgsMapTool::reactivate();
 }
 
 void QgsMeasureTool::restart()
@@ -163,18 +158,20 @@ void QgsMeasureTool::updateSettings()
     }
 
     mRubberBand->updatePosition();
-    mRubberBand->update();
     mRubberBandPoints->updatePosition();
-    mRubberBandPoints->update();
   }
   mDestinationCrs = mCanvas->mapSettings().destinationCrs();
 
+  // Update the dialog. This will clear then re-populate the table
   mDialog->updateSettings();
 
-  if ( !mDone && mRubberBand->size() > 0 )
+  int nbTempVertices = mRubberBand->numberOfVertices();
+  int nbVertices = mRubberBandPoints->numberOfVertices();
+
+  // Add a temporary point to the rubber band if the user is currently measuring
+  if ( !mDone && mRubberBand->size() > 0  && nbTempVertices <= nbVertices )
   {
     mRubberBand->addPoint( mPoints.last() );
-    mDialog->addPoint();
   }
   if ( mRubberBand->size() > 0 )
   {

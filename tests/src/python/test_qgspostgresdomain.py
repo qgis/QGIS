@@ -26,6 +26,7 @@ class TestQgsPostgresDomain(unittest.TestCase):
         Setup the involved layer
         :return:
         """
+        super().setUpClass()
         cls.dbconn = 'service=\'qgis_test\''
         if 'QGIS_PGTEST_DB' in os.environ:
             cls.dbconn = os.environ['QGIS_PGTEST_DB']

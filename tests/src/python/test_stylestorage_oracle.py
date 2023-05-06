@@ -25,7 +25,6 @@ class StyleStorageTest(StyleStorageTestCaseBase, StyleStorageTestBase):
     providerKey = 'oracle'
 
     def setUp(self):
-
         super().setUp()
         dbconn = "host=localhost dbname=XEPDB1 port=1521 user='QGIS' password='qgis'"
         if 'QGIS_ORACLETEST_DB' in os.environ:
@@ -39,7 +38,6 @@ class StyleStorageTest(StyleStorageTestCaseBase, StyleStorageTestBase):
         conn.executeSql('DELETE FROM mdsys.sdo_geom_metadata_table WHERE sdo_table_name = \'TEST_STYLES\'')
 
     def schemaName(self):
-
         return QgsDataSourceUri(self.uri).param('username')
 
     def tableName(self):

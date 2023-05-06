@@ -565,6 +565,11 @@ void QgsWFSSourceSelect::buildQuery( const QModelIndex &index )
   QgsWfsConnection connection( cmbConnections->currentText() );
   QgsWFSDataSourceURI uri( connection.uri().uri( false ) );
   uri.setTypeName( typeName );
+  if ( gbCRS->isEnabled() )
+  {
+    QString crsString = labelCoordRefSys->text();
+    uri.setSRSName( crsString );
+  }
 
   QModelIndex filterIndex = index.sibling( index.row(), MODEL_IDX_SQL );
   QString sql( filterIndex.data().toString() );
@@ -595,8 +600,16 @@ void QgsWFSSourceSelect::buildQuery( const QModelIndex &index )
       }
       else if ( provider->filterTranslatedState() == QgsOapifProvider::FilterTranslationState::PARTIAL )
       {
-        QMessageBox::information( nullptr, tr( "Filter" ),
-                                  tr( "The following part of the filter will be evaluated on client side : %1" ).arg( provider->clientSideFilterExpression() ) );
+        if ( provider->clientSideFilterExpression().isEmpty() )
+        {
+          QMessageBox::information( nullptr, tr( "Filter" ),
+                                    tr( "The filter will partially evaluated on client side." ) );
+        }
+        else
+        {
+          QMessageBox::information( nullptr, tr( "Filter" ),
+                                    tr( "The following part of the filter will be evaluated on client side : %1" ).arg( provider->clientSideFilterExpression() ) );
+        }
       }
       mModelProxy->setData( filterIndex, QVariant( gb.sql() ) );
     }

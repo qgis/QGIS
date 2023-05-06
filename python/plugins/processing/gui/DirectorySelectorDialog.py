@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 ***************************************************************************
     DirectorySelectorDialog.py
@@ -39,7 +37,7 @@ with warnings.catch_warnings():
 class DirectorySelectorDialog(BASE, WIDGET):
 
     def __init__(self, parent, options):
-        super(DirectorySelectorDialog, self).__init__(None)
+        super().__init__(None)
         self.setupUi(self)
 
         self.lstLayers.setSelectionMode(QAbstractItemView.ExtendedSelection)

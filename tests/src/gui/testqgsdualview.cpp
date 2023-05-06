@@ -378,7 +378,7 @@ void TestQgsDualView::testHtmlWidget()
   QgsAttributeEditorHtmlElement *htmlElement = new QgsAttributeEditorHtmlElement( "HtmlWidget", nullptr );
   htmlElement->setHtmlCode( QStringLiteral( "The text is '<script>document.write(expression.evaluate(\"%1\"));</script>'" ).arg( expression ) );
   editFormConfig.addTab( htmlElement );
-  editFormConfig.setLayout( QgsEditFormConfig::TabLayout );
+  editFormConfig.setLayout( Qgis::AttributeFormLayout::DragAndDrop );
   layer.setEditFormConfig( editFormConfig );
 
   QgsFeatureRequest request;

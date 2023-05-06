@@ -47,6 +47,26 @@ QString QgsOapifApiRequest::errorMessageWithReason( const QString &reason )
   return tr( "Download of API page failed: %1" ).arg( reason );
 }
 
+// j must be the root element
+// ref is something like "#/components/parameters/limitFeatures_VegetationSrf"
+static json resolveRef( const json &j, const std::string &ref )
+{
+  if ( ref.compare( 0, 2, "#/" ) != 0 )
+    return json();
+  const auto subPaths = QString::fromStdString( ref.substr( 2 ) ).split( QLatin1Char( '/' ) );
+  json ret = j;
+  for ( const auto &subPath : subPaths )
+  {
+    if ( !ret.is_object() )
+      return json();
+    const auto subJIter = ret.find( subPath.toStdString() );
+    if ( subJIter == ret.end() )
+      return json();
+    ret = *subJIter;
+  }
+  return ret;
+}
+
 void QgsOapifApiRequest::processReply()
 {
   if ( mErrorCode != QgsBaseNetworkRequest::NoError )
@@ -111,6 +131,99 @@ void QgsOapifApiRequest::processReply()
                 if ( defaultL.is_number_integer() )
                 {
                   mDefaultLimit = defaultL.get<int>();
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+
+    if ( j.is_object() && j.contains( "paths" ) )
+    {
+      const auto paths = j["paths"];
+      if ( paths.is_object() )
+      {
+        for ( const auto& [key, val] : paths.items() )
+        {
+          const char *prefix = "/collections/";
+          const char *suffix = "/items";
+          if ( key.size() > strlen( prefix ) + strlen( suffix ) &&
+               key.compare( 0, strlen( prefix ), prefix ) == 0 &&
+               key.compare( key.size() - strlen( suffix ), std::string::npos, suffix ) == 0 )
+          {
+            const std::string collection = key.substr(
+                                             strlen( prefix ), key.size() - strlen( prefix ) - strlen( suffix ) );
+            if ( val.is_object() && val.contains( "get" ) )
+            {
+              const auto get = val["get"];
+              if ( get.is_object() && get.contains( "parameters" ) )
+              {
+                const auto parameters = get["parameters"];
+                if ( parameters.is_array() )
+                {
+                  CollectionProperties collectionProperties;
+                  for ( const auto &parameter : parameters )
+                  {
+                    if ( parameter.is_object() )
+                    {
+                      json parameterResolved;
+                      if ( parameter.contains( "$ref" ) )
+                      {
+                        const auto ref = parameter["$ref"];
+                        if ( ref.is_string() )
+                        {
+                          const auto refStr = ref.get<std::string>();
+                          parameterResolved = resolveRef( j, refStr );
+                        }
+                      }
+                      else
+                      {
+                        parameterResolved = parameter;
+                      }
+                      if ( parameterResolved.is_object() &&
+                           parameterResolved.contains( "name" ) &&
+                           parameterResolved.contains( "in" ) &&
+                           parameterResolved.contains( "style" ) &&
+                           parameterResolved.contains( "explode" ) &&
+                           parameterResolved.contains( "schema" ) )
+                      {
+                        const auto jName = parameterResolved["name"];
+                        const auto jIn = parameterResolved["in"];
+                        const auto jStyle = parameterResolved["style"];
+                        const auto jExplode = parameterResolved["explode"];
+                        const auto jSchema = parameterResolved["schema"];
+                        if ( jName.is_string() && jIn.is_string() &&
+                             jStyle.is_string() && jExplode.is_boolean() &&
+                             jSchema.is_object() && jSchema.contains( "type" ) )
+                        {
+                          const auto name = jName.get<std::string>();
+                          const auto in = jIn.get<std::string>();
+                          const auto style = jStyle.get<std::string>();
+                          const bool explode = jExplode.get<bool>();
+                          const auto jSchemaType = jSchema["type"];
+                          if ( in == "query" &&
+                               style == "form" &&
+                               !explode &&
+                               jSchemaType.is_string() &&
+                               name != "crs" &&
+                               name != "bbox" && name != "bbox-crs" &&
+                               name != "filter" && name != "filter-lang" &&
+                               name != "filter-crs" && name != "datetime" &&
+                               name != "limit" )
+                          {
+                            SimpleQueryable queryable;
+                            queryable.mType = QString::fromStdString( jSchemaType.get<std::string>() );
+                            collectionProperties.mSimpleQueryables[QString::fromStdString( name )] = queryable;
+                          }
+                        }
+                      }
+                    }
+                  }
+                  if ( !collectionProperties.mSimpleQueryables.isEmpty() )
+                  {
+                    mCollectionProperties[QString::fromStdString( collection )] = collectionProperties;
+                  }
                 }
               }
             }

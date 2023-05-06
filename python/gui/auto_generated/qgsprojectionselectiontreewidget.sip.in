@@ -155,6 +155,14 @@ Marks the current selected projection for push to front of recent projections li
    Has no effect since QGIS 3.20
 %End
 
+
+    void clearRecentCrs();
+%Docstring
+Clear the list of recent projections.
+
+.. versionadded:: 3.32
+%End
+
   signals:
 
     void crsSelected();
@@ -188,6 +196,9 @@ Emitted when the selection in the tree is changed from a valid selection to an i
 
 
     virtual void resizeEvent( QResizeEvent *event );
+
+
+    virtual bool eventFilter( QObject *obj, QEvent *ev );
 
 
 };

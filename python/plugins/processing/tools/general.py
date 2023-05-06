@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 ***************************************************************************
     general.py
@@ -46,7 +44,7 @@ def algorithmHelp(id):
     """
     alg = QgsApplication.processingRegistry().algorithmById(id)
     if alg is not None:
-        print('{} ({})\n'.format(alg.displayName(), alg.id()))
+        print(f'{alg.displayName()} ({alg.id()})\n')
         if alg.shortDescription():
             print(alg.shortDescription() + '\n')
         if alg.shortHelpString():
@@ -55,16 +53,16 @@ def algorithmHelp(id):
         print('Input parameters')
         print('----------------')
         for p in alg.parameterDefinitions():
-            print('\n{}: {}'.format(p.name(), p.description()))
+            print(f'\n{p.name()}: {p.description()}')
             if p.help():
-                print('\n\t{}'.format(p.help()))
+                print(f'\n\t{p.help()}')
 
-            print('\n\tParameter type:\t{}'.format(p.__class__.__name__))
+            print(f'\n\tParameter type:\t{p.__class__.__name__}')
 
             if isinstance(p, QgsProcessingParameterEnum):
                 opts = []
                 for i, o in enumerate(p.options()):
-                    opts.append('\t\t- {}: {}'.format(i, o))
+                    opts.append(f'\t\t- {i}: {o}')
                 print('\n\tAvailable values:\n{}'.format('\n'.join(opts)))
 
             parameter_type = QgsApplication.processingRegistry().parameterType(p.type())
@@ -72,7 +70,7 @@ def algorithmHelp(id):
             if accepted_types:
                 opts = []
                 for t in accepted_types:
-                    opts.append('\t\t- {}'.format(t))
+                    opts.append(f'\t\t- {t}')
                 print('\n\tAccepted data types:')
                 print('\n'.join(opts))
 
@@ -81,12 +79,12 @@ def algorithmHelp(id):
         print('----------------')
 
         for o in alg.outputDefinitions():
-            print('\n{}:  <{}>'.format(o.name(), o.__class__.__name__))
+            print(f'\n{o.name()}:  <{o.__class__.__name__}>')
             if o.description():
                 print('\t' + o.description())
 
     else:
-        print('Algorithm "{}" not found.'.format(id))
+        print(f'Algorithm "{id}" not found.')
 
 
 def run(algOrName, parameters, onFinish=None, feedback=None, context=None, is_child_algorithm=False):

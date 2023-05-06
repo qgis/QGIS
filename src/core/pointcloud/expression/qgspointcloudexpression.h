@@ -205,6 +205,13 @@ class CORE_EXPORT QgsPointCloudExpression
      */
     static bool checkExpression( const QgsExpression &expression, const QgsPointCloudBlock *block, QString &errorMessage );
 
+    /**
+     * Returns an expression string converted to PDAL expression format.
+     *
+     * \since QGIS 3.32
+     */
+    QString asPdalExpression() const;
+
   private:
 
     /**

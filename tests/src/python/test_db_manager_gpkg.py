@@ -33,6 +33,7 @@ class TestPyQgsDBManagerGpkg(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
+        super().setUpClass()
 
         QCoreApplication.setOrganizationName("QGIS_Test")
         QCoreApplication.setOrganizationDomain("TestPyQgsDBManagerGpkg.com")
@@ -57,6 +58,7 @@ class TestPyQgsDBManagerGpkg(unittest.TestCase):
     @classmethod
     def tearDownClass(cls):
         """Run after all tests"""
+        super().tearDownClass()
 
         QgsSettings().clear()
         shutil.rmtree(cls.basetestpath, True)

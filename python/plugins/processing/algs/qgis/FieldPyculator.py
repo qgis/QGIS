@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 ***************************************************************************
     FieldPyculator.py
@@ -234,4 +232,4 @@ class FieldsPyculator(QgisAlgorithm):
 
     def checkParameterValues(self, parameters, context):
         # TODO check that formula is correct and fields exist
-        return super(FieldsPyculator, self).checkParameterValues(parameters, context)
+        return super().checkParameterValues(parameters, context)

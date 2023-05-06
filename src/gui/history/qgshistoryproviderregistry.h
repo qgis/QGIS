@@ -185,7 +185,7 @@ class GUI_EXPORT QgsHistoryProviderRegistry : public QObject
      *
      * \see historyCleared()
      */
-    bool clearHistory( Qgis::HistoryProviderBackend backend );
+    bool clearHistory( Qgis::HistoryProviderBackend backend, const QString &providerId = QString() );
 
   signals:
 
@@ -206,9 +206,12 @@ class GUI_EXPORT QgsHistoryProviderRegistry : public QObject
     /**
      * Emitted when the history is cleared for a \a backend.
      *
+     * If \a providerId is non-empty then the history has only been cleared for the
+     * specified provider.
+     *
      * \since QGIS 3.32
      */
-    void historyCleared( Qgis::HistoryProviderBackend backend );
+    void historyCleared( Qgis::HistoryProviderBackend backend, const QString &providerId );
 
   private:
 

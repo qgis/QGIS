@@ -36,12 +36,15 @@ QWidget *QgsHistoryEntryNode::createWidget( const QgsHistoryWidgetContext & )
   return nullptr;
 }
 
-#if 0
-QList<QAction *> QgsHistoryEntryNode::actions( QWidget * )
+bool QgsHistoryEntryNode::doubleClicked( const QgsHistoryWidgetContext & )
 {
-  return {};
+  return false;
 }
-#endif
+
+void QgsHistoryEntryNode::populateContextMenu( QMenu *, const QgsHistoryWidgetContext & )
+{
+
+}
 
 bool QgsHistoryEntryNode::matchesString( const QString &string ) const
 {

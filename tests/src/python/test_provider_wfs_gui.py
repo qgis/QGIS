@@ -47,6 +47,7 @@ class TestPyQgsWFSProviderGUI(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
+        super().setUpClass()
         QCoreApplication.setOrganizationName("QGIS_Test")
         QCoreApplication.setOrganizationDomain("QGIS_TestPyQgsWFSProviderGUI.com")
         QCoreApplication.setApplicationName("QGIS_TestPyQgsWFSProviderGUI")
@@ -61,6 +62,7 @@ class TestPyQgsWFSProviderGUI(unittest.TestCase):
         QgsSettings().clear()
         if cls.basetestpath is not None:
             shutil.rmtree(cls.basetestpath, True)
+        super().tearDownClass()
 
     def get_button(self, main_dialog, text):
         buttonBox = main_dialog.findChild(QDialogButtonBox, "buttonBox")

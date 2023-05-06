@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 ***************************************************************************
     BatchAlgorithmDialog.py
@@ -86,12 +84,12 @@ class BatchAlgorithmDialog(QgsProcessingBatchAlgorithmDialogBase):
         self.execute(alg_parameters)
 
     def handleAlgorithmResults(self, algorithm, context, feedback, parameters):
-        handleAlgorithmResults(algorithm, context, feedback, False, parameters)
+        handleAlgorithmResults(algorithm, context, feedback, parameters)
 
     def loadHtmlResults(self, results, num):
         for out in self.algorithm().outputDefinitions():
             if isinstance(out, QgsProcessingOutputHtml) and out.name() in results and results[out.name()]:
-                resultsList.addResult(icon=self.algorithm().icon(), name='{} [{}]'.format(out.description(), num),
+                resultsList.addResult(icon=self.algorithm().icon(), name=f'{out.description()} [{num}]',
                                       result=results[out.name()])
 
     def createSummaryTable(self, algorithm_results, errors):
@@ -125,7 +123,7 @@ class BatchAlgorithmDialog(QgsProcessingBatchAlgorithmDialogBase):
                     f.write('<table>\n')
                     for out in self.algorithm().outputDefinitions():
                         if out.name() in results:
-                            f.write('<tr><th>{}</th><td>{}</td></tr>\n'.format(out.description(), results[out.name()]))
+                            f.write(f'<tr><th>{out.description()}</th><td>{results[out.name()]}</td></tr>\n')
                     f.write('</table>\n')
             if errors:
                 f.write('<h2 style="color: red">{}</h2>\n'.format(self.tr('Errors')))
@@ -140,11 +138,11 @@ class BatchAlgorithmDialog(QgsProcessingBatchAlgorithmDialogBase):
                     if not param.isDestination():
                         if param.name() in params:
                             f.write(
-                                '<tr><th>{}</th><td>{}</td></tr>\n'.format(param.description(), params[param.name()]))
+                                f'<tr><th>{param.description()}</th><td>{params[param.name()]}</td></tr>\n')
                 f.write('</table>\n')
                 f.write('<h3>{}</h3>\n'.format(self.tr('Error')))
                 f.write('<p style="color: red">{}</p>\n'.format('<br>'.join(errors)))
 
         resultsList.addResult(icon=self.algorithm().icon(),
-                              name='{} [summary]'.format(self.algorithm().name()), timestamp=time.localtime(),
+                              name=f'{self.algorithm().name()} [summary]', timestamp=time.localtime(),
                               result=outputFile)

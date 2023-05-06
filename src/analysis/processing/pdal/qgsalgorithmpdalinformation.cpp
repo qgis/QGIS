@@ -44,7 +44,7 @@ QString QgsPdalInformationAlgorithm::groupId() const
 
 QStringList QgsPdalInformationAlgorithm::tags() const
 {
-  return QObject::tr( "point cloud,las,laz,information" ).split( ',' );
+  return QObject::tr( "pdal,lidar,las,laz,information" ).split( ',' );
 }
 
 QString QgsPdalInformationAlgorithm::shortHelpString() const

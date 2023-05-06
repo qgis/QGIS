@@ -35,13 +35,11 @@
 #include "qgsmaplayerstyleguiutils.h"
 #include "qgsmetadatawidget.h"
 #include "qgsmetadataurlitemdelegate.h"
-#include "qgsnative.h"
 #include "qgsproject.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerjoininfo.h"
 #include "qgsvectorlayerproperties.h"
 #include "qgsvectordataprovider.h"
-#include "qgssubsetstringeditorproviderregistry.h"
 #include "qgssubsetstringeditorinterface.h"
 #include "qgsdatasourceuri.h"
 #include "qgsrenderer.h"
@@ -61,12 +59,15 @@
 #include "qgsexpressioncontextutils.h"
 #include "qgsmaskingwidget.h"
 #include "qgsvectorlayertemporalpropertieswidget.h"
-#include "qgsprovidersourcewidgetproviderregistry.h"
 #include "qgsprovidersourcewidget.h"
 #include "qgsproviderregistry.h"
 #include "qgsmaplayerstylemanager.h"
 #include "qgslayertreemodel.h"
 #include "qgsmaptip.h"
+#include "qgsgui.h"
+#include "qgsnative.h"
+#include "qgssubsetstringeditorproviderregistry.h"
+#include "qgsprovidersourcewidgetproviderregistry.h"
 #include "qgswebview.h"
 #include "qgswebframe.h"
 #if WITH_QTWEBKIT
@@ -174,6 +175,9 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
 
   if ( !mLayer )
     return;
+
+  connect( mEnableMapTips, &QAbstractButton::toggled, mHtmlMapTipGroupBox, &QWidget::setEnabled );
+  mEnableMapTips->setChecked( mLayer->mapTipsEnabled() );
 
   QVBoxLayout *layout = nullptr;
 
@@ -557,8 +561,9 @@ void QgsVectorLayerProperties::syncToLayer()
   txtSubsetSQL->setCaretLineVisible( false );
   setPbnQueryBuilderEnabled();
 
-  mMapTipWidget->setText( mLayer->mapTipTemplate() );
   mDisplayExpressionWidget->setField( mLayer->displayExpression() );
+  mEnableMapTips->setChecked( mLayer->mapTipsEnabled() );
+  mMapTipWidget->setText( mLayer->mapTipTemplate() );
 
   // set up the scale based layer visibility stuff....
   mScaleRangeWidget->setScaleRange( mLayer->minimumScale(), mLayer->maximumScale() );
@@ -718,6 +723,7 @@ void QgsVectorLayerProperties::apply()
   }
 
   mLayer->setDisplayExpression( mDisplayExpressionWidget->asExpression() );
+  mLayer->setMapTipsEnabled( mEnableMapTips->isChecked() );
   mLayer->setMapTipTemplate( mMapTipWidget->text() );
 
   mLayer->actions()->clearActions();

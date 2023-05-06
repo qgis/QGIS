@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 ***************************************************************************
     voronoi.py
@@ -134,7 +132,7 @@ BIG_FLOAT = 1e38
 
 # ------------------------------------------------------------------
 
-class Context(object):
+class Context:
 
     def __init__(self):
         self.doPrint = 0
@@ -166,7 +164,7 @@ class Context(object):
             self.circle(s.x, s.y, None)  # No radius?
         elif self.doPrint:
             # fix_print_with_import
-            print("s %f %f" % (s.x, s.y))
+            print(f"s {s.x:f} {s.y:f}")
 
     def outVertex(self, s):
         self.vertices.append((s.x, s.y))
@@ -177,7 +175,7 @@ class Context(object):
             pass
         elif self.doPrint and not self.plot:
             # fix_print_with_import
-            print("v %f %f" % (s.x, s.y))
+            print(f"v {s.x:f} {s.y:f}")
 
     def outTriple(self, s1, s2, s3):
         self.triangles.append((s1.sitenum, s2.sitenum, s3.sitenum))
@@ -198,7 +196,7 @@ class Context(object):
                 self.line(edge.reg[0].x, edge.reg[0].y, edge.reg[1].x, edge.reg[1].y)
         elif self.doPrint and not self.plot:
             # fix_print_with_import
-            print("l %f %f %f" % (edge.a, edge.b, edge.c))
+            print(f"l {edge.a:f} {edge.b:f} {edge.c:f}")
 
     def outEdge(self, edge):
         sitenumL = -1
@@ -373,7 +371,7 @@ def isEqual(a, b, relativeError=TOLERANCE):
 # ------------------------------------------------------------------
 
 
-class Site(object):
+class Site:
 
     def __init__(self, x=0.0, y=0.0, sitenum=0):
         self.x = x
@@ -402,7 +400,7 @@ class Site(object):
 # ------------------------------------------------------------------
 
 
-class Edge(object):
+class Edge:
     LE = 0
     RE = 1
     EDGE_NUM = 0
@@ -462,7 +460,7 @@ class Edge(object):
 
 
 # ------------------------------------------------------------------
-class Halfedge(object):
+class Halfedge:
 
     def __init__(self, edge=None, pm=Edge.LE):
         self.left = None  # left Halfedge in the edge list
@@ -598,7 +596,7 @@ class Halfedge(object):
 
 
 # ------------------------------------------------------------------
-class EdgeList(object):
+class EdgeList:
 
     def __init__(self, xmin, xmax, nsites):
         if xmin > xmax:
@@ -641,7 +639,7 @@ class EdgeList(object):
 
     def leftbnd(self, pt):
         # Use hash table to get close to desired halfedge
-        bucket = int(((pt.x - self.xmin) / self.deltax * self.hashsize))
+        bucket = int((pt.x - self.xmin) / self.deltax * self.hashsize)
 
         bucket = max(bucket, 0)
 
@@ -678,7 +676,7 @@ class EdgeList(object):
 
 
 # ------------------------------------------------------------------
-class PriorityQueue(object):
+class PriorityQueue:
 
     def __init__(self, ymin, ymax, nsites):
         self.ymin = ymin
@@ -743,7 +741,7 @@ class PriorityQueue(object):
 
 
 # ------------------------------------------------------------------
-class SiteList(object):
+class SiteList:
 
     def __init__(self, pointList):
         self.__sites = []
@@ -769,7 +767,7 @@ class SiteList(object):
         site.sitenum = self.__sitenum
         self.__sitenum += 1
 
-    class Iterator(object):
+    class Iterator:
 
         def __init__(this, lst):
             this.generator = iter(lst)
@@ -870,7 +868,7 @@ if __name__ == "__main__":
         pts = []
         fp = sys.stdin
         if len(args) > 0:
-            fp = open(args[0], 'r')
+            fp = open(args[0])
         for line in fp:
             fld = line.split()
             x = float(fld[0])

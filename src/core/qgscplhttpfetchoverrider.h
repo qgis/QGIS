@@ -20,6 +20,7 @@
 
 #include <QNetworkRequest>
 #include <QString>
+#include <QPointer>
 #include "qgsnetworkaccessmanager.h" // for QgsSetRequestInitiatorClass
 
 #include "cpl_http.h"
@@ -28,7 +29,7 @@
 class QgsFeedback;
 
 #ifndef SIP_RUN
-#define QgsSetCPLHTTPFetchOverriderInitiatorClass(overrider, _class) QgsSetRequestInitiatorClass(overrider, _class)
+#define QgsSetCPLHTTPFetchOverriderInitiatorClass(overrider, _class) QgsSetRequestInitiatorClass((overrider), _class)
 #endif
 
 /**
@@ -53,6 +54,20 @@ class QgsCPLHTTPFetchOverrider
     //! Define attribute that must be forwarded to the actual QNetworkRequest
     void setAttribute( QNetworkRequest::Attribute code, const QVariant &value );
 
+    /**
+     * Sets the \a feedback cancellation object for the redirection.
+     *
+     * \since QGIS 3.32
+     */
+    void setFeedback( QgsFeedback *feedback );
+
+    /**
+     * Returns the thread associated with the overrider.
+     *
+     * \since QGIS 3.32
+     */
+    QThread *thread() const;
+
   private:
 
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,2,0)
@@ -68,6 +83,8 @@ class QgsCPLHTTPFetchOverrider
     QString mAuthCfg;
 
     QgsFeedback *mFeedback = nullptr;
+
+    QPointer< QThread > mThread;
 
     std::map<QNetworkRequest::Attribute, QVariant> mAttributes;
 };

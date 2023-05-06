@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 ***************************************************************************
     __init__.py
@@ -45,7 +43,7 @@ def loadShortHelp():
                     for k, v in yaml.load(stream, Loader=yaml.SafeLoader).items():
                         if v is None:
                             continue
-                        h[k] = QCoreApplication.translate("{}Algorithm".format(f[:-5].upper()), v)
+                        h[k] = QCoreApplication.translate(f"{f[:-5].upper()}Algorithm", v)
 
     version = ".".join(Qgis.QGIS_VERSION.split(".")[0:2])
     overrideLocale = QgsSettings().value('locale/overrideFlag', False, bool)
@@ -57,7 +55,7 @@ def loadShortHelp():
 
     def replace(s):
         if s is not None:
-            return s.replace("{qgisdocs}", "https://docs.qgis.org/%s/%s/docs" % (version, locale))
+            return s.replace("{qgisdocs}", f"https://docs.qgis.org/{version}/{locale}/docs")
         else:
             return None
 

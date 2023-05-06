@@ -53,7 +53,9 @@ QgsProcessingFieldMapPanelWidget::QgsProcessingFieldMapPanelWidget( QWidget *par
   connect( mDeleteButton, &QPushButton::clicked, mFieldsView, &QgsFieldMappingWidget::removeSelectedFields );
   connect( mUpButton, &QPushButton::clicked, mFieldsView, &QgsFieldMappingWidget::moveSelectedFieldsUp );
   connect( mDownButton, &QPushButton::clicked, mFieldsView, &QgsFieldMappingWidget::moveSelectedFieldsDown );
+  connect( mInvertSelectionButton, &QPushButton::clicked, mFieldsView, &QgsFieldMappingWidget::invertSelection );
   connect( mLoadLayerFieldsButton, &QPushButton::clicked, this, &QgsProcessingFieldMapPanelWidget::loadLayerFields );
+
 
   connect( mFieldsView, &QgsFieldMappingWidget::changed, this, [ = ]
   {

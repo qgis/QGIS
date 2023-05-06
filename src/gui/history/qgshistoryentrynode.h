@@ -26,6 +26,7 @@
 
 class QWidget;
 class QAction;
+class QMenu;
 class QgsHistoryEntryGroup;
 class QgsHistoryWidgetContext;
 
@@ -87,18 +88,20 @@ class GUI_EXPORT QgsHistoryEntryNode
      */
     virtual QWidget *createWidget( const QgsHistoryWidgetContext &context ) SIP_FACTORY;
 
-#if 0  // currently unused
+    /**
+     * Called when the node is double-clicked. The default implementation does nothing.
+     *
+     * Returns TRUE if the node handled the double-click event and it should not
+     * be further processed.
+     */
+    virtual bool doubleClicked( const QgsHistoryWidgetContext &context );
 
     /**
-     * Returns a list of actions which users can trigger to interact with the history
-     * entry. Buttons corresponding to each action will be automatically created and
-     * shown to users.
+     * Allows the node to populate a context \a menu before display to the user.
      *
-     * Actions should be parented to the specified \a parent widget.
+     * Actions should be parented to the specified \a menu.
      */
-    virtual QList< QAction * > actions( const QgsHistoryWidgetContext &context, QWidget *parent );
-
-#endif
+    virtual void populateContextMenu( QMenu *menu, const QgsHistoryWidgetContext &context );
 
     /**
      * Returns true if the node matches the specified \a searchString, and

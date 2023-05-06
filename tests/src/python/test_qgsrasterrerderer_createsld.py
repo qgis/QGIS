@@ -56,10 +56,6 @@ class TestQgsRasterRendererCreateSld(unittest.TestCase):
      This class tests the creation of SLD from QGis raster layers
     """
 
-    @classmethod
-    def setUpClass(self):
-        pass
-
     def setUp(self):
         pass
 

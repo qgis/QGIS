@@ -50,6 +50,7 @@ class TestQgsAnnotationLineTextItem(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
+        super().setUpClass()
         cls.report = "<h1>Python QgsAnnotationLineTextItem Tests</h1>\n"
 
     @classmethod
@@ -57,6 +58,7 @@ class TestQgsAnnotationLineTextItem(unittest.TestCase):
         report_file_path = f"{QDir.tempPath()}/qgistest.html"
         with open(report_file_path, 'a') as report_file:
             report_file.write(cls.report)
+        super().tearDownClass()
 
     def testBasic(self):
         item = QgsAnnotationLineTextItem('my text', QgsLineString(((12, 13), (13, 13.1), (14, 13))))

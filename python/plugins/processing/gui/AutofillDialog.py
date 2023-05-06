@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 ***************************************************************************
     AutofillDialog.py
@@ -41,7 +39,7 @@ class AutofillDialog(BASE, WIDGET):
     FILL_WITH_PARAMETER = 2
 
     def __init__(self, alg):
-        super(AutofillDialog, self).__init__(None)
+        super().__init__(None)
         self.setupUi(self)
         self.mode = None
         self.param_name = None

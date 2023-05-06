@@ -22,16 +22,19 @@
 #include "qgsoapifcollection.h"
 #include "qgsoapifconformancerequest.h"
 #include "qgsoapifcreatefeaturerequest.h"
+#include "qgsoapifcql2textexpressioncompiler.h"
 #include "qgsoapifdeletefeaturerequest.h"
 #include "qgsoapifpatchfeaturerequest.h"
 #include "qgsoapifputfeaturerequest.h"
 #include "qgsoapifitemsrequest.h"
 #include "qgsoapifoptionsrequest.h"
+#include "qgsoapifqueryablesrequest.h"
 #include "qgswfsconstants.h"
 #include "qgswfsutils.h" // for isCompatibleType()
 
 #include <algorithm>
 #include <QIcon>
+#include <QUrlQuery>
 
 const QString QgsOapifProvider::OAPIF_PROVIDER_KEY = QStringLiteral( "OAPIF" );
 const QString QgsOapifProvider::OAPIF_PROVIDER_DESCRIPTION = QStringLiteral( "OGC API - Features data provider" );
@@ -96,6 +99,13 @@ bool QgsOapifProvider::init()
     return false;
   if ( apiRequest.errorCode() != QgsBaseNetworkRequest::NoError )
     return false;
+
+  const auto &collectionProperties = apiRequest.collectionProperties();
+  const auto thisCollPropertiesIter = collectionProperties.find( mShared->mURI.typeName() );
+  if ( thisCollPropertiesIter != collectionProperties.end() )
+  {
+    mShared->mSimpleQueryables = thisCollPropertiesIter->mSimpleQueryables;
+  }
 
   mShared->mServerMaxFeatures = apiRequest.maxLimit();
 
@@ -165,6 +175,27 @@ bool QgsOapifProvider::init()
     QgsOapifConformanceRequest conformanceRequest( mShared->mURI.uri() );
     const QStringList conformanceClasses = conformanceRequest.conformanceClasses( conformanceUrl );
     implementsPart2 = conformanceClasses.contains( QLatin1String( "http://www.opengis.net/spec/ogcapi-features-2/1.0/conf/crs" ) );
+
+    const bool implementsCql2Text =
+      ( conformanceClasses.contains( QLatin1String( "http://www.opengis.net/spec/cql2/0.0/conf/cql2-text" ) ) ||
+        conformanceClasses.contains( QLatin1String( "http://www.opengis.net/spec/cql2/1.0/conf/cql2-text" ) ) );
+    mShared->mServerSupportsFilterCql2Text =
+      ( conformanceClasses.contains( QLatin1String( "http://www.opengis.net/spec/cql2/0.0/conf/basic-cql2" ) ) ||
+        conformanceClasses.contains( QLatin1String( "http://www.opengis.net/spec/cql2/1.0/conf/basic-cql2" ) ) ) &&
+      ( conformanceClasses.contains( QLatin1String( "http://www.opengis.net/spec/ogcapi-features-3/0.0/conf/filter" ) ) ||
+        conformanceClasses.contains( QLatin1String( "http://www.opengis.net/spec/ogcapi-features-3/1.0/conf/filter" ) ) ) &&
+      ( conformanceClasses.contains( QLatin1String( "http://www.opengis.net/spec/ogcapi-features-3/0.0/conf/features-filter" ) ) ||
+        conformanceClasses.contains( QLatin1String( "http://www.opengis.net/spec/ogcapi-features-3/1.0/conf/features-filter" ) ) ) &&
+      implementsCql2Text;
+    mShared->mServerSupportsLikeBetweenIn =
+      ( conformanceClasses.contains( QLatin1String( "http://www.opengis.net/spec/cql2/0.0/conf/advanced-comparison-operators" ) ) ||
+        conformanceClasses.contains( QLatin1String( "http://www.opengis.net/spec/cql2/1.0/conf/advanced-comparison-operators" ) ) );
+    mShared->mServerSupportsCaseI =
+      ( conformanceClasses.contains( QLatin1String( "http://www.opengis.net/spec/cql2/0.0/conf/case-insensitive-comparison" ) ) ||
+        conformanceClasses.contains( QLatin1String( "http://www.opengis.net/spec/cql2/1.0/conf/case-insensitive-comparison" ) ) );
+    mShared->mServerSupportsBasicSpatialOperators =
+      ( conformanceClasses.contains( QLatin1String( "http://www.opengis.net/spec/cql2/0.0/conf/basic-spatial-operators" ) ) ||
+        conformanceClasses.contains( QLatin1String( "http://www.opengis.net/spec/cql2/1.0/conf/basic-spatial-operators" ) ) );
   }
 
   mLayerMetadata = collectionRequest->collection().mLayerMetadata;
@@ -204,6 +235,13 @@ bool QgsOapifProvider::init()
 
   // Merge contact info from /api
   mLayerMetadata.setContacts( apiRequest.metadata().contacts() );
+
+  if ( mShared->mServerSupportsFilterCql2Text )
+  {
+    const QString queryablesUrl = mShared->mCollectionUrl +  QStringLiteral( "/queryables" );
+    QgsOapifQueryablesRequest queryablesRequest( mShared->mURI.uri() );
+    mShared->mQueryables = queryablesRequest.queryables( queryablesUrl );
+  }
 
   mShared->mItemsUrl = mShared->mCollectionUrl +  QStringLiteral( "/items" );
 
@@ -765,6 +803,12 @@ QgsOapifSharedData *QgsOapifSharedData::clone() const
   copy->mServerFilter = mServerFilter;
   copy->mFoundIdTopLevel = mFoundIdTopLevel;
   copy->mFoundIdInProperties = mFoundIdInProperties;
+  copy->mSimpleQueryables = mSimpleQueryables;
+  copy->mServerSupportsFilterCql2Text = mServerSupportsFilterCql2Text;
+  copy->mServerSupportsLikeBetweenIn = mServerSupportsLikeBetweenIn;
+  copy->mServerSupportsCaseI = mServerSupportsCaseI;
+  copy->mServerSupportsBasicSpatialOperators = mServerSupportsBasicSpatialOperators;
+  copy->mQueryables = mQueryables;
   QgsBackgroundCachedSharedData::copyStateToClone( copy );
 
   return copy;
@@ -789,7 +833,7 @@ static QString getDateTimeValueAsString( const QVariant &v )
   if ( v.type() == QVariant::String )
     return v.toString();
   else if ( v.type() == QVariant::DateTime )
-    return v.toDateTime().toString( Qt::ISODateWithMs );
+    return v.toDateTime().toOffsetFromUtc( 0 ).toString( Qt::ISODateWithMs );
   return QString();
 }
 
@@ -802,6 +846,13 @@ static bool isDateTimeField( const QgsFields &fields, const QString &fieldName )
     return type == QVariant::DateTime || type == QVariant::Date;
   }
   return false;
+}
+
+static QString getEncodedQueryParam( const QString &key, const QString &value )
+{
+  QUrlQuery query;
+  query.addQueryItem( key, value );
+  return query.toString( QUrl::FullyEncoded );
 }
 
 static void collectTopLevelAndNodes( const QgsExpressionNode *node,
@@ -821,10 +872,10 @@ static void collectTopLevelAndNodes( const QgsExpressionNode *node,
   topAndNodes.push_back( node );
 }
 
-QString QgsOapifSharedData::translateNodeToServer(
+QString QgsOapifSharedData::compileExpressionNodeUsingPart1(
   const QgsExpressionNode *rootNode,
   QgsOapifProvider::FilterTranslationState &translationState,
-  QString &untranslatedPart )
+  QString &untranslatedPart ) const
 {
   std::vector<const QgsExpressionNode *> topAndNodes;
   collectTopLevelAndNodes( rootNode, topAndNodes );
@@ -832,6 +883,7 @@ QString QgsOapifSharedData::translateNodeToServer(
   QDateTime maxDate;
   QString minDateStr;
   QString maxDateStr;
+  QStringList equalityComparisons;
   bool hasTranslatedParts = false;
   for ( size_t i = 0; i < topAndNodes.size(); /* do not increment here */ )
   {
@@ -872,6 +924,40 @@ QString QgsOapifSharedData::translateNodeToServer(
             }
           }
         }
+        else if ( op == QgsExpressionNodeBinaryOperator::boEQ &&
+                  mFields.indexOf( left->name() ) >= 0 )
+        {
+          // Filtering based on Part 1 /rec/core/fc-filters recommendation.
+          const auto iter = mSimpleQueryables.find( left->name() );
+          if ( iter != mSimpleQueryables.end() )
+          {
+            if ( iter->mType == QLatin1String( "string" ) &&
+                 right->value().type() == QVariant::String )
+            {
+              equalityComparisons << getEncodedQueryParam( left->name(), right->value().toString() );
+              removeMe = true;
+            }
+            else if ( ( iter->mType == QLatin1String( "integer" ) ||
+                        iter->mType == QLatin1String( "number" ) ) &&
+                      right->value().type() == QVariant::Int )
+            {
+              equalityComparisons << getEncodedQueryParam( left->name(), QString::number( right->value().toInt() ) );
+              removeMe = true;
+            }
+            else if ( iter->mType == QLatin1String( "number" ) &&
+                      right->value().type() == QVariant::Double )
+            {
+              equalityComparisons << getEncodedQueryParam( left->name(), QString::number( right->value().toDouble() ) );
+              removeMe = true;
+            }
+            else if ( iter->mType == QLatin1String( "boolean" ) &&
+                      right->value().type() == QVariant::Bool )
+            {
+              equalityComparisons << getEncodedQueryParam( left->name(), right->value().toBool() ? QLatin1String( "true" ) : QLatin1String( "false" ) );
+              removeMe = true;
+            }
+          }
+        }
       }
     }
     if ( removeMe )
@@ -904,6 +990,13 @@ QString QgsOapifSharedData::translateNodeToServer(
   {
     // TODO: use ellipsis '..' instead of dummy upper bound once more servers are compliant
     ret = QStringLiteral( "datetime=0000-01-01T00:00:00Z%2F" ) + maxDateStr;
+  }
+
+  for ( const QString &equalityComparison : equalityComparisons )
+  {
+    if ( !ret.isEmpty() )
+      ret += QLatin1Char( '&' );
+    ret += equalityComparison;
   }
 
   if ( !hasTranslatedParts )
@@ -942,6 +1035,55 @@ QString QgsOapifSharedData::translateNodeToServer(
   return ret;
 }
 
+bool QgsOapifSharedData::computeFilter( const QgsExpression &expr,
+                                        QgsOapifProvider::FilterTranslationState &translationState,
+                                        QString &serverSideParameters,
+                                        QString &clientSideFilterExpression ) const
+{
+  const auto rootNode = expr.rootNode();
+  if ( !rootNode )
+    return false;
+
+  if ( mServerSupportsFilterCql2Text )
+  {
+    const bool invertAxisOrientation = mSourceCrs.hasAxisInverted();
+    QgsOapifCql2TextExpressionCompiler compiler(
+      mQueryables, mServerSupportsLikeBetweenIn, mServerSupportsCaseI,
+      mServerSupportsBasicSpatialOperators, invertAxisOrientation );
+    QgsOapifCql2TextExpressionCompiler::Result res = compiler.compile( &expr );
+    if ( res == QgsOapifCql2TextExpressionCompiler::Fail )
+    {
+      clientSideFilterExpression = expr.rootNode()->dump();
+      translationState = QgsOapifProvider::FilterTranslationState::FULLY_CLIENT;
+      return true;
+    }
+    serverSideParameters = getEncodedQueryParam( QStringLiteral( "filter" ), compiler.result() );
+    serverSideParameters += QStringLiteral( "&filter-lang=cql2-text" );
+    if ( compiler.geometryLiteralUsed() )
+    {
+      if ( mSourceCrs
+           != QgsCoordinateReferenceSystem::fromOgcWmsCrs( QgsOapifProvider::OAPIF_PROVIDER_DEFAULT_CRS ) )
+      {
+        serverSideParameters += QStringLiteral( "&filter-crs=%1" ).arg( mSourceCrs.toOgcUri() );
+      }
+    }
+
+    clientSideFilterExpression.clear();
+    if ( res == QgsOapifCql2TextExpressionCompiler::Partial )
+    {
+      translationState = QgsOapifProvider::FilterTranslationState::PARTIAL;
+    }
+    else
+    {
+      translationState = QgsOapifProvider::FilterTranslationState::FULLY_SERVER;
+    }
+    return true;
+  }
+
+  serverSideParameters = compileExpressionNodeUsingPart1( rootNode, translationState, clientSideFilterExpression );
+  return true;
+}
+
 bool QgsOapifSharedData::computeServerFilter( QString &errorMsg )
 {
   errorMsg.clear();
@@ -954,26 +1096,30 @@ bool QgsOapifSharedData::computeServerFilter( QString &errorMsg )
   }
 
   const QgsExpression expr( mClientSideFilterExpression );
-  const auto rootNode = expr.rootNode();
-  if ( !rootNode )
-    return false;
-  mServerFilter = translateNodeToServer( rootNode, mFilterTranslationState, mClientSideFilterExpression );
-  if ( mFilterTranslationState == QgsOapifProvider::FilterTranslationState::PARTIAL )
+  bool ret = computeFilter( expr, mFilterTranslationState, mServerFilter, mClientSideFilterExpression );
+  if ( ret )
   {
-    QgsDebugMsg( QStringLiteral( "Part of the filter will be evaluated on client-side: %1" ).arg( mClientSideFilterExpression ) );
+    if ( mFilterTranslationState == QgsOapifProvider::FilterTranslationState::PARTIAL )
+    {
+      QgsDebugMsgLevel( QStringLiteral( "Part of the filter will be evaluated on client-side: %1" ).arg( mClientSideFilterExpression ), 2 );
+    }
+    else if ( mFilterTranslationState == QgsOapifProvider::FilterTranslationState::FULLY_CLIENT )
+    {
+      QgsDebugMsgLevel( QStringLiteral( "Whole filter will be evaluated on client-side" ), 2 );
+    }
   }
-  else if ( mFilterTranslationState == QgsOapifProvider::FilterTranslationState::FULLY_CLIENT )
-  {
-    QgsDebugMsg( "Whole filter will be evaluated on client-side" );
-  }
-
-  return true;
+  return ret;
 }
 
 QString QgsOapifSharedData::computedExpression( const QgsExpression &expression ) const
 {
-  Q_UNUSED( expression );
-  return QString();
+  if ( !expression.isValid() )
+    return QString();
+  QgsOapifProvider::FilterTranslationState translationState;
+  QString serverParameters;
+  QString clientSideFilterExpression;
+  computeFilter( expression, translationState, serverParameters, clientSideFilterExpression );
+  return serverParameters;
 }
 
 void QgsOapifSharedData::pushError( const QString &errorMsg ) const
@@ -1048,10 +1194,50 @@ void QgsOapifFeatureDownloaderImpl::run( bool serializeFeatures, long long maxFe
     hasQueryParam = true;
   }
 
+  // mServerFilter comes from the translation of the uri "filter" parameter
+  // mServerExpression comes from the translation of a getFeatures() expression
   if ( !mShared->mServerFilter.isEmpty() )
   {
     url += ( hasQueryParam ? QStringLiteral( "&" ) : QStringLiteral( "?" ) );
-    url += mShared->mServerFilter;
+    if ( !mShared->mServerExpression.isEmpty() )
+    {
+      // Combine mServerFilter and mServerExpression
+      QStringList components1 = mShared->mServerFilter.split( QLatin1Char( '&' ) );
+      QStringList components2 = mShared->mServerExpression.split( QLatin1Char( '&' ) );
+      Q_ASSERT( components1[0].startsWith( QStringLiteral( "filter=" ) ) );
+      Q_ASSERT( components2[0].startsWith( QStringLiteral( "filter=" ) ) );
+      url += QStringLiteral( "filter=" );
+      url += '(';
+      url += components1[0].mid( static_cast<int>( strlen( "filter=" ) ) );
+      url += QStringLiteral( ") AND (" );
+      url += components2[0].mid( static_cast<int>( strlen( "filter=" ) ) );
+      url += ')';
+      // Add components1 extra parameters: filter-lang and filter-crs
+      for ( int i = 1; i < components1.size(); ++i )
+      {
+        url += '&';
+        url += components1[i];
+      }
+      // Add components2 extra parameters, not already included in components1
+      for ( int i = 1; i < components2.size(); ++i )
+      {
+        if ( !components1.contains( components2[i] ) )
+        {
+          url += '&';
+          url += components1[i];
+        }
+      }
+    }
+    else
+    {
+      url += mShared->mServerFilter;
+    }
+    hasQueryParam = true;
+  }
+  else if ( !mShared->mServerExpression.isEmpty() )
+  {
+    url += ( hasQueryParam ? QStringLiteral( "&" ) : QStringLiteral( "?" ) );
+    url += mShared->mServerExpression;
     hasQueryParam = true;
   }
 

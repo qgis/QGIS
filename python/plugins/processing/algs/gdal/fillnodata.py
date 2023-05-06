@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 ***************************************************************************
     fillnodata.py
@@ -115,7 +113,16 @@ class fillnodata(GdalAlgorithm):
         return super().flags() | QgsProcessingAlgorithm.FlagDisplayNameIsLiteral
 
     def getConsoleCommands(self, parameters, context, feedback, executing=True):
+        raster = self.parameterAsRasterLayer(parameters, self.INPUT, context)
+        if raster is None:
+            raise QgsProcessingException(self.invalidRasterError(parameters, self.INPUT))
+
+        out = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
+        self.setOutputValue(self.OUTPUT, out)
+
         arguments = [
+            raster.source(),
+            out,
             '-md',
             str(self.parameterAsInt(parameters, self.DISTANCE, context)),
         ]
@@ -136,24 +143,16 @@ class fillnodata(GdalAlgorithm):
             arguments.append('-mask')
             arguments.append(mask.source())
 
-        out = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
-        self.setOutputValue(self.OUTPUT, out)
         arguments.append('-of')
         arguments.append(QgsRasterFileWriter.driverForExtension(os.path.splitext(out)[1]))
-
-        raster = self.parameterAsRasterLayer(parameters, self.INPUT, context)
-        if raster is None:
-            raise QgsProcessingException(self.invalidRasterError(parameters, self.INPUT))
-
-        options = self.parameterAsString(parameters, self.OPTIONS, context)
-        if options:
-            arguments.extend(GdalUtils.parseCreationOptions(options))
 
         if self.EXTRA in parameters and parameters[self.EXTRA] not in (None, ''):
             extra = self.parameterAsString(parameters, self.EXTRA, context)
             arguments.append(extra)
 
-        arguments.append(raster.source())
-        arguments.append(out)
+        # Until https://github.com/OSGeo/gdal/issues/7651 is fixed, creation options should be latest argument
+        options = self.parameterAsString(parameters, self.OPTIONS, context)
+        if options:
+            arguments.extend(GdalUtils.parseCreationOptions(options))
 
         return [self.commandName() + ('.bat' if isWindows() else '.py'), GdalUtils.escapeAndJoin(arguments)]

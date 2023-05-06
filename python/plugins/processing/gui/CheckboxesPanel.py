@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 ***************************************************************************
     CheckBoxesPanel.py
@@ -40,7 +38,7 @@ from qgis.PyQt.QtGui import QCursor
 class CheckboxesPanel(QWidget):
 
     def __init__(self, options, multiple, columns=2, parent=None):
-        super(CheckboxesPanel, self).__init__(parent)
+        super().__init__(parent)
 
         self._options = []
         for i, option in enumerate(options):

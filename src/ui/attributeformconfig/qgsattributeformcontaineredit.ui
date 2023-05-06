@@ -7,14 +7,36 @@
     <x>0</x>
     <y>0</y>
     <width>401</width>
-    <height>360</height>
+    <height>387</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string notr="true">Form</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="4" column="0" colspan="2">
+   <item row="8" column="0" colspan="2">
+    <widget class="QgsCollapsibleGroupBox" name="mControlCollapsedGroupBox">
+     <property name="title">
+      <string>Control Collapsed by Expression</string>
+     </property>
+     <property name="checkable">
+      <bool>true</bool>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_4">
+      <item row="0" column="0">
+       <widget class="QgsFieldExpressionWidget" name="mCollapsedExpressionWidget" native="true"/>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="0" column="0" colspan="2">
+    <widget class="QCheckBox" name="mShowLabelCheckBox">
+     <property name="text">
+      <string>Show label</string>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="0" colspan="2">
     <widget class="QgsCollapsibleGroupBox" name="mControlVisibilityGroupBox">
      <property name="title">
       <string>Control Visibility by Expression</string>
@@ -29,7 +51,7 @@
      </layout>
     </widget>
    </item>
-   <item row="9" column="0" colspan="2">
+   <item row="10" column="0" colspan="2">
     <widget class="QgsCollapsibleGroupBox" name="mGroupBox">
      <property name="title">
       <string>Style</string>
@@ -58,7 +80,14 @@
      </layout>
     </widget>
    </item>
-   <item row="10" column="0">
+   <item row="7" column="0" colspan="2">
+    <widget class="QCheckBox" name="mCollapsedCheckBox">
+     <property name="text">
+      <string>Collapsed</string>
+     </property>
+    </widget>
+   </item>
+   <item row="11" column="0">
     <spacer name="verticalSpacer">
      <property name="orientation">
       <enum>Qt::Vertical</enum>
@@ -71,37 +100,6 @@
      </property>
     </spacer>
    </item>
-   <item row="0" column="0" colspan="2">
-    <widget class="QCheckBox" name="mShowLabelCheckBox">
-     <property name="text">
-      <string>Show label</string>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="0">
-    <widget class="QLabel" name="label_2">
-     <property name="text">
-      <string>Columns</string>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="1">
-    <widget class="QgsSpinBox" name="mColumnCountSpinBox">
-     <property name="minimum">
-      <number>1</number>
-     </property>
-     <property name="maximum">
-      <number>10</number>
-     </property>
-    </widget>
-   </item>
-   <item row="5" column="0">
-    <widget class="QCheckBox" name="mShowAsGroupBox">
-     <property name="text">
-      <string>Show as Group Box</string>
-     </property>
-    </widget>
-   </item>
    <item row="2" column="1">
     <widget class="QLineEdit" name="mTitleLineEdit"/>
    </item>
@@ -112,27 +110,32 @@
      </property>
     </widget>
    </item>
-   <item row="6" column="0">
-    <widget class="QCheckBox" name="mCollapsedCheckBox">
+   <item row="4" column="0">
+    <widget class="QLabel" name="mColumnsLabel">
      <property name="text">
-      <string>Collapsed</string>
+      <string>Columns</string>
      </property>
     </widget>
    </item>
-   <item row="7" column="0" colspan="2">
-    <widget class="QgsCollapsibleGroupBox" name="mControlCollapsedGroupBox">
-     <property name="title">
-      <string>Control Collapsed by Expression</string>
+   <item row="4" column="1">
+    <widget class="QgsSpinBox" name="mColumnCountSpinBox">
+     <property name="minimum">
+      <number>1</number>
      </property>
-     <property name="checkable">
-      <bool>true</bool>
+     <property name="maximum">
+      <number>10</number>
      </property>
-     <layout class="QGridLayout" name="gridLayout_4">
-      <item row="0" column="0">
-       <widget class="QgsFieldExpressionWidget" name="mCollapsedExpressionWidget" native="true"/>
-      </item>
-     </layout>
     </widget>
+   </item>
+   <item row="3" column="0">
+    <widget class="QLabel" name="label_4">
+     <property name="text">
+      <string>Type</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="1">
+    <widget class="QComboBox" name="mTypeCombo"/>
    </item>
   </layout>
  </widget>
@@ -170,9 +173,9 @@
  <tabstops>
   <tabstop>mShowLabelCheckBox</tabstop>
   <tabstop>mTitleLineEdit</tabstop>
+  <tabstop>mTypeCombo</tabstop>
   <tabstop>mColumnCountSpinBox</tabstop>
   <tabstop>mControlVisibilityGroupBox</tabstop>
-  <tabstop>mShowAsGroupBox</tabstop>
   <tabstop>mCollapsedCheckBox</tabstop>
   <tabstop>mControlCollapsedGroupBox</tabstop>
   <tabstop>mBackgroundColorButton</tabstop>

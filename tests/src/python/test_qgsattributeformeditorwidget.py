@@ -19,6 +19,7 @@ from qgis.gui import (
     QgsDefaultSearchWidgetWrapper,
     QgsGui,
     QgsSearchWidgetWrapper,
+    QgsAttributeFormWidget,
 )
 from qgis.testing import start_app, unittest
 
@@ -38,6 +39,7 @@ class PyQgsAttributeFormEditorWidget(unittest.TestCase):
         wrapper = QgsGui.editorWidgetRegistry().create(layer, 0, None, parent)
         af = QgsAttributeFormEditorWidget(wrapper, setup.type(), None)
         af.setSearchWidgetWrapper(w)
+        af.setMode(QgsAttributeFormWidget.SearchMode)
 
         # test that filter combines both current value in search widget wrapper and flags from search tool button
         w.lineEdit().setText('5.5')
@@ -57,6 +59,7 @@ class PyQgsAttributeFormEditorWidget(unittest.TestCase):
         wrapper = QgsGui.editorWidgetRegistry().create(layer, 0, None, parent)
         af = QgsAttributeFormEditorWidget(wrapper, setup.type(), None)
         af.setSearchWidgetWrapper(w)
+        af.setMode(QgsAttributeFormWidget.SearchMode)
 
         sb = af.findChild(QWidget, "SearchWidgetToolButton")
         # start with inactive
@@ -83,6 +86,7 @@ class PyQgsAttributeFormEditorWidget(unittest.TestCase):
         wrapper = QgsGui.editorWidgetRegistry().create(layer, 0, None, form)
         af = QgsAttributeFormEditorWidget(wrapper, 'DateTime', None)
         af.createSearchWidgetWrappers()
+        af.setMode(QgsAttributeFormWidget.SearchMode)
 
         d1 = af.findChildren(QDateTimeEdit)[0]
         d2 = af.findChildren(QDateTimeEdit)[1]

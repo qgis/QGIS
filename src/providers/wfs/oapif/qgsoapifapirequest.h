@@ -52,6 +52,23 @@ class QgsOapifApiRequest : public QgsBaseNetworkRequest
     //! Return metadata (mostly contact info)
     const QgsAbstractMetadataBase &metadata() const { return mMetadata; }
 
+    //! Describes a simple queryable parameter.
+    struct SimpleQueryable
+    {
+      // type as in a JSON schema: "string", "integer", "number", etc.
+      QString mType;
+    };
+
+    //! Describes the properties of a collection.
+    struct CollectionProperties
+    {
+      // Map of simple queryables items (that is as query parameters). The key of the map is a queryable name.
+      QMap<QString, SimpleQueryable> mSimpleQueryables;
+    };
+
+    //! Get collection properties. The key of the map is a collection name.
+    const QMap<QString, CollectionProperties> &collectionProperties() const { return mCollectionProperties; }
+
   signals:
     //! emitted when the capabilities have been fully parsed, or an error occurred */
     void gotResponse();
@@ -70,6 +87,8 @@ class QgsOapifApiRequest : public QgsBaseNetworkRequest
     int mDefaultLimit = -1;
 
     QgsLayerMetadata mMetadata;
+
+    QMap<QString, CollectionProperties> mCollectionProperties;
 
     ApplicationLevelError mAppLevelError = ApplicationLevelError::NoError;
 

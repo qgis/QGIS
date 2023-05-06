@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 ***************************************************************************
     BatchPanel.py
@@ -38,7 +36,7 @@ from qgis.PyQt.QtWidgets import (
     QAction
 )
 
-# adding to this list? also update the HistoryDialog.py executeAlgorithm imports!!
+# adding to this list? also update the QgsProcessingHistoryProvider executeAlgorithm imports!!
 
 from qgis.PyQt.QtCore import (
     QTime,  # NOQA - must be here for saved file evaluation
@@ -432,7 +430,7 @@ class BatchPanel(QgsPanelWidget, WIDGET):
     OUTPUTS = "OUTPUTS"
 
     def __init__(self, parent, alg):
-        super(BatchPanel, self).__init__(None)
+        super().__init__(None)
         self.setupUi(self)
 
         self.wrappers = []

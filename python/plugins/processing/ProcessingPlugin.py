@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 ***************************************************************************
     ProcessingPlugin.py
@@ -38,7 +36,8 @@ from qgis.core import (QgsApplication,
                        QgsSettings)
 from qgis.gui import (QgsGui,
                       QgsOptionsWidgetFactory,
-                      QgsCustomDropHandler)
+                      QgsCustomDropHandler,
+                      QgsProcessingHistoryDialog)
 from qgis.PyQt.QtCore import QObject, Qt, QItemSelectionModel, QCoreApplication, QDir, QFileInfo, pyqtSlot
 from qgis.PyQt.QtWidgets import QWidget, QMenu, QAction
 from qgis.PyQt.QtGui import QIcon, QKeySequence
@@ -46,7 +45,6 @@ from qgis.utils import iface
 
 from processing.core.Processing import Processing
 from processing.gui.ProcessingToolbox import ProcessingToolbox
-from processing.gui.HistoryDialog import HistoryDialog
 from processing.gui.ConfigDialog import ConfigOptionsPage
 from processing.gui.ResultsDock import ResultsDock
 from processing.gui.MessageDialog import MessageDialog
@@ -57,6 +55,7 @@ from processing.gui.Postprocessing import handleAlgorithmResults
 from processing.gui.AlgorithmExecutor import execute, execute_in_place
 from processing.gui.AlgorithmDialog import AlgorithmDialog
 from processing.gui.BatchAlgorithmDialog import BatchAlgorithmDialog
+from processing.gui import TestTools
 from processing.modeler.ModelerDialog import ModelerDialog
 from processing.tools.system import tempHelpFolder
 from processing.tools import dataobjects
@@ -110,7 +109,7 @@ class ProcessingDropHandler(QgsCustomDropHandler):
 class ProcessingModelItem(QgsDataItem):
 
     def __init__(self, parent, name, path):
-        super(ProcessingModelItem, self).__init__(QgsDataItem.Custom, parent, name, path)
+        super().__init__(QgsDataItem.Custom, parent, name, path)
         self.setState(QgsDataItem.Populated)  # no children
         self.setIconName(":/images/themes/default/processingModel.svg")
         self.setToolTip(QDir.toNativeSeparators(path))
@@ -149,7 +148,7 @@ class ProcessingModelItem(QgsDataItem):
 class ProcessingDataItemProvider(QgsDataItemProvider):
 
     def __init__(self):
-        super(ProcessingDataItemProvider, self).__init__()
+        super().__init__()
 
     def name(self):
         return 'processing'
@@ -207,6 +206,13 @@ class ProcessingPlugin(QObject):
         iface.currentLayerChanged.connect(lambda _: self.iface.invalidateLocatorResults())
         self.edit_features_locator_filter = InPlaceAlgorithmLocatorFilter()
         iface.registerLocatorFilter(self.edit_features_locator_filter)
+
+        QgsGui.historyProviderRegistry().providerById('processing').executePython.connect(
+            self._execute_history_commands
+        )
+        QgsGui.historyProviderRegistry().providerById('processing').createTest.connect(
+            self.create_test
+        )
 
         self.toolbox = ProcessingToolbox()
         self.iface.addDockWidget(Qt.RightDockWidgetArea, self.toolbox)
@@ -460,6 +466,13 @@ class ProcessingPlugin(QObject):
             self.iface.projectMenu().removeAction(self.projectMenuSeparator)
             self.projectMenuSeparator = None
 
+        QgsGui.historyProviderRegistry().providerById('processing').executePython.disconnect(
+            self._execute_history_commands
+        )
+        QgsGui.historyProviderRegistry().providerById('processing').createTest.disconnect(
+            self.create_test
+        )
+
         Processing.deinitialize()
 
     def openToolbox(self, show):
@@ -484,11 +497,24 @@ class ProcessingPlugin(QObject):
             self.resultsDock.show()
 
     def openHistory(self):
-        dlg = HistoryDialog()
-        dlg.exec_()
+        dlg = QgsProcessingHistoryDialog(self.iface.mainWindow())
+        dlg.setAttribute(Qt.WA_DeleteOnClose)
+        dlg.show()
 
     def tr(self, message, disambiguation=None, n=-1):
         return QCoreApplication.translate('ProcessingPlugin', message, disambiguation=disambiguation, n=n)
 
     def editSelected(self, enabled):
         self.toolbox.set_in_place_edit_mode(enabled)
+
+    def _execute_history_commands(self, commands: str):
+        """
+        Executes Python commands from the history provider
+        """
+        exec(commands)
+
+    def create_test(self, command: str):
+        """
+        Starts the test creation process given a processing algorithm run command
+        """
+        TestTools.createTest(command)

@@ -12,7 +12,7 @@ __copyright__ = 'Copyright 2017, The QGIS Project'
 import time
 
 import qgis  # NOQA
-from qgis.PyQt.QtCore import QDate, QDateTime, QDir, QTime
+from qgis.PyQt.QtCore import QDate, QDateTime, QDir, QTime, Qt
 from qgis.PyQt.QtXml import QDomDocument
 from qgis.core import (
     QgsAnnotationLayer,
@@ -36,9 +36,9 @@ from qgis.core import (
     QgsSingleSymbolRenderer,
     QgsTemporalController,
     QgsTemporalNavigationObject,
-    QgsVectorLayer,
+    QgsVectorLayer
 )
-from qgis.gui import QgsMapCanvas
+from qgis.gui import QgsMapCanvas, QgsMapToolPan, QgsMapToolZoom, QgsMapToolEmitPoint
 from qgis.testing import start_app, unittest
 
 app = start_app()
@@ -793,6 +793,48 @@ class TestQgsMapCanvas(unittest.TestCase):
         self.assertAlmostEqual(TestQgsMapCanvas.new_extent.xMinimum(), 1008988, places=-3)
 
         self.assertEqual(TestQgsMapCanvas.new_crs, QgsCoordinateReferenceSystem('EPSG:3857'))
+
+    def test_set_map_tool(self):
+
+        canvas = QgsMapCanvas()
+        moveTool = QgsMapToolPan(canvas)
+        zoomTool = QgsMapToolZoom(canvas, True)
+        emitTool = QgsMapToolEmitPoint(canvas)
+
+        counter = {}
+
+        def increment(tool, section):
+            counter[tool][section] += 1
+
+        # Keep track of how many times each tool is activated, deactivated, and reactivated
+        for tool in [moveTool, zoomTool, emitTool]:
+            counter[tool] = {"activated": 0, "deactivated": 0, "reactivated": 0}
+            tool.activated.connect(lambda tool=tool: increment(tool, "activated"), Qt.DirectConnection)
+            tool.deactivated.connect(lambda tool=tool: increment(tool, "deactivated"), Qt.DirectConnection)
+            tool.reactivated.connect(lambda tool=tool: increment(tool, "reactivated"), Qt.DirectConnection)
+
+        canvas.setMapTool(moveTool)
+        canvas.setMapTool(zoomTool)
+        canvas.setMapTool(zoomTool)
+        canvas.setMapTool(emitTool)
+
+        # Check that the correct number of activations and deactivations occurred
+        self.assertEqual(counter[moveTool]["activated"], 1)
+        self.assertEqual(counter[moveTool]["deactivated"], 1)
+        self.assertEqual(counter[moveTool]["reactivated"], 0)
+
+        self.assertEqual(counter[zoomTool]["activated"], 1)
+        self.assertEqual(counter[zoomTool]["deactivated"], 1)
+        self.assertEqual(counter[zoomTool]["reactivated"], 1)
+
+        self.assertEqual(counter[emitTool]["activated"], 1)
+        self.assertEqual(counter[emitTool]["deactivated"], 0)
+        self.assertEqual(counter[emitTool]["reactivated"], 0)
+
+        canvas.setMapTool(emitTool)
+        self.assertEqual(counter[emitTool]["activated"], 1)
+        self.assertEqual(counter[emitTool]["deactivated"], 0)
+        self.assertEqual(counter[emitTool]["reactivated"], 1)
 
 
 if __name__ == '__main__':

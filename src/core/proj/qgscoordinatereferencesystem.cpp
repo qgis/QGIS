@@ -2942,6 +2942,40 @@ void QgsCoordinateReferenceSystem::pushRecentCoordinateReferenceSystem( const Qg
   settings.setValue( QStringLiteral( "UI/recentProjectionsProj4" ), proj );
 }
 
+
+void QgsCoordinateReferenceSystem::removeRecentCoordinateReferenceSystem( const QgsCoordinateReferenceSystem &crs )
+{
+  if ( crs.srsid() == 0 || !crs.isValid() )
+    return;
+
+  QList<QgsCoordinateReferenceSystem> recent = recentCoordinateReferenceSystems();
+  recent.removeAll( crs );
+  QStringList authids;
+  authids.reserve( recent.size() );
+  QStringList proj;
+  proj.reserve( recent.size() );
+  QStringList wkt;
+  wkt.reserve( recent.size() );
+  for ( const QgsCoordinateReferenceSystem &c : std::as_const( recent ) )
+  {
+    authids << c.authid();
+    proj << c.toProj();
+    wkt << c.toWkt( WKT_PREFERRED );
+  }
+  QgsSettings settings;
+  settings.setValue( QStringLiteral( "UI/recentProjectionsAuthId" ), authids );
+  settings.setValue( QStringLiteral( "UI/recentProjectionsWkt" ), wkt );
+  settings.setValue( QStringLiteral( "UI/recentProjectionsProj4" ), proj );
+}
+
+void QgsCoordinateReferenceSystem::clearRecentCoordinateReferenceSystems()
+{
+  QgsSettings settings;
+  settings.remove( QStringLiteral( "UI/recentProjectionsAuthId" ) );
+  settings.remove( QStringLiteral( "UI/recentProjectionsWkt" ) );
+  settings.remove( QStringLiteral( "UI/recentProjectionsProj4" ) );
+}
+
 void QgsCoordinateReferenceSystem::invalidateCache( bool disableCache )
 {
   sSrIdCacheLock()->lockForWrite();

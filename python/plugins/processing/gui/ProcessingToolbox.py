@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 ***************************************************************************
     ProcessingToolbox.py
@@ -67,7 +65,7 @@ class ProcessingToolbox(QgsDockWidget, WIDGET):
     executeWithGui = pyqtSignal(str, QWidget, bool, bool)
 
     def __init__(self):
-        super(ProcessingToolbox, self).__init__(None)
+        super().__init__(None)
         self.tipWasClosed = False
         self.in_place_mode = False
         self.setupUi(self)

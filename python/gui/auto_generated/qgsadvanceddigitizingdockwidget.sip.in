@@ -356,9 +356,16 @@ Adds point to the CAD point list
 
     void removePreviousPoint();
 %Docstring
-Remove previous point in the CAD point list
+Removes previous point in the CAD point list
 
 .. versionadded:: 3.8
+%End
+
+    void updateCurrentPoint( const QgsPoint &point );
+%Docstring
+Updates the current ``point`` in the CAD point list
+
+.. versionadded:: 3.30.2
 %End
 
     void setPoints( const QList<QgsPointXY> &points );
@@ -578,6 +585,13 @@ Returns the capacities
 
 .. versionadded:: 3.26
 %End
+    QString formatCommonAngleSnapping( double angle );
+%Docstring
+Returns the formatted label for common angle snapping option.
+
+.. versionadded:: 3.32
+%End
+
   signals:
 
     void pushWarning( const QString &message );
@@ -1026,6 +1040,13 @@ Could be used by widgets to capture the focus when a field is being edited.
    unstable API (will likely change)
 
 .. versionadded:: 3.8
+%End
+
+    void valueCommonAngleSnappingChanged( double angle );
+%Docstring
+Emitted whenever the snapping to common angle option changes, angle = 0 means that the functionality is disabled.
+
+.. versionadded:: 3.32
 %End
 
 

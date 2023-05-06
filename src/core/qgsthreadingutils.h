@@ -26,6 +26,7 @@
 #include <QThread>
 #if defined(QGISDEBUG) || defined(AGGRESSIVE_SAFE_MODE)
 #include <QDebug>
+#include <QMutex>
 #endif
 #include <QSemaphore>
 #include <QCoreApplication>
@@ -46,7 +47,7 @@
 #ifdef __clang_analyzer__
 #define QGIS_PROTECT_QOBJECT_THREAD_ACCESS_NON_FATAL do {} while(false);
 #elif defined(QGISDEBUG)
-#define QGIS_PROTECT_QOBJECT_THREAD_ACCESS_NON_FATAL if ( QThread::currentThread() != thread() ) {qWarning() << QStringLiteral("%2 (%1:%3) is run from a different thread than the object %4 lives in [0x%5 vs 0x%6]" ).arg( QString( __FILE__ ), QString( __FUNCTION__ ), QString::number( __LINE__  ), objectName() ).arg( reinterpret_cast< qint64 >( QThread::currentThread() ), 0, 16 ).arg( reinterpret_cast< qint64 >( thread() ), 0, 16 ).toLocal8Bit().constData(); }
+#define QGIS_PROTECT_QOBJECT_THREAD_ACCESS_NON_FATAL if ( QThread::currentThread() != thread() ) { const QString location = QStringLiteral("%1 (%2:%3)").arg( QString( __FUNCTION__ ) ,QString( __FILE__ ), QString::number( __LINE__  ) ); QgsThreadingUtils::sEmittedWarningMutex.lock(); if ( !QgsThreadingUtils::sEmittedWarnings.contains( location ) ) { qWarning() << QStringLiteral("%1 is run from a different thread than the object %2 lives in [0x%3 vs 0x%4]" ).arg( location, objectName() ).arg( reinterpret_cast< qint64 >( QThread::currentThread() ), 0, 16 ).arg( reinterpret_cast< qint64 >( thread() ), 0, 16 ).toLocal8Bit().constData(); QgsThreadingUtils::sEmittedWarnings.insert( location ); } QgsThreadingUtils::sEmittedWarningMutex.unlock(); }
 #else
 #define QGIS_PROTECT_QOBJECT_THREAD_ACCESS_NON_FATAL do {} while(false);
 #endif
@@ -153,6 +154,12 @@ class CORE_EXPORT QgsThreadingUtils
         return true;
       }
     }
+#if defined(QGISDEBUG)
+    //! Contains a set of already emitted thread related warnings, to avoid spamming with multiple duplicate warnings
+    static QSet< QString > sEmittedWarnings;
+    //! Mutex protecting sEmittedWarnings
+    static QMutex sEmittedWarningMutex;
+#endif
 
 };
 

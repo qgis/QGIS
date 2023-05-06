@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 /***************************************************************************
 Name                 : DB Manager
@@ -19,15 +17,13 @@ email                : brush.tyler@gmail.com
  *                                                                         *
  ***************************************************************************/
 """
-from builtins import str
-from builtins import object
 
 from qgis.core import QgsDataSourceUri
 
 from .plugin import DbError, ConnectionError
 
 
-class DBConnector(object):
+class DBConnector:
 
     def __init__(self, uri):
         """Creates a new DB connector
@@ -195,7 +191,7 @@ class DBConnector(object):
             )
 
         identifier = str(
-            identifier) if identifier is not None else str()  # make sure it's python unicode string
+            identifier) if identifier is not None else ''  # make sure it's python unicode string
         return '"%s"' % identifier.replace('"', '""')
 
     @classmethod
@@ -208,7 +204,7 @@ class DBConnector(object):
                 if i is not None
             )
 
-        txt = str(txt) if txt is not None else str()  # make sure it's python unicode string
+        txt = str(txt) if txt is not None else ''  # make sure it's python unicode string
         return "'%s'" % txt.replace("'", "''")
 
     @classmethod

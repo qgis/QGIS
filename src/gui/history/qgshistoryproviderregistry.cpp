@@ -22,6 +22,7 @@
 #include "qgsxmlutils.h"
 #include "qgsprocessinghistoryprovider.h"
 #include "qgshistoryentry.h"
+#include "qgsdbqueryhistoryprovider.h"
 
 #include <QFile>
 #include <sqlite3.h>
@@ -59,6 +60,7 @@ QgsHistoryProviderRegistry::~QgsHistoryProviderRegistry()
 void QgsHistoryProviderRegistry::addDefaultProviders()
 {
   addProvider( new QgsProcessingHistoryProvider() );
+  addProvider( new QgsDatabaseQueryHistoryProvider() );
 }
 
 bool QgsHistoryProviderRegistry::addProvider( QgsAbstractHistoryProvider *provider )
@@ -267,15 +269,21 @@ QString QgsHistoryProviderRegistry::userHistoryDbPath()
   return QgsApplication::qgisSettingsDirPath() + QStringLiteral( "user-history.db" );
 }
 
-bool QgsHistoryProviderRegistry::clearHistory( Qgis::HistoryProviderBackend backend )
+bool QgsHistoryProviderRegistry::clearHistory( Qgis::HistoryProviderBackend backend, const QString &providerId )
 {
   switch ( backend )
   {
     case Qgis::HistoryProviderBackend::LocalProfile:
-      runEmptyQuery( QStringLiteral( "DELETE from history;" ) );
+    {
+      if ( providerId.isEmpty() )
+        runEmptyQuery( QStringLiteral( "DELETE from history;" ) );
+      else
+        runEmptyQuery( QStringLiteral( "DELETE from history WHERE provider_id='%1'" )
+                       .arg( providerId ) );
       break;
+    }
   }
-  emit historyCleared( backend );
+  emit historyCleared( backend, providerId );
   return true;
 }
 

@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 ***************************************************************************
     MessageDialog.py
@@ -40,7 +38,7 @@ with warnings.catch_warnings():
 class MessageDialog(BASE, WIDGET):
 
     def __init__(self):
-        super(MessageDialog, self).__init__(None)
+        super().__init__(None)
         self.setupUi(self)
 
         self.txtMessage.anchorClicked.connect(self.openLink)

@@ -83,6 +83,7 @@ class TestQgsHistoryProviderRegistry(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
+        super().setUpClass()
         # trigger metatype registration
         QgsGui.instance()
 

@@ -83,6 +83,7 @@ class TestSelectiveMasking(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
+        super().setUpClass()
         cls.report = REPORT_TITLE
 
     def setUp(self):
@@ -146,6 +147,7 @@ class TestSelectiveMasking(unittest.TestCase):
         if (os.environ.get('QGIS_CONTINUOUS_INTEGRATION_RUN', None) != "true" and
                 cls.report != REPORT_TITLE):
             QDesktopServices.openUrl(QUrl(f"file:///{report_file_path}"))
+        super().tearDownClass()
 
     def get_symbollayer(self, layer, ruleId, symbollayer_ids):
         """

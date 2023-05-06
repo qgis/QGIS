@@ -40,6 +40,7 @@ class TestQgsAttributeTableModel(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
+        super().setUpClass()
         QgsGui.editorWidgetRegistry().initEditors()
 
         # to track down whether or not we have created widget regarding the field

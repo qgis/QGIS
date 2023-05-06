@@ -65,6 +65,7 @@
 #include "qgsannotationlayer.h"
 #include "qgspointcloudattributecombobox.h"
 #include "qgspointcloudlayer.h"
+#include "qgsprocessingpointcloudexpressionlineedit.h"
 #include "qgsunittypes.h"
 #include <QToolButton>
 #include <QLabel>
@@ -2112,61 +2113,110 @@ QgsProcessingExpressionParameterDefinitionWidget::QgsProcessingExpressionParamet
   vlayout->setContentsMargins( 0, 0, 0, 0 );
   vlayout->addWidget( new QLabel( tr( "Default value" ) ) );
 
-  mDefaultLineEdit = new QgsExpressionLineEdit();
-  mDefaultLineEdit->registerExpressionContextGenerator( this );
+  mDefaultQgisLineEdit = new QgsExpressionLineEdit();
+  mDefaultQgisLineEdit->registerExpressionContextGenerator( this );
+
+  mDefaultPointCloudLineEdit = new QgsProcessingPointCloudExpressionLineEdit();
+
+  QStackedWidget *stackedWidget = new QStackedWidget();
+  stackedWidget->addWidget( mDefaultQgisLineEdit );
+  stackedWidget->addWidget( mDefaultPointCloudLineEdit );
+  vlayout->addWidget( stackedWidget );
 
   if ( const QgsProcessingParameterExpression *expParam = dynamic_cast<const QgsProcessingParameterExpression *>( definition ) )
-    mDefaultLineEdit->setExpression( QgsProcessingParameters::parameterAsExpression( expParam, expParam->defaultValueForGui(), context ) );
-  vlayout->addWidget( mDefaultLineEdit );
+  {
+    const QString expr = QgsProcessingParameters::parameterAsExpression( expParam, expParam->defaultValueForGui(), context );
+    mDefaultQgisLineEdit->setExpression( expr );
+    mDefaultPointCloudLineEdit->setExpression( expr );
+  }
 
   vlayout->addWidget( new QLabel( tr( "Parent layer" ) ) );
 
   mParentLayerComboBox = new QComboBox();
-  mParentLayerComboBox->addItem( tr( "None" ), QVariant() );
+  vlayout->addWidget( mParentLayerComboBox );
 
-  QString initialParent;
-  if ( const QgsProcessingParameterExpression *expParam = dynamic_cast<const QgsProcessingParameterExpression *>( definition ) )
-    initialParent = expParam->parentLayerParameterName();
+  vlayout->addWidget( new QLabel( tr( "Expression type" ) ) );
+  mExpressionTypeComboBox = new QComboBox();
+  mExpressionTypeComboBox->addItem( tr( "QGIS" ), static_cast< int >( Qgis::ExpressionType::Qgis ) );
+  mExpressionTypeComboBox->addItem( tr( "Point Cloud" ), static_cast< int >( Qgis::ExpressionType::PointCloud ) );
 
-  if ( QgsProcessingModelAlgorithm *model = widgetContext.model() )
+  connect( mExpressionTypeComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [ = ]( int )
   {
-    // populate combo box with other model input choices
-    const QMap<QString, QgsProcessingModelParameter> components = model->parameterComponents();
-    for ( auto it = components.constBegin(); it != components.constEnd(); ++it )
+    mParentLayerComboBox->clear();
+    mParentLayerComboBox->addItem( tr( "None" ), QVariant() );
+
+    stackedWidget->setCurrentIndex( mExpressionTypeComboBox->currentIndex() > 0 ? mExpressionTypeComboBox->currentIndex() : 0 );
+
+    QString initialParent;
+    if ( const QgsProcessingParameterExpression *expParam = dynamic_cast<const QgsProcessingParameterExpression *>( definition ) )
+      initialParent = expParam->parentLayerParameterName();
+
+    Qgis::ExpressionType exprType = static_cast< Qgis::ExpressionType >( mExpressionTypeComboBox->currentData().toInt() );
+
+    if ( QgsProcessingModelAlgorithm *model = widgetContext.model() )
     {
-      if ( const QgsProcessingParameterFeatureSource *definition = dynamic_cast< const QgsProcessingParameterFeatureSource * >( model->parameterDefinition( it.value().parameterName() ) ) )
+      // populate combo box with other model input choices
+      const QMap<QString, QgsProcessingModelParameter> components = model->parameterComponents();
+      for ( auto it = components.constBegin(); it != components.constEnd(); ++it )
       {
-        mParentLayerComboBox-> addItem( definition->description(), definition->name() );
-        if ( !initialParent.isEmpty() && initialParent == definition->name() )
+        if ( exprType == Qgis::ExpressionType::Qgis )
         {
-          mParentLayerComboBox->setCurrentIndex( mParentLayerComboBox->count() - 1 );
+          if ( const QgsProcessingParameterFeatureSource *definition = dynamic_cast< const QgsProcessingParameterFeatureSource * >( model->parameterDefinition( it.value().parameterName() ) ) )
+          {
+            mParentLayerComboBox-> addItem( definition->description(), definition->name() );
+            if ( !initialParent.isEmpty() && initialParent == definition->name() )
+            {
+              mParentLayerComboBox->setCurrentIndex( mParentLayerComboBox->count() - 1 );
+            }
+          }
+          else if ( const QgsProcessingParameterVectorLayer *definition = dynamic_cast< const QgsProcessingParameterVectorLayer * >( model->parameterDefinition( it.value().parameterName() ) ) )
+          {
+            mParentLayerComboBox-> addItem( definition->description(), definition->name() );
+            if ( !initialParent.isEmpty() && initialParent == definition->name() )
+            {
+              mParentLayerComboBox->setCurrentIndex( mParentLayerComboBox->count() - 1 );
+            }
+          }
         }
-      }
-      else if ( const QgsProcessingParameterVectorLayer *definition = dynamic_cast< const QgsProcessingParameterVectorLayer * >( model->parameterDefinition( it.value().parameterName() ) ) )
-      {
-        mParentLayerComboBox-> addItem( definition->description(), definition->name() );
-        if ( !initialParent.isEmpty() && initialParent == definition->name() )
+        else
         {
-          mParentLayerComboBox->setCurrentIndex( mParentLayerComboBox->count() - 1 );
+          if ( const QgsProcessingParameterPointCloudLayer *definition = dynamic_cast< const QgsProcessingParameterPointCloudLayer * >( model->parameterDefinition( it.value().parameterName() ) ) )
+          {
+            mParentLayerComboBox-> addItem( definition->description(), definition->name() );
+            if ( !initialParent.isEmpty() && initialParent == definition->name() )
+            {
+              mParentLayerComboBox->setCurrentIndex( mParentLayerComboBox->count() - 1 );
+            }
+          }
         }
       }
     }
-  }
 
-  if ( mParentLayerComboBox->count() == 1 && !initialParent.isEmpty() )
-  {
-    // if no parent candidates found, we just add the existing one as a placeholder
-    mParentLayerComboBox->addItem( initialParent, initialParent );
-    mParentLayerComboBox->setCurrentIndex( mParentLayerComboBox->count() - 1 );
-  }
+    if ( mParentLayerComboBox->count() == 1 && !initialParent.isEmpty() )
+    {
+      // if no parent candidates found, we just add the existing one as a placeholder
+      mParentLayerComboBox->addItem( initialParent, initialParent );
+      mParentLayerComboBox->setCurrentIndex( mParentLayerComboBox->count() - 1 );
+    }
 
-  vlayout->addWidget( mParentLayerComboBox );
+  } );
+
+  mExpressionTypeComboBox->setCurrentIndex( -1 );
+  if ( const QgsProcessingParameterExpression *expParam = dynamic_cast<const QgsProcessingParameterExpression *>( definition ) )
+    mExpressionTypeComboBox->setCurrentIndex( mExpressionTypeComboBox->findData( static_cast< int >( expParam->expressionType() ) ) );
+  else
+    mExpressionTypeComboBox->setCurrentIndex( 0 );
+
+  vlayout->addWidget( mExpressionTypeComboBox );
+
   setLayout( vlayout );
 }
 
 QgsProcessingParameterDefinition *QgsProcessingExpressionParameterDefinitionWidget::createParameter( const QString &name, const QString &description, QgsProcessingParameterDefinition::Flags flags ) const
 {
-  auto param = std::make_unique< QgsProcessingParameterExpression >( name, description, mDefaultLineEdit->expression(), mParentLayerComboBox->currentData().toString() );
+  Qgis::ExpressionType expressionType = static_cast< Qgis::ExpressionType >( mExpressionTypeComboBox->currentData().toInt() );
+  QString expression = expressionType == Qgis::ExpressionType::Qgis ? mDefaultQgisLineEdit->expression() : mDefaultPointCloudLineEdit->expression();
+  auto param = std::make_unique< QgsProcessingParameterExpression >( name, description, expression, mParentLayerComboBox->currentData().toString(), false, expressionType );
   param->setFlags( flags );
   return param.release();
 }
@@ -2200,6 +2250,18 @@ QWidget *QgsProcessingExpressionWidgetWrapper::createWidget()
       }
       else
       {
+        if ( expParam->expressionType() == Qgis::ExpressionType::PointCloud )
+        {
+          mPointCloudExpLineEdit = new QgsProcessingPointCloudExpressionLineEdit();
+          mPointCloudExpLineEdit->setToolTip( parameterDefinition()->toolTip() );
+          connect( mPointCloudExpLineEdit, &QgsProcessingPointCloudExpressionLineEdit::expressionChanged, this, [ = ]( const QString & )
+          {
+            emit widgetValueHasChanged( this );
+          } );
+          return mPointCloudExpLineEdit;
+        }
+
+        // native QGIS expression
         if ( expParam->metadata().value( QStringLiteral( "inlineEditor" ) ).toBool() )
         {
           mExpBuilderWidget = new QgsExpressionBuilderWidget();
@@ -2286,44 +2348,82 @@ void QgsProcessingExpressionWidgetWrapper::setParentLayerWrapperValue( const Qgs
   }
 
   QVariant val = parentWrapper->parameterValue();
-  if ( val.userType() == QMetaType::type( "QgsProcessingFeatureSourceDefinition" ) )
-  {
-    // input is a QgsProcessingFeatureSourceDefinition - get extra properties from it
-    QgsProcessingFeatureSourceDefinition fromVar = qvariant_cast<QgsProcessingFeatureSourceDefinition>( val );
-    val = fromVar.source;
-  }
 
-  QgsVectorLayer *layer = QgsProcessingParameters::parameterAsVectorLayer( parentWrapper->parameterDefinition(), val, *context );
-  if ( !layer )
+  const QgsProcessingParameterExpression *expParam = dynamic_cast< const QgsProcessingParameterExpression *>( parameterDefinition() );
+  switch ( expParam->expressionType() )
   {
-    if ( mFieldExpWidget )
-      mFieldExpWidget->setLayer( nullptr );
-    else if ( mExpBuilderWidget )
-      mExpBuilderWidget->setLayer( nullptr );
-    else if ( mExpLineEdit )
-      mExpLineEdit->setLayer( nullptr );
-    return;
-  }
+    case Qgis::ExpressionType::Qgis:
+    {
+      if ( val.userType() == QMetaType::type( "QgsProcessingFeatureSourceDefinition" ) )
+      {
+        // input is a QgsProcessingFeatureSourceDefinition - get extra properties from it
+        QgsProcessingFeatureSourceDefinition fromVar = qvariant_cast<QgsProcessingFeatureSourceDefinition>( val );
+        val = fromVar.source;
+      }
 
-  // need to grab ownership of layer if required - otherwise layer may be deleted when context
-  // goes out of scope
-  std::unique_ptr< QgsMapLayer > ownedLayer( context->takeResultLayer( layer->id() ) );
-  if ( ownedLayer && ownedLayer->type() == Qgis::LayerType::Vector )
-  {
-    mParentLayer.reset( qobject_cast< QgsVectorLayer * >( ownedLayer.release() ) );
-    layer = mParentLayer.get();
-  }
-  else
-  {
-    // don't need ownership of this layer - it wasn't owned by context (so e.g. is owned by the project)
-  }
+      QgsVectorLayer *layer = QgsProcessingParameters::parameterAsVectorLayer( parentWrapper->parameterDefinition(), val, *context );
+      if ( !layer )
+      {
+        if ( mFieldExpWidget )
+          mFieldExpWidget->setLayer( nullptr );
+        else if ( mExpBuilderWidget )
+          mExpBuilderWidget->setLayer( nullptr );
+        else if ( mExpLineEdit )
+          mExpLineEdit->setLayer( nullptr );
+        return;
+      }
 
-  if ( mFieldExpWidget )
-    mFieldExpWidget->setLayer( layer );
-  if ( mExpBuilderWidget )
-    mExpBuilderWidget->setLayer( layer );
-  else if ( mExpLineEdit )
-    mExpLineEdit->setLayer( layer );
+      // need to grab ownership of layer if required - otherwise layer may be deleted when context
+      // goes out of scope
+      std::unique_ptr< QgsMapLayer > ownedLayer( context->takeResultLayer( layer->id() ) );
+      if ( ownedLayer && ownedLayer->type() == Qgis::LayerType::Vector )
+      {
+        mParentLayer.reset( ownedLayer.release() );
+        layer = static_cast<QgsVectorLayer *>( mParentLayer.get() );
+      }
+      else
+      {
+        // don't need ownership of this layer - it wasn't owned by context (so e.g. is owned by the project)
+      }
+
+      if ( mFieldExpWidget )
+        mFieldExpWidget->setLayer( layer );
+      if ( mExpBuilderWidget )
+        mExpBuilderWidget->setLayer( layer );
+      else if ( mExpLineEdit )
+        mExpLineEdit->setLayer( layer );
+
+      break;
+    }
+    case Qgis::ExpressionType::PointCloud:
+    {
+      QgsPointCloudLayer *layer = QgsProcessingParameters::parameterAsPointCloudLayer( parentWrapper->parameterDefinition(), val, *context, QgsProcessing::LayerOptionsFlag::SkipIndexGeneration );
+      if ( !layer )
+      {
+        if ( mPointCloudExpLineEdit )
+          mPointCloudExpLineEdit->setLayer( nullptr );
+        return;
+      }
+
+      // need to grab ownership of layer if required - otherwise layer may be deleted when context
+      // goes out of scope
+      std::unique_ptr< QgsMapLayer > ownedLayer( context->takeResultLayer( layer->id() ) );
+      if ( ownedLayer && ownedLayer->type() == Qgis::LayerType::PointCloud )
+      {
+        mParentLayer.reset( ownedLayer.release() );
+        layer = static_cast<QgsPointCloudLayer *>( mParentLayer.get() );
+      }
+      else
+      {
+        // don't need ownership of this layer - it wasn't owned by context (so e.g. is owned by the project)
+      }
+
+      if ( mPointCloudExpLineEdit )
+        mPointCloudExpLineEdit->setLayer( layer );
+
+      break;
+    }
+  }
 }
 
 void QgsProcessingExpressionWidgetWrapper::setWidgetValue( const QVariant &value, QgsProcessingContext &context )
@@ -2335,6 +2435,8 @@ void QgsProcessingExpressionWidgetWrapper::setWidgetValue( const QVariant &value
     mExpBuilderWidget->setExpressionText( v );
   else if ( mExpLineEdit )
     mExpLineEdit->setExpression( v );
+  else if ( mPointCloudExpLineEdit )
+    mPointCloudExpLineEdit->setExpression( v );
 }
 
 QVariant QgsProcessingExpressionWidgetWrapper::widgetValue() const
@@ -2345,6 +2447,8 @@ QVariant QgsProcessingExpressionWidgetWrapper::widgetValue() const
     return mExpBuilderWidget->expressionText();
   else if ( mExpLineEdit )
     return mExpLineEdit->expression();
+  else if ( mPointCloudExpLineEdit )
+    return mPointCloudExpLineEdit->expression();
   else
     return QVariant();
 }
@@ -2451,8 +2555,19 @@ void QgsProcessingEnumPanelWidget::showDialog()
   if ( mParam )
   {
     availableOptions.reserve( mParam->options().size() );
-    for ( int i = 0; i < mParam->options().count(); ++i )
-      availableOptions << i;
+
+    if ( mParam->usesStaticStrings() )
+    {
+      for ( QString o : mParam->options() )
+      {
+        availableOptions << o;
+      }
+    }
+    else
+    {
+      for ( int i = 0; i < mParam->options().count(); ++i )
+        availableOptions << i;
+    }
   }
 
   const QStringList options = mParam ? mParam->options() : QStringList();

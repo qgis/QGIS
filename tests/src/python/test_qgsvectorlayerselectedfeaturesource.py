@@ -81,6 +81,7 @@ class TestPyQgsVectorLayerSelectedFeatureSource(unittest.TestCase, FeatureSource
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
+        super(TestPyQgsVectorLayerSelectedFeatureSource, cls).setUpClass()
         # Create test layer
         cls.vl = cls.createLayer()
         assert (cls.vl.isValid())
@@ -90,10 +91,6 @@ class TestPyQgsVectorLayerSelectedFeatureSource(unittest.TestCase, FeatureSource
 
         cls.vl.selectByIds(ids)
         cls.source = QgsVectorLayerSelectedFeatureSource(cls.vl)
-
-    @classmethod
-    def tearDownClass(cls):
-        """Run after all tests"""
 
     def testGetFeaturesSubsetAttributes2(self):
         """ Override and skip this test for memory provider, as it's actually more efficient for the memory provider to return

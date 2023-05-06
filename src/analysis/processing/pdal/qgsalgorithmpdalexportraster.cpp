@@ -44,7 +44,7 @@ QString QgsPdalExportRasterAlgorithm::groupId() const
 
 QStringList QgsPdalExportRasterAlgorithm::tags() const
 {
-  return QObject::tr( "export,raster,attribute,create" ).split( ',' );
+  return QObject::tr( "pdal,lidar,dem,export,raster,attribute,create" ).split( ',' );
 }
 
 QString QgsPdalExportRasterAlgorithm::shortHelpString() const
@@ -64,6 +64,8 @@ void QgsPdalExportRasterAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterNumber( QStringLiteral( "RESOLUTION" ), QObject::tr( "Resolution of the density raster" ), QgsProcessingParameterNumber::Integer, 1, false, 1 ) );
   addParameter( new QgsProcessingParameterNumber( QStringLiteral( "TILE_SIZE" ), QObject::tr( "Tile size for parallel runs" ), QgsProcessingParameterNumber::Integer, 1000, false, 1 ) );
 
+  createCommonParameters();
+
   std::unique_ptr< QgsProcessingParameterNumber > paramOriginX = std::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "ORIGIN_X" ), QObject::tr( "X origin of a tile for parallel runs" ), QgsProcessingParameterNumber::Double, QVariant(), true, 0 );
   paramOriginX->setFlags( paramOriginX->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
   addParameter( paramOriginX.release() );
@@ -71,9 +73,7 @@ void QgsPdalExportRasterAlgorithm::initAlgorithm( const QVariantMap & )
   paramOriginY->setFlags( paramOriginY->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
   addParameter( paramOriginY.release() );
 
-  createCommonParameters();
-
-  addParameter( new QgsProcessingParameterRasterDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Output raster" ) ) );
+  addParameter( new QgsProcessingParameterRasterDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Exported" ) ) );
 }
 
 QStringList QgsPdalExportRasterAlgorithm::createArgumentLists( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
@@ -114,7 +114,7 @@ QStringList QgsPdalExportRasterAlgorithm::createArgumentLists( const QVariantMap
   }
 
   applyCommonParameters( args, layer->crs(), parameters, context );
-  applyThreadsParameter( args );
+  applyThreadsParameter( args, context );
   return args;
 }
 

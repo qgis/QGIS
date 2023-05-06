@@ -205,6 +205,7 @@ class TestPyQgsDBManagerPostgis(unittest.TestCase):
     def setUpClass(cls):
         """Run before all tests"""
         # start ans setup server
+        super().setUpClass()
         cls.setUpServer()
 
         # start a standalone qgis application
@@ -224,6 +225,7 @@ class TestPyQgsDBManagerPostgis(unittest.TestCase):
         rmtree(QGIS_AUTH_DB_DIR_PATH)
         rmtree(cls.tempfolder)
         QgsSettings().clear()
+        super().tearDownClass()
 
     ###########################################
 

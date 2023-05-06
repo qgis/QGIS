@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 ***************************************************************************
     Heatmap.py
@@ -38,7 +36,7 @@ WIDGET, BASE = uic.loadUiType(
 class HeatmapPixelSizeWidget(BASE, WIDGET):
 
     def __init__(self):
-        super(HeatmapPixelSizeWidget, self).__init__(None)
+        super().__init__(None)
         self.setupUi(self)
 
         self.layer_bounds = QgsRectangle()

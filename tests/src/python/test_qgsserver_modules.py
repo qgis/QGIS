@@ -79,11 +79,13 @@ class TestModules(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
+        super().setUpClass()
         cls.app = QgsApplication([], False)
 
     @classmethod
     def tearDownClass(cls):
         cls.app.exitQgis()
+        super().tearDownClass()
 
     def setUp(self):
         """Create the server instance"""

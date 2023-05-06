@@ -117,6 +117,12 @@ void QgsMapTool::deactivate()
   emit deactivated();
 }
 
+
+void QgsMapTool::reactivate()
+{
+  emit reactivated();
+}
+
 void QgsMapTool::clean()
 {
 

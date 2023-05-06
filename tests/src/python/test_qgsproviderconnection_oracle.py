@@ -61,6 +61,7 @@ class TestPyQgsProviderConnectionOracle(unittest.TestCase, TestPyQgsProviderConn
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
+        super(TestPyQgsProviderConnectionOracle, cls).setUpClass()
 
         TestPyQgsProviderConnectionBase.setUpClass()
 

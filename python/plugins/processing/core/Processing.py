@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 ***************************************************************************
     Processing.py
@@ -49,7 +47,6 @@ import processing
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.gui.MessageBarProgress import MessageBarProgress
 from processing.gui.RenderingStyles import RenderingStyles
-from processing.gui.Postprocessing import handleAlgorithmResults
 from processing.gui.AlgorithmExecutor import execute
 from processing.script import ScriptUtils
 from processing.tools import dataobjects
@@ -68,7 +65,7 @@ from processing.modeler.ModelerAlgorithmProvider import ModelerAlgorithmProvider
 from processing.modeler.ProjectProvider import ProjectProvider  # NOQA
 
 
-class Processing(object):
+class Processing:
     BASIC_PROVIDERS = []
 
     @staticmethod
@@ -200,7 +197,7 @@ class Processing(object):
                         if result:
                             layers_result = []
                             for l in result:
-                                if not isinstance(result, QgsMapLayer):
+                                if not isinstance(l, QgsMapLayer):
                                     layer = context.takeResultLayer(l)  # transfer layer ownership out of context
                                     if layer:
                                         layers_result.append(layer)

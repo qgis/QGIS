@@ -23,6 +23,7 @@ class TestPythonUtils(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
+        super().setUpClass()
         start_app()
 
     def test_update_available_plugins(self):

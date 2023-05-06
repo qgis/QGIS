@@ -305,6 +305,9 @@
 %Include auto_generated/codeeditors/qgscodeeditorr.sip
 %End
 %If ( HAVE_QSCI_SIP )
+%Include auto_generated/codeeditors/qgscodeeditorshell.sip
+%End
+%If ( HAVE_QSCI_SIP )
 %Include auto_generated/codeeditors/qgscodeeditorsql.sip
 %End
 %Include auto_generated/devtools/qgsdevtoolwidget.sip
@@ -405,6 +408,7 @@
 %Include auto_generated/processing/qgsprocessinggui.sip
 %Include auto_generated/processing/qgsprocessingguiregistry.sip
 %Include auto_generated/processing/qgsprocessinghistoryprovider.sip
+%Include auto_generated/processing/qgsprocessinghistorywidget.sip
 %Include auto_generated/processing/qgsprocessingmaplayercombobox.sip
 %Include auto_generated/processing/qgsprocessingmodelerparameterwidget.sip
 %Include auto_generated/processing/qgsprocessingmultipleselectiondialog.sip
@@ -483,7 +487,12 @@
 %Include auto_generated/symbology/qgsvectorfieldsymbollayerwidget.sip
 %Include auto_generated/sensor/qgssensorguiregistry.sip
 %Include auto_generated/sensor/qgssensorwidget.sip
+%Include auto_generated/settings/qgssettingseditorwidgetwrapper.sip
+%Include auto_generated/settings/qgssettingseditorwidgetwrapperimpl.sip
+%Include auto_generated/settings/qgssettingseditorwidgetregistry.sip
 %Include auto_generated/settings/qgssettingsregistrygui.sip
+%Include auto_generated/settings/qgssettingstreemodel.sip
+%Include auto_generated/settings/qgssettingstreewidget.sip
 %Include auto_generated/tableeditor/qgstableeditordialog.sip
 %Include auto_generated/tableeditor/qgstableeditorwidget.sip
 %Include auto_generated/vectortile/qgsvectortilelayerproperties.sip

@@ -36,7 +36,7 @@ class CORE_EXPORT QgsAttributeEditorQmlElement : public QgsAttributeEditorElemen
      * \param parent       The parent (used as container)
     */
     QgsAttributeEditorQmlElement( const QString &name, QgsAttributeEditorElement *parent )
-      : QgsAttributeEditorElement( AeTypeQmlElement, name, parent )
+      : QgsAttributeEditorElement( Qgis::AttributeEditorType::QmlElement, name, parent )
     {}
 
     QgsAttributeEditorElement *clone( QgsAttributeEditorElement *parent ) const override SIP_FACTORY;

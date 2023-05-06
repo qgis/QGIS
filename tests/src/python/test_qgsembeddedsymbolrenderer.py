@@ -49,6 +49,7 @@ class TestQgsEmbeddedSymbolRenderer(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
+        super().setUpClass()
         cls.report = "<h1>Python QgsSimpleFillSymbolLayer Tests</h1>\n"
 
     @classmethod
@@ -56,6 +57,7 @@ class TestQgsEmbeddedSymbolRenderer(unittest.TestCase):
         report_file_path = f"{QDir.tempPath()}/qgistest.html"
         with open(report_file_path, 'a') as report_file:
             report_file.write(cls.report)
+        super().tearDownClass()
 
     def setUp(self):
         self.mapsettings = QgsMapSettings()

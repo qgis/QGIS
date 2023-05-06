@@ -117,6 +117,28 @@ void QgsUserProfileManager::setDefaultFromActive()
   setDefaultProfileName( userProfile()->name() );
 }
 
+QString QgsUserProfileManager::lastProfileName() const
+{
+  return mSettings->value( QStringLiteral( "/core/lastProfile" ), QString() ).toString();
+}
+
+void QgsUserProfileManager::updateLastProfileName( )
+{
+  mSettings->setValue( QStringLiteral( "/core/lastProfile" ), userProfile()->name() );
+  mSettings->sync();
+}
+
+Qgis::UserProfileSelectionPolicy QgsUserProfileManager::userProfileSelectionPolicy() const
+{
+  return static_cast< Qgis::UserProfileSelectionPolicy >( mSettings->value( QStringLiteral( "/core/selectionPolicy" ), 0 ).toInt() );
+}
+
+void QgsUserProfileManager::setUserProfileSelectionPolicy( Qgis::UserProfileSelectionPolicy policy )
+{
+  mSettings->setValue( QStringLiteral( "/core/selectionPolicy" ), static_cast< int >( policy ) );
+  mSettings->sync();
+}
+
 QStringList QgsUserProfileManager::allProfiles() const
 {
   return QDir( mRootProfilePath ).entryList( QDir::Dirs | QDir::NoDotAndDotDot );

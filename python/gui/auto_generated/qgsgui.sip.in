@@ -10,7 +10,6 @@
 
 
 
-
 class QgsGui : QObject
 {
 %Docstring(signature="appended")
@@ -167,6 +166,13 @@ Returns the global relation widget registry, used for managing all known relatio
 Returns the global history provider registry, used for tracking history providers.
 
 .. versionadded:: 3.24
+%End
+
+    static QgsSettingsEditorWidgetRegistry *settingsEditorWidgetRegistry() /KeepReference/;
+%Docstring
+Returns the registry of settings editors.
+
+.. versionadded:: 3.32
 %End
 
     static void enableAutoGeometryRestore( QWidget *widget, const QString &key = QString() );

@@ -21,6 +21,8 @@ qgis:checkvalidity: >
 
   By default the algorithm uses the strict OGC definition of polygon validity, where a polygon is marked as invalid if a self-intersecting ring causes an interior hole. If the "Ignore ring self intersections" option is checked, then this rule will be ignored and a more lenient validity check will be performed.
 
+  The GEOS method is faster and performs better on larger geometries, but is limited to only returning the first error encountered in a geometry. The QGIS method will be slower but reports all errors encountered in the geometry, not just the first.
+
 qgis:climbalongline: >
   This algorithm calculates the total climb and descent along line geometries.
 

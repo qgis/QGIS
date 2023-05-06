@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 /***************************************************************************
 Name                 : DB Manager
@@ -19,9 +17,6 @@ email                : brush.tyler@gmail.com
  *                                                                         *
  ***************************************************************************/
 """
-from builtins import str
-from builtins import map
-from builtins import range
 
 # this will disable the dbplugin if the connector raise an ImportError
 from .connector import PostGisDBConnector
@@ -80,7 +75,7 @@ class PostGisDBPlugin(DBPlugin):
         uri = QgsDataSourceUri()
 
         settingsList = ["service", "host", "port", "database", "username", "password", "authcfg"]
-        service, host, port, database, username, password, authcfg = [settings.value(x, "", type=str) for x in settingsList]
+        service, host, port, database, username, password, authcfg = (settings.value(x, "", type=str) for x in settingsList)
 
         useEstimatedMetadata = settings.value("estimatedMetadata", False, type=bool)
         try:
@@ -200,7 +195,7 @@ class PGTable(Table):
     def __init__(self, row, db, schema=None):
         Table.__init__(self, db, schema)
         self.name, schema_name, self._relationType, self.owner, self.estimatedRowCount, self.pages, self.comment = row
-        self.isView = self._relationType in set(['v', 'm'])
+        self.isView = self._relationType in {'v', 'm'}
         self.estimatedRowCount = int(self.estimatedRowCount)
 
     def runVacuumAnalyze(self):

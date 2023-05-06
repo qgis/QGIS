@@ -37,6 +37,7 @@ class TestPyQgsQgsQueryResultModel(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
+        super().setUpClass()
 
         QCoreApplication.setOrganizationName("QGIS_Test")
         QCoreApplication.setOrganizationDomain(cls.__name__)
@@ -59,6 +60,7 @@ class TestPyQgsQgsQueryResultModel(unittest.TestCase):
     def tearDownClass(cls):
 
         cls._deleteBigData()
+        super().tearDownClass()
 
     @classmethod
     def _deleteBigData(cls):

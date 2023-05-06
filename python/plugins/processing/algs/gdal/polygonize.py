@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 ***************************************************************************
     polygonize.py
@@ -117,7 +115,7 @@ class polygonize(GdalAlgorithm):
         output, outFormat = GdalUtils.ogrConnectionStringAndFormat(outFile, context)
 
         if outFormat:
-            arguments.append('-f {}'.format(outFormat))
+            arguments.append(f'-f {outFormat}')
 
         arguments.append(output)
 

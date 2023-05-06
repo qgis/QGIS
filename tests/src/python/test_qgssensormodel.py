@@ -70,6 +70,7 @@ class TestQgsSensorModel(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
+        super().setUpClass()
         QCoreApplication.setOrganizationName("QGIS_Test")
         QCoreApplication.setOrganizationDomain("QGIS_TestQgsSensorManager.com")
         QCoreApplication.setApplicationName("QGIS_TestQgsSensorManager")

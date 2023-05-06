@@ -44,11 +44,13 @@ class TestVectorTile(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
+        super().setUpClass()
         cls.tempdir = Path(tempfile.mkdtemp())
 
     @classmethod
     def tearDownClass(cls):
         shutil.rmtree(cls.tempdir, True)
+        super().tearDownClass()
 
     def setUp(self):
         """Run before each test."""

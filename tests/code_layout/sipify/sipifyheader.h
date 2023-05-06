@@ -523,6 +523,9 @@ class CORE_EXPORT TemplateInheritance4 : public SomethingElse1, public QList<Som
 class CORE_EXPORT TemplateInheritance5 : public SomethingElse, public QList<Something>
 {
 }
+class CORE_EXPORT TemplateInheritance6 : public SomethingElse, public YourSuperTemplate<Abc, Def, Ghi>
+{
+}
 
 
 #endif

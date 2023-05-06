@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 ***************************************************************************
     SelectByAttribute.py
@@ -140,17 +138,17 @@ class SelectByAttribute(QgisAlgorithm):
         field_ref = QgsExpression.quotedColumnRef(fieldName)
         quoted_val = QgsExpression.quotedValue(value)
         if operator == 'is null':
-            expression_string = '{} IS NULL'.format(field_ref)
+            expression_string = f'{field_ref} IS NULL'
         elif operator == 'is not null':
-            expression_string = '{} IS NOT NULL'.format(field_ref)
+            expression_string = f'{field_ref} IS NOT NULL'
         elif operator == 'begins with':
-            expression_string = "{} LIKE '{}%'".format(field_ref, value)
+            expression_string = f"{field_ref} LIKE '{value}%'"
         elif operator == 'contains':
-            expression_string = "{} LIKE '%{}%'".format(field_ref, value)
+            expression_string = f"{field_ref} LIKE '%{value}%'"
         elif operator == 'does not contain':
-            expression_string = "{} NOT LIKE '%{}%'".format(field_ref, value)
+            expression_string = f"{field_ref} NOT LIKE '%{value}%'"
         else:
-            expression_string = '{} {} {}'.format(field_ref, operator, quoted_val)
+            expression_string = f'{field_ref} {operator} {quoted_val}'
 
         method = self.parameterAsEnum(parameters, self.METHOD, context)
         if method == 0:

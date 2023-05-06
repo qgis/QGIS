@@ -108,9 +108,18 @@ bool QgsBaseNetworkRequest::sendGET( const QUrl &url, const QString &acceptHeade
   if ( modifiedUrl.toString().contains( QLatin1String( "fake_qgis_http_endpoint" ) ) )
   {
     // Just for testing with local files instead of http:// resources
-    QString modifiedUrlString = modifiedUrl.toString();
-    // Qt5 does URL encoding from some reason (of the FILTER parameter for example)
-    modifiedUrlString = QUrl::fromPercentEncoding( modifiedUrlString.toUtf8() );
+    QString modifiedUrlString;
+
+    if ( modifiedUrl.toString().contains( QLatin1String( "fake_qgis_http_endpoint_encoded_query" ) ) )
+    {
+      // Get encoded representation (used by test_provider_oapif.py testSimpleQueryableFiltering())
+      modifiedUrlString = modifiedUrl.toEncoded();
+    }
+    else
+    {
+      // Get representation with percent decoding (easier for WFS filtering)
+      modifiedUrlString = QUrl::fromPercentEncoding( modifiedUrl.toString().toUtf8() );
+    }
 
     if ( !acceptHeader.isEmpty() )
     {
@@ -192,11 +201,14 @@ bool QgsBaseNetworkRequest::sendGET( const QUrl &url, const QString &acceptHeade
   QgsDebugMsgLevel( QStringLiteral( "Calling: %1" ).arg( modifiedUrl.toDisplayString( QUrl::EncodeSpaces ) ), 4 );
 
   QNetworkRequest request( modifiedUrl );
+
+  mRequestHeaders = extraHeaders;
   if ( !acceptHeader.isEmpty() )
   {
-    request.setRawHeader( "Accept", acceptHeader.toUtf8() );
+    mRequestHeaders << QNetworkReply::RawHeaderPair( "Accept", acceptHeader.toUtf8() );
   }
-  for ( const QNetworkReply::RawHeaderPair &headerPair : extraHeaders )
+
+  for ( const QNetworkReply::RawHeaderPair &headerPair : std::as_const( mRequestHeaders ) )
     request.setRawHeader( headerPair.first, headerPair.second );
 
   QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsBaseNetworkRequest" ) );
@@ -425,8 +437,11 @@ bool QgsBaseNetworkRequest::sendPOSTOrPUTOrPATCH( const QUrl &url, const QByteAr
     logMessageIfEnabled();
     return false;
   }
-  request.setHeader( QNetworkRequest::ContentTypeHeader, contentTypeHeader );
-  for ( const QNetworkReply::RawHeaderPair &headerPair : extraHeaders )
+
+  mRequestHeaders = extraHeaders;
+  mRequestHeaders <<  QNetworkReply::RawHeaderPair( "Content-Type", contentTypeHeader.toUtf8() );
+
+  for ( const QNetworkReply::RawHeaderPair &headerPair : std::as_const( mRequestHeaders ) )
     request.setRawHeader( headerPair.first, headerPair.second );
 
   if ( !issueRequest( request, verb, &data, /*synchronous=*/true ) )
@@ -624,6 +639,9 @@ void QgsBaseNetworkRequest::replyFinished()
           }
           request.setAttribute( QNetworkRequest::CacheLoadControlAttribute, mForceRefresh ? QNetworkRequest::AlwaysNetwork : QNetworkRequest::PreferCache );
           request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
+
+          for ( const QNetworkReply::RawHeaderPair &headerPair : std::as_const( mRequestHeaders ) )
+            request.setRawHeader( headerPair.first, headerPair.second );
 
           mReply->deleteLater();
           mReply = nullptr;

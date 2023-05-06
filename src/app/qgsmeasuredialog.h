@@ -27,12 +27,17 @@
 class QCloseEvent;
 class QgsMeasureTool;
 class QgsMapCanvas;
+class QgsSettingsEntryBool;
+class QgsSettingsEntryString;
 
 class APP_EXPORT QgsMeasureDialog : public QDialog, private Ui::QgsMeasureBase
 {
     Q_OBJECT
 
   public:
+
+    static const QgsSettingsEntryBool *settingClipboardHeader;
+    static const QgsSettingsEntryString *settingClipboardSeparator;
 
     //! Constructor
     QgsMeasureDialog( QgsMeasureTool *tool, Qt::WindowFlags f = Qt::WindowFlags() );
@@ -79,6 +84,14 @@ class APP_EXPORT QgsMeasureDialog : public QDialog, private Ui::QgsMeasureBase
 
   private:
 
+    //! \since QGIS 3.32 columns
+    enum Columns
+    {
+      X = 0,
+      Y,
+      Distance,
+    };
+
     //! formats distance to most appropriate units
     QString formatDistance( double distance, bool convertUnits = true ) const;
 
@@ -111,6 +124,9 @@ class APP_EXPORT QgsMeasureDialog : public QDialog, private Ui::QgsMeasureBase
 
     //! Number of decimal places we want.
     int mDecimalPlaces = 3;
+
+    //! Number of decimal places we want for the coordinates.
+    int mDecimalPlacesCoordinates = 3;
 
     //! Current unit for input values
     Qgis::DistanceUnit mCanvasUnits = Qgis::DistanceUnit::Unknown;

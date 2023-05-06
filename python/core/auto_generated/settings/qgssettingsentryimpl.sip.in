@@ -10,9 +10,9 @@
 
 
 
-typedef QgsSettingsEntryByReference<QVariant> QgsSettingsEntryByReferenceQVariantBase;
+typedef QgsSettingsEntryBaseTemplate<QVariant> QgsSettingsEntryBaseTemplateQVariantBase;
 
-class QgsSettingsEntryVariant : QgsSettingsEntryByReferenceQVariantBase
+class QgsSettingsEntryVariant : QgsSettingsEntryBaseTemplateQVariantBase
 {
 %Docstring(signature="appended")
 
@@ -24,7 +24,7 @@ A variant settings entry.
 %TypeHeaderCode
 #include "qgssettingsentryimpl.h"
 #include "qgssettingsentry.h"
-typedef QgsSettingsEntryByReference<QVariant> QgsSettingsEntryByReferenceQVariantBase;
+typedef QgsSettingsEntryBaseTemplate<QVariant> QgsSettingsEntryBaseTemplateQVariantBase;
 %End
   public:
 
@@ -107,14 +107,13 @@ Returns settings value.
 
     virtual Qgis::SettingsType settingsType() const;
 
-  private:
     virtual QVariant convertFromVariant( const QVariant &value ) const;
 };
 
 
-typedef QgsSettingsEntryByReference<QString> QgsSettingsEntryByReferenceQStringBase;
+typedef QgsSettingsEntryBaseTemplate<QString> QgsSettingsEntryBaseTemplateQStringBase;
 
-class QgsSettingsEntryString : QgsSettingsEntryByReferenceQStringBase
+class QgsSettingsEntryString : QgsSettingsEntryBaseTemplateQStringBase
 {
 %Docstring(signature="appended")
 
@@ -126,7 +125,7 @@ A string settings entry.
 %TypeHeaderCode
 #include "qgssettingsentryimpl.h"
 #include "qgssettingsentry.h"
-typedef QgsSettingsEntryByReference<QString> QgsSettingsEntryByReferenceQStringBase;
+typedef QgsSettingsEntryBaseTemplate<QString> QgsSettingsEntryBaseTemplateQStringBase;
 %End
   public:
 
@@ -203,18 +202,19 @@ Returns the string minimum length.
 Returns the string maximum length. By -1 there is no limitation.
 %End
 
-  private:
-    virtual bool checkValue( const QString &value ) const;
-
     virtual QString convertFromVariant( const QVariant &value ) const;
+
+
+  private:
+    virtual bool checkValuePrivate( const QString &value ) const;
 
 };
 
 
 
-typedef QgsSettingsEntryByReference<QStringList> QgsSettingsEntryByReferenceQStringListBase;
+typedef QgsSettingsEntryBaseTemplate<QStringList> QgsSettingsEntryBaseTemplateQStringListBase;
 
-class QgsSettingsEntryStringList : QgsSettingsEntryByReferenceQStringListBase
+class QgsSettingsEntryStringList : QgsSettingsEntryBaseTemplateQStringListBase
 {
 %Docstring(signature="appended")
 
@@ -226,7 +226,7 @@ A string list settings entry.
 %TypeHeaderCode
 #include "qgssettingsentryimpl.h"
 #include "qgssettingsentry.h"
-typedef QgsSettingsEntryByReference<QStringList> QgsSettingsEntryByReferenceQStringListBase;
+typedef QgsSettingsEntryBaseTemplate<QStringList> QgsSettingsEntryBaseTemplateQStringListBase;
 %End
   public:
 
@@ -284,16 +284,15 @@ This constructor is intended to be used from plugins.
 
     virtual Qgis::SettingsType settingsType() const;
 
-  private:
     virtual QStringList convertFromVariant( const QVariant &value ) const;
 
 };
 
 
 
-typedef QgsSettingsEntryByValue<bool> QgsSettingsEntryByValueboolBase;
+typedef QgsSettingsEntryBaseTemplate<bool> QgsSettingsEntryBaseTemplateboolBase;
 
-class QgsSettingsEntryBool : QgsSettingsEntryByValueboolBase
+class QgsSettingsEntryBool : QgsSettingsEntryBaseTemplateboolBase
 {
 %Docstring(signature="appended")
 
@@ -305,7 +304,7 @@ A boolean settings entry.
 %TypeHeaderCode
 #include "qgssettingsentryimpl.h"
 #include "qgssettingsentry.h"
-typedef QgsSettingsEntryByValue<bool> QgsSettingsEntryByValueboolBase;
+typedef QgsSettingsEntryBaseTemplate<bool> QgsSettingsEntryBaseTemplateboolBase;
 %End
   public:
 
@@ -363,16 +362,15 @@ This constructor is intended to be used from plugins.
 
     virtual Qgis::SettingsType settingsType() const;
 
-  private:
     virtual bool convertFromVariant( const QVariant &value ) const;
 
 };
 
 
 
-typedef QgsSettingsEntryByValue<int> QgsSettingsEntryByValueintBase;
+typedef QgsSettingsEntryBaseTemplate<int> QgsSettingsEntryBaseTemplateintBase;
 
-class QgsSettingsEntryInteger : QgsSettingsEntryByValueintBase
+class QgsSettingsEntryInteger : QgsSettingsEntryBaseTemplateintBase
 {
 %Docstring(signature="appended")
 
@@ -384,7 +382,7 @@ An integer settings entry.
 %TypeHeaderCode
 #include "qgssettingsentryimpl.h"
 #include "qgssettingsentry.h"
-typedef QgsSettingsEntryByValue<int> QgsSettingsEntryByValueintBase;
+typedef QgsSettingsEntryBaseTemplate<int> QgsSettingsEntryBaseTemplateintBase;
 %End
   public:
 
@@ -463,18 +461,19 @@ Returns the minimum value.
 Returns the maximum value.
 %End
 
-  private:
-    virtual bool checkValue( int value ) const;
-
     virtual int convertFromVariant( const QVariant &value ) const;
+
+
+  private:
+    virtual bool checkValuePrivate( const int &value ) const;
 
 };
 
 
 
-typedef QgsSettingsEntryByValue<double> QgsSettingsEntryByValuedoubleBase;
+typedef QgsSettingsEntryBaseTemplate<double> QgsSettingsEntryBaseTemplatedoubleBase;
 
-class QgsSettingsEntryDouble : QgsSettingsEntryByValuedoubleBase
+class QgsSettingsEntryDouble : QgsSettingsEntryBaseTemplatedoubleBase
 {
 %Docstring(signature="appended")
 
@@ -486,7 +485,7 @@ A double settings entry.
 %TypeHeaderCode
 #include "qgssettingsentryimpl.h"
 #include "qgssettingsentry.h"
-typedef QgsSettingsEntryByValue<double> QgsSettingsEntryByValuedoubleBase;
+typedef QgsSettingsEntryBaseTemplate<double> QgsSettingsEntryBaseTemplatedoubleBase;
 %End
   public:
 
@@ -586,19 +585,20 @@ displayHintDecimals The number of decimals that should be shown in the Gui.
 Returns how much decimals should be shown in the Gui.
 %End
 
-  private:
-    virtual bool checkValue( double value ) const;
-
     virtual double convertFromVariant( const QVariant &value ) const;
+
+
+  private:
+    virtual bool checkValuePrivate( const double &value ) const;
 
 };
 
 
 
 
-typedef QgsSettingsEntryByReference<QColor> QgsSettingsEntryByReferenceQColorBase;
+typedef QgsSettingsEntryBaseTemplate<QColor> QgsSettingsEntryBaseTemplateQColorBase;
 
-class QgsSettingsEntryColor : QgsSettingsEntryByReferenceQColorBase
+class QgsSettingsEntryColor : QgsSettingsEntryBaseTemplateQColorBase
 {
 %Docstring(signature="appended")
 
@@ -610,7 +610,7 @@ A color settings entry.
 %TypeHeaderCode
 #include "qgssettingsentryimpl.h"
 #include "qgssettingsentry.h"
-typedef QgsSettingsEntryByReference<QColor> QgsSettingsEntryByReferenceQColorBase;
+typedef QgsSettingsEntryBaseTemplate<QColor> QgsSettingsEntryBaseTemplateQColorBase;
 %End
   public:
 
@@ -681,18 +681,18 @@ Returns ``True`` if transparency is allowed for the color
 
 
 
-
-  private:
     virtual QColor convertFromVariant( const QVariant &value ) const;
 
-    virtual bool checkValue( const QColor &value ) const;
+
+  private:
+    virtual bool checkValuePrivate( const QColor &value ) const;
 
 };
 
 
-typedef QgsSettingsEntryByReference<QVariantMap> QgsSettingsEntryByReferenceQVariantMapBase;
+typedef QgsSettingsEntryBaseTemplate<QVariantMap> QgsSettingsEntryBaseTemplateQVariantMapBase;
 
-class QgsSettingsEntryVariantMap : QgsSettingsEntryByReferenceQVariantMapBase
+class QgsSettingsEntryVariantMap : QgsSettingsEntryBaseTemplateQVariantMapBase
 {
 %Docstring(signature="appended")
 
@@ -704,7 +704,7 @@ A string list settings entry.
 %TypeHeaderCode
 #include "qgssettingsentryimpl.h"
 #include "qgssettingsentry.h"
-typedef QgsSettingsEntryByReference<QVariantMap> QgsSettingsEntryByReferenceQVariantMapBase;
+typedef QgsSettingsEntryBaseTemplate<QVariantMap> QgsSettingsEntryBaseTemplateQVariantMapBase;
 %End
   public:
 
@@ -762,10 +762,10 @@ This constructor is intended to be used from plugins.
 
     virtual Qgis::SettingsType settingsType() const;
 
-  private:
     virtual QVariantMap convertFromVariant( const QVariant &value ) const;
 
 };
+
 
 /************************************************************************
  * This file has been generated automatically from                      *

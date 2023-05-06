@@ -82,6 +82,7 @@ class TestPyQgsMemoryProvider(unittest.TestCase, ProviderTestCase):
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
+        super(TestPyQgsMemoryProvider, cls).setUpClass()
         # Create test layer
         cls.vl = cls.createLayer()
         assert (cls.vl.isValid())
@@ -112,10 +113,6 @@ class TestPyQgsMemoryProvider(unittest.TestCase, ProviderTestCase):
         f4.setAttributes([4])
 
         cls.poly_provider.addFeatures([f1, f2, f3, f4])
-
-    @classmethod
-    def tearDownClass(cls):
-        """Run after all tests"""
 
     def getEditableLayer(self):
         return self.createLayer()
@@ -1020,7 +1017,9 @@ class TestPyQgsMemoryProviderIndexed(unittest.TestCase, ProviderTestCase):
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
+        super(TestPyQgsMemoryProviderIndexed, cls).setUpClass()
         # Create test layer
+
         cls.vl = QgsVectorLayer(
             'Point?crs=epsg:4326&field=pk:integer&field=cnt:integer&field=name:string(0)&field=name2:string(0)&field=num_char:string&field=dt:datetime&field=date:date&field=time:time&key=pk',
             'test', 'memory')
@@ -1079,10 +1078,6 @@ class TestPyQgsMemoryProviderIndexed(unittest.TestCase, ProviderTestCase):
         f4.setAttributes([4])
 
         cls.poly_provider.addFeatures([f1, f2, f3, f4])
-
-    @classmethod
-    def tearDownClass(cls):
-        """Run after all tests"""
 
     def testGetFeaturesSubsetAttributes2(self):
         """ Override and skip this test for memory provider, as it's actually more efficient for the memory provider to return

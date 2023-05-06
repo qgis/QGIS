@@ -1,0 +1,55 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/settings/qgssettingseditorwidgetregistry.h                   *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsSettingsEditorWidgetRegistry
+{
+%Docstring(signature="appended")
+This class manages editor widgets for settings
+
+.. versionadded:: 3.32
+%End
+
+%TypeHeaderCode
+#include "qgssettingseditorwidgetregistry.h"
+%End
+  public:
+    QgsSettingsEditorWidgetRegistry();
+%Docstring
+Constructor
+%End
+    ~QgsSettingsEditorWidgetRegistry();
+
+    bool addWrapper( QgsSettingsEditorWidgetWrapper *wrapper /Transfer/ );
+%Docstring
+Adds an editor widget ``wrapper`` to the registry
+Returns ``False`` if an editor widget with same id already exists.
+%End
+
+    QgsSettingsEditorWidgetWrapper *createWrapper( const QString &id, QObject *parent ) const;
+%Docstring
+Returns a new instance of the editor widget for the given ``id``
+%End
+
+    QWidget *createEditor( const QgsSettingsEntryBase *setting, const QStringList &dynamicKeyPartList, QWidget *parent = 0 ) const /Factory/;
+%Docstring
+Creates an editor widget for the given ``setting`` using the corresponding registered wrapper
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/settings/qgssettingseditorwidgetregistry.h                   *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

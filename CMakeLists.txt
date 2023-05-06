@@ -166,7 +166,7 @@ if(WITH_CORE)
       endif()
   endif()
 
-  set (WITH_3D FALSE CACHE BOOL "Determines whether QGIS 3D library should be built")
+  set (WITH_3D TRUE CACHE BOOL "Determines whether QGIS 3D library should be built")
 
   set (WITH_QUICK FALSE CACHE BOOL "Determines whether QGIS Quick library should be built")
 
@@ -282,7 +282,7 @@ if(WITH_CORE)
     endif()
   endif(WITH_HANA)
 
-  set (WITH_PDAL FALSE CACHE BOOL "Determines whether PDAL support should be built")
+  set (WITH_PDAL TRUE CACHE BOOL "Determines whether PDAL support should be built")
 
   set (WITH_EPT TRUE CACHE BOOL "Determines whether Entwine Point Cloud (EPT) support should be built")
 
@@ -443,7 +443,7 @@ if(WITH_CORE)
 
   set (BUILD_WITH_QT6 FALSE CACHE BOOL "Enable (experimental) Qt6 support")
   if (BUILD_WITH_QT6)
-    set(QT_MIN_VERSION 6.0.0)
+    set(QT_MIN_VERSION 6.4.0)
     set(QT_VERSION_BASE "Qt6")
     set(QT_VERSION_BASE_LOWER "qt6")
     set(CMAKE_CXX_STANDARD 17)

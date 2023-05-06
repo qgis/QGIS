@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 ***************************************************************************
     Grass7Algorithm.py
@@ -751,7 +749,7 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
         if not destName:
             destName = 'rast_{}'.format(os.path.basename(getTempFilename(context=context)))
         self.exportedLayers[name] = destName
-        command = '{0} input="{1}" {2}output="{3}" --overwrite -o'.format(
+        command = '{} input="{}" {}output="{}" --overwrite -o'.format(
             'r.external' if external else 'r.in.gdal',
             os.path.normpath(layer.source()),
             'band={} '.format(band) if band else '',
@@ -800,7 +798,7 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
             # Adjust region to layer before exporting
             cmd.append('g.region raster={}'.format(grassName))
             cmd.append(
-                'r.out.gdal -t -m{0} input="{1}" output="{2}" format="{3}" {4}{5} --overwrite'.format(
+                'r.out.gdal -t -m{} input="{}" output="{}" format="{}" {}{} --overwrite'.format(
                     '' if colorTable else ' -c',
                     grassName, fileName,
                     outFormat,
@@ -831,7 +829,7 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
             # TODO Format/options support
             if isWindows():
                 cmd.append("if not exist {0} mkdir {0}".format(outDir))
-                cmd.append("for /F %%r IN ('g.list type^=rast pattern^=\"{0}*\"') do r.out.gdal -m{1} input=%%r output={2}/%%r.tif {3}".format(
+                cmd.append("for /F %%r IN ('g.list type^=rast pattern^=\"{}*\"') do r.out.gdal -m{} input=%%r output={}/%%r.tif {}".format(
                     basename,
                     ' -t' if colorTable else '',
                     outDir,
@@ -919,7 +917,7 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
         self.setSessionProjectionFromLayer(layer, context)
         destFilename = 'vector_{}'.format(os.path.basename(getTempFilename(context=context)))
         self.exportedLayers[name] = destFilename
-        command = '{0}{1}{2} input="{3}"{4} output="{5}" --overwrite -o'.format(
+        command = '{}{}{} input="{}"{} output="{}" --overwrite -o'.format(
             'v.external' if external else 'v.in.ogr',
             ' min_area={}'.format(self.minArea) if not external else '',
             ' snap={}'.format(self.snapTolerance) if not external else '',
@@ -978,7 +976,7 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
 
         for cmd in [self.commands, self.outputCommands]:
             cmd.append(
-                'v.out.ogr{0} type="{1}" input="{2}" output="{3}" format="{4}" {5}{6}{7}{8} --overwrite'.format(
+                'v.out.ogr{} type="{}" input="{}" output="{}" format="{}" {}{}{}{} --overwrite'.format(
                     '' if nocats else '',
                     dataType, grassName, fileName,
                     outFormat,
@@ -1014,7 +1012,7 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
         if not destName:
             destName = 'table_{}'.format(os.path.basename(getTempFilename(context=context)))
         self.exportedLayers[name] = destName
-        command = 'db.in.ogr --overwrite input="{0}" output="{1}"'.format(
+        command = 'db.in.ogr --overwrite input="{}" output="{}"'.format(
             os.path.normpath(layer.source()), destName)
         self.commands.append(command)
 
@@ -1029,7 +1027,7 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
         """
         for cmd in [self.commands, self.outputCommands]:
             cmd.append(
-                'db.out.ogr input="{0}" output="{1}" layer={2} format={3} --overwrite'.format(
+                'db.out.ogr input="{}" output="{}" layer={} format={} --overwrite'.format(
                     grassName, fileName, layer, outFormat
                 )
             )
@@ -1066,7 +1064,7 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
     def convertToHtml(self, fileName):
         # Read HTML contents
         lines = []
-        with open(fileName, 'r', encoding='utf-8') as f:
+        with open(fileName, encoding='utf-8') as f:
             lines = f.readlines()
 
         if len(lines) > 1 and '<html>' not in lines[0]:

@@ -282,7 +282,7 @@ class QgsDatabaseItemGuiProvider : public QObject, public QgsDataItemGuiProvider
 
   public:
 
-    QgsDatabaseItemGuiProvider() = default;
+    QgsDatabaseItemGuiProvider();
 
     QString name() override;
 
@@ -292,6 +292,14 @@ class QgsDatabaseItemGuiProvider : public QObject, public QgsDataItemGuiProvider
     bool handleDrop( QgsDataItem *item, QgsDataItemGuiContext context,
                      const QMimeData *data,
                      Qt::DropAction action ) override;
+
+
+    void openSqlDialog( const QString &connectionUri, const QString &provider, const QString &query, QgsDataItemGuiContext context, const QString &identifierName = QString() );
+
+  public slots:
+
+    void openSqlDialogGeneric( const QString &connectionUri, const QString &provider, const QString &query );
+
 };
 
 

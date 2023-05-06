@@ -55,7 +55,7 @@ class QgsPdalAlgorithmBase : public QgsProcessingAlgorithm
     /**
      * Adds "--threads"parameter to the pdal_wrench command line.
      */
-    void applyThreadsParameter( QStringList &arguments );
+    void applyThreadsParameter( QStringList &arguments, QgsProcessingContext &context );
 
     /**
      * "Fixes" output file name by changing suffix to .vpc if input file

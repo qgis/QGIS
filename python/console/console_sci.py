@@ -24,6 +24,8 @@ import os
 import re
 import sys
 import traceback
+from pathlib import Path
+from tempfile import NamedTemporaryFile
 
 from qgis.PyQt.Qsci import QsciScintilla
 from qgis.PyQt.QtCore import Qt, QCoreApplication
@@ -36,6 +38,8 @@ from qgis.gui import (
     QgsCodeEditor,
     QgsCodeInterpreter
 )
+
+from .process_wrapper import ProcessWrapper
 
 _init_statements = [
     # Python
@@ -67,12 +71,20 @@ except ModuleNotFoundError:
 ]
 
 
+# States of the interpreter
+PS1 = 0  # Writing a new command
+PS2 = 1  # Continuation of a multi-line command
+SUBPROCESS = 2  # Sending input to a subprocess
+
+
 class PythonInterpreter(QgsCodeInterpreter, code.InteractiveInterpreter):
 
-    def __init__(self):
+    def __init__(self, shell):
         super(QgsCodeInterpreter, self).__init__()
         code.InteractiveInterpreter.__init__(self, locals=None)
 
+        self.shell = shell
+        self.sub_process = None
         self.buffer = []
 
         for statement in _init_statements:
@@ -82,10 +94,53 @@ class PythonInterpreter(QgsCodeInterpreter, code.InteractiveInterpreter):
                 pass
 
     def execCommandImpl(self, cmd, show_input=True):
-        res = self.currentState()
+
+        # Child process running, input should be sent to it
+        if self.currentState() == SUBPROCESS:
+            sys.stdout.write(cmd + "\n")
+            self.sub_process.write(cmd)
+            return 0
 
         if show_input:
             self.writeCMD(cmd)
+
+        if self.currentState() == PS1:
+
+            # This line makes single line commands with leading spaces work
+            cmd = cmd.strip()
+
+            # User entered: varname = !cmd
+            # Run the command and assign the output to varname
+            # Mimics IPython's behavior
+            assignment_pattern = r"(\w+)\s*=\s*!(.+)"
+            match = re.match(assignment_pattern, cmd)
+            if match:
+                varname = match[1]
+                cmd = match[2]
+                # Run the command in non-interactive mode
+                self.sub_process = ProcessWrapper(cmd, interactive=False)
+                # Concatenate stdout and stderr
+                res = (self.sub_process.stdout + self.sub_process.stderr).strip()
+
+                # Use a temporary file to communicate the result to the inner interpreter
+                tmp = Path(NamedTemporaryFile(delete=False).name)
+                tmp.write_text(res, encoding="utf-8")
+                self.runsource(f'{varname} = Path("{tmp}").read_text(encoding="utf-8").split("\\n")')
+                tmp.unlink()
+                self.sub_process = None
+                return 0
+
+            # User entered: !cmd
+            # Run the command and stream the output to the console
+            # While the process is running, the console is in state 2 meaning
+            # that all input is sent to the child process
+            # Mimics IPython's behavior
+            elif cmd.startswith("!"):
+                cmd = cmd[1:]
+                self.sub_process = ProcessWrapper(cmd)
+                self.sub_process.finished.connect(self.processFinished)
+                return 0
+
         import webbrowser
         version = 'master' if 'master' in Qgis.QGIS_VERSION.lower() else \
             re.findall(r'^\d.[0-9]*', Qgis.QGIS_VERSION)[0]
@@ -112,8 +167,7 @@ class PythonInterpreter(QgsCodeInterpreter, code.InteractiveInterpreter):
         if sys.stdout:
             sys.stdout.fire_keyboard_interrupt = False
         if len(txt) > 0:
-            prompt = "... " if self.currentState() == 1 else ">>> "
-            sys.stdout.write(prompt + txt + '\n')
+            sys.stdout.write(f'{self.promptForState()} {txt}\n')
 
     def runsource(self, source, filename='<input>', symbol='single'):
         if sys.stdout:
@@ -130,8 +184,24 @@ class PythonInterpreter(QgsCodeInterpreter, code.InteractiveInterpreter):
         finally:
             sys.excepthook = hook
 
-    def promptForState(self, state):
-        return "..." if state == 1 else ">>>"
+    def currentState(self):
+        if self.sub_process:
+            return SUBPROCESS
+        return super().currentState()
+
+    def promptForState(self, state=-1):
+        if state == -1:
+            state = self.currentState()
+        if state == SUBPROCESS:
+            return " : "
+        elif state == PS2:
+            return "..."
+        else:
+            return ">>>"
+
+    def processFinished(self, errorcode):
+        self.sub_process = None
+        self.shell.updatePrompt()
 
 
 class ShellScintilla(QgsCodeEditorPython):
@@ -144,7 +214,7 @@ class ShellScintilla(QgsCodeEditorPython):
                          flags=QgsCodeEditor.Flags(QgsCodeEditor.Flag.CodeFolding | QgsCodeEditor.Flag.ImmediatelyUpdateHistory))
 
         self.parent = parent
-        self._interpreter = PythonInterpreter()
+        self._interpreter = PythonInterpreter(self)
         self.setInterpreter(self._interpreter)
 
         self.opening = ['(', '{', '[', "'", '"']
@@ -201,16 +271,18 @@ class ShellScintilla(QgsCodeEditorPython):
         self.parent.callWidgetMessageBar(msgText)
 
     def keyPressEvent(self, e):
-        # update the live history
-        self.updateSoftHistory()
 
-        # keyboard interrupt
-        if e.modifiers() & (
-                Qt.ControlModifier | Qt.MetaModifier) and e.key() == Qt.Key_C and not self.hasSelectedText():
-            sys.stdout.fire_keyboard_interrupt = True
+        if e.modifiers() & (Qt.ControlModifier | Qt.MetaModifier) and e.key() == Qt.Key_C and not self.hasSelectedText():
+            if self._interpreter.sub_process:
+                sys.stderr.write("Terminate child process\n")
+                self._interpreter.sub_process.kill()
+                self._interpreter.sub_process = None
+                self.updatePrompt()
             return
 
-        QgsCodeEditorPython.keyPressEvent(self, e)
+        # update the live history
+        self.updateSoftHistory()
+        super().keyPressEvent(e)
         self.updatePrompt()
 
     def mousePressEvent(self, e):

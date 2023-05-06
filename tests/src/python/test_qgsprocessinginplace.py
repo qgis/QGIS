@@ -84,6 +84,8 @@ class TestQgsProcessingInPlace(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
+        super().setUpClass()
+
         """Run before all tests"""
         QCoreApplication.setOrganizationName("QGIS_Test")
         QCoreApplication.setOrganizationDomain(

@@ -28,21 +28,14 @@
 #include <QQueue>
 #include <QTimer>
 
-#include "qgseptdecoder.h"
-#include "qgscoordinatereferencesystem.h"
 #include "qgspointcloudrequest.h"
 #include "qgspointcloudattribute.h"
 #include "qgslogger.h"
-#include "qgsfeedback.h"
-#include "qgsmessagelog.h"
-
 #include "qgstiledownloadmanager.h"
-#include "qgsblockingnetworkrequest.h"
-#include "qgslazdecoder.h"
-#include "qgsfileutils.h"
 #include "qgsapplication.h"
 #include "qgscopcpointcloudblockrequest.h"
 #include "qgspointcloudexpression.h"
+#include "qgsnetworkaccessmanager.h"
 
 ///@cond PRIVATE
 
@@ -180,6 +173,7 @@ bool QgsRemoteCopcPointCloudIndex::isValid() const
 void QgsRemoteCopcPointCloudIndex::fetchHierarchyPage( uint64_t offset, uint64_t byteSize ) const
 {
   QNetworkRequest nr( mUrl );
+  QgsSetRequestInitiatorClass( nr, QStringLiteral( "QgsRemoteCopcPointCloudIndex" ) );
   nr.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferCache );
   nr.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
   QByteArray queryRange = QStringLiteral( "bytes=%1-%2" ).arg( offset ).arg( offset + byteSize - 1 ).toLocal8Bit();

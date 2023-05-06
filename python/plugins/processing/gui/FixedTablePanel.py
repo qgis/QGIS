@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 ***************************************************************************
     FixedTablePanel.py
@@ -39,7 +37,7 @@ with warnings.catch_warnings():
 class FixedTablePanel(BASE, WIDGET):
 
     def __init__(self, param, parent=None):
-        super(FixedTablePanel, self).__init__(parent)
+        super().__init__(parent)
         self.setupUi(self)
 
         self.leText.setEnabled(False)

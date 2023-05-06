@@ -5,6 +5,8 @@ set -e
 CTEST_SOURCE_DIR=${CTEST_SOURCE_DIR-/root/QGIS}
 CTEST_BUILD_DIR=${CTEST_BUILD_DIR-/root/QGIS/build}
 
+export LANG="C.UTF-8"
+
 ##############
 # Setup ccache
 ##############
@@ -58,15 +60,6 @@ fi
 
 CMAKE_EXTRA_ARGS=()
 
-if [[ ${BUILD_WITH_QT6} = "ON" ]]; then
-  CMAKE_EXTRA_ARGS+=(
-   "-DQSCINTILLA_INCLUDE_DIR=/usr/include/qt6"
-   "-DQSCINTILLA_LIBRARY=/usr/lib64/libqscintilla2_qt6.so"
-   "-DQWT_INCLUDE_DIR=/usr/local/qwt-6.2.0/include/"
-   "-DQWT_LIBRARY=/usr/local/qwt-6.2.0/lib/libqwt.so.6"
-  )
-fi
-
 if [[ "${WITH_COMPILE_COMMANDS}" == "ON" ]]; then
   CMAKE_EXTRA_ARGS+=(
     "-DCMAKE_EXPORT_COMPILE_COMMANDS=ON"
@@ -92,6 +85,7 @@ cmake \
  -DWITH_STAGED_PLUGINS=ON \
  -DWITH_GRASS7=${WITH_GRASS7} \
  -DWITH_GRASS8=${WITH_GRASS8} \
+ -DWITH_GRASS_PLUGIN=${WITH_QT5} \
  -DSUPPRESS_QT_WARNINGS=ON \
  -DENABLE_TESTS=ON \
  -DENABLE_MODELTEST=${WITH_QT5} \

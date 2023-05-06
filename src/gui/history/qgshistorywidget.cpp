@@ -17,8 +17,11 @@
 #include "qgsgui.h"
 #include "qgshistoryentrymodel.h"
 #include "qgshistoryentrynode.h"
+#include "qgssettings.h"
 
 #include <QTextBrowser>
+#include <QtGlobal>
+#include <QMenu>
 
 QgsHistoryWidget::QgsHistoryWidget( const QString &providerId, Qgis::HistoryProviderBackends backends, QgsHistoryProviderRegistry *registry, const QgsHistoryWidgetContext &context, QWidget *parent )
   : QgsPanelWidget( parent )
@@ -36,6 +39,24 @@ QgsHistoryWidget::QgsHistoryWidget( const QString &providerId, Qgis::HistoryProv
   mFilterEdit->setShowSearchIcon( true );
   connect( mFilterEdit, &QLineEdit::textChanged, mProxyModel, &QgsHistoryEntryProxyModel::setFilter );
   connect( mTreeView->selectionModel(), &QItemSelectionModel::currentChanged, this, &QgsHistoryWidget::currentItemChanged );
+  connect( mTreeView, &QTreeView::doubleClicked, this, &QgsHistoryWidget::nodeDoubleClicked );
+  mTreeView->setExpandsOnDoubleClick( false );
+
+  mTreeView->setContextMenuPolicy( Qt::CustomContextMenu );
+  connect( mTreeView, &QWidget::customContextMenuRequested, this, &QgsHistoryWidget::showNodeContextMenu );
+
+  // expand first group (usually most recent date group)
+  const QModelIndex firstGroup = mProxyModel->index( 0, 0, QModelIndex() );
+  mTreeView->expand( firstGroup );
+
+  QgsSettings settings;
+  mSplitter->restoreState( settings.value( QStringLiteral( "history/splitterState%1" ).arg( providerId ) ).toByteArray() );
+
+  connect( mSplitter, &QSplitter::splitterMoved, this, [providerId, this]
+  {
+    QgsSettings settings;
+    settings.setValue( QStringLiteral( "history/splitterState%1" ).arg( providerId ), mSplitter->saveState() );
+  } );
 }
 
 void QgsHistoryWidget::currentItemChanged( const QModelIndex &selected, const QModelIndex & )
@@ -70,6 +91,36 @@ void QgsHistoryWidget::currentItemChanged( const QModelIndex &selected, const QM
       mContainerStackedWidget->removeWidget( mContainerStackedWidget->widget( 1 ) );
       mContainerStackedWidget->setCurrentIndex( 0 );
     }
+  }
+}
+
+void QgsHistoryWidget::nodeDoubleClicked( const QModelIndex &index )
+{
+  if ( QgsHistoryEntryNode *node = mModel->index2node( mProxyModel->mapToSource( index ) ) )
+  {
+    if ( node->doubleClicked( mContext ) )
+      return; // double-click handled
+  }
+
+  // otherwise double-clicks expands/collapses the node
+  if ( mTreeView->isExpanded( index ) )
+    mTreeView->collapse( index );
+  else
+    mTreeView->expand( index );
+}
+
+void QgsHistoryWidget::showNodeContextMenu( const QPoint &pos )
+{
+  if ( QgsHistoryEntryNode *node = mModel->index2node( mProxyModel->mapToSource( mTreeView->currentIndex() ) ) )
+  {
+    QMenu *menu = new QMenu();
+
+    node->populateContextMenu( menu, mContext );
+    if ( !menu->isEmpty() )
+    {
+      menu->exec( mTreeView->mapToGlobal( pos ) );
+    }
+    delete menu;
   }
 }
 

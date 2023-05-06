@@ -148,6 +148,7 @@ set(QGIS_GUI_SRCS
   codeeditors/qgscodeeditorjson.cpp
   codeeditors/qgscodeeditorpython.cpp
   codeeditors/qgscodeeditorr.cpp
+  codeeditors/qgscodeeditorshell.cpp
   codeeditors/qgscodeeditorsql.cpp
   codeeditors/qgscodeeditorexpression.cpp
 
@@ -373,6 +374,7 @@ set(QGIS_GUI_SRCS
   processing/qgsprocessingguiregistry.cpp
   processing/qgsprocessinghelpeditorwidget.cpp
   processing/qgsprocessinghistoryprovider.cpp
+  processing/qgsprocessinghistorywidget.cpp
   processing/qgsprocessingmaplayercombobox.cpp
   processing/qgsprocessingmatrixmodelerwidget.cpp
   processing/qgsprocessingmatrixparameterdialog.cpp
@@ -382,6 +384,7 @@ set(QGIS_GUI_SRCS
   processing/qgsprocessingoutputdestinationwidget.cpp
   processing/qgsprocessingparameterdefinitionwidget.cpp
   processing/qgsprocessingparameterswidget.cpp
+  processing/qgsprocessingpointcloudexpressionlineedit.cpp
   processing/qgsprocessingrecentalgorithmlog.cpp
   processing/qgsprocessingtininputlayerswidget.cpp
   processing/qgsprocessingtoolboxmodel.cpp
@@ -438,7 +441,12 @@ set(QGIS_GUI_SRCS
   sensor/qgssensorguiregistry.cpp
   sensor/qgssensorwidget.cpp
 
+  settings/qgssettingseditorwidgetwrapper.cpp
+  settings/qgssettingseditorwidgetwrapperimpl.cpp
+  settings/qgssettingseditorwidgetregistry.cpp
   settings/qgssettingsregistrygui.cpp
+  settings/qgssettingstreemodel.cpp
+  settings/qgssettingstreewidget.cpp
 
   tableeditor/qgstableeditordialog.cpp
   tableeditor/qgstableeditorformattingwidget.cpp
@@ -505,6 +513,7 @@ set(QGIS_GUI_SRCS
   qgsdataitemguiproviderregistry.cpp
   qgsdatumtransformdialog.cpp
   qgsdatasourceselectdialog.cpp
+  qgsdbqueryhistoryprovider.cpp
   qgsdbrelationshipwidget.cpp
   qgsdetaileditemdata.cpp
   qgsdetaileditemdelegate.cpp
@@ -773,6 +782,7 @@ set(QGIS_GUI_HDRS
   qgsdataitemguiproviderregistry.h
   qgsdatasourcemanagerdialog.h
   qgsdatasourceselectdialog.h
+  qgsdbqueryhistoryprovider.h
   qgsdbrelationshipwidget.h
   qgsnewdatabasetablenamewidget.h
   qgsdatumtransformdialog.h
@@ -1056,6 +1066,7 @@ set(QGIS_GUI_HDRS
   codeeditors/qgscodeeditorjson.h
   codeeditors/qgscodeeditorpython.h
   codeeditors/qgscodeeditorr.h
+  codeeditors/qgscodeeditorshell.h
   codeeditors/qgscodeeditorsql.h
 
   devtools/qgsdevtoolwidget.h
@@ -1286,6 +1297,7 @@ set(QGIS_GUI_HDRS
   processing/qgsprocessingguiregistry.h
   processing/qgsprocessinghelpeditorwidget.h
   processing/qgsprocessinghistoryprovider.h
+  processing/qgsprocessinghistorywidget.h
   processing/qgsprocessingmaplayercombobox.h
   processing/qgsprocessingmatrixmodelerwidget.h
   processing/qgsprocessingmatrixparameterdialog.h
@@ -1295,6 +1307,7 @@ set(QGIS_GUI_HDRS
   processing/qgsprocessingoutputdestinationwidget.h
   processing/qgsprocessingparameterdefinitionwidget.h
   processing/qgsprocessingparameterswidget.h
+  processing/qgsprocessingpointcloudexpressionlineedit.h
   processing/qgsprocessingrecentalgorithmlog.h
   processing/qgsprocessingtininputlayerswidget.h
   processing/qgsprocessingtoolboxmodel.h
@@ -1428,7 +1441,12 @@ set(QGIS_GUI_HDRS
   sensor/qgssensorguiregistry.h
   sensor/qgssensorwidget.h
 
+  settings/qgssettingseditorwidgetwrapper.h
+  settings/qgssettingseditorwidgetwrapperimpl.h
+  settings/qgssettingseditorwidgetregistry.h
   settings/qgssettingsregistrygui.h
+  settings/qgssettingstreemodel.h
+  settings/qgssettingstreewidget.h
 
   tableeditor/qgstableeditordialog.h
   tableeditor/qgstableeditorformattingwidget.h

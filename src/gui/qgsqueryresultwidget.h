@@ -226,6 +226,7 @@ class GUI_EXPORT QgsQueryResultWidget: public QWidget, private Ui::QgsQueryResul
     long long mActualRowCount = -1;
     long long mFetchedRowsBatchCount = 0;
     QueryWidgetMode mQueryWidgetMode = QueryWidgetMode::SqlQueryMode;
+    long long mCurrentHistoryEntryId = -1;
 
     /**
      * Updates SQL layer columns.

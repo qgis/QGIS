@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 ***************************************************************************
     QgisAlgorithmTests.py
@@ -99,9 +97,9 @@ class TestQgisAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
             exec(import_string)
             # and now we should be able to instantiate an object!
             if t.className() == 'QgsProcessingParameterProviderConnection':
-                exec('test = {}(\'id\',\'name\', \'provider\')\nself.assertIsNotNone(test)'.format(t.className()))
+                exec(f'test = {t.className()}(\'id\',\'name\', \'provider\')\nself.assertIsNotNone(test)')
             else:
-                exec('test = {}(\'id\',\'name\')\nself.assertIsNotNone(test)'.format(t.className()))
+                exec(f'test = {t.className()}(\'id\',\'name\')\nself.assertIsNotNone(test)')
 
 
 if __name__ == '__main__':

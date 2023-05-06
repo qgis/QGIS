@@ -1,5 +1,5 @@
 /***************************************************************************
-                         qgsalgorithmpdalthin.cpp
+                         qgsalgorithmpdalthinbyradius.cpp
                          ---------------------
     begin                : February 2023
     copyright            : (C) 2023 by Alexander Bruy
@@ -15,58 +15,57 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsalgorithmpdalthin.h"
+#include "qgsalgorithmpdalthinbyradius.h"
 
 #include "qgsrunprocess.h"
 #include "qgspointcloudlayer.h"
 
 ///@cond PRIVATE
 
-QString QgsPdalThinAlgorithm::name() const
+QString QgsPdalThinByRadiusAlgorithm::name() const
 {
-  return QStringLiteral( "thin" );
+  return QStringLiteral( "thinbyradius" );
 }
 
-QString QgsPdalThinAlgorithm::displayName() const
+QString QgsPdalThinByRadiusAlgorithm::displayName() const
 {
-  return QObject::tr( "Thin" );
+  return QObject::tr( "Thin (by sampling radius)" );
 }
 
-QString QgsPdalThinAlgorithm::group() const
+QString QgsPdalThinByRadiusAlgorithm::group() const
 {
   return QObject::tr( "Point cloud data management" );
 }
 
-QString QgsPdalThinAlgorithm::groupId() const
+QString QgsPdalThinByRadiusAlgorithm::groupId() const
 {
   return QStringLiteral( "pointclouddatamanagement" );
 }
 
-QStringList QgsPdalThinAlgorithm::tags() const
+QStringList QgsPdalThinByRadiusAlgorithm::tags() const
 {
-  return QObject::tr( "thin,reduce,decrease,size" ).split( ',' );
+  return QObject::tr( "pdal,lidar,thin,reduce,decrease,size,sampling,radius" ).split( ',' );
 }
 
-QString QgsPdalThinAlgorithm::shortHelpString() const
+QString QgsPdalThinByRadiusAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm creates a thinned version of the point cloud by only keeping every N-th or by performing sampling by distance point." );
+  return QObject::tr( "This algorithm creates a thinned version of the point cloud by performing sampling by distance point." );
 }
 
-QgsPdalThinAlgorithm *QgsPdalThinAlgorithm::createInstance() const
+QgsPdalThinByRadiusAlgorithm *QgsPdalThinByRadiusAlgorithm::createInstance() const
 {
-  return new QgsPdalThinAlgorithm();
+  return new QgsPdalThinByRadiusAlgorithm();
 }
 
-void QgsPdalThinAlgorithm::initAlgorithm( const QVariantMap & )
+void QgsPdalThinByRadiusAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterPointCloudLayer( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ) ) );
-  addParameter( new QgsProcessingParameterEnum( QStringLiteral( "MODE" ), QObject::tr( "Mode" ), QStringList() << QObject::tr( "Every N-th" ) << QObject::tr( "Sample" ), false, 0 ) );
-  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "STEP" ), QObject::tr( "Step" ), QgsProcessingParameterNumber::Integer, 20, false, 1 ) );
+  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "SAMPLING_RADIUS" ), QObject::tr( "Sampling radius (in map units)" ), QgsProcessingParameterNumber::Double, 1.0, false, 1e-9 ) );
   createCommonParameters();
-  addParameter( new QgsProcessingParameterPointCloudDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Output layer" ) ) );
+  addParameter( new QgsProcessingParameterPointCloudDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Thinned (by radius)" ) ) );
 }
 
-QStringList QgsPdalThinAlgorithm::createArgumentLists( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
+QStringList QgsPdalThinByRadiusAlgorithm::createArgumentLists( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   Q_UNUSED( feedback );
 
@@ -78,18 +77,17 @@ QStringList QgsPdalThinAlgorithm::createArgumentLists( const QVariantMap &parame
   QString outputFile = fixOutputFileName( layer->source(), outputName, context );
   setOutputValue( QStringLiteral( "OUTPUT" ), outputFile );
 
-  int mode = parameterAsInt( parameters, QStringLiteral( "MODE" ), context );
-  int step = parameterAsInt( parameters, QStringLiteral( "STEP" ), context );
+  double step = parameterAsDouble( parameters, QStringLiteral( "SAMPLING_RADIUS" ), context );
 
   QStringList args = { QStringLiteral( "thin" ),
                        QStringLiteral( "--input=%1" ).arg( layer->source() ),
                        QStringLiteral( "--output=%1" ).arg( outputFile ),
-                       QStringLiteral( "--mode=%1" ).arg( mode == 0 ? QStringLiteral( "every-nth" ) : QStringLiteral( "sample" ) ),
-                       QStringLiteral( "--%1=%2" ).arg( mode == 0 ? QStringLiteral( "step-every-nth" ) : QStringLiteral( "step-sample" ) ).arg( step )
+                       QStringLiteral( "--mode=sample" ),
+                       QStringLiteral( "--step-sample=%1" ).arg( step )
                      };
 
   applyCommonParameters( args, layer->crs(), parameters, context );
-  applyThreadsParameter( args );
+  applyThreadsParameter( args, context );
   return args;
 }
 

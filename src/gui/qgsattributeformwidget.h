@@ -55,6 +55,8 @@ class GUI_EXPORT QgsAttributeFormWidget : public QWidget // SIP_ABSTRACT
      */
     explicit QgsAttributeFormWidget( QgsWidgetWrapper *widget, QgsAttributeForm *form );
 
+    ~QgsAttributeFormWidget() override;
+
     /**
      * Creates the search widget wrappers for the widget used when the form is in
      * search mode.
@@ -171,6 +173,13 @@ class GUI_EXPORT QgsAttributeFormWidget : public QWidget // SIP_ABSTRACT
      * \note not available in Python bindings
      */
     QWidget *searchPage() const SIP_SKIP;
+
+    /**
+     * Sets the visible page in the widget to the page matching the specified \a mode.
+     *
+     * \since QGIS 3.32
+     */
+    void setVisiblePageForMode( QgsAttributeFormWidget::Mode mode );
 
   private slots:
 

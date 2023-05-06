@@ -84,14 +84,10 @@ class TestAuthManager(unittest.TestCase):
     def setUpClass(cls):
         """Run before all tests:
         Creates an auth configuration"""
+        super().setUpClass()
 
         cls.certsdata_path = os.path.join(unitTestDataPath('auth_system'), 'certs_keys_2048')
         cls.setUpAuth()
-
-    @classmethod
-    def tearDownClass(cls):
-        """Run after all tests"""
-        super().tearDownClass()
 
     def setUp(self):
         """Run before each test."""

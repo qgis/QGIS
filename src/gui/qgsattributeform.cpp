@@ -1659,7 +1659,7 @@ void QgsAttributeForm::init()
   setContentsMargins( 0, 0, 0, 0 );
 
   // Try to load Ui-File for layout
-  if ( mContext.allowCustomUi() && mLayer->editFormConfig().layout() == QgsEditFormConfig::UiFileLayout &&
+  if ( mContext.allowCustomUi() && mLayer->editFormConfig().layout() == Qgis::AttributeFormLayout::UiFile &&
        !mLayer->editFormConfig().uiForm().isEmpty() )
   {
     QgsDebugMsg( QStringLiteral( "loading form: %1" ).arg( mLayer->editFormConfig().uiForm() ) );
@@ -1689,7 +1689,7 @@ void QgsAttributeForm::init()
   QgsTabWidget *tabWidget = nullptr;
 
   // Tab layout
-  if ( !formWidget && mLayer->editFormConfig().layout() == QgsEditFormConfig::TabLayout )
+  if ( !formWidget && mLayer->editFormConfig().layout() == Qgis::AttributeFormLayout::DragAndDrop )
   {
     int row = 0;
     int column = 0;
@@ -1701,60 +1701,79 @@ void QgsAttributeForm::init()
 
     for ( QgsAttributeEditorElement *widgDef : tabs )
     {
-      if ( widgDef->type() == QgsAttributeEditorElement::AeTypeContainer )
+      if ( widgDef->type() == Qgis::AttributeEditorType::Container )
       {
         QgsAttributeEditorContainer *containerDef = dynamic_cast<QgsAttributeEditorContainer *>( widgDef );
         if ( !containerDef )
           continue;
 
-        if ( containerDef->isGroupBox() )
+        switch ( containerDef->type() )
         {
-          tabWidget = nullptr;
-          WidgetInfo widgetInfo = createWidgetFromDef( widgDef, formWidget, mLayer, mContext );
-          if ( widgetInfo.labelStyle.overrideColor )
+          case Qgis::AttributeEditorContainerType::GroupBox:
           {
-            if ( widgetInfo.labelStyle.color.isValid() )
+            tabWidget = nullptr;
+            WidgetInfo widgetInfo = createWidgetFromDef( widgDef, formWidget, mLayer, mContext );
+            if ( widgetInfo.labelStyle.overrideColor )
             {
-              widgetInfo.widget->setStyleSheet( QStringLiteral( "QGroupBox::title { color: %1; }" ).arg( widgetInfo.labelStyle.color.name( QColor::HexArgb ) ) );
+              if ( widgetInfo.labelStyle.color.isValid() )
+              {
+                widgetInfo.widget->setStyleSheet( QStringLiteral( "QGroupBox::title { color: %1; }" ).arg( widgetInfo.labelStyle.color.name( QColor::HexArgb ) ) );
+              }
             }
-          }
-          if ( widgetInfo.labelStyle.overrideFont )
-          {
-            widgetInfo.widget->setFont( widgetInfo.labelStyle.font );
-          }
-          layout->addWidget( widgetInfo.widget, row, column, 1, 2 );
-          if ( containerDef->visibilityExpression().enabled() || containerDef->collapsedExpression().enabled() )
-          {
-            registerContainerInformation( new ContainerInformation( widgetInfo.widget, containerDef->visibilityExpression().enabled() ? containerDef->visibilityExpression().data() : QgsExpression(), containerDef->collapsed(), containerDef->collapsedExpression().enabled() ? containerDef->collapsedExpression().data() : QgsExpression() ) );
-          }
-          column += 2;
-        }
-        else
-        {
-          if ( !tabWidget )
-          {
-            tabWidget = new QgsTabWidget();
-            layout->addWidget( tabWidget, row, column, 1, 2 );
+            if ( widgetInfo.labelStyle.overrideFont )
+            {
+              widgetInfo.widget->setFont( widgetInfo.labelStyle.font );
+            }
+            layout->addWidget( widgetInfo.widget, row, column, 1, 2 );
+            if ( containerDef->visibilityExpression().enabled() || containerDef->collapsedExpression().enabled() )
+            {
+              registerContainerInformation( new ContainerInformation( widgetInfo.widget, containerDef->visibilityExpression().enabled() ? containerDef->visibilityExpression().data() : QgsExpression(), containerDef->collapsed(), containerDef->collapsedExpression().enabled() ? containerDef->collapsedExpression().data() : QgsExpression() ) );
+            }
             column += 2;
+            break;
           }
 
-          QWidget *tabPage = new QWidget( tabWidget );
-
-          tabWidget->addTab( tabPage, widgDef->name() );
-          tabWidget->setTabStyle( tabWidget->tabBar()->count() - 1, widgDef->labelStyle() );
-
-          if ( containerDef->visibilityExpression().enabled() )
+          case Qgis::AttributeEditorContainerType::Row:
           {
-            registerContainerInformation( new ContainerInformation( tabWidget, tabPage, containerDef->visibilityExpression().data() ) );
+            tabWidget = nullptr;
+            WidgetInfo widgetInfo = createWidgetFromDef( widgDef, formWidget, mLayer, mContext );
+            layout->addWidget( widgetInfo.widget, row, column, 1, 2 );
+            if ( containerDef->visibilityExpression().enabled() || containerDef->collapsedExpression().enabled() )
+            {
+              registerContainerInformation( new ContainerInformation( widgetInfo.widget, containerDef->visibilityExpression().enabled() ? containerDef->visibilityExpression().data() : QgsExpression(), containerDef->collapsed(), containerDef->collapsedExpression().enabled() ? containerDef->collapsedExpression().data() : QgsExpression() ) );
+            }
+            column += 2;
+            break;
           }
-          QGridLayout *tabPageLayout = new QGridLayout();
-          tabPage->setLayout( tabPageLayout );
 
-          WidgetInfo widgetInfo = createWidgetFromDef( widgDef, tabPage, mLayer, mContext );
-          tabPageLayout->addWidget( widgetInfo.widget );
+          case Qgis::AttributeEditorContainerType::Tab:
+          {
+            if ( !tabWidget )
+            {
+              tabWidget = new QgsTabWidget();
+              layout->addWidget( tabWidget, row, column, 1, 2 );
+              column += 2;
+            }
+
+            QWidget *tabPage = new QWidget( tabWidget );
+
+            tabWidget->addTab( tabPage, widgDef->name() );
+            tabWidget->setTabStyle( tabWidget->tabBar()->count() - 1, widgDef->labelStyle() );
+
+            if ( containerDef->visibilityExpression().enabled() )
+            {
+              registerContainerInformation( new ContainerInformation( tabWidget, tabPage, containerDef->visibilityExpression().data() ) );
+            }
+            QGridLayout *tabPageLayout = new QGridLayout();
+            tabPage->setLayout( tabPageLayout );
+
+            WidgetInfo widgetInfo = createWidgetFromDef( widgDef, tabPage, mLayer, mContext );
+            tabPageLayout->addWidget( widgetInfo.widget );
+            break;
+          }
         }
       }
-      else if ( widgDef->type() == QgsAttributeEditorElement::AeTypeRelation )
+      else if ( widgDef->type() == Qgis::AttributeEditorType::Relation )
       {
         hasRootFields = true;
         tabWidget = nullptr;
@@ -1847,7 +1866,7 @@ void QgsAttributeForm::init()
         }
 
         // Alias DD overrides
-        if ( widgDef->type() == QgsAttributeEditorElement::AttributeEditorType::AeTypeField )
+        if ( widgDef->type() == Qgis::AttributeEditorType::Field )
         {
           const QgsAttributeEditorField *fieldElement { static_cast<QgsAttributeEditorField *>( widgDef ) };
           const int fieldIdx = fieldElement->idx();
@@ -2179,7 +2198,7 @@ void QgsAttributeForm::initPython()
   // Init Python, if init function is not empty and the combo indicates
   // the source for the function code
   if ( !mLayer->editFormConfig().initFunction().isEmpty()
-       && mLayer->editFormConfig().initCodeSource() != QgsEditFormConfig::CodeSourceNone )
+       && mLayer->editFormConfig().initCodeSource() != Qgis::AttributeFormPythonInitCodeSource::NoSource )
   {
 
     QString initFunction = mLayer->editFormConfig().initFunction();
@@ -2188,7 +2207,7 @@ void QgsAttributeForm::initPython()
 
     switch ( mLayer->editFormConfig().initCodeSource() )
     {
-      case QgsEditFormConfig::CodeSourceFile:
+      case Qgis::AttributeFormPythonInitCodeSource::File:
         if ( !initFilePath.isEmpty() )
         {
           QFile *inputFile = QgsApplication::networkContentFetcherRegistry()->localFile( initFilePath );
@@ -2214,7 +2233,7 @@ void QgsAttributeForm::initPython()
         }
         break;
 
-      case QgsEditFormConfig::CodeSourceDialog:
+      case Qgis::AttributeFormPythonInitCodeSource::Dialog:
         initCode = mLayer->editFormConfig().initCode();
         if ( initCode.isEmpty() )
         {
@@ -2222,8 +2241,8 @@ void QgsAttributeForm::initPython()
         }
         break;
 
-      case QgsEditFormConfig::CodeSourceEnvironment:
-      case QgsEditFormConfig::CodeSourceNone:
+      case Qgis::AttributeFormPythonInitCodeSource::Environment:
+      case Qgis::AttributeFormPythonInitCodeSource::NoSource:
         // Nothing to do: the function code should be already in the environment
         break;
     }
@@ -2295,7 +2314,7 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
 
   switch ( widgetDef->type() )
   {
-    case QgsAttributeEditorElement::AeTypeAction:
+    case Qgis::AttributeEditorType::Action:
     {
       const QgsAttributeEditorAction *elementDef = dynamic_cast<const QgsAttributeEditorAction *>( widgetDef );
       if ( !elementDef )
@@ -2312,7 +2331,7 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
       break;
     }
 
-    case QgsAttributeEditorElement::AeTypeField:
+    case Qgis::AttributeEditorType::Field:
     {
       const QgsAttributeEditorField *fieldDef = dynamic_cast<const QgsAttributeEditorField *>( widgetDef );
       if ( !fieldDef )
@@ -2347,7 +2366,7 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
       break;
     }
 
-    case QgsAttributeEditorElement::AeTypeRelation:
+    case Qgis::AttributeEditorType::Relation:
     {
       const QgsAttributeEditorRelation *relDef = static_cast<const QgsAttributeEditorRelation *>( widgetDef );
 
@@ -2375,7 +2394,7 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
       break;
     }
 
-    case QgsAttributeEditorElement::AeTypeContainer:
+    case Qgis::AttributeEditorType::Container:
     {
       const QgsAttributeEditorContainer *container = dynamic_cast<const QgsAttributeEditorContainer *>( widgetDef );
       if ( !container )
@@ -2388,41 +2407,59 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
 
       QString widgetName;
       QWidget *myContainer = nullptr;
-      if ( container->isGroupBox() )
+      bool removeLayoutMargin = false;
+      switch ( container->type() )
       {
-        QgsCollapsibleGroupBoxBasic *groupBox = new QgsCollapsibleGroupBoxBasic();
-        widgetName = QStringLiteral( "QGroupBox" );
-        if ( container->showLabel() )
+        case Qgis::AttributeEditorContainerType::GroupBox:
         {
-          groupBox->setTitle( container->name() );
-          if ( newWidgetInfo.labelStyle.overrideColor )
+          QgsCollapsibleGroupBoxBasic *groupBox = new QgsCollapsibleGroupBoxBasic();
+          widgetName = QStringLiteral( "QGroupBox" );
+          if ( container->showLabel() )
           {
-            if ( newWidgetInfo.labelStyle.color.isValid() )
+            groupBox->setTitle( container->name() );
+            if ( newWidgetInfo.labelStyle.overrideColor )
             {
-              groupBox->setStyleSheet( QStringLiteral( "QGroupBox::title { color: %1; }" ).arg( newWidgetInfo.labelStyle.color.name( QColor::HexArgb ) ) );
+              if ( newWidgetInfo.labelStyle.color.isValid() )
+              {
+                groupBox->setStyleSheet( QStringLiteral( "QGroupBox::title { color: %1; }" ).arg( newWidgetInfo.labelStyle.color.name( QColor::HexArgb ) ) );
+              }
+            }
+            if ( newWidgetInfo.labelStyle.overrideFont )
+            {
+              groupBox->setFont( newWidgetInfo.labelStyle.font );
             }
           }
-          if ( newWidgetInfo.labelStyle.overrideFont )
-          {
-            groupBox->setFont( newWidgetInfo.labelStyle.font );
-          }
+          myContainer = groupBox;
+          newWidgetInfo.widget = myContainer;
+          groupBox->setCollapsed( container->collapsed() );
+          break;
         }
-        myContainer = groupBox;
-        newWidgetInfo.widget = myContainer;
-        groupBox->setCollapsed( container->collapsed() );
-      }
-      else
-      {
-        myContainer = new QWidget();
 
-        QgsScrollArea *scrollArea = new QgsScrollArea( parent );
+        case Qgis::AttributeEditorContainerType::Row:
+        {
+          QWidget *rowWidget = new QWidget();
+          widgetName = QStringLiteral( "Row" );
+          myContainer = rowWidget;
+          newWidgetInfo.widget = myContainer;
+          removeLayoutMargin = true;
+          columnCount = container->children().size();
+          break;
+        }
 
-        scrollArea->setWidget( myContainer );
-        scrollArea->setWidgetResizable( true );
-        scrollArea->setFrameShape( QFrame::NoFrame );
-        widgetName = QStringLiteral( "QScrollArea QWidget" );
+        case Qgis::AttributeEditorContainerType::Tab:
+        {
+          myContainer = new QWidget();
 
-        newWidgetInfo.widget = scrollArea;
+          QgsScrollArea *scrollArea = new QgsScrollArea( parent );
+
+          scrollArea->setWidget( myContainer );
+          scrollArea->setWidgetResizable( true );
+          scrollArea->setFrameShape( QFrame::NoFrame );
+          widgetName = QStringLiteral( "QScrollArea QWidget" );
+
+          newWidgetInfo.widget = scrollArea;
+          break;
+        }
       }
 
       if ( container->backgroundColor().isValid() )
@@ -2432,6 +2469,8 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
       }
 
       QGridLayout *gbLayout = new QGridLayout();
+      if ( removeLayoutMargin )
+        gbLayout->setContentsMargins( 0, 0, 0, 0 );
       myContainer->setLayout( gbLayout );
 
       int row = 0;
@@ -2444,7 +2483,7 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
       {
         WidgetInfo widgetInfo = createWidgetFromDef( childDef, myContainer, vl, context );
 
-        if ( childDef->type() == QgsAttributeEditorElement::AeTypeContainer )
+        if ( childDef->type() == Qgis::AttributeEditorType::Container )
         {
           QgsAttributeEditorContainer *containerDef = static_cast<QgsAttributeEditorContainer *>( childDef );
           if ( containerDef->visibilityExpression().enabled() || containerDef->collapsedExpression().enabled() )
@@ -2476,7 +2515,7 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
           }
 
           // Alias DD overrides
-          if ( childDef->type() == QgsAttributeEditorElement::AeTypeField )
+          if ( childDef->type() == Qgis::AttributeEditorType::Field )
           {
             const QgsAttributeEditorField *fieldDef { static_cast<QgsAttributeEditorField *>( childDef ) };
             const QgsFields fields = vl->fields();
@@ -2558,7 +2597,7 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
       break;
     }
 
-    case QgsAttributeEditorElement::AeTypeQmlElement:
+    case Qgis::AttributeEditorType::QmlElement:
     {
       const QgsAttributeEditorQmlElement *elementDef = static_cast<const QgsAttributeEditorQmlElement *>( widgetDef );
 
@@ -2576,7 +2615,7 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
       break;
     }
 
-    case QgsAttributeEditorElement::AeTypeHtmlElement:
+    case Qgis::AttributeEditorType::HtmlElement:
     {
       const QgsAttributeEditorHtmlElement *elementDef = static_cast<const QgsAttributeEditorHtmlElement *>( widgetDef );
 
@@ -2594,7 +2633,7 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
       break;
     }
 
-    case QgsAttributeEditorElement::AeTypeTextElement:
+    case Qgis::AttributeEditorType::TextElement:
     {
       const QgsAttributeEditorTextElement *elementDef = static_cast<const QgsAttributeEditorTextElement *>( widgetDef );
 
@@ -2612,7 +2651,7 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
       break;
     }
 
-    case QgsAttributeEditorElement::AeTypeSpacerElement:
+    case Qgis::AttributeEditorType::SpacerElement:
     {
       const QgsAttributeEditorSpacerElement *elementDef = static_cast<const QgsAttributeEditorSpacerElement *>( widgetDef );
       QgsSpacerWidgetWrapper *spacerWrapper = new QgsSpacerWidgetWrapper( mLayer, nullptr, this );

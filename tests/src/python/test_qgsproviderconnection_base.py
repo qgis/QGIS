@@ -71,11 +71,6 @@ class TestPyQgsProviderConnectionBase():
         QCoreApplication.setApplicationName(cls.__name__)
         start_app()
 
-    @classmethod
-    def tearDownClass(cls):
-        """Run after all tests"""
-        pass
-
     def setUp(self):
         QgsSettings().clear()
 

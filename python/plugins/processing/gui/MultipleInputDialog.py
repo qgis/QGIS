@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 ***************************************************************************
     MultipleInputDialog.py
@@ -45,7 +43,7 @@ with warnings.catch_warnings():
 class MultipleInputDialog(BASE, WIDGET):
 
     def __init__(self, options, selectedoptions=None, datatype=None):
-        super(MultipleInputDialog, self).__init__(None)
+        super().__init__(None)
         self.setupUi(self)
         self.datatype = datatype
         self.model = None

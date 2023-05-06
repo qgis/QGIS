@@ -19,8 +19,6 @@
 #include "qgis_core.h"
 #include "qgsattributeeditorelement.h"
 #include "qgsrelation.h"
-#include "qgsoptionalexpression.h"
-#include "qgspropertycollection.h"
 #include <QColor>
 
 class QgsRelationManager;
@@ -61,7 +59,7 @@ class CORE_EXPORT QgsAttributeEditorRelation : public QgsAttributeEditorElement
      * \deprecated since QGIS 3.0.2. The name parameter is not used for anything and overwritten by the relationId internally.
      */
     Q_DECL_DEPRECATED QgsAttributeEditorRelation( const QString &name, const QString &relationId, QgsAttributeEditorElement *parent )
-      : QgsAttributeEditorElement( AeTypeRelation, name, parent )
+      : QgsAttributeEditorElement( Qgis::AttributeEditorType::Relation, name, parent )
       , mRelationId( relationId )
     {}
 
@@ -69,7 +67,7 @@ class CORE_EXPORT QgsAttributeEditorRelation : public QgsAttributeEditorElement
      * \deprecated since QGIS 3.0.2. The name parameter is not used for anything and overwritten by the relationId internally.
      */
     Q_DECL_DEPRECATED QgsAttributeEditorRelation( const QString &name, const QgsRelation &relation, QgsAttributeEditorElement *parent )
-      : QgsAttributeEditorElement( AeTypeRelation, name, parent )
+      : QgsAttributeEditorElement( Qgis::AttributeEditorType::Relation, name, parent )
       , mRelationId( relation.id() )
       , mRelation( relation )
     {}
@@ -81,7 +79,7 @@ class CORE_EXPORT QgsAttributeEditorRelation : public QgsAttributeEditorElement
      * \param parent       The parent (used as container)
      */
     QgsAttributeEditorRelation( const QString &relationId, QgsAttributeEditorElement *parent )
-      : QgsAttributeEditorElement( AeTypeRelation, relationId, parent )
+      : QgsAttributeEditorElement( Qgis::AttributeEditorType::Relation, relationId, parent )
       , mRelationId( relationId )
     {}
 
@@ -92,7 +90,7 @@ class CORE_EXPORT QgsAttributeEditorRelation : public QgsAttributeEditorElement
      * \param parent       The parent (used as container)
      */
     QgsAttributeEditorRelation( const QgsRelation &relation, QgsAttributeEditorElement *parent )
-      : QgsAttributeEditorElement( AeTypeRelation, relation.id(), parent )
+      : QgsAttributeEditorElement( Qgis::AttributeEditorType::Relation, relation.id(), parent )
       , mRelationId( relation.id() )
       , mRelation( relation )
     {}
