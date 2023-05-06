@@ -373,7 +373,7 @@ QgsMapLayer *QgsProcessingUtils::loadMapLayerFromString( const QString &string, 
         pointCloudLayer = std::make_unique< QgsPointCloudLayer >( uri, name, preferredProviders.at( 0 ).metadata()->key(), pointCloudOptions );
       }
     }
-    if ( pointCloudLayer->isValid() )
+    if ( pointCloudLayer && pointCloudLayer->isValid() )
     {
       return pointCloudLayer.release();
     }
