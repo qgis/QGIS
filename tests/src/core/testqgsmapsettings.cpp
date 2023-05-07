@@ -236,7 +236,7 @@ void TestQgsMapSettings::testDevicePixelRatio()
   ms.setDevicePixelRatio( 1.5 );
   ms.setExtent( QgsRectangle( 0, 0, 100, 100 ) );
   QCOMPARE( ms.outputSize() * 1.5, ms.deviceOutputSize() );
-  QCOMPARE( scale * 1.5, ms.scale() );
+  QCOMPARE( scale, ms.scale() );
 }
 
 void TestQgsMapSettings::visiblePolygon()
