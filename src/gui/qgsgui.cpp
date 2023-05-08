@@ -63,6 +63,9 @@
 #include "qgssensorguiregistry.h"
 #include "qgshistoryentry.h"
 
+#include "qgssettingseditorwidgetregistry.h"
+
+
 #include <QPushButton>
 #include <QToolButton>
 
@@ -182,6 +185,11 @@ QgsHistoryProviderRegistry *QgsGui::historyProviderRegistry()
   return instance()->mHistoryProviderRegistry;
 }
 
+QgsSettingsEditorWidgetRegistry *QgsGui::settingsEditorWidgetRegistry()
+{
+  return instance()->mSettingsEditorRegistry;
+}
+
 void QgsGui::enableAutoGeometryRestore( QWidget *widget, const QString &key )
 {
   if ( widget->objectName().isEmpty() )
@@ -238,6 +246,7 @@ QgsGui::~QgsGui()
   delete mRelationEditorRegistry;
   delete mSettingsRegistryGui;
   delete mSensorGuiRegistry;
+  delete mSettingsEditorRegistry;
 }
 
 QColor QgsGui::sampleColor( QPoint point )
@@ -287,6 +296,8 @@ QgsGui::QgsGui()
 #endif
 
   mSettingsRegistryGui = new QgsSettingsRegistryGui();
+
+  mSettingsEditorRegistry = new QgsSettingsEditorWidgetRegistry();
 
   mCodeEditorColorSchemeRegistry = new QgsCodeEditorColorSchemeRegistry();
 

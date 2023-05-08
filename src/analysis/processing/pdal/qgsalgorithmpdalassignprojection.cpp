@@ -1,5 +1,5 @@
 /***************************************************************************
-                         qgsalgorithmpdalfixprojection.cpp
+                         qgsalgorithmpdalassignprojection.cpp
                          ---------------------
     begin                : February 2023
     copyright            : (C) 2023 by Alexander Bruy
@@ -15,56 +15,56 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsalgorithmpdalfixprojection.h"
+#include "qgsalgorithmpdalassignprojection.h"
 
 #include "qgsrunprocess.h"
 #include "qgspointcloudlayer.h"
 
 ///@cond PRIVATE
 
-QString QgsPdalFixProjectionAlgorithm::name() const
+QString QgsPdalAssignProjectionAlgorithm::name() const
 {
-  return QStringLiteral( "fixprojection" );
+  return QStringLiteral( "assignprojection" );
 }
 
-QString QgsPdalFixProjectionAlgorithm::displayName() const
+QString QgsPdalAssignProjectionAlgorithm::displayName() const
 {
-  return QObject::tr( "Fix projection" );
+  return QObject::tr( "Assign projection" );
 }
 
-QString QgsPdalFixProjectionAlgorithm::group() const
+QString QgsPdalAssignProjectionAlgorithm::group() const
 {
   return QObject::tr( "Point cloud data management" );
 }
 
-QString QgsPdalFixProjectionAlgorithm::groupId() const
+QString QgsPdalAssignProjectionAlgorithm::groupId() const
 {
   return QStringLiteral( "pointclouddatamanagement" );
 }
 
-QStringList QgsPdalFixProjectionAlgorithm::tags() const
+QStringList QgsPdalAssignProjectionAlgorithm::tags() const
 {
-  return QObject::tr( "assign,set,fix,crs,srs" ).split( ',' );
+  return QObject::tr( "pdal,lidar,assign,set,fix,crs,srs" ).split( ',' );
 }
 
-QString QgsPdalFixProjectionAlgorithm::shortHelpString() const
+QString QgsPdalAssignProjectionAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm fixes (assigns) point cloud CRS if it is not present or wrong." );
+  return QObject::tr( "This algorithm assigns point cloud CRS if it is not present or wrong." );
 }
 
-QgsPdalFixProjectionAlgorithm *QgsPdalFixProjectionAlgorithm::createInstance() const
+QgsPdalAssignProjectionAlgorithm *QgsPdalAssignProjectionAlgorithm::createInstance() const
 {
-  return new QgsPdalFixProjectionAlgorithm();
+  return new QgsPdalAssignProjectionAlgorithm();
 }
 
-void QgsPdalFixProjectionAlgorithm::initAlgorithm( const QVariantMap & )
+void QgsPdalAssignProjectionAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterPointCloudLayer( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ) ) );
   addParameter( new QgsProcessingParameterCrs( QStringLiteral( "CRS" ), QObject::tr( "Desired CRS" ), QStringLiteral( "EPSG:4326" ) ) );
   addParameter( new QgsProcessingParameterPointCloudDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Output layer" ) ) );
 }
 
-QStringList QgsPdalFixProjectionAlgorithm::createArgumentLists( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
+QStringList QgsPdalAssignProjectionAlgorithm::createArgumentLists( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   Q_UNUSED( feedback );
 

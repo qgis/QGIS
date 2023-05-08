@@ -45,7 +45,7 @@ QString QgsPdalClipAlgorithm::groupId() const
 
 QStringList QgsPdalClipAlgorithm::tags() const
 {
-  return QObject::tr( "clip,intersect,intersection,mask" ).split( ',' );
+  return QObject::tr( "pdal,lidar,clip,intersect,intersection,mask" ).split( ',' );
 }
 
 QString QgsPdalClipAlgorithm::shortHelpString() const
@@ -63,7 +63,7 @@ void QgsPdalClipAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterPointCloudLayer( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ) ) );
   addParameter( new QgsProcessingParameterVectorLayer( QStringLiteral( "OVERLAY" ), QObject::tr( "Clipping polygons" ), QList< int >() << QgsProcessing::TypeVectorPolygon ) );
   createCommonParameters();
-  addParameter( new QgsProcessingParameterPointCloudDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Clipped point cloud" ) ) );
+  addParameter( new QgsProcessingParameterPointCloudDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Clipped" ) ) );
 }
 
 QStringList QgsPdalClipAlgorithm::createArgumentLists( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )

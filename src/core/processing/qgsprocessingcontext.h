@@ -299,6 +299,22 @@ class CORE_EXPORT QgsProcessingContext
         QString outputName;
 
         /**
+         * Optional name for a layer tree group under which to place the layer when loading it into a project.
+         *
+         * \since QGIS 3.32
+         */
+        QString groupName;
+
+        /**
+         * Optional sorting key for sorting output layers when loading them into a project.
+         *
+         * Layers with a greater sort key will be placed over layers with a lesser sort key.
+         *
+         * \since QGIS 3.32
+         */
+        int layerSortKey = 0;
+
+        /**
          * Layer type hint.
          *
          * \since QGIS 3.4

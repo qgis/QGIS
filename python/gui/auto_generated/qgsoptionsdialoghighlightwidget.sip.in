@@ -9,7 +9,9 @@
 
 
 
-class QgsOptionsDialogHighlightWidget : QObject
+
+
+class QgsOptionsDialogHighlightWidget
 {
 %Docstring(signature="appended")
 Container for a widget to be used to search text in the option dialog
@@ -34,6 +36,8 @@ For instance a :py:class:`QgsOptionsDialogHighlightButton` for button.
          for the given widget.
 %End
 
+    virtual ~QgsOptionsDialogHighlightWidget();
+
     bool isValid();
 %Docstring
 Returns if it valid: if the widget type is handled and if the widget is not still available
@@ -50,11 +54,6 @@ search for a text pattern and highlight the widget if the text is found
 %Docstring
 Returns the widget
 %End
-
-
-    virtual bool eventFilter( QObject *obj, QEvent *event );
-
-
 
   protected:
 

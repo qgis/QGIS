@@ -44,7 +44,7 @@ QString QgsPdalExportVectorAlgorithm::groupId() const
 
 QStringList QgsPdalExportVectorAlgorithm::tags() const
 {
-  return QObject::tr( "export,vector,attribute,create" ).split( ',' );
+  return QObject::tr( "pdal,lidar,export,vector,attribute,create" ).split( ',' );
 }
 
 QString QgsPdalExportVectorAlgorithm::shortHelpString() const
@@ -62,7 +62,7 @@ void QgsPdalExportVectorAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterPointCloudLayer( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ) ) );
   addParameter( new QgsProcessingParameterPointCloudAttribute( QStringLiteral( "ATTRIBUTE" ), QObject::tr( "Attribute" ), QVariant(), QStringLiteral( "INPUT" ), true, true ) );
   createCommonParameters();
-  addParameter( new QgsProcessingParameterVectorDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Output vector" ), QgsProcessing::TypeVectorPoint ) );
+  addParameter( new QgsProcessingParameterVectorDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Exported" ), QgsProcessing::TypeVectorPoint ) );
 }
 
 QStringList QgsPdalExportVectorAlgorithm::createArgumentLists( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )

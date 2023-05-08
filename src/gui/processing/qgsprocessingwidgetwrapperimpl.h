@@ -70,6 +70,7 @@ class QgsPointCloudAttributeComboBox;
 class QgsProcessingLayerOutputDestinationWidget;
 class QgsCheckableComboBox;
 class QgsMapLayerComboBox;
+class QgsProcessingPointCloudExpressionLineEdit;
 
 ///@cond PRIVATE
 
@@ -697,7 +698,9 @@ class GUI_EXPORT QgsProcessingExpressionParameterDefinitionWidget : public QgsPr
   private:
 
     QComboBox *mParentLayerComboBox = nullptr;
-    QgsExpressionLineEdit *mDefaultLineEdit = nullptr;
+    QgsExpressionLineEdit *mDefaultQgisLineEdit = nullptr;
+    QgsProcessingPointCloudExpressionLineEdit *mDefaultPointCloudLineEdit = nullptr;
+    QComboBox *mExpressionTypeComboBox = nullptr;
 
 };
 
@@ -742,7 +745,8 @@ class GUI_EXPORT QgsProcessingExpressionWidgetWrapper : public QgsAbstractProces
     QgsFieldExpressionWidget *mFieldExpWidget = nullptr;
     QgsExpressionBuilderWidget *mExpBuilderWidget = nullptr;
     QgsExpressionLineEdit *mExpLineEdit = nullptr;
-    std::unique_ptr< QgsVectorLayer > mParentLayer;
+    QgsProcessingPointCloudExpressionLineEdit *mPointCloudExpLineEdit = nullptr;
+    std::unique_ptr< QgsMapLayer > mParentLayer;
 
     friend class TestProcessingGui;
 };

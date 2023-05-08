@@ -3509,6 +3509,18 @@ class CORE_EXPORT Qgis
     Q_ENUM( AttributeFormPythonInitCodeSource )
 
     /**
+     * Expression types
+     *
+     * \since QGIS 3.32
+     */
+    enum class ExpressionType
+    {
+      Qgis, //!< Native QGIS expression
+      PointCloud, //!< Point cloud expression
+    };
+    Q_ENUM( ExpressionType )
+
+    /**
      * Identify search radius in mm
      * \since QGIS 2.3
      */

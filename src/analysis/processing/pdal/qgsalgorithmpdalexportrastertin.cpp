@@ -29,7 +29,7 @@ QString QgsPdalExportRasterTinAlgorithm::name() const
 
 QString QgsPdalExportRasterTinAlgorithm::displayName() const
 {
-  return QObject::tr( "Export to raster (TIN)" );
+  return QObject::tr( "Export to raster (using triangulation)" );
 }
 
 QString QgsPdalExportRasterTinAlgorithm::group() const
@@ -44,7 +44,7 @@ QString QgsPdalExportRasterTinAlgorithm::groupId() const
 
 QStringList QgsPdalExportRasterTinAlgorithm::tags() const
 {
-  return QObject::tr( "export,raster,tin,create" ).split( ',' );
+  return QObject::tr( "pdal,lidar,dem,export,raster,tin,create" ).split( ',' );
 }
 
 QString QgsPdalExportRasterTinAlgorithm::shortHelpString() const
@@ -63,6 +63,8 @@ void QgsPdalExportRasterTinAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterNumber( QStringLiteral( "RESOLUTION" ), QObject::tr( "Resolution of the density raster" ), QgsProcessingParameterNumber::Integer, 1, false, 1 ) );
   addParameter( new QgsProcessingParameterNumber( QStringLiteral( "TILE_SIZE" ), QObject::tr( "Tile size for parallel runs" ), QgsProcessingParameterNumber::Integer, 1000, false, 1 ) );
 
+  createCommonParameters();
+
   std::unique_ptr< QgsProcessingParameterNumber > paramOriginX = std::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "ORIGIN_X" ), QObject::tr( "X origin of a tile for parallel runs" ), QgsProcessingParameterNumber::Double, QVariant(), true, 0 );
   paramOriginX->setFlags( paramOriginX->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
   addParameter( paramOriginX.release() );
@@ -70,9 +72,7 @@ void QgsPdalExportRasterTinAlgorithm::initAlgorithm( const QVariantMap & )
   paramOriginY->setFlags( paramOriginY->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
   addParameter( paramOriginY.release() );
 
-  createCommonParameters();
-
-  addParameter( new QgsProcessingParameterRasterDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Output raster" ) ) );
+  addParameter( new QgsProcessingParameterRasterDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Exported (using triangulation)" ) ) );
 }
 
 QStringList QgsPdalExportRasterTinAlgorithm::createArgumentLists( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )

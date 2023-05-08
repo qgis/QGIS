@@ -6543,6 +6543,10 @@ void TestQgsProcessing::parameterExpression()
   QVERIFY( !def->checkValueIsAcceptable( "" ) );
   QVERIFY( !def->checkValueIsAcceptable( QVariant() ) ); // should NOT be acceptable, because it will fallback to invalid default value
 
+  // set point cloud expression type
+  def.reset( new QgsProcessingParameterExpression( "non_optional", QString(), QString( "default" ), QString(), false, Qgis::ExpressionType::PointCloud ) );
+  pythonCode = def->asPythonString();
+  QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterExpression('non_optional', '', parentLayerParameterName='', defaultValue='default', type=Qgis.ExpressionType.PointCloud)" ) );
 }
 
 void TestQgsProcessing::parameterField()

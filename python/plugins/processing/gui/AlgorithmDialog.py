@@ -352,7 +352,11 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
                     resultsList.addResult(icon=self.algorithm().icon(), name=out.description(),
                                           timestamp=time.localtime(),
                                           result=result[out.name()])
-            if not handleAlgorithmResults(self.algorithm(), context, feedback, not keepOpen, result):
+            if not handleAlgorithmResults(
+                    self.algorithm(),
+                    context,
+                    feedback,
+                    result):
                 self.resetGui()
                 return
 

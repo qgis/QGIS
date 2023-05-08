@@ -740,7 +740,17 @@ void QgsAttributesFormProperties::addContainer()
 
 void QgsAttributesFormProperties::removeTabOrGroupButton()
 {
-  qDeleteAll( mFormLayoutTree->selectedItems() );
+  // deleting an item may delete any number of nested child items -- so we delete
+  // them one at a time and then see if there's any selection left
+  while ( true )
+  {
+    const QList<QTreeWidgetItem *> items = mFormLayoutTree->selectedItems();
+    if ( items.empty() )
+      break;
+
+    delete items.at( 0 );
+  }
+
 }
 
 QgsAttributeEditorElement *QgsAttributesFormProperties::createAttributeEditorWidget( QTreeWidgetItem *item, QgsAttributeEditorElement *parent, bool isTopLevel )

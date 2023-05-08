@@ -14,26 +14,47 @@
  ***************************************************************************/
 
 #include "qgsadvancedoptions.h"
+#include "qgssettingstreewidget.h"
+#include "qgssettingstreewidgetold.h"
 #include "qgsapplication.h"
-#include "qgssettings.h"
 #include "qgis.h"
 
 //
 // QgsAdvancedSettingsWidget
 //
+const QgsSettingsEntryBool *QgsAdvancedSettingsWidget::settingsUseNewTreeWidget = new QgsSettingsEntryBool( QStringLiteral( "use-new-widget" ), sTreeSettings, true, QStringLiteral( "Use new settings widget" ) );
+const QgsSettingsEntryBool *QgsAdvancedSettingsWidget::settingsShowWarning = new QgsSettingsEntryBool( QStringLiteral( "show-warning" ), sTreeSettings, true, QStringLiteral( "Show warning before opening the settings tree" ) );
+
 
 QgsAdvancedSettingsWidget::QgsAdvancedSettingsWidget( QWidget *parent )
   : QgsOptionsPageWidget( parent )
 {
   setupUi( this );
 
+  mUseNewSettingsTree->setChecked( settingsUseNewTreeWidget->value() );
+
   layout()->setContentsMargins( 0, 0, 0, 0 );
 
-  connect( mAdvancedSettingsEnableButton, &QPushButton::clicked, this, [ = ]
+  if ( !settingsShowWarning->value() )
   {
-    mAdvancedSettingsEditor->show();
     mAdvancedSettingsWarning->hide();
-  } );
+    bool newTree = settingsUseNewTreeWidget->value();
+    createSettingsTreeWidget( newTree, !newTree, false );
+  }
+  else
+  {
+    createSettingsTreeWidget( true, true, true );
+
+    connect( mAdvancedSettingsEnableButton, &QPushButton::clicked, this, [ = ]
+    {
+      settingsUseNewTreeWidget->setValue( mUseNewSettingsTree->isChecked() );
+      mAdvancedSettingsWarning->hide();
+      if ( settingsUseNewTreeWidget->value() )
+        mTreeWidget->show();
+      else
+        mTreeWidgetOld->show();
+    } );
+  }
 }
 
 QgsAdvancedSettingsWidget::~QgsAdvancedSettingsWidget()
@@ -42,12 +63,30 @@ QgsAdvancedSettingsWidget::~QgsAdvancedSettingsWidget()
 
 void QgsAdvancedSettingsWidget::apply()
 {
-// nothing to do -- mAdvancedSettingsEditor applies changes immediately
+  // the old settings editor  applies changes immediately
+  // new settings tree is performing changes on apply
+  if ( mTreeWidget )
+    mTreeWidget->applyChanges();
+
 }
 
-QgsSettingsTreeWidget *QgsAdvancedSettingsWidget::settingsTree()
+void QgsAdvancedSettingsWidget::createSettingsTreeWidget( bool newWidget, bool oldWidget, bool hide )
 {
-  return mAdvancedSettingsEditor;
+  if ( newWidget )
+  {
+    mTreeWidget = new QgsSettingsTreeWidget( this );
+    mGroupBox->layout()->addWidget( mTreeWidget );
+    if ( hide )
+      mTreeWidget->hide();
+  }
+
+  if ( oldWidget )
+  {
+    mTreeWidgetOld = new QgsSettingsTreeWidgetOld( this );
+    mGroupBox->layout()->addWidget( mTreeWidgetOld );
+    if ( hide )
+      mTreeWidgetOld->hide();
+  }
 }
 
 //

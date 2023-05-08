@@ -44,7 +44,7 @@ QString QgsPdalReprojectAlgorithm::groupId() const
 
 QStringList QgsPdalReprojectAlgorithm::tags() const
 {
-  return QObject::tr( "assign,set,transform,reproject,crs,srs" ).split( ',' );
+  return QObject::tr( "pdal,lidar,assign,set,transform,reproject,crs,srs" ).split( ',' );
 }
 
 QString QgsPdalReprojectAlgorithm::shortHelpString() const
@@ -67,7 +67,7 @@ void QgsPdalReprojectAlgorithm::initAlgorithm( const QVariantMap & )
   crsOpParam->setFlags( crsOpParam->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
   addParameter( crsOpParam.release() );
 
-  addParameter( new QgsProcessingParameterPointCloudDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Output layer" ) ) );
+  addParameter( new QgsProcessingParameterPointCloudDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Reprojected" ) ) );
 }
 
 QStringList QgsPdalReprojectAlgorithm::createArgumentLists( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )

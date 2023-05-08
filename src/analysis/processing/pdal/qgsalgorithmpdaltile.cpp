@@ -45,7 +45,7 @@ QString QgsPdalTileAlgorithm::groupId() const
 
 QStringList QgsPdalTileAlgorithm::tags() const
 {
-  return QObject::tr( "export,tile" ).split( ',' );
+  return QObject::tr( "pdal,lidar,export,tile" ).split( ',' );
 }
 
 QString QgsPdalTileAlgorithm::shortHelpString() const
