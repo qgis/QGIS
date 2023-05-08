@@ -38,6 +38,7 @@ class QgsProcessingAlgorithm;
 class QgsVectorTileLayer;
 class QgsPointCloudLayer;
 class QgsAnnotationLayer;
+class QgsVectorTileLayer;
 
 #include <QString>
 #include <QVariant>
@@ -63,6 +64,7 @@ class CORE_EXPORT QgsProcessingUtils
      * \see compatiblePluginLayers()
      * \see compatiblePointCloudLayers()
      * \see compatibleAnnotationLayers()
+     * \see compatibleVectorTileLayers()
      * \see compatibleLayers()
      */
     static QList< QgsRasterLayer * > compatibleRasterLayers( QgsProject *project, bool sort = true );
@@ -83,6 +85,7 @@ class CORE_EXPORT QgsProcessingUtils
      * \see compatiblePluginLayers()
      * \see compatiblePointCloudLayers()
      * \see compatibleAnnotationLayers()
+     * \see compatibleVectorTileLayers()
      * \see compatibleLayers()
      */
     static QList< QgsVectorLayer * > compatibleVectorLayers( QgsProject *project,
@@ -101,6 +104,7 @@ class CORE_EXPORT QgsProcessingUtils
      * \see compatiblePluginLayers()
      * \see compatiblePointCloudLayers()
      * \see compatibleAnnotationLayers()
+     * \see compatibleVectorTileLayers()
      * \see compatibleLayers()
      *
      * \since QGIS 3.6
@@ -119,6 +123,7 @@ class CORE_EXPORT QgsProcessingUtils
      * \see compatibleMeshLayers()
      * \see compatiblePointCloudLayers()
      * \see compatibleAnnotationLayers()
+     * \see compatibleVectorTileLayers()
      * \see compatibleLayers()
      *
      * \since QGIS 3.22
@@ -137,6 +142,7 @@ class CORE_EXPORT QgsProcessingUtils
      * \see compatibleMeshLayers()
      * \see compatiblePluginLayers()
      * \see compatibleAnnotationLayers()
+     * \see compatibleVectorTileLayers()
      * \see compatibleLayers()
      *
      * \since QGIS 3.22
@@ -155,11 +161,31 @@ class CORE_EXPORT QgsProcessingUtils
      * \see compatibleMeshLayers()
      * \see compatiblePluginLayers()
      * \see compatiblePointCloudLayers()
+     * \see compatibleVectorTileLayers()
      * \see compatibleLayers()
      *
      * \since QGIS 3.22
      */
     static QList<QgsAnnotationLayer *> compatibleAnnotationLayers( QgsProject *project, bool sort = true );
+
+    /**
+     * Returns a list of vector tile layers from a \a project which are compatible with the processing
+     * framework.
+     *
+     * If the \a sort argument is TRUE then the layers will be sorted by their QgsMapLayer::name()
+     * value.
+     *
+     * \see compatibleRasterLayers()
+     * \see compatibleVectorLayers()
+     * \see compatibleMeshLayers()
+     * \see compatiblePluginLayers()
+     * \see compatiblePointCloudLayers()
+     * \see compatibleAnnotationLayers()
+     * \see compatibleLayers()
+     *
+     * \since QGIS 3.32
+     */
+    static QList<QgsVectorTileLayer *> compatibleVectorTileLayers( QgsProject *project, bool sort = true );
 
     /**
      * Returns a list of map layers from a \a project which are compatible with the processing
