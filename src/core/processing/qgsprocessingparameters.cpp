@@ -4375,6 +4375,7 @@ QString QgsProcessingParameterMultipleLayers::createFileFilter() const
     case QgsProcessing::TypeMapLayer:
     case QgsProcessing::TypePlugin:
     case QgsProcessing::TypeAnnotation:
+    case QgsProcessing::TypeVectorTile:
       return createAllMapLayerFileFilter();
   }
   return QString();
@@ -6433,6 +6434,7 @@ bool QgsProcessingParameterFeatureSink::hasGeometry() const
     case QgsProcessing::TypeVectorPoint:
     case QgsProcessing::TypeVectorLine:
     case QgsProcessing::TypeVectorPolygon:
+    case QgsProcessing::TypeVectorTile:
       return true;
 
     case QgsProcessing::TypeRaster:
@@ -7134,6 +7136,7 @@ bool QgsProcessingParameterVectorDestination::hasGeometry() const
     case QgsProcessing::TypeVectorPoint:
     case QgsProcessing::TypeVectorLine:
     case QgsProcessing::TypeVectorPolygon:
+    case QgsProcessing::TypeVectorTile:
       return true;
 
     case QgsProcessing::TypeRaster:

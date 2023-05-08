@@ -100,6 +100,11 @@ QList<QgsAnnotationLayer *> QgsProcessingUtils::compatibleAnnotationLayers( QgsP
   return res;
 }
 
+QList<QgsVectorTileLayer *> QgsProcessingUtils::compatibleVectorTileLayers( QgsProject *project, bool sort )
+{
+  return compatibleMapLayers< QgsVectorTileLayer >( project, sort );
+}
+
 template<typename T> QList<T *> QgsProcessingUtils::compatibleMapLayers( QgsProject *project, bool sort )
 {
   if ( !project )
@@ -150,6 +155,10 @@ QList<QgsMapLayer *> QgsProcessingUtils::compatibleLayers( QgsProject *project, 
   for ( QgsAnnotationLayer *al : annotationLayers )
     layers << al;
   layers << project->mainAnnotationLayer();
+
+  const auto vectorTileLayers = compatibleMapLayers< QgsVectorTileLayer >( project, false );
+  for ( QgsVectorTileLayer *vtl : vectorTileLayers )
+    layers << vtl;
 
   const auto pluginLayers = compatibleMapLayers< QgsPluginLayer >( project, false );
   for ( QgsPluginLayer *pl : pluginLayers )
