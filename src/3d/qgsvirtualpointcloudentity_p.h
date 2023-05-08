@@ -29,13 +29,13 @@
 //
 
 #include "qgscoordinatetransform.h"
-#include "qgspointcloudsubindex.h"
 #include "qgschunkedentity_p.h"
 #include "qgs3dmapsceneentity_p.h"
 
 class QgsAABB;
 class QgsChunkBoundsEntity;
 class QgsPointCloudLayer;
+class QgsPointCloudIndex;
 class QgsVirtualPointCloudProvider;
 class QgsPointCloud3DSymbol;
 class Qgs3DMapSettings;
@@ -68,16 +68,12 @@ class QgsVirtualPointCloudEntity : public Qgs3DMapSceneEntity
 
     bool needsUpdate() const override;
 
-  signals:
-    //! Emitted when a new point cloud chunked entity has been created for a sub index
-    void newEntityCreated( QgsChunkedEntity *entity );
-
   public slots:
     //! Creates a child QgsPointCloudLayerChunkedEntity for the \a i th sub index
     void createChunkedEntityForSubIndex( int i );
 
     //! If \a asBbox is TRUE only the bounding box will be rendered for the sub index \a i. If it is FALSE, the sub index will be rendered as a chunked entity.
-    void setRenderSubIndexAsBbox( const int i, const bool asBbox );
+    void setRenderSubIndexAsBbox( int i, bool asBbox );
 
   private:
     //! Updates the Bbox child entity to display the sub indexes set with setRenderSubIndexAsBbox()
