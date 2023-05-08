@@ -34,7 +34,7 @@ class QEventLoop;
  *
  * \since QGIS 3.14
  */
-class QgsVectorTileRawData
+class CORE_EXPORT QgsVectorTileRawData
 {
   public:
     //! Constructs a raw tile object
@@ -54,7 +54,7 @@ class QgsVectorTileRawData
  *
  * \since QGIS 3.14
  */
-class QgsVectorTileLoader : public QObject
+class CORE_EXPORT QgsVectorTileLoader : public QObject
 {
     Q_OBJECT
   public:
@@ -104,7 +104,6 @@ class QgsVectorTileLoader : public QObject
     QList<QgsTileDownloadManagerReply *> mReplies;
 
     QString mError;
-
 };
 
 #endif // QGSVECTORTILELOADER_H
