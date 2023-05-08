@@ -84,6 +84,7 @@ set(TESTS
  testqgsjsonutils.cpp
  testqgslabelingengine.cpp
  testqgslayerdefinition.cpp
+ testqgslayeredsymbollevel.cpp
  testqgslayertree.cpp
  testqgslayout.cpp
  testqgslayoutatlas.cpp
