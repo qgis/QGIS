@@ -26,7 +26,7 @@
 #include "qgsmapclippingutils.h"
 #include "qgsrendercontext.h"
 #include "qgsvectortiledataprovider.h"
-
+#include "qgstextrenderer.h"
 #include <QElapsedTimer>
 #include <QThread>
 
@@ -278,9 +278,14 @@ void QgsVectorTileLayerRenderer::decodeAndDrawTile( const QgsVectorTileRawData &
     ctx.painter()->setPen( pen );
     ctx.painter()->setBrush( brush );
     ctx.painter()->drawPolygon( tile.tilePolygon() );
-#if 0
-    ctx.painter()->setBrush( QBrush( QColor( 255, 0, 0 ) ) );
-    ctx.painter()->drawText( tile.tilePolygon().boundingRect().center(), tile.id().toString() );
+#if 1
+    QgsTextFormat format;
+    format.setColor( QColor( 255, 0, 0 ) );
+    format.buffer().setEnabled( true );
+
+    QgsTextRenderer::drawText( QRectF( QPoint( 0, 0 ), ctx.outputSize() ).intersected( tile.tilePolygon().boundingRect() ),
+                               0, Qgis::TextHorizontalAlignment::Center, { tile.id().toString() },
+                               ctx, format, true, Qgis::TextVerticalAlignment::VerticalCenter );
 #endif
   }
 }
