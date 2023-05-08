@@ -741,6 +741,18 @@ Could be used by widgets that must reflect the current advanced digitizing state
 .. versionadded:: 3.8
 %End
 
+    void valueBearingChanged( const QString &value );
+%Docstring
+Emitted whenever the bearing ``value`` changes.
+Could be used by widgets that must reflect the current advanced digitizing state.
+
+.. note::
+
+   unstable API (will likely change)
+
+.. versionadded:: 3.32
+%End
+
     void lockXChanged( bool locked );
 %Docstring
 Emitted whenever the X parameter is ``locked``.

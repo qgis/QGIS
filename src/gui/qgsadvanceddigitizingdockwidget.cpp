@@ -22,6 +22,7 @@
 #include "qgsadvanceddigitizingdockwidget.h"
 #include "qgsadvanceddigitizingfloater.h"
 #include "qgsadvanceddigitizingcanvasitem.h"
+#include "qgsbearingnumericformat.h"
 #include "qgscadutils.h"
 #include "qgsexpression.h"
 #include "qgsmapcanvas.h"
@@ -35,6 +36,7 @@
 #include "qgsmapmouseevent.h"
 #include "qgsmeshlayer.h"
 #include "qgsunittypes.h"
+#include "qgslocaldefaultsettings.h"
 
 #include <QActionGroup>
 
@@ -129,16 +131,8 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *
   QgsFocusWatcher *mWatcher = new QgsFocusWatcher( mMLineEdit );
   connect( mWatcher, &QgsFocusWatcher::focusOut, this, &QgsAdvancedDigitizingDockWidget::constraintFocusOut );
 
-  // config menu
+  // Common angle snapping menu
   mCommonAngleActionsMenu = new QMenu( this );
-
-  QAction *showCommonAngleSnappingInFloaterAction = new QAction( tr( "Show setting in the floater" ), mCommonAngleActionsMenu );
-  showCommonAngleSnappingInFloaterAction->setCheckable( true );
-
-  mCommonAngleActionsMenu->addAction( showCommonAngleSnappingInFloaterAction );
-
-  // common angles
-
   // Suppress warning: Potential leak of memory pointed to by 'angleButtonGroup' [clang-analyzer-cplusplus.NewDeleteLeaks]
 #ifndef __clang_analyzer__
   QActionGroup *angleButtonGroup = new QActionGroup( mCommonAngleActionsMenu ); // actions are exclusive for common angles NOLINT
@@ -233,18 +227,105 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *
   connect( mAngleLineEdit, &QLineEdit::textChanged, this, &QgsAdvancedDigitizingDockWidget::valueAngleChanged );
 
   // Create the floater
+  mFloaterActionsMenu = new QMenu( this );
+  qobject_cast< QToolButton *>( mToolbar->widgetForAction( mFloaterAction ) )->setPopupMode( QToolButton::InstantPopup );
+  mFloaterAction->setMenu( mFloaterActionsMenu );
+  mFloaterAction->setCheckable( true );
   mFloater = new QgsAdvancedDigitizingFloater( canvas, this );
-  connect( mToggleFloaterAction, &QAction::triggered, mFloater, &QgsAdvancedDigitizingFloater::setActive );
-  mToggleFloaterAction->setChecked( mFloater->active() );
+  mFloaterAction->setChecked( mFloater->active() );
 
-  mShowCommonAngleInFloater = QgsSettings().value( QStringLiteral( "/Cad/CommonAngleShowInFloater" ), false ).toBool();
-  connect( showCommonAngleSnappingInFloaterAction, &QAction::triggered, this, &QgsAdvancedDigitizingDockWidget::commonAngleSnappingShowInFloaterChanged );
-  showCommonAngleSnappingInFloaterAction->setChecked( mShowCommonAngleInFloater );
-  connect( showCommonAngleSnappingInFloaterAction, &QAction::triggered, this, [ = ]( bool checked )
+  // Add floater config actions
   {
-    mShowCommonAngleInFloater = checked;
-    QgsSettings().setValue( QStringLiteral( "/Cad/CommonAngleShowInFloater" ), checked );
-  } );
+    QAction *action = new QAction( tr( "Show floater" ), mFloaterActionsMenu );
+    action->setCheckable( true );
+    action->setChecked( mFloater->active() );
+    mFloaterActionsMenu->addAction( action );
+    connect( action, &QAction::toggled, this, [ = ]( bool checked )
+    {
+      mFloater->setActive( checked );
+      mFloaterAction->setChecked( checked );
+    } );
+  }
+
+  mFloaterActionsMenu->addSeparator();
+
+  {
+    QAction *action = new QAction( tr( "Show XY coordinates" ), mFloaterActionsMenu );
+    action->setCheckable( true );
+    mFloaterActionsMenu->addAction( action );
+    connect( action, &QAction::toggled, this, [ = ]( bool checked )
+    {
+      mFloater->setItemVisibility( QgsAdvancedDigitizingFloater::FloaterItem::XCoordinate, checked );
+      mFloater->setItemVisibility( QgsAdvancedDigitizingFloater::FloaterItem::YCoordinate, checked );
+    } );
+    action->setChecked( QgsSettings().value( QStringLiteral( "/Cad/XYShowInFloater" ), true ).toBool() );
+  }
+
+  {
+    QAction *action = new QAction( tr( "Show angle" ), mFloaterActionsMenu );
+    action->setCheckable( true );
+    mFloaterActionsMenu->addAction( action );
+    connect( action, &QAction::toggled, this, [ = ]( bool checked )
+    {
+      mFloater->setItemVisibility( QgsAdvancedDigitizingFloater::FloaterItem::Angle, checked );
+    } );
+    action->setChecked( QgsSettings().value( QStringLiteral( "/Cad/AngleShowInFloater" ), true ).toBool() );
+  }
+
+  {
+    QAction *action = new QAction( tr( "Show M value" ), mFloaterActionsMenu );
+    action->setCheckable( true );
+    mFloaterActionsMenu->addAction( action );
+    connect( action, &QAction::toggled, this, [ = ]( bool checked )
+    {
+      mFloater->setItemVisibility( QgsAdvancedDigitizingFloater::FloaterItem::MCoordinate, checked );
+    } );
+    action->setChecked( QgsSettings().value( QStringLiteral( "/Cad/MShowInFloater" ), true ).toBool() );
+  }
+
+  {
+    QAction *action = new QAction( tr( "Show Z value" ), mFloaterActionsMenu );
+    action->setCheckable( true );
+    mFloaterActionsMenu->addAction( action );
+    connect( action, &QAction::toggled, this, [ = ]( bool checked )
+    {
+      mFloater->setItemVisibility( QgsAdvancedDigitizingFloater::FloaterItem::ZCoordinate, checked );
+    } );
+    action->setChecked( QgsSettings().value( QStringLiteral( "/Cad/ZShowInFloater" ), true ).toBool() );
+  }
+
+  {
+    QAction *action = new QAction( tr( "Show common snapping angle" ), mFloaterActionsMenu );
+    action->setCheckable( true );
+    mFloaterActionsMenu->addAction( action );
+    connect( action, &QAction::toggled, this, [ = ]( bool checked )
+    {
+      mFloater->setItemVisibility( QgsAdvancedDigitizingFloater::FloaterItem::CommonAngleSnapping, checked );
+    } );
+    action->setChecked( QgsSettings().value( QStringLiteral( "/Cad/CommonAngleShowInFloater" ), false ).toBool() );
+  }
+
+  {
+    QAction *action = new QAction( tr( "Show distance" ), mFloaterActionsMenu );
+    action->setCheckable( true );
+    mFloaterActionsMenu->addAction( action );
+    connect( action, &QAction::toggled, this, [ = ]( bool checked )
+    {
+      mFloater->setItemVisibility( QgsAdvancedDigitizingFloater::FloaterItem::Distance, checked );
+    } );
+    action->setChecked( QgsSettings().value( QStringLiteral( "/Cad/DistanceShowInFloater" ), true ).toBool() );
+  }
+
+  {
+    QAction *action = new QAction( tr( "Show bearing/azimuth" ), mFloaterActionsMenu );
+    action->setCheckable( true );
+    mFloaterActionsMenu->addAction( action );
+    connect( action, &QAction::toggled, this, [ = ]( bool checked )
+    {
+      mFloater->setItemVisibility( QgsAdvancedDigitizingFloater::FloaterItem::Bearing, checked );
+    } );
+    action->setChecked( QgsSettings().value( QStringLiteral( "/Cad/BearingShowInFloater" ), false ).toBool() );
+  }
 
   updateCapacity( true );
   connect( QgsProject::instance(), &QgsProject::snappingConfigChanged, this, [ = ] { updateCapacity( true ); } );
@@ -366,7 +447,7 @@ void QgsAdvancedDigitizingDockWidget::setCadEnabled( bool enabled )
   mConstructionModeAction->setEnabled( enabled );
   mSettingsAction->setEnabled( enabled );
   mInputWidgets->setEnabled( enabled );
-  mToggleFloaterAction->setEnabled( enabled );
+  mFloaterAction->setEnabled( enabled );
   mConstructionAction->setEnabled( enabled );
 
   if ( !enabled )
@@ -389,7 +470,6 @@ void QgsAdvancedDigitizingDockWidget::setCadEnabled( bool enabled )
 
   if ( enabled )
   {
-    emit commonAngleSnappingShowInFloaterChanged( mShowCommonAngleInFloater );
     emit valueCommonAngleSnappingChanged( mCommonAngleConstraint );
   }
 
@@ -1226,19 +1306,29 @@ void QgsAdvancedDigitizingDockWidget::updateUnlockedConstraintValues( const QgsP
   // --- angle
   if ( !mAngleConstraint->isLocked() && previousPointExist )
   {
-    double angle = 0.0;
+    double prevAngle = 0.0;
+
     if ( penulPointExist && mAngleConstraint->relative() )
     {
       // previous angle
-      angle = std::atan2( previousPt.y() - penultimatePt.y(),
-                          previousPt.x() - penultimatePt.x() );
+      prevAngle = std::atan2( previousPt.y() - penultimatePt.y(),
+                              previousPt.x() - penultimatePt.x() )  * 180 / M_PI;
     }
-    angle = ( std::atan2( point.y() - previousPt.y(),
-                          point.x() - previousPt.x()
-                        ) - angle ) * 180 / M_PI;
-    // modulus
-    angle = std::fmod( angle, 360.0 );
+
+    const double xAngle { std::atan2( point.y() - previousPt.y(),
+                                      point.x() - previousPt.x() ) * 180 / M_PI };
+
+    // Modulus
+    const double angle = std::fmod( xAngle - prevAngle, 360.0 );
     mAngleConstraint->setValue( angle );
+
+    // Bearing (azimuth)
+    double bearing { std::fmod( xAngle, 360.0 ) };
+    bearing = bearing <= 90.0 ? 90.0 - bearing : ( bearing > 90 ? 270.0 + 180.0 - bearing : 270.0 - bearing );
+    const QgsNumericFormatContext context;
+    const QString bearingText { QgsProject::instance()->displaySettings()->bearingFormat()->formatDouble( bearing, context ) };
+    emit valueBearingChanged( bearingText );
+
   }
   // --- distance
   if ( !mDistanceConstraint->isLocked() && previousPointExist )
