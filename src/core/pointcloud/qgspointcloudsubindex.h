@@ -20,13 +20,14 @@
 
 #include <memory>
 #include <QString>
+
+#include "qgspointcloudindex.h"
 #include "qgsgeometry.h"
 #include "qgsrange.h"
 
 ///@cond PRIVATE
 #define SIP_NO_FILE
 
-class QgsPointCloudIndex;
 
 /**
  * \brief Represents an individual index and metadata for the virtual point cloud data provider.

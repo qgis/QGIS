@@ -52,22 +52,7 @@ QgsVirtualPointCloudEntity::QgsVirtualPointCloudEntity( QgsPointCloudLayer *laye
 
     mBboxes << Qgs3DUtils::mapToWorldExtent( intersection, si.zRange().lower(), si.zRange().upper(), mMap.origin() );
 
-    if ( !si.index() || intersection.isEmpty() )
-      continue;
-
-    QgsPointCloudLayerChunkedEntity *entity = new QgsPointCloudLayerChunkedEntity( si.index(),
-        mMap,
-        mCoordinateTransform,
-        static_cast< QgsPointCloud3DSymbol * >( mSymbol->clone() ),
-        mMaximumScreenSpaceError,
-        mShowBoundingBoxes,
-        mZValueScale,
-        mZValueOffset,
-        mPointBudget );
-
-    mChunkedEntitiesMap.insert( i, entity );
-    entity->setParent( this );
-    connect( entity, &QgsChunkedEntity::pendingJobsCountChanged, this, &Qgs3DMapSceneEntity::pendingJobsCountChanged );
+    createChunkedEntityForSubIndex( i );
   }
 
   updateBboxEntity();
@@ -92,7 +77,13 @@ QgsAABB QgsVirtualPointCloudEntity::boundingBox( int i ) const
 void QgsVirtualPointCloudEntity::createChunkedEntityForSubIndex( int i )
 {
   const QVector<QgsPointCloudSubIndex> subIndexes = provider()->subIndexes();
-  QgsPointCloudLayerChunkedEntity *newChunkedEntity = new QgsPointCloudLayerChunkedEntity( subIndexes.at( i ).index(),
+  const QgsPointCloudSubIndex &si = subIndexes.at( i );
+
+  // Skip if Index is not yet loaded or is outside the map extents
+  if ( !si.index() || mBboxes.at( i ).isEmpty() )
+    return;
+
+  QgsPointCloudLayerChunkedEntity *newChunkedEntity = new QgsPointCloudLayerChunkedEntity( si.index(),
       mMap,
       mCoordinateTransform,
       static_cast< QgsPointCloud3DSymbol * >( mSymbol->clone() ),
@@ -108,7 +99,7 @@ void QgsVirtualPointCloudEntity::createChunkedEntityForSubIndex( int i )
   emit newEntityCreated( newChunkedEntity );
 }
 
-void QgsVirtualPointCloudEntity::handleSceneUpdate( const QgsChunkedEntity::SceneState &state )
+void QgsVirtualPointCloudEntity::handleSceneUpdate( const SceneState &state )
 {
   const QVector<QgsPointCloudSubIndex> subIndexes = provider()->subIndexes();
   for ( int i = 0; i < subIndexes.size(); ++i )
@@ -149,6 +140,27 @@ QgsRange<float> QgsVirtualPointCloudEntity::getNearFarPlaneRange( const QMatrix4
       fnear = std::min( range.lower(), fnear );
     }
   }
+
+  // if there were no chunked entities available, we will iterate the bboxes as a fallback instead
+  if ( fnear == 1e9 && ffar == 0 )
+  {
+    for ( const QgsAABB &bbox : mBboxes )
+    {
+      for ( int i = 0; i < 8; ++i )
+      {
+        const QVector4D p( ( ( i >> 0 ) & 1 ) ? bbox.xMin : bbox.xMax,
+                           ( ( i >> 1 ) & 1 ) ? bbox.yMin : bbox.yMax,
+                           ( ( i >> 2 ) & 1 ) ? bbox.zMin : bbox.zMax, 1 );
+
+        const QVector4D pc = viewMatrix * p;
+
+        const float dst = -pc.z();  // in camera coordinates, x grows right, y grows down, z grows to the back
+        fnear = std::min( fnear, dst );
+        ffar = std::max( ffar, dst );
+      }
+    }
+  }
+
   return QgsRange<float>( fnear, ffar );
 }
 
@@ -191,7 +203,7 @@ void QgsVirtualPointCloudEntity::updateBboxEntity()
   mBboxesEntity->setBoxes( bboxes );
 }
 
-void QgsVirtualPointCloudEntity::setRenderSubIndexAsBbox( const int i, const bool asBbox )
+void QgsVirtualPointCloudEntity::setRenderSubIndexAsBbox( int i, bool asBbox )
 {
   if ( !mChunkedEntitiesMap.contains( i ) )
     return;
