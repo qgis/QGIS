@@ -113,10 +113,14 @@ QVariantMap QgsVtpkTiles::metadata() const
   }
   else
   {
-    zip_fclose( file );
+    if ( file )
+      zip_fclose( file );
     file = nullptr;
     QgsMessageLog::logMessage( QObject::tr( "Error reading metadata: '%1'" ).arg( zip_strerror( mZip ) ) );
   }
+
+  mTileMapPath = mMetadata.value( QStringLiteral( "tileMap" ) ).toString();
+
   return mMetadata;
 }
 
@@ -146,7 +150,8 @@ QVariantMap QgsVtpkTiles::styleDefinition() const
   }
   else
   {
-    zip_fclose( file );
+    if ( file )
+      zip_fclose( file );
     file = nullptr;
     QgsMessageLog::logMessage( QObject::tr( "Error reading style definition: '%1'" ).arg( zip_strerror( mZip ) ) );
   }
@@ -186,7 +191,8 @@ QVariantMap QgsVtpkTiles::spriteDefinition() const
     }
     else
     {
-      zip_fclose( file );
+      if ( file )
+        zip_fclose( file );
       file = nullptr;
       QgsMessageLog::logMessage( QObject::tr( "Error reading sprite definition: '%1'" ).arg( zip_strerror( mZip ) ) );
     }
@@ -230,7 +236,8 @@ QImage QgsVtpkTiles::spriteImage() const
     }
     else
     {
-      zip_fclose( file );
+      if ( file )
+        zip_fclose( file );
       file = nullptr;
       QgsMessageLog::logMessage( QObject::tr( "Error reading sprite image: '%1'" ).arg( zip_strerror( mZip ) ) );
     }
@@ -322,11 +329,60 @@ QgsLayerMetadata QgsVtpkTiles::layerMetadata() const
   }
   else
   {
-    zip_fclose( file );
+    if ( file )
+      zip_fclose( file );
     file = nullptr;
     QgsMessageLog::logMessage( QObject::tr( "Error reading layer metadata: '%1'" ).arg( zip_strerror( mZip ) ) );
   }
   return metadata;
+}
+
+QVariantMap QgsVtpkTiles::rootTileMap() const
+{
+  // make sure metadata has been read alread
+  ( void )metadata();
+
+  if ( mHasReadTileMap || mTileMapPath.isEmpty() )
+    return mRootTileMap;
+
+  if ( !mZip )
+    return QVariantMap();
+
+  const QString tileMapPath = QStringLiteral( "p12/%1/root.json" ).arg( mTileMapPath );
+  struct zip_stat stat;
+  zip_stat_init( &stat );
+  zip_stat( mZip, tileMapPath.toLocal8Bit().constData(), 0, &stat );
+
+  const size_t len = stat.size;
+  const std::unique_ptr< char[] > buf( new char[len + 1] );
+
+  //Read the compressed file
+  zip_file *file = zip_fopen( mZip, tileMapPath.toLocal8Bit().constData(), 0 );
+  if ( !file )
+  {
+    QgsDebugMsg( QStringLiteral( "Tilemap %1 was not found in vtpk archive" ).arg( tileMapPath ) );
+    mTileMapPath.clear();
+    return mRootTileMap;
+  }
+
+  if ( zip_fread( file, buf.get(), len ) != -1 )
+  {
+    buf[ len ] = '\0';
+    std::string jsonString( buf.get( ) );
+    mRootTileMap = QgsJsonUtils::parseJson( jsonString ).toMap();
+    zip_fclose( file );
+    file = nullptr;
+  }
+  else
+  {
+    if ( file )
+      zip_fclose( file );
+    file = nullptr;
+    QgsDebugMsg( QStringLiteral( "Tilemap %1 could not be read from vtpk archive" ).arg( tileMapPath ) );
+    mTileMapPath.clear();
+  }
+  mHasReadTileMap = true;
+  return mRootTileMap;
 }
 
 QgsVectorTileMatrixSet QgsVtpkTiles::matrixSet() const
@@ -334,7 +390,7 @@ QgsVectorTileMatrixSet QgsVtpkTiles::matrixSet() const
   if ( !mMatrixSet.isEmpty() )
     return mMatrixSet;
 
-  mMatrixSet.fromEsriJson( metadata() );
+  mMatrixSet.fromEsriJson( metadata(), rootTileMap() );
   return mMatrixSet;
 }
 
@@ -426,7 +482,8 @@ QByteArray QgsVtpkTiles::tileData( int z, int x, int y )
     {
       QgsMessageLog::logMessage( QObject::tr( "Error reading tile: '%1'" ).arg( zip_strerror( mZip ) ) );
     }
-    zip_fclose( file );
+    if ( file )
+      zip_fclose( file );
     file = nullptr;
   }
 

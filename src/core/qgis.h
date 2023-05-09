@@ -3554,6 +3554,20 @@ class CORE_EXPORT Qgis
     Q_ENUM( FeatureSymbologyExport )
 
     /**
+     * Possible availability states for a tile within a tile matrix.
+     *
+     * \since QGIS 3.32
+     */
+    enum class TileAvailability
+    {
+      Available, //!< Tile is available within the matrix
+      NotAvailable, //!< Tile is not available within the matrix, e.g. there is no content for the tile
+      AvailableNoChildren, //!< Tile is available within the matrix, and is known to have no children (ie no higher zoom level tiles exist covering this tile's region)
+      UseLowerZoomLevelTile, //!< Tile is not available at the requested zoom level, it should be replaced by a tile from a lower zoom level instead182
+    };
+    Q_ENUM( TileAvailability )
+
+    /**
      * Identify search radius in mm
      * \since QGIS 2.3
      */

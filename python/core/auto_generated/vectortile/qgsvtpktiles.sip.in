@@ -67,6 +67,15 @@ Returns the VTPK sprite image, if it exists.
 Reads layer metadata from the VTPK file.
 %End
 
+    QVariantMap rootTileMap() const;
+%Docstring
+Returns the root tilemap content, if it exists.
+
+This method returns the contents of the "tilemap/root.json" file.
+
+.. versionadded:: 3.32
+%End
+
     QgsVectorTileMatrixSet matrixSet() const;
 %Docstring
 Returns the vector tile matrix set representing the tiles.

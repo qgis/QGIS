@@ -251,6 +251,8 @@ class CORE_EXPORT QgsTileMatrixSet
 
   public:
 
+    QgsTileMatrixSet();
+
     virtual ~QgsTileMatrixSet() = default;
 
     /**
@@ -308,6 +310,20 @@ class CORE_EXPORT QgsTileMatrixSet
      * by \a minimumZoom to \a maximumZoom, inclusive.
      */
     void dropMatricesOutsideZoomRange( int minimumZoom, int maximumZoom );
+
+    /**
+     * Returns the availability of the given tile in this matrix.
+     *
+     * This method can be used to determine whether a particular tile actually
+     * exists within the matrix, or is not available (e.g. due to holes within the matrix).
+     *
+     * This method returns Qgis::TileAvailability::Available by default, unless specific
+     * tile availability is known for the given \a id.
+     *
+     * \see defaultAvailability()
+     * \since QGIS 3.32
+     */
+    Qgis::TileAvailability tileAvailability( QgsTileXYZ id ) const;
 
     /**
      * Returns the coordinate reference system associated with the tiles.
@@ -383,7 +399,9 @@ class CORE_EXPORT QgsTileMatrixSet
      */
     QVector<QgsTileXYZ> tilesInRange( QgsTileRange range, int zoomLevel ) const;
 
-  private:
+  protected:
+    std::function< Qgis::TileAvailability( QgsTileXYZ id ) > mTileAvailabilityFunction;
+    std::function< Qgis::TileAvailability( QgsTileXYZ id, QgsTileXYZ &replacement ) > mTileReplacementFunction;
 
     // Usually corresponds to zoom level 0, even if that zoom level is NOT present in the actual tile matrices for this set
     QgsTileMatrix mRootMatrix;

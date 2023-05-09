@@ -2047,6 +2047,14 @@ The development version
       PerSymbolLayer
     };
 
+    enum class TileAvailability
+    {
+      Available,
+      NotAvailable,
+      AvailableNoChildren,
+      UseLowerZoomLevelTile,
+    };
+
     static const double DEFAULT_SEARCH_RADIUS_MM;
 
     static const float DEFAULT_MAPTOPIXEL_THRESHOLD;

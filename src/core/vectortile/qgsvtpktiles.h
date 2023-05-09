@@ -82,6 +82,15 @@ class CORE_EXPORT QgsVtpkTiles
     QgsLayerMetadata layerMetadata() const;
 
     /**
+     * Returns the root tilemap content, if it exists.
+     *
+     * This method returns the contents of the "tilemap/root.json" file.
+     *
+     * \since QGIS 3.32
+     */
+    QVariantMap rootTileMap() const;
+
+    /**
      * Returns the vector tile matrix set representing the tiles.
      */
     QgsVectorTileMatrixSet matrixSet() const;
@@ -112,6 +121,9 @@ class CORE_EXPORT QgsVtpkTiles
     struct zip *mZip = nullptr;
     mutable QVariantMap mMetadata;
     mutable QgsVectorTileMatrixSet mMatrixSet;
+    mutable QString mTileMapPath;
+    mutable bool mHasReadTileMap = false;
+    mutable QVariantMap mRootTileMap;
     mutable int mPacketSize = -1;
 };
 
