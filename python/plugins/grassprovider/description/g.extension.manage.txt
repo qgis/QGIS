@@ -1,0 +1,7 @@
+g.extension
+g.extension.manage - Install or uninstall GRASS addons.
+General (g.*)
+QgsProcessingParameterString|extension|Name of Extension|None|False
+QgsProcessingParameterEnum|operation|Operation|add;remove|False|None|False
+QgsProcessingParameterBoolean|-f|Force (required for removal)|False
+QgsProcessingParameterBoolean|-t|Operate on toolboxes instead of single modules (experimental)|False
