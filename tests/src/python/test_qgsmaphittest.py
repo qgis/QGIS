@@ -32,10 +32,10 @@ from qgis.core import (
     QgsApplication,
     QgsVectorLayer,
     QgsMapHitTestTask,
-    QgsLayerTreeFilterSettings
+    QgsLayerTreeFilterSettings,
+    QgsLayoutChecker
 )
 from qgis.testing import start_app, unittest
-from qgslayoutchecker import QgsLayoutChecker
 from test_qgslayoutitem import LayoutItemTestCase
 from utilities import unitTestDataPath
 

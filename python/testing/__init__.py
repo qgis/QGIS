@@ -51,9 +51,9 @@ from qgis.core import (
     QgsRenderChecker,
     QgsMultiRenderChecker,
     QgsMapSettings,
-    QgsLayout
+    QgsLayout,
+    QgsLayoutChecker
 )
-from qgslayoutchecker import QgsLayoutChecker
 
 import unittest
 

@@ -45,6 +45,7 @@ from qgis.core import (
     QgsProperty,
     QgsRasterLayer,
     QgsReadWriteContext,
+    QgsLayoutChecker,
     QgsRectangle,
     QgsSingleSymbolRenderer,
     QgsTextFormat,
@@ -54,7 +55,6 @@ from qgis.core import (
 )
 from qgis.testing import start_app, unittest
 
-from qgslayoutchecker import QgsLayoutChecker
 from test_qgslayoutitem import LayoutItemTestCase
 from utilities import unitTestDataPath
 
