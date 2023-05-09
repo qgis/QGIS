@@ -1,0 +1,6 @@
+g.extension
+Manage GRASS addons.
+General (g.*)
+QgsProcessingParameterString|extension|Name of Extension|None|False
+QgsProcessingParameterEnum|operation|Operation|add;remove|False|None|False
+QgsProcessingParameterBoolean|-f|Force (required for removal)|False
