@@ -402,7 +402,7 @@ QDomElement QgsTileMatrixSet::writeXml( QDomDocument &document, const QgsReadWri
 QVector<QgsTileXYZ> QgsTileMatrixSet::tilesInRange( QgsTileRange range, int zoomLevel ) const
 {
   QVector<QgsTileXYZ> tiles;
-  tiles.reserve( static_cast< std::size_t>( range.endColumn() - range.startColumn() + 1 ) * ( range.endRow() - range.startRow() + 1 ) );
+  tiles.reserve( ( range.endColumn() - range.startColumn() + 1 ) * ( range.endRow() - range.startRow() + 1 ) );
 
   for ( int tileRow = range.startRow(); tileRow <= range.endRow(); ++tileRow )
   {
