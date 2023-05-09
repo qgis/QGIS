@@ -41,7 +41,7 @@ endif
 
 QT_PLUGINS_DIR = lib/$(DEB_BUILD_MULTIARCH)/qt5/plugins
 
-ifneq ($(DISTRIBUTION),$(findstring $(DISTRIBUTION),"bullseye focal jammy kinetic lunar"))
+ifneq ($(DISTRIBUTION),$(findstring $(DISTRIBUTION),"bullseye bookworm focal jammy kinetic lunar"))
 	DISTRIBUTION := sid
 endif
 
@@ -106,8 +106,10 @@ ifneq ($(SHA),)
 	CMAKE_OPTS += -DSHA=$(SHA)
 endif
 
-ifeq (,$(findstring $(DISTRIBUTION),"sid kinetic lunar"))
+ifneq (,$(findstring $(DISTRIBUTION),"focal jammy bullseye"))
 	CMAKE_OPTS += -DWITH_PDAL=TRUE
+else
+	CMAKE_OPTS += -DWITH_PDAL=FALSE
 endif
 
 ifneq (,$(findstring ;$(GRASSVER);, ";7;8;"))
