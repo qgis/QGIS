@@ -47,6 +47,8 @@ Returns tile's zoom level (Z)
 Returns tile coordinates in a formatted string
 %End
 
+    bool operator==( const QgsTileXYZ &other ) const;
+    bool operator!=( const QgsTileXYZ &other ) const;
 
     SIP_PYOBJECT __repr__();
 %MethodCode

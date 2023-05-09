@@ -53,6 +53,9 @@ class CORE_EXPORT QgsTileXYZ
     //! Returns tile coordinates in a formatted string
     QString toString() const { return QStringLiteral( "X=%1 Y=%2 Z=%3" ).arg( mColumn ).arg( mRow ).arg( mZoomLevel ); }
 
+    bool operator==( const QgsTileXYZ &other ) const { return mColumn == other.mColumn && mRow == other.mRow && mZoomLevel == other.mZoomLevel; }
+    bool operator!=( const QgsTileXYZ &other ) const { return !( *this == other ); }
+
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
