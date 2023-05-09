@@ -40,8 +40,10 @@ class CORE_EXPORT QgsVectorTileMatrixSet : public QgsTileMatrixSet
      * Initializes the tile structure settings from an ESRI REST VectorTileService \a json map.
      *
      * \note This same structure is utilized in ESRI vtpk archives in the root.json file.
+     *
+     * Optionally, a \a rootTileMap can be specified for indexed vector tile datasets (since QGIS 3.32)
      */
-    bool fromEsriJson( const QVariantMap &json );
+    bool fromEsriJson( const QVariantMap &json, const QVariantMap &rootTileMap = QVariantMap() );
 
 };
 

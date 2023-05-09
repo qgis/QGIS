@@ -256,6 +256,39 @@ bool QgsArcGisVectorTileServiceDataProvider::setupArcgisVectorTileServiceConnect
     }
   }
 
+  // read tileMap if available
+  QVariantMap tileMap;
+  const QString tileMapEndpoint = mArcgisLayerConfiguration.value( QStringLiteral( "tileMap" ) ).toString();
+  if ( !tileMapEndpoint.isEmpty() )
+  {
+    QUrl tilemapUrl( tileServiceUri + '/' + tileMapEndpoint );
+    tilemapUrl.setQuery( query );
+
+    QNetworkRequest tileMapRequest = QNetworkRequest( tilemapUrl );
+    QgsSetRequestInitiatorClass( tileMapRequest, QStringLiteral( "QgsVectorTileLayer" ) )
+
+    QgsBlockingNetworkRequest tileMapNetworkRequest;
+    switch ( tileMapNetworkRequest.get( tileMapRequest ) )
+    {
+      case QgsBlockingNetworkRequest::NoError:
+        break;
+
+      case QgsBlockingNetworkRequest::NetworkError:
+      case QgsBlockingNetworkRequest::TimeoutError:
+      case QgsBlockingNetworkRequest::ServerExceptionError:
+        return false;
+    }
+
+    const QgsNetworkReplyContent tileMapContent = tileMapNetworkRequest.reply();
+    const QByteArray tileMapRaw = tileMapContent.content();
+
+    const QJsonDocument tileMapDoc = QJsonDocument::fromJson( tileMapRaw, &err );
+    if ( !tileMapDoc.isNull() )
+    {
+      tileMap = tileMapDoc.object().toVariantMap();
+    }
+  }
+
   mSourcePath = tileServiceUri + '/' + mArcgisLayerConfiguration.value( QStringLiteral( "tiles" ) ).toList().value( 0 ).toString();
   if ( !QgsVectorTileUtils::checkXYZUrlTemplate( mSourcePath ) )
   {
@@ -265,7 +298,7 @@ bool QgsArcGisVectorTileServiceDataProvider::setupArcgisVectorTileServiceConnect
 
   mArcgisLayerConfiguration.insert( QStringLiteral( "serviceUri" ), tileServiceUri );
 
-  mMatrixSet.fromEsriJson( mArcgisLayerConfiguration );
+  mMatrixSet.fromEsriJson( mArcgisLayerConfiguration, tileMap );
   mCrs = mMatrixSet.crs();
 
   // if hardcoded zoom limits aren't specified, take them from the server

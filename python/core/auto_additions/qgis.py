@@ -3613,3 +3613,11 @@ QgsVectorFileWriter.SymbolLayerSymbology.__doc__ = "Exports one feature per symb
 Qgis.FeatureSymbologyExport.__doc__ = 'Options for exporting features considering their symbology.\n\n.. note::\n\n   Prior to QGIS 3.32 this was available as :py:class:`QgsVectorFileWriter`.SymbologyExport.\n\n.. versionadded:: 3.32\n\n' + '* ``NoSymbology``: ' + Qgis.FeatureSymbologyExport.NoSymbology.__doc__ + '\n' + '* ``FeatureSymbology``: ' + Qgis.FeatureSymbologyExport.PerFeature.__doc__ + '\n' + '* ``SymbolLayerSymbology``: ' + Qgis.FeatureSymbologyExport.PerSymbolLayer.__doc__
 # --
 Qgis.FeatureSymbologyExport.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.TileAvailability.Available.__doc__ = "Tile is available within the matrix"
+Qgis.TileAvailability.NotAvailable.__doc__ = "Tile is not available within the matrix, e.g. there is no content for the tile"
+Qgis.TileAvailability.AvailableNoChildren.__doc__ = "Tile is available within the matrix, and is known to have no children (ie no higher zoom level tiles exist covering this tile's region)"
+Qgis.TileAvailability.UseLowerZoomLevelTile.__doc__ = "Tile is not available at the requested zoom level, it should be replaced by a tile from a lower zoom level instead182"
+Qgis.TileAvailability.__doc__ = 'Possible availability states for a tile within a tile matrix.\n\n.. versionadded:: 3.32\n\n' + '* ``Available``: ' + Qgis.TileAvailability.Available.__doc__ + '\n' + '* ``NotAvailable``: ' + Qgis.TileAvailability.NotAvailable.__doc__ + '\n' + '* ``AvailableNoChildren``: ' + Qgis.TileAvailability.AvailableNoChildren.__doc__ + '\n' + '* ``UseLowerZoomLevelTile``: ' + Qgis.TileAvailability.UseLowerZoomLevelTile.__doc__
+# --
+Qgis.TileAvailability.baseClass = Qgis
