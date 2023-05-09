@@ -70,6 +70,7 @@ set(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmdifference.cpp
   processing/qgsalgorithmdissolve.cpp
   processing/qgsalgorithmdistancewithin.cpp
+  processing/qgsalgorithmdownloadvectortiles.cpp
   processing/qgsalgorithmdrape.cpp
   processing/qgsalgorithmdropfields.cpp
   processing/qgsalgorithmdropgeometry.cpp

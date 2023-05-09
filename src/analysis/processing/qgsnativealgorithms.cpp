@@ -51,6 +51,7 @@
 #include "qgsalgorithmdifference.h"
 #include "qgsalgorithmdissolve.h"
 #include "qgsalgorithmdistancewithin.h"
+#include "qgsalgorithmdownloadvectortiles.h"
 #include "qgsalgorithmdrape.h"
 #include "qgsalgorithmdropfields.h"
 #include "qgsalgorithmdropgeometry.h"
@@ -299,6 +300,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsDetectVectorChangesAlgorithm() );
   addAlgorithm( new QgsDifferenceAlgorithm() );
   addAlgorithm( new QgsDissolveAlgorithm() );
+  addAlgorithm( new QgsDownloadVectorTilesAlgorithm() );
   addAlgorithm( new QgsDrapeToMAlgorithm() );
   addAlgorithm( new QgsDrapeToZAlgorithm() );
   addAlgorithm( new QgsDropTableFieldsAlgorithm() );
