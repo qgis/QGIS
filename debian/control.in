@@ -74,7 +74,7 @@ Build-Depends:
  qtpositioning5-dev,
  qttools5-dev-tools,
  qttools5-dev,
-#bullseye jammy# libpdal-dev, pdal,
+#jammy bullseye# libpdal-dev, pdal,
  libprotobuf-dev,
  protobuf-compiler,
  libzstd-dev,
@@ -418,7 +418,7 @@ Depends:
 Breaks: python-qgis-common (<< ${source:Version})
 Replaces: python-qgis-common (<< ${source:Version})
 Suggests:
-#kinetic bullseye bookworm# otb-qgis,
+#jammy kinetic lunar bullseye bookworm sid# otb-qgis,
  saga
 Description: Python bindings to QGIS - architecture-independent files
  QGIS is a Geographic Information System (GIS) which manages, analyzes and
@@ -437,7 +437,7 @@ Depends:
  libqca-qt5-2-plugins,
  libqt5sql5-sqlite,
  qt5-image-formats-plugins,
-#bullseye bookworm kinetic# qt5-image-formats-plugin-pdf,
+#jammy kinetic lunar bullseye bookworm sid# qt5-image-formats-plugin-pdf,
  ${shlibs:Depends},
  ${misc:Depends}
 Breaks: qgis (<= 1.6)
