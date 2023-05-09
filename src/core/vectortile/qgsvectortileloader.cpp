@@ -39,7 +39,7 @@ QgsVectorTileLoader::QgsVectorTileLoader( const QgsVectorTileDataProvider *provi
   }
 
   QgsDebugMsgLevel( QStringLiteral( "Starting network loader" ), 2 );
-  QVector<QgsTileXYZ> tiles = QgsVectorTileUtils::tilesInRange( range, zoomLevel );
+  QVector<QgsTileXYZ> tiles = tileMatrixSet.tilesInRange( range, zoomLevel );
   QgsVectorTileUtils::sortTilesByDistanceFromCenter( tiles, viewCenter );
   for ( QgsTileXYZ id : std::as_const( tiles ) )
   {
@@ -152,7 +152,7 @@ QList<QgsVectorTileRawData> QgsVectorTileLoader::blockingFetchTileRawData( const
   if ( feedback && feedback->isCanceled() )
     return {};
 
-  QVector<QgsTileXYZ> tiles = QgsVectorTileUtils::tilesInRange( range, zoomLevel );
+  QVector<QgsTileXYZ> tiles = tileMatrixSet.tilesInRange( range, zoomLevel );
 
   // if a tile matrix results in a HUGE number of tile requests, we skip the sort -- it can be expensive
   if ( tiles.size() < 10000 )

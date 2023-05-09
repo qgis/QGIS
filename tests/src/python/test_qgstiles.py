@@ -94,6 +94,14 @@ class TestQgsTiles(unittest.TestCase):
         self.assertEqual(matrix_set.maximumZoom(), 1)
         self.assertEqual(matrix_set.crs().authid(), 'EPSG:4326')
 
+        range = QgsTileRange(1, 3, 4, 7)
+        tiles = matrix_set.tilesInRange(range, 1)
+        self.assertEqual(len(tiles), 12)
+        self.assertEqual(min(t.column() for t in tiles), 1)
+        self.assertEqual(max(t.column() for t in tiles), 3)
+        self.assertEqual(min(t.row() for t in tiles), 4)
+        self.assertEqual(max(t.row() for t in tiles), 7)
+
         # should not apply any special logic here, and return scales unchanged
         self.assertEqual(matrix_set.calculateTileScaleForMap(1000, QgsCoordinateReferenceSystem('EPSG:4326'),
                                                              QgsRectangle(0, 2, 20, 12), QSize(20, 10), 96), 1000)
@@ -122,6 +130,23 @@ class TestQgsTiles(unittest.TestCase):
         self.assertEqual(matrix_set.tileMatrix(1).zoomLevel(), 1)
         self.assertEqual(matrix_set.tileMatrix(2).zoomLevel(), 2)
         self.assertEqual(matrix_set.tileMatrix(99).zoomLevel(), -1)
+
+        tiles = matrix_set.tilesInRange(QgsTileRange(1, 3, 4, 7), 1)
+        self.assertEqual(len(tiles), 12)
+        self.assertEqual(min(t.column() for t in tiles), 1)
+        self.assertEqual(max(t.column() for t in tiles), 3)
+        self.assertEqual(min(t.row() for t in tiles), 4)
+        self.assertEqual(max(t.row() for t in tiles), 7)
+        self.assertEqual(min(t.zoomLevel() for t in tiles), 1)
+        self.assertEqual(max(t.zoomLevel() for t in tiles), 1)
+        tiles = matrix_set.tilesInRange(QgsTileRange(2, 4, 1, 3), 2)
+        self.assertEqual(len(tiles), 9)
+        self.assertEqual(min(t.column() for t in tiles), 2)
+        self.assertEqual(max(t.column() for t in tiles), 4)
+        self.assertEqual(min(t.row() for t in tiles), 1)
+        self.assertEqual(max(t.row() for t in tiles), 3)
+        self.assertEqual(min(t.zoomLevel() for t in tiles), 2)
+        self.assertEqual(max(t.zoomLevel() for t in tiles), 2)
 
         self.assertAlmostEqual(matrix_set.scaleToZoom(776503144), 1, 5)
         self.assertEqual(matrix_set.scaleToZoom(1776503144), 1)
