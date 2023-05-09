@@ -197,9 +197,14 @@ class CORE_EXPORT QgsLayoutChecker : public QgsMultiRenderChecker
      * The page number is specified via \a page, where 0 corresponds to the first
      * page in the layout.
      *
-     * Returns FALSE if the rendered layout differs from the expected reference image.
+     * \param report will be set to generated test report
+     * \param page page number from layout to render and check
+     * \param pixelDiff number of pixels which are permitted to differ from reference image.
+     * \param createReferenceImage if TRUE, the rendered reference image will be regenerated instead of performing a comparison test with the existing image
+     *
+     * \returns TRUE if the rendered layout matches the expected reference image.
      */
-    bool testLayout( QString &report, int page = 0, int pixelDiff = 0, bool createReferenceImage = false );
+    bool testLayout( QString &report SIP_OUT, int page = 0, int pixelDiff = 0, bool createReferenceImage = false );
 
   private:
     QgsLayoutChecker() = delete;
