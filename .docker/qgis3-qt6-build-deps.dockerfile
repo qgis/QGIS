@@ -70,7 +70,7 @@ RUN dnf -y --refresh install \
     dos2unix
 
 # Workaround https://bugreports.qt.io/browse/QTBUG-113227 for now, roll back to qt 6.4
-dnf downgrade qt6-qtbase-6.4.3-1.fc38 --allowerasing
+RUN dnf downgrade qt6-qtbase-6.4.3-1.fc38 --allowerasing
 
 # Oracle : client side
 RUN curl https://download.oracle.com/otn_software/linux/instantclient/199000/instantclient-basic-linux.x64-19.9.0.0.0dbru.zip > instantclient-basic-linux.x64-19.9.0.0.0dbru.zip
