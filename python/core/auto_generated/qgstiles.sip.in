@@ -47,7 +47,15 @@ Returns tile's zoom level (Z)
 Returns tile coordinates in a formatted string
 %End
 
+
+    SIP_PYOBJECT __repr__();
+%MethodCode
+    const QString str = QStringLiteral( "<QgsTileXYZ: %1, %2, %3>" ).arg( sipCpp->column() ).arg( sipCpp->row() ).arg( sipCpp->zoomLevel() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
+
 };
+
 
 
 class QgsTileRange

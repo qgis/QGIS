@@ -53,6 +53,14 @@ class CORE_EXPORT QgsTileXYZ
     //! Returns tile coordinates in a formatted string
     QString toString() const { return QStringLiteral( "X=%1 Y=%2 Z=%3" ).arg( mColumn ).arg( mRow ).arg( mZoomLevel ); }
 
+#ifdef SIP_RUN
+    SIP_PYOBJECT __repr__();
+    % MethodCode
+    const QString str = QStringLiteral( "<QgsTileXYZ: %1, %2, %3>" ).arg( sipCpp->column() ).arg( sipCpp->row() ).arg( sipCpp->zoomLevel() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+    % End
+#endif
+
   private:
     int mColumn = -1;
     int mRow = -1;

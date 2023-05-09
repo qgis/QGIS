@@ -37,6 +37,10 @@ class TestQgsTiles(unittest.TestCase):
         self.assertEqual(tile.row(), 2)
         self.assertEqual(tile.zoomLevel(), 3)
 
+    def testQgsTileXYZRepr(self):
+        tile = QgsTileXYZ(1, 2, 3)
+        self.assertEqual(str(tile), '<QgsTileXYZ: 1, 2, 3>')
+
     def testQgsTileRange(self):
         range = QgsTileRange(1, 2, 3, 4)
         self.assertEqual(range.startColumn(), 1)
