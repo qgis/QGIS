@@ -312,8 +312,6 @@ bool QgsPdalProvider::load( const QString &uri )
       mExtent = QgsRectangle( xmin, ymin, xmax, ymax );
 
       mPointCount = quickInfo.m_pointCount;
-      if ( mPointCount == 0 )
-        throw pdal::pdal_error( "File contains no points" );
 
       // projection
       const QString wkt = QString::fromStdString( quickInfo.m_srs.getWKT() );
