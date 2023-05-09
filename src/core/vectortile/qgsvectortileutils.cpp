@@ -163,19 +163,6 @@ struct LessThanTileRequest
   }
 };
 
-QVector<QgsTileXYZ> QgsVectorTileUtils::tilesInRange( QgsTileRange range, int zoomLevel )
-{
-  QVector<QgsTileXYZ> tiles;
-  for ( int tileRow = range.startRow(); tileRow <= range.endRow(); ++tileRow )
-  {
-    for ( int tileColumn = range.startColumn(); tileColumn <= range.endColumn(); ++tileColumn )
-    {
-      tiles.append( QgsTileXYZ( tileColumn, tileRow, zoomLevel ) );
-    }
-  }
-  return tiles;
-}
-
 void QgsVectorTileUtils::sortTilesByDistanceFromCenter( QVector<QgsTileXYZ> &tiles, QPointF center )
 {
   LessThanTileRequest cmp;

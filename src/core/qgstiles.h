@@ -376,6 +376,13 @@ class CORE_EXPORT QgsTileMatrixSet
      */
     void setScaleToTileZoomMethod( Qgis::ScaleToTileZoomLevelMethod method ) { mScaleToTileZoomMethod = method; }
 
+    /**
+     * Returns a list of tiles in the given tile range.
+     *
+     * \since QGIS 3.32
+     */
+    QVector<QgsTileXYZ> tilesInRange( QgsTileRange range, int zoomLevel ) const;
+
   private:
 
     // Usually corresponds to zoom level 0, even if that zoom level is NOT present in the actual tile matrices for this set

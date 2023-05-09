@@ -398,3 +398,21 @@ QDomElement QgsTileMatrixSet::writeXml( QDomDocument &document, const QgsReadWri
 
   return setElement;
 }
+
+QVector<QgsTileXYZ> QgsTileMatrixSet::tilesInRange( QgsTileRange range, int zoomLevel ) const
+{
+  QVector<QgsTileXYZ> tiles;
+  tiles.reserve( static_cast< std::size_t>( range.endColumn() - range.startColumn() + 1 ) * ( range.endRow() - range.startRow() + 1 ) );
+
+  const QgsTileMatrix &matrix = mTileMatrices.value( zoomLevel );
+
+  for ( int tileRow = range.startRow(); tileRow <= range.endRow(); ++tileRow )
+  {
+    for ( int tileColumn = range.startColumn(); tileColumn <= range.endColumn(); ++tileColumn )
+    {
+      tiles.append( QgsTileXYZ( tileColumn, tileRow, zoomLevel ) );
+    }
+  }
+  return tiles;
+}
+
