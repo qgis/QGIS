@@ -435,12 +435,19 @@ void QgsPointCloudLayer::setDataSourcePrivate( const QString &dataSource, const 
     loadDefaultStyleFlag = true;
   }
 
-  if ( !mLayerOptions.skipIndexGeneration && mDataProvider && mDataProvider->indexingState() != QgsPointCloudDataProvider::PointCloudIndexGenerationState::Indexed )
+  if ( !mLayerOptions.skipIndexGeneration &&
+       mDataProvider &&
+       mDataProvider->indexingState() != QgsPointCloudDataProvider::PointCloudIndexGenerationState::Indexed &&
+       mDataProvider->pointCount() > 0 )
   {
     mDataProvider->generateIndex();
   }
 
-  if ( !mLayerOptions.skipStatisticsCalculation && mDataProvider && !mDataProvider->hasStatisticsMetadata() && mDataProvider->indexingState() == QgsPointCloudDataProvider::PointCloudIndexGenerationState::Indexed )
+  if ( !mLayerOptions.skipStatisticsCalculation &&
+       mDataProvider &&
+       !mDataProvider->hasStatisticsMetadata() &&
+       mDataProvider->indexingState() == QgsPointCloudDataProvider::PointCloudIndexGenerationState::Indexed &&
+       mDataProvider->pointCount() > 0 )
   {
     calculateStatistics();
   }
