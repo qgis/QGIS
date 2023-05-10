@@ -83,7 +83,7 @@ bool QgsRasterBooleanLogicAlgorithmBase::prepareAlgorithm( const QVariantMap &pa
   mExtent = referenceLayer->extent();
   mNoDataValue = parameterAsDouble( parameters, QStringLiteral( "NO_DATA" ), context );
   mDataType = QgsRasterAnalysisUtils::rasterTypeChoiceToDataType( parameterAsEnum( parameters, QStringLiteral( "DATA_TYPE" ), context ) );
-  if ( mDataType == Qgis::DataType::Int8 && GDALVersionInfo( "VERSION_NUM" ) < GDAL_COMPUTE_VERSION( 3, 7, 0 ) )
+  if ( mDataType == Qgis::DataType::Int8 && atoi( GDALVersionInfo( "VERSION_NUM" ) ) < GDAL_COMPUTE_VERSION( 3, 7, 0 ) )
     throw QgsProcessingException( QObject::tr( "Int8 data type requires GDAL version 3.7 or later" ) );
 
   mTreatNodataAsFalse = parameterAsBoolean( parameters, QStringLiteral( "NODATA_AS_FALSE" ), context );
