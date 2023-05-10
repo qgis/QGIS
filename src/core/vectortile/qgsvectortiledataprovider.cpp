@@ -61,7 +61,7 @@ bool QgsVectorTileDataProvider::supportsAsync() const
   return false;
 }
 
-QNetworkRequest QgsVectorTileDataProvider::tileRequest( const QgsTileMatrix &, const QgsTileXYZ &, Qgis::RendererUsage ) const
+QNetworkRequest QgsVectorTileDataProvider::tileRequest( const QgsTileMatrixSet &, const QgsTileXYZ &, Qgis::RendererUsage ) const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 

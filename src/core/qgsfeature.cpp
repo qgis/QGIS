@@ -159,9 +159,6 @@ int QgsFeature::attributeCount() const
 
 void QgsFeature::setAttributes( const QgsAttributes &attrs )
 {
-  if ( attrs == d->attributes )
-    return;
-
   d.detach();
   d->attributes = attrs;
   d->valid = true;

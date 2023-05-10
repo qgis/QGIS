@@ -342,6 +342,45 @@ model :py:func:`~QgsProcessingModelAlgorithm.parameterComponents`.
 .. versionadded:: 3.14
 %End
 
+    QList< QgsProcessingModelOutput > orderedOutputs() const;
+%Docstring
+Returns an ordered list of outputs for the model.
+
+.. seealso:: :py:func:`setOutputOrder`
+
+.. versionadded:: 3.32
+%End
+
+    void setOutputOrder( const QStringList &order );
+%Docstring
+Sets the ``order`` for sorting outputs for the model.
+
+The ``order`` list should consist of "output child algorithm id:output name" formatted strings corresponding to existing
+model outputs.
+
+.. seealso:: :py:func:`orderedOutputs`
+
+.. versionadded:: 3.32
+%End
+
+    QString outputGroup() const;
+%Docstring
+Returns the destination layer tree group name for outputs created by the model.
+
+.. seealso:: :py:func:`setOutputGroup`
+
+.. versionadded:: 3.32
+%End
+
+    void setOutputGroup( const QString &group );
+%Docstring
+Sets the destination layer tree ``group`` name for outputs created by the model.
+
+.. seealso:: :py:func:`outputGroup`
+
+.. versionadded:: 3.32
+%End
+
     void updateDestinationParameters();
 %Docstring
 Updates the model's parameter definitions to include all relevant destination

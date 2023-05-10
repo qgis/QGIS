@@ -42,9 +42,9 @@ class CORE_EXPORT QgsXyzVectorTileDataProviderBase : public QgsVectorTileDataPro
     QgsXyzVectorTileDataProviderBase &operator=( const QgsXyzVectorTileDataProviderBase &other ) = delete;
 
     bool supportsAsync() const override;
-    QByteArray readTile( const QgsTileMatrix &tileMatrix, const QgsTileXYZ &id, QgsFeedback *feedback = nullptr ) const override;
-    QList<QgsVectorTileRawData> readTiles( const QgsTileMatrix &, const QVector<QgsTileXYZ> &tiles, QgsFeedback *feedback = nullptr ) const override;
-    QNetworkRequest tileRequest( const QgsTileMatrix &tileMatrix, const QgsTileXYZ &id, Qgis::RendererUsage usage ) const override;
+    QByteArray readTile( const QgsTileMatrixSet &tileMatrix, const QgsTileXYZ &id, QgsFeedback *feedback = nullptr ) const override;
+    QList<QgsVectorTileRawData> readTiles( const QgsTileMatrixSet &, const QVector<QgsTileXYZ> &tiles, QgsFeedback *feedback = nullptr ) const override;
+    QNetworkRequest tileRequest( const QgsTileMatrixSet &tileMatrix, const QgsTileXYZ &id, Qgis::RendererUsage usage ) const override;
 
   protected:
 

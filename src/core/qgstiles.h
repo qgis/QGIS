@@ -53,11 +53,37 @@ class CORE_EXPORT QgsTileXYZ
     //! Returns tile coordinates in a formatted string
     QString toString() const { return QStringLiteral( "X=%1 Y=%2 Z=%3" ).arg( mColumn ).arg( mRow ).arg( mZoomLevel ); }
 
+    bool operator==( const QgsTileXYZ &other ) const { return mColumn == other.mColumn && mRow == other.mRow && mZoomLevel == other.mZoomLevel; }
+    bool operator!=( const QgsTileXYZ &other ) const { return !( *this == other ); }
+
+#ifdef SIP_RUN
+    SIP_PYOBJECT __repr__();
+    % MethodCode
+    const QString str = QStringLiteral( "<QgsTileXYZ: %1, %2, %3>" ).arg( sipCpp->column() ).arg( sipCpp->row() ).arg( sipCpp->zoomLevel() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+    % End
+#endif
+
   private:
     int mColumn = -1;
     int mRow = -1;
     int mZoomLevel = -1;
 };
+
+/**
+ * Returns a hash for a tile \a id.
+ *
+ * \since QGIS 3.32
+ */
+CORE_EXPORT inline uint qHash( QgsTileXYZ id ) SIP_SKIP
+{
+  return id.column() + id.row() + id.zoomLevel();
+
+  const uint h1 = qHash( static_cast< quint64 >( id.column( ) ) );
+  const uint h2 = qHash( static_cast< quint64 >( id.row() ) );
+  const uint h3 = qHash( static_cast< quint64 >( id.zoomLevel() ) );
+  return h1 ^ ( h2 << 1 ) ^ ( h3 );
+}
 
 
 /**
@@ -349,6 +375,13 @@ class CORE_EXPORT QgsTileMatrixSet
      * \see scaleToTileZoomMethod()
      */
     void setScaleToTileZoomMethod( Qgis::ScaleToTileZoomLevelMethod method ) { mScaleToTileZoomMethod = method; }
+
+    /**
+     * Returns a list of tiles in the given tile range.
+     *
+     * \since QGIS 3.32
+     */
+    QVector<QgsTileXYZ> tilesInRange( QgsTileRange range, int zoomLevel ) const;
 
   private:
 

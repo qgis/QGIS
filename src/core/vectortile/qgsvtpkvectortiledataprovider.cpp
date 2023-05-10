@@ -171,7 +171,7 @@ QImage QgsVtpkVectorTileDataProvider::spriteImage() const
   return mSpriteImage;
 }
 
-QByteArray QgsVtpkVectorTileDataProvider::readTile( const QgsTileMatrix &, const QgsTileXYZ &id, QgsFeedback *feedback ) const
+QByteArray QgsVtpkVectorTileDataProvider::readTile( const QgsTileMatrixSet &, const QgsTileXYZ &id, QgsFeedback *feedback ) const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
@@ -182,7 +182,7 @@ QByteArray QgsVtpkVectorTileDataProvider::readTile( const QgsTileMatrix &, const
   return loadFromVtpk( reader, id, feedback );
 }
 
-QList<QgsVectorTileRawData> QgsVtpkVectorTileDataProvider::readTiles( const QgsTileMatrix &, const QVector<QgsTileXYZ> &tiles, QgsFeedback *feedback ) const
+QList<QgsVectorTileRawData> QgsVtpkVectorTileDataProvider::readTiles( const QgsTileMatrixSet &, const QVector<QgsTileXYZ> &tiles, QgsFeedback *feedback ) const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 

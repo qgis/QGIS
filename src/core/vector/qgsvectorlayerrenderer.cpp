@@ -544,7 +544,28 @@ void QgsVectorLayerRenderer::drawRendererLevels( QgsFeatureRenderer *renderer, Q
 {
   const bool isMainRenderer = renderer == mRenderer;
 
-  QHash< QgsSymbol *, QList<QgsFeature> > features; // key = symbol, value = array of features
+  // We need to figure out in which order all the features should be rendered.
+  // Ordering is based on (a) a "level" which is determined by the configured
+  // feature rendering order" and (b) the symbol level. The "level" is
+  // determined by the values of the attributes defined in the feature
+  // rendering order settings. Each time the attribute(s) have a new distinct
+  // value, a new empty QHash is added to the "features" list. This QHash is
+  // then filled by mappings from the symbol to a list of all the features
+  // that should be rendered by that symbol.
+  //
+  // If orderBy is not enabled, this list will only ever contain a single
+  // element.
+  QList<QHash< QgsSymbol *, QList<QgsFeature> >> features;
+
+  // We have at least one "level" for the features.
+  features.push_back( {} );
+
+  QSet<int> orderByAttributeIdx;
+  if ( renderer->orderByEnabled() )
+  {
+    orderByAttributeIdx = renderer->orderBy().usedAttributeIndices( mSource->fields() );
+  }
+
   QgsRenderContext &context = *renderContext();
 
   QgsSingleSymbolRenderer *selRenderer = nullptr;
@@ -572,6 +593,7 @@ void QgsVectorLayerRenderer::drawRendererLevels( QgsFeatureRenderer *renderer, Q
 
   // 1. fetch features
   QgsFeature fet;
+  QVector<QVariant> prevValues; // previous values of ORDER BY attributes
   while ( fit.nextFeature( fet ) )
   {
     if ( context.renderingStopped() )
@@ -595,13 +617,33 @@ void QgsVectorLayerRenderer::drawRendererLevels( QgsFeatureRenderer *renderer, Q
       continue;
     }
 
+    if ( renderer->orderByEnabled() )
+    {
+      QVector<QVariant> currentValues;
+      for ( auto const idx : orderByAttributeIdx )
+      {
+        currentValues.push_back( fet.attribute( idx ) );
+      }
+      if ( prevValues.empty() )
+      {
+        prevValues = std::move( currentValues );
+      }
+      else if ( currentValues != prevValues )
+      {
+        // Current values of ORDER BY attributes are different than previous
+        // values of these attributes. Start a new level.
+        prevValues = std::move( currentValues );
+        features.push_back( {} );
+      }
+    }
+
     if ( !context.testFlag( Qgis::RenderContextFlag::SkipSymbolRendering ) )
     {
-      if ( !features.contains( sym ) )
+      if ( !features.back().contains( sym ) )
       {
-        features.insert( sym, QList<QgsFeature>() );
+        features.back().insert( sym, QList<QgsFeature>() );
       }
-      features[sym].append( fet );
+      features.back()[sym].append( fet );
     }
 
     // new labeling engine
@@ -637,7 +679,7 @@ void QgsVectorLayerRenderer::drawRendererLevels( QgsFeatureRenderer *renderer, Q
 
   scopePopper.reset();
 
-  if ( features.empty() )
+  if ( features.back().empty() )
   {
     // nothing to draw
     stopRenderer( renderer, selRenderer );
@@ -666,52 +708,54 @@ void QgsVectorLayerRenderer::drawRendererLevels( QgsFeatureRenderer *renderer, Q
     context.setFeatureClipGeometry( mClipFeatureGeom );
 
   // 2. draw features in correct order
-  for ( int l = 0; l < levels.count(); l++ )
+  for ( auto &featureLists : features )
   {
-    QgsSymbolLevel &level = levels[l];
-    for ( int i = 0; i < level.count(); i++ )
+    for ( int l = 0; l < levels.count(); l++ )
     {
-      QgsSymbolLevelItem &item = level[i];
-      if ( !features.contains( item.symbol() ) )
+      const QgsSymbolLevel &level = levels[l];
+      for ( int i = 0; i < level.count(); i++ )
       {
-        QgsDebugMsg( QStringLiteral( "level item's symbol not found!" ) );
-        continue;
-      }
-      int layer = item.layer();
-      QList<QgsFeature> &lst = features[item.symbol()];
-      QList<QgsFeature>::iterator fit;
-      for ( fit = lst.begin(); fit != lst.end(); ++fit )
-      {
-        if ( context.renderingStopped() )
+        const QgsSymbolLevelItem &item = level[i];
+        if ( !featureLists.contains( item.symbol() ) )
         {
-          stopRenderer( renderer, selRenderer );
-          return;
+          QgsDebugMsg( QStringLiteral( "level item's symbol not found!" ) );
+          continue;
         }
-
-        bool sel = isMainRenderer && context.showSelection() && mSelectedFeatureIds.contains( fit->id() );
-        // maybe vertex markers should be drawn only during the last pass...
-        bool drawMarker = isMainRenderer && ( mDrawVertexMarkers && context.drawEditingInformation() && ( !mVertexMarkerOnlyForSelection || sel ) );
-
-        if ( ! mNoSetLayerExpressionContext )
-          context.expressionContext().setFeature( *fit );
-
-        try
+        const int layer = item.layer();
+        const QList<QgsFeature> &lst = featureLists[item.symbol()];
+        for ( auto fit = lst.begin(); fit != lst.end(); ++fit )
         {
-          renderer->renderFeature( *fit, context, layer, sel, drawMarker );
-
-          // as soon as first feature is rendered, we can start showing layer updates.
-          // but if we are blocking render updates (so that a previously cached image is being shown), we wait
-          // at most e.g. 3 seconds before we start forcing progressive updates.
-          if ( !mBlockRenderUpdates || mElapsedTimer.elapsed() > MAX_TIME_TO_USE_CACHED_PREVIEW_IMAGE )
+          if ( context.renderingStopped() )
           {
-            mReadyToCompose = true;
+            stopRenderer( renderer, selRenderer );
+            return;
           }
-        }
-        catch ( const QgsCsException &cse )
-        {
-          Q_UNUSED( cse )
-          QgsDebugMsg( QStringLiteral( "Failed to transform a point while drawing a feature with ID '%1'. Ignoring this feature. %2" )
-                       .arg( fet.id() ).arg( cse.what() ) );
+
+          const bool sel = isMainRenderer && context.showSelection() && mSelectedFeatureIds.contains( fit->id() );
+          // maybe vertex markers should be drawn only during the last pass...
+          const bool drawMarker = isMainRenderer && ( mDrawVertexMarkers && context.drawEditingInformation() && ( !mVertexMarkerOnlyForSelection || sel ) );
+
+          if ( ! mNoSetLayerExpressionContext )
+            context.expressionContext().setFeature( *fit );
+
+          try
+          {
+            renderer->renderFeature( *fit, context, layer, sel, drawMarker );
+
+            // as soon as first feature is rendered, we can start showing layer updates.
+            // but if we are blocking render updates (so that a previously cached image is being shown), we wait
+            // at most e.g. 3 seconds before we start forcing progressive updates.
+            if ( !mBlockRenderUpdates || mElapsedTimer.elapsed() > MAX_TIME_TO_USE_CACHED_PREVIEW_IMAGE )
+            {
+              mReadyToCompose = true;
+            }
+          }
+          catch ( const QgsCsException &cse )
+          {
+            Q_UNUSED( cse )
+            QgsDebugMsg( QStringLiteral( "Failed to transform a point while drawing a feature with ID '%1'. Ignoring this feature. %2" )
+                         .arg( fet.id() ).arg( cse.what() ) );
+          }
         }
       }
     }

@@ -20,7 +20,6 @@
 #include "qgsmessagelog.h"
 #include "qgsjsonutils.h"
 #include "qgsarcgisrestutils.h"
-#include "qgsmbtiles.h"
 #include "qgsziputils.h"
 #include "qgslayermetadata.h"
 
@@ -417,9 +416,8 @@ QByteArray QgsVtpkTiles::tileData( int z, int x, int y )
 
       const std::size_t tileOffset = indexValue % ( 2ULL << 39 );
       const std::size_t tileSize = static_cast< std::size_t>( std::floor( indexValue / ( 2ULL << 39 ) ) );
-
       // bundle is a gzip file;
-      if ( !QgsZipUtils::decodeGzip( buf.get() + tileOffset, tileSize, res ) )
+      if ( tileSize > 0 && !QgsZipUtils::decodeGzip( buf.get() + tileOffset, tileSize, res ) )
       {
         QgsMessageLog::logMessage( QObject::tr( "Error extracting bundle contents as gzip: %1" ).arg( fileName ) );
       }

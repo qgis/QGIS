@@ -137,6 +137,7 @@ QgsVectorLayerFeatureIterator::QgsVectorLayerFeatureIterator( QgsVectorLayerFeat
   if ( mRequest.destinationCrs().isValid() && mRequest.destinationCrs() != mSource->mCrs )
   {
     mTransform = QgsCoordinateTransform( mSource->mCrs, mRequest.destinationCrs(), mRequest.transformContext() );
+    mHasValidTransform = mTransform.isValid();
   }
 
   // prepare spatial filter geometries for optimal speed
@@ -938,7 +939,7 @@ void QgsVectorLayerFeatureIterator::createOrderedJoinList()
 bool QgsVectorLayerFeatureIterator::postProcessFeature( QgsFeature &feature )
 {
   bool result = checkGeometryValidity( feature );
-  if ( result )
+  if ( result && mHasValidTransform )
     geometryToDestinationCrs( feature, mTransform );
 
   if ( result && mDistanceWithinEngine && feature.hasGeometry() )
@@ -951,9 +952,6 @@ bool QgsVectorLayerFeatureIterator::postProcessFeature( QgsFeature &feature )
 
 bool QgsVectorLayerFeatureIterator::checkGeometryValidity( const QgsFeature &feature )
 {
-  if ( !feature.hasGeometry() )
-    return true;
-
   switch ( mRequest.invalidGeometryCheck() )
   {
     case QgsFeatureRequest::GeometryNoCheck:
@@ -961,6 +959,9 @@ bool QgsVectorLayerFeatureIterator::checkGeometryValidity( const QgsFeature &fea
 
     case QgsFeatureRequest::GeometrySkipInvalid:
     {
+      if ( !feature.hasGeometry() )
+        return true;
+
       if ( !feature.geometry().isGeosValid() )
       {
         QgsMessageLog::logMessage( QObject::tr( "Geometry error: One or more input features have invalid geometry." ), QString(), Qgis::MessageLevel::Critical );
@@ -974,6 +975,9 @@ bool QgsVectorLayerFeatureIterator::checkGeometryValidity( const QgsFeature &fea
     }
 
     case QgsFeatureRequest::GeometryAbortOnInvalid:
+      if ( !feature.hasGeometry() )
+        return true;
+
       if ( !feature.geometry().isGeosValid() )
       {
         QgsMessageLog::logMessage( QObject::tr( "Geometry error: One or more input features have invalid geometry." ), QString(), Qgis::MessageLevel::Critical );

@@ -101,6 +101,7 @@ class TestQgsProcessingModelAlgorithm: public QObject
     void modelAcceptableValues();
     void modelValidate();
     void modelInputs();
+    void modelOutputs();
     void modelDependencies();
     void modelSource();
     void modelNameMatchesFileName();
@@ -2087,6 +2088,159 @@ void TestQgsProcessingModelAlgorithm::modelInputs()
   QCOMPARE( m2.parameterDefinitions().at( 0 )->name(), QStringLiteral( "cc string" ) );
   QCOMPARE( m2.parameterDefinitions().at( 1 )->name(), QStringLiteral( "a string" ) );
   QCOMPARE( m2.parameterDefinitions().at( 2 )->name(), QStringLiteral( "string" ) );
+}
+
+void TestQgsProcessingModelAlgorithm::modelOutputs()
+{
+  QgsProcessingModelAlgorithm m;
+  QVERIFY( m.orderedOutputs().isEmpty() );
+  QVERIFY( m.outputGroup().isEmpty() );
+  m.setOutputGroup( QStringLiteral( "output group" ) );
+  QCOMPARE( m.outputGroup(), QStringLiteral( "output group" ) );
+
+  const QgsProcessingModelParameter sourceParam( "INPUT" );
+  m.addModelParameter( new QgsProcessingParameterFeatureSource( "INPUT" ), sourceParam );
+
+  QgsProcessingModelChildAlgorithm algc1;
+  algc1.setChildId( QStringLiteral( "cx1" ) );
+  algc1.setAlgorithmId( "native:buffer" );
+  algc1.addParameterSources( "INPUT", { QgsProcessingModelChildParameterSource::fromModelParameter( "INPUT" ) } );
+
+  m.addChildAlgorithm( algc1 );
+  QVERIFY( m.orderedOutputs().isEmpty() );
+
+  QgsProcessingModelChildAlgorithm algc2;
+  algc2.setChildId( QStringLiteral( "cx2" ) );
+  algc2.setAlgorithmId( "native:buffer" );
+  algc2.addParameterSources( "INPUT", { QgsProcessingModelChildParameterSource::fromModelParameter( "INPUT" ) } );
+
+  QMap<QString, QgsProcessingModelOutput> outputs;
+  QgsProcessingModelOutput out1;
+  out1.setChildOutputName( QStringLiteral( "OUTPUT" ) );
+  outputs.insert( QStringLiteral( "a" ), out1 );
+  algc2.setModelOutputs( outputs );
+
+  m.addChildAlgorithm( algc2 );
+
+  QCOMPARE( m.orderedOutputs().size(), 1 );
+  QCOMPARE( m.orderedOutputs().at( 0 ).childId(), QStringLiteral( "cx2" ) );
+  QCOMPARE( m.orderedOutputs().at( 0 ).childOutputName(), QStringLiteral( "OUTPUT" ) );
+  QCOMPARE( m.orderedOutputs().at( 0 ).name(), QStringLiteral( "a" ) );
+
+  QgsProcessingModelChildAlgorithm algc3;
+  algc3.setChildId( QStringLiteral( "cx3" ) );
+  algc3.setAlgorithmId( "native:buffer" );
+  algc3.addParameterSources( "INPUT", { QgsProcessingModelChildParameterSource::fromModelParameter( "INPUT" ) } );
+
+  outputs.clear();
+  QgsProcessingModelOutput out2;
+  out2.setChildOutputName( QStringLiteral( "OUTPUT" ) );
+  outputs.insert( QStringLiteral( "b" ), out2 );
+  algc3.setModelOutputs( outputs );
+
+  m.addChildAlgorithm( algc3 );
+
+  QCOMPARE( m.orderedOutputs().size(), 2 );
+  QCOMPARE( m.orderedOutputs().at( 0 ).childId(), QStringLiteral( "cx2" ) );
+  QCOMPARE( m.orderedOutputs().at( 0 ).childOutputName(), QStringLiteral( "OUTPUT" ) );
+  QCOMPARE( m.orderedOutputs().at( 0 ).name(), QStringLiteral( "a" ) );
+  QCOMPARE( m.orderedOutputs().at( 1 ).childId(), QStringLiteral( "cx3" ) );
+  QCOMPARE( m.orderedOutputs().at( 1 ).childOutputName(), QStringLiteral( "OUTPUT" ) );
+  QCOMPARE( m.orderedOutputs().at( 1 ).name(), QStringLiteral( "b" ) );
+
+  QgsProcessingModelChildAlgorithm algc4;
+  algc4.setChildId( QStringLiteral( "cx4" ) );
+  algc4.setAlgorithmId( "native:buffer" );
+  algc4.addParameterSources( "INPUT", { QgsProcessingModelChildParameterSource::fromModelParameter( "INPUT" ) } );
+
+  outputs.clear();
+  QgsProcessingModelOutput out3;
+  out3.setChildOutputName( QStringLiteral( "OUTPUT" ) );
+  outputs.insert( QStringLiteral( "c" ), out2 );
+  algc4.setModelOutputs( outputs );
+
+  m.addChildAlgorithm( algc4 );
+
+  QCOMPARE( m.orderedOutputs().size(), 3 );
+  QCOMPARE( m.orderedOutputs().at( 0 ).childId(), QStringLiteral( "cx2" ) );
+  QCOMPARE( m.orderedOutputs().at( 0 ).childOutputName(), QStringLiteral( "OUTPUT" ) );
+  QCOMPARE( m.orderedOutputs().at( 0 ).name(), QStringLiteral( "a" ) );
+  QCOMPARE( m.orderedOutputs().at( 1 ).childId(), QStringLiteral( "cx3" ) );
+  QCOMPARE( m.orderedOutputs().at( 1 ).childOutputName(), QStringLiteral( "OUTPUT" ) );
+  QCOMPARE( m.orderedOutputs().at( 1 ).name(), QStringLiteral( "b" ) );
+  QCOMPARE( m.orderedOutputs().at( 2 ).childId(), QStringLiteral( "cx4" ) );
+  QCOMPARE( m.orderedOutputs().at( 2 ).childOutputName(), QStringLiteral( "OUTPUT" ) );
+  QCOMPARE( m.orderedOutputs().at( 2 ).name(), QStringLiteral( "c" ) );
+
+  // set specific output order (incomplete, and with some non-matching values)
+  m.setOutputOrder( { QStringLiteral( "cx3:OUTPUT" ), QStringLiteral( "cx2:OUTPUT" ), QStringLiteral( "cx1:OUTPUT" ) } );
+  QCOMPARE( m.orderedOutputs().size(), 3 );
+  QCOMPARE( m.orderedOutputs().at( 0 ).childId(), QStringLiteral( "cx3" ) );
+  QCOMPARE( m.orderedOutputs().at( 0 ).childOutputName(), QStringLiteral( "OUTPUT" ) );
+  QCOMPARE( m.orderedOutputs().at( 0 ).name(), QStringLiteral( "b" ) );
+  QCOMPARE( m.orderedOutputs().at( 1 ).childId(), QStringLiteral( "cx2" ) );
+  QCOMPARE( m.orderedOutputs().at( 1 ).childOutputName(), QStringLiteral( "OUTPUT" ) );
+  QCOMPARE( m.orderedOutputs().at( 1 ).name(), QStringLiteral( "a" ) );
+  QCOMPARE( m.orderedOutputs().at( 2 ).childId(), QStringLiteral( "cx4" ) );
+  QCOMPARE( m.orderedOutputs().at( 2 ).childOutputName(), QStringLiteral( "OUTPUT" ) );
+  QCOMPARE( m.orderedOutputs().at( 2 ).name(), QStringLiteral( "c" ) );
+
+  // set specific output order, complete
+  m.setOutputOrder( { QStringLiteral( "cx3:OUTPUT" ), QStringLiteral( "cx4:OUTPUT" ), QStringLiteral( "cx2:OUTPUT" ) } );
+  QCOMPARE( m.orderedOutputs().size(), 3 );
+  QCOMPARE( m.orderedOutputs().at( 0 ).childId(), QStringLiteral( "cx3" ) );
+  QCOMPARE( m.orderedOutputs().at( 0 ).childOutputName(), QStringLiteral( "OUTPUT" ) );
+  QCOMPARE( m.orderedOutputs().at( 0 ).name(), QStringLiteral( "b" ) );
+  QCOMPARE( m.orderedOutputs().at( 1 ).childId(), QStringLiteral( "cx4" ) );
+  QCOMPARE( m.orderedOutputs().at( 1 ).childOutputName(), QStringLiteral( "OUTPUT" ) );
+  QCOMPARE( m.orderedOutputs().at( 1 ).name(), QStringLiteral( "c" ) );
+  QCOMPARE( m.orderedOutputs().at( 2 ).childId(), QStringLiteral( "cx2" ) );
+  QCOMPARE( m.orderedOutputs().at( 2 ).childOutputName(), QStringLiteral( "OUTPUT" ) );
+  QCOMPARE( m.orderedOutputs().at( 2 ).name(), QStringLiteral( "a" ) );
+
+  // save/restore
+  QgsProcessingModelAlgorithm m2;
+  m2.loadVariant( m.toVariant() );
+  QCOMPARE( m2.outputGroup(), QStringLiteral( "output group" ) );
+  QCOMPARE( m2.orderedOutputs().size(), 3 );
+  QCOMPARE( m2.orderedOutputs().at( 0 ).childId(), QStringLiteral( "cx3" ) );
+  QCOMPARE( m2.orderedOutputs().at( 0 ).childOutputName(), QStringLiteral( "OUTPUT" ) );
+  QCOMPARE( m2.orderedOutputs().at( 0 ).name(), QStringLiteral( "b" ) );
+  QCOMPARE( m2.orderedOutputs().at( 1 ).childId(), QStringLiteral( "cx4" ) );
+  QCOMPARE( m2.orderedOutputs().at( 1 ).childOutputName(), QStringLiteral( "OUTPUT" ) );
+  QCOMPARE( m2.orderedOutputs().at( 1 ).name(), QStringLiteral( "c" ) );
+  QCOMPARE( m2.orderedOutputs().at( 2 ).childId(), QStringLiteral( "cx2" ) );
+  QCOMPARE( m2.orderedOutputs().at( 2 ).childOutputName(), QStringLiteral( "OUTPUT" ) );
+  QCOMPARE( m2.orderedOutputs().at( 2 ).name(), QStringLiteral( "a" ) );
+
+  // also run and check context details
+  QgsProcessingContext context;
+  QgsProcessingFeedback feedback;
+  QVariantMap params;
+  QgsVectorLayer *layer3111 = new QgsVectorLayer( "Point?crs=epsg:3111", "v1", "memory" );
+  QgsProject p;
+  p.addMapLayer( layer3111 );
+  context.setProject( &p );
+  params.insert( QStringLiteral( "INPUT" ), QStringLiteral( "v1" ) );
+  params.insert( QStringLiteral( "cx2:a" ), QgsProcessing::TEMPORARY_OUTPUT );
+  params.insert( QStringLiteral( "cx3:b" ), QgsProcessing::TEMPORARY_OUTPUT );
+  params.insert( QStringLiteral( "cx4:c" ), QgsProcessing::TEMPORARY_OUTPUT );
+
+  QVariantMap results = m.run( params, context, &feedback );
+  const QString destA = results.value( QStringLiteral( "cx2:a" ) ).toString();
+  QVERIFY( !destA.isEmpty() );
+  QCOMPARE( context.layerToLoadOnCompletionDetails( destA ).groupName, QStringLiteral( "output group" ) );
+  QCOMPARE( context.layerToLoadOnCompletionDetails( destA ).layerSortKey, 2 );
+
+  const QString destB = results.value( QStringLiteral( "cx3:b" ) ).toString();
+  QVERIFY( !destB.isEmpty() );
+  QCOMPARE( context.layerToLoadOnCompletionDetails( destB ).groupName, QStringLiteral( "output group" ) );
+  QCOMPARE( context.layerToLoadOnCompletionDetails( destB ).layerSortKey, 0 );
+
+  const QString destC = results.value( QStringLiteral( "cx4:c" ) ).toString();
+  QVERIFY( !destC.isEmpty() );
+  QCOMPARE( context.layerToLoadOnCompletionDetails( destC ).groupName, QStringLiteral( "output group" ) );
+  QCOMPARE( context.layerToLoadOnCompletionDetails( destC ).layerSortKey, 1 );
 }
 
 void TestQgsProcessingModelAlgorithm::modelDependencies()

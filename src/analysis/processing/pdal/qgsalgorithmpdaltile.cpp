@@ -80,8 +80,11 @@ QStringList QgsPdalTileAlgorithm::createArgumentLists( const QVariantMap &parame
     feedback->reportError( QObject::tr( "No layers selected" ), true );
   }
 
-  const QString outputDir = parameterAsOutputLayer( parameters, QStringLiteral( "OUTPUT" ), context );
+  const QString outputDir = parameterAsString( parameters, QStringLiteral( "OUTPUT" ), context );
   setOutputValue( QStringLiteral( "OUTPUT" ), outputDir );
+
+  if ( !QDir().mkpath( outputDir ) )
+    throw QgsProcessingException( QStringLiteral( "Failed to create output directory." ) );
 
   int length = parameterAsInt( parameters, QStringLiteral( "LENGTH" ), context );
 

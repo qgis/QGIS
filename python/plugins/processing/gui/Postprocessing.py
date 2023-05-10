@@ -198,6 +198,8 @@ def handleAlgorithmResults(alg: QgsProcessingAlgorithm,
     i = 0
 
     added_layers: List[Tuple[QgsLayerTreeGroup, QgsLayerTreeLayer]] = []
+    layers_to_post_process: List[Tuple[QgsMapLayer,
+                                       QgsProcessingContext.LayerDetails]] = []
 
     for dest_id, details in context.layersToLoadOnCompletion().items():
         if feedback.isCanceled():
@@ -235,10 +237,11 @@ def handleAlgorithmResults(alg: QgsProcessingAlgorithm,
                 added_layers.append((results_group, layer_tree_layer))
 
                 if details.postProcessor():
-                    details.postProcessor().postProcessLayer(
-                        layer,
-                        context,
-                        feedback)
+                    # we defer calling the postProcessor set in the context
+                    # until the layer has been added to the project's layer
+                    # tree, just in case the postProcessor contains logic
+                    # relating to layer tree handling
+                    layers_to_post_process.append((layer, details))
 
             else:
                 wrong_layers.append(str(dest_id))
@@ -261,6 +264,14 @@ def handleAlgorithmResults(alg: QgsProcessingAlgorithm,
     for group, layer_node in sorted_layer_tree_layers:
         layer_node.removeCustomProperty(SORT_ORDER_CUSTOM_PROPERTY)
         group.insertChildNode(0, layer_node)
+
+    # all layers have been added to the layer tree, so safe to call
+    # postProcessors now
+    for layer, details in layers_to_post_process:
+        details.postProcessor().postProcessLayer(
+            layer,
+            context,
+            feedback)
 
     feedback.setProgress(100)
 
