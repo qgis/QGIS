@@ -208,6 +208,23 @@ QList<QgsVectorTileRawData> QgsVtpkVectorTileDataProvider::readTiles( const QgsT
   return rawTiles;
 }
 
+QString QgsVtpkVectorTileDataProvider::htmlMetadata() const
+{
+  QString metadata;
+
+  QgsDataSourceUri dsUri;
+  dsUri.setEncodedUri( dataSourceUri() );
+  QgsVtpkTiles reader( dsUri.param( QStringLiteral( "url" ) ) );
+  reader.open();
+
+  if ( !reader.rootTileMap().isEmpty() )
+    metadata += QStringLiteral( "<tr><td class=\"highlight\">" ) % tr( "VTPK storage" ) % QStringLiteral( "</td><td>" ) % tr( "Indexed VTPK (tilemap is present)" ) % QStringLiteral( "</td></tr>\n" );
+  else
+    metadata += QStringLiteral( "<tr><td class=\"highlight\">" ) % tr( "VTPK storage" ) % QStringLiteral( "</td><td>" ) % tr( "Flat VTPK (no tilemap)" ) % QStringLiteral( "</td></tr>\n" );
+
+  return metadata;
+}
+
 QByteArray QgsVtpkVectorTileDataProvider::loadFromVtpk( QgsVtpkTiles &vtpkTileReader, const QgsTileXYZ &id, QgsFeedback * )
 {
   const QByteArray tileData = vtpkTileReader.tileData( id.zoomLevel(), id.column(), id.row() );

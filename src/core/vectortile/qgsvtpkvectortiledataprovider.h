@@ -60,6 +60,7 @@ class CORE_EXPORT QgsVtpkVectorTileDataProvider : public QgsVectorTileDataProvid
     QImage spriteImage() const override;
     QByteArray readTile( const QgsTileMatrixSet &tileMatrix, const QgsTileXYZ &id, QgsFeedback *feedback = nullptr ) const override;
     QList<QgsVectorTileRawData> readTiles( const QgsTileMatrixSet &, const QVector<QgsTileXYZ> &tiles, QgsFeedback *feedback = nullptr ) const override;
+    QString htmlMetadata() const override;
 
     static QString DATA_PROVIDER_KEY;
     static QString DATA_PROVIDER_DESCRIPTION;
