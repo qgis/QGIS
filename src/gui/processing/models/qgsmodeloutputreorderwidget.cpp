@@ -94,7 +94,7 @@ QString QgsModelOutputReorderWidget::outputGroup() const
 QgsModelOutputReorderDialog::QgsModelOutputReorderDialog( QWidget *parent )
   : QDialog( parent )
 {
-  setWindowTitle( tr( "Reorder Model Outputs" ) );
+  setWindowTitle( tr( "Reorder Output Layers" ) );
   mWidget = new QgsModelOutputReorderWidget();
   QVBoxLayout *vl = new QVBoxLayout();
   vl->addWidget( mWidget, 1 );
