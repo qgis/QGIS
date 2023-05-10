@@ -518,6 +518,9 @@ QString QgsVectorTileLayer::htmlMetadata() const
 
   info += QStringLiteral( "<tr><td class=\"highlight\">" ) % tr( "Zoom levels" ) % QStringLiteral( "</td><td>" ) % QStringLiteral( "%1 - %2" ).arg( sourceMinZoom() ).arg( sourceMaxZoom() ) % QStringLiteral( "</td></tr>\n" );
 
+  if ( mDataProvider )
+    info += qobject_cast< const QgsVectorTileDataProvider * >( mDataProvider.get() )->htmlMetadata();
+
   info += QLatin1String( "</table>\n<br>" );
 
   // CRS

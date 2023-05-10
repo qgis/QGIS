@@ -149,6 +149,12 @@ class CORE_EXPORT QgsVectorTileDataProvider : public QgsDataProvider
      * \see spriteDefinition()
      */
     virtual QImage spriteImage() const;
+
+    /**
+     * Returns metadata in a format suitable for feeding directly
+     * into a subset of the GUI properties "Metadata" tab.
+     */
+    virtual QString htmlMetadata() const;
 };
 
 

@@ -96,5 +96,12 @@ QImage QgsVectorTileDataProvider::spriteImage() const
   return QImage();
 }
 
+QString QgsVectorTileDataProvider::htmlMetadata() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return QString();
+}
+
 
 

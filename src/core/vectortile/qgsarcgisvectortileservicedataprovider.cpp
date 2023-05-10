@@ -156,6 +156,16 @@ QString QgsArcGisVectorTileServiceDataProvider::styleUrl() const
          + '/' + mArcgisLayerConfiguration.value( QStringLiteral( "defaultStyles" ) ).toString();
 }
 
+QString QgsArcGisVectorTileServiceDataProvider::htmlMetadata() const
+{
+  QString metadata;
+
+  if ( !mTileMapUrl.isEmpty() )
+    metadata += QStringLiteral( "<tr><td class=\"highlight\">" ) % tr( "Tilemap" ) % QStringLiteral( "</td><td><a href=\"%1\">%1</a>" ).arg( mTileMapUrl ) % QStringLiteral( "</td></tr>\n" );
+
+  return metadata;
+}
+
 bool QgsArcGisVectorTileServiceDataProvider::setupArcgisVectorTileServiceConnection()
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
@@ -261,7 +271,8 @@ bool QgsArcGisVectorTileServiceDataProvider::setupArcgisVectorTileServiceConnect
   const QString tileMapEndpoint = mArcgisLayerConfiguration.value( QStringLiteral( "tileMap" ) ).toString();
   if ( !tileMapEndpoint.isEmpty() )
   {
-    QUrl tilemapUrl( tileServiceUri + '/' + tileMapEndpoint );
+    mTileMapUrl = tileServiceUri + '/' + tileMapEndpoint;
+    QUrl tilemapUrl( mTileMapUrl );
     tilemapUrl.setQuery( query );
 
     QNetworkRequest tileMapRequest = QNetworkRequest( tilemapUrl );
