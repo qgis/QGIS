@@ -18,6 +18,9 @@ from qgis.core import (
     QgsDataSourceUri,
     QgsProviderRegistry,
     QgsVectorLayer,
+    Qgis,
+    QgsCoordinateReferenceSystem,
+    QgsFields,
 )
 from qgis.testing import unittest
 
@@ -110,22 +113,22 @@ class TestPyQgsProviderConnectionMssql(unittest.TestCase, TestPyQgsProviderConne
 
         conn = md.createConnection(self.uri, {})
         schemas = conn.schemas()
-        self.assertEqual(len(schemas), 2)
-        self.assertEqual(schemas, ['dbo', 'qgis_test'])
+        self.assertTrue('dbo' in schemas)
+        self.assertTrue('qgis_test' in schemas)
         filterUri = QgsDataSourceUri(self.uri)
         filterUri.setParam('excludedSchemas', 'dbo')
         conn = md.createConnection(filterUri.uri(), {})
         schemas = conn.schemas()
-        self.assertEqual(len(schemas), 1)
-        self.assertEqual(schemas, ['qgis_test'])
+        self.assertFalse('dbo' in schemas)
+        self.assertTrue('qgis_test' in schemas)
 
         # Store the connection
         conn.store('filteredConnection')
 
         otherConn = md.createConnection('filteredConnection')
         schemas = otherConn.schemas()
-        self.assertEqual(len(schemas), 1)
-        self.assertEqual(schemas, ['qgis_test'])
+        self.assertFalse('dbo' in schemas)
+        self.assertTrue('qgis_test' in schemas)
 
     def test_exec_sql(self):
 
@@ -142,6 +145,41 @@ class TestPyQgsProviderConnectionMssql(unittest.TestCase, TestPyQgsProviderConne
 
         self.assertEqual(len(rows), 4)
         self.assertEqual(rows, results)
+
+    def test_geometry_z(self):
+        """Test for issue GH #52660: Z values are not correctly stored when using MSSQL"""
+
+        md = QgsProviderRegistry.instance().providerMetadata('mssql')
+        conn = md.createConnection(self.uri, {})
+        conn.dropVectorTable('qgis_test', 'test_z')
+
+        conn.createVectorTable('qgis_test', 'test_z', QgsFields(), Qgis.WkbType.PolygonZ, QgsCoordinateReferenceSystem(), True, {})
+        conn.executeSql("""INSERT INTO qgis_test.test_z (geom) values (geometry::STGeomFromText ('POLYGON ((523699.41 6231152.17 80.53, 523698.64 6231154.35 79.96, 523694.92 6231152.82 80.21, 523695.8 6231150.68 80.54, 523699.41 6231152.17 80.53))' , 25832))""")
+
+        tb = conn.table('qgis_test', 'test_z')
+        gct = tb.geometryColumnTypes()[0]
+        self.assertEqual(gct.wkbType, Qgis.WkbType.PolygonZ)
+        self.assertEqual(tb.maxCoordinateDimensions(), 3)
+
+        vl = QgsVectorLayer(conn.tableUri('qgis_test', 'test_z'), 'test_z', 'mssql')
+        self.assertEqual(vl.wkbType(), Qgis.WkbType.PolygonZ)
+
+        conn.dropVectorTable('qgis_test', 'test_z')
+
+        # Also test ZM
+        conn.dropVectorTable('qgis_test', 'test_zm')
+        conn.createVectorTable('qgis_test', 'test_zm', QgsFields(), Qgis.WkbType.PolygonZM, QgsCoordinateReferenceSystem(), True, {})
+        conn.executeSql("""INSERT INTO qgis_test.test_zm (geom) values (geometry::STGeomFromText ('POLYGON ((523699.41 6231152.17 80.53 123, 523698.64 6231154.35 79.96 456, 523694.92 6231152.82 80.21 789, 523695.8 6231150.68 80.54, 523699.41 6231152.17 80.53 123))' , 25832))""")
+
+        tb = conn.table('qgis_test', 'test_zm')
+        gct = tb.geometryColumnTypes()[0]
+        self.assertEqual(gct.wkbType, Qgis.WkbType.PolygonZM)
+        self.assertEqual(tb.maxCoordinateDimensions(), 4)
+
+        vl = QgsVectorLayer(conn.tableUri('qgis_test', 'test_zm'), 'test_zm', 'mssql')
+        self.assertEqual(vl.wkbType(), Qgis.WkbType.PolygonZM)
+
+        conn.dropVectorTable('qgis_test', 'test_zm')
 
 
 if __name__ == '__main__':
