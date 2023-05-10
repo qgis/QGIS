@@ -230,6 +230,10 @@ QByteArray QgsVtpkVectorTileDataProvider::loadFromVtpk( QgsVtpkTiles &vtpkTileRe
   const QByteArray tileData = vtpkTileReader.tileData( id.zoomLevel(), id.column(), id.row() );
   if ( tileData.isEmpty() )
   {
+    // TODO -- I think here ESRI software will detect a zero size tile and automatically fallback to lower zoom level tiles
+    // I.e. they treat EVERY vtpk a bit like an indexed VTPK, but without the up-front tilemap information.
+    // See https://github.com/qgis/QGIS/issues/52872
+
     return QByteArray();
   }
   return tileData;
