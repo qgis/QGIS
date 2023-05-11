@@ -45,7 +45,8 @@ QgsStatusBarScaleWidget::QgsStatusBarScaleWidget( QgsMapCanvas *canvas, QWidget 
   mScale->setObjectName( QStringLiteral( "mScaleEdit" ) );
   // seems setFont() change font only for popup not for line edit,
   // so we need to set font for it separately
-  mScale->setMinimumWidth( 10 );
+  mScale->setMinimumContentsLength( 3 );
+  mScale->setSizeAdjustPolicy( QComboBox::AdjustToContents );
   mScale->setContentsMargins( 0, 0, 0, 0 );
   mScale->setToolTip( tr( "Current map scale" ) );
 
@@ -69,10 +70,7 @@ void QgsStatusBarScaleWidget::setScale( double scale )
   mScale->setScale( scale );
   mScale->blockSignals( false );
 
-  if ( mScale->width() > mScale->minimumWidth() )
-  {
-    mScale->setMinimumWidth( mScale->width() );
-  }
+  mScale->setMinimumContentsLength( mScale->scaleString().length() );
 }
 
 bool QgsStatusBarScaleWidget::isLocked() const
