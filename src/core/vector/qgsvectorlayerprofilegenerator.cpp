@@ -750,6 +750,10 @@ bool QgsVectorLayerProfileGenerator::generateProfile( const QgsProfileGeneration
   mProfileCurveEngine.reset( new QgsGeos( mProfileCurve.get() ) );
   mProfileCurveEngine->prepareGeometry();
 
+  mProfileBox = std::unique_ptr<QgsAbstractGeometry>( mProfileCurveEngine->buffer( mTolerance, 8, Qgis::EndCapStyle::Flat, Qgis::JoinStyle::Round, 2 ) );
+  mProfileBoxEngine.reset( new QgsGeos( mProfileBox.get() ) );
+  mProfileBoxEngine->prepareGeometry();
+
   mDataDefinedProperties.prepare( mExpressionContext );
 
   if ( mFeedback->isCanceled() )
@@ -873,19 +877,137 @@ bool QgsVectorLayerProfileGenerator::generateProfileForLines()
   // get features from layer
   QgsFeatureRequest request;
   request.setDestinationCrs( mTargetCrs, mTransformContext );
-  request.setFilterRect( mProfileCurve->boundingBox() );
+  request.setFilterRect( mProfileBox->boundingBox() );
   request.setSubsetOfAttributes( mDataDefinedProperties.referencedFields( mExpressionContext ), mFields );
   request.setFeedback( mFeedback.get() );
 
   auto processCurve = [this]( const QgsFeature & feature, const QgsCurve * curve )
   {
+    auto processPoint = [this, curve]( const QgsPoint & intersectionPoint, const QgsGeos & curveGeos,  const QgsFeature & feature )
+    {
+
+      QString error;
+
+      // unfortunately we need to do some work to interpolate the z value for the line -- GEOS doesn't give us this
+      const double distance = curveGeos.lineLocatePoint( intersectionPoint, &error );
+      std::unique_ptr< QgsPoint > interpolatedPoint( curve->interpolatePoint( distance ) );
+
+      const double offset = mDataDefinedProperties.valueAsDouble( QgsMapLayerElevationProperties::Property::ZOffset, mExpressionContext, mOffset );
+
+      const double height = featureZToHeight( interpolatedPoint->x(), interpolatedPoint->y(), interpolatedPoint->z(), offset );
+      mResults->mRawPoints.append( QgsPoint( interpolatedPoint->x(), interpolatedPoint->y(), height ) );
+      mResults->minZ = std::min( mResults->minZ, height );
+      mResults->maxZ = std::max( mResults->maxZ, height );
+
+      const double distanceAlongProfileCurve = mProfileCurveEngine->lineLocatePoint( *interpolatedPoint, &error );
+      mResults->mDistanceToHeightMap.insert( distanceAlongProfileCurve, height );
+
+      QgsVectorLayerProfileResults::Feature resultFeature;
+      resultFeature.featureId = feature.id();
+      if ( mExtrusionEnabled )
+      {
+        const double extrusion = mDataDefinedProperties.valueAsDouble( QgsMapLayerElevationProperties::Property::ExtrusionHeight, mExpressionContext, mExtrusionHeight );
+
+        resultFeature.geometry = QgsGeometry( new QgsLineString( QgsPoint( interpolatedPoint->x(), interpolatedPoint->y(), height ),
+                                              QgsPoint( interpolatedPoint->x(), interpolatedPoint->y(), height + extrusion ) ) );
+        resultFeature.crossSectionGeometry = QgsGeometry( new QgsLineString( QgsPoint( distanceAlongProfileCurve, height ),
+                                             QgsPoint( distanceAlongProfileCurve, height + extrusion ) ) );
+        mResults->minZ = std::min( mResults->minZ, height + extrusion );
+        mResults->maxZ = std::max( mResults->maxZ, height + extrusion );
+      }
+      else
+      {
+        resultFeature.geometry = QgsGeometry( new QgsPoint( interpolatedPoint->x(), interpolatedPoint->y(), height ) );
+        resultFeature.crossSectionGeometry = QgsGeometry( new QgsPoint( distanceAlongProfileCurve, height ) );
+      }
+      mResults->features[resultFeature.featureId].append( resultFeature );
+    };
+
+    auto processIntersectionCurve = [this, curve]( const QgsCurve & intersectionCurve, const QgsGeos & curveGeos,  const QgsFeature & feature )
+    {
+      QString error;
+      QVector< QgsGeometry > transformedParts;
+      QVector< QgsGeometry > crossSectionParts;
+
+      QString lastError;
+      QgsVectorLayerProfileResults::Feature resultFeature;
+      resultFeature.featureId = feature.id();
+      double lastDistanceAlongProfileCurve = 0.0;
+
+      for ( auto it = intersectionCurve.vertices_begin(); it != intersectionCurve.vertices_end(); ++it )
+      {
+        const QgsPoint &intersectionPoint = ( *it );
+
+
+        // JMK : GEOS is returning a valid height value in my current test
+        // Previous comment : unfortunately we need to do some work to interpolate the z value for the line -- GEOS doesn't give us this
+        // const double distance = curveGeos.lineLocatePoint( intersectionPoint, &error );
+        // std::unique_ptr< QgsPoint > interpolatedPoint( curve->interpolatePoint( distance ) );
+        const QgsPoint *interpolatedPoint = &intersectionPoint;
+
+        const double offset = mDataDefinedProperties.valueAsDouble( QgsMapLayerElevationProperties::Property::ZOffset, mExpressionContext, mOffset );
+
+        const double height = featureZToHeight( interpolatedPoint->x(), interpolatedPoint->y(), interpolatedPoint->z(), offset );
+        mResults->mRawPoints.append( QgsPoint( interpolatedPoint->x(), interpolatedPoint->y(), height ) );
+        mResults->minZ = std::min( mResults->minZ, height );
+        mResults->maxZ = std::max( mResults->maxZ, height );
+
+        const double distanceAlongProfileCurve = mProfileCurveEngine->lineLocatePoint( *interpolatedPoint, &error );
+        lastDistanceAlongProfileCurve = distanceAlongProfileCurve;
+        mResults->mDistanceToHeightMap.insert( distanceAlongProfileCurve, height );
+
+        if ( mExtrusionEnabled )
+        {
+          const double extrusion = mDataDefinedProperties.valueAsDouble( QgsMapLayerElevationProperties::Property::ExtrusionHeight, mExpressionContext, mExtrusionHeight );
+
+          transformedParts.append( QgsGeometry( new QgsLineString( QgsPoint( interpolatedPoint->x(), interpolatedPoint->y(), height ),
+                                                QgsPoint( interpolatedPoint->x(), interpolatedPoint->y(), height + extrusion ) ) ) );
+          crossSectionParts.append( QgsGeometry( new QgsLineString( QgsPoint( distanceAlongProfileCurve, height ),
+                                                 QgsPoint( distanceAlongProfileCurve, height + extrusion ) ) ) );
+          mResults->minZ = std::min( mResults->minZ, height + extrusion );
+          mResults->maxZ = std::max( mResults->maxZ, height + extrusion );
+        }
+        else
+        {
+          transformedParts.append( QgsGeometry( new QgsPoint( interpolatedPoint->x(), interpolatedPoint->y(), height ) ) );
+          crossSectionParts.append( QgsGeometry( new QgsPoint( distanceAlongProfileCurve, height ) ) );
+        }
+      }
+
+      mResults->mDistanceToHeightMap.insert( lastDistanceAlongProfileCurve + 0.001, qQNaN() );
+
+      resultFeature.geometry = transformedParts.size() > 1 ? QgsGeometry::unaryUnion( transformedParts ) : transformedParts.value( 0 );
+      if ( !crossSectionParts.empty() )
+      {
+        //Create linestring from point list
+        QgsLineString *line = new QgsLineString();
+        for ( auto it = crossSectionParts.begin(); it != crossSectionParts.end(); ++it )
+        {
+          line->addVertex( QgsPoint( ( *it ).asPoint() ) );
+        }
+        resultFeature.crossSectionGeometry = QgsGeometry( line );
+      }
+
+      mResults->features[resultFeature.featureId].append( resultFeature );
+    };
+
     QString error;
-    std::unique_ptr< QgsAbstractGeometry > intersection( mProfileCurveEngine->intersection( curve, &error ) );
+    std::unique_ptr< QgsAbstractGeometry > intersection( mProfileBoxEngine->intersection( curve, &error ) );
     if ( !intersection )
+    {
       return;
+    }
 
     if ( mFeedback->isCanceled() )
       return;
+
+
+    // Intersection is empty : GEOS issue for vertical intersection : use feature geometry as intersection
+    if ( intersection->isEmpty() )
+    {
+      std::string wkt_std = intersection->asWkt().toStdString();
+      intersection.reset( feature.geometry().constGet()->clone() );
+    }
 
     QgsGeos curveGeos( curve );
     curveGeos.prepareGeometry();
@@ -897,42 +1019,13 @@ bool QgsVectorLayerProfileGenerator::generateProfileForLines()
     {
       if ( mFeedback->isCanceled() )
         return;
-
       if ( const QgsPoint *intersectionPoint = qgsgeometry_cast< const QgsPoint * >( *it ) )
       {
-        // unfortunately we need to do some work to interpolate the z value for the line -- GEOS doesn't give us this
-        const double distance = curveGeos.lineLocatePoint( *intersectionPoint, &error );
-        std::unique_ptr< QgsPoint > interpolatedPoint( curve->interpolatePoint( distance ) );
-
-        const double offset = mDataDefinedProperties.valueAsDouble( QgsMapLayerElevationProperties::Property::ZOffset, mExpressionContext, mOffset );
-
-        const double height = featureZToHeight( interpolatedPoint->x(), interpolatedPoint->y(), interpolatedPoint->z(), offset );
-        mResults->mRawPoints.append( QgsPoint( interpolatedPoint->x(), interpolatedPoint->y(), height ) );
-        mResults->minZ = std::min( mResults->minZ, height );
-        mResults->maxZ = std::max( mResults->maxZ, height );
-
-        const double distanceAlongProfileCurve = mProfileCurveEngine->lineLocatePoint( *interpolatedPoint, &error );
-        mResults->mDistanceToHeightMap.insert( distanceAlongProfileCurve, height );
-
-        QgsVectorLayerProfileResults::Feature resultFeature;
-        resultFeature.featureId = feature.id();
-        if ( mExtrusionEnabled )
-        {
-          const double extrusion = mDataDefinedProperties.valueAsDouble( QgsMapLayerElevationProperties::Property::ExtrusionHeight, mExpressionContext, mExtrusionHeight );
-
-          resultFeature.geometry = QgsGeometry( new QgsLineString( QgsPoint( interpolatedPoint->x(), interpolatedPoint->y(), height ),
-                                                QgsPoint( interpolatedPoint->x(), interpolatedPoint->y(), height + extrusion ) ) );
-          resultFeature.crossSectionGeometry = QgsGeometry( new QgsLineString( QgsPoint( distanceAlongProfileCurve, height ),
-                                               QgsPoint( distanceAlongProfileCurve, height + extrusion ) ) );
-          mResults->minZ = std::min( mResults->minZ, height + extrusion );
-          mResults->maxZ = std::max( mResults->maxZ, height + extrusion );
-        }
-        else
-        {
-          resultFeature.geometry = QgsGeometry( new QgsPoint( interpolatedPoint->x(), interpolatedPoint->y(), height ) );
-          resultFeature.crossSectionGeometry = QgsGeometry( new QgsPoint( distanceAlongProfileCurve, height ) );
-        }
-        mResults->features[resultFeature.featureId].append( resultFeature );
+        processPoint( *intersectionPoint, curveGeos, feature );
+      }
+      else if ( const QgsCurve *intersectionCurve = qgsgeometry_cast< const QgsCurve * >( *it ) )
+      {
+        processIntersectionCurve( *intersectionCurve, curveGeos, feature );
       }
       else if ( const QgsLineString *ls = qgsgeometry_cast< const QgsLineString * >( *it ) )
       {
@@ -1035,7 +1128,7 @@ bool QgsVectorLayerProfileGenerator::generateProfileForLines()
     if ( mFeedback->isCanceled() )
       return false;
 
-    if ( !mProfileCurveEngine->intersects( feature.geometry().constGet() ) )
+    if ( !mProfileBoxEngine->intersects( feature.geometry().constGet() ) )
       continue;
 
     mExpressionContext.setFeature( feature );
@@ -1045,7 +1138,7 @@ bool QgsVectorLayerProfileGenerator::generateProfileForLines()
     {
       for ( auto it = g.const_parts_begin(); it != g.const_parts_end(); ++it )
       {
-        if ( !mProfileCurveEngine->intersects( *it ) )
+        if ( !mProfileBoxEngine->intersects( *it ) )
           continue;
 
         processCurve( feature, qgsgeometry_cast< const QgsCurve * >( *it ) );
