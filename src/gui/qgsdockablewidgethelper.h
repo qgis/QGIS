@@ -30,6 +30,15 @@ class QgsDockWidget;
 
 ///@cond PRIVATE
 
+class GUI_EXPORT QgsNonRejectableDialog : public QDialog
+{
+    Q_OBJECT
+  public:
+
+    explicit QgsNonRejectableDialog( QWidget *parent = nullptr, Qt::WindowFlags f = Qt::WindowFlags() );
+    void reject() override;
+};
+
 /**
  * This class is responible of displaying a QWidget inside a top level window or a dock widget (only one of the 2 is alive at most).
  * The widget is not owned by this class and its ownership is passed to the owner window before this class's object is deleted or
