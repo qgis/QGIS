@@ -2486,6 +2486,24 @@ class CORE_EXPORT Qgis
     };
     Q_ENUM( LineExtensionSide )
 
+
+    /**
+     * Advanced digitizing constraint type.
+     * \since QGIS 3.32
+     */
+    enum class CadConstraintType : int
+    {
+      Generic,      //!< Generic value
+      Angle,        //!< Angle value
+      Distance,     //!< Distance value
+      XCoordinate,  //!< X Coordinate value
+      YCoordinate,  //!< Y Coordinate value
+      ZValue,       //!< Z value
+      MValue,       //!< M value
+    };
+    Q_ENUM( CadConstraintType )
+
+
     /**
      * Flags which control the behavior of QgsProjects.
      *

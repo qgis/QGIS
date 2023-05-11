@@ -65,17 +65,6 @@ It contains all values (locked, value, relative) and pointers to corresponding w
           HardLock
         };
 
-        enum ConstraintType
-        {
-          Generic,
-          Angle,
-          Distance,
-          XCoordinate,
-          YCoordinate,
-          ZValue,
-          MValue,
-        };
-
         CadConstraint( QLineEdit *lineEdit, QToolButton *lockerButton, QToolButton *relativeButton = 0, QToolButton *repeatingLockButton = 0 );
 %Docstring
 Constructor for CadConstraint.
@@ -188,14 +177,14 @@ Sets the numeric precision (decimal places) to show in the associated widget.
 .. versionadded:: 3.22
 %End
 
-        ConstraintType constraintType() const;
+        Qgis::CadConstraintType cadConstraintType() const;
 %Docstring
 Returns the constraint type
 
 .. versionadded:: 3.32
 %End
 
-        void setConstraintType( ConstraintType constraintType );
+        void setCadConstraintType( Qgis::CadConstraintType constraintType );
 %Docstring
 Sets the constraint type to ``constraintType``
 

@@ -1460,6 +1460,19 @@ The development version
       NoVertex,
     };
 
+
+    enum class CadConstraintType
+    {
+      Generic,
+      Angle,
+      Distance,
+      XCoordinate,
+      YCoordinate,
+      ZValue,
+      MValue,
+    };
+
+
     enum class ProjectFlag
     {
       EvaluateDefaultValuesOnProviderSide,
