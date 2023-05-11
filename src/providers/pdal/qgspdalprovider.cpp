@@ -157,6 +157,8 @@ void QgsPdalProvider::loadIndex( )
 
   if ( mIndex && mIndex->isValid() )
     return;
+
+  const QFileInfo sourceFi( dataSourceUri() );
   // Try to load copc index
   if ( !mIndex || !mIndex->isValid() )
   {
@@ -164,8 +166,15 @@ void QgsPdalProvider::loadIndex( )
     const QFileInfo fi( outputFile );
     if ( fi.isFile() )
     {
-      mIndex.reset( new QgsCopcPointCloudIndex );
-      mIndex->load( outputFile );
+      if ( sourceFi.lastModified() < fi.lastModified() )
+      {
+        mIndex.reset( new QgsCopcPointCloudIndex );
+        mIndex->load( outputFile );
+      }
+      else
+      {
+        QgsDebugMsgLevel( QStringLiteral( "Existing copc index is older than the source file and will be replaced." ), 2 );
+      }
     }
   }
   // Try to load ept index
@@ -176,13 +185,25 @@ void QgsPdalProvider::loadIndex( )
     const QFileInfo fi( outEptJson );
     if ( fi.isFile() )
     {
-      mIndex.reset( new QgsEptPointCloudIndex );
-      mIndex->load( outEptJson );
+      if ( sourceFi.lastModified() < fi.lastModified() )
+      {
+        mIndex.reset( new QgsEptPointCloudIndex );
+        mIndex->load( outEptJson );
+      }
+      else
+      {
+        QgsDebugMsgLevel( QStringLiteral( "Existing ept index is older than the source file and will be replaced." ), 2 );
+      }
     }
   }
   if ( !mIndex || !mIndex->isValid() )
   {
     QgsDebugMsgLevel( QStringLiteral( "pdalprovider: neither copc or ept index for dataset %1 is not correctly loaded" ).arg( dataSourceUri() ), 2 );
+  }
+  else if ( mIndex->pointCount() != mPointCount )
+  {
+    QgsDebugMsgLevel( QStringLiteral( "Existing index has different point count, re-indexing." ), 2 );
+    mIndex.reset();
   }
 }
 
