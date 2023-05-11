@@ -15,6 +15,9 @@
 
 #include "qgslayoutitem3dmap.h"
 
+#include <QGuiApplication>
+#include <QScreen>
+
 #include "qgs3dmapscene.h"
 #include "qgs3dutils.h"
 #include "qgscameracontroller.h"
@@ -23,6 +26,7 @@
 #include "qgslayoutitemregistry.h"
 #include "qgsoffscreen3dengine.h"
 #include "qgslayoutrendercontext.h"
+
 
 QgsLayoutItem3DMap::QgsLayoutItem3DMap( QgsLayout *layout )
   : QgsLayoutItem( layout )
@@ -306,4 +310,23 @@ void QgsLayoutItem3DMap::setCameraPose( const QgsCameraPose &pose )
   mCameraPose = pose;
   mCapturedImage = QImage();
   update();
+}
+
+void QgsLayoutItem3DMap::setSettingsFromXml( const QDomElement &elem )
+{
+  QgsReadWriteContext readWriteContext;
+  readWriteContext.setPathResolver( QgsProject::instance()->pathResolver() );
+  mSettings.reset( new Qgs3DMapSettings );
+
+  mSettings->readXml( elem, readWriteContext );
+  // move to 3d map settings loadProjectSettings
+  readPropertiesFromElement( elem, QDomDocument(), readWriteContext );
+  mSettings->setSelectionColor( QgsProject::instance()->selectionColor() );
+  mSettings->setBackgroundColor( QgsProject::instance()->backgroundColor() );
+  mSettings->setOutputDpi( QGuiApplication::primaryScreen()->logicalDotsPerInch() );
+}
+void QgsLayoutItem3DMap::setCameraControllerFromXml( const QDomElement &elem )
+{
+  mScene->cameraController()->readXml( elem );
+  setCameraPose( mScene->cameraController()->cameraPose() );
 }

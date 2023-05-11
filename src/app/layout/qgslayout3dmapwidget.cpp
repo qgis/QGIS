@@ -46,8 +46,8 @@ void _prepare3DViewsMenu( QMenu *menu, QgsLayout3DMapWidget *w, const std::funct
 
       QObject::connect( a, &QAction::triggered, a, [slot, viewName]
       {
-        QDomElement elem3DMap = QgsProject::instance()->viewsManager()->get3DViewSettings( viewName );
-        slot( elem3DMap );
+        QDomElement elem3DViewSettings = QgsProject::instance()->viewsManager()->get3DViewSettings( viewName );
+        slot( elem3DViewSettings );
       } );
     }
 
@@ -109,55 +109,22 @@ void QgsLayout3DMapWidget::updateCameraPoseWidgetsFromItem()
   whileBlocking( mHeadingAngleSpinBox )->setValue( _normalizedAngle( pose.headingAngle() ) );
 }
 
-void QgsLayout3DMapWidget::copy3DMapSettings( const QDomElement &elem3DMap )
+void QgsLayout3DMapWidget::copy3DMapSettings( const QDomElement &elem3DViewSettings )
 {
-  QDomElement elem3D = elem3DMap.firstChildElement( QStringLiteral( "qgis3d" ) );
-
-  if ( elem3D.isNull() )
-  {
-    return;
-  }
-
-  QgsReadWriteContext readWriteContext;
-  readWriteContext.setPathResolver( QgsProject::instance()->pathResolver() );
-
-  Qgs3DMapSettings *settings = new Qgs3DMapSettings();
-  settings->readXml( elem3D, readWriteContext );
-  settings->resolveReferences( *QgsProject::instance() );
-  settings->setTransformContext( QgsProject::instance()->transformContext() );
-  settings->setPathResolver( QgsProject::instance()->pathResolver() );
-  settings->setMapThemeCollection( QgsProject::instance()->mapThemeCollection() );
-  // these things are not saved in project
-  settings->setSelectionColor( QgisApp::instance()->mapCanvas()->selectionColor() );
-  settings->setBackgroundColor( QgisApp::instance()->mapCanvas()->canvasColor() );
-  settings->setOutputDpi( QGuiApplication::primaryScreen()->logicalDotsPerInch() );
-
-  mMap3D->setMapSettings( settings );
+  mMap3D->setSettingsFromXml( elem3DViewSettings );
+  copyCameraPose( elem3DViewSettings );
 }
 
-void QgsLayout3DMapWidget::copyCameraPose( const QDomElement &elem3DMap )
+void QgsLayout3DMapWidget::copyCameraPose( const QDomElement &elem3DViewSettings )
 {
-  QDomElement elemCamera = elem3DMap.firstChildElement( QStringLiteral( "camera" ) );
+  QDomElement elemCamera = elem3DViewSettings.firstChildElement( QStringLiteral( "camera" ) );
 
   if ( elemCamera.isNull() )
   {
     return;
   }
 
-  const float x = elemCamera.attribute( QStringLiteral( "x" ) ).toFloat();
-  const float y = elemCamera.attribute( QStringLiteral( "y" ) ).toFloat();
-  const float elev = elemCamera.attribute( QStringLiteral( "elev" ) ).toFloat();
-  const float dist = elemCamera.attribute( QStringLiteral( "dist" ) ).toFloat();
-  const float pitch = elemCamera.attribute( QStringLiteral( "pitch" ) ).toFloat();
-  const float yaw = elemCamera.attribute( QStringLiteral( "yaw" ) ).toFloat();
-
-  QgsCameraPose cameraPose;
-  cameraPose.setCenterPoint( QgsVector3D( x, elev, y ) );
-  cameraPose.setDistanceFromCenterPoint( dist );
-  cameraPose.setPitchAngle( pitch );
-  cameraPose.setHeadingAngle( yaw );
-
-  mMap3D->setCameraPose( cameraPose );
+  mMap3D->setCameraControllerFromXml( elemCamera );
   updateCameraPoseWidgetsFromItem();
 }
 

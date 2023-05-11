@@ -107,6 +107,11 @@ class _3D_EXPORT QgsLayoutItem3DMap : public QgsLayoutItem, public QgsTemporalRa
 
     void finalizeRestoreFromXml() override;
 
+    void setSettingsFromXml( const QDomElement &elem );
+
+    void setCameraControllerFromXml( const QDomElement &elem );
+
+
   public slots:
     void refresh() override;
 
