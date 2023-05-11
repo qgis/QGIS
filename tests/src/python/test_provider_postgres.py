@@ -31,6 +31,7 @@ from qgis.PyQt.QtCore import (
     QDir,
     QObject,
     QTemporaryDir,
+    QTemporaryFile,
     QTime,
     QVariant,
 )
@@ -66,6 +67,7 @@ from qgis.core import (
     QgsVectorLayerExporter,
     QgsVectorLayerUtils,
     QgsWkbTypes,
+    QgsSettingsTree
 )
 from qgis.gui import QgsAttributeForm, QgsGui
 from qgis.testing import start_app, unittest
