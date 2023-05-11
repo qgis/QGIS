@@ -5002,49 +5002,36 @@ QgsSymbol *QgsSymbolLayerUtils::restrictedSizeSymbol( const QgsSymbol *s, double
   if ( ok )
     *ok = true;
 
+  const QgsSymbolLayerList sls = s->symbolLayers();
+  for ( const QgsSymbolLayer *sl : std::as_const( sls ) )
+  {
+    // geometry generators involved, there is no way to get a restricted size symbol
+    if ( sl->type() == Qgis::SymbolType::Hybrid )
+    {
+      if ( ok )
+        *ok = false;
+
+      return nullptr;
+    }
+  }
+
   double size;
   const QgsMarkerSymbol *markerSymbol = dynamic_cast<const QgsMarkerSymbol *>( s );
   const QgsLineSymbol *lineSymbol = dynamic_cast<const QgsLineSymbol *>( s );
   if ( markerSymbol )
   {
-    const QgsSymbolLayerList sls = s->symbolLayers();
-    for ( const QgsSymbolLayer *sl : std::as_const( sls ) )
-    {
-      // geometry generators involved, there is no way to get a restricted size symbol
-      if ( sl->type() != Qgis::SymbolType::Marker )
-      {
-        if ( ok )
-          *ok = false;
-
-        return nullptr;
-      }
-    }
-
     size = markerSymbol->size( *context );
   }
   else if ( lineSymbol )
   {
-    const QgsSymbolLayerList sls = s->symbolLayers();
-    for ( const QgsSymbolLayer *sl : std::as_const( sls ) )
-    {
-      // geometry generators involved, there is no way to get a restricted size symbol
-      if ( sl->type() != Qgis::SymbolType::Line )
-      {
-        if ( ok )
-          *ok = false;
-
-        return nullptr;
-      }
-    }
-
     size = lineSymbol->width( *context );
   }
   else
   {
-    if ( ok )
-      *ok = false;
-
-    return nullptr; //not size restriction implemented for other symbol types
+    // cannot return a size restricted symbol but we assume there is no need
+    // for one as the rendering will be done in the given size (different from geometry
+    // generator where rendering will bleed outside the given area
+    return nullptr;
   }
 
   size /= context->scaleFactor();
