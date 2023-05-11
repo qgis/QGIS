@@ -152,7 +152,7 @@
     <addaction name="mActionIdentify"/>
     <addaction name="mMenuMeasure"/>
     <addaction name="mActionStatisticalSummary"/>
-    <addaction name="mActionElevationProfile"/>
+    <addaction name="mActionNewElevationProfile"/>
     <addaction name="separator"/>
     <addaction name="mActionZoomFullExtent"/>
     <addaction name="mActionZoomToSelected"/>
@@ -3360,10 +3360,10 @@ Shows placeholders for labels which could not be placed, e.g. due to overlaps wi
     <string>Digitize Shape</string>
    </property>
   </action>
-  <action name="mActionElevationProfile">
+  <action name="mActionNewElevationProfile">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionElevationProfile.svg</normaloff>:/images/themes/default/mActionElevationProfile.svg</iconset>
+     <normaloff>:/images/themes/default/mActionNewElevationProfile.svg</normaloff>:/images/themes/default/mActionNewElevationProfile.svg</iconset>
    </property>
    <property name="text">
     <string>Elevation Profile</string>
