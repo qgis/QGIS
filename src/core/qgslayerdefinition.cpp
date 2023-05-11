@@ -438,6 +438,7 @@ void QgsLayerDefinition::DependencySorter::init( const QDomDocument &doc )
     else
     {
       layersToSort << qMakePair( id, layerElem );
+      mDependentLayerIds.insert( id );
     }
     layerElem = layerElem.nextSiblingElement( );
   }
@@ -527,6 +528,11 @@ QgsLayerDefinition::DependencySorter::DependencySorter( const QString &fileName 
   ( void )pFile.open( QIODevice::ReadOnly );
   ( void )doc.setContent( &pFile );
   init( doc );
+}
+
+bool QgsLayerDefinition::DependencySorter::isLayerDependent( const QString &layerId ) const
+{
+  return mDependentLayerIds.contains( layerId );
 }
 
 

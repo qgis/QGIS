@@ -1466,6 +1466,7 @@ The development version
       TrustStoredLayerStatistics,
       RememberLayerEditStatusBetweenSessions,
       RememberAttributeTableWindowsBetweenSessions,
+      AllowParallelLayerLoading,
     };
     typedef QFlags<Qgis::ProjectFlag> ProjectFlags;
 

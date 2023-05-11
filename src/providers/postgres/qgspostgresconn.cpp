@@ -160,7 +160,7 @@ QMap<QString, QgsPostgresConn *> QgsPostgresConn::sConnectionsRW;
 
 const int QgsPostgresConn::GEOM_TYPE_SELECT_LIMIT = 100;
 
-QgsPostgresConn *QgsPostgresConn::connectDb( const QString &conninfo, bool readonly, bool shared, bool transaction )
+QgsPostgresConn *QgsPostgresConn::connectDb( const QString &conninfo, bool readonly, bool shared, bool transaction, bool allowRequestCredentials )
 {
   QMap<QString, QgsPostgresConn *> &connections =
     readonly ? QgsPostgresConn::sConnectionsRO : QgsPostgresConn::sConnectionsRW;
@@ -169,6 +169,8 @@ QgsPostgresConn *QgsPostgresConn::connectDb( const QString &conninfo, bool reado
   // and which is run in a different thread (drag and drop in browser)
   if ( QApplication::instance()->thread() != QThread::currentThread() )
   {
+    // sharing connection between threads is not safe
+    // See https://github.com/qgis/QGIS/issues/21205
     shared = false;
   }
 
@@ -176,10 +178,6 @@ QgsPostgresConn *QgsPostgresConn::connectDb( const QString &conninfo, bool reado
 
   if ( shared )
   {
-    // sharing connection between threads is not safe
-    // See https://github.com/qgis/QGIS/issues/21205
-    Q_ASSERT( QApplication::instance()->thread() == QThread::currentThread() );
-
     QMap<QString, QgsPostgresConn *>::iterator it = connections.find( conninfo );
     if ( it != connections.end() )
     {
@@ -208,7 +206,7 @@ QgsPostgresConn *QgsPostgresConn::connectDb( const QString &conninfo, bool reado
     );
   }
 
-  conn = new QgsPostgresConn( conninfo, readonly, shared, transaction );
+  conn = new QgsPostgresConn( conninfo, readonly, shared, transaction, allowRequestCredentials );
   QgsDebugMsgLevel(
     QStringLiteral(
       "Created new (%4) connection %2 for %1%3"
@@ -256,9 +254,9 @@ QgsPostgresConn *QgsPostgresConn::connectDb( const QString &conninfo, bool reado
   return conn;
 }
 
-QgsPostgresConn *QgsPostgresConn::connectDb( const QgsDataSourceUri &uri, bool readonly, bool shared, bool transaction )
+QgsPostgresConn *QgsPostgresConn::connectDb( const QgsDataSourceUri &uri, bool readonly, bool shared, bool transaction, bool allowRequestCredentials )
 {
-  QgsPostgresConn *conn = QgsPostgresConn::connectDb( uri.connectionInfo( false ), readonly, shared, transaction );
+  QgsPostgresConn *conn = QgsPostgresConn::connectDb( uri.connectionInfo( false ), readonly, shared, transaction, allowRequestCredentials );
   if ( !conn )
   {
     return conn;
@@ -300,7 +298,7 @@ static void noticeProcessor( void *arg, const char *message )
   QgsMessageLog::logMessage( QObject::tr( "NOTICE: %1" ).arg( msg ), QObject::tr( "PostGIS" ) );
 }
 
-QgsPostgresConn::QgsPostgresConn( const QString &conninfo, bool readOnly, bool shared, bool transaction )
+QgsPostgresConn::QgsPostgresConn( const QString &conninfo, bool readOnly, bool shared, bool transaction, bool allowRequestCredentials )
   : mRef( 1 )
   , mOpenCursors( 0 )
   , mConnInfo( conninfo )
@@ -389,7 +387,7 @@ QgsPostgresConn::QgsPostgresConn( const QString &conninfo, bool readOnly, bool s
     while ( PQstatus() != CONNECTION_OK && i < 5 )
     {
       ++i;
-      bool ok = QgsCredentials::instance()->get( conninfo, username, password, PQerrorMessage() );
+      bool ok = QgsCredentials::instance()->get( conninfo, username, password, PQerrorMessage(), allowRequestCredentials );
       if ( !ok )
       {
         break;

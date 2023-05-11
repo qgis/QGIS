@@ -4196,7 +4196,7 @@ QgsProviderMetadata::ProviderMetadataCapabilities QgsGdalProviderMetadata::capab
 
 QgsProviderMetadata::ProviderCapabilities QgsGdalProviderMetadata::providerCapabilities() const
 {
-  return FileBasedUris;
+  return FileBasedUris | ParallelCreateProvider;
 }
 
 QList<QgsProviderSublayerDetails> QgsGdalProviderMetadata::querySublayers( const QString &uri, Qgis::SublayerQueryFlags flags, QgsFeedback *feedback ) const

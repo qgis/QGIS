@@ -69,6 +69,7 @@
 #include "qgstemporalutils.h"
 #include "qgsstylemanagerdialog.h"
 #include "qgsfileutils.h"
+#include "qgsproviderregistry.h"
 
 //qt includes
 #include <QInputDialog>
@@ -180,6 +181,22 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   mTransactionModeComboBox->setItemData( mTransactionModeComboBox->count() - 1, tr( "Automatic transactional editing means that on supported datasources (postgres databases) the edit state of all tables that originate from the same database are synchronized and executed in a server side transaction." ), Qt::ToolTipRole );
   mTransactionModeComboBox->addItem( tr( "Buffered Transaction Groups" ), static_cast< int >( Qgis::TransactionMode::BufferedGroups ) );
   mTransactionModeComboBox->setItemData( mTransactionModeComboBox->count() - 1, tr( "Buffered transactional editing means that all editable layers in the buffered transaction group are toggled synchronously and all edits are saved in a local edit buffer. Saving changes is executed within a single transaction on all layers (per provider)." ), Qt::ToolTipRole );
+
+  QStringList preloadingProvider;
+  {
+    const QStringList providers = QgsProviderRegistry::instance()->providerList();
+    for ( const QString &provider : providers )
+    {
+      QgsProviderMetadata *meta = QgsProviderRegistry::instance()->providerMetadata( provider );
+      if ( meta && meta->providerCapabilities().testFlag( QgsProviderMetadata::ParallelCreateProvider ) )
+      {
+        preloadingProvider.append( meta->description() );
+      }
+    }
+  }
+
+  mAsynchProviderCreationCheckBox->setToolTip( tr( " This may significantly speed up loading of projects (but only some providers take advantage of this: %1)" )
+      .arg( preloadingProvider.join( QStringLiteral( ", " ) ) ) );
 
   projectionSelector->setShowNoProjection( true );
 
@@ -1050,6 +1067,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   mTrustProjectCheckBox->setChecked( QgsProject::instance()->flags() & Qgis::ProjectFlag::TrustStoredLayerStatistics );
   mCheckRememberEditStatus->setChecked( QgsProject::instance()->flags() & Qgis::ProjectFlag::RememberLayerEditStatusBetweenSessions );
   mCheckBoxRememberAttributeTables->setChecked( QgsProject::instance()->flags() & Qgis::ProjectFlag::RememberAttributeTableWindowsBetweenSessions );
+  mAsynchProviderCreationCheckBox->setChecked( QgsProject::instance()->flags() & Qgis::ProjectFlag::AllowParallelLayerLoading );
 
   // Variables editor
   mVariableEditor->context()->appendScope( QgsExpressionContextUtils::globalScope() );
@@ -1198,6 +1216,7 @@ void QgsProjectProperties::apply()
 
   QgsProject::instance()->setFlag( Qgis::ProjectFlag::RememberLayerEditStatusBetweenSessions, mCheckRememberEditStatus->isChecked() );
   QgsProject::instance()->setFlag( Qgis::ProjectFlag::RememberAttributeTableWindowsBetweenSessions, mCheckBoxRememberAttributeTables->isChecked() );
+  QgsProject::instance()->setFlag( Qgis::ProjectFlag::AllowParallelLayerLoading, mAsynchProviderCreationCheckBox->isChecked() );
 
   // Time settings
   QDateTime start = mStartDateTimeEdit->dateTime();

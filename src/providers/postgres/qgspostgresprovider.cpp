@@ -173,7 +173,7 @@ QgsPostgresProvider::QgsPostgresProvider( QString const &uri, const ProviderOpti
     return;
   }
 
-  mConnectionRO = QgsPostgresConn::connectDb( mUri, true );
+  mConnectionRO = QgsPostgresConn::connectDb( mUri, true, true, false, !mReadFlags.testFlag( QgsDataProvider::SkipCredentialsRequest ) );
   if ( !mConnectionRO )
   {
     return;
@@ -6076,5 +6076,5 @@ bool QgsPostgresProviderMetadata::saveLayerMetadata( const QString &uri, const Q
 
 QgsProviderMetadata::ProviderCapabilities QgsPostgresProviderMetadata::providerCapabilities() const
 {
-  return QgsProviderMetadata::ProviderCapability::SaveLayerMetadata;
+  return QgsProviderMetadata::ProviderCapability::SaveLayerMetadata | QgsProviderMetadata::ProviderCapability::ParallelCreateProvider;
 }

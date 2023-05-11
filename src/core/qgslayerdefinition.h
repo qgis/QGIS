@@ -23,6 +23,7 @@
 #include <QString>
 #include <QVector>
 #include <QDomNode>
+#include <QSet>
 
 class QDomDocument;
 
@@ -119,13 +120,13 @@ class CORE_EXPORT QgsLayerDefinition
          * Constructor
          * \param doc The XML document containing maplayer elements
          */
-        DependencySorter( const QDomDocument &doc );
+        explicit DependencySorter( const QDomDocument &doc );
 
         /**
          * Constructor
          * \param fileName The filename where the XML document is stored
          */
-        DependencySorter( const QString &fileName );
+        explicit DependencySorter( const QString &fileName );
 
         //! Gets the layer nodes in an order where they can be loaded incrementally without dependency break
         QVector<QDomNode> sortedLayerNodes() const { return mSortedLayerNodes; }
@@ -139,9 +140,17 @@ class CORE_EXPORT QgsLayerDefinition
         //! Whether some dependency is missing
         bool hasMissingDependency() const { return mHasMissingDependency; }
 
+        /**
+         * Returns whether the layer associated with the\a layerId is dependent from another layer
+         *
+         * \since QGIS 3.32
+         */
+        bool isLayerDependent( const QString &layerId ) const;
+
       private:
         QVector<QDomNode> mSortedLayerNodes;
         QStringList mSortedLayerIds;
+        QSet<QString> mDependentLayerIds;
         bool mHasCycle;
         bool mHasMissingDependency;
         void init( const QDomDocument &doc );

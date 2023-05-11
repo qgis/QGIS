@@ -39,7 +39,7 @@ QgsCredentials *QgsCredentials::instance()
   return new QgsCredentialsNone();
 }
 
-bool QgsCredentials::get( const QString &realm, QString &username, QString &password, const QString &message )
+bool QgsCredentials::get( const QString &realm, QString &username, QString &password, const QString &message, bool requestCredentials )
 {
   {
     const QMutexLocker locker( &mCacheMutex );
@@ -55,7 +55,7 @@ bool QgsCredentials::get( const QString &realm, QString &username, QString &pass
     }
   }
 
-  if ( request( realm, username, password, message ) )
+  if ( requestCredentials && request( realm, username, password, message ) )
   {
     QgsDebugMsgLevel( QStringLiteral( "requested realm:%1 username:%2" ).arg( realm, username ), 2 );
     return true;

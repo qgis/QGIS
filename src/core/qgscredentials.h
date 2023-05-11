@@ -55,7 +55,7 @@ class CORE_EXPORT QgsCredentials
      * Requests credentials for the specified \a realm.
      *
      * If existing credentials exist for the given \a realm, these will be returned. Otherwise the credential
-     * handler will prompt for the correct username and password.
+     * handler will prompt for the correct username and password if \a requestCredentials is set to True.
      *
      * The retrieved or user-entered details will be stored in \a username and \a password.
      *
@@ -66,7 +66,7 @@ class CORE_EXPORT QgsCredentials
      *
      * \see put()
      */
-    bool get( const QString &realm, QString &username SIP_INOUT, QString &password SIP_INOUT, const QString &message = QString() );
+    bool get( const QString &realm, QString &username SIP_INOUT, QString &password SIP_INOUT, const QString &message = QString(), bool requestCredentials = true );
 
     /**
      * Stores the correct \a username and \a password for the specified \a realm.
