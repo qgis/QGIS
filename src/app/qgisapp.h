@@ -2350,9 +2350,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     QgsCoordinateReferenceSystem defaultCrsForNewLayers() const;
 
-    //! Attempts to choose a reasonable default icon size based on the window's screen DPI
-    int chooseReasonableDefaultIconSize() const;
-
     //! Populates project "load from" / "save to" menu based on project storages (when the menu is about to be shown)
     void populateProjectStorageMenu( QMenu *menu, bool saving );
 
