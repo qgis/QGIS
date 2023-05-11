@@ -392,6 +392,16 @@ int QgsMeshDatasetGroupStore::globalDatasetGroupIndexInSource( QgsMeshDatasetSou
   return -1;
 }
 
+int QgsMeshDatasetGroupStore::indexFromGroupName( const QString &groupName ) const
+{
+  return mGroupNameToGlobalIndex.value( groupName, -1 );
+}
+
+QString QgsMeshDatasetGroupStore::groupName( int groupIndex ) const
+{
+  return  datasetGroupMetadata( groupIndex ).name();
+}
+
 bool QgsMeshDatasetGroupStore::saveDatasetGroup( QString filePath, int groupIndex, QString driver )
 {
   DatasetGroup group = datasetGroup( groupIndex );
