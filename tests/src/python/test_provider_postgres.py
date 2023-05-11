@@ -1,3 +1,29 @@
+"""QGIS Unit tests for the postgres provider.
+
+Note: to prepare the DB, you need to run the sql files specified in
+tests/testdata/provider/testdata_pg.sh
+
+Read tests/README.md about writing/launching tests with PostgreSQL.
+
+Run with ctest -V -R PyQgsPostgresProvider
+
+.. note:: This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
+
+"""
+
+__author__ = 'Matthias Kuhn'
+__date__ = '2015-04-23'
+__copyright__ = 'Copyright 2015, The QGIS Project'
+
+import os
+import time
+from datetime import datetime
+
+import psycopg2
+import qgis  # NOQA
 from qgis.PyQt.QtCore import (
     QByteArray,
     QDate,
