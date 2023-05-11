@@ -69,7 +69,6 @@
 #include "qgstemporalutils.h"
 #include "qgsstylemanagerdialog.h"
 #include "qgsfileutils.h"
-#include "qgsproviderregistry.h"
 
 //qt includes
 #include <QInputDialog>

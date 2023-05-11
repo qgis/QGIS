@@ -1062,8 +1062,6 @@ void TestQgsProject::testAsynchronousLayerLoading()
   project = std::make_unique<QgsProject>();
   QgsSettingsRegistryCore::settingsLayerParallelLoading->setValue( false );
 
-  QElapsedTimer timer;
-  timer.start();
   QVERIFY( project->readProjectFile( projFile.fileName() ) );
   QCOMPARE( project->mapLayers( true ).count(), layersCount );
 
