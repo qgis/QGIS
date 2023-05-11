@@ -136,6 +136,9 @@ class CORE_EXPORT QgsVectorLayerProfileGenerator : public QgsAbstractProfileSurf
     std::unique_ptr< QgsCurve > mProfileCurve;
     std::unique_ptr< QgsGeos > mProfileCurveEngine;
 
+    std::unique_ptr<QgsAbstractGeometry> mProfileBox = nullptr;
+    std::unique_ptr< QgsGeos > mProfileBoxEngine;
+
     std::unique_ptr< QgsAbstractTerrainProvider > mTerrainProvider;
 
     std::unique_ptr< QgsCurve > mTransformedCurve;
