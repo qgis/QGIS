@@ -8,8 +8,8 @@
     "description": "a geometry"
   }],
   "examples": [{
-    "expression": "point_on_surface($geometry)",
+    "expression": "point_on_surface(@geometry)",
     "returns": "a point geometry"
   }],
-  "tags": ["point", "surface", "lie", "centroid", "overlay"]
+  "tags": ["point", "surface", "lie", "centroid", "overlay", "within"]
 }

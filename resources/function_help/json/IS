@@ -26,7 +26,7 @@
     "expression": "4 IS 2",
     "returns": "FALSE"
   }, {
-    "expression": "$geometry IS NULL",
+    "expression": "@geometry IS NULL",
     "returns": "0, if your geometry is not NULL"
   }],
   "tags": ["compare", "same", "equal", "identical"]

@@ -40,8 +40,8 @@
     "expression": "array_sort(overlay_crosses(layer:='regions', expression:=\"name\", filter:= population > 10000))",
     "returns": "an ordered array of names, for the regions crossed by the current feature and with a population greater than 10000"
   }, {
-    "expression": "overlay_crosses(layer:='regions', expression:= geom_to_wkt($geometry), limit:=2)",
+    "expression": "overlay_crosses(layer:='regions', expression:= geom_to_wkt(@geometry), limit:=2)",
     "returns": "an array of geometries (in WKT), for up to two regions crossed by the current feature"
   }],
-  "tags": ["predicate", "st_crosses", "crosses", "current", "target", "array", "geos", "described", "underlying", "features", "crossed"]
+  "tags": ["predicate", "st_crosses", "crosses", "current", "target", "array", "geos", "underlying", "features", "crossed"]
 }

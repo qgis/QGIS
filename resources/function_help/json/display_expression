@@ -41,7 +41,7 @@
       "expression": "display_expression( 'streets', get_feature_by_id('streets', 1))",
       "returns": "The display expression of the feature with the ID 1 on the layer 'streets'."
     }, {
-      "expression": "display_expression('a_layer_id', $currentfeature, 'False')",
+      "expression": "display_expression('a_layer_id', @feature, 'False')",
       "returns": "The display expression of the given feature not evaluated."
     }]
   }],

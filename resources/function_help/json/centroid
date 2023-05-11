@@ -8,7 +8,7 @@
     "description": "a geometry"
   }],
   "examples": [{
-    "expression": "centroid($geometry)",
+    "expression": "centroid(@geometry)",
     "returns": "a point geometry"
   }],
   "tags": ["geometric", "center"]
