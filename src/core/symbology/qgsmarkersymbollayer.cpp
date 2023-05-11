@@ -1178,7 +1178,11 @@ bool QgsSimpleMarkerSymbolLayer::prepareCache( QgsSymbolRenderContext &context )
     return false;
   }
 
-  mCache = QImage( QSize( imageSize, imageSize ), QImage::Format_ARGB32_Premultiplied );
+  mCache = QImage( QSize( imageSize * context.renderContext().devicePixelRatio(),
+                          imageSize * context.renderContext().devicePixelRatio() ), QImage::Format_ARGB32_Premultiplied );
+  mCache.setDevicePixelRatio( context.renderContext().devicePixelRatio() );
+  mCache.setDotsPerMeterX( std::round( context.renderContext().scaleFactor() * 1000 ) );
+  mCache.setDotsPerMeterY( std::round( context.renderContext().scaleFactor() * 1000 ) );
   mCache.fill( 0 );
 
   const bool needsBrush = shapeIsFilled( mShape );
@@ -1338,7 +1342,7 @@ void QgsSimpleMarkerSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderCont
   if ( mUsingCache && qgsDoubleNear( mCachedOpacity, context.opacity() ) )
   {
     const QImage &img = context.selected() ? mSelCache : mCache;
-    const double s = img.width();
+    const double s = img.width() / img.devicePixelRatioF();
 
     bool hasDataDefinedSize = false;
     const double scaledSize = calculateSize( context, hasDataDefinedSize );
