@@ -39,13 +39,13 @@
     "expression": "aggregate(layer:='rail_stations',aggregate:='concatenate', expression:=\"name\", concatenator:=',')",
     "returns": "comma separated list of the name field for all features in the rail_stations layer"
   }, {
-    "expression": "aggregate(layer:='countries', aggregate:='max', expression:=\"code\", filter:=intersects( $geometry, geometry(@parent) ) )",
+    "expression": "aggregate(layer:='countries', aggregate:='max', expression:=\"code\", filter:=intersects( @geometry, geometry(@parent) ) )",
     "returns": "The country code of an intersecting country on the layer 'countries'"
   }, {
-    "expression": "aggregate(layer:='rail_stations',aggregate:='sum',expression:=\"passengers\",filter:=contains( @atlas_geometry, $geometry ) )",
+    "expression": "aggregate(layer:='rail_stations',aggregate:='sum',expression:=\"passengers\",filter:=contains( @atlas_geometry, @geometry ) )",
     "returns": "sum of all values from the passengers field in the rail_stations within the current atlas feature"
   }, {
-    "expression": "aggregate(layer:='rail_stations', aggregate:='collect', expression:=centroid($geometry), filter:=\"region_name\" = attribute(@parent,'name') )",
+    "expression": "aggregate(layer:='rail_stations', aggregate:='collect', expression:=centroid(@geometry), filter:=\"region_name\" = attribute(@parent,'name') )",
     "returns": "aggregates centroid geometries of the rail_stations of the same region as current feature"
   }],
   "tags": ["aggregate", "combine", "features", "calculated", "merge", "concatenate", "sum", "mean", "median", "count", "quartile", "minimum", "maximum", "minority", "majority", "standard", "deviation", "length", "unique"]

@@ -31,7 +31,7 @@
     "description": "miter distance limit, for use when the join style is set to 'miter'"
   }],
   "examples": [{
-    "expression": "buffer($geometry, 10.5)",
+    "expression": "buffer(@geometry, 10.5)",
     "returns": "polygon of the current feature's geometry buffered by 10.5 units"
   }],
   "tags": ["distance", "equal", "spatial", "reference", "calculations", "system", "points", "segments", "miter", "join", "cap", "round"]

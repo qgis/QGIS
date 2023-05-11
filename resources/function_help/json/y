@@ -11,7 +11,7 @@
     "expression": "y( geom_from_wkt( 'POINT(2 5)' ) )",
     "returns": "5"
   }, {
-    "expression": "y( $geometry )",
+    "expression": "y( @geometry )",
     "returns": "y coordinate of the current feature's centroid"
   }],
   "tags": ["centroid", "point", "coordinate"]

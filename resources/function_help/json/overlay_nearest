@@ -51,5 +51,5 @@
     "expression": "overlay_nearest(layer:='airports', expression:=\"name\", limit:= -1, max_distance:= 5000)",
     "returns": "an array of names, for all the airports within a distance of 5000 map units from the current feature, ordered by distance"
   }],
-  "tags": ["distance", "layers", "large", "slow", "current", "target", "array", "lot", "features"]
+  "tags": ["distance", "near", "close", "current", "target", "array", "features"]
 }

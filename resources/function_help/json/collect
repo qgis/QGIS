@@ -16,10 +16,10 @@
     "description": "optional expression to use to filter features used to calculate aggregate"
   }],
   "examples": [{
-    "expression": "collect( $geometry )",
+    "expression": "collect( @geometry )",
     "returns": "multipart geometry of aggregated geometries"
   }, {
-    "expression": "collect( centroid($geometry), group_by:=\"region\", filter:= \"use\" = 'civilian' )",
+    "expression": "collect( centroid(@geometry), group_by:=\"region\", filter:= \"use\" = 'civilian' )",
     "returns": "aggregated centroids of the civilian features based on their region value"
   }],
   "tags": ["aggregated", "multipart"]
