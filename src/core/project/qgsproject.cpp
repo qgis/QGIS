@@ -1324,7 +1324,7 @@ static  QgsMapLayer::ReadFlags projectFlagsToLayerReadFlags( Qgis::ProjectReadFl
   return layerFlags;
 }
 
-void QgsProject::preloadProviders( const QVector<QDomNode> &asynchronusLayerNodes,
+void QgsProject::preloadProviders( const QVector<QDomNode> &parallelLayerNodes,
                                    const QgsReadWriteContext &context,
                                    QMap<QString, QgsDataProvider *> &loadedProviders,
                                    QgsMapLayer::ReadFlags layerReadFlags,
@@ -1339,7 +1339,7 @@ void QgsProject::preloadProviders( const QVector<QDomNode> &asynchronusLayerNode
   int i = 0;
   int validLayerCount = 0;
   QEventLoop loop;
-  for ( const QDomNode &node : asynchronusLayerNodes )
+  for ( const QDomNode &node : parallelLayerNodes )
   {
     const QDomElement layerElement = node.toElement();
     QString layerId = layerElement.namedItem( QStringLiteral( "id" ) ).toElement().text();
@@ -1364,12 +1364,13 @@ void QgsProject::preloadProviders( const QVector<QDomNode> &asynchronusLayerNode
         validLayerCount++;
         emit layerLoaded( validLayerCount, totalProviderCount );
       }
-      if ( i == asynchronusLayerNodes.count() )
+      if ( i == parallelLayerNodes.count() )
         loop.quit();
     } );
     threadPool.start( run );
   }
-  loop.exec();
+  if ( !parallelLayerNodes.isEmpty() )
+    loop.exec();
 
   for ( QgsRunnableProviderCreator *run : std::as_const( runnables ) )
   {
@@ -1427,7 +1428,7 @@ bool QgsProject::_getMapLayers( const QDomDocument &doc, QList<QDomNode> &broken
   const QVector<QDomNode> sortedLayerNodes = depSorter.sortedLayerNodes();
   const int totalLayerCount = sortedLayerNodes.count();
 
-  QVector<QDomNode> asynchronousLoading;
+  QVector<QDomNode> parallelLoading;
   QMap<QString, QgsDataProvider *> loadedProviders;
 
   if ( QgsSettingsRegistryCore::settingsLayerParallelLoading->value() )
@@ -1447,7 +1448,7 @@ bool QgsProject::_getMapLayers( const QDomDocument &doc, QList<QDomNode> &broken
           QgsProviderMetadata *meta = QgsProviderRegistry::instance()->providerMetadata( provider );
           if ( meta && meta->providerCapabilities().testFlag( QgsProviderMetadata::ParallelCreateProvider ) )
           {
-            asynchronousLoading.append( node );
+            parallelLoading.append( node );
             continue;
           }
         }
@@ -1456,7 +1457,8 @@ bool QgsProject::_getMapLayers( const QDomDocument &doc, QList<QDomNode> &broken
 
     QgsReadWriteContext context;
     context.setPathResolver( pathResolver() );
-    preloadProviders( asynchronousLoading, context, loadedProviders, projectFlagsToLayerReadFlags( flags, mFlags ), sortedLayerNodes.count() );
+    if ( !parallelLoading.isEmpty() )
+      preloadProviders( parallelLoading, context, loadedProviders, projectFlagsToLayerReadFlags( flags, mFlags ), sortedLayerNodes.count() );
   }
 
   int i = loadedProviders.count();
