@@ -1430,7 +1430,7 @@ bool QgsProject::_getMapLayers( const QDomDocument &doc, QList<QDomNode> &broken
   QVector<QDomNode> asynchronousLoading;
   QMap<QString, QgsDataProvider *> loadedProviders;
 
-  if ( mFlags & Qgis::ProjectFlag::AllowParallelLayerLoading )
+  if ( QgsSettingsRegistryCore::settingsLayerParallelLoading->value() )
   {
     profile.switchTask( tr( "Load providers in parallel" ) );
     for ( const QDomNode &node : sortedLayerNodes )

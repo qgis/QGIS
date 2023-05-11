@@ -166,8 +166,11 @@ class CORE_EXPORT QgsSettingsRegistryCore : public QgsSettingsRegistry
 
     static const QgsSettingsEntryStringList *settingsMapScales;
 
-    //! Settings entry maximum therad count used to load layer in parallel
+    //! Settings entry maximum thread count used to load layer in parallel
     static const QgsSettingsEntryInteger *settingsLayerParallelLoadingMaxCount;
+
+    //! Settings entry whether layer are loading in parallel
+    static const QgsSettingsEntryBool *settingsLayerParallelLoading;
 
   private:
     friend class QgsApplication;

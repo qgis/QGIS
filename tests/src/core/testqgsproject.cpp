@@ -29,8 +29,8 @@
 #include "qgssymbollayerutils.h"
 #include "qgslayoutmanager.h"
 #include "qgsmarkersymbol.h"
-#include "qgsmeshlayer.h"
 #include "qgsrasterlayer.h"
+#include "qgssettingsregistrycore.h"
 
 
 class TestQgsProject : public QObject
@@ -1051,7 +1051,6 @@ void TestQgsProject::testAsynchronousLayerLoading()
 
   int layersCount = layers.count();
 
-  project->setFlag( Qgis::ProjectFlag::AllowParallelLayerLoading, false );
   project->addMapLayers( layers );
 
   QCOMPARE( project->mapLayers( true ).count(), layersCount );
@@ -1061,22 +1060,19 @@ void TestQgsProject::testAsynchronousLayerLoading()
   QVERIFY( project->write( projFile.fileName() ) );
 
   project = std::make_unique<QgsProject>();
+  QgsSettingsRegistryCore::settingsLayerParallelLoading->setValue( false );
 
   QElapsedTimer timer;
   timer.start();
   QVERIFY( project->readProjectFile( projFile.fileName() ) );
   QCOMPARE( project->mapLayers( true ).count(), layersCount );
-  qDebug() << timer.elapsed();
 
-  project->setFlag( Qgis::ProjectFlag::AllowParallelLayerLoading, true );
   QVERIFY( project->write( projFile.fileName() ) );
   project = std::make_unique<QgsProject>();
 
-  timer.restart();
+  QgsSettingsRegistryCore::settingsLayerParallelLoading->setValue( true );
   QVERIFY( project->readProjectFile( projFile.fileName() ) );
   QCOMPARE( project->mapLayers( true ).count(), layersCount );
-  qDebug() << timer.elapsed();
-  timer.restart();
 }
 
 

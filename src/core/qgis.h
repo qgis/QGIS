@@ -2497,7 +2497,6 @@ class CORE_EXPORT Qgis
       TrustStoredLayerStatistics = 1 << 1, //!< If set, then layer statistics (such as the layer extent) will be read from values stored in the project instead of requesting updated values from the data provider. Additionally, when this flag is set, primary key unicity is not checked for views and materialized views with Postgres provider.
       RememberLayerEditStatusBetweenSessions = 1 << 2, //!< If set, then any layers set to be editable will be stored in the project and immediately made editable whenever that project is restored
       RememberAttributeTableWindowsBetweenSessions = 1 << 3, //!< If set, then any open attribute tables will be stored in the project and immediately reopened when the project is restored
-      AllowParallelLayerLoading = 1 << 4, //!< If set, layers that support parallel loading will be loaded in parallel threads when a project is loaded (since QGIS 3.32)
     };
     Q_ENUM( ProjectFlag )
     Q_DECLARE_FLAGS( ProjectFlags, ProjectFlag )

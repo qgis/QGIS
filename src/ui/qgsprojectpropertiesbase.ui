@@ -298,8 +298,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>685</width>
-                <height>792</height>
+                <width>640</width>
+                <height>971</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout">
@@ -317,7 +317,7 @@
                  <property name="title">
                   <string>General Settings</string>
                  </property>
-                 <property name="syncGroup" stdset="0">
+                 <property name="syncGroup">
                   <string notr="true">projgeneral</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_26">
@@ -578,7 +578,7 @@
                  <property name="title">
                   <string>Measurements</string>
                  </property>
-                 <property name="syncGroup" stdset="0">
+                 <property name="syncGroup">
                   <string notr="true">projgeneral</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayoutMeasureTool">
@@ -647,7 +647,7 @@
                  <property name="title">
                   <string>Coordinate and Bearing Display</string>
                  </property>
-                 <property name="syncGroup" stdset="0">
+                 <property name="syncGroup">
                   <string notr="true">projgeneral</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_18">
@@ -797,7 +797,7 @@
                    </widget>
                   </item>
                   <item row="1" column="1">
-                   <widget class="QgsProjectionSelectionWidget" name="mCoordinateCrs" native="true">
+                   <widget class="QgsProjectionSelectionWidget" name="mCoordinateCrs">
                     <property name="enabled">
                      <bool>false</bool>
                     </property>
@@ -901,7 +901,7 @@
              <property name="checked">
               <bool>false</bool>
              </property>
-             <property name="syncGroup" stdset="0">
+             <property name="syncGroup">
               <string notr="true">projgeneral</string>
              </property>
              <layout class="QGridLayout" name="gridLayout_7">
@@ -1042,8 +1042,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>685</width>
-                <height>792</height>
+                <width>340</width>
+                <height>57</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_7">
@@ -1107,8 +1107,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>685</width>
-                <height>792</height>
+                <width>634</width>
+                <height>90</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_9">
@@ -1179,8 +1179,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>685</width>
-                <height>792</height>
+                <width>344</width>
+                <height>817</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_12" stretch="0,0,1,1">
@@ -1201,7 +1201,7 @@
                  <property name="title">
                   <string>Default Symbols</string>
                  </property>
-                 <property name="syncGroup" stdset="0">
+                 <property name="syncGroup">
                   <string notr="true">projstyles</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_11">
@@ -1423,7 +1423,7 @@
                  <property name="title">
                   <string>Options</string>
                  </property>
-                 <property name="syncGroup" stdset="0">
+                 <property name="syncGroup">
                   <string notr="true">projstyles</string>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_18">
@@ -1437,7 +1437,7 @@
                      </widget>
                     </item>
                     <item>
-                     <widget class="QgsOpacityWidget" name="mDefaultOpacityWidget" native="true">
+                     <widget class="QgsOpacityWidget" name="mDefaultOpacityWidget">
                       <property name="focusPolicy">
                        <enum>Qt::StrongFocus</enum>
                       </property>
@@ -1584,7 +1584,7 @@
                  <property name="checked">
                   <bool>false</bool>
                  </property>
-                 <property name="syncGroup" stdset="0">
+                 <property name="syncGroup">
                   <string notr="true">projgeneral</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_20">
@@ -1802,13 +1802,6 @@
                 </property>
                </widget>
               </item>
-              <item row="1" column="0">
-               <widget class="QCheckBox" name="mAsynchProviderCreationCheckBox">
-                <property name="text">
-                 <string>Load map layers in parallel when loading project</string>
-                </property>
-               </widget>
-              </item>
              </layout>
             </widget>
            </item>
@@ -1889,8 +1882,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>151</width>
-                <height>37</height>
+                <width>176</width>
+                <height>45</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_17">
@@ -1972,8 +1965,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>671</width>
-                <height>1248</height>
+                <width>679</width>
+                <height>1515</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_13">
@@ -2027,13 +2020,13 @@
                        <property name="checked">
                         <bool>false</bool>
                        </property>
-                       <property name="collapsed" stdset="0">
+                       <property name="collapsed">
                         <bool>false</bool>
                        </property>
-                       <property name="syncGroup" stdset="0">
+                       <property name="syncGroup">
                         <string notr="true">projowsserver</string>
                        </property>
-                       <property name="saveCollapsedState" stdset="0">
+                       <property name="saveCollapsedState">
                         <bool>true</bool>
                        </property>
                        <layout class="QGridLayout" name="gridLayout_6">
@@ -2375,10 +2368,10 @@
                        <property name="checked">
                         <bool>false</bool>
                        </property>
-                       <property name="collapsed" stdset="0">
+                       <property name="collapsed">
                         <bool>false</bool>
                        </property>
-                       <property name="saveCollapsedState" stdset="0">
+                       <property name="saveCollapsedState">
                         <bool>true</bool>
                        </property>
                        <layout class="QGridLayout" name="gridLayout_5">
@@ -2472,10 +2465,10 @@
                        <property name="checked">
                         <bool>false</bool>
                        </property>
-                       <property name="collapsed" stdset="0">
+                       <property name="collapsed">
                         <bool>false</bool>
                        </property>
-                       <property name="saveCollapsedState" stdset="0">
+                       <property name="saveCollapsedState">
                         <bool>true</bool>
                        </property>
                        <layout class="QGridLayout" name="gridLayout_10">
@@ -2809,10 +2802,10 @@
                        <property name="checked">
                         <bool>false</bool>
                        </property>
-                       <property name="collapsed" stdset="0">
+                       <property name="collapsed">
                         <bool>false</bool>
                        </property>
-                       <property name="saveCollapsedState" stdset="0">
+                       <property name="saveCollapsedState">
                         <bool>true</bool>
                        </property>
                        <layout class="QGridLayout" name="gridLayout">
@@ -2874,10 +2867,10 @@
                        <property name="checked">
                         <bool>false</bool>
                        </property>
-                       <property name="collapsed" stdset="0">
+                       <property name="collapsed">
                         <bool>false</bool>
                        </property>
-                       <property name="saveCollapsedState" stdset="0">
+                       <property name="saveCollapsedState">
                         <bool>true</bool>
                        </property>
                        <layout class="QVBoxLayout" name="verticalLayout_29">
@@ -3380,7 +3373,7 @@
             </spacer>
            </item>
           </layout>
-         </widget>
+         </widget>        
         </widget>
        </item>
       </layout>
