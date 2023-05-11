@@ -198,7 +198,7 @@ void QgsAdvancedDigitizingFloater::changeM( const QString &text )
 
 void QgsAdvancedDigitizingFloater::changeCommonAngleSnapping( double angle )
 {
-  mCommonAngleSnappingLineEdit->setText( qgsDoubleNear( angle, 0.0 ) ? tr( "disabled" ) : QLocale().toString( angle ).append( QStringLiteral( "°" ) ) );
+  mCommonAngleSnappingLineEdit->setText( qgsDoubleNear( angle, 0.0 ) ? tr( "disabled" ) : QLocale().toString( angle ).append( tr( " °" ) ) );
 }
 
 void QgsAdvancedDigitizingFloater::changeDistance( const QString &text )

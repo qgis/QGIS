@@ -49,22 +49,22 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *
   mCadPaintItem = new QgsAdvancedDigitizingCanvasItem( canvas, this );
 
   mAngleConstraint.reset( new CadConstraint( mAngleLineEdit, mLockAngleButton, mRelativeAngleButton, mRepeatingLockAngleButton ) );
-  mAngleConstraint->setConstraintType( CadConstraint::ConstraintType::Angle );
+  mAngleConstraint->setCadConstraintType( Qgis::CadConstraintType::Angle );
   mAngleConstraint->setMapCanvas( mMapCanvas );
   mDistanceConstraint.reset( new CadConstraint( mDistanceLineEdit, mLockDistanceButton, nullptr, mRepeatingLockDistanceButton ) );
-  mDistanceConstraint->setConstraintType( CadConstraint::ConstraintType::Distance );
+  mDistanceConstraint->setCadConstraintType( Qgis::CadConstraintType::Distance );
   mDistanceConstraint->setMapCanvas( mMapCanvas );
   mXConstraint.reset( new CadConstraint( mXLineEdit, mLockXButton, mRelativeXButton, mRepeatingLockXButton ) );
-  mXConstraint->setConstraintType( CadConstraint::ConstraintType::XCoordinate );
+  mXConstraint->setCadConstraintType( Qgis::CadConstraintType::XCoordinate );
   mXConstraint->setMapCanvas( mMapCanvas );
   mYConstraint.reset( new CadConstraint( mYLineEdit, mLockYButton, mRelativeYButton, mRepeatingLockYButton ) );
-  mYConstraint->setConstraintType( CadConstraint::ConstraintType::YCoordinate );
+  mYConstraint->setCadConstraintType( Qgis::CadConstraintType::YCoordinate );
   mYConstraint->setMapCanvas( mMapCanvas );
   mZConstraint.reset( new CadConstraint( mZLineEdit, mLockZButton, mRelativeZButton, mRepeatingLockZButton ) );
-  mZConstraint->setConstraintType( CadConstraint::ConstraintType::ZValue );
+  mZConstraint->setCadConstraintType( Qgis::CadConstraintType::ZValue );
   mZConstraint->setMapCanvas( mMapCanvas );
   mMConstraint.reset( new CadConstraint( mMLineEdit, mLockMButton, mRelativeMButton, mRepeatingLockMButton ) );
-  mMConstraint->setConstraintType( CadConstraint::ConstraintType::MValue );
+  mMConstraint->setCadConstraintType( Qgis::CadConstraintType::MValue );
   mMConstraint->setMapCanvas( mMapCanvas );
 
   mLineExtensionConstraint.reset( new CadConstraint( new QLineEdit(), new QToolButton() ) );
@@ -703,40 +703,43 @@ QgsAdvancedDigitizingDockWidget::CadConstraint *QgsAdvancedDigitizingDockWidget:
   return constraint;
 }
 
-double QgsAdvancedDigitizingDockWidget::parseUserInput( const QString &inputValue, const CadConstraint::ConstraintType type, bool &ok ) const
+double QgsAdvancedDigitizingDockWidget::parseUserInput( const QString &inputValue, const Qgis::CadConstraintType type, bool &ok ) const
 {
   ok = false;
 
   QString cleanedInputValue { inputValue };
 
   // Remove angle suffix
-  if ( type == QgsAdvancedDigitizingDockWidget::CadConstraint::ConstraintType::Angle )
-    cleanedInputValue.remove( QStringLiteral( "°" ) );
+  if ( type == Qgis::CadConstraintType::Angle )
+    cleanedInputValue.remove( tr( "°" ) );
 
   // Remove distance unit suffix
   const Qgis::DistanceUnit distanceUnit { QgsProject::instance()->distanceUnits() };
-  if ( type == QgsAdvancedDigitizingDockWidget::CadConstraint::ConstraintType::Distance )
+  if ( type == Qgis::CadConstraintType::Distance )
     cleanedInputValue.remove( QgsUnitTypes::toAbbreviatedString( distanceUnit ) );
 
   double value = qgsPermissiveToDouble( cleanedInputValue, ok );
 
   if ( ok )
   {
+    // Note: only distance is formatted for now, but it would be nice to
+    //       handle other constraints in the future, this is the reason
+    //       for the switch.
     switch ( type )
     {
-      case QgsAdvancedDigitizingDockWidget::CadConstraint::ConstraintType::Distance:
+      case Qgis::CadConstraintType::Distance:
       {
         // Convert distance to meters
         const double factorUnits = QgsUnitTypes::fromUnitToUnitFactor( distanceUnit, Qgis::DistanceUnit::Meters );
         value *= factorUnits;
         break;
       }
-      case QgsAdvancedDigitizingDockWidget::CadConstraint::ConstraintType::Generic:
-      case QgsAdvancedDigitizingDockWidget::CadConstraint::ConstraintType::Angle:
-      case QgsAdvancedDigitizingDockWidget::CadConstraint::ConstraintType::ZValue:
-      case QgsAdvancedDigitizingDockWidget::CadConstraint::ConstraintType::MValue:
-      case QgsAdvancedDigitizingDockWidget::CadConstraint::ConstraintType::XCoordinate:
-      case QgsAdvancedDigitizingDockWidget::CadConstraint::ConstraintType::YCoordinate:
+      case Qgis::CadConstraintType::Generic:
+      case Qgis::CadConstraintType::Angle:
+      case Qgis::CadConstraintType::ZValue:
+      case Qgis::CadConstraintType::MValue:
+      case Qgis::CadConstraintType::XCoordinate:
+      case Qgis::CadConstraintType::YCoordinate:
         break;
     }
   }
@@ -792,7 +795,7 @@ void QgsAdvancedDigitizingDockWidget::updateConstraintValue( CadConstraint *cons
     return;
 
   bool ok;
-  const double value = parseUserInput( textValue, constraint->constraintType(), ok );
+  const double value = parseUserInput( textValue, constraint->cadConstraintType(), ok );
   if ( !ok )
     return;
 
@@ -815,7 +818,7 @@ void QgsAdvancedDigitizingDockWidget::lockConstraint( bool activate /* default t
     if ( !textValue.isEmpty() )
     {
       bool ok;
-      const double value = parseUserInput( textValue, constraint->constraintType(), ok );
+      const double value = parseUserInput( textValue, constraint->cadConstraintType(), ok );
       if ( ok )
       {
         constraint->setValue( value );
@@ -1889,25 +1892,25 @@ void QgsAdvancedDigitizingDockWidget::CadConstraint::setValue( double value, boo
 
 QString QgsAdvancedDigitizingDockWidget::CadConstraint::displayValue() const
 {
-  switch ( mConstraintType )
+  switch ( mCadConstraintType )
   {
-    case CadConstraint::ConstraintType::Angle:
+    case Qgis::CadConstraintType::Angle:
     {
-      return QLocale().toString( mValue, 'f', mPrecision ).append( QStringLiteral( " °" ) );
+      return QLocale().toString( mValue, 'f', mPrecision ).append( tr( " °" ) );
     }
-    case CadConstraint::ConstraintType::XCoordinate:
-    case CadConstraint::ConstraintType::YCoordinate:
+    case Qgis::CadConstraintType::XCoordinate:
+    case Qgis::CadConstraintType::YCoordinate:
     {
       if ( mMapCanvas->mapSettings().destinationCrs().isGeographic() )
       {
-        return QLocale().toString( mValue, 'f', mPrecision ).append( QStringLiteral( " °" ) );
+        return QLocale().toString( mValue, 'f', mPrecision ).append( tr( " °" ) );
       }
       else
       {
         return QLocale().toString( mValue, 'f', mPrecision );
       }
     }
-    case CadConstraint::ConstraintType::Distance:
+    case Qgis::CadConstraintType::Distance:
     {
       // Value is always in meters (cartesian) #spellok
       const Qgis::DistanceUnit units { QgsProject::instance()->distanceUnits() };
@@ -1915,9 +1918,9 @@ QString QgsAdvancedDigitizingDockWidget::CadConstraint::displayValue() const
       const double convertedValue { mValue * factorUnits };
       return QgsDistanceArea::formatDistance( convertedValue, mPrecision, units, true );
     }
-    case CadConstraint::ConstraintType::Generic:
-    case CadConstraint::ConstraintType::ZValue:
-    case CadConstraint::ConstraintType::MValue:
+    case Qgis::CadConstraintType::Generic:
+    case Qgis::CadConstraintType::ZValue:
+    case Qgis::CadConstraintType::MValue:
     default:
       break;
   }
@@ -1941,14 +1944,14 @@ void QgsAdvancedDigitizingDockWidget::CadConstraint::setPrecision( int precision
     mLineEdit->setText( displayValue() );
 }
 
-QgsAdvancedDigitizingDockWidget::CadConstraint::ConstraintType QgsAdvancedDigitizingDockWidget::CadConstraint::constraintType() const
+Qgis::CadConstraintType QgsAdvancedDigitizingDockWidget::CadConstraint::cadConstraintType() const
 {
-  return mConstraintType;
+  return mCadConstraintType;
 }
 
-void QgsAdvancedDigitizingDockWidget::CadConstraint::setConstraintType( QgsAdvancedDigitizingDockWidget::CadConstraint::ConstraintType constraintType )
+void QgsAdvancedDigitizingDockWidget::CadConstraint::setCadConstraintType( Qgis::CadConstraintType constraintType )
 {
-  mConstraintType = constraintType;
+  mCadConstraintType = constraintType;
 }
 
 void QgsAdvancedDigitizingDockWidget::CadConstraint::setMapCanvas( QgsMapCanvas *mapCanvas )
