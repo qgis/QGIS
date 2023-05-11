@@ -250,15 +250,14 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *
   mFloaterActionsMenu->addSeparator();
 
   {
-    QAction *action = new QAction( tr( "Show XY coordinates" ), mFloaterActionsMenu );
+    QAction *action = new QAction( tr( "Show distance" ), mFloaterActionsMenu );
     action->setCheckable( true );
     mFloaterActionsMenu->addAction( action );
     connect( action, &QAction::toggled, this, [ = ]( bool checked )
     {
-      mFloater->setItemVisibility( QgsAdvancedDigitizingFloater::FloaterItem::XCoordinate, checked );
-      mFloater->setItemVisibility( QgsAdvancedDigitizingFloater::FloaterItem::YCoordinate, checked );
+      mFloater->setItemVisibility( QgsAdvancedDigitizingFloater::FloaterItem::Distance, checked );
     } );
-    action->setChecked( QgsSettings().value( QStringLiteral( "/Cad/XYShowInFloater" ), true ).toBool() );
+    action->setChecked( QgsSettings().value( QStringLiteral( "/Cad/DistanceShowInFloater" ), true ).toBool() );
   }
 
   {
@@ -273,14 +272,15 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *
   }
 
   {
-    QAction *action = new QAction( tr( "Show M value" ), mFloaterActionsMenu );
+    QAction *action = new QAction( tr( "Show XY coordinates" ), mFloaterActionsMenu );
     action->setCheckable( true );
     mFloaterActionsMenu->addAction( action );
     connect( action, &QAction::toggled, this, [ = ]( bool checked )
     {
-      mFloater->setItemVisibility( QgsAdvancedDigitizingFloater::FloaterItem::MCoordinate, checked );
+      mFloater->setItemVisibility( QgsAdvancedDigitizingFloater::FloaterItem::XCoordinate, checked );
+      mFloater->setItemVisibility( QgsAdvancedDigitizingFloater::FloaterItem::YCoordinate, checked );
     } );
-    action->setChecked( QgsSettings().value( QStringLiteral( "/Cad/MShowInFloater" ), true ).toBool() );
+    action->setChecked( QgsSettings().value( QStringLiteral( "/Cad/XYShowInFloater" ), true ).toBool() );
   }
 
   {
@@ -295,6 +295,17 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *
   }
 
   {
+    QAction *action = new QAction( tr( "Show M value" ), mFloaterActionsMenu );
+    action->setCheckable( true );
+    mFloaterActionsMenu->addAction( action );
+    connect( action, &QAction::toggled, this, [ = ]( bool checked )
+    {
+      mFloater->setItemVisibility( QgsAdvancedDigitizingFloater::FloaterItem::MCoordinate, checked );
+    } );
+    action->setChecked( QgsSettings().value( QStringLiteral( "/Cad/MShowInFloater" ), true ).toBool() );
+  }
+
+  {
     QAction *action = new QAction( tr( "Show common snapping angle" ), mFloaterActionsMenu );
     action->setCheckable( true );
     mFloaterActionsMenu->addAction( action );
@@ -303,17 +314,6 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *
       mFloater->setItemVisibility( QgsAdvancedDigitizingFloater::FloaterItem::CommonAngleSnapping, checked );
     } );
     action->setChecked( QgsSettings().value( QStringLiteral( "/Cad/CommonAngleShowInFloater" ), false ).toBool() );
-  }
-
-  {
-    QAction *action = new QAction( tr( "Show distance" ), mFloaterActionsMenu );
-    action->setCheckable( true );
-    mFloaterActionsMenu->addAction( action );
-    connect( action, &QAction::toggled, this, [ = ]( bool checked )
-    {
-      mFloater->setItemVisibility( QgsAdvancedDigitizingFloater::FloaterItem::Distance, checked );
-    } );
-    action->setChecked( QgsSettings().value( QStringLiteral( "/Cad/DistanceShowInFloater" ), true ).toBool() );
   }
 
   {
