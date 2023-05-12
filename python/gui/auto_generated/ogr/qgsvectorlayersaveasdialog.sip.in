@@ -39,7 +39,7 @@ Class to select destination file, type and CRS for ogr layers
 
 
 
-    QgsVectorLayerSaveAsDialog( QgsVectorLayer *layer, Options options = Option::AllOptions, QWidget *parent = 0, Qt::WindowFlags fl = Qt::WindowFlags() );
+    QgsVectorLayerSaveAsDialog( QgsVectorLayer *layer, QgsVectorLayerSaveAsDialog::Options options = QgsVectorLayerSaveAsDialog::Option::AllOptions, QWidget *parent = 0, Qt::WindowFlags fl = Qt::WindowFlags() );
 %Docstring
 Construct a new QgsVectorLayerSaveAsDialog
 %End
@@ -126,12 +126,9 @@ Sets whether the  "add to canvas" checkbox should be ``checked``.
 .. versionadded:: 3.6
 %End
 
-    int symbologyExport() const;
+    Qgis::FeatureSymbologyExport symbologyExport() const;
 %Docstring
 Returns type of symbology export.
-0: No symbology
-1: Feature symbology
-2: Symbol level symbology
 %End
 
     double scale() const;

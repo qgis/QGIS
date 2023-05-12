@@ -176,9 +176,9 @@ void QgsVectorLayerSaveAsDialog::setup()
   mFormatComboBox_currentIndexChanged( mFormatComboBox->currentIndex() );
 
   //symbology export combo box
-  mSymbologyExportComboBox->addItem( tr( "No Symbology" ), QgsVectorFileWriter::NoSymbology );
-  mSymbologyExportComboBox->addItem( tr( "Feature Symbology" ), QgsVectorFileWriter::FeatureSymbology );
-  mSymbologyExportComboBox->addItem( tr( "Symbol Layer Symbology" ), QgsVectorFileWriter::SymbolLayerSymbology );
+  mSymbologyExportComboBox->addItem( tr( "No Symbology" ), QVariant::fromValue( Qgis::FeatureSymbologyExport::NoSymbology ) );
+  mSymbologyExportComboBox->addItem( tr( "Feature Symbology" ), QVariant::fromValue( Qgis::FeatureSymbologyExport::PerFeature ) );
+  mSymbologyExportComboBox->addItem( tr( "Symbol Layer Symbology" ), QVariant::fromValue( Qgis::FeatureSymbologyExport::PerSymbolLayer ) );
   mSymbologyExportComboBox_currentIndexChanged( mSymbologyExportComboBox->currentText() );
 
   // extent group box
@@ -1072,9 +1072,9 @@ void QgsVectorLayerSaveAsDialog::setAddToCanvas( bool enabled )
   mAddToCanvas->setChecked( enabled );
 }
 
-int QgsVectorLayerSaveAsDialog::symbologyExport() const
+Qgis::FeatureSymbologyExport QgsVectorLayerSaveAsDialog::symbologyExport() const
 {
-  return mSymbologyExportComboBox->currentData().toInt();
+  return mSymbologyExportComboBox->currentData().value< Qgis::FeatureSymbologyExport >();
 }
 
 double QgsVectorLayerSaveAsDialog::scale() const
