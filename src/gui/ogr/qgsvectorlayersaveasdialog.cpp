@@ -899,11 +899,6 @@ QString QgsVectorLayerSaveAsDialog::format() const
   return mFormatComboBox->currentData().toString();
 }
 
-long QgsVectorLayerSaveAsDialog::crs() const
-{
-  return mSelectedCrs.srsid();
-}
-
 QgsCoordinateReferenceSystem QgsVectorLayerSaveAsDialog::crsObject() const
 {
   return mSelectedCrs;
