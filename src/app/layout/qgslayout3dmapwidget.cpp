@@ -124,7 +124,7 @@ void QgsLayout3DMapWidget::copyCameraPose( const QDomElement &elem3DViewSettings
     return;
   }
 
-  mMap3D->setCameraControllerFromXml( elemCamera );
+  mMap3D->setCameraPoseFromXml( elemCamera );
   updateCameraPoseWidgetsFromItem();
 }
 
