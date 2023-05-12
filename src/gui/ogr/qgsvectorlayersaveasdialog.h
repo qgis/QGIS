@@ -72,40 +72,50 @@ class GUI_EXPORT QgsVectorLayerSaveAsDialog : public QDialog, private Ui::QgsVec
     QgsVectorLayerSaveAsDialog( QgsVectorLayer *layer, Options options = Option::AllOptions, QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::WindowFlags() );
 
     /**
-     * The format in which the export should be written.
+     * Returns the selected format in which the export should be written.
+     *
      * \see QgsVectorFileWriter::filterForDriver()
      */
     QString format() const;
 
     /**
-     * The encoding of the target file.
+     * Returns the selected encoding for the target file.
      */
     QString encoding() const;
 
     /**
      * Returns the target filename.
+     *
+     * \see layerName()
      */
-    QString filename() const;
+    QString fileName() const;
 
     /**
-     * Returns the target layer name
+     * Returns the target layer name.
+     *
+     * \see fileName()
      */
-    QString layername() const;
+    QString layerName() const;
 
     /**
      * Returns a list of additional data source options which are passed to OGR.
      * Refer to the OGR documentation for the target format for available options.
+     *
+     * \see layerOptions()
      */
     QStringList datasourceOptions() const;
 
     /**
      * Returns a list of additional layer options which are passed to OGR.
      * Refer to the OGR documentation for the target format for available options.
+     *
+     * \see datasourceOptions()
      */
     QStringList layerOptions() const;
 
     /**
-     * Returns the CRS chosen for export
+     * Returns the CRS chosen for export.
+     *
      * \since QGIS 3.14
      */
     QgsCoordinateReferenceSystem crs() const;
@@ -114,11 +124,16 @@ class GUI_EXPORT QgsVectorLayerSaveAsDialog : public QDialog, private Ui::QgsVec
      * Returns a list of attributes which are selected for saving.
      */
     QgsAttributeList selectedAttributes() const;
-    //! Returns selected attributes that must be exported with their displayed values instead of their raw values. Added in QGIS 2.16
+
+    /**
+     * Returns selected attributes that must be exported with their displayed values instead of their raw values.
+     *
+     * \since QGIS 2.16
+     */
     QgsAttributeList attributesAsDisplayedValues() const;
 
     /**
-     * Returns a list of export names for attributes
+     * Returns a list of export names for attributes.
      */
     QStringList attributesExportNames() const;
 
@@ -170,11 +185,15 @@ class GUI_EXPORT QgsVectorLayerSaveAsDialog : public QDialog, private Ui::QgsVec
 
     /**
      * Sets whether only selected features will be saved.
+     *
+     * \see onlySelected()
      */
     void setOnlySelected( bool onlySelected );
 
     /**
      * Returns whether only selected features will be saved.
+     *
+     * \see setOnlySelected()
      */
     bool onlySelected() const;
 
@@ -201,27 +220,37 @@ class GUI_EXPORT QgsVectorLayerSaveAsDialog : public QDialog, private Ui::QgsVec
 
     /**
      * Returns TRUE if force multi geometry type is checked.
+     *
      * \see includeZ()
+     * \see setForceMulti()
      */
     bool forceMulti() const;
 
     /**
      * Sets whether the force multi geometry checkbox should be checked.
+     *
+     * \see forceMulti()
      */
     void setForceMulti( bool checked );
 
     /**
      * Returns TRUE if include z dimension is checked.
+     *
      * \see forceMulti()
+     * \see setIncludeZ()
      */
     bool includeZ() const;
 
     /**
      * Sets whether the include z dimension checkbox should be checked.
+     *
+     * \see includeZ()
      */
     void setIncludeZ( bool checked );
 
-    //! Returns creation action
+    /**
+     * Returns the creation action.
+     */
     QgsVectorFileWriter::ActionOnExistingFile creationActionOnExistingFile() const;
 
     void accept() override;

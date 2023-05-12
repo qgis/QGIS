@@ -46,41 +46,49 @@ Construct a new QgsVectorLayerSaveAsDialog
 
     QString format() const;
 %Docstring
-The format in which the export should be written.
+Returns the selected format in which the export should be written.
 
 .. seealso:: :py:func:`QgsVectorFileWriter.filterForDriver`
 %End
 
     QString encoding() const;
 %Docstring
-The encoding of the target file.
+Returns the selected encoding for the target file.
 %End
 
-    QString filename() const;
+    QString fileName() const;
 %Docstring
 Returns the target filename.
+
+.. seealso:: :py:func:`layerName`
 %End
 
-    QString layername() const;
+    QString layerName() const;
 %Docstring
-Returns the target layer name
+Returns the target layer name.
+
+.. seealso:: :py:func:`fileName`
 %End
 
     QStringList datasourceOptions() const;
 %Docstring
 Returns a list of additional data source options which are passed to OGR.
 Refer to the OGR documentation for the target format for available options.
+
+.. seealso:: :py:func:`layerOptions`
 %End
 
     QStringList layerOptions() const;
 %Docstring
 Returns a list of additional layer options which are passed to OGR.
 Refer to the OGR documentation for the target format for available options.
+
+.. seealso:: :py:func:`datasourceOptions`
 %End
 
     QgsCoordinateReferenceSystem crs() const;
 %Docstring
-Returns the CRS chosen for export
+Returns the CRS chosen for export.
 
 .. versionadded:: 3.14
 %End
@@ -89,14 +97,17 @@ Returns the CRS chosen for export
 %Docstring
 Returns a list of attributes which are selected for saving.
 %End
+
     QgsAttributeList attributesAsDisplayedValues() const;
 %Docstring
-Returns selected attributes that must be exported with their displayed values instead of their raw values. Added in QGIS 2.16
+Returns selected attributes that must be exported with their displayed values instead of their raw values.
+
+.. versionadded:: 2.16
 %End
 
     QStringList attributesExportNames() const;
 %Docstring
-Returns a list of export names for attributes
+Returns a list of export names for attributes.
 %End
 
     bool addToCanvas() const;
@@ -151,11 +162,15 @@ Determines the extent to be exported.
     void setOnlySelected( bool onlySelected );
 %Docstring
 Sets whether only selected features will be saved.
+
+.. seealso:: :py:func:`onlySelected`
 %End
 
     bool onlySelected() const;
 %Docstring
 Returns whether only selected features will be saved.
+
+.. seealso:: :py:func:`setOnlySelected`
 %End
 
     bool persistMetadata() const;
@@ -188,11 +203,15 @@ Returns ``True`` if geometry type is set to automatic.
 Returns ``True`` if force multi geometry type is checked.
 
 .. seealso:: :py:func:`includeZ`
+
+.. seealso:: :py:func:`setForceMulti`
 %End
 
     void setForceMulti( bool checked );
 %Docstring
 Sets whether the force multi geometry checkbox should be checked.
+
+.. seealso:: :py:func:`forceMulti`
 %End
 
     bool includeZ() const;
@@ -200,16 +219,20 @@ Sets whether the force multi geometry checkbox should be checked.
 Returns ``True`` if include z dimension is checked.
 
 .. seealso:: :py:func:`forceMulti`
+
+.. seealso:: :py:func:`setIncludeZ`
 %End
 
     void setIncludeZ( bool checked );
 %Docstring
 Sets whether the include z dimension checkbox should be checked.
+
+.. seealso:: :py:func:`includeZ`
 %End
 
     QgsVectorFileWriter::ActionOnExistingFile creationActionOnExistingFile() const;
 %Docstring
-Returns creation action
+Returns the creation action.
 %End
 
     virtual void accept();
