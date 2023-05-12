@@ -78,7 +78,7 @@ Returns a list of additional layer options which are passed to OGR.
 Refer to the OGR documentation for the target format for available options.
 %End
 
-    QgsCoordinateReferenceSystem crsObject() const;
+    QgsCoordinateReferenceSystem crs() const;
 %Docstring
 Returns the CRS chosen for export
 

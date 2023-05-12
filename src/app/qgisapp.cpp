@@ -8448,7 +8448,7 @@ QString QgisApp::saveAsVectorFileGeneral( QgsVectorLayer *vlayer, bool symbology
     Qgis::WkbType forcedGeometryType = dialog->geometryType();
 
     QgsCoordinateTransform ct;
-    destCRS = dialog->crsObject();
+    destCRS = dialog->crs();
 
     if ( destCRS.isValid() )
     {
