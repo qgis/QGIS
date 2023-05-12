@@ -307,12 +307,12 @@ QList<QPair<QLabel *, QWidget *> > QgsVectorLayerSaveAsDialog::createControls( c
 
 void QgsVectorLayerSaveAsDialog::accept()
 {
-  if ( QFile::exists( filename() ) )
+  if ( QFile::exists( fileName() ) )
   {
     QgsVectorFileWriter::EditionCapabilities caps =
-      QgsVectorFileWriter::editionCapabilities( filename() );
-    bool layerExists = QgsVectorFileWriter::targetLayerExists( filename(),
-                       layername() );
+      QgsVectorFileWriter::editionCapabilities( fileName() );
+    bool layerExists = QgsVectorFileWriter::targetLayerExists( fileName(),
+                       layerName() );
     QMessageBox msgBox;
     msgBox.setIcon( QMessageBox::Question );
     msgBox.setWindowTitle( tr( "Save Vector Layer As" ) );
@@ -386,7 +386,7 @@ void QgsVectorLayerSaveAsDialog::accept()
 
   if ( mActionOnExistingFile == QgsVectorFileWriter::AppendToLayerNoNewFields )
   {
-    if ( QgsVectorFileWriter::areThereNewFieldsToCreate( filename(), layername(), mLayer, selectedAttributes() ) )
+    if ( QgsVectorFileWriter::areThereNewFieldsToCreate( fileName(), layerName(), mLayer, selectedAttributes() ) )
     {
       if ( QMessageBox::question( this,
                                   tr( "Save Vector Layer As" ),
@@ -396,9 +396,9 @@ void QgsVectorLayerSaveAsDialog::accept()
       }
     }
   }
-  else if ( mActionOnExistingFile == QgsVectorFileWriter::CreateOrOverwriteFile && QFile::exists( filename() ) )
+  else if ( mActionOnExistingFile == QgsVectorFileWriter::CreateOrOverwriteFile && QFile::exists( fileName() ) )
   {
-    const QList<QgsProviderSublayerDetails> sublayers = QgsProviderRegistry::instance()->querySublayers( filename() );
+    const QList<QgsProviderSublayerDetails> sublayers = QgsProviderRegistry::instance()->querySublayers( fileName() );
     QStringList layerList;
     layerList.reserve( sublayers.size() );
     for ( const QgsProviderSublayerDetails &sublayer : sublayers )
@@ -420,7 +420,7 @@ void QgsVectorLayerSaveAsDialog::accept()
   }
 
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "UI/lastVectorFileFilterDir" ), QFileInfo( filename() ).absolutePath() );
+  settings.setValue( QStringLiteral( "UI/lastVectorFileFilterDir" ), QFileInfo( fileName() ).absolutePath() );
   settings.setValue( QStringLiteral( "UI/lastVectorFormat" ), format() );
   settings.setValue( QStringLiteral( "UI/encoding" ), encoding() );
   QDialog::accept();
@@ -879,12 +879,12 @@ void QgsVectorLayerSaveAsDialog::mCrsSelector_crsChanged( const QgsCoordinateRef
   mExtentGroupBox->setOutputCrs( mSelectedCrs );
 }
 
-QString QgsVectorLayerSaveAsDialog::filename() const
+QString QgsVectorLayerSaveAsDialog::fileName() const
 {
   return mFilename->filePath();
 }
 
-QString QgsVectorLayerSaveAsDialog::layername() const
+QString QgsVectorLayerSaveAsDialog::layerName() const
 {
   return leLayername->text();
 }
