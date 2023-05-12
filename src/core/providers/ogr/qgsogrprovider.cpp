@@ -463,7 +463,7 @@ QgsOgrProvider::QgsOgrProvider( QString const &uri, const ProviderOptions &optio
   setNativeTypes( nativeTypes );
 
   // layer metadata
-  loadMetadataWithMutex();
+  loadMetadata();
 
   QgsOgrConnPool::instance()->ref( QgsOgrProviderUtils::connectionPoolId( dataSourceUri( true ), mShareSameDatasetAmongLayers ) );
 }
@@ -1076,11 +1076,6 @@ void QgsOgrProvider::loadMetadata()
     }
   }
   mLayerMetadata.setType( QStringLiteral( "dataset" ) );
-}
-
-void QgsOgrProvider::loadMetadataWithMutex()
-{
-  QgsOgrProviderUtils::loadProviderMetadata( this );
 }
 
 QString QgsOgrProvider::storageType() const

@@ -28,7 +28,6 @@ email                : nyall dot dawson at gmail dot com
 #include "qgsfileutils.h"
 #include "qgsvariantutils.h"
 #include "qgssettings.h"
-#include "qgsogrprovider.h"
 
 #include <ogr_srs_api.h>
 #include <cpl_port.h>
@@ -1291,12 +1290,6 @@ void QgsOgrProviderUtils::GDALCloseWrapper( GDALDatasetH hDS )
   {
     GDALClose( hDS );
   }
-}
-
-void QgsOgrProviderUtils::loadProviderMetadata( QgsOgrProvider *provider )
-{
-  QMutexLocker locker( sGlobalMutex() );
-  provider->loadMetadata();
 }
 
 QByteArray QgsOgrProviderUtils::quotedIdentifier( QByteArray field, const QString &driverName )

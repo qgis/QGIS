@@ -31,7 +31,6 @@ email                : nyall dot dawson at gmail dot com
 class QgsOgrLayer;
 class QgsCoordinateReferenceSystem;
 class QgsProviderSublayerDetails;
-class QgsOgrProvider;
 
 ///@cond PRIVATE
 #define SIP_NO_FILE
@@ -172,9 +171,6 @@ class CORE_EXPORT QgsOgrProviderUtils
 
     //! Wrapper for GDALClose()
     static void GDALCloseWrapper( GDALDatasetH mhDS );
-
-    //! Load the provider metadata under the global mutex of OGR
-    static void loadProviderMetadata( QgsOgrProvider *provider );
 
     //! Return a QgsOgrDataset wrapping an already opened GDALDataset. Typical use: by QgsOgrTransaction
     static QgsOgrDatasetSharedPtr getAlreadyOpenedDataset( const QString &dsName );
