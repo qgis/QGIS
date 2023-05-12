@@ -48,6 +48,20 @@ To indicate the type of geometry, use the following values:
 1: lines
 2: polygons
 
+- Multiple layers
+
+QgsProcessingParameterMultipleLayers|[name of GRASS parameter]|[description of parameter to show]|[A number indicating the type of geometry]|[Default value, or None]|[True/False, indicating if the parameter is optional or not]
+
+Example: QgsProcessingParameterMultipleLayers|input|Input rasters|3|None|False
+
+To indicate the type of geometry, use the following values:
+
+-1: any vector geometry
+0: points
+1: lines
+2: polygons
+3: raster
+
 - A file
 
 QgsProcessingParameterFile|[name of GRASS parameter]|[description of parameter to show]|QgsProcessingParameterFile.File|[file extension|[Default value, or None]|[True/False, indicating if the parameter is optional or not]
@@ -71,17 +85,39 @@ QgsProcessingParameterString|[name of GRASS parameter]|[description of parameter
 
 - A value to select from a list
 
-QgsProcessingParameterEnum|[name of GRASS parameter]|[description of parameter to show]|[list of possible values, separated by semicolons]|[True/False, AJH: what does this indicate?]|[zero-based index of default value]|[True/False, indicating if the parameter is optional or not]
+QgsProcessingParameterEnum|[name of GRASS parameter]|[description of parameter to show]|[list of possible values, separated by semicolons]|[True/False, indicating whether more than one value can be selected (allowMultiple)]|[zero-based index of default value]|[True/False, indicating if the parameter is optional or not]
 
 - A boolean value
 
-Example: QgsProcessingParameterBoolean|-c|-c|False
+QgsProcessingParameterBoolean|[name of GRASS parameter]|[description of parameter to show]|[default value]|[True/False, indicating if the parameter is optional or not]
+
+Example: QgsProcessingParameterBoolean|-p|Output values as percentages|False|True
+
+- A pair of coordinates:
+
+QgsProcessingParameterPoint[name of GRASS parameter]|[description of parameter to show]|[default value]|[True/False, indicating if the parameter is optional or not]
+
+Example: QgsProcessingParameterPoint|coordinates|The coordinate of the center (east,north)|0,0|False
+
+- A rectangular map extent:
+
+QgsProcessingParameterExtent|[name of GRASS parameter]|[description of parameter to show]|[default value]|[True/False, indicating if the parameter is optional or not]
+
+Example: QgsProcessingParameterExtent|bbox|Bounding box for selecting features|None|True
+
+- A crs
+
+QgsProcessingParameterCrs|[name of GRASS parameter]|[description of parameter to show]|[default value]|[True/False, indicating if the parameter is optional or not]
+
+Example: QgsProcessingParameterCrs|crs|New coordinate reference system|None|False
 
 - Outputs
 
 Raster outputs are added with the following syntax:
 
 QgsProcessingParameterRasterDestination|[name of GRASS output]|[description of output to show]|[Default value, or None]|[True/False, indicating if the parameter is optional or not]
+
+Example: QgsProcessingParameterRasterDestination|length_slope|Slope length and steepness (LS) factor for USLE|None|True
 
 Vector outputs are added with the following syntax:
 
@@ -94,11 +130,19 @@ QgsProcessing.VectorLine
 QgsProcessing.VectorPolygon
 QgsProcessing.TypeVectorAnyGeometry
 
+Example: QgsProcessingParameterVectorDestination|flowline|Flow line|QgsProcessing.TypeVectorLine|None|True
+
 File outputs which are not layers or tables of a format supported by QGIS are added with the following syntax:
 
 QgsProcessingParameterFileDestination|[name of GRASS output]|[description of output to show]|[file type]|[Default value, or None]|[True/False, indicating if the parameter is optional or not]
 
 Example: QgsProcessingParameterFileDestination|reportfile|Final Report File|Txt files (*.txt)|None|True
+
+A folder:
+
+QgsProcessingParameterFolderDestination|[name of GRASS parameter]|[description of parameter to show]|[default value]|[True/False, indicating if the parameter is optional or not]
+
+Example: QgsProcessingParameterFolderDestination|output_dir|Output Directory|None|False
 
 - Advanced parameters
 
