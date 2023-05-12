@@ -316,17 +316,31 @@ void QgsLayoutItem3DMap::setSettingsFromXml( const QDomElement &elem )
 {
   QgsReadWriteContext readWriteContext;
   readWriteContext.setPathResolver( QgsProject::instance()->pathResolver() );
-  mSettings.reset( new Qgs3DMapSettings );
 
-  mSettings->readXml( elem, readWriteContext );
-  // move to 3d map settings loadProjectSettings
   readPropertiesFromElement( elem, QDomDocument(), readWriteContext );
+
+  loadProjectSettings();
+  update();
+}
+
+void QgsLayoutItem3DMap::setCameraPoseFromXml( const QDomElement &elem )
+{
+  // create camera pose from camera controller settings saved on 3DViewSettings
+  // look in QgsCameraController::writeXml for explanation
+  QgsCameraPose pose;
+  pose.setCenterPoint( QgsVector3D( elem.attribute( "x" ).toDouble(),
+                                    elem.attribute( "elev" ).toDouble(),
+                                    elem.attribute( "y" ).toDouble() ) );
+  pose.setDistanceFromCenterPoint( elem.attribute( "dist" ).toDouble() );
+  pose.setHeadingAngle( elem.attribute( "yaw" ).toDouble() );
+  pose.setPitchAngle( elem.attribute( "pitch" ).toDouble() );
+
+  setCameraPose( pose );
+}
+
+void QgsLayoutItem3DMap::loadProjectSettings()
+{
   mSettings->setSelectionColor( QgsProject::instance()->selectionColor() );
   mSettings->setBackgroundColor( QgsProject::instance()->backgroundColor() );
   mSettings->setOutputDpi( QGuiApplication::primaryScreen()->logicalDotsPerInch() );
-}
-void QgsLayoutItem3DMap::setCameraControllerFromXml( const QDomElement &elem )
-{
-  mScene->cameraController()->readXml( elem );
-  setCameraPose( mScene->cameraController()->cameraPose() );
 }

@@ -109,7 +109,7 @@ class _3D_EXPORT QgsLayoutItem3DMap : public QgsLayoutItem, public QgsTemporalRa
 
     void setSettingsFromXml( const QDomElement &elem );
 
-    void setCameraControllerFromXml( const QDomElement &elem );
+    void setCameraPoseFromXml( const QDomElement &elem );
 
 
   public slots:
@@ -128,6 +128,8 @@ class _3D_EXPORT QgsLayoutItem3DMap : public QgsLayoutItem, public QgsTemporalRa
   private:
     //! Resets the item tooltip to reflect current map id
     void updateToolTip();
+    // load 3DMapSettings that are only stored in the project
+    void loadProjectSettings();
 
   private:
     std::unique_ptr<Qgs3DMapSettings> mSettings;
