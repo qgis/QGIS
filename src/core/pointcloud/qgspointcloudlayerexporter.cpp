@@ -264,7 +264,7 @@ void QgsPointCloudLayerExporter::doExport()
       saveOptions.datasourceOptions = QgsVectorFileWriter::defaultDatasetOptions( ogrDriver );
       saveOptions.layerOptions = QgsVectorFileWriter::defaultLayerOptions( ogrDriver );
       saveOptions.layerOptions << layerCreationOptions;
-      saveOptions.symbologyExport = QgsVectorFileWriter::NoSymbology;
+      saveOptions.symbologyExport = Qgis::FeatureSymbologyExport::NoSymbology;
       saveOptions.actionOnExistingFile = mActionOnExistingFile;
       saveOptions.feedback = mFeedback;
       mVectorSink = QgsVectorFileWriter::create( mFilename, outputFields(), Qgis::WkbType::PointZ, mTargetCrs, QgsCoordinateTransformContext(), saveOptions );

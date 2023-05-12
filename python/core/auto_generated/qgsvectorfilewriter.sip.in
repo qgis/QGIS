@@ -139,13 +139,6 @@ Constructor for MetaData
       Canceled,
     };
 
-    enum SymbologyExport
-    {
-      NoSymbology,
-      FeatureSymbology,
-      SymbolLayerSymbology
-    };
-
     enum FieldNameSource
     {
       Original,
@@ -249,7 +242,7 @@ Creates a clone of the FieldValueConverter.
         const QStringList &layerOptions = QStringList(),
         bool skipAttributeCreation = false,
         QString *newFilename = 0,
-        QgsVectorFileWriter::SymbologyExport symbologyExport = QgsVectorFileWriter::NoSymbology,
+        Qgis::FeatureSymbologyExport symbologyExport = Qgis::FeatureSymbologyExport::NoSymbology,
         double symbologyScale = 1.0,
         const QgsRectangle *filterExtent = 0,
         Qgis::WkbType overrideGeometryType = Qgis::WkbType::Unknown,
@@ -298,7 +291,7 @@ Write contents of vector layer to an (OGR supported) vector format
         const QStringList &layerOptions = QStringList(),
         bool skipAttributeCreation = false,
         QString *newFilename = 0,
-        QgsVectorFileWriter::SymbologyExport symbologyExport = QgsVectorFileWriter::NoSymbology,
+        Qgis::FeatureSymbologyExport symbologyExport = Qgis::FeatureSymbologyExport::NoSymbology,
         double symbologyScale = 1.0,
         const QgsRectangle *filterExtent = 0,
         Qgis::WkbType overrideGeometryType = Qgis::WkbType::Unknown,
@@ -379,7 +372,7 @@ Constructor
 
         QStringList attributesExportNames;
 
-        QgsVectorFileWriter::SymbologyExport symbologyExport;
+        Qgis::FeatureSymbologyExport symbologyExport;
 
         double symbologyScale;
 
@@ -433,7 +426,7 @@ Writes a layer out to a vector file.
                                            const QStringList &datasourceOptions = QStringList(),
                                            const QStringList &layerOptions = QStringList(),
                                            QString *newFilename = 0,
-                                           QgsVectorFileWriter::SymbologyExport symbologyExport = QgsVectorFileWriter::NoSymbology,
+                                           Qgis::FeatureSymbologyExport symbologyExport = Qgis::FeatureSymbologyExport::NoSymbology,
                                            QgsFeatureSink::SinkFlags sinkFlags = QgsFeatureSink::SinkFlags()
                                          ) /Deprecated/;
 
@@ -659,8 +652,19 @@ Delete a shapefile (and its accompanying shx / dbf / prj / qix / qpj / cpg / sbn
 :return: bool ``True`` if the file was deleted successfully
 %End
 
-    QgsVectorFileWriter::SymbologyExport symbologyExport() const;
-    void setSymbologyExport( QgsVectorFileWriter::SymbologyExport symExport );
+    Qgis::FeatureSymbologyExport symbologyExport() const;
+%Docstring
+Returns the feature symbology export handling for the writer.
+
+.. seealso:: :py:func:`setSymbologyExport`
+%End
+
+    void setSymbologyExport( Qgis::FeatureSymbologyExport symExport );
+%Docstring
+Sets the feature symbology export handling for the writer.
+
+.. seealso:: :py:func:`symbologyExport`
+%End
 
     double symbologyScale() const;
 %Docstring

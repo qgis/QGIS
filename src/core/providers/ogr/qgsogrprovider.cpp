@@ -330,7 +330,7 @@ Qgis::VectorExportResult QgsOgrProvider::createEmptyLayer( const QString &uri,
   saveOptions.datasourceOptions = dsOptions;
   saveOptions.layerOptions = layerOptions;
   saveOptions.actionOnExistingFile = action;
-  saveOptions.symbologyExport = QgsVectorFileWriter::NoSymbology;
+  saveOptions.symbologyExport = Qgis::FeatureSymbologyExport::NoSymbology;
   std::unique_ptr< QgsVectorFileWriter > writer( QgsVectorFileWriter::create( uri, cleanedFields, wkbType, srs, QgsCoordinateTransformContext(), saveOptions, QgsFeatureSink::SinkFlags(), nullptr, &newLayerName ) );
   layerName = newLayerName;
 

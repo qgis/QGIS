@@ -3539,6 +3539,21 @@ class CORE_EXPORT Qgis
     Q_ENUM( ExpressionType )
 
     /**
+     * Options for exporting features considering their symbology.
+     *
+     * \note Prior to QGIS 3.32 this was available as QgsVectorFileWriter::SymbologyExport.
+     *
+     * \since QGIS 3.32
+     */
+    enum class FeatureSymbologyExport SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsVectorFileWriter, SymbologyExport ) : int
+      {
+      NoSymbology = 0, //!< Export only data
+      PerFeature SIP_MONKEYPATCH_COMPAT_NAME( FeatureSymbology ), //!< Keeps the number of features and export symbology per feature
+      PerSymbolLayer SIP_MONKEYPATCH_COMPAT_NAME( SymbolLayerSymbology ) //!< Exports one feature per symbol layer (considering symbol levels)
+    };
+    Q_ENUM( FeatureSymbologyExport )
+
+    /**
      * Identify search radius in mm
      * \since QGIS 2.3
      */

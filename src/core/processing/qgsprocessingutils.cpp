@@ -870,7 +870,7 @@ QgsFeatureSink *QgsProcessingUtils::createFeatureSink( QString &destination, Qgs
       saveOptions.driverName = format;
       saveOptions.datasourceOptions = !datasourceOptions.isEmpty() ? datasourceOptions : QgsVectorFileWriter::defaultDatasetOptions( format );
       saveOptions.layerOptions = !layerOptions.isEmpty() ? layerOptions : QgsVectorFileWriter::defaultLayerOptions( format );
-      saveOptions.symbologyExport = QgsVectorFileWriter::NoSymbology;
+      saveOptions.symbologyExport = Qgis::FeatureSymbologyExport::NoSymbology;
       if ( remappingDefinition )
       {
         saveOptions.actionOnExistingFile = QgsVectorFileWriter::AppendToLayerNoNewFields;
