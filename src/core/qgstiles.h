@@ -320,7 +320,6 @@ class CORE_EXPORT QgsTileMatrixSet
      * This method returns Qgis::TileAvailability::Available by default, unless specific
      * tile availability is known for the given \a id.
      *
-     * \see defaultAvailability()
      * \since QGIS 3.32
      */
     Qgis::TileAvailability tileAvailability( QgsTileXYZ id ) const;
