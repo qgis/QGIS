@@ -312,8 +312,6 @@ exists within the matrix, or is not available (e.g. due to holes within the matr
 This method returns :py:class:`Qgis`.TileAvailability.Available by default, unless specific
 tile availability is known for the given ``id``.
 
-.. seealso:: :py:func:`defaultAvailability`
-
 .. versionadded:: 3.32
 %End
 
