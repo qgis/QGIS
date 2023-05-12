@@ -578,7 +578,7 @@ int main( int argc, char *argv[] )
   bool myCustomization = true;
 
   QString dxfOutputFile;
-  QgsDxfExport::SymbologyExport dxfSymbologyMode = QgsDxfExport::SymbolLayerSymbology;
+  Qgis::FeatureSymbologyExport dxfSymbologyMode = Qgis::FeatureSymbologyExport::PerSymbolLayer;
   double dxfScale = 50000.0;
   QString dxfEncoding = QStringLiteral( "CP1252" );
   QString dxfMapTheme;
@@ -801,15 +801,15 @@ int main( int argc, char *argv[] )
           QString mode( args[++i] );
           if ( mode == QLatin1String( "none" ) )
           {
-            dxfSymbologyMode = QgsDxfExport::NoSymbology;
+            dxfSymbologyMode = Qgis::FeatureSymbologyExport::NoSymbology;
           }
           else if ( mode == QLatin1String( "symbollayer" ) )
           {
-            dxfSymbologyMode = QgsDxfExport::SymbolLayerSymbology;
+            dxfSymbologyMode = Qgis::FeatureSymbologyExport::PerSymbolLayer;
           }
           else if ( mode == QLatin1String( "feature" ) )
           {
-            dxfSymbologyMode = QgsDxfExport::FeatureSymbology;
+            dxfSymbologyMode = Qgis::FeatureSymbologyExport::PerFeature;
           }
           else
           {

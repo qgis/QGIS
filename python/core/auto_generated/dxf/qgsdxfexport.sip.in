@@ -53,13 +53,6 @@ unique value.
 
     };
 
-    enum SymbologyExport
-    {
-      NoSymbology,
-      FeatureSymbology,
-      SymbolLayerSymbology
-    };
-
     enum Flag
     {
       FlagNoMText,
@@ -198,14 +191,14 @@ Returns the destination CRS, or an invalid CRS if no reprojection will be done.
 .. versionadded:: 3.0
 %End
 
-    void setSymbologyExport( QgsDxfExport::SymbologyExport e );
+    void setSymbologyExport( Qgis::FeatureSymbologyExport e );
 %Docstring
 Set symbology export mode
 
 :param e: the mode
 %End
 
-    QgsDxfExport::SymbologyExport symbologyExport() const;
+    Qgis::FeatureSymbologyExport symbologyExport() const;
 %Docstring
 Gets symbology export mode
 
