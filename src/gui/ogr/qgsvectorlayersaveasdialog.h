@@ -36,8 +36,10 @@ class GUI_EXPORT QgsVectorLayerSaveAsDialog : public QDialog, private Ui::QgsVec
 
   public:
 
-    //! Bitmask of options to be shown
-    enum Option
+    /**
+     * Available dialog options.
+     */
+    enum class Option : int
     {
       Symbology = 1, //!< Show symbology options
       DestinationCrs = 1 << 2, //!< Show destination CRS (reprojection) option
@@ -49,7 +51,13 @@ class GUI_EXPORT QgsVectorLayerSaveAsDialog : public QDialog, private Ui::QgsVec
       Metadata = 1 << 8, //!< Show metadata options
       AllOptions = ~0 //!< Show all options
     };
+    Q_ENUM( Option )
+
+    /**
+     * Available dialog options.
+     */
     Q_DECLARE_FLAGS( Options, Option )
+    Q_FLAG( Options )
 
     /**
      * Construct a new QgsVectorLayerSaveAsDialog
@@ -61,7 +69,7 @@ class GUI_EXPORT QgsVectorLayerSaveAsDialog : public QDialog, private Ui::QgsVec
     /**
      * Construct a new QgsVectorLayerSaveAsDialog
      */
-    QgsVectorLayerSaveAsDialog( QgsVectorLayer *layer, Options options = AllOptions, QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::WindowFlags() );
+    QgsVectorLayerSaveAsDialog( QgsVectorLayer *layer, Options options = Option::AllOptions, QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::WindowFlags() );
 
     /**
      * The format in which the export should be written.
@@ -258,7 +266,7 @@ class GUI_EXPORT QgsVectorLayerSaveAsDialog : public QDialog, private Ui::QgsVec
     QgsVectorLayer *mLayer = nullptr;
     QgsMapCanvas *mMapCanvas = nullptr;
     QgsVectorFileWriter::ActionOnExistingFile mActionOnExistingFile;
-    Options mOptions = AllOptions;
+    Options mOptions = Option::AllOptions;
     QString mDefaultOutputLayerNameFromInputLayerName;
 };
 
