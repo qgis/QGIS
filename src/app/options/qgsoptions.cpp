@@ -1628,7 +1628,7 @@ void QgsOptions::saveOptions()
 
   QgsApplication::setNullRepresentation( leNullValue->text() );
   mSettings->setValue( QStringLiteral( "/qgis/style" ), cmbStyle->currentText() );
-  mSettings->setValue( QStringLiteral( "/qgis/iconSize" ), cmbIconSize->currentText() );
+  mSettings->setValue( QStringLiteral( "/qgis/toolbarIconSize" ), cmbIconSize->currentText() );
 
   mSettings->setValue( QStringLiteral( "/qgis/messageTimeout" ), mMessageTimeoutSpnBx->value() );
 
