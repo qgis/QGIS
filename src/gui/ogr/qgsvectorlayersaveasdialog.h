@@ -105,13 +105,6 @@ class GUI_EXPORT QgsVectorLayerSaveAsDialog : public QDialog, private Ui::QgsVec
     QStringList layerOptions() const;
 
     /**
-     * Returns the internal CRS ID.
-     * \see QgsCoordinateReferenceSystem::srsid()
-     * \deprecated since QGIS 3.14 - will be removed in QGIS 4.0. Use crsObject() instead.
-     */
-    Q_DECL_DEPRECATED long crs() const SIP_SKIP;
-
-    /**
      * Returns the CRS chosen for export
      * \since QGIS 3.14
      */
