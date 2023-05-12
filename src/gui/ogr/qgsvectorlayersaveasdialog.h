@@ -108,7 +108,7 @@ class GUI_EXPORT QgsVectorLayerSaveAsDialog : public QDialog, private Ui::QgsVec
      * Returns the CRS chosen for export
      * \since QGIS 3.14
      */
-    QgsCoordinateReferenceSystem crsObject() const;
+    QgsCoordinateReferenceSystem crs() const;
 
     /**
      * Returns a list of attributes which are selected for saving.
