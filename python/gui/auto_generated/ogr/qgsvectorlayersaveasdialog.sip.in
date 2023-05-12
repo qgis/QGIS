@@ -22,7 +22,7 @@ Class to select destination file, type and CRS for ogr layers
 %End
   public:
 
-    enum Option
+    enum class Option
     {
       Symbology,
       DestinationCrs,
@@ -34,11 +34,12 @@ Class to select destination file, type and CRS for ogr layers
       Metadata,
       AllOptions
     };
+
     typedef QFlags<QgsVectorLayerSaveAsDialog::Option> Options;
 
 
 
-    QgsVectorLayerSaveAsDialog( QgsVectorLayer *layer, Options options = AllOptions, QWidget *parent = 0, Qt::WindowFlags fl = Qt::WindowFlags() );
+    QgsVectorLayerSaveAsDialog( QgsVectorLayer *layer, Options options = Option::AllOptions, QWidget *parent = 0, Qt::WindowFlags fl = Qt::WindowFlags() );
 %Docstring
 Construct a new QgsVectorLayerSaveAsDialog
 %End

@@ -68,7 +68,7 @@ QgsVectorLayerSaveAsDialog::QgsVectorLayerSaveAsDialog( QgsVectorLayer *layer, O
       leLayername->setText( mDefaultOutputLayerNameFromInputLayerName );
   }
 
-  if ( !( mOptions & Symbology ) )
+  if ( !( mOptions & Option::Symbology ) )
   {
     mSymbologyExportLabel->hide();
     mSymbologyExportComboBox->hide();
@@ -76,27 +76,27 @@ QgsVectorLayerSaveAsDialog::QgsVectorLayerSaveAsDialog( QgsVectorLayer *layer, O
     mScaleWidget->hide();
   }
 
-  if ( !( mOptions & DestinationCrs ) )
+  if ( !( mOptions & Option::DestinationCrs ) )
   {
     mCrsLabel->hide();
     mCrsSelector->hide();
   }
-  if ( !( mOptions & Fields ) )
+  if ( !( mOptions & Option::Fields ) )
     mAttributesSelection->hide();
 
-  if ( !( mOptions & SelectedOnly ) )
+  if ( !( mOptions & Option::SelectedOnly ) )
     mSelectedOnly->hide();
 
-  if ( !( mOptions & AddToCanvas ) )
+  if ( !( mOptions & Option::AddToCanvas ) )
     mAddToCanvas->hide();
 
-  if ( !( mOptions & GeometryType ) )
+  if ( !( mOptions & Option::GeometryType ) )
     mGeometryGroupBox->hide();
 
-  if ( !( mOptions & Extent ) )
+  if ( !( mOptions & Option::Extent ) )
     mExtentGroupBox->hide();
 
-  if ( !( mOptions & Metadata ) )
+  if ( !( mOptions & Option::Metadata ) )
   {
     mCheckPersistMetadata->setChecked( false );
     mCheckPersistMetadata->hide();
@@ -462,7 +462,7 @@ void QgsVectorLayerSaveAsDialog::mFormatComboBox_currentIndexChanged( int idx )
   }
   else
   {
-    if ( mOptions & Fields )
+    if ( mOptions & Option::Fields )
     {
       mAttributesSelection->setVisible( true );
       isFormatForFieldsAsDisplayedValues = ( sFormat == QLatin1String( "CSV" ) ||
@@ -473,7 +473,7 @@ void QgsVectorLayerSaveAsDialog::mFormatComboBox_currentIndexChanged( int idx )
   }
 
   // Show symbology options only for some formats
-  if ( QgsVectorFileWriter::supportsFeatureStyles( sFormat ) && ( mOptions & Symbology ) )
+  if ( QgsVectorFileWriter::supportsFeatureStyles( sFormat ) && ( mOptions & Option::Symbology ) )
   {
     mSymbologyExportLabel->setVisible( true );
     mSymbologyExportComboBox->setVisible( true );
