@@ -69,7 +69,7 @@ class GUI_EXPORT QgsVectorLayerSaveAsDialog : public QDialog, private Ui::QgsVec
     /**
      * Construct a new QgsVectorLayerSaveAsDialog
      */
-    QgsVectorLayerSaveAsDialog( QgsVectorLayer *layer, Options options = Option::AllOptions, QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::WindowFlags() );
+    QgsVectorLayerSaveAsDialog( QgsVectorLayer *layer, QgsVectorLayerSaveAsDialog::Options options = QgsVectorLayerSaveAsDialog::Option::AllOptions, QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::WindowFlags() );
 
     /**
      * Returns the selected format in which the export should be written.
@@ -154,11 +154,8 @@ class GUI_EXPORT QgsVectorLayerSaveAsDialog : public QDialog, private Ui::QgsVec
 
     /**
      * Returns type of symbology export.
-     * 0: No symbology
-     * 1: Feature symbology
-     * 2: Symbol level symbology
      */
-    int symbologyExport() const;
+    Qgis::FeatureSymbologyExport symbologyExport() const;
 
     /**
      * Returns the specified map scale.
