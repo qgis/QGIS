@@ -78,7 +78,7 @@ QgsVectorFileWriter::QgsVectorFileWriter(
   const QStringList &datasourceOptions,
   const QStringList &layerOptions,
   QString *newFilename,
-  SymbologyExport symbologyExport,
+  Qgis::FeatureSymbologyExport symbologyExport,
   QgsFeatureSink::SinkFlags sinkFlags,
   QString *newLayer,
   const QgsCoordinateTransformContext &transformContext,
@@ -104,7 +104,7 @@ QgsVectorFileWriter::QgsVectorFileWriter(
   const QStringList &datasourceOptions,
   const QStringList &layerOptions,
   QString *newFilename,
-  QgsVectorFileWriter::SymbologyExport symbologyExport,
+  Qgis::FeatureSymbologyExport symbologyExport,
   FieldValueConverter *fieldValueConverter,
   const QString &layerName,
   ActionOnExistingFile action,
@@ -2611,7 +2611,7 @@ bool QgsVectorFileWriter::addFeatureWithStyle( QgsFeature &feature, QgsFeatureRe
     return false;
 
   //add OGR feature style type
-  if ( mSymbologyExport != NoSymbology && renderer )
+  if ( mSymbologyExport != Qgis::FeatureSymbologyExport::NoSymbology && renderer )
   {
     mRenderContext.expressionContext().setFeature( feature );
     //SymbolLayerSymbology: concatenate ogr styles of all symbollayers
@@ -2637,33 +2637,49 @@ bool QgsVectorFileWriter::addFeatureWithStyle( QgsFeature &feature, QgsFeatureRe
 
         currentStyle = ( *symbolIt )->symbolLayer( i )->ogrFeatureStyle( mmsf, musf );//"@" + it.value();
 
-        if ( mSymbologyExport == FeatureSymbology )
+        switch ( mSymbologyExport )
         {
-          if ( symbolIt != symbols.constBegin() || i != 0 )
+          case Qgis::FeatureSymbologyExport::PerFeature:
           {
-            styleString.append( ';' );
+            if ( symbolIt != symbols.constBegin() || i != 0 )
+            {
+              styleString.append( ';' );
+            }
+            styleString.append( currentStyle );
+            break;
           }
-          styleString.append( currentStyle );
-        }
-        else if ( mSymbologyExport == SymbolLayerSymbology )
-        {
-          OGR_F_SetStyleString( poFeature.get(), currentStyle.toLocal8Bit().constData() );
-          if ( !writeFeature( mLayer, poFeature.get() ) )
+          case Qgis::FeatureSymbologyExport::PerSymbolLayer:
           {
-            return false;
+            OGR_F_SetStyleString( poFeature.get(), currentStyle.toLocal8Bit().constData() );
+            if ( !writeFeature( mLayer, poFeature.get() ) )
+            {
+              return false;
+            }
+            break;
           }
+
+          case Qgis::FeatureSymbologyExport::NoSymbology:
+            break;
         }
       }
     }
     OGR_F_SetStyleString( poFeature.get(), styleString.toLocal8Bit().constData() );
   }
 
-  if ( mSymbologyExport == NoSymbology || mSymbologyExport == FeatureSymbology )
+  switch ( mSymbologyExport )
   {
-    if ( !writeFeature( mLayer, poFeature.get() ) )
+    case Qgis::FeatureSymbologyExport::NoSymbology:
+    case Qgis::FeatureSymbologyExport::PerFeature:
     {
-      return false;
+      if ( !writeFeature( mLayer, poFeature.get() ) )
+      {
+        return false;
+      }
+      break;
     }
+
+    case Qgis::FeatureSymbologyExport::PerSymbolLayer:
+      break;
   }
 
   return true;
@@ -3197,7 +3213,7 @@ QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer *layer,
     const QStringList &layerOptions,
     bool skipAttributeCreation,
     QString *newFilename,
-    SymbologyExport symbologyExport,
+    Qgis::FeatureSymbologyExport symbologyExport,
     double symbologyScale,
     const QgsRectangle *filterExtent,
     Qgis::WkbType overrideGeometryType,
@@ -3244,7 +3260,7 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::writeAsVectorFormat( QgsVe
     const QStringList &layerOptions,
     bool skipAttributeCreation,
     QString *newFilename,
-    SymbologyExport symbologyExport,
+    Qgis::FeatureSymbologyExport symbologyExport,
     double symbologyScale,
     const QgsRectangle *filterExtent,
     Qgis::WkbType overrideGeometryType,
@@ -3531,20 +3547,27 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::writeAsVectorFormatV2( Pre
   QgsFeature fet;
 
   //create symbol table if needed
-  if ( writer->symbologyExport() != NoSymbology )
+  if ( writer->symbologyExport() != Qgis::FeatureSymbologyExport::NoSymbology )
   {
     //writer->createSymbolLayerTable( layer,  writer->mDS );
   }
 
-  if ( writer->symbologyExport() == SymbolLayerSymbology )
+  switch ( writer->symbologyExport() )
   {
-    QgsFeatureRenderer *r = details.renderer.get();
-    if ( r && r->capabilities() & QgsFeatureRenderer::SymbolLevels
-         && r->usingSymbolLevels() )
+    case Qgis::FeatureSymbologyExport::PerSymbolLayer:
     {
-      QgsVectorFileWriter::WriterError error = writer->exportFeaturesSymbolLevels( details, details.sourceFeatureIterator, options.ct, errorMessage );
-      return ( error == NoError ) ? NoError : ErrFeatureWriteFailed;
+      QgsFeatureRenderer *r = details.renderer.get();
+      if ( r && r->capabilities() & QgsFeatureRenderer::SymbolLevels
+           && r->usingSymbolLevels() )
+      {
+        QgsVectorFileWriter::WriterError error = writer->exportFeaturesSymbolLevels( details, details.sourceFeatureIterator, options.ct, errorMessage );
+        return ( error == NoError ) ? NoError : ErrFeatureWriteFailed;
+      }
+      break;
     }
+    case Qgis::FeatureSymbologyExport::NoSymbology:
+    case Qgis::FeatureSymbologyExport::PerFeature:
+      break;
   }
 
   int n = 0, errors = 0;
@@ -4298,10 +4321,17 @@ void QgsVectorFileWriter::stopRender()
 
 std::unique_ptr<QgsFeatureRenderer> QgsVectorFileWriter::createSymbologyRenderer( QgsFeatureRenderer *sourceRenderer ) const
 {
-  if ( mSymbologyExport == NoSymbology )
+  switch ( mSymbologyExport )
   {
-    return nullptr;
+    case Qgis::FeatureSymbologyExport::NoSymbology:
+    {
+      return nullptr;
+    }
+    case Qgis::FeatureSymbologyExport::PerFeature:
+    case Qgis::FeatureSymbologyExport::PerSymbolLayer:
+      break;
   }
+
   if ( !sourceRenderer )
   {
     return nullptr;

@@ -3597,3 +3597,19 @@ Qgis.ExpressionType.PointCloud.__doc__ = "Point cloud expression"
 Qgis.ExpressionType.__doc__ = 'Expression types\n\n.. versionadded:: 3.32\n\n' + '* ``Qgis``: ' + Qgis.ExpressionType.Qgis.__doc__ + '\n' + '* ``PointCloud``: ' + Qgis.ExpressionType.PointCloud.__doc__
 # --
 Qgis.ExpressionType.baseClass = Qgis
+QgsVectorFileWriter.SymbologyExport = Qgis.FeatureSymbologyExport
+# monkey patching scoped based enum
+QgsVectorFileWriter.NoSymbology = Qgis.FeatureSymbologyExport.NoSymbology
+QgsVectorFileWriter.NoSymbology.is_monkey_patched = True
+QgsVectorFileWriter.NoSymbology.__doc__ = "Export only data"
+QgsVectorFileWriter.FeatureSymbology = Qgis.FeatureSymbologyExport.PerFeature
+QgsVectorFileWriter.SymbologyExport.FeatureSymbology = Qgis.FeatureSymbologyExport.PerFeature
+QgsVectorFileWriter.FeatureSymbology.is_monkey_patched = True
+QgsVectorFileWriter.FeatureSymbology.__doc__ = "Keeps the number of features and export symbology per feature"
+QgsVectorFileWriter.SymbolLayerSymbology = Qgis.FeatureSymbologyExport.PerSymbolLayer
+QgsVectorFileWriter.SymbologyExport.SymbolLayerSymbology = Qgis.FeatureSymbologyExport.PerSymbolLayer
+QgsVectorFileWriter.SymbolLayerSymbology.is_monkey_patched = True
+QgsVectorFileWriter.SymbolLayerSymbology.__doc__ = "Exports one feature per symbol layer (considering symbol levels)"
+Qgis.FeatureSymbologyExport.__doc__ = 'Options for exporting features considering their symbology.\n\n.. note::\n\n   Prior to QGIS 3.32 this was available as :py:class:`QgsVectorFileWriter`.SymbologyExport.\n\n.. versionadded:: 3.32\n\n' + '* ``NoSymbology``: ' + Qgis.FeatureSymbologyExport.NoSymbology.__doc__ + '\n' + '* ``FeatureSymbology``: ' + Qgis.FeatureSymbologyExport.PerFeature.__doc__ + '\n' + '* ``SymbolLayerSymbology``: ' + Qgis.FeatureSymbologyExport.PerSymbolLayer.__doc__
+# --
+Qgis.FeatureSymbologyExport.baseClass = Qgis

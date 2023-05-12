@@ -176,7 +176,7 @@ bool QgsAbstractGeoPdfExporter::saveTemporaryLayers()
       QString layerName;
       QgsVectorFileWriter::SaveVectorOptions saveOptions;
       saveOptions.driverName = QStringLiteral( "GPKG" );
-      saveOptions.symbologyExport = QgsVectorFileWriter::NoSymbology;
+      saveOptions.symbologyExport = Qgis::FeatureSymbologyExport::NoSymbology;
       std::unique_ptr< QgsVectorFileWriter > writer( QgsVectorFileWriter::create( filePath, features.first().fields(), features.first().geometry().wkbType(), QgsCoordinateReferenceSystem(), QgsCoordinateTransformContext(), saveOptions, QgsFeatureSink::RegeneratePrimaryKey, nullptr, &layerName ) );
       if ( writer->hasError() )
       {
