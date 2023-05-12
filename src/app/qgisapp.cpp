@@ -1664,10 +1664,20 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipBadLayers
   endProfile();
 
   // Set icon size of toolbars
-  int size = settings.value( QStringLiteral( "/qgis/toolbarIconSize" ), QGIS_ICON_SIZE ).toInt();
-  if ( size < 16 )
-    size = QGIS_ICON_SIZE;
-  setIconSizes( size );
+  if ( settings.contains( QStringLiteral( "/qgis/toolbarIconSize" ) ) )
+  {
+    int size = settings.value( QStringLiteral( "/qgis/toolbarIconSize" ), QGIS_ICON_SIZE ).toInt();
+    if ( size < 16 )
+      size = QGIS_ICON_SIZE;
+    setIconSizes( size );
+  }
+  else
+  {
+    // first run, set default value
+    int size = QGIS_ICON_SIZE;
+    settings.setValue( QStringLiteral( "/qgis/toolbarIconSize" ), size );
+    setIconSizes( size );
+  }
 
   QgsApplication::validityCheckRegistry()->addCheck( new QgsLayoutScaleBarValidityCheck() );
   QgsApplication::validityCheckRegistry()->addCheck( new QgsLayoutNorthArrowValidityCheck() );
