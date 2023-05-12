@@ -100,13 +100,6 @@ class CORE_EXPORT QgsDxfExport : public QgsLabelSink
         int mLayerOutputAttributeIndex = -1;
     };
 
-    enum SymbologyExport
-    {
-      NoSymbology = 0, //!< Export only data
-      FeatureSymbology, //!< Keeps the number of features and export symbology per feature (using the first symbol level)
-      SymbolLayerSymbology //!< Exports one feature per symbol layer (considering symbol levels)
-    };
-
     //! Export flags
     enum Flag
     {
@@ -252,14 +245,14 @@ class CORE_EXPORT QgsDxfExport : public QgsLabelSink
      * Set symbology export mode
      * \param e the mode
      */
-    void setSymbologyExport( QgsDxfExport::SymbologyExport e ) { mSymbologyExport = e; }
+    void setSymbologyExport( Qgis::FeatureSymbologyExport e ) { mSymbologyExport = e; }
 
     /**
      * Gets symbology export mode
      * \returns mode
      * \see setSymbologyExport
      */
-    QgsDxfExport::SymbologyExport symbologyExport() const { return mSymbologyExport; }
+    Qgis::FeatureSymbologyExport symbologyExport() const { return mSymbologyExport; }
 
     /**
      * Set extent of area to export
@@ -547,7 +540,7 @@ class CORE_EXPORT QgsDxfExport : public QgsLabelSink
     QgsRectangle mExtent;
     //! Scale for symbology export (used if symbols units are mm)
     double mSymbologyScale = 1.0;
-    SymbologyExport mSymbologyExport = NoSymbology;
+    Qgis::FeatureSymbologyExport mSymbologyExport = Qgis::FeatureSymbologyExport::NoSymbology;
     Qgis::DistanceUnit mMapUnits = Qgis::DistanceUnit::Meters;
     bool mLayerTitleAsName = false;
 

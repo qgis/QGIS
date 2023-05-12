@@ -8425,7 +8425,7 @@ QString QgisApp::saveAsVectorFileGeneral( QgsVectorLayer *vlayer, bool symbology
 
   if ( !symbologyOption )
   {
-    options &= ~QgsVectorLayerSaveAsDialog::Option::Symbology;
+    options &= ~static_cast< int >( QgsVectorLayerSaveAsDialog::Option::Symbology );
   }
 
   QgsVectorLayerSaveAsDialog *dialog = new QgsVectorLayerSaveAsDialog( vlayer, options, this );

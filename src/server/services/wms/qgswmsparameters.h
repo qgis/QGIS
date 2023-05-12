@@ -27,7 +27,6 @@
 #include "qgsprojectversion.h"
 #include "qgsogcutils.h"
 #include "qgsserverparameters.h"
-#include "qgsdxfexport.h"
 
 namespace QgsWms
 {
@@ -1345,7 +1344,7 @@ namespace QgsWms
        * Returns the DXF MODE parameter.
        * \since QGIS 3.8
        */
-      QgsDxfExport::SymbologyExport dxfMode() const;
+      Qgis::FeatureSymbologyExport dxfMode() const;
 
       /**
        * Returns the DXF CODEC parameter.

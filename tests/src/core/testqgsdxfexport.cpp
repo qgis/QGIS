@@ -301,7 +301,7 @@ void TestQgsDxfExport::testMtext()
 
   d.setMapSettings( mapSettings );
   d.setSymbologyScale( 1000 );
-  d.setSymbologyExport( QgsDxfExport::FeatureSymbology );
+  d.setSymbologyExport( Qgis::FeatureSymbologyExport::PerFeature );
 
   const QString file = getTempFileName( layerName );
   QFile dxfFile( file );
@@ -390,7 +390,7 @@ void TestQgsDxfExport::testMTextEscapeSpaces()
 
   d.setMapSettings( mapSettings );
   d.setSymbologyScale( 1000 );
-  d.setSymbologyExport( QgsDxfExport::FeatureSymbology );
+  d.setSymbologyExport( Qgis::FeatureSymbologyExport::PerFeature );
 
   const QString file = getTempFileName( "mtext_escape_spaces" );
   QFile dxfFile( file );
@@ -428,7 +428,7 @@ void TestQgsDxfExport::testMTextEscapeLineBreaks()
 
   d.setMapSettings( mapSettings );
   d.setSymbologyScale( 1000 );
-  d.setSymbologyExport( QgsDxfExport::FeatureSymbology );
+  d.setSymbologyExport( Qgis::FeatureSymbologyExport::PerFeature );
 
   const QString file = getTempFileName( "mtext_escape_linebreaks" );
   QFile dxfFile( file );
@@ -468,7 +468,7 @@ void TestQgsDxfExport::testText()
 
   d.setMapSettings( mapSettings );
   d.setSymbologyScale( 1000 );
-  d.setSymbologyExport( QgsDxfExport::FeatureSymbology );
+  d.setSymbologyExport( Qgis::FeatureSymbologyExport::PerFeature );
   d.setFlags( QgsDxfExport::FlagNoMText );
 
   const QString file = getTempFileName( "text_dxf" );
@@ -547,7 +547,7 @@ void TestQgsDxfExport::testTextAngle()
 
   d.setMapSettings( mapSettings );
   d.setSymbologyScale( 1000 );
-  d.setSymbologyExport( QgsDxfExport::FeatureSymbology );
+  d.setSymbologyExport( Qgis::FeatureSymbologyExport::PerFeature );
   d.setFlags( QgsDxfExport::FlagNoMText );
 
   const QString file = getTempFileName( "text_dxf_angle" );
@@ -637,7 +637,7 @@ void TestQgsDxfExport::testTextAlign()
   d.addLayers( QList< QgsDxfExport::DxfLayer >() << QgsDxfExport::DxfLayer( vl.get() ) );
   d.setMapSettings( mapSettings );
   d.setSymbologyScale( 1000 );
-  d.setSymbologyExport( QgsDxfExport::FeatureSymbology );
+  d.setSymbologyExport( Qgis::FeatureSymbologyExport::PerFeature );
   d.setFlags( QgsDxfExport::FlagNoMText );
   d.setExtent( mapSettings.extent() );
 
@@ -778,7 +778,7 @@ void TestQgsDxfExport::testTextQuadrant()
   d.addLayers( QList< QgsDxfExport::DxfLayer >() << QgsDxfExport::DxfLayer( vl.get() ) );
   d.setMapSettings( mapSettings );
   d.setSymbologyScale( 1000 );
-  d.setSymbologyExport( QgsDxfExport::FeatureSymbology );
+  d.setSymbologyExport( Qgis::FeatureSymbologyExport::PerFeature );
   d.setFlags( QgsDxfExport::FlagNoMText );
   d.setExtent( mapSettings.extent() );
 
@@ -905,7 +905,7 @@ void TestQgsDxfExport::testGeometryGeneratorExport()
 
   d.setMapSettings( mapSettings );
   d.setSymbologyScale( 6000000 );
-  d.setSymbologyExport( QgsDxfExport::FeatureSymbology );
+  d.setSymbologyExport( Qgis::FeatureSymbologyExport::PerFeature );
 
   const QString file = getTempFileName( "geometry_generator_dxf" );
   QFile dxfFile( file );
@@ -1070,7 +1070,7 @@ void TestQgsDxfExport::testDashedLine()
 
   QgsDxfExport d;
   d.addLayers( QList< QgsDxfExport::DxfLayer >() << QgsDxfExport::DxfLayer( vl.get() ) );
-  d.setSymbologyExport( QgsDxfExport::SymbologyExport::SymbolLayerSymbology );
+  d.setSymbologyExport( Qgis::FeatureSymbologyExport::PerSymbolLayer );
 
   QgsMapSettings mapSettings;
   const QSize size( 640, 480 );
@@ -1195,7 +1195,7 @@ void TestQgsDxfExport::testTransform()
 
   QgsDxfExport d;
   d.addLayers( QList< QgsDxfExport::DxfLayer >() << QgsDxfExport::DxfLayer( vl.get() ) );
-  d.setSymbologyExport( QgsDxfExport::SymbologyExport::SymbolLayerSymbology );
+  d.setSymbologyExport( Qgis::FeatureSymbologyExport::PerSymbolLayer );
 
   QgsMapSettings mapSettings;
   const QSize size( 640, 480 );

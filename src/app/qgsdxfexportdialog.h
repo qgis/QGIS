@@ -85,7 +85,7 @@ class QgsDxfExportDialog : public QDialog, private Ui::QgsDxfExportDialogBase
     QList< QgsDxfExport::DxfLayer > layers() const;
 
     double symbologyScale() const;
-    QgsDxfExport::SymbologyExport symbologyMode() const;
+    Qgis::FeatureSymbologyExport symbologyMode() const;
     QString saveFile() const;
     bool exportMapExtent() const;
     bool layerTitleAsName() const;

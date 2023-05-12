@@ -2192,11 +2192,11 @@ namespace QgsWms
     return scale;
   }
 
-  QgsDxfExport::SymbologyExport QgsWmsParameters::dxfMode() const
+  Qgis::FeatureSymbologyExport QgsWmsParameters::dxfMode() const
   {
     const QMap<DxfFormatOption, QString> options = dxfFormatOptions();
 
-    QgsDxfExport::SymbologyExport symbol = QgsDxfExport::NoSymbology;
+    Qgis::FeatureSymbologyExport symbol = Qgis::FeatureSymbologyExport::NoSymbology;
 
     if ( ! options.contains( DxfFormatOption::MODE ) )
     {
@@ -2206,11 +2206,11 @@ namespace QgsWms
     const QString mode = options[ DxfFormatOption::MODE ];
     if ( mode.compare( QLatin1String( "SymbolLayerSymbology" ), Qt::CaseInsensitive ) == 0 )
     {
-      symbol = QgsDxfExport::SymbolLayerSymbology;
+      symbol = Qgis::FeatureSymbologyExport::PerSymbolLayer;
     }
     else if ( mode.compare( QLatin1String( "FeatureSymbology" ), Qt::CaseInsensitive ) == 0 )
     {
-      symbol = QgsDxfExport::FeatureSymbology;
+      symbol = Qgis::FeatureSymbologyExport::PerFeature;
     }
 
     return symbol;
