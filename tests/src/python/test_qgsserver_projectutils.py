@@ -16,7 +16,7 @@ import os
 
 from qgis.core import QgsProject
 from qgis.server import QgsServerProjectUtils
-from qgis.testing import unittest
+from qgis.testing import unittest, start_app
 
 from utilities import unitTestDataPath
 
