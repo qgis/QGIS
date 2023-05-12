@@ -437,9 +437,8 @@ void QgsVectorLayerSaveAsDialog::mFormatComboBox_currentIndexChanged( int idx )
   // to avoid double extensions like .gpkg.shp
   if ( !mFilename->filePath().isEmpty() )
   {
-    QRegularExpression rx( "\\.(.*?)[\\s]" );
-    QString ext;
-    ext = rx.match( QgsVectorFileWriter::filterForDriver( format() ) ).captured( 1 );
+    const thread_local QRegularExpression rx( "\\.(.*?)[\\s]" );
+    const QString ext = rx.match( QgsVectorFileWriter::filterForDriver( format() ) ).captured( 1 );
     if ( !ext.isEmpty() )
     {
       QFileInfo fi( mFilename->filePath() );
