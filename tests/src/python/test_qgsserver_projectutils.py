@@ -22,6 +22,7 @@ from utilities import unitTestDataPath
 
 start_app()
 
+
 class TestQgsServerProjectUtils(unittest.TestCase):
 
     def setUp(self):
