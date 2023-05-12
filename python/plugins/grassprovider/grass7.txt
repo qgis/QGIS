@@ -33,7 +33,7 @@ in a single line, with elements separated by the symbol "|"
 
 QgsProcessingParameterRasterLayer|[name of GRASS parameter]|[description of parameter to show]|[Default value, or None]|[True/False, indicating if the parameter is optional or not]
 
-Example: QgsProcessingParameterRasterLayer|base|base|None|False
+Example: QgsProcessingParameterRasterLayer|base|Name of input raster map|None|False
 
 - A vector layer
 
