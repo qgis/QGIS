@@ -158,7 +158,7 @@ To save the console output from GRASS to file, simply create a QgsProcessingPara
 
 Example: QgsProcessingParameterFileDestination|html|List of addons|Html files (*.html)|addons_list.html|False
 
-To add additional logic to an algorithm, like a preliminary check on  data, the use of more than one GRASS command,
+To add additional logic to an algorithm, like a preliminary check on data, the use of more than one GRASS command,
 or a transformation of output data, then you need to use the ext mechanism. 
 
 There are 4 different levels where you can add logic: 
