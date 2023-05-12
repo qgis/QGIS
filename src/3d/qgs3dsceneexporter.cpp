@@ -235,21 +235,25 @@ void Qgs3DSceneExporter::processEntityMaterial( Qt3DCore::QEntity *entity, Qgs3D
     QgsPhongMaterialSettings material = Qgs3DUtils::phongMaterialFromQt3DComponent( phongMaterial );
     object->setupMaterial( &material );
   }
-  Qt3DExtras::QDiffuseSpecularMaterial *diffuseMapMaterial = findTypedComponent<Qt3DExtras::QDiffuseSpecularMaterial>( entity );
 
+  Qt3DExtras::QDiffuseSpecularMaterial *diffuseMapMaterial = findTypedComponent<Qt3DExtras::QDiffuseSpecularMaterial>( entity );
   if ( diffuseMapMaterial != nullptr )
   {
-    const QVector<Qt3DRender::QAbstractTextureImage *> textureImages = diffuseMapMaterial->diffuse().value< Qt3DRender::QTexture2D * >()->textureImages();
-    QgsImageTexture *imageTexture = nullptr;
-    for ( Qt3DRender::QAbstractTextureImage *tex : textureImages )
+    const Qt3DRender::QTexture2D *diffuseTexture = diffuseMapMaterial->diffuse().value< Qt3DRender::QTexture2D * >();
+    if ( diffuseTexture != nullptr )
     {
-      imageTexture = dynamic_cast<QgsImageTexture *>( tex );
-      if ( imageTexture != nullptr ) break;
-    }
-    if ( imageTexture != nullptr )
-    {
-      const QImage image = imageTexture->getImage();
-      object->setTextureImage( image );
+      const QVector<Qt3DRender::QAbstractTextureImage *> textureImages = diffuseTexture->textureImages();
+      QgsImageTexture *imageTexture = nullptr;
+      for ( Qt3DRender::QAbstractTextureImage *tex : textureImages )
+      {
+        imageTexture = dynamic_cast<QgsImageTexture *>( tex );
+        if ( imageTexture != nullptr ) break;
+      }
+      if ( imageTexture != nullptr )
+      {
+        const QImage image = imageTexture->getImage();
+        object->setTextureImage( image );
+      }
     }
   }
 }
