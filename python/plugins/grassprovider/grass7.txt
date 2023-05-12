@@ -174,7 +174,7 @@ Then you need to create methods using the respective names:
 - Command: processCommand
 - Outputs: processOutputs
 
-If there is a Python file with the algorithm name in the ext directory, methods will be imported from the file and run instead of the common methods (there are "standard" processCommand/processInputs/processOutputs/checkParameterValuesBeforeExecuting methods in the code of the GRASS provider for QGIS Processing, in python/plugins/processing/algs/grass7/Grass7Algorithm.py).
+If there is a Python file with the algorithm name in the ext directory, methods will be imported from the file and run instead of the common methods (there are "standard" processCommand/processInputs/processOutputs/checkParameterValuesBeforeExecuting methods in the code of the GRASS provider for QGIS Processing, in python/plugins/grassprovider/Grass7Algorithm.py).
 
 If we take the example of v.what.rast, there is an ext file: ext/v_what_rast.py.
 In this file there is a processCommand method. It just launches the standard processCommand but with the delOutputs option set to True (we do not want to have standard outputs).
