@@ -148,12 +148,14 @@ class QgsOgrProvider final: public QgsVectorDataProvider
 
     QByteArray quotedIdentifier( const QByteArray &field ) const;
 
+    //! Loads metadata for the layer
+    void loadMetadata();
+
   protected:
     //! Loads fields from input file to member attributeFields
     void loadFields();
 
-    //! Loads metadata for the layer
-    void loadMetadata();
+    void loadMetadataWithMutex();
 
     //! Find out the number of features of the whole layer
     void recalculateFeatureCount() const;
