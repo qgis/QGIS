@@ -516,14 +516,14 @@ QVector<Qgs3DExportObject *> Qgs3DSceneExporter::processSceneLoaderGeometries( Q
   return objects;
 }
 
-Qgs3DExportObject *Qgs3DSceneExporter::processGeometryRenderer( Qt3DRender::QGeometryRenderer *mesh, const QString &objectNamePrefix, float sceneScale, QVector3D sceneTranslation )
+Qgs3DExportObject *Qgs3DSceneExporter::processGeometryRenderer( Qt3DRender::QGeometryRenderer *geomRenderer, const QString &objectNamePrefix, float sceneScale, QVector3D sceneTranslation )
 {
   // We only export triangles for now
-  if ( mesh->primitiveType() != Qt3DRender::QGeometryRenderer::Triangles ) return nullptr;
+  if ( geomRenderer->primitiveType() != Qt3DRender::QGeometryRenderer::Triangles ) return nullptr;
 
   float scale = 1.0f;
   QVector3D translation( 0.0f, 0.0f, 0.0f );
-  QObject *parent = mesh->parent();
+  QObject *parent = geomRenderer->parent();
   while ( parent != nullptr )
   {
     Qt3DCore::QEntity *entity = qobject_cast<Qt3DCore::QEntity *>( parent );
@@ -536,7 +536,7 @@ Qgs3DExportObject *Qgs3DSceneExporter::processGeometryRenderer( Qt3DRender::QGeo
     parent = parent->parent();
   }
 
-  Qt3DQGeometry *geometry = mesh->geometry();
+  Qt3DQGeometry *geometry = geomRenderer->geometry();
 
   Qt3DQAttribute *positionAttribute = findAttribute( geometry, Qt3DQAttribute::defaultPositionAttributeName(), Qt3DQAttribute::VertexAttribute );
   Qt3DQAttribute *indexAttribute = nullptr;
