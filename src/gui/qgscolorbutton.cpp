@@ -734,12 +734,16 @@ void QgsColorButton::setButtonBackground( const QColor &color )
   }
 
   //create an icon pixmap
-  QPixmap pixmap( currentIconSize );
+  const double pixelRatio = devicePixelRatioF();
+  QPixmap pixmap( currentIconSize * pixelRatio );
+  pixmap.setDevicePixelRatio( pixelRatio );
   pixmap.fill( Qt::transparent );
 
   if ( backgroundColor.isValid() )
   {
-    const QRect rect( 0, 0, currentIconSize.width(), currentIconSize.height() );
+    const QRectF rect( 0, 0,
+                       currentIconSize.width(),
+                       currentIconSize.height() );
     QPainter p;
     p.begin( &pixmap );
     p.setRenderHint( QPainter::Antialiasing );
