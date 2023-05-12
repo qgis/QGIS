@@ -151,22 +151,33 @@ to tag a parameter as "advanced", just add "*" before its declaration. For insta
 *ParameterBoolean|-c|-c|True
 
 
-ADVANCED OUTPUT PROCESSING
+ADVANCED PROCESSING
 --------------------------
 
-In some cases, it might be interesting to take the console output from GRASS and
-extract a part of it for saving or formatting.
+To save the console output from GRASS to file, simply create a QgsProcessingParameterFileDestination parameter named 'html'
 
-Two things can be done about this:
+Example: QgsProcessingParameterFileDestination|html|List of addons|Html files (*.html)|addons_list.html|False
 
- - Creating an HTML file with output. Just add an output of type OutputHTML.
-   It's value will not be passed to GRASS, but you can use it later to create the
-   HTML file from the console output. You should create a python file in the
-   grass/ext package, with the same name as the grass module, with dots replaced
-   by low hyphens (for instance r_quantile.py for the r.quantile command), and
-   add a postProcessResults(alg) method. It will be called when the execution of
-   the GRASS command is finished.
- - Creating a text file. Do as above, but adding an output of type OutputFile.
-   Since some GRASS commands might use this type of output, and to make sure that
-   the value of this output is not passed to the GRASS command when calling it,
-   the output has to be named 'outputtext'
+To add additional logic to an algorithm, like a preliminary check on  data, the use of more than one GRASS command,
+or a transformation of output data, then you need to use the ext mechanism. 
+
+There are 4 different levels where you can add logic: 
+- Checking the input parameters, e.g. if you want to verify that two mutually exclusive options have not been both enabled. 
+- Processing inputs import: if you need to do more than importing input layers. 
+- Processing the command itself: if you need to chain more than one GRASS command for your algorithm. 
+- Processing the outputs: if you need to do special things before exporting layers or if you need special export methods. 
+
+Whenever you want to add some logic on one (or more) level(s), you have to create a .py file named according to the algorithm name in python/plugins/processing/algs/grass7/ext, replacing '.' with '_'.
+Then you need to create methods using the respective names:
+- Input parameters: checkParameterValuesBeforeExecuting
+- Inputs import: processInputs
+- Command: processCommand
+- Outputs: processOutputs
+
+If there is a Python file with the algorithm name in the ext directory, methods will be imported from the file and run instead of the common methods (there are "standard" processCommand/processInputs/processOutputs/checkParameterValuesBeforeExecuting methods in the code of the GRASS provider for QGIS Processing, in python/plugins/processing/algs/grass7/Grass7Algorithm.py).
+
+If we take the example of v.what.rast, there is an ext file: ext/v_what_rast.py.
+In this file there is a processCommand method. It just launches the standard processCommand but with the delOutputs option set to True (we do not want to have standard outputs).
+Then there is also a customized processOutputs which exports the input vector as an output for QGIS. We need to do this because v.what.rast modifies values directly in the input vector layer instead of generating a new output, so we have to build this output ourself. 
+
+If you want to do special things in the ext mechanism, you will need to read (and understand) the GRASS provider code standard methods in Grass7Algorithm.py.
