@@ -21,7 +21,7 @@ Each file starts with three lines containing:
  include the algorithm id first, e.g.:
 	r.sun.insoltime - Solar irradiance and irradiation model (daily sums).
 and
-	r.sun.incidout - Solar irradiance and irradiation model ( for the set local time).
+	r.sun.incidout - Solar irradiance and irradiation model (for the set local time).
  - The name of the group where you want the command to appear
 
 After these three lines, a variable number of lines appear, describing all inputs
