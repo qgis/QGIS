@@ -335,13 +335,13 @@ class GUI_EXPORT QgsColorWheel : public QgsColorWidget
     ControlPart mClickedPart = QgsColorWheel::None;
 
     /*Cached image of hue wheel*/
-    QImage *mWheelImage = nullptr;
+    QImage mWheelImage;
 
     /*Cached image of inner triangle*/
-    QImage *mTriangleImage = nullptr;
+    QImage mTriangleImage;
 
     /*Resuable, temporary image for drawing widget*/
-    QImage *mWidgetImage = nullptr;
+    QImage mWidgetImage;
 
     /*Whether the color wheel image requires redrawing*/
     bool mWheelDirty = true;
