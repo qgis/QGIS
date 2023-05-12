@@ -167,7 +167,7 @@ There are 4 different levels where you can add logic:
 - Processing the command itself: if you need to chain more than one GRASS command for your algorithm. 
 - Processing the outputs: if you need to do special things before exporting layers or if you need special export methods. 
 
-Whenever you want to add some logic on one (or more) level(s), you have to create a .py file named according to the algorithm name in python/plugins/processing/algs/grass7/ext, replacing '.' with '_'.
+Whenever you want to add some logic on one (or more) level(s), you have to create a .py file named according to the algorithm name in python/plugins/grassprovider/ext, replacing '.' with '_'.
 Then you need to create methods using the respective names:
 - Input parameters: checkParameterValuesBeforeExecuting
 - Inputs import: processInputs
