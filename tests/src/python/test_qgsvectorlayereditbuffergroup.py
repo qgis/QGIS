@@ -19,6 +19,8 @@ from qgis.core import (
     QgsFeature,
     QgsGeometry,
     QgsProject,
+    QgsRelation,
+    QgsRelationContext,
     QgsVectorFileWriter,
     QgsVectorLayer,
 )
@@ -28,6 +30,10 @@ start_app()
 
 
 class TestQgsVectorLayerEditBufferGroup(unittest.TestCase):
+
+    def tearDown(self):
+        """Run after each test."""
+        QgsProject.instance().removeAllMapLayers()
 
     def testStartEditingCommitRollBack(self):
 
@@ -149,6 +155,68 @@ class TestQgsVectorLayerEditBufferGroup(unittest.TestCase):
         success, rollbackErrors = project.rollBack(True)
 
         self.assertTrue(success)
+
+    def testReadOnlyLayers(self):
+
+        memoryLayer_a = QgsVectorLayer('Point?crs=epsg:4326&field=id:integer&field=id_b', 'test', 'memory')
+        self.assertTrue(memoryLayer_a.isValid())
+        memoryLayer_b = QgsVectorLayer('Point?crs=epsg:4326&field=id:integer', 'test', 'memory')
+        self.assertTrue(memoryLayer_b.isValid())
+
+        # Load 2 layer from a geopackage
+        d = QTemporaryDir()
+        options = QgsVectorFileWriter.SaveVectorOptions()
+        options.driverName = 'GPKG'
+        options.layerName = 'layer_a'
+        err, msg, newFileName, newLayer = QgsVectorFileWriter.writeAsVectorFormatV3(memoryLayer_a, os.path.join(d.path(), 'test_EditBufferGroupReadOnly.gpkg'), QgsCoordinateTransformContext(), options)
+
+        options.layerName = 'layer_b'
+        options.actionOnExistingFile = QgsVectorFileWriter.CreateOrOverwriteLayer
+        err, msg, newFileName, newLayer = QgsVectorFileWriter.writeAsVectorFormatV3(memoryLayer_b, os.path.join(d.path(), 'test_EditBufferGroupReadOnly.gpkg'), QgsCoordinateTransformContext(), options)
+
+        layer_a = QgsVectorLayer(newFileName + '|layername=layer_a')
+        self.assertTrue(layer_a.isValid())
+        layer_b = QgsVectorLayer(newFileName + '|layername=layer_b')
+        self.assertTrue(layer_b.isValid())
+        layer_b.setReadOnly(True)
+
+        project = QgsProject.instance()
+        project.addMapLayers([layer_a, layer_b])
+
+        relationContext = QgsRelationContext(project)
+        relation = QgsRelation(relationContext)
+        relation.setId('relation')
+        relation.setName('Relation Number One')
+        relation.setReferencingLayer(layer_a.id())
+        relation.setReferencedLayer(layer_b.id())
+        relation.addFieldPair("id_b", "id")
+
+        self.assertEqual(relation.validationError(), "")
+        self.assertTrue(relation.isValid())
+
+        project.relationManager().addRelation(relation)
+
+        project.setTransactionMode(Qgis.TransactionMode.BufferedGroups)
+        project.startEditing()
+
+        editBufferGroup = project.editBufferGroup()
+        self.assertTrue(editBufferGroup.isEditing())
+
+        f = QgsFeature(layer_a.fields())
+        f.setAttribute('id', 123)
+        f.setAttribute('id_b', 1)
+        f.setGeometry(QgsGeometry.fromWkt('point(7 45)'))
+        self.assertTrue(layer_a.addFeatures([f]))
+        self.assertEqual(len(editBufferGroup.modifiedLayers()), 1)
+        self.assertIn(layer_a, editBufferGroup.modifiedLayers())
+
+        # Check feature in layer edit buffer but not in provider till commit
+        self.assertEqual(layer_a.featureCount(), 1)
+        self.assertEqual(layer_a.dataProvider().featureCount(), 0)
+
+        success, commitErrors = editBufferGroup.commitChanges(True)
+        self.assertTrue(success)
+        self.assertFalse(editBufferGroup.isEditing())
 
 
 if __name__ == '__main__':
