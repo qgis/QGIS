@@ -46,11 +46,11 @@ from qgis.core import (
     QgsVectorLayer,
     QgsReadWriteContext,
     QgsFeature,
-    QgsGeometry
+    QgsGeometry,
+    QgsLayoutChecker
 )
 from qgis.testing import start_app, unittest
 
-from qgslayoutchecker import QgsLayoutChecker
 from test_qgslayoutitem import LayoutItemTestCase
 from utilities import unitTestDataPath
 

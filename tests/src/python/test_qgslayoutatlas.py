@@ -27,6 +27,7 @@ from qgis.core import (
     QgsGeometry,
     QgsLayoutItemLabel,
     QgsLayoutItemLegend,
+    QgsLayoutChecker,
     QgsLayoutItemMap,
     QgsLayoutObject,
     QgsLayoutPoint,
@@ -44,7 +45,7 @@ from qgis.core import (
 )
 from qgis.testing import start_app, unittest
 
-from qgslayoutchecker import QgsLayoutChecker
+
 from utilities import unitTestDataPath
 
 start_app()

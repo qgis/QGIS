@@ -51,9 +51,9 @@ from qgis.core import (
     QgsRenderChecker,
     QgsMultiRenderChecker,
     QgsMapSettings,
-    QgsLayout
+    QgsLayout,
+    QgsLayoutChecker,
 )
-from qgslayoutchecker import QgsLayoutChecker
 
 import unittest
 
@@ -156,14 +156,9 @@ class TestCase(_TestCase):
         return result
 
     @classmethod
-    def render_layout_check(cls,
-                            name: str,
-                            layout: QgsLayout,
-                            size: QSize,
-                            dpi: Optional[float] = 192) -> bool:
+    def render_layout_check(cls, name: str, layout: QgsLayout, size: QSize):
         checker = QgsLayoutChecker(name, layout)
-        checker.dots_per_meter = dpi / 25.4 * 1000
-        checker.size = size
+        checker.setSize(size)
         if cls.control_path_prefix():
             checker.setControlPathPrefix(cls.control_path_prefix())
         result, message = checker.testLayout()

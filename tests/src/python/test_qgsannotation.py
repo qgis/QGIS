@@ -309,8 +309,7 @@ class TestQgsAnnotation(unittest.TestCase):
         return self.render_layout_check(
             test_name,
             layout=l,
-            size=QSize(1122 * 2, 794 * 2),
-            dpi=192
+            size=QSize(1122 * 2, 794 * 2)
         )
 
 

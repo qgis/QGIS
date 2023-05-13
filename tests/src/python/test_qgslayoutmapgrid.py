@@ -23,10 +23,10 @@ from qgis.core import (
     QgsProperty,
     QgsRectangle,
     QgsTextFormat,
+    QgsLayoutChecker
 )
 from qgis.testing import start_app, unittest
 
-from qgslayoutchecker import QgsLayoutChecker
 from utilities import getTestFont, unitTestDataPath
 
 start_app()
