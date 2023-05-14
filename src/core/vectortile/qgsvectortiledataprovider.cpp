@@ -32,6 +32,11 @@ QgsVectorTileDataProvider::QgsVectorTileDataProvider( const QgsVectorTileDataPro
   setTransformContext( other.transformContext() );
 }
 
+Qgis::VectorTileProviderFlags QgsVectorTileDataProvider::providerFlags() const
+{
+  return Qgis::VectorTileProviderFlags();
+}
+
 Qgis::VectorTileProviderCapabilities QgsVectorTileDataProvider::providerCapabilities() const
 {
   return Qgis::VectorTileProviderCapabilities();

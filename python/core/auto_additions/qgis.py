@@ -3614,6 +3614,13 @@ Qgis.FeatureSymbologyExport.__doc__ = 'Options for exporting features considerin
 # --
 Qgis.FeatureSymbologyExport.baseClass = Qgis
 # monkey patching scoped based enum
+Qgis.VectorTileProviderFlag.AlwaysUseTileMatrixSetFromProvider.__doc__ = "Vector tile layer must always use the tile matrix set from the data provider, and should never store, restore or override the definition of this matrix set."
+Qgis.VectorTileProviderFlag.__doc__ = 'Flags for vector tile data providers.\n\n.. versionadded:: 3.32\n\n' + '* ``AlwaysUseTileMatrixSetFromProvider``: ' + Qgis.VectorTileProviderFlag.AlwaysUseTileMatrixSetFromProvider.__doc__
+# --
+Qgis.VectorTileProviderFlag.baseClass = Qgis
+Qgis.VectorTileProviderFlags.baseClass = Qgis
+VectorTileProviderFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
+# monkey patching scoped based enum
 Qgis.VectorTileProviderCapability.ReadLayerMetadata.__doc__ = "Provider can read layer metadata from data store. See QgsDataProvider.layerMetadata()"
 Qgis.VectorTileProviderCapability.__doc__ = 'Enumeration with capabilities that vector tile data providers might implement.\n\n.. versionadded:: 3.32\n\n' + '* ``ReadLayerMetadata``: ' + Qgis.VectorTileProviderCapability.ReadLayerMetadata.__doc__
 # --

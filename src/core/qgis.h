@@ -3554,6 +3554,25 @@ class CORE_EXPORT Qgis
     Q_ENUM( FeatureSymbologyExport )
 
     /**
+     * Flags for vector tile data providers.
+     *
+     * \since QGIS 3.32
+     */
+    enum class VectorTileProviderFlag : int
+    {
+      AlwaysUseTileMatrixSetFromProvider = 1 << 1, //!< Vector tile layer must always use the tile matrix set from the data provider, and should never store, restore or override the definition of this matrix set.
+    };
+    Q_ENUM( VectorTileProviderFlag )
+
+    /**
+     * Vector tile data provider flags.
+     *
+     * \since QGIS 3.32
+     */
+    Q_DECLARE_FLAGS( VectorTileProviderFlags, VectorTileProviderFlag )
+    Q_FLAG( VectorTileProviderFlags )
+
+    /**
      * Enumeration with capabilities that vector tile data providers might implement.
      * \since QGIS 3.32
      */
@@ -3745,6 +3764,7 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::LabelLinePlacementFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::LabelPolygonPlacementFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::DatabaseProviderConnectionCapabilities2 )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::VectorFileWriterCapabilities )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::VectorTileProviderFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::VectorTileProviderCapabilities )
 
 // hack to workaround warnings when casting void pointers
