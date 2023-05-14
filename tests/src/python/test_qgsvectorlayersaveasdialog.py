@@ -33,7 +33,10 @@ class TestQgsMapCanvas(TestCase):
             layer.addFeature(f)
 
         layer.select(layer.allFeatureIds()[0])
-        options = QgsVectorLayerSaveAsDialog.SelectedOnly | QgsVectorLayerSaveAsDialog.Metadata
+        options = QgsVectorLayerSaveAsDialog.Options(
+            QgsVectorLayerSaveAsDialog.OptionSelectedOnly
+            | QgsVectorLayerSaveAsDialog.Option.Metadata
+        )
         d = QgsVectorLayerSaveAsDialog(layer, options=options)
         self.assertIsInstance(d, QgsVectorLayerSaveAsDialog)
         d.setOnlySelected(True)
