@@ -721,64 +721,61 @@ void QgsVectorTileLayer::selectByGeometry( const QgsGeometry &geometry, const Qg
       const int tileZoom = tileMatrixSet().scaleToZoomLevel( context.scale() );
       const QgsTileMatrix tileMatrix = tileMatrixSet().tileMatrix( tileZoom );
       const QgsTileRange tileRange = tileMatrix.tileRangeFromExtent( r );
+      const QVector< QgsTileXYZ> tiles = tileMatrixSet().tilesInRange( tileRange, tileZoom );
 
-      for ( int row = tileRange.startRow(); row <= tileRange.endRow(); ++row )
+      for ( const QgsTileXYZ &tileID : tiles )
       {
-        for ( int col = tileRange.startColumn(); col <= tileRange.endColumn(); ++col )
+        QByteArray data = getRawTile( tileID );
+        if ( data.isEmpty() )
+          continue;  // failed to get data
+
+        QgsVectorTileMVTDecoder decoder( tileMatrixSet() );
+        if ( !decoder.decode( tileID, data ) )
+          continue;  // failed to decode
+
+        QMap<QString, QgsFields> perLayerFields;
+        const QStringList layerNames = decoder.layers();
+        for ( const QString &layerName : layerNames )
         {
-          QgsTileXYZ tileID( col, row, tileZoom );
-          QByteArray data = getRawTile( tileID );
-          if ( data.isEmpty() )
-            continue;  // failed to get data
+          QSet<QString> fieldNames = qgis::listToSet( decoder.layerFieldNames( layerName ) );
+          perLayerFields[layerName] = QgsVectorTileUtils::makeQgisFields( fieldNames );
+        }
 
-          QgsVectorTileMVTDecoder decoder( tileMatrixSet() );
-          if ( !decoder.decode( tileID, data ) )
-            continue;  // failed to decode
-
-          QMap<QString, QgsFields> perLayerFields;
-          const QStringList layerNames = decoder.layers();
-          for ( const QString &layerName : layerNames )
+        const QgsVectorTileFeatures features = decoder.layerFeatures( perLayerFields, QgsCoordinateTransform() );
+        const QStringList featuresLayerNames = features.keys();
+        for ( const QString &layerName : featuresLayerNames )
+        {
+          const QgsFields fFields = perLayerFields[layerName];
+          const QVector<QgsFeature> &layerFeatures = features[layerName];
+          for ( const QgsFeature &f : layerFeatures )
           {
-            QSet<QString> fieldNames = qgis::listToSet( decoder.layerFieldNames( layerName ) );
-            perLayerFields[layerName] = QgsVectorTileUtils::makeQgisFields( fieldNames );
-          }
+            if ( renderContext && mRenderer && !mRenderer->willRenderFeature( f, tileID.zoomLevel(), layerName, *renderContext ) )
+              continue;
 
-          const QgsVectorTileFeatures features = decoder.layerFeatures( perLayerFields, QgsCoordinateTransform() );
-          const QStringList featuresLayerNames = features.keys();
-          for ( const QString &layerName : featuresLayerNames )
-          {
-            const QgsFields fFields = perLayerFields[layerName];
-            const QVector<QgsFeature> &layerFeatures = features[layerName];
-            for ( const QgsFeature &f : layerFeatures )
+            if ( f.geometry().intersects( r ) )
             {
-              if ( renderContext && mRenderer && !mRenderer->willRenderFeature( f, tileZoom, layerName, *renderContext ) )
-                continue;
-
-              if ( f.geometry().intersects( r ) )
+              bool selectFeature = true;
+              if ( selectionGeomPrepared )
               {
-                bool selectFeature = true;
-                if ( selectionGeomPrepared )
+                switch ( relationship )
                 {
-                  switch ( relationship )
-                  {
-                    case Qgis::SelectGeometryRelationship::Intersect:
-                      selectFeature = selectionGeomPrepared->intersects( f.geometry().constGet() );
-                      break;
-                    case Qgis::SelectGeometryRelationship::Within:
-                      selectFeature = selectionGeomPrepared->contains( f.geometry().constGet() );
-                      break;
-                  }
+                  case Qgis::SelectGeometryRelationship::Intersect:
+                    selectFeature = selectionGeomPrepared->intersects( f.geometry().constGet() );
+                    break;
+                  case Qgis::SelectGeometryRelationship::Within:
+                    selectFeature = selectionGeomPrepared->contains( f.geometry().constGet() );
+                    break;
                 }
+              }
 
-                if ( selectFeature )
-                {
-                  QgsFeature derivedFeature = f;
-                  addDerivedFields( derivedFeature, tileZoom, layerName );
-                  if ( flags & Qgis::SelectionFlag::SingleFeatureSelection )
-                    singleSelectCandidates << derivedFeature;
-                  else
-                    mSelectedFeatures.insert( derivedFeature.id(), derivedFeature );
-                }
+              if ( selectFeature )
+              {
+                QgsFeature derivedFeature = f;
+                addDerivedFields( derivedFeature, tileID.zoomLevel(), layerName );
+                if ( flags & Qgis::SelectionFlag::SingleFeatureSelection )
+                  singleSelectCandidates << derivedFeature;
+                else
+                  mSelectedFeatures.insert( derivedFeature.id(), derivedFeature );
               }
             }
           }
