@@ -72,9 +72,9 @@ QgsArcGisVectorTileServiceDataProvider::QgsArcGisVectorTileServiceDataProvider( 
   mLayerMetadata = other.mLayerMetadata;
 }
 
-QgsVectorTileDataProvider::ProviderCapabilities QgsArcGisVectorTileServiceDataProvider::providerCapabilities() const
+Qgis::VectorTileProviderCapabilities QgsArcGisVectorTileServiceDataProvider::providerCapabilities() const
 {
-  return QgsVectorTileDataProvider::ProviderCapability::ReadLayerMetadata;
+  return Qgis::VectorTileProviderCapability::ReadLayerMetadata;
 }
 
 QString QgsArcGisVectorTileServiceDataProvider::name() const

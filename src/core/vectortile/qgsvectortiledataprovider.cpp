@@ -32,9 +32,9 @@ QgsVectorTileDataProvider::QgsVectorTileDataProvider( const QgsVectorTileDataPro
   setTransformContext( other.transformContext() );
 }
 
-QgsVectorTileDataProvider::ProviderCapabilities QgsVectorTileDataProvider::providerCapabilities() const
+Qgis::VectorTileProviderCapabilities QgsVectorTileDataProvider::providerCapabilities() const
 {
-  return QgsVectorTileDataProvider::ProviderCapabilities();
+  return Qgis::VectorTileProviderCapabilities();
 }
 
 QgsRectangle QgsVectorTileDataProvider::extent() const

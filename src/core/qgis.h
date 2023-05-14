@@ -3554,6 +3554,24 @@ class CORE_EXPORT Qgis
     Q_ENUM( FeatureSymbologyExport )
 
     /**
+     * Enumeration with capabilities that vector tile data providers might implement.
+     * \since QGIS 3.32
+     */
+    enum class VectorTileProviderCapability : int
+    {
+      ReadLayerMetadata = 1 << 1, //!< Provider can read layer metadata from data store. See QgsDataProvider::layerMetadata()
+    };
+    Q_ENUM( VectorTileProviderCapability )
+
+    /**
+     * Vector tile data provider capabilities.
+     *
+     * \since QGIS 3.32
+     */
+    Q_DECLARE_FLAGS( VectorTileProviderCapabilities, VectorTileProviderCapability )
+    Q_FLAG( VectorTileProviderCapabilities )
+
+    /**
      * Possible availability states for a tile within a tile matrix.
      *
      * \since QGIS 3.32
@@ -3727,6 +3745,7 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::LabelLinePlacementFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::LabelPolygonPlacementFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::DatabaseProviderConnectionCapabilities2 )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::VectorFileWriterCapabilities )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::VectorTileProviderCapabilities )
 
 // hack to workaround warnings when casting void pointers
 // retrieved from QLibrary::resolve to function pointers.

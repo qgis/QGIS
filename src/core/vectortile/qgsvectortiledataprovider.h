@@ -42,19 +42,6 @@ class CORE_EXPORT QgsVectorTileDataProvider : public QgsDataProvider
   public:
 
     /**
-     * Enumeration with capabilities that vector tile data providers might implement.
-     * \since QGIS 3.32
-     */
-    enum class ProviderCapability : int
-    {
-      ReadLayerMetadata = 1 << 1, //!< Provider can read layer metadata from data store. See QgsDataProvider::layerMetadata()
-    };
-    Q_ENUM( ProviderCapability )
-
-    //! Provider capabilities
-    Q_DECLARE_FLAGS( ProviderCapabilities, ProviderCapability )
-
-    /**
      * Constructor for QgsVectorTileDataProvider, with the specified \a uri.
      */
     QgsVectorTileDataProvider( const QString &uri,
@@ -75,7 +62,7 @@ class CORE_EXPORT QgsVectorTileDataProvider : public QgsDataProvider
      * Returns flags containing the supported capabilities of the data provider.
      * \since QGIS 3.32
      */
-    virtual QgsVectorTileDataProvider::ProviderCapabilities providerCapabilities() const;
+    virtual Qgis::VectorTileProviderCapabilities providerCapabilities() const;
 
     QgsRectangle extent() const override;
     bool renderInPreview( const QgsDataProvider::PreviewContext &context ) override;
@@ -157,8 +144,6 @@ class CORE_EXPORT QgsVectorTileDataProvider : public QgsDataProvider
     virtual QString htmlMetadata() const;
 };
 
-
-Q_DECLARE_OPERATORS_FOR_FLAGS( QgsVectorTileDataProvider::ProviderCapabilities )
 
 
 #endif // QGSVECTORTILEDATAPROVIDER_H
