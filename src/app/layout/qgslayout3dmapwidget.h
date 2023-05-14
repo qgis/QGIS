@@ -40,8 +40,8 @@ class QgsLayout3DMapWidget : public QgsLayoutItemBaseWidget, private Ui::QgsLayo
     void updateCameraPoseWidgetsFromItem();
 
   private slots:
-    void copy3DMapSettings( const QDomElement &elem3DViewSettings );
-    void copyCameraPose( const QDomElement &elem3DViewSettings );
+    void copy3DMapSettings( const QString &viewName );
+    void copyCameraPose( const QString &viewName );
     void updateCameraPose();
 
   private:

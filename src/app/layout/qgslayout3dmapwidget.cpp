@@ -24,6 +24,7 @@
 #include "qgisapp.h"
 #include "qscreen.h"
 #include "qgsmapcanvas.h"
+#include "qgisapp.h"
 
 float _normalizedAngle( float x )
 {
@@ -32,7 +33,7 @@ float _normalizedAngle( float x )
   return x;
 }
 
-void _prepare3DViewsMenu( QMenu *menu, QgsLayout3DMapWidget *w, const std::function< void( const QDomElement & ) > &slot )
+void _prepare3DViewsMenu( QMenu *menu, QgsLayout3DMapWidget *w, const std::function< void( const QString & ) > &slot )
 {
   QObject::connect( menu, &QMenu::aboutToShow, w, [menu, slot]
   {
@@ -46,8 +47,7 @@ void _prepare3DViewsMenu( QMenu *menu, QgsLayout3DMapWidget *w, const std::funct
 
       QObject::connect( a, &QAction::triggered, a, [slot, viewName]
       {
-        QDomElement elem3DViewSettings = QgsProject::instance()->viewsManager()->get3DViewSettings( viewName );
-        slot( elem3DViewSettings );
+        slot( viewName );
       } );
     }
 
@@ -75,14 +75,14 @@ QgsLayout3DMapWidget::QgsLayout3DMapWidget( QgsLayoutItem3DMap *map3D )
 
   mMenu3DCanvases = new QMenu( this );
   mCopySettingsButton->setMenu( mMenu3DCanvases );
-  _prepare3DViewsMenu( mMenu3DCanvases, this, [ = ]( const QDomElement & elem3DMap )
+  _prepare3DViewsMenu( mMenu3DCanvases, this, [ = ]( const QString & viewName )
   {
-    copy3DMapSettings( elem3DMap );
+    copy3DMapSettings( viewName );
   } );
 
   mMenu3DCanvasesPose = new QMenu( this );
   mPoseFromViewButton->setMenu( mMenu3DCanvasesPose );
-  _prepare3DViewsMenu( mMenu3DCanvasesPose, this, [ = ]( const QDomElement & elem3DMap ) { copyCameraPose( elem3DMap ); } );
+  _prepare3DViewsMenu( mMenu3DCanvasesPose, this, [ = ]( const QString & viewName ) { copyCameraPose( viewName ); } );
 
   QList<QgsDoubleSpinBox *> lst;
   lst << mCenterXSpinBox << mCenterYSpinBox << mCenterZSpinBox << mDistanceToCenterSpinBox << mPitchAngleSpinBox << mHeadingAngleSpinBox;
@@ -109,22 +109,33 @@ void QgsLayout3DMapWidget::updateCameraPoseWidgetsFromItem()
   whileBlocking( mHeadingAngleSpinBox )->setValue( _normalizedAngle( pose.headingAngle() ) );
 }
 
-void QgsLayout3DMapWidget::copy3DMapSettings( const QDomElement &elem3DViewSettings )
+void QgsLayout3DMapWidget::copy3DMapSettings( const QString &viewName )
 {
+  QDomElement elem3DViewSettings = QgsProject::instance()->viewsManager()->get3DViewSettings( viewName );
   mMap3D->setSettingsFromXml( elem3DViewSettings );
-  copyCameraPose( elem3DViewSettings );
+  copyCameraPose( viewName );
 }
 
-void QgsLayout3DMapWidget::copyCameraPose( const QDomElement &elem3DViewSettings )
+void QgsLayout3DMapWidget::copyCameraPose( const QString &viewName )
 {
-  QDomElement elemCamera = elem3DViewSettings.firstChildElement( QStringLiteral( "camera" ) );
+  QDomElement elem3DViewSettings = QgsProject::instance()->viewsManager()->get3DViewSettings( viewName );
 
-  if ( elemCamera.isNull() )
+  if (QgsProject::instance()->viewsManager()->is3DViewOpen(viewName))
   {
-    return;
+    Qgs3DMapCanvasWidget *map3Dwidget = QgisApp::instance()->get3DMapView( viewName );
+    mMap3D->setCameraPose(map3Dwidget->mapCanvas3D()->cameraController()->cameraPose());
+  }
+  else
+  {
+    QDomElement elemCamera = elem3DViewSettings.firstChildElement( QStringLiteral( "camera" ) );
+
+    if ( elemCamera.isNull() )
+    {
+      return;
+    }
+    mMap3D->setCameraPoseFromXml( elemCamera );
   }
 
-  mMap3D->setCameraPoseFromXml( elemCamera );
   updateCameraPoseWidgetsFromItem();
 }
 
