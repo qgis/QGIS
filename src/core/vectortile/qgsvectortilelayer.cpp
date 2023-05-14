@@ -184,7 +184,6 @@ bool QgsVectorTileLayer::writeXml( QDomNode &layerNode, QDomDocument &doc, const
     mapLayerNode.appendChild( mMatrixSet.writeXml( doc, context ) );
   }
 
-
   // add provider node
   if ( mDataProvider )
   {

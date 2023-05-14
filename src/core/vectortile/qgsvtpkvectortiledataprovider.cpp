@@ -83,6 +83,11 @@ QgsVtpkVectorTileDataProvider::QgsVtpkVectorTileDataProvider( const QgsVtpkVecto
   mSpriteImage = other.mSpriteImage;
 }
 
+Qgis::VectorTileProviderFlags QgsVtpkVectorTileDataProvider::providerFlags() const
+{
+  return Qgis::VectorTileProviderFlag::AlwaysUseTileMatrixSetFromProvider;
+}
+
 Qgis::VectorTileProviderCapabilities QgsVtpkVectorTileDataProvider::providerCapabilities() const
 {
   return Qgis::VectorTileProviderCapability::ReadLayerMetadata;
