@@ -446,49 +446,49 @@ bool QgsMapToolIdentify::identifyVectorTileLayer( QList<QgsMapToolIdentify::Iden
     const QgsTileMatrix tileMatrix = layer->tileMatrixSet().tileMatrix( tileZoom );
     const QgsTileRange tileRange = tileMatrix.tileRangeFromExtent( r );
 
-    for ( int row = tileRange.startRow(); row <= tileRange.endRow(); ++row )
+    const QVector< QgsTileXYZ> tiles = layer->tileMatrixSet().tilesInRange( tileRange, tileZoom );
+
+    for ( const QgsTileXYZ &tileID : tiles )
     {
-      for ( int col = tileRange.startColumn(); col <= tileRange.endColumn(); ++col )
+      QByteArray data = layer->getRawTile( tileID );
+      if ( data.isEmpty() )
+        continue;  // failed to get data
+
+      QgsVectorTileMVTDecoder decoder( layer->tileMatrixSet() );
+      if ( !decoder.decode( tileID, data ) )
+        continue;  // failed to decode
+
+      QMap<QString, QgsFields> perLayerFields;
+      const QStringList layerNames = decoder.layers();
+      for ( const QString &layerName : layerNames )
       {
-        QgsTileXYZ tileID( col, row, tileZoom );
-        QByteArray data = layer->getRawTile( tileID );
-        if ( data.isEmpty() )
-          continue;  // failed to get data
+        QSet<QString> fieldNames = qgis::listToSet( decoder.layerFieldNames( layerName ) );
+        perLayerFields[layerName] = QgsVectorTileUtils::makeQgisFields( fieldNames );
+      }
 
-        QgsVectorTileMVTDecoder decoder( layer->tileMatrixSet() );
-        if ( !decoder.decode( tileID, data ) )
-          continue;  // failed to decode
-
-        QMap<QString, QgsFields> perLayerFields;
-        const QStringList layerNames = decoder.layers();
-        for ( const QString &layerName : layerNames )
+      const QgsVectorTileFeatures features = decoder.layerFeatures( perLayerFields, QgsCoordinateTransform() );
+      const QStringList featuresLayerNames = features.keys();
+      for ( const QString &layerName : featuresLayerNames )
+      {
+        const QgsFields fFields = perLayerFields[layerName];
+        const QVector<QgsFeature> &layerFeatures = features[layerName];
+        for ( const QgsFeature &f : layerFeatures )
         {
-          QSet<QString> fieldNames = qgis::listToSet( decoder.layerFieldNames( layerName ) );
-          perLayerFields[layerName] = QgsVectorTileUtils::makeQgisFields( fieldNames );
-        }
-
-        const QgsVectorTileFeatures features = decoder.layerFeatures( perLayerFields, QgsCoordinateTransform() );
-        const QStringList featuresLayerNames = features.keys();
-        for ( const QString &layerName : featuresLayerNames )
-        {
-          const QgsFields fFields = perLayerFields[layerName];
-          const QVector<QgsFeature> &layerFeatures = features[layerName];
-          for ( const QgsFeature &f : layerFeatures )
+          if ( f.geometry().intersects( r ) && ( !selectionGeomPrepared || selectionGeomPrepared->intersects( f.geometry().constGet() ) ) )
           {
-            if ( f.geometry().intersects( r ) && ( !selectionGeomPrepared || selectionGeomPrepared->intersects( f.geometry().constGet() ) ) )
-            {
-              QMap< QString, QString > derivedAttributes = commonDerivedAttributes;
-              derivedAttributes.insert( tr( "Feature ID" ), FID_TO_STRING( f.id() ) );
+            QMap< QString, QString > derivedAttributes = commonDerivedAttributes;
+            derivedAttributes.insert( tr( "Feature ID" ), FID_TO_STRING( f.id() ) );
+            derivedAttributes.insert( tr( "Tile column" ), QString::number( tileID.column() ) );
+            derivedAttributes.insert( tr( "Tile row" ), QString::number( tileID.row() ) );
+            derivedAttributes.insert( tr( "Tile zoom" ), QString::number( tileID.zoomLevel() ) );
 
-              results->append( IdentifyResult( layer, layerName, fFields, f, derivedAttributes ) );
+            results->append( IdentifyResult( layer, layerName, fFields, f, derivedAttributes ) );
 
-              featureCount++;
-            }
+            featureCount++;
           }
         }
       }
     }
-
   }
   catch ( QgsCsException &cse )
   {
