@@ -24,7 +24,6 @@
 #include "qgisapp.h"
 #include "qscreen.h"
 #include "qgsmapcanvas.h"
-#include "qgisapp.h"
 
 float _normalizedAngle( float x )
 {
@@ -120,10 +119,10 @@ void QgsLayout3DMapWidget::copyCameraPose( const QString &viewName )
 {
   QDomElement elem3DViewSettings = QgsProject::instance()->viewsManager()->get3DViewSettings( viewName );
 
-  if (QgsProject::instance()->viewsManager()->is3DViewOpen(viewName))
+  if ( QgsProject::instance()->viewsManager()->is3DViewOpen( viewName ) )
   {
     Qgs3DMapCanvasWidget *map3Dwidget = QgisApp::instance()->get3DMapView( viewName );
-    mMap3D->setCameraPose(map3Dwidget->mapCanvas3D()->cameraController()->cameraPose());
+    mMap3D->setCameraPose( map3Dwidget->mapCanvas3D()->cameraController()->cameraPose() );
   }
   else
   {
