@@ -2047,6 +2047,14 @@ The development version
       PerSymbolLayer
     };
 
+    enum class VectorTileProviderFlag
+    {
+      AlwaysUseTileMatrixSetFromProvider,
+    };
+
+    typedef QFlags<Qgis::VectorTileProviderFlag> VectorTileProviderFlags;
+
+
     enum class VectorTileProviderCapability
     {
       ReadLayerMetadata,
@@ -2216,6 +2224,8 @@ QFlags<Qgis::LabelPolygonPlacementFlag> operator|(Qgis::LabelPolygonPlacementFla
 QFlags<Qgis::DatabaseProviderConnectionCapability2> operator|(Qgis::DatabaseProviderConnectionCapability2 f1, QFlags<Qgis::DatabaseProviderConnectionCapability2> f2);
 
 QFlags<Qgis::VectorFileWriterCapability> operator|(Qgis::VectorFileWriterCapability f1, QFlags<Qgis::VectorFileWriterCapability> f2);
+
+QFlags<Qgis::VectorTileProviderFlag> operator|(Qgis::VectorTileProviderFlag f1, QFlags<Qgis::VectorTileProviderFlag> f2);
 
 QFlags<Qgis::VectorTileProviderCapability> operator|(Qgis::VectorTileProviderCapability f1, QFlags<Qgis::VectorTileProviderCapability> f2);
 

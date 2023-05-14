@@ -59,6 +59,12 @@ class CORE_EXPORT QgsVectorTileDataProvider : public QgsDataProvider
     QgsVectorTileDataProvider &operator=( const QgsVectorTileDataProvider &other ) = delete;
 
     /**
+     * Returns flags reflecting the behavior of the data provider.
+     * \since QGIS 3.32
+     */
+    virtual Qgis::VectorTileProviderFlags providerFlags() const;
+
+    /**
      * Returns flags containing the supported capabilities of the data provider.
      * \since QGIS 3.32
      */

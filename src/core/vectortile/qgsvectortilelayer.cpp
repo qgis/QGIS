@@ -154,12 +154,15 @@ bool QgsVectorTileLayer::readXml( const QDomNode &layerNode, QgsReadWriteContext
 
   setValid( loadDataSource() );
 
-  const QDomElement matrixSetElement = layerNode.firstChildElement( QStringLiteral( "matrixSet" ) );
-  if ( !matrixSetElement.isNull() )
+  if ( !mDataProvider || !( qobject_cast< QgsVectorTileDataProvider * >( mDataProvider.get() )->providerFlags() & Qgis::VectorTileProviderFlag::AlwaysUseTileMatrixSetFromProvider ) )
   {
-    mMatrixSet.readXml( matrixSetElement, context );
-    setCrs( mMatrixSet.crs() );
+    const QDomElement matrixSetElement = layerNode.firstChildElement( QStringLiteral( "matrixSet" ) );
+    if ( !matrixSetElement.isNull() )
+    {
+      mMatrixSet.readXml( matrixSetElement, context );
+    }
   }
+  setCrs( mMatrixSet.crs() );
 
   QString errorMsg;
   if ( !readSymbology( layerNode, errorMsg, context ) )
@@ -176,7 +179,11 @@ bool QgsVectorTileLayer::writeXml( QDomNode &layerNode, QDomDocument &doc, const
   QDomElement mapLayerNode = layerNode.toElement();
   mapLayerNode.setAttribute( QStringLiteral( "type" ), QgsMapLayerFactory::typeToString( Qgis::LayerType::VectorTile ) );
 
-  mapLayerNode.appendChild( mMatrixSet.writeXml( doc, context ) );
+  if ( !mDataProvider || !( qobject_cast< QgsVectorTileDataProvider * >( mDataProvider.get() )->providerFlags() & Qgis::VectorTileProviderFlag::AlwaysUseTileMatrixSetFromProvider ) )
+  {
+    mapLayerNode.appendChild( mMatrixSet.writeXml( doc, context ) );
+  }
+
 
   // add provider node
   if ( mDataProvider )
