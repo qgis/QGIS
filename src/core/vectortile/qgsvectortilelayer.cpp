@@ -45,7 +45,8 @@ QgsVectorTileLayer::QgsVectorTileLayer( const QString &uri, const QString &baseN
 {
   mDataSource = uri;
 
-  setValid( loadDataSource() );
+  if ( !uri.isEmpty() )
+    setValid( loadDataSource() );
 
   // set a default renderer
   QgsVectorTileBasicRenderer *renderer = new QgsVectorTileBasicRenderer;
