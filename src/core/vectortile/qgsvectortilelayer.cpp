@@ -475,7 +475,7 @@ QString QgsVectorTileLayer::loadDefaultMetadata( bool &resultFlag )
   if ( !mDataProvider || !mDataProvider->isValid() )
     return QString();
 
-  if ( qgis::down_cast< QgsVectorTileDataProvider * >( mDataProvider.get() )->providerCapabilities() & QgsVectorTileDataProvider::ProviderCapability::ReadLayerMetadata )
+  if ( qgis::down_cast< QgsVectorTileDataProvider * >( mDataProvider.get() )->providerCapabilities() & Qgis::VectorTileProviderCapability::ReadLayerMetadata )
   {
     setMetadata( mDataProvider->layerMetadata() );
   }

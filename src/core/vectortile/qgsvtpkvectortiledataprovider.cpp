@@ -83,9 +83,9 @@ QgsVtpkVectorTileDataProvider::QgsVtpkVectorTileDataProvider( const QgsVtpkVecto
   mSpriteImage = other.mSpriteImage;
 }
 
-QgsVectorTileDataProvider::ProviderCapabilities QgsVtpkVectorTileDataProvider::providerCapabilities() const
+Qgis::VectorTileProviderCapabilities QgsVtpkVectorTileDataProvider::providerCapabilities() const
 {
-  return QgsVectorTileDataProvider::ProviderCapability::ReadLayerMetadata;
+  return Qgis::VectorTileProviderCapability::ReadLayerMetadata;
 }
 
 QString QgsVtpkVectorTileDataProvider::name() const

@@ -2047,6 +2047,14 @@ The development version
       PerSymbolLayer
     };
 
+    enum class VectorTileProviderCapability
+    {
+      ReadLayerMetadata,
+    };
+
+    typedef QFlags<Qgis::VectorTileProviderCapability> VectorTileProviderCapabilities;
+
+
     enum class TileAvailability
     {
       Available,
@@ -2208,6 +2216,8 @@ QFlags<Qgis::LabelPolygonPlacementFlag> operator|(Qgis::LabelPolygonPlacementFla
 QFlags<Qgis::DatabaseProviderConnectionCapability2> operator|(Qgis::DatabaseProviderConnectionCapability2 f1, QFlags<Qgis::DatabaseProviderConnectionCapability2> f2);
 
 QFlags<Qgis::VectorFileWriterCapability> operator|(Qgis::VectorFileWriterCapability f1, QFlags<Qgis::VectorFileWriterCapability> f2);
+
+QFlags<Qgis::VectorTileProviderCapability> operator|(Qgis::VectorTileProviderCapability f1, QFlags<Qgis::VectorTileProviderCapability> f2);
 
 
 

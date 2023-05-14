@@ -3614,6 +3614,13 @@ Qgis.FeatureSymbologyExport.__doc__ = 'Options for exporting features considerin
 # --
 Qgis.FeatureSymbologyExport.baseClass = Qgis
 # monkey patching scoped based enum
+Qgis.VectorTileProviderCapability.ReadLayerMetadata.__doc__ = "Provider can read layer metadata from data store. See QgsDataProvider.layerMetadata()"
+Qgis.VectorTileProviderCapability.__doc__ = 'Enumeration with capabilities that vector tile data providers might implement.\n\n.. versionadded:: 3.32\n\n' + '* ``ReadLayerMetadata``: ' + Qgis.VectorTileProviderCapability.ReadLayerMetadata.__doc__
+# --
+Qgis.VectorTileProviderCapability.baseClass = Qgis
+Qgis.VectorTileProviderCapabilities.baseClass = Qgis
+VectorTileProviderCapabilities = Qgis  # dirty hack since SIP seems to introduce the flags in module
+# monkey patching scoped based enum
 Qgis.TileAvailability.Available.__doc__ = "Tile is available within the matrix"
 Qgis.TileAvailability.NotAvailable.__doc__ = "Tile is not available within the matrix, e.g. there is no content for the tile"
 Qgis.TileAvailability.AvailableNoChildren.__doc__ = "Tile is available within the matrix, and is known to have no children (ie no higher zoom level tiles exist covering this tile's region)"
