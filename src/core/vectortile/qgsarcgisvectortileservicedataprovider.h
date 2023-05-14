@@ -41,6 +41,7 @@ class CORE_EXPORT QgsArcGisVectorTileServiceDataProvider : public QgsXyzVectorTi
      */
     QgsArcGisVectorTileServiceDataProvider &operator=( const QgsArcGisVectorTileServiceDataProvider &other ) = delete;
 
+    Qgis::VectorTileProviderFlags providerFlags() const override;
     Qgis::VectorTileProviderCapabilities providerCapabilities() const override;
     QString name() const override;
     QString description() const override;
