@@ -281,7 +281,10 @@ void QgsDockableWidgetHelper::toggleDockMode( bool docked )
     // going from dock -> window
     // note -- we explicitly DO NOT set the parent for the dialog, as we want these treated as
     // proper top level windows and have their own taskbar entries. See https://github.com/qgis/QGIS/issues/49286
-    mDialog = new QgsNonRejectableDialog( nullptr, Qt::Window );
+    if ( mUsePersistentWidget )
+      mDialog = new QgsNonRejectableDialog( nullptr, Qt::Window );
+    else
+      mDialog = new QDialog( nullptr, Qt::Window );
     mDialog->setStyleSheet( sAppStylesheetFunction() );
 
     mDialog->setWindowTitle( mWindowTitle );
