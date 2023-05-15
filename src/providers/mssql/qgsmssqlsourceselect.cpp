@@ -431,6 +431,16 @@ void QgsMssqlSourceSelect::btnConnect_clicked()
       layer.isView = q.value( 5 ).toBool();
       layer.pkCols = QStringList(); //TODO
       layer.isGeography = false;
+      const int dimensions { q.value( 6 ).toInt( ) };
+
+      if ( dimensions >= 3 )
+      {
+        layer.type = layer.type.append( 'Z' );
+      }
+      if ( dimensions == 4 )
+      {
+        layer.type = layer.type.append( 'M' );
+      }
 
       QString type = layer.type;
       QString srid = layer.srid;

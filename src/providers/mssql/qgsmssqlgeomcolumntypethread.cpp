@@ -61,7 +61,9 @@ void QgsMssqlGeomColumnTypeThread::run()
 
       const QString query = QStringLiteral( "SELECT %3"
                                             " UPPER([%1].STGeometryType()),"
-                                            " [%1].STSrid"
+                                            " [%1].STSrid,"
+                                            " [%1].HasZ,"
+                                            " [%1].HasM"
                                             " FROM %2"
                                             " WHERE [%1] IS NOT NULL %4"
                                             " GROUP BY [%1].STGeometryType(), [%1].STSrid" )
@@ -95,11 +97,23 @@ void QgsMssqlGeomColumnTypeThread::run()
 
         while ( q.next() )
         {
-          const QString type = q.value( 0 ).toString().toUpper();
+          QString type = q.value( 0 ).toString().toUpper();
           const QString srid = q.value( 1 ).toString();
+          const bool hasZ { q.value( 2 ).toString() == '1' };
+          const bool hasM { q.value( 3 ).toString() == '1' };
 
           if ( type.isEmpty() )
             continue;
+
+          if ( hasZ )
+          {
+            type.append( 'Z' );
+          }
+
+          if ( hasM )
+          {
+            type.append( 'M' );
+          }
 
           types << type;
           srids << srid;
