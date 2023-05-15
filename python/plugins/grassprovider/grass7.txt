@@ -125,9 +125,9 @@ QgsProcessingParameterVectorDestination|[name of GRASS output]|[description of o
 
 The following types are available
 
+QgsProcessing.TypeVectorPoint
 QgsProcessing.TypeVectorLine
-QgsProcessing.VectorLine
-QgsProcessing.VectorPolygon
+QgsProcessing.TypeVectorPolygon
 QgsProcessing.TypeVectorAnyGeometry
 
 Example: QgsProcessingParameterVectorDestination|flowline|Flow line|QgsProcessing.TypeVectorLine|None|True
