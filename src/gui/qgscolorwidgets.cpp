@@ -418,7 +418,7 @@ void QgsColorWheel::paintEvent( QPaintEvent *event )
   }
 
   //draw wheel centered on widget
-  const QPointF center = QPointF( width() / 2.0, height() / 2.0 );
+  const QPointF center = QPointF( mWidgetImage.width() / 2.0, mWidgetImage.height() / 2.0 );
   imagePainter.drawImage( QPointF( center.x() - ( mWheelImage.width() / 2.0 ), center.y() - ( mWheelImage.height() / 2.0 ) ), mWheelImage );
 
   //draw hue marker
@@ -445,7 +445,7 @@ void QgsColorWheel::paintEvent( QPaintEvent *event )
   imagePainter.drawImage( QPointF( center.x() - ( mWheelImage.width() / 2.0 ), center.y() - ( mWheelImage.height() / 2.0 ) ), mTriangleImage );
 
   //draw current color marker
-  const double triangleRadius = length - mWheelThickness - 1;
+  const double triangleRadius = length - mWheelThickness * devicePixelRatioF() - 1;
 
   //adapted from equations at https://github.com/timjb/colortriangle/blob/master/colortriangle.js by Tim Baumann
   const double lightness = mCurrentColor.lightnessF();
@@ -471,7 +471,7 @@ void QgsColorWheel::paintEvent( QPaintEvent *event )
   imagePainter.end();
 
   //draw image onto widget
-  painter.drawImage( QPoint( 0, 0 ), mWidgetImage );
+  painter.drawImage( QRectF( 0, 0, width(), height() ), mWidgetImage );
   painter.end();
 }
 
@@ -492,9 +492,13 @@ void QgsColorWheel::createImages( const QSizeF size )
   mWheelThickness = wheelSize / 15.0;
 
   //recreate cache images at correct size
-  mWheelImage = QImage( wheelSize, wheelSize, QImage::Format_ARGB32 );
-  mTriangleImage = QImage( wheelSize, wheelSize, QImage::Format_ARGB32 );
-  mWidgetImage = QImage( size.width(), size.height(), QImage::Format_ARGB32 );
+  const double pixelRatio = devicePixelRatioF();
+  mWheelImage = QImage( wheelSize * pixelRatio,
+                        wheelSize * pixelRatio, QImage::Format_ARGB32 );
+  mTriangleImage = QImage( wheelSize * pixelRatio,
+                           wheelSize * pixelRatio, QImage::Format_ARGB32 );
+  mWidgetImage = QImage( size.width() * pixelRatio,
+                         size.height() * pixelRatio, QImage::Format_ARGB32 );
 
   //trigger a redraw for the images
   mWheelDirty = true;
@@ -550,7 +554,7 @@ void QgsColorWheel::setColorFromPos( const QPointF pos )
     const double hueRadians = h * M_PI / 180.0;
     double rad0 = std::fmod( eventAngleRadians + 2.0 * M_PI - hueRadians, 2.0 * M_PI );
     double rad1 = std::fmod( rad0, ( ( 2.0 / 3.0 ) * M_PI ) ) - ( M_PI / 3.0 );
-    const double length = mWheelImage.width() / 2.0;
+    const double length = mWheelImage.width() / 2.0 / devicePixelRatioF();
     const double triangleLength = length - mWheelThickness - 1;
 
     const double a = 0.5 * triangleLength;
@@ -626,7 +630,7 @@ void QgsColorWheel::mousePressEvent( QMouseEvent *event )
     //create a line from the widget's center to the event
     const QLineF line = QLineF( width() / 2.0, height() / 2.0, event->pos().x(), event->pos().y() );
 
-    const double innerLength = mWheelImage.width() / 2.0 - mWheelThickness;
+    const double innerLength = mWheelImage.width() / 2.0 / devicePixelRatioF() - mWheelThickness;
     if ( line.length() < innerLength )
     {
       mClickedPart = QgsColorWheel::Triangle;
@@ -679,7 +683,10 @@ void QgsColorWheel::createWheel()
   //cut hole in center of circle to make a ring
   p.setCompositionMode( QPainter::CompositionMode_DestinationOut );
   p.setBrush( QBrush( Qt::black ) );
-  p.drawEllipse( QPointF( 0.0, 0.0 ), wheelRadius - mWheelThickness, wheelRadius  - mWheelThickness );
+  p.drawEllipse( QPointF( 0,
+                          0 ),
+                 wheelRadius - mWheelThickness * devicePixelRatioF(),
+                 wheelRadius  - mWheelThickness * devicePixelRatioF() );
   p.end();
 
   mWheelDirty = false;
@@ -700,7 +707,7 @@ void QgsColorWheel::createTriangle()
 
   const int angle = hue();
   const double wheelRadius = mWheelImage.width() / 2.0;
-  const double triangleRadius = wheelRadius - mWheelThickness - 1;
+  const double triangleRadius = wheelRadius - mWheelThickness * devicePixelRatioF() - 1;
 
   //pure version of hue (at full saturation and value)
   const QColor pureColor = QColor::fromHsv( angle, 255, 255 );
