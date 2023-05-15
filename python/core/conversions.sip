@@ -4368,7 +4368,39 @@ template<_TYPE_>
 %End
 };
 
+%MappedType QVariantMap /TypeHint="Dict[str, Any]", TypeHintValue="{}"/
+{
+%TypeHeaderCode
+#include <qvariant.h>
+%End
+
+%ConvertFromTypeCode
+    // todo FIX this
+    return 0; //qpycore_fromQVariantMap(*sipCpp);
+%End
+
+%ConvertToTypeCode
+    if (!sipIsErr)
+        return PyDict_Check(sipPy);
+
+    QVariantMap *qvm = new QVariantMap;
+
+    // todo FIX this
+    // if (!qpycore_toQVariantMap(sipPy, *qvm))
+    // {
+    //    delete qvm;
+    //    return 0;
+    //}
+
+    *sipCppPtr = qvm;
+
+    return sipGetState(sipTransferObj);
+%End
+};
+
 %MappedType QList<QVariantMap>
+        /TypeHintIn="Iterable[Dict[str, Any]]",
+        TypeHintOut="Iterable[Dict[str, Any]]", TypeHintValue="[]"/
 {
 %TypeHeaderCode
 #include <qlist.h>
