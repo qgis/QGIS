@@ -18,6 +18,30 @@
 
 #include "qgsspatialiteconnpool.h"
 
+void QgsSpatiaLiteConnPoolGroup::connectionCreate( const QString &connectionInfo, QgsSqliteHandle *&connection )
+{
+  connection = QgsSqliteHandle::openDb( connectionInfo, false );
+}
+
+void QgsSpatiaLiteConnPoolGroup::connectionDestroy( QgsSqliteHandle *connection )
+{
+  QgsSqliteHandle::closeDb( connection );  // will delete itself
+}
+
+void QgsSpatiaLiteConnPoolGroup::invalidateConnection( QgsSqliteHandle *connection )
+{
+  /* Invalidation is used in particular by the WFS provider that uses a */
+  /* temporary SpatiaLite DB and want to delete it at some point. For that */
+  /* it must invalidate all handles pointing to it */
+  connection->invalidate();
+}
+
+bool QgsSpatiaLiteConnPoolGroup::connectionIsValid( QgsSqliteHandle *connection )
+{
+  return connection->isValid();
+}
+
+
 QgsSpatiaLiteConnPool *QgsSpatiaLiteConnPool::sInstance = nullptr;
 
 QgsSpatiaLiteConnPool *QgsSpatiaLiteConnPool::instance()
@@ -40,4 +64,9 @@ void QgsSpatiaLiteConnPool::cleanupInstance()
 {
   delete sInstance;
   sInstance = nullptr;
+}
+
+QString QgsSpatiaLiteConnPool::connectionToName( QgsSqliteHandle *connection )
+{
+  return connection->dbPath();
 }

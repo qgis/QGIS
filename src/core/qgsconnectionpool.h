@@ -40,14 +40,6 @@
  * \ingroup core
  * \brief Template that stores data related to a connection to a single server or datasource.
  *
- * It is assumed that following functions exist:
- *
- * - void qgsConnectionPool_ConnectionCreate(QString name, T& c)  ... create a new connection
- * - void qgsConnectionPool_ConnectionDestroy(T c)                ... destroy the connection
- * - QString qgsConnectionPool_ConnectionToName(T c)              ... lookup connection's name (path)
- * - void qgsConnectionPool_InvalidateConnection(T c)             ... flag a connection as invalid
- * - bool qgsConnectionPool_ConnectionIsValid(T c)                ... return whether a connection is valid
- *
  * Because of issues with templates and QObject's signals and slots, this class only provides helper functions for QObject-related
  * functionality - the place which uses the template is resonsible for:
  *
@@ -66,23 +58,38 @@ class QgsConnectionPoolGroup
 
     struct Item
     {
-      T c;
+      T connection;
       QTime lastUsedTime;
     };
 
     QgsConnectionPoolGroup( const QString &ci )
-      : connInfo( ci )
-      , sem( QgsApplication::instance()->maxConcurrentConnectionsPerPool() + CONN_POOL_SPARE_CONNECTIONS )
+      : mConnectionInfo( ci )
+      , mSemaphore( QgsApplication::instance()->maxConcurrentConnectionsPerPool() + CONN_POOL_SPARE_CONNECTIONS )
     {
     }
 
-    ~QgsConnectionPoolGroup()
-    {
-      for ( const Item &item : std::as_const( conns ) )
-      {
-        qgsConnectionPool_ConnectionDestroy( item.c );
-      }
-    }
+    virtual ~QgsConnectionPoolGroup() = 0;
+
+    /**
+     * Classes that implement this template must implement their own connection functions.
+     * Create a \a connection based on connection information \a connectionInfo.
+     */
+    virtual void connectionCreate( const QString &connectionInfo, T &connection ) = 0;
+
+    /**
+     * Destroy the \a connection.
+     */
+    virtual void connectionDestroy( T connection ) = 0;
+
+    /**
+     * Invalidate the \a connection.
+     */
+    virtual void invalidateConnection( T connection ) = 0;
+
+    /**
+     * \returns true if the \a connection is valid.
+     */
+    virtual bool connectionIsValid( T connection ) = 0;
 
     //! QgsConnectionPoolGroup cannot be copied
     QgsConnectionPoolGroup( const QgsConnectionPoolGroup &other ) = delete;
@@ -102,7 +109,7 @@ class QgsConnectionPoolGroup
       // we are going to acquire a resource - if no resource is available, we will block here
       if ( timeout >= 0 )
       {
-        if ( !sem.tryAcquire( requiredFreeConnectionCount, timeout ) )
+        if ( !mSemaphore.tryAcquire( requiredFreeConnectionCount, timeout ) )
           return nullptr;
       }
       else
@@ -111,99 +118,103 @@ class QgsConnectionPoolGroup
         // tryAcquire is broken on Qt > 5.8 with negative timeouts - see
         // https://bugreports.qt.io/browse/QTBUG-64413
         // https://lists.osgeo.org/pipermail/qgis-developer/2017-November/050456.html
-        sem.acquire( requiredFreeConnectionCount );
+        mSemaphore.acquire( requiredFreeConnectionCount );
       }
-      sem.release( requiredFreeConnectionCount - 1 );
+      mSemaphore.release( requiredFreeConnectionCount - 1 );
 
       // quick (preferred) way - use cached connection
       {
-        QMutexLocker locker( &connMutex );
+        QMutexLocker locker( &mConnectionMutex );
 
-        if ( !conns.isEmpty() )
+        if ( !mConnections.isEmpty() )
         {
-          Item i = conns.pop();
-          if ( !qgsConnectionPool_ConnectionIsValid( i.c ) )
+          Item i = mConnections.pop();
+          if ( !connectionIsValid( i.connection ) )
           {
-            qgsConnectionPool_ConnectionDestroy( i.c );
-            qgsConnectionPool_ConnectionCreate( connInfo, i.c );
+            connectionDestroy( i.connection );
+            connectionCreate( mConnectionInfo, i.connection );
           }
 
 
           // no need to run if nothing can expire
-          if ( conns.isEmpty() )
+          if ( mConnections.isEmpty() )
           {
             // will call the slot directly or queue the call (if the object lives in a different thread)
-            QMetaObject::invokeMethod( expirationTimer->parent(), "stopExpirationTimer" );
+            QMetaObject::invokeMethod( mExpirationTimer->parent(), "stopExpirationTimer" );
           }
 
-          acquiredConns.append( i.c );
+          mAcquiredConnections.append( i.connection );
 
-          return i.c;
+          return i.connection;
         }
       }
 
-      T c;
-      qgsConnectionPool_ConnectionCreate( connInfo, c );
-      if ( !c )
+      T connection;
+      connectionCreate( mConnectionInfo, connection );
+      if ( !connection )
       {
         // we didn't get connection for some reason, so release the lock
-        sem.release();
+        mSemaphore.release();
         return nullptr;
       }
 
-      connMutex.lock();
-      acquiredConns.append( c );
-      connMutex.unlock();
-      return c;
+      mConnectionMutex.lock();
+      mAcquiredConnections.append( connection );
+      mConnectionMutex.unlock();
+      return connection;
     }
 
-    void release( T conn )
+    /**
+     * Release the \a connection if it's valid, destroy it otherwise.
+     * Unlock the connection mutex and semaphore.
+     */
+    void release( T connection )
     {
-      connMutex.lock();
-      acquiredConns.removeAll( conn );
-      if ( !qgsConnectionPool_ConnectionIsValid( conn ) )
+      mConnectionMutex.lock();
+      mAcquiredConnections.removeAll( connection );
+      if ( !connectionIsValid( connection ) )
       {
-        qgsConnectionPool_ConnectionDestroy( conn );
+        connectionDestroy( connection );
       }
       else
       {
         Item i;
-        i.c = conn;
+        i.connection = connection;
         i.lastUsedTime = QTime::currentTime();
-        conns.push( i );
+        mConnections.push( i );
 
-        if ( !expirationTimer->isActive() )
+        if ( !mExpirationTimer->isActive() )
         {
           // will call the slot directly or queue the call (if the object lives in a different thread)
-          QMetaObject::invokeMethod( expirationTimer->parent(), "startExpirationTimer" );
+          QMetaObject::invokeMethod( mExpirationTimer->parent(), "startExpirationTimer" );
         }
       }
 
-      connMutex.unlock();
+      mConnectionMutex.unlock();
 
-      sem.release(); // this can unlock a thread waiting in acquire()
+      mSemaphore.release(); // this can unlock a thread waiting in acquire()
     }
 
     void invalidateConnections()
     {
-      connMutex.lock();
-      for ( const Item &i : std::as_const( conns ) )
+      mConnectionMutex.lock();
+      for ( const Item &i : std::as_const( mConnections ) )
       {
-        qgsConnectionPool_ConnectionDestroy( i.c );
+        connectionDestroy( i.connection );
       }
-      conns.clear();
-      for ( T c : std::as_const( acquiredConns ) )
-        qgsConnectionPool_InvalidateConnection( c );
-      connMutex.unlock();
+      mConnections.clear();
+      for ( T connection : std::as_const( mAcquiredConnections ) )
+        invalidateConnection( connection );
+      mConnectionMutex.unlock();
     }
 
   protected:
 
     void initTimer( QObject *parent )
     {
-      expirationTimer = new QTimer( parent );
-      expirationTimer->setInterval( CONN_POOL_EXPIRATION_TIME * 1000 );
-      QObject::connect( expirationTimer, SIGNAL( timeout() ), parent, SLOT( handleConnectionExpired() ) );
+      mExpirationTimer = new QTimer( parent );
+      mExpirationTimer->setInterval( CONN_POOL_EXPIRATION_TIME * 1000 );
+      QObject::connect( mExpirationTimer, SIGNAL( timeout() ), parent, SLOT( handleConnectionExpired() ) );
 
       // just to make sure the object belongs to main thread and thus will get events
       if ( qApp )
@@ -212,15 +223,15 @@ class QgsConnectionPoolGroup
 
     void onConnectionExpired()
     {
-      connMutex.lock();
+      mConnectionMutex.lock();
 
       QTime now = QTime::currentTime();
 
       // what connections have expired?
       QList<int> toDelete;
-      for ( int i = 0; i < conns.count(); ++i )
+      for ( int i = 0; i < mConnections.count(); ++i )
       {
-        if ( conns.at( i ).lastUsedTime.secsTo( now ) >= CONN_POOL_EXPIRATION_TIME )
+        if ( mConnections.at( i ).lastUsedTime.secsTo( now ) >= CONN_POOL_EXPIRATION_TIME )
           toDelete.append( i );
       }
 
@@ -228,26 +239,29 @@ class QgsConnectionPoolGroup
       for ( int j = toDelete.count() - 1; j >= 0; --j )
       {
         int index = toDelete[j];
-        qgsConnectionPool_ConnectionDestroy( conns[index].c );
-        conns.remove( index );
+        connectionDestroy( mConnections[index].connection );
+        mConnections.remove( index );
       }
 
-      if ( conns.isEmpty() )
-        expirationTimer->stop();
+      if ( mConnections.isEmpty() )
+        mExpirationTimer->stop();
 
-      connMutex.unlock();
+      mConnectionMutex.unlock();
     }
 
   protected:
 
-    QString connInfo;
-    QStack<Item> conns;
-    QList<T> acquiredConns;
-    QMutex connMutex;
-    QSemaphore sem;
-    QTimer *expirationTimer = nullptr;
+    QString mConnectionInfo;
+    QStack<Item> mConnections;
+    QList<T> mAcquiredConnections;
+    QMutex mConnectionMutex;
+    QSemaphore mSemaphore;
+    QTimer *mExpirationTimer = nullptr;
 
 };
+
+template<typename T>
+QgsConnectionPoolGroup<T>::~QgsConnectionPoolGroup() {}
 
 
 /**
@@ -286,6 +300,11 @@ class QgsConnectionPool
     }
 
     /**
+     * \returns the name of the \a connection.
+     */
+    virtual QString connectionToName( T connection ) = 0;
+
+    /**
      * Try to acquire a connection for a maximum of \a timeout milliseconds.
      * If \a timeout is a negative value the calling thread will be blocked
      * until a connection becomes available. This is the default behavior.
@@ -295,13 +314,13 @@ class QgsConnectionPool
      *
      * \returns initialized connection or NULLPTR if unsuccessful
      */
-    T acquireConnection( const QString &connInfo, int timeout = -1, bool requestMayBeNested = false, QgsFeedback *feedback = nullptr )
+    T acquireConnection( const QString &connectionInfo, int timeout = -1, bool requestMayBeNested = false, QgsFeedback *feedback = nullptr )
     {
       mMutex.lock();
-      typename T_Groups::iterator it = mGroups.find( connInfo );
+      typename T_Groups::iterator it = mGroups.find( connectionInfo );
       if ( it == mGroups.end() )
       {
-        it = mGroups.insert( connInfo, new T_Group( connInfo ) );
+        it = mGroups.insert( connectionInfo, new T_Group( connectionInfo ) );
       }
       T_Group *group = *it;
       mMutex.unlock();
@@ -313,8 +332,8 @@ class QgsConnectionPool
 
         while ( !feedback->isCanceled() )
         {
-          if ( T conn = group->acquire( 300, requestMayBeNested ) )
-            return conn;
+          if ( T connection = group->acquire( 300, requestMayBeNested ) )
+            return connection;
 
           if ( timeout > 0 && timer.elapsed() >= timeout )
             return nullptr;
@@ -328,15 +347,15 @@ class QgsConnectionPool
     }
 
     //! Release an existing connection so it will get back into the pool and can be reused
-    void releaseConnection( T conn )
+    void releaseConnection( T connection )
     {
       mMutex.lock();
-      typename T_Groups::iterator it = mGroups.find( qgsConnectionPool_ConnectionToName( conn ) );
+      typename T_Groups::iterator it = mGroups.find( connectionToName( connection ) );
       Q_ASSERT( it != mGroups.end() );
       T_Group *group = *it;
       mMutex.unlock();
 
-      group->release( conn );
+      group->release( connection );
     }
 
     /**
@@ -346,11 +365,11 @@ class QgsConnectionPool
      * invalidated when such datasets are changed to ensure the handles are
      * refreshed. See the OGR provider for an example where this is needed.
      */
-    void invalidateConnections( const QString &connInfo )
+    void invalidateConnections( const QString &connectionInfo )
     {
       mMutex.lock();
-      if ( mGroups.contains( connInfo ) )
-        mGroups[connInfo]->invalidateConnections();
+      if ( mGroups.contains( connectionInfo ) )
+        mGroups[connectionInfo]->invalidateConnections();
       mMutex.unlock();
     }
 
@@ -359,6 +378,5 @@ class QgsConnectionPool
     T_Groups mGroups;
     QMutex mMutex;
 };
-
 
 #endif // QGSCONNECTIONPOOL_H

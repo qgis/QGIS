@@ -20,44 +20,37 @@
 #include "qgsoracleconn.h"
 
 
-inline QString qgsConnectionPool_ConnectionToName( QgsOracleConn *c )
-{
-  return c->connInfo();
-}
-
-inline void qgsConnectionPool_ConnectionCreate( const QgsDataSourceUri &uri, QgsOracleConn *&c )
-{
-  c = QgsOracleConn::connectDb( uri, false );
-}
-
-inline void qgsConnectionPool_ConnectionDestroy( QgsOracleConn *c )
-{
-  c->disconnect(); // will delete itself
-}
-
-inline void qgsConnectionPool_InvalidateConnection( QgsOracleConn *c )
-{
-  Q_UNUSED( c )
-}
-
-inline bool qgsConnectionPool_ConnectionIsValid( QgsOracleConn *c )
-{
-  Q_UNUSED( c )
-  return true;
-}
-
-
 class QgsOracleConnPoolGroup : public QObject, public QgsConnectionPoolGroup<QgsOracleConn *>
 {
     Q_OBJECT
 
   public:
     explicit QgsOracleConnPoolGroup( QString name ) : QgsConnectionPoolGroup<QgsOracleConn*>( name ) { initTimer( this ); }
+    ~QgsOracleConnPoolGroup() override
+    {
+      for ( const Item &item : std::as_const( mConnections ) )
+      {
+        item.connection->disconnect(); // will delete itself
+      }
+    }
+
+    void connectionCreate( const QString &connectionInfo, QgsOracleConn *&connection ) override
+    {
+      connection = QgsOracleConn::connectDb( connectionInfo, false );
+    }
+
+    void connectionDestroy( QgsOracleConn *connection ) override
+    {
+      connection->disconnect(); // will delete itself
+    }
+
+    void invalidateConnection( QgsOracleConn * ) override {};
+    bool connectionIsValid( QgsOracleConn * ) override { return true;};
 
   protected slots:
     void handleConnectionExpired() { onConnectionExpired(); }
-    void startExpirationTimer() { expirationTimer->start(); }
-    void stopExpirationTimer() { expirationTimer->stop(); }
+    void startExpirationTimer() { mExpirationTimer->start(); }
+    void stopExpirationTimer() { mExpirationTimer->stop(); }
 
   protected:
     Q_DISABLE_COPY( QgsOracleConnPoolGroup )
@@ -71,6 +64,11 @@ class QgsOracleConnPool : public QgsConnectionPool<QgsOracleConn *, QgsOracleCon
     static QgsOracleConnPool *instance();
 
     static void cleanupInstance();
+
+    QString connectionToName( QgsOracleConn *connection ) override
+    {
+      return connection->connInfo();
+    }
 
   protected:
     Q_DISABLE_COPY( QgsOracleConnPool )

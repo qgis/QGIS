@@ -4,7 +4,6 @@
 set(PG_SRCS
   qgspostgresprovider.cpp
   qgspostgresconn.cpp
-  qgspostgresconnpool.cpp
   qgspostgresdataitems.cpp
   qgspostgresfeatureiterator.cpp
   qgspostgresprojectstorage.cpp
@@ -34,6 +33,7 @@ endif()
 set(PG_HDRS
   qgspostgresexpressioncompiler.h
   qgspostgresproviderconnection.h
+  qgspostgresconnpool.h
 )
 
 ########################################################
@@ -94,7 +94,6 @@ set(PGRASTER_SRCS
   raster/qgspostgresrastershareddata.cpp
   raster/qgspostgresrasterutils.cpp
   qgspostgresconn.cpp
-  qgspostgresconnpool.cpp
   qgspostgresprovidermetadatautils.cpp
 )
 
