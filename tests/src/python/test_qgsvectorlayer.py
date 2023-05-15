@@ -2658,6 +2658,34 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
         layer.reselect()
         self.assertCountEqual(layer.selectedFeatureIds(), [5])
 
+    def testGetFeaturesVirtualFieldsSubset(self):
+        """Test that when a subset is requested virtual fields are returned nullified"""
+
+        vl = QgsVectorLayer(os.path.join(unitTestDataPath(), 'points.shp'), 'Points', 'ogr')
+        virt_field_idx = vl.addExpressionField('\'Importance: \' || Importance', QgsField('virt_1', QVariant.String))
+
+        self.assertEqual(vl.fields().lookupField('virt_1'), virt_field_idx)
+
+        req = QgsFeatureRequest()
+        req.setSubsetOfAttributes([0, 1])
+        attrs = next(vl.getFeatures(req)).attributes()
+        self.assertEqual(attrs, ['Jet', 90, None, None, None, None, None])
+
+        attrs = next(vl.getFeatures()).attributes()
+        self.assertEqual(attrs, ['Jet', 90, 3.0, 2, 0, 2, 'Importance: 3'])
+
+        req.setSubsetOfAttributes([0, 2])
+        attrs = next(vl.getFeatures(req)).attributes()
+        self.assertEqual(attrs, ['Jet', None, 3.0, None, None, None, None])
+
+        req.setSubsetOfAttributes([0, 1, 6])
+        attrs = next(vl.getFeatures(req)).attributes()
+        self.assertEqual(attrs, ['Jet', 90, 3.0, None, None, None, 'Importance: 3'])
+
+        req.setSubsetOfAttributes([6])
+        attrs = next(vl.getFeatures(req)).attributes()
+        self.assertEqual(attrs, [None, None, 3.0, None, None, None, 'Importance: 3'])
+
     def testAggregate(self):
         """ Test aggregate calculation """
         layer = QgsVectorLayer("Point?field=fldint:integer", "layer", "memory")
