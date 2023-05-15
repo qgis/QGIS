@@ -119,7 +119,9 @@ Qt3DCore::QEntity *QgsVectorLayerChunkLoader::createEntity( Qt3DCore::QEntity *p
 {
   if ( mNode->level() < mFactory->mLeafLevel )
   {
-    return new Qt3DCore::QEntity( parent );  // dummy entity
+    Qt3DCore::QEntity *entity = new Qt3DCore::QEntity( parent );  // dummy entity
+    entity->setObjectName( mFactory->mLayer->name() + "_CONTAINER_" + mNode->tileId().text() );
+    return entity;
   }
 
   if ( mHandler->featureCount() == 0 )
@@ -129,6 +131,7 @@ Qt3DCore::QEntity *QgsVectorLayerChunkLoader::createEntity( Qt3DCore::QEntity *p
   }
 
   Qt3DCore::QEntity *entity = new Qt3DCore::QEntity( parent );
+  entity->setObjectName( mFactory->mLayer->name() + "_" + mNode->tileId().text() );
   mHandler->finalize( entity, mContext );
 
   // fix the vertical range of the node from the estimated vertical range to the true range
