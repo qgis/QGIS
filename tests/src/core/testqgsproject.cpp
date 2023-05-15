@@ -214,7 +214,7 @@ static QHash<QString, QString> _parseSvgPathsForLayers( const QString &projectFi
   QFile projectFile( projectFilename );
   bool res = projectFile.open( QIODevice::ReadOnly );
   Q_ASSERT( res );
-  res = doc.setContent( &projectFile );
+  res = static_cast< bool >( doc.setContent( &projectFile ) );
   Q_ASSERT( res );
   projectFile.close();
 
