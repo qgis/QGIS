@@ -551,6 +551,8 @@ bool QgsVectorLayerFeatureIterator::fetchFeature( QgsFeature &f )
 
     if ( mHasVirtualAttributes )
       addVirtualAttributes( f );
+    else
+      f.padAttributes( mSource->mFields.count() - f.attributeCount() );
 
     if ( mRequest.filterType() == QgsFeatureRequest::FilterExpression && mProviderRequest.filterType() != QgsFeatureRequest::FilterExpression )
     {
@@ -664,6 +666,8 @@ void QgsVectorLayerFeatureIterator::useAddedFeature( const QgsFeature &src, QgsF
 
   if ( mHasVirtualAttributes )
     addVirtualAttributes( f );
+  else
+    f.padAttributes( mSource->mFields.count() - f.attributeCount() );
 }
 
 
@@ -918,6 +922,7 @@ void QgsVectorLayerFeatureIterator::prepareFields()
   {
     createOrderedJoinList();
   }
+
 }
 
 void QgsVectorLayerFeatureIterator::createOrderedJoinList()
@@ -1292,6 +1297,8 @@ bool QgsVectorLayerFeatureIterator::nextFeatureFid( QgsFeature &f )
 
     if ( mHasVirtualAttributes )
       addVirtualAttributes( f );
+    else
+      f.padAttributes( mSource->mFields.count() - f.attributeCount() );
 
     return true;
   }
