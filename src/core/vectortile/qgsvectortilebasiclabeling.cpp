@@ -200,7 +200,7 @@ bool QgsVectorTileBasicLabelProvider::prepare( QgsRenderContext &context, QSet<Q
 void QgsVectorTileBasicLabelProvider::registerTileFeatures( const QgsVectorTileRendererData &tile, QgsRenderContext &context )
 {
   const QgsVectorTileFeatures tileData = tile.features();
-  int zoomLevel = tile.id().zoomLevel();
+  const int zoomLevel = tile.renderZoomLevel();
 
   for ( int i = 0; i < mStyles.count(); ++i )
   {
