@@ -44,6 +44,30 @@ Sets polygon of the tile
 Returns polygon (made out of four corners of the tile) in screen coordinates calculated from render context
 %End
 
+    void setRenderZoomLevel( int level );
+%Docstring
+Sets the zoom level corresponding to the target render.
+
+This may differ from the tile's actual zoom leve when indexed tiles cause replacement of
+higher zoom level tiles with data from lower zoom level tiles.
+
+.. seealso:: :py:func:`renderZoomLevel`
+
+.. versionadded:: 3.32
+%End
+
+    int renderZoomLevel() const;
+%Docstring
+Returns the zoom level corresponding to the target render.
+
+This may differ from the tile's actual zoom leve when indexed tiles cause replacement of
+higher zoom level tiles with data from lower zoom level tiles.
+
+.. seealso:: :py:func:`setRenderZoomLevel`
+
+.. versionadded:: 3.32
+%End
+
     void setFields( const QMap<QString, QgsFields> &fields );
 %Docstring
 Sets per-layer fields

@@ -229,6 +229,8 @@ void QgsVectorTileLayerRenderer::decodeAndDrawTile( const QgsVectorTileRawData &
   const QgsCoordinateTransform ct = ctx.coordinateTransform();
 
   QgsVectorTileRendererData tile( rawTile.id );
+  tile.setRenderZoomLevel( mTileZoom );
+
   tile.setFields( mPerLayerFields );
   tile.setFeatures( decoder.layerFeatures( mPerLayerFields, ct, &mRequiredLayers ) );
 
