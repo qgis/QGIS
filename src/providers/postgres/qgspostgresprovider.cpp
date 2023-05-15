@@ -1392,6 +1392,11 @@ bool QgsPostgresProvider::loadFields()
 
     mIdentityFields.insert( mAttributeFields.size(), identityMap[tableoid][attnum][0].toLatin1() );
     mAttributeFields.append( newField );
+
+    // if we know for sure that this field is not enumerated type or a domain type, let's
+    // mark it here, so that enumValues() does not need to check it again (for types like int, text, ...)
+    if ( fieldTType != QLatin1String( "e" ) && !isDomain )
+      mShared->setFieldSupportsEnumValues( fields.count() - 1, false );
   }
 
   setEditorWidgets();
