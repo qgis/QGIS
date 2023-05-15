@@ -1473,19 +1473,18 @@ int main( int argc, char *argv[] )
   }
 
   //set up splash screen
-  QString mySplashPath( QgsCustomization::instance()->splashPath() );
-  QPixmap myPixmap( mySplashPath + QStringLiteral( "splash.png" ) );
+  QString splashPath( QgsCustomization::instance()->splashPath() );
+  QPixmap pixmap( splashPath + QStringLiteral( "splash.png" ) );
 
-  double screenDpi = 96;
   if ( QScreen *screen = QGuiApplication::primaryScreen() )
   {
-    screenDpi = screen->physicalDotsPerInch();
+    pixmap.setDevicePixelRatio( screen->devicePixelRatio() );
   }
 
-  int w = 600 * screenDpi / 96;
-  int h = 300 * screenDpi / 96;
+  int w = 600 * pixmap.devicePixelRatioF();
+  int h = 300 * pixmap.devicePixelRatioF();
 
-  QSplashScreen *mypSplash = new QSplashScreen( myPixmap.scaled( w, h, Qt::KeepAspectRatio, Qt::SmoothTransformation ) );
+  QSplashScreen *mypSplash = new QSplashScreen( pixmap.scaled( w, h, Qt::KeepAspectRatio, Qt::SmoothTransformation ) );
 
   // Force splash screen to start on primary screen
   if ( QScreen *screen = QGuiApplication::primaryScreen() )
@@ -1497,7 +1496,7 @@ int main( int argc, char *argv[] )
   if ( !takeScreenShots && !myHideSplash && !settings.value( QStringLiteral( "qgis/hideSplash" ) ).toBool() )
   {
     //for win and linux we can just automask and png transparency areas will be used
-    mypSplash->setMask( myPixmap.mask() );
+    mypSplash->setMask( pixmap.mask() );
     mypSplash->show();
   }
 
