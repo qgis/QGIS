@@ -23,6 +23,31 @@
 
 ///@cond PRIVATE
 
+class SetStylePostProcessor : public QgsProcessingLayerPostProcessorInterface
+{
+  public:
+
+    SetStylePostProcessor( QgsVectorTileLayer *inputLayer )
+      : mLayer( inputLayer )
+    {}
+
+    void postProcessLayer( QgsMapLayer *layer, QgsProcessingContext &, QgsProcessingFeedback * ) override
+    {
+      if ( QgsVectorTileLayer *tileLayer = qobject_cast< QgsVectorTileLayer * >( layer ) )
+      {
+        QDomDocument doc( QStringLiteral( "qgis" ) );
+        QString errorMsg;
+        mLayer->exportNamedStyle( doc, errorMsg );
+        tileLayer->importNamedStyle( doc, errorMsg );
+        tileLayer->triggerRepaint();
+      }
+    }
+
+  private:
+
+    QgsVectorTileLayer *mLayer;
+};
+
 QString QgsDownloadVectorTilesAlgorithm::name() const
 {
   return QStringLiteral( "downloadvectortiles" );
@@ -169,6 +194,11 @@ QVariantMap QgsDownloadVectorTilesAlgorithm::processAlgorithm( const QVariantMap
     }
 
     it++;
+  }
+
+  if ( context.willLoadLayerOnCompletion( outputFile ) )
+  {
+    context.layerToLoadOnCompletionDetails( outputFile ).setPostProcessor( new SetStylePostProcessor( vtLayer ) );
   }
 
   QVariantMap results;
