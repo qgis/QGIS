@@ -7999,7 +7999,8 @@ QWidget *QgsProcessingOutputWidgetWrapper::createWidget()
            && ( destParam->type() == QgsProcessingParameterRasterDestination::typeName() ||
                 destParam->type() == QgsProcessingParameterFeatureSink::typeName() ||
                 destParam->type() == QgsProcessingParameterVectorDestination::typeName() ||
-                destParam->type() == QgsProcessingParameterPointCloudDestination::typeName() ) )
+                destParam->type() == QgsProcessingParameterPointCloudDestination::typeName() ||
+                destParam->type() == QgsProcessingParameterVectorTileDestination::typeName() ) )
         mOutputWidget->addOpenAfterRunningOption();
 
       return mOutputWidget;
@@ -8201,6 +8202,30 @@ QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingFolderDestinationWidge
 QString QgsProcessingFolderDestinationWidgetWrapper::modelerExpressionFormatString() const
 {
   return tr( "path to folder destination" );
+}
+
+//
+// QgsProcessingVectorTileDestinationWidgetWrapper
+//
+
+QgsProcessingVectorTileDestinationWidgetWrapper::QgsProcessingVectorTileDestinationWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type, QWidget *parent )
+  : QgsProcessingOutputWidgetWrapper( parameter, type, parent )
+{
+}
+
+QString QgsProcessingVectorTileDestinationWidgetWrapper::parameterType() const
+{
+  return QgsProcessingParameterVectorTileDestination::typeName();
+}
+
+QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingVectorTileDestinationWidgetWrapper::createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type )
+{
+  return new QgsProcessingPointCloudDestinationWidgetWrapper( parameter, type );
+}
+
+QString QgsProcessingVectorTileDestinationWidgetWrapper::modelerExpressionFormatString() const
+{
+  return tr( "path to layer destination" );
 }
 
 ///@endcond PRIVATE

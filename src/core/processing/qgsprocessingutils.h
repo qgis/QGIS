@@ -231,6 +231,7 @@ class CORE_EXPORT QgsProcessingUtils
       Mesh, //!< Mesh layer type, since QGIS 3.6
       PointCloud, //!< Point cloud layer type, since QGIS 3.22
       Annotation, //!< Annotation layer type, since QGIS 3.22
+      VectorTile, //!< Vector tile layer type, since QGIS 3.32
     };
 
     /**
@@ -497,6 +498,7 @@ class CORE_EXPORT QgsProcessingUtils
      *
      * \see defaultRasterExtension()
      * \see defaultPointCloudExtension()
+     * \see defaultVectorTileExtension()
      * \since QGIS 3.10
      */
     static QString defaultVectorExtension();
@@ -510,6 +512,7 @@ class CORE_EXPORT QgsProcessingUtils
      *
      * \see defaultVectorExtension()
      * \see defaultPointCloudExtension()
+     * \see defaultVectorTileExtension()
      * \since QGIS 3.10
      */
     static QString defaultRasterExtension();
@@ -522,9 +525,23 @@ class CORE_EXPORT QgsProcessingUtils
      *
      * \see defaultVectorExtension()
      * \see defaultRasterExtension()
+     * \see defaultVectorTileExtension()
      * \since QGIS 3.24
      */
     static QString defaultPointCloudExtension();
+
+    /**
+     * Returns the default vector tile extension to use, in the absence of all other constraints (e.g.
+     * provider based support for extensions).
+     *
+     * This method returns a fallback value of "mbtiles".
+     *
+     * \see defaultVectorExtension()
+     * \see defaultRasterExtension()
+     * \see defaultPointCloudExtension()
+     * \since QGIS 3.32
+     */
+    static QString defaultVectorTileExtension();
 
     /**
      * Removes any raw pointer values from an input \a map, replacing them with

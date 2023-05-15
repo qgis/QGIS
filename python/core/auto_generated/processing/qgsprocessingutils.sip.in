@@ -246,6 +246,7 @@ Decodes a provider key and layer ``uri`` from an encoded string, for use with
       Mesh,
       PointCloud,
       Annotation,
+      VectorTile,
     };
 
     static QgsMapLayer *mapLayerFromString( const QString &string, QgsProcessingContext &context, bool allowLoadingNewLayers = true, QgsProcessingUtils::LayerHint typeHint = QgsProcessingUtils::LayerHint::UnknownType, QgsProcessing::LayerOptionsFlags flags = QgsProcessing::LayerOptionsFlags() );
@@ -503,6 +504,8 @@ a fallback value of "gpkg".
 
 .. seealso:: :py:func:`defaultPointCloudExtension`
 
+.. seealso:: :py:func:`defaultVectorTileExtension`
+
 .. versionadded:: 3.10
 %End
 
@@ -518,6 +521,8 @@ a fallback value of "tif".
 
 .. seealso:: :py:func:`defaultPointCloudExtension`
 
+.. seealso:: :py:func:`defaultVectorTileExtension`
+
 .. versionadded:: 3.10
 %End
 
@@ -532,7 +537,25 @@ This method returns a fallback value of "las".
 
 .. seealso:: :py:func:`defaultRasterExtension`
 
+.. seealso:: :py:func:`defaultVectorTileExtension`
+
 .. versionadded:: 3.24
+%End
+
+    static QString defaultVectorTileExtension();
+%Docstring
+Returns the default vector tile extension to use, in the absence of all other constraints (e.g.
+provider based support for extensions).
+
+This method returns a fallback value of "mbtiles".
+
+.. seealso:: :py:func:`defaultVectorExtension`
+
+.. seealso:: :py:func:`defaultRasterExtension`
+
+.. seealso:: :py:func:`defaultPointCloudExtension`
+
+.. versionadded:: 3.32
 %End
 
     static QVariantMap removePointerValuesFromMap( const QVariantMap &map );
