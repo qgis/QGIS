@@ -388,6 +388,11 @@ void QgsProcessingLayerOutputDestinationWidget::selectFile()
     lastExtPath = QStringLiteral( "/Processing/LastPointCloudOutputExt" );
     lastExt = settings.value( lastExtPath, QStringLiteral( ".%1" ).arg( mParameter->defaultFileExtension() ) ).toString();
   }
+  else if ( mParameter->type() == QgsProcessingParameterVectorTileDestination::typeName() )
+  {
+    lastExtPath = QStringLiteral( "/Processing/LastVectorTileOutputExt" );
+    lastExt = settings.value( lastExtPath, QStringLiteral( ".%1" ).arg( mParameter->defaultFileExtension() ) ).toString();
+  }
 
   // get default filter
   const QStringList filters = fileFilter.split( QStringLiteral( ";;" ) );

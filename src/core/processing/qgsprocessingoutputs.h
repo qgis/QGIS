@@ -49,6 +49,8 @@ class CORE_EXPORT QgsProcessingOutputDefinition
       sipType = sipType_QgsProcessingOutputRasterLayer;
     else if ( sipCpp->type() == QgsProcessingOutputPointCloudLayer::typeName() )
       sipType = sipType_QgsProcessingOutputPointCloudLayer;
+    else if ( sipCpp->type() == QgsProcessingOutputVectorTileLayer::typeName() )
+      sipType = sipType_QgsProcessingOutputVectorTileLayer;
     else if ( sipCpp->type() == QgsProcessingOutputMapLayer::typeName() )
       sipType = sipType_QgsProcessingOutputMapLayer;
     else if ( sipCpp->type() == QgsProcessingOutputMultipleLayers::typeName() )
@@ -434,6 +436,28 @@ class CORE_EXPORT QgsProcessingOutputConditionalBranch : public QgsProcessingOut
      * Returns the type name for the output class.
      */
     static QString typeName() { return QStringLiteral( "outputBranch" ); }
+    QString type() const override { return typeName(); }
+};
+
+/**
+ * \class QgsProcessingOutputVectorTileLayer
+ * \ingroup core
+ * \brief A vector tile layer output for processing algorithms.
+  * \since QGIS 3.32
+ */
+class CORE_EXPORT QgsProcessingOutputVectorTileLayer : public QgsProcessingOutputDefinition
+{
+  public:
+
+    /**
+     * Constructor for QgsProcessingOutputVectorTileLayer.
+     */
+    QgsProcessingOutputVectorTileLayer( const QString &name, const QString &description = QString() );
+
+    /**
+     * Returns the type name for the output class.
+     */
+    static QString typeName() { return QStringLiteral( "outputVectorTile" ); }
     QString type() const override { return typeName(); }
 };
 

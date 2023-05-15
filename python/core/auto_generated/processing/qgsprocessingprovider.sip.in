@@ -145,6 +145,10 @@ Returns ``True`` if the provider is active and able to run algorithms.
 Returns a list of the raster format file extensions supported by this provider.
 
 .. seealso:: :py:func:`supportedOutputVectorLayerExtensions`
+
+.. seealso:: :py:func:`supportedOutputPointCloudLayerExtensions`
+
+.. seealso:: :py:func:`supportedOutputVectorTileLayerExtensions`
 %End
 
     virtual QStringList supportedOutputVectorLayerExtensions() const;
@@ -160,11 +164,34 @@ Returns a list of the vector format file extensions supported by this provider.
 .. seealso:: :py:func:`supportsNonFileBasedOutput`
 
 .. seealso:: :py:func:`supportedOutputPointCloudLayerExtensions`
+
+.. seealso:: :py:func:`supportedOutputVectorTileLayerExtensions`
 %End
 
     virtual QStringList supportedOutputPointCloudLayerExtensions() const;
 %Docstring
 Returns a list of the point cloud format file extensions supported by this provider.
+
+.. seealso:: :py:func:`supportedOutputVectorLayerExtensions`
+
+.. seealso:: :py:func:`supportedOutputRasterLayerExtensions`
+
+.. seealso:: :py:func:`supportedOutputVectorTileLayerExtensions`
+
+.. seealso:: :py:func:`supportedOutputTableExtensions`
+
+.. seealso:: :py:func:`defaultVectorFileExtension`
+
+.. seealso:: :py:func:`supportsNonFileBasedOutput`
+
+.. versionadded:: 3.24
+%End
+
+    virtual QStringList supportedOutputVectorTileLayerExtensions() const;
+%Docstring
+Returns a list of the vector tile format file extensions supported by this provider.
+
+By default returns a list containing only "mbtiles" extension.
 
 .. seealso:: :py:func:`supportedOutputVectorLayerExtensions`
 
@@ -176,7 +203,7 @@ Returns a list of the point cloud format file extensions supported by this provi
 
 .. seealso:: :py:func:`supportsNonFileBasedOutput`
 
-.. versionadded:: 3.24
+.. versionadded:: 3.32
 %End
 
     virtual QStringList supportedOutputTableExtensions() const;
@@ -225,6 +252,8 @@ Otherwise the first reported supported vector format will be used.
 .. seealso:: :py:func:`defaultRasterFileExtension`
 
 .. seealso:: :py:func:`defaultPointCloudFileExtension`
+
+.. seealso:: :py:func:`defaultVectorTileFileExtension`
 %End
 
     virtual QString defaultRasterFileExtension() const;
@@ -241,6 +270,8 @@ Otherwise the first reported supported raster format will be used.
 .. seealso:: :py:func:`defaultVectorFileExtension`
 
 .. seealso:: :py:func:`defaultPointCloudFileExtension`
+
+.. seealso:: :py:func:`defaultVectorTileFileExtension`
 %End
 
     virtual QString defaultPointCloudFileExtension() const;
@@ -258,7 +289,27 @@ Otherwise the first reported supported point cloud format will be used.
 
 .. seealso:: :py:func:`defaultRasterFileExtension`
 
+.. seealso:: :py:func:`defaultVectorTileFileExtension`
+
 .. versionadded:: 3.24
+%End
+
+    virtual QString defaultVectorTileFileExtension() const;
+%Docstring
+Returns the default file extension to use for vector tile outputs created by the
+provider.
+
+The default implementation returns the user's default Processing vector tile output format
+setting, if it's supported by the provider (see :py:func:`~QgsProcessingProvider.supportedOutputVectorTileLayerExtensions`).
+Otherwise the first reported supported vector tile format will be used.
+
+.. seealso:: :py:func:`supportedOutputPointCloudLayerExtensions`
+
+.. seealso:: :py:func:`defaultVectorFileExtension`
+
+.. seealso:: :py:func:`defaultRasterFileExtension`
+
+.. versionadded:: 3.32
 %End
 
     virtual bool supportsNonFileBasedOutput() const;

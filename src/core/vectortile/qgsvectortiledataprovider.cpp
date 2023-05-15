@@ -107,6 +107,3 @@ QString QgsVectorTileDataProvider::htmlMetadata() const
 
   return QString();
 }
-
-
-

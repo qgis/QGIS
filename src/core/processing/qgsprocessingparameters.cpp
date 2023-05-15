@@ -987,6 +987,8 @@ QString QgsProcessingParameters::parameterAsOutputLayer( const QgsProcessingPara
       layerTypeHint = QgsProcessingUtils::LayerHint::Raster;
     else if ( definition && definition->type() == QgsProcessingParameterPointCloudDestination::typeName() )
       layerTypeHint = QgsProcessingUtils::LayerHint::PointCloud;
+    else if ( definition && definition->type() == QgsProcessingParameterVectorTileDestination::typeName() )
+      layerTypeHint = QgsProcessingUtils::LayerHint::VectorTile;
 
     context.addLayerToLoadOnCompletion( dest, QgsProcessingContext::LayerDetails( destName, destinationProject, outputName, layerTypeHint ) );
   }
@@ -2275,6 +2277,8 @@ QgsProcessingParameterDefinition *QgsProcessingParameters::parameterFromVariantM
     def.reset( new QgsProcessingParameterAnnotationLayer( name ) );
   else if ( type == QgsProcessingParameterPointCloudAttribute::typeName() )
     def.reset( new QgsProcessingParameterPointCloudAttribute( name ) );
+  else if ( type == QgsProcessingParameterVectorTileDestination::typeName() )
+    def.reset( new QgsProcessingParameterVectorTileDestination( name ) );
   else
   {
     QgsProcessingParameterType *paramType = QgsApplication::processingRegistry()->parameterType( type );
@@ -2393,6 +2397,8 @@ QgsProcessingParameterDefinition *QgsProcessingParameters::parameterFromScriptCo
     return QgsProcessingParameterAnnotationLayer::fromScriptCode( name, description, isOptional, definition );
   else if ( type == QLatin1String( "attribute" ) )
     return QgsProcessingParameterPointCloudAttribute::fromScriptCode( name, description, isOptional, definition );
+  else if ( type == QLatin1String( "vectortiledestination" ) )
+    return QgsProcessingParameterVectorTileDestination::fromScriptCode( name, description, isOptional, definition );
 
   return nullptr;
 }
@@ -9052,7 +9058,7 @@ QStringList QgsProcessingParameterPointCloudDestination::supportedOutputPointClo
   else
   {
     QString ext = QgsProcessingUtils::defaultPointCloudExtension();
-    return QStringList() << QObject::tr( "%1 files (*.%2)" ).arg( ext.toUpper(), ext.toLower() );
+    return QStringList() << ext;
   }
 }
 
@@ -9280,4 +9286,108 @@ QgsProcessingParameterPointCloudAttribute *QgsProcessingParameterPointCloudAttri
   }
 
   return new QgsProcessingParameterPointCloudAttribute( name, description, def.isEmpty() ? QVariant() : def, parent, allowMultiple, isOptional, defaultToAllAttributes );
+}
+
+//
+// QgsProcessingParameterVectorTileDestination
+//
+
+QgsProcessingParameterVectorTileDestination::QgsProcessingParameterVectorTileDestination( const QString &name, const QString &description, const QVariant &defaultValue, bool optional, bool createByDefault )
+  : QgsProcessingDestinationParameter( name, description, defaultValue, optional, createByDefault )
+{
+}
+
+QgsProcessingParameterDefinition *QgsProcessingParameterVectorTileDestination::clone() const
+{
+  return new QgsProcessingParameterVectorTileDestination( *this );
+}
+
+bool QgsProcessingParameterVectorTileDestination::checkValueIsAcceptable( const QVariant &input, QgsProcessingContext * ) const
+{
+  QVariant var = input;
+  if ( !var.isValid() )
+    return mFlags & FlagOptional;
+
+  if ( var.userType() == QMetaType::type( "QgsProcessingOutputLayerDefinition" ) )
+  {
+    const QgsProcessingOutputLayerDefinition fromVar = qvariant_cast<QgsProcessingOutputLayerDefinition>( var );
+    var = fromVar.sink;
+  }
+
+  if ( var.userType() == QMetaType::type( "QgsProperty" ) )
+  {
+    const QgsProperty p = var.value< QgsProperty >();
+    if ( p.propertyType() == QgsProperty::StaticProperty )
+    {
+      var = p.staticValue();
+    }
+    else
+    {
+      return true;
+    }
+  }
+
+  if ( var.type() != QVariant::String )
+    return false;
+
+  if ( var.toString().isEmpty() )
+    return mFlags & FlagOptional;
+
+  return true;
+}
+
+QString QgsProcessingParameterVectorTileDestination::valueAsPythonString( const QVariant &value, QgsProcessingContext & ) const
+{
+  if ( !value.isValid() )
+    return QStringLiteral( "None" );
+
+  if ( value.userType() == QMetaType::type( "QgsProperty" ) )
+    return QStringLiteral( "QgsProperty.fromExpression('%1')" ).arg( value.value< QgsProperty >().asExpression() );
+
+  if ( value.userType() == QMetaType::type( "QgsProcessingOutputLayerDefinition" ) )
+  {
+    const QgsProcessingOutputLayerDefinition fromVar = qvariant_cast<QgsProcessingOutputLayerDefinition>( value );
+    if ( fromVar.sink.propertyType() == QgsProperty::StaticProperty )
+    {
+      return QgsProcessingUtils::stringToPythonLiteral( fromVar.sink.staticValue().toString() );
+    }
+    else
+    {
+      return QStringLiteral( "QgsProperty.fromExpression('%1')" ).arg( fromVar.sink.asExpression() );
+    }
+  }
+
+  return QgsProcessingUtils::stringToPythonLiteral( value.toString() );
+}
+
+QgsProcessingOutputDefinition *QgsProcessingParameterVectorTileDestination::toOutputDefinition() const
+{
+  return new QgsProcessingOutputVectorTileLayer( name(), description() );
+}
+
+QString QgsProcessingParameterVectorTileDestination::defaultFileExtension() const
+{
+  return QgsProcessingUtils::defaultVectorTileExtension();
+}
+
+QString QgsProcessingParameterVectorTileDestination::createFileFilter() const
+{
+  const QStringList exts = supportedOutputVectorTileLayerExtensions();
+  QStringList filters;
+  for ( const QString &ext : exts )
+  {
+    filters << QObject::tr( "%1 files (*.%2)" ).arg( ext.toUpper(), ext.toLower() );
+  }
+  return filters.join( QLatin1String( ";;" ) ) + QStringLiteral( ";;" ) + QObject::tr( "All files (*.*)" );
+}
+
+QStringList QgsProcessingParameterVectorTileDestination::supportedOutputVectorTileLayerExtensions() const
+{
+  QString ext = QgsProcessingUtils::defaultVectorTileExtension();
+  return QStringList() << ext;
+}
+
+QgsProcessingParameterVectorTileDestination *QgsProcessingParameterVectorTileDestination::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
+{
+  return new QgsProcessingParameterVectorTileDestination( name, description, definition.isEmpty() ? QVariant() : definition, isOptional );
 }

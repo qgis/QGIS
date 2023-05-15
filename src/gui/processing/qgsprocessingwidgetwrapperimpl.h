@@ -2455,6 +2455,24 @@ class GUI_EXPORT QgsProcessingPointCloudAttributeWidgetWrapper : public QgsAbstr
     friend class TestProcessingGui;
 };
 
+class GUI_EXPORT QgsProcessingVectorTileDestinationWidgetWrapper : public QgsProcessingOutputWidgetWrapper
+{
+    Q_OBJECT
+
+  public:
+
+    QgsProcessingVectorTileDestinationWidgetWrapper( const QgsProcessingParameterDefinition *parameter = nullptr,
+        QgsProcessingGui::WidgetType type = QgsProcessingGui::Standard, QWidget *parent = nullptr );
+
+    // QgsProcessingParameterWidgetFactoryInterface
+    QString parameterType() const override;
+    QgsAbstractProcessingParameterWidgetWrapper *createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type ) override;
+
+  protected:
+    QString modelerExpressionFormatString() const override;
+
+};
+
 ///@endcond PRIVATE
 
 #endif // QGSPROCESSINGWIDGETWRAPPERIMPL_H

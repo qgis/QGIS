@@ -244,6 +244,9 @@ QgsMapLayer *QgsProcessingUtils::mapLayerFromStore( const QString &string, QgsMa
 
       case LayerHint::Annotation:
         return l->type() == Qgis::LayerType::Annotation;
+
+      case LayerHint::VectorTile:
+        return l->type() == Qgis::LayerType::VectorTile;
     }
     return true;
   };
@@ -385,6 +388,20 @@ QgsMapLayer *QgsProcessingUtils::loadMapLayerFromString( const QString &string, 
     if ( pointCloudLayer && pointCloudLayer->isValid() )
     {
       return pointCloudLayer.release();
+    }
+  }
+  if ( typeHint == LayerHint::UnknownType || typeHint == LayerHint::VectorTile )
+  {
+    QgsDataSourceUri dsUri;
+    dsUri.setParam( "type", "mbtiles" );
+    dsUri.setParam( "url", uri );
+
+    std::unique_ptr< QgsVectorTileLayer > tileLayer;
+    tileLayer = std::make_unique< QgsVectorTileLayer >( dsUri.encodedUri(), name );
+
+    if ( tileLayer->isValid() )
+    {
+      return tileLayer.release();
     }
   }
   return nullptr;
@@ -1393,6 +1410,11 @@ QString QgsProcessingUtils::defaultRasterExtension()
 QString QgsProcessingUtils::defaultPointCloudExtension()
 {
   return QStringLiteral( "las" );
+}
+
+QString QgsProcessingUtils::defaultVectorTileExtension()
+{
+  return QStringLiteral( "mbtiles" );
 }
 
 QVariantMap QgsProcessingUtils::removePointerValuesFromMap( const QVariantMap &map )
