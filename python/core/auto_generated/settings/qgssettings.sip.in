@@ -241,7 +241,7 @@ If no default value is specified, a default QVariant is returned.
 An optional Section argument can be used to get a value from a specific Section.
 %End
 %MethodCode
-    typedef PyObject *( *pyqt5_from_qvariant_by_type )( QVariant &value, PyObject *type );
+    typedef PyObject *( *pyqt_from_qvariant_by_type )( QVariant &value, PyObject *type );
     QVariant value;
 
     // QSettings has an internal mutex so release the GIL to avoid the possibility of deadlocks.
@@ -249,7 +249,7 @@ An optional Section argument can be used to get a value from a specific Section.
     value = sipCpp->value( *a0, *a1, a3 );
     Py_END_ALLOW_THREADS
 
-    pyqt5_from_qvariant_by_type f = ( pyqt5_from_qvariant_by_type ) sipImportSymbol( "pyqt5_from_qvariant_by_type" );
+    pyqt_from_qvariant_by_type f = ( pyqt_from_qvariant_by_type ) sipImportSymbol( SIP_PYQT_FROM_QVARIANT_BY_TYPE );
     sipRes = f( value, a2 );
 
     sipIsErr = !sipRes;

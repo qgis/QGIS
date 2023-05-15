@@ -4436,6 +4436,18 @@ template<_TYPE_>
 //// End Qt6 SPecific code
 
 %If (!PYQT6)
+    %ModuleHeaderCode
+    #define SIP_PYQT_FROM_QVARIANT_BY_TYPE "pyqt5_from_qvariant_by_type"
+    %End
+%End
+
+%If (PYQT6)
+    %ModuleHeaderCode
+    #define SIP_PYQT_FROM_QVARIANT_BY_TYPE "pyqt6_from_qvariant_by_type"
+    %End
+%End
+
+%If (!PYQT6)
 
 %PostInitialisationCode  //#spellok
 

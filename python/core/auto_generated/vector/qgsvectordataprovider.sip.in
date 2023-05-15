@@ -714,11 +714,14 @@ Usually done in the constructor.
 .. versionadded:: 3.0
 %End
 
+%If( !PYQT6 )
+
     QTextCodec *textEncoding() const;
 %Docstring
 Gets this providers encoding
 
 .. versionadded:: 3.0
+%End
 %End
 
 };

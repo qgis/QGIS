@@ -226,13 +226,11 @@ class CORE_EXPORT QgsSettings : public QObject
     QVariant value( const QString &key, const QVariant &defaultValue = QVariant(),
                     Section section = NoSection ) const;
 #else
-    % If( PYQT6 )
     SIP_PYOBJECT value( const QString &key, const QVariant &defaultValue = QVariant(),
                         SIP_PYOBJECT type = 0,
                         QgsSettings::Section section = QgsSettings::NoSection ) const / ReleaseGIL /;
-
     % MethodCode
-
+    typedef PyObject *( *pyqt_from_qvariant_by_type )( QVariant &value, PyObject *type );
     QVariant value;
 
     // QSettings has an internal mutex so release the GIL to avoid the possibility of deadlocks.
@@ -240,40 +238,11 @@ class CORE_EXPORT QgsSettings : public QObject
     value = sipCpp->value( *a0, *a1, a3 );
     Py_END_ALLOW_THREADS
 
-    typedef PyObject *( *pyqt6_from_qvariant_by_type )( QVariant &value, PyObject *type );
-    pyqt6_from_qvariant_by_type f = ( pyqt6_from_qvariant_by_type ) sipImportSymbol( "pyqt6_from_qvariant_by_type" );
-
+    pyqt_from_qvariant_by_type f = ( pyqt_from_qvariant_by_type ) sipImportSymbol( SIP_PYQT_FROM_QVARIANT_BY_TYPE );
     sipRes = f( value, a2 );
 
     sipIsErr = !sipRes;
-    SIP_END
-
     % End
-
-    % If( !PYQT6 )
-    SIP_PYOBJECT value( const QString &key, const QVariant &defaultValue = QVariant(),
-                        SIP_PYOBJECT type = 0,
-                        QgsSettings::Section section = QgsSettings::NoSection ) const / ReleaseGIL /;
-
-    % MethodCode
-
-    QVariant value;
-
-    // QSettings has an internal mutex so release the GIL to avoid the possibility of deadlocks.
-    Py_BEGIN_ALLOW_THREADS
-    value = sipCpp->value( *a0, *a1, a3 );
-    Py_END_ALLOW_THREADS
-
-    typedef PyObject *( *pyqt5_from_qvariant_by_type )( QVariant &value, PyObject *type );
-    pyqt5_from_qvariant_by_type f = ( pyqt5_from_qvariant_by_type ) sipImportSymbol( "pyqt5_from_qvariant_by_type" );
-
-    sipRes = f( value, a2 );
-
-    sipIsErr = !sipRes;
-    SIP_END
-
-    % End
-
 #endif
 
 

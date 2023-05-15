@@ -692,16 +692,15 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
      */
     void setNativeTypes( const QList<QgsVectorDataProvider::NativeType> &nativeTypes );
 
+#ifdef SIP_RUN // TODO Make it work with Qt6
+    % If( !PYQT6 )
+#endif
+
     /**
      * Gets this providers encoding
      *
      * \since QGIS 3.0
      */
-
-// TODO Make it work with Qt6
-#ifdef SIP_RUN
-    % If( !PYQT6 )
-#endif
     QTextCodec *textEncoding() const;
 #ifdef SIP_RUN
     % End

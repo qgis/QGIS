@@ -675,8 +675,10 @@ while ($LINE_IDX < $LINE_COUNT){
         while ( $LINE !~ m/^ *% *End/ ){
             write_output("COD", $LINE."\n");
             $LINE = read_line();
-            $LINE =~ s/SIP_SSIZE_T/Py_ssize_t/g;
-            $LINE =~ s/SIPLong_AsLong/PyLong_AsLong/g;
+            if ( $is_qt6 ){
+              $LINE =~ s/SIP_SSIZE_T/Py_ssize_t/g;
+              $LINE =~ s/SIPLong_AsLong/PyLong_AsLong/g;
+            }
             $LINE =~ s/^ *% *(VirtualErrorHandler|MappedType|Type(?:Header)?Code|Module(?:Header)?Code|Convert(?:From|To)(?:Type|SubClass)Code|MethodCode|Docstring)(.*)?$/%$1$2/;
             $LINE =~ s/^\s*SIP_END(.*)$/%End$1/;
         }
