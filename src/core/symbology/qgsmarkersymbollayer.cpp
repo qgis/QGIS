@@ -1157,6 +1157,7 @@ void QgsSimpleMarkerSymbolLayer::startRender( QgsSymbolRenderContext &context )
 bool QgsSimpleMarkerSymbolLayer::prepareCache( QgsSymbolRenderContext &context )
 {
   double scaledSize = context.renderContext().convertToPainterUnits( mSize, mSizeUnit, mSizeMapUnitScale );
+  const double deviceRatio = context.renderContext().devicePixelRatio();
   if ( mSizeUnit == Qgis::RenderUnit::MetersInMapUnits && context.renderContext().flags() & Qgis::RenderContextFlag::RenderSymbolPreview )
   {
     // rendering for symbol previews -- a size in meters in map units can't be calculated, so treat the size as millimeters
@@ -1173,13 +1174,13 @@ bool QgsSimpleMarkerSymbolLayer::prepareCache( QgsSymbolRenderContext &context )
   const double pw = static_cast< int >( std::round( ( ( qgsDoubleNear( mPen.widthF(), 0.0 ) ? 1 : mPen.widthF() * 4 ) + 1 ) ) ) / 2 * 2; // make even (round up); handle cosmetic pen
   const int imageSize = ( static_cast< int >( scaledSize ) + pw ) / 2 * 2 + 1; //  make image width, height odd; account for pen width
   const double center = imageSize / 2.0;
-  if ( imageSize > MAXIMUM_CACHE_WIDTH )
+  if ( imageSize * deviceRatio > MAXIMUM_CACHE_WIDTH )
   {
     return false;
   }
 
-  mCache = QImage( QSize( imageSize * context.renderContext().devicePixelRatio(),
-                          imageSize * context.renderContext().devicePixelRatio() ), QImage::Format_ARGB32_Premultiplied );
+  mCache = QImage( QSize( imageSize * deviceRatio,
+                          imageSize * deviceRatio ), QImage::Format_ARGB32_Premultiplied );
   mCache.setDevicePixelRatio( context.renderContext().devicePixelRatio() );
   mCache.setDotsPerMeterX( std::round( context.renderContext().scaleFactor() * 1000 ) );
   mCache.setDotsPerMeterY( std::round( context.renderContext().scaleFactor() * 1000 ) );
