@@ -6297,13 +6297,17 @@ bool QgisApp::addProject( const QString &projectFile )
     }
 #endif
 
-    // Check for missing layer widget dependencies
-    const auto constVLayers { QgsProject::instance()->layers<QgsVectorLayer *>( ) };
-    for ( QgsVectorLayer *vl : constVLayers )
     {
-      if ( vl->isValid() )
+      QgsScopedRuntimeProfile profile( tr( "Resolve vector layer dependencies" ), QStringLiteral( "projectload" ) );
+
+      // Check for missing layer widget dependencies
+      const auto constVLayers { QgsProject::instance()->layers<QgsVectorLayer *>( ) };
+      for ( QgsVectorLayer *vl : constVLayers )
       {
-        QgsAppLayerHandling::resolveVectorLayerDependencies( vl );
+        if ( vl->isValid() )
+        {
+          QgsAppLayerHandling::resolveVectorLayerDependencies( vl );
+        }
       }
     }
 
