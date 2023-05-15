@@ -726,7 +726,7 @@ QDomElement TestQgsCompositionConverter::loadComposer( const QString &name )
   QFile file( templatePath );
   bool res = file.open( QIODevice::ReadOnly );
   Q_ASSERT( res );
-  res = doc.setContent( &file );
+  res = static_cast< bool >( doc.setContent( &file ) );
   Q_ASSERT( res );
   file.close();
   QDomNodeList nodes( doc.elementsByTagName( QStringLiteral( "Composer" ) ) );
