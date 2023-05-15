@@ -150,6 +150,9 @@ to tag a parameter as "advanced", just add "*" before its declaration. For insta
 
 *ParameterBoolean|-c|-c|True
 
+RELOADING ALGORITHM DESCRIPTIONS
+---------------------------------------
+You do not need to restart QGIS after editing or creating an algorithm description - simply click the wrench icon in the processing toolbox, then click OK, and QGIS will reload the descriptions. 
 
 ADVANCED PROCESSING
 --------------------------
