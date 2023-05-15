@@ -34,7 +34,7 @@ class TestQgsMapCanvas(TestCase):
 
         layer.select(layer.allFeatureIds()[0])
         options = QgsVectorLayerSaveAsDialog.Options(
-            QgsVectorLayerSaveAsDialog.OptionSelectedOnly
+            QgsVectorLayerSaveAsDialog.Option.SelectedOnly
             | QgsVectorLayerSaveAsDialog.Option.Metadata
         )
         d = QgsVectorLayerSaveAsDialog(layer, options=options)
