@@ -82,7 +82,10 @@ QVariantMap QgsRepairShapefileAlgorithm::processAlgorithm( const QVariantMap &pa
 
   std::unique_ptr< QgsVectorLayer > layer = std::make_unique< QgsVectorLayer >( path );
   if ( !layer->isValid() )
+  {
+    CPLSetConfigOption( "SHAPE_RESTORE_SHX", nullptr );
     throw QgsProcessingException( QObject::tr( "Could not repair %1." ).arg( path ) );
+  }
 
   CPLSetConfigOption( "SHAPE_RESTORE_SHX", nullptr );
 
