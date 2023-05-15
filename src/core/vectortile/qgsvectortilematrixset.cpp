@@ -140,7 +140,7 @@ bool QgsVectorTileMatrixSet::fromEsriJson( const QVariantMap &json, const QVaria
       // now we'll zoom back in, checking the tilemap information for each tile as we go
       // in order to catch "tile with no children" states
       QVariantList node = tileMap;
-      for ( int index = bottomToTopQueue.size() - 1; index >= 0; --index )
+      for ( int index = static_cast<int>( bottomToTopQueue.size() ) - 1; index >= 0; --index )
       {
         const QgsTileXYZ &tile = bottomToTopQueue[ index ];
         int childColumn = tile.column() - column;
@@ -164,7 +164,7 @@ bool QgsVectorTileMatrixSet::fromEsriJson( const QVariantMap &json, const QVaria
         else
         {
           bool ok = false;
-          const int nodeInt = childNode.toLongLong( &ok );
+          const long long nodeInt = childNode.toLongLong( &ok );
 
           if ( !ok )
           {
