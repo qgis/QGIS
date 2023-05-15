@@ -68,7 +68,7 @@ void QgsDownloadVectorTilesAlgorithm::initAlgorithm( const QVariantMap & )
   tileLimitParam->setFlags( tileLimitParam->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
   addParameter( tileLimitParam.release() );
 
-  addParameter( new QgsProcessingParameterFileDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Output" ), QObject::tr( "MBTiles files (*.mbtiles)" ) ) );
+  addParameter( new QgsProcessingParameterVectorTileDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Output" ) ) );
 }
 
 QVariantMap QgsDownloadVectorTilesAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
@@ -80,7 +80,7 @@ QVariantMap QgsDownloadVectorTilesAlgorithm::processAlgorithm( const QVariantMap
   const QgsRectangle extent = parameterAsExtent( parameters, QStringLiteral( "EXTENT" ), context, layer->crs() );
   const int maxZoomLevel = parameterAsInt( parameters, QStringLiteral( "MAX_ZOOM" ), context );
   const int tileLimit = parameterAsInt( parameters, QStringLiteral( "TILE_LIMIT" ), context );
-  const QString outputFile = parameterAsFileOutput( parameters, QStringLiteral( "OUTPUT" ), context );
+  const QString outputFile = parameterAsOutputLayer( parameters, QStringLiteral( "OUTPUT" ), context );
 
   QgsVectorTileLayer *vtLayer = qobject_cast< QgsVectorTileLayer * >( layer );
   const QgsVectorTileDataProvider *provider = qgis::down_cast< const QgsVectorTileDataProvider * >( vtLayer->dataProvider() );
