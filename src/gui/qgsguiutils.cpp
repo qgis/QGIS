@@ -251,7 +251,7 @@ namespace QgsGuiUtils
   QSize iconSize( bool dockableToolbar )
   {
     const QgsSettings s;
-    const int w = s.value( QStringLiteral( "/qgis/iconSize" ), 32 ).toInt();
+    const int w = s.value( QStringLiteral( "/qgis/toolbarIconSize" ), 32 ).toInt();
     QSize size( w, w );
 
     if ( dockableToolbar )
