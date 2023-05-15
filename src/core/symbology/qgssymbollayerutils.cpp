@@ -5024,6 +5024,19 @@ QgsSymbol *QgsSymbolLayerUtils::restrictedSizeSymbol( const QgsSymbol *s, double
   }
   else if ( lineSymbol )
   {
+    const QgsSymbolLayerList sls = s->symbolLayers();
+    for ( const QgsSymbolLayer *sl : std::as_const( sls ) )
+    {
+      // geometry generators involved, there is no way to get a restricted size symbol
+      if ( sl->type() != Qgis::SymbolType::Line )
+      {
+        if ( ok )
+          *ok = false;
+
+        return nullptr;
+      }
+    }
+
     size = lineSymbol->width( *context );
   }
   else
