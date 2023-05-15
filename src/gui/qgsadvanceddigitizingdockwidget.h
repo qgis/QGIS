@@ -22,7 +22,6 @@
 #include <memory>
 
 #include "ui_qgsadvanceddigitizingdockwidgetbase.h"
-#include "qgsadvanceddigitizingfloater.h"
 #include "qgis_gui.h"
 #include "qgis_sip.h"
 #include "qgsdockwidget.h"
@@ -668,6 +667,14 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     void valueDistanceChanged( const QString &value );
 
     /**
+    * Emitted whenever the bearing \a value changes.
+    * Could be used by widgets that must reflect the current advanced digitizing state.
+    * \note unstable API (will likely change)
+    * \since QGIS 3.32
+    */
+    void valueBearingChanged( const QString &value );
+
+    /**
     * Emitted whenever the X parameter is \a locked.
     * Could be used by widgets that must reflect the current advanced digitizing state.
     * \note unstable API (will likely change)
@@ -1076,7 +1083,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     QgsPoint pointXYToPoint( const QgsPointXY &point ) const;
 
     QMenu *mCommonAngleActionsMenu = nullptr;
-    bool mShowCommonAngleInFloater = false;
+    QMenu *mFloaterActionsMenu = nullptr;
 
     friend class TestQgsAdvancedDigitizing;
     friend class TestQgsAdvancedDigitizingDockWidget;

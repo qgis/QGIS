@@ -49,7 +49,7 @@
       <addaction name="separator"/>
       <addaction name="mSettingsAction"/>
       <addaction name="separator"/>
-      <addaction name="mToggleFloaterAction"/>
+      <addaction name="mFloaterAction"/>
       <addaction name="separator"/>
       <addaction name="mConstructionAction"/>
      </widget>
@@ -612,7 +612,7 @@
     </property>
    </action>
   </widget>
-  <action name="mToggleFloaterAction">
+  <action name="mFloaterAction">
    <property name="checkable">
     <bool>true</bool>
    </property>
@@ -621,7 +621,7 @@
      <normaloff>:/images/themes/default/cadtools/floater.svg</normaloff>:/images/themes/default/cadtools/floater.svg</iconset>
    </property>
    <property name="text">
-    <string>Toggle Floater</string>
+    <string>Floater settings</string>
    </property>
   </action>
   <action name="mConstructionAction">
