@@ -49,7 +49,7 @@ QMap<QString, QVariant> QgisAppStyleSheet::defaultOptions()
   return opts;
 }
 
-void QgisAppStyleSheet::buildStyleSheet( const QMap<QString, QVariant> &opts )
+void QgisAppStyleSheet::applyStyleSheet( const QMap<QString, QVariant> &opts )
 {
   const QgsSettings settings;
   QString ss;

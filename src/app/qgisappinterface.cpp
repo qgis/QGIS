@@ -491,7 +491,7 @@ void QgisAppInterface::buildStyleSheet( const QMap<QString, QVariant> &opts )
     newOpts.remove( QStringLiteral( "fontFamily" ) );
   }
 
-  qgis->styleSheetBuilder()->buildStyleSheet( newOpts );
+  qgis->styleSheetBuilder()->applyStyleSheet( newOpts );
 }
 
 void QgisAppInterface::saveStyleSheetOptions( const QMap<QString, QVariant> &opts )

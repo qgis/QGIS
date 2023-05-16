@@ -38,11 +38,12 @@ class APP_EXPORT QgisAppStyleSheet: public QObject
     QMap<QString, QVariant> defaultOptions();
 
     /**
-     * Generate stylesheet
+     * Build and apply a stylesheet.
+     *
      * \param opts generated default option values, or a changed copy of them
      * \note on success emits appStyleSheetChanged
      */
-    void buildStyleSheet( const QMap<QString, QVariant> &opts );
+    void applyStyleSheet( const QMap<QString, QVariant> &opts );
 
     //! Save changed default option keys/values to user settings
     void saveToSettings( const QMap<QString, QVariant> &opts );
