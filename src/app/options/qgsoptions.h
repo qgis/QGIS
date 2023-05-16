@@ -113,7 +113,7 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
     void selectProjectOnLaunch();
 
     //! Slot to select the default font point size for app
-    void spinFontSize_valueChanged( int fontSize );
+    void spinFontSize_valueChanged(double fontSize );
 
     //! Slot to set font family for app to Qt default
     void mFontFamilyRadioQt_released();
