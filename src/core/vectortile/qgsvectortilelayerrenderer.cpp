@@ -27,6 +27,7 @@
 #include "qgsrendercontext.h"
 #include "qgsvectortiledataprovider.h"
 #include "qgstextrenderer.h"
+
 #include <QElapsedTimer>
 #include <QThread>
 
