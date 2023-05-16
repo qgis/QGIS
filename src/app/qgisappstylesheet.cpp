@@ -42,26 +42,6 @@ QMap<QString, QVariant> QgisAppStyleSheet::defaultOptions()
   // constructor to set reasonable non-Qt defaults for the app stylesheet
   QgsSettings settings;
 
-  // TODO: find a better default fontsize maybe using DPI detection or so (from Marco Bernasocchi commit)
-  const double defaultFontSize = mAndroidOS ? 8 : mDefaultFont.pointSizeF();
-  const double fontSize = settings.value( QStringLiteral( "/qgis/stylesheet/fontPointSize" ), defaultFontSize ).toDouble();
-  QgsDebugMsgLevel( QStringLiteral( "fontPointSize: %1" ).arg( fontSize ), 2 );
-  opts.insert( QStringLiteral( "fontPointSize" ), fontSize );
-
-  QString fontFamily = settings.value( QStringLiteral( "/qgis/stylesheet/fontFamily" ), mDefaultFont.family() ).toString();
-  // make sure family exists on system
-  if ( fontFamily != mDefaultFont.family() )
-  {
-    const QFont tempFont( fontFamily );
-    if ( tempFont.family() != fontFamily )
-    {
-      // missing from system, drop back to default
-      fontFamily = mDefaultFont.family();
-    }
-  }
-  QgsDebugMsgLevel( QStringLiteral( "fontFamily: %1" ).arg( fontFamily ), 2 );
-  opts.insert( QStringLiteral( "fontFamily" ), QVariant( fontFamily ) );
-
   opts.insert( QStringLiteral( "toolbarSpacing" ), settings.value( QStringLiteral( "/qgis/stylesheet/toolbarSpacing" ), QString() ) );
 
   opts.insert( QStringLiteral( "iconSize" ), settings.value( QStringLiteral( "/qgis/toolbarIconSize" ), QGIS_ICON_SIZE ) );
@@ -76,25 +56,37 @@ void QgisAppStyleSheet::buildStyleSheet( const QMap<QString, QVariant> &opts )
 
   // QgisApp-wide font
   {
-    bool fontSizeOk = false;
-    const double fontSize = opts.value( QStringLiteral( "fontPointSize" ) ).toDouble( &fontSizeOk );
-    QgsDebugMsgLevel( QStringLiteral( "fontPointSize: %1" ).arg( fontSize ), 2 );
-    if ( !fontSizeOk )
+    bool overriddenFontSize = false;
+    double currentFontSize = fontSize();
+    if ( opts.contains( QStringLiteral( "fontPointSize" ) ) )
     {
-      return;
+      const double fontSizeFromOpts = opts.value( QStringLiteral( "fontPointSize" ) ).toDouble();
+      currentFontSize = fontSizeFromOpts;
+    }
+    QgsDebugMsgLevel( QStringLiteral( "fontPointSize: %1" ).arg( currentFontSize ), 2 );
+    if ( currentFontSize != defaultFont().pointSizeF() )
+    {
+      overriddenFontSize = true;
     }
 
-    const QString fontFamily = opts.value( QStringLiteral( "fontFamily" ) ).toString();
-    QgsDebugMsgLevel( QStringLiteral( "fontFamily: %1" ).arg( fontFamily ), 2 );
-    if ( fontFamily.isEmpty() )
+    bool overriddenFontFamily = false;
+    QString currentFontFamily = fontFamily();
+    if ( opts.contains( QStringLiteral( "fontFamily" ) ) )
     {
-      return;
+      currentFontFamily = opts.value( QStringLiteral( "fontFamily" ) ).toString();
+    }
+    QgsDebugMsgLevel( QStringLiteral( "fontFamily: %1" ).arg( currentFontFamily ), 2 );
+    if ( !currentFontFamily.isEmpty() && currentFontFamily != defaultFont().family() )
+    {
+      overriddenFontFamily = true;
     }
 
-    const double defaultSize = mDefaultFont.pointSizeF();
-    const QString defaultFamily = mDefaultFont.family();
-    if ( fontSize != defaultSize || fontFamily != defaultFamily )
-      ss += QStringLiteral( "* { font: %1pt \"%2\"} " ).arg( fontSize ).arg( fontFamily );
+    if ( overriddenFontFamily && overriddenFontSize )
+      ss += QStringLiteral( "* { font: %1pt \"%2\"} " ).arg( currentFontSize ).arg( currentFontFamily );
+    else if ( overriddenFontFamily )
+      ss += QStringLiteral( "* { font-family: \"%1\"} " ).arg( currentFontFamily );
+    else if ( overriddenFontSize )
+      ss += QStringLiteral( "* { font-size: %1pt } " ).arg( overriddenFontSize );
   }
 
   if ( mMacStyle )
@@ -203,6 +195,38 @@ void QgisAppStyleSheet::setActiveValues()
   mOxyStyle = mStyle.contains( QLatin1String( "oxygen" ) ); // oxygen
 
   mDefaultFont = qApp->font(); // save before it is changed in any way
+
+  QgsSettings settings;
+
+  if ( mAndroidOS )
+  {
+    // TODO: find a better default fontsize maybe using DPI detection or so (from Marco Bernasocchi commit)
+    mUserFontSize = 8;
+  }
+  else
+  {
+    const double fontSize = settings.value( QStringLiteral( "/qgis/stylesheet/fontPointSize" ), mDefaultFont.pointSizeF() ).toDouble();
+    if ( fontSize != mDefaultFont.pointSizeF() )
+    {
+      mUserFontSize = fontSize;
+    }
+    else
+    {
+      mUserFontSize = -1;
+    }
+  }
+
+  QString fontFamily = settings.value( QStringLiteral( "/qgis/stylesheet/fontFamily" ), mDefaultFont.family() ).toString();
+  // make sure family exists on system
+  if ( fontFamily != mDefaultFont.family() )
+  {
+    const QFont tempFont( fontFamily );
+    if ( tempFont.family() == fontFamily )
+    {
+      // font exists on system
+      mUserFontFamily = fontFamily;
+    }
+  }
 
   // platforms, specific
 #ifdef Q_OS_WIN
