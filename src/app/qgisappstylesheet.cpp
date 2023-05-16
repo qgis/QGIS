@@ -185,13 +185,13 @@ void QgisAppStyleSheet::setUserFontSize( double size )
   QgsSettings settings;
   if ( size == mDefaultFont.pointSizeF() || size < 0 )
   {
-    settings.remove( QStringLiteral( "/qgis/stylesheet/fontPointSize" ) );
+    settings.remove( QStringLiteral( "/app/fontPointSize" ) );
     mUserFontSize = -1;
   }
   else
   {
     mUserFontSize = size;
-    settings.setValue( QStringLiteral( "/qgis/stylesheet/fontPointSize" ), mUserFontSize );
+    settings.setValue( QStringLiteral( "/app/fontPointSize" ), mUserFontSize );
   }
 }
 
@@ -200,13 +200,13 @@ void QgisAppStyleSheet::setUserFontFamily( const QString &family )
   QgsSettings settings;
   if ( family == mDefaultFont.family() || family.isEmpty() )
   {
-    settings.remove( QStringLiteral( "/qgis/stylesheet/fontFamily" ) );
+    settings.remove( QStringLiteral( "/app/fontFamily" ) );
     mUserFontFamily.clear();
   }
   else
   {
     mUserFontFamily = family;
-    settings.setValue( QStringLiteral( "/qgis/stylesheet/fontFamily" ), mUserFontFamily );
+    settings.setValue( QStringLiteral( "/app/fontFamily" ), mUserFontFamily );
   }
 }
 
@@ -244,7 +244,7 @@ void QgisAppStyleSheet::setActiveValues()
   }
   else
   {
-    const double fontSize = settings.value( QStringLiteral( "/qgis/stylesheet/fontPointSize" ), mDefaultFont.pointSizeF() ).toDouble();
+    const double fontSize = settings.value( QStringLiteral( "/app/fontPointSize" ), mDefaultFont.pointSizeF() ).toDouble();
     if ( fontSize != mDefaultFont.pointSizeF() )
     {
       mUserFontSize = fontSize;
@@ -255,7 +255,7 @@ void QgisAppStyleSheet::setActiveValues()
     }
   }
 
-  QString fontFamily = settings.value( QStringLiteral( "/qgis/stylesheet/fontFamily" ), mDefaultFont.family() ).toString();
+  QString fontFamily = settings.value( QStringLiteral( "/app/fontFamily" ), mDefaultFont.family() ).toString();
   // make sure family exists on system
   if ( fontFamily != mDefaultFont.family() )
   {
