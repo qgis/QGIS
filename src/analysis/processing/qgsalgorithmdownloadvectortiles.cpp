@@ -87,7 +87,7 @@ void QgsDownloadVectorTilesAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterMapLayer( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ), QVariant(), false, QList<int>() << QgsProcessing::TypeVectorTile ) );
   addParameter( new QgsProcessingParameterExtent( QStringLiteral( "EXTENT" ), QObject::tr( "Extent" ) ) );
-  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "MAX_ZOOM" ), QObject::tr( "Maximum zoom level to download" ), QgsProcessingParameterNumber::Integer, 0, false, 0 ) );
+  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "MAX_ZOOM" ), QObject::tr( "Maximum zoom level to download" ), QgsProcessingParameterNumber::Integer, 14, false, 0 ) );
 
   std::unique_ptr< QgsProcessingParameterNumber > tileLimitParam = std::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "TILE_LIMIT" ), QObject::tr( "Tile limit" ), QgsProcessingParameterNumber::Integer, 10000, false, 0 );
   tileLimitParam->setFlags( tileLimitParam->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
@@ -103,13 +103,18 @@ QVariantMap QgsDownloadVectorTilesAlgorithm::processAlgorithm( const QVariantMap
     throw QgsProcessingException( QObject::tr( "Invalid input layer" ) );
 
   const QgsRectangle extent = parameterAsExtent( parameters, QStringLiteral( "EXTENT" ), context, layer->crs() );
-  const int maxZoomLevel = parameterAsInt( parameters, QStringLiteral( "MAX_ZOOM" ), context );
+  int maxZoomLevel = parameterAsInt( parameters, QStringLiteral( "MAX_ZOOM" ), context );
   const int tileLimit = parameterAsInt( parameters, QStringLiteral( "TILE_LIMIT" ), context );
   const QString outputFile = parameterAsOutputLayer( parameters, QStringLiteral( "OUTPUT" ), context );
 
   QgsVectorTileLayer *vtLayer = qobject_cast< QgsVectorTileLayer * >( layer );
   const QgsVectorTileDataProvider *provider = qgis::down_cast< const QgsVectorTileDataProvider * >( vtLayer->dataProvider() );
   QgsVectorTileMatrixSet tileMatrixSet = vtLayer->tileMatrixSet();
+
+  if ( maxZoomLevel > vtLayer->sourceMaxZoom() )
+  {
+    throw QgsProcessingException( QObject::tr( "Requested maximum zoom level is bigger than available zoom level in the source layer. Please, select zoom level lower or equal to %1." ).arg( vtLayer->sourceMaxZoom() ) );
+  }
 
   // count total number of tiles in the requested extent and zoom levels to see if it exceeds the tile limit
   long long tileCount = 0;
