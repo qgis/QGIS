@@ -218,6 +218,86 @@ class TestQgsVectorLayerEditBufferGroup(unittest.TestCase):
         self.assertTrue(success)
         self.assertFalse(editBufferGroup.isEditing())
 
+    def testCircularRelations(self):
+
+        memoryLayer_a = QgsVectorLayer('Point?crs=epsg:4326&field=id:integer&field=id_b', 'test', 'memory')
+        self.assertTrue(memoryLayer_a.isValid())
+        memoryLayer_b = QgsVectorLayer('Point?crs=epsg:4326&field=id:integer&field=id_a', 'test', 'memory')
+        self.assertTrue(memoryLayer_b.isValid())
+
+        # Load 2 layer from a geopackage
+        d = QTemporaryDir()
+        options = QgsVectorFileWriter.SaveVectorOptions()
+        options.driverName = 'GPKG'
+        options.layerName = 'layer_a'
+        err, msg, newFileName, newLayer = QgsVectorFileWriter.writeAsVectorFormatV3(memoryLayer_a, os.path.join(d.path(), 'test_EditBufferGroupCircularRelations.gpkg'), QgsCoordinateTransformContext(), options)
+
+        options.layerName = 'layer_b'
+        options.actionOnExistingFile = QgsVectorFileWriter.CreateOrOverwriteLayer
+        err, msg, newFileName, newLayer = QgsVectorFileWriter.writeAsVectorFormatV3(memoryLayer_b, os.path.join(d.path(), 'test_EditBufferGroupCircularRelations.gpkg'), QgsCoordinateTransformContext(), options)
+
+        layer_a = QgsVectorLayer(newFileName + '|layername=layer_a')
+        self.assertTrue(layer_a.isValid())
+        layer_b = QgsVectorLayer(newFileName + '|layername=layer_b')
+        self.assertTrue(layer_b.isValid())
+
+        project = QgsProject.instance()
+        project.addMapLayers([layer_a, layer_b])
+
+        relationContext = QgsRelationContext(project)
+
+        relation_ab = QgsRelation(relationContext)
+        relation_ab.setId('relation_ab')
+        relation_ab.setName('Relation a b')
+        relation_ab.setReferencingLayer(layer_a.id())
+        relation_ab.setReferencedLayer(layer_b.id())
+        relation_ab.addFieldPair("id_b", "id")
+        self.assertEqual(relation_ab.validationError(), "")
+        self.assertTrue(relation_ab.isValid())
+        project.relationManager().addRelation(relation_ab)
+
+        relation_ba = QgsRelation(relationContext)
+        relation_ba.setId('relation_ba')
+        relation_ba.setName('Relation b a')
+        relation_ba.setReferencingLayer(layer_b.id())
+        relation_ba.setReferencedLayer(layer_a.id())
+        relation_ba.addFieldPair("id_a", "id")
+        self.assertEqual(relation_ba.validationError(), "")
+        self.assertTrue(relation_ba.isValid())
+        project.relationManager().addRelation(relation_ba)
+
+        project.setTransactionMode(Qgis.TransactionMode.BufferedGroups)
+        project.startEditing()
+
+        editBufferGroup = project.editBufferGroup()
+        self.assertTrue(editBufferGroup.isEditing())
+
+        f = QgsFeature(layer_a.fields())
+        f.setAttribute('id', 123)
+        f.setAttribute('id_b', 1)
+        f.setGeometry(QgsGeometry.fromWkt('point(7 45)'))
+        self.assertTrue(layer_a.addFeatures([f]))
+        self.assertEqual(len(editBufferGroup.modifiedLayers()), 1)
+        self.assertIn(layer_a, editBufferGroup.modifiedLayers())
+
+        f = QgsFeature(layer_b.fields())
+        f.setAttribute('id', 1)
+        f.setAttribute('id_a', 123)
+        f.setGeometry(QgsGeometry.fromWkt('point(8 46)'))
+        self.assertTrue(layer_b.addFeatures([f]))
+        self.assertEqual(len(editBufferGroup.modifiedLayers()), 2)
+        self.assertIn(layer_b, editBufferGroup.modifiedLayers())
+
+        # Check feature in layer edit buffer but not in provider till commit
+        self.assertEqual(layer_a.featureCount(), 1)
+        self.assertEqual(layer_a.dataProvider().featureCount(), 0)
+        self.assertEqual(layer_b.featureCount(), 1)
+        self.assertEqual(layer_b.dataProvider().featureCount(), 0)
+
+        success, commitErrors = editBufferGroup.commitChanges(True)
+        self.assertTrue(success)
+        self.assertFalse(editBufferGroup.isEditing())
+
 
 if __name__ == '__main__':
     unittest.main()
