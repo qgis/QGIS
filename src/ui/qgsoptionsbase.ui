@@ -122,7 +122,7 @@
        <item>
         <widget class="QStackedWidget" name="mOptionsStackedWidget">
          <property name="currentIndex">
-          <number>7</number>
+          <number>0</number>
          </property>
          <widget class="QWidget" name="mOptionsPageGeneral">
           <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -370,7 +370,7 @@
                    </layout>
                   </item>
                   <item>
-                   <layout class="QHBoxLayout" name="horizontalLayout_27">
+                   <layout class="QHBoxLayout" name="horizontalLayout_27" stretch="0,0,0,4,0,1">
                     <item>
                      <widget class="QLabel" name="label_43">
                       <property name="text">
@@ -424,15 +424,12 @@
                      </widget>
                     </item>
                     <item>
-                     <widget class="QgsSpinBox" name="spinFontSize">
-                      <property name="sizePolicy">
-                       <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
-                        <horstretch>0</horstretch>
-                        <verstretch>0</verstretch>
-                       </sizepolicy>
+                     <widget class="QgsDoubleSpinBox" name="spinFontSize">
+                      <property name="decimals">
+                       <number>1</number>
                       </property>
                       <property name="minimum">
-                       <number>4</number>
+                       <double>2.000000000000000</double>
                       </property>
                      </widget>
                     </item>
