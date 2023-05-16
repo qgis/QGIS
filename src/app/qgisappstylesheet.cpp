@@ -41,32 +41,14 @@ QMap<QString, QVariant> QgisAppStyleSheet::defaultOptions()
   // configured using the platforms and window servers defined in the
   // constructor to set reasonable non-Qt defaults for the app stylesheet
   QgsSettings settings;
-  // handle move from old QgsSettings group (/) to new (/qgis/stylesheet)
-  // NOTE: don't delete old QgsSettings keys, in case user is also running older QGIS
-  const QVariant oldFontPointSize = settings.value( QStringLiteral( "fontPointSize" ) );
-  const QVariant oldFontFamily = settings.value( QStringLiteral( "fontFamily" ) );
 
-  settings.beginGroup( QStringLiteral( "qgis/stylesheet" ) );
-
-  int fontSize = mDefaultFont.pointSize();
-  if ( mAndroidOS )
-  {
-    // TODO: find a better default fontsize maybe using DPI detection or so (from Marco Bernasocchi commit)
-    fontSize = 8;
-  }
-  if ( oldFontPointSize.isValid() && !settings.value( QStringLiteral( "fontPointSize" ) ).isValid() )
-  {
-    fontSize = oldFontPointSize.toInt();
-  }
+  // TODO: find a better default fontsize maybe using DPI detection or so (from Marco Bernasocchi commit)
+  const double defaultFontSize = mAndroidOS ? 8 : mDefaultFont.pointSizeF();
+  const double fontSize = settings.value( QStringLiteral( "/qgis/stylesheet/fontPointSize" ), defaultFontSize ).toDouble();
   QgsDebugMsgLevel( QStringLiteral( "fontPointSize: %1" ).arg( fontSize ), 2 );
-  opts.insert( QStringLiteral( "fontPointSize" ), settings.value( QStringLiteral( "fontPointSize" ), QVariant( fontSize ) ) );
+  opts.insert( QStringLiteral( "fontPointSize" ), fontSize );
 
-  QString fontFamily = mDefaultFont.family();
-  if ( oldFontFamily.isValid() && !settings.value( QStringLiteral( "fontFamily" ) ).isValid() )
-  {
-    fontFamily = oldFontFamily.toString();
-  }
-  fontFamily = settings.value( QStringLiteral( "fontFamily" ), QVariant( fontFamily ) ).toString();
+  QString fontFamily = settings.value( QStringLiteral( "/qgis/stylesheet/fontFamily" ), mDefaultFont.family() ).toString();
   // make sure family exists on system
   if ( fontFamily != mDefaultFont.family() )
   {
@@ -80,9 +62,7 @@ QMap<QString, QVariant> QgisAppStyleSheet::defaultOptions()
   QgsDebugMsgLevel( QStringLiteral( "fontFamily: %1" ).arg( fontFamily ), 2 );
   opts.insert( QStringLiteral( "fontFamily" ), QVariant( fontFamily ) );
 
-  opts.insert( QStringLiteral( "toolbarSpacing" ), settings.value( QStringLiteral( "toolbarSpacing" ), QString() ) );
-
-  settings.endGroup(); // "qgis/stylesheet"
+  opts.insert( QStringLiteral( "toolbarSpacing" ), settings.value( QStringLiteral( "/qgis/stylesheet/toolbarSpacing" ), QString() ) );
 
   opts.insert( QStringLiteral( "iconSize" ), settings.value( QStringLiteral( "/qgis/iconSize" ), QGIS_ICON_SIZE ) );
 
@@ -95,18 +75,27 @@ void QgisAppStyleSheet::buildStyleSheet( const QMap<QString, QVariant> &opts )
   QString ss;
 
   // QgisApp-wide font
-  const QString fontSize = opts.value( QStringLiteral( "fontPointSize" ) ).toString();
-  QgsDebugMsgLevel( QStringLiteral( "fontPointSize: %1" ).arg( fontSize ), 2 );
-  if ( fontSize.isEmpty() ) { return; }
+  {
+    bool fontSizeOk = false;
+    const double fontSize = opts.value( QStringLiteral( "fontPointSize" ) ).toDouble( &fontSizeOk );
+    QgsDebugMsgLevel( QStringLiteral( "fontPointSize: %1" ).arg( fontSize ), 2 );
+    if ( !fontSizeOk )
+    {
+      return;
+    }
 
-  const QString fontFamily = opts.value( QStringLiteral( "fontFamily" ) ).toString();
-  QgsDebugMsgLevel( QStringLiteral( "fontFamily: %1" ).arg( fontFamily ), 2 );
-  if ( fontFamily.isEmpty() ) { return; }
+    const QString fontFamily = opts.value( QStringLiteral( "fontFamily" ) ).toString();
+    QgsDebugMsgLevel( QStringLiteral( "fontFamily: %1" ).arg( fontFamily ), 2 );
+    if ( fontFamily.isEmpty() )
+    {
+      return;
+    }
 
-  const QString defaultSize = QString::number( mDefaultFont.pointSize() );
-  const QString defaultFamily = mDefaultFont.family();
-  if ( fontSize != defaultSize || fontFamily != defaultFamily )
-    ss += QStringLiteral( "* { font: %1pt \"%2\"} " ).arg( fontSize, fontFamily );
+    const double defaultSize = mDefaultFont.pointSizeF();
+    const QString defaultFamily = mDefaultFont.family();
+    if ( fontSize != defaultSize || fontFamily != defaultFamily )
+      ss += QStringLiteral( "* { font: %1pt \"%2\"} " ).arg( fontSize ).arg( fontFamily );
+  }
 
   if ( mMacStyle )
   {
