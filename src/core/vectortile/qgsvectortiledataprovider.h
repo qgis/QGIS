@@ -31,12 +31,29 @@ class QgsVectorTileMatrixSet;
 
 #define SIP_NO_FILE
 
+/**
+ * Shared data class for vector tile layer data providers.
+ *
+ * \note Not available in Python bindings
+ *
+ * \ingroup core
+ * \since QGIS 3.32
+ */
 class QgsVectorTileDataProviderSharedData
 {
   public:
     QgsVectorTileDataProviderSharedData();
 
-    bool getCachedTileData( QgsVectorTileRawData &data, QgsTileXYZ );
+    /**
+     * Retrieves previously cached raw tile data for a tile with matching \a id.
+     *
+     * Returns TRUE if tile data was already cached and could be retrieved.
+     */
+    bool getCachedTileData( QgsVectorTileRawData &data, QgsTileXYZ id );
+
+    /**
+     * Stores raw tile data in the shared cache.
+     */
     void storeCachedTileData( const QgsVectorTileRawData &data );
 
     QCache< QgsTileXYZ, QgsVectorTileRawData > mTileCache;
