@@ -198,39 +198,39 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *layer, QgsAttr
   QgsAttributeEditorContext editorContext = QgisApp::instance()->createAttributeEditorContext();
   editorContext.setDistanceArea( da );
 
-  QgsFeatureRequest r;
+  QgsFeatureRequest request;
   bool needsGeom = false;
   if ( mLayer && mLayer->geometryType() != Qgis::GeometryType::Null &&
        initialMode == QgsAttributeTableFilterModel::ShowVisible )
   {
     QgsMapCanvas *mc = QgisApp::instance()->mapCanvas();
     QgsRectangle extent( mc->mapSettings().mapToLayerCoordinates( layer, mc->extent() ) );
-    r.setFilterRect( extent );
+    request.setFilterRect( extent );
     needsGeom = true;
   }
   else if ( initialMode == QgsAttributeTableFilterModel::ShowSelected )
   {
-    r.setFilterFids( layer->selectedFeatureIds() );
+    request.setFilterFids( layer->selectedFeatureIds() );
   }
   else if ( initialMode == QgsAttributeTableFilterModel::ShowEdited )
   {
-    r.setFilterFids( layer->editBuffer() ? layer->editBuffer()->allAddedOrEditedFeatures() : QgsFeatureIds() );
+    request.setFilterFids( layer->editBuffer() ? layer->editBuffer()->allAddedOrEditedFeatures() : QgsFeatureIds() );
   }
   else if ( !filterExpression.isEmpty() )
   {
-    r.setFilterExpression( filterExpression );
+    request.setFilterExpression( filterExpression );
   }
   if ( !needsGeom )
-    r.setFlags( QgsFeatureRequest::NoGeometry );
+    request.setFlags( QgsFeatureRequest::NoGeometry );
+
 
   // Initialize dual view
   if ( mLayer )
   {
-    mMainView->init( mLayer, QgisApp::instance()->mapCanvas(), r, editorContext, false );
-
+    request.setSubsetOfAttributes( mMainView->requiredAttributes( mLayer ) );
+    mMainView->init( mLayer, QgisApp::instance()->mapCanvas(), request, editorContext, false );
     QgsAttributeTableConfig config = mLayer->attributeTableConfig();
     mMainView->setAttributeTableConfig( config );
-
     mFeatureFilterWidget->init( mLayer, editorContext, mMainView, QgisApp::instance()->messageBar(), QgsMessageBar::defaultMessageTimeout() );
   }
 

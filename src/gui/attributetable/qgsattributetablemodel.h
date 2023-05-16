@@ -387,6 +387,18 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
      */
     virtual bool loadFeatureAtId( QgsFeatureId fid ) const;
 
+    /**
+     * Load feature fid into local cache (mFeat) ensuring that the field with
+     * index \a fieldIdx is also fetched even if the cached attributes did not
+     * contain the field (e.g. because it was hidden in the attribute table).
+     *
+     * \param  fid      feature id
+     * \param  fieldIdx field index
+     *
+     * \returns feature exists
+     */
+    virtual bool loadFeatureAtId( QgsFeatureId fid, int fieldIdx ) const;
+
     QgsFeatureRequest mFeatureRequest;
 
     struct SortCache

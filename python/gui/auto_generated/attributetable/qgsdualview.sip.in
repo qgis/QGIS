@@ -198,6 +198,14 @@ The config used for the attribute table.
 :return: The config used for the attribute table.
 %End
 
+    static QgsAttributeList requiredAttributes( const QgsVectorLayer *layer );
+%Docstring
+Returns the list of required attributes according to the attribute table configuration of the ``layer``,
+only visible attributes and virtual fields referenced fields are returned.
+
+.. versionadded:: 3.32
+%End
+
   public slots:
 
     void setCurrentEditSelection( const QgsFeatureIds &fids );
