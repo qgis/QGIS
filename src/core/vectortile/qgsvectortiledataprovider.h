@@ -19,6 +19,10 @@
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgsdataprovider.h"
+#include "qgstiles.h"
+
+#include <QCache>
+#include <QReadWriteLock>
 
 class QgsTileMatrixSet;
 class QgsTileXYZ;
@@ -26,6 +30,20 @@ class QgsVectorTileRawData;
 class QgsVectorTileMatrixSet;
 
 #define SIP_NO_FILE
+
+class QgsVectorTileDataProviderSharedData
+{
+  public:
+    QgsVectorTileDataProviderSharedData();
+
+    bool getCachedTileData( QgsVectorTileRawData &data, QgsTileXYZ );
+    void storeCachedTileData( const QgsVectorTileRawData &data );
+
+    QCache< QgsTileXYZ, QgsVectorTileRawData > mTileCache;
+
+    QReadWriteLock mMutex; //!< Access to all data members is guarded by the mutex
+
+};
 
 /**
  * Base class for vector tile layer data providers.
@@ -148,6 +166,11 @@ class CORE_EXPORT QgsVectorTileDataProvider : public QgsDataProvider
      * into a subset of the GUI properties "Metadata" tab.
      */
     virtual QString htmlMetadata() const;
+
+  protected:
+
+    std::shared_ptr<QgsVectorTileDataProviderSharedData> mShared;  //!< Mutable data shared between provider instances
+
 };
 
 

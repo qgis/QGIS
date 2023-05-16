@@ -180,11 +180,17 @@ QgsVectorTileRawData QgsVtpkVectorTileDataProvider::readTile( const QgsTileMatri
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
+  QgsVectorTileRawData data;
+  if ( mShared->getCachedTileData( data, id ) )
+    return data;
+
   QgsDataSourceUri dsUri;
   dsUri.setEncodedUri( dataSourceUri() );
   QgsVtpkTiles reader( dsUri.param( QStringLiteral( "url" ) ) );
   reader.open();
-  return loadFromVtpk( reader, id, feedback );
+  const QgsVectorTileRawData rawData = loadFromVtpk( reader, id, feedback );
+  mShared->storeCachedTileData( rawData );
+  return rawData;
 }
 
 QList<QgsVectorTileRawData> QgsVtpkVectorTileDataProvider::readTiles( const QgsTileMatrixSet &, const QVector<QgsTileXYZ> &tiles, QgsFeedback *feedback ) const
@@ -194,8 +200,8 @@ QList<QgsVectorTileRawData> QgsVtpkVectorTileDataProvider::readTiles( const QgsT
   QgsDataSourceUri dsUri;
   dsUri.setEncodedUri( dataSourceUri() );
 
-  QgsVtpkTiles reader( dsUri.param( QStringLiteral( "url" ) ) );
-  reader.open();
+  // defer actual creation of reader until we need it -- maybe everything is already present in the cache!
+  std::unique_ptr< QgsVtpkTiles > reader;
 
   QList<QgsVectorTileRawData> rawTiles;
   QSet< QgsTileXYZ > fetchedTiles;
@@ -206,11 +212,29 @@ QList<QgsVectorTileRawData> QgsVtpkVectorTileDataProvider::readTiles( const QgsT
     if ( feedback && feedback->isCanceled() )
       break;
 
-    const QgsVectorTileRawData rawData = loadFromVtpk( reader, id, feedback );
-    if ( !rawData.data.isEmpty() )
+    if ( fetchedTiles.contains( id ) )
+      continue;
+
+    QgsVectorTileRawData data;
+    if ( mShared->getCachedTileData( data, id ) )
     {
-      rawTiles.append( rawData );
-      fetchedTiles.insert( rawData.id );
+      rawTiles.append( data );
+      fetchedTiles.insert( data.id );
+    }
+    else
+    {
+      if ( !reader )
+      {
+        reader = std::make_unique< QgsVtpkTiles >( dsUri.param( QStringLiteral( "url" ) ) );
+        reader->open();
+      }
+      const QgsVectorTileRawData rawData = loadFromVtpk( *reader, id, feedback );
+      if ( !rawData.data.isEmpty() && !fetchedTiles.contains( rawData.id ) )
+      {
+        rawTiles.append( rawData );
+        fetchedTiles.insert( rawData.id );
+        mShared->storeCachedTileData( rawData );
+      }
     }
   }
   return rawTiles;
