@@ -138,6 +138,13 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
 
   mOptionsTreeView->setModel( mTreeModel );
 
+  // stylesheet setup
+  mStyleSheetBuilder = QgisApp::instance()->styleSheetBuilder();
+  mStyleSheetNewOpts = mStyleSheetBuilder->defaultOptions();
+  mStyleSheetOldOpts = QMap<QString, QVariant>( mStyleSheetNewOpts );
+
+  spinFontSize->setClearValue( mStyleSheetBuilder->defaultFont().pointSizeF() );
+
   connect( cbxProjectDefaultNew, &QCheckBox::toggled, this, &QgsOptions::cbxProjectDefaultNew_toggled );
   connect( leLayerGlobalCrs, &QgsProjectionSelectionWidget::crsChanged, this, &QgsOptions::leLayerGlobalCrs_crsChanged );
   connect( lstRasterDrivers, &QTreeWidget::itemDoubleClicked, this, &QgsOptions::lstRasterDrivers_itemDoubleClicked );
@@ -172,11 +179,6 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
     }
     accept();
   } );
-
-  // stylesheet setup
-  mStyleSheetBuilder = QgisApp::instance()->styleSheetBuilder();
-  mStyleSheetNewOpts = mStyleSheetBuilder->defaultOptions();
-  mStyleSheetOldOpts = QMap<QString, QVariant>( mStyleSheetNewOpts );
 
   connect( mFontFamilyRadioCustom, &QAbstractButton::toggled, mFontFamilyComboBox, &QWidget::setEnabled );
 
