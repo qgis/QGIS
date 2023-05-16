@@ -190,6 +190,46 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpress
         bool showLabel() const;
         void setShowLabel( bool showLabel );
 
+        /**
+         * Returns the horizontal stretch factor for the element.
+         *
+         * \see setHorizontalStretch()
+         * \see verticalStretch()
+         *
+         * \since QGIS 3.32
+         */
+        int horizontalStretch() const { return mHorizontalStretch; }
+
+        /**
+         * Sets the horizontal \a stretch factor for the element.
+         *
+         * \see horizontalStretch()
+         * \see setVerticalStretch()
+         *
+         * \since QGIS 3.32
+         */
+        void setHorizontalStretch( int stretch ) { mHorizontalStretch = stretch; }
+
+        /**
+         * Returns the vertical stretch factor for the element.
+         *
+         * \see setVerticalStretch()
+         * \see horizontalStretch()
+         *
+         * \since QGIS 3.32
+         */
+        int verticalStretch() const { return mVerticalStretch; }
+
+        /**
+         * Sets the vertical \a stretch factor for the element.
+         *
+         * \see verticalStretch()
+         * \see setHorizontalStretch()
+         *
+         * \since QGIS 3.32
+         */
+        void setVerticalStretch( int stretch ) { mVerticalStretch = stretch; }
+
         QgsOptionalExpression visibilityExpression() const;
 
         /**
@@ -263,6 +303,8 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpress
         int mColumnCount = 1;
         Qgis::AttributeEditorContainerType mContainerType = Qgis::AttributeEditorContainerType::Tab;
         bool mShowLabel = true;
+        int mHorizontalStretch = 0;
+        int mVerticalStretch = 0;
         QgsOptionalExpression mVisibilityExpression;
         RelationEditorConfiguration mRelationEditorConfiguration;
         QmlElementEditorConfiguration mQmlElementEditorConfiguration;

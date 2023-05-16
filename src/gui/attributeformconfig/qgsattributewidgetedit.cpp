@@ -24,6 +24,8 @@ QgsAttributeWidgetEdit::QgsAttributeWidgetEdit( QTreeWidgetItem *item, QWidget *
 
 {
   setupUi( this );
+  mHozStretchSpin->setClearValue( 0, tr( "Default" ) );
+  mVertStretchSpin->setClearValue( 0, tr( "Default" ) );
 
   const QgsAttributesFormProperties::DnDTreeItemData itemData = mTreeItem->data( 0, QgsAttributesFormProperties::DnDTreeRole ).value<QgsAttributesFormProperties::DnDTreeItemData>();
 
@@ -31,6 +33,8 @@ QgsAttributeWidgetEdit::QgsAttributeWidgetEdit( QTreeWidgetItem *item, QWidget *
   mShowLabelCheckBox->setChecked( itemData.showLabel() );
 
   mFormLabelFormatWidget->setLabelStyle( itemData.labelStyle() );
+  mHozStretchSpin->setValue( itemData.horizontalStretch() );
+  mVertStretchSpin->setValue( itemData.verticalStretch() );
 
   switch ( itemData.type() )
   {
@@ -68,6 +72,8 @@ void QgsAttributeWidgetEdit::updateItemData()
   // common configs
   itemData.setShowLabel( mShowLabelCheckBox->isChecked() );
   itemData.setLabelStyle( mFormLabelFormatWidget->labelStyle() );
+  itemData.setHorizontalStretch( mHozStretchSpin->value() );
+  itemData.setVerticalStretch( mVertStretchSpin->value() );
 
   // specific configs
   switch ( itemData.type() )

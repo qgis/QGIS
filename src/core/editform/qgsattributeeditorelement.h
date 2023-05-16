@@ -115,7 +115,6 @@ class CORE_EXPORT QgsAttributeEditorElement SIP_ABSTRACT
       : mType( type )
       , mName( name )
       , mParent( parent )
-      , mShowLabel( true )
     {}
 
     virtual ~QgsAttributeEditorElement() = default;
@@ -178,6 +177,46 @@ class CORE_EXPORT QgsAttributeEditorElement SIP_ABSTRACT
     void setShowLabel( bool showLabel );
 
     /**
+     * Returns the horizontal stretch factor for the element.
+     *
+     * \see setHorizontalStretch()
+     * \see verticalStretch()
+     *
+     * \since QGIS 3.32
+     */
+    int horizontalStretch() const { return mHorizontalStretch; }
+
+    /**
+     * Sets the horizontal \a stretch factor for the element.
+     *
+     * \see horizontalStretch()
+     * \see setVerticalStretch()
+     *
+     * \since QGIS 3.32
+     */
+    void setHorizontalStretch( int stretch ) { mHorizontalStretch = stretch; }
+
+    /**
+     * Returns the vertical stretch factor for the element.
+     *
+     * \see setVerticalStretch()
+     * \see horizontalStretch()
+     *
+     * \since QGIS 3.32
+     */
+    int verticalStretch() const { return mVerticalStretch; }
+
+    /**
+     * Sets the vertical \a stretch factor for the element.
+     *
+     * \see verticalStretch()
+     * \see setHorizontalStretch()
+     *
+     * \since QGIS 3.32
+     */
+    void setVerticalStretch( int stretch ) { mVerticalStretch = stretch; }
+
+    /**
      * Returns the label style.
      * \see setLabelStyle()
      * \since QGIS 3.26
@@ -194,10 +233,12 @@ class CORE_EXPORT QgsAttributeEditorElement SIP_ABSTRACT
 
   protected:
 #ifndef SIP_RUN
-    Qgis::AttributeEditorType mType;
+    Qgis::AttributeEditorType mType = Qgis::AttributeEditorType::Invalid;
     QString mName;
     QgsAttributeEditorElement *mParent = nullptr;
-    bool mShowLabel;
+    bool mShowLabel = true;
+    int mHorizontalStretch = 0;
+    int mVerticalStretch = 0;
     LabelStyle mLabelStyle;
 #endif
 
