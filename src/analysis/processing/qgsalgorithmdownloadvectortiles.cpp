@@ -198,7 +198,7 @@ QVariantMap QgsDownloadVectorTilesAlgorithm::processAlgorithm( const QVariantMap
       loader->downloadBlocking();
     }
 
-    it++;
+    ++it;
   }
 
   if ( context.willLoadLayerOnCompletion( outputFile ) )
