@@ -122,7 +122,7 @@ QVariantMap QgsDownloadVectorTilesAlgorithm::processAlgorithm( const QVariantMap
     tileCount += ( tileRange.endColumn() - tileRange.startColumn() + 1 ) * ( tileRange.endRow() - tileRange.startRow() + 1 );
     if ( tileCount > tileLimit )
     {
-      throw QgsProcessingException( QObject::tr( "Requested number of tiles exceeds limit of %1 tiles. Please, select a smaller extent or reduce maximum zoom level." ).arg( tileLimit ) );
+      throw QgsProcessingException( QObject::tr( "Requested number of tiles exceeds limit of %1 tiles. Please, select a smaller extent, reduce maximum zoom level or increase tile limit." ).arg( tileLimit ) );
     }
   }
 
