@@ -1724,7 +1724,18 @@ void QgsAttributeForm::init()
             {
               widgetInfo.widget->setFont( widgetInfo.labelStyle.font );
             }
+
             layout->addWidget( widgetInfo.widget, row, column, 1, 2 );
+            if ( widgDef->horizontalStretch() > 0 && widgDef->horizontalStretch() > layout->columnStretch( column + 1 ) )
+            {
+              layout->setColumnStretch( column + 1, widgDef->horizontalStretch() );
+            }
+            if ( widgDef->verticalStretch() > 0 && widgDef->verticalStretch() > layout->rowStretch( row ) )
+            {
+              layout->setRowStretch( row, widgDef->verticalStretch() );
+              addSpacer = false;
+            }
+
             if ( containerDef->visibilityExpression().enabled() || containerDef->collapsedExpression().enabled() )
             {
               registerContainerInformation( new ContainerInformation( widgetInfo.widget, containerDef->visibilityExpression().enabled() ? containerDef->visibilityExpression().data() : QgsExpression(), containerDef->collapsed(), containerDef->collapsedExpression().enabled() ? containerDef->collapsedExpression().data() : QgsExpression() ) );
@@ -1738,6 +1749,16 @@ void QgsAttributeForm::init()
             tabWidget = nullptr;
             WidgetInfo widgetInfo = createWidgetFromDef( widgDef, formWidget, mLayer, mContext );
             layout->addWidget( widgetInfo.widget, row, column, 1, 2 );
+            if ( widgDef->verticalStretch() > 0 && widgDef->verticalStretch() > layout->rowStretch( row ) )
+            {
+              layout->setRowStretch( row, widgDef->verticalStretch() );
+              addSpacer = false;
+            }
+            if ( widgDef->horizontalStretch() > 0 && widgDef->horizontalStretch() > layout->columnStretch( column + 1 ) )
+            {
+              layout->setColumnStretch( column + 1, widgDef->horizontalStretch() );
+            }
+
             if ( containerDef->visibilityExpression().enabled() || containerDef->collapsedExpression().enabled() )
             {
               registerContainerInformation( new ContainerInformation( widgetInfo.widget, containerDef->visibilityExpression().enabled() ? containerDef->visibilityExpression().data() : QgsExpression(), containerDef->collapsed(), containerDef->collapsedExpression().enabled() ? containerDef->collapsedExpression().data() : QgsExpression() ) );
@@ -1802,6 +1823,12 @@ void QgsAttributeForm::init()
         QVBoxLayout *c = new QVBoxLayout();
         c->addWidget( collapsibleGroupBox );
         layout->addLayout( c, row, column, 1, 2 );
+
+        if ( widgDef->verticalStretch() > 0 && widgDef->verticalStretch() > layout->rowStretch( row ) )
+          layout->setRowStretch( row, widgDef->verticalStretch() );
+        if ( widgDef->horizontalStretch() > 0 && widgDef->horizontalStretch() > layout->columnStretch( column + 1 ) )
+          layout->setColumnStretch( column + 1, widgDef->horizontalStretch() );
+
         column += 2;
 
         // we consider all relation editors should be expanding
@@ -1848,6 +1875,17 @@ void QgsAttributeForm::init()
           label->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Fixed );
           c->addWidget( widgetInfo.widget );
           layout->addLayout( c, row, column, 1, 2 );
+
+          if ( widgDef->verticalStretch() > 0 && widgDef->verticalStretch() > layout->rowStretch( row ) )
+          {
+            layout->setRowStretch( row, widgDef->verticalStretch() );
+            addSpacer = false;
+          }
+          if ( widgDef->horizontalStretch() > 0 && widgDef->horizontalStretch() > layout->columnStretch( column + 1 ) )
+          {
+            layout->setColumnStretch( column + 1, widgDef->horizontalStretch() );
+          }
+
           column += 2;
         }
         else if ( widgetInfo.labelOnTop )
@@ -1857,12 +1895,34 @@ void QgsAttributeForm::init()
           c->addWidget( label );
           c->addWidget( widgetInfo.widget );
           layout->addLayout( c, row, column, 1, 2 );
+
+          if ( widgDef->verticalStretch() > 0 && widgDef->verticalStretch() > layout->rowStretch( row ) )
+          {
+            layout->setRowStretch( row, widgDef->verticalStretch() );
+            addSpacer = false;
+          }
+          if ( widgDef->horizontalStretch() > 0 && widgDef->horizontalStretch() > layout->columnStretch( column + 1 ) )
+          {
+            layout->setColumnStretch( column + 1, widgDef->horizontalStretch() );
+          }
+
           column += 2;
         }
         else
         {
+          const int widgetColumn = column + 1;
           layout->addWidget( label, row, column++ );
           layout->addWidget( widgetInfo.widget, row, column++ );
+
+          if ( widgDef->verticalStretch() > 0 && widgDef->verticalStretch() > layout->rowStretch( row ) )
+          {
+            layout->setRowStretch( row, widgDef->verticalStretch() );
+            addSpacer = false;
+          }
+          if ( widgDef->horizontalStretch() > 0 && widgDef->horizontalStretch() > layout->columnStretch( widgetColumn ) )
+          {
+            layout->setColumnStretch( widgetColumn, widgDef->horizontalStretch() );
+          }
         }
 
         // Alias DD overrides
@@ -2492,9 +2552,13 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
           }
         }
 
+        // column containing the actual widget, not the label
+        int widgetColumn = column;
+
         if ( widgetInfo.labelText.isNull() || ! widgetInfo.showLabel )
         {
           gbLayout->addWidget( widgetInfo.widget, row, column, 1, 2 );
+          widgetColumn = column + 1;
           column += 2;
         }
         else
@@ -2552,6 +2616,7 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
 
           if ( widgetInfo.labelOnTop )
           {
+            widgetColumn = column + 1;
             QVBoxLayout *c = new QVBoxLayout();
             mypLabel->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Fixed );
             c->layout()->addWidget( mypLabel );
@@ -2561,9 +2626,22 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
           }
           else
           {
+            widgetColumn = column + 1;
             gbLayout->addWidget( mypLabel, row, column++ );
             gbLayout->addWidget( widgetInfo.widget, row, column++ );
           }
+        }
+
+        const int childHorizontalStretch = childDef->horizontalStretch();
+        const int existingColumnStretch = gbLayout->columnStretch( widgetColumn );
+        if ( childHorizontalStretch > 0 && childHorizontalStretch > existingColumnStretch )
+        {
+          gbLayout->setColumnStretch( widgetColumn, childHorizontalStretch );
+        }
+
+        if ( childDef->verticalStretch() > 0  && childDef->verticalStretch() > gbLayout->rowStretch( row ) )
+        {
+          gbLayout->setRowStretch( row, childDef->verticalStretch() );
         }
 
         if ( column >= columnCount * 2 )

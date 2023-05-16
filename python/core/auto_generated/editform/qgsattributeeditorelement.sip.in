@@ -130,6 +130,50 @@ Controls if this element should be labeled with a title (field, relation or grou
 .. versionadded:: 2.18
 %End
 
+    int horizontalStretch() const;
+%Docstring
+Returns the horizontal stretch factor for the element.
+
+.. seealso:: :py:func:`setHorizontalStretch`
+
+.. seealso:: :py:func:`verticalStretch`
+
+.. versionadded:: 3.32
+%End
+
+    void setHorizontalStretch( int stretch );
+%Docstring
+Sets the horizontal ``stretch`` factor for the element.
+
+.. seealso:: :py:func:`horizontalStretch`
+
+.. seealso:: :py:func:`setVerticalStretch`
+
+.. versionadded:: 3.32
+%End
+
+    int verticalStretch() const;
+%Docstring
+Returns the vertical stretch factor for the element.
+
+.. seealso:: :py:func:`setVerticalStretch`
+
+.. seealso:: :py:func:`horizontalStretch`
+
+.. versionadded:: 3.32
+%End
+
+    void setVerticalStretch( int stretch );
+%Docstring
+Sets the vertical ``stretch`` factor for the element.
+
+.. seealso:: :py:func:`verticalStretch`
+
+.. seealso:: :py:func:`setHorizontalStretch`
+
+.. versionadded:: 3.32
+%End
+
     LabelStyle labelStyle() const;
 %Docstring
 Returns the label style.

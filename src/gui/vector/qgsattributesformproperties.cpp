@@ -437,14 +437,21 @@ void QgsAttributesFormProperties::loadAttributeContainerEdit()
 
 QTreeWidgetItem *QgsAttributesFormProperties::loadAttributeEditorTreeItem( QgsAttributeEditorElement *const widgetDef, QTreeWidgetItem *parent, QgsAttributesDnDTree *tree )
 {
+  auto setCommonProperties = [widgetDef]( DnDTreeItemData & itemData )
+  {
+    itemData.setShowLabel( widgetDef->showLabel() );
+    itemData.setLabelStyle( widgetDef->labelStyle() );
+    itemData.setHorizontalStretch( widgetDef->horizontalStretch() );
+    itemData.setVerticalStretch( widgetDef->verticalStretch() );
+  };
+
   QTreeWidgetItem *newWidget = nullptr;
   switch ( widgetDef->type() )
   {
     case Qgis::AttributeEditorType::Field:
     {
       DnDTreeItemData itemData = DnDTreeItemData( DnDTreeItemData::Field, widgetDef->name(), widgetDef->name() );
-      itemData.setShowLabel( widgetDef->showLabel() );
-      itemData.setLabelStyle( widgetDef->labelStyle() );
+      setCommonProperties( itemData );
       newWidget = tree->addItem( parent, itemData );
       break;
     }
@@ -456,8 +463,7 @@ QTreeWidgetItem *QgsAttributesFormProperties::loadAttributeEditorTreeItem( QgsAt
       if ( action.isValid() )
       {
         DnDTreeItemData itemData = DnDTreeItemData( DnDTreeItemData::Action, action.id().toString(), action.shortTitle().isEmpty() ? action.name() : action.shortTitle() );
-        itemData.setShowLabel( widgetDef->showLabel() );
-        itemData.setLabelStyle( widgetDef->labelStyle() );
+        setCommonProperties( itemData );
         newWidget = tree->addItem( parent, itemData );
       }
       else
@@ -471,8 +477,7 @@ QTreeWidgetItem *QgsAttributesFormProperties::loadAttributeEditorTreeItem( QgsAt
     {
       const QgsAttributeEditorRelation *relationEditor = static_cast<const QgsAttributeEditorRelation *>( widgetDef );
       DnDTreeItemData itemData = DnDTreeItemData( DnDTreeItemData::Relation, relationEditor->relation().id(), relationEditor->relation().name() );
-      itemData.setShowLabel( widgetDef->showLabel() );
-      itemData.setLabelStyle( widgetDef->labelStyle() );
+      setCommonProperties( itemData );
 
       RelationEditorConfiguration relEdConfig;
 //      relEdConfig.buttons = relationEditor->visibleButtons();
@@ -489,7 +494,6 @@ QTreeWidgetItem *QgsAttributesFormProperties::loadAttributeEditorTreeItem( QgsAt
     case Qgis::AttributeEditorType::Container:
     {
       DnDTreeItemData itemData( DnDTreeItemData::Container, widgetDef->name(), widgetDef->name() );
-      itemData.setShowLabel( widgetDef->showLabel() );
 
       const QgsAttributeEditorContainer *container = static_cast<const QgsAttributeEditorContainer *>( widgetDef );
       if ( !container )
@@ -501,7 +505,9 @@ QTreeWidgetItem *QgsAttributesFormProperties::loadAttributeEditorTreeItem( QgsAt
       itemData.setVisibilityExpression( container->visibilityExpression() );
       itemData.setCollapsedExpression( container->collapsedExpression() );
       itemData.setCollapsed( container->collapsed() );
-      itemData.setLabelStyle( widgetDef->labelStyle() );
+
+      setCommonProperties( itemData );
+
       newWidget = tree->addItem( parent, itemData );
 
       const QList<QgsAttributeEditorElement *> children = container->children();
@@ -516,11 +522,10 @@ QTreeWidgetItem *QgsAttributesFormProperties::loadAttributeEditorTreeItem( QgsAt
     {
       const QgsAttributeEditorQmlElement *qmlElementEditor = static_cast<const QgsAttributeEditorQmlElement *>( widgetDef );
       DnDTreeItemData itemData = DnDTreeItemData( DnDTreeItemData::QmlWidget, widgetDef->name(), widgetDef->name() );
-      itemData.setShowLabel( widgetDef->showLabel() );
       QmlElementEditorConfiguration qmlEdConfig;
       qmlEdConfig.qmlCode = qmlElementEditor->qmlCode();
       itemData.setQmlElementEditorConfiguration( qmlEdConfig );
-      itemData.setLabelStyle( widgetDef->labelStyle() );
+      setCommonProperties( itemData );
       newWidget = tree->addItem( parent, itemData );
       break;
     }
@@ -529,11 +534,10 @@ QTreeWidgetItem *QgsAttributesFormProperties::loadAttributeEditorTreeItem( QgsAt
     {
       const QgsAttributeEditorHtmlElement *htmlElementEditor = static_cast<const QgsAttributeEditorHtmlElement *>( widgetDef );
       DnDTreeItemData itemData = DnDTreeItemData( DnDTreeItemData::HtmlWidget, widgetDef->name(), widgetDef->name() );
-      itemData.setShowLabel( widgetDef->showLabel() );
       HtmlElementEditorConfiguration htmlEdConfig;
       htmlEdConfig.htmlCode = htmlElementEditor->htmlCode();
       itemData.setHtmlElementEditorConfiguration( htmlEdConfig );
-      itemData.setLabelStyle( widgetDef->labelStyle() );
+      setCommonProperties( itemData );
       newWidget = tree->addItem( parent, itemData );
       break;
     }
@@ -542,11 +546,10 @@ QTreeWidgetItem *QgsAttributesFormProperties::loadAttributeEditorTreeItem( QgsAt
     {
       const QgsAttributeEditorTextElement *textElementEditor = static_cast<const QgsAttributeEditorTextElement *>( widgetDef );
       DnDTreeItemData itemData = DnDTreeItemData( DnDTreeItemData::TextWidget, widgetDef->name(), widgetDef->name() );
-      itemData.setShowLabel( widgetDef->showLabel() );
       TextElementEditorConfiguration textEdConfig;
       textEdConfig.text = textElementEditor->text();
       itemData.setTextElementEditorConfiguration( textEdConfig );
-      itemData.setLabelStyle( widgetDef->labelStyle() );
+      setCommonProperties( itemData );
       newWidget = tree->addItem( parent, itemData );
       break;
     }
@@ -555,11 +558,10 @@ QTreeWidgetItem *QgsAttributesFormProperties::loadAttributeEditorTreeItem( QgsAt
     {
       const QgsAttributeEditorSpacerElement *spacerElementEditor = static_cast<const QgsAttributeEditorSpacerElement *>( widgetDef );
       DnDTreeItemData itemData = DnDTreeItemData( DnDTreeItemData::SpacerWidget, widgetDef->name(), widgetDef->name() );
-      itemData.setShowLabel( widgetDef->showLabel() );
       SpacerElementEditorConfiguration spacerEdConfig;
       spacerEdConfig.drawLine = spacerElementEditor->drawLine();
       itemData.setSpacerElementEditorConfiguration( spacerEdConfig );
-      itemData.setLabelStyle( widgetDef->labelStyle() );
+      setCommonProperties( itemData );
       itemData.setShowLabel( false );
       newWidget = tree->addItem( parent, itemData );
       break;
@@ -859,6 +861,8 @@ QgsAttributeEditorElement *QgsAttributesFormProperties::createAttributeEditorWid
   {
     widgetDef->setShowLabel( itemData.showLabel() );
     widgetDef->setLabelStyle( itemData.labelStyle() );
+    widgetDef->setHorizontalStretch( itemData.horizontalStretch() );
+    widgetDef->setVerticalStretch( itemData.verticalStretch() );
   }
 
   return widgetDef;

@@ -35,6 +35,9 @@ QgsAttributeFormContainerEdit::QgsAttributeFormContainerEdit( QTreeWidgetItem *i
   mTypeCombo->addItem( tr( "Group Box" ), QVariant::fromValue( Qgis::AttributeEditorContainerType::GroupBox ) );
   mTypeCombo->addItem( tr( "Row" ), QVariant::fromValue( Qgis::AttributeEditorContainerType::Row ) );
 
+  mHozStretchSpin->setClearValue( 0, tr( "Default" ) );
+  mVertStretchSpin->setClearValue( 0, tr( "Default" ) );
+
   mTitleLineEdit->setText( itemData.name() );
   mShowLabelCheckBox->setChecked( itemData.showLabel() );
   mTypeCombo->setCurrentIndex( mTypeCombo->findData( QVariant::fromValue( itemData.containerType() ) ) );
@@ -50,6 +53,9 @@ QgsAttributeFormContainerEdit::QgsAttributeFormContainerEdit( QTreeWidgetItem *i
   mCollapsedCheckBox->setChecked( itemData.collapsed() );
   mControlCollapsedGroupBox->setChecked( itemData.collapsedExpression().enabled() );
   mCollapsedExpressionWidget->setExpression( itemData.collapsedExpression()->expression() );
+
+  mHozStretchSpin->setValue( itemData.horizontalStretch() );
+  mVertStretchSpin->setValue( itemData.verticalStretch() );
 
   mFormLabelFormatWidget->setLabelStyle( itemData.labelStyle() );
 
@@ -73,6 +79,8 @@ void QgsAttributeFormContainerEdit::updateItemData()
   itemData.setShowLabel( mShowLabelCheckBox->isChecked() );
   itemData.setBackgroundColor( mBackgroundColorButton->color() );
   itemData.setLabelStyle( mFormLabelFormatWidget->labelStyle() );
+  itemData.setHorizontalStretch( mHozStretchSpin->value() );
+  itemData.setVerticalStretch( mVertStretchSpin->value() );
 
   QgsOptionalExpression visibilityExpression;
   visibilityExpression.setData( QgsExpression( mVisibilityExpressionWidget->expression() ) );
