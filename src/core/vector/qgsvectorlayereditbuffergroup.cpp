@@ -399,20 +399,20 @@ QList<QgsVectorLayer *> QgsVectorLayerEditBufferGroup::orderLayersParentsToChild
     QSet<QgsVectorLayer *>::iterator unorderedLayerIterator = unorderedLayers.begin();
     while ( unorderedLayerIterator != unorderedLayers.end() )
     {
-      // Get referencing layers
-      const QList<QgsRelation> referencedRelations = QgsProject::instance()->relationManager()->referencedRelations( *unorderedLayerIterator );
+      // Get referencing relation to find referenced layers
+      const QList<QgsRelation> referencingRelations = QgsProject::instance()->relationManager()->referencingRelations( *unorderedLayerIterator );
 
-      // If at least one modified layer references this layer continue
-      bool layerReferenced = false;
-      for ( const QgsRelation &relation : referencedRelations )
+      // If this layer references at least one modified layer continue
+      bool layerReferencingModifiedLayer = false;
+      for ( const QgsRelation &relation : referencingRelations )
       {
-        if ( unorderedLayers.contains( relation.referencingLayer() ) )
+        if ( unorderedLayers.contains( relation.referencedLayer() ) )
         {
-          layerReferenced = true;
+          layerReferencingModifiedLayer = true;
           break;
         }
       }
-      if ( layerReferenced )
+      if ( layerReferencingModifiedLayer )
       {
         ++unorderedLayerIterator;
         continue;
