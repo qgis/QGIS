@@ -4129,7 +4129,7 @@ void QgisApp::setTheme( const QString &themeName )
 
   QString theme = themeName;
 
-  mStyleSheetBuilder->applyStyleSheet( mStyleSheetBuilder->defaultOptions() );
+  mStyleSheetBuilder->updateStyleSheet();
   QgsApplication::setUITheme( theme );
 
   mActionNewProject->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionFileNew.svg" ) ) );

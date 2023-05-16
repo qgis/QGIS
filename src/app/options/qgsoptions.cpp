@@ -140,8 +140,6 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
 
   // stylesheet setup
   mStyleSheetBuilder = QgisApp::instance()->styleSheetBuilder();
-  mStyleSheetNewOpts = mStyleSheetBuilder->defaultOptions();
-  mStyleSheetOldOpts = QMap<QString, QVariant>( mStyleSheetNewOpts );
 
   spinFontSize->setClearValue( mStyleSheetBuilder->defaultFont().pointSizeF() );
 
@@ -149,10 +147,6 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   connect( leLayerGlobalCrs, &QgsProjectionSelectionWidget::crsChanged, this, &QgsOptions::leLayerGlobalCrs_crsChanged );
   connect( lstRasterDrivers, &QTreeWidget::itemDoubleClicked, this, &QgsOptions::lstRasterDrivers_itemDoubleClicked );
   connect( mProjectOnLaunchCmbBx, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsOptions::mProjectOnLaunchCmbBx_currentIndexChanged );
-  connect( spinFontSize, qOverload< double>( &QDoubleSpinBox::valueChanged ), this, &QgsOptions::spinFontSize_valueChanged );
-  connect( mFontFamilyRadioQt, &QRadioButton::released, this, &QgsOptions::mFontFamilyRadioQt_released );
-  connect( mFontFamilyRadioCustom, &QRadioButton::released, this, &QgsOptions::mFontFamilyRadioCustom_released );
-  connect( mFontFamilyComboBox, &QFontComboBox::currentFontChanged, this, &QgsOptions::mFontFamilyComboBox_currentFontChanged );
   connect( mProxyTypeComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsOptions::mProxyTypeComboBox_currentIndexChanged );
   connect( mCustomVariablesChkBx, &QCheckBox::toggled, this, &QgsOptions::mCustomVariablesChkBx_toggled );
   connect( mCurrentVariablesQGISChxBx, &QCheckBox::toggled, this, &QgsOptions::mCurrentVariablesQGISChxBx_toggled );
@@ -681,21 +675,29 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   mFontFamilyRadioCustom->blockSignals( true );
   mFontFamilyComboBox->blockSignals( true );
 
-  spinFontSize->setValue( mStyleSheetOldOpts.value( QStringLiteral( "fontPointSize" ) ).toDouble() );
-  QString fontFamily = mStyleSheetOldOpts.value( QStringLiteral( "fontFamily" ) ).toString();
-  bool isQtDefault = ( fontFamily == mStyleSheetBuilder->defaultFont().family() );
+  spinFontSize->setValue( mStyleSheetBuilder->fontSize() );
+  const QString userFontFamily = mStyleSheetBuilder->userFontFamily();
+  bool isQtDefault = userFontFamily.isEmpty();
+  if ( !isQtDefault )
+  {
+    const QFont tempFont( userFontFamily );
+    // is exact family match returned from system?
+    if ( tempFont.family() != userFontFamily )
+    {
+      // fallback to default
+      isQtDefault = true;
+    }
+  }
   mFontFamilyRadioQt->setChecked( isQtDefault );
   mFontFamilyRadioCustom->setChecked( !isQtDefault );
   mFontFamilyComboBox->setEnabled( !isQtDefault );
   if ( !isQtDefault )
   {
-    QFont *tempFont = new QFont( fontFamily );
-    // is exact family match returned from system?
-    if ( tempFont->family() == fontFamily )
-    {
-      mFontFamilyComboBox->setCurrentFont( *tempFont );
-    }
-    delete tempFont;
+    mFontFamilyComboBox->setCurrentFont( userFontFamily );
+  }
+  else
+  {
+    mFontFamilyComboBox->setCurrentFont( mStyleSheetBuilder->defaultFont() );
   }
 
   spinFontSize->blockSignals( false );
@@ -1858,12 +1860,17 @@ void QgsOptions::saveOptions()
   //save variables
   QgsExpressionContextUtils::setGlobalVariables( mVariableEditor->variablesInActiveScope() );
 
-  // save app stylesheet last (in case reset becomes necessary)
-  if ( mStyleSheetNewOpts != mStyleSheetOldOpts )
+  // only update stylesheet if changed
+  const double newFontSize = spinFontSize->value();
+  const QString newUserFontFamily = mFontFamilyRadioQt->isChecked() ? QString() : mFontFamilyComboBox->currentFont().family();
+  if ( ( newUserFontFamily.isEmpty() && !mStyleSheetBuilder->userFontFamily().isEmpty() )
+       || ( !newUserFontFamily.isEmpty() && newUserFontFamily != mStyleSheetBuilder->fontFamily() )
+       || ( newFontSize != mStyleSheetBuilder->fontSize() ) )
   {
-    mStyleSheetBuilder->saveToSettings( mStyleSheetNewOpts );
-    // trigger an extra  style sheet build to propagate saved settings
-    mStyleSheetBuilder->buildStyleSheet( mStyleSheetNewOpts );
+    mStyleSheetBuilder->setUserFontSize( newFontSize );
+    mStyleSheetBuilder->setUserFontFamily( newUserFontFamily );
+    // trigger a style sheet build to propagate saved settings
+    mStyleSheetBuilder->updateStyleSheet();
   }
 
   mDefaultDatumTransformTableWidget->transformContext().writeSettings();
@@ -1880,45 +1887,6 @@ void QgsOptions::saveOptions()
 
 void QgsOptions::rejectOptions()
 {
-  // don't reset stylesheet if we don't have to
-  if ( mStyleSheetNewOpts != mStyleSheetOldOpts )
-  {
-    mStyleSheetBuilder->buildStyleSheet( mStyleSheetOldOpts );
-  }
-}
-
-void QgsOptions::spinFontSize_valueChanged( double fontSize )
-{
-  mStyleSheetNewOpts.insert( QStringLiteral( "fontPointSize" ), QVariant( fontSize ) );
-  mStyleSheetBuilder->buildStyleSheet( mStyleSheetNewOpts );
-}
-
-void QgsOptions::mFontFamilyRadioQt_released()
-{
-  if ( mStyleSheetNewOpts.value( QStringLiteral( "fontFamily" ) ).toString() != mStyleSheetBuilder->defaultFont().family() )
-  {
-    mStyleSheetNewOpts.insert( QStringLiteral( "fontFamily" ), QVariant( mStyleSheetBuilder->defaultFont().family() ) );
-    mStyleSheetBuilder->buildStyleSheet( mStyleSheetNewOpts );
-  }
-}
-
-void QgsOptions::mFontFamilyRadioCustom_released()
-{
-  if ( mFontFamilyComboBox->currentFont().family() != mStyleSheetBuilder->defaultFont().family() )
-  {
-    mStyleSheetNewOpts.insert( QStringLiteral( "fontFamily" ), QVariant( mFontFamilyComboBox->currentFont().family() ) );
-    mStyleSheetBuilder->buildStyleSheet( mStyleSheetNewOpts );
-  }
-}
-
-void QgsOptions::mFontFamilyComboBox_currentFontChanged( const QFont &font )
-{
-  if ( mFontFamilyRadioCustom->isChecked()
-       && mStyleSheetNewOpts.value( QStringLiteral( "fontFamily" ) ).toString() != font.family() )
-  {
-    mStyleSheetNewOpts.insert( QStringLiteral( "fontFamily" ), QVariant( font.family() ) );
-    mStyleSheetBuilder->buildStyleSheet( mStyleSheetNewOpts );
-  }
 }
 
 void QgsOptions::leLayerGlobalCrs_crsChanged( const QgsCoordinateReferenceSystem &crs )

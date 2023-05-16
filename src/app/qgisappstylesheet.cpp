@@ -86,7 +86,7 @@ void QgisAppStyleSheet::applyStyleSheet( const QMap<QString, QVariant> &opts )
     else if ( overriddenFontFamily )
       ss += QStringLiteral( "* { font-family: \"%1\"} " ).arg( currentFontFamily );
     else if ( overriddenFontSize )
-      ss += QStringLiteral( "* { font-size: %1pt } " ).arg( overriddenFontSize );
+      ss += QStringLiteral( "* { font-size: %1pt } " ).arg( currentFontSize );
   }
 
   if ( mMacStyle )
@@ -169,6 +169,41 @@ void QgisAppStyleSheet::applyStyleSheet( const QMap<QString, QVariant> &opts )
   QgsDebugMsgLevel( QStringLiteral( "Stylesheet built: %1" ).arg( ss ), 2 );
 
   emit appStyleSheetChanged( ss );
+}
+
+void QgisAppStyleSheet::updateStyleSheet()
+{
+  applyStyleSheet( defaultOptions() );
+}
+
+void QgisAppStyleSheet::setUserFontSize( double size )
+{
+  QgsSettings settings;
+  if ( size == mDefaultFont.pointSizeF() || size < 0 )
+  {
+    settings.remove( QStringLiteral( "/qgis/stylesheet/fontPointSize" ) );
+    mUserFontSize = -1;
+  }
+  else
+  {
+    mUserFontSize = size;
+    settings.setValue( QStringLiteral( "/qgis/stylesheet/fontPointSize" ), mUserFontSize );
+  }
+}
+
+void QgisAppStyleSheet::setUserFontFamily( const QString &family )
+{
+  QgsSettings settings;
+  if ( family == mDefaultFont.family() || family.isEmpty() )
+  {
+    settings.remove( QStringLiteral( "/qgis/stylesheet/fontFamily" ) );
+    mUserFontFamily.clear();
+  }
+  else
+  {
+    mUserFontFamily = family;
+    settings.setValue( QStringLiteral( "/qgis/stylesheet/fontFamily" ), mUserFontFamily );
+  }
 }
 
 void QgisAppStyleSheet::saveToSettings( const QMap<QString, QVariant> &opts )
