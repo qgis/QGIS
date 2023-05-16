@@ -423,8 +423,8 @@ QString QgsMapTip::htmlText( const QString &text, int maxWidth )
 
   const QgsSettings settings;
   const QFont defaultFont = qApp->font();
-  const int fontSize = settings.value( QStringLiteral( "/qgis/stylesheet/fontPointSize" ), defaultFont.pointSize() ).toInt();
-  const QString fontFamily = settings.value( QStringLiteral( "/qgis/stylesheet/fontFamily" ), defaultFont.family() ).toString();
+  const int fontSize = defaultFont.pointSize();
+  const QString fontFamily = defaultFont.family();
   const QString backgroundColor = QgsApplication::palette().base().color().name();
   const QString strokeColor = QgsApplication::palette().shadow().color().name();
   const QString textColor = QgsApplication::palette().toolTipText().color().name();
