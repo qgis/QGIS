@@ -45,6 +45,21 @@ class APP_EXPORT QgisAppStyleSheet: public QObject
      */
     void applyStyleSheet( const QMap<QString, QVariant> &opts );
 
+    /**
+     * Applies an updated stylesheet using current user settings.
+     */
+    void updateStyleSheet();
+
+    /**
+     * Sets a new user font \a size. Set to -1 to force the default Qt font size to be used.
+     */
+    void setUserFontSize( double size );
+
+    /**
+     * Sets a new user font \a family. Set to an empty string to force the default Qt font family to be used.
+     */
+    void setUserFontFamily( const QString &family );
+
     //! Save changed default option keys/values to user settings
     void saveToSettings( const QMap<QString, QVariant> &opts );
 
