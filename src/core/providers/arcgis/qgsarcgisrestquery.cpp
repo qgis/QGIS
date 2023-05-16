@@ -461,6 +461,28 @@ void QgsArcGisRestQueryUtils::addLayerItems( const std::function<void ( const QS
     }
   }
 
+  const QVariantList tableInfoList = serviceData.value( QStringLiteral( "tables" ) ).toList();
+  for ( const QVariant &tableInfo : tableInfoList )
+  {
+    const QVariantMap tableInfoMap = tableInfo.toMap();
+    const QString id = tableInfoMap.value( QStringLiteral( "id" ) ).toString();
+    const QString parentLayerId = tableInfoMap.value( QStringLiteral( "parentLayerId" ) ).toString();
+    const QString name = tableInfoMap.value( QStringLiteral( "name" ) ).toString();
+    const QString description = tableInfoMap.value( QStringLiteral( "description" ) ).toString();
+
+    if ( serviceMayHaveQueryCapability && ( filter == ServiceTypeFilter::Vector || filter == ServiceTypeFilter::AllTypes ) )
+    {
+      if ( !tableInfoMap.value( QStringLiteral( "subLayerIds" ) ).toList().empty() )
+      {
+        visitor( parentLayerId, ServiceTypeFilter::Vector, Qgis::GeometryType::Null, id, name, description, parentUrl + '/' + id, true, QString(), format );
+      }
+      else
+      {
+        visitor( parentLayerId, ServiceTypeFilter::Vector, Qgis::GeometryType::Null, id, name, description, parentUrl + '/' + id, false, authid, format );
+      }
+    }
+  }
+
   // Add root MapServer as raster layer when multiple layers are listed
   if ( filter != ServiceTypeFilter::Vector && layerInfoList.count() > 1 && serviceData.contains( QStringLiteral( "supportedImageFormatTypes" ) ) )
   {

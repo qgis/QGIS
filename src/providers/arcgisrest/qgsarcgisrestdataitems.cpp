@@ -146,7 +146,8 @@ void addLayerItems( QVector< QgsDataItem * > &items, const QVariantMap &serviceD
         case QgsArcGisRestQueryUtils::ServiceTypeFilter::Vector:
           layerItem = std::make_unique< QgsArcGisFeatureServiceLayerItem >( parent, name, url, name, authid, authcfg, headers, geometryType == Qgis::GeometryType::Polygon ? Qgis::BrowserLayerType::Polygon :
                       geometryType == Qgis::GeometryType::Line ? Qgis::BrowserLayerType::Line
-                      : geometryType == Qgis::GeometryType::Point ? Qgis::BrowserLayerType::Point : Qgis::BrowserLayerType::Vector );
+                      : geometryType == Qgis::GeometryType::Point ? Qgis::BrowserLayerType::Point :
+                      geometryType == Qgis::GeometryType::Null ? Qgis::BrowserLayerType::TableLayer : Qgis::BrowserLayerType::Vector );
           break;
 
         case QgsArcGisRestQueryUtils::ServiceTypeFilter::Raster:
