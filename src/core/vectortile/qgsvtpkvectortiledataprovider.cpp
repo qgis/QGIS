@@ -176,7 +176,7 @@ QImage QgsVtpkVectorTileDataProvider::spriteImage() const
   return mSpriteImage;
 }
 
-QByteArray QgsVtpkVectorTileDataProvider::readTile( const QgsTileMatrixSet &, const QgsTileXYZ &id, QgsFeedback *feedback ) const
+QgsVectorTileRawData QgsVtpkVectorTileDataProvider::readTile( const QgsTileMatrixSet &, const QgsTileXYZ &id, QgsFeedback *feedback ) const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
@@ -204,10 +204,10 @@ QList<QgsVectorTileRawData> QgsVtpkVectorTileDataProvider::readTiles( const QgsT
     if ( feedback && feedback->isCanceled() )
       break;
 
-    const QByteArray rawData = loadFromVtpk( reader, id, feedback );
-    if ( !rawData.isEmpty() )
+    const QgsVectorTileRawData rawData = loadFromVtpk( reader, id, feedback );
+    if ( !rawData.data.isEmpty() )
     {
-      rawTiles.append( QgsVectorTileRawData( id, rawData ) );
+      rawTiles.append( rawData );
     }
   }
   return rawTiles;
@@ -230,7 +230,7 @@ QString QgsVtpkVectorTileDataProvider::htmlMetadata() const
   return metadata;
 }
 
-QByteArray QgsVtpkVectorTileDataProvider::loadFromVtpk( QgsVtpkTiles &vtpkTileReader, const QgsTileXYZ &id, QgsFeedback * )
+QgsVectorTileRawData QgsVtpkVectorTileDataProvider::loadFromVtpk( QgsVtpkTiles &vtpkTileReader, const QgsTileXYZ &id, QgsFeedback * )
 {
   const QByteArray tileData = vtpkTileReader.tileData( id.zoomLevel(), id.column(), id.row() );
   if ( tileData.isEmpty() )
@@ -241,7 +241,12 @@ QByteArray QgsVtpkVectorTileDataProvider::loadFromVtpk( QgsVtpkTiles &vtpkTileRe
 
     return QByteArray();
   }
-  return tileData;
+
+  if ( tileData.isEmpty() )
+    return QgsVectorTileRawData();
+
+  QgsVectorTileRawData res( id, tileData );
+  return res;
 }
 
 

@@ -20,6 +20,7 @@
 #include "qgsvectortilebasiclabeling.h"
 #include "qgsvectortilebasicrenderer.h"
 #include "qgsvectortilelabeling.h"
+#include "qgsvectortileloader.h"
 #include "qgsvectortileutils.h"
 #include "qgsnetworkaccessmanager.h"
 #include "qgsdatasourceuri.h"
@@ -577,13 +578,13 @@ QString QgsVectorTileLayer::sourcePath() const
   return QString();
 }
 
-QByteArray QgsVectorTileLayer::getRawTile( QgsTileXYZ tileID )
+QgsVectorTileRawData QgsVectorTileLayer::getRawTile( QgsTileXYZ tileID )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
   QgsVectorTileDataProvider *vtProvider = qobject_cast< QgsVectorTileDataProvider * >( mDataProvider.get() );
   if ( !vtProvider )
-    return QByteArray();
+    return QgsVectorTileRawData();
 
   return vtProvider->readTile( mMatrixSet, tileID );
 }
@@ -726,8 +727,8 @@ void QgsVectorTileLayer::selectByGeometry( const QgsGeometry &geometry, const Qg
 
       for ( const QgsTileXYZ &tileID : tiles )
       {
-        QByteArray data = getRawTile( tileID );
-        if ( data.isEmpty() )
+        const QgsVectorTileRawData data = getRawTile( tileID );
+        if ( data.data.isEmpty() )
           continue;  // failed to get data
 
         QgsVectorTileMVTDecoder decoder( tileMatrixSet() );

@@ -57,9 +57,9 @@ bool QgsXyzVectorTileDataProviderBase::supportsAsync() const
   return true;
 }
 
-QByteArray QgsXyzVectorTileDataProviderBase::readTile( const QgsTileMatrixSet &set, const QgsTileXYZ &id, QgsFeedback *feedback ) const
+QgsVectorTileRawData QgsXyzVectorTileDataProviderBase::readTile( const QgsTileMatrixSet &set, const QgsTileXYZ &id, QgsFeedback *feedback ) const
 {
-  return loadFromNetwork( id, set.tileMatrix( id.zoomLevel() ), sourcePath(), mAuthCfg, mHeaders, feedback );
+  return QgsVectorTileRawData( id, loadFromNetwork( id, set.tileMatrix( id.zoomLevel() ), sourcePath(), mAuthCfg, mHeaders, feedback ) );
 }
 
 QList<QgsVectorTileRawData> QgsXyzVectorTileDataProviderBase::readTiles( const QgsTileMatrixSet &set, const QVector<QgsTileXYZ> &tiles, QgsFeedback *feedback ) const

@@ -35,6 +35,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayertemporalproperties.h"
 #include "qgsvectortilelayer.h"
+#include "qgsvectortileloader.h"
 #include "qgsvectortilemvtdecoder.h"
 #include "qgsvectortileutils.h"
 #include "qgsproject.h"
@@ -450,8 +451,8 @@ bool QgsMapToolIdentify::identifyVectorTileLayer( QList<QgsMapToolIdentify::Iden
 
     for ( const QgsTileXYZ &tileID : tiles )
     {
-      QByteArray data = layer->getRawTile( tileID );
-      if ( data.isEmpty() )
+      const QgsVectorTileRawData data = layer->getRawTile( tileID );
+      if ( data.data.isEmpty() )
         continue;  // failed to get data
 
       QgsVectorTileMVTDecoder decoder( layer->tileMatrixSet() );

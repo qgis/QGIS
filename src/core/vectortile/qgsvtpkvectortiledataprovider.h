@@ -59,7 +59,7 @@ class CORE_EXPORT QgsVtpkVectorTileDataProvider : public QgsVectorTileDataProvid
     QVariantMap styleDefinition() const override;
     QVariantMap spriteDefinition() const override;
     QImage spriteImage() const override;
-    QByteArray readTile( const QgsTileMatrixSet &tileMatrix, const QgsTileXYZ &id, QgsFeedback *feedback = nullptr ) const override;
+    QgsVectorTileRawData readTile( const QgsTileMatrixSet &tileMatrix, const QgsTileXYZ &id, QgsFeedback *feedback = nullptr ) const override;
     QList<QgsVectorTileRawData> readTiles( const QgsTileMatrixSet &, const QVector<QgsTileXYZ> &tiles, QgsFeedback *feedback = nullptr ) const override;
     QString htmlMetadata() const override;
 
@@ -69,7 +69,7 @@ class CORE_EXPORT QgsVtpkVectorTileDataProvider : public QgsVectorTileDataProvid
   private:
 
     //! Returns raw tile data for a single tile loaded from VTPK file
-    static QByteArray loadFromVtpk( QgsVtpkTiles &vtpkTileReader, const QgsTileXYZ &id, QgsFeedback *feedback = nullptr );
+    static QgsVectorTileRawData loadFromVtpk( QgsVtpkTiles &vtpkTileReader, const QgsTileXYZ &id, QgsFeedback *feedback = nullptr );
     bool mIsValid = false;
     QgsCoordinateReferenceSystem mCrs;
     QgsRectangle mExtent;
