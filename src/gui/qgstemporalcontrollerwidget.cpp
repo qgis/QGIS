@@ -290,9 +290,11 @@ void QgsTemporalControllerWidget::updateTemporalExtent()
   const QDateTime start = mStartDateTime->dateTime();
   const QDateTime end = mEndDateTime->dateTime();
   const bool isTimeInstant = start == end;
-  const QgsDateTimeRange temporalExtent = QgsDateTimeRange( start, end,
-                                          true, !isTimeInstant && mNavigationObject->navigationMode() == QgsTemporalNavigationObject::FixedRange ? false : true );
-  mNavigationObject->setTemporalExtents( temporalExtent );
+  const QgsDateTimeRange overallTemporalExtent = QgsTemporalUtils::calculateTemporalRangeForProject( QgsProject::instance() );
+  QgsDateTimeRange controlledExtent = QgsDateTimeRange( start, end,
+                                      true, !overallTemporalExtent.includeEnd() || ( !isTimeInstant && mNavigationObject->navigationMode() == QgsTemporalNavigationObject::FixedRange ) ? false : true );
+
+  mNavigationObject->setTemporalExtents( controlledExtent );
   mSlider->setRange( 0, mNavigationObject->totalFrameCount() - 1 );
   mSlider->setValue( mNavigationObject->currentFrameNumber() );
 }
