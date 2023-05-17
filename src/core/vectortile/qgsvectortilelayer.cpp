@@ -732,7 +732,7 @@ void QgsVectorTileLayer::selectByGeometry( const QgsGeometry &geometry, const Qg
           continue;  // failed to get data
 
         QgsVectorTileMVTDecoder decoder( tileMatrixSet() );
-        if ( !decoder.decode( tileID, data ) )
+        if ( !decoder.decode( data ) )
           continue;  // failed to decode
 
         QMap<QString, QgsFields> perLayerFields;

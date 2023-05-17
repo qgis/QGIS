@@ -117,7 +117,7 @@ void TestQgsVectorTileWriter::test_basic()
 
   const QgsVectorTileRawData tile0 = vtLayer->getRawTile( QgsTileXYZ( 0, 0, 0 ) );
   QgsVectorTileMVTDecoder decoder( QgsVectorTileMatrixSet::fromWebMercator() );
-  const bool resDecode0 = decoder.decode( QgsTileXYZ( 0, 0, 0 ), tile0.data );
+  const bool resDecode0 = decoder.decode( tile0 );
   QVERIFY( resDecode0 );
   const QStringList layerNames = decoder.layers();
   QCOMPARE( layerNames, QStringList() << "points" << "lines" << "polys" );
@@ -186,7 +186,7 @@ void TestQgsVectorTileWriter::test_mbtiles()
 
   const QgsVectorTileRawData tile0 = vtLayer->getRawTile( QgsTileXYZ( 0, 0, 0 ) );
   QgsVectorTileMVTDecoder decoder( QgsVectorTileMatrixSet::fromWebMercator() );
-  const bool resDecode0 = decoder.decode( QgsTileXYZ( 0, 0, 0 ), tile0.data );
+  const bool resDecode0 = decoder.decode( tile0 );
   QVERIFY( resDecode0 );
   const QStringList layerNames = decoder.layers();
   QCOMPARE( layerNames, QStringList() << "points" << "lines" << "polys" );
@@ -302,7 +302,7 @@ void TestQgsVectorTileWriter::test_filtering()
 
   const QgsVectorTileRawData tile0 = vtLayer->getRawTile( QgsTileXYZ( 0, 0, 0 ) );
   QgsVectorTileMVTDecoder decoder( QgsVectorTileMatrixSet::fromWebMercator() );
-  const bool resDecode0 = decoder.decode( QgsTileXYZ( 0, 0, 0 ), tile0.data );
+  const bool resDecode0 = decoder.decode( tile0 );
   QVERIFY( resDecode0 );
   const QStringList layerNames = decoder.layers();
   QCOMPARE( layerNames, QStringList() << "b52" << "lines" );
@@ -365,7 +365,7 @@ void TestQgsVectorTileWriter::test_z0TileMatrix3857()
 
   const QgsVectorTileRawData tile0 = vtLayer->getRawTile( QgsTileXYZ( 0, 0, 0 ) );
   QgsVectorTileMVTDecoder decoder( QgsVectorTileMatrixSet::fromWebMercator() );
-  const bool resDecode0 = decoder.decode( QgsTileXYZ( 0, 0, 0 ), tile0.data );
+  const bool resDecode0 = decoder.decode( tile0 );
   QVERIFY( resDecode0 );
   const QStringList layerNames = decoder.layers();
   QCOMPARE( layerNames, QStringList() << "points" << "lines" << "polys" );
@@ -451,7 +451,7 @@ void TestQgsVectorTileWriter::test_z0TileMatrix2154()
 
   const QgsVectorTileRawData tile0 = vtLayer->getRawTile( QgsTileXYZ( 0, 0, 0 ) );
   QgsVectorTileMVTDecoder decoder( QgsVectorTileMatrixSet::fromWebMercator() );
-  const bool resDecode0 = decoder.decode( QgsTileXYZ( 0, 0, 0 ), tile0.data );
+  const bool resDecode0 = decoder.decode( tile0 );
   QVERIFY( resDecode0 );
   const QStringList layerNames = decoder.layers();
   QCOMPARE( layerNames, QStringList() << "points" << "lines" << "polys" );

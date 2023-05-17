@@ -456,7 +456,7 @@ bool QgsMapToolIdentify::identifyVectorTileLayer( QList<QgsMapToolIdentify::Iden
         continue;  // failed to get data
 
       QgsVectorTileMVTDecoder decoder( layer->tileMatrixSet() );
-      if ( !decoder.decode( tileID, data ) )
+      if ( !decoder.decode( data ) )
         continue;  // failed to decode
 
       QMap<QString, QgsFields> perLayerFields;
