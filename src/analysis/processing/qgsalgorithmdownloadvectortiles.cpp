@@ -100,7 +100,7 @@ QVariantMap QgsDownloadVectorTilesAlgorithm::processAlgorithm( const QVariantMap
 
   const QgsRectangle extent = parameterAsExtent( parameters, QStringLiteral( "EXTENT" ), context, layer->crs() );
   int maxZoomLevel = parameterAsInt( parameters, QStringLiteral( "MAX_ZOOM" ), context );
-  const int tileLimit = parameterAsInt( parameters, QStringLiteral( "TILE_LIMIT" ), context );
+  const long long tileLimit = static_cast< long long >( parameterAsInt( parameters, QStringLiteral( "TILE_LIMIT" ), context ) );
   const QString outputFile = parameterAsOutputLayer( parameters, QStringLiteral( "OUTPUT" ), context );
 
   QgsVectorTileLayer *vtLayer = qobject_cast< QgsVectorTileLayer * >( layer );
@@ -120,11 +120,11 @@ QVariantMap QgsDownloadVectorTilesAlgorithm::processAlgorithm( const QVariantMap
     QgsTileMatrix tileMatrix = tileMatrixSet.tileMatrix( i );
     QgsTileRange tileRange = tileMatrix.tileRangeFromExtent( extent );
     tileRanges.insert( i, tileRange );
-    tileCount += ( tileRange.endColumn() - tileRange.startColumn() + 1 ) * ( tileRange.endRow() - tileRange.startRow() + 1 );
-    if ( tileCount > tileLimit )
-    {
-      throw QgsProcessingException( QObject::tr( "Requested number of tiles exceeds limit of %1 tiles. Please, select a smaller extent, reduce maximum zoom level or increase tile limit." ).arg( tileLimit ) );
-    }
+    tileCount += static_cast< long long >( ( tileRange.endColumn() - tileRange.startColumn() + 1 ) * ( tileRange.endRow() - tileRange.startRow() + 1 ) );
+  }
+  if ( tileCount > tileLimit )
+  {
+    throw QgsProcessingException( QObject::tr( "Requested number of tiles %1 exceeds limit of %2 tiles. Please, select a smaller extent, reduce maximum zoom level or increase tile limit." ).arg( tileCount ).arg( tileLimit ) );
   }
 
   std::unique_ptr<QgsMbTiles> writer = std::make_unique<QgsMbTiles>( outputFile );
@@ -141,7 +141,7 @@ QVariantMap QgsDownloadVectorTilesAlgorithm::processAlgorithm( const QVariantMap
   {
     QgsCoordinateTransform ct( tileMatrixSet.rootMatrix().crs(), QgsCoordinateReferenceSystem( "EPSG:4326" ), context.transformContext() );
     ct.setBallparkTransformsAreAppropriate( true );
-    QgsRectangle wgsExtent = ct.transform( extent );
+    QgsRectangle wgsExtent = ct.transformBoundingBox( extent );
     QString boundsStr = QString( "%1,%2,%3,%4" )
                         .arg( wgsExtent.xMinimum() ).arg( wgsExtent.yMinimum() )
                         .arg( wgsExtent.xMaximum() ).arg( wgsExtent.yMaximum() );
@@ -166,7 +166,7 @@ QVariantMap QgsDownloadVectorTilesAlgorithm::processAlgorithm( const QVariantMap
     multiStepFeedback.setCurrentStep( it.key() );
 
     QgsTileMatrix tileMatrix = tileMatrixSet.tileMatrix( it.key() );
-    tileCount = ( it.value().endColumn() - it.value().startColumn() + 1 ) * ( it.value().endRow() - it.value().startRow() + 1 );
+    tileCount = static_cast< long long >( ( it.value().endColumn() - it.value().startColumn() + 1 ) * ( it.value().endRow() - it.value().startRow() + 1 ) );
 
     const QPointF viewCenter = tileMatrix.mapToTileCoordinates( extent.center() );
 
