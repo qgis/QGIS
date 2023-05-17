@@ -87,12 +87,8 @@ void QgsDownloadVectorTilesAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterMapLayer( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ), QVariant(), false, QList<int>() << QgsProcessing::TypeVectorTile ) );
   addParameter( new QgsProcessingParameterExtent( QStringLiteral( "EXTENT" ), QObject::tr( "Extent" ) ) );
-  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "MAX_ZOOM" ), QObject::tr( "Maximum zoom level to download" ), QgsProcessingParameterNumber::Integer, 14, false, 0 ) );
-
-  std::unique_ptr< QgsProcessingParameterNumber > tileLimitParam = std::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "TILE_LIMIT" ), QObject::tr( "Tile limit" ), QgsProcessingParameterNumber::Integer, 10000, false, 0 );
-  tileLimitParam->setFlags( tileLimitParam->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
-  addParameter( tileLimitParam.release() );
-
+  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "MAX_ZOOM" ), QObject::tr( "Maximum zoom level to download" ), QgsProcessingParameterNumber::Integer, 10, false, 0 ) );
+  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "TILE_LIMIT" ), QObject::tr( "Tile limit" ), QgsProcessingParameterNumber::Integer, 100, false, 0 ) );
   addParameter( new QgsProcessingParameterVectorTileDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Output" ) ) );
 }
 
