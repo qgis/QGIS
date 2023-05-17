@@ -457,7 +457,8 @@ QByteArray QgsVtpkTiles::tileData( int z, int x, int y )
   const size_t len = stat.size;
   if ( len <= tileIndexOffset )
   {
-    QgsMessageLog::logMessage( QObject::tr( "Cannot read gzip contents at offset %1: %2" ).arg( tileIndexOffset ).arg( fileName ) );
+    // seems this should be treated as "no content" here, rather then a broken VTPK
+    res = QByteArray( "" );
   }
   else
   {
