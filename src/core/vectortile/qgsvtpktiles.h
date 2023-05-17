@@ -107,6 +107,11 @@ class CORE_EXPORT QgsVtpkTiles
 
     /**
      * Returns the raw tile data for the matching tile.
+     *
+     * Returns a null byte array if the requested tile does not exist.
+     *
+     * Will return an empty byte array (as opposed to a null byte array) if the tile
+     * exists but has a zero size.
      */
     QByteArray tileData( int z, int x, int y );
 
