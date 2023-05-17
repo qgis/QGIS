@@ -198,7 +198,9 @@ QList<QgsVectorTileRawData> QgsVtpkVectorTileDataProvider::readTiles( const QgsT
   reader.open();
 
   QList<QgsVectorTileRawData> rawTiles;
+  QSet< QgsTileXYZ > fetchedTiles;
   rawTiles.reserve( tiles.size() );
+  fetchedTiles.reserve( tiles.size() );
   for ( QgsTileXYZ id : std::as_const( tiles ) )
   {
     if ( feedback && feedback->isCanceled() )
@@ -208,6 +210,7 @@ QList<QgsVectorTileRawData> QgsVtpkVectorTileDataProvider::readTiles( const QgsT
     if ( !rawData.data.isEmpty() )
     {
       rawTiles.append( rawData );
+      fetchedTiles.insert( rawData.id );
     }
   }
   return rawTiles;
@@ -232,20 +235,22 @@ QString QgsVtpkVectorTileDataProvider::htmlMetadata() const
 
 QgsVectorTileRawData QgsVtpkVectorTileDataProvider::loadFromVtpk( QgsVtpkTiles &vtpkTileReader, const QgsTileXYZ &id, QgsFeedback * )
 {
-  const QByteArray tileData = vtpkTileReader.tileData( id.zoomLevel(), id.column(), id.row() );
-  if ( tileData.isEmpty() )
+  QgsTileXYZ requestedTile = id;
+  QByteArray tileData = vtpkTileReader.tileData( requestedTile.zoomLevel(), requestedTile.column(), requestedTile.row() );
+  // I **think** here ESRI software will detect a zero size tile and automatically fallback to lower zoom level tiles
+  // I.e. they treat EVERY vtpk a bit like an indexed VTPK, but without the up-front tilemap information.
+  // See https://github.com/qgis/QGIS/issues/52872
+  while ( !tileData.isNull() && tileData.size() == 0 && requestedTile.zoomLevel() > vtpkTileReader.matrixSet().minimumZoom() )
   {
-    // TODO -- I think here ESRI software will detect a zero size tile and automatically fallback to lower zoom level tiles
-    // I.e. they treat EVERY vtpk a bit like an indexed VTPK, but without the up-front tilemap information.
-    // See https://github.com/qgis/QGIS/issues/52872
-
-    return QByteArray();
+    requestedTile = QgsTileXYZ( requestedTile.column() / 2, requestedTile.row() / 2, requestedTile.zoomLevel() - 1 );
+    tileData = vtpkTileReader.tileData( requestedTile.zoomLevel(), requestedTile.column(), requestedTile.row() );
   }
 
-  if ( tileData.isEmpty() )
+  if ( tileData.isNull() )
     return QgsVectorTileRawData();
 
   QgsVectorTileRawData res( id, tileData );
+  res.tileGeometryId = requestedTile;
   return res;
 }
 
