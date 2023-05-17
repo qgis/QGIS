@@ -230,6 +230,11 @@ QString QgsVtpkVectorTileDataProvider::htmlMetadata() const
   else
     metadata += QStringLiteral( "<tr><td class=\"highlight\">" ) % tr( "VTPK storage" ) % QStringLiteral( "</td><td>" ) % tr( "Flat VTPK (no tilemap)" ) % QStringLiteral( "</td></tr>\n" );
 
+  if ( reader.metadata().contains( QStringLiteral( "minLOD" ) ) )
+  {
+    metadata += QStringLiteral( "<tr><td class=\"highlight\">" ) % tr( "Tile detail levels" ) % QStringLiteral( "</td><td>" ) % QStringLiteral( "%1 - %2" ).arg( reader.metadata().value( QStringLiteral( "minLOD" ) ).toInt() ).arg( reader.metadata().value( QStringLiteral( "maxLOD" ) ).toInt() ) % QStringLiteral( "</td></tr>\n" );
+  }
+
   return metadata;
 }
 
