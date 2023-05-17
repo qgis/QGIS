@@ -29,6 +29,7 @@ QgsDateTimeRange QgsTemporalUtils::calculateTemporalRangeForProject( QgsProject 
   const QMap<QString, QgsMapLayer *> mapLayers = project->mapLayers();
   QDateTime minDate;
   QDateTime maxDate;
+  bool includeEnd = false;
 
   for ( auto it = mapLayers.constBegin(); it != mapLayers.constEnd(); ++it )
   {
@@ -38,13 +39,16 @@ QgsDateTimeRange QgsTemporalUtils::calculateTemporalRangeForProject( QgsProject 
       continue;
     const QgsDateTimeRange layerRange = currentLayer->temporalProperties()->calculateTemporalExtent( currentLayer );
 
+    if ( layerRange.includeEnd() )
+      includeEnd = true;
+
     if ( layerRange.begin().isValid() && ( !minDate.isValid() ||  layerRange.begin() < minDate ) )
       minDate = layerRange.begin();
     if ( layerRange.end().isValid() && ( !maxDate.isValid() ||  layerRange.end() > maxDate ) )
       maxDate = layerRange.end();
   }
 
-  return QgsDateTimeRange( minDate, maxDate );
+  return QgsDateTimeRange( minDate, maxDate, true, includeEnd );
 }
 
 QList< QgsDateTimeRange > QgsTemporalUtils::usedTemporalRangesForProject( QgsProject *project )

@@ -71,7 +71,7 @@ QgsDateTimeRange QgsVectorLayerTemporalProperties::calculateTemporalExtent( QgsM
         const QDateTime min = minVal.toDateTime();
         const QDateTime maxStartTime = maxVal.toDateTime();
         const QgsInterval eventDuration = QgsInterval( mFixedDuration, mDurationUnit );
-        return QgsDateTimeRange( min, maxStartTime + eventDuration );
+        return QgsDateTimeRange( min, maxStartTime + eventDuration, true, mFixedDuration == 0 ? true : false );
       }
       break;
     }
@@ -88,6 +88,7 @@ QgsDateTimeRange QgsVectorLayerTemporalProperties::calculateTemporalExtent( QgsM
         QgsFeature f;
         QgsFeatureIterator it = vectorLayer->getFeatures( QgsFeatureRequest().setFlags( QgsFeatureRequest::NoGeometry ).setSubsetOfAttributes( QgsAttributeList() << durationFieldIndex << fieldIndex ) );
         QDateTime maxTime;
+        bool hasZeroDuration = false;
         while ( it.nextFeature( f ) )
         {
           const QDateTime start = f.attribute( fieldIndex ).toDateTime();
@@ -97,13 +98,15 @@ QgsDateTimeRange QgsVectorLayerTemporalProperties::calculateTemporalExtent( QgsM
             if ( durationValue.isValid() )
             {
               const double duration = durationValue.toDouble();
+              if ( duration == 0.0 )
+                hasZeroDuration = true;
               const QDateTime end = start.addMSecs( QgsInterval( duration, mDurationUnit ).seconds() * 1000.0 );
               if ( end.isValid() )
                 maxTime = maxTime.isValid() ? std::max( maxTime, end ) : end;
             }
           }
         }
-        return QgsDateTimeRange( minTime, maxTime );
+        return QgsDateTimeRange( minTime, maxTime, true, hasZeroDuration );
       }
       break;
     }
@@ -124,7 +127,8 @@ QgsDateTimeRange QgsVectorLayerTemporalProperties::calculateTemporalExtent( QgsM
         return QgsDateTimeRange( std::min( startMinVal.toDateTime(),
                                            endMinVal.toDateTime() ),
                                  std::max( startMaxVal.toDateTime(),
-                                           endMaxVal.toDateTime() ) );
+                                           endMaxVal.toDateTime() ),
+                                 true, false );
       }
       else if ( startFieldIndex >= 0 )
       {
@@ -132,7 +136,8 @@ QgsDateTimeRange QgsVectorLayerTemporalProperties::calculateTemporalExtent( QgsM
         QVariant startMaxVal;
         vectorLayer->minimumAndMaximumValue( startFieldIndex, startMinVal, startMaxVal );
         return QgsDateTimeRange( startMinVal.toDateTime(),
-                                 startMaxVal.toDateTime() );
+                                 startMaxVal.toDateTime(),
+                                 true, false );
       }
       else if ( endFieldIndex >= 0 )
       {
@@ -140,7 +145,8 @@ QgsDateTimeRange QgsVectorLayerTemporalProperties::calculateTemporalExtent( QgsM
         QVariant endMaxVal;
         vectorLayer->minimumAndMaximumValue( endFieldIndex, endMinVal, endMaxVal );
         return QgsDateTimeRange( endMinVal.toDateTime(),
-                                 endMaxVal.toDateTime() );
+                                 endMaxVal.toDateTime(),
+                                 true, false );
       }
       break;
     }
@@ -208,7 +214,7 @@ QgsDateTimeRange QgsVectorLayerTemporalProperties::calculateTemporalExtent( QgsM
             minTime = minTime.isValid() ? std::min( minTime, end ) : end;
         }
       }
-      return QgsDateTimeRange( minTime, maxTime );
+      return QgsDateTimeRange( minTime, maxTime, true, false );
     }
 
     case Qgis::VectorTemporalMode::RedrawLayerOnly:

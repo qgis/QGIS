@@ -324,7 +324,10 @@ long long QgsTemporalNavigationObject::totalFrameCount() const
   else
   {
     const QgsInterval totalAnimationLength = mTemporalExtents.end() - mTemporalExtents.begin();
-    return static_cast< long long >( std::ceil( totalAnimationLength.seconds() / mFrameDuration.seconds() ) );
+    if ( mTemporalExtents.includeEnd() )
+      return static_cast< long long >( std::ceil( ( totalAnimationLength.seconds() + 0.001 ) / mFrameDuration.seconds() ) );
+    else
+      return static_cast< long long >( std::ceil( totalAnimationLength.seconds() / mFrameDuration.seconds() ) );
   }
 }
 
