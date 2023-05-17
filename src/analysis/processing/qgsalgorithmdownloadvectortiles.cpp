@@ -136,7 +136,7 @@ QVariantMap QgsDownloadVectorTilesAlgorithm::processAlgorithm( const QVariantMap
     QgsTileMatrix tileMatrix = mTileMatrixSet.tileMatrix( i );
     QgsTileRange tileRange = tileMatrix.tileRangeFromExtent( mExtent );
     tileRanges.insert( i, tileRange );
-    tileCount += static_cast< long long >( ( tileRange.endColumn() - tileRange.startColumn() + 1 ) * ( tileRange.endRow() - tileRange.startRow() + 1 ) );
+    tileCount += static_cast< long long >( tileRange.endColumn() - tileRange.startColumn() + 1 ) * ( tileRange.endRow() - tileRange.startRow() + 1 );
   }
   if ( tileCount > mTileLimit )
   {
@@ -182,7 +182,7 @@ QVariantMap QgsDownloadVectorTilesAlgorithm::processAlgorithm( const QVariantMap
     multiStepFeedback.setCurrentStep( it.key() );
 
     QgsTileMatrix tileMatrix = mTileMatrixSet.tileMatrix( it.key() );
-    tileCount = static_cast< long long >( ( it.value().endColumn() - it.value().startColumn() + 1 ) * ( it.value().endRow() - it.value().startRow() + 1 ) );
+    tileCount = static_cast< long long >( it.value().endColumn() - it.value().startColumn() + 1 ) * ( it.value().endRow() - it.value().startRow() + 1 );
 
     const QPointF viewCenter = tileMatrix.mapToTileCoordinates( mExtent.center() );
 
