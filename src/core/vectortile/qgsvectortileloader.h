@@ -39,10 +39,21 @@ class CORE_EXPORT QgsVectorTileRawData
   public:
     //! Constructs a raw tile object
     QgsVectorTileRawData( QgsTileXYZ tileID = QgsTileXYZ(), const QByteArray &raw = QByteArray() )
-      : id( tileID ), data( raw ) {}
+      : id( tileID ), tileGeometryId( tileID ), data( raw ) {}
 
     //! Tile position in tile matrix set
     QgsTileXYZ id;
+
+    /**
+     * Tile id associated with the raw tile data.
+     *
+     * This may differ from the tile id in the situation where lower zoom level tiles have been used to replace
+     * missing higher zoom level tiles. In this case, the tileGeometryId should be used when decoding tiles
+     * to features in order to obtain correct geometry scaling and placement, while the actual tile id
+     * should be used when determining the region of the tile for clipping purposes.
+     */
+    QgsTileXYZ tileGeometryId;
+
     //! Raw tile data
     QByteArray data;
 };

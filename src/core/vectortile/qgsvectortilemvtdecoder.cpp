@@ -42,7 +42,7 @@ bool QgsVectorTileMVTDecoder::decode( const QgsVectorTileRawData &rawTileData )
   if ( !tile.ParseFromArray( rawTileData.data.constData(), rawTileData.data.count() ) )
     return false;
 
-  mTileID = rawTileData.id;
+  mTileID = rawTileData.tileGeometryId;
 
   mLayerNameToIndex.clear();
   for ( int layerNum = 0; layerNum < tile.layers_size(); layerNum++ )
