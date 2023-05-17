@@ -45,7 +45,7 @@ void insertIndexData( QVector<uint> &vertexIndex, const QVector<T> &faceIndex )
     if ( faceIndex[i] == faceIndex[i + 1] || faceIndex[i + 1] == faceIndex[i + 2] || faceIndex[i] == faceIndex[i + 2] )
       continue;
     for ( int j = 0; j < 3; ++j )
-      vertexIndex << faceIndex[i + j] + 1;
+      vertexIndex << faceIndex[i + j];
   }
 }
 
@@ -95,7 +95,7 @@ void Qgs3DExportObject::objectBounds( float &minX, float &minY, float &minZ, flo
   if ( mType != TriangularFaces ) return;
   for ( const unsigned int vertice : mIndexes )
   {
-    const int heightIndex = ( vertice - 1 ) * 3 + 1;
+    const int heightIndex = vertice * 3 + 1;
     minX = std::min( minX, mVertexPosition[heightIndex - 1] );
     maxX = std::max( maxX, mVertexPosition[heightIndex - 1] );
     minY = std::min( minY, mVertexPosition[heightIndex] );
@@ -117,8 +117,9 @@ void Qgs3DExportObject::saveTo( QTextStream &out, float scale, const QVector3D &
     out << "s off\n";
 
   // Construct vertices
-  for ( int i = 0; i < mVertexPosition.size(); i += 3 )
+  for ( const unsigned int vertice : mIndexes )
   {
+    const int i = vertice * 3;
     // for now just ignore wrong vertex positions
     out << "v ";
     out << ( mVertexPosition[i] - center.x() ) / scale << " ";
@@ -144,11 +145,13 @@ void Qgs3DExportObject::saveTo( QTextStream &out, float scale, const QVector3D &
   {
     QgsDebugMsg( "Vertex normals count and vertex positions count are different" );
   }
-  int verticesCount = mVertexPosition.size() / 3;
+  int verticesCount = mIndexes.size();
 
+  // we use negative indexes as this is the way to use relative values to reference vertex positions
+  // Positive values are absolute vertex position from the beginning of the file.
   auto getVertexIndex = [&]( int i ) -> QString
   {
-    const int negativeIndex = -1 - ( verticesCount - i );
+    const int negativeIndex = - ( verticesCount - i ) - mIndexes[0]; // mIndexes[0] is used to shift the index according to the first index (not always 0)
     if ( hasNormals && !hasTextures )
       return QStringLiteral( "%1//%2" ).arg( negativeIndex ).arg( negativeIndex );
     if ( !hasNormals && hasTextures )
@@ -180,8 +183,8 @@ void Qgs3DExportObject::saveTo( QTextStream &out, float scale, const QVector3D &
   else if ( mType == Points )
   {
     out << "p";
-    for ( int i = 0; i < mVertexPosition.size(); i += 3 )
-      out << " " << getVertexIndex( i / 3 + 1 );
+    for ( const int i : mIndexes )
+      out << " " << getVertexIndex( i );
     out << "\n";
   }
 }
