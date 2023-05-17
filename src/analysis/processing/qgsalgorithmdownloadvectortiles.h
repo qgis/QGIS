@@ -23,9 +23,8 @@
 #include "qgis_sip.h"
 #include "qgsprocessingalgorithm.h"
 
-#include "qgsmbtiles.h"
-#include "qgsvectortileloader.h"
-
+#include "qgsvectortilematrixset.h"
+#include "qgsvectortiledataprovider.h"
 
 ///@cond PRIVATE
 
@@ -48,13 +47,20 @@ class QgsDownloadVectorTilesAlgorithm : public QgsProcessingAlgorithm
     QgsDownloadVectorTilesAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
-
+    bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
     QVariantMap processAlgorithm( const QVariantMap &parameters,
                                   QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
   private:
 
-    void writeTile( QgsMbTiles *writer, const QgsVectorTileRawData &rawTile );
+    std::unique_ptr< QgsVectorTileDataProvider > mProvider;
+    int mMaxZoom;
+    int mSourceMinZoom;
+    long long mTileLimit;
+    QString mLayerName;
+    QgsRectangle mExtent;
+    QgsVectorTileMatrixSet mTileMatrixSet;
+    QDomDocument mStyleDocument;
 };
 
 ///@endcond PRIVATE
