@@ -808,13 +808,13 @@ void QgsOgrProvider::loadFields()
                           width, prec, QString(), varSubType
                         );
 
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,7,0)
     const QString alias = textEncoding()->toUnicode( OGR_Fld_GetAlternativeNameRef( fldDef ) );
     if ( !alias.isEmpty() )
     {
       newField.setAlias( alias );
     }
 
-#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,7,0)
     {
       const QString comment = textEncoding()->toUnicode( OGR_Fld_GetComment( fldDef ) );
       if ( !comment.isEmpty() )
