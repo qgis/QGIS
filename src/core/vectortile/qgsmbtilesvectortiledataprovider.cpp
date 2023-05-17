@@ -150,7 +150,7 @@ const QgsVectorTileMatrixSet &QgsMbTilesVectorTileDataProvider::tileMatrixSet() 
   return mMatrixSet;
 }
 
-QByteArray QgsMbTilesVectorTileDataProvider::readTile( const QgsTileMatrixSet &, const QgsTileXYZ &id, QgsFeedback *feedback ) const
+QgsVectorTileRawData QgsMbTilesVectorTileDataProvider::readTile( const QgsTileMatrixSet &, const QgsTileXYZ &id, QgsFeedback *feedback ) const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
@@ -159,7 +159,7 @@ QByteArray QgsMbTilesVectorTileDataProvider::readTile( const QgsTileMatrixSet &,
 
   QgsMbTiles mbReader( dsUri.param( QStringLiteral( "url" ) ) );
   mbReader.open();
-  return loadFromMBTiles( mbReader, id, feedback );
+  return QgsVectorTileRawData( id, loadFromMBTiles( mbReader, id, feedback ) );
 }
 
 QList<QgsVectorTileRawData> QgsMbTilesVectorTileDataProvider::readTiles( const QgsTileMatrixSet &, const QVector<QgsTileXYZ> &tiles, QgsFeedback *feedback ) const

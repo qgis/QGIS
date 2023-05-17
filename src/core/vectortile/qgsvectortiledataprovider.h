@@ -98,7 +98,7 @@ class CORE_EXPORT QgsVectorTileDataProvider : public QgsDataProvider
     /**
      * Returns raw tile data for a single tile.
      */
-    virtual QByteArray readTile( const QgsTileMatrixSet &tileMatrixSet, const QgsTileXYZ &id, QgsFeedback *feedback = nullptr ) const = 0;
+    virtual QgsVectorTileRawData readTile( const QgsTileMatrixSet &tileMatrixSet, const QgsTileXYZ &id, QgsFeedback *feedback = nullptr ) const = 0;
 
     /**
      * Returns raw tile data for a range of tiles.

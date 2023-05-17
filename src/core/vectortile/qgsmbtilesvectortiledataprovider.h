@@ -52,7 +52,7 @@ class CORE_EXPORT QgsMbTilesVectorTileDataProvider : public QgsVectorTileDataPro
     QgsRectangle extent() const override;
     QgsCoordinateReferenceSystem crs() const override;
     const QgsVectorTileMatrixSet &tileMatrixSet() const override;
-    QByteArray readTile( const QgsTileMatrixSet &tileMatrixSet, const QgsTileXYZ &id, QgsFeedback *feedback = nullptr ) const override;
+    QgsVectorTileRawData readTile( const QgsTileMatrixSet &tileMatrixSet, const QgsTileXYZ &id, QgsFeedback *feedback = nullptr ) const override;
     QList<QgsVectorTileRawData> readTiles( const QgsTileMatrixSet &, const QVector<QgsTileXYZ> &tiles, QgsFeedback *feedback = nullptr ) const override;
 
     static QString MB_TILES_VECTOR_TILE_DATA_PROVIDER_KEY;

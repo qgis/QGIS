@@ -27,6 +27,7 @@ class QgsVectorTileLabeling;
 class QgsFeature;
 class QgsGeometry;
 class QgsSelectionContext;
+class QgsVectorTileRawData;
 
 /**
  * \ingroup core
@@ -197,7 +198,7 @@ class CORE_EXPORT QgsVectorTileLayer : public QgsMapLayer
      * \note This call may issue a network request (depending on the source type) and will block
      * the caller until the request is finished.
      */
-    QByteArray getRawTile( QgsTileXYZ tileID ) SIP_SKIP;
+    QgsVectorTileRawData getRawTile( QgsTileXYZ tileID ) SIP_SKIP;
 
     /**
      * Sets renderer for the map layer.
