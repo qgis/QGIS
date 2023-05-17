@@ -218,7 +218,7 @@ void QgsVectorTileLayerRenderer::decodeAndDrawTile( const QgsVectorTileRawData &
 
   // currently only MVT encoding supported
   QgsVectorTileMVTDecoder decoder( mTileMatrixSet );
-  if ( !decoder.decode( rawTile.id, rawTile.data ) )
+  if ( !decoder.decode( rawTile ) )
   {
     QgsDebugMsgLevel( QStringLiteral( "Failed to parse raw tile data! " ) + rawTile.id.toString(), 2 );
     return;

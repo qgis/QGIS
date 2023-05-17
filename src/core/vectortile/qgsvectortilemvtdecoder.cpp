@@ -15,9 +15,9 @@
 
 #include <string>
 
+#include "qgsvectortileloader.h"
 #include "qgsvectortilemvtdecoder.h"
 
-#include "qgsvectortilelayerrenderer.h"
 #include "qgsvectortilemvtutils.h"
 #include "qgsvectortileutils.h"
 
@@ -37,12 +37,12 @@ QgsVectorTileMVTDecoder::QgsVectorTileMVTDecoder( const QgsVectorTileMatrixSet &
 
 QgsVectorTileMVTDecoder::~QgsVectorTileMVTDecoder() = default;
 
-bool QgsVectorTileMVTDecoder::decode( QgsTileXYZ tileID, const QByteArray &rawTileData )
+bool QgsVectorTileMVTDecoder::decode( const QgsVectorTileRawData &rawTileData )
 {
-  if ( !tile.ParseFromArray( rawTileData.constData(), rawTileData.count() ) )
+  if ( !tile.ParseFromArray( rawTileData.data.constData(), rawTileData.data.count() ) )
     return false;
 
-  mTileID = tileID;
+  mTileID = rawTileData.id;
 
   mLayerNameToIndex.clear();
   for ( int layerNum = 0; layerNum < tile.layers_size(); layerNum++ )
