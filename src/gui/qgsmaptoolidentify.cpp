@@ -443,7 +443,14 @@ bool QgsMapToolIdentify::identifyVectorTileLayer( QList<QgsMapToolIdentify::Iden
       }
     }
 
-    const int tileZoom = layer->tileMatrixSet().scaleToZoomLevel( mCanvas->scale() );
+    const double tileScale = layer->tileMatrixSet().calculateTileScaleForMap(
+                               mCanvas->scale(),
+                               mCanvas->mapSettings().destinationCrs(),
+                               mCanvas->mapSettings().extent(),
+                               mCanvas->size(),
+                               mCanvas->logicalDpiX() );
+
+    const int tileZoom = layer->tileMatrixSet().scaleToZoomLevel( tileScale );
     const QgsTileMatrix tileMatrix = layer->tileMatrixSet().tileMatrix( tileZoom );
     const QgsTileRange tileRange = tileMatrix.tileRangeFromExtent( r );
 
