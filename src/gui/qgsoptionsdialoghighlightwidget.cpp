@@ -95,12 +95,6 @@ bool QgsOptionsDialogHighlightWidget::searchHighlight( const QString &text )
   if ( !mWidget )
     return found;
 
-  if ( mChangedStyle )
-  {
-    reset();
-    mChangedStyle = false;
-  }
-
   if ( mEventFilter )
   {
     mWidget->removeEventFilter( mEventFilter );
@@ -111,6 +105,17 @@ bool QgsOptionsDialogHighlightWidget::searchHighlight( const QString &text )
   if ( !text.isEmpty() )
   {
     found = searchText( mSearchText );
+  }
+  else
+  {
+    reset();
+    mChangedStyle = false;
+  }
+
+  if ( mChangedStyle )
+  {
+    reset();
+    mChangedStyle = false;
   }
 
   if ( found )
