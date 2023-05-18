@@ -70,6 +70,7 @@ class QgsElevationProfileWidget : public QWidget
 
     static const QgsSettingsEntryDouble *settingTolerance;
     static const QgsSettingsEntryBool *settingShowLayerTree;
+    static const QgsSettingsEntryBool *settingLockAxis;
 
     QgsElevationProfileWidget( const QString &name );
     ~QgsElevationProfileWidget();
@@ -104,6 +105,7 @@ class QgsElevationProfileWidget : public QWidget
     void nudgeLeft();
     void nudgeRight();
     void nudgeCurve( Qgis::BufferSide side );
+    void axisScaleLockToggled( bool active );
 
   private:
     QgsElevationProfileCanvas *mCanvas = nullptr;
@@ -123,6 +125,7 @@ class QgsElevationProfileWidget : public QWidget
     QAction *mCaptureCurveFromFeatureAction = nullptr;
     QAction *mNudgeLeftAction = nullptr;
     QAction *mNudgeRightAction = nullptr;
+    QAction *mLockRatioAction = nullptr;
 
     QgsDockableWidgetHelper *mDockableWidgetHelper = nullptr;
     std::unique_ptr< QgsMapToolProfileCurve > mCaptureCurveMapTool;

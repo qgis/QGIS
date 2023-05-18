@@ -423,6 +423,9 @@ QRectF Qgs2DPlot::interiorPlotArea( QgsRenderContext &context ) const
 
 void Qgs2DPlot::calculateOptimisedIntervals( QgsRenderContext &context )
 {
+  if ( !mSize.isValid() )
+    return;
+
   // aim for about 40% coverage of label text to available space
   constexpr double IDEAL_WIDTH = 0.4;
   constexpr double TOLERANCE = 0.04;
