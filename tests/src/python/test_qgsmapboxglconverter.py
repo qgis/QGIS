@@ -849,6 +849,33 @@ class TestQgsMapBoxGlStyleConverter(unittest.TestCase):
                          'CASE WHEN @vector_tile_zoom >= 10 AND @vector_tile_zoom <= 11 THEN scale_exp(@vector_tile_zoom,10,11,1.5,2,1.2) WHEN @vector_tile_zoom > 11 AND @vector_tile_zoom <= 12 THEN scale_exp(@vector_tile_zoom,11,12,2,3,1.2) WHEN @vector_tile_zoom > 12 AND @vector_tile_zoom <= 13 THEN scale_exp(@vector_tile_zoom,12,13,3,5,1.2) WHEN @vector_tile_zoom > 13 AND @vector_tile_zoom <= 14 THEN scale_exp(@vector_tile_zoom,13,14,5,6,1.2) WHEN @vector_tile_zoom > 14 AND @vector_tile_zoom <= 16 THEN scale_exp(@vector_tile_zoom,14,16,6,10,1.2) WHEN @vector_tile_zoom > 16 AND @vector_tile_zoom <= 17 THEN scale_exp(@vector_tile_zoom,16,17,10,12,1.2) WHEN @vector_tile_zoom > 17 THEN 12 END')
         self.assertFalse(dd_properties.property(QgsSymbolLayer.PropertyCustomDash).isActive())
 
+    def testParseLineDashArrayNoWidth(self):
+        conversion_context = QgsMapBoxGlStyleConversionContext()
+        conversion_context.setPixelSizeConversionFactor(0.5)
+        style = {
+            "id": "water line (intermittent)/river",
+            "type": "line",
+            "source": "esri",
+            "source-layer": "water line (intermittent)",
+            "filter": ["==", "_symbol", 3],
+            "minzoom": 10,
+            "layout": {
+                "line-join": "round"
+            },
+            "paint": {
+                "line-color": "#aad3df",
+                "line-dasharray": [2, 1],
+            }
+        }
+        has_renderer, rendererStyle = QgsMapBoxGlStyleConverter.parseLineLayer(style, conversion_context)
+        self.assertTrue(has_renderer)
+        self.assertEqual(rendererStyle.geometryType(), QgsWkbTypes.LineGeometry)
+        self.assertTrue(rendererStyle.symbol()[0].useCustomDashPattern())
+        self.assertEqual(rendererStyle.symbol()[0].customDashVector(), [1.0, 0.5])
+        dd_properties = rendererStyle.symbol().symbolLayers()[0].dataDefinedProperties()
+        self.assertEqual(dd_properties.property(QgsSymbolLayer.PropertyStrokeWidth).asExpression(), '')
+        self.assertEqual(dd_properties.property(QgsSymbolLayer.PropertyCustomDash).asExpression(), '')
+
     def testLinePattern(self):
         """ Test line-pattern property """
         context = QgsMapBoxGlStyleConversionContext()
