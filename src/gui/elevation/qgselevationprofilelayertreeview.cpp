@@ -235,6 +235,23 @@ QVariant QgsElevationProfileLayerTreeModel::data( const QModelIndex &index, int 
   return QgsLayerTreeModel::data( index, role );
 }
 
+bool QgsElevationProfileLayerTreeModel::setData( const QModelIndex &index, const QVariant &value, int role )
+{
+  if ( QgsLayerTreeLayer *layerNode = qobject_cast< QgsLayerTreeLayer * >( index2node( index ) ) )
+  {
+    if ( role == Qt::CheckStateRole )
+    {
+      const bool checked = static_cast< Qt::CheckState >( value.toInt() ) == Qt::Checked;
+      if ( QgsMapLayer *layer = layerNode->layer() )
+      {
+        layer->setCustomProperty( QStringLiteral( "_include_in_elevation_profiles" ), checked );
+      }
+    }
+  }
+
+  return QgsLayerTreeModel::setData( index, value, role );
+}
+
 bool QgsElevationProfileLayerTreeModel::dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent )
 {
   if ( action == Qt::IgnoreAction )
@@ -388,7 +405,15 @@ void QgsElevationProfileLayerTreeView::populateInitialLayers( QgsProject *projec
   for ( QgsMapLayer *layer : std::as_const( sortedLayers ) )
   {
     QgsLayerTreeLayer *node = mLayerTree->addLayer( layer );
-    node->setItemVisibilityChecked( layer->elevationProperties() && layer->elevationProperties()->showByDefaultInElevationProfilePlots() );
+
+    if ( layer->customProperty( QStringLiteral( "_include_in_elevation_profiles" ) ).isValid() )
+    {
+      node->setItemVisibilityChecked( layer->customProperty( QStringLiteral( "_include_in_elevation_profiles" ) ).toBool() );
+    }
+    else
+    {
+      node->setItemVisibilityChecked( layer->elevationProperties() && layer->elevationProperties()->showByDefaultInElevationProfilePlots() );
+    }
   }
 }
 
