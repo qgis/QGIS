@@ -984,6 +984,7 @@
         <file>themes/default/algorithms/mAlgorithmOffsetLines.svg</file>
         <file>composer/refreshing_item.svg</file>
         <file>themes/default/mActionTextAlongLine.svg</file>
+        <file>themes/default/mActionNewElevationProfile.svg</file>
     </qresource>
     <qresource prefix="/images/tips">
         <file alias="symbol_levels.png">qgis_tips/symbol_levels.png</file>
