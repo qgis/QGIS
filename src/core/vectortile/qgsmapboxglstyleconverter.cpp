@@ -542,7 +542,7 @@ bool QgsMapBoxGlStyleConverter::parseLineLayer( const QVariantMap &jsonLayer, Qg
   }
 
 
-  double lineWidth = 1.0;
+  double lineWidth = 1.0 * context.pixelSizeConversionFactor();
   QgsProperty lineWidthProperty;
   if ( jsonPaint.contains( QStringLiteral( "line-width" ) ) )
   {
@@ -571,10 +571,6 @@ bool QgsMapBoxGlStyleConverter::parseLineLayer( const QVariantMap &jsonLayer, Qg
         context.pushWarning( QObject::tr( "%1: Skipping unsupported fill-width type (%2)" ).arg( context.layerId(), QMetaType::typeName( jsonLineWidth.type() ) ) );
         break;
     }
-  }
-  else
-  {
-    lineWidth *= context.pixelSizeConversionFactor();
   }
 
   double lineOffset = 0.0;
