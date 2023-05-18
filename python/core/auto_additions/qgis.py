@@ -2477,7 +2477,8 @@ Qgis.VerticalAxisInversion.baseClass = Qgis
 # monkey patching scoped based enum
 Qgis.ProfileSurfaceSymbology.Line.__doc__ = "The elevation surface will be rendered using a line symbol"
 Qgis.ProfileSurfaceSymbology.FillBelow.__doc__ = "The elevation surface will be rendered using a fill symbol below the surface level"
-Qgis.ProfileSurfaceSymbology.__doc__ = 'Surface symbology type for elevation profile plots.\n\n.. versionadded:: 3.26\n\n' + '* ``Line``: ' + Qgis.ProfileSurfaceSymbology.Line.__doc__ + '\n' + '* ``FillBelow``: ' + Qgis.ProfileSurfaceSymbology.FillBelow.__doc__
+Qgis.ProfileSurfaceSymbology.FillAbove.__doc__ = "The elevation surface will be rendered using a fill symbol above the surface level (since QGIS 3.32)"
+Qgis.ProfileSurfaceSymbology.__doc__ = 'Surface symbology type for elevation profile plots.\n\n.. versionadded:: 3.26\n\n' + '* ``Line``: ' + Qgis.ProfileSurfaceSymbology.Line.__doc__ + '\n' + '* ``FillBelow``: ' + Qgis.ProfileSurfaceSymbology.FillBelow.__doc__ + '\n' + '* ``FillAbove``: ' + Qgis.ProfileSurfaceSymbology.FillAbove.__doc__
 # --
 Qgis.ProfileSurfaceSymbology.baseClass = Qgis
 # monkey patching scoped based enum
