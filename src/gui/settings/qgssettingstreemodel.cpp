@@ -134,17 +134,17 @@ void QgsSettingsTreeModelNodeData::addChildForSetting( const QgsSettingsEntryBas
   switch ( mNamedParentNodes.count() )
   {
     case 1:
-      QgsDebugMsg( QString( "getting %1 with %2" ).arg( setting->definitionKey(), mNamedParentNodes.at( 0 ) ) );
+      QgsDebugMsgLevel( QString( "getting %1 with %2" ).arg( setting->definitionKey(), mNamedParentNodes.at( 0 ) ), 3 );
       break;
     case 2:
-      QgsDebugMsg( QString( "getting %1 with %2 and %3" ).arg( setting->definitionKey(), mNamedParentNodes.at( 0 ), mNamedParentNodes.at( 1 ) ) );
+      QgsDebugMsgLevel( QString( "getting %1 with %2 and %3" ).arg( setting->definitionKey(), mNamedParentNodes.at( 0 ), mNamedParentNodes.at( 1 ) ), 3 );
       break;
     case 0:
-      QgsDebugMsg( QString( "getting %1" ).arg( setting->definitionKey() ) );
+      QgsDebugMsgLevel( QString( "getting %1" ).arg( setting->definitionKey() ), 3 );
       break;
     default:
       Q_ASSERT( false );
-      QgsDebugMsg( QString( "Not handling that many named parent nodes for %1" ).arg( setting->definitionKey() ) );
+      QgsDebugMsgLevel( QString( "Not handling that many named parent nodes for %1" ).arg( setting->definitionKey() ), 3 );
       break;
   }
 
