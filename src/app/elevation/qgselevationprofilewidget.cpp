@@ -59,6 +59,7 @@
 const QgsSettingsEntryDouble *QgsElevationProfileWidget::settingTolerance = new QgsSettingsEntryDouble( QStringLiteral( "tolerance" ), QgsSettingsTree::sTreeElevationProfile, 0.1, QStringLiteral( "Tolerance distance for elevation profile plots" ), Qgis::SettingsOptions(), 0 );
 
 const QgsSettingsEntryBool *QgsElevationProfileWidget::settingShowLayerTree = new QgsSettingsEntryBool( QStringLiteral( "show-layer-tree" ), QgsSettingsTree::sTreeElevationProfile, true, QStringLiteral( "Whether the layer tree should be shown for elevation profile plots" ) );
+const QgsSettingsEntryBool *QgsElevationProfileWidget::settingLockAxis = new QgsSettingsEntryBool( QStringLiteral( "lock-axis-ratio" ), QgsSettingsTree::sTreeElevationProfile, false, QStringLiteral( "Whether the the distance and elevation axis scales are locked to each other" ) );
 
 QgsElevationProfileWidget::QgsElevationProfileWidget( const QString &name )
   : QWidget( nullptr )
@@ -81,6 +82,8 @@ QgsElevationProfileWidget::QgsElevationProfileWidget( const QString &name )
   mCanvas->setProject( QgsProject::instance() );
   connect( mCanvas, &QgsElevationProfileCanvas::activeJobCountChanged, this, &QgsElevationProfileWidget::onTotalPendingJobsCountChanged );
   connect( mCanvas, &QgsElevationProfileCanvas::canvasPointHovered, this, &QgsElevationProfileWidget::onCanvasPointHovered );
+
+  mCanvas->setLockAxisScales( settingLockAxis->value() );
 
   mPanTool = new QgsPlotToolPan( mCanvas );
 
@@ -234,6 +237,12 @@ QgsElevationProfileWidget::QgsElevationProfileWidget( const QString &name )
 
   // Options Menu
   mOptionsMenu = new QMenu( this );
+
+  mLockRatioAction = new QAction( tr( "Lock Distance/Elevation Scales" ), this );
+  mLockRatioAction->setCheckable( true );
+  mLockRatioAction->setChecked( settingLockAxis->value( ) );
+  connect( mLockRatioAction, &QAction::toggled, this, &QgsElevationProfileWidget::axisScaleLockToggled );
+  mOptionsMenu->addAction( mLockRatioAction );
 
   mSettingsAction = new QgsElevationProfileWidgetSettingsAction( mOptionsMenu );
 
@@ -639,6 +648,12 @@ void QgsElevationProfileWidget::nudgeCurve( Qgis::BufferSide side )
 
   const QgsGeometry nudgedCurve = mProfileCurve.offsetCurve( side == Qgis::BufferSide::Left ? distance : -distance, 8, Qgis::JoinStyle::Miter, 2 );
   setProfileCurve( nudgedCurve, false );
+}
+
+void QgsElevationProfileWidget::axisScaleLockToggled( bool active )
+{
+  settingLockAxis->setValue( active );
+  mCanvas->setLockAxisScales( active );
 }
 
 void QgsElevationProfileWidget::createOrUpdateRubberBands( )
