@@ -17,13 +17,16 @@
 
 #include "qgsconfig.h"
 #include "qgsmaplayer.h"
+#include "qgsmaplayerelevationproperties.h"
 #include "qgsmeshlayer.h"
 #include "qgsproject.h"
+#include "qgsprojectelevationproperties.h"
 #include "qgsprojecttimesettings.h"
 #include "qgspointcloudlayer.h"
 #include "qgsmeshlayertemporalproperties.h"
 #include "qgisapp.h"
 #include "qgsmessagebar.h"
+#include "qgsterrainprovider.h"
 #ifdef HAVE_3D
 #include "qgspointcloudlayer3drenderer.h"
 #endif
@@ -65,8 +68,32 @@ void QgsAppLayerHandling::postProcessAddedLayer( QgsMapLayer *layer )
 {
   switch ( layer->type() )
   {
-    case Qgis::LayerType::Vector:
     case Qgis::LayerType::Raster:
+    {
+      bool ok = false;
+      layer->loadDefaultStyle( ok );
+      layer->loadDefaultMetadata( ok );
+
+      // if there's no (useful) terrain provider for the current project, and we know that this
+      // layer contains elevation, then automatically set it as the terrain provider
+      if ( !QgsProject::instance()->elevationProperties()->terrainProvider()
+           || ( dynamic_cast< QgsFlatTerrainProvider * >( QgsProject::instance()->elevationProperties()->terrainProvider() )
+                && QgsProject::instance()->elevationProperties()->terrainProvider()->offset() == 0
+                && QgsProject::instance()->elevationProperties()->terrainProvider()->scale() == 1 ) )
+      {
+        if ( layer->elevationProperties()->hasElevation() )
+        {
+          std::unique_ptr< QgsRasterDemTerrainProvider > terrain = std::make_unique<QgsRasterDemTerrainProvider>();
+          terrain->setLayer( qobject_cast< QgsRasterLayer *>( layer ) );
+          QgsProject::instance()->elevationProperties()->setTerrainProvider(
+            terrain.release()
+          );
+        }
+      }
+      break;
+    }
+
+    case Qgis::LayerType::Vector:
     {
       bool ok = false;
       layer->loadDefaultStyle( ok );
