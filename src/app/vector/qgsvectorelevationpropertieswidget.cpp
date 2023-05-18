@@ -52,6 +52,7 @@ QgsVectorElevationPropertiesWidget::QgsVectorElevationPropertiesWidget( QgsVecto
 
   mStyleComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "mIconSurfaceElevationLine.svg" ) ), tr( "Line" ), static_cast< int >( Qgis::ProfileSurfaceSymbology::Line ) );
   mStyleComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "mIconSurfaceElevationFillBelow.svg" ) ), tr( "Fill Below" ), static_cast< int >( Qgis::ProfileSurfaceSymbology::FillBelow ) );
+  mStyleComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "mIconSurfaceElevationFillAbove.svg" ) ), tr( "Fill Above" ), static_cast< int >( Qgis::ProfileSurfaceSymbology::FillAbove ) );
 
   initializeDataDefinedButton( mOffsetDDBtn, QgsMapLayerElevationProperties::ZOffset );
   initializeDataDefinedButton( mExtrusionDDBtn, QgsMapLayerElevationProperties::ExtrusionHeight );
@@ -88,6 +89,7 @@ QgsVectorElevationPropertiesWidget::QgsVectorElevationPropertiesWidget( QgsVecto
         mSymbologyStackedWidget->setCurrentWidget( mPageLine );
         break;
       case Qgis::ProfileSurfaceSymbology::FillBelow:
+      case Qgis::ProfileSurfaceSymbology::FillAbove:
         mSymbologyStackedWidget->setCurrentWidget( mPageFill );
         break;
     }
@@ -150,6 +152,7 @@ void QgsVectorElevationPropertiesWidget::syncToLayer( QgsMapLayer *layer )
       mSymbologyStackedWidget->setCurrentWidget( mPageLine );
       break;
     case Qgis::ProfileSurfaceSymbology::FillBelow:
+    case Qgis::ProfileSurfaceSymbology::FillAbove:
       mSymbologyStackedWidget->setCurrentWidget( mPageFill );
       break;
   }

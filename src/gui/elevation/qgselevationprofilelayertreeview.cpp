@@ -130,6 +130,7 @@ QVariant QgsElevationProfileLayerTreeModel::data( const QModelIndex &index, int 
                       }
                       break;
                     case Qgis::ProfileSurfaceSymbology::FillBelow:
+                    case Qgis::ProfileSurfaceSymbology::FillAbove:
                       if ( QgsFillSymbol *fillSymbol = elevationProperties->profileFillSymbol() )
                       {
                         symbol.reset( fillSymbol->clone() );
@@ -154,6 +155,7 @@ QVariant QgsElevationProfileLayerTreeModel::data( const QModelIndex &index, int 
                   }
                   break;
                 case Qgis::ProfileSurfaceSymbology::FillBelow:
+                case Qgis::ProfileSurfaceSymbology::FillAbove:
                   if ( QgsFillSymbol *fillSymbol = rlProps->profileFillSymbol() )
                   {
                     symbol.reset( fillSymbol->clone() );
@@ -175,6 +177,7 @@ QVariant QgsElevationProfileLayerTreeModel::data( const QModelIndex &index, int 
                   }
                   break;
                 case Qgis::ProfileSurfaceSymbology::FillBelow:
+                case Qgis::ProfileSurfaceSymbology::FillAbove:
                   if ( QgsFillSymbol *fillSymbol = mlProps->profileFillSymbol() )
                   {
                     symbol.reset( fillSymbol->clone() );

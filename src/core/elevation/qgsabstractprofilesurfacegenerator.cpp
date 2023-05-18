@@ -148,6 +148,7 @@ void QgsAbstractProfileSurfaceResults::renderResults( QgsProfileRenderContext &c
       mLineSymbol->startRender( context.renderContext() );
       break;
     case Qgis::ProfileSurfaceSymbology::FillBelow:
+    case Qgis::ProfileSurfaceSymbology::FillAbove:
       mFillSymbol->startRender( context.renderContext() );
       break;
   }
@@ -176,6 +177,12 @@ void QgsAbstractProfileSurfaceResults::renderResults( QgsProfileRenderContext &c
             currentLine.append( currentLine.at( 0 ) );
             mFillSymbol->renderPolygon( currentLine, nullptr, nullptr, context.renderContext() );
             break;
+          case Qgis::ProfileSurfaceSymbology::FillAbove:
+            currentLine.append( context.worldTransform().map( QPointF( prevDistance, maxZ ) ) );
+            currentLine.append( context.worldTransform().map( QPointF( currentPartStartDistance, maxZ ) ) );
+            currentLine.append( currentLine.at( 0 ) );
+            mFillSymbol->renderPolygon( currentLine, nullptr, nullptr, context.renderContext() );
+            break;
         }
       }
       prevDistance = pointIt.key();
@@ -199,6 +206,12 @@ void QgsAbstractProfileSurfaceResults::renderResults( QgsProfileRenderContext &c
         currentLine.append( currentLine.at( 0 ) );
         mFillSymbol->renderPolygon( currentLine, nullptr, nullptr, context.renderContext() );
         break;
+      case Qgis::ProfileSurfaceSymbology::FillAbove:
+        currentLine.append( context.worldTransform().map( QPointF( prevDistance, maxZ ) ) );
+        currentLine.append( context.worldTransform().map( QPointF( currentPartStartDistance, maxZ ) ) );
+        currentLine.append( currentLine.at( 0 ) );
+        mFillSymbol->renderPolygon( currentLine, nullptr, nullptr, context.renderContext() );
+        break;
     }
   }
 
@@ -208,6 +221,7 @@ void QgsAbstractProfileSurfaceResults::renderResults( QgsProfileRenderContext &c
       mLineSymbol->stopRender( context.renderContext() );
       break;
     case Qgis::ProfileSurfaceSymbology::FillBelow:
+    case Qgis::ProfileSurfaceSymbology::FillAbove:
       mFillSymbol->stopRender( context.renderContext() );
       break;
   }

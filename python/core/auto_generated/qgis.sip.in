@@ -1513,6 +1513,7 @@ The development version
     {
       Line,
       FillBelow,
+      FillAbove,
     };
 
     enum class VectorProfileType

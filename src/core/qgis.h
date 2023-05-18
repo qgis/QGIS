@@ -2579,6 +2579,7 @@ class CORE_EXPORT Qgis
     {
       Line, //!< The elevation surface will be rendered using a line symbol
       FillBelow, //!< The elevation surface will be rendered using a fill symbol below the surface level
+      FillAbove, //!< The elevation surface will be rendered using a fill symbol above the surface level (since QGIS 3.32)
     };
     Q_ENUM( ProfileSurfaceSymbology );
 
