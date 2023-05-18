@@ -137,7 +137,7 @@ void QgsSettingsTreeModelNodeData::addChildForSetting( const QgsSettingsEntryBas
       QgsDebugMsg( QString( "getting %1 with %2" ).arg( setting->definitionKey(), mNamedParentNodes.at( 0 ) ) );
       break;
     case 2:
-      QgsDebugMsg( QString( "getting %1 with %2" ).arg( setting->definitionKey(), mNamedParentNodes.at( 0 ), mNamedParentNodes.at( 1 ) ) );
+      QgsDebugMsg( QString( "getting %1 with %2 and %3" ).arg( setting->definitionKey(), mNamedParentNodes.at( 0 ), mNamedParentNodes.at( 1 ) ) );
       break;
     case 0:
       QgsDebugMsg( QString( "getting %1" ).arg( setting->definitionKey() ) );
